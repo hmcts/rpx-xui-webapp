@@ -130,6 +130,181 @@
           }
         }
       }
+    },
+    "exui-case-search": {
+      "root": "projects/exui-case-search",
+      "sourceRoot": "projects/exui-case-search/src",
+      "projectType": "library",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/exui-case-search/tsconfig.lib.json",
+            "project": "projects/exui-case-search/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/exui-case-search/src/test.ts",
+            "tsConfig": "projects/exui-case-search/tsconfig.spec.json",
+            "karmaConfig": "projects/exui-case-search/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/exui-case-search/tsconfig.lib.json",
+              "projects/exui-case-search/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "exui-http-interceptor": {
+      "root": "projects/exui-http-interceptor",
+      "sourceRoot": "projects/exui-http-interceptor/src",
+      "projectType": "library",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/exui-http-interceptor/tsconfig.lib.json",
+            "project": "projects/exui-http-interceptor/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/exui-http-interceptor/src/test.ts",
+            "tsConfig": "projects/exui-http-interceptor/tsconfig.spec.json",
+            "karmaConfig": "projects/exui-http-interceptor/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/exui-http-interceptor/tsconfig.lib.json",
+              "projects/exui-http-interceptor/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "exui-shared-lazy": {
+      "root": "projects/exui-shared-lazy",
+      "sourceRoot": "projects/exui-shared-lazy/src",
+      "projectType": "library",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/exui-shared-lazy/tsconfig.lib.json",
+            "project": "projects/exui-shared-lazy/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/exui-shared-lazy/src/test.ts",
+            "tsConfig": "projects/exui-shared-lazy/tsconfig.spec.json",
+            "karmaConfig": "projects/exui-shared-lazy/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/exui-shared-lazy/tsconfig.lib.json",
+              "projects/exui-shared-lazy/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "exui-core": {
+      "root": "projects/exui-core",
+      "sourceRoot": "projects/exui-core/src",
+      "projectType": "library",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/exui-core/tsconfig.lib.json",
+            "project": "projects/exui-core/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/exui-core/src/test.ts",
+            "tsConfig": "projects/exui-core/tsconfig.spec.json",
+            "karmaConfig": "projects/exui-core/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/exui-core/tsconfig.lib.json",
+              "projects/exui-core/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "exui-organisation": {
+      "root": "projects/exui-organisation",
+      "sourceRoot": "projects/exui-organisation/src",
+      "projectType": "library",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/exui-organisation/tsconfig.lib.json",
+            "project": "projects/exui-organisation/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/exui-organisation/src/test.ts",
+            "tsConfig": "projects/exui-organisation/tsconfig.spec.json",
+            "karmaConfig": "projects/exui-organisation/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/exui-organisation/tsconfig.lib.json",
+              "projects/exui-organisation/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "rpx-exui"

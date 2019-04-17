@@ -17,6 +17,38 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "exui-case-search": [
+        "dist/exui-case-search"
+      ],
+      "exui-case-search/*": [
+        "dist/exui-case-search/*"
+      ],
+      "exui-http-interceptor": [
+        "dist/exui-http-interceptor"
+      ],
+      "exui-http-interceptor/*": [
+        "dist/exui-http-interceptor/*"
+      ],
+      "exui-shared-lazy": [
+        "dist/exui-shared-lazy"
+      ],
+      "exui-shared-lazy/*": [
+        "dist/exui-shared-lazy/*"
+      ],
+      "exui-core": [
+        "dist/exui-core"
+      ],
+      "exui-core/*": [
+        "dist/exui-core/*"
+      ],
+      "exui-organisation": [
+        "dist/exui-organisation"
+      ],
+      "exui-organisation/*": [
+        "dist/exui-organisation/*"
+      ]
+    }
   }
 }

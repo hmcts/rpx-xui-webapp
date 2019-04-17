@@ -3,6 +3,11 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './containers/app/app.component';
 import { LoggerModule } from './service/logger/logger.module';
 
+import { StoreModule } from '@ngrx/store';
+import { reducers, metaReducers } from './reducers';
+import { EffectsModule } from '@ngrx/effects';
+import { AppEffects } from './app.effects';
+
 import { RouterModule } from '@angular/router';
 import { ROUTES } from './app.routes';
 @NgModule({
@@ -12,7 +17,8 @@ import { ROUTES } from './app.routes';
   imports: [
     BrowserModule,
     RouterModule.forRoot(ROUTES),
-    LoggerModule
+    StoreModule.forRoot(reducers, { metaReducers }),
+    EffectsModule.forRoot([AppEffects])
   ],
   bootstrap: [AppComponent]
 })

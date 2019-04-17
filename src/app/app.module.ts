@@ -4,9 +4,9 @@ import { AppComponent } from './containers/app/app.component';
 import { LoggerModule } from './service/logger/logger.module';
 
 import { StoreModule } from '@ngrx/store';
-import { reducers, metaReducers } from './reducers';
+import { reducers, metaReducers } from './store/reducers';
 import { EffectsModule } from '@ngrx/effects';
-import { AppEffects } from './app.effects';
+import { AppEffects } from './store/effects/app.effects';
 
 import { RouterModule } from '@angular/router';
 import { ROUTES } from './app.routes';

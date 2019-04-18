@@ -13,7 +13,7 @@ const noop = (): any => undefined;
 export class ConsoleLoggerService implements Logger {
 
   get info() {
-    if (isDebugMode === 'INFO') {
+    if (isDebugMode === 'DEBUG') {
       return console.info.bind(console);
     } else {
       return noop;
@@ -21,7 +21,7 @@ export class ConsoleLoggerService implements Logger {
   }
 
   get warn() {
-    if (isDebugMode === 'INFO' || isDebugMode === 'WARN') {
+    if (isDebugMode === 'DEBUG' || isDebugMode === 'WARN') {
       return console.warn.bind(console);
     } else {
       return noop;
@@ -29,7 +29,7 @@ export class ConsoleLoggerService implements Logger {
   }
 
   get error() {
-    if (isDebugMode === 'ERROR' || isDebugMode === 'WARN' || isDebugMode === 'INFO') {
+    if (isDebugMode === 'ERROR' || isDebugMode === 'WARN' || isDebugMode === 'DEBUG') {
       return console.error.bind(console);
     } else {
       return noop;

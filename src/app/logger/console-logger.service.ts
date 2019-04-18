@@ -1,10 +1,15 @@
 import { Injectable } from '@angular/core';
+import { Logger } from './logger.service';
 import { environment } from '../../environments/environment';
 
-import { Logger } from './logger.service';
+enum IsDebugMode {
+  OFF,
+  ERROR,
+  WARN,
+  DEBUG
+}
 
-export let isDebugMode = environment.isDebugMode;
-
+export let isDebugMode = IsDebugMode[environment.loggingLevel];
 const noop = (): any => undefined;
 
 @Injectable({
@@ -13,7 +18,7 @@ const noop = (): any => undefined;
 export class ConsoleLoggerService implements Logger {
 
   get info() {
-    if (isDebugMode === 'DEBUG') {
+    if (isDebugMode !== 0 && isDebugMode !== 1 && isDebugMode !== 2) {
       return console.info.bind(console);
     } else {
       return noop;
@@ -21,7 +26,7 @@ export class ConsoleLoggerService implements Logger {
   }
 
   get warn() {
-    if (isDebugMode === 'DEBUG' || isDebugMode === 'WARN') {
+    if (isDebugMode !== 0 && isDebugMode !== 1) {
       return console.warn.bind(console);
     } else {
       return noop;
@@ -29,7 +34,7 @@ export class ConsoleLoggerService implements Logger {
   }
 
   get error() {
-    if (isDebugMode === 'ERROR' || isDebugMode === 'WARN' || isDebugMode === 'DEBUG') {
+    if (isDebugMode !== 0) {
       return console.error.bind(console);
     } else {
       return noop;

@@ -1,5 +1,8 @@
 import { TestBed, async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
+import {LoggerService} from './logger/logger.service';
+
+
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -7,6 +10,20 @@ describe('AppComponent', () => {
       declarations: [
         AppComponent
       ],
+      providers :[
+        { provide: LoggerService,
+          useValue: {
+            info: () => {
+              return 'test info';
+            },
+            warn: () => {
+              return 'test warning';
+            },
+            error: () => {
+              return 'test error';
+            }
+          }
+        }]
     }).compileComponents();
   }));
 
@@ -16,16 +33,4 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'rpx-exui'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('rpx-exui');
-  });
-
-  it('should render title in a h1 tag', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to rpx-exui!');
-  });
 });

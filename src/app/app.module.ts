@@ -1,18 +1,16 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
-
 import {AppComponent} from './app.component';
-import {LoggerService} from './services/logger.service';
-import {ConsoleLoggerService} from './services/console-logger.service';
+import {LoggerModule} from './logger/logger.module';
 
 @NgModule({
   declarations: [
     AppComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    LoggerModule
   ],
-  providers: [ { provide: LoggerService, useClass: ConsoleLoggerService } ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

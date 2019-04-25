@@ -1,7 +1,8 @@
-import {BrowserModule} from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
-import {AppComponent} from './app.component';
-import {LoggerModule} from './logger/logger.module';
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { AppComponent } from './app.component';
+import { LoggerModule } from './logger/logger.module';
+import { CaseFeatureModule } from './case/case-feature/case-feature.module';
 
 @NgModule({
   declarations: [
@@ -9,7 +10,8 @@ import {LoggerModule} from './logger/logger.module';
   ],
   imports: [
     BrowserModule,
-    LoggerModule
+    LoggerModule,
+    CaseFeatureModule
   ],
   bootstrap: [AppComponent]
 })

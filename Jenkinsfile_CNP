@@ -1,0 +1,26 @@
+/////////////////////////////////////////////////////////////////
+// XUI - Jenkins Pipeline configuration for master and PR Builds
+/////////////////////////////////////////////////////////////////
+
+@Library("Infrastructure")
+
+def type        = "angular"
+def product     = "xui"
+def component   = "webapp"
+def channel     = '#xui-pipeline'
+
+properties([
+    [
+        $class       : 'GithubProjectProperty',
+        displayName  : 'XUI (Expert UI Webapp)',
+        projectUrlStr: 'https://github.com/hmcts/rpx-xui-webapp/'
+    ],
+    pipelineTriggers([
+        [$class: 'GitHubPushTrigger']
+    ])
+])
+
+withPipeline(type, product, component) {
+    enableSlackNotifications(channel)
+    //enableDockerBuild()
+}

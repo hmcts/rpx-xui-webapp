@@ -7,6 +7,8 @@ import { LoggerService } from './logger/logger.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  title = "XUI"
+
   constructor(private logger: LoggerService) {
     logger.info('AppComponent: logger.info()');
     logger.warn('AppComponent: logger.warn()');

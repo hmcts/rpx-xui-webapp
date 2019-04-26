@@ -10,16 +10,33 @@ import {
 import { AppConfig } from './case-feature.config';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { MaterialManifestModule } from 'src/app/material-manifest/material-manifest.module';
-
+import { caseFeatureRouting } from './case-feature.routes';
+import { HttpClientModule } from '@angular/common/http';
+import { HttpModule } from '@angular/http';
 
 
 @NgModule({
   imports: [
     CommonModule,
-    MaterialManifestModule
+    CaseUIToolkitModule,
+    MaterialManifestModule,
+    HttpClientModule,
+    HttpModule,
+    caseFeatureRouting
   ],
-  declarations: [CreateCaseComponent],
+  declarations: [CreateCaseComponent,],
   providers: [
+    PlaceholderService,
+    CasesService,
+    CCDAuthService,
+    HttpService,
+    HttpErrorService,
+    AlertService,
+    DraftService,
+    PageValidationService,
+    CaseEditWizardGuard,
+    RouterHelperService,
+    DocumentManagementService,
     AppConfig,
     {
       provide: AbstractAppConfig,

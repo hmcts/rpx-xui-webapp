@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
+//import { LoggerService } from '../../../../logger/logger.service'
+
 @Component({
   selector: 'app-create-case',
   templateUrl: './create-case.component.html',
@@ -8,9 +10,14 @@ import { Component, OnInit } from '@angular/core';
 export class CreateCaseComponent implements OnInit {
 
   caseSelected: string
-  constructor() { }
+  constructor(
+    //private logger: LoggerService
+  ) {
+  }
 
   ngOnInit() {
+
+    //this.logger.info('CreateCaseComponent: initialized');
   }
 
 

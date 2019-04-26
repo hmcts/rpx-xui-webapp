@@ -3,6 +3,8 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { LoggerModule } from './logger/logger.module';
 import { CaseFeatureModule } from './case/case-feature/case-feature.module';
+import { RouterModule } from '@angular/router';
+import { ROUTES } from './app.routes';
 
 @NgModule({
   declarations: [
@@ -10,8 +12,9 @@ import { CaseFeatureModule } from './case/case-feature/case-feature.module';
   ],
   imports: [
     BrowserModule,
-    LoggerModule,
-    CaseFeatureModule
+    CaseFeatureModule,
+    RouterModule.forRoot(ROUTES),
+    LoggerModule
   ],
   bootstrap: [AppComponent]
 })

@@ -11,3 +11,10 @@ export const ROUTES: Routes = [
         children: editorRouting
     },
 ];
+
+
+
+
+
+
+export const caseFeatureRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);

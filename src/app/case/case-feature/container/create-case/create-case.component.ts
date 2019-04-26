@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
-//import { LoggerService } from '../../../../logger/logger.service'
+import { LoggerService } from 'src/app/logger/logger.service';
 
 @Component({
   selector: 'app-create-case',
@@ -10,15 +9,10 @@ import { Component, OnInit } from '@angular/core';
 export class CreateCaseComponent implements OnInit {
 
   caseSelected: string
-  constructor(
-    //private logger: LoggerService
-  ) {
+  constructor(private logger: LoggerService) {
   }
 
-  ngOnInit() {
-
-    //this.logger.info('CreateCaseComponent: initialized');
-  }
+  ngOnInit() { }
 
 
   jurisdictionId = 'TEST';
@@ -33,19 +27,20 @@ export class CreateCaseComponent implements OnInit {
   }
 
   submit(event: any): void {
-    console.log('CaseCreateConsumerComponent submit event=', event)
+    this.logger.info('CaseCreateConsumerComponent submit event=', event);
 
   }
 
   cancel(event: any): void {
-    console.log('CaseCreateConsumerComponent cancel event=', event)
+    this.logger.info('CaseCreateConsumerComponent cancel event=', event);
+
   }
 
 
 
   chooseEvent() {
     this.caseType = JSON.parse(this.caseSelected)
-    console.log(this.caseType)
+    this.logger.info(this.caseType)
   }
 
 }

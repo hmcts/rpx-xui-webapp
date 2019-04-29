@@ -13,7 +13,7 @@ properties([
 
 @Library("Infrastructure")
 
-def type = "amgular"
+def type = "angular"
 def product = "xui"
 def component = "webapp"
 def vault = "rpx"

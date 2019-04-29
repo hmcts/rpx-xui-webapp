@@ -2,12 +2,14 @@
   "name": "rpx-exui",
   "version": "0.0.0",
   "scripts": {
+    "clean": "rm -rf dist",    
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "build:docker": "npm run clean && ng build --prod && docker build -t xui ."
   },
   "private": true,
   "dependencies": {

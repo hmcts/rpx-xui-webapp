@@ -2,7 +2,8 @@
   "name": "rpx-exui",
   "version": "0.0.0",
   "scripts": {
-    "clean": "rm -rf dist",    
+    "nuke": "npm run clean && rm -fr node_modules",
+    "clean": "rm -rf dist",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",

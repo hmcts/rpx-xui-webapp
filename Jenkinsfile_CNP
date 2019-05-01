@@ -21,4 +21,6 @@ def channel   = '#xui-pipeline'
 withPipeline(type, product, component) {
     enableSlackNotifications(channel)
     enableDockerBuild()
+
+    after('checkout') {sh 'yarn cache clean'}
 }

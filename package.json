@@ -6,7 +6,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "test": "ng test",
+    "test": "ng test --browsers=ChromeHeadless",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "build:docker": "npm run clean && ng build --prod && docker build -t xui .",

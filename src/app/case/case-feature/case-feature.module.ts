@@ -9,7 +9,6 @@ import {
 } from '@hmcts/ccd-case-ui-toolkit';
 import { AppConfig } from './case-feature.config';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
-import { MaterialManifestModule } from 'src/app/material-manifest/material-manifest.module';
 import { caseFeatureRouting } from './case-feature.routes';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
@@ -19,7 +18,6 @@ import { HttpModule } from '@angular/http';
   imports: [
     CommonModule,
     CaseUIToolkitModule,
-    MaterialManifestModule,
     HttpClientModule,
     HttpModule,
     caseFeatureRouting

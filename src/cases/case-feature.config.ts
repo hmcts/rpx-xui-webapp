@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import { AbstractAppConfig, CaseEditorConfig, CaseEventData } from '@hmcts/ccd-case-ui-toolkit';;
-import { environment as mainConfig } from '../../environments/environment';
+import { environment as mainConfig } from '../environments/environment';
 
 @Injectable()
 export class AppConfig extends AbstractAppConfig {

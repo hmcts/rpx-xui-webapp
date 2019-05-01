@@ -3,26 +3,33 @@ import { LoggerService } from 'src/app/logger/logger.service';
 
 @Component({
   selector: 'app-create-case',
-  templateUrl: './create-case.component.html',
-  styleUrls: ['./create-case.component.css']
+  template: `
+    <p>create-case container</p>
+<!--    <ccd-case-create-->
+<!--      [jurisdiction]="jurisdictionId"-->
+<!--      [caseType]="caseTypeId"-->
+<!--      [event]="eventTriggerId"-->
+<!--      (cancelled)="cancel($event)"-->
+<!--      (submitted)="submit($event)">-->
+<!--    </ccd-case-create>-->
+  `
 })
-export class CreateCaseComponent implements OnInit {
-
-  caseSelected: string
-  constructor(private logger: LoggerService) {
-  }
-
-  ngOnInit() { }
-
+export class CasesCreateComponent implements OnInit {
   jurisdictionId = 'TEST';
   caseTypeId = 'TestAddressBookCase';
   eventTriggerId = 'createCase';
 
   caseType: object = {
-    jurisdictionId: "TEST",
-    caseTypeId: "TestAddressBookCase",
-    eventTriggerId: "createCase"
+    jurisdictionId: 'TEST',
+    caseTypeId: 'TestAddressBookCase',
+    eventTriggerId: 'createCase'
+  };
+
+  caseSelected: string;
+  constructor(private logger: LoggerService) {
   }
+
+  ngOnInit() { }
 
   submit(event: any): void {
     this.logger.info('CaseCreateConsumerComponent submit event=', event);

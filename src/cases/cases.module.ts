@@ -1,28 +1,27 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { AppConfig } from './case-feature.config';
+import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
+import { HttpClientModule } from '@angular/common/http';
+import { HttpModule } from '@angular/http';
+import {CasesCreateComponent} from './containers/cases-create/cases-create.component';
 import {
   CaseUIToolkitModule, DraftService, AlertService, HttpService, AuthService as CCDAuthService, CasesService,
   HttpErrorService, AbstractAppConfig, CaseEditWizardGuard, RouterHelperService,
   DocumentManagementService, PageValidationService, PlaceholderService
 } from '@hmcts/ccd-case-ui-toolkit';
-import { AppConfig } from './case-feature.config';
-import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
-import { caseFeatureRouting } from './case-feature.routes';
-import { HttpClientModule } from '@angular/common/http';
-import { HttpModule } from '@angular/http';
-import {CreateCaseComponent} from './containers/cases-create.component';
+import { casesRouting } from './case-feature.routes';
 
 
 @NgModule({
   imports: [
     CommonModule,
-    CaseUIToolkitModule,
+    // CaseUIToolkitModule,
     HttpClientModule,
     HttpModule,
-    caseFeatureRouting
+    casesRouting
   ],
-  declarations: [CreateCaseComponent],
+  declarations: [CasesCreateComponent],
   providers: [
     PlaceholderService,
     CasesService,
@@ -43,4 +42,4 @@ import {CreateCaseComponent} from './containers/cases-create.component';
     ScrollToService
   ]
 })
-export class CasesFeatureModule { }
+export class CasesModule { }

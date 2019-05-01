@@ -2,14 +2,14 @@
 import { RouterModule, Routes } from '@angular/router';
 import { ModuleWithProviders } from '@angular/core';
 import { editorRouting } from '@hmcts/ccd-case-ui-toolkit';
-import { CreateCaseComponent } from './containers/cases-create.component';
+import { CasesCreateComponent } from './containers/cases-create/cases-create.component';
 
 export const ROUTES: Routes = [
     {
         path: '',
-        component: CreateCaseComponent,
-        children: editorRouting
+        component: CasesCreateComponent,
+        // children: editorRouting
     },
 ];
 
-export const caseFeatureRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);
+export const casesRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);

@@ -9,7 +9,7 @@ export const ROUTES: Routes = [
     },
     {
         path: 'create-cases',
-        loadChildren: './cases/cases-feature.module#CasesFeatureModule'
+        loadChildren: '../cases/cases.module#CasesModule'
     },
     {
         path: '**',

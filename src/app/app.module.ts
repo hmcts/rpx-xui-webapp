@@ -11,7 +11,7 @@ import { ROUTES } from './app.routes';
   ],
   imports: [
     BrowserModule,
-    RouterModule.forRoot(ROUTES, {enableTracing: true}),
+    RouterModule.forRoot(ROUTES),
     LoggerModule
   ],
   bootstrap: [AppComponent]

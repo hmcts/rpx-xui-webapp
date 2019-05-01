@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
-import { AbstractAppConfig, CaseEditorConfig, CaseEventData } from '@hmcts/ccd-case-ui-toolkit';
+import { AbstractAppConfig, CaseEditorConfig, CaseEventData } from '@hmcts/ccd-case-ui-toolkit';;
 import { environment as mainConfig } from '../../../environments/environment';
-//    'case_data_url': 'http://localhost:3001/api/data',
+
 @Injectable()
 export class AppConfig extends AbstractAppConfig {
 
@@ -89,5 +89,9 @@ export class AppConfig extends AbstractAppConfig {
 
     public getRemotePrintServiceUrl() {
         return this.config.remote_print_service_url;
+    }
+
+    public getPaginationPageSize(): number {
+      return this.config.pagination_page_size;
     }
 }

@@ -9,7 +9,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "build:docker": "npm run clean && ng build --prod && docker build -t xui ."
+    "build:docker": "npm run clean && ng build --prod && docker build -t xui .",
+    "build:ssr": "echo 'no-op to appease the Angular pipeline type'"
   },
   "private": true,
   "dependencies": {

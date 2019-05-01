@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CreateCaseComponent } from './container/create-case/create-case.component';
 
 import {
   CaseUIToolkitModule, DraftService, AlertService, HttpService, AuthService as CCDAuthService, CasesService,
@@ -12,6 +11,7 @@ import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { caseFeatureRouting } from './case-feature.routes';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
+import {CreateCaseComponent} from './containers/cases-create.component';
 
 
 @NgModule({
@@ -22,7 +22,7 @@ import { HttpModule } from '@angular/http';
     HttpModule,
     caseFeatureRouting
   ],
-  declarations: [ CreateCaseComponent ],
+  declarations: [CreateCaseComponent],
   providers: [
     PlaceholderService,
     CasesService,
@@ -43,4 +43,4 @@ import { HttpModule } from '@angular/http';
     ScrollToService
   ]
 })
-export class CaseFeatureModule { }
+export class CasesFeatureModule { }

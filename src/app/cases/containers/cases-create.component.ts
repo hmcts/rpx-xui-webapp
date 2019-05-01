@@ -8,22 +8,21 @@ import { LoggerService } from 'src/app/logger/logger.service';
 })
 export class CreateCaseComponent implements OnInit {
 
-  caseSelected: string;
+  caseSelected: string
+  constructor(private logger: LoggerService) {
+  }
+
+  ngOnInit() { }
 
   jurisdictionId = 'TEST';
   caseTypeId = 'TestAddressBookCase';
   eventTriggerId = 'createCase';
 
   caseType: object = {
-    jurisdictionId: 'TEST',
-    caseTypeId: 'TestAddressBookCase',
-    eventTriggerId: 'createCase'
-  };
-
-  constructor(private logger: LoggerService) {
+    jurisdictionId: "TEST",
+    caseTypeId: "TestAddressBookCase",
+    eventTriggerId: "createCase"
   }
-
-  ngOnInit() { }
 
   submit(event: any): void {
     this.logger.info('CaseCreateConsumerComponent submit event=', event);
@@ -36,8 +35,8 @@ export class CreateCaseComponent implements OnInit {
   }
 
   chooseEvent() {
-    this.caseType = JSON.parse(this.caseSelected);
-    this.logger.info(this.caseType);
+    this.caseType = JSON.parse(this.caseSelected)
+    this.logger.info(this.caseType)
   }
 
 }

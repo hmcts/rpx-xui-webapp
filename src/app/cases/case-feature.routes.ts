@@ -2,7 +2,7 @@
 import { RouterModule, Routes } from '@angular/router';
 import { ModuleWithProviders } from '@angular/core';
 import { editorRouting } from '@hmcts/ccd-case-ui-toolkit';
-import { CreateCaseComponent } from './container/create-case/create-case.component';
+import { CreateCaseComponent } from './containers/cases-create.component';
 
 export const ROUTES: Routes = [
     {

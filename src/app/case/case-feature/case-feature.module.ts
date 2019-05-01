@@ -24,7 +24,7 @@ import { HttpModule } from '@angular/http';
     HttpModule,
     caseFeatureRouting
   ],
-  declarations: [CreateCaseComponent,],
+  declarations: [ CreateCaseComponent ],
   providers: [
     PlaceholderService,
     CasesService,

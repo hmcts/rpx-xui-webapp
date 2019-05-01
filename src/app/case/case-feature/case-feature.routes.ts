@@ -12,9 +12,4 @@ export const ROUTES: Routes = [
     },
 ];
 
-
-
-
-
-
 export const caseFeatureRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);

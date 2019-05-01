@@ -20,6 +20,7 @@ const user = 'dummy@user.com';
 })
 export class ConsoleLoggerService implements Logger {
 
+  /* tslint:disable:no-console */
   get info() {
     if (isDebugMode !== 0 && isDebugMode !== 1 && isDebugMode !== 2) {
       return console.info.bind(console, [user, now]);

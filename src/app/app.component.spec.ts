@@ -1,6 +1,6 @@
 import { TestBed, async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import {LoggerService} from './logger/logger.service';
+import { LoggerService } from './logger/logger.service';
 
 
 
@@ -10,7 +10,7 @@ describe('AppComponent', () => {
       declarations: [
         AppComponent
       ],
-      providers :[
+      providers: [
         { provide: LoggerService,
           useValue: {
             info: () => {

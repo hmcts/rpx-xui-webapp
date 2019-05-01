@@ -8,7 +8,7 @@ export const ROUTES: Routes = [
     {
         path: '',
         component: CasesCreateComponent,
-        // children: editorRouting
+        // children: editorRouting // TODO when on, angular redirect is not going to work.
     },
 ];
 

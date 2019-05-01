@@ -2,12 +2,13 @@
   "name": "rpx-exui",
   "version": "0.0.0",
   "scripts": {
+    "pre-push": "npm run lint && ng test --code-coverage && npm run build-prod",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
   },
   "private": true,
   "dependencies": {

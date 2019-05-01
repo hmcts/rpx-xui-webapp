@@ -1,24 +1,27 @@
 import { Component, OnInit } from '@angular/core';
 import { LoggerService } from 'src/app/logger/logger.service';
-
+/**
+ * Entry component wrapper for CCD-CASE-CREATE
+ * Smart Component
+ */
 @Component({
   selector: 'app-create-case',
   template: `
     <p>create-case container</p>
-<!--    <ccd-case-create-->
-<!--      [jurisdiction]="jurisdictionId"-->
-<!--      [caseType]="caseTypeId"-->
-<!--      [event]="eventTriggerId"-->
-<!--      (cancelled)="cancel($event)"-->
-<!--      (submitted)="submit($event)">-->
-<!--    </ccd-case-create>-->
+    <ccd-case-create
+      [jurisdiction]="jurisdictionId"
+      [caseType]="caseTypeId"
+      [event]="eventTriggerId"
+      (cancelled)="cancel($event)"
+      (submitted)="submit($event)">
+    </ccd-case-create>
   `
 })
-export class CasesCreateComponent implements OnInit {
+export class CasesCreateComponent {
+  // TODO move this to store or better place
   jurisdictionId = 'TEST';
   caseTypeId = 'TestAddressBookCase';
   eventTriggerId = 'createCase';
-
   caseType: object = {
     jurisdictionId: 'TEST',
     caseTypeId: 'TestAddressBookCase',
@@ -26,11 +29,10 @@ export class CasesCreateComponent implements OnInit {
   };
 
   caseSelected: string;
-  constructor(private logger: LoggerService) {
-  }
 
-  ngOnInit() { }
+  constructor(private logger: LoggerService) {}
 
+  // todo add dispatch action ngrx-it
   submit(event: any): void {
     this.logger.info('CaseCreateConsumerComponent submit event=', event);
 
@@ -42,8 +44,8 @@ export class CasesCreateComponent implements OnInit {
   }
 
   chooseEvent() {
-    this.caseType = JSON.parse(this.caseSelected)
-    this.logger.info(this.caseType)
+    this.caseType = JSON.parse(this.caseSelected);
+    this.logger.info(this.caseType);
   }
 
 }

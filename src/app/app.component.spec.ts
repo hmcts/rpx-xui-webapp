@@ -10,7 +10,7 @@ describe('AppComponent', () => {
       declarations: [
         AppComponent
       ],
-      providers: [
+      providers : [
         { provide: LoggerService,
           useValue: {
             info: () => {

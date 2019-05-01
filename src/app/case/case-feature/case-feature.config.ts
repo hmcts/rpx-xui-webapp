@@ -1,11 +1,13 @@
-import { Injectable } from '@angular/core'
-import { Http } from '@angular/http'
-import { AbstractAppConfig, CaseEditorConfig, CaseEventData } from '@hmcts/ccd-case-ui-toolkit'
-import { environment as mainConfig } from '../../../environments/environment'
+import { Injectable } from '@angular/core';
+import { Http } from '@angular/http';
+import { AbstractAppConfig, CaseEditorConfig, CaseEventData } from '@hmcts/ccd-case-ui-toolkit';
+import { environment as mainConfig } from '../../../environments/environment';
 //    'case_data_url': 'http://localhost:3001/api/data',
 @Injectable()
 export class AppConfig extends AbstractAppConfig {
-    protected config: CaseEditorConfig = mainConfig.CaseEditorConfig
+
+    protected config: CaseEditorConfig = mainConfig.CaseEditorConfig;
+
     constructor(private http: Http) {
         super();
     }

@@ -7,7 +7,7 @@ import { LoggerService } from './logger/logger.service';
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, Router],      
+      imports: [RouterTestingModule, Router],
       declarations: [
         AppComponent
       ],

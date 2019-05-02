@@ -34,7 +34,6 @@ import { casesRouting } from './case-feature.routes';
     CaseEditWizardGuard,
     RouterHelperService,
     DocumentManagementService,
-    AppConfig,
     {
       provide: AbstractAppConfig,
       useExisting: AppConfig

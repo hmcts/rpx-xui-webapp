@@ -8,7 +8,6 @@ import {
 } from '@hmcts/ccd-case-ui-toolkit';
 import {AppConfig} from '../../case.config';
 import {ScrollToService} from '@nicky-lenaers/ngx-scroll-to';
-import {HTTP_PROVIDERS} from 'angular2/http';
 import {RouterModule} from '@angular/router';
 import {ROUTES} from '../../../app/app.routes';
 

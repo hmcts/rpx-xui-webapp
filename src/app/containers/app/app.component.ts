@@ -7,6 +7,7 @@ import { LoggerService } from '../../service/logger/logger.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  title = 'change me';
   constructor(private logger: LoggerService) {
     logger.info('AppComponent: logger.info()');
     logger.warn('AppComponent: logger.warn()');

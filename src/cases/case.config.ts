@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
-import { AbstractAppConfig, CaseEditorConfig, CaseEventData } from '@hmcts/ccd-case-ui-toolkit';
+import { AbstractAppConfig, CaseEditorConfig } from '@hmcts/ccd-case-ui-toolkit';
 import { environment as mainConfig } from '../environments/environment';
 
-/*
-  https://tools.hmcts.net/confluence/pages/viewpage.action?pageId=797343913#Integrationsteps-Caseview(`ccd-case-view`)
-  is explained why this is needed
-*/
+/**
+ * see more:
+ * https://tools.hmcts.net/confluence/pages/viewpage.action?pageId=797343913#Integrationsteps-Caseview(`ccd-case-view`)
+ * is explained why this is needed
+ */
 
 @Injectable()
 export class AppConfig extends AbstractAppConfig {
+    // TODO perhaps move the config to store or maybe make it part of assets/config.json
     protected config: CaseEditorConfig = mainConfig.CaseEditorConfig;
     constructor() {
         super();

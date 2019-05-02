@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Logger } from './logger.service';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 
 enum IsDebugMode {
   OFF,
@@ -20,9 +20,9 @@ const user = 'dummy@user.com';
 })
 export class ConsoleLoggerService implements Logger {
 
-  /* tslint:disable:no-console */
   get info() {
     if (isDebugMode !== 0 && isDebugMode !== 1 && isDebugMode !== 2) {
+      // tslint:disable-next-line:no-console
       return console.info.bind(console, [user, now]);
     } else {
       return noop;

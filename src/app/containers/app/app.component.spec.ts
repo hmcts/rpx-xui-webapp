@@ -1,16 +1,21 @@
 import { TestBed, async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import { LoggerService } from './logger/logger.service';
-
+import { LoggerService } from '../../service/logger/logger.service';
+import { RouterModule } from '@angular/router';
+import {ROUTES} from '../../app.routes';
+import {RouterTestingModule} from '@angular/router/testing';
 
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [
+        RouterTestingModule,
+      ],
       declarations: [
         AppComponent
       ],
-      providers: [
+      providers : [
         { provide: LoggerService,
           useValue: {
             info: () => {

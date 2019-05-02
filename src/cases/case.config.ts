@@ -1,14 +1,18 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
-import { AbstractAppConfig, CaseEditorConfig, CaseEventData } from '@hmcts/ccd-case-ui-toolkit';
-import { environment as mainConfig } from '../../../environments/environment';
-//    'case_data_url': 'http://localhost:3001/api/data',
+import { AbstractAppConfig, CaseEditorConfig } from '@hmcts/ccd-case-ui-toolkit';
+import { environment as mainConfig } from '../environments/environment';
+
+/**
+ * see more:
+ * https://tools.hmcts.net/confluence/pages/viewpage.action?pageId=797343913#Integrationsteps-Caseview(`ccd-case-view`)
+ * is explained why this is needed
+ */
+
 @Injectable()
 export class AppConfig extends AbstractAppConfig {
-
+    // TODO perhaps move the config to store or maybe make it part of assets/config.json
     protected config: CaseEditorConfig = mainConfig.CaseEditorConfig;
-
-    constructor(private http: Http) {
+    constructor() {
         super();
     }
 
@@ -89,5 +93,9 @@ export class AppConfig extends AbstractAppConfig {
 
     public getRemotePrintServiceUrl() {
         return this.config.remote_print_service_url;
+    }
+
+    public getPaginationPageSize(): number {
+      return this.config.pagination_page_size;
     }
 }

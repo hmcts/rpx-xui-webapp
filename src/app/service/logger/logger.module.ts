@@ -1,7 +1,7 @@
 import {NgModule, Optional, SkipSelf} from '@angular/core';
 import {LoggerService} from './logger.service';
 import {ConsoleLoggerService} from './console-logger.service';
-
+// TODO make part of common module
 @NgModule({
   providers: [
     {

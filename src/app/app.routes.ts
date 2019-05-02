@@ -4,16 +4,16 @@ import { Routes } from '@angular/router';
 export const ROUTES: Routes = [
     {
         path: '',
-        redirectTo: 'create-case',
+        redirectTo: 'create-cases',
         pathMatch: 'full',
     },
     {
-        path: 'create-case',
-        loadChildren: './case/case-feature/case-feature.module#CaseFeatureModule'
+        path: 'create-cases',
+        loadChildren: '../cases/cases.module#CasesModule'
     },
     {
         path: '**',
-        redirectTo: '/create-case',
+        redirectTo: '/create-cases',
         pathMatch: 'full'
     }
 ];

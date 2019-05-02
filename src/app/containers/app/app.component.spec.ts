@@ -3,13 +3,14 @@ import { AppComponent } from './app.component';
 import { LoggerService } from '../../service/logger/logger.service';
 import { RouterModule } from '@angular/router';
 import {ROUTES} from '../../app.routes';
+import {RouterTestingModule} from '@angular/router/testing';
 
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        RouterModule.forRoot(ROUTES)
+        RouterTestingModule,
       ],
       declarations: [
         AppComponent

@@ -10,6 +10,7 @@ import {AppConfig} from '../../case.config';
 import {ScrollToService} from '@nicky-lenaers/ngx-scroll-to';
 import {RouterModule} from '@angular/router';
 import {ROUTES} from '../../../app/app.routes';
+import {RouterTestingModule} from '@angular/router/testing';
 
 
 describe('CasesCreateComponent', () => {
@@ -19,7 +20,7 @@ describe('CasesCreateComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        RouterModule.forRoot(ROUTES),
+        RouterTestingModule,
         CaseUIToolkitModule,
         HttpModule
       ],

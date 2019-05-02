@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { LoggerService } from 'src/app/logger/logger.service';
+import { LoggerService } from 'src/app/service/logger/logger.service';
 /**
  * Entry component wrapper for CCD-CASE-CREATE
  * Smart Component
@@ -8,13 +8,13 @@ import { LoggerService } from 'src/app/logger/logger.service';
   selector: 'app-create-case',
   template: `
     <p>create-case container</p>
-    <ccd-case-create
-      [jurisdiction]="jurisdictionId"
-      [caseType]="caseTypeId"
-      [event]="eventTriggerId"
-      (cancelled)="cancel($event)"
-      (submitted)="submit($event)">
-    </ccd-case-create>
+<!--    <ccd-case-create-->
+<!--      [jurisdiction]="jurisdictionId"-->
+<!--      [caseType]="caseTypeId"-->
+<!--      [event]="eventTriggerId"-->
+<!--      (cancelled)="cancel($event)"-->
+<!--      (submitted)="submit($event)">-->
+<!--    </ccd-case-create>-->
   `
 })
 export class CasesCreateComponent {

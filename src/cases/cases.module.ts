@@ -17,7 +17,7 @@ import { casesRouting } from './case-feature.routes';
 @NgModule({
   imports: [
     CommonModule,
-    CaseUIToolkitModule,
+    // CaseUIToolkitModule,
     HttpClientModule,
     casesRouting
   ],

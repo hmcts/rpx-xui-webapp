@@ -1,12 +1,16 @@
 import { TestBed, async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { LoggerService } from './logger/logger.service';
-
+import { RouterModule } from '@angular/router';
+import {ROUTES} from './app.routes';
 
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [
+        RouterModule.forRoot(ROUTES)
+      ],
       declarations: [
         AppComponent
       ],

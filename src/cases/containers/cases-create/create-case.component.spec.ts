@@ -1,5 +1,16 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import {CasesCreateComponent} from './cases-create.component';
+import {ConnectionBackend, Http, HttpModule, RequestOptions} from '@angular/http';
+import {
+  CaseUIToolkitModule, DraftService, AlertService, HttpService, AuthService as CCDAuthService, CasesService,
+  HttpErrorService, AbstractAppConfig, CaseEditWizardGuard, RouterHelperService,
+  DocumentManagementService, PageValidationService, PlaceholderService
+} from '@hmcts/ccd-case-ui-toolkit';
+import {AppConfig} from '../../case.config';
+import {ScrollToService} from '@nicky-lenaers/ngx-scroll-to';
+import {HTTP_PROVIDERS} from 'angular2/http';
+import {RouterModule} from '@angular/router';
+import {ROUTES} from '../../../app/app.routes';
 
 
 describe('CasesCreateComponent', () => {
@@ -8,7 +19,31 @@ describe('CasesCreateComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CasesCreateComponent ]
+      imports: [
+        RouterModule.forRoot(ROUTES),
+        CaseUIToolkitModule,
+        HttpModule
+      ],
+      declarations: [ CasesCreateComponent ],
+      providers: [
+        PlaceholderService,
+        CasesService,
+        CCDAuthService,
+        HttpService,
+        HttpErrorService,
+        AlertService,
+        DraftService,
+        PageValidationService,
+        CaseEditWizardGuard,
+        RouterHelperService,
+        DocumentManagementService,
+        AppConfig,
+        {
+          provide: AbstractAppConfig,
+          useExisting: AppConfig
+        },
+        ScrollToService
+      ]
     })
     .compileComponents();
   }));

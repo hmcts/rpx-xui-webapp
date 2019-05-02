@@ -1,4 +1,6 @@
 export const environment = {
   production: true,
-  loggingLevel: 'OFF'
+  loggingLevel: 'OFF',
+  CaseEditorConfig: {
+  }
 };

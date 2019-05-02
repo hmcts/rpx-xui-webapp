@@ -22,7 +22,7 @@ export function reducer(
         ...state,
         config,
         loaded: true
-      }
+      };
     }
   }
   return state;

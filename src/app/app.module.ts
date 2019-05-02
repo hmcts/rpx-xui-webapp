@@ -2,27 +2,29 @@ import { BrowserModule } from '@angular/platform-browser';
 import { APP_INITIALIZER, NgModule} from '@angular/core';
 import { AppComponent } from './containers/app/app.component';
 import { LoggerModule } from './services/logger/logger.module';
-
+import { environment } from '../environments/environment';
+import { HttpClientModule } from '@angular/common/http';
+import { RouterModule } from '@angular/router';
 // ngrx modules - START
 import {EffectsModule} from '@ngrx/effects';
 import {MetaReducer, Store, StoreModule} from '@ngrx/store';
 import {RouterStateSerializer, StoreRouterConnectingModule} from '@ngrx/router-store';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {storeFreeze} from 'ngrx-store-freeze';
-// ngrx modules - END
 export const metaReducers: MetaReducer<any>[] = !environment.production
   ? [storeFreeze]
   : [];
-
-import { RouterModule } from '@angular/router';
-import { ROUTES } from './app.routes';
-import {environment} from '../environments/environment';
+// ngrx modules - END
+// APP store
 import {CustomSerializer, reducers} from './store/reducers';
 import {effects} from './store/effects';
+
 import {initApplication} from './app-initilizer';
 
+// common provider
 import {ProvidersModule} from './providers/providers.module';
-import {HttpClientModule} from '@angular/common/http';
+// app routes
+import { ROUTES } from './app.routes';
 
 @NgModule({
   declarations: [
@@ -39,7 +41,7 @@ import {HttpClientModule} from '@angular/common/http';
     StoreDevtoolsModule.instrument({
       logOnly: environment.production
     }),
-    LoggerModule // todo remove
+    LoggerModule // TODO remove make it service and part of providerModule
   ],
   providers: [
     {

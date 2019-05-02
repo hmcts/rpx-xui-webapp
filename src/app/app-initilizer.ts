@@ -7,10 +7,10 @@ import {take} from 'rxjs/operators';
  *  Responsible for storing and dispatching initial features data / event
  *  When it does resolves into true and starts application
  */
-export function initApplication(store: Store<fromApp.State>): Function {
+export function initApplication(store: Store<fromApp.State>): VoidFunction {
   return () => new Promise(resolve => {
-    store.dispatch(new fromApp.StartAppInitilizer);
-    store.dispatch(new fromApp.LoadConfig);
+    store.dispatch(new fromApp.StartAppInitilizer());
+    store.dispatch(new fromApp.LoadConfig());
     store.pipe(
       select((state: any) =>  state.appConfig), take(2)).subscribe(appConfig => {
         if (appConfig.config.features && Object.keys(appConfig.config.features).length) {

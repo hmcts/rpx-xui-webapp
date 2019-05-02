@@ -16,6 +16,7 @@ export const environment = {
     activity_url: '',
     activity_max_request_per_batch: 25,
     print_service_url: '/print',
-    remote_print_service_url: '/remote_print'
+    remote_print_service_url: '/remote_print',
+    pagination_page_size: 0
   }
 };

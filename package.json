@@ -27,7 +27,7 @@
     "@angular/platform-browser": "^7.2.13",
     "@angular/platform-browser-dynamic": "^7.2.13",
     "@angular/router": "^7.2.13",
-    "@hmcts/ccd-case-ui-toolkit": "~2.42.3",
+    "@hmcts/ccd-case-ui-toolkit": "^2.42.3",
     "@hmcts/ccpay-web-component": "^1.8.2",
     "@nicky-lenaers/ngx-scroll-to": "^1.1.1",
     "core-js": "^2.5.4",

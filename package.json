@@ -10,8 +10,9 @@
     "test": "ng test --browsers=ChromeHeadless",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "build:docker": "npm run clean && ng build --prod && docker build -t xui .",
-    "build:ssr": "echo 'no-op to appease the Angular pipeline type'"
+    "build:production": "npm run clean && ng build --prod",
+    "build:docker": "npm run build:production && docker build -t xui .",
+    "build:ssr": "npm run build:production"
   },
   "private": true,
   "dependencies": {

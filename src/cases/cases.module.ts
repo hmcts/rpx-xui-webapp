@@ -12,6 +12,7 @@ import {
 } from '@hmcts/ccd-case-ui-toolkit';
 
 import { casesRouting } from './case-feature.routes';
+import { SharedModule } from '../app/shared/shared.module';
 import { StoreModule } from '@ngrx/store';
 import { reducer } from './store';
 import { HttpModule } from '@angular/http';
@@ -24,7 +25,8 @@ import { HttpModule } from '@angular/http';
     HttpClientModule,
     HttpModule,
     StoreModule.forFeature('cases', reducer),
-    casesRouting
+    casesRouting,
+    SharedModule
   ],
   declarations: [CasesCreateComponent],
   providers: [

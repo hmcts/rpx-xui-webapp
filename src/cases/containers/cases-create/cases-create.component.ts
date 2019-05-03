@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { LoggerService } from 'src/app/service/logger/logger.service';
+import { LoggerService } from 'src/app/services/logger/logger.service';
 /**
  * Entry component wrapper for CCD-CASE-CREATE
  * Smart Component

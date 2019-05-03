@@ -1,6 +1,6 @@
 import { TestBed, async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import { LoggerService } from '../../service/logger/logger.service';
+import { LoggerService } from '../../services/logger/logger.service';
 import { RouterModule } from '@angular/router';
 import {ROUTES} from '../../app.routes';
 import {RouterTestingModule} from '@angular/router/testing';

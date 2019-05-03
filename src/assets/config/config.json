@@ -1,0 +1,12 @@
+{
+  "features": {
+    "featureOne": {
+      "isEnabled": true,
+      "label": "CaseSearchComponent"
+    },
+    "featureTwo": {
+      "isEnabled": true,
+      "label": "CaseSearchComponent"
+    }
+  }
+}

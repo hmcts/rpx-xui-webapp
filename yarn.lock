@@ -372,10 +372,10 @@
     lodash "^4.17.11"
     to-fast-properties "^2.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@^2.42.3":
-  version "2.43.0"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.43.0.tgz#960f6f8d7f79af17443e2768ee81ddfaa993036a"
-  integrity sha512-Vy3AjxO4qYEY8HKVr7xYpqP7pvlt2w5IZBJhbYZkr+1VELH7SWkDnoK4kMkMIY6hussXxXCTfzrYbBtsM8LSjA==
+"@hmcts/ccd-case-ui-toolkit@^2.42.2":
+  version "2.46.0"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.46.0.tgz#109f0c425756acebffe5e4557deb680d3def2751"
+  integrity sha512-LVEwAfH6nO6wls3Y3xQ1y9XZ4oGiBsIrYmdFlbvfwgSI5RzWIl3djXUjH8vperDGA2jqt20gWE4/mN41B5WsAA==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
@@ -392,6 +392,11 @@
   integrity sha512-u5Q3Xzm9sPezWQ5tmnLshOz3zRQEz2sbrkrlN/H0xRQIWmuiTRSB65nlqZwYQYK/EgHP6ounNZWJRy3h/MOxFQ==
   dependencies:
     tslib "^1.9.0"
+
+"@hmcts/frontend@0.0.34-alpha":
+  version "0.0.34-alpha"
+  resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.34-alpha.tgz#0d39b6d06c632ccb7c578fc91e3311306da9db0d"
+  integrity sha512-+q3IB4L3UHsD5cs/11PDWEftDAmDV6eYkxm9eoNtXAfea93VhXNFA9ZEIV+TM7v/9xaAIkmDj9C4kCSUb1Hl3g==
 
 "@ngrx/effects@^7.4.0":
   version "7.4.0"
@@ -3381,6 +3386,11 @@ govuk-elements-sass@^3.1.2:
   integrity sha512-uLg/LHSrylkXDKVPlz9uQtdAOQ2CG4rwxPBmQGO5c5QqW4OS83gspNEDaM/dzK2n2OduiieynfkwKbtqR89xiA==
   dependencies:
     govuk_frontend_toolkit "^7.1.0"
+
+govuk-frontend@^2.11.0:
+  version "2.11.0"
+  resolved "https://registry.yarnpkg.com/govuk-frontend/-/govuk-frontend-2.11.0.tgz#f9eb4497a55d22b7eab8364323266680e17be188"
+  integrity sha512-kZR0ZrSju+Jqh8o5niKklj8/m5XmsNNUSQLL4M4urnMcrLypwW2dU3RkR8UCnzS2DDy4BTHb7CZw0VjQPoi3jg==
 
 govuk_frontend_toolkit@^7.1.0:
   version "7.6.0"

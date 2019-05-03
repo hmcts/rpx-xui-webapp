@@ -14,6 +14,7 @@ import {
 import { casesRouting } from './case-feature.routes';
 import {StoreModule} from '@ngrx/store';
 import {reducer} from './store';
+import {SharedModule} from '../app/shared/shared.module';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import {reducer} from './store';
     // CaseUIToolkitModule,
     HttpClientModule,
     StoreModule.forFeature('cases', reducer),
-    casesRouting
+    casesRouting,
+    SharedModule
   ],
   declarations: [CasesCreateComponent],
   providers: [

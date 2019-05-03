@@ -7,7 +7,7 @@
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
-      "prefix": "app",
+      "prefix": "xui",
       "schematics": {},
       "architect": {
         "build": {
@@ -132,5 +132,10 @@
       }
     }
   },
-  "defaultProject": "rpx-exui"
+  "defaultProject": "rpx-exui",
+  "schematics": {
+    "@schematics/angular:component": {
+      "styleext": "scss"
+    }
+  }
 }

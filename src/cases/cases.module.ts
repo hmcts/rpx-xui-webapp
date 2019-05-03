@@ -12,6 +12,8 @@ import {
 } from '@hmcts/ccd-case-ui-toolkit';
 
 import { casesRouting } from './case-feature.routes';
+import {StoreModule} from '@ngrx/store';
+import {reducer} from './store';
 
 
 @NgModule({
@@ -19,6 +21,7 @@ import { casesRouting } from './case-feature.routes';
     CommonModule,
     // CaseUIToolkitModule,
     HttpClientModule,
+    StoreModule.forFeature('cases', reducer),
     casesRouting
   ],
   declarations: [CasesCreateComponent],

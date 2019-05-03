@@ -11,6 +11,7 @@ import {ScrollToService} from '@nicky-lenaers/ngx-scroll-to';
 import {RouterModule} from '@angular/router';
 import {ROUTES} from '../../../app/app.routes';
 import {RouterTestingModule} from '@angular/router/testing';
+import {HttpClientModule} from '@angular/common/http';
 
 
 describe('CasesCreateComponent', () => {
@@ -22,7 +23,8 @@ describe('CasesCreateComponent', () => {
       imports: [
         RouterTestingModule,
         CaseUIToolkitModule,
-        HttpModule
+        HttpClientModule
+
       ],
       declarations: [ CasesCreateComponent ],
       providers: [

@@ -6,18 +6,21 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
  * param TBC
  */
 @Component({
-  selector: 'app-create-case',
-  template: ` 
-    <p>create-case container</p>
- <ccd-case-create
-     [jurisdiction]="jurisdictionId"
-     [caseType]="caseTypeId"
-     [event]="eventTriggerId"
-     (cancelled)="cancel($event)"
-     (submitted)="submit($event)">
-    </ccd-case-create>
-    `
-
+  selector: 'exui-create-case',
+  template: `
+    <exui-page-wrapper [title]="'Create Case'">
+      <p>create-case container</p>
+      <exui-ccd-connector>
+        <ccd-case-create #ccdComponent
+          [jurisdiction]="jurisdictionId"
+          [caseType]="caseTypeId"
+          [event]="eventTriggerId"
+          (cancelled)="cancel($event)"
+          (submitted)="submit($event)">
+        </ccd-case-create>
+      </exui-ccd-connector>
+    </exui-page-wrapper>
+  `
 })
 export class CasesCreateComponent {
   // TODO move this to store or better place

@@ -1,5 +1,5 @@
-import {ExuiMainWrapperComponent} from './exui-mian-wrapper/exui-main-wrapper.component';
+import {ExuiPageWrapperComponent} from './exui-mian-wrapper/exui-page-wrapper.component';
 
-export const components: any[] = [ExuiMainWrapperComponent];
+export const components: any[] = [ExuiPageWrapperComponent];
 
-export * from './exui-mian-wrapper/exui-main-wrapper.component';
+export * from './exui-mian-wrapper/exui-page-wrapper.component';

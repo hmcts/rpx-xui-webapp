@@ -1,15 +1,15 @@
 import {Component, Input} from '@angular/core';
-/*
-* Main Content wrapper
-* Responsible for:
- * Wrapping content within the gov-uk html elements bellow
- * @prop showBackLink - switch for back link
- * @prop title = title
- * @prop summaryErrors list of errors
-* @prop back link, title (title), summaryErrors (array of errors)
-* */
+/**
+ * Main Page Wrapper
+ * Responsible for:
+ * * Wrapping content within the gov-uk html elements bellow
+ * * @prop showBackLink - switch for back link
+ * * @prop title = title
+ * * @prop summaryErrors list of errors
+ * * @prop back link, title (title), summaryErrors (array of errors)
+ */
 @Component({
-  selector: 'exui-main-wrapper',
+  selector: 'exui-page-wrapper',
   template: `
     <a *ngIf="backLink" [routerLink]="backLink" class="govuk-back-link">Back</a>
     <main id="content" role="main" class="govuk-main-wrapper">
@@ -22,7 +22,7 @@ import {Component, Input} from '@angular/core';
     </main>
   `
 })
-export class ExuiMainWrapperComponent  {
+export class ExuiPageWrapperComponent  {
 
   @Input() backLink: string;
   @Input() title: string;

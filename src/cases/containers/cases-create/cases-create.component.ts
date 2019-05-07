@@ -10,14 +10,18 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
   template: `
     <exui-page-wrapper [title]="'Create Case'">
       <p>create-case container</p>
-      <exui-ccd-connector>
-        <ccd-case-create #ccdComponent
+      <exui-ccd-connector [events]="events">
+        <exui-ccd-dummy-component #ccdComponent
           [jurisdiction]="jurisdictionId"
-          [caseType]="caseTypeId"
-          [event]="eventTriggerId"
-          (cancelled)="cancel($event)"
-          (submitted)="submit($event)">
-        </ccd-case-create>
+          [caseType]="caseTypeId">
+        </exui-ccd-dummy-component>
+        <!--        <ccd-case-create #ccdComponent-->
+        <!--          [jurisdiction]="jurisdictionId"-->
+        <!--          [caseType]="caseTypeId"-->
+        <!--          [event]="eventTriggerId"-->
+        <!--          (cancelled)="cancel($event)"-->
+        <!--          (submitted)="submit($event)">-->
+        <!--        </ccd-case-create>-->
       </exui-ccd-connector>
     </exui-page-wrapper>
   `
@@ -35,7 +39,9 @@ export class CasesCreateComponent {
 
   caseSelected: string;
 
-  constructor(private logger: LoggerService) { }
+  events = ['cancelled', 'submitted'];
+
+  constructor(private logger: LoggerService) {}
 
   // todo add dispatch action ngrx-it
   submit(event: any): void {

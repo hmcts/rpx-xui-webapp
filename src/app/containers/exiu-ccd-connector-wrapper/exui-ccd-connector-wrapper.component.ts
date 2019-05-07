@@ -1,4 +1,5 @@
-import {AfterContentInit, Component, ContentChild, Input, ViewChild} from '@angular/core';
+import {AfterContentInit, Component, ContentChild, Input, OnDestroy, ViewChild} from '@angular/core';
+import {Subscription} from 'rxjs';
 /**
  * CCD Connector
  * Smart Components responsible for connecting CCD components to ExUI App
@@ -6,14 +7,17 @@ import {AfterContentInit, Component, ContentChild, Input, ViewChild} from '@angu
 @Component({
   selector: 'exui-ccd-connector',
   template: `
-    <div>
+    <ng-container>
       <ng-content></ng-content>
-    </div>
+    </ng-container>
   `
 })
-export class ExuiCcdConnectorWrapperComponent implements AfterContentInit {
+export class ExuiCcdConnectorWrapperComponent implements AfterContentInit, OnDestroy {
 
   @ContentChild('ccdComponent') ccdComponent;
+  @Input() events: string[];
+
+  subscriptions: Subscription[] = [];
 
   constructor() { }
   // create actions
@@ -22,14 +26,24 @@ export class ExuiCcdConnectorWrapperComponent implements AfterContentInit {
   // create dispatchers
 
   ngAfterContentInit() {
-    console.log(this.ccdComponent);
+    this.events.forEach((event: string) => {
+      this.subscriptions[event] = this.ccdComponent[event].subscribe((events) => this.applyChanges(events));
+    });
   };
 
   selectionChanged(): void {}
 
-  applyChanges(): void {}
+  applyChanges(event): void {
+    console.log('CaseCreateConsumerComponent submit event=', event);
+  }
 
   resetCcd(): void {}
+
+  ngOnDestroy(): void {
+    this.events.forEach((event: string) => {
+      this.subscriptions[event].unsubscribe();
+    });
+  }
 
 
 }

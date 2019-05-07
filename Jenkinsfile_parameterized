@@ -1,0 +1,29 @@
+#!groovy
+
+
+properties([
+    [
+        $class       : 'GithubProjectProperty',
+        displayName  : 'Expert UI Webapp',
+        projectUrlStr: 'https://github.com/hmcts/rpx-xui-webapp/'
+    ],
+    pipelineTriggers([
+        [$class: 'GitHubPushTrigger']
+    ]),
+    parameters([
+        choice(name: 'ENVIRONMENT', choices: 'saat\nsandbox\nsprod', description: 'Environment where code should be build and deployed')
+    ])
+])
+
+@Library("Infrastructure")
+
+def type      = "angular"
+def product   = "xui"
+def component = "webapp"
+def channel   = '#xui-pipeline'
+
+withPipeline(type, product, component) {
+    enableSlackNotifications(channel)
+
+    after('checkout') {sh 'yarn cache clean'}
+}

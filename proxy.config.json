@@ -1,0 +1,12 @@
+{
+  "/api/*": {
+    "target": "http://localhost:3000",
+    "secure": false,
+    "logLevel": "debug"
+  },
+  "/oauth2/callback": {
+    "target": "http://localhost:3001",
+    "secure": false,
+    "logLevel": "debug"
+  }
+}

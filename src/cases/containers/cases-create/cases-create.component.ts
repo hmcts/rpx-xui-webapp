@@ -1,5 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { LoggerService } from 'src/app/services/logger/logger.service';
+import {Component, OnInit} from '@angular/core';
+import * as fromCaseCreate from '../../store';
+import {Store} from '@ngrx/store';
+import * as fromCasesFeature from '../../../cases/store';
+import {CreateCaseActionsModel} from '../../models/create-case-actions.model';
 /**
  * Entry component wrapper for CCD-CASE-CREATE
  * Smart Component
@@ -10,10 +13,11 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
   template: `
     <exui-page-wrapper [title]="'Create Case'">
       <p>create-case container</p>
-      <exui-ccd-connector [events]="events">
-        <exui-ccd-dummy-component #ccdComponent
-          [jurisdiction]="jurisdictionId"
-          [caseType]="caseTypeId">
+      <exui-ccd-connector
+        [events]="caseCreateEvents"
+        [store]="store"
+        [fromFeature]="fromCasesFeature">
+        <exui-ccd-dummy-component #ccdComponent [jurisdiction]="jurisdictionId" [caseType]="caseTypeId">
         </exui-ccd-dummy-component>
         <!--        <ccd-case-create #ccdComponent-->
         <!--          [jurisdiction]="jurisdictionId"-->
@@ -26,37 +30,24 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
     </exui-page-wrapper>
   `
 })
-export class CasesCreateComponent {
-  // TODO move this to store or better place
+export class CasesCreateComponent implements OnInit{
   jurisdictionId = 'TEST';
   caseTypeId = 'TestAddressBookCase';
-  eventTriggerId = 'createCase';
-  caseType: object = {
-    jurisdictionId: 'TEST',
-    caseTypeId: 'TestAddressBookCase',
-    eventTriggerId: 'createCase'
-  };
+  caseCreateEvents: CreateCaseActionsModel[];
 
-  caseSelected: string;
+  fromCasesFeature: any;
 
-  events = ['cancelled', 'submitted'];
+  constructor(private store: Store<fromCaseCreate.CasesState>) {}
 
-  constructor(private logger: LoggerService) {}
+  ngOnInit(): void {
+    this.fromCasesFeature = fromCasesFeature;
 
-  // todo add dispatch action ngrx-it
-  submit(event: any): void {
-    this.logger.info('CaseCreateConsumerComponent submit event=', event);
+    // mapping components events to ExUI actions
+    this.caseCreateEvents = [
+      {type: 'cancelled', action: 'ResetChange'},
+      {type: 'submitted', action: 'ApplyChange'}
+    ];
 
-  }
-
-  cancel(event: any): void {
-    this.logger.info('CaseCreateConsumerComponent cancel event=', event);
-
-  }
-
-  chooseEvent() {
-    this.caseType = JSON.parse(this.caseSelected);
-    this.logger.info(this.caseType);
   }
 
 }

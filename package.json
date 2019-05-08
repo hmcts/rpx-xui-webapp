@@ -18,7 +18,8 @@
     "build:docker": "npm run build:production && docker build -t xui .",
     "build:ssr": "npm run build:production",
     "test:coverage": "echo 'not yet implemented'",
-    "test:a11y": "echo 'not yet implemented'"
+    "test:a11y": "echo 'not yet implemented'",
+    "sonar-scan": "node_modules/sonar-scanner/bin/sonar-scanner"
   },
   "private": true,
   "dependencies": {

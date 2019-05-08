@@ -72,7 +72,7 @@ export async function getTokenFromCode(req: express.Request, res: express.Respon
 
     return http.post(
         `${config.services.idam.idamApiUrl}/oauth2/token?grant_type=authorization_code&code=${req.query.code}&redirect_uri=${
-            config.protocol
+        config.protocol
         }://${req.headers.host}${config.services.idam.oauthCallbackUrl}`,
         {},
         options
@@ -91,16 +91,16 @@ export async function oauth(req: EnhancedRequest, res: express.Response, next: e
             const accessToken = response.data.access_token
             const details: any = await getDetails(accessToken)
 
-            // logger.info('details are', details.data)
+            logger.info('details are', details)
 
             // set browser cookie
             res.cookie(config.cookies.token, accessToken)
 
             session.auth = {
-                email: details.data.email,
-                roles: details.data.roles,
-                token: response.data.access_token,
-                userId: details.data.id,
+                email: details.email,
+                roles: details.roles,
+                token: accessToken,
+                userId: details.id,
             }
 
             logger.info('save session', session)

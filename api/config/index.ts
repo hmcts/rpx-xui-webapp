@@ -46,9 +46,9 @@ export const config = {
             api: 'https://dm-store-aat.service.core-compute-aat.internal',
         },
         idam: {
-            idamApiUrl: 'https://preprod-idamapi.reform.hmcts.net:3511',
+            idamApiUrl: 'https://idam-api.aat.platform.hmcts.net',
             idamClientID: 'juiwebapp',
-            idamLoginUrl: 'https://idam.preprod.ccidam.reform.hmcts.net/login',
+            idamLoginUrl: 'https://idam-web-public.aat.platform.hmcts.net',
             indexUrl: '/',
             oauthCallbackUrl: '/oauth2/callback',
         },

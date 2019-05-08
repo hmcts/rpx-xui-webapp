@@ -22,7 +22,7 @@ def product   = "xui"
 def component = "webapp"
 def channel   = '#xui-pipeline'
 
-withPipeline(type, product, component) {
+withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox') {
     enableSlackNotifications(channel)
 
     after('checkout') {sh 'yarn cache clean'}

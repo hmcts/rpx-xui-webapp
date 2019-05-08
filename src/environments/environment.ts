@@ -30,7 +30,11 @@ export const environment = {
     idamLoginUrl: "https://idam-web-public.aat.platform.hmcts.net",
     indexUrl: "/",
     oauthCallbackUrl: "oauth2/callback"
-  }
+  },
+  cookies: {
+    token: '__auth__',
+    userId: '__userid__',
+  },
 };
 
 /*

@@ -29,11 +29,13 @@ import { ProvidersModule } from "./providers/providers.module";
 // app routes
 import { ROUTES } from "./app.routes";
 import { AuthService } from "./services/auth/auth.service";
+import { CookieModule } from 'ngx-cookie';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
+    CookieModule.forRoot(),
     HttpClientModule,
     ProvidersModule.forRoot(),
     RouterModule.forRoot(ROUTES),
@@ -60,4 +62,4 @@ import { AuthService } from "./services/auth/auth.service";
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

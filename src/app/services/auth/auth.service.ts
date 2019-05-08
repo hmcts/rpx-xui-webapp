@@ -1,7 +1,7 @@
 //import { HttpClient } from '@angular/common/http'
 import { Inject, Injectable } from "@angular/core";
-// import { CookieService } from 'ngx-cookie'
-// import * as jwtDecode from 'jwt-decode'
+import { CookieService } from 'ngx-cookie'
+import * as jwtDecode from 'jwt-decode'
 import { environment as config } from "../../../environments/environment";
 import { Router } from "@angular/router";
 
@@ -21,13 +21,14 @@ export class AuthService {
   user$;
   constructor(
     // private httpCilent: HttpClient,
-    //private cookieService: CookieService,
+    private cookieService: CookieService,
     private router: Router
   ) {
-    // this.COOKIE_KEYS = {
-    //     TOKEN: config.cookies.token,
-    //     USER: config.cookies.userId
-    // }
+    this.COOKIE_KEYS = {
+      TOKEN: config.cookies.token,
+      USER: config.cookies.userId
+    }
+
     this.api_base_url =
       window.location.protocol +
       "//" +
@@ -70,9 +71,9 @@ export class AuthService {
     window.location.href = this.generateLoginUrl();
   }
 
-  // decodeJwt(jwt) {
-  //     return jwtDecode(jwt)
-  // }
+  decodeJwt(jwt) {
+    return jwtDecode(jwt)
+  }
 
   // public getUser() {
   //     if (this.user) {
@@ -85,21 +86,21 @@ export class AuthService {
   //     }
   // }
 
-  // isAuthenticated(): boolean {
-  //     const jwt = this.cookieService.get(this.COOKIE_KEYS.TOKEN)
-  //     if (!jwt) {
-  //         return false
-  //     }
-  //     const jwtData = this.decodeJwt(jwt)
-  //     const notExpired = jwtData.exp > Math.round(new Date().getTime() / 1000)
-  //     // do stuff!!
-  //     return notExpired
-  // }
-
   isAuthenticated(): boolean {
-    // false for now
-    return false;
+    const jwt = this.cookieService.get(this.COOKIE_KEYS.TOKEN)
+    if (!jwt) {
+      return false
+    }
+    const jwtData = this.decodeJwt(jwt)
+    const notExpired = jwtData.exp > Math.round(new Date().getTime() / 1000)
+    // do stuff!!
+    return notExpired
   }
+
+  // isAuthenticated(): boolean {
+  //   // false for now
+  //   return false;
+  // }
 
   signOut() {
     window.location.href = "/api/logout";

@@ -1,13 +1,11 @@
 import axios, { AxiosInstance } from 'axios'
 import * as jwtDecode from 'jwt-decode'
-import * as log4js from 'log4js'
+import * as log4jui from '../lib/log4jui'
 import * as otp from 'otp'
-import {config} from '../config'
+import { config } from '../config'
 import { Token } from '../lib/models'
 
-const logger = log4js.getLogger('serviceToken')
-logger.level = config.logging
-
+const logger = log4jui.getLogger('serviceToken')
 const microservice = config.microservice
 const secret = process.env.S2S_SECRET
 
@@ -27,7 +25,7 @@ function getToken(): Token {
 }
 
 async function generateToken() {
-    logger.info('generating from secret  :', { secret })
+    logger.info('generating from secret  :', secret)
     const oneTimePassword = otp({ secret }).totp()
     http = axios.create({})
 

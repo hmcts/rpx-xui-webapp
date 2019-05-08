@@ -32,7 +32,8 @@ export async function get(req: EnhancedRequest, res: express.Response, next: exp
         res.status(200)
         res.send(response.data)
     } catch (e) {
-        res.status(e.response.status)
+        console.log(e)
+        res.status(e)
         res.send(e.response.data)
     }
 }

@@ -9,7 +9,7 @@ export class SelectionChanged implements Action {
   readonly type = SELECTION_CHANGED;
 }
 
-export class PaygeChanged implements Action {
+export class PageChanged implements Action {
   readonly type = PAGE_CHANGED;
   constructor(public payload: number) {}
 }
@@ -26,6 +26,6 @@ export class ResetChange implements Action {
 
 export type CreateCasesAction =
   | SelectionChanged
-  | PaygeChanged
+  | PageChanged
   | ApplyChange
   | ResetChange;

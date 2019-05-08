@@ -12,7 +12,7 @@ import {CommonModule} from '@angular/common';
  * */
 @NgModule( {
   imports: [RouterModule, CommonModule],
-  declarations: [...fromAppComponents.components, ...fromAppContainers.contrainers],
-  exports: [...fromAppComponents.components, ...fromAppContainers.contrainers],
+  declarations: [...fromAppComponents.components, ...fromAppContainers.containers],
+  exports: [...fromAppComponents.components, ...fromAppContainers.containers],
 })
 export class SharedModule {}

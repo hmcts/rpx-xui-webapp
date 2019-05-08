@@ -5,9 +5,9 @@ import * as proxy from './lib/proxy'
 
 const router = express.Router({ mergeParams: true })
 
-router.get('/api/ccd/*', proxy.get)
-router.post('/api/ccd/*', proxy.post)
-router.put('/api/ccd/*', proxy.put)
+router.get('/ccd/*', proxy.get)
+router.post('/ccd/*', proxy.post)
+router.put('/ccd/*', proxy.put)
 
 router.use('/logout', auth.logout)
 

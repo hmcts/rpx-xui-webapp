@@ -2,7 +2,7 @@ import axios, { AxiosPromise, AxiosResponse } from 'axios'
 import * as exceptionFormatter from 'exception-formatter'
 import * as express from 'express'
 import * as jwtDecode from 'jwt-decode'
-import * as log4js from 'log4js'
+import * as log4jui from '../lib/log4jui'
 import { config } from '../config'
 import { http } from '../lib/http'
 import { EnhancedRequest } from '../lib/models'
@@ -10,8 +10,8 @@ import { getDetails } from '../services/idam'
 import { serviceTokenGenerator } from './serviceToken'
 
 const secret = process.env.IDAM_SECRET
-const logger = log4js.getLogger('auth')
-logger.level = config.logging
+const logger = log4jui.getLogger('auth')
+
 
 export async function attach(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
     const session = req.session!

@@ -14,18 +14,14 @@ import {CreateCaseActionsModel} from '../../models/create-case-actions.model';
     <exui-page-wrapper [title]="'Create Case'">
       <p>create-case container</p>
       <exui-ccd-connector
-        [events]="caseCreateEvents"
+        [eventsBindings]="caseCreateEventsBindings"
         [store]="store"
-        [fromFeature]="fromCasesFeature">
-        <exui-ccd-dummy-component #ccdComponent [jurisdiction]="jurisdictionId" [caseType]="caseTypeId">
-        </exui-ccd-dummy-component>
-        <!--        <ccd-case-create #ccdComponent-->
-        <!--          [jurisdiction]="jurisdictionId"-->
-        <!--          [caseType]="caseTypeId"-->
-        <!--          [event]="eventTriggerId"-->
-        <!--          (cancelled)="cancel($event)"-->
-        <!--          (submitted)="submit($event)">-->
-        <!--        </ccd-case-create>-->
+        [fromFeatureStore]="fromCasesFeature">
+          <ccd-case-create #ccdComponent
+            [jurisdiction]="jurisdictionId"
+            [caseType]="caseTypeId"
+            [event]="eventTriggerId">
+          </ccd-case-create>
       </exui-ccd-connector>
     </exui-page-wrapper>
   `
@@ -33,7 +29,8 @@ import {CreateCaseActionsModel} from '../../models/create-case-actions.model';
 export class CasesCreateComponent implements OnInit{
   jurisdictionId = 'TEST';
   caseTypeId = 'TestAddressBookCase';
-  caseCreateEvents: CreateCaseActionsModel[];
+  eventTriggerId = 'createCase';
+  caseCreateEventsBindings: CreateCaseActionsModel[];
 
   fromCasesFeature: any;
 
@@ -42,8 +39,10 @@ export class CasesCreateComponent implements OnInit{
   ngOnInit(): void {
     this.fromCasesFeature = fromCasesFeature;
 
-    // mapping components events to ExUI actions
-    this.caseCreateEvents = [
+    /**
+     * Mapping CCD components eventsBindings to ExUI Actions
+     */
+    this.caseCreateEventsBindings = [
       {type: 'cancelled', action: 'ResetChange'},
       {type: 'submitted', action: 'ApplyChange'}
     ];

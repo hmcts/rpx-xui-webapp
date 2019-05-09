@@ -25,7 +25,7 @@
     "@angular/platform-browser-dynamic": "^7.2.13",
     "@angular/router": "^7.2.13",
     "@hmcts/ccd-case-ui-toolkit": "^2.42.2",
-    "@hmcts/ccpay-web-component": "^1.8.2",
+    "@hmcts/ccpay-web-component": "^1.8.4",
     "@hmcts/frontend": "0.0.34-alpha",
     "@ngrx/effects": "^7.4.0",
     "@ngrx/router-store": "^7.4.0",

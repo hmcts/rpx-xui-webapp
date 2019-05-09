@@ -15,16 +15,18 @@ import { casesRouting } from './case-feature.routes';
 import {StoreModule} from '@ngrx/store';
 import {reducer} from './store';
 import {SharedModule} from '../app/shared/shared.module';
+import {HttpModule} from '@angular/http';
 
 
 @NgModule({
   imports: [
     CommonModule,
-    // CaseUIToolkitModule,
+    CaseUIToolkitModule,
     HttpClientModule,
     StoreModule.forFeature('cases', reducer),
     casesRouting,
-    SharedModule
+    SharedModule,
+    HttpModule
   ],
   declarations: [CasesCreateComponent],
   providers: [
@@ -39,6 +41,7 @@ import {SharedModule} from '../app/shared/shared.module';
     CaseEditWizardGuard,
     RouterHelperService,
     DocumentManagementService,
+    AppConfig,
     {
       provide: AbstractAppConfig,
       useExisting: AppConfig

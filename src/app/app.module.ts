@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { APP_INITIALIZER, NgModule} from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { AppComponent } from './containers/app/app.component';
 import { LoggerModule } from './services/logger/logger.module';
 import { environment } from '../environments/environment';
@@ -18,24 +18,27 @@ export const metaReducers: MetaReducer<any>[] = !environment.production
 // ngrx modules - END
 
 // APP store
-import {CustomSerializer, reducers} from './store/reducers';
-import {effects} from './store/effects';
+import { CustomSerializer, reducers } from './store/reducers';
+import { effects } from './store/effects';
 
 import {initApplication} from './app-initilizer';
 
 // common provider
-import {ProvidersModule} from './providers/providers.module';
+import { ProvidersModule } from './providers/providers.module';
 // app routes
 import { ROUTES } from './app.routes';
+import { AuthService } from './services/auth/auth.service';
+import { CookieModule } from 'ngx-cookie';
+
+import {SharedModule} from './shared/shared.module';
 
 import {SharedModule} from './shared/shared.module';
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
+    CookieModule.forRoot(),
     HttpClientModule,
     ProvidersModule.forRoot(),
     RouterModule.forRoot(ROUTES),
@@ -49,15 +52,17 @@ import {SharedModule} from './shared/shared.module';
     SharedModule
   ],
   providers: [
+    AuthService,
     {
       provide: RouterStateSerializer,
-      useClass: CustomSerializer },
+      useClass: CustomSerializer
+    },
     {
       provide: APP_INITIALIZER,
       useFactory: initApplication,
       deps: [Store],
       multi: true
-    },
+    }
   ],
   bootstrap: [AppComponent]
 })

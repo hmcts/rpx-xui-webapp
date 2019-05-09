@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AppConfig } from './case.config';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
-import {HttpClientModule} from '@angular/common/http';
-import {CasesCreateComponent} from './containers/cases-create/cases-create.component';
+import { HttpClientModule } from '@angular/common/http';
+import { CasesCreateComponent } from './containers/cases-create/cases-create.component';
 
 import {
   CaseUIToolkitModule, DraftService, AlertService, HttpService, AuthService as CCDAuthService, CasesService,

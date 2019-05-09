@@ -7,16 +7,17 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
  */
 @Component({
   selector: 'app-create-case',
-  template: `
+  template: ` 
     <p>create-case container</p>
-<!--    <ccd-case-create-->
-<!--      [jurisdiction]="jurisdictionId"-->
-<!--      [caseType]="caseTypeId"-->
-<!--      [event]="eventTriggerId"-->
-<!--      (cancelled)="cancel($event)"-->
-<!--      (submitted)="submit($event)">-->
-<!--    </ccd-case-create>-->
-  `
+ <ccd-case-create
+     [jurisdiction]="jurisdictionId"
+     [caseType]="caseTypeId"
+     [event]="eventTriggerId"
+     (cancelled)="cancel($event)"
+     (submitted)="submit($event)">
+    </ccd-case-create>
+    `
+
 })
 export class CasesCreateComponent {
   // TODO move this to store or better place
@@ -31,7 +32,7 @@ export class CasesCreateComponent {
 
   caseSelected: string;
 
-  constructor(private logger: LoggerService) {}
+  constructor(private logger: LoggerService) { }
 
   // todo add dispatch action ngrx-it
   submit(event: any): void {

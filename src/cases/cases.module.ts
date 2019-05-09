@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AppConfig } from './case.config';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
-import {HttpClientModule} from '@angular/common/http';
-import {CasesCreateComponent} from './containers/cases-create/cases-create.component';
+import { HttpClientModule } from '@angular/common/http';
+import { CasesCreateComponent } from './containers/cases-create/cases-create.component';
 
 import {
   CaseUIToolkitModule, DraftService, AlertService, HttpService, AuthService as CCDAuthService, CasesService,
@@ -12,15 +12,17 @@ import {
 } from '@hmcts/ccd-case-ui-toolkit';
 
 import { casesRouting } from './case-feature.routes';
-import {StoreModule} from '@ngrx/store';
-import {reducer} from './store';
+import { StoreModule } from '@ngrx/store';
+import { reducer } from './store';
+import { HttpModule } from '@angular/http';
 
 
 @NgModule({
   imports: [
     CommonModule,
-    // CaseUIToolkitModule,
+    CaseUIToolkitModule,
     HttpClientModule,
+    HttpModule,
     StoreModule.forFeature('cases', reducer),
     casesRouting
   ],
@@ -37,6 +39,7 @@ import {reducer} from './store';
     CaseEditWizardGuard,
     RouterHelperService,
     DocumentManagementService,
+    AppConfig,
     {
       provide: AbstractAppConfig,
       useExisting: AppConfig

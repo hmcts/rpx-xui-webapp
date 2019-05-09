@@ -7,7 +7,7 @@ import * as session from 'express-session'
 import * as log4js from 'log4js'
 import * as path from 'path'
 import * as sessionFileStore from 'session-file-store'
-import {config} from './config'
+import { config } from './config'
 import { errorStack } from './lib/errorStack'
 import routes from './routes'
 
@@ -22,12 +22,12 @@ app.use(
             maxAge: 1800000,
             secure: config.secureCookie !== false,
         },
-        name: "jui-webapp",
+        name: 'jui-webapp',
         resave: true,
         saveUninitialized: true,
         secret: config.sessionSecret,
         store: new FileStore({
-            path: process.env.NOW ? "/tmp/sessions" : ".sessions",
+            path: process.env.NOW ? '/tmp/sessions' : '.sessions',
         })
     })
 )
@@ -37,7 +37,7 @@ app.set('view engine', 'html')
 app.set('views', __dirname)
 
 app.use(express.static(path.join(__dirname, '..', 'assets'), { index: false }))
-app.use(express.static(path.join(__dirname, '..', ), { index: false }))
+app.use(express.static(path.join(__dirname, '..'), { index: false }))
 
 app.use(errorStack)
 app.use(bodyParser.json())
@@ -47,7 +47,7 @@ app.use(cookieParser())
 app.use('/api', routes)
 
 app.use('/*', (req, res) => {
-    console.time(`GET: ${req.originalUrl}`)
+    console.time('GET: ${req.originalUrl}')
     res.render('../index', {
         providers: [
             { provide: 'REQUEST', useValue: req },
@@ -56,7 +56,7 @@ app.use('/*', (req, res) => {
         req,
         res,
     })
-    console.timeEnd(`GET: ${req.originalUrl}`)
+    console.timeEnd('GET: ${req.originalUrl}')
 })
 
 app.listen(process.env.PORT || 3000)

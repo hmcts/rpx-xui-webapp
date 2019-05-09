@@ -12,10 +12,10 @@ import {
 } from '@hmcts/ccd-case-ui-toolkit';
 
 import { casesRouting } from './case-feature.routes';
-import { SharedModule } from '../app/shared/shared.module';
-import { StoreModule } from '@ngrx/store';
-import { reducer } from './store';
-import { HttpModule } from '@angular/http';
+import {StoreModule} from '@ngrx/store';
+import {reducer} from './store';
+import {SharedModule} from '../app/shared/shared.module';
+import {HttpModule} from '@angular/http';
 
 
 @NgModule({
@@ -23,10 +23,10 @@ import { HttpModule } from '@angular/http';
     CommonModule,
     CaseUIToolkitModule,
     HttpClientModule,
-    HttpModule,
     StoreModule.forFeature('cases', reducer),
     casesRouting,
-    SharedModule
+    SharedModule,
+    HttpModule
   ],
   declarations: [CasesCreateComponent],
   providers: [

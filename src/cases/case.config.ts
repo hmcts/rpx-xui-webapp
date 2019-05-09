@@ -1,9 +1,9 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import {
   AbstractAppConfig,
   CaseEditorConfig
-} from "@hmcts/ccd-case-ui-toolkit";
-import { environment as mainConfig } from "../environments/environment";
+} from '@hmcts/ccd-case-ui-toolkit';
+import { environment as mainConfig } from '../environments/environment';
 
 /**
  * see more:

@@ -1,17 +1,17 @@
 //import { HttpClient } from '@angular/common/http'
-import { Inject, Injectable } from "@angular/core";
+import { Inject, Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie'
 import * as jwtDecode from 'jwt-decode'
-import { environment as config } from "../../../environments/environment";
-import { Router } from "@angular/router";
+import { environment as config } from '../../../environments/environment';
+import { Router } from '@angular/router';
 
-import { Observable } from "rxjs/Observable";
-import "rxjs/add/observable/of";
-import "rxjs/add/operator/share";
-import "rxjs/add/operator/map";
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/share';
+import 'rxjs/add/operator/map';
 
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root'
 })
 export class AuthService {
   api_base_url;
@@ -31,16 +31,16 @@ export class AuthService {
 
     this.api_base_url =
       window.location.protocol +
-      "//" +
+      '//' +
       window.location.hostname +
-      ":" +
+      ':' +
       window.location.port;
     //this.httpCilent = httpCilent
     this.user = null;
   }
 
   canActivate() {
-    console.log("reached can activate");
+    console.log('reached can activate');
     if (!this.isAuthenticated()) {
       this.loginRedirect();
       return false;
@@ -103,6 +103,6 @@ export class AuthService {
   // }
 
   signOut() {
-    window.location.href = "/api/logout";
+    window.location.href = '/api/logout';
   }
 }

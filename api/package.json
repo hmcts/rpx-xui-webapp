@@ -6,7 +6,7 @@
         "ng": "ng",
         "build": "tsc",
         "coverage": "npx nyc mocha",
-        "watch": "export IDAM_SECRET=TZdHXaDbvZTfNy6U; export S2S_SECRET=KY4XS6KBPBSVOOSQ; nodemon --watch '**/*.ts' --exec 'ts-node' local.ts",
+        "watch": "nodemon --watch '**/*.ts' --exec 'ts-node' local.ts",
         "test": "mocha || true",
         "test:watch": "mocha --watch --recursive --watch-extensions ts",
         "start": "cd ../dist/jui-backend && node server.js"

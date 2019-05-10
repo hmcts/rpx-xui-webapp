@@ -1,6 +1,5 @@
 import * as fromCases from './cases.reducer';
 import * as fromActions from '../actions/create-cases.action';
-;
 
 describe('CasesReducer', () => {
   describe('undefined action', () => {

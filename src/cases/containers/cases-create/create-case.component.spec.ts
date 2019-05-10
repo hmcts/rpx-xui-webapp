@@ -13,6 +13,7 @@ import {DummyComponentComponent, ExuiCcdConnectorComponent} from '../../../app/c
 import {ExuiPageWrapperComponent} from '../../../app/components';
 import {StoreModule} from '@ngrx/store';
 import {MockStore} from '@ngrx/store/testing';
+import {HttpModule} from '@angular/http';
 
 
 describe('CasesCreateComponent', () => {
@@ -25,6 +26,8 @@ describe('CasesCreateComponent', () => {
         RouterTestingModule,
         CaseUIToolkitModule,
         HttpClientModule,
+        StoreModule.forRoot({}),
+        HttpModule
       ],
       declarations: [ CasesCreateComponent, ExuiCcdConnectorComponent, DummyComponentComponent, ExuiPageWrapperComponent ],
       providers: [

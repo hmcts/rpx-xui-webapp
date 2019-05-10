@@ -29,9 +29,6 @@ import { ProvidersModule } from './providers/providers.module';
 import { ROUTES } from './app.routes';
 import { AuthService } from './services/auth/auth.service';
 import { CookieModule } from 'ngx-cookie';
-
-import {SharedModule} from './shared/shared.module';
-
 import {SharedModule} from './shared/shared.module';
 
 @NgModule({

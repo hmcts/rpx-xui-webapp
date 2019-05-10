@@ -1,7 +1,7 @@
-//import { HttpClient } from '@angular/common/http'
+// import { HttpClient } from '@angular/common/http'
 import { Inject, Injectable } from '@angular/core';
-import { CookieService } from 'ngx-cookie'
-import * as jwtDecode from 'jwt-decode'
+import { CookieService } from 'ngx-cookie';
+import * as jwtDecode from 'jwt-decode';
 import { environment as config } from '../../../environments/environment';
 import { Router } from '@angular/router';
 
@@ -14,7 +14,7 @@ import 'rxjs/add/operator/map';
   providedIn: 'root'
 })
 export class AuthService {
-  api_base_url;
+  apiBaseUrl;
   httpClient;
   COOKIE_KEYS;
   user;
@@ -27,15 +27,15 @@ export class AuthService {
     this.COOKIE_KEYS = {
       TOKEN: config.cookies.token,
       USER: config.cookies.userId
-    }
+    };
 
-    this.api_base_url =
+    this.apiBaseUrl =
       window.location.protocol +
       '//' +
       window.location.hostname +
       ':' +
       window.location.port;
-    //this.httpCilent = httpCilent
+    // this.httpCilent = httpCilent
     this.user = null;
   }
 
@@ -52,7 +52,7 @@ export class AuthService {
   generateLoginUrl() {
     const base = config.idam.idamLoginUrl;
     const clientId = config.idam.idamClientID;
-    const callback = `${this.api_base_url}/${config.idam.oauthCallbackUrl}`;
+    const callback = `${this.apiBaseUrl}/${config.idam.oauthCallbackUrl}`;
     return `${base}/login?response_type=code&client_id=${clientId}&redirect_uri=${callback}`;
   }
 
@@ -72,7 +72,7 @@ export class AuthService {
   }
 
   decodeJwt(jwt) {
-    return jwtDecode(jwt)
+    return jwtDecode(jwt);
   }
 
   // public getUser() {
@@ -87,14 +87,14 @@ export class AuthService {
   // }
 
   isAuthenticated(): boolean {
-    const jwt = this.cookieService.get(this.COOKIE_KEYS.TOKEN)
+    const jwt = this.cookieService.get(this.COOKIE_KEYS.TOKEN);
     if (!jwt) {
-      return false
+      return false;
     }
-    const jwtData = this.decodeJwt(jwt)
-    const notExpired = jwtData.exp > Math.round(new Date().getTime() / 1000)
+    const jwtData = this.decodeJwt(jwt);
+    const notExpired = jwtData.exp > Math.round(new Date().getTime() / 1000);
     // do stuff!!
-    return notExpired
+    return notExpired;
   }
 
   // isAuthenticated(): boolean {

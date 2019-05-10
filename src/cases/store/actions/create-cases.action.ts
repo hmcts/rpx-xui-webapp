@@ -16,12 +16,11 @@ export class PageChanged implements Action {
 
 export class ApplyChange implements Action {
   readonly type = APPLY_CHANGE;
-  constructor(public payload: number) {}
+  constructor(public payload: any) {}
 }
 
 export class ResetChange implements Action {
   readonly type = RESET_CHANGE;
-  constructor(public payload: number) {}
 }
 
 export type CreateCasesAction =

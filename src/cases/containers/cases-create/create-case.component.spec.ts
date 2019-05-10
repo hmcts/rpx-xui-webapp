@@ -9,7 +9,7 @@ import {AppConfig} from '../../case.config';
 import {ScrollToService} from '@nicky-lenaers/ngx-scroll-to';
 import {RouterTestingModule} from '@angular/router/testing';
 import {HttpClientModule} from '@angular/common/http';
-import {DummyComponentComponent, ExuiCcdConnectorComponent} from '../../../app/containers';
+import {ExuiCcdConnectorComponent} from '../../../app/containers';
 import {ExuiPageWrapperComponent} from '../../../app/components';
 import {StoreModule} from '@ngrx/store';
 import {HttpModule} from '@angular/http';
@@ -28,7 +28,7 @@ describe('CasesCreateComponent', () => {
         StoreModule.forRoot({}),
         HttpModule
       ],
-      declarations: [ CasesCreateComponent, ExuiCcdConnectorComponent, DummyComponentComponent, ExuiPageWrapperComponent ],
+      declarations: [ CasesCreateComponent, ExuiCcdConnectorComponent, ExuiPageWrapperComponent ],
       providers: [
         PlaceholderService,
         CasesService,

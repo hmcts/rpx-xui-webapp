@@ -1,9 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import {RouterTestingModule} from '@angular/router/testing';
 import {ExuiCcdConnectorComponent} from './exui-ccd-connector.component';
-import {DummyComponentComponent} from '..';
-import {DebugElement} from '@angular/core';
-import {By} from '@angular/platform-browser';
 
 describe('CCD Connector Component', () => {
   let component: ExuiCcdConnectorComponent;
@@ -16,7 +13,6 @@ describe('CCD Connector Component', () => {
       ],
       declarations: [
         ExuiCcdConnectorComponent,
-        DummyComponentComponent
       ],
       providers: []
     }).compileComponents();

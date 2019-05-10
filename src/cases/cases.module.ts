@@ -8,7 +8,7 @@ import { CasesCreateComponent } from './containers/cases-create/cases-create.com
 import {
   CaseUIToolkitModule, DraftService, AlertService, HttpService, AuthService as CCDAuthService, CasesService,
   HttpErrorService, AbstractAppConfig, CaseEditWizardGuard, RouterHelperService,
-  DocumentManagementService, PageValidationService, PlaceholderService
+  DocumentManagementService, PageValidationService, PlaceholderService, RequestOptionsBuilder
 } from '@hmcts/ccd-case-ui-toolkit';
 
 import { casesRouting } from './case-feature.routes';
@@ -44,6 +44,7 @@ import {CdkTableModule} from '@angular/cdk/table';
     RouterHelperService,
     DocumentManagementService,
     AppConfig,
+    RequestOptionsBuilder,
     {
       provide: AbstractAppConfig,
       useExisting: AppConfig

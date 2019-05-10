@@ -3,6 +3,7 @@ import { Action } from '@ngrx/store';
 
 export const APP_LOAD_CONFIG = '[App] Load Config';
 export const APP_LOAD_CONFIG_SUCCESS = '[App] Load Config Success';
+export const APP_LOAD_CONFIG_FAIL = '[App] Load Config Fail';
 
 export const START_APP_INITIALIZER = '[App] Start App initializer';
 export const FINISH_APP_INITIALIZER = '[App] Finish Start App initializer';
@@ -17,7 +18,7 @@ export class LoadConfigSuccess implements Action {
 }
 
 export class LoadConfigFail implements Action {
-  readonly type = APP_LOAD_CONFIG_SUCCESS;
+  readonly type = APP_LOAD_CONFIG_FAIL;
   constructor(public payload: any ) {}
 }
 

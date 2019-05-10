@@ -62,5 +62,9 @@ describe('CasesCreateComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should have ngOnInit', () => {
+    expect(component.ngOnInit).toBeTruthy();
+  });
+
 
 });

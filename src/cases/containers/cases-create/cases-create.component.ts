@@ -1,53 +1,52 @@
-import { Component, OnInit } from '@angular/core';
-import { LoggerService } from 'src/app/services/logger/logger.service';
+import {Component, OnInit} from '@angular/core';
+import * as fromCaseCreate from '../../store';
+import {Store} from '@ngrx/store';
+import * as fromCasesFeature from '../../../cases/store';
+import {CreateCaseActionsModel} from '../../models/create-case-actions.model';
 /**
  * Entry component wrapper for CCD-CASE-CREATE
  * Smart Component
  * param TBC
  */
 @Component({
-  selector: 'app-create-case',
+  selector: 'exui-create-case',
   template: `
-    <p>create-case container</p>
- <ccd-case-create
-     [jurisdiction]="jurisdictionId"
-     [caseType]="caseTypeId"
-     [event]="eventTriggerId"
-     (cancelled)="cancel($event)"
-     (submitted)="submit($event)">
-    </ccd-case-create>
-    `
-
+    <exui-page-wrapper [title]="'Create Case'">
+      <p>create-case container</p>
+      <exui-ccd-connector
+        [eventsBindings]="caseCreateEventsBindings"
+        [store]="store"
+        [fromFeatureStore]="fromCasesFeature">
+          <ccd-case-create #ccdComponent
+            [jurisdiction]="jurisdictionId"
+            [caseType]="caseTypeId"
+            [event]="eventTriggerId">
+          </ccd-case-create>
+      </exui-ccd-connector>
+    </exui-page-wrapper>
+  `
 })
-export class CasesCreateComponent {
-  // TODO move this to store or better place
+export class CasesCreateComponent implements OnInit {
   jurisdictionId = 'TEST';
   caseTypeId = 'TestAddressBookCase';
   eventTriggerId = 'createCase';
-  caseType: object = {
-    jurisdictionId: 'TEST',
-    caseTypeId: 'TestAddressBookCase',
-    eventTriggerId: 'createCase'
-  };
+  caseCreateEventsBindings: CreateCaseActionsModel[];
 
-  caseSelected: string;
+  fromCasesFeature: any;
 
-  constructor(private logger: LoggerService) { }
+  constructor(private store: Store<fromCaseCreate.CasesState>) {}
 
-  // todo add dispatch action ngrx-it
-  submit(event: any): void {
-    this.logger.info('CaseCreateConsumerComponent submit event=', event);
+  ngOnInit(): void {
+    this.fromCasesFeature = fromCasesFeature;
 
-  }
+    /**
+     * Mapping CCD components eventsBindings to ExUI Actions
+     */
+    this.caseCreateEventsBindings = [
+      {type: 'cancelled', action: 'ResetChange'},
+      {type: 'submitted', action: 'ApplyChange'}
+    ];
 
-  cancel(event: any): void {
-    this.logger.info('CaseCreateConsumerComponent cancel event=', event);
-
-  }
-
-  chooseEvent() {
-    this.caseType = JSON.parse(this.caseSelected);
-    this.logger.info(this.caseType);
   }
 
 }

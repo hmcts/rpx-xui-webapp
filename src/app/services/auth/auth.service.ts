@@ -1,11 +1,10 @@
-// import { HttpClient } from '@angular/common/http'
+
 import { Inject, Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie';
 import * as jwtDecode from 'jwt-decode';
 import { environment as config } from '../../../environments/environment';
 import { Router } from '@angular/router';
 
-import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/map';
@@ -35,7 +34,9 @@ export class AuthService {
       window.location.hostname +
       ':' +
       window.location.port;
+
     // this.httpCilent = httpCilent
+
     this.user = null;
   }
 

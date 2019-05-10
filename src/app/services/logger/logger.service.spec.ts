@@ -14,4 +14,10 @@ describe('LoggerService', () => {
     const service: LoggerService = TestBed.get(LoggerService);
     expect(service).toBeTruthy();
   });
+
+  it('should have info, warn and error prop', () => {
+    const logger: Logger = TestBed.get(Logger);
+    expect(logger).toBeTruthy();
+
+  });
 });

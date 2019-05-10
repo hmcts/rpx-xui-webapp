@@ -17,7 +17,7 @@ properties([
 
 @Library("Infrastructure")
 
-def type      = "angular"
+def type      = "nodejs"
 def product   = "xui"
 def component = "webapp"
 def channel   = '#xui-pipeline'

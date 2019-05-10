@@ -1,6 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import {CasesCreateComponent} from './cases-create.component';
-import {ConnectionBackend, Http, HttpModule, RequestOptions} from '@angular/http';
 import {
   CaseUIToolkitModule, DraftService, AlertService, HttpService, AuthService as CCDAuthService, CasesService,
   HttpErrorService, AbstractAppConfig, CaseEditWizardGuard, RouterHelperService,
@@ -8,10 +7,12 @@ import {
 } from '@hmcts/ccd-case-ui-toolkit';
 import {AppConfig} from '../../case.config';
 import {ScrollToService} from '@nicky-lenaers/ngx-scroll-to';
-import {RouterModule} from '@angular/router';
-import {ROUTES} from '../../../app/app.routes';
 import {RouterTestingModule} from '@angular/router/testing';
 import {HttpClientModule} from '@angular/common/http';
+import {ExuiCcdConnectorComponent} from '../../../app/containers';
+import {ExuiPageWrapperComponent} from '../../../app/components';
+import {StoreModule} from '@ngrx/store';
+import {HttpModule} from '@angular/http';
 
 
 describe('CasesCreateComponent', () => {
@@ -23,10 +24,11 @@ describe('CasesCreateComponent', () => {
       imports: [
         RouterTestingModule,
         CaseUIToolkitModule,
-        HttpClientModule
-
+        HttpClientModule,
+        StoreModule.forRoot({}),
+        HttpModule
       ],
-      declarations: [ CasesCreateComponent ],
+      declarations: [ CasesCreateComponent, ExuiCcdConnectorComponent, ExuiPageWrapperComponent ],
       providers: [
         PlaceholderService,
         CasesService,
@@ -59,4 +61,10 @@ describe('CasesCreateComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should have ngOnInit', () => {
+    expect(component.ngOnInit).toBeTruthy();
+  });
+
+
 });

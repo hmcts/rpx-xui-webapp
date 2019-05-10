@@ -12,19 +12,25 @@ import {
 } from '@hmcts/ccd-case-ui-toolkit';
 
 import { casesRouting } from './case-feature.routes';
-import { StoreModule } from '@ngrx/store';
-import { reducer } from './store';
-import { HttpModule } from '@angular/http';
+import {StoreModule} from '@ngrx/store';
+import {reducer} from './store';
+import {SharedModule} from '../app/shared/shared.module';
+import {HttpModule} from '@angular/http';
+import {MatDialogModule} from '@angular/material';
+import {CdkTableModule} from '@angular/cdk/table';
 
 
 @NgModule({
   imports: [
     CommonModule,
     CaseUIToolkitModule,
+    MatDialogModule,  // TODO check with ccd why do we need material
+    CdkTableModule,
     HttpClientModule,
-    HttpModule,
     StoreModule.forFeature('cases', reducer),
-    casesRouting
+    casesRouting,
+    SharedModule,
+    HttpModule
   ],
   declarations: [CasesCreateComponent],
   providers: [

@@ -7,7 +7,7 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
  */
 @Component({
   selector: 'app-create-case',
-  template: ` 
+  template: `
     <p>create-case container</p>
  <ccd-case-create
      [jurisdiction]="jurisdictionId"

@@ -9,7 +9,7 @@
     "nuke": "rm -rf dist",
     "build": "npm run build:ng && npm run build:node",
     "pre-push": "npm run lint:ng && ng test --code-coverage && npm run build:prod",
-    "start": "node ./dist/rpa-pui-registration/api/server.js",
+    "start": "node ./dist/rpx-exui/api/server.js",
     "build:node": "cd api && npm run build",
     "build:prod": "ng build --prod",
     "start:node": "cd api && npm run watch",

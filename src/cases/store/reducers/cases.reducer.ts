@@ -1,4 +1,5 @@
-import * as fromCases from '../actions/cases.action';
+import * as fromCases from '../actions/create-cases.action';
+
 // todo this is just a place holder
 export interface CasesState {
   someState: any;
@@ -14,11 +15,11 @@ export const initialState: CasesState = {
 
 export function reducer(
   state = initialState,
-  action: fromCases.CasesAction
+  action: fromCases.CreateCasesAction
 ): CasesState {
   switch (action.type) {
 
-    case fromCases.SEARCH_CASES: {
+    case fromCases.RESET_CHANGE: {
       // tbc
       return {
         ...state,

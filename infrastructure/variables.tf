@@ -7,7 +7,7 @@ variable "component" {
 }
 
 variable "team_name" {
-  default = "judicial_ui"
+  default = "expert_ui"
 }
 
 variable "app_language" {

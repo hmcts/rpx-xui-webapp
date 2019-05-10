@@ -1,5 +1,5 @@
 locals {
-    app_full_name = "xui"
+    app_full_name = "xui-${var.component}"
     ase_name = "core-compute-${var.env}"
     local_env = "${(var.env == "preview" || var.env == "spreview") ? (var.env == "preview" ) ? "aat" : "saat" : var.env}"
     shared_product_name = "rpx"

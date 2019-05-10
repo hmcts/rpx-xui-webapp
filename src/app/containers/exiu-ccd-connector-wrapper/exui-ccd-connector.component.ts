@@ -29,13 +29,14 @@ export class ExuiCcdConnectorComponent implements AfterContentInit, OnDestroy {
   constructor() { }
 
   ngAfterContentInit() {
-    this.eventsBindings.forEach((event) => {
-      this.subscriptions[event.type] =
-        this.ccdComponent[event.type].subscribe((obj) => this.dispatcherContainer[event.type](obj));
-    });
-
-    this.createDispatchers();
-  };
+    if (this.ccdComponent) {
+      this.eventsBindings.forEach((event) => {
+        this.subscriptions[event.type] =
+          this.ccdComponent[event.type].subscribe((obj) => this.dispatcherContainer[event.type](obj));
+      });
+      this.createDispatchers();
+    }
+  }
   /**
    * Creates dispatchers functions based on CCD events array
    */
@@ -49,9 +50,11 @@ export class ExuiCcdConnectorComponent implements AfterContentInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.eventsBindings.forEach((event ) => {
-      this.subscriptions[event.type].unsubscribe();
-    });
+    if (this.subscriptions.length) {
+      this.eventsBindings.forEach((event ) => {
+        this.subscriptions[event.type].unsubscribe();
+      });
+    }
   }
 
 }

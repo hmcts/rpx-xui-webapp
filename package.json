@@ -4,7 +4,7 @@
   "scripts": {
     "nuke": "rm -rf dist",
     "build": "npm run build:ng && npm run build:node",
-    "pre-push": "npm run lint:ng && ng test --code-coverage && npm run build:prod",
+    "pre-push": "npm run lint && ng test --code-coverage && npm run build:prod",
     "start": "node ./dist/rpa-pui-registration/api/server.js",
     "build:node": "cd api && npm run build",
     "build:prod": "ng build --prod",
@@ -13,7 +13,7 @@
     "start:ng": "ng serve --port 3000 --host 0.0.0.0 --proxy-config proxy.config.json",
     "build:ng": "ng build",
     "test": "ng test",
-    "lint": "ng lint jui",
+    "lint": "ng lint",
     "e2e": "ng e2e"
   },
   "private": true,

@@ -26,7 +26,7 @@ import {CreateCaseActionsModel} from '../../models/create-case-actions.model';
     </exui-page-wrapper>
   `
 })
-export class CasesCreateComponent implements OnInit{
+export class CasesCreateComponent implements OnInit {
   jurisdictionId = 'TEST';
   caseTypeId = 'TestAddressBookCase';
   eventTriggerId = 'createCase';

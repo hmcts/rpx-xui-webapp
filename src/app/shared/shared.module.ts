@@ -9,7 +9,7 @@ import {CommonModule} from '@angular/common';
  * Shared Module
  * Used to share common modules and components/containers across the app
  * FormsModule, CommonModule, ReactiveForms etc..
- * */
+ */
 @NgModule( {
   imports: [RouterModule, CommonModule],
   declarations: [...fromAppComponents.components, ...fromAppContainers.containers],

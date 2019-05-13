@@ -8,7 +8,6 @@ import {ConfigurationModel} from '../models/configuration.model';
 import {catchError, take} from 'rxjs/operators';
 import {throwError} from 'rxjs';
 
-
 /**
  *  Configuration Services responsible for fetching initial cofig data needed for app  to run
  *  It also provides instance of environment or other data;
@@ -31,6 +30,7 @@ export class AppConfigService {
       this.configuration = config;
     });
   }
+
   getFeatureToggle() {
     return this.configuration.features;
   }

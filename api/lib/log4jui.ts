@@ -3,7 +3,7 @@ import { config } from '../config'
 import * as errorStack from '../lib/errorStack'
 import { JUILogger } from '../lib/models'
 
-import { isReqResSet, request, response } from './middleware/responseRequest'
+import { isReqResSet, request } from './middleware/responseRequest'
 
 // the longest category length we have currently
 const maxCatLength = 14
@@ -51,7 +51,6 @@ export function prepareMessage(fullMessage: string): string {
 function info(...messages: any[]) {
     const fullMessage = messages.join(' ')
 
-    const category = this._logger.category
     this._logger.info(prepareMessage(fullMessage))
 }
 

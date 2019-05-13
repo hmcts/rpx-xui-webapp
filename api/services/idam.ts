@@ -1,15 +1,16 @@
 import * as express from 'express'
 import { config } from '../config'
 import { http } from '../lib/http'
-import { isReqResSet, request, response } from '../lib/middleware/responseRequest'
+import { isReqResSet, request } from '../lib/middleware/responseRequest'
 
 import { getHealth, getInfo, valueOrNull } from '../lib/util'
 
-const url = config.services.idam.idamApiUrl
+const url = config.services.idamaApi
+
 const idamSecret = process.env.IDAM_SECRET || 'AAAAAAAAAAAAAAAA'
-const idamClient = config.services.idam.idamClientID
+const idamClient = config.services.idamClient
 const idamProtocol = config.protocol
-const oauthCallbackUrl = config.services.idam.oauthCallbackUrl
+const oauthCallbackUrl = config.services.oauthCallbackUrl
 
 export async function getDetails(token: string = null) {
     // have to pass options in at first login as headers are yet to be attached.
@@ -70,4 +71,3 @@ export default app => {
         res.status(200).send(getDetails())
     })
 }
-

@@ -1,11 +1,11 @@
 import * as express from 'express'
-import * as log4jui from './log4jui'
 import * as striptags from 'striptags'
-import { config } from '../config'
 import { http } from '.'
+import { config } from '../config'
+//import * as log4jui from './log4jui'
 import { EnhancedRequest } from './models'
 
-const logger = log4jui.getLogger('proxy')
+//const logger = log4jui.getLogger('proxy')
 
 function setHeaders(req: EnhancedRequest) {
     const headers: any = {}
@@ -22,8 +22,8 @@ function setHeaders(req: EnhancedRequest) {
 }
 
 export async function get(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
-    const url = striptags(req.url).replace('/api/ccd', '')
-
+    let url = striptags(req.url).replace('/api/ccd', '')
+    url = '/data/internal' + url
     const headers: any = setHeaders(req)
 
     try {

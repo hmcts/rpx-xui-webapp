@@ -1,131 +1,51 @@
-import axios, { AxiosPromise, AxiosResponse } from 'axios'
-import * as exceptionFormatter from 'exception-formatter'
-import * as express from 'express'
-import * as jwtDecode from 'jwt-decode'
-import * as log4jui from '../lib/log4jui'
-import { config } from '../config'
-import { http } from '../lib/http'
-import { EnhancedRequest } from '../lib/models'
-import { getDetails } from '../services/idam'
-import { serviceTokenGenerator } from './serviceToken'
 
-const secret = process.env.IDAM_SECRET
+import { config } from '../config'
+import * as log4jui from '../lib/log4jui'
+import { asyncReturnOrError, exists } from '../lib/util'
+import { getDetails, postOauthToken } from '../services/idam'
+
+const cookieToken = config.cookies.token
+const cookieUserId = config.cookies.userId
+
 const logger = log4jui.getLogger('auth')
 
-
-export async function attach(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
-    const session = req.session!
-
-    try {
-        const token = await serviceTokenGenerator()
-
-        req.headers.ServiceAuthorization = token.token
-        logger.info(' session.auth.userId', session.auth.email)
-
-        const userId = session.auth.userId
-        const jwt = session.auth.token
-        const roles = session.auth.roles
-        const orgId = session.auth.orgId
-        const email = session.auth.email
-        const jwtData = jwtDecode(jwt)
-        const expires = new Date(jwtData.exp).getTime()
-        const now = new Date().getTime() / 1000
-        const expired = expires < now
-
-        logger.info('Attaching auth')
-
-        if (expired) {
-            logger.info('Could not add S2S token header')
-            res.status(401).send('Token expired!')
-        } else {
-            logger.info('userId ===> ', userId)
-            req.auth = jwtData
-            req.auth.token = jwt
-            req.auth.userId = userId
-            req.auth.expires = expires
-            req.auth.roles = roles
-
-            // also use these as axios defaults
-            logger.info('Using Idam Token in defaults')
-            axios.defaults.headers.common.Authorization = `Bearer ${req.auth.token}`
-            if (req.headers.ServiceAuthorization) {
-                logger.info('Using S2S Token in defaults')
-                axios.defaults.headers.common.ServiceAuthorization = req.headers.ServiceAuthorization
-            }
-            next()
-        }
-    } catch (exception) {
-        logger.error('Could not add S2S token header', exceptionFormatter(exception, config.exceptionOptions))
-    }
+export function doLogout(req, res, status = 302) {
+    res.clearCookie(cookieToken)
+    res.clearCookie(cookieUserId)
+    req.session.user = null
+    req.session.save(() => {
+        res.redirect(status, req.query.redirect || '/')
+    })
+}
+export function logout(req, res) {
+    doLogout(req, res)
 }
 
-export async function getTokenFromCode(req: express.Request, res: express.Response): Promise<AxiosResponse> {
-    const Authorization = `Basic ${new Buffer(`${config.services.idam.idamClientID}:${secret}`).toString('base64')}`
-    const options = {
-        headers: {
-            Authorization,
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-    }
-
-    logger.info('Getting Token from auth code.')
-
-    return http.post(
-        `${config.services.idam.idamApiUrl}/oauth2/token?grant_type=authorization_code&code=${req.query.code}&redirect_uri=${
-        config.protocol
-        }://${req.headers.host}${config.services.idam.oauthCallbackUrl}`,
-        {},
-        options
+export default async function authenticateUser(req: any, res, next) {
+    req.session.user = null
+    const data = await asyncReturnOrError(
+        postOauthToken(req.query.code, req.get('host')),
+        'Error getting token for code',
+        res,
+        logger,
+        false
     )
-}
 
-export async function oauth(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
-    const session = req.session!
+    if (exists(data, 'access_token')) {
 
-    try {
-        const response = await getTokenFromCode(req, res)
+        const details = await asyncReturnOrError(getDetails(data.access_token), 'Cannot get user details', res, logger, false)
+        if (details) {
+            logger.info('Setting session and cookies')
+            req.session.user = details
+            res.cookie(cookieUserId, details.id)
+            res.cookie(cookieToken, data.access_token)
 
-        if (response.data.access_token) {
-            logger.info('Getting user details')
-
-            const accessToken = response.data.access_token
-            const details: any = await getDetails(accessToken)
-
-            logger.info('details are', details)
-
-            // set browser cookie
-            res.cookie(config.cookies.token, accessToken)
-
-            session.auth = {
-                email: details.email,
-                roles: details.roles,
-                token: accessToken,
-                userId: details.id,
-            }
-
-            logger.info('save session', session)
-            session.save(() => {
-                res.redirect(config.indexUrl)
-            })
+            // need this so angular knows which enviroment config to use ...
+            res.cookie('platform', config.environment)
         }
-    } catch (e) {
-        logger.error('Error:', e)
-        res.redirect(config.indexUrl || '/')
     }
-}
-
-export function user(req: EnhancedRequest, res: express.Response) {
-    const userJson = {
-        expires: req.auth.expires,
-        roles: req.auth.roles,
-        userId: req.auth.userId,
-    }
-    res.setHeader('Content-Type', 'application/json')
-    res.send(JSON.stringify(userJson))
-}
-
-export function logout(req: EnhancedRequest, res: express.Response) {
-    const redirect = config.indexUrl ? config.indexUrl : '/'
-    res.clearCookie(config.cookies.token)
-    res.redirect(redirect)
+    logger.info('Auth finished, redirecting')
+    req.session.save(() => {
+        res.redirect('/')
+    })
 }

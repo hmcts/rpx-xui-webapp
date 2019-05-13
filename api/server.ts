@@ -14,10 +14,10 @@ app.set('view engine', 'html')
 app.set('views', __dirname)
 
 app.use(express.static(path.join(__dirname, '..', 'assets'), { index: false }))
-app.use(express.static(path.join(__dirname, '..', 'jui-frontend', 'main'), { index: false }))
+app.use(express.static(path.join(__dirname, '..'), { index: false }))
 
 app.use('/*', (req, res) => {
-    res.render('../jui-frontend/main/index', {
+    res.render('../index', {
         providers: [
             { provide: 'REQUEST', useValue: req },
             { provide: 'RESPONSE', useValue: res },

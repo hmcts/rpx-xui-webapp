@@ -8,8 +8,6 @@ import * as auth from './auth'
 import { config } from './config'
 import { errorStack } from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
-import authInterceptor from './lib/middleware/auth'
-import serviceTokenMiddleware from './lib/middleware/serviceToken'
 import routes from './routes'
 
 config.environment = process.env.JUI_ENV || 'local'
@@ -59,12 +57,7 @@ if (config.proxy) {
 }
 
 app.get('/oauth2/callback', auth.authenticateUser)
-
-app.use(serviceTokenMiddleware)
-app.use(authInterceptor)
-
-app.use('/api', routes)
-app.use('/data/internal', routes)
+app.use('/data', routes)
 
 const logger = log4jui.getLogger('Application')
 logger.info(`Started up on ${config.environment || 'local'} using ${config.protocol}`)

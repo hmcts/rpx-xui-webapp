@@ -22,10 +22,9 @@ function setHeaders(req: EnhancedRequest) {
 }
 
 export async function get(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
-    let url = striptags(req.url).replace('/api/ccd', '')
-    url = '/data/internal' + url
+    let url = striptags(req.url)
+    url = '/data/' + url
 
-    console.log(url)
     const headers: any = setHeaders(req)
 
     try {
@@ -41,7 +40,8 @@ export async function get(req: EnhancedRequest, res: express.Response, next: exp
 }
 
 export async function put(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
-    const url = striptags(req.url).replace('/api/ccd', '')
+    let url = striptags(req.url)
+    url = '/data/' + url
 
     const headers: any = setHeaders(req)
 
@@ -56,7 +56,8 @@ export async function put(req: EnhancedRequest, res: express.Response, next: exp
 }
 
 export async function post(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
-    const url = striptags(req.url).replace('/api/ccd', '')
+    let url = striptags(req.url)
+    url = '/data/' + url
 
     const headers: any = setHeaders(req)
 

@@ -115,9 +115,4 @@ export class CasesCreateComponent implements OnInit {
     console.log('selected jurisdiction:', jurisdiction);
   }
 
-  // chooseEvent() {
-  //   this.caseType = JSON.parse(this.caseSelected);
-  //   this.logger.info(this.caseType);
-  // }
-
 }

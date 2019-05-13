@@ -4,7 +4,7 @@ import * as express from 'express'
 import * as session from 'express-session'
 import * as globalTunnel from 'global-tunnel-ng'
 import * as sessionFileStore from 'session-file-store'
-import auth from './auth'
+import * as auth from './auth'
 import { config } from './config'
 import { errorStack } from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
@@ -15,6 +15,7 @@ import routes from './routes'
 config.environment = process.env.JUI_ENV || 'local'
 
 export const app = express()
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
 const FileStore = sessionFileStore(session)
 
@@ -57,7 +58,7 @@ if (config.proxy) {
     })
 }
 
-app.get('/oauth2/callback', auth)
+app.get('/oauth2/callback', auth.authenticateUser)
 
 app.use(serviceTokenMiddleware)
 app.use(authInterceptor)

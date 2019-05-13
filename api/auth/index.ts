@@ -21,7 +21,7 @@ export function logout(req, res) {
     doLogout(req, res)
 }
 
-export default async function authenticateUser(req: any, res, next) {
+export async function authenticateUser(req: any, res, next) {
     req.session.user = null
     const data = await asyncReturnOrError(
         postOauthToken(req.query.code, req.get('host')),

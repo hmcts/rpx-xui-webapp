@@ -1,6 +1,19 @@
-FROM nginx:alpine
+FROM node:8.9.0-alpine
 
-COPY docker/nginx.conf /etc/nginx/nginx.conf
+MAINTAINER "HMCTS Team <https://github.com/hmcts>"
+LABEL maintainer = "HMCTS Team <https://github.com/hmcts>"
 
-WORKDIR /usr/share/nginx/html
-COPY dist/rpx-exui/ .
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+COPY package.json .
+COPY package-lock.json .
+COPY yarn.lock .
+
+RUN npm install
+
+COPY . .
+RUN npm run build
+
+EXPOSE 8080
+CMD [ "npm", "start" ]

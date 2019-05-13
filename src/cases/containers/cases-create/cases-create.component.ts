@@ -23,13 +23,19 @@ import { Jurisdiction, CaseType } from '@hmcts/ccd-case-ui-toolkit';
             [caseType]="caseTypeId"
             [event]="eventTriggerId">
           </ccd-case-create>
-          <ccd-search-filters
-            [autoApply]="true"
-            (onJurisdiction)="jurisdictionSelected($event)"
-            (onReset)="reset()"
-            (onApply)="applied($event)"
-            [jurisdictions]="jurisdictions">
-          </ccd-search-filters>
+      </exui-ccd-connector>
+      <p>search-filter container</p>
+      <exui-ccd-connector
+        [eventsBindings]="caseCreateEventsBindings"
+        [store]="store"
+        [fromFeatureStore]="fromCasesFeature">
+        <ccd-search-filters
+          [autoApply]="true"
+          (onJurisdiction)="jurisdictionSelected($event)"
+          (onReset)="reset()"
+          (onApply)="applied($event)"
+          [jurisdictions]="jurisdictions">
+        </ccd-search-filters>
       </exui-ccd-connector>
     </exui-page-wrapper>
   `,

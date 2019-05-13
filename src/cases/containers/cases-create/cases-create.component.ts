@@ -91,6 +91,7 @@ export class CasesCreateComponent implements OnInit {
 
   ngOnInit(): void {
     this.fromCasesFeature = fromCasesFeature;
+    this.jurisdictions = [ this.JURISDICTION_1, this.JURISDICTION_2 ];
 
     /**
      * Mapping CCD components eventsBindings to ExUI Actions
@@ -114,9 +115,9 @@ export class CasesCreateComponent implements OnInit {
     console.log('selected jurisdiction:', jurisdiction);
   }
 
-  chooseEvent() {
-    this.caseType = JSON.parse(this.caseSelected);
-    this.logger.info(this.caseType);
-  }
+  // chooseEvent() {
+  //   this.caseType = JSON.parse(this.caseSelected);
+  //   this.logger.info(this.caseType);
+  // }
 
 }

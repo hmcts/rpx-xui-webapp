@@ -18,5 +18,16 @@ export const environment = {
     print_service_url: '/print',
     remote_print_service_url: '/remote_print',
     pagination_page_size: 0
-  }
+  },
+   idam: {
+     idamApiUrl: 'https://idam-api.aat.platform.hmcts.net',
+     idamClientID: 'juiwebapp',
+     idamLoginUrl: 'https://idam-web-public.aat.platform.hmcts.net',
+     indexUrl: '/',
+     oauthCallbackUrl: 'oauth2/callback'
+   },
+   cookies: {
+     token: '__auth__',
+     userId: '__userid__',
+   },
 };

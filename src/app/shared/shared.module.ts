@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 
 import * as fromAppComponents from '../components';
 import * as fromAppContainers from '../containers';
+import * as fromAppDirectives from '../directives';
+
 import {RouterModule} from '@angular/router';
 import {CommonModule} from '@angular/common';
 
@@ -12,7 +14,15 @@ import {CommonModule} from '@angular/common';
  */
 @NgModule( {
   imports: [RouterModule, CommonModule],
-  declarations: [...fromAppComponents.components, ...fromAppContainers.containers],
-  exports: [...fromAppComponents.components, ...fromAppContainers.containers],
+  declarations: [
+    ...fromAppComponents.components,
+    ...fromAppContainers.containers,
+    ...fromAppDirectives.directives
+  ],
+  exports: [
+    ...fromAppComponents.components,
+    ...fromAppContainers.containers,
+    ...fromAppDirectives.directives
+  ],
 })
 export class SharedModule {}

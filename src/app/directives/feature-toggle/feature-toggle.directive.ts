@@ -3,10 +3,10 @@ import {ConfigurationModel} from '../../models/configuration.model';
 import {AppConfigService} from '../../services/configuration.services';
 
 @Directive({
-  selector: '[featureToggle]'
+  selector: '[exuiFeatureToggle]'
 })
 export class FeatureToggleDirective implements OnInit {
-  @Input() featureToggle: string;
+  @Input() exuiFeatureToggle: string;
   config: ConfigurationModel;
 
   constructor(
@@ -25,9 +25,9 @@ export class FeatureToggleDirective implements OnInit {
   }
 
   isEnabled() {
-    if (!this.config[this.featureToggle]) {
+    if (!this.config[this.exuiFeatureToggle]) {
       return true;
     }
-    return this.config[this.featureToggle].isEnabled;
+    return this.config[this.exuiFeatureToggle].isEnabled;
   }
 }

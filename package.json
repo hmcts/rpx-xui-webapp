@@ -1,5 +1,5 @@
 {
-  "name": "xui",
+  "name": "rpx-exui",
   "version": "0.0.0",
   "engines": {
     "yarn": "^1.12.3",
@@ -9,7 +9,7 @@
     "nuke": "rm -rf dist",
     "build": "npm run build:ng && npm run build:node",
     "pre-push": "npm run lint && ng test --code-coverage && npm run build:prod",
-    "start": "node ./dist/xui/api/server.js",
+    "start": "node ./dist/rpx-exui/api/server.js",
     "build:node": "cd api && npm run build",
     "build:prod": "ng build --prod",
     "start:node": "cd api && npm run watch",

@@ -23,7 +23,11 @@ def component = "webapp"
 def channel   = '#xui-pipeline'
 
 withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox') {
-    enableSlackNotifications(channel)
+  enableSlackNotifications(channel)
+  enableDockerBuild()
+  installCharts()
 
-    after('checkout') {sh 'yarn cache clean'}
+  after('checkout') { sh 'yarn cache clean' }
+  after('build') { sh 'npm run build' }
+
 }

@@ -4,7 +4,7 @@ export const application = {
         token: '__auth__',
         userId: '__userid__',
     },
-    idam_client: 'juiwebapp',
+    idamClient: 'juiwebapp',
     juiJudgeRole: 'jui-judge',
     juiPanelMember: 'jui-panelmember',
     localEnv: 'local',

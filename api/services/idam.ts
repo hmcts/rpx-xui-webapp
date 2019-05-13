@@ -8,7 +8,7 @@ import { getHealth, getInfo, valueOrNull } from '../lib/util'
 const url = config.services.idamApi
 
 const idamSecret = process.env.IDAM_SECRET || 'AAAAAAAAAAAAAAAA'
-const idamClient = config.services.idamClient
+const idamClient = config.idamClient
 const idamProtocol = config.protocol
 const oauthCallbackUrl = config.oauthCallbackUrl
 

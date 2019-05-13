@@ -3,18 +3,15 @@ import * as fromCaseCreate from '../../store';
 import {Store} from '@ngrx/store';
 import * as fromCasesFeature from '../../../cases/store';
 import {CreateCaseActionsModel} from '../../models/create-case-actions.model';
+import { Jurisdiction, CaseType } from '@hmcts/ccd-case-ui-toolkit';
 /**
  * Entry component wrapper for CCD-CASE-CREATE
  * Smart Component
  * param TBC
  */
 @Component({
-      </ccd-search-filters>
-                          (onJurisdiction)="jurisdictionSelected($event)">
-                          (onReset)="reset()"
-                          (onApply)="applied($event)"
-                          [jurisdictions]="jurisdictions"
-      <ccd-search-filters [autoApply]="true"
+  selector: 'app-create-case',
+  template: `
     <exui-page-wrapper [title]="'Create Case'">
       <p>create-case container</p>
       <exui-ccd-connector *exuiFeatureToggle="'ccdCaseCreate'"
@@ -26,12 +23,19 @@ import {CreateCaseActionsModel} from '../../models/create-case-actions.model';
             [caseType]="caseTypeId"
             [event]="eventTriggerId">
           </ccd-case-create>
+          <ccd-search-filters
+            [autoApply]="true"
+            (onJurisdiction)="jurisdictionSelected($event)"
+            (onReset)="reset()"
+            (onApply)="applied($event)"
+            [jurisdictions]="jurisdictions">
+          </ccd-search-filters>
       </exui-ccd-connector>
     </exui-page-wrapper>
   `,
   encapsulation: ViewEncapsulation.None
 })
-export class CasesCreateComponent {
+export class CasesCreateComponent implements OnInit {
   // TODO move this to store or better place
   jurisdictionId = 'TEST';
   caseTypeId = 'TestAddressBookCase';
@@ -41,7 +45,8 @@ export class CasesCreateComponent {
   fromCasesFeature: any;
 
   constructor(private store: Store<fromCaseCreate.CasesState>) {}
-  //For Searchfilters only
+
+  // For Searchfilters only
   readonly CASE_TYPE_1: CaseType = {
     id: 'CT0',
     name: 'Case type 0',
@@ -81,6 +86,7 @@ export class CasesCreateComponent {
     description: '',
     caseTypes: [this.CASE_TYPE_3]
   };
+
   jurisdictions: Jurisdiction[];
 
   ngOnInit(): void {
@@ -94,6 +100,18 @@ export class CasesCreateComponent {
       {type: 'submitted', action: 'ApplyChange'}
     ];
 
+  }
+
+  applied(selected) {
+    console.log('selected:', selected);
+  }
+
+  reset() {
+    console.log('reset');
+  }
+
+  jurisdictionSelected(jurisdiction) {
+    console.log('selected jurisdiction:', jurisdiction);
   }
 
   chooseEvent() {

@@ -5,12 +5,12 @@ import { isReqResSet, request } from '../lib/middleware/responseRequest'
 
 import { getHealth, getInfo, valueOrNull } from '../lib/util'
 
-const url = config.services.idamaApi
+const url = config.services.idamApi
 
 const idamSecret = process.env.IDAM_SECRET || 'AAAAAAAAAAAAAAAA'
 const idamClient = config.services.idamClient
 const idamProtocol = config.protocol
-const oauthCallbackUrl = config.services.oauthCallbackUrl
+const oauthCallbackUrl = config.oauthCallbackUrl
 
 export async function getDetails(token: string = null) {
     // have to pass options in at first login as headers are yet to be attached.

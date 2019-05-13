@@ -24,7 +24,7 @@ export const application = {
     },
     maxCCDRetries: 3,
     microservice: 'jui_webapp',
-    oauth_callback_url: 'oauth2/callback',
+    oauthCallbackUrl: 'oauth2/callback',
     platformCookie: 'platform',
     protocol: 'https',
 }

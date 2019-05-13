@@ -15,7 +15,6 @@ export default {
         emNpaApi: 'https://em-npa-aat.service.core-compute-aat.internal',
         idamApi: 'https://idam-api.aat.platform.hmcts.net',
         idamWeb: 'https://idam-web-public.aat.platform.hmcts.net',
-
         s2s:
             'https://rpe-service-auth-provider-aat.service.core-compute-aat.internal',
 

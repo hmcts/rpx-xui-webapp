@@ -1,8 +1,9 @@
 import * as express from 'express'
+import { EnhancedRequest } from './models'
 
 let request = null
 
-export function errorStack(req: express.Request, res: express.Response, next: express.next) {
+export function errorStack(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
     request = req
 
     if (req.session) {

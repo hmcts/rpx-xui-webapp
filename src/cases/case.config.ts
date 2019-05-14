@@ -100,7 +100,7 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.remote_print_service_url;
   }
 
-  public getPaginationPageSize(): number {
-    return this.config.pagination_page_size;
-  }
+  // public getPaginationPageSize(): number {
+  //   return this.config.pagination_page_size;
+  // }
 }

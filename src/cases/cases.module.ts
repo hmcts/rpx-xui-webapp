@@ -13,7 +13,7 @@ import {
 
 import { casesRouting } from './case-feature.routes';
 import {StoreModule} from '@ngrx/store';
-import {reducer} from './store';
+import {reducers} from './store';
 import {SharedModule} from '../app/shared/shared.module';
 import {HttpModule} from '@angular/http';
 import {MatDialogModule} from '@angular/material';
@@ -25,7 +25,7 @@ import {CdkTableModule} from '@angular/cdk/table';
     CommonModule,
     CaseUIToolkitModule,
     HttpClientModule,
-    StoreModule.forFeature('cases', reducer),
+    StoreModule.forFeature('cases', reducers),
     casesRouting,
     SharedModule,
     SearchFiltersModule,

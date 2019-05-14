@@ -1,11 +1,11 @@
 import {Action} from '@ngrx/store';
 
-export const JURISTDICTION_SELECTED = '[CreateSearch] Jurisdiction Selected';
+export const JURISDICTION_SELECTED = '[CreateSearch] Jurisdiction Selected';
 export const APPLIED = '[CreateSearch] Applied';
 export const RESET = '[CreateSearch] Reset';
 
 export class JurisdictionSelected implements Action {
-  readonly type = JURISTDICTION_SELECTED;
+  readonly type = JURISDICTION_SELECTED;
 }
 
 export class Applied implements Action {

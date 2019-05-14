@@ -13,14 +13,13 @@ export const initialStateSearch: SearchState = {
   loading: false,
 };
 
-export function c(
+export function reducer(
   state = initialStateSearch,
   action: fromCases.CaseSearchAction
 ): SearchState {
   switch (action.type) {
 
-    case fromCases.JURISTDICTION_SELECTED: {
-      console.log('JURISTDICTION_SELECTED');
+    case fromCases.JURISDICTION_SELECTED: {
       return {
         ...state,
         loading: true,
@@ -28,7 +27,6 @@ export function c(
     }
 
     case fromCases.APPLIED: {
-      console.log('APPLIED');
       return {
         ...state,
         loading: true,
@@ -36,7 +34,6 @@ export function c(
     }
 
     case fromCases.RESET: {
-      console.log('RESET');
       return {
         ...state,
         loading: true,

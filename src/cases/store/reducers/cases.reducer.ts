@@ -2,13 +2,13 @@ import * as fromCases from '../actions/create-cases.action';
 
 // todo this is just a place holder
 export interface CasesState {
-  someState: any;
+  caseState: any;
   loading: boolean;
   loaded: boolean;
 }
 
 export const initialState: CasesState = {
-  someState: {},
+  caseState: {},
   loaded: false,
   loading: false,
 };

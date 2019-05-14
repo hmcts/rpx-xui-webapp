@@ -7,7 +7,7 @@ describe('Case Search Actions', () => {
         const payload = {};
         const action = new fromSearchCases.JurisdictionSelected();
         expect({ ...action }).toEqual({
-          type: fromSearchCases.JURISTDICTION_SELECTED
+          type: fromSearchCases.JURISDICTION_SELECTED
         });
       });
     });

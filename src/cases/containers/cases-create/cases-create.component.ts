@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import * as fromCaseCreate from '../../store';
 import {Store} from '@ngrx/store';
-import * as fromCasesFeature from '../../../cases/store';
+import * as fromCasesFeature from '../../../cases/store/reducers';
 import {ActionBindingModel} from '../../models/create-case-actions.model';
 import {mocked} from '../../models/search-filter-dummy-data-to-delete'
 import {JurisdictionSelected} from '../../store/actions/case-search.action';
@@ -50,7 +50,7 @@ export class CasesCreateComponent implements OnInit {
   fromCasesFeature: any;
   jurisdictions: Jurisdiction[];
 
-  constructor(private store: Store<fromCaseCreate.CasesState>) {}
+  constructor(private store: Store<fromCaseCreate.State>) {}
 
   ngOnInit(): void {
     this.fromCasesFeature = fromCasesFeature;

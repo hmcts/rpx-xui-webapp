@@ -8,7 +8,7 @@ import { CasesCreateComponent } from './containers/cases-create/cases-create.com
 import {
   CaseUIToolkitModule, DraftService, AlertService, HttpService, AuthService as CCDAuthService, CasesService,
   HttpErrorService, AbstractAppConfig, CaseEditWizardGuard, RouterHelperService,
-  DocumentManagementService, PageValidationService, PlaceholderService, RequestOptionsBuilder
+  DocumentManagementService, PageValidationService, PlaceholderService, RequestOptionsBuilder, SearchFiltersModule
 } from '@hmcts/ccd-case-ui-toolkit';
 
 import { casesRouting } from './case-feature.routes';
@@ -28,6 +28,7 @@ import {CdkTableModule} from '@angular/cdk/table';
     StoreModule.forFeature('cases', reducer),
     casesRouting,
     SharedModule,
+    SearchFiltersModule,
     HttpModule
   ],
   declarations: [CasesCreateComponent],

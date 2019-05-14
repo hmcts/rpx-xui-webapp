@@ -21,7 +21,7 @@
     "test": "npm run test:ng && npm run test:node",
     "lint:node": "cd api && npm run lint",
     "test:node": "cd api && npm run test",
-    "test:ng": "ng test",
+    "test:ng": "ng test --watch=false --browsers=ChromeHeadless",
     "lint:ng": "ng lint",
     "e2e": "ng e2e"
   },

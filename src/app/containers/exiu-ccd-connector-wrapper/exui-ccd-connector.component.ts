@@ -30,9 +30,10 @@ export class ExuiCcdConnectorComponent implements AfterContentInit, OnDestroy {
 
   ngAfterContentInit() {
     if (this.ccdComponent) {
+      console.log(this.ccdComponent)
       this.eventsBindings.forEach((event) => {
         this.subscriptions[event.type] =
-          this.ccdComponent[event.type].subscribe((obj) => this.dispatcherContainer[event.type](obj));
+          this.ccdComponent[event.type].subscribe((obj = {}) => this.dispatcherContainer[event.type](obj));
       });
       this.createDispatchers();
     }

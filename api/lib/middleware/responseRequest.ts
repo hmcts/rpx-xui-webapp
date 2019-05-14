@@ -1,13 +1,14 @@
-import { request, response } from 'express'
+import { Request, Response } from 'express'
 import { generate } from 'shortid'
 import { config } from '../../config'
+import { EnhancedRequest } from '../models'
 
 const sessionId = config.cookies.sessionId
 
 let res = null
 let req = null
 
-export default function setReqRes(expressReq: request, expressRes: response, next) {
+export default function setReqRes(expressReq: Request, expressRes: Response, next) {
     res = expressRes
     req = expressReq
 
@@ -17,11 +18,11 @@ export default function setReqRes(expressReq: request, expressRes: response, nex
     next()
 }
 
-export function response(): response {
+export function response(): Response {
     return res
 }
 
-export function request(): request {
+export function request(): EnhancedRequest {
     return req
 }
 

@@ -1,5 +1,4 @@
 import * as express from 'express'
-import * as session from 'express-session'
 import * as log4js from 'log4js'
 
 export interface JurisdictionObject {
@@ -26,10 +25,10 @@ export interface EnhancedRequest extends express.Request {
         userId: string
         expires: number
     }
-    body?
-    headers?
+    body,
+    headers
     session?
-    url?: string
+    url: string
 }
 
 export interface Token {

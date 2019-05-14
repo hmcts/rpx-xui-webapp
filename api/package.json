@@ -6,6 +6,7 @@
         "ng": "ng",
         "build": "tsc",
         "coverage": "npx nyc mocha",
+        "lint": "npx tslint --project .",
         "watch": "nodemon --watch '**/*.ts' --exec 'ts-node' local.ts",
         "test": "mocha || true",
         "test:watch": "mocha --watch --recursive --watch-extensions ts",

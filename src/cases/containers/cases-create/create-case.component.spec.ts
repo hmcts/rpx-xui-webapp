@@ -3,7 +3,7 @@ import {CasesCreateComponent} from './cases-create.component';
 import {
   CaseUIToolkitModule, DraftService, AlertService, HttpService, AuthService as CCDAuthService, CasesService,
   HttpErrorService, AbstractAppConfig, CaseEditWizardGuard, RouterHelperService,
-  DocumentManagementService, PageValidationService, PlaceholderService
+  DocumentManagementService, PageValidationService, PlaceholderService, SearchService
 } from '@hmcts/ccd-case-ui-toolkit';
 import {AppConfig} from '../../case.config';
 import {ScrollToService} from '@nicky-lenaers/ngx-scroll-to';
@@ -47,6 +47,12 @@ describe('CasesCreateComponent', () => {
         DocumentManagementService,
         AppConfig,
         AppConfigService,
+        {
+          provide: SearchService,
+          useValue: {
+            requestOptionsBuilder: RequestOptionsBuilder
+          }
+        },
         {
           provide: AbstractAppConfig,
           useExisting: AppConfig

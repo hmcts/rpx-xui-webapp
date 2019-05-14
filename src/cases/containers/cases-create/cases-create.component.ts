@@ -2,8 +2,10 @@ import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import * as fromCaseCreate from '../../store';
 import {Store} from '@ngrx/store';
 import * as fromCasesFeature from '../../../cases/store';
-import {CreateCaseActionsModel} from '../../models/create-case-actions.model';
-import { Jurisdiction, CaseType } from '@hmcts/ccd-case-ui-toolkit';
+import {ActionBindingModel} from '../../models/create-case-actions.model';
+import {mocked} from '../../models/search-filter-dummy-data-to-delete'
+import {JurisdictionSelected} from '../../store/actions/case-search.action';
+import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
 /**
  * Entry component wrapper for CCD-CASE-CREATE
  * Smart Component
@@ -26,14 +28,11 @@ import { Jurisdiction, CaseType } from '@hmcts/ccd-case-ui-toolkit';
       </exui-ccd-connector>
       <p>search-filter container</p>
       <exui-ccd-connector
-        [eventsBindings]="caseCreateEventsBindings"
+        [eventsBindings]="caseSearchEventsBindings"
         [store]="store"
         [fromFeatureStore]="fromCasesFeature">
-        <ccd-search-filters
+        <ccd-search-filters #ccdComponent
           [autoApply]="true"
-          (onJurisdiction)="jurisdictionSelected($event)"
-          (onReset)="reset()"
-          (onApply)="applied($event)"
           [jurisdictions]="jurisdictions">
         </ccd-search-filters>
       </exui-ccd-connector>
@@ -46,58 +45,16 @@ export class CasesCreateComponent implements OnInit {
   jurisdictionId = 'TEST';
   caseTypeId = 'TestAddressBookCase';
   eventTriggerId = 'createCase';
-  caseCreateEventsBindings: CreateCaseActionsModel[];
-
+  caseCreateEventsBindings: ActionBindingModel[];
+  caseSearchEventsBindings: ActionBindingModel[];
   fromCasesFeature: any;
+  jurisdictions: Jurisdiction[];
 
   constructor(private store: Store<fromCaseCreate.CasesState>) {}
 
-  // For Searchfilters only
-  readonly CASE_TYPE_1: CaseType = {
-    id: 'CT0',
-    name: 'Case type 0',
-    description: '',
-    states: [],
-    events: [],
-    case_fields: [],
-    jurisdiction: null
-  };
-  readonly CASE_TYPE_2: CaseType = {
-    id: 'CT2',
-    name: 'Case type 2',
-    description: '',
-    states: [],
-    events: [],
-    case_fields: [],
-    jurisdiction: null
-  };
-  readonly CASE_TYPE_3: CaseType = {
-    name: 'Case type 3',
-    id: 'CT3',
-    description: '',
-    states: [],
-    events: [],
-    case_fields: [],
-    jurisdiction: null
-  };
-  readonly JURISDICTION_1: Jurisdiction = {
-    id: 'J1',
-    name: 'Jurisdiction 1',
-    description: '',
-    caseTypes: [this.CASE_TYPE_1, this.CASE_TYPE_2]
-  };
-  readonly JURISDICTION_2: Jurisdiction = {
-    id: 'J2',
-    name: 'Jurisdiction 2',
-    description: '',
-    caseTypes: [this.CASE_TYPE_3]
-  };
-
-  jurisdictions: Jurisdiction[];
-
   ngOnInit(): void {
     this.fromCasesFeature = fromCasesFeature;
-    this.jurisdictions = [ this.JURISDICTION_1, this.JURISDICTION_2 ];
+    this.jurisdictions = [ mocked.juristdiction1, mocked.juristdiction2 ];
 
     /**
      * Mapping CCD components eventsBindings to ExUI Actions
@@ -107,18 +64,12 @@ export class CasesCreateComponent implements OnInit {
       {type: 'submitted', action: 'ApplyChange'}
     ];
 
-  }
+    this.caseSearchEventsBindings = [
+      {type: 'onJurisdiction', action: 'JurisdictionSelected'},
+      {type: 'onApply', action: 'Applied'},
+      {type: 'onReset', action: 'Reset'}
+    ];
 
-  applied(selected) {
-    console.log('selected:', selected);
-  }
-
-  reset() {
-    console.log('reset');
-  }
-
-  jurisdictionSelected(jurisdiction) {
-    console.log('selected jurisdiction:', jurisdiction);
   }
 
 }

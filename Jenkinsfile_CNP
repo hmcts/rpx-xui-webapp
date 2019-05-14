@@ -17,13 +17,12 @@ def type      = "nodejs"
 def product   = "xui"
 def component = "webapp"
 def channel   = '#xui-pipeline'
-def vault     = 'rpx'
 
 withPipeline(type, product, component) {
     enableSlackNotifications(channel)
-    setVaultName(vault)
     enableDockerBuild()
     installCharts()
 
-    after('checkout') {sh 'yarn cache clean'}
+  after('checkout') { sh 'yarn cache clean' }
+  after('build') { sh 'npm run build' }
 }

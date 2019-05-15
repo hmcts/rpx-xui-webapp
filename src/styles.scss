@@ -1,0 +1,15 @@
+/* You can add global styles to this file, and also import other style files */
+@import '~@hmcts/ccd-case-ui-toolkit/dist/cut-styles/components/typography';
+@import 'shims';
+@import 'conditionals';
+@import 'measurements';
+
+$black: #323232;
+
+$path: "/assets/";
+
+$fa-font-path: "/node_modules/font-awesome/fonts";
+$govuk-frontend-toolkit-image-path: "/assets";
+$govuk-template-image-path: "/assets";
+
+@import "govuk-elements";

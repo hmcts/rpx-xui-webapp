@@ -9,12 +9,15 @@ import {AppConfig} from '../../case.config';
 import {ScrollToService} from '@nicky-lenaers/ngx-scroll-to';
 import {RouterTestingModule} from '@angular/router/testing';
 import {HttpClientModule} from '@angular/common/http';
-import {ExuiCcdConnectorComponent} from '../../../app/containers';
-import {ExuiPageWrapperComponent} from '../../../app/components';
 import {StoreModule} from '@ngrx/store';
 import {HttpModule} from '@angular/http';
+import {SharedModule} from '../../../app/shared/shared.module';
+import {AppConfigService} from '../../../app/services/configuration.services';
 
-
+class MockSortService {
+  features = {};
+  getFeatureToggle() {}
+}
 describe('CasesCreateComponent', () => {
   let component: CasesCreateComponent;
   let fixture: ComponentFixture<CasesCreateComponent>;
@@ -26,9 +29,10 @@ describe('CasesCreateComponent', () => {
         CaseUIToolkitModule,
         HttpClientModule,
         StoreModule.forRoot({}),
-        HttpModule
+        HttpModule,
+        SharedModule,
       ],
-      declarations: [ CasesCreateComponent, ExuiCcdConnectorComponent, ExuiPageWrapperComponent ],
+      declarations: [ CasesCreateComponent ],
       providers: [
         PlaceholderService,
         CasesService,
@@ -42,9 +46,14 @@ describe('CasesCreateComponent', () => {
         RouterHelperService,
         DocumentManagementService,
         AppConfig,
+        AppConfigService,
         {
           provide: AbstractAppConfig,
           useExisting: AppConfig
+        },
+        {
+          provide: AppConfigService,
+          useClass: MockSortService
         },
         ScrollToService
       ]
@@ -56,8 +65,8 @@ describe('CasesCreateComponent', () => {
     fixture = TestBed.createComponent(CasesCreateComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  });
 
+  });
   it('should create', () => {
     expect(component).toBeTruthy();
   });

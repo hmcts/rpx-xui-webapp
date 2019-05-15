@@ -13,7 +13,6 @@ import {CreateCaseActionsModel} from '../../models/create-case-actions.model';
   template: `
     <exui-page-wrapper [title]="'Create Case'">
       <p>create-case container</p>
-      
       <exui-ccd-connector *exuiFeatureToggle="'ccdCaseCreate'"
         [eventsBindings]="caseCreateEventsBindings"
         [store]="store"

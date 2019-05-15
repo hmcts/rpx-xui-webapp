@@ -16,7 +16,7 @@ export class FeatureToggleDirective implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.config = this.appConfigService.getFeatureToggle();
+    this.config = this.appConfigService.getFeatureToggle() || {};
     if (this.isEnabled()) {
       this.viewContainer.createEmbeddedView(this.templateRef);
     } else {

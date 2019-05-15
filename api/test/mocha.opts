@@ -1,0 +1,6 @@
+--require ts-node/register
+--require source-map-support/register
+--full-trace
+--bail
+--exit
+**/*.spec.ts

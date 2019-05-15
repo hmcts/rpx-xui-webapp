@@ -1,9 +1,9 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import * as fromCaseCreate from '../../store';
 import {Store} from '@ngrx/store';
-import * as fromCasesFeature from '../../../cases/store/reducers';
+import * as fromCasesFeature from '../../../cases/store';
 import {ActionBindingModel} from '../../models/create-case-actions.model';
-import {mocked} from '../../models/search-filter-dummy-data-to-delete'
+import {mocked} from '../../models/search-filter-dummy-data-to-delete';
 import {JurisdictionSelected} from '../../store/actions/case-search.action';
 import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
 /**
@@ -12,7 +12,7 @@ import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
  * param TBC
  */
 @Component({
-  selector: 'app-create-case',
+  selector: 'exui-create-case',
   template: `
     <exui-page-wrapper [title]="'Create Case'">
       <p>create-case container</p>

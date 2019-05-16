@@ -47,6 +47,8 @@ export class ExuiCcdConnectorComponent implements AfterContentInit, OnDestroy {
         this.store.dispatch(new this.fromFeatureStore[event.action](obj));
       };
     });
+
+    console.log(this.dispatcherContainer);
   }
 
   ngOnDestroy(): void {

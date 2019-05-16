@@ -24,8 +24,6 @@ import {CdkTableModule} from '@angular/cdk/table';
   imports: [
     CommonModule,
     CaseUIToolkitModule,
-    MatDialogModule,  // TODO check with ccd why do we need material
-    CdkTableModule,
     HttpClientModule,
     StoreModule.forFeature('cases', reducer),
     casesRouting,

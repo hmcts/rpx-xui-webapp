@@ -21,8 +21,8 @@ const CASE_TYPE_2: CaseType = {
 };
 
 const CASE_TYPE_3: CaseType = {
-  name: 'Case type 3',
-  id: 'CT3',
+  name: 'Benefit',
+  id: 'Benefit',
   description: '',
   states: [],
   events: [],
@@ -37,9 +37,9 @@ const JURISDICTION_1: Jurisdiction = {
   caseTypes: [CASE_TYPE_1, CASE_TYPE_2]
 };
 
-const JURISDICTION_2: Jurisdiction = {
+const SSCS: Jurisdiction = {
   id: 'J2',
-  name: 'Jurisdiction 2',
+  name: 'SSCS',
   description: '',
   caseTypes: [CASE_TYPE_3]
 };
@@ -47,5 +47,5 @@ const JURISDICTION_2: Jurisdiction = {
 
 export const mocked = {
   juristdiction1: JURISDICTION_1,
-  juristdiction2: JURISDICTION_2
+  juristdiction2: SSCS
 };

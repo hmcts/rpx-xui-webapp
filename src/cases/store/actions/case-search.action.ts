@@ -10,6 +10,7 @@ export class JurisdictionSelected implements Action {
 
 export class Applied implements Action {
   readonly type = APPLIED;
+  constructor(public payload: any) {}
 }
 
 export class Reset implements Action {

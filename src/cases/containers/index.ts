@@ -1,11 +1,11 @@
 import {CaseListComponent} from './case-list/case-list.component';
-import {CaseCreateComponent} from './case-create/case-create.component';
 import {CaseFilterComponent} from './case-filter/case-filter.component';
 import {CaseSearchComponent} from './case-search/case-search.component';
+import {CasesCreateComponent} from './case-create/case-create.component';
 
 export const containers: any[] = [
   CaseListComponent,
-  CaseCreateComponent,
+  CasesCreateComponent,
   CaseFilterComponent,
   CaseSearchComponent
 ];

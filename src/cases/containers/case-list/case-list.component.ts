@@ -1,8 +1,7 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import * as fromCaseCreate from '../../store';
-import {Store} from '@ngrx/store';
+
 /**
- * Entry component wrapper for Case Search
+ * Entry component wrapper for Case List
  * Smart Component
  * param TBC
  */
@@ -17,7 +16,7 @@ import {Store} from '@ngrx/store';
   encapsulation: ViewEncapsulation.None
 })
 export class CaseListComponent implements OnInit {
-  constructor(private store: Store<fromCaseCreate.CasesState>) {}
+  constructor() {}
 
   ngOnInit(): void {
 

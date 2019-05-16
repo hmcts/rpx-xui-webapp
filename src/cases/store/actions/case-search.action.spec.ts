@@ -14,9 +14,11 @@ describe('Case Search Actions', () => {
 
     describe('Applied', () => {
       it('should create an action', () => {
-        const action = new fromSearchCases.Applied();
+        const payload = {};
+        const action = new fromSearchCases.Applied({});
         expect({ ...action }).toEqual({
-          type: fromSearchCases.APPLIED
+          type: fromSearchCases.APPLIED,
+          payload
         });
       });
     });

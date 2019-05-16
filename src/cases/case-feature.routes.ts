@@ -2,14 +2,25 @@
 import { RouterModule, Routes } from '@angular/router';
 import { ModuleWithProviders } from '@angular/core';
 import { editorRouting } from '@hmcts/ccd-case-ui-toolkit';
-import { CasesCreateComponent } from './containers/cases-create/cases-create.component';
+import { CaseListComponent } from './containers/case-list/case-list.component';
+import { CaseFilterComponent } from './containers/case-filter/case-filter.component';
+import {CaseCreateComponent} from './containers';
 
 export const ROUTES: Routes = [
     {
-        path: '',
-        component: CasesCreateComponent,
-        children: editorRouting
+      path: '',
+      component: CaseListComponent,
     },
+    {
+      path: 'case-filter',
+      component: CaseFilterComponent,
+    },
+    {
+      path: 'case-create',
+      component: CaseCreateComponent,
+      children: editorRouting
+    }
+
 ];
 
 export const casesRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);

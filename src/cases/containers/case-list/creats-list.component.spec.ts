@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import {CasesCreateComponent} from './cases-create.component';
+import {CaseListComponent} from './case-list.component';
 import {
   CaseUIToolkitModule, DraftService, AlertService, HttpService, AuthService as CCDAuthService, CasesService,
   HttpErrorService, AbstractAppConfig, CaseEditWizardGuard, RouterHelperService,
@@ -18,9 +18,9 @@ class MockSortService {
   features = {};
   getFeatureToggle() {}
 }
-describe('CasesCreateComponent', () => {
-  let component: CasesCreateComponent;
-  let fixture: ComponentFixture<CasesCreateComponent>;
+describe('CaseListComponent', () => {
+  let component: CaseListComponent;
+  let fixture: ComponentFixture<CaseListComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -33,7 +33,7 @@ describe('CasesCreateComponent', () => {
         SharedModule,
         SearchFiltersModule,
       ],
-      declarations: [ CasesCreateComponent ],
+      declarations: [ CaseListComponent ],
       providers: [
         PlaceholderService,
         CasesService,
@@ -70,7 +70,7 @@ describe('CasesCreateComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CasesCreateComponent);
+    fixture = TestBed.createComponent(CaseListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
 

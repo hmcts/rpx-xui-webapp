@@ -1,12 +1,8 @@
 {
   "features": {
-    "featureOne": {
+    "ccdCaseCreate": {
       "isEnabled": true,
-      "label": "CaseSearchComponent"
-    },
-    "featureTwo": {
-      "isEnabled": true,
-      "label": "CaseSearchComponent"
+      "label": "CCDCaseCreate"
     }
   }
 }

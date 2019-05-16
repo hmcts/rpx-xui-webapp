@@ -13,6 +13,7 @@
     "start:node": "cd api && npm run watch",
     "lint:node": "cd api && npm run lint",
     "test:node": "cd api && npm run test",
+    "coverage:node": "cd api && npm run coverage",
     "ng": "ng",
     "start:ng": "ng serve --port 3000 --host 0.0.0.0 --proxy-config proxy.config.json",
     "build:ng": "ng build",

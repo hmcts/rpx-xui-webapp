@@ -1,25 +1,21 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import * as fromCaseCreate from '../../store';
 import {Store} from '@ngrx/store';
+
 /**
- * Entry component wrapper for Case Search
+ * Entry component wrapper for CCD-CASE-CREATE
  * Smart Component
  * param TBC
  */
 @Component({
-  selector: 'exui-create-case',
-  template: `
-    <h1>CASE LIST COMPONENT</h1>
-    <a routerLink="/cases/case-filter" class="button">Create case</a>
-    <a routerLink="/cases/case-search" class="button">Search</a>
-  `,
+  selector: 'exui-search-case',
+  template: `<h1>Case Search</h1>`,
   encapsulation: ViewEncapsulation.None
 })
-export class CaseListComponent implements OnInit {
+export class CaseSearchComponent implements OnInit {
   constructor(private store: Store<fromCaseCreate.CasesState>) {}
 
   ngOnInit(): void {
-
   }
 
 }

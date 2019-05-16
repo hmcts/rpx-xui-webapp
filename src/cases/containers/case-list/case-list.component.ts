@@ -9,9 +9,10 @@ import {Store} from '@ngrx/store';
 @Component({
   selector: 'exui-create-case',
   template: `
-    <h1>CASE LIST COMPONENT</h1>
+    <exui-page-wrapper [title]="'Case List'">
     <a routerLink="/cases/case-filter" class="button">Create case</a>
     <a routerLink="/cases/case-search" class="button">Search</a>
+    </exui-page-wrapper>
   `,
   encapsulation: ViewEncapsulation.None
 })

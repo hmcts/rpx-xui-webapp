@@ -9,8 +9,8 @@ import {Store} from '@ngrx/store';
  */
 @Component({
   selector: 'exui-filter-case',
-  template: `<h1>FILTER CASE</h1>
-  <a routerLink="/cases/case-create" class="button">Create case</a>`,
+  template: `<exui-page-wrapper [title]="'Case Filter'">
+    <a routerLink="/cases/case-create" class="button">Create case</a></exui-page-wrapper>`,
   encapsulation: ViewEncapsulation.None
 })
 export class CaseFilterComponent implements OnInit {

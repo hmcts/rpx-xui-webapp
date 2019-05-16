@@ -9,7 +9,7 @@ import {Store} from '@ngrx/store';
  */
 @Component({
   selector: 'exui-search-case',
-  template: `<h1>Case Search</h1>`,
+  template: `<exui-page-wrapper [title]="'Search'"></exui-page-wrapper>`,
   encapsulation: ViewEncapsulation.None
 })
 export class CaseSearchComponent implements OnInit {

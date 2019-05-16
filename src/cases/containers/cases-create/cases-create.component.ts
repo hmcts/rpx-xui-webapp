@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import * as fromCaseCreate from '../../store';
 import {Store} from '@ngrx/store';
 import * as fromCasesFeature from '../../../cases/store';
@@ -24,7 +24,8 @@ import {CreateCaseActionsModel} from '../../models/create-case-actions.model';
           </ccd-case-create>
       </exui-ccd-connector>
     </exui-page-wrapper>
-  `
+  `,
+  encapsulation: ViewEncapsulation.None
 })
 export class CasesCreateComponent implements OnInit {
   jurisdictionId = 'TEST';

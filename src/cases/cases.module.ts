@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { AppConfig } from './case.config';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { HttpClientModule } from '@angular/common/http';
-import { CasesCreateComponent } from './containers/cases-create/cases-create.component';
 
 import {
   CaseUIToolkitModule, DraftService, AlertService, HttpService, AuthService as CCDAuthService, CasesService,
@@ -16,9 +15,9 @@ import {StoreModule} from '@ngrx/store';
 import {reducers} from './store';
 import {SharedModule} from '../app/shared/shared.module';
 import {HttpModule} from '@angular/http';
-import {MatDialogModule} from '@angular/material';
-import {CdkTableModule} from '@angular/cdk/table';
 
+// from containers
+import * as fromContainers from './containers';
 
 @NgModule({
   imports: [
@@ -31,7 +30,7 @@ import {CdkTableModule} from '@angular/cdk/table';
     SearchFiltersModule,
     HttpModule
   ],
-  declarations: [CasesCreateComponent],
+  declarations: [...fromContainers.containers],
   providers: [
     PlaceholderService,
     CasesService,

@@ -3,9 +3,6 @@ import * as fromCaseCreate from '../../store';
 import {Store} from '@ngrx/store';
 import * as fromCasesFeature from '../../../cases/store';
 import {ActionBindingModel} from '../../models/create-case-actions.model';
-import {mocked} from '../../models/search-filter-dummy-data-to-delete';
-import {JurisdictionSelected} from '../../store/actions/case-search.action';
-import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
 /**
  * Entry component wrapper for CCD-CASE-CREATE
  * Smart Component
@@ -26,16 +23,6 @@ import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
             [event]="eventTriggerId">
           </ccd-case-create>
       </exui-ccd-connector>
-      <p>search-filter container</p>
-      <exui-ccd-connector
-        [eventsBindings]="caseSearchEventsBindings"
-        [store]="store"
-        [fromFeatureStore]="fromCasesFeature">
-        <ccd-search-filters #ccdComponent
-          [autoApply]="true"
-          [jurisdictions]="jurisdictions">
-        </ccd-search-filters>
-      </exui-ccd-connector>
     </exui-page-wrapper>
   `,
   encapsulation: ViewEncapsulation.None
@@ -46,15 +33,12 @@ export class CasesCreateComponent implements OnInit {
   caseTypeId = 'TestAddressBookCase';
   eventTriggerId = 'createCase';
   caseCreateEventsBindings: ActionBindingModel[];
-  caseSearchEventsBindings: ActionBindingModel[];
   fromCasesFeature: any;
-  jurisdictions: Jurisdiction[];
 
   constructor(private store: Store<fromCaseCreate.State>) {}
 
   ngOnInit(): void {
     this.fromCasesFeature = fromCasesFeature;
-    this.jurisdictions = [ mocked.juristdiction1, mocked.juristdiction2 ];
 
     /**
      * Mapping CCD components eventsBindings to ExUI Actions
@@ -62,12 +46,6 @@ export class CasesCreateComponent implements OnInit {
     this.caseCreateEventsBindings = [
       {type: 'cancelled', action: 'ResetChange'},
       {type: 'submitted', action: 'ApplyChange'}
-    ];
-
-    this.caseSearchEventsBindings = [
-      {type: 'onJurisdiction', action: 'JurisdictionSelected'},
-      {type: 'onApply', action: 'Applied'},
-      {type: 'onReset', action: 'Reset'}
     ];
 
   }

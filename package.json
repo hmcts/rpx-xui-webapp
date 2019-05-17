@@ -37,7 +37,8 @@
     "test:crossbrowser": "protractor ./test/e2e/config/crossbrowser.conf.js",
     "test:fullfunctional": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/conf.js --local",
     "test:mutation": "echo 'not implemented'",
-    "test:apiGateway": "echo 'not implemented'"
+    "test:apiGateway": "echo 'not implemented'",
+    "sonar-scan": "node_modules/sonar-scanner/bin/sonar-scanner"
   },
   "private": true,
   "dependencies": {
@@ -125,6 +126,7 @@
     "sinon-express-mock": "^2.2.0",
     "ts-node": "~7.0.0",
     "tslint": "~5.11.0",
-    "typescript": "~3.2.2"
+    "typescript": "~3.2.2",
+    "sonar-scanner": "^3.1.0"
   }
 }

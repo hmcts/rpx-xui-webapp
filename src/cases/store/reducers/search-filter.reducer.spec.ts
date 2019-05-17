@@ -15,11 +15,11 @@ describe('SearchFilterReducer', () => {
   describe('APPLIED action', () => {
     it('should apply patload to store', () => {
       const { initialStateSearch } = fromCases;
-      const payload = {};
+      const payload = true;
       const action = new fromActions.Applied(payload);
       const state = fromCases.reducer(initialStateSearch, action);
-      expect(state.loading).toEqual(false);
-      expect(state.loaded).toEqual(false);
+      expect(state.searchFilterCriteria).toBe(true);
+      expect(state.loaded).toEqual(true);
     });
   });
 

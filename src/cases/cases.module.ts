@@ -19,6 +19,8 @@ import {HttpModule} from '@angular/http';
 
 // from containers
 import * as fromContainers from './containers';
+// from components
+import * as fromComponents from './components';
 
 @NgModule({
   imports: [
@@ -32,7 +34,7 @@ import * as fromContainers from './containers';
     SearchFiltersModule,
     HttpModule
   ],
-  declarations: [...fromContainers.containers],
+  declarations: [...fromContainers.containers, ...fromComponents.components],
   providers: [
     PlaceholderService,
     CasesService,

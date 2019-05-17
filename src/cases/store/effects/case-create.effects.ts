@@ -16,7 +16,7 @@ export class CaseCreateEffects {
     ofType(fromActions.APPLY_CHANGE),
     map(payload => {
       return new fromRoot.Go({
-        path: ['/']
+        path: ['/cases/case-confirmation']
       });
     })
   );

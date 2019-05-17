@@ -1,2 +1,2 @@
-export * from './create-cases.action';
+export * from './create-case.action';
 export * from './case-search.action';

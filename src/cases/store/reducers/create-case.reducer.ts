@@ -1,4 +1,4 @@
-import * as fromCases from '../actions/create-cases.action';
+import * as fromCases from '../actions/create-case.action';
 
 export interface CreatedCaseModel {
   caseId: string;

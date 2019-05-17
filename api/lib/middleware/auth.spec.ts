@@ -14,7 +14,7 @@ import * as idam from '../../services/idam'
 import * as auth from './auth'
 
 describe('auth', () => {
-    // commenting out as not clear if restricted roles apply to xui
+    //TODO commenting out as not clear if restricted roles apply to xui
 
     // describe('validRoles', () => {
     //     it('should return true if a give roles match jui pannel member or judge roles', () => {
@@ -88,7 +88,7 @@ describe('auth', () => {
             stub.restore()
         })
 
-        // commenting out as not clear if restricted roles apply to xui
+        //TODO commenting out as not clear if restricted roles apply to xui
 
         //     it('should log out users without correct roles', async () => {
         //         const req = mockReq({

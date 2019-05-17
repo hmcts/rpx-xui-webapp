@@ -1,4 +1,4 @@
-import * as fromCases from './cases.reducer';
+import * as fromCases from './create-case.reducer';
 import * as fromActions from '../actions/create-cases.action';
 
 describe('CasesReducer', () => {

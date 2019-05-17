@@ -9,9 +9,10 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/map';
 
-@Injectable({
-  providedIn: 'root'
-})
+//import {Store} from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
+
+@Injectable()
 export class AuthService {
   apiBaseUrl;
   httpClient;
@@ -40,15 +41,7 @@ export class AuthService {
     this.user = null;
   }
 
-  canActivate() {
-    console.log('reached can activate');
-    if (!this.isAuthenticated()) {
-      this.loginRedirect();
-      return false;
-    }
 
-    return true;
-  }
 
   generateLoginUrl() {
     const base = config.idam.idamLoginUrl;
@@ -98,12 +91,11 @@ export class AuthService {
     return notExpired;
   }
 
-  // isAuthenticated(): boolean {
-  //   // false for now
-  //   return false;
-  // }
+
 
   signOut() {
     window.location.href = '/api/logout';
   }
+
 }
+

@@ -22,7 +22,8 @@ export function reducer(
       const searchFilterCriteria = action.payload;
       return {
           ...state,
-          searchFilterCriteria
+          searchFilterCriteria,
+          loaded: true
       };
     }
   }

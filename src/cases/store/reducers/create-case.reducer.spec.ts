@@ -18,7 +18,7 @@ describe('CasesReducer', () => {
       const action = new fromActions.ResetChange();
       const state = fromCases.reducer(initialState, action);
 
-      expect(state.loading).toEqual(true);
+      expect(state.loading).toEqual(false);
       expect(state.loaded).toEqual(false);
     });
   });

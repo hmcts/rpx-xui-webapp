@@ -24,7 +24,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {StoreModule} from '@ngrx/store';
 import {HttpModule} from '@angular/http';
 import {SharedModule} from '../../../app/shared/shared.module';
-import {AppConfigService} from '../../../app/services/configuration.services';
+import {AppConfigService} from '../../../app/services/config/configuration.services';
 import {CasesCreateComponent} from './case-create.component';
 
 class MockSortService {

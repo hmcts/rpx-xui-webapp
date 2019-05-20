@@ -19,11 +19,29 @@ properties([
 def type      = "nodejs"
 def product   = "xui"
 def component = "webapp"
+def vault     = "rpa"
 def channel   = '#xui-pipeline'
+
+List<LinkedHashMap<String, Object>> secrets = [
+  secret('jui-s2s-token',                 'S2S_SECRET'),
+  secret('jui-oauth2-token',              'IDAM_SECRET'),
+  secret('AppInsightsInstrumentationKey', 'APPINSIGHTS_INSTRUMENTATIONKEY')
+]
+
+static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
+  [ $class: 'AzureKeyVaultSecret',
+    secretType: 'Secret',
+    name: secretName,
+    version: '',
+    envVariable: envVar
+  ]
+}
 
 withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox') {
   enableSlackNotifications(channel)
   enableDockerBuild()
+  loadVaultSecrets(secrets)
+  setVaultName(vault)
   installCharts()
 
   after('checkout') { sh 'yarn cache clean' }

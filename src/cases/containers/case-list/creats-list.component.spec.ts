@@ -1,23 +1,26 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import {CasesCreateComponent} from './cases-create.component';
+import {CaseListComponent} from './case-list.component';
 import {
   CaseUIToolkitModule, DraftService, AlertService, HttpService, AuthService as CCDAuthService, CasesService,
   HttpErrorService, AbstractAppConfig, CaseEditWizardGuard, RouterHelperService,
-  DocumentManagementService, PageValidationService, PlaceholderService
+  DocumentManagementService, PageValidationService, PlaceholderService, SearchService, RequestOptionsBuilder, SearchFiltersModule
 } from '@hmcts/ccd-case-ui-toolkit';
 import {AppConfig} from '../../case.config';
 import {ScrollToService} from '@nicky-lenaers/ngx-scroll-to';
 import {RouterTestingModule} from '@angular/router/testing';
 import {HttpClientModule} from '@angular/common/http';
-import {ExuiCcdConnectorComponent} from '../../../app/containers';
-import {ExuiPageWrapperComponent} from '../../../app/components';
 import {StoreModule} from '@ngrx/store';
 import {HttpModule} from '@angular/http';
+import {SharedModule} from '../../../app/shared/shared.module';
+import {AppConfigService} from '../../../app/services/configuration.services';
 
-
-describe('CasesCreateComponent', () => {
-  let component: CasesCreateComponent;
-  let fixture: ComponentFixture<CasesCreateComponent>;
+class MockSortService {
+  features = {};
+  getFeatureToggle() {}
+}
+describe('CaseListComponent', () => {
+  let component: CaseListComponent;
+  let fixture: ComponentFixture<CaseListComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -26,9 +29,11 @@ describe('CasesCreateComponent', () => {
         CaseUIToolkitModule,
         HttpClientModule,
         StoreModule.forRoot({}),
-        HttpModule
+        HttpModule,
+        SharedModule,
+        SearchFiltersModule,
       ],
-      declarations: [ CasesCreateComponent, ExuiCcdConnectorComponent, ExuiPageWrapperComponent ],
+      declarations: [ CaseListComponent ],
       providers: [
         PlaceholderService,
         CasesService,
@@ -42,9 +47,21 @@ describe('CasesCreateComponent', () => {
         RouterHelperService,
         DocumentManagementService,
         AppConfig,
+        AppConfigService,
+        RequestOptionsBuilder,
+        {
+          provide: SearchService,
+          useValue: {
+            requestOptionsBuilder: RequestOptionsBuilder
+          }
+        },
         {
           provide: AbstractAppConfig,
           useExisting: AppConfig
+        },
+        {
+          provide: AppConfigService,
+          useClass: MockSortService
         },
         ScrollToService
       ]
@@ -53,11 +70,11 @@ describe('CasesCreateComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CasesCreateComponent);
+    fixture = TestBed.createComponent(CaseListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  });
 
+  });
   it('should create', () => {
     expect(component).toBeTruthy();
   });

@@ -1,8 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import * as fromCaseCreate from '../../store';
 import {Store} from '@ngrx/store';
 import * as fromCasesFeature from '../../../cases/store';
-import {CreateCaseActionsModel} from '../../models/create-case-actions.model';
+import {ActionBindingModel} from '../../models/create-case-actions.model';
 /**
  * Entry component wrapper for CCD-CASE-CREATE
  * Smart Component
@@ -13,7 +13,7 @@ import {CreateCaseActionsModel} from '../../models/create-case-actions.model';
   template: `
     <exui-page-wrapper [title]="'Create Case'">
       <p>create-case container</p>
-      <exui-ccd-connector
+      <exui-ccd-connector *exuiFeatureToggle="'ccdCaseCreate'"
         [eventsBindings]="caseCreateEventsBindings"
         [store]="store"
         [fromFeatureStore]="fromCasesFeature">
@@ -24,17 +24,18 @@ import {CreateCaseActionsModel} from '../../models/create-case-actions.model';
           </ccd-case-create>
       </exui-ccd-connector>
     </exui-page-wrapper>
-  `
+  `,
+  encapsulation: ViewEncapsulation.None
 })
 export class CasesCreateComponent implements OnInit {
+  // TODO move this to store or better place
   jurisdictionId = 'TEST';
   caseTypeId = 'TestAddressBookCase';
   eventTriggerId = 'createCase';
-  caseCreateEventsBindings: CreateCaseActionsModel[];
-
+  caseCreateEventsBindings: ActionBindingModel[];
   fromCasesFeature: any;
 
-  constructor(private store: Store<fromCaseCreate.CasesState>) {}
+  constructor(private store: Store<fromCaseCreate.State>) {}
 
   ngOnInit(): void {
     this.fromCasesFeature = fromCasesFeature;

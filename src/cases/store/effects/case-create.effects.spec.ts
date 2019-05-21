@@ -28,12 +28,6 @@ describe('CaseCreate Effects', () => {
   let actions$: TestActions;
   let effects: fromEffects.CaseCreateEffects;
 
-  const toppings = [
-    { id: 1, name: 'onion' },
-    { id: 2, name: 'mushroom' },
-    { id: 3, name: 'basil' },
-  ];
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],

@@ -1,13 +1,13 @@
 import * as fromActions from '../actions/';
 import {ConfigurationModel} from '../../models/configuration.model';
 export interface AppConfigState {
-  config: ConfigurationModel;
+  config;
   loaded: boolean;
   loading: boolean;
 }
 
 export const initialState: AppConfigState = {
-  config: { features: {}},
+  config: {},
   loaded: false,
   loading: false
 };

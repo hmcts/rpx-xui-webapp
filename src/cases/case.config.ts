@@ -3,6 +3,7 @@ import {
   AbstractAppConfig,
   CaseEditorConfig
 } from '@hmcts/ccd-case-ui-toolkit';
+import {AppConfigService} from '../app/services/config/configuration.services';
 import { environment as mainConfig } from '../environments/environment';
 
 /**
@@ -14,9 +15,11 @@ import { environment as mainConfig } from '../environments/environment';
 @Injectable()
 export class AppConfig extends AbstractAppConfig {
   // TODO perhaps move the config to store or maybe make it part of assets/config.json
-  protected config: CaseEditorConfig = mainConfig.CaseEditorConfig;
-  constructor() {
+  // protected config: CaseEditorConfig = mainConfig.CaseEditorConfig;
+  protected config: CaseEditorConfig
+  constructor(private appConfigService: AppConfigService) {
     super();
+    this.config =  this.appConfigService.getEditorConfiguration();
   }
 
   public load(): Promise<void> {

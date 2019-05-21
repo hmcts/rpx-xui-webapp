@@ -1,5 +1,5 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
-import {AppConfigService} from '../services/configuration.services';
+import {AppConfigService} from '../services/config/configuration.services';
 
 /**
  * This Provider Module shares the instances of providers across the app (i.e. services)

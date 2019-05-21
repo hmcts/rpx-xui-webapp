@@ -12,12 +12,15 @@ import {
 
 import { casesRouting } from './case-feature.routes';
 import {StoreModule} from '@ngrx/store';
-import {reducers} from './store';
+import {EffectsModule} from '@ngrx/effects';
+import {reducers, effects} from './store';
 import {SharedModule} from '../app/shared/shared.module';
 import {HttpModule} from '@angular/http';
 
 // from containers
 import * as fromContainers from './containers';
+// from components
+import * as fromComponents from './components';
 
 @NgModule({
   imports: [
@@ -25,12 +28,13 @@ import * as fromContainers from './containers';
     CaseUIToolkitModule,
     HttpClientModule,
     StoreModule.forFeature('cases', reducers),
+    EffectsModule.forFeature(effects),
     casesRouting,
     SharedModule,
     SearchFiltersModule,
     HttpModule
   ],
-  declarations: [...fromContainers.containers],
+  declarations: [...fromContainers.containers, ...fromComponents.components],
   providers: [
     PlaceholderService,
     CasesService,

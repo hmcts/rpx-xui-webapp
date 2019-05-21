@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AppConfig } from '../app/services/ccd-config/case.config';
+import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { HttpClientModule } from '@angular/common/http';
 

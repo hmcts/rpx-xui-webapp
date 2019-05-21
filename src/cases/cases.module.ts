@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AppConfig } from './case.config';
+import { AppConfig } from '../app/services/ccd-config/case.config';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -21,6 +21,7 @@ import {HttpModule} from '@angular/http';
 import * as fromContainers from './containers';
 // from components
 import * as fromComponents from './components';
+import {ProvidersModule} from '../app/providers/providers.module';
 
 @NgModule({
   imports: [
@@ -32,7 +33,8 @@ import * as fromComponents from './components';
     casesRouting,
     SharedModule,
     SearchFiltersModule,
-    HttpModule
+    HttpModule,
+    ProvidersModule
   ],
   declarations: [...fromContainers.containers, ...fromComponents.components],
   providers: [
@@ -47,7 +49,6 @@ import * as fromComponents from './components';
     CaseEditWizardGuard,
     RouterHelperService,
     DocumentManagementService,
-    AppConfig,
     RequestOptionsBuilder,
     {
       provide: AbstractAppConfig,

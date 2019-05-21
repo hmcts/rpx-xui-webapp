@@ -3,7 +3,7 @@ import {
   AbstractAppConfig,
   CaseEditorConfig
 } from '@hmcts/ccd-case-ui-toolkit';
-import {AppConfigService} from '../app/services/config/configuration.services';
+import {AppConfigService} from '../config/configuration.services';
 
 
 /**

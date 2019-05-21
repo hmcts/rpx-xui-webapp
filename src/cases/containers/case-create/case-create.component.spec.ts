@@ -17,7 +17,7 @@ import {
   RequestOptionsBuilder,
   SearchFiltersModule,
 } from '@hmcts/ccd-case-ui-toolkit';
-import {AppConfig} from '../../case.config';
+import {AppConfig} from '../../../app/services/ccd-config/case.config';
 import {ScrollToService} from '@nicky-lenaers/ngx-scroll-to';
 import {RouterTestingModule} from '@angular/router/testing';
 import {HttpClientModule} from '@angular/common/http';
@@ -26,6 +26,7 @@ import {HttpModule} from '@angular/http';
 import {SharedModule} from '../../../app/shared/shared.module';
 import {AppConfigService} from '../../../app/services/config/configuration.services';
 import {CasesCreateComponent} from './case-create.component';
+import {ProvidersModule} from '../../../app/providers/providers.module';
 
 class MockSortService {
   features = {};
@@ -45,6 +46,7 @@ describe('CaseCaseComponent', () => {
         HttpModule,
         SharedModule,
         SearchFiltersModule,
+        ProvidersModule
       ],
       declarations: [ CasesCreateComponent ],
       providers: [
@@ -59,7 +61,6 @@ describe('CaseCaseComponent', () => {
         CaseEditWizardGuard,
         RouterHelperService,
         DocumentManagementService,
-        AppConfig,
         AppConfigService,
         RequestOptionsBuilder,
         {

@@ -1,9 +1,21 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import {CaseListComponent} from './case-list.component';
 import {
-  CaseUIToolkitModule, DraftService, AlertService, HttpService, AuthService as CCDAuthService, CasesService,
-  HttpErrorService, AbstractAppConfig, CaseEditWizardGuard, RouterHelperService,
-  DocumentManagementService, PageValidationService, PlaceholderService, SearchService, RequestOptionsBuilder, SearchFiltersModule
+  CaseUIToolkitModule,
+  DraftService,
+  AlertService,
+  HttpService,
+  AuthService as CCDAuthService,
+  CasesService,
+  HttpErrorService,
+  AbstractAppConfig,
+  CaseEditWizardGuard,
+  RouterHelperService,
+  DocumentManagementService,
+  PageValidationService,
+  PlaceholderService,
+  SearchService,
+  RequestOptionsBuilder,
+  SearchFiltersModule,
 } from '@hmcts/ccd-case-ui-toolkit';
 import {AppConfig} from '../../case.config';
 import {ScrollToService} from '@nicky-lenaers/ngx-scroll-to';
@@ -13,14 +25,15 @@ import {StoreModule} from '@ngrx/store';
 import {HttpModule} from '@angular/http';
 import {SharedModule} from '../../../app/shared/shared.module';
 import {AppConfigService} from '../../../app/services/config/configuration.services';
+import {CasesCreateComponent} from './case-create.component';
 
 class MockSortService {
   features = {};
   getFeatureToggle() {}
 }
-describe('CaseListComponent', () => {
-  let component: CaseListComponent;
-  let fixture: ComponentFixture<CaseListComponent>;
+describe('CaseCaseComponent', () => {
+  let component: CasesCreateComponent;
+  let fixture: ComponentFixture<CasesCreateComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -33,7 +46,7 @@ describe('CaseListComponent', () => {
         SharedModule,
         SearchFiltersModule,
       ],
-      declarations: [ CaseListComponent ],
+      declarations: [ CasesCreateComponent ],
       providers: [
         PlaceholderService,
         CasesService,
@@ -66,11 +79,11 @@ describe('CaseListComponent', () => {
         ScrollToService
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CaseListComponent);
+    fixture = TestBed.createComponent(CasesCreateComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
 

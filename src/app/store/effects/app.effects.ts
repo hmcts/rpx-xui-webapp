@@ -4,7 +4,7 @@ import {Effect, Actions, ofType} from '@ngrx/effects';
 import {catchError, map, switchMap} from 'rxjs/operators';
 import * as fromCore from '../';
 import * as fromActions from '../actions';
-import {AppConfigService} from '../../services/configuration.services';
+import {AppConfigService} from '../../services/config/configuration.services';
 import {of} from 'rxjs/internal/observable/of';
 
 @Injectable()

@@ -11,8 +11,7 @@ import {ActionBindingModel} from '../../models/create-case-actions.model';
 @Component({
   selector: 'exui-create-case',
   template: `
-    <exui-page-wrapper [title]="'Create Case'">
-      <p>create-case container</p>
+    <exui-page-wrapper>
       <exui-ccd-connector *exuiFeatureToggle="'ccdCaseCreate'"
         [eventsBindings]="caseCreateEventsBindings"
         [store]="store"
@@ -32,6 +31,7 @@ export class CasesCreateComponent implements OnInit {
   jurisdictionId = 'TEST';
   caseTypeId = 'TestAddressBookCase';
   eventTriggerId = 'createCase';
+
   caseCreateEventsBindings: ActionBindingModel[];
   fromCasesFeature: any;
 

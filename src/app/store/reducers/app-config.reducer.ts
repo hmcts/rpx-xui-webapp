@@ -7,7 +7,7 @@ export interface AppConfigState {
 }
 
 export const initialState: AppConfigState = {
-  config: { features: {}, endPoints: []},
+  config: { features: {}},
   loaded: false,
   loading: false
 };

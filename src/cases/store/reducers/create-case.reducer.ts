@@ -1,14 +1,18 @@
-import * as fromCases from '../actions/create-cases.action';
+import * as fromCases from '../actions/create-case.action';
 
-// todo this is just a place holder
+export interface CreatedCaseModel {
+  caseId: string;
+  status: string;
+}
+
 export interface CasesState {
-  caseState: any;
+  createdCase: CreatedCaseModel | {};
   loading: boolean;
   loaded: boolean;
 }
 
 export const initialState: CasesState = {
-  caseState: {},
+  createdCase: {},
   loaded: false,
   loading: false,
 };
@@ -19,11 +23,11 @@ export function reducer(
 ): CasesState {
   switch (action.type) {
 
-    case fromCases.RESET_CHANGE: {
-      // tbc
+    case fromCases.APPLY_CHANGE: {
       return {
         ...state,
-        loading: true,
+        createdCase: action.payload,
+        loaded: true,
       };
     }
 

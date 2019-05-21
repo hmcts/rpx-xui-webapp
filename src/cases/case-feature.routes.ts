@@ -7,6 +7,7 @@ import { CaseFilterComponent } from './containers/case-filter/case-filter.compon
 import { CaseSearchComponent } from './containers/case-search/case-search.component';
 import {CasesCreateComponent} from './containers';
 import {editorRouting} from '@hmcts/ccd-case-ui-toolkit';
+import {CaseConfirmationComponent} from './components/case-confirmation/case-confirmation.component';
 
 
 export const ROUTES: Routes = [
@@ -26,6 +27,11 @@ export const ROUTES: Routes = [
     {
       path: 'case-search',
       component: CaseSearchComponent,
+      children: editorRouting
+    },
+    {
+      path: 'case-confirmation',
+      component: CaseConfirmationComponent,
       children: editorRouting
     }
 

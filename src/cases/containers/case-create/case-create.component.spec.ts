@@ -30,7 +30,8 @@ import {ProvidersModule} from '../../../app/providers/providers.module';
 
 class MockSortService {
   features = {};
-  getFeatureToggle() {}
+  getFeatureToggle() {};
+  getEditorConfiguration() {};
 }
 describe('CaseCaseComponent', () => {
   let component: CasesCreateComponent;
@@ -46,7 +47,6 @@ describe('CaseCaseComponent', () => {
         HttpModule,
         SharedModule,
         SearchFiltersModule,
-        ProvidersModule
       ],
       declarations: [ CasesCreateComponent ],
       providers: [
@@ -63,6 +63,8 @@ describe('CaseCaseComponent', () => {
         DocumentManagementService,
         AppConfigService,
         RequestOptionsBuilder,
+        AppConfigService,
+        AppConfig,
         {
           provide: SearchService,
           useValue: {

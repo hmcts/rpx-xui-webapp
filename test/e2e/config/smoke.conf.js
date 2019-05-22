@@ -1,6 +1,6 @@
-const common = require('./support/common.conf');
-const localConfig = require('./support/jenkins.conf')
-const jenkinsConfig = require('./support/jenkins.conf')
+const common = require('../support/common.conf');
+const localConfig = require('../support/jenkins.conf')
+const jenkinsConfig = require('../support/jenkins.conf')
 
 const cap = (common.argv.local) ? localConfig : jenkinsConfig;
 

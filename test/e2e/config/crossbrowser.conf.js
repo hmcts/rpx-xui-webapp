@@ -1,4 +1,4 @@
-const common = require('./support/common.conf');
+const common = require('../support/common.conf');
 
 const config = {
     framework: 'custom',

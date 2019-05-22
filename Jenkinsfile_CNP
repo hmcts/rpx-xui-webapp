@@ -16,6 +16,7 @@ properties([
 def type      = "nodejs"
 def product   = "xui"
 def component = "webapp"
+def vault = "rpx"
 def channel   = '#xui-pipeline'
 
 withPipeline(type, product, component) {
@@ -26,3 +27,163 @@ withPipeline(type, product, component) {
   after('checkout') { sh 'yarn cache clean' }
   after('build') { sh 'npm run build' }
 }
+
+List<LinkedHashMap<String, Object>> secrets = [
+  secret('test-email', 'TEST_EMAIL'),
+  secret('test-password', 'TEST_PASSWORD'),
+  secret('jui-s2s-token', 'S2S_SECRET'),
+  secret('decrypt-key', 'DECRYPT_KEY'),
+  secret('jui-oauth2-token', 'IDAM_SECRET'),
+  secret('AppInsightsInstrumentationKey', 'APPINSIGHTS_INSTRUMENTATIONKEY'),
+
+
+]
+
+static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
+  [ $class: 'AzureKeyVaultSecret',
+    secretType: 'Secret',
+    name: secretName,
+    version: '',
+    envVariable: envVar
+  ]
+}
+
+
+withPipeline(type, product, component) {
+  enableSlackNotifications(channel)
+  loadVaultSecrets(secrets)
+  setVaultName(vault)
+
+  enableDockerBuild()
+  installCharts()
+
+  after('checkout') {sh 'yarn cache clean'}
+
+  after('build') {
+    sh 'npm run build'
+
+    publishHTML([
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "reports/lint/node/",
+      reportFiles          : 'index.html',
+      reportName           : 'node lint Report'
+    ])
+
+    publishHTML([
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "reports/lint/ng/",
+      reportFiles          : 'index.html',
+      reportName           : 'ng lint Report'
+    ])
+  }
+
+  after('test') {
+
+//        publishHTML ( [
+//            allowMissing         : true,
+//            alwaysLinkToLastBuild: true,
+//            keepAll              : true,
+//            reportDir            : "reports/tests/unit/node",
+//            reportFiles          : "index.html",
+//            reportName           : "node unit tests"
+//        ])
+//
+//        publishHTML ( [
+//            allowMissing         : true,
+//            alwaysLinkToLastBuild: true,
+//            keepAll              : true,
+//            reportDir            : "reports/tests/unit/ng",
+//            reportFiles          : "index.html",
+//            reportName           : "ng unit Tests"
+//        ])
+
+    publishHTML ( [
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "reports/tests/coverage/node",
+      reportFiles          : "index.html",
+      reportName           : "node coverage tests"
+    ])
+
+    publishHTML ( [
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "reports/tests/coverage/ng",
+      reportFiles          : "index.html",
+      reportName           : "ng coverage tests"
+    ])
+
+  }
+
+  after('smoketest:demo') {
+    publishHTML([
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "reports/tests/smoke/",
+      reportFiles          : 'index.html',
+      reportName           : 'DEMO Smoke Test'
+    ])
+  }
+
+//    after('functionalTest:demo') {
+//        publishHTML([
+//            allowMissing         : true,
+//            alwaysLinkToLastBuild: true,
+//            keepAll              : true,
+//            reportDir            : "reports/tests/functional/",
+//            reportFiles          : 'index.html',
+//            reportName           : 'DEMO Functional Test'
+//        ])
+//    }
+
+  after('smoketest:preview') {
+    publishHTML([
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "reports/smoke_tests/functional/",
+      reportFiles          : 'index.html',
+      reportName           : 'PREVIEW Smoke Test'
+    ])
+  }
+
+  after('functionalTest:preview') {
+    publishHTML([
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "reports/tests/functional/",
+      reportFiles          : 'index.html',
+      reportName           : 'PREVIEW Functional Test'
+    ])
+  }
+
+
+  after('smoketest:aat') {
+    publishHTML([
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "reports/smoke_tests/functional/",
+      reportFiles          : 'index.html',
+      reportName           : 'AAT Smoke Test'
+    ])
+  }
+
+  after('functionalTest:aat') {
+    publishHTML([
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "reports/tests/functional/",
+      reportFiles          : 'index.html',
+      reportName           : 'AAT Functional Test'
+    ])
+  }

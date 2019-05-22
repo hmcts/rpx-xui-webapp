@@ -57,7 +57,7 @@ withPipeline(type, product, component) {
   enableDockerBuild()
   installCharts()
 
-  after('checkout') {sh 'yarn cache clean'}
+  after('checkout') { sh 'yarn cache clean' }
 
   after('build') {
     sh 'npm run build'
@@ -101,7 +101,7 @@ withPipeline(type, product, component) {
 //            reportName           : "ng unit Tests"
 //        ])
 
-    publishHTML ( [
+    publishHTML([
       allowMissing         : true,
       alwaysLinkToLastBuild: true,
       keepAll              : true,
@@ -110,7 +110,7 @@ withPipeline(type, product, component) {
       reportName           : "node coverage tests"
     ])
 
-    publishHTML ( [
+    publishHTML([
       allowMissing         : true,
       alwaysLinkToLastBuild: true,
       keepAll              : true,
@@ -187,3 +187,4 @@ withPipeline(type, product, component) {
       reportName           : 'AAT Functional Test'
     ])
   }
+}

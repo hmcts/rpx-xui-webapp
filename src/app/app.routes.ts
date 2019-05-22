@@ -8,7 +8,7 @@ export const ROUTES: Routes = [
     pathMatch: 'full'
   },
   {
-    path: 'create-cases',
+    path: 'cases',
     canActivate: [AuthGuard],
     loadChildren: '../cases/cases.module#CasesModule'
   },

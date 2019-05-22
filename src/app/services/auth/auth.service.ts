@@ -11,16 +11,17 @@ import 'rxjs/add/operator/map';
 
 //import {Store} from '@ngrx/store';
 import { select, Store } from '@ngrx/store';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class AuthService {
   apiBaseUrl;
-  httpClient;
+  //httpClient;
   COOKIE_KEYS;
   user;
   user$;
   constructor(
-    // private httpCilent: HttpClient,
+    private httpClient: HttpClient,
     private cookieService: CookieService,
     private router: Router
   ) {
@@ -36,7 +37,7 @@ export class AuthService {
       ':' +
       window.location.port;
 
-    // this.httpCilent = httpCilent
+    //this.httpCilent = httpCilent
 
     this.user = null;
   }
@@ -94,7 +95,10 @@ export class AuthService {
 
 
   signOut() {
-    window.location.href = '/api/logout';
+    //window.location.href = '/api/logout';
+    this.httpClient.get('/api/logout').subscribe((res) => {
+      console.log('logedout from auth service', res);
+    });
   }
 
 }

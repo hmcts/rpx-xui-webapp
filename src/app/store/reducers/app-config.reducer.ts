@@ -30,7 +30,7 @@ export function reducer(
         ...state,
         loading: false,
         loaded: false
-      }
+      };
     }
   }
   return state;

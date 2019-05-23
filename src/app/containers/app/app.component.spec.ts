@@ -6,7 +6,7 @@ import { ROUTES } from '../../app.routes';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store, StoreModule } from '@ngrx/store';
 import { AuthGuard } from '../../services/auth/auth.guard';
-import { AuthService } from '../../services/auth/auth.service'
+import { AuthService } from '../../services/auth/auth.service';
 import { ProvidersModule } from 'src/app/providers/providers.module';
 
 xdescribe('AppComponent', () => {

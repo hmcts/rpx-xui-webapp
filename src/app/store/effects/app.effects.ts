@@ -44,6 +44,6 @@ export class AppEffects {
     tap((action: fromActions.Logout) => {
       return this.authService.signOut();
     }),
-    map(() => { return { type: 'NO_ACTION' }; })
+    map(() => ({ type: 'NO_ACTION' }))
   );
 }

@@ -38,7 +38,7 @@ const cookieService = {
 class HttpClientMock {
 
     get() {
-        return 'response'
+        return 'response';
     }
 }
 let deleteCookiesSpy;
@@ -63,7 +63,7 @@ describe('AuthService', () => {
         expect(service).toBeTruthy();
     }));
 
-    // to do fix
+    // To do fix
     xdescribe('isAuthenticated', () => {
         it('should return false when jwt is expired, true when still valid', inject([AuthService], (service: AuthService) => {
             let expiry = new Date().getTime() + 3000;
@@ -78,7 +78,5 @@ describe('AuthService', () => {
         }));
 
     });
-
-
 
 });

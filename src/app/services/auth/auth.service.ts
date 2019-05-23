@@ -9,14 +9,12 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/map';
 
-//import {Store} from '@ngrx/store';
 import { select, Store } from '@ngrx/store';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class AuthService {
   apiBaseUrl;
-  //httpClient;
   COOKIE_KEYS;
   user;
   user$;
@@ -37,7 +35,6 @@ export class AuthService {
       ':' +
       window.location.port;
 
-    //this.httpCilent = httpCilent
 
     this.user = null;
   }
@@ -93,7 +90,7 @@ export class AuthService {
   }
 
 
-  // to do remove console.log
+  // To do remove console.log
   signOut() {
     this.httpClient.get('/api/logout').subscribe((res) => {
       console.log('logged out from auth service', res);

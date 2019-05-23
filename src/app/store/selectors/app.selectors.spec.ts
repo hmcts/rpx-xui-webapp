@@ -11,7 +11,7 @@ describe('App Selectors', () => {
   let store: Store<fromReducers.State>;
 
   const appConfig = {
-    config: { features: {}},
+    config: {},
     loaded: false,
     loading: false
   };

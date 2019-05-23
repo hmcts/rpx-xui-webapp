@@ -1,3 +1,6 @@
+import {CaseEditorConfig} from '@hmcts/ccd-case-ui-toolkit';
+
 export interface ConfigurationModel {
-  features: any; // tbc
+  features: object;
+  caseEditorConfig: CaseEditorConfig;
 }

@@ -10,16 +10,14 @@ import { select, Store } from '@ngrx/store';
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {
-  constructor(private logger: LoggerService,
-    private store: Store<fromActions.State>
-  ) {
+  constructor(private logger: LoggerService, private store: Store<fromActions.State>) {
     logger.info('AppComponent: logger.info()');
     logger.warn('AppComponent: logger.warn()');
     logger.error('AppComponent: logger.error()');
   }
 
 
-  //to do move signOut to header component when available!!!
+  // To do move signOut to header component when available!!!
   signOut() {
     this.store.dispatch(new fromActions.Logout());
   }

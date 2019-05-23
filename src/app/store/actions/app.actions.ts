@@ -34,7 +34,7 @@ export class FinishAppInitilizer implements Action {
 }
 
 export class Logout implements Action {
-  readonly type = LOGOUT
+  readonly type = LOGOUT;
 }
 
 
@@ -44,4 +44,4 @@ export type AppActions =
   | LoadConfigFail
   | StartAppInitilizer
   | FinishAppInitilizer
-  | Logout
+  | Logout;

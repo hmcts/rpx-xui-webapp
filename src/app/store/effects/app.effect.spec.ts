@@ -5,7 +5,6 @@ import { of, throwError } from 'rxjs';
 import { provideMockActions } from '@ngrx/effects/testing';
 import * as fromAppEffects from './app.effects';
 import { AppEffects } from './app.effects';
-//import { Logoutl } from '../actions/app.actions';
 import { Logout } from '../actions';
 import { AuthService } from '../../services/auth/auth.service';
 
@@ -24,7 +23,7 @@ xdescribe('Organisation Effects', () => {
             providers: [
                 {
                     provide: AuthService,
-                    useValue: AuthServiceMock,
+                    useValue: AuthServiceMock
                 },
                 fromAppEffects.AppEffects,
                 provideMockActions(() => actions$)
@@ -40,7 +39,7 @@ xdescribe('Organisation Effects', () => {
         it('should logout', () => {
             const payload = [{ payload: 'something' }];
             AuthServiceMock.signOut.and.returnValue(of(payload));
-            const action = new Logout()
+            const action = new Logout();
             actions$ = hot('-a', { a: action });
             expect(effects.logout$).toHaveBeenCalled();
         });

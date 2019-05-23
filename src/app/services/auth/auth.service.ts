@@ -93,11 +93,10 @@ export class AuthService {
   }
 
 
-
+  // to do remove console.log
   signOut() {
-    //window.location.href = '/api/logout';
     this.httpClient.get('/api/logout').subscribe((res) => {
-      console.log('logedout from auth service', res);
+      console.log('logged out from auth service', res);
     });
   }
 

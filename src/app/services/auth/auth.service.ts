@@ -1,27 +1,22 @@
 
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie';
 import * as jwtDecode from 'jwt-decode';
 import { environment as config } from '../../../environments/environment';
-import { Router } from '@angular/router';
 
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/map';
+import {AppConfigService} from '../config/configuration.services';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class AuthService {
   apiBaseUrl;
-  httpClient;
   COOKIE_KEYS;
   user;
-  user$;
   constructor(
-    // private httpCilent: HttpClient,
     private cookieService: CookieService,
-    private router: Router
+    private appConfigService: AppConfigService
   ) {
     this.COOKIE_KEYS = {
       TOKEN: config.cookies.token,
@@ -34,8 +29,6 @@ export class AuthService {
       window.location.hostname +
       ':' +
       window.location.port;
-
-    // this.httpCilent = httpCilent
 
     this.user = null;
   }
@@ -51,22 +44,11 @@ export class AuthService {
   }
 
   generateLoginUrl() {
-    const base = config.idam.idamLoginUrl;
-    const clientId = config.idam.idamClientID;
-    const callback = `${this.apiBaseUrl}/${config.idam.oauthCallbackUrl}`;
+    const base = this.appConfigService.getRoutesConfig().idam.idamLoginUrl;
+    const clientId = this.appConfigService.getRoutesConfig().idam.idamClientID;
+    const callback = `${this.apiBaseUrl}/${this.appConfigService.getRoutesConfig().idam.oauthCallbackUrl}`;
     return `${base}/login?response_type=code&client_id=${clientId}&redirect_uri=${callback}`;
   }
-
-  // getAuthHeaders() {
-  //     interface HeaderObject {
-  //         [key: string]: string
-  //     }
-  //     const headers: HeaderObject = {
-  //         Authorization: this.cookieService.get(this.COOKIE_KEYS.TOKEN),
-  //         [this.COOKIE_KEYS.USER]: this.cookieService.get(this.COOKIE_KEYS.USER)
-  //     }
-  //     return headers
-  // }
 
   loginRedirect() {
     window.location.href = this.generateLoginUrl();
@@ -76,16 +58,6 @@ export class AuthService {
     return jwtDecode(jwt);
   }
 
-  // public getUser() {
-  //     if (this.user) {
-  //         return this.user
-  //     } else {
-  //         this.user = this.httpCilent.get('/api/user').map(response => {
-  //             return response
-  //         })
-  //         return this.user
-  //     }
-  // }
 
   isAuthenticated(): boolean {
     const jwt = this.cookieService.get(this.COOKIE_KEYS.TOKEN);
@@ -98,10 +70,6 @@ export class AuthService {
     return notExpired;
   }
 
-  // isAuthenticated(): boolean {
-  //   // false for now
-  //   return false;
-  // }
 
   signOut() {
     window.location.href = '/api/logout';

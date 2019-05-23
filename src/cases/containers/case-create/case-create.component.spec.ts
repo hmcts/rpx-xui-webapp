@@ -30,8 +30,8 @@ import {ProvidersModule} from '../../../app/providers/providers.module';
 
 class MockSortService {
   features = {};
-  getFeatureToggle() {};
-  getEditorConfiguration() {};
+  getFeatureToggle() {}
+  getEditorConfiguration() {}
 }
 describe('CaseCaseComponent', () => {
   let component: CasesCreateComponent;

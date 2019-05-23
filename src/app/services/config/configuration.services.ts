@@ -16,7 +16,7 @@ import {throwError} from 'rxjs';
 export class AppConfigService {
 
   constructor(private http: HttpClient,  private store: Store<fromApp.State>) {}
-  private configuration: ConfigurationModel;
+  private configuration: ConfigurationModel | any;
 
   load(): Observable<any> {
     const jsonFile = `assets/config/config.json`;
@@ -33,6 +33,10 @@ export class AppConfigService {
 
   getFeatureToggle() {
     return this.configuration.features;
+  }
+
+  getEditorConfiguration() {
+    return this.configuration.caseEditorConfig;
   }
 
   // todo make it global and make it make sense

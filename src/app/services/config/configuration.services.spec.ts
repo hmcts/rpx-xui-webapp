@@ -31,13 +31,10 @@ describe('Configuration Service', () => {
 
   it('should have configuration service getFeatureToggle method', () => {
       expect(service.getFeatureToggle).toBeTruthy();
-
   });
 
   it('should have configuration service setConfiguration method', () => {
     expect(service.setConfiguration).toBeTruthy();
-
-
   });
 
 

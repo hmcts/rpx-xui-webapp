@@ -18,8 +18,8 @@ module "app" {
     https_only="false"
     common_tags  = "${var.common_tags}"
     asp_rg = "${local.app_full_name}-${var.env}"
-    #asp_name = "${local.shared_product_name}-${var.env}"
-    asp_name = "${var.env == "prod" ? "TBD" : "${local.shared_product_name}-${var.env}"}"
+    asp_name = "${local.shared_product_name}-${var.env}"
+    #asp_name = "${var.env == "prod" ? "TBD" : "${local.shared_product_name}-${var.env}"}"
 
     app_settings = {
         # logging vars & healthcheck

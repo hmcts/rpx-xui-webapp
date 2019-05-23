@@ -15,7 +15,7 @@ describe('SearchFilterReducer', () => {
   describe('APPLIED action', () => {
     it('should apply patload to store', () => {
       const { initialStateSearch } = fromCases;
-      const payload = true;
+      const payload = {jurisdiction: true};
       const action = new fromActions.Applied(payload);
       const state = fromCases.reducer(initialStateSearch, action);
       expect(state.searchFilterCriteria).toBe(true);

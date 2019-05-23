@@ -19,7 +19,7 @@ export function reducer(
 ): SearchState {
   switch (action.type) {
     case fromCases.APPLIED: {
-      const searchFilterCriteria = action.payload;
+      const searchFilterCriteria = action.payload.jurisdiction;
       return {
           ...state,
           searchFilterCriteria,

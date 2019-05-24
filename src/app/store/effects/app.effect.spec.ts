@@ -41,7 +41,7 @@ xdescribe('Organisation Effects', () => {
             AuthServiceMock.signOut.and.returnValue(of(payload));
             const action = new Logout();
             actions$ = hot('-a', { a: action });
-            expect(effects.logout$).toHaveBeenCalled();
+            expect(effects.logout).toHaveBeenCalled();
         });
     });
 

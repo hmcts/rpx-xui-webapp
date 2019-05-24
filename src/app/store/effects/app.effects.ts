@@ -39,11 +39,11 @@ export class AppEffects {
   );
 
 
-  @Effect() logout$: Observable<Action> = this.actions$.pipe(
+  @Effect({ dispatch: false })
+  logout = this.actions$.pipe(
     ofType(fromActions.LOGOUT),
-    tap((action: fromActions.Logout) => {
-      return this.authService.signOut();
-    }),
-    map(() => ({ type: 'NO_ACTION' }))
+    map(() => {
+      this.authService.signOut();
+    })
   );
 }

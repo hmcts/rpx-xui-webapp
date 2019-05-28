@@ -33,6 +33,15 @@ export class AuthService {
     this.user = null;
   }
 
+  canActivate() {
+    console.log('reached can activate');
+    if (!this.isAuthenticated()) {
+      this.loginRedirect();
+      return false;
+    }
+
+    return true;
+  }
 
   generateLoginUrl() {
     const base = this.appConfigService.getRoutesConfig().idam.idamLoginUrl;

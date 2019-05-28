@@ -34,9 +34,8 @@ import {HttpModule} from '@angular/http';
 // from containers
 import * as fromContainers from './containers';
 // from components
-import * as fromComponents from './components';
+// import * as fromComponents from './components';
 import {ProvidersModule} from '../app/providers/providers.module';
-import {MatDialogModule} from '@angular/material';
 
 @NgModule({
   imports: [
@@ -54,7 +53,7 @@ import {MatDialogModule} from '@angular/material';
     ProvidersModule,
     MatDialogModule
   ],
-  declarations: [...fromContainers.containers, ...fromComponents.components],
+  declarations: [...fromContainers.containers],
   providers: [
     PlaceholderService,
     CasesService,

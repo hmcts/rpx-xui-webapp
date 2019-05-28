@@ -3,7 +3,7 @@ export const environment = {
   loggingLevel: 'OFF',
    idam: {
      idamApiUrl: 'https://idam-api.aat.platform.hmcts.net',
-     idamClientID: 'juiwebapp',
+     idamClientID: 'xuiwebapp',
      idamLoginUrl: 'https://idam-web-public.aat.platform.hmcts.net',
      indexUrl: '/',
      oauthCallbackUrl: 'oauth2/callback'

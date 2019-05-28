@@ -19,7 +19,7 @@ properties([
 def type      = "nodejs"
 def product   = "xui"
 def component = "webapp"
-def vault     = "rpa"
+def vault     = "rpx"
 def channel   = '#xui-pipeline'
 
 List<LinkedHashMap<String, Object>> secrets = [

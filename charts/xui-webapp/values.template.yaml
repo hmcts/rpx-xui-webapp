@@ -16,7 +16,7 @@ nodejs:
       resourceGroup: rpa
       secrets:
         - test-email
-        - jui-s2s-toke
+        - jui-s2s-token
         - decrypt-key
         - jui-oauth2-token
         - fr-email

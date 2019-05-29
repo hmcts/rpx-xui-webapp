@@ -1,9 +1,15 @@
 import { Injectable } from '@angular/core';
 
 export abstract class Logger {
-  info: any;
-  warn: any;
-  error: any;
+  info(message: string): void{
+
+  }
+  warn(message: string): void{
+
+  }
+  error(message: string): void{
+
+  }
 }
 
 @Injectable({
@@ -11,7 +17,13 @@ export abstract class Logger {
 })
 
 export class LoggerService implements Logger {
-  info: any;
-  warn: any;
-  error: any;
+  info(message: string): void{
+
+  }
+  warn(message: string): void{
+
+  }
+  error(message: string): void{
+
+  }
 }

@@ -1,6 +1,6 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {ActionBindingModel} from '../../models/create-case-actions.model';
-import {Jurisdiction, SearchResultView} from '@hmcts/ccd-case-ui-toolkit';
+import {Jurisdiction, SearchResultView, SearchResultViewColumn} from '@hmcts/ccd-case-ui-toolkit';
 import * as fromCasesFeature from '../../store';
 import {mocked} from '../../models/search-filter-dummy-data-to-delete';
 import {Store, select} from '@ngrx/store';
@@ -41,6 +41,7 @@ export class CaseSearchComponent implements OnInit {
       this.caseType = state.caseType;
       this.jurisdiction = state.jurisdiction;
       this.paginationMetadata = state.metadataFields;
+
     });
 
     this.fromCasesFeature = fromCasesFeature;
@@ -50,17 +51,21 @@ export class CaseSearchComponent implements OnInit {
       {type: 'onApply', action: 'Applied'},
       {type: 'onReset', action: 'Reset'}
     ];
+
+    this.caseSearchResultEventsBindings = [
+      {type: 'onChangePage', action: 'changePage' }
+    ];
   }
 
   getResultView(): SearchResultView {
-    const result = null;
-
-
+    const result = new SearchResultView();
+    result.columns = [];
     return result;
   }
 
   setTempPayload(payload) {
     this.caseFilterFG = payload.formGroup;
+    console.log(payload);
   }
 
 }

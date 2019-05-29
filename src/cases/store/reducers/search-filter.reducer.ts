@@ -27,10 +27,10 @@ export function reducer( state = initialStateSearch, action: fromCases.CaseSearc
       const {metadataFields, jurisdiction, caseType} = action.payload;
 >>>>>>> casefilter state management with styling
       return {
-          ...state,
           metadataFields,
           jurisdiction,
           caseType,
+          loading: false,
           loaded: true
       };
     }

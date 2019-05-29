@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Logger } from './logger.service';
 import { environment } from '../../../environments/environment';
+import { NGXLogger } from 'ngx-logger';
 
 enum IsDebugMode {
   OFF,
@@ -20,28 +21,24 @@ const user = 'dummy@user.com';
 })
 export class ConsoleLoggerService implements Logger {
 
-  get info() {
+ constructor(private ngxLogger: NGXLogger){
+  }
+
+  info(message: string) : void {
     if (isDebugMode !== 0 && isDebugMode !== 1 && isDebugMode !== 2) {
-      // tslint:disable-next-line:no-console
-      return console.info.bind(console, [user, now]);
-    } else {
-      return noop;
+      this.ngxLogger.info(message, [user, now]);
     }
   }
 
-  get warn() {
+  warn(message: string) : void {
     if (isDebugMode !== 0 && isDebugMode !== 1) {
-      return console.warn.bind(console, [user, now]);
-    } else {
-      return noop;
+      this.ngxLogger.warn(message, [user, now]);
     }
   }
 
-  get error() {
+  error(message: string) : void {
     if (isDebugMode !== 0) {
-      return console.error.bind(console, [user, now]);
-    } else {
-      return noop;
+      this.ngxLogger.warn(message, [user, now]);
     }
   }
 

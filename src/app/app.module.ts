@@ -31,6 +31,7 @@ import { AuthService } from './services/auth/auth.service';
 import { CookieModule } from 'ngx-cookie';
 import {SharedModule} from './shared/shared.module';
 import { ConsoleLoggerService } from './services/logger/console-logger.service';
+import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 
 @NgModule({
   declarations: [AppComponent],
@@ -46,7 +47,11 @@ import { ConsoleLoggerService } from './services/logger/console-logger.service';
     StoreDevtoolsModule.instrument({
       logOnly: environment.production
     }),
-    SharedModule
+    SharedModule,
+    LoggerModule.forRoot({
+      level: NgxLoggerLevel.TRACE,
+      disableConsoleLogging: false
+    })
   ],
   providers: [
     AuthService,

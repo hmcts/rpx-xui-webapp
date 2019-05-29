@@ -14,10 +14,10 @@ export default {
         },
         idam: {
             idamApiUrl: 'https://idam-api.aat.platform.hmcts.net',
-            idamClientID: 'juiwebapp',
+            idamClientID: 'xuiwebapp',
             idamLoginUrl: 'https://idam-web-public.aat.platform.hmcts.net',
             indexUrl: '/',
-            oauthCallbackUrl: 'outh2/callback',
+            oauthCallbackUrl: 'oauth2/callback',
         },
         s2s:
             'https://rpe-service-auth-provider-aat.service.core-compute-aat.internal',

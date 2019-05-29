@@ -57,6 +57,11 @@ if (config.proxy) {
 }
 
 app.get('/oauth2/callback', auth.authenticateUser)
+app.use('/aggregated', routes)
+app.get('/api/logout', (req, res, next) => {
+    auth.doLogout(req, res)
+})
+
 app.use('/data', routes)
 
 const logger = log4jui.getLogger('Application')

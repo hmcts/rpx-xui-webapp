@@ -5,12 +5,11 @@
           [eventsBindings]="caseSearchEventsBindings"
           [store]="store"
           [fromFeatureStore]="fromCasesFeature">
-          <ccd-search-filters #ccdComponent
+          <ccd-search-filters-wrapper #ccdComponent
             [autoApply]="true"
-            [jurisdictions]="jurisdictions"
             (onApply)="setTempPayload($event)"
             >
-          </ccd-search-filters>
+          </ccd-search-filters-wrapper>
         </exui-ccd-connector>
       </div>
       <div class="govuk-grid-column-two-thirds">

@@ -9,7 +9,7 @@ import { AuthGuard } from '../../services/auth/auth.guard';
 import { AuthService } from '../../services/auth/auth.service';
 import { ProvidersModule } from 'src/app/providers/providers.module';
 
-xdescribe('AppComponent', () => {
+describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [

@@ -5,21 +5,12 @@ import { NGXLogger } from 'ngx-logger';
 import { AuthService } from '../auth/auth.service';
 import { CookieService } from 'ngx-cookie';
 
-enum IsDebugMode {
-  OFF,
-  ERROR,
-  WARN,
-  DEBUG
-}
-
-export let isDebugMode = IsDebugMode[environment.loggingLevel];
-
 const now = Date();
-
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class ConsoleLoggerService implements Logger {
   user:string;
   COOKIE_KEYS;
@@ -32,7 +23,8 @@ export class ConsoleLoggerService implements Logger {
       TOKEN: environment.cookies.token,
       USER: environment.cookies.userId
     };
-    const userId = this.cookieService.get(this.COOKIE_KEYS.USER);
+
+    let userId = this.cookieService.get(this.COOKIE_KEYS.USER);
     if (!userId) {
       this.user = 'dummy@user.com';
     } 
@@ -41,22 +33,26 @@ export class ConsoleLoggerService implements Logger {
     }
   }
 
+  debug(message: string): void{
+    this.ngxLogger.debug(message, [this.user, now]);
+  }
+
+  trace(message: string): void{
+      this.ngxLogger.trace(message, [this.user, now]);
+  }  
+
   info(message: string) : void {
-    if (isDebugMode !== 0 && isDebugMode !== 1 && isDebugMode !== 2) {
       this.ngxLogger.info(message, [this.user, now]);
-    }
   }
 
   warn(message: string) : void {
-    if (isDebugMode !== 0 && isDebugMode !== 1) {
       this.ngxLogger.warn(message, [this.user, now]);
-    }
   }
 
   error(message: string) : void {
-    if (isDebugMode !== 0) {
       this.ngxLogger.error(message, [this.user, now]);
-    }
   }
-
+  fatal(message: string) : void {
+    this.ngxLogger.fatal(message, [this.user, now]);
+  }
 }

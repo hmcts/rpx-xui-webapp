@@ -9,8 +9,11 @@ import { LoggerService } from '../../services/logger/logger.service';
 })
 export class AppComponent {
   constructor(private logger: LoggerService) {
+    logger.debug('AppComponent: logger.debug()');
+    logger.trace('AppComponent: logger.trace()');
     logger.info('AppComponent: logger.info()');
     logger.warn('AppComponent: logger.warn()');
     logger.error('AppComponent: logger.error()');
+    logger.fatal('AppComponent: logger.fatal()');
   }
 }

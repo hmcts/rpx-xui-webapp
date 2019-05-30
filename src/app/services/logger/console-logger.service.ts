@@ -55,7 +55,7 @@ export class ConsoleLoggerService implements Logger {
 
   error(message: string) : void {
     if (isDebugMode !== 0) {
-      this.ngxLogger.warn(message, [this.user, now]);
+      this.ngxLogger.error(message, [this.user, now]);
     }
   }
 

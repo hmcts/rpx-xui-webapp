@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation, OnInit } from '@angular/core';
 import { LoggerService } from '../../services/logger/logger.service';
 
 @Component({
@@ -7,13 +7,16 @@ import { LoggerService } from '../../services/logger/logger.service';
   styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   constructor(private logger: LoggerService) {
-    logger.debug('AppComponent: logger.debug()');
-    logger.trace('AppComponent: logger.trace()');
-    logger.info('AppComponent: logger.info()');
-    logger.warn('AppComponent: logger.warn()');
-    logger.error('AppComponent: logger.error()');
-    logger.fatal('AppComponent: logger.fatal()');
+  }
+
+  ngOnInit() {
+    this.logger.debug('AppComponent: logger.debug()');
+    this.logger.trace('AppComponent: logger.trace()');
+    this.logger.info('AppComponent: logger.info()');
+    this.logger.warn('AppComponent: logger.warn()');
+    this.logger.error('AppComponent: logger.error()');
+    this.logger.fatal('AppComponent: logger.fatal()');
   }
 }

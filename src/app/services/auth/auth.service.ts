@@ -9,17 +9,17 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/map';
 
-import { select, Store } from '@ngrx/store';
-import { HttpClient } from '@angular/common/http';
-
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class AuthService {
   apiBaseUrl;
+  httpClient;
   COOKIE_KEYS;
   user;
   user$;
   constructor(
-    private httpClient: HttpClient,
+    // private httpCilent: HttpClient,
     private cookieService: CookieService,
     private router: Router
   ) {
@@ -35,11 +35,20 @@ export class AuthService {
       ':' +
       window.location.port;
 
+    // this.httpCilent = httpCilent
 
     this.user = null;
   }
 
+  canActivate() {
+    console.log('reached can activate');
+    if (!this.isAuthenticated()) {
+      this.loginRedirect();
+      return false;
+    }
 
+    return true;
+  }
 
   generateLoginUrl() {
     const base = config.idam.idamLoginUrl;
@@ -89,13 +98,12 @@ export class AuthService {
     return notExpired;
   }
 
+  // isAuthenticated(): boolean {
+  //   // false for now
+  //   return false;
+  // }
 
-  // To do remove console.log
   signOut() {
-    this.httpClient.get('/api/logout').subscribe((res) => {
-      console.log('logged out from auth service', res);
-    });
+    window.location.href = '/api/logout';
   }
-
 }
-

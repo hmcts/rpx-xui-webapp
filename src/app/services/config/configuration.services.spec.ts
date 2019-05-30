@@ -1,5 +1,5 @@
 import {AppConfigService} from './configuration.services';
-import { TestBed} from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 import {HttpClientModule} from '@angular/common/http';
 import {StoreModule} from '@ngrx/store';
 
@@ -37,6 +37,9 @@ describe('Configuration Service', () => {
     expect(service.setConfiguration).toBeTruthy();
   });
 
+  it('should have configuration service setConfiguration method', () => {
+    expect(service.getEditorConfiguration).toBeTruthy();
+  });
 
 });
 

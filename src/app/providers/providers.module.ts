@@ -18,6 +18,7 @@ export class ProvidersModule {
     return {
       ngModule: ProvidersModule,
       providers: [
+        AuthService,
         AppConfigService,
         AppConfig,
         AuthService

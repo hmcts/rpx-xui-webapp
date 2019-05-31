@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation, OnInit } from '@angular/core';
 import { LoggerService } from '../../services/logger/logger.service';
 import * as fromActions from '../../store';
 import { select, Store } from '@ngrx/store';
@@ -9,11 +9,20 @@ import { select, Store } from '@ngrx/store';
   styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class AppComponent {
-  constructor(private logger: LoggerService, private store: Store<fromActions.State>) {
-    logger.info('AppComponent: logger.info()');
-    logger.warn('AppComponent: logger.warn()');
-    logger.error('AppComponent: logger.error()');
+export class AppComponent implements OnInit {
+  constructor(
+    private logger: LoggerService,
+    private store: Store<fromActions.State>
+  ) {
+  }
+
+  ngOnInit() {
+    this.logger.debug('AppComponent: logger.debug()');
+    this.logger.trace('AppComponent: logger.trace()');
+    this.logger.info('AppComponent: logger.info()');
+    this.logger.warn('AppComponent: logger.warn()');
+    this.logger.error('AppComponent: logger.error()');
+    this.logger.fatal('AppComponent: logger.fatal()');
   }
 
 

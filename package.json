@@ -74,6 +74,7 @@
     "govuk-frontend": "^2.11.0",
     "jwt-decode": "^2.2.0",
     "ngx-cookie": "^4.1.2",
+    "ngx-logger": "^3.3.13",
     "ngx-md": "^7.0.0",
     "ngx-pagination": "^3.2.1",
     "otp": "^0.1.3",

@@ -6,7 +6,7 @@
     }
   },
   "caseEditorConfig": {
-    "api_url": ",/aggregated",
+    "api_url": "/aggregated",
     "case_data_url": "/data",
     "document_management_url": "/documents",
     "login_url": "/login",

@@ -6,30 +6,9 @@
           [store]="store"
           [fromFeatureStore]="fromCasesFeature">
           <ccd-search-filters-wrapper #ccdComponent
-            [autoApply]="true"
-            (onApply)="setTempPayload($event)"
-            >
+            [autoApply]="false">
           </ccd-search-filters-wrapper>
         </exui-ccd-connector>
-      </div>
-      <div class="govuk-grid-column-two-thirds">
-          <exui-ccd-connector
-            [eventsBindings]="caseSearchResultEventsBindings"
-            [store]="store"
-            [fromFeatureStore]="fromCasesFeature">
-            <ccd-search-result #ccdComponent
-              [jurisdiction]="jurisdiction"
-              [caseType]="caseType"
-              [caseState]="caseState"
-              [metadataFields]="metadataFields"
-              [caseFilterFG]="caseFilterFG"
-              [resultView]="resultView"
-              [page]= "page"
-              [paginationMetadata]="paginationMetadata"
-              [metadataFields]="metadataFields"
-              >
-            </ccd-search-result>
-          </exui-ccd-connector>
       </div>
     </div>
 </exui-page-wrapper>

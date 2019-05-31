@@ -51,5 +51,6 @@ api/.nyc_output
 Thumbs.db
 .sessions
 package-lock.json
+local-only-tools
 
 /local-only-tools

@@ -34,7 +34,6 @@ export class AuthService {
   }
 
   canActivate() {
-    console.log('reached can activate');
     if (!this.isAuthenticated()) {
       this.loginRedirect();
       return false;

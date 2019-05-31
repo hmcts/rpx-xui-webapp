@@ -1,7 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { AppComponent } from './containers/app/app.component';
-import { LoggerModule } from './services/logger/logger.module';
 import { environment } from '../environments/environment';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
@@ -11,6 +10,7 @@ import {MetaReducer, Store, StoreModule} from '@ngrx/store';
 import {RouterStateSerializer, StoreRouterConnectingModule} from '@ngrx/router-store';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {storeFreeze} from 'ngrx-store-freeze';
+import {LoggerService} from './services/logger/logger.service';
 // enforces immutability
 export const metaReducers: MetaReducer<any>[] = !environment.production
   ? [storeFreeze]
@@ -30,6 +30,8 @@ import { ROUTES } from './app.routes';
 import { AuthService } from './services/auth/auth.service';
 import { CookieModule } from 'ngx-cookie';
 import {SharedModule} from './shared/shared.module';
+import { ConsoleLoggerService } from './services/logger/console-logger.service';
+import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 
 @NgModule({
   declarations: [AppComponent],
@@ -45,8 +47,11 @@ import {SharedModule} from './shared/shared.module';
     StoreDevtoolsModule.instrument({
       logOnly: environment.production
     }),
-    LoggerModule, // TODO remove make it service and part of providerModule
-    SharedModule
+    SharedModule,
+    LoggerModule.forRoot({
+      level: NgxLoggerLevel.TRACE,
+      disableConsoleLogging: false
+    })
   ],
   providers: [
     AuthService,
@@ -59,6 +64,10 @@ import {SharedModule} from './shared/shared.module';
       useFactory: initApplication,
       deps: [Store],
       multi: true
+    },
+    {
+      provide: LoggerService,
+      useClass: ConsoleLoggerService
     }
   ],
   bootstrap: [AppComponent]

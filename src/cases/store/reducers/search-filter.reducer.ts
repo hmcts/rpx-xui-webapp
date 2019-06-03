@@ -23,6 +23,9 @@ export function reducer( state , action: fromCases.CaseSearchAction): SearchStat
           loaded: true
       };
     }
+
+    case fromCases.RESET:
+      return null;
   }
   return state;
 }

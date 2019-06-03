@@ -12,11 +12,11 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.logger.debug('AppComponent: logger.debug()');
     this.logger.trace('AppComponent: logger.trace()');
-    this.logger.info('AppComponent: logger.info()');
-    this.logger.warn('AppComponent: logger.warn()');
     this.logger.error('AppComponent: logger.error()');
     this.logger.fatal('AppComponent: logger.fatal()');
+    this.logger.info('AppComponent: logger.info()');
+    this.logger.debug('AppComponent: logger.debug()');
+    this.logger.warn('AppComponent: logger.warn()');
   }
 }

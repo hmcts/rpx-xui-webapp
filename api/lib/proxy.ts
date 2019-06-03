@@ -23,8 +23,7 @@ function setHeaders(req: EnhancedRequest) {
 
 export async function get(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
     let url = striptags(req.url)
-    url = '/data/' + url
-
+    url = req.baseUrl  + url
     const headers: any = setHeaders(req)
 
     try {

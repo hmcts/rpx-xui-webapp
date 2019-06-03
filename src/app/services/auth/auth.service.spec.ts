@@ -4,8 +4,8 @@ import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie';
 import { HttpClient } from '@angular/common/http';
-import {AppConfigService} from '../config/configuration.services';
-import {StoreModule} from '@ngrx/store';
+import { AppConfigService } from '../config/configuration.services';
+import { StoreModule } from '@ngrx/store';
 
 const config = {
   config: {
@@ -26,12 +26,18 @@ const router = {
   navigate: () => { }
 };
 
+const expiredJwt = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOj`
+  + `EwNTkyNTE3NDR9.6pdabSR59z99w-OE8_ZMka7IazJbY2cLfax09Cy1JIY`;
+
+const nonExpiredJwt = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHA`
+  + `iOjIwNTkyNTE3NDR9.3XJN4KnwY82gULXpN5tJDcUMmNcypk2MFPRUGB_Frv0`;
+
 const cookieService = {
   get: key => {
-    return this[key];
+    return cookieService[key];
   },
   set: (key, value) => {
-    this[key] = value;
+    cookieService[key] = value;
   },
   removeAll: () => { }
 };
@@ -70,16 +76,11 @@ describe('AuthService', () => {
   }));
 
   // To do fix
-  xdescribe('isAuthenticated', () => {
+  describe('isAuthenticated', () => {
     it('should return false when jwt is expired, true when still valid', inject([AuthService], (service: AuthService) => {
-      let expiry = new Date().getTime() + 3000;
-      service.decodeJwt = () => {
-        return {
-          exp: expiry
-        };
-      };
+      cookieService.set('__auth__', expiredJwt);
       expect(service.isAuthenticated()).toEqual(false);
-      expiry = new Date().getTime() - 3000;
+      cookieService.set('__auth__', nonExpiredJwt);
       expect(service.isAuthenticated()).toEqual(true);
     }));
 

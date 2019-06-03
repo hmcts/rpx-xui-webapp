@@ -1,0 +1,19 @@
+// TODO - needs to be clarified wehre the css is coming form
+/*
+Forms
+*/
+
+$module: "form";
+
+.#{$module} {
+
+  &-money {
+
+    .#{$module}-currency {
+      font-weight: 600;
+      margin-right: em(10);
+    }
+
+  }
+
+}

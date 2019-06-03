@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { environment } from 'src/environments/environment';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { EffectsModule } from '@ngrx/effects';
+import { LoggerEffects } from '../logger/effects/logger.effects';
 
 @NgModule({
     declarations: [
@@ -10,7 +11,7 @@ import { EffectsModule } from '@ngrx/effects';
     imports: [
         BrowserModule,
         !environment.production ? StoreDevtoolsModule.instrument() : [],
-        EffectsModule.forRoot([])
+        EffectsModule.forFeature([LoggerEffects])
     ],
     providers: []
 })

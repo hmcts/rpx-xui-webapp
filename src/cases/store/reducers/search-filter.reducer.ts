@@ -15,6 +15,8 @@ export function reducer( state , action: fromCases.CaseSearchAction): SearchStat
   switch (action.type) {
     case fromCases.APPLIED: {
       const jurisdiction = new Entity(action.payload.jurisdiction);
+      const metadataFields = new Entity(action.payload.metadataFields);
+      const caseType = new Entity(action.payload.caseType);
       return {
           metadataFields,
           jurisdiction,

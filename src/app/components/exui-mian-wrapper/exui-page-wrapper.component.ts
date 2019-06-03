@@ -10,18 +10,8 @@ import {Component, Input} from '@angular/core';
  */
 @Component({
   selector: 'exui-page-wrapper',
-<<<<<<< HEAD
-  template: `
-    <a *ngIf="backLink" [routerLink]="backLink" class="govuk-back-link">Back</a>
-    <main id="content" role="main" class="govuk-main-wrapper">
-      <h1 *ngIf="title" class="govuk-heading-xl">{{title}}</h1>
-      <ng-content></ng-content>
-    </main>
-  `
-=======
   templateUrl: 'exui-page-wrapper.component.html',
   styleUrls: ['exui-page-wrapper.component.scss']
->>>>>>> casefilter state management with styling
 })
 export class ExuiPageWrapperComponent  {
 

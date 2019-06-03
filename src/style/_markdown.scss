@@ -1,0 +1,47 @@
+@import 'node_modules/@hmcts/ccd-case-ui-toolkit/dist/cut-styles/components/typography';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_shims';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_conditionals';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_measurements';
+
+.markdown {
+    h1 {
+        @include bold-18pt();
+        margin-top: 30px;
+        margin-bottom: 30px;
+    }
+    h2 {
+        @include bold-16pt();
+        margin-top: 45px;
+        margin-bottom: 15px;
+    }
+    h3 {
+        @include bold-14pt();
+        margin-top: 45px;
+        margin-bottom: 15px;
+    }
+    h4 {
+        @include bold-12pt();
+        margin-top: 20px;
+    }
+    p {
+        @include core-12pt();
+        margin-bottom: 15px;
+        strong {
+            @include bold-12pt();
+        }
+    }
+    ul {
+        padding: 0;
+        margin-top: 5px;
+        margin-bottom: 45px;
+        padding-left: 20px;
+        li {
+            @include core-12pt();
+            margin-bottom: 5px;
+            list-style-type: disc;
+        }
+    }
+    table {
+        margin-bottom: 30px;
+    }
+}

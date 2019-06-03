@@ -1,0 +1,18 @@
+@media print {
+  .phase-banner,
+  cut-header-bar,
+  cut-nav-bar {
+    display: none;
+  }
+
+  div.side-padding {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+
+  .check-your-answers {
+    .check-your-answers__change {
+      display: none;
+    }
+  }
+}

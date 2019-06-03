@@ -1,0 +1,17 @@
+/*
+Buttons
+*/
+
+$module: "button";
+
+.#{$module} {
+
+  &-secondary {
+    @include button($grey-3);
+  }
+
+  &-tertiary {
+    @include button($grey-4);
+  }
+
+}

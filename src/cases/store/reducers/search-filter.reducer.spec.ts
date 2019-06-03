@@ -18,7 +18,6 @@ describe('SearchFilterReducer', () => {
       const payload = {jurisdiction: true};
       const action = new fromActions.Applied(payload);
       const state = fromCases.reducer(initialStateSearch, action);
-      expect(state.searchFilterCriteria).toBe(true);
       expect(state.loaded).toEqual(true);
     });
   });

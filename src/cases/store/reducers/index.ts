@@ -17,4 +17,6 @@ export const getCaseFeatureState = createFeatureSelector<State>(
   'cases'
 );
 
+export * from './search-filter.reducer';
+
 

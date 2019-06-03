@@ -7,7 +7,7 @@ import { HttpClientModule } from '@angular/common/http';
 import {
   CaseUIToolkitModule, DraftService, AlertService, HttpService, AuthService as CCDAuthService, CasesService,
   HttpErrorService, AbstractAppConfig, CaseEditWizardGuard, RouterHelperService,
-  DocumentManagementService, PageValidationService, PlaceholderService, RequestOptionsBuilder, SearchFiltersModule
+  DocumentManagementService, PageValidationService, PlaceholderService, RequestOptionsBuilder, SearchFiltersModule, SearchResultModule
 } from '@hmcts/ccd-case-ui-toolkit';
 
 import { casesRouting } from './case-feature.routes';
@@ -27,6 +27,7 @@ import {ProvidersModule} from '../app/providers/providers.module';
   imports: [
     CommonModule,
     CaseUIToolkitModule,
+    SearchResultModule,
     HttpClientModule,
     StoreModule.forFeature('cases', reducers),
     EffectsModule.forFeature(effects),

@@ -1,5 +1,5 @@
 import * as fromActions from '../actions/';
-import {ConfigurationModel} from '../../models/configuration.model';
+import { ConfigurationModel } from '../../models/configuration.model';
 export interface AppConfigState {
   config: ConfigurationModel | {};
   loaded: boolean;
@@ -14,8 +14,8 @@ export const initialState: AppConfigState = {
 
 export function reducer(
   state = initialState,
-  action: fromActions.AppActions ): AppConfigState {
-  switch ( action.type ) {
+  action: fromActions.AppActions): AppConfigState {
+  switch (action.type) {
     case fromActions.APP_LOAD_CONFIG_SUCCESS: {
       const config = action.payload;
       return {
@@ -24,10 +24,17 @@ export function reducer(
         loaded: true
       };
     }
+    // TO add appropriate state as/ when ,reqd.
+    case fromActions.LOGOUT: {
+      return {
+        ...state,
+        loading: false,
+        loaded: false
+      };
+    }
   }
   return state;
 }
 
-export const getFeatureConfig = (state: AppConfigState ) => state.config;
 
-
+export const getFeatureConfig = (state: AppConfigState) => state.config;

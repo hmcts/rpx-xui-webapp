@@ -30,6 +30,7 @@ import {CaseSearchComponent} from './case-search.component';
 class MockSortService {
   features = {};
   getFeatureToggle() {}
+  getEditorConfiguration() {}
 }
 describe('CaseCaseComponent', () => {
   let component: CaseSearchComponent;

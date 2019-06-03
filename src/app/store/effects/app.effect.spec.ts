@@ -7,10 +7,12 @@ import * as fromAppEffects from './app.effects';
 import { AppEffects } from './app.effects';
 import { Logout } from '../actions';
 import { AuthService } from '../../services/auth/auth.service';
+import { StoreModule } from '@ngrx/store';
+import { AppConfigService } from '../../services/config/configuration.services';
 
 
 
-xdescribe('Organisation Effects', () => {
+describe('App Effects', () => {
     let actions$;
     let effects: AppEffects;
     const AuthServiceMock = jasmine.createSpyObj('AuthService', [
@@ -19,8 +21,12 @@ xdescribe('Organisation Effects', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [HttpClientTestingModule],
+            imports: [
+                StoreModule.forRoot({}),
+                HttpClientTestingModule
+            ],
             providers: [
+                AppConfigService,
                 {
                     provide: AuthService,
                     useValue: AuthServiceMock
@@ -41,7 +47,9 @@ xdescribe('Organisation Effects', () => {
             AuthServiceMock.signOut.and.returnValue(of(payload));
             const action = new Logout();
             actions$ = hot('-a', { a: action });
-            expect(effects.logout).toHaveBeenCalled();
+            effects.logout.subscribe(() => {
+                expect(AuthServiceMock.signOut).toHaveBeenCalled();
+            });
         });
     });
 

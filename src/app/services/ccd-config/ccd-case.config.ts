@@ -103,6 +103,6 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getPaginationPageSize(): number {
-    return this.config.pagination_page_size;
+     return this.config.pagination_page_size;
   }
 }

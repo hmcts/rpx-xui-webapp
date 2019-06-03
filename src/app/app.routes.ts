@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { AuthGuard } from './services/auth/auth.guard';
+import { AuthService } from './services/auth/auth.service';
 
 export const ROUTES: Routes = [
   {
@@ -9,7 +9,7 @@ export const ROUTES: Routes = [
   },
   {
     path: 'cases',
-    canActivate: [AuthGuard],
+    canActivate: [AuthService],
     loadChildren: '../cases/cases.module#CasesModule'
   },
   {

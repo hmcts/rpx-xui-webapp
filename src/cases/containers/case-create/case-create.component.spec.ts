@@ -17,20 +17,20 @@ import {
   RequestOptionsBuilder,
   SearchFiltersModule,
 } from '@hmcts/ccd-case-ui-toolkit';
-import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
-import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
-import { RouterTestingModule } from '@angular/router/testing';
-import { HttpClientModule } from '@angular/common/http';
-import { StoreModule } from '@ngrx/store';
-import { HttpModule } from '@angular/http';
-import { SharedModule } from '../../../app/shared/shared.module';
-import { AppConfigService } from '../../../app/services/config/configuration.services';
-import { CasesCreateComponent } from './case-create.component';
+import {AppConfig} from '../../../app/services/ccd-config/ccd-case.config';
+import {ScrollToService} from '@nicky-lenaers/ngx-scroll-to';
+import {RouterTestingModule} from '@angular/router/testing';
+import {HttpClientModule} from '@angular/common/http';
+import {StoreModule} from '@ngrx/store';
+import {HttpModule} from '@angular/http';
+import {SharedModule} from '../../../app/shared/shared.module';
+import {AppConfigService} from '../../../app/services/config/configuration.services';
+import {CasesCreateComponent} from './case-create.component';
 
 class MockSortService {
   features = {};
-  getFeatureToggle() { }
-  getEditorConfiguration() { }
+  getFeatureToggle() {}
+  getEditorConfiguration() {}
 }
 describe('CaseCaseComponent', () => {
   let component: CasesCreateComponent;
@@ -47,7 +47,7 @@ describe('CaseCaseComponent', () => {
         SharedModule,
         SearchFiltersModule,
       ],
-      declarations: [CasesCreateComponent],
+      declarations: [ CasesCreateComponent ],
       providers: [
         PlaceholderService,
         CasesService,

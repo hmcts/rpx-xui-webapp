@@ -14,7 +14,7 @@ import * as fromCasesFeature from '../../store';
   selector: 'exui-filter-case',
   template: `
     <exui-page-wrapper [title]="'Create Case'">
-      <exui-ccd-connector 
+      <exui-ccd-connector
         *exuiFeatureToggle="'ccdCaseCreate'"
         [eventsBindings]="caseCreatFilteerBindings"
         [store]="store"
@@ -24,7 +24,6 @@ import * as fromCasesFeature from '../../store';
           [startButtonText]="startButtonText"
         ></ccd-create-case-filters>
       </exui-ccd-connector>
-      <a routerLink="/cases/case-create" class="button">Create case</a>
     </exui-page-wrapper>`,
   encapsulation: ViewEncapsulation.None
 })
@@ -39,6 +38,9 @@ export class CaseFilterComponent implements OnInit {
   ngOnInit(): void {
     this.fromCasesFeature = fromCasesFeature;
     this.startButtonText = 'Start';
+    /**
+     * Mapping CCD components eventsBindings to ExUI Actions
+     */
     this.caseCreatFilteerBindings = [
       {type: 'selectionSubmitted', action: 'CaseCreateFilterApply'},
       {type: 'selectionChanged', action: 'CaseCreateFilterChanged'}

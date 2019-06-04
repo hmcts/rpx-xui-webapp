@@ -45,11 +45,23 @@ export class ExuiLoggerComponent implements OnInit, OnDestroy {
   }
 
     ngOnDestroy(): void {
-      this.debugSubscribtion.unsubscribe();
-      this.infoSubscribtion.unsubscribe();
-      this.warningSubscribtion.unsubscribe();
-      this.errorSubscribtion.unsubscribe();
-      this.fatalSubscribtion.unsubscribe();
-      this.traceSubscribtion.unsubscribe();
+      if (this.debugSubscribtion) {
+        this.debugSubscribtion.unsubscribe();
+      }
+      if (this.infoSubscribtion) {
+        this.infoSubscribtion.unsubscribe();
+      }
+      if (this.warningSubscribtion) {
+        this.warningSubscribtion.unsubscribe();
+      }
+      if (this.errorSubscribtion) {
+        this.errorSubscribtion.unsubscribe();
+      }
+      if (this.fatalSubscribtion) {
+        this.fatalSubscribtion.unsubscribe();
+      }
+      if (this.traceSubscribtion) {
+        this.traceSubscribtion.unsubscribe();
+      }
     }
 }

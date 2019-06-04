@@ -6,7 +6,7 @@ describe('CasesReducer', () => {
     it('should return the default state', () => {
       const { initialState } = fromCases;
       const action = {} as any;
-      const state = fromCases.reducer(undefined, action);
+      const state = fromCases.reducerCreateCase(undefined, action);
 
       expect(state).toBe(initialState);
     });
@@ -16,7 +16,7 @@ describe('CasesReducer', () => {
     it('should set loading to true', () => {
       const { initialState } = fromCases;
       const action = new fromActions.ResetChange();
-      const state = fromCases.reducer(initialState, action);
+      const state = fromCases.reducerCreateCase(initialState, action);
 
       expect(state.loading).toEqual(false);
       expect(state.loaded).toEqual(false);

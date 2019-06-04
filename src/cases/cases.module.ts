@@ -30,12 +30,12 @@ import {EffectsModule} from '@ngrx/effects';
 import {reducers, effects} from './store';
 import {SharedModule} from '../app/shared/shared.module';
 import {HttpModule} from '@angular/http';
-
 // from containers
 import * as fromContainers from './containers';
 // from components
 import * as fromComponents from './components';
 import {ProvidersModule} from '../app/providers/providers.module';
+import {MatDialogModule} from '@angular/material';
 
 @NgModule({
   imports: [
@@ -50,7 +50,8 @@ import {ProvidersModule} from '../app/providers/providers.module';
     SharedModule,
     SearchFiltersModule,
     HttpModule,
-    ProvidersModule
+    ProvidersModule,
+    MatDialogModule
   ],
   declarations: [...fromContainers.containers, ...fromComponents.components],
   providers: [

@@ -1,8 +1,10 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import * as fromCaseCreate from '../../store';
-import {Store} from '@ngrx/store';
+import {select, Store} from '@ngrx/store';
 import * as fromCasesFeature from '../../../cases/store';
+import * as fromRoot from '../../../app/store';
 import {ActionBindingModel} from '../../models/create-case-actions.model';
+import {Subscription} from 'rxjs';
 /**
  * Entry component wrapper for CCD-CASE-CREATE
  * Smart Component
@@ -12,34 +14,44 @@ import {ActionBindingModel} from '../../models/create-case-actions.model';
   selector: 'exui-create-case',
   template: `
     <exui-page-wrapper>
-      <exui-ccd-connector *exuiFeatureToggle="'ccdCaseCreate'"
-        [eventsBindings]="caseCreateEventsBindings"
-        [store]="store"
-        [fromFeatureStore]="fromCasesFeature">
-          <ccd-case-create #ccdComponent
-            [jurisdiction]="jurisdictionId"
-            [caseType]="caseTypeId"
-            [event]="eventTriggerId">
+      <div *ngIf="caseCreateInputs.jurisdictionId">
+        <exui-ccd-connector
+          *exuiFeatureToggle="'ccdCaseCreate'"
+          [eventsBindings]="caseCreateEventsBindings"
+          [store]="store"
+          [fromFeatureStore]="fromCasesFeature">
+          <ccd-case-create
+            #ccdComponent
+            [jurisdiction]="caseCreateInputs.jurisdictionId"
+            [caseType]="caseCreateInputs.caseTypeId"
+            [event]="caseCreateInputs.eventId">
           </ccd-case-create>
-      </exui-ccd-connector>
+        </exui-ccd-connector>
+      </div>
     </exui-page-wrapper>
   `,
   encapsulation: ViewEncapsulation.None
 })
 export class CasesCreateComponent implements OnInit {
-  // TODO move this to store or better place
-  jurisdictionId = 'TEST';
-  caseTypeId = 'TestAddressBookCase';
-  eventTriggerId = 'createCase';
+  caseCreateInputs: {jurisdictionId: string; caseTypeId: string; eventId: string}
 
   caseCreateEventsBindings: ActionBindingModel[];
   fromCasesFeature: any;
+  inputSubscription: Subscription;
 
   constructor(private store: Store<fromCaseCreate.State>) {}
 
   ngOnInit(): void {
     this.fromCasesFeature = fromCasesFeature;
-
+    this.inputSubscription = this.store.pipe(select(fromCasesFeature.getCreateCaseFilterState))
+      .subscribe(caseFilterInput => {
+        if (!caseFilterInput.jurisdictionId) {
+          this.store.dispatch(new fromRoot.Go({
+            path: ['/cases/'],
+          }));
+        }
+        this.caseCreateInputs = caseFilterInput;
+      });
     /**
      * Mapping CCD components eventsBindings to ExUI Actions
      */

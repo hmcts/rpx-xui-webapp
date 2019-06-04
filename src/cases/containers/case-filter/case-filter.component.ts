@@ -22,8 +22,6 @@ import * as fromCasesFeature from '../../store';
         <ccd-create-case-filters #ccdComponent
           [isDisabled]="hasErrors()"
           [startButtonText]="startButtonText"
-          (selectionSubmitted)="apply($event)"
-          (selectionChanged)="resetErrors()"
         ></ccd-create-case-filters>
       </exui-ccd-connector>
       <a routerLink="/cases/case-create" class="button">Create case</a>
@@ -45,18 +43,6 @@ export class CaseFilterComponent implements OnInit {
       {type: 'selectionSubmitted', action: 'CaseCreateFilterApply'},
       {type: 'selectionChanged', action: 'CaseCreateFilterChanged'}
     ];
-  }
-
-  apply(selected: CreateCaseFiltersSelection) {
-    console.log(selected);
-    if (selected.eventId === 'create3') { // to sample failed callback
-      this.error = new HttpError();
-      this.error.error = 'error';
-    }
-  }
-
-  resetErrors(): void {
-    this.error = null;
   }
 
   hasErrors() {

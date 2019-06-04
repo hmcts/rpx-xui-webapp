@@ -19,13 +19,13 @@ export interface RouterStateUrl {
 export interface State {
   routerReducer: fromRouter.RouterReducerState<RouterStateUrl>;
   appConfig: fromApp.AppConfigState;
-  infoMessage: LoggerMessage
+  loggerState: LoggerMessage
 }
 
 export const reducers: ActionReducerMap<State> = {
   routerReducer: fromRouter.routerReducer,
   appConfig: fromApp.reducer,
-  infoMessage: loggerReducer
+  loggerState: loggerReducer
 };
 
 export class CustomSerializer
@@ -50,3 +50,7 @@ export const getRouterState = createFeatureSelector<
   >('routerReducer');
 
 export const getAppConfigState = createFeatureSelector<any>( 'appConfig' );
+
+export const getLoggerState = createFeatureSelector<LoggerMessage>(
+  'loggerState'
+);

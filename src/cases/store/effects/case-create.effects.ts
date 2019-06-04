@@ -21,6 +21,17 @@ export class CaseCreateEffects {
     })
   );
 
+  @Effect()
+  apply$ = this.actions$.pipe(
+    ofType(fromActions.APPLY_CHANGE),
+    map((action: fromActions.ApplyChange) => action.payload),
+    map(newCases => {
+      return new fromRoot.Go({
+        path: [`/cases/case-details/${newCases.caseId}`]
+      });
+    })
+  );
+
 }
 
 

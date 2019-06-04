@@ -1,5 +1,8 @@
-import {Component, OnInit} from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+
+import {select, Store} from '@ngrx/store';
+import * as fromCaseCreate from '../../store';
+import {Subscription} from 'rxjs';
 /**
  * Entry component
  * Dumb Component
@@ -9,22 +12,26 @@ import { ActivatedRoute } from '@angular/router';
   selector: 'exui-case-details',
   template: `
     <h1>Case Details Page</h1>
-    <ccd-case-view [hasPrint]="true"
+    <ccd-case-view [hasPrint]="true" *ngIf="caseId"
                      [case]="caseId"
                      [hasEventSelector]="true"></ccd-case-view>
   `
 })
-export class CaseDetailsComponent implements OnInit{
+export class CaseDetailsComponent implements OnInit, OnDestroy{
 
-  constructor() {}
+  constructor(private store: Store<fromCaseCreate.State>) {}
 
-  caseId = '1559225025259926';
-  eventTriggerId = ['enterCaseIntoLegacy'];
+  caseId;
+  $caeIdSubscription: Subscription;
 
   ngOnInit(): void {
+    this.$caeIdSubscription = this.store.pipe(select(fromCaseCreate.getCaseId))
+      .subscribe(caseId => this.caseId = caseId);
   }
 
-  cancel($event) {}
-  submit($event) {}
+  ngOnDestroy(): void {
+    this.$caeIdSubscription.unsubscribe();
+  }
+
 
 }

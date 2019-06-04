@@ -1,5 +1,4 @@
 import * as fromCases from '../actions/create-case.action';
-import {CREATE_CASE_FILTER_APPLY} from '../actions/create-case.action';
 
 export interface CreatedCaseModel {
   caseId: string;
@@ -20,7 +19,7 @@ export const initialState: CasesState = {
   loading: false,
 };
 
-export function reducer(
+export function reducerCreateCase(
   state = initialState,
   action: fromCases.CreateCasesAction
 ): CasesState {
@@ -46,3 +45,7 @@ export function reducer(
 
   return state;
 }
+
+
+export const getCreatedCase = (state: CasesState) => state.createdCase;
+export const getCaseFiltersState = (state: CasesState) => state.createCaseFilters;

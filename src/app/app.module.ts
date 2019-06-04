@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { AppComponent } from './containers/app/app.component';
 import { environment } from '../environments/environment';
 import { HttpClientModule } from '@angular/common/http';
@@ -70,6 +70,7 @@ import {LoggerModule as XuiLoggerModule} from './services/logger/logger.module';
       useClass: ConsoleLoggerService
     }
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule { }

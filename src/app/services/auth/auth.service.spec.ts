@@ -112,4 +112,13 @@ describe('AuthService', () => {
 
   });
 
+  describe('generateLoginUrl', () => {
+    it('should generate url', inject([AuthService], (service: AuthService) => {
+      const base = 'dummy';
+      const clientId = 'dummy';
+      const callback = `${service.apiBaseUrl}/dummy`;
+      expect(service.generateLoginUrl()).toEqual(`${base}/login?response_type=code&client_id=${clientId}&redirect_uri=${callback}`);
+    }));
+  });
+
 });

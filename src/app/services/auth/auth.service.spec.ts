@@ -52,6 +52,18 @@ class HttpClientMock {
 let deleteCookiesSpy;
 let routerNavigateSpy;
 
+class AppConfigServiceMock {
+  getRoutesConfig() {
+    return {
+      idam: {
+        idamLoginUrl: 'dummy',
+        idamClientID: 'dummy',
+        oauthCallbackUrl: 'dummy'
+      }
+    }
+  }
+}
+
 describe('AuthService', () => {
   beforeEach(() => {
     deleteCookiesSpy = spyOn(cookieService, 'removeAll');
@@ -62,7 +74,7 @@ describe('AuthService', () => {
       ],
       providers: [
         AuthService,
-        AppConfigService,
+        { provide: AppConfigService, useClass: AppConfigServiceMock},
         { provide: environment, useValue: config },
         { provide: Router, useValue: router },
         { provide: CookieService, useValue: cookieService },
@@ -75,13 +87,27 @@ describe('AuthService', () => {
     expect(service).toBeTruthy();
   }));
 
-  // To do fix
   describe('isAuthenticated', () => {
     it('should return false when jwt is expired, true when still valid', inject([AuthService], (service: AuthService) => {
       cookieService.set('__auth__', expiredJwt);
       expect(service.isAuthenticated()).toEqual(false);
       cookieService.set('__auth__', nonExpiredJwt);
       expect(service.isAuthenticated()).toEqual(true);
+    }));
+
+  });
+
+  describe('canActivate', () => {
+    it('should redirect to login if not authenticated', inject([AuthService], (service: AuthService) => {
+      cookieService.set('__auth__', expiredJwt);
+      const loginRedirectMock = spyOn(service, 'loginRedirect');
+      service.canActivate();
+      expect(loginRedirectMock).toHaveBeenCalled();
+    }));
+
+    it('should return true if authenticated', inject([AuthService], (service: AuthService) => {
+      cookieService.set('__auth__', nonExpiredJwt);
+      expect(service.canActivate()).toEqual(true);
     }));
 
   });

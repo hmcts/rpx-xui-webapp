@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import * as fromCaseCreate from '../../store';
 import {select, Store} from '@ngrx/store';
 import * as fromCasesFeature from '../../../cases/store';
@@ -32,23 +32,24 @@ import {Subscription} from 'rxjs';
   `,
   encapsulation: ViewEncapsulation.None
 })
-export class CasesCreateComponent implements OnInit {
+export class CasesCreateComponent implements OnInit, OnDestroy{
   caseCreateInputs: {jurisdictionId: string; caseTypeId: string; eventId: string}
 
   caseCreateEventsBindings: ActionBindingModel[];
   fromCasesFeature: any;
-  inputSubscription: Subscription;
+  $inputSubscription: Subscription;
 
   constructor(private store: Store<fromCaseCreate.State>) {}
 
   ngOnInit(): void {
     this.fromCasesFeature = fromCasesFeature;
-    this.inputSubscription = this.store.pipe(select(fromCasesFeature.getCreateCaseFilterState))
+    this.$inputSubscription = this.store.pipe(select(fromCasesFeature.getCreateCaseFilterState))
       .subscribe(caseFilterInput => {
         if (!caseFilterInput.jurisdictionId) {
           this.store.dispatch(new fromRoot.Go({
-            path: ['/cases/'],
+            path: ['/cases/case-filter'],
           }));
+          return;
         }
         this.caseCreateInputs = caseFilterInput;
       });
@@ -60,6 +61,10 @@ export class CasesCreateComponent implements OnInit {
       {type: 'submitted', action: 'ApplyChange'}
     ];
 
+  }
+
+  ngOnDestroy(): void {
+    this.$inputSubscription.unsubscribe();
   }
 
 }

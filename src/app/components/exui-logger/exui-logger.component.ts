@@ -1,15 +1,9 @@
-import {Component, Input, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import { NGXLogger } from 'ngx-logger';
 import { LoggerMessage } from 'src/app/services/logger/reducers/logger.reducer';
 import { Store, select } from '@ngrx/store';
-import { 
-  getDebugMessagesState, 
-  getInfoMessagesState, 
-  getWarningMessagesState, 
-  getErrorMessagesState, 
-  getFatalMessagesState, 
-  getTraceMessagesState 
-} from 'src/app/services/logger/selectors/logger.selector';
+import { getDebugMessagesState, getInfoMessagesState, getWarningMessagesState, getErrorMessagesState,
+  getFatalMessagesState, getTraceMessagesState } from 'src/app/services/logger/selectors/logger.selector';
 
 @Component({
   selector: 'exui-logger',

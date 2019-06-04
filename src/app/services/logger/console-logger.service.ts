@@ -39,28 +39,28 @@ export class ConsoleLoggerService implements Logger {
 
   trace(message: string): void {
     const loggerMessage = this.getLoggerMessage(message);
-      this.store.dispatch(new Trace(loggerMessage));
+    this.store.dispatch(new Trace(loggerMessage));
   }
 
   info(message: string): void {
     const loggerMessage = `${message} ${this.user} ${now}`;
-      this.store.dispatch(new Info(loggerMessage));
+    this.store.dispatch(new Info(loggerMessage));
   }
 
   warn(message: string): void {
     const loggerMessage = this.getLoggerMessage(message);
-      this.store.dispatch(new Warning(loggerMessage));
+    this.store.dispatch(new Warning(loggerMessage));
   }
 
   error(message: string): void {
     const loggerMessage = this.getLoggerMessage(message);
-      this.store.dispatch(new Error(loggerMessage));
+    this.store.dispatch(new Error(loggerMessage));
   }
   fatal(message: string): void {
     const loggerMessage = this.getLoggerMessage(message);
     this.store.dispatch(new Fatal(loggerMessage));
   }
-  getLoggerMessage(message) : string {
+  getLoggerMessage(message): string {
     return `${message} ${this.user} ${now}`;
   }
 }

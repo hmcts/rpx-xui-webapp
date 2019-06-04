@@ -1,12 +1,12 @@
 import { LoggerStateAction, LoggerStateActionTypes } from '../actions/logger-state.actions';
 
 export interface LoggerMessage {
-    infoMessages: Array<string>,
-    errorMessages: Array<string>,
-    traceMessages: Array<string>,
-    warningMessages: Array<string>,
-    debugMessages: Array<string>,
-    fatalMessages: Array<string>
+    infoMessages: Array<string>;
+    errorMessages: Array<string>;
+    traceMessages: Array<string>;
+    warningMessages: Array<string>;
+    debugMessages: Array<string>;
+    fatalMessages: Array<string>;
 }
 
 export const initialState: LoggerMessage = {
@@ -18,21 +18,21 @@ export const initialState: LoggerMessage = {
     fatalMessages: []
 };
 
-export function loggerReducer(state = initialState, action: LoggerStateAction) : LoggerMessage {
+export function loggerReducer(state = initialState, action: LoggerStateAction): LoggerMessage {
     const message = action.payload;
-    switch(action.type) {
+    switch (action.type) {
         case LoggerStateActionTypes.Info:
                 const infoMessages = [...state.infoMessages, message];
                 return {
                 ...state,
                 infoMessages
-                };  
+                };
         case LoggerStateActionTypes.Error:
             const errorMessages = [...state.errorMessages, message];
             return {
             ...state,
             errorMessages
-            };       
+            };
         case LoggerStateActionTypes.Warning:
             const warningMessages = [...state.warningMessages, message];
             return {
@@ -43,10 +43,10 @@ export function loggerReducer(state = initialState, action: LoggerStateAction) :
             const fatalMessages = [...state.fatalMessages, message];
             return {
             ...state,
-            fatalMessages: fatalMessages
+            fatalMessages
             };
         case LoggerStateActionTypes.Debug:
-                const debugMessages =  [...state.debugMessages, message];
+            const debugMessages =  [...state.debugMessages, message];
             return {
             ...state,
             debugMessages

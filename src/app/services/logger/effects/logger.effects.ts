@@ -1,17 +1,15 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import {Effect, Actions, ofType} from '@ngrx/effects';
-import { LoggerStateAction, LoggerStateActionTypes } from '../actions/logger-state.actions'
+import { LoggerStateAction, LoggerStateActionTypes } from '../actions/logger-state.actions';
 import {  map } from 'rxjs/operators';
 import { NGXLogger } from 'ngx-logger';
 import 'rxjs/add/operator/do';
 
 @Injectable()
 
-export class LoggerEffects{
+export class LoggerEffects {
     constructor(private actions$: Actions,
-        private ngxLogger: NGXLogger){
-        }
-    
+                private ngxLogger: NGXLogger) {}
     @Effect({dispatch: false})
     infoConfig = this.actions$.pipe(
         ofType<LoggerStateAction>(LoggerStateActionTypes.Info),

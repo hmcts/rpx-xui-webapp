@@ -60,7 +60,7 @@ class AppConfigServiceMock {
         idamClientID: 'dummy',
         oauthCallbackUrl: 'dummy'
       }
-    }
+    };
   }
 }
 

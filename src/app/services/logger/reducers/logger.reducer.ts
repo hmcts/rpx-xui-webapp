@@ -19,44 +19,45 @@ export const initialState: LoggerMessage = {
 };
 
 export function loggerReducer(state = initialState, action: LoggerStateAction) : LoggerMessage {
+    const message = action.payload;
     switch(action.type) {
         case LoggerStateActionTypes.Info:
-            return {
-            ...state,
-            infoMessages: insertMessage(state.infoMessages, action)
-            };
+                const infoMessages = [...state.infoMessages, message];
+                return {
+                ...state,
+                infoMessages
+                };  
         case LoggerStateActionTypes.Error:
+            const errorMessages = [...state.errorMessages, message];
             return {
             ...state,
-            errorMessages: insertMessage(state.errorMessages, action)
-            };        
+            errorMessages
+            };       
         case LoggerStateActionTypes.Warning:
+            const warningMessages = [...state.warningMessages, message];
             return {
             ...state,
-            warningMessages: insertMessage(state.warningMessages, action)
+            warningMessages
             };
         case LoggerStateActionTypes.Fatal:
+            const fatalMessages = [...state.fatalMessages, message];
             return {
             ...state,
-            fatalMessages: insertMessage(state.fatalMessages, action)
+            fatalMessages: fatalMessages
             };
         case LoggerStateActionTypes.Debug:
+                const debugMessages =  [...state.debugMessages, message];
             return {
             ...state,
-            debugMessages: insertMessage(state.debugMessages, action)
+            debugMessages
             };
         case LoggerStateActionTypes.Trace:
+            const traceMessages =  [...state.traceMessages, message];
             return {
             ...state,
-            traceMessages: insertMessage(state.traceMessages, action)
+            traceMessages
             };
         default:
             return state;
+        }
     }
-
-    function insertMessage(array, action) {
-        let newArray = array.slice()
-        newArray.splice(action.index, 0, action.payload)
-        return newArray
-      } 
-}

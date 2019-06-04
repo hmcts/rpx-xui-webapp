@@ -19,7 +19,7 @@ export interface RouterStateUrl {
 export interface State {
   routerReducer: fromRouter.RouterReducerState<RouterStateUrl>;
   appConfig: fromApp.AppConfigState;
-  loggerState: LoggerMessage
+  loggerState: LoggerMessage;
 }
 
 export const reducers: ActionReducerMap<State> = {

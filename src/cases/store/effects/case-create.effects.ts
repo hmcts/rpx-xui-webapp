@@ -4,6 +4,7 @@ import {Actions, Effect, ofType} from '@ngrx/effects';
 import {map} from 'rxjs/operators';
 import * as fromRoot from '../../../app/store';
 import * as fromActions from '../actions';
+import {CREATE_CASE_FILTER_APPLY} from '../actions';
 
 @Injectable()
 export class CaseCreateEffects {
@@ -13,10 +14,10 @@ export class CaseCreateEffects {
 
   @Effect()
   applyChangeCaseCreate$ = this.actions$.pipe(
-    ofType(fromActions.APPLY_CHANGE),
+    ofType(fromActions.CREATE_CASE_FILTER_APPLY),
     map(payload => {
       return new fromRoot.Go({
-        path: ['/cases/case-confirmation']
+        path: ['/cases/case-create']
       });
     })
   );

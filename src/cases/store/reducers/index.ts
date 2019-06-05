@@ -9,7 +9,7 @@ export interface State {
 }
 
 export const reducers: ActionReducerMap<State> = {
-  caseCreate: fromCaseCreate.reducer,
+  caseCreate: fromCaseCreate.reducerCreateCase,
   caseSearchFilter: fromCaseSearchFilters.reducer
 };
 
@@ -18,5 +18,7 @@ export const getCaseFeatureState = createFeatureSelector<State>(
 );
 
 export * from './search-filter.reducer';
+export * from './create-case.reducer';
+
 
 

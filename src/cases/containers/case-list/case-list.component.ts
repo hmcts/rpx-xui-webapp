@@ -16,11 +16,7 @@ import {Component, OnInit, ViewEncapsulation} from '@angular/core';
   `,
   encapsulation: ViewEncapsulation.None
 })
-export class CaseListComponent implements OnInit {
+export class CaseListComponent {
   constructor() {}
-
-  ngOnInit(): void {
-
-  }
 
 }

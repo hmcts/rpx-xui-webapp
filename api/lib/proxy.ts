@@ -1,3 +1,4 @@
+import axios from 'axios'
 import * as express from 'express'
 import * as striptags from 'striptags'
 import { http } from '.'
@@ -10,7 +11,9 @@ import { EnhancedRequest } from './models'
 function setHeaders(req: EnhancedRequest) {
     const headers: any = {}
 
-    headers['content-type'] = req.headers['content-type']
+    headers['content-type'] = req.headers['content-type'] ?  req.headers['content-type']  :
+    axios.defaults.headers.common['Content-Type']
+    
     if (req.headers.accept) {
         headers.accept = req.headers.accept || null
     }

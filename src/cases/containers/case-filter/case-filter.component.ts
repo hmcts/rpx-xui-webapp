@@ -22,7 +22,7 @@ import * as fromCasesFeature from '../../store';
           [fromFeatureStore]="fromCasesFeature">
           <ccd-create-case-filters
             #ccdComponent
-            [isDisabled]="hasErrors()"
+            [attr.isDisabled]="false"
             [startButtonText]="startButtonText"
           ></ccd-create-case-filters>
         </exui-ccd-connector>
@@ -31,7 +31,6 @@ import * as fromCasesFeature from '../../store';
   encapsulation: ViewEncapsulation.None
 })
 export class CaseFilterComponent implements OnInit {
-  error: HttpError;
   startButtonText: string;
   caseCreatFilterBindings: ActionBindingModel[];
   fromCasesFeature: any;
@@ -47,10 +46,6 @@ export class CaseFilterComponent implements OnInit {
       {type: 'selectionSubmitted', action: 'CaseCreateFilterApply'},
       {type: 'selectionChanged', action: 'CaseCreateFilterChanged'}
     ];
-  }
-
-  hasErrors() {
-    return this.error;
   }
 
 }

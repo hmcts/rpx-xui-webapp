@@ -32,8 +32,8 @@ import {Subscription} from 'rxjs';
   `,
   encapsulation: ViewEncapsulation.None
 })
-export class CasesCreateComponent implements OnInit, OnDestroy{
-  caseCreateInputs: {jurisdictionId: string; caseTypeId: string; eventId: string}
+export class CasesCreateComponent implements OnInit, OnDestroy {
+  caseCreateInputs: {jurisdictionId: string; caseTypeId: string; eventId: string};
 
   caseCreateEventsBindings: ActionBindingModel[];
   fromCasesFeature: any;

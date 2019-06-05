@@ -17,7 +17,7 @@ import {Subscription} from 'rxjs';
                      [hasEventSelector]="true"></ccd-case-view>
   `
 })
-export class CaseDetailsComponent implements OnInit, OnDestroy{
+export class CaseDetailsComponent implements OnInit, OnDestroy {
 
   constructor(private store: Store<fromCaseCreate.State>) {}
 

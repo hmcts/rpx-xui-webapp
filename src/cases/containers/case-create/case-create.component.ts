@@ -6,7 +6,7 @@ import * as fromRoot from '../../../app/store';
 import {ActionBindingModel} from '../../models/create-case-actions.model';
 import {Subscription} from 'rxjs';
 /**
- * Entry component wrapper for CCD-CASE-CREATE
+ * Entry component wrapper for CCD-CASE-CREATE-FILTER
  * Smart Component
  * param TBC
  */
@@ -43,6 +43,7 @@ export class CasesCreateComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.fromCasesFeature = fromCasesFeature;
+    // TODO try to be nice and remove subscription use pipe | instead
     this.$inputSubscription = this.store.pipe(select(fromCasesFeature.getCreateCaseFilterState))
       .subscribe(caseFilterInput => {
         if (!caseFilterInput.jurisdictionId) {

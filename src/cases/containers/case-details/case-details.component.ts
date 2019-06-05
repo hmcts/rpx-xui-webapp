@@ -4,9 +4,7 @@ import {select, Store} from '@ngrx/store';
 import * as fromCaseCreate from '../../store';
 import {Subscription} from 'rxjs';
 /**
- * Entry component
- * Dumb Component
- * param TBC
+ * THIS IS ONLY A PLACEHOLDER THE STORY FOR THIS YET NEEDS TO BE RUN
  */
 @Component({
   selector: 'exui-case-details',

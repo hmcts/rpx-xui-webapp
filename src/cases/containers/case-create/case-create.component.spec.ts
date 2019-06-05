@@ -87,6 +87,8 @@ describe('CaseCaseComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CasesCreateComponent);
     component = fixture.componentInstance;
+    component.caseCreateInputs = {jurisdictionId: '', caseTypeId: '', eventId: ''};
+
     fixture.detectChanges();
 
   });

@@ -4,6 +4,7 @@ import { LoggerService } from '../../services/logger/logger.service';
 import { RouterModule } from '@angular/router';
 import {ROUTES} from '../../app.routes';
 import {RouterTestingModule} from '@angular/router/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 
 describe('AppComponent', () => {
@@ -12,6 +13,7 @@ describe('AppComponent', () => {
       imports: [
         RouterTestingModule,
       ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [
         AppComponent
       ],

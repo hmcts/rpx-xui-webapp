@@ -7,6 +7,7 @@ export enum LoggerStateActionTypes {
   Warning = '[LoggerState] Warning',
   Error = '[LoggerState] Error',
   Fatal = '[LoggerState] Fatal',
+  Clear = '[LoggerState] Clear'
 }
 
 export class Debug implements Action {
@@ -34,6 +35,10 @@ export class Fatal implements Action {
   readonly type = LoggerStateActionTypes.Fatal;
   constructor(public payload: string) {}
 }
+export class Clear implements Action {
+  readonly type = LoggerStateActionTypes.Clear;
+  constructor(public payload: string) {}
+}
 
 
-export type LoggerStateAction = Debug | Trace | Info | Warning | Error | Fatal;
+export type LoggerStateAction = Debug | Trace | Info | Warning | Error | Fatal | Clear;

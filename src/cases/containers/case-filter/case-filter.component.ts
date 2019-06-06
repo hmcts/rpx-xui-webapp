@@ -1,20 +1,51 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {HttpError} from '@hmcts/ccd-case-ui-toolkit';
+import {Store} from '@ngrx/store';
+import * as fromCaseCreate from '../../store/reducers';
+import {ActionBindingModel} from '../../models/create-case-actions.model';
+import * as fromCasesFeature from '../../store';
 
 /**
- * Entry component wrapper for CCD-CASE-CREATE
+ * Entry component wrapper for CCD-CASE-FILTER component
  * Smart Component
- * param TBC
+ * injected by the root
  */
 @Component({
   selector: 'exui-filter-case',
-  template: `<exui-page-wrapper [title]="'Case Filter'">
-    <a routerLink="/cases/case-create" class="button">Create case</a></exui-page-wrapper>`,
+  template: `
+    <exui-page-wrapper [title]="'Create Case'">
+      <div class="width-50">
+        <exui-ccd-connector
+          *exuiFeatureToggle="'ccdCaseCreate'"
+          [eventsBindings]="caseCreatFilterBindings"
+          [store]="store"
+          [fromFeatureStore]="fromCasesFeature">
+          <ccd-create-case-filters
+            #ccdComponent
+            [attr.isDisabled]="false"
+            [startButtonText]="startButtonText"
+          ></ccd-create-case-filters>
+        </exui-ccd-connector>
+      </div>
+    </exui-page-wrapper>`,
   encapsulation: ViewEncapsulation.None
 })
 export class CaseFilterComponent implements OnInit {
-  constructor() {}
+  startButtonText: string;
+  caseCreatFilterBindings: ActionBindingModel[];
+  fromCasesFeature: any;
+  constructor(private store: Store<fromCaseCreate.State>) {}
 
   ngOnInit(): void {
+    this.fromCasesFeature = fromCasesFeature;
+    this.startButtonText = 'Start'; // TODO add this to some config file.
+    /**
+     * Mapping CCD components eventsBindings to ExUI Actions
+     */
+    this.caseCreatFilterBindings = [
+      {type: 'selectionSubmitted', action: 'CaseCreateFilterApply'},
+      {type: 'selectionChanged', action: 'CaseCreateFilterChanged'}
+    ];
   }
 
 }

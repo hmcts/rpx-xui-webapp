@@ -35,7 +35,8 @@ import {ProvidersModule} from '../app/providers/providers.module';
     SharedModule,
     SearchFiltersModule,
     HttpModule,
-    ProvidersModule
+    ProvidersModule,
+    SearchResultModule,
   ],
   declarations: [...fromContainers.containers, ...fromComponents.components],
   providers: [

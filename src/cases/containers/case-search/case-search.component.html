@@ -10,5 +10,23 @@
           </ccd-search-filters-wrapper>
         </exui-ccd-connector>
       </div>
+      <div class="govuk-grid-column-two-third">
+        <exui-ccd-connector
+          [eventsBindings]="caseSearchEventsBindings"
+          [store]="store"
+          [fromFeatureStore]="fromCasesFeature">
+          <ccd-search-result #ccdComponent
+            *ngIf="resultView"
+            [jurisdiction]="jurisdiction"
+            [caseType]="caseType"
+            [caseState]="caseState"
+            [caseFilterFG]="fg"
+            [resultView]="resultView"
+            [paginationMetadata]="paginationMetadata"
+            [metadataFields]="metadataFields"
+            (changePage)="apply($event)">
+          </ccd-search-result>
+        </exui-ccd-connector>
+      </div>
     </div>
 </exui-page-wrapper>

@@ -1,7 +1,7 @@
 export class Entity {
-  id: string | Array<string> ;
-  value: {id: string; [key: string]: any};
-  [key: string]: {id: string; [key: string]: any} | Array<string> | string;
+  id: string | Array<string>  | null;
+  value: {id: string; [key: string]: any} | any;
+  [key: string]: {id: string; [key: string]: any} | Array<string> | string | any ;
   constructor(obj: any) {
     this.value = obj;
     if (obj instanceof Array) {
@@ -10,6 +10,7 @@ export class Entity {
         this.id.push(o.id);
         this[o.id] = o;
       }
+    } else if(typeof obj === 'string') {
     } else {
       this.id = obj.id;
       this[obj.id] = obj;

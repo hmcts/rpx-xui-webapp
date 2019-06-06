@@ -1,11 +1,13 @@
 import { Entity } from '../helpers/entity';
 import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
 import * as fromCases from '../actions/case-search.action';
+import {SUCCESS} from '../actions/case-search.action';
 
 // todo this is just a place holder
 export interface SearchState {
   metadataFields: Entity;
   jurisdiction: Entity;
+  searchResult: any;
   caseType: Entity;
   loading: boolean;
   loaded: boolean;
@@ -23,6 +25,14 @@ export function reducer( state , action: fromCases.CaseSearchAction): SearchStat
           caseType,
           loading: false,
           loaded: true
+      };
+    }
+
+
+    case fromCases.SUCCESS: {
+      return {
+        ...state,
+        searchResult: action.payload
       };
     }
 

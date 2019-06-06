@@ -32,4 +32,5 @@ export class SearchFailure implements Action {
 export type CaseSearchAction =
   | JurisdictionSelected
   | Applied
-  | Reset;
+  | Reset
+  | SearchSuccess;

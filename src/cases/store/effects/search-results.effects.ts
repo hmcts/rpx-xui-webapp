@@ -1,33 +1,29 @@
-import { APPLIED } from './../actions/case-search.action';
-import { SearchService, SearchResultView } from '@hmcts/ccd-case-ui-toolkit';
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { map } from 'rxjs/operators';
 import { catchError, mergeMap } from 'rxjs/operators';
 import { of } from 'rxjs';
-import * as fromActions from '../actions';
 import { switchMap } from 'rxjs-compat/operator/switchMap';
+import * as fromAction from '../actions';
+import {SearchServiceProxyService} from '../../services/search-service-proxy.service';
 
 @Injectable()
 export class SearchEffects {
   constructor(
     private actions$: Actions,
-    private searchService: SearchService) {}
-
+    private searchProxyServce: SearchServiceProxyService) {}
 
   @Effect()
-  searchCaseResults$ = this.actions$.pipe(
-    ofType(fromActions.APPLIED),
-    map((action: fromActions.Applied) => action.payload),
-    switchMap(getSearchResults));
-
-  private getSearchResults(payload: any) {
-    return this.searchService.search(payload.jurisdiction.id, payload.caseType.id, {}, {}, null);
-    map(returnedItems => {
-          return new fromActions.SearchSuccess(payload)
-          }),
-    catchError(error => of(new fromActions.SearchFailure(error)))
-  }
+  postRegistrationFormData$ = this.actions$.pipe(
+    ofType(fromAction.APPLIED),
+    map((action: fromAction.Applied) => action.payload),
+    mergeMap((payload) => {
+      return this.searchProxyServce.getSearch(payload).pipe(
+        map(obj => {
+          return new fromAction.SearchSuccess(obj);
+        }),
+        catchError(error => of(new fromAction.SearchFailure(error)))
+      );
     })
   );
 

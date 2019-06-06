@@ -4,3 +4,4 @@ import { SearchEffects } from './search-results.effects';
 export const effects: any[] = [CaseCreateEffects, SearchEffects];
 
 export * from './case-create.effects';
+export * from './search-results.effects';

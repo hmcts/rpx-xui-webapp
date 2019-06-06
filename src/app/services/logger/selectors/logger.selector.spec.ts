@@ -2,7 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { StoreModule, Store, combineReducers } from '@ngrx/store';
 import * as fromRoot from '../../../../app/store/reducers';
 import * as fromReducers from '../reducers';
-import { getLogMessagesState, getInfoMessagesState, getErrorMessagesState, getWarningMessagesState, getDebugMessagesState, getTraceMessagesState, getFatalMessagesState } from './logger.selector';
+import { getLogMessagesState, getInfoMessagesState, getErrorMessagesState, getWarningMessagesState,
+  getDebugMessagesState, getTraceMessagesState, getFatalMessagesState } from './logger.selector';
 import { Clear, Info, Error, Warning, Debug, Trace, Fatal } from '../actions/logger-state.actions';
 import { initialState } from '../reducers/logger.reducer';
 

@@ -13,10 +13,21 @@ export class CaseCreateEffects {
 
   @Effect()
   applyChangeCaseCreate$ = this.actions$.pipe(
-    ofType(fromActions.APPLY_CHANGE),
+    ofType(fromActions.CREATE_CASE_FILTER_APPLY),
     map(payload => {
       return new fromRoot.Go({
-        path: ['/cases/case-confirmation']
+        path: ['/cases/case-create']
+      });
+    })
+  );
+
+  @Effect()
+  apply$ = this.actions$.pipe(
+    ofType(fromActions.APPLY_CHANGE),
+    map((action: fromActions.ApplyChange) => action.payload),
+    map(newCases => {
+      return new fromRoot.Go({
+        path: [`/cases/case-details/${newCases.caseId}`]
       });
     })
   );

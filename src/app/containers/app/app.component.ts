@@ -1,7 +1,7 @@
 import { Component, ViewEncapsulation, OnInit } from '@angular/core';
 import { LoggerService } from '../../services/logger/logger.service';
 import * as fromActions from '../../store';
-import { select, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'exui-root',

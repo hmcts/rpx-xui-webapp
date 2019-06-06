@@ -1,4 +1,4 @@
-import { Entity } from '../helpers/entity';
+import { Entity } from '../../../app/store/helpers/entity';
 import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
 import * as fromCases from '../actions/case-search.action';
 

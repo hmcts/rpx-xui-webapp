@@ -23,7 +23,7 @@ export class ExuiLoggerComponent implements OnInit, OnDestroy {
   fatalSubscribtion: any;
   traceSubscribtion: any;
 
-  constructor(private ngxLogger: NGXLogger, private store: Store<LoggerMessage>, 
+  constructor(private ngxLogger: NGXLogger, private store: Store<LoggerMessage>,
               private logger: LoggerService) { }
   @Input() title: string;
   ngOnInit(): void {

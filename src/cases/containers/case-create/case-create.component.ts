@@ -7,8 +7,8 @@ import {ActionBindingModel} from '../../models/create-case-actions.model';
 import {Subscription} from 'rxjs';
 /**
  * Entry component wrapper for CddCreateCaseFilter
- * Smart Component
- * param TBC
+ * Smart Component consuming <ccd-case-create>
+ * Initialized from routing
  */
 @Component({
   selector: 'exui-create-case',
@@ -29,6 +29,7 @@ export class CasesCreateComponent implements OnInit, OnDestroy {
     // TODO try to be nice and remove subscription use pipe | instead
     this.$inputSubscription = this.store.pipe(select(fromCases.getCreateCaseFilterState))
       .subscribe(caseFilterInput => {
+        // if state is reseated then redirect
         if (!caseFilterInput.jurisdictionId) {
           this.store.dispatch(new fromRoot.Go({
             path: ['/cases/case-list'],

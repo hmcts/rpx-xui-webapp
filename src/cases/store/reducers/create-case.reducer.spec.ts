@@ -36,4 +36,17 @@ describe('CasesReducer', () => {
     });
   });
 
+  describe('CREATE_CASE_RESET action', () => {
+    it('should reset to init', () => {
+      const { initialState } = fromCases;
+      const action = new fromActions.CreateCaaseReset();
+      const state = fromCases.reducerCreateCase(initialState, action);
+
+      expect(state.loading).toEqual(false);
+      expect(state.loaded).toEqual(false);
+      expect(state.createCaseFilters).toEqual({});
+      expect(state.createdCase).toEqual({});
+    });
+  });
+
 });

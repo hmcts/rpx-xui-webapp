@@ -22,7 +22,6 @@ import * as fromContainers from './containers';
 // from components
 import * as fromComponents from './components';
 import {ProvidersModule} from '../app/providers/providers.module';
-import {SearchServiceProxyService} from './services/search-service-proxy.service';
 
 @NgModule({
   imports: [
@@ -57,8 +56,7 @@ import {SearchServiceProxyService} from './services/search-service-proxy.service
       provide: AbstractAppConfig,
       useExisting: AppConfig
     },
-    ScrollToService,
-    SearchServiceProxyService
+    ScrollToService
   ]
 })
 /**

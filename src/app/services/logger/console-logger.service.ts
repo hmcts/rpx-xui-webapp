@@ -3,8 +3,8 @@ import { Logger } from './logger.service';
 import { environment } from '../../../environments/environment';
 import { CookieService } from 'ngx-cookie';
 import { Store } from '@ngrx/store';
-import { LoggerState } from './reducers';
 import {  Debug, Trace, Info, Warning, Error, Fatal } from '../../store/actions/logger-state.actions';
+import { LoggerMessage } from 'src/app/store/reducers/logger.reducer';
 
 const now = Date();
 
@@ -18,7 +18,7 @@ export class ConsoleLoggerService implements Logger {
 
  constructor(
    private cookieService: CookieService,
-   private store: Store<LoggerState>) {
+   private store: Store<LoggerMessage>) {
     this.COOKIE_KEYS = {
       TOKEN: environment.cookies.token,
       USER: environment.cookies.userId

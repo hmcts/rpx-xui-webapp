@@ -10,7 +10,7 @@ export const configs = {
     local,
 }
 
-export const configEnv = process ? process.env.JUI_ENV || 'local' : 'local'
+export const configEnv = process ? process.env.XUI_ENV || 'local' : 'local'
 export const baseConfig = { ...application }
 export const config = { ...baseConfig, ...configs[configEnv].default }
 

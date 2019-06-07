@@ -9,6 +9,7 @@ module "app" {
     source = "git@github.com:hmcts/cnp-module-webapp?ref=master"
     product = "${local.app_full_name}"
     location = "${var.location}"
+    env = "${var.env}"
     XUI_ENV = "${var.env}"
     ilbIp = "${var.ilbIp}"
     subscription = "${var.subscription}"

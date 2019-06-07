@@ -9,7 +9,6 @@ import { getDebugMessagesState, getInfoMessagesState, getWarningMessagesState, g
   selector: 'exui-logger',
   template: `
     <div>
-        <p>{{message}}<p>
     <div>
   `
 })

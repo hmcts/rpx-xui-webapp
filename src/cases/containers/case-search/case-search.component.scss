@@ -1,0 +1,22 @@
+.search-block{
+  margin: 10px;
+  display: inline-block;
+  width:100vw;
+
+  .filter-block{
+    display:inline-block;
+    width: 15vw;
+    margin-right: 20px;
+    border-style: solid;
+    border-color: lightgray;
+    border-width: 1px;
+    padding: 20px;
+  }
+  .results-block{
+    display:inline-block;
+    width:70vw;
+    vertical-align: top;
+    height: 100%;
+    padding: 20px;
+  }
+}

@@ -1,6 +1,6 @@
 <exui-page-wrapper [title]="'Search'">
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-one-third">
+    <div class="search-block">
+      <div class="filter-block">
         <exui-ccd-connector
           [eventsBindings]="caseSearchEventsBindings"
           [store]="store"
@@ -11,7 +11,7 @@
           </ccd-search-filters-wrapper>
         </exui-ccd-connector>
       </div>
-      <div class="govuk-grid-column-two-third">
+      <div class="results-block">
         <exui-ccd-connector
           [eventsBindings]="caseSearchEventsBindings"
           [store]="store"

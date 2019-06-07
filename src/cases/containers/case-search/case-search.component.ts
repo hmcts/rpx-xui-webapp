@@ -16,6 +16,7 @@ import { AppConfig } from 'src/app/services/ccd-config/ccd-case.config';
 @Component({
   selector: 'exui-search-case',
   templateUrl: 'case-search.component.html',
+  styleUrls:['case-search.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class CaseSearchComponent implements OnInit {
@@ -39,17 +40,22 @@ export class CaseSearchComponent implements OnInit {
     const state = this.store.pipe(select(fromCasesFeature.getSearchState));
 
     state.subscribe(st => {
-      if (typeof st !== 'undefined' ) {
+      if (typeof st !== 'undefined'  && st !== null) {
         this.jurisdiction = st.jurisdiction.value as Jurisdiction;
         this.caseType = st.caseType.value as CaseType;
         this.metadataFields = st.metadataFields.value as Array<string>;
         this.caseState = this.caseType.states[0];
-        if (st.searchResult !== null){
-          this.paginationMetadata = new PaginationMetadata();
-          this.paginationMetadata.total_results_count = st.searchResult.results.length;
-          this.paginationMetadata.total_pages_count = Math.ceil(st.searchResult.results.length / 10);
-          this.resultView = st.searchResult;
-        }
+        const lfg = JSON.parse(localStorage.getItem('search-form-group-value'));
+        this.searchService.search( this.jurisdiction.id, this.caseType.id, this.metadataFields, lfg, null ).subscribe(
+          data => {
+            this.paginationMetadata = new PaginationMetadata();
+            this.paginationMetadata.total_results_count = data.results.length;
+            this.paginationMetadata.total_pages_count = Math.ceil(data.results.length / 10);
+            this.resultView = data;
+          });
+
+      } else if( st === null){
+        this.resultView = null;
       }
     });
   }

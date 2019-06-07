@@ -1,3 +1,7 @@
 $govuk-global-styles: true;
 @import "~govuk-frontend/all";
 @import "~@hmcts/frontend/all";
+.govuk-width-container{
+  width: 100vw;
+  margin: 0;
+}

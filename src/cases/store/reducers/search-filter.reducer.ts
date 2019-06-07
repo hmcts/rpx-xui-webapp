@@ -7,7 +7,6 @@ import {SUCCESS} from '../actions/case-search.action';
 export interface SearchState {
   metadataFields: Entity;
   jurisdiction: Entity;
-  searchResult: any;
   caseType: Entity;
   loading: boolean;
   loaded: boolean;
@@ -24,7 +23,6 @@ export function reducer( state , action: fromCases.CaseSearchAction): SearchStat
           metadataFields,
           jurisdiction,
           caseType,
-          searchResult,
           loading: false,
           loaded: true
       };

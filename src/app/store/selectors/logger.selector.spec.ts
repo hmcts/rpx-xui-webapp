@@ -1,24 +1,25 @@
 import { TestBed } from '@angular/core/testing';
 import { StoreModule, Store, combineReducers } from '@ngrx/store';
 import * as fromRoot from '../reducers';
-import * as fromReducers from '../../services/logger/reducers';
 import { getLogMessagesState, getInfoMessagesState, getErrorMessagesState, getWarningMessagesState,
   getDebugMessagesState, getTraceMessagesState, getFatalMessagesState } from './logger.selector';
 import { Clear, Info, Error, Warning, Debug, Trace, Fatal } from '../actions/logger-state.actions';
-import { initialState } from '../reducers/logger.reducer';
+import { initialState, LoggerMessage, loggerReducer } from '../reducers/logger.reducer';
 
 describe('Logger Selectors', () => {
-    let store: Store<fromReducers.LoggerState>;
+    let store: Store<LoggerMessage>;
+
     beforeEach(() => {
       TestBed.configureTestingModule({
         imports: [
           StoreModule.forRoot({
             ...fromRoot.reducers,
-            products: combineReducers(fromReducers.reducers),
+            products: combineReducers(loggerReducer),
           }),
         ],
       });
       store = TestBed.get(Store);
+
       spyOn(store, 'dispatch').and.callThrough();
     });
 
@@ -29,6 +30,7 @@ describe('Logger Selectors', () => {
          store
             .select(getLogMessagesState)
             .subscribe(value => (result = value));
+         console.log('result is ' + result);
          expect(result).toEqual(initialState);
         });
       });

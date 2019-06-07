@@ -4,7 +4,7 @@ import { LoggerMessage } from 'src/app/services/logger/reducers/logger.reducer';
 import { Store, select } from '@ngrx/store';
 import { getDebugMessagesState, getInfoMessagesState, getWarningMessagesState, getErrorMessagesState,
   getFatalMessagesState, getTraceMessagesState } from 'src/app/services/logger/selectors/logger.selector';
-import { LoggerService } from '../logger.service';
+import { LoggerService } from '../../services/logger/logger.service';
 
 @Component({
   selector: 'exui-logger',

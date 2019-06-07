@@ -4,7 +4,7 @@ locals {
     local_env = "${(var.env == "preview" || var.env == "spreview") ? (var.env == "preview" ) ? "aat" : "saat" : var.env}"
     shared_product_name = "rpx"
 }
-e th
+
 module "app" {
     source = "git@github.com:hmcts/cnp-module-webapp?ref=master"
     product = "${local.app_full_name}"
@@ -36,6 +36,6 @@ module "app" {
         S2S_SECRET = "${data.azurerm_key_vault_secret.s2s_secret.value}"
         IDAM_SECRET = "${data.azurerm_key_vault_secret.oauth2_secret.value}"
     
-    
+
     }
 }

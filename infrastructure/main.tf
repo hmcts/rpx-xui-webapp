@@ -39,3 +39,23 @@ module "app" {
 
     }
 }
+
+
+data "azurerm_key_vault" "key_vault" {
+    name = "${local.shared_vault_name}"
+    resource_group_name = "${local.shared_vault_name}"
+}
+
+data "azurerm_key_vault_secret" "s2s_secret" {
+    name = "jui-s2s-token"
+    vault_uri = "${data.azurerm_key_vault.key_vault.vault_uri}"
+}
+
+data "azurerm_key_vault_secret" "oauth2_secret" {
+    name = "jui-oauth2-token"
+    vault_uri = "${data.azurerm_key_vault.key_vault.vault_uri}"
+}
+
+provider "azurerm" {
+    version = "1.22.1"
+}

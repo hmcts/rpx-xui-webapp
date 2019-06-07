@@ -58,7 +58,7 @@ export class CasesCreateComponent implements OnInit, OnDestroy {
      * Mapping CCD components eventsBindings to ExUI Actions
      */
     this.caseCreateEventsBindings = [
-      {type: 'cancelled', action: 'ResetChange'},
+      {type: 'cancelled', action: 'CreateCaaseReset'},
       {type: 'submitted', action: 'ApplyChange'}
     ];
 

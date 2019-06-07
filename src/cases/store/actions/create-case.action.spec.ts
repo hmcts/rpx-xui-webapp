@@ -18,10 +18,10 @@ describe('Create Cases Actions', () => {
 
     describe('Reset Change', () => {
       it('should create an action', () => {
-        const action = new fromCreateCases.ResetChange();
+        const action = new fromCreateCases.CreateCaaseReset();
 
         expect({ ...action }).toEqual({
-          type: fromCreateCases.RESET_CHANGE,
+          type: fromCreateCases.CREATE_CASE_RESET,
         });
       });
     });

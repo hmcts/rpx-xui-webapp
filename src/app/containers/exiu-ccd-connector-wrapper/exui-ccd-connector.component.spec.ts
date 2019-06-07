@@ -25,7 +25,7 @@ describe('CCD Connector Component', () => {
     component = fixture.componentInstance;
     component.store = null;
     component.eventsBindings = [
-      {type: 'cancelled', action: 'ResetChange'},
+      {type: 'cancelled', action: 'CreateCaaseReset'},
       {type: 'submitted', action: 'ApplyChange'}
     ];
     component.fromFeatureStore = null;

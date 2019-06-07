@@ -41,7 +41,7 @@ export function reducerCreateCase(
       };
     }
 
-    case fromCases.RESET_CHANGE: {
+    case fromCases.CREATE_CASE_RESET: {
       return {
         ...state,
         ...initialState

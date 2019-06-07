@@ -1,14 +1,16 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnInit, OnDestroy, Input} from '@angular/core';
 import { NGXLogger } from 'ngx-logger';
 import { LoggerMessage } from 'src/app/services/logger/reducers/logger.reducer';
 import { Store, select } from '@ngrx/store';
 import { getDebugMessagesState, getInfoMessagesState, getWarningMessagesState, getErrorMessagesState,
   getFatalMessagesState, getTraceMessagesState } from 'src/app/services/logger/selectors/logger.selector';
+import { LoggerService } from '../logger.service';
 
 @Component({
   selector: 'exui-logger',
   template: `
     <div>
+    {{title}}
     <div>
   `
 })
@@ -21,8 +23,17 @@ export class ExuiLoggerComponent implements OnInit, OnDestroy {
   fatalSubscribtion: any;
   traceSubscribtion: any;
 
-  constructor(private ngxLogger: NGXLogger, private store: Store<LoggerMessage>) { }
+  constructor(private ngxLogger: NGXLogger, private store: Store<LoggerMessage>, 
+              private logger: LoggerService) { }
+  @Input() title: string;
   ngOnInit(): void {
+    this.logger.trace(this.title + ' logger.trace()');
+    this.logger.error(this.title + ' logger.error()');
+    this.logger.fatal(this.title + ' logger.fatal()');
+    this.logger.info(this.title + ' logger.info()');
+    this.logger.debug(this.title + ' logger.debug()');
+    this.logger.warn(this.title + ' logger.warn()');
+
     this.debugSubscribtion = this.store.pipe(select(getDebugMessagesState)).subscribe(debugMessage => {
       this.ngxLogger.debug(debugMessage);
     });

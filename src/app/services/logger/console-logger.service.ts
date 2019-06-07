@@ -4,7 +4,7 @@ import { environment } from '../../../environments/environment';
 import { CookieService } from 'ngx-cookie';
 import { Store } from '@ngrx/store';
 import { LoggerState } from './reducers';
-import {  Debug, Trace, Info, Warning, Error, Fatal } from './actions/logger-state.actions';
+import {  Debug, Trace, Info, Warning, Error, Fatal } from '../../store/actions/logger-state.actions';
 
 const now = Date();
 

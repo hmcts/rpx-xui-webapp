@@ -4,7 +4,7 @@ locals {
     local_env = "${(var.env == "preview" || var.env == "spreview") ? (var.env == "preview" ) ? "aat" : "saat" : var.env}"
     shared_product_name = "rpx"
 }
-
+e th
 module "app" {
     source = "git@github.com:hmcts/cnp-module-webapp?ref=master"
     product = "${local.app_full_name}"
@@ -31,5 +31,10 @@ module "app" {
         PACKAGES_NAME = "${local.app_full_name}"
         PACKAGES_PROJECT = "${var.team_name}"
         PACKAGES_ENVIRONMENT = "${var.env}"
+
+        # Need to check these vault values - dont seem right here.
+        S2S_SECRET = "${data.azurerm_key_vault_secret.s2s_secret.value}"
+        IDAM_SECRET = "${data.azurerm_key_vault_secret.oauth2_secret.value}"
+    
     }
 }

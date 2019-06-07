@@ -1,4 +1,4 @@
-import { LoggerStateAction, LoggerStateActionTypes } from '../../../store/actions/logger-state.actions';
+import { LoggerStateAction, LoggerStateActionTypes } from '../actions/logger-state.actions';
 
 export interface LoggerMessage {
     infoMessages: Array<string>;

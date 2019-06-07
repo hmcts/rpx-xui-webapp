@@ -6,7 +6,7 @@ import {
   MetaReducer
 } from '@ngrx/store';
 import { environment } from '../../../../environments/environment';
-import { loggerReducer, LoggerMessage } from './logger.reducer';
+import { loggerReducer, LoggerMessage } from '../../../store/reducers/logger.reducer';
 
 export interface LoggerState {
   loggerMessage: LoggerMessage;

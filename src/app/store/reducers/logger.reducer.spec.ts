@@ -1,5 +1,5 @@
 import {loggerReducer, initialState} from './logger.reducer';
-import { Info, Error, Warning, Fatal, Debug, Trace, Clear } from '../../../store/actions/logger-state.actions';
+import { Info, Error, Warning, Fatal, Debug, Trace, Clear } from '../actions/logger-state.actions';
 import { stat } from 'fs';
 
 const loggerMessage = 'Logger Test123';

@@ -25,7 +25,7 @@ export function reducerCreateCase(
 ): CasesState {
   switch (action.type) {
 
-    case fromCases.APPLY_CHANGE: {
+    case fromCases.CREATE_CASE_APPLY: {
       return {
         ...state,
         createdCase: action.payload,
@@ -38,6 +38,13 @@ export function reducerCreateCase(
         ...state,
         createCaseFilters: action.payload,
         loaded: true,
+      };
+    }
+
+    case fromCases.RESET_CHANGE: {
+      return {
+        ...state,
+        ...initialState
       };
     }
 

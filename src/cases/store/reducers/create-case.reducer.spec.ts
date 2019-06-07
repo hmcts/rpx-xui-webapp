@@ -12,7 +12,7 @@ describe('CasesReducer', () => {
     });
   });
 
-  describe('APPLY_CHANGE action', () => {
+  describe('CREATE_CASE_APPLY action', () => {
     it('should set correct object', () => {
       const { initialState } = fromCases;
       const action = new fromActions.ApplyChange({status: null, caseId: 1234});

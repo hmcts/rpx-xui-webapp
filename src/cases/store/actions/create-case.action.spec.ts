@@ -10,7 +10,7 @@ describe('Create Cases Actions', () => {
         const action = new fromCreateCases.ApplyChange(payload);
 
         expect({ ...action }).toEqual({
-          type: fromCreateCases.APPLY_CHANGE,
+          type: fromCreateCases.CREATE_CASE_APPLY,
           payload,
         });
       });

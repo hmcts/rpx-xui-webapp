@@ -1,13 +1,13 @@
 import {Action} from '@ngrx/store';
 
-export const APPLY_CHANGE = '[CreateCase] Apply Change';
+export const CREATE_CASE_APPLY = '[CreateCase] Create Case Apply';
 export const RESET_CHANGE = '[CreateCase] Reset Change';
 
-export const CREATE_CASE_FILTER_APPLY = '[CreateCaseFilter] Apply Change';
-export const CREATE_CASE_FILTER_CHANGED = '[CreateCaseFilter] Selection Changed';
+export const CREATE_CASE_FILTER_APPLY = '[CreateCase] Filter Apply';
+export const CREATE_CASE_FILTER_CHANGED = '[CreateCase] Filter Changed';
 
 export class ApplyChange implements Action {
-  readonly type = APPLY_CHANGE;
+  readonly type = CREATE_CASE_APPLY;
   constructor(public payload: any) {}
 }
 

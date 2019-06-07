@@ -5,7 +5,7 @@ import * as fromReducers from '../reducers';
 import { getLogMessagesState, getInfoMessagesState, getErrorMessagesState, getWarningMessagesState,
   getDebugMessagesState, getTraceMessagesState, getFatalMessagesState } from './logger.selector';
 import { Clear, Info, Error, Warning, Debug, Trace, Fatal } from '../../../store/actions/logger-state.actions';
-import { initialState } from '../reducers/logger.reducer';
+import { initialState } from '../../../store/reducers/logger.reducer';
 
 describe('Logger Selectors', () => {
     let store: Store<fromReducers.LoggerState>;

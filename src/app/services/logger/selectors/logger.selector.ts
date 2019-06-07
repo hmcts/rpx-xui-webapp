@@ -1,6 +1,6 @@
 import {createSelector} from '@ngrx/store';
 import { getLoggerState } from 'src/app/store';
-import { LoggerMessage } from '../reducers/logger.reducer';
+import { LoggerMessage } from '../../../store/reducers/logger.reducer';
 
 export const getLogMessagesState = createSelector(
     getLoggerState,

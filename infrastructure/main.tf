@@ -10,7 +10,6 @@ module "app" {
     product = "${local.app_full_name}"
     location = "${var.location}"
     env = "${var.env}"
-    XUI_ENV = "${var.env}"
     ilbIp = "${var.ilbIp}"
     subscription = "${var.subscription}"
     capacity     = "${var.capacity}"
@@ -32,5 +31,6 @@ module "app" {
         PACKAGES_NAME = "${local.app_full_name}"
         PACKAGES_PROJECT = "${var.team_name}"
         PACKAGES_ENVIRONMENT = "${var.env}"
+        XUI_ENV = "${var.env}"
     }
 }

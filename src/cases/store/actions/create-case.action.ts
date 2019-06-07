@@ -11,7 +11,7 @@ export class ApplyChange implements Action {
   constructor(public payload: any) {}
 }
 
-export class CreateCaaseReset implements Action {
+export class CreateCaseReset implements Action {
   readonly type = CREATE_CASE_RESET;
 }
 
@@ -26,6 +26,6 @@ export class CaseCreateFilterChanged implements Action {
 }
 export type CreateCasesAction =
   | ApplyChange
-  | CreateCaaseReset
+  | CreateCaseReset
   | CaseCreateFilterApply
   | CaseCreateFilterChanged;

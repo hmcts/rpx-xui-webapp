@@ -39,7 +39,7 @@ describe('CasesReducer', () => {
   describe('CREATE_CASE_RESET action', () => {
     it('should reset to init', () => {
       const { initialState } = fromCases;
-      const action = new fromActions.CreateCaaseReset();
+      const action = new fromActions.CreateCaseReset();
       const state = fromCases.reducerCreateCase(initialState, action);
 
       expect(state.loading).toEqual(false);

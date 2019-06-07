@@ -1,35 +1,18 @@
 import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import * as fromCaseCreate from '../../store';
 import {select, Store} from '@ngrx/store';
-import * as fromCasesFeature from '../../../cases/store';
+import * as fromCases from '../../../cases/store';
 import * as fromRoot from '../../../app/store';
 import {ActionBindingModel} from '../../models/create-case-actions.model';
 import {Subscription} from 'rxjs';
 /**
- * Entry component wrapper for CCD-CASE-CREATE-FILTER
+ * Entry component wrapper for CddCreateCaseFilter
  * Smart Component
  * param TBC
  */
 @Component({
   selector: 'exui-create-case',
-  template: `
-    <exui-page-wrapper>
-      <div *ngIf="caseCreateInputs.jurisdictionId">
-        <exui-ccd-connector
-          *exuiFeatureToggle="'ccdCaseCreate'"
-          [eventsBindings]="caseCreateEventsBindings"
-          [store]="store"
-          [fromFeatureStore]="fromCasesFeature">
-          <ccd-case-create
-            #ccdComponent
-            [jurisdiction]="caseCreateInputs.jurisdictionId"
-            [caseType]="caseCreateInputs.caseTypeId"
-            [event]="caseCreateInputs.eventId">
-          </ccd-case-create>
-        </exui-ccd-connector>
-      </div>
-    </exui-page-wrapper>
-  `,
+  templateUrl: './case-create.component.html',
   encapsulation: ViewEncapsulation.None
 })
 export class CasesCreateComponent implements OnInit, OnDestroy {
@@ -42,13 +25,13 @@ export class CasesCreateComponent implements OnInit, OnDestroy {
   constructor(private store: Store<fromCaseCreate.State>) {}
 
   ngOnInit(): void {
-    this.fromCasesFeature = fromCasesFeature;
+    this.fromCasesFeature = fromCases;
     // TODO try to be nice and remove subscription use pipe | instead
-    this.$inputSubscription = this.store.pipe(select(fromCasesFeature.getCreateCaseFilterState))
+    this.$inputSubscription = this.store.pipe(select(fromCases.getCreateCaseFilterState))
       .subscribe(caseFilterInput => {
         if (!caseFilterInput.jurisdictionId) {
           this.store.dispatch(new fromRoot.Go({
-            path: ['/cases/case-filter'],
+            path: ['/cases/case-list'],
           }));
           return;
         }

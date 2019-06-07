@@ -24,7 +24,7 @@ variable "env" {
 }
 
 variable "shared_product_name" {
-    default = "rpa"
+    default = "rpx"
 }
 
 variable "subscription" {

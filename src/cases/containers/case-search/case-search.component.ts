@@ -16,7 +16,7 @@ import { AppConfig } from 'src/app/services/ccd-config/ccd-case.config';
 @Component({
   selector: 'exui-search-case',
   templateUrl: 'case-search.component.html',
-  styleUrls:['case-search.component.scss'],
+  styleUrls: ['case-search.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class CaseSearchComponent implements OnInit {
@@ -54,7 +54,7 @@ export class CaseSearchComponent implements OnInit {
             this.resultView = data;
           });
 
-      } else if( st === null){
+      } else if ( st === null) {
         this.resultView = null;
       }
     });
@@ -69,7 +69,7 @@ export class CaseSearchComponent implements OnInit {
     ];
   }
 
-  getFormGroup(payload){
+  getFormGroup(payload) {
     this.fg = payload.formGroup;
   }
 }

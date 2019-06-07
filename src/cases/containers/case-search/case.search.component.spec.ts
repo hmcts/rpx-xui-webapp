@@ -43,6 +43,7 @@ describe('CaseCaseComponent', () => {
         CaseUIToolkitModule,
         HttpClientModule,
         StoreModule.forRoot({}),
+// tslint:disable-next-line: deprecation
         HttpModule,
         SharedModule,
         SearchFiltersModule,

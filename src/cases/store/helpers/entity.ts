@@ -10,7 +10,7 @@ export class Entity {
         this.id.push(o.id);
         this[o.id] = o;
       }
-    } else if(typeof obj === 'string') {
+    } else if (typeof obj === 'string') {
     } else {
       this.id = obj.id;
       this[obj.id] = obj;

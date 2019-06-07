@@ -19,10 +19,12 @@ export function reducer( state , action: fromCases.CaseSearchAction): SearchStat
       const jurisdiction = new Entity(action.payload.jurisdiction);
       const metadataFields = new Entity(action.payload.metadataFields);
       const caseType = new Entity(action.payload.caseType);
+      const searchResult = null;
       return {
           metadataFields,
           jurisdiction,
           caseType,
+          searchResult,
           loading: false,
           loaded: true
       };

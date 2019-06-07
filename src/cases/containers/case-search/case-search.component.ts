@@ -44,93 +44,12 @@ export class CaseSearchComponent implements OnInit {
         this.caseType = st.caseType.value as CaseType;
         this.metadataFields = st.metadataFields.value as Array<string>;
         this.caseState = this.caseType.states[0];
-        this.resultView = {
-          hasDrafts: () => false,
-          columns: JSON.parse(`[
-            {
-              "label": "Appellant Surname",
-              "order": 2,
-              "metadata": false,
-              "case_field_id": "generatedSurname",
-              "case_field_type": {
-                "id": "Text",
-                "type": "Text",
-                "min": null,
-                "max": null,
-                "regular_expression": null,
-                "fixed_list_items": [],
-                "complex_fields": [],
-                "collection_field_type": null
-              }
-            },
-            {
-              "label": "Appellant Date of Birth",
-              "order": 3,
-              "metadata": false,
-              "case_field_id": "generatedDOB",
-              "case_field_type": {
-                "id": "Date",
-                "type": "Date",
-                "min": null,
-                "max": null,
-                "regular_expression": null,
-                "fixed_list_items": [],
-                "complex_fields": [],
-                "collection_field_type": null
-              }
-            },
-            {
-              "label": "SC Case Number",
-              "order": 4,
-              "metadata": false,
-              "case_field_id": "caseReference",
-              "case_field_type": {
-                "id": "Text",
-                "type": "Text",
-                "min": null,
-                "max": null,
-                "regular_expression": null,
-                "fixed_list_items": [],
-                "complex_fields": [],
-                "collection_field_type": null
-              }
-            },
-            {
-              "label": "Evidence Present",
-              "order": 5,
-              "metadata": false,
-              "case_field_id": "evidencePresent",
-              "case_field_type": {
-                "id": "YesOrNo",
-                "type": "YesOrNo",
-                "min": null,
-                "max": null,
-                "regular_expression": null,
-                "fixed_list_items": [],
-                "complex_fields": [],
-                "collection_field_type": null
-              }
-            },
-            {
-              "label": "Case Ref",
-              "order": 1,
-              "metadata": true,
-              "case_field_id": "[CASE_REFERENCE]",
-              "case_field_type": {
-                "id": "Number",
-                "type": "Number",
-                "min": null,
-                "max": null,
-                "regular_expression": null,
-                "fixed_list_items": [],
-                "complex_fields": [],
-                "collection_field_type": null
-              }
-            }
-          ]`),
-          results: this.resultsArr.slice(0, this.appConfig.getPaginationPageSize()),
-          result_error: null
-        };
+        if (st.searchResult !== null){
+          this.paginationMetadata = new PaginationMetadata();
+          this.paginationMetadata.total_results_count = st.searchResult.results.length;
+          this.paginationMetadata.total_pages_count = Math.ceil(st.searchResult.results.length / 10);
+          this.resultView = st.searchResult;
+        }
       }
     });
   }
@@ -142,5 +61,9 @@ export class CaseSearchComponent implements OnInit {
       {type: 'onApply', action: 'Applied'},
       {type: 'onReset', action: 'Reset'}
     ];
+  }
+
+  getFormGroup(payload){
+    this.fg = payload.formGroup;
   }
 }

@@ -9,7 +9,7 @@ export class SearchServiceProxyService {
 
   constructor(private serachService: SearchService) {}
 
-  getSearch(payload): Observable<any> {
+  getSearch(payload): Observable<SearchResultView> {
     return this.serachService.search(payload.jurisdiction.id, payload.caseType.id, {}, {}, null);
   }
 

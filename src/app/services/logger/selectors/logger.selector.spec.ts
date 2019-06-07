@@ -4,7 +4,7 @@ import * as fromRoot from '../../../../app/store/reducers';
 import * as fromReducers from '../reducers';
 import { getLogMessagesState, getInfoMessagesState, getErrorMessagesState, getWarningMessagesState,
   getDebugMessagesState, getTraceMessagesState, getFatalMessagesState } from './logger.selector';
-import { Clear, Info, Error, Warning, Debug, Trace, Fatal } from '../actions/logger-state.actions';
+import { Clear, Info, Error, Warning, Debug, Trace, Fatal } from '../../../store/actions/logger-state.actions';
 import { initialState } from '../reducers/logger.reducer';
 
 describe('Logger Selectors', () => {

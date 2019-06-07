@@ -17,7 +17,7 @@ module "app" {
     additional_host_name = "${var.additional_host_name}"
     https_only="false"
     common_tags  = "${var.common_tags}"
-    asp_rg = "${var.shared_product_name}-${var.env}"
+    asp_rg = "${local.app_full_name}-${var.env}"
     asp_name = "${var.shared_product_name}-${var.env}"
     #asp_name = "${var.env == "prod" ? "TBD" : "${var.shared_product_name}-${var.env}"}"
 

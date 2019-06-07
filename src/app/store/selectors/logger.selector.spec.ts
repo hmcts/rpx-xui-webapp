@@ -1,11 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { StoreModule, Store, combineReducers } from '@ngrx/store';
-import * as fromRoot from '../../../../app/store/reducers';
-import * as fromReducers from '../reducers';
+import * as fromRoot from '../reducers';
+import * as fromReducers from '../../services/logger/reducers';
 import { getLogMessagesState, getInfoMessagesState, getErrorMessagesState, getWarningMessagesState,
   getDebugMessagesState, getTraceMessagesState, getFatalMessagesState } from './logger.selector';
-import { Clear, Info, Error, Warning, Debug, Trace, Fatal } from '../../../store/actions/logger-state.actions';
-import { initialState } from '../../../store/reducers/logger.reducer';
+import { Clear, Info, Error, Warning, Debug, Trace, Fatal } from '../actions/logger-state.actions';
+import { initialState } from '../reducers/logger.reducer';
 
 describe('Logger Selectors', () => {
     let store: Store<fromReducers.LoggerState>;

@@ -3,7 +3,7 @@ import { NGXLogger } from 'ngx-logger';
 import { LoggerMessage } from 'src/app/store/reducers/logger.reducer';
 import { Store, select } from '@ngrx/store';
 import { getDebugMessagesState, getInfoMessagesState, getWarningMessagesState, getErrorMessagesState,
-  getFatalMessagesState, getTraceMessagesState } from 'src/app/services/logger/selectors/logger.selector';
+  getFatalMessagesState, getTraceMessagesState } from 'src/app/store/selectors/logger.selector';
 import { LoggerService } from '../../services/logger/logger.service';
 
 @Component({

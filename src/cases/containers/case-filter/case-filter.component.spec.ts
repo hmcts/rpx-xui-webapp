@@ -15,7 +15,7 @@ import {
   PlaceholderService,
   SearchService,
   RequestOptionsBuilder,
-  SearchFiltersModule,
+  SearchFiltersModule, CreateCaseFiltersModule,
 } from '@hmcts/ccd-case-ui-toolkit';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
@@ -25,7 +25,7 @@ import { StoreModule } from '@ngrx/store';
 import { HttpModule } from '@angular/http';
 import { SharedModule } from '../../../app/shared/shared.module';
 import { AppConfigService } from '../../../app/services/config/configuration.services';
-import { CasesCreateComponent } from './case-create.component';
+import { CaseFilterComponent } from './case-filter.component';
 
 class MockSortService {
   features = {};
@@ -33,8 +33,8 @@ class MockSortService {
   getEditorConfiguration() { }
 }
 describe('CaseCaseComponent', () => {
-  let component: CasesCreateComponent;
-  let fixture: ComponentFixture<CasesCreateComponent>;
+  let component: CaseFilterComponent;
+  let fixture: ComponentFixture<CaseFilterComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -46,8 +46,9 @@ describe('CaseCaseComponent', () => {
         HttpModule,
         SharedModule,
         SearchFiltersModule,
+        CreateCaseFiltersModule,
       ],
-      declarations: [CasesCreateComponent],
+      declarations: [CaseFilterComponent],
       providers: [
         PlaceholderService,
         CasesService,
@@ -85,10 +86,10 @@ describe('CaseCaseComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CasesCreateComponent);
+    fixture = TestBed.createComponent(CaseFilterComponent);
     component = fixture.componentInstance;
-    component.caseCreateInputs = {jurisdictionId: '', caseTypeId: '', eventId: ''};
-
+    component.startButtonText = 'start';
+    component.caseCreatFilterBindings = [];
     fixture.detectChanges();
 
   });

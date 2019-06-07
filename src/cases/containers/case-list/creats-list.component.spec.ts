@@ -79,9 +79,6 @@ describe('CaseListComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have ngOnInit', () => {
-    expect(component.ngOnInit).toBeTruthy();
-  });
 
 
 });

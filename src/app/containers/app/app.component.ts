@@ -9,7 +9,7 @@ import { Store } from '@ngrx/store';
   styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   private name: string;
   constructor(
     private logger: LoggerService,
@@ -17,10 +17,6 @@ export class AppComponent implements OnInit {
   ) {
     this.name = 'App.Component';
   }
-
-  ngOnInit() {
-  }
-
 
   // To do move signOut to header component when available!!!
   signOut() {

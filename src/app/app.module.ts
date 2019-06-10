@@ -31,7 +31,6 @@ import { CookieModule } from 'ngx-cookie';
 import {SharedModule} from './shared/shared.module';
 import { ConsoleLoggerService } from './services/logger/console-logger.service';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
-import {LoggerModule as XuiLoggerModule} from './services/logger/logger.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -51,8 +50,7 @@ import {LoggerModule as XuiLoggerModule} from './services/logger/logger.module';
     LoggerModule.forRoot({
       level: NgxLoggerLevel.TRACE,
       disableConsoleLogging: false
-    }),
-    XuiLoggerModule
+    })
   ],
   providers: [
     {

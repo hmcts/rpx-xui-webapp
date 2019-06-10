@@ -21,13 +21,12 @@ export const metaReducers: MetaReducer<any>[] = !environment.production
 import { CustomSerializer, reducers } from './store/reducers';
 import { effects } from './store/effects';
 
-import {initApplication} from './app-initilizer';
+import { initApplication } from './app-initilizer';
 
 // common provider
 import { ProvidersModule } from './providers/providers.module';
 // app routes
 import { ROUTES } from './app.routes';
-import { AuthService } from './services/auth/auth.service';
 import { CookieModule } from 'ngx-cookie';
 import {SharedModule} from './shared/shared.module';
 import { ConsoleLoggerService } from './services/logger/console-logger.service';
@@ -54,7 +53,6 @@ import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
     })
   ],
   providers: [
-    AuthService,
     {
       provide: RouterStateSerializer,
       useClass: CustomSerializer

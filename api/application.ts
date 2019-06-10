@@ -10,7 +10,7 @@ import { errorStack } from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
 import routes from './routes'
 
-config.environment = process.env.JUI_ENV || 'local'
+config.environment = process.env.XUI_ENV || 'local'
 
 export const app = express()
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
@@ -43,7 +43,7 @@ app.use(cookieParser())
 
 app.use((req, res, next) => {
     // Set cookie for angular to know which config to use
-    const platform = process.env.JUI_ENV || 'local'
+    const platform = process.env.XUI_ENV || 'local'
     res.cookie('platform', platform)
     next()
 }

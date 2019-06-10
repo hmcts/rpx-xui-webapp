@@ -10,7 +10,6 @@ import { LoggerService } from '../../services/logger/logger.service';
   selector: 'exui-logger',
   template: `
     <div>
-    {{title}}
     <div>
   `
 })

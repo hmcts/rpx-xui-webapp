@@ -4,16 +4,7 @@ import { stat } from 'fs';
 
 const loggerMessage = 'Logger Test123';
 
-describe('LoggerReducer', () => {
-  describe('undefined action', () => {
-    it('should return the default state', () => {
-      const action = {} as any;
-      const state = loggerReducer(undefined, action);
-      expect(state).toBe(initialState);
-    });
-  });
-
-  describe('info action', () => {
+describe('info action', () => {
     it('should return the info message in state', () => {
       const action = new Info(loggerMessage);
       const state = loggerReducer(undefined, action);
@@ -24,7 +15,7 @@ describe('LoggerReducer', () => {
     });
   });
 
-  describe('error action', () => {
+describe('error action', () => {
     it('should return the error message in state', () => {
       const action = new Error(loggerMessage);
       const state = loggerReducer(undefined, action);
@@ -35,7 +26,7 @@ describe('LoggerReducer', () => {
     });
   });
 
-  describe('warn action', () => {
+describe('warn action', () => {
     it('should return the warn message in state', () => {
       const action = new Warning(loggerMessage);
       const state = loggerReducer(undefined, action);
@@ -46,7 +37,7 @@ describe('LoggerReducer', () => {
     });
   });
 
-  describe('fatal action', () => {
+describe('fatal action', () => {
     it('should return the fatal message in state', () => {
       const action = new Fatal(loggerMessage);
       const state = loggerReducer(undefined, action);
@@ -57,7 +48,7 @@ describe('LoggerReducer', () => {
     });
   });
 
-  describe('debug action', () => {
+describe('debug action', () => {
     it('should return the error message in state', () => {
       const action = new Debug(loggerMessage);
       const state = loggerReducer(undefined, action);
@@ -68,7 +59,7 @@ describe('LoggerReducer', () => {
     });
   });
 
-  describe('debug action', () => {
+describe('debug action', () => {
     it('should return the error message in state', () => {
       const action = new Trace(loggerMessage);
       const state = loggerReducer(undefined, action);
@@ -78,8 +69,3 @@ describe('LoggerReducer', () => {
       expect(state).toEqual(expectedState);
     });
   });
-  afterEach(() => {
-    const action = {} as any;
-    const state = loggerReducer(initialState, new Clear(undefined));
-  });
-});

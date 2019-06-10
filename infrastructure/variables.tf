@@ -23,6 +23,10 @@ variable "env" {
   type = "string"
 }
 
+variable "shared_product_name" {
+    default = "rpx"
+}
+
 variable "subscription" {
   type = "string"
 }

@@ -13,7 +13,7 @@ function setHeaders(req: EnhancedRequest) {
 
     headers['content-type'] = req.headers['content-type'] ?  req.headers['content-type']  :
     axios.defaults.headers.common['Content-Type']
-    
+
     if (req.headers.accept) {
         headers.accept = req.headers.accept || null
     }

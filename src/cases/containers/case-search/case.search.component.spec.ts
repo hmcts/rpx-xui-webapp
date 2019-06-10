@@ -26,13 +26,14 @@ import {HttpModule} from '@angular/http';
 import {SharedModule} from '../../../app/shared/shared.module';
 import {AppConfigService} from '../../../app/services/config/configuration.services';
 import {CaseSearchComponent} from './case-search.component';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 class MockSortService {
   features = {};
   getFeatureToggle() {}
   getEditorConfiguration() {}
 }
-describe('CaseCaseComponent', () => {
+describe('CaseSearchComponent', () => {
   let component: CaseSearchComponent;
   let fixture: ComponentFixture<CaseSearchComponent>;
 
@@ -49,6 +50,7 @@ describe('CaseCaseComponent', () => {
         SearchFiltersModule,
       ],
       declarations: [ CaseSearchComponent ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         PlaceholderService,
         CasesService,

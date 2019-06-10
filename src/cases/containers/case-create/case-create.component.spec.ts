@@ -32,7 +32,7 @@ class MockSortService {
   getFeatureToggle() {}
   getEditorConfiguration() {}
 }
-describe('CaseCaseComponent', () => {
+describe('CaseCreateComponent', () => {
   let component: CasesCreateComponent;
   let fixture: ComponentFixture<CasesCreateComponent>;
 

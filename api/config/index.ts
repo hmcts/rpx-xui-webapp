@@ -4,10 +4,12 @@ import { application } from './application.config'
 
 import * as aat from './environments/aat.config'
 import * as local from './environments/local.config'
+import * as preview from './environments/preview.config'
 
 export const configs = {
     aat,
     local,
+    preview,
 }
 
 export const configEnv = process ? process.env.XUI_ENV || 'local' : 'local'

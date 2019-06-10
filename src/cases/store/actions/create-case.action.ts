@@ -1,18 +1,18 @@
 import {Action} from '@ngrx/store';
 
-export const APPLY_CHANGE = '[CreateCase] Apply Change';
-export const RESET_CHANGE = '[CreateCase] Reset Change';
+export const CREATE_CASE_APPLY = '[CreateCase] Create Case Apply';
+export const CREATE_CASE_RESET = '[CreateCase] Reset Change';
 
-export const CREATE_CASE_FILTER_APPLY = '[CreateCaseFilter] Apply Change';
-export const CREATE_CASE_FILTER_CHANGED = '[CreateCaseFilter] Selection Changed';
+export const CREATE_CASE_FILTER_APPLY = '[CreateCase] Filter Apply';
+export const CREATE_CASE_FILTER_CHANGED = '[CreateCase] Filter Changed';
 
 export class ApplyChange implements Action {
-  readonly type = APPLY_CHANGE;
+  readonly type = CREATE_CASE_APPLY;
   constructor(public payload: any) {}
 }
 
-export class ResetChange implements Action {
-  readonly type = RESET_CHANGE;
+export class CreateCaseReset implements Action {
+  readonly type = CREATE_CASE_RESET;
 }
 
 export class CaseCreateFilterApply implements Action {
@@ -26,6 +26,6 @@ export class CaseCreateFilterChanged implements Action {
 }
 export type CreateCasesAction =
   | ApplyChange
-  | ResetChange
+  | CreateCaseReset
   | CaseCreateFilterApply
   | CaseCreateFilterChanged;

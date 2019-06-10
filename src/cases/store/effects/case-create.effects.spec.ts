@@ -48,7 +48,7 @@ describe('CaseCreate Effects', () => {
 
       actions$.stream = hot('-a', { a: action });
 
-      expect(effects.applyChangeCaseCreate$).toBeTruthy();
+      expect(effects.applyChangeCaseCreateFilter$).toBeTruthy();
     });
   });
 });

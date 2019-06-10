@@ -10,10 +10,12 @@ import { Store } from '@ngrx/store';
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {
+  private name: string;
   constructor(
     private logger: LoggerService,
     private store: Store<fromActions.State>
   ) {
+    this.name = 'App.Component';
   }
 
   // To do move signOut to header component when available!!!

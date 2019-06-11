@@ -10,7 +10,7 @@ import { Store } from '@ngrx/store';
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {
-  private name: string;
+  name: string;
   constructor(
     private logger: LoggerService,
     private store: Store<fromActions.State>

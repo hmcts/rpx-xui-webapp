@@ -1,0 +1,377 @@
+[
+  {
+    "keyword": "Feature",
+    "name": "Login",
+    "line": 3,
+    "id": "login",
+    "tags": [
+      {
+        "name": "@login",
+        "line": 2
+      }
+    ],
+    "uri": "test/e2e/features/app/loginLogout.feature",
+    "elements": [
+      {
+        "id": "login;un-authenticated-user-login",
+        "keyword": "Scenario",
+        "line": 23,
+        "name": "un-authenticated user login",
+        "tags": [
+          {
+            "name": "@login",
+            "line": 2
+          },
+          {
+            "name": "@EUI-42",
+            "line": 22
+          },
+          {
+            "name": "@login",
+            "line": 22
+          },
+          {
+            "name": "@all",
+            "line": 22
+          },
+          {
+            "name": "@smoke",
+            "line": 22
+          },
+          {
+            "name": "@crossbrowser",
+            "line": 22
+          }
+        ],
+        "type": "scenario",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 6,
+            "name": "I navigate to Expert UI Url",
+            "match": {
+              "location": "test/e2e/features/step_definitions/steps/loginLogout.steps.js:43"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4650000000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 24,
+            "name": "I am on Idam login page",
+            "match": {
+              "location": "test/e2e/features/step_definitions/steps/loginLogout.steps.js:61"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9331000000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 25,
+            "name": "I enter an Invalid email-address and password to login",
+            "match": {
+              "location": "test/e2e/features/step_definitions/steps/loginLogout.steps.js:84"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 133000000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 26,
+            "name": "I should be redirected to the Idam login page",
+            "match": {
+              "location": "test/e2e/features/step_definitions/steps/loginLogout.steps.js:90"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8026000000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 27,
+            "name": "I should see failure error summary",
+            "match": {
+              "location": "test/e2e/features/step_definitions/steps/loginLogout.steps.js:51"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 60000000
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "match": {
+              "location": "test/e2e/support/hooks.js:96"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1000000
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "match": {
+              "location": "node_modules/protractor-cucumber-framework/lib/resultsCapturer.js:26"
+            },
+            "result": {
+              "status": "passed"
+            }
+          }
+        ]
+      },
+      {
+        "id": "login;login-and-log-out-from-eui-as-sscs-user",
+        "keyword": "Scenario",
+        "line": 31,
+        "name": "login and log out from EUI as SSCS user",
+        "tags": [
+          {
+            "name": "@login",
+            "line": 2
+          },
+          {
+            "name": "@EUI-42",
+            "line": 30
+          },
+          {
+            "name": "@logout",
+            "line": 30
+          },
+          {
+            "name": "@smoke",
+            "line": 30
+          }
+        ],
+        "type": "scenario",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 6,
+            "name": "I navigate to Expert UI Url",
+            "match": {
+              "location": "test/e2e/features/step_definitions/steps/loginLogout.steps.js:43"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6807000000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 32,
+            "name": "I am logged into Expert UI with SSCS judge details",
+            "match": {
+              "location": "test/e2e/features/step_definitions/steps/loginLogout.steps.js:128"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6414000000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 33,
+            "name": "I should be redirected to EUI dashboard page",
+            "match": {
+              "location": "test/e2e/features/step_definitions/steps/loginLogout.steps.js:109"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 14994000000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 34,
+            "name": "I select the sign out link",
+            "match": {
+              "location": "test/e2e/features/step_definitions/steps/loginLogout.steps.js:100"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8886000000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 35,
+            "name": "I should be redirected to the Idam login page",
+            "match": {
+              "location": "test/e2e/features/step_definitions/steps/loginLogout.steps.js:90"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8031000000
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "match": {
+              "location": "test/e2e/support/hooks.js:96"
+            },
+            "result": {
+              "status": "passed"
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "match": {
+              "location": "node_modules/protractor-cucumber-framework/lib/resultsCapturer.js:26"
+            },
+            "result": {
+              "status": "passed"
+            }
+          }
+        ]
+      },
+      {
+        "id": "login;login-and-log-out-from-eui-as-fr-user",
+        "keyword": "Scenario",
+        "line": 39,
+        "name": "login and log out from EUI as FR user",
+        "tags": [
+          {
+            "name": "@login",
+            "line": 2
+          },
+          {
+            "name": "@EUI-42",
+            "line": 38
+          },
+          {
+            "name": "@logout",
+            "line": 38
+          },
+          {
+            "name": "@all",
+            "line": 38
+          },
+          {
+            "name": "@smoke",
+            "line": 38
+          }
+        ],
+        "type": "scenario",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 6,
+            "name": "I navigate to Expert UI Url",
+            "match": {
+              "location": "test/e2e/features/step_definitions/steps/loginLogout.steps.js:43"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3206000000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 40,
+            "name": "I am logged into Expert UI with FR judge details",
+            "match": {
+              "location": "test/e2e/features/step_definitions/steps/loginLogout.steps.js:136"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6153000000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 41,
+            "name": "I should be redirected to EUI dashboard page",
+            "match": {
+              "location": "test/e2e/features/step_definitions/steps/loginLogout.steps.js:109"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8685000000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 42,
+            "name": "I select the sign out link",
+            "match": {
+              "location": "test/e2e/features/step_definitions/steps/loginLogout.steps.js:100"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9595000000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 43,
+            "name": "I should be redirected to the Idam login page",
+            "match": {
+              "location": "test/e2e/features/step_definitions/steps/loginLogout.steps.js:90"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8040000000
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "match": {
+              "location": "test/e2e/support/hooks.js:96"
+            },
+            "result": {
+              "status": "passed"
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "match": {
+              "location": "node_modules/protractor-cucumber-framework/lib/resultsCapturer.js:26"
+            },
+            "result": {
+              "status": "passed"
+            }
+          }
+        ]
+      }
+    ],
+    "metadata": {
+      "browser": {
+        "name": "chrome",
+        "version": "74.0.3729.169"
+      },
+      "device": "",
+      "platform": {
+        "name": "",
+        "version": ""
+      }
+    }
+  }
+]

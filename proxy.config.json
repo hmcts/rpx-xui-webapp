@@ -14,6 +14,11 @@
     "secure": false,
     "logLevel": "debug"
   },
+  "/health": {
+    "target": "http://localhost:3001",
+    "secure": false,
+    "logLevel": "debug"
+  },
   "/oauth2/callback": {
     "target": "http://localhost:3001",
     "secure": false,

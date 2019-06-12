@@ -1,3 +1,4 @@
+import * as healthcheck from '@hmcts/nodejs-healthcheck'
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
@@ -46,8 +47,7 @@ app.use((req, res, next) => {
     const platform = process.env.XUI_ENV || 'local'
     res.cookie('platform', platform)
     next()
-}
-)
+})
 
 if (config.proxy) {
     globalTunnel.initialize({
@@ -56,12 +56,30 @@ if (config.proxy) {
     })
 }
 
+function healthcheckConfig(msUrl) {
+    return healthcheck.web(`${msUrl}/health`, {
+        deadline: 6000,
+        timeout: 6000,
+    })
+}
+
+const healthchecks = {
+    checks: {
+        ccdDataApi: healthcheckConfig(config.services.ccd.dataApi),
+        ccdDefApi: healthcheckConfig(config.services.ccd.componentApi),
+        idamApi: healthcheckConfig(config.services.idam.idamApiUrl),
+        s2s: healthcheckConfig(config.services.s2s),
+    },
+}
+
+healthcheck.addTo(app, healthchecks)
+
 app.get('/oauth2/callback', auth.authenticateUser)
-app.use('/aggregated', routes)
 app.get('/api/logout', (req, res, next) => {
     auth.doLogout(req, res)
 })
 
+app.use('/aggregated', routes)
 app.use('/data', routes)
 
 const logger = log4jui.getLogger('Application')

@@ -15,10 +15,10 @@ describe('Configuration Service', () => {
       providers: [AppConfigService]
     });
     httpClientSpy = jasmine.createSpyObj('HttpClient', ['get']);
+    service = TestBed.get(AppConfigService);
   });
 
   it('should have configuration service', () => {
-    service = TestBed.get(AppConfigService);
     expect(service).toBeTruthy();
   });
 
@@ -30,16 +30,15 @@ describe('Configuration Service', () => {
   });
 
   it('should have configuration service getFeatureToggle method', () => {
-      expect(service.getFeatureToggle).toBeTruthy();
+    expect(service.getFeatureToggle).toBeTruthy();
   });
 
   it('should have configuration service setConfiguration method', () => {
     expect(service.setConfiguration).toBeTruthy();
   });
 
-  it('should have configuration service setConfiguration method', () => {
+  it('should have configuration service getEditorConfiguration method', () => {
     expect(service.getEditorConfiguration).toBeTruthy();
   });
-
 });
 

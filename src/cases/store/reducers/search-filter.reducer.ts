@@ -1,7 +1,6 @@
 import { Entity } from '../../../app/store/helpers/entity';
 import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
 import * as fromCases from '../actions/case-search.action';
-import {SUCCESS} from '../actions/case-search.action';
 
 // todo this is just a place holder
 export interface SearchState {
@@ -25,14 +24,6 @@ export function reducer( state , action: fromCases.CaseSearchAction): SearchStat
           caseType,
           loading: false,
           loaded: true
-      };
-    }
-
-
-    case fromCases.SUCCESS: {
-      return {
-        ...state,
-        searchResult: action.payload
       };
     }
 

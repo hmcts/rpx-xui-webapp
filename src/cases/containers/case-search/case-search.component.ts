@@ -6,7 +6,7 @@ import * as fromCasesFeature from '../../store';
 import * as fromCaseCreate from '../../store/reducers';
 import { Jurisdiction, CaseType, CaseState, SearchResultView, PaginationMetadata, SearchService } from '@hmcts/ccd-case-ui-toolkit';
 import { FormGroup } from '@angular/forms';
-import { AppConfig } from 'src/app/services/ccd-config/ccd-case.config';
+import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 
 /**
  * Entry component wrapper for CCD-CASE-CREATE
@@ -34,7 +34,6 @@ export class CaseSearchComponent implements OnInit {
   resultsArr: any[] = [];
 
   constructor(public store: Store<fromCasesFeature.State>,
-              private appConfig: AppConfig,
               private searchService: SearchService) {
 
     const state = this.store.pipe(select(fromCasesFeature.getSearchState));

@@ -81,17 +81,22 @@ describe('CaseCreateComponent', () => {
         ScrollToService
       ]
     })
-      .compileComponents();
+      .compileComponents()
+      .then(()=>{
+        fixture = TestBed.createComponent(CasesCreateComponent);
+        component = fixture.componentInstance;
+        component.caseCreateInputs = {jurisdictionId: '', caseTypeId: '', eventId: ''};
+      });
   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(CasesCreateComponent);
-    component = fixture.componentInstance;
-    component.caseCreateInputs = {jurisdictionId: '', caseTypeId: '', eventId: ''};
+  // beforeEach(() => {
+  //   fixture = TestBed.createComponent(CasesCreateComponent);
+  //   component = fixture.componentInstance;
+  //   component.caseCreateInputs = {jurisdictionId: '', caseTypeId: '', eventId: ''};
 
-    fixture.detectChanges();
+  //   fixture.detectChanges();
 
-  });
+  // });
   it('should create', () => {
     expect(component).toBeTruthy();
   });

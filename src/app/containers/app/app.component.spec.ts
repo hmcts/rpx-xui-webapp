@@ -7,7 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Store, StoreModule } from '@ngrx/store';
 import { AuthGuard } from '../../services/auth/auth.guard';
 import { AuthService } from '../../services/auth/auth.service';
-import { ProvidersModule } from 'src/app/providers/providers.module';
+import { ProvidersModule } from '../../providers/providers.module';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {

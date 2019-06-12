@@ -1,104 +1,92 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import {
-  CaseUIToolkitModule,
-  DraftService,
-  AlertService,
-  HttpService,
-  AuthService as CCDAuthService,
-  CasesService,
-  HttpErrorService,
-  AbstractAppConfig,
-  CaseEditWizardGuard,
-  RouterHelperService,
-  DocumentManagementService,
-  PageValidationService,
-  PlaceholderService,
-  SearchService,
-  RequestOptionsBuilder,
-  SearchFiltersModule,
-} from '@hmcts/ccd-case-ui-toolkit';
-import {AppConfig} from '../../../app/services/ccd-config/ccd-case.config';
-import {ScrollToService} from '@nicky-lenaers/ngx-scroll-to';
-import {RouterTestingModule} from '@angular/router/testing';
-import {HttpClientModule} from '@angular/common/http';
-import {StoreModule} from '@ngrx/store';
-import {HttpModule} from '@angular/http';
-import {SharedModule} from '../../../app/shared/shared.module';
-import {AppConfigService} from '../../../app/services/config/configuration.services';
-import {CaseSearchComponent} from './case-search.component';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { AppModule } from './../../../app/app.module';
+import { AuthService } from './../../../app/services/auth/auth.service';
+import { ExuiPageWrapperComponent } from './../../../app/components/exui-mian-wrapper/exui-page-wrapper.component';
+import { BrowserDynamicTestingModule,
+  platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
+import { ComponentFixture, TestBed, inject } from '@angular/core/testing';
+import { CaseSearchComponent } from './case-search.component';
+import * as fromCasesFeature from '../../store';
+import { MockStore } from '@ngrx/store/testing';
+import { SearchService, ActivityService, HttpErrorService, HttpService, AbstractAppConfig} from '@hmcts/ccd-case-ui-toolkit';
+import { ExuiCcdConnectorComponent } from '../../../app/containers/exiu-ccd-connector-wrapper/exui-ccd-connector.component';
+import { SearchFiltersModule, SearchResultModule } from '@hmcts/ccd-case-ui-toolkit/dist/shared/components';
+import { RouterModule } from '@angular/router';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { Store, StoreModule, combineReducers } from '@ngrx/store';
+import { Http, ConnectionBackend, RequestOptions, HttpModule } from '@angular/http';
+import { ProvidersModule } from '../../../app/providers/providers.module';
+import { RouterTestingModule } from '@angular/router/testing';
+import { AppConfigService } from '../../../app/services/config/configuration.services';
 
-class MockSortService {
-  features = {};
-  getFeatureToggle() {}
-  getEditorConfiguration() {}
-}
 describe('CaseSearchComponent', () => {
-  let component: CaseSearchComponent;
   let fixture: ComponentFixture<CaseSearchComponent>;
-
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        CaseUIToolkitModule,
-        HttpClientModule,
-        StoreModule.forRoot({}),
-// tslint:disable-next-line: deprecation
-        HttpModule,
-        SharedModule,
-        SearchFiltersModule,
-      ],
-      declarations: [ CaseSearchComponent ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        PlaceholderService,
-        CasesService,
-        CCDAuthService,
-        HttpService,
-        HttpErrorService,
-        AlertService,
-        DraftService,
-        PageValidationService,
-        CaseEditWizardGuard,
-        RouterHelperService,
-        DocumentManagementService,
-        AppConfig,
-        AppConfigService,
-        RequestOptionsBuilder,
-        {
-          provide: SearchService,
-          useValue: {
-            requestOptionsBuilder: RequestOptionsBuilder
-          }
-        },
-        {
-          provide: AbstractAppConfig,
-          useExisting: AppConfig
-        },
-        {
-          provide: AppConfigService,
-          useClass: MockSortService
-        },
-        ScrollToService
-      ]
-    })
-      .compileComponents();
-  }));
+  let component: CaseSearchComponent;
+  let store: Store<fromCasesFeature.State>;
+  // let store: MockStore<fromCasesFeature.State>;
 
   beforeEach(() => {
+    const mockSearchService = jasmine.createSpyObj(['search', 'getSearchInputUrl', 'getSearchInputs', 'isDataValid']);
+    const mockAuthService = jasmine.createSpyObj(['canActivate','generateLoginUrl','loginRedirect', 'decodeJwt',
+                                                  'isAuthenticated', 'signOut']);
+    const appMockService = jasmine.createSpyObj(['load', 'getLoginUrl','getApiUrl','getCaseDataUrl','getDocumentManagementUrl',
+    'getRemoteDocumentManagementUrl', 'getPostcodeLookupUrl',
+    'getPostcodeLookupUrl',
+    'getOAuth2ClientId',
+    'getPaymentsUrl',
+    'getCreateOrUpdateDraftsUrl',
+    'getViewOrDeleteDraftsUrl',
+    'getActivityUrl',
+    'getActivityNexPollRequestMs',
+    'getActivityRetry',
+    'getActivityBatchCollectionDelayMs',
+    'getActivityMaxRequestPerBatch',
+    'getPrintServiceUrl',
+    'getRemotePrintServiceUrl',
+    'getPaginationPageSize']);
+
+    TestBed.resetTestEnvironment();
+    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
+    TestBed.configureTestingModule({
+      imports: [
+        SearchFiltersModule,
+        SearchResultModule,
+        RouterTestingModule,
+        ProvidersModule,
+        HttpModule,
+        HttpClientTestingModule,
+        StoreModule.forRoot({
+          ...fromCasesFeature.reducers,
+          feature: combineReducers(fromCasesFeature.reducers),
+        }),
+      ],
+      schemas: [NO_ERRORS_SCHEMA],
+      providers: [
+        //Http,ConnectionBackend,RequestOptions,
+        HttpService,
+        { provide:  AuthService, useValue: mockAuthService},
+        {provide: HttpErrorService, useClass: HttpErrorService, deps: [AuthService]},
+        {provide: AbstractAppConfig, useValue: appMockService},
+        ActivityService,
+        AppConfigService,
+        { provide: SearchService, useValue: mockSearchService},
+      ],
+      declarations: [ExuiPageWrapperComponent, ExuiCcdConnectorComponent, CaseSearchComponent, ]
+    });
+    // .compileComponents().then(() => {
+    store = TestBed.get(Store);
+    spyOn(store, 'dispatch').and.callThrough();
     fixture = TestBed.createComponent(CaseSearchComponent);
-    component = fixture.componentInstance;
     fixture.detectChanges();
+    component = fixture.componentInstance;
 
-  });
+    });
   it('should create', () => {
-    expect(component).toBeTruthy();
+      // inject([HttpTestingController, SearchService], ( httpMock: HttpTestingController, searchService: SearchService) => {
+        expect(component).toBeTruthy();
   });
 
-  it('should have ngOnInit', () => {
-    expect(component.ngOnInit).toBeTruthy();
-  });
-
-
+  // it('should have ngOnInit', () => {
+  //   expect(component.ngOnInit).toBeTruthy();
+  // });
 });

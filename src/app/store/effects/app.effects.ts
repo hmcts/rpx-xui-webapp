@@ -7,7 +7,7 @@ import * as fromActions from '../actions';
 import { AppConfigService } from '../../services/config/configuration.services';
 import { of } from 'rxjs/internal/observable/of';
 import { Observable } from 'rxjs';
-import { AuthService } from 'src/app/services/auth/auth.service';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Injectable()
 export class AppEffects {

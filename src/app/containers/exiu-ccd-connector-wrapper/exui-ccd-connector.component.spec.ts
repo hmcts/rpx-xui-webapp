@@ -15,22 +15,34 @@ describe('CCD Connector Component', () => {
         ExuiCcdConnectorComponent,
       ],
       providers: []
-    }).compileComponents();
+    }).compileComponents()
+    .then(() => {
+      fixture = TestBed.createComponent(ExuiCcdConnectorComponent);
+      fixture.detectChanges();
+
+      component = fixture.componentInstance;
+      component.store = null;
+      component.eventsBindings = [
+        {type: 'cancelled', action: 'ResetChange'},
+        {type: 'submitted', action: 'ApplyChange'}
+      ];
+      component.fromFeatureStore = null;
+    });
   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ExuiCcdConnectorComponent);
-    fixture.detectChanges();
+  // beforeEach(() => {
+  //   fixture = TestBed.createComponent(ExuiCcdConnectorComponent);
+  //   fixture.detectChanges();
 
-    component = fixture.componentInstance;
-    component.store = null;
-    component.eventsBindings = [
-      {type: 'cancelled', action: 'ResetChange'},
-      {type: 'submitted', action: 'ApplyChange'}
-    ];
-    component.fromFeatureStore = null;
-    fixture.detectChanges();
-  });
+  //   component = fixture.componentInstance;
+  //   component.store = null;
+  //   component.eventsBindings = [
+  //     {type: 'cancelled', action: 'ResetChange'},
+  //     {type: 'submitted', action: 'ApplyChange'}
+  //   ];
+  //   component.fromFeatureStore = null;
+  //   fixture.detectChanges();
+  // });
 
   it('should create component', () => {
     expect(component).toBeTruthy();

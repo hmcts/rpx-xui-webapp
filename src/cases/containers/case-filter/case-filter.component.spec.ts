@@ -37,7 +37,7 @@ describe('CaseCaseComponent', () => {
   let fixture: ComponentFixture<CaseFilterComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
+      TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
         CaseUIToolkitModule,
@@ -82,17 +82,23 @@ describe('CaseCaseComponent', () => {
         ScrollToService
       ]
     })
-      .compileComponents();
+      .compileComponents()
+      .then(()=>{
+        fixture = TestBed.createComponent(CaseFilterComponent);
+        component = fixture.componentInstance;
+        component.startButtonText = 'start';
+        component.caseCreatFilterBindings = [];
+      });
   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(CaseFilterComponent);
-    component = fixture.componentInstance;
-    component.startButtonText = 'start';
-    component.caseCreatFilterBindings = [];
-    fixture.detectChanges();
+  // beforeEach(() => {
+  //   fixture = TestBed.createComponent(CaseFilterComponent);
+  //   component = fixture.componentInstance;
+  //   component.startButtonText = 'start';
+  //   component.caseCreatFilterBindings = [];
+  //   fixture.detectChanges();
 
-  });
+  // });
   it('should create', () => {
     expect(component).toBeTruthy();
   });

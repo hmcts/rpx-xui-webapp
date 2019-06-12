@@ -66,15 +66,19 @@ describe('CaseListComponent', () => {
         ScrollToService
       ]
     })
-    .compileComponents();
+    .compileComponents()
+    .then(()=> {
+      fixture = TestBed.createComponent(CaseListComponent);
+      component = fixture.componentInstance;
+    });
   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(CaseListComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+  // beforeEach(() => {
+  //   fixture = TestBed.createComponent(CaseListComponent);
+  //   component = fixture.componentInstance;
+  //   fixture.detectChanges();
 
-  });
+  // });
   it('should create', () => {
     expect(component).toBeTruthy();
   });

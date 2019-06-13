@@ -6,6 +6,7 @@ import * as fromAppDirectives from '../directives';
 
 import {RouterModule} from '@angular/router';
 import {CommonModule} from '@angular/common';
+import { ExuiLoggerComponent } from '../components/exui-logger/exui-logger.component';
 
 /**
  * Shared Module
@@ -17,12 +18,14 @@ import {CommonModule} from '@angular/common';
   declarations: [
     ...fromAppComponents.components,
     ...fromAppContainers.containers,
-    ...fromAppDirectives.directives
+    ...fromAppDirectives.directives,
+    ExuiLoggerComponent
   ],
   exports: [
     ...fromAppComponents.components,
     ...fromAppContainers.containers,
-    ...fromAppDirectives.directives
+    ...fromAppDirectives.directives,
+    ExuiLoggerComponent
   ],
 })
 export class SharedModule {}

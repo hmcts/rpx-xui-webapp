@@ -2,12 +2,10 @@ import { TestBed, async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { LoggerService } from '../../services/logger/logger.service';
 import { RouterModule } from '@angular/router';
-import { ROUTES } from '../../app.routes';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Store, StoreModule } from '@ngrx/store';
-import { AuthGuard } from '../../services/auth/auth.guard';
-import { AuthService } from '../../services/auth/auth.service';
+import { StoreModule } from '@ngrx/store';
 import { ProvidersModule } from 'src/app/providers/providers.module';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -17,6 +15,7 @@ describe('AppComponent', () => {
         StoreModule.forRoot({}),
         ProvidersModule
       ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [
         AppComponent
       ],

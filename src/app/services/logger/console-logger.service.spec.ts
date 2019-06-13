@@ -2,10 +2,12 @@ import { TestBed, async } from '@angular/core/testing';
 import { ConsoleLoggerService } from './console-logger.service';
 import { NGXLogger } from 'ngx-logger';
 import { CookieService } from 'ngx-cookie';
+import {StoreModule} from '@ngrx/store';
 
 describe('ConsoleLoggerService', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [StoreModule.forRoot({})],
       providers : [
         { provide: NGXLogger,
           useValue: {

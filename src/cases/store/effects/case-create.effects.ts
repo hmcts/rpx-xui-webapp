@@ -12,7 +12,7 @@ export class CaseCreateEffects {
   ) {}
 
   @Effect()
-  applyChangeCaseCreate$ = this.actions$.pipe(
+  applyChangeCaseCreateFilter$ = this.actions$.pipe(
     ofType(fromActions.CREATE_CASE_FILTER_APPLY),
     map(payload => {
       return new fromRoot.Go({
@@ -22,8 +22,8 @@ export class CaseCreateEffects {
   );
 
   @Effect()
-  apply$ = this.actions$.pipe(
-    ofType(fromActions.APPLY_CHANGE),
+  applyCreateCase$ = this.actions$.pipe(
+    ofType(fromActions.CREATE_CASE_APPLY),
     map((action: fromActions.ApplyChange) => action.payload),
     map(newCases => {
       return new fromRoot.Go({

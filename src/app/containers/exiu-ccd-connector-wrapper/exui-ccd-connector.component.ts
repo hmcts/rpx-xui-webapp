@@ -1,6 +1,14 @@
-import {AfterContentInit, Component, ContentChild, Input, OnDestroy} from '@angular/core';
-import {Subscription} from 'rxjs';
-import {Store} from '@ngrx/store';
+import {
+  AfterContentInit,
+  Component,
+  ContentChild,
+  ElementRef, HostBinding,
+  Input,
+  OnDestroy
+} from '@angular/core';
+import { Subscription } from 'rxjs';
+import { Store } from '@ngrx/store';
+
 /**
  * CCD Connector
  * Smart Components responsible for connecting CCD components to ExUI App
@@ -17,14 +25,15 @@ import {Store} from '@ngrx/store';
   `
 })
 export class ExuiCcdConnectorComponent implements AfterContentInit, OnDestroy {
-
   @ContentChild('ccdComponent') ccdComponent;
+  @ContentChild('ccdComponent', {read: ElementRef}) ccdComponentElementRef: ElementRef;
   @Input() eventsBindings;
   @Input() store: Store<any>; // generic store
   @Input() fromFeatureStore: any; // specific feature store
+  @HostBinding('attr.data-selector') hostBindingValue: string;
 
   subscriptions: Subscription[] = [];
-  dispatcherContainer: {type: string} | {};
+  dispatcherContainer: { type: string } | {};
 
   constructor() { }
 
@@ -35,8 +44,10 @@ export class ExuiCcdConnectorComponent implements AfterContentInit, OnDestroy {
           this.ccdComponent[event.type].subscribe((obj = {}) => this.dispatcherContainer[event.type](obj));
       });
       this.createDispatchers();
+      this.hostBindingValue = this.ccdComponentElementRef.nativeElement.tagName;
     }
   }
+
   /**
    * Creates dispatchers functions based on CCD events array
    */
@@ -51,7 +62,7 @@ export class ExuiCcdConnectorComponent implements AfterContentInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.subscriptions.length) {
-      this.eventsBindings.forEach((event ) => {
+      this.eventsBindings.forEach((event) => {
         this.subscriptions[event.type].unsubscribe();
       });
     }

@@ -39,26 +39,33 @@ export class CaseSearchComponent implements OnInit {
     const state = this.store.pipe(select(fromCasesFeature.getSearchState));
 
     state.subscribe(st => {
-      if (typeof st !== 'undefined'  && st !== null) {
-        this.jurisdiction = st.jurisdiction.value as Jurisdiction;
-        this.caseType = st.caseType.value as CaseType;
-        this.metadataFields = st.metadataFields.value as Array<string>;
-        this.caseState = this.caseType.states[0];
-        const lfg = JSON.parse(localStorage.getItem('search-form-group-value'));
-        this.searchService.search( this.jurisdiction.id, this.caseType.id, this.metadataFields, lfg, null ).subscribe(
-          data => {
-            this.paginationMetadata = new PaginationMetadata();
-            this.paginationMetadata.total_results_count = data.results.length;
-            this.paginationMetadata.total_pages_count = Math.ceil(data.results.length / 10);
-            this.resultView = data;
-          });
-
-      } else if ( st === null) {
-        this.resultView = null;
-      }
+      this.assignData(st);
     });
   }
 
+  assignData(st) {
+    if (typeof st !== 'undefined'  && st !== null) {
+      this.jurisdiction = st.jurisdiction.value as Jurisdiction;
+      this.caseType = st.caseType.value as CaseType;
+      this.metadataFields = st.metadataFields.value as Array<string>;
+      this.caseState = this.caseType.states[0];
+      const lfg = JSON.parse(localStorage.getItem('search-form-group-value'));
+      const search = this.searchService.search( this.jurisdiction.id, this.caseType.id, this.metadataFields, lfg, null );
+      search.subscribe(
+        data => {
+          this.assignResult(data);
+        });
+
+    } else if ( st === null) {
+      this.resultView = null;
+    }
+  }
+  assignResult(data){
+    this.paginationMetadata = new PaginationMetadata();
+    this.paginationMetadata.total_results_count = data.results.length;
+    this.paginationMetadata.total_pages_count = Math.ceil(data.results.length / 10);
+    this.resultView = data;
+  }
   ngOnInit(): void {
     this.fromCasesFeature = fromCasesFeature;
     this.caseSearchEventsBindings = [

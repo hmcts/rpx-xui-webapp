@@ -16,14 +16,31 @@ properties([
 def type      = "nodejs"
 def product   = "xui"
 def component = "webapp"
+def vault = "rpx"
 def channel   = '#xui-pipeline'
+
+List<LinkedHashMap<String, Object>> secrets = [
+    secret('xui-s2s-token', 'S2S_SECRET'),
+    secret('xui-oauth2-token', 'IDAM_SECRET'),
+    secret('test-email', 'TEST_EMAIL'),
+    secret('test-password', 'TEST_PASSWORD'),
+]
+
+static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
+    [ $class: 'AzureKeyVaultSecret',
+      secretType: 'Secret',
+      name: secretName,
+      version: '',
+      envVariable: envVar
+    ]
+}
 
 withPipeline(type, product, component) {
     enableSlackNotifications(channel)
     enableDockerBuild()
     installCharts()
 
- 
+
     after('checkout') {sh 'yarn cache clean'}
 
     after('build') {

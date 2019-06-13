@@ -23,12 +23,11 @@ export class AuthService {
       USER: config.cookies.userId
     };
 
-    this.apiBaseUrl =
-      window.location.protocol +
-      '//' +
-      window.location.hostname +
-      ':' +
-      window.location.port;
+    this.apiBaseUrl = window.location.protocol + '//' + window.location.hostname;
+
+    if (window.location.port) { // don't add colon if there is no port
+      this.apiBaseUrl +=   ':' + window.location.port;
+    }
 
     this.user = null;
   }

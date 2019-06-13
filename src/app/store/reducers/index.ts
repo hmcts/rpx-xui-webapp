@@ -8,6 +8,7 @@ import { createFeatureSelector, ActionReducerMap } from '@ngrx/store';
 import * as fromRouter from '@ngrx/router-store';
 
 import * as fromApp from './app-config.reducer';
+import { LoggerMessage, loggerReducer } from 'src/app/store/reducers/logger.reducer';
 
 export interface RouterStateUrl {
   url: string;
@@ -18,11 +19,13 @@ export interface RouterStateUrl {
 export interface State {
   routerReducer: fromRouter.RouterReducerState<RouterStateUrl>;
   appConfig: fromApp.AppConfigState;
+  loggerState: LoggerMessage;
 }
 
 export const reducers: ActionReducerMap<State> = {
   routerReducer: fromRouter.routerReducer,
   appConfig: fromApp.reducer,
+  loggerState: loggerReducer
 };
 
 export class CustomSerializer
@@ -47,3 +50,7 @@ export const getRouterState = createFeatureSelector<
   >('routerReducer');
 
 export const getAppConfigState = createFeatureSelector<any>( 'appConfig' );
+
+export const getLoggerState = createFeatureSelector<LoggerMessage>(
+  'loggerState'
+);

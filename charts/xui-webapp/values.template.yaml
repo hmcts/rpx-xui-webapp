@@ -1,4 +1,3 @@
-
 nodejs:
   applicationPort: 3000
   memoryLimits: 1024Mi

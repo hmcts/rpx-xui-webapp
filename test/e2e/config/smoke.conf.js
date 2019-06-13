@@ -31,7 +31,7 @@ const localConfig = [
   {
     browserName: 'chrome',
     acceptInsecureCerts: true,
-    chromeOptions: { args: [ '--headless', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote '] },
+    chromeOptions: { args: ['--headless', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ']} ,
     proxy: {
       proxyType: 'manual',
       httpProxy: 'proxyout.reform.hmcts.net:8080',
@@ -61,7 +61,7 @@ const config = {
     targetEnv: argv.env || 'local',
     // username: process.env.TEST_EMAIL,
     // password: process.env.TEST_PASSWORD,
-    username: 'juitestjugdesscs@mailnesia.com ',
+    username: 'juitestjudgesscs@mailnesia.com ',
     password: 'Monday01',
     fr_judge_username: process.env.FR_EMAIL,
     fr_judge_password: process.env.FR_PASSWORD,

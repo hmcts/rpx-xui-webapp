@@ -4,7 +4,9 @@ import { http } from '../lib/http'
 import { isReqResSet, request } from '../lib/middleware/responseRequest'
 
 import { getHealth, getInfo, valueOrNull } from '../lib/util'
+import * as log4jui from '../lib/log4jui'
 
+const logger = log4jui.getLogger('idam')
 const url = config.services.idam.idamApiUrl
 
 const idamSecret = process.env.IDAM_SECRET || 'AAAAAAAAAAAAAAAA'
@@ -41,6 +43,7 @@ export async function getUser(email = null) {
 
 export async function postOauthToken(code, host) {
     const redirectUri = `${idamProtocol}://${host}/${oauthCallbackUrl}`
+    logger.info(`idam details ${idamClient}:${idamSecret}`)
     const urlX = `${url}/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=${redirectUri}`
     const options = {
         headers: {

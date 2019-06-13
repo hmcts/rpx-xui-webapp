@@ -11,7 +11,6 @@ nodejs:
     XUI_ENV: preview
     S2S_SECRET: ${S2S_SECRET}
     IDAM_SECRET: ${IDAM_SECRET}
-    XUI_ENV: preview
   keyVaults:
     rpa:
       resourceGroup: rpa

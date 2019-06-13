@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Logger } from './logger.service';
 import { environment } from '../../../environments/environment';
-import { NGXLogger } from 'ngx-logger';
 import { CookieService } from 'ngx-cookie';
+import { Store } from '@ngrx/store';
+import {  Debug, Trace, Info, Warning, Error, Fatal } from '../../store/actions/logger-state.actions';
+import { LoggerMessage } from 'src/app/store/reducers/logger.reducer';
 
 const now = Date();
 
@@ -15,8 +17,8 @@ export class ConsoleLoggerService implements Logger {
   COOKIE_KEYS;
 
  constructor(
-   private ngxLogger: NGXLogger,
-   private cookieService: CookieService) {
+   private cookieService: CookieService,
+   private store: Store<LoggerMessage>) {
     this.COOKIE_KEYS = {
       TOKEN: environment.cookies.token,
       USER: environment.cookies.userId
@@ -31,25 +33,34 @@ export class ConsoleLoggerService implements Logger {
   }
 
   debug(message: string): void {
-    this.ngxLogger.debug(message, [this.user, now]);
+    const loggerMessage = this.getLoggerMessage(message);
+    this.store.dispatch(new Debug(loggerMessage));
   }
 
   trace(message: string): void {
-      this.ngxLogger.trace(message, [this.user, now]);
+    const loggerMessage = this.getLoggerMessage(message);
+    this.store.dispatch(new Trace(loggerMessage));
   }
 
   info(message: string): void {
-      this.ngxLogger.info(message, [this.user, now]);
+    const loggerMessage = `${message} ${this.user} ${now}`;
+    this.store.dispatch(new Info(loggerMessage));
   }
 
   warn(message: string): void {
-      this.ngxLogger.warn(message, [this.user, now]);
+    const loggerMessage = this.getLoggerMessage(message);
+    this.store.dispatch(new Warning(loggerMessage));
   }
 
   error(message: string): void {
-      this.ngxLogger.error(message, [this.user, now]);
+    const loggerMessage = this.getLoggerMessage(message);
+    this.store.dispatch(new Error(loggerMessage));
   }
   fatal(message: string): void {
-    this.ngxLogger.fatal(message, [this.user, now]);
+    const loggerMessage = this.getLoggerMessage(message);
+    this.store.dispatch(new Fatal(loggerMessage));
+  }
+  getLoggerMessage(message): string {
+    return `${message} ${this.user} ${now}`;
   }
 }

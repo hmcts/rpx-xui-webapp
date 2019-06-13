@@ -6,10 +6,12 @@
 /out-tsc
 # Only exists if Bazel was run
 /bazel-out
+/reports
 
 # dependencies
 node_modules
-
+api/node_modules
+api/.nyc_output
 
 
 # profiling files
@@ -52,5 +54,12 @@ Thumbs.db
 .sessions
 package-lock.json
 local-only-tools
+/test/reports/
+reports/
 
 /local-only-tools
+
+reports_json/
+.nyc_output/
+cb_reports/
+report.json

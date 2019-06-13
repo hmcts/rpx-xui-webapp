@@ -10,7 +10,7 @@ describe('Create Cases Actions', () => {
         const action = new fromCreateCases.ApplyChange(payload);
 
         expect({ ...action }).toEqual({
-          type: fromCreateCases.APPLY_CHANGE,
+          type: fromCreateCases.CREATE_CASE_APPLY,
           payload,
         });
       });
@@ -18,10 +18,10 @@ describe('Create Cases Actions', () => {
 
     describe('Reset Change', () => {
       it('should create an action', () => {
-        const action = new fromCreateCases.ResetChange();
+        const action = new fromCreateCases.CreateCaseReset();
 
         expect({ ...action }).toEqual({
-          type: fromCreateCases.RESET_CHANGE,
+          type: fromCreateCases.CREATE_CASE_RESET,
         });
       });
     });

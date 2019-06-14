@@ -1,7 +1,6 @@
 import * as express from 'express'
 import { config } from '../config'
 import { http } from '../lib/http'
-import * as log4jui from '../lib/log4jui'
 import { isReqResSet, request } from '../lib/middleware/responseRequest'
 import { getHealth, getInfo, valueOrNull } from '../lib/util'
 

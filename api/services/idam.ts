@@ -5,7 +5,6 @@ import * as log4jui from '../lib/log4jui'
 import { isReqResSet, request } from '../lib/middleware/responseRequest'
 import { getHealth, getInfo, valueOrNull } from '../lib/util'
 
-const logger = log4jui.getLogger('idam')
 const url = config.services.idam.idamApiUrl
 
 const idamSecret = process.env.IDAM_SECRET || 'AAAAAAAAAAAAAAAA'

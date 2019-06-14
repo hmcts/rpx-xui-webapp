@@ -42,7 +42,7 @@ export async function getUser(email = null) {
 
 export async function postOauthToken(code, host) {
     const redirectUri = `${idamProtocol}://${host}/${oauthCallbackUrl}`
-    logger.info(`idam details ${idamClient}:${idamSecret}`)
+
     const urlX = `${url}/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=${redirectUri}`
     const options = {
         headers: {

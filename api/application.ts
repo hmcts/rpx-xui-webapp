@@ -9,6 +9,7 @@ import * as auth from './auth'
 import { config } from './config'
 import { errorStack } from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
+import routes from './routes'
 
 console.log('env settings:', process.env)
 

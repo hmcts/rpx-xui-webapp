@@ -1,15 +1,17 @@
+import { Entity } from './../../../app/store/helpers/entity';
 import { Observable } from 'rxjs/Observable';
-import { reducers } from './../../../app/store/reducers/index';
-import { AppModule } from './../../../app/app.module';
-import { AuthService } from './../../../app/services/auth/auth.service';
-import { ExuiPageWrapperComponent } from './../../../app/components/exui-mian-wrapper/exui-page-wrapper.component';
+import { reducers } from '../../../app/store/reducers/index';
+import { AppModule } from '../../../app/app.module';
+import { AuthService } from '../../../app/services/auth/auth.service';
+import { ExuiPageWrapperComponent } from '../../../app/components/exui-mian-wrapper/exui-page-wrapper.component';
 import { BrowserDynamicTestingModule,
   platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
 import { ComponentFixture, TestBed, inject } from '@angular/core/testing';
 import { CaseSearchComponent } from './case-search.component';
 import * as fromCasesFeature from '../../store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { SearchService, ActivityService, HttpErrorService, HttpService, AbstractAppConfig} from '@hmcts/ccd-case-ui-toolkit';
+import { SearchService, ActivityService, HttpErrorService, HttpService, AbstractAppConfig,
+  SearchResultView, SearchResultViewColumn, FieldType, FieldTypeEnum, SearchResultViewItem, CaseType, CaseState, Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCcdConnectorComponent } from '../../../app/containers/exiu-ccd-connector-wrapper/exui-ccd-connector.component';
 import { SearchFiltersModule, SearchResultModule } from '@hmcts/ccd-case-ui-toolkit/dist/shared/components';
 import { RouterModule } from '@angular/router';
@@ -21,6 +23,7 @@ import { ProvidersModule } from '../../../app/providers/providers.module';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppConfigService } from '../../../app/services/config/configuration.services';
 import { of, observable } from 'rxjs';
+import { json } from 'body-parser';
 
 describe('CaseSearchComponent', () => {
   let fixture: ComponentFixture<CaseSearchComponent>;
@@ -97,20 +100,32 @@ describe('CaseSearchComponent', () => {
   });
 
   it('should assign value to search input', () => {
+    const ct = new CaseType();
+    ct.id = 'Benefit';
+    const cs = new CaseState();
+    cs.id = 'Open';
+    ct.states = [cs];
+    const jd = new Jurisdiction();
+    jd.caseTypes = [ct];
+    jd.id = 'England';
     const data = {
-      jurisdiction : {value : 'england'},
-      caseType: {value : { states:['open']}},
+      jurisdiction : new Entity(jd),
+      caseType: new Entity(ct),
       metadataFields: []
     };
     component.assignData(data);
-    expect(component.jurisdiction).toBe(data.jurisdiction.value);
+    expect(component.jurisdiction.id).toBe(data.jurisdiction.id);
+    expect(component.caseType.id).toBe(data.caseType.id);
   });
 
   it('should do search result mapping', () => {
-    const res = {
-      results: [1, 2, 3, 4]
-    };
-    component.assignResult(res);
-    expect(component.resultView).toBe(res);
+    const data = new SearchResultView();
+    const column = new SearchResultViewColumn();
+    column.case_field_type = new FieldType();
+    data.columns =[column];
+    const result = new SearchResultViewItem();
+    data.results = [result];
+    component.assignResult(data);
+    expect(component.resultView).toBe(data);
   });
 });

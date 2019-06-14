@@ -1,9 +1,9 @@
 import {Component, OnInit, OnDestroy, Input} from '@angular/core';
 import { NGXLogger } from 'ngx-logger';
-import { LoggerMessage } from 'src/app/store/reducers/logger.reducer';
+import { LoggerMessage } from '../..//store/reducers/logger.reducer';
 import { Store, select } from '@ngrx/store';
 import { getDebugMessagesState, getInfoMessagesState, getWarningMessagesState, getErrorMessagesState,
-  getFatalMessagesState, getTraceMessagesState } from 'src/app/store/selectors/logger.selector';
+  getFatalMessagesState, getTraceMessagesState } from '../../store/selectors/logger.selector';
 import { LoggerService } from '../../services/logger/logger.service';
 
 @Component({

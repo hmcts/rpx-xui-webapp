@@ -8,7 +8,7 @@ import { createFeatureSelector, ActionReducerMap } from '@ngrx/store';
 import * as fromRouter from '@ngrx/router-store';
 
 import * as fromApp from './app-config.reducer';
-import { LoggerMessage, loggerReducer } from 'src/app/store/reducers/logger.reducer';
+import { LoggerMessage, loggerReducer } from '../../store/reducers/logger.reducer';
 
 export interface RouterStateUrl {
   url: string;

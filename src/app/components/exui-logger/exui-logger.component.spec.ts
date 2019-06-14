@@ -2,7 +2,7 @@ import { TestBed, async } from '@angular/core/testing';
 import { ExuiLoggerComponent } from './exui-logger.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule } from '@ngrx/store';
-import { ProvidersModule } from 'src/app/providers/providers.module';
+import { ProvidersModule } from '../../providers/providers.module';
 import { NGXLogger } from 'ngx-logger';
 
 class MockNGXLogger {

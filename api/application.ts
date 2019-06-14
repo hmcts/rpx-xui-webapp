@@ -11,6 +11,8 @@ import { errorStack } from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
 import routes from './routes'
 
+console.log(process.env)
+
 config.environment = process.env.XUI_ENV || 'local'
 
 export const app = express()

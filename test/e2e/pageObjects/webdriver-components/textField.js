@@ -19,7 +19,6 @@ class TextField{
   async enterText(text){
     await $(this.css).sendKeys(text);
   }
-
   /**
    * Check the input tag is present
    * @returns {Promise<boolean|*>}

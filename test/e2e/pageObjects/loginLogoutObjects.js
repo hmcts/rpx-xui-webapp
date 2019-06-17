@@ -1,6 +1,6 @@
 'use strict';
 
-const { SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants');
+const { SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../support/constants');
 
 function loginLogoutObjects() {
 

@@ -1,4 +1,4 @@
-class CcdDataGenerationUtils {
+class EuiDataGenerationUtils {
 
 
     /**
@@ -40,5 +40,5 @@ class CcdDataGenerationUtils {
     }
 }
 
-module.exports = CcdDataGenerationUtils;
+module.exports = EuiDataGenerationUtils;
 

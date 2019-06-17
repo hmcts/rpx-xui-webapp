@@ -1,7 +1,6 @@
 Dropdown = require('./webdriver-components/dropdown.js')
 Button = require('./webdriver-components/button.js')
 
-
 class CreateCaseStartPage extends BasePage{
 
   constructor(){
@@ -9,7 +8,7 @@ class CreateCaseStartPage extends BasePage{
       this._jurisdiction = new Dropdown('#cc-jurisdiction');
       this._caseType = new Dropdown('#cc-case-type');
       this._event = new Dropdown('#cc-event');
-      this._submitButton = new Button('.container-fluid .button');
+      this._submitButton = new Button('#content > div > div > exui-ccd-connector > ccd-create-case-filters > form > button');
   }
 
   /**
@@ -46,8 +45,10 @@ class CreateCaseStartPage extends BasePage{
   async clickStartButton() {
     await this._submitButton.waitForElementToBeClickable();
     await this._submitButton.click();
-    await browser.waitForAngular;
-    return new CreateCaseWizardPage;
+
+    //await $(this._submitButton).click();
+    //await browser.waitForAngular;
+    //return new CreateCaseWizardPage;
   }
 
   /**

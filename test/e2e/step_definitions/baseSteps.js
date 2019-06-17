@@ -1,4 +1,4 @@
-let TestData = require('/Users/nagendrareddyk/GITMOJ/repo/rpx-xui-webapp/test/e2e/utils/TestData.js');
+let TestData = require('../utils/TestData.js');
 
 module.exports = {
 

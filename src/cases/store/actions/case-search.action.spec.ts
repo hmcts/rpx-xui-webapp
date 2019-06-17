@@ -4,13 +4,6 @@ import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@ang
 import { JURISDICTION_SELECTED, JurisdictionSelected, RESET, Reset, APPLIED, Applied } from './case-search.action';
 
 describe('Case Search Actions', () => {
-  // beforeEach(() => {
-  //   TestBed.resetTestEnvironment();
-  //   TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
-  //   TestBed.configureTestingModule({
-
-  //   });
-  // });
   describe('Search Cases filter', () => {
     describe('Jurisdiction Selected', () => {
       it('should create an action', () => {

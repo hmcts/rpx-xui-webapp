@@ -6,7 +6,7 @@ import {FooterComponent} from './footer.component';
 describe('FooterComponent', () => {
     @Component({
         selector: `exui-app-host-dummy-component`,
-        template: `<app-footer></app-footer>`
+        template: `<exui-app-footer></exui-app-footer>`
     })
     class TestDummyHostComponent {
         @ViewChild(FooterComponent)
@@ -15,8 +15,8 @@ describe('FooterComponent', () => {
 
     let testHostComponent: TestDummyHostComponent;
     let testHostFixture: ComponentFixture<TestDummyHostComponent>;
-    let el: DebugElement;
-    let de: any;
+    const el: DebugElement;
+    const de: any;
     let component: FooterComponent;
     let fixture: ComponentFixture<FooterComponent>;
     let element: DebugElement;

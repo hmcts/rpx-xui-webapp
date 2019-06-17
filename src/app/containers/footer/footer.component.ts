@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Helper, Navigation } from './footer.model';
 
 @Component({
-    selector: 'app-footer',
+    selector: 'exui-app-footer',
     templateUrl: './footer.component.html',
     styleUrls: ['./footer.component.scss']
 })

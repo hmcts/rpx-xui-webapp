@@ -18,10 +18,10 @@ describe('HmctsGlobalFooterComponent', () => {
         @ViewChild(HmctsGlobalFooterComponent)
         public hmctsGlobalFooterComponent: HmctsGlobalFooterComponent;
     }
-    let testHostComponent: TestDummyHostComponent;
-    let testHostFixture: ComponentFixture<TestDummyHostComponent>;
-    let el: DebugElement;
-    let de: any;
+    const testHostComponent = TestDummyHostComponent;
+    const testHostFixture = ComponentFixture<TestDummyHostComponent>;
+    const el: DebugElement;
+    const de: any;
     let component: HmctsGlobalFooterComponent;
     let fixture: ComponentFixture<HmctsGlobalFooterComponent>;
 

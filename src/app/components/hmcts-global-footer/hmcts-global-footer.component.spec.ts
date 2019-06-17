@@ -19,9 +19,12 @@ describe('HmctsGlobalFooterComponent', () => {
         public hmctsGlobalFooterComponent: HmctsGlobalFooterComponent;
     }
     const testHostComponent = TestDummyHostComponent;
-    const testHostFixture = ComponentFixture<TestDummyHostComponent>;
-    const el: DebugElement;
-    const de: any;
+    // tslint:disable-next-line
+    let testHostFixture: ComponentFixture<TestDummyHostComponent>;
+    // tslint:disable-next-line
+    let el: DebugElement;
+    // tslint:disable-next-line
+    let de: any;
     let component: HmctsGlobalFooterComponent;
     let fixture: ComponentFixture<HmctsGlobalFooterComponent>;
 

@@ -15,8 +15,10 @@ describe('FooterComponent', () => {
 
     let testHostComponent: TestDummyHostComponent;
     let testHostFixture: ComponentFixture<TestDummyHostComponent>;
-    const el: DebugElement;
-    const de: any;
+    // tslint:disable-next-line
+    let el: DebugElement;
+    // tslint:disable-next-line
+    let de: any;
     let component: FooterComponent;
     let fixture: ComponentFixture<FooterComponent>;
     let element: DebugElement;

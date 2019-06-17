@@ -65,5 +65,17 @@ describe('Configuration Service', () => {
   it('should have configuration service getEditorConfiguration method', () => {
     expect(service.getEditorConfiguration).toBeTruthy();
   });
+
+  it('should have configuration service load method', () => {
+    expect(service.load).toBeTruthy();
+  });
+
+  it('should have configuration service getRoutesConfig method', () => {
+    expect(service.getRoutesConfig).toBeTruthy();
+  });
+
+  it('should have configuration service getEditorConfiguration method', () => {
+    expect(service.getEditorConfiguration).toBeTruthy();
+  });
 });
 

@@ -2,7 +2,6 @@ import * as express from 'express'
 import { config } from '../config'
 import { http } from '../lib/http'
 import { isReqResSet, request } from '../lib/middleware/responseRequest'
-
 import { getHealth, getInfo, valueOrNull } from '../lib/util'
 
 const url = config.services.idam.idamApiUrl
@@ -41,6 +40,7 @@ export async function getUser(email = null) {
 
 export async function postOauthToken(code, host) {
     const redirectUri = `${idamProtocol}://${host}/${oauthCallbackUrl}`
+
     const urlX = `${url}/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=${redirectUri}`
     const options = {
         headers: {

@@ -12,13 +12,12 @@ nodejs:
     S2S_SECRET: ${S2S_SECRET}
     IDAM_SECRET: ${IDAM_SECRET}
   keyVaults:
-    rpa:
-      resourceGroup: rpa
+    rpx:
+      resourceGroup: rpx
       secrets:
         - test-email
-        - jui-s2s-token
-        - decrypt-key
-        - jui-oauth2-token
+        - xui-s2s-token
+        - xui-oauth2-token
         - fr-email
         - fr-password
         - sscs-email

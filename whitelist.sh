@@ -1,3 +1,4 @@
+export
 if [[ $HOSTNAME = *xui-webapp-pr* ]]
 then
 

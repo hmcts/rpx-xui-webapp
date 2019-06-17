@@ -67,7 +67,7 @@ describe('CaseListComponent', () => {
       ]
     })
     .compileComponents()
-    .then(()=> {
+    .then(() => {
       fixture = TestBed.createComponent(CaseListComponent);
       component = fixture.componentInstance;
     });

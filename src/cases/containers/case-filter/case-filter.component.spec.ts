@@ -83,7 +83,7 @@ describe('Case Filter Component', () => {
       ]
     })
       .compileComponents()
-      .then(()=>{
+      .then(() => {
         fixture = TestBed.createComponent(CaseFilterComponent);
         component = fixture.componentInstance;
         component.startButtonText = 'start';

@@ -81,7 +81,7 @@ describe('CaseCreateComponent', () => {
         ScrollToService
       ]
     })
-      .compileComponents()
+      .compileComponents();
       // .then(()=>{
       //   fixture = TestBed.createComponent(CasesCreateComponent);
       //   component = fixture.componentInstance;

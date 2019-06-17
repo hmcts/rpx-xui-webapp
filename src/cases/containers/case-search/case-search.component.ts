@@ -60,7 +60,7 @@ export class CaseSearchComponent implements OnInit {
       this.resultView = null;
     }
   }
-  assignResult(data){
+  assignResult(data) {
     this.paginationMetadata = new PaginationMetadata();
     this.paginationMetadata.total_results_count = data.results.length;
     this.paginationMetadata.total_pages_count = Math.ceil(data.results.length / 10);

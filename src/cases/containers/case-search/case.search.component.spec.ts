@@ -11,7 +11,8 @@ import { CaseSearchComponent } from './case-search.component';
 import * as fromCasesFeature from '../../store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { SearchService, ActivityService, HttpErrorService, HttpService, AbstractAppConfig,
-  SearchResultView, SearchResultViewColumn, FieldType, FieldTypeEnum, SearchResultViewItem, CaseType, CaseState, Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
+  SearchResultView, SearchResultViewColumn, FieldType, SearchResultViewItem, CaseType,
+  CaseState, Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCcdConnectorComponent } from '../../../app/containers/exiu-ccd-connector-wrapper/exui-ccd-connector.component';
 import { SearchFiltersModule, SearchResultModule } from '@hmcts/ccd-case-ui-toolkit/dist/shared/components';
 import { RouterModule } from '@angular/router';
@@ -122,7 +123,7 @@ describe('CaseSearchComponent', () => {
     const data = new SearchResultView();
     const column = new SearchResultViewColumn();
     column.case_field_type = new FieldType();
-    data.columns =[column];
+    data.columns = [column];
     const result = new SearchResultViewItem();
     data.results = [result];
     component.assignResult(data);

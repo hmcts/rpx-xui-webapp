@@ -14,7 +14,7 @@ PARAM="{
 }"
 
 https_proxy=proxyout.reform.hmcts.net:8080 curl -v -X PATCH \
- https://idam-api.aat.platform.hmcts.net/testing-support/services/judicial-ui \
+ https://idam-api.aat.platform.hmcts.net/testing-support/services/XUI \
  -H 'Accept: application/json' \
  -H 'Content-Type: application/json' \
  -d "[${PARAM}]"

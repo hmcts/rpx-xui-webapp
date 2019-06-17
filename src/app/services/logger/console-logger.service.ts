@@ -4,7 +4,7 @@ import { environment } from '../../../environments/environment';
 import { CookieService } from 'ngx-cookie';
 import { Store } from '@ngrx/store';
 import {  Debug, Trace, Info, Warning, Error, Fatal } from '../../store/actions/logger-state.actions';
-import { LoggerMessage } from '../../store/reducers/logger.reducer';
+import { NGXLogger } from 'ngx-logger';
 
 const now = Date();
 
@@ -18,7 +18,7 @@ export class ConsoleLoggerService implements Logger {
 
  constructor(
    private cookieService: CookieService,
-   private store: Store<LoggerMessage>) {
+   private ngxLogger: NGXLogger) {
     this.COOKIE_KEYS = {
       TOKEN: environment.cookies.token,
       USER: environment.cookies.userId
@@ -34,31 +34,31 @@ export class ConsoleLoggerService implements Logger {
 
   debug(message: string): void {
     const loggerMessage = this.getLoggerMessage(message);
-    this.store.dispatch(new Debug(loggerMessage));
+    this.ngxLogger.debug(loggerMessage);
   }
 
   trace(message: string): void {
     const loggerMessage = this.getLoggerMessage(message);
-    this.store.dispatch(new Trace(loggerMessage));
+    this.ngxLogger.trace(loggerMessage);
   }
 
   info(message: string): void {
     const loggerMessage = `${message} ${this.user} ${now}`;
-    this.store.dispatch(new Info(loggerMessage));
+    this.ngxLogger.info(loggerMessage);
   }
 
   warn(message: string): void {
     const loggerMessage = this.getLoggerMessage(message);
-    this.store.dispatch(new Warning(loggerMessage));
+    this.ngxLogger.warn(loggerMessage);
   }
 
   error(message: string): void {
     const loggerMessage = this.getLoggerMessage(message);
-    this.store.dispatch(new Error(loggerMessage));
+    this.ngxLogger.error(loggerMessage);
   }
   fatal(message: string): void {
     const loggerMessage = this.getLoggerMessage(message);
-    this.store.dispatch(new Fatal(loggerMessage));
+    this.ngxLogger.fatal(loggerMessage);
   }
   getLoggerMessage(message): string {
     return `${message} ${this.user} ${now}`;

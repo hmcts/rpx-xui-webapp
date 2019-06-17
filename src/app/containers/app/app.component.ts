@@ -9,13 +9,22 @@ import { Store } from '@ngrx/store';
   styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   name: string;
   constructor(
     private logger: LoggerService,
     private store: Store<fromActions.State>
   ) {
     this.name = 'App.Component';
+  }
+
+  ngOnInit() {
+    this.logger.debug('logger debug');
+    this.logger.info('logger info');
+    this.logger.error('logger error');
+    this.logger.warn('logger warn');
+    this.logger.fatal('logger fatal');
+    this.logger.trace('logger trace');
   }
 
   // To do move signOut to header component when available!!!

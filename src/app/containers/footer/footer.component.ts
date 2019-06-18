@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Helper, Navigation } from './footer.model';
+import { AppConstants } from '../../app.constants';
 
 @Component({
     selector: 'exui-app-footer',
@@ -7,24 +8,6 @@ import { Helper, Navigation } from './footer.model';
     styleUrls: ['./footer.component.scss']
 })
 export class FooterComponent {
-    public helpData: Helper = {
-        heading: 'Help',
-        email: {
-            address: 'service-desk@hmcts.gov.uk',
-            text: 'service-desk@hmcts.gov.uk'
-        },
-        phone: {
-            text: '0207 633 4140'
-        },
-        opening: {
-            text: 'Monday to Friday, 8am to 6pm (excluding public holidays)'
-        }
-    };
-    public navigationData: Navigation = {
-        items: [
-            { text: 'Terms and conditions', href: 'terms-and-conditions'},
-            { text: 'Cookies', href: 'cookies' },
-            { text: 'Privacy policy', href: 'privacy-policy'}
-        ]
-    };
+    public helpData: Helper = AppConstants.FOOTER_DATA;
+    public navigationData: Navigation = AppConstants.FOOTER_DATA_NAVIGATION;
 }

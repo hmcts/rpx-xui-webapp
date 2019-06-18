@@ -25,6 +25,7 @@
             [resultView]="resultView"
             [paginationMetadata]="paginationMetadata"
             [metadataFields]="metadataFields"
+            (changePage)="applyChangePage($event)"
           >
           </ccd-search-result>
         </exui-ccd-connector>

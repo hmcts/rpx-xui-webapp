@@ -1,7 +1,7 @@
 import { Reset } from './../../store/actions/case-search.action';
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {ActionBindingModel} from '../../models/create-case-actions.model';
-import {Store, select} from '@ngrx/store';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ActionBindingModel } from '../../models/create-case-actions.model';
+import { Store, select } from '@ngrx/store';
 import * as fromCasesFeature from '../../store';
 import * as fromCaseCreate from '../../store/reducers';
 import { Jurisdiction, CaseType, CaseState, SearchResultView, PaginationMetadata, SearchService } from '@hmcts/ccd-case-ui-toolkit';
@@ -33,10 +33,16 @@ export class CaseSearchComponent implements OnInit {
 
   resultsArr: any[] = [];
 
-  constructor(public store: Store<fromCasesFeature.State>,
-              private searchService: SearchService) {
+  paginationSize: number;
+
+  constructor(
+    public store: Store<fromCasesFeature.State>,
+    private searchService: SearchService,
+    private appConfig: AppConfig
+  ) {
 
     const state = this.store.pipe(select(fromCasesFeature.getSearchState));
+    this.paginationSize = this.appConfig.getPaginationPageSize();
 
     state.subscribe(st => {
       this.assignData(st);
@@ -44,35 +50,52 @@ export class CaseSearchComponent implements OnInit {
   }
 
   assignData(st) {
-    if (typeof st !== 'undefined'  && st !== null) {
+    if (typeof st !== 'undefined' && st !== null) {
       this.jurisdiction = st.jurisdiction.value as Jurisdiction;
       this.caseType = st.caseType.value as CaseType;
       this.metadataFields = st.metadataFields.value as Array<string>;
       this.caseState = this.caseType.states[0];
       const lfg = JSON.parse(localStorage.getItem('search-form-group-value'));
-      const search = this.searchService.search( this.jurisdiction.id, this.caseType.id, this.metadataFields, lfg, null );
+      const search = this.searchService.search(this.jurisdiction.id, this.caseType.id, this.metadataFields, lfg, null);
       search.subscribe(
         data => {
           this.assignResult(data);
         });
 
-    } else if ( st === null) {
+    } else if (st === null) {
       this.resultView = null;
     }
   }
-  assignResult(data){
+  assignResult(data) {
     this.paginationMetadata = new PaginationMetadata();
     this.paginationMetadata.total_results_count = data.results.length;
-    this.paginationMetadata.total_pages_count = Math.ceil(data.results.length / 10);
-    this.resultView = data;
+    this.paginationMetadata.total_pages_count = Math.ceil(data.results.length / this.paginationSize);
+    this.resultsArr = data.results;
+    this.resultView = {
+      ...data,
+      results: data.results.slice(0, this.paginationSize)
+    };
   }
   ngOnInit(): void {
     this.fromCasesFeature = fromCasesFeature;
     this.caseSearchEventsBindings = [
-      {type: 'onJurisdiction', action: 'JurisdictionSelected'},
-      {type: 'onApply', action: 'Applied'},
-      {type: 'onReset', action: 'Reset'}
+      { type: 'onJurisdiction', action: 'JurisdictionSelected' },
+      { type: 'onApply', action: 'Applied' },
+      { type: 'onReset', action: 'Reset' }
     ];
+  }
+
+  applyChangePage(selected) {
+    const startingPoint = (selected.page - 1) * this.paginationSize;
+    const endingPoint = startingPoint + this.paginationSize;
+    const newArr = this.resultsArr.slice(startingPoint, endingPoint);
+
+    this.resultView = {
+      ...this.resultView,
+      results: newArr,
+      hasDrafts: this.resultView.hasDrafts
+    };
+
   }
 
   getFormGroup(payload) {

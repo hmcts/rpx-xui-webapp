@@ -8,8 +8,8 @@ class AppealCreatedPage extends BasePage{
     super();
     this.header = '.page .heading-h1';
     this.submitButton = new Button('button[type=submit]');
-    this.previousButton = new Button('button[type=submit]');
-    this.cancelButton = new Button('button[type=submit]');
+    this.previousButton = new Button('button[type=button]');
+    this.cancelButton = new Button('.cancel a');
     this.eventSummary = 'field-trigger-summary';
     this.eventDescription = 'field-trigger-description';
 
@@ -21,16 +21,16 @@ class AppealCreatedPage extends BasePage{
    * Enter random text into the Text field
    * @returns EUIStringField Object
    */
-  async enterIntoTextField(value){
-    await this.eventSummary.enterText(value);
+  async enterIntoTextFieldEvent(value){
+    await this.eventSummary.sendKeys(value);
   }
 
   /**
    * Enter random text into the Text field
    * @returns EUIStringField Object
    */
-  async enterIntoTextField(value){
-    await this.eventDescription.enterText(value);
+  async enterIntoTextFieldEventDes(value){
+    await this.eventDescription.sendKeys(value);
   }
 
   async getPageHeader(){

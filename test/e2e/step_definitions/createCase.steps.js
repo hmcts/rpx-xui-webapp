@@ -60,10 +60,11 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
   });
 
   When(/^I enter event details and click on submit button$/, async function () {
-    pausecomp(5000);
-    await appealCreatedPage.eventSummary(TestData.eventSummary);
-    await appealCreatedPage.eventDescription(TestData.eventDescription);
+
+   // await appealCreatedPage.enterIntoTextFieldEvent(TestData.eventSummary);
+    //await appealCreatedPage.enterIntoTextFieldEventDes(TestData.eventDescription);
     await appealCreatedPage.submitCase();
+
   });
 
   Then(/^case should be created successfuly$/, async function () {

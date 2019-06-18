@@ -1,6 +1,6 @@
 
 Feature: create case workflow
-  @smoke57
+  @smokegit sta
   Scenario:
     When I navigate to Expert UI Url
     Given I am logged into Expert UI with SSCS judge details

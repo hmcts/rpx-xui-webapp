@@ -8,7 +8,7 @@ class CreateCaseWizardPage extends BasePage{
       super();
       this.header = '.page .heading-h1';
       this.continueButton = new Button('button[type=submit]');
-      this.addnewButton=new Button('button[type=button]');
+      this.addnewButton=new Button('#appeal_appealReasons_reasons button:nth-child(2)');
       this.cancelButton = new Button('button[type=Cancel]');
       this.caseReference='caseReference';
       this.caseCreatedDay='caseCreated-day';

@@ -73,14 +73,20 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
 
   });
 
-  When(/^I click on cancel button$/, function (callback) {
-    callback.pending();
+  When(/^I click on cancel button$/, async function () {
+    await appealCreatedPage.clickCancelButton();
+
   });
-  Then(/^I should be display the expert ui case list page$/, function (callback) {
-    callback.pending();
+  Then(/^I should be display the expert ui case list page$/, async function (){
+    await caseListPage.clickCreateNewCaseButton();
+
   });
-  When(/^I click on previous button$/, function (callback) {
-    callback.pending();
+  When(/^I click on previous button$/, async function (){
+    await appealCreatedPage.clickPreviousButton();
+  });
+
+  Then(/^I should be display the Case details page$/, async function (){
+    expect(await new CreateCaseWizardPage().amOnPage()).to.be.true
   });
 
   function pausecomp(millis)

@@ -33,6 +33,23 @@ class AppealCreatedPage extends BasePage{
     await this.eventDescription.sendKeys(value);
   }
 
+  /**
+   * Final button to cancel the case/event
+   * @returns {Promise<void>}
+   */
+  async clickCancelButton(){
+    await this.cancelButton.click();
+  }
+
+  /**
+   * Final button to previous the case/event
+   * @returns {Promise<void>}
+   */
+  async clickPreviousButton(){
+    await this.previousButton.click();
+  }
+
+
   async getPageHeader(){
     return await $(this.header).getText();
   }

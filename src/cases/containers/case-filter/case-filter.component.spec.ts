@@ -42,7 +42,7 @@ const mockHttpErrorService = jasmine.createSpyObj(['setError', 'removeError', 'h
 const mockAlertService = jasmine.createSpyObj(['push', 'clear', 'error', 'warning', 'success', 'setPreserveAlerts', 'isPreserveAlerts',
 'message']);
 
-describe('Case Filter Component1', () => {
+describe('Case Filter Component', () => {
   let component: CaseFilterComponent;
   let fixture: ComponentFixture<CaseFilterComponent>;
 

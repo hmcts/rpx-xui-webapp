@@ -21,8 +21,7 @@ import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientModule } from '@angular/common/http';
-import { StoreModule, Store } from '@ngrx/store';
-import { HttpModule } from '@angular/http';
+import { StoreModule, Store, combineReducers } from '@ngrx/store';
 import { SharedModule } from '../../../app/shared/shared.module';
 import { AppConfigService } from '../../../app/services/config/configuration.services';
 import { CaseFilterComponent } from './case-filter.component';
@@ -30,6 +29,7 @@ import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@ang
 import { MockStore } from '@ngrx/store/testing';
 import * as fromCaseCreate from '../../store/reducers';
 import { Observable } from 'rxjs';
+import * as fromCasesFeature from '../../store';
 
 class MockSortService {
   features = {};
@@ -47,7 +47,7 @@ const mockHttpErrorService = jasmine.createSpyObj(['setError', 'removeError', 'h
 const mockAlertService = jasmine.createSpyObj(['push', 'clear', 'error', 'warning', 'success', 'setPreserveAlerts', 'isPreserveAlerts',
 'message']);
 
-describe('Case Filter Component', () => {
+describe('Case Filter Component1', () => {
   let component: CaseFilterComponent;
   let fixture: ComponentFixture<CaseFilterComponent>;
 
@@ -59,8 +59,10 @@ describe('Case Filter Component', () => {
         RouterTestingModule,
         CaseUIToolkitModule,
         HttpClientModule,
-        StoreModule.forRoot({}),
-        HttpModule,
+        StoreModule.forRoot({
+          ...fromCasesFeature.reducers,
+          feature: combineReducers(fromCasesFeature.reducers)
+        }),
         SharedModule,
         SearchFiltersModule,
         CreateCaseFiltersModule,
@@ -103,7 +105,6 @@ describe('Case Filter Component', () => {
     spyOn(store, 'dispatch').and.callThrough();
 
     fixture = TestBed.createComponent(CaseFilterComponent);
-    console.log('fixture is ' + fixture);
     component = fixture.componentInstance;
     component.startButtonText = 'start';
     component.caseCreatFilterBindings = [];

@@ -1,17 +1,12 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import {
   CaseUIToolkitModule,
-  DraftService,
   AlertService,
   HttpService,
   AuthService as CCDAuthService,
   CasesService,
   HttpErrorService,
   AbstractAppConfig,
-  CaseEditWizardGuard,
-  RouterHelperService,
-  DocumentManagementService,
-  PageValidationService,
   PlaceholderService,
   SearchService,
   RequestOptionsBuilder,

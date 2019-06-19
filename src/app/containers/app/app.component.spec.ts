@@ -9,7 +9,10 @@ import { AuthService } from '../../services/auth/auth.service';
 import { ProvidersModule } from '../../providers/providers.module';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
+
+let mockLoggerService;
 describe('AppComponent', () => {
+  mockLoggerService = jasmine.createSpyObj('mockLoggerService', ['debug', 'trace', 'info', 'warn', 'error', 'fatal']);
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -23,18 +26,7 @@ describe('AppComponent', () => {
       ],
       providers: [
         {
-          provide: LoggerService,
-          useValue: {
-            info: () => {
-              return 'test info';
-            },
-            warn: () => {
-              return 'test warning';
-            },
-            error: () => {
-              return 'test error';
-            }
-          }
+          provide: LoggerService, useValue: mockLoggerService
         }
       ]
     }).compileComponents();
@@ -45,6 +37,12 @@ describe('AppComponent', () => {
     const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
     expect(app.signOut).toBeTruthy();
+    expect(mockLoggerService.info).toHaveBeenCalled();
+    expect(mockLoggerService.debug).toHaveBeenCalled();
+    expect(mockLoggerService.trace).toHaveBeenCalled();
+    expect(mockLoggerService.warn).toHaveBeenCalled();
+    expect(mockLoggerService.error).toHaveBeenCalled();
+    expect(mockLoggerService.fatal).toHaveBeenCalled();
   });
 
 

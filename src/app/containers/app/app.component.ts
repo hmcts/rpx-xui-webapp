@@ -9,16 +9,14 @@ import { Store } from '@ngrx/store';
   styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   name: string;
   constructor(
     private logger: LoggerService,
     private store: Store<fromActions.State>
   ) {
     this.name = 'App.Component';
-  }
-
-  ngOnInit() {
+    this.logger.info('logger info');
     this.logger.debug('logger debug');
     this.logger.info('logger info');
     this.logger.error('logger error');

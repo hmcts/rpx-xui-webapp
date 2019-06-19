@@ -50,7 +50,7 @@ export class CaseSearchComponent implements OnInit {
   }
 
   assignData(st) {
-    if (typeof st !== 'undefined' && st !== null) {
+    if (st.jurisdiction) {
       this.jurisdiction = st.jurisdiction.value as Jurisdiction;
       this.caseType = st.caseType.value as CaseType;
       this.metadataFields = st.metadataFields.value as Array<string>;

@@ -11,24 +11,32 @@ export interface SearchState {
   loaded: boolean;
 }
 
-export function reducer( state , action: fromCases.CaseSearchAction): SearchState {
+export const initialSearchState: SearchState = {
+  metadataFields: null,
+  jurisdiction: null,
+  caseType: null,
+  loading: false,
+  loaded: false
+};
+
+export function reducer(
+  state = initialSearchState,
+  action: fromCases.CaseSearchAction
+): SearchState {
   switch (action.type) {
     case fromCases.APPLIED: {
-      const jurisdiction = new Entity(action.payload.jurisdiction);
-      const metadataFields = new Entity(action.payload.metadataFields);
-      const caseType = new Entity(action.payload.caseType);
-      const searchResult = null;
       return {
-          metadataFields,
-          jurisdiction,
-          caseType,
-          loading: false,
-          loaded: true
+        ...state,
+        metadataFields: new Entity(action.payload.metadataFields),
+        jurisdiction: new Entity(action.payload.jurisdiction),
+        caseType: new Entity(action.payload.caseType),
+        loading: false,
+        loaded: true
       };
     }
 
     case fromCases.RESET:
-      return null;
+      return initialSearchState;
   }
   return state;
 }

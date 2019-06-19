@@ -2,15 +2,6 @@ import * as fromCases from './create-case.reducer';
 import * as fromActions from '../actions/create-case.action';
 
 describe('CasesReducer', () => {
-  // describe('undefined action', () => {
-  //   it('should return the default state', () => {
-  //     const { initialState } = fromCases;
-  //     const action = {} as any;
-  //     const state = fromCases.reducerCreateCase(undefined, action);
-
-  //     expect(state).toBe(initialState);
-  //   });
-  // });
 
   describe('CREATE_CASE_APPLY action', () => {
     it('should set correct object', () => {

@@ -30,20 +30,6 @@ describe('CCD Connector Component', () => {
     });
   }));
 
-  // beforeEach(() => {
-  //   fixture = TestBed.createComponent(ExuiCcdConnectorComponent);
-  //   fixture.detectChanges();
-
-  //   component = fixture.componentInstance;
-  //   component.store = null;
-  //   component.eventsBindings = [
-  //     {type: 'cancelled', action: 'ResetChange'},
-  //     {type: 'submitted', action: 'ApplyChange'}
-  //   ];
-  //   component.fromFeatureStore = null;
-  //   fixture.detectChanges();
-  // });
-
   it('should create component', () => {
     expect(component).toBeTruthy();
   });

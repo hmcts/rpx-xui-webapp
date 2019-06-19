@@ -1,8 +1,6 @@
 import {AppConfigService} from './configuration.services';
 import {TestBed} from '@angular/core/testing';
 import {HttpClientModule} from '@angular/common/http';
-import {StoreModule} from '@ngrx/store';
-import { MockStore } from '@ngrx/store/testing';
 
 describe('Configuration Service', () => {
   let httpClientSpy: { get: jasmine.Spy };
@@ -46,13 +44,6 @@ describe('Configuration Service', () => {
   it('should have configuration service', () => {
     expect(service).toBeTruthy();
   });
-
-  // it('should have configuration service load method', () => {
-  //   httpClientSpy.get.and.returnValue({});
-  //   service.load().subscribe(data => {
-  //     expect(data.features).toBeDefined();
-  //   });
-  // });
 
   it('should have configuration service getFeatureToggle method', () => {
     expect(service.getFeatureToggle).toBeTruthy();

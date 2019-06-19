@@ -1,4 +1,4 @@
-CustomError = require('../utils/errors/custom-error.js');
+CustomError = require('../../utils/errors/custom-error.js');
 
 const DEFAULT_TIMEOUT = 30000;
 const EC = protractor.ExpectedConditions;

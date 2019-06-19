@@ -1,4 +1,4 @@
-let TestData = require('../utils/TestData.js');
+let TestData = require('../../utils/TestData.js');
 
 module.exports = {
 

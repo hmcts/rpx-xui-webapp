@@ -1,4 +1,4 @@
-CustomError = require('../../utils/errors/custom-error.js');
+CustomError = require('../../../utils/errors/custom-error.js');
 /**
  * WebDriver Button component class
  */

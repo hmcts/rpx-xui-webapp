@@ -7,6 +7,7 @@ class CaseListPage extends BasePage {
 
     this._landingPageFilters = by.css('ccd-workbasket-filters');
     this._createNewCaseButton = '#content > div > a:nth-child(2)';
+    this._serachButton = '#content > div > a:nth-child(3)';
   }
 
   async waitForPageLoaded(){
@@ -58,6 +59,9 @@ class CaseListPage extends BasePage {
     await $(this._createNewCaseButton).click();
   }
 
+  async clickSearchButton(){
+    await $(this._serachButton).click();
+  }
 }
 
 module.exports = CaseListPage;

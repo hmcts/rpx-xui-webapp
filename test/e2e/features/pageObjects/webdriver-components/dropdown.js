@@ -1,5 +1,5 @@
-let CustomError = require('../../utils/errors/custom-error.js');
-let RandomUtils = require('../../utils/euiDataGenerationUtils.js');
+let CustomError = require('../../../utils/errors/custom-error.js');
+let RandomUtils = require('../../../utils/euiDataGenerationUtils.js');
 
 
 /**

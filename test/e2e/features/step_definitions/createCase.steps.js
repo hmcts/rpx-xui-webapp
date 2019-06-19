@@ -3,10 +3,10 @@ let CreateCaseStartPage = require('../pageObjects/createCaseStartPage.js');
 let CreateCaseWizardPage = require('../pageObjects/createCaseWizardPage.js');
 let AppealCreatedPage = require('../pageObjects/appealCreatedPage.js');
 let CaseCreatedPage = require('../pageObjects/caseCreatedPage.js');
-let TestData = require('../utils/TestData.js');
+let TestData = require('../../utils/TestData.js');
 let baseSteps = require('./baseSteps.js');
 Dropdown = require('../pageObjects/webdriver-components/dropdown.js');
-CustomError = require('../utils/errors/custom-error.js');
+CustomError = require('../../utils/errors/custom-error.js');
 
 var {defineSupportCode} = require('cucumber');
 

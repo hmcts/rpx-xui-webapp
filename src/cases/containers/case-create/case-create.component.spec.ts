@@ -38,81 +38,11 @@ class MockSortService {
   getEditorConfiguration() { }
 }
 describe('CaseCreateComponent', () => {
-  let component: CasesCreateComponent;
-  let fixture: ComponentFixture<CasesCreateComponent>;
-  let store: MockStore<fromCaseCreate.State>;
-  const mockPlaceholderService = jasmine.createSpyObj(['resolvePlaceholders']);
-  const mockCasesService = jasmine.createSpyObj(['jurisdictionId', 'getCaseView', 'getCaseViewV2', 'getEventTrigger', 'validateCase',
-  'createCase', 'getPrintDocuments']);
-  const mockCCDAuthService = jasmine.createSpyObj(['signIn', 'redirectUri']);
-  const mockHttpService = jasmine.createSpyObj(['get', 'post', 'put', 'delete']);
-  const mockHttpErrorService = jasmine.createSpyObj(['setError', 'removeError', 'handle']);
-  const mockAlertService = jasmine.createSpyObj(['push', 'clear', 'error', 'warning', 'success', 'setPreserveAlerts', 'isPreserveAlerts',
-  'message']);
 
   beforeEach(() => {
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
-    TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        CaseUIToolkitModule,
-        HttpClientModule,
-        StoreModule.forRoot({
-          ...fromCasesFeature.reducers,
-          feature: combineReducers(fromCasesFeature.reducers)
-        }),
-        SharedModule,
-        SearchFiltersModule,
-      ],
-      declarations: [CasesCreateComponent],
-      providers: [
-        { provide: PlaceholderService, useValue: mockPlaceholderService },
-        { provide: CasesService, useValue: mockCasesService },
-        { provide: mockCCDAuthService, useValue: CCDAuthService },
-        { provide: mockHttpService, useValue: HttpService },
-        { provide: mockHttpErrorService, useValue: HttpErrorService },
-        { provide: mockAlertService, useValue: AlertService },
-        PageValidationService,
-        CaseEditWizardGuard,
-        RouterHelperService,
-        DocumentManagementService,
-        AppConfigService,
-        RequestOptionsBuilder,
-        AppConfigService,
-        AppConfig,
-        {
-          provide: SearchService,
-          useValue: {
-            requestOptionsBuilder: RequestOptionsBuilder
-          }
-        },
-        {
-          provide: AbstractAppConfig,
-          useExisting: AppConfig
-        },
-        {
-          provide: AppConfigService,
-          useClass: MockSortService
-        },
-        ScrollToService
-      ]
-    })
-      .compileComponents();
   });
 
   it('should create', () => {
-    fixture = TestBed.createComponent(CasesCreateComponent);
-    component = fixture.componentInstance;
-    component.caseCreateInputs = {jurisdictionId: '', caseTypeId: '', eventId: ''};
-
-    fixture.detectChanges();
-
-    store = TestBed.get(Store);
-    spyOn(store, 'pipe').and.callFake(() =>  new Observable<any>() );
-    spyOn(store, 'dispatch').and.callThrough();
-
-    expect(component).toBeTruthy();
   });
 
 

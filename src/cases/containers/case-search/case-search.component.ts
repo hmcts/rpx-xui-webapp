@@ -73,7 +73,8 @@ export class CaseSearchComponent implements OnInit {
     this.resultsArr = data.results;
     this.resultView = {
       ...data,
-      results: data.results.slice(0, this.paginationSize)
+      results: data.results.slice(0, this.paginationSize),
+      hasDrafts: data.hasDrafts ? data.hasDrafts : () => false
     };
   }
   ngOnInit(): void {

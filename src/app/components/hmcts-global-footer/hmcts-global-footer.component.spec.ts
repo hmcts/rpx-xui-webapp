@@ -4,7 +4,7 @@ import {Component, DebugElement, Input, ViewChild} from '@angular/core';
 import {Helper, Navigation} from '../../containers/footer/footer.model';
 import { AppConstants } from '../../app.constants';
 
-fdescribe('HmctsGlobalFooterComponent', () => {
+describe('HmctsGlobalFooterComponent', () => {
     @Component({
         selector: `exui-app-host-dummy-component`,
         template: `<exui-app-hmcts-global-footer

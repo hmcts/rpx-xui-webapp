@@ -1,5 +1,5 @@
 import { Entity } from '../../../app/store/helpers/entity';
-import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
+import { SearchResultView } from '@hmcts/ccd-case-ui-toolkit';
 import * as fromCases from '../actions/case-search.action';
 
 // todo this is just a place holder
@@ -9,6 +9,7 @@ export interface SearchState {
   caseType: Entity;
   loading: boolean;
   loaded: boolean;
+  resultView: SearchResultView;
 }
 
 export const initialSearchState: SearchState = {
@@ -16,7 +17,8 @@ export const initialSearchState: SearchState = {
   jurisdiction: null,
   caseType: null,
   loading: false,
-  loaded: false
+  loaded: false,
+  resultView: null
 };
 
 export function reducer(
@@ -24,25 +26,24 @@ export function reducer(
   action: fromCases.CaseSearchAction
 ): SearchState {
   switch (action.type) {
-    case fromCases.APPLIED: {
-      console.log(action.payload);
+    case fromCases.APPLY_SEARCH_FILTER: {
       return {
         ...state,
         metadataFields: new Entity(action.payload.metadataFields),
         jurisdiction: new Entity(action.payload.jurisdiction),
         caseType: new Entity(action.payload.caseType),
-        loading: false,
-        loaded: true
+        loading: true,
+        loaded: false
       };
     }
 
     case fromCases.APPLY_SEARCH_FILTER_SUCCESS: {
-      console.log(action.payload);
       return {
         ...state,
         metadataFields: new Entity(action.payload.metadataFields),
         jurisdiction: new Entity(action.payload.jurisdiction),
         caseType: new Entity(action.payload.caseType),
+        resultView: action.payload,
         loading: false,
         loaded: true
       };

@@ -1,3 +1,5 @@
+<exui-logger [title]="componentName"></exui-logger>
+
 <exui-header
   [navItems]="navItems"
   [title]="appHeaderTitle"
@@ -6,8 +8,7 @@
 </exui-header>
 
 <div class="govuk-width-container">
-    <exui-logger [title]="name"></exui-logger>
-    <router-outlet></router-outlet>
+  <router-outlet></router-outlet>
 </div>
 
 <exui-app-footer></exui-app-footer>

@@ -16,6 +16,7 @@ export class AppComponent implements OnInit{
   navItems: NavItemsModel[];
   appHeaderTitle: AppTitleModel;
   userNav: UserNavModel;
+  componentName: string;
 
   constructor(
     private logger: LoggerService,
@@ -23,6 +24,7 @@ export class AppComponent implements OnInit{
   }
 
   ngOnInit(): void {
+    this.componentName = 'App Component';
     this.appHeaderTitle = {name: 'Manage Cases', url: '/'};
     this.appHeaderTitle.url = '/';
 

@@ -47,7 +47,7 @@ const { Given, When, Then } = require('cucumber');
 //         source: targetJson,
 //         dest: htmlReports,
 //         name: "cucumber_report.html",
-//         title: "Cucumber Report"
+//         appHeaderTitle: "Cucumber Report"
 //     };
 //
 //     var cucumberReporteroptions = {

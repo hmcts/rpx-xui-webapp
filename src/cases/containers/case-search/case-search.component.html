@@ -6,7 +6,7 @@
           [store]="store"
           [fromFeatureStore]="fromCasesFeature">
           <ccd-search-filters-wrapper #ccdComponent
-            (onApply)='getFormGroup($event)'
+            (onApply)="applySearchFilter($event)"
             [autoApply]="false">
           </ccd-search-filters-wrapper>
         </exui-ccd-connector>

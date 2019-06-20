@@ -25,6 +25,19 @@ export function reducer(
 ): SearchState {
   switch (action.type) {
     case fromCases.APPLIED: {
+      console.log(action.payload);
+      return {
+        ...state,
+        metadataFields: new Entity(action.payload.metadataFields),
+        jurisdiction: new Entity(action.payload.jurisdiction),
+        caseType: new Entity(action.payload.caseType),
+        loading: false,
+        loaded: true
+      };
+    }
+
+    case fromCases.APPLY_SEARCH_FILTER_SUCCESS: {
+      console.log(action.payload);
       return {
         ...state,
         metadataFields: new Entity(action.payload.metadataFields),

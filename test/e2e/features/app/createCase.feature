@@ -1,4 +1,4 @@
-@smoke
+@smoke57
 Feature: create case workflow
 
   Background:

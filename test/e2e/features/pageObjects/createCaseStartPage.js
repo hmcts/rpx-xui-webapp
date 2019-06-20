@@ -26,7 +26,7 @@ class CreateCaseStartPage extends BasePage{
    * @returns {Promise<void>}
    */
   async selectCaseType(option){
-      await this._caseType.selectFromDropdownByText(option);
+      await this._caseType.selectAnOption("Benefit");
   }
 
   /**

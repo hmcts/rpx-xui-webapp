@@ -91,7 +91,7 @@ const config = {
       '../support/timeout.js',
       '../support/world.js',
       '../support/*.js',
-      '../features/step_definitions/**/*.steps.js'
+      '../features/step_definitions/*.steps.js'
     ]
   },
 

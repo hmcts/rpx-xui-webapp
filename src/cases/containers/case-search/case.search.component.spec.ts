@@ -25,11 +25,15 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AppConfigService } from '../../../app/services/config/configuration.services';
 import { of, observable } from 'rxjs';
 import { json } from 'body-parser';
+import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 
 describe('CaseSearchComponent', () => {
   let fixture: ComponentFixture<CaseSearchComponent>;
   let component: CaseSearchComponent;
   let store: MockStore<fromCasesFeature.State>;
+  const mockAppConfig = {
+    getPaginationPageSize: () => 10
+  };
 
   beforeEach(() => {
     const mockSearchService = jasmine.createSpyObj(['search', 'getSearchInputUrl', 'getSearchInputs', 'isDataValid']);
@@ -73,6 +77,7 @@ describe('CaseSearchComponent', () => {
         {provide: HttpErrorService, useClass: HttpErrorService, deps: [AuthService]},
         {provide: AbstractAppConfig, useValue: appMockService},
         ActivityService,
+        {provide: AppConfig, useValue: mockAppConfig},
         AppConfigService,
         { provide: SearchService, useValue: mockSearchService},
 
@@ -120,13 +125,14 @@ describe('CaseSearchComponent', () => {
   });
 
   it('should do search result mapping', () => {
-    const data = new SearchResultView();
+    const data: any = {};
     const column = new SearchResultViewColumn();
     column.case_field_type = new FieldType();
     data.columns = [column];
     const result = new SearchResultViewItem();
     data.results = [result];
+    data.hasDrafts = () => false;
     component.assignResult(data);
-    expect(component.resultView).toBe(data);
+    expect(component.resultView).toEqual(data);
   });
 });

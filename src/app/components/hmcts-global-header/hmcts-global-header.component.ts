@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import * as fromRoot from '../../store';
 import { Store } from '@ngrx/store';
 
@@ -8,13 +8,19 @@ import { Store } from '@ngrx/store';
 })
 export class HmctsGlobalHeaderComponent {
 
-    // @Input() set userLoggedIn(value) {
-    //     this.userValue = value;
-    // }
-    @Input() headerTitle: {name: string; url: string};
-    @Input() navigation;
+  // @Input() set userLoggedIn(value) {
+  //     this.userValue = value;
+  // }
+  @Input() headerTitle: {name: string; url: string};
+  @Input() navigation;
+  @Output() navigate = new EventEmitter<string>();
 
-    userValue: true;
-    constructor(public store: Store<fromRoot.State>) { }
+  userValue = true;
+  constructor(public store: Store<fromRoot.State>) { }
+
+  onEmmitEvent(index) {
+    this.navigate.emit(this.navigation.items[index].emit);
+  }
+
 
 }

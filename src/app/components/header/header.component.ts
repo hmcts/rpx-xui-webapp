@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
@@ -15,6 +15,7 @@ export class HeaderComponent implements OnInit {
   @Input() navItems: { active: boolean; href: string; }[];
   @Input() title;
   @Input() userNav;
+  @Output() navigate = new EventEmitter<string>();
 
   isUserLoggedIn$: Observable<boolean>;
 
@@ -22,7 +23,7 @@ export class HeaderComponent implements OnInit {
 
 
   ngOnInit(): void {
-      debugger
+
     // this.isUserLoggedIn$ = this.store.pipe(select(fromAuth.getIsAuthenticated));
     // this.store.pipe(select(fromRoot.getRouterState)).subscribe(rootState => {
     //   if (rootState) {
@@ -39,4 +40,8 @@ export class HeaderComponent implements OnInit {
   //     };
   //   });
   // }
+
+  onNavigate(event) {
+    this.navigate.emit(event);
+  }
 }

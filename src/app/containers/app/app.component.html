@@ -1,14 +1,13 @@
 <exui-header
   [navItems]="navItems"
   [title]="appHeaderTitle"
-  [userNav]="userNav">
+  [userNav]="userNav"
+  (navigate)="onNavigate($event)">
 </exui-header>
 
-<div class="hmcts-width-container">
-    <a (click)="signOut()" >Signout</a>
-</div>
 <div class="govuk-width-container">
     <exui-logger [title]="name"></exui-logger>
     <router-outlet></router-outlet>
 </div>
+
 <exui-app-footer></exui-app-footer>

@@ -49,5 +49,17 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
+  it('should have on navigate', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.debugElement.componentInstance;
+    expect(app.onNavigate).toBeTruthy();
+  });
+
+  it('should create the app', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.debugElement.componentInstance;
+    expect(app.componentName).toBe('App Component');
+  });
+
 
 });

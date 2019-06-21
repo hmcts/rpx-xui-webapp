@@ -74,7 +74,7 @@ describe('CaseListComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CaseListComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+   // componentInstance fixture.detectChanges();
 
   });
   it('should create', () => {

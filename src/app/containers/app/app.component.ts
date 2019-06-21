@@ -13,7 +13,7 @@ import {AppConstants} from '../../app.constants';
   styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
   navItems: NavItemsModel[];
   appHeaderTitle: AppTitleModel;
   userNav: UserNavModel;

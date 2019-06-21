@@ -21,13 +21,13 @@ const FooterDataNavigation = {
 };
 
 const navItems = [{
-  text: 'Case list',
-  href: '/cases',
-  active: true
-},{
-  text: 'Create case',
-  href: '/cases/case-filter',
-  active: false
+    text: 'Case list',
+    href: '/cases',
+    active: false
+  }, {
+    text: 'Create case',
+    href: '/cases/case-filter',
+    active: true
 }];
 
 const userNav = {

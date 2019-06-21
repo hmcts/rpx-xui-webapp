@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core'
+import { Component, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -12,8 +12,7 @@ export class HmctsPrimaryNavigationComponent {
         this.isUserLoggedIn = true;
     }
 
-    @Input()
-    label = 'Primary navigation'
+    @Input() label;
     @Input() items;
 
     isUserLoggedIn = true;

@@ -61,7 +61,7 @@ const config = {
     targetEnv: argv.env || 'local',
     // username: process.env.TEST_EMAIL,
     // password: process.env.TEST_PASSWORD,
-    username: 'juitestjudgesscs@mailnesia.com ',
+    username: 'sscs4jui@mailnesia.com',
     password: 'Monday01',
     fr_judge_username: process.env.FR_EMAIL,
     fr_judge_password: process.env.FR_PASSWORD,
@@ -91,7 +91,7 @@ const config = {
       '../support/timeout.js',
       '../support/world.js',
       '../support/*.js',
-      '../features/step_definitions/**/*.steps.js'
+      '../features/step_definitions/*.steps.js'
     ]
   },
 

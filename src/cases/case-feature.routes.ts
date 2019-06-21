@@ -8,13 +8,12 @@ import { CaseSearchComponent } from './containers/case-search/case-search.compon
 import {CasesCreateComponent} from './containers';
 import {editorRouting} from '@hmcts/ccd-case-ui-toolkit';
 import {CaseDetailsComponent} from './containers/case-details/case-details.component';
-import { CaseListFilterComponent } from './containers/case-list-filter/case-list-filter.component';
 
 
 export const ROUTES: Routes = [
     {
       path: '',
-      component: CaseListFilterComponent,
+      component: CaseListComponent,
     },
     {
       path: 'case-filter',

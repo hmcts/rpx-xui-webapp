@@ -1,7 +1,7 @@
 let CaseListPage = require('../pageObjects/caseListPage.js');
 let CreateCaseStartPage = require('../pageObjects/createCaseStartPage.js');
 let CaseCreatedPage = require('../pageObjects/caseCreatedPage.js');
-let SearchCasePage = require('../pageObjects/SearchCasePage.js');
+let SearchCasePage = require('../pageObjects/searchCasePage.js');
 let TestData = require('../../utils/TestData.js');
 Dropdown = require('../pageObjects/webdriver-components/dropdown.js');
 TextField = require('../pageObjects/webdriver-components/textField.js');

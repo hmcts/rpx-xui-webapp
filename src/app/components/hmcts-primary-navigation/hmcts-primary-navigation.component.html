@@ -1,10 +1,17 @@
 <nav class="hmcts-primary-navigation" [attr.aria-label]="label">
-    <div class="hmcts-primary-navigation__container">
+  <div class="hmcts-primary-navigation__container">
+    <div class="hmcts-primary-navigation__nav">
+      <nav class="hmcts-primary-navigation" aria-label="Primary navigation">
         <ul class="hmcts-primary-navigation__list">
-            <li class="hmcts-primary-navigation__item"  *ngFor="let item of items">
-                <a class="hmcts-primary-navigation__link" [attr.aria-current]="item.active ? true: null" [routerLink]="item.href">{{item.text}}</a>
-            </li>
+          <li class="hmcts-primary-navigation__item" *ngFor="let item of items">
+            <a class="hmcts-primary-navigation__link" [attr.aria-current]="item.active ? true: null" [routerLink]="item.href">{{item.text}}</a>
+          </li>
         </ul>
+      </nav>
     </div>
-</nav>
+    <div class="hmcts-primary-navigation__search">
+      <a class="hmcts-search-toggle__button" [routerLink]="">Find case</a>
+    </div>
+  </div>
 
+</nav>

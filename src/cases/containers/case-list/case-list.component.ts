@@ -10,8 +10,6 @@ import {Component, OnInit, ViewEncapsulation} from '@angular/core';
   template: `
     <exui-page-wrapper [title]="'Case List'">
     <a routerLink="/cases/case-filter" class="button">Create case</a>
-    <a routerLink="/cases/case-search" class="button">Search</a>
-    <a routerLink="/cases/case-details" class="button">Case Details</a>
     </exui-page-wrapper>
   `,
   encapsulation: ViewEncapsulation.None

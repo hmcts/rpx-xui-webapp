@@ -20,7 +20,31 @@ const FooterDataNavigation = {
   ]
 };
 
+const navItems = [{
+  text: 'Case list',
+  href: '/cases',
+  active: true
+},{
+  text: 'Create case',
+  href: '/cases/case-filter',
+  active: false
+}];
+
+const userNav = {
+  label: 'Account navigation',
+  items: [{
+    text: 'Sign out',
+    emit: 'sign-out'
+  }]
+};
+
+const appHeaderTitle = {name: 'Manage Cases', url: '/'};
+
+
 export class AppConstants {
   static FOOTER_DATA = FooterData;
   static FOOTER_DATA_NAVIGATION = FooterDataNavigation;
+  static NAV_ITEMS = navItems;
+  static USER_NAV = userNav;
+  static APP_HEADER_TITLE = appHeaderTitle;
 }

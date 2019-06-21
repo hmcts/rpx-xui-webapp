@@ -4,7 +4,7 @@ $hmcts-images-path: "/assets/images/";
 @import "~@hmcts/frontend/all";
 
 // TODO move this in more appropriate place - perhaps get it from govuk-frontend
-// search button START
+// Find case button START
 a.hmcts-search-toggle__button {
   color: govuk-colour('white');
 }
@@ -39,4 +39,4 @@ a.hmcts-search-toggle__button {
 .hmcts-primary-navigation__search {
   float: right;;
 }
-// search button END
+// Find case button END

@@ -5,6 +5,7 @@ import { Store } from '@ngrx/store';
 import {NavItemsModel} from '../../models/nav-item.model';
 import {AppTitleModel} from '../../models/app-title.model';
 import {UserNavModel} from '../../models/user-nav.model';
+import {AppConstants} from '../../app.constants';
 
 @Component({
   selector: 'exui-root',
@@ -25,33 +26,15 @@ export class AppComponent implements OnInit{
 
   ngOnInit(): void {
     this.componentName = 'App Component';
-    this.appHeaderTitle = {name: 'Manage Cases', url: '/'};
-    this.appHeaderTitle.url = '/';
-
-    this.navItems = [{
-      text: 'Case list',
-      href: '/cases',
-      active: true
-    }];
-
-    this.userNav ={
-      label: 'Account navigation',
-      items: [{
-        text: 'Sign out',
-        emit: 'sing-out'
-      }]
-    };
+    this.appHeaderTitle = AppConstants.APP_HEADER_TITLE;
+    this.navItems = AppConstants.NAV_ITEMS;
+    this.userNav = AppConstants.USER_NAV;
   }
 
   onNavigate(event): void {
-    this.store.dispatch(new fromActions.Logout());
-    switch(event) {
-      case 'sign-out':
-        this.store.dispatch(new fromActions.Logout());
+    if (event === 'sign-out') {
+      return this.store.dispatch(new fromActions.Logout());
     }
   }
-  // To do move signOut to header component when available!!!
-  signOut() {
 
-  }
 }

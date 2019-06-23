@@ -17,7 +17,7 @@ describe('Search Filter Reducer', () => {
     };
 
     it('should set correct object', () => {
-      const initialState = {};
+      const initialState = fromFilter.initialSearchState;
       const action = new fromActions.Applied(dummy);
       const state = fromFilter.reducer(initialState, action);
       expect(state).toBeDefined();
@@ -26,10 +26,10 @@ describe('Search Filter Reducer', () => {
 
   describe('RESET action', () => {
     it('should set correct object', () => {
-      const initialState = {};
+      const initialState = fromFilter.initialSearchState;
       const action = new fromActions.Reset();
       const state = fromFilter.reducer(initialState, action);
-      expect(state).toBe(null);
+      expect(state).toBe(initialState);
     });
   });
 

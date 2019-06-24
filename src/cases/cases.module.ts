@@ -35,6 +35,8 @@ import {HttpModule} from '@angular/http';
 import * as fromContainers from './containers';
 // from components
 // import * as fromComponents from './components';
+// from services
+import * as fromServices from './services';
 import {ProvidersModule} from '../app/providers/providers.module';
 
 @NgModule({
@@ -51,6 +53,7 @@ import {ProvidersModule} from '../app/providers/providers.module';
     SearchFiltersModule,
     HttpModule,
     ProvidersModule,
+    SearchResultModule,
     MatDialogModule
   ],
   declarations: [...fromContainers.containers],
@@ -71,7 +74,9 @@ import {ProvidersModule} from '../app/providers/providers.module';
       provide: AbstractAppConfig,
       useExisting: AppConfig
     },
-    ScrollToService
+    ScrollToService,
+    ...fromServices.services
+
   ]
 })
 /**

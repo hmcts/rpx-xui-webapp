@@ -3,15 +3,8 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'exui-case-list-filters-consumer',
-  template: `
-   <div class="container-fluid">
-      <ccd-case-list-filters
-            [defaults]="defaults"
-            (onApply)="applied($event)"
-            (onReset)="reset($event)"
-      ></ccd-case-list-filters>
-   </div>`,
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  templateUrl: 'case-list-filter.component.html',
 })
 export class CaseListFilterComponent implements OnInit {
     defaults: any;

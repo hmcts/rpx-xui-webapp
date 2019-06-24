@@ -3,7 +3,7 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { map, switchMap, catchError } from 'rxjs/operators';
 import { of, Observable } from 'rxjs';
 import * as caseSearchActions from '../actions/case-search.action';
-import { SearchFilterService } from 'src/cases/services';
+import { SearchFilterService } from '../../../cases/services';
 
 @Injectable()
 export class SearchFilterEffects {

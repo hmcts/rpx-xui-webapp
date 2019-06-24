@@ -5,7 +5,11 @@ import * as fromCaseSearchStore from '../../store';
 import { RouterTestingModule } from '@angular/router/testing';
 import * as fromRoot from '../../../app/store/reducers';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { AppConfig } from 'src/app/services/ccd-config/ccd-case.config';
+import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
+import { of } from 'rxjs';
+import { Jurisdiction, CaseType, CaseState, SearchResultView } from '@hmcts/ccd-case-ui-toolkit';
+import { mockedSearchResultPayload, mockedSearchResultResult } from '../../../cases/mock/search-filter.mock';
+import { ApplySearchFilterSuccess } from '../../store';
 
 describe('CaseSearchComponent', () => {
   let fixture: ComponentFixture<CaseSearchComponent>;
@@ -45,14 +49,16 @@ describe('CaseSearchComponent', () => {
 
     fixture = TestBed.createComponent(CaseSearchComponent);
     component = fixture.componentInstance;
+    component.jurisdiction$ = storePipeMock.and.returnValue(of(new Jurisdiction()));
+    component.caseType$ = storePipeMock.and.returnValue(of(new CaseType()));
+    component.caseState$ = storePipeMock.and.returnValue(of(new CaseState()));
+    component.resultView$ = storePipeMock.and.returnValue(of(new SearchResultView()));
+    component.metadataFields$ = storePipeMock.and.returnValue(of([]));
+    fixture.detectChanges();
   }));
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should have ngOnInit', () => {
-    expect(component.ngOnInit).toBeTruthy();
   });
 
 });

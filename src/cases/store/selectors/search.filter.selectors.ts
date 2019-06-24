@@ -2,34 +2,32 @@ import { createSelector, createFeatureSelector } from '@ngrx/store';
 
 import * as fromFeature from '../../store/reducers';
 
-const getSearchFilterState = createFeatureSelector<fromFeature.SearchState>('cases');
-
 export const getSearchState = createSelector(
  fromFeature.getCaseFeatureState,
  (state: fromFeature.State) => state.caseSearchFilter
 );
 
 export const searchFilterJurisdiction = createSelector(
-    getSearchFilterState,
+    getSearchState,
     fromFeature.getSearchFilterJurisdiction
 );
 
 export const searchFilterCaseType = createSelector(
-    getSearchFilterState,
+    getSearchState,
     fromFeature.getSearchFilterCaseType
 );
 
 export const searchFilterCaseState = createSelector(
-    getSearchFilterState,
+    getSearchState,
     fromFeature.getSearchFilterCaseState
 );
 
 export const searchFilterMetadataFields = createSelector(
-    getSearchFilterState,
+    getSearchState,
     fromFeature.getSearchFilterMetadataFields
 );
 
 export const searchFilterResultView = createSelector(
-    getSearchFilterState,
+    getSearchState,
     fromFeature.getSearchFilterResultView
 );

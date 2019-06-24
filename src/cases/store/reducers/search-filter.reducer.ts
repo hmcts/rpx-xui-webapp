@@ -1,6 +1,5 @@
 import { SearchResultView, Jurisdiction, CaseType, CaseState, PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
 import * as fromCases from '../actions/case-search.action';
-import { FormGroup } from '@angular/forms';
 
 export class SearchStateFilter {
   jurisdiction: Jurisdiction;
@@ -74,8 +73,8 @@ export function reducer(
   return state;
 }
 
-export const getSearchFilterJurisdiction = (state) => state.caseSearchFilter.filter.jurisdiction;
-export const getSearchFilterCaseType = (state) => state.caseSearchFilter.filter.caseType;
-export const getSearchFilterCaseState = (state) => state.caseSearchFilter.filter.caseState;
-export const getSearchFilterMetadataFields = (state) => state.caseSearchFilter.filter.metadataFields;
-export const getSearchFilterResultView = (state) => state.caseSearchFilter.results.resultView;
+export const getSearchFilterJurisdiction = (state) => state.filter.jurisdiction;
+export const getSearchFilterCaseType = (state) => state.filter.caseType;
+export const getSearchFilterCaseState = (state) => state.filter.caseState;
+export const getSearchFilterMetadataFields = (state) => state.filter.metadataFields;
+export const getSearchFilterResultView = (state) => state.results.resultView;

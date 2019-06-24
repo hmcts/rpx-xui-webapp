@@ -1,6 +1,6 @@
 import {loggerReducer, initialState} from './logger.reducer';
-import { Info, Error, Warning, Fatal, Debug, Trace, Clear } from '../actions/logger-state.actions';
-import { stat } from 'fs';
+import { Info, Error, Warning, Fatal, Debug, Trace } from '../actions/logger-state.actions';
+
 
 const loggerMessage = 'Logger Test123';
 
@@ -9,8 +9,10 @@ describe('info action', () => {
       const action = new Info(loggerMessage);
       const state = loggerReducer(undefined, action);
       expect(state).not.toBe(initialState);
-      const expectedState = initialState;
-      expectedState.infoMessages.push(loggerMessage);
+      const expectedState = {
+        ...initialState,
+        infoMessages: [loggerMessage]
+      };
       expect(state).toEqual(expectedState);
     });
   });
@@ -20,8 +22,10 @@ describe('error action', () => {
       const action = new Error(loggerMessage);
       const state = loggerReducer(undefined, action);
       expect(state).not.toBe(initialState);
-      const expectedState = initialState;
-      expectedState.errorMessages.push(loggerMessage);
+      const expectedState = {
+        ...initialState,
+        errorMessages: [loggerMessage]
+      };
       expect(state).toEqual(expectedState);
     });
   });
@@ -31,8 +35,10 @@ describe('warn action', () => {
       const action = new Warning(loggerMessage);
       const state = loggerReducer(undefined, action);
       expect(state).not.toBe(initialState);
-      const expectedState = initialState;
-      expectedState.warningMessages.push(loggerMessage);
+      const expectedState = {
+        ...initialState,
+        warningMessages: [loggerMessage]
+      };
       expect(state).toEqual(expectedState);
     });
   });
@@ -42,8 +48,10 @@ describe('fatal action', () => {
       const action = new Fatal(loggerMessage);
       const state = loggerReducer(undefined, action);
       expect(state).not.toBe(initialState);
-      const expectedState = initialState;
-      expectedState.fatalMessages.push(loggerMessage);
+      const expectedState = {
+        ...initialState,
+        fatalMessages: [loggerMessage]
+      };
       expect(state).toEqual(expectedState);
     });
   });
@@ -53,8 +61,10 @@ describe('debug action', () => {
       const action = new Debug(loggerMessage);
       const state = loggerReducer(undefined, action);
       expect(state).not.toBe(initialState);
-      const expectedState = initialState;
-      expectedState.debugMessages.push(loggerMessage);
+      const expectedState = {
+        ...initialState,
+        debugMessages: [loggerMessage]
+      };
       expect(state).toEqual(expectedState);
     });
   });
@@ -64,8 +74,10 @@ describe('debug action', () => {
       const action = new Trace(loggerMessage);
       const state = loggerReducer(undefined, action);
       expect(state).not.toBe(initialState);
-      const expectedState = initialState;
-      expectedState.traceMessages.push(loggerMessage);
+      const expectedState = {
+        ...initialState,
+        traceMessages: [loggerMessage]
+      };
       expect(state).toEqual(expectedState);
     });
-  });
+   });

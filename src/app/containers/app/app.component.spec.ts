@@ -6,6 +6,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule } from '@ngrx/store';
 import { ProvidersModule } from 'src/app/providers/providers.module';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import {SharedModule} from '../../shared/shared.module';
+import {LoggerConfig, LoggerModule} from 'ngx-logger';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -13,13 +15,16 @@ describe('AppComponent', () => {
       imports: [
         RouterTestingModule,
         StoreModule.forRoot({}),
-        ProvidersModule
+        ProvidersModule,
+        SharedModule,
+        LoggerModule
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [
         AppComponent
       ],
       providers: [
+        LoggerConfig,
         {
           provide: LoggerService,
           useValue: {
@@ -42,7 +47,18 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
-    expect(app.signOut).toBeTruthy();
+  });
+
+  it('should have on navigate', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.debugElement.componentInstance;
+    expect(app.onNavigate).toBeTruthy();
+  });
+
+  it('should create the app', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.debugElement.componentInstance;
+    expect(app.componentName).toBe('App Component');
   });
 
 

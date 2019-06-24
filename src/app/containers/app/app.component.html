@@ -1,8 +1,14 @@
-<div class="hmcts-width-container">
-    <a (click)="signOut()" >Signout</a>
-</div>
+
+<exui-header
+  [navItems]="navItems"
+  [title]="appHeaderTitle"
+  [userNav]="userNav"
+  (navigate)="onNavigate($event)">
+</exui-header>
+
 <div class="govuk-width-container">
-    <exui-logger [title]="name"></exui-logger>
-    <router-outlet></router-outlet>
+<exui-logger [title]="componentName"></exui-logger>
+  <router-outlet></router-outlet>
 </div>
+
 <exui-app-footer></exui-app-footer>

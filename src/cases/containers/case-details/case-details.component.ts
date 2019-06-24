@@ -4,22 +4,26 @@ import {select, Store} from '@ngrx/store';
 import * as fromCaseCreate from '../../store';
 import {Subscription} from 'rxjs';
 /**
- * THIS IS ONLY A PLACEHOLDER THE STORY FOR THIS YET NEEDS TO BE RUN
+ * Case Details Component
+ * It consumes ccd-case-view component
+ * param caseId
  */
 @Component({
   selector: 'exui-case-details',
   template: `
-    <h1>Case Details Page</h1>
-    <ccd-case-view [hasPrint]="true" *ngIf="caseId"
-                     [case]="caseId"
-                     [hasEventSelector]="true"></ccd-case-view>
+    <ccd-case-view
+      [hasPrint]="true"
+      *ngIf="caseId"
+      [case]="caseId"
+      [hasEventSelector]="true">
+    </ccd-case-view>
   `
 })
 export class CaseDetailsComponent implements OnInit, OnDestroy {
 
   constructor(private store: Store<fromCaseCreate.State>) {}
 
-  caseId;
+  caseId: string;
   $caeIdSubscription: Subscription;
 
   ngOnInit(): void {

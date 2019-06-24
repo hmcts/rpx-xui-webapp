@@ -10,14 +10,7 @@ import {Subscription} from 'rxjs';
  */
 @Component({
   selector: 'exui-case-details',
-  template: `
-    <ccd-case-view
-      [hasPrint]="true"
-      *ngIf="caseId"
-      [case]="caseId"
-      [hasEventSelector]="true">
-    </ccd-case-view>
-  `
+  templateUrl: './case-details.component.html'
 })
 export class CaseDetailsComponent implements OnInit, OnDestroy {
 

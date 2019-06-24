@@ -17,26 +17,26 @@ import {
   RequestOptionsBuilder,
   SearchFiltersModule,
 } from '@hmcts/ccd-case-ui-toolkit';
-import {AppConfig} from '../../../app/services/ccd-config/ccd-case.config';
-import {ScrollToService} from '@nicky-lenaers/ngx-scroll-to';
-import {RouterTestingModule} from '@angular/router/testing';
-import {HttpClientModule} from '@angular/common/http';
+import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
+import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
+import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientModule } from '@angular/common/http';
 import {combineReducers, StoreModule} from '@ngrx/store';
-import {HttpModule} from '@angular/http';
-import {SharedModule} from '../../../app/shared/shared.module';
-import {AppConfigService} from '../../../app/services/config/configuration.services';
-import {CaseSearchComponent} from './case-search.component';
-import {reducers} from '../../store/reducers';
-import * as fromCases from '../../store/reducers';
+import { HttpModule } from '@angular/http';
+import { SharedModule } from '../../../app/shared/shared.module';
+import { AppConfigService } from '../../../app/services/config/configuration.services';
 
+import { reducers } from 'src/app/store';
+import * as fromCases from '../../store/reducers';
+import {CaseDetailsComponent} from './case-details.component';
 class MockSortService {
   features = {};
-  getFeatureToggle() {}
-  getEditorConfiguration() {}
+  getFeatureToggle() { }
+  getEditorConfiguration() { }
 }
-describe('Case Search Component', () => {
-  let component: CaseSearchComponent;
-  let fixture: ComponentFixture<CaseSearchComponent>;
+describe('CaseDetailsComponent', () => {
+  let component: CaseDetailsComponent;
+  let fixture: ComponentFixture<CaseDetailsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -49,7 +49,7 @@ describe('Case Search Component', () => {
         SharedModule,
         SearchFiltersModule,
       ],
-      declarations: [ CaseSearchComponent ],
+      declarations: [CaseDetailsComponent],
       providers: [
         PlaceholderService,
         CasesService,
@@ -62,9 +62,10 @@ describe('Case Search Component', () => {
         CaseEditWizardGuard,
         RouterHelperService,
         DocumentManagementService,
-        AppConfig,
         AppConfigService,
         RequestOptionsBuilder,
+        AppConfigService,
+        AppConfig,
         {
           provide: SearchService,
           useValue: {
@@ -86,13 +87,22 @@ describe('Case Search Component', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CaseSearchComponent);
+    fixture = TestBed.createComponent(CaseDetailsComponent);
     component = fixture.componentInstance;
+
     fixture.detectChanges();
 
   });
   it('should create', () => {
-   expect(component).toBeTruthy();
+    expect(component).toBeTruthy();
+  });
+
+  it('should have ngOnInit', () => {
+    expect(component.ngOnInit).toBeTruthy();
+  });
+
+  it('should have ngOnDestroy ', () => {
+    expect(component.ngOnDestroy).toBeTruthy();
   });
 
 

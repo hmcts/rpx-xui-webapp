@@ -4,9 +4,9 @@ import {Component, Input} from '@angular/core';
  * Responsible for:
  * * Wrapping content within the gov-uk html elements bellow
  * * @prop showBackLink - switch for back link
- * * @prop title = title
+ * * @prop appHeaderTitle = appHeaderTitle
  * * @prop summaryErrors list of errors
- * * @prop back link, title (title), summaryErrors (array of errors)
+ * * @prop back link, appHeaderTitle (appHeaderTitle), summaryErrors (array of errors)
  */
 @Component({
   selector: 'exui-page-wrapper',

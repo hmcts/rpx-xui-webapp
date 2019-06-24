@@ -22,7 +22,8 @@ import {
   RequestOptionsBuilder,
   SearchFiltersModule,
   SearchResultModule,
-  CreateCaseFiltersModule
+  CreateCaseFiltersModule,
+  CaseListFiltersModule
 } from '@hmcts/ccd-case-ui-toolkit';
 
 import { casesRouting } from './case-feature.routes';
@@ -51,7 +52,8 @@ import {ProvidersModule} from '../app/providers/providers.module';
     SearchFiltersModule,
     HttpModule,
     ProvidersModule,
-    MatDialogModule
+    MatDialogModule,
+    CaseListFiltersModule
   ],
   declarations: [...fromContainers.containers],
   providers: [

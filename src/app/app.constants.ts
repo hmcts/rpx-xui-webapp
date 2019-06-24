@@ -27,7 +27,7 @@ const navItems = [{
   }, {
     text: 'Create case',
     href: '/cases/case-filter',
-    active: true
+    active: false
 }];
 
 const userNav = {

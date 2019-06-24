@@ -25,12 +25,12 @@ describe('Search Filter Reducer', () => {
       }
     };
 
-    // it('should return the default state', () => {
-    //   const action = {} as any;
-    //   const state = fromFilter.reducer(undefined, action);
-    //
-    //   expect(state).toBe(initialState);
-    // });
+    it('should return the default state', () => {
+      const action = {} as any;
+      const state = fromFilter.reducer(initialState, action);
+
+      expect(state).toBe(initialState);
+    });
 
     it('should set correct object', () => {
       const action = new fromActions.Applied(dummy);

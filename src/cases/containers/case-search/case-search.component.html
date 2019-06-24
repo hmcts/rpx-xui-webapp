@@ -2,22 +2,23 @@
     <div class="search-block">
       <div class="filter-block">
         <exui-ccd-connector
-          [eventsBindings]="caseSearchEventsBindings"
+          [eventsBindings]="caseSearchFilterEventsBindings"
           [store]="store"
           [fromFeatureStore]="fromCasesFeature">
-          <ccd-search-filters-wrapper #ccdComponent
-            (onApply)='getFormGroup($event)'
+          <ccd-search-filters-wrapper #ccdFilterComponent
+            (onApply)="applySearchFilter($event)"
             [autoApply]="false">
           </ccd-search-filters-wrapper>
         </exui-ccd-connector>
       </div>
       <div class="results-block">
         <exui-ccd-connector
-          [eventsBindings]="caseSearchEventsBindings"
+          [eventsBindings]="caseSearchResultEventsBindings"
           [store]="store"
           [fromFeatureStore]="fromCasesFeature">
-          <ccd-search-result #ccdComponent
-            *ngIf="resultView"
+          
+          <ccd-search-result #ccdResultComponent
+            *ngIf="showResults"
             [jurisdiction]="jurisdiction"
             [caseType]="caseType"
             [caseState]="caseState"

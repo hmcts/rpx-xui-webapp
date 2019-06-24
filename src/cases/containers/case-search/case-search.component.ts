@@ -1,12 +1,11 @@
-import { Reset } from './../../store/actions/case-search.action';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { ActionBindingModel } from '../../models/create-case-actions.model';
 import { Store, select } from '@ngrx/store';
 import * as fromCasesFeature from '../../store';
-import * as fromCaseCreate from '../../store/reducers';
-import { Jurisdiction, CaseType, CaseState, SearchResultView, PaginationMetadata, SearchService } from '@hmcts/ccd-case-ui-toolkit';
-import { FormGroup } from '@angular/forms';
+import { Jurisdiction, CaseType, CaseState, SearchResultView, PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
+import { Subscription, Observable } from 'rxjs';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
+import { ActionBindingModel } from '../../../cases/models/create-case-actions.model';
+import { FormGroup } from '@angular/forms';
 
 /**
  * Entry component wrapper for CCD-CASE-CREATE
@@ -20,8 +19,17 @@ import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
   encapsulation: ViewEncapsulation.None
 })
 export class CaseSearchComponent implements OnInit {
-  caseSearchEventsBindings: ActionBindingModel[];
+  caseSearchFilterEventsBindings: ActionBindingModel[];
+  caseSearchResultEventsBindings: ActionBindingModel[];
   fromCasesFeature; any;
+
+  jurisdiction$: Observable<Jurisdiction>;
+  caseType$: Observable<CaseType>;
+  caseState$: Observable<CaseState>;
+  resultView$: Observable<SearchResultView>;
+  paginationMetadata$: Observable<PaginationMetadata>;
+  metadataFields$: Observable<string[]>;
+  fg: FormGroup;
 
   jurisdiction: Jurisdiction;
   caseType: CaseType;
@@ -29,77 +37,99 @@ export class CaseSearchComponent implements OnInit {
   resultView: SearchResultView;
   paginationMetadata: PaginationMetadata;
   metadataFields: string[];
-  fg: FormGroup;
 
   resultsArr: any[] = [];
 
   paginationSize: number;
 
+  showResults: boolean;
+
+  state: any;
+
   constructor(
     public store: Store<fromCasesFeature.State>,
-    private searchService: SearchService,
     private appConfig: AppConfig
   ) {
 
-    const state = this.store.pipe(select(fromCasesFeature.getSearchState));
-    this.paginationSize = this.appConfig.getPaginationPageSize();
-
-    state.subscribe(st => {
-      this.assignData(st);
-    });
   }
 
-  assignData(st) {
-    if (typeof st !== 'undefined' && st !== null) {
-      this.jurisdiction = st.jurisdiction.value as Jurisdiction;
-      this.caseType = st.caseType.value as CaseType;
-      this.metadataFields = st.metadataFields.value as Array<string>;
-      this.caseState = this.caseType.states[0];
-      const lfg = JSON.parse(localStorage.getItem('search-form-group-value'));
-      const search = this.searchService.search(this.jurisdiction.id, this.caseType.id, this.metadataFields, lfg, null);
-      search.subscribe(
-        data => {
-          this.assignResult(data);
-        });
-
-    } else if (st === null) {
-      this.resultView = null;
-    }
-  }
-  assignResult(data) {
-    this.paginationMetadata = new PaginationMetadata();
-    this.paginationMetadata.total_results_count = data.results.length;
-    this.paginationMetadata.total_pages_count = Math.ceil(data.results.length / this.paginationSize);
-    this.resultsArr = data.results;
-    this.resultView = {
-      ...data,
-      results: data.results.slice(0, this.paginationSize),
-      hasDrafts: data.hasDrafts ? data.hasDrafts : () => false
-    };
-  }
   ngOnInit(): void {
     this.fromCasesFeature = fromCasesFeature;
-    this.caseSearchEventsBindings = [
-      { type: 'onJurisdiction', action: 'JurisdictionSelected' },
-      { type: 'onApply', action: 'Applied' },
-      { type: 'onReset', action: 'Reset' }
+    this.caseSearchFilterEventsBindings = [
+      { type: 'onApply', action: 'ApplySearchFilter' }
     ];
+    this.caseSearchResultEventsBindings = [
+      { type: 'changePage', action: '' }
+    ];
+
+    this.paginationSize = this.appConfig.getPaginationPageSize();
+
+    this.jurisdiction$ = this.store.pipe(select(fromCasesFeature.searchFilterJurisdiction));
+    this.caseType$ = this.store.pipe(select(fromCasesFeature.searchFilterCaseType));
+    this.caseState$ = this.store.pipe(select(fromCasesFeature.searchFilterCaseState));
+    this.resultView$ = this.store.pipe(select(fromCasesFeature.searchFilterResultView));
+    this.metadataFields$ = this.store.pipe(select(fromCasesFeature.searchFilterMetadataFields));
+
+    this.jurisdiction$.subscribe(jurisdiction => this.jurisdiction = {
+      ...jurisdiction
+    });
+    this.caseType$.subscribe(caseType => this.caseType = {
+      ...caseType
+    });
+    this.caseState$.subscribe(caseState => this.caseState = {
+      ...caseState
+    });
+
+    this.metadataFields$.subscribe(metadataFields => this.metadataFields = {
+      ...metadataFields
+    });
+
+    this.resultView$.subscribe(resultView => {
+      this.showResults = resultView.results ? resultView.results.length > 0 : false;
+
+      if (this.showResults) {
+
+        this.paginationMetadata = new PaginationMetadata();
+        this.paginationMetadata.total_results_count = resultView.results.length;
+        this.paginationMetadata.total_pages_count = Math.ceil(resultView.results.length / this.paginationSize);
+        this.resultsArr = resultView.results;
+        this.resultView = {
+          ...resultView,
+          results: resultView.results.map(item => {
+            return {
+              ...item,
+              hydrated_case_fields: null
+            };
+          }).slice(0, this.paginationSize),
+          hasDrafts: resultView.hasDrafts ? resultView.hasDrafts : () => false
+        };
+      }
+    });
+
   }
 
-  applyChangePage(selected) {
-    const startingPoint = (selected.page - 1) * this.paginationSize;
+  applyChangePage(event) {
+    const startingPoint = (event.selected.page - 1) * this.paginationSize;
     const endingPoint = startingPoint + this.paginationSize;
-    const newArr = this.resultsArr.slice(startingPoint, endingPoint);
+    const newArr = this.resultsArr.map(item => {
+      return {
+        ...item,
+        hydrated_case_fields: null
+      };
+    }).slice(startingPoint, endingPoint);
 
     this.resultView = {
       ...this.resultView,
       results: newArr,
       hasDrafts: this.resultView.hasDrafts
     };
-
   }
 
-  getFormGroup(payload) {
-    this.fg = payload.formGroup;
+  applySearchFilter(event) {
+    this.fg = {
+      ...event.selected.formGroup
+    };
+    this.store.dispatch(new fromCasesFeature.ApplySearchFilter(event.selected));
   }
+
 }

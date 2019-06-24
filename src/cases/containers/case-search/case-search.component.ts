@@ -42,8 +42,6 @@ export class CaseSearchComponent implements OnInit {
 
   paginationSize: number;
 
-  showResults: boolean;
-
   state: any;
 
   constructor(
@@ -85,44 +83,44 @@ export class CaseSearchComponent implements OnInit {
     });
 
     this.resultView$.subscribe(resultView => {
-      this.showResults = resultView.results ? resultView.results.length > 0 : false;
 
-      if (this.showResults) {
-
-        this.paginationMetadata = new PaginationMetadata();
-        this.paginationMetadata.total_results_count = resultView.results.length;
-        this.paginationMetadata.total_pages_count = Math.ceil(resultView.results.length / this.paginationSize);
-        this.resultsArr = resultView.results;
-        this.resultView = {
-          ...resultView,
-          results: resultView.results.map(item => {
-            return {
-              ...item,
-              hydrated_case_fields: null
-            };
-          }).slice(0, this.paginationSize),
-          hasDrafts: resultView.hasDrafts ? resultView.hasDrafts : () => false
-        };
-      }
+      this.paginationMetadata = new PaginationMetadata();
+      const resultViewResultsLength = resultView.results ? resultView.results.length : 0;
+      this.paginationMetadata.total_results_count = resultViewResultsLength;
+      this.paginationMetadata.total_pages_count = Math.ceil(resultViewResultsLength / this.paginationSize);
+      this.resultsArr = resultView.results;
+      this.resultView = {
+        ...resultView,
+        columns: resultView.columns ? resultView.columns : [],
+        results: resultView.results ? resultView.results.map(item => {
+          return {
+            ...item,
+            hydrated_case_fields: null
+          };
+        }).slice(0, this.paginationSize) : [],
+        hasDrafts: resultView.hasDrafts ? resultView.hasDrafts : () => false
+      };
     });
 
   }
 
   applyChangePage(event) {
-    const startingPoint = (event.selected.page - 1) * this.paginationSize;
-    const endingPoint = startingPoint + this.paginationSize;
-    const newArr = this.resultsArr.map(item => {
-      return {
-        ...item,
-        hydrated_case_fields: null
-      };
-    }).slice(startingPoint, endingPoint);
+    if (this.resultsArr.length > 0) {
+      const startingPoint = (event.selected.page - 1) * this.paginationSize;
+      const endingPoint = startingPoint + this.paginationSize;
+      const newArr = this.resultsArr.map(item => {
+        return {
+          ...item,
+          hydrated_case_fields: null
+        };
+      }).slice(startingPoint, endingPoint);
 
-    this.resultView = {
-      ...this.resultView,
-      results: newArr,
-      hasDrafts: this.resultView.hasDrafts
-    };
+      this.resultView = {
+        ...this.resultView,
+        results: newArr,
+        hasDrafts: this.resultView.hasDrafts
+      };
+    }
   }
 
   applySearchFilter(event) {

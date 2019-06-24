@@ -18,7 +18,7 @@
           [fromFeatureStore]="fromCasesFeature">
           
           <ccd-search-result #ccdResultComponent
-            *ngIf="showResults"
+            *ngIf="resultView"
             [jurisdiction]="jurisdiction"
             [caseType]="caseType"
             [caseState]="caseState"

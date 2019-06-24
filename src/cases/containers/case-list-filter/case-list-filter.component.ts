@@ -1,5 +1,9 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import { Router } from '@angular/router';
+import { ActionBindingModel } from 'src/cases/models/create-case-actions.model';
+import * as fromCasesFeature from '../../store';
+import {Store} from '@ngrx/store';
+import * as fromCaseList from '../../store/reducers';
 
 @Component({
   selector: 'exui-case-list-filters-consumer',
@@ -8,19 +12,18 @@ import { Router } from '@angular/router';
 })
 export class CaseListFilterComponent implements OnInit {
     defaults: any;
+    caseListFilterEventsBindings: ActionBindingModel[];
+    fromCasesFeature; any;
     constructor(
-       private router: Router,
+      public store: Store<fromCaseList.State>
     ) { }
 
     ngOnInit() {
-    }
-
-    applied(arg: any) {
-       console.log('selected:', arg);
-    }
-
-    reset() {
-       console.log('reset');
+      this.fromCasesFeature = fromCasesFeature;
+      this.caseListFilterEventsBindings = [
+         {type: 'onApply', action: 'ApplyFilter'},
+         {type: 'onReset', action: 'ResetFilter'}
+       ];
     }
 
  }

@@ -9,32 +9,28 @@ interface CaseIdNameDescription {
 export interface CaseFilterState {
   loading: boolean;
   loaded: boolean;
-  selected: {
     caseState: CaseIdNameDescription;
     caseType: CaseIdNameDescription;
-    jurisdiction: CaseIdNameDescription
-  };
+    jurisdiction: CaseIdNameDescription;
 }
 
 const initialState: CaseFilterState = {
   loading: false,
   loaded: false,
-  selected: {
-    caseState: {
-      id: '',
-      name: '',
-      description: ''
-    },
-    jurisdiction: {
-      id: '',
-      name: '',
-      description: ''
-    },
-    caseType: {
-      id: '',
-      name: '',
-      description: ''
-    }
+  caseState: {
+    id: '',
+    name: '',
+    description: ''
+  },
+  jurisdiction: {
+    id: '',
+    name: '',
+    description: ''
+  },
+  caseType: {
+    id: '',
+    name: '',
+    description: ''
   }
 };
 
@@ -44,7 +40,10 @@ export function reducerCaseListFilter( state = initialState, action: fromCases.C
       return {
           ...state,
           loading: true,
-          loaded: false
+          loaded: false,
+          caseState: {...action.payload.selected.caseState},
+          jurisdiction: {...action.payload.selected.caseState},
+          caseType: {...action.payload.selected.caseType}
       } as CaseFilterState;
     }
 

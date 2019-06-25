@@ -2,7 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import * as fromCasesFeature from '../../store';
 import { Jurisdiction, CaseType, CaseState, SearchResultView, PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription, Observable, forkJoin, combineLatest } from 'rxjs';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { ActionBindingModel } from '../../../cases/models/create-case-actions.model';
 import { FormGroup } from '@angular/forms';
@@ -68,18 +68,24 @@ export class CaseSearchComponent implements OnInit {
     this.resultView$ = this.store.pipe(select(fromCasesFeature.searchFilterResultView));
     this.metadataFields$ = this.store.pipe(select(fromCasesFeature.searchFilterMetadataFields));
 
-    this.jurisdiction$.subscribe(jurisdiction => this.jurisdiction = {
-      ...jurisdiction
-    });
-    this.caseType$.subscribe(caseType => this.caseType = {
-      ...caseType
-    });
-    this.caseState$.subscribe(caseState => this.caseState = {
-      ...caseState
-    });
-
-    this.metadataFields$.subscribe(metadataFields => this.metadataFields = {
-      ...metadataFields
+    combineLatest([
+      this.jurisdiction$,
+      this.caseType$,
+      this.caseState$,
+      this.metadataFields$
+    ]).subscribe(result => {
+      this.jurisdiction = {
+        ...result[0]
+      };
+      this.caseType = {
+        ...result[1]
+      };
+      this.caseState = {
+        ...result[2]
+      };
+      this.metadataFields = {
+        ...result[3]
+      };
     });
 
     this.resultView$.subscribe(resultView => {
@@ -101,6 +107,27 @@ export class CaseSearchComponent implements OnInit {
         hasDrafts: resultView.hasDrafts ? resultView.hasDrafts : () => false
       };
     });
+
+
+    const formGroupFromLS = JSON.parse(localStorage.getItem('search-form-group-value'));
+    const jurisdictionFromLS = JSON.parse(localStorage.getItem('search-jurisdiction'));
+    const caseTypeGroupFromLS = JSON.parse(localStorage.getItem('search-caseType'));
+    const metadataFieldsGroupFromLS = JSON.parse(localStorage.getItem('search-metadata-fields'));
+
+    if (formGroupFromLS && jurisdictionFromLS && caseTypeGroupFromLS &&   metadataFieldsGroupFromLS) {
+      const event = {
+        selected: {
+          jurisdiction: jurisdictionFromLS,
+          caseType: caseTypeGroupFromLS,
+          metadataFields: metadataFieldsGroupFromLS,
+          formGroup: {
+            value: formGroupFromLS
+          }
+        }
+      };
+
+      this.applySearchFilter(event);
+    }
 
   }
 

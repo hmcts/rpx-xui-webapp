@@ -7,11 +7,7 @@ import {Component, OnInit, ViewEncapsulation} from '@angular/core';
  */
 @Component({
   selector: 'exui-create-case',
-  template: `
-    <exui-page-wrapper [title]="'Case List'">
-    <a routerLink="/cases/case-filter" class="button">Create case</a>
-    </exui-page-wrapper>
-  `,
+  templateUrl: 'case-list.component.html',
   encapsulation: ViewEncapsulation.None
 })
 export class CaseListComponent {

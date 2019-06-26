@@ -13,7 +13,7 @@ import {CaseDetailsComponent} from './containers/case-details/case-details.compo
 export const ROUTES: Routes = [
     {
       path: '',
-      component: CaseListFilterComponent,
+      component: CaseListComponent,
     },
     {
       path: 'case-filter',

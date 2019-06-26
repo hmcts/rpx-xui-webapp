@@ -1,10 +1,10 @@
 import {Action} from '@ngrx/store';
 
-export const APPLYFILTER = '[CaseListFilter] Applied';
+export const APPLYCASELISTFILTER = '[CaseListFilter] Applied';
 export const RESETFILTER = '[CaseListFilter] Reset';
 
 export class ApplyFilter implements Action {
-  readonly type = APPLYFILTER;
+  readonly type = APPLYCASELISTFILTER;
   constructor(public payload: any) {}
 }
 

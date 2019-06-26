@@ -1,34 +1,80 @@
-import { Entity } from '../../../app/store/helpers/entity';
-import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
+import { SearchResultView, Jurisdiction, CaseType, CaseState, PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
 import * as fromCases from '../actions/case-search.action';
 
-// todo this is just a place holder
+export class SearchStateFilter {
+  jurisdiction: Jurisdiction;
+  caseType: CaseType;
+  caseState: CaseState;
+  metadataFields: any;
+
+  constructor() {
+    this.jurisdiction = new Jurisdiction();
+    this.caseType = new CaseType();
+    this.caseState = new CaseState();
+    this.metadataFields = {};
+  }
+}
+
+export class SearchStateResults {
+  resultView: SearchResultView;
+
+  constructor() {
+    this.resultView = new SearchResultView();
+  }
+}
+
 export interface SearchState {
-  metadataFields: Entity;
-  jurisdiction: Entity;
-  caseType: Entity;
+  filter: SearchStateFilter;
+  results: SearchStateResults;
   loading: boolean;
   loaded: boolean;
 }
 
-export function reducer( state , action: fromCases.CaseSearchAction): SearchState {
+export const initialSearchState: SearchState = {
+  filter: new SearchStateFilter(),
+  results: new SearchStateResults(),
+  loading: false,
+  loaded: false,
+};
+
+export function reducer(
+  state = initialSearchState,
+  action: fromCases.CaseSearchAction
+): SearchState {
   switch (action.type) {
-    case fromCases.APPLIED: {
-      const jurisdiction = new Entity(action.payload.jurisdiction);
-      const metadataFields = new Entity(action.payload.metadataFields);
-      const caseType = new Entity(action.payload.caseType);
+    case fromCases.APPLY_SEARCH_FILTER: {
       return {
-          metadataFields,
-          jurisdiction,
-          caseType,
-          loading: false,
-          loaded: true
+        ...state,
+        filter: {
+          metadataFields: action.payload.metadataFields,
+          jurisdiction: action.payload.jurisdiction,
+          caseType: action.payload.caseType,
+          caseState: action.payload.caseState ? action.payload.caseState : null
+        },
+        loading: true,
+        loaded: false
+      };
+    }
+
+    case fromCases.APPLY_SEARCH_FILTER_SUCCESS: {
+      return {
+        ...state,
+        results: {
+          resultView: action.payload
+        },
+        loading: false,
+        loaded: true
       };
     }
 
     case fromCases.RESET:
-      return null;
+      return initialSearchState;
   }
   return state;
 }
 
+export const getSearchFilterJurisdiction = (state) => state.filter.jurisdiction;
+export const getSearchFilterCaseType = (state) => state.filter.caseType;
+export const getSearchFilterCaseState = (state) => state.filter.caseState;
+export const getSearchFilterMetadataFields = (state) => state.filter.metadataFields;
+export const getSearchFilterResultView = (state) => state.results.resultView;

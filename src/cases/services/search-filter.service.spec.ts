@@ -21,17 +21,19 @@ describe('SearchFilterService', () => {
 
     it('should search', () => {
         const payload = {
-            jurisdiction: {
-                id: 'Athos'
-            },
-            caseType: {
-                id: 'Porthos'
-            },
-            metadataFields: {
-                id: 'Aramis'
-            },
-            formGroup: {
-                value: 'dArtagnan'
+            selected: {
+                jurisdiction: {
+                    id: 'Athos'
+                },
+                caseType: {
+                    id: 'Porthos'
+                },
+                metadataFields: {
+                    id: 'Aramis'
+                },
+                formGroup: {
+                    value: 'dArtagnan'
+                }
             }
         };
 

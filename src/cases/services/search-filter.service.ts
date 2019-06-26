@@ -10,10 +10,10 @@ export class SearchFilterService {
     ) {}
 
     search(payload): Observable<any> {
-        const jurisdictionId = payload.jurisdiction.id;
-        const caseTypeId = payload.caseType.id;
-        const metaCriteria = payload.metadataFields;
-        const caseCriteria = payload.formGroup.value;
+        const jurisdictionId = payload.selected.jurisdiction.id;
+        const caseTypeId = payload.selected.caseType.id;
+        const metaCriteria = payload.selected.metadataFields;
+        const caseCriteria = payload.selected.formGroup.value;
 
         return this.ccdSearchService.search(jurisdictionId, caseTypeId, metaCriteria, caseCriteria) as any;
     }

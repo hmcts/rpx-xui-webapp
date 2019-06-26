@@ -19,7 +19,7 @@ Feature: Login
 #    Then I logout successfully and back to Login page
 
 
-  @EUI-42 @login @all @smoke @crossbrowser
+  @EUI-42 @login @all @smoke 
   Scenario: un-authenticated user login
     Then I am on Idam login page
     When I enter an Invalid email-address and password to login
@@ -27,7 +27,7 @@ Feature: Login
     Then I should see failure error summary
 
 
-  @EUI-42 @logout @smoke
+  @EUI-42 @logout @smoke @all
   Scenario: login and log out from EUI as SSCS user
     Given I am logged into Expert UI with SSCS judge details
     Then I should be redirected to EUI dashboard page

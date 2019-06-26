@@ -8,10 +8,9 @@ function loginLogoutObjects() {
   this.password = element(by.css("[id='password']"));
   this.signinTitle = element(by.css("h1.heading-large"));
   this.signinBtn = element(by.css("input.button"));
-  this.signOutlink = element(by.xpath("//a[contains(text(),'Signout')]"));
+  this.signOutlink = element(by.xpath("//a[@class='hmcts-header__navigation-link']"));
   this.failure_error_heading = element(by.css("[id='validation-error-summary-heading']"));
   this.dashboard_header= element(by.css("[class='govuk-heading-xl']"));
-
 
 
   this.givenIAmLoggedIn = async function () {

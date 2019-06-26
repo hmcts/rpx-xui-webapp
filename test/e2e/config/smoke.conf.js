@@ -101,7 +101,7 @@ const config = {
       options: {
         automaticallyGenerateReport: true,
         removeExistingJsonReportFile: true,
-        reportName: 'JUI Functional Tests',
+        reportName: 'XUI Manage Cases Functional Tests',
         // openReportInBrowser: true,
         jsonDir: 'reports/smoke_tests/functional',
         reportPath: 'reports/smoke_tests/functional'

@@ -1,14 +1,14 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, OnDestroy } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import * as fromCasesFeature from '../../store';
 import { Jurisdiction, CaseType, CaseState, SearchResultView, PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
-import { Subscription, Observable, forkJoin, combineLatest } from 'rxjs';
+import { Observable, combineLatest, Subscription } from 'rxjs';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { ActionBindingModel } from '../../../cases/models/create-case-actions.model';
 import { FormGroup } from '@angular/forms';
 
 /**
- * Entry component wrapper for CCD-CASE-CREATE
+ * Entry component wrapper for ccd-search-filters-wrapper ccd-search-result
  * Smart Component
  * param TBC
  */
@@ -18,9 +18,8 @@ import { FormGroup } from '@angular/forms';
   styleUrls: ['case-search.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class CaseSearchComponent implements OnInit {
+export class CaseSearchComponent implements OnInit, OnDestroy {
   caseSearchFilterEventsBindings: ActionBindingModel[];
-  caseSearchResultEventsBindings: ActionBindingModel[];
   fromCasesFeature; any;
 
   jurisdiction$: Observable<Jurisdiction>;
@@ -37,6 +36,9 @@ export class CaseSearchComponent implements OnInit {
   resultView: SearchResultView;
   paginationMetadata: PaginationMetadata;
   metadataFields: string[];
+
+  filterSubscription: Subscription;
+  resultSubscription: Subscription;
 
   resultsArr: any[] = [];
 
@@ -56,9 +58,6 @@ export class CaseSearchComponent implements OnInit {
     this.caseSearchFilterEventsBindings = [
       { type: 'onApply', action: 'ApplySearchFilter' }
     ];
-    this.caseSearchResultEventsBindings = [
-      { type: 'changePage', action: '' }
-    ];
 
     this.paginationSize = this.appConfig.getPaginationPageSize();
 
@@ -68,7 +67,7 @@ export class CaseSearchComponent implements OnInit {
     this.resultView$ = this.store.pipe(select(fromCasesFeature.searchFilterResultView));
     this.metadataFields$ = this.store.pipe(select(fromCasesFeature.searchFilterMetadataFields));
 
-    combineLatest([
+    this.filterSubscription = combineLatest([
       this.jurisdiction$,
       this.caseType$,
       this.caseState$,
@@ -88,7 +87,7 @@ export class CaseSearchComponent implements OnInit {
       };
     });
 
-    this.resultView$.subscribe(resultView => {
+    this.resultSubscription = this.resultView$.subscribe(resultView => {
 
       this.paginationMetadata = new PaginationMetadata();
       const resultViewResultsLength = resultView.results ? resultView.results.length : 0;
@@ -108,6 +107,10 @@ export class CaseSearchComponent implements OnInit {
       };
     });
 
+    this.checkLSAndTrigger();
+  }
+
+  checkLSAndTrigger() {
 
     const formGroupFromLS = JSON.parse(localStorage.getItem('search-form-group-value'));
     const jurisdictionFromLS = JSON.parse(localStorage.getItem('search-jurisdiction'));
@@ -126,9 +129,8 @@ export class CaseSearchComponent implements OnInit {
         }
       };
 
-      this.applySearchFilter(event);
+      this.store.dispatch(new fromCasesFeature.ApplySearchFilter(event));
     }
-
   }
 
   applyChangePage(event) {
@@ -150,11 +152,9 @@ export class CaseSearchComponent implements OnInit {
     }
   }
 
-  applySearchFilter(event) {
-    this.fg = {
-      ...event.selected.formGroup
-    };
-    this.store.dispatch(new fromCasesFeature.ApplySearchFilter(event.selected));
+  ngOnDestroy() {
+    this.filterSubscription.unsubscribe();
+    this.resultSubscription.unsubscribe();
   }
 
 }

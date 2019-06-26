@@ -5,21 +5,7 @@ Feature: Login
   Background:
     When I navigate to Expert UI Url
 
-#
-#  Scenario: Login and Logout as SSCS user
-#    Then I login as SSCS user
-#    Then I check the user is logged
-#    Then I click the signout
-#    Then I logout successfully and back to Login page
-#
-#  Scenario: Login and Logout as FR user
-#    Then I login as FR user
-#    Then I check the user is logged
-#    Then I click the signout
-#    Then I logout successfully and back to Login page
-
-
-  @EUI-42 @login @all @smoke 
+  @EUI-42 @login @all @smoke
   Scenario: un-authenticated user login
     Then I am on Idam login page
     When I enter an Invalid email-address and password to login
@@ -41,3 +27,9 @@ Feature: Login
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
     Then I should be redirected to the Idam login page
+
+
+  @EUI-42 @logout @all @smoke
+  Scenario: Verify the direct link navigate to login page
+    Given I navigate to Expert UI Url direct link
+    Then I should be redirected back to Login page after direct link

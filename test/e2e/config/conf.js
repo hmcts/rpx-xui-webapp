@@ -6,17 +6,6 @@ chai.use(chaiAsPromised);
 
 const argv = minimist(process.argv.slice(2));
 
-//const specFilesFilter = ['../features/**/*.feature'];
-
-// module.exports = {
-//   chai: chai,
-//   chaiAsPromised: chaiAsPromised,
-//   minimist: minimist,
-//   argv: argv,
-//   specFilesFilter: specFilesFilter
-// }
-//
-
 const jenkinsConfig = [
 
   {
@@ -47,14 +36,6 @@ const config = {
   framework: 'custom',
   frameworkPath: require.resolve('protractor-cucumber-framework'),
   specs: ['../features/**/*.feature'],
-  // specs: [
-  //   '../features/**/caseFile.feature',
-  //   '../features/**/login.feature',
-  //   '../features/**/makeDecision.feature',
-  //   '../features/**/parties.feature',
-  //   '../features/**/questions.feature',
-  //   '../features/**/recentEvents.feature',
-  // ],
   baseUrl: process.env.TEST_URL || 'http://localhost:3000/',
   params: {
     serverUrls: process.env.TEST_URL || 'http://localhost:3000/',

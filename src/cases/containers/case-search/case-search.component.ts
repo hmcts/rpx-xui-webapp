@@ -117,7 +117,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     const caseTypeGroupFromLS = JSON.parse(localStorage.getItem('search-caseType'));
     const metadataFieldsGroupFromLS = JSON.parse(localStorage.getItem('search-metadata-fields'));
 
-    if (formGroupFromLS && jurisdictionFromLS && caseTypeGroupFromLS &&   metadataFieldsGroupFromLS) {
+    if (formGroupFromLS && jurisdictionFromLS && caseTypeGroupFromLS && metadataFieldsGroupFromLS) {
       const event = {
         selected: {
           jurisdiction: jurisdictionFromLS,
@@ -153,8 +153,12 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.filterSubscription.unsubscribe();
-    this.resultSubscription.unsubscribe();
+    if (this.filterSubscription) {
+      this.filterSubscription.unsubscribe();
+    }
+    if (this.resultSubscription) {
+      this.resultSubscription.unsubscribe();
+    }
   }
 
 }

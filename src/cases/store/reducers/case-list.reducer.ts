@@ -1,4 +1,4 @@
-import * as fromCases from '../actions/case-list.filter.action';
+import * as fromCases from '../actions/case-list.action';
 
 
 

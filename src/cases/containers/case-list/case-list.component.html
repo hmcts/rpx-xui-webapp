@@ -1,14 +1,9 @@
-<div _ngcontent-c9="" class="global-display">
-    <div class="global-display">
-        <div _ngcontent-c9="" class="display-left" leftbody="">
+<exui-page-wrapper [title]="'Case List'">
+    <div class="search-block">
+        <div class="filter-block" >
             <exui-case-list-filters-consumer></exui-case-list-filters-consumer>
         </div>
-        <div _ngcontent-c9="" aria-live="polite" class="display-right" id="search-result" rightbody="" role="region">
-            <exui-page-wrapper [title]="'Case List'">
-                <a routerLink="/cases/case-filter" class="button">Create case</a>
-                <a routerLink="/cases/case-search" class="button">Search</a>
-                <a routerLink="/cases/case-details" class="button">Case Details</a>
-            </exui-page-wrapper>
+        <div aria-live="polite" class="results-block" id="search-result" rightbody="" role="region">
         </div>
-    </div>
-</div>
+    </div>    
+</exui-page-wrapper>

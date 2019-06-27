@@ -1,4 +1,4 @@
-import * as filterCaseList from './case-list-filter.reducer';
+import * as filterCaseList from './case-list.reducer';
 import * as fromCases from '../actions/case-list.filter.action';
 
 describe('CaseList Filter Reducer', () => {

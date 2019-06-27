@@ -16,9 +16,9 @@ describe('Case List Filter Component', () => {
     let component: CaseListFilterComponent;
     let fixture: ComponentFixture<CaseListFilterComponent>;
 
-    let mockApiConfig = jasmine.createSpyObj('mockApiConfig', [
+    const mockApiConfig = jasmine.createSpyObj('mockApiConfig', [
     'load', 'getLoginUrl', 'getApiUrl', 'getCaseDataUrl', 'getDocumentManagementUrl', 'getRemoteDocumentManagementUrl',
-    'getPostcodeLookupUrl','getOAuth2ClientId',
+    'getPostcodeLookupUrl', 'getOAuth2ClientId',
     'getPaymentsUrl', 'getCreateOrUpdateDraftsUrl', 'getViewOrDeleteDraftsUrl', 'getActivityUrl',
     'getActivityNexPollRequestMs', 'getActivityRetry', 'getActivityBatchCollectionDelayMs', 'getActivityMaxRequestPerBatch',
     'getCaseHistoryUrl', 'getPrintServiceUrl', 'getRemotePrintServiceUrl', 'getPaginationPageSize']);

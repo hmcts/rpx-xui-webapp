@@ -54,8 +54,9 @@ import {ProvidersModule} from '../app/providers/providers.module';
     SearchFiltersModule,
     HttpModule,
     ProvidersModule,
-    CaseListFiltersModule,
-    SearchResultModule
+    CaseListFilterModule.
+    MatDialogModule,
+    CaseListFiltersModule
   ],
   declarations: [...fromContainers.containers],
   providers: [

@@ -8,7 +8,8 @@ import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 @Component({
   selector: 'exui-create-case',
   templateUrl: 'case-list.component.html',
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  styleUrls: ['case-list-filter.component.scss']
 })
 export class CaseListComponent {
   constructor() {}

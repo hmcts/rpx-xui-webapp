@@ -1,0 +1,15 @@
+.search-block{
+    clear: both;
+    overflow: hidden;
+    .filter-block{
+      float: left;
+      width: 22%;
+    }
+    .results-block{
+      float: left;
+      width: 70%;
+      margin-left: 2vw;
+      overflow: auto;
+    }
+  }
+  

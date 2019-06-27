@@ -4,7 +4,7 @@ import * as fromFeature from '../../store/reducers';
 
 export const getSearchState = createSelector(
  fromFeature.getCaseFeatureState,
- (state: fromFeature.State) => state.caseSearchFilter
+ (state: fromFeature.State) => state.caseSearch
 );
 
 export const searchFilterJurisdiction = createSelector(

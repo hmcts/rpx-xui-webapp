@@ -1,5 +1,5 @@
 import * as filterCaseList from './case-list.reducer';
-import * as fromCases from '../actions/case-list.filter.action';
+import * as fromCases from '../actions/case-list.action';
 
 describe('CaseList Filter Reducer', () => {
     describe('undefined action', () => {

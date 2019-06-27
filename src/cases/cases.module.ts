@@ -54,7 +54,6 @@ import {ProvidersModule} from '../app/providers/providers.module';
     SearchFiltersModule,
     HttpModule,
     ProvidersModule,
-    CaseListFilterModule.
     MatDialogModule,
     CaseListFiltersModule
   ],

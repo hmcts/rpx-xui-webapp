@@ -15,7 +15,7 @@ import { Store } from '@ngrx/store';
   encapsulation: ViewEncapsulation.None,
   styleUrls: ['case-list-filter.component.scss']
 })
-export class CaseListComponent {
+export class CaseListComponent implements OnInit {
   defaults: any;
   caseListFilterEventsBindings: ActionBindingModel[];
   fromCasesFeature; any;

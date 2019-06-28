@@ -15,7 +15,7 @@ import {SharedModule} from '../../../app/shared/shared.module';
 import {AppConfigService} from '../../../app/services/config/configuration.services';
 import {reducers} from '../../store/reducers';
 import * as fromCases from '../../store/reducers/';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 class MockSortService {
   features = {};
@@ -36,8 +36,8 @@ describe('CaseListComponent', () => {
         SharedModule,
         SearchFiltersModule,
       ],
-      declarations: [ CaseListComponent],
-      schemas: [NO_ERRORS_SCHEMA],
+      declarations: [ CaseListComponent ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         PlaceholderService,
         CasesService,

@@ -1,6 +1,6 @@
-import { Jurisdiction, CaseType, SearchResultViewItem } from '@hmcts/ccd-case-ui-toolkit';
+import { Jurisdiction, CaseType, SearchResultViewItem, CaseState } from '@hmcts/ccd-case-ui-toolkit';
 
-const CASE_TYPE_1: CaseType = {
+export const CASE_TYPE_1: CaseType = {
     id: 'CT0',
     name: 'Case type 0',
     description: '',
@@ -10,7 +10,7 @@ const CASE_TYPE_1: CaseType = {
     jurisdiction: null
 };
 
-const CASE_TYPE_2: CaseType = {
+export const CASE_TYPE_2: CaseType = {
     id: 'CT2',
     name: 'Case type 2',
     description: '',
@@ -20,7 +20,7 @@ const CASE_TYPE_2: CaseType = {
     jurisdiction: null
 };
 
-const CASE_TYPE_3: CaseType = {
+export const CASE_TYPE_3: CaseType = {
     name: 'Benefit',
     id: 'Benefit',
     description: '',
@@ -30,20 +30,25 @@ const CASE_TYPE_3: CaseType = {
     jurisdiction: null
 };
 
-const JURISDICTION_1: Jurisdiction = {
+export const JURISDICTION_1: Jurisdiction = {
     id: 'J1',
     name: 'Jurisdiction 1',
     description: '',
     caseTypes: [CASE_TYPE_1, CASE_TYPE_2]
 };
 
-const SSCS: Jurisdiction = {
+export const SSCS: Jurisdiction = {
     id: 'J2',
     name: 'SSCS',
     description: '',
     caseTypes: [CASE_TYPE_3]
 };
 
+export const CASE_STATE_1: CaseState = {
+    id: 'TEST_STATE',
+    name: 'Test Case State',
+    description: 'A test Case State'
+};
 
 export const mockedJurisdictions = {
     juristdiction1: JURISDICTION_1,

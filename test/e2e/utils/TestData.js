@@ -4,7 +4,7 @@
  */
 module.exports = {
   jurisdiction: 'Tribunals',
-  caseType: 'SSCS Case v5.0.36_AAT',
+  caseType: 'SSCS Case v5.0.65_AAT',
   event: 'Appeal created',
   eventSummary: 'Appeal Created Event Summary Tribunals',
   eventDescription: 'Appeal Created Event Description Tribunals',

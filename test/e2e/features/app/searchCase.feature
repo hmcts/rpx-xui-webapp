@@ -1,4 +1,4 @@
-@smoke
+@ignore
 Feature: search criteria workflow
 
   Background:

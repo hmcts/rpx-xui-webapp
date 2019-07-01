@@ -55,9 +55,29 @@ export class ExuiCcdConnectorComponent implements AfterContentInit, OnDestroy {
     this.dispatcherContainer = {};
     this.eventsBindings.forEach(event => {
       this.dispatcherContainer[event.type] = (obj) => {
-        this.store.dispatch(new this.fromFeatureStore[event.action](obj));
+        this.store.dispatch(new this.fromFeatureStore[event.action](this.deepClone(obj)));
       };
     });
+  }
+
+  deepClone(obj) {
+    return JSON.parse(JSON.stringify(this.simplifyFormGroup(obj)));
+  }
+
+  simplifyFormGroup(obj) {
+    Object.keys(obj).forEach((key) => {
+      if (key === 'formGroup') {
+        const copiedValue = obj[key].value;
+        delete obj[key];
+        obj[key] = {
+          value: copiedValue
+        };
+
+      } else if (obj[key] && typeof obj[key] === 'object') {
+        this.simplifyFormGroup(obj[key]);
+      }
+    });
+    return obj;
   }
 
   ngOnDestroy(): void {

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { SearchService } from '@hmcts/ccd-case-ui-toolkit';
 import { Observable } from 'rxjs';
 import { FormGroup } from '@angular/forms';
+import { isStringOrNumber, getFilterType, sanitiseMetadataFieldName } from '../utils/utils';
 
 @Injectable()
 export class SearchFilterService {
@@ -62,9 +63,9 @@ export class SearchFilterService {
         }
         for (let attributeName of Object.keys(formGroupValue)) {
             const value = formGroupValue[attributeName];
-            if (this.isStringOrNumber(value)) {
-                const filterType = this.getFilterType(attributeName);
-                attributeName = this.sanitiseMetadataFieldName(filterType, attributeName);
+            if (isStringOrNumber(value)) {
+                const filterType = getFilterType(attributeName, this.metadataFields);
+                attributeName = sanitiseMetadataFieldName(filterType, attributeName);
                 target[filterType][prefix + attributeName] = value;
             } else if (value) {
                 this.buildFormDetails(attributeName, target, value);
@@ -72,19 +73,4 @@ export class SearchFilterService {
         }
     }
 
-    private isStringOrNumber(value: any): boolean {
-        return (typeof value === 'string' && value.length !== 0) || (typeof value === 'number');
-    }
-
-    private getFilterType(fieldName: string): string {
-        return (this.metadataFields && (this.metadataFields.indexOf(fieldName) > -1)) ?
-            'metadataFilter' : 'caseFilter';
-    }
-
-    private sanitiseMetadataFieldName(filterType: string, fieldName: string): string {
-        if (filterType === 'metadataFilter') {
-            fieldName = fieldName.replace(/\[(.*?)]/g, '$1').toLocaleLowerCase();
-        }
-        return fieldName;
-    }
 }

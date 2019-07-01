@@ -82,7 +82,6 @@ class Dropdown {
            break;
         }
     }
-
     if (!found){
       let message = `option '${dropdownOption}' not found in dropdown '${this._dropdownElement.toString()}'. Available options: ${optionsTextArray}`
       throw new CustomError(message)

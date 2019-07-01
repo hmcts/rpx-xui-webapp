@@ -107,7 +107,7 @@ defineSupportCode(function ({ Given, When, Then }) {
 
 
     Then(/^I should be redirected to EUI dashboard page$/, async function () {
-        // browser.sleep(LONG_DELAY);
+         browser.sleep(LONG_DELAY);
         // await expect(dashBoardPage.dashboard_header.isDisplayed()).to.eventually.be.true;
         // await dashBoardPage.table.isDisplayed();
         // // await expect(dashBoardPage.your_cases.getText())

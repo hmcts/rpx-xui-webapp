@@ -1,4 +1,4 @@
-@ignore
+@smoke
 Feature: search criteria workflow
 
   Background:
@@ -7,11 +7,9 @@ Feature: search criteria workflow
     Then I should be redirected to EUI dashboard page
     When I click on search button
     Then Search page should be displayed
-    When I enter mandatory fields jurisdiction,case type and click on start button
-    Then I should navigate to search criteria page
 
   Scenario: search criteria apply workflow
-    When I select the search criteria details and click on apply button
+    When I enter mandatory fields jurisdiction,case type and click on start button
     Then Case details should be displayed based on selected search criteria
 
   Scenario: search criteria reset workflow

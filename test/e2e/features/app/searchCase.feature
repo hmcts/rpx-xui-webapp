@@ -1,4 +1,4 @@
-@ignore
+  @ignore
 Feature: search criteria workflow
 
   Background:

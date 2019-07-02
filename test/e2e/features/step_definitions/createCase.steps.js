@@ -42,11 +42,12 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
   });
 
   When(/^I Enter mandatory case details and click on continue button$/, async function () {
+    browser.sleep(LONG_DELAY);
     await createWizardPage.clickContinueButton()
   });
 
   Then(/^I should be on Appeal created page$/, async function () {
-    browser.sleep(LONG_DELAY);
+    browser.sleep(SHORT_DELAY);
     expect(await new AppealCreatedPage().amOnPage()).to.be.true
   });
 

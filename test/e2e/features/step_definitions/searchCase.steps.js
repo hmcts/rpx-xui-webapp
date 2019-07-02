@@ -17,7 +17,7 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
     });
 
   Then(/^Search page should be displayed$/, async function () {
-    browser.sleep(LONG_DELAY);
+    browser.sleep(SHORT_DELAY);
     expect(await new SearchPage().amOnPage()).to.be.true;
   });
 

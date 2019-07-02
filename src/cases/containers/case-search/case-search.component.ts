@@ -56,7 +56,8 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.fromCasesFeature = fromCasesFeature;
     this.caseSearchFilterEventsBindings = [
-      { type: 'onApply', action: 'ApplySearchFilter' }
+      { type: 'onApply', action: 'ApplySearchFilter' },
+      { type: 'onReset', action: 'Reset' }
     ];
 
     this.paginationSize = this.appConfig.getPaginationPageSize();

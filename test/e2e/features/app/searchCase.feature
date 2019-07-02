@@ -8,7 +8,6 @@ Feature: search criteria workflow
     When I click on search button
     Then Search page should be displayed
 
-
   Scenario: search criteria apply workflow
     When I enter mandatory fields jurisdiction,case type and click on start button
     Then Case details should be displayed based on selected search criteria

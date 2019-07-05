@@ -17,15 +17,15 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
     });
 
   Then(/^Search page should be displayed$/, async function () {
-    browser.sleep(SHORT_DELAY);
+    browser.sleep(AMAZING_DELAY);
     expect(await new SearchPage().amOnPage()).to.be.true;
   });
 
-  When(/^I enter mandatory fields jurisdiction,case type and click on start button$/, async function () {
-    browser.sleep(LONG_DELAY);
+  When(/^I enter mandatory fields jurisdiction,case type and click on apply button$/, async function () {
+    browser.sleep(AMAZING_DELAY);
     await searchPage.selectJurisdiction(TestData.jurisdiction);
-    browser.sleep(LONG_DELAY);
-    await searchPage.selectCaseType(TestData.caseType);
+    browser.sleep(AMAZING_DELAY);
+    await searchPage.selectCaseType(TestData.caseTypeIndex);
 
     await searchPage.clickApplyButton();
   });
@@ -38,7 +38,7 @@ When(/^I select the search criteria details and click on reset button$/, async f
   browser.sleep(LONG_DELAY);
   await searchPage.selectJurisdiction(TestData.jurisdiction);
   browser.sleep(LONG_DELAY);
-  await searchPage.selectCaseType(TestData.caseType);
+  await searchPage.selectCaseType(TestData.caseTypeIndex);
   browser.sleep(LONG_DELAY);
   await searchPage.clickResetButton();
 });

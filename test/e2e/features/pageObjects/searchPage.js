@@ -32,7 +32,7 @@ class SearchPage {
   }
 
   async selectCaseType(option){
-    await this.caseType.selectFromDropdownByText(option);
+    await this.caseType.selectFromDropdownByIndex(option);
   }
 
   async clickApplyButton() {

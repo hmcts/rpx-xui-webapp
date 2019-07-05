@@ -23,7 +23,7 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
 
   });
   Then(/^Create case page should be displayed$/, async function () {
-    browser.sleep(LONG_DELAY);
+    browser.sleep(AMAZING_DELAY);
     expect(await new CreateCaseStartPage().amOnPage()).to.be.true;
   });
 

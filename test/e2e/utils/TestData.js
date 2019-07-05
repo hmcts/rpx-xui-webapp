@@ -8,5 +8,5 @@ module.exports = {
   event: 'Appeal created',
   eventSummary: 'Appeal Created Event Summary Tribunals',
   eventDescription: 'Appeal Created Event Description Tribunals',
-  caseOption: '25: Object'
+  caseTypeIndex: 3
 };

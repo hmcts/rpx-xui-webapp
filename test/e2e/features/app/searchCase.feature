@@ -1,4 +1,4 @@
-@ignore
+@smoke
 Feature: search criteria workflow
 
   Background:
@@ -8,8 +8,9 @@ Feature: search criteria workflow
     When I click on search button
     Then Search page should be displayed
 
+
   Scenario: search criteria apply workflow
-    When I enter mandatory fields jurisdiction,case type and click on start button
+    When I enter mandatory fields jurisdiction,case type and click on apply button
     Then Case details should be displayed based on selected search criteria
 
   Scenario: search criteria reset workflow

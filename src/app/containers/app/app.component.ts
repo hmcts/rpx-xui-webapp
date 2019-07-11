@@ -6,6 +6,7 @@ import {NavItemsModel} from '../../models/nav-item.model';
 import {AppTitleModel} from '../../models/app-title.model';
 import {UserNavModel} from '../../models/user-nav.model';
 import {AppConstants} from '../../app.constants';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'exui-root',
@@ -21,7 +22,8 @@ export class AppComponent implements OnInit {
 
   constructor(
     private logger: LoggerService,
-    private store: Store<fromActions.State> ) {
+    private store: Store<fromActions.State>,
+    private http: HttpClient) {
   }
 
   ngOnInit(): void {
@@ -36,4 +38,9 @@ export class AppComponent implements OnInit {
     }
   }
 
+  getUrl(url) {
+    this.http.get<any>(url).subscribe(data => {
+      console.log(data);
+    });
+  }
 }

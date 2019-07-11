@@ -78,6 +78,9 @@ app.get('/oauth2/callback', auth.authenticateUser)
 app.get('/api/logout', (req, res, next) => {
     auth.doLogout(req, res)
 })
+app.get('/api/simple', (req, res, next) => {
+  res.send({hello: 'world'})
+});
 
 app.use('/aggregated', routes)
 app.use('/data', routes)

@@ -6,7 +6,7 @@ import { CaseFilterComponent } from './containers/case-filter/case-filter.compon
 
 import { CaseSearchComponent } from './containers/case-search/case-search.component';
 import {CasesCreateComponent} from './containers';
-import {editorRouting} from '@hmcts/ccd-case-ui-toolkit';
+import {viewerRouting as caseViewRouting, editorRouting} from '@hmcts/ccd-case-ui-toolkit';
 import {CaseDetailsComponent} from './containers/case-details/case-details.component';
 
 
@@ -31,9 +31,11 @@ export const ROUTES: Routes = [
     },
     {
       path: 'case-details/:caseId',
-      component: CaseDetailsComponent
+      component: CaseDetailsComponent,
+      children: caseViewRouting
     }
 
 ];
 
 export const casesRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);
+

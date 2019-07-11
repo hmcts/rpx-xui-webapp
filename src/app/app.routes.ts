@@ -9,7 +9,7 @@ export const ROUTES: Routes = [
   },
   {
     path: 'cases',
-    //canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
     loadChildren: '../cases/cases.module#CasesModule'
   },
   {

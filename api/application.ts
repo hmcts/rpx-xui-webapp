@@ -1,4 +1,4 @@
-//import * as healthcheck from '@hmcts/nodejs-healthcheck'
+import * as healthcheck from '@hmcts/nodejs-healthcheck'
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
@@ -56,7 +56,7 @@ if (config.proxy) {
     })
 }
 
-/*function healthcheckConfig(msUrl) {
+function healthcheckConfig(msUrl) {
     return healthcheck.web(`${msUrl}/health`, {
         deadline: 6000,
         timeout: 6000,
@@ -72,7 +72,7 @@ const healthchecks = {
     },
 }
 
-healthcheck.addTo(app, healthchecks)*/
+healthcheck.addTo(app, healthchecks)
 
 app.get('/oauth2/callback', auth.authenticateUser)
 app.get('/api/logout', (req, res, next) => {

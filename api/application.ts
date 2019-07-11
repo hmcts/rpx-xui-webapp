@@ -80,7 +80,7 @@ app.get('/api/logout', (req, res, next) => {
 })
 app.get('/api/simple', (req, res, next) => {
   res.send({hello: 'world'})
-});
+})
 
 app.use('/aggregated', routes)
 app.use('/data', routes)

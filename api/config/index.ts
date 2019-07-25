@@ -11,7 +11,7 @@ export const configs = {
     aat,
     local,
     preview,
-    prod
+    prod,
 }
 
 export const configEnv = process ? process.env.XUI_ENV || 'local' : 'local'

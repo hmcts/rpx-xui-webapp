@@ -7,7 +7,7 @@
   },
   "scripts": {
     "nuke": "rm -rf dist",
-    "build": "npm run build:ng && npm run build:node",
+    "build": "npm run build:prod && npm run build:node",
     "pre-push": "npm run lint && npm run build:prod && ng test --code-coverage",
     "start": "node ./dist/rpx-exui/api/server.js",
     "build:node": "cd api && npm run build",

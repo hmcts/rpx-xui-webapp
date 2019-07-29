@@ -13,9 +13,9 @@ export default {
             api: 'https://dm-store-aat.service.core-compute-aat.internal',
         },
         idam: {
-            idamApiUrl: 'https://idam-api.aat.platform.hmcts.net',
+            idamApiUrl: 'https://idam-api.ithc.platform.hmcts.net',
             idamClientID: 'xuiwebapp',
-            idamLoginUrl: 'https://idam-web-public.aat.platform.hmcts.net',
+            idamLoginUrl: 'https://idam-web-public.ithc.platform.hmcts.net',
             indexUrl: '/',
             oauthCallbackUrl: 'oauth2/callback',
         },

@@ -45,9 +45,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     StoreModule.forRoot(reducers, { metaReducers }),
     EffectsModule.forRoot(effects),
     StoreRouterConnectingModule,
-    StoreDevtoolsModule.instrument({
-      logOnly: environment.production
-    }),
+    !environment.production ? StoreDevtoolsModule.instrument({ logOnly: true }) : [],
     SharedModule,
     LoggerModule.forRoot({
       level: NgxLoggerLevel.TRACE,

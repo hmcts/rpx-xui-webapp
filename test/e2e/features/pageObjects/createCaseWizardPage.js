@@ -1,12 +1,10 @@
-BasePage = require('./basePage');
 Button = require('./webdriver-components/button.js');
 
-class CreateCaseWizardPage extends BasePage{
+class CreateCaseWizardPage{
 
 
     constructor() {
-      super();
-      this.header = '.page .heading-h1';
+      this.header = '#content h1';
       this.continueButton = new Button('button[type=submit]');
       this.addnewButton=new Button('#appeal_appealReasons_reasons button:nth-child(2)');
       this.cancelButton = new Button('button[type=Cancel]');

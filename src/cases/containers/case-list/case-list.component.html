@@ -1,0 +1,20 @@
+<exui-page-wrapper [title]="'Case List'">
+    <div class="search-block">
+        <div class="filter-block" >
+            <div _ngcontent-c11="" class="form-group">
+                <div class="container-fluid">
+                    <exui-ccd-connector
+                    [eventsBindings]="caseListFilterEventsBindings"
+                    [store]="store"
+                    [fromFeatureStore]="fromCasesFeature">
+                        <ccd-case-list-filters #ccdComponent
+                            [defaults]="defaults">
+                        </ccd-case-list-filters>
+                    </exui-ccd-connector>
+                </div>
+            </div>
+        </div>
+        <div aria-live="polite" class="results-block" id="search-result" rightbody="" role="region">
+        </div>
+    </div>    
+</exui-page-wrapper>

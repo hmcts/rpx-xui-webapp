@@ -31,11 +31,13 @@ import { CookieModule } from 'ngx-cookie';
 import {SharedModule} from './shared/shared.module';
 import { ConsoleLoggerService } from './services/logger/console-logger.service';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     CookieModule.forRoot(),
     HttpClientModule,
     ProvidersModule.forRoot(),

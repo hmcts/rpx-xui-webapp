@@ -20,7 +20,7 @@ def vault = "rpx"
 def channel   = '#xui-pipeline'
 
 List<LinkedHashMap<String, Object>> secrets = [
-    secret('xui-s2s-token', 'S2S_SECRET'),
+    secret('xui-webapp-s2s-token', 'S2S_SECRET'),
     secret('xui-oauth2-token', 'IDAM_SECRET'),
     secret('test-email', 'TEST_EMAIL'),
     secret('test-password', 'TEST_PASSWORD'),

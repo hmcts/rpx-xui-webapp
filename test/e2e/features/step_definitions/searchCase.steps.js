@@ -1,63 +1,53 @@
-let CaseListPage = require('../pageObjects/caseListPage.js');
-let CreateCaseStartPage = require('../pageObjects/createCaseStartPage.js');
-let CaseCreatedPage = require('../pageObjects/caseCreatedPage.js');
-let SearchCasePage = require('../pageObjects/searchCasePage.js');
+let SearchPage = require('../pageObjects/searchPage.js');
 let TestData = require('../../utils/TestData.js');
+const headerPage = require('../pageObjects/headerPage');
 Dropdown = require('../pageObjects/webdriver-components/dropdown.js');
 TextField = require('../pageObjects/webdriver-components/textField.js');
 CustomError = require('../../utils/errors/custom-error.js');
+const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants');
 
 var {defineSupportCode} = require('cucumber');
-
 defineSupportCode(function ({And, But, Given, Then, When}) {
-  let createCaseStartPage = new CreateCaseStartPage();
-  let caseListPage = new CaseListPage();
-  let searchCasePage= new SearchCasePage();
+  let searchPage= new SearchPage();
 
   When(/^I click on search button$/, async function () {
-    await caseListPage.clickSearchButton();
+    browser.sleep(LONG_DELAY);
+    await headerPage.clickFindCase();
 
     });
 
   Then(/^Search page should be displayed$/, async function () {
-    pausecomp(5000);
-    expect(await new SearchCasePage().amOnPage()).to.be.true
+    browser.sleep(AMAZING_DELAY);
+    expect(await new SearchPage().amOnPage()).to.be.true;
   });
 
-  When(/^I enter mandatory fields jurisdiction,case type and click on start button$/, async function () {
-    pausecomp(5000);
-    await searchCasePage.selectJurisdiction(TestData.jurisdiction);
-    await searchCasePage.selectCaseType(TestData.caseType);
+  When(/^I enter mandatory fields jurisdiction,case type and click on apply button$/, async function () {
+    browser.sleep(AMAZING_DELAY);
+    await searchPage.selectJurisdiction(TestData.jurisdiction);
+    browser.sleep(AMAZING_DELAY);
+    await searchPage.selectCaseType(TestData.caseTypeIndex);
 
+    await searchPage.clickApplyButton();
   });
 
-Then(/^I should navigate to search criteria page$/, async function () {
-  pausecomp(5000);
-  expect(await new SearchCasePage().amOnPage()).to.be.true
-});
-When(/^I select the search criteria details and click on apply button$/, async function (){
-  await searchCasePage.clickApplyButton();
-
-});
 Then(/^Case details should be displayed based on selected search criteria$/, async function () {
-
+  expect(await new SearchPage().amOnPage()).to.be.true;
 });
+
 When(/^I select the search criteria details and click on reset button$/, async function () {
-  await searchCasePage.clickResetButton();
+  browser.sleep(LONG_DELAY);
+  await searchPage.selectJurisdiction(TestData.jurisdiction);
+  browser.sleep(LONG_DELAY);
+  await searchPage.selectCaseType(TestData.caseTypeIndex);
+  browser.sleep(LONG_DELAY);
+  await searchPage.clickResetButton();
 });
 Then(/^search criteria details should be reset$/, async function () {
-  pausecomp(5000);
-  expect(await new SearchCasePage().amOnPage()).to.be.true
+  browser.sleep(LONG_DELAY);;
+  expect(await new SearchPage().amOnPage()).to.be.true
 
 });
 
-  function pausecomp(millis)
-  {
-    var date = new Date();
-    var curDate = null;
-    do { curDate = new Date(); }
-    while(curDate-date < millis);
-  }
 
 });
 

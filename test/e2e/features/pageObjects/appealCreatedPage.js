@@ -1,17 +1,15 @@
-BasePage = require('./basePage');
 Button = require('./webdriver-components/button.js');
 TextField = require('./webdriver-components/textField.js');
 
-class AppealCreatedPage extends BasePage{
+class AppealCreatedPage{
 
   constructor() {
-    super();
     this.header = '.page .heading-h1';
     this.submitButton = new Button('button[type=submit]');
     this.previousButton = new Button('button[type=button]');
     this.cancelButton = new Button('.cancel a');
-    this.eventSummary = '#field-trigger-summary';
-    this.eventDescription = '#field-trigger-description';
+    this.eventSummary = element(by.css("#field-trigger-summary"));
+    this.eventDescription = element(by.css("#field-trigger-description"));
 
   }
   /**
@@ -19,7 +17,8 @@ class AppealCreatedPage extends BasePage{
    * @returns EUIStringField Object
    */
   async enterIntoTextFieldEvent(value){
-    await this.eventSummary.enterText(value);
+    await this.eventSummary.sendKeys(value);
+    //await this.password.sendKeys(password);
   }
 
   /**
@@ -27,7 +26,7 @@ class AppealCreatedPage extends BasePage{
    * @returns EUIStringField Object
    */
   async enterIntoTextFieldEventDes(value){
-    await this.eventDescription.enterText(value);
+    await this.eventDescription.sendKeys(value);
   }
 
   /**

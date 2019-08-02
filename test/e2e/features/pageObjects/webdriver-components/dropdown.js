@@ -82,9 +82,40 @@ class Dropdown {
            break;
         }
     }
-
     if (!found){
       let message = `option '${dropdownOption}' not found in dropdown '${this._dropdownElement.toString()}'. Available options: ${optionsTextArray}`
+      throw new CustomError(message)
+    }
+
+    await optionToSelect.click();
+  }
+
+  async _selectFromDropdownByIndex(dropdownIndex){
+    let optionToSelect;
+    let found = false;
+
+    let options = await this._getOptionElements();
+    let optionsTextArrayTemp = [];
+    let optionsTextArray = [];
+
+    for (const option of options){
+      const optionText = await option.getText();
+      await optionsTextArrayTemp.push(optionText);
+    }
+
+    for (const option of options){
+      const optionText = await option.getText();
+      await optionsTextArray.push(optionText);
+      if (optionText.trim().toLowerCase() === optionsTextArrayTemp[dropdownIndex].trim().toLowerCase()){
+        optionToSelect = option;
+        found = true;
+        break;
+      }
+    }
+
+
+    if (!found){
+      let message = `option '${dropdownIndex}' not found in dropdown '${this._dropdownElement.toString()}'. Available options: ${optionsTextArray}`
       throw new CustomError(message)
     }
 
@@ -163,6 +194,31 @@ class Dropdown {
     }
   }
 
+
+  async selectFromDropdownByIndex(dropdownOption){
+
+    let fail = true;
+    let failmessage = null;
+
+    for (let i = 1; i < 4; i++){
+      try {
+        await this._selectFromDropdownByIndex(dropdownOption);
+        fail = false;
+        break;
+      } catch (e) {
+        failmessage = e;
+        console.log(e);
+        console.log(`Attempt ${i}/3 failed, Retry after wait`);
+        await browser.sleep(2000 * i)
+      }
+    }
+
+    if (fail){
+      throw new CustomError(failmessage, 'failed 3 retry attempts')
+    }
+  }
 }
+
+
 
 module.exports = Dropdown;

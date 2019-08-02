@@ -1,11 +1,9 @@
-BasePage = require('./basePage');
 Dropdown = require('./webdriver-components/dropdown.js')
 Button = require('./webdriver-components/button.js')
 
-class SearchCasePage extends BasePage{
+class SearchPage {
 
   constructor(){
-    super();
     this.header = '#content h1';
     this.jurisdiction = new Dropdown('#s-jurisdiction');
     this.caseType = new Dropdown('#s-case-type');
@@ -29,60 +27,32 @@ class SearchCasePage extends BasePage{
     this.documentsSentToDWPNo='#documentSentToDwp-No';
   }
 
-  /**
-   * Select a Jurisdiction from the dropdown
-   * @param option to select - case insensitive
-   * @returns {Promise<void>}
-   */
   async selectJurisdiction(option){
     await this.jurisdiction.selectFromDropdownByText(option);
   }
 
-  /**
-   * Select Case Type from the dropdown
-   * @param option to select - case insensitive
-   * @returns {Promise<void>}
-   */
   async selectCaseType(option){
-    await this.caseType.selectFromDropdownByText(option)
+    await this.caseType.selectFromDropdownByIndex(option);
   }
-  /**
-   * Click Start button to apply options and start a search case
-   * @returns {Promise<SearchCasePage|*>}
-   */
+
   async clickApplyButton() {
     await this.applyButton.waitForElementToBeClickable();
     await this.applyButton.click();
-
-    //await $(this._submitButton).click();
-    //await browser.waitForAngular;
-    //return new CreateCaseWizardPage;
   }
-  /**
-   * Click Start button to reset options and start a search case
-   * @returns {Promise<SearchCasePage|*>}
-   */
+
   async clickResetButton() {
     await this.resetButton.waitForElementToBeClickable();
     await this.resetButton.click();
-    //await $(this._submitButton).click();
-    //await browser.waitForAngular;
-    //return new CreateCaseWizardPage;
   }
 
   async getPageHeader(){
     return await $(this.header).getText();
   }
 
-  /**
-   * Check we are on CreateCaseStartPage by checking the page header is as expected
-   * @returns Boolean
-   */
   async amOnPage(){
     let header = await this.getPageHeader();
     return header === 'Search'
   }
-
 }
+module.exports = SearchPage;
 
-module.exports = SearchCasePage;

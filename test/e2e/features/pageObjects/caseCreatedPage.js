@@ -1,9 +1,7 @@
-BasePage = require('./basePage');
-class CaseCreatedPage extends BasePage{
+class CaseCreatedPage {
 
   constructor() {
-    super();
-    this.header = '.govuk-width-container > exui-case-details > h1';
+    this.header = element(by.xpath('//h1'));
 
   }
 
@@ -12,9 +10,7 @@ class CaseCreatedPage extends BasePage{
   }
 
   async amOnPage(){
-    let header = await this.getPageHeader();
-
-    return header === 'Case Details Page';
+    return this.header.isDisplayed();
   }
 }
 

@@ -10,7 +10,7 @@
           </ccd-search-filters-wrapper>
         </exui-ccd-connector>
       </div>
-      <div class="results-block">          
+      <div aria-live="polite" class="results-block" id="search-result" rightbody="" role="region">
         <ccd-search-result
           *ngIf="resultView"
           [jurisdiction]="jurisdiction"

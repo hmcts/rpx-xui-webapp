@@ -54,6 +54,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.store.dispatch(new fromCasesFeature.Reset());
     this.fromCasesFeature = fromCasesFeature;
     this.caseSearchFilterEventsBindings = [
       { type: 'onApply', action: 'ApplySearchFilter' },

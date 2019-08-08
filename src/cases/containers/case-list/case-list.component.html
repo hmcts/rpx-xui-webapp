@@ -14,7 +14,19 @@
                 </div>
             </div>
         </div>
-        <div aria-live="polite" class="results-block" id="search-result" rightbody="" role="region">
+        <div class="results-block">
+          <ccd-search-result
+            *ngIf="resultView"
+            [jurisdiction]="jurisdiction"
+            [caseType]="caseType"
+            [caseState]="caseState"
+            [caseFilterFG]="fg"
+            [resultView]="resultView"
+            [paginationMetadata]="paginationMetadata"
+            [metadataFields]="metadataFields"
+            (changePage)="applyChangePage($event)"
+          >
+          </ccd-search-result>
         </div>
-    </div>    
+    </div>
 </exui-page-wrapper>

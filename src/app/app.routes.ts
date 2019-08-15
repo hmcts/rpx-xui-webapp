@@ -12,6 +12,7 @@ export const ROUTES: Routes = [
     canActivate: [AuthGuard],
     loadChildren: '../cases/cases.module#CasesModule'
   },
+  { path: 'case/:caseId', redirectTo: 'cases/case-details/:caseId', pathMatch: 'full' },
   {
     path: '**',
     redirectTo: '/cases',

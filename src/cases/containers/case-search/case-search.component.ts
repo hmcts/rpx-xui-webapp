@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation, OnDestroy } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import * as fromCasesFeature from '../../store';
-import { Jurisdiction, CaseType, CaseState, SearchResultView, PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
+import { Jurisdiction, CaseType, CaseState, SearchResultView, PaginationMetadata, SearchResultViewItem } from '@hmcts/ccd-case-ui-toolkit';
 import { Observable, combineLatest, Subscription } from 'rxjs';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { ActionBindingModel } from '../../../cases/models/create-case-actions.model';
@@ -28,13 +28,14 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   resultView$: Observable<SearchResultView>;
   paginationMetadata$: Observable<PaginationMetadata>;
   metadataFields$: Observable<string[]>;
+
   fg: FormGroup;
 
   jurisdiction: Jurisdiction;
   caseType: CaseType;
   caseState: CaseState;
   resultView: SearchResultView;
-  paginationMetadata: PaginationMetadata;
+  paginationMetadata: PaginationMetadata = new PaginationMetadata();
   metadataFields: string[];
 
   filterSubscription: Subscription;
@@ -43,6 +44,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   resultsArr: any[] = [];
 
   paginationSize: number;
+  page: number;
 
   state: any;
 
@@ -54,9 +56,10 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.page = 1;
     this.fromCasesFeature = fromCasesFeature;
     this.caseSearchFilterEventsBindings = [
-      { type: 'onApply', action: 'ApplySearchFilter' },
+      { type: 'onApply', action: 'FindPaginationMetadata' },
       { type: 'onReset', action: 'Reset' }
     ];
 
@@ -67,12 +70,12 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     this.caseState$ = this.store.pipe(select(fromCasesFeature.searchFilterCaseState));
     this.resultView$ = this.store.pipe(select(fromCasesFeature.searchFilterResultView));
     this.metadataFields$ = this.store.pipe(select(fromCasesFeature.searchFilterMetadataFields));
-
+    this.paginationMetadata$ = this.store.pipe(select(fromCasesFeature.getSearchFilterPaginationMetadata));
     this.filterSubscription = combineLatest([
       this.jurisdiction$,
       this.caseType$,
       this.caseState$,
-      this.metadataFields$
+      this.metadataFields$,
     ]).subscribe(result => {
       this.jurisdiction = {
         ...result[0]
@@ -87,14 +90,19 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
         ...result[3]
       };
     });
-
+    this.paginationMetadata$.subscribe(result => {
+      if (typeof result !== 'undefined'  && typeof result.total_pages_count!== 'undefined') {
+        this.paginationMetadata.total_pages_count = result.total_pages_count;
+        this.paginationMetadata.total_results_count = result.total_results_count;
+        const event = this.getEvent();
+        if ( event != null) {
+          this.store.dispatch(new fromCasesFeature.ApplySearchFilter(event));
+        }
+      }
+    });
     this.resultSubscription = this.resultView$.subscribe(resultView => {
-
-      this.paginationMetadata = new PaginationMetadata();
-      const resultViewResultsLength = resultView.results ? resultView.results.length : 0;
-      this.paginationMetadata.total_results_count = resultViewResultsLength;
-      this.paginationMetadata.total_pages_count = Math.ceil(resultViewResultsLength / this.paginationSize);
       this.resultsArr = resultView.results;
+      console.log(this.paginationMetadata.total_pages_count);
       this.resultView = {
         ...resultView,
         columns: resultView.columns ? resultView.columns : [],
@@ -103,54 +111,44 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
             ...item,
             hydrated_case_fields: null
           };
-        }).slice(0, this.paginationSize) : [],
+        }) : [],
         hasDrafts: resultView.hasDrafts ? resultView.hasDrafts : () => false
       };
     });
-
     this.checkLSAndTrigger();
   }
-
-  checkLSAndTrigger() {
-
+  getEvent() {
+    let event = null;
     const formGroupFromLS = JSON.parse(localStorage.getItem('search-form-group-value'));
     const jurisdictionFromLS = JSON.parse(localStorage.getItem('search-jurisdiction'));
     const caseTypeGroupFromLS = JSON.parse(localStorage.getItem('search-caseType'));
     const metadataFieldsGroupFromLS = JSON.parse(localStorage.getItem('search-metadata-fields'));
 
     if (formGroupFromLS && jurisdictionFromLS && caseTypeGroupFromLS && metadataFieldsGroupFromLS) {
-      const event = {
+      event = {
         selected: {
           jurisdiction: jurisdictionFromLS,
           caseType: caseTypeGroupFromLS,
           metadataFields: metadataFieldsGroupFromLS,
           formGroup: {
             value: formGroupFromLS
-          }
+          },
+          page: this.page
         }
       };
-
-      this.store.dispatch(new fromCasesFeature.ApplySearchFilter(event));
+    }
+    return event;
+  }
+  checkLSAndTrigger() {
+    const event = this.getEvent();
+    if ( event != null) {
+      this.store.dispatch(new fromCasesFeature.FindPaginationMetadata(event));
     }
   }
 
   applyChangePage(event) {
-    if (this.resultsArr.length > 0) {
-      const startingPoint = (event.selected.page - 1) * this.paginationSize;
-      const endingPoint = startingPoint + this.paginationSize;
-      const newArr = this.resultsArr.map(item => {
-        return {
-          ...item,
-          hydrated_case_fields: null
-        };
-      }).slice(startingPoint, endingPoint);
-
-      this.resultView = {
-        ...this.resultView,
-        results: newArr,
-        hasDrafts: this.resultView.hasDrafts
-      };
-    }
+    this.page = event.selected.page;
+    this.checkLSAndTrigger();
   }
 
   ngOnDestroy() {

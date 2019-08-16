@@ -110,7 +110,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
       };
     });
     this.paginationSubscription = this.paginationMetadata$.subscribe(result => {
-      if (typeof result !== 'undefined'  && typeof result.total_pages_count!== 'undefined') {
+      if (typeof result !== 'undefined'  && typeof result.total_pages_count !== 'undefined') {
         this.paginationMetadata.total_pages_count = result.total_pages_count;
         this.paginationMetadata.total_results_count = result.total_results_count;
         const event = this.getEvent();
@@ -178,7 +178,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
     if (this.resultSubscription) {
       this.resultSubscription.unsubscribe();
     }
-    if(this.paginationSubscription) {
+    if (this.paginationSubscription) {
       this.paginationSubscription.unsubscribe();
     }
   }

@@ -7,21 +7,34 @@ import { SearchFilterService } from '../../../cases/services';
 
 @Injectable()
 export class SearchFilterEffects {
+    payload: any;
     constructor(
         private actions$: Actions,
-        private searchService: SearchFilterService
+        private searchService: SearchFilterService,
     ) { }
 
     @Effect()
-    applySearchFilters$ = this.actions$.pipe(
-        ofType(caseSearchActions.APPLY_SEARCH_FILTER),
-        map((action: caseSearchActions.ApplySearchFilter) => action.payload),
+    applyPageMetadata$ = this.actions$.pipe(
+        ofType(caseSearchActions.FIND_PAGINATION_METADATA),
+        map((action: caseSearchActions.FindPaginationMetadata) => action.payload),
         switchMap(payload => {
-            return this.searchService.search(payload).pipe(
-              map((result: Observable<any>) => new caseSearchActions.ApplySearchFilterSuccess(result)),
-              catchError(error => of(new caseSearchActions.ApplySearchFilterFail(error)))
+            this.payload = payload;
+            return this.searchService.findPaginationMetadata(payload).pipe(
+              map(
+                (response) => new caseSearchActions.FindPaginationMetadataSuccess(response.json()) ),
+                catchError(error => of(new caseSearchActions.ApplySearchFilterFail(error)))
             );
           })
     );
 
+    @Effect()
+    applySearchFilters$ = this.actions$.pipe(
+      ofType(caseSearchActions.APPLY_SEARCH_FILTER),
+      map((action: caseSearchActions.ApplySearchFilter) => action.payload),
+      switchMap(payload => {
+          return this.searchService.search(payload).pipe(
+            map((result: Observable<any>) => new caseSearchActions.ApplySearchFilterSuccess(result)),
+            catchError(error => of(new caseSearchActions.ApplySearchFilterFail(error)))
+          );
+      }));
 }

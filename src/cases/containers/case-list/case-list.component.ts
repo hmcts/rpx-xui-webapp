@@ -51,15 +51,14 @@ export class CaseListComponent implements OnInit, OnDestroy {
   savedQueryParams: any;
   page: number;
   paginationSubscription: Subscription;
-  visible: boolean;
   constructor(
     public store: Store<fromCaseList.State>,
     private appConfig: AppConfig
   ) { }
 
   ngOnInit() {
-    this.visible = false;
     this.page = 1;
+    this.resultView = null;
     this.store.dispatch(new fromCasesFeature.Reset());
     this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
     if (this.savedQueryParams) {
@@ -133,16 +132,17 @@ export class CaseListComponent implements OnInit, OnDestroy {
         }) : [],
         hasDrafts: resultView.hasDrafts ? resultView.hasDrafts : () => false
       };
-      this.visible = true;
     });
     this.checkLSAndTrigger();
   }
+
   getEvent() {
     let event = null;
-    const formGroupFromLS = JSON.parse(localStorage.getItem('search-form-group-value'));
-    const jurisdictionFromLS = JSON.parse(localStorage.getItem('search-jurisdiction'));
-    const caseTypeGroupFromLS = JSON.parse(localStorage.getItem('search-caseType'));
-    const metadataFieldsGroupFromLS = JSON.parse(localStorage.getItem('search-metadata-fields'));
+    this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
+    const formGroupFromLS = JSON.parse(localStorage.getItem('workbasket-filter-form-group-value'));
+    const jurisdictionFromLS = { id: this.savedQueryParams.jurisdiction};
+    const caseTypeGroupFromLS = { id: this.savedQueryParams['case-type'] };
+    const metadataFieldsGroupFromLS = ['[CASE_REFERENCE]'];
 
     if (formGroupFromLS && jurisdictionFromLS && caseTypeGroupFromLS && metadataFieldsGroupFromLS) {
       event = {

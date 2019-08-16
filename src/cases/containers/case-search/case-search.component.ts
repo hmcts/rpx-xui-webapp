@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation, OnDestroy } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import * as fromCasesFeature from '../../store';
-import { Jurisdiction, CaseType, CaseState, SearchResultView, PaginationMetadata, SearchResultViewItem } from '@hmcts/ccd-case-ui-toolkit';
+import { Jurisdiction, CaseType, CaseState, SearchResultView, PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
 import { Observable, combineLatest, Subscription } from 'rxjs';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { ActionBindingModel } from '../../../cases/models/create-case-actions.model';
@@ -40,6 +40,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
 
   filterSubscription: Subscription;
   resultSubscription: Subscription;
+  paginationSubscription: Subscription;
 
   resultsArr: any[] = [];
 
@@ -90,7 +91,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
         ...result[3]
       };
     });
-    this.paginationMetadata$.subscribe(result => {
+    this.paginationSubscription = this.paginationMetadata$.subscribe(result => {
       if (typeof result !== 'undefined'  && typeof result.total_pages_count!== 'undefined') {
         this.paginationMetadata.total_pages_count = result.total_pages_count;
         this.paginationMetadata.total_results_count = result.total_results_count;
@@ -157,6 +158,9 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     }
     if (this.resultSubscription) {
       this.resultSubscription.unsubscribe();
+    }
+    if(this.paginationSubscription) {
+      this.paginationSubscription.unsubscribe();
     }
   }
 

@@ -6,6 +6,7 @@ import * as session from 'express-session'
 import * as globalTunnel from 'global-tunnel-ng'
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
+import * as postCodeLookup from './postCodeLookup'
 import { config } from './config'
 import { errorStack } from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
@@ -77,6 +78,9 @@ healthcheck.addTo(app, healthchecks)
 app.get('/oauth2/callback', auth.authenticateUser)
 app.get('/api/logout', (req, res, next) => {
     auth.doLogout(req, res)
+})
+app.get('/api/addresses', (req, res, next) => {
+    postCodeLookup.doLookup(req, res, next)
 })
 
 app.use('/aggregated', routes)

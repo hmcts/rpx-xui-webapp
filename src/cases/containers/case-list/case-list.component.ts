@@ -51,12 +51,14 @@ export class CaseListComponent implements OnInit, OnDestroy {
   savedQueryParams: any;
   page: number;
   paginationSubscription: Subscription;
+  visible: boolean;
   constructor(
     public store: Store<fromCaseList.State>,
     private appConfig: AppConfig
   ) { }
 
   ngOnInit() {
+    this.visible = false;
     this.page = 1;
     this.store.dispatch(new fromCasesFeature.Reset());
     this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
@@ -131,6 +133,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
         }) : [],
         hasDrafts: resultView.hasDrafts ? resultView.hasDrafts : () => false
       };
+      this.visible = true;
     });
     this.checkLSAndTrigger();
   }

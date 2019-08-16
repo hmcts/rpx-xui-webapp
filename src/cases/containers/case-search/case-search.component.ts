@@ -103,7 +103,6 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     });
     this.resultSubscription = this.resultView$.subscribe(resultView => {
       this.resultsArr = resultView.results;
-      console.log(this.paginationMetadata.total_pages_count);
       this.resultView = {
         ...resultView,
         columns: resultView.columns ? resultView.columns : [],

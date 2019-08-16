@@ -3,7 +3,8 @@ import {HmctsGlobalFooterComponent} from './hmcts-global-footer/hmcts-global-foo
 import {HeaderComponent} from './header/header.component';
 import {HmctsGlobalHeaderComponent} from './hmcts-global-header/hmcts-global-header.component';
 import {HmctsPrimaryNavigationComponent} from './hmcts-primary-navigation/hmcts-primary-navigation.component';
-import {PhaseBannerComponent} from './phase-banner/phase-banner.component'
+import {PhaseBannerComponent} from './phase-banner/phase-banner.component';
+
 export const components: any[] = [
   ExuiPageWrapperComponent,
   HmctsGlobalFooterComponent,

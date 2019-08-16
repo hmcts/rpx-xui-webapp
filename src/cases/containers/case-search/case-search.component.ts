@@ -48,6 +48,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   page: number;
 
   state: any;
+  visible: boolean;
 
   constructor(
     public store: Store<fromCasesFeature.State>,
@@ -57,6 +58,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.visible = false;
     this.page = 1;
     this.store.dispatch(new fromCasesFeature.Reset());
     this.fromCasesFeature = fromCasesFeature;
@@ -115,6 +117,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
         }) : [],
         hasDrafts: resultView.hasDrafts ? resultView.hasDrafts : () => false
       };
+      this.visible = true;
     });
     this.checkLSAndTrigger();
   }

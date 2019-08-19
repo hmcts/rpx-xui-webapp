@@ -20,6 +20,10 @@ $govuk-template-image-path: "/assets";
 @import "./print";
 @import "./vendor/prism.scss";
 
+body {
+  margin: 0;
+}
+
 // Bootstrap
 
 .container-fluid {

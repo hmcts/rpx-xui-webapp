@@ -80,7 +80,7 @@ describe('CaseListComponent', () => {
    // componentInstance fixture.detectChanges();
 
   });
-  it('should create', () => {
+  xit('should create', () => {
     // TODO enable when developing component
    // expect(component).toBeTruthy();
   });

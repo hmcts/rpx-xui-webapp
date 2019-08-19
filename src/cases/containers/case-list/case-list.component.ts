@@ -35,7 +35,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
   jurisdiction: Jurisdiction;
   caseType: CaseType;
-  caseState: CaseState;
+  searchResult: CaseState;
   resultView: SearchResultView;
   paginationMetadata: PaginationMetadata = new PaginationMetadata();
   metadataFields: string[];
@@ -102,7 +102,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
       this.caseType = {
         ...result[1]
       };
-      this.caseState = {
+      this.searchResult = {
         ...result[2]
       };
       this.metadataFields = {

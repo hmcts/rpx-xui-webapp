@@ -20,6 +20,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 class MockSortService {
   features = {};
   getFeatureToggle() {}
+  getEditorConfiguration() { }
 }
 describe('CaseListComponent', () => {
   let component: CaseListComponent;

@@ -14,7 +14,7 @@ import { FormGroup } from '@angular/forms';
  * param TBC
  */
 @Component({
-  selector: 'exui-create-case',
+  selector: 'exui-case-list',
   templateUrl: 'case-list.component.html',
   encapsulation: ViewEncapsulation.None,
   styleUrls: ['case-list-filter.component.scss']

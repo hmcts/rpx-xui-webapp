@@ -1,47 +1,51 @@
 import { Injectable } from '@angular/core';
-import { SearchService } from '@hmcts/ccd-case-ui-toolkit';
+import { SearchService, AbstractAppConfig, HttpService, RequestOptionsBuilder } from '@hmcts/ccd-case-ui-toolkit';
 import { Observable } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { isStringOrNumber, getFilterType, sanitiseMetadataFieldName } from '../utils/utils';
+
 
 @Injectable()
 export class SearchFilterService {
 
     constructor(
-        private ccdSearchService: SearchService
-    ) { }
+        private ccdSearchService: SearchService,
+        private appConfig: AbstractAppConfig,
+        private httpService: HttpService,
+        private requestOptionsBuilder: RequestOptionsBuilder    ) { }
 
     metadataFields: string[];
 
     search(payload): Observable<any> {
 
-        const filter = payload.selected;
-
-        let searchParams = {};
-
-        this.metadataFields = filter.metadataFields;
-
-        if (filter.caseState) {
-            searchParams = {
-                ...searchParams,
-                state: filter.caseState.id
-            };
-        }
-
-        if (filter.page) {
-            searchParams = {
-                ...searchParams,
-                page: filter.page
-            };
-        }
-
-        const jurisdictionId = filter.jurisdiction.id;
-        const caseTypeId = filter.caseType.id;
-        const filters = this.getCaseFilterFromFormGroup(filter.formGroup);
-        const caseFilters = filters.caseFilter;
-        const metadataFilters = Object.assign(searchParams, filters.metadataFilter);
+        const { jurisdictionId, caseTypeId, metadataFilters, caseFilters } = this.getParams(payload);
 
         return this.ccdSearchService.search(jurisdictionId, caseTypeId, metadataFilters, caseFilters) as any;
+    }
+
+    private getParams(payload: any) {
+      const filter = payload.selected;
+      let searchParams = {};
+      this.metadataFields = filter.metadataFields;
+      if (filter.caseState) {
+        searchParams = {
+          ...searchParams,
+          state: filter.caseState.id
+        };
+      }
+      if (filter.page) {
+        searchParams = {
+          ...searchParams,
+          page: filter.page
+        };
+      }
+      const jurisdictionId = filter.jurisdiction.id;
+      const caseTypeId = filter.caseType.id;
+      const filters = this.getCaseFilterFromFormGroup(filter.formGroup);
+      const caseFilters = filters.caseFilter;
+      const metadataFilters = Object.assign(searchParams, filters.metadataFilter);
+
+      return { jurisdictionId, caseTypeId, metadataFilters, caseFilters };
     }
 
     private getCaseFilterFromFormGroup(formGroup?: FormGroup): { caseFilter, metadataFilter } {
@@ -73,4 +77,14 @@ export class SearchFilterService {
         }
     }
 
+    public findPaginationMetadata(payload): Observable<any> {
+      const { jurisdictionId, caseTypeId, metadataFilters,  caseFilters } = this.getParams(payload);
+      const url = this.appConfig.getCaseDataUrl()  + `/caseworkers/:uid`
+                                        + `/jurisdictions/${jurisdictionId}`
+                                        + `/case-types/${caseTypeId}`
+                                        + `/cases/pagination_metadata`;
+
+      const options = this.requestOptionsBuilder.buildOptions(metadataFilters, caseFilters);
+      return this.httpService.get(url, options ) as any;
+  }
 }

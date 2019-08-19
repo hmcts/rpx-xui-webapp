@@ -9,14 +9,14 @@ describe('Search Filter Reducer', () => {
 
     it('should set correct object', () => {
       const initialState = fromFilter.initialSearchState;
-      const action = new fromActions.ApplySearchFilter(mockedSearchFilters);
+      const action = new fromActions.ApplySearchFilter({selected: {filter: mockedSearchFilters}});
       const state = fromFilter.reducer(initialState, action);
       expect(state).toBeDefined();
     });
 
     it('should set correct object with caseState', () => {
       const initialState = fromFilter.initialSearchState;
-      const action = new fromActions.ApplySearchFilter(mockedSearchFiltersCaseState);
+      const action = new fromActions.ApplySearchFilter({selected: {filter: mockedSearchFiltersCaseState}});
       const state = fromFilter.reducer(initialState, action);
       expect(state).toBeDefined();
     });

@@ -1,13 +1,14 @@
 import * as filterCaseList from './case-list.reducer';
 import * as fromCases from '../actions/case-list.action';
+import { CaseTypeLite, Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
 
 describe('CaseList Filter Reducer', () => {
     describe('undefined action', () => {
       it('should return the default state', () => {
-        const { initialCaseFilterState } = filterCaseList;
+        const { initialCaselistState } = filterCaseList;
         const action = {} as any;
-        const state = filterCaseList.reducerCaseListFilter(undefined, action);
-        expect(state).toBe(initialCaseFilterState);
+        const state = filterCaseList.caselistReducer(undefined, action);
+        expect(state).toBe(initialCaselistState);
       });
     });
 });
@@ -15,8 +16,8 @@ describe('CaseList Filter Reducer', () => {
 
 describe('[CaseListFilter] Applied', () => {
   it('should set correct object', () => {
-    const { initialCaseFilterState } = filterCaseList;
-    const action = new fromCases.ApplyFilter({
+    const { initialCaselistState } = filterCaseList;
+    const action = new fromCases.ApplyCaselistFilter({
       selected: {
       caseState: {
         id: '1',
@@ -36,24 +37,30 @@ describe('[CaseListFilter] Applied', () => {
     }
     });
 
-    const state = filterCaseList.reducerCaseListFilter(initialCaseFilterState, action);
+    const state = filterCaseList.caselistReducer(initialCaselistState, action);
 
     expect(state.loading).toEqual(true);
     expect(state.loaded).toEqual(false);
-    expect(state.caseState).toEqual({
+    expect(state.filter.caseState).toEqual({
         id: '1',
         name: 'One',
         description: 'One desc'
       });
-    expect(state.jurisdiction).toEqual({
+    expect(state.filter.jurisdiction).toEqual({
         id: '2',
         name: 'Two',
-        description: 'Two desc'
+        description: 'Two desc',
+        caseTypes: [new CaseTypeLite()],
       });
-    expect(state.caseType).toEqual({
+    expect(state.filter.caseType).toEqual({
         id: '3',
         name: 'case type',
-        description: 'Case Type Desc'
+        description: 'Case Type Desc',
+        events: [],
+        states: [],
+        case_fields: [],
+        jurisdiction: new Jurisdiction(),
+        printEnabled: false
       });
   });
 });

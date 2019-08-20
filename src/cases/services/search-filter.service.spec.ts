@@ -52,7 +52,8 @@ describe('SearchFilterService', () => {
                 jurisdiction: JURISDICTION,
                 caseType: CASE_TYPES[0],
                 caseState: CASE_STATE,
-                page: 1
+                page: 1,
+                view: 'SEARCH'
             }
         };
 
@@ -61,7 +62,7 @@ describe('SearchFilterService', () => {
 
         expect(ccdSearchServiceMock.search).toHaveBeenCalledWith(JURISDICTION.id, CASE_TYPE.id, { page: 1, state: CASE_STATE.id }, {
             name: NAME_VALUE
-        });
+        }, 'SEARCH');
 
     });
 
@@ -81,7 +82,8 @@ describe('SearchFilterService', () => {
                 jurisdiction: JURISDICTION,
                 caseType: CASE_TYPES[0],
                 caseState: CASE_STATE,
-                page: 1
+                page: 1,
+                view: 'SEARCH'
             }
         };
 
@@ -90,7 +92,7 @@ describe('SearchFilterService', () => {
         expect(ccdSearchServiceMock.search).toHaveBeenCalledWith(JURISDICTION.id, CASE_TYPE.id, { page: 1, state: CASE_STATE.id }, {
             name: NAME_VALUE,
             'child.childName': 'childValue'
-        });
+        }, 'SEARCH');
 
     });
 
@@ -113,7 +115,8 @@ describe('SearchFilterService', () => {
                 jurisdiction: JURISDICTION,
                 caseType: CASE_TYPES[0],
                 page: 1,
-                metadataFields: ['[META]']
+                metadataFields: ['[META]'],
+                view: 'SEARCH'
             }
         };
 
@@ -121,7 +124,7 @@ describe('SearchFilterService', () => {
 
         expect(ccdSearchServiceMock.search).toHaveBeenCalledWith(JURISDICTION.id, CASE_TYPE.id, { page: 1, meta: NAME_VALUE2 }, {
             name: NAME_VALUE1
-        });
+        }, 'SEARCH');
 
     });
 

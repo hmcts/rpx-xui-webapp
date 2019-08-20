@@ -27,12 +27,18 @@ describe('[CaseListFilter] Applied', () => {
       jurisdiction: {
         id: '2',
         name: 'Two',
-        description: 'Two desc'
+        description: 'Two desc',
+        caseTypes: [],
       } ,
       caseType: {
         id: '3',
         name: 'case type',
-        description: 'Case Type Desc'
+        description: 'Case Type Desc',
+        events: [],
+        states: [],
+        case_fields: [],
+        jurisdiction: null,
+        printEnabled: false
       }
     }
     });
@@ -50,7 +56,7 @@ describe('[CaseListFilter] Applied', () => {
         id: '2',
         name: 'Two',
         description: 'Two desc',
-        caseTypes: [new CaseTypeLite()],
+        caseTypes: [],
       });
     expect(state.filter.caseType).toEqual({
         id: '3',
@@ -59,7 +65,7 @@ describe('[CaseListFilter] Applied', () => {
         events: [],
         states: [],
         case_fields: [],
-        jurisdiction: new Jurisdiction(),
+        jurisdiction: null,
         printEnabled: false
       });
   });

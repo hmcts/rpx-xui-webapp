@@ -22,6 +22,10 @@ $govuk-template-image-path: "/assets";
 
 // Bootstrap
 
+main {
+  font-size: inherit;
+}
+
 .container-fluid {
   padding-right: 15px;
   padding-left: 15px;

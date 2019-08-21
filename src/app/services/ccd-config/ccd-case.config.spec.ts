@@ -3,8 +3,7 @@ import { AppConfig } from './ccd-case.config';
 
 import {AppConfigService} from '../config/configuration.services';
 import {StoreModule} from '@ngrx/store';
-import {HttpClient, HttpClientModule} from '@angular/common/http';
-import {CookieService} from 'ngx-cookie';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 class MockConfigService {
   config;
@@ -22,7 +21,7 @@ describe('AppConfiguration', () => {
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({}),
-        HttpClientModule
+        HttpClientTestingModule
       ],
       providers: [
         AppConfig,

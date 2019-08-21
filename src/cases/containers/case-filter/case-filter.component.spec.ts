@@ -20,14 +20,15 @@ import {
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { RouterTestingModule } from '@angular/router/testing';
-import { HttpClientModule } from '@angular/common/http';
-import {combineReducers, StoreModule} from '@ngrx/store';
+import { combineReducers, StoreModule } from '@ngrx/store';
 import { HttpModule } from '@angular/http';
 import { SharedModule } from '../../../app/shared/shared.module';
 import { AppConfigService } from '../../../app/services/config/configuration.services';
 import { CaseFilterComponent } from './case-filter.component';
-import {reducers} from '../../store/reducers';
+import { reducers } from '../../store/reducers';
 import * as fromCases from '../../store/reducers/';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import * as fromCaseCreate from '../../store/reducers';
 
 class MockSortService {
   features = {};
@@ -43,8 +44,8 @@ describe('Case Filter Component', () => {
       imports: [
         RouterTestingModule,
         CaseUIToolkitModule,
-        HttpClientModule,
-        StoreModule.forRoot({...reducers, cases: combineReducers(fromCases.reducers)}),
+        HttpClientTestingModule,
+        StoreModule.forRoot({ ...reducers, cases: combineReducers(fromCases.reducers) }),
         HttpModule,
         SharedModule,
         SearchFiltersModule,
@@ -92,11 +93,12 @@ describe('Case Filter Component', () => {
     component = fixture.componentInstance;
     component.startButtonText = 'start';
     component.caseCreatFilterBindings = [];
+    component.fromCasesFeature = fromCaseCreate;
     fixture.detectChanges();
   });
 
-  xit('should create', () => {
-    // expect(component).toBeTruthy();
+  it('should create', () => {
+    expect(component).toBeTruthy();
   });
 
 

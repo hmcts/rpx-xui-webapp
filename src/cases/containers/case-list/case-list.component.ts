@@ -59,7 +59,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.page = 1;
     this.resultView = null;
-    this.store.dispatch(new fromCasesFeature.Reset());
     this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
     if (this.savedQueryParams) {
       this.defaults = {
@@ -77,18 +76,18 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
     this.fromCasesFeature = fromCasesFeature;
     this.caseListFilterEventsBindings = [
-      { type: 'onApply', action: 'ApplySearchFilter' },
-      { type: 'onReset', action: 'Reset' }
+      { type: 'onApply', action: 'FindCaselistPaginationMetadata' },
+      { type: 'onReset', action: 'CaseListReset' }
      ];
 
     this.paginationSize = this.appConfig.getPaginationPageSize();
 
-    this.jurisdiction$ = this.store.pipe(select(fromCasesFeature.searchFilterJurisdiction));
-    this.caseType$ = this.store.pipe(select(fromCasesFeature.searchFilterCaseType));
-    this.caseState$ = this.store.pipe(select(fromCasesFeature.searchFilterCaseState));
-    this.resultView$ = this.store.pipe(select(fromCasesFeature.searchFilterResultView));
-    this.metadataFields$ = this.store.pipe(select(fromCasesFeature.searchFilterMetadataFields));
-    this.paginationMetadata$ = this.store.pipe(select(fromCasesFeature.getSearchFilterPaginationMetadata));
+    this.jurisdiction$ = this.store.pipe(select(fromCasesFeature.caselistFilterJurisdiction));
+    this.caseType$ = this.store.pipe(select(fromCasesFeature.caselistFilterCaseType));
+    this.caseState$ = this.store.pipe(select(fromCasesFeature.caselistFilterCaseState));
+    this.resultView$ = this.store.pipe(select(fromCasesFeature.caselistFilterResultView));
+    this.metadataFields$ = this.store.pipe(select(fromCasesFeature.caselistFilterMetadataFields));
+    this.paginationMetadata$ = this.store.pipe(select(fromCasesFeature.getCaselistFilterPaginationMetadata));
 
     this.filterSubscription = combineLatest([
       this.jurisdiction$,
@@ -115,7 +114,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
         this.paginationMetadata.total_results_count = result.total_results_count;
         const event = this.getEvent();
         if ( event != null) {
-          this.store.dispatch(new fromCasesFeature.ApplySearchFilter(event));
+          this.store.dispatch(new fromCasesFeature.ApplyCaselistFilter(event));
         }
       }
     });
@@ -153,7 +152,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
           formGroup: {
             value: formGroupFromLS
           },
-          page: this.page
+          page: this.page,
+          view: 'WORKBASKET'
         }
       };
     }
@@ -162,7 +162,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   checkLSAndTrigger() {
     const event = this.getEvent();
     if ( event != null) {
-      this.store.dispatch(new fromCasesFeature.FindPaginationMetadata(event));
+      this.store.dispatch(new fromCasesFeature.FindCaselistPaginationMetadata(event));
     }
   }
 

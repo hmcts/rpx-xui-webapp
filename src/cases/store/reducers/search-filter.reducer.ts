@@ -64,7 +64,7 @@ export function reducer(
       };
     }
 
-    case fromCases.FIND_PAGINATION_METADATA_SUCCESS: {
+    case fromCases.FIND_SEARCH_PAGINATION_METADATA_SUCCESS: {
       return {
         ...state,
         paginationMetadata: {

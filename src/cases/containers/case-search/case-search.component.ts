@@ -59,10 +59,9 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.page = 1;
     this.resultView = null;
-    this.store.dispatch(new fromCasesFeature.Reset());
     this.fromCasesFeature = fromCasesFeature;
     this.caseSearchFilterEventsBindings = [
-      { type: 'onApply', action: 'FindPaginationMetadata' },
+      { type: 'onApply', action: 'FindSearchPaginationMetadata' },
       { type: 'onReset', action: 'Reset' }
     ];
 
@@ -135,7 +134,8 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
           formGroup: {
             value: formGroupFromLS
           },
-          page: this.page
+          page: this.page,
+          view: 'SEARCH'
         }
       };
     }
@@ -144,7 +144,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   checkLSAndTrigger() {
     const event = this.getEvent();
     if ( event != null) {
-      this.store.dispatch(new fromCasesFeature.FindPaginationMetadata(event));
+      this.store.dispatch(new fromCasesFeature.FindSearchPaginationMetadata(event));
     }
   }
 

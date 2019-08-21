@@ -28,6 +28,7 @@ import { CaseFilterComponent } from './case-filter.component';
 import {reducers} from '../../store/reducers';
 import * as fromCases from '../../store/reducers/';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import * as fromCaseCreate from '../../store/reducers';
 
 class MockSortService {
   features = {};
@@ -92,6 +93,7 @@ describe('Case Filter Component', () => {
     component = fixture.componentInstance;
     component.startButtonText = 'start';
     component.caseCreatFilterBindings = [];
+    component.fromCasesFeature = fromCaseCreate;
     fixture.detectChanges();
   });
 

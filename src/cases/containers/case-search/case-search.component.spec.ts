@@ -7,8 +7,8 @@ import * as fromRoot from '../../../app/store/reducers';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { of } from 'rxjs';
-import { Jurisdiction, CaseType, CaseState, SearchResultView } from '@hmcts/ccd-case-ui-toolkit';
-import { mockedSearchResultPayload, mockedSearchResultResult } from '../../../cases/mock/search-filter.mock';
+import { Jurisdiction, CaseType, CaseState, SearchResultView, PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
+import { mockedSearchResultPayload, mockedSearchResultResult } from '../../mock/search-filter.mock';
 import { ApplySearchFilterSuccess } from '../../store';
 
 describe('CaseSearchComponent', () => {
@@ -22,7 +22,7 @@ describe('CaseSearchComponent', () => {
     getPaginationPageSize: () => 10
   };
 
-  beforeEach((() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
@@ -53,12 +53,13 @@ describe('CaseSearchComponent', () => {
     component.caseType$ = storePipeMock.and.returnValue(of(new CaseType()));
     component.caseState$ = storePipeMock.and.returnValue(of(new CaseState()));
     component.resultView$ = storePipeMock.and.returnValue(of(new SearchResultView()));
+    component.paginationMetadata$ = storePipeMock.and.returnValue(of(new PaginationMetadata()));
     component.metadataFields$ = storePipeMock.and.returnValue(of([]));
     fixture.detectChanges();
-  }));
+  });
 
-  xit('should create', () => {
-    // expect(component).toBeTruthy();
+  it('should create', () => {
+    expect(component).toBeTruthy();
   });
 
 });

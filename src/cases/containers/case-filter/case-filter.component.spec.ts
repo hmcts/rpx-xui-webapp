@@ -20,7 +20,6 @@ import {
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { RouterTestingModule } from '@angular/router/testing';
-import { HttpClientModule } from '@angular/common/http';
 import {combineReducers, StoreModule} from '@ngrx/store';
 import { HttpModule } from '@angular/http';
 import { SharedModule } from '../../../app/shared/shared.module';
@@ -28,6 +27,7 @@ import { AppConfigService } from '../../../app/services/config/configuration.ser
 import { CaseFilterComponent } from './case-filter.component';
 import {reducers} from '../../store/reducers';
 import * as fromCases from '../../store/reducers/';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 class MockSortService {
   features = {};
@@ -43,7 +43,7 @@ describe('Case Filter Component', () => {
       imports: [
         RouterTestingModule,
         CaseUIToolkitModule,
-        HttpClientModule,
+        HttpClientTestingModule,
         StoreModule.forRoot({...reducers, cases: combineReducers(fromCases.reducers)}),
         HttpModule,
         SharedModule,

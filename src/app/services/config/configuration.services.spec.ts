@@ -1,7 +1,7 @@
 import {AppConfigService} from './configuration.services';
 import {TestBed} from '@angular/core/testing';
-import {HttpClientModule} from '@angular/common/http';
 import {StoreModule} from '@ngrx/store';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('Configuration Service', () => {
   let httpClientSpy: { get: jasmine.Spy };
@@ -10,7 +10,7 @@ describe('Configuration Service', () => {
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({}),
-        HttpClientModule
+        HttpClientTestingModule
       ],
       providers: [AppConfigService]
     });

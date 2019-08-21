@@ -59,7 +59,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.page = 1;
     this.resultView = null;
-    // this.store.dispatch(new fromCasesFeature.Reset());
     this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
     if (this.savedQueryParams) {
       this.defaults = {

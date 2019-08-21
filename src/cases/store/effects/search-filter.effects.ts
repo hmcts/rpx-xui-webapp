@@ -15,13 +15,13 @@ export class SearchFilterEffects {
 
     @Effect()
     applyPageMetadata$ = this.actions$.pipe(
-        ofType(caseSearchActions.FIND_PAGINATION_METADATA),
-        map((action: caseSearchActions.FindPaginationMetadata) => action.payload),
+        ofType(caseSearchActions.FIND_SEARCH_PAGINATION_METADATA),
+        map((action: caseSearchActions.FindSearchPaginationMetadata) => action.payload),
         switchMap(payload => {
             this.payload = payload;
             return this.searchService.findPaginationMetadata(payload).pipe(
               map(
-                (response) => new caseSearchActions.FindPaginationMetadataSuccess(response.json()) ),
+                (response) => new caseSearchActions.FindSearchPaginationMetadataSuccess(response.json()) ),
                 catchError(error => of(new caseSearchActions.ApplySearchFilterFail(error)))
             );
           })

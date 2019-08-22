@@ -22,7 +22,7 @@
     "build:docker": "npm run build:prod && docker build -t xui .",
     "lint": "npm run lint:ng && npm run lint:node",
     "test": "cd api && npm run coverage && cd .. && npm run test:ng",
-    "test:ng": "ng test",
+    "test:ng": "ng test --sourceMap=false",
     "lint:ng": "ng lint",
     "e2e": "ng e2e",
     "test:coverage": "echo 'not implemented'",

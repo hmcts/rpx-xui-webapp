@@ -22,6 +22,22 @@ describe('CaseListComponent', () => {
     getPaginationPageSize: () => 10
   };
 
+  let localStore = {};
+  const mockLocalStorage = {
+    getItem: (key: string): string => {
+      return key in localStore ? localStore[key] : null;
+    },
+    setItem: (key: string, value: string) => {
+      localStore[key] = `${value}`;
+    },
+    removeItem: (key: string) => {
+      delete localStore[key];
+    },
+    clear: () => {
+      localStore = {};
+    }
+  };
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -42,7 +58,13 @@ describe('CaseListComponent', () => {
       ]
     }).compileComponents();
 
-    localStorage.setItem('savedQueryParams', JSON.stringify({
+    spyOn(localStorage, 'getItem').and.callFake(mockLocalStorage.getItem);
+    spyOn(localStorage, 'setItem').and.callFake(mockLocalStorage.setItem);
+    spyOn(localStorage, 'removeItem').and.callFake(mockLocalStorage.removeItem);
+    spyOn(localStorage, 'clear').and.callFake(mockLocalStorage.clear);
+
+
+    mockLocalStorage.setItem('savedQueryParams', JSON.stringify({
       jurisdiction_id: JURISDICTION_1.id,
       case_type_id: JURISDICTION_1.caseTypes[0].id,
       state_id: JURISDICTION_1.caseTypes[0].states[0]
@@ -62,10 +84,6 @@ describe('CaseListComponent', () => {
     component.paginationMetadata$ = storePipeMock.and.returnValue(of(new PaginationMetadata()));
     component.metadataFields$ = storePipeMock.and.returnValue(of([]));
     fixture.detectChanges();
-  });
-
-  afterEach(() => {
-    localStorage.removeItem('savedQueryParams');
   });
 
   it('should create', () => {

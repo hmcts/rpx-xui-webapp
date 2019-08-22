@@ -42,7 +42,11 @@ describe('CaseListComponent', () => {
       ]
     }).compileComponents();
 
-    localStorage.setItem('savedQueryParams', '{"jurisdiction": ' + JSON.stringify(JURISDICTION_1) + '}');
+    localStorage.setItem('savedQueryParams', JSON.stringify({
+      jurisdiction_id: JURISDICTION_1.id,
+      case_type_id: JURISDICTION_1.caseTypes[0].id,
+      state_id: JURISDICTION_1.caseTypes[0].states[0]
+    }));
 
     store = TestBed.get(Store);
 

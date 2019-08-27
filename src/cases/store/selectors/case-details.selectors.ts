@@ -4,6 +4,7 @@ import * as fromRoot from '../../../app/store';
 export const getCaseId = createSelector(
   fromRoot.getRouterState,
   (router): string => {
-    return router.state && router.state.params.caseId;
+    console.log(router.state.params);
+    return router.state && router.state.params.cid;
   }
 );

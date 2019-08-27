@@ -1,86 +1,41 @@
+import { State } from './../../../app/store/reducers/index';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import {CaseListComponent} from './case-list.component';
-import {
-  CaseUIToolkitModule, DraftService, AlertService, HttpService, AuthService as CCDAuthService, CasesService,
-  HttpErrorService, AbstractAppConfig, CaseEditWizardGuard, RouterHelperService,
-  DocumentManagementService, PageValidationService, PlaceholderService, SearchService, RequestOptionsBuilder, SearchFiltersModule
-} from '@hmcts/ccd-case-ui-toolkit';
 import {AppConfig} from '../../../app/services/ccd-config/ccd-case.config';
-import {ScrollToService} from '@nicky-lenaers/ngx-scroll-to';
-import {RouterTestingModule} from '@angular/router/testing';
-import {combineReducers, StoreModule} from '@ngrx/store';
-import {SharedModule} from '../../../app/shared/shared.module';
+import { Store} from '@ngrx/store';
 import {AppConfigService} from '../../../app/services/config/configuration.services';
-import {reducers} from '../../store/reducers';
-import * as fromCases from '../../store/reducers/';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { provideMockStore, MockStore } from '@ngrx/store/testing';
 
-class MockSortService {
-  features = {};
-  getFeatureToggle() {}
-  getEditorConfiguration() { }
-}
+
 describe('CaseListComponent', () => {
   let component: CaseListComponent;
   let fixture: ComponentFixture<CaseListComponent>;
-
+  let store: MockStore<State>;
+  const mockService = jasmine.createSpy();
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        CaseUIToolkitModule,
-        HttpClientTestingModule,
-        StoreModule.forRoot({...reducers, cases: combineReducers(fromCases.reducers)}),
-        SharedModule,
-        SearchFiltersModule,
-      ],
       declarations: [ CaseListComponent ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      schemas: [NO_ERRORS_SCHEMA],
       providers: [
-        PlaceholderService,
-        CasesService,
-        CCDAuthService,
-        HttpService,
-        HttpErrorService,
-        AlertService,
-        DraftService,
-        PageValidationService,
-        CaseEditWizardGuard,
-        RouterHelperService,
-        DocumentManagementService,
-        AppConfig,
-        AppConfigService,
-        RequestOptionsBuilder,
-        {
-          provide: SearchService,
-          useValue: {
-            requestOptionsBuilder: RequestOptionsBuilder
-          }
-        },
-        {
-          provide: AbstractAppConfig,
-          useExisting: AppConfig
-        },
         {
           provide: AppConfigService,
-          useClass: MockSortService
+          useClass: mockService
         },
-        ScrollToService
+        {
+          provide: AppConfig,
+          useClass: mockService
+        },
+        provideMockStore(),
       ]
-    })
-    .compileComponents();
-  }));
-
-  beforeEach(() => {
+    });
+    store = TestBed.get(Store);
     fixture = TestBed.createComponent(CaseListComponent);
     component = fixture.componentInstance;
+  }));
 
-  });
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(component).not.toBeUndefined();
   });
-
-
-
 });
+

@@ -30,7 +30,7 @@ export const ROUTES: Routes = [
       children: editorRouting
     },
     {
-      path: 'case-details/:caseId',
+      path: 'case-details/:cid',
       component: CaseDetailsComponent,
       children: caseViewRouting
     }

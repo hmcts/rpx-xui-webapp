@@ -7,7 +7,6 @@ import {AppConfigService} from '../../../app/services/config/configuration.servi
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 
-
 describe('CaseListComponent', () => {
   let component: CaseListComponent;
   let fixture: ComponentFixture<CaseListComponent>;

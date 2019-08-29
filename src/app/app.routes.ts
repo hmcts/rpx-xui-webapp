@@ -14,6 +14,7 @@ export const ROUTES: Routes = [
   },
   { path: 'case/:jurisdiction/:case-type/:caseId', redirectTo: 'cases/case-details/:caseId', pathMatch: 'full' },
   { path: 'case/:caseId', redirectTo: 'cases/case-details/:caseId', pathMatch: 'full' },
+  { path: 'case-details/:caseId', redirectTo: 'cases/case-details/:caseId', pathMatch: 'full' },
   {
     path: '**',
     redirectTo: '/cases',

@@ -7,7 +7,6 @@ import { CaseFilterComponent } from './containers/case-filter/case-filter.compon
 import { CaseSearchComponent } from './containers/case-search/case-search.component';
 import {CasesCreateComponent, CaseProgressComponent} from './containers';
 import {viewerRouting as caseViewRouting, editorRouting, CaseResolver} from '@hmcts/ccd-case-ui-toolkit';
-import {CaseDetailsComponent} from './containers/case-details/case-details.component';
 
 
 export const ROUTES: Routes = [
@@ -36,8 +35,7 @@ export const ROUTES: Routes = [
       },
       runGuardsAndResolvers: 'always',
       children: caseViewRouting,
-    },
-    { path: 'case/:jid/:ctid/:cid', redirectTo: 'case-details/:cid', pathMatch: 'full' },
+    }
 
 ];
 

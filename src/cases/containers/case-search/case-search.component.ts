@@ -97,13 +97,9 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
       };
     });
 
-    this.caseFilterToggleSubscription = this.caseFilterToggle$.subscribe( result => {
-      if ( result) {
-        this.toggleButtonName = 'Hide Filter';
-      } else {
-        this.toggleButtonName = 'Show Filter';
-      }
+    this.caseFilterToggleSubscription = this.caseFilterToggle$.subscribe( (result: boolean) => {
       this.showFilter = result;
+      this.toggleButtonName = this.getToggleButtonName(this.showFilter);
     });
 
     this.paginationSubscription = this.paginationMetadata$.subscribe(result => {
@@ -132,6 +128,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     });
     this.checkLSAndTrigger();
   }
+
   getEvent() {
     let event = null;
     const formGroupFromLS = JSON.parse(localStorage.getItem('search-form-group-value'));
@@ -155,6 +152,11 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     }
     return event;
   }
+
+  getToggleButtonName(showFilter: boolean): string {
+    return showFilter ? 'Hide Filter' : 'Show Filter';
+  }
+
   checkLSAndTrigger() {
     const event = this.getEvent();
     if ( event != null) {

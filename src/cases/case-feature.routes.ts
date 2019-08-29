@@ -5,8 +5,8 @@ import { CaseListComponent } from './containers/case-list/case-list.component';
 import { CaseFilterComponent } from './containers/case-filter/case-filter.component';
 
 import { CaseSearchComponent } from './containers/case-search/case-search.component';
-import {CasesCreateComponent} from './containers';
-import {viewerRouting as caseViewRouting, editorRouting} from '@hmcts/ccd-case-ui-toolkit';
+import {CasesCreateComponent, CaseProgressComponent} from './containers';
+import {viewerRouting as caseViewRouting, editorRouting, CaseResolver} from '@hmcts/ccd-case-ui-toolkit';
 import {CaseDetailsComponent} from './containers/case-details/case-details.component';
 
 
@@ -31,9 +31,13 @@ export const ROUTES: Routes = [
     },
     {
       path: 'case-details/:cid',
-      component: CaseDetailsComponent,
-      children: caseViewRouting
-    }
+      resolve: {
+        case: CaseResolver
+      },
+      runGuardsAndResolvers: 'always',
+      children: caseViewRouting,
+    },
+    { path: 'case/:jid/:ctid/:cid', redirectTo: 'case-details/:cid', pathMatch: 'full' },
 
 ];
 

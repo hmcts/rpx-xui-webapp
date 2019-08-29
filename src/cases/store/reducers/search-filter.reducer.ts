@@ -93,8 +93,6 @@ export function reducer(
       return {
         ...state,
         showFilter: action.payload,
-        loading: true,
-        loaded: false
       };
     }
 

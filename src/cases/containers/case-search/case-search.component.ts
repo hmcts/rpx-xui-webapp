@@ -98,7 +98,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     });
 
     this.caseFilterToggleSubscription = this.caseFilterToggle$.subscribe( result => {
-      if(result){
+      if ( result) {
         this.toggleButtonName = 'Hide Filter';
       } else {
         this.toggleButtonName = 'Show Filter';
@@ -164,7 +164,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
 
   toggleFilter() {
     const toggle = this.showFilter === false;
-    this.store.dispatch(new fromCasesFeature.SearchFilterToggle(toggle))
+    this.store.dispatch(new fromCasesFeature.SearchFilterToggle(toggle));
   }
 
   applyChangePage(event) {
@@ -182,7 +182,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     if (this.paginationSubscription) {
       this.paginationSubscription.unsubscribe();
     }
-    if(this.caseFilterToggleSubscription) {
+    if (this.caseFilterToggleSubscription) {
       this.caseFilterToggleSubscription.unsubscribe();
     }
   }

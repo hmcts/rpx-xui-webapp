@@ -37,4 +37,11 @@ export class SearchFilterEffects {
             catchError(error => of(new caseSearchActions.ApplySearchFilterFail(error)))
           );
       }));
+
+      @Effect()
+      applySearchFilterToggle$ = this.actions$.pipe(
+        ofType(caseSearchActions.SEARCH_FILTER_DISPLAY_TOGGLE),
+        map((action: caseSearchActions.SearchFilterToggle) => new caseSearchActions.SearchFilterToggleSuccess(action.payload)),
+            catchError(error => of(new caseSearchActions.ApplySearchFilterFail(error))));
+
 }

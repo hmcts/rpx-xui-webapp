@@ -28,6 +28,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   resultView$: Observable<SearchResultView>;
   paginationMetadata$: Observable<PaginationMetadata>;
   metadataFields$: Observable<string[]>;
+  caseFilterToggle$: Observable<boolean>;
 
   fg: FormGroup;
 
@@ -41,13 +42,15 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   filterSubscription: Subscription;
   resultSubscription: Subscription;
   paginationSubscription: Subscription;
+  caseFilterToggleSubscription: Subscription;
 
   resultsArr: any[] = [];
 
   paginationSize: number;
   page: number;
-
+  showFilter: boolean;
   state: any;
+  toggleButtonName: string;
 
   constructor(
     public store: Store<fromCasesFeature.State>,
@@ -73,6 +76,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     this.resultView$ = this.store.pipe(select(fromCasesFeature.searchFilterResultView));
     this.metadataFields$ = this.store.pipe(select(fromCasesFeature.searchFilterMetadataFields));
     this.paginationMetadata$ = this.store.pipe(select(fromCasesFeature.getSearchFilterPaginationMetadata));
+    this.caseFilterToggle$ = this.store.pipe(select(fromCasesFeature.getSearchFilterToggle));
     this.filterSubscription = combineLatest([
       this.jurisdiction$,
       this.caseType$,
@@ -92,6 +96,12 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
         ...result[3]
       };
     });
+
+    this.caseFilterToggleSubscription = this.caseFilterToggle$.subscribe( (result: boolean) => {
+      this.showFilter = result;
+      this.toggleButtonName = this.getToggleButtonName(this.showFilter);
+    });
+
     this.paginationSubscription = this.paginationMetadata$.subscribe(result => {
       if (typeof result !== 'undefined'  && typeof result.total_pages_count !== 'undefined') {
         this.paginationMetadata.total_pages_count = result.total_pages_count;
@@ -118,6 +128,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     });
     this.checkLSAndTrigger();
   }
+
   getEvent() {
     let event = null;
     const formGroupFromLS = JSON.parse(localStorage.getItem('search-form-group-value'));
@@ -141,11 +152,21 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     }
     return event;
   }
+
+  getToggleButtonName(showFilter: boolean): string {
+    return showFilter ? 'Hide Filter' : 'Show Filter';
+  }
+
   checkLSAndTrigger() {
     const event = this.getEvent();
     if ( event != null) {
       this.store.dispatch(new fromCasesFeature.FindSearchPaginationMetadata(event));
     }
+  }
+
+  toggleFilter() {
+    const toggle = this.showFilter === false;
+    this.store.dispatch(new fromCasesFeature.SearchFilterToggle(toggle));
   }
 
   applyChangePage(event) {
@@ -162,6 +183,9 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     }
     if (this.paginationSubscription) {
       this.paginationSubscription.unsubscribe();
+    }
+    if (this.caseFilterToggleSubscription) {
+      this.caseFilterToggleSubscription.unsubscribe();
     }
   }
 

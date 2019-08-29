@@ -37,4 +37,10 @@ export class CaseListEffects {
             catchError(error => of(new caselistActions.ApplyCaselistFilterFail(error)))
           );
       }));
+
+      @Effect()
+      applySearchFilterToggle$ = this.actions$.pipe(
+        ofType(caselistActions.CASE_FILTER_DISPLAY_TOGGLE),
+        map((action: caselistActions.CaseFilterToggle) => new caselistActions.CaseFilterToggleSuccess(action.payload)),
+            catchError(error => of(new caselistActions.ApplyCaselistFilterFail(error))));
 }

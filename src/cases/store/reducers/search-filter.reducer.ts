@@ -29,6 +29,7 @@ export interface SearchState {
   filter: SearchStateFilter;
   results: SearchStateResults;
   paginationMetadata: PaginationMetadata;
+  showFilter: boolean;
   loading: boolean;
   loaded: boolean;
 }
@@ -40,8 +41,9 @@ export const initialSearchState: SearchState = {
     total_pages_count: 0,
     total_results_count: 0
   },
+  showFilter: true,
   loading: false,
-  loaded: false,
+  loaded: false
 };
 
 export function reducer(
@@ -87,6 +89,13 @@ export function reducer(
       };
     }
 
+    case fromCases.SEARCH_FILTER_DISPLAY_TOGGLE_SUCCESS: {
+      return {
+        ...state,
+        showFilter: action.payload,
+      };
+    }
+
     case fromCases.RESET:
       return initialSearchState;
   }
@@ -100,3 +109,4 @@ export const getSearchFilterMetadataFields = (state) => state.filter.metadataFie
 export const getSearchFilterResultView = (state) => state.results.resultView;
 export const getSearchFilterPageMetadata = (state) => state.paginationMetadata;
 export const getSearchResultsCurrentPage = (state) => state.filter.page;
+export const getSearchFilterToggleState = (state) => state.showFilter;

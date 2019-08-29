@@ -1,0 +1,16 @@
+<exui-page-wrapper>
+  addadadad 
+  <div *ngIf="caseProgresssInputs.eventId">
+    <exui-ccd-connector
+      *exuiFeatureToggle="'ccdCaseProgresss'"
+      [eventsBindings]="caseProgresssEventsBindings"
+      [store]="store"
+      [fromFeatureStore]="fromCasesFeature">
+      <ccd-case-progress
+        #ccdComponent
+        [case]="caseProgresssInputs.caseId"
+        [event]="caseProgresssInputs.eventId">
+      </ccd-case-progress>
+    </exui-ccd-connector>
+  </div>
+</exui-page-wrapper>

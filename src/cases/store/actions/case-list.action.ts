@@ -9,8 +9,8 @@ export const APPLY_CASELIST_FILTER_FAIL = '[CreateCaselist] Apply Caselist Filte
 export const FIND_CASELIST_PAGINATION_METADATA = '[CreateCaselist] Find caselist pagination metadata';
 export const FIND_CASELIST_PAGINATION_METADATA_SUCCESS = '[CreateCaselist] Find caselist pagination metadata success';
 export const CASELIST_RESULT_PAGE_CHANGE = '[CreateCaselist] Caselist result page change';
-export const CASE_FILTER_DISPLAY_TOGGLE = '[CreateCaseList] toggle search filter';
-export const CASE_FILTER_DISPLAY_TOGGLE_SUCCESS = '[CreateCaseList] toggle search filter success';
+export const CASE_FILTER_DISPLAY_TOGGLE = '[CreateCaseList] toggle caselist filter';
+export const CASE_FILTER_DISPLAY_TOGGLE_SUCCESS = '[CreateCaseList] toggle caselist filter success';
 
 export class CaseListJurisdictionSelected implements Action {
   readonly type = CASELIST_JURISDICTION_SELECTED;

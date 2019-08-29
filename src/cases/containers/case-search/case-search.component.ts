@@ -28,6 +28,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   resultView$: Observable<SearchResultView>;
   paginationMetadata$: Observable<PaginationMetadata>;
   metadataFields$: Observable<string[]>;
+  caseFilterToggle$: Observable<boolean>;
 
   fg: FormGroup;
 
@@ -41,13 +42,15 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   filterSubscription: Subscription;
   resultSubscription: Subscription;
   paginationSubscription: Subscription;
+  caseFilterToggleSubscription: Subscription;
 
   resultsArr: any[] = [];
 
   paginationSize: number;
   page: number;
-
+  showFilter: boolean;
   state: any;
+  toggleButtonName: string;
 
   constructor(
     public store: Store<fromCasesFeature.State>,
@@ -73,6 +76,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     this.resultView$ = this.store.pipe(select(fromCasesFeature.searchFilterResultView));
     this.metadataFields$ = this.store.pipe(select(fromCasesFeature.searchFilterMetadataFields));
     this.paginationMetadata$ = this.store.pipe(select(fromCasesFeature.getSearchFilterPaginationMetadata));
+    this.caseFilterToggle$ = this.store.pipe(select(fromCasesFeature.getSearchFilterToggle));
     this.filterSubscription = combineLatest([
       this.jurisdiction$,
       this.caseType$,
@@ -92,6 +96,16 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
         ...result[3]
       };
     });
+
+    this.caseFilterToggleSubscription = this.caseFilterToggle$.subscribe( result => {
+      if(result){
+        this.toggleButtonName = 'Hide Filter';
+      } else {
+        this.toggleButtonName = 'Show Filter';
+      }
+      this.showFilter = result;
+    });
+
     this.paginationSubscription = this.paginationMetadata$.subscribe(result => {
       if (typeof result !== 'undefined'  && typeof result.total_pages_count !== 'undefined') {
         this.paginationMetadata.total_pages_count = result.total_pages_count;
@@ -148,6 +162,11 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     }
   }
 
+  toggleFilter() {
+    const toggle = this.showFilter === false;
+    this.store.dispatch(new fromCasesFeature.SearchFilterToggle(toggle))
+  }
+
   applyChangePage(event) {
     this.page = event.selected.page;
     this.checkLSAndTrigger();
@@ -162,6 +181,9 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     }
     if (this.paginationSubscription) {
       this.paginationSubscription.unsubscribe();
+    }
+    if(this.caseFilterToggleSubscription) {
+      this.caseFilterToggleSubscription.unsubscribe();
     }
   }
 

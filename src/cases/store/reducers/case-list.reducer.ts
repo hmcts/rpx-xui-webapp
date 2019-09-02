@@ -29,6 +29,7 @@ export interface CaselistState {
   filter: CaselistStateFilter;
   results: CaselistStateResults;
   paginationMetadata: PaginationMetadata;
+  showFilter: boolean;
   loading: boolean;
   loaded: boolean;
 }
@@ -40,6 +41,7 @@ export const initialCaselistState: CaselistState = {
     total_pages_count: 0,
     total_results_count: 0
   },
+  showFilter: true,
   loading: false,
   loaded: false,
 };
@@ -87,6 +89,13 @@ export function caselistReducer(
       };
     }
 
+    case fromCases.CASE_FILTER_DISPLAY_TOGGLE_SUCCESS: {
+      return {
+        ...state,
+        showFilter: action.payload,
+      };
+    }
+
     case fromCases.CASELIST_RESET:
       return initialCaselistState;
   }
@@ -100,3 +109,4 @@ export const getCaselistFilterMetadataFields = (state) => state.filter.metadataF
 export const getCaselistFilterResultView = (state) => state.results.resultView;
 export const getCaselistFilterPageMetadata = (state) => state.paginationMetadata;
 export const getCaselistResultsCurrentPage = (state) => state.filter.page;
+export const getCaselistFilterToggleState = (state) => state.showFilter;

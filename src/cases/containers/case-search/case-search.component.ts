@@ -165,8 +165,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   }
 
   toggleFilter() {
-    const toggle = this.showFilter === false;
-    this.store.dispatch(new fromCasesFeature.SearchFilterToggle(toggle));
+    this.store.dispatch(new fromCasesFeature.SearchFilterToggle(!this.showFilter));
   }
 
   applyChangePage(event) {

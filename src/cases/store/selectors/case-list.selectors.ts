@@ -41,3 +41,8 @@ export const getCaselistCurrentPage = createSelector(
   getCaselistState,
   fromFeature.getCaselistResultsCurrentPage
 );
+
+export const getCaselistFilterToggle = createSelector(
+  getCaselistState,
+  fromFeature.getSearchFilterToggleState
+);

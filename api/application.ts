@@ -89,6 +89,6 @@ app.get('/api/monitoring-tools', (req, res, next) => {
 
 app.use('/aggregated', routes)
 app.use('/data', routes)
-
+app.use('/documents', routes)
 const logger = log4jui.getLogger('Application')
 logger.info(`Started up on ${config.environment || 'local'} using ${config.protocol}`)

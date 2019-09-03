@@ -21,13 +21,33 @@ function setHeaders(req: EnhancedRequest) {
     return headers
 }
 
+function getApiUrl(baseUrl: string): string {
+  let apiUrl = ''
+  switch (baseUrl) {
+    case '/aggregated/':
+      apiUrl = config.services.ccd.componentApi
+      break
+    case '/data/':
+      apiUrl =  config.services.ccd.dataApi
+      break
+    case '/documents/':
+      apiUrl = config.services.documents.api
+      break
+    default:
+      apiUrl = config.services.ccd.componentApi
+      break
+  }
+
+  return apiUrl
+}
+
 export async function get(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
     let url = striptags(req.url)
     url = req.baseUrl  + url
     const headers: any = setHeaders(req)
 
     try {
-        const response = await http.get(`${config.services.ccd.componentApi}${url}`, { headers })
+        const response = await http.get(`${getApiUrl(url)}${url}`, { headers })
 
         res.status(200)
         res.send(response.data)
@@ -40,12 +60,12 @@ export async function get(req: EnhancedRequest, res: express.Response, next: exp
 
 export async function put(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
     let url = striptags(req.url)
-    url = '/data/' + url
+    url = req.baseUrl + url
 
     const headers: any = setHeaders(req)
 
     try {
-        const response = await http.put(`${config.services.ccd.componentApi}${url}`, req.body, { headers })
+        const response = await http.put(`${getApiUrl(url)}${url}`, req.body, { headers })
         res.status(200)
         res.send(response.data)
     } catch (e) {
@@ -56,12 +76,13 @@ export async function put(req: EnhancedRequest, res: express.Response, next: exp
 
 export async function post(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
     let url = striptags(req.url)
-    url = '/data/' + url
+    url = req.baseUrl + url
 
     const headers: any = setHeaders(req)
-
+    console.log(req.body)
+    console.log(headers)
     try {
-        const response = await http.post(`${config.services.ccd.componentApi}${url}`, req.body, { headers })
+        const response = await http.post(`${getApiUrl(url)}${url}`, req.body, { headers })
         res.status(200)
         res.send(response.data)
     } catch (e) {

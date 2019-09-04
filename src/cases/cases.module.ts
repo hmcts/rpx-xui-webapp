@@ -35,7 +35,7 @@ import {HttpModule} from '@angular/http';
 // from containers
 import * as fromContainers from './containers';
 // from components
-// import * as fromComponents from './components';
+import * as fromComponents from './components';
 // from services
 import * as fromServices from './services';
 import {ProvidersModule} from '../app/providers/providers.module';
@@ -57,7 +57,7 @@ import {ProvidersModule} from '../app/providers/providers.module';
     MatDialogModule,
     CaseListFiltersModule
   ],
-  declarations: [...fromContainers.containers],
+  declarations: [...fromComponents.components, ...fromContainers.containers],
   providers: [
     PlaceholderService,
     CasesService,

@@ -83,6 +83,7 @@ export class MonitoringService implements IMonitoringService {
     } else {
       this.http.get('/api/monitoring-tools').subscribe(it => {
         this.config = {
+          // tslint:disable-next-line: no-string-literal
           instrumentationKey: it['key']
         };
         if (!this.appInsights.config) {

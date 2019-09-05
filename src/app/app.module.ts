@@ -34,6 +34,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MonitoringService } from './services/logger/monitoring.service';
 import { CryptoWrapper } from './services/logger/cryptoWrapper';
 import { JwtDecodeWrapper } from './services/logger/jwtDecodeWrapper';
+import { AbstractAppInsights, AppInsightsWrapper } from './services/logger/appInsightsWrapper';
 
 @NgModule({
   declarations: [AppComponent],
@@ -70,7 +71,11 @@ import { JwtDecodeWrapper } from './services/logger/jwtDecodeWrapper';
     JwtDecodeWrapper,
     CryptoWrapper,
     MonitoringService,
-    LoggerService
+    LoggerService,
+    {
+      provide: AbstractAppInsights,
+      useClass: AppInsightsWrapper
+    }
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

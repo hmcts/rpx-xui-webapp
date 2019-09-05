@@ -81,7 +81,7 @@ export class MonitoringService implements IMonitoringService {
     if (this.config && this.config.instrumentationKey) {
       func();
     } else {
-      this.http.get('external/monitoring-tools').subscribe(it => {
+      this.http.get('/api/monitoring-tools').subscribe(it => {
         this.config = {
           instrumentationKey: it['key']
         };

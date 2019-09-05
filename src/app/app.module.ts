@@ -29,9 +29,11 @@ import { ProvidersModule } from './providers/providers.module';
 import { ROUTES } from './app.routes';
 import { CookieModule } from 'ngx-cookie';
 import {SharedModule} from './shared/shared.module';
-import { ConsoleLoggerService } from './services/logger/console-logger.service';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MonitoringService } from './services/logger/monitoring.service';
+import { CryptoWrapper } from './services/logger/cryptoWrapper';
+import { JwtDecodeWrapper } from './services/logger/jwtDecodeWrapper';
 
 @NgModule({
   declarations: [AppComponent],
@@ -65,10 +67,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
       deps: [Store],
       multi: true
     },
-    {
-      provide: LoggerService,
-      useClass: ConsoleLoggerService
-    }
+    JwtDecodeWrapper,
+    CryptoWrapper,
+    MonitoringService,
+    LoggerService
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

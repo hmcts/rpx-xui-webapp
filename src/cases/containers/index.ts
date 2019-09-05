@@ -1,3 +1,4 @@
+import { CaseHomeComponent } from './case-home/case-home.component';
 import {CaseListComponent} from './case-list/case-list.component';
 import {CaseFilterComponent} from './case-filter/case-filter.component';
 import {CaseSearchComponent} from './case-search/case-search.component';
@@ -9,7 +10,8 @@ export const containers: any[] = [
   CasesCreateComponent,
   CaseFilterComponent,
   CaseSearchComponent,
-  CaseDetailsComponent
+  CaseDetailsComponent,
+  CaseHomeComponent
 ];
 
 export * from './case-list/case-list.component';
@@ -17,3 +19,4 @@ export * from './case-create/case-create.component';
 export * from './case-filter/case-filter.component';
 export * from './case-filter/case-filter.component';
 export * from './case-details/case-details.component';
+export * from './case-home/case-home.component';

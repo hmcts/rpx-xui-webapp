@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, Optional, SkipSelf, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
@@ -8,7 +8,6 @@ import { MatDialogModule } from '@angular/material';
 import {
   CaseUIToolkitModule,
   DraftService,
-  AlertService,
   HttpService,
   AuthService as CCDAuthService,
   CasesService,
@@ -23,7 +22,8 @@ import {
   SearchFiltersModule,
   SearchResultModule,
   CreateCaseFiltersModule,
-  CaseListFiltersModule
+  CaseListFiltersModule,
+  AlertService
 } from '@hmcts/ccd-case-ui-toolkit';
 
 import { casesRouting } from './case-feature.routes';
@@ -53,7 +53,6 @@ import {ProvidersModule} from '../app/providers/providers.module';
     SharedModule,
     SearchFiltersModule,
     HttpModule,
-    ProvidersModule,
     MatDialogModule,
     CaseListFiltersModule
   ],
@@ -64,7 +63,6 @@ import {ProvidersModule} from '../app/providers/providers.module';
     CCDAuthService,
     HttpService,
     HttpErrorService,
-    AlertService,
     DraftService,
     PageValidationService,
     CaseEditWizardGuard,
@@ -77,10 +75,27 @@ import {ProvidersModule} from '../app/providers/providers.module';
     },
     ScrollToService,
     ...fromServices.services
-
   ]
 })
 /**
  * Entry point for Cases Module that is also lazy loaded.
  */
-export class CasesModule { }
+export class CasesModule {
+  constructor (@Optional() @SkipSelf() parentModule: CasesModule) {
+    if (parentModule) {
+      throw new Error(
+        'ParentModule is already loaded. Import it in the AppModule only');
+    }
+    console.log('loading module');
+    CasesModule.forRoot();
+  }
+
+  static forRoot(): ModuleWithProviders {
+    return {
+      ngModule: CasesModule,
+      providers: [
+        AlertService
+      ]
+    };
+  }
+}

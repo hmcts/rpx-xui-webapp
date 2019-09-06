@@ -8,7 +8,8 @@
                     [store]="store"
                     [fromFeatureStore]="fromCasesFeature">
                         <ccd-case-list-filters #ccdComponent
-                            [defaults]="defaults">
+                            [defaults]="defaults"
+                            (onApply)="onApply($event)">
                         </ccd-case-list-filters>
                     </exui-ccd-connector>
                 </div>

@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { APP_INITIALIZER, NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { APP_INITIALIZER, NgModule, CUSTOM_ELEMENTS_SCHEMA, ErrorHandler } from '@angular/core';
 import { AppComponent } from './containers/app/app.component';
 import { environment } from '../environments/environment';
 import { HttpClientModule } from '@angular/common/http';
@@ -29,9 +29,13 @@ import { ProvidersModule } from './providers/providers.module';
 import { ROUTES } from './app.routes';
 import { CookieModule } from 'ngx-cookie';
 import {SharedModule} from './shared/shared.module';
-import { ConsoleLoggerService } from './services/logger/console-logger.service';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MonitoringService } from './services/logger/monitoring.service';
+import { CryptoWrapper } from './services/logger/cryptoWrapper';
+import { JwtDecodeWrapper } from './services/logger/jwtDecodeWrapper';
+import { AbstractAppInsights, AppInsightsWrapper } from './services/logger/appInsightsWrapper';
+import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler';
 
 @NgModule({
   declarations: [AppComponent],
@@ -65,9 +69,17 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
       deps: [Store],
       multi: true
     },
+    JwtDecodeWrapper,
+    CryptoWrapper,
+    MonitoringService,
+    LoggerService,
     {
-      provide: LoggerService,
-      useClass: ConsoleLoggerService
+      provide: AbstractAppInsights,
+      useClass: AppInsightsWrapper
+    },
+    {
+      provide: ErrorHandler,
+      useClass: DefaultErrorHandler
     }
   ],
   bootstrap: [AppComponent],

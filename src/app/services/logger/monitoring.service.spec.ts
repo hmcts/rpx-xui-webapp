@@ -1,4 +1,4 @@
-/*import { HttpClient } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { TestBed, inject } from '@angular/core/testing';
 import { MonitoringService, IMonitoringService, MonitorConfig } from './monitoring.service';
 import { Observable, of } from 'rxjs';
@@ -51,4 +51,4 @@ describe('Monitoring service', () => {
         service.logPageView('name', null, [], [], 1);
         expect(mockedHttpClient.get).toHaveBeenCalled();
     });
-});*/
+});

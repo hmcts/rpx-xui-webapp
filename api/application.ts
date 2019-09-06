@@ -83,6 +83,10 @@ app.get('/api/addresses', (req, res, next) => {
     postCodeLookup.doLookup(req, res, next)
 })
 
+app.get('/api/monitoring-tools', (req, res, next) => {
+    res.send({key: config.appInsightsInstrumentationKey})
+})
+
 app.use('/aggregated', routes)
 app.use('/data', routes)
 app.use('/documents', routes)

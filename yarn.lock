@@ -537,6 +537,11 @@
   resolved "https://registry.yarnpkg.com/@sinonjs/text-encoding/-/text-encoding-0.7.1.tgz#8da5c6530915653f3a1f38fd5f101d8c3f8079c5"
   integrity sha512-+iTbntw2IZPb/anVDbypzfQa+ay64MW0Zo8aJ8gZPWMMK6/OubMVb6lUPMagqjOPnmtauXnFCACVl3O7ogjeqQ==
 
+"@types/applicationinsights-js@^1.0.9":
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/@types/applicationinsights-js/-/applicationinsights-js-1.0.9.tgz#791581118068517ecd0bc29fd4590239a577a489"
+  integrity sha512-tf2BBQFIRgaoxkii5Ys4Q2nvhPQ2PFt9FfgDc+xL7+XPi3s4ScqzRuAn8FRBCglnyzVvwEznOtdfqGREzUOkCw==
+
 "@types/body-parser@*":
   version "1.17.0"
   resolved "https://registry.yarnpkg.com/@types/body-parser/-/body-parser-1.17.0.tgz#9f5c9d9bd04bb54be32d5eb9fc0d8c974e6cf58c"
@@ -551,6 +556,11 @@
   integrity sha512-4r8qa0quOvh7lGD0pre62CAb1oni1OO6ecJLGCezTmhQ8Fz50Arx9RUszryR8KlgK6avuSXvviL6yWyViQABOg==
   dependencies:
     "@types/node" "*"
+
+"@types/crypto-js@^3.1.43":
+  version "3.1.43"
+  resolved "https://registry.yarnpkg.com/@types/crypto-js/-/crypto-js-3.1.43.tgz#b859347d6289ba13e347c335a4c9efa63337a748"
+  integrity sha512-EHe/YKctU3IYNBsDmSOPX/7jLHPRlx8WaiDKSY9JCTnJ8XJeM4c0ZJvx+9Gxmr2s2ihI92R+3U/gNL1sq5oRuQ==
 
 "@types/ejs@^2.6.3":
   version "2.6.3"
@@ -1021,6 +1031,11 @@ append-transform@^1.0.0:
   integrity sha512-P009oYkeHyU742iSZJzZZywj4QRJdnTWffaKuJQLablCZ1uz6/cW4yaRgcDaoQ+uwOxxnt0gRUcwfsNP2ri0gw==
   dependencies:
     default-require-extensions "^2.0.0"
+
+applicationinsights-js@^1.0.20:
+  version "1.0.20"
+  resolved "https://registry.yarnpkg.com/applicationinsights-js/-/applicationinsights-js-1.0.20.tgz#e0519a2c043e9b4683d32d327a06c3f18c63d5ca"
+  integrity sha512-vN6fEv2fNPZtw76/mv5OJ44cTP/VzSDahdXVIGnRB5Apnf2/9PIl4IyWpwS9biG53I1sWvkw83RjdrAnsIKoRQ==
 
 aproba@^1.0.3, aproba@^1.1.1:
   version "1.2.0"
@@ -2389,6 +2404,11 @@ crypto-browserify@^3.11.0:
     public-encrypt "^4.0.0"
     randombytes "^2.0.0"
     randomfill "^1.0.3"
+
+crypto-js@^3.1.9-1:
+  version "3.1.9-1"
+  resolved "https://registry.yarnpkg.com/crypto-js/-/crypto-js-3.1.9-1.tgz#fda19e761fc077e01ffbfdc6e9fdfc59e8806cd8"
+  integrity sha1-/aGedh/Ad+Af+/3G6f38WeiAbNg=
 
 crypto-random-string@^1.0.0:
   version "1.0.0"
@@ -5918,12 +5938,13 @@ ngx-cookie@^4.1.2:
   dependencies:
     tslib "^1.9.0"
 
-ngx-logger@^3.3.13:
-  version "3.3.13"
-  resolved "https://registry.yarnpkg.com/ngx-logger/-/ngx-logger-3.3.13.tgz#d5705c114d4b4d29a1495dc4bd02e65ecdab6b3b"
-  integrity sha512-FKoLpcu3SSeufLlfZ4hlKjXgMGXxNTEfYt/mO0ZnBZw8ashmnfFT8g/3K25ZmDt620GUURt7AYLfl36DxBNSrw==
+ngx-logger@^4.0.4:
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/ngx-logger/-/ngx-logger-4.0.4.tgz#2daefe010a193b2d0fc6b3a50b5ed1f7d002d8ae"
+  integrity sha512-Jq74RG0Ki0zB8NWHo6oavtcayhe473x1+hDCT8BEPDv5GQu6w91svRZMhBF9HYm4dZvH/019rr5xVpfzlQy0TA==
   dependencies:
     tslib "^1.9.0"
+    vlq "^1.0.0"
 
 ngx-md@^7.0.0:
   version "7.1.3"
@@ -9030,6 +9051,11 @@ verror@1.10.0, verror@^1.9.0:
     assert-plus "^1.0.0"
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
+
+vlq@^1.0.0:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/vlq/-/vlq-1.0.1.tgz#c003f6e7c0b4c1edd623fd6ee50bbc0d6a1de468"
+  integrity sha512-gQpnTgkubC6hQgdIcRdYGDSDc+SaujOdyesZQMv6JlfQee/9Mp0Qhnys6WxDWvQnL5WZdT7o2Ul187aSt0Rq+w==
 
 vm-browserify@^1.0.1:
   version "1.1.0"

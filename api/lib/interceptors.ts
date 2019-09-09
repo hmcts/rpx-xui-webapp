@@ -29,6 +29,13 @@ export function successInterceptor(response) {
     const url = shorten(response.config.url, config.maxLogLine)
 
     logger.info(`Success on ${response.config.method.toUpperCase()} to ${url} (${response.duration})`)
+    logger.trackRequest({
+        duration: response.duration,
+        name: `Service ${response.config.method.toUpperCase()} call`,
+        resultCode: response.status,
+        success: true,
+        url: response.config.url,
+    })
     return response
 }
 
@@ -49,6 +56,14 @@ export function errorInterceptor(error) {
         logger.error(`Error on ${error.config.method.toUpperCase()} to ${url} in (${error.duration}) - ${error} \n
         ${JSON.stringify(data)}`)
     }
+
+    logger.trackRequest({
+        duration: error.duration,
+        name: `Service ${error.config.method.toUpperCase()} call`,
+        resultCode: error.status,
+        success: true,
+        url: error.config.url,
+    })
 
     errorStack.push(['request', JSON.parse(stringify(error.request))])
     errorStack.push(['response', JSON.parse(stringify(error.response))])

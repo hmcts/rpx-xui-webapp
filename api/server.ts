@@ -2,6 +2,7 @@ import { app } from './application'
 
 import * as ejs from 'ejs'
 import * as express from 'express'
+import { appInsights } from 'lib/appInsights'
 import * as path from 'path'
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
@@ -26,7 +27,7 @@ app.use('/*', (req, res) => {
         res,
     })
 })
-
+app.use(appInsights)
 app.listen(process.env.PORT || 3000, () => {
     console.log('Server listening on port 3000!')
 })

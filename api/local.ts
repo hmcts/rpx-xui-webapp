@@ -1,5 +1,5 @@
-import { appInsights } from 'lib/appInsights'
 import { app } from './application'
+import { appInsights } from './lib/appInsights'
 
 app.use(appInsights)
 

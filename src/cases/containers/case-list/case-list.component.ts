@@ -48,7 +48,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   resultsArr: any[] = [];
 
   paginationSize: number;
-
+  selected: any;
   showFilter: boolean;
   toggleButtonName: string;
   state: any;
@@ -120,6 +120,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
     });
 
     this.paginationSubscription = this.paginationMetadata$.subscribe(result => {
+      console.log(result);
       if (typeof result !== 'undefined'  && typeof result.total_pages_count !== 'undefined') {
         this.paginationMetadata.total_pages_count = result.total_pages_count;
         this.paginationMetadata.total_results_count = result.total_results_count;
@@ -148,17 +149,30 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
   getEvent() {
     let event = null;
-    this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
-    const formGroupFromLS = JSON.parse(localStorage.getItem('workbasket-filter-form-group-value'));
-    const jurisdictionFromLS = { id: this.savedQueryParams.jurisdiction};
-    const caseTypeGroupFromLS = { id: this.savedQueryParams['case-type'] };
+    let formGroupFromLS = null;
+    let jurisdictionFromLS = null;
+    let caseStateGroupFromLS = null;
+    let caseTypeGroupFromLS = null;
+    console.log(this.selected)
+    if (typeof this.selected !== 'undefined' && this.selected !== null ) {
+      formGroupFromLS = this.selected.formGroup.value;
+      jurisdictionFromLS = { id: this.selected.jurisdiction.id};
+      caseTypeGroupFromLS = { id: this.selected.caseType.id };
+      caseStateGroupFromLS = { id: this.selected.caseState.id };
+    } else {
+      this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
+      formGroupFromLS = JSON.parse(localStorage.getItem('workbasket-filter-form-group-value'));
+      jurisdictionFromLS = { id: this.savedQueryParams.jurisdiction};
+      caseTypeGroupFromLS = { id: this.savedQueryParams['case-type'] };
+      caseStateGroupFromLS = { id: this.savedQueryParams['case-state'] };
+    }
     const metadataFieldsGroupFromLS = ['[CASE_REFERENCE]'];
-
-    if (formGroupFromLS && jurisdictionFromLS && caseTypeGroupFromLS && metadataFieldsGroupFromLS) {
+    if (formGroupFromLS && jurisdictionFromLS && caseTypeGroupFromLS && metadataFieldsGroupFromLS && caseStateGroupFromLS) {
       event = {
         selected: {
           jurisdiction: jurisdictionFromLS,
           caseType: caseTypeGroupFromLS,
+          caseState: caseStateGroupFromLS,
           metadataFields: metadataFieldsGroupFromLS,
           formGroup: {
             value: formGroupFromLS
@@ -184,6 +198,12 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
   applyChangePage(event) {
     this.page = event.selected.page;
+    this.checkLSAndTrigger();
+  }
+
+  applyFilter(event) {
+    this.page = event.selected.page;
+    this.selected = event.selected;
     this.checkLSAndTrigger();
   }
 

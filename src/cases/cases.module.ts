@@ -82,11 +82,6 @@ import {ProvidersModule} from '../app/providers/providers.module';
  */
 export class CasesModule {
   constructor (@Optional() @SkipSelf() parentModule: CasesModule) {
-    if (parentModule) {
-      throw new Error(
-        'ParentModule is already loaded. Import it in the AppModule only');
-    }
-    console.log('loading module');
     CasesModule.forRoot();
   }
 

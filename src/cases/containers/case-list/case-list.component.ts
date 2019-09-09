@@ -120,7 +120,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
     });
 
     this.paginationSubscription = this.paginationMetadata$.subscribe(result => {
-      console.log(result);
       if (typeof result !== 'undefined'  && typeof result.total_pages_count !== 'undefined') {
         this.paginationMetadata.total_pages_count = result.total_pages_count;
         this.paginationMetadata.total_results_count = result.total_results_count;
@@ -153,7 +152,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
     let jurisdictionFromLS = null;
     let caseStateGroupFromLS = null;
     let caseTypeGroupFromLS = null;
-    console.log(this.selected)
     if (typeof this.selected !== 'undefined' && this.selected !== null ) {
       formGroupFromLS = this.selected.formGroup.value;
       jurisdictionFromLS = { id: this.selected.jurisdiction.id};

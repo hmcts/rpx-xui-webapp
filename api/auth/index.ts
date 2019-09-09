@@ -13,7 +13,6 @@ export function doLogout(req, res, status = 302) {
     res.clearCookie(cookieToken)
     res.clearCookie(cookieUserId)
     req.session.user = null
-    delete req.session.auth
     req.session.save(() => {
         res.redirect(status, req.query.redirect || '/')
     })

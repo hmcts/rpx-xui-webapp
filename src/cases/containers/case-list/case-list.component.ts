@@ -155,37 +155,43 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
   getEvent() {
     let event = null;
+    let formGroupFromLS = null;
+    let jurisdictionFromLS = null;
+    let caseStateGroupFromLS = null;
+    let caseTypeGroupFromLS = null;
     if (this.selected) {
-      const formGroupFromLS = this.selected.formGroup.value;
-      const jurisdictionFromLS = { id: this.selected.jurisdiction.id};
-      const caseTypeGroupFromLS = { id: this.selected.caseType.id };
-      const metadataFieldsGroupFromLS = ['[CASE_REFERENCE]'];
-
-      if (formGroupFromLS && jurisdictionFromLS && caseTypeGroupFromLS && metadataFieldsGroupFromLS) {
-        event = {
-          selected: {
-            jurisdiction: jurisdictionFromLS,
-            caseType: caseTypeGroupFromLS,
-            metadataFields: metadataFieldsGroupFromLS,
-            formGroup: {
-              value: formGroupFromLS
-            },
-            page: this.page,
-            view: 'WORKBASKET'
-          }
-        };
-      }
+      formGroupFromLS = this.selected.formGroup.value;
+      jurisdictionFromLS = { id: this.selected.jurisdiction.id};
+      caseTypeGroupFromLS = { id: this.selected.caseType.id };
+      caseStateGroupFromLS = { id: this.selected.caseState.id };
+    } else {
+      this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
+      formGroupFromLS = JSON.parse(localStorage.getItem('workbasket-filter-form-group-value'));
+      jurisdictionFromLS = { id: this.savedQueryParams.jurisdiction};
+      caseTypeGroupFromLS = { id: this.savedQueryParams['case-type'] };
+      caseStateGroupFromLS = { id: this.savedQueryParams['case-state'] };
+    }
+    const metadataFieldsGroupFromLS = ['[CASE_REFERENCE]'];
+    if (formGroupFromLS && jurisdictionFromLS && caseTypeGroupFromLS && metadataFieldsGroupFromLS && caseStateGroupFromLS) {
+      event = {
+        selected: {
+          jurisdiction: jurisdictionFromLS,
+          caseType: caseTypeGroupFromLS,
+          caseState: caseStateGroupFromLS,
+          metadataFields: metadataFieldsGroupFromLS,
+          formGroup: {
+            value: formGroupFromLS
+          },
+          page: this.page,
+          view: 'WORKBASKET'
+        }
+      };
     }
     return event;
   }
 
   getToggleButtonName(showFilter: boolean): string {
     return showFilter ? 'Hide Filter' : 'Show Filter';
-  }
-
-  onApply($event) {
-    this.selected = $event.selected;
-    this.checkLSAndTrigger();
   }
 
   checkLSAndTrigger() {
@@ -197,6 +203,12 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
   applyChangePage(event) {
     this.page = event.selected.page;
+    this.checkLSAndTrigger();
+  }
+
+  applyFilter(event) {
+    this.page = event.selected.page;
+    this.selected = event.selected;
     this.checkLSAndTrigger();
   }
 

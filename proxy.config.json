@@ -10,7 +10,7 @@
     "logLevel": "debug"
   },
   "/documents/*": {
-    "target": "http://localhost:3001",
+    "target": "http://localhost:3001/documents/",
     "secure": false,
     "logLevel": "debug"
   },

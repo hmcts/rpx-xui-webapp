@@ -21,10 +21,10 @@ export class AlertComponent implements OnDestroy {
   constructor(private alertService: AlertService, private router: Router) {
     this.alertMessageObservable = this.alertService.alerts.pipe(select( alert => alert));
     this.routeSubscription = this.router.events.subscribe((val) => this.message = '');
-    this.alertMessageSubscription = this.alertMessageObservable.subscribe(o => {
-      if (o) {
-        this.message = o.message;
-        this.level = o.level;
+    this.alertMessageSubscription = this.alertMessageObservable.subscribe(alert => {
+      if (alert) {
+        this.message = alert.message;
+        this.level = alert.level;
       }
     });
   }

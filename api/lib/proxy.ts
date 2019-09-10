@@ -1,7 +1,4 @@
 import * as express from 'express'
-const FormData = require('form-data')
-import * as formidable from 'formidable'
-import * as fs from 'fs'
 import * as striptags from 'striptags'
 import { http } from '.'
 import { config } from '../config'
@@ -92,42 +89,4 @@ export async function post(req: EnhancedRequest, res: express.Response, next: ex
         res.status(e.response.status)
         res.send(e.response.data)
     }
-}
-
-export async function postDocuments(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
-  const url = striptags(req.url)
-
-  try {
-
-    const form = new formidable.IncomingForm()
-    let headers: any = setHeaders(req)
-    const formData = new FormData()
-    const requestUrl = `${getApiUrl(url)}${url}`
-
-    await form.parse(req, async (err, fields, files)  => {
-
-      if (err) {
-        console.error('Error', err)
-        throw err
-      }
-
-      Object.keys(files).forEach( field => {
-        const file = files[field]
-        formData.append(field, fs.createReadStream(file.path), {type: file.type, filename: file.name})
-      })
-
-      Object.keys(fields).forEach( field => {
-        formData.append(field, fields[field])
-      })
-
-      headers = {...headers, ...formData.getHeaders()}
-
-      const response = await http.post(requestUrl, formData, { headers })
-      res.status(200).send(response.data)
-    })
-
-  } catch (e) {
-    res.status(e.response.status)
-    res.send(e.response.data)
-  }
 }

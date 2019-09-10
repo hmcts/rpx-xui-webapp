@@ -66,8 +66,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
     if (this.savedQueryParams) {
       this.defaults = {
-        jurisdiction_id: this.savedQueryParams.jurisdiction_id,
-        case_type_id: this.savedQueryParams.case_type_id,
+        jurisdiction_id: this.savedQueryParams.jurisdiction,
+        case_type_id: this.savedQueryParams['case-type'],
         state_id: this.savedQueryParams['case-state']
       };
     } else {

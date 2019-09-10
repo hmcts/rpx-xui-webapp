@@ -2,8 +2,8 @@ import { app } from './application'
 
 import * as ejs from 'ejs'
 import * as express from 'express'
-import { appInsights } from 'lib/appInsights'
 import * as path from 'path'
+import { appInsights } from './lib/appInsights'
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 

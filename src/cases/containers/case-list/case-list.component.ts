@@ -7,6 +7,7 @@ import { Store, select } from '@ngrx/store';
 import { Observable, Subscription, combineLatest } from 'rxjs';
 import { Jurisdiction, CaseType, CaseState, SearchResultView, PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
 import { FormGroup } from '@angular/forms';
+import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
 
 /**
  * Entry component wrapper for Case List
@@ -48,7 +49,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   resultsArr: any[] = [];
 
   paginationSize: number;
-
+  selected: any;
   showFilter: boolean;
   toggleButtonName: string;
   state: any;
@@ -57,7 +58,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
   paginationSubscription: Subscription;
   constructor(
     public store: Store<fromCaseList.State>,
-    private appConfig: AppConfig
+    private appConfig: AppConfig,
+    private definitionsService: DefinitionsService,
   ) { }
 
   ngOnInit() {
@@ -66,16 +68,21 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
     if (this.savedQueryParams) {
       this.defaults = {
-        jurisdiction_id: this.savedQueryParams.jurisdiction_id,
-        case_type_id: this.savedQueryParams.case_type_id,
+        jurisdiction_id: this.savedQueryParams.jurisdiction,
+        case_type_id: this.savedQueryParams['case-type'],
         state_id: this.savedQueryParams['case-state']
       };
     } else {
-      this.defaults = {
-        jurisdiction_id: '',
-        case_type_id: '',
-        state_id: ''
-      };
+      this.definitionsService.getJurisdictions('read')
+      .subscribe(jurisdictions => {
+        if (jurisdictions[0] && jurisdictions[0].id && jurisdictions[0].caseTypes[0] && jurisdictions[0].caseTypes[0].states[0]) {
+          this.defaults = {
+            jurisdiction_id: jurisdictions[0].id,
+            case_type_id: jurisdictions[0].caseTypes[0].id,
+            state_id: jurisdictions[0].caseTypes[0].states[0].id
+          };
+        }
+      });
     }
 
     this.fromCasesFeature = fromCasesFeature;
@@ -148,17 +155,29 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
   getEvent() {
     let event = null;
-    this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
-    const formGroupFromLS = JSON.parse(localStorage.getItem('workbasket-filter-form-group-value'));
-    const jurisdictionFromLS = { id: this.savedQueryParams.jurisdiction};
-    const caseTypeGroupFromLS = { id: this.savedQueryParams['case-type'] };
+    let formGroupFromLS = null;
+    let jurisdictionFromLS = null;
+    let caseStateGroupFromLS = null;
+    let caseTypeGroupFromLS = null;
+    if (this.selected) {
+      formGroupFromLS = this.selected.formGroup.value;
+      jurisdictionFromLS = { id: this.selected.jurisdiction.id};
+      caseTypeGroupFromLS = { id: this.selected.caseType.id };
+      caseStateGroupFromLS = { id: this.selected.caseState.id };
+    } else if (this.savedQueryParams) {
+      this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
+      formGroupFromLS = JSON.parse(localStorage.getItem('workbasket-filter-form-group-value'));
+      jurisdictionFromLS = { id: this.savedQueryParams.jurisdiction};
+      caseTypeGroupFromLS = { id: this.savedQueryParams['case-type'] };
+      caseStateGroupFromLS = { id: this.savedQueryParams['case-state'] };
+    }
     const metadataFieldsGroupFromLS = ['[CASE_REFERENCE]'];
-
-    if (formGroupFromLS && jurisdictionFromLS && caseTypeGroupFromLS && metadataFieldsGroupFromLS) {
+    if (formGroupFromLS && jurisdictionFromLS && caseTypeGroupFromLS && metadataFieldsGroupFromLS && caseStateGroupFromLS) {
       event = {
         selected: {
           jurisdiction: jurisdictionFromLS,
           caseType: caseTypeGroupFromLS,
+          caseState: caseStateGroupFromLS,
           metadataFields: metadataFieldsGroupFromLS,
           formGroup: {
             value: formGroupFromLS
@@ -184,6 +203,12 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
   applyChangePage(event) {
     this.page = event.selected.page;
+    this.checkLSAndTrigger();
+  }
+
+  applyFilter(event) {
+    this.page = event.selected.page;
+    this.selected = event.selected;
     this.checkLSAndTrigger();
   }
 

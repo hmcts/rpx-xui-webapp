@@ -6,6 +6,8 @@ import * as fromAppDirectives from '../directives';
 
 import {RouterModule} from '@angular/router';
 import {CommonModule} from '@angular/common';
+import { HealthCheckGuard } from './guards/health-check.guard';
+import { HealthCheckService } from './services/health-check.service';
 
 /**
  * Shared Module
@@ -23,6 +25,10 @@ import {CommonModule} from '@angular/common';
     ...fromAppComponents.components,
     ...fromAppContainers.containers,
     ...fromAppDirectives.directives
+  ],
+  providers: [
+    HealthCheckGuard,
+    HealthCheckService
   ],
 })
 export class SharedModule {}

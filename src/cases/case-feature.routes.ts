@@ -1,3 +1,4 @@
+import { CaseHomeComponent } from './containers/case-home/case-home.component';
 // routes
 import { RouterModule, Routes } from '@angular/router';
 import { ModuleWithProviders } from '@angular/core';
@@ -12,30 +13,37 @@ import {CaseDetailsComponent} from './containers/case-details/case-details.compo
 export const ROUTES: Routes = [
     {
       path: '',
-      component: CaseListComponent,
+      component: CaseHomeComponent,
+      children: [
+        {
+          path: '',
+          component: CaseListComponent,
+        },
+        {
+          path: 'case-filter',
+          component: CaseFilterComponent,
+        },
+        {
+          path: 'case-create',
+          component: CasesCreateComponent,
+          children: editorRouting
+        },
+        {
+          path: 'case-search',
+          component: CaseSearchComponent,
+          children: editorRouting
+        },
+        {
+          path: 'case-details/:cid',
+          resolve: {
+            case: CaseResolver
+          },
+          runGuardsAndResolvers: 'always',
+          children: caseViewRouting,
+        }
+      ]
     },
-    {
-      path: 'case-filter',
-      component: CaseFilterComponent,
-    },
-    {
-      path: 'case-create',
-      component: CasesCreateComponent,
-      children: editorRouting
-    },
-    {
-      path: 'case-search',
-      component: CaseSearchComponent,
-      children: editorRouting
-    },
-    {
-      path: 'case-details/:cid',
-      resolve: {
-        case: CaseResolver
-      },
-      runGuardsAndResolvers: 'always',
-      children: caseViewRouting,
-    }
+
 
 ];
 

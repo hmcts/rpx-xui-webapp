@@ -2,6 +2,7 @@ import * as log4js from 'log4js'
 import { config } from '../config'
 import * as errorStack from '../lib/errorStack'
 import { JUILogger } from '../lib/models'
+import { client } from './appInsights'
 
 import { isReqResSet, request } from './middleware/responseRequest'
 
@@ -29,6 +30,7 @@ export function getLogger(category: string): JUILogger {
         debug,
         error,
         info,
+        trackRequest,
         warn,
     }
 }
@@ -64,6 +66,12 @@ function debug(...messages: any[]) {
     const fullMessage = messages.join(' ')
 
     this._logger.debug(prepareMessage(fullMessage))
+}
+
+function trackRequest(obj: any) {
+    if (client) {
+        client.trackRequest(obj)
+    }
 }
 
 function error(...messages: any[]) {

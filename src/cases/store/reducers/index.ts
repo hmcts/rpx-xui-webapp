@@ -7,13 +7,13 @@ import * as fromCaseListFilters from './case-list.reducer';
 export interface State {
   caseCreate: fromCaseCreate.CasesState;
   caseSearch: fromCaseSearchFilters.SearchState;
-  caseList: fromCaseListFilters.CaseFilterState;
+  caseList: fromCaseListFilters.CaselistState;
 }
 
 export const reducers: ActionReducerMap<State> = {
   caseCreate: fromCaseCreate.reducerCreateCase,
   caseSearch: fromCaseSearchFilters.reducer,
-  caseList: fromCaseListFilters.reducerCaseListFilter
+  caseList: fromCaseListFilters.caselistReducer
 };
 
 export const getCaseFeatureState = createFeatureSelector<State>(

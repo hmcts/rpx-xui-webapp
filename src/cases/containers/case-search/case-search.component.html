@@ -1,6 +1,6 @@
 <exui-page-wrapper [title]="'Search'">
     <div class="search-block">
-      <div class="filter-block">
+      <div class="hmcts-filter-layout__filter" [hidden]="!showFilter" >
         <exui-ccd-connector
           [eventsBindings]="caseSearchFilterEventsBindings"
           [store]="store"
@@ -10,12 +10,20 @@
           </ccd-search-filters-wrapper>
         </exui-ccd-connector>
       </div>
-      <div class="results-block">          
+
+      <div class="hmcts-filter-layout__content">
+        <div class="hmcts-action-bar">
+          <div class="hmcts-action-bar__filter">
+            <button class="govuk-button hmcts-button--secondary" (click) = "toggleFilter()" type="button"  aria-haspopup="true" aria-expanded="false">
+              {{toggleButtonName}}
+            </button>
+          </div>
+        </div>
         <ccd-search-result
           *ngIf="resultView"
           [jurisdiction]="jurisdiction"
           [caseType]="caseType"
-          [caseState]="caseState"
+          [caseState]=""
           [caseFilterFG]="fg"
           [resultView]="resultView"
           [paginationMetadata]="paginationMetadata"

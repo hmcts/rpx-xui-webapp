@@ -5,10 +5,9 @@ import { CaseListComponent } from './containers/case-list/case-list.component';
 import { CaseFilterComponent } from './containers/case-filter/case-filter.component';
 
 import { CaseSearchComponent } from './containers/case-search/case-search.component';
-import {CasesCreateComponent} from './containers';
-import {editorRouting} from '@hmcts/ccd-case-ui-toolkit';
+import {CasesCreateComponent } from './containers';
+import {viewerRouting as caseViewRouting, editorRouting, CaseResolver} from '@hmcts/ccd-case-ui-toolkit';
 import {CaseDetailsComponent} from './containers/case-details/case-details.component';
-
 
 export const ROUTES: Routes = [
     {
@@ -30,10 +29,15 @@ export const ROUTES: Routes = [
       children: editorRouting
     },
     {
-      path: 'case-details/:caseId',
-      component: CaseDetailsComponent
+      path: 'case-details/:cid',
+      resolve: {
+        case: CaseResolver
+      },
+      runGuardsAndResolvers: 'always',
+      children: caseViewRouting,
     }
 
 ];
 
 export const casesRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);
+

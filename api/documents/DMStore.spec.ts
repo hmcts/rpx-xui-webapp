@@ -1,5 +1,6 @@
 import * as chai from 'chai'
 import {expect} from 'chai'
+import {Fields, File, Files} from 'formidable'
 import 'mocha'
 import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
@@ -72,22 +73,30 @@ describe('DMStore', () => {
         })
     })
 
-    /*describe('postDocument()', () => {
+    describe('postDocument()', () => {
 
-        const documentId = 'Document Id'
-        const files = ''
-        const fields = [ {'classification': 'body' }]
+        const fields: Fields =  {'classification': 'PUBLIC' }
 
-        it('Should make a http.post call based on the document Id and version Id', async () => {
+        const file: File = {
+          toJSON(): object {
+            return undefined
+          },
+          name: 'dummy.pdf',
+          path: '/tmp/uploads/dummy.pdf',
+          size: 1,
+          type: 'application/pdf',
+        }
 
+        const files: Files = { file }
+
+        it('Should make a http.post call', async () => {
             await DMStore.postDocuments(fields, files)
-            expect(spyPost).to.be.calledWith(`${url}/documents/${documentId}`)
+            expect(spyPost).to.be.calledWith(`${url}/documents/`)
         })
 
         it('Should return the data property of the return of the http.post call', async () => {
-
             expect(await DMStore.postDocuments(fields, files)).to.equal('okay')
         })
-    })*/
+    })
 
 })

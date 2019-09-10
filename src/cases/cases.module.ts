@@ -81,7 +81,7 @@ import {ProvidersModule} from '../app/providers/providers.module';
  * Entry point for Cases Module that is also lazy loaded.
  */
 export class CasesModule {
-  constructor (@Optional() @SkipSelf() parentModule: CasesModule) {
+  constructor(@Optional() @SkipSelf() parentModule: CasesModule) {
     CasesModule.forRoot();
   }
 

@@ -12,6 +12,7 @@ export interface JUILogger {
     debug: (...message: any[]) => void
     error: (...message: any[]) => void
     info: (...message: any[]) => void
+    trackRequest: (obj: any) => void
     warn: (...message: any[]) => void
 }
 

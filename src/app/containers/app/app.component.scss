@@ -52,4 +52,10 @@ a.hmcts-search-toggle__button {
 .hmcts-primary-navigation__search {
   float: right;;
 }
+
+// gov uk frond-end template is not installed on this
+.js-hidden{
+  display: none;
+  visibility: hidden;
+}
 // Find case button END

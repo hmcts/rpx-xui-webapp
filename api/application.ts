@@ -9,6 +9,7 @@ import * as auth from './auth'
 import { config } from './config'
 import { errorStack } from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
+import * as postCodeLookup from './postCodeLookup'
 import routes from './routes'
 
 config.environment = process.env.XUI_ENV || 'local'
@@ -77,6 +78,13 @@ healthcheck.addTo(app, healthchecks)*/
 app.get('/oauth2/callback', auth.authenticateUser)
 app.get('/api/logout', (req, res, next) => {
     auth.doLogout(req, res)
+})
+app.get('/api/addresses', (req, res, next) => {
+    postCodeLookup.doLookup(req, res, next)
+})
+
+app.get('/api/monitoring-tools', (req, res, next) => {
+    res.send({key: config.appInsightsInstrumentationKey})
 })
 
 app.use('/aggregated', routes)

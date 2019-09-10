@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import createSpyObj = jasmine.createSpyObj;
 import { SearchFilterService } from './';
-import { SearchService, Jurisdiction, CaseType, CaseState } from '@hmcts/ccd-case-ui-toolkit';
+import { SearchService, Jurisdiction, CaseType, CaseState, AbstractAppConfig,
+         HttpService, RequestOptionsBuilder } from '@hmcts/ccd-case-ui-toolkit';
 import { FormControl, FormGroup } from '@angular/forms';
 import { JURISDICTION_1, CASE_TYPE_1, CASE_STATE_1 } from '../mock/search-filter.mock';
 
@@ -16,6 +17,9 @@ const CASE_STATE: CaseState = CASE_STATE_1;
 describe('SearchFilterService', () => {
     let searchFilterService: SearchFilterService;
     const ccdSearchServiceMock = createSpyObj<SearchService>('SearchService', ['search']);
+    const abstractAppConfigMock = createSpyObj<AbstractAppConfig>('AbstractAppConfig', ['getCaseDataUrl']);
+    const httpService = createSpyObj<HttpService>('HttpService', ['get']);
+    const requestOptionsBuilder = createSpyObj<RequestOptionsBuilder>('RequestOptionsBuilder', ['buildOptions']);
 
     beforeEach(() => {
 
@@ -23,6 +27,9 @@ describe('SearchFilterService', () => {
             providers: [
                 SearchFilterService,
                 { provide: SearchService, useValue: ccdSearchServiceMock },
+                { provide: AbstractAppConfig, useValue: abstractAppConfigMock },
+                { provide: HttpService, useValue: httpService },
+                { provide: RequestOptionsBuilder, useValue: requestOptionsBuilder}
             ]
         });
 
@@ -45,7 +52,8 @@ describe('SearchFilterService', () => {
                 jurisdiction: JURISDICTION,
                 caseType: CASE_TYPES[0],
                 caseState: CASE_STATE,
-                page: 1
+                page: 1,
+                view: 'SEARCH'
             }
         };
 
@@ -54,7 +62,7 @@ describe('SearchFilterService', () => {
 
         expect(ccdSearchServiceMock.search).toHaveBeenCalledWith(JURISDICTION.id, CASE_TYPE.id, { page: 1, state: CASE_STATE.id }, {
             name: NAME_VALUE
-        });
+        }, 'SEARCH');
 
     });
 
@@ -74,7 +82,8 @@ describe('SearchFilterService', () => {
                 jurisdiction: JURISDICTION,
                 caseType: CASE_TYPES[0],
                 caseState: CASE_STATE,
-                page: 1
+                page: 1,
+                view: 'SEARCH'
             }
         };
 
@@ -83,7 +92,7 @@ describe('SearchFilterService', () => {
         expect(ccdSearchServiceMock.search).toHaveBeenCalledWith(JURISDICTION.id, CASE_TYPE.id, { page: 1, state: CASE_STATE.id }, {
             name: NAME_VALUE,
             'child.childName': 'childValue'
-        });
+        }, 'SEARCH');
 
     });
 
@@ -106,7 +115,8 @@ describe('SearchFilterService', () => {
                 jurisdiction: JURISDICTION,
                 caseType: CASE_TYPES[0],
                 page: 1,
-                metadataFields: ['[META]']
+                metadataFields: ['[META]'],
+                view: 'SEARCH'
             }
         };
 
@@ -114,7 +124,7 @@ describe('SearchFilterService', () => {
 
         expect(ccdSearchServiceMock.search).toHaveBeenCalledWith(JURISDICTION.id, CASE_TYPE.id, { page: 1, meta: NAME_VALUE2 }, {
             name: NAME_VALUE1
-        });
+        }, 'SEARCH');
 
     });
 

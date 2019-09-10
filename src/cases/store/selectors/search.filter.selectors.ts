@@ -31,3 +31,18 @@ export const searchFilterResultView = createSelector(
     getSearchState,
     fromFeature.getSearchFilterResultView
 );
+
+export const getSearchFilterPaginationMetadata = createSelector(
+  getSearchState,
+  fromFeature.getSearchFilterPageMetadata
+);
+
+export const getCurrentPage = createSelector(
+  getSearchState,
+  fromFeature.getSearchResultsCurrentPage
+);
+
+export const getSearchFilterToggle = createSelector(
+  getSearchState,
+  fromFeature.getSearchFilterToggleState
+);

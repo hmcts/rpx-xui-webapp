@@ -28,23 +28,29 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   resultView$: Observable<SearchResultView>;
   paginationMetadata$: Observable<PaginationMetadata>;
   metadataFields$: Observable<string[]>;
+  caseFilterToggle$: Observable<boolean>;
+
   fg: FormGroup;
 
   jurisdiction: Jurisdiction;
   caseType: CaseType;
   caseState: CaseState;
   resultView: SearchResultView;
-  paginationMetadata: PaginationMetadata;
+  paginationMetadata: PaginationMetadata = new PaginationMetadata();
   metadataFields: string[];
 
   filterSubscription: Subscription;
   resultSubscription: Subscription;
+  paginationSubscription: Subscription;
+  caseFilterToggleSubscription: Subscription;
 
   resultsArr: any[] = [];
 
   paginationSize: number;
-
+  page: number;
+  showFilter: boolean;
   state: any;
+  toggleButtonName: string;
 
   constructor(
     public store: Store<fromCasesFeature.State>,
@@ -54,9 +60,11 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.page = 1;
+    this.resultView = null;
     this.fromCasesFeature = fromCasesFeature;
     this.caseSearchFilterEventsBindings = [
-      { type: 'onApply', action: 'ApplySearchFilter' },
+      { type: 'onApply', action: 'FindSearchPaginationMetadata' },
       { type: 'onReset', action: 'Reset' }
     ];
 
@@ -67,12 +75,13 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     this.caseState$ = this.store.pipe(select(fromCasesFeature.searchFilterCaseState));
     this.resultView$ = this.store.pipe(select(fromCasesFeature.searchFilterResultView));
     this.metadataFields$ = this.store.pipe(select(fromCasesFeature.searchFilterMetadataFields));
-
+    this.paginationMetadata$ = this.store.pipe(select(fromCasesFeature.getSearchFilterPaginationMetadata));
+    this.caseFilterToggle$ = this.store.pipe(select(fromCasesFeature.getSearchFilterToggle));
     this.filterSubscription = combineLatest([
       this.jurisdiction$,
       this.caseType$,
       this.caseState$,
-      this.metadataFields$
+      this.metadataFields$,
     ]).subscribe(result => {
       this.jurisdiction = {
         ...result[0]
@@ -88,12 +97,22 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
       };
     });
 
-    this.resultSubscription = this.resultView$.subscribe(resultView => {
+    this.caseFilterToggleSubscription = this.caseFilterToggle$.subscribe( (result: boolean) => {
+      this.showFilter = result;
+      this.toggleButtonName = this.getToggleButtonName(this.showFilter);
+    });
 
-      this.paginationMetadata = new PaginationMetadata();
-      const resultViewResultsLength = resultView.results ? resultView.results.length : 0;
-      this.paginationMetadata.total_results_count = resultViewResultsLength;
-      this.paginationMetadata.total_pages_count = Math.ceil(resultViewResultsLength / this.paginationSize);
+    this.paginationSubscription = this.paginationMetadata$.subscribe(result => {
+      if (typeof result !== 'undefined'  && typeof result.total_pages_count !== 'undefined') {
+        this.paginationMetadata.total_pages_count = result.total_pages_count;
+        this.paginationMetadata.total_results_count = result.total_results_count;
+        const event = this.getEvent();
+        if ( event != null) {
+          this.store.dispatch(new fromCasesFeature.ApplySearchFilter(event));
+        }
+      }
+    });
+    this.resultSubscription = this.resultView$.subscribe(resultView => {
       this.resultsArr = resultView.results;
       this.resultView = {
         ...resultView,
@@ -103,54 +122,55 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
             ...item,
             hydrated_case_fields: null
           };
-        }).slice(0, this.paginationSize) : [],
+        }) : [],
         hasDrafts: resultView.hasDrafts ? resultView.hasDrafts : () => false
       };
     });
-
     this.checkLSAndTrigger();
   }
 
-  checkLSAndTrigger() {
-
+  getEvent() {
+    let event = null;
     const formGroupFromLS = JSON.parse(localStorage.getItem('search-form-group-value'));
     const jurisdictionFromLS = JSON.parse(localStorage.getItem('search-jurisdiction'));
     const caseTypeGroupFromLS = JSON.parse(localStorage.getItem('search-caseType'));
     const metadataFieldsGroupFromLS = JSON.parse(localStorage.getItem('search-metadata-fields'));
 
     if (formGroupFromLS && jurisdictionFromLS && caseTypeGroupFromLS && metadataFieldsGroupFromLS) {
-      const event = {
+      event = {
         selected: {
           jurisdiction: jurisdictionFromLS,
           caseType: caseTypeGroupFromLS,
           metadataFields: metadataFieldsGroupFromLS,
           formGroup: {
             value: formGroupFromLS
-          }
+          },
+          page: this.page,
+          view: 'SEARCH'
         }
       };
+    }
+    return event;
+  }
 
-      this.store.dispatch(new fromCasesFeature.ApplySearchFilter(event));
+  getToggleButtonName(showFilter: boolean): string {
+    return showFilter ? 'Hide Filter' : 'Show Filter';
+  }
+
+  checkLSAndTrigger() {
+    const event = this.getEvent();
+    if ( event != null) {
+      this.store.dispatch(new fromCasesFeature.FindSearchPaginationMetadata(event));
     }
   }
 
-  applyChangePage(event) {
-    if (this.resultsArr.length > 0) {
-      const startingPoint = (event.selected.page - 1) * this.paginationSize;
-      const endingPoint = startingPoint + this.paginationSize;
-      const newArr = this.resultsArr.map(item => {
-        return {
-          ...item,
-          hydrated_case_fields: null
-        };
-      }).slice(startingPoint, endingPoint);
+  toggleFilter() {
+    this.store.dispatch(new fromCasesFeature.SearchFilterToggle(!this.showFilter));
+  }
 
-      this.resultView = {
-        ...this.resultView,
-        results: newArr,
-        hasDrafts: this.resultView.hasDrafts
-      };
-    }
+  applyChangePage(event) {
+    this.page = event.selected.page;
+    this.checkLSAndTrigger();
   }
 
   ngOnDestroy() {
@@ -159,6 +179,12 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     }
     if (this.resultSubscription) {
       this.resultSubscription.unsubscribe();
+    }
+    if (this.paginationSubscription) {
+      this.paginationSubscription.unsubscribe();
+    }
+    if (this.caseFilterToggleSubscription) {
+      this.caseFilterToggleSubscription.unsubscribe();
     }
   }
 

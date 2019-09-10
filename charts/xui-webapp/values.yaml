@@ -15,13 +15,8 @@ nodejs:
     rpx:
       resourceGroup: rpx
       secrets:
-        - test-email
-        - xui-s2s-token
+        - xui-webapp-s2s-token
         - xui-oauth2-token
-        - fr-email
-        - fr-password
-        - sscs-email
-        - sscs-password
         - AppInsightsInstrumentationKey
   # Don't modify below here
   image: ${IMAGE_NAME}

@@ -164,7 +164,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
       jurisdictionFromLS = { id: this.selected.jurisdiction.id};
       caseTypeGroupFromLS = { id: this.selected.caseType.id };
       caseStateGroupFromLS = { id: this.selected.caseState.id };
-    } else {
+    } else if (this.savedQueryParams) {
       this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
       formGroupFromLS = JSON.parse(localStorage.getItem('workbasket-filter-form-group-value'));
       jurisdictionFromLS = { id: this.savedQueryParams.jurisdiction};

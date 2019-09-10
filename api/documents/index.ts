@@ -9,12 +9,12 @@ import * as DMStore from './DMStore'
  * @param res
  */
 export async function getDocumentRoute(req: express.Request, res: express.Response) {
-    const document_id = req.params.document_id
-    const document = await DMStore.getDocument(document_id)
+    const documentId = req.params.document_id
+    const document = await DMStore.getDocument(documentId)
     if (document) {
         res.status(200).send(document)
     } else {
-        res.status(500).send(`Error getting document ${document_id}`)
+        res.status(500).send(`Error getting document ${documentId}`)
     }
 }
 

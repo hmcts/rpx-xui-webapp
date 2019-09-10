@@ -59,14 +59,4 @@ describe('Documents', () => {
         expect(binaryPipe.pipe).to.have.been.calledWith(res)
     })
 
-    /*it('should create the appropriate routes', () => {
-        const app = {
-            use: sandbox.spy(),
-        }
-        sandbox.stub(express.Router, 'get')
-        documents.default(app)
-        expect(app.use).to.have.been.calledWith('/documents')
-        expect(express.Router.get).to.have.been.calledWith('/:document_id', documents.getDocumentRoute)
-        expect(express.Router.get).to.have.been.calledWith('/:document_id/binary', documents.getDocumentBinaryRoute)
-    })*/
 })

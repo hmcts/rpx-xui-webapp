@@ -69,7 +69,6 @@ const healthchecks = {
         ccdDataApi: healthcheckConfig(config.services.ccd.dataApi),
         ccdDefApi: healthcheckConfig(config.services.ccd.componentApi),
         idamApi: healthcheckConfig(config.services.idam.idamApiUrl),
-        s2s: healthcheckConfig(config.services.s2s),
     },
 }
 

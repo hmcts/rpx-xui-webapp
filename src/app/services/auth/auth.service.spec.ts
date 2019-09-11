@@ -117,7 +117,9 @@ describe('AuthService', () => {
       const base = 'dummy';
       const clientId = 'dummy';
       const callback = `${service.apiBaseUrl}/dummy`;
-      expect(service.generateLoginUrl()).toEqual(`${base}/login?response_type=code&client_id=${clientId}&redirect_uri=${callback}`);
+      const scope = `profile openid roles manage-user create-user`;
+      const loginUrl = `${base}/login?response_type=code&client_id=${clientId}&redirect_uri=${callback}&scope=${scope}`;
+      expect(service.generateLoginUrl()).toEqual(loginUrl);
     }));
   });
 

@@ -28,7 +28,7 @@ app.use(
             maxAge: 1800000,
             secure: config.secureCookie !== false,
         },
-        name: 'xui-webapp',
+        name: 'xui-webapp', // keep as string
         resave: true,
         saveUninitialized: true,
         secret: config.sessionSecret,

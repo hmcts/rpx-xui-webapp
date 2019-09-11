@@ -3,7 +3,7 @@ import { CanActivate } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { HealthCheckService } from '../services/health-check.service';
-import * as fromRoot from '../../app/store';
+import * as fromRoot from '../../store';
 import { Store } from '@ngrx/store';
 
 

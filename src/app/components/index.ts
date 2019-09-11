@@ -4,6 +4,7 @@ import {HeaderComponent} from './header/header.component';
 import {HmctsGlobalHeaderComponent} from './hmcts-global-header/hmcts-global-header.component';
 import {HmctsPrimaryNavigationComponent} from './hmcts-primary-navigation/hmcts-primary-navigation.component';
 import {PhaseBannerComponent} from './phase-banner/phase-banner.component';
+import {ServiceDownComponent} from './service-down/service-down.component';
 
 export const components: any[] = [
   ExuiPageWrapperComponent,
@@ -11,7 +12,8 @@ export const components: any[] = [
   HeaderComponent,
   HmctsGlobalHeaderComponent,
   HmctsPrimaryNavigationComponent,
-  PhaseBannerComponent
+  PhaseBannerComponent,
+  ServiceDownComponent
 ];
 
 export * from './exui-mian-wrapper/exui-page-wrapper.component';
@@ -20,3 +22,4 @@ export * from './header/header.component';
 export * from './hmcts-global-header/hmcts-global-header.component';
 export * from './hmcts-primary-navigation/hmcts-primary-navigation.component';
 export * from './phase-banner/phase-banner.component';
+export * from './service-down/service-down.component';

@@ -7,6 +7,7 @@ import { Store, select } from '@ngrx/store';
 import { Observable, Subscription, combineLatest } from 'rxjs';
 import { Jurisdiction, CaseType, CaseState, SearchResultView, PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
 import { FormGroup } from '@angular/forms';
+import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
 
 /**
  * Entry component wrapper for Case List
@@ -57,7 +58,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
   paginationSubscription: Subscription;
   constructor(
     public store: Store<fromCaseList.State>,
-    private appConfig: AppConfig
+    private appConfig: AppConfig,
+    private definitionsService: DefinitionsService,
   ) { }
 
   ngOnInit() {
@@ -71,11 +73,16 @@ export class CaseListComponent implements OnInit, OnDestroy {
         state_id: this.savedQueryParams['case-state']
       };
     } else {
-      this.defaults = {
-        jurisdiction_id: '',
-        case_type_id: '',
-        state_id: ''
-      };
+      this.definitionsService.getJurisdictions('read')
+      .subscribe(jurisdictions => {
+        if (jurisdictions[0] && jurisdictions[0].id && jurisdictions[0].caseTypes[0] && jurisdictions[0].caseTypes[0].states[0]) {
+          this.defaults = {
+            jurisdiction_id: jurisdictions[0].id,
+            case_type_id: jurisdictions[0].caseTypes[0].id,
+            state_id: jurisdictions[0].caseTypes[0].states[0].id
+          };
+        }
+      });
     }
 
     this.fromCasesFeature = fromCasesFeature;
@@ -157,7 +164,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
       jurisdictionFromLS = { id: this.selected.jurisdiction.id};
       caseTypeGroupFromLS = { id: this.selected.caseType.id };
       caseStateGroupFromLS = { id: this.selected.caseState.id };
-    } else {
+    } else if (this.savedQueryParams) {
       this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
       formGroupFromLS = JSON.parse(localStorage.getItem('workbasket-filter-form-group-value'));
       jurisdictionFromLS = { id: this.savedQueryParams.jurisdiction};

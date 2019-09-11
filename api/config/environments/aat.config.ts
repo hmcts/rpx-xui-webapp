@@ -17,6 +17,13 @@ export default {
             oauthCallbackUrl: 'oauth2/callback',
         },
     },
+    health: {
+        ccdComponentApi: 'https://ccd-api-gateway-web-aat.service.core-compute-aat.internal/health',
+        ccdDataApi: 'https://ccd-data-store-api-aat.service.core-compute-aat.internal/health',
+        cohCorApi: 'http://coh-cor-aat.service.core-compute-aat.internal/health',
+        documentsApi: 'https://dm-store-aat.service.core-compute-aat.internal/health',
+        s2s: 'https://rpe-service-auth-provider-aat.service.core-compute-aat.internal/health',
+    },
     sessionSecret: 'secretSauce',
     useProxy: false,
 }

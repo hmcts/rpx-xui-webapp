@@ -17,6 +17,13 @@ export default {
             oauthCallbackUrl: 'oauth2/callback',
         },
     },
+    health: {
+        ccdComponentApi: 'https://ccd-api-gateway-web-prod.service.core-compute-prod.internal/health',
+        ccdDataApi: 'https://ccd-data-store-api-prod.service.core-compute-prod.internal/health',
+        cohCorApi: 'https://coh-cor-prod.service.core-compute-prod.internal/health',
+        documentsApi: 'https://dm-store-prod.service.core-compute-prod.internal/health',
+        s2s: 'https://rpe-service-auth-provider-prod.service.core-compute-prod.internal/health',
+    },
     sessionSecret: 'secretSauce',
     useProxy: false,
 }

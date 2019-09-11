@@ -7,6 +7,7 @@ import * as globalTunnel from 'global-tunnel-ng'
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
 import { config } from './config'
+import {router as documentRouter} from './documents/routes'
 import { errorStack } from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
 import * as postCodeLookup from './postCodeLookup'
@@ -68,6 +69,7 @@ const healthchecks = {
     checks: {
         ccdDataApi: healthcheckConfig(config.services.ccd.dataApi),
         ccdDefApi: healthcheckConfig(config.services.ccd.componentApi),
+        dmStoreApi: healthcheckConfig(config.services.documents.api),
         idamApi: healthcheckConfig(config.services.idam.idamApiUrl),
         s2s: healthcheckConfig(config.services.s2s),
     },
@@ -76,19 +78,18 @@ const healthchecks = {
 healthcheck.addTo(app, healthchecks)
 
 app.get('/oauth2/callback', auth.authenticateUser)
-app.get('/api/logout', (req, res, next) => {
+app.get('/api/logout', (req, res) => {
     auth.doLogout(req, res)
 })
-app.get('/api/addresses', (req, res, next) => {
-    postCodeLookup.doLookup(req, res, next)
-})
+app.get('/api/addresses', postCodeLookup.doLookup)
 
-app.get('/api/monitoring-tools', (req, res, next) => {
+app.get('/api/monitoring-tools', (req, res) => {
     res.send({key: config.appInsightsInstrumentationKey})
 })
 
 app.use('/aggregated', routes)
 app.use('/data', routes)
-
+// separate route for document upload/view
+app.use('/documents', documentRouter)
 const logger = log4jui.getLogger('Application')
 logger.info(`Started up on ${config.environment || 'local'} using ${config.protocol}`)

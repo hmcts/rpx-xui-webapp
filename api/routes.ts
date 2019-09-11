@@ -10,6 +10,14 @@ const router = express.Router({ mergeParams: true })
 router.use(serviceTokenMiddleware)
 router.use(authInterceptor)
 
+/**
+ * These wildcard routes are leveraged by the CCD components.
+ *
+ * Calls to /aggregated and /data are routed through here.
+ *
+ * @see ccd-case-ui-toolkit project
+ * @see application.ts
+ */
 router.get('/*', proxy.get)
 router.post('/*', proxy.post)
 router.put('/*', proxy.put)

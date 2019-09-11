@@ -46,8 +46,8 @@ export class AuthService {
     const base = this.appConfigService.getRoutesConfig().idam.idamLoginUrl;
     const clientId = this.appConfigService.getRoutesConfig().idam.idamClientID;
     const callback = `${this.apiBaseUrl}/${this.appConfigService.getRoutesConfig().idam.oauthCallbackUrl}`;
-    return `${base}/login?response_type=code&client_id=${clientId}&
-      redirect_uri=${callback}&scope=profile openid roles manage-user create-user`;
+    const scope = `profile openid roles manage-user create-user`;
+    return `${base}/login?response_type=code&client_id=${clientId}&redirect_uri=${callback}&scope=${scope}`;
   }
 
   loginRedirect() {

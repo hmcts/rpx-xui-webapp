@@ -4,7 +4,7 @@ import { config } from '../config'
 import { http } from '../lib/http'
 import * as log4jui from '../lib/log4jui'
 import { getHealth, getInfo } from '../lib/util'
-
+// need to remove this
 const url = config.services.s2s
 const microservice = config.microservice
 const s2sSecret = process.env.S2S_SECRET || 'AAAAAAAAAAAAAAAA'

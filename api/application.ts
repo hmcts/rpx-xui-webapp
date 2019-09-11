@@ -89,6 +89,7 @@ app.get('/api/monitoring-tools', (req, res) => {
 
 app.use('/aggregated', routes)
 app.use('/data', routes)
+// separate route for document upload/view
 app.use('/documents', documentRouter)
 const logger = log4jui.getLogger('Application')
 logger.info(`Started up on ${config.environment || 'local'} using ${config.protocol}`)

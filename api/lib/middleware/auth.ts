@@ -55,12 +55,8 @@ export default async (req, res, next) => {
 
         axios.defaults.headers.common.Authorization = `Bearer ${req.auth.token}`
         axios.defaults.headers.common['user-roles'] = req.auth.data.roles.join()
-        if (req.headers.ServiceAuthorization) {
-            axios.defaults.headers.common.ServiceAuthorization = req.headers.ServiceAuthorization
-        }
 
         logger.info('Auth token: ' + `Bearer ${req.auth.token}`)
-        logger.info('S2S token: ' + req.headers.ServiceAuthorization)
         logger.info('Attached auth headers to request')
 
         next()

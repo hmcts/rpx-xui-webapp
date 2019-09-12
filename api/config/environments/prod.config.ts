@@ -16,6 +16,7 @@ export default {
             indexUrl: '/',
             oauthCallbackUrl: 'oauth2/callback',
         },
+        s2s: 'https://rpe-service-auth-provider-prod.service.core-compute-prod.internal',
     },
     sessionSecret: 'secretSauce',
     useProxy: false,

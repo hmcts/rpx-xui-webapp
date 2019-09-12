@@ -3,14 +3,11 @@ export default {
     secureCookie: false,
     services: {
         ccd: {
-            componentApi: 'https://ccd-api-gateway-web-aat.service.core-compute-aat.internal',
-            dataApi: 'https://ccd-data-store-api-aat.service.core-compute-aat.internal',
-        },
-        coh: {
-            corApi: 'http://coh-cor-aat.service.core-compute-aat.internal',
+            componentApi: 'https://ccd-api-gateway-web-ithc.service.core-compute-ithc.internal',
+            dataApi: 'https://ccd-data-store-api-ithc.service.core-compute-ithc.internal',
         },
         documents: {
-            api: 'https://dm-store-aat.service.core-compute-aat.internal',
+            api: 'https://dm-store-ithc.service.core-compute-ithc.internal',
         },
         idam: {
             idamApiUrl: 'https://idam-api.ithc.platform.hmcts.net',
@@ -19,8 +16,6 @@ export default {
             indexUrl: '/',
             oauthCallbackUrl: 'oauth2/callback',
         },
-        s2s:
-            'https://rpe-service-auth-provider-aat.service.core-compute-aat.internal',
     },
     sessionSecret: 'secretSauce',
     useProxy: false,

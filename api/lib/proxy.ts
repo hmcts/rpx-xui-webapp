@@ -21,7 +21,7 @@ function setHeaders(req: EnhancedRequest) {
     return headers
 }
 
-export async function get(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
+export async function get(req: EnhancedRequest, res: express.Response) {
     let url = striptags(req.url)
     url = req.baseUrl  + url
     const headers: any = setHeaders(req)
@@ -38,9 +38,9 @@ export async function get(req: EnhancedRequest, res: express.Response, next: exp
     }
 }
 
-export async function put(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
+export async function put(req: EnhancedRequest, res: express.Response) {
     let url = striptags(req.url)
-    url = '/data/' + url
+    url = req.baseUrl + url
 
     const headers: any = setHeaders(req)
 
@@ -54,9 +54,9 @@ export async function put(req: EnhancedRequest, res: express.Response, next: exp
     }
 }
 
-export async function post(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
+export async function post(req: EnhancedRequest, res: express.Response) {
     let url = striptags(req.url)
-    url = '/data/' + url
+    url = req.baseUrl + url
 
     const headers: any = setHeaders(req)
 

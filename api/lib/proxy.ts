@@ -68,7 +68,7 @@ export async function post(req: EnhancedRequest, res: express.Response) {
         /**
          * Adnan: 12/09/2019
          *
-         * Ticket EUI-734 required me to remove 'reponse' from both lines below.
+         * Ticket EUI-734 required me to remove '.reponse' from both lines below.
          *      res.status(e.response.status) => res.status(e.status)
          *      res.send(e.response.data) => res.send(e.data)
          * The response from CCD does not have the 'response' property.

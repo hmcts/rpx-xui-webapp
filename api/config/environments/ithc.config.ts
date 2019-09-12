@@ -16,6 +16,7 @@ export default {
             indexUrl: '/',
             oauthCallbackUrl: 'oauth2/callback',
         },
+        s2s: 'https://rpe-service-auth-provider-ithc.service.core-compute-ithc.internal',
     },
     sessionSecret: 'secretSauce',
     useProxy: false,

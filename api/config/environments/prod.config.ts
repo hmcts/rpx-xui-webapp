@@ -1,4 +1,9 @@
 export default {
+    health: {
+        ccdComponentApi: 'https://ccd-api-gateway-web-prod.service.core-compute-prod.internal/health',
+        ccdDataApi: 'https://ccd-data-store-api-prod.service.core-compute-prod.internal/health',
+        documentsApi: 'https://dm-store-prod.service.core-compute-prod.internal/health',
+    },
     logging: 'debug',
     secureCookie: false,
     services: {

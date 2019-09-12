@@ -9,6 +9,7 @@ import { CaseSearchComponent } from './containers/case-search/case-search.compon
 import {CasesCreateComponent } from './containers';
 import {viewerRouting as caseViewRouting, editorRouting, CaseResolver} from '@hmcts/ccd-case-ui-toolkit';
 import {CaseDetailsComponent} from './containers/case-details/case-details.component';
+import { HealthCheckGuard } from 'src/app/shared/guards/health-check.guard';
 
 export const ROUTES: Routes = [
     {
@@ -18,20 +19,24 @@ export const ROUTES: Routes = [
         {
           path: '',
           component: CaseListComponent,
+          canActivate: [ HealthCheckGuard ]
         },
         {
           path: 'case-filter',
           component: CaseFilterComponent,
+          canActivate: [ HealthCheckGuard ]
         },
         {
           path: 'case-create',
           component: CasesCreateComponent,
-          children: editorRouting
+          children: editorRouting,
+          canActivate: [ HealthCheckGuard ]
         },
         {
           path: 'case-search',
           component: CaseSearchComponent,
-          children: editorRouting
+          children: editorRouting,
+          canActivate: [ HealthCheckGuard ]
         },
         {
           path: 'case-details/:cid',
@@ -40,6 +45,7 @@ export const ROUTES: Routes = [
           },
           runGuardsAndResolvers: 'always',
           children: caseViewRouting,
+          canActivate: [ HealthCheckGuard ]
         }
       ]
     },

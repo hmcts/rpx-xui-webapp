@@ -7,6 +7,7 @@ import * as globalTunnel from 'global-tunnel-ng'
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
 import { config } from './config'
+import healthCheck from './healthCheck'
 import { errorStack } from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
 import * as postCodeLookup from './postCodeLookup'
@@ -86,6 +87,8 @@ app.get('/api/addresses', (req, res, next) => {
 app.get('/api/monitoring-tools', (req, res, next) => {
     res.send({key: config.appInsightsInstrumentationKey})
 })
+
+app.use('/api/healthCheck', healthCheck)
 
 app.use('/aggregated', routes)
 app.use('/data', routes)

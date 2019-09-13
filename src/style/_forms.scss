@@ -7,6 +7,8 @@ $module: "form";
 
 .#{$module} {
 
+  border: 1px solid red;
+
   &-money {
 
     .#{$module}-currency {

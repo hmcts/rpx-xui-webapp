@@ -1,11 +1,21 @@
-@import '~@hmcts/ccd-case-ui-toolkit/dist/cut-styles/components/typography';
-//@import 'shims';
-//@import 'conditionals';
-//@import 'measurements';
-
 /**
- * Global variables
+ * This global file has been directly lifted from ccd-case-ui-toolkit's app.scss file.
+ *
+ * This file itself therefore should not be changed as if CCD creates a new component it would automatically be styled
+ * by the css in this file.
+ * @see ccd-case-ui-toolkit /app.scss
+ *
+ * ccd-case-ui-toolkit is using 'govuk_frontend_toolkit' for styling. 'govuk_frontend_toolkit' is now a deprecated
+ * project for styling and 'govuk_frontend' should be used.
+ *
+ * Note that we do not see the import of node_modules/govuk_frontend_toolkit/stylesheets here as it happens within
+ * @see angular.json includePaths
  */
+@import '~@hmcts/ccd-case-ui-toolkit/dist/cut-styles/components/typography';
+@import 'shims';
+@import 'conditionals';
+@import 'measurements';
+
 $black: #323232;
 
 $path: "/assets/";
@@ -14,24 +24,14 @@ $fa-font-path: "/node_modules/font-awesome/fonts";
 $govuk-frontend-toolkit-image-path: "/assets";
 $govuk-template-image-path: "/assets";
 
-/**
- * This project uses the deprecated govuk_frontend_toolkit as it looks like
- * the CCD components use this toolkit. Therefore we will have to continue to use it.
- *
- * @see angular.json includePaths
- */
 @import 'govuk-elements';
 
-// What should we do;
-// we can't go around and replace the CSS as that would take too long. Therefore
-// let's make this cleaner here.
-
-// Organise SASS (TODO / TS)
-@import "./buttons";
-@import "./forms";
-@import "./markdown";
-@import "./print";
-@import "./vendor/prism.scss";
+@import './buttons';
+@import './forms';
+@import './markdown';
+@import './print';
+@import './vendor/prism.scss';
+@import './notifications';
 
 body {
   margin: 0;
@@ -69,8 +69,6 @@ main {
   }
 
 }
-
-@import './notifications';
 
 table.form-table {
   td.form-cell {

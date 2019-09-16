@@ -1,11 +1,9 @@
-// TODO - needs to be clarified wehre the css is coming form
 @import 'node_modules/@hmcts/ccd-case-ui-toolkit/dist/cut-styles/components/typography';
 @import 'node_modules/govuk_frontend_toolkit/stylesheets/_shims';
 @import 'node_modules/govuk_frontend_toolkit/stylesheets/_conditionals';
 @import 'node_modules/govuk_frontend_toolkit/stylesheets/_measurements';
 
 .markdown {
-    border: 1px solid red;
     h1 {
         @include bold-18pt();
         margin-top: 30px;

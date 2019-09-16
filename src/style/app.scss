@@ -31,7 +31,6 @@ $govuk-template-image-path: "/assets";
 @import './markdown';
 @import './print';
 @import './vendor/prism.scss';
-@import './notifications';
 
 body {
   margin: 0;
@@ -69,6 +68,8 @@ main {
   }
 
 }
+
+@import './notifications';
 
 table.form-table {
   td.form-cell {

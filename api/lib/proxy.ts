@@ -7,7 +7,7 @@ import { EnhancedRequest } from './models'
 
 //const logger = log4jui.getLogger('proxy')
 
-function setHeaders(req: EnhancedRequest) {
+export function setHeaders(req: EnhancedRequest) {
     const headers: any = {}
 
     headers['content-type'] = req.headers['content-type']

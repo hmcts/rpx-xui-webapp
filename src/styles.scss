@@ -1,2 +1,17 @@
+/**
+ * app.scss has been directly lifted from ccd-case-ui-toolkit's app.scss file and is
+ * used to style the CCD components.
+ *
+ * CCD components are styled using i. The deprecated 'govuk_frontend_toolkit' 2. In some cases their own custom styling
+ * 3. Bootstrap
+ *
+ * @see ccd-case-ui-toolkit repo /app.scss
+ */
 @import './style/app.scss';
+
+/**
+ * XUI Webapp Styles
+ *
+ * The CSS below takes precedence over the CCD Components styles.
+ */
 @import '../node_modules/@angular/material/prebuilt-themes/indigo-pink.css';

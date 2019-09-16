@@ -25,14 +25,12 @@
             ".tsx"
         ],
         "include": [
-            "controllers",
-            "lib",
-            "services"
+            "**/*"
         ],
         "exclude": [
+            "**/*.js",
             "**/*.d.ts",
-            "**/*.spec.ts",
-            "**/templates"
+            "**/*.spec.ts"
         ],
         "reporter": [
             "lcov",

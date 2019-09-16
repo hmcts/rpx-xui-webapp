@@ -1,42 +1,43 @@
-import * as chai from 'chai'
 import { expect } from 'chai'
 import 'mocha'
 import * as sinon from 'sinon'
-import * as sinonChai from 'sinon-chai'
 import { mockReq, mockRes } from 'sinon-express-mock'
-chai.use(sinonChai)
+import { http } from '../lib/http'
+import * as serviceAuth from './serviceAuth'
 
-import {config} from '../config'
-import {http} from '../lib/http'
-import {postS2SLease} from './serviceAuth'
+import { config } from '../config'
 
 describe('serviceAuth', () => {
+
   let res
 
   const url = config.services.s2s
+  const microservice = config.microservice
+  const s2sSecret = process.env.S2S_SECRET || 'AAAAAAAAAAAAAAAA'
 
+  let spy: any
   let spyPost: any
-  let sandbox: any
 
   beforeEach(() => {
-    // this doesn't change much but it is different for createHearing
-    // so is just set by default and overridden in that test, to be reset after
+
     res = {
       data: 'okay',
     }
 
-    sandbox = sinon.createSandbox()
-
-    spyPost = sandbox.stub(http, 'post').callsFake(() => {
+    spyPost = sinon.stub(http, 'post').callsFake(() => {
       return Promise.resolve(res)
     })
-
   })
 
   afterEach(() => {
-    sandbox.restore()
+
+    spyPost.restore()
   })
 
+  describe('service Auth', async () => {
 
-
+    it('Should make a http.post call ', async () => {
+      expect(await serviceAuth.postS2SLease()).to.equal('okay')
+    })
+  })
 })

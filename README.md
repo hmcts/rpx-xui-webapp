@@ -40,3 +40,30 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 Extended version of script below:
 
 (https://robferguson.org/blog/2017/09/09/a-simple-logging-service-for-angular-4/)
+
+## Styling
+
+### styles.scss
+
+Entrance to Styling the Manage Cases application.
+
+We @import the ccd-case-ui-toolkit app.scss first, postceding this we are able to write
+CSS here which takes precendence over the CSS from the ccd-case-ui-toolkit.
+
+### app.scss
+
+The app.scss global file has been directly lifted from ccd-case-ui-toolkit's app.scss file.
+
+This file itself therefore should not be changed as if CCD creates a new component it would automatically be styled by this CSS in this file.
+@see ccd-case-ui-toolkit /app.scss
+
+ccd-case-ui-toolkit uses  i. The deprecated 'govuk_frontend_toolkit' 2. In some cases their own custom styling and 3. Bootstrap for styling.
+
+If we take control of the CCD components we will need to make a decision whether or not to move to the new 'govuk_frontend' or the HMCTS styling library.
+
+### angular.json
+
+Note that we do not see the import of node_modules/govuk_frontend_toolkit/stylesheets within the app.scss. This happens within
+@see angular.json includePaths
+
+END

@@ -12,10 +12,10 @@ export function setHeaders(req: EnhancedRequest) {
 
     headers['content-type'] = req.headers['content-type']
     if (req.headers.accept) {
-        headers.accept = req.headers.accept || null
+        headers.accept = req.headers.accept
     }
     if (req.headers.experimental) {
-        headers.experimental = req.headers.experimental || null
+        headers.experimental = req.headers.experimental
     }
 
     return headers
@@ -32,8 +32,7 @@ export async function get(req: EnhancedRequest, res: express.Response) {
         res.status(200)
         res.send(response.data)
     } catch (e) {
-        console.log(e)
-        res.status(e)
+        res.status(e.response.status)
         res.send(e.response.data)
     }
 }
@@ -68,7 +67,7 @@ export async function post(req: EnhancedRequest, res: express.Response) {
         /**
          * Adnan: 12/09/2019
          *
-         * Ticket EUI-734 required me to remove '.reponse' from both lines below.
+         * Ticket EUI-734 required me to remove '.response' from both lines below.
          *      res.status(e.response.status) => res.status(e.status)
          *      res.send(e.response.data) => res.send(e.data)
          * The response from CCD does not have the 'response' property.

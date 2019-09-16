@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-    selector: 'app-accessibility',
+    selector: 'exui-accessibility',
     templateUrl: './accessibility.component.html'
 })
 export class AccessibilityComponent {

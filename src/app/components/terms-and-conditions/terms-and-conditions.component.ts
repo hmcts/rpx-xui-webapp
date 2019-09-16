@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-    selector: 'app-terms-and-conditions',
+    selector: 'exui-terms-and-conditions',
     templateUrl: './terms-and-conditions.component.html'
 })
 export class TermsAndConditionsComponent {

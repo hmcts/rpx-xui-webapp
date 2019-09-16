@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-    selector: 'app-cookie-policy',
+    selector: 'exui-cookie-policy',
     templateUrl: './cookie-policy.component.html'
 })
 export class CookiePolicyComponent {

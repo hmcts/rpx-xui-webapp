@@ -31,6 +31,7 @@ describe('CaseCreate Effects', () => {
   let actions$: TestActions;
   let effects: fromEffects.CaseCreateEffects;
   mockAlertService = jasmine.createSpyObj('alertService', ['success']);
+  let router: Router;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -42,6 +43,8 @@ describe('CaseCreate Effects', () => {
       ],
     });
     actions$ = TestBed.get(Actions);
+    router = TestBed.get(Router);
+    router.initialNavigation();
     effects = new fromEffects.CaseCreateEffects(actions$, mockAlertService, router);
 
   });

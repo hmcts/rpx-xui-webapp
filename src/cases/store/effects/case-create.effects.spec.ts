@@ -9,6 +9,9 @@ import { empty } from 'rxjs/observable/empty';
 
 import * as fromEffects from './case-create.effects';
 import * as fromActions from '../actions/create-case.action';
+import { RouterTestingModule } from '@angular/router/testing';
+import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
+import { Router } from '@angular/router';
 
 export class TestActions extends Actions {
   constructor() {
@@ -23,32 +26,32 @@ export class TestActions extends Actions {
 export function getActions() {
   return new TestActions();
 }
-
+let mockAlertService: any;
 describe('CaseCreate Effects', () => {
   let actions$: TestActions;
   let effects: fromEffects.CaseCreateEffects;
+  mockAlertService = jasmine.createSpyObj('alertService', ['success']);
+  let router: Router;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [HttpClientTestingModule, RouterTestingModule],
       providers: [
         fromEffects.CaseCreateEffects,
+        {provide: AlertService, useClass: mockAlertService},
         { provide: Actions, useFactory: getActions },
       ],
     });
-
     actions$ = TestBed.get(Actions);
-    effects = TestBed.get(fromEffects.CaseCreateEffects);
+    router = TestBed.get(Router);
+    router.initialNavigation();
+    effects = new fromEffects.CaseCreateEffects(actions$, mockAlertService, router);
 
   });
 
   describe('loadToppings$', () => {
     it('should return a collection from LoadToppingsSuccess', () => {
-      const action = new fromActions.ApplyChange({});
-
-      actions$.stream = hot('-a', { a: action });
-
-      expect(effects.applyChangeCaseCreateFilter$).toBeTruthy();
+      expect(effects).toBeTruthy();
     });
   });
 });

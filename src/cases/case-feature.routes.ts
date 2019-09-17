@@ -1,3 +1,4 @@
+import { CaseDetailsHomeComponent } from './containers/case-details-home/case-details-home';
 import { CaseHomeComponent } from './containers/case-home/case-home.component';
 // routes
 import { RouterModule, Routes } from '@angular/router';
@@ -53,11 +54,15 @@ export const ROUTES: Routes = [
         },
         {
           path: 'case-details/:cid',
-          resolve: {
-            case: CaseResolver
-          },
-          runGuardsAndResolvers: 'always',
-          children: caseViewRouting,
+          component: CaseDetailsHomeComponent,
+          children: [
+            {
+              path: '', resolve: { case: CaseResolver },
+              runGuardsAndResolvers: 'always',
+              children: caseViewRouting,
+              canActivate: [ HealthCheckGuard ]
+            }
+          ],
           canActivate: [ HealthCheckGuard ]
         }
       ]

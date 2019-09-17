@@ -8,6 +8,7 @@ import { Observable, Subscription, combineLatest } from 'rxjs';
 import { Jurisdiction, CaseType, CaseState, SearchResultView, PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
 import { FormGroup } from '@angular/forms';
 import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
+import { Title } from '@angular/platform-browser';
 
 /**
  * Entry component wrapper for Case List
@@ -60,7 +61,10 @@ export class CaseListComponent implements OnInit, OnDestroy {
     public store: Store<fromCaseList.State>,
     private appConfig: AppConfig,
     private definitionsService: DefinitionsService,
-  ) { }
+    private titleService: Title
+  ) {
+    titleService.setTitle('HMCTS Manage Cases | Case list');
+  }
 
   ngOnInit() {
     this.page = 1;

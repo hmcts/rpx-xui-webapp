@@ -6,6 +6,7 @@ import { Observable, combineLatest, Subscription } from 'rxjs';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { ActionBindingModel } from '../../../cases/models/create-case-actions.model';
 import { FormGroup } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 
 /**
  * Entry component wrapper for ccd-search-filters-wrapper ccd-search-result
@@ -54,9 +55,10 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
 
   constructor(
     public store: Store<fromCasesFeature.State>,
-    private appConfig: AppConfig
+    private appConfig: AppConfig,
+    private titleService: Title
   ) {
-
+    this.titleService.setTitle('HMCTS Manage Cases | Find a case');
   }
 
   ngOnInit(): void {

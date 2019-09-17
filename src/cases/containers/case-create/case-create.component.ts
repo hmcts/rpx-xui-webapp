@@ -5,6 +5,7 @@ import * as fromCases from '../../../cases/store';
 import * as fromRoot from '../../../app/store';
 import {ActionBindingModel} from '../../models/create-case-actions.model';
 import {Subscription} from 'rxjs';
+import { Title } from '@angular/platform-browser';
 /**
  * Entry component wrapper for CddCreateCaseFilter
  * Smart Component consuming <ccd-case-create>
@@ -22,7 +23,9 @@ export class CasesCreateComponent implements OnInit, OnDestroy {
   fromCasesFeature: any;
   $inputSubscription: Subscription;
 
-  constructor(private store: Store<fromCaseCreate.State>) {}
+  constructor(private store: Store<fromCaseCreate.State>, private titleService: Title) {
+    this.titleService.setTitle('HMCTS Manage Cases | Create a case');
+  }
 
   ngOnInit(): void {
     this.fromCasesFeature = fromCases;

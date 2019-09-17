@@ -4,6 +4,7 @@ import {Store} from '@ngrx/store';
 import * as fromCaseCreate from '../../store/reducers';
 import {ActionBindingModel} from '../../models/create-case-actions.model';
 import * as fromCasesFeature from '../../store';
+import { Title } from '@angular/platform-browser';
 
 /**
  * Entry component wrapper for CCD-CASE-FILTER component
@@ -34,7 +35,11 @@ export class CaseFilterComponent implements OnInit {
   startButtonText: string;
   caseCreatFilterBindings: ActionBindingModel[];
   fromCasesFeature: any;
-  constructor(private store: Store<fromCaseCreate.State>) {}
+  constructor(private store: Store<fromCaseCreate.State>,
+              private titleService: Title
+    ) {
+      titleService.setTitle('HMCTS Manage Cases | Create a case');
+    }
 
   ngOnInit(): void {
     this.fromCasesFeature = fromCasesFeature;

@@ -30,7 +30,8 @@
         "exclude": [
             "**/*.js",
             "**/*.d.ts",
-            "**/*.spec.ts"
+            "**/*.spec.ts",
+            "local.ts"
         ],
         "reporter": [
             "lcov",

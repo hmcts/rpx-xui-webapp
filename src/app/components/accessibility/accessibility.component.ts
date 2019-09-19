@@ -5,6 +5,9 @@ import { Component } from '@angular/core';
     templateUrl: './accessibility.component.html'
 })
 export class AccessibilityComponent {
-    constructor() {
-    }
+
+  date = '19 September 2019';
+
+  constructor() {
+  }
 }

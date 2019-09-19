@@ -1,4 +1,9 @@
 export default {
+    health: {
+        ccdComponentApi: 'https://ccd-api-gateway-web-ithc.service.core-compute-ithc.internal/health',
+        ccdDataApi: 'https://ccd-data-store-api-ithc.service.core-compute-ithc.internal/health',
+        documentsApi: 'https://dm-store-ithc.service.core-compute-ithc.internal/health',
+    },
     logging: 'debug',
     secureCookie: false,
     services: {
@@ -16,7 +21,7 @@ export default {
             indexUrl: '/',
             oauthCallbackUrl: 'oauth2/callback',
         },
-        s2s: 'https://rpe-service-auth-provider-ithc.service.core-compute-ithc.internal',
+        s2s: 'http://rpe-service-auth-provider-ithc.service.core-compute-ithc.internal',
     },
     sessionSecret: 'secretSauce',
     useProxy: false,

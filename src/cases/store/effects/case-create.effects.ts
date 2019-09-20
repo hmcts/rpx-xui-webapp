@@ -6,13 +6,15 @@ import * as fromRoot from '../../../app/store';
 import * as fromActions from '../actions';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { Router } from '@angular/router';
+import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Injectable()
 export class CaseCreateEffects {
   constructor(
     private actions$: Actions,
     private alertService: AlertService,
-    private router: Router
+    private router: Router,
+    private loggerService: LoggerService
   ) {}
 
   @Effect()
@@ -33,6 +35,7 @@ export class CaseCreateEffects {
       this.router.navigate([`/cases/case-details/${newCases.caseId}`])
       .then(() => {
         this.alertService.success(`Case #${newCases.caseId} has been created.`);
+        this.loggerService.info('Case created successfully');
         return new fromRoot.Go({
           path: [`/cases/case-details/${newCases.caseId}`]
         });

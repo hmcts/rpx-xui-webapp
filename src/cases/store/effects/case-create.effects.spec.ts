@@ -27,10 +27,12 @@ export function getActions() {
   return new TestActions();
 }
 let mockAlertService: any;
+let mockLogger: any;
 describe('CaseCreate Effects', () => {
   let actions$: TestActions;
   let effects: fromEffects.CaseCreateEffects;
   mockAlertService = jasmine.createSpyObj('alertService', ['success']);
+  mockLogger = jasmine.createSpyObj('mockLogger', ['info']);
   let router: Router;
 
   beforeEach(() => {
@@ -45,7 +47,7 @@ describe('CaseCreate Effects', () => {
     actions$ = TestBed.get(Actions);
     router = TestBed.get(Router);
     router.initialNavigation();
-    effects = new fromEffects.CaseCreateEffects(actions$, mockAlertService, router);
+    effects = new fromEffects.CaseCreateEffects(actions$, mockAlertService, router, mockLogger);
 
   });
 

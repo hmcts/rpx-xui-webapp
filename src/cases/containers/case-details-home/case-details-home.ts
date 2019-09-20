@@ -6,7 +6,5 @@ import { Component } from '@angular/core';
   templateUrl: './case-details-home.html'
 })
 export class CaseDetailsHomeComponent {
-  constructor(private titleService: Title) {
-    this.titleService.setTitle('HMCTS Manage Cases | Case');
-  }
+  constructor() {}
 }

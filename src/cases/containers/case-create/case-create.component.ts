@@ -23,8 +23,7 @@ export class CasesCreateComponent implements OnInit, OnDestroy {
   fromCasesFeature: any;
   $inputSubscription: Subscription;
 
-  constructor(private store: Store<fromCaseCreate.State>, private titleService: Title) {
-    this.titleService.setTitle('HMCTS Manage Cases | Create a case');
+  constructor(private store: Store<fromCaseCreate.State>) {
   }
 
   ngOnInit(): void {

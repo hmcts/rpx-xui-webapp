@@ -55,11 +55,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
 
   constructor(
     public store: Store<fromCasesFeature.State>,
-    private appConfig: AppConfig,
-    private titleService: Title
-  ) {
-    this.titleService.setTitle('HMCTS Manage Cases | Find a case');
-  }
+    private appConfig: AppConfig) {}
 
   ngOnInit(): void {
     this.page = 1;

@@ -35,11 +35,7 @@ export class CaseFilterComponent implements OnInit {
   startButtonText: string;
   caseCreatFilterBindings: ActionBindingModel[];
   fromCasesFeature: any;
-  constructor(private store: Store<fromCaseCreate.State>,
-              private titleService: Title
-    ) {
-      titleService.setTitle('HMCTS Manage Cases | Create a case');
-    }
+  constructor(private store: Store<fromCaseCreate.State>) {}
 
   ngOnInit(): void {
     this.fromCasesFeature = fromCasesFeature;

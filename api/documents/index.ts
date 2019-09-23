@@ -25,6 +25,13 @@ export async function getDocumentRoute(req: express.Request, res: express.Respon
  */
 export async function getDocumentBinaryRoute(req: express.Request, res: express.Response) {
     const binary = await DMStore.getDocumentBinary(req.params.document_id)
+    const headers = binary.headers
+
+    res.set({
+      'Content-Disposition': `inline; ${headers['content-disposition']}`,
+      'Content-Length': headers['content-length'],
+      'Content-Type': headers['content-type'],
+    })
     binary.pipe(res)
 }
 

@@ -6,6 +6,8 @@ import * as log4jui from '../lib/log4jui'
 export const router = express.Router({ mergeParams: true })
 const logger = log4jui.getLogger('outgoing')
 
+const that = this
+
 router.get('/', healthCheckRoute)
 
 /*
@@ -35,7 +37,7 @@ const healthCheckEndpointDictionary = {
     endpoint may be different from a regular endpoint
 */
 
-function getPromises(path): any[] {
+export function getPromises(path): any[] {
     const Promises = []
 
     /* Checking whether path can be simplified, ie route has parameters*/
@@ -55,15 +57,14 @@ function getPromises(path): any[] {
     return Promises
 }
 
-async function healthCheckRoute(req, res) {
-
+export async function healthCheckRoute(req, res) {
     try {
         const path = req.query.path
         let PromiseArr = []
         let response = { healthState: true }
 
         if (path !== '') {
-            PromiseArr = getPromises(path)
+            PromiseArr = that.getPromises(path)
         }
 
         // comment out following block to bypass actual check

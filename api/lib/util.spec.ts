@@ -1,12 +1,13 @@
 import * as chai from 'chai'
 import {expect} from 'chai'
 import 'mocha'
+import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
-import {mockReq, mockRes} from 'sinon-express-mock'
-
+import * as log4jui from './log4jui'
 chai.use(sinonChai)
 
 import {asyncReturnOrError, dotNotation, exists, isObject, shorten, some, valueOrNull} from './util'
+import {JUILogger} from "./models";
 
 describe('util', () => {
     describe('isObject', () => {
@@ -111,13 +112,39 @@ describe('util', () => {
         })
     })
     describe('asyncReturnOrError', () => {
-        // @todo - need help with this one
-        // it('Should return data if promise is returned', () => {
-        //     const server = sinon.fakeServer.create()
-        //     server.respondWith('GET', '/test', JSON.stringify({'test': 'this works'}))
-        //
-        //     const result = asyncReturnOrError('/test', 'string', null, null, true)
-        //     expect(result).to.equal(false)
-        // })
+
+        let sandbox
+        let spyObj
+
+        beforeEach( () => {
+            sandbox = sinon.createSandbox()
+            spyObj = {
+                error: sandbox.spy(),
+            }
+            sandbox.stub(log4jui, 'getLogger').returns(spyObj)
+        })
+
+        afterEach( () => {
+            sandbox.restore()
+        })
+
+        it('Should return data if promise is returned', async () => {
+            const promise = Promise.resolve(1)
+
+            const result = await asyncReturnOrError(promise, 'string', null, null, true)
+            expect(result).to.equal(1)
+        })
+
+        it('should log the error and return null on error, with response.status if setResponse is false', async () => {
+            const promise = Promise.reject({
+                response: {
+                    status: 403
+                }
+            })
+            const logger = log4jui.getLogger('util')
+            const result = await asyncReturnOrError(promise, 'string', null, logger, false)
+            expect(logger.error).to.have.been.calledWith('string')
+            expect(result).to.be.null
+        })
     })
 })

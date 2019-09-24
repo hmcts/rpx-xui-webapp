@@ -27,12 +27,12 @@ export class CreateCaseEventTriggerResolver implements Resolve<CaseEventTrigger>
     : this.getAndCacheEventTrigger(route);
   }
 
-  getAndCacheEventTrigger(route: ActivatedRouteSnapshot): Observable<CaseEventTrigger> {
-    let caseTypeId = route.paramMap.get(CreateCaseEventTriggerResolver.PARAM_CASE_TYPE_ID);
-    let eventTriggerId = route.paramMap.get(CreateCaseEventTriggerResolver.PARAM_EVENT_ID);
+  getAndCacheEventTrigger(route: ActivatedRouteSnapshot): any {
+    const caseTypeId = route.paramMap.get(CreateCaseEventTriggerResolver.PARAM_CASE_TYPE_ID);
+    const eventTriggerId = route.paramMap.get(CreateCaseEventTriggerResolver.PARAM_EVENT_ID);
     let ignoreWarning = route.queryParamMap.get(CreateCaseEventTriggerResolver.QUERY_PARAM_IGNORE_WARNING);
-    let draftId = route.queryParamMap.get(DRAFT_QUERY_PARAM);
-    let caseId = undefined;
+    const draftId = route.queryParamMap.get(DRAFT_QUERY_PARAM);
+    let caseId;
 
     if (-1 === CreateCaseEventTriggerResolver.IGNORE_WARNING_VALUES.indexOf(ignoreWarning)) {
       ignoreWarning = 'false';
@@ -41,13 +41,7 @@ export class CreateCaseEventTriggerResolver implements Resolve<CaseEventTrigger>
       caseId = draftId;
     }
     return this.casesService
-      .getEventTrigger(caseTypeId, eventTriggerId, caseId, ignoreWarning)
-      .do(eventTrigger => this.cachedEventTrigger = eventTrigger)
-      .catch((error: HttpError) => {
-        this.alertService.error(error.message);
-
-        return Observable.throw(error);
-      });
+      .getEventTrigger(caseTypeId, eventTriggerId, caseId, ignoreWarning);
   }
 
   private isRootCreateRoute(route: ActivatedRouteSnapshot) {

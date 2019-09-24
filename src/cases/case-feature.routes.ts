@@ -48,24 +48,6 @@ export const ROUTES: Routes = [
           ],
           canActivate: [ HealthCheckGuard ]
         },
-        /**
-         * { path: 'create/case',
-         *   children: [
-         *     {
-         *       path: '',
-         *       component: CaseCreatorComponent
-         *     },
-         *     {
-         *       path: ':jid/:ctid/:eid',
-         *       component: CaseCreatorSubmitComponent,
-         *       resolve: {
-         *         eventTrigger: CreateCaseEventTriggerResolver
-         *       },
-         *       children: caseEditRouting
-         *     }
-         *   ]
-         * },
-         */
         {
           path: 'case-search',
           component: CaseSearchComponent,

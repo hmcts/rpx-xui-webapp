@@ -20,9 +20,13 @@ export class CaseCreateEffects {
   @Effect()
   applyChangeCaseCreateFilter$ = this.actions$.pipe(
     ofType(fromActions.CREATE_CASE_FILTER_APPLY),
-    map(payload => {
+    map((action: fromActions.CaseCreateFilterApply) => action.payload),
+    map(param => {
+      // caseTypeId: "FinancialRemedyForDAC"
+      // eventId: "FR_solicitorCreate"
+      // jurisdictionId: "DIVORCE"
       return new fromRoot.Go({
-        path: ['/cases/case-create']
+        path: [`/cases/case-create/${param.jurisdictionId}/${param.caseTypeId}/${param.eventId}`]
       });
     })
   );

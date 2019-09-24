@@ -1,4 +1,3 @@
-import { Title } from '@angular/platform-browser';
 import { Component } from '@angular/core';
 
 @Component({

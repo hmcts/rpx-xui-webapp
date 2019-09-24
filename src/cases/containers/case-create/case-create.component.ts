@@ -5,7 +5,6 @@ import * as fromCases from '../../../cases/store';
 import * as fromRoot from '../../../app/store';
 import {ActionBindingModel} from '../../models/create-case-actions.model';
 import {Subscription} from 'rxjs';
-import { Title } from '@angular/platform-browser';
 /**
  * Entry component wrapper for CddCreateCaseFilter
  * Smart Component consuming <ccd-case-create>

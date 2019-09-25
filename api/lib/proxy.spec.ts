@@ -7,8 +7,8 @@ import { mockReq, mockRes } from 'sinon-express-mock'
 
 chai.use(sinonChai)
 
-import {http} from '.'
 import { config } from '../config'
+import {http} from './http'
 import * as proxy from './proxy'
 
 describe('proxy', () => {

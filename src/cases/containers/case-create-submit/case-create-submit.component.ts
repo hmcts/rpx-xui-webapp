@@ -4,17 +4,24 @@ import { CaseEventTrigger, CaseEventData, Draft, CaseReferencePipe, CaseEditPage
   CasesService, DraftService } from '@hmcts/ccd-case-ui-toolkit';
 import { Observable } from 'rxjs';
 import { EventStatusService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
+import * as fromCaseCreate from '../../store';
+import {Store} from '@ngrx/store';
+import { ActionBindingModel } from 'src/cases/models/create-case-actions.model';
+import * as fromCases from '../../../cases/store';
 
 @Component({
-  selector: 'exui-case-creator-submit',
-  templateUrl: 'case-creator-submit.component.html'
+  selector: 'exui-case-create-submit',
+  templateUrl: 'case-create-submit.component.html'
 })
-export class CaseCreatorSubmitComponent implements OnInit {
+export class CaseCreateSubmitComponent implements OnInit {
 
   eventTrigger: CaseEventTrigger;
 
   jurisdictionId: string;
   caseTypeId: string;
+
+  caseCreateSubmitEventsBindings: ActionBindingModel[];
+  fromCasesFeature: any;
 
   constructor(
     private casesService: CasesService,
@@ -22,12 +29,14 @@ export class CaseCreatorSubmitComponent implements OnInit {
     private router: Router,
     private alertService: AlertService,
     private route: ActivatedRoute,
-    private caseReferencePipe: CaseReferencePipe
+    private caseReferencePipe: CaseReferencePipe,
+    private store: Store<fromCaseCreate.State>
   ) {
     this.eventTrigger = route.snapshot.data.eventTrigger;
   }
 
   ngOnInit() {
+    this.fromCasesFeature = fromCases;
     this.route.params.subscribe((params: Params) => {
       this.jurisdictionId = params.jid;
       this.caseTypeId = params.ctid;

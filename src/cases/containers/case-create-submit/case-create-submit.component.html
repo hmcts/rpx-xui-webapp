@@ -1,0 +1,27 @@
+<!-- <div class="screen-990">
+  <ccd-case-edit [submit]="submit()"
+                 [validate]="validate()"
+                 [saveDraft]="saveDraft()"
+                 [eventTrigger]="eventTrigger"
+                 (cancelled)="cancel($event)"
+                 (submitted)="submitted($event)"></ccd-case-edit>
+</div>
+ -->
+
+<exui-page-wrapper>
+  <exui-ccd-connector
+    *exuiFeatureToggle="'ccdCaseCreate'"
+    [eventsBindings]="caseCreateSubmitEventsBindings"
+    [store]="store"
+    [fromFeatureStore]="fromCasesFeature">
+    <ccd-case-edit
+      #ccdComponent 
+      [submit]="submit()"
+      [validate]="validate()"
+      [saveDraft]="saveDraft()"
+      [eventTrigger]="eventTrigger"
+      (cancelled)="cancel($event)"
+      (submitted)="submitted($event)">
+    </ccd-case-edit>
+  </exui-ccd-connector>
+</exui-page-wrapper>

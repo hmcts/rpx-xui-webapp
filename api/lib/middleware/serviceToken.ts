@@ -12,6 +12,7 @@ const microservice = config.microservice
 export function validateCache() {
   logger.info('validaing s2s cache')
   const currentTime = Math.floor(Date.now() / 1000)
+  /* istanbul ignore else */
   if (!_cache[microservice]) {
     return false
   }
@@ -47,7 +48,8 @@ export async function serviceTokenGenerator() {
 }
 
 export default async (req, res, next) => {
-  const token = await asyncReturnOrError(serviceTokenGenerator(), 'Error getting s2s token', res, logger)
+  const token = await asyncReturnOrError(that.serviceTokenGenerator(), 'Error getting s2s token', res, logger)
+  /* istanbul ignore else */
   if (token) {
     logger.info('Attaching s2s token')
     req.headers.ServiceAuthorization = token

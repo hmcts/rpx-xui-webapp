@@ -7,24 +7,68 @@ import { mockReq, mockRes } from 'sinon-express-mock'
 
 chai.use(sinonChai)
 
-import * as serviceToken from './serviceToken'
 import * as serviceAuth from '../../services/serviceAuth'
+import * as serviceToken from './serviceToken'
 
 import {generateToken} from './serviceToken'
 
 describe('serviceToken', () => {
-  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
+  // tslint:disable-next-line:max-line-length
+  const token = `eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1Njk0MTc2OTQsImp0aSI6IjZiMmJhMzZmLTYyMTktNDJkNi05Mjc1LTIzOWUwMjcxZTM2MCIsImlhdCI6MTU2OTQxNDA5NH0.FlW379B-WKJe3jBg7fB3XfZtbiTSPkNnpiIK_MviGMY`
+  const tokenExpires = 1569417694
 
   describe('validateCache', () => {
-    it('Should load currentTime', () => {
 
+    let sandbox
+
+    beforeEach( () => {
+      sandbox = sinon.createSandbox()
+      sandbox.stub(serviceAuth, 'postS2SLease').resolves(token)
     })
-  });
+
+    afterEach( () => {
+      sandbox.restore()
+    })
+
+    it('Should return false if microservice is not in cache', () => {
+      expect(serviceToken.validateCache()).to.be.false
+    })
+    it('should return false if microservice is expired', async () => {
+      const clock = sinon.useFakeTimers(tokenExpires * 1000)
+      await serviceToken.generateToken()
+      expect(serviceToken.validateCache()).to.be.false
+      clock.restore()
+    })
+
+    it('should return true if microservice has not expired', async () => {
+      const clock = sinon.useFakeTimers((tokenExpires - 1) * 1000)
+      await serviceToken.generateToken()
+      expect(serviceToken.validateCache()).to.be.true
+      clock.restore()
+    })
+  })
   describe('getToken', () => {
-    it('Should return cache microservice', () => {
 
+    let sandbox
+
+    beforeEach( () => {
+      sandbox = sinon.createSandbox()
+      sandbox.stub(serviceAuth, 'postS2SLease').resolves(token)
     })
-  });
+
+    afterEach( () => {
+      sandbox.restore()
+    })
+
+    it('Should return cache microservice', async () => {
+      const clock = sinon.useFakeTimers(tokenExpires * 1000)
+      await serviceToken.generateToken()
+      const s2sToken = serviceToken.getToken()
+      expect(s2sToken.expiresAt).to.be.equal(tokenExpires)
+      expect(s2sToken.token).to.be.equal(token)
+      clock.restore()
+    })
+  })
   describe('generateToken', () => {
     it('Should call postS2SLease so that it generates token. ', async () => {
       const sandbox = sinon.createSandbox()
@@ -59,6 +103,21 @@ describe('serviceToken', () => {
       const retValue = await serviceToken.serviceTokenGenerator()
       expect(retValue).to.equal(token)
       sandbox.restore()
+    })
+  })
+
+  describe('serviceToken default', async () => {
+    it('should set the ServiceAuthorization on request header', async () => {
+      const sandbox = sinon.createSandbox()
+      const req = mockReq({
+        headers: {}
+      })
+      const res = mockRes()
+      const next = sandbox.spy()
+      sandbox.stub(serviceToken, 'serviceTokenGenerator').resolves(token)
+      await serviceToken.default(req, res, next)
+      expect(req.headers.ServiceAuthorization).to.be.equal(token)
+      expect(next).to.have.been.called
     })
   })
 })

@@ -6,21 +6,21 @@ import { asyncReturnOrError } from '../util'
 
 const logger = log4jui.getLogger('service-token')
 const that = this
-const _cache = {}
+const cache = {}
 const microservice = config.microservice
 
 export function validateCache() {
   logger.info('validaing s2s cache')
   const currentTime = Math.floor(Date.now() / 1000)
   /* istanbul ignore else */
-  if (!_cache[microservice]) {
+  if (!cache[microservice]) {
     return false
   }
-  return currentTime < _cache[microservice].expiresAt
+  return currentTime < cache[microservice].expiresAt
 }
 
 export function getToken() {
-  return _cache[microservice]
+  return cache[microservice]
 }
 
 export async function generateToken() {
@@ -29,7 +29,7 @@ export async function generateToken() {
 
   const tokenData: any = jwtDecode(token)
 
-  _cache[microservice] = {
+  cache[microservice] = {
     expiresAt: tokenData.exp,
     token,
   }

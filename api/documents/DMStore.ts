@@ -2,7 +2,6 @@ import {AxiosResponse} from 'axios'
 import * as FormData from 'form-data'
 import {Fields, File, Files} from 'formidable'
 import * as fs from 'fs'
-import * as stream from 'stream'
 import { config } from '../config'
 import { http } from '../lib/http'
 import * as log4jui from '../lib/log4jui'
@@ -34,10 +33,10 @@ export async function getDocument(documentId: string): Promise<DMDocument> {
 /**
  * Streams contents of the most recent Document Content Version associated with the Stored Document.
  * @param documentId
- * @returns Promise<stream.Readable>
+ * @returns Promise<any>
  */
-export async function getDocumentBinary(documentId: string): Promise<stream.Readable> {
-    const response: AxiosResponse<stream.Readable> = await asyncReturnOrError(
+export async function getDocumentBinary(documentId: string): Promise<any> {
+    const response: AxiosResponse<any> = await asyncReturnOrError(
         http.get(`${url}/documents/${documentId}/binary`, { responseType: 'stream' }),
         `Error getting Binary for document ${documentId}`,
         null,

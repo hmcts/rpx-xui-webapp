@@ -1,8 +1,8 @@
 import * as log4js from 'log4js'
 import { config } from '../config'
-import * as errorStack from '../lib/errorStack'
-import { JUILogger } from '../lib/models'
 import { client } from './appInsights'
+import * as errorStack from './errorStack'
+import { JUILogger } from './models'
 
 import { isReqResSet, request } from './middleware/responseRequest'
 

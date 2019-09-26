@@ -1,0 +1,114 @@
+import * as chai from 'chai'
+import { expect } from 'chai'
+import 'mocha'
+import * as sinon from 'sinon'
+import * as sinonChai from 'sinon-chai'
+import { mockReq, mockRes } from 'sinon-express-mock'
+
+chai.use(sinonChai)
+
+import { config } from '../config'
+import {http} from './http'
+import * as proxy from './proxy'
+
+describe('proxy', () => {
+
+  let next
+  let sandbox
+  let req
+  let res
+  let result
+  let spy: any
+  let spyPost: any
+  let spyPut: any
+
+  beforeEach(() => {
+    sandbox = sinon.createSandbox()
+
+    result = {
+      data: 'okay',
+    }
+
+    spy = sandbox.stub(http, 'get').resolves(result)
+    spyPost = sandbox.stub(http, 'post').resolves(result)
+    spyPut = sandbox.stub(http, 'put').resolves(result)
+
+    next = sandbox.spy()
+    res = mockRes()
+    req = mockReq({
+      url: 'fdafu4543543/binary',
+      baseUrl: '/api/documents/',
+      cookies: [],
+      headers: {
+        'accept': '*/*',
+        'content-type': 'text/test',
+        'experimental': 'experiment/test'
+      },
+      session: {
+        save: fun => {
+          fun()
+        },
+      },
+    })
+
+  })
+
+  afterEach(() => {
+    sandbox.restore()
+  })
+
+  it('should set content type', () => {
+    req.headers.accept = false
+    req.headers.experimental = false
+    const headers = proxy.setHeaders(req)
+    expect(headers).to.deep.equal({ 'content-type': 'text/test' })
+  })
+
+  it('should return a headers object from request', () => {
+    const headers = proxy.setHeaders(req)
+    expect(headers).to.deep.equal(req.headers)
+  })
+
+  it('should proxy a get request', async () => {
+    const url = `${config.services.ccd.componentApi}${req.baseUrl}${req.url}`
+    await proxy.get(req, res)
+    expect(spy).to.have.been.calledWith(url)
+    expect(res.send).to.have.been.calledWith(result.data)
+  })
+
+  it('should catch any errors upon proxy get request', async () => {
+    spy.restore()
+    spy = sandbox.stub(http, 'get').throws({ response: { data: 'error occurred'}})
+    await proxy.get(req, res)
+    expect(res.send).to.have.been.calledWith('error occurred')
+  })
+
+  it('should proxy a put request', async () => {
+    const url = `${config.services.ccd.componentApi}${req.baseUrl}${req.url}`
+    await proxy.put(req, res)
+    expect(spyPut).to.have.been.calledWith(url)
+    expect(res.send).to.have.been.calledWith(result.data)
+  })
+
+  it('should catch any errors upon proxy put request', async () => {
+    spyPut.restore()
+    spyPut = sandbox.stub(http, 'put').throws({ response: { data: 'error occurred'}})
+    await proxy.put(req, res)
+    expect(res.send).to.have.been.calledWith('error occurred')
+  })
+
+  it('should proxy a post request', async () => {
+    const url = `${config.services.ccd.componentApi}${req.baseUrl}${req.url}`
+    await proxy.post(req, res)
+    expect(spyPost).to.have.been.calledWith(url)
+    expect(res.send).to.have.been.calledWith(result.data)
+  })
+
+  it('should catch any errors upon proxy post request', async () => {
+    spyPost.restore()
+    spyPost = sandbox.stub(http, 'post').throws({ data: 'error occurred'})
+    await proxy.post(req, res)
+    expect(res.send).to.have.been.calledWith('error occurred')
+  })
+
+})

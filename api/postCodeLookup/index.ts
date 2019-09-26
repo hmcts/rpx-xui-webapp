@@ -1,9 +1,10 @@
+import * as express from 'express'
 import { config } from '../config'
 import { http } from '../lib/http'
 
-export async function doLookup(req: any, res, next) {
-    try {
+export async function doLookup(req: express.Request, res: express.Response) {
 
+    try {
         const postcode = req.query.postcode
 
         const url = `${config.services.ccd.componentApi}/addresses?postcode=${postcode}`

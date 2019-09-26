@@ -12,7 +12,7 @@ export function errorStack(req: EnhancedRequest, res: express.Response, next: ex
 
     next()
 }
-// if the data is ana rray the first entry will be a key when returned by get()
+// if the data is an array the first entry will be a key when returned by get()
 export function push(data: any): void {
     if (request && request.session) {
         request.session.errorStack.push(data)

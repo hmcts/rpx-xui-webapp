@@ -36,7 +36,7 @@ describe('CreateCaseFieldsResolver', () => {
     casesService = createSpyObj('casesService', ['getEventTrigger']);
     alertService = createSpyObj('alertService', ['error']);
 
-    createCaseFieldsResolver = new CreateCaseEventTriggerResolver(casesService, alertService);
+    createCaseFieldsResolver = new CreateCaseEventTriggerResolver(casesService);
 
     route = {
       paramMap: createSpyObj('paramMap', ['get']),
@@ -62,49 +62,6 @@ describe('CreateCaseFieldsResolver', () => {
     });
   });
 
-  it('should resolve event trigger and cache when route is :jid/:ctid/:eid', () => {
-    casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OBS);
-    expect(createCaseFieldsResolver['cachedEventTrigger']).toBeUndefined();
-
-    createCaseFieldsResolver
-      .resolve(route)
-      .subscribe(triggerData => {
-        expect(triggerData).toBe(EVENT_TRIGGER);
-      });
-
-    expect(casesService.getEventTrigger).toHaveBeenCalledWith(
-      CASE_TYPE, EVENT_TRIGGER_ID, undefined, String(IGNORE_WARNINGS));
-    expect(route.paramMap.get).toHaveBeenCalledWith(PARAM_CASE_TYPE_ID);
-    expect(route.paramMap.get).toHaveBeenCalledWith(PARAM_EVENT_ID);
-    expect(route.queryParamMap.get).toHaveBeenCalledWith(QUERY_PARAM_IGNORE_WARNINGS);
-    expect(route.queryParamMap.get).toHaveBeenCalledWith(DRAFT_QUERY_PARAM);
-    expect(route.paramMap.get).toHaveBeenCalledTimes(2);
-    expect(route.queryParamMap.get).toHaveBeenCalledTimes(2);
-    expect(createCaseFieldsResolver['cachedEventTrigger']).toBe(EVENT_TRIGGER);
-  });
-
-  it('should resolve event trigger when route is not :jid/:ctid/:eid but cache is empty', () => {
-    route = {
-      firstChild: {
-          url: ['someChild']
-        },
-      queryParamMap : createSpyObj('queryParamMap', ['get']),
-      paramMap: createSpyObj('paramMap', ['get'])
-    };
-    casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OBS);
-    expect(createCaseFieldsResolver['cachedEventTrigger']).toBeUndefined();
-
-    createCaseFieldsResolver
-      .resolve(route)
-      .subscribe(triggerData => {
-        expect(triggerData).toBe(EVENT_TRIGGER);
-      });
-
-    expect(casesService.getEventTrigger).toHaveBeenCalled();
-    expect(route.paramMap.get).toHaveBeenCalledWith(PARAM_EVENT_ID);
-    expect(createCaseFieldsResolver['cachedEventTrigger']).toBe(EVENT_TRIGGER);
-  });
-
   it('should return cached event trigger when route is not :jid/:ctid/:eid if cache is not empty', () => {
     route = {
       firstChild: {
@@ -114,7 +71,7 @@ describe('CreateCaseFieldsResolver', () => {
       paramMap: createSpyObj('paramMap', ['get'])
     };
     casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OBS);
-    createCaseFieldsResolver['cachedEventTrigger'] = EVENT_TRIGGER;
+    createCaseFieldsResolver.cachedEventTrigger = EVENT_TRIGGER;
 
     createCaseFieldsResolver
       .resolve(route)
@@ -123,7 +80,7 @@ describe('CreateCaseFieldsResolver', () => {
       });
 
     expect(casesService.getEventTrigger).not.toHaveBeenCalled();
-    expect(createCaseFieldsResolver['cachedEventTrigger']).toBe(EVENT_TRIGGER);
+    expect(createCaseFieldsResolver.cachedEventTrigger).toBe(EVENT_TRIGGER);
   });
 
   it('should use draftId when resuming create event ', () => {
@@ -151,17 +108,4 @@ describe('CreateCaseFieldsResolver', () => {
     expect(route.queryParamMap.get).toHaveBeenCalledTimes(2);
   });
 
-  it('should create error alert when event trigger cannot be retrieved', done => {
-    casesService.getEventTrigger.and.returnValue(Observable.throw(ERROR));
-
-    createCaseFieldsResolver
-      .resolve(route)
-      .subscribe(data => {
-        fail(data);
-      }, err => {
-        expect(err).toBeTruthy();
-        expect(alertService.error).toHaveBeenCalledWith(ERROR.message);
-        done();
-      });
-  });
 });

@@ -28,12 +28,11 @@ export async function getPrintout(req: EnhancedRequest, res: express.Response) {
 
   try {
     const htmlResponse = await getCcdPrintout(printoutPath)
-    console.log('htmlResponse')
-    console.log(htmlResponse)
     res.status(200).send(htmlResponse)
   } catch (error) {
-    console.log('error')
-    console.log(error)
-    res.status(error.status).send(error)
+    res.status(error.status).send({
+      errorMessage: error.data,
+      errorStatusText: error.statusText,
+    })
   }
 }

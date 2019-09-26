@@ -1,9 +1,7 @@
-import * as express from 'express'
 import * as otp from 'otp'
 import { config } from '../config'
 import { http } from '../lib/http'
 import * as log4jui from '../lib/log4jui'
-import { getHealth, getInfo } from '../lib/util'
 
 const url = config.services.s2s
 const microservice = config.microservice
@@ -26,17 +24,4 @@ export async function postS2SLease() {
     })
 
     return request.data
-}
-
-export default app => {
-    const router = express.Router({ mergeParams: true })
-    app.use('/s2s', router)
-
-    router.get('/health', (req, res, next) => {
-        res.status(200).send(getHealth(url))
-    })
-
-    router.get('/info', (req, res, next) => {
-        res.status(200).send(getInfo(url))
-    })
 }

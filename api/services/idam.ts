@@ -1,8 +1,7 @@
-import * as express from 'express'
 import { config } from '../config'
 import { http } from '../lib/http'
 import { isReqResSet, request } from '../lib/middleware/responseRequest'
-import { getHealth, getInfo, valueOrNull } from '../lib/util'
+import { valueOrNull } from '../lib/util'
 
 const url = config.services.idam.idamApiUrl
 
@@ -16,6 +15,7 @@ export async function getDetails(token: string = null) {
     // lets try and see if we have these already
     let details
 
+    /* istanbul ignore else */
     if (isReqResSet()) {
         const req = request()
         details = valueOrNull(req, 'session.user')
@@ -52,21 +52,4 @@ export async function postOauthToken(code, host) {
     const response = await http.post(urlX, {}, options)
 
     return response.data
-}
-
-export default app => {
-    const router = express.Router({ mergeParams: true })
-    app.use('/idam', router)
-
-    router.get('/health', (req, res, next) => {
-        res.status(200).send(getHealth(url))
-    })
-
-    router.get('/info', (req, res, next) => {
-        res.status(200).send(getInfo(url))
-    })
-
-    router.get('/details', (req, res, next) => {
-        res.status(200).send(getDetails())
-    })
 }

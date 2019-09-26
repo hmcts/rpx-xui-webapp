@@ -16,7 +16,7 @@
           <ul
               class="hmcts-footer__list hmcts-footer__list--inline">
               <li class="hmcts-footer__list-item" *ngFor="let item of navigation.items">
-                  <a class="hmcts-footer__link" href="{{item.href}}">{{item.text}}</a>
+                  <a class="govuk-footer__link" [routerLink]="item.href" [target]="item.target">{{item.text}}</a>
               </li>
           </ul>
       </div>

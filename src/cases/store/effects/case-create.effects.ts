@@ -6,13 +6,15 @@ import * as fromRoot from '../../../app/store';
 import * as fromActions from '../actions';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { Router } from '@angular/router';
+import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Injectable()
 export class CaseCreateEffects {
   constructor(
     private actions$: Actions,
     private alertService: AlertService,
-    private router: Router
+    private router: Router,
+    private loggerService: LoggerService
   ) {}
 
   @Effect()
@@ -30,16 +32,19 @@ export class CaseCreateEffects {
     ofType(fromActions.CREATE_CASE_APPLY),
     map((action: fromActions.ApplyChange) => action.payload),
     map(newCases => {
-      this.router.navigate([`/cases/case-details/${newCases.caseId}`])
-      .then(() => {
-        this.alertService.success(`Case #${newCases.caseId} has been created.`);
-        return new fromRoot.Go({
-          path: [`/cases/case-details/${newCases.caseId}`]
+        return new fromRoot.CreateCaseGo({
+          path: [`/cases/case-details/${newCases.caseId}`],
+          caseId: newCases.caseId
         });
-      });
     })
   );
 
+  @Effect()
+  applyCreatedCaseLoaded$ = this.actions$.pipe(
+    ofType(fromActions.CREATED_CASE_LOADED),
+    map((payload: any) => {
+       this.alertService.success(`Case #${payload.caseId} has been created.`);
+       return new fromRoot.NewCaseLoadedSuccessfully();
+    }),
+  );
 }
-
-

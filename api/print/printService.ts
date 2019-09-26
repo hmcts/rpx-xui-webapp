@@ -18,13 +18,7 @@ const logger: JUILogger = log4jui.getLogger('print-service')
  */
 export async function getCcdPrintout(printPath) {
 
-  const response: AxiosResponse = await asyncReturnOrError(
-    http.get(printPath),
-    `Error getting ${printPath}`,
-    null,
-    logger,
-    false
-  )
+  const response = await http.get(printPath)
 
-  return response ? response.data : null
+  return response.data
 }

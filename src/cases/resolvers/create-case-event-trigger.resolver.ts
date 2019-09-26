@@ -14,7 +14,7 @@ export class CreateCaseEventTriggerResolver implements Resolve<CaseEventTrigger>
   public static readonly QUERY_PARAM_IGNORE_WARNING = 'ignoreWarning';
   private static readonly IGNORE_WARNING_VALUES = [ 'true', 'false' ];
 
-  private cachedEventTrigger: CaseEventTrigger;
+  cachedEventTrigger: CaseEventTrigger;
 
   constructor(
     private casesService: CasesService,

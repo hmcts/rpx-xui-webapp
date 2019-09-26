@@ -29,8 +29,6 @@ export const ROUTES: Routes = [
         },
         {
           path: 'case-create',
-          // component: CasesCreateComponent,
-          // children: editorRouting,
           children: [
             {
               path: '',

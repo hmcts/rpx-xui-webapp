@@ -1,3 +1,4 @@
+import { CaseDetailsHomeComponent } from './containers/case-details-home/case-details-home';
 import { CaseHomeComponent } from './containers/case-home/case-home.component';
 // routes
 import { RouterModule, Routes } from '@angular/router';
@@ -20,12 +21,18 @@ export const ROUTES: Routes = [
         {
           path: '',
           component: CaseListComponent,
-          canActivate: [ HealthCheckGuard ]
+          canActivate: [ HealthCheckGuard ],
+          data: {
+            title: 'HMCTS Manage Cases | Case list'
+          }
         },
         {
           path: 'case-filter',
           component: CaseFilterComponent,
-          canActivate: [ HealthCheckGuard ]
+          canActivate: [ HealthCheckGuard ],
+          data: {
+            title: 'HMCTS Manage Cases | Create a case'
+          }
         },
         {
           path: 'case-create',
@@ -43,22 +50,35 @@ export const ROUTES: Routes = [
               children: editorRouting
             }
           ],
-          canActivate: [ HealthCheckGuard ]
+          canActivate: [ HealthCheckGuard ],
+          data: {
+            title: 'HMCTS Manage Cases | Create a case'
+          }
         },
         {
           path: 'case-search',
           component: CaseSearchComponent,
           children: editorRouting,
-          canActivate: [ HealthCheckGuard ]
+          canActivate: [ HealthCheckGuard ],
+          data: {
+            title: 'HMCTS Manage Cases | Find a case'
+          }
         },
         {
           path: 'case-details/:cid',
-          resolve: {
-            case: CaseResolver
-          },
-          runGuardsAndResolvers: 'always',
-          children: caseViewRouting,
-          canActivate: [ HealthCheckGuard ]
+          component: CaseDetailsHomeComponent,
+          children: [
+            {
+              path: '', resolve: { case: CaseResolver },
+              runGuardsAndResolvers: 'always',
+              children: caseViewRouting,
+              canActivate: [ HealthCheckGuard ],
+            }
+          ],
+          canActivate: [ HealthCheckGuard ],
+          data: {
+            title: 'HMCTS Manage Cases | Case'
+          }
         }
       ]
     },

@@ -60,7 +60,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
     public store: Store<fromCaseList.State>,
     private appConfig: AppConfig,
     private definitionsService: DefinitionsService,
-  ) { }
+  ) {
+  }
 
   ngOnInit() {
     this.page = 1;

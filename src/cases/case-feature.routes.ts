@@ -6,10 +6,11 @@ import { CaseListComponent } from './containers/case-list/case-list.component';
 import { CaseFilterComponent } from './containers/case-filter/case-filter.component';
 
 import { CaseSearchComponent } from './containers/case-search/case-search.component';
-import {CasesCreateComponent } from './containers';
+import {CasesCreateComponent, CaseCreateSubmitComponent } from './containers';
 import {viewerRouting as caseViewRouting, editorRouting, CaseResolver} from '@hmcts/ccd-case-ui-toolkit';
 import {CaseDetailsComponent} from './containers/case-details/case-details.component';
 import { HealthCheckGuard } from 'src/app/shared/guards/health-check.guard';
+import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
 
 export const ROUTES: Routes = [
     {
@@ -28,8 +29,20 @@ export const ROUTES: Routes = [
         },
         {
           path: 'case-create',
-          component: CasesCreateComponent,
-          children: editorRouting,
+          children: [
+            {
+              path: '',
+              component: CasesCreateComponent
+            },
+            {
+              path: ':jid/:ctid/:eid',
+              component: CaseCreateSubmitComponent,
+              resolve: {
+                eventTrigger: CreateCaseEventTriggerResolver
+              },
+              children: editorRouting
+            }
+          ],
           canActivate: [ HealthCheckGuard ]
         },
         {

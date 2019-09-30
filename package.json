@@ -41,9 +41,7 @@
     "test:apiGateway": "echo 'not implemented'",
     "sonar-scan": "node_modules/sonar-scanner/bin/sonar-scanner",
     "test:accessibility-local": "pa11y-ci --config .pa11yci_local.json",
-    "test:accessibility-aat": "pa11y-ci --config .pa11yci_aat.json",
-    "test:accessibility-ithc": "pa11y-ci --config .pa11yci_ithc.json",
-    "test:accessibility-prod": "pa11y-ci --config .pa11yci_prod.json"
+    "test:accessibility-aat": "pa11y-ci --config .pa11yci_aat.json"
   },
   "private": true,
   "dependencies": {

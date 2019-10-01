@@ -22,7 +22,8 @@ export class CasesCreateComponent implements OnInit, OnDestroy {
   fromCasesFeature: any;
   $inputSubscription: Subscription;
 
-  constructor(private store: Store<fromCaseCreate.State>) {}
+  constructor(private store: Store<fromCaseCreate.State>) {
+  }
 
   ngOnInit(): void {
     this.fromCasesFeature = fromCases;

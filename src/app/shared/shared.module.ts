@@ -8,6 +8,7 @@ import {RouterModule} from '@angular/router';
 import {CommonModule} from '@angular/common';
 import { HealthCheckGuard } from './guards/health-check.guard';
 import { HealthCheckService } from './services/health-check.service';
+import { ExUITitleService } from './services/exui-title.service';
 
 /**
  * Shared Module
@@ -28,7 +29,8 @@ import { HealthCheckService } from './services/health-check.service';
   ],
   providers: [
     HealthCheckGuard,
-    HealthCheckService
+    HealthCheckService,
+    ExUITitleService
   ],
 })
 export class SharedModule {}

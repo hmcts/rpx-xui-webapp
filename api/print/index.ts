@@ -15,15 +15,12 @@ import {config} from '../config'
  * We overwrite the 'remote_print_service_url' to point to '/print'. '/print' hits our Node layer, so that
  * we are able to attach an authorisation token to the request.
  *
- * TODO: Path to print should be taken from the Azure key values pairs, so that it doesn't just work on AAT.
- *
  * @see ccd-case-ui-toolkit print-url.pipe.ts
  */
 export async function getPrintout(req: EnhancedRequest, res: express.Response) {
 
-  //const url: string = config.services.documents.api
-  const basePrintUrl = `https://gateway-ccd.aat.platform.hmcts.net`
-  const printoutPath = basePrintUrl + req.originalUrl
+  const url: string = config.services.ccd.componentApi
+  const printoutPath = url + req.originalUrl
 
   try {
     const htmlResponse = await getCcdPrintout(printoutPath)

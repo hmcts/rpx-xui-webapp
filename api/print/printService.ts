@@ -1,6 +1,4 @@
 import {http} from '../lib/http'
-import {AxiosResponse} from 'axios'
-import {asyncReturnOrError} from '../lib/util'
 import * as log4jui from '../lib/log4jui'
 import {JUILogger} from '../lib/models'
 

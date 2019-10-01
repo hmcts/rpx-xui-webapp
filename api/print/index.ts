@@ -16,7 +16,6 @@ import {config} from '../config'
  * we are able to attach an authorisation token to the request.
  *
  * TODO: Path to print should be taken from the Azure key values pairs, so that it doesn't just work on AAT.
- * TODO: Unit test
  *
  * @see ccd-case-ui-toolkit print-url.pipe.ts
  */

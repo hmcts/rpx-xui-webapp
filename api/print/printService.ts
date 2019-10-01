@@ -16,7 +16,13 @@ const logger: JUILogger = log4jui.getLogger('print-service')
  */
 export async function getCcdPrintout(printPath) {
 
-  const response = await http.get(printPath)
+    try {
+        logger.info('getting print document', printPath)
+        const response = await http.get(printPath)
+        return response.data
+    } catch (e) {
+        logger.error(e.message)
+        throw e
+    }
 
-  return response.data
 }

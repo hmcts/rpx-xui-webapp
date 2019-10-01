@@ -1,7 +1,7 @@
-import {EnhancedRequest} from '../lib/models'
 import * as express from 'express'
-import {getCcdPrintout} from './printService'
 import {config} from '../config'
+import {EnhancedRequest} from '../lib/models'
+import {getCcdPrintout} from './printService'
 
 /**
  * getPrintout

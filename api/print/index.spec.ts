@@ -5,15 +5,16 @@ import 'mocha'
 import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
 import { mockReq, mockRes } from 'sinon-express-mock'
-import * as printService from './printService'
+import {config} from '../config'
 import { getPrintout } from './index'
+import * as printService from './printService'
 
 chai.use(sinonChai)
 describe('print - getPrintout', () => {
 
     let sandbox
     let spy: any
-    const service = `https://gateway-ccd.aat.platform.hmcts.net`
+    const service: string = config.services.ccd.componentApi
     const reqQuery = {
         originalUrl: '/print/12345',
     }

@@ -99,7 +99,7 @@ describe('serviceToken', () => {
     it('Method should be called with validate value FALSE so that and return token', async () => {
       const sandbox = sinon.createSandbox()
       sandbox.stub(serviceToken, 'validateCache').returns(false)
-      sandbox.stub(serviceToken, 'generateToken').returns(token)
+      sandbox.stub(serviceToken, 'generateToken').resolves(token)
       const retValue = await serviceToken.serviceTokenGenerator()
       expect(retValue).to.equal(token)
       sandbox.restore()

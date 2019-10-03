@@ -12,6 +12,7 @@ import healthCheck from './healthCheck'
 import { errorStack } from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
 import * as postCodeLookup from './postCodeLookup'
+import {router as printRouter} from './print/routes'
 import routes from './routes'
 
 config.environment = process.env.XUI_ENV || 'local'
@@ -94,5 +95,8 @@ app.use('/aggregated', routes)
 app.use('/data', routes)
 // separate route for document upload/view
 app.use('/documents', documentRouter)
+
+app.use('/print', printRouter)
+
 const logger = log4jui.getLogger('Application')
 logger.info(`Started up on ${config.environment || 'local'} using ${config.protocol}`)

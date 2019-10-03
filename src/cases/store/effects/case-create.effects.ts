@@ -22,9 +22,6 @@ export class CaseCreateEffects {
     ofType(fromActions.CREATE_CASE_FILTER_APPLY),
     map((action: fromActions.CaseCreateFilterApply) => action.payload),
     map(param => {
-      // caseTypeId: "FinancialRemedyForDAC"
-      // eventId: "FR_solicitorCreate"
-      // jurisdictionId: "DIVORCE"
       return new fromRoot.Go({
         path: [`/cases/case-create/${param.jurisdictionId}/${param.caseTypeId}/${param.eventId}`]
       });
@@ -48,6 +45,7 @@ export class CaseCreateEffects {
     ofType(fromActions.CREATED_CASE_LOADED),
     map((payload: any) => {
        this.alertService.success(`Case #${payload.caseId} has been created.`);
+       this.loggerService.info('Case created successfully');
        return new fromRoot.NewCaseLoadedSuccessfully();
     }),
   );

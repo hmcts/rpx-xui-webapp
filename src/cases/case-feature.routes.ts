@@ -67,14 +67,9 @@ export const ROUTES: Routes = [
         {
           path: 'case-details/:cid',
           component: CaseDetailsHomeComponent,
-          children: [
-            {
-              path: '', resolve: { case: CaseResolver },
-              runGuardsAndResolvers: 'always',
-              children: caseViewRouting,
-              canActivate: [ HealthCheckGuard ],
-            }
-          ],
+          resolve: { case: CaseResolver },
+          runGuardsAndResolvers: 'always',
+          children: caseViewRouting,
           canActivate: [ HealthCheckGuard ],
           data: {
             title: 'HMCTS Manage Cases | Case'

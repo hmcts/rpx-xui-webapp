@@ -218,7 +218,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   }
 
   findCaseListPaginationMetadata(event) {
-    if ( event != null) {
+    if (event != null) {
       this.store.dispatch(new fromCasesFeature.FindCaselistPaginationMetadata(event));
     }
   }

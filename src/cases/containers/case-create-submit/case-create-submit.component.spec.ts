@@ -19,17 +19,40 @@ import {combineReducers, StoreModule} from '@ngrx/store';
 import { SharedModule } from '../../../app/shared/shared.module';
 import { AppConfigService } from '../../../app/services/config/configuration.services';
 import { CaseCreateSubmitComponent } from './case-create-submit.component';
-import { reducers } from 'src/app/store';
 import * as fromCases from '../../store/reducers';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { HttpModule } from '@angular/http';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
+
 class MockSortService {
   features = {};
   getFeatureToggle() { }
   getEditorConfiguration() { }
 }
+
+const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger(
+  'TEST_TRIGGER',
+  'Test Trigger',
+  'caseId',
+  false,
+  [
+    ({
+      id: 'PersonFirstName',
+      label: 'First name',
+      field_type: null,
+      display_context: 'READONLY'
+    }) as CaseField,
+    ({
+      id: 'PersonLastName',
+      label: 'Last name',
+      field_type: null,
+      display_context: 'OPTIONAL'
+    }) as CaseField
+  ],
+  [],
+  true
+);
 
 const SANITISED_EDIT_FORM: CaseEventData = {
   data: {
@@ -51,36 +74,13 @@ describe('CaseCaseComponent', () => {
   let draftService: DraftService;
 
   beforeEach(async(() => {
-    const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger(
-      'TEST_TRIGGER',
-      'Test Trigger',
-      'caseId',
-      false,
-      [
-        ({
-          id: 'PersonFirstName',
-          label: 'First name',
-          field_type: null,
-          display_context: 'READONLY'
-        }) as CaseField,
-        ({
-          id: 'PersonLastName',
-          label: 'Last name',
-          field_type: null,
-          display_context: 'OPTIONAL'
-        }) as CaseField
-      ],
-      [],
-      true
-    );
-
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
         CaseUIToolkitModule,
         HttpModule,
         HttpClientTestingModule,
-        StoreModule.forRoot({...reducers, cases: combineReducers(fromCases.reducers)}),
+        StoreModule.forRoot({...fromCases.reducers, cases: combineReducers(fromCases.reducers)}),
         SharedModule
       ],
       declarations: [CaseCreateSubmitComponent],

@@ -202,21 +202,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
    */
   getToggleButtonName = (showFilter: boolean): string => showFilter ? 'Hide Filter' : 'Show Filter';
 
-  /**
-   * TODO: This needs to take in the event. Side effecting is currently happening, making it
-   * harder to test.
-   *
-   * TODO: What is LS?
-   */
-  checkLSAndTrigger() {
-    console.log('checkLSAndTrigger');
-    const event = this.getEvent();
-    console.log(event);
-    if ( event != null) {
-      this.store.dispatch(new fromCasesFeature.FindCaselistPaginationMetadata(event));
-    }
-  }
-
   findCaseListPaginationMetadata(event) {
     if (event != null) {
       this.store.dispatch(new fromCasesFeature.FindCaselistPaginationMetadata(event));
@@ -226,7 +211,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
   applyChangePage(event) {
     console.log('applyChangePage');
     this.page = event.selected.page;
-    // this.checkLSAndTrigger();
     this.findCaseListPaginationMetadata(this.getEvent());
   }
 
@@ -234,7 +218,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
     console.log('applyChangePage');
     this.page = event.selected.page;
     this.selected = event.selected;
-    // this.checkLSAndTrigger();
     this.findCaseListPaginationMetadata(this.getEvent());
   }
 

@@ -151,7 +151,10 @@ export class CaseListComponent implements OnInit, OnDestroy {
         hasDrafts: resultView.hasDrafts ? resultView.hasDrafts : () => false
       };
     });
-    this.checkLSAndTrigger();
+
+    console.log('on init')
+    // this.checkLSAndTrigger();
+    this.findCaseListPaginationMetadata(this.getEvent());
   }
 
   getEvent() {
@@ -160,6 +163,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
     let jurisdictionFromLS = null;
     let caseStateGroupFromLS = null;
     let caseTypeGroupFromLS = null;
+
     if (this.selected) {
       formGroupFromLS = this.selected.formGroup.value;
       jurisdictionFromLS = { id: this.selected.jurisdiction.id};
@@ -172,7 +176,9 @@ export class CaseListComponent implements OnInit, OnDestroy {
       caseTypeGroupFromLS = { id: this.savedQueryParams['case-type'] };
       caseStateGroupFromLS = { id: this.savedQueryParams['case-state'] };
     }
+
     const metadataFieldsGroupFromLS = ['[CASE_REFERENCE]'];
+
     if (formGroupFromLS && jurisdictionFromLS && caseTypeGroupFromLS && metadataFieldsGroupFromLS && caseStateGroupFromLS) {
       event = {
         selected: {
@@ -196,22 +202,40 @@ export class CaseListComponent implements OnInit, OnDestroy {
    */
   getToggleButtonName = (showFilter: boolean): string => showFilter ? 'Hide Filter' : 'Show Filter';
 
+  /**
+   * TODO: This needs to take in the event. Side effecting is currently happening, making it
+   * harder to test.
+   *
+   * TODO: What is LS?
+   */
   checkLSAndTrigger() {
+    console.log('checkLSAndTrigger');
     const event = this.getEvent();
+    console.log(event);
+    if ( event != null) {
+      this.store.dispatch(new fromCasesFeature.FindCaselistPaginationMetadata(event));
+    }
+  }
+
+  findCaseListPaginationMetadata(event) {
     if ( event != null) {
       this.store.dispatch(new fromCasesFeature.FindCaselistPaginationMetadata(event));
     }
   }
 
   applyChangePage(event) {
+    console.log('applyChangePage');
     this.page = event.selected.page;
-    this.checkLSAndTrigger();
+    // this.checkLSAndTrigger();
+    this.findCaseListPaginationMetadata(this.getEvent());
   }
 
   applyFilter(event) {
+    console.log('applyChangePage');
     this.page = event.selected.page;
     this.selected = event.selected;
-    this.checkLSAndTrigger();
+    // this.checkLSAndTrigger();
+    this.findCaseListPaginationMetadata(this.getEvent());
   }
 
   toggleFilter() {

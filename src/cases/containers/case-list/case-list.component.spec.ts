@@ -71,5 +71,10 @@ describe('CaseListComponent', () => {
     component.toggleFilter();
     expect(spyOnDispatchToStore).toHaveBeenCalledWith(new CaseFilterToggle(true));
   });
+
+  // it('should be able to create an event.', () => {
+  //   component.toggleFilter();
+  //   expect(spyOnDispatchToStore).toHaveBeenCalledWith(new CaseFilterToggle(true));
+  // });
 });
 

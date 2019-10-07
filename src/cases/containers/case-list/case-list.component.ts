@@ -158,7 +158,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
   }
 
   getEvent() {
-    let event = null;
     let formGroupFromLS = null;
     let jurisdictionFromLS = null;
     let caseStateGroupFromLS = null;
@@ -180,21 +179,30 @@ export class CaseListComponent implements OnInit, OnDestroy {
     const metadataFieldsGroupFromLS = ['[CASE_REFERENCE]'];
 
     if (formGroupFromLS && jurisdictionFromLS && caseTypeGroupFromLS && metadataFieldsGroupFromLS && caseStateGroupFromLS) {
-      event = {
-        selected: {
-          jurisdiction: jurisdictionFromLS,
-          caseType: caseTypeGroupFromLS,
-          caseState: caseStateGroupFromLS,
-          metadataFields: metadataFieldsGroupFromLS,
-          formGroup: {
-            value: formGroupFromLS
-          },
-          page: this.page,
-          view: 'WORKBASKET'
-        }
-      };
+      return this.createEvent(jurisdictionFromLS, caseTypeGroupFromLS, caseStateGroupFromLS, metadataFieldsGroupFromLS,
+                                formGroupFromLS, this.page);
+    } else {
+      return null;
     }
-    return event;
+  }
+
+  /**
+   * Wondering what this is used for?
+   */
+  createEvent = (jurisdiction, caseType, caseState, metadataFields, formGroupValues, page) => {
+    return {
+      selected: {
+        jurisdiction,
+        caseType,
+        caseState,
+        metadataFields,
+        formGroup: {
+          value: formGroupValues
+        },
+        page,
+        view: 'WORKBASKET'
+      }
+    };
   }
 
   /**

@@ -155,7 +155,7 @@ describe('CaseCaseComponent', () => {
     expect(casesService.createCase).toHaveBeenCalled();
   });
 
-  it('should have called casesService.createCase on validate', async () => {
+  it('should have called casesService.validateCase on validate', async () => {
     spyOn(casesService, 'validateCase').and.callThrough();
     component.validate()(SANITISED_EDIT_FORM, '12');
     await fixture.whenStable();
@@ -163,7 +163,7 @@ describe('CaseCaseComponent', () => {
     expect(casesService.validateCase).toHaveBeenCalled();
   });
 
-  it('should have called casesService.createCase on saveDraft', async () => {
+  it('should have called draftService.createOrUpdateDraft on saveDraft', async () => {
     spyOn(draftService, 'createOrUpdateDraft').and.callThrough();
     component.saveDraft()(SANITISED_EDIT_FORM);
     await fixture.whenStable();

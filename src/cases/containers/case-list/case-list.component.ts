@@ -191,9 +191,10 @@ export class CaseListComponent implements OnInit, OnDestroy {
     return event;
   }
 
-  getToggleButtonName(showFilter: boolean): string {
-    return showFilter ? 'Hide Filter' : 'Show Filter';
-  }
+  /**
+   * Display the name seen on the toggle button.
+   */
+  getToggleButtonName = (showFilter: boolean): string => showFilter ? 'Hide Filter' : 'Show Filter';
 
   checkLSAndTrigger() {
     const event = this.getEvent();

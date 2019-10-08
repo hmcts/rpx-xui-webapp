@@ -7,12 +7,14 @@ import * as ithc from './environments/ithc.config'
 import * as local from './environments/local.config'
 import * as preview from './environments/preview.config'
 import * as prod from './environments/prod.config'
+import * as perftest from './environments/perftest.config'
 
 export const configs = {
     aat,
     ithc,
     local,
     preview,
+    perftest,
     prod,
 }
 

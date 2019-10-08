@@ -66,6 +66,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.page = 1;
     this.resultView = null;
+
     this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
     if (this.savedQueryParams) {
       this.defaults = {
@@ -97,8 +98,9 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.jurisdiction$ = this.store.pipe(select(fromCasesFeature.caselistFilterJurisdiction));
     this.caseType$ = this.store.pipe(select(fromCasesFeature.caselistFilterCaseType));
     this.caseState$ = this.store.pipe(select(fromCasesFeature.caselistFilterCaseState));
-    this.resultView$ = this.store.pipe(select(fromCasesFeature.caselistFilterResultView));
     this.metadataFields$ = this.store.pipe(select(fromCasesFeature.caselistFilterMetadataFields));
+
+    this.resultView$ = this.store.pipe(select(fromCasesFeature.caselistFilterResultView));
     this.paginationMetadata$ = this.store.pipe(select(fromCasesFeature.getCaselistFilterPaginationMetadata));
     this.caseFilterToggle$ = this.store.pipe(select(fromCasesFeature.getCaselistFilterToggle));
 
@@ -127,32 +129,47 @@ export class CaseListComponent implements OnInit, OnDestroy {
       this.toggleButtonName = this.getToggleButtonName(this.showFilter);
     });
 
-    this.paginationSubscription = this.paginationMetadata$.subscribe(result => {
-      if (typeof result !== 'undefined'  && typeof result.total_pages_count !== 'undefined') {
-        this.paginationMetadata.total_pages_count = result.total_pages_count;
-        this.paginationMetadata.total_results_count = result.total_results_count;
-        const event = this.getEvent();
-        if ( event != null) {
-          this.store.dispatch(new fromCasesFeature.ApplyCaselistFilter(event));
-        }
-      }
-    });
-    this.resultSubscription = this.resultView$.subscribe(resultView => {
-      this.resultsArr = resultView.results;
-      this.resultView = {
-        ...resultView,
-        columns: resultView.columns ? resultView.columns : [],
-        results: resultView.results ? resultView.results.map(item => {
-          return {
-            ...item,
-            hydrated_case_fields: null
-          };
-        }) : [],
-        hasDrafts: resultView.hasDrafts ? resultView.hasDrafts : () => false
-      };
-    });
+    this.paginationSubscription = this.paginationMetadata$.subscribe(paginationMetadata =>
+      this.onPaginationSubscribeHandler(paginationMetadata));
+
+    this.resultSubscription = this.resultView$.subscribe(resultView =>
+      this.onResultsViewHandler(resultView));
 
     this.findCaseListPaginationMetadata(this.getEvent());
+  }
+
+  onResultsViewHandler = (resultView) => {
+
+    this.resultsArr = resultView.results;
+    this.resultView = {
+      ...resultView,
+      columns: resultView.columns ? resultView.columns : [],
+      results: resultView.results ? resultView.results.map(item => {
+        return {
+          ...item,
+          hydrated_case_fields: null
+        };
+      }) : [],
+      hasDrafts: resultView.hasDrafts ? resultView.hasDrafts : () => false
+    };
+  }
+
+  /**
+   * Handles the return of Pagination Metadata.
+   *
+   * @param result - {total_pages_count: 33, total_results_count: 811}
+   */
+  onPaginationSubscribeHandler = (paginationMetadata) => {
+
+    if (typeof paginationMetadata !== 'undefined'  && typeof paginationMetadata.total_pages_count !== 'undefined') {
+      this.paginationMetadata.total_pages_count = paginationMetadata.total_pages_count;
+      this.paginationMetadata.total_results_count = paginationMetadata.total_results_count;
+
+      const event = this.getEvent();
+      if ( event != null) {
+        this.store.dispatch(new fromCasesFeature.ApplyCaselistFilter(event));
+      }
+    }
   }
 
   getEvent() {

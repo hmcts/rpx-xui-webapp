@@ -37,7 +37,7 @@ describe('AlertComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have called draftService.createOrUpdateDraft on saveDraft', async () => {
+  it('should have updated the value of message and level in ngOnInit', async () => {
     const alertService = fixture.debugElement.injector.get(AlertService);
     alertService.push({message: 'message', level: 'success'});
     component.ngOnInit();

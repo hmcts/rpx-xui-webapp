@@ -151,15 +151,16 @@ export class CaseListComponent implements OnInit, OnDestroy {
         hasDrafts: resultView.hasDrafts ? resultView.hasDrafts : () => false
       };
     });
-    this.checkLSAndTrigger();
+
+    this.findCaseListPaginationMetadata(this.getEvent());
   }
 
   getEvent() {
-    let event = null;
     let formGroupFromLS = null;
     let jurisdictionFromLS = null;
     let caseStateGroupFromLS = null;
     let caseTypeGroupFromLS = null;
+
     if (this.selected) {
       formGroupFromLS = this.selected.formGroup.value;
       jurisdictionFromLS = { id: this.selected.jurisdiction.id};
@@ -172,45 +173,71 @@ export class CaseListComponent implements OnInit, OnDestroy {
       caseTypeGroupFromLS = { id: this.savedQueryParams['case-type'] };
       caseStateGroupFromLS = { id: this.savedQueryParams['case-state'] };
     }
+
     const metadataFieldsGroupFromLS = ['[CASE_REFERENCE]'];
+
     if (formGroupFromLS && jurisdictionFromLS && caseTypeGroupFromLS && metadataFieldsGroupFromLS && caseStateGroupFromLS) {
-      event = {
-        selected: {
-          jurisdiction: jurisdictionFromLS,
-          caseType: caseTypeGroupFromLS,
-          caseState: caseStateGroupFromLS,
-          metadataFields: metadataFieldsGroupFromLS,
-          formGroup: {
-            value: formGroupFromLS
-          },
-          page: this.page,
-          view: 'WORKBASKET'
-        }
-      };
+      return this.createEvent(jurisdictionFromLS, caseTypeGroupFromLS, caseStateGroupFromLS, metadataFieldsGroupFromLS,
+                                formGroupFromLS, this.page);
+    } else {
+      return null;
     }
-    return event;
   }
 
-  getToggleButtonName(showFilter: boolean): string {
-    return showFilter ? 'Hide Filter' : 'Show Filter';
+  /**
+   * createEvent
+   *
+   * We should think about calling this function makePaginationMetadataQuery as it looks like it's only being used to construct the
+   * Case List Pagination Metadata payload?
+   */
+  createEvent = (jurisdiction, caseType, caseState, metadataFields, formGroupValues, page) => {
+    return {
+      selected: {
+        jurisdiction,
+        caseType,
+        caseState,
+        metadataFields,
+        formGroup: {
+          value: formGroupValues
+        },
+        page,
+        view: 'WORKBASKET'
+      }
+    };
   }
 
-  checkLSAndTrigger() {
-    const event = this.getEvent();
-    if ( event != null) {
+  /**
+   * Display the name seen on the toggle button.
+   */
+  getToggleButtonName = (showFilter: boolean): string => showFilter ? 'Hide Filter' : 'Show Filter';
+
+  findCaseListPaginationMetadata(event) {
+    if (event != null) {
       this.store.dispatch(new fromCasesFeature.FindCaselistPaginationMetadata(event));
     }
   }
 
+  /**
+   * applyChangePage
+   *
+   * Change the page number and call findCaseListPaginationMetadata()
+   * to dispatch an Action to get the Pagination Metadata for the next page.
+   */
   applyChangePage(event) {
     this.page = event.selected.page;
-    this.checkLSAndTrigger();
+    this.findCaseListPaginationMetadata(this.getEvent());
   }
 
+  /**
+   * applyFilter
+   *
+   * Change the page number and call findCaseListPaginationMetadata()
+   * to dispatch an Action to get the Pagination Metadata for the filter selection.
+   */
   applyFilter(event) {
     this.page = event.selected.page;
     this.selected = event.selected;
-    this.checkLSAndTrigger();
+    this.findCaseListPaginationMetadata(this.getEvent());
   }
 
   toggleFilter() {
@@ -231,5 +258,4 @@ export class CaseListComponent implements OnInit, OnDestroy {
       this.caseFilterToggleSubscription.unsubscribe();
     }
   }
-
  }

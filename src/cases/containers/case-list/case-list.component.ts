@@ -56,6 +56,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   savedQueryParams: any;
   page: number;
   paginationSubscription: Subscription;
+
   constructor(
     public store: Store<fromCaseList.State>,
     private appConfig: AppConfig,
@@ -64,28 +65,11 @@ export class CaseListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+
     this.page = 1;
     this.resultView = null;
 
-    this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
-    if (this.savedQueryParams) {
-      this.defaults = {
-        jurisdiction_id: this.savedQueryParams.jurisdiction,
-        case_type_id: this.savedQueryParams['case-type'],
-        state_id: this.savedQueryParams['case-state']
-      };
-    } else {
-      this.definitionsService.getJurisdictions('read')
-      .subscribe(jurisdictions => {
-        if (jurisdictions[0] && jurisdictions[0].id && jurisdictions[0].caseTypes[0] && jurisdictions[0].caseTypes[0].states[0]) {
-          this.defaults = {
-            jurisdiction_id: jurisdictions[0].id,
-            case_type_id: jurisdictions[0].caseTypes[0].id,
-            state_id: jurisdictions[0].caseTypes[0].states[0].id
-          };
-        }
-      });
-    }
+    this.setCaseListFilterDefaults();
 
     this.fromCasesFeature = fromCasesFeature;
     this.caseListFilterEventsBindings = [
@@ -99,43 +83,85 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.caseType$ = this.store.pipe(select(fromCasesFeature.caselistFilterCaseType));
     this.caseState$ = this.store.pipe(select(fromCasesFeature.caselistFilterCaseState));
     this.metadataFields$ = this.store.pipe(select(fromCasesFeature.caselistFilterMetadataFields));
-
-    this.resultView$ = this.store.pipe(select(fromCasesFeature.caselistFilterResultView));
-    this.paginationMetadata$ = this.store.pipe(select(fromCasesFeature.getCaselistFilterPaginationMetadata));
-    this.caseFilterToggle$ = this.store.pipe(select(fromCasesFeature.getCaselistFilterToggle));
-
     this.filterSubscription = combineLatest([
       this.jurisdiction$,
       this.caseType$,
       this.caseState$,
       this.metadataFields$
-    ]).subscribe(result => {
-      this.jurisdiction = {
-        ...result[0]
-      };
-      this.caseType = {
-        ...result[1]
-      };
-      this.caseState = {
-        ...result[2]
-      };
-      this.metadataFields = {
-        ...result[3]
-      };
-    });
+    ]).subscribe(result => this.onFilterSubscriptionHandler(result));
 
-    this.caseFilterToggleSubscription = this.caseFilterToggle$.subscribe( (result: boolean) => {
-      this.showFilter = result;
-      this.toggleButtonName = this.getToggleButtonName(this.showFilter);
-    });
+    this.caseFilterToggle$ = this.store.pipe(select(fromCasesFeature.getCaselistFilterToggle));
+    this.caseFilterToggleSubscription = this.caseFilterToggle$.subscribe( (result: boolean) => this.onToogleHandler(result));
 
+    this.paginationMetadata$ = this.store.pipe(select(fromCasesFeature.getCaselistFilterPaginationMetadata));
     this.paginationSubscription = this.paginationMetadata$.subscribe(paginationMetadata =>
       this.onPaginationSubscribeHandler(paginationMetadata));
 
+    this.resultView$ = this.store.pipe(select(fromCasesFeature.caselistFilterResultView));
     this.resultSubscription = this.resultView$.subscribe(resultView =>
       this.onResultsViewHandler(resultView));
 
+
     this.findCaseListPaginationMetadata(this.getEvent());
+  }
+
+  /**
+   * We might be able to remove this as it doesn't look like it's being used?
+   */
+  setCaseListFilterDefaults = () => {
+
+    this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
+    if (this.savedQueryParams) {
+      this.defaults = {
+        jurisdiction_id: this.savedQueryParams.jurisdiction,
+        case_type_id: this.savedQueryParams['case-type'],
+        state_id: this.savedQueryParams['case-state']
+      };
+    } else {
+      this.definitionsService.getJurisdictions('read')
+        .subscribe(jurisdictions => {
+          if (jurisdictions[0] && jurisdictions[0].id && jurisdictions[0].caseTypes[0] && jurisdictions[0].caseTypes[0].states[0]) {
+            this.defaults = {
+              jurisdiction_id: jurisdictions[0].id,
+              case_type_id: jurisdictions[0].caseTypes[0].id,
+              state_id: jurisdictions[0].caseTypes[0].states[0].id
+            };
+          }
+        });
+    }
+  }
+
+  /**
+   * result
+   * @param result - [
+   * { id: 'PROBATE' },
+   * { id: 'GrantOfRepresentation' },
+   * { id: 'SolAppUpdated' },
+   * ['[CASE_REFERENCE]']
+   * ]
+   */
+  onFilterSubscriptionHandler = result => {
+
+    console.log('result');
+    console.log(result);
+    this.jurisdiction = {
+      ...result[0]
+    };
+    this.caseType = {
+      ...result[1]
+    };
+    this.caseState = {
+      ...result[2]
+    };
+    this.metadataFields = {
+      ...result[3]
+    };
+  }
+
+  onToogleHandler = showFilter => {
+
+    this.showFilter = showFilter;
+    this.toggleButtonName = this.getToggleButtonName(this.showFilter);
   }
 
   onResultsViewHandler = (resultView) => {
@@ -159,7 +185,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
    *
    * @param result - {total_pages_count: 33, total_results_count: 811}
    */
-  onPaginationSubscribeHandler = (paginationMetadata) => {
+  onPaginationSubscribeHandler = paginationMetadata => {
 
     if (typeof paginationMetadata !== 'undefined'  && typeof paginationMetadata.total_pages_count !== 'undefined') {
       this.paginationMetadata.total_pages_count = paginationMetadata.total_pages_count;

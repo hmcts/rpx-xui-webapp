@@ -55,9 +55,7 @@ const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger(
 );
 
 const SANITISED_EDIT_FORM: CaseEventData = {
-  data: {
-    'PersonLastName': 'Khaleesi'
-  },
+  data: {},
   event: {
     id: null,
     summary: 'Some summary',

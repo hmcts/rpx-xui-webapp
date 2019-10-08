@@ -8,6 +8,7 @@ import {AppConfigService} from '../../../app/services/config/configuration.servi
 import {NO_ERRORS_SCHEMA} from '@angular/core';
 import {CaseFilterToggle, FindCaselistPaginationMetadata} from '../../store/actions/case-list.action';
 import {provideMockStore, MockStore} from '@ngrx/store/testing';
+import {Jurisdiction, PaginationMetadata} from '@hmcts/ccd-case-ui-toolkit';
 
 describe('CaseListComponent', () => {
   let component: CaseListComponent;
@@ -187,6 +188,49 @@ describe('CaseListComponent', () => {
       component.applyFilter(event);
 
       expect(component.page).toEqual(event.selected.page);
+    });
+  });
+
+  describe('onPaginationSubscribeHandler()', () => {
+
+    it('should update the components paginationMetadata property, on return of subscription.', () => {
+
+      const paginationMetadata = new PaginationMetadata();
+      paginationMetadata.total_pages_count = 33;
+      paginationMetadata.total_results_count = 811;
+
+      component.onPaginationSubscribeHandler(paginationMetadata);
+
+      expect(component.paginationMetadata.total_pages_count).toEqual(paginationMetadata.total_pages_count);
+      expect(component.paginationMetadata.total_results_count).toEqual(paginationMetadata.total_results_count);
+    });
+  });
+
+  describe('onToogleHandler()', () => {
+
+    it('should update the components showFilter property, on return of toogle subscription.', () => {
+
+      const showFilter = true;
+      component.onToogleHandler(showFilter);
+
+      expect(component.showFilter).toEqual(showFilter);
+    });
+  });
+
+  describe('onFilterSubscriptionHandler()', () => {
+
+    it('should update the components jurisdiction property, on return of the filter subscription.', () => {
+
+      const filterResult = [
+        {id: 'PROBATE'},
+        {id: 'GrantOfRepresentation'},
+        {id: 'SolAppUpdated'},
+        ['[CASE_REFERENCE]']
+      ];
+
+      component.onFilterSubscriptionHandler(filterResult);
+
+      // expect(component.jurisdiction.id).toEqual(filterResult[0]);
     });
   });
 });

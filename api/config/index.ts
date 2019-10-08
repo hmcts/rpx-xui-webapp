@@ -6,7 +6,6 @@ import * as local from './environments/local.config'
 import * as perftest from './environments/perftest.config'
 import * as preview from './environments/preview.config'
 import * as prod from './environments/prod.config'
-import * as perftest from './environments/perftest.config'
 
 
 export const configs = {
@@ -15,7 +14,6 @@ export const configs = {
     local,
     perftest,
     preview,
-    perftest,
     prod,
 }
 

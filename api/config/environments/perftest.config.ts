@@ -1,8 +1,8 @@
 export default {
     health: {
-        ccdComponentApi: 'https://ccd-api-gateway-web-ithc.service.core-compute-ithc.internal/health',
-        ccdDataApi: 'https://ccd-data-store-api-ithc.service.core-compute-ithc.internal/health',
-        documentsApi: 'https://dm-store-ithc.service.core-compute-ithc.internal/health',
+        ccdComponentApi: 'https://ccd-api-gateway-web-perftest.service.core-compute-perftest.internal/health',
+        ccdDataApi: 'https://ccd-data-store-api-perftest.service.core-compute-perftest.internal/health',
+        documentsApi: 'https://dm-store-perftest.service.core-compute-perftest.internal/health',
     },
     logging: 'debug',
     secureCookie: false,

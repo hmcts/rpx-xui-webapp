@@ -152,8 +152,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
       };
     });
 
-    console.log('on init')
-    // this.checkLSAndTrigger();
     this.findCaseListPaginationMetadata(this.getEvent());
   }
 
@@ -187,7 +185,10 @@ export class CaseListComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Wondering what this is used for?
+   * createEvent
+   *
+   * We should think about calling this function makePaginationMetadataQuery as it looks like it's only being used to construct the
+   * Case List Pagination Metadata payload?
    */
   createEvent = (jurisdiction, caseType, caseState, metadataFields, formGroupValues, page) => {
     return {
@@ -216,14 +217,24 @@ export class CaseListComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * applyChangePage
+   *
+   * Change the page number and call findCaseListPaginationMetadata()
+   * to dispatch an Action to get the Pagination Metadata for the next page.
+   */
   applyChangePage(event) {
-    console.log('applyChangePage');
     this.page = event.selected.page;
     this.findCaseListPaginationMetadata(this.getEvent());
   }
 
+  /**
+   * applyFilter
+   *
+   * Change the page number and call findCaseListPaginationMetadata()
+   * to dispatch an Action to get the Pagination Metadata for the filter selection.
+   */
   applyFilter(event) {
-    console.log('applyChangePage');
     this.page = event.selected.page;
     this.selected = event.selected;
     this.findCaseListPaginationMetadata(this.getEvent());
@@ -247,5 +258,4 @@ export class CaseListComponent implements OnInit, OnDestroy {
       this.caseFilterToggleSubscription.unsubscribe();
     }
   }
-
  }

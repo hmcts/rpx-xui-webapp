@@ -7,7 +7,6 @@ import * as perftest from './environments/perftest.config'
 import * as preview from './environments/preview.config'
 import * as prod from './environments/prod.config'
 
-
 export const configs = {
     aat,
     ithc,

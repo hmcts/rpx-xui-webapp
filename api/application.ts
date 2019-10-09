@@ -6,11 +6,14 @@ import * as session from 'express-session'
 import * as globalTunnel from 'global-tunnel-ng'
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
-import { config } from './config'
+import {config} from './config'
 import {router as documentRouter} from './documents/routes'
 import healthCheck from './healthCheck'
-import { errorStack } from './lib/errorStack'
+import {errorStack} from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
+import authInterceptor from './lib/middleware/auth'
+import serviceTokenMiddleware from './lib/middleware/serviceToken'
+import {JUILogger} from './lib/models'
 import * as postCodeLookup from './postCodeLookup'
 import {router as printRouter} from './print/routes'
 import routes from './routes'
@@ -35,17 +38,20 @@ app.use(
         resave: true,
         saveUninitialized: true,
         secret: config.sessionSecret,
+        // TODO: remove this and use values from cookie token instead
         store: new FileStore({
             path: process.env.NOW ? '/tmp/sessions' : '.sessions',
         }),
     })
 )
 
-app.use(errorStack)
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
 
+app.use(errorStack)
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended: true}))
+
+// TODO: remove this when we have proper frontend configuration
 app.use((req, res, next) => {
     // Set cookie for angular to know which config to use
     const platform = process.env.XUI_ENV || 'local'
@@ -83,6 +89,10 @@ app.get('/oauth2/callback', auth.authenticateUser)
 app.get('/api/logout', (req, res) => {
     auth.doLogout(req, res)
 })
+
+app.use(serviceTokenMiddleware)
+app.use(authInterceptor)
+
 app.get('/api/addresses', postCodeLookup.doLookup)
 
 app.get('/api/monitoring-tools', (req, res) => {
@@ -98,5 +108,6 @@ app.use('/documents', documentRouter)
 
 app.use('/print', printRouter)
 
-const logger = log4jui.getLogger('Application')
+// @ts-ignore
+const logger: JUILogger = log4jui.getLogger('Application')
 logger.info(`Started up on ${config.environment || 'local'} using ${config.protocol}`)

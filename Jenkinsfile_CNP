@@ -46,13 +46,13 @@ withPipeline(type, product, component) {
 
     after('checkout') {sh 'yarn cache clean'}
 
-  /*
-  before('buildinfra:prod') {
-    currentBuild.result = 'SUCCESS'
-    currentBuild.description = "SUCCESS TILL AAT"
-    error 'XUI  projects are not authorised to be in production environments yet.'
-  }
-  */
+
+    before('buildinfra:prod') {
+      currentBuild.result = 'SUCCESS'
+      currentBuild.description = "SUCCESS TILL AAT"
+      error 'XUI  projects are not authorised to be in production environments yet.'
+    }
+
 
     after('build') {
         sh 'npm run build'

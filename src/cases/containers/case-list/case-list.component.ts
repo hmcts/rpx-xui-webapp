@@ -93,9 +93,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.caseFilterToggle$ = this.store.pipe(select(fromCasesFeature.getCaselistFilterToggle));
     this.caseFilterToggleSubscription = this.caseFilterToggle$.subscribe( (result: boolean) => this.onToogleHandler(result));
 
-    this.paginationMetadata$ = this.store.pipe(select(fromCasesFeature.getCaselistFilterPaginationMetadata));
-    this.paginationSubscription = this.paginationMetadata$.subscribe(paginationMetadata =>
-      this.onPaginationSubscribeHandler(paginationMetadata));
+    this.listenToPaginationMetadata();
 
     this.resultView$ = this.store.pipe(select(fromCasesFeature.caselistFilterResultView));
     this.resultSubscription = this.resultView$.subscribe(resultView =>
@@ -105,9 +103,12 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.findCaseListPaginationMetadata(this.getEvent());
   }
 
-  /**
-   * We might be able to remove this as it doesn't look like it's being used?
-   */
+  listenToPaginationMetadata = () => {
+    this.paginationMetadata$ = this.store.pipe(select(fromCasesFeature.getCaselistFilterPaginationMetadata));
+    this.paginationSubscription = this.paginationMetadata$.subscribe(paginationMetadata =>
+      this.onPaginationSubscribeHandler(paginationMetadata));
+  }
+
   setCaseListFilterDefaults = () => {
 
     this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
@@ -142,8 +143,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
    */
   onFilterSubscriptionHandler = result => {
 
-    console.log('result');
-    console.log(result);
     this.jurisdiction = {
       ...result[0]
     };
@@ -164,7 +163,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.toggleButtonName = this.getToggleButtonName(this.showFilter);
   }
 
-  onResultsViewHandler = (resultView) => {
+  onResultsViewHandler = resultView => {
 
     this.resultsArr = resultView.results;
     this.resultView = {

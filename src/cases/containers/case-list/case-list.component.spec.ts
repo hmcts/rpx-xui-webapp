@@ -230,7 +230,30 @@ describe('CaseListComponent', () => {
 
       component.onFilterSubscriptionHandler(filterResult);
 
-      // expect(component.jurisdiction.id).toEqual(filterResult[0]);
+      expect(component.jurisdiction.id).toEqual('PROBATE');
+      expect(component.caseType.id).toEqual('GrantOfRepresentation');
+      expect(component.caseState.id).toEqual('SolAppUpdated');
+      expect(component.metadataFields[0]).toEqual('[CASE_REFERENCE]');
+    });
+  });
+
+  describe('onResultsViewHandler()', () => {
+
+    it('should set the components resultsArr property on return of subscription.', () => {
+
+      const resultView = {
+        columns: [],
+        results: [
+          {
+            case_id: 'DRAFT274146',
+          }
+        ],
+        result_error: null
+      };
+
+      component.onResultsViewHandler(resultView);
+
+      expect(component.resultsArr).toEqual([{ case_id: 'DRAFT274146' }]);
     });
   });
 });

@@ -22,6 +22,7 @@ module "app" {
     #asp_name = "${var.env == "prod" ? "TBD" : "${var.shared_product_name}-${var.env}"}"
     DUMMY_VAR = "TRUE"
 
+
     app_settings = {
         # logging vars & healthcheck
         REFORM_SERVICE_NAME = "${local.app_full_name}"
@@ -33,6 +34,7 @@ module "app" {
         PACKAGES_PROJECT = "${var.team_name}"
         PACKAGES_ENVIRONMENT = "${var.env}"
         XUI_ENV = "${var.env}"
+        DUMMY_VAR = "TRUE"
 
         # Need to check these vault values - dont seem right here.
         S2S_SECRET = "${data.azurerm_key_vault_secret.s2s_secret.value}"

@@ -17,6 +17,7 @@ def type      = "nodejs"
 def product   = "xui"
 def component = "webapp"
 def channel   = '#xui-pipeline'
+def deployToAatOnly = true  // set to true if only deploy upto AAT, set to false will deploy all the way to production
 
 def secrets = [
   'rpx-${env}': [
@@ -46,11 +47,13 @@ withPipeline(type, product, component) {
 
     after('checkout') {sh 'yarn cache clean'}
 
-
-    before('buildinfra:prod') {
-      currentBuild.result = 'SUCCESS'
-      currentBuild.description = "SUCCESS TILL AAT"
-      error 'XUI  projects are not authorised to be in production environments yet.'
+    if (deployToAatOnly) {
+      println("Only Deploy up to AAT!")
+      before('buildinfra:prod') {
+        currentBuild.result = 'SUCCESS'
+        currentBuild.description = "SUCCESS TILL AAT"
+        error 'XUI  projects are not authorised to be in production environments yet.'
+      }
     }
 
 

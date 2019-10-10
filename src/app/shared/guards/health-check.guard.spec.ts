@@ -3,28 +3,26 @@ import { HealthCheckGuard } from './health-check.guard';
 import { StoreModule, Store } from '@ngrx/store';
 import { HealthCheckService } from '../services/health-check.service';
 import { HttpClient } from '@angular/common/http';
-import { of } from 'rxjs';
+import { of, Observable } from 'rxjs';
 
 class HttpClientMock {
 
     get() {
-        return 'response';
+        return {healthState: true};
     }
 }
 
-const healthCheckServiceMock = {
-    http: null,
-    store: null,
-    doHealthCheck: () => {
-        console.log('@@@@@@@@@@@@@@@@@@@@@@@');
-        return of('response');
-    },
-    ngOnDestroy: () => {}
-};
+const healthCheckServiceMock = jasmine.createSpyObj('HealthCheckService', [
+    'doHealthCheck'
+]);
+
+const storeMock = jasmine.createSpyObj('Store', [
+    'dispatch'
+]);
 
 describe('HealthCheckGuard', () => {
-    let healthCheckGuardInstance: HealthCheckGuard;
     let healthCheckServiceInstance: HealthCheckService;
+    let storeInstance: Store<any>;
 
     beforeEach(async () => {
         TestBed.configureTestingModule({
@@ -34,37 +32,43 @@ describe('HealthCheckGuard', () => {
             providers: [
                 HealthCheckGuard,
                 { provide: HttpClient, useClass: HttpClientMock },
-                { provide: HealthCheckService, useValue: healthCheckServiceMock }
+                { provide: HealthCheckService, useValue: healthCheckServiceMock},
+                { provide: Store, useValue: storeMock}
             ]
         });
     });
 
     beforeEach(() => {
-        healthCheckGuardInstance = TestBed.get(HealthCheckGuard);
         healthCheckServiceInstance = TestBed.get(HealthCheckService);
+        storeInstance = TestBed.get(Store);
     });
-
-    it('should have canActivate', inject([HealthCheckGuard], (guard: HealthCheckGuard) => {
-        expect(guard.canActivate).toBeDefined();
-    }));
 
     describe('canActivate', () => {
-        // it('should trigger service call', () => {
-        //     healthCheckGuardInstance = new HealthCheckGuard(healthCheckServiceInstance, null);
-        //     const doHealthCheckSpy = spyOn(healthCheckServiceInstance, 'doHealthCheck');
-        //     healthCheckGuardInstance.canActivate();
-        //     expect(doHealthCheckSpy()).toHaveBeenCalled();
-        // });
+        it('should trigger service call', inject([HealthCheckGuard], (guard: HealthCheckGuard) => {
+            const healthState: boolean = true;
+            const result: { healthState } = { healthState };
+            healthCheckServiceMock.doHealthCheck.and.returnValue(of(result));
+            guard.canActivate().subscribe(() => {
+                expect(healthCheckServiceInstance.doHealthCheck).toHaveBeenCalled();
+            });
+        }));
 
+        it('should trigger service down when there is a false healthstate', inject([HealthCheckGuard], (guard: HealthCheckGuard) => {
+            const healthState: boolean = false;
+            const result: { healthState } = { healthState };
+            healthCheckServiceMock.doHealthCheck.and.returnValue(of(result));
+            guard.canActivate().subscribe(() => {
+                expect(storeInstance.dispatch).toHaveBeenCalled();
+            });
+        }));
 
-        // it('should trigger service call', inject([HealthCheckGuard, HealthCheckService],
-        //     (guard: HealthCheckGuard, service: HealthCheckService) => {
+        it('should trigger service down when there is an error', inject([HealthCheckGuard], (guard: HealthCheckGuard) => {
+            healthCheckServiceMock.doHealthCheck.and.returnValue(Observable.throwError({status: 404}));
+            guard.canActivate().subscribe(() => {
+                expect(storeInstance.dispatch).toHaveBeenCalled();
+            });
+        }));
 
-        //         spyOn(service, 'doHealthCheck');
-        //         guard.canActivate();
-        //         expect(service.doHealthCheck()).toHaveBeenCalled();
-        // }));
     });
-
 
 });

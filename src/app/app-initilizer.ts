@@ -1,4 +1,4 @@
-import { select, Store } from '@ngrx/store';
+import {select, Store} from '@ngrx/store';
 import * as fromApp from './store';
 import {take} from 'rxjs/operators';
 
@@ -12,11 +12,11 @@ export function initApplication(store: Store<fromApp.State>): VoidFunction {
     store.dispatch(new fromApp.StartAppInitilizer());
     store.dispatch(new fromApp.LoadConfig());
     store.pipe(
-      select((state: any) =>  state.appConfig), take(2)).subscribe(appConfig => {
-        if (appConfig.config.features && Object.keys(appConfig.config.features).length) {
-          store.dispatch( new fromApp.FinishAppInitilizer());
-          resolve(true);
-        }
-      });
+      select((state: any) => state.appConfig), take(2)).subscribe(appConfig => {
+      if (appConfig.config.features && Object.keys(appConfig.config.features).length) {
+        store.dispatch(new fromApp.FinishAppInitilizer());
+        resolve(true);
+      }
+    });
   });
 }

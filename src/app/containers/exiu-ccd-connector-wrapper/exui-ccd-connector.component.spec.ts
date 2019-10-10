@@ -46,13 +46,12 @@ describe('CCD Connector Component', () => {
       expect(component.simplifyFormGroup(object)).toEqual({a: 'value'});
     });
 
-    it('should return an object', () => {
+    it('should set the formGroupValue as the key.', () => {
       const object = {
-        a: 'value',
-        formGroup: 'test',
+        formGroup: 'formGroupValue',
       };
 
-      expect(component.simplifyFormGroup(object)).toEqual({a: 'value'});
+      expect(component.simplifyFormGroup(object)).toEqual({formGroup: {value: undefined}});
     });
   });
 
@@ -63,6 +62,5 @@ describe('CCD Connector Component', () => {
   it('should have ngOnDestroy() method', () => {
     expect(component.ngOnDestroy).toBeTruthy();
   });
-
 
 });

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {RouterTestingModule} from '@angular/router/testing';
 import {ExuiCcdConnectorComponent} from './exui-ccd-connector.component';
 
@@ -34,6 +34,26 @@ describe('CCD Connector Component', () => {
 
   it('should create component', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('simplifyFormGroup()', () => {
+
+    it('should return an object', () => {
+      const object = {
+        a: 'value',
+      };
+
+      expect(component.simplifyFormGroup(object)).toEqual({a: 'value'});
+    });
+
+    it('should return an object', () => {
+      const object = {
+        a: 'value',
+        formGroup: 'test',
+      };
+
+      expect(component.simplifyFormGroup(object)).toEqual({a: 'value'});
+    });
   });
 
   it('should have createDispatchers() method', () => {

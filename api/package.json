@@ -13,35 +13,5 @@
         "start": "cd ../dist/jui-backend && node server.js"
     },
     "private": true,
-    "nyc": {
-        "check-coverage": true,
-        "per-file": true,
-        "lines": 0,
-        "statements": 0,
-        "functions": 0,
-        "branches": 0,
-        "extension": [
-            ".ts",
-            ".tsx"
-        ],
-        "include": [
-            "**/*"
-        ],
-        "exclude": [
-            "**/*.js",
-            "**/*.d.ts",
-            "**/*.spec.ts",
-            "local.ts"
-        ],
-        "reporter": [
-            "lcov",
-            "html",
-            "text-summary"
-        ],
-        "require": [],
-        "cache": true,
-        "all": true,
-        "report-dir": "../reports/tests/coverage/node"
-    },
     "dependencies": {}
 }

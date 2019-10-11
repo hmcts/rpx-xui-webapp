@@ -3,6 +3,9 @@ import { generate } from 'shortid'
 import { config } from '../../config'
 import { EnhancedRequest } from '../models'
 
+// TODO!!!: remove this entire file.
+// concerns: the last request/response from any user is now stored to node memory
+
 const sessionId = config.cookies.sessionId
 
 let res = null

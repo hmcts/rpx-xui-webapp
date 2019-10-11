@@ -15,9 +15,9 @@ export default {
             api: 'https://dm-store-prod.service.core-compute-prod.internal',
         },
         idam: {
-            idamApiUrl: 'https://idam-api-pregolive.platform.hmcts.net',
+            idamApiUrl: 'https://idam-api.platform.hmcts.net',
             idamClientID: 'xuiwebapp',
-            idamLoginUrl: 'https://idam-web-public.platform.hmcts.net',
+            idamLoginUrl: 'https://hmcts-access.service.gov.uk',
             indexUrl: '/',
             oauthCallbackUrl: 'oauth2/callback',
         },

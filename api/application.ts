@@ -5,6 +5,7 @@ import * as express from 'express'
 import * as session from 'express-session'
 import * as globalTunnel from 'global-tunnel-ng'
 import * as sessionFileStore from 'session-file-store'
+import * as amendedJurisdictions from './amendedJurisdictions'
 import * as auth from './auth'
 import {config} from './config'
 import {router as documentRouter} from './documents/routes'
@@ -101,6 +102,7 @@ app.get('/api/monitoring-tools', (req, res) => {
 
 app.use('/api/healthCheck', healthCheck)
 
+app.get('/aggregated/caseworkers/:uid/jurisdictions', amendedJurisdictions.getJurisdictions)
 app.use('/aggregated', routes)
 app.use('/data', routes)
 // separate route for document upload/view

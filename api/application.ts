@@ -92,7 +92,6 @@ app.get('/api/logout', (req, res) => {
 })
 
 app.use(serviceTokenMiddleware)
-app.use(authInterceptor)
 
 app.get('/api/addresses', postCodeLookup.doLookup)
 

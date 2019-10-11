@@ -6,6 +6,8 @@ import { CookieService } from 'ngx-cookie';
 import { HttpClient } from '@angular/common/http';
 import { AppConfigService } from '../config/configuration.services';
 import { StoreModule } from '@ngrx/store';
+import { AppConstants } from 'src/app/app.constants';
+import { AppUtils } from 'src/app/app-utils';
 
 const config = {
   config: {
@@ -114,7 +116,7 @@ describe('AuthService', () => {
 
   describe('generateLoginUrl', () => {
     it('should generate url', inject([AuthService], (service: AuthService) => {
-      const base = 'dummy';
+      const base =  AppConstants.REDIRECT_URL[AppUtils.getEnvironment(window.location.origin)];
       const clientId = 'dummy';
       const callback = `${service.apiBaseUrl}/dummy`;
       const scope = `profile openid roles manage-user create-user`;

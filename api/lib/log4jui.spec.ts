@@ -1,6 +1,5 @@
 import * as chai from 'chai'
 import { expect } from 'chai'
-import 'mocha'
 import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
 import { mockReq } from 'sinon-express-mock'

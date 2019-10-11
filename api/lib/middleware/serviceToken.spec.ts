@@ -1,6 +1,5 @@
 import * as chai from 'chai'
 import { expect } from 'chai'
-import 'mocha'
 import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
 import { mockReq, mockRes } from 'sinon-express-mock'
@@ -106,7 +105,7 @@ describe('serviceToken', () => {
     })
   })
 
-  describe('serviceToken default', async () => {
+  describe('serviceToken default',  () => {
     it('should set the ServiceAuthorization on request header', async () => {
       const sandbox = sinon.createSandbox()
       const req = mockReq({

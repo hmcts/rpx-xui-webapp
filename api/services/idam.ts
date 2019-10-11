@@ -10,6 +10,8 @@ const idamClient = config.idamClient
 const idamProtocol = config.protocol
 const oauthCallbackUrl = config.services.idam.oauthCallbackUrl
 
+const that = this
+
 export async function getDetails(token: string = null) {
     // have to pass options in at first login as headers are yet to be attached.
     // lets try and see if we have these already
@@ -33,9 +35,7 @@ export async function getDetails(token: string = null) {
 
 // this does same as above + more. need to depricate above
 export async function getUser(email = null) {
-    const response = email ? await http.get(`${url}/users?email=${email}`) : await getDetails()
-
-    return response
+    return email ? await http.get(`${url}/users?email=${email}`) : await that.getDetails()
 }
 
 export async function postOauthToken(code, host) {

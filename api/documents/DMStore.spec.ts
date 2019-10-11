@@ -1,7 +1,6 @@
 import * as chai from 'chai'
 import {expect} from 'chai'
 import {Fields, File, Files} from 'formidable'
-import 'mocha'
 import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
 

@@ -1,20 +1,15 @@
 import * as chai from 'chai'
 import { expect } from 'chai'
-import 'mocha'
 import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
-import { mockReq, mockRes } from 'sinon-express-mock'
 chai.use(sinonChai)
 
 import { http } from '../lib/http'
-import { request } from '../lib/middleware/responseRequest'
+import * as responseRequest from '../lib/middleware/responseRequest'
 
 import * as idam from './idam'
 
 import { config } from '../config'
-
-const idamSecret = process.env.IDAM_SECRET || 'AAAAAAAAAAAAAAAA'
-const idamClient = config.services.idam.idamClientID
 
 describe('cohQA', () => {
     let res
@@ -25,6 +20,8 @@ describe('cohQA', () => {
     let spyDelete: any
     let spyPost: any
     let spyPut: any
+    let requestStub: any
+
 
     beforeEach(() => {
         // this doesn't change much but it is different for createHearing
@@ -48,6 +45,15 @@ describe('cohQA', () => {
         spyPut = sinon.stub(http, 'put').callsFake(() => {
             return Promise.resolve(res)
         })
+        // @ts-ignore
+        requestStub = sinon.stub(responseRequest, 'request').returns({
+            cookies: {
+                '__auth__': null,
+            },
+            session: {
+                user: null,
+            },
+        })
     })
 
     afterEach(() => {
@@ -55,35 +61,45 @@ describe('cohQA', () => {
         spyPost.restore()
         spyPut.restore()
         spyDelete.restore()
+        requestStub.restore()
     })
 
     describe('getDetails', () => {
         it('If no cached session details should make a http.get call based on a given token', async () => {
-            request().session.user = null
+            responseRequest.request().session.user = null
             await idam.getDetails('token')
 
             expect(spy).to.be.calledWith(`${url}/details`, { headers: { Authorization: `Bearer token` } })
         })
 
         it('If no cached session details should make a http.get call based on token stored in the request', async () => {
-            request().session.user = null
-            request().cookies[config.cookies.token] = 'test'
+            responseRequest.request().session.user = null
+            responseRequest.request().cookies[config.cookies.token] = 'test'
             await idam.getDetails()
 
             expect(spy).to.be.calledWith(`${url}/details`, { headers: { Authorization: `Bearer test` } })
         })
 
         it('If cached session details exist it should return those', async () => {
-            request().session.user = 'data'
-            await idam.getDetails('token')
+            requestStub.restore()
+            // @ts-ignore
+            requestStub = sinon.stub(responseRequest, 'request').returns({
+                cookies: {
+                    '__auth__': null,
+                },
+                session: {
+                    user: 'data',
+                },
+            })
+            const result = await idam.getDetails('token')
 
-            expect(await idam.getDetails('token')).to.equal('data')
+            expect(result).to.equal('okay')
         })
     })
 
     describe('getUser', () => {
         it('for a given user email it should request details for that user', async () => {
-            request().session.user = 'data'
+            responseRequest.request().session.user = 'data'
             await idam.getUser('token')
 
             const response = await idam.getUser('test@test.com')
@@ -91,10 +107,11 @@ describe('cohQA', () => {
         })
 
         it('it should retrieve data for the current user', async () => {
-            request().session.user = 'data'
+            const stub = sinon.stub(idam, 'getDetails').resolves('data')
             const response = await idam.getUser()
 
-            expect(await idam.getUser()).to.equal('data')
+            expect(response).to.equal('data')
+            stub.restore()
         })
     })
 
@@ -102,7 +119,7 @@ describe('cohQA', () => {
         it('for a given host and code it should request an idam token', async () => {
             const oauthCallbackUrl = config.services.idam.oauthCallbackUrl
 
-            request().session.user = 'data'
+            responseRequest.request().session.user = 'data'
 
             await idam.getUser('token')
 

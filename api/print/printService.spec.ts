@@ -1,11 +1,9 @@
 /* tslint:disable:no-unused-expression no-var-requires */
 import * as chai from 'chai'
 import { expect } from 'chai'
-import 'mocha'
 import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
-import { mockReq, mockRes } from 'sinon-express-mock'
-import { config } from '../config'
+import { mockRes } from 'sinon-express-mock'
 import { http } from '../lib/http'
 import { getCcdPrintout } from './printService'
 
@@ -14,7 +12,6 @@ describe('printService - getCcdPrintout', () => {
 
     let sandbox
     let spy: any
-    const req = mockReq()
     const res = mockRes({
         data: 'ok'
     })

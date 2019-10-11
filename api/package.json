@@ -5,11 +5,11 @@
     "scripts": {
         "ng": "ng",
         "build": "tsc",
-        "coverage": "npx nyc mocha",
+        "coverage": "jest --coverage",
         "lint": "npx tslint --project .",
         "watch": "nodemon --watch '**/*.ts' --exec 'ts-node' local.ts",
-        "test": "mocha || true",
-        "test:watch": "mocha --watch --recursive --watch-extensions ts",
+        "test": "jest",
+        "test:watch": "jest --watch",
         "start": "cd ../dist/jui-backend && node server.js"
     },
     "private": true,

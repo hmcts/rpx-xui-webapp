@@ -3,7 +3,7 @@
     "compilerOptions": {
         "outDir": "../dist/rpx-exui/api",
         "target": "es5",
-        "types": ["node", "mocha", "rxjs"],
+        "types": ["node", "jest", "rxjs"],
         "baseUrl": ".",
         "lib": ["es2017", "dom"]
     },

@@ -46,7 +46,6 @@ const cookieService = {
 
 
 class HttpClientMock {
-
   get() {
     return 'response';
   }
@@ -64,6 +63,18 @@ class AppConfigServiceMock {
       }
     };
   }
+}
+
+class AppConstantsMock {
+  static REDIRECT_URL = {
+    dummy: 'dummy',
+    aat: 'dummy',
+    demo: 'dummy',
+    ithc: 'dummy',
+    prod: 'dummy',
+    perftest: 'dummy',
+    localhost: 'dummy'
+  };
 }
 
 describe('AuthService', () => {
@@ -116,7 +127,9 @@ describe('AuthService', () => {
 
   describe('generateLoginUrl', () => {
     it('should generate url', inject([AuthService], (service: AuthService) => {
-      const base =  AppConstants.REDIRECT_URL[AppUtils.getEnvironment(window.location.origin)];
+      spyOn(AppUtils, 'getEnvironment').and.returnValue('dummy');
+      AppConstants.REDIRECT_URL = AppConstantsMock.REDIRECT_URL;
+      const base = 'dummy';
       const clientId = 'dummy';
       const callback = `${service.apiBaseUrl}/dummy`;
       const scope = `profile openid roles manage-user create-user`;

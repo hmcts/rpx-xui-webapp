@@ -12,7 +12,6 @@ import {router as documentRouter} from './documents/routes'
 import healthCheck from './healthCheck'
 import {errorStack} from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
-import serviceTokenMiddleware from './lib/middleware/serviceToken'
 import {JUILogger} from './lib/models'
 import * as postCodeLookup from './postCodeLookup'
 import {router as printRouter} from './print/routes'
@@ -89,8 +88,6 @@ app.get('/oauth2/callback', auth.authenticateUser)
 app.get('/api/logout', (req, res) => {
     auth.doLogout(req, res)
 })
-
-app.use(serviceTokenMiddleware)
 
 app.get('/api/addresses', postCodeLookup.doLookup)
 

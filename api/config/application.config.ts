@@ -23,7 +23,7 @@ export const application = {
         },
     },
     maxCCDRetries: 3,
-    microservice: 'xui_webapp',
+    microservice: 'jui_webapp',
     oauthCallbackUrl: 'oauth2/callback',
     platformCookie: 'platform',
     protocol: 'https',

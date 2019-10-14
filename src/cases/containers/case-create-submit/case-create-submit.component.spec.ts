@@ -169,4 +169,10 @@ describe('CaseCaseComponent', () => {
     expect(draftService.createOrUpdateDraft).toHaveBeenCalled();
   });
 
+  it('should not  have called draftService.createOrUpdateDraft on saveDraft is false', async () => {
+    spyOn(draftService, 'createOrUpdateDraft').and.callThrough();
+    component.eventTrigger.can_save_draft = false;
+    expect(component.saveDraft()).toBeUndefined();
+  });
+
 });

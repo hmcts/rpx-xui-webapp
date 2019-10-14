@@ -27,6 +27,11 @@ describe('ExUITitleService', () => {
               firstChild: {
                 snapshot: {
                   data: { title: 'First Child 2'},
+                },
+                firstChild: {
+                  snapshot: {
+                    data: { title: 'First Child 3'},
+                  }
                 }
               }
             }
@@ -45,7 +50,29 @@ describe('ExUITitleService', () => {
     TestBed.get(Router).events.next(event);
     service.ngOnInit();
     service.title$.subscribe(title => {
-      expect(title).toBe('First Child 2');
+      expect(title).toBe('First Child 3');
+    });
+  }));
+
+  it('ngOnInit should use the main firstChild title', inject([ExUITitleService], (service: ExUITitleService) => {
+    const activatedRoute = TestBed.get(ActivatedRoute);
+    activatedRoute.firstChild = { snapshot: { data: { title: 'First Child 1'}}};
+    const event = new NavigationEnd(42, '/', '/');
+    TestBed.get(Router).events.next(event);
+    service.ngOnInit();
+    service.title$.subscribe(title => {
+      expect(title).toBe('First Child 1');
+    });
+  }));
+
+  it('ngOnInit should have empty string title when no title in activatedRoute', inject([ExUITitleService], (service: ExUITitleService) => {
+    const activatedRoute = TestBed.get(ActivatedRoute);
+    activatedRoute.firstChild = { snapshot: { data: { }}};
+    const event = new NavigationEnd(42, '/', '/');
+    TestBed.get(Router).events.next(event);
+    service.ngOnInit();
+    service.title$.subscribe(title => {
+      expect(title).toBe('');
     });
   }));
 

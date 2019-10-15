@@ -24,7 +24,7 @@ def channel   = '#xui-pipeline'
 
 List<LinkedHashMap<String, Object>> secrets = [
   secret('xui-s2s-token',                 'S2S_SECRET'),
-  secret('xui-oauth2-token',              'IDAM_SECRET'),
+  secret('mc-idam-client-secret',              'IDAM_SECRET'),
   secret('AppInsightsInstrumentationKey', 'APPINSIGHTS_INSTRUMENTATIONKEY')
 ]
 

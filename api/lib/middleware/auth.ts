@@ -5,6 +5,7 @@ import { config } from '../../config'
 import * as log4jui from '../../lib/log4jui'
 import { getDetails } from '../../services/idam'
 import { asyncReturnOrError } from '../util'
+import * as serviceTokenMiddleware from './serviceToken'
 
 const logger = log4jui.getLogger('auth')
 
@@ -61,15 +62,12 @@ export default async (req, res, next) => {
         axios.defaults.headers.common.Authorization = `Bearer ${req.auth.token}`
         axios.defaults.headers.common['user-roles'] = req.auth.data.roles.join()
 
-        // this is fine, as S2S can be stored in memory per node app
-        if (req.headers.ServiceAuthorization) {
-            axios.defaults.headers.common.ServiceAuthorization = req.headers.ServiceAuthorization
-        }
-
         logger.info('Auth token: ' + `Bearer ${req.auth.token}`)
-        logger.info('S2S token: ' + req.headers.ServiceAuthorization)
-        logger.info('Attached auth headers to request')
 
-        next()
+        // moved s2s here so we authenticate first
+        await serviceTokenMiddleware.default(req, res, () => {
+            logger.info('Attached auth headers to request')
+            next()
+        })
     }
 }

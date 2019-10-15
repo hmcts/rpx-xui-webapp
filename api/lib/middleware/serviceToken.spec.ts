@@ -10,6 +10,7 @@ chai.use(sinonChai)
 import * as serviceAuth from '../../services/serviceAuth'
 import * as serviceToken from './serviceToken'
 
+import axios from 'axios'
 import {generateToken} from './serviceToken'
 
 describe('serviceToken', () => {
@@ -107,7 +108,7 @@ describe('serviceToken', () => {
   })
 
   describe('serviceToken default', async () => {
-    it('should set the ServiceAuthorization on request header', async () => {
+    it('should set the ServiceAuthorization on axios', async () => {
       const sandbox = sinon.createSandbox()
       const req = mockReq({
         headers: {}
@@ -116,7 +117,7 @@ describe('serviceToken', () => {
       const next = sandbox.spy()
       sandbox.stub(serviceToken, 'serviceTokenGenerator').resolves(token)
       await serviceToken.default(req, res, next)
-      expect(req.headers.ServiceAuthorization).to.be.equal(token)
+      expect(axios.defaults.headers.common.ServiceAuthorization).to.be.equal(token)
       expect(next).to.have.been.called
     })
   })

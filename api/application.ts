@@ -5,13 +5,13 @@ import * as express from 'express'
 import * as session from 'express-session'
 import * as globalTunnel from 'global-tunnel-ng'
 import * as sessionFileStore from 'session-file-store'
-import * as amendedJurisdictions from './amendedJurisdictions'
 import * as auth from './auth'
 import {config} from './config'
 import {router as documentRouter} from './documents/routes'
 import healthCheck from './healthCheck'
 import {errorStack} from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
+import authInterceptor from './lib/middleware/auth'
 import {JUILogger} from './lib/models'
 import * as postCodeLookup from './postCodeLookup'
 import {router as printRouter} from './print/routes'
@@ -89,7 +89,7 @@ app.get('/api/logout', (req, res) => {
     auth.doLogout(req, res)
 })
 
-app.get('/api/addresses', postCodeLookup.doLookup)
+app.get('/api/addresses', authInterceptor, postCodeLookup.doLookup)
 
 app.get('/api/monitoring-tools', (req, res) => {
     res.send({key: config.appInsightsInstrumentationKey})
@@ -97,7 +97,6 @@ app.get('/api/monitoring-tools', (req, res) => {
 
 app.use('/api/healthCheck', healthCheck)
 
-app.get('/aggregated/caseworkers/:uid/jurisdictions', amendedJurisdictions.getJurisdictions)
 app.use('/aggregated', routes)
 app.use('/data', routes)
 // separate route for document upload/view

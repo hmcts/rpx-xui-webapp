@@ -1,8 +1,8 @@
 export default {
     health: {
-        ccdComponentApi: 'https://ccd-api-gateway-web-aat.service.core-compute-aat.internal/health',
-        ccdDataApi: 'https://ccd-data-store-api-aat.service.core-compute-aat.internal/health',
-        documentsApi: 'https://dm-store-aat.service.core-compute-aat.internal/health',
+        ccdComponentApi: 'http://ccd-api-gateway-web-aat.service.core-compute-aat.internal/health',
+        ccdDataApi: 'http://ccd-data-store-api-aat.service.core-compute-aat.internal/health',
+        documentsApi: 'http://dm-store-aat.service.core-compute-aat.internal/health',
     },
     logging: 'debug',
     protocol: 'http',
@@ -13,11 +13,11 @@ export default {
     secureCookie: false,
     services: {
         ccd: {
-            componentApi: 'https://ccd-api-gateway-web-aat.service.core-compute-aat.internal',
-            dataApi: 'https://ccd-data-store-api-aat.service.core-compute-aat.internal',
+            componentApi: 'http://ccd-api-gateway-web-aat.service.core-compute-aat.internal',
+            dataApi: 'http://ccd-data-store-api-aat.service.core-compute-aat.internal',
         },
         documents: {
-            api: 'https://dm-store-aat.service.core-compute-aat.internal',
+            api: 'http://dm-store-aat.service.core-compute-aat.internal',
         },
         idam: {
             idamApiUrl: 'https://idam-api.ithc.platform.hmcts.net',

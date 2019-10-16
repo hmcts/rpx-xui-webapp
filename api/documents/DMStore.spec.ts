@@ -26,9 +26,13 @@ describe('DMStore', () => {
 
     beforeEach(() => {
 
+        // @ts-ignore
         spy = sinon.stub(http, 'get').resolves(res)
+        // @ts-ignore
         spyPost = sinon.stub(http, 'post').resolves(res)
+        // @ts-ignore
         spyPatch = sinon.stub(http, 'patch').resolves(res)
+        // @ts-ignore
         spyDelete = sinon.stub(http, 'delete').resolves(res)
     })
 

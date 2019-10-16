@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { AlertService, Alert, AlertLevel } from '@hmcts/ccd-case-ui-toolkit';
 import { select } from '@ngrx/store';
 import { Subscription, Observable } from 'rxjs';
@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./alert.component.scss']
 })
 
-export class AlertComponent implements OnDestroy {
+export class AlertComponent implements OnInit, OnDestroy {
   message = '';
   level = '';
   currentUrl = '';
@@ -19,6 +19,9 @@ export class AlertComponent implements OnDestroy {
   routeSubscription: Subscription;
 
   constructor(private alertService: AlertService, private router: Router) {
+  }
+
+  ngOnInit() {
     this.alertMessageObservable = this.alertService.alerts.pipe(select( alert => alert));
     this.routeSubscription = this.router.events.subscribe((val) => this.message = '');
     this.alertMessageSubscription = this.alertMessageObservable.subscribe(alert => {

@@ -78,7 +78,7 @@ describe('proxy', () => {
 
   it('should catch any errors upon proxy get request', async () => {
     spy.restore()
-    spy = sandbox.stub(http, 'get').throws({ response: { data: 'error occurred'}})
+    spy = sandbox.stub(http, 'get').throws({ data: 'error occurred'})
     await proxy.get(req, res)
     expect(res.send).to.have.been.calledWith('error occurred')
   })
@@ -92,7 +92,7 @@ describe('proxy', () => {
 
   it('should catch any errors upon proxy put request', async () => {
     spyPut.restore()
-    spyPut = sandbox.stub(http, 'put').throws({ response: { data: 'error occurred'}})
+    spyPut = sandbox.stub(http, 'put').throws({ data: 'error occurred'})
     await proxy.put(req, res)
     expect(res.send).to.have.been.calledWith('error occurred')
   })

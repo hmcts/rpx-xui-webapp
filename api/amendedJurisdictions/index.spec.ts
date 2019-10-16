@@ -67,18 +67,6 @@ describe('proxy', () => {
     sandbox.restore()
   })
 
-  it('should set content type', () => {
-    req.headers.accept = false
-    req.headers.experimental = false
-    const headers = amendedJurisdictions.setHeaders(req)
-    expect(headers).to.deep.equal({ 'content-type': 'text/test' })
-  })
-
-  it('should return a headers object from request', () => {
-    const headers = amendedJurisdictions.setHeaders(req)
-    expect(headers).to.deep.equal(req.headers)
-  })
-
   it('should jurisdictions proxy a get request and send PROBATE array', async () => {
     const url = `${config.services.ccd.componentApi}${req.baseUrl}${req.url}`
     const expected = [

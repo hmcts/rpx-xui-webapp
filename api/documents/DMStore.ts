@@ -44,7 +44,7 @@ export async function getDocumentBinary(documentId: string): Promise<any> {
         false
     )
 
-    return response.data
+    return response ? response.data : null
 }
 
 /**

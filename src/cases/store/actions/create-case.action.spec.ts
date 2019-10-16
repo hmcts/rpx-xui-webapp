@@ -1,6 +1,4 @@
 import * as fromCreateCases from './create-case.action';
-import {CREATE_CASE_FILTER_APPLY} from './create-case.action';
-import {CREATE_CASE_FILTER_CHANGED} from './create-case.action';
 
 describe('Create Cases Actions', () => {
   describe('Create Cases', () => {
@@ -22,6 +20,18 @@ describe('Create Cases Actions', () => {
 
         expect({ ...action }).toEqual({
           type: fromCreateCases.CREATE_CASE_RESET,
+        });
+      });
+    });
+
+    describe('Case Create Loaded', () => {
+      it('should create an action', () => {
+        const caseId = 'caseId';
+        const action = new fromCreateCases.CreateCaseLoaded(caseId);
+
+        expect({ ...action }).toEqual({
+          type: fromCreateCases.CREATED_CASE_LOADED,
+          caseId
         });
       });
     });

@@ -20,7 +20,7 @@ import routes from './routes'
 config.environment = process.env.XUI_ENV || 'local'
 
 export const app = express()
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '1'
 
 const FileStore = sessionFileStore(session)
 

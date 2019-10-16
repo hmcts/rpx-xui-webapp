@@ -16,4 +16,5 @@ router.put('/*', proxy.put)
 
 router.use('/logout', auth.logout)
 
+// @ts-ignore
 export default router

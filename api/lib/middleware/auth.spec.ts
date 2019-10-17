@@ -11,6 +11,7 @@ chai.use(sinonChai)
 import * as authController from '../../auth'
 import * as idam from '../../services/idam'
 import * as auth from './auth'
+import * as serviceTokenMiddleware from './serviceToken'
 
 describe('auth', () => {
     //TODO commenting out as not clear if restricted roles apply to xui
@@ -47,6 +48,7 @@ describe('auth', () => {
             req.headers.authorization = token
             const stub = sinon.stub(idam, 'getDetails')
             const stub2 = sinon.stub(auth, 'validRoles')
+            const stub3 = sinon.stub(serviceTokenMiddleware, 'default').resolves()
 
             stub.returns(
                 Promise.resolve({
@@ -59,6 +61,8 @@ describe('auth', () => {
             await auth.default(req, res, () => {})
             expect(stub).to.be.called
             stub.restore()
+            stub2.restore()
+            stub3.restore()
         })
         it('should log the user out if token has expired', async () => {
             const req = mockReq({
@@ -138,11 +142,16 @@ describe('auth', () => {
         const token = jwt.sign({ exp: expiry.getTime() / 1000 }, 'test')
         req.headers.authorization = token
         const spy = sinon.spy()
+        const stub = sinon.stub(serviceTokenMiddleware, 'default').callsFake(() => {
+            spy()
+            return Promise.resolve()
+        })
 
         // the spy in this context is the middleware next function  which
         // will be  called right at the end if everything is successful
 
         await auth.default(req, res, spy)
         expect(spy).to.be.called
+        stub.restore()
     })
 })

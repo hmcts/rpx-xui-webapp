@@ -17,12 +17,12 @@ def type      = "nodejs"
 def product   = "xui"
 def component = "webapp"
 def channel   = '#xui-pipeline'
-def deployToAatOnly = false  // set to true if only deploy upto AAT, set to false will deploy all the way to production
+def deployToAatOnly = true  // set to true if only deploy upto AAT, set to false will deploy all the way to production
 
 def secrets = [
   'rpx-${env}': [
     secret('xui-s2s-token', 'S2S_SECRET'),
-    secret('xui-oauth2-token', 'IDAM_SECRET'),
+    secret('mc-idam-client-secret', 'IDAM_SECRET'),
     secret('test-email', 'TEST_EMAIL'),
     secret('test-password', 'TEST_PASSWORD'),
     secret('APPINSIGHTS-INSTRUMENTATIONKEY-MO', 'APPINSIGHTS_INSTRUMENTATIONKEY')

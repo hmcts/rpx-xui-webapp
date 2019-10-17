@@ -32,11 +32,12 @@ module "app" {
         PACKAGES_PROJECT = "${var.team_name}"
         PACKAGES_ENVIRONMENT = "${var.env}"
         XUI_ENV = "${var.env}"
+        DUMMY_VAR = "TRUE"
 
         # Need to check these vault values - dont seem right here.
         S2S_SECRET = "${data.azurerm_key_vault_secret.s2s_secret.value}"
         IDAM_SECRET = "${data.azurerm_key_vault_secret.oauth2_secret.value}"
-    
+
 
     }
 }
@@ -53,7 +54,7 @@ data "azurerm_key_vault_secret" "s2s_secret" {
 }
 
 data "azurerm_key_vault_secret" "oauth2_secret" {
-    name = "xui-oauth2-token"
+    name = "mc-idam-client-secret"
     vault_uri = "${data.azurerm_key_vault.key_vault.vault_uri}"
 }
 

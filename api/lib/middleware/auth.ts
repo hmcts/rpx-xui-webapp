@@ -5,6 +5,7 @@ import { config } from '../../config'
 import * as log4jui from '../../lib/log4jui'
 import { getDetails } from '../../services/idam'
 import { asyncReturnOrError } from '../util'
+import * as serviceTokenMiddleware from './serviceToken'
 
 const logger = log4jui.getLogger('auth')
 
@@ -18,7 +19,7 @@ export default async (req, res, next) => {
     const jwt = req.headers.authorization || req.cookies[config.cookies.token]
 
     if (!jwt) {
-        next() // this should only occur if there is no auth cookie, which will be picked up by the FE
+        auth.doLogout(req, res, 401)
         return
     }
 
@@ -28,6 +29,8 @@ export default async (req, res, next) => {
     const now = new Date().getTime() / 1000
     const expired = expires < now
 
+    // TODO: clean this up, why is this even required?
+    // concerns: if doLogout is called, req.session.user is cleared but this sets it all up again
     if (!req.session.user) {
         logger.warn('Session expired. Trying to get user details again')
         const details = await asyncReturnOrError(getDetails(), 'Cannot get user details', res, logger, false)
@@ -37,6 +40,8 @@ export default async (req, res, next) => {
             req.session.user = details
         }
     }
+
+    // TODO: expired could be false without req.session.user so this code block could fall through
     if (expired || !req.session.user) {
         logger.warn('Auth token  expired need to log in again')
         auth.doLogout(req, res, 401)
@@ -44,6 +49,7 @@ export default async (req, res, next) => {
 
     }
 
+    // TODO: not even a valid test anymore (validRoles() returns true)
     if (!validRoles(req.session.user.roles)) {
         logger.warn('User role does not allow login')
         auth.doLogout(req, res, 401)
@@ -56,14 +62,12 @@ export default async (req, res, next) => {
         axios.defaults.headers.common.Authorization = `Bearer ${req.auth.token}`
         axios.defaults.headers.common['user-roles'] = req.auth.data.roles.join()
 
-        if (req.headers.ServiceAuthorization) {
-            axios.defaults.headers.common.ServiceAuthorization = req.headers.ServiceAuthorization
-        }
-
         logger.info('Auth token: ' + `Bearer ${req.auth.token}`)
-        logger.info('S2S token: ' + req.headers.ServiceAuthorization)
-        logger.info('Attached auth headers to request')
 
-        next()
+        // moved s2s here so we authenticate first
+        await serviceTokenMiddleware.default(req, res, () => {
+            logger.info('Attached auth headers to request')
+            next()
+        })
     }
 }

@@ -94,7 +94,7 @@ defineSupportCode(function ({ Given, When, Then }) {
 
   });
 
-  Given(/^I am logged into Expert UI with SSCS judge details$/, async function () {
+  Given(/^I am logged into Expert UI with valid user details$/, async function () {
     browser.sleep(LONG_DELAY);
     await loginPage.emailAddress.sendKeys(this.config.username);
     browser.sleep(MID_DELAY);
@@ -103,7 +103,7 @@ defineSupportCode(function ({ Given, When, Then }) {
     browser.sleep(MID_DELAY);
   });
 
-  Given(/^I am logged into Expert UI with FR judge details$/, async function () {
+  Given(/^I am logged into Expert UI with Probate user details$/, async function () {
     browser.sleep(MID_DELAY);
     await loginPage.emailAddress.sendKeys(this.config.username);
     browser.sleep(MID_DELAY);

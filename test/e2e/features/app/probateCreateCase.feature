@@ -3,12 +3,12 @@ Feature: create case workflow
 
   Background:
     When I navigate to Expert UI Url
-    Given I am logged into Expert UI with SSCS judge details
+    Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I click on create case button
     Then Create case page should be displayed
 
-  @smoke
+  @all
   Scenario: create case for Probate user workflow
     When I enter mandatory probate fields jurisdiction,case type,event and click on start button
     Then I should navigate to apply for probate page

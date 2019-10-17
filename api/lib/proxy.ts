@@ -32,9 +32,10 @@ export async function get(req: EnhancedRequest, res: express.Response) {
         res.status(200)
         res.send(response.data)
     } catch (e) {
-        res.status(e.response.status)
-        res.send(e.response.data)
+        res.status(e.status)
+        res.send(e.data)
     }
+
 }
 
 export async function put(req: EnhancedRequest, res: express.Response) {
@@ -48,8 +49,8 @@ export async function put(req: EnhancedRequest, res: express.Response) {
         res.status(200)
         res.send(response.data)
     } catch (e) {
-        res.status(e.response.status)
-        res.send(e.response.data)
+        res.status(e.status)
+        res.send(e.data)
     }
 }
 
@@ -64,14 +65,6 @@ export async function post(req: EnhancedRequest, res: express.Response) {
         res.status(200)
         res.send(response.data)
     } catch (e) {
-        /**
-         * Adnan: 12/09/2019
-         *
-         * Ticket EUI-734 required me to remove '.response' from both lines below.
-         *      res.status(e.response.status) => res.status(e.status)
-         *      res.send(e.response.data) => res.send(e.data)
-         * The response from CCD does not have the 'response' property.
-         */
         res.status(e.status)
         res.send(e.data)
     }

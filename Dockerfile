@@ -22,6 +22,7 @@ RUN chmod 777 /usr/src/app/dist
 WORKDIR /usr/src/app
 COPY --from=builder /usr/src/app/dist ./dist
 COPY --from=builder /usr/src/app/package.json .
+COPY yarn.lock .
 RUN yarn install --production
 EXPOSE 8080
 CMD [ "npm", "start" ]

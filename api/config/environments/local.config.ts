@@ -1,4 +1,9 @@
 export default {
+    health: {
+        ccdComponentApi: 'http://ccd-api-gateway-web-aat.service.core-compute-aat.internal/health',
+        ccdDataApi: 'http://ccd-data-store-api-aat.service.core-compute-aat.internal/health',
+        documentsApi: 'http://dm-store-aat.service.core-compute-aat.internal/health',
+    },
     logging: 'debug',
     protocol: 'http',
     proxy: {
@@ -8,14 +13,11 @@ export default {
     secureCookie: false,
     services: {
         ccd: {
-            componentApi: 'https://ccd-api-gateway-web-aat.service.core-compute-aat.internal',
-            dataApi: 'https://ccd-data-store-api-aat.service.core-compute-aat.internal',
-        },
-        coh: {
-            corApi: 'http://coh-cor-aat.service.core-compute-aat.internal',
+            componentApi: 'http://ccd-api-gateway-web-aat.service.core-compute-aat.internal',
+            dataApi: 'http://ccd-data-store-api-aat.service.core-compute-aat.internal',
         },
         documents: {
-            api: 'https://dm-store-aat.service.core-compute-aat.internal',
+            api: 'http://dm-store-aat.service.core-compute-aat.internal',
         },
         idam: {
             idamApiUrl: 'https://idam-api.aat.platform.hmcts.net',
@@ -24,8 +26,7 @@ export default {
             indexUrl: '/',
             oauthCallbackUrl: 'oauth2/callback',
         },
-        s2s:
-            'https://rpe-service-auth-provider-aat.service.core-compute-aat.internal',
+        s2s: 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal',
     },
     sessionSecret: 'secretSauce',
 }

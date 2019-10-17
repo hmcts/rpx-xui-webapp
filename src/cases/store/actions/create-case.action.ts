@@ -6,6 +6,8 @@ export const CREATE_CASE_RESET = '[CreateCase] Reset Change';
 export const CREATE_CASE_FILTER_APPLY = '[CreateCase] Filter Apply';
 export const CREATE_CASE_FILTER_CHANGED = '[CreateCase] Filter Changed';
 
+export const CREATED_CASE_LOADED = '[CreateCase] Load Finished';
+
 export class ApplyChange implements Action {
   readonly type = CREATE_CASE_APPLY;
   constructor(public payload: any) {}
@@ -13,6 +15,11 @@ export class ApplyChange implements Action {
 
 export class CreateCaseReset implements Action {
   readonly type = CREATE_CASE_RESET;
+}
+
+export class CreateCaseLoaded implements Action {
+  constructor(public caseId: any) {}
+  readonly type = CREATED_CASE_LOADED;
 }
 
 export class CaseCreateFilterApply implements Action {
@@ -28,4 +35,5 @@ export type CreateCasesAction =
   | ApplyChange
   | CreateCaseReset
   | CaseCreateFilterApply
-  | CaseCreateFilterChanged;
+  | CaseCreateFilterChanged
+  | CreateCaseLoaded;

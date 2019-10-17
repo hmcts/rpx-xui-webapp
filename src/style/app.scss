@@ -20,7 +20,15 @@ $govuk-template-image-path: "/assets";
 @import "./print";
 @import "./vendor/prism.scss";
 
+body {
+  margin: 0;
+}
+
 // Bootstrap
+
+main {
+  font-size: inherit;
+}
 
 .container-fluid {
   padding-right: 15px;
@@ -325,4 +333,18 @@ form.check-your-answers table  td .markdown p {
     display:flex;
     align-items:center;
   }
+}
+
+.show-condition-grey-bar {
+  border-left: 10px solid #bfc1c3;
+  padding-left: 15px;
+  margin-bottom: 30px !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+button:focus {
+  outline: 3px solid #ffbf47;
+  outline-offset: 0; 
 }

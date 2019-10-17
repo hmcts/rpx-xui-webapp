@@ -41,3 +41,8 @@ export const getCurrentPage = createSelector(
   getSearchState,
   fromFeature.getSearchResultsCurrentPage
 );
+
+export const getSearchFilterToggle = createSelector(
+  getSearchState,
+  fromFeature.getSearchFilterToggleState
+);

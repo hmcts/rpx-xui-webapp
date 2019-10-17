@@ -1,6 +1,6 @@
 <exui-page-wrapper [title]="'Case List'">
     <div class="search-block">
-        <div class="filter-block" >
+        <div class="hmcts-filter-layout__filter" [hidden]="!showFilter" >
             <div _ngcontent-c11="" class="form-group">
                 <div class="container-fluid">
                     <exui-ccd-connector
@@ -8,13 +8,22 @@
                     [store]="store"
                     [fromFeatureStore]="fromCasesFeature">
                         <ccd-case-list-filters #ccdComponent
-                            [defaults]="defaults">
+                            [defaults]="defaults"
+                            (onApply)="applyFilter($event)"
+                        >
                         </ccd-case-list-filters>
                     </exui-ccd-connector>
                 </div>
             </div>
         </div>
-        <div aria-live="polite" class="results-block" id="search-result" rightbody="" role="region">
+        <div aria-live="polite" class="hmcts-filter-layout__content" id="search-result" rightbody="" role="region">
+          <div class="hmcts-action-bar">
+            <div class="hmcts-action-bar__filter">
+              <button class="govuk-button hmcts-button--secondary" (click) = "toggleFilter()" type="button"  aria-haspopup="true" aria-expanded="false">
+                {{toggleButtonName}}
+              </button>
+            </div>
+          </div>
           <ccd-search-result
             *ngIf="resultView"
             [jurisdiction]="jurisdiction"

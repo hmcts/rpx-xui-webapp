@@ -18,9 +18,9 @@ export class SearchFilterService {
 
     search(payload): Observable<any> {
 
-        const { jurisdictionId, caseTypeId, metadataFilters, caseFilters } = this.getParams(payload);
+        const { jurisdictionId, caseTypeId, metadataFilters, caseFilters, view  } = this.getParams(payload);
 
-        return this.ccdSearchService.search(jurisdictionId, caseTypeId, metadataFilters, caseFilters) as any;
+        return this.ccdSearchService.search(jurisdictionId, caseTypeId, metadataFilters, caseFilters, view) as any;
     }
 
     private getParams(payload: any) {
@@ -44,8 +44,9 @@ export class SearchFilterService {
       const filters = this.getCaseFilterFromFormGroup(filter.formGroup);
       const caseFilters = filters.caseFilter;
       const metadataFilters = Object.assign(searchParams, filters.metadataFilter);
+      const view = filter.view;
 
-      return { jurisdictionId, caseTypeId, metadataFilters, caseFilters };
+      return { jurisdictionId, caseTypeId, metadataFilters, caseFilters, view };
     }
 
     private getCaseFilterFromFormGroup(formGroup?: FormGroup): { caseFilter, metadataFilter } {
@@ -78,12 +79,12 @@ export class SearchFilterService {
     }
 
     public findPaginationMetadata(payload): Observable<any> {
-      const { jurisdictionId, caseTypeId, metadataFilters,  caseFilters } = this.getParams(payload);
+      const { jurisdictionId, caseTypeId, metadataFilters,  caseFilters, view } = this.getParams(payload);
       const url = this.appConfig.getCaseDataUrl()  + `/caseworkers/:uid`
                                         + `/jurisdictions/${jurisdictionId}`
                                         + `/case-types/${caseTypeId}`
                                         + `/cases/pagination_metadata`;
-
+      delete metadataFilters.page;
       const options = this.requestOptionsBuilder.buildOptions(metadataFilters, caseFilters);
       return this.httpService.get(url, options ) as any;
   }

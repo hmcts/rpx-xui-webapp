@@ -1,10 +1,8 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {HttpError} from '@hmcts/ccd-case-ui-toolkit';
 import {Store} from '@ngrx/store';
 import * as fromCaseCreate from '../../store/reducers';
 import {ActionBindingModel} from '../../models/create-case-actions.model';
 import * as fromCasesFeature from '../../store';
-
 /**
  * Entry component wrapper for CCD-CASE-FILTER component
  * Smart Component

@@ -13,7 +13,7 @@ body .govuk-width-container, #content {
   padding-left: 20px;
 }
 
-@import "~govuk-frontend/all";
+@import "~govuk-frontend/govuk/all";
 @import "~@hmcts/frontend/all";
 
 // TODO move this in more appropriate place - perhaps get it from govuk-frontend

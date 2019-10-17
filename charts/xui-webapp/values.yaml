@@ -1,0 +1,23 @@
+nodejs:
+  applicationPort: 3000
+  memoryLimits: 1024Mi
+  cpuLimits: 1000m
+  environment:
+    REFORM_TEAM: rpx
+    REFORM_SERVICE_NAME: xui-webapp
+    NODE_ENV: production
+    UV_THREADPOOL_SIZE: 64
+    APPINSIGHTS_INSTRUMENTATIONKEY: ${APPINSIGHTS_INSTRUMENTATIONKEY}
+    XUI_ENV: preview
+    S2S_SECRET: ${S2S_SECRET}
+    IDAM_SECRET: ${IDAM_SECRET}
+  keyVaults:
+    rpx:
+      resourceGroup: rpx
+      secrets:
+        - xui-webapp-s2s-token
+        - mc-idam-client-secret
+        - AppInsightsInstrumentationKey
+  # Don't modify below here
+  image: ${IMAGE_NAME}
+  ingressHost: ${SERVICE_FQDN}

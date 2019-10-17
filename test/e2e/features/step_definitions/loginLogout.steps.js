@@ -14,7 +14,7 @@ async function waitForElement(el) {
 
 defineSupportCode(function ({ Given, When, Then }) {
 
-  When(/^I navigate to Expert UI Url$/, { timeout: 600 * 1000 }, async function () {
+  When(/^I navigate to Expert UI Url$/, async function () {
     await browser.get(config.config.baseUrl);
     await browser.driver.manage()
       .deleteAllCookies();
@@ -29,10 +29,11 @@ defineSupportCode(function ({ Given, When, Then }) {
       .to
       .eventually
       .equal('Incorrect email or password');
+    browser.sleep(SHORT_DELAY);
   });
 
 
-  Then(/^I am on Idam login page$/, { timeout: 600 * 1000 }, async function () {
+  Then(/^I am on Idam login page$/, async function () {
     await waitForElement('heading-large');
     await expect(loginPage.signinTitle.isDisplayed()).to.eventually.be.true;
     await expect(loginPage.signinTitle.getText())
@@ -41,12 +42,14 @@ defineSupportCode(function ({ Given, When, Then }) {
       .equal('Sign in');
     await expect(loginPage.emailAddress.isDisplayed()).to.eventually.be.true;
     await expect(loginPage.password.isDisplayed()).to.eventually.be.true;
+    browser.sleep(SHORT_DELAY);
 
   });
 
 
   When(/^I enter an valid email-address and password to login$/, async function () {
     await loginPage.emailAddress.sendKeys(this.config.username);          //replace username and password
+    browser.sleep(MID_DELAY);
     await loginPage.password.sendKeys(this.config.password);
     // browser.sleep(SHORT_DELAY);
     await loginPage.signinBtn.click();
@@ -81,7 +84,7 @@ defineSupportCode(function ({ Given, When, Then }) {
 
 
   Then(/^I should be redirected to EUI dashboard page$/, async function () {
-    browser.sleep(LONG_DELAY);
+    browser.sleep(SHORT_DELAY);
     await waitForElement('govuk-heading-xl');
     await expect(loginPage.dashboard_header.isDisplayed()).to.eventually.be.true;
     await expect(loginPage.dashboard_header.getText())
@@ -91,28 +94,30 @@ defineSupportCode(function ({ Given, When, Then }) {
 
   });
 
-  Given(/^I am logged into Expert UI with SSCS judge details$/, async function () {
+  Given(/^I am logged into Expert UI with valid user details$/, async function () {
     browser.sleep(LONG_DELAY);
     await loginPage.emailAddress.sendKeys(this.config.username);
+    browser.sleep(MID_DELAY);
     await loginPage.password.sendKeys(this.config.password);
     await loginPage.clickSignIn();
     browser.sleep(MID_DELAY);
   });
 
-  Given(/^I am logged into Expert UI with FR judge details$/, async function () {
-    browser.sleep(LONG_DELAY);
+  Given(/^I am logged into Expert UI with Probate user details$/, async function () {
+    browser.sleep(MID_DELAY);
     await loginPage.emailAddress.sendKeys(this.config.username);
+    browser.sleep(MID_DELAY);
     await loginPage.password.sendKeys(this.config.password);
     await loginPage.clickSignIn();
     browser.sleep(LONG_DELAY);
   });
 
-  Given(/^I navigate to Expert UI Url direct link$/, { timeout: 600 * 1000 }, async function () {
+  Given(/^I navigate to Expert UI Url direct link$/, async function () {
     await browser.get(config.config.baseUrl + '/cases/case-filter');
     await browser.driver.manage()
       .deleteAllCookies();
     await browser.refresh();
-    browser.sleep(AMAZING_DELAY);
+    browser.sleep(LONG_DELAY);
   });
 
   Then(/^I should be redirected back to Login page after direct link$/, async function () {

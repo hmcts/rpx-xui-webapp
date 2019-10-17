@@ -1,18 +1,18 @@
 export default {
     health: {
-        ccdComponentApi: 'https://ccd-api-gateway-web-perftest.service.core-compute-perftest.internal/health',
-        ccdDataApi: 'https://ccd-data-store-api-perftest.service.core-compute-perftest.internal/health',
-        documentsApi: 'https://dm-store-perftest.service.core-compute-perftest.internal/health',
+        ccdComponentApi: 'http://ccd-api-gateway-web-perftest.service.core-compute-perftest.internal/health',
+        ccdDataApi: 'http://ccd-data-store-api-perftest.service.core-compute-perftest.internal/health',
+        documentsApi: 'http://dm-store-perftest.service.core-compute-perftest.internal/health',
     },
     logging: 'debug',
     secureCookie: false,
     services: {
         ccd: {
-            componentApi: 'https://ccd-api-gateway-web-perftest.service.core-compute-perftest.internal',
-            dataApi: 'https://ccd-data-store-api-perftest.service.core-compute-perftest.internal',
+            componentApi: 'http://ccd-api-gateway-web-perftest.service.core-compute-perftest.internal',
+            dataApi: 'http://ccd-data-store-api-perftest.service.core-compute-perftest.internal',
         },
         documents: {
-            api: 'https://dm-store-perftest.service.core-compute-perftest.internal',
+            api: 'http://dm-store-perftest.service.core-compute-perftest.internal',
         },
         idam: {
             idamApiUrl: 'https://idam-api.perftest.platform.hmcts.net',

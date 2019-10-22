@@ -48,7 +48,7 @@ variable "common_tags" {
 //Addtional Vars ///////////////////////////////
 ////////////////////////////////////////////////
 variable "capacity" {
-  default = "1"
+  default = "2"
 }
 
 variable "additional_host_name" {

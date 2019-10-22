@@ -21,7 +21,7 @@ def deployToAatOnly = true  // set to true if only deploy upto AAT, set to false
 
 def secrets = [
   'rpx-${env}': [
-    secret('xui-s2s-token', 'S2S_SECRET'),
+    secret('mc-s2s-client-secret', 'S2S_SECRET'),
     secret('mc-idam-client-secret', 'IDAM_SECRET'),
     secret('test-email', 'TEST_EMAIL'),
     secret('test-password', 'TEST_PASSWORD'),

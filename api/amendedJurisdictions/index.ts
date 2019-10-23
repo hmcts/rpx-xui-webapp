@@ -15,7 +15,7 @@ export async function getJurisdictions(req: express.Request, res: express.Respon
         let amendedJurisdictions = []
         if (config.environment === 'prod') {
             response.data.forEach(element => {
-                if (element.id === 'PROBATE') {
+                if (element && element.id === 'PROBATE') {
                     amendedJurisdictions.push(element)
                 }
             })

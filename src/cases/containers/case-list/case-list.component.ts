@@ -8,6 +8,7 @@ import { Observable, Subscription, combineLatest } from 'rxjs';
 import { Jurisdiction, CaseType, CaseState, SearchResultView, PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
 import { FormGroup } from '@angular/forms';
 import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
+import {CookieService} from 'ngx-cookie';
 
 /**
  * Entry component wrapper for Case List
@@ -61,10 +62,16 @@ export class CaseListComponent implements OnInit, OnDestroy {
     public store: Store<fromCaseList.State>,
     private appConfig: AppConfig,
     private definitionsService: DefinitionsService,
+    private cookieService: CookieService,
   ) {
   }
 
   ngOnInit() {
+
+    /** Calling of User Roles example **/
+    const userRoles = this.cookieService.get('roles');
+    console.log('userRoles');
+    console.log(userRoles);
 
     this.page = 1;
     this.resultView = null;

@@ -95,4 +95,8 @@ describe('AppConfiguration', () => {
     expect(service.getCreateOrUpdateDraftsUrl('')).toBe('undefined/case-types//drafts/');
   }));
 
+  it('should have getAnnotationApiUrl', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getAnnotationApiUrl()).toBeUndefined();
+  }));
+
 });

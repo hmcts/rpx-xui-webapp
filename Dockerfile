@@ -8,8 +8,7 @@ RUN chmod 777 /usr/src/app
 WORKDIR /usr/src/app
 
 COPY hello.js .
-COPY package.json .
 
 ENV NODE_ENV=production
 EXPOSE 8080
-CMD [ "yarn", "basic" ]
+CMD [ "node", "hello.js" ]

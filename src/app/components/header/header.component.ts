@@ -26,7 +26,7 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit() {
      const userRoles = this.cookieService.get('roles');
-     if (userRoles.indexOf('pui-case-manager') !== -1) {
+     if (userRoles && userRoles.indexOf('pui-case-manager') !== -1) {
         this.isCaseManager = true;
      }
   }

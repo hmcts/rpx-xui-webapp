@@ -9,6 +9,19 @@ import {SharedModule} from '../../shared/shared.module';
 import {LoggerConfig, LoggerModule} from 'ngx-logger';
 import { AppConstants } from 'src/app/app.constants';
 import * as fromActions from '../../store';
+import { CookieService, CookieModule } from 'ngx-cookie';
+
+
+const cookieService = {
+  get: key => {
+    return cookieService[key];
+  },
+  set: (key, value) => {
+    cookieService[key] = value;
+  },
+  removeAll: () => { }
+};
+
 
 describe('AppComponent', () => {
   let component: AppComponent;
@@ -22,7 +35,8 @@ describe('AppComponent', () => {
         StoreModule.forRoot({}),
         ProvidersModule,
         SharedModule,
-        LoggerModule
+        LoggerModule,
+        CookieModule.forRoot()
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [
@@ -30,6 +44,7 @@ describe('AppComponent', () => {
       ],
       providers: [
         LoggerConfig,
+        { provide: CookieService, useValue: cookieService },
         {
           provide: LoggerService,
           useValue: {

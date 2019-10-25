@@ -9,7 +9,7 @@ import {NO_ERRORS_SCHEMA} from '@angular/core';
 import {CaseFilterToggle, FindCaselistPaginationMetadata} from '../../store/actions/case-list.action';
 import {provideMockStore, MockStore} from '@ngrx/store/testing';
 import {Jurisdiction, PaginationMetadata} from '@hmcts/ccd-case-ui-toolkit';
-import { of } from 'rxjs';
+import { of, Observable } from 'rxjs';
 
 describe('CaseListComponent', () => {
   let component: CaseListComponent;
@@ -156,6 +156,29 @@ describe('CaseListComponent', () => {
 
       expect(spyOnFindCaseListPaginationMetadata).toHaveBeenCalled();
     });
+
+    it('should call findCaseListPaginationMetadata() on page change with values from localStorage.', () => {
+
+      const spyOnFindCaseListPaginationMetadata = spyOn(component, 'findCaseListPaginationMetadata').and.callThrough();
+
+      const event = {
+        selected: {
+          page: 1,
+        }
+      };
+
+      const localStorageGetItemSpy = spyOn(localStorage, 'getItem');
+      component.savedQueryParams = { id:  '' };
+      localStorageGetItemSpy.and.returnValue('{' +
+        '"jurisdiction": "Probate", ' +
+        '"case-type": "GrantOfRepresentation", ' +
+        '"case-state": "BOReadyToIssue"' +
+      '}');
+
+      component.applyChangePage(event);
+
+      expect(spyOnFindCaseListPaginationMetadata).toHaveBeenCalled();
+    });
   });
 
   describe('applyFilter()', () => {
@@ -277,6 +300,36 @@ describe('CaseListComponent', () => {
 
       expect(component.defaults).toBeDefined();
     });
+
+    it('should set the defaults from localStorage.', () => {
+      const localStorageGetItemSpy = spyOn(localStorage, 'getItem');
+      localStorageGetItemSpy.and.returnValue('{' +
+        '"jurisdiction": "Probate", ' +
+        '"case-type": "GrantOfRepresentation", ' +
+        '"case-state": "BOReadyToIssue"' +
+      '}');
+      component.setCaseListFilterDefaults();
+
+      expect(component.defaults.state_id).toEqual('BOReadyToIssue');
+    });
+  });
+
+
+  it('should unsubscribe onDestroy', () => {
+    component.filterSubscription = new Observable().subscribe();
+    component.resultSubscription = new Observable().subscribe();
+    component.paginationSubscription = new Observable().subscribe();
+    component.caseFilterToggleSubscription = new Observable().subscribe();
+    spyOn(component.filterSubscription, 'unsubscribe').and.callThrough();
+    spyOn(component.resultSubscription, 'unsubscribe').and.callThrough();
+    spyOn(component.paginationSubscription, 'unsubscribe').and.callThrough();
+    spyOn(component.caseFilterToggleSubscription, 'unsubscribe').and.callThrough();
+
+    component.ngOnDestroy();
+    expect(component.filterSubscription.unsubscribe).toHaveBeenCalled();
+    expect(component.resultSubscription.unsubscribe).toHaveBeenCalled();
+    expect(component.paginationSubscription.unsubscribe).toHaveBeenCalled();
+    expect(component.caseFilterToggleSubscription.unsubscribe).toHaveBeenCalled();
   });
 
 });

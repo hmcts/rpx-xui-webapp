@@ -3,6 +3,7 @@ import { application } from './application.config'
 import * as aat from './environments/aat.config'
 import * as ithc from './environments/ithc.config'
 import * as demo from './environments/demo.config'
+import * as ithc from './environments/ithc.config'
 import * as local from './environments/local.config'
 import * as perftest from './environments/perftest.config'
 import * as preview from './environments/preview.config'
@@ -10,8 +11,8 @@ import * as prod from './environments/prod.config'
 
 export const configs = {
     aat,
-    ithc,
     demo,
+    ithc,
     local,
     perftest,
     preview,

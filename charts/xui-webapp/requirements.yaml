@@ -1,4 +1,4 @@
 dependencies:
   - name: nodejs
-    version: 0.0.12
-    repository: '@hmcts'
+    version: 1.4.1
+    repository: '@hmctspublic'

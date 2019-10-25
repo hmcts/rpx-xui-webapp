@@ -1,0 +1,34 @@
+{
+  "check-coverage": true,
+  "per-file": true,
+  "lines": 0,
+  "statements": 0,
+  "functions": 0,
+  "branches": 0,
+  "extension": [
+    ".ts",
+    ".tsx"
+  ],
+  "require": [
+    "ts-node/register"
+  ],
+  "include": [
+    "**/*"
+  ],
+  "exclude": [
+    "**/*.js",
+    "**/*.d.ts",
+    "**/*.spec.ts",
+    "local.ts",
+    "routes.ts",
+    "server.ts"
+  ],
+  "reporter": [
+    "lcov",
+    "html",
+    "text-summary"
+  ],
+  "cache": true,
+  "all": true,
+  "report-dir": "../reports/tests/coverage/node"
+}

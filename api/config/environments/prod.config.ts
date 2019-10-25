@@ -1,25 +1,27 @@
 export default {
+    health: {
+        ccdComponentApi: 'http://ccd-api-gateway-web-prod.service.core-compute-prod.internal/health',
+        ccdDataApi: 'http://ccd-data-store-api-prod.service.core-compute-prod.internal/health',
+        documentsApi: 'http://dm-store-prod.service.core-compute-prod.internal/health',
+    },
     logging: 'debug',
     secureCookie: false,
     services: {
         ccd: {
-            componentApi: 'https://ccd-api-gateway-web-prod.service.core-compute-prod.internal',
-            dataApi: 'https://ccd-data-store-api-prod.service.core-compute-prod.internal',
-        },
-        coh: {
-            corApi: 'https://coh-cor-prod.service.core-compute-prod.internal',
+            componentApi: 'http://ccd-api-gateway-web-prod.service.core-compute-prod.internal',
+            dataApi: 'http://ccd-data-store-api-prod.service.core-compute-prod.internal',
         },
         documents: {
-            api: 'https://dm-store-prod.service.core-compute-prod.internal',
+            api: 'http://dm-store-prod.service.core-compute-prod.internal',
         },
         idam: {
-            idamApiUrl: 'https://idam-api-pregolive.platform.hmcts.net',
+            idamApiUrl: 'https://idam-api.platform.hmcts.net',
             idamClientID: 'xuiwebapp',
-            idamLoginUrl: 'https://idam-web-public.platform.hmcts.net',
+            idamLoginUrl: 'https://hmcts-access.service.gov.uk',
             indexUrl: '/',
             oauthCallbackUrl: 'oauth2/callback',
         },
-        s2s: 'https://rpe-service-auth-provider-prod.service.core-compute-prod.internal',
+        s2s: 'http://rpe-service-auth-provider-prod.service.core-compute-prod.internal',
     },
     sessionSecret: 'secretSauce',
     useProxy: false,

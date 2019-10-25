@@ -1,90 +1,260 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {State} from './../../../app/store/reducers/index';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {CaseListComponent} from './case-list.component';
-import {
-  CaseUIToolkitModule, DraftService, AlertService, HttpService, AuthService as CCDAuthService, CasesService,
-  HttpErrorService, AbstractAppConfig, CaseEditWizardGuard, RouterHelperService,
-  DocumentManagementService, PageValidationService, PlaceholderService, SearchService, RequestOptionsBuilder, SearchFiltersModule
-} from '@hmcts/ccd-case-ui-toolkit';
 import {AppConfig} from '../../../app/services/ccd-config/ccd-case.config';
-import {ScrollToService} from '@nicky-lenaers/ngx-scroll-to';
-import {RouterTestingModule} from '@angular/router/testing';
-import {HttpClientModule} from '@angular/common/http';
-import {combineReducers, StoreModule} from '@ngrx/store';
-import {HttpModule} from '@angular/http';
-import {SharedModule} from '../../../app/shared/shared.module';
+import {DefinitionsService} from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
+import {Store} from '@ngrx/store';
 import {AppConfigService} from '../../../app/services/config/configuration.services';
-import {reducers} from '../../store/reducers';
-import * as fromCases from '../../store/reducers/';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import {NO_ERRORS_SCHEMA} from '@angular/core';
+import {CaseFilterToggle, FindCaselistPaginationMetadata} from '../../store/actions/case-list.action';
+import {provideMockStore, MockStore} from '@ngrx/store/testing';
+import {Jurisdiction, PaginationMetadata} from '@hmcts/ccd-case-ui-toolkit';
 
-class MockSortService {
-  features = {};
-  getFeatureToggle() {}
-  getEditorConfiguration() { }
-}
 describe('CaseListComponent', () => {
   let component: CaseListComponent;
   let fixture: ComponentFixture<CaseListComponent>;
+  let store: MockStore<State>;
+
+  /**
+   * Spies
+   */
+  const mockService = jasmine.createSpy();
+  let spyOnDispatchToStore = jasmine.createSpy();
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        CaseUIToolkitModule,
-        HttpClientModule,
-        StoreModule.forRoot({...reducers, cases: combineReducers(fromCases.reducers)}),
-        HttpModule,
-        SharedModule,
-        SearchFiltersModule,
-      ],
-      declarations: [ CaseListComponent ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [CaseListComponent],
+      schemas: [NO_ERRORS_SCHEMA],
       providers: [
-        PlaceholderService,
-        CasesService,
-        CCDAuthService,
-        HttpService,
-        HttpErrorService,
-        AlertService,
-        DraftService,
-        PageValidationService,
-        CaseEditWizardGuard,
-        RouterHelperService,
-        DocumentManagementService,
-        AppConfig,
-        AppConfigService,
-        RequestOptionsBuilder,
-        {
-          provide: SearchService,
-          useValue: {
-            requestOptionsBuilder: RequestOptionsBuilder
-          }
-        },
-        {
-          provide: AbstractAppConfig,
-          useExisting: AppConfig
-        },
         {
           provide: AppConfigService,
-          useClass: MockSortService
+          useClass: mockService
         },
-        ScrollToService
+        {
+          provide: AppConfig,
+          useClass: mockService
+        },
+        {
+          provide: DefinitionsService,
+          useClass: mockService
+        },
+        provideMockStore(),
       ]
-    })
-    .compileComponents();
-  }));
+    });
+    store = TestBed.get(Store);
+    spyOnDispatchToStore = spyOn(store, 'dispatch').and.callThrough();
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(CaseListComponent);
     component = fixture.componentInstance;
-   // componentInstance fixture.detectChanges();
+  }));
 
+  describe('getToggleButtonName()', () => {
+
+    it('should return the toggle button name as \'Hide Filter\' if we have shown ' +
+      'the filter', () => {
+      expect(component.getToggleButtonName(true)).toEqual('Hide Filter');
+    });
+
+    it('should return the toggle button name as \'Show Filter\' if we do not show ' +
+      'the filter', () => {
+      expect(component.getToggleButtonName(false)).toEqual('Show Filter');
+    });
   });
-  xit('should create', () => {
-    // TODO enable when developing component
-   // expect(component).toBeTruthy();
+
+  describe('findCaseListPaginationMetadata()', () => {
+
+    /**
+     * TODO: event should show the shape of event object.
+     */
+    it('should dispatch an action to find the case list pagination metadata.', () => {
+      const event = {
+        test: 'test',
+      };
+      component.findCaseListPaginationMetadata(event);
+      expect(spyOnDispatchToStore).toHaveBeenCalledWith(new FindCaselistPaginationMetadata(event));
+    });
   });
 
+  describe('toggleFilter()', () => {
 
+    /**
+     * TODO: We should always give the payload a proper name, not just payload.
+     */
+    it('should dispatch an action on toggle of the filter to show and hide the filter.', () => {
+      component.toggleFilter();
+      expect(spyOnDispatchToStore).toHaveBeenCalledWith(new CaseFilterToggle(true));
+    });
+  });
 
+  describe('createEvent()', () => {
+
+    /**
+     * We should think about calling the createEvent function
+     * makePaginationMetadataQuery as it's only used to find the Case List Pagination
+     * Metadata.
+     */
+    it('should be able to create an event.', () => {
+
+      const jurisdiction = {id: 'PROBATE'};
+      const caseType = {id: 'GrantOfRepresentation'};
+      const caseState = {id: 'CaseCreated'};
+      const metadataFields = ['[CASE_REFERENCE]'];
+      const formGroupValues = {};
+      const page = 1;
+
+      const event = component.createEvent(jurisdiction, caseType, caseState, metadataFields,
+        formGroupValues, page);
+
+      expect(event.selected.jurisdiction).toEqual(jurisdiction);
+      expect(event.selected.caseType).toEqual(caseType);
+      expect(event.selected.caseState).toEqual(caseState);
+      expect(event.selected.metadataFields).toEqual(metadataFields);
+      expect(event.selected.formGroup.value).toEqual(formGroupValues);
+      expect(event.selected.page).toEqual(page);
+    });
+  });
+
+  describe('applyChangePage()', () => {
+
+    /**
+     * We initially check that page is undefined, so that we know that calling the
+     * findCaseListPaginationMetadata() function is definitely changing the components page property.
+     */
+    it('should update the components page property on page change.', () => {
+
+      expect(component.page).toBeUndefined();
+
+      const event = {
+        selected: {
+          page: 1,
+        }
+      };
+
+      component.applyChangePage(event);
+
+      expect(component.page).toEqual(event.selected.page);
+    });
+
+    /**
+     * Note that the findCaseListPaginationMetadata() dispatches an Action to get the
+     * pagination metadata.
+     */
+    it('should call findCaseListPaginationMetadata() on page change.', () => {
+
+      const spyOnFindCaseListPaginationMetadata = spyOn(component, 'findCaseListPaginationMetadata').and.callThrough();
+
+      const event = {
+        selected: {
+          page: 1,
+        }
+      };
+
+      component.applyChangePage(event);
+
+      expect(spyOnFindCaseListPaginationMetadata).toHaveBeenCalled();
+    });
+  });
+
+  describe('applyFilter()', () => {
+
+    let event;
+
+    beforeEach(() => {
+
+      const jurisdiction = {id: 'PROBATE'};
+      const caseType = {id: 'GrantOfRepresentation'};
+      const caseState = {id: 'CaseCreated'};
+      const metadataFields = ['[CASE_REFERENCE]'];
+      const formGroupValues = {};
+      const page = 1;
+
+      event = component.createEvent(jurisdiction, caseType, caseState, metadataFields,
+        formGroupValues, page);
+    });
+
+    it('should call findCaseListPaginationMetadata() on apply of filter.', () => {
+
+      const spyOnFindCaseListPaginationMetadata = spyOn(component, 'findCaseListPaginationMetadata').and.callThrough();
+
+      component.applyFilter(event);
+
+      expect(spyOnFindCaseListPaginationMetadata).toHaveBeenCalled();
+    });
+
+    it('should update the components page property on apply of a filter change.', () => {
+
+      expect(component.page).toBeUndefined();
+
+      component.applyFilter(event);
+
+      expect(component.page).toEqual(event.selected.page);
+    });
+  });
+
+  describe('onPaginationSubscribeHandler()', () => {
+
+    it('should update the components paginationMetadata property, on return of subscription.', () => {
+
+      const paginationMetadata = new PaginationMetadata();
+      paginationMetadata.total_pages_count = 33;
+      paginationMetadata.total_results_count = 811;
+
+      component.onPaginationSubscribeHandler(paginationMetadata);
+
+      expect(component.paginationMetadata.total_pages_count).toEqual(paginationMetadata.total_pages_count);
+      expect(component.paginationMetadata.total_results_count).toEqual(paginationMetadata.total_results_count);
+    });
+  });
+
+  describe('onToogleHandler()', () => {
+
+    it('should update the components showFilter property, on return of toogle subscription.', () => {
+
+      const showFilter = true;
+      component.onToogleHandler(showFilter);
+
+      expect(component.showFilter).toEqual(showFilter);
+    });
+  });
+
+  describe('onFilterSubscriptionHandler()', () => {
+
+    it('should update the components jurisdiction property, on return of the filter subscription.', () => {
+
+      const filterResult = [
+        {id: 'PROBATE'},
+        {id: 'GrantOfRepresentation'},
+        {id: 'SolAppUpdated'},
+        ['[CASE_REFERENCE]']
+      ];
+
+      component.onFilterSubscriptionHandler(filterResult);
+
+      expect(component.jurisdiction.id).toEqual('PROBATE');
+      expect(component.caseType.id).toEqual('GrantOfRepresentation');
+      expect(component.caseState.id).toEqual('SolAppUpdated');
+      expect(component.metadataFields[0]).toEqual('[CASE_REFERENCE]');
+    });
+  });
+
+  describe('onResultsViewHandler()', () => {
+
+    it('should set the components resultsArr property on return of subscription.', () => {
+
+      const resultView = {
+        columns: [],
+        results: [
+          {
+            case_id: 'DRAFT274146',
+          }
+        ],
+        result_error: null
+      };
+
+      component.onResultsViewHandler(resultView);
+
+      expect(component.resultsArr).toEqual([{ case_id: 'DRAFT274146' }]);
+    });
+  });
 });
+

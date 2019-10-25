@@ -4,6 +4,11 @@ import {HeaderComponent} from './header/header.component';
 import {HmctsGlobalHeaderComponent} from './hmcts-global-header/hmcts-global-header.component';
 import {HmctsPrimaryNavigationComponent} from './hmcts-primary-navigation/hmcts-primary-navigation.component';
 import {PhaseBannerComponent} from './phase-banner/phase-banner.component';
+import {ServiceDownComponent} from './service-down/service-down.component';
+import { CookiePolicyComponent } from './cookie-policy/cookie-policy.component';
+import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
+import { TermsAndConditionsComponent } from './terms-and-conditions/terms-and-conditions.component';
+import { AccessibilityComponent } from './accessibility/accessibility.component';
 
 export const components: any[] = [
   ExuiPageWrapperComponent,
@@ -11,7 +16,12 @@ export const components: any[] = [
   HeaderComponent,
   HmctsGlobalHeaderComponent,
   HmctsPrimaryNavigationComponent,
-  PhaseBannerComponent
+  CookiePolicyComponent,
+  PrivacyPolicyComponent,
+  TermsAndConditionsComponent,
+  AccessibilityComponent,
+  PhaseBannerComponent,
+  ServiceDownComponent
 ];
 
 export * from './exui-mian-wrapper/exui-page-wrapper.component';
@@ -20,3 +30,8 @@ export * from './header/header.component';
 export * from './hmcts-global-header/hmcts-global-header.component';
 export * from './hmcts-primary-navigation/hmcts-primary-navigation.component';
 export * from './phase-banner/phase-banner.component';
+export * from './service-down/service-down.component';
+export * from './cookie-policy/cookie-policy.component';
+export * from './privacy-policy/privacy-policy.component';
+export * from './terms-and-conditions/terms-and-conditions.component';
+export * from './accessibility/accessibility.component';

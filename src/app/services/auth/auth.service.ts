@@ -8,6 +8,8 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/map';
 import {AppConfigService} from '../config/configuration.services';
+import { AppUtils } from 'src/app/app-utils';
+import { AppConstants } from 'src/app/app.constants';
 
 @Injectable()
 export class AuthService {
@@ -43,10 +45,13 @@ export class AuthService {
   }
 
   generateLoginUrl() {
-    const base = this.appConfigService.getRoutesConfig().idam.idamLoginUrl;
+    const env = AppUtils.getEnvironment(window.location.origin);
+    // const base = this.appConfigService.getRoutesConfig().idam.idamLoginUrl;
+    const base = AppConstants.REDIRECT_URL[env];
     const clientId = this.appConfigService.getRoutesConfig().idam.idamClientID;
     const callback = `${this.apiBaseUrl}/${this.appConfigService.getRoutesConfig().idam.oauthCallbackUrl}`;
-    return `${base}/login?response_type=code&client_id=${clientId}&redirect_uri=${callback}`;
+    const scope = `profile openid roles manage-user create-user`;
+    return `${base}/login?response_type=code&client_id=${clientId}&redirect_uri=${callback}&scope=${scope}`;
   }
 
   loginRedirect() {

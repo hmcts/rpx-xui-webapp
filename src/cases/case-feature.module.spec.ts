@@ -4,7 +4,7 @@ describe('CasesModule', () => {
   let caseFeatureModule: CasesModule;
 
   beforeEach(() => {
-    caseFeatureModule = new CasesModule();
+    caseFeatureModule = new CasesModule(null);
   });
 
   it('should create an instance', () => {

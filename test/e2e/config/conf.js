@@ -42,7 +42,7 @@ const config = {
     targetEnv: argv.env || 'local',
     // username: process.env.TEST_EMAIL,
     // password: process.env.TEST_PASSWORD,
-    username: 'sscs4jui@mailnesia.com ',
+    username: 'lukesuperuserxui@mailnesia.com',
     password: 'Monday01',
     fr_judge_username: process.env.FR_EMAIL,
     fr_judge_password: process.env.FR_PASSWORD,
@@ -67,7 +67,7 @@ const config = {
     strict: true,
     // format: ['node_modules/cucumber-pretty'],
     format: ['node_modules/cucumber-pretty', 'json:reports_json/results.json'],
-    tags: ['@ignore'],
+    tags: ['@all'],
     require: [
       '../support/timeout.js',
       '../support/world.js',

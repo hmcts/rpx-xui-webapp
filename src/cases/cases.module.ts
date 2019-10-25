@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, Optional, SkipSelf, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
@@ -8,7 +8,6 @@ import { MatDialogModule } from '@angular/material';
 import {
   CaseUIToolkitModule,
   DraftService,
-  AlertService,
   HttpService,
   AuthService as CCDAuthService,
   CasesService,
@@ -23,7 +22,8 @@ import {
   SearchFiltersModule,
   SearchResultModule,
   CreateCaseFiltersModule,
-  CaseListFiltersModule
+  CaseListFiltersModule,
+  AlertService
 } from '@hmcts/ccd-case-ui-toolkit';
 
 import { casesRouting } from './case-feature.routes';
@@ -35,10 +35,11 @@ import {HttpModule} from '@angular/http';
 // from containers
 import * as fromContainers from './containers';
 // from components
-// import * as fromComponents from './components';
+import * as fromComponents from './components';
 // from services
 import * as fromServices from './services';
 import {ProvidersModule} from '../app/providers/providers.module';
+import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
 
 @NgModule({
   imports: [
@@ -53,18 +54,16 @@ import {ProvidersModule} from '../app/providers/providers.module';
     SharedModule,
     SearchFiltersModule,
     HttpModule,
-    ProvidersModule,
     MatDialogModule,
     CaseListFiltersModule
   ],
-  declarations: [...fromContainers.containers],
+  declarations: [...fromComponents.components, ...fromContainers.containers],
   providers: [
     PlaceholderService,
     CasesService,
     CCDAuthService,
     HttpService,
     HttpErrorService,
-    AlertService,
     DraftService,
     PageValidationService,
     CaseEditWizardGuard,
@@ -76,11 +75,24 @@ import {ProvidersModule} from '../app/providers/providers.module';
       useExisting: AppConfig
     },
     ScrollToService,
-    ...fromServices.services
-
+    ...fromServices.services,
+    CreateCaseEventTriggerResolver
   ]
 })
 /**
  * Entry point for Cases Module that is also lazy loaded.
  */
-export class CasesModule { }
+export class CasesModule {
+  constructor(@Optional() @SkipSelf() parentModule: CasesModule) {
+    CasesModule.forRoot();
+  }
+
+  static forRoot(): ModuleWithProviders {
+    return {
+      ngModule: CasesModule,
+      providers: [
+        AlertService
+      ]
+    };
+  }
+}

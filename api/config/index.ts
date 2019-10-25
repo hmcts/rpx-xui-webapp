@@ -1,7 +1,6 @@
 import * as process from 'process'
 import { application } from './application.config'
 import * as aat from './environments/aat.config'
-import * as ithc from './environments/ithc.config'
 import * as demo from './environments/demo.config'
 import * as ithc from './environments/ithc.config'
 import * as local from './environments/local.config'

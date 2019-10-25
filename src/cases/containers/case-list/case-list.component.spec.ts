@@ -9,6 +9,7 @@ import {NO_ERRORS_SCHEMA} from '@angular/core';
 import {CaseFilterToggle, FindCaselistPaginationMetadata} from '../../store/actions/case-list.action';
 import {provideMockStore, MockStore} from '@ngrx/store/testing';
 import {Jurisdiction, PaginationMetadata} from '@hmcts/ccd-case-ui-toolkit';
+import { of } from 'rxjs';
 
 describe('CaseListComponent', () => {
   let component: CaseListComponent;
@@ -20,6 +21,8 @@ describe('CaseListComponent', () => {
    */
   const mockService = jasmine.createSpy();
   let spyOnDispatchToStore = jasmine.createSpy();
+
+  const mockDefinitionsService = jasmine.createSpyObj('DefinitionsService', ['getJurisdictions']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -36,7 +39,7 @@ describe('CaseListComponent', () => {
         },
         {
           provide: DefinitionsService,
-          useClass: mockService
+          useValue: mockDefinitionsService
         },
         provideMockStore(),
       ]
@@ -256,5 +259,25 @@ describe('CaseListComponent', () => {
       expect(component.resultsArr).toEqual([{ case_id: 'DRAFT274146' }]);
     });
   });
+
+
+  describe('setCaseListFilterDefaults()', () => {
+
+    it('should set the defaults.', () => {
+      mockDefinitionsService.getJurisdictions.and.returnValue(of([{
+        id: 'some id',
+        caseTypes: [{
+          id: 'some id',
+          states: [{
+            id: 'some id'
+          }]
+        }]
+      }]));
+      component.setCaseListFilterDefaults();
+
+      expect(component.defaults).toBeDefined();
+    });
+  });
+
 });
 

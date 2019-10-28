@@ -21,8 +21,10 @@ describe('CaseListComponent', () => {
    */
   const mockService = jasmine.createSpy();
   let spyOnDispatchToStore = jasmine.createSpy();
+  let spyOnPipeToStore = jasmine.createSpy();
 
   const mockDefinitionsService = jasmine.createSpyObj('DefinitionsService', ['getJurisdictions']);
+  const mockAppConfig = jasmine.createSpyObj('AppConfig', ['getPaginationPageSize']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -30,12 +32,8 @@ describe('CaseListComponent', () => {
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
         {
-          provide: AppConfigService,
-          useClass: mockService
-        },
-        {
           provide: AppConfig,
-          useClass: mockService
+          useValue: mockAppConfig
         },
         {
           provide: DefinitionsService,
@@ -46,10 +44,36 @@ describe('CaseListComponent', () => {
     });
     store = TestBed.get(Store);
     spyOnDispatchToStore = spyOn(store, 'dispatch').and.callThrough();
+    spyOnPipeToStore = spyOn(store, 'pipe').and.callThrough();
 
     fixture = TestBed.createComponent(CaseListComponent);
     component = fixture.componentInstance;
   }));
+
+  describe('ngOnInit()', () => {
+    it('should make internal function calls', () => {
+      spyOnPipeToStore.and.returnValue(of({}));
+      spyOn(component, 'setCaseListFilterDefaults').and.callThrough();
+      spyOn(component, 'listenToPaginationMetadata').and.callThrough();
+      spyOn(component, 'findCaseListPaginationMetadata').and.callThrough();
+
+      mockDefinitionsService.getJurisdictions.and.returnValue(of([{
+        id: 'some id',
+        caseTypes: [{
+          id: 'some id',
+          states: [{
+            id: 'some id'
+          }]
+        }]
+      }]));
+
+      component.ngOnInit();
+
+      expect(component.setCaseListFilterDefaults).toHaveBeenCalled();
+      expect(component.listenToPaginationMetadata).toHaveBeenCalled();
+      expect(component.findCaseListPaginationMetadata).toHaveBeenCalled();
+    });
+  });
 
   describe('getToggleButtonName()', () => {
 

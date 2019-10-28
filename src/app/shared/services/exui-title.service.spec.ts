@@ -2,7 +2,7 @@ import { TestBed, inject } from '@angular/core/testing';
 import { ExUITitleService} from './exui-title.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of, BehaviorSubject } from 'rxjs';
+import { of, BehaviorSubject, Observable } from 'rxjs';
 
 describe('ExUITitleService', () => {
   beforeEach(() => {
@@ -67,7 +67,7 @@ describe('ExUITitleService', () => {
 
   it('ngOnInit should have empty string title when no title in activatedRoute', inject([ExUITitleService], (service: ExUITitleService) => {
     const activatedRoute = TestBed.get(ActivatedRoute);
-    activatedRoute.firstChild = { snapshot: { data: { }}};
+    activatedRoute.firstChild = { snapshot: { data: { }}, firstChild: {snapshot: { data: { }}} };
     const event = new NavigationEnd(42, '/', '/');
     TestBed.get(Router).events.next(event);
     service.ngOnInit();
@@ -83,6 +83,15 @@ describe('ExUITitleService', () => {
     spyOn(service.titleSubscription, 'unsubscribe').and.callThrough();
     service.ngOnDestroy();
     expect(service.titleSubscription.unsubscribe).toHaveBeenCalled();
+  }));
+
+  it('should not unsubscribe onDestroy, if there is no subscription', inject([ExUITitleService], (service: ExUITitleService) => {
+    service.titleSubscription =  new Observable().subscribe();
+    const serviceTitleSubscriptionUnsubscribeSpy = spyOn(service.titleSubscription, 'unsubscribe').and.callThrough();
+    service.titleSubscription = undefined;
+    service.ngOnDestroy();
+    expect(serviceTitleSubscriptionUnsubscribeSpy).not.toHaveBeenCalled();
+
   }));
 
 });

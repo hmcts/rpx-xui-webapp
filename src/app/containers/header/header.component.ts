@@ -1,0 +1,34 @@
+import {Component, OnInit} from '@angular/core';
+import {Store} from '@ngrx/store';
+
+import {AppConstants} from '../../app.constants';
+import {NavItemsModel} from '../../models/nav-item.model';
+import {AppTitleModel} from '../../models/app-title.model';
+import {UserNavModel} from '../../models/user-nav.model';
+import * as fromActions from '../../store';
+
+@Component({
+  selector: 'exui-app-header',
+  templateUrl: './header.component.html',
+})
+export class HeaderComponent implements OnInit {
+  navItems: NavItemsModel[];
+  appHeaderTitle: AppTitleModel;
+  userNav: UserNavModel;
+
+  constructor(
+    private store: Store<fromActions.State>) {
+  }
+
+  ngOnInit(): void {
+    this.appHeaderTitle = AppConstants.APP_HEADER_TITLE;
+    this.navItems = AppConstants.NAV_ITEMS;
+    this.userNav = AppConstants.USER_NAV;
+  }
+
+  onNavigate(event): void {
+    if (event === 'sign-out') {
+      return this.store.dispatch(new fromActions.Logout());
+    }
+  }
+}

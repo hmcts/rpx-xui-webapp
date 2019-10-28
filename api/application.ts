@@ -39,7 +39,7 @@ app.use(
         secret: config.sessionSecret,
         // TODO: remove this and use values from cookie token instead
         store: new FileStore({
-            path: process.env.NOW ? '/tmp/sessions' : '.sessions',
+            path: '/tmp/sessions',
         }),
     })
 )

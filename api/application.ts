@@ -107,3 +107,5 @@ app.use('/print', printRouter)
 // @ts-ignore
 const logger: JUILogger = log4jui.getLogger('Application')
 logger.info(`Started up on ${config.environment || 'local'} using ${config.protocol}`)
+
+logger.info('ENV: ', JSON.stringify(process.env, null, 2))

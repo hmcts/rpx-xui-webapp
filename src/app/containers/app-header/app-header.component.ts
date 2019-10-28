@@ -9,9 +9,9 @@ import * as fromActions from '../../store';
 
 @Component({
   selector: 'exui-app-header',
-  templateUrl: './header.component.html',
+  templateUrl: './app-header.component.html',
 })
-export class HeaderComponent implements OnInit {
+export class AppHeaderComponent implements OnInit {
   navItems: NavItemsModel[];
   appHeaderTitle: AppTitleModel;
   userNav: UserNavModel;

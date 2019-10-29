@@ -1,6 +1,8 @@
 import { config } from '../config'
 import { http } from '../lib/http'
+import * as log4jui from '../lib/log4jui'
 import { isReqResSet, request } from '../lib/middleware/responseRequest'
+import {JUILogger} from '../lib/models'
 import { valueOrNull } from '../lib/util'
 
 const url = config.services.idam.idamApiUrl
@@ -9,6 +11,7 @@ const idamSecret = process.env.IDAM_SECRET || 'AAAAAAAAAAAAAAAA'
 const idamClient = config.idamClient
 const idamProtocol = config.protocol
 const oauthCallbackUrl = config.services.idam.oauthCallbackUrl
+const logger: JUILogger = log4jui.getLogger('Idam')
 
 export async function getDetails(token: string = null) {
     // have to pass options in at first login as headers are yet to be attached.
@@ -42,6 +45,10 @@ export async function postOauthToken(code, host) {
     const redirectUri = `${idamProtocol}://${host}/${oauthCallbackUrl}`
 
     const urlX = `${url}/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=${redirectUri}`
+
+    logger.info(`IDAM URL: ${urlX}`)
+    logger.info(`IDAM_CLIENT/SECRET: ${idamClient}:${idamSecret}`)
+
     const options = {
         headers: {
             Authorization: `Basic ${Buffer.from(`${idamClient}:${idamSecret}`).toString('base64')}`,

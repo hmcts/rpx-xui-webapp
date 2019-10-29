@@ -16,6 +16,7 @@ import {JUILogger} from './lib/models'
 import * as postCodeLookup from './postCodeLookup'
 import {router as printRouter} from './print/routes'
 import routes from './routes'
+import * as payments from './payments/index'
 
 config.environment = process.env.XUI_ENV || 'local'
 
@@ -99,7 +100,9 @@ app.use('/api/healthCheck', healthCheck)
 
 app.use('/aggregated', routes)
 app.use('/data', routes)
+
 // separate route for document upload/view
+app.use('/payments', payments.getPaymentDetails)
 app.use('/documents', documentRouter)
 
 app.use('/print', printRouter)

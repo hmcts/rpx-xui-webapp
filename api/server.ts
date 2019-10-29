@@ -5,7 +5,7 @@ import * as express from 'express'
 import * as path from 'path'
 import { appInsights } from './lib/appInsights'
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '1'
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
 app.engine('html', ejs.renderFile)
 app.set('view engine', 'html')

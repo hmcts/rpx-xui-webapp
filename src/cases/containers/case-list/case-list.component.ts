@@ -60,7 +60,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   constructor(
     public store: Store<fromCaseList.State>,
     private appConfig: AppConfig,
-    private definitionsService: DefinitionsService
+    private definitionsService: DefinitionsService,
   ) {
   }
 

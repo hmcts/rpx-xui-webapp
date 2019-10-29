@@ -12,12 +12,16 @@ export async function getJurisdictions(req: express.Request, res: express.Respon
     try {
         const response = await http.get(`${config.services.ccd.componentApi}${url}`, { headers })
 
-        const amendedJurisdictions = []
-        response.data.forEach(element => {
-            if (element.id === 'PROBATE') {
-                amendedJurisdictions.push(element)
-            }
-        })
+        let amendedJurisdictions = []
+        if (config.environment === 'prod') {
+            response.data.forEach(element => {
+                if (element && element.id === 'PROBATE') {
+                    amendedJurisdictions.push(element)
+                }
+            })
+        } else {
+            amendedJurisdictions = response.data
+        }
 
         res.status(200)
         res.send(amendedJurisdictions)

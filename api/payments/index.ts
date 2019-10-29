@@ -10,7 +10,6 @@ export async function getPaymentDetails(req: express.Request, res: express.Respo
 
     const ref = url.split('/')[2]
     url = req.baseUrl  + url
-    console.log(url)
     const headers: any = setHeaders(req)
     try {
         headers['content-type'] = 'application/json'
@@ -21,7 +20,7 @@ export async function getPaymentDetails(req: express.Request, res: express.Respo
           response = await http.get(`${config.services.payments.api}/payments?ccd_case_number=${ref}`, { headers })
         } else if (url.startsWith('/payments/payment-groups/')) {
           response = await http.get(`${config.services.payments.api}/payment-groups/${ref}`, { headers })
-        } else if (url.startsWith('/payments/card-payments/')) {{
+        } else if (url.startsWith('/payments/card-payments/')) {
           response = await http.get(`${config.services.payments.api}/card-payments/${ref}`, { headers })
         }
         res.status(200)

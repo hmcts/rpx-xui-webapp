@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { AccessibilityComponent } from '..';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('AccessibilityComponent', () => {
   let component: AccessibilityComponent;
@@ -7,6 +8,7 @@ describe('AccessibilityComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [ AccessibilityComponent ]
     })
     .compileComponents();

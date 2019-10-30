@@ -35,7 +35,7 @@ export const ROUTES: Routes = [
     component: AccessibilityComponent
   },
   { path: 'service-down', component: ServiceDownComponent },
-  { path: 'media-viewer', component: MediaViewerWrapperComponent, data: {plainView: true} },
+  { path: 'media-viewer', component: MediaViewerWrapperComponent },
   {
     path: '**',
     redirectTo: '/cases',

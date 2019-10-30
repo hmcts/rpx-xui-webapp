@@ -5,7 +5,7 @@ export default {
         documentsApi: 'http://dm-store-ithc.service.core-compute-ithc.internal/health',
     },
     logging: 'debug',
-    secureCookie: false,
+    secureCookie: true,
     services: {
         ccd: {
             componentApi: 'http://ccd-api-gateway-web-ithc.service.core-compute-ithc.internal',

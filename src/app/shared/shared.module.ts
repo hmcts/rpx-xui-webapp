@@ -9,6 +9,8 @@ import {CommonModule} from '@angular/common';
 import { HealthCheckGuard } from './guards/health-check.guard';
 import { HealthCheckService } from './services/health-check.service';
 import { ExUITitleService } from './services/exui-title.service';
+import { MediaViewerModule } from '@hmcts/media-viewer';
+import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 
 /**
  * Shared Module
@@ -16,7 +18,7 @@ import { ExUITitleService } from './services/exui-title.service';
  * FormsModule, CommonModule, ReactiveForms etc..
  */
 @NgModule( {
-  imports: [RouterModule, CommonModule],
+  imports: [RouterModule, CommonModule, MediaViewerModule],
   declarations: [
     ...fromAppComponents.components,
     ...fromAppContainers.containers,
@@ -30,7 +32,8 @@ import { ExUITitleService } from './services/exui-title.service';
   providers: [
     HealthCheckGuard,
     HealthCheckService,
-    ExUITitleService
+    ExUITitleService,
+    WindowService
   ],
 })
 export class SharedModule {}

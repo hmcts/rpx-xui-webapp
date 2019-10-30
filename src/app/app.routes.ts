@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from './services/auth/auth.guard';
 import { ServiceDownComponent, CookiePolicyComponent, PrivacyPolicyComponent, TermsAndConditionsComponent,
-          AccessibilityComponent } from './components';
+          AccessibilityComponent, MediaViewerWrapperComponent} from './components';
 
 export const ROUTES: Routes = [
   {
@@ -35,6 +35,7 @@ export const ROUTES: Routes = [
     component: AccessibilityComponent
   },
   { path: 'service-down', component: ServiceDownComponent },
+  { path: 'media-viewer', component: MediaViewerWrapperComponent, data: {plainView: true} },
   {
     path: '**',
     redirectTo: '/cases',

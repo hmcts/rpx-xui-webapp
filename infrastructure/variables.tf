@@ -54,3 +54,7 @@ variable "capacity" {
 variable "additional_host_name" {
     default = "null"
 }
+
+variable "node_tls_reject_unauthorized" {
+    default = "1"
+}

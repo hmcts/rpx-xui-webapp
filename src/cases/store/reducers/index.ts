@@ -1,8 +1,7 @@
-import {ActionReducerMap, createFeatureSelector} from '@ngrx/store';
-
+import { ActionReducerMap, createFeatureSelector } from '@ngrx/store';
+import * as fromCaseListFilters from './case-list.reducer';
 import * as fromCaseCreate from './create-case.reducer';
 import * as fromCaseSearchFilters from './search-filter.reducer';
-import * as fromCaseListFilters from './case-list.reducer';
 
 export interface State {
   caseCreate: fromCaseCreate.CasesState;
@@ -20,8 +19,6 @@ export const getCaseFeatureState = createFeatureSelector<State>(
   'cases'
 );
 
-export * from './search-filter.reducer';
-export * from './create-case.reducer';
 export * from './case-list.reducer';
-
-
+export * from './create-case.reducer';
+export * from './search-filter.reducer';

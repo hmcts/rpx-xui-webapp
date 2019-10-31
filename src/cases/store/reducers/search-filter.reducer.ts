@@ -1,13 +1,12 @@
-import { SearchResultView, Jurisdiction, CaseType, CaseState, PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
+import { CaseState, CaseType, Jurisdiction, PaginationMetadata, SearchResultView } from '@hmcts/ccd-case-ui-toolkit';
 import * as fromCases from '../actions/case-search.action';
-import { mockedSearchResultPayload } from 'src/cases/mock/search-filter.mock';
 
 export class SearchStateFilter {
-  jurisdiction: Jurisdiction;
-  caseType: CaseType;
-  caseState: CaseState;
-  metadataFields: any;
-  page: number;
+  public jurisdiction: Jurisdiction;
+  public caseType: CaseType;
+  public caseState: CaseState;
+  public metadataFields: any;
+  public page: number;
   constructor() {
     this.jurisdiction = new Jurisdiction();
     this.caseType = new CaseType();
@@ -18,7 +17,7 @@ export class SearchStateFilter {
 }
 
 export class SearchStateResults {
-  resultView: SearchResultView;
+  public resultView: SearchResultView;
 
   constructor() {
     this.resultView = new SearchResultView();
@@ -98,8 +97,10 @@ export function reducer(
 
     case fromCases.RESET:
       return initialSearchState;
+
+    default:
+      return state;
   }
-  return state;
 }
 
 export const getSearchFilterJurisdiction = (state) => state.filter.jurisdiction;

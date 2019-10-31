@@ -7,7 +7,7 @@ import * as sinonChai from 'sinon-chai'
 import { mockReq, mockRes } from 'sinon-express-mock'
 import { config } from '../config'
 import * as emAnnoService from './emAnnoService'
-import { getAnnotations, postAnnotations, putAnnotations, deleteAnnotations } from './index'
+import { deleteAnnotations, getAnnotations, postAnnotations, putAnnotations } from './index'
 
 chai.use(sinonChai)
 describe('emAnno', () => {

@@ -17,7 +17,6 @@ export async function handleGet(annotationsPath) {
         const response = await http.get(annotationsPath)
         return response.data
     } catch (e) {
-        console.log(e)
         logger.error(e.message)
         throw e
     }

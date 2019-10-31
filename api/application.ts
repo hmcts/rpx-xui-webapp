@@ -101,7 +101,7 @@ app.use('/aggregated', routes)
 app.use('/data', routes)
 // separate route for document upload/view
 app.use('/documents', documentRouter)
-app.use('/emAnno', emAnnoRouter)
+app.use('/em-anno', emAnnoRouter)
 
 app.use('/print', printRouter)
 

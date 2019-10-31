@@ -13,8 +13,8 @@ export async function getAnnotations(req: EnhancedRequest, res: express.Response
   const annotationsPath = url + req.originalUrl.replace('/em-anno/', '/api/')
 
   try {
-    const htmlResponse = await handleGet(annotationsPath)
-    res.status(200).send(htmlResponse)
+    const jsonResponse = await handleGet(annotationsPath)
+    res.status(200).send(jsonResponse)
   } catch (error) {
     res.status(error.status).send({
       errorMessage: error.data,
@@ -32,8 +32,8 @@ export async function postAnnotations(req: EnhancedRequest, res: express.Respons
   const body = req.body
 
   try {
-    const htmlResponse = await handlePost(annotationsPath, body)
-    res.status(200).send(htmlResponse)
+    const jsonResponse = await handlePost(annotationsPath, body)
+    res.status(200).send(jsonResponse)
   } catch (error) {
     res.status(error.status).send({
       errorMessage: error.data,
@@ -51,8 +51,8 @@ export async function putAnnotations(req: EnhancedRequest, res: express.Response
   const body = req.body
 
   try {
-    const htmlResponse = await handlePut(annotationsPath, body)
-    res.status(200).send(htmlResponse)
+    const jsonResponse = await handlePut(annotationsPath, body)
+    res.status(200).send(jsonResponse)
   } catch (error) {
     res.status(error.status).send({
       errorMessage: error.data,
@@ -69,8 +69,8 @@ export async function deleteAnnotations(req: EnhancedRequest, res: express.Respo
   const annotationsPath = url + req.originalUrl.replace('/em-anno/', '/api/')
 
   try {
-    const htmlResponse = await handleDelete(annotationsPath)
-    res.status(200).send(htmlResponse)
+    const jsonResponse = await handleDelete(annotationsPath)
+    res.status(200).send(jsonResponse)
   } catch (error) {
     res.status(error.status).send({
       errorMessage: error.data,

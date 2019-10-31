@@ -1,36 +1,19 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import {
-  CaseUIToolkitModule,
-  DraftService,
-  AlertService,
-  HttpService,
-  AuthService as CCDAuthService,
-  CasesService,
-  HttpErrorService,
-  AbstractAppConfig,
-  CaseEditWizardGuard,
-  RouterHelperService,
-  DocumentManagementService,
-  PageValidationService,
-  PlaceholderService,
-  SearchService,
-  RequestOptionsBuilder,
-  SearchFiltersModule,
-} from '@hmcts/ccd-case-ui-toolkit';
-import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
-import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
-import { RouterTestingModule } from '@angular/router/testing';
-import {combineReducers, StoreModule} from '@ngrx/store';
-import { SharedModule } from '../../../app/shared/shared.module';
-import { AppConfigService } from '../../../app/services/config/configuration.services';
-import { CasesCreateComponent } from './case-create.component';
-import { reducers } from 'src/app/store';
-import * as fromCases from '../../store/reducers';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { AbstractAppConfig, AlertService, AuthService as CCDAuthService, CaseEditWizardGuard, CasesService, CaseUIToolkitModule, DocumentManagementService, DraftService, HttpErrorService, HttpService, PageValidationService, PlaceholderService, RequestOptionsBuilder, RouterHelperService, SearchFiltersModule, SearchService } from '@hmcts/ccd-case-ui-toolkit';
+import { combineReducers, StoreModule } from '@ngrx/store';
+import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
+import { reducers } from 'src/app/store';
+import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
+import { AppConfigService } from '../../../app/services/config/configuration.services';
+import { SharedModule } from '../../../app/shared/shared.module';
+import * as fromCases from '../../store/reducers';
+import { CasesCreateComponent } from './case-create.component';
 class MockSortService {
-  features = {};
-  getFeatureToggle() { }
-  getEditorConfiguration() { }
+  public features = {};
+  public getFeatureToggle() { }
+  public getEditorConfiguration() { }
 }
 
 describe('CaseCaseComponent', () => {
@@ -43,7 +26,7 @@ describe('CaseCaseComponent', () => {
         RouterTestingModule,
         CaseUIToolkitModule,
         HttpClientTestingModule,
-        StoreModule.forRoot({...reducers, cases: combineReducers(fromCases.reducers)}),
+        StoreModule.forRoot({ ...reducers, cases: combineReducers(fromCases.reducers) }),
         SharedModule,
         SearchFiltersModule,
       ],
@@ -87,7 +70,7 @@ describe('CaseCaseComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CasesCreateComponent);
     component = fixture.componentInstance;
-    component.caseCreateInputs = {jurisdictionId: '', caseTypeId: '', eventId: ''};
+    component.caseCreateInputs = { jurisdictionId: '', caseTypeId: '', eventId: '' };
 
     fixture.detectChanges();
 

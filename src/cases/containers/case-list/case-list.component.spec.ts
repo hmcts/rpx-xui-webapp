@@ -1,14 +1,14 @@
-import {State} from './../../../app/store/reducers/index';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {CaseListComponent} from './case-list.component';
-import {AppConfig} from '../../../app/services/ccd-config/ccd-case.config';
-import {DefinitionsService} from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
-import {Store} from '@ngrx/store';
-import {AppConfigService} from '../../../app/services/config/configuration.services';
-import {NO_ERRORS_SCHEMA} from '@angular/core';
-import {CaseFilterToggle, FindCaselistPaginationMetadata} from '../../store/actions/case-list.action';
-import {provideMockStore, MockStore} from '@ngrx/store/testing';
-import {Jurisdiction, PaginationMetadata} from '@hmcts/ccd-case-ui-toolkit';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
+import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
+import { Store } from '@ngrx/store';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
+import { AppConfigService } from '../../../app/services/config/configuration.services';
+import { CaseFilterToggle, FindCaselistPaginationMetadata } from '../../store/actions/case-list.action';
+import { State } from './../../../app/store/reducers/index';
+import { CaseListComponent } from './case-list.component';
 
 describe('CaseListComponent', () => {
   let component: CaseListComponent;
@@ -52,13 +52,13 @@ describe('CaseListComponent', () => {
 
     it('should return the toggle button name as \'Hide Filter\' if we have shown ' +
       'the filter', () => {
-      expect(component.getToggleButtonName(true)).toEqual('Hide Filter');
-    });
+        expect(component.getToggleButtonName(true)).toEqual('Hide Filter');
+      });
 
     it('should return the toggle button name as \'Show Filter\' if we do not show ' +
       'the filter', () => {
-      expect(component.getToggleButtonName(false)).toEqual('Show Filter');
-    });
+        expect(component.getToggleButtonName(false)).toEqual('Show Filter');
+      });
   });
 
   describe('findCaseListPaginationMetadata()', () => {
@@ -95,9 +95,9 @@ describe('CaseListComponent', () => {
      */
     it('should be able to create an event.', () => {
 
-      const jurisdiction = {id: 'PROBATE'};
-      const caseType = {id: 'GrantOfRepresentation'};
-      const caseState = {id: 'CaseCreated'};
+      const jurisdiction = { id: 'PROBATE' };
+      const caseType = { id: 'GrantOfRepresentation' };
+      const caseState = { id: 'CaseCreated' };
       const metadataFields = ['[CASE_REFERENCE]'];
       const formGroupValues = {};
       const page = 1;
@@ -161,9 +161,9 @@ describe('CaseListComponent', () => {
 
     beforeEach(() => {
 
-      const jurisdiction = {id: 'PROBATE'};
-      const caseType = {id: 'GrantOfRepresentation'};
-      const caseState = {id: 'CaseCreated'};
+      const jurisdiction = { id: 'PROBATE' };
+      const caseType = { id: 'GrantOfRepresentation' };
+      const caseState = { id: 'CaseCreated' };
       const metadataFields = ['[CASE_REFERENCE]'];
       const formGroupValues = {};
       const page = 1;
@@ -222,9 +222,9 @@ describe('CaseListComponent', () => {
     it('should update the components jurisdiction property, on return of the filter subscription.', () => {
 
       const filterResult = [
-        {id: 'PROBATE'},
-        {id: 'GrantOfRepresentation'},
-        {id: 'SolAppUpdated'},
+        { id: 'PROBATE' },
+        { id: 'GrantOfRepresentation' },
+        { id: 'SolAppUpdated' },
         ['[CASE_REFERENCE]']
       ];
 

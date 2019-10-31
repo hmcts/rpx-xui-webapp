@@ -1,9 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { CaseUIToolkitModule, AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { RouterTestingModule } from '@angular/router/testing';
-import { CaseHomeComponent } from '..';
+import { AlertService, CaseUIToolkitModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExUITitleService } from 'src/app/shared/services/exui-title.service';
 import { AlertComponent } from 'src/cases/components';
+import { CaseHomeComponent } from '..';
 
 describe('CaseHomeComponent', () => {
   let component: CaseHomeComponent;

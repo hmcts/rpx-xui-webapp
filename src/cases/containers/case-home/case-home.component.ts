@@ -1,4 +1,3 @@
-import { ExUITitleService } from 'src/app/shared/services/exui-title.service';
 import { Component } from '@angular/core';
 
 @Component({
@@ -6,5 +5,5 @@ import { Component } from '@angular/core';
   templateUrl: 'case-home.component.html'
 })
 export class CaseHomeComponent {
-  constructor(private titleService: ExUITitleService) {}
+  constructor() { }
 }

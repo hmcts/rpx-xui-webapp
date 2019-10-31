@@ -1,11 +1,11 @@
-import { Component, OnInit, ViewEncapsulation, OnDestroy } from '@angular/core';
-import { Store, select } from '@ngrx/store';
-import * as fromCasesFeature from '../../store';
-import { Jurisdiction, CaseType, CaseState, SearchResultView, PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
-import { Observable, combineLatest, Subscription } from 'rxjs';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { CaseState, CaseType, Jurisdiction, PaginationMetadata, SearchResultView } from '@hmcts/ccd-case-ui-toolkit';
+import { select, Store } from '@ngrx/store';
+import { combineLatest, Observable, Subscription } from 'rxjs';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { ActionBindingModel } from '../../../cases/models/create-case-actions.model';
-import { FormGroup } from '@angular/forms';
+import * as fromCasesFeature from '../../store';
 /**
  * Entry component wrapper for ccd-search-filters-wrapper ccd-search-result
  * Smart Component
@@ -18,44 +18,44 @@ import { FormGroup } from '@angular/forms';
   encapsulation: ViewEncapsulation.None
 })
 export class CaseSearchComponent implements OnInit, OnDestroy {
-  caseSearchFilterEventsBindings: ActionBindingModel[];
-  fromCasesFeature; any;
+  public caseSearchFilterEventsBindings: ActionBindingModel[];
+  public fromCasesFeature: any;
 
-  jurisdiction$: Observable<Jurisdiction>;
-  caseType$: Observable<CaseType>;
-  caseState$: Observable<CaseState>;
-  resultView$: Observable<SearchResultView>;
-  paginationMetadata$: Observable<PaginationMetadata>;
-  metadataFields$: Observable<string[]>;
-  caseFilterToggle$: Observable<boolean>;
+  public jurisdiction$: Observable<Jurisdiction>;
+  public caseType$: Observable<CaseType>;
+  public caseState$: Observable<CaseState>;
+  public resultView$: Observable<SearchResultView>;
+  public paginationMetadata$: Observable<PaginationMetadata>;
+  public metadataFields$: Observable<string[]>;
+  public caseFilterToggle$: Observable<boolean>;
 
-  fg: FormGroup;
+  public fg: FormGroup;
 
-  jurisdiction: Jurisdiction;
-  caseType: CaseType;
-  caseState: CaseState;
-  resultView: SearchResultView;
-  paginationMetadata: PaginationMetadata = new PaginationMetadata();
-  metadataFields: string[];
+  public jurisdiction: Jurisdiction;
+  public caseType: CaseType;
+  public caseState: CaseState;
+  public resultView: SearchResultView;
+  public paginationMetadata: PaginationMetadata = new PaginationMetadata();
+  public metadataFields: string[];
 
-  filterSubscription: Subscription;
-  resultSubscription: Subscription;
-  paginationSubscription: Subscription;
-  caseFilterToggleSubscription: Subscription;
+  public filterSubscription: Subscription;
+  public resultSubscription: Subscription;
+  public paginationSubscription: Subscription;
+  public caseFilterToggleSubscription: Subscription;
 
-  resultsArr: any[] = [];
+  public resultsArr: any[] = [];
 
-  paginationSize: number;
-  page: number;
-  showFilter: boolean;
-  state: any;
-  toggleButtonName: string;
+  public paginationSize: number;
+  public page: number;
+  public showFilter: boolean;
+  public state: any;
+  public toggleButtonName: string;
 
   constructor(
     public store: Store<fromCasesFeature.State>,
-    private appConfig: AppConfig) {}
+    private readonly appConfig: AppConfig) { }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.page = 1;
     this.resultView = null;
     this.fromCasesFeature = fromCasesFeature;
@@ -93,17 +93,17 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
       };
     });
 
-    this.caseFilterToggleSubscription = this.caseFilterToggle$.subscribe( (result: boolean) => {
+    this.caseFilterToggleSubscription = this.caseFilterToggle$.subscribe((result: boolean) => {
       this.showFilter = result;
       this.toggleButtonName = this.getToggleButtonName(this.showFilter);
     });
 
     this.paginationSubscription = this.paginationMetadata$.subscribe(result => {
-      if (typeof result !== 'undefined'  && typeof result.total_pages_count !== 'undefined') {
+      if (typeof result !== 'undefined' && typeof result.total_pages_count !== 'undefined') {
         this.paginationMetadata.total_pages_count = result.total_pages_count;
         this.paginationMetadata.total_results_count = result.total_results_count;
         const event = this.getEvent();
-        if ( event != null) {
+        if (event !== null) {
           this.store.dispatch(new fromCasesFeature.ApplySearchFilter(event));
         }
       }
@@ -125,7 +125,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     this.checkLSAndTrigger();
   }
 
-  getEvent() {
+  public getEvent() {
     let event = null;
     const formGroupFromLS = JSON.parse(localStorage.getItem('search-form-group-value'));
     const jurisdictionFromLS = JSON.parse(localStorage.getItem('search-jurisdiction'));
@@ -149,27 +149,27 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     return event;
   }
 
-  getToggleButtonName(showFilter: boolean): string {
+  public getToggleButtonName(showFilter: boolean): string {
     return showFilter ? 'Hide Filter' : 'Show Filter';
   }
 
-  checkLSAndTrigger() {
+  public checkLSAndTrigger() {
     const event = this.getEvent();
-    if ( event != null) {
+    if (event !== null) {
       this.store.dispatch(new fromCasesFeature.FindSearchPaginationMetadata(event));
     }
   }
 
-  toggleFilter() {
+  public toggleFilter() {
     this.store.dispatch(new fromCasesFeature.SearchFilterToggle(!this.showFilter));
   }
 
-  applyChangePage(event) {
+  public applyChangePage(event) {
     this.page = event.selected.page;
     this.checkLSAndTrigger();
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     if (this.filterSubscription) {
       this.filterSubscription.unsubscribe();
     }

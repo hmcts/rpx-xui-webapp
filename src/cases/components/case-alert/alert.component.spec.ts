@@ -1,13 +1,10 @@
-import { AlertComponent } from './alert.component';
-import { async, ComponentFixture, TestBed, fakeAsync } from '@angular/core/testing';
-import { AlertComponent as CCDAlertComponent } from '@hmcts/ccd-case-ui-toolkit/dist/components/banners/alert/alert.component';
-import {AlertIconClassPipe} from '@hmcts/ccd-case-ui-toolkit/dist/components/banners/alert/alert-icon-class.pipe';
-import { AlertService, Alert } from '@hmcts/ccd-case-ui-toolkit';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs/internal/observable/of';
-import {ConnectableObservable} from 'rxjs';
-import { publish } from 'rxjs/internal/operators/publish';
+import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
+import { AlertIconClassPipe } from '@hmcts/ccd-case-ui-toolkit/dist/components/banners/alert/alert-icon-class.pipe';
+import { AlertComponent as CCDAlertComponent } from '@hmcts/ccd-case-ui-toolkit/dist/components/banners/alert/alert.component';
+import { AlertComponent } from './alert.component';
 
 describe('AlertComponent', () => {
   let component: AlertComponent;
@@ -15,16 +12,16 @@ describe('AlertComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ RouterModule,
+      imports: [RouterModule,
         RouterTestingModule.withRoutes([
         ])
       ],
-      declarations: [ AlertComponent, CCDAlertComponent, AlertIconClassPipe ],
+      declarations: [AlertComponent, CCDAlertComponent, AlertIconClassPipe],
       providers: [
         AlertService
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -39,7 +36,7 @@ describe('AlertComponent', () => {
 
   it('should have updated the value of message and level in ngOnInit', async () => {
     const alertService = fixture.debugElement.injector.get(AlertService);
-    alertService.push({message: 'message', level: 'success'});
+    alertService.push({ message: 'message', level: 'success' });
     component.ngOnInit();
     await fixture.whenStable();
     fixture.detectChanges();

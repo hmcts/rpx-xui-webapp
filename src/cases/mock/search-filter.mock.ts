@@ -1,4 +1,4 @@
-import { Jurisdiction, CaseType, SearchResultViewItem, CaseState } from '@hmcts/ccd-case-ui-toolkit';
+import { CaseState, CaseType, Jurisdiction, SearchResultViewItem } from '@hmcts/ccd-case-ui-toolkit';
 
 export const CASE_TYPE_1: CaseType = {
     id: 'CT0',

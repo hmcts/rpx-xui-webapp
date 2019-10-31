@@ -1,34 +1,21 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import {
-  CaseUIToolkitModule,
-  DraftService,
-  AuthService as CCDAuthService,
-  CasesService,
-  HttpErrorService,
-  AbstractAppConfig,
-  SearchService,
-  RequestOptionsBuilder,
-  CaseEventTrigger,
-  createCaseEventTrigger,
-  CaseField,
-  CaseEventData,
-} from '@hmcts/ccd-case-ui-toolkit';
-import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
-import { RouterTestingModule } from '@angular/router/testing';
-import {combineReducers, StoreModule} from '@ngrx/store';
-import { SharedModule } from '../../../app/shared/shared.module';
-import { AppConfigService } from '../../../app/services/config/configuration.services';
-import { CaseCreateSubmitComponent } from './case-create-submit.component';
-import * as fromCases from '../../store/reducers';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpModule } from '@angular/http';
 import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { AbstractAppConfig, AuthService as CCDAuthService, CaseEventData, CaseEventTrigger, CaseField, CasesService, CaseUIToolkitModule, createCaseEventTrigger, DraftService, HttpErrorService, RequestOptionsBuilder, SearchService } from '@hmcts/ccd-case-ui-toolkit';
+import { combineReducers, StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
+import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
+import { AppConfigService } from '../../../app/services/config/configuration.services';
+import { SharedModule } from '../../../app/shared/shared.module';
+import * as fromCases from '../../store/reducers';
+import { CaseCreateSubmitComponent } from './case-create-submit.component';
 
 class MockSortService {
-  features = {};
-  getFeatureToggle() { }
-  getEditorConfiguration() { }
+  public features = {};
+  public getFeatureToggle() { }
+  public getEditorConfiguration() { }
 }
 
 const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger(
@@ -76,9 +63,10 @@ describe('CaseCaseComponent', () => {
       imports: [
         RouterTestingModule,
         CaseUIToolkitModule,
+        // tslint:disable-next-line: deprecation
         HttpModule,
         HttpClientTestingModule,
-        StoreModule.forRoot({...fromCases.reducers, cases: combineReducers(fromCases.reducers)}),
+        StoreModule.forRoot({ ...fromCases.reducers, cases: combineReducers(fromCases.reducers) }),
         SharedModule
       ],
       declarations: [CaseCreateSubmitComponent],
@@ -87,9 +75,9 @@ describe('CaseCaseComponent', () => {
           provide: ActivatedRoute,
           useValue:
           {
-            queryParams: of({Origin: 'viewDraft'}),
+            queryParams: of({ Origin: 'viewDraft' }),
             snapshot: {
-              data: {eventTrigger: EVENT_TRIGGER},
+              data: { eventTrigger: EVENT_TRIGGER },
               params: {},
               pathFromRoot: [
                 {},
@@ -100,7 +88,7 @@ describe('CaseCaseComponent', () => {
                 }
               ]
             },
-            params: of({jid: 'jid', ctid: 'ctid'})
+            params: of({ jid: 'jid', ctid: 'ctid' })
           }
         },
         CasesService,

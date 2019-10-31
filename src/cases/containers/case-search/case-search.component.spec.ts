@@ -1,15 +1,13 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { CaseSearchComponent } from './case-search.component';
-import { Store, StoreModule, combineReducers } from '@ngrx/store';
-import * as fromCaseSearchStore from '../../store';
-import { RouterTestingModule } from '@angular/router/testing';
-import * as fromRoot from '../../../app/store/reducers';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { CaseState, CaseType, Jurisdiction, PaginationMetadata, SearchResultView } from '@hmcts/ccd-case-ui-toolkit';
+import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
-import { Jurisdiction, CaseType, CaseState, SearchResultView, PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
-import { mockedSearchResultPayload, mockedSearchResultResult } from '../../mock/search-filter.mock';
-import { ApplySearchFilterSuccess } from '../../store';
+import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
+import * as fromRoot from '../../../app/store/reducers';
+import * as fromCaseSearchStore from '../../store';
+import { CaseSearchComponent } from './case-search.component';
 
 describe('CaseSearchComponent', () => {
   let fixture: ComponentFixture<CaseSearchComponent>;

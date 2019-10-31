@@ -1,10 +1,11 @@
 export const environment = {
   production: true,
   loggingLevel: 'OFF',
-   cookies: {
-     token: '__auth__',
-     userId: '__userid__',
-   },
+  cookies: {
+    token: '__auth__',
+    userId: '__userid__',
+  },
+  googleAnalyticsKey: 'UA-151027057-1',
 };
 
 /**

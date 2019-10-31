@@ -9,6 +9,7 @@ import {CommonModule} from '@angular/common';
 import { HealthCheckGuard } from './guards/health-check.guard';
 import { HealthCheckService } from './services/health-check.service';
 import { ExUITitleService } from './services/exui-title.service';
+import { GoogleAnalyticsService } from './services/google-analytics.service';
 
 /**
  * Shared Module
@@ -30,7 +31,8 @@ import { ExUITitleService } from './services/exui-title.service';
   providers: [
     HealthCheckGuard,
     HealthCheckService,
-    ExUITitleService
+    ExUITitleService,
+    GoogleAnalyticsService
   ],
 })
 export class SharedModule {}

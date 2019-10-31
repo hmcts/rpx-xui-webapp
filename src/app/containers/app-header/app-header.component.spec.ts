@@ -1,12 +1,7 @@
 import { TestBed, async, ComponentFixture } from '@angular/core/testing';
-import { AppComponent } from './app.component';
-import { LoggerService } from '../../services/logger/logger.service';
-import { RouterTestingModule } from '@angular/router/testing';
+import { AppHeaderComponent } from './app-header.component';
 import { StoreModule, Store } from '@ngrx/store';
-import { ProvidersModule } from 'src/app/providers/providers.module';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import {SharedModule} from '../../shared/shared.module';
-import {LoggerConfig, LoggerModule} from 'ngx-logger';
 import { AppConstants } from 'src/app/app.constants';
 import * as fromActions from '../../store';
 import { CookieService, CookieModule } from 'ngx-cookie';
@@ -23,48 +18,25 @@ const cookieService = {
 };
 
 
-describe('AppComponent', () => {
-  let component: AppComponent;
-  let fixture: ComponentFixture<AppComponent>;
+describe('AppHeaderComponent', () => {
+  let component: AppHeaderComponent;
+  let fixture: ComponentFixture<AppHeaderComponent>;
   let store: Store<fromActions.State>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule,
-        StoreModule.forRoot({}),
-        ProvidersModule,
-        SharedModule,
-        LoggerModule,
-        CookieModule.forRoot()
+        StoreModule.forRoot({})
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [
-        AppComponent
+        AppHeaderComponent
       ],
-      providers: [
-        LoggerConfig,
-        { provide: CookieService, useValue: cookieService },
-        {
-          provide: LoggerService,
-          useValue: {
-            info: () => {
-              return 'test info';
-            },
-            warn: () => {
-              return 'test warning';
-            },
-            error: () => {
-              return 'test error';
-            }
-          }
-        }
-      ]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AppComponent);
+    fixture = TestBed.createComponent(AppHeaderComponent);
     component = fixture.componentInstance;
     store = TestBed.get(Store);
     fixture.detectChanges();

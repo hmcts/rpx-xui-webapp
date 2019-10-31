@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 
 const MEDIA_VIEWER = 'media-viewer';
@@ -16,8 +16,6 @@ export class MediaViewerWrapperComponent implements OnInit {
     mediaAnnotationApiUrl = '';
 
     public constructor(
-        public renderer: Renderer2,
-        private el: ElementRef,
         private windowService: WindowService
     ) {
     }
@@ -33,18 +31,6 @@ export class MediaViewerWrapperComponent implements OnInit {
             this.mediaContentType = media.content_type;
             this.mediaAnnotationApiUrl = media.annotation_api_url;
         }
-        this.removeSideBar();
     }
 
-    removeSideBar() {
-        if (this.el.nativeElement) {
-            let tempElement = this.el.nativeElement.parentElement;
-            while (tempElement) {
-                if (tempElement.tagName === 'HTML') {
-                    this.renderer.setStyle(tempElement, 'background-color', '#ffffff');
-                }
-                tempElement = tempElement.parentElement;
-            }
-        }
-    }
 }

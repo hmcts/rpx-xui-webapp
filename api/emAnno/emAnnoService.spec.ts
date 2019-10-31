@@ -16,7 +16,7 @@ describe('enAnnoService', () => {
     let spy: any
     const req = mockReq()
     const res = mockRes({
-        data: 'ok'
+        data: 'ok',
     })
 
     beforeEach(() => {

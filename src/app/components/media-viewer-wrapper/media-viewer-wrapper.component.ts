@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 
 const MEDIA_VIEWER = 'media-viewer';
@@ -6,7 +6,8 @@ const MEDIA_VIEWER = 'media-viewer';
 @Component({
     selector: 'exui-media-viewer',
     templateUrl: './media-viewer-wrapper.component.html',
-    styleUrls: ['../../../../node_modules/@hmcts/media-viewer/assets/aui-styles.scss']
+    styleUrls: ['./media-viewer-wrapper.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class MediaViewerWrapperComponent implements OnInit {
 

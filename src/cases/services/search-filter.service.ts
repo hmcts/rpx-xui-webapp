@@ -78,7 +78,7 @@ export class SearchFilterService {
   }
 
   public findPaginationMetadata(payload): Observable<any> {
-    const { jurisdictionId, caseTypeId, metadataFilters, caseFilters, view } = this.getParams(payload);
+    const { jurisdictionId, caseTypeId, metadataFilters, caseFilters } = this.getParams(payload);
     const url = `${this.appConfig.getCaseDataUrl()}/caseworkers/:uid`
       + `/jurisdictions/${jurisdictionId}`
       + `/case-types/${caseTypeId}`

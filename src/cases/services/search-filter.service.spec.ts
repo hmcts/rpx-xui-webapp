@@ -1,10 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-import createSpyObj = jasmine.createSpyObj;
-import { SearchFilterService } from './';
-import { SearchService, Jurisdiction, CaseType, CaseState, AbstractAppConfig,
-         HttpService, RequestOptionsBuilder } from '@hmcts/ccd-case-ui-toolkit';
 import { FormControl, FormGroup } from '@angular/forms';
-import { JURISDICTION_1, CASE_TYPE_1, CASE_STATE_1 } from '../mock/search-filter.mock';
+import { AbstractAppConfig, CaseState, CaseType, HttpService, Jurisdiction, RequestOptionsBuilder, SearchService } from '@hmcts/ccd-case-ui-toolkit';
+import { CASE_STATE_1, CASE_TYPE_1, JURISDICTION_1 } from '../mock/search-filter.mock';
+import { SearchFilterService } from './';
+import createSpyObj = jasmine.createSpyObj;
 
 const JURISDICTION: Jurisdiction = JURISDICTION_1;
 
@@ -29,7 +28,7 @@ describe('SearchFilterService', () => {
                 { provide: SearchService, useValue: ccdSearchServiceMock },
                 { provide: AbstractAppConfig, useValue: abstractAppConfigMock },
                 { provide: HttpService, useValue: httpService },
-                { provide: RequestOptionsBuilder, useValue: requestOptionsBuilder}
+                { provide: RequestOptionsBuilder, useValue: requestOptionsBuilder }
             ]
         });
 

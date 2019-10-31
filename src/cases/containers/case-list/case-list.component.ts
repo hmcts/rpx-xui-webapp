@@ -23,7 +23,7 @@ import { AppConfig } from './../../../app/services/ccd-config/ccd-case.config';
 export class CaseListComponent implements OnInit, OnDestroy {
   public defaults: any;
   public caseListFilterEventsBindings: ActionBindingModel[];
-  public fromCasesFeature; any;
+  public fromCasesFeature: any;
 
   public jurisdiction$: Observable<Jurisdiction>;
   public caseType$: Observable<CaseType>;

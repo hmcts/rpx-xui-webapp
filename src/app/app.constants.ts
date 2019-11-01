@@ -1,4 +1,4 @@
-const FooterData =  {
+const footerData =  {
   heading: 'Help',
   email: {
     address: 'service-desk@hmcts.gov.uk',
@@ -12,7 +12,7 @@ const FooterData =  {
   }
 };
 
-const FooterDataNavigation = {
+const footerDataNavigation = {
   items: [
     { text: 'Accessibility', href: 'accessibility', target: '_blank' },
     { text: 'Terms and conditions', href: 'terms-and-conditions', target: '_blank' },
@@ -64,11 +64,11 @@ const appHeaderTitle = {name: 'Manage Cases', url: '/'};
 
 
 export class AppConstants {
-  static FOOTER_DATA = FooterData;
-  static FOOTER_DATA_NAVIGATION = FooterDataNavigation;
-  static NAV_ITEMS = navItems;
-  static USER_NAV = userNav;
-  static APP_HEADER_TITLE = appHeaderTitle;
-  static ENVIRONMENT_NAMES = environmentNames;
-  static REDIRECT_URL = redirectUrl;
+  public static FOOTER_DATA = footerData;
+  public static FOOTER_DATA_NAVIGATION = footerDataNavigation;
+  public static NAV_ITEMS = navItems;
+  public static USER_NAV = userNav;
+  public static APP_HEADER_TITLE = appHeaderTitle;
+  public static ENVIRONMENT_NAMES = environmentNames;
+  public static REDIRECT_URL = redirectUrl;
 }

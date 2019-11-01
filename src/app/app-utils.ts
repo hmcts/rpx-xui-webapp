@@ -2,7 +2,7 @@
 import { AppConstants } from './app.constants';
 
 export class AppUtils {
-  static getEnvironment(url: string): string {
+  public static getEnvironment(url: string): string {
     const regex = 'pr-|localhost|aat|demo|ithc|perftest';
     const matched = url.match(regex);
 
@@ -19,6 +19,8 @@ export class AppUtils {
           return AppConstants.ENVIRONMENT_NAMES.ithc;
         case AppConstants.ENVIRONMENT_NAMES.perftest:
           return AppConstants.ENVIRONMENT_NAMES.perftest;
+        default:
+          return AppConstants.ENVIRONMENT_NAMES.prod;
       }
     }
     return AppConstants.ENVIRONMENT_NAMES.prod;

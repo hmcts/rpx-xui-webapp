@@ -1,5 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {Helper, Navigation} from '../../containers/footer/footer.model';
+import { Component, Input } from '@angular/core';
+import { Helper, Navigation } from '../../containers/footer/footer.model';
 
 @Component({
     selector: 'exui-app-hmcts-global-footer',

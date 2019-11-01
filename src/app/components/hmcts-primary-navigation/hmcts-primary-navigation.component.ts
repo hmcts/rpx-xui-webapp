@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'exui-hmcts-primary-navigation',
@@ -16,7 +15,7 @@ export class HmctsPrimaryNavigationComponent {
     @Input() public items: any;
 
     public isUserLoggedIn = true;
-    constructor(private readonly route: ActivatedRoute) {
+    constructor() {
 
     }
 

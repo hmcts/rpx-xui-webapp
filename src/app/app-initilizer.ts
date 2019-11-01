@@ -1,6 +1,6 @@
-import {select, Store} from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
+import { take } from 'rxjs/operators';
 import * as fromApp from './store';
-import {take} from 'rxjs/operators';
 
 /**
  *  Function used in APP_INITIALIZER provider that returns a promise

@@ -35,7 +35,7 @@ describe('AlertComponent', () => {
   });
 
   it('should have updated the value of message and level in ngOnInit', async () => {
-    const alertService = fixture.debugElement.injector.get(AlertService);
+    const alertService = fixture.debugElement.injector.get<AlertService>(AlertService);
     alertService.push({ message: 'message', level: 'success' });
     component.ngOnInit();
     await fixture.whenStable();

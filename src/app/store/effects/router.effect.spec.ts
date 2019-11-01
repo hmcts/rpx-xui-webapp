@@ -1,28 +1,27 @@
-import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {TestBed} from '@angular/core/testing';
-import {Router} from '@angular/router';
-import {hot} from 'jasmine-marbles';
-import {of} from 'rxjs';
-import {provideMockActions} from '@ngrx/effects/testing';
+import { Location } from '@angular/common';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
+import { provideMockActions } from '@ngrx/effects/testing';
+import { Store, StoreModule } from '@ngrx/store';
+import { MockStore } from '@ngrx/store/testing';
+import { hot } from 'jasmine-marbles';
+import { of } from 'rxjs';
+import { AppConfigService } from '../../services/config/configuration.services';
+import { BACK, FORWARD } from '../actions/router.action';
+import { State } from '../reducers';
 import * as fromRouterEffects from './router.effect';
-import {RouterEffects} from './router.effect';
-import {BACK, FORWARD} from '../actions/router.action';
-import {Location} from '@angular/common';
-import {Store, StoreModule} from '@ngrx/store';
-import {AppConfigService} from '../../services/config/configuration.services';
-import {MockStore} from '@ngrx/store/testing';
-import {State} from '../reducers';
 
 describe('Router Effects', () => {
   let actions$;
-  let effects: RouterEffects;
+  let effects: fromRouterEffects.RouterEffects;
   let store: MockStore<State>;
 
-  const LocationMock = jasmine.createSpyObj('Location', [
+  const locationMock = jasmine.createSpyObj('Location', [
     'back', 'forward',
   ]);
 
-  const GenericMock = jasmine.createSpy();
+  const genericMock = jasmine.createSpy();
   let spyOnDispatchToStore = jasmine.createSpy();
 
   beforeEach(() => {
@@ -35,11 +34,11 @@ describe('Router Effects', () => {
         AppConfigService,
         {
           provide: Location,
-          useValue: LocationMock
+          useValue: locationMock
         },
         {
           provide: Router,
-          useValue: GenericMock
+          useValue: genericMock
         },
         fromRouterEffects.RouterEffects,
         provideMockActions(() => actions$)
@@ -48,7 +47,7 @@ describe('Router Effects', () => {
     store = TestBed.get(Store);
     spyOnDispatchToStore = spyOn(store, 'dispatch').and.callThrough();
 
-    effects = TestBed.get(RouterEffects);
+    effects = TestBed.get(fromRouterEffects.RouterEffects);
   });
 
   describe('navigateBack$', () => {
@@ -56,12 +55,12 @@ describe('Router Effects', () => {
       'of RouterActions.BACK', () => {
       const payload = [{payload: 'something'}];
 
-      LocationMock.back.and.returnValue(of(payload));
+      locationMock.back.and.returnValue(of(payload));
 
       const action = BACK;
       actions$ = hot('-a', {a: action});
       effects.navigateBack$.subscribe(() => {
-        expect(LocationMock.back).toHaveBeenCalled();
+        expect(locationMock.back).toHaveBeenCalled();
       });
     });
   });
@@ -71,12 +70,12 @@ describe('Router Effects', () => {
       'of RouterActions.FORWARD', () => {
       const payload = [{payload: 'something'}];
 
-      LocationMock.forward.and.returnValue(of(payload));
+      locationMock.forward.and.returnValue(of(payload));
 
       const action = FORWARD;
       actions$ = hot('-a', {a: action});
       effects.navigateForward$.subscribe(() => {
-        expect(LocationMock.forward).toHaveBeenCalled();
+        expect(locationMock.forward).toHaveBeenCalled();
       });
     });
   });

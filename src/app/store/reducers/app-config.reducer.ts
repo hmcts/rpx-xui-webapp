@@ -1,5 +1,6 @@
-import * as fromActions from '../actions/';
 import { ConfigurationModel } from '../../models/configuration.model';
+import * as fromActions from '../actions/';
+
 export interface AppConfigState {
   config: ConfigurationModel | {};
   loaded: boolean;
@@ -32,8 +33,9 @@ export function reducer(
         loaded: false
       };
     }
+    default:
+      return state;
   }
-  return state;
 }
 
 

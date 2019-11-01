@@ -119,8 +119,8 @@ describe('CaseCaseComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CaseCreateSubmitComponent);
     component = fixture.componentInstance;
-    casesService = fixture.debugElement.injector.get(CasesService);
-    draftService = fixture.debugElement.injector.get(DraftService);
+    casesService = fixture.debugElement.injector.get<CasesService>(CasesService);
+    draftService = fixture.debugElement.injector.get<DraftService>(DraftService);
 
     fixture.detectChanges();
 

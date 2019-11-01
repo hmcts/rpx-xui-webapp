@@ -1,7 +1,7 @@
 import { TestBed, inject } from '@angular/core/testing';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of, BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { GoogleAnalyticsService } from './google-analytics.service';
 import { Title } from '@angular/platform-browser';
 import { environment as config} from '../../../environments/environment';
@@ -13,16 +13,11 @@ class MockTitle {
   }
 }
 
-const MockConfig = {
-    googleAnalyticsKey: 'testId',
-};
-
 const windowMock: Window = { gtag: () => {}} as any;
 
 describe('GoogleAnalyticsService', () => {
 
   let titleTestBed: Title;
-  let configTestBed: any;
   let windowTestBed: Window;
 
   beforeEach(() => {
@@ -41,10 +36,6 @@ describe('GoogleAnalyticsService', () => {
           }
         },
         {
-          provide: config,
-          useValue: MockConfig
-        },
-        {
           provide: WindowToken,
           useValue: windowMock
         },
@@ -52,7 +43,6 @@ describe('GoogleAnalyticsService', () => {
     });
 
     titleTestBed = TestBed.get(Title);
-    configTestBed = TestBed.get(config);
     windowTestBed = TestBed.get(WindowToken);
 
   });

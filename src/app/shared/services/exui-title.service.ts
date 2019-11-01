@@ -1,18 +1,21 @@
-import { Subscription, Observable } from 'rxjs';
+import { Injectable, OnDestroy, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { OnDestroy, Injectable, OnInit } from '@angular/core';
-import { map, filter } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 
 @Injectable()
 export class ExUITitleService implements OnInit, OnDestroy {
-  titleSubscription: Subscription;
-  title$: Observable<string>;
+  public titleSubscription: Subscription;
+  public title$: Observable<string>;
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute, private titleService: Title) {
-  }
+  constructor(
+    private readonly router: Router,
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly titleService: Title
+  ) { }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.title$ =  this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),
       map(() => {
@@ -35,7 +38,8 @@ export class ExUITitleService implements OnInit, OnDestroy {
       this.titleService.setTitle(ttl);
     });
   }
-  ngOnDestroy() {
+
+  public ngOnDestroy() {
     if (this.titleSubscription) {
       this.titleSubscription.unsubscribe();
     }

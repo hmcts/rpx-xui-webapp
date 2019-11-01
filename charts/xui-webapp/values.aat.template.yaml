@@ -4,3 +4,6 @@ nodejs:
   environment:
        IDAM_URL: https://idam-api.aat.platform.hmcts.net
        S2S_URL: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal
+       S2S_SECRET: ${S2S_SECRET}
+       IDAM_SECRET: ${IDAM_SECRET}
+       NODE_TLS_REJECT_UNAUTHORIZED: '1'

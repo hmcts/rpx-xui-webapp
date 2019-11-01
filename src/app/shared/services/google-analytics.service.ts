@@ -30,6 +30,8 @@ export class GoogleAnalyticsService {
       script2.innerHTML = `
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);
+          console.log('calling gtag');
+          console.log(arguments);
         }
         gtag('js', new Date());
         gtag('config', '` + this.googleAnalyticsKey + `', {'send_page_view': false});

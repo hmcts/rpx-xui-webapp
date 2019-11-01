@@ -1,13 +1,13 @@
-import { inject, TestBed } from '@angular/core/testing';
-import { AuthService } from './auth.service';
-import { environment } from '../../../environments/environment';
-import { Router } from '@angular/router';
-import { CookieService } from 'ngx-cookie';
 import { HttpClient } from '@angular/common/http';
-import { AppConfigService } from '../config/configuration.services';
+import { inject, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { StoreModule } from '@ngrx/store';
-import { AppConstants } from 'src/app/app.constants';
+import { CookieService } from 'ngx-cookie';
 import { AppUtils } from 'src/app/app-utils';
+import { AppConstants } from 'src/app/app.constants';
+import { environment } from '../../../environments/environment';
+import { AppConfigService } from '../config/configuration.services';
+import { AuthService } from './auth.service';
 
 const config = {
   config: {
@@ -46,7 +46,7 @@ const cookieService = {
 
 
 class HttpClientMock {
-  get() {
+  public get() {
     return 'response';
   }
 }
@@ -54,7 +54,7 @@ let deleteCookiesSpy;
 let routerNavigateSpy;
 
 class AppConfigServiceMock {
-  getRoutesConfig() {
+  public getRoutesConfig() {
     return {
       idam: {
         idamLoginUrl: 'dummy',
@@ -66,7 +66,7 @@ class AppConfigServiceMock {
 }
 
 class AppConstantsMock {
-  static REDIRECT_URL = {
+  public static REDIRECT_URL = {
     dummy: 'dummy',
     aat: 'dummy',
     demo: 'dummy',

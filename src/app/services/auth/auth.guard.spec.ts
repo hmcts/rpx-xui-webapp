@@ -1,13 +1,12 @@
+import { HttpClient } from '@angular/common/http';
 import { inject, TestBed } from '@angular/core/testing';
-import { AuthService } from './auth.service';
-
+import { Router } from '@angular/router';
 import { StoreModule } from '@ngrx/store';
-import {AuthGuard} from './auth.guard';
-import {CookieOptionsProvider, CookieService} from 'ngx-cookie';
-import {AppConfigService} from '../config/configuration.services';
-import {environment} from '../../../environments/environment';
-import {Router} from '@angular/router';
-import {HttpClient} from '@angular/common/http';
+import { CookieService } from 'ngx-cookie';
+import { environment } from '../../../environments/environment';
+import { AppConfigService } from '../config/configuration.services';
+import { AuthGuard } from './auth.guard';
+import { AuthService } from './auth.service';
 
 const config = {
   config: {
@@ -41,13 +40,13 @@ const cookieService = {
 
 class HttpClientMock {
 
-  get() {
+  public get() {
     return 'response';
   }
 }
 
 class AppConfigServiceMock {
-  getRoutesConfig() {
+  public getRoutesConfig() {
     return {
       idam: {
         idamLoginUrl: 'dummy',

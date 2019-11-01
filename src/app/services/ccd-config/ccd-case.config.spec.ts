@@ -1,14 +1,13 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
+import { StoreModule } from '@ngrx/store';
+import { AppConfigService } from '../config/configuration.services';
 import { AppConfig } from './ccd-case.config';
 
-import {AppConfigService} from '../config/configuration.services';
-import {StoreModule} from '@ngrx/store';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-
 class MockConfigService {
-  config;
-  caseEditorConfig = {};
-  getEditorConfiguration() {}
+  public config;
+  public caseEditorConfig = {};
+  public getEditorConfiguration() {}
   constructor() {
     this.config = {
       login_url: 'test'

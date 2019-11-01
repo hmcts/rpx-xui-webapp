@@ -1,11 +1,10 @@
-import { Component, ViewEncapsulation, OnInit } from '@angular/core';
-import { LoggerService } from '../../services/logger/logger.service';
-import * as fromActions from '../../store';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Store } from '@ngrx/store';
-import {NavItemsModel} from '../../models/nav-item.model';
-import {AppTitleModel} from '../../models/app-title.model';
-import {UserNavModel} from '../../models/user-nav.model';
-import {AppConstants} from '../../app.constants';
+import { AppConstants } from '../../app.constants';
+import { AppTitleModel } from '../../models/app-title.model';
+import { NavItemsModel } from '../../models/nav-item.model';
+import { UserNavModel } from '../../models/user-nav.model';
+import * as fromActions from '../../store';
 
 @Component({
   selector: 'exui-root',
@@ -14,23 +13,22 @@ import {AppConstants} from '../../app.constants';
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent implements OnInit {
-  navItems: NavItemsModel[];
-  appHeaderTitle: AppTitleModel;
-  userNav: UserNavModel;
-  componentName = 'App Component';
+  public navItems: NavItemsModel[];
+  public appHeaderTitle: AppTitleModel;
+  public userNav: UserNavModel;
+  public componentName = 'App Component';
 
   constructor(
-    private logger: LoggerService,
-    private store: Store<fromActions.State> ) {
+    private readonly store: Store<fromActions.State> ) {
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.appHeaderTitle = AppConstants.APP_HEADER_TITLE;
     this.navItems = AppConstants.NAV_ITEMS;
     this.userNav = AppConstants.USER_NAV;
   }
 
-  onNavigate(event): void {
+  public onNavigate(event): void {
     if (event === 'sign-out') {
       return this.store.dispatch(new fromActions.Logout());
     }

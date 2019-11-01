@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { Helper, Navigation } from './footer.model';
 import { AppConstants } from '../../app.constants';
+import { Helper, Navigation } from './footer.model';
 
 @Component({
     selector: 'exui-app-footer',

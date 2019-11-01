@@ -1,14 +1,14 @@
-import { TestBed, async, ComponentFixture } from '@angular/core/testing';
-import { AppComponent } from './app.component';
-import { LoggerService } from '../../services/logger/logger.service';
-import { RouterTestingModule } from '@angular/router/testing';
-import { StoreModule, Store } from '@ngrx/store';
-import { ProvidersModule } from 'src/app/providers/providers.module';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import {SharedModule} from '../../shared/shared.module';
-import {LoggerConfig, LoggerModule} from 'ngx-logger';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { Store, StoreModule } from '@ngrx/store';
+import { LoggerConfig, LoggerModule } from 'ngx-logger';
 import { AppConstants } from 'src/app/app.constants';
+import { ProvidersModule } from 'src/app/providers/providers.module';
+import { LoggerService } from '../../services/logger/logger.service';
+import { SharedModule } from '../../shared/shared.module';
 import * as fromActions from '../../store';
+import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
   let component: AppComponent;

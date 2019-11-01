@@ -1,15 +1,12 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'exui-phase-banner',
   templateUrl: './phase-banner.component.html'
 })
-export class PhaseBannerComponent implements OnInit {
-  @Input() type: string;
+export class PhaseBannerComponent {
+  @Input() public type: string;
 
   constructor() { }
-
-  ngOnInit() {
-  }
 
 }

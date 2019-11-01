@@ -1,9 +1,9 @@
+import { Component, DebugElement, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { HmctsGlobalFooterComponent } from './hmcts-global-footer.component';
-import {Component, DebugElement, Input, ViewChild} from '@angular/core';
-import {Helper, Navigation} from '../../containers/footer/footer.model';
-import { AppConstants } from '../../app.constants';
 import { RouterTestingModule } from '@angular/router/testing';
+import { AppConstants } from '../../app.constants';
+import { Helper, Navigation } from '../../containers/footer/footer.model';
+import { HmctsGlobalFooterComponent } from './hmcts-global-footer.component';
 
 describe('HmctsGlobalFooterComponent', () => {
     @Component({
@@ -14,8 +14,8 @@ describe('HmctsGlobalFooterComponent', () => {
                     [items]="text"></exui-app-hmcts-global-footer>`
     })
     class TestDummyHostComponent {
-        @Input() help: Helper;
-        @Input() navigation: Navigation;
+        @Input() public help: Helper;
+        @Input() public navigation: Navigation;
         @ViewChild(HmctsGlobalFooterComponent)
         public hmctsGlobalFooterComponent: HmctsGlobalFooterComponent;
     }

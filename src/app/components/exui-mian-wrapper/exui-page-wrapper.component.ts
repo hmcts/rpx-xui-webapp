@@ -15,8 +15,8 @@ import {Component, Input} from '@angular/core';
 })
 export class ExuiPageWrapperComponent  {
 
-  @Input() backLink: string;
-  @Input() title: string;
+  @Input() public backLink: string;
+  @Input() public title: string;
 
   constructor() { }
 

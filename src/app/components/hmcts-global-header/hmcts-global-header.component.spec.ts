@@ -1,11 +1,10 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { HmctsGlobalHeaderComponent } from './hmcts-global-header.component';
-import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import { StoreModule } from '@ngrx/store';
-import { reducers } from 'src/app/store';
-import { metaReducers } from 'src/app/app.module';
 import { RouterTestingModule } from '@angular/router/testing';
+import { StoreModule } from '@ngrx/store';
+import { metaReducers } from 'src/app/app.module';
+import { reducers } from 'src/app/store';
+import { HmctsGlobalHeaderComponent } from './hmcts-global-header.component';
 
 describe('HmctsGlobalHeaderComponent', () => {
   let component: HmctsGlobalHeaderComponent;

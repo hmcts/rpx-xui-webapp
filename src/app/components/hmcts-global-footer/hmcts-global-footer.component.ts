@@ -5,11 +5,10 @@ import {Helper, Navigation} from '../../containers/footer/footer.model';
     selector: 'exui-app-hmcts-global-footer',
     templateUrl: './hmcts-global-footer.component.html'
 })
-export class HmctsGlobalFooterComponent implements OnInit {
-    @Input() help: Helper;
-    @Input() navigation: Navigation;
+export class HmctsGlobalFooterComponent {
+    @Input() public help: Helper;
+    @Input() public navigation: Navigation;
 
     constructor() { }
-    ngOnInit() {}
 
 }

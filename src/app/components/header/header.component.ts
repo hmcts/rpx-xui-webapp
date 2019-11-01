@@ -1,9 +1,8 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Store } from '@ngrx/store';
-
+import { AppTitleModel } from '../../models/app-title.model';
+import { UserNavModel } from '../../models/user-nav.model';
 import * as fromRoot from '../../store';
-import {AppTitleModel} from '../../models/app-title.model';
-import {UserNavModel} from '../../models/user-nav.model';
 
 @Component({
   selector: 'exui-header',
@@ -11,14 +10,14 @@ import {UserNavModel} from '../../models/user-nav.model';
 })
 export class HeaderComponent {
 
-  @Input() navItems: { active: boolean; href: string; }[];
-  @Input() title: AppTitleModel;
-  @Input() userNav: UserNavModel;
-  @Output() navigate = new EventEmitter<string>();
+  @Input() public navItems: { active: boolean; href: string; }[];
+  @Input() public title: AppTitleModel;
+  @Input() public userNav: UserNavModel;
+  @Output() public navigate = new EventEmitter<string>();
 
   constructor(public store: Store<fromRoot.State>) {}
 
-  onNavigate(event) {
+  public onNavigate(event) {
     this.navigate.emit(event);
   }
 }

@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { PrivacyPolicyComponent } from '..';
-import { of } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
+import { PrivacyPolicyComponent } from '..';
 
 describe('PrivacyPolicyComponent', () => {
   let component: PrivacyPolicyComponent;
@@ -9,7 +9,7 @@ describe('PrivacyPolicyComponent', () => {
 
 
   class MockActivatedRoute {
-    get fragment() {
+    public get fragment() {
       return of('overview');
     }
   }

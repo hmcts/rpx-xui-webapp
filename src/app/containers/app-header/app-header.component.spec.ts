@@ -4,6 +4,19 @@ import { StoreModule, Store } from '@ngrx/store';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { AppConstants } from 'src/app/app.constants';
 import * as fromActions from '../../store';
+import { CookieService, CookieModule } from 'ngx-cookie';
+
+
+const cookieService = {
+  get: key => {
+    return cookieService[key];
+  },
+  set: (key, value) => {
+    cookieService[key] = value;
+  },
+  removeAll: () => { }
+};
+
 
 describe('AppHeaderComponent', () => {
   let component: AppHeaderComponent;

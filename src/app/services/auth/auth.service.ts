@@ -22,7 +22,8 @@ export class AuthService {
   ) {
     this.COOKIE_KEYS = {
       TOKEN: config.cookies.token,
-      USER: config.cookies.userId
+      USER: config.cookies.userId,
+      ROLES: config.cookies.roles,
     };
 
     this.apiBaseUrl = window.location.protocol + '//' + window.location.hostname;

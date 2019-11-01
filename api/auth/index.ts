@@ -39,6 +39,7 @@ export async function authenticateUser(req: any, res, next) {
             req.session.user = details
             res.cookie(cookieUserId, details.id)
             res.cookie(cookieToken, data.access_token)
+            res.cookie('roles', details.roles)
 
             // need this so angular knows which enviroment config to use ...
             res.cookie('platform', config.environment)

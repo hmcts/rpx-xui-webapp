@@ -4,6 +4,7 @@ export const environment = {
    cookies: {
      token: '__auth__',
      userId: '__userid__',
+     roles: 'roles',
    },
 };
 

@@ -1,7 +1,7 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
-import { AppConfigService } from '../services/config/configuration.services';
-import { AppConfig } from '../services/ccd-config/ccd-case.config';
 import { AuthService } from '../services/auth/auth.service';
+import { AppConfig } from '../services/ccd-config/ccd-case.config';
+import { AppConfigService } from '../services/config/configuration.services';
 
 
 /**
@@ -14,7 +14,7 @@ import { AuthService } from '../services/auth/auth.service';
   providers: []
 })
 export class ProvidersModule {
-  static forRoot(): ModuleWithProviders {
+  public static forRoot(): ModuleWithProviders {
     return {
       ngModule: ProvidersModule,
       providers: [

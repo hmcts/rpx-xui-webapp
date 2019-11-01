@@ -32,7 +32,7 @@ import { GoogleAnalyticsService } from './services/google-analytics.service';
     HealthCheckGuard,
     HealthCheckService,
     ExUITitleService,
-    GoogleAnalyticsService
+    GoogleAnalyticsService,
   ],
 })
 export class SharedModule {}

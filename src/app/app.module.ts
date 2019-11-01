@@ -36,6 +36,7 @@ import { CryptoWrapper } from './services/logger/cryptoWrapper';
 import { JwtDecodeWrapper } from './services/logger/jwtDecodeWrapper';
 import { AbstractAppInsights, AppInsightsWrapper } from './services/logger/appInsightsWrapper';
 import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler';
+import { WindowToken, windowProvider } from './shared/services/window';
 
 @NgModule({
   declarations: [AppComponent],
@@ -80,7 +81,8 @@ import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler
     {
       provide: ErrorHandler,
       useClass: DefaultErrorHandler
-    }
+    },
+    { provide: WindowToken, useFactory: windowProvider }
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

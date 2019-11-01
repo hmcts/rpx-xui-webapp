@@ -5,6 +5,7 @@ import { of, BehaviorSubject, Observable } from 'rxjs';
 import { GoogleAnalyticsService } from './google-analytics.service';
 import { Title } from '@angular/platform-browser';
 import { environment as config} from '../../../environments/environment';
+import { WindowToken } from './window';
 
 class MockTitle {
   getTitle(): string {
@@ -13,14 +14,16 @@ class MockTitle {
 }
 
 const MockConfig = {
-    googleAnalyticsKey: 'GoogleKeyID',
+    googleAnalyticsKey: 'testId',
 };
 
-declare let gtag: Function;
+const windowMock: Window = { gtag: () => {}} as any;
 
 describe('GoogleAnalyticsService', () => {
+
   let titleTestBed: Title;
   let configTestBed: any;
+  let windowTestBed: Window;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -41,11 +44,16 @@ describe('GoogleAnalyticsService', () => {
           provide: config,
           useValue: MockConfig
         },
+        {
+          provide: WindowToken,
+          useValue: windowMock
+        },
       ]
     });
 
     titleTestBed = TestBed.get(Title);
     configTestBed = TestBed.get(config);
+    windowTestBed = TestBed.get(WindowToken);
 
   });
 
@@ -53,17 +61,23 @@ describe('GoogleAnalyticsService', () => {
     expect(service).toBeTruthy();
   }));
 
-  it('init should call router navigation end', inject([GoogleAnalyticsService], (service: GoogleAnalyticsService) => {
-    config.googleAnalyticsKey = 'testId';
+  it('should call gtag with correct params', inject([GoogleAnalyticsService], (service: GoogleAnalyticsService) => {
+    spyOn(windowTestBed as any, 'gtag').and.callThrough();
+    service.event('eventName', {});
+    expect((windowTestBed as any).gtag).toHaveBeenCalledWith('event', 'eventName', {});
+  }));
+
+  it('init should call router navigation end and gtag with correct config',
+  inject([GoogleAnalyticsService], (service: GoogleAnalyticsService) => {
     const event = new NavigationEnd(42, '/url', '/redirect-url');
     TestBed.get(Router).events.next(event);
     spyOn(titleTestBed, 'getTitle').and.returnValue('testTitle');
-    // const gtagSpy = jasmine.createSpy('gtag');
-    // service.init();
-    // expect(gtagSpy).toHaveBeenCalled();
-    spyOn(window as any, 'gtag').and.callThrough();
-    service.init();
-    expect(gtag).toHaveBeenCalled();
+    spyOn(windowTestBed as any, 'gtag').and.callThrough();
+    service.init('testId');
+    expect((windowTestBed as any).gtag).toHaveBeenCalledWith('config', 'testId', {
+      page_path: '/redirect-url',
+      page_title: 'testTitle'
+    });
   }));
 
 });

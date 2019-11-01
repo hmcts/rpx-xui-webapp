@@ -1,35 +1,40 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-import { environment as config } from '../../../environments/environment';
 import { Title } from '@angular/platform-browser';
-
-declare let gtag: Function;
+import { WindowToken } from './window';
+import { DOCUMENT } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class GoogleAnalyticsService {
 
+  public googleAnalyticsKey: string;
   constructor(
-    private router: Router,
-    private title: Title,
+    private readonly router: Router,
+    private readonly title: Title,
+    @Inject(WindowToken) private readonly window: Window,
+    @Inject(DOCUMENT) private readonly document: Document,
   ) {}
 
-  public init() {
+  public init(googleAnalyticsKey: string) {
+    this.googleAnalyticsKey = googleAnalyticsKey;
     try {
-      const script1 = document.createElement('script');
+      const script1 = this.document.createElement('script');
       script1.async = true;
-      script1.src = 'https://www.googletagmanager.com/gtag/js?id=' + config.googleAnalyticsKey;
-      document.head.appendChild(script1);
+      script1.src = 'https://www.googletagmanager.com/gtag/js?id=' + this.googleAnalyticsKey;
+      this.document.head.appendChild(script1);
 
-      const script2 = document.createElement('script');
+      const script2 = this.document.createElement('script');
       script2.innerHTML = `
         window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
+        function gtag(){dataLayer.push(arguments);
+        }
         gtag('js', new Date());
-        gtag('config', '` + config.googleAnalyticsKey + `', {'send_page_view': false});
+        gtag('config', '` + this.googleAnalyticsKey + `', {'send_page_view': false});
       `;
-      document.head.appendChild(script2);
+      this.document.head.appendChild(script2);
     } catch (ex) {
       console.error('Error appending google analytics');
       console.error(ex);
@@ -38,23 +43,20 @@ export class GoogleAnalyticsService {
   }
 
   private listenForRouteChanges() {
-    console.log('listen for route changes');
-    this.router.events.subscribe(event => {
-      if (event instanceof NavigationEnd) {
-        console.log('calling gtag');
-        console.log('config.googleAnalyticsKey', config.googleAnalyticsKey);
-        console.log('event.urlAfterRedirects', event.urlAfterRedirects);
-        console.log('title', this.title.getTitle());
-        gtag('config', config.googleAnalyticsKey, {
-          page_path: event.urlAfterRedirects,
-          page_title: this.title.getTitle(),
-        });
-      }
-    });
+    if (this.googleAnalyticsKey) {
+      this.router.events.subscribe(event => {
+        if (event instanceof NavigationEnd) {
+          (this.window as any).gtag('config', this.googleAnalyticsKey, {
+            page_path: event.urlAfterRedirects,
+            page_title: this.title.getTitle(),
+          });
+        }
+      });
+    }
   }
 
   public event(eventName: string, params: {}) {
-    gtag('event', eventName, params);
+    (this.window as any).gtag('event', eventName, params);
   }
 
 }

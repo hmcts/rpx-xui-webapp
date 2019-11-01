@@ -7,6 +7,7 @@ import {AppTitleModel} from '../../models/app-title.model';
 import {UserNavModel} from '../../models/user-nav.model';
 import {AppConstants} from '../../app.constants';
 import { GoogleAnalyticsService } from 'src/app/shared/services/google-analytics.service';
+import { environment as config } from '../../../environments/environment';
 
 @Component({
   selector: 'exui-root',
@@ -27,7 +28,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.googleAnalyticsService.init();
+    this.googleAnalyticsService.init(config.googleAnalyticsKey);
     this.appHeaderTitle = AppConstants.APP_HEADER_TITLE;
     this.navItems = AppConstants.NAV_ITEMS;
     this.userNav = AppConstants.USER_NAV;

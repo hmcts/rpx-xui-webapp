@@ -9,6 +9,7 @@ import {SharedModule} from '../../shared/shared.module';
 import {LoggerConfig, LoggerModule} from 'ngx-logger';
 import { AppConstants } from 'src/app/app.constants';
 import * as fromActions from '../../store';
+import { WindowToken } from 'src/app/shared/services/window';
 
 describe('AppComponent', () => {
   let component: AppComponent;
@@ -43,7 +44,11 @@ describe('AppComponent', () => {
               return 'test error';
             }
           }
-        }
+        },
+        {
+          provide: WindowToken,
+          useValue: {}
+        },
       ]
     }).compileComponents();
   }));

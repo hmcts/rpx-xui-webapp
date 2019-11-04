@@ -29,12 +29,10 @@ describe('CreateCaseFieldsResolver', () => {
   let createCaseFieldsResolver: CreateCaseEventTriggerResolver;
 
   let casesService: any;
-  let alertService: any;
   let route: any;
 
   beforeEach(() => {
     casesService = createSpyObj('casesService', ['getEventTrigger']);
-    alertService = createSpyObj('alertService', ['error']);
 
     createCaseFieldsResolver = new CreateCaseEventTriggerResolver(casesService);
 
@@ -43,7 +41,7 @@ describe('CreateCaseFieldsResolver', () => {
       queryParamMap: createSpyObj('queryParamMap', ['get']),
     };
 
-    route.paramMap.get.and.callFake(key => {
+    route.paramMap.get.and.callFake((key: string) => {
       switch (key) {
         case PARAM_JURISDICTION_ID:
           return JURISDICTION;
@@ -56,7 +54,7 @@ describe('CreateCaseFieldsResolver', () => {
       }
     });
 
-    route.queryParamMap.get.and.callFake(key => {
+    route.queryParamMap.get.and.callFake((key: string) => {
       switch (key) {
         case QUERY_PARAM_IGNORE_WARNINGS:
           return IGNORE_WARNINGS;
@@ -129,7 +127,7 @@ describe('CreateCaseFieldsResolver', () => {
   });
 
   it('should use draftId when resuming create event ', () => {
-    route.queryParamMap.get.and.callFake(key => {
+    route.queryParamMap.get.and.callFake((key: string) => {
       switch (key) {
         case QUERY_PARAM_IGNORE_WARNINGS:
           return IGNORE_WARNINGS;

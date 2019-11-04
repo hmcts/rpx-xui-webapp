@@ -103,13 +103,13 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.findCaseListPaginationMetadata(this.getEvent());
   }
 
-  public listenToPaginationMetadata = () => {
+  public listenToPaginationMetadata() {
     this.paginationMetadata$ = this.store.pipe(select(fromCasesFeature.getCaselistFilterPaginationMetadata));
     this.paginationSubscription = this.paginationMetadata$.subscribe(paginationMetadata =>
       this.onPaginationSubscribeHandler(paginationMetadata));
   }
 
-  public setCaseListFilterDefaults = () => {
+  public setCaseListFilterDefaults() {
 
     this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
     if (this.savedQueryParams) {
@@ -141,7 +141,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
    * ['[CASE_REFERENCE]']
    * ]
    */
-  public onFilterSubscriptionHandler = result => {
+  public onFilterSubscriptionHandler(result: [Jurisdiction, CaseType, CaseState, string[]]) {
 
     this.jurisdiction = {
       ...result[0]
@@ -157,13 +157,13 @@ export class CaseListComponent implements OnInit, OnDestroy {
     };
   }
 
-  public onToogleHandler = showFilter => {
+  public onToogleHandler(showFilter: boolean) {
 
     this.showFilter = showFilter;
     this.toggleButtonName = this.getToggleButtonName(this.showFilter);
   }
 
-  public onResultsViewHandler = resultView => {
+  public onResultsViewHandler(resultView: SearchResultView) {
 
     this.resultsArr = resultView.results;
     this.resultView = {
@@ -184,7 +184,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
    *
    * @param result - {total_pages_count: 33, total_results_count: 811}
    */
-  public onPaginationSubscribeHandler = paginationMetadata => {
+  public onPaginationSubscribeHandler(paginationMetadata: PaginationMetadata) {
 
     if (typeof paginationMetadata !== 'undefined' && typeof paginationMetadata.total_pages_count !== 'undefined') {
       this.paginationMetadata.total_pages_count = paginationMetadata.total_pages_count;
@@ -219,7 +219,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
     const metadataFieldsGroupFromLS = ['[CASE_REFERENCE]'];
 
     if (formGroupFromLS && jurisdictionFromLS && caseTypeGroupFromLS && metadataFieldsGroupFromLS && caseStateGroupFromLS) {
-      return this.createEvent(jurisdictionFromLS, caseTypeGroupFromLS, caseStateGroupFromLS, metadataFieldsGroupFromLS,
+      return this.createEvent(jurisdictionFromLS as Jurisdiction, caseTypeGroupFromLS as CaseType, caseStateGroupFromLS as CaseState, metadataFieldsGroupFromLS,
         formGroupFromLS, this.page);
     } else {
       return null;
@@ -232,7 +232,14 @@ export class CaseListComponent implements OnInit, OnDestroy {
    * We should think about calling this function makePaginationMetadataQuery as it looks like it's only being used to construct the
    * Case List Pagination Metadata payload?
    */
-  public createEvent = (jurisdiction, caseType, caseState, metadataFields, formGroupValues, page) => {
+  public createEvent(
+    jurisdiction: Jurisdiction,
+    caseType: CaseType,
+    caseState: CaseState,
+    metadataFields: string[],
+    formGroupValues: any,
+    page: number
+  ) {
     return {
       selected: {
         jurisdiction,
@@ -251,9 +258,11 @@ export class CaseListComponent implements OnInit, OnDestroy {
   /**
    * Display the name seen on the toggle button.
    */
-  public getToggleButtonName = (showFilter: boolean): string => showFilter ? 'Hide Filter' : 'Show Filter';
+  public getToggleButtonName(showFilter: boolean): string {
+    return (showFilter ? 'Hide Filter' : 'Show Filter');
+  }
 
-  public findCaseListPaginationMetadata(event) {
+  public findCaseListPaginationMetadata(event: any) {
     if (event !== null) {
       this.store.dispatch(new fromCasesFeature.FindCaselistPaginationMetadata(event));
     }
@@ -265,7 +274,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
    * Change the page number and call findCaseListPaginationMetadata()
    * to dispatch an Action to get the Pagination Metadata for the next page.
    */
-  public applyChangePage(event) {
+  public applyChangePage(event: any) {
     this.page = event.selected.page;
     this.findCaseListPaginationMetadata(this.getEvent());
   }
@@ -276,7 +285,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
    * Change the page number and call findCaseListPaginationMetadata()
    * to dispatch an Action to get the Pagination Metadata for the filter selection.
    */
-  public applyFilter(event) {
+  public applyFilter(event: any) {
     this.page = event.selected.page;
     this.selected = event.selected;
     this.findCaseListPaginationMetadata(this.getEvent());

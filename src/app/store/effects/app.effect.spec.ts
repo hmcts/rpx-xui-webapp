@@ -1,16 +1,17 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { Actions } from '@ngrx/effects';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { StoreModule } from '@ngrx/store';
 import { hot } from 'jasmine-marbles';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { AuthService } from '../../services/auth/auth.service';
 import { AppConfigService } from '../../services/config/configuration.services';
 import { Logout } from '../actions';
 import * as fromAppEffects from './app.effects';
 
 describe('App Effects', () => {
-    let actions$;
+    let actions$: Observable<Actions>;
     let effects: fromAppEffects.AppEffects;
     const authServiceMock = jasmine.createSpyObj('AuthService', [
         'signOut',

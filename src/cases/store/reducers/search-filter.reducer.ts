@@ -103,11 +103,11 @@ export function reducer(
   }
 }
 
-export const getSearchFilterJurisdiction = (state) => state.filter.jurisdiction;
-export const getSearchFilterCaseType = (state) => state.filter.caseType;
-export const getSearchFilterCaseState = (state) => state.filter.caseState;
-export const getSearchFilterMetadataFields = (state) => state.filter.metadataFields;
-export const getSearchFilterResultView = (state) => state.results.resultView;
-export const getSearchFilterPageMetadata = (state) => state.paginationMetadata;
-export const getSearchResultsCurrentPage = (state) => state.filter.page;
-export const getSearchFilterToggleState = (state) => state.showFilter;
+export const getSearchFilterJurisdiction = (state: SearchState) => state.filter.jurisdiction;
+export const getSearchFilterCaseType = (state: SearchState) => state.filter.caseType;
+export const getSearchFilterCaseState = (state: SearchState) => state.filter.caseState;
+export const getSearchFilterMetadataFields = (state: SearchState) => state.filter.metadataFields;
+export const getSearchFilterResultView = (state: SearchState) => state.results.resultView;
+export const getSearchFilterPageMetadata = (state: SearchState) => state.paginationMetadata;
+export const getSearchResultsCurrentPage = (state: SearchState) => state.filter.page;
+export const getSearchFilterToggleState = (state: SearchState) => state.showFilter;

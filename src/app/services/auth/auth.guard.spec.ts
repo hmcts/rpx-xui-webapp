@@ -27,11 +27,11 @@ const router = {
   navigate: () => { }
 };
 
-const cookieService = {
-  get: key => {
+const cookieService: any = {
+  get: (key: string): string => {
     return cookieService[key];
   },
-  set: (key, value) => {
+  set: (key: string, value: string) => {
     cookieService[key] = value;
   },
   removeAll: () => { }

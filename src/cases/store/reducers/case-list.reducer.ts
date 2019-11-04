@@ -104,11 +104,11 @@ export function caselistReducer(
   }
 }
 
-export const getCaselistFilterJurisdiction = (state) => state.filter.jurisdiction;
-export const getCaselistFilterCaseType = (state) => state.filter.caseType;
-export const getCaselistFilterCaseState = (state) => state.filter.caseState;
-export const getCaselistFilterMetadataFields = (state) => state.filter.metadataFields;
-export const getCaselistFilterResultView = (state) => state.results.resultView;
-export const getCaselistFilterPageMetadata = (state) => state.paginationMetadata;
-export const getCaselistResultsCurrentPage = (state) => state.filter.page;
-export const getCaselistFilterToggleState = (state) => state.showFilter;
+export const getCaselistFilterJurisdiction = (state: CaselistState) => state.filter.jurisdiction;
+export const getCaselistFilterCaseType = (state: CaselistState) => state.filter.caseType;
+export const getCaselistFilterCaseState = (state: CaselistState) => state.filter.caseState;
+export const getCaselistFilterMetadataFields = (state: CaselistState) => state.filter.metadataFields;
+export const getCaselistFilterResultView = (state: CaselistState) => state.results.resultView;
+export const getCaselistFilterPageMetadata = (state: CaselistState) => state.paginationMetadata;
+export const getCaselistResultsCurrentPage = (state: CaselistState) => state.filter.page;
+export const getCaselistFilterToggleState = (state: CaselistState) => state.showFilter;

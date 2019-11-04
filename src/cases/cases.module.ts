@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
 import { MatDialogModule } from '@angular/material';
-import { AbstractAppConfig, AlertService, AuthService as CCDAuthService, CaseEditWizardGuard, CaseListFiltersModule, CasesService, CaseUIToolkitModule, CreateCaseFiltersModule, DocumentManagementService, DraftService, HttpErrorService, HttpService, PageValidationService, PlaceholderService, RequestOptionsBuilder, RouterHelperService, SearchFiltersModule, SearchResultModule } from '@hmcts/ccd-case-ui-toolkit';
+import { AbstractAppConfig, AuthService as CCDAuthService, CaseEditWizardGuard, CaseListFiltersModule, CasesService, CaseUIToolkitModule, CreateCaseFiltersModule, DocumentManagementService, DraftService, HttpErrorService, HttpService, PageValidationService, PlaceholderService, RequestOptionsBuilder, RouterHelperService, SearchFiltersModule, SearchResultModule } from '@hmcts/ccd-case-ui-toolkit';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
@@ -62,16 +62,4 @@ import { effects, reducers } from './store';
  * Entry point for Cases Module that is also lazy loaded.
  */
 export class CasesModule {
-  constructor(@Optional() @SkipSelf() parentModule: CasesModule) {
-    CasesModule.forRoot();
-  }
-
-  public static forRoot(): ModuleWithProviders {
-    return {
-      ngModule: CasesModule,
-      providers: [
-        AlertService
-      ]
-    };
-  }
 }

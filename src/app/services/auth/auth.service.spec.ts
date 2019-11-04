@@ -34,14 +34,14 @@ const expiredJwt = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODk
 const nonExpiredJwt = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHA`
   + `iOjIwNTkyNTE3NDR9.3XJN4KnwY82gULXpN5tJDcUMmNcypk2MFPRUGB_Frv0`;
 
-const cookieService = {
-  get: key => {
+const cookieService: any = {
+  get: (key: string): string => {
     return cookieService[key];
   },
-  set: (key, value) => {
+  set: (key: string, value: string) => {
     cookieService[key] = value;
   },
-  removeAll: () => { }
+  removeAll: (): void => { }
 };
 
 
@@ -50,8 +50,6 @@ class HttpClientMock {
     return 'response';
   }
 }
-let deleteCookiesSpy;
-let routerNavigateSpy;
 
 class AppConfigServiceMock {
   public getRoutesConfig() {
@@ -79,8 +77,6 @@ class AppConstantsMock {
 
 describe('AuthService', () => {
   beforeEach(() => {
-    deleteCookiesSpy = spyOn(cookieService, 'removeAll');
-    routerNavigateSpy = spyOn(router, 'navigate');
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({})

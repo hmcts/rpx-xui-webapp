@@ -1,6 +1,6 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
+import { CaseState, CaseType, Jurisdiction, PaginationMetadata, SearchResultView } from '@hmcts/ccd-case-ui-toolkit';
 import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
 import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
@@ -95,9 +95,9 @@ describe('CaseListComponent', () => {
      */
     it('should be able to create an event.', () => {
 
-      const jurisdiction = { id: 'PROBATE' };
-      const caseType = { id: 'GrantOfRepresentation' };
-      const caseState = { id: 'CaseCreated' };
+      const jurisdiction = { id: 'PROBATE' } as Jurisdiction;
+      const caseType = { id: 'GrantOfRepresentation' } as CaseType;
+      const caseState = { id: 'CaseCreated' } as CaseState;
       const metadataFields = ['[CASE_REFERENCE]'];
       const formGroupValues = {};
       const page = 1;
@@ -157,13 +157,13 @@ describe('CaseListComponent', () => {
 
   describe('applyFilter()', () => {
 
-    let event;
+    let event: any;
 
     beforeEach(() => {
 
-      const jurisdiction = { id: 'PROBATE' };
-      const caseType = { id: 'GrantOfRepresentation' };
-      const caseState = { id: 'CaseCreated' };
+      const jurisdiction = { id: 'PROBATE' } as Jurisdiction;
+      const caseType = { id: 'GrantOfRepresentation' } as CaseType;
+      const caseState = { id: 'CaseCreated' } as CaseState;
       const metadataFields = ['[CASE_REFERENCE]'];
       const formGroupValues = {};
       const page = 1;
@@ -228,7 +228,7 @@ describe('CaseListComponent', () => {
         ['[CASE_REFERENCE]']
       ];
 
-      component.onFilterSubscriptionHandler(filterResult);
+      component.onFilterSubscriptionHandler(filterResult as any);
 
       expect(component.jurisdiction.id).toEqual('PROBATE');
       expect(component.caseType.id).toEqual('GrantOfRepresentation');
@@ -241,14 +241,16 @@ describe('CaseListComponent', () => {
 
     it('should set the components resultsArr property on return of subscription.', () => {
 
-      const resultView = {
+      const resultView: SearchResultView = {
         columns: [],
         results: [
           {
             case_id: 'DRAFT274146',
+            case_fields: {}
           }
         ],
-        result_error: null
+        result_error: null,
+        hasDrafts: () => false
       };
 
       component.onResultsViewHandler(resultView);

@@ -49,7 +49,7 @@ const environmentNames = {
   prod: 'prod'
 };
 
-const redirectUrl = {
+const redirectUrl: { [key: string]: string } = {
   aat: 'https://idam-web-public.aat.platform.hmcts.net',
   demo: 'https://idam-web-public.demo.platform.hmcts.net',
   ithc: 'https://idam-web-public.ithc.platform.hmcts.net',

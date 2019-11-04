@@ -14,7 +14,6 @@ describe('CaseSearchComponent', () => {
   let component: CaseSearchComponent;
   let store: Store<fromCaseSearchStore.SearchState>;
   let storePipeMock: any;
-  let storeDispatchMock: any;
 
   const appConfigMock = {
     getPaginationPageSize: () => 10
@@ -43,7 +42,6 @@ describe('CaseSearchComponent', () => {
     store = TestBed.get(Store);
 
     storePipeMock = spyOn(store, 'pipe');
-    storeDispatchMock = spyOn(store, 'dispatch');
 
     fixture = TestBed.createComponent(CaseSearchComponent);
     component = fixture.componentInstance;

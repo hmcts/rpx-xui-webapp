@@ -4,30 +4,30 @@ export abstract class AbstractAppInsights implements Microsoft.ApplicationInsigh
   public config: Microsoft.ApplicationInsights.IConfig;
   public context: Microsoft.ApplicationInsights.ITelemetryContext;
   public queue: (() => void)[];
-  public abstract startTrackPage(name?: string);
+  public abstract startTrackPage(name?: string): void;
   public abstract stopTrackPage(name?: string, url?: string, properties?: { [name: string]: string; },
-                                measurements?: { [name: string]: number; });
+                                measurements?: { [name: string]: number; }): void;
   public abstract trackPageView(name?: string, url?: string, properties?: { [name: string]: string; },
-                                measurements?: { [name: string]: number; }, duration?: number);
-  public abstract startTrackEvent(name: string);
-  public abstract stopTrackEvent(name: string, properties?: { [name: string]: string; }, measurements?: { [name: string]: number; });
-  public abstract trackEvent(name: string, properties?: { [name: string]: string; }, measurements?: { [name: string]: number; });
+                                measurements?: { [name: string]: number; }, duration?: number): void;
+  public abstract startTrackEvent(name: string): void;
+  public abstract stopTrackEvent(name: string, properties?: { [name: string]: string; }, measurements?: { [name: string]: number; }): void;
+  public abstract trackEvent(name: string, properties?: { [name: string]: string; }, measurements?: { [name: string]: number; }): void;
   public abstract trackDependency(id: string, method: string, absoluteUrl: string, pathName: string, totalTime: number,
                                   success: boolean, resultCode: number,
-                                  properties?: { [name: string]: string; }, measurements?: { [name: string]: number; });
+                                  properties?: { [name: string]: string; }, measurements?: { [name: string]: number; }): void;
 
   public abstract trackException(exception: Error, handledAt?: string,
                                  properties?: { [name: string]: string; }, measurements?: { [name: string]: number; },
-                                 severityLevel?: AI.SeverityLevel);
+                                 severityLevel?: AI.SeverityLevel): void;
 
   public abstract trackMetric(name: string, average: number, sampleCount?: number, min?: number, max?: number,
-                              properties?: { [name: string]: string; });
-  public abstract trackTrace(message: string, properties?: { [name: string]: string; }, severityLevel?: AI.SeverityLevel) ;
-  public abstract flush();
-  public abstract setAuthenticatedUserContext(authenticatedUserId: string, accountId?: string, storeInCookie?: boolean);
-  public abstract clearAuthenticatedUserContext();
-  public abstract downloadAndSetup?(config: Microsoft.ApplicationInsights.IConfig);
-  public abstract _onerror(message: string, url: string, lineNumber: number, columnNumber: number, error: Error);
+                              properties?: { [name: string]: string; }): void;
+  public abstract trackTrace(message: string, properties?: { [name: string]: string; }, severityLevel?: AI.SeverityLevel): void;
+  public abstract flush(): void;
+  public abstract setAuthenticatedUserContext(authenticatedUserId: string, accountId?: string, storeInCookie?: boolean): void;
+  public abstract clearAuthenticatedUserContext(): void;
+  public abstract downloadAndSetup?(config: Microsoft.ApplicationInsights.IConfig): void;
+  public abstract _onerror(message: string, url: string, lineNumber: number, columnNumber: number, error: Error): void;
 
 }
 

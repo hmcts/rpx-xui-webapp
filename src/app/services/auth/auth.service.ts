@@ -9,9 +9,9 @@ import { AppConfigService } from '../config/configuration.services';
 
 @Injectable()
 export class AuthService {
-  public apiBaseUrl;
-  public COOKIE_KEYS;
-  public user;
+  public apiBaseUrl: string;
+  public COOKIE_KEYS: { TOKEN: string; USER: string};
+  public user: any;
   constructor(
     private readonly cookieService: CookieService,
     private readonly appConfigService: AppConfigService
@@ -45,7 +45,7 @@ export class AuthService {
   public generateLoginUrl() {
     const env = AppUtils.getEnvironment(window.location.origin);
     // const base = this.appConfigService.getRoutesConfig().idam.idamLoginUrl;
-    const base = AppConstants.REDIRECT_URL[env];
+    const base = AppConstants.REDIRECT_URL[env] as string;
     const clientId = this.appConfigService.getRoutesConfig().idam.idamClientID;
     const callback = `${this.apiBaseUrl}/${this.appConfigService.getRoutesConfig().idam.oauthCallbackUrl}`;
     const scope = `profile openid roles manage-user create-user`;
@@ -56,8 +56,8 @@ export class AuthService {
     window.location.href = this.generateLoginUrl();
   }
 
-  public decodeJwt(jwt) {
-    return jwtDecode(jwt);
+  public decodeJwt<T = any>(jwt: string): T {
+    return jwtDecode<T>(jwt);
   }
 
 

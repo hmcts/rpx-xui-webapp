@@ -16,7 +16,7 @@ export class HealthCheckService implements OnDestroy {
 
     public doHealthCheck(): Observable<any> {
         const healthState: boolean = true;
-        const result: { healthState } = { healthState };
+        const result: { healthState: boolean } = { healthState };
         let path = '';
 
         this.routeSubscription = this.store.pipe(select(fromRoot.getRouterUrl)).subscribe(value => {

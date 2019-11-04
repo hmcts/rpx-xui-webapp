@@ -19,7 +19,7 @@ export interface ILoggerService {
 
 @Injectable()
 export class LoggerService implements ILoggerService {
-    private readonly COOKIE_KEYS;
+    private readonly COOKIE_KEYS: { TOKEN: string; USER: string };
 
     constructor(
         private readonly monitoringService: MonitoringService,
@@ -34,38 +34,38 @@ export class LoggerService implements ILoggerService {
         };
     }
 
-    public trace(message: any, ...additional: any[]): void {
+    public trace(message: any): void {
         const formattedMessage = this.getMessage(message);
         this.ngxLogger.trace(formattedMessage);
         this.monitoringService.logEvent(message);
     }
-    public debug(message: any, ...additional: any[]): void {
+    public debug(message: any): void {
         const formattedMessage = this.getMessage(message);
         this.ngxLogger.debug(formattedMessage);
         this.monitoringService.logEvent(message);
     }
-    public info(message: any, ...additional: any[]): void {
+    public info(message: any): void {
         const formattedMessage = this.getMessage(message);
         this.ngxLogger.info(formattedMessage);
         this.monitoringService.logEvent(message);
     }
-    public log(message: any, ...additional: any[]): void {
+    public log(message: any): void {
         const formattedMessage = this.getMessage(message);
         this.ngxLogger.log(formattedMessage);
         this.monitoringService.logEvent(message);
     }
-    public warn(message: any, ...additional: any[]): void {
+    public warn(message: any): void {
         const formattedMessage = this.getMessage(message);
         this.ngxLogger.warn(formattedMessage);
         this.monitoringService.logEvent(message);
     }
-    public error(message: any, ...additional: any[]): void {
+    public error(message: any): void {
        this.ngxLogger.error(message);
        const formattedMessage = this.getMessage(message);
        const error = new Error(formattedMessage);
        this.monitoringService.logException(error);
     }
-    public fatal(message: any, ...additional: any[]): void {
+    public fatal(message: any): void {
         this.ngxLogger.fatal(message);
         const formattedMessage = this.getMessage(message);
         const error = new Error(formattedMessage);

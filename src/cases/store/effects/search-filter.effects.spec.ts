@@ -1,14 +1,15 @@
 import { TestBed } from '@angular/core/testing';
+import { Actions } from '@ngrx/effects';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { cold, hot } from 'jasmine-marbles';
-import { of, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { mockedSearchFilters } from '../../../cases/mock/search-filter.mock';
 import { SearchFilterService } from '../../../cases/services';
 import { ApplySearchFilter, ApplySearchFilterFail, ApplySearchFilterSuccess } from '../actions';
 import * as fromSearchFilterEffects from './search-filter.effects';
 
 describe('Pending Organisation Effects', () => {
-    let actions$;
+    let actions$: Observable<Actions>;
     let effects: fromSearchFilterEffects.SearchFilterEffects;
     const searchFilterServiceMock = jasmine.createSpyObj('SearchFilterService', [
         'search'

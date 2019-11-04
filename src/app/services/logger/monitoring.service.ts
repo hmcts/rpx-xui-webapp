@@ -5,9 +5,9 @@ import { AbstractAppInsights } from './appInsightsWrapper';
 
 export interface IMonitoringService {
   logPageView(name?: string, url?: string, properties?: any,
-              measurements?: any, duration?: number);
-  logEvent(name: string, properties?: any, measurements?: any);
-  logException(exception: Error);
+              measurements?: any, duration?: number): void;
+  logEvent(name: string, properties?: any, measurements?: any): void;
+  logException(exception: Error): void;
 }
 
 export class MonitorConfig implements Microsoft.ApplicationInsights.IConfig {
@@ -89,7 +89,7 @@ export class MonitoringService implements IMonitoringService {
     if (this.config && this.config.instrumentationKey) {
       func();
     } else {
-      this.http.get('/api/monitoring-tools').subscribe(it => {
+      this.http.get('/api/monitoring-tools').subscribe((it: any) => {
         this.config = {
           // tslint:disable-next-line: no-string-literal
           instrumentationKey: it['key']

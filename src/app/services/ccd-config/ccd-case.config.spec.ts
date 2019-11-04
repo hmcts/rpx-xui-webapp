@@ -5,7 +5,7 @@ import { AppConfigService } from '../config/configuration.services';
 import { AppConfig } from './ccd-case.config';
 
 class MockConfigService {
-  public config;
+  public config: { login_url: string };
   public caseEditorConfig = {};
   public getEditorConfiguration() {}
   constructor() {

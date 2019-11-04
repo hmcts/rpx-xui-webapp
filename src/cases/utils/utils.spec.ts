@@ -11,7 +11,7 @@ describe('Utils', () => {
 
     it('should get filter type', () => {
         const fieldName = 'someFieldName';
-        let metadataFields = [];
+        let metadataFields: string[] = [];
         expect(getFilterType(fieldName, metadataFields)).toEqual('caseFilter');
         metadataFields = ['someFieldName'];
         expect(getFilterType(fieldName, metadataFields)).toEqual('metadataFilter');

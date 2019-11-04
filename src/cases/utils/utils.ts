@@ -2,7 +2,7 @@ export function isStringOrNumber(value: any): boolean {
     return (typeof value === 'string' && value.length !== 0) || (typeof value === 'number');
 }
 
-export function getFilterType(fieldName: string, metadataFields): string {
+export function getFilterType(fieldName: string, metadataFields: string[]): string {
     return (metadataFields && (metadataFields.indexOf(fieldName) > -1)) ?
         'metadataFilter' : 'caseFilter';
 }

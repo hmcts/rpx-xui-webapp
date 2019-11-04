@@ -18,12 +18,7 @@ export async function getJurisdictions(req: express.Request, res: express.Respon
     try {
         const response = await http.get(`${config.services.ccd.componentApi}${url}`, { headers })
         const filters = {jurisdiction: ['DIVORCE', 'PROBATE']}
-        let amendedJurisdictions = []
-        if (config.environment === 'prod' || config.environment === 'aat') {
-            amendedJurisdictions = [...response.data].filter(o => filters.jurisdiction.includes(o.id))
-        } else {
-            amendedJurisdictions = response.data
-        }
+        const amendedJurisdictions = [...response.data].filter(o => filters.jurisdiction.includes(o.id))
         res.status(200)
         res.send(amendedJurisdictions)
     } catch (e) {

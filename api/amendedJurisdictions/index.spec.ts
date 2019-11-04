@@ -72,10 +72,7 @@ describe('proxy', () => {
     const expected = [
         {
             id: 'PROBATE',
-        },
-        {
-            id: 'data',
-        },
+        }
     ]
 
     spy = sandbox.stub(http, 'get').resolves(result0)

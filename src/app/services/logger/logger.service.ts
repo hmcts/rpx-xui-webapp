@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie';
 import { NGXLogger } from 'ngx-logger';
+import { JwtContents } from 'src/app/models/jwtContents.model';
 import { environment as config } from '../../../environments/environment';
 import { CryptoWrapper } from './cryptoWrapper';
 import { JwtDecodeWrapper } from './jwtDecodeWrapper';
@@ -60,10 +61,10 @@ export class LoggerService implements ILoggerService {
         this.monitoringService.logEvent(message);
     }
     public error(message: any): void {
-       this.ngxLogger.error(message);
-       const formattedMessage = this.getMessage(message);
-       const error = new Error(formattedMessage);
-       this.monitoringService.logException(error);
+        this.ngxLogger.error(message);
+        const formattedMessage = this.getMessage(message);
+        const error = new Error(formattedMessage);
+        this.monitoringService.logException(error);
     }
     public fatal(message: any): void {
         this.ngxLogger.fatal(message);
@@ -75,7 +76,7 @@ export class LoggerService implements ILoggerService {
         const jwt = this.cookieService.get(this.COOKIE_KEYS.TOKEN);
         let encryptedMessage = '';
         if (jwt) {
-            const jwtData = this.jwtDecodeWrapper.decode(jwt);
+            const jwtData = this.jwtDecodeWrapper.decode<JwtContents>(jwt);
             if (jwtData) {
                 const userIdEncrypted = this.cryptoWrapper.encrypt(jwtData.sub);
                 encryptedMessage = `User - ${userIdEncrypted.toString()}, Message - ${message}, Timestamp - ${Date.now()}`;

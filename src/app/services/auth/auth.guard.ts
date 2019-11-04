@@ -8,12 +8,12 @@ import { AuthService } from './auth.service';
 export class AuthGuard implements CanActivate {
 
   constructor(
-    public authService: AuthService,
+    private readonly authService: AuthService,
   ) {
   }
 
 
-  public canActivate() {
+  public canActivate(): boolean {
     if (!this.authService.isAuthenticated()) {
       this.authService.loginRedirect();
       return false;

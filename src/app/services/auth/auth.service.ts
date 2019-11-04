@@ -1,32 +1,40 @@
-
-import { Injectable } from '@angular/core';
-import * as jwtDecode from 'jwt-decode';
+import { Inject, Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie';
 import { AppUtils } from 'src/app/app-utils';
 import { AppConstants } from 'src/app/app.constants';
+import { windowToken } from 'src/app/shared/shared.module';
 import { environment as config } from '../../../environments/environment';
 import { AppConfigService } from '../config/configuration.services';
+import { JwtDecodeWrapper } from '../logger/jwtDecodeWrapper';
+import { JwtContents } from 'src/app/models/jwtContents.model';
 
 @Injectable()
 export class AuthService {
   public apiBaseUrl: string;
-  public COOKIE_KEYS: { TOKEN: string; USER: string};
+  public COOKIE_KEYS: { TOKEN: string; USER: string };
   public user: any;
+
   constructor(
     private readonly cookieService: CookieService,
-    private readonly appConfigService: AppConfigService
+    private readonly appConfigService: AppConfigService,
+    private readonly jwtDecoder: JwtDecodeWrapper,
+    @Inject(windowToken) private readonly window: Window
   ) {
     this.COOKIE_KEYS = {
       TOKEN: config.cookies.token,
       USER: config.cookies.userId
     };
 
-    // tslint:disable-next-line: prefer-template
-    this.apiBaseUrl = window.location.protocol + '//' + window.location.hostname;
-
-    if (window.location.port) { // don't add colon if there is no port
+    if (this.window) {
       // tslint:disable-next-line: prefer-template
-      this.apiBaseUrl +=   ':' + window.location.port;
+      this.apiBaseUrl = this.window.location.protocol + '//' + this.window.location.hostname;
+
+      if (this.window.location.port) { // don't add colon if there is no port
+        // tslint:disable-next-line: prefer-template
+        this.apiBaseUrl += ':' + this.window.location.port;
+      }
+    } else {
+      this.apiBaseUrl = '';
     }
 
     this.user = null;
@@ -43,7 +51,10 @@ export class AuthService {
   }
 
   public generateLoginUrl() {
-    const env = AppUtils.getEnvironment(window.location.origin);
+    if (!this.window) {
+      return '';
+    }
+    const env = AppUtils.getEnvironment(this.window.location.origin);
     // const base = this.appConfigService.getRoutesConfig().idam.idamLoginUrl;
     const base = AppConstants.REDIRECT_URL[env] as string;
     const clientId = this.appConfigService.getRoutesConfig().idam.idamClientID;
@@ -53,27 +64,25 @@ export class AuthService {
   }
 
   public loginRedirect() {
-    window.location.href = this.generateLoginUrl();
+    if (this.window) {
+      this.window.location.href = this.generateLoginUrl();
+    }
   }
-
-  public decodeJwt<T = any>(jwt: string): T {
-    return jwtDecode<T>(jwt);
-  }
-
 
   public isAuthenticated(): boolean {
     const jwt = this.cookieService.get(this.COOKIE_KEYS.TOKEN);
     if (!jwt) {
       return false;
     }
-    const jwtData = this.decodeJwt(jwt);
+    const jwtData = this.jwtDecoder.decode<JwtContents>(jwt);
     const notExpired = jwtData.exp > Math.round(new Date().getTime() / 1000);
     // do stuff!!
     return notExpired;
   }
 
-
   public signOut() {
-    window.location.href = '/api/logout';
+    if (this.window) {
+      this.window.location.href = '/api/logout';
+    }
   }
 }

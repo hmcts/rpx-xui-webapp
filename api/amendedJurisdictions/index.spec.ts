@@ -70,10 +70,7 @@ describe('Amended Jurisdiction', () => {
     const expected = [
         {
             id: 'PROBATE',
-        },
-        {
-            id: 'data',
-        },
+        }
     ]
 
     spy = sandbox.stub(http, 'get').resolves(result0)
@@ -88,9 +85,6 @@ describe('Amended Jurisdiction', () => {
     const expected = [
         {
             id: 'PROBATE',
-        },
-        {
-          id: 'data',
         }
     ]
 

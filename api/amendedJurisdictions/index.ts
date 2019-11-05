@@ -24,12 +24,15 @@ export async function getJurisdictions(req: express.Request, res: express.Respon
         // const filtersString = process.env.JURISDICTIONS.split(',')
         // const filters = {jurisdiction: filtersString}
         const filters = {jurisdiction: config.environment === 'demo' ? ['DIVORCE', 'PROBATE', 'CMC'] : ['DIVORCE', 'PROBATE']}
+        console.log(filters)
+        console.log(config.environment)
+        console.log(response.data)
         let amendedJurisdictions = []
         if (config.environment === 'local') {
+          amendedJurisdictions = response.data
+        } else {
           amendedJurisdictions = [...response.data].filter(o => filters.jurisdiction.includes(o.id))
           res.status(200)
-        } else {
-          amendedJurisdictions = response.data
         }
         res.send(amendedJurisdictions)
     } catch (e) {

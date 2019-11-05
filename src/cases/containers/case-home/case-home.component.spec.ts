@@ -4,6 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { CaseHomeComponent } from '..';
 import { ExUITitleService } from 'src/app/shared/services/exui-title.service';
 import { AlertComponent } from 'src/cases/components';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('CaseHomeComponent', () => {
   let component: CaseHomeComponent;
@@ -11,6 +12,7 @@ describe('CaseHomeComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
         RouterTestingModule,
         CaseUIToolkitModule

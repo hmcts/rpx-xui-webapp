@@ -11,7 +11,7 @@ import { config } from '../config'
 import {http} from '../lib/http'
 import * as amendedJurisdictions from './index'
 
-describe('proxy', () => {
+describe('Amended Jurisdiction', () => {
 
   let next
   let sandbox
@@ -37,9 +37,7 @@ describe('proxy', () => {
 
     result1 = {
         data: [
-            {
-                id: 'data',
-            },
+
         ],
     }
 
@@ -72,10 +70,7 @@ describe('proxy', () => {
     const expected = [
         {
             id: 'PROBATE',
-        },
-        {
-            id: 'data',
-        },
+        }
     ]
 
     spy = sandbox.stub(http, 'get').resolves(result0)
@@ -90,7 +85,7 @@ describe('proxy', () => {
     const expected = [
         {
             id: 'PROBATE',
-        },
+        }
     ]
 
     spy = sandbox.stub(http, 'get').resolves(result0)

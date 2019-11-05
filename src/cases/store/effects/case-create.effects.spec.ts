@@ -7,53 +7,73 @@ import { hot, cold } from 'jasmine-marbles';
 import { Observable } from 'rxjs/Observable';
 import { empty } from 'rxjs/observable/empty';
 
-import * as fromEffects from './case-create.effects';
-import * as fromActions from '../actions/create-case.action';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
-import { Router } from '@angular/router';
+import { CaseCreateEffects } from './case-create.effects';
+import { LoggerService } from 'src/app/services/logger/logger.service';
+import { CreateCaseLoaded, ApplyChange, CaseCreateFilterApply } from '../actions/create-case.action';
+import { NewCaseLoadedSuccessfully, CreateCaseGo, Go } from '../../../app/store/actions';
+import { provideMockActions } from '@ngrx/effects/testing';
 
-export class TestActions extends Actions {
-  constructor() {
-    super(empty());
-  }
-
-  set stream(source: Observable<any>) {
-    this.source = source;
-  }
-}
-
-export function getActions() {
-  return new TestActions();
-}
-let mockAlertService: any;
-let mockLogger: any;
 describe('CaseCreate Effects', () => {
-  let actions$: TestActions;
-  let effects: fromEffects.CaseCreateEffects;
+
+  let mockAlertService: any;
+  let mockLogger: any;
+  let actions$;
+  let effects: CaseCreateEffects;
   mockAlertService = jasmine.createSpyObj('alertService', ['success']);
   mockLogger = jasmine.createSpyObj('mockLogger', ['info']);
-  let router: Router;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule],
       providers: [
-        fromEffects.CaseCreateEffects,
-        {provide: AlertService, useClass: mockAlertService},
-        { provide: Actions, useFactory: getActions },
+        CaseCreateEffects,
+        { provide: AlertService, useValue: mockAlertService },
+        provideMockActions(() => actions$),
+        { provide: LoggerService, useValue: mockLogger },
       ],
     });
-    actions$ = TestBed.get(Actions);
-    router = TestBed.get(Router);
-    router.initialNavigation();
-    effects = new fromEffects.CaseCreateEffects(actions$, mockAlertService, router, mockLogger);
+
+    effects = TestBed.get(CaseCreateEffects);
 
   });
 
-  describe('loadToppings$', () => {
-    it('should return a collection from LoadToppingsSuccess', () => {
-      expect(effects).toBeTruthy();
+  describe('applyCreateCase$', () => {
+    it('should apply case action', () => {
+
+      const action = new ApplyChange({});
+      const completion = new CreateCaseGo({
+        path: ['/cases/case-details/undefined'],
+        caseId: undefined
+      });
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.applyCreateCase$).toBeObservable(expected);
+    });
+  });
+
+  describe('applyCreatedCaseLoaded$', () => {
+    it('should apply load action', () => {
+
+      const action = new CreateCaseLoaded({});
+      const completion = new NewCaseLoadedSuccessfully();
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.applyCreatedCaseLoaded$).toBeObservable(expected);
+    });
+  });
+
+  describe('applyChangeCaseCreateFilter$', () => {
+    it('should apply load action', () => {
+
+      const action = new CaseCreateFilterApply({});
+      const completion = new Go({
+        path: ['/cases/case-create/undefined/undefined/undefined']
+      });
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.applyChangeCaseCreateFilter$).toBeObservable(expected);
     });
   });
 });

@@ -60,7 +60,7 @@ describe('cohQA', () => {
     describe('getDetails', () => {
         it('If no cached session details should make a http.get call based on a given token', async () => {
             request().session.user = null
-            await idam.getDetails('token')
+            await idam.getDetails(url, 'token')
 
             expect(spy).to.be.calledWith(`${url}/details`, { headers: { Authorization: `Bearer token` } })
         })
@@ -68,16 +68,16 @@ describe('cohQA', () => {
         it('If no cached session details should make a http.get call based on token stored in the request', async () => {
             request().session.user = null
             request().cookies[config.cookies.token] = 'test'
-            await idam.getDetails()
+            await idam.getDetails(url)
 
             expect(spy).to.be.calledWith(`${url}/details`, { headers: { Authorization: `Bearer test` } })
         })
 
         it('If cached session details exist it should return those', async () => {
             request().session.user = 'data'
-            await idam.getDetails('token')
+            await idam.getDetails(url, 'token')
 
-            expect(await idam.getDetails('token')).to.equal('data')
+            expect(await idam.getDetails(url, 'token')).to.equal('data')
         })
     })
 

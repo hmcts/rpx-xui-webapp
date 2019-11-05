@@ -90,7 +90,7 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
   });
 
   Then(/^I should navigate to apply for probate page$/, async function () {
-    browser.sleep(LONG_DELAY);
+    browser.sleep(AMAZING_DELAY);
     expect(await new ProbatePage().amOnPage()).to.be.true
   });
 

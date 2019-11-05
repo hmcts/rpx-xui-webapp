@@ -18,6 +18,7 @@ export async function getJurisdictions(req: express.Request, res: express.Respon
     try {
         const response = await http.get(`${config.services.ccd.componentApi}${url}`, { headers })
         // TODO
+        // EUI-1075
         // Use this when configured in the assure to export the evn variable
         // export JURISDICTIONS=DIVORCE,PROBATE,CMC && npm run start:node
         // const filtersString = process.env.JURISDICTIONS.split(',')

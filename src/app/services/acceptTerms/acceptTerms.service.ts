@@ -7,9 +7,9 @@ export class AcceptTermsService {
     constructor(private http: HttpClient) {}
 
     postUserAccepted(userId: string): Observable<boolean> {
-        return this.http.post<boolean>(`api/termsAndConditions`, {userId});
+        return this.http.post<boolean>(`api/userTermsAndConditions`, {userId});
     }
     getIsUserAccepted(userId: string): Observable<boolean> {
-        return this.http.get<boolean>(`api/termsAndConditions/${userId}`);
+        return this.http.get<boolean>(`api/userTermsAndConditions/${userId}`);
     }
 }

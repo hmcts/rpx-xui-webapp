@@ -1,4 +1,3 @@
-/* tslint:disable:no-unused-expression no-var-requires */
 import * as chai from 'chai'
 import { expect } from 'chai'
 import 'mocha'

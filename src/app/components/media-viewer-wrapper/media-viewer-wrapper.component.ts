@@ -26,7 +26,12 @@ export class MediaViewerWrapperComponent implements OnInit {
 
         const localStorageMedia = this.windowService.getLocalStorage(MEDIA_VIEWER);
         if (localStorageMedia) {
-            const media = JSON.parse(localStorageMedia);
+            const media: {
+                document_binary_url: string
+                document_filename: string
+                content_type: string
+                annotation_api_url?: string
+            } = JSON.parse(localStorageMedia);
             this.mediaURL = media.document_binary_url;
             this.mediaFilename = media.document_filename;
             this.mediaContentType = media.content_type;

@@ -10,11 +10,11 @@ const logger: JUILogger = log4jui.getLogger('em-anno-service')
  * @param annotationsPath
  * @returns {Promise<null>}
  */
-export async function handleGet(annotationsPath) {
+export async function handleGet(annotationsPath): Promise<any> {
 
     try {
         logger.info('getting annotations', annotationsPath)
-        const response = await http.get(annotationsPath)
+        const response: { data?: {}} = await http.get(annotationsPath)
         return response.data
     } catch (e) {
         logger.error(e.message)
@@ -30,11 +30,11 @@ export async function handleGet(annotationsPath) {
  * @param body
  * @returns {Promise<null>}
  */
-export async function handlePost(annotationsPath, body) {
+export async function handlePost(annotationsPath, body): Promise<any> {
 
     try {
         logger.info('posting annotations', annotationsPath)
-        const response = await http.post(annotationsPath, body)
+        const response: { data?: {}} = await http.post(annotationsPath, body)
         return response.data
     } catch (e) {
         logger.error(e.message)
@@ -50,11 +50,11 @@ export async function handlePost(annotationsPath, body) {
  * @param body
  * @returns {Promise<null>}
  */
-export async function handlePut(annotationsPath, body) {
+export async function handlePut(annotationsPath, body): Promise<any> {
 
     try {
         logger.info('putting annotations', annotationsPath)
-        const response = await http.put(annotationsPath, body)
+        const response: { data?: {}} = await http.put(annotationsPath, body)
         return response.data
     } catch (e) {
         logger.error(e.message)
@@ -69,11 +69,11 @@ export async function handlePut(annotationsPath, body) {
  * @param annotationsPath
  * @returns {Promise<null>}
  */
-export async function handleDelete(annotationsPath) {
+export async function handleDelete(annotationsPath): Promise<any> {
 
     try {
         logger.info('deleting annotations', annotationsPath)
-        const response = await http.delete(annotationsPath)
+        const response: { data?: {}} = await http.delete(annotationsPath)
         return response.data
     } catch (e) {
         logger.error(e.message)

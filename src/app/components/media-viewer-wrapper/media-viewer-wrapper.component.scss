@@ -18,7 +18,7 @@ html {
     box-shadow: 0 0 3px #bbb;
   }
   .pdfViewer .page {
-    margin-bottom: 10px;
+    margin-bottom: 10;
   }
 
   .annotationLayer {
@@ -49,10 +49,6 @@ html {
     position: absolute;
     white-space: pre;
     cursor: text;
-    -webkit-transform-origin: 0% 0%;
-    -moz-transform-origin: 0% 0%;
-    -o-transform-origin: 0% 0%;
-    -ms-transform-origin: 0% 0%;
     transform-origin: 0% 0%;
   }
 
@@ -65,15 +61,15 @@ html {
   }
 
   .textLayer .highlight.begin {
-    border-radius: 4px 0px 0px 4px;
+    border-radius: 4px 0 0 4px;
   }
 
   .textLayer .highlight.end {
-    border-radius: 0px 4px 4px 0px;
+    border-radius: 0 4px 4px 0;
   }
 
   .textLayer .highlight.middle {
-    border-radius: 0px;
+    border-radius: 0;
   }
 
   .textLayer .highlight.selected {
@@ -86,19 +82,17 @@ html {
   .textLayer .endOfContent {
     display: block;
     position: absolute;
-    left: 0px;
+    left: 0;
     top: 100%;
-    right: 0px;
-    bottom: 0px;
+    right: 0;
+    bottom: 0;
     z-index: -1;
     cursor: default;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    -moz-user-select: none;
+    user-select: none;
   }
 
   .textLayer .endOfContent.active {
-    top: 0px;
+    top: 0;
   }
 
 
@@ -122,7 +116,7 @@ html {
   .annotationLayer .linkAnnotation > a:hover {
     opacity: 0.2;
     background: #ff0;
-    box-shadow: 0px 2px 10px #ff0;
+    box-shadow: 0 2px 10 #ff0;
   }
 
   .annotationLayer .textAnnotation img {
@@ -140,7 +134,7 @@ html {
     z-index: 200;
     max-width: 20em;
     background-color: #FFFF99;
-    box-shadow: 0px 2px 5px #333;
+    box-shadow: 0 2px 5px #333;
     border-radius: 2px;
     padding: 0.6em;
     margin-left: 5px;
@@ -180,7 +174,7 @@ html {
   }
 
   .pdfViewer.removePageBorders .page {
-    margin: 0px auto 10px auto;
+    margin: 0 auto 10 auto;
     border: none;
   }
 

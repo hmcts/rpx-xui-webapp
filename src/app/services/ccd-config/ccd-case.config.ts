@@ -106,7 +106,7 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.pagination_page_size;
   }
 
-  public getAnnotationApiUrl() {
+  public getAnnotationApiUrl(): string {
     return this.config.annotation_api_url;
   }
 }

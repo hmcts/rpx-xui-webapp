@@ -1,6 +1,7 @@
 import * as express from 'express'
 import { config } from '../config'
 import { http } from '../lib/http'
+import { getTermsAndConditionsUrl, postTermsAndConditionsUrl } from './termsAndConditionsUtil'
 
 export async function getTermsAndConditions(req: express.Request, res: express.Response) {
     let errReport: any
@@ -13,10 +14,8 @@ export async function getTermsAndConditions(req: express.Request, res: express.R
         res.status(400).send(errReport)
     }
     try {
-        // const response = await http.get(
-        //     `${config.services.termsAndConditions}/api/v1/termsAndConditions/managecases/users/${req.params.userId}/1`
-        //   )
-        // console.log(response)
+        const url = getTermsAndConditionsUrl(config.services.termsAndConditions, req.params.userId)
+        // const response = await http.get(url)
         res.send(true)
     } catch (error) {
         // we get a 404 if the user has not agreed to Terms and conditions
@@ -45,10 +44,8 @@ export async function postTermsAndConditions(req: express.Request, res: express.
     }
     try {
         const data = {userId: req.body.userId}
-        // const response = await http.post(
-        //     `${config.services.termsAndConditions}/api/v1/termsAndConditions/managecases/users/1`, data
-        //   )
-        // console.log(response)
+        const url = postTermsAndConditionsUrl(config.services.termsAndConditions)
+        //const response = await http.post(url, data)
         res.send(true)
     } catch (error) {
         errReport = {

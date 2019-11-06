@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 
 @Injectable()
 export class AcceptTermsService {
@@ -11,5 +11,8 @@ export class AcceptTermsService {
     }
     getIsUserAccepted(userId: string): Observable<boolean> {
         return this.http.get<boolean>(`api/userTermsAndConditions/${userId}`);
+    }
+    getTermsAndConditionsContent(): Observable<any> {
+        return this.http.get<any>(`api/termsAndConditions`);
     }
 }

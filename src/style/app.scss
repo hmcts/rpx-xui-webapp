@@ -31,6 +31,10 @@ main {
   font-size: inherit;
 }
 
+.govuk-main-wrapper  {
+  padding-left: 40px;
+}
+
 .container-fluid {
   padding-right: 15px;
   padding-left: 15px;
@@ -347,5 +351,5 @@ textarea:focus,
 select:focus,
 button:focus {
   outline: 3px solid #ffbf47;
-  outline-offset: 0; 
+  outline-offset: 0;
 }

@@ -28,7 +28,7 @@ export async function getTermsAndConditions(req: express.Request, res: express.R
             apiStatusCode: error.status,
             message: 'Terms and Conditions route error',
         }
-        res.status(500).send(errReport)
+        res.status(error.status).send(errReport)
     }
 }
 
@@ -53,6 +53,6 @@ export async function postTermsAndConditions(req: express.Request, res: express.
             apiStatusCode: error.status,
             message: 'Terms and Conditions route error',
         }
-        res.status(500).send(errReport)
+        res.status(error.status).send(errReport)
     }
 }

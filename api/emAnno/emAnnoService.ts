@@ -10,7 +10,7 @@ const logger: JUILogger = log4jui.getLogger('em-anno-service')
  * @param annotationsPath
  * @returns {Promise<null>}
  */
-export async function handleGet(annotationsPath): Promise<any> {
+export async function handleGet(annotationsPath: string): Promise<{ data?: {}}> {
 
     try {
         logger.info('getting annotations', annotationsPath)
@@ -30,7 +30,7 @@ export async function handleGet(annotationsPath): Promise<any> {
  * @param body
  * @returns {Promise<null>}
  */
-export async function handlePost(annotationsPath, body): Promise<any> {
+export async function handlePost(annotationsPath: string, body: {}): Promise<{ data?: {}}> {
 
     try {
         logger.info('posting annotations', annotationsPath)
@@ -50,7 +50,7 @@ export async function handlePost(annotationsPath, body): Promise<any> {
  * @param body
  * @returns {Promise<null>}
  */
-export async function handlePut(annotationsPath, body): Promise<any> {
+export async function handlePut(annotationsPath: string, body: {}): Promise<{ data?: {}}> {
 
     try {
         logger.info('putting annotations', annotationsPath)
@@ -69,7 +69,7 @@ export async function handlePut(annotationsPath, body): Promise<any> {
  * @param annotationsPath
  * @returns {Promise<null>}
  */
-export async function handleDelete(annotationsPath): Promise<any> {
+export async function handleDelete(annotationsPath: string): Promise<{ data?: {}}> {
 
     try {
         logger.info('deleting annotations', annotationsPath)

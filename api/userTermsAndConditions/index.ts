@@ -3,7 +3,7 @@ import { config } from '../config'
 import { http } from '../lib/http'
 import { getTermsAndConditionsUrl, postTermsAndConditionsUrl } from './termsAndConditionsUtil'
 
-export async function getTermsAndConditions(req: express.Request, res: express.Response) {
+export async function getUserTermsAndConditions(req: express.Request, res: express.Response) {
     let errReport: any
     if (!req.params.userId) {
         errReport = {
@@ -32,7 +32,7 @@ export async function getTermsAndConditions(req: express.Request, res: express.R
     }
 }
 
-export async function postTermsAndConditions(req: express.Request, res: express.Response) {
+export async function postUserTermsAndConditions(req: express.Request, res: express.Response) {
     let errReport: any
     if (!req.body.userId) {
         errReport = {

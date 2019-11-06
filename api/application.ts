@@ -16,7 +16,7 @@ import {JUILogger} from './lib/models'
 import * as postCodeLookup from './postCodeLookup'
 import {router as printRouter} from './print/routes'
 import routes from './routes'
-import { getTermsAndConditions, postTermsAndConditions } from './termsAndConditions'
+import { getUserTermsAndConditions, postUserTermsAndConditions } from './userTermsAndConditions'
 
 config.environment = process.env.XUI_ENV || 'local'
 
@@ -94,8 +94,8 @@ app.get('/api/addresses', authInterceptor, postCodeLookup.doLookup)
 app.get('/api/monitoring-tools', (req, res) => {
     res.send({key: config.appInsightsInstrumentationKey})
 })
-app.get('/api/termsAndConditions/:userId', getTermsAndConditions)
-app.post('/api/termsAndConditions', postTermsAndConditions)
+app.get('/api/userTermsAndConditions/:userId', getUserTermsAndConditions)
+app.post('/api/userTermsAndConditions', postUserTermsAndConditions)
 app.use('/api/healthCheck', healthCheck)
 
 app.use('/aggregated', routes)

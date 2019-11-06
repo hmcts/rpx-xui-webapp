@@ -53,6 +53,7 @@ export default async (req, res, next) => {
   /* istanbul ignore else */
   if (token) {
     logger.info('Attaching s2s token')
+    console.log(token)
     axios.defaults.headers.common.ServiceAuthorization = token
     next()
   }

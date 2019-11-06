@@ -3,11 +3,11 @@ import { inject, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { StoreModule } from '@ngrx/store';
 import { CookieService } from 'ngx-cookie';
+import { windowToken } from 'src/app/shared/shared.module';
 import { environment } from '../../../environments/environment';
 import { AppConfigService } from '../config/configuration.services';
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
-import { windowToken } from 'src/app/shared/shared.module';
 
 const config = {
   config: {

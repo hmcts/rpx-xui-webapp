@@ -14,7 +14,7 @@ export class AppConfig extends AbstractAppConfig {
   protected config: CaseEditorConfig;
   constructor(private readonly appConfigService: AppConfigService) {
     super();
-    this.config =  this.appConfigService.getEditorConfiguration() || {};
+    this.config =  this.appConfigService.getEditorConfiguration() || new CaseEditorConfig();
   }
 
   public load(): Promise<void> {

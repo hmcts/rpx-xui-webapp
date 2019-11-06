@@ -7,6 +7,7 @@ import { environment } from '../../../environments/environment';
 import { AppConfigService } from '../config/configuration.services';
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
+import { windowToken } from 'src/app/shared/shared.module';
 
 const config = {
   config: {
@@ -71,7 +72,8 @@ describe('AuthService', () => {
         { provide: environment, useValue: config },
         { provide: Router, useValue: router },
         { provide: CookieService, useValue: cookieService },
-        { provide: HttpClient, useClass: HttpClientMock }
+        { provide: HttpClient, useClass: HttpClientMock },
+        { provide: windowToken, useValue: window }
       ]
     });
   });

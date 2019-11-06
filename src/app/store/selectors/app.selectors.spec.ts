@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
+import { ConfigurationModel } from 'src/app/models/configuration.model';
 import * as fromRoot from '../../../app/store/reducers';
 import * as fromActions from '../actions';
 import * as fromReducers from '../reducers';
@@ -11,7 +12,7 @@ describe('App Selectors', () => {
   let store: Store<fromReducers.State>;
 
   const appConfig = {
-    config: {},
+    config: new ConfigurationModel(),
     loaded: false,
     loading: false
   };

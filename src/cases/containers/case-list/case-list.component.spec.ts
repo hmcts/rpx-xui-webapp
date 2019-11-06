@@ -255,7 +255,7 @@ describe('CaseListComponent', () => {
 
       component.onResultsViewHandler(resultView);
 
-      expect(component.resultsArr).toEqual([{ case_id: 'DRAFT274146' }]);
+      expect(component.resultsArr).toEqual([{ case_id: 'DRAFT274146', case_fields: {} }]);
     });
   });
 });

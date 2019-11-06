@@ -2,11 +2,11 @@ import { Inject, Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie';
 import { AppUtils } from 'src/app/app-utils';
 import { AppConstants } from 'src/app/app.constants';
+import { JwtContents } from 'src/app/models/jwtContents.model';
 import { windowToken } from 'src/app/shared/shared.module';
 import { environment as config } from '../../../environments/environment';
 import { AppConfigService } from '../config/configuration.services';
 import { JwtDecodeWrapper } from '../logger/jwtDecodeWrapper';
-import { JwtContents } from 'src/app/models/jwtContents.model';
 
 @Injectable()
 export class AuthService {
@@ -14,12 +14,15 @@ export class AuthService {
   public COOKIE_KEYS: { TOKEN: string; USER: string };
   public user: any;
 
+  private readonly window: Window;
+
   constructor(
     private readonly cookieService: CookieService,
     private readonly appConfigService: AppConfigService,
     private readonly jwtDecoder: JwtDecodeWrapper,
-    @Inject(windowToken) private readonly window: Window
+    @Inject(windowToken) window: any
   ) {
+    this.window = window as Window;
     this.COOKIE_KEYS = {
       TOKEN: config.cookies.token,
       USER: config.cookies.userId

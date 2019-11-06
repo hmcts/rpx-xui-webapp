@@ -5,6 +5,7 @@ import { StoreModule } from '@ngrx/store';
 import { CookieService } from 'ngx-cookie';
 import { AppUtils } from 'src/app/app-utils';
 import { AppConstants } from 'src/app/app.constants';
+import { windowToken } from 'src/app/shared/shared.module';
 import { environment } from '../../../environments/environment';
 import { AppConfigService } from '../config/configuration.services';
 import { AuthService } from './auth.service';
@@ -87,7 +88,8 @@ describe('AuthService', () => {
         { provide: environment, useValue: config },
         { provide: Router, useValue: router },
         { provide: CookieService, useValue: cookieService },
-        { provide: HttpClient, useClass: HttpClientMock }
+        { provide: HttpClient, useClass: HttpClientMock },
+        { provide: windowToken, useValue: window }
       ]
     });
   });

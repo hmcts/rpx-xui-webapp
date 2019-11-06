@@ -58,6 +58,8 @@ describe('CreateCaseFieldsResolver', () => {
       switch (key) {
         case QUERY_PARAM_IGNORE_WARNINGS:
           return IGNORE_WARNINGS;
+        case DRAFT_QUERY_PARAM:
+          return null;
         default:
           throw new Error('Unknown key');
       }

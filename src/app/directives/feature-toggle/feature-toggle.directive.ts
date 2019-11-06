@@ -1,5 +1,5 @@
 import { Directive, Input, OnInit, TemplateRef, ViewContainerRef } from '@angular/core';
-import { ConfigurationModel } from '../../models/configuration.model';
+import { FeatureCollection } from '../../models/configuration.model';
 import { AppConfigService } from '../../services/config/configuration.services';
 
 @Directive({
@@ -7,7 +7,7 @@ import { AppConfigService } from '../../services/config/configuration.services';
 })
 export class FeatureToggleDirective implements OnInit {
   @Input() public exuiFeatureToggle: string;
-  public config: ConfigurationModel;
+  public config: FeatureCollection;
 
   constructor(
     private readonly templateRef: TemplateRef<any>,

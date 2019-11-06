@@ -1,10 +1,11 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { CaseEditorConfig } from '@hmcts/ccd-case-ui-toolkit';
 import { select, Store } from '@ngrx/store';
 import { throwError } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 import { catchError, take } from 'rxjs/operators';
-import { ConfigurationModel } from '../../models/configuration.model';
+import { ConfigurationModel, FeatureCollection, UrlCollection } from '../../models/configuration.model';
 import * as fromApp from '../../store';
 
 /**
@@ -15,13 +16,13 @@ import * as fromApp from '../../store';
 export class AppConfigService {
 
   constructor(private readonly http: HttpClient,  private readonly store: Store<fromApp.State>) {}
-  private configuration: ConfigurationModel | any;
+  private configuration: ConfigurationModel;
   /**
    * Loading configuration json file
    */
-  public load(): Observable<any> {
+  public load(): Observable<ConfigurationModel> {
     const jsonFile = `assets/config/config.json`;
-    return this.http.get(jsonFile).pipe(
+    return this.http.get<ConfigurationModel>(jsonFile).pipe(
       catchError(this.handleError)
     );
   }
@@ -37,19 +38,19 @@ export class AppConfigService {
   /**
    * Returning features config
    */
-  public getFeatureToggle() {
+  public getFeatureToggle(): FeatureCollection {
     return this.configuration.features;
   }
   /**
    * Returning caseEditorConfig config
    */
-  public getEditorConfiguration() {
+  public getEditorConfiguration(): CaseEditorConfig {
     return this.configuration.caseEditorConfig;
   }
   /**
    * Returning urls config
    */
-  public getRoutesConfig() {
+  public getRoutesConfig(): { [id: string]: UrlCollection } {
     return this.configuration.urls;
   }
 

@@ -97,7 +97,7 @@ app.get('/api/monitoring-tools', (req, res) => {
 })
 app.get('/api/userTermsAndConditions/:userId', getUserTermsAndConditions)
 app.post('/api/userTermsAndConditions', postUserTermsAndConditions)
-app.get('api/getTermsAndConditions', getTermsAndConditions)
+app.get('api/termsAndConditions', getTermsAndConditions)
 app.use('/api/healthCheck', healthCheck)
 
 app.use('/aggregated', routes)

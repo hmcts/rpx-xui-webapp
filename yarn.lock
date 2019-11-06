@@ -415,6 +415,13 @@
     js-yaml "^3.8.4"
     superagent "^3.5.1"
 
+"@hmcts/rpx-xui-common-lib@0.0.13":
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-0.0.13.tgz#19733805992c404171bcc82fe28e26136854897e"
+  integrity sha512-ClS1QyE9V7IlKUlz3JUqRWsKgMfRRqgHE+oahTwTOthlgTitWHVNPgnQ4PjRUaUhhxobg/lrurG/vcLwek7Tfw==
+  dependencies:
+    tslib "^1.9.0"
+
 "@ngrx/effects@^7.4.0":
   version "7.4.0"
   resolved "https://registry.yarnpkg.com/@ngrx/effects/-/effects-7.4.0.tgz#7d1977538cf85e42ab48fd648acdfbc8b52f93d3"

@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { UserNavModel } from 'src/app/models/user-nav.model';
 import * as fromRoot from '../../store';
 
 @Component({
@@ -12,7 +13,7 @@ export class HmctsGlobalHeaderComponent {
   //     this.userValue = value;
   // }
   @Input() public headerTitle: {name: string; url: string};
-  @Input() public navigation: any;
+  @Input() public navigation: UserNavModel;
   @Output() public navigate = new EventEmitter<string>();
 
   public userValue = true;

@@ -12,7 +12,6 @@ import { JwtDecodeWrapper } from '../logger/jwtDecodeWrapper';
 export class AuthService {
   public apiBaseUrl: string;
   public COOKIE_KEYS: { TOKEN: string; USER: string };
-  public user: any;
 
   private readonly window: Window;
 
@@ -39,8 +38,6 @@ export class AuthService {
     } else {
       this.apiBaseUrl = '';
     }
-
-    this.user = null;
   }
 
   public canActivate() {

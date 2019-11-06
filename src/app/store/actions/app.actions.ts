@@ -1,4 +1,5 @@
 import { Action } from '@ngrx/store';
+import { ConfigurationModel } from 'src/app/models/configuration.model';
 
 
 export const APP_LOAD_CONFIG = '[App] Load Config';
@@ -17,12 +18,12 @@ export class LoadConfig implements Action {
 
 export class LoadConfigSuccess implements Action {
   public readonly type = APP_LOAD_CONFIG_SUCCESS;
-  constructor(public payload: any) { }
+  constructor(public payload: ConfigurationModel) { }
 }
 
 export class LoadConfigFail implements Action {
   public readonly type = APP_LOAD_CONFIG_FAIL;
-  constructor(public payload: any) { }
+  constructor(public payload: Error) { }
 }
 
 export class StartAppInitilizer implements Action {

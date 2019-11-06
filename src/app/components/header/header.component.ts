@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { NavItemsModel } from 'src/app/models/nav-item.model';
 import { AppTitleModel } from '../../models/app-title.model';
 import { UserNavModel } from '../../models/user-nav.model';
 import * as fromRoot from '../../store';
@@ -10,7 +11,7 @@ import * as fromRoot from '../../store';
 })
 export class HeaderComponent {
 
-  @Input() public navItems: { active: boolean; href: string; }[];
+  @Input() public navItems: NavItemsModel[];
   @Input() public title: AppTitleModel;
   @Input() public userNav: UserNavModel;
   @Output() public navigate = new EventEmitter<string>();

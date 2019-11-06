@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { NavItemsModel } from 'src/app/models/nav-item.model';
 
 @Component({
     selector: 'exui-hmcts-primary-navigation',
@@ -11,8 +12,8 @@ export class HmctsPrimaryNavigationComponent {
         this.isUserLoggedIn = true;
     }
 
-    @Input() public label: any;
-    @Input() public items: any;
+    @Input() public label: string;
+    @Input() public items: NavItemsModel[];
 
     public isUserLoggedIn = true;
     constructor() {

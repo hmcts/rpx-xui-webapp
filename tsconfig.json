@@ -19,10 +19,10 @@
       "dom"
     ],
 
-    // "noUnusedLocals": true,
-    // "noUnusedParameters": true,
-    // "noImplicitAny": true,
-    // "allowUnreachableCode": false,
-    // "allowUnusedLabels": false
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitAny": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false
   }
 }

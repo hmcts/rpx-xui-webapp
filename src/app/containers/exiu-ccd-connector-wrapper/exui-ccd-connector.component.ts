@@ -1,6 +1,8 @@
 import { AfterContentInit, Component, ContentChild, ElementRef, HostBinding, Input, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
+import { Collection } from 'src/app/models/collection.model';
+import { ActionBindingModel } from 'src/cases/models/create-case-actions.model';
 
 /**
  * CCD Connector
@@ -18,15 +20,15 @@ import { Subscription } from 'rxjs';
   `
 })
 export class ExuiCcdConnectorComponent implements AfterContentInit, OnDestroy {
-  @ContentChild('ccdComponent') public ccdComponent;
+  @ContentChild('ccdComponent') public ccdComponent: any;
   @ContentChild('ccdComponent', {read: ElementRef}) public ccdComponentElementRef: ElementRef;
-  @Input() public eventsBindings;
+  @Input() public eventsBindings: ActionBindingModel[];
   @Input() public store: Store<any>; // generic store
   @Input() public fromFeatureStore: any; // specific feature store
   @HostBinding('attr.data-selector') public  hostBindingValue: string;
 
-  private readonly subscriptions: Subscription[] = [];
-  public dispatcherContainer: { type: string } | {};
+  private readonly subscriptions: Collection<Subscription> = {};
+  public dispatcherContainer: Collection<(obj: any) => void> = {};
 
   constructor() { }
 
@@ -34,7 +36,7 @@ export class ExuiCcdConnectorComponent implements AfterContentInit, OnDestroy {
     if (this.ccdComponent) {
       this.eventsBindings.forEach((event) => {
         this.subscriptions[event.type] =
-          this.ccdComponent[event.type].subscribe((obj = {}) => this.dispatcherContainer[event.type](obj));
+          this.ccdComponent[event.type].subscribe((obj: any = {}) => this.dispatcherContainer[event.type](obj));
       });
       this.createDispatchers();
       this.hostBindingValue = this.ccdComponentElementRef.nativeElement.tagName;
@@ -53,21 +55,21 @@ export class ExuiCcdConnectorComponent implements AfterContentInit, OnDestroy {
     });
   }
 
-  public deepClone(obj) {
+  public deepClone<T = any>(obj: T): T {
     return JSON.parse(JSON.stringify(this.simplifyFormGroup(obj)));
   }
 
-  public simplifyFormGroup(obj) {
+  public simplifyFormGroup<T = Collection<any>>(obj: T): T {
     Object.keys(obj).forEach((key) => {
       if (key === 'formGroup') {
-        const copiedValue = obj[key].value;
-        delete obj[key];
-        obj[key] = {
+        const copiedValue: any = (obj as any)[key].value;
+        delete (obj as any)[key];
+        (obj as any)[key] = {
           value: copiedValue
         };
 
-      } else if (obj[key] && typeof obj[key] === 'object') {
-        this.simplifyFormGroup(obj[key]);
+      } else if ((obj as any)[key] && typeof (obj as any)[key] === 'object') {
+        this.simplifyFormGroup((obj as any)[key]);
       }
     });
     return obj;

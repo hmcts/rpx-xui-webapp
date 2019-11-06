@@ -10,10 +10,10 @@ const url: string = config.services.em_anno_api
  */
 export async function getAnnotations(req: EnhancedRequest, res: express.Response) {
 
-  const annotationsPath = url + req.originalUrl.replace('/em-anno/', '/api/')
+  const annotationsPath: string = url + req.originalUrl.replace('/em-anno/', '/api/')
 
   try {
-    const jsonResponse = await handleGet(annotationsPath)
+    const jsonResponse: {} = await handleGet(annotationsPath)
     res.status(200).send(jsonResponse)
   } catch (error) {
     res.status(error.status).send({
@@ -28,11 +28,11 @@ export async function getAnnotations(req: EnhancedRequest, res: express.Response
  */
 export async function postAnnotations(req: EnhancedRequest, res: express.Response) {
 
-  const annotationsPath = url + req.originalUrl.replace('/em-anno/', '/api/')
-  const body = req.body
+  const annotationsPath: string = url + req.originalUrl.replace('/em-anno/', '/api/')
+  const body: {} = req.body
 
   try {
-    const jsonResponse = await handlePost(annotationsPath, body)
+    const jsonResponse: {} = await handlePost(annotationsPath, body)
     res.status(200).send(jsonResponse)
   } catch (error) {
     res.status(error.status).send({
@@ -47,11 +47,11 @@ export async function postAnnotations(req: EnhancedRequest, res: express.Respons
  */
 export async function putAnnotations(req: EnhancedRequest, res: express.Response) {
 
-  const annotationsPath = url + req.originalUrl.replace('/em-anno/', '/api/')
-  const body = req.body
+  const annotationsPath: string = url + req.originalUrl.replace('/em-anno/', '/api/')
+  const body: {} = req.body
 
   try {
-    const jsonResponse = await handlePut(annotationsPath, body)
+    const jsonResponse: {} = await handlePut(annotationsPath, body)
     res.status(200).send(jsonResponse)
   } catch (error) {
     res.status(error.status).send({
@@ -66,10 +66,10 @@ export async function putAnnotations(req: EnhancedRequest, res: express.Response
  */
 export async function deleteAnnotations(req: EnhancedRequest, res: express.Response) {
 
-  const annotationsPath = url + req.originalUrl.replace('/em-anno/', '/api/')
+  const annotationsPath: string = url + req.originalUrl.replace('/em-anno/', '/api/')
 
   try {
-    const jsonResponse = await handleDelete(annotationsPath)
+    const jsonResponse: {} = await handleDelete(annotationsPath)
     res.status(200).send(jsonResponse)
   } catch (error) {
     res.status(error.status).send({

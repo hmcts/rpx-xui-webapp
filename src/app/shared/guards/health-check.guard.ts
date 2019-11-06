@@ -3,6 +3,7 @@ import { CanActivate } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
+import { HealthCheck } from 'src/cases/models/healthCheck.model';
 import * as fromRoot from '../../store';
 import { HealthCheckService } from '../services/health-check.service';
 
@@ -14,9 +15,9 @@ export class HealthCheckGuard implements CanActivate {
     ) {
     }
 
-    public canActivate() {
+    public canActivate(): Observable<boolean> {
         return this.checkHealth().pipe(
-            switchMap((res: any) => {
+            switchMap(res => {
                 const state = res.healthState;
                 if (!state) {
                     this.redirectToServiceDownPage();
@@ -30,7 +31,7 @@ export class HealthCheckGuard implements CanActivate {
         );
     }
 
-    private checkHealth(): Observable<boolean> {
+    private checkHealth(): Observable<HealthCheck> {
         return this.healthCheck.doHealthCheck();
     }
 

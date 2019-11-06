@@ -1,7 +1,7 @@
 import * as express from 'express'
 import { config } from '../config'
 import { http } from '../lib/http'
-import { getTermsAndConditionsUrl, postTermsAndConditionsUrl } from './termsAndConditionsUtil'
+import { getUserTermsAndConditionsUrl, postUserTermsAndConditionsUrl } from './userTermsAndConditionsUtil'
 
 export async function getUserTermsAndConditions(req: express.Request, res: express.Response) {
     let errReport: any
@@ -9,12 +9,12 @@ export async function getUserTermsAndConditions(req: express.Request, res: expre
         errReport = {
             apiError: 'UserId is missing',
             apiStatusCode: '400',
-            message: 'Terms and Conditions route error',
+            message: 'User Terms and Conditions route error',
         }
         res.status(400).send(errReport)
     }
     try {
-        const url = getTermsAndConditionsUrl(config.services.termsAndConditions, req.params.userId)
+        const url = getUserTermsAndConditionsUrl(config.services.termsAndConditions, req.params.userId)
         // const response = await http.get(url)
         res.send(true)
     } catch (error) {
@@ -26,7 +26,7 @@ export async function getUserTermsAndConditions(req: express.Request, res: expre
         errReport = {
             apiError: error.data.message,
             apiStatusCode: error.status,
-            message: 'Terms and Conditions route error',
+            message: 'User Terms and Conditions route error',
         }
         res.status(error.status).send(errReport)
     }
@@ -38,20 +38,20 @@ export async function postUserTermsAndConditions(req: express.Request, res: expr
         errReport = {
             apiError: 'UserId is missing',
             apiStatusCode: '400',
-            message: 'Terms and Conditions route error',
+            message: 'User Terms and Conditions route error',
         }
         res.status(400).send(errReport)
     }
     try {
         const data = {userId: req.body.userId}
-        const url = postTermsAndConditionsUrl(config.services.termsAndConditions)
+        const url = postUserTermsAndConditionsUrl(config.services.termsAndConditions)
         //const response = await http.post(url, data)
         res.send(true)
     } catch (error) {
         errReport = {
             apiError: error.data.message,
             apiStatusCode: error.status,
-            message: 'Terms and Conditions route error',
+            message: 'User Terms and Conditions route error',
         }
         res.status(error.status).send(errReport)
     }

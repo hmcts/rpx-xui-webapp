@@ -1,7 +1,7 @@
 import {http} from '../lib/http'
 import * as log4jui from '../lib/log4jui'
 import {JUILogger} from '../lib/models'
-import { Annotations, Annotation } from './models'
+import { Annotation, Annotations } from './models'
 
 const logger: JUILogger = log4jui.getLogger('em-anno-service')
 

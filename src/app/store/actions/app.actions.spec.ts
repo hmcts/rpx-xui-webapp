@@ -1,3 +1,4 @@
+import { ConfigurationModel } from 'src/app/models/configuration.model';
 import * as fromApp from './app.actions';
 
 describe('App Actions', () => {
@@ -13,7 +14,7 @@ describe('App Actions', () => {
 
   describe('Load Config Success', () => {
     it('should create an action', () => {
-      const payload = {prop: 'value'};
+      const payload = {prop: 'value'} as unknown as ConfigurationModel;
       const action = new fromApp.LoadConfigSuccess(payload);
 
       expect({ ...action }).toEqual({
@@ -25,7 +26,7 @@ describe('App Actions', () => {
 
   describe('Load Config Fail', () => {
     it('should create an action', () => {
-      const payload = {error: 'value'};
+      const payload = {error: 'value'} as unknown as Error;
       const action = new fromApp.LoadConfigFail(payload);
 
       expect({ ...action }).toEqual({

@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FooterComponent } from './footer.component';
@@ -13,15 +13,8 @@ describe('FooterComponent', () => {
         public footerComponent: FooterComponent;
     }
 
-    let testHostComponent: TestDummyHostComponent;
-    let testHostFixture: ComponentFixture<TestDummyHostComponent>;
-    // tslint:disable-next-line
-    let el: DebugElement;
-    // tslint:disable-next-line
-    let de: any;
     let component: FooterComponent;
     let fixture: ComponentFixture<FooterComponent>;
-    let element: DebugElement;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -34,13 +27,8 @@ describe('FooterComponent', () => {
             .compileComponents();
     }));
     beforeEach(() => {
-        testHostFixture = TestBed.createComponent(TestDummyHostComponent);
-        testHostComponent = testHostFixture.componentInstance;
-    });
-    beforeEach(() => {
         fixture = TestBed.createComponent(FooterComponent);
         component = fixture.componentInstance;
-        element = fixture.debugElement;
     });
 
     it('should create', () => {

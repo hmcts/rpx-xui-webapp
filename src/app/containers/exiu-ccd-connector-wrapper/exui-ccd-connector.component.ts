@@ -59,7 +59,7 @@ export class ExuiCcdConnectorComponent implements AfterContentInit, OnDestroy {
     return JSON.parse(JSON.stringify(this.simplifyFormGroup(obj)));
   }
 
-  public simplifyFormGroup<T = Collection<any>>(obj: T): T {
+  public simplifyFormGroup(obj: any): any {
     Object.keys(obj).forEach((key) => {
       if (key === 'formGroup') {
         const copiedValue: any = (obj as any)[key].value;

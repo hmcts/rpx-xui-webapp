@@ -6,8 +6,6 @@ import * as fromActions from '../actions';
 import * as fromReducers from '../reducers';
 import * as fromSelectors from './app.selectors';
 
-
-
 describe('App Selectors', () => {
   let store: Store<fromReducers.State>;
 
@@ -64,7 +62,7 @@ describe('App Selectors', () => {
 
       expect(result).toEqual(appConfig);
 
-      store.dispatch(new fromActions.LoadConfigSuccess(appPayload));
+      store.dispatch(new fromActions.LoadConfigSuccess(appPayload as unknown as ConfigurationModel));
       expect(result).toEqual(appConfigLoaded);
     });
 
@@ -75,7 +73,7 @@ describe('App Selectors', () => {
         .select(fromSelectors.getAppFeatures)
         .subscribe(value => (result = value));
 
-      store.dispatch(new fromActions.LoadConfigSuccess(appPayload));
+      store.dispatch(new fromActions.LoadConfigSuccess(appPayload as unknown as ConfigurationModel));
       expect(result).toEqual(appConfigLoaded.config);
     });
   });

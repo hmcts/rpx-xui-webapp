@@ -6,9 +6,26 @@ import * as sinonChai from 'sinon-chai'
 import { mockReq, mockRes } from 'sinon-express-mock'
 import { http } from '../lib/http'
 import { handleDelete, handleGet, handlePost, handlePut } from './emAnnoService'
+import { Annotation } from './models'
 
 chai.use(sinonChai)
 describe('enAnnoService', () => {
+
+    const dummyAnnotation: Annotation = {
+        annotationSetId: 'dummy',
+        color: 'dummy',
+        comments: [],
+        createdBy: 'dummy',
+        createdByDetails: {forename: 'dummy', surname: 'dummy', email: 'dummy'},
+        createdDate: 'dummy',
+        id: 'dummy',
+        lastModifiedBy: 'dummy',
+        lastModifiedByDetails: {forename: 'dummy', surname: 'dummy', email: 'dummy'},
+        lastModifiedDate: 'dummy',
+        page: 1,
+        rectangles: [],
+        type: 'dummy',
+    }
 
     let sandbox
     let spy: any
@@ -39,7 +56,7 @@ describe('enAnnoService', () => {
         it('should make a post request', async () => {
             spy = sandbox.stub(http, 'post').resolves(res)
             const emAnnoPath = '/em-anno/12345'
-            const response = await handlePost(emAnnoPath, {})
+            const response = await handlePost(emAnnoPath, dummyAnnotation)
             expect(response).to.equal('ok')
         })
     })
@@ -48,7 +65,7 @@ describe('enAnnoService', () => {
         it('should make a put request', async () => {
             spy = sandbox.stub(http, 'put').resolves(res)
             const emAnnoPath = '/em-anno/12345'
-            const response = await handlePut(emAnnoPath, {})
+            const response = await handlePut(emAnnoPath, dummyAnnotation)
             expect(response).to.equal('ok')
         })
     })

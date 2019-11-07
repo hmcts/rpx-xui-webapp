@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { SearchFilterService } from '../../../cases/services';
 import * as caseSearchActions from '../actions/case-search.action';
@@ -33,7 +33,7 @@ export class SearchFilterEffects {
     map((action: caseSearchActions.ApplySearchFilter) => action.payload),
     switchMap(payload => {
       return this.searchService.search(payload).pipe(
-        map((result: Observable<any>) => new caseSearchActions.ApplySearchFilterSuccess(result)),
+        map(result => new caseSearchActions.ApplySearchFilterSuccess(result)),
         catchError(error => of(new caseSearchActions.ApplySearchFilterFail(error)))
       );
     }));

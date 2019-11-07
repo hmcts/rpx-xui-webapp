@@ -18,7 +18,7 @@ export class HeaderComponent {
 
   constructor(public store: Store<fromRoot.State>) {}
 
-  public onNavigate(event) {
+  public onNavigate(event: any) {
     this.navigate.emit(event);
   }
 }

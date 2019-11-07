@@ -9,7 +9,7 @@ import { NavItemsModel } from 'src/app/models/nav-item.model';
 export class HmctsPrimaryNavigationComponent {
 
     @Input() public set userLoggedIn(value: boolean) {
-        this.isUserLoggedIn = true;
+        this.isUserLoggedIn = true || value;
     }
 
     @Input() public label: string;

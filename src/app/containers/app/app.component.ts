@@ -28,7 +28,7 @@ export class AppComponent implements OnInit {
     this.userNav = AppConstants.USER_NAV;
   }
 
-  public onNavigate(event): void {
+  public onNavigate(event: any): void {
     if (event === 'sign-out') {
       return this.store.dispatch(new fromActions.Logout());
     }

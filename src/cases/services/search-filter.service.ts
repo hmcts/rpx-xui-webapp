@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { AbstractAppConfig, HttpService, RequestOptionsBuilder, SearchService } from '@hmcts/ccd-case-ui-toolkit';
+import { AbstractAppConfig, HttpService, RequestOptionsBuilder, SearchResultView, SearchService } from '@hmcts/ccd-case-ui-toolkit';
 import { Observable } from 'rxjs';
 import { getFilterType, isStringOrNumber, sanitiseMetadataFieldName } from '../utils/utils';
 
@@ -15,7 +15,7 @@ export class SearchFilterService {
 
   public metadataFields: string[];
 
-  public search(payload: { selected: any }): Observable<any> {
+  public search(payload: { selected: any }): Observable<SearchResultView> {
 
     const { jurisdictionId, caseTypeId, metadataFilters, caseFilters, view } = this.getParams(payload);
 

@@ -17,7 +17,7 @@ def type      = "nodejs"
 def product   = "xui"
 def component = "webapp"
 def channel   = '#xui-pipeline'
-def deployToAatOnly = true  // set to true if only deploy upto AAT, set to false will deploy all the way to production
+def deployToAatOnly = false  // set to true if only deploy upto AAT, set to false will deploy all the way to production
 
 def secrets = [
   'rpx-${env}': [

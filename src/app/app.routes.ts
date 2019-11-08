@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { AuthGuard } from './services/auth/auth.guard';
 import { ServiceDownComponent, CookiePolicyComponent, PrivacyPolicyComponent, TermsAndConditionsComponent,
           AccessibilityComponent } from './components';
+import { AcceptTermsGuard } from './services/acceptTerms/acceptTerms.guard';
 
 export const ROUTES: Routes = [
   {
@@ -11,7 +12,7 @@ export const ROUTES: Routes = [
   },
   {
     path: 'cases',
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, AcceptTermsGuard],
     loadChildren: '../cases/cases.module#CasesModule'
   },
   { path: 'case/:jurisdiction/:case-type/:cid', redirectTo: 'cases/case-details/:cid', pathMatch: 'full' },

@@ -18,12 +18,24 @@ export class AcceptTcEffects {
   loadHasAccepted$ = this.actions$.pipe(
     ofType(acceptTandCActions.LOAD_HAS_ACCEPTED_TC),
     switchMap((action: any) => {
-    console.log(action);
     return this.acceptTcService.getIsUserAccepted(action.payload).pipe(
     map(userId => {
         return new acceptTandCActions.LoadHasAcceptedTCSuccess(userId);
     }),
     catchError(error => of(new acceptTandCActions.LoadHasAcceptedTCFail(error)))
+    );
+    })
+  );
+
+  @Effect()
+  userHasAccepted$ = this.actions$.pipe(
+    ofType(acceptTandCActions.ACCEPT_T_AND_C),
+    switchMap((action: any) => {
+    return this.acceptTcService.postUserAccepted(action.payload).pipe(
+    map(userId => {
+        return new acceptTandCActions.AcceptTandCSuccess(userId);
+    }),
+    catchError(error => of(new acceptTandCActions.AcceptTandCFail(error)))
     );
     })
   );

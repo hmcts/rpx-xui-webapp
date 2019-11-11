@@ -9,6 +9,7 @@ import { CookiePolicyComponent } from './cookie-policy/cookie-policy.component';
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 import { TermsAndConditionsComponent } from './terms-and-conditions/terms-and-conditions.component';
 import { AccessibilityComponent } from './accessibility/accessibility.component';
+import { AcceptTcComponent } from '../accept-terms/accept-tc.component';
 
 export const components: any[] = [
   ExuiPageWrapperComponent,
@@ -21,7 +22,8 @@ export const components: any[] = [
   TermsAndConditionsComponent,
   AccessibilityComponent,
   PhaseBannerComponent,
-  ServiceDownComponent
+  ServiceDownComponent,
+  AcceptTcComponent
 ];
 
 export * from './exui-mian-wrapper/exui-page-wrapper.component';
@@ -35,3 +37,4 @@ export * from './cookie-policy/cookie-policy.component';
 export * from './privacy-policy/privacy-policy.component';
 export * from './terms-and-conditions/terms-and-conditions.component';
 export * from './accessibility/accessibility.component';
+export * from '../accept-terms/accept-tc.component';

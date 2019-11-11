@@ -33,7 +33,7 @@ export class AcceptTermsGuard implements CanActivate {
           this.store.dispatch(new fromApp.LoadHasAcceptedTC(userId));
         }
         if (tcConfirmed.hasUserAcceptedTC === 'false') {
-          this.store.dispatch(new fromApp.Go({path: ['terms-and-conditions']}));
+          this.store.dispatch(new fromApp.Go({path: ['accept-terms-and-conditions']}));
         }
 
       }),

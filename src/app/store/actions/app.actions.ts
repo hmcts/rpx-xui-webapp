@@ -83,4 +83,7 @@ export type AppActions =
   | Logout
   | LoadHasAcceptedTC
   | LoadHasAcceptedTCSuccess
-  | LoadHasAcceptedTCFail;
+  | LoadHasAcceptedTCFail
+  | AcceptTandC
+  | AcceptTandCFail
+  | AcceptTandCSuccess;

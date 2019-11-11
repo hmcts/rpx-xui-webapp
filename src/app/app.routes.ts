@@ -3,7 +3,7 @@ import { AuthGuard } from './services/auth/auth.guard';
 import { ServiceDownComponent, CookiePolicyComponent, PrivacyPolicyComponent, TermsAndConditionsComponent,
           AccessibilityComponent } from './components';
 import { AcceptTermsGuard } from './services/acceptTerms/acceptTerms.guard';
-import { AcceptTcComponent } from './accept-terms/accept-tc.component';
+import { AcceptTcWrapperComponent } from './accept-tc.wrapper/accept-tc-wrapper.component';
 
 export const ROUTES: Routes = [
   {
@@ -34,7 +34,7 @@ export const ROUTES: Routes = [
   },
   {
     path: 'accept-terms-and-conditions',
-    component: AcceptTcComponent
+    component: AcceptTcWrapperComponent
   },
   {
     path: 'accessibility',

@@ -1,23 +1,14 @@
-import {Component, OnInit} from '@angular/core';
-import {select, Store} from '@ngrx/store';
-import * as fromStore from '../store';
-import * as fromApp from '../../../src/app/store/index';
-import { CookieService } from 'ngx-cookie';
+import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
 
 @Component({
-  selector: 'app-accept-terms-and-conditions',
+  selector: 'accept-tc-component',
   templateUrl: './accept-tc.component.html'
 })
-export class AcceptTcComponent implements OnInit {
-  userId: string;
-  constructor(private store: Store<fromApp.State>, private cookieService: CookieService) {
-  }
-
-  ngOnInit(): void {
-    this.userId = this.cookieService.get('__userid__');
-  }
+export class AcceptTcComponent {
+  @Input() uId: string;
+  @Output() acceptTC = new EventEmitter<string>();
 
   onAcceptTandC() {
-    this.store.dispatch(new fromStore.AcceptTandC(this.userId));
+    this.acceptTC.emit(this.uId);
   }
 }

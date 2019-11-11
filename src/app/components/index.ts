@@ -9,6 +9,7 @@ import { CookiePolicyComponent } from './cookie-policy/cookie-policy.component';
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 import { TermsAndConditionsComponent } from './terms-and-conditions/terms-and-conditions.component';
 import { AccessibilityComponent } from './accessibility/accessibility.component';
+import { AcceptTcWrapperComponent } from '../accept-tc.wrapper/accept-tc-wrapper.component';
 import { AcceptTcComponent } from '../accept-terms/accept-tc.component';
 
 export const components: any[] = [
@@ -23,6 +24,7 @@ export const components: any[] = [
   AccessibilityComponent,
   PhaseBannerComponent,
   ServiceDownComponent,
+  AcceptTcWrapperComponent,
   AcceptTcComponent
 ];
 
@@ -37,4 +39,5 @@ export * from './cookie-policy/cookie-policy.component';
 export * from './privacy-policy/privacy-policy.component';
 export * from './terms-and-conditions/terms-and-conditions.component';
 export * from './accessibility/accessibility.component';
+export * from '../accept-tc.wrapper/accept-tc-wrapper.component';
 export * from '../accept-terms/accept-tc.component';

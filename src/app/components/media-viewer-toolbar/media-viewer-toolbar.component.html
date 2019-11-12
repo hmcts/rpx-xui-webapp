@@ -1,0 +1,44 @@
+<div class="jui-toolbar">
+  <div class="mv-toolbar__container">
+  <button class="jui-toolbar__button jui-toolbar__button--items" aria-pressed="false" (click)="toggleSideBar()">Index</button>
+  <button class="jui-toolbar__button jui-toolbar__menu-button--draw" aria-pressed="false" (click)="onClickDrawToggle()">Draw a box</button>
+  <button class="jui-toolbar__button jui-toolbar__menu-button--highlight" aria-pressed="false" (click)="onClickDrawToggle()">Highlight</button>
+  <button class="jui-toolbar__button " aria-pressed="false">Page
+    <span class="jui-toolbar__menu-button--down" (click)="decreasePageNumber()"></span>
+    <span class="jui-toolbar__menu-button--up" (click)="increasePageNumber()"></span>
+     <input type="number" id="pageNumber" class="hmcts-toolbar-input govuk-input--width-2" title="Page Number" value="1" size="4" min="1"
+         [value]="pageNumber" aria-label="page number"
+         tabindex="0" data-l10n-id="page" (change)="onPageNumberInputChange(pageNumberInput.value)" #pageNumberInput> /10
+  </button>
+  <button class="jui-toolbar__button " aria-pressed="false">Zoom<span class="jui-toolbar__menu-button--zoom-out" (click)="stepZoom(-0.1)"></span>
+    <select id="scaleSelect" class="hmcts-toolbar-select" title="Zoom" tabindex="0" data-l10n-id="zoom" (change)="zoom($event.target.value)" aria-label="zoom">
+      <option #zoomSelect id="customScaleOption" title="" [value]="toolbarEvents.zoomValue.value">{{(toolbarEvents.zoomValue.value) * 100 | number: '1.0-0'}}%</option>
+      <option title="" value="0.1" data-l10n-id="page_scale_percent"
+              data-l10n-args='{ "scale": 10 }'>10%</option>
+      <option title="" value="0.25" data-l10n-id="page_scale_percent"
+              data-l10n-args='{ "scale": 25 }'>25%</option>
+      <option title="" value="0.5" data-l10n-id="page_scale_percent"
+              data-l10n-args='{ "scale": 50 }'>50%</option>
+      <option title="" value="0.75" data-l10n-id="page_scale_percent"
+              data-l10n-args='{ "scale": 75 }'>75%</option>
+      <option title="" value="1" data-l10n-id="page_scale_percent"
+              data-l10n-args='{ "scale": 100 }'>100%</option>
+      <option title="" value="1.25" data-l10n-id="page_scale_percent"
+              data-l10n-args='{ "scale": 125 }'>125%</option>
+      <option title="" value="1.5" data-l10n-id="page_scale_percent"
+              data-l10n-args='{ "scale": 150 }'>150%</option>
+      <option title="" value="2.5" data-l10n-id="page_scale_percent"
+              data-l10n-args='{ "scale": 250 }'>250%</option>
+      <option title="" value="3" data-l10n-id="page_scale_percent"
+              data-l10n-args='{ "scale": 300 }'>300%</option>
+      <option title="" value="5" data-l10n-id="page_scale_percent"
+              data-l10n-args='{ "scale": 500 }'>500%</option>
+    </select>
+    <span class="jui-toolbar__menu-button--zoom-in" (click)="stepZoom(0.1)"></span>
+  </button>
+  <button class="jui-toolbar__button jui-toolbar__menu-button--rotate" aria-pressed="false" (click)="rotate(90)">Rotate</button>
+  <button class="jui-toolbar__button jui-toolbar__menu-button--download" aria-pressed="false" (click)="downloadFile()">Download</button>
+  <button class="jui-toolbar__button jui-toolbar__menu-button--printer" aria-pressed="false" (click)="printFile()">Print</button>
+  <button class="jui-toolbar__button jui-toolbar__menu-button--search" aria-pressed="false" (click)="toggleSearchBar()">Search</button>
+  </div>
+</div>

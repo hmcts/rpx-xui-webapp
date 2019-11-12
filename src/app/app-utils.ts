@@ -23,4 +23,8 @@ export class AppUtils {
     }
     return AppConstants.ENVIRONMENT_NAMES.prod;
   }
+
+  static showNavItems(url: string): boolean {
+    return url.indexOf('accept-terms-and-conditions') <= 0;
+}
 }

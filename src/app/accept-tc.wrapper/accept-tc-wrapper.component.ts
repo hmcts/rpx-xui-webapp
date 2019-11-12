@@ -10,7 +10,7 @@ import { ofType, Actions } from '@ngrx/effects';
  * absorbs Terms and Condition dumb component
  */
 @Component({
-  selector: 'accept-terms-conditions-wrapper',
+  selector: 'exui-accept-terms-conditions-wrapper',
   templateUrl: './accept-tc-wrapper.component.html'
 })
 export class AcceptTcWrapperComponent implements OnInit {

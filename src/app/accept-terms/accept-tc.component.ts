@@ -1,7 +1,7 @@
 import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
 
 @Component({
-  selector: 'accept-tc-component',
+  selector: 'exui-accept-tc-component',
   templateUrl: './accept-tc.component.html'
 })
 export class AcceptTcComponent {

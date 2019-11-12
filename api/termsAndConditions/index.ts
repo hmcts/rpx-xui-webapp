@@ -1,12 +1,13 @@
 import * as express from 'express'
 import { config } from '../config'
+import { application } from '../config/application.config'
 import { http } from '../lib/http'
 import { getTermsAndConditionsUrl } from './termsAndConditionsUtil'
 
 export async function getTermsAndConditions(req: express.Request, res: express.Response) {
     let errReport: any
     try {
-        const url = getTermsAndConditionsUrl(config.services.termsAndConditions)
+        const url = getTermsAndConditionsUrl(config.services.termsAndConditions, application.idamClient)
         const response = await http.get(url)
         res.send(response.data)
     } catch (error) {

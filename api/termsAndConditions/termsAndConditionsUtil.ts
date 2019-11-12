@@ -1,3 +1,3 @@
-export function getTermsAndConditionsUrl(baseUrl: string): string {
-    return `${baseUrl}/api/v1/termsAndConditions/1`
+export function getTermsAndConditionsUrl(baseUrl: string, idamClient: string): string {
+    return `${baseUrl}/api/v1/termsAndConditions/${idamClient}/1`
 }

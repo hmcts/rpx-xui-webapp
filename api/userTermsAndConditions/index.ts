@@ -1,5 +1,6 @@
 import * as express from 'express'
 import { config } from '../config'
+import { application } from '../config/application.config'
 import { http } from '../lib/http'
 import { getUserTermsAndConditionsUrl, postUserTermsAndConditionsUrl } from './userTermsAndConditionsUtil'
 
@@ -14,7 +15,7 @@ export async function getUserTermsAndConditions(req: express.Request, res: expre
         res.status(400).send(errReport)
     }
     try {
-        const url = getUserTermsAndConditionsUrl(config.services.termsAndConditions, req.params.userId)
+        const url = getUserTermsAndConditionsUrl(config.services.termsAndConditions, req.params.userId, application.idamClient)
         // const response = await http.get(url)
         res.send(true)
     } catch (error) {
@@ -44,7 +45,7 @@ export async function postUserTermsAndConditions(req: express.Request, res: expr
     }
     try {
         const data = {userId: req.body.userId}
-        const url = postUserTermsAndConditionsUrl(config.services.termsAndConditions)
+        const url = postUserTermsAndConditionsUrl(config.services.termsAndConditions, application.idamClient)
         //const response = await http.post(url, data)
         res.send(true)
     } catch (error) {

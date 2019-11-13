@@ -3,6 +3,7 @@ export default {
         ccdComponentApi: 'http://ccd-api-gateway-web-ithc.service.core-compute-ithc.internal/health',
         ccdDataApi: 'http://ccd-data-store-api-ithc.service.core-compute-ithc.internal/health',
         documentsApi: 'http://dm-store-ithc.service.core-compute-ithc.internal/health',
+        em_anno_api: 'http://em-anno-ithc.service.core-compute-ithc.internal/health',
     },
     logging: 'debug',
     secureCookie: false,
@@ -14,6 +15,7 @@ export default {
         documents: {
             api: 'http://dm-store-ithc.service.core-compute-ithc.internal',
         },
+        em_anno_api: 'http://em-anno-ithc.service.core-compute-ithc.internal',
         idam: {
             idamApiUrl: 'https://idam-api.ithc.platform.hmcts.net',
             idamClientID: 'xuiwebapp',

@@ -6,7 +6,7 @@ export default {
         em_anno_api: 'http://em-anno-aat.service.core-compute-aat.internal/health',
     },
     logging: 'debug',
-    secureCookie: false,
+    secureCookie: true,
     services: {
         ccd: {
             componentApi: 'http://ccd-api-gateway-web-aat.service.core-compute-aat.internal',

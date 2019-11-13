@@ -6,7 +6,7 @@ export default {
         em_anno_api: 'http://em-anno-ithc.service.core-compute-ithc.internal/health',
     },
     logging: 'debug',
-    secureCookie: false,
+    secureCookie: true,
     services: {
         ccd: {
             componentApi: 'http://ccd-api-gateway-web-ithc.service.core-compute-ithc.internal',

@@ -20,10 +20,10 @@ export async function getJurisdictions(req: express.Request, res: express.Respon
         // TODO
         // EUI-1075
         // Use this when configured in the assure to export the evn variable
-        // export JURISDICTIONS=DIVORCE,PROBATE,CMC && npm run start:node
+        // export JURISDICTIONS=DIVORCE,PROBATE,CMC,PUBLICLAW, IA && npm run start:node
         // const filtersString = process.env.JURISDICTIONS.split(',')
         // const filters = {jurisdiction: filtersString}
-        const filters = {jurisdiction: config.environment === 'demo' ? ['DIVORCE', 'PROBATE', 'CMC'] : ['DIVORCE', 'PROBATE']}
+        const filters = {jurisdiction: config.environment === 'demo' ? ['DIVORCE', 'PROBATE', 'CMC', 'PUBLICLAW', 'IA'] : ['DIVORCE', 'PROBATE']}
         let amendedJurisdictions = []
         if (config.environment === 'local') {
           amendedJurisdictions = response.data

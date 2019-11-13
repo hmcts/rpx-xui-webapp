@@ -37,6 +37,7 @@ import { JwtDecodeWrapper } from './services/logger/jwtDecodeWrapper';
 import { AbstractAppInsights, AppInsightsWrapper } from './services/logger/appInsightsWrapper';
 import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler';
 import { AcceptTermsService } from './services/acceptTerms/acceptTerms.service';
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 
 @NgModule({
   declarations: [AppComponent],
@@ -57,7 +58,8 @@ import { AcceptTermsService } from './services/acceptTerms/acceptTerms.service';
     LoggerModule.forRoot({
       level: NgxLoggerLevel.TRACE,
       disableConsoleLogging: false
-    })
+    }),
+    ExuiCommonLibModule
   ],
   providers: [
     {

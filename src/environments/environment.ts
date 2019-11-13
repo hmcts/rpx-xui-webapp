@@ -11,6 +11,7 @@ export const environment = {
     userId: '__userid__',
     roles: 'roles',
   },
+  googleAnalyticsKey: 'UA-124734893-2'
 };
 /**
  * Do not add configuration to this file if possible

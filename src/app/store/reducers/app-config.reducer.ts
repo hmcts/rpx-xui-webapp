@@ -1,15 +1,19 @@
 import * as fromActions from '../actions/';
 import { ConfigurationModel } from '../../models/configuration.model';
+import { TCDocument } from '@hmcts/rpx-xui-common-lib';
+
 export interface AppConfigState {
   config: ConfigurationModel | {};
   loaded: boolean;
   loading: boolean;
+  termsAndConditions: TCDocument;
 }
 
 export const initialState: AppConfigState = {
   config: {},
   loaded: false,
-  loading: false
+  loading: false,
+  termsAndConditions: null
 };
 
 export function reducer(
@@ -32,9 +36,15 @@ export function reducer(
         loaded: false
       };
     }
+    case fromActions.LOAD_TERMS_CONDITIONS_SUCCESS:
+      return {
+        ...state,
+        termsAndConditions: action.payload
+      };
   }
   return state;
 }
 
 
 export const getFeatureConfig = (state: AppConfigState) => state.config;
+export const getTermsConditions = (state: AppConfigState) => state.termsAndConditions;

@@ -8,6 +8,7 @@ import { AppConfigService } from '../../services/config/configuration.services';
 import { of } from 'rxjs/internal/observable/of';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { TermsConditionsService } from 'src/app/services/terms-and-conditions/terms-and-conditions.service';
 
 @Injectable()
 export class AppEffects {
@@ -15,7 +16,8 @@ export class AppEffects {
     private actions$: Actions,
     private store: Store<fromCore.State>,
     private configurationServices: AppConfigService,
-    private authService: AuthService
+    private authService: AuthService,
+    private termsService: TermsConditionsService
   ) { }
 
   @Effect()
@@ -44,6 +46,17 @@ export class AppEffects {
     ofType(fromActions.LOGOUT),
     map(() => {
       this.authService.signOut();
+    })
+  );
+
+  @Effect()
+  loadTermsConditions$ = this.actions$.pipe(
+    ofType(fromActions.LOAD_TERMS_CONDITIONS),
+    switchMap(() => {
+      return this.termsService.getTermsConditions().pipe(
+        map(doc => new fromActions.LoadTermsConditionsSuccess(doc)),
+        catchError(err => of(new fromActions.LoadTermsConditionsFail(err)))
+      );
     })
   );
 }

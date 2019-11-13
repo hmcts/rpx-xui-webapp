@@ -11,6 +11,7 @@ import { TermsAndConditionsComponent } from './terms-and-conditions/terms-and-co
 import { AccessibilityComponent } from './accessibility/accessibility.component';
 import { AcceptTcWrapperComponent } from '../accept-tc.wrapper/accept-tc-wrapper.component';
 import { AcceptTcComponent } from '../accept-terms/accept-tc.component';
+import { MediaViewerWrapperComponent } from './media-viewer-wrapper/media-viewer-wrapper.component';
 
 export const components: any[] = [
   ExuiPageWrapperComponent,
@@ -25,7 +26,8 @@ export const components: any[] = [
   PhaseBannerComponent,
   ServiceDownComponent,
   AcceptTcWrapperComponent,
-  AcceptTcComponent
+  AcceptTcComponent,
+  MediaViewerWrapperComponent
 ];
 
 export * from './exui-mian-wrapper/exui-page-wrapper.component';
@@ -41,3 +43,4 @@ export * from './terms-and-conditions/terms-and-conditions.component';
 export * from './accessibility/accessibility.component';
 export * from '../accept-tc.wrapper/accept-tc-wrapper.component';
 export * from '../accept-terms/accept-tc.component';
+export * from './media-viewer-wrapper/media-viewer-wrapper.component';

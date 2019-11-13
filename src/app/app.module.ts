@@ -36,6 +36,7 @@ import { CryptoWrapper } from './services/logger/cryptoWrapper';
 import { JwtDecodeWrapper } from './services/logger/jwtDecodeWrapper';
 import { AbstractAppInsights, AppInsightsWrapper } from './services/logger/appInsightsWrapper';
 import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler';
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 
 @NgModule({
   declarations: [AppComponent],
@@ -56,7 +57,8 @@ import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler
     LoggerModule.forRoot({
       level: NgxLoggerLevel.TRACE,
       disableConsoleLogging: false
-    })
+    }),
+    ExuiCommonLibModule
   ],
   providers: [
     {

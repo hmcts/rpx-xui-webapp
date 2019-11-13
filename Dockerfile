@@ -1,4 +1,4 @@
-FROM node:8.9.0-alpine
+FROM node:10.14.2-slim
 
 MAINTAINER "HMCTS Team <https://github.com/hmcts>"
 LABEL maintainer = "HMCTS Team <https://github.com/hmcts>"

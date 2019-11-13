@@ -3,6 +3,7 @@ export default {
         ccdComponentApi: 'http://ccd-api-gateway-web-aat.service.core-compute-aat.internal/health',
         ccdDataApi: 'http://ccd-data-store-api-aat.service.core-compute-aat.internal/health',
         documentsApi: 'http://dm-store-aat.service.core-compute-aat.internal/health',
+        em_anno_api: 'http://em-anno-aat.service.core-compute-aat.internal/health',
     },
     logging: 'debug',
     secureCookie: false,
@@ -14,6 +15,7 @@ export default {
         documents: {
             api: 'http://dm-store-aat.service.core-compute-aat.internal',
         },
+        em_anno_api: 'http://em-anno-aat.service.core-compute-aat.internal',
         idam: {
             idamApiUrl: 'https://idam-api.aat.platform.hmcts.net',
             idamClientID: 'xuiwebapp',

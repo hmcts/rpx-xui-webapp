@@ -25,6 +25,11 @@
               ]
             },
             "assets": [
+              {
+                "glob": "**/*",
+                "input": "node_modules/@hmcts/media-viewer/assets",
+                "output": "/assets"
+              },
               "src/favicon.ico",
               "src/assets",
               "src/web.config"

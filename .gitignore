@@ -46,6 +46,8 @@ testem.log
 /typings
 /reports
 api/.nyc_output
+/api/test/pact/logs/
+/api/test/pact/pacts/
 
 
 # System Files

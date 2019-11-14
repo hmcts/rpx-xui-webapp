@@ -18,6 +18,7 @@ export class MediaViewerSearchComponent implements OnInit, OnDestroy {
   public resultsText = '';
   public searchText = '';
   public haveResults = false;
+  public isAdvanced = false;
 
   private subscriptions: Subscription[] = [];
 
@@ -71,6 +72,7 @@ export class MediaViewerSearchComponent implements OnInit, OnDestroy {
   }
 
   public search(): void {
+    console.log('calling search', this.searchText);
     this.toolbarEvents.search.next({
       searchTerm: this.searchText,
       highlightAll: this.highlightAll,
@@ -92,5 +94,9 @@ export class MediaViewerSearchComponent implements OnInit, OnDestroy {
     if (e.key === 'Escape') {
       this.toolbarButtons.searchBarHidden.next(true);
     }
+  }
+
+  public advanced(): void {
+    this.isAdvanced = !this.isAdvanced;
   }
 }

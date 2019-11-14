@@ -1,0 +1,45 @@
+.mv-findbar {
+  top: 40px;
+  right: 0px;
+  position: absolute;
+  z-index: 10000;
+  height: auto;
+  width: 400px;
+  padding: 12px;
+  margin: 4px 2px;
+  color: #0b0c0c;
+  font-size: 1rem;
+  line-height: 1.2rem;
+  text-align: left;
+  cursor: default;
+  background-color: white;
+  border: 3px solid #0b0c0c;
+}
+
+.hmcts-search {
+  .govuk-form-group {
+    width: 77%;
+  }
+}
+.mv-search-table {
+  display: table;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.mv-search-table-cell {
+  display: table-cell;
+  width: 10%;
+   p{
+     color: #6f777b;
+   }
+}
+
+.mv-search-table-cell:first-child {
+  width: 50%;
+}
+
+.mv-search-table-cell:last-child {
+  text-align: right;
+}
+

@@ -11,6 +11,7 @@ import { HealthCheckService } from './services/health-check.service';
 import { ExUITitleService } from './services/exui-title.service';
 import { MediaViewerModule } from '@hmcts/media-viewer';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
+import { FormsModule } from '@angular/forms';
 
 /**
  * Shared Module
@@ -18,7 +19,7 @@ import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
  * FormsModule, CommonModule, ReactiveForms etc..
  */
 @NgModule( {
-  imports: [RouterModule, CommonModule, MediaViewerModule],
+  imports: [RouterModule, CommonModule, FormsModule, MediaViewerModule],
   declarations: [
     ...fromAppComponents.components,
     ...fromAppContainers.containers,

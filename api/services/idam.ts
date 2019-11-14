@@ -10,7 +10,7 @@ const idamClient = config.idamClient
 const idamProtocol = config.protocol
 const oauthCallbackUrl = config.services.idam.oauthCallbackUrl
 
-export async function getDetails(token: string = null) {
+export async function getDetails(idamUrl: string, token: string = null) {
     // have to pass options in at first login as headers are yet to be attached.
     // lets try and see if we have these already
     let details
@@ -27,13 +27,13 @@ export async function getDetails(token: string = null) {
 
     const jwt = token || request().cookies[config.cookies.token]
     const options = { headers: { Authorization: `Bearer ${jwt}` } }
-    const response = await http.get(`${url}/details`, options)
+    const response = await http.get(`${idamUrl}/details`, options)
     return response.data
 }
 
 // this does same as above + more. need to depricate above
 export async function getUser(email = null) {
-    const response = email ? await http.get(`${url}/users?email=${email}`) : await getDetails()
+    const response = email ? await http.get(`${url}/users?email=${email}`) : await getDetails(url)
 
     return response
 }

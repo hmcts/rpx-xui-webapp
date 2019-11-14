@@ -39,7 +39,10 @@
     "test:fullfunctional": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/conf.js --local",
     "test:mutation": "echo 'not implemented'",
     "test:apiGateway": "echo 'not implemented'",
-    "sonar-scan": "node_modules/sonar-scanner/bin/sonar-scanner"
+    "sonar-scan": "node_modules/sonar-scanner/bin/sonar-scanner",
+    "test-pact": "NODE_PATH=. LOG_LEVEL=error mocha --timeout 10000 -r ts-node/register api/test/pact/pact-tests/*.ts",
+    "publish-pact": "NODE_PATH=. LOG_LEVEL=error mocha 'api/test/pact/publish/*.js' --timeout 15000 --reporter spec",
+    "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact"
   },
   "private": true,
   "dependencies": {
@@ -54,10 +57,12 @@
     "@angular/platform-browser": "^7.2.13",
     "@angular/platform-browser-dynamic": "^7.2.13",
     "@angular/router": "^7.2.13",
-    "@hmcts/ccd-case-ui-toolkit": "^2.59.1",
+    "@hmcts/ccd-case-ui-toolkit": "^2.62.16-RDM-5582-prerelease",
     "@hmcts/ccpay-web-component": "^1.8.4",
     "@hmcts/frontend": "0.0.39-alpha",
+    "@hmcts/media-viewer": "1.1.9",
     "@hmcts/nodejs-healthcheck": "^1.5.1",
+    "@hmcts/rpx-xui-common-lib": "0.0.13",
     "@ngrx/effects": "^7.4.0",
     "@ngrx/router-store": "^7.4.0",
     "@ngrx/store": "^7.4.0",
@@ -66,7 +71,8 @@
     "@nicky-lenaers/ngx-scroll-to": "^1.1.1",
     "@types/applicationinsights-js": "^1.0.9",
     "@types/crypto-js": "^3.1.43",
-    "applicationinsights": "^1.4.2",
+    "@types/sinon": "^7.0.13",
+    "applicationinsights": "^1.5.0",
     "applicationinsights-js": "^1.0.20",
     "axios": "^0.18.0",
     "class-transformer": "^0.1.10",
@@ -141,6 +147,8 @@
     "sonar-scanner": "^3.1.0",
     "ts-node": "~7.0.0",
     "tslint": "~5.11.0",
-    "typescript": "~3.2.2"
+    "typescript": "~3.2.2",
+    "@pact-foundation/pact": "^9.2.0",
+    "@pact-foundation/pact-node": "^9.0.6"
   }
 }

@@ -1,3 +1,4 @@
+import axios from 'axios'
 import * as jwtDecode from 'jwt-decode'
 import { config } from '../../config'
 import { postS2SLease } from '../../services/serviceAuth'
@@ -52,7 +53,7 @@ export default async (req, res, next) => {
   /* istanbul ignore else */
   if (token) {
     logger.info('Attaching s2s token')
-    req.headers.ServiceAuthorization = token
+    axios.defaults.headers.common.ServiceAuthorization = token
     next()
   }
 }

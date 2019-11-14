@@ -25,6 +25,6 @@ export class AppUtils {
   }
 
   static showNavItems(url: string): boolean {
-    return url.indexOf('accept-terms-and-conditions') <= 0;
+    return url.indexOf('accept-terms-and-conditions') < 0;
 }
 }

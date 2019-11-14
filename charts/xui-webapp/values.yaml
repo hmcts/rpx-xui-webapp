@@ -16,7 +16,7 @@ nodejs:
       resourceGroup: rpx
       secrets:
         - xui-webapp-s2s-token
-        - xui-oauth2-token
+        - mc-idam-client-secret
         - AppInsightsInstrumentationKey
   # Don't modify below here
   image: ${IMAGE_NAME}

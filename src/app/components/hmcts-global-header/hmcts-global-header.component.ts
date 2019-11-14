@@ -13,6 +13,7 @@ export class HmctsGlobalHeaderComponent {
   // }
   @Input() headerTitle: {name: string; url: string};
   @Input() navigation;
+  @Input() isBrandedHeader: boolean;
   @Output() navigate = new EventEmitter<string>();
 
   userValue = true;

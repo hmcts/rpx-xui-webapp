@@ -6,6 +6,7 @@ import { getDetails, postOauthToken } from '../services/idam'
 
 const cookieToken = config.cookies.token
 const cookieUserId = config.cookies.userId
+const idamURl = config.services.idam.idamApiUrl
 
 const logger = log4jui.getLogger('auth')
 
@@ -32,13 +33,14 @@ export async function authenticateUser(req: any, res, next) {
     )
 
     if (exists(data, 'access_token')) {
-
-        const details = await asyncReturnOrError(getDetails(data.access_token), 'Cannot get user details', res, logger, false)
+        // tslint:disable-next-line
+        const details = await asyncReturnOrError(getDetails( idamURl, data.access_token), 'Cannot get user details', res, logger, false)
         if (details) {
             logger.info('Setting session and cookies')
             req.session.user = details
             res.cookie(cookieUserId, details.id)
             res.cookie(cookieToken, data.access_token)
+            res.cookie('roles', details.roles)
 
             // need this so angular knows which enviroment config to use ...
             res.cookie('platform', config.environment)

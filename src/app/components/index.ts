@@ -11,6 +11,7 @@ import { TermsAndConditionsComponent } from './terms-and-conditions/terms-and-co
 import { AccessibilityComponent } from './accessibility/accessibility.component';
 import { MediaViewerWrapperComponent } from './media-viewer-wrapper/media-viewer-wrapper.component';
 import { MediaViewerToolbarComponent } from './media-viewer-toolbar/media-viewer-toolbar.component';
+import { MediaViewerSearchComponent } from './media-viewer-search/media-viewer-search.component';
 
 export const components: any[] = [
   ExuiPageWrapperComponent,
@@ -25,6 +26,7 @@ export const components: any[] = [
   PhaseBannerComponent,
   ServiceDownComponent,
   MediaViewerToolbarComponent,
+  MediaViewerSearchComponent,
   MediaViewerWrapperComponent,
 ];
 

@@ -5,6 +5,7 @@ import { MediaViewerModule } from '@hmcts/media-viewer';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/window';
 import { AbstractAppConfig } from '@hmcts/ccd-case-ui-toolkit/dist/app.config';
 import createSpyObj = jasmine.createSpyObj;
+import { MediaViewerToolbarComponent } from '../media-viewer-toolbar/media-viewer-toolbar.component';
 
 const GATEWAY_DOCUMENT_URL = 'http://localhost:1234/documents';
 const REMOTE_DOCUMENT_URL = 'https://www.example.com/binary';
@@ -32,6 +33,7 @@ describe('MediaViewerWrapperComponent', () => {
             ],
             declarations: [
                 MediaViewerWrapperComponent,
+                MediaViewerToolbarComponent,
                 DocumentUrlPipe
             ],
             providers: [

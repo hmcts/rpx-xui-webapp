@@ -1,0 +1,39 @@
+<div class="findbar doorHanger" [ngClass]="{ hidden: toolbarButtons.searchBarHidden | async }">
+  <div id="findbarInputContainer">
+    <!-- <input #findInput
+           [(ngModel)]="searchText"
+           (ngModelChange)="search()"
+           (keydown)="onInputKeyPress($event)"
+           [ngClass]="'toolbarField ' + (!searchText || haveResults ? '' : 'notFound')"
+           title="Find"
+           placeholder="Find in document…"
+           tabindex="0"
+           data-l10n-id="find_input"> -->
+    <div class="splitToolbarButton">
+      <button id="findPrevious" class="toolbarButton findPrevious"
+              title="Find the previous occurrence of the phrase" tabindex="0" data-l10n-id="find_previous"
+              (click)="searchPrev()">
+        <span data-l10n-id="find_previous_label">Previous</span>
+      </button>
+      <div class="splitToolbarButtonSeparator"></div>
+      <button id="findNext" class="toolbarButton findNext" title="Find the next occurrence of the phrase"
+              tabindex="0" data-l10n-id="find_next" (click)="searchNext()">
+        <span data-l10n-id="find_next_label">Next</span>
+      </button>
+    </div>
+  </div>
+  <div id="findbarOptionsOneContainer">
+    <input (change)="highlightAll = !highlightAll; search()" [checked]="highlightAll" type="checkbox" id="findHighlightAll" class="toolbarField" tabindex="0">
+    <label for="findHighlightAll" class="toolbarLabel" data-l10n-id="find_highlight">Highlight all</label>
+    <input (change)="matchCase = !matchCase; search()" [checked]="matchCase" type="checkbox" id="findMatchCase" class="toolbarField" tabindex="0">
+    <label for="findMatchCase" class="toolbarLabel" data-l10n-id="find_match_case_label">Match case</label>
+  </div>
+  <div id="findbarOptionsTwoContainer">
+    <input (change)="wholeWord = !wholeWord; search()" [checked]="wholeWord" type="checkbox" id="findEntireWord" class="toolbarField" tabindex="0">
+    <label for="findEntireWord" class="toolbarLabel" data-l10n-id="find_entire_word_label">Whole words</label>
+    <span *ngIf="resultsText" id="findResultsCount" class="toolbarLabel">{{resultsText}}</span>
+  </div>
+  <div id="findbarMessageContainer">
+    <span id="findMsg" class="toolbarLabel"></span>
+  </div>
+</div>

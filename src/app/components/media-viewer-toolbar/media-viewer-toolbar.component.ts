@@ -20,39 +20,39 @@ export class MediaViewerToolbarComponent implements OnInit, OnDestroy  {
   ) {
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.subscriptions.push(
       this.toolbarEvents.setCurrentPage.subscribe(pageNumber => this.setCurrentPage(pageNumber)),
       this.toolbarEvents.setCurrentPageInputValue.subscribe(pageNumber => this.pageNumber = pageNumber)
     );
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     for (const subscription of this.subscriptions) {
       subscription.unsubscribe();
     }
   }
 
   // Handler onClick Event of the Highlight Mode Button
-  onClickHighlightToggle() {
+  public onClickHighlightToggle() {
     // Emit an event that HighlightMode has been enabled/disabled
     this.toolbarEvents.toggleHighlightMode();
   }
   // Handler onClick Event of the Draw Mode Button
-  onClickDrawToggle() {
+  public onClickDrawToggle() {
     // Emit an event that HighlightMode has been enabled/disabled
     this.toolbarEvents.toggleDrawMode();
   }
 
-  toggleSideBar() {
+  public toggleSideBar() {
     this.toolbarButtons.sidebarOpen.next(!this.toolbarButtons.sidebarOpen.getValue());
   }
 
-  toggleSearchBar() {
+  public toggleSearchBar() {
     this.toolbarButtons.searchBarHidden.next(!this.toolbarButtons.searchBarHidden.getValue());
   }
 
-  increasePageNumber() {
+  public increasePageNumber() {
     this.toolbarEvents.changePageByDelta.next(1);
   }
 
@@ -60,7 +60,7 @@ export class MediaViewerToolbarComponent implements OnInit, OnDestroy  {
     this.toolbarEvents.changePageByDelta.next(-1);
   }
 
-  onPageNumberInputChange(pageNumber: string) {
+  public onPageNumberInputChange(pageNumber: string) {
     this.toolbarEvents.setCurrentPage.next(Number.parseInt(pageNumber, 0));
   }
 
@@ -68,27 +68,27 @@ export class MediaViewerToolbarComponent implements OnInit, OnDestroy  {
     this.pageNumber = pageNumber;
   }
 
-  rotate(rotation: number) {
+  public rotate(rotation: number) {
     this.toolbarEvents.rotate.next(rotation);
   }
 
-  toggleSecondaryToolbar() {
+  public toggleSecondaryToolbar() {
     this.toolbarButtons.subToolbarHidden.next(!this.toolbarButtons.subToolbarHidden.getValue());
   }
 
-  printFile() {
+  public printFile() {
     this.toolbarEvents.print.next();
   }
 
-  downloadFile() {
+  public downloadFile() {
     this.toolbarEvents.download.next();
   }
 
-  zoom(zoomFactor: string) {
+  public zoom(zoomFactor: string) {
     this.toolbarEvents.zoom.next(+zoomFactor);
   }
 
-  stepZoom(zoomFactor: number) {
+  public stepZoom(zoomFactor: number) {
     this.toolbarEvents.stepZoom.next(zoomFactor);
     this.zoomSelect.nativeElement.selected = 'selected';
   }

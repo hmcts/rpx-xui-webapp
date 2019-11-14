@@ -37,4 +37,9 @@ describe('getEnvironment', () => {
     expect(AppUtils.getEnvironment('perftest')).toEqual(
       AppConstants.ENVIRONMENT_NAMES.perftest);
   });
+
+  it('show Nav Items', () => {
+    expect(AppUtils.showNavItems('SomeItems')).toEqual(true);
+    expect(AppUtils.showNavItems('accept-terms-and-conditions')).toEqual(false);
+  });
 });

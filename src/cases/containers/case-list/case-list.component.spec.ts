@@ -9,6 +9,7 @@ import {NO_ERRORS_SCHEMA} from '@angular/core';
 import {CaseFilterToggle, FindCaselistPaginationMetadata} from '../../store/actions/case-list.action';
 import {provideMockStore, MockStore} from '@ngrx/store/testing';
 import {Jurisdiction, PaginationMetadata} from '@hmcts/ccd-case-ui-toolkit';
+import { of, Observable } from 'rxjs';
 
 describe('CaseListComponent', () => {
   let component: CaseListComponent;
@@ -20,6 +21,10 @@ describe('CaseListComponent', () => {
    */
   const mockService = jasmine.createSpy();
   let spyOnDispatchToStore = jasmine.createSpy();
+  let spyOnPipeToStore = jasmine.createSpy();
+
+  const mockDefinitionsService = jasmine.createSpyObj('DefinitionsService', ['getJurisdictions']);
+  const mockAppConfig = jasmine.createSpyObj('AppConfig', ['getPaginationPageSize']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -27,26 +32,48 @@ describe('CaseListComponent', () => {
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
         {
-          provide: AppConfigService,
-          useClass: mockService
-        },
-        {
           provide: AppConfig,
-          useClass: mockService
+          useValue: mockAppConfig
         },
         {
           provide: DefinitionsService,
-          useClass: mockService
+          useValue: mockDefinitionsService
         },
         provideMockStore(),
       ]
     });
     store = TestBed.get(Store);
     spyOnDispatchToStore = spyOn(store, 'dispatch').and.callThrough();
+    spyOnPipeToStore = spyOn(store, 'pipe').and.callThrough();
 
     fixture = TestBed.createComponent(CaseListComponent);
     component = fixture.componentInstance;
   }));
+
+  describe('ngOnInit()', () => {
+    it('should make internal function calls', () => {
+      spyOnPipeToStore.and.returnValue(of({}));
+      spyOn(component, 'setCaseListFilterDefaults').and.callThrough();
+      spyOn(component, 'listenToPaginationMetadata').and.callThrough();
+      spyOn(component, 'findCaseListPaginationMetadata').and.callThrough();
+
+      mockDefinitionsService.getJurisdictions.and.returnValue(of([{
+        id: 'some id',
+        caseTypes: [{
+          id: 'some id',
+          states: [{
+            id: 'some id'
+          }]
+        }]
+      }]));
+
+      component.ngOnInit();
+
+      expect(component.setCaseListFilterDefaults).toHaveBeenCalled();
+      expect(component.listenToPaginationMetadata).toHaveBeenCalled();
+      expect(component.findCaseListPaginationMetadata).toHaveBeenCalled();
+    });
+  });
 
   describe('getToggleButtonName()', () => {
 
@@ -148,6 +175,29 @@ describe('CaseListComponent', () => {
           page: 1,
         }
       };
+
+      component.applyChangePage(event);
+
+      expect(spyOnFindCaseListPaginationMetadata).toHaveBeenCalled();
+    });
+
+    it('should call findCaseListPaginationMetadata() on page change with values from localStorage.', () => {
+
+      const spyOnFindCaseListPaginationMetadata = spyOn(component, 'findCaseListPaginationMetadata').and.callThrough();
+
+      const event = {
+        selected: {
+          page: 1,
+        }
+      };
+
+      const localStorageGetItemSpy = spyOn(localStorage, 'getItem');
+      component.savedQueryParams = { id:  '' };
+      localStorageGetItemSpy.and.returnValue('{' +
+        '"jurisdiction": "Probate", ' +
+        '"case-type": "GrantOfRepresentation", ' +
+        '"case-state": "BOReadyToIssue"' +
+      '}');
 
       component.applyChangePage(event);
 
@@ -256,5 +306,55 @@ describe('CaseListComponent', () => {
       expect(component.resultsArr).toEqual([{ case_id: 'DRAFT274146' }]);
     });
   });
+
+
+  describe('setCaseListFilterDefaults()', () => {
+
+    it('should set the defaults.', () => {
+      mockDefinitionsService.getJurisdictions.and.returnValue(of([{
+        id: 'some id',
+        caseTypes: [{
+          id: 'some id',
+          states: [{
+            id: 'some id'
+          }]
+        }]
+      }]));
+      component.setCaseListFilterDefaults();
+
+      expect(component.defaults).toBeDefined();
+    });
+
+    it('should set the defaults from localStorage.', () => {
+      const localStorageGetItemSpy = spyOn(localStorage, 'getItem');
+      localStorageGetItemSpy.and.returnValue('{' +
+        '"jurisdiction": "Probate", ' +
+        '"case-type": "GrantOfRepresentation", ' +
+        '"case-state": "BOReadyToIssue"' +
+      '}');
+      component.setCaseListFilterDefaults();
+
+      expect(component.defaults.state_id).toEqual('BOReadyToIssue');
+    });
+  });
+
+
+  it('should unsubscribe onDestroy', () => {
+    component.filterSubscription = new Observable().subscribe();
+    component.resultSubscription = new Observable().subscribe();
+    component.paginationSubscription = new Observable().subscribe();
+    component.caseFilterToggleSubscription = new Observable().subscribe();
+    spyOn(component.filterSubscription, 'unsubscribe').and.callThrough();
+    spyOn(component.resultSubscription, 'unsubscribe').and.callThrough();
+    spyOn(component.paginationSubscription, 'unsubscribe').and.callThrough();
+    spyOn(component.caseFilterToggleSubscription, 'unsubscribe').and.callThrough();
+
+    component.ngOnDestroy();
+    expect(component.filterSubscription.unsubscribe).toHaveBeenCalled();
+    expect(component.resultSubscription.unsubscribe).toHaveBeenCalled();
+    expect(component.paginationSubscription.unsubscribe).toHaveBeenCalled();
+    expect(component.caseFilterToggleSubscription.unsubscribe).toHaveBeenCalled();
+  });
+
 });
 

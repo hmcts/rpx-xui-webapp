@@ -11,7 +11,7 @@ import { config } from '../config'
 import {http} from '../lib/http'
 import * as amendedJurisdictions from './index'
 
-describe('proxy', () => {
+describe('Amended Jurisdiction', () => {
 
   let next
   let sandbox
@@ -37,9 +37,7 @@ describe('proxy', () => {
 
     result1 = {
         data: [
-            {
-                id: 'data',
-            },
+
         ],
     }
 
@@ -72,7 +70,22 @@ describe('proxy', () => {
     const expected = [
         {
             id: 'PROBATE',
-        },
+        }
+    ]
+
+    spy = sandbox.stub(http, 'get').resolves(result0)
+    await amendedJurisdictions.getJurisdictions(req, res)
+    expect(spy).to.have.been.calledWith(url)
+    expect(res.send).to.have.been.calledWith(expected)
+  })
+
+  it('should jurisdictions proxy a get request and send PROBATE array when env is prod', async () => {
+    const url = `${config.services.ccd.componentApi}${req.baseUrl}${req.url}`
+    config.environment = 'prod'
+    const expected = [
+        {
+            id: 'PROBATE',
+        }
     ]
 
     spy = sandbox.stub(http, 'get').resolves(result0)

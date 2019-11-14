@@ -37,7 +37,7 @@ module "app" {
         # Need to check these vault values - dont seem right here.
         S2S_SECRET = "${data.azurerm_key_vault_secret.s2s_secret.value}"
         IDAM_SECRET = "${data.azurerm_key_vault_secret.oauth2_secret.value}"
-
+        NODE_TLS_REJECT_UNAUTHORIZED = "${var.node_tls_reject_unauthorized}"
 
     }
 }
@@ -49,7 +49,7 @@ data "azurerm_key_vault" "key_vault" {
 }
 
 data "azurerm_key_vault_secret" "s2s_secret" {
-    name = "xui-s2s-token"
+    name = "mc-s2s-client-secret"
     vault_uri = "${data.azurerm_key_vault.key_vault.vault_uri}"
 }
 

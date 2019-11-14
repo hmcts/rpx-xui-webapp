@@ -8,6 +8,7 @@ import { asyncReturnOrError } from '../util'
 import * as serviceTokenMiddleware from './serviceToken'
 
 const logger = log4jui.getLogger('auth')
+const idamURl = config.services.idam.idamApiUrl
 
 export function validRoles(roles) {
     //return roles.indexOf(config.juiJudgeRole) > -1 || roles.indexOf(config.juiPanelMember) > -1
@@ -33,7 +34,7 @@ export default async (req, res, next) => {
     // concerns: if doLogout is called, req.session.user is cleared but this sets it all up again
     if (!req.session.user) {
         logger.warn('Session expired. Trying to get user details again')
-        const details = await asyncReturnOrError(getDetails(), 'Cannot get user details', res, logger, false)
+        const details = await asyncReturnOrError(getDetails(idamURl), 'Cannot get user details', res, logger, false)
 
         if (details) {
             logger.info('Setting session')

@@ -1,19 +1,21 @@
 export default {
     health: {
-        ccdComponentApi: 'https://ccd-api-gateway-web-prod.service.core-compute-prod.internal/health',
-        ccdDataApi: 'https://ccd-data-store-api-prod.service.core-compute-prod.internal/health',
-        documentsApi: 'https://dm-store-prod.service.core-compute-prod.internal/health',
+        ccdComponentApi: 'http://ccd-api-gateway-web-prod.service.core-compute-prod.internal/health',
+        ccdDataApi: 'http://ccd-data-store-api-prod.service.core-compute-prod.internal/health',
+        documentsApi: 'http://dm-store-prod.service.core-compute-prod.internal/health',
+        em_anno_api: 'http://em-anno-prod.service.core-compute-prod.internal',
     },
     logging: 'debug',
     secureCookie: false,
     services: {
         ccd: {
-            componentApi: 'https://ccd-api-gateway-web-prod.service.core-compute-prod.internal',
-            dataApi: 'https://ccd-data-store-api-prod.service.core-compute-prod.internal',
+            componentApi: 'http://ccd-api-gateway-web-prod.service.core-compute-prod.internal',
+            dataApi: 'http://ccd-data-store-api-prod.service.core-compute-prod.internal',
         },
         documents: {
-            api: 'https://dm-store-prod.service.core-compute-prod.internal',
+            api: 'http://dm-store-prod.service.core-compute-prod.internal',
         },
+        em_anno_api: 'http://em-anno-prod.service.core-compute-prod.internal',
         idam: {
             idamApiUrl: 'https://idam-api.platform.hmcts.net',
             idamClientID: 'xuiwebapp',

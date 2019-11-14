@@ -2,9 +2,15 @@ const CreateCaseStartPage = require('../pageObjects/createCaseStartPage.js');
 let CreateCaseWizardPage = require('../pageObjects/createCaseWizardPage.js');
 let AppealCreatedPage = require('../pageObjects/appealCreatedPage.js');
 let CaseCreatedPage = require('../pageObjects/caseCreatedPage.js');
+let ProbatePage = require('../pageObjects/probatePage.js');
+let DivorcesPage = require('../pageObjects/divorcesPage.js');
+let FrUserPage = require('../pageObjects/frUserPage.js');
+let ApplyForProbatePage = require('../pageObjects/applyForProbatePage.js');
 const headerPage = require('../pageObjects/headerPage');
 const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants');
 let TestData = require('../../utils/TestData.js');
+var {When} = require('cucumber');
+var {Then} = require('cucumber');
 Dropdown = require('../pageObjects/webdriver-components/dropdown.js');
 TextField = require('../pageObjects/webdriver-components/textField.js');
 CustomError = require('../../utils/errors/custom-error.js');
@@ -16,6 +22,10 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
   let createCaseStartPage = new CreateCaseStartPage();
   let createWizardPage = new CreateCaseWizardPage();
   let appealCreatedPage = new AppealCreatedPage();
+  let probatePage = new ProbatePage();
+  let divorcesPage = new DivorcesPage();
+  let frUserPage = new FrUserPage();
+  let applyForProbatePage = new ApplyForProbatePage();
 
   When(/^I click on create case button$/, async function () {
     //await caseListPage.clickCreateNewCaseButton();
@@ -27,15 +37,14 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
     expect(await new CreateCaseStartPage().amOnPage()).to.be.true;
   });
 
-  When(/^I enter mandatory fields jurisdiction,case type,event and click on start button$/, async function () {
-    browser.sleep(LONG_DELAY);
-    await createCaseStartPage.selectJurisdiction(TestData.jurisdiction);
-    await createCaseStartPage.selectCaseType();
-    await createCaseStartPage.selectEvent(TestData.event);
+  When(/^I enter mandatory probate fields jurisdiction,case type,event and click on start button$/, async function () {
+    browser.sleep(AMAZING_DELAY);
+    await createCaseStartPage.selectJurisdiction(TestData.probatejurisdiction);
+    //await createCaseStartPage.selectCaseType();
+    //await createCaseStartPage.selectEvent();
     await createCaseStartPage.clickStartButton();
-
-
   });
+
   Then(/^I should navigate to Case details page$/, async function () {
     browser.sleep(LONG_DELAY);
     expect(await new CreateCaseWizardPage().amOnPage()).to.be.true;
@@ -58,7 +67,7 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
     await appealCreatedPage.submitCase();
   });
 
-  Then(/^case should be created successfuly$/, async function () {
+  Then(/^case should be created successfully$/, async function () {
     browser.sleep(LONG_DELAY);
     expect(await new CaseCreatedPage().amOnPage()).to.be.true
 
@@ -79,5 +88,88 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
   Then(/^I should be display the Case details page$/, async function (){
     expect(await new CreateCaseWizardPage().amOnPage()).to.be.true
   });
+
+  Then(/^I should navigate to apply for probate page$/, async function () {
+    browser.sleep(AMAZING_DELAY);
+    expect(await new ProbatePage().amOnPage()).to.be.true
+  });
+
+  When(/^I Enter mandatory details and click on save and continue button$/,async function () {
+    browser.sleep(LONG_DELAY);
+    await probatePage.enterFirmName();
+    await probatePage.enterPostCodeTextField();
+    browser.sleep(LONG_DELAY);
+    await probatePage.selectanAddress();
+    browser.sleep(AMAZING_DELAY);
+    await probatePage.enterReference();
+    await probatePage.enterEmailAddress();
+    browser.sleep(AMAZING_DELAY);
+    await probatePage.clickOnSaveAndContinue();
+  });
+
+  Then(/^I should be on check your answers page$/,async function () {
+    browser.sleep(LONG_DELAY);
+    expect(await new ApplyForProbatePage().amOnPage()).to.be.true;
+  });
+
+  When(/^I click on save and continue button$/, async function () {
+    browser.sleep(AMAZING_DELAY);
+    await applyForProbatePage.clickOnSaveAndContinue();
+  });
+});
+
+Then(/^I should navigate to reason for the divorce page$/, async function () {
+
+});
+When(/^I enter mandatory divorces fields jurisdiction,case type,event and click on start button$/,async function () {
+  browser.sleep(AMAZING_DELAY);
+  await createCaseStartPage.selectJurisdiction(TestData.divorcesjurisdiction);
+  //await createCaseStartPage.selectCaseType(TestData.divorcescaseType);
+  //await createCaseStartPage.selectEvent(TestData.divorceseevent);
+  await createCaseStartPage.clickStartButton();
+});
+Then(/^I should navigate to about the solicitor page$/, function () {
+
+});
+When(/^I Enter mandatory solicitor details and click on continue button$/, function () {
+
+});
+Then(/^I should navigate to about the petitioner page$/, function () {
+
+});
+When(/^I Enter mandatory petitioner details and click on continue button$/, function () {
+
+});
+Then(/^I should navigate to about the respondent page$/, function () {
+
+});
+When(/^I Enter mandatory respondent details and click on continue button$/, function () {
+
+});
+Then(/^I should navigate to marriage certificate details page$/, function () {
+
+});
+When(/^I Enter mandatory marriage certificate details and click on continue button$/, function () {
+
+});
+Then(/^I should navigate to jurisdiction page$/, function () {
+
+});
+When(/^I select the legal connection and click on continue button$/, function () {
+
+});
+When(/^I select the fact reason and click on continue button$/, function () {
+
+});
+Then(/^I should navigate to statement of case page$/, function () {
+
+});
+When(/^I Enter mandatory statement of case details and click on continue button$/, function () {
+
+});
+When(/^I click on save petition button$/, function () {
+
+});
+When(/^I enter mandatory fr fields jurisdiction,case type,event and click on start button$/, function () {
 
 });

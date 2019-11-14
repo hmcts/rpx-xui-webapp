@@ -13,6 +13,10 @@ properties([
 
 @Library("Infrastructure")
 
+// Disable pact testing on pipeline
+//
+// import uk.gov.hmcts.contino.AppPipelineDsl
+
 def type      = "nodejs"
 def product   = "xui"
 def component = "webapp"
@@ -21,7 +25,7 @@ def deployToAatOnly = true  // set to true if only deploy upto AAT, set to false
 
 def secrets = [
   'rpx-${env}': [
-    secret('xui-s2s-token', 'S2S_SECRET'),
+    secret('mc-s2s-client-secret', 'S2S_SECRET'),
     secret('mc-idam-client-secret', 'IDAM_SECRET'),
     secret('test-email', 'TEST_EMAIL'),
     secret('test-password', 'TEST_PASSWORD'),
@@ -44,6 +48,11 @@ withPipeline(type, product, component) {
     enableDockerBuild()
     installCharts()
 
+// Disable pact testing on pipeline
+//
+//    enablePactAs([
+//      AppPipelineDsl.PactRoles.CONSUMER
+//    ])
 
     after('checkout') {sh 'yarn cache clean'}
 

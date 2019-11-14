@@ -16,8 +16,8 @@ export async function getUserTermsAndConditions(req: express.Request, res: expre
     }
     try {
         const url = getUserTermsAndConditionsUrl(config.services.termsAndConditions, req.params.userId, application.idamClient)
-        // const response = await http.get(url)
-        res.send(true)
+        const response = await http.get(url)
+        res.send(response.data)
     } catch (error) {
         // we get a 404 if the user has not agreed to Terms and conditions
         if (error.status === 404) {
@@ -46,8 +46,8 @@ export async function postUserTermsAndConditions(req: express.Request, res: expr
     try {
         const data = {userId: req.body.userId}
         const url = postUserTermsAndConditionsUrl(config.services.termsAndConditions, application.idamClient)
-        //const response = await http.post(url, data)
-        res.send(true)
+        const response = await http.post(url, data)
+        res.send(response.data)
     } catch (error) {
         errReport = {
             apiError: error.data.message,

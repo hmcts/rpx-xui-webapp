@@ -1,5 +1,5 @@
 import { HeaderComponent } from './header.component';
-import { Subscription } from 'rxjs';
+import { of } from 'rxjs';
 
 
 describe('Header Component', () => {
@@ -40,5 +40,13 @@ describe('Header Component', () => {
     it('should getObservable', () => {
         component.getObservable(mockStore);
         expect(mockStore.pipe).toHaveBeenCalled();
+    });
+
+    it('should ngOnInit', () => {
+        mockService.get.and.returnValue('pui-case-manager');
+        mockStore.pipe.and.returnValue(of('true'));
+        component.ngOnInit();
+        expect(mockService.get).toHaveBeenCalled();
+        expect(component.isCaseManager).toEqual(true);
     });
 });

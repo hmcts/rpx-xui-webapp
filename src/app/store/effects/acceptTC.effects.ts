@@ -10,8 +10,7 @@ import { CookieService } from 'ngx-cookie';
 export class AcceptTcEffects {
   constructor(
     private actions$: Actions,
-    private acceptTcService: AcceptTermsService,
-    private cookieService: CookieService
+    private acceptTcService: AcceptTermsService
   ) { }
 
   @Effect()

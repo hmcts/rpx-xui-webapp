@@ -13,19 +13,11 @@ import { GuardUtil } from './guardUtil';
   providedIn: 'root'
 })
 export class AcceptTermsGuard implements CanActivate {
-  constructor(private cookieService: CookieService,
-              private store: Store<fromApp.State>,
+  constructor(private store: Store<fromApp.State>,
               private guardUtil: GuardUtil) {
   }
 
   canActivate(): Observable<boolean> {
-    const isPuiCaseManager = AppUtils.isRoleExistsForUser('pui-case-manager', this.cookieService);
-    if (isPuiCaseManager) {
-      return this.guardUtil.checkStore(this.store, 'accept-terms-and-conditions', 'false').pipe(
-        switchMap(() => of(true)),
-        catchError(() => of(false))
-      );
-    }
-    return of(true);
+    return this.guardUtil.canActivate(this.store, 'accept-terms-and-conditions', 'false');
   }
 }

@@ -6,6 +6,8 @@ import { WindowService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/w
 import { AbstractAppConfig } from '@hmcts/ccd-case-ui-toolkit/dist/app.config';
 import createSpyObj = jasmine.createSpyObj;
 import { MediaViewerToolbarComponent } from '../media-viewer-toolbar/media-viewer-toolbar.component';
+import { MediaViewerSearchComponent } from '../media-viewer-search/media-viewer-search.component';
+import { FormsModule } from '@angular/forms';
 
 const GATEWAY_DOCUMENT_URL = 'http://localhost:1234/documents';
 const REMOTE_DOCUMENT_URL = 'https://www.example.com/binary';
@@ -29,11 +31,13 @@ describe('MediaViewerWrapperComponent', () => {
         windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage', 'removeLocalStorage']);
         TestBed.configureTestingModule({
             imports: [
-                MediaViewerModule
+              FormsModule,
+              MediaViewerModule,
             ],
             declarations: [
                 MediaViewerWrapperComponent,
                 MediaViewerToolbarComponent,
+                MediaViewerSearchComponent,
                 DocumentUrlPipe
             ],
             providers: [

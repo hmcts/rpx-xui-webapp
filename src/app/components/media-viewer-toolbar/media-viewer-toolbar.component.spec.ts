@@ -50,5 +50,59 @@ describe('MediaViewerToolbarComponent', () => {
     component.toolbarButtons.searchBarHidden.asObservable()
       .subscribe(searchBarHidden => expect(searchBarHidden).toBeTruthy());
   }));
-  
+
+  it('should call toggleSideBar when the index button click', () => {
+    spyOn(component, 'toggleSideBar').and.callThrough();
+    const indexBtn = fixture.debugElement.query(By.css('#mvIndexBtn')).nativeElement;
+    indexBtn.click();
+    fixture.detectChanges();
+    expect(component.toggleSideBar).toHaveBeenCalled();
+  });
+
+  it('should call onClickDrawToggle when the draw button click', () => {
+    spyOn(component, 'onClickDrawToggle').and.callThrough();
+    const mvDrawBtn = fixture.debugElement.query(By.css('#mvDrawBtn')).nativeElement;
+    mvDrawBtn.click();
+    fixture.detectChanges();
+    expect(component.onClickDrawToggle).toHaveBeenCalled();
+  });
+
+
+  it('should call onClickHighlightToggle when the hightlight button click', () => {
+    spyOn(component, 'onClickHighlightToggle').and.callThrough();
+    const mvHighlightBtn = fixture.debugElement.query(By.css('#mvHighlightBtn')).nativeElement;
+    mvHighlightBtn.click();
+    fixture.detectChanges();
+    expect(component.onClickHighlightToggle).toHaveBeenCalled();
+  });
+
+  it('should call decreasePageNumber when the down button click', () => {
+    spyOn(component, 'decreasePageNumber').and.callThrough();
+    const mvDownBtn = fixture.debugElement.query(By.css('#mvDownBtn')).nativeElement;
+    mvDownBtn.click();
+    fixture.detectChanges();
+    expect(component.decreasePageNumber).toHaveBeenCalled();
+  });
+
+  it('should call increasePageNumber when the up button click', () => {
+    spyOn(component, 'increasePageNumber').and.callThrough();
+    const mvUpBtn = fixture.debugElement.query(By.css('#mvUpBtn')).nativeElement;
+    mvUpBtn.click();
+    fixture.detectChanges();
+    expect(component.increasePageNumber).toHaveBeenCalled();
+  });
+
+  it('should call stepZoom when the zoom minus or plus button click', () => {
+    spyOn(component, 'stepZoom').and.callThrough();
+    const mvMinusBtn = fixture.debugElement.query(By.css('#mvMinusBtn')).nativeElement;
+    mvMinusBtn.click();
+    fixture.detectChanges();
+    expect(component.stepZoom).toHaveBeenCalledWith(-0.1);
+
+    const mvPlusBtn = fixture.debugElement.query(By.css('#mvPlusBtn')).nativeElement;
+    mvPlusBtn.click();
+    fixture.detectChanges();
+    expect(component.stepZoom).toHaveBeenCalledWith(0.1);
+  });
+
 });

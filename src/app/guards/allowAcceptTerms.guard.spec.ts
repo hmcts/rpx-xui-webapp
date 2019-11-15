@@ -4,32 +4,16 @@ describe('Allow Accept Terms guard', () => {
     let guard: AllowAcceptTermsGuard;
     let mockStore: any;
     let mockService: any;
+    let mockGuardUtil: any;
 
     beforeEach(() => {
         mockStore = jasmine.createSpyObj('mockStore', ['unsubscribe', 'dispatch', 'pipe']);
         mockService = jasmine.createSpyObj('mockService', ['get']);
-        guard = new AllowAcceptTermsGuard(mockStore, mockService);
+        mockGuardUtil = jasmine.createSpyObj('guardUtil', ['checkStore', 'handleTC']);
+        guard = new AllowAcceptTermsGuard(mockStore, mockService, mockGuardUtil);
     });
 
     it('is Truthy', () => {
         expect(guard).toBeTruthy();
-    });
-
-    it('checkStore', () => {
-        guard.checkStore(mockStore);
-        expect(mockStore.pipe).toHaveBeenCalled();
-    });
-
-    it('handleTC url when not loaded', () => {
-        const tc = { isLoaded: false, hasUserAcceptedTC: 'true' };
-        guard.handleTC(tc, 'cookieName', 'cases', mockService, mockStore);
-        expect(mockService.get).toHaveBeenCalledWith('cookieName');
-        expect(mockStore.dispatch).toHaveBeenCalled();
-    });
-
-    it('handleTC url when loaded', () => {
-        const tc = { isLoaded: true, hasUserAcceptedTC: 'true' };
-        guard.handleTC(tc, 'cookieName', 'cases', mockService, mockStore);
-        expect(mockStore.dispatch).toHaveBeenCalled();
     });
 });

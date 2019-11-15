@@ -3,11 +3,11 @@ import { getUserTermsAndConditionsUrl, postUserTermsAndConditionsUrl } from './u
 
 describe('terms And Conditions ', () => {
     it('should getUserTermsAndConditionsUrl', () => {
-        const url = getUserTermsAndConditionsUrl('http://base', 'userId1234', 'idamClient')
-        expect(url).to.equal('http://base/api/v1/termsAndConditions/managecases/users/userId1234/idamClient/1')
+        const url = getUserTermsAndConditionsUrl('http://base', 'userId1234', 'xuiwebapp')
+        expect(url).to.equal('http://base/api/v1/termsAndConditions/xuiwebapp/users/userId1234')
     })
     it('should postUserTermsAndConditionsUrl', () => {
-        const url = postUserTermsAndConditionsUrl('http://base', 'idamClient')
-        expect(url).to.equal('http://base/api/v1/termsAndConditions/managecases/users/idamClient/1')
+        const url = postUserTermsAndConditionsUrl('http://base', 'xuiwebapp')
+        expect(url).to.equal('http://base/api/v1/termsAndConditions/xuiwebapp/users/accept/version')
     })
 })

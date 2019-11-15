@@ -84,7 +84,6 @@ defineSupportCode(function ({ Given, When, Then }) {
 
 
   Then(/^I should be redirected to EUI dashboard page$/, async function () {
-    browser.sleep(SHORT_DELAY);
     await waitForElement('govuk-heading-xl');
     await expect(loginPage.dashboard_header.isDisplayed()).to.eventually.be.true;
     await expect(loginPage.dashboard_header.getText())
@@ -95,12 +94,7 @@ defineSupportCode(function ({ Given, When, Then }) {
   });
 
   Given(/^I am logged into Expert UI with valid user details$/, async function () {
-    browser.sleep(LONG_DELAY);
-    await loginPage.emailAddress.sendKeys(this.config.username);
-    browser.sleep(MID_DELAY);
-    await loginPage.password.sendKeys(this.config.password);
-    await loginPage.clickSignIn();
-    browser.sleep(MID_DELAY);
+    await loginPage.givenIAmLoggedIn(this.config.username, this.config.password); 
   });
 
   Given(/^I am logged into Expert UI with Probate user details$/, async function () {

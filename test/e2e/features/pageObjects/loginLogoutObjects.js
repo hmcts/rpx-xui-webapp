@@ -2,6 +2,8 @@
 
 const { SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants');
 
+var BrowserWaits = require('../../support/customWaits');
+
 function loginLogoutObjects() {
 
   this.emailAddress = element(by.css("[id='username']"));
@@ -13,10 +15,14 @@ function loginLogoutObjects() {
   this.dashboard_header= element(by.css("[class='govuk-heading-xl']"));
 
 
-  this.givenIAmLoggedIn = async function () {
-    await this.enterUrEmail('');
-    await this.enterPassword('');
+  this.givenIAmLoggedIn = async function (email,password) {
+    BrowserWaits.waitForElement(this.signinTitle);
+    await this.enterUrEmail(email);
+    await this.enterPassword(password);
     await this.clickSignIn();
+    BrowserWaits.waitForElement(this.signOutlink);
+
+
   };
 
   this.givenIAmUnauthenticatedUser = async function () {

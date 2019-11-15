@@ -14,7 +14,7 @@ var {Then} = require('cucumber');
 Dropdown = require('../pageObjects/webdriver-components/dropdown.js');
 TextField = require('../pageObjects/webdriver-components/textField.js');
 CustomError = require('../../utils/errors/custom-error.js');
-
+var FRCase = require('../pageObjects/FRCase');
 var {defineSupportCode} = require('cucumber');
 
 defineSupportCode(function ({And, But, Given, Then, When}) {
@@ -27,13 +27,15 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
   let frUserPage = new FrUserPage();
   let applyForProbatePage = new ApplyForProbatePage();
 
+  let frCase = new FRCase(); 
+
   When(/^I click on create case button$/, async function () {
     //await caseListPage.clickCreateNewCaseButton();
     await headerPage.clickCreateCase();
 
   });
   Then(/^Create case page should be displayed$/, async function () {
-    browser.sleep(AMAZING_DELAY);
+     
     expect(await new CreateCaseStartPage().amOnPage()).to.be.true;
   });
 
@@ -46,7 +48,6 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
   });
 
   Then(/^I should navigate to Case details page$/, async function () {
-    browser.sleep(LONG_DELAY);
     expect(await new CreateCaseWizardPage().amOnPage()).to.be.true;
   });
 
@@ -116,60 +117,75 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
     browser.sleep(AMAZING_DELAY);
     await applyForProbatePage.clickOnSaveAndContinue();
   });
-});
 
-Then(/^I should navigate to reason for the divorce page$/, async function () {
 
-});
-When(/^I enter mandatory divorces fields jurisdiction,case type,event and click on start button$/,async function () {
-  browser.sleep(AMAZING_DELAY);
-  await createCaseStartPage.selectJurisdiction(TestData.divorcesjurisdiction);
-  //await createCaseStartPage.selectCaseType(TestData.divorcescaseType);
-  //await createCaseStartPage.selectEvent(TestData.divorceseevent);
-  await createCaseStartPage.clickStartButton();
-});
-Then(/^I should navigate to about the solicitor page$/, function () {
 
-});
-When(/^I Enter mandatory solicitor details and click on continue button$/, function () {
 
-});
-Then(/^I should navigate to about the petitioner page$/, function () {
+  Then(/^I should navigate to reason for the divorce page$/, async function () {
 
-});
-When(/^I Enter mandatory petitioner details and click on continue button$/, function () {
+  });
+  When(/^I enter mandatory divorces fields jurisdiction,case type,event and click on start button$/, async function () {
+    browser.sleep(AMAZING_DELAY);
+    await createCaseStartPage.selectJurisdiction(TestData.divorcesjurisdiction);
+    //await createCaseStartPage.selectCaseType(TestData.divorcescaseType);
+    //await createCaseStartPage.selectEvent(TestData.divorceseevent);
+    await createCaseStartPage.clickStartButton();
+  });
+  Then(/^I should navigate to about the solicitor page$/, function () {
 
-});
-Then(/^I should navigate to about the respondent page$/, function () {
+  });
+  When(/^I Enter mandatory solicitor details and click on continue button$/, function () {
 
-});
-When(/^I Enter mandatory respondent details and click on continue button$/, function () {
+  });
+  Then(/^I should navigate to about the petitioner page$/, function () {
 
-});
-Then(/^I should navigate to marriage certificate details page$/, function () {
+  });
+  When(/^I Enter mandatory petitioner details and click on continue button$/, function () {
 
-});
-When(/^I Enter mandatory marriage certificate details and click on continue button$/, function () {
+  });
+  Then(/^I should navigate to about the respondent page$/, function () {
 
-});
-Then(/^I should navigate to jurisdiction page$/, function () {
+  });
+  When(/^I Enter mandatory respondent details and click on continue button$/, function () {
 
-});
-When(/^I select the legal connection and click on continue button$/, function () {
+  });
+  Then(/^I should navigate to marriage certificate details page$/, function () {
 
-});
-When(/^I select the fact reason and click on continue button$/, function () {
+  });
+  When(/^I Enter mandatory marriage certificate details and click on continue button$/, function () {
 
-});
-Then(/^I should navigate to statement of case page$/, function () {
+  });
+  Then(/^I should navigate to jurisdiction page$/, function () {
 
-});
-When(/^I Enter mandatory statement of case details and click on continue button$/, function () {
+  });
+  When(/^I select the legal connection and click on continue button$/, function () {
 
-});
-When(/^I click on save petition button$/, function () {
+  });
+  When(/^I select the fact reason and click on continue button$/, function () {
 
-});
-When(/^I enter mandatory fr fields jurisdiction,case type,event and click on start button$/, function () {
+  });
+  Then(/^I should navigate to statement of case page$/, function () {
+
+  });
+  When(/^I Enter mandatory statement of case details and click on continue button$/, function () {
+
+  });
+  When(/^I click on save petition button$/, function () {
+
+  });
+
+
+  When('I create {string}  FR Case', async function (caseType) {
+    await frCase.createCase(caseType);
+  });
+
+  When(/^I enter mandatory fr fields jurisdiction,case type,event and click on start button$/, async function () {
+    await createCaseStartPage.selectJurisdiction('Family Divorce');
+    await createCaseStartPage.selectCaseType('Financial Remedy Consented');
+    await createCaseStartPage.selectEvent('Consent Order Application');
+    await createCaseStartPage.clickStartButton();
+
+  });
+
 
 });

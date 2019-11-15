@@ -2,6 +2,8 @@
 
 const { SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants');
 
+var BrowserWaits = require('../../support/customWaits');
+
 function HeaderPage() {
 
     this.manageCases = element(by.css(".hmcts-header .hmcts-header__link"));
@@ -21,9 +23,10 @@ function HeaderPage() {
     browser.sleep(SHORT_DELAY);
   };
 
-  this.clickCreateCase = function () {
-    this.createCase.click();
-    browser.sleep(SHORT_DELAY);
+  this.clickCreateCase = async function () {
+    await this.createCase.click();
+    await BrowserWaits.waitForElement($('#cc-jurisdiction'));
+
   };
 
   this.clickFindCase = function () {

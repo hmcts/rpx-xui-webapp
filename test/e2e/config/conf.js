@@ -20,7 +20,7 @@ const localConfig = [
   {
     browserName: 'chrome',
     acceptInsecureCerts: true,
-    chromeOptions: { args: ['--headless', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote '] },
+    chromeOptions: { args: [ '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote '] },
     proxy: {
       proxyType: 'manual',
       httpProxy: 'proxyout.reform.hmcts.net:8080',
@@ -33,6 +33,7 @@ const localConfig = [
 const cap = (argv.local) ? localConfig : jenkinsConfig;
 
 const config = {
+  SELENIUM_PROMISE_MANAGER: false,
   framework: 'custom',
   frameworkPath: require.resolve('protractor-cucumber-framework'),
   specs: ['../features/**/*.feature'],
@@ -67,11 +68,11 @@ const config = {
     strict: true,
     // format: ['node_modules/cucumber-pretty'],
     format: ['node_modules/cucumber-pretty', 'json:reports_json/results.json'],
-    tags: ['@ignore'],
+    tags: ['@fr'],
     require: [
       '../support/timeout.js',
       '../support/world.js',
-      '../support/*.js',
+      // '../support/*.js',
       '../features/step_definitions/*.steps.js'
     ]
   },

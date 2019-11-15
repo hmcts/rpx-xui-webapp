@@ -8,6 +8,7 @@ import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
 import {config} from './config'
 import {router as documentRouter} from './documents/routes'
+import {router as emAnnoRouter} from './emAnno/routes'
 import healthCheck from './healthCheck'
 import {errorStack} from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
@@ -100,6 +101,7 @@ app.use('/aggregated', routes)
 app.use('/data', routes)
 // separate route for document upload/view
 app.use('/documents', documentRouter)
+app.use('/em-anno', emAnnoRouter)
 
 app.use('/print', printRouter)
 

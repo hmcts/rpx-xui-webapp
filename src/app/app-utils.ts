@@ -1,5 +1,6 @@
 
 import { AppConstants } from './app.constants';
+import { CookieService } from 'ngx-cookie';
 
 export class AppUtils {
   static getEnvironment(url: string): string {
@@ -22,5 +23,16 @@ export class AppUtils {
       }
     }
     return AppConstants.ENVIRONMENT_NAMES.prod;
+  }
+
+  static showNavItems(url: string): boolean {
+    return url.indexOf('accept-terms-and-conditions') < 0;
+  }
+
+  static isRoleExistsForUser(roleName: string,
+                             cookieService: CookieService,
+                             cookiename: string = 'roles'): boolean {
+    const userRoles = cookieService.get(cookiename);
+    return userRoles && userRoles.indexOf(roleName) >= 0;
   }
 }

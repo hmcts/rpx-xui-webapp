@@ -37,4 +37,16 @@ describe('getEnvironment', () => {
     expect(AppUtils.getEnvironment('perftest')).toEqual(
       AppConstants.ENVIRONMENT_NAMES.perftest);
   });
+
+  it('show Nav Items', () => {
+    expect(AppUtils.showNavItems('SomeItems')).toEqual(true);
+    expect(AppUtils.showNavItems('accept-terms-and-conditions')).toEqual(false);
+  });
+
+  it('isRoleExistsForUser', () => {
+    const mockService = jasmine.createSpyObj('mockService', ['get']);
+    mockService.get.and.returnValue('role1,role2,role3');
+    const roleExists = AppUtils.isRoleExistsForUser('role1', mockService);
+    expect(roleExists).toEqual(true);
+  });
 });

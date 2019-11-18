@@ -60,7 +60,7 @@ import { GuardUtil } from './guards/guardUtil';
       level: NgxLoggerLevel.TRACE,
       disableConsoleLogging: false
     }),
-    ExuiCommonLibModule
+    ExuiCommonLibModule.forRoot()
   ],
   providers: [
     {

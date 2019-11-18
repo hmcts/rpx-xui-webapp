@@ -1,18 +1,22 @@
-import * as fromActions from '../actions/';
-import { ConfigurationModel } from '../../models/configuration.model';
+import { TCDocument } from '@hmcts/rpx-xui-common-lib';
 import { TermsAndCondition } from 'src/app/models/TermsAndCondition';
+import { ConfigurationModel } from '../../models/configuration.model';
+import * as fromActions from '../actions/';
+
 export interface AppConfigState {
   config: ConfigurationModel | {};
   termsAndCondition: TermsAndCondition;
   loaded: boolean;
   loading: boolean;
+  termsAndConditions: TCDocument;
 }
 
 export const initialState: AppConfigState = {
   config: {},
   termsAndCondition: { isLoaded: false, hasUserAcceptedTC: 'true', },
   loaded: false,
-  loading: false
+  loading: false,
+  termsAndConditions: null
 };
 
 export function reducer(
@@ -53,6 +57,11 @@ export function reducer(
         }
       };
     }
+    case fromActions.LOAD_TERMS_CONDITIONS_SUCCESS:
+      return {
+        ...state,
+        termsAndConditions: action.payload
+      };
   }
   return state;
 }
@@ -60,3 +69,4 @@ export function reducer(
 
 export const getFeatureConfig = (state: AppConfigState) => state.config;
 export const getTandCLoadedConfig = (state: AppConfigState) => state.termsAndCondition;
+export const getTermsConditions = (state: AppConfigState) => state.termsAndConditions;

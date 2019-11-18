@@ -1,5 +1,5 @@
+import { TCDocument } from '@hmcts/rpx-xui-common-lib';
 import { Action } from '@ngrx/store';
-
 
 export const APP_LOAD_CONFIG = '[App] Load Config';
 export const APP_LOAD_CONFIG_SUCCESS = '[App] Load Config Success';
@@ -17,6 +17,11 @@ export const LOAD_HAS_ACCEPTED_TC_FAIL = '[T&C] Lad Has Accepted Fail';
 export const ACCEPT_T_AND_C = '[T&C] Accept T&C';
 export const ACCEPT_T_AND_C_SUCCESS = '[T&C] Accept T&C Success';
 export const ACCEPT_T_AND_C_FAIL = '[T&C] Accept T&C Fail';
+
+export const LOAD_TERMS_CONDITIONS = '[TC] Load Terms Conditions';
+export const LOAD_TERMS_CONDITIONS_SUCCESS = '[TC] Load Terms Conditions Success';
+export const LOAD_TERMS_CONDITIONS_FAIL = '[TC] Load Terms Conditions Fail';
+
 
 export class LoadConfig implements Action {
   readonly type = APP_LOAD_CONFIG;
@@ -74,6 +79,20 @@ export class AcceptTandCFail implements Action {
   constructor(public payload: boolean) {}
 }
 
+export class LoadTermsConditions {
+  public readonly type = LOAD_TERMS_CONDITIONS;
+}
+
+export class LoadTermsConditionsSuccess {
+  public readonly type = LOAD_TERMS_CONDITIONS_SUCCESS;
+  constructor(public payload: TCDocument) {}
+}
+
+export class LoadTermsConditionsFail {
+  public readonly type = LOAD_TERMS_CONDITIONS_FAIL;
+  constructor(public payload: any) {}
+}
+
 export type AppActions =
   | LoadConfig
   | LoadConfigSuccess
@@ -86,4 +105,7 @@ export type AppActions =
   | LoadHasAcceptedTCFail
   | AcceptTandC
   | AcceptTandCFail
-  | AcceptTandCSuccess;
+  | AcceptTandCSuccess
+  | LoadTermsConditions
+  | LoadTermsConditionsFail
+  | LoadTermsConditionsSuccess;

@@ -15,6 +15,7 @@ describe('App Selectors', () => {
     termsAndCondition: { isLoaded: false, hasUserAcceptedTC: 'true', },
     loaded: false,
     loading: false,
+    termsAndConditions: null
   };
 
   const appPayload = {
@@ -51,6 +52,7 @@ describe('App Selectors', () => {
     termsAndCondition: { isLoaded: false, hasUserAcceptedTC: 'true', },
     loaded: true,
     loading: false,
+    termsAndConditions: null
 };
 
   beforeEach(() => {

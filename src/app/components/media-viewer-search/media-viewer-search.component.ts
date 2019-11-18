@@ -72,7 +72,6 @@ export class MediaViewerSearchComponent implements OnInit, OnDestroy {
   }
 
   public search(): void {
-    console.log('calling search', this.searchText);
     this.toolbarEvents.search.next({
       searchTerm: this.searchText,
       highlightAll: this.highlightAll,
@@ -86,7 +85,7 @@ export class MediaViewerSearchComponent implements OnInit, OnDestroy {
   private setSearchResultsCount(results: SearchResultsCount): void {
     this.haveResults = results.total > 0;
     this.resultsText = this.haveResults
-      ? `${results.current} of ${results.total} matches`
+      ? `Found ${results.current} of ${results.total}`
       : 'Phrase not found';
   }
 

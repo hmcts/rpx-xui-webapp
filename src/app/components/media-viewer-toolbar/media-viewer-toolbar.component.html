@@ -40,12 +40,12 @@
           </select>
           <a id="mvPlusBtn" class="jui-toolbar__menu-button--zoom-in" (click)="stepZoom(0.1)"></a>
         </div>
-        <button class="jui-toolbar__button jui-toolbar__menu-button--rotate" aria-pressed="false" (click)="rotate(90)">Rotate</button>
+        <button id="mvRotateBtn" class="jui-toolbar__button jui-toolbar__menu-button--rotate" aria-pressed="false" (click)="rotate(90)">Rotate</button>
     </div>
     <div class="mv-toolbar-right">
-      <button class="jui-toolbar__button jui-toolbar__menu-button--download mv-button-left-border" aria-pressed="false" (click)="downloadFile()">Download</button>
-      <button class="jui-toolbar__button jui-toolbar__menu-button--printer" aria-pressed="false" (click)="printFile()">Print</button>
-      <button class="jui-toolbar__button jui-toolbar__menu-button--search" aria-pressed="false" (click)="toggleSearchBar()">Search</button>      
+      <button id="mvDownloadBtn" class="jui-toolbar__button jui-toolbar__menu-button--download mv-button-left-border" aria-pressed="false" (click)="downloadFile()">Download</button>
+      <button id="mvPrintBtn" class="jui-toolbar__button jui-toolbar__menu-button--printer" aria-pressed="false" (click)="printFile()">Print</button>
+      <button id="mvSearcgBtn" class="jui-toolbar__button jui-toolbar__menu-button--search" aria-pressed="false" (click)="toggleSearchBar()">Search</button>      
     </div>
 </div>
 </div>

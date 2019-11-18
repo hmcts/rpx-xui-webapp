@@ -72,10 +72,6 @@ export class MediaViewerToolbarComponent implements OnInit, OnDestroy  {
     this.toolbarEvents.rotate.next(rotation);
   }
 
-  public toggleSecondaryToolbar() {
-    this.toolbarButtons.subToolbarHidden.next(!this.toolbarButtons.subToolbarHidden.getValue());
-  }
-
   public printFile() {
     this.toolbarEvents.print.next();
   }

@@ -35,6 +35,17 @@ describe('MediaViewerToolbarComponent', () => {
     expect(component.pageNumber).toEqual(2);
   });
 
+  it('should update page number', () => {
+    component.toolbarEvents.setCurrentPage.next(4);
+    expect(component.pageNumber).toEqual(4);
+  });
+
+  it('should go to selected page', () => {
+    const pageChangerSpy = spyOn(component.toolbarEvents.setCurrentPage, 'next');
+    component.onPageNumberInputChange('4');
+    expect(pageChangerSpy).toHaveBeenCalledWith(4);
+  });
+
   it('should not show sidebar', async(() => {
     component.toolbarButtons.sidebarOpen.asObservable()
       .subscribe(sidebarOpen => expect(sidebarOpen).toBeFalsy());
@@ -103,6 +114,38 @@ describe('MediaViewerToolbarComponent', () => {
     mvPlusBtn.click();
     fixture.detectChanges();
     expect(component.stepZoom).toHaveBeenCalledWith(0.1);
+  });
+
+  it('should call rotate when the rotate button click', () => {
+    spyOn(component, 'rotate').and.callThrough();
+    const mvRotateBtn = fixture.debugElement.query(By.css('#mvRotateBtn')).nativeElement;
+    mvRotateBtn.click();
+    fixture.detectChanges();
+    expect(component.rotate).toHaveBeenCalledWith(90);
+  });
+
+  it('should call downloadFile when the download button click', () => {
+    spyOn(component, 'downloadFile').and.callThrough();
+    const mvDownloadBtn = fixture.debugElement.query(By.css('#mvDownloadBtn')).nativeElement;
+    mvDownloadBtn.click();
+    fixture.detectChanges();
+    expect(component.downloadFile).toHaveBeenCalled();
+  });
+
+  it('should call printFile when the print button click', () => {
+    spyOn(component, 'printFile').and.callThrough();
+    const mvPrintBtn = fixture.debugElement.query(By.css('#mvPrintBtn')).nativeElement;
+    mvPrintBtn.click();
+    fixture.detectChanges();
+    expect(component.printFile).toHaveBeenCalled();
+  });
+
+  it('should call toggleSearchBar when the search button click', () => {
+    spyOn(component, 'toggleSearchBar').and.callThrough();
+    const mvSearcgBtn = fixture.debugElement.query(By.css('#mvSearcgBtn')).nativeElement;
+    mvSearcgBtn.click();
+    fixture.detectChanges();
+    expect(component.toggleSearchBar).toHaveBeenCalled();
   });
 
 });

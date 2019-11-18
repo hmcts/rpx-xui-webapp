@@ -21,25 +21,16 @@
     width: 77%;
   }
 }
-.mv-search-table {
-  display: table;
-  padding-top: 15px;
-  padding-bottom: 15px;
+
+.mv-findbar-result-row {
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 
-.mv-search-table-cell {
-  display: table-cell;
-  width: 10%;
-   p{
-     color: #6f777b;
-   }
+.toolbarLabel {
+ color: #6f777b;
 }
 
-.mv-search-table-cell:first-child {
-  width: 50%;
+#findPrevious{
+  margin-right: 5px;
 }
-
-.mv-search-table-cell:last-child {
-  text-align: right;
-}
-

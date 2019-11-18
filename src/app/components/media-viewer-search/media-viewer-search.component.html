@@ -11,34 +11,34 @@
         tabindex="0"
         data-l10n-id="find_input">
     </div>
-    <button id="search" class="govuk-button hmcts-search__button"
-           title="Find the previous occurrence of the phrase" tabindex="0" data-l10n-id="find_previous"
-           (click)="search()">Search
+    <button id="searchBtn" class="govuk-button hmcts-search__button"
+            title="Find the previous occurrence of the phrase" tabindex="0" data-l10n-id="find_previous"
+            (click)="search()">Search
     </button>
-    <div class="mv-search-table">
-      <div class="mv-search-table-cell">
-      <p *ngIf="resultsText" id="findResultsCount" class="toolbarLabel">{{resultsText}}</p>
+    <div class="govuk-grid-row mv-findbar-result-row">
+        <div class="govuk-grid-column-one-half">
+            <p id="findResultsCount" class="toolbarLabel">{{resultsText}}</p>
+        </div>
+        <div class="govuk-grid-column-one-quarter">
+            <button id="findPrevious" class="link govuk-link govuk-link--no-visited-state"
+                    title="Find the previous occurrence of the phrase" tabindex="0" data-l10n-id="find_previous"
+                    (click)="searchPrev()">
+            <span data-l10n-id="find_previous_label">Prev</span>
+            </button>
+            <button id="findNext" class="link govuk-link govuk-link--no-visited-state" title="Find the next occurrence of the phrase"
+              tabindex="0" data-l10n-id="find_next" (click)="searchNext()">
+            <span data-l10n-id="find_next_label">Next</span>
+            </button>
+        </div>
+        <div class="govuk-grid-column-one-quarter">
+            <button id="advanced" class="link govuk-link govuk-link--no-visited-state" title="Advanced"
+              tabindex="0" data-l10n-id="find_next" (click)="advanced()">
+          <span data-l10n-id="find_next_label">Advanced</span>
+          </button>
+        </div>
+        
       </div>
-      <div class="mv-search-table-cell">
-          <button id="findPrevious" class="link govuk-link govuk-link--no-visited-state"
-                  title="Find the previous occurrence of the phrase" tabindex="0" data-l10n-id="find_previous"
-                  (click)="searchPrev()">
-          <span data-l10n-id="find_previous_label">Prev</span>
-        </button>
-      </div>
-      <div class="mv-search-table-cell">
-          <button id="findNext" class="link govuk-link govuk-link--no-visited-state" title="Find the next occurrence of the phrase"
-          tabindex="0" data-l10n-id="find_next" (click)="searchNext()">
-        <span data-l10n-id="find_next_label">Next</span>
-        </button>
-      </div>
-      <div class="mv-search-table-cell">
-          <button id="advanced" class="link govuk-link govuk-link--no-visited-state" title="Advanced"
-            tabindex="0" data-l10n-id="find_next" (click)="advanced()">
-        <span data-l10n-id="find_next_label">Advanced</span>
-        </button>
-      </div>
-    </div>
+
   </div>
 
   <div class="govuk-checkboxes govuk-checkboxes--medium" *ngIf="isAdvanced">

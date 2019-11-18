@@ -12,8 +12,9 @@ describe('App Selectors', () => {
 
   const appConfig = {
     config: {},
+    termsAndCondition: { isLoaded: false, hasUserAcceptedTC: 'true', },
     loaded: false,
-    loading: false
+    loading: false,
   };
 
   const appPayload = {
@@ -22,7 +23,7 @@ describe('App Selectors', () => {
         isEnabled: true,
         label: 'CCDCaseCreate'
       }
-    }
+    },
   };
 
   const appConfigLoaded = {
@@ -32,11 +33,25 @@ describe('App Selectors', () => {
             isEnabled: true,
             label: 'CCDCaseCreate'
           }
-        }
+        },
       },
       loaded: true,
-      loading: false
+      loading: false,
   };
+
+  const appConfigLoadedAfter = {
+    config: {
+      features: {
+        ccdCaseCreate: {
+          isEnabled: true,
+          label: 'CCDCaseCreate'
+        }
+      },
+    },
+    termsAndCondition: { isLoaded: false, hasUserAcceptedTC: 'true', },
+    loaded: true,
+    loading: false,
+};
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -60,11 +75,10 @@ describe('App Selectors', () => {
       store
         .select(fromSelectors.getConfigState)
         .subscribe(value => (result = value));
-
       expect(result).toEqual(appConfig);
 
       store.dispatch(new fromActions.LoadConfigSuccess(appPayload));
-      expect(result).toEqual(appConfigLoaded);
+      expect(result).toEqual(appConfigLoadedAfter);
     });
 
     it('should return app feature state', () => {

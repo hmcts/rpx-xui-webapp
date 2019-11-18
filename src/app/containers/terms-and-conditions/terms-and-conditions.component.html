@@ -1,0 +1,16 @@
+<exui-app-header></exui-app-header>
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper govuk-main-wrapper--l" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+      <ng-container *ngIf="document; else loading">
+        <xuilib-terms-and-conditions [document]="document"></xuilib-terms-and-conditions>
+      </ng-container>
+      <ng-template #loading>Loading...</ng-template>
+
+    </div>
+  </div>
+  </main>
+</div>
+<exui-app-footer></exui-app-footer>

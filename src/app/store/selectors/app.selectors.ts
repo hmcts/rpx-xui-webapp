@@ -18,3 +18,8 @@ export const getAppFeatures = createSelector(
   getConfigState,
   fromApp.getFeatureConfig
 );
+
+export const getTermsAndConditions = createSelector(
+  getConfigState,
+  state => state.termsAndConditions
+);

@@ -1,8 +1,6 @@
-import {createSelector} from '@ngrx/store';
-
+import { createSelector } from '@ngrx/store';
 import * as fromFeature from '../reducers';
 import * as fromApp from '../reducers/app-config.reducer';
-import { TermsAndCondition } from 'src/app/models/TermsAndCondition';
 
 export const getConfigState = createSelector(
   fromFeature.getAppConfigState,

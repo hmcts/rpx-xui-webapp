@@ -15,6 +15,11 @@ Dropdown = require('../pageObjects/webdriver-components/dropdown.js');
 TextField = require('../pageObjects/webdriver-components/textField.js');
 CustomError = require('../../utils/errors/custom-error.js');
 var FRCase = require('../pageObjects/FRCase');
+var ProbateCase = require('../pageObjects/ProbateCase');
+
+var CaseManager = require('../pageObjects/common/CaseManager');
+
+
 var {defineSupportCode} = require('cucumber');
 
 defineSupportCode(function ({And, But, Given, Then, When}) {
@@ -28,6 +33,9 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
   let applyForProbatePage = new ApplyForProbatePage();
 
   let frCase = new FRCase(); 
+  let probateCase = new ProbateCase();
+
+  let caseManager = new CaseManager();
 
   When(/^I click on create case button$/, async function () {
     //await caseListPage.clickCreateNewCaseButton();
@@ -175,9 +183,6 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
   });
 
 
-  When('I create {string}  FR Case', async function (caseType) {
-    await frCase.createCase(caseType);
-  });
 
   When(/^I enter mandatory fr fields jurisdiction,case type,event and click on start button$/, async function () {
     await createCaseStartPage.selectJurisdiction('Family Divorce');

@@ -16,11 +16,12 @@ function loginLogoutObjects() {
 
 
   this.givenIAmLoggedIn = async function (email,password) {
-    BrowserWaits.waitForElement(this.signinTitle);
+    await BrowserWaits.waitForElement(this.signinTitle);
+ 
     await this.enterUrEmail(email);
     await this.enterPassword(password);
     await this.clickSignIn();
-    BrowserWaits.waitForElement(this.signOutlink);
+    await BrowserWaits.waitForElement(this.signOutlink);
 
 
   };
@@ -29,13 +30,20 @@ function loginLogoutObjects() {
     await this.enterUrEmail("test@gmail.com");
     await this.enterPassword("123");
     await this.clickSignIn();
+
+    await BrowserWaits.waitForElement($(".error-summary"));
+ 
   };
 
   this.enterUrEmail = async function (email) {
+    await BrowserWaits.waitForElement(this.emailAddress);
+
     await this.emailAddress.sendKeys(email);
   };
 
   this.enterPassword = async function (password) {
+    await BrowserWaits.waitForElement(this.password);
+
     await this.password.sendKeys(password);
   };
 

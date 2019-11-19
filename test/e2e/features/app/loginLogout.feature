@@ -1,4 +1,4 @@
-@smoke
+@smoke @regression
 Feature: Login
 
   Background:

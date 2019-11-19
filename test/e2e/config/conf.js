@@ -41,10 +41,12 @@ const config = {
   params: {
     serverUrls: process.env.TEST_URL || 'http://localhost:3000/',
     targetEnv: argv.env || 'local',
-    // username: process.env.TEST_EMAIL,
-    // password: process.env.TEST_PASSWORD,
+    // username: 'peterxuisuperuser@mailnesia.com',
+    // password: 'Monday01',
     username: 'lukesuperuserxui@mailnesia.com',
     password: 'Monday01',
+    caseworkerUser:'mahesh_fr_courtadmn@mailinator.com',
+    caseworkerPassword: 'London01',
     fr_judge_username: process.env.FR_EMAIL,
     fr_judge_password: process.env.FR_PASSWORD,
     sscs_username: process.env.SSCS_EMAIL,
@@ -67,10 +69,11 @@ const config = {
   cucumberOpts: {
     strict: true,
     // format: ['node_modules/cucumber-pretty'],
-    format: ['node_modules/cucumber-pretty', 'json:reports_json/results.json'],
-    tags: ['@fr'],
+    format: ['node_modules/cucumber-pretty', 'json:reports/tests/json/results.json'],
+    tags: ['@test','not @ignore'],
     require: [
       '../support/timeout.js',
+      '../support/hooks.js',
       '../support/world.js',
       // '../support/*.js',
       '../features/step_definitions/*.steps.js'

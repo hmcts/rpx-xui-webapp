@@ -12,6 +12,7 @@ function HeaderPage() {
     this.findCase = element(by.xpath("//a[contains(text(),'Find case')]"));
     this.signOut = element(by.xpath("//a[contains(text(),'Sign out')]"));
 
+    this.contentHeader = $("#content h1");
 
   this.clickManageCases = function () {
     this.manageCases.click();
@@ -29,9 +30,11 @@ function HeaderPage() {
 
   };
 
-  this.clickFindCase = function () {
+  this.clickFindCase = async function () {
     this.findCase.click();
-    browser.sleep(LONG_DELAY);
+
+    var searchPaheHeader = element(by.xpath("//*[@id = 'content']//h1[text() = 'Search']"));
+    await BrowserWaits.waitForElement(searchPaheHeader); 
   };
 
   this.clickSignOut = function () {

@@ -93,9 +93,13 @@ defineSupportCode(function ({ Given, When, Then }) {
 
   });
 
-  Given(/^I am logged into Expert UI with valid user details$/, async function () {
+  Given('I am logged into Expert UI with valid user details', async function () {
     await loginPage.givenIAmLoggedIn(this.config.username, this.config.password); 
   });
+
+  Given('I am logged into Expert UI with valid Case Worker user details', async function () {
+    await loginPage.givenIAmLoggedIn(this.config.caseworkerUser, this.config.caseworkerPassword);
+  })
 
   Given(/^I am logged into Expert UI with Probate user details$/, async function () {
     browser.sleep(MID_DELAY);

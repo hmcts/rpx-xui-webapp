@@ -58,14 +58,14 @@ describe('MediaViewerWrapperComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    // it('should load media viewer data from local storage', () => {
-    //     windowService.getLocalStorage.and.returnValues(JSON.stringify(MEDIA_VIEWER_DATA));
-    //     fixture.detectChanges();
-    //     expect(component).toBeTruthy();
-    //     component.ngOnInit();
-    //     expect(component.mediaURL).toBe(GATEWAY_DOCUMENT_URL);
-    //     expect(component.mediaFilename).toBe('sample.pdf');
-    //     expect(component.mediaContentType).toBe('pdf');
-    // });
+    it('should load media viewer data from local storage', () => {
+        windowService.getLocalStorage.and.returnValues(JSON.stringify(MEDIA_VIEWER_DATA));
+        fixture.detectChanges();
+        expect(component).toBeTruthy();
+        component.ngOnInit();
+        expect(component.mediaURL).toBe(GATEWAY_DOCUMENT_URL);
+        expect(component.mediaFilename).toBe('sample.pdf');
+        expect(component.mediaContentType).toBe('pdf');
+    });
 
 });

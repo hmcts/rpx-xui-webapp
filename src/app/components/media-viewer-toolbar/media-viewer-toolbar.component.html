@@ -2,8 +2,8 @@
   <div class="mv-toolbar__container">
     <div class="mv-toolbar-left">
       <button id="mvIndexBtn" class="jui-toolbar__button jui-toolbar__button--items" aria-pressed="false" (click)="toggleSideBar()">Index</button>
-      <button id="mvDrawBtn" class="jui-toolbar__button jui-toolbar__menu-button--draw" [class.toggled]="toolbarEvents.drawMode | async" aria-pressed="false" (click)="onClickDrawToggle()">Draw a box</button>
-      <button id="mvHighlightBtn" class="jui-toolbar__button jui-toolbar__menu-button--highlight" [class.toggled]="toolbarEvents.highlightMode | async"  aria-pressed="false" (click)="onClickHighlightToggle()">Highlight</button>      
+      <button id="mvDrawBtn" class="jui-toolbar__button jui-toolbar__menu-button--draw" [class.toggled]="toolbarEvents.drawModeSubject | async" aria-pressed="false" (click)="onClickDrawToggle()">Draw a box</button>
+      <button id="mvHighlightBtn" class="jui-toolbar__button jui-toolbar__menu-button--highlight" [class.toggled]="toolbarEvents.highlightModeSubject | async"  aria-pressed="false" (click)="onClickHighlightToggle()">Highlight</button>      
     </div>
     <div class="mv-toolbar-center">
       <div class="jui-toolbar__button mv-button-left-border no-top-bottom-padding" aria-pressed="false">Page
@@ -16,7 +16,7 @@
         <div class="jui-toolbar__button  no-top-bottom-padding" aria-pressed="false">Zoom
           <a id="mvMinusBtn" class="jui-toolbar__menu-button--zoom-out" (click)="stepZoom(-0.1)"></a>
           <select id="scaleSelect" class="hmcts-toolbar-select" title="Zoom" tabindex="0" data-l10n-id="zoom" (change)="zoom($event.target.value)" aria-label="zoom">
-            <option #zoomSelect id="customScaleOption" title="" [value]="toolbarEvents.zoomValue.value">{{(toolbarEvents.zoomValue.value) * 100 | number: '1.0-0'}}%</option>
+            <option #zoomSelect id="customScaleOption" title="" [value]="toolbarEvents.getZoomValue()">{{(toolbarEvents.getZoomValue()) * 100 | number: '1.0-0'}}%</option>
             <option title="" value="0.1" data-l10n-id="page_scale_percent"
                     data-l10n-args='{ "scale": 10 }'>10%</option>
             <option title="" value="0.25" data-l10n-id="page_scale_percent"
@@ -45,7 +45,7 @@
     <div class="mv-toolbar-right">
       <button id="mvDownloadBtn" class="jui-toolbar__button jui-toolbar__menu-button--download mv-button-left-border" aria-pressed="false" (click)="downloadFile()">Download</button>
       <button id="mvPrintBtn" class="jui-toolbar__button jui-toolbar__menu-button--printer" aria-pressed="false" (click)="printFile()">Print</button>
-      <button id="mvSearcgBtn" class="jui-toolbar__button jui-toolbar__menu-button--search" aria-pressed="false" (click)="toggleSearchBar()">Search</button>      
+      <button id="mvSearchBtn" class="jui-toolbar__button jui-toolbar__menu-button--search" aria-pressed="false" (click)="toggleSearchBar()">Search</button>      
     </div>
 </div>
 </div>

@@ -22,8 +22,8 @@ export class MediaViewerToolbarComponent implements OnInit, OnDestroy  {
 
   public ngOnInit() {
     this.subscriptions.push(
-      this.toolbarEvents.setCurrentPage.subscribe(pageNumber => this.setCurrentPage(pageNumber)),
-      this.toolbarEvents.setCurrentPageInputValue.subscribe(pageNumber => this.pageNumber = pageNumber)
+      this.toolbarEvents.setCurrentPageSubject.subscribe(pageNumber => this.setCurrentPage(pageNumber)),
+      this.toolbarEvents.setCurrentPageInputValueSubject.subscribe(pageNumber => this.pageNumber = pageNumber)
     );
   }
 
@@ -53,15 +53,15 @@ export class MediaViewerToolbarComponent implements OnInit, OnDestroy  {
   }
 
   public increasePageNumber() {
-    this.toolbarEvents.changePageByDelta.next(1);
+    this.toolbarEvents.changePageByDeltaSubject.next(1);
   }
 
   decreasePageNumber() {
-    this.toolbarEvents.changePageByDelta.next(-1);
+    this.toolbarEvents.changePageByDeltaSubject.next(-1);
   }
 
   public onPageNumberInputChange(pageNumber: string) {
-    this.toolbarEvents.setCurrentPage.next(Number.parseInt(pageNumber, 0));
+    this.toolbarEvents.setCurrentPageSubject.next(Number.parseInt(pageNumber, 0));
   }
 
   private setCurrentPage(pageNumber: number) {
@@ -69,23 +69,23 @@ export class MediaViewerToolbarComponent implements OnInit, OnDestroy  {
   }
 
   public rotate(rotation: number) {
-    this.toolbarEvents.rotate.next(rotation);
+    this.toolbarEvents.rotate(rotation);
   }
 
   public printFile() {
-    this.toolbarEvents.print.next();
+    this.toolbarEvents.print();
   }
 
   public downloadFile() {
-    this.toolbarEvents.download.next();
+    this.toolbarEvents.download();
   }
 
   public zoom(zoomFactor: string) {
-    this.toolbarEvents.zoom.next(+zoomFactor);
+    this.toolbarEvents.zoom(+zoomFactor);
   }
 
   public stepZoom(zoomFactor: number) {
-    this.toolbarEvents.stepZoom.next(zoomFactor);
+    this.toolbarEvents.stepZoom(zoomFactor);
     this.zoomSelect.nativeElement.selected = 'selected';
   }
 

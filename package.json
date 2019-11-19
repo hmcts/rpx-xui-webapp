@@ -57,7 +57,7 @@
     "@hmcts/ccd-case-ui-toolkit": "^2.62.16-RDM-5582-prerelease",
     "@hmcts/ccpay-web-component": "^1.8.4",
     "@hmcts/frontend": "0.0.39-alpha",
-    "@hmcts/media-viewer": "1.1.9",
+    "@hmcts/media-viewer": "1.1.11",
     "@hmcts/nodejs-healthcheck": "^1.5.1",
     "@ngrx/effects": "^7.4.0",
     "@ngrx/router-store": "^7.4.0",

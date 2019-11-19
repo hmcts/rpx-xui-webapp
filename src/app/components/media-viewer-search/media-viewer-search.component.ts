@@ -29,7 +29,7 @@ export class MediaViewerSearchComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.subscriptions.push(
-      this.toolbarEvents.searchResultsCount.subscribe(results => this.setSearchResultsCount(results))
+      this.toolbarEvents.searchResultsCountSubject.subscribe(results => this.setSearchResultsCount(results))
     );
   }
 
@@ -50,7 +50,7 @@ export class MediaViewerSearchComponent implements OnInit, OnDestroy {
   }
 
   public searchNext(): void {
-    this.toolbarEvents.search.next({
+    this.toolbarEvents.search({
       searchTerm: this.searchText,
       highlightAll: this.highlightAll,
       matchCase: this.matchCase,
@@ -61,7 +61,7 @@ export class MediaViewerSearchComponent implements OnInit, OnDestroy {
   }
 
   public searchPrev(): void {
-    this.toolbarEvents.search.next({
+    this.toolbarEvents.search({
       searchTerm: this.searchText,
       highlightAll: this.highlightAll,
       matchCase: this.matchCase,
@@ -72,7 +72,7 @@ export class MediaViewerSearchComponent implements OnInit, OnDestroy {
   }
 
   public search(): void {
-    this.toolbarEvents.search.next({
+    this.toolbarEvents.search({
       searchTerm: this.searchText,
       highlightAll: this.highlightAll,
       matchCase: this.matchCase,

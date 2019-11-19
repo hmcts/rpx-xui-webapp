@@ -14,7 +14,7 @@ import { ofType, Actions } from '@ngrx/effects';
   templateUrl: './accept-tc-wrapper.component.html'
 })
 export class AcceptTcWrapperComponent implements OnInit, OnDestroy {
-  uId: Observable<string>;
+  uId$: Observable<string>;
   subscription: Subscription;
   constructor(private store: Store<fromApp.State>,
               private cookieService: CookieService,
@@ -22,7 +22,7 @@ export class AcceptTcWrapperComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.uId = this.getCookieValueForKey('__userid__', this.cookieService);
+    this.uId$ = this.getCookieValueForKey('__userid__', this.cookieService);
     this.subscription = this.getObservable(this.actions$, fromApp.ACCEPT_T_AND_C_SUCCESS).subscribe(() => {
       this.dispatchAction(this.store, new fromStore.Go({ path: ['cases'] }));
     });
@@ -37,7 +37,8 @@ export class AcceptTcWrapperComponent implements OnInit, OnDestroy {
   }
 
   onAcceptTandC() {
-    this.dispatchAction(this.store, new fromStore.AcceptTandC(this.uId));
+    const uid = this.cookieService.get('__userid__');
+    this.dispatchAction(this.store, new fromStore.AcceptTandC(uid));
   }
 
   ngOnDestroy() {

@@ -16,7 +16,7 @@
         <div class="jui-toolbar__button  no-top-bottom-padding" aria-pressed="false">Zoom
           <button id="mvMinusBtn" class="jui-toolbar__menu-button--zoom-out button-image" (click)="stepZoom(-0.1)"></button>
           <select id="scaleSelect" class="hmcts-toolbar-select" title="Zoom" tabindex="0" data-l10n-id="zoom" (change)="zoom($event.target.value)" aria-label="zoom">
-            <option #zoomSelect id="customScaleOption" title="" [value]="toolbarEvents.getZoomValue()">{{(toolbarEvents.getZoomValue()) * 100 | number: '1.0-0'}}%</option>
+            <option #zoomSelect id="customScaleOption" title="" [value]="toolbarEvents.zoomValueSubject.value">{{(toolbarEvents.zoomValueSubject.value) * 100 | number: '1.0-0'}}%</option>
             <option title="" value="0.1" data-l10n-id="page_scale_percent"
                     data-l10n-args='{ "scale": 10 }'>10%</option>
             <option title="" value="0.25" data-l10n-id="page_scale_percent"

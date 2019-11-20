@@ -4,7 +4,6 @@
   border-bottom: 1px solid #DDDDDD;
   border-top: 1px solid #DDDDDD;
   position: sticky;
-  position: -webkit-sticky;
   top: -1px;
   width: 100%;
   z-index: 200;
@@ -30,8 +29,6 @@
   position: absolute;
   width: 100%;
   z-index: -1;
-  -webkit-box-shadow: 0px 0px 3px 2px #BEBEBE;
-  -moz-box-shadow: 0px 0px 3px 2px #BEBEBE;
   box-shadow: 0px 0px 3px 2px #BEBEBE;
 }
 
@@ -56,7 +53,6 @@
 .mv-toolbar-center {
   position: absolute;
   left: 50%;
-  -webkit-transform: translateX(-50%);
   transform: translateX(-50%);
 }
 .mv-toolbar__container::after {

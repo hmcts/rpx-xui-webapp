@@ -14,6 +14,8 @@ export class Go implements Action {
       path: any[];
       query?: object;
       extras?: NavigationExtras;
+      callback?: () => void;
+      errorHandler?: (err) => void;
     }
   ) {}
 }

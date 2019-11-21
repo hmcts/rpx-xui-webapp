@@ -1,5 +1,5 @@
 import { ExUITitleService } from 'src/app/shared/services/exui-title.service';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import { AlertService, NavigationNotifierService, NavigationOrigin, HttpError } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
@@ -8,17 +8,16 @@ import * as fromFeature from '../../store';
 
 @Component({
   selector: 'exui-case-home',
-  templateUrl: 'case-home.component.html'
+  templateUrl: 'case-home.component.html',
+  styleUrls: ['case-home.component.scss']
 })
-export class CaseHomeComponent implements OnInit, OnDestroy{
+export class CaseHomeComponent implements OnInit, OnDestroy {
 
   public static readonly CASE_CREATED_MSG = 'The case has been created successfully';
-  public static readonly DRAFT_DELETED_MSG = `The draft has been successfully deleted`;
+  public static readonly DRAFT_DELETED_MSG = 'The draft has been successfully deleted';
 
   callbackErrorsSubject: Subject<any> = new Subject();
   navigationSubscription: Subscription;
-
-  dummy = 'adn';
 
   constructor(
     private titleService: ExUITitleService,
@@ -32,7 +31,7 @@ export class CaseHomeComponent implements OnInit, OnDestroy{
       switch (navigation.action) {
         case NavigationOrigin.DRAFT_DELETED:
           return this.store.dispatch(new fromRoot.Go({
-            path: ['list/case'],
+            path: ['cases'],
             callback: () => {
               this.alertService.setPreserveAlerts(true);
               this.alertService.success(CaseHomeComponent.DRAFT_DELETED_MSG);
@@ -40,7 +39,7 @@ export class CaseHomeComponent implements OnInit, OnDestroy{
           }));
         case NavigationOrigin.ERROR_DELETING_DRAFT:
           return this.store.dispatch(new fromRoot.Go({
-            path: ['list/case']
+            path: ['cases']
           }));
         case NavigationOrigin.DRAFT_RESUMED:
           return this.store.dispatch(new fromRoot.Go({
@@ -52,21 +51,26 @@ export class CaseHomeComponent implements OnInit, OnDestroy{
             errorHandler: (error) => this.handleError(error, navigation.etid)
           }));
         case NavigationOrigin.EVENT_TRIGGERED:
+          const query = navigation.queryParams;
           return this.store.dispatch(new fromRoot.Go({
-            path: ['trigger', navigation.etid],
-            query: navigation.queryParams,
-            extras: {relativeTo: navigation.relativeTo},
+            path: ['cases',
+              'case-details',
+              navigation.relativeTo.snapshot.params.cid,
+              'trigger',
+              navigation.etid],
+            query: {...query},
             errorHandler: (error) => this.handleError(error, navigation.etid)
           }));
         case NavigationOrigin.NO_READ_ACCESS_REDIRECTION:
           return this.store.dispatch(new fromRoot.Go({
-            path: ['/list/case'],
+            path: ['cases'],
             callback: () => {
               this.alertService.success(CaseHomeComponent.CASE_CREATED_MSG);
             }
           }));
       }
     }) as any;
+
   }
 
 

@@ -5,6 +5,9 @@ import { CaseHomeComponent } from '..';
 import { ExUITitleService } from 'src/app/shared/services/exui-title.service';
 import { AlertComponent } from 'src/cases/components';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { StoreModule, combineReducers } from '@ngrx/store';
+import { reducers } from 'src/app/store';
+import * as fromFeature from '../../store';
 
 describe('CaseHomeComponent', () => {
   let component: CaseHomeComponent;
@@ -15,7 +18,8 @@ describe('CaseHomeComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
         RouterTestingModule,
-        CaseUIToolkitModule
+        CaseUIToolkitModule,
+        StoreModule.forRoot({...reducers, cases: combineReducers(fromFeature.reducers)}),
       ],
       declarations: [CaseHomeComponent, AlertComponent],
       providers: [

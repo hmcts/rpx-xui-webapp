@@ -1,6 +1,6 @@
 {
   "name": "rpx-exui",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "engines": {
     "yarn": "^1.12.3",
     "npm": "^5.6.0"

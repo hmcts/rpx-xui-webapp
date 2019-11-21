@@ -1,7 +1,5 @@
-import { AcceptTcWrapperComponent } from '../components';
-import { Subscription, of } from 'rxjs';
 import { Action } from '@ngrx/store';
-import { ofType } from '@ngrx/effects';
+import { AcceptTcWrapperComponent } from './accept-tc-wrapper.component';
 
 describe('Accept Tc Wrapper Component', () => {
     let component: AcceptTcWrapperComponent;
@@ -34,16 +32,6 @@ describe('Accept Tc Wrapper Component', () => {
         const action = new TestAction();
         component.dispatchAction(mockStore, action);
         expect(mockStore.dispatch).toHaveBeenCalledWith(action);
-    });
-
-    it('should getCookieValueForKey', () => {
-
-        mockService.get.and.returnValue('someValue');
-        const result = component.getCookieValueForKey('key', mockService);
-        result.subscribe(value => {
-            console.log(value);
-            expect(value).toEqual('someValue');
-        });
     });
 
     it('should getObservable', () => {

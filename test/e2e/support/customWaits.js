@@ -3,7 +3,7 @@ var EC = protractor.ExpectedConditions;
 class BrowserWaits{
 
     constructor(){
-        this.waitTime = 20000; 
+        this.waitTime = 30000; 
     }
     
     async waitForElement(element){

@@ -67,8 +67,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await caseManager.AmOnChekYourAnswersPage();
     });
 
-    Then('I amdummy', async function () {
-        await caseManager.AmOnChekYourAnswersPage();
+    Then('I am on case form page', async function () {
+        await caseManager.AmOnCCDCaseEditPage();
     });
 
 

@@ -21,9 +21,8 @@ function loginLogoutObjects() {
     await this.enterUrEmail(email);
     await this.enterPassword(password);
     await this.clickSignIn();
-    await BrowserWaits.waitForElement(this.signOutlink);
-
-
+    await BrowserWaits.retryForPageLoad(this.signOutlink);
+    
   };
 
   this.givenIAmUnauthenticatedUser = async function () {
@@ -47,13 +46,12 @@ function loginLogoutObjects() {
     await this.password.sendKeys(password);
   };
 
-  this.clickSignIn = function () {
-    this.signinBtn.click();
-    browser.sleep(SHORT_DELAY);
+  this.clickSignIn = async function () {
+    await this.signinBtn.click();
   };
 
-  this.waitFor = function (selector) {
-    return browser.wait(function () {
+  this.waitFor = async function (selector) {
+    return await browser.wait(function () {
       return browser.isElementPresent(selector);
     }, LONG_DELAY);
   };

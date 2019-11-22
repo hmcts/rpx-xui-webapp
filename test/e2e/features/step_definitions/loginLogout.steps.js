@@ -5,21 +5,28 @@ const { defineSupportCode } = require('cucumber');
 const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants');
 const config = require('../../config/conf.js');
 const EC = protractor.ExpectedConditions;
+const BrowserWaits = require("../../support/customWaits");
 
 async function waitForElement(el) {
   await browser.wait(result => {
     return element(by.className(el)).isPresent();
-  }, 600000);
+  }, 20000);
 }
 
 defineSupportCode(function ({ Given, When, Then }) {
 
   When(/^I navigate to Expert UI Url$/, async function () {
-    await browser.get(config.config.baseUrl);
     await browser.driver.manage()
       .deleteAllCookies();
-    await browser.refresh();
-    browser.sleep(AMAZING_DELAY);
+    await browser.get(config.config.baseUrl);
+
+    const world = this;
+    await BrowserWaits.retryForPageLoad(loginPage.signinTitle,function(message){
+      world.attach("Expert UI Url reload attempt : "+message); 
+    });
+     
+    expect(await loginPage.signinBtn.isDisplayed()).to.be.true;
+
   });
 
   Then(/^I should see failure error summary$/, async function () {
@@ -65,7 +72,12 @@ defineSupportCode(function ({ Given, When, Then }) {
 
 
   Given(/^I should be redirected to the Idam login page$/, async function () {
-    browser.sleep(LONG_DELAY);
+
+    const world = this;
+    await BrowserWaits.retryForPageLoad(loginPage.signinTitle, function(message){
+      world.attach("Idam login page load attempt : "+message)
+    });
+
     await expect(loginPage.signinTitle.getText())
       .to
       .eventually
@@ -84,7 +96,12 @@ defineSupportCode(function ({ Given, When, Then }) {
 
 
   Then(/^I should be redirected to EUI dashboard page$/, async function () {
-    await waitForElement('govuk-heading-xl');
+
+    const world = this;
+    await BrowserWaits.retryForPageLoad($("exui-header"), function(message){
+      world.attach("Redirected to EUI dashboard , attempt reload : "+message);
+    });
+
     await expect(loginPage.dashboard_header.isDisplayed()).to.eventually.be.true;
     await expect(loginPage.dashboard_header.getText())
       .to
@@ -95,6 +112,10 @@ defineSupportCode(function ({ Given, When, Then }) {
 
   Given('I am logged into Expert UI with valid user details', async function () {
     await loginPage.givenIAmLoggedIn(this.config.username, this.config.password); 
+    const world = this;
+    await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
+      world.attach("Login success page load load attempt : " + message)
+    });
   });
 
   Given('I am logged into Expert UI with valid Case Worker user details', async function () {
@@ -111,15 +132,13 @@ defineSupportCode(function ({ Given, When, Then }) {
   });
 
   Given(/^I navigate to Expert UI Url direct link$/, async function () {
-    await browser.get(config.config.baseUrl + '/cases/case-filter');
     await browser.driver.manage()
       .deleteAllCookies();
-    await browser.refresh();
-    browser.sleep(LONG_DELAY);
+    await browser.get(config.config.baseUrl + '/cases/case-filter');
   });
 
   Then(/^I should be redirected back to Login page after direct link$/, async function () {
-    browser.sleep(LONG_DELAY);
+    await BrowserWaits.waitForElement(loginPage.signinBtn);
     await expect(loginPage.signinTitle.getText())
       .to
       .eventually

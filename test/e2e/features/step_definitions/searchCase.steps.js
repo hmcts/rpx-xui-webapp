@@ -11,9 +11,12 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
   let searchPage= new SearchPage();
 
   When(/^I click on search button$/, async function () {
-    browser.sleep(LONG_DELAY);
     await headerPage.clickFindCase();
 
+    });
+
+    When('I click on Case list',async function(){
+      await headerPage.clickCaseList();
     });
 
   Then(/^Search page should be displayed$/, async function () {

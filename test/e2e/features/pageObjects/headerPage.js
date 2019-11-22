@@ -19,9 +19,11 @@ function HeaderPage() {
     browser.sleep(SHORT_DELAY);
   };
 
-  this.clickCaseList = function () {
-    this.caseList.click();
-    browser.sleep(SHORT_DELAY);
+  this.clickCaseList = async function () {
+    await this.caseList.click();
+
+    var searchPageHeader = element(by.xpath("//*[@id = 'content']//h1[text() = 'Case List']"));
+    await BrowserWaits.waitForElement(searchPageHeader);
   };
 
   this.clickCreateCase = async function () {
@@ -31,10 +33,10 @@ function HeaderPage() {
   };
 
   this.clickFindCase = async function () {
-    this.findCase.click();
+    await this.findCase.click();
 
-    var searchPaheHeader = element(by.xpath("//*[@id = 'content']//h1[text() = 'Search']"));
-    await BrowserWaits.waitForElement(searchPaheHeader); 
+    var searchPageHeader = element(by.xpath("//*[@id = 'content']//h1[text() = 'Search']"));
+    await BrowserWaits.waitForElement(searchPageHeader); 
   };
 
   this.clickSignOut = function () {

@@ -13,7 +13,7 @@ import { AppConfigService } from '../../services/config/configuration.services';
 import { MockStore } from '@ngrx/store/testing';
 import { State } from '../reducers';
 
-fdescribe('Router Effects', () => {
+describe('Router Effects', () => {
   let actions$;
   let effects: RouterEffects;
   let store: MockStore<State>;

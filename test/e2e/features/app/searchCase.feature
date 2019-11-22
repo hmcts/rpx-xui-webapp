@@ -24,7 +24,6 @@ Feature: search criteria workflow
     | Family Divorce | Financial Remedy Consented |
     | Family Divorce | Contested Financial Remedy |
 
-@test
   Scenario Outline:  search criteria apply workflow from Case list Page
     When I click on Case list
     Then I am on case list page
@@ -46,7 +45,7 @@ Feature: search criteria workflow
     When I click on Case list
     Then I am on case list page
     When I select search criteria jurisdiction "Family Divorce" case type "Financial Remedy Consented" state "Any" in case list page
-    When I reset case search fields
+    When I click search Reset in case list page
     Then search criteria details should be reset
 
   Scenario: search criteria reset workflow in search page

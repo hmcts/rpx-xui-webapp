@@ -95,7 +95,7 @@ class CaseManager {
             nextStepSelectoption = this.caseNextStepSelect.element(by.xpath("option[text() = '" + stepName + "']"));
 
         }else{
-            nextStepSelectoption = this.caseNextStepSelect.element(by.xpath("option:nth-of-type(1)"));
+            nextStepSelectoption = this.caseNextStepSelect.element(by.css("option:nth-of-type(1)"));
         }
         await nextStepSelectoption.click();
 
@@ -162,7 +162,7 @@ class CaseManager {
             fieldName = await ccdField.$('.form-label').getText();
         }
         catch (err) {
-            fieldName = "No inline field label";
+            fieldName = "Not inline field label";
         }
         switch (ccdFileTagName) {
 

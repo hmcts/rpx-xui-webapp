@@ -28,51 +28,12 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.navigationSubscription = this.navigationNotifier.navigation.subscribe(navigation => {
-      switch (navigation.action) {
-        case NavigationOrigin.DRAFT_DELETED:
-          return this.store.dispatch(new fromRoot.Go({
-            path: ['cases'],
-            callback: () => {
-              this.alertService.setPreserveAlerts(true);
-              this.alertService.success(CaseHomeComponent.DRAFT_DELETED_MSG);
-            }
-          }));
-        case NavigationOrigin.ERROR_DELETING_DRAFT:
-          return this.store.dispatch(new fromRoot.Go({
-            path: ['cases']
-          }));
-        case NavigationOrigin.DRAFT_RESUMED:
-          return this.store.dispatch(new fromRoot.Go({
-            path: ['create/case',
-              navigation.jid,
-              navigation.ctid,
-              navigation.etid],
-            query: navigation.queryParams,
-            errorHandler: (error) => this.handleError(error, navigation.etid)
-          }));
-        case NavigationOrigin.EVENT_TRIGGERED:
-          const query = navigation.queryParams;
-          return this.store.dispatch(new fromRoot.Go({
-            path: ['cases',
-              'case-details',
-              navigation.relativeTo.snapshot.params.cid,
-              'trigger',
-              navigation.etid],
-            query: {...query},
-            errorHandler: (error) => this.handleError(error, navigation.etid)
-          }));
-        case NavigationOrigin.NO_READ_ACCESS_REDIRECTION:
-          return this.store.dispatch(new fromRoot.Go({
-            path: ['cases'],
-            callback: () => {
-              this.alertService.success(CaseHomeComponent.CASE_CREATED_MSG);
-            }
-          }));
+      if (navigation.action) {
+        this.actionDispatcher(this.paramHandler(navigation));
       }
     }) as any;
 
   }
-
 
   ngOnDestroy(): void {
     if (this.navigationSubscription) {
@@ -80,7 +41,68 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  private handleError(error: HttpError, triggerId: string) {
+  paramHandler(navigation) {
+    let params;
+    switch (navigation.action) {
+      case NavigationOrigin.DRAFT_DELETED:
+        params = {
+          path: ['cases'],
+          callback: () => {
+            this.alertService.setPreserveAlerts(true);
+            this.alertService.success(CaseHomeComponent.DRAFT_DELETED_MSG);
+          }
+        };
+        break;
+      case NavigationOrigin.ERROR_DELETING_DRAFT:
+        params = {
+          path: ['cases']
+        };
+        break;
+      case NavigationOrigin.DRAFT_RESUMED:
+        params = {
+          path: ['create/case',
+            navigation.jid,
+            navigation.ctid,
+            navigation.etid],
+          query: navigation.queryParams,
+          errorHandler: (error) => this.handleError(error, navigation.etid)
+        };
+        break;
+      case NavigationOrigin.EVENT_TRIGGERED:
+        const query = navigation.queryParams;
+        params = {
+          path: ['cases',
+            'case-details',
+            navigation.relativeTo.snapshot.params.cid,
+            'trigger',
+            navigation.etid],
+          query: {...query},
+          errorHandler: (error) => this.handleError(error, navigation.etid)
+        };
+        break;
+      case NavigationOrigin.NO_READ_ACCESS_REDIRECTION:
+        params = {
+          path: ['cases'],
+          callback: () => {
+            this.alertService.success(CaseHomeComponent.CASE_CREATED_MSG);
+          }
+        };
+        break;
+      default:
+        params = {
+          path: ['cases',
+            'case-details',
+            navigation.relativeTo.snapshot.params.cid]
+        };
+    }
+    return params;
+  }
+
+  actionDispatcher(params) {
+    return this.store.dispatch(new fromRoot.Go(params));
+  }
+
+  handleError(error: HttpError, triggerId: string) {
     if (error.status !== 401 && error.status !== 403) {
       console.log('error during triggering event:', triggerId);
       console.log(error);

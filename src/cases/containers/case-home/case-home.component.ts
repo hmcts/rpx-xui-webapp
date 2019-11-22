@@ -5,6 +5,7 @@ import { AlertService, NavigationNotifierService, NavigationOrigin, HttpError } 
 import { Store } from '@ngrx/store';
 import * as fromRoot from '../../../app/store';
 import * as fromFeature from '../../store';
+import { GoActionParams } from 'src/cases/models/go-action-params.model';
 
 @Component({
   selector: 'exui-case-home',
@@ -41,8 +42,8 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  paramHandler(navigation) {
-    let params;
+  paramHandler(navigation: any): GoActionParams {
+    let params: GoActionParams;
     switch (navigation.action) {
       case NavigationOrigin.DRAFT_DELETED:
         params = {
@@ -98,11 +99,11 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
     return params;
   }
 
-  actionDispatcher(params) {
+  actionDispatcher(params: GoActionParams): void {
     return this.store.dispatch(new fromRoot.Go(params));
   }
 
-  handleError(error: HttpError, triggerId: string) {
+  handleError(error: HttpError, triggerId: string): void {
     if (error.status !== 401 && error.status !== 403) {
       console.log('error during triggering event:', triggerId);
       console.log(error);

@@ -78,7 +78,7 @@ describe('CaseHomeComponent', () => {
       expect(resultingKeys).toContain('errorHandler');
 
       const mockComponentHandleError = spyOn(component, 'handleError');
-      result.errorHandler();
+      result.errorHandler({});
       expect(mockComponentHandleError).toHaveBeenCalled();
     });
 
@@ -100,7 +100,7 @@ describe('CaseHomeComponent', () => {
       expect(resultingKeys).toContain('errorHandler');
 
       const mockComponentHandleError = spyOn(component, 'handleError');
-      result.errorHandler();
+      result.errorHandler({});
       expect(mockComponentHandleError).toHaveBeenCalled();
     });
 
@@ -138,7 +138,7 @@ describe('CaseHomeComponent', () => {
 
     it('should dispatch an action', () => {
       const params = {
-        dummy: false
+        path: []
       };
       component.actionDispatcher(params);
 

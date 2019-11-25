@@ -42,6 +42,7 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
     }
   }
 
+  // TODO: please revisit
   paramHandler(navigation: any): GoActionParams {
     let params: GoActionParams;
     switch (navigation.action) {

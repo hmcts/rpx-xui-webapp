@@ -1,4 +1,3 @@
-import { PaymentLibModule, PaymentLibService, ɵc, ɵm, ɵf, ɵd, ɵk, ɵl, ɵh, ɵb } from '@hmcts/ccpay-web-component';
 import { NgModule, Optional, SkipSelf, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
@@ -46,7 +45,6 @@ import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-tr
   imports: [
     CommonModule,
     CaseUIToolkitModule,
-    PaymentLibModule,
     CreateCaseFiltersModule,
     SearchResultModule,
     HttpClientModule,
@@ -71,8 +69,6 @@ import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-tr
     CaseEditWizardGuard,
     RouterHelperService,
     DocumentManagementService,
-    PaymentLibService, ɵf, ɵd, ɵk, ɵh, ɵb,
-    {provide: ɵc, useClass: ɵm},
     RequestOptionsBuilder,
     {
       provide: AbstractAppConfig,

@@ -55,7 +55,7 @@ import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-tr
     SearchFiltersModule,
     HttpModule,
     MatDialogModule,
-    CaseListFiltersModule,
+    CaseListFiltersModule
   ],
   declarations: [...fromComponents.components, ...fromContainers.containers],
   providers: [

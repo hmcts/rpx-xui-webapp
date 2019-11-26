@@ -1,14 +1,10 @@
-import { Component, ChangeDetectorRef, AfterContentChecked } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 @Component({
   selector: 'exui-case-details-home',
   templateUrl: './case-details-home.html',
 
 })
-export class CaseDetailsHomeComponent implements AfterContentChecked {
+export class CaseDetailsHomeComponent {
   constructor(private cdr: ChangeDetectorRef) {}
-
-  ngAfterContentChecked() {
-    this.cdr.detectChanges();
-  }
 }
 

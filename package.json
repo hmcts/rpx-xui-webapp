@@ -57,9 +57,10 @@
     "@angular/platform-browser": "^7.2.13",
     "@angular/platform-browser-dynamic": "^7.2.13",
     "@angular/router": "^7.2.13",
-    "@hmcts/ccd-case-ui-toolkit": "^2.59.1",
+    "@hmcts/ccd-case-ui-toolkit": "^2.62.16-RDM-5582-prerelease",
     "@hmcts/ccpay-web-component": "^1.8.4",
     "@hmcts/frontend": "0.0.39-alpha",
+    "@hmcts/media-viewer": "^1.1.12",
     "@hmcts/nodejs-healthcheck": "^1.5.1",
     "@hmcts/rpx-xui-common-lib": "0.0.13",
     "@ngrx/effects": "^7.4.0",
@@ -71,7 +72,7 @@
     "@types/applicationinsights-js": "^1.0.9",
     "@types/crypto-js": "^3.1.43",
     "@types/sinon": "^7.0.13",
-    "applicationinsights": "^1.4.2",
+    "applicationinsights": "^1.5.0",
     "applicationinsights-js": "^1.0.20",
     "axios": "^0.18.0",
     "class-transformer": "^0.1.10",
@@ -109,6 +110,8 @@
     "@angular/compiler-cli": "^7.2.13",
     "@angular/language-service": "~7.2.0",
     "@ngrx/schematics": "^7.4.0",
+    "@pact-foundation/pact": "^9.2.0",
+    "@pact-foundation/pact-node": "^9.0.6",
     "@types/ejs": "^2.6.3",
     "@types/express": "^4.16.1",
     "@types/formidable": "^1.0.31",
@@ -146,8 +149,6 @@
     "sonar-scanner": "^3.1.0",
     "ts-node": "~7.0.0",
     "tslint": "~5.11.0",
-    "typescript": "~3.2.2",
-    "@pact-foundation/pact": "^9.2.0",
-    "@pact-foundation/pact-node": "^9.0.6"
+    "typescript": "~3.2.2"
   }
 }

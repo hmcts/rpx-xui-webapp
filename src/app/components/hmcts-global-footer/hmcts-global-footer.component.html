@@ -2,15 +2,21 @@
   <div class="govuk-width-container ">
     <div class="govuk-footer__meta">
       <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
-          <h2 class="hmcts-footer__heading">
-              {{help.heading}}
-          </h2>
+          <h2 class="hmcts-footer__heading">{{help.heading}}</h2>
+          <ul class="hmcts-footer__list">
+              <li class="hmcts-footer__list-item">{{help.probate.text}}</li>
+          </ul>
+          <br/>
           <ul class="hmcts-footer__list">
               <li class="hmcts-footer__list-item">
                   Email: <a class="hmcts-footer__link" href="mailto:{{help.email.address}}">{{help.email.text}}</a>
               </li>
               <li class="hmcts-footer__list-item">Phone: {{help.phone.text}}</li>
               <li class="hmcts-footer__list-item">Opening times: {{help.opening.text}}</li>
+          </ul>
+          <br/>
+          <ul class="hmcts-footer__list">
+            <li class="hmcts-footer__list-item">{{help.otherContact.text}}</li>
           </ul>
           <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
           <ul

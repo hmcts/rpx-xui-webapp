@@ -15,7 +15,7 @@ nodejs:
     rpx:
       resourceGroup: rpx
       secrets:
-        - xui-webapp-s2s-token
+        - mc-s2s-client-secret
         - mc-idam-client-secret
         - AppInsightsInstrumentationKey
   # Don't modify below here

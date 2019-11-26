@@ -11,7 +11,7 @@ properties([
     ])
 ])
 
-@Library("Infrastructure")
+@Library("Infrastructure@helm2.16.1")
 
 // Disable pact testing on pipeline
 //

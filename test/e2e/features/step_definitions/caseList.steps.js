@@ -43,8 +43,17 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I see no cases in case list page', async function () {
-        expect(await caseListPage.hasCaseListAnyResults()).to.be.false;
+        validateNoResultsDisplayed();
     });
+
+    Then('I see search results on case list page are reset', async function () {
+        validateNoResultsDisplayed();
+    });
+
+    async function validateNoResultsDisplayed(){
+        expect(await caseListPage.hasCaseListAnyResults()).to.be.false;
+
+    }
     
 
 });

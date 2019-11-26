@@ -101,7 +101,7 @@ class CaseManager {
 
         var thisPageUrl = await browser.getCurrentUrl();
         await this.nextStepGoButton.click();
-        BrowserWaits.waitForPageNavigation(thisPageUrl);
+        await BrowserWaits.waitForPageNavigation(thisPageUrl);
     }
 
 

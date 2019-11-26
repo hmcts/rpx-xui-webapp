@@ -52,11 +52,15 @@ class CaseListPage{
     async clickSearchApplyBtn(){
   
         await this._waitForSearchComponent();
+        await browser.executeScript('arguments[0].scrollIntoView()',
+            this.searchApplyBtn);
         await this.searchApplyBtn.click();
     }
 
     async clickSearchResetBtn() {
         await this._waitForSearchComponent();
+        await browser.executeScript('arguments[0].scrollIntoView()',
+            this.searchReset);
         await this.searchReset.click();
     }
 

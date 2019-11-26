@@ -39,7 +39,7 @@ Feature: FR create case workflow
       | Family Divorce | Financial Remedy Consented | Consent Order Application |
       | Family Divorce | Contested Financial Remedy | Form A Application        |
 
-@test
+
   Scenario Outline: Start Next Step on  FR Case
     When I start case with jurisdiction "<Jurisdiction>" case type "<CaseType>" and event "<Event>"
     When I create FR case

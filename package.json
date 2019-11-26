@@ -58,7 +58,7 @@
     "@angular/platform-browser-dynamic": "^7.2.13",
     "@angular/router": "^7.2.13",
     "@hmcts/ccd-case-ui-toolkit": "^2.62.16-RDM-5582-prerelease",
-    "@hmcts/ccpay-web-component": "^1.8.4",
+    "@hmcts/ccpay-web-component": "~2.0.50",
     "@hmcts/frontend": "0.0.39-alpha",
     "@hmcts/media-viewer": "^1.1.12",
     "@hmcts/nodejs-healthcheck": "^1.5.1",

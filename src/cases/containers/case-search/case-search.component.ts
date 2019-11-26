@@ -6,7 +6,7 @@ import { Observable, combineLatest, Subscription } from 'rxjs';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { ActionBindingModel } from '../../../cases/models/create-case-actions.model';
 import { FormGroup } from '@angular/forms';
-import * as fromRoot from '../../../app/store';
+import { SearchFilterService } from 'src/cases/services';
 
 /**
  * Entry component wrapper for ccd-search-filters-wrapper ccd-search-result
@@ -55,7 +55,9 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
 
   constructor(
     public store: Store<fromCasesFeature.State>,
-    private appConfig: AppConfig) {}
+    private appConfig: AppConfig,
+    private searchService: SearchFilterService,
+  ) {}
 
   ngOnInit(): void {
     this.page = 1;
@@ -172,9 +174,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   }
 
   goToCase(evt) {
-    this.store.dispatch(new fromRoot.Go({
-      path: ['/cases/case-details/' + evt.caseId],
-    }));
+    this.searchService.redirectToCase(evt);
   }
 
   ngOnDestroy() {

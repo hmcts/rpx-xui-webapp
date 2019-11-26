@@ -1,4 +1,3 @@
-
 var CaseManager = require("./common/CaseManager");
 
 class FRCase {
@@ -11,14 +10,8 @@ class FRCase {
         var caseData = {
             "Divorce Case Number": "BV18D00152"
         };
-
-     
-
         await this.caseManager.createCase (caseData);
     }
-
-
-
 }
 
 module.exports = FRCase;

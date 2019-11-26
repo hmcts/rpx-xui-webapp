@@ -26,4 +26,3 @@ Feature: Divorce create case workflow
         Then I am on check your answers page
         When I submit case
         Then I see case details page
-

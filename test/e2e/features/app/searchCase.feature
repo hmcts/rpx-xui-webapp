@@ -1,4 +1,3 @@
-
 @search @regression
 Feature: search criteria workflow
 
@@ -7,7 +6,6 @@ Feature: search criteria workflow
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     
-
   Scenario Outline:  search criteria apply workflow from Search Case Page
     When I click on search button
     Then Search page should be displayed

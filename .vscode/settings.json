@@ -1,5 +1,4 @@
 {
-
     "cucumberautocomplete.steps": [
         "test/e2e/features/step_definitions/*.steps.js"
     ],

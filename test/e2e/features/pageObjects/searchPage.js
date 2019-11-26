@@ -1,6 +1,5 @@
 Dropdown = require('./webdriver-components/dropdown.js')
 Button = require('./webdriver-components/button.js')
-
 var BrowserWaits = require("../../support/customWaits");
 
 class SearchPage {
@@ -31,9 +30,7 @@ class SearchPage {
     this.searchResultsTopPagination = $("ccd-search-result .pagination-top");
     this.noResultsNotification = $("ccd-search-result .notification");
 
-    this.firstResultCaseLink = $("ccd-search-result>table>tbody>tr:nth-of-type(1)>td:nth-of-type(1)>a");
-
-    
+    this.firstResultCaseLink = $("ccd-search-result>table>tbody>tr:nth-of-type(1)>td:nth-of-type(1)>a"); 
   }
 
   async selectJurisdiction(option){
@@ -80,7 +77,6 @@ class SearchPage {
     await this.firstResultCaseLink.click();
 
     await BrowserWaits.waitForPageNavigation(thisPageUrl);
-
   }
 
   async getPageHeader(){
@@ -102,8 +98,7 @@ class SearchPage {
   }
 
   async waitForSearchWithNoResults(){
-    await BrowserWaits.waitForElement(this.noResultsNotification);
- 
+    await BrowserWaits.waitForElement(this.noResultsNotification); 
   }
 }
 module.exports = SearchPage;

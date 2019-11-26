@@ -126,9 +126,6 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
     await applyForProbatePage.clickOnSaveAndContinue();
   });
 
-
-
-
   Then(/^I should navigate to reason for the divorce page$/, async function () {
 
   });
@@ -139,58 +136,11 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
     //await createCaseStartPage.selectEvent(TestData.divorceseevent);
     await createCaseStartPage.clickStartButton();
   });
-  Then(/^I should navigate to about the solicitor page$/, function () {
-
-  });
-  When(/^I Enter mandatory solicitor details and click on continue button$/, function () {
-
-  });
-  Then(/^I should navigate to about the petitioner page$/, function () {
-
-  });
-  When(/^I Enter mandatory petitioner details and click on continue button$/, function () {
-
-  });
-  Then(/^I should navigate to about the respondent page$/, function () {
-
-  });
-  When(/^I Enter mandatory respondent details and click on continue button$/, function () {
-
-  });
-  Then(/^I should navigate to marriage certificate details page$/, function () {
-
-  });
-  When(/^I Enter mandatory marriage certificate details and click on continue button$/, function () {
-
-  });
-  Then(/^I should navigate to jurisdiction page$/, function () {
-
-  });
-  When(/^I select the legal connection and click on continue button$/, function () {
-
-  });
-  When(/^I select the fact reason and click on continue button$/, function () {
-
-  });
-  Then(/^I should navigate to statement of case page$/, function () {
-
-  });
-  When(/^I Enter mandatory statement of case details and click on continue button$/, function () {
-
-  });
-  When(/^I click on save petition button$/, function () {
-
-  });
-
-
-
+ 
   When(/^I enter mandatory fr fields jurisdiction,case type,event and click on start button$/, async function () {
     await createCaseStartPage.selectJurisdiction('Family Divorce');
     await createCaseStartPage.selectCaseType('Financial Remedy Consented');
     await createCaseStartPage.selectEvent('Consent Order Application');
     await createCaseStartPage.clickStartButton();
-
   });
-
-
 });

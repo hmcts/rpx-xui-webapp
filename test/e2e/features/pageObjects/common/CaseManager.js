@@ -1,20 +1,17 @@
 
 var CreateCaseStartPage = require('../createCaseStartPage');
 var BrowserWaits = require('../../../support/customWaits');
-
 const date = require('moment');
 var path = require('path');
-
 class CaseManager {
 
     constructor() {
         this.continueBtn = new Button('button', 'Continue');
 
         this.submitBtn = $("form button[@type = 'submit']");
-
         this.previousBtn = $("form .button-secondary");
-
         this.cancelLink = $("form .cancel a");
+
         this.formFields = 'ccd-case-edit-form>div';
 
         this.ccdCaseEdit = $('ccd-case-edit')
@@ -23,28 +20,22 @@ class CaseManager {
 
         this.caseNextStepSelect = $("select#next-step");
         this.nextStepGoButton = $(".event-trigger button");
-
-
         this.createCaseStartPage = new CreateCaseStartPage();
     }
 
     async cancelCaseCreation(){
         await BrowserWaits.waitForElement(this.ccdCaseEdit);
         var thisPageUrl = await browser.getCurrentUrl();
-
         await this.cancelLink.click();
         await BrowserWaits.waitForPageNavigation(thisPageUrl);
-
     }
 
     async clickPreviousButton(){
         await BrowserWaits.waitForElement(this.previousBtn); 
         var thisPageUrl = await browser.getCurrentUrl();
         await this.previousBtn.clilc();
-        await BrowserWaits.waitForPageNavigation(thisPageUrl);
- 
+        await BrowserWaits.waitForPageNavigation(thisPageUrl); 
     }
-
 
     async startCaseCreation(jurisdiction, caseType, event){
         await this.createCaseStartPage.selectJurisdiction(jurisdiction);
@@ -65,7 +56,6 @@ class CaseManager {
             var checkYouranswers = $(".check-your-answers");
             isCheckYourAnswersPage = await checkYouranswers.isPresent();
         }
-
     }
 
     async submitCase(){
@@ -83,7 +73,6 @@ class CaseManager {
         }else{
             throw new  Error("Not in case creation check your answers page");
         }
-
     }
 
     async startNextStep(stepName){
@@ -109,19 +98,15 @@ class CaseManager {
         expect(this.ccdCaseEdit.isPresent()).to.be.equal;
     }
 
-
     async AmOnCCDCaseEditPage() {
         expect(this.exuiCaseHomeComp.isPresent()).to.be.equal;
     }
-
 
     async AmOnChekYourAnswersPage() {
         expect(this.checkYourAnswers.isPresent()).to.be.equal;
     }
 
-    
     async _formFillPage() {
-
         var currentPageElement = $('ccd-case-edit-page');
         await BrowserWaits.waitForElement(currentPageElement);
 
@@ -138,9 +123,7 @@ class CaseManager {
             if (readWriteField === "ccd-field-write") {
                 var ccdField = field.element(by.xpath("./div/*"));
                 await this._writeToField(ccdField);
-
             }
-
         }
 
         var continieElement = element(by.xpath('//button[@type= "submit"]'));
@@ -165,9 +148,7 @@ class CaseManager {
             fieldName = "Not inline field label";
         }
         switch (ccdFileTagName) {
-
             case "ccd-write-text-field":
-                
                 await ccdField.$('input.form-control').sendKeys(this._fieldValue(fieldName));
                 break;
             case "ccd-write-text-area-field":
@@ -212,7 +193,6 @@ class CaseManager {
                 await ccdField.$('input.form-control').sendKeys(fileToUpload);
                 await browser.sleep(1000);
                 break;
-
             case "ccd-write-multi-select-list-field":
                 var selectionFields = ccdField.$$(".multiple-choice input");
                 var selectionFieldsCount = await selectionFields.count();
@@ -226,7 +206,6 @@ class CaseManager {
                 var selectionFieldsCount = await selectionRadioFields.count();
                 await selectionRadioFields.get(0).click();
             break;
-
             case "ccd-write-complex-type-field":
                 var writeFields = ccdField.$$("ccd-field-write");
                 for (var fieldcounter = 0; fieldcounter < await writeFields.count(); fieldcounter++){
@@ -269,15 +248,8 @@ class CaseManager {
         }else{
             value = "test "+fieldName
         }
-
         return value;
     }
-
-
-
-
-
-
 }
 
 module.exports = CaseManager;

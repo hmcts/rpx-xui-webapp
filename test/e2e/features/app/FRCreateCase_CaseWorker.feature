@@ -1,4 +1,3 @@
-
 @fr @regression
 Feature: FR create case workflow - Case Worker
 
@@ -29,7 +28,3 @@ Feature: FR create case workflow - Case Worker
         | Jurisdiction   | CaseType                   | Event                     |
         | Family Divorce | Financial Remedy Consented | Consent Order Application |
         | Family Divorce | Contested Financial Remedy | Form A Application        |
-
-
-
-

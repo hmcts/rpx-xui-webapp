@@ -41,8 +41,6 @@ const config = {
   params: {
     serverUrls: process.env.TEST_URL || 'http://localhost:3000/',
     targetEnv: argv.env || 'local',
-    // username: 'peterxuisuperuser@mailnesia.com',
-    // password: 'Monday01',
     username: 'lukesuperuserxui@mailnesia.com',
     password: 'Monday01',
     caseworkerUser:'mahesh_fr_courtadmn@mailinator.com',

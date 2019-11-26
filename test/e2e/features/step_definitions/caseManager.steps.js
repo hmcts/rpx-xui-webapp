@@ -14,9 +14,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     let frCase = new FRCase();
     let probateCase = new ProbateCase();
     let divorceCase = new DivorceCase();
-
     let caseManager = new CaseManager();
-
 
     When('I start case with jurisdiction {string} case type {string} and event {string}', async function (jurisidiction, casetype, event) {
         await caseManager.startCaseCreation(jurisidiction, casetype, event);
@@ -39,11 +37,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await caseManager.startNextStep(stepName);
     });
 
-
     When('I create Probate case', async function () {
         await probateCase.createCase();
     });
-
 
     When('I click cancel link', async function () {
         await caseManager.cancelCaseCreation();
@@ -52,8 +48,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     When('I click previous button', async () => {
         await caseManager.clickPreviousButton();
     });
-
-
 
     When('I submit case', async function () {
         await caseManager.submitCase();
@@ -70,7 +64,4 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Then('I am on case form page', async function () {
         await caseManager.AmOnCCDCaseEditPage();
     });
-
-
-
 });

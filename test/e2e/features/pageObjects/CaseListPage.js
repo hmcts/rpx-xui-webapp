@@ -18,7 +18,6 @@ class CaseListPage{
         this.noResultsNotification = $("ccd-search-result .notification");
 
         this.caseListRows = $$("ccd-search-result>table>tbody>tr");
-
     }
 
     async amOnPage(){
@@ -48,9 +47,7 @@ class CaseListPage{
         await this.stateSelectElement.element(this._getOptionSelectorWithText(state)).click();
     }
 
-
-    async clickSearchApplyBtn(){
-  
+    async clickSearchApplyBtn(){ 
         await this._waitForSearchComponent();
         await browser.executeScript('arguments[0].scrollIntoView()',
             this.searchApplyBtn);
@@ -63,7 +60,6 @@ class CaseListPage{
             this.searchReset);
         await this.searchReset.click();
     }
-
 
     async waitForCaseResultsToDisplay(){
         await BrowserWaits.waitForElement(this.searchResultsTopPagination);
@@ -86,7 +82,6 @@ class CaseListPage{
     async getCountOfCasesListedInPage(){
         await this.caseListRows.count();
     }
-
 }
 
 module.exports = CaseListPage;

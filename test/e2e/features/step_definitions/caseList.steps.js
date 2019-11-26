@@ -52,8 +52,5 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     async function validateNoResultsDisplayed(){
         expect(await caseListPage.hasCaseListAnyResults()).to.be.false;
-
     }
-    
-
 });

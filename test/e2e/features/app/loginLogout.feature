@@ -4,20 +4,6 @@ Feature: Login
   Background:
     When I navigate to Expert UI Url
 
-#
-#  Scenario: Login and Logout as SSCS user
-#    Then I login as SSCS user
-#    Then I check the user is logged
-#    Then I click the signout
-#    Then I logout successfully and back to Login page
-#
-#  Scenario: Login and Logout as FR user
-#    Then I login as FR user
-#    Then I check the user is logged
-#    Then I click the signout
-#    Then I logout successfully and back to Login page
-
-
     @all @smoke
   Scenario: un-authenticated user login
     Then I am on Idam login page

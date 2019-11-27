@@ -431,10 +431,10 @@
     js-yaml "^3.8.4"
     superagent "^3.5.1"
 
-"@hmcts/rpx-xui-common-lib@0.0.16":
-  version "0.0.16"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-0.0.16.tgz#31605c7e29c152e3ac9f9f95671f48f35ac84a3e"
-  integrity sha512-cYla6US8D+bTp6GJVAVUTt7g6l5T/K9JdsyRVpTdI2GtnfkUzYtoMfyNLOFo4bi2WdhBTMMkqWuks0F2b8SQUw==
+"@hmcts/rpx-xui-common-lib@0.0.17":
+  version "0.0.17"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-0.0.17.tgz#d5ead7250fcd7340c5620e67a9b88d210be66287"
+  integrity sha512-gLGVp3ODAFqnxT3d6fUoYomZRsOgDXGtEcArnrxK+dfs9aS5zXfh+v7dWok1zNRamq6E/yHyNcH05U3exQlpHg==
   dependencies:
     tslib "^1.9.0"
 

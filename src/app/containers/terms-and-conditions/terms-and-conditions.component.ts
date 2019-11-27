@@ -16,6 +16,7 @@ export class TermsAndConditionsComponent implements OnInit {
     }
 
     public ngOnInit() {
+      // TODO: store subscription so we can unsubscribe on destroy
         this.store.pipe(
             select(fromRoot.getTermsAndConditions)
         ).subscribe(doc => {

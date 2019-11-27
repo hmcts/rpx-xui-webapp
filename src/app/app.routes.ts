@@ -1,8 +1,7 @@
 import { Routes } from '@angular/router';
-import { AcceptTcWrapperComponent } from './accept-tc.wrapper/accept-tc-wrapper.component';
 import { AccessibilityComponent, CookiePolicyComponent, PrivacyPolicyComponent, ServiceDownComponent } from './components';
 import { MediaViewerWrapperComponent } from './components/media-viewer-wrapper/media-viewer-wrapper.component';
-import { TermsAndConditionsComponent } from './containers';
+import { AcceptTcWrapperComponent, TermsAndConditionsComponent } from './containers';
 import { AcceptTermsGuard } from './guards/acceptTerms.guard';
 import { AllowAcceptTermsGuard } from './guards/allowAcceptTerms.guard';
 import { AuthGuard } from './services/auth/auth.guard';

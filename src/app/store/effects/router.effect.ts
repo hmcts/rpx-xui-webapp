@@ -22,8 +22,10 @@ export class RouterEffects {
   navigate$ = this.actions$.pipe(
     ofType(RouterActions.GO),
     map((action: RouterActions.Go) => action.payload),
-    tap(({ path, query: queryParams, extras }) => {
-      this.router.navigate(path, { queryParams, ...extras });
+    tap(({ path, query: queryParams, extras, callback, errorHandler }) => {
+      return this.router.navigate(path, { queryParams, ...extras })
+        .then(() => callback ? callback() : false)
+        .catch(error => errorHandler ? errorHandler(error) : false);
     })
   );
 
@@ -33,7 +35,7 @@ export class RouterEffects {
     map((action: RouterActions.CreateCaseGo) => action.payload),
     tap(({ path, query: queryParams, extras, caseId }) => {
       const thatCaseId = caseId;
-      this.router.navigate(path, { queryParams, ...extras }).then(() => {
+      return this.router.navigate(path, { queryParams, ...extras }).then(() => {
         this.store.dispatch(new fromCases.CreateCaseLoaded(thatCaseId));
       });
     })

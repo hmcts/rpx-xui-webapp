@@ -101,8 +101,8 @@ app.use('/api/healthCheck', healthCheck)
 
 app.use('/aggregated', routes)
 app.use('/data', routes)
-app.use('', userTandCRoutes)
-app.use('', termsAndCRoutes)
+app.use('/api/userTermsAndConditions', userTandCRoutes)
+app.use('/api/termsAndConditions', termsAndCRoutes)
 // separate route for document upload/view
 app.use('/documents', documentRouter)
 app.use('/em-anno', emAnnoRouter)

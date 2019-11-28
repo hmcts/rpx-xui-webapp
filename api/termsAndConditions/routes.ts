@@ -6,4 +6,4 @@ import { getTermsAndConditions } from './index'
 export const router = express.Router({ mergeParams: true })
 
 router.use(authInterceptor)
-router.get('/api/termsAndConditions', getTermsAndConditions)
+router.get('/', getTermsAndConditions)

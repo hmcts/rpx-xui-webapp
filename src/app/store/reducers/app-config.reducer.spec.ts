@@ -15,7 +15,7 @@ describe('App Config Reducer', () => {
             ...appConfigReducer.initialState,
             termsAndCondition: {
                 isLoaded: true,
-                hasUserAcceptedTC: 'false'
+                hasUserAcceptedTC: false
               }
         };
         expect(state).toEqual(expectedState);
@@ -28,7 +28,7 @@ describe('App Config Reducer', () => {
             ...appConfigReducer.initialState,
             termsAndCondition: {
                 isLoaded: true,
-                hasUserAcceptedTC: 'true'
+                hasUserAcceptedTC: true
               }
         };
         expect(state).toEqual(expectedState);

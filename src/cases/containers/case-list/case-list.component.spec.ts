@@ -1,20 +1,24 @@
-import {State} from './../../../app/store/reducers/index';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {CaseListComponent} from './case-list.component';
-import {AppConfig} from '../../../app/services/ccd-config/ccd-case.config';
-import {DefinitionsService} from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
-import {Store} from '@ngrx/store';
-import {AppConfigService} from '../../../app/services/config/configuration.services';
-import {NO_ERRORS_SCHEMA} from '@angular/core';
-import {CaseFilterToggle, FindCaselistPaginationMetadata} from '../../store/actions/case-list.action';
-import {provideMockStore, MockStore} from '@ngrx/store/testing';
-import {Jurisdiction, PaginationMetadata} from '@hmcts/ccd-case-ui-toolkit';
+import { State } from './../../../app/store/reducers/index';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { CaseListComponent } from './case-list.component';
+import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
+import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
+import { Store } from '@ngrx/store';
+import { AppConfigService } from '../../../app/services/config/configuration.services';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { CaseFilterToggle, FindCaselistPaginationMetadata } from '../../store/actions/case-list.action';
+import { provideMockStore, MockStore } from '@ngrx/store/testing';
+import { Jurisdiction, PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
 import { of, Observable } from 'rxjs';
+import { SearchFilterService } from 'src/cases/services';
 
 describe('CaseListComponent', () => {
   let component: CaseListComponent;
   let fixture: ComponentFixture<CaseListComponent>;
   let store: MockStore<State>;
+  const SearchFilterServiceMock = jasmine.createSpyObj('SearchFilterService', [
+    'redirectToCase'
+  ]);
 
   /**
    * Spies
@@ -38,6 +42,10 @@ describe('CaseListComponent', () => {
         {
           provide: DefinitionsService,
           useValue: mockDefinitionsService
+        },
+        {
+          provide: SearchFilterService,
+          useValue: SearchFilterServiceMock,
         },
         provideMockStore(),
       ]
@@ -79,13 +87,13 @@ describe('CaseListComponent', () => {
 
     it('should return the toggle button name as \'Hide Filter\' if we have shown ' +
       'the filter', () => {
-      expect(component.getToggleButtonName(true)).toEqual('Hide Filter');
-    });
+        expect(component.getToggleButtonName(true)).toEqual('Hide Filter');
+      });
 
     it('should return the toggle button name as \'Show Filter\' if we do not show ' +
       'the filter', () => {
-      expect(component.getToggleButtonName(false)).toEqual('Show Filter');
-    });
+        expect(component.getToggleButtonName(false)).toEqual('Show Filter');
+      });
   });
 
   describe('findCaseListPaginationMetadata()', () => {
@@ -122,9 +130,9 @@ describe('CaseListComponent', () => {
      */
     it('should be able to create an event.', () => {
 
-      const jurisdiction = {id: 'PROBATE'};
-      const caseType = {id: 'GrantOfRepresentation'};
-      const caseState = {id: 'CaseCreated'};
+      const jurisdiction = { id: 'PROBATE' };
+      const caseType = { id: 'GrantOfRepresentation' };
+      const caseState = { id: 'CaseCreated' };
       const metadataFields = ['[CASE_REFERENCE]'];
       const formGroupValues = {};
       const page = 1;
@@ -192,12 +200,12 @@ describe('CaseListComponent', () => {
       };
 
       const localStorageGetItemSpy = spyOn(localStorage, 'getItem');
-      component.savedQueryParams = { id:  '' };
+      component.savedQueryParams = { id: '' };
       localStorageGetItemSpy.and.returnValue('{' +
         '"jurisdiction": "Probate", ' +
         '"case-type": "GrantOfRepresentation", ' +
         '"case-state": "BOReadyToIssue"' +
-      '}');
+        '}');
 
       component.applyChangePage(event);
 
@@ -211,9 +219,9 @@ describe('CaseListComponent', () => {
 
     beforeEach(() => {
 
-      const jurisdiction = {id: 'PROBATE'};
-      const caseType = {id: 'GrantOfRepresentation'};
-      const caseState = {id: 'CaseCreated'};
+      const jurisdiction = { id: 'PROBATE' };
+      const caseType = { id: 'GrantOfRepresentation' };
+      const caseState = { id: 'CaseCreated' };
       const metadataFields = ['[CASE_REFERENCE]'];
       const formGroupValues = {};
       const page = 1;
@@ -272,9 +280,9 @@ describe('CaseListComponent', () => {
     it('should update the components jurisdiction property, on return of the filter subscription.', () => {
 
       const filterResult = [
-        {id: 'PROBATE'},
-        {id: 'GrantOfRepresentation'},
-        {id: 'SolAppUpdated'},
+        { id: 'PROBATE' },
+        { id: 'GrantOfRepresentation' },
+        { id: 'SolAppUpdated' },
         ['[CASE_REFERENCE]']
       ];
 
@@ -331,7 +339,7 @@ describe('CaseListComponent', () => {
         '"jurisdiction": "Probate", ' +
         '"case-type": "GrantOfRepresentation", ' +
         '"case-state": "BOReadyToIssue"' +
-      '}');
+        '}');
       component.setCaseListFilterDefaults();
 
       expect(component.defaults.state_id).toEqual('BOReadyToIssue');

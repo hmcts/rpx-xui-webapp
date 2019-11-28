@@ -8,8 +8,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { of } from 'rxjs';
 import { Jurisdiction, CaseType, CaseState, SearchResultView, PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
-import { mockedSearchResultPayload, mockedSearchResultResult } from '../../mock/search-filter.mock';
-import { ApplySearchFilterSuccess } from '../../store';
+import { SearchFilterService } from 'src/cases/services';
 
 describe('CaseSearchComponent', () => {
   let fixture: ComponentFixture<CaseSearchComponent>;
@@ -17,6 +16,9 @@ describe('CaseSearchComponent', () => {
   let store: Store<fromCaseSearchStore.SearchState>;
   let storePipeMock: any;
   let storeDispatchMock: any;
+  const SearchFilterServiceMock = jasmine.createSpyObj('SearchFilterService', [
+    'redirectToCase'
+  ]);
 
   const appConfigMock = {
     getPaginationPageSize: () => 10
@@ -38,7 +40,11 @@ describe('CaseSearchComponent', () => {
         CaseSearchComponent
       ],
       providers: [
-        { provide: AppConfig, useValue: appConfigMock }
+        { provide: AppConfig, useValue: appConfigMock },
+        {
+          provide: SearchFilterService,
+          useValue: SearchFilterServiceMock,
+        }
       ]
     }).compileComponents();
 

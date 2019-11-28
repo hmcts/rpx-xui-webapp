@@ -15,6 +15,7 @@ export class MediaViewerWrapperComponent implements OnInit {
     mediaFilename = '';
     mediaContentType = '';
     mediaAnnotationApiUrl = '';
+    toolbarButtons = { showPrint: true };
 
     public constructor(
         private windowService: WindowService

@@ -22,6 +22,7 @@ import routes from './routes'
 config.environment = process.env.XUI_ENV || 'local'
 
 export const app = express()
+app.disable('x-powered-by')
 
 const FileStore = sessionFileStore(session)
 

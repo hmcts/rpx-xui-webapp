@@ -66,7 +66,7 @@ export class LoadHasAcceptedTCFail implements Action {
 
 export class AcceptTandC implements Action {
   readonly type = ACCEPT_T_AND_C;
-  constructor(public payload: any) {}
+  constructor(public payload: string) {}
 }
 
 export class AcceptTandCSuccess implements Action {

@@ -30,12 +30,12 @@ export class AcceptTcEffects {
   userHasAccepted$ = this.actions$.pipe(
     ofType(acceptTandCActions.ACCEPT_T_AND_C),
     switchMap((action: any) => {
-    return this.acceptTcService.postUserAccepted(action.payload).pipe(
-    map(userId => {
-        return new acceptTandCActions.AcceptTandCSuccess(userId);
-    }),
-    catchError(error => of(new acceptTandCActions.AcceptTandCFail(error)))
-    );
+      return this.acceptTcService.postUserAccepted(action.payload).pipe(
+        map(accepted => {
+            return new acceptTandCActions.AcceptTandCSuccess(accepted);
+        }),
+        catchError(error => of(new acceptTandCActions.AcceptTandCFail(error)))
+      );
     })
   );
 }

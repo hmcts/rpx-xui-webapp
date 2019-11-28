@@ -12,7 +12,7 @@ describe('App Selectors', () => {
 
   const appConfig = {
     config: {},
-    termsAndCondition: { isLoaded: false, hasUserAcceptedTC: 'true', },
+    termsAndCondition: { isLoaded: false, hasUserAcceptedTC: false },
     loaded: false,
     loading: false,
     termsAndConditions: null
@@ -49,7 +49,7 @@ describe('App Selectors', () => {
         }
       },
     },
-    termsAndCondition: { isLoaded: false, hasUserAcceptedTC: 'true', },
+    termsAndCondition: { isLoaded: false, hasUserAcceptedTC: false },
     loaded: true,
     loading: false,
     termsAndConditions: null

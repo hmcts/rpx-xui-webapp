@@ -1,23 +1,35 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
-import { of, Observable, Subscription } from 'rxjs';
+import { CanActivate } from '@angular/router';
+import { select, Store } from '@ngrx/store';
 import { CookieService } from 'ngx-cookie';
-import * as fromApp from '../store';
-import { Store, select } from '@ngrx/store';
-import {catchError, filter, switchMap, take, tap} from 'rxjs/operators';
-import { TermsAndCondition } from 'src/app/models/TermsAndCondition';
+import { Observable, of } from 'rxjs';
+import { filter, map, tap } from 'rxjs/operators';
 import { AppUtils } from '../app-utils';
-import { GuardUtil } from './guardUtil';
+import * as fromApp from '../store';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AcceptTermsGuard implements CanActivate {
   constructor(private store: Store<fromApp.State>,
-              private guardUtil: GuardUtil) {
+              private cookieService: CookieService) {
   }
 
   canActivate(): Observable<boolean> {
-    return this.guardUtil.canActivate(this.store, 'accept-terms-and-conditions', 'false');
+    const isPuiCaseManager = AppUtils.isRoleExistsForUser('pui-case-manager', this.cookieService);
+    if (!isPuiCaseManager) {
+      return of(true);
+    }
+    return this.store.pipe(
+      select(fromApp.getTandCLoaded),
+      tap(tc => {
+        if (!tc.isLoaded) {
+          const userId = this.cookieService.get('__userid__');
+          this.store.dispatch(new fromApp.LoadHasAcceptedTC(userId));
+        }
+      }),
+      filter(tc => tc.isLoaded),
+      map(tc => tc.hasUserAcceptedTC)
+    );
   }
 }

@@ -13,7 +13,7 @@ export interface AppConfigState {
 
 export const initialState: AppConfigState = {
   config: {},
-  termsAndCondition: { isLoaded: false, hasUserAcceptedTC: 'true', },
+  termsAndCondition: { isLoaded: false, hasUserAcceptedTC: false },
   loaded: false,
   loading: false,
   termsAndConditions: null
@@ -44,7 +44,7 @@ export function reducer(
         ...state,
         termsAndCondition: {
           isLoaded: true,
-          hasUserAcceptedTC: action.payload.toString()
+          hasUserAcceptedTC: action.payload
         }
       };
     }
@@ -53,7 +53,7 @@ export function reducer(
         ...state,
         termsAndCondition: {
           isLoaded: true,
-          hasUserAcceptedTC: 'true'
+          hasUserAcceptedTC: action.payload
         }
       };
     }

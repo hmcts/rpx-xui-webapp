@@ -29,7 +29,12 @@ export class AcceptTermsGuard implements CanActivate {
         }
       }),
       filter(tc => tc.isLoaded),
-      map(tc => tc.hasUserAcceptedTC)
+      map(tc => tc.hasUserAcceptedTC),
+      tap(accepted => {
+        if (!accepted) {
+          window.location.href = '/accept-terms-and-conditions';
+        }
+      })
     );
   }
 }

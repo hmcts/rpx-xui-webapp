@@ -1,5 +1,5 @@
 
-@probate @regression
+@probate @all
 Feature: Probate create case workflow
 
   Background:

@@ -1,4 +1,4 @@
-@search @regression
+@search @all
 Feature: search criteria workflow
 
   Background:
@@ -38,7 +38,6 @@ Feature: search criteria workflow
       | Family Divorce | Financial Remedy Consented |
       | Family Divorce | Contested Financial Remedy |
 
-@test
   Scenario: search criteria reset workflow in case list page
     When I click on Case list
     Then I am on case list page

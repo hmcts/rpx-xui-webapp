@@ -1,4 +1,4 @@
-@divorce @regression
+@divorce @all
 Feature: Divorce create case workflow
 
     Background:

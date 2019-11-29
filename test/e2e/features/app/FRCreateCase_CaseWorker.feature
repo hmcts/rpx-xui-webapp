@@ -1,4 +1,4 @@
-@fr @regression
+@fr @all
 Feature: FR create case workflow - Case Worker
 
     Background:

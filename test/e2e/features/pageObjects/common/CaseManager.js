@@ -81,14 +81,17 @@ class CaseManager {
 
         var nextStepSelectoption = null;
         if (stepName){
-            nextStepSelectoption = this.caseNextStepSelect.element(by.xpath("option[text() = '" + stepName + "']"));
+            nextStepSelectoption = element(by.xpath("//*[@id='next-step']//option[text() = '" + stepName + "']"));
 
         }else{
-            nextStepSelectoption = this.caseNextStepSelect.element(by.css("option:nth-of-type(1)"));
+            nextStepSelectoption = element(by.xpath("//*[@id='next-step']//option[2]"));
         }
+        await BrowserWaits.waitForElement(nextStepSelectoption);
+
         await nextStepSelectoption.click();
 
         var thisPageUrl = await browser.getCurrentUrl();
+
         await this.nextStepGoButton.click();
         await BrowserWaits.waitForPageNavigation(thisPageUrl);
     }

@@ -10,6 +10,10 @@ class BrowserWaits{
         await browser.wait(EC.visibilityOf(element), this.waitTime,"Error : "+element.locator().toString());
     }
 
+    async waitForPresenceOfElement(element){
+        await browser.wait(EC.presenceOf(element), this.waitTime, "Error : " + element.locator().toString());
+    }
+
     async waitForElementClickable(element) {
         await browser.wait(EC.elementToBeClickable(element), this.waitTime, "Error : " + element.locator().toString());
     }

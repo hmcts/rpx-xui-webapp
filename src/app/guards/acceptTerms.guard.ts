@@ -31,7 +31,7 @@ export class AcceptTermsGuard implements CanActivate {
       filter(tc => tc.isLoaded),
       map(tc => tc.hasUserAcceptedTC),
       tap(accepted => {
-        if (!accepted) {
+        if (!accepted && window.location.href.indexOf('accept-terms-and-conditions') === -1) {
           window.location.href = '/accept-terms-and-conditions';
         }
       })

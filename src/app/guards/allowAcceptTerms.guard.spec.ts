@@ -14,6 +14,7 @@ describe('Allow Accept Terms guard', () => {
     });
 
     it('calls acceptGuard', () => {
+        acceptGuard.canActivate.and.returnValue({ pipe: () => {} });
         guard.canActivate();
         expect(acceptGuard.canActivate).toHaveBeenCalled();
     });

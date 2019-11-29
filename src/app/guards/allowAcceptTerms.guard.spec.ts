@@ -12,4 +12,9 @@ describe('Allow Accept Terms guard', () => {
     it('is Truthy', () => {
         expect(guard).toBeTruthy();
     });
+
+    it('calls acceptGuard', () => {
+        guard.canActivate();
+        expect(acceptGuard.canActivate).toHaveBeenCalled();
+    });
 });

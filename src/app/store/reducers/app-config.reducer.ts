@@ -48,6 +48,15 @@ export function reducer(
         }
       };
     }
+    case fromActions.LOAD_HAS_ACCEPTED_TC_FAIL: {
+      return {
+        ...state,
+        termsAndCondition: {
+          isLoaded: false,
+          hasUserAcceptedTC: false
+        }
+      };
+    }
     case fromActions.ACCEPT_T_AND_C_SUCCESS: {
       return {
         ...state,

@@ -19,6 +19,7 @@ export default {
     documents: {
       api: 'http://dm-store-aat.service.core-compute-aat.internal',
     },
+    payments: 'http://payment-api-aat.service.core-compute-aat.internal',
     idam: {
       idamApiUrl: 'https://idam-api.aat.platform.hmcts.net',
       idamClientID: 'xuiwebapp',

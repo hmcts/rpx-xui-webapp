@@ -16,6 +16,7 @@ export default {
             api: 'http://dm-store-prod.service.core-compute-prod.internal',
         },
         em_anno_api: 'http://em-anno-prod.service.core-compute-prod.internal',
+        payments: 'http://payment-api-prod.service.core-compute-prod.internal',
         idam: {
             idamApiUrl: 'https://idam-api.platform.hmcts.net',
             idamClientID: 'xuiwebapp',

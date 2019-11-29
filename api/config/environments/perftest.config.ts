@@ -16,7 +16,6 @@ export default {
             api: 'https://dm-store-perftest.service.core-compute-perftest.internal',
         },
         em_anno_api: 'http://em-anno-perftest.service.core-compute-perftest.internal',
-        payments: 'http://payment-api-perftest.service.core-compute-perftest.internal',
         idam: {
             idamApiUrl: 'https://idam-api.perftest.platform.hmcts.net',
             idamClientID: 'xuiwebapp',
@@ -24,6 +23,7 @@ export default {
             indexUrl: '/',
             oauthCallbackUrl: 'oauth2/callback',
         },
+        payments: 'http://payment-api-perftest.service.core-compute-perftest.internal',
         s2s: 'http://rpe-service-auth-provider-perftest.service.core-compute-perftest.internal',
     },
     sessionSecret: 'secretSauce',

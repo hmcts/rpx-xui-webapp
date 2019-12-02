@@ -25,7 +25,7 @@ export default {
             oauthCallbackUrl: 'oauth2/callback',
         },
         s2s: 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal',
-        termsAndConditions: 'http://xui-terms-and-conditions-staging.service.core-compute-aat.internal/',
+        termsAndConditions: 'http://xui-terms-and-conditions-staging.service.core-compute-aat.internal',
     },
     sessionSecret: 'secretSauce',
     useProxy: false,

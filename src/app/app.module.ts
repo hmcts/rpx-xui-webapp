@@ -10,7 +10,7 @@ import {MetaReducer, Store, StoreModule} from '@ngrx/store';
 import {RouterStateSerializer, StoreRouterConnectingModule} from '@ngrx/router-store';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {storeFreeze} from 'ngrx-store-freeze';
-import {LoggerService} from './services/logger/logger.service';
+import {XuiLoggerService} from './services/logger/xui-logger.service';
 // enforces immutability
 export const metaReducers: MetaReducer<any>[] = !environment.production
   ? [storeFreeze]
@@ -74,7 +74,7 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
     JwtDecodeWrapper,
     CryptoWrapper,
     MonitoringService,
-    LoggerService,
+    XuiLoggerService,
     {
       provide: AbstractAppInsights,
       useClass: AppInsightsWrapper

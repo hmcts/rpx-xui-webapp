@@ -10,7 +10,7 @@ import { empty } from 'rxjs/observable/empty';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { CaseCreateEffects } from './case-create.effects';
-import { LoggerService } from 'src/app/services/logger/logger.service';
+import { XuiLoggerService } from 'src/app/services/logger/xui-logger.service';
 import { CreateCaseLoaded, ApplyChange, CaseCreateFilterApply } from '../actions/create-case.action';
 import { NewCaseLoadedSuccessfully, CreateCaseGo, Go } from '../../../app/store/actions';
 import { provideMockActions } from '@ngrx/effects/testing';
@@ -31,7 +31,7 @@ describe('CaseCreate Effects', () => {
         CaseCreateEffects,
         { provide: AlertService, useValue: mockAlertService },
         provideMockActions(() => actions$),
-        { provide: LoggerService, useValue: mockLogger },
+        { provide: XuiLoggerService, useValue: mockLogger },
       ],
     });
 

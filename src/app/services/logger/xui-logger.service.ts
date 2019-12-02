@@ -19,7 +19,7 @@ export interface ILoggerService {
 
 @Injectable()
 
-export class LoggerService implements ILoggerService {
+export class XuiLoggerService implements ILoggerService {
     COOKIE_KEYS;
     constructor(private monitoringService: MonitoringService,
                 private ngxLogger: NGXLogger,

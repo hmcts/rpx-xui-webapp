@@ -23,22 +23,32 @@ import {
   SearchResultModule,
   CreateCaseFiltersModule,
   CaseListFiltersModule,
-  AlertService
+  AlertService,
+  EventLogModule,
+  CaseReferencePipe,
+  ActivityModule,
+  CaseHeaderModule,
+  ConditionalShowModule,
+  LabelSubstitutorModule,
+  MarkdownModule,
+  PaletteModule,
+  FieldsPurger,
+  NavigationNotifierService
 } from '@hmcts/ccd-case-ui-toolkit';
 
 import { casesRouting } from './case-feature.routes';
-import {StoreModule} from '@ngrx/store';
-import {EffectsModule} from '@ngrx/effects';
-import {reducers, effects} from './store';
-import {SharedModule} from '../app/shared/shared.module';
-import {HttpModule} from '@angular/http';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { reducers, effects } from './store';
+import { SharedModule } from '../app/shared/shared.module';
+import { HttpModule } from '@angular/http';
 // from containers
 import * as fromContainers from './containers';
 // from components
 import * as fromComponents from './components';
 // from services
 import * as fromServices from './services';
-import {ProvidersModule} from '../app/providers/providers.module';
+import { ProvidersModule } from '../app/providers/providers.module';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
 
 @NgModule({
@@ -55,11 +65,17 @@ import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-tr
     SearchFiltersModule,
     HttpModule,
     MatDialogModule,
-    CaseListFiltersModule
+    CaseListFiltersModule,
+    EventLogModule,
+    ActivityModule, CaseHeaderModule, ConditionalShowModule,
+    LabelSubstitutorModule,
+    MarkdownModule,
+    PaletteModule
   ],
   declarations: [...fromComponents.components, ...fromContainers.containers],
   providers: [
     PlaceholderService,
+    CaseReferencePipe,
     CasesService,
     CCDAuthService,
     HttpService,
@@ -76,7 +92,9 @@ import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-tr
     },
     ScrollToService,
     ...fromServices.services,
-    CreateCaseEventTriggerResolver
+    CreateCaseEventTriggerResolver,
+    FieldsPurger,
+    NavigationNotifierService
   ]
 })
 /**

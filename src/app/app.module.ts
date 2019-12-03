@@ -10,7 +10,7 @@ import {MetaReducer, Store, StoreModule} from '@ngrx/store';
 import {RouterStateSerializer, StoreRouterConnectingModule} from '@ngrx/router-store';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {storeFreeze} from 'ngrx-store-freeze';
-import {XuiLoggerService} from './services/logger/xui-logger.service';
+import {LoggerService} from './services/logger/logger.service';
 // enforces immutability
 export const metaReducers: MetaReducer<any>[] = !environment.production
   ? [storeFreeze]
@@ -37,6 +37,7 @@ import { JwtDecodeWrapper } from './services/logger/jwtDecodeWrapper';
 import { AbstractAppInsights, AppInsightsWrapper } from './services/logger/appInsightsWrapper';
 import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 
 @NgModule({
   declarations: [AppComponent],
@@ -58,7 +59,8 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
       level: NgxLoggerLevel.TRACE,
       disableConsoleLogging: false
     }),
-    ExuiCommonLibModule
+    ExuiCommonLibModule,
+    PaymentLibModule
   ],
   providers: [
     {
@@ -74,7 +76,7 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
     JwtDecodeWrapper,
     CryptoWrapper,
     MonitoringService,
-    XuiLoggerService,
+    LoggerService,
     {
       provide: AbstractAppInsights,
       useClass: AppInsightsWrapper

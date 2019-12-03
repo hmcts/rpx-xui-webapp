@@ -5,14 +5,14 @@ import {map} from 'rxjs/operators';
 import * as fromRoot from '../../../app/store';
 import * as fromActions from '../actions';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
-import { XuiLoggerService } from 'src/app/services/logger/xui-logger.service';
+import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Injectable()
 export class CaseCreateEffects {
   constructor(
     private actions$: Actions,
     private alertService: AlertService,
-    private loggerService: XuiLoggerService
+    private loggerService: LoggerService
   ) {}
 
   @Effect()

@@ -1,4 +1,4 @@
-import { XuiLoggerService } from './xui-logger.service';
+import { LoggerService } from './logger.service';
 
 describe('Logger service', () => {
     const mockedMonitoringService = jasmine.createSpyObj('mockedMonitoringService', ['logEvent', 'logException']);
@@ -9,13 +9,13 @@ describe('Logger service', () => {
     const mockJwtDecodeWrapper = jasmine.createSpyObj('mockJwtDecodeWrapper', ['decode']);
 
     it('should be Truthy', () => {
-        const service = new XuiLoggerService(mockedMonitoringService, mockedNgxLogger, mockedCookieService,
+        const service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedCookieService,
         mockedCryptoWrapper, mockJwtDecodeWrapper);
         expect(service).toBeTruthy();
     });
 
     it('should be able to call info', () => {
-        const service = new XuiLoggerService(mockedMonitoringService, mockedNgxLogger, mockedCookieService,
+        const service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedCookieService,
         mockedCryptoWrapper, mockJwtDecodeWrapper);
         service.info('message');
         expect(mockedMonitoringService.logEvent).toHaveBeenCalled();
@@ -23,7 +23,7 @@ describe('Logger service', () => {
     });
 
     it('should be able to call warn', () => {
-        const service = new XuiLoggerService(mockedMonitoringService, mockedNgxLogger, mockedCookieService,
+        const service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedCookieService,
         mockedCryptoWrapper, mockJwtDecodeWrapper);
         service.warn('message');
         expect(mockedMonitoringService.logEvent).toHaveBeenCalled();
@@ -31,7 +31,7 @@ describe('Logger service', () => {
     });
 
     it('should be able to call error', () => {
-        const service = new XuiLoggerService(mockedMonitoringService, mockedNgxLogger, mockedCookieService,
+        const service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedCookieService,
         mockedCryptoWrapper, mockJwtDecodeWrapper);
         service.error('message');
         expect(mockedMonitoringService.logException).toHaveBeenCalled();
@@ -39,7 +39,7 @@ describe('Logger service', () => {
     });
 
     it('should be able to call fatal', () => {
-        const service = new XuiLoggerService(mockedMonitoringService, mockedNgxLogger, mockedCookieService,
+        const service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedCookieService,
         mockedCryptoWrapper, mockJwtDecodeWrapper);
         service.fatal('message');
         expect(mockedMonitoringService.logException).toHaveBeenCalled();
@@ -47,14 +47,14 @@ describe('Logger service', () => {
     });
 
     it('should be able to call debug', () => {
-        const service = new XuiLoggerService(mockedMonitoringService, mockedNgxLogger, mockedCookieService,
+        const service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedCookieService,
         mockedCryptoWrapper, mockJwtDecodeWrapper);
         service.debug('message');
         expect(mockedMonitoringService.logEvent).toHaveBeenCalled();
     });
 
     it('should be able to call trace', () => {
-        const service = new XuiLoggerService(mockedMonitoringService, mockedNgxLogger, mockedCookieService,
+        const service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedCookieService,
         mockedCryptoWrapper, mockJwtDecodeWrapper);
         service.trace('message');
         expect(mockedMonitoringService.logEvent).toHaveBeenCalled();

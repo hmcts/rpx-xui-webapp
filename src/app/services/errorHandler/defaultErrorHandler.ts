@@ -1,10 +1,10 @@
 import { ErrorHandler, Injectable} from '@angular/core';
-import { XuiLoggerService } from '../logger/xui-logger.service';
+import { LoggerService } from '../logger/logger.service';
 
 @Injectable()
 export class DefaultErrorHandler implements ErrorHandler {
   constructor(
-    private loggerService: XuiLoggerService
+    private loggerService: LoggerService
   ) { }
 
     handleError(error: Error) {

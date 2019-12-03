@@ -66,8 +66,13 @@ export async function postDocuments(fields: Fields, files: Files): Promise<DMDoc
     formData.append(field, fields[field])
   })
 
+  // we explicitly set upload limit to Infinity here, rejection is handled by dm-store
   const response: AxiosResponse<DMDocuments> = await asyncReturnOrError(
-    http.post(`${url}/documents/`, formData, { headers: formData.getHeaders() }),
+    http.post(`${url}/documents/`, formData,
+        {
+            headers: formData.getHeaders(),
+            maxContentLength: Infinity,
+        }),
     `Error posting documents`,
     null,
     logger,

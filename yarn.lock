@@ -411,14 +411,14 @@
   resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.34-alpha.tgz#0d39b6d06c632ccb7c578fc91e3311306da9db0d"
   integrity sha512-+q3IB4L3UHsD5cs/11PDWEftDAmDV6eYkxm9eoNtXAfea93VhXNFA9ZEIV+TM7v/9xaAIkmDj9C4kCSUb1Hl3g==
 
-"@hmcts/media-viewer@^1.1.12":
-  version "1.1.12"
-  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-1.1.12.tgz#1a4917f57d1bc9fdccf5f653ed8bcb7975c31c59"
-  integrity sha512-Xr/RgxnQ6iNnHlskLSR56u/jiRd7hrQH+QM9YSB4A6Sd3FsB6hBK5DdOmQ3Qii9nQ2+M57pldpw6iMch94a7Qw==
+"@hmcts/media-viewer@^1.1.12-showcase-1.0":
+  version "1.1.12-showcase-1.0"
+  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-1.1.12-showcase-1.0.tgz#01e51def12ee95d528110b82be30076c3af7f85f"
+  integrity sha512-2hBtBVbMJZSkeJAcEGYuACw9UEZzTI9hFqj0O2Q0WmKSXPG7M77X0Dtx1pi3J9YwH9R775p3McyR5nVSQjn2XA==
   dependencies:
     "@hmcts/frontend" "^0.0.34-alpha"
     govuk-frontend "^2.11.0"
-    pdfjs-dist "2.0.943"
+    pdfjs-dist "2.3.200"
     tslib "^1.9.0"
     uuid "^3.3.2"
 
@@ -7483,10 +7483,10 @@ pbkdf2@^3.0.3:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-pdfjs-dist@2.0.943:
-  version "2.0.943"
-  resolved "https://registry.yarnpkg.com/pdfjs-dist/-/pdfjs-dist-2.0.943.tgz#32fb9a2d863df5a1d89521a0b3cd900c16e7edde"
-  integrity sha512-iLhNcm4XceTHRaSU5o22ZGCm4YpuW5+rf4+BJFH/feBhMQLbCGBry+Jet8Q419QDI4qgARaIQzXuiNrsNWS8Yw==
+pdfjs-dist@2.3.200:
+  version "2.3.200"
+  resolved "https://registry.yarnpkg.com/pdfjs-dist/-/pdfjs-dist-2.3.200.tgz#2920dc28ae7f2b8313cd6d6223c97ae85ac07eac"
+  integrity sha512-+8wBjU5h8LPZOIvR9X2uCrp/8xWQG1DRDKMLg5lzGN1qyIAZlYUxA0KQyy12Nw5jN7ozulC6v97PMaDcLgAcFg==
   dependencies:
     node-ensure "^0.0.0"
     worker-loader "^2.0.0"

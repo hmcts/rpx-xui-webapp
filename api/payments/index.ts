@@ -1,21 +1,27 @@
 import * as express from 'express'
 import { config } from '../config'
-import { http } from '../lib/http'
+import { EnhancedRequest } from '../lib/models'
+import { handleGet } from './paymentsService'
 
 const baseUrl: string = config.services.payments
 
-export async function handleGet(req: express.Request, res: express.Response) {
+/**
+ * getPayments
+ */
+export async function getPayments(req: EnhancedRequest, res: express.Response) {
 
   try {
 
     const paymentsPath: string = baseUrl + req.originalUrl.replace('/payments/', '/')
 
-    const response = await http.get(`${paymentsPath}`)
+    const jsonResponse = await handleGet(paymentsPath)
     res.status(200)
-    res.send(response.data)
-  } catch (e) {
-    res.status(e.status)
-    res.send(e.data)
+    res.send(jsonResponse)
+  } catch (error) {
+    res.status(error.status).send({
+      errorMessage: error.data,
+      errorStatusText: error.statusText,
+    })
   }
 
 }

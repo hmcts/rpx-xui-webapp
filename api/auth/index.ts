@@ -1,10 +1,10 @@
 
 import { config } from '../config'
 import * as log4jui from '../lib/log4jui'
+import { propsExist } from '../lib/objectUtilities'
 import { asyncReturnOrError, exists } from '../lib/util'
 import { getDetails, postOauthToken } from '../services/idam'
 import { userHasAppAccess } from './manageCasesUserRoleAuth'
-import { propsExist } from '../lib/objectUtilities'
 
 const cookieToken = config.cookies.token
 const cookieUserId = config.cookies.userId

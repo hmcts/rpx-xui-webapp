@@ -6,6 +6,7 @@ export default {
         em_anno_api: 'http://em-anno-ithc.service.core-compute-ithc.internal/health',
     },
     logging: 'debug',
+    loginRoleMatcher: 'caseworker',
     secureCookie: true,
     services: {
         ccd: {

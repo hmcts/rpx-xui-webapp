@@ -40,13 +40,13 @@ export async function authenticateUser(req: any, res, next) {
 
         if (!propsExist(userDetails, ['roles'])) {
           logger.warn('User does not have any access roles.')
-          doLogout(req, res, 401)
+          doLogout(req, res)
           return false
         }
 
         if (!userHasAppAccess(userDetails.roles)) {
           logger.warn('User has no application access, as they do not have a Caseworker role.')
-          doLogout(req, res, 401)
+          doLogout(req, res)
           return false
         }
 

@@ -1,0 +1,8 @@
+<div class="get-help-details">
+  <h3 class="govuk-heading-m">{{ data.title }}</h3>
+  <p><span [className]="'hmcts-badge ' + data.badgeColour">{{ data.badgeText }}</span></p>
+  <div><span class="govuk-!-font-weight-bold">Email: </span> <a href="mailto:{{ data.email }}">{{ data.email }}</a></div>
+  <div><span class="govuk-!-font-weight-bold">Phone: </span>{{ data.phone }}</div>
+  <div><span class="govuk-!-font-weight-bold">Opening times: </span>{{ data.openingTimes}}</div>
+</div>
+

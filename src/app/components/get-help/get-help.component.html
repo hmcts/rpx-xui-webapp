@@ -1,0 +1,14 @@
+<exui-app-header></exui-app-header>
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper govuk-main-wrapper--l" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl" id="cookies">Get Help</h1>
+        <div *ngFor="let help of getHelpData">
+            <exui-get-help-details [data]="help"></exui-get-help-details>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<exui-app-footer></exui-app-footer>

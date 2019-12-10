@@ -5,6 +5,7 @@ export default {
     documentsApi: 'http://dm-store-aat.service.core-compute-aat.internal/health',
   },
   logging: 'debug',
+  loginRoleMatcher: 'caseworker',
   protocol: 'http',
   proxy: {
     host: '172.16.0.7',

@@ -103,7 +103,7 @@ describe('Auth', () => {
 
             expect(req.session.user).not.to.be.equals(details)
             expect(res.cookie).not.to.be.calledWith(config.cookies.userId, details.id)
-            expect(res.redirect).to.be.calledWith(401, '/')
+            expect(res.redirect).to.be.calledWith(302, '/')
         })
     })
 })

@@ -51,8 +51,8 @@ const userNav = {
 const getHelpDetailsData: ContactDetailsDataModel[] = [
   {
     title: 'Probate',
-    badgeColour: BadgeColour.BADGE_RED,
-    badgeText: 'PRIVATE BETA',
+    badgeColour: BadgeColour.BADGE_BLUE,
+    badgeText: 'PUBLIC BETA',
     email: 'contactprobate@justice.gov.uk',
     phone: '0300 303 0648',
     openingTimes: 'Monday to Friday, 9.30pm to 5pm (excluding public holidays)'
@@ -60,7 +60,7 @@ const getHelpDetailsData: ContactDetailsDataModel[] = [
   {
     title: 'Divorce',
     badgeColour: BadgeColour.BADGE_BLUE,
-    badgeText: 'PUBLIC BETA',
+  //  badgeText: 'PUBLIC BETA',
     email: 'divorcecase@justice.gov.uk',
     phone: '0300 303 0642',
     openingTimes: 'Monday to Friday, 9.30pm to 5pm (excluding public holidays)'
@@ -68,7 +68,7 @@ const getHelpDetailsData: ContactDetailsDataModel[] = [
   {
     title: 'Financial Remedy',
     badgeColour: BadgeColour.BADGE_RED,
-    badgeText: 'PRIVATE BETA',
+ //   badgeText: 'PRIVATE BETA',
     email: 'contactfinancialremedy@justice.gov.uk',
     phone: '0300 303 0642',
     openingTimes: 'Monday to Friday, 9.30pm to 5pm (excluding public holidays)'

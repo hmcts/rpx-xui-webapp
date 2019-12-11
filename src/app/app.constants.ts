@@ -1,4 +1,4 @@
-import { BADGE_COLOUR, GetHelpDetailsDataModel } from './components/get-help-details/get-help-details.model';
+import { ContactDetailsDataModel, BadgeColour } from '@hmcts/rpx-xui-common-lib';
 
 const FooterData =  {
   heading: 'Help',
@@ -48,10 +48,10 @@ const userNav = {
   }]
 };
 
-const getHelpDetailsData: GetHelpDetailsDataModel[] = [
+const getHelpDetailsData: ContactDetailsDataModel[] = [
   {
     title: 'Probate',
-    badgeColour: BADGE_COLOUR.BADGE_RED,
+    badgeColour: BadgeColour.BADGE_RED,
     badgeText: 'PRIVATE BETA',
     email: 'contactprobate@justice.gov.uk',
     phone: '0300 303 0648',
@@ -59,7 +59,7 @@ const getHelpDetailsData: GetHelpDetailsDataModel[] = [
   },
   {
     title: 'Divorce',
-    badgeColour: BADGE_COLOUR.BADGE_BLUE,
+    badgeColour: BadgeColour.BADGE_BLUE,
     badgeText: 'PUBLIC BETA',
     email: 'divorcecase@justice.gov.uk',
     phone: '0300 303 0642',
@@ -67,7 +67,7 @@ const getHelpDetailsData: GetHelpDetailsDataModel[] = [
   },
   {
     title: 'Financial Remedy',
-    badgeColour: BADGE_COLOUR.BADGE_RED,
+    badgeColour: BadgeColour.BADGE_RED,
     badgeText: 'PRIVATE BETA',
     email: 'contactfinancialremedy@justice.gov.uk',
     phone: '0300 303 0642',

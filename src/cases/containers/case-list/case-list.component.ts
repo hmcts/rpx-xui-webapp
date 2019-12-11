@@ -19,7 +19,7 @@ import { SearchFilterService } from 'src/cases/services';
   selector: 'exui-case-list',
   templateUrl: 'case-list.component.html',
   encapsulation: ViewEncapsulation.None,
-  styleUrls: ['case-list-filter.component.scss']
+  styleUrls: ['case-list.component.scss']
 })
 export class CaseListComponent implements OnInit, OnDestroy {
   defaults: any;

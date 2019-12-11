@@ -4,9 +4,7 @@
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl" id="cookies">Get Help</h1>
-        <div *ngFor="let help of getHelpData">
-            <xuilib-contact-details [data]="help"></xuilib-contact-details>
-        </div>
+        <xuilib-contact-details *ngFor="let help of getHelpData" [data]="help"></xuilib-contact-details>
       </div>
     </div>
   </main>

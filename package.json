@@ -62,7 +62,7 @@
     "@hmcts/frontend": "0.0.39-alpha",
     "@hmcts/media-viewer": "^1.1.12",
     "@hmcts/nodejs-healthcheck": "^1.5.1",
-    "@hmcts/rpx-xui-common-lib": "0.0.13",
+    "@hmcts/rpx-xui-common-lib": "0.0.19",
     "@ngrx/effects": "^7.4.0",
     "@ngrx/router-store": "^7.4.0",
     "@ngrx/store": "^7.4.0",

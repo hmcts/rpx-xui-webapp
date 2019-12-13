@@ -76,6 +76,7 @@
     "applicationinsights-js": "^1.0.20",
     "axios": "^0.18.0",
     "class-transformer": "^0.1.10",
+    "classlist.js": "^1.1.20150312",
     "cookie-parser": "^1.4.4",
     "core-js": "^2.5.4",
     "crypto-js": "^3.1.9-1",
@@ -102,6 +103,7 @@
     "smoothscroll-polyfill": "^0.4.3",
     "striptags": "^3.1.1",
     "tslib": "^1.9.0",
+    "web-animations-js": "^2.3.2",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {

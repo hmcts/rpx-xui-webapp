@@ -52,7 +52,7 @@ const getHelpDetailsData: ContactDetailsDataModel[] = [
   {
     title: 'Probate',
     badgeColour: BadgeColour.BADGE_BLUE,
-    badgeText: 'PUBLIC BETA',
+    // badgeText: 'PUBLIC BETA',
     email: 'contactprobate@justice.gov.uk',
     phone: '0300 303 0648',
     openingTimes: 'Monday to Friday, 9.30pm to 5pm (excluding public holidays)'

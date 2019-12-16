@@ -43,7 +43,10 @@ describe('Auth', () => {
         let res
         let sandbox
         const accessToken = 'access'
-        const details = { id: 1, name: 'testuser' }
+        const details = { id: 1, name: 'testuser', roles: [
+            'pui-case-manager',
+            'caseworker-probate',
+          ] };
         beforeEach(() => {
             sandbox = sinon.createSandbox()
             sandbox.stub(idam, 'postOauthToken').resolves({ access_token: `${accessToken}` })
@@ -73,6 +76,7 @@ describe('Auth', () => {
         })
 
         it('should set the session, cookies and redirect the user', async () => {
+
             await authenticateUser(req, res, () => { })
             expect(req.session.user).to.be.equals(details)
             expect(res.cookie).to.be.calledWith(config.cookies.token, accessToken)
@@ -96,10 +100,10 @@ describe('Auth', () => {
             idam.getDetails.restore()
             sandbox.stub(idam, 'getDetails').resolves(null)
             await authenticateUser(req, res, () => { })
+
             expect(req.session.user).not.to.be.equals(details)
             expect(res.cookie).not.to.be.calledWith(config.cookies.userId, details.id)
-            expect(res.redirect).to.be.calledWith('/')
+            expect(res.redirect).to.be.calledWith(302, '/')
         })
-
     })
 })

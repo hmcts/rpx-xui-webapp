@@ -6,6 +6,7 @@ export default {
         em_anno_api: 'http://em-anno-aat.service.core-compute-aat.internal/health',
     },
     logging: 'debug',
+    loginRoleMatcher: 'caseworker',
     protocol: 'http',
     proxy: {
         host: '172.16.0.7',

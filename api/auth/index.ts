@@ -1,8 +1,10 @@
 
 import { config } from '../config'
 import * as log4jui from '../lib/log4jui'
+import { propsExist } from '../lib/objectUtilities'
 import { asyncReturnOrError, exists } from '../lib/util'
 import { getDetails, postOauthToken } from '../services/idam'
+import { userHasAppAccess } from './manageCasesUserRoleAuth'
 
 const cookieToken = config.cookies.token
 const cookieUserId = config.cookies.userId
@@ -34,13 +36,26 @@ export async function authenticateUser(req: any, res, next) {
 
     if (exists(data, 'access_token')) {
         // tslint:disable-next-line
-        const details = await asyncReturnOrError(getDetails( idamURl, data.access_token), 'Cannot get user details', res, logger, false)
-        if (details) {
+        const userDetails = await asyncReturnOrError(getDetails( idamURl, data.access_token), 'Cannot get user userDetails', res, logger, false)
+
+        if (!propsExist(userDetails, ['roles'])) {
+          logger.warn('User does not have any access roles.')
+          doLogout(req, res)
+          return false
+        }
+
+        if (!userHasAppAccess(userDetails.roles)) {
+          logger.warn('User has no application access, as they do not have a Caseworker role.')
+          doLogout(req, res)
+          return false
+        }
+
+        if (userDetails) {
             logger.info('Setting session and cookies')
-            req.session.user = details
-            res.cookie(cookieUserId, details.id)
+            req.session.user = userDetails
+            res.cookie(cookieUserId, userDetails.id)
             res.cookie(cookieToken, data.access_token)
-            res.cookie('roles', details.roles)
+            res.cookie('roles', userDetails.roles)
 
             // need this so angular knows which enviroment config to use ...
             res.cookie('platform', config.environment)

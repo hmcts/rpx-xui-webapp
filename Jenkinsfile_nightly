@@ -1,13 +1,15 @@
 #!groovy
 
 properties([
-        [$class: 'GithubProjectProperty', projectUrlStr: 'https://github.com/hmcts/rpx-xui-webapp/']
-],
-pipelineTriggers([
+    [
+        $class       : 'GithubProjectProperty',
+        displayName  : 'Expert UI Webapp',
+        projectUrlStr: 'https://github.com/hmcts/rpx-xui-webapp/'
+    ],
+    pipelineTriggers([
     cron('H 05 * * *')
+    ])
 ])
-
-)
 
 @Library("Infrastructure")
 

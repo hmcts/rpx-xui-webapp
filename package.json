@@ -36,7 +36,7 @@
     "test:functional": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/conf.js",
     "test:functional:local": "protractor ./test/e2e/config/conf.js --local",
     "test:crossbrowser": "protractor ./test/e2e/config/crossbrowser.conf.js",
-    "test:fullfunctional": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/conf.js --local",
+    "test:fullfunctional": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/conf.js",
     "test:mutation": "echo 'not implemented'",
     "test:apiGateway": "echo 'not implemented'",
     "sonar-scan": "node_modules/sonar-scanner/bin/sonar-scanner",

@@ -17,7 +17,6 @@ class ProbatePage {
     this.findAddress = new Button('button[type=button]');
     this.saveandContinueButton = new Button('button[type=submit]');
     this.selectanAddressDropdown=new Dropdown('#solsSolicitorAddress_solsSolicitorAddress_addressList');
-
   }
 
   async getPageHeader(){
@@ -30,8 +29,6 @@ class ProbatePage {
     await this.findAddress.click();
     await this.reference.sendKeys('Rajesh12345');
     await this.emailAddress.sendKeys('Rajesh1234@gmail.com');
-
-
   }
 
   async enterFirmName(value){
@@ -59,6 +56,5 @@ class ProbatePage {
   async clickOnSaveAndContinue() {
     await this.saveandContinueButton.click();
   }
-
 }
 module.exports = ProbatePage;

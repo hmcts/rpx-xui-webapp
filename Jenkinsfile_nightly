@@ -14,7 +14,7 @@ pipelineTriggers([
 def type      = "nodejs"
 def product   = "xui"
 def component = "webapp"
-def channel   = '#xui-pipeline
+def channel   = '#xui-pipeline'
 
 withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)

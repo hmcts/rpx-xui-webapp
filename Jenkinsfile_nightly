@@ -1,0 +1,40 @@
+#!groovy
+
+properties([
+        [$class: 'GithubProjectProperty', projectUrlStr: 'https://github.com/hmcts/rpx-xui-webapp/']
+])
+
+@Library("Infrastructure")
+
+def type      = "nodejs"
+def product   = "xui"
+def component = "webapp"
+def channel   = '#xui-pipeline
+
+node {
+    ws('workspace/rpx-xui-webapp') {
+        stage('Checkout') {
+            deleteDir()
+            checkout scm
+        }
+        stage('Journey Tests') {
+            try {
+                sh 'yarn install'
+                sh """ yarn run test:functional"""
+            }
+            catch (Exception err) {
+                currentBuild.result = 'UNSTABLE'
+                echo "RESULT: ${currentBuild.result}"
+            } finally {
+                archiveArtifacts 'reports/**'
+            }
+
+        }
+
+        stage('After run') {
+            echo "finished"
+        }
+
+    }
+    deleteDir()
+}

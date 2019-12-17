@@ -23,17 +23,7 @@ import {
   SearchResultModule,
   CreateCaseFiltersModule,
   CaseListFiltersModule,
-  AlertService,
-  EventLogModule,
-  CaseReferencePipe,
-  ActivityModule,
-  CaseHeaderModule,
-  ConditionalShowModule,
-  LabelSubstitutorModule,
-  MarkdownModule,
-  PaletteModule,
-  FieldsPurger,
-  NavigationNotifierService
+  AlertService
 } from '@hmcts/ccd-case-ui-toolkit';
 
 import { casesRouting } from './case-feature.routes';
@@ -48,7 +38,6 @@ import * as fromContainers from './containers';
 import * as fromComponents from './components';
 // from services
 import * as fromServices from './services';
-import { ProvidersModule } from '../app/providers/providers.module';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
 
 @NgModule({
@@ -65,17 +54,11 @@ import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-tr
     SearchFiltersModule,
     HttpModule,
     MatDialogModule,
-    CaseListFiltersModule,
-    EventLogModule,
-    ActivityModule, CaseHeaderModule, ConditionalShowModule,
-    LabelSubstitutorModule,
-    MarkdownModule,
-    PaletteModule
+    CaseListFiltersModule
   ],
   declarations: [...fromComponents.components, ...fromContainers.containers],
   providers: [
     PlaceholderService,
-    CaseReferencePipe,
     CasesService,
     CCDAuthService,
     HttpService,
@@ -92,9 +75,7 @@ import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-tr
     },
     ScrollToService,
     ...fromServices.services,
-    CreateCaseEventTriggerResolver,
-    FieldsPurger,
-    NavigationNotifierService
+    CreateCaseEventTriggerResolver
   ]
 })
 /**

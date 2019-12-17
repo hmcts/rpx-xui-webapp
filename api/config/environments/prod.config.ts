@@ -6,6 +6,7 @@ export default {
         em_anno_api: 'http://em-anno-prod.service.core-compute-prod.internal',
     },
     logging: 'debug',
+    loginRoleMatcher: 'caseworker',
     secureCookie: false,
     services: {
         ccd: {

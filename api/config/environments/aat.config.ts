@@ -6,6 +6,7 @@ export default {
         em_anno_api: 'http://em-anno-aat.service.core-compute-aat.internal/health',
     },
     logging: 'debug',
+    loginRoleMatcher: 'caseworker',
     secureCookie: true,
     services: {
         ccd: {

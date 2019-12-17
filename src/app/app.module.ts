@@ -61,6 +61,7 @@ import { PaymentLibModule } from '@hmcts/ccpay-web-component';
     }),
     ExuiCommonLibModule,
     PaymentLibModule
+    ExuiCommonLibModule.forRoot()
   ],
   providers: [
     {

@@ -59,8 +59,7 @@ import { PaymentLibModule } from '@hmcts/ccpay-web-component';
       level: NgxLoggerLevel.TRACE,
       disableConsoleLogging: false
     }),
-    ExuiCommonLibModule,
-    PaymentLibModule
+    PaymentLibModule,
     ExuiCommonLibModule.forRoot()
   ],
   providers: [

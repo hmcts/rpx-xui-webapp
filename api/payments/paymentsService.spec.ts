@@ -10,11 +10,8 @@ import { handleGet } from './paymentsService'
 chai.use(sinonChai)
 describe('paymentsService', () => {
 
-    const dummyPayments: any = {}
-
     let sandbox
     let spy: any
-    const req = mockReq()
     const res = mockRes({
         data: 'ok',
     })

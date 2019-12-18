@@ -8,8 +8,6 @@ import { preparePaymentsUrl } from './paymentsUtil'
 chai.use(sinonChai)
 describe('paymentsUtil', () => {
 
-    const dummyPayments: any = {}
-
     let sandbox
 
     beforeEach(() => {

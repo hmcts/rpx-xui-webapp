@@ -2,8 +2,11 @@ var EC = protractor.ExpectedConditions;
 
 class BrowserWaits{
 
+
+
     constructor(){
         this.waitTime = 30000; 
+        this.pageErrors = $$(".error-summary");
     }
     
     async waitForElement(element){
@@ -33,10 +36,16 @@ class BrowserWaits{
 
     async waitForPageNavigation(currentPageUrl) {
         var nextPage = "";
+        let pageErrors = "";
         await browser.wait(async () => {
             nextPage = await browser.getCurrentUrl();
+
+            for(let errorMsgCounter = 0; errorMsgCounter < this.pageErrors.length;errorMsgCounter++){
+                pageErrors = pageErrors + " | "+ this.pageErrors[errorMsgCounter].getText(); 
+            }
+
             return currentPageUrl !== nextPage;
-        }, this.waitTime)
+        }, this.waitTime, "Navigation to next page taking too long " + this.waitTime + ". Current page " + currentPageUrl + ". Errors => " + pageErrors);
     }
 
     async retryForPageLoad(element,callback) {

@@ -47,8 +47,8 @@ export class AuthService {
 
   generateLoginUrl() {
     const env = AppUtils.getEnvironment(window.location.origin);
-    // const base = this.appConfigService.getRoutesConfig().idam.idamLoginUrl;
-    const base = AppConstants.REDIRECT_URL[env];
+    const idamLoginUrl = this.appConfigService.getRoutesConfig().idam.idamLoginUrl;
+    const base = idamLoginUrl ? idamLoginUrl : AppConstants.REDIRECT_URL[env];
     const clientId = this.appConfigService.getRoutesConfig().idam.idamClientID;
     const callback = `${this.apiBaseUrl}/${this.appConfigService.getRoutesConfig().idam.oauthCallbackUrl}`;
     const scope = `profile openid roles manage-user create-user`;

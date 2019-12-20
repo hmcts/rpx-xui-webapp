@@ -4,6 +4,7 @@ import * as aat from './environments/aat.config'
 import * as demo from './environments/demo.config'
 import * as ithc from './environments/ithc.config'
 import * as local from './environments/local.config'
+import * as localdocker from './environments/localdocker.config'
 import * as perftest from './environments/perftest.config'
 import * as preview from './environments/preview.config'
 import * as prod from './environments/prod.config'
@@ -13,6 +14,7 @@ export const configs = {
     demo,
     ithc,
     local,
+    localdocker,
     perftest,
     preview,
     prod,

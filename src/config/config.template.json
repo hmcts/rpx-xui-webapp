@@ -28,6 +28,7 @@
     "idam": {
       "idamApiUrl": "https://idam-api.aat.platform.hmcts.net",
       "idamClientID": "xuiwebapp",
+      "idamLoginUrl": "$XUI_IDAM_LOGIN_URL",
       "indexUrl": "/",
       "oauthCallbackUrl": "oauth2/callback"
     }

@@ -100,20 +100,23 @@ defineSupportCode(({ After }) => {
                 const decodedImage = new Buffer(stream.replace(/^data:image\/(png|gif|jpeg);base64,/, ''), 'base64');
                 world.attach(decodedImage, 'image/png');
             })
-                .then(() => {
-                    browser.manage().logs().get('browser').then(function (browserLog) {
-                        // console.log('log: ' + require('util').inspect(browserLog));
-                        let browserErrorLogs = []
-                        for (let browserLogCounter = 0; browserLogCounter < browserLog.length; browserLogCounter++){
-                            if (browserLog[browserLogCounter].level.value > 900){
-                                browserErrorLogs.push(rowserLog[browserLogCounter]);
-                            }
+            .then(() => {
+                browser.manage().logs().get('browser').then(function (browserLog) {
+                    // console.log('log: ' + require('util').inspect(browserLog));
+                    let browserErrorLogs = []
+                    for (let browserLogCounter = 0; browserLogCounter < browserLog.length; browserLogCounter++){
+                        if (browserLog[browserLogCounter].level.value > 900){
+                            browserErrorLogs.push(browserLog[browserLogCounter]);
                         }
-                        world.attach(JSON.stringify(browserErrorLogs, null, 2));
-                        done();
-                    })
-                    
-                });
+                    }
+                    // world.attach(JSON.stringify(browserLog, null, 2));
+
+                    world.attach(JSON.stringify(browserErrorLogs, null, 2));
+                    // scenario.attach(scenario);
+                    done();
+                })
+                
+            });
 
 
         } else {

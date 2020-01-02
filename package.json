@@ -60,7 +60,7 @@
     "@hmcts/ccd-case-ui-toolkit": "^2.62.16-RDM-5582-prerelease",
     "@hmcts/ccpay-web-component": "^1.8.4",
     "@hmcts/frontend": "0.0.39-alpha",
-    "@hmcts/media-viewer": "^1.1.12",
+    "@hmcts/media-viewer": "^1.1.13",
     "@hmcts/nodejs-healthcheck": "^1.5.1",
     "@hmcts/rpx-xui-common-lib": "0.0.19",
     "@ngrx/effects": "^7.4.0",

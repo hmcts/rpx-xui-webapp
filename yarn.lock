@@ -411,13 +411,14 @@
   resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.34-alpha.tgz#0d39b6d06c632ccb7c578fc91e3311306da9db0d"
   integrity sha512-+q3IB4L3UHsD5cs/11PDWEftDAmDV6eYkxm9eoNtXAfea93VhXNFA9ZEIV+TM7v/9xaAIkmDj9C4kCSUb1Hl3g==
 
-"@hmcts/media-viewer@^1.1.12":
-  version "1.1.12"
-  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-1.1.12.tgz#1a4917f57d1bc9fdccf5f653ed8bcb7975c31c59"
-  integrity sha512-Xr/RgxnQ6iNnHlskLSR56u/jiRd7hrQH+QM9YSB4A6Sd3FsB6hBK5DdOmQ3Qii9nQ2+M57pldpw6iMch94a7Qw==
+"@hmcts/media-viewer@^1.1.13":
+  version "1.1.13"
+  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-1.1.13.tgz#bb786a20c0c08ba5cff8e3493f3959138d951fb7"
+  integrity sha512-gENrogdLHoKmklJMwGtoS4bIeBZANldOXc6XrgkslAVQ3eRZv0CamIC12CCSJGwBx7kVX+ZRMwbCLXAdrQOlDw==
   dependencies:
     "@hmcts/frontend" "^0.0.34-alpha"
     govuk-frontend "^2.11.0"
+    mutable-div "0.0.8"
     pdfjs-dist "2.0.943"
     tslib "^1.9.0"
     uuid "^3.3.2"
@@ -6520,6 +6521,13 @@ mustache@^2.3.0:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/mustache/-/mustache-2.3.2.tgz#a6d4d9c3f91d13359ab889a812954f9230a3d0c5"
   integrity sha512-KpMNwdQsYz3O/SBS1qJ/o3sqUJ5wSb8gb0pul8CO0S56b9Y2ALm8zCfsjPXsqGFfoNBkDwZuZIAjhsZI03gYVQ==
+
+mutable-div@0.0.8:
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/mutable-div/-/mutable-div-0.0.8.tgz#f953b0259a0a2d40f11ec941958124a97f67541c"
+  integrity sha512-5d8QsA9DQUy/2mw819PK4oBhuCDvaN6aXNtOjvl+XMQ32Q2pVELcijUUlIpsoip6WjRn1mMCotru3ujUs8kGhA==
+  dependencies:
+    tslib "^1.9.0"
 
 mute-stream@0.0.7:
   version "0.0.7"

@@ -20,7 +20,7 @@ const localConfig = [
   {
     browserName: 'chrome',
     acceptInsecureCerts: true,
-    chromeOptions: { args: ['--headless', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote '] },
+    chromeOptions: { args: [ '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote '] },
     proxy: {
       proxyType: 'manual',
       httpProxy: 'proxyout.reform.hmcts.net:8080',
@@ -33,6 +33,7 @@ const localConfig = [
 const cap = (argv.local) ? localConfig : jenkinsConfig;
 
 const config = {
+  SELENIUM_PROMISE_MANAGER: false,
   framework: 'custom',
   frameworkPath: require.resolve('protractor-cucumber-framework'),
   specs: ['../features/**/*.feature'],
@@ -40,10 +41,10 @@ const config = {
   params: {
     serverUrls: process.env.TEST_URL || 'http://localhost:3000/',
     targetEnv: argv.env || 'local',
-    // username: process.env.TEST_EMAIL,
-    // password: process.env.TEST_PASSWORD,
     username: 'lukesuperuserxui@mailnesia.com',
     password: 'Monday01',
+    caseworkerUser:'mahesh_fr_courtadmn@mailinator.com',
+    caseworkerPassword: 'London01',
     fr_judge_username: process.env.FR_EMAIL,
     fr_judge_password: process.env.FR_PASSWORD,
     sscs_username: process.env.SSCS_EMAIL,
@@ -66,12 +67,13 @@ const config = {
   cucumberOpts: {
     strict: true,
     // format: ['node_modules/cucumber-pretty'],
-    format: ['node_modules/cucumber-pretty', 'json:reports_json/results.json'],
-    tags: ['@ignore'],
+    format: ['node_modules/cucumber-pretty', 'json:reports/tests/json/results.json'],
+    tags: ['@all','not @ignore'],
     require: [
       '../support/timeout.js',
+      '../support/hooks.js',
       '../support/world.js',
-      '../support/*.js',
+      // '../support/*.js',
       '../features/step_definitions/*.steps.js'
     ]
   },

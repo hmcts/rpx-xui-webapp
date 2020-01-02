@@ -33,7 +33,7 @@
     "test:all": "npm run test:ng && npm run test:node && npm run test:smoke && npm run test:functional && npm run test:crossbrowser",
     "test:smoke": "sh whitelist.sh && webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/smoke.conf.js",
     "test:smoke:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/smoke.conf.js --local",
-    "test:functional": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/conf.js",
+    "test:functional": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/smoke.conf.js",
     "test:functional:local": "protractor ./test/e2e/config/conf.js --local",
     "test:crossbrowser": "protractor ./test/e2e/config/crossbrowser.conf.js",
     "test:fullfunctional": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/conf.js",

@@ -2,6 +2,9 @@ const chai            = require('chai');
 const chaiAsPromised  = require('chai-as-promised');
 const minimist        = require('minimist');
 
+var screenShotUtils = require("protractor-screenshot-utils").ProtractorScreenShotUtils;
+
+
 chai.use(chaiAsPromised);
 
 const argv = minimist(process.argv.slice(2));
@@ -82,6 +85,9 @@ const config = {
     global.expect = chai.expect;
     global.assert = chai.assert;
     global.should = chai.should;
+    global.screenShotUtils = new screenShotUtils({
+      browserInstance: browser
+    });
   },
 
   cucumberOpts: {

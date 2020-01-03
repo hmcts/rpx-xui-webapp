@@ -12,6 +12,7 @@ import { ExUITitleService } from './services/exui-title.service';
 import { MediaViewerModule } from '@hmcts/media-viewer';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { FormsModule } from '@angular/forms';
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 
 /**
  * Shared Module
@@ -19,7 +20,7 @@ import { FormsModule } from '@angular/forms';
  * FormsModule, CommonModule, ReactiveForms etc..
  */
 @NgModule( {
-  imports: [RouterModule, CommonModule, FormsModule, MediaViewerModule],
+  imports: [RouterModule, CommonModule, FormsModule, MediaViewerModule, ExuiCommonLibModule.forChild()],
   declarations: [
     ...fromAppComponents.components,
     ...fromAppContainers.containers,

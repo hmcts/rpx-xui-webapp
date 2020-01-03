@@ -2,6 +2,8 @@
 
 const { SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants');
 
+var BrowserWaits = require('../../support/customWaits');
+
 function HeaderPage() {
 
     this.manageCases = element(by.css(".hmcts-header .hmcts-header__link"));
@@ -10,25 +12,31 @@ function HeaderPage() {
     this.findCase = element(by.xpath("//a[contains(text(),'Find case')]"));
     this.signOut = element(by.xpath("//a[contains(text(),'Sign out')]"));
 
+    this.contentHeader = $("#content h1");
 
   this.clickManageCases = function () {
     this.manageCases.click();
     browser.sleep(SHORT_DELAY);
   };
 
-  this.clickCaseList = function () {
-    this.caseList.click();
-    browser.sleep(SHORT_DELAY);
+  this.clickCaseList = async function () {
+    await this.caseList.click();
+
+    var searchPageHeader = element(by.xpath("//*[@id = 'content']//h1[text() = 'Case List']"));
+    await BrowserWaits.waitForElement(searchPageHeader);
   };
 
-  this.clickCreateCase = function () {
-    this.createCase.click();
-    browser.sleep(SHORT_DELAY);
+  this.clickCreateCase = async function () {
+    await this.createCase.click();
+    await BrowserWaits.waitForElement($('#cc-jurisdiction'));
+
   };
 
-  this.clickFindCase = function () {
-    this.findCase.click();
-    browser.sleep(LONG_DELAY);
+  this.clickFindCase = async function () {
+    await this.findCase.click();
+
+    var searchPageHeader = element(by.xpath("//*[@id = 'content']//h1[text() = 'Search']"));
+    await BrowserWaits.waitForElement(searchPageHeader); 
   };
 
   this.clickSignOut = function () {

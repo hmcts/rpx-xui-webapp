@@ -43,6 +43,8 @@ class World {
         this.config.targetEnv = global.browser.params.targetEnv;
         this.config.username = global.browser.params.username;
         this.config.password = global.browser.params.password;
+        this.config.caseworkerUser = global.browser.params.caseworkerUser;
+        this.config.caseworkerPassword = global.browser.params.caseworkerPassword
         this.config.fr_judge_username = global.browser.params.fr_judge_username;
         this.config.fr_judge_password = global.browser.params.fr_judge_password;
         this.config.sscs_username = global.browser.params.sscs_username;

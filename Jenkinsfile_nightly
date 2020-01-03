@@ -1,0 +1,58 @@
+#!groovy
+
+properties([
+    [
+        $class       : 'GithubProjectProperty',
+        displayName  : 'Expert UI Webapp',
+        projectUrlStr: 'https://github.com/hmcts/rpx-xui-webapp/'
+    ],
+    pipelineTriggers([
+    cron('H 05 * * *')
+    ])
+])
+
+@Library("Infrastructure")
+
+def type      = "nodejs"
+def product   = "xui"
+def component = "webapp"
+def channel   = '#xui-pipeline'
+
+withNightlyPipeline(type, product, component) {
+    enableSlackNotifications(channel)
+
+    enableFullFunctionalTest(30)
+
+    env.TEST_URL = 'https://xui-webapp-aat.service.core-compute-aat.internal/'
+    after('checkout') {sh 'yarn cache clean'}
+    after('build') {
+        sh 'npm run build'
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "test/reports/lint/node/",
+            reportFiles          : 'index.html',
+            reportName           : 'node lint Report'
+        ])
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "test/reports/lint/ng/",
+            reportFiles          : 'index.html',
+            reportName           : 'ng lint Report'
+        ])
+    }
+
+    after('fullFunctionalTest') {
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "reports/tests/functional/",
+            reportFiles          : 'index.html',
+            reportName           : 'XUI Manage Cases Full functional Tests'
+        ])
+    }
+}

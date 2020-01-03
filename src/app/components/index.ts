@@ -12,6 +12,7 @@ import { AccessibilityComponent } from './accessibility/accessibility.component'
 import { MediaViewerWrapperComponent } from './media-viewer-wrapper/media-viewer-wrapper.component';
 import { MediaViewerToolbarComponent } from './media-viewer-toolbar/media-viewer-toolbar.component';
 import { MediaViewerSearchComponent } from './media-viewer-search/media-viewer-search.component';
+import { GetHelpComponent } from './get-help/get-help.component';
 
 export const components: any[] = [
   ExuiPageWrapperComponent,
@@ -28,6 +29,7 @@ export const components: any[] = [
   MediaViewerToolbarComponent,
   MediaViewerSearchComponent,
   MediaViewerWrapperComponent,
+  GetHelpComponent
 ];
 
 export * from './exui-mian-wrapper/exui-page-wrapper.component';
@@ -43,3 +45,4 @@ export * from './terms-and-conditions/terms-and-conditions.component';
 export * from './accessibility/accessibility.component';
 export * from './media-viewer-wrapper/media-viewer-wrapper.component';
 export * from './media-viewer-toolbar/media-viewer-toolbar.component';
+export * from './get-help/get-help.component';

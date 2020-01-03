@@ -9,6 +9,8 @@ var CaseManager = require('../pageObjects/common/CaseManager');
 
 var { defineSupportCode } = require('cucumber');
 
+const creatCaseStepTimeout = 600*1000;
+
 defineSupportCode(function ({ And, But, Given, Then, When }) {
     var caseListPage = new CaseListPage();
     let frCase = new FRCase();
@@ -20,13 +22,17 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await caseManager.startCaseCreation(jurisidiction, casetype, event);
     });
 
-    When('I create FR case', async function () {
+    When('I create FR case', { timeout: creatCaseStepTimeout }, async function () {
         await frCase.createCase();
     });
 
-    When('I create Divorce case', async function () {
+    When('I create Divorce case', { timeout: creatCaseStepTimeout }, async function () {
         await divorceCase.createCase();
     });
+
+    When('I create Probate case', { timeout: creatCaseStepTimeout }, async function () {
+        await probateCase.createCase();
+    })
 
     When('I start case next step', async function () {
         await caseManager.startNextStep();
@@ -35,10 +41,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     When('I start case next step {string}', async function (stepName) {
         await caseManager.startNextStep(stepName);
-    });
-
-    When('I create Probate case', async function () {
-        await probateCase.createCase();
     });
 
     When('I click cancel link', async function () {

@@ -7,6 +7,7 @@ export default {
         termsAndConditions: 'http://localhost:8080/health',
     },
     logging: 'debug',
+    loginRoleMatcher: 'caseworker',
     protocol: 'http',
     proxy: {
         host: '172.16.0.7',

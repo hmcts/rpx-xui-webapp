@@ -7,6 +7,7 @@ export default {
         termsAndConditions: 'http://xui-terms-and-conditions-staging.service.core-compute-aat.internal/health',
     },
     logging: 'debug',
+    loginRoleMatcher: 'caseworker',
     secureCookie: false,
     services: {
         ccd: {

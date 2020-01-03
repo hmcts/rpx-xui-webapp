@@ -5,6 +5,9 @@ import { AcceptTcWrapperComponent, TermsAndConditionsComponent } from './contain
 import { AcceptTermsGuard } from './guards/acceptTerms.guard';
 import { AllowAcceptTermsGuard } from './guards/allowAcceptTerms.guard';
 import { AuthGuard } from './services/auth/auth.guard';
+import { ServiceDownComponent, CookiePolicyComponent, PrivacyPolicyComponent, TermsAndConditionsComponent,
+          AccessibilityComponent, MediaViewerWrapperComponent} from './components';
+import { GetHelpComponent } from './components/get-help/get-help.component';
 
 export const ROUTES: Routes = [
   {
@@ -45,6 +48,10 @@ export const ROUTES: Routes = [
   },
   { path: 'service-down', component: ServiceDownComponent },
   { path: 'media-viewer', component: MediaViewerWrapperComponent },
+  {
+    path: 'get-help',
+    component: GetHelpComponent
+  },
   {
     path: '**',
     redirectTo: '/cases',

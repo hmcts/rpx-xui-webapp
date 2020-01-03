@@ -96,13 +96,29 @@ defineSupportCode(({ After }) => {
     After(function(scenario, done) {
         const world = this;
         if (scenario.result.status === 'failed') {
-            browser.takeScreenshot().then(stream => {
+            screenShotUtils.takeScreenshot().then(stream => {
                 const decodedImage = new Buffer(stream.replace(/^data:image\/(png|gif|jpeg);base64,/, ''), 'base64');
                 world.attach(decodedImage, 'image/png');
             })
-                .then(() => {
+            .then(() => {
+                browser.manage().logs().get('browser').then(function (browserLog) {
+                    // console.log('log: ' + require('util').inspect(browserLog));
+                    let browserErrorLogs = []
+                    for (let browserLogCounter = 0; browserLogCounter < browserLog.length; browserLogCounter++){
+                        if (browserLog[browserLogCounter].level.value > 900){
+                            browserErrorLogs.push(browserLog[browserLogCounter]);
+                        }
+                    }
+                    // world.attach(JSON.stringify(browserLog, null, 2));
+
+                    world.attach(JSON.stringify(browserErrorLogs, null, 2));
+                    // scenario.attach(scenario);
                     done();
-                });
+                })
+                
+            });
+
+
         } else {
             done();
         }

@@ -5,7 +5,8 @@ export default {
     documentsApi: 'http://dm-store-demo.service.core-compute-demo.internal/health',
   },
 
-    logging: 'debug',loginRoleMatcher: 'caseworker',
+  logging: 'debug',
+  loginRoleMatcher: 'caseworker',
   protocol: 'http',
   proxy: {
     host: '172.16.0.7',
@@ -33,5 +34,4 @@ export default {
 
     },
     sessionSecret: 'secretSauce',
-
 }

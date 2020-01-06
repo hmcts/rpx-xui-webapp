@@ -37,6 +37,7 @@ import { JwtDecodeWrapper } from './services/logger/jwtDecodeWrapper';
 import { AbstractAppInsights, AppInsightsWrapper } from './services/logger/appInsightsWrapper';
 import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
 
 @NgModule({
   declarations: [AppComponent],
@@ -58,7 +59,8 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
       level: NgxLoggerLevel.TRACE,
       disableConsoleLogging: false
     }),
-    ExuiCommonLibModule.forRoot()
+    ExuiCommonLibModule.forRoot(),
+    NgIdleKeepaliveModule.forRoot()
   ],
   providers: [
     {

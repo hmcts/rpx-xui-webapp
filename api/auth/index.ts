@@ -19,7 +19,14 @@ export function doLogout(req, res, status = 302) {
     res.clearCookie(cookieUserId)
     req.session.user = null
     req.session.save(() => {
+      if (req.query.redirect || status === 401) {  // 401 is when no accessToken
         res.redirect(status, req.query.redirect || '/')
+        console.log('Logged out by user')
+      } else {
+        const message = JSON.stringify({message: 'You have been logged out!'})
+        res.status(200).send(message)
+        console.log('Logged out by Session')
+      }
     })
 }
 export function logout(req, res) {

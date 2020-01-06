@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Store, Action } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { Effect, Actions, ofType } from '@ngrx/effects';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import * as fromCore from '../';
 import * as fromActions from '../actions';
 import { AppConfigService } from '../../services/config/configuration.services';
 import { of } from 'rxjs/internal/observable/of';
-import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import {LogOutKeepAliveService} from '../../services/keep-alive/keep-alive.services';
 
 @Injectable()
 export class AppEffects {
@@ -15,7 +15,8 @@ export class AppEffects {
     private actions$: Actions,
     private store: Store<fromCore.State>,
     private configurationServices: AppConfigService,
-    private authService: AuthService
+    private authService: AuthService,
+    private logOutService: LogOutKeepAliveService
   ) { }
 
   @Effect()
@@ -46,4 +47,30 @@ export class AppEffects {
       this.authService.signOut();
     })
   );
+
+  @Effect()
+  loadJuridictions$ = this.actions$.pipe(
+    ofType(fromActions.SIGNED_OUT),
+    switchMap(() => {
+      return this.logOutService.logOut().pipe(
+        map(() => new fromActions.SignedOutSuccess())
+      );
+    })
+  );
+
+  @Effect()
+  signedOutSuccess = this.actions$.pipe(
+    ofType(fromActions.SIGNED_OUT_SUCCESS),
+    map(() => new fromActions.Go({path: ['/signed-out']}))
+  );
+
+  @Effect({ dispatch: false})
+  keepAlive = this.actions$.pipe(
+    ofType(fromActions.KEEP_ALIVE),
+    switchMap((date) => {
+      return this.logOutService.heartBeat()
+        ;
+    })
+  );
+
 }

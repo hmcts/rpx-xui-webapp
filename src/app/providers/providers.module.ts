@@ -2,6 +2,8 @@ import { ModuleWithProviders, NgModule } from '@angular/core';
 import { AppConfigService } from '../services/config/configuration.services';
 import { AppConfig } from '../services/ccd-config/ccd-case.config';
 import { AuthService } from '../services/auth/auth.service';
+import {IdleService} from '../services/idle/idle.services';
+import {LogOutKeepAliveService} from '../services/keep-alive/keep-alive.services';
 
 
 /**
@@ -21,7 +23,9 @@ export class ProvidersModule {
         AuthService,
         AppConfigService,
         AppConfig,
-        AuthService
+        AuthService,
+        IdleService,
+        LogOutKeepAliveService
       ]
     };
   }

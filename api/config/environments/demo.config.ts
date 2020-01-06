@@ -4,15 +4,19 @@ export default {
     ccdDataApi: 'http://ccd-data-store-api-demo.service.core-compute-demo.internal/health',
     documentsApi: 'http://dm-store-demo.service.core-compute-demo.internal/health',
   },
-    logging: 'debug',
+
+    logging: 'debug',loginRoleMatcher: 'caseworker',
+  protocol: 'http',
+  proxy: {
+    host: '172.16.0.7',
+    port: 8080,
+  },
     secureCookie: false,
     services: {
         ccd: {
             componentApi: 'http://ccd-api-gateway-web-demo.service.core-compute-demo.internal',
             dataApi: 'http://ccd-data-store-api-demo.service.core-compute-demo.internal',
-        },
-        coh: {
-            corApi: 'http://coh-cor-demo.service.core-compute-demo.internal',
+
         },
         documents: {
             api: 'http://dm-store-demo.service.core-compute-demo.internal',
@@ -26,7 +30,8 @@ export default {
         },
         s2s:
             'http://rpe-service-auth-provider-demo.service.core-compute-demo.internal',
+
     },
     sessionSecret: 'secretSauce',
-    useProxy: false,
+
 }

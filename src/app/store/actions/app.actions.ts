@@ -10,6 +10,11 @@ export const FINISH_APP_INITIALIZER = '[App] Finish Start App initializer';
 
 export const LOGOUT = '[App] Logout';
 
+export const SIGNED_OUT = '[App] Signed Out'; // used by session management
+export const SIGNED_OUT_SUCCESS = '[App] Signed Out Success'; // used by session management
+export const KEEP_ALIVE = '[App] Keep Alive';
+export const SET_MODAL = '[APP] Set Modal';
+
 
 export class LoadConfig implements Action {
   readonly type = APP_LOAD_CONFIG;
@@ -37,6 +42,22 @@ export class Logout implements Action {
   readonly type = LOGOUT;
 }
 
+export class SignedOut implements Action {
+  readonly type = SIGNED_OUT;
+}
+
+export class SignedOutSuccess implements Action {
+  readonly type = SIGNED_OUT_SUCCESS;
+}
+
+export class KeepAlive implements Action {
+  readonly type = KEEP_ALIVE;
+}
+
+export class SetModal implements Action {
+  readonly type = SET_MODAL;
+  constructor(public payload: {[id: string]: {isVisible?: boolean; countdown?: string}}) { }
+}
 
 export type AppActions =
   | LoadConfig
@@ -44,4 +65,7 @@ export type AppActions =
   | LoadConfigFail
   | StartAppInitilizer
   | FinishAppInitilizer
-  | Logout;
+  | Logout
+  | SetModal
+  | SignedOut
+  | KeepAlive;

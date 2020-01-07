@@ -5,7 +5,7 @@ import * as fromApp from '../reducers/app-config.reducer';
 
 export const getConfigState = createSelector(
   fromFeature.getAppConfigState,
-  (state: fromApp.AppConfigState) => state
+  (state: fromApp.AppState) => state
 );
 
 export const getAppFeatures = createSelector(

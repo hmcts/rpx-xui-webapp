@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import {Idle, DocumentInterruptSource } from '@ng-idle/core';
 import {select, Store} from '@ngrx/store';
 import * as fromRoot from '../../store';
-// import * as fromUserProfile from '../../user-profile/store';
+// import * as fromUserProfile from '../../userDetails-profile/store';
 import {
   delay,
   distinctUntilChanged,
@@ -40,7 +40,7 @@ export class IdleService {
       new DocumentInterruptSource('mousedown keydown DOMMouseScroll mousewheel touchstart touchmove scroll');
     this.idle.setInterrupts([interrupt]);
 
-    // adding delay so that user can click on sign out before the windows closes
+    // adding delay so that userDetails can click on sign out before the windows closes
     this.idle.onIdleEnd.pipe(delay(250)).subscribe(() => {
       console.log('No longer idle.');
       this.dispatchModal(undefined, false);
@@ -117,7 +117,7 @@ export class IdleService {
     //     });
     //   });
 
-    // /* setting user idle time */
+    // /* setting userDetails idle time */
     // const route$ = this.store.pipe(select(fromRoot.getRouterUrl));
     // // const userIdleSession$ =  this.store.pipe(select(fromUserProfile.getUserTimeOut));
     // combineLatest(

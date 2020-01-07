@@ -25,10 +25,10 @@ export class HeaderComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    //  const userRoles = this.cookieService.get('roles');
-    //  if (userRoles && userRoles.indexOf('pui-case-manager') !== -1) {
-    //     this.isCaseManager = true;
-    //  }
+     // const userRoles = this.cookieService.get('roles');
+     // if (userRoles && userRoles.indexOf('pui-case-manager') !== -1) {
+     //    this.isCaseManager = true;
+     // }
   }
 
   onNavigate(event) {

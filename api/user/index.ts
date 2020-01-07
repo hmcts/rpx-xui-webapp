@@ -2,7 +2,6 @@ import * as express from 'express'
 import * as log4jui from '../lib/log4jui'
 const logger = log4jui.getLogger('auth')
 
-
 export const router = express.Router({ mergeParams: true })
 
 router.get('/details', handleUserRoute)
@@ -35,6 +34,7 @@ function handleUserRoute(req, res) {
       return idleTimeOuts.caseworker
     }
   }
+
   const UserDetails = {
     ...req.session.user,
     idleTime: getUserTimeouts()

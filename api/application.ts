@@ -162,15 +162,12 @@ app.get('/oauth2/callback', passport.authenticate('oidc', {
 })
 
 app.get('/auth/logout', (req: any, res: any) => {
-    //passport provides this method on request object
-    req.logout()
+    req.query.redirect = '/auth/login'
+    auth.doLogout(req, res)
+})
 
-    res.clearCookie(cookieUserId)
-    res.clearCookie(cookieToken)
-    res.clearCookie('roles')
-    res.clearCookie('platform')
-
-    res.redirect('/auth/login')
+app.get('/api/logout', (req: any, res: any) => {
+    auth.doLogout(req, res)
 })
 
 app.get('/api/addresses', postCodeLookup.doLookup)

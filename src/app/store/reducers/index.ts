@@ -49,7 +49,7 @@ export const getRouterState = createFeatureSelector<
 
 export const getRouterUrl = createSelector(
   getRouterState,
-  state => state.state.url
+  state => state ? state.state.url : null
 );
 
 export const getAppConfigState = createFeatureSelector<any>( 'appState' );

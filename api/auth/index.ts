@@ -15,6 +15,11 @@ const idamURl = config.services.idam.idamApiUrl
 const logger = log4jui.getLogger('auth')
 
 export function doLogout(req, res, status = 302) {
+
+    //passport provides this method on request object
+    req.logout()
+
+    res.clearCookie('roles')
     res.clearCookie(cookieToken)
     res.clearCookie(cookieUserId)
     req.session.user = null

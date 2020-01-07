@@ -1,7 +1,7 @@
 import * as express from 'express'
 import * as amendedJurisdictions from './amendedJurisdictions'
 import * as auth from './auth'
-import keepAlive from './keepalive'
+import { router as keepAlive } from './keepalive'
 // import authInterceptor from './lib/middleware/auth'
 import * as proxy from './lib/proxy'
 

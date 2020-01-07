@@ -2,6 +2,9 @@ const chai            = require('chai');
 const chaiAsPromised  = require('chai-as-promised');
 const minimist        = require('minimist');
 
+var screenShotUtils = require("protractor-screenshot-utils").ProtractorScreenShotUtils;
+
+
 chai.use(chaiAsPromised);
 
 const argv = minimist(process.argv.slice(2));
@@ -31,7 +34,7 @@ const localConfig = [
   {
     browserName: 'chrome',
     acceptInsecureCerts: true,
-    chromeOptions: { args: ['--headless','--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ']} ,
+    chromeOptions: { args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ']} ,
     proxy: {
       proxyType: 'manual',
       httpProxy: 'proxyout.reform.hmcts.net:8080',
@@ -61,8 +64,10 @@ const config = {
     targetEnv: argv.env || 'local',
     // username: process.env.TEST_EMAIL,
     // password: process.env.TEST_PASSWORD,
-    username: 'sscs4jui@mailnesia.com ',
+    username: 'lukesuperuserxui@mailnesia.com',
     password: 'Monday01',
+    caseworkerUser: 'mahesh_fr_courtadmn@mailinator.com',
+    caseworkerPassword: 'London01',
     fr_judge_username: process.env.FR_EMAIL,
     fr_judge_password: process.env.FR_PASSWORD,
     sscs_username: process.env.SSCS_EMAIL,
@@ -80,13 +85,16 @@ const config = {
     global.expect = chai.expect;
     global.assert = chai.assert;
     global.should = chai.should;
+    global.screenShotUtils = new screenShotUtils({
+      browserInstance: browser
+    });
   },
 
   cucumberOpts: {
     strict: true,
     // format: ['node_modules/cucumber-pretty'],
     format: ['node_modules/cucumber-pretty', 'json:reports_json/results.json'],
-    tags: ['@ignore'],
+    tags: ['@smoke','not @ignore'],
     require: [
       '../support/timeout.js',
       '../support/world.js',

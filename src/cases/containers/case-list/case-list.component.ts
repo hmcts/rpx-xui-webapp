@@ -8,7 +8,6 @@ import { Observable, Subscription, combineLatest } from 'rxjs';
 import { Jurisdiction, CaseType, CaseState, SearchResultView, PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
 import { FormGroup } from '@angular/forms';
 import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
-import * as fromRoot from '../../../app/store';
 
 /**
  * Entry component wrapper for Case List
@@ -19,7 +18,7 @@ import * as fromRoot from '../../../app/store';
   selector: 'exui-case-list',
   templateUrl: 'case-list.component.html',
   encapsulation: ViewEncapsulation.None,
-  styleUrls: ['case-list-filter.component.scss']
+  styleUrls: ['case-list.component.scss']
 })
 export class CaseListComponent implements OnInit, OnDestroy {
   defaults: any;
@@ -285,12 +284,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
   toggleFilter() {
     this.store.dispatch(new fromCasesFeature.CaseFilterToggle(!this.showFilter));
-  }
-
-  goToCase(evt) {
-    this.store.dispatch(new fromRoot.Go({
-      path: ['/cases/case-details/' + evt.caseId],
-    }));
   }
 
   ngOnDestroy() {

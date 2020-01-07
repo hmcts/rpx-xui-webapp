@@ -12,7 +12,7 @@ function handleUserRoute(req, res) {
   // todo get this from config
   /* Timeout for userDetails less then 8hrs */
   const timeOuts = {
-    caseworker: 2 * 60 * 1000,  // 8 hr
+    caseworker: 1 * 60 * 1000,  // 8 hr
     solicitors: 60 * 60 * 1000, // 1 hr
     special: 20 * 60 * 1000 // 20 min
   };
@@ -23,14 +23,9 @@ function handleUserRoute(req, res) {
       return timeOuts['caseworker']
     }
   }
-
-  // const sessionTimeOut = getUserTimeouts()
-  // const sessionTimeStamp = Math.floor(jwtDecode(req.session.auth.token).exp * 1000)
-  const now = new Date()
-  /* Session timeout */
-  // const sessionTimeStamp = now.setMinutes(now.getMinutes() + 1)
   const UserDetails = {
     ...req.session.user,
+    idleTime: getUserTimeouts()
   }
 
   try {

@@ -36,4 +36,10 @@ export class AppComponent implements OnInit{
     };
     this.store.dispatch(new fromRoot.SetModal(payload));
   }
+
+  onNavigate(event): void {
+    if (event === 'signed-out') {
+      return this.store.dispatch(new fromRoot.Logout());
+    }
+  }
 }

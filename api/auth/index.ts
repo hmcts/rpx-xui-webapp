@@ -1,6 +1,8 @@
 
+import {TokenSet, UserinfoResponse} from 'openid-client'
 import { config } from '../config'
 import * as log4jui from '../lib/log4jui'
+import * as serviceTokenMiddleware from '../lib/middleware/serviceToken'
 import { propsExist } from '../lib/objectUtilities'
 import { asyncReturnOrError, exists } from '../lib/util'
 import { getDetails, postOauthToken } from '../services/idam'
@@ -21,6 +23,7 @@ export function doLogout(req, res, status = 302) {
     })
 }
 export function logout(req, res) {
+    console.log('auth logout called##11')
     doLogout(req, res)
 }
 
@@ -65,4 +68,31 @@ export async function authenticateUser(req: any, res, next) {
     req.session.save(() => {
         res.redirect('/')
     })
+}
+
+export async function oidcVerify(tokenset: TokenSet, userinfo: UserinfoResponse, done: any ) {
+
+    console.log('expires_in: ', tokenset.expires_in)
+
+    if (!propsExist(userinfo, ['roles'])) {
+        logger.warn('User does not have any access roles.')
+        return done(null, false, { message: 'User does not have any access roles.'})
+    }
+
+    if (!userHasAppAccess(userinfo.roles)) {
+        logger.warn('User has no application access, as they do not have a Caseworker role.')
+        return done(null, false, { message: 'User has no application access, as they do not have a Caseworker role.'})
+    }
+
+    logger.info('Auth token: ' + `Bearer ${tokenset.access_token}`)
+
+    // moved s2s here so we authenticate first
+    await serviceTokenMiddleware.default(null, null, () => {
+        logger.info('Attached auth headers to request')
+        logger.info('Auth finished, redirecting')
+        return done(null, {tokenset, userinfo})
+    })
+
+    return done(null, {tokenset, userinfo})
+
 }

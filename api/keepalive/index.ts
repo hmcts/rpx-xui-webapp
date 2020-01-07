@@ -9,7 +9,6 @@ async function handleAddressRoute(req, res) {
     const errorMessage = JSON.stringify({message: 'Something went wrong with the heart beat'});
     res.status(500).send(errorMessage)
   }
-
 }
 
 export const router = express.Router({ mergeParams: true })

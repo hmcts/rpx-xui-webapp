@@ -5,12 +5,13 @@ import * as fromRoot from '../../store';
 import {
   delay,
   distinctUntilChanged,
-  filter,
+  filter, first,
   map,
   take,
   tap
 } from 'rxjs/operators';
 import {Keepalive} from '@ng-idle/keepalive';
+import {combineLatest} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -86,9 +87,14 @@ export class IdleService {
 
   initWatch(): void {
     /* setting userDetails idle time */
+    const route$ = this.store.pipe(select(fromRoot.getRouterUrl));
     const userIdleSession$ =  this.store.pipe(select(fromRoot.getUserIdleTimeOut));
-    userIdleSession$.pipe(filter(value => !isNaN(value)), take(1)).subscribe((idle) => {
-      if (idle) {
+    combineLatest(
+      route$.pipe(first(value => typeof value === 'string' )),
+      userIdleSession$.pipe(filter(value => !isNaN(value)), take(1))
+    ).subscribe(([routes, idle]) => {
+      const isSignedOut: boolean = routes.indexOf('signed-out') !== -1;
+      if (idle && !isSignedOut) {
         const idleInSeconds = Math.floor((idle / 1000)) - this.timeout;
         console.log('idleInSeconds', idleInSeconds);
         this.idle.setIdle(idleInSeconds);

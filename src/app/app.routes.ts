@@ -2,8 +2,8 @@ import { Routes } from '@angular/router';
 import { AuthGuard } from './services/auth/auth.guard';
 import { ServiceDownComponent, CookiePolicyComponent, PrivacyPolicyComponent, TermsAndConditionsComponent,
           AccessibilityComponent, MediaViewerWrapperComponent} from './components';
-import { GetHelpComponent } from './components/get-help/get-help.component';
-import { SignedOutComponent } from './components/singed-out/signed-out.component';
+import { GetHelpComponent } from './components';
+import { SignedOutComponent } from './components';
 
 export const ROUTES: Routes = [
   {
@@ -45,6 +45,7 @@ export const ROUTES: Routes = [
   },
   {
     path: 'signed-out',
+    canActivate: [AuthGuard],
     component: SignedOutComponent
   },
   {

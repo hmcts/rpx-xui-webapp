@@ -15,7 +15,7 @@ export class SignedOutComponent implements OnInit {
   constructor(private authGuard: AuthGuard) { }
 
   ngOnInit(): void {
-    this.redirectUrl = '';
+    this.redirectUrl = './';
   }
 
 

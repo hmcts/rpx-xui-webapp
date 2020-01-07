@@ -352,7 +352,7 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@^2.63.0":
+"@hmcts/ccd-case-ui-toolkit@^2.62.22-RDM-4837-prerelease":
   version "2.63.0"
   resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.63.0.tgz#2b0796483814baa674fea7d3e8665ae8dac0c77e"
   integrity sha512-sltROPlxkjeSBKg6+NVVkDHiaenEcHFu5xnTNDFwuodH+cx8vQo7MVhpHtUiok6qWAdSxSZborqmyD9OQRAXlA==

@@ -3,7 +3,7 @@ import {AuthGuard} from '../../services/auth/auth.guard';
 
 /*
 * Sign Out Component
-* Responsible for telling user that have been signed out.
+* Responsible for telling userDetails that have been signed out.
 * */
 
 @Component({

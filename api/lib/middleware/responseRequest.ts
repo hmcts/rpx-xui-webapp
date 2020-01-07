@@ -4,7 +4,7 @@ import { config } from '../../config'
 import { EnhancedRequest } from '../models'
 
 // TODO!!!: remove this entire file.
-// concerns: the last request/response from any user is now stored to node memory
+// concerns: the last request/response from any userDetails is now stored to node memory
 
 const sessionId = config.cookies.sessionId
 

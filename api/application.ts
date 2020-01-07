@@ -23,6 +23,7 @@ import {propsExist} from './lib/objectUtilities'
 import * as postCodeLookup from './postCodeLookup'
 import {router as printRouter} from './print/routes'
 import routes from './routes'
+import userDetailsRouter from './user'
 
 config.environment = process.env.XUI_ENV || 'local'
 
@@ -178,6 +179,7 @@ app.get('/api/monitoring-tools', (req, res) => {
     res.send({key: config.appInsightsInstrumentationKey})
 })
 
+app.use('/api/user', userDetailsRouter)
 app.use('/api/healthCheck', healthCheck)
 
 app.use('/aggregated', routes)

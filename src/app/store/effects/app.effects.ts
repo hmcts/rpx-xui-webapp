@@ -8,6 +8,9 @@ import { AppConfigService } from '../../services/config/configuration.services';
 import { of } from 'rxjs/internal/observable/of';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import {LogOutKeepAliveService} from '../../services/keep-alive/keep-alive.services';
+import {HttpErrorResponse} from '@angular/common/http';
+import {UserInterface} from '../../models/user.model';
+import {UserService} from '../../services/user-service/user.service';
 
 @Injectable()
 export class AppEffects {
@@ -16,7 +19,8 @@ export class AppEffects {
     private store: Store<fromCore.State>,
     private configurationServices: AppConfigService,
     private authService: AuthService,
-    private logOutService: LogOutKeepAliveService
+    private logOutService: LogOutKeepAliveService,
+    private userService: UserService
   ) { }
 
   @Effect()
@@ -70,6 +74,18 @@ export class AppEffects {
     switchMap((date) => {
       return this.logOutService.heartBeat()
         ;
+    })
+  );
+
+  @Effect()
+  getUser$ = this.actions$.pipe(
+    ofType(fromActions.GET_USER_DETAILS),
+    switchMap(() => {
+      return this.userService.getUserDetails()
+        .pipe(
+          map((userDetails: UserInterface) => new fromActions.GetUserDetailsSuccess(userDetails)),
+          catchError((error: HttpErrorResponse) => of(new fromActions.GetUserDetailsFailure(error)))
+        );
     })
   );
 

@@ -31,10 +31,10 @@ export default async (req, res, next) => {
     const expired = expires < now
 
     // TODO: clean this up, why is this even required?
-    // concerns: if doLogout is called, req.session.user is cleared but this sets it all up again
+    // concerns: if doLogout is called, req.session.userDetails is cleared but this sets it all up again
     if (!req.session.user) {
-        logger.warn('Session expired. Trying to get user details again')
-        const details = await asyncReturnOrError(getDetails(idamURl), 'Cannot get user details', res, logger, false)
+        logger.warn('Session expired. Trying to get userDetails details again')
+        const details = await asyncReturnOrError(getDetails(idamURl), 'Cannot get userDetails details', res, logger, false)
 
         if (details) {
             logger.info('Setting session')
@@ -42,7 +42,7 @@ export default async (req, res, next) => {
         }
     }
 
-    // TODO: expired could be false without req.session.user so this code block could fall through
+    // TODO: expired could be false without req.session.userDetails so this code block could fall through
     if (expired || !req.session.user) {
         logger.warn('Auth token  expired need to log in again')
         auth.doLogout(req, res, 401)

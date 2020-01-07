@@ -28,7 +28,7 @@ describe('auth', () => {
     // })
 
     describe('default', () => {
-        it('should call user details if session  does not contain user details', async () => {
+        it('should call userDetails details if session  does not contain userDetails details', async () => {
             const req = mockReq({
                 cookies: [],
                 headers: [],
@@ -65,7 +65,7 @@ describe('auth', () => {
             stub2.restore()
             stub3.restore()
         })
-        it('should log the user out if token has expired', async () => {
+        it('should log the userDetails out if token has expired', async () => {
             const req = mockReq({
                 cookies: [],
                 headers: [],
@@ -99,7 +99,7 @@ describe('auth', () => {
         //             cookies: [],
         //             headers: [],
         //             session: {
-        //                 user: {
+        //                 userDetails: {
         //                     id: 'testId',
         //                     roles: [],
         //                 },

@@ -1,16 +1,27 @@
 import * as express from 'express'
+import {app} from '../application'
+import {config} from '../config'
+import axios from 'axios'
+
+const cookieToken = config.cookies.token
 
 async function handleAddressRoute(req, res) {
   try {
-    const response = JSON.stringify({message: 'Keeping alive for another 20sec'})
-    req.session.cookie.maxAge = 20 * 1000
-    res.status(200).send(response)
+    const tokenSet = await app.locals.client.refresh(req.session.passport.user.tokenset.refresh_token)
+
+    req.session.passport.user.tokenset = tokenSet
+
+    axios.defaults.headers.common.Authorization = `Bearer ${tokenSet.access_token}`
+
+    res.cookie(cookieToken, tokenSet.access_token)
+
+    res.status(200).send({message: 'Keeping alive done'})
+
   } catch (e) {
-    const errorMessage = JSON.stringify({message: 'Something went wrong with the heart beat'});
+    const errorMessage = JSON.stringify({message: 'Something went wrong with the heart beat'})
     res.status(500).send(errorMessage)
   }
 }
 
 export const router = express.Router({ mergeParams: true })
 router.get('', handleAddressRoute)
-export default router

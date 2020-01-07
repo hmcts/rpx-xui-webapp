@@ -68,7 +68,7 @@ export class IdleService {
     this.keepalive.interval(30);
     this.keepalive.onPing.pipe(delay(250)).subscribe(() => {
       console.log('Keep alive');
-      // this.store.dispatch(new fromRoot.KeepAlive());
+      this.store.dispatch(new fromRoot.KeepAlive());
     });
 
     this.initWatch();

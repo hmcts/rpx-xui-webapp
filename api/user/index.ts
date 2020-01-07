@@ -1,8 +1,7 @@
 import * as express from 'express'
 import * as log4jui from '../lib/log4jui'
 const logger = log4jui.getLogger('auth')
-import { UserProfileModel } from './user'
-import * as jwtDecode from 'jwt-decode'
+
 
 export const router = express.Router({ mergeParams: true })
 
@@ -12,12 +11,12 @@ function handleUserRoute(req, res) {
   // todo get this from config
   /* Timeout for userDetails less then 8hrs */
   const timeOuts = {
-    caseworker: 1 * 60 * 1000,  // 8 hr
+    caseworker: 2 * 60 * 1000,  // 8 hr
     solicitors: 60 * 60 * 1000, // 1 hr
     special: 20 * 60 * 1000 // 20 min
   };
-  const userRoles = 'caseworker'
-
+  const userRoles = req.session.passport.user.userinfo.roles;
+  console.log('userRoles', userRoles)
   function getUserTimeouts() {
     if (userRoles.indexOf('caseworker') !== -1) {
       return timeOuts['caseworker']
@@ -29,7 +28,7 @@ function handleUserRoute(req, res) {
   }
 
   try {
-      const payload = JSON.stringify(UserDetails);
+      const payload = JSON.stringify(UserDetails)
       console.log(payload)
       res.send(payload)
   } catch (error) {

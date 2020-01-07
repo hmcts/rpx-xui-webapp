@@ -13,7 +13,17 @@ export const getAppFeatures = createSelector(
   fromApp.getFeatureConfig
 );
 
+export const getUser = createSelector(
+  getConfigState,
+  fromApp.getUserDetails
+);
+
+export const getUserIdleTimeOut = createSelector(
+  getUser,
+  (user) => (user && user.idleTime) ? user.idleTime : NaN
+);
+
 export const getModalSessionData = createSelector(
   getConfigState,
-  (state) => '2345233343443'
+  (state) => state.modal.session
 );

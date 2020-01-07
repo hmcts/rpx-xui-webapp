@@ -31,7 +31,7 @@ export class IdleService {
 
   public init(): void {
     // time is set in seconds
-    this.timeout = 60; // set to 10 minutes
+    this.timeout = 50; // set to 10 minutes
 
     this.idle.setIdleName('idleSession');
     this.idle.setTimeout(this.timeout);
@@ -68,7 +68,7 @@ export class IdleService {
     this.keepalive.interval(30);
     this.keepalive.onPing.pipe(delay(250)).subscribe(() => {
       console.log('Keep alive');
-      this.store.dispatch(new fromRoot.KeepAlive());
+      // this.store.dispatch(new fromRoot.KeepAlive());
     });
 
     this.initWatch();
@@ -99,40 +99,17 @@ export class IdleService {
   }
 
   initWatch(): void {
-    // /* limiting session to up to max server session 8 hrs */
-    // this.store.pipe(select(fromUserProfile.getSessionTimeOut))
-    //   .pipe(filter(value => !isNaN(value)), take(1))
-    //   .subscribe(value => {
-    //     const now = Math.round(new Date().getTime());
-    //     const timeDifference = Math.round(value - now);
-    //     const timeOut$ = timer(timeDifference, 1000).pipe(
-    //       takeWhile(val => val <= 60),
-    //       finalize(() => {
-    //         this.dispatchSignedOut();
-    //         this.dispatchModal(undefined, false);
-    //       })
-    //     );
-    //     timeOut$.subscribe(time => {
-    //       this.dispatchModal(time, true);
-    //     });
-    //   });
-
-    // /* setting userDetails idle time */
-    // const route$ = this.store.pipe(select(fromRoot.getRouterUrl));
-    // // const userIdleSession$ =  this.store.pipe(select(fromUserProfile.getUserTimeOut));
-    // combineLatest(
-    //   route$.pipe(first(value => typeof value === 'string' )),
-    //   userIdleSession$.pipe(filter(value => !isNaN(value)), take(1))
-    // ).subscribe(([routes, idle]) => {
-    //   const isRegisterOrg: boolean = routes.indexOf('register-org') !== -1;
-    //   const isSignedOut: boolean = routes.indexOf('signed-out') !== -1;
-    //   if (routes && !(isRegisterOrg || isSignedOut) && idle) {
-    //     const idleInSeconds = Math.floor((idle / 1000)) - this.timeout;
-    //     console.log('idleInSeconds', idleInSeconds);
-    //     this.idle.setIdle(idleInSeconds);
-    //     this.idle.watch();
-    //   }
-    // });
+    /* setting userDetails idle time */
+    const userIdleSession$ =  this.store.pipe(select(fromRoot.getUserIdleTimeOut))
+      .pipe(filter(value => !isNaN(value)), take(1));
+    userIdleSession$.subscribe((idle) => {
+      if (idle) {
+        const idleInSeconds = Math.floor((idle / 1000)) - this.timeout;
+        console.log('idleInSeconds', idleInSeconds);
+        this.idle.setIdle(idleInSeconds);
+        this.idle.watch();
+      }
+    });
   }
 
 }

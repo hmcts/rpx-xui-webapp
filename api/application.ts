@@ -15,6 +15,7 @@ import {config} from './config'
 import {router as documentRouter} from './documents/routes'
 import {router as emAnnoRouter} from './emAnno/routes'
 import healthCheck from './healthCheck'
+import keepAlive from './keepalive'
 import {errorStack} from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
 import authInterceptor from './lib/middleware/auth'
@@ -178,6 +179,7 @@ app.get('/api/monitoring-tools', (req, res) => {
 
 app.use('/api/user', userDetailsRouter)
 app.use('/api/healthCheck', healthCheck)
+app.use('/api/keepalive', keepAlive)
 
 app.use('/aggregated', routes)
 app.use('/data', routes)

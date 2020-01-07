@@ -8,18 +8,31 @@ export const router = express.Router({ mergeParams: true })
 router.get('/details', handleUserRoute)
 
 function handleUserRoute(req, res) {
-  // todo get this from config
-  /* Timeout for userDetails less then 8hrs */
-  const timeOuts = {
-    caseworker: 2 * 60 * 1000,  // 8 hr
+
+  const idleTimeOuts: {caseworker: number; solicitors: number; special: number} = {
+    caseworker: 8 * 60 * 60 * 1000,  // 8 hr
     solicitors: 60 * 60 * 1000, // 1 hr
     special: 20 * 60 * 1000 // 20 min
-  };
-  const userRoles = req.session.passport.user.userinfo.roles;
-  console.log('userRoles', userRoles)
+  }
+
+  const userRoles: string[] = req.session.passport.user.userinfo.roles
+
+  const isDwpOrHomeOffice: boolean = (
+    userRoles.includes('caseworker-sscs-dwpresponsewriter') ||
+    userRoles.includes('caseworker-ia-homeofficeapc') ||
+    userRoles.includes('caseworker-ia-homeofficelart') ||
+    userRoles.includes('caseworker-ia-homeofficepou')
+  )
+
+  const isSolicitor: boolean = userRoles.includes('pui-case-manager')
+
   function getUserTimeouts() {
-    if (userRoles.indexOf('caseworker') !== -1) {
-      return timeOuts['caseworker']
+    if (isSolicitor) {
+      return idleTimeOuts.solicitors
+    } else if (isDwpOrHomeOffice) {
+      return idleTimeOuts.special
+    } else {
+      return idleTimeOuts.caseworker
     }
   }
   const UserDetails = {

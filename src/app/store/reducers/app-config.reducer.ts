@@ -5,6 +5,7 @@ import {UserModel} from '../../models/user.model';
 export interface AppState {
   config: ConfigurationModel | {};
   userDetails: UserModel | null;
+  modal: {[id: string]: {isVisible?: boolean; countdown?: string}};
   loaded: boolean;
   loading: boolean;
 }
@@ -12,6 +13,12 @@ export interface AppState {
 export const initialState: AppState = {
   config: {},
   userDetails: null,
+  modal: {
+    session: {
+      isVisible: false,
+      countdown: ''
+    }
+  },
   loaded: false,
   loading: false
 };
@@ -46,9 +53,19 @@ export function reducer(
         loaded: false
       };
     }
+
+
+    case fromActions.SET_MODAL: {
+      return {
+        ...state,
+        modal: {...action.payload}
+      }
+    }
   }
   return state;
 }
 
 
 export const getFeatureConfig = (state: AppState) => state.config;
+export const getUserDetails = (state: AppState) => state.userDetails;
+export const getModal = (state: AppState) => state.modal;

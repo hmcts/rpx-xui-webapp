@@ -42,7 +42,7 @@ describe("SIDAM API", () => {
     const jwt = 'some-access-token'
     before(done => {
       const interaction = {
-        state: "request for user details",
+        state: "request for userDetails details",
         uponReceiving: "sidam_user_details will respond with:",
         withRequest: {
           method: "GET",

@@ -4,6 +4,7 @@ import { environment as config } from '../../../environments/environment';
 import {select, Store} from '@ngrx/store';
 import * as fromRoot from '../../store';
 import {IdleService} from '../../services/idle/idle.services';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'exui-root',
@@ -12,7 +13,7 @@ import {IdleService} from '../../services/idle/idle.services';
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent implements OnInit{
-
+  modalData$: Observable<any>
   constructor(
     private googleAnalyticsService: GoogleAnalyticsService,
     private store: Store<fromRoot.State>,
@@ -24,6 +25,7 @@ export class AppComponent implements OnInit{
   ngOnInit(): void {
     this.idleService.init();
     this.modalData$ = this.store.pipe(select(fromRoot.getModalSessionData));
+    this.store.dispatch(new fromRoot.GetUserDetails());
   }
 
   onStaySignedIn() {

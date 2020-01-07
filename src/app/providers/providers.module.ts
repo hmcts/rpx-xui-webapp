@@ -4,6 +4,7 @@ import { AppConfig } from '../services/ccd-config/ccd-case.config';
 import { AuthService } from '../services/auth/auth.service';
 import {IdleService} from '../services/idle/idle.services';
 import {LogOutKeepAliveService} from '../services/keep-alive/keep-alive.services';
+import {UserService} from '../services/user-service/user.service';
 
 
 /**
@@ -25,7 +26,8 @@ export class ProvidersModule {
         AppConfig,
         AuthService,
         IdleService,
-        LogOutKeepAliveService
+        LogOutKeepAliveService,
+        UserService
       ]
     };
   }

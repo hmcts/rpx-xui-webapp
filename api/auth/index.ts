@@ -21,7 +21,7 @@ export function doLogout(req, res, status = 302) {
     req.session.save(() => {
       if (req.query.redirect || status === 401) {  // 401 is when no accessToken
         res.redirect(status, req.query.redirect || '/')
-        console.log('Logged out by user')
+        console.log('Logged out by userDetails')
       } else {
         const message = JSON.stringify({message: 'You have been logged out!'})
         res.status(200).send(message)
@@ -46,7 +46,7 @@ export async function authenticateUser(req: any, res, next) {
 
     if (exists(data, 'access_token')) {
         // tslint:disable-next-line
-        const userDetails = await asyncReturnOrError(getDetails( idamURl, data.access_token), 'Cannot get user userDetails', res, logger, false)
+        const userDetails = await asyncReturnOrError(getDetails( idamURl, data.access_token), 'Cannot get userDetails userDetails', res, logger, false)
 
         if (!propsExist(userDetails, ['roles'])) {
           logger.warn('User does not have any access roles.')

@@ -1,21 +1,16 @@
 import { Injectable } from '@angular/core';
-
 import {Idle, DocumentInterruptSource } from '@ng-idle/core';
 import {select, Store} from '@ngrx/store';
 import * as fromRoot from '../../store';
-// import * as fromUserProfile from '../../userDetails-profile/store';
 import {
   delay,
   distinctUntilChanged,
-  filter, finalize,
-  first,
+  filter,
   map,
   take,
-  takeWhile,
   tap
 } from 'rxjs/operators';
 import {Keepalive} from '@ng-idle/keepalive';
-import {combineLatest, timer} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -31,7 +26,7 @@ export class IdleService {
 
   public init(): void {
     // time is set in seconds
-    this.timeout = 50; // set to 10 minutes
+    this.timeout = 10 * 60; // set to 10 minutes
 
     this.idle.setIdleName('idleSession');
     this.idle.setTimeout(this.timeout);
@@ -84,15 +79,6 @@ export class IdleService {
     this.store.dispatch(new fromRoot.SetModal(modalConfig));
   }
 
-  keepAlive() {
-    const thirtyMinutes = 20 * 1000;
-    const thirtyMinInterval$ = timer(thirtyMinutes, thirtyMinutes);
-    thirtyMinInterval$.subscribe(() => {
-      console.log('Keep alive');
-      this.store.dispatch(new fromRoot.KeepAlive());
-    });
-  }
-
   dispatchSignedOut() {
     this.dispatchModal(undefined, false);
     this.store.dispatch(new fromRoot.SignedOut()); // sing out BE
@@ -100,9 +86,8 @@ export class IdleService {
 
   initWatch(): void {
     /* setting userDetails idle time */
-    const userIdleSession$ =  this.store.pipe(select(fromRoot.getUserIdleTimeOut))
-      .pipe(filter(value => !isNaN(value)), take(1));
-    userIdleSession$.subscribe((idle) => {
+    const userIdleSession$ =  this.store.pipe(select(fromRoot.getUserIdleTimeOut));
+    userIdleSession$.pipe(filter(value => !isNaN(value)), take(1)).subscribe((idle) => {
       if (idle) {
         const idleInSeconds = Math.floor((idle / 1000)) - this.timeout;
         console.log('idleInSeconds', idleInSeconds);

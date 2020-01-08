@@ -12,8 +12,8 @@ import {Observable} from 'rxjs';
   styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class AppComponent implements OnInit{
-  modalData$: Observable<any>
+export class AppComponent implements OnInit {
+  modalData$: Observable<{isVisible?: boolean; countdown?: string}>;
   constructor(
     private googleAnalyticsService: GoogleAnalyticsService,
     private store: Store<fromRoot.State>,
@@ -23,9 +23,9 @@ export class AppComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.idleService.init();
-    this.modalData$ = this.store.pipe(select(fromRoot.getModalSessionData));
     this.store.dispatch(new fromRoot.GetUserDetails());
+    this.modalData$ = this.store.pipe(select(fromRoot.getModalSessionData));
+    this.idleService.init();
   }
 
   onStaySignedIn() {

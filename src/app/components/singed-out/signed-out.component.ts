@@ -1,18 +1,16 @@
 import {Component, OnInit} from '@angular/core';
-import {AuthGuard} from '../../services/auth/auth.guard';
-
 /*
 * Sign Out Component
-* Responsible for telling userDetails that have been signed out.
+* Responsible for displaying you been singed out page.
 * */
 
 @Component({
-  selector: 'app-sign-out',
+  selector: 'exui-sign-out',
   templateUrl: './signed-out.component.html',
 })
 export class SignedOutComponent implements OnInit {
-  public redirectUrl: string
-  constructor(private authGuard: AuthGuard) { }
+  public redirectUrl: string;
+  constructor() { }
 
   ngOnInit(): void {
     this.redirectUrl = './';

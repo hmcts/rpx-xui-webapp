@@ -11,7 +11,7 @@ function handleUserRoute(req, res) {
   const idleTimeOuts: {caseworker: number; solicitors: number; special: number} = {
     caseworker: 8 * 60 * 60 * 1000,  // 8 hr
     solicitors: 60 * 60 * 1000, // 1 hr
-    special: 20 * 60 * 1000 // 20 min
+    special: 20 * 60 * 1000, // 20 min
   }
 
   const userRoles: string[] = req.session.passport.user.userinfo.roles
@@ -37,7 +37,7 @@ function handleUserRoute(req, res) {
 
   const UserDetails = {
     ...req.session.user,
-    idleTime: getUserTimeouts()
+    idleTime: getUserTimeouts(),
   }
 
   try {
@@ -45,7 +45,6 @@ function handleUserRoute(req, res) {
       console.log(payload)
       res.send(payload)
   } catch (error) {
-      // there is bug here
       logger.info(error)
       const errReport = JSON.stringify({ apiError: error, apiStatusCode: error.statusCode, message: '' })
       res.status(500).send(errReport)

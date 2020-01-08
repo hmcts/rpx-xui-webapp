@@ -5,11 +5,10 @@ import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
 import * as session from 'express-session'
 import * as globalTunnel from 'global-tunnel-ng'
-import {Issuer, Strategy, TokenSet, UserinfoResponse} from 'openid-client'
+import {Issuer, Strategy} from 'openid-client'
 import * as passport from 'passport'
 import * as process from "process"
 import * as sessionFileStore from 'session-file-store'
-import {userHasAppAccess} from './auth/manageCasesUserRoleAuth'
 import * as auth from './auth'
 import {config} from './config'
 import {router as documentRouter} from './documents/routes'
@@ -18,9 +17,7 @@ import healthCheck from './healthCheck'
 import {router as keepAlive} from './keepalive'
 import {errorStack} from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
-import authInterceptor from './lib/middleware/auth'
 import {JUILogger} from './lib/models'
-import {propsExist} from './lib/objectUtilities'
 import * as postCodeLookup from './postCodeLookup'
 import {router as printRouter} from './print/routes'
 import routes from './routes'
@@ -141,7 +138,7 @@ healthcheck.addTo(app, healthchecks)
 app.get('/auth/login', passport.authenticate('oidc'))
 
 app.get('/oauth2/callback', passport.authenticate('oidc', {
-    failureRedirect: '/auth/login'
+    failureRedirect: '/auth/login',
 }), (req: any, res: any) => {
     // console.log('callback', req.session)
 

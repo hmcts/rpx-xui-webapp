@@ -7,7 +7,7 @@ import {DOCUMENT} from '@angular/common';
 * using ng-content to display content from parent
 * */
 @Component({
-  selector: 'lib-dialog',
+  selector: 'exui-dialog',
   templateUrl: './hmcts-dialog.component.html',
   styleUrls: ['./hmcts-dialog.component.scss']
 })

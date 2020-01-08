@@ -89,10 +89,10 @@ export class IdleService {
     /* setting userDetails idle time */
     const route$ = this.store.pipe(select(fromRoot.getRouterUrl));
     const userIdleSession$ =  this.store.pipe(select(fromRoot.getUserIdleTimeOut));
-    combineLatest(
+    combineLatest([
       route$.pipe(first(value => typeof value === 'string' )),
       userIdleSession$.pipe(filter(value => !isNaN(value)), take(1))
-    ).subscribe(([routes, idle]) => {
+    ]).subscribe(([routes, idle]) => {
       const isSignedOut: boolean = routes.indexOf('signed-out') !== -1;
       if (idle && !isSignedOut) {
         const idleInSeconds = Math.floor((idle / 1000)) - this.timeout;

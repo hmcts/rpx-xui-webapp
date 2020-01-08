@@ -14,6 +14,7 @@ import {router as emAnnoRouter} from './emAnno/routes'
 import healthCheck from './healthCheck'
 import {errorStack} from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
+import authInterceptor from './lib/middleware/auth'
 import errorHandler from './lib/middleware/error.handler'
 import {JUILogger} from './lib/models'
 import * as postCodeLookup from './postCodeLookup'
@@ -102,14 +103,14 @@ healthcheck.addTo(app, healthchecks)
 app.use('/auth', auth.router)
 
 app.get('/oauth2/callback', passport.authenticate('oidc', {
-    failureRedirect: '/auth/login'
+    failureRedirect: '/auth/login',
 }), auth.authCallbackSucess)
 
 app.get('/api/logout', (req: any, res: any) => {
     auth.doLogout(req, res)
 })
 
-app.get('/api/addresses', postCodeLookup.doLookup)
+app.get('/api/addresses', authInterceptor, postCodeLookup.doLookup)
 
 app.get('/api/monitoring-tools', (req, res) => {
     res.send({key: config.appInsightsInstrumentationKey})

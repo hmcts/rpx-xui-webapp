@@ -13,6 +13,5 @@ router.get('/*', proxy.get)
 router.post('/*', proxy.post)
 router.put('/*', proxy.put)
 
-
 // @ts-ignore
 export default router

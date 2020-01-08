@@ -12,6 +12,13 @@ describe('App Selectors', () => {
 
   const appConfig = {
     config: {},
+    userDetails: null,
+    modal: {
+      session: {
+        isVisible: false,
+        countdown: ''
+      }
+    },
     loaded: false,
     loading: false
   };
@@ -32,6 +39,13 @@ describe('App Selectors', () => {
             isEnabled: true,
             label: 'CCDCaseCreate'
           }
+        }
+      },
+      userDetails: null,
+      modal: {
+        session: {
+          isVisible: false,
+          countdown: ''
         }
       },
       loaded: true,

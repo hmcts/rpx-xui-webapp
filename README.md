@@ -40,3 +40,5 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 Extended version of script below:
 
 (https://robferguson.org/blog/2017/09/09/a-simple-logging-service-for-angular-4/)
+
+END

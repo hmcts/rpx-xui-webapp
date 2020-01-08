@@ -26,7 +26,7 @@ export class AppHeaderComponent implements OnInit {
     this.store.select(fromActions.getRouterUrl)
       .pipe(first(value => typeof value === 'string' ))
       .subscribe(val => {
-        // exclude urls to from containing navigation
+        // exclude urls from containing navigation
         const toExclude = val === '/signed-out';
         this.navItems = toExclude ? [] : AppConstants.NAV_ITEMS;
     });

@@ -1,6 +1,6 @@
 <router-outlet></router-outlet>
 
-<lib-dialog positionTop="300px" *ngIf="(modalData$ | async).isVisible" (close)="onStaySignedIn()">
+<exui-dialog positionTop="300px" *ngIf="(modalData$ | async).isVisible" (close)="onStaySignedIn()">
   <h3 class="govuk-heading-m">We are about so sign you out</h3>
   <p class="govuk-body">For your security, we will sign you out of your account in
     <strong style="font-weight: bold">{{(modalData$ | async).countdown}}</strong>
@@ -12,4 +12,4 @@
   <div>
     <a (click)="onNavigate('signed-out')" [routerLink]="">Sign out</a>
   </div>
-</lib-dialog>
+</exui-dialog>

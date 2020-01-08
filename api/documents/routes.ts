@@ -1,6 +1,4 @@
 import * as express from 'express'
-// import authInterceptor from '../lib/middleware/auth'
-import * as passport from 'passport'
 import {getDocumentBinaryRoute, getDocumentRoute, postDocuments} from './index'
 
 export const router = express.Router({ mergeParams: true })

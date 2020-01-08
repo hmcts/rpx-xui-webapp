@@ -1,4 +1,6 @@
 import * as fromApp from './app.actions';
+import any = jasmine.any;
+import {GET_USER_DETAILS_SUCCESS} from './app.actions';
 
 describe('App Actions', () => {
   describe('Load Config', () => {
@@ -55,4 +57,34 @@ describe('App Actions', () => {
     });
   });
 
+  describe('Get user details', () => {
+    it('should create an action', () => {
+      const action = new fromApp.GetUserDetails();
+      expect({ ...action }).toEqual({
+        type: fromApp.GET_USER_DETAILS,
+      });
+    });
+  });
+
+  describe('Get user details success', () => {
+    it('should create an action', () => {
+      const payload = {email: 'test@test.com', userId: '1234'} as any;
+      const action = new fromApp.GetUserDetailsSuccess(payload);
+      expect({ ...action }).toEqual({
+        type: fromApp.GET_USER_DETAILS_SUCCESS,
+        payload
+      });
+    });
+  });
+
+  describe('Get user details failure', () => {
+    it('should create an action', () => {
+      const payload = {error: 'some error text', message: '', name: ''} as any;
+      const action = new fromApp.GetUserDetailsFailure(payload);
+      expect({ ...action }).toEqual({
+        type: fromApp.GET_USER_DETAILS_FAIL,
+        payload
+      });
+    });
+  });
 });

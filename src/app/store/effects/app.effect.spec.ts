@@ -9,6 +9,7 @@ import { Logout } from '../actions';
 import { AuthService } from '../../services/auth/auth.service';
 import { StoreModule } from '@ngrx/store';
 import { AppConfigService } from '../../services/config/configuration.services';
+import {LogOutKeepAliveService} from '../../services/keep-alive/keep-alive.services';
 
 
 
@@ -27,6 +28,7 @@ describe('App Effects', () => {
             ],
             providers: [
                 AppConfigService,
+                LogOutKeepAliveService,
                 {
                     provide: AuthService,
                     useValue: AuthServiceMock

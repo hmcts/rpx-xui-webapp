@@ -8,11 +8,11 @@ chai.use(sinonChai)
 
 import { config } from '../config'
 import * as idam from '../services/idam'
-import { authenticateUser, logout } from './index'
+// import { logout } from './index'
 
 describe('Auth', () => {
 
-    describe('logOut', () => {
+    /*describe('logOut', () => {
         it('should delete auth cookie', () => {
             const req = mockReq({
                 session: {
@@ -36,9 +36,9 @@ describe('Auth', () => {
             logout(req, res)
             expect(res.redirect).to.be.calledWith(302, '/')
         })
-    })
+    })*/
 
-    describe('authenticate userDetails', () => {
+    /*describe('authenticate userDetails', () => {
         let req
         let res
         let sandbox
@@ -105,5 +105,5 @@ describe('Auth', () => {
             expect(res.cookie).not.to.be.calledWith(config.cookies.userId, details.id)
             expect(res.redirect).to.be.calledWith(302, '/')
         })
-    })
+    })*/
 })

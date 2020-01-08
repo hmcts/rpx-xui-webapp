@@ -16,37 +16,44 @@ const cookieToken = config.cookies.token
 const cookieUserId = config.cookies.userId
 const idamURl = config.services.idam.idamApiUrl
 
-const logger = log4jui.getLogger('auth')
-
-// @ts-ignore
-const clientMetadata = {
-    client_id: config.idamClient,
-    client_secret: process.env.IDAM_SECRET,
-    post_logout_redirect_uris: ['http://localhost:3000'],
-    redirect_uris: ['http://localhost:3000/oauth2/callback'],
-    response_types: ['code'],
-    token_endpoint_auth_method: 'client_secret_post', // The default is 'client_secret_basic'.
-};
+const logger = log4jui.getLogger('auth');
 
 // TODO: find a better way of doing this
 (async () => {
     const issuer = await Issuer.discover(`${idamURl}/o`)
 
     const metadata = issuer.metadata
-    metadata.issuer = 'https://forgerock-am.service.core-compute-idam-aat.internal:8443/openam/oauth2/hmcts'
+    metadata.issuer = config.services.idam.iss
 
-    const newIssuer = new Issuer(metadata)
+    app.locals.issuer = new Issuer(metadata)
+})()
+
+export async function configure(req: any, res: any, next: any) {
+
+    const fqdn = req.protocol + '://' + req.get('host')
 
     // @ts-ignore
-    app.locals.client = new newIssuer.Client(clientMetadata)
+    const clientMetadata = {
+        client_id: config.idamClient,
+        client_secret: process.env.IDAM_SECRET,
+        post_logout_redirect_uris: [`${fqdn}/auth/login`],
+        redirect_uris: [`${fqdn}/oauth2/callback`],
+        response_types: ['code'],
+        token_endpoint_auth_method: 'client_secret_post', // The default is 'client_secret_basic'.
+    }
+
+    // @ts-ignore
+    app.locals.client = new app.locals.issuer.Client(clientMetadata)
 
     passport.use('oidc', new Strategy({
         client: app.locals.client,
         params: {scope: 'profile openid roles manage-user create-user'},
     }, oidcVerify))
 
+    next()
+
     // passport.use('s2s', new BearerStrategy())
-})()
+}
 
 export async function doLogout(req, res, status = 302) {
 

@@ -58,6 +58,8 @@ app.use(errorHandler)
 app.use(passport.initialize())
 app.use(passport.session())
 
+app.use(auth.configure)
+
 passport.serializeUser((user, done) => {
     done(null, user)
 })

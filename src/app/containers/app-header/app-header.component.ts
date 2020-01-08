@@ -29,7 +29,7 @@ export class AppHeaderComponent implements OnInit {
         // exclude urls to contain navigation
         const toExclude = val === '/signed-out';
         this.navItems = toExclude ? [] : AppConstants.NAV_ITEMS;
-    })
+    });
     this.userNav = AppConstants.USER_NAV;
   }
 

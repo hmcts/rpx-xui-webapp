@@ -36,7 +36,7 @@ export class IdleService {
       new DocumentInterruptSource('mousedown keydown DOMMouseScroll mousewheel touchstart touchmove scroll');
     this.idle.setInterrupts([interrupt]);
 
-    // adding delay so that userDetails can click on sign out before the windows closes
+    // adding delay so that user can click on sign out before the modal shuts
     this.idle.onIdleEnd.pipe(delay(250)).subscribe(() => {
       console.log('No longer idle.');
       this.dispatchModal(undefined, false);

@@ -102,7 +102,7 @@ healthcheck.addTo(app, healthchecks)
 app.use('/auth', auth.router)
 
 app.get('/oauth2/callback', passport.authenticate('oidc', {
-    failureRedirect: '/auth/login'
+    failureRedirect: '/auth/login',
 }), auth.authCallbackSucess)
 
 app.get('/api/logout', (req: any, res: any) => {

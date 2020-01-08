@@ -38,7 +38,7 @@ describe('Auth', () => {
         })
     })*/
 
-    /*describe('authenticate userDetails', () => {
+    /*describe('authenticate user', () => {
         let req
         let res
         let sandbox
@@ -75,7 +75,7 @@ describe('Auth', () => {
             // expect(idam.getDetails).to.have.been.calledWith({ headers: { Authorization: `Bearer ${accessToken}` } })
         })
 
-        it('should set the session, cookies and redirect the userDetails', async () => {
+        it('should set the session, cookies and redirect the user', async () => {
 
             await authenticateUser(req, res, () => { })
             expect(req.session.user).to.be.equals(details)
@@ -84,7 +84,7 @@ describe('Auth', () => {
             expect(res.redirect).to.be.calledWith('/')
         })
 
-        it('should redirect the userDetails if an error occurs in getting access token', async () => {
+        it('should redirect the user if an error occurs in getting access token', async () => {
             // @ts-ignore
             idam.postOauthToken.restore()
             sandbox.stub(idam, 'postOauthToken').resolves({ error: `${accessToken}` })
@@ -95,7 +95,7 @@ describe('Auth', () => {
             expect(res.redirect).to.be.calledWith('/')
         })
 
-        it('should redirect the userDetails if cannot get userDetails details', async () => {
+        it('should redirect the user if cannot get user details', async () => {
             // @ts-ignore
             idam.getDetails.restore()
             sandbox.stub(idam, 'getDetails').resolves(null)

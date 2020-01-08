@@ -82,7 +82,7 @@ describe('cohQA', () => {
     })
 
     describe('getUser', () => {
-        it('for a given userDetails email it should request details for that userDetails', async () => {
+        it('for a given user email it should request details for that user', async () => {
             request().session.user = 'data'
             await idam.getUser('token')
 
@@ -90,7 +90,7 @@ describe('cohQA', () => {
             expect(response.data).to.equal('okay')
         })
 
-        it('it should retrieve data for the current userDetails', async () => {
+        it('it should retrieve data for the current user', async () => {
             request().session.user = 'data'
             const response = await idam.getUser()
 

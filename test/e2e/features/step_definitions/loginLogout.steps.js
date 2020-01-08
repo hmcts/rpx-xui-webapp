@@ -110,7 +110,7 @@ defineSupportCode(function ({ Given, When, Then }) {
 
   });
 
-  Given('I am logged into Expert UI with valid userDetails details', async function () {
+  Given('I am logged into Expert UI with valid user details', async function () {
     await loginPage.givenIAmLoggedIn(this.config.username, this.config.password);
     const world = this;
     await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
@@ -118,7 +118,7 @@ defineSupportCode(function ({ Given, When, Then }) {
     });
   });
 
-  Given('I am logged into Expert UI with valid Case Worker userDetails details', async function () {
+  Given('I am logged into Expert UI with valid Case Worker user details', async function () {
     await loginPage.givenIAmLoggedIn(this.config.caseworkerUser, this.config.caseworkerPassword);
   })
 

@@ -10,7 +10,7 @@ import { CookieService } from 'ngx-cookie';
   selector: 'exui-header',
   templateUrl: './header.component.html'
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent {
 
   @Input() navItems: { active: boolean; href: string; }[];
   @Input() title: AppTitleModel;
@@ -23,13 +23,6 @@ export class HeaderComponent implements OnInit {
     public store: Store<fromRoot.State>,
     private cookieService: CookieService
   ) {}
-
-  ngOnInit() {
-     // const userRoles = this.cookieService.get('roles');
-     // if (userRoles && userRoles.indexOf('pui-case-manager') !== -1) {
-     //    this.isCaseManager = true;
-     // }
-  }
 
   onNavigate(event) {
     this.navigate.emit(event);

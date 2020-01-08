@@ -65,7 +65,7 @@ describe('AppHeaderComponent', () => {
     AppConstants.USER_NAV = dummyUserNav;
     component.ngOnInit();
     expect(component.appHeaderTitle).toBe(dummyAppHeaderTitle);
-    expect(component.navItems).toBe(dummyNavItems);
+    expect(component.navItems).toBeUndefined();
     expect(component.userNav).toBe(dummyUserNav);
   });
 

@@ -18,7 +18,7 @@ import {combineLatest} from 'rxjs';
 })
 
 export class IdleService {
-  timeout: number;
+  private timeout: number;
   constructor(
     private idle: Idle,
     private keepalive: Keepalive,
@@ -27,6 +27,7 @@ export class IdleService {
 
   public init(): void {
     // time is set in seconds
+    // TODO get this from configuration when .evn ready
     this.timeout = 10 * 60; // set to 10 minutes
 
     this.idle.setIdleName('idleSession');
@@ -54,13 +55,13 @@ export class IdleService {
 
     this.idle.onTimeoutWarning.pipe(
       map(sec => (sec > 60) ? Math.ceil(sec / 60) + ' minutes' : sec + ' seconds'),
-      tap(console.log), // remove when happy
       distinctUntilChanged()
     ).subscribe((countdown) => {
       this.dispatchModal(countdown, true);
     });
 
     // sets the ping interval in seconds 7:50 min
+    // TODO get this from configuration when .evn ready
     this.keepalive.interval(5 * 60 * 60);
     this.keepalive.onPing.pipe(delay(250)).subscribe(() => {
       console.log('Keep alive');
@@ -70,7 +71,7 @@ export class IdleService {
     this.initWatch();
   }
 
-  dispatchModal(countdown = 0, isVisible): void {
+  private dispatchModal(countdown = '0', isVisible): void {
     const modalConfig: any = {
       session: {
         countdown,
@@ -80,12 +81,12 @@ export class IdleService {
     this.store.dispatch(new fromRoot.SetModal(modalConfig));
   }
 
-  dispatchSignedOut() {
+  private dispatchSignedOut(): void {
     this.dispatchModal(undefined, false);
     this.store.dispatch(new fromRoot.SignedOut()); // sing out BE
   }
 
-  initWatch(): void {
+  private initWatch(): void {
     /* setting userDetails idle time */
     const route$ = this.store.pipe(select(fromRoot.getRouterUrl));
     const userIdleSession$ =  this.store.pipe(select(fromRoot.getUserIdleTimeOut));

@@ -22,7 +22,7 @@ export class IdleService {
     private keepalive: Keepalive,
     private store: Store<fromRoot.State>
   ) {}
-
+  // TODO refactor init to pass the timeout and idle time
   public init(): void {
     // time is set in seconds
     // TODO get this from configuration when .evn ready
@@ -58,7 +58,7 @@ export class IdleService {
       this.dispatchModal(countdown, true);
     });
 
-    // sets the ping interval in seconds 7:50 min
+    // sets the ping interval in seconds 5 hrs
     // TODO get this from configuration when .evn ready
     this.keepalive.interval(5 * 60 * 60);
     this.keepalive.onPing.pipe(delay(250)).subscribe(() => {
@@ -87,6 +87,7 @@ export class IdleService {
   private initWatch(): void {
     /* setting userDetails idle time */
     const route$ = this.store.pipe(select(fromRoot.getRouterUrl));
+    // TODO refactor this to pass through the init
     const userIdleSession$ =  this.store.pipe(select(fromRoot.getUserIdleTimeOut));
     combineLatest([
       route$.pipe(first(value => typeof value === 'string' )),

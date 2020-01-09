@@ -51,13 +51,11 @@ app.use(
 
 app.use(cookieParser())
 
-app.use(errorStack)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
-app.use(errorHandler)
+app.use(errorStack)
 app.use(passport.initialize())
 app.use(passport.session())
-
 app.use(auth.configure)
 
 passport.serializeUser((user, done) => {
@@ -104,9 +102,33 @@ healthcheck.addTo(app, healthchecks)
 
 app.use('/auth', auth.router)
 
-app.get('/oauth2/callback', passport.authenticate('oidc', {
-    failureRedirect: '/auth/login',
-}), auth.authCallbackSucess)
+// @ts-ignore
+const logger: JUILogger = log4jui.getLogger('Application')
+
+app.get('/oauth2/callback', (req: any, res, next) => {
+    passport.authenticate('oidc', (error, user, info) => {
+
+        // TODO: give a more meaningful error to user rather than redirect back to idam
+        // return next(error) would pass off to error.handler.ts to show users a proper error page etc
+        if (error) {
+            logger.error(error)
+            // return next(error)
+        }
+        if (info) {
+            logger.info(info)
+            // return next(info)
+        }
+        if (!user) {
+            return res.redirect('/auth/login')
+        }
+        req.logIn(user, err => {
+            if (err) {
+                return next(err)
+            }
+            return auth.authCallbackSuccess(req, res)
+        })
+    })(req, res, next)
+})
 
 app.get('/api/logout', (req: any, res: any) => {
     auth.doLogout(req, res)
@@ -129,6 +151,7 @@ app.use('/em-anno', emAnnoRouter)
 
 app.use('/print', printRouter)
 
-// @ts-ignore
-const logger: JUILogger = log4jui.getLogger('Application')
+// custom error handlers need to be used last
+app.use(errorHandler)
+
 logger.info(`Started up on ${config.environment || 'local'} using ${config.protocol}`)

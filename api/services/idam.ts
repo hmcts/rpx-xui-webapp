@@ -18,7 +18,7 @@ export async function getDetails(idamUrl: string, token: string = null) {
     /* istanbul ignore else */
     if (isReqResSet()) {
         const req = request()
-        details = valueOrNull(req, 'session.userDetails')
+        details = valueOrNull(req, 'session.user')
 
         if (details) {
             return details

@@ -84,7 +84,7 @@ export class IdleService {
     this.store.dispatch(new fromRoot.SignedOut()); // sing out BE
   }
 
-  private initWatch(): void {
+  public initWatch(): void {
     /* setting userDetails idle time */
     const route$ = this.store.pipe(select(fromRoot.getRouterUrl));
     // TODO refactor this to pass through the init

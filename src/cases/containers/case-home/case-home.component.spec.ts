@@ -1,5 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { CaseUIToolkitModule, AlertService, NavigationOrigin, HttpError } from '@hmcts/ccd-case-ui-toolkit';
+import {
+  CaseUIToolkitModule,
+  AlertService,
+  NavigationOrigin,
+  HttpError,
+  ErrorNotifierService
+} from '@hmcts/ccd-case-ui-toolkit';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseHomeComponent } from '..';
 import { ExUITitleService } from 'src/app/shared/services/exui-title.service';
@@ -11,7 +17,8 @@ import * as fromFeature from '../../store';
 describe('CaseHomeComponent', () => {
   let component: CaseHomeComponent;
   let fixture: ComponentFixture<CaseHomeComponent>;
-  const mockAlertService = jasmine.createSpyObj('alertService', ['success', 'setPreserveAlerts']);
+  const mockAlertService = jasmine.createSpyObj('alertService', ['success', 'setPreserveAlerts', 'error']);
+  const mockErrorNotifierService = jasmine.createSpyObj('ErrorNotifierService', ['announceError']);
   let store: Store<fromFeature.State>;
   let storeDispatchMock: any;
 
@@ -26,7 +33,8 @@ describe('CaseHomeComponent', () => {
       declarations: [CaseHomeComponent],
       providers: [
         ExUITitleService,
-        { provide: AlertService, useValue: mockAlertService }
+        { provide: AlertService, useValue: mockAlertService },
+        { provide: ErrorNotifierService, useValue: mockErrorNotifierService }
       ]
     })
       .compileComponents();
@@ -152,11 +160,11 @@ describe('CaseHomeComponent', () => {
       const error: HttpError = new HttpError();
       error.status = 400;
       const triggerId = 'dummy';
-      const mockComponentCallbackErrorsSubjectNext = spyOn(component.callbackErrorsSubject, 'next');
 
       component.handleError(error, triggerId);
 
-      expect(mockComponentCallbackErrorsSubjectNext).toHaveBeenCalledWith(error);
+      expect(mockErrorNotifierService.announceError).toHaveBeenCalledWith(error);
+      expect(mockAlertService.error).toHaveBeenCalledWith(error.message);
     });
   });
 });

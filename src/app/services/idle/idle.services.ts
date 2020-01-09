@@ -61,7 +61,7 @@ export class IdleService {
     });
 
     // sets the ping interval in seconds 7:50 min
-    this.keepalive.interval(20);
+    this.keepalive.interval(5 * 60 * 60);
     this.keepalive.onPing.pipe(delay(250)).subscribe(() => {
       console.log('Keep alive');
       this.store.dispatch(new fromRoot.KeepAlive());

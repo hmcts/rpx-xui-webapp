@@ -18,7 +18,7 @@ import {combineLatest} from 'rxjs';
 })
 
 export class IdleService {
-  timeout: number;
+  private timeout: number;
   constructor(
     private idle: Idle,
     private keepalive: Keepalive,
@@ -71,7 +71,7 @@ export class IdleService {
     this.initWatch();
   }
 
-  dispatchModal(countdown = 0, isVisible): void {
+  private dispatchModal(countdown = '0', isVisible): void {
     const modalConfig: any = {
       session: {
         countdown,
@@ -81,12 +81,12 @@ export class IdleService {
     this.store.dispatch(new fromRoot.SetModal(modalConfig));
   }
 
-  dispatchSignedOut() {
+  private dispatchSignedOut(): void {
     this.dispatchModal(undefined, false);
     this.store.dispatch(new fromRoot.SignedOut()); // sing out BE
   }
 
-  initWatch(): void {
+  private initWatch(): void {
     /* setting userDetails idle time */
     const route$ = this.store.pipe(select(fromRoot.getRouterUrl));
     const userIdleSession$ =  this.store.pipe(select(fromRoot.getUserIdleTimeOut));

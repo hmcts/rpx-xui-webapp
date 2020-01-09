@@ -67,7 +67,10 @@ withPipeline(type, product, component) {
 
 
     after('build') {
-        sh 'yarn build'
+
+        nvm('v10.14.2') {
+            sh 'yarn build'
+        }
 
         publishHTML([
             allowMissing         : true,

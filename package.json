@@ -7,10 +7,10 @@
   },
   "scripts": {
     "nuke": "rm -rf dist",
-    "build": "yarn build:prod && yarn build:node",
+    "build": "npm run build:prod && npm run build:node",
     "pre-push": "npm run lint && npm run build:prod && ng test --code-coverage",
     "start": "node ./dist/rpx-exui/api/server.js",
-    "build:node": "cd api && yarn build",
+    "build:node": "cd api && npm run build",
     "build:prod": "ng build --prod",
     "start:node": "cd api && npm run watch",
     "lint:node": "cd api && npm run lint",

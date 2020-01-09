@@ -27,6 +27,7 @@ export class IdleService {
 
   public init(): void {
     // time is set in seconds
+    // TODO get this from configuration when .evn ready
     this.timeout = 10 * 60; // set to 10 minutes
 
     this.idle.setIdleName('idleSession');
@@ -54,13 +55,13 @@ export class IdleService {
 
     this.idle.onTimeoutWarning.pipe(
       map(sec => (sec > 60) ? Math.ceil(sec / 60) + ' minutes' : sec + ' seconds'),
-      tap(console.log), // remove when happy
       distinctUntilChanged()
     ).subscribe((countdown) => {
       this.dispatchModal(countdown, true);
     });
 
     // sets the ping interval in seconds 7:50 min
+    // TODO get this from configuration when .evn ready
     this.keepalive.interval(5 * 60 * 60);
     this.keepalive.onPing.pipe(delay(250)).subscribe(() => {
       console.log('Keep alive');

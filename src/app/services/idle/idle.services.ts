@@ -7,8 +7,7 @@ import {
   distinctUntilChanged,
   filter, first,
   map,
-  take,
-  tap
+  take
 } from 'rxjs/operators';
 import {Keepalive} from '@ng-idle/keepalive';
 import {combineLatest} from 'rxjs';
@@ -16,7 +15,6 @@ import {combineLatest} from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-
 export class IdleService {
   private timeout: number;
   constructor(
@@ -71,7 +69,7 @@ export class IdleService {
     this.initWatch();
   }
 
-  private dispatchModal(countdown = '0', isVisible): void {
+  public dispatchModal(countdown = '0', isVisible): void {
     const modalConfig: any = {
       session: {
         countdown,
@@ -81,7 +79,7 @@ export class IdleService {
     this.store.dispatch(new fromRoot.SetModal(modalConfig));
   }
 
-  private dispatchSignedOut(): void {
+  public dispatchSignedOut(): void {
     this.dispatchModal(undefined, false);
     this.store.dispatch(new fromRoot.SignedOut()); // sing out BE
   }
@@ -103,5 +101,4 @@ export class IdleService {
       }
     });
   }
-
 }

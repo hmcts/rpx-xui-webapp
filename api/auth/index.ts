@@ -93,7 +93,7 @@ export async function oidcVerify(tokenset: TokenSet, userinfo: UserinfoResponse,
 
 }
 
-export function authCallbackSucess(req: any, res: any) {
+export function authCallbackSuccess(req: any, res: any) {
     // console.log('callback', req.session)
 
     // we need extra logic before success redirect
@@ -118,31 +118,6 @@ router.get('/logout', (req: any, res: any) => {
     doLogout(req, res)
 })
 
-// router.get('/login', passport.authenticate('oidc'))
-
-router.get('/login', (req: any, res, next) => {
-    passport.authenticate('oidc', (err, user, info) => {
-        if (err) {
-            console.log('HERE', err)
-            return next(err) // will generate a 500 error
-        }
-        // Generate a JSON response reflecting authentication status
-        if (! user) {
-            return res.send({ success : false, message : 'authentication failed' })
-        }
-        // ***********************************************************************
-        // "Note that when using a custom callback, it becomes the application's
-        // responsibility to establish a session (by calling req.login()) and send
-        // a response."
-        // Source: http://passportjs.org/docs
-        // ***********************************************************************
-        req.login(user, loginErr => {
-            if (loginErr) {
-                return next(loginErr)
-            }
-            return res.send({ success : true, message : 'authentication succeeded' })
-        })
-    })(req, res, next)
-})
+router.get('/login', passport.authenticate('oidc'))
 
 router.use('/keepalive', keepAlive)

@@ -45,7 +45,6 @@ export const ROUTES: Routes = [
   },
   {
     path: 'signed-out',
-    canActivate: [AuthGuard],
     component: SignedOutComponent
   },
   {

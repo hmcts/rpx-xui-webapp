@@ -57,7 +57,7 @@
     "@angular/platform-browser": "^7.2.13",
     "@angular/platform-browser-dynamic": "^7.2.13",
     "@angular/router": "^7.2.13",
-    "@hmcts/ccd-case-ui-toolkit": "^2.62.16-RDM-5582-prerelease",
+    "@hmcts/ccd-case-ui-toolkit": "^2.63.0",
     "@hmcts/ccpay-web-component": "^1.8.4",
     "@hmcts/frontend": "0.0.39-alpha",
     "@hmcts/media-viewer": "^1.1.12",
@@ -109,7 +109,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.13.0",
-    "@angular/cli": "~7.3.8",
+    "@angular/cli": "^6.0.8",
     "@angular/compiler-cli": "^7.2.13",
     "@angular/language-service": "~7.2.0",
     "@ngrx/schematics": "^7.4.0",

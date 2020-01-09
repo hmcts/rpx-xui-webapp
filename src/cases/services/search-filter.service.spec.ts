@@ -143,18 +143,6 @@ describe('SearchFilterService', () => {
 
     });
 
-    describe('redirectToCase', () => {
-        it('should dispatch an action', () => {
-
-            searchFilterService.redirectToCase({});
-
-
-            expect(storeDispatchMock).toHaveBeenCalled();
-
-        });
-    });
-
-
     describe('findPaginationMetadata', () => {
         it('should httpService get call', () => {
 

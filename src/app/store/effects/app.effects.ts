@@ -53,7 +53,7 @@ export class AppEffects {
   );
 
   @Effect()
-  loadJuridictions$ = this.actions$.pipe(
+  sigout$ = this.actions$.pipe(
     ofType(fromActions.SIGNED_OUT),
     switchMap(() => {
       return this.logOutService.logOut().pipe(

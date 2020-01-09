@@ -1,6 +1,6 @@
 import axios from 'axios'
 import * as express from 'express'
-import {Issuer, Strategy, TokenSet, UserinfoResponse} from 'openid-client'
+import {ClientMetadata, Issuer, Strategy, TokenSet, UserinfoResponse} from 'openid-client'
 import * as passport from 'passport'
 import * as process from 'process'
 import {app} from '../application'
@@ -20,6 +20,7 @@ const logger = log4jui.getLogger('auth');
 
 // TODO: find a better way of doing this
 (async () => {
+    logger.info('getting oidc discovery endpoint')
     const issuer = await Issuer.discover(`${idamURl}/o`)
 
     const metadata = issuer.metadata
@@ -32,8 +33,7 @@ export async function configure(req: any, res: any, next: any) {
 
     const fqdn = req.protocol + '://' + req.get('host')
 
-    // @ts-ignore
-    const clientMetadata = {
+    const clientMetadata: ClientMetadata = {
         client_id: config.idamClient,
         client_secret: process.env.IDAM_SECRET,
         post_logout_redirect_uris: [`${fqdn}/auth/login`],
@@ -42,7 +42,6 @@ export async function configure(req: any, res: any, next: any) {
         token_endpoint_auth_method: 'client_secret_post', // The default is 'client_secret_basic'.
     }
 
-    // @ts-ignore
     app.locals.client = new app.locals.issuer.Client(clientMetadata)
 
     passport.use('oidc', new Strategy({

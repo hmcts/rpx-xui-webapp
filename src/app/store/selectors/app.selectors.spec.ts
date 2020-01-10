@@ -91,6 +91,39 @@ describe('App Selectors', () => {
       store.dispatch(new fromActions.LoadConfigSuccess(appPayload));
       expect(result).toEqual(appConfigLoaded.config);
     });
+
+    it('should return userDetails state', () => {
+      let result;
+
+      store
+        .select(fromSelectors.getUser)
+        .subscribe(value => (result = value));
+
+      store.dispatch(new fromActions.GetUserDetails());
+      expect(result).toEqual(appConfigLoaded.userDetails);
+    });
+
+    it('should return getUserIdleTimeOut state', () => {
+      let result;
+
+      store
+        .select(fromSelectors.getUserIdleTimeOut)
+        .subscribe(value => (result = value));
+
+      store.dispatch(new fromActions.GetUserDetails());
+      expect(result).toEqual(NaN);
+    });
+
+    it('should return getModalSessionData state', () => {
+      let result;
+
+      store
+        .select(fromSelectors.getModalSessionData)
+        .subscribe(value => (result = value));
+
+      store.dispatch(new fromActions.GetUserDetails());
+      expect(result).toEqual(appConfigLoaded.modal.session);
+    });
   });
 
 

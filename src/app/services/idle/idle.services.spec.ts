@@ -44,7 +44,7 @@ describe('Idle Services', () => {
         provideMockStore(),
       ]
     });
-    
+
     store = TestBed.get(Store);
     spyOnDispatchToStore = spyOn(store, 'dispatch').and.callThrough();
     spyOnPipeToStore = spyOn(store, 'pipe').and.returnValue(of('something'));

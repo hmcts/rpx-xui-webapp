@@ -66,7 +66,7 @@ describe('AppHeaderComponent', () => {
     component.ngOnInit();
     expect(component.appHeaderTitle).toBe(dummyAppHeaderTitle);
     expect(component.navItems).toBeUndefined();
-    expect(component.userNav).toBe(dummyUserNav);
+    expect(component.userNav).toBe(undefined);
   });
 
   it('should logout when onNavigate sign-out is called ', () => {

@@ -1,7 +1,7 @@
 import {TestBed, async, inject} from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { StoreModule, Store } from '@ngrx/store';
-import { reducers} from 'src/app/store';
+import {GetUserDetails, Logout, reducers, SetModal} from 'src/app/store';
 import * as fromStore from '../../store'
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import { cold } from 'jasmine-marbles';
@@ -63,66 +63,44 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   })));
 
-  // it('should have pageTitle$ Observable the app', async(() => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   const app = fixture.componentInstance;
-  //   fixture.detectChanges();
-  //
-  //   const expected = cold('a', { a: '' });
-  //   expect(app.pageTitle$).toBeObservable(expected);
-  //
-  // }));
-  //
-  //
-  // it('should have appHeaderTitle$ Observable the app', async(() => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   const app = fixture.componentInstance;
-  //   fixture.detectChanges();
-  //
-  //   const expected = cold('a', { a: undefined });
-  //   expect(app.appHeaderTitle$).toBeObservable(expected);
-  //
-  // }));
-  //
-  // it('should have userNav$ Observable the app', async(() => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   const app = fixture.componentInstance;
-  //   fixture.detectChanges();
-  //
-  //   const expected = cold('a', { a: [] });
-  //   expect(app.userNav$).toBeObservable(expected);
-  //
-  // }));
-  //
-  //
-  // it('should have navItems$ Observable the app', async(() => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   const app = fixture.componentInstance;
-  //   fixture.detectChanges();
-  //   const navItems = [
-  //     {
-  //       text: 'Organisation',
-  //       href: '/organisation',
-  //       active: true
-  //     },
-  //     {
-  //       text: 'Users',
-  //       href: '/users',
-  //       active: false
-  //     }];
-  //   const expected = cold('a', { a: { navItems: [] } });
-  //   expect(app.navItems$).toBeObservable(expected);
-  //
-  // }));
-  //
-  // it('should dispatch a logout action', async(() => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   const app = fixture.componentInstance;
-  //   app.onNavigate('signed-out');
-  //   fixture.detectChanges();
-  //
-  //   expect(store.dispatch).toHaveBeenCalledWith(new Logout());
-  //
-  // }));
+  it('should have modalData$ Observable the app', async(() => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    fixture.detectChanges();
+
+    const expected = cold('a', { a: { isVisible: false, countdown: '' } });
+    expect(app.modalData$).toBeObservable(expected);
+
+  }));
+
+  it('should dispatch a setmodal action', async(() => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    app.onStaySignedIn();
+    fixture.detectChanges();
+    const payload = {
+      session : {
+        isVisible: false
+      }
+    };
+    expect(store.dispatch).toHaveBeenCalledWith(new SetModal(payload));
+
+  }));
+
+  it('should dispatch a onNavigate logout action', async(() => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    app.onNavigate('signed-out');
+    fixture.detectChanges();
+    expect(store.dispatch).toHaveBeenCalledWith(new Logout());
+  }));
+
+  it('should dispatch a ngOnInit', async(() => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    app.ngOnInit();
+    fixture.detectChanges();
+    expect(store.dispatch).toHaveBeenCalledWith(new GetUserDetails());
+  }));
 
 });

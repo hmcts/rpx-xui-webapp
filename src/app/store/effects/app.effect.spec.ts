@@ -5,11 +5,13 @@ import { of, throwError } from 'rxjs';
 import { provideMockActions } from '@ngrx/effects/testing';
 import * as fromAppEffects from './app.effects';
 import { AppEffects } from './app.effects';
-import { Logout } from '../actions';
+import {GetUserDetails, GetUserDetailsFailure, GetUserDetailsSuccess, Logout} from '../actions';
 import { AuthService } from '../../services/auth/auth.service';
 import { StoreModule } from '@ngrx/store';
 import { AppConfigService } from '../../services/config/configuration.services';
 import {LogOutKeepAliveService} from '../../services/keep-alive/keep-alive.services';
+import {HttpErrorResponse} from '@angular/common/http';
+import {UserService} from '../../services/user-service/user.service';
 
 
 
@@ -18,6 +20,9 @@ describe('App Effects', () => {
     let effects: AppEffects;
     const AuthServiceMock = jasmine.createSpyObj('AuthService', [
         'signOut',
+    ]);
+    const UserServiceMock = jasmine.createSpyObj('UserService', [
+      'getUserDetails',
     ]);
 
     beforeEach(() => {
@@ -32,6 +37,10 @@ describe('App Effects', () => {
                 {
                     provide: AuthService,
                     useValue: AuthServiceMock
+                },
+                {
+                  provide: UserService,
+                  useValue: UserServiceMock,
                 },
                 fromAppEffects.AppEffects,
                 provideMockActions(() => actions$)
@@ -53,6 +62,34 @@ describe('App Effects', () => {
                 expect(AuthServiceMock.signOut).toHaveBeenCalled();
             });
         });
+    });
+
+    describe('getUser$', () => {
+      it('should return a UserInterface - GetUserDetailsSuccess', () => {
+        const returnValue = {
+          userId: 'something',
+          email: 'something',
+          orgId: 'something',
+          roles: []
+        };
+        UserServiceMock.getUserDetails.and.returnValue(of(returnValue));
+        const action = new GetUserDetails();
+        const completion = new GetUserDetailsSuccess(returnValue);
+        actions$ = hot('-a', { a: action });
+        const expected = cold('-b', { b: completion });
+        expect(effects.getUser$).toBeObservable(expected);
+      });
+    });
+
+    describe('getUser$ error', () => {
+      it('should return GetUserDetailsFailure', () => {
+        UserServiceMock.getUserDetails.and.returnValue(throwError(new HttpErrorResponse({})));
+        const action = new GetUserDetails();
+        const completion = new GetUserDetailsFailure(new HttpErrorResponse({}));
+        actions$ = hot('-a', { a: action });
+        const expected = cold('-b', { b: completion });
+        expect(effects.getUser$).toBeObservable(expected);
+      });
     });
 
 

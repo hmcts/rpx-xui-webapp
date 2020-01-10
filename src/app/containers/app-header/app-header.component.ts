@@ -15,7 +15,7 @@ import {first} from 'rxjs/operators';
 export class AppHeaderComponent implements OnInit {
   navItems: NavItemsModel[];
   appHeaderTitle: AppTitleModel;
-  userNav: UserNavModel;
+  userNav: UserNavModel | [] ;
 
   constructor(
     private store: Store<fromActions.State>) {
@@ -29,8 +29,9 @@ export class AppHeaderComponent implements OnInit {
         // exclude urls from containing navigation
         const toExclude = val === '/signed-out';
         this.navItems = toExclude ? [] : AppConstants.NAV_ITEMS;
+        this.userNav = toExclude ? [] : AppConstants.USER_NAV;
     });
-    this.userNav = AppConstants.USER_NAV;
+
   }
 
   onNavigate(event): void {

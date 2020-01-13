@@ -4,7 +4,9 @@ import { environment as config } from '../../../environments/environment';
 import {select, Store} from '@ngrx/store';
 import * as fromRoot from '../../store';
 import {IdleService} from '../../services/idle/idle.services';
-import {Observable} from 'rxjs';
+import {combineLatest, Observable} from 'rxjs';
+import {filter, first, take} from 'rxjs/operators';
+import {IdleConfigModel} from '../../models/idle-config.model';
 
 @Component({
   selector: 'exui-root',
@@ -13,7 +15,7 @@ import {Observable} from 'rxjs';
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent implements OnInit {
-  modalData$: Observable<{isVisible?: boolean; countdown?: string}>;
+  public modalData$: Observable<{isVisible?: boolean; countdown?: string}>;
   constructor(
     private googleAnalyticsService: GoogleAnalyticsService,
     private store: Store<fromRoot.State>,
@@ -22,13 +24,33 @@ export class AppComponent implements OnInit {
     this.googleAnalyticsService.init(config.googleAnalyticsKey);
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.store.dispatch(new fromRoot.GetUserDetails());
     this.modalData$ = this.store.pipe(select(fromRoot.getModalSessionData));
-    this.idleService.init();
+    this.idleStart();
   }
 
-  onStaySignedIn() {
+  public idleStart() {
+    const route$ = this.store.pipe(select(fromRoot.getRouterUrl));
+    const userIdleSession$ =  this.store.pipe(select(fromRoot.getUserIdleTimeOut));
+    combineLatest([
+      route$.pipe(first(value => typeof value === 'string' )),
+      userIdleSession$.pipe(filter(value => !isNaN(value)), take(1))
+    ]).subscribe(([routes, idleMilliseconds]) => {
+      const isSignedOut: boolean = routes.indexOf('signed-out') !== -1;
+      if (idleMilliseconds && !isSignedOut) {
+        const idleConfig: IdleConfigModel = {
+          timeout: 10 * 60, // 10 min
+          idleMilliseconds,
+          keepAliveInSeconds: 5 * 60 * 60, // 5 hrs
+          idleServiceName: 'idleSession'
+        };
+        this.idleService.init(idleConfig);
+      }
+    });
+  }
+
+  public onStaySignedIn() {
     const payload = {
       session : {
         isVisible: false
@@ -37,7 +59,7 @@ export class AppComponent implements OnInit {
     this.store.dispatch(new fromRoot.SetModal(payload));
   }
 
-  onNavigate(event): void {
+  public onNavigate(event): void {
     if (event === 'signed-out') {
       return this.store.dispatch(new fromRoot.Logout());
     }

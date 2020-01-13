@@ -16,10 +16,14 @@ const cookieToken = config.cookies.token
 const cookieUserId = config.cookies.userId
 const idamURl = config.services.idam.idamApiUrl
 
-const logger = log4jui.getLogger('auth');
+const logger = log4jui.getLogger('auth')
 
-// TODO: find a better way of doing this
-(async () => {
+export async function configure(req: any, res: any, next: any) {
+
+    if (app.locals.client) {
+        return next()
+    }
+
     logger.info('getting oidc discovery endpoint')
     const issuer = await Issuer.discover(`${idamURl}/o`)
 
@@ -27,9 +31,6 @@ const logger = log4jui.getLogger('auth');
     metadata.issuer = config.services.idam.iss
 
     app.locals.issuer = new Issuer(metadata)
-})()
-
-export async function configure(req: any, res: any, next: any) {
 
     const fqdn = req.protocol + '://' + req.get('host')
 

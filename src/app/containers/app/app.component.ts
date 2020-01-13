@@ -32,15 +32,17 @@ export class AppComponent implements OnInit {
 
   public idleStart() {
     const route$ = this.store.pipe(select(fromRoot.getRouterUrl));
-    const userIdleSession$ =  this.store.pipe(select(fromRoot.getUserIdleTimeOut));
+    const userIdleSession$ =  this.store.pipe(select(fromRoot.getUserIdleTime));
+    const userTimeOut$ =  this.store.pipe(select(fromRoot.getUserTimeOut));
     combineLatest([
       route$.pipe(first(value => typeof value === 'string' )),
-      userIdleSession$.pipe(filter(value => !isNaN(value)), take(1))
-    ]).subscribe(([routes, idleMilliseconds]) => {
+      userIdleSession$.pipe(filter(value => !isNaN(value)), take(1)),
+      userTimeOut$.pipe(filter(value => !isNaN(value)), take(1))
+    ]).subscribe(([routes, idleMilliseconds, timeout]) => {
       const isSignedOut: boolean = routes.indexOf('signed-out') !== -1;
-      if (idleMilliseconds && !isSignedOut) {
+      if (timeout && idleMilliseconds && !isSignedOut) {
         const idleConfig: IdleConfigModel = {
-          timeout: 10 * 60, // 10 min
+          timeout,
           idleMilliseconds,
           keepAliveInSeconds: 5 * 60 * 60, // 5 hrs
           idleServiceName: 'idleSession'

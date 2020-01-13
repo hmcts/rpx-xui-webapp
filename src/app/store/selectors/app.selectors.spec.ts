@@ -104,11 +104,22 @@ describe('App Selectors', () => {
       expect(result).toEqual(appConfigLoaded.userDetails);
     });
 
-    it('should return getUserIdleTimeOut state', () => {
+    it('should return getUserIdleTime state', () => {
       let result;
 
       store
-        .select(fromSelectors.getUserIdleTimeOut)
+        .select(fromSelectors.getUserIdleTime)
+        .subscribe(value => (result = value));
+
+      store.dispatch(new fromActions.GetUserDetails());
+      expect(result).toEqual(NaN);
+    });
+
+    it('should return getUserIdleTime state', () => {
+      let result;
+
+      store
+        .select(fromSelectors.getUserTimeOut)
         .subscribe(value => (result = value));
 
       store.dispatch(new fromActions.GetUserDetails());

@@ -5,11 +5,9 @@ import * as fromRoot from '../../store';
 import {
   delay,
   distinctUntilChanged,
-  map,
-  take
+  map
 } from 'rxjs/operators';
 import {Keepalive} from '@ng-idle/keepalive';
-import {combineLatest} from 'rxjs';
 import {IdleConfigModel} from '../../models/idle-config.model';
 
 @Injectable({
@@ -58,7 +56,6 @@ export class IdleService {
       console.log('Keep alive');
       this.store.dispatch(new fromRoot.KeepAlive());
     });
-
     const idleInSeconds = Math.floor((idleConfig.idleMilliseconds / 1000)) - idleConfig.timeout;
     console.log('idleInSeconds', idleInSeconds)
     this.idle.setIdle(idleInSeconds);

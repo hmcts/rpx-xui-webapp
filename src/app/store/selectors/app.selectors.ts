@@ -18,9 +18,14 @@ export const getUser = createSelector(
   fromApp.getUserDetails
 );
 
-export const getUserIdleTimeOut = createSelector(
+export const getUserIdleTime = createSelector(
   getUser,
   (user) => (user && user.idleTime) ? user.idleTime : NaN
+);
+
+export const getUserTimeOut = createSelector(
+  getUser,
+  (user) => (user && user.timeout) ? user.timeout : NaN
 );
 
 export const getModalSessionData = createSelector(

@@ -22,6 +22,14 @@ export const ROUTES: Routes = [
   { path: 'case-details/:cid', redirectTo: 'cases/case-details/:cid', pathMatch: 'full' },
   { path: 'v2/case/:cid', redirectTo: 'cases/case-details/:cid', pathMatch: 'full' },
   {
+    path: 'case/:jurisdiction/:case-type/:cid/trigger/:triggerPath',
+    redirectTo: 'cases/case-details/:cid/trigger/:triggerPath', pathMatch: 'full'
+  },
+  {
+    path: 'case/:jurisdiction/:case-type/:cid/trigger/:triggerPath/:triggerPath2',
+    redirectTo: 'cases/case-details/:cid/trigger/:triggerPath/:triggerPath2', pathMatch: 'full'
+  },
+  {
     path: 'cookies',
     component: CookiePolicyComponent
   },

@@ -126,15 +126,13 @@ describe('App Selectors', () => {
       expect(result).toEqual(appConfigLoaded.modal.session);
     });
 
-    it('should return getModalSessionData state', () => {
+    it('should return getRouterState state', () => {
       let result;
 
       store
         .select(fromReducers.getRouterState)
         .subscribe(value => (result = value));
-
-      store.dispatch(new fromActions.GetUserDetails());
-      expect(result).toEqual(appConfigLoaded.modal.session);
+      expect(result).toBeUndefined()
     });
   });
 

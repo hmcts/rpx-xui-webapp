@@ -5,31 +5,26 @@ import * as fromRoot from '../../store';
 import {
   delay,
   distinctUntilChanged,
-  filter, first,
   map,
   take
 } from 'rxjs/operators';
 import {Keepalive} from '@ng-idle/keepalive';
 import {combineLatest} from 'rxjs';
+import {IdleConfigModel} from '../../models/idle-config.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class IdleService {
-  private timeout: number;
   constructor(
     private idle: Idle,
     private keepalive: Keepalive,
     private store: Store<fromRoot.State>
   ) {}
-  // TODO refactor init to pass the timeout and idle time
-  public init(): void {
-    // time is set in seconds
-    // TODO get this from configuration when .evn ready
-    this.timeout = 10 * 60; // set to 10 minutes
 
-    this.idle.setIdleName('idleSession');
-    this.idle.setTimeout(this.timeout);
+  public init(idleConfig: IdleConfigModel): void {
+    this.idle.setIdleName(idleConfig.idleServiceName);
+    this.idle.setTimeout(idleConfig.timeout);
 
     const interrupt =
       new DocumentInterruptSource('mousedown keydown DOMMouseScroll mousewheel touchstart touchmove scroll');
@@ -58,15 +53,16 @@ export class IdleService {
       this.dispatchModal(countdown, true);
     });
 
-    // sets the ping interval in seconds 5 hrs
-    // TODO get this from configuration when .evn ready
-    this.keepalive.interval(5 * 60 * 60);
+    this.keepalive.interval(idleConfig.keepAliveInSeconds);
     this.keepalive.onPing.pipe(delay(250)).subscribe(() => {
       console.log('Keep alive');
       this.store.dispatch(new fromRoot.KeepAlive());
     });
 
-    this.initWatch();
+    const idleInSeconds = Math.floor((idleConfig.idleMilliseconds / 1000)) - idleConfig.timeout;
+    console.log('idleInSeconds', idleInSeconds)
+    this.idle.setIdle(idleInSeconds);
+    this.idle.watch();
   }
 
   public dispatchModal(countdown = '0', isVisible): void {
@@ -84,22 +80,4 @@ export class IdleService {
     this.store.dispatch(new fromRoot.SignedOut()); // sing out BE
   }
 
-  public initWatch(): void {
-    /* setting userDetails idle time */
-    const route$ = this.store.pipe(select(fromRoot.getRouterUrl));
-    // TODO refactor this to pass through the init
-    const userIdleSession$ =  this.store.pipe(select(fromRoot.getUserIdleTimeOut));
-    combineLatest([
-      route$.pipe(first(value => typeof value === 'string' )),
-      userIdleSession$.pipe(filter(value => !isNaN(value)), take(1))
-    ]).subscribe(([routes, idle]) => {
-      const isSignedOut: boolean = routes.indexOf('signed-out') !== -1;
-      if (idle && !isSignedOut) {
-        const idleInSeconds = Math.floor((idle / 1000)) - this.timeout;
-        console.log('idleInSeconds', idleInSeconds);
-        this.idle.setIdle(idleInSeconds);
-        this.idle.watch();
-      }
-    });
-  }
 }

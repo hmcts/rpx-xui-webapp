@@ -21,7 +21,6 @@ export class HeaderComponent {
 
   constructor(
     public store: Store<fromRoot.State>,
-    private cookieService: CookieService
   ) {}
 
   onNavigate(event) {

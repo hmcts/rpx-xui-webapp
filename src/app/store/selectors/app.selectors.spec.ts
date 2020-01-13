@@ -7,6 +7,7 @@ import * as fromActions from '../actions';
 import * as fromSelectors from './app.selectors';
 
 
+
 describe('App Selectors', () => {
   let store: Store<fromReducers.State>;
 
@@ -119,6 +120,17 @@ describe('App Selectors', () => {
 
       store
         .select(fromSelectors.getModalSessionData)
+        .subscribe(value => (result = value));
+
+      store.dispatch(new fromActions.GetUserDetails());
+      expect(result).toEqual(appConfigLoaded.modal.session);
+    });
+
+    it('should return getModalSessionData state', () => {
+      let result;
+
+      store
+        .select(fromReducers.getRouterState)
         .subscribe(value => (result = value));
 
       store.dispatch(new fromActions.GetUserDetails());

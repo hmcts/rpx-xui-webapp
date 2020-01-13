@@ -7,13 +7,16 @@ import {Keepalive} from '@ng-idle/keepalive';
 import { of } from 'rxjs';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import * as fromRoot from '../../store';
+import {IdleConfigModel} from '../../models/idle-config.model';
 
 describe('Idle Services', () => {
 
   const mockIdle = jasmine.createSpyObj('Idle', [
     'setIdleName',
     'setTimeout',
-    'setInterrupts'
+    'setInterrupts',
+    'setIdle',
+    'watch'
   ]);
 
   mockIdle.onIdleEnd = { pipe: (param) => of('something') };
@@ -54,7 +57,13 @@ describe('Idle Services', () => {
 
   describe('init', () => {
     it('should setup values', inject([IdleService], (service: IdleService) => {
-      service.init();
+      const idleConfig: IdleConfigModel = {
+        timeout: 10 * 60, // 10 min
+        idleMilliseconds: 3000,
+        keepAliveInSeconds: 5 * 60 * 60, // 5 hrs
+        idleServiceName: 'idleSession'
+      };
+      service.init(idleConfig);
       expect(mockIdle.setIdleName).toHaveBeenCalledWith('idleSession');
       expect(mockIdle.setTimeout).toHaveBeenCalled();
     }));

@@ -25,6 +25,10 @@ export const ROUTES: Routes = [
     redirectTo: 'cases/case-details/:cid/trigger/:triggerPath', pathMatch: 'full'
   },
   {
+    path: 'case/:jurisdiction/:case-type/:cid/trigger/:triggerPath/:triggerPath2',
+    redirectTo: 'cases/case-details/:cid/trigger/:triggerPath/:triggerPath2', pathMatch: 'full'
+  },
+  {
     path: 'cookies',
     component: CookiePolicyComponent
   },

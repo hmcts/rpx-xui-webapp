@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 
-const MEDIA_VIEWER = 'media-viewer';
+const MEDIA_VIEWER = 'media-viewer-info';
 
 @Component({
     selector: 'exui-media-viewer',

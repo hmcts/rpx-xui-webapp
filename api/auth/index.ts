@@ -20,23 +20,22 @@ const logger = log4jui.getLogger('auth')
 
 export async function configure(req: any, res: any, next: any) {
 
-    if (app.locals.client) {
-        return next()
+    if (!app.locals.issuer) {
+
+        let issuer: Issuer<Client>
+
+        try {
+            logger.info('getting oidc discovery endpoint')
+            issuer = await Issuer.discover(`${idamURl}/o`)
+        } catch (error) {
+            return next(error)
+        }
+
+        const metadata = issuer.metadata
+        metadata.issuer = config.services.idam.iss
+
+        app.locals.issuer = new Issuer(metadata)
     }
-
-    let issuer: Issuer<Client>
-
-    try {
-        logger.info('getting oidc discovery endpoint')
-        issuer = await Issuer.discover(`${idamURl}/o`)
-    } catch (error) {
-        return next(error)
-    }
-
-    const metadata = issuer.metadata
-    metadata.issuer = config.services.idam.iss
-
-    app.locals.issuer = new Issuer(metadata)
 
     const fqdn = req.protocol + '://' + req.get('host')
 

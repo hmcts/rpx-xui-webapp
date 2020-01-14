@@ -1,7 +1,13 @@
 import { ExUITitleService } from 'src/app/shared/services/exui-title.service';
 import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
-import { Subject, Subscription } from 'rxjs';
-import { AlertService, NavigationNotifierService, NavigationOrigin, HttpError } from '@hmcts/ccd-case-ui-toolkit';
+import { Subscription } from 'rxjs';
+import {
+  AlertService,
+  NavigationNotifierService,
+  NavigationOrigin,
+  HttpError,
+  ErrorNotifierService
+} from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import * as fromRoot from '../../../app/store';
 import * as fromFeature from '../../store';
@@ -17,12 +23,12 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
   public static readonly CASE_CREATED_MSG = 'The case has been created successfully';
   public static readonly DRAFT_DELETED_MSG = 'The draft has been successfully deleted';
 
-  callbackErrorsSubject: Subject<any> = new Subject();
   navigationSubscription: Subscription;
 
   constructor(
     private titleService: ExUITitleService,
     private alertService: AlertService,
+    private errorNotifierService: ErrorNotifierService,
     private navigationNotifier: NavigationNotifierService,
     private store: Store<fromFeature.State>,
   ) { }
@@ -42,7 +48,7 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  // TODO: please revisit
+// TODO: please revisit
   paramHandler(navigation: any): GoActionParams {
     let params: GoActionParams;
     switch (navigation.action) {
@@ -108,7 +114,8 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
     if (error.status !== 401 && error.status !== 403) {
       console.log('error during triggering event:', triggerId);
       console.log(error);
-      this.callbackErrorsSubject.next(error);
+      this.errorNotifierService.announceError(error);
+      this.alertService.error(error.message);
     }
   }
 }

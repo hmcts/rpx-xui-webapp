@@ -9,6 +9,7 @@ import {router as keepAlive} from '../keepalive'
 import * as log4jui from '../lib/log4jui'
 import {propsExist} from '../lib/objectUtilities'
 import {userHasAppAccess} from './manageCasesUserRoleAuth'
+import * as net from 'net'
 
 export const router = express.Router({mergeParams: true})
 
@@ -20,24 +21,27 @@ const logger = log4jui.getLogger('auth')
 
 export async function configure(req: any, res: any, next: any) {
 
-    if (!app.locals.issuer) {
+    const host = req.get('host')
 
-        let issuer: Issuer<Client>
-
-        try {
-            logger.info('getting oidc discovery endpoint')
-            issuer = await Issuer.discover(`${idamURl}/o`)
-        } catch (error) {
-            return next(error)
-        }
-
-        const metadata = issuer.metadata
-        metadata.issuer = config.services.idam.iss
-
-        app.locals.issuer = new Issuer(metadata)
+    if (net.isIP(host) || app.locals.client) {
+        return next()
     }
 
-    const fqdn = req.protocol + '://' + req.get('host')
+    let issuer: Issuer<Client>
+
+    try {
+        logger.info('getting oidc discovery endpoint')
+        issuer = await Issuer.discover(`${idamURl}/o`)
+    } catch (error) {
+        return next(error)
+    }
+
+    const metadata = issuer.metadata
+    metadata.issuer = config.services.idam.iss
+
+    app.locals.issuer = new Issuer(metadata)
+
+    const fqdn = req.protocol + '://' + host
 
     logger.info('fqdn: ', fqdn)
 

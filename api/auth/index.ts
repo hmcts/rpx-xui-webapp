@@ -1,6 +1,6 @@
 import axios from 'axios'
 import * as express from 'express'
-import {ClientMetadata, Issuer, Strategy, TokenSet, UserinfoResponse} from 'openid-client'
+import {Client, ClientMetadata, Issuer, Strategy, TokenSet, UserinfoResponse} from 'openid-client'
 import * as passport from 'passport'
 import * as process from 'process'
 import {app} from '../application'
@@ -24,8 +24,14 @@ export async function configure(req: any, res: any, next: any) {
         return next()
     }
 
-    logger.info('getting oidc discovery endpoint')
-    const issuer = await Issuer.discover(`${idamURl}/o`)
+    let issuer: Issuer<Client>
+
+    try {
+        logger.info('getting oidc discovery endpoint')
+        issuer = await Issuer.discover(`${idamURl}/o`)
+    } catch (error) {
+        return next(error)
+    }
 
     const metadata = issuer.metadata
     metadata.issuer = config.services.idam.iss
@@ -33,6 +39,8 @@ export async function configure(req: any, res: any, next: any) {
     app.locals.issuer = new Issuer(metadata)
 
     const fqdn = req.protocol + '://' + req.get('host')
+
+    logger.info('fqdn: ', fqdn)
 
     const clientMetadata: ClientMetadata = {
         client_id: config.idamClient,

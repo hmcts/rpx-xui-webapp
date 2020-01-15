@@ -1,9 +1,8 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import { GoogleAnalyticsService } from '@hmcts/rpx-xui-common-lib';
+import {GoogleAnalyticsService, ManageSessionServices} from '@hmcts/rpx-xui-common-lib';
 import { environment as config } from '../../../environments/environment';
 import {select, Store} from '@ngrx/store';
 import * as fromRoot from '../../store';
-import {IdleService} from '../../services/idle/idle.services';
 import {combineLatest, Observable} from 'rxjs';
 import {filter, first, take} from 'rxjs/operators';
 import {IdleConfigModel} from '../../models/idle-config.model';
@@ -19,7 +18,7 @@ export class AppComponent implements OnInit {
   constructor(
     private googleAnalyticsService: GoogleAnalyticsService,
     private store: Store<fromRoot.State>,
-    private idleService: IdleService,
+    private idleService: ManageSessionServices,
   ) {
     this.googleAnalyticsService.init(config.googleAnalyticsKey);
   }

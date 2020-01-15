@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Idle, DocumentInterruptSource } from '@ng-idle/core';
-import {select, Store} from '@ngrx/store';
+import {Store} from '@ngrx/store';
 import * as fromRoot from '../../store';
 import {
   delay,
@@ -9,16 +9,17 @@ import {
 } from 'rxjs/operators';
 import {Keepalive} from '@ng-idle/keepalive';
 import {IdleConfigModel} from '../../models/idle-config.model';
+import {Observable, Subject} from 'rxjs';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class IdleService {
+  private appStateEmitter: Subject<{type: string, countdown?: string; isVisible?: boolean}>;
   constructor(
     private idle: Idle,
     private keepalive: Keepalive,
-    private store: Store<fromRoot.State>
-  ) {}
+  ) {
+    this.appStateEmitter = new Subject();
+  }
 
   public init(idleConfig: IdleConfigModel): void {
     this.idle.setIdleName(idleConfig.idleServiceName);
@@ -31,13 +32,12 @@ export class IdleService {
     // adding delay so that user can click on sign out before the modal shuts
     this.idle.onIdleEnd.pipe(delay(250)).subscribe(() => {
       console.log('No longer idle.');
-      this.dispatchModal(undefined, false);
+      this.appStateEmitter.next({type: 'modal', countdown: undefined, isVisible: false});
     });
 
     this.idle.onTimeout.subscribe(() => {
       console.log('Timed out!');
-      this.dispatchSignedOut();
-      this.dispatchModal(undefined, false);
+      this.appStateEmitter.next({type: 'signout'});
     });
 
     this.idle.onIdleStart.subscribe(() => {
@@ -48,13 +48,13 @@ export class IdleService {
       map(sec => (sec > 60) ? Math.ceil(sec / 60) + ' minutes' : sec + ' seconds'),
       distinctUntilChanged()
     ).subscribe((countdown) => {
-      this.dispatchModal(countdown, true);
+      this.appStateEmitter.next({type: 'modal', countdown, isVisible: true});
     });
 
     this.keepalive.interval(idleConfig.keepAliveInSeconds);
     this.keepalive.onPing.pipe(delay(250)).subscribe(() => {
       console.log('Keep alive');
-      this.store.dispatch(new fromRoot.KeepAlive());
+      this.appStateEmitter.next({type: 'keepalive'})
     });
     const idleInSeconds = Math.floor((idleConfig.idleMilliseconds / 1000)) - idleConfig.timeout;
     console.log('idleInSeconds', idleInSeconds)
@@ -62,19 +62,8 @@ export class IdleService {
     this.idle.watch();
   }
 
-  public dispatchModal(countdown = '0', isVisible): void {
-    const modalConfig: any = {
-      session: {
-        countdown,
-        isVisible
-      }
-    };
-    this.store.dispatch(new fromRoot.SetModal(modalConfig));
-  }
-
-  public dispatchSignedOut(): void {
-    this.dispatchModal(undefined, false);
-    this.store.dispatch(new fromRoot.SignedOut()); // sing out BE
+  public appStateChanges(): Observable<any> {
+    return this.appStateEmitter.asObservable();
   }
 
 }

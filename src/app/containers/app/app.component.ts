@@ -28,6 +28,23 @@ export class AppComponent implements OnInit {
     this.store.dispatch(new fromRoot.GetUserDetails());
     this.modalData$ = this.store.pipe(select(fromRoot.getModalSessionData));
     this.idleStart();
+    this.idleService.appStateChanges().subscribe(value => {
+      switch (value.type) {
+        case 'modal': {
+          this.dispatchModal(value.countdown, value.isVisible);
+          return;
+        }
+        case 'signout': {
+          this.dispatchModal(undefined, false);
+          this.store.dispatch(new fromRoot.SignedOut()); // sing out BE
+          return;
+        }
+        case 'keepalive': {
+          this.store.dispatch(new fromRoot.KeepAlive());
+          return;
+        }
+      }
+    });
   }
 
   public idleStart() {
@@ -50,6 +67,16 @@ export class AppComponent implements OnInit {
         this.idleService.init(idleConfig);
       }
     });
+  }
+
+  public dispatchModal(countdown = '0', isVisible): void {
+    const modalConfig: any = {
+      session: {
+        countdown,
+        isVisible
+      }
+    };
+    this.store.dispatch(new fromRoot.SetModal(modalConfig));
   }
 
   public onStaySignedIn() {

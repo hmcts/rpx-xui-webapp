@@ -59,7 +59,7 @@ import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
       level: NgxLoggerLevel.TRACE,
       disableConsoleLogging: false
     }),
-    ExuiCommonLibModule.forRoot(),
+    ExuiCommonLibModule.forRoot({launchDarklyKey: ''}),
     NgIdleKeepaliveModule.forRoot()
   ],
   providers: [

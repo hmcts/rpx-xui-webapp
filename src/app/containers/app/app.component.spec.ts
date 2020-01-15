@@ -11,6 +11,7 @@ import {HeaderComponent} from '../../components';
 import {IdleService} from '../../services/idle/idle.services';
 import {Idle, LocalStorageExpiry} from '@ng-idle/core';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
+import {Keepalive} from '@ng-idle/keepalive';
 
 const mockedServoces = { init: () => {}}
 const windowMock: Window = { gtag: () => {}} as any;
@@ -32,10 +33,8 @@ describe('AppComponent', () => {
           })
       ],
       providers: [
-        {
-          provide: IdleService,
-          useValue: mockedServoces
-        },
+        IdleService,
+        Keepalive,
         {
           provide: Idle,
           useValue: mockedServoces

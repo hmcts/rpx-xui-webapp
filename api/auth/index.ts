@@ -15,34 +15,44 @@ export const router = express.Router({mergeParams: true})
 
 const cookieToken = config.cookies.token
 const cookieUserId = config.cookies.userId
-const idamURl = config.services.idam.idamApiUrl
+const idamURl = config.services.idam.idamLoginUrl
 
 const logger = log4jui.getLogger('auth')
 
-export async function configure(req: any, res: any, next: any) {
-
-    const host = req.get('host')
-
-    if (net.isIP(host) || app.locals.client) {
-        return next()
-    }
-
+export async function configureIssuer(url: string) {
     let issuer: Issuer<Client>
 
-    try {
-        logger.info('getting oidc discovery endpoint')
-        issuer = await Issuer.discover(`${idamURl}/o`)
-    } catch (error) {
-        return next(error)
-    }
+    logger.info('getting oidc discovery endpoint')
+    issuer = await Issuer.discover(`${url}/o`)
 
     const metadata = issuer.metadata
     metadata.issuer = config.services.idam.iss
 
-    app.locals.issuer = new Issuer(metadata)
+    return new Issuer(metadata)
+}
 
+export async function configure(req: any, res: any, next: any) {
+
+    const host = req.get('host')
     const fqdn = req.protocol + '://' + host
 
+    // we don't want to configure strategy if coming from direct IP address (e.g. could be health endpoint)
+    if (net.isIP(host)) {
+        return next()
+    }
+
+    // if client is already configured, exit early
+    if (app.locals.client) {
+        return next()
+    }
+
+    if (!app.locals.issuer) {
+        try {
+            app.locals.issuer = await configureIssuer(idamURl)
+        } catch (error) {
+            return next(error)
+        }
+    }
     logger.info('fqdn: ', fqdn)
 
     const clientMetadata: ClientMetadata = {
@@ -55,6 +65,8 @@ export async function configure(req: any, res: any, next: any) {
     }
 
     app.locals.client = new app.locals.issuer.Client(clientMetadata)
+
+    logger.info('configuring strategy')
 
     passport.use('oidc', new Strategy({
         client: app.locals.client,

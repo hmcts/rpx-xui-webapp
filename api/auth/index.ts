@@ -15,7 +15,7 @@ export const router = express.Router({mergeParams: true})
 
 const cookieToken = config.cookies.token
 const cookieUserId = config.cookies.userId
-const idamURl = config.services.idam.idamLoginUrl
+const idamURl = config.services.idam.idamApiUrl
 
 const logger = log4jui.getLogger('auth')
 

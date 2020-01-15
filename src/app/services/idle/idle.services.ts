@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 import {Idle, DocumentInterruptSource } from '@ng-idle/core';
-import {Store} from '@ngrx/store';
-import * as fromRoot from '../../store';
 import {
   delay,
   distinctUntilChanged,

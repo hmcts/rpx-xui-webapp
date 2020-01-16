@@ -1,7 +1,7 @@
 import {TestBed, async, inject} from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { StoreModule, Store } from '@ngrx/store';
-import {GetUserDetails, Logout, reducers, SetModal} from 'src/app/store';
+import {GetUserDetails, KeepAlive, Logout, reducers, SetModal, SignedOut} from 'src/app/store';
 import * as fromStore from '../../store'
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import { cold } from 'jasmine-marbles';
@@ -71,7 +71,7 @@ describe('AppComponent', () => {
 
   }));
 
-  it('should dispatch a setmodal action', async(() => {
+  it('should dispatch a onStaySigned', async(() => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
     app.onStaySignedIn();
@@ -79,6 +79,22 @@ describe('AppComponent', () => {
     const payload = {
       session : {
         isVisible: false
+      }
+    };
+    expect(store.dispatch).toHaveBeenCalledWith(new SetModal(payload));
+
+  }));
+
+
+  it('should dispatch a setmodal action', async(() => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    app.dispatchModal('0', true);
+    fixture.detectChanges();
+    const payload = {
+      session : {
+        countdown: '0',
+        isVisible: true
       }
     };
     expect(store.dispatch).toHaveBeenCalledWith(new SetModal(payload));
@@ -101,4 +117,25 @@ describe('AppComponent', () => {
     expect(store.dispatch).toHaveBeenCalledWith(new GetUserDetails());
   }));
 
+  it('should dispatchSessionAction dispatich singout', async(() => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    app.dispatchSessionAction({type: 'keepalive'});
+    fixture.detectChanges();
+    expect(store.dispatch).toHaveBeenCalledWith(new KeepAlive());
+  }));
+
+  it('should dispatchSessionAction dispatich setModal ', async(() => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    app.dispatchSessionAction({type: 'modal', countdown: '0', isVisible: true});
+    fixture.detectChanges();
+    const payload = {
+      session : {
+        countdown: '0',
+        isVisible: true
+      }
+    };
+    expect(store.dispatch).toHaveBeenCalledWith(new SetModal(payload));
+  }));
 });

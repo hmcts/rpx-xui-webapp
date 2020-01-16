@@ -1,17 +1,11 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-
-import { Actions } from '@ngrx/effects';
-
 import { hot, cold } from 'jasmine-marbles';
-import { Observable } from 'rxjs/Observable';
-import { empty } from 'rxjs/observable/empty';
-
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { CaseCreateEffects } from './case-create.effects';
 import { LoggerService } from 'src/app/services/logger/logger.service';
-import { CreateCaseLoaded, ApplyChange, CaseCreateFilterApply } from '../actions/create-case.action';
+import { CreateCaseLoaded, ApplyChange, CaseCreateFilterApply, CreateCaseReset } from '../actions/create-case.action';
 import { NewCaseLoadedSuccessfully, CreateCaseGo, Go } from '../../../app/store/actions';
 import { provideMockActions } from '@ngrx/effects/testing';
 
@@ -50,6 +44,19 @@ describe('CaseCreate Effects', () => {
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.applyCreateCase$).toBeObservable(expected);
+    });
+  });
+
+  describe('cancel$', () => {
+    it('should cancel case action', () => {
+
+      const action = new CreateCaseReset();
+      const completion = new Go({
+        path: ['/cases']
+      });
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.cancel$).toBeObservable(expected);
     });
   });
 

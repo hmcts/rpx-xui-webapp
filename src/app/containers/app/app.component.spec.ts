@@ -6,11 +6,10 @@ import * as fromStore from '../../store'
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import { cold } from 'jasmine-marbles';
 import { RouterTestingModule } from '@angular/router/testing';
-import { windowToken } from '@hmcts/rpx-xui-common-lib';
+import {ManageSessionServices, windowToken} from '@hmcts/rpx-xui-common-lib';
 import {HeaderComponent} from '../../components';
-import {IdleService} from '../../services/idle/idle.services';
 import {Idle, LocalStorageExpiry} from '@ng-idle/core';
-import {HttpClient, HttpClientModule} from '@angular/common/http';
+import { HttpClientModule} from '@angular/common/http';
 import {Keepalive} from '@ng-idle/keepalive';
 
 const mockedServoces = { init: () => {}}
@@ -33,7 +32,7 @@ describe('AppComponent', () => {
           })
       ],
       providers: [
-        IdleService,
+        ManageSessionServices,
         Keepalive,
         {
           provide: Idle,

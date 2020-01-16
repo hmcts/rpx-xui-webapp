@@ -66,6 +66,22 @@ describe('App Actions', () => {
     });
   });
 
+  describe('Sign Out ', () => {
+    it('should have sign out action', () => {
+      const action = new fromApp.SignedOut();
+      expect({ ...action }).toEqual({
+        type: fromApp.SIGNED_OUT,
+      });
+    });
+
+    it('should have sign out success action', () => {
+      const action = new fromApp.SignedOutSuccess();
+      expect({ ...action }).toEqual({
+        type: fromApp.SIGNED_OUT_SUCCESS,
+      });
+    });
+  });
+
   describe('Get user details success', () => {
     it('should create an action', () => {
       const payload = {email: 'test@test.com', userId: '1234'} as any;

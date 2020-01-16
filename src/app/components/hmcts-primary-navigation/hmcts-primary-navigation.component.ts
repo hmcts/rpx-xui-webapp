@@ -8,15 +8,15 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class HmctsPrimaryNavigationComponent {
 
-    @Input() set userLoggedIn(value) {
-        this.isUserLoggedIn = true;
+    @Input() set showNavItems(value) {
+        this.showItems = value;
     }
 
     @Input() label;
     @Input() items;
     @Input() isBrandedHeader: boolean;
 
-    isUserLoggedIn = true;
+    showItems: boolean;
     constructor(private route: ActivatedRoute) {
 
     }

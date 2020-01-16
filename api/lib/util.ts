@@ -1,4 +1,5 @@
 import * as express from 'express'
+import { PostUserAcceptTandCResponse } from '../interface/userAcceptTandCResponse'
 import * as errorStack from './errorStack'
 import { JUILogger } from './models'
 
@@ -78,4 +79,8 @@ export function shorten(str: string, maxLen: number): string {
 
 export function isObject(o) {
     return o !== null && typeof o === 'object' && Array.isArray(o) === false
+}
+
+export function isUserTandCPostSuccessful(postResponse: PostUserAcceptTandCResponse, userId: string): any {
+    return postResponse.userId === userId
 }

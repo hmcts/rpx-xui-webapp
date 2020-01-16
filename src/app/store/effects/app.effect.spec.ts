@@ -35,10 +35,10 @@ describe('App Effects', () => {
       'getUserDetails',
     ]);
 
-  const LogOutServiceMock = jasmine.createSpyObj('LogOutKeepAliveService', [
-    'logOut',
-    'heartBeat'
-  ]);
+    const LogOutServiceMock = jasmine.createSpyObj('LogOutKeepAliveService', [
+      'logOut',
+      'heartBeat'
+    ]);
 
     beforeEach(() => {
         TestBed.configureTestingModule({

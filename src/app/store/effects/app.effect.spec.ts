@@ -5,16 +5,26 @@ import { of, throwError } from 'rxjs';
 import { provideMockActions } from '@ngrx/effects/testing';
 import * as fromAppEffects from './app.effects';
 import { AppEffects } from './app.effects';
-import {GetUserDetails, GetUserDetailsFailure, GetUserDetailsSuccess, Logout} from '../actions';
+import {
+  GetUserDetails,
+  GetUserDetailsFailure,
+  GetUserDetailsSuccess,
+  Logout,
+  SignedOut,
+  SignedOutSuccess
+} from '../actions';
 import { AuthService } from '../../services/auth/auth.service';
-import { StoreModule } from '@ngrx/store';
+import {Store, StoreModule} from '@ngrx/store';
 import { AppConfigService } from '../../services/config/configuration.services';
 import {LogOutKeepAliveService} from '../../services/keep-alive/keep-alive.services';
 import {HttpErrorResponse} from '@angular/common/http';
 import {UserService} from '../../services/user-service/user.service';
+import {MockStore} from '@ngrx/store/testing';
+import {State} from '../reducers';
 
 
-
+let spyOnDispatchToStore = jasmine.createSpy();
+let store: MockStore<State>;
 describe('App Effects', () => {
     let actions$;
     let effects: AppEffects;
@@ -25,6 +35,11 @@ describe('App Effects', () => {
       'getUserDetails',
     ]);
 
+  const LogOutServiceMock = jasmine.createSpyObj('LogOutKeepAliveService', [
+    'logOut',
+    'heartBeat'
+  ]);
+
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [
@@ -34,6 +49,10 @@ describe('App Effects', () => {
             providers: [
                 AppConfigService,
                 LogOutKeepAliveService,
+                {
+                  provide: LogOutKeepAliveService,
+                  useValue: LogOutServiceMock
+                },
                 {
                     provide: AuthService,
                     useValue: AuthServiceMock
@@ -46,7 +65,8 @@ describe('App Effects', () => {
                 provideMockActions(() => actions$)
             ]
         });
-
+        store = TestBed.get(Store);
+        spyOnDispatchToStore = spyOn(store, 'dispatch').and.callThrough();
         effects = TestBed.get(AppEffects);
 
     });
@@ -92,6 +112,16 @@ describe('App Effects', () => {
       });
     });
 
+    describe('sigout', () => {
+      it('should return a sign out sucess', () => {
+        LogOutServiceMock.logOut.and.returnValue(of('something'));
+        const action = new SignedOut();
+        const completion = new SignedOutSuccess();
+        actions$ = hot('-a', { a: action });
+        const expected = cold('-b', { b: completion });
+        expect(effects.sigout$).toBeObservable(expected);
+      });
+    });
 
 
 });

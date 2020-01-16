@@ -1,6 +1,9 @@
 import { Routes } from '@angular/router';
+import { AcceptTcWrapperComponent, TermsAndConditionsComponent } from './containers';
+import { AcceptTermsGuard } from './guards/acceptTerms.guard';
+import { AllowAcceptTermsGuard } from './guards/allowAcceptTerms.guard';
 import { AuthGuard } from './services/auth/auth.guard';
-import { ServiceDownComponent, CookiePolicyComponent, PrivacyPolicyComponent, TermsAndConditionsComponent,
+import { ServiceDownComponent, CookiePolicyComponent, PrivacyPolicyComponent,
           AccessibilityComponent, MediaViewerWrapperComponent} from './components';
 import { GetHelpComponent } from './components/get-help/get-help.component';
 
@@ -12,7 +15,7 @@ export const ROUTES: Routes = [
   },
   {
     path: 'cases',
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, AcceptTermsGuard],
     loadChildren: '../cases/cases.module#CasesModule'
   },
   // TODO: remove redundant redirections
@@ -39,6 +42,11 @@ export const ROUTES: Routes = [
   {
     path: 'terms-and-conditions',
     component: TermsAndConditionsComponent
+  },
+  {
+    path: 'accept-terms-and-conditions',
+    component: AcceptTcWrapperComponent,
+    canActivate: [AllowAcceptTermsGuard]
   },
   {
     path: 'accessibility',

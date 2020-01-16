@@ -63,13 +63,13 @@ export class AppEffects {
   );
 
   @Effect()
-  signedOutSuccess = this.actions$.pipe(
+  signedOutSuccess$ = this.actions$.pipe(
     ofType(fromActions.SIGNED_OUT_SUCCESS),
     map(() => new fromActions.Go({path: ['/signed-out']}))
   );
 
   @Effect({ dispatch: false})
-  keepAlive = this.actions$.pipe(
+  keepAlive$ = this.actions$.pipe(
     ofType(fromActions.KEEP_ALIVE),
     switchMap((date) => {
       return this.logOutService.heartBeat()

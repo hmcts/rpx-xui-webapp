@@ -12,7 +12,7 @@ router.get('/details', handleUserRoute)
 
 function handleUserRoute(req, res) {
 
-  const isProd: boolean = (config.environment === 'prod' || config.environment === 'local')
+  const isProd: boolean = (config.environment === 'prod')
   // in milliseconds
   const idleTimeOuts: {caseworker: number; solicitors: number; special: number} = {
     caseworker: isProd ? 8 * 60 * 60 * 1000 : 60 * 1000, // 8 hr

@@ -28,22 +28,26 @@ export class AppComponent implements OnInit {
     this.modalData$ = this.store.pipe(select(fromRoot.getModalSessionData));
     this.idleStart();
     this.idleService.appStateChanges().subscribe(value => {
-      switch (value.type) {
-        case 'modal': {
-          this.dispatchModal(value.countdown, value.isVisible);
-          return;
-        }
-        case 'signout': {
-          this.dispatchModal(undefined, false);
-          this.store.dispatch(new fromRoot.SignedOut()); // sing out BE
-          return;
-        }
-        case 'keepalive': {
-          this.store.dispatch(new fromRoot.KeepAlive());
-          return;
-        }
-      }
+      this.dispatchSessionAction(value);
     });
+  }
+
+  public dispatchSessionAction(value) {
+    switch (value.type) {
+      case 'modal': {
+        this.dispatchModal(value.countdown, value.isVisible);
+        return;
+      }
+      case 'signout': {
+        this.dispatchModal(undefined, false);
+        this.store.dispatch(new fromRoot.SignedOut()); // sing out BE
+        return;
+      }
+      case 'keepalive': {
+        this.store.dispatch(new fromRoot.KeepAlive());
+        return;
+      }
+    }
   }
 
   public idleStart() {

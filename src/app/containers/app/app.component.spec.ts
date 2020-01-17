@@ -1,16 +1,16 @@
 import {TestBed, async, inject} from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { StoreModule, Store } from '@ngrx/store';
-import {GetUserDetails, Logout, reducers, SetModal} from 'src/app/store';
+import {GetUserDetails, KeepAlive, Logout, reducers, SetModal, SignedOut} from 'src/app/store';
 import * as fromStore from '../../store'
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import { cold } from 'jasmine-marbles';
 import { RouterTestingModule } from '@angular/router/testing';
-import { windowToken } from '@hmcts/rpx-xui-common-lib';
+import {ManageSessionServices, windowToken} from '@hmcts/rpx-xui-common-lib';
 import {HeaderComponent} from '../../components';
-import {IdleService} from '../../services/idle/idle.services';
 import {Idle, LocalStorageExpiry} from '@ng-idle/core';
-import {HttpClient, HttpClientModule} from '@angular/common/http';
+import { HttpClientModule} from '@angular/common/http';
+import {Keepalive} from '@ng-idle/keepalive';
 
 const mockedServoces = { init: () => {}}
 const windowMock: Window = { gtag: () => {}} as any;
@@ -32,10 +32,8 @@ describe('AppComponent', () => {
           })
       ],
       providers: [
-        {
-          provide: IdleService,
-          useValue: mockedServoces
-        },
+        ManageSessionServices,
+        Keepalive,
         {
           provide: Idle,
           useValue: mockedServoces
@@ -73,7 +71,7 @@ describe('AppComponent', () => {
 
   }));
 
-  it('should dispatch a setmodal action', async(() => {
+  it('should dispatch a onStaySigned', async(() => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
     app.onStaySignedIn();
@@ -81,6 +79,22 @@ describe('AppComponent', () => {
     const payload = {
       session : {
         isVisible: false
+      }
+    };
+    expect(store.dispatch).toHaveBeenCalledWith(new SetModal(payload));
+
+  }));
+
+
+  it('should dispatch a setmodal action', async(() => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    app.dispatchModal('0', true);
+    fixture.detectChanges();
+    const payload = {
+      session : {
+        countdown: '0',
+        isVisible: true
       }
     };
     expect(store.dispatch).toHaveBeenCalledWith(new SetModal(payload));
@@ -103,4 +117,25 @@ describe('AppComponent', () => {
     expect(store.dispatch).toHaveBeenCalledWith(new GetUserDetails());
   }));
 
+  it('should dispatchSessionAction dispatich singout', async(() => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    app.dispatchSessionAction({type: 'keepalive'});
+    fixture.detectChanges();
+    expect(store.dispatch).toHaveBeenCalledWith(new KeepAlive());
+  }));
+
+  it('should dispatchSessionAction dispatich setModal ', async(() => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    app.dispatchSessionAction({type: 'modal', countdown: '0', isVisible: true});
+    fixture.detectChanges();
+    const payload = {
+      session : {
+        countdown: '0',
+        isVisible: true
+      }
+    };
+    expect(store.dispatch).toHaveBeenCalledWith(new SetModal(payload));
+  }));
 });

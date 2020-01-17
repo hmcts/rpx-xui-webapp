@@ -311,6 +311,14 @@
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.7.7.tgz#1b886595419cf92d811316d5b715a53ff38b4937"
   integrity sha512-WtTZMZAZLbeymhkd/sEaPD8IQyGAhmuTuvTzLiCFM7iXiVdY0gc0IaI+cW0fh1BnSMbJSzXX6/fHllgHKwHhXw==
 
+"@babel/polyfill@7.6.0":
+  version "7.6.0"
+  resolved "https://registry.yarnpkg.com/@babel/polyfill/-/polyfill-7.6.0.tgz#6d89203f8b6cd323e8d946e47774ea35dc0619cc"
+  integrity sha512-q5BZJI0n/B10VaQQvln1IlDK3BTBJFbADx7tv+oXDPIDZuTo37H5Adb9jhlXm/fEN4Y7/64qD9mnrJJG7rmaTw==
+  dependencies:
+    core-js "^2.6.5"
+    regenerator-runtime "^0.13.2"
+
 "@babel/polyfill@^7.2.3":
   version "7.7.0"
   resolved "https://registry.yarnpkg.com/@babel/polyfill/-/polyfill-7.7.0.tgz#e1066e251e17606ec7908b05617f9b7f8180d8f3"
@@ -405,10 +413,10 @@
     js-yaml "^3.8.4"
     superagent "^3.5.1"
 
-"@hmcts/rpx-xui-common-lib@0.0.19":
-  version "0.0.19"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-0.0.19.tgz#da7948fbc1f45e5a202c554c9ff84e5a79ee1f21"
-  integrity sha512-BYgxpoQtZXZjFOFfCcAplvthn69O5zlLvfjcPy+2alon8NTU7zHvuSgZTVp2swtl3HrNhm4dHGvoriG03eJpSQ==
+"@hmcts/rpx-xui-common-lib@0.0.27":
+  version "0.0.27"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-0.0.27.tgz#abf1b607a0abfc2fd13a5d57d4dada15df13ccb4"
+  integrity sha512-NnqY/Fyk1cHms3N7vvZCw9kEghmdE5HEf1yjpqOtwYfZC0PuCpnXw0AaZmw0vLlfGfN8dzNF8F2+yu050LE98Q==
   dependencies:
     tslib "^1.9.0"
 
@@ -1554,6 +1562,11 @@ base64-arraybuffer@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/base64-arraybuffer/-/base64-arraybuffer-0.2.0.tgz#4b944fac0191aa5907afe2d8c999ccc57ce80f45"
   integrity sha512-7emyCsu1/xiBXgQZrscw/8KPRT44I4Yq9Pe6EGs3aPRTsWuggML1/1DTuZUuIaJPIm1FTDUVXl4x/yW8s0kQDQ==
+
+base64-js@1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.3.0.tgz#cab1e6118f051095e58b5281aea8c1cd22bfc0e3"
+  integrity sha512-ccav/yGvoa80BQDljCxsmmQ3Xvx60/UpBIij5QN21W3wBi/hhIC9OoO+KLpu9IJTS9j4DRVJ3aDDF9cMSoa2lw==
 
 base64-js@^1.0.2:
   version "1.3.1"
@@ -3850,15 +3863,15 @@ extsprintf@^1.2.0:
   resolved "https://registry.yarnpkg.com/extsprintf/-/extsprintf-1.4.0.tgz#e2689f8f356fad62cca65a3a91c5df5f9551692f"
   integrity sha1-4mifjzVvrWLMplo6kcXfX5VRaS8=
 
+fast-deep-equal@2.0.1, fast-deep-equal@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-2.0.1.tgz#7b05218ddf9667bf7f370bf7fdb2cb15fdd0aa49"
+  integrity sha1-ewUhjd+WZ79/Nwv3/bLLFf3Qqkk=
+
 fast-deep-equal@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-1.1.0.tgz#c053477817c86b51daa853c81e059b733d023614"
   integrity sha1-wFNHeBfIa1HaqFPIHgWbcz0CNhQ=
-
-fast-deep-equal@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-2.0.1.tgz#7b05218ddf9667bf7f370bf7fdb2cb15fdd0aa49"
-  integrity sha1-ewUhjd+WZ79/Nwv3/bLLFf3Qqkk=
 
 fast-json-stable-stringify@2.0.0:
   version "2.0.0"
@@ -5931,6 +5944,24 @@ latest-version@^3.0.0:
   integrity sha1-ogU4P+oyKzO1rjsYq+4NwvNW7hU=
   dependencies:
     package-json "^4.0.0"
+
+launchdarkly-js-client-sdk@^2.15.2:
+  version "2.16.0"
+  resolved "https://registry.yarnpkg.com/launchdarkly-js-client-sdk/-/launchdarkly-js-client-sdk-2.16.0.tgz#aac4273a5499a69006a95ec0097fdd4d4c8023fd"
+  integrity sha512-nr8UAmWDw1UmhfC4u8TyRg/kjsuN/mja8iH5gQpNXbO9ot7AlZIfsd8bPRoMhAgNHMFeE6PnqpOhZuURE7OgdA==
+  dependencies:
+    escape-string-regexp "1.0.5"
+    launchdarkly-js-sdk-common "3.1.0"
+
+launchdarkly-js-sdk-common@3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/launchdarkly-js-sdk-common/-/launchdarkly-js-sdk-common-3.1.0.tgz#565e0fbe9af214d1b74f5a55011e2d47d407e277"
+  integrity sha512-htP7QkOnsXmcWlsJxLvrAjxYCSU0XjKBBbjvpHH/SBD+mmfInjN/P7S3Y89HAen/o8O+FHz3/FbBhqoZ+W4uyQ==
+  dependencies:
+    "@babel/polyfill" "7.6.0"
+    base64-js "1.3.0"
+    fast-deep-equal "2.0.1"
+    uuid "3.3.2"
 
 lcid@^1.0.0:
   version "1.0.0"
@@ -10244,6 +10275,11 @@ utils-merge@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
   integrity sha1-n5VxD1CiZ5R7LMwSR0HBAoQn5xM=
+
+uuid@3.3.2:
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.2.tgz#1b4af4955eb3077c501c23872fc6513811587131"
+  integrity sha512-yXJmeNaw3DnnKAOKJE51sL/ZaYfWJRl1pK9dr19YFCu0ObS231AB1/LbqTKRAQ5kw8A90rA6fr4riOUpTZvQZA==
 
 uuid@^3.0.1, uuid@^3.1.0, uuid@^3.2.1, uuid@^3.3.2:
   version "3.3.3"

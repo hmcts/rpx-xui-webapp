@@ -1,9 +1,8 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import { GoogleAnalyticsService } from '@hmcts/rpx-xui-common-lib';
+import {GoogleAnalyticsService, ManageSessionServices} from '@hmcts/rpx-xui-common-lib';
 import { environment as config } from '../../../environments/environment';
 import {select, Store} from '@ngrx/store';
 import * as fromRoot from '../../store';
-import {IdleService} from '../../services/idle/idle.services';
 import {combineLatest, Observable} from 'rxjs';
 import {filter, first, take} from 'rxjs/operators';
 import {IdleConfigModel} from '../../models/idle-config.model';
@@ -19,7 +18,7 @@ export class AppComponent implements OnInit {
   constructor(
     private googleAnalyticsService: GoogleAnalyticsService,
     private store: Store<fromRoot.State>,
-    private idleService: IdleService,
+    private idleService: ManageSessionServices,
   ) {
     this.googleAnalyticsService.init(config.googleAnalyticsKey);
   }
@@ -29,22 +28,26 @@ export class AppComponent implements OnInit {
     this.modalData$ = this.store.pipe(select(fromRoot.getModalSessionData));
     this.idleStart();
     this.idleService.appStateChanges().subscribe(value => {
-      switch (value.type) {
-        case 'modal': {
-          this.dispatchModal(value.countdown, value.isVisible);
-          return;
-        }
-        case 'signout': {
-          this.dispatchModal(undefined, false);
-          this.store.dispatch(new fromRoot.SignedOut()); // sing out BE
-          return;
-        }
-        case 'keepalive': {
-          this.store.dispatch(new fromRoot.KeepAlive());
-          return;
-        }
-      }
+      this.dispatchSessionAction(value);
     });
+  }
+
+  public dispatchSessionAction(value) {
+    switch (value.type) {
+      case 'modal': {
+        this.dispatchModal(value.countdown, value.isVisible);
+        return;
+      }
+      case 'signout': {
+        this.dispatchModal(undefined, false);
+        this.store.dispatch(new fromRoot.SignedOut()); // sing out BE
+        return;
+      }
+      case 'keepalive': {
+        this.store.dispatch(new fromRoot.KeepAlive());
+        return;
+      }
+    }
   }
 
   public idleStart() {

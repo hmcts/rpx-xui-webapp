@@ -10,6 +10,7 @@ import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.componen
 import { AccessibilityComponent } from './accessibility/accessibility.component';
 import { MediaViewerWrapperComponent } from './media-viewer-wrapper/media-viewer-wrapper.component';
 import { GetHelpComponent } from './get-help/get-help.component';
+import { SignedOutComponent} from './singed-out/signed-out.component';
 
 export const components: any[] = [
   ExuiPageWrapperComponent,
@@ -23,7 +24,8 @@ export const components: any[] = [
   PhaseBannerComponent,
   ServiceDownComponent,
   MediaViewerWrapperComponent,
-  GetHelpComponent
+  GetHelpComponent,
+  SignedOutComponent
 ];
 
 export * from './exui-mian-wrapper/exui-page-wrapper.component';
@@ -38,3 +40,4 @@ export * from './privacy-policy/privacy-policy.component';
 export * from './accessibility/accessibility.component';
 export * from './media-viewer-wrapper/media-viewer-wrapper.component';
 export * from './get-help/get-help.component';
+export * from './singed-out/signed-out.component';

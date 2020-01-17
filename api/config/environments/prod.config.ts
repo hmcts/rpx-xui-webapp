@@ -22,6 +22,7 @@ export default {
             idamClientID: 'xuiwebapp',
             idamLoginUrl: 'https://hmcts-access.service.gov.uk',
             indexUrl: '/',
+            iss: 'https://forgerock-am.service.core-compute-idam-prod.internal:8443/openam/oauth2/hmcts',
             oauthCallbackUrl: 'oauth2/callback',
         },
         s2s: 'http://rpe-service-auth-provider-prod.service.core-compute-prod.internal',

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import * as express from 'express'
+import { NextFunction, Request, Response, Router } from 'express'
 import * as net from 'net'
 import {Client, ClientMetadata, Issuer, Strategy, TokenSet, UserinfoResponse} from 'openid-client'
 import * as passport from 'passport'
@@ -11,7 +11,7 @@ import * as log4jui from '../lib/log4jui'
 import {propsExist} from '../lib/objectUtilities'
 import {userHasAppAccess} from './manageCasesUserRoleAuth'
 
-export const router = express.Router({mergeParams: true})
+export const router = Router({mergeParams: true})
 
 const cookieToken = config.cookies.token
 const cookieUserId = config.cookies.userId
@@ -31,7 +31,7 @@ export async function configureIssuer(url: string) {
     return new Issuer(metadata)
 }
 
-export async function configure(req: any, res: any, next: any) {
+export async function configure(req: Request, res: Response, next: NextFunction) {
 
     const host = req.get('host')
     const fqdn = req.protocol + '://' + host
@@ -71,6 +71,8 @@ export async function configure(req: any, res: any, next: any) {
     passport.use('oidc', new Strategy({
         client: app.locals.client,
         params: {scope: 'profile openid roles manage-user create-user'},
+        sessionKey: 'xui_webapp', // being explicit here so we can set manually on logout
+        usePKCE: false, // issuer doesn't support pkce - no code_challenge_methods_supported
     }, oidcVerify))
 
     next()
@@ -78,18 +80,25 @@ export async function configure(req: any, res: any, next: any) {
     // passport.use('s2s', new BearerStrategy())
 }
 
-export async function doLogout(req, res, status = 302) {
+export async function doLogout(req: Request, res: Response, status = 302) {
 
-    // TODO: we may need to revoke tokens by doing a call to OP
+    req.query.redirect = app.locals.client.endSessionUrl({
+        id_token_hint: req.session.passport.user.tokenset.id_token,
+        // TODO: we can generate a random state and use that
+        // post_logout_redirect_uri: app.locals.client.authorizationUrl({ state: 'testState' })
+    })
 
-    //passport provides this method on request object
-    req.logout()
+    delete axios.defaults.headers.common.Authorization
+    delete axios.defaults.headers.common['user-roles']
 
     res.clearCookie('roles')
     res.clearCookie(cookieToken)
     res.clearCookie(cookieUserId)
-    req.session.user = null
-    req.session.save(() => {
+
+    //passport provides this method on request object
+    req.logout()
+
+    req.session.destroy( () => {
         if (req.query.redirect || status === 401) {  // 401 is when no accessToken
             res.redirect(status, req.query.redirect || '/')
             console.log('Logged out by userDetails')
@@ -116,7 +125,7 @@ export async function oidcVerify(tokenset: TokenSet, userinfo: UserinfoResponse,
 
 }
 
-export function authCallbackSuccess(req: any, res: any) {
+export function authCallbackSuccess(req: Request, res: Response) {
     // console.log('callback', req.session)
 
     // we need extra logic before success redirect
@@ -136,8 +145,7 @@ export function authCallbackSuccess(req: any, res: any) {
     res.redirect('/')
 }
 
-router.get('/logout', (req: any, res: any) => {
-    req.query.redirect = '/auth/login'
+router.get('/logout', (req: Request, res: Response) => {
     doLogout(req, res)
 })
 

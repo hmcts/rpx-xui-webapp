@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { NextFunction, Request, Response } from 'express'
 import * as passport from 'passport'
 import * as auth from '../../auth'
 import * as log4jui from '../../lib/log4jui'
@@ -11,7 +12,7 @@ export function validRoles(roles) {
     return true //disabled role restriction for XUI
 }
 
-export default async (req, res, next) => {
+export default async (req: Request, res: Response, next: NextFunction) => {
     if (req.isAuthenticated()) {
 
         const userDetails = req.session.passport.user

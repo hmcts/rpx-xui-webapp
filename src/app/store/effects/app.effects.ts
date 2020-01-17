@@ -1,26 +1,29 @@
 import { Injectable } from '@angular/core';
+import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { Effect, Actions, ofType } from '@ngrx/effects';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
-import * as fromCore from '../';
-import * as fromActions from '../actions';
-import { AppConfigService } from '../../services/config/configuration.services';
 import { of } from 'rxjs/internal/observable/of';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import {LogOutKeepAliveService} from '../../services/keep-alive/keep-alive.services';
+import { TermsConditionsService } from 'src/app/services/terms-and-conditions/terms-and-conditions.service';
+import * as fromCore from '../';
+import { AppConfigService } from '../../services/config/configuration.services';
+import * as fromActions from '../actions';
+
 import {HttpErrorResponse} from '@angular/common/http';
 import {UserInterface} from '../../models/user.model';
+import {LogOutKeepAliveService} from '../../services/keep-alive/keep-alive.services';
 import {UserService} from '../../services/user-service/user.service';
 
 @Injectable()
 export class AppEffects {
   constructor(
-    private actions$: Actions,
-    private store: Store<fromCore.State>,
-    private configurationServices: AppConfigService,
-    private authService: AuthService,
-    private logOutService: LogOutKeepAliveService,
-    private userService: UserService
+    private readonly actions$: Actions,
+    private readonly store: Store<fromCore.State>,
+    private readonly configurationServices: AppConfigService,
+    private readonly authService: AuthService,
+    private readonly termsService: TermsConditionsService,
+    private readonly logOutService: LogOutKeepAliveService,
+    private readonly userService: UserService
   ) { }
 
   @Effect()
@@ -53,6 +56,16 @@ export class AppEffects {
   );
 
   @Effect()
+  loadTermsConditions$ = this.actions$.pipe(
+    ofType(fromActions.LOAD_TERMS_CONDITIONS),
+    switchMap(() => {
+      return this.termsService.getTermsConditions().pipe(
+        map(doc => new fromActions.LoadTermsConditionsSuccess(doc)),
+        catchError(err => of(new fromActions.LoadTermsConditionsFail(err)))
+      );
+    })
+  );
+
   sigout$ = this.actions$.pipe(
     ofType(fromActions.SIGNED_OUT),
     switchMap(() => {
@@ -88,5 +101,4 @@ export class AppEffects {
         );
     })
   );
-
 }

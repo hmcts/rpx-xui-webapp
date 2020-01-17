@@ -1,6 +1,6 @@
-import * as fromApp from './app-config.reducer';
-import * as fromActions from '../actions/app.actions';
 import {UserInterface, UserModel} from '../../models/user.model';
+import * as fromActions from '../actions/app.actions';
+import * as fromApp from './app-config.reducer';
 
 describe('AppReducer', () => {
   describe('undefined action', () => {
@@ -55,5 +55,39 @@ describe('AppReducer', () => {
       expect(state.modal).toEqual(payload);
     });
   });
+
+  describe('App Config Reducer', () => {
+    it('should return the default state', () => {
+        const action = {} as any;
+        const state = fromApp.reducer(undefined, action);
+        expect(state).toEqual(fromApp.initialState);
+    });
+
+    it('Has accepted TC Success', () => {
+        const action = new fromActions.LoadHasAcceptedTCSuccess(false);
+        const state = fromApp.reducer(fromApp.initialState, action);
+        const expectedState = {
+            ...fromApp.initialState,
+            termsAndCondition: {
+                isLoaded: true,
+                hasUserAcceptedTC: false
+              }
+        };
+        expect(state).toEqual(expectedState);
+    });
+
+    it('Accept TC Success', () => {
+        const action = new fromActions.AcceptTandCSuccess(true);
+        const state = fromApp.reducer(fromApp.initialState, action);
+        const expectedState = {
+            ...fromApp.initialState,
+            termsAndCondition: {
+                isLoaded: true,
+                hasUserAcceptedTC: true
+              }
+        };
+        expect(state).toEqual(expectedState);
+    });
+});
 
 });

@@ -1,11 +1,15 @@
-import {createSelector} from '@ngrx/store';
-
+import { createSelector } from '@ngrx/store';
 import * as fromFeature from '../reducers';
 import * as fromApp from '../reducers/app-config.reducer';
 
 export const getConfigState = createSelector(
   fromFeature.getAppConfigState,
   (state: fromApp.AppState) => state
+);
+
+export const getTandCLoaded = createSelector(
+  getConfigState,
+  fromApp.getTandCLoadedConfig
 );
 
 export const getAppFeatures = createSelector(
@@ -31,4 +35,9 @@ export const getUserTimeOut = createSelector(
 export const getModalSessionData = createSelector(
   getConfigState,
   (state) => state.modal.session
+);
+
+export const getTermsAndConditions = createSelector(
+  getConfigState,
+  state => state.termsAndConditions
 );

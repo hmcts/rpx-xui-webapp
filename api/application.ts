@@ -1,4 +1,4 @@
-import * as healthcheck from '@hmcts/nodejs-healthcheck'
+//import * as healthcheck from '@hmcts/nodejs-healthcheck'
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
@@ -20,7 +20,9 @@ import {JUILogger} from './lib/models'
 import * as postCodeLookup from './postCodeLookup'
 import {router as printRouter} from './print/routes'
 import routes from './routes'
+import {router as termsAndCRoutes} from './termsAndConditions/routes'
 import userDetailsRouter from './user'
+import {router as userTandCRoutes} from './userTermsAndConditions/routes'
 
 config.environment = process.env.XUI_ENV || 'local'
 
@@ -81,7 +83,7 @@ if (config.proxy) {
     })
 }
 
-function healthcheckConfig(msUrl) {
+/*function healthcheckConfig(msUrl) {
     return healthcheck.web(`${msUrl}/health`, {
         deadline: 6000,
         timeout: 6000,
@@ -98,7 +100,7 @@ const healthchecks = {
     },
 }
 
-healthcheck.addTo(app, healthchecks)
+healthcheck.addTo(app, healthchecks)*/
 
 app.use('/auth', auth.router)
 
@@ -145,6 +147,8 @@ app.use('/api/healthCheck', healthCheck)
 
 app.use('/aggregated', routes)
 app.use('/data', routes)
+app.use('/api/userTermsAndConditions', userTandCRoutes)
+app.use('/api/termsAndConditions', termsAndCRoutes)
 // separate route for document upload/view
 app.use('/documents', documentRouter)
 app.use('/em-anno', emAnnoRouter)

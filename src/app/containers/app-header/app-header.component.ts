@@ -6,6 +6,7 @@ import {NavItemsModel} from '../../models/nav-item.model';
 import {AppTitleModel} from '../../models/app-title.model';
 import {UserNavModel} from '../../models/user-nav.model';
 import * as fromActions from '../../store';
+import {first} from 'rxjs/operators';
 
 @Component({
   selector: 'exui-app-header',
@@ -14,7 +15,7 @@ import * as fromActions from '../../store';
 export class AppHeaderComponent implements OnInit {
   navItems: NavItemsModel[];
   appHeaderTitle: AppTitleModel;
-  userNav: UserNavModel;
+  userNav: UserNavModel | [] ;
 
   constructor(
     private store: Store<fromActions.State>) {
@@ -22,8 +23,15 @@ export class AppHeaderComponent implements OnInit {
 
   ngOnInit(): void {
     this.appHeaderTitle = AppConstants.APP_HEADER_TITLE;
-    this.navItems = AppConstants.NAV_ITEMS;
-    this.userNav = AppConstants.USER_NAV;
+    this.store.select(fromActions.getRouterUrl)
+      .pipe(first(value => typeof value === 'string' ))
+      .subscribe(val => {
+        // exclude urls from containing navigation
+        const toExclude = val === '/signed-out';
+        this.navItems = toExclude ? [] : AppConstants.NAV_ITEMS;
+        this.userNav = toExclude ? [] : AppConstants.USER_NAV;
+    });
+
   }
 
   onNavigate(event): void {

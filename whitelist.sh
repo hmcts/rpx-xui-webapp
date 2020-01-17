@@ -4,7 +4,7 @@ then
 
 NUMBER=$(echo "$JOB_NAME" |  grep -o -E '[0-9]+')
 
-echo "PR Number $NUMBER" 
+echo "PR Number $NUMBER"
 echo "Will try and whitelist https://xui-webapp-pr-${NUMBER}.service.core-compute-preview.internal/oauth2/callback"
 
 PARAM="{

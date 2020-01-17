@@ -7,9 +7,6 @@ import { environment as config } from '../../../environments/environment';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/map';
-import {AppConfigService} from '../config/configuration.services';
-import { AppUtils } from 'src/app/app-utils';
-import { AppConstants } from 'src/app/app.constants';
 
 @Injectable()
 export class AuthService {
@@ -17,8 +14,7 @@ export class AuthService {
   COOKIE_KEYS;
   user;
   constructor(
-    private cookieService: CookieService,
-    private appConfigService: AppConfigService
+    private cookieService: CookieService
   ) {
     this.COOKIE_KEYS = {
       TOKEN: config.cookies.token,
@@ -45,24 +41,13 @@ export class AuthService {
     return true;
   }
 
-  generateLoginUrl() {
-    const env = AppUtils.getEnvironment(window.location.origin);
-    // const base = this.appConfigService.getRoutesConfig().idam.idamLoginUrl;
-    const base = AppConstants.REDIRECT_URL[env];
-    const clientId = this.appConfigService.getRoutesConfig().idam.idamClientID;
-    const callback = `${this.apiBaseUrl}/${this.appConfigService.getRoutesConfig().idam.oauthCallbackUrl}`;
-    const scope = `profile openid roles manage-user create-user`;
-    return `${base}/login?response_type=code&client_id=${clientId}&redirect_uri=${callback}&scope=${scope}`;
-  }
-
   loginRedirect() {
-    window.location.href = this.generateLoginUrl();
+    window.location.href = '/auth/login';
   }
 
   decodeJwt(jwt) {
     return jwtDecode(jwt);
   }
-
 
   isAuthenticated(): boolean {
     const jwt = this.cookieService.get(this.COOKIE_KEYS.TOKEN);
@@ -77,6 +62,6 @@ export class AuthService {
 
 
   signOut() {
-    window.location.href = '/api/logout';
+    window.location.href = '/auth/logout';
   }
 }

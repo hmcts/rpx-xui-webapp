@@ -1,9 +1,15 @@
+import {HttpErrorResponse} from '@angular/common/http';
 import { TCDocument } from '@hmcts/rpx-xui-common-lib';
 import { Action } from '@ngrx/store';
+import {UserInterface} from '../../models/user.model';
 
 export const APP_LOAD_CONFIG = '[App] Load Config';
 export const APP_LOAD_CONFIG_SUCCESS = '[App] Load Config Success';
 export const APP_LOAD_CONFIG_FAIL = '[App] Load Config Fail';
+
+export const GET_USER_DETAILS = '[User] Get User Details';
+export const GET_USER_DETAILS_SUCCESS = '[User] Get User Details Success';
+export const GET_USER_DETAILS_FAIL = '[User]Get User Details Fail';
 
 export const START_APP_INITIALIZER = '[App] Start App initializer';
 export const FINISH_APP_INITIALIZER = '[App] Finish Start App initializer';
@@ -13,6 +19,7 @@ export const LOGOUT = '[App] Logout';
 export const LOAD_HAS_ACCEPTED_TC = '[T&C] Lad Has Accepted';
 export const LOAD_HAS_ACCEPTED_TC_SUCCESS = '[T&C] Lad Has Accepted Success';
 export const LOAD_HAS_ACCEPTED_TC_FAIL = '[T&C] Lad Has Accepted Fail';
+
 
 export const ACCEPT_T_AND_C = '[T&C] Accept T&C';
 export const ACCEPT_T_AND_C_SUCCESS = '[T&C] Accept T&C Success';
@@ -93,6 +100,43 @@ export class LoadTermsConditionsFail {
   constructor(public payload: any) {}
 }
 
+export const SIGNED_OUT = '[App] Signed Out'; // used by session management
+export const SIGNED_OUT_SUCCESS = '[App] Signed Out Success'; // used by session management
+export const KEEP_ALIVE = '[App] Keep Alive';
+export const SET_MODAL = '[APP] Set Modal';
+
+
+export class GetUserDetails implements Action {
+  readonly type = GET_USER_DETAILS;
+}
+
+export class GetUserDetailsSuccess implements Action {
+  readonly type = GET_USER_DETAILS_SUCCESS;
+  constructor(public payload: UserInterface) {}
+}
+
+export class GetUserDetailsFailure implements Action {
+  readonly type = GET_USER_DETAILS_FAIL;
+  constructor(public payload: HttpErrorResponse) {}
+}
+
+export class SignedOut implements Action {
+  readonly type = SIGNED_OUT;
+}
+
+export class SignedOutSuccess implements Action {
+  readonly type = SIGNED_OUT_SUCCESS;
+}
+
+export class KeepAlive implements Action {
+  readonly type = KEEP_ALIVE;
+}
+
+export class SetModal implements Action {
+  readonly type = SET_MODAL;
+  constructor(public payload: {[id: string]: {isVisible?: boolean; countdown?: string}}) { }
+}
+
 export type AppActions =
   | LoadConfig
   | LoadConfigSuccess
@@ -108,4 +152,10 @@ export type AppActions =
   | AcceptTandCSuccess
   | LoadTermsConditions
   | LoadTermsConditionsFail
-  | LoadTermsConditionsSuccess;
+  | LoadTermsConditionsSuccess
+  | SetModal
+  | SignedOut
+  | KeepAlive
+  | GetUserDetails
+  | GetUserDetailsSuccess
+  | GetUserDetailsFailure;

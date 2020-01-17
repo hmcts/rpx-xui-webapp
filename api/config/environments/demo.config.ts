@@ -7,7 +7,7 @@ export default {
 
   logging: 'debug',
   loginRoleMatcher: 'caseworker',
-  protocol: 'http',
+  protocol: 'https',
   proxy: {
     host: '172.16.0.7',
     port: 8080,

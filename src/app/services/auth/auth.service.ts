@@ -1,18 +1,16 @@
-
-import { Injectable } from '@angular/core';
-import { CookieService } from 'ngx-cookie';
+import {Injectable} from '@angular/core';
 import * as jwtDecode from 'jwt-decode';
-import { environment as config } from '../../../environments/environment';
+import {CookieService} from 'ngx-cookie';
+import {environment as config} from '../../../environments/environment';
 
 import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/share';
 
 @Injectable()
 export class AuthService {
-  apiBaseUrl;
-  COOKIE_KEYS;
-  user;
+  public COOKIE_KEYS;
+  public user;
   constructor(
     private cookieService: CookieService
   ) {
@@ -22,16 +20,10 @@ export class AuthService {
       ROLES: config.cookies.roles,
     };
 
-    this.apiBaseUrl = window.location.protocol + '//' + window.location.hostname;
-
-    if (window.location.port) { // don't add colon if there is no port
-      this.apiBaseUrl +=   ':' + window.location.port;
-    }
-
     this.user = null;
   }
 
-  canActivate() {
+  public canActivate() {
     console.log('reached can activate');
     if (!this.isAuthenticated()) {
       this.loginRedirect();
@@ -41,15 +33,15 @@ export class AuthService {
     return true;
   }
 
-  loginRedirect() {
+  public loginRedirect() {
     window.location.href = '/auth/login';
   }
 
-  decodeJwt(jwt) {
+  public decodeJwt(jwt) {
     return jwtDecode(jwt);
   }
 
-  isAuthenticated(): boolean {
+  public isAuthenticated(): boolean {
     const jwt = this.cookieService.get(this.COOKIE_KEYS.TOKEN);
     if (!jwt) {
       return false;
@@ -61,7 +53,7 @@ export class AuthService {
   }
 
 
-  signOut() {
+  public signOut() {
     window.location.href = '/auth/logout';
   }
 }

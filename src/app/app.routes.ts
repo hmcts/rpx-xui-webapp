@@ -16,7 +16,10 @@ export const ROUTES: Routes = [
   },
   {
     path: 'cases',
-    canActivate: [AuthGuard, AcceptTermsGuard],
+    canActivate: [
+        AuthGuard,
+      // AcceptTermsGuard
+    ],
     loadChildren: '../cases/cases.module#CasesModule'
   },
   // TODO: remove redundant redirections
@@ -47,7 +50,7 @@ export const ROUTES: Routes = [
   {
     path: 'accept-terms-and-conditions',
     component: AcceptTcWrapperComponent,
-    canActivate: [AllowAcceptTermsGuard]
+    // canActivate: [AllowAcceptTermsGuard]
   },
   {
     path: 'accessibility',

@@ -41,11 +41,6 @@ export async function configure(req: any, res: any, next: any) {
         return next()
     }
 
-    // if client is already configured, exit early
-    if (app.locals.client) {
-        return next()
-    }
-
     if (!app.locals.issuer) {
         try {
             app.locals.issuer = await configureIssuer(idamURl)
@@ -68,7 +63,7 @@ export async function configure(req: any, res: any, next: any) {
 
     logger.info('configuring strategy')
 
-    passport.use('oidc', new Strategy({
+    passport.unuse('oidc').use('oidc', new Strategy({
         client: app.locals.client,
         params: {scope: 'profile openid roles manage-user create-user'},
     }, oidcVerify))

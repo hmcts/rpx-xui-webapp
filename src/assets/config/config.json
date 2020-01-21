@@ -9,7 +9,7 @@
     "api_url": "/aggregated",
     "case_data_url": "/data",
     "document_management_url": "/documents",
-    "login_url": "/login",
+    "login_url": "/auth/login",
     "oauth2_client_id": "ccd_gateway",
     "postcode_lookup_url": "/api/addresses?postcode=${postcode}",
     "remote_document_management_url": ".*(\/documents)",
@@ -26,9 +26,9 @@
   },
   "urls": {
     "idam": {
-      "idamApiUrl": "https://idam-api.aat.platform.hmcts.net",
+      "idamApiUrl": "https://idam-api.ithc.platform.hmcts.net",
       "idamClientID": "xuiwebapp",
-      "idamLoginUrl": "https://idam-web-public.aat.platform.hmcts.net",
+      "idamLoginUrl": "https://idam-web-public.ithc.platform.hmcts.net",
       "indexUrl": "/",
       "oauthCallbackUrl": "oauth2/callback"
     }

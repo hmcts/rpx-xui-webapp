@@ -22,9 +22,9 @@ defineSupportCode(function ({ Given, When, Then }) {
 
     const world = this;
     await BrowserWaits.retryForPageLoad(loginPage.signinTitle,function(message){
-      world.attach("Expert UI Url reload attempt : "+message); 
+      world.attach("Expert UI Url reload attempt : "+message);
     });
-     
+
     expect(await loginPage.signinBtn.isDisplayed()).to.be.true;
 
   });
@@ -110,15 +110,15 @@ defineSupportCode(function ({ Given, When, Then }) {
 
   });
 
-  Given('I am logged into Expert UI with valid user details', async function () {
-    await loginPage.givenIAmLoggedIn(this.config.username, this.config.password); 
+  Given('I am logged into Expert UI with valid userDetails details', async function () {
+    await loginPage.givenIAmLoggedIn(this.config.username, this.config.password);
     const world = this;
     await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
       world.attach("Login success page load load attempt : " + message)
     });
   });
 
-  Given('I am logged into Expert UI with valid Case Worker user details', async function () {
+  Given('I am logged into Expert UI with valid Case Worker userDetails details', async function () {
     await loginPage.givenIAmLoggedIn(this.config.caseworkerUser, this.config.caseworkerPassword);
   })
 

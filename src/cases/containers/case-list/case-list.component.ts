@@ -216,7 +216,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
       caseStateGroupFromLS = { id: this.savedQueryParams['case-state'] };
     }
 
-    const metadataFieldsGroupFromLS = ['[CASE_REFERENCE]'];
+    const metadataFieldsGroupFromLS = ['[CASE_REFERENCE]', '[CREATED_DATE]'];
 
     if (formGroupFromLS && jurisdictionFromLS && caseTypeGroupFromLS && metadataFieldsGroupFromLS && caseStateGroupFromLS) {
       return this.createEvent(jurisdictionFromLS, caseTypeGroupFromLS, caseStateGroupFromLS, metadataFieldsGroupFromLS,

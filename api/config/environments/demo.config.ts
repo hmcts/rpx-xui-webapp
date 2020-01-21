@@ -4,9 +4,10 @@ export default {
     ccdDataApi: 'http://ccd-data-store-api-demo.service.core-compute-demo.internal/health',
     documentsApi: 'http://dm-store-demo.service.core-compute-demo.internal/health',
   },
+
   logging: 'debug',
   loginRoleMatcher: 'caseworker',
-  protocol: 'http',
+  protocol: 'https',
   proxy: {
     host: '172.16.0.7',
     port: 8080,

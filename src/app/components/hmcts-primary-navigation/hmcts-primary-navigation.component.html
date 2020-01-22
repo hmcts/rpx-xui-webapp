@@ -1,4 +1,4 @@
-<nav class="hmcts-primary-navigation" [attr.aria-label]="label">
+<nav *ngIf="showItems" class="hmcts-primary-navigation" [attr.aria-label]="label">
   <div class="hmcts-primary-navigation__container">
     <div class="govuk-header__logo" *ngIf="isBrandedHeader"></div>
     <div class="hmcts-primary-navigation__nav">
@@ -10,7 +10,7 @@
         </ul>
       </nav>
     </div>
-    <div class="hmcts-primary-navigation__search">
+    <div class="hmcts-primary-navigation__search" *ngIf="items?.length">
       <a class="hmcts-search-toggle__button" [routerLink]="'/cases/case-search'">Find case</a>
     </div>
   </div>

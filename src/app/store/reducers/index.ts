@@ -17,12 +17,12 @@ export interface RouterStateUrl {
 
 export interface State {
   routerReducer: fromRouter.RouterReducerState<RouterStateUrl>;
-  appConfig: fromApp.AppConfigState;
+  appState: fromApp.AppState;
 }
 
 export const reducers: ActionReducerMap<State> = {
   routerReducer: fromRouter.routerReducer,
-  appConfig: fromApp.reducer
+  appState: fromApp.reducer
 };
 
 export class CustomSerializer
@@ -49,8 +49,8 @@ export const getRouterState = createFeatureSelector<
 
 export const getRouterUrl = createSelector(
   getRouterState,
-  state => state.state.url
+  state => state ? state.state.url : null
 );
 
-export const getAppConfigState = createFeatureSelector<any>( 'appConfig' );
+export const getAppConfigState = createFeatureSelector<any>( 'appState' );
 

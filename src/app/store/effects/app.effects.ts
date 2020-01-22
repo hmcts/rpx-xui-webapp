@@ -1,21 +1,29 @@
 import { Injectable } from '@angular/core';
-import { Store, Action } from '@ngrx/store';
-import { Effect, Actions, ofType } from '@ngrx/effects';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
-import * as fromCore from '../';
-import * as fromActions from '../actions';
-import { AppConfigService } from '../../services/config/configuration.services';
+import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
 import { of } from 'rxjs/internal/observable/of';
-import { Observable } from 'rxjs';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { TermsConditionsService } from 'src/app/services/terms-and-conditions/terms-and-conditions.service';
+import * as fromCore from '../';
+import { AppConfigService } from '../../services/config/configuration.services';
+import * as fromActions from '../actions';
+
+import {HttpErrorResponse} from '@angular/common/http';
+import {UserInterface} from '../../models/user.model';
+import {LogOutKeepAliveService} from '../../services/keep-alive/keep-alive.services';
+import {UserService} from '../../services/user-service/user.service';
 
 @Injectable()
 export class AppEffects {
   constructor(
-    private actions$: Actions,
-    private store: Store<fromCore.State>,
-    private configurationServices: AppConfigService,
-    private authService: AuthService
+    private readonly actions$: Actions,
+    private readonly store: Store<fromCore.State>,
+    private readonly configurationServices: AppConfigService,
+    private readonly authService: AuthService,
+    private readonly termsService: TermsConditionsService,
+    private readonly logOutService: LogOutKeepAliveService,
+    private readonly userService: UserService
   ) { }
 
   @Effect()
@@ -44,6 +52,53 @@ export class AppEffects {
     ofType(fromActions.LOGOUT),
     map(() => {
       this.authService.signOut();
+    })
+  );
+
+  @Effect()
+  loadTermsConditions$ = this.actions$.pipe(
+    ofType(fromActions.LOAD_TERMS_CONDITIONS),
+    switchMap(() => {
+      return this.termsService.getTermsConditions().pipe(
+        map(doc => new fromActions.LoadTermsConditionsSuccess(doc)),
+        catchError(err => of(new fromActions.LoadTermsConditionsFail(err)))
+      );
+    })
+  );
+
+  sigout$ = this.actions$.pipe(
+    ofType(fromActions.SIGNED_OUT),
+    switchMap(() => {
+      return this.logOutService.logOut().pipe(
+        map(() => new fromActions.SignedOutSuccess())
+      );
+    })
+  );
+
+  @Effect()
+  signedOutSuccess$ = this.actions$.pipe(
+    ofType(fromActions.SIGNED_OUT_SUCCESS),
+    map(() => new fromActions.Go({path: ['/signed-out']}))
+  );
+
+  @Effect({ dispatch: false})
+  keepAlive$ = this.actions$.pipe(
+    ofType(fromActions.KEEP_ALIVE),
+    switchMap((date) => {
+      return this.logOutService.heartBeat()
+        ;
+    })
+  );
+
+  @Effect()
+  getUser$ = this.actions$.pipe(
+    ofType(fromActions.GET_USER_DETAILS),
+    switchMap(() => {
+      return this.userService.getUserDetails()
+        .pipe(
+          map((userDetails: UserInterface) => new fromActions.GetUserDetailsSuccess(userDetails)),
+          catchError((error: HttpErrorResponse) => of(new fromActions.GetUserDetailsFailure(error)))
+        );
     })
   );
 }

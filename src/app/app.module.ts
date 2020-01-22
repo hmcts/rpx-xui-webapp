@@ -36,7 +36,9 @@ import { CryptoWrapper } from './services/logger/cryptoWrapper';
 import { JwtDecodeWrapper } from './services/logger/jwtDecodeWrapper';
 import { AbstractAppInsights, AppInsightsWrapper } from './services/logger/appInsightsWrapper';
 import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler';
+import { AcceptTermsService } from './services/acceptTerms/acceptTerms.service';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
 
 @NgModule({
   declarations: [AppComponent],
@@ -58,7 +60,8 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
       level: NgxLoggerLevel.TRACE,
       disableConsoleLogging: false
     }),
-    ExuiCommonLibModule.forRoot()
+    ExuiCommonLibModule.forRoot({launchDarklyKey: ''}),
+    NgIdleKeepaliveModule.forRoot()
   ],
   providers: [
     {
@@ -82,7 +85,8 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
     {
       provide: ErrorHandler,
       useClass: DefaultErrorHandler
-    }
+    },
+    AcceptTermsService
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

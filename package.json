@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "engines": {
     "yarn": "^1.12.3",
-    "npm": "^5.6.0"
+    "npm": "^6.4.0",
+    "node" : "^10.14.0"
   },
   "scripts": {
     "nuke": "rm -rf dist",

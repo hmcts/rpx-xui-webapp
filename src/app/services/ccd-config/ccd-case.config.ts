@@ -109,4 +109,12 @@ export class AppConfig extends AbstractAppConfig {
   public getAnnotationApiUrl(): string {
     return this.config.annotation_api_url;
   }
+
+  public getJurisdictionUiConfigsUrl(): string {
+    return '';
+  }
+
+  public getBannersUrl(): string {
+    return '';
+  }
 }

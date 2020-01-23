@@ -67,6 +67,8 @@ export async function configure(req: any, res: any, next: any) {
     passport.unuse('oidc').use('oidc', new Strategy({
         client: app.locals.client,
         params: {scope: 'profile openid roles manage-user create-user'},
+        sessionKey: 'xui_webapp', // being explicit here so we can set manually on logout
+        usePKCE: false, // issuer doesn't support pkce - no code_challenge_methods_supported
     }, oidcVerify))
 
     next()

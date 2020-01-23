@@ -60,6 +60,10 @@ withPipeline(type, product, component) {
         yarnBuilder.yarn('cache clean')
     }
 
+    before('buildinfra:demo') {
+        sh 'echo "PADDY TEST"'
+    }
+
     if (deployToAatOnly) {
       println("Only Deploy up to AAT!")
       before('buildinfra:prod') {

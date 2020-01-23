@@ -71,7 +71,6 @@ withPipeline(type, product, component) {
 
 
     after('build') {
-        sh 'echo "PADDY TEST"'
         yarnBuilder.yarn('build')
 
         publishHTML([

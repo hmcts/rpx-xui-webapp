@@ -35,9 +35,10 @@ export async function configure(req: any, res: any, next: any) {
 
     const host = req.get('host')
     const fqdn = req.protocol + '://' + host
-
+    //Strip out port number
+    const hostname = ( host.match(/:/g) ) ? host.slice( 0, host.indexOf(":") ) : host
     // we don't want to configure strategy if coming from direct IP address (e.g. could be health endpoint)
-    if (net.isIP(host)) {
+    if (net.isIP(hostname)) {
         return next()
     }
 

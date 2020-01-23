@@ -110,11 +110,8 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.annotation_api_url;
   }
 
-  public getJurisdictionUiConfigsUrl(): string {
-    return '';
+  public getPayBulkScanBaseUrl(): string {
+    return this.config.pay_bulk_scan_url;
   }
 
-  public getBannersUrl(): string {
-    return '';
-  }
 }

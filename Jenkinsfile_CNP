@@ -61,7 +61,7 @@ withPipeline(type, product, component) {
     }
 
     before('buildinfra:demo') {
-        sh 'echo "PADDY TEST"'
+        sh 'npm -v && node -v'
     }
 
     if (deployToAatOnly) {

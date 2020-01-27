@@ -23,8 +23,6 @@ def component = "webapp"
 def channel   = '#xui-pipeline'
 def deployToAatOnly = true  // set to true if only deploy upto AAT, set to false will deploy all the way to production
 
-def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
-
 def secrets = [
   'rpx-${env}': [
     secret('mc-s2s-client-secret', 'S2S_SECRET'),
@@ -69,8 +67,7 @@ withPipeline(type, product, component) {
 
 
     after('build') {
-
-        yarnBuilder.yarn('build')
+        sh 'npm run build'
 
         publishHTML([
             allowMissing         : true,

@@ -12,8 +12,8 @@ export function initApplication(store: Store<fromApp.State>): VoidFunction {
     store.dispatch(new fromApp.StartAppInitilizer());
     store.dispatch(new fromApp.LoadConfig());
     store.pipe(
-      select((state: any) => state.appState), take(2)).subscribe(appState => {
-      if (appState.config.features && Object.keys(appState.config.features).length) {
+      select((state: any) => state.appConfig), take(2)).subscribe(appConfig => {
+      if (appConfig.config.features && Object.keys(appConfig.config.features).length) {
         store.dispatch(new fromApp.FinishAppInitilizer());
         resolve(true);
       }

@@ -5,8 +5,7 @@ import { AllowAcceptTermsGuard } from './guards/allowAcceptTerms.guard';
 import { AuthGuard } from './services/auth/auth.guard';
 import { ServiceDownComponent, CookiePolicyComponent, PrivacyPolicyComponent,
           AccessibilityComponent, MediaViewerWrapperComponent} from './components';
-import { GetHelpComponent } from './components';
-import { SignedOutComponent } from './components';
+import { GetHelpComponent } from './components/get-help/get-help.component';
 
 export const ROUTES: Routes = [
   {
@@ -58,10 +57,6 @@ export const ROUTES: Routes = [
   {
     path: 'get-help',
     component: GetHelpComponent
-  },
-  {
-    path: 'signed-out',
-    component: SignedOutComponent
   },
   {
     path: '**',

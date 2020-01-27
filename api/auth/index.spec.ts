@@ -5,7 +5,7 @@ import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
 import { mockReq, mockRes } from 'sinon-express-mock'
 chai.use(sinonChai)
-/*
+
 import { config } from '../config'
 import * as idam from '../services/idam'
 import { authenticateUser, logout } from './index'
@@ -38,7 +38,7 @@ describe('Auth', () => {
         })
     })
 
-    describe('authenticate userDetails', () => {
+    describe('authenticate user', () => {
         let req
         let res
         let sandbox
@@ -106,4 +106,4 @@ describe('Auth', () => {
             expect(res.redirect).to.be.calledWith(302, '/')
         })
     })
-})*/
+})

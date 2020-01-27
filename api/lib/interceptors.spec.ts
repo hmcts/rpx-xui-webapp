@@ -1,4 +1,4 @@
-  import * as chai from 'chai'
+import * as chai from 'chai'
 import { expect } from 'chai'
 import * as log4js from 'log4js'
 import 'mocha'

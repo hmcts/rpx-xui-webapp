@@ -5,7 +5,7 @@ import {Client, ClientMetadata, Issuer, Strategy, TokenSet, UserinfoResponse} fr
 import * as passport from 'passport'
 import * as process from 'process'
 import {app} from '../application'
-import {config} from '../config'
+import {config} from '../dep-config'
 import {router as keepAlive} from '../keepalive'
 import * as log4jui from '../lib/log4jui'
 import {propsExist} from '../lib/objectUtilities'
@@ -130,7 +130,7 @@ export function authCallbackSuccess(req: any, res: any) {
     res.cookie(cookieToken, userDetails.tokenset.access_token)
     res.cookie('roles', roles)
 
-    // need this so angular knows which enviroment config to use ...
+    // need this so angular knows which enviroment dep-config to use ...
     res.cookie('platform', config.environment)
 
     res.redirect('/')

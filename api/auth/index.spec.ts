@@ -6,7 +6,7 @@ import * as sinonChai from 'sinon-chai'
 import { mockReq, mockRes } from 'sinon-express-mock'
 chai.use(sinonChai)
 /*
-import { config } from '../config'
+import { dep-config } from '../dep-config'
 import * as idam from '../services/idam'
 import { authenticateUser, logout } from './index'
 
@@ -22,7 +22,7 @@ describe('Auth', () => {
 
             const res = mockRes()
             logout(req, res)
-            expect(res.clearCookie).to.be.calledWith(config.cookies.token)
+            expect(res.clearCookie).to.be.calledWith(dep-config.cookies.token)
         })
 
         it('should redirect to index page', () => {
@@ -79,8 +79,8 @@ describe('Auth', () => {
 
             await authenticateUser(req, res, () => { })
             expect(req.session.user).to.be.equals(details)
-            expect(res.cookie).to.be.calledWith(config.cookies.token, accessToken)
-            expect(res.cookie).to.be.calledWith(config.cookies.userId, details.id)
+            expect(res.cookie).to.be.calledWith(dep-config.cookies.token, accessToken)
+            expect(res.cookie).to.be.calledWith(dep-config.cookies.userId, details.id)
             expect(res.redirect).to.be.calledWith('/')
         })
 
@@ -90,8 +90,8 @@ describe('Auth', () => {
             sandbox.stub(idam, 'postOauthToken').resolves({ error: `${accessToken}` })
             await authenticateUser(req, res, () => { })
             expect(req.session.user).not.to.be.equals(details)
-            expect(res.cookie).not.to.be.calledWith(config.cookies.token, accessToken)
-            expect(res.cookie).not.to.be.calledWith(config.cookies.userId, details.id)
+            expect(res.cookie).not.to.be.calledWith(dep-config.cookies.token, accessToken)
+            expect(res.cookie).not.to.be.calledWith(dep-config.cookies.userId, details.id)
             expect(res.redirect).to.be.calledWith('/')
         })
 
@@ -102,7 +102,7 @@ describe('Auth', () => {
             await authenticateUser(req, res, () => { })
 
             expect(req.session.user).not.to.be.equals(details)
-            expect(res.cookie).not.to.be.calledWith(config.cookies.userId, details.id)
+            expect(res.cookie).not.to.be.calledWith(dep-config.cookies.userId, details.id)
             expect(res.redirect).to.be.calledWith(302, '/')
         })
     })

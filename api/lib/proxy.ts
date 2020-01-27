@@ -1,6 +1,6 @@
 import * as express from 'express'
 import * as striptags from 'striptags'
-import { config } from '../config'
+import { config } from '../dep-config'
 import { http } from './http'
 //import * as log4jui from './log4jui'
 import { EnhancedRequest } from './models'

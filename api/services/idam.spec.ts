@@ -11,7 +11,7 @@ import { request } from '../lib/middleware/responseRequest'
 
 import * as idam from './idam'
 
-import { config } from '../config'
+import { config } from '../dep-config'
 
 const idamSecret = process.env.IDAM_SECRET || 'AAAAAAAAAAAAAAAA'
 const idamClient = config.services.idam.idamClientID

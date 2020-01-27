@@ -2,7 +2,7 @@ import {AxiosResponse} from 'axios'
 import * as FormData from 'form-data'
 import {Fields, File, Files} from 'formidable'
 import * as fs from 'fs'
-import { config } from '../config'
+import { config } from '../dep-config'
 import { http } from '../lib/http'
 import * as log4jui from '../lib/log4jui'
 import {JUILogger} from "../lib/models"

@@ -1,5 +1,5 @@
 import * as express from 'express'
-import {config} from '../config'
+import {config} from '../dep-config'
 import {EnhancedRequest} from '../lib/models'
 import {handleDelete, handleGet, handlePost, handlePut} from './emAnnoService'
 import { Annotation, Annotations } from './models'

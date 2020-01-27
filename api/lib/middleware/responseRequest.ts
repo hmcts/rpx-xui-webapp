@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { generate } from 'shortid'
-import { config } from '../../config'
+import { config } from '../../dep-config'
 import { EnhancedRequest } from '../models'
 
 // TODO!!!: remove this entire file.

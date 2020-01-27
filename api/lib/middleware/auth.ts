@@ -7,7 +7,7 @@ import * as serviceTokenMiddleware from './serviceToken'
 const logger = log4jui.getLogger('auth')
 
 export function validRoles(roles) {
-    //return roles.indexOf(config.juiJudgeRole) > -1 || roles.indexOf(config.juiPanelMember) > -1
+    //return roles.indexOf(dep-config.juiJudgeRole) > -1 || roles.indexOf(dep-config.juiPanelMember) > -1
     return true //disabled role restriction for XUI
 }
 

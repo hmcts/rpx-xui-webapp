@@ -1,11 +1,11 @@
-import {config} from '../config'
+import {config} from '../dep-config'
 
 /**
  * getLoginRoleMatcher
  *
  * The role who is able to access this application should have a prefix of 'caseworker'.
  *
- * The matcher is passed in through the config.
+ * The matcher is passed in through the dep-config.
  *
  * @returns {string} - ie. 'caseworker'
  */

@@ -1,7 +1,7 @@
 import axios from 'axios'
 import * as express from 'express'
 import {app} from '../application'
-import {config} from '../config'
+import {config} from '../dep-config'
 
 const cookieToken = config.cookies.token
 

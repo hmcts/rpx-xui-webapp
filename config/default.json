@@ -1,0 +1,12 @@
+{
+  "environment": {
+    "name": "default environment"
+  },
+  "cookies": {
+    "token": "COOKIE_TOKEN",
+    "userId": "COOKIE_USER_ID"
+  },
+  "appInsights": {
+    "instrumentationKey": ""
+  }
+}

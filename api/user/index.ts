@@ -1,5 +1,5 @@
 import * as express from 'express'
-import {config} from '../config'
+import {config} from '../dep-config'
 import * as log4jui from '../lib/log4jui'
 import authInterceptor from '../lib/middleware/auth'
 const logger = log4jui.getLogger('auth')

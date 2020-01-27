@@ -1,4 +1,4 @@
-FROM node:10.14.2-slim
+FROM node:12.13.0-slim
 
 MAINTAINER "HMCTS Team <https://github.com/hmcts>"
 LABEL maintainer = "HMCTS Team <https://github.com/hmcts>"
@@ -16,5 +16,4 @@ RUN yarn install
 COPY . .
 RUN yarn build
 
-EXPOSE 8080
-CMD [ "npm", "start" ]
+EXPOSE 3000

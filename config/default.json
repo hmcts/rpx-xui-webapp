@@ -8,5 +8,9 @@
   },
   "appInsights": {
     "instrumentationKey": ""
-  }
+  },
+  "services": {
+    "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal"
+  },
+  "microservice": "xui_webapp"
 }

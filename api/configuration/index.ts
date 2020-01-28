@@ -1,4 +1,5 @@
 import * as config from 'config'
+import { propsExist } from '../lib/objectUtilities'
 import {DEVELOPMENT, HTTP} from './constants'
 import {ENVIRONMENT, PROTOCOL} from './references'
 
@@ -7,6 +8,8 @@ import {ENVIRONMENT, PROTOCOL} from './references'
  *
  * See Readme for more information on how the configuration file is set.
  * 'Environmental Variables Setup & Error Handling'
+ *
+ * TODO: Not required???? See when you get all the way through the environments.
  *
  * @see Readme
  * @returns {string} ie. - development / preview / aat / ithc, prod
@@ -38,12 +41,26 @@ export const getIdamSecret = () => process.env.IDAM_SECRET
 /**
  * Get S2S Secret
  *
- * The S2S secret is contained within the Azure Key Vault, and not within our .yaml file. All references to process.env
- * are managed from this file therefore we call process.env.S2S_SECRET here.
+ * We're able to pull in the S2S secret into the application using the following:
+ * secretsConfig['secrets']['rpx']['mc-s2s-client-secret']
+ *
+ * The secret always comes from keyVaults.rpx.secrets.mc-s2s-client-secret
+ * @see values.yaml
  *
  * @returns {string}
  */
-export const getS2SSecret = () => process.env.S2S_SECRET
+export const getS2sSecret = (secretsConfig): string => {
+  const ERROR_S2S_SECRET_NOT_FOUND =
+    'secrets.rpx.mc-s2s-client-secret not found on this environment.'
+
+  if (propsExist(secretsConfig, ['secrets', 'rpx', 'mc-s2s-client-secret'])) {
+    // tslint:disable-next-line: no-string-literal
+    return secretsConfig['secrets']['rpx']['mc-s2s-client-secret']
+  } else {
+    console.log(ERROR_S2S_SECRET_NOT_FOUND)
+    return ''
+  }
+}
 
 /**
  * Generate Environment Check Text

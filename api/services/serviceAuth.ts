@@ -1,11 +1,19 @@
+
+// import { config } from '../dep-config'
+import config from 'config'
+import * as secretsConfig from 'config'
 import * as otp from 'otp'
-import { config } from '../dep-config'
+import { getS2sSecret } from '../configuration'
 import { http } from '../lib/http'
 import * as log4jui from '../lib/log4jui'
+import * as propertiesVolume from '@hmcts/properties-volume'
 
-const url = config.services.s2s
-const microservice = config.microservice
-const s2sSecret = process.env.S2S_SECRET || 'AAAAAAAAAAAAAAAA'
+const s2sPath = config.get('services.s2s')
+const microservice = config.get('microservice')
+
+propertiesVolume.addTo(secretsConfig)
+
+const s2sSecret = getS2sSecret(secretsConfig)
 
 const logger = log4jui.getLogger('service auth')
 
@@ -18,7 +26,7 @@ export async function postS2SLease() {
         oneTimePassword
     )
 
-    const request = await http.post(`${url}/lease`, {
+    const request = await http.post(`${s2sPath}/lease`, {
         microservice,
         oneTimePassword,
     })

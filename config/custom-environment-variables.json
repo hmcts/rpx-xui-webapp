@@ -8,5 +8,9 @@
   },
   "appInsights": {
     "instrumentationKey": "APPINSIGHTS_INSTRUMENTATIONKEY"
-  }
+  },
+  "services": {
+    "s2s": "S2S_PATH"
+  },
+  "microservice": "XUI_WEBAPP"
 }

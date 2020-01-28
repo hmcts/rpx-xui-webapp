@@ -4,11 +4,11 @@ import { Observable } from 'rxjs';
 import { ActivityService } from '@hmcts/ccd-case-ui-toolkit';
 
 @Injectable()
-export class ActivityResolver implements Resolve<Boolean> {
+export class ActivityResolver implements Resolve<boolean> {
 
   constructor(private activityService: ActivityService) {}
 
-  resolve(): Observable<Boolean> {
+  resolve(): Observable<boolean> {
     this.activityService.verifyUserIsAuthorized();
     return Observable.of(true);
   }

@@ -3,7 +3,8 @@ import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
 import * as session from 'express-session'
-import * as globalTunnel from 'global-tunnel-ng'
+// import * as globalTunnel from 'global-tunnel-ng'
+import { createGlobalProxyAgent } from 'global-agent'
 import * as passport from 'passport'
 import * as process from 'process'
 import * as sessionFileStore from 'session-file-store'
@@ -76,11 +77,18 @@ app.use((req, res, next) => {
     next()
 })
 
-if (config.proxy) {
-    globalTunnel.initialize({
+// @ts-ignore
+const logger: JUILogger = log4jui.getLogger('Application')
+
+if (config.proxy && config.localEnv === 'local') {
+    const globalProxyAgent = createGlobalProxyAgent()
+    logger.info('configuring global-agent:', config.proxy)
+    globalProxyAgent.HTTP_PROXY = `http://${config.proxy.host}:${config.proxy.port}`
+    globalProxyAgent.NO_PROXY = 'localhost'
+    /*globalTunnel.initialize({
         host: config.proxy.host,
         port: config.proxy.port,
-    })
+    })*/
 }
 
 /*function healthcheckConfig(msUrl) {
@@ -103,9 +111,6 @@ const healthchecks = {
 healthcheck.addTo(app, healthchecks)*/
 
 app.use('/auth', auth.router)
-
-// @ts-ignore
-const logger: JUILogger = log4jui.getLogger('Application')
 
 app.get('/oauth2/callback', (req: any, res, next) => {
     passport.authenticate('oidc', (error, user, info) => {

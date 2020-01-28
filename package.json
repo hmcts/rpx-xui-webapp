@@ -86,6 +86,7 @@
     "express-session": "^1.16.1",
     "form-data": "^2.5.1",
     "formidable": "^1.2.1",
+    "global-agent": "^2.1.7",
     "global-tunnel-ng": "^2.7.1",
     "govuk-frontend": "^3.1.0",
     "govuk_frontend_toolkit": "^8.2.0",

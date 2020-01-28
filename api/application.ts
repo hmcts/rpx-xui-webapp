@@ -98,6 +98,7 @@ app.get('/api/monitoring-tools', (req, res) => {
 
 app.use('/api/healthCheck', healthCheck)
 
+app.use('/activity', routes)
 app.use('/aggregated', routes)
 app.use('/data', routes)
 // separate route for document upload/view

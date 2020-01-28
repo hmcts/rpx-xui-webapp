@@ -40,6 +40,7 @@ import * as fromComponents from './components';
 import * as fromServices from './services';
 import {ProvidersModule} from '../app/providers/providers.module';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
+import { ActivityResolver } from './resolvers/activity.resolver';
 
 @NgModule({
   imports: [
@@ -76,7 +77,8 @@ import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-tr
     },
     ScrollToService,
     ...fromServices.services,
-    CreateCaseEventTriggerResolver
+    CreateCaseEventTriggerResolver,
+    ActivityResolver
   ]
 })
 /**

@@ -1,7 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
-const WebpackShellPlugin = require('webpack-shell-plugin');
 
 const {
     NODE_ENV = 'production',
@@ -17,10 +16,7 @@ module.exports = {
     },
     watch: NODE_ENV === 'development',
     plugins: [
-        new webpack.DefinePlugin({ "global.GENTLY": false }),
-        new WebpackShellPlugin({
-            onBuildEnd: ['yarn run:dev']
-        })
+        new webpack.DefinePlugin({ "global.GENTLY": false })
     ],
     output: {
         path: path.resolve(__dirname, '../dist/rpx-exui/api'),

@@ -9,7 +9,7 @@
     "build": "yarn build:prod && yarn build:node",
     "pre-push": "yarn lint && yarn build:prod && ng test --code-coverage",
     "start": "node ./dist/rpx-exui/api/server.bundle.js",
-    "build:node": "cd api && webpack --config ./webpack-node.config.js",
+    "build:node": "cd api && yarn build",
     "build:prod": "ng build --prod",
     "start:node": "cd api && yarn start:dev",
     "lint:node": "cd api && yarn lint",
@@ -156,7 +156,6 @@
     "typescript": "~3.2.2",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10",
-    "webpack-node-externals": "^1.7.2",
-    "webpack-shell-plugin": "^0.5.0"
+    "webpack-node-externals": "^1.7.2"
   }
 }

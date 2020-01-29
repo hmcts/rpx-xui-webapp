@@ -150,6 +150,7 @@ app.get('/api/monitoring-tools', (req, res) => {
 app.use('/api/user', userDetailsRouter)
 app.use('/api/healthCheck', healthCheck)
 
+app.use('/activity', routes)
 app.use('/aggregated', routes)
 app.use('/data', routes)
 app.use('/api/userTermsAndConditions', userTandCRoutes)

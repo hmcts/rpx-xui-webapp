@@ -8,6 +8,8 @@
         "coverage": "npx nyc mocha",
         "lint": "npx tslint --project .",
         "watch": "nodemon --watch '**/*.ts' --exec ts-node local.ts",
+        "run:dev": "NODE_ENV=development nodemon ../dist/rpx-exui/api/server.bundle.js",
+        "start:dev": "NODE_ENV=development webpack --config ./webpack-node.config.js",
         "test": "mocha || true",
         "test:watch": "mocha --watch --recursive --watch-extensions ts",
         "start": "cd ../dist/jui-backend && node server.js"

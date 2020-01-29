@@ -3,8 +3,8 @@ import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
 import * as session from 'express-session'
-import * as globalTunnel from 'global-tunnel-ng'
 import * as sessionFileStore from 'session-file-store'
+import * as tunnel from './lib/tunnel'
 import * as auth from './auth'
 import {config} from './config'
 import {router as documentRouter} from './documents/routes'
@@ -61,12 +61,7 @@ app.use((req, res, next) => {
     next()
 })
 
-if (config.proxy) {
-    globalTunnel.initialize({
-        host: config.proxy.host,
-        port: config.proxy.port,
-    })
-}
+tunnel.init()
 
 /*function healthcheckConfig(msUrl) {
     return healthcheck.web(`${msUrl}/health`, {

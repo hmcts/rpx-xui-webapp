@@ -23,6 +23,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     When('I click search Reset in case list page', async function () {
         await caseListPage.clickSearchResetBtn();
+        await caseListPage.waitForNoCaseResultsToDisplay();
     });
 
     Then('I wait to see case results displayed', async function(){

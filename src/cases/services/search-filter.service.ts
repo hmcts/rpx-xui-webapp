@@ -3,7 +3,6 @@ import { SearchService, AbstractAppConfig, HttpService, RequestOptionsBuilder } 
 import { Observable } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { isStringOrNumber, getFilterType, sanitiseMetadataFieldName } from '../utils/utils';
-import * as fromRoot from '../../app/store';
 import { Store } from '@ngrx/store';
 import * as fromCaseList from '../store/reducers';
 
@@ -15,7 +14,6 @@ export class SearchFilterService {
     private appConfig: AbstractAppConfig,
     private httpService: HttpService,
     private requestOptionsBuilder: RequestOptionsBuilder,
-    private store: Store<fromCaseList.State>,
   ) { }
 
   metadataFields: string[];
@@ -91,13 +89,6 @@ export class SearchFilterService {
     delete metadataFilters.page;
     const options = this.requestOptionsBuilder.buildOptions(metadataFilters, caseFilters);
     return this.httpService.get(url, options) as any;
-  }
-
-
-  public redirectToCase(evt) {
-    this.store.dispatch(new fromRoot.Go({
-      path: ['/cases/case-details/' + evt.caseId],
-    }));
   }
 
 }

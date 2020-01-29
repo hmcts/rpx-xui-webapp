@@ -12,10 +12,14 @@ import {viewerRouting as caseViewRouting, editorRouting, CaseResolver} from '@hm
 import {CaseDetailsComponent} from './containers/case-details/case-details.component';
 import { HealthCheckGuard } from 'src/app/shared/guards/health-check.guard';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
+import { ActivityResolver } from './resolvers/activity.resolver';
 
 export const ROUTES: Routes = [
     {
       path: '',
+      resolve: {
+        activity: ActivityResolver,
+      },
       component: CaseHomeComponent,
       children: [
         {

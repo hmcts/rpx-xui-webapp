@@ -4,6 +4,7 @@ import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { HttpClientModule } from '@angular/common/http';
 import { MatDialogModule } from '@angular/material';
+import { ActivityResolver } from './resolvers/activity.resolver';
 
 import {
   CaseUIToolkitModule,
@@ -76,7 +77,8 @@ import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-tr
     },
     ScrollToService,
     ...fromServices.services,
-    CreateCaseEventTriggerResolver
+    CreateCaseEventTriggerResolver,
+    ActivityResolver
   ]
 })
 /**

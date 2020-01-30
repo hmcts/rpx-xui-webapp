@@ -1,7 +1,7 @@
 //import * as healthcheck from '@hmcts/nodejs-healthcheck'
+import * as express from 'express'
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
-import * as express from 'express'
 import * as session from 'express-session'
 // import * as globalTunnel from 'global-tunnel-ng'
 import { createGlobalProxyAgent } from 'global-agent'

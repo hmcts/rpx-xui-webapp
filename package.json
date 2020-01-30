@@ -76,6 +76,7 @@
     "applicationinsights": "^1.7.0",
     "applicationinsights-js": "^1.0.20",
     "axios": "^0.18.0",
+    "body-parser": "^1.19.0",
     "class-transformer": "^0.1.10",
     "classlist.js": "^1.1.20150312",
     "cookie-parser": "^1.4.4",

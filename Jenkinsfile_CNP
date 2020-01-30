@@ -47,6 +47,8 @@ withPipeline(type, product, component) {
     loadVaultSecrets(secrets)
     enableDockerBuild()
     installCharts()
+    enableSecurityScan()
+    env.TEST_URL = 'https://xui-webapp-aat.service.core-compute-aat.internal'
 
 // Disable pact testing on pipeline
 //

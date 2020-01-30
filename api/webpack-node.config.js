@@ -14,7 +14,6 @@ module.exports = {
         __dirname: false,
         __filename: false,
     },
-    watch: NODE_ENV === 'development',
     plugins: [
         new webpack.DefinePlugin({ "global.GENTLY": false })
     ],

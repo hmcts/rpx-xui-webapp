@@ -2,6 +2,9 @@ const chai            = require('chai');
 const chaiAsPromised  = require('chai-as-promised');
 const minimist        = require('minimist');
 
+var screenShotUtils = require("protractor-screenshot-utils").ProtractorScreenShotUtils;
+
+
 chai.use(chaiAsPromised);
 
 const argv = minimist(process.argv.slice(2));
@@ -18,9 +21,10 @@ const jenkinsConfig = [
 
 const localConfig = [
   {
+
     browserName: 'chrome',
     acceptInsecureCerts: true,
-    chromeOptions: { args: [ '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote '] },
+    chromeOptions: { args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote '] },
     proxy: {
       proxyType: 'manual',
       httpProxy: 'proxyout.reform.hmcts.net:8080',
@@ -62,13 +66,17 @@ const config = {
     global.expect = chai.expect;
     global.assert = chai.assert;
     global.should = chai.should;
+
+    global.screenShotUtils = new screenShotUtils({
+      browserInstance: browser
+    });
   },
 
   cucumberOpts: {
     strict: true,
     // format: ['node_modules/cucumber-pretty'],
     format: ['node_modules/cucumber-pretty', 'json:reports/tests/json/results.json'],
-    tags: ['@all','not @ignore'],
+    tags: ['@smoke','not @ignore'],
     require: [
       '../support/timeout.js',
       '../support/hooks.js',

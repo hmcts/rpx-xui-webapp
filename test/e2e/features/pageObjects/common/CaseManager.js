@@ -134,6 +134,8 @@ class CaseManager {
             continieElement.getWebElement())
 
         await BrowserWaits.waitForElement(continieElement);
+        await BrowserWaits.waitForElementClickable(continieElement);
+
         var thisPageUrl = await browser.getCurrentUrl();
         console.log("Submitting : " + thisPageUrl )
         await continieElement.click();

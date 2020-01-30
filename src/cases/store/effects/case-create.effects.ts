@@ -39,6 +39,16 @@ export class CaseCreateEffects {
   );
 
   @Effect()
+  cancel$ = this.actions$.pipe(
+    ofType(fromActions.CREATE_CASE_RESET),
+    map(() => {
+        return new fromRoot.Go({
+          path: [`/cases`]
+        });
+    })
+  );
+
+  @Effect()
   applyCreatedCaseLoaded$ = this.actions$.pipe(
     ofType(fromActions.CREATED_CASE_LOADED),
     map((payload: any) => {

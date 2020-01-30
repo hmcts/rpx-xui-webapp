@@ -8,7 +8,7 @@
     "nuke": "rm -rf dist",
     "build": "yarn build:prod && yarn build:node",
     "pre-push": "yarn lint && yarn build:prod && ng test --code-coverage",
-    "start": "node -v && npm -v && node ./dist/rpx-exui/api/server.js",
+    "start": "node ./dist/rpx-exui/api/server.js",
     "build:node": "cd api && yarn build",
     "build:prod": "ng build --prod",
     "start:node": "cd api && yarn watch",

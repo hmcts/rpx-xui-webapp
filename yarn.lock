@@ -384,7 +384,7 @@
   resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.34-alpha.tgz#0d39b6d06c632ccb7c578fc91e3311306da9db0d"
   integrity sha512-+q3IB4L3UHsD5cs/11PDWEftDAmDV6eYkxm9eoNtXAfea93VhXNFA9ZEIV+TM7v/9xaAIkmDj9C4kCSUb1Hl3g==
 
-"@hmcts/media-viewer@^1.1.13":
+"@hmcts/media-viewer@^1.1.14":
   version "1.1.14"
   resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-1.1.14.tgz#9af5d1104f82d94e75e2451d4d42bc33eab49bff"
   integrity sha512-YqSPY5edW5ulBDCIfhLxuLMUbLqkl85HTC1UF7g8muPrE28TBv5f882JJDKuBPZtxgx8MRMlmjYSyyNUrAbDcw==

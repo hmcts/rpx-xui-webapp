@@ -3,7 +3,6 @@ import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
 import * as session from 'express-session'
-import * as globalTunnel from 'global-tunnel-ng'
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
 import {config} from './config'
@@ -14,6 +13,7 @@ import {errorStack} from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
 import authInterceptor from './lib/middleware/auth'
 import {JUILogger} from './lib/models'
+import * as tunnel from './lib/tunnel'
 import * as postCodeLookup from './postCodeLookup'
 import {router as printRouter} from './print/routes'
 import routes from './routes'
@@ -61,12 +61,7 @@ app.use((req, res, next) => {
     next()
 })
 
-if (config.proxy) {
-    globalTunnel.initialize({
-        host: config.proxy.host,
-        port: config.proxy.port,
-    })
-}
+tunnel.init()
 
 /*function healthcheckConfig(msUrl) {
     return healthcheck.web(`${msUrl}/health`, {

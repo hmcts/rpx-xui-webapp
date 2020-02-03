@@ -39,6 +39,8 @@ module "app" {
         IDAM_SECRET = "${data.azurerm_key_vault_secret.oauth2_secret.value}"
         NODE_TLS_REJECT_UNAUTHORIZED = "${var.node_tls_reject_unauthorized}"
 
+        WEBSITE_NODE_DEFAULT_VERSION  = "12.13.0"
+
     }
 }
 

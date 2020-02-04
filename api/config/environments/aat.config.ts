@@ -18,10 +18,11 @@ export default {
         },
         em_anno_api: 'http://em-anno-aat.service.core-compute-aat.internal',
         idam: {
-            idamApiUrl: 'https://idam-api.aat.platform.hmcts.net',
+            idamApiUrl: 'https://idam-api.ithc.platform.hmcts.net',
             idamClientID: 'xuiwebapp',
-            idamLoginUrl: 'https://idam-web-public.aat.platform.hmcts.net',
+            idamLoginUrl: 'https://idam-web-public.ithc.platform.hmcts.net',
             indexUrl: '/',
+            iss: 'https://forgerock-am.service.core-compute-idam-aat.internal:8443/openam/oauth2/hmcts',
             oauthCallbackUrl: 'oauth2/callback',
         },
         s2s: 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal',

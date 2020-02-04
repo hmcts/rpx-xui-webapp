@@ -42,6 +42,11 @@ export async function configure(req: any, res: any, next: any) {
         return next()
     }
 
+    // if client is already configured, exit early
+    if (app.locals.client) {
+        return next()
+    }
+
     if (!app.locals.issuer) {
         try {
             app.locals.issuer = await configureIssuer(idamURl)

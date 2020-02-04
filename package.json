@@ -8,10 +8,10 @@
     "nuke": "rm -rf dist",
     "build": "yarn build:prod && yarn build:node",
     "pre-push": "yarn lint && yarn build:prod && ng test --code-coverage",
-    "start": "node ./dist/rpx-exui/api/server.js",
+    "start": "node ./dist/rpx-exui/api/server.bundle.js",
     "build:node": "cd api && yarn build",
     "build:prod": "ng build --prod",
-    "start:node": "cd api && yarn watch",
+    "start:node": "cd api && yarn start:dev",
     "lint:node": "cd api && yarn lint",
     "test:node": "cd api && yarn test",
     "coverage:node": "cd api && yarn coverage",
@@ -151,7 +151,7 @@
     "karma-jasmine": "~1.1.2",
     "karma-jasmine-html-reporter": "^0.2.2",
     "ngrx-store-freeze": "^0.2.4",
-    "nodemon": "^1.19.0",
+    "nodemon": "^2.0.2",
     "protractor": "^5.4.3",
     "protractor-cucumber-framework": "6.1.1",
     "protractor-multiple-cucumber-html-reporter-plugin": "1.8.0",
@@ -159,8 +159,12 @@
     "sinon-chai": "^3.4.0",
     "sinon-express-mock": "^2.2.0",
     "sonar-scanner": "^3.1.0",
+    "ts-loader": "^6.2.1",
     "ts-node": "~7.0.0",
     "tslint": "~5.11.0",
-    "typescript": "~3.2.2"
+    "typescript": "~3.2.2",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10",
+    "webpack-node-externals": "^1.7.2"
   }
 }

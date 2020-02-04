@@ -3,8 +3,6 @@ import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
 import * as session from 'express-session'
-// import * as globalTunnel from 'global-tunnel-ng'
-import { createGlobalProxyAgent } from 'global-agent'
 import * as passport from 'passport'
 import * as process from 'process'
 import * as sessionFileStore from 'session-file-store'
@@ -18,6 +16,7 @@ import * as log4jui from './lib/log4jui'
 import authInterceptor from './lib/middleware/auth'
 import errorHandler from './lib/middleware/error.handler'
 import {JUILogger} from './lib/models'
+import * as tunnel from './lib/tunnel'
 import * as postCodeLookup from './postCodeLookup'
 import {router as printRouter} from './print/routes'
 import routes from './routes'
@@ -77,19 +76,7 @@ app.use((req, res, next) => {
     next()
 })
 
-// @ts-ignore
-const logger: JUILogger = log4jui.getLogger('Application')
-
-if (config.proxy && config.localEnv === 'local') {
-    const globalProxyAgent = createGlobalProxyAgent()
-    logger.info('configuring global-agent:', config.proxy)
-    globalProxyAgent.HTTP_PROXY = `http://${config.proxy.host}:${config.proxy.port}`
-    globalProxyAgent.NO_PROXY = 'localhost'
-    /*globalTunnel.initialize({
-        host: config.proxy.host,
-        port: config.proxy.port,
-    })*/
-}
+tunnel.init()
 
 /*function healthcheckConfig(msUrl) {
     return healthcheck.web(`${msUrl}/health`, {
@@ -164,4 +151,6 @@ app.use('/print', printRouter)
 // custom error handlers need to be used last
 app.use(errorHandler)
 
+// @ts-ignore
+const logger: JUILogger = log4jui.getLogger('Application')
 logger.info(`Started up on ${config.environment || 'local'} using ${config.protocol}`)

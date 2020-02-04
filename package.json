@@ -11,7 +11,7 @@
     "start": "node ./dist/rpx-exui/api/server.bundle.js",
     "build:node": "cd api && yarn build",
     "build:prod": "ng build --prod",
-    "start:node": "cd api && yarn start:dev",
+    "start:node": "cd api && yarn watch",
     "lint:node": "cd api && yarn lint",
     "test:node": "cd api && yarn test",
     "coverage:node": "cd api && yarn coverage",

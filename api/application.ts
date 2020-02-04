@@ -5,7 +5,7 @@ import * as express from 'express'
 import * as session from 'express-session'
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
-import {config} from './config'
+// import {config} from './z'
 import {router as documentRouter} from './documents/routes'
 import {router as emAnnoRouter} from './emAnno/routes'
 import healthCheck from './healthCheck'
@@ -20,7 +20,8 @@ import routes from './routes'
 import {router as termsAndCRoutes} from './termsAndConditions/routes'
 import {router as userTandCRoutes} from './userTermsAndConditions/routes'
 
-config.environment = process.env.XUI_ENV || 'local'
+// TODO: Check if this is being used
+// config.environment = process.env.XUI_ENV || 'local'
 
 export const app = express()
 app.disable('x-powered-by')
@@ -34,12 +35,12 @@ app.use(
         cookie: {
             httpOnly: true,
             maxAge: 1800000,
-            secure: config.secureCookie !== false,
+            secure: false // TODO: Refactor config.secureCookie !== false,
         },
         name: 'xui-webapp', // keep as string
         resave: true,
         saveUninitialized: true,
-        secret: config.sessionSecret,
+        secret: false, // TODO: Refactor config.sessionSecret,
         // TODO: remove this and use values from cookie token instead
         store: new FileStore({
             path: process.env.NOW ? '/tmp/sessions' : '.sessions',
@@ -55,7 +56,7 @@ app.use(bodyParser.urlencoded({extended: true}))
 
 // TODO: remove this when we have proper frontend configuration
 app.use((req, res, next) => {
-    // Set cookie for angular to know which config to use
+    // Set cookie for angular to know which z.config to use
     const platform = process.env.XUI_ENV || 'local'
     res.cookie('platform', platform)
     next()
@@ -72,11 +73,11 @@ tunnel.init()
 
 const healthchecks = {
     checks: {
-        ccdDataApi: healthcheckConfig(config.services.ccd.dataApi),
-        ccdDefApi: healthcheckConfig(config.services.ccd.componentApi),
-        dmStoreApi: healthcheckConfig(config.services.documents.api),
-        idamApi: healthcheckConfig(config.services.idam.idamApiUrl),
-        s2s: healthcheckConfig(config.services.s2s),
+        ccdDataApi: healthcheckConfig(z.config.services.ccd.dataApi),
+        ccdDefApi: healthcheckConfig(z.config.services.ccd.componentApi),
+        dmStoreApi: healthcheckConfig(z.config.services.documents.api),
+        idamApi: healthcheckConfig(z.config.services.idam.idamApiUrl),
+        s2s: healthcheckConfig(z.config.services.s2s),
     },
 }
 
@@ -90,7 +91,9 @@ app.get('/api/logout', (req, res) => {
 app.get('/api/addresses', authInterceptor, postCodeLookup.doLookup)
 
 app.get('/api/monitoring-tools', (req, res) => {
-    res.send({key: config.appInsightsInstrumentationKey})
+    // TODO: Refactor key
+    // res.send({key: config.appInsightsInstrumentationKey})
+    res.send({key: ''})
 })
 
 app.use('/api/healthCheck', healthCheck)
@@ -107,4 +110,6 @@ app.use('/print', printRouter)
 
 // @ts-ignore
 const logger: JUILogger = log4jui.getLogger('Application')
-logger.info(`Started up on ${config.environment || 'local'} using ${config.protocol}`)
+// TODO: Refactor to not use config, or use it?
+// logger.info(`Started up on ${config.environment || 'local'} using ${config.protocol}`)
+logger.info(`Started up on somewhere`)

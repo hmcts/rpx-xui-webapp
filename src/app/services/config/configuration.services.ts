@@ -9,7 +9,7 @@ import {catchError, take} from 'rxjs/operators';
 import {throwError} from 'rxjs';
 
 /**
- *  Configuration Services responsible for fetching initial config data needed for app to run
+ *  Configuration Services responsible for fetching initial z.config data needed for app to run
  *  It also provides instance of environment or other data
  */
 @Injectable()
@@ -36,19 +36,19 @@ export class AppConfigService {
     });
   }
   /**
-   * Returning features config
+   * Returning features z.config
    */
   getFeatureToggle() {
     return this.configuration.features;
   }
   /**
-   * Returning caseEditorConfig config
+   * Returning caseEditorConfig z.config
    */
   getEditorConfiguration() {
     return this.configuration.caseEditorConfig;
   }
   /**
-   * Returning urls config
+   * Returning urls z.config
    */
   getRoutesConfig() {
     return this.configuration.urls;

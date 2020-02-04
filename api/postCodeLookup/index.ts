@@ -1,5 +1,5 @@
 import * as express from 'express'
-import { config } from '../config'
+import { config } from '../z'
 import { http } from '../lib/http'
 
 export async function doLookup(req: express.Request, res: express.Response) {

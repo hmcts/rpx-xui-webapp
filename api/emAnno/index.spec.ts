@@ -4,7 +4,7 @@ import 'mocha'
 import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
 import { mockReq, mockRes } from 'sinon-express-mock'
-import { config } from '../config'
+import { config } from '../z'
 import * as emAnnoService from './emAnnoService'
 import { deleteAnnotations, getAnnotations, postAnnotations, putAnnotations } from './index'
 

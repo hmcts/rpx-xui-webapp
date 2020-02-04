@@ -1,6 +1,6 @@
 import * as applicationinsights from 'applicationinsights'
 import * as express from 'express'
-import { config } from '../config'
+import {getConfigValue} from '../configuration'
 
 export let client
 
@@ -9,7 +9,7 @@ const environment = process.env.XUI_ENV || 'local'
 
 if (environment !== 'local') {
     applicationinsights
-        .setup(config.appInsightsInstrumentationKey)
+        .setup(getConfigValue('appInsightsInstrumentationKey'))
         .setAutoDependencyCorrelation(true)
         .setAutoCollectRequests(true)
         .setAutoCollectPerformance(true)

@@ -1,6 +1,6 @@
 import * as express from 'express'
-import { config } from '../config'
-import { application } from '../config/application.config'
+import { config } from '../z'
+import { application } from '../z.config/application.config'
 import { http } from '../lib/http'
 import { getTermsAndConditionsUrl } from './termsAndConditionsUtil'
 

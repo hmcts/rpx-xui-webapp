@@ -1,4 +1,4 @@
-import { config } from '../config'
+import { config } from '../z'
 import { http } from '../lib/http'
 import { isReqResSet, request } from '../lib/middleware/responseRequest'
 import { valueOrNull } from '../lib/util'

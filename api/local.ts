@@ -1,5 +1,5 @@
 import { app } from './application'
-import { config } from 'config'
+import config from 'config'
 import * as secretsConfig from 'config'
 import {
   hasConfigValue, getPostgresSecret,

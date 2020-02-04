@@ -1,5 +1,5 @@
 import { createGlobalProxyAgent } from 'global-agent'
-import {config} from '../config'
+import {config} from '../z'
 
 export function init(): void {
     if (config.proxy && config.localEnv === 'local') {

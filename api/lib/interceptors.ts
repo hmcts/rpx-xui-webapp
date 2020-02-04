@@ -1,6 +1,6 @@
 import * as exceptionFormatter from 'exception-formatter'
 import * as stringify from 'json-stringify-safe'
-import { config } from '../config'
+import { config } from '../z'
 import * as errorStack from '../lib/errorStack'
 import { shorten, valueOrNull } from '../lib/util'
 import * as log4jui from './log4jui'

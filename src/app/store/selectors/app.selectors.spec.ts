@@ -71,7 +71,7 @@ describe('App Selectors', () => {
   });
 
   describe('Configuration State', () => {
-    it('should return config initial state', () => {
+    it('should return z.config initial state', () => {
       let result;
 
       store

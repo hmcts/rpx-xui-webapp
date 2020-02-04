@@ -1,6 +1,6 @@
 import * as express from 'express'
 import * as striptags from 'striptags'
-import { config } from '../config'
+import { config } from '../z'
 import { http } from '../lib/http'
 import { setHeaders } from '../lib/proxy'
 

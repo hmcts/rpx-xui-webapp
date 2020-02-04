@@ -6,7 +6,7 @@ import * as sinonChai from 'sinon-chai'
 import { mockReq, mockRes } from 'sinon-express-mock'
 chai.use(sinonChai)
 
-import { config } from '../config'
+import { config } from '../z'
 import * as idam from '../services/idam'
 import { authenticateUser, logout } from './index'
 

@@ -1,12 +1,12 @@
 import * as express from 'express'
-import {config} from '../config'
+import {config} from '../z'
 import {EnhancedRequest} from '../lib/models'
 import {getCcdPrintout} from './printService'
 
 /**
  * getPrintout
  *
- * Note that within the config.json file the 'print_service_url' property is set as '/print'.
+ * Note that within the z.config.json file the 'print_service_url' property is set as '/print'.
  *
  * The Case Viewer CCD Component uses the 'print_service_url' property in conjunction with 'remote_print_service_url'.
  *

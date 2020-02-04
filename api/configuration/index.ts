@@ -1,4 +1,4 @@
-import { config } from 'config'
+import config from 'config'
 import { propsExist } from '../lib/objectUtilities'
 
 /**
@@ -11,6 +11,18 @@ import { propsExist } from '../lib/objectUtilities'
  * @returns {string} ie. - development / preview / aat / ithc, prod
  */
 export const getEnvironment = () => process.env.NODE_CONFIG_ENV;
+
+/**
+ * Get Configuration Value
+ *
+ * Returns the configuration value, using a config reference. It uses the reference to pull out the value
+ * from the .yaml file
+ *
+ * @see /config .yaml
+ * @see references.ts
+ * @param reference - ie. 'services.ccdDefApi'
+ */
+export const getConfigValue = reference => config.get(reference)
 
 /**
  * Get Postgres Secret
@@ -60,7 +72,7 @@ export const getAppInsightsSecret = (secretsConfig): string => {
 /**
  * Has Config Value
  *
- * Returns if the configuration value is available, using a config reference. It uses the reference to pull out the value
+ * Returns if the configuration value is available, using a z.config reference. It uses the reference to pull out the value
  * from the .yaml file
  *
  * Note: If within a .yaml file you have
@@ -71,13 +83,13 @@ export const getAppInsightsSecret = (secretsConfig): string => {
  * If POSTGRES_DB_NAME is unable to be pulled from the JenkinsFile_CNP,
  * then .yaml will return a string of 'POSTGRES_DB_NAME'
  *
- * This means that config.has('database.name') will always return true
+ * This means that z.config.has('database.name') will always return true
  * as 'database.name'.
  *
- * This also means that config.get('database.name') will return 'POSTGRES_DB_NAME' and not
+ * This also means that z.config.get('database.name') will return 'POSTGRES_DB_NAME' and not
  * undefined.
  *
- * We return null if the value config.get receives has not been overridden.
+ * We return null if the value z.config.get receives has not been overridden.
  *
  * @see /config .yaml
  * @see references.ts

@@ -1,7 +1,7 @@
 import axios from 'axios'
 import * as jwtDecode from 'jwt-decode'
 import * as auth from '../../auth'
-import { config } from '../../config'
+import { config } from '../../z'
 import * as log4jui from '../../lib/log4jui'
 import { getDetails } from '../../services/idam'
 import { asyncReturnOrError } from '../util'
@@ -11,7 +11,7 @@ const logger = log4jui.getLogger('auth')
 const idamURl = config.services.idam.idamApiUrl
 
 export function validRoles(roles) {
-    //return roles.indexOf(config.juiJudgeRole) > -1 || roles.indexOf(config.juiPanelMember) > -1
+    //return roles.indexOf(z.config.juiJudgeRole) > -1 || roles.indexOf(z.config.juiPanelMember) > -1
     return true //disabled role restriction for XUI
 }
 

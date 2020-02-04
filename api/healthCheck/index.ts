@@ -1,5 +1,5 @@
 import * as express from 'express'
-import { config } from '../config'
+import { config } from '../z'
 import { http } from '../lib/http'
 import * as log4jui from '../lib/log4jui'
 

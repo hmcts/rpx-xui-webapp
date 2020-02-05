@@ -125,17 +125,4 @@ describe('AuthService', () => {
 
   });
 
-  describe('generateLoginUrl', () => {
-    it('should generate url', inject([AuthService], (service: AuthService) => {
-      spyOn(AppUtils, 'getEnvironment').and.returnValue('dummy');
-      AppConstants.REDIRECT_URL = AppConstantsMock.REDIRECT_URL;
-      const base = 'dummy';
-      const clientId = 'dummy';
-      const callback = `${service.apiBaseUrl}/dummy`;
-      const scope = `profile openid roles manage-user create-user`;
-      const loginUrl = `${base}/login?response_type=code&client_id=${clientId}&redirect_uri=${callback}&scope=${scope}`;
-      expect(service.generateLoginUrl()).toEqual(loginUrl);
-    }));
-  });
-
 });

@@ -38,6 +38,7 @@ module "app" {
         S2S_SECRET = "${data.azurerm_key_vault_secret.s2s_secret.value}"
         IDAM_SECRET = "${data.azurerm_key_vault_secret.oauth2_secret.value}"
         NODE_TLS_REJECT_UNAUTHORIZED = "${var.node_tls_reject_unauthorized}"
+        APP_URL = "https://xui-webapp-${var.env}.service.core-compute-${var.env}.internal"
 
         WEBSITE_NODE_DEFAULT_VERSION  = "12.13.0"
 

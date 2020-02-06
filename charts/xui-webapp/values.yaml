@@ -11,6 +11,7 @@ nodejs:
     XUI_ENV: preview
     S2S_SECRET: ${S2S_SECRET}
     IDAM_SECRET: ${IDAM_SECRET}
+    APP_URL: ${SERVICE_FQDN}
   keyVaults:
     rpx:
       resourceGroup: rpx

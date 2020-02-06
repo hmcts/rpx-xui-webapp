@@ -81,7 +81,7 @@ export async function configure(req: any, res: any, next: any) {
     // passport.use('s2s', new BearerStrategy())
 }
 
-export async function doLogout(req, res, status = 302) {
+export async function doLogout(req: express.Request, res: express.Response, status = 302) {
 
     // TODO: we may need to revoke tokens by doing a call to OP
 

@@ -1,6 +1,5 @@
 import axios from 'axios'
 import * as express from 'express'
-import * as net from 'net'
 import {Client, ClientMetadata, Issuer, Strategy, TokenSet, UserinfoResponse} from 'openid-client'
 import * as passport from 'passport'
 import * as process from 'process'
@@ -33,20 +32,6 @@ export async function configureIssuer(url: string) {
 
 export async function configure(req: any, res: any, next: any) {
 
-    const host = req.get('host')
-    const fqdn = req.protocol + '://' + host
-    //Strip out port number
-    const hostname = ( host.match(/:/g) ) ? host.slice( 0, host.indexOf(":") ) : host
-    // we don't want to configure strategy if coming from direct IP address (e.g. could be health endpoint)
-    if (net.isIP(hostname)) {
-        return next()
-    }
-
-    // if client is already configured, exit early
-    if (app.locals.client) {
-        return next()
-    }
-
     if (!app.locals.issuer) {
         try {
             app.locals.issuer = await configureIssuer(idamURl)
@@ -54,24 +39,30 @@ export async function configure(req: any, res: any, next: any) {
             return next(error)
         }
     }
-    logger.info('fqdn: ', fqdn)
 
-    const clientMetadata: ClientMetadata = {
-        client_id: config.idamClient,
-        client_secret: process.env.IDAM_SECRET,
-        post_logout_redirect_uris: [`${fqdn}/auth/login`],
-        redirect_uris: [`${fqdn}/oauth2/callback`],
-        response_types: ['code'],
-        token_endpoint_auth_method: 'client_secret_post', // The default is 'client_secret_basic'.
+    if (!app.locals.client) {
+        const clientMetadata: ClientMetadata = {
+            client_id: config.idamClient,
+            client_secret: process.env.IDAM_SECRET,
+            response_types: ['code'],
+            token_endpoint_auth_method: 'client_secret_post', // The default is 'client_secret_basic'.
+        }
+
+        app.locals.client = new app.locals.issuer.Client(clientMetadata)
     }
 
-    app.locals.client = new app.locals.issuer.Client(clientMetadata)
+    const host = req.get('host')
+    const fqdn = req.protocol + '://' + host
+    const redirectUri = `${fqdn}/${config.services.idam.oauthCallbackUrl}`
 
-    logger.info('configuring strategy')
+    logger.info('configuring strategy with redirect_uri:', redirectUri)
 
     passport.unuse('oidc').use('oidc', new Strategy({
         client: app.locals.client,
-        params: {scope: 'profile openid roles manage-user create-user'},
+        params: {
+            redirect_uri: redirectUri,
+            scope: 'profile openid roles manage-user create-user',
+        },
         sessionKey: 'xui_webapp', // being explicit here so we can set manually on logout
         usePKCE: false, // issuer doesn't support pkce - no code_challenge_methods_supported
     }, oidcVerify))
@@ -81,7 +72,7 @@ export async function configure(req: any, res: any, next: any) {
     // passport.use('s2s', new BearerStrategy())
 }
 
-export async function doLogout(req, res, status = 302) {
+export async function doLogout(req: express.Request, res: express.Response, status = 302) {
 
     // TODO: we may need to revoke tokens by doing a call to OP
 

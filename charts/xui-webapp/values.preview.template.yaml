@@ -7,3 +7,4 @@ nodejs:
        S2S_SECRET: ${S2S_SECRET}
        IDAM_SECRET: ${IDAM_SECRET}
        NODE_TLS_REJECT_UNAUTHORIZED: '0'
+       APP_URL: "https://xui-webapp-{{ .Release.Name }}.service.core-compute-preview.internal"

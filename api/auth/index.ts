@@ -61,6 +61,7 @@ export async function configure(req: any, res: any, next: any) {
     passport.unuse('oidc').use('oidc', new Strategy({
         client: app.locals.client,
         params: {
+            prompt: 'login',
             redirect_uri: redirectUri,
             scope: 'profile openid roles manage-user create-user',
         },
@@ -77,33 +78,32 @@ export async function doLogout(req: express.Request, res: express.Response, stat
 
     // TODO: we may need to revoke tokens by doing a call to OP
     const access_token = req.session.passport.user.tokenset.access_token
+    const refresh_token = req.session.passport.user.tokenset.refresh_token
 
     // we need this to remove the access_token, however it is a legacy endpoint for oauth2
     // endSession endpoint would be much more appropriate
     const auth = `Basic ${new Buffer(`${config.idamClient}:${process.env.IDAM_SECRET}`).toString('base64')}`
     axios.defaults.headers.common.Authorization = auth
-    const result  = await http.delete(`${config.services.idam.idamApiUrl}/session/${access_token}`)
+    await http.delete(`${config.services.idam.idamApiUrl}/session/${access_token}`)
+    await http.delete(`${config.services.idam.idamApiUrl}/session/${refresh_token}`)
 
-    if (result) {
+    //passport provides this method on request object
+    req.logout()
 
-        //passport provides this method on request object
-        req.logout()
-
-        res.clearCookie('roles')
-        res.clearCookie(cookieToken)
-        res.clearCookie(cookieUserId)
-        req.session.user = null
-        req.session.save(() => {
-            if (req.query.redirect || status === 401) {  // 401 is when no accessToken
-                res.redirect(status, req.query.redirect || '/')
-                console.log('Logged out by userDetails')
-            } else {
-                const message = JSON.stringify({message: 'You have been logged out!'})
-                res.status(200).send(message)
-                console.log('Logged out by Session')
-            }
-        })
-    }
+    res.clearCookie('roles')
+    res.clearCookie(cookieToken)
+    res.clearCookie(cookieUserId)
+    req.session.user = null
+    req.session.save(() => {
+        if (req.query.redirect || status === 401) {  // 401 is when no accessToken
+            res.redirect(status, req.query.redirect || '/')
+            console.log('Logged out by userDetails')
+        } else {
+            const message = JSON.stringify({message: 'You have been logged out!'})
+            res.status(200).send(message)
+            console.log('Logged out by Session')
+        }
+    })
 }
 
 export async function oidcVerify(tokenset: TokenSet, userinfo: UserinfoResponse, done: any) {

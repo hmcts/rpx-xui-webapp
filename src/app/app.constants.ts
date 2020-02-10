@@ -52,26 +52,30 @@ const getHelpDetailsData: ContactDetailsDataModel[] = [
   {
     title: 'Probate',
     badgeColour: BadgeColour.BADGE_BLUE,
-    // badgeText: 'PUBLIC BETA',
     email: 'contactprobate@justice.gov.uk',
     phone: '0300 303 0648',
-    openingTimes: 'Monday to Friday, 9.30pm to 5pm (excluding public holidays)'
+    openingTimes: 'Monday to Friday, 9:30am to 5pm (excluding public holidays)'
   },
   {
     title: 'Divorce',
     badgeColour: BadgeColour.BADGE_BLUE,
-  //  badgeText: 'PUBLIC BETA',
     email: 'divorcecase@justice.gov.uk',
     phone: '0300 303 0642',
-    openingTimes: 'Monday to Friday, 9.30pm to 5pm (excluding public holidays)'
+    openingTimes: 'Monday to Friday, 9:30am to 5pm (excluding public holidays)'
   },
   {
     title: 'Financial Remedy',
     badgeColour: BadgeColour.BADGE_RED,
- //   badgeText: 'PRIVATE BETA',
     email: 'contactfinancialremedy@justice.gov.uk',
     phone: '0300 303 0642',
-    openingTimes: 'Monday to Friday, 9.30pm to 5pm (excluding public holidays)'
+    openingTimes: 'Monday to Friday, 9:30am to 5pm (excluding public holidays)'
+  },
+  {
+    title: 'Immigration and Asylum',
+    badgeColour: BadgeColour.BADGE_RED,
+    email: 'customer.service@justice.gov.uk',
+    phone: '0300 123 1711',
+    openingTimes: 'Monday to Friday, 9am to 5pm (excluding public holidays)'
   }
 ];
 

@@ -125,6 +125,7 @@
     "@pact-foundation/pact-node": "^9.0.6",
     "@types/ejs": "^2.6.3",
     "@types/express": "^4.16.1",
+    "@types/express-session": "^1.15.16",
     "@types/formidable": "^1.0.31",
     "@types/global-tunnel-ng": "^2.1.0",
     "@types/jasmine": "~2.8.8",

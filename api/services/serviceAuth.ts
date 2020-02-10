@@ -1,6 +1,6 @@
 
 // import { config } from '../dep-config'
-import config from 'config'
+import * as config from 'config'
 import * as secretsConfig from 'config'
 import * as otp from 'otp'
 import { getS2sSecret } from '../configuration'

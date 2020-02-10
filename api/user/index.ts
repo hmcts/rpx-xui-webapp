@@ -12,6 +12,7 @@ router.get('/details', handleUserRoute)
 
 function handleUserRoute(req, res) {
 
+  // TODO: Why is this only being done on PROD can we remove this?
   const isProd: boolean = (config.environment === 'prod')
   // in milliseconds
   const idleTimeOuts: {caseworker: number; solicitors: number; special: number} = {

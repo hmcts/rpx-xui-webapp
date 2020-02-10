@@ -31,6 +31,7 @@ import {
 propertiesVolume.addTo(config)
 
 console.log(getConfigValue('environment.name'))
+console.log(getConfigValue(COOKIE_TOKEN))
 
 app.use(appInsights)
 

@@ -10,19 +10,23 @@ import {environmentCheckText, getConfigValue, getEnvironment} from './configurat
 // TODO: Not needed?
 import {ERROR_NODE_CONFIG_ENV} from './configuration/constants'
 import {
-  APP_INSIGHTS_KEY,
-  COOKIE_TOKEN,
-  COOKIES_USERID, ENVIRONMENT,
-  IDAM_CLIENT,
-  JURISDICTIONS,
+  SERVICES_CCD_COMPONENT_API_PATH,
+  SERVICES_CCD_DATA_STORE_API_PATH,
+  SERVICES_DOCUMENTS_API_PATH,
+  COOKIES_TOKEN,
+  COOKIES_SESSION_ID,
+  SERVICES_IDAM_API_URL,
+  SERVICES_IDAM_CLIENT_ID,
+  SERVICES_IDAM_LOGIN_URL,
+  SERVICES_IDAM_INDEX_URL,
+  SERVICES_IDAM_ISS_URL,
+  SERVICES_IDAM_OAUTH_CALLBACK_URL,
+  PROTOCOL,
+  MAX_LOG_LINE,
   LOGGING,
-  MAX_LINES, NOW,
-  PROXY_HOST,
-  SECURE_COOKIE,
-  SERVICES_CCD_DATA_API_PATH,
-  SERVICES_CCD_DEF_API_PATH,
-  SERVICES_IDAM_API_PATH,
-  SESSION_SECRET,
+  APP_INSIGHTS_KEY,
+  SERVICES_TERMS_AND_CONDITIONS_PATH,
+  HEALTH,
 } from './configuration/references'
 
 /**
@@ -31,7 +35,23 @@ import {
 propertiesVolume.addTo(config)
 
 console.log(getConfigValue('environment.name'))
-console.log(getConfigValue(COOKIE_TOKEN))
+console.log(getConfigValue(SERVICES_CCD_COMPONENT_API_PATH))
+console.log(getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH))
+console.log(getConfigValue(SERVICES_DOCUMENTS_API_PATH))
+console.log(getConfigValue(COOKIES_TOKEN))
+console.log(getConfigValue(COOKIES_SESSION_ID))
+console.log(getConfigValue(SERVICES_IDAM_API_URL))
+console.log(getConfigValue(SERVICES_IDAM_CLIENT_ID))
+console.log(getConfigValue(SERVICES_IDAM_LOGIN_URL))
+console.log(getConfigValue(SERVICES_IDAM_INDEX_URL))
+console.log(getConfigValue(SERVICES_IDAM_ISS_URL))
+console.log(getConfigValue(SERVICES_IDAM_OAUTH_CALLBACK_URL))
+console.log(getConfigValue(PROTOCOL))
+console.log(getConfigValue(MAX_LOG_LINE))
+console.log(getConfigValue(LOGGING))
+console.log(getConfigValue(APP_INSIGHTS_KEY))
+console.log(getConfigValue(SERVICES_TERMS_AND_CONDITIONS_PATH))
+console.log(getConfigValue(HEALTH))
 
 app.use(appInsights)
 

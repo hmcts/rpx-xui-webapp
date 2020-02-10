@@ -9,9 +9,36 @@
  * This file should be representative of the .yaml files in /dep-config, and not
  * contain any additional constants. They are grouped as a representation of the .yaml structure.
  */
+// TODO: Path to Url
+export const SERVICES_CCD_COMPONENT_API_PATH = 'services.ccd.componentApi'
+export const SERVICES_CCD_DATA_STORE_API_PATH = 'services.ccd.dataApi'
+export const SERVICES_DOCUMENTS_API_PATH = 'services.documents.api'
+
+export const COOKIES_TOKEN = 'cookies.token'
+export const COOKIES_SESSION_ID = 'cookies.sessionId'
+
+export const SERVICES_IDAM_API_URL = 'services.idam.idamApiUrl'
+export const SERVICES_IDAM_CLIENT_ID = 'services.idam.idamClientID'
+export const SERVICES_IDAM_LOGIN_URL = 'services.idam.idamLoginUrl'
+export const SERVICES_IDAM_INDEX_URL = 'services.idam.indexUrl'
+export const SERVICES_IDAM_ISS_URL = 'services.idam.iss'
+export const SERVICES_IDAM_OAUTH_CALLBACK_URL = 'services.idam.oauthCallbackUrl'
+
+export const PROTOCOL = 'https'
+export const MAX_LOG_LINE = 'maxLogLine'
+export const LOGGING = 'logging'
+
+export const APP_INSIGHTS_KEY = 'appInsights.instrumentationKey'
+
+// TODO: rename to url
+export const SERVICES_TERMS_AND_CONDITIONS_PATH = 'services.termsAndConditions'
+export const HEALTH = 'health'
+
+
+// TODO: Deprecate the following
+
 export const ENVIRONMENT = 'environment'
 
-export const APP_INSIGHTS_KEY = 'appInsightsInstrumentationKey'
 
 export const COOKIE_TOKEN = 'cookies.token'
 export const COOKIES_USERID = 'cookies.userId'
@@ -19,12 +46,11 @@ export const COOKIES_USERID = 'cookies.userId'
 export const MAX_LINES = 'exceptionOptions.maxLines'
 
 export const INDEX_URL = 'indexUrl'
-export const MAX_LOG_LINE = 'maxLogLine'
+
 export const IDAM_CLIENT = 'idamClient'
 export const MICROSERVICE = 'microservice'
 export const NOW = 'now'
 export const OAUTH_CALLBACK_URL = 'oauthCallbackUrl'
-export const PROTOCOL = 'protocol'
 export const SECURE_COOKIE = 'secureCookie'
 
 export const SERVICES_CCD_DATA_API_PATH = 'services.ccdDataApi'
@@ -39,5 +65,5 @@ export const SESSION_SECRET = 'sessionSecret'
 export const PROXY_HOST = 'proxyConfig.host'
 export const PROXY_PORT = 'proxyConfig.port'
 
-export const LOGGING = 'logging'
+// export const LOGGING = 'logging'
 export const JURISDICTIONS = 'jurisdictions'

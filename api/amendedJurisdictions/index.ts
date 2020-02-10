@@ -1,6 +1,12 @@
 import * as express from 'express'
 import * as striptags from 'striptags'
-import { config } from '../dep-config'
+// import { config } from '../dep-config'
+import {getConfigValue} from '../configuration'
+import {
+  SERVICES_TERMS_AND_CONDITIONS_PATH,
+  SERVICES_CCD_COMPONENT_API_PATH,
+  SERVICES_CCD_DATA_STORE_API_PATH,
+} from '../configuration/references'
 import { http } from '../lib/http'
 import { setHeaders } from '../lib/proxy'
 
@@ -16,7 +22,7 @@ export async function getJurisdictions(req: express.Request, res: express.Respon
     const headers: any = setHeaders(req)
 
     try {
-        const response = await http.get(`${config.services.ccd.componentApi}${url}`, { headers })
+        const response = await http.get(`${getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)}${url}`, { headers })
         // TODO
         // EUI-1075
         // Use this when configured in the assure to export the evn variable

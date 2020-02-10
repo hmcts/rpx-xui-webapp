@@ -1,5 +1,3 @@
-
-// import { config } from '../dep-config'
 import * as config from 'config'
 import * as secretsConfig from 'config'
 import * as otp from 'otp'
@@ -16,6 +14,7 @@ propertiesVolume.addTo(secretsConfig)
 const s2sSecret = getS2sSecret(secretsConfig)
 
 const logger = log4jui.getLogger('service auth')
+
 
 export async function postS2SLease() {
 

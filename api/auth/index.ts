@@ -6,6 +6,7 @@ import * as process from 'process'
 import {app} from '../application'
 import {config} from '../config'
 import {router as keepAlive} from '../keepalive'
+import {http} from '../lib/http'
 import * as log4jui from '../lib/log4jui'
 import {propsExist} from '../lib/objectUtilities'
 import {userHasAppAccess} from './manageCasesUserRoleAuth'
@@ -14,7 +15,7 @@ export const router = express.Router({mergeParams: true})
 
 const cookieToken = config.cookies.token
 const cookieUserId = config.cookies.userId
-const idamURl = config.services.idam.idamApiUrl
+const idamURl = config.services.idam.idamLoginUrl
 
 const logger = log4jui.getLogger('auth')
 
@@ -55,7 +56,7 @@ export async function configure(req: any, res: any, next: any) {
     const fqdn = req.protocol + '://' + host
     const redirectUri = `${fqdn}/${config.services.idam.oauthCallbackUrl}`
 
-    logger.info('configuring strategy with redirect_uri:', redirectUri)
+    // logger.info('configuring strategy with redirect_uri:', redirectUri)
 
     passport.unuse('oidc').use('oidc', new Strategy({
         client: app.locals.client,
@@ -75,24 +76,33 @@ export async function configure(req: any, res: any, next: any) {
 export async function doLogout(req: express.Request, res: express.Response, status = 302) {
 
     // TODO: we may need to revoke tokens by doing a call to OP
+    const access_token = req.session.passport.user.tokenset.access_token
 
-    //passport provides this method on request object
-    req.logout()
+    // we need this to remove the access_token, however it is a legacy endpoint for oauth2
+    // endSession endpoint would be much more appropriate
+    axios.defaults.headers.common.Authorization = `Basic ${new Buffer(`${config.idamClient}:${process.env.IDAM_SECRET}`).toString('base64')}`
+    const result  = await http.delete(`${config.services.idam.idamApiUrl}/session/${access_token}`)
 
-    res.clearCookie('roles')
-    res.clearCookie(cookieToken)
-    res.clearCookie(cookieUserId)
-    req.session.user = null
-    req.session.save(() => {
-        if (req.query.redirect || status === 401) {  // 401 is when no accessToken
-            res.redirect(status, req.query.redirect || '/')
-            console.log('Logged out by userDetails')
-        } else {
-            const message = JSON.stringify({message: 'You have been logged out!'})
-            res.status(200).send(message)
-            console.log('Logged out by Session')
-        }
-    })
+    if (result) {
+
+        //passport provides this method on request object
+        req.logout()
+
+        res.clearCookie('roles')
+        res.clearCookie(cookieToken)
+        res.clearCookie(cookieUserId)
+        req.session.user = null
+        req.session.save(() => {
+            if (req.query.redirect || status === 401) {  // 401 is when no accessToken
+                res.redirect(status, req.query.redirect || '/')
+                console.log('Logged out by userDetails')
+            } else {
+                const message = JSON.stringify({message: 'You have been logged out!'})
+                res.status(200).send(message)
+                console.log('Logged out by Session')
+            }
+        })
+    }
 }
 
 export async function oidcVerify(tokenset: TokenSet, userinfo: UserinfoResponse, done: any) {

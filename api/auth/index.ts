@@ -80,7 +80,8 @@ export async function doLogout(req: express.Request, res: express.Response, stat
 
     // we need this to remove the access_token, however it is a legacy endpoint for oauth2
     // endSession endpoint would be much more appropriate
-    axios.defaults.headers.common.Authorization = `Basic ${new Buffer(`${config.idamClient}:${process.env.IDAM_SECRET}`).toString('base64')}`
+    const auth = `Basic ${new Buffer(`${config.idamClient}:${process.env.IDAM_SECRET}`).toString('base64')}`
+    axios.defaults.headers.common.Authorization = auth
     const result  = await http.delete(`${config.services.idam.idamApiUrl}/session/${access_token}`)
 
     if (result) {

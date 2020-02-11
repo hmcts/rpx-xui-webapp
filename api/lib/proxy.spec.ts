@@ -7,7 +7,7 @@ import { mockReq, mockRes } from 'sinon-express-mock'
 
 chai.use(sinonChai)
 
-import { config } from '../config'
+import { config } from '../dep-config'
 import {http} from './http'
 import * as proxy from './proxy'
 

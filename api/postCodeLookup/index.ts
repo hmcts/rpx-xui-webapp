@@ -1,5 +1,8 @@
 import * as express from 'express'
-import { config } from '../config'
+import {getConfigValue} from '../configuration'
+import {
+  SERVICES_CCD_COMPONENT_API_PATH,
+} from '../configuration/references'
 import { http } from '../lib/http'
 
 export async function doLookup(req: express.Request, res: express.Response) {
@@ -7,7 +10,7 @@ export async function doLookup(req: express.Request, res: express.Response) {
     try {
         const postcode = req.query.postcode
 
-        const url = `${config.services.ccd.componentApi}/addresses?postcode=${postcode}`
+        const url = `${getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)}/addresses?postcode=${postcode}`
 
         const response = await http.get(url)
 

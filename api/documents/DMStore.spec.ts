@@ -10,7 +10,7 @@ chai.use(sinonChai)
 import {http} from '../lib/http'
 import * as DMStore from './DMStore'
 
-import {config} from '../config'
+import {config} from '../dep-config'
 
 describe('DMStore', () => {
     const res = {

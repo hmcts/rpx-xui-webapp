@@ -1,4 +1,4 @@
-import {config} from '../config'
+// import {config} from '../config'
 
 /**
  * getLoginRoleMatcher
@@ -7,9 +7,11 @@ import {config} from '../config'
  *
  * The matcher is passed in through the config.
  *
+ * TODO: Should come from a configuration value
+ *
  * @returns {string} - ie. 'caseworker'
  */
-export const getLoginRoleMatcher = () => config.loginRoleMatcher
+export const getLoginRoleMatcher = () => 'caseworker'
 
 /**
  * User Has Application Access

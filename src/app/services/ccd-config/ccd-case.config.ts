@@ -109,4 +109,8 @@ export class AppConfig extends AbstractAppConfig {
   public getAnnotationApiUrl(): string {
     return this.config.annotation_api_url;
   }
+
+  public getPayBulkScanBaseUrl(): string {
+    return this.config.pay_bulk_scan_url;
+  }
 }

@@ -7,6 +7,12 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 ## Node Proxy Server  
 Run `npm run start:node`
 
+## Issues and Solutions
+
+Property 'cookies' does not exist on type 'EnhancedRequest' - you will need to make
+sure @types/express-session is added ie.
+`yarn add @types/express-session`
+
 ## Frontend 
 Run `npm run start:ng` for a dev server in separate terminal. Navigate to `http://localhost:3000/`. The app will automatically reload if you change any of the source files.
 

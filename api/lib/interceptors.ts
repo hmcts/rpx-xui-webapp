@@ -1,6 +1,6 @@
 import * as exceptionFormatter from 'exception-formatter'
 import * as stringify from 'json-stringify-safe'
-import {getConfigValue} from '../configuration'
+import {getConfigValue, getConfigValueNumber} from '../configuration'
 import {
   MAX_LOG_LINE,
 } from '../configuration/references'
@@ -16,7 +16,7 @@ const exceptionOptions = {
 export function requestInterceptor(request) {
     const logger = log4jui.getLogger('outgoing')
 
-    const url = shorten(request.url, getConfigValue(MAX_LOG_LINE))
+    const url = shorten(request.url, getConfigValueNumber(MAX_LOG_LINE))
     logger.info(`${request.method.toUpperCase()} to ${url}`)
     //add timings to requests
     request.metadata = { startTime: new Date() }
@@ -30,7 +30,7 @@ export function successInterceptor(response) {
 
     const logger = log4jui.getLogger('return')
 
-    const url = shorten(response.config.url, getConfigValue(MAX_LOG_LINE))
+    const url = shorten(response.config.url, getConfigValueNumber(MAX_LOG_LINE))
 
     logger.info(`Success on ${response.config.method.toUpperCase()} to ${url} (${response.duration})`)
     logger.trackRequest({
@@ -49,7 +49,7 @@ export function errorInterceptor(error) {
 
     const logger = log4jui.getLogger('return')
 
-    const url = shorten(error.config.url, getConfigValue(MAX_LOG_LINE))
+    const url = shorten(error.config.url, getConfigValueNumber(MAX_LOG_LINE))
 
     let data = valueOrNull(error, 'response.data.details')
     if (!data) {

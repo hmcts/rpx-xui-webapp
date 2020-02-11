@@ -5,7 +5,7 @@ import * as express from 'express'
 import * as session from 'express-session'
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
-import {config} from './config'
+import {config} from './dep-config'
 import {router as documentRouter} from './documents/routes'
 import {router as emAnnoRouter} from './emAnno/routes'
 import healthCheck from './healthCheck'
@@ -55,7 +55,7 @@ app.use(bodyParser.urlencoded({extended: true}))
 
 // TODO: remove this when we have proper frontend configuration
 app.use((req, res, next) => {
-    // Set cookie for angular to know which config to use
+    // Set cookie for angular to know which dep-config to use
     const platform = process.env.XUI_ENV || 'local'
     res.cookie('platform', platform)
     next()
@@ -72,11 +72,11 @@ tunnel.init()
 
 const healthchecks = {
     checks: {
-        ccdDataApi: healthcheckConfig(config.services.ccd.dataApi),
-        ccdDefApi: healthcheckConfig(config.services.ccd.componentApi),
-        dmStoreApi: healthcheckConfig(config.services.documents.api),
-        idamApi: healthcheckConfig(config.services.idam.idamApiUrl),
-        s2s: healthcheckConfig(config.services.s2s),
+        ccdDataApi: healthcheckConfig(dep-config.services.ccd.dataApi),
+        ccdDefApi: healthcheckConfig(dep-config.services.ccd.componentApi),
+        dmStoreApi: healthcheckConfig(dep-config.services.documents.api),
+        idamApi: healthcheckConfig(dep-config.services.idam.idamApiUrl),
+        s2s: healthcheckConfig(dep-config.services.s2s),
     },
 }
 

@@ -1,13 +1,16 @@
 import * as express from 'express'
-import { config } from '../config'
-import { application } from '../config/application.config'
+import {getConfigValue} from '../configuration'
+import {
+  SERVICES_TERMS_AND_CONDITIONS_PATH,
+} from '../configuration/references'
+import { application } from '../dep-config/application.config'
 import { http } from '../lib/http'
 import { getTermsAndConditionsUrl } from './termsAndConditionsUtil'
 
 export async function getTermsAndConditions(req: express.Request, res: express.Response) {
     let errReport: any
     try {
-        const url = getTermsAndConditionsUrl(config.services.termsAndConditions, application.idamClient)
+        const url = getTermsAndConditionsUrl(getConfigValue(SERVICES_TERMS_AND_CONDITIONS_PATH), application.idamClient)
         const response = await http.get(url)
         res.send(response.data)
     } catch (error) {

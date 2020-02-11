@@ -11,7 +11,7 @@ const logger = log4jui.getLogger('auth')
 const idamURl = config.services.idam.idamApiUrl
 
 export function validRoles(roles) {
-    //return roles.indexOf(config.juiJudgeRole) > -1 || roles.indexOf(config.juiPanelMember) > -1
+    //return roles.indexOf(dep-config.juiJudgeRole) > -1 || roles.indexOf(dep-config.juiPanelMember) > -1
     return true //disabled role restriction for XUI
 }
 

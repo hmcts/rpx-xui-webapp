@@ -56,8 +56,8 @@
     "@angular/platform-browser": "^7.2.16",
     "@angular/platform-browser-dynamic": "^7.2.16",
     "@angular/router": "^7.2.16",
-    "@hmcts/ccd-case-ui-toolkit": "2.62.22-RDM-4837-prerelease",
-    "@hmcts/ccpay-web-component": "^1.8.4",
+    "@hmcts/ccd-case-ui-toolkit": "2.63.3-RDM-7120-prerelease",
+    "@hmcts/ccpay-web-component": "3.0.3",
     "@hmcts/frontend": "0.0.39-alpha",
     "@hmcts/media-viewer": "^1.1.14",
     "@hmcts/nodejs-healthcheck": "^1.5.1",
@@ -86,6 +86,7 @@
     "exception-formatter": "1.0.7",
     "express": "^4.17.1",
     "express-session": "^1.16.1",
+    "file-saver": "^2.0.2",
     "form-data": "^2.5.1",
     "formidable": "^1.2.1",
     "global-agent": "^2.1.8",
@@ -111,6 +112,7 @@
     "striptags": "^3.1.1",
     "tslib": "^1.9.0",
     "web-animations-js": "^2.3.2",
+    "xlsx": "^0.15.4",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {

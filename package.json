@@ -73,6 +73,7 @@
     "@nguniversal/express-engine": "^7.1.1",
     "@nicky-lenaers/ngx-scroll-to": "^1.1.1",
     "@types/applicationinsights-js": "^1.0.9",
+    "@types/config": "^0.0.36",
     "@types/crypto-js": "^3.1.43",
     "@types/sinon": "^7.0.13",
     "applicationinsights": "^1.5.0",

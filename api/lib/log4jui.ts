@@ -37,6 +37,7 @@ export function leftPad(str: string, length = 20): string {
 
 export function getLogger(category: string): JUILogger {
     const logger: log4js.Logger = log4js.getLogger(category)
+    // @ts-ignore
     logger.level = getConfigValue(LOGGING) || 'off'
 
     const catFormatted = leftPad(category, maxCatLength)
@@ -60,6 +61,7 @@ export function prepareMessage(fullMessage: string): string {
         const req = request()
 
         uid = req.session && req.session.user ? req.session.user.id : null
+        // @ts-ignore
         sessionId = req.cookies ? req.cookies[sessionid] : null
     }
 

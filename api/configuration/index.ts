@@ -26,7 +26,14 @@ export const getEnvironment = () => process.env.NODE_CONFIG_ENV
  * @see references.ts
  * @param reference - ie. 'services.ccdDefApi'
  */
-export const getConfigValue = reference => config.get(reference)
+export const getConfigValue = reference => {
+  return config.get<string>(reference)
+}
+
+// TODO: Refactor
+export const getConfigValueNumber = reference => {
+  return config.get<number>(reference)
+}
 
 /**
  * Get Idam Secret
@@ -61,6 +68,19 @@ export const getS2sSecret = (secretsConfig): string => {
     return ''
   }
 }
+
+// Works on T&Cs
+export const getAppInsightsSecret = (secretsConfig): string => {
+  const ERROR_APP_INSIGHT_SECRET_NOT_FOUND =
+    'secrets.rpx.appinsights-instrumentationkey-tc not found on this environment.';
+
+  if (propsExist(secretsConfig, ['secrets', 'rpx', 'appinsights-instrumentationkey-tc'])) {
+    return secretsConfig['secrets']['rpx']['appinsights-instrumentationkey-tc'];
+  } else {
+    console.log(ERROR_APP_INSIGHT_SECRET_NOT_FOUND);
+    return '';
+  }
+};
 
 /**
  * Generate Environment Check Text

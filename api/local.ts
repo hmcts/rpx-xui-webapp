@@ -3,31 +3,31 @@
  */
 import * as propertiesVolume from '@hmcts/properties-volume'
 import { app } from './application'
-import { appInsights } from './lib/appInsights'
-import { getConfigValue, getS2sSecret, getAppInsightsSecret } from './configuration'
+import { getAppInsightsSecret, getConfigValue, getS2sSecret } from './configuration'
 import {
+  APP_INSIGHTS_KEY,
+  COOKIES_SESSION_ID,
+  COOKIES_TOKEN,
+  HEALTH,
+  LOGGING,
+  MAX_LOG_LINE,
+  PROTOCOL,
   SERVICES_CCD_COMPONENT_API_PATH,
   SERVICES_CCD_DATA_STORE_API_PATH,
   SERVICES_DOCUMENTS_API_PATH,
-  COOKIES_TOKEN,
-  COOKIES_SESSION_ID,
   SERVICES_IDAM_API_URL,
   SERVICES_IDAM_CLIENT_ID,
-  SERVICES_IDAM_LOGIN_URL,
   SERVICES_IDAM_INDEX_URL,
   SERVICES_IDAM_ISS_URL,
+  SERVICES_IDAM_LOGIN_URL,
   SERVICES_IDAM_OAUTH_CALLBACK_URL,
-  PROTOCOL,
-  MAX_LOG_LINE,
-  LOGGING,
-  APP_INSIGHTS_KEY,
   SERVICES_TERMS_AND_CONDITIONS_PATH,
-  HEALTH,
 } from './configuration/references'
+import { appInsights } from './lib/appInsights'
 
-const secrets = propertiesVolume.addTo({}, { mountPoint: '/Volumes/mnt/secrets/', failOnError: true });
+const secrets = propertiesVolume.addTo({}, { mountPoint: '/Volumes/mnt/secrets/', failOnError: true })
 
-console.log('CHECK ENVIRONMENT VARIABLES:');
+console.log('CHECK ENVIRONMENT VARIABLES:')
 console.log(getConfigValue('environment'))
 console.log(getConfigValue(SERVICES_CCD_COMPONENT_API_PATH))
 console.log(getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH))

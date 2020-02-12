@@ -1,11 +1,11 @@
-import {healthEndpoints} from './health'
-import {getConfigValue, getEnvironment} from './index'
 import {
   EnvironmentConfigCookies,
   EnvironmentConfigExceptionOptions,
   EnvironmentConfigProxy,
   EnvironmentConfigServices
 } from '../interfaces/environment.config'
+import {healthEndpoints} from './health'
+import {getConfigValue, getEnvironment} from './index'
 import {
   COOKIE_TOKEN,
   COOKIES_USERID,

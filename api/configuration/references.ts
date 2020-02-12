@@ -25,6 +25,7 @@ export const PROXY_HOST = 'proxy.host'
 export const PROXY_PORT = 'proxy.port'
 
 export const SERVICES_IDAM_API_URL = 'services.idam.idamApiUrl'
+
 export const SERVICES_IDAM_CLIENT_ID = 'services.idam.idamClientID'
 export const SERVICES_IDAM_LOGIN_URL = 'services.idam.idamLoginUrl'
 export const SERVICES_IDAM_INDEX_URL = 'services.idam.indexUrl'
@@ -39,33 +40,11 @@ export const MAX_LOG_LINE = 'maxLogLine'
 export const LOGGING = 'logging'
 
 export const APP_INSIGHTS_KEY = 'appInsights.instrumentationKey'
+export const ENVIRONMENT = 'environment'
+export const MICROSERVICE = 'microservice'
 
 // TODO: rename to url
 export const SERVICES_TERMS_AND_CONDITIONS_PATH = 'services.termsAndConditions'
 export const HEALTH = 'health'
 
-// TODO: Deprecate the following
-
-export const ENVIRONMENT = 'environment'
-
-export const COOKIE_TOKEN = 'cookies.token'
-export const COOKIES_USERID = 'cookies.userId'
-
-export const MAX_LINES = 'exceptionOptions.maxLines'
-
-export const INDEX_URL = 'indexUrl'
-
-export const IDAM_CLIENT = 'idamClient'
-export const MICROSERVICE = 'microservice'
-export const NOW = 'now'
-export const OAUTH_CALLBACK_URL = 'oauthCallbackUrl'
-
-export const SERVICES_CCD_DATA_API_PATH = 'services.ccdDataApi'
-export const SERVICES_CCD_DEF_API_PATH = 'services.ccdDefApi'
-export const SERVICES_IDAM_API_PATH = 'services.idamApi'
-export const SERVICES_IDAM_WEB = 'services.idamWeb'
-export const SERVICES_RD_PROFESSIONAL_API_PATH = 'services.rdProfessionalApi'
-export const SERVICES_FEE_AND_PAY_API_PATH = 'services.feeAndPayApi'
-
-// export const LOGGING = 'logging'
 export const JURISDICTIONS = 'jurisdictions'

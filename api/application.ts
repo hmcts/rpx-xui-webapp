@@ -83,11 +83,11 @@ tunnel.init()
 
 const healthchecks = {
     checks: {
-        ccdDataApi: healthcheckConfig(dep-config.services.ccd.dataApi),
-        ccdDefApi: healthcheckConfig(dep-config.services.ccd.componentApi),
-        dmStoreApi: healthcheckConfig(dep-config.services.documents.api),
-        idamApi: healthcheckConfig(dep-config.services.idam.idamApiUrl),
-        s2s: healthcheckConfig(dep-config.services.s2s),
+        ccdDataApi: healthcheckConfig(config.services.ccd.dataApi),
+        ccdDefApi: healthcheckConfig(config.services.ccd.componentApi),
+        dmStoreApi: healthcheckConfig(config.services.documents.api),
+        idamApi: healthcheckConfig(config.services.idam.idamApiUrl),
+        s2s: healthcheckConfig(config.services.s2s),
     },
 }
 

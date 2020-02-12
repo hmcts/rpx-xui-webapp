@@ -3,8 +3,8 @@
     "name": "default environment"
   },
   "cookies": {
-    "token": "asdsads",
-    "userId": "COOKIE_USER_ID",
+    "token": "__auth__",
+    "userId": "__userid__",
     "sessionId": "__sessionId__"
   },
   "appInsights": {
@@ -39,5 +39,9 @@
     "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal"
   },
   "protocol": "https",
-  "microservice": "xui_webapp"
+  "microservice": "xui_webapp",
+  "proxy": {
+    "host": "172.16.0.7",
+    "port": 8080
+  }
 }

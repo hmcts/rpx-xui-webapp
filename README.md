@@ -63,6 +63,16 @@ Extended version of script below:
  |---------------------------------------|
 ```
 
+# Path to configuration
+
+You need to setup a variable that points to the /config folder where the .json
+configuration files are stored.
+`export NODE_CONFIG_DIR=/Users/philip/projects/rpx-xui-webapp/config`
+
+# Environment
+
+`NODE_ENV_CONFIG=local` will turn on tunneling on a local environment.
+
 # Setting up Secrets locally (Required)
 
 You need to setup secrets locally before you run the project. Why? - When you push this application

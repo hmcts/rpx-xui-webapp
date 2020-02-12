@@ -4,7 +4,10 @@ import 'mocha'
 import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
 import { mockReq, mockRes } from 'sinon-express-mock'
-import { config } from '../dep-config'
+import {getConfigValue} from '../configuration'
+import {
+  SERVICES_EM_ANNO_API_URL,
+} from '../configuration/references'
 import * as emAnnoService from './emAnnoService'
 import { deleteAnnotations, getAnnotations, postAnnotations, putAnnotations } from './index'
 
@@ -13,7 +16,7 @@ describe('emAnno', () => {
 
     let sandbox
     let spy: any
-    const service: string = config.services.em_anno_api
+    const service: string = getConfigValue(SERVICES_EM_ANNO_API_URL)
     const reqQuery = {
         originalUrl: '/emAnno/12345',
     }

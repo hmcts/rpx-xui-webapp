@@ -74,9 +74,9 @@ export const getAppInsightsSecret = (secretsConfig): string => {
   const ERROR_APP_INSIGHT_SECRET_NOT_FOUND =
     'secrets.rpx.appinsights-instrumentationkey-tc not found on this environment.'
 
-  if (propsExist(secretsConfig, ['secrets', 'rpx', 'appinsights-instrumentationkey-tc'])) {
+  if (propsExist(secretsConfig, ['secrets', 'rpx', 'AppInsightsInstrumentationKey'])) {
     // tslint:disable-next-line
-    return secretsConfig['secrets']['rpx']['appinsights-instrumentationkey-tc']
+    return secretsConfig['secrets']['rpx']['AppInsightsInstrumentationKey']
   } else {
     console.log(ERROR_APP_INSIGHT_SECRET_NOT_FOUND)
     return ''

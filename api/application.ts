@@ -1,11 +1,16 @@
 //import * as healthcheck from '@hmcts/nodejs-healthcheck'
+import * as propertiesVolume from '@hmcts/properties-volume'
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
 import * as session from 'express-session'
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
-import {config} from './dep-config'
+import {getAppInsightsSecret, getConfigValue, getEnvironment} from './configuration'
+import {
+  PROTOCOL,
+  SESSION_SECRET,
+} from './configuration/references'
 import {router as documentRouter} from './documents/routes'
 import {router as emAnnoRouter} from './emAnno/routes'
 import healthCheck from './healthCheck'
@@ -20,7 +25,9 @@ import routes from './routes'
 import {router as termsAndCRoutes} from './termsAndConditions/routes'
 import {router as userTandCRoutes} from './userTermsAndConditions/routes'
 
-config.environment = process.env.XUI_ENV || 'local'
+// config.environment = process.env.XUI_ENV || 'local'
+
+const secrets = propertiesVolume.addTo({})
 
 export const app = express()
 app.disable('x-powered-by')
@@ -34,12 +41,15 @@ app.use(
         cookie: {
             httpOnly: true,
             maxAge: 1800000,
-            secure: config.secureCookie !== false,
+            // TODO: This needs to be looked at [12.02.2020] but
+            // for now set it false to get it through the build pipeline.
+            // secure: config.secureCookie !== false,
+            secure: false,
         },
         name: 'xui-webapp', // keep as string
         resave: true,
         saveUninitialized: true,
-        secret: config.sessionSecret,
+        secret: getConfigValue(SESSION_SECRET),
         // TODO: remove this and use values from cookie token instead
         store: new FileStore({
             path: process.env.NOW ? '/tmp/sessions' : '.sessions',
@@ -56,7 +66,8 @@ app.use(bodyParser.urlencoded({extended: true}))
 // TODO: remove this when we have proper frontend configuration
 app.use((req, res, next) => {
     // Set cookie for angular to know which dep-config to use
-    const platform = process.env.XUI_ENV || 'local'
+    // const platform = process.env.XUI_ENV || 'local'
+    const platform = getEnvironment() || 'local'
     res.cookie('platform', platform)
     next()
 })
@@ -90,7 +101,8 @@ app.get('/api/logout', (req, res) => {
 app.get('/api/addresses', authInterceptor, postCodeLookup.doLookup)
 
 app.get('/api/monitoring-tools', (req, res) => {
-    res.send({key: config.appInsightsInstrumentationKey})
+    // res.send({key: config.appInsightsInstrumentationKey})
+    res.send({key: getAppInsightsSecret(secrets)})
 })
 
 app.use('/api/healthCheck', healthCheck)
@@ -107,4 +119,4 @@ app.use('/print', printRouter)
 
 // @ts-ignore
 const logger: JUILogger = log4jui.getLogger('Application')
-logger.info(`Started up on ${config.environment || 'local'} using ${config.protocol}`)
+logger.info(`Started up on ${getEnvironment() || 'local'} using ${getConfigValue(PROTOCOL)}`)

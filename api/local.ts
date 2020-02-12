@@ -46,12 +46,12 @@ console.log(getConfigValue(LOGGING))
 console.log(getConfigValue(APP_INSIGHTS_KEY))
 console.log(getConfigValue(SERVICES_TERMS_AND_CONDITIONS_PATH))
 console.log(getConfigValue(HEALTH))
-console.log('END CHECK OF ENVIRONMENTAL VARIABLES');
+console.log('END CHECK OF ENVIRONMENTAL VARIABLES')
 
 // TODO: Let's get the secrets into here.
-console.log('s2sSecret');
-console.log(getS2sSecret(secrets));
-console.log(getAppInsightsSecret(secrets));
+console.log('s2sSecret')
+console.log(getS2sSecret(secrets))
+console.log(getAppInsightsSecret(secrets))
 
 app.use(appInsights)
 

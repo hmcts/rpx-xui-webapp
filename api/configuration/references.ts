@@ -15,7 +15,11 @@ export const SERVICES_CCD_DATA_STORE_API_PATH = 'services.ccd.dataApi'
 export const SERVICES_DOCUMENTS_API_PATH = 'services.documents.api'
 
 export const COOKIES_TOKEN = 'cookies.token'
+export const COOKIES_USER_ID = 'cookies.userId'
 export const COOKIES_SESSION_ID = 'cookies.sessionId'
+
+export const PROXY_HOST = 'proxy.host'
+export const PROXY_PORT = 'proxy.port'
 
 export const SERVICES_IDAM_API_URL = 'services.idam.idamApiUrl'
 export const SERVICES_IDAM_CLIENT_ID = 'services.idam.idamClientID'
@@ -62,8 +66,6 @@ export const SERVICES_RD_PROFESSIONAL_API_PATH = 'services.rdProfessionalApi'
 export const SERVICES_FEE_AND_PAY_API_PATH = 'services.feeAndPayApi'
 
 export const SESSION_SECRET = 'sessionSecret'
-export const PROXY_HOST = 'proxyConfig.host'
-export const PROXY_PORT = 'proxyConfig.port'
 
 // export const LOGGING = 'logging'
 export const JURISDICTIONS = 'jurisdictions'

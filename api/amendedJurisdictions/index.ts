@@ -1,6 +1,5 @@
 import * as express from 'express'
 import * as striptags from 'striptags'
-// import { config } from '../dep-config'
 import {getConfigValue} from '../configuration'
 import {
   SERVICES_TERMS_AND_CONDITIONS_PATH,

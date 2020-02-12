@@ -5,7 +5,7 @@ import * as ejs from 'ejs'
 import * as express from 'express'
 import * as path from 'path'
 import { appInsights } from './lib/appInsights'
-import { getConfigValue, getS2sSecret, getAppInsightsSecret } from './configuration'
+import { getAppInsightsSecret, getConfigValue, getS2sSecret } from './configuration'
 import {
   SERVICES_CCD_COMPONENT_API_PATH,
   SERVICES_CCD_DATA_STORE_API_PATH,
@@ -47,9 +47,9 @@ app.use('/*', (req, res) => {
     })
 })
 
-const secrets = propertiesVolume.addTo({});
+const secrets = propertiesVolume.addTo({})
 
-console.log('CHECK ENVIRONMENT VARIABLES:');
+console.log('CHECK ENVIRONMENT VARIABLES:')
 console.log(getConfigValue('environment'))
 console.log(getConfigValue(SERVICES_CCD_COMPONENT_API_PATH))
 console.log(getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH))
@@ -68,12 +68,12 @@ console.log(getConfigValue(LOGGING))
 console.log(getConfigValue(APP_INSIGHTS_KEY))
 console.log(getConfigValue(SERVICES_TERMS_AND_CONDITIONS_PATH))
 console.log(getConfigValue(HEALTH))
-console.log('END CHECK OF ENVIRONMENTAL VARIABLES');
+console.log('END CHECK OF ENVIRONMENTAL VARIABLES')
 
 // TODO: Let's get the secrets into here.
-console.log('s2sSecret');
-console.log(getS2sSecret(secrets));
-console.log(getAppInsightsSecret(secrets));
+console.log('s2sSecret')
+console.log(getS2sSecret(secrets))
+console.log(getAppInsightsSecret(secrets))
 
 
 app.use(appInsights)

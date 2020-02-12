@@ -1,26 +1,18 @@
-import axios from 'axios'
-import * as express from 'express'
-import * as net from 'net'
-import {Client, ClientMetadata, Issuer, Strategy, TokenSet, UserinfoResponse} from 'openid-client'
-import * as passport from 'passport'
-import * as process from 'process'
-import {app} from '../application'
-import {router as keepAlive} from '../keepalive'
-import * as log4jui from '../lib/log4jui'
-import {propsExist} from '../lib/objectUtilities'
-import {userHasAppAccess} from './manageCasesUserRoleAuth'
-
-
-import { config } from '../config'
+import {getConfigValue, getEnvironment} from '../configuration'
+import {
+  COOKIES_TOKEN,
+  COOKIES_USER_ID,
+  SERVICES_IDAM_API_URL,
+} from '../configuration/references'
 import * as log4jui from '../lib/log4jui'
 import { propsExist } from '../lib/objectUtilities'
 import { asyncReturnOrError, exists } from '../lib/util'
 import { getDetails, postOauthToken } from '../services/idam'
 import { userHasAppAccess } from './manageCasesUserRoleAuth'
 
-const cookieToken = config.cookies.token
-const cookieUserId = config.cookies.userId
-const idamURl = config.services.idam.idamApiUrl
+const cookieToken = getConfigValue(COOKIES_TOKEN)
+const cookieUserId = getConfigValue(COOKIES_USER_ID)
+const idamURl = getConfigValue(SERVICES_IDAM_API_URL)
 
 const logger = log4jui.getLogger('auth')
 
@@ -70,7 +62,7 @@ export async function authenticateUser(req: any, res, next) {
             res.cookie('roles', userDetails.roles)
 
             // need this so angular knows which enviroment config to use ...
-            res.cookie('platform', config.environment)
+            res.cookie('platform', getEnvironment())
         }
     }
     logger.info('Auth finished, redirecting')

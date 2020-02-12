@@ -59,9 +59,7 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
       level: NgxLoggerLevel.TRACE,
       disableConsoleLogging: false
     }),
-    // TODO: This does not work on the build as we're not passing in an options object.
-    // @ts-ignore
-    ExuiCommonLibModule.forRoot()
+    ExuiCommonLibModule.forRoot({launchDarklyKey: ''})
   ],
   providers: [
     {

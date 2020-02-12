@@ -32,6 +32,7 @@ export const SERVICES_IDAM_ISS_URL = 'services.idam.iss'
 export const SERVICES_IDAM_OAUTH_CALLBACK_URL = 'services.idam.oauthCallbackUrl'
 
 export const SERVICES_EM_ANNO_API_URL = 'services.em_anno_api'
+export const SERVICE_S2S_PATH = 'services.s2s'
 
 export const PROTOCOL = 'protocol'
 export const MAX_LOG_LINE = 'maxLogLine'
@@ -63,7 +64,6 @@ export const SERVICES_CCD_DATA_API_PATH = 'services.ccdDataApi'
 export const SERVICES_CCD_DEF_API_PATH = 'services.ccdDefApi'
 export const SERVICES_IDAM_API_PATH = 'services.idamApi'
 export const SERVICES_IDAM_WEB = 'services.idamWeb'
-export const SERVICE_S2S_PATH = 'services.s2s'
 export const SERVICES_RD_PROFESSIONAL_API_PATH = 'services.rdProfessionalApi'
 export const SERVICES_FEE_AND_PAY_API_PATH = 'services.feeAndPayApi'
 

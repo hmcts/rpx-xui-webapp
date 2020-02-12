@@ -31,6 +31,8 @@ export const SERVICES_IDAM_INDEX_URL = 'services.idam.indexUrl'
 export const SERVICES_IDAM_ISS_URL = 'services.idam.iss'
 export const SERVICES_IDAM_OAUTH_CALLBACK_URL = 'services.idam.oauthCallbackUrl'
 
+export const SERVICES_EM_ANNO_API_URL = 'services.em_anno_api'
+
 export const PROTOCOL = 'protocol'
 export const MAX_LOG_LINE = 'maxLogLine'
 export const LOGGING = 'logging'

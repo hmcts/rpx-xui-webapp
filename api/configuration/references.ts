@@ -18,6 +18,9 @@ export const COOKIES_TOKEN = 'cookies.token'
 export const COOKIES_USER_ID = 'cookies.userId'
 export const COOKIES_SESSION_ID = 'cookies.sessionId'
 
+export const SECURE_COOKIE = 'secureCookie'
+export const SESSION_SECRET = 'sessionSecret'
+
 export const PROXY_HOST = 'proxy.host'
 export const PROXY_PORT = 'proxy.port'
 
@@ -53,7 +56,6 @@ export const IDAM_CLIENT = 'idamClient'
 export const MICROSERVICE = 'microservice'
 export const NOW = 'now'
 export const OAUTH_CALLBACK_URL = 'oauthCallbackUrl'
-export const SECURE_COOKIE = 'secureCookie'
 
 export const SERVICES_CCD_DATA_API_PATH = 'services.ccdDataApi'
 export const SERVICES_CCD_DEF_API_PATH = 'services.ccdDefApi'
@@ -62,8 +64,6 @@ export const SERVICES_IDAM_WEB = 'services.idamWeb'
 export const SERVICE_S2S_PATH = 'services.s2s'
 export const SERVICES_RD_PROFESSIONAL_API_PATH = 'services.rdProfessionalApi'
 export const SERVICES_FEE_AND_PAY_API_PATH = 'services.feeAndPayApi'
-
-export const SESSION_SECRET = 'sessionSecret'
 
 // export const LOGGING = 'logging'
 export const JURISDICTIONS = 'jurisdictions'

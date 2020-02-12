@@ -1,6 +1,6 @@
 import * as exceptionFormatter from 'exception-formatter'
 import * as stringify from 'json-stringify-safe'
-import {getConfigValue, getConfigValueNumber} from '../configuration'
+import { getConfigValueNumber } from '../configuration'
 import {
   MAX_LOG_LINE,
 } from '../configuration/references'

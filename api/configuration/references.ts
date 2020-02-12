@@ -38,11 +38,9 @@ export const APP_INSIGHTS_KEY = 'appInsights.instrumentationKey'
 export const SERVICES_TERMS_AND_CONDITIONS_PATH = 'services.termsAndConditions'
 export const HEALTH = 'health'
 
-
 // TODO: Deprecate the following
 
 export const ENVIRONMENT = 'environment'
-
 
 export const COOKIE_TOKEN = 'cookies.token'
 export const COOKIES_USERID = 'cookies.userId'

@@ -1,9 +1,9 @@
 import {getConfigValue} from '../configuration'
 import {
   COOKIES_TOKEN,
+  PROTOCOL,
   SERVICES_IDAM_API_URL,
   SERVICES_IDAM_CLIENT_ID,
-  PROTOCOL,
   SERVICES_IDAM_OAUTH_CALLBACK_URL
 } from '../configuration/references'
 import { http } from '../lib/http'

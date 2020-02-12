@@ -20,7 +20,8 @@ export async function getUserTermsAndConditions(req: express.Request, res: expre
         res.status(400).send(errReport)
     }
     try {
-        const url = getUserTermsAndConditionsUrl(getConfigValue(SERVICES_TERMS_AND_CONDITIONS_PATH), req.params.userId, application.idamClient)
+        const url = getUserTermsAndConditionsUrl(getConfigValue(SERVICES_TERMS_AND_CONDITIONS_PATH),
+            req.params.userId, application.idamClient)
         const response = await http.get(url)
         const userTandCResponse = response.data as GetUserAcceptTandCResponse
         res.send(userTandCResponse.accepted)

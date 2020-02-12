@@ -1,24 +1,24 @@
 import * as express from 'express'
-import * as striptags from 'striptags'
-import {getConfigValue} from '../configuration'
-import {
-  SERVICES_TERMS_AND_CONDITIONS_PATH,
-  SERVICES_CCD_COMPONENT_API_PATH,
-  SERVICES_CCD_DATA_STORE_API_PATH,
-} from '../configuration/references'
-import { http } from '../lib/http'
-import { setHeaders } from '../lib/proxy'
+// import * as striptags from 'striptags'
+// import {getConfigValue} from '../configuration'
+// import {
+//   SERVICES_TERMS_AND_CONDITIONS_PATH,
+//   SERVICES_CCD_COMPONENT_API_PATH,
+//   SERVICES_CCD_DATA_STORE_API_PATH,
+// } from '../configuration/references'
+// import { http } from '../lib/http'
+// import { setHeaders } from '../lib/proxy'
 
 /**
  * Manually filtering returned jurisdictions
  * to make available jurisdiction in filters array only
  */
 export async function getJurisdictions(req: express.Request, res: express.Response) {
-    console.log(req.url)
-    let url = striptags(req.url)
-    console.log(url)
-    url = req.baseUrl  + url
-    const headers: any = setHeaders(req)
+    // console.log(req.url)
+    // let url = striptags(req.url)
+    // console.log(url)
+    // url = req.baseUrl  + url
+    // const headers: any = setHeaders(req)
 
     res.status(200)
 

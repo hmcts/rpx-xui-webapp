@@ -1,9 +1,9 @@
 import * as express from 'express'
 // import { config } from '../dep-config'
 import {getConfigValue} from '../configuration'
-import {
-  SERVICES_CCD_COMPONENT_API_PATH,
-} from '../configuration/references'
+// import {
+//   SERVICES_CCD_COMPONENT_API_PATH,
+// } from '../configuration/references'
 import { http } from '../lib/http'
 import * as log4jui from '../lib/log4jui'
 

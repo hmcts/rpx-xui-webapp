@@ -61,7 +61,7 @@ export const getS2sSecret = (secretsConfig): string => {
     'secrets.rpx.mc-s2s-client-secret not found on this environment.'
 
   if (propsExist(secretsConfig, ['secrets', 'rpx', 'mc-s2s-client-secret'])) {
-    // tslint:disable-next-line: no-string-literal
+    // tslint:disable-next-line
     return secretsConfig['secrets']['rpx']['mc-s2s-client-secret']
   } else {
     console.log(ERROR_S2S_SECRET_NOT_FOUND)
@@ -72,15 +72,16 @@ export const getS2sSecret = (secretsConfig): string => {
 // Works on T&Cs
 export const getAppInsightsSecret = (secretsConfig): string => {
   const ERROR_APP_INSIGHT_SECRET_NOT_FOUND =
-    'secrets.rpx.appinsights-instrumentationkey-tc not found on this environment.';
+    'secrets.rpx.appinsights-instrumentationkey-tc not found on this environment.'
 
   if (propsExist(secretsConfig, ['secrets', 'rpx', 'appinsights-instrumentationkey-tc'])) {
-    return secretsConfig['secrets']['rpx']['appinsights-instrumentationkey-tc'];
+    // tslint:disable-next-line
+    return secretsConfig['secrets']['rpx']['appinsights-instrumentationkey-tc']
   } else {
-    console.log(ERROR_APP_INSIGHT_SECRET_NOT_FOUND);
-    return '';
+    console.log(ERROR_APP_INSIGHT_SECRET_NOT_FOUND)
+    return ''
   }
-};
+}
 
 /**
  * Generate Environment Check Text
@@ -88,7 +89,8 @@ export const getAppInsightsSecret = (secretsConfig): string => {
  * We generate text to be used for debugging purposes, so as the person attempting to initialise the application knows
  * what the NODE_CONFIG_ENV is set as and what dep-config file is being used.
  */
-export const environmentCheckText = () => `NODE_CONFIG_ENV is set as ${process.env.NODE_CONFIG_ENV} therefore we are using the ${config.get(ENVIRONMENT)} config.`
+export const environmentCheckText = () => `NODE_CONFIG_ENV is set as ${process.env.NODE_CONFIG_ENV} therefore
+                                      we are using the ${config.get(ENVIRONMENT)} config.`
 
 /**
  * Get Protocol

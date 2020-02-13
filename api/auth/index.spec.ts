@@ -14,7 +14,6 @@ import {
 import * as idam from '../services/idam'
 import { authenticateUser, logout } from './index'
 
-
 describe('Auth', () => {
 
     describe('logOut', () => {

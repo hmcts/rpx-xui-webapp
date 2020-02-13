@@ -45,7 +45,7 @@ describe('interceptors', () => {
     },
   }
   describe('requestInterceptor', () => {
-    xit('Should log outbound request', () => {
+    it('Should log outbound request', () => {
       const spy = sinon.spy()
       const getLoggerStub = sinon.stub(log4js, 'getLogger')
       // @ts-ignore

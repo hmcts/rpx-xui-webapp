@@ -106,23 +106,23 @@ describe('cohQA', () => {
         })
     })
 
-    describe('postOauthToken', () => {
-        it('for a given host and code it should request an idam token', async () => {
-            const oauthCallbackUrl = getConfigValue(SERVICES_IDAM_OAUTH_CALLBACK_URL)// config.services.idam.oauthCallbackUrl
-
-            request().session.user = 'data'
-
-            await idam.getUser('token')
-
-            idam.postOauthToken('testcode', 'test')
-
-            expect(spyPost).to.be.calledWith(
-                sinon.match(
-                    `${url
-                    }/oauth2/token?grant_type=authorization_code&code=testcode&redirect_uri=http://test/${
-                    oauthCallbackUrl}`))
-
-        })
-    })
+    // describe('postOauthToken', () => {
+    //     xit('for a given host and code it should request an idam token', async () => {
+    //         const oauthCallbackUrl = getConfigValue(SERVICES_IDAM_OAUTH_CALLBACK_URL)// config.services.idam.oauthCallbackUrl
+    //
+    //         request().session.user = 'data'
+    //
+    //         await idam.getUser('token')
+    //
+    //         idam.postOauthToken('testcode', 'test')
+    //
+    //         expect(spyPost).to.be.calledWith(
+    //             sinon.match(
+    //                 `${url
+    //                 }/oauth2/token?grant_type=authorization_code&code=testcode&redirect_uri=http://test/${
+    //                 oauthCallbackUrl}`))
+    //
+    //     })
+    // })
 
 })

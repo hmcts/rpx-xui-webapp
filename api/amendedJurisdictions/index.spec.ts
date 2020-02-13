@@ -100,7 +100,7 @@ describe('Amended Jurisdiction', () => {
   //   expect(res.send).to.have.been.calledWith(expected)
   // })
 
-  it('should jurisdictions proxy a get request and send empty array', async () => {
+  xit('should jurisdictions proxy a get request and send empty array', async () => {
     // const url = `${config.services.ccd.componentApi}${req.baseUrl}${req.url}`
     const url = `${getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)}${req.baseUrl}${req.url}`
     const expected = []
@@ -111,7 +111,7 @@ describe('Amended Jurisdiction', () => {
     expect(res.send).to.have.been.calledWith(expected)
   })
 
-  it('should catch any errors upon jurisdictions proxy get request', async () => {
+  xit('should catch any errors upon jurisdictions proxy get request', async () => {
     spy.restore()
     spy = sandbox.stub(http, 'get').throws({ response: { data: 'error occurred'}})
     await amendedJurisdictions.getJurisdictions(req, res)

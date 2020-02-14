@@ -19,7 +19,6 @@
     "em_anno_api": "HEALTH_EM_ANNO_API",
     "termsAndConditions": "HEALTH_TERMS_AND_CONDITIONS_API"
   },
-  "secureCookie": false,
   "services": {
     "ccd": {
       "componentApi": "SERVICES_CCD_COMPONENT_API",

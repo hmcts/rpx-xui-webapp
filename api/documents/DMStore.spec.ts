@@ -65,11 +65,11 @@ describe('DMStore', () => {
 
         const documentId = 'Document Id'
 
-        it('Should make a http.get call based on the document Id', async () => {
-
-            await DMStore.getDocumentBinary(documentId)
-            expect(spy).to.be.calledWith(`${url}/documents/${documentId}/binary`)
-        })
+        // xit('Should make a http.get call based on the document Id', async () => {
+        //
+        //     await DMStore.getDocumentBinary(documentId)
+        //     expect(spy).to.be.calledWith(`${url}/documents/${documentId}/binary`)
+        // })
 
         it('Should return the data property of the return of the http.get call', async () => {
 

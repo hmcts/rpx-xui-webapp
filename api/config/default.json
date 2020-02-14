@@ -11,7 +11,7 @@
     "instrumentationKey": ""
   },
   "logging": "debug",
-  "maxLogLine": 10,
+  "maxLogLine": 80,
   "health": {
     "ccdComponentApi": "http://ccd-api-gateway-web-prod.service.core-compute-prod.internal/health",
     "ccdDataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal/health",

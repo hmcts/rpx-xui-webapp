@@ -25,7 +25,7 @@ import {
 } from './configuration/references'
 import { appInsights } from './lib/appInsights'
 
-const secrets = propertiesVolume.addTo({}, { mountPoint: '/Volumes/mnt/secrets/', failOnError: true })
+const secrets = propertiesVolume.addTo({}, { mountPoint: '/Volumes/mnt/secrets/', failOnError: false })
 
 console.log('CHECK ENVIRONMENT VARIABLES:')
 console.log(getConfigValue('environment'))
@@ -38,7 +38,6 @@ console.log(getConfigValue(SERVICES_IDAM_API_URL))
 console.log(getConfigValue(SERVICES_IDAM_CLIENT_ID))
 console.log(getConfigValue(SERVICES_IDAM_LOGIN_URL))
 console.log(getConfigValue(SERVICES_IDAM_INDEX_URL))
-console.log(getConfigValue(SERVICES_IDAM_ISS_URL))
 console.log(getConfigValue(SERVICES_IDAM_OAUTH_CALLBACK_URL))
 console.log(getConfigValue(PROTOCOL))
 console.log(getConfigValue(MAX_LOG_LINE))

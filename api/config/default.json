@@ -1,6 +1,6 @@
 {
   "environment": {
-    "name": "default environment"
+    "name": "This file: default.json contains the default values, ie. production values."
   },
   "cookies": {
     "token": "__auth__",
@@ -41,6 +41,7 @@
   "protocol": "https",
   "microservice": "xui_webapp",
   "proxy": {
+    "enabled": false,
     "host": "172.16.0.7",
     "port": 8080
   },

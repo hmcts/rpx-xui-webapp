@@ -42,7 +42,7 @@
   "microservice": "MICROSERVICE",
   "proxy": {
     "host": "172.16.0.7",
-    "port": 8080
+    "port": "PROXY_PORT"
   },
   "sessionSecret": "SESSION_SECRET"
 }

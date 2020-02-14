@@ -19,7 +19,6 @@
     "em_anno_api": "http://em-anno-prod.service.core-compute-prod.internal",
     "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal/health"
   },
-  "secureCookie": false,
   "services": {
     "ccd": {
       "componentApi": "http://ccd-api-gateway-web-prod.service.core-compute-prod.internal",

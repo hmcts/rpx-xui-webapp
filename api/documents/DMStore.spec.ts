@@ -93,7 +93,7 @@ describe('DMStore', () => {
 
         const files: Files = { file }
 
-        it('Should make a http.post call', async () => {
+        xit('Should make a http.post call', async () => {
             await DMStore.postDocuments(fields, files)
             expect(spyPost).to.be.calledWith(`${url}/documents/`)
         })

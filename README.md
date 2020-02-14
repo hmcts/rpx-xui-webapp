@@ -65,9 +65,20 @@ Extended version of script below:
 
 # Path to configuration
 
-You need to setup a variable that points to the /config folder where the .json
-configuration files are stored.
-`export NODE_CONFIG_DIR=/Users/philip/projects/rpx-xui-webapp/config`
+The application should point to the configuration folder that contains the .json configuration files. There 
+should only ever be two files within this folder:
+
+custom-environmental-variables.json <- Allows configuration values to be set by the machines environmental values.
+Through the Jenkins pipelines they are overwritten by values.*.template.yaml files for the Preview and AAT enviroments.
+On AKS they are only overwritten by values.yaml
+default.json <- Should contain Production configuration values.
+
+Adding new files into /config should be avoided, as it increases complexity. Local needs to be setup to point 
+at AAT, but this should be done by the developer on their local machine. 
+
+It increases complexity if we were to add files to /config as we already have the Preview and AAT Jenkins enviromental values contained within values.preview.template.yaml and values.aat.template.yaml.
+
+We should only have a default.json file within /config that has all the Production configuration values.
 
 # Environment
 

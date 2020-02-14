@@ -1,6 +1,6 @@
 {
   "environment": {
-    "name": "custom environment"
+    "name": "This file: custom-environment-variables overwrites all other .json files within the /config folder"
   },
   "cookies": {
     "token": "__auth__",
@@ -41,6 +41,7 @@
   "protocol": "PROTOCOL",
   "microservice": "MICROSERVICE",
   "proxy": {
+    "enabled": "PROXY_ENABLED",
     "host": "172.16.0.7",
     "port": "PROXY_PORT"
   },

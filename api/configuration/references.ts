@@ -21,6 +21,7 @@ export const COOKIES_SESSION_ID = 'cookies.sessionId'
 export const SECURE_COOKIE = 'secureCookie'
 export const SESSION_SECRET = 'sessionSecret'
 
+export const PROXY_ENABLED = 'proxy.enabled'
 export const PROXY_HOST = 'proxy.host'
 export const PROXY_PORT = 'proxy.port'
 

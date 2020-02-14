@@ -384,14 +384,15 @@
   resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.34-alpha.tgz#0d39b6d06c632ccb7c578fc91e3311306da9db0d"
   integrity sha512-+q3IB4L3UHsD5cs/11PDWEftDAmDV6eYkxm9eoNtXAfea93VhXNFA9ZEIV+TM7v/9xaAIkmDj9C4kCSUb1Hl3g==
 
-"@hmcts/media-viewer@^1.1.12":
-  version "1.1.14"
-  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-1.1.14.tgz#9af5d1104f82d94e75e2451d4d42bc33eab49bff"
-  integrity sha512-YqSPY5edW5ulBDCIfhLxuLMUbLqkl85HTC1UF7g8muPrE28TBv5f882JJDKuBPZtxgx8MRMlmjYSyyNUrAbDcw==
+"@hmcts/media-viewer@^1.1.15":
+  version "1.1.15"
+  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-1.1.15.tgz#c85b57dea63cf9755422cc2e2c139e6158693cee"
+  integrity sha512-hJgDIQ2FVqp5U9uv6pGtCVPIO1woiKPFKHtwZM729AfFsnl6RWDwLY6tJ5WZUiRSNty79ecBv5K8M/zFd02IlA==
   dependencies:
     "@hmcts/frontend" "^0.0.34-alpha"
     govuk-frontend "^2.11.0"
-    mutable-div "0.0.8"
+    hammerjs "^2.0.8"
+    mutable-div "0.0.11"
     pdfjs-dist "2.0.943"
     tslib "^1.9.0"
     uuid "^3.3.2"
@@ -4491,6 +4492,11 @@ growl@1.10.5:
   resolved "https://registry.yarnpkg.com/growl/-/growl-1.10.5.tgz#f2735dc2283674fa67478b10181059355c369e5e"
   integrity sha512-qBr4OuELkhPenW6goKVXiv47US3clb3/IbuWF9KNKEijAy9oeHxU9IgzjvJhHkUzhaj7rOUD7+YGWqUjLp5oSA==
 
+hammerjs@^2.0.8:
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/hammerjs/-/hammerjs-2.0.8.tgz#04ef77862cff2bb79d30f7692095930222bf60f1"
+  integrity sha1-BO93hiz/K7edMPdpIJWTAiK/YPE=
+
 handle-thing@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/handle-thing/-/handle-thing-2.0.0.tgz#0e039695ff50c93fc288557d696f3c1dc6776754"
@@ -6540,10 +6546,10 @@ mustache@^2.3.0:
   resolved "https://registry.yarnpkg.com/mustache/-/mustache-2.3.2.tgz#a6d4d9c3f91d13359ab889a812954f9230a3d0c5"
   integrity sha512-KpMNwdQsYz3O/SBS1qJ/o3sqUJ5wSb8gb0pul8CO0S56b9Y2ALm8zCfsjPXsqGFfoNBkDwZuZIAjhsZI03gYVQ==
 
-mutable-div@0.0.8:
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/mutable-div/-/mutable-div-0.0.8.tgz#f953b0259a0a2d40f11ec941958124a97f67541c"
-  integrity sha512-5d8QsA9DQUy/2mw819PK4oBhuCDvaN6aXNtOjvl+XMQ32Q2pVELcijUUlIpsoip6WjRn1mMCotru3ujUs8kGhA==
+mutable-div@0.0.11:
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/mutable-div/-/mutable-div-0.0.11.tgz#b807c826ed16ca96fcb51e34dc0303ab901464b0"
+  integrity sha512-R6r3UAdPX2oHeWKLPX4BpnHa9Un/NdjovHyOk/TbDX0gCx5yxVftGewX6oP8yYxYbo0VsV9jU9PZtOzrJ9EKvQ==
   dependencies:
     tslib "^1.9.0"
 

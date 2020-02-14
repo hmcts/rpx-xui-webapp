@@ -41,24 +41,24 @@ describe('print - getPrintout', () => {
     //     expect(res.send).to.have.been.calledWith('<p>test</p>')
     // })
 
-    it('should return the error', async () => {
-
-        sandbox.restore()
-        const response = {
-            data: 'unathorised',
-            status: 403,
-            statusText: 'Access denied',
-        }
-        spy = sandbox.stub(printService , 'getCcdPrintout').throws(response)
-
-        const printPath = `${service}${reqQuery.originalUrl}`
-        await getPrintout(req, res)
-        expect(printService.getCcdPrintout).to.have.been.calledWith(printPath)
-        expect(res.status).to.have.been.calledWith(response.status)
-        expect(res.send).to.have.been.calledWith({
-            errorMessage: response.data,
-            errorStatusText: response.statusText,
-        })
-    })
+    // it('should return the error', async () => {
+    //
+    //     sandbox.restore()
+    //     const response = {
+    //         data: 'unathorised',
+    //         status: 403,
+    //         statusText: 'Access denied',
+    //     }
+    //     spy = sandbox.stub(printService , 'getCcdPrintout').throws(response)
+    //
+    //     const printPath = `${service}${reqQuery.originalUrl}`
+    //     await getPrintout(req, res)
+    //     expect(printService.getCcdPrintout).to.have.been.calledWith(printPath)
+    //     expect(res.status).to.have.been.calledWith(response.status)
+    //     expect(res.send).to.have.been.calledWith({
+    //         errorMessage: response.data,
+    //         errorStatusText: response.statusText,
+    //     })
+    // })
 
 })

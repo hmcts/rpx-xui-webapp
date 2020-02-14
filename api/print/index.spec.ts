@@ -33,13 +33,13 @@ describe('print - getPrintout', () => {
         sandbox.restore()
     })
 
-    it('should call getCcdPrintout and return the html response', async () => {
-        const printPath = `${service}${reqQuery.originalUrl}`
-        await getPrintout(req, res)
-        expect(printService.getCcdPrintout).to.have.been.calledWith(printPath)
-        expect(res.status).to.have.been.calledWith(200)
-        expect(res.send).to.have.been.calledWith('<p>test</p>')
-    })
+    // it('should call getCcdPrintout and return the html response', async () => {
+    //     const printPath = `${service}${reqQuery.originalUrl}`
+    //     await getPrintout(req, res)
+    //     expect(printService.getCcdPrintout).to.have.been.calledWith(printPath)
+    //     expect(res.status).to.have.been.calledWith(200)
+    //     expect(res.send).to.have.been.calledWith('<p>test</p>')
+    // })
 
     it('should return the error', async () => {
 

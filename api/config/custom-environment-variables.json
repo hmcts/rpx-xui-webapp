@@ -45,5 +45,6 @@
     "host": "172.16.0.7",
     "port": "PROXY_PORT"
   },
-  "sessionSecret": "SESSION_SECRET"
+  "sessionSecret": "SESSION_SECRET",
+  "jurisdictions"
 }

@@ -46,5 +46,5 @@
     "port": "PROXY_PORT"
   },
   "sessionSecret": "SESSION_SECRET",
-  "jurisdictions"
+  "jurisdictions": "JURISDICTIONS"
 }

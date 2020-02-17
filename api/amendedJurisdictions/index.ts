@@ -2,6 +2,7 @@ import * as express from 'express'
 import * as striptags from 'striptags'
 import {getConfigValue} from '../configuration'
 import {
+  JURISDICTIONS,
   SERVICES_CCD_COMPONENT_API_PATH,
 } from '../configuration/references'
 import { http } from '../lib/http'
@@ -18,14 +19,13 @@ import { setHeaders } from '../lib/proxy'
  *
  * as per EUI-1075
  */
-const getFilters = () => ['DIVORCE', 'PROBATE', 'FR', 'PUBLICLAW', 'IA']
+const getFilters = () => getConfigValue(JURISDICTIONS)
 
 /**
  * Manually filtering returned jurisdictions
  * to make available jurisdiction in filters array only
  */
 export async function getJurisdictions(req: express.Request, res: express.Response) {
-    console.log('getJurisdictions')
     let url = striptags(req.url)
     url = req.baseUrl  + url
     const headers: any = setHeaders(req)
@@ -37,18 +37,9 @@ export async function getJurisdictions(req: express.Request, res: express.Respon
 
         const filters = { jurisdiction: getFilters() }
 
-        let amendedJurisdictions = []
-        // if (config.environment === 'local') {
-        if (false) {
-          amendedJurisdictions = response.data
-          console.log('amendedJurisdictions')
-          console.log(amendedJurisdictions)
-        } else {
-          amendedJurisdictions = [...response.data].filter(o => filters.jurisdiction.includes(o.id))
-          console.log('amendedJurisdictions')
-          console.log(amendedJurisdictions)
-          res.status(200)
-        }
+        const amendedJurisdictions = [...response.data].filter(o => filters.jurisdiction.includes(o.id))
+        res.status(200)
+
         res.send(amendedJurisdictions)
     } catch (e) {
         res.status(e.response.status)

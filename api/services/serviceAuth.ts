@@ -26,6 +26,12 @@ export async function postS2SLease() {
 
     console.log('serviceAuth: s2sSecret')
     console.log(s2sSecret)
+    console.log('microservice')
+    console.log(microservice)
+    console.log('oneTimePassword')
+    console.log(oneTimePassword)
+    console.log('s2sPath')
+    console.log(s2sPath)
     logger.info('generating from secret  :', s2sSecret,
         microservice,
         oneTimePassword

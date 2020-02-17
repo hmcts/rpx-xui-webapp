@@ -22,7 +22,7 @@ import {
   SERVICES_IDAM_LOGIN_URL,
   SERVICES_IDAM_OAUTH_CALLBACK_URL,
   SERVICES_TERMS_AND_CONDITIONS_PATH,
-} from './configuration/references';
+} from './configuration/references'
 import { appInsights } from './lib/appInsights'
 
 app.engine('html', ejs.renderFile)

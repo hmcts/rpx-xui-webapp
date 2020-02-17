@@ -30,6 +30,10 @@ export const getConfigValue = reference => {
   return config.get<string>(reference)
 }
 
+export const hasConfigValue = reference => {
+  return config.has(reference)
+}
+
 // TODO: Refactor
 export const getConfigValueNumber = reference => {
   return config.get<number>(reference)

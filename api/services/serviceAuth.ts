@@ -23,6 +23,8 @@ export async function postS2SLease() {
 
     const oneTimePassword = otp({ secret: s2sSecret }).totp()
 
+    console.log('serviceAuth: s2sSecret')
+    console.log(s2sSecret)
     logger.info('generating from secret  :', s2sSecret,
         microservice,
         oneTimePassword

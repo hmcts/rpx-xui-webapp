@@ -13,8 +13,8 @@ const s2sPath = getConfigValue(SERVICE_S2S_PATH)
 // const microservice = config.get('microservice')
 const microservice = getConfigValue(MICROSERVICE)
 
-// const mountedSecrets = propertiesVolume.addTo({})
-const mountedSecrets = propertiesVolume.addTo({}, { mountPoint: '/Volumes/mnt/secrets/' })
+const mountedSecrets = propertiesVolume.addTo({})
+// const mountedSecrets = propertiesVolume.addTo({}, { mountPoint: '/Volumes/mnt/secrets/' })
 
 const s2sSecret = getS2sSecret(mountedSecrets)
 

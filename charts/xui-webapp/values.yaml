@@ -17,7 +17,6 @@ nodejs:
     PROTOCOL: https
     MICROSERVICE: xui_webapp
     SESSION_SECRET: secretSauce
-    PROXY_ENABLED: false
   keyVaults:
     rpx:
       resourceGroup: rpx

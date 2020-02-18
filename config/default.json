@@ -1,6 +1,6 @@
 {
   "environment": {
-    "name": "default environment"
+    "name": "This file: default.json contains the default values, ie. production values."
   },
   "cookies": {
     "token": "__auth__",
@@ -11,30 +11,28 @@
     "instrumentationKey": ""
   },
   "logging": "debug",
-  "maxLogLine": 10,
+  "maxLogLine": 80,
   "health": {
-    "ccdComponentApi": "http://ccd-api-gateway-web-aat.service.core-compute-aat.internal/health",
-    "ccdDataApi": "http://ccd-data-store-api-aat.service.core-compute-aat.internal/health",
-    "documentsApi": "http://dm-store-aat.service.core-compute-aat.internal/health",
-    "em_anno_api": "http://em-anno-aat.service.core-compute-aat.internal/health",
+    "ccdComponentApi": "http://ccd-api-gateway-web-prod.service.core-compute-prod.internal/health",
+    "ccdDataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal/health",
+    "documentsApi": "http://dm-store-prod.service.core-compute-prod.internal/health",
+    "em_anno_api": "http://em-anno-prod.service.core-compute-prod.internal",
     "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal/health"
   },
-  "secureCookie": false,
   "services": {
     "ccd": {
-      "componentApi": "http://ccd-api-gateway-web-aat.service.core-compute-aat.internal",
-      "dataApi": "http://ccd-data-store-api-aat.service.core-compute-aat.internal"
+      "componentApi": "http://ccd-api-gateway-web-prod.service.core-compute-prod.internal",
+      "dataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal"
     },
     "documents": {
-      "api": "http://dm-store-aat.service.core-compute-aat.internal"
+      "api": "http://dm-store-prod.service.core-compute-prod.internal"
     },
     "em_anno_api": "http://em-anno-prod.service.core-compute-prod.internal",
     "idam": {
-      "idamApiUrl": "https://idam-api.aat.platform.hmcts.net",
+      "idamApiUrl": "https://idam-api.platform.hmcts.net",
       "idamClientID": "xuiwebapp",
-      "idamLoginUrl": "https://idam-web-public.aat.platform.hmcts.net",
+      "idamLoginUrl": "https://hmcts-access.service.gov.uk",
       "indexUrl": "/",
-      "iss": "https://forgerock-am.service.core-compute-idam-aat.internal:8443/openam/oauth2/hmcts",
       "oauthCallbackUrl": "oauth2/callback"
     },
     "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal",
@@ -43,8 +41,10 @@
   "protocol": "https",
   "microservice": "xui_webapp",
   "proxy": {
+    "enabled": false,
     "host": "172.16.0.7",
     "port": 8080
   },
-  "sessionSecret": "secretSauce"
+  "sessionSecret": "secretSauce",
+  "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA"
 }

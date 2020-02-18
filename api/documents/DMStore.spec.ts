@@ -4,6 +4,10 @@ import {Fields, File, Files} from 'formidable'
 import 'mocha'
 import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
+import {getConfigValue} from '../configuration'
+import {
+  SERVICES_DOCUMENTS_API_PATH,
+} from '../configuration/references'
 
 chai.use(sinonChai)
 
@@ -17,7 +21,7 @@ describe('DMStore', () => {
         data: 'okay',
     }
 
-    const url: string = config.services.documents.api
+    const url: string = getConfigValue(SERVICES_DOCUMENTS_API_PATH)
 
     let spy: any
     let spyDelete: any
@@ -48,11 +52,11 @@ describe('DMStore', () => {
 
         const documentId = 'document Id'
 
-        // xit('Should make a http.get call based on the document Id', async () => {
-        //
-        //     await DMStore.getDocument(documentId)
-        //     expect(spy).to.be.calledWith(`${url}/documents/${documentId}`)
-        // })
+        it('Should make a http.get call based on the document Id', async () => {
+
+            await DMStore.getDocument(documentId)
+            expect(spy).to.be.calledWith(`${url}/documents/${documentId}`)
+        })
 
         it('Should return the data property of the return of a http.get call', async () => {
 
@@ -65,11 +69,11 @@ describe('DMStore', () => {
 
         const documentId = 'Document Id'
 
-        // xit('Should make a http.get call based on the document Id', async () => {
-        //
-        //     await DMStore.getDocumentBinary(documentId)
-        //     expect(spy).to.be.calledWith(`${url}/documents/${documentId}/binary`)
-        // })
+        it('Should make a http.get call based on the document Id', async () => {
+
+            await DMStore.getDocumentBinary(documentId)
+            expect(spy).to.be.calledWith(`${url}/documents/${documentId}/binary`)
+        })
 
         it('Should return the data property of the return of the http.get call', async () => {
 
@@ -93,7 +97,7 @@ describe('DMStore', () => {
 
         const files: Files = { file }
 
-        xit('Should make a http.post call', async () => {
+        it('Should make a http.post call', async () => {
             await DMStore.postDocuments(fields, files)
             expect(spyPost).to.be.calledWith(`${url}/documents/`)
         })

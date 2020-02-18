@@ -8,7 +8,7 @@
         "coverage": "NODE_CONFIG_DIR=../config npx nyc mocha",
         "lint": "npx tslint --project .",
         "watch": "nodemon --watch '**/*.ts' --exec ts-node local.ts",
-        "test": "mocha || true",
+        "test": "NODE_CONFIG_DIR=../config npx nyc mocha",
         "test:watch": "mocha --watch --recursive --watch-extensions ts",
         "start": "cd ../dist/jui-backend && node server.js"
     },

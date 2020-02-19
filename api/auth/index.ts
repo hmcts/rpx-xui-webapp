@@ -1,4 +1,4 @@
-import {getConfigValue, getEnvironment} from '../configuration'
+import {getConfigValue} from '../configuration'
 import {
   COOKIES_TOKEN,
   COOKIES_USER_ID,
@@ -60,9 +60,6 @@ export async function authenticateUser(req: any, res, next) {
             res.cookie(cookieUserId, userDetails.id)
             res.cookie(cookieToken, data.access_token)
             res.cookie('roles', userDetails.roles)
-
-            // need this so angular knows which enviroment config to use ...
-            res.cookie('platform', getEnvironment())
         }
     }
     logger.info('Auth finished, redirecting')

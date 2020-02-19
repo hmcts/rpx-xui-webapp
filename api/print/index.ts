@@ -1,12 +1,15 @@
 import * as express from 'express'
-import {config} from '../dep-config'
+import {getConfigValue} from '../configuration'
+import {
+  SERVICES_CCD_COMPONENT_API_PATH,
+} from '../configuration/references'
 import {EnhancedRequest} from '../lib/models'
 import {getCcdPrintout} from './printService'
 
 /**
  * getPrintout
  *
- * Note that within the dep-config.json file the 'print_service_url' property is set as '/print'.
+ * Note that within the config.json file the 'print_service_url' property is set as '/print'.
  *
  * The Case Viewer CCD Component uses the 'print_service_url' property in conjunction with 'remote_print_service_url'.
  *
@@ -19,7 +22,7 @@ import {getCcdPrintout} from './printService'
  */
 export async function getPrintout(req: EnhancedRequest, res: express.Response) {
 
-  const url: string = config.services.ccd.componentApi
+  const url: string = getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)
   const printoutPath = url + req.originalUrl
 
   try {

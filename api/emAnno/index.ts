@@ -7,7 +7,6 @@ import {EnhancedRequest} from '../lib/models'
 import {handleDelete, handleGet, handlePost, handlePut} from './emAnnoService'
 import { Annotation, Annotations } from './models'
 
-// const url: string = config.services.em_anno_api
 const url: string = getConfigValue(SERVICES_EM_ANNO_API_URL)
 
 /**

@@ -1,12 +1,10 @@
 import * as express from 'express'
-// import { config } from '../dep-config'
 import {getConfigValue} from '../configuration'
-// import {
-//   SERVICES_CCD_COMPONENT_API_PATH,
-// } from '../configuration/references'
+import {
+  HEALTH,
+} from '../configuration/references'
 import { http } from '../lib/http'
 import * as log4jui from '../lib/log4jui'
-
 export const router = express.Router({ mergeParams: true })
 const logger = log4jui.getLogger('outgoing')
 
@@ -53,12 +51,10 @@ export function getPromises(path): any[] {
         }
     }
 
-    // TODO: New logic TEST
-    const health = getConfigValue('health')
+    const health = getConfigValue(HEALTH)
 
     if (healthCheckEndpointDictionary[path]) {
         healthCheckEndpointDictionary[path].forEach(endpoint => {
-            // TODO: New logic TEST
             Promises.push(http.get(health[endpoint]))
         })
     }

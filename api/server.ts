@@ -23,7 +23,7 @@ import {
   SERVICES_IDAM_INDEX_URL,
   SERVICES_IDAM_LOGIN_URL,
   SERVICES_IDAM_OAUTH_CALLBACK_URL,
-  SERVICES_TERMS_AND_CONDITIONS_PATH,
+  SERVICES_TERMS_AND_CONDITIONS_URL,
 } from './configuration/references'
 import { appInsights } from './lib/appInsights'
 
@@ -67,7 +67,7 @@ console.log(getConfigValue(PROTOCOL))
 console.log(getConfigValue(MAX_LOG_LINE))
 console.log(getConfigValue(LOGGING))
 console.log(getConfigValue(APP_INSIGHTS_KEY))
-console.log(getConfigValue(SERVICES_TERMS_AND_CONDITIONS_PATH))
+console.log(getConfigValue(SERVICES_TERMS_AND_CONDITIONS_URL))
 console.log(getConfigValue(HEALTH))
 console.log(getConfigValue(SERVICE_S2S_PATH))
 console.log('END CHECK OF ENVIRONMENTAL VARIABLES')

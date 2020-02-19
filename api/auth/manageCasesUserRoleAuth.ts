@@ -1,13 +1,9 @@
-// import {config} from '../config'
-
 /**
  * getLoginRoleMatcher
  *
  * The role who is able to access this application should have a prefix of 'caseworker'.
  *
  * The matcher is passed in through the config.
- *
- * TODO: Should come from a configuration value
  *
  * @returns {string} - ie. 'caseworker'
  */

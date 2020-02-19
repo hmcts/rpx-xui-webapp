@@ -11,7 +11,6 @@ import { asyncReturnOrError } from '../util'
 const logger = log4jui.getLogger('service-token')
 const that = this
 const cache = {}
-// const microservice = config.microservice
 const microservice = getConfigValue(MICROSERVICE)
 
 export function validateCache() {

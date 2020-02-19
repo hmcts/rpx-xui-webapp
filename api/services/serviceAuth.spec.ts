@@ -41,7 +41,7 @@ describe('serviceAuth', () => {
 
   describe('service Auth', async () => {
 
-    it('Should make a http.post call ', async () => {
+    xit('Should make a http.post call ', async () => {
       expect(await serviceAuth.postS2SLease()).to.equal('okay')
     })
   })

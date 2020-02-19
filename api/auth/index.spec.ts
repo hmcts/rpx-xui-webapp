@@ -6,7 +6,7 @@ import * as sinonChai from 'sinon-chai'
 import { mockReq, mockRes } from 'sinon-express-mock'
 chai.use(sinonChai)
 
-import {getConfigValue, getEnvironment} from '../configuration'
+import {getConfigValue} from '../configuration'
 import {
   COOKIES_TOKEN,
   COOKIES_USER_ID,

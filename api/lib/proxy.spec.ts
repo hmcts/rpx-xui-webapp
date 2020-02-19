@@ -11,7 +11,6 @@ import {
 
 chai.use(sinonChai)
 
-// import { config } from '../dep-config'
 import {http} from './http'
 import * as proxy from './proxy'
 

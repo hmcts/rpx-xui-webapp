@@ -1,6 +1,5 @@
 import { Request, Response } from 'express'
 import { generate } from 'shortid'
-// import { config } from '../../dep-config'
 import {getConfigValue} from '../../configuration'
 import {
   COOKIES_SESSION_ID,
@@ -10,7 +9,6 @@ import { EnhancedRequest } from '../models'
 // TODO!!!: remove this entire file.
 // concerns: the last request/response from any user is now stored to node memory
 
-// const sessionId = config.cookies.sessionId
 const sessionId = getConfigValue(COOKIES_SESSION_ID)
 
 let res = null

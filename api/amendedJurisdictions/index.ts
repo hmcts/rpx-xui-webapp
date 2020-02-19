@@ -10,13 +10,6 @@ import { setHeaders } from '../lib/proxy'
 
 /**
  * getFilters
- *
- * On the Demo environment this needs to be:
- * ['DIVORCE', 'PROBATE', 'FR', 'PUBLICLAW', 'IA', 'CMC', 'SSCS']
- * whereas on all other environments this should be:
- * ['DIVORCE', 'PROBATE', 'FR', 'PUBLICLAW', 'IA']
- *
- * as per EUI-1075
  */
 const getFilters = () => getConfigValue(JURISDICTIONS)
 

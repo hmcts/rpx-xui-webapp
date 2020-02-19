@@ -3,13 +3,11 @@ import { expect } from 'chai'
 import 'mocha'
 import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
-import { mockReq, mockRes } from 'sinon-express-mock'
 chai.use(sinonChai)
 
 import { http } from '../lib/http'
 import { request } from '../lib/middleware/responseRequest'
 
-import * as idam from './idam'
 import {getConfigValue} from '../configuration'
 import {
   COOKIES_TOKEN,
@@ -18,15 +16,14 @@ import {
   SERVICES_IDAM_CLIENT_ID,
   SERVICES_IDAM_OAUTH_CALLBACK_URL
 } from '../configuration/references'
+import * as idam from './idam'
 
 const idamSecret = process.env.IDAM_SECRET || 'AAAAAAAAAAAAAAAA'
-// const idamClient = config.services.idam.idamClientID
 const idamClient = getConfigValue(SERVICES_IDAM_CLIENT_ID)
 
 describe('cohQA', () => {
     let res
 
-    // const url = config.services.idam.idamApiUrl
     const url = getConfigValue(SERVICES_IDAM_API_URL)
 
     let spy: any
@@ -106,23 +103,23 @@ describe('cohQA', () => {
         })
     })
 
-    // describe('postOauthToken', () => {
-    //     xit('for a given host and code it should request an idam token', async () => {
-    //         const oauthCallbackUrl = getConfigValue(SERVICES_IDAM_OAUTH_CALLBACK_URL)// config.services.idam.oauthCallbackUrl
-    //
-    //         request().session.user = 'data'
-    //
-    //         await idam.getUser('token')
-    //
-    //         idam.postOauthToken('testcode', 'test')
-    //
-    //         expect(spyPost).to.be.calledWith(
-    //             sinon.match(
-    //                 `${url
-    //                 }/oauth2/token?grant_type=authorization_code&code=testcode&redirect_uri=http://test/${
-    //                 oauthCallbackUrl}`))
-    //
-    //     })
-    // })
+    describe('postOauthToken', () => {
+        it('for a given host and code it should request an idam token', async () => {
+            const oauthCallbackUrl = getConfigValue(SERVICES_IDAM_OAUTH_CALLBACK_URL)
+
+            request().session.user = 'data'
+
+            await idam.getUser('token')
+
+            idam.postOauthToken('testcode', 'test')
+
+            expect(spyPost).to.be.calledWith(
+                sinon.match(
+                    `${url
+                    }/oauth2/token?grant_type=authorization_code&code=testcode&redirect_uri=http://test/${
+                    oauthCallbackUrl}`))
+
+        })
+    })
 
 })

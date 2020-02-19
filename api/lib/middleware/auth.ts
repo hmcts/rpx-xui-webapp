@@ -13,7 +13,7 @@ import { asyncReturnOrError } from '../util'
 import * as serviceTokenMiddleware from './serviceToken'
 
 const logger = log4jui.getLogger('auth')
-const idamURl = getConfigValue(SERVICES_IDAM_API_URL) // config.services.idam.idamApiUrl
+const idamURl = getConfigValue(SERVICES_IDAM_API_URL)
 
 export function validRoles(roles) {
     //return roles.indexOf(config.juiJudgeRole) > -1 || roles.indexOf(config.juiPanelMember) > -1
@@ -21,9 +21,7 @@ export function validRoles(roles) {
 }
 
 export default async (req, res, next) => {
-    // const userId = req.headers[config.cookies.userId] || req.cookies[config.cookies.userId]
     const userId = req.headers[getConfigValue(COOKIES_USER_ID)] || req.cookies[getConfigValue(COOKIES_USER_ID)]
-    // const jwt = req.headers.authorization || req.cookies[config.cookies.token]
     const jwt = req.headers.authorization || req.cookies[getConfigValue(COOKIES_TOKEN)]
 
     if (!jwt) {

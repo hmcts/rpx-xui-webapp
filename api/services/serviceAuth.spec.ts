@@ -1,7 +1,6 @@
 import { expect } from 'chai'
 import 'mocha'
 import * as sinon from 'sinon'
-import { mockReq, mockRes } from 'sinon-express-mock'
 import { getConfigValue } from '../configuration'
 import {
   MICROSERVICE,
@@ -14,9 +13,7 @@ describe('serviceAuth', () => {
 
   let res
 
-  // const url = config.services.s2s
   const url = getConfigValue(SERVICE_S2S_PATH)
-  // const microservice = config.microservice
   const microservice = getConfigValue(MICROSERVICE)
   const s2sSecret = process.env.S2S_SECRET || 'AAAAAAAAAAAAAAAA'
 

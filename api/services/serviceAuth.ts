@@ -14,12 +14,11 @@ const microservice = getConfigValue(MICROSERVICE)
 
 initialiseSecrets()
 
-const s2sSecret = getConfigValue(S2S_SECRET)
-
 const logger = log4jui.getLogger('service auth')
 
 export async function postS2SLease() {
 
+    const s2sSecret = getConfigValue(S2S_SECRET)
     const oneTimePassword = otp({ secret: s2sSecret }).totp()
 
     console.log('serviceAuth: s2sSecret')

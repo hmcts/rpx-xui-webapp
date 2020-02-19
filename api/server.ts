@@ -1,18 +1,20 @@
-import * as propertiesVolume from '@hmcts/properties-volume'
 import { app } from './application'
 
 import * as ejs from 'ejs'
 import * as express from 'express'
 import * as path from 'path'
-import { getAppInsightsSecret, getConfigValue, getS2sSecret } from './configuration'
+import {getConfigValue, initialiseSecrets} from './configuration'
 import {
   APP_INSIGHTS_KEY,
+  APP_INSIGHTS_SECRET,
   COOKIES_SESSION_ID,
   COOKIES_TOKEN,
   HEALTH,
   LOGGING,
   MAX_LOG_LINE,
-  PROTOCOL, SERVICE_S2S_PATH,
+  PROTOCOL,
+  S2S_SECRET,
+  SERVICE_S2S_PATH,
   SERVICES_CCD_COMPONENT_API_PATH,
   SERVICES_CCD_DATA_STORE_API_PATH,
   SERVICES_DOCUMENTS_API_PATH,
@@ -46,7 +48,8 @@ app.use('/*', (req, res) => {
     })
 })
 
-const secrets = propertiesVolume.addTo({})
+// const secrets = propertiesVolume.addTo({})
+initialiseSecrets()
 
 console.log('CHECK ENVIRONMENT VARIABLES:')
 console.log(getConfigValue('environment'))
@@ -69,10 +72,9 @@ console.log(getConfigValue(HEALTH))
 console.log(getConfigValue(SERVICE_S2S_PATH))
 console.log('END CHECK OF ENVIRONMENTAL VARIABLES')
 
-// TODO: Let's get the secrets into here.
-console.log('s2sSecret')
-console.log(getS2sSecret(secrets))
-console.log(getAppInsightsSecret(secrets))
+console.log('s2s secret')
+console.log(getConfigValue(S2S_SECRET))
+console.log(getConfigValue(APP_INSIGHTS_SECRET))
 
 app.use(appInsights)
 app.listen(process.env.PORT || 3000, () => {

@@ -1,7 +1,21 @@
+import * as propertiesVolume from '@hmcts/properties-volume'
 import * as config from 'config'
-import { propsExist } from '../lib/objectUtilities'
-import {DEVELOPMENT, HTTP} from './constants'
-import {ENVIRONMENT, PROTOCOL} from './references'
+import {ENVIRONMENT} from './references'
+
+/**
+ * If you are running locally you might need to set the mountPoint up as documented in the readme.
+ * ie. propertiesVolume.addTo(config, { mountPoint: '/Volumes/mnt/secrets/'})
+ *
+ * ALLOW_CONFIG_MUTATIONS should equal true on the environment otherwise HMCTS Properties Volume will
+ * not be able to merge the volume secrets into the Node config object.
+ *
+ * @see Readme.md
+ * @see https://github.com/lorenwest/node-config/wiki/Environment-Variables
+ */
+export const initialiseSecrets = () => {
+  propertiesVolume.addTo(config)
+  // propertiesVolume.addTo(config, { mountPoint: '/Volumes/mnt/secrets/'})
+}
 
 /**
  * Get Environment
@@ -60,32 +74,32 @@ export const getIdamSecret = () => process.env.IDAM_SECRET
  *
  * @returns {string}
  */
-export const getS2sSecret = (secretsConfig): string => {
-  const ERROR_S2S_SECRET_NOT_FOUND =
-    'secrets.rpx.mc-s2s-client-secret not found on this environment.'
-
-  if (propsExist(secretsConfig, ['secrets', 'rpx', 'mc-s2s-client-secret'])) {
-    // tslint:disable-next-line
-    return secretsConfig['secrets']['rpx']['mc-s2s-client-secret']
-  } else {
-    console.log(ERROR_S2S_SECRET_NOT_FOUND)
-    return ''
-  }
-}
+// export const getS2sSecret = (secretsConfig): string => {
+//   const ERROR_S2S_SECRET_NOT_FOUND =
+//     'secrets.rpx.mc-s2s-client-secret not found on this environment.'
+//
+//   if (propsExist(secretsConfig, ['secrets', 'rpx', 'mc-s2s-client-secret'])) {
+//     // tslint:disable-next-line
+//     return secretsConfig['secrets']['rpx']['mc-s2s-client-secret']
+//   } else {
+//     console.log(ERROR_S2S_SECRET_NOT_FOUND)
+//     return ''
+//   }
+// }
 
 // Works on T&Cs
-export const getAppInsightsSecret = (secretsConfig): string => {
-  const ERROR_APP_INSIGHT_SECRET_NOT_FOUND =
-    'secrets.rpx.appinsights-instrumentationkey-tc not found on this environment.'
-
-  if (propsExist(secretsConfig, ['secrets', 'rpx', 'AppInsightsInstrumentationKey'])) {
-    // tslint:disable-next-line
-    return secretsConfig['secrets']['rpx']['AppInsightsInstrumentationKey']
-  } else {
-    console.log(ERROR_APP_INSIGHT_SECRET_NOT_FOUND)
-    return ''
-  }
-}
+// export const getAppInsightsSecret = (secretsConfig): string => {
+//   const ERROR_APP_INSIGHT_SECRET_NOT_FOUND =
+//     'secrets.rpx.appinsights-instrumentationkey-tc not found on this environment.'
+//
+//   if (propsExist(secretsConfig, ['secrets', 'rpx', 'AppInsightsInstrumentationKey'])) {
+//     // tslint:disable-next-line
+//     return secretsConfig['secrets']['rpx']['AppInsightsInstrumentationKey']
+//   } else {
+//     console.log(ERROR_APP_INSIGHT_SECRET_NOT_FOUND)
+//     return ''
+//   }
+// }
 
 /**
  * Generate Environment Check Text
@@ -95,12 +109,3 @@ export const getAppInsightsSecret = (secretsConfig): string => {
  */
 export const environmentCheckText = () => `NODE_CONFIG_ENV is set as ${process.env.NODE_CONFIG_ENV} therefore
                                       we are using the ${config.get(ENVIRONMENT)} config.`
-
-/**
- * Get Protocol
- *
- * If running locally we return 'http'
- *
- * @returns {string | string}
- */
-export const getProtocol = () => getEnvironment() === DEVELOPMENT ? HTTP : getConfigValue(PROTOCOL)

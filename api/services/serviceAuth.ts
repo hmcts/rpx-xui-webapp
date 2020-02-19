@@ -1,8 +1,7 @@
-import * as propertiesVolume from '@hmcts/properties-volume'
 import * as otp from 'otp'
-import { getConfigValue, getS2sSecret } from '../configuration'
+import {getConfigValue, initialiseSecrets} from '../configuration'
 import {
-  MICROSERVICE,
+  MICROSERVICE, S2S_SECRET,
   SERVICE_S2S_PATH,
 } from '../configuration/references'
 import { http } from '../lib/http'
@@ -13,10 +12,9 @@ const s2sPath = getConfigValue(SERVICE_S2S_PATH)
 // const microservice = config.get('microservice')
 const microservice = getConfigValue(MICROSERVICE)
 
-const mountedSecrets = propertiesVolume.addTo({})
-// const mountedSecrets = propertiesVolume.addTo({}, { mountPoint: '/Volumes/mnt/secrets/' })
+initialiseSecrets()
 
-const s2sSecret = getS2sSecret(mountedSecrets)
+const s2sSecret = getConfigValue(S2S_SECRET)
 
 const logger = log4jui.getLogger('service auth')
 

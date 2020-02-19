@@ -10,6 +10,9 @@
  * contain any additional constants. They are grouped as a representation of the .yaml structure.
  */
 // TODO: Path to Url
+export const APP_INSIGHTS_SECRET = 'secrets.rpx.AppInsightsInstrumentationKey'
+export const S2S_SECRET = 'secrets.rpx.mc-s2s-client-secret'
+
 export const SERVICES_CCD_COMPONENT_API_PATH = 'services.ccd.componentApi'
 export const SERVICES_CCD_DATA_STORE_API_PATH = 'services.ccd.dataApi'
 export const SERVICES_DOCUMENTS_API_PATH = 'services.documents.api'

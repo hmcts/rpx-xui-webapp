@@ -17,6 +17,7 @@ nodejs:
     PROTOCOL: https
     MICROSERVICE: xui_webapp
     SESSION_SECRET: secretSauce
+    ALLOW_CONFIG_MUTATIONS: 1
   keyVaults:
     rpx:
       resourceGroup: rpx

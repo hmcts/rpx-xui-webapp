@@ -1,13 +1,14 @@
 //import * as healthcheck from '@hmcts/nodejs-healthcheck'
-import * as propertiesVolume from '@hmcts/properties-volume'
+// import * as propertiesVolume from '@hmcts/properties-volume'
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
 import * as session from 'express-session'
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
-import {getAppInsightsSecret, getConfigValue, getEnvironment} from './configuration'
+import {getConfigValue, getEnvironment} from './configuration'
 import {
+  APP_INSIGHTS_SECRET,
   PROTOCOL,
   SESSION_SECRET,
 } from './configuration/references'
@@ -26,8 +27,6 @@ import {router as termsAndCRoutes} from './termsAndConditions/routes'
 import {router as userTandCRoutes} from './userTermsAndConditions/routes'
 
 // config.environment = process.env.XUI_ENV || 'local'
-
-const secrets = propertiesVolume.addTo({})
 
 export const app = express()
 app.disable('x-powered-by')
@@ -102,7 +101,7 @@ app.get('/api/addresses', authInterceptor, postCodeLookup.doLookup)
 
 app.get('/api/monitoring-tools', (req, res) => {
     // res.send({key: config.appInsightsInstrumentationKey})
-    res.send({key: getAppInsightsSecret(secrets)})
+    res.send({key: getConfigValue(APP_INSIGHTS_SECRET)})
 })
 
 app.use('/api/healthCheck', healthCheck)

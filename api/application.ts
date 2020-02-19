@@ -1,5 +1,3 @@
-//import * as healthcheck from '@hmcts/nodejs-healthcheck'
-// import * as propertiesVolume from '@hmcts/properties-volume'
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'

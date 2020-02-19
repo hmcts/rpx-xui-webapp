@@ -5,7 +5,6 @@ import 'mocha'
 import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
 import { mockReq, mockRes } from 'sinon-express-mock'
-import { config } from '../dep-config'
 import { http } from '../lib/http'
 import { getCcdPrintout } from './printService'
 

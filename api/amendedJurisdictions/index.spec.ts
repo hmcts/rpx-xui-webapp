@@ -83,11 +83,9 @@ describe('Amended Jurisdiction', () => {
     expect(res.send).to.have.been.calledWith(expected)
   })
 
-  // TODO: Re-write test as it changes enviroment to prod which can no longer be done.
   it('should jurisdictions proxy a get request and send PROBATE array when env is prod', async () => {
-    // const url = `${config.services.ccd.componentApi}${req.baseUrl}${req.url}`
     const url = `${getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)}${req.baseUrl}${req.url}`
-    // config.environment = 'prod'
+
     const expected = [
         {
             id: 'PROBATE',

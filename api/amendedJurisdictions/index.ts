@@ -11,7 +11,6 @@ import { setHeaders } from '../lib/proxy'
 /**
  * getFilters
  *
- * TODO:
  * On the Demo environment this needs to be:
  * ['DIVORCE', 'PROBATE', 'FR', 'PUBLICLAW', 'IA', 'CMC', 'SSCS']
  * whereas on all other environments this should be:

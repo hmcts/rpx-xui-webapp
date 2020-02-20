@@ -1,5 +1,9 @@
+import axios from 'axios'
 import * as express from 'express'
 import * as formidable from 'formidable'
+import * as http from 'http'
+import {RequestOptions} from 'http'
+import {config} from '../config'
 import {EnhancedRequest} from '../lib/models'
 import * as DMStore from './DMStore'
 
@@ -24,19 +28,23 @@ export async function getDocumentRoute(req: express.Request, res: express.Respon
  * @param res
  */
 export async function getDocumentBinaryRoute(req: express.Request, res: express.Response) {
-    const binary = await DMStore.getDocumentBinary(req.params.document_id)
+    const documentId = req.params.document_id
+    const url = new URL(config.services.documents.api)
 
-    if (binary) {
-      const headers = binary.headers
-      res.set({
-        'Content-Disposition': `inline; ${headers['content-disposition']}`,
-        'Content-Length': headers['content-length'],
-        'Content-Type': headers['content-type'],
-      })
-      binary.pipe(res)
-    } else {
-      res.status(500).send(`Error getting document ${req.params.document_id}`)
-    }
+    const options = {
+        headers: {
+            'Authorization': axios.defaults.headers.common.Authorization,
+            'ServiceAuthorization': axios.defaults.headers.common.ServiceAuthorization,
+            'user-roles': axios.defaults.headers.common['user-roles'],
+        },
+        host: `${url.host}/documents/${documentId}/binary`,
+    } as RequestOptions
+
+    const request = http.get(options, response => {
+        response.pipe(res)
+    })
+
+    request.on('error', err => console.log(err))
 }
 
 /**

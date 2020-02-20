@@ -1,4 +1,5 @@
 nodejs:
+  aadIdentityName: xui
   applicationPort: 3000
   memoryLimits: 1024Mi
   cpuLimits: 1000m

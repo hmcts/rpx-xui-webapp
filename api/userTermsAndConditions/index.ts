@@ -1,8 +1,8 @@
 import * as express from 'express'
 import {getConfigValue} from '../configuration'
 import {
-  SERVICES_TERMS_AND_CONDITIONS_URL,
   SERVICES_IDAM_CLIENT_ID,
+  SERVICES_TERMS_AND_CONDITIONS_URL,
 } from '../configuration/references'
 import { GetUserAcceptTandCResponse, PostUserAcceptTandCResponse } from '../interface/userAcceptTandCResponse'
 import { http } from '../lib/http'

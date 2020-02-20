@@ -2,8 +2,8 @@ import * as express from 'express'
 import {getConfigValue} from '../configuration'
 import {
   SERVICES_TERMS_AND_CONDITIONS_URL,
+  SERVICES_IDAM_CLIENT_ID,
 } from '../configuration/references'
-import { application } from '../dep-config/application.config'
 import { GetUserAcceptTandCResponse, PostUserAcceptTandCResponse } from '../interface/userAcceptTandCResponse'
 import { http } from '../lib/http'
 import { isUserTandCPostSuccessful } from '../lib/util'
@@ -21,7 +21,7 @@ export async function getUserTermsAndConditions(req: express.Request, res: expre
     }
     try {
         const url = getUserTermsAndConditionsUrl(getConfigValue(SERVICES_TERMS_AND_CONDITIONS_URL),
-            req.params.userId, application.idamClient)
+            req.params.userId, getConfigValue(SERVICES_IDAM_CLIENT_ID))
         const response = await http.get(url)
         const userTandCResponse = response.data as GetUserAcceptTandCResponse
         res.send(userTandCResponse.accepted)
@@ -52,7 +52,8 @@ export async function postUserTermsAndConditions(req: express.Request, res: expr
     }
     try {
         const data = {userId: req.body.userId}
-        const url = postUserTermsAndConditionsUrl(getConfigValue(SERVICES_TERMS_AND_CONDITIONS_URL), application.idamClient)
+        const url = postUserTermsAndConditionsUrl(getConfigValue(SERVICES_TERMS_AND_CONDITIONS_URL),
+          getConfigValue(SERVICES_IDAM_CLIENT_ID))
         const response = await http.post(url, data)
         const postResponse = response.data as PostUserAcceptTandCResponse
         res.send(isUserTandCPostSuccessful(postResponse, req.body.userId))

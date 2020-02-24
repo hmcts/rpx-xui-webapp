@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
     providedIn: 'root'
 })
 export class TermsConditionsService {
-    constructor(private http: HttpClient) {}
+    constructor(private readonly http: HttpClient) {}
 
     public getTermsConditions(): Observable<TCDocument> {
         return this.http.get<TCDocument>(`api/termsAndConditions`);

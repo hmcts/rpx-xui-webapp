@@ -12,7 +12,7 @@ export default {
     host: '172.16.0.7',
     port: 8080,
   },
-  secureCookie: false,
+  secureCookie: true,
   services: {
     ccd: {
       componentApi: 'http://ccd-api-gateway-web-demo.service.core-compute-demo.internal',

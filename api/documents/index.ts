@@ -1,5 +1,6 @@
 import * as express from 'express'
 import * as formidable from 'formidable'
+import * as fs from 'fs'
 import {EnhancedRequest} from '../lib/models'
 import * as DMStore from './DMStore'
 
@@ -24,18 +25,102 @@ export async function getDocumentRoute(req: express.Request, res: express.Respon
  * @param res
  */
 export async function getDocumentBinaryRoute(req: express.Request, res: express.Response) {
-    const binary = await DMStore.getDocumentBinary(req.params.document_id)
+    const documentId = req.params.document_id
+    const filePath = `/tmp/${documentId}`
 
+    console.log('NEW REQUEST')
+
+    const {F_OK, R_OK} = fs.constants
+    // tslint:disable-next-line:no-bitwise
+    fs.access(filePath, F_OK | R_OK, async err => {
+        if (err) {
+            // no file/not readable, so create it
+            await downloadFile(documentId, filePath)
+            console.log('file awaited, downloaded')
+            return streamFile(filePath, req, res)
+        }
+        console.log('streaming file from route')
+        streamFile(filePath, req, res)
+    })
+}
+
+export function streamFile(file, req, res) {
+
+    fs.stat(file, (err, stats) => {
+        if (err) {
+            if (err.code === 'ENOENT') {
+                return res.status(404).send()
+            }
+        }
+
+        let start
+        let end
+        let total = 0
+        let contentRange = false
+        let contentLength = 0
+
+        const range = req.headers.range
+        if (range) {
+            const positions = range.replace(/bytes=/, "").split("-")
+            start = parseInt(positions[0], 10)
+            total = stats.size
+            end = positions[1] ? parseInt(positions[1], 10) : total - 1
+            const chunksize = (end - start) + 1
+            contentRange = true
+            contentLength = chunksize
+        } else {
+            start = 0
+            end = stats.size
+            contentLength = stats.size
+        }
+
+        if (start <= end) {
+            let responseCode = 200
+            const responseHeader = {
+                "Accept-Ranges": "bytes",
+                "Content-Length": contentLength,
+                'Content-Type': stats.size,
+            }
+            if (contentRange) {
+                responseCode = 206
+                responseHeader["Content-Range"] = "bytes " + start + "-" + end + "/" + total
+            }
+            console.log('streaming cached file')
+            res.writeHead(responseCode, responseHeader)
+
+            const stream = fs.createReadStream(file, {start, end})
+                .on("readable", () => {
+                    let chunk
+                    while (null !== (chunk = stream.read(1024))) {
+                        res.write(chunk)
+                    }
+                }).on("error", error => {
+                    res.end(error)
+                }).on("end", () => {
+                    res.end()
+                })
+        }
+    })
+}
+
+export async function downloadFile(documentId, filePath) {
+
+    const binary = await DMStore.getDocumentBinary(documentId)
     if (binary) {
-      const headers = binary.headers
-      res.set({
-        'Content-Disposition': `inline; ${headers['content-disposition']}`,
-        'Content-Length': headers['content-length'],
-        'Content-Type': headers['content-type'],
-      })
-      binary.pipe(res)
-    } else {
-      res.status(500).send(`Error getting document ${req.params.document_id}`)
+        console.log('saving file')
+        const writer = fs.createWriteStream(filePath)
+        binary.pipe(writer)
+
+        return new Promise((resolve, reject) => {
+            writer.on('finish', () => {
+                console.log('file saved!')
+                resolve()
+            })
+            writer.on('error', error => {
+                console.log('error occurred')
+                reject(error)
+            })
+        })
     }
 }
 

@@ -36,14 +36,7 @@ export async function getDocument(documentId: string): Promise<DMDocument> {
  * @returns Promise<any>
  */
 export async function getDocumentBinary(documentId: string): Promise<any> {
-    const response: AxiosResponse<any> = await asyncReturnOrError(
-        http.get(`${url}/documents/${documentId}/binary`, { responseType: 'stream' }),
-        `Error getting Binary for document ${documentId}`,
-        null,
-        logger,
-        false
-    )
-
+    const response: AxiosResponse<any> = await http.get(`${url}/documents/${documentId}/binary`, { responseType: 'stream' })
     return response ? response.data : null
 }
 

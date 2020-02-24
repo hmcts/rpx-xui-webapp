@@ -28,23 +28,20 @@ export async function getDocumentBinaryRoute(req: express.Request, res: express.
     const documentId = req.params.document_id
     const filePath = `/tmp/${documentId}`
 
-    console.log('NEW REQUEST')
-
     const {F_OK, R_OK} = fs.constants
     // tslint:disable-next-line:no-bitwise
     fs.access(filePath, F_OK | R_OK, async err => {
         if (err) {
             // no file/not readable, so create it
-            await downloadFile(documentId, filePath)
+            const binary = await downloadFile(documentId, filePath)
             console.log('file awaited, downloaded')
-            return streamFile(filePath, req, res)
+            return streamFile(filePath, req, res, binary)
         }
-        console.log('streaming file from route')
         streamFile(filePath, req, res)
     })
 }
 
-export function streamFile(file, req, res) {
+export function streamFile(file, req, res, binary?) {
 
     fs.stat(file, (err, stats) => {
         if (err) {
@@ -74,12 +71,19 @@ export function streamFile(file, req, res) {
             contentLength = stats.size
         }
 
+        if (binary && binary.headers.length) {
+            const binarySize = parseInt(binary.headers["Content-Length"], 10)
+            total = Math.max(stats.size, binarySize)
+            end = Math.max(stats.size, binarySize)
+            contentLength = Math.max(stats.size, binarySize)
+        }
+
         if (start <= end) {
             let responseCode = 200
             const responseHeader = {
                 "Accept-Ranges": "bytes",
                 "Content-Length": contentLength,
-                'Content-Type': stats.size,
+                'Content-Type': "application/pdf",
             }
             if (contentRange) {
                 responseCode = 206
@@ -90,9 +94,10 @@ export function streamFile(file, req, res) {
 
             const stream = fs.createReadStream(file, {start, end})
                 .on("readable", () => {
-                    let chunk
-                    while (null !== (chunk = stream.read(1024))) {
+                    let chunk = stream.read(1024)
+                    while (null !== chunk) {
                         res.write(chunk)
+                        chunk = stream.read(1024)
                     }
                 }).on("error", error => {
                     res.end(error)
@@ -114,7 +119,7 @@ export async function downloadFile(documentId, filePath) {
         return new Promise((resolve, reject) => {
             writer.on('finish', () => {
                 console.log('file saved!')
-                resolve()
+                resolve(binary)
             })
             writer.on('error', error => {
                 console.log('error occurred')

@@ -360,10 +360,10 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@2.63.3-RDM-7120-prerelease":
-  version "2.63.3-RDM-7120-prerelease"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.63.3-RDM-7120-prerelease.tgz#f4436963e6236586b275fad41a86724b79106b9a"
-  integrity sha512-cduOHxdnbBmeFUrDmsTp8/fTmgMtkCIvd2Xepx6zcYUX6hdAuF7CoFoVbZf03ArBX0L6dtJmdKsky75to9qLiQ==
+"@hmcts/ccd-case-ui-toolkit@2.64.1-EUI-1476-prerelease":
+  version "2.64.1-EUI-1476-prerelease"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.64.1-EUI-1476-prerelease.tgz#597ca108141a1929fb4cb27668f60f732ba67f4c"
+  integrity sha512-TlPz5mwEzF3IZ2sr1qGVZw9p2E5V5VhpsUIZXCxlV4b3k2xaxSIW87xEHTfwH0InpzBUSVB1mpIh1pNIRCgCmQ==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
@@ -8914,10 +8914,9 @@ run-queue@^1.0.0, run-queue@^1.0.3:
   dependencies:
     aproba "^1.1.1"
 
-rx-polling@^1.0.1:
+"rx-polling@git://github.com/hmcts/rx-polling.git":
   version "1.0.1"
-  resolved "https://registry.yarnpkg.com/rx-polling/-/rx-polling-1.0.1.tgz#d7dd8857633ba07ed4617dd333fcac51852693f1"
-  integrity sha512-vWwR74dL3CgXNi3pIUimFx5wGsK7M1U+oEIq17MX8k5dRHBCTr6/qWRkJQIPltoBUcVZyAR5J46TaCmN0aWn5Q==
+  resolved "git://github.com/hmcts/rx-polling.git#695fcf10439bd29fad6a8e8fbeb30441de38c8cd"
 
 rxjs-compat@^6.5.4:
   version "6.5.4"

@@ -210,7 +210,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
     let caseStateGroupFromLS = null;
     let caseTypeGroupFromLS = null;
     this.setCaseListFilterDefaults();
-    if (this.selected && this.selected.jurisdiction !== null && this.selected.jurisdiction !== undefined) {
+    if (this.selected) {
       formGroupFromLS = this.selected.formGroup.value;
       jurisdictionFromLS = { id: this.selected.jurisdiction.id};
       caseTypeGroupFromLS = { id: this.selected.caseType.id };

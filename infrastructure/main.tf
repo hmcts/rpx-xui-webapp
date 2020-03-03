@@ -37,6 +37,9 @@ module "app" {
         # Allow secrets to be attached to the node-config object
         ALLOW_CONFIG_MUTATIONS = "${var.allow_config_mutations}"
 
+        # Cookie setting
+        SECURE_COOKIE = "${var.secure_cookie}"
+
         # Need to check these vault values - dont seem right here.
         S2S_SECRET = "${data.azurerm_key_vault_secret.s2s_secret.value}"
         IDAM_SECRET = "${data.azurerm_key_vault_secret.oauth2_secret.value}"

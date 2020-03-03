@@ -8,6 +8,7 @@ import {getConfigValue} from './configuration'
 import {
   APP_INSIGHTS_SECRET,
   PROTOCOL,
+  SECURE_COOKIE,
   SESSION_SECRET,
 } from './configuration/references'
 import {router as documentRouter} from './documents/routes'
@@ -36,9 +37,7 @@ app.use(
         cookie: {
             httpOnly: true,
             maxAge: 1800000,
-            // TODO: Possible to deprecate?
-            // secure: config.secureCookie !== false,
-            secure: false,
+            secure: getConfigValue(SECURE_COOKIE) !== 'false',
         },
         name: 'xui-webapp', // keep as string
         resave: true,

@@ -39,6 +39,7 @@
     "termsAndConditions": "SERVICES_TERMS_AND_CONDITIONS"
   },
   "protocol": "PROTOCOL",
+  "secureCookie": "SECURE_COOKIE",
   "microservice": "MICROSERVICE",
   "proxy": {
     "enabled": "PROXY_ENABLED",

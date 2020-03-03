@@ -62,3 +62,7 @@ variable "additional_host_name" {
 variable "node_tls_reject_unauthorized" {
     default = "1"
 }
+
+variable "secure_cookie" {
+  default = "false"
+}

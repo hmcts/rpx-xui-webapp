@@ -385,6 +385,7 @@
   integrity sha512-+q3IB4L3UHsD5cs/11PDWEftDAmDV6eYkxm9eoNtXAfea93VhXNFA9ZEIV+TM7v/9xaAIkmDj9C4kCSUb1Hl3g==
 
 "@hmcts/media-viewer@^1.2.1":
+  version "1.2.1"
   resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-1.2.1.tgz#6cc9c46fd9a42bde809e209bffe8dc8baa855395"
   integrity sha512-IgkMHBatrZLB3uJSDr7+nqJ2j+36OxdDLeb5ax/Kvpu7RwP1rFGxoED7OvFt3YVOVJA0aNJklRz5T0iRG6Zt6A==
   dependencies:

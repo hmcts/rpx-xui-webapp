@@ -19,6 +19,7 @@ nodejs:
     MICROSERVICE: xui_webapp
     SESSION_SECRET: secretSauce
     ALLOW_CONFIG_MUTATIONS: 1
+    SECURE_COOKIE: true
   keyVaults:
     rpx:
       resourceGroup: rpx

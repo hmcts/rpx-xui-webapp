@@ -1,5 +1,6 @@
 import * as propertiesVolume from '@hmcts/properties-volume'
 import * as config from 'config'
+import { propsExist } from '../lib/objectUtilities'
 
 /**
  * If you are running locally you might need to set the mountPoint up as documented in the readme.
@@ -37,4 +38,16 @@ export const hasConfigValue = reference => {
 
 export const getConfigValueNumber = reference => {
   return config.get<number>(reference)
+}
+
+export const getIDamSecret = (secretsConfig): string => {
+  const ERROR_IDAM_SECRET_NOT_FOUND =
+    'mc-idam-client-secret not found on this environment.'
+  if (propsExist(secretsConfig, ['secrets', 'rpx', 'mc-idam-client-secret'])) {
+    // tslint:disable-next-line: no-string-literal
+    return secretsConfig['secrets']['rpx']['mc-idam-client-secret']
+  } else {
+    console.log(ERROR_IDAM_SECRET_NOT_FOUND)
+    return ''
+  }
 }

@@ -1,4 +1,6 @@
-import {getConfigValue} from '../configuration'
+import * as propertiesVolume from '@hmcts/properties-volume'
+import * as config from 'config'
+import {getConfigValue, getIDamSecret} from '../configuration'
 import {
   COOKIES_TOKEN,
   PROTOCOL,
@@ -11,8 +13,10 @@ import { isReqResSet, request } from '../lib/middleware/responseRequest'
 import { valueOrNull } from '../lib/util'
 
 const url = getConfigValue(SERVICES_IDAM_API_URL)
-
-const idamSecret = process.env.IDAM_SECRET || 'AAAAAAAAAAAAAAAA'
+const mountedSecrets = propertiesVolume.addTo(config)
+// const mountedSecrets = propertiesVolume.addTo(config, { mountPoint: '/Volumes/mnt/secrets/'})
+const idamSecret = getIDamSecret(mountedSecrets) || 'AAAAAAAAAAAAAAAA'
+console.log('idamSecret', idamSecret)
 const idamClient = getConfigValue(SERVICES_IDAM_CLIENT_ID)
 const idamProtocol = getConfigValue(PROTOCOL)
 const oauthCallbackUrl = getConfigValue(SERVICES_IDAM_OAUTH_CALLBACK_URL)

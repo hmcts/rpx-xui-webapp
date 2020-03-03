@@ -7,8 +7,8 @@
     </div>
     <div class="mv-toolbar-center">
       <div class="jui-toolbar__button mv-button-left-border no-top-bottom-padding" aria-pressed="false">Page
-          <button id="mvDownBtn" role="button" class="jui-toolbar__menu-button--down button-image" (click)="decreasePageNumber()"></button>
-          <button id="mvUpBtn" role="button" class="jui-toolbar__menu-button--up button-image" (click)="increasePageNumber()"></button>
+          <button id="mvDownBtn" role="button" class="jui-toolbar__menu-button--down button-image" (click)="increasePageNumber()"></button>
+          <button id="mvUpBtn" role="button" class="jui-toolbar__menu-button--up button-image" (click)="decreasePageNumber()"></button>
             <input type="number" id="pageNumber" class="hmcts-toolbar-input govuk-input--width-2 no-top-bottom-padding" title="Page Number" value="1" size="4" min="1"
                 [value]="pageNumber" aria-label="page number"
                 tabindex="0" data-l10n-id="page" (change)="onPageNumberInputChange(pageNumberInput.value)" #pageNumberInput>

@@ -1,8 +1,10 @@
 /**
  * Common to both server.ts and local.ts files
  */
+import * as propertiesVolume from '@hmcts/properties-volume'
+import * as config from 'config'
 import { app } from './application'
-import {getConfigValue, initialiseSecrets} from './configuration'
+import {getConfigValue, getIDamSecret, initialiseSecrets} from './configuration'
 import {
   APP_INSIGHTS_KEY,
   APP_INSIGHTS_SECRET,
@@ -49,6 +51,9 @@ console.log('END CHECK OF ENVIRONMENTAL VARIABLES')
 
 console.log(getConfigValue(S2S_SECRET))
 console.log(getConfigValue(APP_INSIGHTS_SECRET))
+const mountedSecrets = propertiesVolume.addTo(config)
+// const mountedSecrets = propertiesVolume.addTo(config, { mountPoint: '/Volumes/mnt/secrets/'})
+console.log('idamSecret', getIDamSecret(mountedSecrets))
 
 app.use(appInsights)
 

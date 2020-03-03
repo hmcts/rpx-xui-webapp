@@ -51,3 +51,5 @@ export const SECURE_COOKIE = 'secureCookie'
 export const ENVIRONMENT = 'environment'
 
 export const JURISDICTIONS = 'jurisdictions'
+
+export const IDAM_SECRET = 'secrets.rpx.mc-idam-client-secret'

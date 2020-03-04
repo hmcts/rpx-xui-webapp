@@ -12,7 +12,6 @@ const environment = process.env.XUI_ENV || 'local'
 
 if (environment !== 'local') {
     applicationinsights
-        // @ts-ignore
         .setup(getConfigValue(APP_INSIGHTS_KEY))
         .setAutoDependencyCorrelation(true)
         .setAutoCollectRequests(true)

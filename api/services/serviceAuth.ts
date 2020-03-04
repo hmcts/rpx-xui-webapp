@@ -1,5 +1,5 @@
 import * as otp from 'otp'
-import {getConfigValue, initialiseSecrets} from '../configuration'
+import {getConfigValue} from '../configuration'
 import {
   MICROSERVICE, S2S_SECRET,
   SERVICE_S2S_PATH,
@@ -9,8 +9,6 @@ import * as log4jui from '../lib/log4jui'
 
 const s2sPath = getConfigValue(SERVICE_S2S_PATH)
 const microservice = getConfigValue(MICROSERVICE)
-
-initialiseSecrets()
 
 const logger = log4jui.getLogger('service auth')
 

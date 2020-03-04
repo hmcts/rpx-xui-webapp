@@ -3,7 +3,7 @@ import { app } from './application'
 import * as ejs from 'ejs'
 import * as express from 'express'
 import * as path from 'path'
-import {getConfigValue, initialiseSecrets} from './configuration'
+import {getConfigValue} from './configuration'
 import {
   APP_INSIGHTS_KEY,
   APP_INSIGHTS_SECRET,
@@ -47,9 +47,6 @@ app.use('/*', (req, res) => {
         res,
     })
 })
-
-// const secrets = propertiesVolume.addTo({})
-initialiseSecrets()
 
 console.log('CHECK ENVIRONMENT VARIABLES:')
 console.log(getConfigValue('environment'))

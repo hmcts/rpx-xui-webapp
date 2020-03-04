@@ -3,21 +3,6 @@ import * as config from 'config'
 import { ENVIRONMENT } from './references'
 
 /**
- * If you are running locally you might need to set the mountPoint up as documented in the readme.
- * ie. propertiesVolume.addTo(config, { mountPoint: '/Volumes/mnt/secrets/'})
- *
- * ALLOW_CONFIG_MUTATIONS should equal true on the environment otherwise HMCTS Properties Volume will
- * not be able to merge the volume secrets into the Node config object.
- *
- * @see Readme.md
- * @see https://github.com/lorenwest/node-config/wiki/Environment-Variables
- */
-export const initialiseSecrets = () => {
-  propertiesVolume.addTo(config)
-  // propertiesVolume.addTo(config, { mountPoint: '/Volumes/mnt/secrets/'})
-}
-
-/**
  * Get Configuration Value
  *
  * Returns the configuration value, using a config reference. It uses the reference to pull out the value
@@ -37,8 +22,8 @@ export const hasConfigValue = reference => {
 /**
  * Allows us to integrate the Azure key-vault flex volume, so that we are able to access Node configuration values.
  */
-propertiesVolume.addTo(config, { mountPoint: '/Volumes/mnt/secrets/'})
-//propertiesVolume.addTo(config)
+// propertiesVolume.addTo(config, { mountPoint: '/Volumes/mnt/secrets/'})
+propertiesVolume.addTo(config)
 
 /**
  * Get Environment

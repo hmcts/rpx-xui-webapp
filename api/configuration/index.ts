@@ -3,6 +3,11 @@ import * as config from 'config'
 import { ENVIRONMENT } from './references'
 
 /**
+ * Allows us to integrate the Azure key-vault flex volume, so that we are able to access Node configuration values.
+ */
+// propertiesVolume.addTo(config, { mountPoint: '/Volumes/mnt/secrets/'})
+propertiesVolume.addTo(config)
+/**
  * Get Configuration Value
  *
  * Returns the configuration value, using a config reference. It uses the reference to pull out the value
@@ -18,12 +23,6 @@ export const getConfigValue = reference => config.get<any>(reference)
 export const hasConfigValue = reference => {
   return config.has(reference)
 }
-
-/**
- * Allows us to integrate the Azure key-vault flex volume, so that we are able to access Node configuration values.
- */
-// propertiesVolume.addTo(config, { mountPoint: '/Volumes/mnt/secrets/'})
-propertiesVolume.addTo(config)
 
 /**
  * Get Environment

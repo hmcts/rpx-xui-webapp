@@ -47,5 +47,12 @@
     "port": "PROXY_PORT"
   },
   "sessionSecret": "SESSION_SECRET",
+  "secrets": {
+    "rpx": {
+      "AppInsightsInstrumentationKey": "APPINSIGHTS_INSTRUMENTATIONKEY",
+      "ao-s2s-client-secret": "S2S_SECRET",
+      "ao-idam-client-secret": "IDAM_SECRET"
+    }
+  },
   "jurisdictions": "JURISDICTIONS"
 }

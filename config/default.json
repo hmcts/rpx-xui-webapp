@@ -47,5 +47,6 @@
     "port": 8080
   },
   "sessionSecret": "secretSauce",
-  "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA"
+  "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA",
+  "loginRoleMatcher": "caseworker"
 }

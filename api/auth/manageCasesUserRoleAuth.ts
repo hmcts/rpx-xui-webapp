@@ -1,3 +1,6 @@
+import { getConfigValue } from "../configuration"
+import { LOGIN_ROLE_MATCHER } from "../configuration/references"
+
 /**
  * getLoginRoleMatcher
  *
@@ -7,7 +10,7 @@
  *
  * @returns {string} - ie. 'caseworker'
  */
-export const getLoginRoleMatcher = () => 'caseworker'
+export const getLoginRoleMatcher = () => getConfigValue(LOGIN_ROLE_MATCHER)
 
 /**
  * User Has Application Access

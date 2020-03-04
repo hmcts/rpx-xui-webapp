@@ -28,16 +28,10 @@ export const initialiseSecrets = () => {
  * @see references.ts
  * @param reference - ie. 'services.ccdDefApi'
  */
-export const getConfigValue = reference => {
-  return config.get<string>(reference)
-}
+export const getConfigValue = reference => config.get<any>(reference)
 
 export const hasConfigValue = reference => {
   return config.has(reference)
-}
-
-export const getConfigValueNumber = reference => {
-  return config.get<number>(reference)
 }
 
 export const getIDamSecret = (secretsConfig): string => {

@@ -39,6 +39,7 @@
     "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal"
   },
   "protocol": "https",
+  "secureCookie": true,
   "microservice": "xui_webapp",
   "proxy": {
     "enabled": false,

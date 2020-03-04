@@ -31,6 +31,10 @@ variable "subscription" {
   type = "string"
 }
 
+variable "allow_config_mutations" {
+  default = "1"
+}
+
 variable "ilbIp"{}
 
 variable "tenant_id" {}
@@ -57,4 +61,8 @@ variable "additional_host_name" {
 
 variable "node_tls_reject_unauthorized" {
     default = "1"
+}
+
+variable "secure_cookie" {
+  default = "false"
 }

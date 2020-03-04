@@ -53,3 +53,5 @@ export const ENVIRONMENT = 'environment'
 export const JURISDICTIONS = 'jurisdictions'
 
 export const IDAM_SECRET = 'secrets.rpx.mc-idam-client-secret'
+
+export const LOGIN_ROLE_MATCHER = 'loginRoleMatcher'

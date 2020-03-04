@@ -36,7 +36,7 @@ app.use(
         cookie: {
             httpOnly: true,
             maxAge: 1800000,
-            secure: getConfigValue(SECURE_COOKIE) !== false,
+            secure: getConfigValue(SECURE_COOKIE),
         },
         name: 'xui-webapp', // keep as string
         resave: true,

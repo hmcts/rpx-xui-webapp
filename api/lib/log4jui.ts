@@ -2,6 +2,7 @@ import * as log4js from 'log4js'
 import {getConfigValue} from '../configuration'
 import {
   COOKIES_SESSION_ID,
+  LOG4_J_CONFIG,
   LOGGING,
 } from '../configuration/references'
 import { client } from './appInsights'
@@ -15,20 +16,7 @@ const maxCatLength = 14
 const sessionid = getConfigValue(COOKIES_SESSION_ID)
 
 // This is done to mimic log4js calls
-log4js.configure({
-  appenders: {
-    out: {
-      layout: {
-        pattern: '%[%d | %p |%X{catFormatted}|%] %m%n',
-        type: 'pattern',
-      },
-      type: 'stdout',
-    },
-  },
-  categories: {
-    default: { appenders: ['out'], level: 'info' },
-  },
-})
+log4js.configure(getConfigValue(LOG4_J_CONFIG))
 
 // TODO: this should be moved into util but the import seems to fail
 export function leftPad(str: string, length = 20): string {

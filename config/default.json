@@ -48,5 +48,19 @@
   },
   "sessionSecret": "secretSauce",
   "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA",
-  "loginRoleMatcher": "caseworker"
+  "loginRoleMatcher": "caseworker",
+  "log4JConfig": {
+    "appenders": {
+      "out": {
+        "layout": {
+          "pattern": "%[%d | %p |%X{catFormatted}|%] %m%n",
+          "type": "pattern"
+        },
+        "type": "stdout"
+      }
+    },
+    "categories": {
+      "default": { "appenders": ["out"], "level": "info" }
+    }
+  }
 }

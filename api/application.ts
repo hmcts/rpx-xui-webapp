@@ -31,13 +31,12 @@ app.disable('x-powered-by')
 const FileStore = sessionFileStore(session)
 
 app.set('trust proxy', 1)
-
 app.use(
     session({
         cookie: {
             httpOnly: true,
             maxAge: 1800000,
-            secure: getConfigValue(SECURE_COOKIE) !== 'false',
+            secure: getConfigValue(SECURE_COOKIE) !== false,
         },
         name: 'xui-webapp', // keep as string
         resave: true,

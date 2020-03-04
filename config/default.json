@@ -1,7 +1,5 @@
 {
-  "environment": {
-    "name": "This file: default.json contains the default values, ie. production values."
-  },
+  "environment": "production",
   "cookies": {
     "token": "__auth__",
     "userId": "__userid__",

@@ -1,11 +1,9 @@
 {
-  "environment": {
-    "name": "This file: custom-environment-variables overwrites all other .json files within the /config folder"
-  },
+  "environment": "NODE_CONFIG_ENV",
   "cookies": {
-    "token": "__auth__",
-    "userId": "__userid__",
-    "sessionId": "__sessionId__"
+    "token": "COOKIE_TOKEN",
+    "userId": "COOKIES_USER_ID",
+    "sessionId": "COOKIES_SESSION_ID"
   },
   "appInsights": {
     "instrumentationKey": "APPINSIGHTS_INSTRUMENTATIONKEY"
@@ -43,7 +41,7 @@
   "microservice": "MICROSERVICE",
   "proxy": {
     "enabled": "PROXY_ENABLED",
-    "host": "172.16.0.7",
+    "host": "PROXY_HOST",
     "port": "PROXY_PORT"
   },
   "sessionSecret": "SESSION_SECRET",

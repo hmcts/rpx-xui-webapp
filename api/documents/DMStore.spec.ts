@@ -4,20 +4,22 @@ import {Fields, File, Files} from 'formidable'
 import 'mocha'
 import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
+import {getConfigValue} from '../configuration'
+import {
+  SERVICES_DOCUMENTS_API_PATH,
+} from '../configuration/references'
 
 chai.use(sinonChai)
 
 import {http} from '../lib/http'
 import * as DMStore from './DMStore'
 
-import {config} from '../config'
-
 describe('DMStore', () => {
     const res = {
         data: 'okay',
     }
 
-    const url: string = config.services.documents.api
+    const url: string = getConfigValue(SERVICES_DOCUMENTS_API_PATH)
 
     let spy: any
     let spyDelete: any

@@ -50,8 +50,8 @@
   "secrets": {
     "rpx": {
       "AppInsightsInstrumentationKey": "APPINSIGHTS_INSTRUMENTATIONKEY",
-      "ao-s2s-client-secret": "S2S_SECRET",
-      "ao-idam-client-secret": "IDAM_SECRET"
+      "mc-s2s-client-secret": "S2S_SECRET",
+      "mc-idam-client-secret": "IDAM_SECRET"
     }
   },
   "jurisdictions": "JURISDICTIONS"

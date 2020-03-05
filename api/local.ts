@@ -2,7 +2,7 @@
  * Common to both server.ts and local.ts files
  */
 import { app } from './application'
-import {getConfigValue} from './configuration'
+import {getConfigValue, initialiseSecrets} from './configuration'
 import {
   APP_INSIGHTS_KEY,
   APP_INSIGHTS_SECRET,
@@ -25,6 +25,8 @@ import {
   SERVICES_TERMS_AND_CONDITIONS_URL,
 } from './configuration/references'
 import { appInsights } from './lib/appInsights'
+
+initialiseSecrets()
 
 console.log('CHECK ENVIRONMENT VARIABLES:')
 console.log(getConfigValue('environment'))

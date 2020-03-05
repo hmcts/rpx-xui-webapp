@@ -87,20 +87,20 @@ describe('MediaViewerToolbarComponent', () => {
     expect(component.onClickHighlightToggle).toHaveBeenCalled();
   });
 
-  it('should call decreasePageNumber when the down button click', () => {
-    spyOn(component, 'decreasePageNumber').and.callThrough();
+  it('should call increasePageNumber when the down button click', () => {
+    spyOn(component, 'increasePageNumber').and.callThrough();
     const mvDownBtn = fixture.debugElement.query(By.css('#mvDownBtn')).nativeElement;
     mvDownBtn.click();
     fixture.detectChanges();
-    expect(component.decreasePageNumber).toHaveBeenCalled();
+    expect(component.increasePageNumber).toHaveBeenCalled();
   });
-
-  it('should call increasePageNumber when the up button click', () => {
-    spyOn(component, 'increasePageNumber').and.callThrough();
+  
+  it('should call decreasePageNumber when the up button click', () => {
+    spyOn(component, 'decreasePageNumber').and.callThrough();
     const mvUpBtn = fixture.debugElement.query(By.css('#mvUpBtn')).nativeElement;
     mvUpBtn.click();
     fixture.detectChanges();
-    expect(component.increasePageNumber).toHaveBeenCalled();
+    expect(component.decreasePageNumber).toHaveBeenCalled();
   });
 
   it('should call stepZoom when the zoom minus or plus button click', () => {

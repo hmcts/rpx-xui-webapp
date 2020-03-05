@@ -5,8 +5,10 @@ import { ENVIRONMENT } from './references'
 /**
  * Allows us to integrate the Azure key-vault flex volume, so that we are able to access Node configuration values.
  */
-// propertiesVolume.addTo(config, { mountPoint: '/Volumes/mnt/secrets/'})
-propertiesVolume.addTo(config)
+export const initialiseSecrets = () => {
+  // propertiesVolume.addTo(config, { mountPoint: '/Volumes/mnt/secrets/'})
+  propertiesVolume.addTo(config)
+}
 /**
  * Get Configuration Value
  *

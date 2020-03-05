@@ -49,7 +49,6 @@ app.use('/*', (req, res) => {
     })
 })
 
-
 console.log('CHECK ENVIRONMENT VARIABLES:')
 console.log(getConfigValue('environment'))
 console.log(getConfigValue(SERVICES_CCD_COMPONENT_API_PATH))

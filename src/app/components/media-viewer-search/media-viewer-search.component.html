@@ -44,16 +44,16 @@
   <div class="govuk-checkboxes govuk-checkboxes--medium" *ngIf="isAdvanced">
       <div class="govuk-checkboxes__item">
           <input (change)="highlightAll = !highlightAll; search()" [checked]="highlightAll" type="checkbox" id="findHighlightAll" class="govuk-checkboxes__input" tabindex="0">
-          <label for="findHighlightAll" class="govuk-label govuk-checkboxes__label" data-l10n-id="find_highlight">Highlight all(instances of matches)</label>      
+          <label for="findHighlightAll" class="govuk-label govuk-checkboxes__label" data-l10n-id="find_highlight">Highlight all (instances of matches)</label>      
       </div>
       <div class="govuk-checkboxes__item">
           <input (change)="matchCase = !matchCase; search()" [checked]="matchCase" type="checkbox" id="findMatchCase" class="govuk-checkboxes__input" tabindex="0">
-          <label for="findMatchCase" class="govuk-label govuk-checkboxes__label" data-l10n-id="find_match_case_label">Match case(exact words)</label>
+          <label for="findMatchCase" class="govuk-label govuk-checkboxes__label" data-l10n-id="find_match_case_label">Match case (exact words)</label>
           
       </div>
       <div class="govuk-checkboxes__item">
           <input (change)="wholeWord = !wholeWord; search()" [checked]="wholeWord" type="checkbox" id="findEntireWord" class="govuk-checkboxes__input" tabindex="0">
-          <label for="findEntireWord" class="govuk-label govuk-checkboxes__label" data-l10n-id="find_entire_word_label">Whole words(string of words)</label>      
+          <label for="findEntireWord" class="govuk-label govuk-checkboxes__label" data-l10n-id="find_entire_word_label">Whole words (string of words)</label>      
       </div>
   </div>
 </div>

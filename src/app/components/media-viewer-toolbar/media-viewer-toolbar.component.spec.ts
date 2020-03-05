@@ -94,7 +94,7 @@ describe('MediaViewerToolbarComponent', () => {
     fixture.detectChanges();
     expect(component.increasePageNumber).toHaveBeenCalled();
   });
-  
+
   it('should call decreasePageNumber when the up button click', () => {
     spyOn(component, 'decreasePageNumber').and.callThrough();
     const mvUpBtn = fixture.debugElement.query(By.css('#mvUpBtn')).nativeElement;

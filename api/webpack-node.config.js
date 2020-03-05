@@ -10,6 +10,7 @@ module.exports = {
     entry: './server.ts',
     mode: NODE_ENV,
     target: 'node',
+    devtool: 'source-map',
     node: {
         __dirname: false,
         __filename: false,

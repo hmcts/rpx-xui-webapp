@@ -3,7 +3,7 @@ import { app } from './application'
 import * as ejs from 'ejs'
 import * as express from 'express'
 import * as path from 'path'
-import {getConfigValue, initialiseSecrets} from './configuration'
+import {getConfigValue} from './configuration'
 import {
   APP_INSIGHTS_KEY,
   APP_INSIGHTS_SECRET,
@@ -27,7 +27,6 @@ import {
   SERVICES_TERMS_AND_CONDITIONS_URL,
 } from './configuration/references'
 import { appInsights } from './lib/appInsights'
-initialiseSecrets()
 app.engine('html', ejs.renderFile)
 app.set('view engine', 'html')
 app.set('views', __dirname)

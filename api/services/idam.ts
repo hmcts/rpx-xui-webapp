@@ -1,4 +1,4 @@
-import {getConfigValue, initialiseSecrets} from '../configuration'
+import {getConfigValue} from '../configuration'
 import {
   COOKIES_TOKEN,
   IDAM_SECRET,
@@ -11,7 +11,6 @@ import { http } from '../lib/http'
 import { isReqResSet, request } from '../lib/middleware/responseRequest'
 import { valueOrNull } from '../lib/util'
 
-initialiseSecrets()
 const url = getConfigValue(SERVICES_IDAM_API_URL)
 const idamSecret = getConfigValue(IDAM_SECRET) || 'AAAAAAAAAAAAAAAA'
 console.log('idamSecret', idamSecret)

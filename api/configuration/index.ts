@@ -5,10 +5,7 @@ import { ENVIRONMENT } from './references'
 /**
  * Allows us to integrate the Azure key-vault flex volume, so that we are able to access Node configuration values.
  */
-export const initialiseSecrets = () => {
-  // propertiesVolume.addTo(config, { mountPoint: '/Volumes/mnt/secrets/'})
-  propertiesVolume.addTo(config)
-}
+propertiesVolume.addTo(config)
 /**
  * Get Configuration Value
  *
@@ -20,7 +17,7 @@ export const initialiseSecrets = () => {
  * @see references.ts
  * @param reference - ie. 'services.ccdDefApi'
  */
-export const getConfigValue = reference => config.get<any>(reference)
+export const getConfigValue = <T = string>(reference: string): T => config.get<T>(reference)
 
 export const hasConfigValue = reference => {
   return config.has(reference)
@@ -42,7 +39,7 @@ export const getEnvironment = () => process.env.NODE_CONFIG_ENV
  * @param feature
  * @return boolean
  */
-export const showFeature = feature => config.get(`feature.${feature}`)
+export const showFeature = (feature: string): boolean => config.get<boolean>(`feature.${feature}`)
 
 /**
  * Generate Environment Check Text

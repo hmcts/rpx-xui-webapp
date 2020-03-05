@@ -1,5 +1,5 @@
 import { createGlobalProxyAgent } from 'global-agent'
-import { getConfigValue, hasConfigValue } from '../configuration'
+import {getConfigValue, hasConfigValue, showFeature} from '../configuration'
 import {
   PROXY_ENABLED,
   PROXY_HOST,
@@ -15,3 +15,12 @@ export function init(): void {
         globalProxyAgent.NO_PROXY = 'localhost'
     }
 }
+
+/*export function init(): void {
+    if (showFeature(FEATURE_PROXY_ENABLED)) {
+        logger.info('configuring global-agent: ', process.env.MC_HTTP_PROXY, ' no proxy: ', process.env.MC_NO_PROXY)
+        createGlobalProxyAgent({
+            environmentVariableNamespace: "MC_",
+        })
+    }
+}*/

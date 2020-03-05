@@ -10,6 +10,7 @@ import {
   COOKIES_SESSION_ID,
   COOKIES_TOKEN,
   HEALTH,
+  IDAM_SECRET,
   LOGGING,
   MAX_LOG_LINE,
   PROTOCOL,
@@ -26,7 +27,7 @@ import {
   SERVICES_TERMS_AND_CONDITIONS_URL,
 } from './configuration/references'
 import { appInsights } from './lib/appInsights'
-
+initialiseSecrets()
 app.engine('html', ejs.renderFile)
 app.set('view engine', 'html')
 app.set('views', __dirname)
@@ -48,7 +49,7 @@ app.use('/*', (req, res) => {
     })
 })
 
-initialiseSecrets()
+
 console.log('CHECK ENVIRONMENT VARIABLES:')
 console.log(getConfigValue('environment'))
 console.log(getConfigValue(SERVICES_CCD_COMPONENT_API_PATH))
@@ -72,6 +73,7 @@ console.log('END CHECK OF ENVIRONMENTAL VARIABLES')
 
 console.log('s2s secret')
 console.log(getConfigValue(S2S_SECRET))
+console.log(getConfigValue(IDAM_SECRET))
 console.log(getConfigValue(APP_INSIGHTS_SECRET))
 
 app.use(appInsights)

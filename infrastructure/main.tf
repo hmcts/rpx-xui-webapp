@@ -33,6 +33,7 @@ module "app" {
         PACKAGES_ENVIRONMENT = "${var.env}"
         XUI_ENV = "${var.env}"
         DUMMY_VAR = "TRUE"
+        NODE_CONFIG_DIR = "${var.node_config_dir}"
 
         # Allow secrets to be attached to the node-config object
         ALLOW_CONFIG_MUTATIONS = "${var.allow_config_mutations}"

@@ -66,3 +66,8 @@ variable "node_tls_reject_unauthorized" {
 variable "secure_cookie" {
   default = "false"
 }
+
+variable "node_config_dir" {
+  // for Windows
+  default = "D:\\home\\site\\wwwroot\\config"
+}

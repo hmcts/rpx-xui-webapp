@@ -20,6 +20,7 @@ properties([
 def type      = "nodejs"
 def product   = "xui"
 def component = "webapp"
+def vault = "rpx"
 def channel   = '#xui-pipeline'
 def deployToAatOnly = true  // set to true if only deploy upto AAT, set to false will deploy all the way to production
 
@@ -46,9 +47,9 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 
 withPipeline(type, product, component) {
     enableSlackNotifications(channel)
-    
+
     loadVaultSecrets(secrets)
-    
+
     installCharts()
 
     enableAksStagingDeployment()

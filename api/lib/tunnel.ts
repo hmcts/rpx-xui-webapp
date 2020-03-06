@@ -1,5 +1,5 @@
 import { createGlobalProxyAgent } from 'global-agent'
-import {getConfigValue, hasConfigValue, showFeature} from '../configuration'
+import {getConfigValue, hasConfigValue} from '../configuration'
 import {
   PROXY_ENABLED,
   PROXY_HOST,

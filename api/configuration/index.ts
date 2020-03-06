@@ -6,7 +6,7 @@ import { ENVIRONMENT } from './references'
  * Allows us to integrate the Azure key-vault flex volume, so that we are able to access Node configuration values.
  */
 propertiesVolume.addTo(config)
-console.log('config: ', config)
+console.log('IDAM_SECRET: ', process.env.IDAM_SECRET)
 /**
  * Get Configuration Value
  *

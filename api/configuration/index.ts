@@ -2,12 +2,11 @@ import * as propertiesVolume from '@hmcts/properties-volume'
 import * as config from 'config'
 import { ENVIRONMENT } from './references'
 
-console.log('NODE_CONFIG_DIR: ' + config.util.getEnv('NODE_CONFIG_DIR'))
-
 /**
  * Allows us to integrate the Azure key-vault flex volume, so that we are able to access Node configuration values.
  */
 propertiesVolume.addTo(config)
+console.log('config: ', config)
 /**
  * Get Configuration Value
  *

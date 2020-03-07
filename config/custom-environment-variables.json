@@ -51,7 +51,7 @@
   "log4JConfig": {
     "__name": "LOG_4JS_CONFIG",
     "__format": "json"
-  }
+  },
   "feature": {
     "appInsightsEnabled": {
       "__name": "FEATURE_APP_INSIGHTS_ENABLED",
@@ -74,4 +74,4 @@
     "__name": "HELMET_CONFIG",
     "__format": "json"
   }
-},
+}

@@ -51,6 +51,7 @@ api/.nyc_output
 
 # Do not commit local files
 /config/local*.*
+.env
 
 # System Files
 .DS_Store

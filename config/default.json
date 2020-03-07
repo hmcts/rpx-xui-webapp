@@ -37,13 +37,7 @@
     "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal"
   },
   "protocol": "https",
-  "secureCookie": true,
   "microservice": "xui_webapp",
-  "proxy": {
-    "enabled": false,
-    "host": "172.16.0.7",
-    "port": 8080
-  },
   "sessionSecret": "secretSauce",
   "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA",
   "loginRoleMatcher": "caseworker",
@@ -59,6 +53,61 @@
     },
     "categories": {
       "default": { "appenders": ["out"], "level": "info" }
+    }
+  },
+  "feature": {
+    "appInsightsEnabled": true,
+    "proxyEnabled": false,
+    "secureCookieEnabled": true,
+    "helmetEnabled": false
+  },
+  "helmet": {
+    "contentSecurityPolicy": {
+      "directives": {
+        "defaultSrc": ["'self'"],
+        "fontSrc": ["'self'", "https://fonts.gstatic.com", "data:"],
+        "styleSrc": [
+          "'self'",
+          "'unsafe-inline'",
+          "https://fonts.googleapis.com",
+          "https://fonts.gstatic.com"
+        ],
+        "scriptSrc": [
+          "'self'",
+          "'unsafe-inline'",
+          "'unsafe-eval'",
+          "www.google-analytics.com",
+          "www.googletagmanager.com",
+          "az416426.vo.msecnd.net"
+        ],
+        "connectSrc": [
+          "'self'",
+          "*.gov.uk",
+          "dc.services.visualstudio.com"
+        ],
+        "mediaSrc": ["'self'"],
+        "objectSrc": ["'self'"],
+        "frameAncestors": ["'none'"],
+        "imgSrc": [
+          "'self'",
+          "data:",
+          "https://www.google-analytics.com",
+          "https://www.googletagmanager.com",
+          "https://raw.githubusercontent.com/hmcts/"
+        ]
+      }
+    },
+    "referrerPolicy": {
+      "policy": "origin"
+    },
+    "noCache": {
+      "enable": true
+    },
+    "frameguard": {
+      "action":"deny"
+    },
+    "hidePoweredBy": {
+      "setTo": "XUI Server 1.0"
     }
   }
 }

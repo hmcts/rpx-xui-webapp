@@ -4,7 +4,7 @@ import * as express from 'express'
 import * as session from 'express-session'
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
-import {getConfigValue} from './configuration'
+import {getConfigValue, showFeature} from './configuration'
 import {
   APP_INSIGHTS_SECRET,
   PROTOCOL,
@@ -74,6 +74,9 @@ app.use('/aggregated', routes)
 app.use('/data', routes)
 app.use('/api/userTermsAndConditions', userTandCRoutes)
 app.use('/api/termsAndConditions', termsAndCRoutes)
+app.get('/api/configuration', (req, res) => {
+    res.send(showFeature(req.query.configurationKey))
+})
 // separate route for document upload/view
 app.use('/documents', documentRouter)
 app.use('/em-anno', emAnnoRouter)

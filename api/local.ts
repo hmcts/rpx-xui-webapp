@@ -2,12 +2,16 @@
  * Common to both server.ts and local.ts files
  */
 import { app } from './application'
-import {getConfigValue} from './configuration'
+import {getConfigValue, showFeature} from './configuration'
 import {
   APP_INSIGHTS_KEY,
   APP_INSIGHTS_SECRET,
   COOKIES_SESSION_ID,
   COOKIES_TOKEN,
+  FEATURE_APP_INSIGHTS_ENABLED,
+  FEATURE_PROXY_ENABLED,
+  FEATURE_SECURE_COOKIE_ENABLED,
+  FEATURE_TERMS_AND_CONDITIONS_ENABLED,
   HEALTH,
   IDAM_SECRET,
   LOGGING,
@@ -44,6 +48,14 @@ console.log(getConfigValue(LOGGING))
 console.log(getConfigValue(APP_INSIGHTS_KEY))
 console.log(getConfigValue(SERVICES_TERMS_AND_CONDITIONS_URL))
 console.log(getConfigValue(HEALTH))
+console.log('Secure Cookie is:')
+console.log(showFeature(FEATURE_SECURE_COOKIE_ENABLED))
+console.log('App Insights enabled:')
+console.log(showFeature(FEATURE_APP_INSIGHTS_ENABLED))
+console.log('Proxy enabled:')
+console.log(showFeature(FEATURE_PROXY_ENABLED))
+console.log('Terms and Conditions enabled:')
+console.log(showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED))
 console.log('END CHECK OF ENVIRONMENTAL VARIABLES')
 
 console.log(getConfigValue(S2S_SECRET))

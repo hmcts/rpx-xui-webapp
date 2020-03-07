@@ -57,3 +57,8 @@ export const IDAM_SECRET = 'secrets.rpx.mc-idam-client-secret'
 export const LOGIN_ROLE_MATCHER = 'loginRoleMatcher'
 
 export const LOG4_J_CONFIG = 'log4JConfig'
+
+export const FEATURE_SECURE_COOKIE_ENABLED = 'secureCookieEnabled'
+export const FEATURE_APP_INSIGHTS_ENABLED = 'appInsightsEnabled'
+export const FEATURE_PROXY_ENABLED = 'proxyEnabled'
+export const FEATURE_TERMS_AND_CONDITIONS_ENABLED = 'termsAndConditionsEnabled'

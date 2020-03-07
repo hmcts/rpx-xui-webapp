@@ -29,3 +29,8 @@ nodejs:
   # Don't modify below here
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
+  # Feature Toggles
+  FEATURE_APP_INSIGHTS_ENABLED: true
+  FEATURE_SECURE_COOKIE_ENABLED: true
+  FEATURE_PROXY_ENABLED: false
+  FEATURE_TERMS_AND_CONDITIONS_ENABLED: false

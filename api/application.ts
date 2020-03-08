@@ -2,14 +2,18 @@ import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
 import * as session from 'express-session'
+import * as helmet from 'helmet'
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
 import {getConfigValue, showFeature} from './configuration'
 import {
-  APP_INSIGHTS_SECRET,
-  PROTOCOL,
-  SECURE_COOKIE,
-  SESSION_SECRET,
+    APP_INSIGHTS_SECRET,
+    FEATURE_HELMET_ENABLED,
+    FEATURE_SECURE_COOKIE_ENABLED,
+    HELMET,
+    NOW,
+    PROTOCOL,
+    SESSION_SECRET,
 } from './configuration/references'
 import {router as documentRouter} from './documents/routes'
 import {router as emAnnoRouter} from './emAnno/routes'
@@ -26,7 +30,10 @@ import {router as termsAndCRoutes} from './termsAndConditions/routes'
 import {router as userTandCRoutes} from './userTermsAndConditions/routes'
 
 export const app = express()
-app.disable('x-powered-by')
+if (showFeature(FEATURE_HELMET_ENABLED)) {
+    console.log('Helmet enabled')
+    app.use(helmet(getConfigValue(HELMET)))
+}
 
 const FileStore = sessionFileStore(session)
 
@@ -36,7 +43,7 @@ app.use(
         cookie: {
             httpOnly: true,
             maxAge: 1800000,
-            secure: getConfigValue(SECURE_COOKIE),
+            secure: showFeature(FEATURE_SECURE_COOKIE_ENABLED),
         },
         name: 'xui-webapp', // keep as string
         resave: true,
@@ -44,7 +51,7 @@ app.use(
         secret: getConfigValue(SESSION_SECRET),
         // TODO: remove this and use values from cookie token instead
         store: new FileStore({
-            path: process.env.NOW ? '/tmp/sessions' : '.sessions',
+            path: getConfigValue(NOW) ? '/tmp/sessions' : '.sessions',
         }),
     })
 )

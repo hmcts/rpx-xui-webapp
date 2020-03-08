@@ -23,6 +23,22 @@ variable "env" {
   type = "string"
 }
 
+variable "feature_secure_cookie_enabled" {
+  default = "true"
+}
+
+variable "feature_app_insights_enabled" {
+  default = "true"
+}
+
+variable "feature_proxy_enabled" {
+  default = "false"
+}
+
+variable "feature_terms_and_conditions_enabled" {
+  default = "false"
+}
+
 variable "shared_product_name" {
     default = "rpx"
 }

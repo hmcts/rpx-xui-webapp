@@ -59,7 +59,8 @@
     "appInsightsEnabled": true,
     "proxyEnabled": false,
     "secureCookieEnabled": true,
-    "helmetEnabled": false
+    "helmetEnabled": false,
+    "termsAndConditionsEnabled": false
   },
   "helmet": {
     "contentSecurityPolicy": {

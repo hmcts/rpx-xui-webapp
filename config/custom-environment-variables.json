@@ -9,6 +9,7 @@
     "instrumentationKey": "APPINSIGHTS_INSTRUMENTATIONKEY"
   },
   "logging": "LOGGING",
+  "now": "NOW",
   "maxLogLine": "MAX_LOG_LINE",
   "health": {
     "ccdComponentApi": "HEALTH_CCD_COMPONENT_API",

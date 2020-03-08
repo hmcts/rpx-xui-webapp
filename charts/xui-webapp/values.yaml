@@ -9,9 +9,7 @@ nodejs:
     NODE_ENV: production
     NODE_CONFIG_ENV: production
     UV_THREADPOOL_SIZE: 64
-    APPINSIGHTS_INSTRUMENTATIONKEY: ${APPINSIGHTS_INSTRUMENTATIONKEY}
     XUI_ENV: preview
-    # New values.yaml values
     LOGGING: debug
     MAX_LOG_LINE: 80
     PROTOCOL: https
@@ -19,6 +17,13 @@ nodejs:
     SESSION_SECRET: secretSauce
     ALLOW_CONFIG_MUTATIONS: 1
     SECURE_COOKIE: true
+    MC_HTTP_PROXY: http://172.16.0.7:8080
+    MC_NO_PROXY: localhost
+    NOW: false
+    FEATURE_APP_INSIGHTS_ENABLED: true
+    FEATURE_SECURE_COOKIE_ENABLED: true
+    FEATURE_PROXY_ENABLED: false
+    FEATURE_TERMS_AND_CONDITIONS_ENABLED: true
   keyVaults:
     rpx:
       resourceGroup: rpx
@@ -29,8 +34,3 @@ nodejs:
   # Don't modify below here
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
-  # Feature Toggles
-  FEATURE_APP_INSIGHTS_ENABLED: true
-  FEATURE_SECURE_COOKIE_ENABLED: true
-  FEATURE_PROXY_ENABLED: false
-  FEATURE_TERMS_AND_CONDITIONS_ENABLED: false

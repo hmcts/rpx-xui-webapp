@@ -81,6 +81,9 @@ app.use('/aggregated', routes)
 app.use('/data', routes)
 app.use('/api/userTermsAndConditions', userTandCRoutes)
 app.use('/api/termsAndConditions', termsAndCRoutes)
+app.get('/api/configuration', (req, res) => {
+    res.send(showFeature(req.query.configurationKey))
+})
 // separate route for document upload/view
 app.use('/documents', documentRouter)
 app.use('/em-anno', emAnnoRouter)

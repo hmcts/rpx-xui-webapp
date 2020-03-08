@@ -46,6 +46,12 @@ module "app" {
         IDAM_SECRET = "${data.azurerm_key_vault_secret.oauth2_secret.value}"
         NODE_TLS_REJECT_UNAUTHORIZED = "${var.node_tls_reject_unauthorized}"
 
+        # FEATURE TOGGLES
+        FEATURE_APP_INSIGHTS_ENABLED = "${var.feature_app_insights_enabled}"
+        FEATURE_SECURE_COOKIE_ENABLED = "${var.feature_secure_cookie_enabled}"
+        FEATURE_PROXY_ENABLED = "${var.feature_proxy_enabled}"
+        FEATURE_TERMS_AND_CONDITIONS_ENABLED = "${var.feature_terms_and_conditions_enabled}"
+
         WEBSITE_NODE_DEFAULT_VERSION  = "12.13.0"
 
     }

@@ -7,7 +7,7 @@ import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
 import {getConfigValue, showFeature} from './configuration'
 import {
-    APP_INSIGHTS_SECRET,
+    APP_INSIGHTS_KEY,
     FEATURE_HELMET_ENABLED,
     FEATURE_SECURE_COOKIE_ENABLED,
     HELMET,
@@ -72,7 +72,7 @@ app.get('/api/logout', (req, res) => {
 app.get('/api/addresses', authInterceptor, postCodeLookup.doLookup)
 
 app.get('/api/monitoring-tools', (req, res) => {
-    res.send({key: getConfigValue(APP_INSIGHTS_SECRET)})
+    res.send({key: getConfigValue(APP_INSIGHTS_KEY)})
 })
 
 app.use('/api/healthCheck', healthCheck)

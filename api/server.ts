@@ -6,7 +6,6 @@ import * as path from 'path'
 import {getConfigValue, showFeature} from './configuration'
 import {
   APP_INSIGHTS_KEY,
-  APP_INSIGHTS_SECRET,
   COOKIES_SESSION_ID,
   COOKIES_TOKEN,
   FEATURE_APP_INSIGHTS_ENABLED,
@@ -84,7 +83,7 @@ console.log('END CHECK OF ENVIRONMENTAL VARIABLES')
 console.log('s2s secret')
 console.log(getConfigValue(S2S_SECRET))
 console.log(getConfigValue(IDAM_SECRET))
-console.log(getConfigValue(APP_INSIGHTS_SECRET))
+console.log(getConfigValue(APP_INSIGHTS_KEY))
 
 app.use(appInsights)
 app.listen(process.env.PORT || 3000, () => {

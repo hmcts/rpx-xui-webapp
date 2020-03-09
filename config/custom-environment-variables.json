@@ -5,9 +5,6 @@
     "userId": "COOKIES_USER_ID",
     "sessionId": "COOKIES_SESSION_ID"
   },
-  "appInsights": {
-    "instrumentationKey": "APPINSIGHTS_INSTRUMENTATIONKEY"
-  },
   "logging": "LOGGING",
   "now": "NOW",
   "maxLogLine": "MAX_LOG_LINE",

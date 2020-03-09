@@ -8,11 +8,27 @@ import * as auth from './auth'
 import {getConfigValue, showFeature} from './configuration'
 import {
     APP_INSIGHTS_KEY,
+    COOKIES_TOKEN,
+    COOKIES_USER_ID,
+    FEATURE_APP_INSIGHTS_ENABLED,
     FEATURE_HELMET_ENABLED,
+    FEATURE_PROXY_ENABLED,
     FEATURE_SECURE_COOKIE_ENABLED,
+    FEATURE_TERMS_AND_CONDITIONS_ENABLED,
     HELMET,
+    JURISDICTIONS,
+    MAX_LOG_LINE,
+    MICROSERVICE,
     NOW,
     PROTOCOL,
+    SERVICE_S2S_PATH,
+    SERVICES_DOCUMENTS_API_PATH,
+    SERVICES_EM_ANNO_API_URL,
+    SERVICES_IDAM_API_URL,
+    SERVICES_IDAM_CLIENT_ID,
+    SERVICES_IDAM_LOGIN_URL,
+    SERVICES_IDAM_OAUTH_CALLBACK_URL,
+    SERVICES_TERMS_AND_CONDITIONS_URL,
     SESSION_SECRET,
 } from './configuration/references'
 import {router as documentRouter} from './documents/routes'
@@ -83,6 +99,38 @@ app.use('/api/userTermsAndConditions', userTandCRoutes)
 app.use('/api/termsAndConditions', termsAndCRoutes)
 app.get('/api/configuration', (req, res) => {
     res.send(showFeature(req.query.configurationKey))
+})
+app.get('/health', (req, res) => {
+    res.status(200).send({
+        allowConfigMutations: process.env.ALLOW_CONFIG_MUTATIONS,
+        nodeConfigEnv: process.env.NODE_CONFIG_ENV,
+        // 1st set
+        // tslint:disable-next-line:object-literal-sort-keys
+        idamClient: getConfigValue(SERVICES_IDAM_CLIENT_ID),
+        maxLogLine: getConfigValue(MAX_LOG_LINE),
+        microService: getConfigValue(MICROSERVICE),
+        now: getConfigValue(NOW),
+        // 2nd set
+        cookieToken: getConfigValue(COOKIES_TOKEN),
+        cookieUserId: getConfigValue(COOKIES_USER_ID),
+        oauthCallBack: getConfigValue(SERVICES_IDAM_OAUTH_CALLBACK_URL),
+        protocol: getConfigValue(PROTOCOL),
+        // 3rd set
+        idamApiPath: getConfigValue(SERVICES_IDAM_API_URL),
+        idamWeb: getConfigValue(SERVICES_IDAM_LOGIN_URL),
+        s2sPath: getConfigValue(SERVICE_S2S_PATH),
+        emAnnoApi: getConfigValue(SERVICES_EM_ANNO_API_URL),
+        documentsApi: getConfigValue(SERVICES_DOCUMENTS_API_PATH),
+        termsAndConditionsApi: getConfigValue(SERVICES_TERMS_AND_CONDITIONS_URL),
+        // 4th set
+        sessionSecret: getConfigValue(SESSION_SECRET),
+        jurisdictions: getConfigValue(JURISDICTIONS),
+        // 5th set
+        featureSecureCookieEnabled: showFeature(FEATURE_SECURE_COOKIE_ENABLED),
+        featureAppInsightEnabled: showFeature(FEATURE_APP_INSIGHTS_ENABLED),
+        featureProxyEnabled: showFeature(FEATURE_PROXY_ENABLED),
+        featureTermsAndConditionsEnabled: showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED),
+    })
 })
 // separate route for document upload/view
 app.use('/documents', documentRouter)

@@ -1,16 +1,12 @@
 {
-  "environment": {
-    "name": "This file: custom-environment-variables overwrites all other .json files within the /config folder"
-  },
+  "environment": "NODE_CONFIG_ENV",
   "cookies": {
-    "token": "__auth__",
-    "userId": "__userid__",
-    "sessionId": "__sessionId__"
-  },
-  "appInsights": {
-    "instrumentationKey": "APPINSIGHTS_INSTRUMENTATIONKEY"
+    "token": "COOKIE_TOKEN",
+    "userId": "COOKIES_USER_ID",
+    "sessionId": "COOKIES_SESSION_ID"
   },
   "logging": "LOGGING",
+  "now": "NOW",
   "maxLogLine": "MAX_LOG_LINE",
   "health": {
     "ccdComponentApi": "HEALTH_CCD_COMPONENT_API",
@@ -41,11 +37,43 @@
   "protocol": "PROTOCOL",
   "secureCookie": "SECURE_COOKIE",
   "microservice": "MICROSERVICE",
-  "proxy": {
-    "enabled": "PROXY_ENABLED",
-    "host": "172.16.0.7",
-    "port": "PROXY_PORT"
-  },
   "sessionSecret": "SESSION_SECRET",
-  "jurisdictions": "JURISDICTIONS"
+  "secrets": {
+    "rpx": {
+      "AppInsightsInstrumentationKey": "APPINSIGHTS_INSTRUMENTATIONKEY",
+      "mc-s2s-client-secret": "S2S_SECRET",
+      "mc-idam-client-secret": "IDAM_SECRET"
+    }
+  },
+  "jurisdictions": "JURISDICTIONS",
+  "log4JConfig": {
+    "__name": "LOG_4JS_CONFIG",
+    "__format": "json"
+  },
+  "feature": {
+    "appInsightsEnabled": {
+      "__name": "FEATURE_APP_INSIGHTS_ENABLED",
+      "__format": "json"
+    },
+    "proxyEnabled": {
+      "__name": "FEATURE_PROXY_ENABLED",
+      "__format": "json"
+    },
+    "secureCookieEnabled": {
+      "__name": "FEATURE_SECURE_COOKIE_ENABLED",
+      "__format": "json"
+    },
+    "termsAndConditionsEnabled": {
+      "__name": "FEATURE_TERMS_AND_CONDITIONS_ENABLED",
+      "__format": "json"
+    },
+    "helmetEnabled": {
+      "__name": "FEATURE_HELMET_ENABLED",
+      "__format": "json"
+    }
+  },
+  "helmet": {
+    "__name": "HELMET_CONFIG",
+    "__format": "json"
+  }
 }

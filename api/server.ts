@@ -3,13 +3,17 @@ import { app } from './application'
 import * as ejs from 'ejs'
 import * as express from 'express'
 import * as path from 'path'
-import {getConfigValue, initialiseSecrets} from './configuration'
+import {getConfigValue, showFeature} from './configuration'
 import {
   APP_INSIGHTS_KEY,
-  APP_INSIGHTS_SECRET,
   COOKIES_SESSION_ID,
   COOKIES_TOKEN,
+  FEATURE_APP_INSIGHTS_ENABLED,
+  FEATURE_PROXY_ENABLED,
+  FEATURE_SECURE_COOKIE_ENABLED,
+  FEATURE_TERMS_AND_CONDITIONS_ENABLED,
   HEALTH,
+  IDAM_SECRET,
   LOGGING,
   MAX_LOG_LINE,
   PROTOCOL,
@@ -26,7 +30,6 @@ import {
   SERVICES_TERMS_AND_CONDITIONS_URL,
 } from './configuration/references'
 import { appInsights } from './lib/appInsights'
-
 app.engine('html', ejs.renderFile)
 app.set('view engine', 'html')
 app.set('views', __dirname)
@@ -48,9 +51,6 @@ app.use('/*', (req, res) => {
     })
 })
 
-// const secrets = propertiesVolume.addTo({})
-initialiseSecrets()
-
 console.log('CHECK ENVIRONMENT VARIABLES:')
 console.log(getConfigValue('environment'))
 console.log(getConfigValue(SERVICES_CCD_COMPONENT_API_PATH))
@@ -70,11 +70,20 @@ console.log(getConfigValue(APP_INSIGHTS_KEY))
 console.log(getConfigValue(SERVICES_TERMS_AND_CONDITIONS_URL))
 console.log(getConfigValue(HEALTH))
 console.log(getConfigValue(SERVICE_S2S_PATH))
+console.log('Secure Cookie is:')
+console.log(showFeature(FEATURE_SECURE_COOKIE_ENABLED))
+console.log('App Insights enabled:')
+console.log(showFeature(FEATURE_APP_INSIGHTS_ENABLED))
+console.log('Proxy enabled:')
+console.log(showFeature(FEATURE_PROXY_ENABLED))
+console.log('Terms and Conditions enabled:')
+console.log(showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED))
 console.log('END CHECK OF ENVIRONMENTAL VARIABLES')
 
 console.log('s2s secret')
 console.log(getConfigValue(S2S_SECRET))
-console.log(getConfigValue(APP_INSIGHTS_SECRET))
+console.log(getConfigValue(IDAM_SECRET))
+console.log(getConfigValue(APP_INSIGHTS_KEY))
 
 app.use(appInsights)
 app.listen(process.env.PORT || 3000, () => {

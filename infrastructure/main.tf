@@ -33,6 +33,7 @@ module "app" {
         PACKAGES_ENVIRONMENT = "${var.env}"
         XUI_ENV = "${var.env}"
         DUMMY_VAR = "TRUE"
+        NODE_CONFIG_DIR = "${var.node_config_dir}"
 
         # Allow secrets to be attached to the node-config object
         ALLOW_CONFIG_MUTATIONS = "${var.allow_config_mutations}"
@@ -44,6 +45,12 @@ module "app" {
         S2S_SECRET = "${data.azurerm_key_vault_secret.s2s_secret.value}"
         IDAM_SECRET = "${data.azurerm_key_vault_secret.oauth2_secret.value}"
         NODE_TLS_REJECT_UNAUTHORIZED = "${var.node_tls_reject_unauthorized}"
+
+        # FEATURE TOGGLES
+        FEATURE_APP_INSIGHTS_ENABLED = "${var.feature_app_insights_enabled}"
+        FEATURE_SECURE_COOKIE_ENABLED = "${var.feature_secure_cookie_enabled}"
+        FEATURE_PROXY_ENABLED = "${var.feature_proxy_enabled}"
+        FEATURE_TERMS_AND_CONDITIONS_ENABLED = "${var.feature_terms_and_conditions_enabled}"
 
         WEBSITE_NODE_DEFAULT_VERSION  = "12.13.0"
 

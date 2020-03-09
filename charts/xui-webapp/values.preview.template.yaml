@@ -2,32 +2,4 @@ nodejs:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
   environment:
-       IDAM_URL: https://idam-api.aat.platform.hmcts.net
-       S2S_URL: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal
-       APPINSIGHTS_INSTRUMENTATIONKEY: ${APPINSIGHTS_INSTRUMENTATIONKEY}
-       S2S_SECRET: ${S2S_SECRET}
-       IDAM_SECRET: ${IDAM_SECRET}
-       NODE_TLS_REJECT_UNAUTHORIZED: '0'
-       # Health Endpoints
-       HEALTH_CCD_COMPONENT_API: http://ccd-api-gateway-web-aat.service.core-compute-aat.internal/health
-       HEALTH_CCD_DATA_API: http://ccd-data-store-api-aat.service.core-compute-aat.internal/health
-       HEALTH_DOCUMENTS_API: http://dm-store-aat.service.core-compute-aat.internal/health
-       HEALTH_EM_ANNO_API: http://em-anno-aat.service.core-compute-aat.internal/health
-       HEALTH_TERMS_AND_CONDITIONS_API: http://xui-terms-and-conditions-aat.service.core-compute-aat.internal/health
-       # Services CCD Endpoints
-       SERVICES_CCD_COMPONENT_API: http://ccd-api-gateway-web-aat.service.core-compute-aat.internal
-       SERVICES_CCD_DATA_STORE_API: http://ccd-data-store-api-aat.service.core-compute-aat.internal
-       # Services Documents Endpoints
-       SERVICES_DOCUMENTS_API: http://dm-store-aat.service.core-compute-aat.internal
-       # Services Em Anno
-       SERVICES_EM_ANNO_API: http://em-anno-aat.service.core-compute-aat.internal
-       # Services Idam
-       SERVICES_IDAM_API_URL: https://idam-api.aat.platform.hmcts.net
-       SERVICES_IDAM_CLIENT_ID: xuiwebapp
-       SERVICES_IDAM_LOGIN_URL: https://idam-web-public.aat.platform.hmcts.net
-       SERVICES_IDAM_INDEX_URL: /
-       SERVICES_IDAM_OAUTH_CALLBACK_URL: oauth2/callback
-       # Services S2s
-       SERVICES_S2S: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal
-       # Services T&Cs
-       SERVICES_TERMS_AND_CONDITIONS: http://xui-terms-and-conditions-aat.service.core-compute-aat.internal
+       NODE_TLS_REJECT_UNAUTHORIZED: 0

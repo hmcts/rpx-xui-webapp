@@ -6,13 +6,13 @@ nodejs:
        S2S_URL: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal
        NODE_TLS_REJECT_UNAUTHORIZED: 0
        # Health Endpoints
-       HEALTH_CCD_COMPONENT_API: http://ccd-api-gateway-web-aat.service.core-compute-aat.internal/health
+       HEALTH_CCD_COMPONENT_API: https://gateway-ccd.aat.platform.hmcts.net/health
        HEALTH_CCD_DATA_API: http://ccd-data-store-api-aat.service.core-compute-aat.internal/health
        HEALTH_DOCUMENTS_API: http://dm-store-aat.service.core-compute-aat.internal/health
        HEALTH_EM_ANNO_API: http://em-anno-aat.service.core-compute-aat.internal/health
        HEALTH_TERMS_AND_CONDITIONS_API: http://xui-terms-and-conditions-aat.service.core-compute-aat.internal/health
        # Services CCD Endpoints
-       SERVICES_CCD_COMPONENT_API: http://ccd-api-gateway-web-aat.service.core-compute-aat.internal
+       SERVICES_CCD_COMPONENT_API: https://gateway-ccd.aat.platform.hmcts.net
        SERVICES_CCD_DATA_STORE_API: http://ccd-data-store-api-aat.service.core-compute-aat.internal
        # Services Documents Endpoints
        SERVICES_DOCUMENTS_API: http://dm-store-aat.service.core-compute-aat.internal

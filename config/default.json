@@ -5,9 +5,6 @@
     "userId": "__userid__",
     "sessionId": "__sessionId__"
   },
-  "appInsights": {
-    "instrumentationKey": ""
-  },
   "logging": "debug",
   "now": false,
   "maxLogLine": 80,

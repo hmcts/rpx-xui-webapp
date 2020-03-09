@@ -1,16 +1,18 @@
 /**
  * Common to both server.ts and local.ts files
  */
-import * as propertiesVolume from '@hmcts/properties-volume'
-import * as config from 'config'
 import { app } from './application'
-import {getConfigValue, getIDamSecret, initialiseSecrets} from './configuration'
+import {getConfigValue, showFeature} from './configuration'
 import {
   APP_INSIGHTS_KEY,
-  APP_INSIGHTS_SECRET,
   COOKIES_SESSION_ID,
   COOKIES_TOKEN,
+  FEATURE_APP_INSIGHTS_ENABLED,
+  FEATURE_PROXY_ENABLED,
+  FEATURE_SECURE_COOKIE_ENABLED,
+  FEATURE_TERMS_AND_CONDITIONS_ENABLED,
   HEALTH,
+  IDAM_SECRET,
   LOGGING,
   MAX_LOG_LINE,
   PROTOCOL,
@@ -26,8 +28,6 @@ import {
   SERVICES_TERMS_AND_CONDITIONS_URL,
 } from './configuration/references'
 import { appInsights } from './lib/appInsights'
-
-initialiseSecrets()
 
 console.log('CHECK ENVIRONMENT VARIABLES:')
 console.log(getConfigValue('environment'))
@@ -47,13 +47,19 @@ console.log(getConfigValue(LOGGING))
 console.log(getConfigValue(APP_INSIGHTS_KEY))
 console.log(getConfigValue(SERVICES_TERMS_AND_CONDITIONS_URL))
 console.log(getConfigValue(HEALTH))
+console.log('Secure Cookie is:')
+console.log(showFeature(FEATURE_SECURE_COOKIE_ENABLED))
+console.log('App Insights enabled:')
+console.log(showFeature(FEATURE_APP_INSIGHTS_ENABLED))
+console.log('Proxy enabled:')
+console.log(showFeature(FEATURE_PROXY_ENABLED))
+console.log('Terms and Conditions enabled:')
+console.log(showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED))
 console.log('END CHECK OF ENVIRONMENTAL VARIABLES')
 
 console.log(getConfigValue(S2S_SECRET))
-console.log(getConfigValue(APP_INSIGHTS_SECRET))
-const mountedSecrets = propertiesVolume.addTo(config)
-// const mountedSecrets = propertiesVolume.addTo(config, { mountPoint: '/Volumes/mnt/secrets/'})
-console.log('idamSecret', getIDamSecret(mountedSecrets))
+console.log(getConfigValue(APP_INSIGHTS_KEY))
+console.log('idamSecret', getConfigValue(IDAM_SECRET))
 
 app.use(appInsights)
 

@@ -74,7 +74,7 @@ export async function postDocuments(fields: Fields, files: Files): Promise<DMDoc
     http.post(`${url}/documents/`, formData,
         {
             headers: formData.getHeaders(),
-            maxContentLength: 104857600,
+            maxContentLength: 524300000,
         }),
     `Error posting documents`,
     null,

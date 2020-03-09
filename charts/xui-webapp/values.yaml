@@ -7,11 +7,46 @@ nodejs:
     REFORM_TEAM: rpx
     REFORM_SERVICE_NAME: xui-webapp
     NODE_ENV: production
+    NODE_CONFIG_ENV: production
     UV_THREADPOOL_SIZE: 64
-    APPINSIGHTS_INSTRUMENTATIONKEY: ${APPINSIGHTS_INSTRUMENTATIONKEY}
     XUI_ENV: preview
-    S2S_SECRET: ${S2S_SECRET}
-    IDAM_SECRET: ${IDAM_SECRET}
+    LOGGING: debug
+    MAX_LOG_LINE: 80
+    PROTOCOL: https
+    MICROSERVICE: xui_webapp
+    SESSION_SECRET: secretSauce
+    ALLOW_CONFIG_MUTATIONS: 1
+    SECURE_COOKIE: true
+    MC_HTTP_PROXY: http://172.16.0.7:8080
+    MC_NO_PROXY: localhost
+    NOW: false
+    # Health Endpoints
+    HEALTH_CCD_COMPONENT_API: https://gateway-ccd.{{ .Values.global.environment }}.platform.hmcts.net/health
+    HEALTH_CCD_DATA_API: http://ccd-data-store-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
+    HEALTH_DOCUMENTS_API: http://dm-store-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
+    HEALTH_EM_ANNO_API: http://em-anno-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
+    HEALTH_TERMS_AND_CONDITIONS_API: http://xui-terms-and-conditions-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
+    # Services CCD Endpoints
+    SERVICES_CCD_COMPONENT_API: https://gateway-ccd.{{ .Values.global.environment }}.platform.hmcts.net
+    SERVICES_CCD_DATA_STORE_API: http://ccd-data-store-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services Documents Endpoints
+    SERVICES_DOCUMENTS_API: http://dm-store-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services Em Anno
+    SERVICES_EM_ANNO_API: http://em-anno-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services Idam
+    SERVICES_IDAM_API_URL: https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net
+    SERVICES_IDAM_CLIENT_ID: xuiwebapp
+    SERVICES_IDAM_LOGIN_URL: https://idam-web-public.{{ .Values.global.environment }}.platform.hmcts.net
+    SERVICES_IDAM_INDEX_URL: /
+    SERVICES_IDAM_OAUTH_CALLBACK_URL: oauth2/callback
+    # Services S2s
+    SERVICES_S2S: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services T&Cs
+    SERVICES_TERMS_AND_CONDITIONS: http://xui-terms-and-conditions-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    FEATURE_APP_INSIGHTS_ENABLED: true
+    FEATURE_SECURE_COOKIE_ENABLED: true
+    FEATURE_PROXY_ENABLED: false
+    FEATURE_TERMS_AND_CONDITIONS_ENABLED: true
   keyVaults:
     rpx:
       resourceGroup: rpx

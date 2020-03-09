@@ -7,7 +7,10 @@ import { mockReq, mockRes } from 'sinon-express-mock'
 
 chai.use(sinonChai)
 
-import { config } from '../config'
+import {getConfigValue} from '../configuration'
+import {
+  SERVICES_CCD_COMPONENT_API_PATH,
+} from '../configuration/references'
 import {http} from '../lib/http'
 import * as amendedJurisdictions from './index'
 
@@ -66,11 +69,11 @@ describe('Amended Jurisdiction', () => {
   })
 
   it('should jurisdictions proxy a get request and send PROBATE array', async () => {
-    const url = `${config.services.ccd.componentApi}${req.baseUrl}${req.url}`
+    const url = `${getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)}${req.baseUrl}${req.url}`
     const expected = [
         {
             id: 'PROBATE',
-        }
+        },
     ]
 
     spy = sandbox.stub(http, 'get').resolves(result0)
@@ -80,12 +83,12 @@ describe('Amended Jurisdiction', () => {
   })
 
   it('should jurisdictions proxy a get request and send PROBATE array when env is prod', async () => {
-    const url = `${config.services.ccd.componentApi}${req.baseUrl}${req.url}`
-    config.environment = 'prod'
+    const url = `${getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)}${req.baseUrl}${req.url}`
+
     const expected = [
         {
             id: 'PROBATE',
-        }
+        },
     ]
 
     spy = sandbox.stub(http, 'get').resolves(result0)
@@ -95,7 +98,7 @@ describe('Amended Jurisdiction', () => {
   })
 
   it('should jurisdictions proxy a get request and send empty array', async () => {
-    const url = `${config.services.ccd.componentApi}${req.baseUrl}${req.url}`
+    const url = `${getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)}${req.baseUrl}${req.url}`
     const expected = []
 
     spy = sandbox.stub(http, 'get').resolves(result1)

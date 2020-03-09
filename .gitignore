@@ -49,6 +49,9 @@ api/.nyc_output
 /api/test/pact/logs/
 /api/test/pact/pacts/
 
+# Do not commit local files
+/config/local*.*
+.env
 
 # System Files
 .DS_Store

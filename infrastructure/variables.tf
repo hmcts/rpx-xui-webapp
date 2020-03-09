@@ -23,12 +23,32 @@ variable "env" {
   type = "string"
 }
 
+variable "feature_secure_cookie_enabled" {
+  default = "true"
+}
+
+variable "feature_app_insights_enabled" {
+  default = "true"
+}
+
+variable "feature_proxy_enabled" {
+  default = "false"
+}
+
+variable "feature_terms_and_conditions_enabled" {
+  default = "false"
+}
+
 variable "shared_product_name" {
     default = "rpx"
 }
 
 variable "subscription" {
   type = "string"
+}
+
+variable "allow_config_mutations" {
+  default = "1"
 }
 
 variable "ilbIp"{}
@@ -57,4 +77,13 @@ variable "additional_host_name" {
 
 variable "node_tls_reject_unauthorized" {
     default = "1"
+}
+
+variable "secure_cookie" {
+  default = "false"
+}
+
+variable "node_config_dir" {
+  // for Windows
+  default = "D:\\home\\site\\wwwroot\\config"
 }

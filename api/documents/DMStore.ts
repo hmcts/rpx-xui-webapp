@@ -2,14 +2,17 @@ import {AxiosResponse} from 'axios'
 import * as FormData from 'form-data'
 import {Fields, File, Files} from 'formidable'
 import * as fs from 'fs'
-import { config } from '../config'
+import {getConfigValue} from '../configuration'
+import {
+  SERVICES_DOCUMENTS_API_PATH,
+} from '../configuration/references'
 import { http } from '../lib/http'
 import * as log4jui from '../lib/log4jui'
 import {JUILogger} from "../lib/models"
 import { asyncReturnOrError } from '../lib/util'
 import {DMDocument, DMDocuments} from './document.interface'
 
-const url: string = config.services.documents.api
+const url: string = getConfigValue(SERVICES_DOCUMENTS_API_PATH)
 
 const logger: JUILogger = log4jui.getLogger('dm-store')
 
@@ -71,7 +74,7 @@ export async function postDocuments(fields: Fields, files: Files): Promise<DMDoc
     http.post(`${url}/documents/`, formData,
         {
             headers: formData.getHeaders(),
-            maxContentLength: 104857600,
+            maxContentLength: 524300000,
         }),
     `Error posting documents`,
     null,

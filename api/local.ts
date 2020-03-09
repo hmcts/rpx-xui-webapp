@@ -5,7 +5,6 @@ import { app } from './application'
 import {getConfigValue, showFeature} from './configuration'
 import {
   APP_INSIGHTS_KEY,
-  APP_INSIGHTS_SECRET,
   COOKIES_SESSION_ID,
   COOKIES_TOKEN,
   FEATURE_APP_INSIGHTS_ENABLED,
@@ -59,7 +58,7 @@ console.log(showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED))
 console.log('END CHECK OF ENVIRONMENTAL VARIABLES')
 
 console.log(getConfigValue(S2S_SECRET))
-console.log(getConfigValue(APP_INSIGHTS_SECRET))
+console.log(getConfigValue(APP_INSIGHTS_KEY))
 console.log('idamSecret', getConfigValue(IDAM_SECRET))
 
 app.use(appInsights)

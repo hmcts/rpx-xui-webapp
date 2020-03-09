@@ -8,14 +8,13 @@
  *
  * This file should be representative of the .json files in /config
  */
-export const APP_INSIGHTS_SECRET = 'secrets.rpx.AppInsightsInstrumentationKey'
 export const S2S_SECRET = 'secrets.rpx.mc-s2s-client-secret'
 
 export const COOKIES_TOKEN = 'cookies.token'
 export const COOKIES_USER_ID = 'cookies.userId'
 export const COOKIES_SESSION_ID = 'cookies.sessionId'
 
-export const APP_INSIGHTS_KEY = 'appInsights.instrumentationKey'
+export const APP_INSIGHTS_KEY = 'secrets.rpx.AppInsightsInstrumentationKey'
 
 export const LOGGING = 'logging'
 export const MAX_LOG_LINE = 'maxLogLine'

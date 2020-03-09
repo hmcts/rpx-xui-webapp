@@ -21,6 +21,11 @@ nodejs:
     MC_HTTP_PROXY: http://172.16.0.7:8080
     MC_NO_PROXY: localhost
     NOW: false
+    **{{- if eq .Values.global.environment "preview" }}
+    SERVICES_IDAM_API_URL: https://idam-api-aks.{{ .Values.global.environment }}.platform.hmcts.net
+    **{{- else }}
+    SERVICES_IDAM_API_URL: https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net
+    {{- end }}
     FEATURE_APP_INSIGHTS_ENABLED: true
     FEATURE_SECURE_COOKIE_ENABLED: true
     FEATURE_PROXY_ENABLED: false

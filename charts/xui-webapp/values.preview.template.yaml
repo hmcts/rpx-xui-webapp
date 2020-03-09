@@ -2,8 +2,4 @@ nodejs:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
   environment:
-       IDAM_URL: https://idam-api.aat.platform.hmcts.net
-       S2S_URL: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal
-       S2S_SECRET: ${S2S_SECRET}
-       IDAM_SECRET: ${IDAM_SECRET}
-       NODE_TLS_REJECT_UNAUTHORIZED: '0'
+       NODE_TLS_REJECT_UNAUTHORIZED: 0

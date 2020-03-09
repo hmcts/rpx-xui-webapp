@@ -1,5 +1,8 @@
 import * as express from 'express'
-import {config} from '../config'
+import {getConfigValue} from '../configuration'
+import {
+  SERVICES_CCD_COMPONENT_API_PATH,
+} from '../configuration/references'
 import {EnhancedRequest} from '../lib/models'
 import {getCcdPrintout} from './printService'
 
@@ -19,7 +22,7 @@ import {getCcdPrintout} from './printService'
  */
 export async function getPrintout(req: EnhancedRequest, res: express.Response) {
 
-  const url: string = config.services.ccd.componentApi
+  const url: string = getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)
   const printoutPath = url + req.originalUrl
 
   try {

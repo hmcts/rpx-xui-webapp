@@ -1,25 +1,23 @@
 import { Injectable } from '@angular/core';
-import { Store, Action } from '@ngrx/store';
-import { Effect, Actions, ofType } from '@ngrx/effects';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
-import * as fromCore from '../';
-import * as fromActions from '../actions';
-import { AppConfigService } from '../../services/config/configuration.services';
+import { Actions, Effect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs/internal/observable/of';
-import { Observable } from 'rxjs';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { TermsConditionsService } from 'src/app/services/terms-and-conditions/terms-and-conditions.service';
+import { AppConfigService } from '../../services/config/configuration.services';
+import * as fromActions from '../actions';
 
 @Injectable()
 export class AppEffects {
   constructor(
-    private actions$: Actions,
-    private store: Store<fromCore.State>,
-    private configurationServices: AppConfigService,
-    private authService: AuthService
+    private readonly actions$: Actions,
+    private readonly configurationServices: AppConfigService,
+    private readonly authService: AuthService,
+    private readonly termsService: TermsConditionsService
   ) { }
 
   @Effect()
-  config = this.actions$.pipe(
+  public config = this.actions$.pipe(
     ofType(fromActions.APP_LOAD_CONFIG),
     switchMap(() => {
       return this.configurationServices.load()
@@ -31,7 +29,7 @@ export class AppEffects {
   );
 
   @Effect({ dispatch: false })
-  setConfig = this.actions$.pipe(
+  public setConfig = this.actions$.pipe(
     ofType(fromActions.APP_LOAD_CONFIG_SUCCESS),
     map(() => {
       this.configurationServices.setConfiguration();
@@ -40,10 +38,21 @@ export class AppEffects {
 
 
   @Effect({ dispatch: false })
-  logout = this.actions$.pipe(
+  public logout = this.actions$.pipe(
     ofType(fromActions.LOGOUT),
     map(() => {
       this.authService.signOut();
+    })
+  );
+
+  @Effect()
+  public loadTermsConditions$ = this.actions$.pipe(
+    ofType(fromActions.LOAD_TERMS_CONDITIONS),
+    switchMap(() => {
+      return this.termsService.getTermsConditions().pipe(
+        map(doc => new fromActions.LoadTermsConditionsSuccess(doc)),
+        catchError(err => of(new fromActions.Go({ path: ['/service-down'] })))
+      );
     })
   );
 }

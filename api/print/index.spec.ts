@@ -5,7 +5,10 @@ import 'mocha'
 import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
 import { mockReq, mockRes } from 'sinon-express-mock'
-import {config} from '../config'
+import {getConfigValue} from '../configuration'
+import {
+  SERVICES_CCD_COMPONENT_API_PATH,
+} from '../configuration/references'
 import { getPrintout } from './index'
 import * as printService from './printService'
 
@@ -14,7 +17,7 @@ describe('print - getPrintout', () => {
 
     let sandbox
     let spy: any
-    const service: string = config.services.ccd.componentApi
+    const service: string = getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)
     const reqQuery = {
         originalUrl: '/print/12345',
     }

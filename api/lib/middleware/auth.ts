@@ -1,14 +1,19 @@
 import axios from 'axios'
 import * as jwtDecode from 'jwt-decode'
 import * as auth from '../../auth'
-import { config } from '../../config'
+import {getConfigValue} from '../../configuration'
+import {
+  COOKIES_TOKEN,
+  COOKIES_USER_ID,
+  SERVICES_IDAM_API_URL,
+} from '../../configuration/references'
 import * as log4jui from '../../lib/log4jui'
 import { getDetails } from '../../services/idam'
 import { asyncReturnOrError } from '../util'
 import * as serviceTokenMiddleware from './serviceToken'
 
 const logger = log4jui.getLogger('auth')
-const idamURl = config.services.idam.idamApiUrl
+const idamURl = getConfigValue(SERVICES_IDAM_API_URL)
 
 export function validRoles(roles) {
     //return roles.indexOf(config.juiJudgeRole) > -1 || roles.indexOf(config.juiPanelMember) > -1
@@ -16,8 +21,8 @@ export function validRoles(roles) {
 }
 
 export default async (req, res, next) => {
-    const userId = req.headers[config.cookies.userId] || req.cookies[config.cookies.userId]
-    const jwt = req.headers.authorization || req.cookies[config.cookies.token]
+    const userId = req.headers[getConfigValue(COOKIES_USER_ID)] || req.cookies[getConfigValue(COOKIES_USER_ID)]
+    const jwt = req.headers.authorization || req.cookies[getConfigValue(COOKIES_TOKEN)]
 
     if (!jwt) {
         auth.doLogout(req, res, 401)

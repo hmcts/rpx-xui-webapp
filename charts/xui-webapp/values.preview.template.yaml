@@ -2,4 +2,6 @@ nodejs:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
   environment:
-       NODE_TLS_REJECT_UNAUTHORIZED: 0
+     NODE_TLS_REJECT_UNAUTHORIZED: 0
+     SERVICES_IDAM_API_URL: https://idam-api.aat.platform.hmcts.net
+     SERVICES_IDAM_LOGIN_URL: https://idam-web-public.aat.platform.hmcts.net

@@ -16,7 +16,6 @@ nodejs:
     MICROSERVICE: xui_webapp
     SESSION_SECRET: secretSauce
     ALLOW_CONFIG_MUTATIONS: 1
-    SECURE_COOKIE: true
     MC_HTTP_PROXY: http://172.16.0.7:8080
     MC_NO_PROXY: localhost
     NOW: false

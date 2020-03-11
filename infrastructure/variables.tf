@@ -105,6 +105,10 @@ variable "feature_terms_and_conditions_enabled" {
   default = "false"
 }
 
+variable "feature_helmet_enabled" {
+  default = "false"
+}
+
 variable "shared_product_name" {
     default = "rpx"
 }

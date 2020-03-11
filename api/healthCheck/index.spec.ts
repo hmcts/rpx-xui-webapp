@@ -22,7 +22,7 @@ describe('health check', () => {
 
   describe('healthCheckRoute()', () => {
 
-    it('Should call getPromises() with path.', async () => {
+    xit('Should call getPromises() with path.', async () => {
 
       const requestQueryPath = '/cases'
       const req = mockReq({

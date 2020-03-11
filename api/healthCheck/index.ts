@@ -4,11 +4,7 @@ import {
   HEALTH,
 } from '../configuration/references'
 import { http } from '../lib/http'
-import * as log4jui from '../lib/log4jui'
 export const router = express.Router({ mergeParams: true })
-const logger = log4jui.getLogger('outgoing')
-
-const that = this
 
 router.get('/', healthCheckRoute)
 

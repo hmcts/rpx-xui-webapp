@@ -6,7 +6,10 @@
     "sessionId": "COOKIES_SESSION_ID"
   },
   "logging": "LOGGING",
-  "now": "NOW",
+  "now": {
+    "__name": "NOW",
+    "__format": "json"
+  },
   "maxLogLine": "MAX_LOG_LINE",
   "health": {
     "ccdComponentApi": "HEALTH_CCD_COMPONENT_API",

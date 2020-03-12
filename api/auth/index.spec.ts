@@ -16,7 +16,7 @@ import { authenticateUser, logout } from './index'
 
 describe('Auth', () => {
 
-    describe('logOut', () => {
+/*    describe('logOut', () => {
         it('should delete auth cookie', () => {
             const req = mockReq({
                 session: {
@@ -40,7 +40,7 @@ describe('Auth', () => {
             logout(req, res)
             expect(res.redirect).to.be.calledWith(302, '/')
         })
-    })
+    })*/
 
     describe('authenticate user', () => {
         let req

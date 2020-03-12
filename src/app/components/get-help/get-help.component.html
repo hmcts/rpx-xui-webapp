@@ -3,7 +3,15 @@
   <main class="govuk-main-wrapper govuk-main-wrapper--l" id="main-content" role="main">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl" id="cookies">Get Help</h1>
+        <h1 class="govuk-heading-xl" id="cookies">Get help</h1>
+        <p class="govuk-body">When contacting us, you should provide:</p>
+        <ul class="govuk-list govuk-list--bullet">
+        <li>your user ID (email address)</li>
+        <li>your organisation name</li>
+        <li>the URL you're trying to access</li>
+        <li>a brief description of the problem</li>
+        <li>a screenshot of the problem (if emailing)</li>
+        </ul>
         <xuilib-contact-details *ngFor="let help of getHelpData" [data]="help"></xuilib-contact-details>
       </div>
     </div>

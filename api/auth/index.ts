@@ -21,9 +21,9 @@ const logger = log4jui.getLogger('auth')
 export async function doLogout(req, res, status = 302) {
   // tslint:disable-next-line:max-line-length
   const auth = `Basic ${new Buffer(`${getConfigValue(SERVICES_IDAM_CLIENT_ID)}:${getConfigValue(IDAM_SECRET)}`).toString('base64')}`
-  const accessTokenRaw = axios.defaults.headers.common.Authorization
-  const accessToken = accessTokenRaw.substring(7)
-  await http.delete(`${getConfigValue(SERVICES_IDAM_API_URL)}/session/${accessToken}`, {
+  const accessToken = axios.defaults.headers.common.Authorization
+  const accessTokenJwt = accessToken.substring(7)
+  await http.delete(`${getConfigValue(SERVICES_IDAM_API_URL)}/session/${accessTokenJwt}`, {
     headers: {
       Authorization: auth,
     },

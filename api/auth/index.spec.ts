@@ -10,6 +10,9 @@ import {getConfigValue} from '../configuration'
 import {
   COOKIES_TOKEN,
   COOKIES_USER_ID,
+  IDAM_SECRET,
+  SERVICES_IDAM_API_URL,
+  SERVICES_IDAM_CLIENT_ID,
 } from '../configuration/references'
 import * as idam from '../services/idam'
 import { authenticateUser, logout } from './index'

@@ -73,10 +73,15 @@
     "helmetEnabled": {
       "__name": "FEATURE_HELMET_ENABLED",
       "__format": "json"
+    },
+    "redisEnabled": {
+      "__name": "FEATURE_REDIS_ENABLED",
+      "__format": "json"
     }
   },
   "helmet": {
     "__name": "HELMET_CONFIG",
     "__format": "json"
-  }
+  },
+  "redis": "REDISCLOUD_URL"
 }

@@ -47,6 +47,7 @@ nodejs:
     FEATURE_PROXY_ENABLED: false
     FEATURE_TERMS_AND_CONDITIONS_ENABLED: true
     FEATURE_HELMET_ENABLED: true
+    FEATURE_REDIS_ENABLED: true
   keyVaults:
     rpx:
       resourceGroup: rpx

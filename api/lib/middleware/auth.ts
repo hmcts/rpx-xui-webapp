@@ -25,7 +25,7 @@ export default async (req, res, next) => {
     const jwt = req.headers.authorization || req.cookies[getConfigValue(COOKIES_TOKEN)]
 
     if (!jwt) {
-        auth.doLogout(req, res, 401)
+        await auth.doLogout(req, res, 401)
         return
     }
 
@@ -50,7 +50,7 @@ export default async (req, res, next) => {
     // TODO: expired could be false without req.session.user so this code block could fall through
     if (expired || !req.session.user) {
         logger.warn('Auth token  expired need to log in again')
-        auth.doLogout(req, res, 401)
+        await auth.doLogout(req, res, 401)
         return
 
     }
@@ -58,7 +58,7 @@ export default async (req, res, next) => {
     // TODO: not even a valid test anymore (validRoles() returns true)
     if (!validRoles(req.session.user.roles)) {
         logger.warn('User role does not allow login')
-        auth.doLogout(req, res, 401)
+        await auth.doLogout(req, res, 401)
     } else {
         req.auth = {}
         req.auth.data = req.session.user

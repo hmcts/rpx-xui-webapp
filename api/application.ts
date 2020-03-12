@@ -81,8 +81,8 @@ app.use(bodyParser.urlencoded({extended: true}))
 tunnel.init()
 
 app.get('/oauth2/callback', auth.authenticateUser)
-app.get('/api/logout', (req, res) => {
-    auth.doLogout(req, res)
+app.get('/api/logout', async (req, res) => {
+    await auth.doLogout(req, res)
 })
 
 app.get('/api/addresses', authInterceptor, postCodeLookup.doLookup)

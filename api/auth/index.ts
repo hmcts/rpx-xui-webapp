@@ -1,9 +1,11 @@
+import axios from 'axios'
 import {getConfigValue} from '../configuration'
 import {
   COOKIES_TOKEN,
-  COOKIES_USER_ID,
-  SERVICES_IDAM_API_URL,
+  COOKIES_USER_ID, IDAM_SECRET,
+  SERVICES_IDAM_API_URL, SERVICES_IDAM_CLIENT_ID,
 } from '../configuration/references'
+import {http} from '../lib/http'
 import * as log4jui from '../lib/log4jui'
 import { propsExist } from '../lib/objectUtilities'
 import { asyncReturnOrError, exists } from '../lib/util'
@@ -16,16 +18,27 @@ const idamURl = getConfigValue(SERVICES_IDAM_API_URL)
 
 const logger = log4jui.getLogger('auth')
 
-export function doLogout(req, res, status = 302) {
-    res.clearCookie(cookieToken)
-    res.clearCookie(cookieUserId)
-    req.session.user = null
-    req.session.save(() => {
-        res.redirect(status, req.query.redirect || '/')
-    })
+export async function doLogout(req, res, status = 302) {
+  // tslint:disable-next-line:max-line-length
+  const auth = `Basic ${new Buffer(`${getConfigValue(SERVICES_IDAM_CLIENT_ID)}:${getConfigValue(IDAM_SECRET)}`).toString('base64')}`
+  const accessTokenRaw = axios.defaults.headers.common.Authorization
+  const accessToken = accessTokenRaw.substring(7)
+  await http.delete(`${getConfigValue(SERVICES_IDAM_API_URL)}/session/${accessToken}`, {
+    headers: {
+      Authorization: auth,
+    },
+  })
+  delete axios.defaults.headers.common.Authorization
+  delete axios.defaults.headers.common['user-roles']
+  res.clearCookie(cookieToken)
+  res.clearCookie(cookieUserId)
+  req.session.user = null
+  req.session.save(() => {
+    res.redirect(status, req.query.redirect || '/')
+  })
 }
-export function logout(req, res) {
-    doLogout(req, res)
+export async function logout(req, res) {
+  await doLogout(req, res)
 }
 
 export async function authenticateUser(req: any, res, next) {
@@ -44,13 +57,13 @@ export async function authenticateUser(req: any, res, next) {
 
         if (!propsExist(userDetails, ['roles'])) {
           logger.warn('User does not have any access roles.')
-          doLogout(req, res)
+          await doLogout(req, res)
           return false
         }
 
         if (!userHasAppAccess(userDetails.roles)) {
           logger.warn('User has no application access, as they do not have a Caseworker role.')
-          doLogout(req, res)
+          await doLogout(req, res)
           return false
         }
 

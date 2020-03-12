@@ -1,3 +1,13 @@
+redis:
+  enabled: false
+  cluster:
+    enabled: false
+    slaveCount: 0
+  usePassword: false
+  master:
+    persistence:
+      enabled: false
+
 nodejs:
   aadIdentityName: xui
   applicationPort: 3000

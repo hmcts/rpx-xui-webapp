@@ -121,8 +121,9 @@ data "azurerm_subnet" "core_infra_redis_subnet" {
   resource_group_name  = "core-infra-${var.env}"
 }
 
-data "azurerm_key_vault_secret" "redis_secret" {
-  name      = "redis-secret"
+resource "azurerm_key_vault_secret" "redis_access_key" {
+  name         = "${var.product}-redis-access-key"
+  value        = "${module.redis-cache.access_key}"
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
 }
 

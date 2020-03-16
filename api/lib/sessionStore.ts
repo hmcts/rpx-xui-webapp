@@ -14,7 +14,7 @@ export const getRedisStore = () => {
     console.log('using RedisStore')
 
     const redisClient = redis.createClient({
-        url: getConfigValue(REDIS)
+        url: getConfigValue(REDIS),
     })
 
     redisClient.on('ready', () => {

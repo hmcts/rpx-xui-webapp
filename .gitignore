@@ -68,3 +68,7 @@ reports_json/
 .nyc_output/
 cb_reports/
 report.json
+stryker-tmp/
+
+# stryker temp files
+.stryker-tmp

@@ -10,7 +10,13 @@ module.exports = {
     "!src/test.ts",
     "!src/environments/*.ts"
   ],
+
   mutator: "typescript",
+  // mutator1:{
+  //   name: "typescript",
+  //   excludedMutations: ["EqualityOperator", "BooleanLiteral", "ConditionalExpression", "LogicalOperator", "StringLiteral", "MethodExpression"]
+  // },
+
   testRunner: "karma",
   karma: {
     configFile: "src/karma.conf.js",
@@ -19,7 +25,6 @@ module.exports = {
       browsers: ["ChromeHeadless"]
     }
   },
-  "excluded-mutations": ["EqualityOperator", "BooleanLiteral", "ConditionalExpression", "LogicalOperator", "StringLiteral","MethodExpression"],
   reporters: ["progress", "clear-text", "html"],
   maxConcurrentTestRunners: 8,
   maxConcurrentTestRunners_comment:

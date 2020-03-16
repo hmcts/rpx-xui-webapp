@@ -3,10 +3,11 @@ redis:
   cluster:
     enabled: false
     slaveCount: 0
-  usePassword: false
+  password: fake-passwor
   master:
     persistence:
       enabled: false
+
 
 nodejs:
   aadIdentityName: xui
@@ -57,6 +58,13 @@ nodejs:
     FEATURE_PROXY_ENABLED: false
     FEATURE_TERMS_AND_CONDITIONS_ENABLED: true
     FEATURE_HELMET_ENABLED: true
+    # Redis
+    REDIS_HOST: xui-webapp-{{ .Values.global.environment }}.redis.cache.windows.net
+    REDIS_PORT: 6380
+    REDIS_SSL_ENABLED: true
+    REDIS_KEY_PREFIX: 'activity:'
+    REDIS_ACTIVITY_TTL: 5
+    REDIS_USER_DETAILS_TTL: 6000
   keyVaults:
     rpx:
       resourceGroup: rpx

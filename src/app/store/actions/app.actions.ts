@@ -22,9 +22,26 @@ export const LOAD_TERMS_CONDITIONS = '[TC] Load Terms Conditions';
 export const LOAD_TERMS_CONDITIONS_SUCCESS = '[TC] Load Terms Conditions Success';
 export const LOAD_TERMS_CONDITIONS_FAIL = '[TC] Load Terms Conditions Fail';
 
+export const LOAD_FEATURE_TOGGLE_CONFIG = '[App] Load Feature Toggle Config';
+export const LOAD_FEATURE_TOGGLE_CONFIG_SUCCESS = '[App] Load Feature Toggle Config Success';
+export const LOAD_FEATURE_TOGGLE_CONFIG_FAIL = '[App] Load Feature Toggle Config Fail';
 
 export class LoadConfig implements Action {
   readonly type = APP_LOAD_CONFIG;
+}
+
+export class LoadFeatureToggleConfig implements Action {
+  readonly type = LOAD_FEATURE_TOGGLE_CONFIG;
+}
+
+export class LoadFeatureToggleConfigSuccess implements Action {
+  readonly type = LOAD_FEATURE_TOGGLE_CONFIG_SUCCESS;
+  constructor(public payload: any) { }
+}
+
+export class LoadFeatureToggleConfigFail implements Action {
+  readonly type = LOAD_FEATURE_TOGGLE_CONFIG_FAIL;
+  constructor(public payload: any) { }
 }
 
 export class LoadConfigSuccess implements Action {
@@ -108,4 +125,7 @@ export type AppActions =
   | AcceptTandCSuccess
   | LoadTermsConditions
   | LoadTermsConditionsFail
-  | LoadTermsConditionsSuccess;
+  | LoadTermsConditionsSuccess
+  | LoadFeatureToggleConfig
+  | LoadFeatureToggleConfigSuccess
+  | LoadFeatureToggleConfigFail;

@@ -28,6 +28,19 @@ export class AppEffects {
     })
   );
 
+  @Effect()
+  public featureToggleConfig = this.actions$.pipe(
+    ofType(fromActions.LOAD_FEATURE_TOGGLE_CONFIG),
+    switchMap(() => {
+      // TODO: this should be replaced by the feature toggle service once its ready.
+      return this.termsService.isTermsConditionsFeatureEnabled()
+        .pipe(
+          map(isTandCFeatureToggleEnabled => new fromActions.LoadFeatureToggleConfigSuccess(isTandCFeatureToggleEnabled)),
+          catchError(error => of(new fromActions.LoadFeatureToggleConfigFail(error))
+          ));
+    })
+  );
+
   @Effect({ dispatch: false })
   public setConfig = this.actions$.pipe(
     ofType(fromActions.APP_LOAD_CONFIG_SUCCESS),

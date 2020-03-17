@@ -21,7 +21,7 @@ export class TermsAndConditionsComponent implements OnInit, OnDestroy {
     }
 
     public ngOnInit() {
-      this.termsAndConditionsService.isTermsConditionsFeatureEnabled().subscribe(enabled => {
+      const tnc = this.termsAndConditionsService.isTermsConditionsFeatureEnabled().subscribe(enabled => {
         if (enabled) {
           this.isTandCEnabled = true;
           const s = this.store.pipe(
@@ -35,10 +35,13 @@ export class TermsAndConditionsComponent implements OnInit, OnDestroy {
           });
           this.subscriptions.push(s);
         }
+        this.subscriptions.push(tnc);
       });
     }
 
     public ngOnDestroy() {
-      this.subscriptions.forEach(s => s.unsubscribe());
-  }
+      this.subscriptions.forEach(s => {
+        if (s) { s.unsubscribe(); }
+      });
+    }
 }

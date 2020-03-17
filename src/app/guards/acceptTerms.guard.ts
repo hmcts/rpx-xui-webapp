@@ -13,12 +13,11 @@ import * as fromApp from '../store';
 })
 export class AcceptTermsGuard implements CanActivate {
   constructor(private readonly store: Store<fromApp.State>,
-              private readonly cookieService: CookieService,
-              private readonly termsAndConditionsService: TermsConditionsService) {
+              private readonly cookieService: CookieService) {
   }
 
   public canActivate(): Observable<boolean> {
-    const isTandCEnabled$ = this.termsAndConditionsService.isTermsConditionsFeatureEnabled();
+    const isTandCEnabled$ = this.store.pipe(select(fromApp.getIsTermsAndConditionsFeatureEnabled));
     return isTandCEnabled$.pipe(switchMap(enabled => enabled ? this.enableTermsAndConditions() : of(true)));
   }
 

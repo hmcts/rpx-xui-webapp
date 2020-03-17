@@ -4,11 +4,7 @@ import {
   HEALTH,
 } from '../configuration/references'
 import { http } from '../lib/http'
-import * as log4jui from '../lib/log4jui'
 export const router = express.Router({ mergeParams: true })
-const logger = log4jui.getLogger('outgoing')
-
-const that = this
 
 router.get('/', healthCheckRoute)
 
@@ -62,7 +58,8 @@ export function getPromises(path): any[] {
 }
 
 export async function healthCheckRoute(req, res) {
-    try {
+    res.send({ healthState: true })
+    /*try {
         const path = req.query.path
         let PromiseArr = []
         let response = { healthState: true }
@@ -82,6 +79,6 @@ export async function healthCheckRoute(req, res) {
         console.log(error)
         logger.info('error', { healthState: false })
         res.status(error.status).send({ healthState: false })
-    }
+    }*/
 }
 export default router

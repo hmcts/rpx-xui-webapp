@@ -1,30 +1,44 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TCDocument } from '@hmcts/rpx-xui-common-lib';
-import { Store, select } from '@ngrx/store';
-import { LoadTermsConditions } from 'src/app/store';
+import { select, Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+import { TermsConditionsService } from 'src/app/services/terms-and-conditions/terms-and-conditions.service';
 import * as fromRoot from '../../store';
 
 @Component({
     selector: 'exui-terms-and-conditions',
     templateUrl: './terms-and-conditions.component.html'
 })
-export class TermsAndConditionsComponent implements OnInit {
+export class TermsAndConditionsComponent implements OnInit, OnDestroy {
 
     public document: TCDocument = null;
+    private readonly subscriptions: Subscription[] = [];
 
-    constructor(private readonly store: Store<fromRoot.State>) {
+    public isTandCEnabled: boolean = false;
+
+    constructor(private readonly store: Store<fromRoot.State>,
+                private readonly termsAndConditionsService: TermsConditionsService) {
     }
 
     public ngOnInit() {
-      // TODO: store subscription so we can unsubscribe on destroy
-        this.store.pipe(
+      this.termsAndConditionsService.isTermsConditionsFeatureEnabled().subscribe(enabled => {
+        if (enabled) {
+          this.isTandCEnabled = true;
+          const s = this.store.pipe(
             select(fromRoot.getTermsAndConditions)
         ).subscribe(doc => {
             if (doc) {
                 this.document = doc;
             } else {
-                this.store.dispatch(new LoadTermsConditions());
+                this.store.dispatch(new fromRoot.LoadTermsConditions());
             }
-        });
+          });
+          this.subscriptions.push(s);
+        }
+      });
     }
+
+    public ngOnDestroy() {
+      this.subscriptions.forEach(s => s.unsubscribe());
+  }
 }

@@ -19,11 +19,13 @@ export class FooterComponent implements OnInit {
 
     public ngOnInit() {
         const tAndCNavItem = this.getNavigationItemForTandC(this.navigationData.items);
-        this.store.pipe(
-            select(fromRoot.getIsTermsAndConditionsFeatureEnabled)
-        ).subscribe(isEnabled => {
-            tAndCNavItem.href = isEnabled ?  '/terms-and-conditions' : '/legacy-terms-and-conditions';
-        });
+        if (tAndCNavItem) {
+            this.store.pipe(
+                select(fromRoot.getIsTermsAndConditionsFeatureEnabled)
+            ).subscribe(isEnabled => {
+                tAndCNavItem.href = isEnabled ?  '/terms-and-conditions' : '/legacy-terms-and-conditions';
+            });
+        }
     }
 
     public getNavigationItemForTandC(navigationItems: NavigationItems[]): NavigationItems {

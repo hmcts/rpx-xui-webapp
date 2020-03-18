@@ -3,11 +3,10 @@ import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
 import * as session from 'express-session'
 import * as helmet from 'helmet'
-import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
-import {getConfigValue, showFeature} from './configuration'
+import { getConfigValue, showFeature } from './configuration'
 import {
-    APP_INSIGHTS_KEY,
+APP_INSIGHTS_KEY,
     COOKIES_TOKEN,
     COOKIES_USER_ID,
     FEATURE_APP_INSIGHTS_ENABLED,
@@ -38,6 +37,7 @@ import {errorStack} from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
 import authInterceptor from './lib/middleware/auth'
 import {JUILogger} from './lib/models'
+import { getStore } from './lib/sessionStore'
 import * as tunnel from './lib/tunnel'
 import * as postCodeLookup from './postCodeLookup'
 import {router as printRouter} from './print/routes'
@@ -50,8 +50,6 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
     console.log('Helmet enabled')
     app.use(helmet(getConfigValue(HELMET)))
 }
-
-const FileStore = sessionFileStore(session)
 
 app.set('trust proxy', 1)
 app.use(
@@ -66,9 +64,7 @@ app.use(
         saveUninitialized: true,
         secret: getConfigValue(SESSION_SECRET),
         // TODO: remove this and use values from cookie token instead
-        store: new FileStore({
-            path: getConfigValue(NOW) ? '/tmp/sessions' : '.sessions',
-        }),
+        store: getStore(),
     })
 )
 

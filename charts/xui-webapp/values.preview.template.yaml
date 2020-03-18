@@ -5,3 +5,10 @@ nodejs:
      NODE_TLS_REJECT_UNAUTHORIZED: 0
      SERVICES_IDAM_API_URL: https://idam-api.aat.platform.hmcts.net
      SERVICES_IDAM_LOGIN_URL: https://idam-web-public.aat.platform.hmcts.net
+     REDIS_HOST: ${SERVICE_NAME}-redis-master
+     REDIS_PORT: 6379
+     REDIS_PASSWORD: fake-password
+     REDIS_SSL_ENABLED: false
+redis:
+  enabled: true
+

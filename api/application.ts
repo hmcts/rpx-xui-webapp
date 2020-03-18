@@ -5,6 +5,7 @@ import * as session from 'express-session'
 import * as helmet from 'helmet'
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
+import { getStore } from './lib/sessionStore'
 import {getConfigValue, showFeature} from './configuration'
 import {
     APP_INSIGHTS_KEY,
@@ -51,8 +52,6 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
     app.use(helmet(getConfigValue(HELMET)))
 }
 
-const FileStore = sessionFileStore(session)
-
 app.set('trust proxy', 1)
 app.use(
     session({
@@ -66,9 +65,7 @@ app.use(
         saveUninitialized: true,
         secret: getConfigValue(SESSION_SECRET),
         // TODO: remove this and use values from cookie token instead
-        store: new FileStore({
-            path: getConfigValue(NOW) ? '/tmp/sessions' : '.sessions',
-        }),
+        store: getStore(),
     })
 )
 

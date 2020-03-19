@@ -20,6 +20,7 @@ import {
     MICROSERVICE,
     NOW,
     PROTOCOL,
+    REDIS_HOST,
     SERVICE_S2S_PATH,
     SERVICES_DOCUMENTS_API_PATH,
     SERVICES_EM_ANNO_API_URL,
@@ -126,6 +127,9 @@ app.get('/health', (req, res) => {
         featureAppInsightEnabled: showFeature(FEATURE_APP_INSIGHTS_ENABLED),
         featureProxyEnabled: showFeature(FEATURE_PROXY_ENABLED),
         featureTermsAndConditionsEnabled: showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED),
+        // 6th set
+        redisHost: getConfigValue(REDIS_HOST),
+
     })
 })
 // separate route for document upload/view

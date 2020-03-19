@@ -1,41 +1,35 @@
-module.exports = function (config) {
-    config.set({
-        mutate: ["src/**/*.ts", "!src/**/*.spec.ts"],
-        mutator: 'typescript',
-        // transpilers: [
-        //     'typescript'
-        // ],
-        testFramework: "jasmine",
-        // testRunner: "karma",
-        testRunner: "command",
+/**
+ * @type {import('@stryker-mutator/api/core').StrykerOptions}
+ */
+module.exports = {
+    fileLogLevel: 'trace',
+    // logLevel: 'trace',
+    comment:
+        "This config was generated using a preset. Please see the handbook for more information: https://github.com/stryker-mutator/stryker-handbook/blob/master/stryker/guides/angular.md#angular",
+    mutate: [
+        "src/**/*.ts",
+        "!src/**/*.spec.ts",
+        "!src/test.ts",
+        "!src/environments/*.ts"
+    ],
 
+    mutator: "typescript",
+    // mutator1:{
+    //   name: "typescript",
+    //   excludedMutations: ["EqualityOperator", "BooleanLiteral", "ConditionalExpression", "LogicalOperator", "StringLiteral", "MethodExpression"]
+    // },
 
-        commandRunner: {
-            command: 'ng test' // optionally choose a different command to run
-        },
-        reporters: ["clear-text", "progress", "html"],
-        tsconfigFile: 'tsconfig.json',
-        karma: {
-            projectType: 'angular-cli',
-            // projectType:'custom',
-           
-           configFile: 'src/karma.conf.js',
-           
-            ngConfig: {
-                browsers: ['HeadlessChrome'],
-                customLaunchers: {
-                    HeadlessChrome: {
-                        base: 'ChromeHeadless',
-                        flags: ['--no-sandbox']
-                    }
-                }
-                }
-            
-        },
-        htmlReporter: {
-            baseDir: 'reports/mutation/html/ng/'
-        },
-        "max-concurrent-test-runners": 4
-
-    });
-}
+    testRunner: "karma",
+    karma: {
+        configFile: "src/karma.conf.js",
+        projectType: "angular-cli",
+        config: {
+            browsers: ["ChromeHeadless"]
+        }
+    },
+    reporters: ["progress", "clear-text", "html"],
+    maxConcurrentTestRunners: 4,
+    maxConcurrentTestRunners_comment:
+        "Recommended to use about half of your available cores when running stryker with angular",
+    coverageAnalysis: "off"
+};

@@ -15,7 +15,7 @@ module.exports = function (config) {
             timeout: 5000
         },
         htmlReporter: {
-            baseDir: 'reports/mutation/html/node/' 
+            baseDir: 'reports/tests/mutation/node/' 
         }
     });
 }

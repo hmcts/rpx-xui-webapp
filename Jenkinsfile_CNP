@@ -49,7 +49,6 @@ withPipeline(type, product, component) {
     enableSlackNotifications(channel)
 
     loadVaultSecrets(secrets)
-    enableMutationTest()
     installCharts()
     
     enableAksStagingDeployment()

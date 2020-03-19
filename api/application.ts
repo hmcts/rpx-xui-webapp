@@ -6,13 +6,12 @@ import * as helmet from 'helmet'
 import * as auth from './auth'
 import { getConfigValue, showFeature } from './configuration'
 import {
-APP_INSIGHTS_KEY,
+    APP_INSIGHTS_KEY,
     COOKIES_TOKEN,
     COOKIES_USER_ID,
     FEATURE_APP_INSIGHTS_ENABLED,
     FEATURE_HELMET_ENABLED,
     FEATURE_PROXY_ENABLED,
-    FEATURE_REDIS_ENABLED,
     FEATURE_SECURE_COOKIE_ENABLED,
     FEATURE_TERMS_AND_CONDITIONS_ENABLED,
     HELMET,
@@ -21,11 +20,6 @@ APP_INSIGHTS_KEY,
     MICROSERVICE,
     NOW,
     PROTOCOL,
-    // REDIS_HOST,
-    // REDIS_KEY_PREFIX,
-    // REDIS_PORT,
-    // REDIS_SSL_ENABLED,
-    // REDIS_TTL,
     SERVICE_S2S_PATH,
     SERVICES_DOCUMENTS_API_PATH,
     SERVICES_EM_ANNO_API_URL,
@@ -132,14 +126,6 @@ app.get('/health', (req, res) => {
         featureAppInsightEnabled: showFeature(FEATURE_APP_INSIGHTS_ENABLED),
         featureProxyEnabled: showFeature(FEATURE_PROXY_ENABLED),
         featureTermsAndConditionsEnabled: showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED),
-        // 6th set
-        featureRedisEnabled: getConfigValue(FEATURE_REDIS_ENABLED),
-        // redisHost: getConfigValue(REDIS_HOST),
-        // redisPort: getConfigValue(REDIS_PORT),
-        // redisSslEnabled: getConfigValue(REDIS_SSL_ENABLED),
-        // redisKeyPrefix: getConfigValue(REDIS_KEY_PREFIX),
-        // redisTtl: getConfigValue(REDIS_TTL),
-        // redisPassword: getConfigValue(REDIS_PASSWORD),
     })
 })
 // separate route for document upload/view

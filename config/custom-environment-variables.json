@@ -95,6 +95,7 @@
     },
     "prefix": "REDIS_KEY_PREFIX",
     "ttl": "REDIS_USER_DETAILS_TTL",
-    "password": "REDIS_PASSWORD"
+    "accessKey": "REDIS_ACCESS_KEY",
+    "cloudUrl": "REDISCLOUD_URL"
   }
 }

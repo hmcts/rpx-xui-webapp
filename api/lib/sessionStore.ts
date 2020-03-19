@@ -6,8 +6,9 @@ import {getConfigValue, showFeature} from '../configuration'
 import {
   FEATURE_REDIS_ENABLED,
   NOW,
-  REDIS_HOST, REDIS_KEY_PREFIX,
-  REDIS_PASSWORD,
+  REDIS_ACCESS_KEY,
+  REDIS_HOST,
+  REDIS_KEY_PREFIX,
   REDIS_PORT,
   REDIS_SSL_ENABLED,
   REDIS_TTL
@@ -22,7 +23,8 @@ export const getRedisStore = () => {
     console.log('using RedisStore')
 
     const tlsOptions = {
-      password: getConfigValue(REDIS_PASSWORD),
+      // TODO: So what is the password here?
+      password: getConfigValue(REDIS_ACCESS_KEY),
       prefix: getConfigValue(REDIS_KEY_PREFIX),
       tls: getConfigValue(REDIS_SSL_ENABLED),
     }

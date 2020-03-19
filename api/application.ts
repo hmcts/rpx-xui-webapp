@@ -22,6 +22,7 @@ import {
     PROTOCOL,
     REDIS_HOST,
     REDIS_KEY_PREFIX,
+    REDIS_PASSWORD,
     REDIS_PORT,
     REDIS_SSL_ENABLED,
     REDIS_TTL,
@@ -135,8 +136,9 @@ app.get('/health', (req, res) => {
         redisHost: getConfigValue(REDIS_HOST), // works
         redisPort: getConfigValue(REDIS_PORT), // works
         redisSslEnabled: getConfigValue(REDIS_SSL_ENABLED), // works
-        redisKeyPrefix: getConfigValue(REDIS_KEY_PREFIX),
-        redisTtl: getConfigValue(REDIS_TTL),
+        redisKeyPrefix: getConfigValue(REDIS_KEY_PREFIX), // works
+        redisTtl: getConfigValue(REDIS_TTL), // works
+        redisPassword: getConfigValue(REDIS_PASSWORD),
     })
 })
 // separate route for document upload/view

@@ -43,7 +43,6 @@ module "app" {
         IDAM_SECRET = "${data.azurerm_key_vault_secret.oauth2_secret.value}"
         NODE_TLS_REJECT_UNAUTHORIZED = "${var.node_tls_reject_unauthorized}"
 
-
         NODE_CONFIG_ENV = "${var.env}"
         MAX_LOG_LINE = "${var.max_log_line}"
         PROTOCOL = "${var.protocol}"
@@ -91,8 +90,7 @@ module "app" {
 
         // Redis Cloud
         REDISCLOUD_URL = "redis://ignore:${urlencode(module.redis-cache.access_key)}@${module.redis-cache.host_name}:${module.redis-cache.redis_port}?tls=true"
-        REDIS_ENCRYPTION_SECRET = "${module.redis-cache.access_key}"
-
+        REDIS_ACCESS_KEY = "${module.redis-cache.access_key}"
     }
 }
 

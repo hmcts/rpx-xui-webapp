@@ -20,9 +20,10 @@ import {
     MICROSERVICE,
     NOW,
     PROTOCOL,
+    REDIS_ACCESS_KEY,
+    REDIS_CLOUD_URL,
     REDIS_HOST,
     REDIS_KEY_PREFIX,
-    REDIS_PASSWORD,
     REDIS_PORT,
     REDIS_SSL_ENABLED,
     REDIS_TTL,
@@ -138,7 +139,8 @@ app.get('/health', (req, res) => {
         redisSslEnabled: getConfigValue(REDIS_SSL_ENABLED), // works
         redisKeyPrefix: getConfigValue(REDIS_KEY_PREFIX), // works
         redisTtl: getConfigValue(REDIS_TTL), // works
-        redisPassword: getConfigValue(REDIS_PASSWORD),
+        redisCloudUrl: getConfigValue(REDIS_CLOUD_URL), // check if working on ASE
+        redisAccessKey: getConfigValue(REDIS_ACCESS_KEY), // check if working on ASE
     })
 })
 // separate route for document upload/view

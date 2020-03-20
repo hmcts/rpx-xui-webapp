@@ -1,6 +1,8 @@
+require('dotenv-extended').load({ path: 'api/.env.defaults' });
 module.exports = function (config) {
     config.set({
-        
+        // fileLogLevel: 'trace',
+        // logLevel: 'trace',
         mutate: ["api/**/*.ts", "!api/**/*.spec.ts", "!api/test/**/*.ts"],
         mutator: 'typescript',
         transpilers: [

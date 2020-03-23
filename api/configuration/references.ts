@@ -64,7 +64,7 @@ export const FEATURE_REDIS_ENABLED = 'redisEnabled'
 export const HELMET = 'helmet'
 
 // REDIS CONFIG
-export const REDIS_HOST = 'redis.host'
+// export const REDIS_HOST = 'redis.host'
 export const REDIS_PORT = 'redis.port'
 export const REDIS_SSL_ENABLED = 'redis.tls'
 export const REDIS_KEY_PREFIX = 'redis.prefix'

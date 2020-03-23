@@ -62,7 +62,7 @@ nodejs:
     FEATURE_REDIS_ENABLED: true
 
     # Redis
-    REDIS_HOST: xui-webapp-{{ .Values.global.environment }}.redis.cache.windows.net
+    REDISCLOUD_URL: xui-webapp-{{ .Values.global.environment }}.redis.cache.windows.net
     REDIS_PORT: 6380
     REDIS_SSL_ENABLED: true
     REDIS_KEY_PREFIX: 'activity:'

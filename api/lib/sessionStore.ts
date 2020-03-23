@@ -23,8 +23,9 @@ export const getRedisStore = () => {
     console.log('using RedisStore')
 
     const tlsOptions = {
-      // TODO: So what is the password here?
-      password: getConfigValue(REDIS_ACCESS_KEY),
+      // This is only being used on the Preview environment
+      // in all other environments this is not needed
+      // password: getConfigValue(REDIS_ACCESS_KEY),
       prefix: getConfigValue(REDIS_KEY_PREFIX),
       tls: getConfigValue(REDIS_SSL_ENABLED),
     }

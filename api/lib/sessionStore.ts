@@ -6,7 +6,6 @@ import {getConfigValue, showFeature} from '../configuration'
 import {
   FEATURE_REDIS_ENABLED,
   NOW,
-  REDIS_ACCESS_KEY,
   REDIS_CLOUD_URL,
   REDIS_KEY_PREFIX,
   REDIS_PORT,

@@ -11,7 +11,6 @@
 export const S2S_SECRET = 'secrets.rpx.mc-s2s-client-secret'
 export const REDIS_CLOUD_URL = 'secrets.rpx.webapp-redis-connection-string'
 
-
 export const COOKIES_TOKEN = 'cookies.token'
 export const COOKIES_USER_ID = 'cookies.userId'
 export const COOKIES_SESSION_ID = 'cookies.sessionId'

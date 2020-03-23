@@ -84,7 +84,7 @@
     "__format": "json"
   },
   "redis": {
-    "host": "REDIS_HOST",
+    "host": "REDISCLOUD_URL",
     "port": {
       "__name": "REDIS_PORT",
       "__format": "json"

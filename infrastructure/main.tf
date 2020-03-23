@@ -134,7 +134,7 @@ resource "azurerm_key_vault_secret" "redis_connection_string" {
 
 module "redis-cache" {
   source      = "git@github.com:hmcts/cnp-module-redis?ref=master"
-  product     = "${var.shared_product_name}-redis"
+  product     = "${var.shared_product_name}-mc-redis"
   location    = "${var.location}"
   env         = "${var.env}"
   subnetid    = "${data.azurerm_subnet.core_infra_redis_subnet.id}"

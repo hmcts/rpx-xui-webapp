@@ -7,7 +7,7 @@ import {
   FEATURE_REDIS_ENABLED,
   NOW,
   REDIS_ACCESS_KEY,
-  REDIS_HOST,
+  REDIS_CLOUD_URL,
   REDIS_KEY_PREFIX,
   REDIS_PORT,
   REDIS_SSL_ENABLED,
@@ -31,7 +31,7 @@ export const getRedisStore = () => {
 
     const redisClient = redis.createClient(
       getConfigValue(REDIS_PORT),
-      getConfigValue(REDIS_HOST),
+      getConfigValue(REDIS_CLOUD_URL),
       tlsOptions
     )
 

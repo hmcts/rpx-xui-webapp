@@ -9,7 +9,7 @@
   "now": false,
   "maxLogLine": 80,
   "health": {
-    "ccdComponentApi": "https://ccd-api-gateway-web-prod.service.core-compute-prod.internal/health",
+    "ccdComponentApi": "https://gateway.ccd.platform.hmcts.net/health",
     "ccdDataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal/health",
     "documentsApi": "http://dm-store-prod.service.core-compute-prod.internal/health",
     "em_anno_api": "http://em-anno-prod.service.core-compute-prod.internal/health",
@@ -17,7 +17,7 @@
   },
   "services": {
     "ccd": {
-      "componentApi": "https://ccd-api-gateway-web-prod.service.core-compute-prod.internal",
+      "componentApi": "https://gateway.ccd.platform.hmcts.net",
       "dataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal"
     },
     "documents": {

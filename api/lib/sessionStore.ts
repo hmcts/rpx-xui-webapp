@@ -8,8 +8,6 @@ import {
   NOW,
   REDIS_CLOUD_URL,
   REDIS_KEY_PREFIX,
-  REDIS_PORT,
-  REDIS_SSL_ENABLED,
   REDIS_TTL
 } from '../configuration/references'
 
@@ -22,15 +20,10 @@ export const getRedisStore = () => {
     console.log('using RedisStore')
 
     const tlsOptions = {
-      // This is only being used on the Preview environment
-      // in all other environments this is not needed
-      // password: getConfigValue(REDIS_ACCESS_KEY),
       prefix: getConfigValue(REDIS_KEY_PREFIX),
-      tls: getConfigValue(REDIS_SSL_ENABLED),
     }
 
     const redisClient = redis.createClient(
-      getConfigValue(REDIS_PORT),
       getConfigValue(REDIS_CLOUD_URL),
       tlsOptions
     )

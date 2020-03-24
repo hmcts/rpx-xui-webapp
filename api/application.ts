@@ -22,8 +22,6 @@ import {
     PROTOCOL,
     REDIS_CLOUD_URL,
     REDIS_KEY_PREFIX,
-    REDIS_PORT,
-    REDIS_SSL_ENABLED,
     REDIS_TTL,
     SERVICE_S2S_PATH,
     SERVICES_DOCUMENTS_API_PATH,
@@ -132,12 +130,9 @@ app.get('/health', (req, res) => {
         featureProxyEnabled: showFeature(FEATURE_PROXY_ENABLED),
         featureTermsAndConditionsEnabled: showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED),
         // 6th set
-        redisPort: getConfigValue(REDIS_PORT), // works
-        redisSslEnabled: getConfigValue(REDIS_SSL_ENABLED), // works
-        redisKeyPrefix: getConfigValue(REDIS_KEY_PREFIX), // works
-        redisTtl: getConfigValue(REDIS_TTL), // works
-        redisCloudUrl: getConfigValue(REDIS_CLOUD_URL), // check if works
-        // redisAccessKey: getConfigValue(REDIS_ACCESS_KEY), // works and returns access key
+        redisKeyPrefix: getConfigValue(REDIS_KEY_PREFIX),
+        redisTtl: getConfigValue(REDIS_TTL),
+        redisCloudUrl: getConfigValue(REDIS_CLOUD_URL),
     })
 })
 // separate route for document upload/view

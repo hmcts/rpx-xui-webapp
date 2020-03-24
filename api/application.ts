@@ -20,7 +20,6 @@ import {
     MICROSERVICE,
     NOW,
     PROTOCOL,
-    REDIS_ACCESS_KEY,
     REDIS_CLOUD_URL,
     REDIS_KEY_PREFIX,
     REDIS_PORT,
@@ -138,7 +137,7 @@ app.get('/health', (req, res) => {
         redisKeyPrefix: getConfigValue(REDIS_KEY_PREFIX), // works
         redisTtl: getConfigValue(REDIS_TTL), // works
         redisCloudUrl: getConfigValue(REDIS_CLOUD_URL), // check if works
-        redisAccessKey: getConfigValue(REDIS_ACCESS_KEY), // works and returns access key
+        // redisAccessKey: getConfigValue(REDIS_ACCESS_KEY), // works and returns access key
     })
 })
 // separate route for document upload/view

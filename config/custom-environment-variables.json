@@ -85,17 +85,7 @@
     "__format": "json"
   },
   "redis": {
-    "host": "REDISCLOUD_URL",
-    "port": {
-      "__name": "REDIS_PORT",
-      "__format": "json"
-    },
-    "tls": {
-      "__name": "REDIS_SSL_ENABLED",
-      "__format": "json"
-    },
     "prefix": "REDIS_KEY_PREFIX",
-    "ttl": "REDIS_USER_DETAILS_TTL",
-    "cloudUrl": "REDISCLOUD_URL"
+    "ttl": "REDIS_TTL"
   }
 }

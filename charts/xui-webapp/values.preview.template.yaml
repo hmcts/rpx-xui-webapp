@@ -6,10 +6,6 @@ nodejs:
      SERVICES_IDAM_API_URL: https://idam-api.aat.platform.hmcts.net
      SERVICES_IDAM_LOGIN_URL: https://idam-web-public.aat.platform.hmcts.net
      REDISCLOUD_URL: redis://ignore:fake-password@${SERVICE_NAME}-redis-master:6379
-     REDIS_PORT: 6379
-     # TODO Check if this is being used, if not remove
-     REDIS_PASSWORD: fake-password
-     REDIS_SSL_ENABLED: false
 redis:
   enabled: true
 

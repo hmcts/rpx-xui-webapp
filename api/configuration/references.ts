@@ -71,7 +71,7 @@ export const REDIS_SSL_ENABLED = 'redis.tls'
 export const REDIS_KEY_PREFIX = 'redis.prefix'
 export const REDIS_TTL = 'redis.ttl'
 
-export const REDIS_ACCESS_KEY = 'redis.accessKey'
+// export const REDIS_ACCESS_KEY = 'redis.accessKey'
 // export const REDIS_CLOUD_URL = 'redis.cloudUrl'
 
 export const USER_TIMEOUT_IN_SECONDS = 'userTimeoutInSeconds'

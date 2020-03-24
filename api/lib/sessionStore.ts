@@ -14,7 +14,7 @@ import {
 const RedisStore = connectRedis(session)
 const FileStore = sessionFileStore(session)
 
-let store = session.Store = null
+let store = null
 
 export const getRedisStore = () => {
     console.log('using RedisStore')
@@ -47,7 +47,7 @@ export const getFileStore = () => {
     })
 }
 
-export const getStore = (): session.Store => {
+export const getStore = () => {
     if (!store) {
         if (showFeature(FEATURE_REDIS_ENABLED)) {
             store = getRedisStore()

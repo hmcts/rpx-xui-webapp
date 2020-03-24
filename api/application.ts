@@ -130,9 +130,9 @@ app.get('/health', (req, res) => {
         featureProxyEnabled: showFeature(FEATURE_PROXY_ENABLED),
         featureTermsAndConditionsEnabled: showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED),
         // 6th set
-        redisKeyPrefix: getConfigValue(REDIS_KEY_PREFIX), // works
-        redisTtl: getConfigValue(REDIS_TTL), // works
-        redisCloudUrl: getConfigValue(REDIS_CLOUD_URL), // check if work
+        redisKeyPrefix: getConfigValue(REDIS_KEY_PREFIX),
+        redisTtl: getConfigValue(REDIS_TTL),
+        redisCloudUrl: getConfigValue(REDIS_CLOUD_URL),
     })
 })
 // separate route for document upload/view

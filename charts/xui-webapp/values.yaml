@@ -1,3 +1,13 @@
+redis:
+  enabled: false
+  cluster:
+    enabled: false
+    slaveCount: 0
+  password: fake-password
+  master:
+    persistence:
+      enabled: false
+
 nodejs:
   aadIdentityName: xui
   applicationPort: 3000
@@ -42,11 +52,19 @@ nodejs:
     SERVICES_S2S: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services T&Cs
     SERVICES_TERMS_AND_CONDITIONS: http://xui-terms-and-conditions-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+
+    #Feature Flags
     FEATURE_APP_INSIGHTS_ENABLED: true
     FEATURE_SECURE_COOKIE_ENABLED: true
     FEATURE_PROXY_ENABLED: false
     FEATURE_TERMS_AND_CONDITIONS_ENABLED: true
     FEATURE_HELMET_ENABLED: true
+    FEATURE_REDIS_ENABLED: true
+
+    # Redis
+    REDIS_KEY_PREFIX: 'activity:'
+    REDIS_TTL: 6000
+
   keyVaults:
     rpx:
       resourceGroup: rpx
@@ -54,6 +72,7 @@ nodejs:
         - mc-s2s-client-secret
         - mc-idam-client-secret
         - AppInsightsInstrumentationKey
+        - webapp-redis-connection-string
   # Don't modify below here
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}

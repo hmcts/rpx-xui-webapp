@@ -3,15 +3,10 @@
  * to achieve better security.
  */
 
-import axios from 'axios'
 import * as jwtDecode from 'jwt-decode'
 import * as auth from '../../auth'
-import {getConfigValue} from '../../configuration'
-import {
-  COOKIES_TOKEN,
-  COOKIES_USER_ID,
-  SERVICES_IDAM_API_URL,
-} from '../../configuration/references'
+import { getConfigValue } from '../../configuration'
+import { COOKIES_TOKEN, COOKIES_USER_ID, SERVICES_IDAM_API_URL } from '../../configuration/references'
 import * as log4jui from '../../lib/log4jui'
 import { getDetails } from '../../services/idam'
 import { asyncReturnOrError } from '../util'

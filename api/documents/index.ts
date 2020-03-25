@@ -10,7 +10,7 @@ import * as DMStore from './DMStore'
  */
 export async function getDocumentRoute(req: express.Request, res: express.Response) {
     const documentId = req.params.document_id
-    const document = await DMStore.getDocument(documentId)
+    const document = await DMStore.getDocument(documentId, req)
     if (document) {
         res.status(200).send(document)
     } else {
@@ -24,7 +24,7 @@ export async function getDocumentRoute(req: express.Request, res: express.Respon
  * @param res
  */
 export async function getDocumentBinaryRoute(req: express.Request, res: express.Response) {
-    const binary = await DMStore.getDocumentBinary(req.params.document_id)
+    const binary = await DMStore.getDocumentBinary(req.params.document_id, req)
 
     if (binary) {
       const headers = binary.headers
@@ -49,7 +49,7 @@ export async function postDocuments(req: EnhancedRequest, res: express.Response)
 
   await form.parse(req, async (err, fields: formidable.Fields, files: formidable.Files) => {
 
-    const documents = await DMStore.postDocuments(fields, files)
+    const documents = await DMStore.postDocuments(fields, files, req)
 
     if (documents) {
       res.status(200).send(documents)

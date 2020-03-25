@@ -1,16 +1,15 @@
-import {AxiosResponse} from 'axios'
+import { AxiosResponse } from 'axios'
 import * as FormData from 'form-data'
-import {Fields, File, Files} from 'formidable'
+import { Fields, File, Files } from 'formidable'
 import * as fs from 'fs'
-import {getConfigValue} from '../configuration'
-import {
-  SERVICES_DOCUMENTS_API_PATH,
-} from '../configuration/references'
+import { setHeaders } from 'lib/proxy'
+import { getConfigValue } from '../configuration'
+import { SERVICES_DOCUMENTS_API_PATH } from '../configuration/references'
 import { http } from '../lib/http'
 import * as log4jui from '../lib/log4jui'
-import {JUILogger} from "../lib/models"
+import { EnhancedRequest, JUILogger } from "../lib/models"
 import { asyncReturnOrError } from '../lib/util'
-import {DMDocument, DMDocuments} from './document.interface'
+import { DMDocument, DMDocuments } from './document.interface'
 
 const url: string = getConfigValue(SERVICES_DOCUMENTS_API_PATH)
 
@@ -21,9 +20,10 @@ const logger: JUILogger = log4jui.getLogger('dm-store')
  * @param documentId
  * @returns Promise<DMDocument>|null
  */
-export async function getDocument(documentId: string): Promise<DMDocument> {
+export async function getDocument(documentId: string, req: EnhancedRequest): Promise<DMDocument> {
+    const headers = setHeaders(req)
     const response: AxiosResponse<DMDocument> = await asyncReturnOrError(
-        http.get(`${url}/documents/${documentId}`),
+        http.get(`${url}/documents/${documentId}`, { headers }),
         `Error getting document ${documentId}`,
         null,
         logger,
@@ -38,9 +38,10 @@ export async function getDocument(documentId: string): Promise<DMDocument> {
  * @param documentId
  * @returns Promise<any>
  */
-export async function getDocumentBinary(documentId: string): Promise<any> {
+export async function getDocumentBinary(documentId: string, req: EnhancedRequest): Promise<any> {
+    const headers = setHeaders(req)
     const response: AxiosResponse<any> = await asyncReturnOrError(
-        http.get(`${url}/documents/${documentId}/binary`, { responseType: 'stream' }),
+        http.get(`${url}/documents/${documentId}/binary`, { responseType: 'stream', headers }),
         `Error getting Binary for document ${documentId}`,
         null,
         logger,
@@ -56,7 +57,7 @@ export async function getDocumentBinary(documentId: string): Promise<any> {
  * @param files
  * @returns Promise<DMDocuments>
  */
-export async function postDocuments(fields: Fields, files: Files): Promise<DMDocuments> {
+export async function postDocuments(fields: Fields, files: Files, req: EnhancedRequest): Promise<DMDocuments> {
 
   const formData: FormData = new FormData()
 
@@ -69,11 +70,13 @@ export async function postDocuments(fields: Fields, files: Files): Promise<DMDoc
     formData.append(field, fields[field])
   })
 
+  const headers = setHeaders(req)
+
   // we explicitly set upload limit to 100MB here, rejection is handled by dm-store
   const response: AxiosResponse<DMDocuments> = await asyncReturnOrError(
     http.post(`${url}/documents/`, formData,
         {
-            headers: formData.getHeaders(),
+            headers: { ...headers, ...formData.getHeaders() },
             maxContentLength: 524300000,
         }),
     `Error posting documents`,

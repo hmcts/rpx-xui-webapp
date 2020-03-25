@@ -18,7 +18,7 @@ export default {
         },
         em_anno_api: 'http://em-anno-ithc.service.core-compute-ithc.internal',
         idam: {
-            idamApiUrl: 'http://idam-api-ithc.service.core-compute-ithc.internal',
+            idamApiUrl: 'https://idam-api.ithc.platform.hmcts.net',
             idamClientID: 'xuiwebapp',
             idamLoginUrl: 'https://idam-web-public.ithc.platform.hmcts.net',
             indexUrl: '/',

@@ -20,7 +20,7 @@ export default {
         idam: {
             idamApiUrl: 'http://idam-api-ithc.service.core-compute-ithc.internal',
             idamClientID: 'xuiwebapp',
-            idamLoginUrl: 'https://idam-web-public-aks.ithc.platform.hmcts.net',
+            idamLoginUrl: 'https://idam-web-public.ithc.platform.hmcts.net',
             indexUrl: '/',
             oauthCallbackUrl: 'oauth2/callback',
         },

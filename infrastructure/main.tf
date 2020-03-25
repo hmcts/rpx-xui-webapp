@@ -90,7 +90,6 @@ module "app" {
 
         // Redis Cloud
         REDISCLOUD_URL = "redis://ignore:${urlencode(module.redis-cache.access_key)}@${module.redis-cache.host_name}:${module.redis-cache.redis_port}?tls=true"
-        REDIS_ACCESS_KEY = "${module.redis-cache.access_key}"
     }
 }
 

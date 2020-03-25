@@ -12,6 +12,7 @@ import {
     FEATURE_APP_INSIGHTS_ENABLED,
     FEATURE_HELMET_ENABLED,
     FEATURE_PROXY_ENABLED,
+    FEATURE_REDIS_ENABLED,
     FEATURE_SECURE_COOKIE_ENABLED,
     FEATURE_TERMS_AND_CONDITIONS_ENABLED,
     HELMET,
@@ -20,7 +21,6 @@ import {
     MICROSERVICE,
     NOW,
     PROTOCOL,
-    REDIS_CLOUD_URL,
     REDIS_KEY_PREFIX,
     REDIS_TTL,
     SERVICE_S2S_PATH,
@@ -129,10 +129,10 @@ app.get('/health', (req, res) => {
         featureAppInsightEnabled: showFeature(FEATURE_APP_INSIGHTS_ENABLED),
         featureProxyEnabled: showFeature(FEATURE_PROXY_ENABLED),
         featureTermsAndConditionsEnabled: showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED),
+        featureRedisEnabled: showFeature(FEATURE_REDIS_ENABLED),
         // 6th set
         redisKeyPrefix: getConfigValue(REDIS_KEY_PREFIX),
         redisTtl: getConfigValue(REDIS_TTL),
-        redisCloudUrl: getConfigValue(REDIS_CLOUD_URL),
     })
 })
 // separate route for document upload/view

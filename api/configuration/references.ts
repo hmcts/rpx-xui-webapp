@@ -9,6 +9,7 @@
  * This file should be representative of the .json files in /config
  */
 export const S2S_SECRET = 'secrets.rpx.mc-s2s-client-secret'
+export const REDIS_CLOUD_URL = 'secrets.rpx.webapp-redis-connection-string'
 
 export const COOKIES_TOKEN = 'cookies.token'
 export const COOKIES_USER_ID = 'cookies.userId'
@@ -59,4 +60,11 @@ export const FEATURE_APP_INSIGHTS_ENABLED = 'appInsightsEnabled'
 export const FEATURE_PROXY_ENABLED = 'proxyEnabled'
 export const FEATURE_TERMS_AND_CONDITIONS_ENABLED = 'termsAndConditionsEnabled'
 export const FEATURE_HELMET_ENABLED = 'helmetEnabled'
+export const FEATURE_REDIS_ENABLED = 'redisEnabled'
+
 export const HELMET = 'helmet'
+
+export const REDIS_KEY_PREFIX = 'redis.prefix'
+export const REDIS_TTL = 'redis.ttl'
+
+export const USER_TIMEOUT_IN_SECONDS = 'userTimeoutInSeconds'

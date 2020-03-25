@@ -45,7 +45,8 @@
     "rpx": {
       "AppInsightsInstrumentationKey": "APPINSIGHTS_INSTRUMENTATIONKEY",
       "mc-s2s-client-secret": "S2S_SECRET",
-      "mc-idam-client-secret": "IDAM_SECRET"
+      "mc-idam-client-secret": "IDAM_SECRET",
+      "webapp-redis-connection-string": "REDISCLOUD_URL"
     }
   },
   "jurisdictions": "JURISDICTIONS",
@@ -73,10 +74,18 @@
     "helmetEnabled": {
       "__name": "FEATURE_HELMET_ENABLED",
       "__format": "json"
+    },
+    "redisEnabled": {
+      "__name": "FEATURE_REDIS_ENABLED",
+      "__format": "json"
     }
   },
   "helmet": {
     "__name": "HELMET_CONFIG",
     "__format": "json"
+  },
+  "redis": {
+    "prefix": "REDIS_KEY_PREFIX",
+    "ttl": "REDIS_TTL"
   }
 }

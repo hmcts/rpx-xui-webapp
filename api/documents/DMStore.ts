@@ -2,12 +2,12 @@ import { AxiosResponse } from 'axios'
 import * as FormData from 'form-data'
 import { Fields, File, Files } from 'formidable'
 import * as fs from 'fs'
-import { setHeaders } from 'lib/proxy'
 import { getConfigValue } from '../configuration'
 import { SERVICES_DOCUMENTS_API_PATH } from '../configuration/references'
 import { http } from '../lib/http'
 import * as log4jui from '../lib/log4jui'
 import { EnhancedRequest, JUILogger } from "../lib/models"
+import { setHeaders } from '../lib/proxy'
 import { asyncReturnOrError } from '../lib/util'
 import { DMDocument, DMDocuments } from './document.interface'
 

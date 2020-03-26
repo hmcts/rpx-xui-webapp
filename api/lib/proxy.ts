@@ -20,11 +20,15 @@ import { EnhancedRequest } from './models'
 export function setHeaders(req: EnhancedRequest) {
     const headers: any = {}
 
-    headers['content-type'] = req.headers['content-type']
-    if (req.headers.accept) {
+    if (req.headers && req.headers['content-type']) {
+        headers['content-type'] = req.headers['content-type']
+    }
+
+    if (req.headers && req.headers.accept) {
         headers.accept = req.headers.accept
     }
-    if (req.headers.experimental) {
+
+    if (req.headers && req.headers.experimental) {
         headers.experimental = req.headers.experimental
     }
 

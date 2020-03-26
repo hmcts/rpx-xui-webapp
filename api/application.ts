@@ -42,6 +42,7 @@ import authInterceptor from './lib/middleware/auth'
 import {JUILogger} from './lib/models'
 import { getStore } from './lib/sessionStore'
 import * as tunnel from './lib/tunnel'
+import openRoutes from './openRoutes'
 import * as postCodeLookup from './postCodeLookup'
 import {router as printRouter} from './print/routes'
 import routes from './routes'
@@ -80,6 +81,8 @@ app.use(bodyParser.urlencoded({extended: true}))
 tunnel.init()
 
 app.get('/oauth2/callback', auth.authenticateUser)
+app.use('/external', openRoutes)
+
 app.get('/api/logout', (req, res) => {
     auth.doLogout(req, res)
 })

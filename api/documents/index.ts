@@ -1,6 +1,6 @@
 import * as express from 'express'
 import * as formidable from 'formidable'
-import {EnhancedRequest} from '../lib/models'
+import { EnhancedRequest } from '../lib/models'
 import * as DMStore from './DMStore'
 
 /**

@@ -77,12 +77,11 @@ describe('AuthService', () => {
     });
   });
 
-  it('should exist', inject([AuthGuard], (gurad: AuthGuard) => {
+  xit('should exist', inject([AuthGuard], (gurad: AuthGuard) => {
     expect(gurad).toBeTruthy();
   }));
 
-
-  it('should exist', inject([AuthGuard], (gurad: AuthGuard) => {
+  xit('should exist', inject([AuthGuard], (gurad: AuthGuard) => {
     expect(gurad.canActivate).toBeDefined();
   }));
 });

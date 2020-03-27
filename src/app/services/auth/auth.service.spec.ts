@@ -8,6 +8,9 @@ import { AppConfigService } from '../config/configuration.services';
 import { StoreModule } from '@ngrx/store';
 import { AppConstants } from 'src/app/app.constants';
 import { AppUtils } from 'src/app/app-utils';
+import { of, throwError } from 'rxjs';
+import {EnvironmentService} from '../../shared/services/environment.service';
+import {provideMockActions} from '@ngrx/effects/testing';
 
 const config = {
   config: {
@@ -44,6 +47,8 @@ const cookieService = {
   removeAll: () => { }
 };
 
+const environmentServiceMock = {
+};
 
 class HttpClientMock {
   get() {
@@ -78,6 +83,7 @@ class AppConstantsMock {
 }
 
 describe('AuthService', () => {
+
   beforeEach(() => {
     deleteCookiesSpy = spyOn(cookieService, 'removeAll');
     routerNavigateSpy = spyOn(router, 'navigate');
@@ -87,20 +93,21 @@ describe('AuthService', () => {
       ],
       providers: [
         AuthService,
+        { provide: CookieService, useValue: cookieService },
         { provide: AppConfigService, useClass: AppConfigServiceMock},
+        { provide: EnvironmentService, useValue: environmentServiceMock},
         { provide: environment, useValue: config },
         { provide: Router, useValue: router },
-        { provide: CookieService, useValue: cookieService },
-        { provide: HttpClient, useClass: HttpClientMock }
+        { provide: HttpClient, useClass: HttpClientMock },
       ]
     });
   });
 
-  xit('should be created', inject([AuthService], (service: AuthService) => {
+  it('should be created', inject([AuthService], (service: AuthService) => {
     expect(service).toBeTruthy();
   }));
 
-  xdescribe('isAuthenticated', () => {
+  describe('isAuthenticated', () => {
     it('should return false when jwt is expired, true when still valid', inject([AuthService], (service: AuthService) => {
       cookieService.set('__auth__', expiredJwt);
       expect(service.isAuthenticated()).toEqual(false);
@@ -110,7 +117,7 @@ describe('AuthService', () => {
 
   });
 
-  xdescribe('canActivate', () => {
+  describe('canActivate', () => {
     it('should redirect to login if not authenticated', inject([AuthService], (service: AuthService) => {
       cookieService.set('__auth__', expiredJwt);
       const loginRedirectMock = spyOn(service, 'loginRedirect');
@@ -126,17 +133,9 @@ describe('AuthService', () => {
   });
 
   // TODO: Re-implement test around observable.
-  // describe('generateLoginUrl', () => {
-  //   it('should generate url', inject([AuthService], (service: AuthService) => {
-  //     spyOn(AppUtils, 'getEnvironment').and.returnValue('dummy');
-  //     AppConstants.REDIRECT_URL = AppConstantsMock.REDIRECT_URL;
-  //     const base = 'dummy';
-  //     const clientId = 'dummy';
-  //     const callback = `${service.apiBaseUrl}/dummy`;
-  //     const scope = `profile openid roles manage-user create-user`;
-  //     const loginUrl = `${base}/login?response_type=code&client_id=${clientId}&redirect_uri=${callback}&scope=${scope}`;
-  //     expect(service.generateLoginUrl()).toEqual(loginUrl);
-  //   }));
-  // });
+  xdescribe('generateLoginUrl', () => {
+    it('should observe/call environment service config$', inject([AuthService], (service: AuthService) => {
+    }));
+  });
 
 });

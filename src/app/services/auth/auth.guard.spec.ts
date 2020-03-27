@@ -8,6 +8,7 @@ import {AppConfigService} from '../config/configuration.services';
 import {environment} from '../../../environments/environment';
 import {Router} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
+import {EnvironmentService} from '../../shared/services/environment.service';
 
 const config = {
   config: {
@@ -58,7 +59,8 @@ class AppConfigServiceMock {
   }
 }
 
-
+const environmentServiceMock = {
+};
 
 describe('AuthService', () => {
   beforeEach(() => {
@@ -72,16 +74,17 @@ describe('AuthService', () => {
         { provide: environment, useValue: config },
         { provide: Router, useValue: router },
         { provide: CookieService, useValue: cookieService },
-        { provide: HttpClient, useClass: HttpClientMock }
+        { provide: HttpClient, useClass: HttpClientMock },
+        { provide: EnvironmentService, useValue: environmentServiceMock},
       ]
     });
   });
 
-  xit('should exist', inject([AuthGuard], (gurad: AuthGuard) => {
+  it('should exist', inject([AuthGuard], (gurad: AuthGuard) => {
     expect(gurad).toBeTruthy();
   }));
 
-  xit('should exist', inject([AuthGuard], (gurad: AuthGuard) => {
+  it('should exist', inject([AuthGuard], (gurad: AuthGuard) => {
     expect(gurad.canActivate).toBeDefined();
   }));
 });

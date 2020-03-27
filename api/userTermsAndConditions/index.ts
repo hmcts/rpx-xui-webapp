@@ -1,11 +1,9 @@
 import * as express from 'express'
-import {getConfigValue} from '../configuration'
-import {
-  SERVICES_IDAM_CLIENT_ID,
-  SERVICES_TERMS_AND_CONDITIONS_URL,
-} from '../configuration/references'
+import { getConfigValue } from '../configuration'
+import { SERVICES_IDAM_CLIENT_ID, SERVICES_TERMS_AND_CONDITIONS_URL } from '../configuration/references'
 import { GetUserAcceptTandCResponse, PostUserAcceptTandCResponse } from '../interface/userAcceptTandCResponse'
 import { http } from '../lib/http'
+import { setHeaders } from '../lib/proxy'
 import { isUserTandCPostSuccessful } from '../lib/util'
 import { getUserTermsAndConditionsUrl, postUserTermsAndConditionsUrl } from './userTermsAndConditionsUtil'
 
@@ -22,7 +20,8 @@ export async function getUserTermsAndConditions(req: express.Request, res: expre
     try {
         const url = getUserTermsAndConditionsUrl(getConfigValue(SERVICES_TERMS_AND_CONDITIONS_URL),
             req.params.userId, getConfigValue(SERVICES_IDAM_CLIENT_ID))
-        const response = await http.get(url)
+        const headers = setHeaders(req)
+        const response = await http.get(url, { headers })
         const userTandCResponse = response.data as GetUserAcceptTandCResponse
         res.send(userTandCResponse.accepted)
     } catch (error) {
@@ -54,7 +53,8 @@ export async function postUserTermsAndConditions(req: express.Request, res: expr
         const data = {userId: req.body.userId}
         const url = postUserTermsAndConditionsUrl(getConfigValue(SERVICES_TERMS_AND_CONDITIONS_URL),
           getConfigValue(SERVICES_IDAM_CLIENT_ID))
-        const response = await http.post(url, data)
+        const headers = setHeaders(req)
+        const response = await http.post(url, data, { headers })
         const postResponse = response.data as PostUserAcceptTandCResponse
         res.send(isUserTandCPostSuccessful(postResponse, req.body.userId))
     } catch (error) {

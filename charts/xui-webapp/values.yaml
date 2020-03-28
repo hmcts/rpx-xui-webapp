@@ -59,7 +59,7 @@ nodejs:
     FEATURE_PROXY_ENABLED: false
     FEATURE_TERMS_AND_CONDITIONS_ENABLED: false
     FEATURE_HELMET_ENABLED: true
-    FEATURE_REDIS_ENABLED: false
+    FEATURE_REDIS_ENABLED: true
 
     # Redis
     REDIS_KEY_PREFIX: 'activity:'

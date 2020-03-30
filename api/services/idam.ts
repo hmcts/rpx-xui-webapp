@@ -13,7 +13,7 @@ import { valueOrNull } from '../lib/util'
 
 const url = getConfigValue(SERVICES_IDAM_API_URL)
 const idamSecret = getConfigValue(IDAM_SECRET) || 'AAAAAAAAAAAAAAAA'
-console.log('idamSecret', idamSecret)
+
 const idamClient = getConfigValue(SERVICES_IDAM_CLIENT_ID)
 const idamProtocol = getConfigValue(PROTOCOL)
 const oauthCallbackUrl = getConfigValue(SERVICES_IDAM_OAUTH_CALLBACK_URL)

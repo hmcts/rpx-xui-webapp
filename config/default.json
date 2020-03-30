@@ -58,7 +58,8 @@
     "proxyEnabled": false,
     "secureCookieEnabled": true,
     "helmetEnabled": false,
-    "termsAndConditionsEnabled": false
+    "termsAndConditionsEnabled": false,
+    "redisEnabled": false
   },
   "helmet": {
     "contentSecurityPolicy": {
@@ -103,10 +104,17 @@
       "enable": true
     },
     "frameguard": {
-      "action":"deny"
+      "action": "deny"
     },
     "hidePoweredBy": {
       "setTo": "XUI Server 1.0"
     }
+  },
+  "redis": {
+    "host": "xui-ao-webapp-prod.redis.cache.windows.net",
+    "port": 6380,
+    "tls": true,
+    "prefix": "activity:",
+    "ttl": 86400
   }
 }

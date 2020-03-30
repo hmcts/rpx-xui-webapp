@@ -1,10 +1,15 @@
 import * as express from 'express'
-import getConfigurationCheckRouter from './configurationCheck'
-import getConfigurationUIRouter from './configurationUI'
+import getAppConfigCheckRouter from './configuration/appConfigCheckRouter'
+import getUiConfigRouter from './configuration/uiConfigRouter'
 
 const router = express.Router({ mergeParams: true })
 
-router.use('/configuration-ui', getConfigurationUIRouter)
-router.use('/configuration/check', getConfigurationCheckRouter)
+/**
+ * TODO: Deprecate due to naming
+ */
+router.use('/configuration-ui', getUiConfigRouter)
+
+router.use('/config/ui', getUiConfigRouter)
+router.use('/config/check', getAppConfigCheckRouter)
 
 export default router

@@ -10,7 +10,7 @@
         "watch": "nodemon  -r dotenv-extended/config --watch '**/*.ts' --exec ts-node local.ts",
         "test": "mocha -r dotenv-extended/config",
         "test:watch": "mocha --watch --recursive --watch-extensions ts",
-        "start": "cd ../dist/jui-backend && node server.js"
+        "start": "node -r dotenv-extended/config ../dist/rpx-exui/api/server.bundle.js"
     },
     "private": true,
     "dependencies": {}

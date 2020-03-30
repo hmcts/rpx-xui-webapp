@@ -1,3 +1,9 @@
+/**
+ * The setHeaders method now also adds the authorization headers when applicable
+ * for better security.
+ * When moving to a different proxy middleware, it is important to refactor this as well.
+ */
+
 import * as express from 'express'
 import * as striptags from 'striptags'
 import {getConfigValue} from '../configuration'
@@ -14,12 +20,24 @@ import { EnhancedRequest } from './models'
 export function setHeaders(req: EnhancedRequest) {
     const headers: any = {}
 
-    headers['content-type'] = req.headers['content-type']
-    if (req.headers.accept) {
+    if (req.headers && req.headers['content-type']) {
+        headers['content-type'] = req.headers['content-type']
+    }
+
+    if (req.headers && req.headers.accept) {
         headers.accept = req.headers.accept
     }
-    if (req.headers.experimental) {
+
+    if (req.headers && req.headers.experimental) {
         headers.experimental = req.headers.experimental
+    }
+
+    if (req.auth && req.auth.token) {
+        headers.Authorization = `Bearer ${req.auth.token}`
+    }
+
+    if (req.auth && req.auth.data && req.auth.data.roles && req.auth.data.roles.length > 0) {
+        headers['user-roles'] = req.auth.data.roles.join()
     }
 
     return headers

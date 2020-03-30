@@ -31,7 +31,6 @@ export const SERVICES_EM_ANNO_API_URL = 'services.em_anno_api'
 export const SERVICES_IDAM_API_URL = 'services.idam.idamApiUrl'
 export const SERVICES_IDAM_CLIENT_ID = 'services.idam.idamClientID'
 export const SERVICES_IDAM_LOGIN_URL = 'services.idam.idamLoginUrl'
-export const SERVICES_IDAM_INDEX_URL = 'services.idam.indexUrl'
 export const SERVICES_IDAM_ISS_URL = 'services.idam.iss'
 export const SERVICES_IDAM_OAUTH_CALLBACK_URL = 'services.idam.oauthCallbackUrl'
 

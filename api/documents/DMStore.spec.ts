@@ -1,18 +1,16 @@
 import * as chai from 'chai'
-import {expect} from 'chai'
-import {Fields, File, Files} from 'formidable'
+import { expect } from 'chai'
+import { Fields, File, Files } from 'formidable'
 import 'mocha'
 import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
-import {getConfigValue} from '../configuration'
-import {
-  SERVICES_DOCUMENTS_API_PATH,
-} from '../configuration/references'
+import { getConfigValue } from '../configuration'
+import { SERVICES_DOCUMENTS_API_PATH } from '../configuration/references'
+import { http } from '../lib/http'
+import { EnhancedRequest } from '../lib/models'
+import * as DMStore from './DMStore'
 
 chai.use(sinonChai)
-
-import {http} from '../lib/http'
-import * as DMStore from './DMStore'
 
 describe('DMStore', () => {
     const res = {
@@ -52,13 +50,13 @@ describe('DMStore', () => {
 
         it('Should make a http.get call based on the document Id', async () => {
 
-            await DMStore.getDocument(documentId)
+            await DMStore.getDocument(documentId, {} as EnhancedRequest)
             expect(spy).to.be.calledWith(`${url}/documents/${documentId}`)
         })
 
         it('Should return the data property of the return of a http.get call', async () => {
 
-            expect(await DMStore.getDocument(documentId)).to.equal('okay')
+            expect(await DMStore.getDocument(documentId, {} as EnhancedRequest)).to.equal('okay')
         })
 
     })
@@ -69,13 +67,13 @@ describe('DMStore', () => {
 
         it('Should make a http.get call based on the document Id', async () => {
 
-            await DMStore.getDocumentBinary(documentId)
+            await DMStore.getDocumentBinary(documentId, {} as EnhancedRequest)
             expect(spy).to.be.calledWith(`${url}/documents/${documentId}/binary`)
         })
 
         it('Should return the data property of the return of the http.get call', async () => {
 
-            expect(await DMStore.getDocumentBinary(documentId)).to.equal('okay')
+            expect(await DMStore.getDocumentBinary(documentId, {} as EnhancedRequest)).to.equal('okay')
         })
     })
 
@@ -96,12 +94,12 @@ describe('DMStore', () => {
         const files: Files = { file }
 
         it('Should make a http.post call', async () => {
-            await DMStore.postDocuments(fields, files)
+            await DMStore.postDocuments(fields, files, {} as EnhancedRequest)
             expect(spyPost).to.be.calledWith(`${url}/documents/`)
         })
 
         it('Should return the data property of the return of the http.post call', async () => {
-            expect(await DMStore.postDocuments(fields, files)).to.equal('okay')
+            expect(await DMStore.postDocuments(fields, files, {} as EnhancedRequest)).to.equal('okay')
         })
     })
 

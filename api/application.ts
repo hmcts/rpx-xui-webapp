@@ -1,3 +1,4 @@
+import * as healthcheck from '@hmcts/nodejs-healthcheck'
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
@@ -36,6 +37,7 @@ import {
 import {router as documentRouter} from './documents/routes'
 import {router as emAnnoRouter} from './emAnno/routes'
 import healthCheck from './healthCheck'
+import * as health from './health'
 import {errorStack} from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
 import authInterceptor from './lib/middleware/auth'
@@ -80,6 +82,11 @@ app.use(bodyParser.urlencoded({extended: true}))
 
 tunnel.init()
 
+/**
+ * Add Reform Standard health checks.
+ */
+health.addReformHealthCheck(app)
+
 app.get('/oauth2/callback', auth.authenticateUser)
 app.use('/external', openRoutes)
 
@@ -102,42 +109,7 @@ app.use('/api/termsAndConditions', termsAndCRoutes)
 app.get('/api/configuration', (req, res) => {
     res.send(showFeature(req.query.configurationKey))
 })
-app.get('/health', (req, res) => {
-    res.status(200).send({
-        allowConfigMutations: process.env.ALLOW_CONFIG_MUTATIONS,
-        nodeConfigEnv: process.env.NODE_CONFIG_ENV,
-        // 1st set
-        // tslint:disable-next-line:object-literal-sort-keys
-        idamClient: getConfigValue(SERVICES_IDAM_CLIENT_ID),
-        maxLogLine: getConfigValue(MAX_LOG_LINE),
-        microService: getConfigValue(MICROSERVICE),
-        now: getConfigValue(NOW),
-        // 2nd set
-        cookieToken: getConfigValue(COOKIES_TOKEN),
-        cookieUserId: getConfigValue(COOKIES_USER_ID),
-        oauthCallBack: getConfigValue(SERVICES_IDAM_OAUTH_CALLBACK_URL),
-        protocol: getConfigValue(PROTOCOL),
-        // 3rd set
-        idamApiPath: getConfigValue(SERVICES_IDAM_API_URL),
-        idamWeb: getConfigValue(SERVICES_IDAM_LOGIN_URL),
-        s2sPath: getConfigValue(SERVICE_S2S_PATH),
-        emAnnoApi: getConfigValue(SERVICES_EM_ANNO_API_URL),
-        documentsApi: getConfigValue(SERVICES_DOCUMENTS_API_PATH),
-        termsAndConditionsApi: getConfigValue(SERVICES_TERMS_AND_CONDITIONS_URL),
-        // 4th set
-        sessionSecret: getConfigValue(SESSION_SECRET),
-        jurisdictions: getConfigValue(JURISDICTIONS),
-        // 5th set
-        featureSecureCookieEnabled: showFeature(FEATURE_SECURE_COOKIE_ENABLED),
-        featureAppInsightEnabled: showFeature(FEATURE_APP_INSIGHTS_ENABLED),
-        featureProxyEnabled: showFeature(FEATURE_PROXY_ENABLED),
-        featureTermsAndConditionsEnabled: showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED),
-        featureRedisEnabled: showFeature(FEATURE_REDIS_ENABLED),
-        // 6th set
-        redisKeyPrefix: getConfigValue(REDIS_KEY_PREFIX),
-        redisTtl: getConfigValue(REDIS_TTL),
-    })
-})
+
 // separate route for document upload/view
 app.use('/documents', documentRouter)
 app.use('/em-anno', emAnnoRouter)

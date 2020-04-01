@@ -1,6 +1,7 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import {Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, Input, ViewChild} from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import {RouterTestingModule} from '@angular/router/testing';
+import { Store } from '@ngrx/store';
 import {FooterComponent} from './footer.component';
 
 describe('FooterComponent', () => {
@@ -24,12 +25,17 @@ describe('FooterComponent', () => {
     let element: DebugElement;
 
     beforeEach(async(() => {
+        const storeMock = jasmine.createSpyObj('mockStore', ['unsubscribe', 'dispatch', 'pipe']);
         TestBed.configureTestingModule({
             imports: [
                 RouterTestingModule
             ],
             declarations: [ FooterComponent, TestDummyHostComponent ],
-            schemas: [CUSTOM_ELEMENTS_SCHEMA]
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
+            providers: [{
+                provide: Store,
+                useValue: storeMock
+            }]
         })
             .compileComponents();
     }));

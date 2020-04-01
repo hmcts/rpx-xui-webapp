@@ -76,6 +76,13 @@ const getHelpDetailsData: ContactDetailsDataModel[] = [
     email: 'customer.service@justice.gov.uk',
     phone: '0300 123 1711',
     openingTimes: 'Monday to Friday, 9am to 5pm (excluding public holidays)'
+  },
+  {
+    title: 'Family Public Law and Adoption',
+    badgeColour: BadgeColour.BADGE_RED,
+    email: 'fpla@justice.gov.uk',
+    phone: '0330 808 4424',
+    openingTimes: 'Monday to Friday, 8:30am to 5pm (excluding public holidays)'
   }
 ];
 

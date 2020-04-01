@@ -111,6 +111,7 @@
     "shortid": "^2.2.14",
     "smoothscroll-polyfill": "^0.4.3",
     "striptags": "^3.1.1",
+    "terser-webpack-plugin": "^2.3.5",
     "tslib": "^1.9.0",
     "web-animations-js": "^2.3.2",
     "xlsx": "^0.15.4",

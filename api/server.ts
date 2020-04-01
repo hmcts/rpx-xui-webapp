@@ -1,3 +1,4 @@
+import 'source-map-support/register'
 import { app } from './application'
 
 import * as ejs from 'ejs'

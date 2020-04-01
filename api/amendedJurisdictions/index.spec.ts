@@ -4,15 +4,12 @@ import 'mocha'
 import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
 import { mockReq, mockRes } from 'sinon-express-mock'
+import { getConfigValue } from '../configuration'
+import { SERVICES_CCD_COMPONENT_API_PATH } from '../configuration/references'
+import { http } from '../lib/http'
+import * as amendedJurisdictions from './index'
 
 chai.use(sinonChai)
-
-import {getConfigValue} from '../configuration'
-import {
-  SERVICES_CCD_COMPONENT_API_PATH,
-} from '../configuration/references'
-import {http} from '../lib/http'
-import * as amendedJurisdictions from './index'
 
 describe('Amended Jurisdiction', () => {
 

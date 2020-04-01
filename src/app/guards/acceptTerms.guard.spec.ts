@@ -7,13 +7,12 @@ describe('Accept terms guard', () => {
     let guard: AcceptTermsGuard;
     let mockStore: any;
     let mockCookie: jasmine.SpyObj<CookieService>;
-    let mockTermsService: jasmine.SpyObj<TermsConditionsService>;
 
     beforeEach(() => {
         mockStore = jasmine.createSpyObj('mockStore', ['unsubscribe', 'dispatch', 'pipe']);
         mockCookie = jasmine.createSpyObj<CookieService>('mockCookie', ['get']);
-        mockTermsService = jasmine.createSpyObj<TermsConditionsService>('mockTermsService', ['getTermsConditions', 'isTermsConditionsFeatureEnabled']);
-        guard = new AcceptTermsGuard(mockStore, mockCookie, mockTermsService);
+        guard = new AcceptTermsGuard(mockStore, mockCookie);
+        mockStore.pipe.and.returnValue(of(true));
     });
 
     it('is Truthy', () => {
@@ -21,7 +20,6 @@ describe('Accept terms guard', () => {
     });
 
     it('returns true for non pui users', (done: any) => {
-        mockTermsService.isTermsConditionsFeatureEnabled.and.returnValue(of(true));
         mockCookie.get.and.returnValue('zui-case-manager');
         guard.canActivate().subscribe(access => {
             expect(access).toBeTruthy();

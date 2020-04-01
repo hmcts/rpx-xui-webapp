@@ -13,6 +13,11 @@ export const checkServiceHealth = service => healthcheck.web(`${service}/health`
   timeout: 6000,
 })
 
+/**
+ * Health Checks
+ *
+ * Check each 3rd party endpoint to see if it's up and running.
+ */
 export const healthChecks = {
   checks: {
     documentsApi: checkServiceHealth(getConfigValue(SERVICES_DOCUMENTS_API_PATH)),
@@ -22,15 +27,6 @@ export const healthChecks = {
     s2s: checkServiceHealth(getConfigValue(SERVICE_S2S_PATH)),
   },
 }
-
-// Not showing in health checks
-// if (showFeature(FEATURE_REDIS_ENABLED)) {
-//   healthChecks.checks = {...healthChecks.checks, ...{
-//       redis: healthcheck.raw(() => {
-//         return app.locals.redisClient.connected ? healthcheck.up() : healthcheck.down()
-//       })
-//     }}
-// }
 
 /**
  * Add Reform standard Health Checks for /health and /health/liveness

@@ -7,7 +7,7 @@ import { Store } from '@ngrx/store';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { CaseFilterToggle, FindCaselistPaginationMetadata } from '../../store/actions/case-list.action';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
-import { PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
+import { PaginationMetadata, WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { of, Observable } from 'rxjs';
 
 describe('CaseListComponent', () => {
@@ -23,6 +23,7 @@ describe('CaseListComponent', () => {
 
   const mockDefinitionsService = jasmine.createSpyObj('DefinitionsService', ['getJurisdictions']);
   const mockAppConfig = jasmine.createSpyObj('AppConfig', ['getPaginationPageSize']);
+  const mockWindowService = jasmine.createSpyObj('WindowService', ['removeLocalStorage']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -36,6 +37,10 @@ describe('CaseListComponent', () => {
         {
           provide: DefinitionsService,
           useValue: mockDefinitionsService
+        },
+        {
+          provide: WindowService,
+          useValue: mockWindowService
         },
         provideMockStore(),
       ]

@@ -4,6 +4,7 @@
  * Server.ts is used to run the application as it moves through the Jenkins pipelines, and on the Preview
  * and higher environments.
  */
+import 'source-map-support/register'
 import { app } from './application'
 
 import * as ejs from 'ejs'

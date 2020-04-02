@@ -1,4 +1,3 @@
-import * as healthcheck from '@hmcts/nodejs-healthcheck'
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
@@ -8,36 +7,16 @@ import * as auth from './auth'
 import { getConfigValue, showFeature } from './configuration'
 import {
     APP_INSIGHTS_KEY,
-    COOKIES_TOKEN,
-    COOKIES_USER_ID,
-    FEATURE_APP_INSIGHTS_ENABLED,
     FEATURE_HELMET_ENABLED,
-    FEATURE_PROXY_ENABLED,
-    FEATURE_REDIS_ENABLED,
     FEATURE_SECURE_COOKIE_ENABLED,
-    FEATURE_TERMS_AND_CONDITIONS_ENABLED,
     HELMET,
-    JURISDICTIONS,
-    MAX_LOG_LINE,
-    MICROSERVICE,
-    NOW,
     PROTOCOL,
-    REDIS_KEY_PREFIX,
-    REDIS_TTL,
-    SERVICE_S2S_PATH,
-    SERVICES_DOCUMENTS_API_PATH,
-    SERVICES_EM_ANNO_API_URL,
-    SERVICES_IDAM_API_URL,
-    SERVICES_IDAM_CLIENT_ID,
-    SERVICES_IDAM_LOGIN_URL,
-    SERVICES_IDAM_OAUTH_CALLBACK_URL,
-    SERVICES_TERMS_AND_CONDITIONS_URL,
     SESSION_SECRET,
 } from './configuration/references'
 import {router as documentRouter} from './documents/routes'
 import {router as emAnnoRouter} from './emAnno/routes'
-import healthCheck from './healthCheck'
 import * as health from './health'
+import healthCheck from './healthCheck'
 import {errorStack} from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
 import authInterceptor from './lib/middleware/auth'

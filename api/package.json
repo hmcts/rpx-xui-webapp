@@ -8,10 +8,15 @@
         "coverage": "npx nyc mocha -r dotenv-extended/config",
         "lint": "npx tslint --project .",
         "watch": "nodemon  -r dotenv-extended/config --watch '**/*.ts' --exec ts-node local.ts",
+        "debug": "node --inspect -r ts-node/register -r dotenv-extended/config local.ts",
         "test": "mocha -r dotenv-extended/config",
         "test:watch": "mocha --watch --recursive --watch-extensions ts",
         "start": "cd ../dist/jui-backend && node server.js"
     },
     "private": true,
-    "dependencies": {}
+    "dependencies": {
+        "@types/global-agent": "^2.1.0",
+        "global-agent": "^2.1.8",
+        "http-proxy-middleware": "^1.0.3"
+    }
 }

@@ -6,6 +6,7 @@ import * as helmet from 'helmet'
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
 import {getConfigValue, showFeature} from './configuration'
+import {createDocStoreProxy} from './lib/middleware/httpProxy'
 import {
     APP_INSIGHTS_KEY,
     COOKIES_TOKEN,
@@ -78,7 +79,7 @@ app.use(errorStack)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 
-tunnel.init()
+const agent = tunnel.init()
 
 app.get('/oauth2/callback', auth.authenticateUser)
 app.get('/api/logout', (req, res) => {
@@ -134,8 +135,9 @@ app.get('/health', (req, res) => {
 })
 // separate route for document upload/view
 app.use('/documents', documentRouter)
+// Use a real proxy for docstore to improve performance
+createDocStoreProxy(app, agent)
 app.use('/em-anno', emAnnoRouter)
-
 app.use('/print', printRouter)
 
 // @ts-ignore

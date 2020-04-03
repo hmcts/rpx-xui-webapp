@@ -69,6 +69,7 @@ export default async (req, res, next) => {
         axios.defaults.headers.common['user-roles'] = req.auth.data.roles.join()
 
         logger.info('Auth token: ' + `Bearer ${req.auth.token}`)
+        req.headers['user-roles'] = axios.defaults.headers.common['user-roles'];
 
         // moved s2s here so we authenticate first
         await serviceTokenMiddleware.default(req, res, () => {

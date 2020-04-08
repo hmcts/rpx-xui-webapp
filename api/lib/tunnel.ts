@@ -1,11 +1,14 @@
-import { createGlobalProxyAgent } from 'global-agent'
-import {config} from '../config'
+import {createGlobalProxyAgent} from 'global-agent'
+import {showFeature} from '../configuration'
+import {
+    FEATURE_PROXY_ENABLED,
+} from '../configuration/references'
 
 export function init(): void {
-    if (config.proxy && config.localEnv === 'local') {
-        const globalProxyAgent = createGlobalProxyAgent()
-        console.log('configuring global-agent: %s', config.proxy)
-        globalProxyAgent.HTTP_PROXY = `http://${config.proxy.host}:${config.proxy.port}`
-        globalProxyAgent.NO_PROXY = 'localhost'
+    if (showFeature(FEATURE_PROXY_ENABLED)) {
+        console.info('configuring global-agent: ', process.env.MC_HTTP_PROXY, ' no proxy: ', process.env.MC_NO_PROXY)
+        createGlobalProxyAgent({
+            environmentVariableNamespace: "MC_",
+        })
     }
 }

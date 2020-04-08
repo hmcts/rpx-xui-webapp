@@ -6,7 +6,11 @@ import * as sinonChai from 'sinon-chai'
 import { mockReq, mockRes } from 'sinon-express-mock'
 chai.use(sinonChai)
 
-import { config } from '../config'
+import {getConfigValue} from '../configuration'
+import {
+  COOKIES_TOKEN,
+  COOKIES_USER_ID,
+} from '../configuration/references'
 import * as idam from '../services/idam'
 import { authenticateUser, logout } from './index'
 
@@ -16,20 +20,20 @@ describe('Auth', () => {
         it('should delete auth cookie', () => {
             const req = mockReq({
                 session: {
-                    save: (fun) => { fun() }
-                }
+                    save: fun => { fun() },
+                },
             })
 
             const res = mockRes()
             logout(req, res)
-            expect(res.clearCookie).to.be.calledWith(config.cookies.token)
+            expect(res.clearCookie).to.be.calledWith(getConfigValue(COOKIES_TOKEN))
         })
 
         it('should redirect to index page', () => {
             const req = mockReq({
                 session: {
-                    save: (fun) => { fun() }
-                }
+                    save: fun => { fun() },
+                },
             })
 
             const res = mockRes()
@@ -46,7 +50,7 @@ describe('Auth', () => {
         const details = { id: 1, name: 'testuser', roles: [
             'pui-case-manager',
             'caseworker-probate',
-          ] };
+          ] }
         beforeEach(() => {
             sandbox = sinon.createSandbox()
             sandbox.stub(idam, 'postOauthToken').resolves({ access_token: `${accessToken}` })
@@ -57,7 +61,7 @@ describe('Auth', () => {
                     code: 1,
                 },
                 session: {
-                    save: (fun) => { fun() },
+                    save: fun => { fun() },
                     user: null,
 
                 },
@@ -79,8 +83,8 @@ describe('Auth', () => {
 
             await authenticateUser(req, res, () => { })
             expect(req.session.user).to.be.equals(details)
-            expect(res.cookie).to.be.calledWith(config.cookies.token, accessToken)
-            expect(res.cookie).to.be.calledWith(config.cookies.userId, details.id)
+            expect(res.cookie).to.be.calledWith(getConfigValue(COOKIES_TOKEN), accessToken)
+            expect(res.cookie).to.be.calledWith(getConfigValue(COOKIES_USER_ID), details.id)
             expect(res.redirect).to.be.calledWith('/')
         })
 
@@ -90,8 +94,8 @@ describe('Auth', () => {
             sandbox.stub(idam, 'postOauthToken').resolves({ error: `${accessToken}` })
             await authenticateUser(req, res, () => { })
             expect(req.session.user).not.to.be.equals(details)
-            expect(res.cookie).not.to.be.calledWith(config.cookies.token, accessToken)
-            expect(res.cookie).not.to.be.calledWith(config.cookies.userId, details.id)
+            expect(res.cookie).not.to.be.calledWith(getConfigValue(COOKIES_TOKEN), accessToken)
+            expect(res.cookie).not.to.be.calledWith(getConfigValue(COOKIES_USER_ID), details.id)
             expect(res.redirect).to.be.calledWith('/')
         })
 
@@ -102,7 +106,7 @@ describe('Auth', () => {
             await authenticateUser(req, res, () => { })
 
             expect(req.session.user).not.to.be.equals(details)
-            expect(res.cookie).not.to.be.calledWith(config.cookies.userId, details.id)
+            expect(res.cookie).not.to.be.calledWith(getConfigValue(COOKIES_USER_ID), details.id)
             expect(res.redirect).to.be.calledWith(302, '/')
         })
     })

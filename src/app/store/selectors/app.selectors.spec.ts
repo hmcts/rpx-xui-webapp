@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-import { StoreModule, Store, combineReducers } from '@ngrx/store';
+import { combineReducers, Store, StoreModule } from '@ngrx/store';
 
 import * as fromRoot from '../../../app/store/reducers';
-import * as fromReducers from '../reducers';
 import * as fromActions from '../actions';
+import * as fromReducers from '../reducers';
 import * as fromSelectors from './app.selectors';
 
 
@@ -15,7 +15,8 @@ describe('App Selectors', () => {
     termsAndCondition: { isLoaded: false, hasUserAcceptedTC: false },
     loaded: false,
     loading: false,
-    termsAndConditions: null
+    termsAndConditions: null,
+    isTermsAndConditionsFeatureEnabled: false
   };
 
   const appPayload = {
@@ -52,7 +53,8 @@ describe('App Selectors', () => {
     termsAndCondition: { isLoaded: false, hasUserAcceptedTC: false },
     loaded: true,
     loading: false,
-    termsAndConditions: null
+    termsAndConditions: null,
+    isTermsAndConditionsFeatureEnabled: false
 };
 
   beforeEach(() => {

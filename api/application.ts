@@ -134,7 +134,7 @@ app.get('/health', (req, res) => {
     })
 })
 // separate route for document upload/view
-app.use('/documents', documentRouter)
+// app.use('/documents', documentRouter)
 // Use a real proxy for docstore to improve performance
 createDocStoreProxy(app, agent)
 app.use('/em-anno', emAnnoRouter)

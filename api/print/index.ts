@@ -26,7 +26,7 @@ export async function getPrintout(req: EnhancedRequest, res: express.Response) {
   const printoutPath = url + req.originalUrl
 
   try {
-    const htmlResponse = await getCcdPrintout(printoutPath)
+    const htmlResponse = await getCcdPrintout(printoutPath, req)
     res.status(200).send(htmlResponse)
   } catch (error) {
     res.status(error.status).send({

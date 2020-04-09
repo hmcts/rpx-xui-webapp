@@ -1,12 +1,12 @@
-import axios from 'axios'
+/**
+ * Note that authorization headers have been moved from this file to proxy.ts
+ * to achieve better security.
+ */
+
 import * as jwtDecode from 'jwt-decode'
 import * as auth from '../../auth'
-import {getConfigValue} from '../../configuration'
-import {
-  COOKIES_TOKEN,
-  COOKIES_USER_ID,
-  SERVICES_IDAM_API_URL,
-} from '../../configuration/references'
+import { getConfigValue } from '../../configuration'
+import { COOKIES_TOKEN, COOKIES_USER_ID, SERVICES_IDAM_API_URL } from '../../configuration/references'
 import * as log4jui from '../../lib/log4jui'
 import { getDetails } from '../../services/idam'
 import { asyncReturnOrError } from '../util'
@@ -65,8 +65,13 @@ export default async (req, res, next) => {
         req.auth.token = jwt
         req.auth.userId = userId
 
-        axios.defaults.headers.common.Authorization = `Bearer ${req.auth.token}`
-        axios.defaults.headers.common['user-roles'] = req.auth.data.roles.join()
+        // !!!
+        // The commented lines below have been moved to proxy.ts, where the information
+        // is added to the request JIT, instead of setting it as a global default
+        // to improve security.
+
+        // axios.defaults.headers.common.Authorization = `Bearer ${req.auth.token}`
+        // axios.defaults.headers.common['user-roles'] = req.auth.data.roles.join()
 
         logger.info('Auth token: ' + `Bearer ${req.auth.token}`)
         req.headers['user-roles'] = axios.defaults.headers.common['user-roles'];

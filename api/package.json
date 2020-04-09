@@ -11,7 +11,7 @@
         "debug": "node --inspect -r ts-node/register -r dotenv-extended/config local.ts",
         "test": "mocha -r dotenv-extended/config",
         "test:watch": "mocha --watch --recursive --watch-extensions ts",
-        "start": "cd ../dist/jui-backend && node server.js"
+        "start": "node -r dotenv-extended/config ../dist/rpx-exui/api/server.bundle.js"
     },
     "private": true,
     "dependencies": {

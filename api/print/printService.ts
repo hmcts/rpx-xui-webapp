@@ -1,6 +1,7 @@
-import {http} from '../lib/http'
+import { http } from '../lib/http'
 import * as log4jui from '../lib/log4jui'
-import {JUILogger} from '../lib/models'
+import { EnhancedRequest, JUILogger } from '../lib/models'
+import { setHeaders } from '../lib/proxy'
 
 const logger: JUILogger = log4jui.getLogger('print-service')
 
@@ -14,11 +15,12 @@ const logger: JUILogger = log4jui.getLogger('print-service')
  * @param printPath
  * @returns {Promise<null>}
  */
-export async function getCcdPrintout(printPath) {
+export async function getCcdPrintout(printPath, req: EnhancedRequest) {
 
     try {
         logger.info('getting print document', printPath)
-        const response = await http.get(printPath)
+        const headers = setHeaders(req)
+        const response = await http.get(printPath, { headers })
         return response.data
     } catch (e) {
         logger.error(e.message)

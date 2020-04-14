@@ -10,10 +10,10 @@ propertiesVolume.addTo(config)
  * Get Configuration Value
  *
  * Returns the configuration value, using a config reference. It uses the reference to pull out the value
- * from the .json file
+ * from the custom-environment-variables.json file
  *
  * @see readme.md
- * @see /config .yaml
+ * @see /config/custom-environment-variables.json
  * @see references.ts
  * @param reference - ie. 'services.ccdDefApi'
  */

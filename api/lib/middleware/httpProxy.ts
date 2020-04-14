@@ -1,4 +1,5 @@
 import {Application} from 'express'
+import {Request, Response} from "express"
 import {ProxyAgentConfigurationType} from 'global-agent'
 import {ClientRequest, IncomingMessage} from 'http'
 import {createProxyMiddleware, Options} from 'http-proxy-middleware'
@@ -7,7 +8,6 @@ import {SERVICES_DOCUMENTS_API_PATH, SERVICES_EM_ANNO_API_URL} from '../../confi
 import * as log4jui from '../log4jui'
 import authInterceptor from '../middleware/auth'
 import {JUILogger} from '../models'
-import {Request, Response} from "http-proxy-middleware/dist/types";
 
 const logger: JUILogger = log4jui.getLogger('HttpProxy')
 const docUrl: string = getConfigValue(SERVICES_DOCUMENTS_API_PATH)

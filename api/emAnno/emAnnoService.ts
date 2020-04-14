@@ -1,6 +1,7 @@
-import {http} from '../lib/http'
+import { http } from '../lib/http'
 import * as log4jui from '../lib/log4jui'
-import {JUILogger} from '../lib/models'
+import { EnhancedRequest, JUILogger } from '../lib/models'
+import { setHeaders } from '../lib/proxy'
 import { Annotation, Annotations } from './models'
 
 const logger: JUILogger = log4jui.getLogger('em-anno-service')
@@ -11,11 +12,12 @@ const logger: JUILogger = log4jui.getLogger('em-anno-service')
  * @param annotationsPath
  * @returns {Promise<null>}
  */
-export async function handleGet(annotationsPath: string): Promise<Annotations> {
+export async function handleGet(annotationsPath: string, req: EnhancedRequest): Promise<Annotations> {
 
     try {
         logger.info('getting annotations', annotationsPath)
-        const response: { data?: Annotations} = await http.get(annotationsPath)
+        const headers = setHeaders(req)
+        const response: { data?: Annotations} = await http.get(annotationsPath, { headers })
         return response.data
     } catch (e) {
         logger.error(e.message)
@@ -31,11 +33,12 @@ export async function handleGet(annotationsPath: string): Promise<Annotations> {
  * @param body
  * @returns {Promise<null>}
  */
-export async function handlePost(annotationsPath: string, body: Annotation): Promise<Annotation> {
+export async function handlePost(annotationsPath: string, body: Annotation, req: EnhancedRequest): Promise<Annotation> {
 
     try {
         logger.info('posting annotations', annotationsPath)
-        const response: { data?: Annotation} = await http.post(annotationsPath, body)
+        const headers = setHeaders(req)
+        const response: { data?: Annotation} = await http.post(annotationsPath, body, { headers })
         return response.data
     } catch (e) {
         logger.error(e.message)
@@ -51,11 +54,12 @@ export async function handlePost(annotationsPath: string, body: Annotation): Pro
  * @param body
  * @returns {Promise<null>}
  */
-export async function handlePut(annotationsPath: string, body: Annotation): Promise<Annotation> {
+export async function handlePut(annotationsPath: string, body: Annotation, req: EnhancedRequest): Promise<Annotation> {
 
     try {
         logger.info('putting annotations', annotationsPath)
-        const response: { data?: Annotation} = await http.put(annotationsPath, body)
+        const headers = setHeaders(req)
+        const response: { data?: Annotation} = await http.put(annotationsPath, body, { headers })
         return response.data
     } catch (e) {
         logger.error(e.message)
@@ -70,11 +74,12 @@ export async function handlePut(annotationsPath: string, body: Annotation): Prom
  * @param annotationsPath
  * @returns {Promise<null>}
  */
-export async function handleDelete(annotationsPath: string): Promise<Annotation> {
+export async function handleDelete(annotationsPath: string, req: EnhancedRequest): Promise<Annotation> {
 
     try {
         logger.info('deleting annotations', annotationsPath)
-        const response: { data?: Annotation} = await http.delete(annotationsPath)
+        const headers = setHeaders(req)
+        const response: { data?: Annotation} = await http.delete(annotationsPath, { headers })
         return response.data
     } catch (e) {
         logger.error(e.message)

@@ -41,7 +41,7 @@ export class SearchFilterService {
         page: filter.page
       };
     }
-    const jurisdictionId = filter.jurisdiction.id;
+    const jurisdictionId = filter.jurisdiction ? filter.jurisdiction.id : null;
     const caseTypeId = filter.caseType.id;
     const filters = this.getCaseFilterFromFormGroup(filter.formGroup);
     const caseFilters = filters.caseFilter;

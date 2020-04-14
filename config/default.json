@@ -1,0 +1,120 @@
+{
+  "environment": "production",
+  "cookies": {
+    "token": "__auth__",
+    "userId": "__userid__",
+    "sessionId": "__sessionId__"
+  },
+  "logging": "debug",
+  "now": false,
+  "maxLogLine": 80,
+  "health": {
+    "ccdComponentApi": "https://ccd-api-gateway-web-prod.service.core-compute-prod.internal/health",
+    "ccdDataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal/health",
+    "documentsApi": "http://dm-store-prod.service.core-compute-prod.internal/health",
+    "em_anno_api": "http://em-anno-prod.service.core-compute-prod.internal/health",
+    "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal/health"
+  },
+  "services": {
+    "ccd": {
+      "componentApi": "https://ccd-api-gateway-web-prod.service.core-compute-prod.internal",
+      "dataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal"
+    },
+    "documents": {
+      "api": "http://dm-store-prod.service.core-compute-prod.internal"
+    },
+    "em_anno_api": "http://em-anno-prod.service.core-compute-prod.internal",
+    "idam": {
+      "idamApiUrl": "https://idam-api.platform.hmcts.net",
+      "idamClientID": "xuiwebapp",
+      "idamLoginUrl": "https://hmcts-access.service.gov.uk",
+      "indexUrl": "/",
+      "oauthCallbackUrl": "oauth2/callback"
+    },
+    "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal",
+    "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal"
+  },
+  "protocol": "https",
+  "microservice": "xui_webapp",
+  "sessionSecret": "secretSauce",
+  "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA",
+  "loginRoleMatcher": "caseworker",
+  "log4JConfig": {
+    "appenders": {
+      "out": {
+        "layout": {
+          "pattern": "%[%d | %p |%X{catFormatted}|%] %m%n",
+          "type": "pattern"
+        },
+        "type": "stdout"
+      }
+    },
+    "categories": {
+      "default": { "appenders": ["out"], "level": "info" }
+    }
+  },
+  "feature": {
+    "appInsightsEnabled": true,
+    "proxyEnabled": false,
+    "secureCookieEnabled": true,
+    "helmetEnabled": false,
+    "termsAndConditionsEnabled": false,
+    "redisEnabled": false
+  },
+  "helmet": {
+    "contentSecurityPolicy": {
+      "directives": {
+        "defaultSrc": ["'self'"],
+        "fontSrc": ["'self'", "https://fonts.gstatic.com", "data:"],
+        "styleSrc": [
+          "'self'",
+          "'unsafe-inline'",
+          "https://fonts.googleapis.com",
+          "https://fonts.gstatic.com"
+        ],
+        "scriptSrc": [
+          "'self'",
+          "'unsafe-inline'",
+          "'unsafe-eval'",
+          "www.google-analytics.com",
+          "www.googletagmanager.com",
+          "az416426.vo.msecnd.net"
+        ],
+        "connectSrc": [
+          "'self'",
+          "*.gov.uk",
+          "dc.services.visualstudio.com"
+        ],
+        "mediaSrc": ["'self'"],
+        "objectSrc": ["'self'"],
+        "frameAncestors": ["'none'"],
+        "imgSrc": [
+          "'self'",
+          "data:",
+          "https://www.google-analytics.com",
+          "https://www.googletagmanager.com",
+          "https://raw.githubusercontent.com/hmcts/"
+        ]
+      }
+    },
+    "referrerPolicy": {
+      "policy": "origin"
+    },
+    "noCache": {
+      "enable": true
+    },
+    "frameguard": {
+      "action": "deny"
+    },
+    "hidePoweredBy": {
+      "setTo": "XUI Server 1.0"
+    }
+  },
+  "redis": {
+    "host": "xui-ao-webapp-prod.redis.cache.windows.net",
+    "port": 6380,
+    "tls": true,
+    "prefix": "activity:",
+    "ttl": 86400
+  }
+}

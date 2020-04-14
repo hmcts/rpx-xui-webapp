@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-import { StoreModule, Store, combineReducers } from '@ngrx/store';
+import { combineReducers, Store, StoreModule } from '@ngrx/store';
 
 import * as fromRoot from '../../../app/store/reducers';
-import * as fromReducers from '../reducers';
 import * as fromActions from '../actions';
+import * as fromReducers from '../reducers';
 import * as fromSelectors from './app.selectors';
 
 
@@ -12,8 +12,11 @@ describe('App Selectors', () => {
 
   const appConfig = {
     config: {},
+    termsAndCondition: { isLoaded: false, hasUserAcceptedTC: false },
     loaded: false,
-    loading: false
+    loading: false,
+    termsAndConditions: null,
+    isTermsAndConditionsFeatureEnabled: false
   };
 
   const appPayload = {
@@ -22,7 +25,7 @@ describe('App Selectors', () => {
         isEnabled: true,
         label: 'CCDCaseCreate'
       }
-    }
+    },
   };
 
   const appConfigLoaded = {
@@ -32,11 +35,27 @@ describe('App Selectors', () => {
             isEnabled: true,
             label: 'CCDCaseCreate'
           }
-        }
+        },
       },
       loaded: true,
-      loading: false
+      loading: false,
   };
+
+  const appConfigLoadedAfter = {
+    config: {
+      features: {
+        ccdCaseCreate: {
+          isEnabled: true,
+          label: 'CCDCaseCreate'
+        }
+      },
+    },
+    termsAndCondition: { isLoaded: false, hasUserAcceptedTC: false },
+    loaded: true,
+    loading: false,
+    termsAndConditions: null,
+    isTermsAndConditionsFeatureEnabled: false
+};
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -60,11 +79,10 @@ describe('App Selectors', () => {
       store
         .select(fromSelectors.getConfigState)
         .subscribe(value => (result = value));
-
       expect(result).toEqual(appConfig);
 
       store.dispatch(new fromActions.LoadConfigSuccess(appPayload));
-      expect(result).toEqual(appConfigLoaded);
+      expect(result).toEqual(appConfigLoadedAfter);
     });
 
     it('should return app feature state', () => {

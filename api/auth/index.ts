@@ -1,14 +1,18 @@
-
-import { config } from '../config'
+import {getConfigValue} from '../configuration'
+import {
+  COOKIES_TOKEN,
+  COOKIES_USER_ID,
+  SERVICES_IDAM_API_URL,
+} from '../configuration/references'
 import * as log4jui from '../lib/log4jui'
 import { propsExist } from '../lib/objectUtilities'
 import { asyncReturnOrError, exists } from '../lib/util'
 import { getDetails, postOauthToken } from '../services/idam'
 import { userHasAppAccess } from './manageCasesUserRoleAuth'
 
-const cookieToken = config.cookies.token
-const cookieUserId = config.cookies.userId
-const idamURl = config.services.idam.idamApiUrl
+const cookieToken = getConfigValue(COOKIES_TOKEN)
+const cookieUserId = getConfigValue(COOKIES_USER_ID)
+const idamURl = getConfigValue(SERVICES_IDAM_API_URL)
 
 const logger = log4jui.getLogger('auth')
 
@@ -56,9 +60,6 @@ export async function authenticateUser(req: any, res, next) {
             res.cookie(cookieUserId, userDetails.id)
             res.cookie(cookieToken, data.access_token)
             res.cookie('roles', userDetails.roles)
-
-            // need this so angular knows which enviroment config to use ...
-            res.cookie('platform', config.environment)
         }
     }
     logger.info('Auth finished, redirecting')

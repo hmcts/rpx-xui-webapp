@@ -3,13 +3,12 @@ import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie';
 import * as jwtDecode from 'jwt-decode';
 import { environment as config } from '../../../environments/environment';
+import {EnvironmentService} from '../../shared/services/environment.service';
 
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/map';
 import {AppConfigService} from '../config/configuration.services';
-import { AppUtils } from 'src/app/app-utils';
-import { AppConstants } from 'src/app/app.constants';
 
 @Injectable()
 export class AuthService {
@@ -18,19 +17,14 @@ export class AuthService {
   user;
   constructor(
     private cookieService: CookieService,
-    private appConfigService: AppConfigService
+    private appConfigService: AppConfigService,
+    private environmentService: EnvironmentService
   ) {
     this.COOKIE_KEYS = {
       TOKEN: config.cookies.token,
       USER: config.cookies.userId,
       ROLES: config.cookies.roles,
     };
-
-    this.apiBaseUrl = window.location.protocol + '//' + window.location.hostname;
-
-    if (window.location.port) { // don't add colon if there is no port
-      this.apiBaseUrl +=   ':' + window.location.port;
-    }
 
     this.user = null;
   }
@@ -45,18 +39,30 @@ export class AuthService {
     return true;
   }
 
+  /**
+   * Generate the Idam Login url.
+   */
   generateLoginUrl() {
-    const env = AppUtils.getEnvironment(window.location.origin);
-    // const base = this.appConfigService.getRoutesConfig().idam.idamLoginUrl;
-    const base = AppConstants.REDIRECT_URL[env];
-    const clientId = this.appConfigService.getRoutesConfig().idam.idamClientID;
-    const callback = `${this.apiBaseUrl}/${this.appConfigService.getRoutesConfig().idam.oauthCallbackUrl}`;
-    const scope = `profile openid roles manage-user create-user`;
-    return `${base}/login?response_type=code&client_id=${clientId}&redirect_uri=${callback}&scope=${scope}`;
+
+    const SCOPE = `profile openid roles manage-user create-user`;
+
+    return this.environmentService.config$.map( environmentConfig => {
+
+      const { clientId, idamWeb, oAuthCallback, protocol } = environmentConfig;
+
+      const port = window.location.port ? `:${window.location.port}` : ``;
+      const API_BASE_URL = `${protocol}://${window.location.hostname}${port}`;
+
+      const callback = `${API_BASE_URL}/${oAuthCallback}`;
+
+      return `${idamWeb}/login?response_type=code&client_id=${clientId}&redirect_uri=${callback}&scope=${SCOPE}`;
+    });
   }
 
   loginRedirect() {
-    window.location.href = this.generateLoginUrl();
+    this.generateLoginUrl().subscribe( url => {
+      window.location.href = url;
+    });
   }
 
   decodeJwt(jwt) {

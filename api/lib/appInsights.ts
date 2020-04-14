@@ -1,15 +1,15 @@
 import * as applicationinsights from 'applicationinsights'
 import * as express from 'express'
-import { config } from '../config'
+import {getConfigValue, showFeature} from '../configuration'
+import {
+    APP_INSIGHTS_KEY, FEATURE_APP_INSIGHTS_ENABLED,
+} from '../configuration/references'
 
 export let client
 
-// shouldnt do this check here but this is a high level dep
-const environment = process.env.XUI_ENV || 'local'
-
-if (environment !== 'local') {
+if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
     applicationinsights
-        .setup(config.appInsightsInstrumentationKey)
+        .setup(getConfigValue(APP_INSIGHTS_KEY))
         .setAutoDependencyCorrelation(true)
         .setAutoCollectRequests(true)
         .setAutoCollectPerformance(true)

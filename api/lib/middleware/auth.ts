@@ -3,7 +3,6 @@
  * to achieve better security.
  */
 
-import axios from 'axios'
 import * as jwtDecode from 'jwt-decode'
 import * as auth from '../../auth'
 import { getConfigValue } from '../../configuration'

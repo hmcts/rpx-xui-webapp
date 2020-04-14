@@ -25,7 +25,7 @@ def channel   = '#xui-pipeline'
 List<LinkedHashMap<String, Object>> secrets = [
   secret('mc-s2s-client-secret',                 'S2S_SECRET'),
   secret('mc-idam-client-secret',              'IDAM_SECRET'),
-  secret('AppInsightsInstrumentationKey', 'APPINSIGHTS_INSTRUMENTATIONKEY')
+  secret('appinsights-instrumentationkey-mc', 'APPINSIGHTS_INSTRUMENTATIONKEY')
 ]
 
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {

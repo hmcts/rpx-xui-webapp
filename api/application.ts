@@ -5,7 +5,6 @@ import * as session from 'express-session'
 import * as helmet from 'helmet'
 import * as auth from './auth'
 import {getConfigValue, showFeature} from './configuration'
-import {createDocStoreProxy} from './lib/middleware/httpProxy'
 import {
     APP_INSIGHTS_KEY,
     FEATURE_HELMET_ENABLED,
@@ -14,13 +13,14 @@ import {
     PROTOCOL,
     SESSION_SECRET,
 } from './configuration/references'
-import {router as documentRouter} from './documents/routes'
+// import {router as documentRouter} from './documents/routes'
 import {router as emAnnoRouter} from './emAnno/routes'
 import * as health from './health'
 import healthCheck from './healthCheck'
 import {errorStack} from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
 import authInterceptor from './lib/middleware/auth'
+import {createDocStoreProxy} from './lib/middleware/httpProxy'
 import {JUILogger} from './lib/models'
 import { getStore } from './lib/sessionStore'
 import * as tunnel from './lib/tunnel'

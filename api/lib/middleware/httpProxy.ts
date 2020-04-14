@@ -36,19 +36,16 @@ const applyProxy = (app, config) => {
       })
     },
     onProxyReq: (req: ClientRequest) => {
-      console.debug(req.getHeaders())
+      req.setHeader("Accept-Ranges", "bytes")
+      console.debug('REQUEST HEADERS =====>>', req.getHeaders())
       /*req.setHeader("user-roles", "caseworker")
       req.setHeader("ServiceAuthorization", this.serviceAuthRepository.getToken())*/
     },
     onProxyRes: (proxyRes: IncomingMessage, req: Request, res: Response) => {
-      proxyRes.headers['x-added'] = 'foobar'
       console.debug('response ->:', proxyRes.pipe(res))
       // res.set(proxyRes.headers)
       /*req.setHeader("user-roles", "caseworker")
       req.setHeader("ServiceAuthorization", this.serviceAuthRepository.getToken())*/
-    },
-    pathRewrite: path => {
-      return path.replace('/binary', '')
     },
     target: config.target,
   }

@@ -4,16 +4,15 @@ import {ProxyAgentConfigurationType} from 'global-agent'
 import {ClientRequest, IncomingMessage} from 'http'
 import {createProxyMiddleware, Options} from 'http-proxy-middleware'
 import {getConfigValue} from '../../configuration'
-import {SERVICES_DOCUMENTS_API_PATH, SERVICES_EM_ANNO_API_URL} from '../../configuration/references'
+import {SERVICES_DOCUMENTS_API_PATH} from '../../configuration/references'
 import * as log4jui from '../log4jui'
 import authInterceptor from '../middleware/auth'
 import {JUILogger} from '../models'
 
 const logger: JUILogger = log4jui.getLogger('HttpProxy')
 const docUrl: string = getConfigValue(SERVICES_DOCUMENTS_API_PATH)
-const annoUrl: string = getConfigValue(SERVICES_EM_ANNO_API_URL)
-const SERVICE_AUTHORIZATION_HEADER: string = 'serviceauthorization'
-
+// const annoUrl: string = getConfigValue(SERVICES_EM_ANNO_API_URL)
+// const SERVICE_AUTHORIZATION_HEADER: string = 'serviceauthorization'
 
 const applyProxy = (app, config) => {
   const options = {
@@ -33,7 +32,7 @@ const applyProxy = (app, config) => {
       res.status(500)
       res.json({
         error: 'Error when connecting to remote server',
-        status: 504
+        status: 504,
       })
     },
     onProxyReq: (req: ClientRequest) => {

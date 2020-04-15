@@ -42,7 +42,7 @@ const applyProxy = (app, config) => {
       req.setHeader("ServiceAuthorization", this.serviceAuthRepository.getToken())*/
     },
     onProxyRes: (proxyRes: IncomingMessage, req: Request, res: Response) => {
-      console.debug('response ->:', proxyRes.pipe(res))
+      // console.debug('response ->:', proxyRes.pipe(res))
       // res.set(proxyRes.headers)
       /*req.setHeader("user-roles", "caseworker")
       req.setHeader("ServiceAuthorization", this.serviceAuthRepository.getToken())*/

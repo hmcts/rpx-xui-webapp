@@ -9,12 +9,9 @@ import {HmctsPrimaryNavigationComponent} from './hmcts-primary-navigation/hmcts-
 import { MediaViewerWrapperComponent } from './media-viewer-wrapper/media-viewer-wrapper.component';
 import {PhaseBannerComponent} from './phase-banner/phase-banner.component';
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
-import { TermsAndConditionsComponent } from './terms-and-conditions/terms-and-conditions.component';
-import { AccessibilityComponent } from './accessibility/accessibility.component';
-import { MediaViewerWrapperComponent } from './media-viewer-wrapper/media-viewer-wrapper.component';
 import { MediaViewerToolbarComponent } from './media-viewer-toolbar/media-viewer-toolbar.component';
 import { MediaViewerSearchComponent } from './media-viewer-search/media-viewer-search.component';
-import { GetHelpComponent } from './get-help/get-help.component';
+import {ServiceDownComponent} from './service-down/service-down.component';
 
 export const components: any[] = [
   ExuiPageWrapperComponent,

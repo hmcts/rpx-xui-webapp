@@ -3,9 +3,12 @@ import * as express from 'express'
 import * as formidable from 'formidable'
 import * as http from 'http'
 import {RequestOptions} from 'http'
-import {config} from '../config'
+import {getConfigValue} from '../configuration'
+import {SERVICES_DOCUMENTS_API_PATH} from '../configuration/references'
 import {EnhancedRequest} from '../lib/models'
+import {setHeaders} from '../lib/proxy'
 import * as DMStore from './DMStore'
+import {app} from "../application";
 
 /**
  * retrieve a document from dm-store by the document_id
@@ -29,22 +32,38 @@ export async function getDocumentRoute(req: express.Request, res: express.Respon
  */
 export async function getDocumentBinaryRoute(req: express.Request, res: express.Response) {
     const documentId = req.params.document_id
-    const url = new URL(config.services.documents.api)
+    const url = new URL(getConfigValue<string>(SERVICES_DOCUMENTS_API_PATH))
+    const headers = {
+        ...setHeaders(req),
+        ...{'ServiceAuthorization': axios.defaults.headers.common.ServiceAuthorization },
+    }
 
     const options = {
-        headers: {
-            'Authorization': axios.defaults.headers.common.Authorization,
-            'ServiceAuthorization': axios.defaults.headers.common.ServiceAuthorization,
-            'user-roles': axios.defaults.headers.common['user-roles'],
-        },
+        headers,
         host: `${url.host}/documents/${documentId}/binary`,
     } as RequestOptions
 
-    const request = http.get(options, response => {
-        response.pipe(res)
-    })
+    if (!app.locals[documentId]) {
+        const request = http.get(options, response => {
+            app.locals[documentId] = response
 
-    request.on('error', err => console.log(err))
+            res.sendSeekable(response, {
+                length: response.headers['content-length'],
+                type: response.headers['content-type'],
+            })
+        })
+        request.on('error', err => console.log(err))
+
+    } else {
+
+        const doc = app.locals[documentId]
+
+        res.sendSeekable(doc, {
+            length: doc.headers['content-length'],
+            type: doc.headers['content-type'],
+        })
+    }
+
 }
 
 /**

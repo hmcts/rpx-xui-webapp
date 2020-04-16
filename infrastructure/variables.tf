@@ -110,7 +110,7 @@ variable "feature_helmet_enabled" {
 }
 
 variable "feature_redis_enabled" {
-  default = "false"
+  default = "true"
 }
 
 variable "shared_product_name" {

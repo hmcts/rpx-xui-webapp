@@ -76,6 +76,13 @@ const getHelpDetailsData: ContactDetailsDataModel[] = [
     email: 'customer.service@justice.gov.uk',
     phone: '0300 123 1711',
     openingTimes: 'Monday to Friday, 9am to 5pm (excluding public holidays)'
+  },
+  {
+    title: 'Family Public Law and Adoption',
+    badgeColour: BadgeColour.BADGE_RED,
+    email: 'fpla@justice.gov.uk',
+    phone: '0330 808 4424',
+    openingTimes: 'Monday to Friday, 8:30am to 5pm (excluding public holidays)'
   }
 ];
 
@@ -92,7 +99,7 @@ const environmentNames = {
 const redirectUrl = {
   aat: 'https://idam-web-public.aat.platform.hmcts.net',
   demo: 'https://idam-web-public.demo.platform.hmcts.net',
-  ithc: 'https://idam-web-public.ithc.platform.hmcts.net',
+  ithc: 'https://idam-web-public-aks.ithc.platform.hmcts.net',
   prod: 'https://hmcts-access.service.gov.uk',
   perftest: 'https://idam-web-public.perftest.platform.hmcts.net',
   localhost: 'https://idam-web-public.aat.platform.hmcts.net'

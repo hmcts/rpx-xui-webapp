@@ -35,7 +35,7 @@ export async function getDocumentBinaryRoute(req: express.Request, res: express.
 
     const headers = { ...{
             'ServiceAuthorization': axios.defaults.headers.common.ServiceAuthorization,
-        }, ...setHeaders(req),
+        }, ...setHeaders(req), ...req.headers
     }
 
     const options = {
@@ -44,7 +44,11 @@ export async function getDocumentBinaryRoute(req: express.Request, res: express.
     } as RequestOptions
 
     const request = http.get(options, response => {
-        res.set(response.headers)
+        const responseHeaders = {...response.headers}
+        delete responseHeaders.connection
+        delete responseHeaders['set-cookie']
+        delete responseHeaders['content-length']
+        res.set(responseHeaders)
         response.pipe(res)
     })
 

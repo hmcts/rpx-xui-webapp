@@ -3,11 +3,11 @@ import * as express from 'express'
 import * as formidable from 'formidable'
 import * as http from 'http'
 import {RequestOptions} from 'http'
+import {getConfigValue} from '../configuration'
+import {SERVICES_DOCUMENTS_API_PATH} from '../configuration/references'
 import {EnhancedRequest} from '../lib/models'
 import {setHeaders} from '../lib/proxy'
 import * as DMStore from './DMStore'
-import {getConfigValue} from "../configuration";
-import {SERVICES_DOCUMENTS_API_PATH} from "../configuration/references";
 
 /**
  * retrieve a document from dm-store by the document_id
@@ -35,7 +35,7 @@ export async function getDocumentBinaryRoute(req: express.Request, res: express.
 
     const headers = { ...{
             'ServiceAuthorization': axios.defaults.headers.common.ServiceAuthorization,
-        }, ...setHeaders(req)
+        }, ...setHeaders(req),
     }
 
     const options = {

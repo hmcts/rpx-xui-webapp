@@ -35,7 +35,7 @@ export async function getDocumentBinaryRoute(req: express.Request, res: express.
 
     const headers = { ...{
             'ServiceAuthorization': axios.defaults.headers.common.ServiceAuthorization,
-        }, ...setHeaders(req), ...req.headers
+        }, ...setHeaders(req), ...req.headers,
     }
 
     const options = {

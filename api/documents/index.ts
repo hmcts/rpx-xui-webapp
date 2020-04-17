@@ -44,6 +44,7 @@ export async function getDocumentBinaryRoute(req: express.Request, res: express.
     } as RequestOptions
 
     const request = http.get(options, response => {
+        res.set(response.headers)
         response.pipe(res)
     })
 

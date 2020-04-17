@@ -3,12 +3,11 @@ import * as express from 'express'
 import * as formidable from 'formidable'
 import * as http from 'http'
 import {RequestOptions} from 'http'
-import {getConfigValue} from '../configuration'
-import {SERVICES_DOCUMENTS_API_PATH} from '../configuration/references'
 import {EnhancedRequest} from '../lib/models'
 import {setHeaders} from '../lib/proxy'
 import * as DMStore from './DMStore'
-import {app} from "../application";
+import {getConfigValue} from "../configuration";
+import {SERVICES_DOCUMENTS_API_PATH} from "../configuration/references";
 
 /**
  * retrieve a document from dm-store by the document_id
@@ -32,10 +31,11 @@ export async function getDocumentRoute(req: express.Request, res: express.Respon
  */
 export async function getDocumentBinaryRoute(req: express.Request, res: express.Response) {
     const documentId = req.params.document_id
-    const url = new URL(getConfigValue<string>(SERVICES_DOCUMENTS_API_PATH))
-    const headers = {
-        ...setHeaders(req),
-        ...{'ServiceAuthorization': axios.defaults.headers.common.ServiceAuthorization },
+    const url = new URL(getConfigValue(SERVICES_DOCUMENTS_API_PATH))
+
+    const headers = { ...{
+            'ServiceAuthorization': axios.defaults.headers.common.ServiceAuthorization,
+        }, ...setHeaders(req)
     }
 
     const options = {
@@ -43,27 +43,11 @@ export async function getDocumentBinaryRoute(req: express.Request, res: express.
         host: `${url.host}/documents/${documentId}/binary`,
     } as RequestOptions
 
-    if (!app.locals[documentId]) {
-        const request = http.get(options, response => {
-            app.locals[documentId] = response
+    const request = http.get(options, response => {
+        response.pipe(res)
+    })
 
-            res.sendSeekable(response, {
-                length: response.headers['content-length'],
-                type: response.headers['content-type'],
-            })
-        })
-        request.on('error', err => console.log(err))
-
-    } else {
-
-        const doc = app.locals[documentId]
-
-        res.sendSeekable(doc, {
-            length: doc.headers['content-length'],
-            type: doc.headers['content-type'],
-        })
-    }
-
+    request.on('error', err => console.log(err))
 }
 
 /**

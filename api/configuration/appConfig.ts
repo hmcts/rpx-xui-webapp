@@ -20,8 +20,8 @@ import {
   SERVICES_IDAM_CLIENT_ID,
   SERVICES_IDAM_LOGIN_URL,
   SERVICES_IDAM_OAUTH_CALLBACK_URL,
-  SERVICES_TERMS_AND_CONDITIONS_URL,
   SERVICES_PAYMENTS_URL,
+  SERVICES_TERMS_AND_CONDITIONS_URL,
 } from './references'
 
 /**
@@ -49,12 +49,12 @@ export const applicationConfiguration = () => {
     logging: getConfigValue(LOGGING),
     maxLogLine: getConfigValue(MAX_LOG_LINE),
     oAuthCallback: getConfigValue(SERVICES_IDAM_OAUTH_CALLBACK_URL),
+    payments: getConfigValue(SERVICES_PAYMENTS_URL),
     protocol: getConfigValue(PROTOCOL),
     servicesCcdComponentPath: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH),
     servicesCcdDataStorePath: getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH),
     servicesDocumentApiPath: getConfigValue(SERVICES_DOCUMENTS_API_PATH),
     servicesS2sPath: getConfigValue(SERVICE_S2S_PATH),
     servicesTermsAndConditionsPath: getConfigValue(SERVICES_TERMS_AND_CONDITIONS_URL),
-    payments: getConfigValue(SERVICES_PAYMENTS_URL),
   }
 }

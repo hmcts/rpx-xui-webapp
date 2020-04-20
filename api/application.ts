@@ -24,12 +24,12 @@ import {JUILogger} from './lib/models'
 import { getStore } from './lib/sessionStore'
 import * as tunnel from './lib/tunnel'
 import openRoutes from './openRoutes'
+import {router as paymentsRouter} from './payments/routes'
 import * as postCodeLookup from './postCodeLookup'
 import {router as printRouter} from './print/routes'
 import routes from './routes'
 import {router as termsAndCRoutes} from './termsAndConditions/routes'
 import {router as userTandCRoutes} from './userTermsAndConditions/routes'
-import {router as paymentsRouter} from './payments/routes'
 
 export const app = express()
 if (showFeature(FEATURE_HELMET_ENABLED)) {

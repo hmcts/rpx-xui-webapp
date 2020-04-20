@@ -12,7 +12,6 @@ import {
 } from '../configuration/references'
 import {redisHealth} from './redis.health'
 
-
 export const checkServiceHealth = service => healthcheck.web(`${service}/health`, {
   deadline: 6000,
   timeout: 6000,
@@ -45,7 +44,7 @@ if (showFeature(FEATURE_REDIS_ENABLED)) {
       redis: healthcheck.raw(async () => {
         const status = await redisHealth()
         return status ? healthcheck.up() : healthcheck.down()
-      })
+      }),
     }}
 }
 

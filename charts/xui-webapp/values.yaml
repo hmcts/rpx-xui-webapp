@@ -48,6 +48,8 @@ nodejs:
     SERVICES_IDAM_LOGIN_URL: https://idam-web-public.{{ .Values.global.environment }}.platform.hmcts.net
     SERVICES_IDAM_INDEX_URL: /
     SERVICES_IDAM_OAUTH_CALLBACK_URL: oauth2/callback
+    # Services payments
+    SERVICES_PAYMENTS_URL: http://payment-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services S2s
     SERVICES_S2S: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services T&Cs

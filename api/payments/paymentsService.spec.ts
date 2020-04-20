@@ -29,7 +29,8 @@ describe('paymentsService', () => {
         it('should make a get request', async () => {
             spy = sandbox.stub(http, 'get').resolves(res)
             const paymentsPath = '/payments/12345'
-            const response = await handleGet(paymentsPath)
+            const req = mockReq()
+            const response = await handleGet(paymentsPath, req)
             expect(response).to.equal('ok')
         })
     })

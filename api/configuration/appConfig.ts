@@ -21,6 +21,7 @@ import {
   SERVICES_IDAM_LOGIN_URL,
   SERVICES_IDAM_OAUTH_CALLBACK_URL,
   SERVICES_TERMS_AND_CONDITIONS_URL,
+  SERVICES_PAYMENTS_URL,
 } from './references'
 
 /**
@@ -54,5 +55,6 @@ export const applicationConfiguration = () => {
     servicesDocumentApiPath: getConfigValue(SERVICES_DOCUMENTS_API_PATH),
     servicesS2sPath: getConfigValue(SERVICE_S2S_PATH),
     servicesTermsAndConditionsPath: getConfigValue(SERVICES_TERMS_AND_CONDITIONS_URL),
+    payments: getConfigValue(SERVICES_PAYMENTS_URL),
   }
 }

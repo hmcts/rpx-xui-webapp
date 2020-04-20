@@ -1,9 +1,9 @@
 import * as express from 'express'
+import { getConfigValue } from '../configuration'
+import { SERVICES_PAYMENTS_URL } from '../configuration/references'
 import { EnhancedRequest } from '../lib/models'
 import { handleGet } from './paymentsService'
 import { preparePaymentsUrl } from './paymentsUtil'
-import { SERVICES_PAYMENTS_URL } from '../configuration/references'
-import { getConfigValue } from '../configuration'
 
 const baseUrl: string = getConfigValue(SERVICES_PAYMENTS_URL)
 

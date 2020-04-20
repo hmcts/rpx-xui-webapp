@@ -29,6 +29,7 @@ import {router as printRouter} from './print/routes'
 import routes from './routes'
 import {router as termsAndCRoutes} from './termsAndConditions/routes'
 import {router as userTandCRoutes} from './userTermsAndConditions/routes'
+import {router as paymentsRouter} from './payments/routes'
 
 export const app = express()
 if (showFeature(FEATURE_HELMET_ENABLED)) {
@@ -88,6 +89,8 @@ app.use('/api/termsAndConditions', termsAndCRoutes)
 app.get('/api/configuration', (req, res) => {
     res.send(showFeature(req.query.configurationKey))
 })
+
+app.use('/payments', paymentsRouter)
 
 // separate route for document upload/view
 app.use('/documents', documentRouter)

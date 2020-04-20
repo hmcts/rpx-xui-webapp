@@ -1,6 +1,7 @@
 import {http} from '../lib/http'
 import * as log4jui from '../lib/log4jui'
-import {JUILogger} from '../lib/models'
+import {JUILogger, EnhancedRequest} from '../lib/models'
+import { setHeaders } from '../lib/proxy'
 
 const logger: JUILogger = log4jui.getLogger('payments-service')
 
@@ -10,11 +11,14 @@ const logger: JUILogger = log4jui.getLogger('payments-service')
  * @param paymentsPath
  * @returns {Promise<null>}
  */
-export async function handleGet(paymentsPath: string): Promise<any> {
+export async function handleGet(paymentsPath: string, req: EnhancedRequest): Promise<any> {
 
     try {
         logger.info('getting payments', paymentsPath)
-        const response: { data?: any} = await http.get(paymentsPath)
+        const headers = setHeaders(req)
+        console.log(headers)
+        console.log(paymentsPath)
+        const response: { data?: any} = await http.get(paymentsPath, { headers })
         return response.data
     } catch (e) {
         logger.error(e.message)

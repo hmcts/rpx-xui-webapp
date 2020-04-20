@@ -41,7 +41,7 @@ app.use(
     session({
         cookie: {
             httpOnly: true,
-            maxAge: 1800000,
+            maxAge: 28800000,
             secure: showFeature(FEATURE_SECURE_COOKIE_ENABLED),
         },
         name: 'xui-webapp', // keep as string

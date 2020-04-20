@@ -41,7 +41,7 @@ app.use(
     session({
         cookie: {
             httpOnly: true,
-            maxAge: 1800000,
+            maxAge: 28800000,
             secure: showFeature(FEATURE_SECURE_COOKIE_ENABLED),
         },
         name: 'xui-webapp', // keep as string
@@ -86,7 +86,7 @@ app.use('/data', routes)
 app.use('/api/userTermsAndConditions', userTandCRoutes)
 app.use('/api/termsAndConditions', termsAndCRoutes)
 app.get('/api/configuration', (req, res) => {
-    res.send(showFeature(req.query.configurationKey))
+    res.send(showFeature(req.query.configurationKey as string))
 })
 
 // separate route for document upload/view

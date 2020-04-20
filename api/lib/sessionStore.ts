@@ -2,6 +2,7 @@ import * as connectRedis from 'connect-redis'
 import * as session from 'express-session'
 import * as redis from 'redis'
 import * as sessionFileStore from 'session-file-store'
+import {app} from '../application'
 import {getConfigValue, showFeature} from '../configuration'
 import {
   FEATURE_REDIS_ENABLED,
@@ -23,19 +24,19 @@ export const getRedisStore = () => {
       prefix: getConfigValue(REDIS_KEY_PREFIX),
     }
 
-    const redisClient = redis.createClient(
+    app.locals.redisClient = redis.createClient(
       getConfigValue(REDIS_CLOUD_URL),
       tlsOptions
     )
 
-    redisClient.on('ready', () => {
+    app.locals.redisClient.on('ready', () => {
         console.log('redis client connected successfully')
     })
 
-    redisClient.on('error', console.error)
+    app.locals.redisClient.on('error', console.error)
 
     return new RedisStore({
-        client: redisClient,
+        client: app.locals.redisClient,
         ttl: getConfigValue(REDIS_TTL),
     })
 }

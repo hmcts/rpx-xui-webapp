@@ -17,12 +17,25 @@ export class SearchFilterService {
   ) { }
 
   metadataFields: string[];
+  elasticSearch: boolean = true;
+
+
+  setElasticSearch() {
+    this.elasticSearch = !this.elasticSearch;
+  }
+
+  getElasticSearch(): boolean {
+    return this.elasticSearch;
+  }
 
   search(payload): Observable<any> {
 
     const { jurisdictionId, caseTypeId, metadataFilters, caseFilters, view } = this.getParams(payload);
 
-    return this.ccdSearchService.search(jurisdictionId, caseTypeId, metadataFilters, caseFilters, view) as any;
+    // return this.ccdSearchService.search(jurisdictionId, caseTypeId, metadataFilters, caseFilters, view) as any;
+    return this.getElasticSearch() ?
+          this.ccdSearchService.searchCases(caseTypeId, metadataFilters, caseFilters, view) as any :
+          this.ccdSearchService.search(jurisdictionId, caseTypeId, metadataFilters, caseFilters, view) as any;
   }
 
   private getParams(payload: any) {

@@ -8,7 +8,7 @@ import { ContactDetailsDataModel } from '@hmcts/rpx-xui-common-lib';
 })
 export class GetHelpComponent {
 
-    public getHelpData: ContactDetailsDataModel[] = AppConstants.GET_HELP_DETAILS_DATA;
+    public helpContactDetails: ContactDetailsDataModel[] = AppConstants.HELP_CONTACT_DETAILS;
 
     constructor() {
     }

@@ -8,6 +8,7 @@ import { Observable, Subscription, combineLatest } from 'rxjs';
 import { Jurisdiction, CaseType, CaseState, SearchResultView, PaginationMetadata, WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { FormGroup } from '@angular/forms';
 import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
+import { SearchFilterService } from 'src/cases/services';
 
 /**
  * Entry component wrapper for Case List
@@ -62,6 +63,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
     private appConfig: AppConfig,
     private definitionsService: DefinitionsService,
     private windowService: WindowService,
+    private searchFilterService: SearchFilterService
   ) {
   }
 
@@ -203,6 +205,15 @@ export class CaseListComponent implements OnInit, OnDestroy {
       }
     }
   }
+
+  setElasticSearch() {
+    this.searchFilterService.setElasticSearch();
+  }
+
+  getElasticSearch(): boolean {
+    return this.searchFilterService.getElasticSearch();
+  }
+
 
   getEvent() {
     let formGroupFromLS = null;

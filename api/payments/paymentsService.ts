@@ -16,8 +16,6 @@ export async function handleGet(paymentsPath: string, req: EnhancedRequest): Pro
     try {
         logger.info('getting payments', paymentsPath)
         const headers = setHeaders(req)
-        console.log(headers)
-        console.log(paymentsPath)
         const response: { data?: any} = await http.get(paymentsPath, { headers })
         return response.data
     } catch (e) {

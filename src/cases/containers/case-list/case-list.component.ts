@@ -65,6 +65,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
     private appConfig: AppConfig,
     private definitionsService: DefinitionsService,
     private windowService: WindowService,
+    private searchFilterService: SearchFilterService
   ) {
   }
 
@@ -215,7 +216,16 @@ export class CaseListComponent implements OnInit, OnDestroy {
     }
   }
 
-  public getEvent() {
+  setElasticSearch() {
+    this.searchFilterService.setElasticSearch();
+  }
+
+  getElasticSearch(): boolean {
+    return this.searchFilterService.getElasticSearch();
+  }
+
+
+  getEvent() {
     let formGroupFromLS = null;
     let jurisdictionFromLS = null;
     let caseStateGroupFromLS = null;

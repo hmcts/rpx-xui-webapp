@@ -36,11 +36,12 @@ export async function getDocument(documentId: string, req: EnhancedRequest): Pro
 /**
  * Streams contents of the most recent Document Content Version associated with the Stored Document.
  * @param documentId
+ * @param req
  * @returns Promise<any>
  */
 export async function getDocumentBinary(documentId: string, req: EnhancedRequest): Promise<any> {
     const headers = setHeaders(req)
-    const response: AxiosResponse<any> = await asyncReturnOrError(
+    const response: AxiosResponse<DMDocuments> = await asyncReturnOrError(
         http.get(`${url}/documents/${documentId}/binary`, { responseType: 'stream', headers }),
         `Error getting Binary for document ${documentId}`,
         null,
@@ -70,13 +71,13 @@ export async function postDocuments(fields: Fields, files: Files, req: EnhancedR
     formData.append(field, fields[field])
   })
 
-  const headers = setHeaders(req)
+  const headers = { ...setHeaders(req), ...formData.getHeaders() }
 
   // we explicitly set upload limit to 100MB here, rejection is handled by dm-store
   const response: AxiosResponse<DMDocuments> = await asyncReturnOrError(
     http.post(`${url}/documents/`, formData,
         {
-            headers: { ...headers, ...formData.getHeaders() },
+            headers,
             maxContentLength: 524300000,
         }),
     `Error posting documents`,

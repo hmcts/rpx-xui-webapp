@@ -31,19 +31,22 @@ export async function getDocumentRoute(req: express.Request, res: express.Respon
  */
 export async function getDocumentBinaryRoute(req: express.Request, res: express.Response) {
     const documentId = req.params.document_id
-    const url = new URL(getConfigValue(SERVICES_DOCUMENTS_API_PATH))
+    const url = getConfigValue(SERVICES_DOCUMENTS_API_PATH)
+    const host = `${url}/documents/${documentId}/binary`
 
-    const headers = { ...{
+    const headers = {
+        ...{
             'ServiceAuthorization': axios.defaults.headers.common.ServiceAuthorization,
-        }, ...setHeaders(req), ...req.headers,
+        },
+        ...setHeaders(req),
+        ...req.headers,
     }
 
     const options = {
         headers,
-        host: `${url.host}/documents/${documentId}/binary`,
     } as RequestOptions
 
-    const request = http.get(options, response => {
+    const request = http.get(host, options, response => {
         const responseHeaders = {...response.headers}
         delete responseHeaders.connection
         delete responseHeaders['set-cookie']

@@ -33,7 +33,7 @@ export const applyProxy = (app, config) => {
 
     if (false !== config.rewrite) {
         options.pathRewrite = {
-            [`^${config.source}`]: config.rewriteUrl || ''
+            [`^${config.source}`]: config.rewriteUrl || '',
         }
     }
 

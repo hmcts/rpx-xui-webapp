@@ -60,6 +60,7 @@ export default async (req, res, next) => {
         logger.warn('User role does not allow login')
         auth.doLogout(req, res, 401)
     } else {
+        // TODO: once moved over to proxy-middleware can remove this
         req.auth = {}
         req.auth.data = req.session.user
         req.auth.token = jwt

@@ -1,4 +1,4 @@
-import { ContactDetailsDataModel, BadgeColour } from '@hmcts/rpx-xui-common-lib';
+import { BadgeColour, ContactDetailsDataModel } from '@hmcts/rpx-xui-common-lib';
 
 const FooterData =  {
   heading: 'Help',
@@ -48,7 +48,7 @@ const userNav = {
   }]
 };
 
-const getHelpDetailsData: ContactDetailsDataModel[] = [
+const helpContactDetails: ContactDetailsDataModel[] = [
   {
     title: 'Probate',
     badgeColour: BadgeColour.BADGE_BLUE,
@@ -118,5 +118,5 @@ export class AppConstants {
   static APP_HEADER_TITLE = appHeaderTitle;
   static ENVIRONMENT_NAMES = environmentNames;
   static REDIRECT_URL = redirectUrl;
-  static GET_HELP_DETAILS_DATA = getHelpDetailsData;
+  static HELP_CONTACT_DETAILS = helpContactDetails;
 }

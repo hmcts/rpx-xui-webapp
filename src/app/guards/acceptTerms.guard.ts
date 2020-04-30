@@ -18,8 +18,12 @@ export class AcceptTermsGuard implements CanActivate {
   }
 
   public canActivate(): Observable<boolean> {
-    const isTandCEnabled$ = this.termsAndConditionsService.isTermsConditionsFeatureEnabled();
-    return isTandCEnabled$.pipe(switchMap(enabled => enabled ? this.enableTermsAndConditions() : of(true)));
+    try {
+      const isTandCEnabled$ = this.termsAndConditionsService.isTermsConditionsFeatureEnabled();
+      return isTandCEnabled$.pipe(switchMap(enabled => enabled ? this.enableTermsAndConditions() : of(true)));
+    } catch (e) {
+      return of(true);
+    }
   }
 
   private enableTermsAndConditions(): Observable<boolean> {

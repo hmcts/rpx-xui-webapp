@@ -9090,7 +9090,8 @@ rx-polling@1.1.0:
 
 rx-polling@^1.0.1:
   version "1.0.1"
-  resolved "git://github.com/hmcts/rx-polling.git#695fcf10439bd29fad6a8e8fbeb30441de38c8cd"
+  resolved "https://registry.yarnpkg.com/rx-polling/-/rx-polling-1.0.1.tgz#d7dd8857633ba07ed4617dd333fcac51852693f1"
+  integrity sha512-vWwR74dL3CgXNi3pIUimFx5wGsK7M1U+oEIq17MX8k5dRHBCTr6/qWRkJQIPltoBUcVZyAR5J46TaCmN0aWn5Q==
 
 rxjs-compat@^6.4.0:
   version "6.5.4"

@@ -352,10 +352,10 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@2.64.4-EUI":
-  version "2.64.4-EUI"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.64.4-EUI.tgz#3722d5206a2dc6ad440baf11357c8edf0c937ffd"
-  integrity sha512-P/vlgQWsDZcggs/mI0x43xLd/01iM5df6bIznweeX2aEGy/N+uw1KX28+gS8DPJfnrPH4/FtwH/Z5xhELLgRVA==
+"@hmcts/ccd-case-ui-toolkit@2.64.3-EUI-1610-prerelease":
+  version "2.64.3-EUI-1610-prerelease"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.64.3-EUI-1610-prerelease.tgz#0074ba8c36b8d9d6e6c8d4dbd27a9a3f1bb485e6"
+  integrity sha512-hoMsOYLW9Y6gDK2dtNel4Q7lhqCwxrmw0bLTXbxUJ9UdAXB+bfGuUnq5YMSw4nBfCAg6XJmrMJaDsmrek/WbZg==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
@@ -364,7 +364,7 @@
     json-server "^0.14.0"
     karma-jasmine-html-reporter "^1.2.0"
     mocha "^5.0.5"
-    rx-polling "git://github.com/hmcts/rx-polling.git"
+    rx-polling "1.1.0"
     typescript "3.1.1"
     underscore "^1.9.1"
 
@@ -9083,7 +9083,12 @@ run-queue@^1.0.0, run-queue@^1.0.3:
   dependencies:
     aproba "^1.1.1"
 
-rx-polling@^1.0.1, "rx-polling@git://github.com/hmcts/rx-polling.git":
+rx-polling@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/rx-polling/-/rx-polling-1.1.0.tgz#633fc1813e05bb974f4dccd84e5a58b65e5395b1"
+  integrity sha512-Y/YBGBewcbx+PXXoEEL4pxa7StHqKJcg1DHNhRIitSoakEZUa5inEEjpjQaksQfr9krsESP9GAdlPZmF31MO3g==
+
+rx-polling@^1.0.1:
   version "1.0.1"
   resolved "git://github.com/hmcts/rx-polling.git#695fcf10439bd29fad6a8e8fbeb30441de38c8cd"
 

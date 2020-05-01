@@ -1,4 +1,4 @@
-import { ContactDetailsDataModel, BadgeColour } from '@hmcts/rpx-xui-common-lib';
+import { BadgeColour, ContactDetailsDataModel } from '@hmcts/rpx-xui-common-lib';
 
 const FooterData =  {
   heading: 'Help',
@@ -48,7 +48,7 @@ const userNav = {
   }]
 };
 
-const getHelpDetailsData: ContactDetailsDataModel[] = [
+const helpContactDetails: ContactDetailsDataModel[] = [
   {
     title: 'Probate',
     badgeColour: BadgeColour.BADGE_BLUE,
@@ -76,6 +76,13 @@ const getHelpDetailsData: ContactDetailsDataModel[] = [
     email: 'customer.service@justice.gov.uk',
     phone: '0300 123 1711',
     openingTimes: 'Monday to Friday, 9am to 5pm (excluding public holidays)'
+  },
+  {
+    title: 'Family Public Law and Adoption',
+    badgeColour: BadgeColour.BADGE_RED,
+    email: 'fpla@justice.gov.uk',
+    phone: '0330 808 4424',
+    openingTimes: 'Monday to Friday, 8:30am to 5pm (excluding public holidays)'
   }
 ];
 
@@ -111,5 +118,5 @@ export class AppConstants {
   static APP_HEADER_TITLE = appHeaderTitle;
   static ENVIRONMENT_NAMES = environmentNames;
   static REDIRECT_URL = redirectUrl;
-  static GET_HELP_DETAILS_DATA = getHelpDetailsData;
+  static HELP_CONTACT_DETAILS = helpContactDetails;
 }

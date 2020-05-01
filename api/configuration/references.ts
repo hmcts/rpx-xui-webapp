@@ -6,15 +6,15 @@
  *
  * They are reference strings and therefore need to be testable.
  *
- * This file should be representative of the .json files in /config
+ * This file should be representative of the .json files in the root /config folder
  */
 export const S2S_SECRET = 'secrets.rpx.mc-s2s-client-secret'
+export const REDIS_CLOUD_URL = 'secrets.rpx.webapp-redis-connection-string'
+export const APP_INSIGHTS_KEY = 'secrets.rpx.appinsights-instrumentationkey-mc'
 
 export const COOKIES_TOKEN = 'cookies.token'
 export const COOKIES_USER_ID = 'cookies.userId'
 export const COOKIES_SESSION_ID = 'cookies.sessionId'
-
-export const APP_INSIGHTS_KEY = 'secrets.rpx.AppInsightsInstrumentationKey'
 
 export const LOGGING = 'logging'
 export const MAX_LOG_LINE = 'maxLogLine'
@@ -30,7 +30,6 @@ export const SERVICES_EM_ANNO_API_URL = 'services.em_anno_api'
 export const SERVICES_IDAM_API_URL = 'services.idam.idamApiUrl'
 export const SERVICES_IDAM_CLIENT_ID = 'services.idam.idamClientID'
 export const SERVICES_IDAM_LOGIN_URL = 'services.idam.idamLoginUrl'
-export const SERVICES_IDAM_INDEX_URL = 'services.idam.indexUrl'
 export const SERVICES_IDAM_ISS_URL = 'services.idam.iss'
 export const SERVICES_IDAM_OAUTH_CALLBACK_URL = 'services.idam.oauthCallbackUrl'
 
@@ -53,10 +52,16 @@ export const LOGIN_ROLE_MATCHER = 'loginRoleMatcher'
 
 export const LOG4_J_CONFIG = 'log4JConfig'
 
-// FEATURE TOGGLES
 export const FEATURE_SECURE_COOKIE_ENABLED = 'secureCookieEnabled'
 export const FEATURE_APP_INSIGHTS_ENABLED = 'appInsightsEnabled'
 export const FEATURE_PROXY_ENABLED = 'proxyEnabled'
 export const FEATURE_TERMS_AND_CONDITIONS_ENABLED = 'termsAndConditionsEnabled'
 export const FEATURE_HELMET_ENABLED = 'helmetEnabled'
+export const FEATURE_REDIS_ENABLED = 'redisEnabled'
+
 export const HELMET = 'helmet'
+
+export const REDIS_KEY_PREFIX = 'redis.prefix'
+export const REDIS_TTL = 'redis.ttl'
+
+export const USER_TIMEOUT_IN_SECONDS = 'userTimeoutInSeconds'

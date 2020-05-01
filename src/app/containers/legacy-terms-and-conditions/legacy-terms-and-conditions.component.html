@@ -1,18 +1,9 @@
 <exui-app-header></exui-app-header>
-<ng-container *ngIf="isTandCEnabled; else legacyTandC">
-  <div class="govuk-width-container">
-      <ng-container *ngIf="document; else loading">
-        <xuilib-terms-and-conditions [document]="document"></xuilib-terms-and-conditions>
-      </ng-container>
-      <ng-template #loading>Loading...</ng-template>
-  </div>
-</ng-container>
-<ng-template #legacyTandC>
-  <div class="govuk-width-container">
-    <main class="govuk-main-wrapper govuk-main-wrapper--l" id="main-content" role="main">
-      <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-          <h1 class="govuk-heading-xl">Terms and conditions</h1>
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper govuk-main-wrapper--l" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Terms and conditions</h1>
         <p class="govuk-body">By accessing this service (‘the Service’), you’re agreeing to the following terms of use. This includes the <a routerLink="/privacy-policy">privacy policy</a>.</p>
         <p class="govuk-body">The use of the Service includes the Manage Organisation and Manage Cases applications (sometimes known as ‘MyHMCTS’) and Judicial Case Manager (JCM).</p>
         <p class="govuk-body">The term ‘you’ includes yourself and all users of the Service in your organisation.  The terms ‘we’ and ‘us’ refer to Her Majesty’s Courts and Tribunals Service.</p>
@@ -28,9 +19,9 @@
         <p class="govuk-body">You will be individually responsible for the secure use of unique credentials issued to you by the Service (for example, user ID and passwords). You must:
         </p>
         <ul class="govuk-list govuk-list--bullet">
-            <li>protect and not share your EUI credentials for access to the Service</li>
-            <li>report actual or suspected disclosure of this information immediately to MyHMCTS Business Support Help</li>
-            <li>not use another person’s credentials to access HMCTS Services</li>
+          <li>protect and not share your EUI credentials for access to the Service</li>
+          <li>report actual or suspected disclosure of this information immediately to MyHMCTS Business Support Help</li>
+          <li>not use another person’s credentials to access HMCTS Services</li>
         </ul>
         <p class="govuk-body">You will ensure that devices (including computers and mobile devices) connected to the Service will be kept secure, for example by being locked when not in use, and the data secured through encryption and/or protected access (using a password or similar).</p>
         <p class="govuk-body">You will not make false claims or denials relating to the use of the Service (for example, falsely denying any access, editing, reproduction or viewing of digital case material).</p>
@@ -45,11 +36,8 @@
         <p class="govuk-body">In the event of a suspected breach of this agreement, we reserve the right to investigate and, if a breach has occurred, to impose appropriate sanctions. This can range from a warning and instructions to improve internal processes, to temporary suspension or reduction in service availability, to the potential complete withdrawal of service, should the breach adversely affect other users of the Service and the integrity of the trust framework within which the Service operates.</p>
         <p class="govuk-body">You acknowledge and accept that the Service is provided free of charge and we are not responsible and accept no liability for any defect, failure or fault in the Service.</p>
         <p class="govuk-body">You hereby represent and undertake that you have all procedures in the place to ensure compliance with these terms.</p>
-        <p class="govuk-body">You acknowledge and accept that you are fully aware of your responsibilities for this organisation, in relation to the use of the Service as set out in the above terms and conditions. You are authorised to accept the terms on behalf of your organisation including other users.</p>           
-        </div>
+        <p class="govuk-body">You acknowledge and accept that you are fully aware of your responsibilities for this organisation, in relation to the use of the Service as set out in the above terms and conditions. You are authorised to accept the terms on behalf of your organisation including other users.</p>
       </div>
-    </main>
-  </div>
-</ng-template>
-<exui-app-footer></exui-app-footer>
-
+    </div>
+  </main>
+</div>

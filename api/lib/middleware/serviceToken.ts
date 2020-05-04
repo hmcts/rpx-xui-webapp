@@ -55,8 +55,9 @@ export default async (req, res, next) => {
   const token = await asyncReturnOrError(that.serviceTokenGenerator(), 'Error getting s2s token', res, logger)
   /* istanbul ignore else */
   if (token) {
-    logger.info('Attaching s2s token')
+    logger.debug('Attaching s2s token ', token)
     axios.defaults.headers.common.ServiceAuthorization = token
+    req.headers.serviceauthorization = token
     next()
   }
 }

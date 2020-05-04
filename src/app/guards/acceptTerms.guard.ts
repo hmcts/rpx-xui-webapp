@@ -18,7 +18,7 @@ export class AcceptTermsGuard implements CanActivate {
 
   public canActivate(): Observable<boolean> {
     try {
-      const isTandCEnabled$ = this.termsAndConditionsService.isTermsConditionsFeatureEnabled();
+      const isTandCEnabled$ = this.store.pipe(select(fromApp.getIsTermsAndConditionsFeatureEnabled));
       return isTandCEnabled$.pipe(switchMap(enabled => enabled ? this.enableTermsAndConditions() : of(true)));
     } catch (e) {
       return of(true);

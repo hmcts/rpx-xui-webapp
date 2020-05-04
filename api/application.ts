@@ -4,7 +4,7 @@ import * as express from 'express'
 import * as session from 'express-session'
 import * as helmet from 'helmet'
 import * as auth from './auth'
-import { getConfigValue, showFeature } from './configuration'
+import {getConfigValue, showFeature} from './configuration'
 import {
     APP_INSIGHTS_KEY,
     FEATURE_HELMET_ENABLED,
@@ -13,13 +13,14 @@ import {
     PROTOCOL,
     SESSION_SECRET,
 } from './configuration/references'
-import {router as documentRouter} from './documents/routes'
+// import {router as documentRouter} from './documents/routes'
 import {router as emAnnoRouter} from './emAnno/routes'
 import * as health from './health'
 import healthCheck from './healthCheck'
 import {errorStack} from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
 import authInterceptor from './lib/middleware/auth'
+import {createDocStoreProxy} from './lib/middleware/httpProxy'
 import {JUILogger} from './lib/models'
 import { getStore } from './lib/sessionStore'
 import * as tunnel from './lib/tunnel'
@@ -60,7 +61,7 @@ app.use(errorStack)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 
-tunnel.init()
+const agent = tunnel.init()
 
 /**
  * Add Reform Standard health checks.
@@ -93,9 +94,10 @@ app.get('/api/configuration', (req, res) => {
 app.use('/payments', paymentsRouter)
 
 // separate route for document upload/view
-app.use('/documents', documentRouter)
+// app.use('/documents', documentRouter)
+// Use a real proxy for docstore to improve performance
+createDocStoreProxy(app, agent)
 app.use('/em-anno', emAnnoRouter)
-
 app.use('/print', printRouter)
 
 // @ts-ignore

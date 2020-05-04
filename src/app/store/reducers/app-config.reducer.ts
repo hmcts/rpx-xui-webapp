@@ -9,6 +9,7 @@ export interface AppConfigState {
   loaded: boolean;
   loading: boolean;
   termsAndConditions: TCDocument;
+  isTermsAndConditionsFeatureEnabled: boolean;
 }
 
 export const initialState: AppConfigState = {
@@ -16,7 +17,8 @@ export const initialState: AppConfigState = {
   termsAndCondition: { isLoaded: false, hasUserAcceptedTC: false },
   loaded: false,
   loading: false,
-  termsAndConditions: null
+  termsAndConditions: null,
+  isTermsAndConditionsFeatureEnabled: false
 };
 
 export function reducer(
@@ -70,6 +72,15 @@ export function reducer(
       return {
         ...state,
         termsAndConditions: action.payload
+      };
+    case fromActions.LOAD_FEATURE_TOGGLE_CONFIG_SUCCESS:
+      return {
+          ...state,
+          isTermsAndConditionsFeatureEnabled: action.payload
+        };
+    default:
+      return {
+        ...state
       };
   }
   return state;

@@ -1,10 +1,11 @@
 import * as express from 'express'
-import {config} from '../config'
-import {EnhancedRequest} from '../lib/models'
-import {handleDelete, handleGet, handlePost, handlePut} from './emAnnoService'
+import { getConfigValue } from '../configuration'
+import { SERVICES_EM_ANNO_API_URL } from '../configuration/references'
+import { EnhancedRequest } from '../lib/models'
+import { handleDelete, handleGet, handlePost, handlePut } from './emAnnoService'
 import { Annotation, Annotations } from './models'
 
-const url: string = config.services.em_anno_api
+const url: string = getConfigValue(SERVICES_EM_ANNO_API_URL)
 
 /**
  * getAnnotations
@@ -14,7 +15,7 @@ export async function getAnnotations(req: EnhancedRequest, res: express.Response
   const annotationsPath: string = url + req.originalUrl.replace('/em-anno/', '/api/')
 
   try {
-    const jsonResponse: Annotations = await handleGet(annotationsPath)
+    const jsonResponse: Annotations = await handleGet(annotationsPath, req)
     res.status(200).send(jsonResponse)
   } catch (error) {
     res.status(error.status).send({
@@ -33,7 +34,7 @@ export async function postAnnotations(req: EnhancedRequest, res: express.Respons
   const body: Annotation = req.body
 
   try {
-    const jsonResponse: Annotation = await handlePost(annotationsPath, body)
+    const jsonResponse: Annotation = await handlePost(annotationsPath, body, req)
     res.status(200).send(jsonResponse)
   } catch (error) {
     res.status(error.status).send({
@@ -52,7 +53,7 @@ export async function putAnnotations(req: EnhancedRequest, res: express.Response
   const body: Annotation = req.body
 
   try {
-    const jsonResponse: Annotation = await handlePut(annotationsPath, body)
+    const jsonResponse: Annotation = await handlePut(annotationsPath, body, req)
     res.status(200).send(jsonResponse)
   } catch (error) {
     res.status(error.status).send({
@@ -70,7 +71,7 @@ export async function deleteAnnotations(req: EnhancedRequest, res: express.Respo
   const annotationsPath: string = url + req.originalUrl.replace('/em-anno/', '/api/')
 
   try {
-    const jsonResponse: Annotation = await handleDelete(annotationsPath)
+    const jsonResponse: Annotation = await handleDelete(annotationsPath, req)
     res.status(200).send(jsonResponse)
   } catch (error) {
     res.status(error.status).send({

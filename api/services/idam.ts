@@ -1,14 +1,21 @@
-import { config } from '../config'
+import {getConfigValue} from '../configuration'
+import {
+  COOKIES_TOKEN,
+  IDAM_SECRET,
+  PROTOCOL,
+  SERVICES_IDAM_API_URL,
+  SERVICES_IDAM_CLIENT_ID,
+  SERVICES_IDAM_OAUTH_CALLBACK_URL
+} from '../configuration/references'
 import { http } from '../lib/http'
 import { isReqResSet, request } from '../lib/middleware/responseRequest'
 import { valueOrNull } from '../lib/util'
 
-const url = config.services.idam.idamApiUrl
-
-const idamSecret = process.env.IDAM_SECRET || 'AAAAAAAAAAAAAAAA'
-const idamClient = config.idamClient
-const idamProtocol = config.protocol
-const oauthCallbackUrl = config.services.idam.oauthCallbackUrl
+const url = getConfigValue(SERVICES_IDAM_API_URL)
+const idamSecret = getConfigValue(IDAM_SECRET) || 'AAAAAAAAAAAAAAAA'
+const idamClient = getConfigValue(SERVICES_IDAM_CLIENT_ID)
+const idamProtocol = getConfigValue(PROTOCOL)
+const oauthCallbackUrl = getConfigValue(SERVICES_IDAM_OAUTH_CALLBACK_URL)
 
 export async function getDetails(idamUrl: string, token: string = null) {
     // have to pass options in at first login as headers are yet to be attached.
@@ -25,7 +32,7 @@ export async function getDetails(idamUrl: string, token: string = null) {
         }
     }
 
-    const jwt = token || request().cookies[config.cookies.token]
+    const jwt = token || request().cookies[getConfigValue(COOKIES_TOKEN)]
     const options = { headers: { Authorization: `Bearer ${jwt}` } }
     const response = await http.get(`${idamUrl}/details`, options)
     return response.data

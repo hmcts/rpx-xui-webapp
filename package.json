@@ -23,6 +23,7 @@
     "lint": "yarn lint:ng && yarn lint:node",
     "test": "cd api && yarn coverage && cd .. && yarn test:ng",
     "test:ng": "ng test",
+    "test:ng:watch": "ng test --watch=true",
     "lint:ng": "ng lint",
     "e2e": "ng e2e",
     "test:coverage": "echo 'not implemented'",

@@ -57,4 +57,15 @@ withNightlyPipeline(type, product, component) {
             reportName           : 'XUI Manage Cases Full functional Tests'
         ])
     }
+
+    after('mutationTest') {
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "reports/tests/mutation/node/",
+            reportFiles          : 'index.html',
+            reportName           : 'XUI Manage Cases Mutation tests'
+        ])
+    }
 }

@@ -13,8 +13,7 @@ import * as fromApp from '../store';
 })
 export class AcceptTermsGuard implements CanActivate {
   constructor(private readonly store: Store<fromApp.State>,
-              private readonly cookieService: CookieService,
-              private readonly termsAndConditionsService: TermsConditionsService) {
+              private readonly cookieService: CookieService) {
   }
 
   public canActivate(): Observable<boolean> {

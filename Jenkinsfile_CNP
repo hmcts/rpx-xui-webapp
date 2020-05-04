@@ -55,6 +55,8 @@ withPipeline(type, product, component) {
 
     enableAksStagingDeployment()
 
+    disableLegacyDeployment()
+
 // Disable pact testing on pipeline
 //
 //    enablePactAs([

@@ -25,6 +25,7 @@ export interface EnhancedRequest extends express.Request {
         token: string
         userId: string
         expires: number
+        data?: any
     }
     body,
     headers

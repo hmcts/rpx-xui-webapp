@@ -5,8 +5,8 @@ import 'mocha'
 import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
 import { mockReq, mockRes } from 'sinon-express-mock'
-import { config } from '../config'
 import { http } from '../lib/http'
+import { EnhancedRequest } from '../lib/models'
 import { getCcdPrintout } from './printService'
 
 chai.use(sinonChai)
@@ -30,7 +30,7 @@ describe('printService - getCcdPrintout', () => {
 
     it('should make a get request', async () => {
         const printPath = '/print/12345'
-        const response = await getCcdPrintout(printPath)
+        const response = await getCcdPrintout(printPath, {} as EnhancedRequest)
         expect(response).to.equal('ok')
     })
 

@@ -1,4 +1,4 @@
-import { ContactDetailsDataModel, BadgeColour } from '@hmcts/rpx-xui-common-lib';
+import { BadgeColour, ContactDetailsDataModel } from '@hmcts/rpx-xui-common-lib';
 
 const FooterData =  {
   heading: 'Help',
@@ -26,7 +26,7 @@ const FooterDataNavigation = {
     { text: 'Terms and conditions', href: '/terms-and-conditions', target: '_blank' },
     { text: 'Cookies', href: '/cookies', target: '_blank' },
     { text: 'Privacy policy', href: '/privacy-policy', target: '_blank' },
-    { text: 'Get Help', href: '/get-help', target: '_blank' }
+    { text: 'Get help', href: '/get-help', target: '_blank' }
   ]
 };
 
@@ -48,30 +48,41 @@ const userNav = {
   }]
 };
 
-const getHelpDetailsData: ContactDetailsDataModel[] = [
+const helpContactDetails: ContactDetailsDataModel[] = [
   {
     title: 'Probate',
     badgeColour: BadgeColour.BADGE_BLUE,
-    // badgeText: 'PUBLIC BETA',
     email: 'contactprobate@justice.gov.uk',
     phone: '0300 303 0648',
-    openingTimes: 'Monday to Friday, 9.30pm to 5pm (excluding public holidays)'
+    openingTimes: 'Monday to Friday, 9:30am to 5pm (excluding public holidays)'
   },
   {
     title: 'Divorce',
     badgeColour: BadgeColour.BADGE_BLUE,
-  //  badgeText: 'PUBLIC BETA',
     email: 'divorcecase@justice.gov.uk',
     phone: '0300 303 0642',
-    openingTimes: 'Monday to Friday, 9.30pm to 5pm (excluding public holidays)'
+    openingTimes: 'Monday to Friday, 9:30am to 5pm (excluding public holidays)'
   },
   {
     title: 'Financial Remedy',
     badgeColour: BadgeColour.BADGE_RED,
- //   badgeText: 'PRIVATE BETA',
     email: 'contactfinancialremedy@justice.gov.uk',
     phone: '0300 303 0642',
-    openingTimes: 'Monday to Friday, 9.30pm to 5pm (excluding public holidays)'
+    openingTimes: 'Monday to Friday, 9:30am to 5pm (excluding public holidays)'
+  },
+  {
+    title: 'Immigration and Asylum',
+    badgeColour: BadgeColour.BADGE_RED,
+    email: 'customer.service@justice.gov.uk',
+    phone: '0300 123 1711',
+    openingTimes: 'Monday to Friday, 9am to 5pm (excluding public holidays)'
+  },
+  {
+    title: 'Family Public Law and Adoption',
+    badgeColour: BadgeColour.BADGE_RED,
+    email: 'fpla@justice.gov.uk',
+    phone: '0330 808 4424',
+    openingTimes: 'Monday to Friday, 8:30am to 5pm (excluding public holidays)'
   }
 ];
 
@@ -88,7 +99,7 @@ const environmentNames = {
 const redirectUrl = {
   aat: 'https://idam-web-public.aat.platform.hmcts.net',
   demo: 'https://idam-web-public.demo.platform.hmcts.net',
-  ithc: 'https://idam-web-public.ithc.platform.hmcts.net',
+  ithc: 'https://idam-web-public-aks.ithc.platform.hmcts.net',
   prod: 'https://hmcts-access.service.gov.uk',
   perftest: 'https://idam-web-public.perftest.platform.hmcts.net',
   localhost: 'https://idam-web-public.aat.platform.hmcts.net'
@@ -107,5 +118,5 @@ export class AppConstants {
   static APP_HEADER_TITLE = appHeaderTitle;
   static ENVIRONMENT_NAMES = environmentNames;
   static REDIRECT_URL = redirectUrl;
-  static GET_HELP_DETAILS_DATA = getHelpDetailsData;
+  static HELP_CONTACT_DETAILS = helpContactDetails;
 }

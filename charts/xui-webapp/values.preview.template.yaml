@@ -2,8 +2,10 @@ nodejs:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
   environment:
-       IDAM_URL: https://idam-api.aat.platform.hmcts.net
-       S2S_URL: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal
-       S2S_SECRET: ${S2S_SECRET}
-       IDAM_SECRET: ${IDAM_SECRET}
-       NODE_TLS_REJECT_UNAUTHORIZED: '0'
+     NODE_TLS_REJECT_UNAUTHORIZED: 0
+     SERVICES_IDAM_API_URL: https://idam-api.aat.platform.hmcts.net
+     SERVICES_IDAM_LOGIN_URL: https://idam-web-public.aat.platform.hmcts.net
+     REDISCLOUD_URL: redis://ignore:fake-password@${SERVICE_NAME}-redis-master:6379
+redis:
+  enabled: true
+

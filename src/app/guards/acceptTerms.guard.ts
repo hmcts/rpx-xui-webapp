@@ -3,19 +3,30 @@ import { CanActivate } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { CookieService } from 'ngx-cookie';
 import { Observable, of } from 'rxjs';
-import { filter, map, tap } from 'rxjs/operators';
+import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { AppUtils } from '../app-utils';
+import { TermsConditionsService } from '../services/terms-and-conditions/terms-and-conditions.service';
 import * as fromApp from '../store';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AcceptTermsGuard implements CanActivate {
-  constructor(private store: Store<fromApp.State>,
-              private cookieService: CookieService) {
+  constructor(private readonly store: Store<fromApp.State>,
+              private readonly cookieService: CookieService,
+              private readonly termsAndConditionsService: TermsConditionsService) {
   }
 
-  canActivate(): Observable<boolean> {
+  public canActivate(): Observable<boolean> {
+    try {
+      const isTandCEnabled$ = this.termsAndConditionsService.isTermsConditionsFeatureEnabled();
+      return isTandCEnabled$.pipe(switchMap(enabled => enabled ? this.enableTermsAndConditions() : of(true)));
+    } catch (e) {
+      return of(true);
+    }
+  }
+
+  private enableTermsAndConditions(): Observable<boolean> {
     const isPuiCaseManager = AppUtils.isRoleExistsForUser('pui-case-manager', this.cookieService);
     if (!isPuiCaseManager) {
       return of(true);

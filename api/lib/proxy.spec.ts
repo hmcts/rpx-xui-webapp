@@ -4,10 +4,13 @@ import 'mocha'
 import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
 import { mockReq, mockRes } from 'sinon-express-mock'
+import { getConfigValue } from '../configuration'
+import {
+  SERVICES_CCD_COMPONENT_API_PATH,
+} from '../configuration/references'
 
 chai.use(sinonChai)
 
-import { config } from '../config'
 import {http} from './http'
 import * as proxy from './proxy'
 
@@ -70,7 +73,7 @@ describe('proxy', () => {
   })
 
   it('should proxy a get request', async () => {
-    const url = `${config.services.ccd.componentApi}${req.baseUrl}${req.url}`
+    const url = `${getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)}${req.baseUrl}${req.url}`
     await proxy.get(req, res)
     expect(spy).to.have.been.calledWith(url)
     expect(res.send).to.have.been.calledWith(result.data)
@@ -84,7 +87,7 @@ describe('proxy', () => {
   })
 
   it('should proxy a put request', async () => {
-    const url = `${config.services.ccd.componentApi}${req.baseUrl}${req.url}`
+    const url = `${getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)}${req.baseUrl}${req.url}`
     await proxy.put(req, res)
     expect(spyPut).to.have.been.calledWith(url)
     expect(res.send).to.have.been.calledWith(result.data)
@@ -98,7 +101,7 @@ describe('proxy', () => {
   })
 
   it('should proxy a post request', async () => {
-    const url = `${config.services.ccd.componentApi}${req.baseUrl}${req.url}`
+    const url = `${getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)}${req.baseUrl}${req.url}`
     await proxy.post(req, res)
     expect(spyPost).to.have.been.calledWith(url)
     expect(res.send).to.have.been.calledWith(result.data)

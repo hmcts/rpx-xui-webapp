@@ -15,17 +15,6 @@ import * as auth from './auth'
 import * as serviceTokenMiddleware from './serviceToken'
 
 describe('auth', () => {
-    //TODO commenting out as not clear if restricted roles apply to xui
-
-    // describe('validRoles', () => {
-    //     it('should return true if a give roles match jui pannel member or judge roles', () => {
-    //         expect(auth.validRoles(['jui-judge'])).to.equal(true)
-    //         expect(auth.validRoles(['jui-panelmember'])).to.equal(true)
-    //     })
-    //     it('should return false if given roles do not match jui pannel member or judge roles', () => {
-    //         expect(auth.validRoles(['test'])).to.equal(false)
-    //     })
-    // })
 
     describe('default', () => {
         it('should call user details if session  does not contain user details', async () => {
@@ -91,35 +80,6 @@ describe('auth', () => {
             expect(stub).to.be.called
             stub.restore()
         })
-
-        //TODO commenting out as not clear if restricted roles apply to xui
-
-        //     it('should log out users without correct roles', async () => {
-        //         const req = mockReq({
-        //             cookies: [],
-        //             headers: [],
-        //             session: {
-        //                 user: {
-        //                     id: 'testId',
-        //                     roles: [],
-        //                 },
-        //             },
-        //         })
-
-        //         const res = mockRes()
-
-        //         // lets set the expiry to be tomorrow
-        //         const expiry = new Date()
-        //         expiry.setDate(expiry.getDate() + 1)
-        //         // this should be able to decoded by jwtdecode
-        //         const token = jwt.sign({ exp: expiry.getTime() / 1000 }, 'test')
-        //         req.headers.authorization = token
-        //         const stub = sinon.stub(authController, 'doLogout')
-
-        //         await auth.default(req, res, () => {})
-        //         expect(stub).to.be.called
-        //         stub.restore()
-        //     })
     })
 
     it('should not log out users with correct roles', async () => {

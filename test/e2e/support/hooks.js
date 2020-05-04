@@ -4,7 +4,6 @@ const { defineSupportCode } = require('cucumber');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
 const conf = require('../config/conf').config;
-// const conf = require('../config/saucelabs.conf').config;
 const reporter = require('cucumber-html-reporter');
 const report = require('cucumber-html-report');
 
@@ -115,7 +114,7 @@ defineSupportCode(({ After }) => {
                     // scenario.attach(scenario);
                     done();
                 })
-                
+
             });
 
 

@@ -1,5 +1,10 @@
 import * as log4js from 'log4js'
-import { config } from '../config'
+import {getConfigValue} from '../configuration'
+import {
+  COOKIES_SESSION_ID,
+  LOG4_J_CONFIG,
+  LOGGING,
+} from '../configuration/references'
 import { client } from './appInsights'
 import * as errorStack from './errorStack'
 import { JUILogger } from './models'
@@ -8,10 +13,10 @@ import { isReqResSet, request } from './middleware/responseRequest'
 
 // the longest category length we have currently
 const maxCatLength = 14
-const sessionid = config.cookies.sessionId
+const sessionid = getConfigValue(COOKIES_SESSION_ID)
 
 // This is done to mimic log4js calls
-log4js.configure(config.log4jui)
+log4js.configure(getConfigValue(LOG4_J_CONFIG))
 
 // TODO: this should be moved into util but the import seems to fail
 export function leftPad(str: string, length = 20): string {
@@ -20,7 +25,8 @@ export function leftPad(str: string, length = 20): string {
 
 export function getLogger(category: string): JUILogger {
     const logger: log4js.Logger = log4js.getLogger(category)
-    logger.level = config.logging || 'off'
+    // @ts-ignore
+    logger.level = getConfigValue(LOGGING) || 'off'
 
     const catFormatted = leftPad(category, maxCatLength)
     logger.addContext('catFormatted', `${catFormatted} `)
@@ -43,6 +49,7 @@ export function prepareMessage(fullMessage: string): string {
         const req = request()
 
         uid = req.session && req.session.user ? req.session.user.id : null
+        // @ts-ignore
         sessionId = req.cookies ? req.cookies[sessionid] : null
     }
 
@@ -80,7 +87,7 @@ function error(...messages: any[]) {
     const category = this._logger.category
     this._logger.error(prepareMessage(fullMessage))
 
-    if (config.logging === 'debug' || config.logging === 'error') {
+    if (getConfigValue(LOGGING) === 'debug' || getConfigValue(LOGGING) === 'error') {
         errorStack.push([category, fullMessage])
     }
 }

@@ -68,6 +68,8 @@ module "app" {
         # Services Idam
         SERVICES_IDAM_API_URL = "${var.services_idam_api_url}"
         SERVICES_IDAM_LOGIN_URL = "${var.services_idam_login_url}"
+        # Services payments
+        SERVICES_S2S = "${var.services_payments_url}"
         # Services S2s
         SERVICES_S2S = "${var.services_s2s}"
         # Services T&Cs

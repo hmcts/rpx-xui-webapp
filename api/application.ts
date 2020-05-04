@@ -24,6 +24,7 @@ import {JUILogger} from './lib/models'
 import { getStore } from './lib/sessionStore'
 import * as tunnel from './lib/tunnel'
 import openRoutes from './openRoutes'
+import {router as paymentsRouter} from './payments/routes'
 import * as postCodeLookup from './postCodeLookup'
 import {router as printRouter} from './print/routes'
 import routes from './routes'
@@ -88,6 +89,8 @@ app.use('/api/termsAndConditions', termsAndCRoutes)
 app.get('/api/configuration', (req, res) => {
     res.send(showFeature(req.query.configurationKey))
 })
+
+app.use('/payments', paymentsRouter)
 
 // separate route for document upload/view
 app.use('/documents', documentRouter)

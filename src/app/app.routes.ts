@@ -50,8 +50,7 @@ export const ROUTES: Routes = [
   },
   {
     path: 'accept-terms-and-conditions',
-    component: AcceptTcWrapperComponent,
-    canActivate: [AllowAcceptTermsGuard]
+    component: AcceptTcWrapperComponent
   },
   {
     path: 'accessibility',

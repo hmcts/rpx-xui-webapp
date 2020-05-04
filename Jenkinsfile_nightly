@@ -22,6 +22,7 @@ withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
 
     enableFullFunctionalTest(30)
+    enableMutationTest()
 
     env.TEST_URL = 'https://xui-webapp-aat.service.core-compute-aat.internal/'
     after('checkout') {sh 'yarn cache clean'}
@@ -53,6 +54,17 @@ withNightlyPipeline(type, product, component) {
             reportDir            : "reports/tests/functional/",
             reportFiles          : 'index.html',
             reportName           : 'XUI Manage Cases Full functional Tests'
+        ])
+    }
+
+    after('mutationTest') {
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "reports/tests/mutation/node/",
+            reportFiles          : 'index.html',
+            reportName           : 'XUI Manage Cases Mutation tests'
         ])
     }
 }

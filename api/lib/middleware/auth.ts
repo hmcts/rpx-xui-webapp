@@ -60,10 +60,16 @@ export default async (req, res, next) => {
         logger.warn('User role does not allow login')
         auth.doLogout(req, res, 401)
     } else {
+        // TODO: once moved over to proxy-middleware can remove this
         req.auth = {}
         req.auth.data = req.session.user
         req.auth.token = jwt
         req.auth.userId = userId
+
+        req.headers.Authorization = `Bearer ${jwt}`
+        // req.authentication.user = req.session.user
+        req.headers['user-id'] = userId
+        req.headers['user-roles'] = req.session.user.roles.join(',')
 
         // !!!
         // The commented lines below have been moved to proxy.ts, where the information
@@ -73,7 +79,7 @@ export default async (req, res, next) => {
         // axios.defaults.headers.common.Authorization = `Bearer ${req.auth.token}`
         // axios.defaults.headers.common['user-roles'] = req.auth.data.roles.join()
 
-        logger.info('Auth token: ' + `Bearer ${req.auth.token}`)
+        logger.info('Auth token: ' + `${req.headers.Authorization}`)
 
         // moved s2s here so we authenticate first
         await serviceTokenMiddleware.default(req, res, () => {

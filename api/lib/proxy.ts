@@ -3,7 +3,7 @@
  * for better security.
  * When moving to a different proxy middleware, it is important to refactor this as well.
  */
-
+// TODO: remove this entire file in favour of middleware/proxy.ts
 import * as express from 'express'
 import * as striptags from 'striptags'
 import {getConfigValue} from '../configuration'

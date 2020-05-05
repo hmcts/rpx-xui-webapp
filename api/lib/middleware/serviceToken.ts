@@ -57,6 +57,7 @@ export default async (req, res, next) => {
   if (token) {
     logger.info('Attaching s2s token')
     axios.defaults.headers.common.ServiceAuthorization = token
+    req.headers.ServiceAuthorization = token
     next()
   }
 }

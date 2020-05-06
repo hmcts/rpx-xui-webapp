@@ -115,7 +115,6 @@ applyProxy(app, {
 // TODO: move to proxy route as above
 app.use('/em-anno', emAnnoRouter)
 
-// payments
 app.use('/payments', paymentsRouter)
 
 // @ts-ignore

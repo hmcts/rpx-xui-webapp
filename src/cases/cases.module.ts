@@ -6,24 +6,25 @@ import { HttpClientModule } from '@angular/common/http';
 import { MatDialogModule } from '@angular/material';
 
 import {
-  CaseUIToolkitModule,
-  DraftService,
-  HttpService,
-  AuthService as CCDAuthService,
-  CasesService,
-  HttpErrorService,
-  AbstractAppConfig,
-  CaseEditWizardGuard,
-  RouterHelperService,
-  DocumentManagementService,
-  PageValidationService,
-  PlaceholderService,
-  RequestOptionsBuilder,
-  SearchFiltersModule,
-  SearchResultModule,
-  CreateCaseFiltersModule,
-  CaseListFiltersModule,
-  AlertService
+    CaseUIToolkitModule,
+    DraftService,
+    HttpService,
+    AuthService as CCDAuthService,
+    CasesService,
+    HttpErrorService,
+    AbstractAppConfig,
+    CaseEditWizardGuard,
+    RouterHelperService,
+    DocumentManagementService,
+    PageValidationService,
+    PlaceholderService,
+    RequestOptionsBuilder,
+    SearchFiltersModule,
+    SearchResultModule,
+    CreateCaseFiltersModule,
+    CaseListFiltersModule,
+    AlertService,
+    WorkbasketFiltersModule,
 } from '@hmcts/ccd-case-ui-toolkit';
 
 import { casesRouting } from './case-feature.routes';
@@ -42,21 +43,22 @@ import {ProvidersModule} from '../app/providers/providers.module';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    CaseUIToolkitModule,
-    CreateCaseFiltersModule,
-    SearchResultModule,
-    HttpClientModule,
-    StoreModule.forFeature('cases', reducers),
-    EffectsModule.forFeature(effects),
-    casesRouting,
-    SharedModule,
-    SearchFiltersModule,
-    HttpModule,
-    MatDialogModule,
-    CaseListFiltersModule
-  ],
+    imports: [
+        CommonModule,
+        CaseUIToolkitModule,
+        CreateCaseFiltersModule,
+        SearchResultModule,
+        HttpClientModule,
+        StoreModule.forFeature('cases', reducers),
+        EffectsModule.forFeature(effects),
+        casesRouting,
+        SharedModule,
+        SearchFiltersModule,
+        HttpModule,
+        MatDialogModule,
+        CaseListFiltersModule,
+        WorkbasketFiltersModule
+    ],
   declarations: [...fromComponents.components, ...fromContainers.containers],
   providers: [
     PlaceholderService,

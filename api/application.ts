@@ -30,6 +30,7 @@ import * as postCodeLookup from './postCodeLookup'
 import routes from './routes'
 import {router as termsAndCRoutes} from './termsAndConditions/routes'
 import {router as userTandCRoutes} from './userTermsAndConditions/routes'
+import {router as paymentsRouter} from './payments/routes'
 
 export const app = express()
 if (showFeature(FEATURE_HELMET_ENABLED)) {
@@ -113,6 +114,8 @@ applyProxy(app, {
 
 // TODO: move to proxy route as above
 app.use('/em-anno', emAnnoRouter)
+
+app.use('/payments', paymentsRouter)
 
 // @ts-ignore
 const logger: JUILogger = log4jui.getLogger('Application')

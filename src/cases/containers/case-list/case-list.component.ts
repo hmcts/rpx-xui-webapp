@@ -57,6 +57,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public savedQueryParams: any;
   public page: number;
   public paginationSubscription: Subscription;
+  public isVisible: boolean;
+  public jurisdictions: Jurisdiction[];
 
   constructor(
     public store: Store<fromCaseList.State>,
@@ -68,10 +70,16 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
   public ngOnInit() {
 
+    this.isVisible = false;
     this.page = 1;
     this.resultView = null;
 
     this.definitionsService.getJurisdictions('read').subscribe(this.jurisdictionsBehaviourSubject$);
+
+    this.jurisdictionsBehaviourSubject$.subscribe( jurisdictions => {
+      this.isVisible = jurisdictions.length > 0;
+      this.jurisdictions = jurisdictions;
+    });
 
     this.setCaseListFilterDefaults();
 
@@ -118,11 +126,10 @@ export class CaseListComponent implements OnInit, OnDestroy {
   }
 
   public setCaseListFilterDefaults = () => {
-
     this.jurisdictionsBehaviourSubject$
       .subscribe(jurisdictions => {
         this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
-        if (this.savedQueryParams && this.savedQueryParams.jurisdiction && !this.doesIdExist(jurisdictions, this.savedQueryParams.jurisdiction)) {
+        if (this.savedQueryParams && this.savedQueryParams.jurisdiction && !this.doesIdExist(this.jurisdictions, this.savedQueryParams.jurisdiction)) {
           this.windowService.removeLocalStorage('savedQueryParams');
         }
         if (this.savedQueryParams) {

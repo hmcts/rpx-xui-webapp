@@ -228,7 +228,9 @@ describe('CaseListComponent', () => {
     it('should call findCaseListPaginationMetadata() on apply of filter.', () => {
 
       const spyOnFindCaseListPaginationMetadata = spyOn(component, 'findCaseListPaginationMetadata').and.callThrough();
+      const spyOnGetEvent = spyOn(component, 'getEvent');
 
+      // component.ngOnInit();
       component.applyFilter(event);
 
       expect(spyOnFindCaseListPaginationMetadata).toHaveBeenCalled();
@@ -323,6 +325,7 @@ describe('CaseListComponent', () => {
           }]
         }]
       }]));
+      component.ngOnInit();
       component.setCaseListFilterDefaults();
 
       expect(component.defaults).toBeDefined();

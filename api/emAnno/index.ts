@@ -15,8 +15,8 @@ export async function getAnnotations(req: EnhancedRequest, res: express.Response
   const annotationsPath: string = url + req.originalUrl.replace('/em-anno/', '/api/')
 
   try {
-    const jsonResponse: Annotations = await handleGet(annotationsPath, req)
-    res.status(200).send(jsonResponse)
+    const jsonResponse = await handleGet(annotationsPath, req)
+    res.status(jsonResponse.status).send(jsonResponse.data)
   } catch (error) {
     res.status(error.status).send({
       errorMessage: error.data,

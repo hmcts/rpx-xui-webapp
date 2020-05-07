@@ -1,8 +1,10 @@
 // Consumer component will have to import following dependencies // START
 // Import GOV.UK Frontend
 @import "~govuk-frontend/govuk/all";
-//@import "~@hmcts/frontend/all";
-@import "~@hmcts/media-viewer/assets/all.scss";
+@import "~@hmcts/frontend/all";
+// Import Media Viewer Styles
+@import "~@hmcts/media-viewer/assets/all";
+// END
 
 html {
     overflow: hidden;

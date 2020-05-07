@@ -12,13 +12,13 @@ const logger: JUILogger = log4jui.getLogger('em-anno-service')
  * @param annotationsPath
  * @returns {Promise<null>}
  */
-export async function handleGet(annotationsPath: string, req: EnhancedRequest): Promise<Annotations> {
+export async function handleGet(annotationsPath: string, req: EnhancedRequest): Promise<any> { // todo add typings
 
     try {
         logger.info('getting annotations', annotationsPath)
         const headers = setHeaders(req)
-        const response: { data?: Annotations} = await http.get(annotationsPath, { headers })
-        return response.data
+        const response: { data?: any} = await http.get(annotationsPath, { headers }) // todo make add typings
+        return response
     } catch (e) {
         logger.error(e.message)
         throw e

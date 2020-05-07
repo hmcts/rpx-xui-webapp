@@ -62,6 +62,7 @@
     "@hmcts/ccd-case-ui-toolkit": "2.63.3-RDM-7120-prerelease",
     "@hmcts/ccpay-web-component": "3.0.3",
     "@hmcts/frontend": "0.0.39-alpha",
+    "govuk-frontend": "^3.1.0",
     "@hmcts/media-viewer": "^2.1.2",
     "@hmcts/nodejs-healthcheck": "^1.5.1",
     "@hmcts/properties-volume": "^0.0.9",

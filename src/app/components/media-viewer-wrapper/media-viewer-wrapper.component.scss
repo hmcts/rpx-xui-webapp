@@ -1,4 +1,8 @@
-@import "../../../../node_modules/@hmcts/media-viewer/assets/aui-styles.scss";
+// Consumer component will have to import following dependencies // START
+// Import GOV.UK Frontend
+@import "~govuk-frontend/govuk/all";
+//@import "~@hmcts/frontend/all";
+@import "~@hmcts/media-viewer/assets/all.scss";
 
 html {
     overflow: hidden;

@@ -1,4 +1,6 @@
-@import "../../../../node_modules/@hmcts/media-viewer/assets/aui-styles.scss";
+@import "../../../../node_modules/govuk-frontend/govuk/all";
+@import "../../../../node_modules/@hmcts/frontend/all";
+@import "../../../../node_modules/@hmcts/media-viewer/assets/all";
 
 html {
     overflow: hidden;

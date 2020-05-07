@@ -53,7 +53,6 @@ withPipeline(type, product, component) {
     installCharts()
     enableSecurityScan()
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net'
-    installCharts() 
     enableAksStagingDeployment()
     disableLegacyDeployment()
 

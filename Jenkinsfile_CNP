@@ -22,7 +22,7 @@ def product   = "xui"
 def component = "webapp"
 def vault = "rpx"
 def channel   = '#xui-pipeline'
-def deployToAatOnly = false  // set to true if only deploy upto AAT, set to false will deploy all the way to production
+def deployToAatOnly = true  // set to true if only deploy upto AAT, set to false will deploy all the way to production
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
@@ -53,7 +53,6 @@ withPipeline(type, product, component) {
     installCharts()
     enableSecurityScan()
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net'
-    installCharts() 
     enableAksStagingDeployment()
     disableLegacyDeployment()
 

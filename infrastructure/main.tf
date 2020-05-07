@@ -20,6 +20,7 @@ module "app" {
     asp_rg = "${local.app_full_name}-${var.env}"
     asp_name = "${var.shared_product_name}-${var.env}"
     #asp_name = "${var.env == "prod" ? "TBD" : "${var.shared_product_name}-${var.env}"}"
+    enable_ase = "${var.enable_ase}"
 
     app_settings = {
         # logging vars & healthcheck

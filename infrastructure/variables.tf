@@ -153,3 +153,8 @@ variable "node_config_dir" {
   // for Windows
   default = "D:\\home\\site\\wwwroot\\config"
 }
+
+variable "enable_ase" {
+    default = false
+}
+

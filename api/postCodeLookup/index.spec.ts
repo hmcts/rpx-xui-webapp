@@ -5,7 +5,10 @@ import 'mocha'
 import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
 import { mockReq, mockRes } from 'sinon-express-mock'
-import { config } from '../config'
+import {getConfigValue} from '../configuration'
+import {
+  SERVICES_CCD_COMPONENT_API_PATH,
+} from '../configuration/references'
 import { http } from '../lib/http'
 import { doLookup } from './index'
 
@@ -33,7 +36,7 @@ describe('postCodeLookup - doLookup', () => {
     })
 
     it('should make a http.get call', async () => {
-        const url =  `${config.services.ccd.componentApi}/addresses?postcode=${postcode}`
+        const url =  `${getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)}/addresses?postcode=${postcode}`
         await doLookup(req, res)
         expect(spy).to.have.been.calledWith(url)
         expect(res.send).to.have.been.calledWith('ok')

@@ -49,6 +49,9 @@ api/.nyc_output
 /api/test/pact/logs/
 /api/test/pact/pacts/
 
+# Do not commit local files
+/config/local*.*
+.env
 
 # System Files
 .DS_Store
@@ -65,3 +68,8 @@ reports_json/
 .nyc_output/
 cb_reports/
 report.json
+stryker-tmp/
+
+# stryker temp files
+.stryker-tmp
+stryker.log

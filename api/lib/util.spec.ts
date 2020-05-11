@@ -6,10 +6,13 @@ import * as sinonChai from 'sinon-chai'
 import * as log4jui from './log4jui'
 chai.use(sinonChai)
 
-import {asyncReturnOrError, dotNotation, exists, isObject, shorten, some, valueOrNull} from './util'
-import {JUILogger} from "./models";
+import {asyncReturnOrError, dotNotation, exists, isObject, isUserTandCPostSuccessful, shorten, some, valueOrNull} from './util'
 
 describe('util', () => {
+    describe('isUserTandCPostSuccessful', () => {
+        expect(isUserTandCPostSuccessful({userId: 'userId123'}, 'userId123')).to.equal(true)
+        expect(isUserTandCPostSuccessful({userId: 'SomethingElse'}, 'userId123')).to.equal(false)
+    })
     describe('isObject', () => {
         it('Should return true if object is passed', () => {
             const anObject = {k: 'v'}

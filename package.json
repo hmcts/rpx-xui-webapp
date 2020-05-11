@@ -182,5 +182,8 @@
     "webpack-cli": "^3.3.10",
     "webpack-node-externals": "^1.7.2",
     "webpack-source-map-support": "^2.0.1"
+  },
+  "resolutions": {
+    "ng2-material-dropdown": "0.10.1"
   }
 }

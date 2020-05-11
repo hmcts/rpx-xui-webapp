@@ -48,7 +48,7 @@ describe('enAnnoService', () => {
             spy = sandbox.stub(http, 'get').resolves(res)
             const emAnnoPath = '/em-anno/12345'
             const response = await handleGet(emAnnoPath, req)
-            expect(response).to.equal('ok')
+            expect(response.data).to.equal('ok')
         })
     })
 
@@ -57,7 +57,7 @@ describe('enAnnoService', () => {
             spy = sandbox.stub(http, 'post').resolves(res)
             const emAnnoPath = '/em-anno/12345'
             const response = await handlePost(emAnnoPath, dummyAnnotation, req)
-            expect(response).to.equal('ok')
+            expect(response.data).to.equal('ok')
         })
     })
 
@@ -66,7 +66,7 @@ describe('enAnnoService', () => {
             spy = sandbox.stub(http, 'put').resolves(res)
             const emAnnoPath = '/em-anno/12345'
             const response = await handlePut(emAnnoPath, dummyAnnotation, req)
-            expect(response).to.equal('ok')
+            expect(response.data).to.equal('ok')
         })
     })
 
@@ -75,7 +75,7 @@ describe('enAnnoService', () => {
             spy = sandbox.stub(http, 'delete').resolves(res)
             const emAnnoPath = '/em-anno/12345'
             const response = await handleDelete(emAnnoPath, req)
-            expect(response).to.equal('ok')
+            expect(response.data).to.equal('ok')
         })
     })
 

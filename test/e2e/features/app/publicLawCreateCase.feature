@@ -1,5 +1,5 @@
 
-@probate @all
+@publiclaw @all 
 Feature: Public Law create case workflow
 
     Background:
@@ -11,17 +11,17 @@ Feature: Public Law create case workflow
 
     @smoke
     Scenario: Start create case for Public Law
-        When I start case with jurisdiction "<Jutisdiction>" case type "<caseType>" and event "<event>"
+        When I start case with jurisdiction "Public Law" case type "Care, supervision and EPOs" and event "Start application"
         Then I am on case form page
 
-    @ignore @smoke
+    
     Scenario: Cancel create case for Law
-        When I start case with jurisdiction "<Jutisdiction>" case type "<caseType>" and event "<event>"
+        When I start case with jurisdiction "Public Law" case type "Care, supervision and EPOs" and event "Start application"
         When I click cancel link
         When I am on case list page
-
+@ignore
     Scenario: Create and Submit Law Case
-        When I start case with jurisdiction "<Jutisdiction>" case type "<caseType>" and event "<event>"
+        When I start case with jurisdiction "Public Law" case type "Care, supervision and EPOs" and event "Start application"
         When I create Public Law case
         Then I am on check your answers page
         When I submit case

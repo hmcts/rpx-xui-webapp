@@ -1,5 +1,5 @@
 
-@probate @all
+@iac @all
 Feature: Immigration Asylum create case workflow
 
     Background:
@@ -11,17 +11,17 @@ Feature: Immigration Asylum create case workflow
 
     @smoke
     Scenario: Start create case for IA
-        When I start case with jurisdiction "<Jutisdiction>" case type "<caseType>" and event "<event>"
+        When I start case with jurisdiction "Immigration & Asylum" case type "IA Asylum Case* master" and event "Start your appeal"
         Then I am on case form page
 
-    @ignore @smoke
+    
     Scenario: Cancel create case for IA
-        When I start case with jurisdiction "<Jutisdiction>" case type "<caseType>" and event "<event>"
+        When I start case with jurisdiction "Immigration & Asylum" case type "IA Asylum Case* master" and event "Start your appeal"
         When I click cancel link
         When I am on case list page
 
     Scenario: Create and Submit IA Case
-        When I start case with jurisdiction "<Jutisdiction>" case type "<caseType>" and event "<event>"
+        When I start case with jurisdiction "Immigration & Asylum" case type "IA Asylum Case* master" and event "Start your appeal"
         When I create Immigration Asylum case
         Then I am on check your answers page
         When I submit case

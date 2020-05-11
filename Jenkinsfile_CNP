@@ -49,7 +49,6 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 withPipeline(type, product, component) {
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
-   // enableDockerBuild()
     installCharts()
     enableSecurityScan()
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net'

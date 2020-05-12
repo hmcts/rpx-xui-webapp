@@ -1,4 +1,3 @@
-import { AxiosResponse } from 'axios'
 import { http } from '../lib/http'
 import * as log4jui from '../lib/log4jui'
 import { EnhancedRequest, JUILogger } from '../lib/models'
@@ -13,7 +12,7 @@ const logger: JUILogger = log4jui.getLogger('em-anno-service')
  * @param annotationsPath
  * @returns {Promise<null>}
  */
-export async function handleGet(annotationsPath: string, req: EnhancedRequest): Promise<AxiosResponse> {
+export async function handleGet(annotationsPath: string, req: EnhancedRequest): Promise<any> {
 
     try {
         logger.info('getting annotations', annotationsPath)
@@ -34,7 +33,7 @@ export async function handleGet(annotationsPath: string, req: EnhancedRequest): 
  * @param body
  * @returns {Promise<null>}
  */
-export async function handlePost(annotationsPath: string, body: Annotation, req: EnhancedRequest): Promise<AxiosResponse> {
+export async function handlePost(annotationsPath: string, body: Annotation, req: EnhancedRequest): Promise<any> {
 
     try {
         logger.info('posting annotations', annotationsPath)
@@ -55,7 +54,7 @@ export async function handlePost(annotationsPath: string, body: Annotation, req:
  * @param body
  * @returns {Promise<null>}
  */
-export async function handlePut(annotationsPath: string, body: Annotation, req: EnhancedRequest): Promise<AxiosResponse> {
+export async function handlePut(annotationsPath: string, body: Annotation, req: EnhancedRequest): Promise<any> {
 
     try {
         logger.info('putting annotations', annotationsPath)
@@ -75,7 +74,7 @@ export async function handlePut(annotationsPath: string, body: Annotation, req: 
  * @param annotationsPath
  * @returns {Promise<null>}
  */
-export async function handleDelete(annotationsPath: string, req: EnhancedRequest): Promise<AxiosResponse> {
+export async function handleDelete(annotationsPath: string, req: EnhancedRequest): Promise<any> {
 
     try {
         logger.info('deleting annotations', annotationsPath)

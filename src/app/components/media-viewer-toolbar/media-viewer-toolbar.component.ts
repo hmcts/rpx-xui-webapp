@@ -1,5 +1,6 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef  } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, Renderer2, Inject } from '@angular/core';
 import { ToolbarEventService, ToolbarButtonVisibilityService } from '@hmcts/media-viewer';
+import { DOCUMENT } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -16,7 +17,9 @@ export class MediaViewerToolbarComponent implements OnInit, OnDestroy  {
 
   public constructor(
     public readonly toolbarEvents: ToolbarEventService,
-    public readonly toolbarButtons: ToolbarButtonVisibilityService
+    public readonly toolbarButtons: ToolbarButtonVisibilityService,
+    private renderer2: Renderer2,
+    @Inject(DOCUMENT) private _document
   ) {
   }
 
@@ -25,6 +28,10 @@ export class MediaViewerToolbarComponent implements OnInit, OnDestroy  {
       this.toolbarEvents.setCurrentPageSubject.subscribe(pageNumber => this.setCurrentPage(pageNumber)),
       this.toolbarEvents.setCurrentPageInputValueSubject.subscribe(pageNumber => this.pageNumber = pageNumber)
     );
+    const s = this.renderer2.createElement('script');
+    s.type = 'text/javascript';
+    s.text = 'function xuiMediaViewerDropdown() {var x = document.getElementById("mv-toolbar-right-exui");if (x.className === "mv-toolbar-right") {x.className += " responsive";} else {x.className = "mv-toolbar-right";}}';
+    this.renderer2.appendChild(this._document.body, s);
   }
 
   public ngOnDestroy(): void {

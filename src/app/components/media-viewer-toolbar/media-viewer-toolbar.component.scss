@@ -236,3 +236,31 @@
   }
 }
 
+.dropdown-xui-toolbar-button {
+  display: none;
+
+}
+
+@media screen and (max-width: 1170px) {
+  .dropdown-xui-toolbar-button {
+    float: right;
+    display: block;
+  }
+
+  .mv-toolbar-right.responsive {position: relative;}
+
+
+  .mv-toolbar-right.responsive button.dropdown-xui-toolbar-button {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
+  .mv-toolbar-right.responsive button {
+    float: none;
+    display: block;
+    text-align: left;
+  }
+
+
+}

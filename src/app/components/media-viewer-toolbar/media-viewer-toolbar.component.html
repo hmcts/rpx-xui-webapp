@@ -3,7 +3,7 @@
     <div class="mv-toolbar-left">
       <button id="mvIndexBtn" class="jui-toolbar__button jui-toolbar__button--items" aria-pressed="false" (click)="toggleSideBar()">Index</button>
       <button id="mvDrawBtn" class="jui-toolbar__button jui-toolbar__menu-button--draw" [class.toggled]="toolbarEvents.drawModeSubject | async" aria-pressed="false" (click)="onClickDrawToggle()">Draw a box</button>
-      <button id="mvHighlightBtn" class="jui-toolbar__button jui-toolbar__menu-button--highlight" [class.toggled]="toolbarEvents.highlightModeSubject | async"  aria-pressed="false" (click)="onClickHighlightToggle()">Highlight</button>      
+      <button id="mvHighlightBtn" class="jui-toolbar__button jui-toolbar__menu-button--highlight" [class.toggled]="toolbarEvents.highlightModeSubject | async"  aria-pressed="false" (click)="onClickHighlightToggle()">Highlight</button>
     </div>
     <div class="mv-toolbar-center">
       <div class="jui-toolbar__button mv-button-left-border no-top-bottom-padding" aria-pressed="false">Page
@@ -42,10 +42,13 @@
         </div>
         <button id="mvRotateBtn" class="jui-toolbar__button jui-toolbar__menu-button--rotate" aria-pressed="false" (click)="rotate(90)">Rotate</button>
     </div>
-    <div class="mv-toolbar-right">
+    <div class="mv-toolbar-right" id="mv-toolbar-right-exui" >
       <button id="mvDownloadBtn" class="jui-toolbar__button jui-toolbar__menu-button--download mv-button-left-border" aria-pressed="false" (click)="downloadFile()">Download</button>
       <button id="mvPrintBtn" class="jui-toolbar__button jui-toolbar__menu-button--printer" aria-pressed="false" (click)="printFile()">Print</button>
-      <button id="mvSearchBtn" class="jui-toolbar__button jui-toolbar__menu-button--search" aria-pressed="false" (click)="toggleSearchBar()">Search</button>      
+      <button id="mvSearchBtn" class="jui-toolbar__button jui-toolbar__menu-button--search" aria-pressed="false" (click)="toggleSearchBar()">Search</button>
+      <button class="dropdown-xui-toolbar-button" onclick="xuiMediaViewerDropdown()"> >> More options</button>
     </div>
+
 </div>
 </div>
+

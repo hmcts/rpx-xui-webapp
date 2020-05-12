@@ -4,6 +4,9 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Action, Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import { TermsAndConditionsComponent } from './terms-and-conditions.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TermsConditionsService } from 'src/app/services/terms-and-conditions/terms-and-conditions.service';
+import { By } from '@angular/platform-browser';
 
 const storeMock = {
     pipe: () => of(null),
@@ -31,20 +34,24 @@ describe('TermsAndConditionsComponent', () => {
     let component: TermsAndConditionsComponent;
     let fixture: ComponentFixture<TermsAndConditionsComponent>;
     let element: DebugElement;
+    let termsConditionsService: TermsConditionsService;
 
     beforeEach(async(() => {
         pipeSpy = spyOn(storeMock, 'pipe');
         dispatchSpy = spyOn(storeMock, 'dispatch');
         TestBed.configureTestingModule({
             imports: [
-                RouterTestingModule
+                RouterTestingModule,
+                HttpClientTestingModule
             ],
             declarations: [ TermsAndConditionsComponent, TestDummyHostComponent ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             providers: [{
                 provide: Store,
                 useValue: storeMock
-            }]
+            },
+            TermsConditionsService
+          ]
         })
             .compileComponents();
     }));
@@ -56,6 +63,7 @@ describe('TermsAndConditionsComponent', () => {
         fixture = TestBed.createComponent(TermsAndConditionsComponent);
         component = fixture.componentInstance;
         element = fixture.debugElement;
+        termsConditionsService = fixture.debugElement.injector.get(TermsConditionsService);
     });
 
     it('should create', () => {
@@ -66,16 +74,26 @@ describe('TermsAndConditionsComponent', () => {
     });
 
     it('should dispatch LoadTermsConditions', () => {
-        pipeSpy.and.returnValue(of(null));
-        component.ngOnInit();
-        expect(pipeSpy).toHaveBeenCalledTimes(1);
-        expect(dispatchSpy).toHaveBeenCalledTimes(1);
+      spyOn(termsConditionsService, 'isTermsConditionsFeatureEnabled').and.returnValue(of(true));
+      pipeSpy.and.returnValue(of(null));
+      component.ngOnInit();
+      expect(pipeSpy).toHaveBeenCalledTimes(1);
+      expect(dispatchSpy).toHaveBeenCalledTimes(1);
     });
 
     it('should not dispatch when document is available', () => {
+        spyOn(termsConditionsService, 'isTermsConditionsFeatureEnabled').and.returnValue(of(true));
         pipeSpy.and.returnValue(of(true));
         component.ngOnInit();
         expect(pipeSpy).toHaveBeenCalledTimes(1);
         expect(dispatchSpy).not.toHaveBeenCalled();
+    });
+
+    it('should display old legacy terms and conditions when feature is not enabled', () => {
+      spyOn(termsConditionsService, 'isTermsConditionsFeatureEnabled').and.returnValue(of(false));
+      component.ngOnInit();
+      fixture.detectChanges();
+      const legacy = fixture.debugElement.query(By.css('#main-content'));
+      expect(legacy).toBeTruthy();
     });
 });

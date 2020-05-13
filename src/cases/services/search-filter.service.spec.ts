@@ -7,8 +7,7 @@ import {
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FormControl, FormGroup } from '@angular/forms';
 import { JURISDICTION_1, CASE_TYPE_1, CASE_STATE_1 } from '../mock/search-filter.mock';
-import { StoreModule, combineReducers, Store } from '@ngrx/store';
-import * as fromRoot from '../../app/store/reducers';
+import { StoreModule, Store } from '@ngrx/store';
 import * as fromCaseSearchStore from '../store';
 
 const JURISDICTION: Jurisdiction = JURISDICTION_1;
@@ -32,10 +31,7 @@ describe('SearchFilterService', () => {
 
         TestBed.configureTestingModule({
             imports: [
-                StoreModule.forRoot({
-                    ...fromRoot.reducers,
-                    feature: combineReducers(fromCaseSearchStore.reducers),
-                }),
+                StoreModule.forRoot({}),
             ],
             providers: [
                 SearchFilterService,

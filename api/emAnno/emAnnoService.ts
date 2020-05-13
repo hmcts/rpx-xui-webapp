@@ -11,7 +11,7 @@ const logger: JUILogger = log4jui.getLogger('em-anno-service')
  * Get Annotations
  *
  * @param annotationsPath
- * @returns {Promise<null>}
+ * @returns {Promise<AxiosResponse>}
  */
 export async function handleGet(annotationsPath: string, req: EnhancedRequest): Promise<AxiosResponse> {
 
@@ -32,7 +32,7 @@ export async function handleGet(annotationsPath: string, req: EnhancedRequest): 
  *
  * @param annotationsPath
  * @param body
- * @returns {Promise<null>}
+ * @returns {Promise<AxiosResponse>}
  */
 export async function handlePost(annotationsPath: string, body: Annotation, req: EnhancedRequest): Promise<AxiosResponse> {
 
@@ -53,7 +53,7 @@ export async function handlePost(annotationsPath: string, body: Annotation, req:
  *
  * @param annotationsPath
  * @param body
- * @returns {Promise<null>}
+ * @returns {Promise<AxiosResponse>}
  */
 export async function handlePut(annotationsPath: string, body: Annotation, req: EnhancedRequest): Promise<AxiosResponse> {
 
@@ -73,7 +73,7 @@ export async function handlePut(annotationsPath: string, body: Annotation, req: 
  * Delete Annotations
  *
  * @param annotationsPath
- * @returns {Promise<null>}
+ * @returns {Promise<AxiosResponse>}
  */
 export async function handleDelete(annotationsPath: string, req: EnhancedRequest): Promise<AxiosResponse> {
 

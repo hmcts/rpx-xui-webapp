@@ -242,12 +242,18 @@
 }
 
 @media screen and (max-width: 1170px) {
-  .dropdown-xui-toolbar-button {
+  .mv-toolbar-right button {
+    display: none;
+  }
+
+  .mv-toolbar-right button.dropdown-xui-toolbar-button {
     float: right;
     display: block;
   }
 
-  .mv-toolbar-right.responsive {position: relative;}
+  .mv-toolbar-right.responsive {position: relative; padding-top: 40px;  background-color: #fff;}
+
+  .mv-toolbar-right.responsive button { width: 150px;}
 
 
   .mv-toolbar-right.responsive button.dropdown-xui-toolbar-button {
@@ -261,6 +267,7 @@
     display: block;
     text-align: left;
   }
+
 
 
 }

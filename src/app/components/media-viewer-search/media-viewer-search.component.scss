@@ -34,3 +34,10 @@
 #findPrevious{
   margin-right: 5px;
 }
+
+@media screen and (max-width: 1170px) {
+  .mv-findbar {
+    top: 40px;
+    right: 150px;
+  }
+}

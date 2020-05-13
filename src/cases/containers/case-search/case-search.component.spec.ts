@@ -1,8 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CaseSearchComponent } from './case-search.component';
-import { Store, StoreModule } from '@ngrx/store';
+import { Store, StoreModule, combineReducers } from '@ngrx/store';
 import * as fromCaseSearchStore from '../../store';
 import { RouterTestingModule } from '@angular/router/testing';
+import * as fromRoot from '../../../app/store/reducers';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { of } from 'rxjs';
@@ -23,7 +24,10 @@ describe('CaseSearchComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
-        StoreModule.forRoot({}),
+        StoreModule.forRoot({
+          ...fromRoot.reducers,
+          feature: combineReducers(fromCaseSearchStore.reducers),
+        }),
       ],
       schemas: [
         CUSTOM_ELEMENTS_SCHEMA

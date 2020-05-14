@@ -79,7 +79,7 @@ describe('CaseCreateSubmitComponent', () => {
         CaseUIToolkitModule,
         HttpModule,
         HttpClientTestingModule,
-        StoreModule.forRoot({...fromCases.reducers, cases: combineReducers(fromCases.reducers)}),
+        StoreModule.forRoot({...fromCases.appReducers, cases: combineReducers(fromCases.appReducers)}),
         EffectsModule.forRoot([]),
         SharedModule
       ],

@@ -44,7 +44,7 @@ describe('CaseCreateComponent', () => {
         RouterTestingModule,
         CaseUIToolkitModule,
         HttpClientTestingModule,
-        StoreModule.forRoot({...reducers, cases: combineReducers(fromCases.reducers)}),
+        StoreModule.forRoot({...reducers, cases: combineReducers(fromCases.appReducers)}),
         EffectsModule.forRoot([]),
         SharedModule,
         SearchFiltersModule,

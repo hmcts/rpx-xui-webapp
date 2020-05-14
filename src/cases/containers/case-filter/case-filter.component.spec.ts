@@ -25,7 +25,7 @@ import { HttpModule } from '@angular/http';
 import { SharedModule } from '../../../app/shared/shared.module';
 import { AppConfigService } from '../../../app/services/config/configuration.services';
 import { CaseFilterComponent } from './case-filter.component';
-import { reducers } from '../../store/reducers';
+import { appReducers } from '../../store/reducers';
 import * as fromCases from '../../store/reducers/';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import * as fromCaseCreate from '../../store/reducers';
@@ -45,7 +45,7 @@ describe('Case Filter Component', () => {
         RouterTestingModule,
         CaseUIToolkitModule,
         HttpClientTestingModule,
-        StoreModule.forRoot({ ...reducers, cases: combineReducers(fromCases.reducers) }),
+        StoreModule.forRoot({ ...appReducers, cases: combineReducers(fromCases.appReducers) }),
         HttpModule,
         SharedModule,
         SearchFiltersModule,

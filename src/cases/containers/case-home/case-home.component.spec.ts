@@ -28,7 +28,7 @@ describe('CaseHomeComponent', () => {
       imports: [
         RouterTestingModule,
         CaseUIToolkitModule,
-        StoreModule.forRoot({...reducers, cases: combineReducers(fromFeature.reducers)}),
+        StoreModule.forRoot({...reducers, cases: combineReducers(fromFeature.appReducers)}),
       ],
       declarations: [CaseHomeComponent],
       providers: [

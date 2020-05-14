@@ -46,7 +46,7 @@ export const initialSearchState: SearchState = {
   loaded: false
 };
 
-export function reducer(
+export function searchFilterReducer(
   state = initialSearchState,
   action: fromCases.CaseSearchAction
 ): SearchState {

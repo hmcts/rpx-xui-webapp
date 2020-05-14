@@ -29,7 +29,7 @@ import {
 import { casesRouting } from './case-feature.routes';
 import {StoreModule} from '@ngrx/store';
 import {EffectsModule} from '@ngrx/effects';
-import {reducers, effects} from './store';
+import {appReducers, effects} from './store';
 import {SharedModule} from '../app/shared/shared.module';
 import {HttpModule} from '@angular/http';
 // from containers
@@ -48,7 +48,7 @@ import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-tr
     CreateCaseFiltersModule,
     SearchResultModule,
     HttpClientModule,
-    StoreModule.forFeature('cases', reducers),
+    StoreModule.forFeature('cases', appReducers),
     EffectsModule.forFeature(effects),
     casesRouting,
     SharedModule,

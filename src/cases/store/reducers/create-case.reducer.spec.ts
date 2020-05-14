@@ -10,7 +10,7 @@ describe('CasesReducer', () => {
 
       expect(state).toBe(initialState);
     });
-  }); 
+  });
 
   describe('CREATE_CASE_APPLY action', () => {
     it('should set correct object', () => {

@@ -43,7 +43,7 @@ export class SearchFilterService {
     const caseTypeId = filter.caseType.id;
     const filters = this.getCaseFilterFromFormGroup(filter.formGroup);
     const caseFilters = filters.caseFilter;
-    const metadataFilters = { ...searchParams, ...filters.metadataFilter };
+    const metadataFilters = Object.assign(searchParams, filters.metadataFilter);
     const view = filter.view;
 
     return { jurisdictionId, caseTypeId, metadataFilters, caseFilters, view };

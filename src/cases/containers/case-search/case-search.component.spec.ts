@@ -26,7 +26,7 @@ describe('CaseSearchComponent', () => {
         RouterTestingModule,
         StoreModule.forRoot({
           ...fromRoot.reducers,
-          feature: combineReducers(fromCaseSearchStore.reducers),
+          feature: combineReducers(fromCaseSearchStore.appReducers),
         }),
       ],
       schemas: [

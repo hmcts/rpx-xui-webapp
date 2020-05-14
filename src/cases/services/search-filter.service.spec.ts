@@ -34,7 +34,7 @@ describe('SearchFilterService', () => {
             imports: [
                 StoreModule.forRoot({
                     ...fromRoot.reducers,
-                    feature: combineReducers(fromCaseSearchStore.reducers),
+                    feature: combineReducers(fromCaseSearchStore.appReducers),
                 }),
             ],
             providers: [

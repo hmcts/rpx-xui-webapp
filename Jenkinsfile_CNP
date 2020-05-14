@@ -28,12 +28,12 @@ def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 def secrets = [
   'rpx-${env}': [
-    secret('mc-s2s-client-secret', 'S2S_SECRET'),
-    secret('mc-idam-client-secret', 'IDAM_SECRET'),
-    secret('webapp-redis-connection-string', 'REDISCLOUD_URL'),
+    //secret('mc-s2s-client-secret', 'S2S_SECRET'),
+    //secret('mc-idam-client-secret', 'IDAM_SECRET'),
+    //secret('webapp-redis-connection-string', 'REDISCLOUD_URL'),
     secret('test-email', 'TEST_EMAIL'),
     secret('test-password', 'TEST_PASSWORD'),
-    secret('appinsights-instrumentationkey-mc', 'APPINSIGHTS_INSTRUMENTATIONKEY')
+    //secret('appinsights-instrumentationkey-mc', 'APPINSIGHTS_INSTRUMENTATIONKEY')
   ],
   ]
 
@@ -49,11 +49,8 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 withPipeline(type, product, component) {
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
-   // enableDockerBuild()
-    installCharts()
     enableSecurityScan()
-    env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net'
-    installCharts() 
+    env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net' 
     enableAksStagingDeployment()
 
 // Disable pact testing on pipeline

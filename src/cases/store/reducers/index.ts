@@ -10,9 +10,9 @@ export interface State {
   caseList: fromCaseListFilters.CaselistState;
 }
 
-export const appReducers: ActionReducerMap<State> = {
-  caseCreate: fromCaseCreate.createCaseReducer,
-  caseSearch: fromCaseSearchFilters.searchFilterReducer,
+export const reducers: ActionReducerMap<State> = {
+  caseCreate: fromCaseCreate.reducerCreateCase,
+  caseSearch: fromCaseSearchFilters.reducer,
   caseList: fromCaseListFilters.caselistReducer
 };
 

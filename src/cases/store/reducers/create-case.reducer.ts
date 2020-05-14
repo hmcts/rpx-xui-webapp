@@ -19,7 +19,7 @@ export const initialState: CasesState = {
   loading: false,
 };
 
-export function createCaseReducer(
+export function reducerCreateCase(
   state = initialState,
   action: fromCases.CreateCasesAction
 ): CasesState {

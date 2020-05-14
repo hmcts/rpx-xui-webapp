@@ -43,7 +43,7 @@ xdescribe('CaseDetailsComponent', () => {
         RouterTestingModule,
         CaseUIToolkitModule,
         HttpClientTestingModule,
-        StoreModule.forRoot({...reducers, cases: combineReducers(fromCases.appReducers)}),
+        StoreModule.forRoot({...reducers, cases: combineReducers(fromCases.reducers)}),
         SharedModule,
         SearchFiltersModule,
       ],

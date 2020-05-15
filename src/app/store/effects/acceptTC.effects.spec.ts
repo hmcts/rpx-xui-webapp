@@ -2,15 +2,15 @@ import { TestBed } from '@angular/core/testing';
 import { StoreModule } from '@ngrx/store';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AcceptTermsService } from '../../../../src/app/services/acceptTerms/acceptTerms.service';
-import * as fromTcEffects from './acceptTC.effects';
+import { AcceptTcEffects } from './acceptTC.effects';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { of } from 'rxjs';
-import * as acceptTandCActions from '../actions';
+import { LoadHasAcceptedTCSuccess, AcceptTandCSuccess } from '../actions';
 import { hot } from 'jasmine-marbles';
 
 describe('acceptTC Effects', () => {
     let actions$;
-    let effects: fromTcEffects.AcceptTcEffects;
+    let effects: AcceptTcEffects;
     const AcceptTermsServiceMock = jasmine.createSpyObj('AcceptTermsService', [
         'getIsUserAccepted', 'postUserAccepted'
     ]);
@@ -26,19 +26,19 @@ describe('acceptTC Effects', () => {
                     provide: AcceptTermsService,
                     useValue: AcceptTermsServiceMock
                 },
-                fromTcEffects.AcceptTcEffects,
+                AcceptTcEffects,
                 provideMockActions(() => actions$)
             ]
         });
 
-        effects = TestBed.get(fromTcEffects.AcceptTcEffects);
+        effects = TestBed.get(AcceptTcEffects);
 
     });
 
     it('should accept TC', () => {
         const payload = [{ payload: 'userId' }];
         AcceptTermsServiceMock.getIsUserAccepted.and.returnValue(of(payload));
-        const action = new acceptTandCActions.LoadHasAcceptedTCSuccess(true);
+        const action = new LoadHasAcceptedTCSuccess(true);
         actions$ = hot('-a', { a: action });
         effects.loadHasAccepted$.subscribe(() => {
             expect(AcceptTermsServiceMock.getIsUserAccepted).toHaveBeenCalled();
@@ -48,7 +48,7 @@ describe('acceptTC Effects', () => {
     it('should accept TC', () => {
         const payload = [{ payload: 'userId' }];
         AcceptTermsServiceMock.postUserAccepted.and.returnValue(of(payload));
-        const action = new acceptTandCActions.AcceptTandCSuccess(true);
+        const action = new AcceptTandCSuccess(true);
         actions$ = hot('-a', { a: action });
         effects.loadHasAccepted$.subscribe(() => {
             expect(AcceptTermsServiceMock.postUserAccepted).toHaveBeenCalled();

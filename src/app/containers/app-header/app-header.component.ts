@@ -5,7 +5,7 @@ import {AppConstants} from '../../app.constants';
 import {NavItemsModel} from '../../models/nav-item.model';
 import {AppTitleModel} from '../../models/app-title.model';
 import {UserNavModel} from '../../models/user-nav.model';
-import * as fromActions from '../../store';
+import { Logout, State } from '../../store';
 
 @Component({
   selector: 'exui-app-header',
@@ -17,7 +17,7 @@ export class AppHeaderComponent implements OnInit {
   userNav: UserNavModel;
 
   constructor(
-    private store: Store<fromActions.State>) {
+    private store: Store<State>) {
   }
 
   ngOnInit(): void {
@@ -28,7 +28,7 @@ export class AppHeaderComponent implements OnInit {
 
   onNavigate(event): void {
     if (event === 'sign-out') {
-      return this.store.dispatch(new fromActions.Logout());
+      return this.store.dispatch(new Logout());
     }
   }
 }

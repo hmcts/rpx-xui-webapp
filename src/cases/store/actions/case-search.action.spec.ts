@@ -1,20 +1,25 @@
-import * as fromCaseSearch from './case-search.action';
+import { JurisdictionSelected, JURISDICTION_SELECTED, Applied, APPLIED,
+  Reset, RESET, ApplySearchFilter, APPLY_SEARCH_FILTER, ApplySearchFilterSuccess,
+  APPLY_SEARCH_FILTER_SUCCESS, ApplySearchFilterFail, APPLY_SEARCH_FILTER_FAIL, FindSearchPaginationMetadata,
+  FIND_SEARCH_PAGINATION_METADATA, SearchResultPageChange, SEARCH_RESULT_PAGE_CHANGE, FindSearchPaginationMetadataSuccess,
+  FIND_SEARCH_PAGINATION_METADATA_SUCCESS, SearchFilterToggle, SEARCH_FILTER_DISPLAY_TOGGLE, SearchFilterToggleSuccess,
+  SEARCH_FILTER_DISPLAY_TOGGLE_SUCCESS } from './case-search.action';
 
 describe('Case Search Actions', () => {
   describe('Search Cases filter', () => {
     describe('Jurisdiction Selected', () => {
       it('should create an action', () => {
-        const action = new fromCaseSearch.JurisdictionSelected();
-        expect(action.type).toBe(fromCaseSearch.JURISDICTION_SELECTED);
+        const action = new JurisdictionSelected();
+        expect(action.type).toBe(JURISDICTION_SELECTED);
       });
     });
 
     describe('Applied', () => {
       it('should create an action', () => {
         const payload = {};
-        const action = new fromCaseSearch.Applied({});
+        const action = new Applied({});
         expect({ ...action }).toEqual({
-          type: fromCaseSearch.APPLIED,
+          type: APPLIED,
           payload
         });
       });
@@ -22,10 +27,10 @@ describe('Case Search Actions', () => {
 
     describe('Reset', () => {
       it('should create an action', () => {
-        const action = new fromCaseSearch.Reset();
+        const action = new Reset();
 
         expect({ ...action }).toEqual({
-          type: fromCaseSearch.RESET
+          type: RESET
         });
       });
     });
@@ -33,9 +38,9 @@ describe('Case Search Actions', () => {
     describe('ApplySearchFilter', () => {
       it('should create an action', () => {
         const payload = {};
-        const action = new fromCaseSearch.ApplySearchFilter(payload);
+        const action = new ApplySearchFilter(payload);
         expect({ ...action }).toEqual({
-          type: fromCaseSearch.APPLY_SEARCH_FILTER,
+          type: APPLY_SEARCH_FILTER,
           payload
         });
       });
@@ -44,9 +49,9 @@ describe('Case Search Actions', () => {
     describe('ApplySearchFilterSuccess', () => {
       it('should create an action', () => {
         const payload = {};
-        const action = new fromCaseSearch.ApplySearchFilterSuccess(payload);
+        const action = new ApplySearchFilterSuccess(payload);
         expect({ ...action }).toEqual({
-          type: fromCaseSearch.APPLY_SEARCH_FILTER_SUCCESS,
+          type: APPLY_SEARCH_FILTER_SUCCESS,
           payload
         });
       });
@@ -55,9 +60,9 @@ describe('Case Search Actions', () => {
     describe('ApplySearchFilterFail', () => {
       it('should create an action', () => {
         const payload = {};
-        const action = new fromCaseSearch.ApplySearchFilterFail(payload);
+        const action = new ApplySearchFilterFail(payload);
         expect({ ...action }).toEqual({
-          type: fromCaseSearch.APPLY_SEARCH_FILTER_FAIL,
+          type: APPLY_SEARCH_FILTER_FAIL,
           payload
         });
       });
@@ -66,9 +71,9 @@ describe('Case Search Actions', () => {
     describe('FindSearchPaginationMetadata', () => {
       it('should create an action', () => {
         const payload = {};
-        const action = new fromCaseSearch.FindSearchPaginationMetadata(payload);
+        const action = new FindSearchPaginationMetadata(payload);
         expect({ ...action }).toEqual({
-          type: fromCaseSearch.FIND_SEARCH_PAGINATION_METADATA,
+          type: FIND_SEARCH_PAGINATION_METADATA,
           payload
         });
       });
@@ -77,9 +82,9 @@ describe('Case Search Actions', () => {
     describe('SearchResultPageChange', () => {
       it('should create an action', () => {
         const payload = {};
-        const action = new fromCaseSearch.SearchResultPageChange(payload);
+        const action = new SearchResultPageChange(payload);
         expect({ ...action }).toEqual({
-          type: fromCaseSearch.SEARCH_RESULT_PAGE_CHANGE,
+          type: SEARCH_RESULT_PAGE_CHANGE,
           payload
         });
       });
@@ -88,9 +93,9 @@ describe('Case Search Actions', () => {
     describe('FindSearchPaginationMetadataSuccess', () => {
       it('should create an action', () => {
         const payload = {};
-        const action = new fromCaseSearch.FindSearchPaginationMetadataSuccess(payload);
+        const action = new FindSearchPaginationMetadataSuccess(payload);
         expect({ ...action }).toEqual({
-          type: fromCaseSearch.FIND_SEARCH_PAGINATION_METADATA_SUCCESS,
+          type: FIND_SEARCH_PAGINATION_METADATA_SUCCESS,
           payload
         });
       });
@@ -99,9 +104,9 @@ describe('Case Search Actions', () => {
     describe('SearchFilterToggle', () => {
       it('should create an action', () => {
         const payload = {};
-        const action = new fromCaseSearch.SearchFilterToggle(payload);
+        const action = new SearchFilterToggle(payload);
         expect({ ...action }).toEqual({
-          type: fromCaseSearch.SEARCH_FILTER_DISPLAY_TOGGLE,
+          type: SEARCH_FILTER_DISPLAY_TOGGLE,
           payload
         });
       });
@@ -110,9 +115,9 @@ describe('Case Search Actions', () => {
     describe('SearchFilterToggleSuccess', () => {
       it('should create an action', () => {
         const payload = {};
-        const action = new fromCaseSearch.SearchFilterToggleSuccess(payload);
+        const action = new SearchFilterToggleSuccess(payload);
         expect({ ...action }).toEqual({
-          type: fromCaseSearch.SEARCH_FILTER_DISPLAY_TOGGLE_SUCCESS,
+          type: SEARCH_FILTER_DISPLAY_TOGGLE_SUCCESS,
           payload
         });
       });

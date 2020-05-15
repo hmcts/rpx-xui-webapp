@@ -26,9 +26,8 @@ import { SharedModule } from '../../../app/shared/shared.module';
 import { AppConfigService } from '../../../app/services/config/configuration.services';
 import { CaseFilterComponent } from './case-filter.component';
 import { reducers } from '../../store/reducers';
-import * as fromCases from '../../store/reducers/';
+import { reducers as fromCasesReducers} from '../../store/reducers/';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import * as fromCaseCreate from '../../store/reducers';
 
 class MockSortService {
   features = {};
@@ -45,7 +44,7 @@ describe('Case Filter Component', () => {
         RouterTestingModule,
         CaseUIToolkitModule,
         HttpClientTestingModule,
-        StoreModule.forRoot({ ...reducers, cases: combineReducers(fromCases.reducers) }),
+        StoreModule.forRoot({ ...reducers, cases: combineReducers(fromCasesReducers) }),
         HttpModule,
         SharedModule,
         SearchFiltersModule,
@@ -93,7 +92,6 @@ describe('Case Filter Component', () => {
     component = fixture.componentInstance;
     component.startButtonText = 'start';
     component.caseCreatFilterBindings = [];
-    component.fromCasesFeature = fromCaseCreate;
     fixture.detectChanges();
   });
 

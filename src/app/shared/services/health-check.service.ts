@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Observable, of, Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import * as fromRoot from '../../store';
+import { State, getRouterUrl } from '../../store';
 import { Store, select } from '@ngrx/store';
 
 @Injectable()
@@ -11,7 +11,7 @@ export class HealthCheckService implements OnDestroy {
 
     constructor(
         private http: HttpClient,
-        private store: Store<fromRoot.State>,
+        private store: Store<State>,
     ) { }
 
     doHealthCheck(): Observable<any> {
@@ -19,7 +19,7 @@ export class HealthCheckService implements OnDestroy {
         const result: { healthState } = { healthState };
         let path = '';
 
-        this.routeSubscription = this.store.pipe(select(fromRoot.getRouterUrl)).subscribe(value => {
+        this.routeSubscription = this.store.pipe(select(getRouterUrl)).subscribe(value => {
             path = value;
         });
 

@@ -1,14 +1,14 @@
 import { createSelector } from '@ngrx/store';
 
-import * as fromFeature from '../../store/reducers';
+import { getCaseFeatureState, State, getCaseFiltersState } from '../../store/reducers';
 
 export const getCreateCaseState = createSelector(
-  fromFeature.getCaseFeatureState,
-  (state: fromFeature.State) => state.caseCreate
+  getCaseFeatureState,
+  (state: State) => state.caseCreate
 );
 
 export const getCreateCaseFilterState = createSelector(
   getCreateCaseState,
-  fromFeature.getCaseFiltersState
+  getCaseFiltersState
 );
 

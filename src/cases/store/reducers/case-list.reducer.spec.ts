@@ -1,13 +1,11 @@
-import * as filterCaseList from './case-list.reducer';
-import * as fromCases from '../actions/case-list.action';
-import { CaseTypeLite, Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
+import { caselistReducer, initialCaselistState } from './case-list.reducer';
+import { ApplyCaselistFilter } from '../actions/case-list.action';
 
 describe('CaseList Filter Reducer', () => {
     describe('undefined action', () => {
       it('should return the default state', () => {
-        const { initialCaselistState } = filterCaseList;
         const action = {} as any;
-        const state = filterCaseList.caselistReducer(undefined, action);
+        const state = caselistReducer(undefined, action);
         expect(state).toBe(initialCaselistState);
       });
     });
@@ -16,8 +14,7 @@ describe('CaseList Filter Reducer', () => {
 
 describe('[CaseListFilter] Applied', () => {
   it('should set correct object', () => {
-    const { initialCaselistState } = filterCaseList;
-    const action = new fromCases.ApplyCaselistFilter({
+    const action = new ApplyCaselistFilter({
       selected: {
       caseState: {
         id: '1',
@@ -43,7 +40,7 @@ describe('[CaseListFilter] Applied', () => {
     }
     });
 
-    const state = filterCaseList.caselistReducer(initialCaselistState, action);
+    const state = caselistReducer(initialCaselistState, action);
 
     expect(state.loading).toEqual(true);
     expect(state.loaded).toEqual(false);

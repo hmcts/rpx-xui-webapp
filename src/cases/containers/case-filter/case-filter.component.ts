@@ -1,6 +1,6 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {Store} from '@ngrx/store';
-import * as fromCaseCreate from '../../store/reducers';
+import { State } from '../../store/reducers';
 import {ActionBindingModel} from '../../models/create-case-actions.model';
 import * as fromCasesFeature from '../../store';
 /**
@@ -32,7 +32,7 @@ export class CaseFilterComponent implements OnInit {
   startButtonText: string;
   caseCreatFilterBindings: ActionBindingModel[];
   fromCasesFeature: any;
-  constructor(private store: Store<fromCaseCreate.State>) {}
+  constructor(private store: Store<State>) {}
 
   ngOnInit(): void {
     this.fromCasesFeature = fromCasesFeature;

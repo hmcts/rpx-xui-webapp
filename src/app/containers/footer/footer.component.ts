@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { AppConstants } from '../../app.constants';
-import * as fromRoot from '../../store';
+import { State, getIsTermsAndConditionsFeatureEnabled } from '../../store';
 import { Helper, Navigation, NavigationItems } from './footer.model';
 
 @Component({
@@ -14,14 +14,14 @@ export class FooterComponent implements OnInit {
     public helpData: Helper = AppConstants.FOOTER_DATA;
     public navigationData: Navigation = AppConstants.FOOTER_DATA_NAVIGATION;
 
-    constructor(private readonly store: Store<fromRoot.State>) {
+    constructor(private readonly store: Store<State>) {
     }
 
     public ngOnInit() {
         const tAndCNavItem = this.getNavigationItemForTandC(this.navigationData.items);
         if (tAndCNavItem) {
             this.store.pipe(
-                select(fromRoot.getIsTermsAndConditionsFeatureEnabled)
+                select(getIsTermsAndConditionsFeatureEnabled)
             ).subscribe(isEnabled => {
                 tAndCNavItem.href = isEnabled ?  '/terms-and-conditions' : '/legacy-terms-and-conditions';
             });

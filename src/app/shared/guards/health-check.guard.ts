@@ -3,7 +3,7 @@ import { CanActivate } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
-import * as fromRoot from '../../store';
+import { State, Go } from '../../store';
 import { HealthCheckService } from '../services/health-check.service';
 
 
@@ -11,7 +11,7 @@ import { HealthCheckService } from '../services/health-check.service';
 export class HealthCheckGuard implements CanActivate {
     constructor(
         private readonly healthCheck: HealthCheckService,
-        private readonly store: Store<fromRoot.State>,
+        private readonly store: Store<State>,
     ) {
     }
 
@@ -36,7 +36,7 @@ export class HealthCheckGuard implements CanActivate {
     }
 
     public redirectToServiceDownPage() {
-        this.store.dispatch(new fromRoot.Go({ path: ['/service-down'] }));
+        this.store.dispatch(new Go({ path: ['/service-down'] }));
     }
 }
 

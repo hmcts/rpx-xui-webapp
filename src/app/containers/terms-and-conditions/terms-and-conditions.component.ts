@@ -3,7 +3,7 @@ import { TCDocument } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { TermsConditionsService } from 'src/app/services/terms-and-conditions/terms-and-conditions.service';
-import * as fromRoot from '../../store';
+import { getTermsAndConditions, LoadTermsConditions, State } from '../../store';
 
 @Component({
     selector: 'exui-terms-and-conditions',
@@ -16,7 +16,7 @@ export class TermsAndConditionsComponent implements OnInit, OnDestroy {
 
     public isTandCEnabled: boolean = false;
 
-    constructor(private readonly store: Store<fromRoot.State>,
+    constructor(private readonly store: Store<State>,
                 private readonly termsAndConditionsService: TermsConditionsService) {
     }
 
@@ -25,12 +25,12 @@ export class TermsAndConditionsComponent implements OnInit, OnDestroy {
         if (enabled) {
           this.isTandCEnabled = true;
           const s = this.store.pipe(
-            select(fromRoot.getTermsAndConditions)
+            select(getTermsAndConditions)
         ).subscribe(doc => {
             if (doc) {
                 this.document = doc;
             } else {
-                this.store.dispatch(new fromRoot.LoadTermsConditions());
+                this.store.dispatch(new LoadTermsConditions());
             }
           });
           this.subscriptions.push(s);

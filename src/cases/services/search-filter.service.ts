@@ -3,8 +3,6 @@ import { SearchService, AbstractAppConfig, HttpService, RequestOptionsBuilder } 
 import { Observable } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { isStringOrNumber, getFilterType, sanitiseMetadataFieldName } from '../utils/utils';
-import { Store } from '@ngrx/store';
-import * as fromCaseList from '../store/reducers';
 
 @Injectable()
 export class SearchFilterService {

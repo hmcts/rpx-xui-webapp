@@ -1,48 +1,49 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 
-import * as fromFeature from '../../store/reducers';
+import { getCaseFeatureState, State, getSearchFilterJurisdiction, getSearchFilterCaseType, getSearchFilterCaseState, getSearchFilterMetadataFields,
+  getSearchFilterResultView, getSearchFilterPageMetadata, getSearchResultsCurrentPage, getSearchFilterToggleState } from '../../store/reducers';
 
 export const getSearchState = createSelector(
- fromFeature.getCaseFeatureState,
- (state: fromFeature.State) => state.caseSearch
+ getCaseFeatureState,
+ (state: State) => state.caseSearch
 );
 
 export const searchFilterJurisdiction = createSelector(
     getSearchState,
-    fromFeature.getSearchFilterJurisdiction
+    getSearchFilterJurisdiction
 );
 
 export const searchFilterCaseType = createSelector(
     getSearchState,
-    fromFeature.getSearchFilterCaseType
+    getSearchFilterCaseType
 );
 
 export const searchFilterCaseState = createSelector(
     getSearchState,
-    fromFeature.getSearchFilterCaseState
+    getSearchFilterCaseState
 );
 
 export const searchFilterMetadataFields = createSelector(
     getSearchState,
-    fromFeature.getSearchFilterMetadataFields
+    getSearchFilterMetadataFields
 );
 
 export const searchFilterResultView = createSelector(
     getSearchState,
-    fromFeature.getSearchFilterResultView
+    getSearchFilterResultView
 );
 
 export const getSearchFilterPaginationMetadata = createSelector(
   getSearchState,
-  fromFeature.getSearchFilterPageMetadata
+  getSearchFilterPageMetadata
 );
 
 export const getCurrentPage = createSelector(
   getSearchState,
-  fromFeature.getSearchResultsCurrentPage
+  getSearchResultsCurrentPage
 );
 
 export const getSearchFilterToggle = createSelector(
   getSearchState,
-  fromFeature.getSearchFilterToggleState
+  getSearchFilterToggleState
 );

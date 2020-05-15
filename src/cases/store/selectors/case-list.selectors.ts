@@ -1,48 +1,50 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 
-import * as fromFeature from '../../store/reducers';
+import { getCaseFeatureState, State, getCaselistFilterJurisdiction, getCaselistFilterCaseType, getCaselistFilterCaseState,
+  getCaselistFilterMetadataFields, getCaselistFilterResultView, getCaselistFilterPageMetadata, getCaselistResultsCurrentPage,
+  getSearchFilterToggleState } from '../../store/reducers';
 
 export const getCaselistState = createSelector(
- fromFeature.getCaseFeatureState,
- (state: fromFeature.State) => state.caseList
+ getCaseFeatureState,
+ (state: State) => state.caseList
 );
 
 export const caselistFilterJurisdiction = createSelector(
     getCaselistState,
-    fromFeature.getCaselistFilterJurisdiction
+    getCaselistFilterJurisdiction
 );
 
 export const caselistFilterCaseType = createSelector(
     getCaselistState,
-    fromFeature.getCaselistFilterCaseType
+    getCaselistFilterCaseType
 );
 
 export const caselistFilterCaseState = createSelector(
     getCaselistState,
-    fromFeature.getCaselistFilterCaseState
+    getCaselistFilterCaseState
 );
 
 export const caselistFilterMetadataFields = createSelector(
     getCaselistState,
-    fromFeature.getCaselistFilterMetadataFields
+    getCaselistFilterMetadataFields
 );
 
 export const caselistFilterResultView = createSelector(
     getCaselistState,
-    fromFeature.getCaselistFilterResultView
+    getCaselistFilterResultView
 );
 
 export const getCaselistFilterPaginationMetadata = createSelector(
   getCaselistState,
-  fromFeature.getCaselistFilterPageMetadata
+  getCaselistFilterPageMetadata
 );
 
 export const getCaselistCurrentPage = createSelector(
   getCaselistState,
-  fromFeature.getCaselistResultsCurrentPage
+  getCaselistResultsCurrentPage
 );
 
 export const getCaselistFilterToggle = createSelector(
   getCaselistState,
-  fromFeature.getSearchFilterToggleState
+  getSearchFilterToggleState
 );

@@ -1,6 +1,5 @@
-
-import {SearchResultView, Jurisdiction, CaseType, CaseState, PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
-import * as fromCases from '../actions/case-list.action';
+import { SearchResultView, Jurisdiction, CaseType, CaseState, PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
+import { CaselistAction, APPLY_CASELIST_FILTER, FIND_CASELIST_PAGINATION_METADATA_SUCCESS, APPLY_CASELIST_FILTER_SUCCESS, CASE_FILTER_DISPLAY_TOGGLE_SUCCESS, CASELIST_RESET } from '../actions/case-list.action';
 
 export class CaselistStateFilter {
   jurisdiction: Jurisdiction;
@@ -48,10 +47,10 @@ export const initialCaselistState: CaselistState = {
 
 export function caselistReducer(
   state = initialCaselistState,
-  action: fromCases.CaselistAction
+  action: CaselistAction
 ): CaselistState {
   switch (action.type) {
-    case fromCases.APPLY_CASELIST_FILTER: {
+    case APPLY_CASELIST_FILTER: {
       return {
         ...state,
         filter: {
@@ -66,7 +65,7 @@ export function caselistReducer(
       };
     }
 
-    case fromCases.FIND_CASELIST_PAGINATION_METADATA_SUCCESS: {
+    case FIND_CASELIST_PAGINATION_METADATA_SUCCESS: {
       return {
         ...state,
         paginationMetadata: {
@@ -78,7 +77,7 @@ export function caselistReducer(
       };
     }
 
-    case fromCases.APPLY_CASELIST_FILTER_SUCCESS: {
+    case APPLY_CASELIST_FILTER_SUCCESS: {
       return {
         ...state,
         results: {
@@ -89,14 +88,14 @@ export function caselistReducer(
       };
     }
 
-    case fromCases.CASE_FILTER_DISPLAY_TOGGLE_SUCCESS: {
+    case CASE_FILTER_DISPLAY_TOGGLE_SUCCESS: {
       return {
         ...state,
         showFilter: action.payload,
       };
     }
 
-    case fromCases.CASELIST_RESET:
+    case CASELIST_RESET:
       return initialCaselistState;
   }
   return state;

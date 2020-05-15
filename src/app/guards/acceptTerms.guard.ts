@@ -6,13 +6,13 @@ import { Observable, of } from 'rxjs';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { AppUtils } from '../app-utils';
 import { TermsConditionsService } from '../services/terms-and-conditions/terms-and-conditions.service';
-import * as fromApp from '../store';
+import { State, getTandCLoaded, LoadHasAcceptedTC } from '../store';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AcceptTermsGuard implements CanActivate {
-  constructor(private readonly store: Store<fromApp.State>,
+  constructor(private readonly store: Store<State>,
               private readonly cookieService: CookieService,
               private readonly termsAndConditionsService: TermsConditionsService) {
   }
@@ -32,11 +32,11 @@ export class AcceptTermsGuard implements CanActivate {
       return of(true);
     }
     return this.store.pipe(
-      select(fromApp.getTandCLoaded),
+      select(getTandCLoaded),
       tap(tc => {
         if (!tc.isLoaded) {
           const userId = this.cookieService.get('__userid__');
-          this.store.dispatch(new fromApp.LoadHasAcceptedTC(userId));
+          this.store.dispatch(new LoadHasAcceptedTC(userId));
         }
       }),
       filter(tc => tc.isLoaded),

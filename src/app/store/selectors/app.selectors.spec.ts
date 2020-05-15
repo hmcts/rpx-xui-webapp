@@ -1,14 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
-
-import * as fromRoot from '../../../app/store/reducers';
-import * as fromActions from '../actions';
-import * as fromReducers from '../reducers';
-import * as fromSelectors from './app.selectors';
+import { LoadConfigSuccess } from '../actions';
+import { State, reducers } from '../reducers';
+import { getConfigState, getAppFeatures } from './app.selectors';
 
 
 describe('App Selectors', () => {
-  let store: Store<fromReducers.State>;
+  let store: Store<State>;
 
   const appConfig = {
     config: {},
@@ -61,8 +59,8 @@ describe('App Selectors', () => {
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({
-          ...fromRoot.reducers,
-          products: combineReducers(fromReducers.reducers),
+          ...reducers,
+          products: combineReducers(reducers),
         }),
       ],
     });
@@ -77,11 +75,11 @@ describe('App Selectors', () => {
       let result;
 
       store
-        .select(fromSelectors.getConfigState)
+        .select(getConfigState)
         .subscribe(value => (result = value));
       expect(result).toEqual(appConfig);
 
-      store.dispatch(new fromActions.LoadConfigSuccess(appPayload));
+      store.dispatch(new LoadConfigSuccess(appPayload));
       expect(result).toEqual(appConfigLoadedAfter);
     });
 
@@ -89,10 +87,10 @@ describe('App Selectors', () => {
       let result;
 
       store
-        .select(fromSelectors.getAppFeatures)
+        .select(getAppFeatures)
         .subscribe(value => (result = value));
 
-      store.dispatch(new fromActions.LoadConfigSuccess(appPayload));
+      store.dispatch(new LoadConfigSuccess(appPayload));
       expect(result).toEqual(appConfigLoaded.config);
     });
   });

@@ -3,7 +3,6 @@ import { TestBed } from '@angular/core/testing';
 import { hot, cold } from 'jasmine-marbles';
 import { of, throwError } from 'rxjs';
 import { provideMockActions } from '@ngrx/effects/testing';
-import * as fromAppEffects from './app.effects';
 import { AppEffects } from './app.effects';
 import { Logout } from '../actions';
 import { AuthService } from '../../services/auth/auth.service';
@@ -31,7 +30,7 @@ describe('App Effects', () => {
                     provide: AuthService,
                     useValue: AuthServiceMock
                 },
-                fromAppEffects.AppEffects,
+                AppEffects,
                 provideMockActions(() => actions$)
             ]
         });

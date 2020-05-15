@@ -25,7 +25,7 @@ import { SharedModule } from '../../../app/shared/shared.module';
 import { AppConfigService } from '../../../app/services/config/configuration.services';
 
 import { reducers } from 'src/app/store';
-import * as fromCases from '../../store/reducers';
+import { reducers as fromCasesReducers } from '../../store/reducers';
 import {CaseDetailsComponent} from './case-details.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 class MockSortService {
@@ -43,7 +43,7 @@ xdescribe('CaseDetailsComponent', () => {
         RouterTestingModule,
         CaseUIToolkitModule,
         HttpClientTestingModule,
-        StoreModule.forRoot({...reducers, cases: combineReducers(fromCases.reducers)}),
+        StoreModule.forRoot({...reducers, cases: combineReducers(fromCasesReducers)}),
         SharedModule,
         SearchFiltersModule,
       ],

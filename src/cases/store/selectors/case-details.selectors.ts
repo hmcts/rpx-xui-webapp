@@ -1,8 +1,8 @@
 import {createSelector} from '@ngrx/store';
-import * as fromRoot from '../../../app/store';
+import { getRouterState } from '../../../app/store';
 
 export const getCaseId = createSelector(
-  fromRoot.getRouterState,
+  getRouterState,
   (router): string => {
     return router.state && router.state.params.cid;
   }

@@ -8,8 +8,8 @@ import {
 import { FormControl, FormGroup } from '@angular/forms';
 import { JURISDICTION_1, CASE_TYPE_1, CASE_STATE_1 } from '../mock/search-filter.mock';
 import { StoreModule, combineReducers, Store } from '@ngrx/store';
-import * as fromRoot from '../../app/store/reducers';
-import * as fromCaseSearchStore from '../store';
+import { reducers } from '../../app/store/reducers';
+import { SearchState, reducers as fromCaseSearchStoreReducers } from '../store';
 
 const JURISDICTION: Jurisdiction = JURISDICTION_1;
 
@@ -26,15 +26,15 @@ describe('SearchFilterService', () => {
     const httpService = createSpyObj<HttpService>('HttpService', ['get']);
     const requestOptionsBuilder = createSpyObj<RequestOptionsBuilder>('RequestOptionsBuilder', ['buildOptions']);
     let storeDispatchMock: any;
-    let store: Store<fromCaseSearchStore.SearchState>;
+    let store: Store<SearchState>;
 
     beforeEach(() => {
 
         TestBed.configureTestingModule({
             imports: [
                 StoreModule.forRoot({
-                    ...fromRoot.reducers,
-                    feature: combineReducers(fromCaseSearchStore.reducers),
+                    ...reducers,
+                    feature: combineReducers(fromCaseSearchStoreReducers),
                 }),
             ],
             providers: [

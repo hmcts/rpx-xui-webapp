@@ -1,20 +1,20 @@
 import { createSelector } from '@ngrx/store';
-import * as fromFeature from '../reducers';
-import * as fromApp from '../reducers/app-config.reducer';
+import { getAppConfigState } from '../reducers';
+import { AppConfigState, getTandCLoadedConfig, getFeatureConfig } from '../reducers/app-config.reducer';
 
 export const getConfigState = createSelector(
-  fromFeature.getAppConfigState,
-  (state: fromApp.AppConfigState) => state
+  getAppConfigState,
+  (state: AppConfigState) => state
 );
 
 export const getTandCLoaded = createSelector(
   getConfigState,
-  fromApp.getTandCLoadedConfig
+  getTandCLoadedConfig
 );
 
 export const getAppFeatures = createSelector(
   getConfigState,
-  fromApp.getFeatureConfig
+  getFeatureConfig
 );
 
 export const getTermsAndConditions = createSelector(

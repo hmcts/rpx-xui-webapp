@@ -1,13 +1,12 @@
-import { LoadConfig, APP_LOAD_CONFIG, LoadConfigSuccess, APP_LOAD_CONFIG_SUCCESS,
-  LoadConfigFail, APP_LOAD_CONFIG_FAIL, StartAppInitilizer, START_APP_INITIALIZER, FinishAppInitilizer, FINISH_APP_INITIALIZER } from './app.actions';
+import * as fromApp from './app.actions';
 
 describe('App Actions', () => {
   describe('Load Config', () => {
     it('should create an action', () => {
-      const action = new LoadConfig();
+      const action = new fromApp.LoadConfig();
 
       expect({ ...action }).toEqual({
-        type: APP_LOAD_CONFIG,
+        type: fromApp.APP_LOAD_CONFIG,
       });
     });
   });
@@ -15,10 +14,10 @@ describe('App Actions', () => {
   describe('Load Config Success', () => {
     it('should create an action', () => {
       const payload = {prop: 'value'};
-      const action = new LoadConfigSuccess(payload);
+      const action = new fromApp.LoadConfigSuccess(payload);
 
       expect({ ...action }).toEqual({
-        type: APP_LOAD_CONFIG_SUCCESS,
+        type: fromApp.APP_LOAD_CONFIG_SUCCESS,
         payload,
       });
     });
@@ -27,10 +26,10 @@ describe('App Actions', () => {
   describe('Load Config Fail', () => {
     it('should create an action', () => {
       const payload = {error: 'value'};
-      const action = new LoadConfigFail(payload);
+      const action = new fromApp.LoadConfigFail(payload);
 
       expect({ ...action }).toEqual({
-        type: APP_LOAD_CONFIG_FAIL,
+        type: fromApp.APP_LOAD_CONFIG_FAIL,
         payload,
       });
     });
@@ -38,20 +37,20 @@ describe('App Actions', () => {
 
   describe('Start App Initializer ', () => {
     it('should create an action', () => {
-      const action = new StartAppInitilizer();
+      const action = new fromApp.StartAppInitilizer();
 
       expect({ ...action }).toEqual({
-        type: START_APP_INITIALIZER,
+        type: fromApp.START_APP_INITIALIZER,
       });
     });
   });
 
   describe('Finish App Initializer ', () => {
     it('should create an action', () => {
-      const action = new FinishAppInitilizer();
+      const action = new fromApp.FinishAppInitilizer();
 
       expect({ ...action }).toEqual({
-        type: FINISH_APP_INITIALIZER,
+        type: fromApp.FINISH_APP_INITIALIZER,
       });
     });
   });

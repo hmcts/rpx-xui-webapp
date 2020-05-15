@@ -12,14 +12,14 @@ import { ExUITitleService } from 'src/app/shared/services/exui-title.service';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { StoreModule, combineReducers, Store } from '@ngrx/store';
 import { reducers } from 'src/app/store';
-import { State, reducers as fromFeatureReducers } from '../../store';
+import * as fromFeature from '../../store';
 
 describe('CaseHomeComponent', () => {
   let component: CaseHomeComponent;
   let fixture: ComponentFixture<CaseHomeComponent>;
   const mockAlertService = jasmine.createSpyObj('alertService', ['success', 'setPreserveAlerts', 'error']);
   const mockErrorNotifierService = jasmine.createSpyObj('ErrorNotifierService', ['announceError']);
-  let store: Store<State>;
+  let store: Store<fromFeature.State>;
   let storeDispatchMock: any;
 
   beforeEach(async(() => {
@@ -28,7 +28,7 @@ describe('CaseHomeComponent', () => {
       imports: [
         RouterTestingModule,
         CaseUIToolkitModule,
-        StoreModule.forRoot({...reducers, cases: combineReducers(fromFeatureReducers)}),
+        StoreModule.forRoot({...reducers, cases: combineReducers(fromFeature.reducers)}),
       ],
       declarations: [CaseHomeComponent],
       providers: [

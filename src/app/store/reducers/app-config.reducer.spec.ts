@@ -1,18 +1,18 @@
-import { reducer, initialState } from './app-config.reducer';
-import { LoadHasAcceptedTCSuccess, AcceptTandCSuccess } from '../actions/';
+import * as appConfigReducer from './app-config.reducer';
+import * as fromActions from '../actions/';
 
 describe('App Config Reducer', () => {
     it('should return the default state', () => {
         const action = {} as any;
-        const state = reducer(undefined, action);
-        expect(state).toEqual(initialState);
+        const state = appConfigReducer.reducer(undefined, action);
+        expect(state).toEqual(appConfigReducer.initialState);
     });
 
     it('Has accepted TC Success', () => {
-        const action = new LoadHasAcceptedTCSuccess(false);
-        const state = reducer(initialState, action);
+        const action = new fromActions.LoadHasAcceptedTCSuccess(false);
+        const state = appConfigReducer.reducer(appConfigReducer.initialState, action);
         const expectedState = {
-            ...initialState,
+            ...appConfigReducer.initialState,
             termsAndCondition: {
                 isLoaded: true,
                 hasUserAcceptedTC: false
@@ -22,10 +22,10 @@ describe('App Config Reducer', () => {
     });
 
     it('Accept TC Success', () => {
-        const action = new AcceptTandCSuccess(true);
-        const state = reducer(initialState, action);
+        const action = new fromActions.AcceptTandCSuccess(true);
+        const state = appConfigReducer.reducer(appConfigReducer.initialState, action);
         const expectedState = {
-            ...initialState,
+            ...appConfigReducer.initialState,
             termsAndCondition: {
                 isLoaded: true,
                 hasUserAcceptedTC: true

@@ -1,12 +1,12 @@
-import { NewCaseLoadedSuccessfully, NEW_CASE_LOADED, CreateCaseGo, CREATE_CASE_GO, Back, BACK, Forward, FORWARD } from './router.action';
+import * as fromRouter from './router.action';
 
 describe('Router Actions', () => {
   describe('NewCaseLoadedSuccessfully', () => {
     it('should create an action', () => {
-      const action = new NewCaseLoadedSuccessfully();
+      const action = new fromRouter.NewCaseLoadedSuccessfully();
 
       expect({ ...action }).toEqual({
-        type: NEW_CASE_LOADED
+        type: fromRouter.NEW_CASE_LOADED
       });
     });
   });
@@ -14,10 +14,10 @@ describe('Router Actions', () => {
   describe('CreateCaseGo', () => {
     it('should create an action', () => {
       const payload = {path: [], caseId: ''};
-      const action = new CreateCaseGo(payload);
+      const action = new fromRouter.CreateCaseGo(payload);
 
       expect({ ...action }).toEqual({
-        type: CREATE_CASE_GO,
+        type: fromRouter.CREATE_CASE_GO,
         payload
       });
     });
@@ -25,20 +25,20 @@ describe('Router Actions', () => {
 
   describe('Back', () => {
     it('should create an action', () => {
-      const action = new Back();
+      const action = new fromRouter.Back();
 
       expect({ ...action }).toEqual({
-        type: BACK
+        type: fromRouter.BACK
       });
     });
   });
 
   describe('Forward', () => {
     it('should create an action', () => {
-      const action = new Forward();
+      const action = new fromRouter.Forward();
 
       expect({ ...action }).toEqual({
-        type: FORWARD
+        type: fromRouter.FORWARD
       });
     });
   });

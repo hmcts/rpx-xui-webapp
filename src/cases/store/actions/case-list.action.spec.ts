@@ -1,16 +1,13 @@
-import { CaseListJurisdictionSelected, CASELIST_JURISDICTION_SELECTED, CaseListApplied, CASELIST_APPLIED, CaseListReset,
-  CASELIST_RESET, CaselistResultPageChange, CASELIST_RESULT_PAGE_CHANGE, FindCaselistPaginationMetadataSuccess,
-  FIND_CASELIST_PAGINATION_METADATA_SUCCESS, ApplyCaselistFilterSuccess, APPLY_CASELIST_FILTER_SUCCESS,
-  ApplyCaselistFilterFail, APPLY_CASELIST_FILTER_FAIL, CaseFilterToggleSuccess, CASE_FILTER_DISPLAY_TOGGLE_SUCCESS } from './case-list.action';
+import * as fromCaseList from './case-list.action';
 
 describe('Case List Actions', () => {
   describe('Case List', () => {
     describe('CaseListJurisdictionSelected', () => {
       it('should create an action', () => {
-        const action = new CaseListJurisdictionSelected();
+        const action = new fromCaseList.CaseListJurisdictionSelected();
 
         expect({ ...action }).toEqual({
-          type: CASELIST_JURISDICTION_SELECTED
+          type: fromCaseList.CASELIST_JURISDICTION_SELECTED
         });
       });
     });
@@ -18,10 +15,10 @@ describe('Case List Actions', () => {
     describe('CaseListApplied', () => {
       it('should create an action', () => {
         const payload = {};
-        const action = new CaseListApplied(payload);
+        const action = new fromCaseList.CaseListApplied(payload);
 
         expect({ ...action }).toEqual({
-          type: CASELIST_APPLIED,
+          type: fromCaseList.CASELIST_APPLIED,
           payload
         });
       });
@@ -29,10 +26,10 @@ describe('Case List Actions', () => {
 
     describe('CaseListReset', () => {
       it('should create an action', () => {
-        const action = new CaseListReset();
+        const action = new fromCaseList.CaseListReset();
 
         expect({ ...action }).toEqual({
-          type: CASELIST_RESET
+          type: fromCaseList.CASELIST_RESET
         });
       });
     });
@@ -40,10 +37,10 @@ describe('Case List Actions', () => {
     describe('CaselistResultPageChange', () => {
       it('should create an action', () => {
         const payload = {};
-        const action = new CaselistResultPageChange(payload);
+        const action = new fromCaseList.CaselistResultPageChange(payload);
 
         expect({ ...action }).toEqual({
-          type: CASELIST_RESULT_PAGE_CHANGE,
+          type: fromCaseList.CASELIST_RESULT_PAGE_CHANGE,
           payload
         });
       });
@@ -52,10 +49,10 @@ describe('Case List Actions', () => {
     describe('FindCaselistPaginationMetadataSuccess', () => {
       it('should create an action', () => {
         const payload = {};
-        const action = new FindCaselistPaginationMetadataSuccess(payload);
+        const action = new fromCaseList.FindCaselistPaginationMetadataSuccess(payload);
 
         expect({ ...action }).toEqual({
-          type: FIND_CASELIST_PAGINATION_METADATA_SUCCESS,
+          type: fromCaseList.FIND_CASELIST_PAGINATION_METADATA_SUCCESS,
           payload
         });
       });
@@ -64,10 +61,10 @@ describe('Case List Actions', () => {
     describe('ApplyCaselistFilterSuccess', () => {
       it('should create an action', () => {
         const payload = {};
-        const action = new ApplyCaselistFilterSuccess(payload);
+        const action = new fromCaseList.ApplyCaselistFilterSuccess(payload);
 
         expect({ ...action }).toEqual({
-          type: APPLY_CASELIST_FILTER_SUCCESS,
+          type: fromCaseList.APPLY_CASELIST_FILTER_SUCCESS,
           payload
         });
       });
@@ -76,10 +73,10 @@ describe('Case List Actions', () => {
     describe('ApplyCaselistFilterFail', () => {
       it('should create an action', () => {
         const payload = {};
-        const action = new ApplyCaselistFilterFail(payload);
+        const action = new fromCaseList.ApplyCaselistFilterFail(payload);
 
         expect({ ...action }).toEqual({
-          type: APPLY_CASELIST_FILTER_FAIL,
+          type: fromCaseList.APPLY_CASELIST_FILTER_FAIL,
           payload
         });
       });
@@ -88,10 +85,10 @@ describe('Case List Actions', () => {
     describe('CaseFilterToggleSuccess', () => {
       it('should create an action', () => {
         const payload = {};
-        const action = new CaseFilterToggleSuccess(payload);
+        const action = new fromCaseList.CaseFilterToggleSuccess(payload);
 
         expect({ ...action }).toEqual({
-          type: CASE_FILTER_DISPLAY_TOGGLE_SUCCESS,
+          type: fromCaseList.CASE_FILTER_DISPLAY_TOGGLE_SUCCESS,
           payload
         });
       });

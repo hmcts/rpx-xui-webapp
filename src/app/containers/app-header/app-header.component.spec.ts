@@ -3,7 +3,8 @@ import { AppHeaderComponent } from './app-header.component';
 import { StoreModule, Store } from '@ngrx/store';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { AppConstants } from 'src/app/app.constants';
-import { State, Logout } from '../../store';
+import * as fromActions from '../../store';
+import { CookieService, CookieModule } from 'ngx-cookie';
 
 
 const cookieService = {
@@ -20,7 +21,7 @@ const cookieService = {
 describe('AppHeaderComponent', () => {
   let component: AppHeaderComponent;
   let fixture: ComponentFixture<AppHeaderComponent>;
-  let store: Store<State>;
+  let store: Store<fromActions.State>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -73,6 +74,6 @@ describe('AppHeaderComponent', () => {
     component.onNavigate('anything');
     expect(spyOnDispatchToStore).toHaveBeenCalledTimes(0);
     component.onNavigate('sign-out');
-    expect(spyOnDispatchToStore).toHaveBeenCalledWith(new Logout());
+    expect(spyOnDispatchToStore).toHaveBeenCalledWith(new fromActions.Logout());
   });
 });

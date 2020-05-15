@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 
 import {select, Store} from '@ngrx/store';
-import { State, getCaseId } from '../../store';
+import * as fromCaseCreate from '../../store';
 import {Subscription} from 'rxjs';
 /**
  * Case Details Component
@@ -14,13 +14,13 @@ import {Subscription} from 'rxjs';
 })
 export class CaseDetailsComponent implements OnInit, OnDestroy {
 
-  constructor(private store: Store<State>) {}
+  constructor(private store: Store<fromCaseCreate.State>) {}
 
   caseId: string;
   $caeIdSubscription: Subscription;
 
   ngOnInit(): void {
-    this.$caeIdSubscription = this.store.pipe(select(getCaseId))
+    this.$caeIdSubscription = this.store.pipe(select(fromCaseCreate.getCaseId))
       .subscribe(caseId => this.caseId = caseId);
   }
 

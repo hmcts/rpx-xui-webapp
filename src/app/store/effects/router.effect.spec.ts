@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { hot } from 'jasmine-marbles';
 import { of } from 'rxjs';
 import { provideMockActions } from '@ngrx/effects/testing';
+import * as fromRouterEffects from './router.effect';
 import { RouterEffects } from './router.effect';
 import { Go, CreateCaseGo, Back, Forward } from '../actions/router.action';
 import { Location } from '@angular/common';
@@ -43,7 +44,7 @@ describe('Router Effects', () => {
           provide: Router,
           useValue: RouterMock
         },
-        RouterEffects,
+        fromRouterEffects.RouterEffects,
         provideMockActions(() => actions$)
       ]
     });

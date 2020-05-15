@@ -1,8 +1,6 @@
 import { Component, OnInit, ViewEncapsulation, OnDestroy } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import * as fromCasesFeature from '../../store';
-import { State, searchFilterJurisdiction, searchFilterCaseType, searchFilterCaseState, searchFilterResultView, searchFilterMetadataFields,
-  getSearchFilterPaginationMetadata, getSearchFilterToggle, ApplySearchFilter, FindSearchPaginationMetadata, SearchFilterToggle } from '../../store';
 import { Jurisdiction, CaseType, CaseState, SearchResultView, PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
 import { Observable, combineLatest, Subscription } from 'rxjs';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
@@ -55,7 +53,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   toggleButtonName: string;
 
   constructor(
-    public store: Store<State>,
+    public store: Store<fromCasesFeature.State>,
     private appConfig: AppConfig,
   ) {}
 
@@ -70,13 +68,13 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
 
     this.paginationSize = this.appConfig.getPaginationPageSize();
 
-    this.jurisdiction$ = this.store.pipe(select(searchFilterJurisdiction));
-    this.caseType$ = this.store.pipe(select(searchFilterCaseType));
-    this.caseState$ = this.store.pipe(select(searchFilterCaseState));
-    this.resultView$ = this.store.pipe(select(searchFilterResultView));
-    this.metadataFields$ = this.store.pipe(select(searchFilterMetadataFields));
-    this.paginationMetadata$ = this.store.pipe(select(getSearchFilterPaginationMetadata));
-    this.caseFilterToggle$ = this.store.pipe(select(getSearchFilterToggle));
+    this.jurisdiction$ = this.store.pipe(select(fromCasesFeature.searchFilterJurisdiction));
+    this.caseType$ = this.store.pipe(select(fromCasesFeature.searchFilterCaseType));
+    this.caseState$ = this.store.pipe(select(fromCasesFeature.searchFilterCaseState));
+    this.resultView$ = this.store.pipe(select(fromCasesFeature.searchFilterResultView));
+    this.metadataFields$ = this.store.pipe(select(fromCasesFeature.searchFilterMetadataFields));
+    this.paginationMetadata$ = this.store.pipe(select(fromCasesFeature.getSearchFilterPaginationMetadata));
+    this.caseFilterToggle$ = this.store.pipe(select(fromCasesFeature.getSearchFilterToggle));
     this.filterSubscription = combineLatest([
       this.jurisdiction$,
       this.caseType$,
@@ -108,7 +106,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
         this.paginationMetadata.total_results_count = result.total_results_count;
         const event = this.getEvent();
         if ( event != null) {
-          this.store.dispatch(new ApplySearchFilter(event));
+          this.store.dispatch(new fromCasesFeature.ApplySearchFilter(event));
         }
       }
     });
@@ -160,12 +158,12 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   checkLSAndTrigger() {
     const event = this.getEvent();
     if ( event != null) {
-      this.store.dispatch(new FindSearchPaginationMetadata(event));
+      this.store.dispatch(new fromCasesFeature.FindSearchPaginationMetadata(event));
     }
   }
 
   toggleFilter() {
-    this.store.dispatch(new SearchFilterToggle(!this.showFilter));
+    this.store.dispatch(new fromCasesFeature.SearchFilterToggle(!this.showFilter));
   }
 
   applyChangePage(event) {

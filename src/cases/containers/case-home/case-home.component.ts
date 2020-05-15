@@ -9,8 +9,8 @@ import {
   ErrorNotifierService
 } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
-import { Go } from '../../../app/store';
-import { State } from '../../store';
+import * as fromRoot from '../../../app/store';
+import * as fromFeature from '../../store';
 import { GoActionParams } from 'src/cases/models/go-action-params.model';
 
 @Component({
@@ -30,7 +30,7 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
     private alertService: AlertService,
     private errorNotifierService: ErrorNotifierService,
     private navigationNotifier: NavigationNotifierService,
-    private store: Store<State>,
+    private store: Store<fromFeature.State>,
   ) { }
 
   ngOnInit(): void {
@@ -107,7 +107,7 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
   }
 
   actionDispatcher(params: GoActionParams): void {
-    return this.store.dispatch(new Go(params));
+    return this.store.dispatch(new fromRoot.Go(params));
   }
 
   handleError(error: HttpError, triggerId: string): void {

@@ -20,12 +20,12 @@ import {
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { RouterTestingModule } from '@angular/router/testing';
-import { combineReducers, StoreModule } from '@ngrx/store';
+import {combineReducers, StoreModule} from '@ngrx/store';
 import { SharedModule } from '../../../app/shared/shared.module';
 import { AppConfigService } from '../../../app/services/config/configuration.services';
 import { CasesCreateComponent } from './case-create.component';
 import { reducers } from 'src/app/store';
-import { reducers as reducers2 } from '../../store/reducers';
+import * as fromCases from '../../store/reducers';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { EffectsModule } from '@ngrx/effects';
 class MockSortService {
@@ -44,7 +44,7 @@ describe('CaseCreateComponent', () => {
         RouterTestingModule,
         CaseUIToolkitModule,
         HttpClientTestingModule,
-        StoreModule.forRoot({...reducers, cases: combineReducers(reducers2)}),
+        StoreModule.forRoot({...reducers, cases: combineReducers(fromCases.reducers)}),
         EffectsModule.forRoot([]),
         SharedModule,
         SearchFiltersModule,

@@ -19,7 +19,7 @@ import {combineReducers, StoreModule} from '@ngrx/store';
 import { SharedModule } from '../../../app/shared/shared.module';
 import { AppConfigService } from '../../../app/services/config/configuration.services';
 import { CaseCreateSubmitComponent } from './case-create-submit.component';
-import { reducers } from '../../store/reducers';
+import * as fromCases from '../../store/reducers';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { HttpModule } from '@angular/http';
 import { ActivatedRoute } from '@angular/router';
@@ -79,9 +79,8 @@ describe('CaseCreateSubmitComponent', () => {
         CaseUIToolkitModule,
         HttpModule,
         HttpClientTestingModule,
-        StoreModule.forRoot({...reducers, cases: combineReducers(reducers)}),
+        StoreModule.forRoot({...fromCases.reducers, cases: combineReducers(fromCases.reducers)}),
         EffectsModule.forRoot([]),
-        StoreModule.forRoot({...reducers, cases: combineReducers(reducers)}),
         SharedModule
       ],
       declarations: [CaseCreateSubmitComponent],

@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output, OnDestroy} from '@angular/core';
 import { Store, select } from '@ngrx/store';
 
-import { getRouterUrl, State } from '../../store';
+import * as fromRoot from '../../store';
 import {AppTitleModel} from '../../models/app-title.model';
 import {UserNavModel} from '../../models/user-nav.model';
 import { CookieService } from 'ngx-cookie';
@@ -24,7 +24,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   subscription: Subscription;
 
   constructor(
-    public store: Store<State>,
+    public store: Store<fromRoot.State>,
     private cookieService: CookieService
   ) {}
 
@@ -41,8 +41,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     });
   }
 
-  getObservable(store: Store<State>): Observable<string> {
-    return store.pipe(select(getRouterUrl));
+  getObservable(store: Store<fromRoot.State>): Observable<string> {
+    return store.pipe(select(fromRoot.getRouterUrl));
   }
 
   getIsCaseManager(userRoles: string): boolean {

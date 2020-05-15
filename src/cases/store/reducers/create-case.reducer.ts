@@ -1,4 +1,4 @@
-import { CreateCasesAction, CREATE_CASE_APPLY, CREATE_CASE_FILTER_APPLY, CREATE_CASE_RESET } from '../actions/create-case.action';
+import * as fromCases from '../actions/create-case.action';
 
 export interface CreatedCaseModel {
   caseId: string;
@@ -21,11 +21,11 @@ export const initialState: CasesState = {
 
 export function reducerCreateCase(
   state = initialState,
-  action: CreateCasesAction
+  action: fromCases.CreateCasesAction
 ): CasesState {
   switch (action.type) {
 
-    case CREATE_CASE_APPLY: {
+    case fromCases.CREATE_CASE_APPLY: {
       return {
         ...state,
         createdCase: action.payload,
@@ -33,7 +33,7 @@ export function reducerCreateCase(
       };
     }
 
-    case CREATE_CASE_FILTER_APPLY: {
+    case fromCases.CREATE_CASE_FILTER_APPLY: {
       return {
         ...state,
         createCaseFilters: action.payload,
@@ -41,7 +41,7 @@ export function reducerCreateCase(
       };
     }
 
-    case CREATE_CASE_RESET: {
+    case fromCases.CREATE_CASE_RESET: {
       return {
         ...state,
         ...initialState

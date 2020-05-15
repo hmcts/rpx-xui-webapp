@@ -1,5 +1,6 @@
 import { SearchResultView, Jurisdiction, CaseType, CaseState, PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
-import { CaseSearchAction, APPLY_SEARCH_FILTER, FIND_SEARCH_PAGINATION_METADATA_SUCCESS, APPLY_SEARCH_FILTER_SUCCESS, SEARCH_FILTER_DISPLAY_TOGGLE_SUCCESS, RESET } from '../actions/case-search.action';
+import * as fromCases from '../actions/case-search.action';
+import { mockedSearchResultPayload } from 'src/cases/mock/search-filter.mock';
 
 export class SearchStateFilter {
   jurisdiction: Jurisdiction;
@@ -47,10 +48,10 @@ export const initialSearchState: SearchState = {
 
 export function reducer(
   state = initialSearchState,
-  action: CaseSearchAction
+  action: fromCases.CaseSearchAction
 ): SearchState {
   switch (action.type) {
-    case APPLY_SEARCH_FILTER: {
+    case fromCases.APPLY_SEARCH_FILTER: {
       return {
         ...state,
         filter: {
@@ -65,7 +66,7 @@ export function reducer(
       };
     }
 
-    case FIND_SEARCH_PAGINATION_METADATA_SUCCESS: {
+    case fromCases.FIND_SEARCH_PAGINATION_METADATA_SUCCESS: {
       return {
         ...state,
         paginationMetadata: {
@@ -77,7 +78,7 @@ export function reducer(
       };
     }
 
-    case APPLY_SEARCH_FILTER_SUCCESS: {
+    case fromCases.APPLY_SEARCH_FILTER_SUCCESS: {
       return {
         ...state,
         results: {
@@ -88,14 +89,14 @@ export function reducer(
       };
     }
 
-    case SEARCH_FILTER_DISPLAY_TOGGLE_SUCCESS: {
+    case fromCases.SEARCH_FILTER_DISPLAY_TOGGLE_SUCCESS: {
       return {
         ...state,
         showFilter: action.payload,
       };
     }
 
-    case RESET:
+    case fromCases.RESET:
       return initialSearchState;
   }
   return state;

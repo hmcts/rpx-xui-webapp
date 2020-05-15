@@ -1,8 +1,8 @@
 import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
-import { State, getCreateCaseFilterState } from '../../store';
+import * as fromCaseCreate from '../../store';
 import {select, Store} from '@ngrx/store';
 import * as fromCases from '../../../cases/store';
-import { Go } from '../../../app/store';
+import * as fromRoot from '../../../app/store';
 import {ActionBindingModel} from '../../models/create-case-actions.model';
 import {Subscription} from 'rxjs';
 /**
@@ -22,17 +22,17 @@ export class CasesCreateComponent implements OnInit, OnDestroy {
   fromCasesFeature: any;
   $inputSubscription: Subscription;
 
-  constructor(private store: Store<State>) {
+  constructor(private store: Store<fromCaseCreate.State>) {
   }
 
   ngOnInit(): void {
     this.fromCasesFeature = fromCases;
     // TODO try to be nice and remove subscription use pipe | instead
-    this.$inputSubscription = this.store.pipe(select(getCreateCaseFilterState))
+    this.$inputSubscription = this.store.pipe(select(fromCases.getCreateCaseFilterState))
       .subscribe(caseFilterInput => {
         // if state is reseated then redirect
         if (!caseFilterInput.jurisdictionId) {
-          this.store.dispatch(new Go({
+          this.store.dispatch(new fromRoot.Go({
             path: ['/cases/case-list'],
           }));
           return;

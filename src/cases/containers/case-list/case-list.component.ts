@@ -2,10 +2,7 @@ import { AppConfig } from './../../../app/services/ccd-config/ccd-case.config';
 import { Component, OnInit, ViewEncapsulation, OnDestroy } from '@angular/core';
 import { ActionBindingModel } from 'src/cases/models/create-case-actions.model';
 import * as fromCasesFeature from '../../store';
-import { caselistFilterJurisdiction, caselistFilterCaseType, caselistFilterCaseState, caselistFilterMetadataFields,
-  getCaselistFilterToggle, caselistFilterResultView, getCaselistFilterPaginationMetadata, ApplyCaselistFilter, FindCaselistPaginationMetadata,
-  CaseFilterToggle } from '../../store';
-import { State } from '../../store/reducers';
+import * as fromCaseList from '../../store/reducers';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription, combineLatest } from 'rxjs';
 import { Jurisdiction, CaseType, CaseState, SearchResultView, PaginationMetadata, WindowService } from '@hmcts/ccd-case-ui-toolkit';
@@ -61,7 +58,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   paginationSubscription: Subscription;
 
   constructor(
-    public store: Store<State>,
+    public store: Store<fromCaseList.State>,
     private appConfig: AppConfig,
     private definitionsService: DefinitionsService,
     private windowService: WindowService,
@@ -82,10 +79,10 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
     this.paginationSize = this.appConfig.getPaginationPageSize();
 
-    this.jurisdiction$ = this.store.pipe(select(caselistFilterJurisdiction));
-    this.caseType$ = this.store.pipe(select(caselistFilterCaseType));
-    this.caseState$ = this.store.pipe(select(caselistFilterCaseState));
-    this.metadataFields$ = this.store.pipe(select(caselistFilterMetadataFields));
+    this.jurisdiction$ = this.store.pipe(select(fromCasesFeature.caselistFilterJurisdiction));
+    this.caseType$ = this.store.pipe(select(fromCasesFeature.caselistFilterCaseType));
+    this.caseState$ = this.store.pipe(select(fromCasesFeature.caselistFilterCaseState));
+    this.metadataFields$ = this.store.pipe(select(fromCasesFeature.caselistFilterMetadataFields));
     this.filterSubscription = combineLatest([
       this.jurisdiction$,
       this.caseType$,
@@ -93,12 +90,12 @@ export class CaseListComponent implements OnInit, OnDestroy {
       this.metadataFields$
     ]).subscribe(result => this.onFilterSubscriptionHandler(result));
 
-    this.caseFilterToggle$ = this.store.pipe(select(getCaselistFilterToggle));
+    this.caseFilterToggle$ = this.store.pipe(select(fromCasesFeature.getCaselistFilterToggle));
     this.caseFilterToggleSubscription = this.caseFilterToggle$.subscribe( (result: boolean) => this.onToogleHandler(result));
 
     this.listenToPaginationMetadata();
 
-    this.resultView$ = this.store.pipe(select(caselistFilterResultView));
+    this.resultView$ = this.store.pipe(select(fromCasesFeature.caselistFilterResultView));
     this.resultSubscription = this.resultView$.subscribe(resultView =>
       this.onResultsViewHandler(resultView));
 
@@ -107,7 +104,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   }
 
   listenToPaginationMetadata = () => {
-    this.paginationMetadata$ = this.store.pipe(select(getCaselistFilterPaginationMetadata));
+    this.paginationMetadata$ = this.store.pipe(select(fromCasesFeature.getCaselistFilterPaginationMetadata));
     this.paginationSubscription = this.paginationMetadata$.subscribe(paginationMetadata =>
       this.onPaginationSubscribeHandler(paginationMetadata));
   }
@@ -202,7 +199,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
       const event = this.getEvent();
       if ( event != null) {
-        this.store.dispatch(new ApplyCaselistFilter(event));
+        this.store.dispatch(new fromCasesFeature.ApplyCaselistFilter(event));
       }
     }
   }
@@ -265,7 +262,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
   findCaseListPaginationMetadata(event) {
     if (event != null) {
-      this.store.dispatch(new FindCaselistPaginationMetadata(event));
+      this.store.dispatch(new fromCasesFeature.FindCaselistPaginationMetadata(event));
     }
   }
 
@@ -293,7 +290,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   }
 
   toggleFilter() {
-    this.store.dispatch(new CaseFilterToggle(!this.showFilter));
+    this.store.dispatch(new fromCasesFeature.CaseFilterToggle(!this.showFilter));
   }
 
   ngOnDestroy() {

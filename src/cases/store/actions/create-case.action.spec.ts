@@ -1,15 +1,14 @@
-import { ApplyChange, CREATE_CASE_APPLY, CreateCaseReset, CREATE_CASE_RESET, CreateCaseLoaded, CREATED_CASE_LOADED,
-  CaseCreateFilterApply, CREATE_CASE_FILTER_APPLY, CaseCreateFilterChanged, CREATE_CASE_FILTER_CHANGED } from './create-case.action';
+import * as fromCreateCases from './create-case.action';
 
 describe('Create Cases Actions', () => {
   describe('Create Cases', () => {
     describe('Apply Change', () => {
       it('should create an action', () => {
         const payload = {};
-        const action = new ApplyChange(payload);
+        const action = new fromCreateCases.ApplyChange(payload);
 
         expect({ ...action }).toEqual({
-          type: CREATE_CASE_APPLY,
+          type: fromCreateCases.CREATE_CASE_APPLY,
           payload,
         });
       });
@@ -17,10 +16,10 @@ describe('Create Cases Actions', () => {
 
     describe('Reset Change', () => {
       it('should create an action', () => {
-        const action = new CreateCaseReset();
+        const action = new fromCreateCases.CreateCaseReset();
 
         expect({ ...action }).toEqual({
-          type: CREATE_CASE_RESET,
+          type: fromCreateCases.CREATE_CASE_RESET,
         });
       });
     });
@@ -28,10 +27,10 @@ describe('Create Cases Actions', () => {
     describe('Case Create Loaded', () => {
       it('should create an action', () => {
         const caseId = 'caseId';
-        const action = new CreateCaseLoaded(caseId);
+        const action = new fromCreateCases.CreateCaseLoaded(caseId);
 
         expect({ ...action }).toEqual({
-          type: CREATED_CASE_LOADED,
+          type: fromCreateCases.CREATED_CASE_LOADED,
           caseId
         });
       });
@@ -40,10 +39,10 @@ describe('Create Cases Actions', () => {
     describe('Case Create Filter Apply', () => {
       it('should create an action', () => {
         const payload = {jurisdiction: 'SSCS'};
-        const action = new CaseCreateFilterApply(payload);
+        const action = new fromCreateCases.CaseCreateFilterApply(payload);
 
         expect({ ...action }).toEqual({
-          type: CREATE_CASE_FILTER_APPLY,
+          type: fromCreateCases.CREATE_CASE_FILTER_APPLY,
           payload
         });
       });
@@ -52,10 +51,10 @@ describe('Create Cases Actions', () => {
     describe('Case Create Filter Changed', () => {
       it('should create an action', () => {
         const payload = {jurisdiction: 'SSCS'};
-        const action = new CaseCreateFilterChanged(payload);
+        const action = new fromCreateCases.CaseCreateFilterChanged(payload);
 
         expect({ ...action }).toEqual({
-          type: CREATE_CASE_FILTER_CHANGED,
+          type: fromCreateCases.CREATE_CASE_FILTER_CHANGED,
           payload
         });
       });

@@ -3,6 +3,7 @@ import { mockedSearchFilters } from '../../../cases/mock/search-filter.mock';
 import { TestBed } from '@angular/core/testing';
 import { SearchFilterService } from '../../../cases/services';
 import { provideMockActions } from '@ngrx/effects/testing';
+import * as fromSearchFilterEffects from './search-filter.effects';
 import { of, throwError } from 'rxjs';
 import { ApplySearchFilter, ApplySearchFilterSuccess, ApplySearchFilterFail } from '../actions';
 import { hot, cold } from 'jasmine-marbles';
@@ -23,7 +24,7 @@ describe('Pending Organisation Effects', () => {
                     provide: SearchFilterService,
                     useValue: SearchFilterServiceMock,
                 },
-                SearchFilterEffects,
+                fromSearchFilterEffects.SearchFilterEffects,
                 provideMockActions(() => actions$)
             ]
         });

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { CaseEventTrigger, CaseEventData, CasesService, DraftService, Draft } from '@hmcts/ccd-case-ui-toolkit';
-import { State } from '../../store';
-import { Store } from '@ngrx/store';
+import * as fromCaseCreate from '../../store';
+import {Store} from '@ngrx/store';
 import { ActionBindingModel } from 'src/cases/models/create-case-actions.model';
 import * as fromCases from '../../../cases/store';
 import { Observable } from 'rxjs';
@@ -25,7 +25,7 @@ export class CaseCreateSubmitComponent implements OnInit {
     private casesService: CasesService,
     private draftService: DraftService,
     private route: ActivatedRoute,
-    private store: Store<State>
+    private store: Store<fromCaseCreate.State>
   ) {
     this.eventTrigger = route.snapshot.data.eventTrigger;
   }

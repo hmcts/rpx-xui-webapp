@@ -379,10 +379,10 @@
   resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.39-alpha.tgz#782d4a4698dae040dd72b26711f04a8d8299d25c"
   integrity sha512-M1364rFLuvktYz5+jVjJ5ZmNUx0/SgoAvH3RsIaT2wFqFf92emuiRyXqax5oSEC5kM9Jpw0rcxEcRbBJWMoglg==
 
-"@hmcts/media-viewer@2.1.2":
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-2.1.2.tgz#3e46a69fa178f177848aa8f7b5b7624c30a54e29"
-  integrity sha512-uUXVHd6EpLPHphssA7/EZNXk0EeF6GWB+tqRE0H2mpEn1un28pKEDNr5SIiv3/7EjtNcEA7gy8si3odmjV5lkw==
+"@hmcts/media-viewer@2.1.2-aot-fix":
+  version "2.1.2-aot-fix"
+  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-2.1.2-aot-fix.tgz#8a6dfae809f5afaf1116ae54df817bcf89caa6c4"
+  integrity sha512-/Vtiy3BaxVr4rwD8zGt4mzKvHnRLxFVnLBBwEwVIrpjquAolPOZJY/Gxr6AHruGqeHfQuvzqF+gNsyGKoApWSg==
   dependencies:
     hammerjs "^2.0.8"
     mutable-div "0.0.11"

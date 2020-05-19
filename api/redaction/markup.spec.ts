@@ -8,8 +8,8 @@ import {getConfigValue} from '../configuration'
 import {
   SERVICES_MARKUP_API_URL,
 } from '../configuration/references'
-import * as markupService from './markupService'
-import { deleteMarkup, getMarkup, postMarkup, putMarkup } from './index'
+import * as markupService from './redactionService'
+import { deleteMarkup, getMarkup, postMarkup, putMarkup } from './markup'
 
 chai.use(sinonChai)
 describe('markup', () => {

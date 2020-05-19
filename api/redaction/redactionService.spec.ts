@@ -5,13 +5,13 @@ import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
 import { mockReq, mockRes } from 'sinon-express-mock'
 import { http } from '../lib/http'
-import { handleDelete, handleGet, handlePost, handlePut } from './markupService'
-import { Markup } from './models'
+import { handleDelete, handleGet, handlePost, handlePut } from './redactionService'
+import { Redaction } from './redactionModels'
 
 chai.use(sinonChai)
-describe('markupService', () => {
+describe('redactionService', () => {
 
-    const dummyMarkup: Markup = {
+    const dummyRedaction: Redaction = {
         redactionId: 'dummy',
         documentId: 'dummy',
         page: 1,
@@ -37,8 +37,8 @@ describe('markupService', () => {
 
         it('should make a get request', async () => {
             spy = sandbox.stub(http, 'get').resolves(res)
-            const markupPath = '/markup/12345'
-            const response = await handleGet(markupPath, req)
+            const redactionPath = '/redaction/12345'
+            const response = await handleGet(redactionPath, req)
             expect(response.data).to.equal('ok')
         })
     })
@@ -46,8 +46,8 @@ describe('markupService', () => {
     describe('handlePost', () => {
         it('should make a post request', async () => {
             spy = sandbox.stub(http, 'post').resolves(res)
-            const markupPath = '/markup/12345'
-            const response = await handlePost(markupPath, dummyMarkup, req)
+            const redactionPath = '/redaction/12345'
+            const response = await handlePost(redactionPath, dummyRedaction, req)
             expect(response.data).to.equal('ok')
         })
     })
@@ -55,8 +55,8 @@ describe('markupService', () => {
     describe('handlePut', () => {
         it('should make a put request', async () => {
             spy = sandbox.stub(http, 'put').resolves(res)
-            const markupPath = '/markup/12345'
-            const response = await handlePut(markupPath, dummyMarkup, req)
+            const redactionPath = '/redaction/12345'
+            const response = await handlePut(redactionPath, dummyRedaction, req)
             expect(response.data).to.equal('ok')
         })
     })
@@ -64,8 +64,8 @@ describe('markupService', () => {
     describe('handleDelete', () => {
         it('should make a delete request', async () => {
             spy = sandbox.stub(http, 'delete').resolves(res)
-            const markupPath = '/markup/12345'
-            const response = await handleDelete(markupPath, req)
+            const redactionPath = '/redaction/12345'
+            const response = await handleDelete(redactionPath, req)
             expect(response.data).to.equal('ok')
         })
     })

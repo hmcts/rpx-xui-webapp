@@ -1,11 +1,11 @@
-export interface Markup {
+export interface Redaction {
     redactionId: string,
     documentId: string,
     page: number,
-    rectangles: MarkupRectangle[]
+    rectangles: RedactionRectangle[]
 }
 
-interface MarkupRectangle {
+interface RedactionRectangle {
     id: string,
     x: number,
     y: number,

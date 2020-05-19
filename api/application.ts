@@ -25,7 +25,8 @@ import {applyProxy} from './lib/middleware/proxy'
 import {JUILogger} from './lib/models'
 import { getStore } from './lib/sessionStore'
 import * as tunnel from './lib/tunnel'
-import {router as markupRouter} from './markup/routes'
+import {router as markupRouter} from './redaction/markupRoutes'
+import {router as redactionRouter} from './redaction/redactionRoutes'
 import openRoutes from './openRoutes'
 import * as postCodeLookup from './postCodeLookup'
 import routes from './routes'
@@ -90,6 +91,7 @@ app.get('/api/configuration', (req, res) => {
 
 // TODO: move to proxy route as below
 app.use('/api/markups', markupRouter)
+app.use('/api/redaction', redactionRouter)
 
 // TODO: move these to proxy routes as well
 app.use('/aggregated', routes)

@@ -1,6 +1,6 @@
 import * as express from 'express'
 import authInterceptor from '../lib/middleware/auth'
-import {deleteMarkup, getMarkup, postMarkup, putMarkup} from './index'
+import {deleteMarkup, getMarkup, postMarkup, putMarkup} from './markup'
 
 export const router = express.Router({ mergeParams: true })
 

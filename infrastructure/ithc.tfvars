@@ -10,6 +10,7 @@ services_ccd_component_api = "http://ccd-api-gateway-web-ithc.service.core-compu
 services_ccd_data_store_api = "http://ccd-data-store-api-ithc.service.core-compute-ithc.internal"
 services_documents_api = "http://dm-store-ithc.service.core-compute-ithc.internal"
 services_em_anno_api = "http://em-anno-ithc.service.core-compute-ithc.internal"
+services_markup_api = "http://em-npa-ithc.service.core-compute-ithc.internal"
 services_idam_api_url = "https://idam-api.ithc.platform.hmcts.net"
 services_idam_login_url = "https://idam-web-public.ithc.platform.hmcts.net"
 services_s2s = "http://rpe-service-auth-provider-ithc.service.core-compute-ithc.internal"

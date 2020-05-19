@@ -14,6 +14,8 @@ import {
     SERVICES_CCD_COMPONENT_API_PATH,
     SERVICES_DOCUMENTS_API_PATH,
     SESSION_SECRET,
+    SERVICES_EM_ANNO_API_URL,
+    SERVICES_MARKUP_API_URL,
 } from './configuration/references'
 import {router as emAnnoRouter} from './emAnno/routes'
 import * as health from './health'
@@ -25,6 +27,7 @@ import {applyProxy} from './lib/middleware/proxy'
 import {JUILogger} from './lib/models'
 import { getStore } from './lib/sessionStore'
 import * as tunnel from './lib/tunnel'
+import {router as markupRouter} from './markup/routes'
 import openRoutes from './openRoutes'
 import * as postCodeLookup from './postCodeLookup'
 import routes from './routes'
@@ -86,6 +89,9 @@ app.use('/api/termsAndConditions', termsAndCRoutes)
 app.get('/api/configuration', (req, res) => {
     res.send(showFeature(req.query.configurationKey as string))
 })
+
+// TODO: move to proxy route as below
+app.use('/api/markups', markupRouter)
 
 // TODO: move these to proxy routes as well
 app.use('/aggregated', routes)

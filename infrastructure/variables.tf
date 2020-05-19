@@ -35,6 +35,7 @@ variable "services_ccd_component_api" {}
 variable "services_ccd_data_store_api" {}
 variable "services_documents_api" {}
 variable "services_em_anno_api" {}
+variable "services_markup_api" {}
 variable "services_idam_api_url" {}
 variable "services_idam_login_url" {}
 variable "services_s2s" {}

@@ -65,6 +65,8 @@ module "app" {
         SERVICES_DOCUMENTS_API = "${var.services_documents_api}"
         # Services Em Anno
         SERVICES_EM_ANNO_API = "${var.services_em_anno_api}"
+        # Services Markup
+        SERVICES_MARKUP_API = "${var.services_markup_api}"
         # Services Idam
         SERVICES_IDAM_API_URL = "${var.services_idam_api_url}"
         SERVICES_IDAM_LOGIN_URL = "${var.services_idam_login_url}"

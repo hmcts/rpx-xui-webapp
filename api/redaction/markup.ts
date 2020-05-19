@@ -2,8 +2,8 @@ import * as express from 'express'
 import { getConfigValue } from '../configuration'
 import { SERVICES_MARKUP_API_URL } from '../configuration/references'
 import { EnhancedRequest } from '../lib/models'
-import { handleDelete, handleGet, handlePost, handlePut } from './redactionService'
 import { Redaction } from './redactionModels'
+import { handleDelete, handleGet, handlePost, handlePut } from './redactionService'
 
 const url: string = getConfigValue(SERVICES_MARKUP_API_URL)
 

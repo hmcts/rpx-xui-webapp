@@ -50,9 +50,8 @@ export async function handlePost(redactionPath: string, body: Redaction, req: En
 
 }
 
-
 /**
- * Post Redaction
+ * Post Blob Redaction
  *
  * @param redactionPath
  * @param body

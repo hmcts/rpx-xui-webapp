@@ -33,12 +33,12 @@ describe('redaction', () => {
 
     describe('postRedaction', () => {
         beforeEach(() => {
-            spy = sandbox.stub(redactionService, 'handlePost').returns({status: 200, data: {}})
+            spy = sandbox.stub(redactionService, 'handlePostBlob').returns({status: 200, data: {}})
         })
         it('should call postRedaction and return the json response', async () => {
             const redactionPath = `${service}${reqQuery.originalUrl}`
             await postRedaction(req, res)
-            expect(redactionService.handlePost).to.have.been.calledWith(redactionPath, req.body)
+            expect(redactionService.handlePostBlob).to.have.been.calledWith(redactionPath, req.body)
             expect(res.status).to.have.been.calledWith(200)
             expect(res.send).to.have.been.calledWith({})
         })
@@ -51,11 +51,11 @@ describe('redaction', () => {
                 status: 403,
                 statusText: 'Access denied',
             }
-            spy = sandbox.stub(redactionService, 'handlePost').throws(response)
+            spy = sandbox.stub(redactionService, 'handlePostBlob').throws(response)
 
             const redactionPath = `${service}${reqQuery.originalUrl}`
             await postRedaction(req, res)
-            expect(redactionService.handlePost).to.have.been.calledWith(redactionPath, req.body)
+            expect(redactionService.handlePostBlob).to.have.been.calledWith(redactionPath, req.body)
             expect(res.status).to.have.been.calledWith(response.status)
             expect(res.send).to.have.been.calledWith({
                 errorMessage: response.data,

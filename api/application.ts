@@ -14,8 +14,6 @@ import {
     SERVICES_CCD_COMPONENT_API_PATH,
     SERVICES_DOCUMENTS_API_PATH,
     SESSION_SECRET,
-    SERVICES_EM_ANNO_API_URL,
-    SERVICES_MARKUP_API_URL,
 } from './configuration/references'
 import {router as emAnnoRouter} from './emAnno/routes'
 import * as health from './health'

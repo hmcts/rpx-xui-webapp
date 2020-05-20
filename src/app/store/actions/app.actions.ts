@@ -26,6 +26,10 @@ export const LOAD_FEATURE_TOGGLE_CONFIG = '[App] Load Feature Toggle Config';
 export const LOAD_FEATURE_TOGGLE_CONFIG_SUCCESS = '[App] Load Feature Toggle Config Success';
 export const LOAD_FEATURE_TOGGLE_CONFIG_FAIL = '[App] Load Feature Toggle Config Fail';
 
+export const LOAD_USER_DETAILS = '[App] Load User Details';
+export const LOAD_USER_DETAILS_SUCCESS = '[App] Load User Details Success';
+export const LOAD_USER_DETAILS_FAIL = '[App] Load User Details Success';
+
 export class LoadConfig implements Action {
   readonly type = APP_LOAD_CONFIG;
 }
@@ -110,6 +114,21 @@ export class LoadTermsConditionsFail {
   constructor(public payload: any) {}
 }
 
+export class LoadUserDetails {
+  public readonly type = LOAD_USER_DETAILS;
+}
+
+// TODO: strong type the payload
+export class LoadUserDetailsSuccess {
+  public readonly type = LOAD_USER_DETAILS_SUCCESS;
+  constructor(public payload) {}
+}
+
+export class LoadUserDetailsFail {
+  public readonly type = LOAD_USER_DETAILS_FAIL;
+  constructor(public payload: any) {}
+}
+
 export type AppActions =
   | LoadConfig
   | LoadConfigSuccess
@@ -128,4 +147,7 @@ export type AppActions =
   | LoadTermsConditionsSuccess
   | LoadFeatureToggleConfig
   | LoadFeatureToggleConfigSuccess
-  | LoadFeatureToggleConfigFail;
+  | LoadFeatureToggleConfigFail
+  | LoadUserDetails
+  | LoadUserDetailsSuccess
+  | LoadUserDetailsFail;

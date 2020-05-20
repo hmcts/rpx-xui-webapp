@@ -3,6 +3,10 @@ import { TermsAndCondition } from 'src/app/models/TermsAndCondition';
 import { ConfigurationModel } from '../../models/configuration.model';
 import * as fromActions from '../actions/';
 
+interface UserDetails {
+  sessionTimeout: object;
+}
+
 export interface AppConfigState {
   config: ConfigurationModel | {};
   termsAndCondition: TermsAndCondition;
@@ -10,6 +14,8 @@ export interface AppConfigState {
   loading: boolean;
   termsAndConditions: TCDocument;
   isTermsAndConditionsFeatureEnabled: boolean;
+  // TODO: Change type once we know this works.
+  userDetails: object;
 }
 
 export const initialState: AppConfigState = {
@@ -18,7 +24,8 @@ export const initialState: AppConfigState = {
   loaded: false,
   loading: false,
   termsAndConditions: null,
-  isTermsAndConditionsFeatureEnabled: false
+  isTermsAndConditionsFeatureEnabled: false,
+  userDetails: { sessionTimeout: false }
 };
 
 export function reducer(
@@ -78,6 +85,11 @@ export function reducer(
           ...state,
           isTermsAndConditionsFeatureEnabled: action.payload
         };
+    case fromActions.LOAD_USER_DETAILS_SUCCESS:
+      return {
+        ...state,
+        userDetails: action.payload
+      };
     default:
       return {
         ...state
@@ -90,3 +102,4 @@ export function reducer(
 export const getFeatureConfig = (state: AppConfigState) => state.config;
 export const getTandCLoadedConfig = (state: AppConfigState) => state.termsAndCondition;
 export const getTermsConditions = (state: AppConfigState) => state.termsAndConditions;
+export const getUserDetails = (state: AppConfigState) => state.userDetails;

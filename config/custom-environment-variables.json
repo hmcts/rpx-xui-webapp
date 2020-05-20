@@ -86,5 +86,9 @@
   "redis": {
     "prefix": "REDIS_KEY_PREFIX",
     "ttl": "REDIS_TTL"
+  },
+  "sessionTimeouts": {
+    "__name": "SESSION_TIMEOUTS",
+    "__format": "json"
   }
 }

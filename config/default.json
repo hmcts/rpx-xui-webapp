@@ -119,6 +119,11 @@
   },
   "sessionTimeouts": [
     {
+      "idleModalDisplayTime": 1,
+      "pattern": "pui-",
+      "totalIdleTime": 2
+    },
+    {
       "idleModalDisplayTime": 10,
       "pattern": ".",
       "totalIdleTime": 50

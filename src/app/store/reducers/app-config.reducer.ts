@@ -4,7 +4,10 @@ import { ConfigurationModel } from '../../models/configuration.model';
 import * as fromActions from '../actions/';
 
 interface UserDetails {
-  sessionTimeout: object;
+  sessionTimeout: {
+    idleModalDisplayTime: number,
+    totalIdleTime: number,
+  };
 }
 
 export interface AppConfigState {
@@ -15,7 +18,7 @@ export interface AppConfigState {
   termsAndConditions: TCDocument;
   isTermsAndConditionsFeatureEnabled: boolean;
   // TODO: Change type once we know this works.
-  userDetails: object;
+  userDetails: UserDetails;
 }
 
 export const initialState: AppConfigState = {
@@ -25,7 +28,12 @@ export const initialState: AppConfigState = {
   loading: false,
   termsAndConditions: null,
   isTermsAndConditionsFeatureEnabled: false,
-  userDetails: { sessionTimeout: false }
+  userDetails: {
+    sessionTimeout: {
+      idleModalDisplayTime: 0,
+      totalIdleTime: 0,
+    }
+  }
 };
 
 export function reducer(

@@ -3,6 +3,7 @@ import { GoogleAnalyticsService, ManageSessionServices } from '@hmcts/rpx-xui-co
 import { environment as config } from '../../../environments/environment';
 import { select, Store } from '@ngrx/store';
 import * as fromRoot from '../../store';
+import {propsExist} from '../../../../api/lib/objectUtilities';
 
 @Component({
   selector: 'exui-root',
@@ -26,14 +27,13 @@ export class AppComponent implements OnInit {
   public ngOnInit() {
 
     this.store.pipe(select(fromRoot.getUserDetails)).subscribe(userDetails => {
-      console.log(userDetails);
-      if (userDetails.sessionTimeout) {
+      if (propsExist(userDetails,['sessionTimeout']) && userDetails.sessionTimeout.totalIdleTime > 0) {
         console.log('hello User details in app');
         console.log(userDetails);
-        // this.addIdleServiceListener();
 
         const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
 
+        this.addIdleServiceListener();
         this.initIdleService(idleModalDisplayTime, totalIdleTime);
       }
     });
@@ -46,12 +46,13 @@ export class AppComponent implements OnInit {
    *
    * We listen for idle service events, that alert the application to the User being Idle.
    */
-  // public addIdleServiceListener() {
-  //
-  //   this.idleService.appStateChanges().subscribe(event => {
-  //     this.idleServiceEventHandler(event);
-  //   });
-  // }
+  public addIdleServiceListener() {
+
+    console.log('ADD IDLE SERVICE LISTENER');
+    this.idleService.appStateChanges().subscribe(event => {
+      this.idleServiceEventHandler(event);
+    });
+  }
 
   /**
    * Add User Profile Listener
@@ -86,32 +87,35 @@ export class AppComponent implements OnInit {
    *
    * @param value - { 'isVisible': false, 'countdown': ''}
    */
-  // public idleServiceEventHandler(value) {
-  //
-  //   const IDLE_EVENT_MODAL = 'modal';
-  //   const IDLE_EVENT_SIGNOUT = 'signout';
-  //   const IDLE_EVENT_KEEP_ALIVE = 'keepalive';
-  //
-  //   switch (value.type) {
-  //     case IDLE_EVENT_MODAL: {
-  //       console.log('idle event modal');
-  //       // this.dispatchModal(value.countdown, value.isVisible);
-  //       return;
-  //     }
-  //     case IDLE_EVENT_SIGNOUT: {
-  //       console.log('idle event signout');
-  //       // this.dispatchModal(undefined, false);
-  //       // this.store.dispatch(new fromRoot.IdleUserSignOut());
-  //       return;
-  //     }
-  //     case IDLE_EVENT_KEEP_ALIVE: {
-  //       return;
-  //     }
-  //     default: {
-  //       throw new Error('Invalid Dispatch session');
-  //     }
-  //   }
-  // }
+  public idleServiceEventHandler(value) {
+
+    const IDLE_EVENT_MODAL = 'modal';
+    const IDLE_EVENT_SIGNOUT = 'signout';
+    const IDLE_EVENT_KEEP_ALIVE = 'keepalive';
+
+    // TODO: You are receiving 4 events here, why?
+    switch (value.type) {
+      case IDLE_EVENT_MODAL: {
+        console.log('idle event modal');
+        console.log(value);
+        // this.dispatchModal(value.countdown, value.isVisible);
+        return;
+      }
+      case IDLE_EVENT_SIGNOUT: {
+        console.log('idle event signout');
+        console.log(value);
+        // this.dispatchModal(undefined, false);
+        // this.store.dispatch(new fromRoot.IdleUserSignOut());
+        return;
+      }
+      case IDLE_EVENT_KEEP_ALIVE: {
+        return;
+      }
+      default: {
+        throw new Error('Invalid Dispatch session');
+      }
+    }
+  }
 
   // public dispatchModal(countdown = '0', isVisible): void {
   //   const modalConfig: any = {
@@ -154,6 +158,9 @@ export class AppComponent implements OnInit {
    * @param totalIdleTime - Should reach here in minutes
    */
   public initIdleService(idleModalDisplayTime, totalIdleTime) {
+
+    console.log(idleModalDisplayTime);
+    console.log(totalIdleTime);
 
     const idleModalDisplayTimeInSeconds = idleModalDisplayTime * 60;
     const totalIdleTimeInMilliseconds = (totalIdleTime * 60) * 1000;

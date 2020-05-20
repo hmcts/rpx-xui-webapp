@@ -16,7 +16,7 @@ export async function postRedaction(req: EnhancedRequest, res: express.Response)
 
   try {
     const {status, data, headers}: {status: number, data: Blob, headers} = await handlePostBlob(redactionPath, body, req)
-    
+
     res.status(status).header(headers).send(data)
   } catch (error) {
     res.status(error.status).send({

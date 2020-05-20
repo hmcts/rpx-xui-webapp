@@ -8,12 +8,11 @@ Feature: Divorce create case workflow
         When I click on create case button
         Then Create case page should be displayed
 
-    @smoke
     Scenario: Start create case for Divorce
         When I start case with jurisdiction "Family Divorce" case type "Divorce case - v115.00" and event "Apply for a divorce"
        Then I am on case form page 
 
-   @ignore @smoke
+   @ignore
     Scenario: Cancel create case for Divorce
         When I start case with jurisdiction "Family Divorce" case type "Divorce case - v115.00" and event "Apply for a divorce"
         When I click cancel link

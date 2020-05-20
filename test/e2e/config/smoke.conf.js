@@ -1,6 +1,6 @@
-const chai            = require('chai');
-const chaiAsPromised  = require('chai-as-promised');
-const minimist        = require('minimist');
+const chai = require('chai');
+const chaiAsPromised = require('chai-as-promised');
+const minimist = require('minimist');
 
 var screenShotUtils = require("protractor-screenshot-utils").ProtractorScreenShotUtils;
 
@@ -8,17 +8,6 @@ var screenShotUtils = require("protractor-screenshot-utils").ProtractorScreenSho
 chai.use(chaiAsPromised);
 
 const argv = minimist(process.argv.slice(2));
-
-//const specFilesFilter = ['../features/**/*.feature'];
-
-// module.exports = {
-//   chai: chai,
-//   chaiAsPromised: chaiAsPromised,
-//   minimist: minimist,
-//   argv: argv,
-//   specFilesFilter: specFilesFilter
-// }
-//
 
 const jenkinsConfig = [
 
@@ -32,9 +21,10 @@ const jenkinsConfig = [
 
 const localConfig = [
   {
+
     browserName: 'chrome',
     acceptInsecureCerts: true,
-    chromeOptions: { args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ']} ,
+    chromeOptions: { args: ['--headless', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote '] },
     proxy: {
       proxyType: 'manual',
       httpProxy: 'proxyout.reform.hmcts.net:8080',
@@ -47,23 +37,14 @@ const localConfig = [
 const cap = (argv.local) ? localConfig : jenkinsConfig;
 
 const config = {
+  SELENIUM_PROMISE_MANAGER: false,
   framework: 'custom',
   frameworkPath: require.resolve('protractor-cucumber-framework'),
   specs: ['../features/**/*.feature'],
-  // specs: [
-  //   '../features/**/caseFile.feature',
-  //   '../features/**/login.feature',
-  //   '../features/**/makeDecision.feature',
-  //   '../features/**/parties.feature',
-  //   '../features/**/questions.feature',
-  //   '../features/**/recentEvents.feature',
-  // ],
   baseUrl: process.env.TEST_URL || 'http://localhost:3000/',
   params: {
     serverUrls: process.env.TEST_URL || 'http://localhost:3000/',
     targetEnv: argv.env || 'local',
-    // username: process.env.TEST_EMAIL,
-    // password: process.env.TEST_PASSWORD,
     username: 'lukesuperuserxui@mailnesia.com',
     password: 'Monday01',
     caseworkerUser: 'mahesh_fr_courtadmn@mailinator.com',
@@ -85,6 +66,7 @@ const config = {
     global.expect = chai.expect;
     global.assert = chai.assert;
     global.should = chai.should;
+
     global.screenShotUtils = new screenShotUtils({
       browserInstance: browser
     });
@@ -93,13 +75,14 @@ const config = {
   cucumberOpts: {
     strict: true,
     // format: ['node_modules/cucumber-pretty'],
-    format: ['node_modules/cucumber-pretty', 'json:reports_json/results.json'],
-    tags: ['@smoke','not @ignore'],
+    format: ['node_modules/cucumber-pretty', 'json:reports/tests/json/results.json'],
+    tags: ['@smoke'],
     require: [
       '../support/timeout.js',
+      '../support/hooks.js',
       '../support/world.js',
-      '../support/*.js',
-      '../features/step_definitions/**/*.steps.js'
+      // '../support/*.js',
+      '../features/step_definitions/*.steps.js'
     ]
   },
 
@@ -111,8 +94,8 @@ const config = {
         removeExistingJsonReportFile: true,
         reportName: 'XUI Manage Cases Functional Tests',
         // openReportInBrowser: true,
-        jsonDir: 'reports/smoke_tests/functional',
-        reportPath: 'reports/smoke_tests/functional'
+        jsonDir: 'reports/tests/functional',
+        reportPath: 'reports/tests/functional'
       }
     }
   ]
@@ -122,4 +105,3 @@ const config = {
 
 
 exports.config = config;
-

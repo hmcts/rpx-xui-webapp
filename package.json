@@ -32,7 +32,7 @@
     "test:coverage:ng": "yarn test:ng --source-map --code-coverage",
     "test:a11y": "echo 'not implemented'",
     "test:all": "yarn test:ng && yarn test:node && yarn test:smoke && yarn test:functional && yarn test:crossbrowser",
-    "test:smoke": "sh whitelist.sh",
+    "test:smoke": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/smoke.conf.js",
     "test:smoke:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/smoke.conf.js --local",
     "test:functional": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/conf.js",
     "test:functional:backup": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/conf.js --local",

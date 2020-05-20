@@ -2,6 +2,7 @@ import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import { GoogleAnalyticsService, ManageSessionServices } from '@hmcts/rpx-xui-common-lib';
 import { environment as config } from '../../../environments/environment';
 import { select, Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
 import * as fromRoot from '../../store';
 import {propsExist} from '../../../../api/lib/objectUtilities';
 
@@ -12,6 +13,13 @@ import {propsExist} from '../../../../api/lib/objectUtilities';
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent implements OnInit {
+
+  // public modalData$: Observable<{isVisible?: boolean; countdown?: string}>;
+
+  public modalConfig = {
+    countdown: 100,
+    isVisible: false,
+  }
 
   constructor(
     private readonly store: Store<fromRoot.State>,
@@ -26,21 +34,38 @@ export class AppComponent implements OnInit {
 
   public ngOnInit() {
 
-    this.store.pipe(select(fromRoot.getUserDetails)).subscribe(userDetails => {
-      if (propsExist(userDetails,['sessionTimeout']) && userDetails.sessionTimeout.totalIdleTime > 0) {
-        console.log('hello User details in app');
-        console.log(userDetails);
+    this.loadAndListenForUserDetails();
+  }
 
-        const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
+  /**
+   * Load and Listen for User Details changes
+   */
+  public loadAndListenForUserDetails() {
 
-        this.addIdleServiceListener();
-        this.initIdleService(idleModalDisplayTime, totalIdleTime);
-      }
-    });
+    this.store.pipe(select(fromRoot.getUserDetails)).subscribe(userDetails => this.userDetailsHandler(userDetails))
 
-    // We send an action to get the User's details
     this.store.dispatch(new fromRoot.LoadUserDetails());
   }
+
+  /**
+   * User Details Handler
+   *
+   * @param userDetails
+   */
+  public userDetailsHandler(userDetails) {
+
+    if (propsExist(userDetails,['sessionTimeout']) && userDetails.sessionTimeout.totalIdleTime > 0) {
+
+      console.log('userDetailsHandler');
+      console.log(userDetails);
+
+      const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
+
+      this.addIdleServiceListener();
+      this.initIdleService(idleModalDisplayTime, totalIdleTime);
+    }
+  }
+
   /**
    * Add Idle Service Listener
    *
@@ -93,18 +118,16 @@ export class AppComponent implements OnInit {
     const IDLE_EVENT_SIGNOUT = 'signout';
     const IDLE_EVENT_KEEP_ALIVE = 'keepalive';
 
-    // TODO: You are receiving 4 events here, why?
     switch (value.type) {
       case IDLE_EVENT_MODAL: {
-        console.log('idle event modal');
-        console.log(value);
-        // this.dispatchModal(value.countdown, value.isVisible);
+        this.setModal(value.countdown, value.isVisible);
         return;
       }
       case IDLE_EVENT_SIGNOUT: {
         console.log('idle event signout');
         console.log(value);
-        // this.dispatchModal(undefined, false);
+        // Remove the modal properly
+        this.setModal(undefined, false);
         // this.store.dispatch(new fromRoot.IdleUserSignOut());
         return;
       }
@@ -117,16 +140,29 @@ export class AppComponent implements OnInit {
     }
   }
 
-  // public dispatchModal(countdown = '0', isVisible): void {
-  //   const modalConfig: any = {
-  //     session: {
-  //       countdown,
-  //       isVisible
-  //     }
-  //   };
-  //   this.store.dispatch(new fromRoot.SetModal(modalConfig));
-  // }
+  /**
+   * Set Modal
+   *
+   * Set the modal countdown, and if the modal is visible to the User.
+   */
+  public setModal(countdown: number, isVisible: boolean): void {
+    this.modalConfig = {
+        countdown,
+        isVisible
+    };
+  }
 
+  // TODO: Should refresh the token.
+  /**
+   * Stay Signed in Handler
+   */
+  public staySignedInHandler() {
+    this.setModal(undefined, false);
+  }
+
+  public signOutHandler() {
+    console.log('signOutHandler');
+  }
   /**
    * Initialise Idle Service
    *

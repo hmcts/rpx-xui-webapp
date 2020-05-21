@@ -1,4 +1,6 @@
 import * as express from 'express'
+import * as fs from 'fs'
+import * as path from 'path'
 import {getConfigValue, showFeature} from '../configuration'
 import {
     FEATURE_TERMS_AND_CONDITIONS_ENABLED,
@@ -11,8 +13,11 @@ import { getTermsAndConditionsUrl } from './termsAndConditionsUtil'
 
 export async function getTermsAndConditions(req: express.Request, res: express.Response) {
     if (!showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED)) {
+        const TERMS_PATH = path.join(__dirname, './resources', 'terms.html')
+        const terms = fs.readFileSync(TERMS_PATH, 'utf8')
+
         res.status(200).send({
-            content: '<h1>Hello world</h1>',
+            content: terms,
             mimeType: 'text/html',
             version: 1,
         })

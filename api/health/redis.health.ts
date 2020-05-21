@@ -6,12 +6,16 @@ const logger: JUILogger = log4jui.getLogger('RedisHealth')
 
 export const redisHealth = (): Promise<boolean> => {
     return new Promise<boolean>( resolve => {
-        app.locals.redisClient.ping((err, pong) => {
-            if (err || (pong !== 'PONG')) {
-                logger.error(err || 'redis server is not responsive')
-                return resolve(false)
-            }
-            return resolve(true)
-        })
+        try {
+            app.locals.redisClient.ping((err, pong) => {
+                if (err || (pong !== 'PONG')) {
+                    logger.error(err || 'redis server is not responsive')
+                    return resolve(false)
+                }
+                return resolve(true)
+            })
+        } catch (e) {
+            resolve(false)
+        }
     })
 }

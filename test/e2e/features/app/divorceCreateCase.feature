@@ -1,4 +1,4 @@
-@divorce @all
+@divorce @fullfunctional
 Feature: Divorce create case workflow
 
     Background:
@@ -8,6 +8,7 @@ Feature: Divorce create case workflow
         When I click on create case button
         Then Create case page should be displayed
 
+    @all
     Scenario: Start create case for Divorce
         When I start case with jurisdiction "Family Divorce" case type "Divorce case - v115.00" and event "Apply for a divorce"
        Then I am on case form page 

@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { GetHelpComponent } from '..';
-import { CUSTOM_ELEMENTS_SCHEMA,DebugElement } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { ContactDetailsComponent } from '@hmcts/rpx-xui-common-lib';
 import {CookieService} from 'ngx-cookie';
@@ -65,11 +65,12 @@ describe('GetHelpComponent', () => {
   });
 
   describe('Verify HTML content on Get help page', () => {
+
     it('header title should be "Get help"', () => {
       const getHelpDe: DebugElement = fixture.debugElement;
       const headerElementDe: DebugElement = getHelpDe.query(By.css('h1'));
       const headerElementNative: HTMLElement = headerElementDe.nativeElement;
       expect(headerElementNative.textContent).toEqual('Get help');
-      });
+    });
   });
 });

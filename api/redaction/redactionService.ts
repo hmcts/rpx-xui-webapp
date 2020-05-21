@@ -62,9 +62,9 @@ export async function handlePostBlob(redactionPath: string, body: any, req: Enha
     try {
         logger.info('posting blob redaction', redactionPath)
         const headers = setHeaders(req)
-        const response = await http.post(redactionPath, body, { 
+        const response = await http.post(redactionPath, body, {
             headers,
-            responseType: 'arraybuffer'
+            responseType: 'arraybuffer',
         })
         return response
     } catch (e) {

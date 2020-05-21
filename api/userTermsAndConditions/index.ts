@@ -1,6 +1,10 @@
 import * as express from 'express'
-import { getConfigValue } from '../configuration'
-import { SERVICES_IDAM_CLIENT_ID, SERVICES_TERMS_AND_CONDITIONS_URL } from '../configuration/references'
+import {getConfigValue, showFeature} from '../configuration'
+import {
+    FEATURE_TERMS_AND_CONDITIONS_ENABLED,
+    SERVICES_IDAM_CLIENT_ID,
+    SERVICES_TERMS_AND_CONDITIONS_URL
+} from '../configuration/references'
 import { GetUserAcceptTandCResponse, PostUserAcceptTandCResponse } from '../interface/userAcceptTandCResponse'
 import { http } from '../lib/http'
 import { setHeaders } from '../lib/proxy'
@@ -15,8 +19,17 @@ export async function getUserTermsAndConditions(req: express.Request, res: expre
             apiStatusCode: '400',
             message: 'User Terms and Conditions route error',
         }
-        res.status(400).send(errReport)
+        return res.status(400).send(errReport)
     }
+
+    if (!showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED)) {
+        return res.status(200).send({
+            accepted: true,
+            userId: req.params.userId,
+            version: 1,
+        })
+    }
+
     try {
         const url = getUserTermsAndConditionsUrl(getConfigValue(SERVICES_TERMS_AND_CONDITIONS_URL),
             req.params.userId, getConfigValue(SERVICES_IDAM_CLIENT_ID))
@@ -40,6 +53,10 @@ export async function getUserTermsAndConditions(req: express.Request, res: expre
 }
 
 export async function postUserTermsAndConditions(req: express.Request, res: express.Response) {
+    if (!showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED)) {
+        return res.status(200).send(true)
+    }
+
     let errReport: any
     if (!req.body.userId) {
         errReport = {
@@ -47,7 +64,7 @@ export async function postUserTermsAndConditions(req: express.Request, res: expr
             apiStatusCode: '400',
             message: 'User Terms and Conditions route error',
         }
-        res.status(400).send(errReport)
+        return res.status(400).send(errReport)
     }
     try {
         const data = {userId: req.body.userId}

@@ -16,7 +16,7 @@ export async function getTermsAndConditions(req: express.Request, res: express.R
         const TERMS_PATH = path.join(__dirname, './resources', 'terms.html')
         const terms = fs.readFileSync(TERMS_PATH, 'utf8')
 
-        res.status(200).send({
+        return res.status(200).send({
             content: terms,
             mimeType: 'text/html',
             version: 1,

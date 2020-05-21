@@ -9,6 +9,7 @@ export const START_APP_INITIALIZER = '[App] Start App initializer';
 export const FINISH_APP_INITIALIZER = '[App] Finish Start App initializer';
 
 export const LOGOUT = '[App] Logout';
+export const IDLE_USER_LOGOUT = '[App] Idle User Logout';
 
 export const LOAD_HAS_ACCEPTED_TC = '[T&C] Lad Has Accepted';
 export const LOAD_HAS_ACCEPTED_TC_SUCCESS = '[T&C] Lad Has Accepted Success';
@@ -68,6 +69,10 @@ export class FinishAppInitilizer implements Action {
 
 export class Logout implements Action {
   readonly type = LOGOUT;
+}
+
+export class IdleUserLogOut implements Action {
+  readonly type = IDLE_USER_LOGOUT;
 }
 
 export class LoadHasAcceptedTC implements Action {

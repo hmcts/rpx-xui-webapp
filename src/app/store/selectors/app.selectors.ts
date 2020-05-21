@@ -31,3 +31,8 @@ export const getUserDetails = createSelector(
   getConfigState,
   fromApp.getUserDetails
 );
+
+export const getHasUserAuthenticated = createSelector(
+  getConfigState,
+  fromApp.getHasUserAuthenticated
+);

@@ -17,6 +17,7 @@ export interface AppConfigState {
   loading: boolean;
   termsAndConditions: TCDocument;
   isTermsAndConditionsFeatureEnabled: boolean;
+  hasUserAuthenticated: boolean;
   // TODO: Change type once we know this works.
   userDetails: UserDetails;
 }
@@ -28,6 +29,7 @@ export const initialState: AppConfigState = {
   loading: false,
   termsAndConditions: null,
   isTermsAndConditionsFeatureEnabled: false,
+  hasUserAuthenticated: false,
   userDetails: {
     sessionTimeout: {
       idleModalDisplayTime: 0,
@@ -111,3 +113,4 @@ export const getFeatureConfig = (state: AppConfigState) => state.config;
 export const getTandCLoadedConfig = (state: AppConfigState) => state.termsAndCondition;
 export const getTermsConditions = (state: AppConfigState) => state.termsAndConditions;
 export const getUserDetails = (state: AppConfigState) => state.userDetails;
+export const getHasUserAuthenticated = (state: AppConfigState) => state.hasUserAuthenticated;

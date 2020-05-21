@@ -60,18 +60,13 @@ export class AppEffects {
     })
   );
 
-  // public idleSignout = this.actions$.pipe(
-  //   ofType(appActions.IDLE_USER_SIGNOUT),
-  //   map(() => {
-  //
-  //     const { hostname, port } = window.location;
-  //     const portNumber = port ? `:${port}` : '';
-  //     const baseUrl = `${this.environmentConfig.protocol}://${hostname}${portNumber}`;
-  //
-  //     const idleSignOutUrl = `${baseUrl}/idle-sign-out`;
-  //     window.location.href = `api/logout?redirect=${idleSignOutUrl}`;
-  //   })
-  // );
+  @Effect({ dispatch: false })
+  public logoutAndRedirect = this.actions$.pipe(
+    ofType(fromActions.IDLE_USER_LOGOUT),
+    map(() => {
+      this.authService.logOutAndRedirect();
+    })
+  );
 
   @Effect()
   public loadTermsConditions$ = this.actions$.pipe(

@@ -81,13 +81,15 @@ export class AuthService {
     return notExpired;
   }
 
-  // TODO: So you can place a redirect on this.
+  // TODO: Chanve to logOut to keep consistency
   signOut() {
+
     window.location.href = '/api/logout';
   }
 
-  signOutAndRedirect() {
+  logOutAndRedirect() {
 
+    console.log('logOutAndRedirect');
     const { hostname, port } = window.location;
     const portNumber = port ? `:${port}` : '';
     // const baseUrl = `${this.environmentConfig.protocol}://${hostname}${portNumber}`;

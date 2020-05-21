@@ -5,6 +5,7 @@ import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import * as fromRoot from '../../store';
 import {propsExist} from '../../../../api/lib/objectUtilities';
+import {IdleUserLogOut, Logout} from '../../store/actions/app.actions';
 
 @Component({
   selector: 'exui-root',
@@ -34,11 +35,22 @@ export class AppComponent implements OnInit {
 
   public ngOnInit() {
 
-    this.loadAndListenForUserDetails();
+    // Good to listen out for if the User has logged in or not.
+    // would you check for auth? where does it check now?
+
+    // this.loadAndListenForUserDetails();
+
+    this.store.pipe(select(fromRoot.getHasUserAuthenticated)).subscribe(userDetails => this.userDetailsHandler(userDetails))
   }
 
   /**
    * Load and Listen for User Details changes
+   *
+   * TODO: Note that this is kicking in too soon, and the User has not signed in as yet. But they
+   * are getting redirected to a 'Service is down page'.
+   *
+   * Remember that we need the User Roles to know what session timeout to apply to that user.
+   * Is there some application state we can listen for???
    */
   public loadAndListenForUserDetails() {
 
@@ -91,17 +103,6 @@ export class AppComponent implements OnInit {
    *
    * TODO: Remove console.log(userProfile) after testing
    */
-  // public addUserProfileListener() {
-  //
-  //   this.store.pipe(select(fromUserProfile.getUser)).subscribe(userProfile => {
-  //     if (userProfile) {
-  //       console.log(userProfile);
-  //       const { idleModalDisplayTime, totalIdleTime } = userProfile.sessionTimeout;
-  //
-  //       this.initIdleService(idleModalDisplayTime, totalIdleTime);
-  //     }
-  //   });
-  // }
 
   /**
    * Idle Service Event Handler
@@ -128,7 +129,9 @@ export class AppComponent implements OnInit {
         console.log(value);
         // Remove the modal properly
         this.setModal(undefined, false);
-        // this.store.dispatch(new fromRoot.IdleUserSignOut());
+
+        // Ok so we should call an action, that an effect listens to
+        this.store.dispatch(new fromRoot.IdleUserLogOut());
         return;
       }
       case IDLE_EVENT_KEEP_ALIVE: {
@@ -160,7 +163,9 @@ export class AppComponent implements OnInit {
     this.setModal(undefined, false);
   }
 
+  // TODO: Keep consistent naming conventions
   public signOutHandler() {
+    this.store.dispatch(new fromRoot.Logout());
     console.log('signOutHandler');
   }
   /**

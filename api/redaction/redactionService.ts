@@ -57,7 +57,7 @@ export async function handlePost(redactionPath: string, body: Redaction, req: En
  * @param body
  * @returns {Promise<AxiosResponse>}
  */
-export async function handlePostBlob(redactionPath: string, body: Blob, req: EnhancedRequest): Promise<AxiosResponse> {
+export async function handlePostBlob(redactionPath: string, body: any, req: EnhancedRequest): Promise<AxiosResponse> {
 
     try {
         logger.info('posting blob redaction', redactionPath)

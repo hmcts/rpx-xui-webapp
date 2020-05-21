@@ -68,7 +68,7 @@ export async function putMarkup(req: EnhancedRequest, res: express.Response) {
  */
 export async function deleteMarkup(req: EnhancedRequest, res: express.Response) {
 
-  const markupPath: string = url + req.originalUrl
+  const markupPath: string = url + req.originalUrl.replace('//', '/')
 
   try {
     const {status, data}: {status: number, data: Redaction} = await handleDelete(markupPath, req)

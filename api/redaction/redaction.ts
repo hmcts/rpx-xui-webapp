@@ -12,7 +12,7 @@ const url: string = getConfigValue(SERVICES_MARKUP_API_URL)
 export async function postRedaction(req: EnhancedRequest, res: express.Response) {
 
   const redactionPath: string = url + req.originalUrl
-  const body: Blob = req.body
+  const body: any = req.body
 
   try {
     const {status, data, headers}: {status: number, data: Blob, headers: any} = await handlePostBlob(redactionPath, body, req)

@@ -37,6 +37,7 @@ variable "services_documents_api" {}
 variable "services_em_anno_api" {}
 variable "services_idam_api_url" {}
 variable "services_idam_login_url" {}
+variable "services_payments_url" {}
 variable "services_s2s" {}
 variable "services_terms_and_conditions" {}
 
@@ -110,7 +111,7 @@ variable "feature_helmet_enabled" {
 }
 
 variable "feature_redis_enabled" {
-  default = "false"
+  default = "true"
 }
 
 variable "shared_product_name" {

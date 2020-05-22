@@ -8,7 +8,7 @@ import { getConfigValue, showFeature } from './configuration'
 import {
     APP_INSIGHTS_KEY,
     FEATURE_HELMET_ENABLED,
-    FEATURE_SECURE_COOKIE_ENABLED,
+    FEATURE_SECURE_COOKIE_ENABLED, FEATURE_TERMS_AND_CONDITIONS_ENABLED,
     HELMET,
     PROTOCOL,
     SERVICES_CCD_COMPONENT_API_PATH,
@@ -18,7 +18,7 @@ import {
 import {router as emAnnoRouter} from './emAnno/routes'
 import * as health from './health'
 import healthCheck from './healthCheck'
-import {errorStack} from './lib/errorStack'
+// import {errorStack} from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
 import authInterceptor from './lib/middleware/auth'
 import {applyProxy} from './lib/middleware/proxy'
@@ -57,7 +57,7 @@ app.use(
 
 app.use(cookieParser())
 
-app.use(errorStack)
+// app.use(errorStack)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 
@@ -82,8 +82,12 @@ app.get('/api/monitoring-tools', (req, res) => {
 })
 
 app.use('/api/healthCheck', healthCheck)
-app.use('/api/userTermsAndConditions', userTandCRoutes)
-app.use('/api/termsAndConditions', termsAndCRoutes)
+
+if (showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED)) {
+    app.use('/api/userTermsAndConditions', userTandCRoutes)
+    app.use('/api/termsAndConditions', termsAndCRoutes)
+}
+
 app.get('/api/configuration', (req, res) => {
     res.send(showFeature(req.query.configurationKey))
 })

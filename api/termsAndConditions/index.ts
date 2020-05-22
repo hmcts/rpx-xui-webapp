@@ -1,11 +1,28 @@
 import * as express from 'express'
-import { getConfigValue } from '../configuration'
-import { SERVICES_IDAM_CLIENT_ID, SERVICES_TERMS_AND_CONDITIONS_URL } from '../configuration/references'
+import * as fs from 'fs'
+import * as path from 'path'
+import {getConfigValue, showFeature} from '../configuration'
+import {
+    FEATURE_TERMS_AND_CONDITIONS_ENABLED,
+    SERVICES_IDAM_CLIENT_ID,
+    SERVICES_TERMS_AND_CONDITIONS_URL
+} from '../configuration/references'
 import { http } from '../lib/http'
 import { setHeaders } from '../lib/proxy'
 import { getTermsAndConditionsUrl } from './termsAndConditionsUtil'
 
 export async function getTermsAndConditions(req: express.Request, res: express.Response) {
+    if (!showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED)) {
+        const TERMS_PATH = path.join(__dirname, './resources', 'terms.html')
+        const terms = fs.readFileSync(TERMS_PATH, 'utf8')
+
+        return res.status(200).send({
+            content: terms,
+            mimeType: 'text/html',
+            version: 1,
+        })
+    }
+
     let errReport: any
     try {
         const url = getTermsAndConditionsUrl(getConfigValue(SERVICES_TERMS_AND_CONDITIONS_URL),

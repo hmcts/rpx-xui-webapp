@@ -11,6 +11,8 @@ import * as ejs from 'ejs'
 import * as express from 'express'
 import * as path from 'path'
 import { appInsights } from './lib/appInsights'
+import errorHandler from './lib/error.handler'
+
 app.engine('html', ejs.renderFile)
 app.set('view engine', 'html')
 app.set('views', __dirname)
@@ -33,6 +35,7 @@ app.use('/*', (req, res) => {
 })
 
 app.use(appInsights)
+app.use(errorHandler)
 app.listen(process.env.PORT || 3000, () => {
     console.log('Server listening on port 3000!')
 })

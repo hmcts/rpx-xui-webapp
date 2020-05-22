@@ -31,7 +31,7 @@
       "indexUrl": "/",
       "oauthCallbackUrl": "oauth2/callback"
     },
-    "payments": "http://payment-api-prod.service.core-compute-prod.internal",
+    "markup_api": "http://em-npa-prod.service.core-compute-prod.internal",
     "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal",
     "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal"
   },

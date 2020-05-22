@@ -6,19 +6,19 @@ import * as sinonChai from 'sinon-chai'
 import { mockReq, mockRes } from 'sinon-express-mock'
 import {getConfigValue} from '../configuration'
 import {
-  SERVICES_EM_ANNO_API_URL,
+  SERVICES_MARKUP_API_URL,
 } from '../configuration/references'
-import * as emAnnoService from './emAnnoService'
-import { deleteAnnotations, getAnnotations, postAnnotations, putAnnotations } from './index'
+import * as markupService from './redactionService'
+import { deleteMarkup, getMarkup, postMarkup, putMarkup } from './markup'
 
 chai.use(sinonChai)
-describe('emAnno', () => {
+describe('markup', () => {
 
     let sandbox
     let spy: any
-    const service: string = getConfigValue(SERVICES_EM_ANNO_API_URL)
+    const service: string = getConfigValue(SERVICES_MARKUP_API_URL)
     const reqQuery = {
-        originalUrl: '/emAnno/12345',
+        originalUrl: '/markup/12345',
     }
     const req = mockReq(reqQuery)
     const res = mockRes()
@@ -31,14 +31,14 @@ describe('emAnno', () => {
         sandbox.restore()
     })
 
-    describe('getAnnotations', () => {
+    describe('getMarkup', () => {
         beforeEach(() => {
-            spy = sandbox.stub(emAnnoService, 'handleGet').returns({status: 200, data: {}})
+            spy = sandbox.stub(markupService, 'handleGet').returns({status: 200, data: {}})
         })
-        it('should call getAnnotations and return the json response', async () => {
-            const annotationsPath = `${service}${reqQuery.originalUrl}`
-            await getAnnotations(req, res)
-            expect(emAnnoService.handleGet).to.have.been.calledWith(annotationsPath)
+        it('should call getMarkup and return the json response', async () => {
+            const markupPath = `${service}${reqQuery.originalUrl}`
+            await getMarkup(req, res)
+            expect(markupService.handleGet).to.have.been.calledWith(markupPath)
             expect(res.status).to.have.been.calledWith(200)
             expect(res.send).to.have.been.calledWith({})
         })
@@ -51,11 +51,11 @@ describe('emAnno', () => {
                 status: 403,
                 statusText: 'Access denied',
             }
-            spy = sandbox.stub(emAnnoService, 'handleGet').throws(response)
+            spy = sandbox.stub(markupService, 'handleGet').throws(response)
 
-            const annotationsPath = `${service}${reqQuery.originalUrl}`
-            await getAnnotations(req, res)
-            expect(emAnnoService.handleGet).to.have.been.calledWith(annotationsPath)
+            const markupPath = `${service}${reqQuery.originalUrl}`
+            await getMarkup(req, res)
+            expect(markupService.handleGet).to.have.been.calledWith(markupPath)
             expect(res.status).to.have.been.calledWith(response.status)
             expect(res.send).to.have.been.calledWith({
                 errorMessage: response.data,
@@ -65,14 +65,14 @@ describe('emAnno', () => {
 
     })
 
-    describe('postAnnotations', () => {
+    describe('postMarkup', () => {
         beforeEach(() => {
-            spy = sandbox.stub(emAnnoService, 'handlePost').returns({status: 200, data: {}})
+            spy = sandbox.stub(markupService, 'handlePost').returns({status: 200, data: {}})
         })
-        it('should call postAnnotations and return the json response', async () => {
-            const annotationsPath = `${service}${reqQuery.originalUrl}`
-            await postAnnotations(req, res)
-            expect(emAnnoService.handlePost).to.have.been.calledWith(annotationsPath, req.body)
+        it('should call postMarkup and return the json response', async () => {
+            const markupPath = `${service}${reqQuery.originalUrl}`
+            await postMarkup(req, res)
+            expect(markupService.handlePost).to.have.been.calledWith(markupPath, req.body)
             expect(res.status).to.have.been.calledWith(200)
             expect(res.send).to.have.been.calledWith({})
         })
@@ -85,11 +85,11 @@ describe('emAnno', () => {
                 status: 403,
                 statusText: 'Access denied',
             }
-            spy = sandbox.stub(emAnnoService, 'handlePost').throws(response)
+            spy = sandbox.stub(markupService, 'handlePost').throws(response)
 
-            const annotationsPath = `${service}${reqQuery.originalUrl}`
-            await postAnnotations(req, res)
-            expect(emAnnoService.handlePost).to.have.been.calledWith(annotationsPath, req.body)
+            const markupPath = `${service}${reqQuery.originalUrl}`
+            await postMarkup(req, res)
+            expect(markupService.handlePost).to.have.been.calledWith(markupPath, req.body)
             expect(res.status).to.have.been.calledWith(response.status)
             expect(res.send).to.have.been.calledWith({
                 errorMessage: response.data,
@@ -99,14 +99,14 @@ describe('emAnno', () => {
 
     })
 
-    describe('putAnnotations', () => {
+    describe('putMarkup', () => {
         beforeEach(() => {
-            spy = sandbox.stub(emAnnoService, 'handlePut').returns({status: 200, data: {}})
+            spy = sandbox.stub(markupService, 'handlePut').returns({status: 200, data: {}})
         })
-        it('should call putAnnotations and return the json response', async () => {
-            const annotationsPath = `${service}${reqQuery.originalUrl}`
-            await putAnnotations(req, res)
-            expect(emAnnoService.handlePut).to.have.been.calledWith(annotationsPath, req.body)
+        it('should call putMarkup and return the json response', async () => {
+            const markupPath = `${service}${reqQuery.originalUrl}`
+            await putMarkup(req, res)
+            expect(markupService.handlePut).to.have.been.calledWith(markupPath, req.body)
             expect(res.status).to.have.been.calledWith(200)
             expect(res.send).to.have.been.calledWith({})
         })
@@ -119,11 +119,11 @@ describe('emAnno', () => {
                 status: 403,
                 statusText: 'Access denied',
             }
-            spy = sandbox.stub(emAnnoService, 'handlePut').throws(response)
+            spy = sandbox.stub(markupService, 'handlePut').throws(response)
 
-            const annotationsPath = `${service}${reqQuery.originalUrl}`
-            await putAnnotations(req, res)
-            expect(emAnnoService.handlePut).to.have.been.calledWith(annotationsPath, req.body)
+            const markupPath = `${service}${reqQuery.originalUrl}`
+            await putMarkup(req, res)
+            expect(markupService.handlePut).to.have.been.calledWith(markupPath, req.body)
             expect(res.status).to.have.been.calledWith(response.status)
             expect(res.send).to.have.been.calledWith({
                 errorMessage: response.data,
@@ -133,14 +133,14 @@ describe('emAnno', () => {
 
     })
 
-    describe('deleteAnnotations', () => {
+    describe('deleteMarkup', () => {
         beforeEach(() => {
-            spy = sandbox.stub(emAnnoService, 'handleDelete').returns({status: 200, data: {}})
+            spy = sandbox.stub(markupService, 'handleDelete').returns({status: 200, data: {}})
         })
-        it('should call deleteAnnotations and return the json response', async () => {
-            const annotationsPath = `${service}${reqQuery.originalUrl}`
-            await deleteAnnotations(req, res)
-            expect(emAnnoService.handleDelete).to.have.been.calledWith(annotationsPath)
+        it('should call deleteMarkup and return the json response', async () => {
+            const markupPath = `${service}${reqQuery.originalUrl}`
+            await deleteMarkup(req, res)
+            expect(markupService.handleDelete).to.have.been.calledWith(markupPath)
             expect(res.status).to.have.been.calledWith(200)
             expect(res.send).to.have.been.calledWith({})
         })
@@ -153,11 +153,11 @@ describe('emAnno', () => {
                 status: 403,
                 statusText: 'Access denied',
             }
-            spy = sandbox.stub(emAnnoService, 'handleDelete').throws(response)
+            spy = sandbox.stub(markupService, 'handleDelete').throws(response)
 
-            const annotationsPath = `${service}${reqQuery.originalUrl}`
-            await deleteAnnotations(req, res)
-            expect(emAnnoService.handleDelete).to.have.been.calledWith(annotationsPath)
+            const markupPath = `${service}${reqQuery.originalUrl}`
+            await deleteMarkup(req, res)
+            expect(markupService.handleDelete).to.have.been.calledWith(markupPath)
             expect(res.status).to.have.been.calledWith(response.status)
             expect(res.send).to.have.been.calledWith({
                 errorMessage: response.data,

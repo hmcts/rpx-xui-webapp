@@ -28,6 +28,8 @@ import * as tunnel from './lib/tunnel'
 import openRoutes from './openRoutes'
 import {router as paymentsRouter} from './payments/routes'
 import * as postCodeLookup from './postCodeLookup'
+import {router as markupRouter} from './redaction/markupRoutes'
+import {router as redactionRouter} from './redaction/redactionRoutes'
 import routes from './routes'
 import {router as termsAndCRoutes} from './termsAndConditions/routes'
 import {router as userTandCRoutes} from './userTermsAndConditions/routes'
@@ -87,6 +89,10 @@ app.use('/api/termsAndConditions', termsAndCRoutes)
 app.get('/api/configuration', (req, res) => {
     res.send(showFeature(req.query.configurationKey))
 })
+
+// TODO: move to proxy route as below
+app.use('/api/markups', markupRouter)
+app.use('/api/redaction', redactionRouter)
 
 // TODO: move these to proxy routes as well
 app.use('/aggregated', routes)

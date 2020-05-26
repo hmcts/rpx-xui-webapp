@@ -26,6 +26,7 @@ export const SERVICES_CCD_DATA_STORE_API_PATH = 'services.ccd.dataApi'
 export const SERVICES_DOCUMENTS_API_PATH = 'services.documents.api'
 
 export const SERVICES_EM_ANNO_API_URL = 'services.em_anno_api'
+export const SERVICES_MARKUP_API_URL = 'services.markup_api'
 
 export const SERVICES_IDAM_API_URL = 'services.idam.idamApiUrl'
 export const SERVICES_IDAM_CLIENT_ID = 'services.idam.idamClientID'
@@ -35,6 +36,8 @@ export const SERVICES_IDAM_OAUTH_CALLBACK_URL = 'services.idam.oauthCallbackUrl'
 
 export const SERVICE_S2S_PATH = 'services.s2s'
 export const SERVICES_TERMS_AND_CONDITIONS_URL = 'services.termsAndConditions'
+
+export const SERVICES_PAYMENTS_URL = 'services.payments'
 
 export const PROTOCOL = 'protocol'
 export const MICROSERVICE = 'microservice'

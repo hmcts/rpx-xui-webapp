@@ -12,5 +12,6 @@ services_documents_api = "http://dm-store-prod.service.core-compute-prod.interna
 services_em_anno_api = "http://em-anno-prod.service.core-compute-prod.internal"
 services_idam_api_url = "https://idam-api.platform.hmcts.net"
 services_idam_login_url = "https://hmcts-access.service.gov.uk"
+services_payments_url = "http://payment-api-prod.service.core-compute-prod.internal"
 services_s2s = "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal"
 services_terms_and_conditions = "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal"

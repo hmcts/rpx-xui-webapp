@@ -48,11 +48,10 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 
 withPipeline(type, product, component) {
     enableSlackNotifications(channel)
-
     loadVaultSecrets(secrets)
-
     installCharts()
-
+    enableSecurityScan()
+    env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net'
     enableAksStagingDeployment()
 
     disableLegacyDeployment()
@@ -119,6 +118,15 @@ withPipeline(type, product, component) {
             reportFiles          : "index.html",
             reportName           : "ng coverage tests"
         ])
+
+        //  publishHTML([
+        //     allowMissing         : true,
+        //     alwaysLinkToLastBuild: true,
+        //     keepAll              : true,
+        //     reportDir            : "reports/tests/mutation/node/",
+        //     reportFiles          : 'index.html',
+        //     reportName           : 'XUI Manage Cases Mutation tests'
+        // ])
 
     }
 

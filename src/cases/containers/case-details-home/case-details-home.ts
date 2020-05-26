@@ -5,5 +5,7 @@ import { Component } from '@angular/core';
   templateUrl: './case-details-home.html'
 })
 export class CaseDetailsHomeComponent {
-  constructor() {}
+  constructor() {
+    console.log('case-details home component');
+  }
 }

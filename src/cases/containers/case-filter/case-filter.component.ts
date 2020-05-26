@@ -35,6 +35,7 @@ export class CaseFilterComponent implements OnInit {
   constructor(private store: Store<fromCaseCreate.State>) {}
 
   ngOnInit(): void {
+    console.log('case-filter component');
     this.fromCasesFeature = fromCasesFeature;
     this.startButtonText = 'Start'; // TODO add this to some config file.
     /**

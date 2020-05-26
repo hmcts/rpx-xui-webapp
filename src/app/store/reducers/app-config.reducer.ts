@@ -2,6 +2,7 @@ import { TCDocument } from '@hmcts/rpx-xui-common-lib';
 import { TermsAndCondition } from 'src/app/models/TermsAndCondition';
 import { ConfigurationModel } from '../../models/configuration.model';
 import * as fromActions from '../actions/';
+import {StartIdleSessionTimeout, STOP_IDLE_SESSION_TIMEOUT} from '../actions/app.actions';
 
 interface UserDetails {
   sessionTimeout: {
@@ -17,7 +18,7 @@ export interface AppConfigState {
   loading: boolean;
   termsAndConditions: TCDocument;
   isTermsAndConditionsFeatureEnabled: boolean;
-  hasUserAuthenticated: boolean;
+  useIdleSessionTimeout: boolean;
   // TODO: Change type once we know this works.
   userDetails: UserDetails;
 }
@@ -29,7 +30,7 @@ export const initialState: AppConfigState = {
   loading: false,
   termsAndConditions: null,
   isTermsAndConditionsFeatureEnabled: false,
-  hasUserAuthenticated: false,
+  useIdleSessionTimeout: false,
   userDetails: {
     sessionTimeout: {
       idleModalDisplayTime: 0,
@@ -100,6 +101,18 @@ export function reducer(
         ...state,
         userDetails: action.payload
       };
+    // TODO: Check if this changes the idle session timeout value properly
+    // TODO: Maybe call the property useIdleSessionTimeout
+    case fromActions.START_IDLE_SESSION_TIMEOUT:
+      return {
+        ...state,
+        useIdleSessionTimeout: true
+      };
+    case fromActions.STOP_IDLE_SESSION_TIMEOUT:
+      return {
+        ...state,
+        useIdleSessionTimeout: false
+      };
     default:
       return {
         ...state
@@ -113,4 +126,4 @@ export const getFeatureConfig = (state: AppConfigState) => state.config;
 export const getTandCLoadedConfig = (state: AppConfigState) => state.termsAndCondition;
 export const getTermsConditions = (state: AppConfigState) => state.termsAndConditions;
 export const getUserDetails = (state: AppConfigState) => state.userDetails;
-export const getHasUserAuthenticated = (state: AppConfigState) => state.hasUserAuthenticated;
+export const getUseIdleSessionTimeout = (state: AppConfigState) => state.useIdleSessionTimeout;

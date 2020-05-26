@@ -31,6 +31,9 @@ export const LOAD_USER_DETAILS = '[App] Load User Details';
 export const LOAD_USER_DETAILS_SUCCESS = '[App] Load User Details Success';
 export const LOAD_USER_DETAILS_FAIL = '[App] Load User Details Success';
 
+export const START_IDLE_SESSION_TIMEOUT = '[App] Start Idle Session Timeout';
+export const STOP_IDLE_SESSION_TIMEOUT = '[App] Stop Idle Session Timeout';
+
 export class LoadConfig implements Action {
   readonly type = APP_LOAD_CONFIG;
 }
@@ -123,6 +126,14 @@ export class LoadUserDetails {
   public readonly type = LOAD_USER_DETAILS;
 }
 
+export class StartIdleSessionTimeout {
+  public readonly type = START_IDLE_SESSION_TIMEOUT;
+}
+
+export class StopIdleSessionTimeout {
+  public readonly type = STOP_IDLE_SESSION_TIMEOUT;
+}
+
 // TODO: strong type the payload
 export class LoadUserDetailsSuccess {
   public readonly type = LOAD_USER_DETAILS_SUCCESS;
@@ -155,4 +166,6 @@ export type AppActions =
   | LoadFeatureToggleConfigFail
   | LoadUserDetails
   | LoadUserDetailsSuccess
-  | LoadUserDetailsFail;
+  | LoadUserDetailsFail
+  | StartIdleSessionTimeout
+  | StopIdleSessionTimeout;

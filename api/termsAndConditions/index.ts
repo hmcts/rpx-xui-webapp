@@ -1,3 +1,4 @@
+/*
 import * as express from 'express'
 import {getConfigValue} from '../configuration'
 import {
@@ -26,3 +27,4 @@ export async function getTermsAndConditions(req: express.Request, res: express.R
         res.status(error.status).send(errReport)
     }
 }
+*/

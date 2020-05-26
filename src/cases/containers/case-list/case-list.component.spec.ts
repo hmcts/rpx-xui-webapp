@@ -316,16 +316,22 @@ describe('CaseListComponent', () => {
   describe('setCaseListFilterDefaults()', () => {
 
     it('should set the defaults.', () => {
-      mockDefinitionsService.getJurisdictions.and.returnValue(of([{
+      component.jurisdictionsBehaviourSubject$.next([{
         id: 'some id',
+        name: 'some name',
+        description: 'some desc',
         caseTypes: [{
           id: 'some id',
+          events: null,
+          name: 'some name',
+          description: 'some desc',
           states: [{
-            id: 'some id'
+            id: 'some id',
+            name: 'some name',
+            description: 'some desc'
           }]
         }]
-      }]));
-      component.ngOnInit();
+      }]);
       component.setCaseListFilterDefaults();
 
       expect(component.defaults).toBeDefined();

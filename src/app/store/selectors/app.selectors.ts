@@ -32,7 +32,7 @@ export const getUserDetails = createSelector(
   fromApp.getUserDetails
 );
 
-export const getHasUserAuthenticated = createSelector(
+export const getUseIdleSessionTimeout = createSelector(
   getConfigState,
-  fromApp.getHasUserAuthenticated
+  fromApp.getUseIdleSessionTimeout
 );

@@ -5,7 +5,7 @@ import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import * as fromRoot from '../../store';
 import {propsExist} from '../../../../api/lib/objectUtilities';
-import {IdleUserLogOut, Logout} from '../../store/actions/app.actions';
+import {IdleUserLogOut, Logout, StopIdleSessionTimeout} from '../../store/actions/app.actions';
 
 @Component({
   selector: 'exui-root',
@@ -29,18 +29,15 @@ export class AppComponent implements OnInit {
   ) {
 
     this.googleAnalyticsService.init(config.googleAnalyticsKey);
-
-    console.log('hello app');
   }
 
   public ngOnInit() {
 
-    // Good to listen out for if the User has logged in or not.
-    // would you check for auth? where does it check now?
-
-    // this.loadAndListenForUserDetails();
-
-    this.store.pipe(select(fromRoot.getHasUserAuthenticated)).subscribe(userDetails => this.userDetailsHandler(userDetails))
+    this.store.pipe(select(fromRoot.getUseIdleSessionTimeout)).subscribe(useIdleTimeout => {
+      if (useIdleTimeout) {
+        this.loadAndListenForUserDetails();
+      }
+    });
   }
 
   /**
@@ -67,9 +64,6 @@ export class AppComponent implements OnInit {
   public userDetailsHandler(userDetails) {
 
     if (propsExist(userDetails,['sessionTimeout']) && userDetails.sessionTimeout.totalIdleTime > 0) {
-
-      console.log('userDetailsHandler');
-      console.log(userDetails);
 
       const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
 
@@ -131,6 +125,7 @@ export class AppComponent implements OnInit {
         this.setModal(undefined, false);
 
         // Ok so we should call an action, that an effect listens to
+        this.store.dispatch(new fromRoot.StopIdleSessionTimeout());
         this.store.dispatch(new fromRoot.IdleUserLogOut());
         return;
       }
@@ -165,6 +160,7 @@ export class AppComponent implements OnInit {
 
   // TODO: Keep consistent naming conventions
   public signOutHandler() {
+    this.store.dispatch(new fromRoot.StopIdleSessionTimeout());
     this.store.dispatch(new fromRoot.Logout());
     console.log('signOutHandler');
   }

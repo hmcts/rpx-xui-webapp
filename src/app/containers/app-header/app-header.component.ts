@@ -28,6 +28,7 @@ export class AppHeaderComponent implements OnInit {
 
   onNavigate(event): void {
     if (event === 'sign-out') {
+      this.store.dispatch(new fromActions.StopIdleSessionTimeout());
       return this.store.dispatch(new fromActions.Logout());
     }
   }

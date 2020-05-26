@@ -8,8 +8,7 @@ import { getConfigValue, showFeature } from './configuration'
 import {
     APP_INSIGHTS_KEY,
     FEATURE_HELMET_ENABLED,
-    FEATURE_SECURE_COOKIE_ENABLED, FEATURE_TERMS_AND_CONDITIONS_ENABLED,
-    HELMET,
+    FEATURE_SECURE_COOKIE_ENABLED, HELMET,
     PROTOCOL,
     SERVICES_CCD_COMPONENT_API_PATH,
     SERVICES_DOCUMENTS_API_PATH,
@@ -29,8 +28,8 @@ import openRoutes from './openRoutes'
 import {router as paymentsRouter} from './payments/routes'
 import * as postCodeLookup from './postCodeLookup'
 import routes from './routes'
-import {router as termsAndCRoutes} from './termsAndConditions/routes'
-import {router as userTandCRoutes} from './userTermsAndConditions/routes'
+// import {router as termsAndCRoutes} from './termsAndConditions/routes'
+// import {router as userTandCRoutes} from './userTermsAndConditions/routes'
 
 export const app = express()
 if (showFeature(FEATURE_HELMET_ENABLED)) {
@@ -83,10 +82,10 @@ app.get('/api/monitoring-tools', (req, res) => {
 
 app.use('/api/healthCheck', healthCheck)
 
-if (showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED)) {
+/*if (showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED)) {
     app.use('/api/userTermsAndConditions', userTandCRoutes)
     app.use('/api/termsAndConditions', termsAndCRoutes)
-}
+}*/
 
 app.get('/api/configuration', (req, res) => {
     res.send(showFeature(req.query.configurationKey))

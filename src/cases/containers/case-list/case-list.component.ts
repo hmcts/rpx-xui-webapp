@@ -121,7 +121,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
       this.onPaginationSubscribeHandler(paginationMetadata));
   }
 
-  public doesIdExist(arr, id): boolean {
+  public doesIdExist(arr = [], id): boolean {
     return arr.some(element => element.id === id);
   }
 

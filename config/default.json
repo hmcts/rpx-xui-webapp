@@ -118,11 +118,11 @@
     "ttl": 86400
   },
   "sessionTimeouts": [
-    {
-      "idleModalDisplayTime": 1,
-      "pattern": "pui-",
-      "totalIdleTime": 2
-    },
+//    {
+//      "idleModalDisplayTime": 1,
+//      "pattern": "pui-",
+//      "totalIdleTime": 2
+//    },
     {
       "idleModalDisplayTime": 10,
       "pattern": ".",

@@ -10,9 +10,10 @@ export const processErrorInit = () => {
         logger.info('Process exit event with code: ', code)
     })
 
-    process.on('uncaughtException', err => {
+    process.on('uncaughtException', (err, origin) => {
         // tslint:disable-next-line:new-parens
         logger._logger.error((new Date).toUTCString() + ' uncaughtException:', err.message)
+        logger._logger.error(`Exception origin: ${origin}`)
         logger._logger.error(err.stack)
     })
 

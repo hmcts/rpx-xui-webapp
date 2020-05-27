@@ -24,12 +24,12 @@ import * as log4jui from './lib/log4jui'
 import authInterceptor from './lib/middleware/auth'
 import {applyProxy} from './lib/middleware/proxy'
 import {JUILogger} from './lib/models'
+import {processErrorInit} from './lib/processError.handler'
 import { getStore } from './lib/sessionStore'
 import * as tunnel from './lib/tunnel'
 import openRoutes from './openRoutes'
 import {router as paymentsRouter} from './payments/routes'
 import * as postCodeLookup from './postCodeLookup'
-import {processErrorInit} from './lib/processError.handler'
 import routes from './routes'
 
 export const app = express()

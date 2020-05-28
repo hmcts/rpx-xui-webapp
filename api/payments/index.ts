@@ -21,10 +21,6 @@ export async function getPayments(req: EnhancedRequest, res: express.Response, n
     res.send(jsonResponse)
   } catch (error) {
     next(error)
-    /*res.status(error.status).send({
-      errorMessage: error.data,
-      errorStatusText: error.statusText,
-    })*/
   }
 
 }

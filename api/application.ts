@@ -3,6 +3,8 @@ import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
 import * as session from 'express-session'
 import * as helmet from 'helmet'
+// import {router as termsAndCRoutes} from './termsAndConditions/routes'
+// import {router as userTandCRoutes} from './userTermsAndConditions/routes'
 import * as auth from './auth'
 import { getConfigValue, showFeature } from './configuration'
 import {
@@ -22,14 +24,13 @@ import * as log4jui from './lib/log4jui'
 import authInterceptor from './lib/middleware/auth'
 import {applyProxy} from './lib/middleware/proxy'
 import {JUILogger} from './lib/models'
+import {processErrorInit} from './lib/processError.handler'
 import { getStore } from './lib/sessionStore'
 import * as tunnel from './lib/tunnel'
 import openRoutes from './openRoutes'
 import {router as paymentsRouter} from './payments/routes'
 import * as postCodeLookup from './postCodeLookup'
 import routes from './routes'
-// import {router as termsAndCRoutes} from './termsAndConditions/routes'
-// import {router as userTandCRoutes} from './userTermsAndConditions/routes'
 
 export const app = express()
 if (showFeature(FEATURE_HELMET_ENABLED)) {
@@ -123,3 +124,5 @@ app.use('/payments', paymentsRouter)
 // @ts-ignore
 const logger: JUILogger = log4jui.getLogger('Application')
 logger.info(`Started up using ${getConfigValue(PROTOCOL)}`)
+
+processErrorInit()

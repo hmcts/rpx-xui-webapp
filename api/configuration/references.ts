@@ -26,6 +26,7 @@ export const SERVICES_CCD_DATA_STORE_API_PATH = 'services.ccd.dataApi'
 export const SERVICES_DOCUMENTS_API_PATH = 'services.documents.api'
 
 export const SERVICES_EM_ANNO_API_URL = 'services.em_anno_api'
+export const SERVICES_MARKUP_API_URL = 'services.markup_api'
 
 export const SERVICES_IDAM_API_URL = 'services.idam.idamApiUrl'
 export const SERVICES_IDAM_CLIENT_ID = 'services.idam.idamClientID'

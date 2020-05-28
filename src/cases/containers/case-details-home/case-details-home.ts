@@ -6,6 +6,5 @@ import { Component } from '@angular/core';
 })
 export class CaseDetailsHomeComponent {
   constructor() {
-    console.log('case-details home component');
   }
 }

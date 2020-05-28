@@ -1,11 +1,9 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import { GoogleAnalyticsService, ManageSessionServices } from '@hmcts/rpx-xui-common-lib';
-import { environment as config } from '../../../environments/environment';
 import { select, Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import * as fromRoot from '../../store';
 import {propsExist} from '../../../../api/lib/objectUtilities';
-import {IdleUserLogOut, Logout, StopIdleSessionTimeout} from '../../store/actions/app.actions';
+import { environment as config } from '../../../environments/environment';
+import * as fromRoot from '../../store';
 
 @Component({
   selector: 'exui-root',
@@ -39,13 +37,7 @@ export class AppComponent implements OnInit {
   }
 
   /**
-   * Load and Listen for User Details changes
-   *
-   * TODO: Note that this is kicking in too soon, and the User has not signed in as yet. But they
-   * are getting redirected to a 'Service is down page'.
-   *
-   * Remember that we need the User Roles to know what session timeout to apply to that user.
-   * Is there some application state we can listen for???
+   * Load and Listen for User Details
    */
   public loadAndListenForUserDetails() {
 
@@ -57,7 +49,16 @@ export class AppComponent implements OnInit {
   /**
    * User Details Handler
    *
-   * @param userDetails
+   * If the sessionTimeout exists on the userDetails object we add the Idle Service Listeners, and initialise
+   * the Idle service.
+   *
+   * @param userDetails - {
+   *  "sessionTimeout": {
+   *  "idleModalDisplayTime": 10,
+   *  "pattern": "-solicitor",
+   *  "totalIdleTime": 50
+   *  }
+   * }
    */
   public userDetailsHandler(userDetails) {
 
@@ -84,19 +85,6 @@ export class AppComponent implements OnInit {
   }
 
   /**
-   * Add User Profile Listener
-   *
-   * We listen for User Profile details. Once the application has these details we are able to initialise the idle timer,
-   * which displays a Session Timeout Modal to the User if they have been idle for x amount of time.
-   *
-   * The User profile details contain the User's session timeout information.
-   *
-   * The User's Session Timeout information is different per User and per application.
-   *
-   * TODO: Remove console.log(userProfile) after testing
-   */
-
-  /**
    * Idle Service Event Handler
    *
    * TODO:
@@ -119,7 +107,6 @@ export class AppComponent implements OnInit {
       case IDLE_EVENT_SIGNOUT: {
         this.setModal(undefined, false);
 
-        // Ok so we should call an action, that an effect listens to
         this.store.dispatch(new fromRoot.StopIdleSessionTimeout());
         this.store.dispatch(new fromRoot.IdleUserLogOut());
         return;
@@ -145,7 +132,6 @@ export class AppComponent implements OnInit {
     };
   }
 
-  // TODO: Should refresh the token.
   /**
    * Stay Signed in Handler
    */
@@ -157,7 +143,6 @@ export class AppComponent implements OnInit {
   public signOutHandler() {
     this.store.dispatch(new fromRoot.StopIdleSessionTimeout());
     this.store.dispatch(new fromRoot.Logout());
-    console.log('signOutHandler');
   }
   /**
    * Initialise Idle Service

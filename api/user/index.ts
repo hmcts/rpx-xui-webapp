@@ -3,7 +3,6 @@ import { getUserSessionTimeout } from './userTimeout';
 import { getConfigValue } from '../configuration'
 import { SESSION_TIMEOUTS } from '../configuration/references'
 
-// TODO: Is it correct to do this?
 interface SessionRequest extends express.Request {
   session: {
     user: {
@@ -12,7 +11,8 @@ interface SessionRequest extends express.Request {
   },
 }
 
-export async function getUserDetails(req: SessionRequest, res: express.Response) {
+// TODO: Need to test error condition here.
+export async function getUserDetails(req: SessionRequest, res: express.Response, next: express.NextFunction) {
 
   const { roles } = req.session.user
 
@@ -24,14 +24,6 @@ export async function getUserDetails(req: SessionRequest, res: express.Response)
       sessionTimeout,
     })
   } catch (error) {
-
-    // TODO : Replace with next func
-    const errReport = {
-      apiError: error.data.message,
-      apiStatusCode: error.status,
-      message: 'User details route error',
-    }
-
-    res.status(error.status).send(errReport)
+    next(error)
   }
 }

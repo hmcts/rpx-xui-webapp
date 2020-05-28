@@ -27,7 +27,6 @@ export class CaseCreateSubmitComponent implements OnInit {
     private route: ActivatedRoute,
     private store: Store<fromCaseCreate.State>
   ) {
-    console.log('case-create submit component');
     this.eventTrigger = route.snapshot.data.eventTrigger;
   }
 

@@ -118,15 +118,25 @@
     "ttl": 86400
   },
   "sessionTimeouts": [
-//    {
-//      "idleModalDisplayTime": 1,
-//      "pattern": "pui-",
-//      "totalIdleTime": 2
-//    },
+    {
+      "idleModalDisplayTime": 3,
+      "pattern": "-dwpresponsewriter",
+      "totalIdleTime": 12
+    },
+    {
+      "idleModalDisplayTime": 3,
+      "pattern": "-homeoffice",
+      "totalIdleTime": 12
+    },
+    {
+      "idleModalDisplayTime": 10,
+      "pattern": "-solicitor",
+      "totalIdleTime": 50
+    },
     {
       "idleModalDisplayTime": 10,
       "pattern": ".",
-      "totalIdleTime": 50
+      "totalIdleTime": 480
     }
   ]
 }

@@ -15,8 +15,6 @@ interface SessionRequest extends express.Request {
 export async function getUserDetails(req: SessionRequest, res: express.Response) {
 
   const { roles } = req.session.user
-  console.log('roles')
-  console.log(roles)
 
   const sessionTimeouts = getConfigValue(SESSION_TIMEOUTS)
   const sessionTimeout = getUserSessionTimeout(roles, sessionTimeouts)
@@ -27,6 +25,7 @@ export async function getUserDetails(req: SessionRequest, res: express.Response)
     })
   } catch (error) {
 
+    // TODO : Replace with next func
     const errReport = {
       apiError: error.data.message,
       apiStatusCode: error.status,

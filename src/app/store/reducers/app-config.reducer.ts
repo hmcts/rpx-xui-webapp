@@ -100,8 +100,6 @@ export function reducer(
         ...state,
         userDetails: action.payload
       };
-    // TODO: Check if this changes the idle session timeout value properly
-    // TODO: Maybe call the property useIdleSessionTimeout
     case fromActions.START_IDLE_SESSION_TIMEOUT:
       return {
         ...state,

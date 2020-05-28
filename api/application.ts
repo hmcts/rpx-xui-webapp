@@ -124,5 +124,3 @@ app.use('/payments', paymentsRouter)
 // @ts-ignore
 const logger: JUILogger = log4jui.getLogger('Application')
 logger.info(`Started up using ${getConfigValue(PROTOCOL)}`)
-
-processErrorInit()

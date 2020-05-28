@@ -24,6 +24,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { HttpModule } from '@angular/http';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
+import { EffectsModule } from '@ngrx/effects';
 
 class MockSortService {
   features = {};
@@ -65,7 +66,7 @@ const SANITISED_EDIT_FORM: CaseEventData = {
   ignore_warning: false
 };
 
-describe('CaseCaseComponent', () => {
+describe('CaseCreateSubmitComponent', () => {
   let component: CaseCreateSubmitComponent;
   let fixture: ComponentFixture<CaseCreateSubmitComponent>;
   let casesService: CasesService;
@@ -79,6 +80,7 @@ describe('CaseCaseComponent', () => {
         HttpModule,
         HttpClientTestingModule,
         StoreModule.forRoot({...fromCases.reducers, cases: combineReducers(fromCases.reducers)}),
+        EffectsModule.forRoot([]),
         SharedModule
       ],
       declarations: [CaseCreateSubmitComponent],

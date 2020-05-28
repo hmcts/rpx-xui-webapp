@@ -79,8 +79,6 @@ export default async (req, res, next) => {
         // axios.defaults.headers.common.Authorization = `Bearer ${req.auth.token}`
         // axios.defaults.headers.common['user-roles'] = req.auth.data.roles.join()
 
-        logger.info('Auth token: ' + `${req.headers.Authorization}`)
-
         // moved s2s here so we authenticate first
         await serviceTokenMiddleware.default(req, res, () => {
             logger.info('Attached auth headers to request')

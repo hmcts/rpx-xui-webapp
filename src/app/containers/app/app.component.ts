@@ -15,8 +15,6 @@ import {IdleUserLogOut, Logout, StopIdleSessionTimeout} from '../../store/action
 })
 export class AppComponent implements OnInit {
 
-  // public modalData$: Observable<{isVisible?: boolean; countdown?: string}>;
-
   public modalConfig = {
     countdown: 100,
     isVisible: false,
@@ -65,6 +63,7 @@ export class AppComponent implements OnInit {
 
     if (propsExist(userDetails,['sessionTimeout']) && userDetails.sessionTimeout.totalIdleTime > 0) {
 
+      console.log(userDetails.sessionTimeout);
       const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
 
       this.addIdleServiceListener();
@@ -79,7 +78,6 @@ export class AppComponent implements OnInit {
    */
   public addIdleServiceListener() {
 
-    console.log('ADD IDLE SERVICE LISTENER');
     this.idleService.appStateChanges().subscribe(event => {
       this.idleServiceEventHandler(event);
     });
@@ -119,9 +117,6 @@ export class AppComponent implements OnInit {
         return;
       }
       case IDLE_EVENT_SIGNOUT: {
-        console.log('idle event signout');
-        console.log(value);
-        // Remove the modal properly
         this.setModal(undefined, false);
 
         // Ok so we should call an action, that an effect listens to
@@ -195,9 +190,6 @@ export class AppComponent implements OnInit {
    * @param totalIdleTime - Should reach here in minutes
    */
   public initIdleService(idleModalDisplayTime, totalIdleTime) {
-
-    console.log(idleModalDisplayTime);
-    console.log(totalIdleTime);
 
     const idleModalDisplayTimeInSeconds = idleModalDisplayTime * 60;
     const totalIdleTimeInMilliseconds = (totalIdleTime * 60) * 1000;

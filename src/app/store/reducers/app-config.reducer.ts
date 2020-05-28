@@ -19,7 +19,6 @@ export interface AppConfigState {
   termsAndConditions: TCDocument;
   isTermsAndConditionsFeatureEnabled: boolean;
   useIdleSessionTimeout: boolean;
-  // TODO: Change type once we know this works.
   userDetails: UserDetails;
 }
 

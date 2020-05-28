@@ -59,19 +59,11 @@ describe('AppHeaderSignedOutComponent', () => {
       }]
     };
     AppConstants.APP_HEADER_TITLE = dummyAppHeaderTitle;
-    AppConstants.NAV_ITEMS = dummyNavItems;
-    AppConstants.USER_NAV = dummyUserNav;
+    AppConstants.SIGNED_OUT_NAV_ITEMS = dummyNavItems;
+    AppConstants.SIGNED_OUT_USER_NAV = dummyUserNav;
     component.ngOnInit();
     expect(component.appHeaderTitle).toBe(dummyAppHeaderTitle);
     expect(component.navItems).toBe(dummyNavItems);
     expect(component.userNav).toBe(dummyUserNav);
-  });
-
-  it('should logout when onNavigate sign-out is called ', () => {
-    const spyOnDispatchToStore = spyOn(store, 'dispatch').and.callThrough();
-    component.onNavigate('anything');
-    expect(spyOnDispatchToStore).toHaveBeenCalledTimes(0);
-    component.onNavigate('sign-out');
-    expect(spyOnDispatchToStore).toHaveBeenCalledWith(new fromActions.Logout());
   });
 });

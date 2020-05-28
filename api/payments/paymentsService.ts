@@ -19,7 +19,7 @@ export async function handleGet(paymentsPath: string, req: EnhancedRequest): Pro
         const response: { data?: any} = await http.get(paymentsPath, { headers })
         return response.data
     } catch (e) {
-        logger.error(e.message)
+        logger._logger.error(e)
         throw e
     }
 

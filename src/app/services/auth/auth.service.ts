@@ -81,7 +81,6 @@ export class AuthService {
     return notExpired;
   }
 
-  // TODO: Chanve to logOut to keep consistency
   signOut() {
 
     window.location.href = '/api/logout';

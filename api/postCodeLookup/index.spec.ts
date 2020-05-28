@@ -17,6 +17,7 @@ describe('postCodeLookup - doLookup', () => {
 
     let sandbox
     let spy: any
+    let next: any
     const postcode = 'E1 8FA'
     const reqQuery = {
         query: { postcode },
@@ -28,6 +29,7 @@ describe('postCodeLookup - doLookup', () => {
 
     beforeEach(() => {
         sandbox = sinon.createSandbox()
+        next = sandbox.spy()
         spy = sandbox.stub(http, 'get').resolves(res)
     })
 
@@ -37,7 +39,7 @@ describe('postCodeLookup - doLookup', () => {
 
     it('should make a http.get call', async () => {
         const url =  `${getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)}/addresses?postcode=${postcode}`
-        await doLookup(req, res)
+        await doLookup(req, res, next)
         expect(spy).to.have.been.calledWith(url)
         expect(res.send).to.have.been.calledWith('ok')
     })
@@ -57,8 +59,7 @@ describe('postCodeLookup - doLookup', () => {
             statusCode: error.status,
         }
         spy = sandbox.stub(http, 'get').throws(error)
-        await doLookup(req, res)
-        expect(res.status).to.have.been.calledWith(errReport.statusCode)
-        expect(res.send).to.have.been.calledWith(errReport)
+        await doLookup(req, res, next)
+        expect(next).to.have.been.called
     })
 })

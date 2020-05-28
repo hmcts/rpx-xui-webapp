@@ -31,8 +31,8 @@ const config = {
 
 
     // sauceProxy: 'https://proxyout.reform.hmcts.net:8080',  // Proxy for the REST API
-    //  sauceUser: process.env.SAUCE_USERNAME,
-    //   sauceKey: process.env.SAUCE_ACCESS_KEY,
+    sauceUser: process.env.SAUCE_USERNAME,
+    sauceKey: process.env.SAUCE_ACCESS_KEY,
     SAUCE_REST_ENDPOINT: 'https://eu-central-1.saucelabs.com/',
     allScriptsTimeout: 111000,
 
@@ -43,7 +43,6 @@ const config = {
         version: 'latest',
         platform: 'Windows 10',
         name: 'chrome-tests',
-        'tunnel-identifier': 'reformtunnel',
         tunnelIdentifier: 'reformtunnel',
         extendedDebugging: true,
         shardTestFiles: true,

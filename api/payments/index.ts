@@ -10,7 +10,7 @@ const baseUrl: string = getConfigValue(SERVICES_PAYMENTS_URL)
 /**
  * getPayments
  */
-export async function getPayments(req: EnhancedRequest, res: express.Response) {
+export async function getPayments(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
 
   try {
 
@@ -20,10 +20,11 @@ export async function getPayments(req: EnhancedRequest, res: express.Response) {
     res.status(200)
     res.send(jsonResponse)
   } catch (error) {
-    res.status(error.status).send({
+    next(error)
+    /*res.status(error.status).send({
       errorMessage: error.data,
       errorStatusText: error.statusText,
-    })
+    })*/
   }
 
 }

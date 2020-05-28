@@ -1,11 +1,9 @@
 import * as exceptionFormatter from 'exception-formatter'
-import * as stringify from 'json-stringify-safe'
 import { getConfigValue } from '../configuration'
 import {
   MAX_LOG_LINE,
 } from '../configuration/references'
 
-import * as errorStack from '../lib/errorStack'
 import { shorten, valueOrNull } from '../lib/util'
 import * as log4jui from './log4jui'
 

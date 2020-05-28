@@ -8,6 +8,6 @@ const logger = log4jui.getLogger('errorHandler')
  */
 // eslint-disable-next-line no-unused-vars, no-shadow,
 export default function errorHandler(err, req: Request, res: Response, next: NextFunction) {
-    logger.error(err)
+    logger._logger.error(err)
     res.status(500).send({ message: 'Internal Server Error' })
 }

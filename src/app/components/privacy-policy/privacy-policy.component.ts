@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-privacy-policy',
+  selector: 'exui-privacy-policy',
   templateUrl: './privacy-policy.component.html'
 })
 export class PrivacyPolicyComponent implements OnInit {

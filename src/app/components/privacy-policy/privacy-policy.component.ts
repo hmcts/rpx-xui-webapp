@@ -1,19 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
-    selector: 'exui-privacy-policy',
-    templateUrl: './privacy-policy.component.html'
+  selector: 'app-privacy-policy',
+  templateUrl: './privacy-policy.component.html'
 })
-export class PrivacyPolicyComponent implements OnInit {
+export class PrivacyPolicyComponent {
 
-    constructor(private route: ActivatedRoute) { }
+  constructor(private route: ActivatedRoute) { }
 
-    ngOnInit() {
-        this.route.fragment.subscribe(fragment => {
-            try {
-                document.querySelector('#' + fragment).scrollIntoView();
-            } catch (e) { }
-        });
+  private subscription: Subscription;
+
+  @HostListener('document:click', ['$event'])
+  clickout(event) {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
     }
+    this.subscription = this.route.fragment.subscribe(fragment => {
+      try {
+        document.querySelector('#' + fragment).scrollIntoView();
+      } catch (e) { }
+    });
+  }
 }

@@ -29,7 +29,7 @@ import * as tunnel from './lib/tunnel'
 import openRoutes from './openRoutes'
 import {router as paymentsRouter} from './payments/routes'
 import * as postCodeLookup from './postCodeLookup'
-import {router as markupRouter} from './redaction/markupRoutes'	
+import {router as markupRouter} from './redaction/markupRoutes'
 import {router as redactionRouter} from './redaction/redactionRoutes'
 import routes from './routes'
 

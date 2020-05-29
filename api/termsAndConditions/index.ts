@@ -1,9 +1,7 @@
+/*
 import * as express from 'express'
-import * as fs from 'fs'
-import * as path from 'path'
-import {getConfigValue, showFeature} from '../configuration'
+import {getConfigValue} from '../configuration'
 import {
-    FEATURE_TERMS_AND_CONDITIONS_ENABLED,
     SERVICES_IDAM_CLIENT_ID,
     SERVICES_TERMS_AND_CONDITIONS_URL
 } from '../configuration/references'
@@ -40,3 +38,4 @@ export async function getTermsAndConditions(req: express.Request, res: express.R
         res.status(error.status).send(errReport)
     }
 }
+*/

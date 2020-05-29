@@ -1,7 +1,7 @@
+/*
 import * as express from 'express'
-import {getConfigValue, showFeature} from '../configuration'
+import {getConfigValue} from '../configuration'
 import {
-    FEATURE_TERMS_AND_CONDITIONS_ENABLED,
     SERVICES_IDAM_CLIENT_ID,
     SERVICES_TERMS_AND_CONDITIONS_URL
 } from '../configuration/references'
@@ -20,14 +20,6 @@ export async function getUserTermsAndConditions(req: express.Request, res: expre
             message: 'User Terms and Conditions route error',
         }
         return res.status(400).send(errReport)
-    }
-
-    if (!showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED)) {
-        return res.status(200).send({
-            accepted: true,
-            userId: req.params.userId,
-            version: 1,
-        })
     }
 
     try {
@@ -83,3 +75,4 @@ export async function postUserTermsAndConditions(req: express.Request, res: expr
         res.status(error.status).send(errReport)
     }
 }
+*/

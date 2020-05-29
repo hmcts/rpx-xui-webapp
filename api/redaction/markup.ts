@@ -10,7 +10,7 @@ const url: string = getConfigValue(SERVICES_MARKUP_API_URL)
 /**
  * getMarkup
  */
-export async function getMarkup(req: EnhancedRequest, res: express.Response) {
+export async function getMarkup(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
 
   const markupPath: string = url + req.originalUrl
 
@@ -18,17 +18,14 @@ export async function getMarkup(req: EnhancedRequest, res: express.Response) {
     const {status, data}: {status: number, data: Redaction[]} = await handleGet(markupPath, req)
     res.status(status).send(data)
   } catch (error) {
-    res.status(error.status).send({
-      errorMessage: error.data,
-      errorStatusText: error.statusText,
-    })
+    next(error)
   }
 }
 
 /**
  * postMarkup
  */
-export async function postMarkup(req: EnhancedRequest, res: express.Response) {
+export async function postMarkup(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
 
   const markupPath: string = url + req.originalUrl
   const body: Redaction = req.body
@@ -37,17 +34,14 @@ export async function postMarkup(req: EnhancedRequest, res: express.Response) {
     const {status, data}: {status: number, data: Redaction} = await handlePost(markupPath, body, req)
     res.status(status).send(data)
   } catch (error) {
-    res.status(error.status).send({
-      errorMessage: error.data,
-      errorStatusText: error.statusText,
-    })
+    next(error)
   }
 }
 
 /**
  * putMarkup
  */
-export async function putMarkup(req: EnhancedRequest, res: express.Response) {
+export async function putMarkup(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
 
   const markupPath: string = url + req.originalUrl
   const body: Redaction = req.body
@@ -56,17 +50,14 @@ export async function putMarkup(req: EnhancedRequest, res: express.Response) {
     const {status, data}: {status: number, data: Redaction}  = await handlePut(markupPath, body, req)
     res.status(status).send(data)
   } catch (error) {
-    res.status(error.status).send({
-      errorMessage: error.data,
-      errorStatusText: error.statusText,
-    })
+    next(error)
   }
 }
 
 /**
  * deleteMarkup
  */
-export async function deleteMarkup(req: EnhancedRequest, res: express.Response) {
+export async function deleteMarkup(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
 
   const markupPath: string = url + req.originalUrl.replace('//', '/')
 
@@ -74,9 +65,6 @@ export async function deleteMarkup(req: EnhancedRequest, res: express.Response) 
     const {status, data}: {status: number, data: Redaction} = await handleDelete(markupPath, req)
     res.status(status).send(data)
   } catch (error) {
-    res.status(error.status).send({
-      errorMessage: error.data,
-      errorStatusText: error.statusText,
-    })
+    next(error)
   }
 }

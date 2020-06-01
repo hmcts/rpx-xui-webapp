@@ -74,7 +74,7 @@ describe('Amended Jurisdiction', () => {
     ]
 
     spy = sandbox.stub(http, 'get').resolves(result0)
-    await amendedJurisdictions.getJurisdictions(req, res)
+    await amendedJurisdictions.getJurisdictions(req, res, next)
     expect(spy).to.have.been.calledWith(url)
     expect(res.send).to.have.been.calledWith(expected)
   })
@@ -89,7 +89,7 @@ describe('Amended Jurisdiction', () => {
     ]
 
     spy = sandbox.stub(http, 'get').resolves(result0)
-    await amendedJurisdictions.getJurisdictions(req, res)
+    await amendedJurisdictions.getJurisdictions(req, res, next)
     expect(spy).to.have.been.calledWith(url)
     expect(res.send).to.have.been.calledWith(expected)
   })
@@ -99,7 +99,7 @@ describe('Amended Jurisdiction', () => {
     const expected = []
 
     spy = sandbox.stub(http, 'get').resolves(result1)
-    await amendedJurisdictions.getJurisdictions(req, res)
+    await amendedJurisdictions.getJurisdictions(req, res, next)
     expect(spy).to.have.been.calledWith(url)
     expect(res.send).to.have.been.calledWith(expected)
   })
@@ -107,8 +107,8 @@ describe('Amended Jurisdiction', () => {
   it('should catch any errors upon jurisdictions proxy get request', async () => {
     spy.restore()
     spy = sandbox.stub(http, 'get').throws({ response: { data: 'error occurred'}})
-    await amendedJurisdictions.getJurisdictions(req, res)
-    expect(res.send).to.have.been.calledWith('error occurred')
+    await amendedJurisdictions.getJurisdictions(req, res, next)
+    expect(next).to.have.been.called
   })
 
 })

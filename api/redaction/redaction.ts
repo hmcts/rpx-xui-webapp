@@ -9,7 +9,7 @@ const url: string = getConfigValue(SERVICES_MARKUP_API_URL)
 /**
  * postRedaction
  */
-export async function postRedaction(req: EnhancedRequest, res: express.Response) {
+export async function postRedaction(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
 
   const redactionPath: string = url + req.originalUrl
   const body: any = req.body
@@ -19,9 +19,6 @@ export async function postRedaction(req: EnhancedRequest, res: express.Response)
 
     res.set(headers).status(status).send(data)
   } catch (error) {
-    res.status(error.status).send({
-      errorMessage: error.data,
-      errorStatusText: error.statusText,
-    })
+    next(error)
   }
 }

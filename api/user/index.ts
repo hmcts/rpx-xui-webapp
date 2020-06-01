@@ -3,15 +3,7 @@ import { getConfigValue } from '../configuration'
 import { SESSION_TIMEOUTS } from '../configuration/references'
 import { getUserSessionTimeout } from './userTimeout';
 
-interface SessionRequest extends Request {
-  session: {
-    user: {
-      roles: ['']
-    }
-  },
-}
-
-export async function getUserDetails(req: SessionRequest, res: Response, next: NextFunction) {
+export async function getUserDetails(req, res: Response, next: NextFunction) {
 
   const { roles } = req.session.user
 

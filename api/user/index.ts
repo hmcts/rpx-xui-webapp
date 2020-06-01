@@ -1,9 +1,17 @@
-import * as express from 'express';
-import { getUserSessionTimeout } from './userTimeout';
+import { NextFunction, Request, Response } from 'express'
 import { getConfigValue } from '../configuration'
 import { SESSION_TIMEOUTS } from '../configuration/references'
+import { getUserSessionTimeout } from './userTimeout';
 
-export async function getUserDetails(req: express.Request, res: express.Response, next: express.NextFunction) {
+interface SessionRequest extends Request {
+  session: {
+    user: {
+      roles: ['']
+    }
+  },
+}
+
+export async function getUserDetails(req: SessionRequest, res: Response, next: NextFunction) {
 
   const { roles } = req.session.user
 

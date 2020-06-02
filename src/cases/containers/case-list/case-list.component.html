@@ -9,17 +9,18 @@
     </div>
     <div class="search-block">
         <div class="hmcts-filter-layout__filter" [hidden]="!showFilter" >
-            <div _ngcontent-c11="" class="form-group">
+            <div class="form-group">
                 <div class="container-fluid">
                     <exui-ccd-connector
                     [eventsBindings]="caseListFilterEventsBindings"
                     [store]="store"
                     [fromFeatureStore]="fromCasesFeature">
-                        <ccd-case-list-filters #ccdComponent
-                            [defaults]="defaults"
-                            (onApply)="applyFilter($event)"
-                        >
-                        </ccd-case-list-filters>
+                        <ccd-workbasket-filters
+                                *ngIf="isVisible"
+                                [jurisdictions]="jurisdictions"
+                                [defaults]="defaults"
+                                (onApply)="applyFilter($event)"
+                        ></ccd-workbasket-filters>
                     </exui-ccd-connector>
                 </div>
             </div>

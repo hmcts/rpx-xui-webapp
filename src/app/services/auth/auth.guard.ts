@@ -13,13 +13,11 @@ export class AuthGuard implements CanActivate {
   ) {
   }
 
-
   canActivate() {
     if (!this.authService.isAuthenticated()) {
       this.authService.loginRedirect();
       return false;
     }
-
     return true;
   }
 }

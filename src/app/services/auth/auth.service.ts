@@ -81,8 +81,20 @@ export class AuthService {
     return notExpired;
   }
 
-
   signOut() {
+
     window.location.href = '/api/logout';
+  }
+
+  logOutAndRedirect() {
+
+    console.log('logOutAndRedirect');
+    const { hostname, port } = window.location;
+    const portNumber = port ? `:${port}` : '';
+
+    const baseUrl = `http://${hostname}${portNumber}`;
+
+    const idleSignOutUrl = `${baseUrl}/idle-sign-out`;
+    window.location.href = `api/logout?redirect=${idleSignOutUrl}`;
   }
 }

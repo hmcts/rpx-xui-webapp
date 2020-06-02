@@ -8,8 +8,8 @@
 
 export const DEFAULT_SESSION_TIMEOUT = {
   idleModalDisplayTime: 10,
-  pattern: 'ERROR: NO-SESSION_TIMEOUT_SET. You need to set a DEFAULT Session Timeout for this application through the configuration file. ie.' +
-  'use the pattern ".", @see unit tests. The totalIdleTime will be set to a low value.',
+  pattern: 'ERROR: NO-SESSION_TIMEOUT_SET. You need to set a DEFAULT Session Timeout for this application through' +
+  'the configuration file. ie. use the pattern ".", @see unit tests. The totalIdleTime will be set to a low value.',
   totalIdleTime: 480,
 }
 
@@ -97,9 +97,11 @@ export const sortUserRoles = (roles: string[]) => roles.sort()
  * Whereas a Manage Organisation application user should have an Total Idle Time of 50 minutes,
  * and should show the Session Timeout Modal 10 minutes before the end of their session.
  *
- * Note that the Session Timeout needs to be easily configurable and will change for each XUI application, and each User role group.
+ * Note that the Session Timeout needs to be easily configurable and will change for each XUI
+ * application, and each User role group.
  *
- * Important: the Session Timeout configuration should be in PRIORITY ORDER, with the DEFAULT for this application being the last item in the array.
+ * Important: the Session Timeout configuration should be in PRIORITY ORDER, with the DEFAULT for
+ * this application being the last item in the array.
  *
  * Jargon:
  *

@@ -31,6 +31,7 @@ import {router as markupRouter} from './redaction/markupRoutes'
 import {router as redactionRouter} from './redaction/redactionRoutes'
 import routes from './routes'
 import {router as termsAndCRoutes} from './termsAndConditions/routes'
+import userRouter from './user/routes'
 import {router as userTandCRoutes} from './userTermsAndConditions/routes'
 
 export const app = express()
@@ -84,6 +85,7 @@ app.get('/api/monitoring-tools', (req, res) => {
 
 app.use('/api/healthCheck', healthCheck)
 app.use('/api/userTermsAndConditions', userTandCRoutes)
+app.use('/api/user', userRouter)
 app.use('/api/termsAndConditions', termsAndCRoutes)
 app.get('/api/configuration', (req, res) => {
     res.send(showFeature(req.query.configurationKey as string))

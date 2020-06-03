@@ -13,9 +13,9 @@ export default function errorHandler(err, req: Request, res: Response, next: Nex
         // remove any sensitive data, such as bearer token from being logged
         delete err.config.headers
     }
-    if (propsExist(err, ['request', '_header', 'ClientRequest'])) {
+    if (propsExist(err, ['request', '_header'])) {
       // remove any sensitive data
-      delete err.request[0]._header
+      delete err.request._header
     }
     logger._logger.error(err)
 

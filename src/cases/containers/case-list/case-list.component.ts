@@ -1,13 +1,13 @@
-import { AppConfig } from './../../../app/services/ccd-config/ccd-case.config';
-import { Component, OnInit, ViewEncapsulation, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { CaseState, CaseType, Jurisdiction, PaginationMetadata, SearchResultView, WindowService } from '@hmcts/ccd-case-ui-toolkit';
+import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
+import { select, Store } from '@ngrx/store';
+import {BehaviorSubject, combineLatest, Observable, Subscription} from 'rxjs';
 import { ActionBindingModel } from 'src/cases/models/create-case-actions.model';
 import * as fromCasesFeature from '../../store';
 import * as fromCaseList from '../../store/reducers';
-import { Store, select } from '@ngrx/store';
-import { Observable, Subscription, combineLatest } from 'rxjs';
-import { Jurisdiction, CaseType, CaseState, SearchResultView, PaginationMetadata, WindowService } from '@hmcts/ccd-case-ui-toolkit';
-import { FormGroup } from '@angular/forms';
-import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
+import { AppConfig } from './../../../app/services/ccd-config/ccd-case.config';
 
 /**
  * Entry component wrapper for Case List
@@ -21,41 +21,44 @@ import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/servi
   styleUrls: ['case-list.component.scss']
 })
 export class CaseListComponent implements OnInit, OnDestroy {
-  defaults: any;
-  caseListFilterEventsBindings: ActionBindingModel[];
-  fromCasesFeature; any;
+  public defaults: any;
+  public caseListFilterEventsBindings: ActionBindingModel[];
+  public fromCasesFeature: any;
 
-  jurisdiction$: Observable<Jurisdiction>;
-  caseType$: Observable<CaseType>;
-  caseState$: Observable<CaseState>;
-  resultView$: Observable<SearchResultView>;
-  paginationMetadata$: Observable<PaginationMetadata>;
-  metadataFields$: Observable<string[]>;
-  caseFilterToggle$: Observable<boolean>;
+  public jurisdiction$: Observable<Jurisdiction>;
+  public caseType$: Observable<CaseType>;
+  public caseState$: Observable<CaseState>;
+  public resultView$: Observable<SearchResultView>;
+  public paginationMetadata$: Observable<PaginationMetadata>;
+  public metadataFields$: Observable<string[]>;
+  public caseFilterToggle$: Observable<boolean>;
+  public jurisdictionsBehaviourSubject$: BehaviorSubject<Jurisdiction[]> = new BehaviorSubject<Jurisdiction[]>([]);
 
-  fg: FormGroup;
+  public fg: FormGroup;
 
-  jurisdiction: Jurisdiction;
-  caseType: CaseType;
-  caseState: CaseState;
-  resultView: SearchResultView;
-  paginationMetadata: PaginationMetadata = new PaginationMetadata();
-  metadataFields: string[];
+  public jurisdiction: Jurisdiction;
+  public caseType: CaseType;
+  public caseState: CaseState;
+  public resultView: SearchResultView;
+  public paginationMetadata: PaginationMetadata = new PaginationMetadata();
+  public metadataFields: string[];
 
-  filterSubscription: Subscription;
-  resultSubscription: Subscription;
-  caseFilterToggleSubscription: Subscription;
+  public filterSubscription: Subscription;
+  public resultSubscription: Subscription;
+  public caseFilterToggleSubscription: Subscription;
 
-  resultsArr: any[] = [];
+  public resultsArr: any[] = [];
 
-  paginationSize: number;
-  selected: any;
-  showFilter: boolean;
-  toggleButtonName: string;
-  state: any;
-  savedQueryParams: any;
-  page: number;
-  paginationSubscription: Subscription;
+  public paginationSize: number;
+  public selected: any;
+  public showFilter: boolean;
+  public toggleButtonName: string;
+  public state: any;
+  public savedQueryParams: any;
+  public page: number;
+  public paginationSubscription: Subscription;
+  public isVisible: boolean;
+  public jurisdictions: Jurisdiction[];
 
   constructor(
     public store: Store<fromCaseList.State>,
@@ -65,10 +68,19 @@ export class CaseListComponent implements OnInit, OnDestroy {
   ) {
   }
 
-  ngOnInit() {
+  public ngOnInit() {
 
+    this.isVisible = false;
     this.page = 1;
     this.resultView = null;
+
+    this.definitionsService.getJurisdictions('read').subscribe(this.jurisdictionsBehaviourSubject$);
+
+    this.jurisdictionsBehaviourSubject$.subscribe( jurisdictions => {
+      this.isVisible = jurisdictions.length > 0;
+      this.jurisdictions = jurisdictions;
+    });
+
     this.setCaseListFilterDefaults();
 
     this.fromCasesFeature = fromCasesFeature;
@@ -103,22 +115,21 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.findCaseListPaginationMetadata(this.getEvent());
   }
 
-  listenToPaginationMetadata = () => {
+  public listenToPaginationMetadata = () => {
     this.paginationMetadata$ = this.store.pipe(select(fromCasesFeature.getCaselistFilterPaginationMetadata));
     this.paginationSubscription = this.paginationMetadata$.subscribe(paginationMetadata =>
       this.onPaginationSubscribeHandler(paginationMetadata));
   }
 
-  doesIdExist(arr, id): boolean {
+  public doesIdExist(arr = [], id): boolean {
     return arr.some(element => element.id === id);
   }
 
-  setCaseListFilterDefaults = () => {
-
-    this.definitionsService.getJurisdictions('read')
+  public setCaseListFilterDefaults = () => {
+    this.jurisdictionsBehaviourSubject$
       .subscribe(jurisdictions => {
         this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
-        if (this.savedQueryParams && this.savedQueryParams.jurisdiction && !this.doesIdExist(jurisdictions, this.savedQueryParams.jurisdiction)) {
+        if (this.savedQueryParams && this.savedQueryParams.jurisdiction && !this.doesIdExist(this.jurisdictions, this.savedQueryParams.jurisdiction)) {
           this.windowService.removeLocalStorage('savedQueryParams');
         }
         if (this.savedQueryParams) {
@@ -148,7 +159,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
    * ['[CASE_REFERENCE]']
    * ]
    */
-  onFilterSubscriptionHandler = result => {
+  public onFilterSubscriptionHandler = result => {
 
     this.jurisdiction = {
       ...result[0]
@@ -164,13 +175,13 @@ export class CaseListComponent implements OnInit, OnDestroy {
     };
   }
 
-  onToogleHandler = showFilter => {
+  public onToogleHandler = showFilter => {
 
     this.showFilter = showFilter;
     this.toggleButtonName = this.getToggleButtonName(this.showFilter);
   }
 
-  onResultsViewHandler = resultView => {
+  public onResultsViewHandler = resultView => {
 
     this.resultsArr = resultView.results;
     this.resultView = {
@@ -191,7 +202,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
    *
    * @param result - {total_pages_count: 33, total_results_count: 811}
    */
-  onPaginationSubscribeHandler = paginationMetadata => {
+  public onPaginationSubscribeHandler = paginationMetadata => {
 
     if (typeof paginationMetadata !== 'undefined'  && typeof paginationMetadata.total_pages_count !== 'undefined') {
       this.paginationMetadata.total_pages_count = paginationMetadata.total_pages_count;
@@ -204,7 +215,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
     }
   }
 
-  getEvent() {
+  public getEvent() {
     let formGroupFromLS = null;
     let jurisdictionFromLS = null;
     let caseStateGroupFromLS = null;
@@ -239,7 +250,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
    * We should think about calling this function makePaginationMetadataQuery as it looks like it's only being used to construct the
    * Case List Pagination Metadata payload?
    */
-  createEvent = (jurisdiction, caseType, caseState, metadataFields, formGroupValues, page) => {
+  public createEvent = (jurisdiction, caseType, caseState, metadataFields, formGroupValues, page) => {
     return {
       selected: {
         jurisdiction,
@@ -258,9 +269,9 @@ export class CaseListComponent implements OnInit, OnDestroy {
   /**
    * Display the name seen on the toggle button.
    */
-  getToggleButtonName = (showFilter: boolean): string => showFilter ? 'Hide Filter' : 'Show Filter';
+  public getToggleButtonName = (showFilter: boolean): string => showFilter ? 'Hide Filter' : 'Show Filter';
 
-  findCaseListPaginationMetadata(event) {
+  public findCaseListPaginationMetadata(event) {
     if (event != null) {
       this.store.dispatch(new fromCasesFeature.FindCaselistPaginationMetadata(event));
     }
@@ -272,7 +283,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
    * Change the page number and call findCaseListPaginationMetadata()
    * to dispatch an Action to get the Pagination Metadata for the next page.
    */
-  applyChangePage(event) {
+  public applyChangePage(event) {
     this.page = event.selected.page;
     this.findCaseListPaginationMetadata(this.getEvent());
   }
@@ -283,17 +294,17 @@ export class CaseListComponent implements OnInit, OnDestroy {
    * Change the page number and call findCaseListPaginationMetadata()
    * to dispatch an Action to get the Pagination Metadata for the filter selection.
    */
-  applyFilter(event) {
+  public applyFilter(event) {
     this.page = event.selected.page;
     this.selected = event.selected;
     this.findCaseListPaginationMetadata(this.getEvent());
   }
 
-  toggleFilter() {
+  public toggleFilter() {
     this.store.dispatch(new fromCasesFeature.CaseFilterToggle(!this.showFilter));
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     if (this.filterSubscription) {
       this.filterSubscription.unsubscribe();
     }

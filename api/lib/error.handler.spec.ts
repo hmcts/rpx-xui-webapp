@@ -66,4 +66,15 @@ describe('errorHandler', () => {
     expect(res.send).to.have.been.calledWith({test: 'dummy'})
   })
 
+  it('should empty _header if it exists', () => {
+    const err = {
+      request : {
+        _header: {
+        }
+      }
+    }
+    errorHandler.default(err, req, res, next)
+    expect(propsExist(err, ['request', '_header'])).to.be.false
+  })
+
 })

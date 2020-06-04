@@ -1,6 +1,10 @@
+/*
 import * as express from 'express'
-import { getConfigValue } from '../configuration'
-import { SERVICES_IDAM_CLIENT_ID, SERVICES_TERMS_AND_CONDITIONS_URL } from '../configuration/references'
+import {getConfigValue} from '../configuration'
+import {
+    SERVICES_IDAM_CLIENT_ID,
+    SERVICES_TERMS_AND_CONDITIONS_URL
+} from '../configuration/references'
 import { http } from '../lib/http'
 import { setHeaders } from '../lib/proxy'
 import { getTermsAndConditionsUrl } from './termsAndConditionsUtil'
@@ -23,3 +27,4 @@ export async function getTermsAndConditions(req: express.Request, res: express.R
         res.status(error.status).send(errReport)
     }
 }
+*/

@@ -4,10 +4,10 @@ import 'mocha'
 import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
 import { mockReq, mockRes } from 'sinon-express-mock'
-import { getPayments} from './index'
-import * as paymentsService from './paymentsService'
 import { getConfigValue } from '../configuration'
 import { SERVICES_PAYMENTS_URL } from '../configuration/references'
+import { getPayments} from './index'
+import * as paymentsService from './paymentsService'
 
 chai.use(sinonChai)
 describe('payments', () => {
@@ -20,6 +20,7 @@ describe('payments', () => {
     }
     const req = mockReq(reqQuery)
     const res = mockRes()
+    const next = sinon.spy()
 
     beforeEach(() => {
         sandbox = sinon.createSandbox()
@@ -35,7 +36,7 @@ describe('payments', () => {
         })
         it('should call getPayments and return the json response', async () => {
             const paymentsPath = `${service}${reqQuery.originalUrl}`
-            await getPayments(req, res)
+            await getPayments(req, res, next)
             expect(paymentsService.handleGet).to.have.been.calledWith(paymentsPath)
             expect(res.status).to.have.been.calledWith(200)
             expect(res.send).to.have.been.calledWith('{}')
@@ -52,13 +53,9 @@ describe('payments', () => {
             spy = sandbox.stub(paymentsService, 'handleGet').throws(response)
 
             const paymentsPath = `${service}${reqQuery.originalUrl}`
-            await getPayments(req, res)
+            await getPayments(req, res, next)
             expect(paymentsService.handleGet).to.have.been.calledWith(paymentsPath)
-            expect(res.status).to.have.been.calledWith(response.status)
-            expect(res.send).to.have.been.calledWith({
-                errorMessage: response.data,
-                errorStatusText: response.statusText,
-            })
+            expect(next).to.have.been.calledWith(response)
         })
 
     })

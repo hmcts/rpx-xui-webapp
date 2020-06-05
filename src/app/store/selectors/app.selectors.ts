@@ -36,3 +36,8 @@ export const getUseIdleSessionTimeout = createSelector(
   getConfigState,
   fromApp.getUseIdleSessionTimeout
 );
+
+export const getCanShareCases = createSelector(
+  getConfigState,
+  fromApp.getCanShareCases
+);

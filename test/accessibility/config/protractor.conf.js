@@ -38,9 +38,9 @@ const cap = (argv.local) ? localConfig : jenkinsConfig;
 
 const config = {
     SELENIUM_PROMISE_MANAGER: false,
-    framework: 'custom',
-    frameworkPath: require.resolve('protractor-cucumber-framework'),
-    specs: ['../features/**/*.feature'],
+    framework: 'mocha',
+    frameworkPath: require.resolve('mocha'),
+    specs: ['../tests/**/*.js'],
     baseUrl: process.env.TEST_URL || 'http://localhost:3000/',
     params: {
         serverUrls: process.env.TEST_URL || 'http://localhost:3000/',
@@ -72,33 +72,8 @@ const config = {
         });
     },
 
-    cucumberOpts: {
-        strict: true,
-        // format: ['node_modules/cucumber-pretty'],
-        format: ['node_modules/cucumber-pretty', 'json:reports/tests/json/results.json'],
-        tags: ['@all'],
-        require: [
-            '../support/timeout.js',
-            '../support/hooks.js',
-            '../support/world.js',
-            // '../support/*.js',
-            '../features/step_definitions/*.steps.js'
-        ]
-    },
 
-    plugins: [
-        {
-            package: 'protractor-multiple-cucumber-html-reporter-plugin',
-            options: {
-                automaticallyGenerateReport: true,
-                removeExistingJsonReportFile: true,
-                reportName: 'XUI Manage Cases Functional Tests',
-                // openReportInBrowser: true,
-                jsonDir: 'reports/tests/functional',
-                reportPath: 'reports/tests/functional'
-            }
-        }
-    ]
+
 
 
 };

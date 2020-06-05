@@ -8,6 +8,7 @@ import { ActionBindingModel } from 'src/cases/models/create-case-actions.model';
 import * as fromCasesFeature from '../../store';
 import * as fromCaseList from '../../store/reducers';
 import { AppConfig } from './../../../app/services/ccd-config/ccd-case.config';
+import * as fromRoot from '../../../app/store';
 
 /**
  * Entry component wrapper for Case List
@@ -59,6 +60,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public paginationSubscription: Subscription;
   public isVisible: boolean;
   public jurisdictions: Jurisdiction[];
+
+  public canShareCases: Observable<boolean>;
 
   constructor(
     public store: Store<fromCaseList.State>,
@@ -113,6 +116,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
 
     this.findCaseListPaginationMetadata(this.getEvent());
+
+    this.canShareCases = this.store.pipe(select(fromRoot.getCanShareCases));
   }
 
   public listenToPaginationMetadata = () => {

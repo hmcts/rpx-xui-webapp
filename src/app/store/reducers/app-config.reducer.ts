@@ -9,6 +9,7 @@ interface UserDetails {
     idleModalDisplayTime: number,
     totalIdleTime: number,
   };
+  canShareCases: boolean;
 }
 
 export interface AppConfigState {
@@ -34,7 +35,8 @@ export const initialState: AppConfigState = {
     sessionTimeout: {
       idleModalDisplayTime: 0,
       totalIdleTime: 0,
-    }
+    },
+    canShareCases: false
   }
 };
 
@@ -124,3 +126,4 @@ export const getTandCLoadedConfig = (state: AppConfigState) => state.termsAndCon
 export const getTermsConditions = (state: AppConfigState) => state.termsAndConditions;
 export const getUserDetails = (state: AppConfigState) => state.userDetails;
 export const getUseIdleSessionTimeout = (state: AppConfigState) => state.useIdleSessionTimeout;
+export const getCanShareCases = (state: AppConfigState) => state.userDetails.canShareCases;

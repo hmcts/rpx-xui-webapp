@@ -9,10 +9,12 @@ export async function getUserDetails(req, res: Response, next: NextFunction) {
 
   const sessionTimeouts = getConfigValue(SESSION_TIMEOUTS)
   const sessionTimeout = getUserSessionTimeout(roles, sessionTimeouts)
+  const canShareCases = roles.includes('pui-case-manager')
 
   try {
     res.send({
       sessionTimeout,
+      canShareCases
     })
   } catch (error) {
     next(error)

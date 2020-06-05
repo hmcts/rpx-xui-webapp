@@ -28,6 +28,7 @@
         <div aria-live="polite" class="hmcts-filter-layout__content" id="search-result" rightbody="" role="region">
           <ccd-search-result
             *ngIf="resultView"
+            [selectionEnabled]="canShareCases | async"
             [jurisdiction]="jurisdiction"
             [caseType]="caseType"
             [caseState]="caseState"

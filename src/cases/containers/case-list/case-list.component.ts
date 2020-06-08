@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { CaseState, CaseType, Jurisdiction, PaginationMetadata, SearchResultView, WindowService } from '@hmcts/ccd-case-ui-toolkit';
+import { CaseState, CaseType, Jurisdiction, PaginationMetadata, SearchResultView, WindowService, SearchResultViewItem } from '@hmcts/ccd-case-ui-toolkit';
 import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
 import { select, Store } from '@ngrx/store';
 import {BehaviorSubject, combineLatest, Observable, Subscription} from 'rxjs';
@@ -62,6 +62,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public jurisdictions: Jurisdiction[];
 
   public userDetails: Observable<any>;
+  public selectionItems: SearchResultViewItem[];
 
   constructor(
     public store: Store<fromCaseList.State>,
@@ -118,6 +119,10 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.findCaseListPaginationMetadata(this.getEvent());
 
     this.userDetails = this.store.pipe(select(fromRoot.getUserDetails));
+  }
+
+  public selectionChanged(selectionItems: SearchResultViewItem[]) {
+    this.selectionItems = selectionItems;
   }
 
   public listenToPaginationMetadata = () => {

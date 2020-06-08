@@ -121,10 +121,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.userDetails = this.store.pipe(select(fromRoot.getUserDetails));
   }
 
-  public selectionChanged(selectionItems: SearchResultViewItem[]) {
-    this.selectionItems = selectionItems;
-  }
-
   public listenToPaginationMetadata = () => {
     this.paginationMetadata$ = this.store.pipe(select(fromCasesFeature.getCaselistFilterPaginationMetadata));
     this.paginationSubscription = this.paginationMetadata$.subscribe(paginationMetadata =>

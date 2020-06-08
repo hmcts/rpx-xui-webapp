@@ -13,6 +13,13 @@ export default function errorHandler(err, req: Request, res: Response, next: Nex
         // remove any sensitive data, such as bearer token from being logged
         delete err.config.headers
     }
+    if (propsExist(err, ['request', '_header'])) {
+      // remove any sensitive data
+      delete err.request._header
+    }
     logger._logger.error(err)
-    res.status(500).send({ message: 'Internal Server Error' })
+
+    const errorStatus = err.status ? err.status : 500
+    const errorContent = err.data ? err.data : { message: 'Internal Server Error' }
+    res.status(errorStatus).send(errorContent)
 }

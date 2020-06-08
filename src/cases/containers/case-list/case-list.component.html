@@ -2,8 +2,13 @@
   <div class="case-list-component">
     <div class="hmcts-action-bar">
       <div class="hmcts-action-bar__filter">
-        <button class="govuk-button hmcts-button--secondary" (click) = "toggleFilter()" type="button"  aria-haspopup="true" aria-expanded="false">
+        <button class="govuk-button hmcts-button--secondary" (click)="toggleFilter()" type="button"  aria-haspopup="true" aria-expanded="false">
           {{toggleButtonName}}
+        </button>
+      </div>
+      <div class="hmcts-action-bar__filter" *ngIf="(userDetails | async).canShareCases">
+        <button class="govuk-button hmcts-button--secondary" type="button"  aria-haspopup="true" aria-expanded="false">
+          Share Case
         </button>
       </div>
     </div>
@@ -37,9 +42,20 @@
             [paginationMetadata]="paginationMetadata"
             [metadataFields]="metadataFields"
             (changePage)="applyChangePage($event)"
+            (selection)="selectionChanged($event)"
             caseLinkUrlTemplate="case-details/case_id"
           >
           </ccd-search-result>
+          <details class="govuk-details" data-module="govuk-details" *ngIf="(userDetails | async).canShareCases">
+            <summary class="govuk-details__summary">
+              <span class="govuk-details__summary-text">
+                Why are some cases unselectable?
+              </span>
+            </summary>
+            <div class="govuk-details__text">
+              An explanation on why certain case cannot be shared goes in here.
+            </div>
+          </details>
         </div>
     </div>
   </div>

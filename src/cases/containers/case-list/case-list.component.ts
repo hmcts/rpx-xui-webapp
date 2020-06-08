@@ -61,7 +61,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public isVisible: boolean;
   public jurisdictions: Jurisdiction[];
 
-  public canShareCases: Observable<boolean>;
+  public userDetails: Observable<any>;
 
   constructor(
     public store: Store<fromCaseList.State>,
@@ -117,7 +117,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
     this.findCaseListPaginationMetadata(this.getEvent());
 
-    this.canShareCases = this.store.pipe(select(fromRoot.getCanShareCases));
+    this.userDetails = this.store.pipe(select(fromRoot.getUserDetails));
   }
 
   public listenToPaginationMetadata = () => {

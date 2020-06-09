@@ -18,10 +18,6 @@ const conf = {
         {
             url: 'cases/case-search',
             pageElementcss: '.search-block'
-        },
-        {
-            url: 'cases/case-details/1574434783416279',
-            pageElementcss : '.tabs'
         }
 
     
@@ -32,6 +28,12 @@ const conf = {
         'privacy-policy',
         'get-help'
     ],
+    caseCreationPages:[
+        { jurisdiction: 'Family Divorce', caseType: 'Divorce case - v115.00', event:'Apply for a divorce' },
+        { jurisdiction: 'Family Divorce', caseType: 'Financial Remedy Consented', event: 'Consent Order Application' },
+        { jurisdiction: 'Family Divorce', caseType: 'Contested Financial Remedy', event: 'Form A Application' },
+        { jurisdiction: 'Manage probate application', caseType: 'Grant of representation', event: 'Apply for probate' }
+    ]
 
 }
 

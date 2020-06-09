@@ -4,6 +4,7 @@ const minimist = require('minimist');
 
 var screenShotUtils = require("protractor-screenshot-utils").ProtractorScreenShotUtils;
 
+const report = require('./reporter');
 
 chai.use(chaiAsPromised);
 
@@ -24,7 +25,7 @@ const localConfig = [
 
         browserName: 'chrome',
         acceptInsecureCerts: true,
-        chromeOptions: { args: ['--headless', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote '] },
+        chromeOptions: { args: ['--headless1', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote '] },
         proxy: {
             proxyType: 'manual',
             httpProxy: 'proxyout.reform.hmcts.net:8080',
@@ -38,12 +39,11 @@ const cap = (argv.local) ? localConfig : jenkinsConfig;
 
 const config = {
     SELENIUM_PROMISE_MANAGER: false,
-    framework: 'mocha',
-    frameworkPath: require.resolve('mocha'),
-    specs: ['../tests/**/*.js'],
-    baseUrl: process.env.TEST_URL || 'http://localhost:3000/',
+    framework: 'jasmine',
+    specs: ['../tests/*.protractor.js'],
+    baseUrl: process.env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net/',
     params: {
-        serverUrls: process.env.TEST_URL || 'http://localhost:3000/',
+        serverUrls: process.env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net/',
         targetEnv: argv.env || 'local',
         username: 'lukesuperuserxui@mailnesia.com',
         password: 'Monday01',
@@ -72,10 +72,9 @@ const config = {
         });
     },
 
-
-
-
-
+    onComplete(){
+        report();
+    }
 };
 
 

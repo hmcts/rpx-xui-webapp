@@ -87,3 +87,5 @@ function copyResources(){
  
 
 }
+
+module.exports = { generateReport}

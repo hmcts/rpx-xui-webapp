@@ -3,6 +3,9 @@ var CreateCaseStartPage = require('../createCaseStartPage');
 var BrowserWaits = require('../../../support/customWaits');
 const date = require('moment');
 var path = require('path');
+
+const { accessibilityCheckerAuditor } = require('../../../../accessibility/helpers/accessibilityAuditor');
+
 class CaseManager {
 
     constructor() {
@@ -47,14 +50,20 @@ class CaseManager {
         await BrowserWaits.waitForPageNavigation(thisPageUrl)
    } 
 
-    async createCase( caseData) {
+    async createCase( caseData,isAccessibilityTest) {
         this.caseData = caseData;
 
         var isCheckYourAnswersPage = false;
+        let pageCounter = 1;
         while (!isCheckYourAnswersPage) {
+            if (isAccessibilityTest){
+               
+                await accessibilityCheckerAuditor(); 
+            }
             await this._formFillPage();
             var checkYouranswers = $(".check-your-answers");
             isCheckYourAnswersPage = await checkYouranswers.isPresent();
+            pageCounter++;
         }
     }
 
@@ -70,6 +79,9 @@ class CaseManager {
             var thisPageUrl = await browser.getCurrentUrl();
             await submit.click();
             BrowserWaits.waitForPageNavigation(thisPageUrl);
+            if (isAccessibilityTest) {
+                await accessibilityCheckerAuditor(' Case Submitted ');
+            }
         }else{
             throw new  Error("Not in case creation check your answers page");
         }
@@ -94,6 +106,10 @@ class CaseManager {
 
         await this.nextStepGoButton.click();
         await BrowserWaits.waitForPageNavigation(thisPageUrl);
+        if (isAccessibilityTest) {
+            await accessibilityCheckerAuditor('CasenextStep ' + stepName); 
+        }
+
     }
 
 
@@ -140,7 +156,10 @@ class CaseManager {
         console.log("Submitting : " + thisPageUrl )
         await continieElement.click();
         await BrowserWaits.waitForPageNavigation(thisPageUrl);
-       ;
+
+        var nextPageUrl = await browser.getCurrentUrl();
+
+
     }
 
 
@@ -156,33 +175,48 @@ class CaseManager {
         }
         switch (ccdFileTagName) {
             case "ccd-write-text-field":
-                await ccdField.$('input.form-control').sendKeys(this._fieldValue(fieldName));
+                let e = ccdField.$('input.form-control'); 
+                await e.sendKeys(this._fieldValue(fieldName));
                 break;
             case "ccd-write-text-area-field":
-                await ccdField.$('textarea.form-control').sendKeys(this._fieldValue(fieldName))
+                let e1 = ccdField.$('textarea.form-control');
+                await e1.sendKeys(this._fieldValue(fieldName))
                 break;
             case "ccd-write-address-field":
                 await ccdField.$('.form-control').sendKeys("SW1");
+
                 await ccdField.$('button').click();
+
                 var addressSelectionField = ccdField.$('select.form-control')
                 await BrowserWaits.waitForElement(addressSelectionField);
+
                 var addressToSelect = addressSelectionField.$("option:nth-of-type(2)");
                 await BrowserWaits.waitForElement(addressToSelect);
+
                 await addressToSelect.click();
+
                 break;
             case "ccd-write-email-field":
                 await ccdField.$('input.form-control').sendKeys("test@autotest.com ");
+
                 break;
             case "ccd-write-yes-no-field":
                 await ccdField.$('.multiple-choice input').click();
+
                 break;
             case "ccd-write-fixed-list-field":
                 var selectOption = this._fieldValue(fieldName);
                 var selectOptionElement = ccdField.$('select option:nth-of-type(2)'); 
                 if (selectOption.includes(fieldName) &&  selectOption === "") {
-                    selectOptionElement = ccdField.element(by.xpath("select//option[text() = '" + selectOption+"']"));  
+                    selectOptionElement = ccdField.element(by.xpath("select//option[text() = '" + selectOption+"']")); 
+
                 }
                 await selectOptionElement.click();
+
+                let selectFieldId = await ccdField.$('select');
+                let id = await selectFieldId.getAttribute('id');
+                let selectionOptionValue = await selectOptionElement.getAttribute('value');
+
                 break;
             case "ccd-write-date-field":
                 var dateValue = this._fieldValue(fieldName);
@@ -191,13 +225,17 @@ class CaseManager {
                 }
                 var today = dateValue.split("-");
                 await ccdField.$('.form-group-day input').sendKeys(today[0]);
+
                 await ccdField.$('.form-group-month input').sendKeys(today[1]);
+
                 await ccdField.$('.form-group-year input').sendKeys(today[2]);
+
                 break;
 
             case "ccd-write-document-field":
                 var fileToUpload = path.resolve(__dirname, "../../../documents/dummy.pdf");
                 await ccdField.$('input.form-control').sendKeys(fileToUpload);
+
                 await browser.sleep(1000);
                 break;
             case "ccd-write-multi-select-list-field":
@@ -212,6 +250,7 @@ class CaseManager {
                 var selectionRadioFields = ccdField.$$(".multiple-choice input");
                 var selectionFieldsCount = await selectionRadioFields.count();
                 await selectionRadioFields.get(0).click();
+
             break;
             case "ccd-write-complex-type-field":
                 var writeFields = ccdField.$$("ccd-field-write");
@@ -245,7 +284,7 @@ class CaseManager {
         }
     }
 
-    _fieldValue(fieldName) {
+    _fieldValue(fieldName) {;
         var value = "fieldName";
 
         if (this.caseData[fieldName]) {
@@ -257,6 +296,7 @@ class CaseManager {
         }
         return value;
     }
-}
 
+
+}
 module.exports = CaseManager;

@@ -1,6 +1,8 @@
 
 
 const pa11y = require('pa11y');
+const action = require('pa11y');
+
 const assert = require('assert');
 const {conf} = require('../config/config');
 
@@ -8,7 +10,7 @@ const {conf} = require('../config/config');
 const fs = require('fs');
 
 
-async function pa11ytest(test,actions,timeoutVal) {
+async function pa11ytest(test,actions,browser,page) {
     console.log("pally test with actions : " + test.test.title);
     console.log(actions);
 
@@ -25,16 +27,18 @@ async function pa11ytest(test,actions,timeoutVal) {
     let result;
     try{
         result = await pa11y(conf.baseUrl, {
-            "chromeLaunchConfig": { "ignoreHTTPSErrors": false , headless:false } ,
+            "chromeLaunchConfig": { "ignoreHTTPSErrors": false, headless: false }, 
             timeout: 60000,
             screenCapture: screenshotPath,
-            // log: {
-            //     debug: console.log,
-            //     error: console.error,
-            //     info: console.info
-            // },
+            log: {
+                debug: console.log,
+                error: console.error,
+                info: console.info
+            },
             actions: actions
-        })
+        });
+
+
     }catch(err){
         const elapsedTime = Date.now() - startTime;
         console.log("Test Execution time : " + elapsedTime);

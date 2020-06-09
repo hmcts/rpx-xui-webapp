@@ -43,9 +43,8 @@ describe('getUserDetails', () => {
           session: { user: { roles: [] } },
       }
       req = mockReq(reqQuery)
-      res.send.throws();
-      
-      
+      res.send.throws()
+
       await getUserDetails(req, res, next)
 
       expect(next).to.have.been.calledWith()

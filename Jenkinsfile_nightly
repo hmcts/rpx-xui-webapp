@@ -46,7 +46,7 @@ withNightlyPipeline(type, product, component) {
             reportName           : 'ng lint Report'
         ])
 
-        sh 'yarn test:a11y'
+        sh 'yarn test:a11y1'
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,

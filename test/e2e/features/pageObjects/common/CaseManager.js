@@ -67,7 +67,7 @@ class CaseManager {
         }
     }
 
-    async submitCase(){
+    async submitCase(isAccessibilityTest){
         var checkYouranswers = $(".check-your-answers");
         var isCheckYourAnswersPage = await checkYouranswers.isPresent();
         if (isCheckYourAnswersPage) {
@@ -87,7 +87,7 @@ class CaseManager {
         }
     }
 
-    async startNextStep(stepName){
+    async startNextStep(stepName, isAccessibilityTest){
         await BrowserWaits.waitForElement(this.exuiCaseHomeComp);
         await BrowserWaits.waitForElement(this.caseNextStepSelect);
 

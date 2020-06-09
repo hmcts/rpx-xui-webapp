@@ -1,6 +1,6 @@
 import { NextFunction, Response } from 'express'
 import { getConfigValue } from '../configuration'
-import { SESSION_TIMEOUTS, CASE_SHARE_PERMISSION } from '../configuration/references'
+import { CASE_SHARE_PERMISSION, SESSION_TIMEOUTS } from '../configuration/references'
 import { getUserSessionTimeout } from './userTimeout'
 
 export async function getUserDetails(req, res: Response, next: NextFunction) {
@@ -13,8 +13,8 @@ export async function getUserDetails(req, res: Response, next: NextFunction) {
 
   try {
     res.send({
+      canShareCases,
       sessionTimeout,
-      canShareCases
     })
   } catch (error) {
     next(error)

@@ -7,7 +7,7 @@ import { Store } from '@ngrx/store';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { CaseFilterToggle, FindCaselistPaginationMetadata } from '../../store/actions/case-list.action';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
-import { PaginationMetadata, WindowService } from '@hmcts/ccd-case-ui-toolkit';
+import { PaginationMetadata, SearchResultViewItem, WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { of, Observable } from 'rxjs';
 
 describe('CaseListComponent', () => {
@@ -347,6 +347,44 @@ describe('CaseListComponent', () => {
       component.setCaseListFilterDefaults();
 
       expect(component.defaults.state_id).toEqual('BOReadyToIssue');
+    });
+  });
+
+  describe('Should show share case button', () => {
+    let selectedCases: SearchResultViewItem[] = [];
+    beforeEach(() => {
+      selectedCases = [{
+        case_id: '1',
+        case_fields: {
+          PersonFirstName: 'James',
+          PersonLastName: 'Parker',
+          PersonAddress: '123, Fake Street, Hexton, England, HX08 UTG'
+        }
+      }, {
+        case_id: '2',
+        case_fields: {
+          PersonFirstName: 'Steve',
+          PersonLastName: 'Harris',
+          PersonAddress: 'Davidson House, Forbury Square, Reading, RG1 3EB'
+        }
+      }];
+    });
+    it('Should receive selected cases', () => {
+      component.retrieveSelections(selectedCases);
+      expect(component.selectedCases.length).toEqual(2);
+    });
+    it('Should see the \'Share case\' button greyed out', () => {
+      selectedCases = [];
+      component.retrieveSelections(selectedCases);
+      expect(fixture.debugElement.nativeElement.querySelector('#btn-share-button').textContent).toContain('Share case');
+      expect(component.checkIfButtonDisabled()).toBeTruthy();
+    });
+    it('Share a case button is selectable when any case is selected', () => {
+      component.retrieveSelections(selectedCases);
+      expect(component.checkIfButtonDisabled()).toBeFalsy();
+    });
+    afterEach(() => {
+      selectedCases = [];
     });
   });
 

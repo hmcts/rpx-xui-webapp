@@ -410,6 +410,44 @@ describe('CaseListComponent', () => {
     });
   });
 
+  describe('Should show share case button', () => {
+    let selectedCases: SearchResultViewItem[] = [];
+    beforeEach(() => {
+      selectedCases = [{
+        case_id: '1',
+        case_fields: {
+          PersonFirstName: 'James',
+          PersonLastName: 'Parker',
+          PersonAddress: '123, Fake Street, Hexton, England, HX08 UTG'
+        }
+      }, {
+        case_id: '2',
+        case_fields: {
+          PersonFirstName: 'Steve',
+          PersonLastName: 'Harris',
+          PersonAddress: 'Davidson House, Forbury Square, Reading, RG1 3EB'
+        }
+      }];
+    });
+    it('Should receive selected cases', () => {
+      component.retrieveSelections(selectedCases);
+      expect(component.selectedCases.length).toEqual(2);
+    });
+    it('Should see the \'Share case\' button greyed out', () => {
+      selectedCases = [];
+      component.retrieveSelections(selectedCases);
+      expect(fixture.debugElement.nativeElement.querySelector('#btn-share-button').textContent).toContain('Share case');
+      expect(component.checkIfButtonDisabled()).toBeTruthy();
+    });
+    it('Share a case button is selectable when any case is selected', () => {
+      component.retrieveSelections(selectedCases);
+      expect(component.checkIfButtonDisabled()).toBeFalsy();
+    });
+    afterEach(() => {
+      selectedCases = [];
+    });
+  });
+
   describe('onDestroy()', () => {
     it('should unsubscribe', () => {
       component.filterSubscription = new Observable().subscribe();

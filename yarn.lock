@@ -352,10 +352,10 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@2.63.3-RDM-7120-prerelease":
-  version "2.63.3-RDM-7120-prerelease"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.63.3-RDM-7120-prerelease.tgz#f4436963e6236586b275fad41a86724b79106b9a"
-  integrity sha512-cduOHxdnbBmeFUrDmsTp8/fTmgMtkCIvd2Xepx6zcYUX6hdAuF7CoFoVbZf03ArBX0L6dtJmdKsky75to9qLiQ==
+"@hmcts/ccd-case-ui-toolkit@2.64.4-EUI-1940-prerelease":
+  version "2.64.4-EUI-1940-prerelease"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.64.4-EUI-1940-prerelease.tgz#69fb31c544d6d96e9e2c124f136f468398057b25"
+  integrity sha512-xiFvyKemnZMyY33LJ2+PmY8U+FpDpF0Dx+AiwXmj1zv30nUh23l7qkedWyUWZfnebrot/yFpGCsFBtllyJfJgA==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
@@ -364,6 +364,9 @@
     json-server "^0.14.0"
     karma-jasmine-html-reporter "^1.2.0"
     mocha "^5.0.5"
+    moment "^2.26.0"
+    moment-timezone "^0.5.31"
+    rx-polling "1.1.0"
     typescript "3.1.1"
     underscore "^1.9.1"
 
@@ -7764,6 +7767,13 @@ moment-timezone@^0.5.28:
   dependencies:
     moment ">= 2.9.0"
 
+moment-timezone@^0.5.31:
+  version "0.5.31"
+  resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.5.31.tgz#9c40d8c5026f0c7ab46eda3d63e49c155148de05"
+  integrity sha512-+GgHNg8xRhMXfEbv81iDtrVeTcWt0kWmTEY1XQK14dICTXnWJnT0dxdlPspwqF3keKMVPXwayEsk1DI0AA/jdA==
+  dependencies:
+    moment ">= 2.9.0"
+
 "moment@>= 2.9.0":
   version "2.27.0"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.27.0.tgz#8bff4e3e26a236220dfe3e36de756b6ebaa0105d"
@@ -7773,6 +7783,11 @@ moment@^2.10.6, moment@^2.19.0, moment@^2.19.3, moment@^2.24.0:
   version "2.24.0"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
   integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
+
+moment@^2.26.0:
+  version "2.26.0"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.26.0.tgz#5e1f82c6bafca6e83e808b30c8705eed0dcbd39a"
+  integrity sha512-oIixUO+OamkUkwjhAVE18rAMfRJNsNe/Stid/gwHSOfHrOtw9EhAY2AHvdKZ/k/MggcYELFCJz/Sn2pL8b8JMw==
 
 morgan@^1.9.1:
   version "1.9.1"
@@ -9884,6 +9899,11 @@ run-queue@^1.0.0, run-queue@^1.0.3:
   integrity sha1-6Eg5bwV9Ij8kOGkkYY4laUFh7Ec=
   dependencies:
     aproba "^1.1.1"
+
+rx-polling@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/rx-polling/-/rx-polling-1.1.0.tgz#633fc1813e05bb974f4dccd84e5a58b65e5395b1"
+  integrity sha512-Y/YBGBewcbx+PXXoEEL4pxa7StHqKJcg1DHNhRIitSoakEZUa5inEEjpjQaksQfr9krsESP9GAdlPZmF31MO3g==
 
 rx-polling@^1.0.1:
   version "1.0.1"

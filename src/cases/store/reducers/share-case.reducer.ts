@@ -5,32 +5,38 @@ export interface ShareCasesState {
   shareCases: SearchResultViewItem[];
 }
 
-export let initialSharedCasesState: ShareCasesState = { shareCases: [] };
+export let initialSharedCasesState: ShareCasesState = {
+  shareCases: []
+};
 
 export function shareCasesReducer(state: ShareCasesState = initialSharedCasesState,
                                   action: ShareCasesActions.Actions): ShareCasesState {
   switch (action.type) {
     case ShareCasesActions.ADD_SHARE_CASES:
-      if (state.shareCases.length === 0 ) {
-        state.shareCases = state.shareCases.concat(action.payload);
-      } else {
-        action.payload.forEach(x => {
-          if (!state.shareCases.some(e => e.case_id === x.case_id)) {
-            state.shareCases.push(x);
-          }
-        });
+      const caseInStore4Add = state.shareCases;
+      for (let i = 0, l = action.payload.length; i < l; i++) {
+        if (!caseInStore4Add.some(x => x.case_id === action.payload[i].case_id)) {
+          caseInStore4Add.push(action.payload[i]);
+        }
       }
-      return state;
+      return {
+        ...state,
+        shareCases: caseInStore4Add
+      };
     case ShareCasesActions.DELETE_A_SHARE_CASE:
-      for (let i = 0, l = state.shareCases.length; i < l; i++) {
-        if (state.shareCases[i].case_id === action.payload) {
-          state.shareCases.splice(i, 1);
+      const caseInStore4Delete = state.shareCases;
+      for (let i = 0, l = caseInStore4Delete.length; i < l; i++) {
+        if (caseInStore4Delete[i].case_id === action.payload) {
+          caseInStore4Delete.splice(i, 1);
           break;
         }
       }
-      return state;
+      return {
+        ...state,
+        shareCases: caseInStore4Delete
+      };
     default:
-      return state;
+      return initialSharedCasesState;
   }
 }
 

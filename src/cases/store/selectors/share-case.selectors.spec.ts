@@ -21,7 +21,7 @@ describe('Share case selectors', () => {
       store.pipe(select(getShareCaseListState)).subscribe(value => {
         result = value;
       });
-      expect(result.length).toEqual(2);
+      expect(result.length).toEqual(3);
     });
   });
 

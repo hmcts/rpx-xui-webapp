@@ -143,7 +143,7 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/smoke_tests/functional/",
+            reportDir            : "reports/tests/smoke/",
             reportFiles          : 'index.html',
             reportName           : 'PREVIEW Smoke Test'
         ])
@@ -166,7 +166,7 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/smoke_tests/functional/",
+            reportDir            : "reports/tests/smoke/",
             reportFiles          : 'index.html',
             reportName           : 'AAT Smoke Test'
         ])

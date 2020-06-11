@@ -23,19 +23,19 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     When('I create FR case', { timeout: creatCaseStepTimeout }, async function () {
-        await frCase.createCase();
+        await frCase.createCase(false);
     });
 
     When('I create Divorce case', { timeout: creatCaseStepTimeout }, async function () {
-        await divorceCase.createCase();
+        await divorceCase.createCase(false);
     });
 
     When('I create Probate case', { timeout: creatCaseStepTimeout }, async function () {
-        await probateCase.createCase();
+        await probateCase.createCase(false);
     })
 
     When('I start case next step', async function () {
-        await caseManager.startNextStep();
+        await caseManager.startNextStep(false);
     });
 
 
@@ -52,7 +52,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     When('I submit case', async function () {
-        await caseManager.submitCase();
+        await caseManager.submitCase(false);
     });
 
     Then('I see case details page', async function () {

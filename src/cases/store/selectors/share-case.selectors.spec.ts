@@ -17,11 +17,11 @@ describe('Share case selectors', () => {
 
   describe('get share case state', () => {
     it('should return search state', () => {
-      let result = {};
+      let result = [];
       store.pipe(select(getShareCaseListState)).subscribe(value => {
         result = value;
       });
-      expect(result).toEqual([]);
+      expect(result.length).toEqual(2);
     });
   });
 

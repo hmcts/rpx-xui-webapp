@@ -313,6 +313,10 @@ export class CaseListComponent implements OnInit, OnDestroy {
     return !(this.selectedCases.length > 0);
   }
 
+  public shareCaseSubmit() {
+    this.store.dispatch(new fromCasesFeature.AddShareCases(this.selectedCases));
+  }
+
   public ngOnDestroy() {
     if (this.filterSubscription) {
       this.filterSubscription.unsubscribe();

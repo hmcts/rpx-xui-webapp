@@ -9,7 +9,7 @@
       <div class="hmcts-menu">
         <div class="hmcts-menu__wrapper">
           <button id="btn-share-button" class="govuk-button hmcts-button--secondary" type="button" aria-haspopup="true" aria-expanded="false"
-                  [disabled]="checkIfButtonDisabled()">
+                  [disabled]="checkIfButtonDisabled()" (click)="shareCaseSubmit()">
             Share case
           </button>
         </div>

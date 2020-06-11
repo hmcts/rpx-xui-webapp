@@ -400,6 +400,11 @@ describe('CaseListComponent', () => {
       component.retrieveSelections(selectedCases);
       expect(component.checkIfButtonDisabled()).toBeFalsy();
     });
+    it('Should save share cases to store', () => {
+      component.retrieveSelections(selectedCases);
+      component.shareCaseSubmit();
+      expect(component.checkIfButtonDisabled()).toBeFalsy();
+    });
     afterEach(() => {
       selectedCases = [];
     });

@@ -305,7 +305,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   }
 
   public hasResults() {
-    return(this.resultView.results.length > 0);
+    return this.resultView.results.length > 0;
   }
 
   public ngOnDestroy() {

@@ -304,6 +304,10 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.store.dispatch(new fromCasesFeature.CaseFilterToggle(!this.showFilter));
   }
 
+  public hasResults() {
+    return(this.resultView.results.length > 0);
+  }
+
   public ngOnDestroy() {
     if (this.filterSubscription) {
       this.filterSubscription.unsubscribe();

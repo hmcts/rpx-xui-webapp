@@ -453,6 +453,32 @@ describe('CaseListComponent', () => {
     });
   });
 
+  describe('Should see cases unselectable information', () => {
+    it('should see why are some cases unselectable', () => {
+      const resultView = {
+        columns: [],
+        results: [
+          {
+            case_id: 'case_123',
+          }
+        ],
+        result_error: null
+      };
+      component.onResultsViewHandler(resultView);
+      expect(component.hasResults()).toBeTruthy();
+    });
+
+    it('should not see why are some cases unselectable', () => {
+      const resultView = {
+        columns: [],
+        results: [],
+        result_error: null
+      };
+      component.onResultsViewHandler(resultView);
+      expect(component.hasResults()).toBeFalsy();
+    });
+  });
+
   describe('onDestroy()', () => {
     it('should unsubscribe', () => {
       component.filterSubscription = new Observable().subscribe();
@@ -473,4 +499,3 @@ describe('CaseListComponent', () => {
   });
 
 });
-

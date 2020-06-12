@@ -1,8 +1,8 @@
-import { SearchResultViewItem } from '@hmcts/ccd-case-ui-toolkit';
 import * as ShareCasesActions from '../actions/share-case.action';
+import { SharedCase } from '../../models/case-share/case-share.module';
 
 export interface ShareCasesState {
-  shareCases: SearchResultViewItem[];
+  shareCases: SharedCase[];
 }
 
 export let initialSharedCasesState: ShareCasesState = {
@@ -15,7 +15,7 @@ export function shareCasesReducer(state: ShareCasesState = initialSharedCasesSta
     case ShareCasesActions.ADD_SHARE_CASES:
       const caseInStore4Add = state.shareCases;
       for (let i = 0, l = action.payload.length; i < l; i++) {
-        if (!caseInStore4Add.some(x => x.case_id === action.payload[i].case_id)) {
+        if (!caseInStore4Add.some(x => x.caseId === action.payload[i].caseId)) {
           caseInStore4Add.push(action.payload[i]);
         }
       }
@@ -26,7 +26,7 @@ export function shareCasesReducer(state: ShareCasesState = initialSharedCasesSta
     case ShareCasesActions.DELETE_A_SHARE_CASE:
       const caseInStore4Delete = state.shareCases;
       for (let i = 0, l = caseInStore4Delete.length; i < l; i++) {
-        if (caseInStore4Delete[i].case_id === action.payload) {
+        if (caseInStore4Delete[i].caseId === action.payload) {
           caseInStore4Delete.splice(i, 1);
           break;
         }

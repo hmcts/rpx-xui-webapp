@@ -128,23 +128,25 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public setCaseListFilterDefaults = () => {
     this.jurisdictionsBehaviourSubject$
       .subscribe(jurisdictions => {
-        this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
-        if (this.savedQueryParams && this.savedQueryParams.jurisdiction && !this.doesIdExist(this.jurisdictions, this.savedQueryParams.jurisdiction)) {
-          this.windowService.removeLocalStorage('savedQueryParams');
-        }
-        if (this.savedQueryParams) {
-          this.defaults = {
-            jurisdiction_id: this.savedQueryParams.jurisdiction,
-            case_type_id: this.savedQueryParams['case-type'],
-            state_id: this.savedQueryParams['case-state']
-          };
-        } else {
-          if (jurisdictions[0] && jurisdictions[0].id && jurisdictions[0].caseTypes[0] && jurisdictions[0].caseTypes[0].states[0]) {
+        if (this.jurisdictions && this.jurisdictions.length > 0) {
+          this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
+          if (this.savedQueryParams && this.savedQueryParams.jurisdiction && !this.doesIdExist(this.jurisdictions, this.savedQueryParams.jurisdiction)) {
+            this.windowService.removeLocalStorage('savedQueryParams');
+          }
+          if (this.savedQueryParams) {
             this.defaults = {
-              jurisdiction_id: jurisdictions[0].id,
-              case_type_id: jurisdictions[0].caseTypes[0].id,
-              state_id: jurisdictions[0].caseTypes[0].states[0].id
+              jurisdiction_id: this.savedQueryParams.jurisdiction,
+              case_type_id: this.savedQueryParams['case-type'],
+              state_id: this.savedQueryParams['case-state']
             };
+          } else {
+            if (jurisdictions[0] && jurisdictions[0].id && jurisdictions[0].caseTypes[0] && jurisdictions[0].caseTypes[0].states[0]) {
+              this.defaults = {
+                jurisdiction_id: jurisdictions[0].id,
+                case_type_id: jurisdictions[0].caseTypes[0].id,
+                state_id: jurisdictions[0].caseTypes[0].states[0].id
+              };
+            }
           }
         }
       });

@@ -41,6 +41,7 @@ import * as fromComponents from './components';
 import * as fromServices from './services';
 import {ProvidersModule} from '../app/providers/providers.module';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
+import { CaseShareComponent } from './containers/case-share/case-share.component';
 
 @NgModule({
     imports: [
@@ -59,7 +60,7 @@ import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-tr
         CaseListFiltersModule,
         WorkbasketFiltersModule
     ],
-  declarations: [...fromComponents.components, ...fromContainers.containers],
+  declarations: [...fromComponents.components, ...fromContainers.containers, CaseShareComponent],
   providers: [
     PlaceholderService,
     CasesService,

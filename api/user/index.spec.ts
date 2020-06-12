@@ -25,7 +25,7 @@ describe('getUserDetails', () => {
         sandbox.restore()
     })
 
-    it('should return a response', async () => {
+    it('should return a true response when case share permission is existent', async () => {
       const reqQuery = {
           session: { user: { roles: ['pui-case-manager'] } },
       }
@@ -33,6 +33,20 @@ describe('getUserDetails', () => {
       await getUserDetails(req, res, next)
       const response = {
         canShareCases: true,
+        sessionTimeout: { idleModalDisplayTime: 10, pattern: ".", totalIdleTime: 480 }
+      }
+      expect(res.send).to.have.been.calledWith(response)
+    })
+
+
+    it('should return a false response when case share permission is non-existent', async () => {
+      const reqQuery = {
+          session: { user: { roles: ['dummy'] } },
+      }
+      req = mockReq(reqQuery)
+      await getUserDetails(req, res, next)
+      const response = {
+        canShareCases: false,
         sessionTimeout: { idleModalDisplayTime: 10, pattern: ".", totalIdleTime: 480 }
       }
       expect(res.send).to.have.been.calledWith(response)

@@ -13,7 +13,7 @@ export function shareCasesReducer(state: ShareCasesState = initialSharedCasesSta
                                   action: ShareCasesActions.Actions): ShareCasesState {
   switch (action.type) {
     case ShareCasesActions.ADD_SHARE_CASES:
-      const caseInStore4Add = state.shareCases;
+      const caseInStore4Add = state.shareCases.slice();
       for (let i = 0, l = action.payload.length; i < l; i++) {
         if (!caseInStore4Add.some(x => x.caseId === action.payload[i].caseId)) {
           caseInStore4Add.push(action.payload[i]);

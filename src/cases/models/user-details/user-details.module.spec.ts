@@ -1,10 +1,15 @@
-import { UserDetailsModule } from './user-details.module';
+import { UserDetails } from './user-details.module';
 
 describe('UserDetailsModule', () => {
-  let userDetailsModule: UserDetailsModule;
+  let userDetailsModule: UserDetails;
 
   beforeEach(() => {
-    userDetailsModule = new UserDetailsModule();
+    userDetailsModule = {
+      idamId: 'id123',
+      firstName: 'Pete',
+      lastName: 'Smith',
+      email: 'pete.smith@hmcts.net'
+    };
   });
 
   it('should create an instance', () => {

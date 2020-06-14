@@ -1,10 +1,10 @@
-import { CaseShareModule } from './case-share.module';
+import {SharedCase} from './case-share.module';
 
 describe('CaseShareModule', () => {
-  let caseShareModule: CaseShareModule;
+  let caseShareModule: SharedCase;
 
   beforeEach(() => {
-    caseShareModule = new CaseShareModule();
+    caseShareModule = {caseId: '1', caseTitle: 'Pete123'};
   });
 
   it('should create an instance', () => {

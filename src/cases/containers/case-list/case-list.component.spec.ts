@@ -9,6 +9,9 @@ import { CaseFilterToggle, FindCaselistPaginationMetadata } from '../../store/ac
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { PaginationMetadata, SearchResultViewItem, WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { of, Observable } from 'rxjs';
+import { AddShareCases } from '../../store/actions';
+import { SharedCase } from '../../models/case-share/case-share.module';
+import * as converts from '../../converters/case-converter';
 
 describe('CaseListComponent', () => {
   let component: CaseListComponent;
@@ -373,16 +376,12 @@ describe('CaseListComponent', () => {
       selectedCases = [{
         case_id: '1',
         case_fields: {
-          PersonFirstName: 'James',
-          PersonLastName: 'Parker',
-          PersonAddress: '123, Fake Street, Hexton, England, HX08 UTG'
+          solsSolicitorAppReference: 'James123'
         }
       }, {
         case_id: '2',
         case_fields: {
-          PersonFirstName: 'Steve',
-          PersonLastName: 'Harris',
-          PersonAddress: 'Davidson House, Forbury Square, Reading, RG1 3EB'
+          solsSolicitorAppReference: 'Steve321'
         }
       }];
     });
@@ -402,7 +401,9 @@ describe('CaseListComponent', () => {
     });
     it('Should save share cases to store', () => {
       component.retrieveSelections(selectedCases);
+      const shareCases: SharedCase[] = converts.toShareCaseConverter(component.selectedCases);
       component.shareCaseSubmit();
+      expect(spyOnDispatchToStore).toHaveBeenCalledWith(new AddShareCases(shareCases));
       expect(component.checkIfButtonDisabled()).toBeFalsy();
     });
     afterEach(() => {

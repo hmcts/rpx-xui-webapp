@@ -1,6 +1,6 @@
-import {UserDetails} from '../user-details/user-details.module';
+import { UserDetails } from '../user-details/user-details.module';
 
-export class SharedCase {
+export interface SharedCase {
   caseTitle: string;
   caseId: string;
   roles?: string[];

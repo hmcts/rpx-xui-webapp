@@ -8,7 +8,7 @@ import { ActionBindingModel } from 'src/cases/models/create-case-actions.model';
 import * as fromCasesFeature from '../../store';
 import * as fromCaseList from '../../store/reducers';
 import { AppConfig } from './../../../app/services/ccd-config/ccd-case.config';
-import {SharedCase} from "../../models/case-share/case-share.module";
+import * as converters from 'src/cases/converters/case-converter';
 
 /**
  * Entry component wrapper for Case List
@@ -315,16 +315,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   }
 
   public shareCaseSubmit() {
-    // console.log('x.caseid' + this.selectedCases.map(x => x.case_id));
-    const sharedCases: SharedCase[] = [];
-    for (let i = 0, l = this.selectedCases.length; i < l; i++) {
-      const shareCase = {
-        caseId: this.selectedCases[i].case_id,
-        caseTitle: '',
-      };
-      sharedCases.push(shareCase);
-    }
-    this.store.dispatch(new fromCasesFeature.AddShareCases(sharedCases));
+    this.store.dispatch(new fromCasesFeature.AddShareCases(converters.toShareCaseConverter(this.selectedCases)));
   }
 
   public hasResults() {

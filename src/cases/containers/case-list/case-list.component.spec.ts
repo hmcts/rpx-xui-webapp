@@ -343,7 +343,23 @@ describe('CaseListComponent', () => {
         '"jurisdiction": "Probate", ' +
         '"case-type": "GrantOfRepresentation", ' +
         '"case-state": "BOReadyToIssue"' +
-        '}');
+      '}');
+      component.jurisdictionsBehaviourSubject$.next([{
+        id: 'Probate',
+        name: 'some name',
+        description: 'some desc',
+        caseTypes: [{
+          id: 'GrantOfRepresentation',
+          events: null,
+          name: 'some name',
+          description: 'some desc',
+          states: [{
+            id: 'BOReadyToIssue',
+            name: 'some name',
+            description: 'some desc'
+          }]
+        }]
+      }]);
       component.setCaseListFilterDefaults();
 
       expect(component.defaults.state_id).toEqual('BOReadyToIssue');

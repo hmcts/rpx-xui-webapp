@@ -128,7 +128,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public setCaseListFilterDefaults = () => {
     this.jurisdictionsBehaviourSubject$
       .subscribe(jurisdictions => {
-        if (this.jurisdictions && this.jurisdictions.length > 0) {
+        if (jurisdictions.length > 0) {
           this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
           if (this.savedQueryParams && this.savedQueryParams.jurisdiction && !this.doesIdExist(this.jurisdictions, this.savedQueryParams.jurisdiction)) {
             this.windowService.removeLocalStorage('savedQueryParams');

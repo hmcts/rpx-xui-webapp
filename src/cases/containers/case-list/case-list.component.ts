@@ -139,14 +139,12 @@ export class CaseListComponent implements OnInit, OnDestroy {
               case_type_id: this.savedQueryParams['case-type'],
               state_id: this.savedQueryParams['case-state']
             };
-          } else {
-            if (jurisdictions[0] && jurisdictions[0].id && jurisdictions[0].caseTypes[0] && jurisdictions[0].caseTypes[0].states[0]) {
-              this.defaults = {
-                jurisdiction_id: jurisdictions[0].id,
-                case_type_id: jurisdictions[0].caseTypes[0].id,
-                state_id: jurisdictions[0].caseTypes[0].states[0].id
-              };
-            }
+          } else if (jurisdictions[0] && jurisdictions[0].id && jurisdictions[0].caseTypes[0] && jurisdictions[0].caseTypes[0].states[0]) {
+            this.defaults = {
+              jurisdiction_id: jurisdictions[0].id,
+              case_type_id: jurisdictions[0].caseTypes[0].id,
+              state_id: jurisdictions[0].caseTypes[0].states[0].id
+            };
           }
         }
       });

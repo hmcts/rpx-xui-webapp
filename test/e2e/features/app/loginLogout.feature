@@ -17,7 +17,7 @@ Feature: Login
     When I select the sign out link
     Then I should be redirected to the Idam login page
 
-    @all
+    @all @crossbrowser
   Scenario: login and log out from EUI as Probate user
     Given I am logged into Expert UI with Probate user details
     Then I should be redirected to EUI dashboard page

@@ -326,7 +326,7 @@ describe('CaseListComponent', () => {
           name: 'some name',
           description: 'some desc',
           states: [{
-            id: 'some id',
+            id: 'some state id',
             name: 'some name',
             description: 'some desc'
           }]
@@ -335,6 +335,7 @@ describe('CaseListComponent', () => {
       component.setCaseListFilterDefaults();
 
       expect(component.defaults).toBeDefined();
+      expect(component.defaults.state_id).toEqual('some state id');
     });
 
     it('should set the defaults from localStorage.', () => {

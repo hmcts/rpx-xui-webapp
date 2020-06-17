@@ -10,6 +10,7 @@ interface UserDetails {
     totalIdleTime: number,
   };
   canShareCases: boolean;
+  shareCaseTypes: string[];
 }
 
 export interface AppConfigState {
@@ -36,7 +37,8 @@ export const initialState: AppConfigState = {
       idleModalDisplayTime: 0,
       totalIdleTime: 0,
     },
-    canShareCases: false
+    canShareCases: false,
+    shareCaseTypes: []
   }
 };
 

@@ -24,6 +24,7 @@ withNightlyPipeline(type, product, component) {
     enableFullFunctionalTest(30)
     enableSecurityScan()
     enableMutationTest()
+    enableCrossBrowserTest()
 
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net/'
     after('checkout') {sh 'yarn cache clean'}
@@ -78,4 +79,15 @@ withNightlyPipeline(type, product, component) {
             reportName           : 'XUI Manage Cases Mutation tests'
         ])
     }
+
+  after('crossBrowserTest') {
+    publishHTML([
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "reports/tests/crossbrowser/",
+      reportFiles          : 'index.html',
+      reportName           : 'XUI Manage Cases Cross Browser Tests'
+    ])
+  }
 }

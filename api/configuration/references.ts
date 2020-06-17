@@ -68,3 +68,5 @@ export const REDIS_KEY_PREFIX = 'redis.prefix'
 export const REDIS_TTL = 'redis.ttl'
 
 export const USER_TIMEOUT_IN_SECONDS = 'userTimeoutInSeconds'
+
+export const CASE_SHARE_PERMISSIONS = 'pui-case-manager'

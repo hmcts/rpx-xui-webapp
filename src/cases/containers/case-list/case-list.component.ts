@@ -9,6 +9,7 @@ import * as fromCasesFeature from '../../store';
 import * as fromCaseList from '../../store/reducers';
 import { AppConfig } from './../../../app/services/ccd-config/ccd-case.config';
 import * as converters from 'src/cases/converters/case-converter';
+import * as fromRoot from '../../../app/store';
 
 /**
  * Entry component wrapper for Case List
@@ -61,6 +62,9 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public isVisible: boolean;
   public jurisdictions: Jurisdiction[];
   public selectedCases: SearchResultViewItem[] = [];
+
+  public userDetails: Observable<any>;
+  public selectionItems: SearchResultViewItem[];
 
   constructor(
     public store: Store<fromCaseList.State>,
@@ -115,6 +119,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
 
     this.findCaseListPaginationMetadata(this.getEvent());
+
+    this.userDetails = this.store.pipe(select(fromRoot.getUserDetails));
   }
 
   public listenToPaginationMetadata = () => {

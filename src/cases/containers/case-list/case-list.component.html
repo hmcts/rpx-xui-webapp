@@ -2,11 +2,11 @@
   <div class="case-list-component">
     <div class="hmcts-action-bar">
       <div class="hmcts-action-bar__filter">
-        <button class="govuk-button hmcts-button--secondary" (click) = "toggleFilter()" type="button"  aria-haspopup="true" aria-expanded="false">
+        <button class="govuk-button hmcts-button--secondary" (click)="toggleFilter()" type="button"  aria-haspopup="true" aria-expanded="false">
           {{toggleButtonName}}
         </button>
       </div>
-      <div class="hmcts-menu">
+      <div class="hmcts-menu"  *ngIf="(userDetails | async).canShareCases">
         <div class="hmcts-menu__wrapper">
           <button id="btn-share-button" class="govuk-button hmcts-button--secondary" type="button" aria-haspopup="true" aria-expanded="false"
                   [disabled]="checkIfButtonDisabled()" (click)="shareCaseSubmit()">
@@ -36,6 +36,7 @@
         <div aria-live="polite" class="hmcts-filter-layout__content" id="search-result" rightbody="" role="region">
           <ccd-search-result
             *ngIf="resultView"
+            [selectionEnabled]="(userDetails | async).canShareCases"
             [jurisdiction]="jurisdiction"
             [caseType]="caseType"
             [caseState]="caseState"

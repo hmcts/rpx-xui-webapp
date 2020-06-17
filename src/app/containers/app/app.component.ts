@@ -64,7 +64,6 @@ export class AppComponent implements OnInit {
 
     if (propsExist(userDetails, ['sessionTimeout'] ) && userDetails.sessionTimeout.totalIdleTime > 0) {
 
-      console.log(userDetails.sessionTimeout);
       const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
 
       this.addIdleServiceListener();

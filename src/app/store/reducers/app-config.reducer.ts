@@ -9,6 +9,7 @@ interface UserDetails {
     idleModalDisplayTime: number,
     totalIdleTime: number,
   };
+  canShareCases: boolean;
 }
 
 export interface AppConfigState {
@@ -34,7 +35,8 @@ export const initialState: AppConfigState = {
     sessionTimeout: {
       idleModalDisplayTime: 0,
       totalIdleTime: 0,
-    }
+    },
+    canShareCases: false
   }
 };
 

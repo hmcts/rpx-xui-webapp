@@ -9,6 +9,7 @@ import { CaseFilterToggle, FindCaselistPaginationMetadata } from '../../store/ac
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { PaginationMetadata, WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { of, Observable } from 'rxjs';
+import { By } from '@angular/platform-browser';
 
 describe('CaseListComponent', () => {
   let component: CaseListComponent;
@@ -351,6 +352,18 @@ describe('CaseListComponent', () => {
   });
 
   describe('Should see cases unselectable information', () => {
+    beforeEach(() => {
+      spyOnPipeToStore.and.returnValue(of({}));
+      mockDefinitionsService.getJurisdictions.and.returnValue(of([{
+        id: 'some id',
+        caseTypes: [{
+          id: 'some id',
+          states: [{
+            id: 'some id'
+          }]
+        }]
+      }]));
+    });
     it('should see why are some cases unselectable', () => {
       const resultView = {
         columns: [],
@@ -363,6 +376,12 @@ describe('CaseListComponent', () => {
       };
       component.onResultsViewHandler(resultView);
       expect(component.hasResults()).toBeTruthy();
+      spyOn(component, 'hasResults').and.returnValue(true);
+      fixture.detectChanges();
+      const infoHeader = fixture.debugElement.query(By.css('#sp-msg-unselected-case-header')).nativeElement;
+      expect(infoHeader.innerHTML).toContain('Why are some cases unselectable?');
+      const infoContent = fixture.debugElement.query(By.css('#sp-msg-unselected-case-content')).nativeElement;
+      expect(infoContent.innerHTML).toContain('You might not be able to select and share some cases in your current case list. However, you\'ll be able to select any new cases you create and share them.');
     });
 
     it('should not see why are some cases unselectable', () => {
@@ -373,6 +392,12 @@ describe('CaseListComponent', () => {
       };
       component.onResultsViewHandler(resultView);
       expect(component.hasResults()).toBeFalsy();
+      spyOn(component, 'hasResults').and.returnValue(false);
+      fixture.detectChanges();
+      const infoHeader = fixture.debugElement.query(By.css('#sp-msg-unselected-case-header'));
+      expect(infoHeader).toBeNull();
+      const infoContent = fixture.debugElement.query(By.css('#sp-msg-unselected-case-content'))
+      expect(infoContent).toBeNull();
     });
   });
 

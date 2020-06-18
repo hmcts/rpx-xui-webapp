@@ -310,6 +310,18 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.store.dispatch(new fromCasesFeature.CaseFilterToggle(!this.showFilter));
   }
 
+
+  /**
+   * isCaseShareVisible()
+   * Determines case share visibility
+   *
+   * @param canShareCases - true
+   * @param shareJurisdictions - ["IA", "FR"]
+   */
+  public isCaseShareVisible(canShareCases: boolean, shareJurisdictions: string[]) {
+    return canShareCases && shareJurisdictions.includes(this.jurisdiction.id);
+  }
+
   public ngOnDestroy() {
     if (this.filterSubscription) {
       this.filterSubscription.unsubscribe();

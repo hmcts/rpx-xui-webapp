@@ -35,7 +35,7 @@
     "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal",
     "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal"
   },
-  "shareCaseTypes": [],
+  "shareJurisdictions": [],
   "protocol": "https",
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",

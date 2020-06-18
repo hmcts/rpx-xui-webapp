@@ -49,7 +49,7 @@
       "webapp-redis-connection-string": "REDISCLOUD_URL"
     }
   },
-  "shareCaseTypes": "SHARE_CASE_TYPES",
+  "shareJurisdictions": "SHARE_JURISDICTIONS",
   "jurisdictions": "JURISDICTIONS",
   "log4JConfig": {
     "__name": "LOG_4JS_CONFIG",

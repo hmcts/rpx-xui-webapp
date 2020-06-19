@@ -1,0 +1,82 @@
+{
+  "organisations": [
+    {
+      "orgId": "o111111",
+      "orgName": "Woodford solicitors ltd.",
+      "users": [
+        {
+          "idamId": "u111111",
+          "firstName": "Steve",
+          "lastName": "Harrison",
+          "email": "steve.harrison@woodford.com"
+        },
+        {
+          "idamId": "u222222",
+          "firstName": "Joe",
+          "lastName": "Elliott",
+          "email": "joe.elliott@woodford.com"
+        },
+        {
+          "idamId": "u333333",
+          "firstName": "James",
+          "lastName": "Priest",
+          "email": "james.priest@woodford.com"
+        },
+        {
+          "idamId": "u444444",
+          "firstName": "Shaun",
+          "lastName": "Coldwell",
+          "email": "shaun.coldwell@woodford.com"
+        }
+      ]
+    },
+    {
+      "orgId": "o222222",
+      "orgName": "Lamb brooks solicitors ltd.",
+      "users": [
+        {
+          "idamId": "u555555",
+          "firstName": "Anne",
+          "lastName": "Deller",
+          "email": "anne.deller@lambbrooks.com"
+        },
+        {
+          "idamId": "u666666",
+          "firstName": "Kate",
+          "lastName": "Grant",
+          "email": "kate.grant@lambbrooks.com"
+        },
+        {
+          "idamId": "u777777",
+          "firstName": "Nick",
+          "lastName": "Rodrigues",
+          "email": "nick.rodrigues@lambbrooks.com"
+        },
+        {
+          "idamId": "u888888",
+          "firstName": "Joel",
+          "lastName": "Molloy",
+          "email": "joel.molloy@lambbrooks.com"
+        }
+      ]
+    }
+  ],
+  "sharedCases": [
+    {
+      "caseId": "c111111",
+      "caseTitle": "Paul vs Jenifer",
+      "sharedWith": [
+        "u111111",
+        "u222222"
+      ]
+    },
+    {
+      "caseId": "c222222",
+      "caseTitle": "Neha vs Sanjet",
+      "sharedWith": [
+        "u333333",
+        "u444444"
+      ]
+    }
+  ]
+}

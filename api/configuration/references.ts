@@ -37,6 +37,9 @@ export const SERVICES_IDAM_OAUTH_CALLBACK_URL = 'services.idam.oauthCallbackUrl'
 export const SERVICE_S2S_PATH = 'services.s2s'
 export const SERVICES_TERMS_AND_CONDITIONS_URL = 'services.termsAndConditions'
 
+// TODO: require updates when API is ready
+export const SERVICES_CASE_SHARE_API_URL = 'services.caseShare.api'
+
 export const PROTOCOL = 'protocol'
 export const MICROSERVICE = 'microservice'
 export const NOW = 'now'

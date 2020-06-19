@@ -379,10 +379,10 @@
   resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.39-alpha.tgz#782d4a4698dae040dd72b26711f04a8d8299d25c"
   integrity sha512-M1364rFLuvktYz5+jVjJ5ZmNUx0/SgoAvH3RsIaT2wFqFf92emuiRyXqax5oSEC5kM9Jpw0rcxEcRbBJWMoglg==
 
-"@hmcts/media-viewer@2.2.4":
-  version "2.2.4"
-  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-2.2.4.tgz#d0ae436ccd9c04184077e37c3ae21d9925ea2896"
-  integrity sha512-TnUhjiPIG6IqJhMcFNPZ/RbHJSPMOJbBAEtuG+D5vCiowMxhTHF42wzPihE7erMES8zoxJKOhouNsfFFVO4ZDw==
+"@hmcts/media-viewer@2.2.7":
+  version "2.2.7"
+  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-2.2.7.tgz#11c2716727f83d83dcaa1369682fe83df7d654e1"
+  integrity sha512-7HpYKdCbw4caiJQLhMk8Hg3VeAaZXu/oMqQ9Zue6VKEFzlwICMeUVKQzdQYPkN152bkNWzXg4nn812oyj3lH/A==
   dependencies:
     hammerjs "^2.0.8"
     mutable-div "0.0.11"
@@ -2579,11 +2579,6 @@ chownr@^1.0.1, chownr@^1.1.1:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/chownr/-/chownr-1.1.3.tgz#42d837d5239688d55f303003a508230fa6727142"
   integrity sha512-i70fVHhmV3DtTl6nqvZOnIjbY0Pe4kAUjwHj8z0zAdgBtYrJyYwLKCCuRBQ5ppkyL0AkN7HKRnETdmdp1zqNXw==
-
-chownr@^1.1.2:
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/chownr/-/chownr-1.1.4.tgz#6fc9d7b42d32a583596337666e7d08084da2cc6b"
-  integrity sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg==
 
 chownr@^1.1.2:
   version "1.1.4"

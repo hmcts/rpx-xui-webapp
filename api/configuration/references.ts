@@ -39,6 +39,9 @@ export const SERVICES_TERMS_AND_CONDITIONS_URL = 'services.termsAndConditions'
 
 export const SERVICES_PAYMENTS_URL = 'services.payments'
 
+// TODO: require updates when API is ready
+export const SERVICES_CASE_SHARE_API_URL = 'services.caseShare.api'
+
 export const PROTOCOL = 'protocol'
 export const MICROSERVICE = 'microservice'
 export const NOW = 'now'

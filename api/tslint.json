@@ -46,7 +46,7 @@
         ],
         "quotemark": false,
         "semicolon": [
-            true,
+            false,
             "never"
         ],
         "trailing-comma": [

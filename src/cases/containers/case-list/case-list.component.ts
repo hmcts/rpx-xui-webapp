@@ -9,6 +9,7 @@ import * as fromCasesFeature from '../../store';
 import * as fromCaseList from '../../store/reducers';
 import { AppConfig } from './../../../app/services/ccd-config/ccd-case.config';
 import * as fromRoot from '../../../app/store';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 
 /**
  * Entry component wrapper for Case List
@@ -69,6 +70,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
     private appConfig: AppConfig,
     private definitionsService: DefinitionsService,
     private windowService: WindowService,
+    private featureToggleService: FeatureToggleService,
   ) {
   }
 
@@ -320,6 +322,10 @@ export class CaseListComponent implements OnInit, OnDestroy {
    */
   public isCaseShareVisible(canShareCases: boolean, shareJurisdictions: string[]) {
     return canShareCases && shareJurisdictions.includes(this.jurisdiction.id);
+  }
+
+  public getSharedJurisdictions() {
+    return this.featureToggleService.getValue('sharedJurisdiction', []);
   }
 
   public ngOnDestroy() {

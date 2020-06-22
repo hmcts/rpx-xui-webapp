@@ -6,7 +6,7 @@
           {{toggleButtonName}}
         </button>
       </div>
-      <div class="hmcts-action-bar__filter" *ngIf="isCaseShareVisible((userDetails | async).canShareCases, (userDetails | async).shareJurisdictions)">
+      <div class="hmcts-action-bar__filter" *ngIf="isCaseShareVisible((userDetails | async).canShareCases, getSharedJurisdictions() | async)">
         <button class="govuk-button hmcts-button--secondary" type="button"  aria-haspopup="true" aria-expanded="false">
           Share Case
         </button>
@@ -33,7 +33,7 @@
         <div aria-live="polite" class="hmcts-filter-layout__content" id="search-result" rightbody="" role="region">
           <ccd-search-result
             *ngIf="resultView"
-            [selectionEnabled]="isCaseShareVisible((userDetails | async).canShareCases, (userDetails | async).shareJurisdictions)"
+            [selectionEnabled]="isCaseShareVisible((userDetails | async).canShareCases, getSharedJurisdictions() | async)"
             [jurisdiction]="jurisdiction"
             [caseType]="caseType"
             [caseState]="caseState"
@@ -45,7 +45,7 @@
             caseLinkUrlTemplate="case-details/case_id"
           >
           </ccd-search-result>
-          <details class="govuk-details" data-module="govuk-details" *ngIf="isCaseShareVisible((userDetails | async).canShareCases, (userDetails | async).shareJurisdictions)">
+          <details class="govuk-details" data-module="govuk-details" *ngIf="isCaseShareVisible((userDetails | async).canShareCases, getSharedJurisdictions() | async)">
             <summary class="govuk-details__summary">
               <span class="govuk-details__summary-text">
                 Why are some cases unselectable?

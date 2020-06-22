@@ -29,7 +29,7 @@ import { ProvidersModule } from './providers/providers.module';
 // app routes
 import { ROUTES } from './app.routes';
 import { CookieModule } from 'ngx-cookie';
-import {SharedModule} from './shared/shared.module';
+import { SharedModule } from './shared/shared.module';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MonitoringService } from './services/logger/monitoring.service';
@@ -38,7 +38,13 @@ import { JwtDecodeWrapper } from './services/logger/jwtDecodeWrapper';
 import { AbstractAppInsights, AppInsightsWrapper } from './services/logger/appInsightsWrapper';
 import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler';
 import { AcceptTermsService } from './services/acceptTerms/acceptTerms.service';
-import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule, LAUNCHDARKLYKEY } from '@hmcts/rpx-xui-common-lib';
+import { ENVIRONMENT_CONFIG, EnvironmentConfig } from 'src/models/environmentConfig.model';
+
+
+export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): string {
+  return envConfig.launchDarklyClientId || '';
+}
 
 @NgModule({
   declarations: [AppComponent],
@@ -86,7 +92,8 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
       provide: ErrorHandler,
       useClass: DefaultErrorHandler
     },
-    AcceptTermsService
+    AcceptTermsService,
+    { provide: LAUNCHDARKLYKEY, useFactory: launchDarklyClientIdFactory, deps: [ENVIRONMENT_CONFIG] },
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

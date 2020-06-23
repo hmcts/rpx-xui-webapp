@@ -10,6 +10,7 @@ import * as fromCaseList from '../../store/reducers';
 import { AppConfig } from './../../../app/services/ccd-config/ccd-case.config';
 import * as converters from 'src/cases/converters/case-converter';
 import * as fromRoot from '../../../app/store';
+import { Router } from '@angular/router';
 
 /**
  * Entry component wrapper for Case List
@@ -68,6 +69,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
   constructor(
     public store: Store<fromCaseList.State>,
+    public router: Router,
     private appConfig: AppConfig,
     private definitionsService: DefinitionsService,
     private windowService: WindowService,
@@ -322,6 +324,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
   public shareCaseSubmit() {
     this.store.dispatch(new fromCasesFeature.AddShareCases(converters.toShareCaseConverter(this.selectedCases)));
+    this.router.navigate(['cases', 'case-share']);
   }
 
   public hasResults() {

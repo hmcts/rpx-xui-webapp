@@ -7,9 +7,11 @@ nodejs:
      SERVICES_IDAM_LOGIN_URL: https://idam-web-public.aat.platform.hmcts.net
      REDISCLOUD_URL: redis://ignore:fake-password@${SERVICE_NAME}-redis-master:6379
   keyVaults:
-        rpx:
-            secrets:
-                - webapp-redis-connection-string
+    rpx:
+      secrets:
+        - mc-s2s-client-secret
+        - mc-idam-client-secret
+    
 redis:
   enabled: true
 

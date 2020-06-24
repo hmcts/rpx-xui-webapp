@@ -1,8 +1,5 @@
 <exui-page-wrapper [backLink]="'cases'" [fnTitle]="'Share a case'" [title]="'Add recipient'">
-  <xuilib-share-case>
-
+  <xuilib-share-case
+    [cases] = "shareCaseList$ | async">
   </xuilib-share-case>
-  <xuilib-selected-case-list>
-
-  </xuilib-selected-case-list>
 </exui-page-wrapper>

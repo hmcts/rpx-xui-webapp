@@ -39,6 +39,7 @@ import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler
 import { AcceptTermsService } from './services/acceptTerms/acceptTerms.service';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
+import { CaseShareService } from './services/case/share-case.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -86,7 +87,8 @@ import { PaymentLibModule } from '@hmcts/ccpay-web-component';
       provide: ErrorHandler,
       useClass: DefaultErrorHandler
     },
-    AcceptTermsService
+    AcceptTermsService,
+    CaseShareService
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

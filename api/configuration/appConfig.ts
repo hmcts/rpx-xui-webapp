@@ -21,7 +21,6 @@ import {
   SERVICES_IDAM_LOGIN_URL,
   SERVICES_IDAM_OAUTH_CALLBACK_URL,
   SERVICES_TERMS_AND_CONDITIONS_URL,
-  LAUNCH_DARKLY_CLIENT_ID,
 } from './references'
 
 /**
@@ -43,7 +42,6 @@ export const applicationConfiguration = () => {
     featureRedisEnabled: showFeature(FEATURE_REDIS_ENABLED),
     featureSecureCookieEnabled: showFeature(FEATURE_SECURE_COOKIE_ENABLED),
     featureTermsAndConditionsEnabled: showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED),
-    launchDarklyClientId: getConfigValue(LAUNCH_DARKLY_CLIENT_ID),
     health: getConfigValue(HEALTH),
     idamApiUrl: getConfigValue(SERVICES_IDAM_API_URL),
     idamWeb: getConfigValue(SERVICES_IDAM_LOGIN_URL),

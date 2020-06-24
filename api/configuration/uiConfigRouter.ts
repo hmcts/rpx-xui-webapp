@@ -5,6 +5,7 @@ import {
   SERVICES_IDAM_CLIENT_ID,
   SERVICES_IDAM_LOGIN_URL,
   SERVICES_IDAM_OAUTH_CALLBACK_URL,
+  LAUNCH_DARKLY_CLIENT_ID,
 } from './references'
 
 export const router = express.Router({mergeParams: true})
@@ -25,6 +26,7 @@ async function uiConfigurationRouter(req, res) {
     idamWeb: getConfigValue(SERVICES_IDAM_LOGIN_URL),
     oAuthCallback: getConfigValue(SERVICES_IDAM_OAUTH_CALLBACK_URL),
     protocol: getConfigValue(PROTOCOL),
+    launchDarklyClientId: getConfigValue(LAUNCH_DARKLY_CLIENT_ID),
   })
 }
 

@@ -324,8 +324,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
     return canShareCases && shareJurisdictions.includes(this.jurisdiction.id);
   }
 
-  public getSharedJurisdictions() {
-    return this.featureToggleService.getValue('sharedJurisdiction', []);
+  public getShareableJurisdictions() {
+    return this.featureToggleService.getValue('shareable-jurisdictions', []);
   }
 
   public ngOnDestroy() {

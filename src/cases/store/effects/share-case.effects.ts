@@ -28,7 +28,7 @@ export class ShareCaseEffects {
       ),
     );
 
-/*  @Effect()
+  @Effect()
   public addShareCases$ = this.actions$.pipe(
     ofType(shareCaseActions.ADD_SHARE_CASES),
     map((action: shareCaseActions.AddShareCases) => action.payload),
@@ -36,16 +36,6 @@ export class ShareCaseEffects {
       return new shareCaseActions.AddShareCases({
         path: [`/cases/case-share`],
         sharedCases: newCases.sharedCases
-      });
-    })
-  );*/
-
-  @Effect()
-  public addShareCases$ = this.actions$.pipe(
-    ofType(shareCaseActions.ADD_SHARE_CASES),
-    map(() => {
-      return new shareCaseActions.AddShareCases({
-        path: [`/cases/case-share`]
       });
     })
   );

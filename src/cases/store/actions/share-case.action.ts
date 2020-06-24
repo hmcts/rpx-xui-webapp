@@ -10,7 +10,7 @@ export const DELETE_A_SHARE_CASE = '[ShareCase] Delete A Share Case';
 
 export class LoadShareCase implements Action {
   public readonly type = LOAD_SHARE_CASES;
-  constructor() {}
+  constructor(public payload: SharedCase[]) {}
 }
 
 export class LoadShareCaseSuccess implements Action {

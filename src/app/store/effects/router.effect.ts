@@ -42,6 +42,18 @@ export class RouterEffects {
   );
 
   @Effect({ dispatch: false })
+  navigateAddShareCase$ = this.actions$.pipe(
+    ofType(RouterActions.ADD_SHARE_CASE_GO),
+    map((action: RouterActions.AddShareCaseGo) => action.payload),
+    tap(({ path, query: queryParams, extras, sharedCases }) => {
+      const thatSharedCases = sharedCases;
+      return this.router.navigate(path, { queryParams, ...extras }).then(() => {
+        this.store.dispatch(new fromCases.LoadShareCase(thatSharedCases));
+      });
+    })
+  );
+
+  @Effect({ dispatch: false })
   navigateBack$ = this.actions$.pipe(
     ofType(RouterActions.BACK),
     tap(() => this.location.back())

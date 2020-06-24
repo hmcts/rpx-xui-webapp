@@ -1,8 +1,10 @@
 import { Action } from '@ngrx/store';
 import { NavigationExtras } from '@angular/router';
+import { SharedCase } from '../../../cases/models/case-share/case-share.module';
 
 export const GO = '[Router] Go';
 export const CREATE_CASE_GO = '[Router] Create Case Go';
+export const ADD_SHARE_CASE_GO = '[Router] Add Share Case Go';
 export const BACK = '[Router] Back';
 export const FORWARD = '[Router] Forward';
 export const NEW_CASE_LOADED = '[Router] Case Loaded';
@@ -34,6 +36,18 @@ export class CreateCaseGo implements Action {
     ) {}
 }
 
+export class AddShareCaseGo implements Action {
+  readonly type = ADD_SHARE_CASE_GO;
+  constructor(
+    public payload: {
+      path: any[];
+      query?: object;
+      extras?: NavigationExtras;
+      sharedCases: SharedCase[]
+    }
+  ) {}
+}
+
 export class Back implements Action {
   readonly type = BACK;
 }
@@ -42,4 +56,4 @@ export class Forward implements Action {
   readonly type = FORWARD;
 }
 
-export type Actions = Go | Back | Forward | NewCaseLoadedSuccessfully | CreateCaseGo;
+export type Actions = Go | Back | Forward | NewCaseLoadedSuccessfully | CreateCaseGo | AddShareCaseGo;

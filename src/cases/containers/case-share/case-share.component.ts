@@ -26,7 +26,7 @@ export class CaseShareComponent implements OnInit {
     this.shareCaseList$ = this.store.select(store => store.caseShare.shareCases);
     this.loading$ = this.store.select(store => store.caseShare.loading);
     this.error$ = this.store.select(store => store.caseShare.error);
-    this.store.dispatch(new LoadShareCase());
+    // this.store.dispatch(new LoadShareCase());
   }
 
 }

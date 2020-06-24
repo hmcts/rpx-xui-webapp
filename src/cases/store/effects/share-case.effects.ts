@@ -33,7 +33,7 @@ export class ShareCaseEffects {
     ofType(shareCaseActions.ADD_SHARE_CASES),
     map((action: shareCaseActions.AddShareCases) => action.payload),
     map(newCases => {
-      return new shareCaseActions.AddShareCases({
+      return new fromRoot.AddShareCaseGo({
         path: [`/cases/case-share`],
         sharedCases: newCases.sharedCases
       });

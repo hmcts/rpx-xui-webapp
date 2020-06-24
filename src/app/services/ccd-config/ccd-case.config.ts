@@ -115,7 +115,7 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getBannersUrl(): string {
-    return this.config.pay_bulk_scan_url;
+    return this.getCaseDataUrl() + `/internal/banners/`;
   }
 
 }

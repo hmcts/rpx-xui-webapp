@@ -50,7 +50,6 @@
       "launch-darkly-client-id": "LAUNCH_DARKLY_CLIENT_ID"
     }
   },
-  "shareJurisdictions": "SHARE_JURISDICTIONS",
   "jurisdictions": "JURISDICTIONS",
   "log4JConfig": {
     "__name": "LOG_4JS_CONFIG",

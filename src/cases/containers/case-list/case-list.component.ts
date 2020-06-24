@@ -318,10 +318,10 @@ export class CaseListComponent implements OnInit, OnDestroy {
    * Determines case share visibility
    *
    * @param canShareCases - true
-   * @param shareJurisdictions - ["IA", "FR"]
+   * @param shareableJurisdictions - ["IA", "FR"]
    */
-  public isCaseShareVisible(canShareCases: boolean, shareJurisdictions: string[]) {
-    return canShareCases && shareJurisdictions.includes(this.jurisdiction.id);
+  public isCaseShareVisible(canShareCases: boolean, shareableJurisdictions: string[]) {
+    return canShareCases && shareableJurisdictions.includes(this.jurisdiction.id);
   }
 
   public getShareableJurisdictions() {

@@ -10,7 +10,6 @@ interface UserDetails {
     totalIdleTime: number,
   };
   canShareCases: boolean;
-  shareJurisdictions: string[];
 }
 
 export interface AppConfigState {
@@ -37,8 +36,7 @@ export const initialState: AppConfigState = {
       idleModalDisplayTime: 0,
       totalIdleTime: 0,
     },
-    canShareCases: false,
-    shareJurisdictions: []
+    canShareCases: false
   }
 };
 

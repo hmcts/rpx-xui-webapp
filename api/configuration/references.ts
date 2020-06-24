@@ -71,4 +71,3 @@ export const USER_TIMEOUT_IN_SECONDS = 'userTimeoutInSeconds'
 export const SESSION_TIMEOUTS = 'sessionTimeouts'
 
 export const CASE_SHARE_PERMISSIONS = 'pui-case-manager'
-export const SHARE_JURISDICTIONS = 'shareJurisdictions'

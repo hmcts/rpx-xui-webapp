@@ -319,6 +319,42 @@ describe('CaseListComponent', () => {
     });
   });
 
+  describe('isCaseShareVisible()', () => {
+
+    it('should return true when case share available.', () => {
+
+      component.jurisdiction = {
+        name: 'bongo',
+        caseTypes: [],
+        description: 'drums',
+        id: 'dummy'
+      };
+
+      expect(component.isCaseShareVisible(true, ['dummy'])).toBeTruthy();
+    });
+
+    it('should return false when case share not available.', () => {
+
+      component.jurisdiction = {
+        name: 'bongo',
+        caseTypes: [],
+        description: 'drums',
+        id: 'dummy1'
+      };
+
+      expect(component.isCaseShareVisible(true, ['dummy'])).toBeFalsy();
+    });
+  });
+
+  describe('getShareableJurisdictions()', () => {
+
+    it('should return shareable jurisdictions.', () => {
+      component.getShareableJurisdictions().subscribe(jurisdictions => {
+        expect(jurisdictions).toEqual(['dummy']);
+      });
+    });
+
+  });
 
   describe('setCaseListFilterDefaults()', () => {
 

@@ -319,7 +319,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
    * @param canShareCases - true
    * @param shareableJurisdictions - ["IA", "FR"]
    */
-  public isCaseShareVisible(canShareCases: boolean, shareableJurisdictions: string[]) {
+  public isCaseShareVisible(canShareCases: boolean, shareableJurisdictions: string[]): boolean {
     return canShareCases && shareableJurisdictions.includes(this.jurisdiction.id);
   }
 
@@ -328,7 +328,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
    * Gets shareable Jurisdictions observable
    *
    */
-  public getShareableJurisdictions() {
+  public getShareableJurisdictions(): Observable<string[]> {
     return this.featureToggleService.getValue('shareable-jurisdictions', []);
   }
 

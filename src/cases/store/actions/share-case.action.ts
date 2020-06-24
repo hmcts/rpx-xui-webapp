@@ -29,7 +29,7 @@ export class AddShareCases implements Action {
     path?: any[];
     query?: object;
     extras?: NavigationExtras;
-    sharedCases?: SharedCase[]
+    sharedCases: SharedCase[]
   }) {}
 }
 

@@ -312,7 +312,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.store.dispatch(new fromCasesFeature.CaseFilterToggle(!this.showFilter));
   }
 
-
   /**
    * isCaseShareVisible()
    * Determines case share visibility
@@ -324,6 +323,11 @@ export class CaseListComponent implements OnInit, OnDestroy {
     return canShareCases && shareableJurisdictions.includes(this.jurisdiction.id);
   }
 
+  /**
+   * getShareableJurisdictions()
+   * Gets shareable Jurisdictions observable
+   *
+   */
   public getShareableJurisdictions() {
     return this.featureToggleService.getValue('shareable-jurisdictions', []);
   }

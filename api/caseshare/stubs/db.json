@@ -6,15 +6,15 @@
       "users": [
         {
           "idamId": "u111111",
-          "firstName": "Steve",
-          "lastName": "Harrison",
-          "email": "steve.harrison@woodford.com"
-        },
-        {
-          "idamId": "u222222",
           "firstName": "Joe",
           "lastName": "Elliott",
           "email": "joe.elliott@woodford.com"
+        },
+        {
+          "idamId": "u222222",
+          "firstName": "Steve",
+          "lastName": "Harrison",
+          "email": "steve.harrison@woodford.com"
         },
         {
           "idamId": "u333333",
@@ -68,15 +68,15 @@
       "sharedWith": [
         {
           "idamId": "u111111",
-          "firstName": "Steve",
-          "lastName": "Harrison",
-          "email": "steve.harrison@woodford.com"
-        },
-        {
-          "idamId": "u222222",
           "firstName": "Joe",
           "lastName": "Elliott",
           "email": "joe.elliott@woodford.com"
+        },
+        {
+          "idamId": "u222222",
+          "firstName": "Steve",
+          "lastName": "Harrison",
+          "email": "steve.harrison@woodford.com"
         }
       ]
     },

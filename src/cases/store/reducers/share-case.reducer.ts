@@ -16,6 +16,17 @@ export let initialSharedCasesState: ShareCasesState = {
 export function shareCasesReducer(state: ShareCasesState = initialSharedCasesState,
                                   action: ShareCasesActions.Actions): ShareCasesState {
   switch (action.type) {
+    case ShareCasesActions.NAVIGATE_TO_SHARE_CASES:
+      const navigateToShareCases = state.shareCases.slice();
+      for (let i = 0, l = action.payload.length; i < l; i++) {
+        if (!navigateToShareCases.some(x => x.caseId === action.payload[i].caseId)) {
+          navigateToShareCases.push(action.payload[i]);
+        }
+      }
+      return {
+        ...state,
+        shareCases: navigateToShareCases
+      };
     case ShareCasesActions.LOAD_SHARE_CASES:
       return {
         ...state,
@@ -34,15 +45,26 @@ export function shareCasesReducer(state: ShareCasesState = initialSharedCasesSta
         loading: false
       };
     case ShareCasesActions.ADD_SHARE_CASES:
-      const caseInStore4Add = state.shareCases.slice();
+      const addShareCases = state.shareCases.slice();
       for (let i = 0, l = action.payload.sharedCases.length; i < l; i++) {
-        if (!caseInStore4Add.some(x => x.caseId === action.payload.sharedCases[i].caseId)) {
-          caseInStore4Add.push(action.payload.sharedCases[i]);
+        if (!addShareCases.some(x => x.caseId === action.payload.sharedCases[i].caseId)) {
+          addShareCases.push(action.payload.sharedCases[i]);
         }
       }
       return {
         ...state,
-        shareCases: caseInStore4Add
+        shareCases: addShareCases
+      };
+    case ShareCasesActions.ADD_SHARE_CASE_GO:
+      const addShareCasesGo = state.shareCases.slice();
+      for (let i = 0, l = action.payload.sharedCases.length; i < l; i++) {
+        if (!addShareCasesGo.some(x => x.caseId === action.payload.sharedCases[i].caseId)) {
+          addShareCasesGo.push(action.payload.sharedCases[i]);
+        }
+      }
+      return {
+        ...state,
+        shareCases: addShareCasesGo
       };
     case ShareCasesActions.DELETE_A_SHARE_CASE:
       const caseInStore4Delete = state.shareCases.slice();

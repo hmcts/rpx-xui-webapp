@@ -63,19 +63,39 @@
   ],
   "sharedCases": [
     {
-      "caseId": "c111111",
-      "caseTitle": "Paul vs Jenifer",
+      "caseId": "4748282877128233",
+      "caseTitle": "Paul Saddlebrook Vs Jennifer Saddlebrook",
       "sharedWith": [
-        "u111111",
-        "u222222"
+        {
+          "idamId": "u111111",
+          "firstName": "Steve",
+          "lastName": "Harrison",
+          "email": "steve.harrison@woodford.com"
+        },
+        {
+          "idamId": "u222222",
+          "firstName": "Joe",
+          "lastName": "Elliott",
+          "email": "joe.elliott@woodford.com"
+        }
       ]
     },
     {
-      "caseId": "c222222",
-      "caseTitle": "Neha vs Sanjet",
+      "caseId": "9417373995765131",
+      "caseTitle": "Neha Venkatanarasimharaj Vs Sanjet Venkatanarasimharaj",
       "sharedWith": [
-        "u333333",
-        "u444444"
+        {
+          "idamId": "u333333",
+          "firstName": "James",
+          "lastName": "Priest",
+          "email": "james.priest@woodford.com"
+        },
+        {
+          "idamId": "u444444",
+          "firstName": "Shaun",
+          "lastName": "Coldwell",
+          "email": "shaun.coldwell@woodford.com"
+        }
       ]
     }
   ]

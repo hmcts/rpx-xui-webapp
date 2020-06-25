@@ -3,6 +3,6 @@
   [fnTitle]="'Share a case'"
   [title]="'Add recipient'">
   <xuilib-share-case
-    [cases] = "shareCases">
+    [cases] = "shareCases" [users]="orgUsers$ | async">
   </xuilib-share-case>
 </exui-page-wrapper>

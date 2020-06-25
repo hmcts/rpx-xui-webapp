@@ -11,7 +11,7 @@ export class CaseShareService {
     public getShareCases(shareCases: SharedCase[]): Observable<SharedCase[]> {
         return this.http.get<SharedCase[]>(`api/caseshare/cases`);
     }
-    public getUsersFromOrg(orgId: string, searchText: string): Observable<UserDetails[]> {
-        return this.http.get<UserDetails[]>(`api/caseshare/orgs/${orgId}?q=${searchText}`);
+    public getUsersFromOrg(orgId: string): Observable<UserDetails[]> {
+        return this.http.get<UserDetails[]>(`api/caseshare/orgs/${orgId}`);
     }
 }

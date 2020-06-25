@@ -1,3 +1,4 @@
+import { UserDetails } from 'src/cases/models/user-details/user-details.module';
 import { SharedCase } from '../../models/case-share/case-share.module';
 import * as ShareCasesActions from '../actions/share-case.action';
 
@@ -5,12 +6,14 @@ export interface ShareCasesState {
   shareCases: SharedCase[];
   loading: boolean;
   error: Error;
+  users: UserDetails[];
 }
 
 export let initialSharedCasesState: ShareCasesState = {
   shareCases: [],
   loading: false,
-  error: undefined
+  error: undefined,
+  users: []
 };
 
 export function shareCasesReducer(state: ShareCasesState = initialSharedCasesState,
@@ -78,9 +81,15 @@ export function shareCasesReducer(state: ShareCasesState = initialSharedCasesSta
         ...state,
         shareCases: caseInStore4Delete
       };
+    case ShareCasesActions.LOAD_USERS_FROM_ORG_FOR_CASE_SUCCESS:
+      return {
+        ...state,
+        users: action.payload
+      };
     default:
       return initialSharedCasesState;
   }
 }
 
 export const getShareCases = (state: ShareCasesState) => state.shareCases;
+export const getOrganisationUsers = (state: ShareCasesState) => state.users;

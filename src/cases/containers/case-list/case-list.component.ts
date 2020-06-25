@@ -318,12 +318,9 @@ export class CaseListComponent implements OnInit, OnDestroy {
   }
 
   public shareCaseSubmit() {
-    console.log('this.selectedCases=' + this.selectedCases);
     this.store.dispatch(new fromCasesFeature.AddShareCases({
       sharedCases: converters.toShareCaseConverter(this.selectedCases)
     }));
-    // this.store.dispatch(new fromCasesFeature.AddShareCases({}));
-    // this.router.navigate(['cases', 'case-share']);
   }
 
   public hasResults() {

@@ -8,7 +8,7 @@ import { UserDetails } from '../../../cases/models/user-details/user-details.mod
 export class CaseShareService {
     constructor(private readonly http: HttpClient) {}
 
-    public getShareCases(): Observable<SharedCase[]> {
+    public getShareCases(shareCases: SharedCase[]): Observable<SharedCase[]> {
         return this.http.get<SharedCase[]>(`api/caseshare/cases`);
     }
     public getUsersFromOrg(orgId: string, searchText: string): Observable<UserDetails[]> {

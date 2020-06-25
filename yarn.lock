@@ -352,10 +352,10 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@2.64.4-EUI-1940-prerelease":
-  version "2.64.4-EUI-1940-prerelease"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.64.4-EUI-1940-prerelease.tgz#69fb31c544d6d96e9e2c124f136f468398057b25"
-  integrity sha512-xiFvyKemnZMyY33LJ2+PmY8U+FpDpF0Dx+AiwXmj1zv30nUh23l7qkedWyUWZfnebrot/yFpGCsFBtllyJfJgA==
+"@hmcts/ccd-case-ui-toolkit@2.64.5-case-sharing-prerelease":
+  version "2.64.5-case-sharing-prerelease"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.64.5-case-sharing-prerelease.tgz#32eeec198efa476ab518ed78a65aa532a2b33709"
+  integrity sha512-22ha8p2tew80IEvaBGtZp13D41kjqCYKEZcU9Fim8Fazoo0R6iFaYwoQwXP7ZLZ50Tbg/kdXevHZSfVZSZmUhw==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
@@ -7483,9 +7483,9 @@ moment@^2.10.6, moment@^2.19.0, moment@^2.19.3, moment@^2.24.0:
   integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
 
 moment@^2.26.0:
-  version "2.26.0"
-  resolved "https://registry.yarnpkg.com/moment/-/moment-2.26.0.tgz#5e1f82c6bafca6e83e808b30c8705eed0dcbd39a"
-  integrity sha512-oIixUO+OamkUkwjhAVE18rAMfRJNsNe/Stid/gwHSOfHrOtw9EhAY2AHvdKZ/k/MggcYELFCJz/Sn2pL8b8JMw==
+  version "2.27.0"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.27.0.tgz#8bff4e3e26a236220dfe3e36de756b6ebaa0105d"
+  integrity sha512-al0MUK7cpIcglMv3YF13qSgdAIqxHTO7brRtaz3DlSULbqfazqkc5kEjNrLDOM7fsjshoFIihnU8snrP7zUvhQ==
 
 morgan@^1.9.1:
   version "1.9.1"

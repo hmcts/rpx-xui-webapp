@@ -344,7 +344,7 @@ describe('CaseListComponent', () => {
 
       expect(component.isCaseShareVisible(true, ['dummy'])).toBeFalsy();
       expect(component.isCaseShareVisible(true, [])).toBeFalsy();
-      expect(component.isCaseShareVisible(false, ['dummy'])).toBeFalsy();
+      expect(component.isCaseShareVisible(false, ['dummy1'])).toBeFalsy();
       expect(component.isCaseShareVisible(false, [])).toBeFalsy();
     });
   });

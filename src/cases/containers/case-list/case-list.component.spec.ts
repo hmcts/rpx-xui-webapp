@@ -333,7 +333,7 @@ describe('CaseListComponent', () => {
       expect(component.isCaseShareVisible(true, ['dummy'])).toBeTruthy();
     });
 
-    it('should return false when case share not available.', () => {
+    it('should return false when jurisdiction is not shareable.', () => {
 
       component.jurisdiction = {
         name: 'bongo',
@@ -343,8 +343,41 @@ describe('CaseListComponent', () => {
       };
 
       expect(component.isCaseShareVisible(true, ['dummy'])).toBeFalsy();
+    });
+
+    it('should return false when there are no shareable jurisdictions.', () => {
+
+      component.jurisdiction = {
+        name: 'bongo',
+        caseTypes: [],
+        description: 'drums',
+        id: 'dummy1'
+      };
+
       expect(component.isCaseShareVisible(true, [])).toBeFalsy();
+    });
+
+    it('should return false when the jurisdiction is shareable but sharing is disabled.', () => {
+
+      component.jurisdiction = {
+        name: 'bongo',
+        caseTypes: [],
+        description: 'drums',
+        id: 'dummy1'
+      };
+
       expect(component.isCaseShareVisible(false, ['dummy1'])).toBeFalsy();
+    });
+
+    it('should return false when there are no shareable jurisdictions and sharing is disabled.', () => {
+
+      component.jurisdiction = {
+        name: 'bongo',
+        caseTypes: [],
+        description: 'drums',
+        id: 'dummy1'
+      };
+
       expect(component.isCaseShareVisible(false, [])).toBeFalsy();
     });
   });

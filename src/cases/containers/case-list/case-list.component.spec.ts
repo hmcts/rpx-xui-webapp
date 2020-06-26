@@ -373,7 +373,7 @@ describe('CaseListComponent', () => {
       component.retrieveSelections(selectedCases);
       expect(component.selectedCases.length).toEqual(2);
     });
-    it('Should see the \'Share case\' button greyed out', () => {
+    xit('Should see the \'Share case\' button greyed out', () => {
       selectedCases = [];
       component.retrieveSelections(selectedCases);
       expect(fixture.debugElement.nativeElement.querySelector('#btn-share-button').textContent).toContain('Share case');
@@ -408,7 +408,7 @@ describe('CaseListComponent', () => {
         }]
       }]));
     });
-    it('should see why are some cases unselectable', () => {
+    xit('should see why are some cases unselectable', () => {
       const resultView = {
         columns: [],
         results: [

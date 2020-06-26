@@ -3,6 +3,7 @@ import { UserDetails } from '@hmcts/rpx-xui-common-lib/lib/models/user-details.m
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { SharedCase } from '../../models/case-share/case-share.module';
+import {DeleteAShareCase} from '../../store';
 import * as fromCasesFeature from '../../store';
 import { LoadShareCase, LoadUserFromOrgForCase } from '../../store/actions';
 import * as fromCaseList from '../../store/reducers';
@@ -38,6 +39,10 @@ export class CaseShareComponent implements OnInit {
     // Hard coded Org Id as this info will come later
     this.store.dispatch(new LoadUserFromOrgForCase('o111111'));
     this.orgUsers$.subscribe(user => console.log(user));
+  }
+
+  deselect($event) {
+    this.store.dispatch(new DeleteAShareCase($event));
   }
 
 }

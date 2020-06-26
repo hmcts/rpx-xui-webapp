@@ -9,6 +9,7 @@ import { CaseFilterToggle, FindCaselistPaginationMetadata } from '../../store/ac
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { PaginationMetadata, SearchResultViewItem, WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { of, Observable } from 'rxjs';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { AddShareCases } from '../../store/actions';
 import { SharedCase } from '../../models/case-share/case-share.module';
 import * as converts from '../../converters/case-converter';
@@ -28,6 +29,7 @@ describe('CaseListComponent', () => {
   const mockDefinitionsService = jasmine.createSpyObj('DefinitionsService', ['getJurisdictions']);
   const mockAppConfig = jasmine.createSpyObj('AppConfig', ['getPaginationPageSize']);
   const mockWindowService = jasmine.createSpyObj('WindowService', ['removeLocalStorage']);
+  const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['getValue']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -46,12 +48,17 @@ describe('CaseListComponent', () => {
           provide: WindowService,
           useValue: mockWindowService
         },
+        {
+          provide: FeatureToggleService,
+          useValue: mockFeatureToggleService
+        },
         provideMockStore(),
       ]
     });
     store = TestBed.get(Store);
     spyOnDispatchToStore = spyOn(store, 'dispatch').and.callThrough();
     spyOnPipeToStore = spyOn(store, 'pipe').and.callThrough();
+    mockFeatureToggleService.getValue.and.returnValue(of(['dummy']));
 
     fixture = TestBed.createComponent(CaseListComponent);
     component = fixture.componentInstance;
@@ -316,6 +323,78 @@ describe('CaseListComponent', () => {
     });
   });
 
+  describe('isCaseShareVisible()', () => {
+
+    it('should return true when case share available.', () => {
+
+      component.jurisdiction = {
+        name: 'bongo',
+        caseTypes: [],
+        description: 'drums',
+        id: 'dummy'
+      };
+
+      expect(component.isCaseShareVisible(true, ['dummy'])).toBeTruthy();
+    });
+
+    it('should return false when jurisdiction is not shareable.', () => {
+
+      component.jurisdiction = {
+        name: 'bongo',
+        caseTypes: [],
+        description: 'drums',
+        id: 'dummy1'
+      };
+
+      expect(component.isCaseShareVisible(true, ['dummy'])).toBeFalsy();
+    });
+
+    it('should return false when there are no shareable jurisdictions.', () => {
+
+      component.jurisdiction = {
+        name: 'bongo',
+        caseTypes: [],
+        description: 'drums',
+        id: 'dummy1'
+      };
+
+      expect(component.isCaseShareVisible(true, [])).toBeFalsy();
+    });
+
+    it('should return false when the jurisdiction is shareable but sharing is disabled.', () => {
+
+      component.jurisdiction = {
+        name: 'bongo',
+        caseTypes: [],
+        description: 'drums',
+        id: 'dummy1'
+      };
+
+      expect(component.isCaseShareVisible(false, ['dummy1'])).toBeFalsy();
+    });
+
+    it('should return false when there are no shareable jurisdictions and sharing is disabled.', () => {
+
+      component.jurisdiction = {
+        name: 'bongo',
+        caseTypes: [],
+        description: 'drums',
+        id: 'dummy1'
+      };
+
+      expect(component.isCaseShareVisible(false, [])).toBeFalsy();
+    });
+  });
+
+  describe('getShareableJurisdictions()', () => {
+
+    it('should return shareable jurisdictions.', () => {
+      component.getShareableJurisdictions().subscribe(jurisdictions => {
+        expect(jurisdictions).toEqual(['dummy']);
+      });
+    });
+
+  });
 
   describe('setCaseListFilterDefaults()', () => {
 

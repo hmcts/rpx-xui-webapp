@@ -9,6 +9,7 @@ import * as fromCasesFeature from '../../store';
 import * as fromCaseList from '../../store/reducers';
 import { AppConfig } from './../../../app/services/ccd-config/ccd-case.config';
 import * as fromRoot from '../../../app/store';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import * as converters from 'src/cases/converters/case-converter';
 
 /**
@@ -71,6 +72,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
     private appConfig: AppConfig,
     private definitionsService: DefinitionsService,
     private windowService: WindowService,
+    private featureToggleService: FeatureToggleService,
   ) {
   }
 
@@ -310,6 +312,26 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
   public toggleFilter() {
     this.store.dispatch(new fromCasesFeature.CaseFilterToggle(!this.showFilter));
+  }
+
+  /**
+   * isCaseShareVisible()
+   * Determines case share visibility
+   *
+   * @param canShareCases - true
+   * @param shareableJurisdictions - ["IA", "FR"]
+   */
+  public isCaseShareVisible(canShareCases: boolean, shareableJurisdictions: string[]): boolean {
+    return canShareCases && shareableJurisdictions.includes(this.jurisdiction.id);
+  }
+
+  /**
+   * getShareableJurisdictions()
+   * Gets shareable Jurisdictions observable
+   *
+   */
+  public getShareableJurisdictions(): Observable<string[]> {
+    return this.featureToggleService.getValue('shareable-jurisdictions', []);
   }
 
   public retrieveSelections(event) {

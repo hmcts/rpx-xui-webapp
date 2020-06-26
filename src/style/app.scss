@@ -1,4 +1,5 @@
 @import '~@hmcts/ccd-case-ui-toolkit/dist/cut-styles/components/typography';
+@import '~govuk-frontend/govuk/all';
 @import 'shims';
 @import 'conditionals';
 @import 'measurements';
@@ -347,5 +348,5 @@ textarea:focus,
 select:focus,
 button:focus {
   outline: 3px solid #ffbf47;
-  outline-offset: 0; 
+  outline-offset: 0;
 }

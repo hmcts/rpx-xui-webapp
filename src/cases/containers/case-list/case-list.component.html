@@ -6,13 +6,11 @@
           {{toggleButtonName}}
         </button>
       </div>
-      <div class="hmcts-menu"  *ngIf="(userDetails | async).canShareCases">
-        <div class="hmcts-menu__wrapper">
-          <button id="btn-share-button" class="govuk-button hmcts-button--secondary" type="button" aria-haspopup="true" aria-expanded="false"
-                  [disabled]="checkIfButtonDisabled()" (click)="shareCaseSubmit()">
-            Share case
-          </button>
-        </div>
+      <div class="hmcts-action-bar__filter"  *ngIf="isCaseShareVisible((userDetails | async).canShareCases, getShareableJurisdictions() | async)">
+        <button id="btn-share-button" class="govuk-button hmcts-button--secondary" type="button"  aria-haspopup="true" aria-expanded="false"
+                [disabled]="checkIfButtonDisabled()" (click)="shareCaseSubmit()">
+          Share Case
+        </button>
       </div>
     </div>
     <div class="search-block">
@@ -36,7 +34,7 @@
         <div aria-live="polite" class="hmcts-filter-layout__content" id="search-result" rightbody="" role="region">
           <ccd-search-result
             *ngIf="resultView"
-            [selectionEnabled]="(userDetails | async).canShareCases"
+            [selectionEnabled]="isCaseShareVisible((userDetails | async).canShareCases, getShareableJurisdictions() | async)"
             [jurisdiction]="jurisdiction"
             [caseType]="caseType"
             [caseState]="caseState"
@@ -44,13 +42,12 @@
             [resultView]="resultView"
             [paginationMetadata]="paginationMetadata"
             [metadataFields]="metadataFields"
-            [selectionEnabled]="true"
             (changePage)="applyChangePage($event)"
             (selection)="retrieveSelections($event)"
             caseLinkUrlTemplate="case-details/case_id"
           >
           </ccd-search-result>
-          <div id="info-msg-unselected-case" *ngIf="hasResults()" class="form-group">
+          <div id="info-msg-unselected-case" *ngIf="hasResults() && isCaseShareVisible((userDetails | async).canShareCases, getShareableJurisdictions() | async)" class="form-group">
             <details class="govuk-details" data-module="govuk-details">
               <summary class="govuk-details__summary">
                 <span id="sp-msg-unselected-case-header" class="govuk-details__summary-text">

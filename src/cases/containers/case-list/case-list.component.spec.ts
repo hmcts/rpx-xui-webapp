@@ -12,6 +12,7 @@ import { of, Observable } from 'rxjs';
 import { AddShareCases } from '../../store/actions';
 import { SharedCase } from '../../models/case-share/case-share.module';
 import * as converts from '../../converters/case-converter';
+import { By } from '@angular/platform-browser';
 
 describe('CaseListComponent', () => {
   let component: CaseListComponent;
@@ -394,6 +395,56 @@ describe('CaseListComponent', () => {
     });
   });
 
+  describe('Should see cases unselectable information', () => {
+    beforeEach(() => {
+      spyOnPipeToStore.and.returnValue(of({}));
+      mockDefinitionsService.getJurisdictions.and.returnValue(of([{
+        id: 'some id',
+        caseTypes: [{
+          id: 'some id',
+          states: [{
+            id: 'some id'
+          }]
+        }]
+      }]));
+    });
+    it('should see why are some cases unselectable', () => {
+      const resultView = {
+        columns: [],
+        results: [
+          {
+            case_id: 'case_123',
+          }
+        ],
+        result_error: null
+      };
+      component.onResultsViewHandler(resultView);
+      expect(component.hasResults()).toBeTruthy();
+      spyOn(component, 'hasResults').and.returnValue(true);
+      fixture.detectChanges();
+      const infoHeader = fixture.debugElement.query(By.css('#sp-msg-unselected-case-header')).nativeElement;
+      expect(infoHeader.innerHTML).toContain('Why are some cases unselectable?');
+      const infoContent = fixture.debugElement.query(By.css('#sp-msg-unselected-case-content')).nativeElement;
+      expect(infoContent.innerHTML).toContain('You might not be able to select and share some cases in your current case list. However, you\'ll be able to select any new cases you create and share them.');
+    });
+
+    it('should not see why are some cases unselectable', () => {
+      const resultView = {
+        columns: [],
+        results: [],
+        result_error: null
+      };
+      component.onResultsViewHandler(resultView);
+      expect(component.hasResults()).toBeFalsy();
+      spyOn(component, 'hasResults').and.returnValue(false);
+      fixture.detectChanges();
+      const infoHeader = fixture.debugElement.query(By.css('#sp-msg-unselected-case-header'));
+      expect(infoHeader).toBeNull();
+      const infoContent = fixture.debugElement.query(By.css('#sp-msg-unselected-case-content'))
+      expect(infoContent).toBeNull();
+    });
+  });
+
   describe('onDestroy()', () => {
     it('should unsubscribe', () => {
       component.filterSubscription = new Observable().subscribe();
@@ -414,4 +465,3 @@ describe('CaseListComponent', () => {
   });
 
 });
-

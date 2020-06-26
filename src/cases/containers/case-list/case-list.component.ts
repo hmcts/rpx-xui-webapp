@@ -10,6 +10,7 @@ import * as fromCaseList from '../../store/reducers';
 import { AppConfig } from './../../../app/services/ccd-config/ccd-case.config';
 import * as fromRoot from '../../../app/store';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import * as converters from 'src/cases/converters/case-converter';
 
 /**
  * Entry component wrapper for Case List
@@ -61,6 +62,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public paginationSubscription: Subscription;
   public isVisible: boolean;
   public jurisdictions: Jurisdiction[];
+  public selectedCases: SearchResultViewItem[] = [];
 
   public userDetails: Observable<any>;
   public selectionItems: SearchResultViewItem[];
@@ -330,6 +332,18 @@ export class CaseListComponent implements OnInit, OnDestroy {
    */
   public getShareableJurisdictions(): Observable<string[]> {
     return this.featureToggleService.getValue('shareable-jurisdictions', []);
+  }
+
+  public retrieveSelections(event) {
+    this.selectedCases = event;
+  }
+
+  public checkIfButtonDisabled(): boolean {
+    return !(this.selectedCases.length > 0);
+  }
+
+  public shareCaseSubmit() {
+    this.store.dispatch(new fromCasesFeature.AddShareCases(converters.toShareCaseConverter(this.selectedCases)));
   }
 
   public ngOnDestroy() {

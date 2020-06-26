@@ -7,9 +7,12 @@ import { Store } from '@ngrx/store';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { CaseFilterToggle, FindCaselistPaginationMetadata } from '../../store/actions/case-list.action';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
-import { PaginationMetadata, WindowService } from '@hmcts/ccd-case-ui-toolkit';
+import { PaginationMetadata, SearchResultViewItem, WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { of, Observable } from 'rxjs';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { AddShareCases } from '../../store/actions';
+import { SharedCase } from '../../models/case-share/case-share.module';
+import * as converts from '../../converters/case-converter';
 
 describe('CaseListComponent', () => {
   let component: CaseListComponent;
@@ -426,6 +429,47 @@ describe('CaseListComponent', () => {
       component.setCaseListFilterDefaults();
 
       expect(component.defaults.state_id).toEqual('BOReadyToIssue');
+    });
+  });
+
+  describe('Should show share case button', () => {
+    let selectedCases: SearchResultViewItem[] = [];
+    beforeEach(() => {
+      selectedCases = [{
+        case_id: '1',
+        case_fields: {
+          solsSolicitorAppReference: 'James123'
+        }
+      }, {
+        case_id: '2',
+        case_fields: {
+          solsSolicitorAppReference: 'Steve321'
+        }
+      }];
+    });
+    it('Should receive selected cases', () => {
+      component.retrieveSelections(selectedCases);
+      expect(component.selectedCases.length).toEqual(2);
+    });
+    it('Should see the \'Share case\' button greyed out', () => {
+      selectedCases = [];
+      component.retrieveSelections(selectedCases);
+      expect(fixture.debugElement.nativeElement.querySelector('#btn-share-button').textContent).toContain('Share case');
+      expect(component.checkIfButtonDisabled()).toBeTruthy();
+    });
+    it('Share a case button is selectable when any case is selected', () => {
+      component.retrieveSelections(selectedCases);
+      expect(component.checkIfButtonDisabled()).toBeFalsy();
+    });
+    it('Should save share cases to store', () => {
+      component.retrieveSelections(selectedCases);
+      const shareCases: SharedCase[] = converts.toShareCaseConverter(component.selectedCases);
+      component.shareCaseSubmit();
+      expect(spyOnDispatchToStore).toHaveBeenCalledWith(new AddShareCases(shareCases));
+      expect(component.checkIfButtonDisabled()).toBeFalsy();
+    });
+    afterEach(() => {
+      selectedCases = [];
     });
   });
 

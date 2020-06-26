@@ -6,8 +6,9 @@
           {{toggleButtonName}}
         </button>
       </div>
-      <div class="hmcts-action-bar__filter" *ngIf="isCaseShareVisible((userDetails | async).canShareCases, getShareableJurisdictions() | async)">
-        <button class="govuk-button hmcts-button--secondary" type="button"  aria-haspopup="true" aria-expanded="false">
+      <div class="hmcts-action-bar__filter"  *ngIf="isCaseShareVisible((userDetails | async).canShareCases, getShareableJurisdictions() | async)">
+        <button id="btn-share-button" class="govuk-button hmcts-button--secondary" type="button"  aria-haspopup="true" aria-expanded="false"
+                [disabled]="checkIfButtonDisabled()" (click)="shareCaseSubmit()">
           Share Case
         </button>
       </div>
@@ -42,6 +43,7 @@
             [paginationMetadata]="paginationMetadata"
             [metadataFields]="metadataFields"
             (changePage)="applyChangePage($event)"
+            (selection)="retrieveSelections($event)"
             caseLinkUrlTemplate="case-details/case_id"
           >
           </ccd-search-result>

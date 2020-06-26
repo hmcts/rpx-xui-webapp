@@ -7,7 +7,8 @@
         </button>
       </div>
       <div class="hmcts-action-bar__filter" *ngIf="(userDetails | async).canShareCases">
-        <button class="govuk-button hmcts-button--secondary" type="button"  aria-haspopup="true" aria-expanded="false">
+        <button id="btn-share-button" class="govuk-button hmcts-button--secondary" type="button"  aria-haspopup="true" aria-expanded="false"
+                [disabled]="checkIfButtonDisabled()" (click)="shareCaseSubmit()">
           Share Case
         </button>
       </div>
@@ -41,7 +42,9 @@
             [resultView]="resultView"
             [paginationMetadata]="paginationMetadata"
             [metadataFields]="metadataFields"
+            [selectionEnabled]="true"
             (changePage)="applyChangePage($event)"
+            (selection)="retrieveSelections($event)"
             caseLinkUrlTemplate="case-details/case_id"
           >
           </ccd-search-result>

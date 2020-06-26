@@ -58,7 +58,7 @@ export function searchUsers(req: EnhancedRequest, res: Response) {
       return res.status(404).send('{"errorMessage": "Organisation is not found}"');
     }
     if (searchText === undefined) {
-      return res.send(org);
+      return res.send(org.users);
     } else {
       const users = org.users;
       const user = users.filter(u => u.idamId.toLowerCase().indexOf(searchText.toLowerCase()) > -1 ||

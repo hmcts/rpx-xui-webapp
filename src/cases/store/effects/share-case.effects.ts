@@ -11,7 +11,9 @@ import * as shareCases from '../reducers/share-case.reducer';
 
 @Injectable()
 export class ShareCaseEffects {
-  payload: any;
+
+  public payload: any;
+
   constructor(
     private actions$: Actions,
     private caseShareService: CaseShareService,
@@ -44,7 +46,8 @@ export class ShareCaseEffects {
     })
   );
 
-  @Effect() loadShopping$ = this.actions$.pipe(
+  @Effect()
+  public loadShareCases$ = this.actions$.pipe(
     ofType(shareCaseActions.LOAD_SHARE_CASES),
     map((action: shareCaseActions.LoadShareCase) => action.payload),
     switchMap(payload => {
@@ -52,7 +55,7 @@ export class ShareCaseEffects {
       return this.caseShareService.getShareCases(payload).pipe(
         map(
           (response) => new shareCaseActions.LoadShareCaseSuccess(response)),
-        catchError(error => of(new shareCaseActions.LoadShareCaseFailure(error)))
+        catchError(() => of(new fromRoot.Go({ path: ['/service-down']})))
       );
     })
   );

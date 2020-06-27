@@ -97,6 +97,30 @@
           "email": "shaun.coldwell@woodford.com"
         }
       ]
+    },
+    {
+      "caseId": "9417373995765131",
+      "caseTitle": "Sam Green Vs Williams Lee",
+      "sharedWith": [
+        {
+          "idamId": "u666666",
+          "firstName": "Kate",
+          "lastName": "Grant",
+          "email": "kate.grant@lambbrooks.com"
+        },
+        {
+          "idamId": "u777777",
+          "firstName": "Nick",
+          "lastName": "Rodrigues",
+          "email": "nick.rodrigues@lambbrooks.com"
+        },
+        {
+          "idamId": "u888888",
+          "firstName": "Joel",
+          "lastName": "Molloy",
+          "email": "joel.molloy@lambbrooks.com"
+        }
+      ]
     }
   ]
 }

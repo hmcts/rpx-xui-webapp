@@ -22,6 +22,7 @@ const healthCheckEndpointDictionary = {
     '/cases/case-details': ['ccdComponentApi'],
     '/cases/case-filter': ['ccdComponentApi'],
     '/cases/case-search': ['ccdComponentApi'],
+    '/cases/case-share': ['ccdComponentApi'],
 }
 
 /*

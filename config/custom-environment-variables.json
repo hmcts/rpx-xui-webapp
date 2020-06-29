@@ -26,6 +26,9 @@
     "documents": {
       "api": "SERVICES_DOCUMENTS_API"
     },
+    "caseShare": {
+      "api": "SERVICES_CASE_SHARE_API"
+    },
     "em_anno_api": "SERVICES_EM_ANNO_API",
     "idam": {
       "idamApiUrl": "SERVICES_IDAM_API_URL",

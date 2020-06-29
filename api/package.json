@@ -13,5 +13,7 @@
         "start": "node -r dotenv-extended/config ../dist/rpx-exui/api/server.bundle.js"
     },
     "private": true,
-    "dependencies": {}
+    "dependencies": {
+        "class-transformer": "^0.2.3"
+    }
 }

@@ -6,6 +6,7 @@
         "types": ["node", "mocha", "rxjs"],
         "baseUrl": ".",
         "lib": ["es2017", "dom"],
+        "resolveJsonModule": true,
         "typeRoots": [
           "node_modules/@types"
         ]

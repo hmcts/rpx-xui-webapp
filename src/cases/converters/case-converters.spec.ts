@@ -14,7 +14,7 @@ describe('case converters', () => {
         solsSolicitorAppReference: 'Steve321'
       }
     }];
-    const expectedShareCases = [{caseId: '1', caseTitle: 'James123'}, {caseId: '2', caseTitle: 'Steve321'}];
+    const expectedShareCases = [{caseId: '1', caseTitle: ''}, {caseId: '2', caseTitle: ''}];
     const shareCases: SharedCase[] = converts.toShareCaseConverter(selectedCases);
     expect(shareCases).toEqual(expectedShareCases);
   });

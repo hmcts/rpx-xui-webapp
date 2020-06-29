@@ -72,7 +72,7 @@ export function shareCasesReducer(state: ShareCasesState = initialSharedCasesSta
     case ShareCasesActions.DELETE_A_SHARE_CASE:
       const caseInStore4Delete = state.shareCases.slice();
       for (let i = 0, l = caseInStore4Delete.length; i < l; i++) {
-        if (caseInStore4Delete[i].caseId === action.payload) {
+        if (caseInStore4Delete[i].caseId === action.payload.caseId) {
           caseInStore4Delete.splice(i, 1);
           break;
         }

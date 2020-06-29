@@ -67,7 +67,11 @@ export class AddShareCaseGo implements Action {
 
 export class DeleteAShareCase implements Action {
   public readonly type = DELETE_A_SHARE_CASE;
-  constructor(public payload: string) {}
+  constructor(
+    public payload: {
+      caseId: string;
+    }
+  ) {}
 }
 
 export type Actions = NavigateToShareCase | LoadShareCase | LoadShareCaseSuccess | LoadShareCaseFailure

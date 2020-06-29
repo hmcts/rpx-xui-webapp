@@ -4,6 +4,7 @@ import { select, Store } from '@ngrx/store';
 import { initAll } from 'govuk-frontend';
 import { Observable } from 'rxjs';
 import { SharedCase } from '../../models/case-share/case-share.module';
+import {DeleteAShareCase} from '../../store';
 import * as fromCasesFeature from '../../store';
 import { LoadShareCase, LoadUserFromOrgForCase } from '../../store/actions';
 import * as fromCaseList from '../../store/reducers';
@@ -40,6 +41,10 @@ export class CaseShareComponent implements OnInit {
 
     // initialize javascript for accordion component to enable open/close button
     setTimeout(() => initAll(), 1000);
+  }
+
+  deselect($event) {
+    this.store.dispatch(new DeleteAShareCase($event));
   }
 
 }

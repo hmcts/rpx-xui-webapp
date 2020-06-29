@@ -43,7 +43,7 @@ export class CaseShareComponent implements OnInit {
     setTimeout(() => initAll(), 1000);
   }
 
-  deselect($event) {
+  public deselect($event) {
     this.store.dispatch(new DeleteAShareCase($event));
   }
 

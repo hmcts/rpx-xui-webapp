@@ -60,7 +60,8 @@
     "secureCookieEnabled": true,
     "helmetEnabled": false,
     "termsAndConditionsEnabled": false,
-    "redisEnabled": false
+    "redisEnabled": false,
+    "oidcEnabled": false
   },
   "helmet": {
     "contentSecurityPolicy": {

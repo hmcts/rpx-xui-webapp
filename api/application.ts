@@ -4,6 +4,7 @@ import * as express from 'express'
 import * as session from 'express-session'
 import * as helmet from 'helmet'
 import * as auth from './auth'
+import { router as caseShareRoutes } from './caseshare/routes'
 import { getConfigValue, showFeature } from './configuration'
 import {
     APP_INSIGHTS_KEY,
@@ -94,6 +95,8 @@ app.get('/api/configuration', (req, res) => {
 // TODO: move to proxy route as below
 app.use('/api/markups', markupRouter)
 app.use('/api/redaction', redactionRouter)
+
+app.use('/api/caseshare', caseShareRoutes)
 
 // TODO: move these to proxy routes as well
 app.use('/aggregated', routes)

@@ -23,6 +23,9 @@
     "documents": {
       "api": "http://dm-store-prod.service.core-compute-prod.internal"
     },
+    "caseShare": {
+      "api": "http://ccd-case-share-api-aat.service.core-compute-aat.internal"
+    },
     "em_anno_api": "http://em-anno-prod.service.core-compute-prod.internal",
     "idam": {
       "idamApiUrl": "https://idam-api.platform.hmcts.net",

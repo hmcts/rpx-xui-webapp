@@ -1,16 +1,16 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { CaseState, CaseType, Jurisdiction, PaginationMetadata, SearchResultView, WindowService, SearchResultViewItem } from '@hmcts/ccd-case-ui-toolkit';
+import { CaseState, CaseType, Jurisdiction, PaginationMetadata, SearchResultView, SearchResultViewItem, WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import {BehaviorSubject, combineLatest, Observable, Subscription} from 'rxjs';
+import * as converters from 'src/cases/converters/case-converter';
 import { ActionBindingModel } from 'src/cases/models/create-case-actions.model';
+import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
+import * as fromRoot from '../../../app/store';
 import * as fromCasesFeature from '../../store';
 import * as fromCaseList from '../../store/reducers';
-import { AppConfig } from './../../../app/services/ccd-config/ccd-case.config';
-import * as fromRoot from '../../../app/store';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import * as converters from 'src/cases/converters/case-converter';
 
 /**
  * Entry component wrapper for Case List
@@ -343,7 +343,9 @@ export class CaseListComponent implements OnInit, OnDestroy {
   }
 
   public shareCaseSubmit() {
-    this.store.dispatch(new fromCasesFeature.AddShareCases(converters.toShareCaseConverter(this.selectedCases)));
+    this.store.dispatch(new fromCasesFeature.AddShareCases({
+      sharedCases: converters.toShareCaseConverter(this.selectedCases)
+    }));
   }
 
   public hasResults() {

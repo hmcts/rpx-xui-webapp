@@ -3,8 +3,11 @@
   <div class="govuk-width-container">
     <main id="content" role="main" class="govuk-main-wrapper">
       <div class="govuk-grid-row">
-          <h1 *ngIf="title" class="govuk-heading-xl">{{title}}</h1>
-          <ng-content></ng-content>
+        <h1 *ngIf="title" class="govuk-heading-xl">
+          <span *ngIf="fnTitle" class="govuk-caption-xl">{{fnTitle}}</span>{{title}}</h1>
+        <ng-content>
+
+        </ng-content>
       </div>
     </main>
   </div>

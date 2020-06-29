@@ -17,6 +17,7 @@ export class ExuiPageWrapperComponent  {
 
   @Input() backLink: string;
   @Input() title: string;
+  @Input() fnTitle: string;
 
   constructor() { }
 

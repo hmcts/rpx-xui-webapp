@@ -14,6 +14,7 @@ import { AddShareCases } from '../../store/actions';
 import { SharedCase } from '../../models/case-share/case-share.module';
 import * as converts from '../../converters/case-converter';
 import { By } from '@angular/platform-browser';
+import { NavigationExtras } from '@angular/router';
 
 describe('CaseListComponent', () => {
   let component: CaseListComponent;
@@ -464,7 +465,9 @@ describe('CaseListComponent', () => {
     });
     it('Should save share cases to store', () => {
       component.retrieveSelections(selectedCases);
-      const shareCases: SharedCase[] = converts.toShareCaseConverter(component.selectedCases);
+      const shareCases = {
+        sharedCases: converts.toShareCaseConverter(component.selectedCases)
+      };
       component.shareCaseSubmit();
       expect(spyOnDispatchToStore).toHaveBeenCalledWith(new AddShareCases(shareCases));
       expect(component.checkIfButtonDisabled()).toBeFalsy();

@@ -40,6 +40,7 @@ import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler
 import { AcceptTermsService } from './services/acceptTerms/acceptTerms.service';
 import { ExuiCommonLibModule, LAUNCHDARKLYKEY } from '@hmcts/rpx-xui-common-lib';
 import { ENVIRONMENT_CONFIG, EnvironmentConfig } from 'src/models/environmentConfig.model';
+import { CaseShareService } from './services/case/share-case.service';
 
 
 export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): string {
@@ -93,6 +94,7 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
       useClass: DefaultErrorHandler
     },
     AcceptTermsService,
+    CaseShareService,
     { provide: LAUNCHDARKLYKEY, useFactory: launchDarklyClientIdFactory, deps: [ENVIRONMENT_CONFIG] },
   ],
   bootstrap: [AppComponent],

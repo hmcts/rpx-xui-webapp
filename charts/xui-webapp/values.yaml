@@ -62,6 +62,7 @@ nodejs:
     FEATURE_TERMS_AND_CONDITIONS_ENABLED: false
     FEATURE_HELMET_ENABLED: true
     FEATURE_REDIS_ENABLED: true
+    FEATURE_OIDC_ENABLED: false
 
     # Redis
     REDIS_KEY_PREFIX: 'activity:'

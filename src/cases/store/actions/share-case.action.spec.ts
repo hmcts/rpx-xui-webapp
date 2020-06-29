@@ -4,7 +4,9 @@ describe('Case Share Actions', () => {
   describe('Case Share', () => {
     describe('AddShareCases', () => {
       it('should create an action', () => {
-        const payload = [];
+        const payload = {
+          sharedCases: []
+        };
         const action = new fromCaseShare.AddShareCases(payload);
 
         expect({ ...action }).toEqual({
@@ -16,7 +18,9 @@ describe('Case Share Actions', () => {
 
     describe('DeleteAShareCase', () => {
       it('should create an action', () => {
-        const payload = '1';
+        const payload = {
+          caseId: '1'
+        };
         const action = new fromCaseShare.DeleteAShareCase(payload);
 
         expect({ ...action }).toEqual({

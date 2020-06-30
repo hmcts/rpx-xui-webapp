@@ -3,7 +3,8 @@
   "cookies": {
     "token": "__auth__",
     "userId": "__userid__",
-    "sessionId": "__sessionId__"
+    "sessionId": "__sessionId__",
+    "roles": "roles"
   },
   "logging": "debug",
   "now": false,

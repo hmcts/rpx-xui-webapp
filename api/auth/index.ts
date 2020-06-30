@@ -1,10 +1,31 @@
+import { AUTH, Strategy, xuiNode } from '@hmcts/rpx-xui-node-lib'
+import { NextFunction, Request, Response } from 'express'
 import {getConfigValue} from '../configuration'
-import {
-  COOKIES_TOKEN,
-  COOKIES_USER_ID,
-  SERVICES_IDAM_API_URL,
-} from '../configuration/references'
+import { COOKIE_ROLES } from '../configuration/references'
 import * as log4jui from '../lib/log4jui'
+import {userHasAppAccess} from './manageCasesUserRoleAuth'
+
+const logger = log4jui.getLogger('auth')
+
+const successCallback = async (strategy: Strategy, isRefresh: boolean, req: Request, res: Response, next: NextFunction) => {
+    const userDetails = req.session.passport.user
+    const roles = userDetails.userinfo.roles
+    if (!userHasAppAccess(roles)) {
+        logger.warn('User has no application access, as they do not have a Caseworker role.')
+        return await strategy.logout(req, res)
+    }
+
+    res.cookie(getConfigValue(COOKIE_ROLES), roles)
+
+    if (!isRefresh) {
+        return res.redirect('/')
+    }
+    next()
+}
+
+xuiNode.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, successCallback)
+
+/*
 import { propsExist } from '../lib/objectUtilities'
 import { asyncReturnOrError, exists } from '../lib/util'
 import { getDetails, postOauthToken } from '../services/idam'
@@ -12,7 +33,6 @@ import { userHasAppAccess } from './manageCasesUserRoleAuth'
 
 const cookieToken = getConfigValue(COOKIES_TOKEN)
 const cookieUserId = getConfigValue(COOKIES_USER_ID)
-const idamURl = getConfigValue(SERVICES_IDAM_API_URL)
 
 const logger = log4jui.getLogger('auth')
 
@@ -67,3 +87,4 @@ export async function authenticateUser(req: any, res, next) {
         res.redirect('/')
     })
 }
+*/

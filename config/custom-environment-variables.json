@@ -3,7 +3,8 @@
   "cookies": {
     "token": "COOKIE_TOKEN",
     "userId": "COOKIES_USER_ID",
-    "sessionId": "COOKIES_SESSION_ID"
+    "sessionId": "COOKIES_SESSION_ID",
+    "roles": "COOKIES_ROLES"
   },
   "logging": "LOGGING",
   "now": {

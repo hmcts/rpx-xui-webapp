@@ -72,10 +72,6 @@ health.addReformHealthCheck(app)
 app.get('/oauth2/callback', auth.authenticateUser)
 app.use('/external', openRoutes)
 
-app.get('/api/logout', (req, res) => {
-    auth.doLogout(req, res)
-})
-
 app.get('/api/addresses', authInterceptor, postCodeLookup.doLookup)
 
 app.get('/api/monitoring-tools', (req, res) => {

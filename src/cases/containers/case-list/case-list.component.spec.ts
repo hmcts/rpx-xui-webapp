@@ -1,20 +1,18 @@
-import { State } from './../../../app/store/reducers/index';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { CaseListComponent } from './case-list.component';
-import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
-import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
-import { Store } from '@ngrx/store';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { CaseFilterToggle, FindCaselistPaginationMetadata } from '../../store/actions/case-list.action';
-import { provideMockStore, MockStore } from '@ngrx/store/testing';
-import { PaginationMetadata, SearchResultViewItem, WindowService } from '@hmcts/ccd-case-ui-toolkit';
-import { of, Observable } from 'rxjs';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { AddShareCases } from '../../store/actions';
-import { SharedCase } from '../../models/case-share/case-share.module';
-import * as converts from '../../converters/case-converter';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { NavigationExtras } from '@angular/router';
+import { PaginationMetadata, SearchResultViewItem, WindowService } from '@hmcts/ccd-case-ui-toolkit';
+import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { Store } from '@ngrx/store';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { Observable, of } from 'rxjs';
+import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
+import * as converts from '../../converters/case-converter';
+import { AddShareCases } from '../../store/actions';
+import { CaseFilterToggle, FindCaselistPaginationMetadata } from '../../store/actions/case-list.action';
+import { State } from './../../../app/store/reducers/index';
+import { CaseListComponent } from './case-list.component';
 
 describe('CaseListComponent', () => {
   let component: CaseListComponent;

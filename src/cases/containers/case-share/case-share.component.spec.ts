@@ -18,8 +18,7 @@ describe('CaseShareComponent', () => {
       providers: [
         provideMockStore(),
       ]
-    })
-      .compileComponents();
+    }).compileComponents();
     store = TestBed.get(Store);
   }));
 

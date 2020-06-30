@@ -1,5 +1,6 @@
-import { UserDetails } from 'src/cases/models/user-details/user-details.module';
-import { SharedCase } from '../../models/case-share/case-share.module';
+
+import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
+import { UserDetails } from '@hmcts/rpx-xui-common-lib/lib/models/user-details.model';
 import * as ShareCasesActions from '../actions/share-case.action';
 
 export interface ShareCasesState {

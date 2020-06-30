@@ -24,7 +24,7 @@
       "api": "http://dm-store-prod.service.core-compute-prod.internal"
     },
     "caseShare": {
-      "api": "http://ccd-case-share-api-aat.service.core-compute-aat.internal"
+      "api": "http://ccd-case-share-api-prod.service.core-compute-prod.internal"
     },
     "em_anno_api": "http://em-anno-prod.service.core-compute-prod.internal",
     "idam": {

@@ -3,11 +3,9 @@ import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.mode
 
 export function toShareCaseConverter(selectedCases: SearchResultViewItem[]): SharedCase[] {
   const sharedCases: SharedCase[] = [];
-  for (let i = 0, l = selectedCases.length; i < l; i++) {
-    // const caseReference = selectedCases[i].case_fields.hasOwnProperty('solsSolicitorAppReference') ? selectedCases[i].case_fields['solsSolicitorAppReference'] : '';
-    // const casePrimaryApplicant = `${selectedCases[i].case_fields.hasOwnProperty('primaryApplicantForenames') ? selectedCases[i].case_fields['primaryApplicantForenames'] : ''} ${selectedCases[i].case_fields.hasOwnProperty('primaryApplicantForenames') ? selectedCases[i].case_fields['primaryApplicantForenames'] : ''}`;
+  for (const selectCase of selectedCases) {
     const shareCase = {
-      caseId: selectedCases[i].case_id,
+      caseId: selectCase.case_id,
       caseTitle: ''
     };
     sharedCases.push(shareCase);

@@ -3,7 +3,7 @@ import * as converts from 'src/cases/converters/case-converter';
 
 describe('case converters', () => {
   let selectedCases = [];
-  beforeEach(() =>{
+  beforeEach(() => {
     selectedCases = [{
       case_id: '1',
       case_fields: {
@@ -18,5 +18,8 @@ describe('case converters', () => {
     const expectedShareCases = [{caseId: '1', caseTitle: ''}, {caseId: '2', caseTitle: ''}];
     const shareCases: SharedCase[] = converts.toShareCaseConverter(selectedCases);
     expect(shareCases).toEqual(expectedShareCases);
+  });
+  afterEach(() => {
+    selectedCases = [];
   });
 });

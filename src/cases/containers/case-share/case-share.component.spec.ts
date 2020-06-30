@@ -11,7 +11,7 @@ describe('CaseShareComponent', () => {
 
   let store: MockStore<State>;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [ CaseShareComponent ],
@@ -20,9 +20,6 @@ describe('CaseShareComponent', () => {
       ]
     }).compileComponents();
     store = TestBed.get(Store);
-  }));
-
-  beforeEach(() => {
     fixture = TestBed.createComponent(CaseShareComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

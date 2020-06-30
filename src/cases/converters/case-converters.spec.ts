@@ -2,8 +2,9 @@ import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.mode
 import * as converts from 'src/cases/converters/case-converter';
 
 describe('case converters', () => {
-  it('should convert the share case', () => {
-    const selectedCases = [{
+  let selectedCases = [];
+  beforeEach(() =>{
+    selectedCases = [{
       case_id: '1',
       case_fields: {
       }
@@ -12,6 +13,8 @@ describe('case converters', () => {
       case_fields: {
       }
     }];
+  });
+  it('should convert the share case', () => {
     const expectedShareCases = [{caseId: '1', caseTitle: ''}, {caseId: '2', caseTitle: ''}];
     const shareCases: SharedCase[] = converts.toShareCaseConverter(selectedCases);
     expect(shareCases).toEqual(expectedShareCases);

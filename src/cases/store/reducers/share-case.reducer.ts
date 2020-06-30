@@ -22,9 +22,9 @@ export function shareCasesReducer(state: ShareCasesState = initialSharedCasesSta
   switch (action.type) {
     case ShareCasesActions.NAVIGATE_TO_SHARE_CASES:
       const navigateToShareCases = state.shareCases.slice();
-      for (let i = 0, l = action.payload.length; i < l; i++) {
-        if (!navigateToShareCases.some(x => x.caseId === action.payload[i].caseId)) {
-          navigateToShareCases.push(action.payload[i]);
+      for (const aCase of action.payload) {
+        if (!navigateToShareCases.some(hasACase => hasACase.caseId === aCase.caseId)) {
+          navigateToShareCases.push(aCase);
         }
       }
       return {
@@ -50,9 +50,9 @@ export function shareCasesReducer(state: ShareCasesState = initialSharedCasesSta
       };
     case ShareCasesActions.ADD_SHARE_CASES:
       const addShareCases = state.shareCases.slice();
-      for (let i = 0, l = action.payload.sharedCases.length; i < l; i++) {
-        if (!addShareCases.some(x => x.caseId === action.payload.sharedCases[i].caseId)) {
-          addShareCases.push(action.payload.sharedCases[i]);
+      for (const aCase of action.payload.sharedCases) {
+        if (!addShareCases.some(hasACase => hasACase.caseId === aCase.caseId)) {
+          addShareCases.push(aCase);
         }
       }
       return {
@@ -61,9 +61,9 @@ export function shareCasesReducer(state: ShareCasesState = initialSharedCasesSta
       };
     case ShareCasesActions.ADD_SHARE_CASE_GO:
       const addShareCasesGo = state.shareCases.slice();
-      for (let i = 0, l = action.payload.sharedCases.length; i < l; i++) {
-        if (!addShareCasesGo.some(x => x.caseId === action.payload.sharedCases[i].caseId)) {
-          addShareCasesGo.push(action.payload.sharedCases[i]);
+      for (const aCase of action.payload.sharedCases) {
+        if (!addShareCasesGo.some(hasACase => hasACase.caseId === aCase.caseId)) {
+          addShareCasesGo.push(aCase);
         }
       }
       return {

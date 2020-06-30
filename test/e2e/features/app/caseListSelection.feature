@@ -89,13 +89,3 @@ Feature: Case List Selection
         Then I sort case list table by column
         Then I see case list table has 2 rows selected
 
-    Scenario: verify Case list page information container "Why some cases are not selectable"
-        When I click on Case list
-        Then I am on case list page
-        When I select search criteria jurisdiction "<Jurisdiction>" case type "<CaseType>" state "Any" in case list page
-        When I click search Apply in case list page
-        Then I wait to see case results displayed
-        Then I see why Can't select a case information
-        Then I see why Can't select a case information details not displayed
-        Then I click on why Can't select a case information container
-        Then I see why Can't select a case information details is displayed

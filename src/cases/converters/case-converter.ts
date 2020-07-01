@@ -1,4 +1,4 @@
-import {SearchResultViewItem} from '@hmcts/ccd-case-ui-toolkit';
+import { SearchResultViewItem } from '@hmcts/ccd-case-ui-toolkit';
 import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
 
 export function toShareCaseConverter(selectedCases: SearchResultViewItem[]): SharedCase[] {

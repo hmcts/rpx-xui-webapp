@@ -1,9 +1,9 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { CaseShareComponent } from './case-share.component';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { State } from '../../../app/store/reducers';
-import { Store } from '@ngrx/store';
+import { CaseShareComponent } from './case-share.component';
 
 describe('CaseShareComponent', () => {
   let component: CaseShareComponent;
@@ -27,5 +27,9 @@ describe('CaseShareComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  afterEach(() => {
+    fixture.destroy();
   });
 });

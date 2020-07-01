@@ -1,11 +1,12 @@
-import { Response } from 'express';
-import { getConfigValue } from '../configuration';
-import { SERVICES_CASE_SHARE_API_URL } from '../configuration/references';
-import { EnhancedRequest } from '../lib/models';
-import * as stubAPI from './stub-api';
+import { Response } from 'express'
+import { getConfigValue } from '../configuration'
+import { SERVICES_CASE_SHARE_API_URL } from '../configuration/references'
+import { EnhancedRequest } from '../lib/models'
+import * as stubAPI from './stub-api'
 
 // TODO: use below url for actual API
-const url: string = getConfigValue(SERVICES_CASE_SHARE_API_URL);
+// @ts-ignore
+const url: string = getConfigValue(SERVICES_CASE_SHARE_API_URL)
 
 /**
  * getRoot
@@ -13,10 +14,10 @@ const url: string = getConfigValue(SERVICES_CASE_SHARE_API_URL);
  */
 export async function getRoot(req: EnhancedRequest, res: Response) {
   if (process.env.STUB) {
-    return stubAPI.getRoot(req, res);
+    return stubAPI.getRoot(req, res)
   } else {
     // TODO: call actual API if not for stub
-    return res.status(500).send('{"errorMessage": "Yet to implement}"');
+    return res.status(500).send('{"errorMessage": "Yet to implement}"')
   }
 }
 
@@ -26,10 +27,10 @@ export async function getRoot(req: EnhancedRequest, res: Response) {
  */
 export async function getDB(req: EnhancedRequest, res: Response) {
   if (process.env.STUB) {
-    return stubAPI.getDB(req, res);
+    return stubAPI.getDB(req, res)
   } else {
     // TODO: call actual API if not for stub
-    return res.status(500).send('{"errorMessage": "Yet to implement}"');
+    return res.status(500).send('{"errorMessage": "Yet to implement}"')
   }
 }
 
@@ -39,10 +40,10 @@ export async function getDB(req: EnhancedRequest, res: Response) {
  */
 export async function getOrgs(req: EnhancedRequest, res: Response) {
   if (process.env.STUB) {
-    return stubAPI.getOrgs(req, res);
+    return stubAPI.getOrgs(req, res)
   } else {
     // TODO: call actual API if not for stub
-    return res.status(500).send('{"errorMessage": "Yet to implement}"');
+    return res.status(500).send('{"errorMessage": "Yet to implement}"')
   }
 }
 
@@ -52,10 +53,10 @@ export async function getOrgs(req: EnhancedRequest, res: Response) {
  */
 export async function getUsersByOrgId(req: EnhancedRequest, res: Response) {
   if (process.env.STUB) {
-    return stubAPI.getUsersByOrgId(req, res);
+    return stubAPI.getUsersByOrgId(req, res)
   } else {
     // TODO: call actual API if not for stub
-    return res.status(500).send('{"errorMessage": "Yet to implement}"');
+    return res.status(500).send('{"errorMessage": "Yet to implement}"')
   }
 }
 
@@ -65,10 +66,10 @@ export async function getUsersByOrgId(req: EnhancedRequest, res: Response) {
  */
 export async function getUserByOrgAndUserId(req: EnhancedRequest, res: Response) {
   if (process.env.STUB) {
-    return stubAPI.getUserByOrgAndUserId(req, res);
+    return stubAPI.getUserByOrgAndUserId(req, res)
   } else {
     // TODO: call actual API if not for stub
-    return res.status(500).send('{"errorMessage": "Yet to implement}"');
+    return res.status(500).send('{"errorMessage": "Yet to implement}"')
   }
 }
 
@@ -79,10 +80,10 @@ export async function getUserByOrgAndUserId(req: EnhancedRequest, res: Response)
  */
 export async function searchUsers(req: EnhancedRequest, res: Response) {
   if (process.env.STUB) {
-    return stubAPI.searchUsers(req, res);
+    return stubAPI.searchUsers(req, res)
   } else {
     // TODO: call actual API if not for stub
-    return res.status(500).send('{"errorMessage": "Yet to implement}"');
+    return res.status(500).send('{"errorMessage": "Yet to implement}"')
   }
 }
 
@@ -92,10 +93,10 @@ export async function searchUsers(req: EnhancedRequest, res: Response) {
  */
 export async function getCases(req: EnhancedRequest, res: Response) {
   if (process.env.STUB) {
-    return stubAPI.getCases(req, res);
+    return stubAPI.getCases(req, res)
   } else {
     // TODO: call actual API if not for stub
-    return res.status(500).send('{"errorMessage": "Yet to implement}"');
+    return res.status(500).send('{"errorMessage": "Yet to implement}"')
   }
 }
 
@@ -105,9 +106,9 @@ export async function getCases(req: EnhancedRequest, res: Response) {
  */
 export async function getCaseById(req: EnhancedRequest, res: Response) {
   if (process.env.STUB) {
-    return stubAPI.getCaseById(req, res);
+    return stubAPI.getCaseById(req, res)
   } else {
     // TODO: call actual API if not for stub
-    return res.status(500).send('{"errorMessage": "Yet to implement}"');
+    return res.status(500).send('{"errorMessage": "Yet to implement}"')
   }
 }

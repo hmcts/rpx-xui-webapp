@@ -1,7 +1,7 @@
 import { NavigationExtras } from '@angular/router';
-import { UserDetails } from '@hmcts/rpx-xui-common-lib/lib/models/user-details.module';
+import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
+import { UserDetails } from '@hmcts/rpx-xui-common-lib/lib/models/user-details.model';
 import { Action } from '@ngrx/store';
-import { SharedCase } from '../../models/case-share/case-share.module';
 
 export const NAVIGATE_TO_SHARE_CASES = '[ShareCase] Navigate To Share Cases';
 export const LOAD_SHARE_CASES = '[ShareCase] Load Share Cases';
@@ -54,7 +54,7 @@ export class AddShareCases implements Action {
 }
 
 export class AddShareCaseGo implements Action {
-  readonly type = ADD_SHARE_CASE_GO;
+  public readonly type = ADD_SHARE_CASE_GO;
   constructor(
     public payload: {
       path: any[];

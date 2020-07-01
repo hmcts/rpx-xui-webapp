@@ -1,10 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { UserDetails } from '@hmcts/rpx-xui-common-lib/lib/models/user-details.module';
+import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
+import { UserDetails } from '@hmcts/rpx-xui-common-lib/lib/models/user-details.model';
 import { select, Store } from '@ngrx/store';
 import { initAll } from 'govuk-frontend';
 import { Observable } from 'rxjs';
-import { SharedCase } from '../../models/case-share/case-share.module';
-import {DeleteAShareCase} from '../../store';
 import * as fromCasesFeature from '../../store';
 import { LoadShareCase, LoadUserFromOrgForCase } from '../../store/actions';
 import * as fromCaseList from '../../store/reducers';
@@ -44,7 +43,7 @@ export class CaseShareComponent implements OnInit {
   }
 
   public deselect($event) {
-    this.store.dispatch(new DeleteAShareCase($event));
+    this.store.dispatch(new fromCasesFeature.DeleteAShareCase($event));
   }
 
 }

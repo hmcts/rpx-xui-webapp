@@ -1,20 +1,17 @@
-import { State } from './../../../app/store/reducers/index';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { CaseListComponent } from './case-list.component';
-import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
-import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
-import { Store } from '@ngrx/store';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { CaseFilterToggle, FindCaselistPaginationMetadata } from '../../store/actions/case-list.action';
-import { provideMockStore, MockStore } from '@ngrx/store/testing';
-import { PaginationMetadata, SearchResultViewItem, WindowService } from '@hmcts/ccd-case-ui-toolkit';
-import { of, Observable } from 'rxjs';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { AddShareCases } from '../../store/actions';
-import { SharedCase } from '../../models/case-share/case-share.module';
-import * as converts from '../../converters/case-converter';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { NavigationExtras } from '@angular/router';
+import { PaginationMetadata, SearchResultViewItem, WindowService } from '@hmcts/ccd-case-ui-toolkit';
+import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { Store } from '@ngrx/store';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { Observable, of } from 'rxjs';
+import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
+import { State } from '../../../app/store/reducers';
+import * as converts from '../../converters/case-converter';
+import { AddShareCases, CaseFilterToggle, FindCaselistPaginationMetadata } from '../../store/actions';
+import { CaseListComponent } from './case-list.component';
 
 describe('CaseListComponent', () => {
   let component: CaseListComponent;
@@ -240,9 +237,7 @@ describe('CaseListComponent', () => {
     it('should call findCaseListPaginationMetadata() on apply of filter.', () => {
 
       const spyOnFindCaseListPaginationMetadata = spyOn(component, 'findCaseListPaginationMetadata').and.callThrough();
-      const spyOnGetEvent = spyOn(component, 'getEvent');
 
-      // component.ngOnInit();
       component.applyFilter(event);
 
       expect(spyOnFindCaseListPaginationMetadata).toHaveBeenCalled();
@@ -453,10 +448,19 @@ describe('CaseListComponent', () => {
       component.retrieveSelections(selectedCases);
       expect(component.selectedCases.length).toEqual(2);
     });
-    xit('Should see the \'Share case\' button greyed out', () => {
+    it('Should see the \'Share case\' button greyed out', () => {
       selectedCases = [];
       component.retrieveSelections(selectedCases);
-      expect(fixture.debugElement.nativeElement.querySelector('#btn-share-button').textContent).toContain('Share case');
+      spyOnPipeToStore.and.returnValue(of({
+        sessionTimeout: {
+          idleModalDisplayTime: 1,
+            totalIdleTime: 1,
+        },
+        canShareCases: true
+      }));
+      spyOn(component, 'isCaseShareVisible').and.returnValue(true);
+      fixture.detectChanges();
+      expect(fixture.debugElement.nativeElement.querySelector('#btn-share-button').textContent).toContain('Share Case');
       expect(component.checkIfButtonDisabled()).toBeTruthy();
     });
     it('Share a case button is selectable when any case is selected', () => {
@@ -490,7 +494,7 @@ describe('CaseListComponent', () => {
         }]
       }]));
     });
-    xit('should see why are some cases unselectable', () => {
+    it('should see why are some cases unselectable', () => {
       const resultView = {
         columns: [],
         results: [
@@ -500,9 +504,17 @@ describe('CaseListComponent', () => {
         ],
         result_error: null
       };
+      spyOnPipeToStore.and.returnValue(of({
+        sessionTimeout: {
+          idleModalDisplayTime: 1,
+          totalIdleTime: 1,
+        },
+        canShareCases: true
+      }));
       component.onResultsViewHandler(resultView);
       expect(component.hasResults()).toBeTruthy();
       spyOn(component, 'hasResults').and.returnValue(true);
+      spyOn(component, 'isCaseShareVisible').and.returnValue(true);
       fixture.detectChanges();
       const infoHeader = fixture.debugElement.query(By.css('#sp-msg-unselected-case-header')).nativeElement;
       expect(infoHeader.innerHTML).toContain('Why are some cases unselectable?');
@@ -522,7 +534,7 @@ describe('CaseListComponent', () => {
       fixture.detectChanges();
       const infoHeader = fixture.debugElement.query(By.css('#sp-msg-unselected-case-header'));
       expect(infoHeader).toBeNull();
-      const infoContent = fixture.debugElement.query(By.css('#sp-msg-unselected-case-content'))
+      const infoContent = fixture.debugElement.query(By.css('#sp-msg-unselected-case-content'));
       expect(infoContent).toBeNull();
     });
   });

@@ -15,7 +15,7 @@ async function waitForElement(el) {
 
 defineSupportCode(function ({ Given, When, Then }) {
 
-  When(/^I navigate to Expert UI Url$/, async function () {
+  When('I navigate to Expert UI Url', async function () {
     await browser.driver.manage()
       .deleteAllCookies();
     await browser.get(config.config.baseUrl);
@@ -95,7 +95,7 @@ defineSupportCode(function ({ Given, When, Then }) {
   });
 
 
-  Then(/^I should be redirected to EUI dashboard page$/, async function () {
+  Then('I should be redirected to EUI dashboard page', async function () {
 
     const world = this;
     await BrowserWaits.retryForPageLoad($("exui-header"), function(message){
@@ -112,6 +112,14 @@ defineSupportCode(function ({ Given, When, Then }) {
 
   Given('I am logged into Expert UI with valid user details', async function () {
     await loginPage.givenIAmLoggedIn(config.config.params.username, config.config.params.password);
+    const world = this;
+    await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
+      world.attach("Login success page load load attempt : " + message)
+    });
+  });
+
+  Given('I am logged into Expert UI with non professional user details', async function () {
+    await loginPage.givenIAmLoggedIn(this.config.caseworkerUser, this.config.caseworkerPassword);
     const world = this;
     await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
       world.attach("Login success page load load attempt : " + message)

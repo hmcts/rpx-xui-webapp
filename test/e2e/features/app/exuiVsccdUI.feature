@@ -1,4 +1,4 @@
-@test
+@fullfunctional
 Feature: Application feature variations with professional users Bs Non professional users (EXUI Vx CCD UI)
 
     Scenario: Share a case feature available to EXUI users

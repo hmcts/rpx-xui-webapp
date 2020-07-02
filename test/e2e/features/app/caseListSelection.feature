@@ -19,7 +19,7 @@ Feature: Case List Selection
         Then I see case list table each case row has checkbox column 
 
     @all
-    Scenario: Verify Case list selection and Unselection persistence on navigation away from caselist 
+    Scenario: Verify Case list selection and Unselection persistence on navigation to case view 
         When I click on Case list
         Then I am on case list page
         When I select search criteria jurisdiction "Family Divorce" case type "Divorce case - v115.00" state "Any" in case list page
@@ -30,9 +30,8 @@ Feature: Case List Selection
         When I select case at row 1 in case list page
         When I select case at row 2 in case list page
         When I select case at row 3 in case list page
-        When I unselect case at row 3 in case list page
-        When I click on create case button
-        Then Create case page should be displayed
+        When I unselect case at row 1 in case list page
+        When I click case at row 2 and navigate to case view page
         When I click on Case list
         Then I am on case list page
         When I select search criteria jurisdiction "Family Divorce" case type "Divorce case - v115.00" state "Any" in case list page
@@ -40,6 +39,7 @@ Feature: Case List Selection
         Then I wait to see case results displayed
         Then I see case list table has case at row 2 selected
         Then I see case list table has case at row 3 selected
+
 
     Scenario: Verify Case list selection and Unslection persistence over filter changes
         When I click on Case list
@@ -54,8 +54,8 @@ Feature: Case List Selection
         When I select search criteria jurisdiction "Family Divorce" case type "Financial Remedy Consented" state "Any" in case list page
         When I click search Apply in case list page
         Then I wait to see case results displayed
-        When I select case at row 1 in case list page
-        When I select case at row 2 in case list page
+        When I select case at row 3 in case list page
+        When I select case at row 4 in case list page
         When I select search criteria jurisdiction "Family Divorce" case type "Divorce case - v115.00" state "Any" in case list page
         When I click search Apply in case list page
         Then I wait to see case results displayed

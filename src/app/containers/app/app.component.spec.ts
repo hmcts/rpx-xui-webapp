@@ -55,4 +55,18 @@ describe('AppComponent', () => {
         appComponent.staySignedInHandler();
         expect(spyModal).toHaveBeenCalledWith(undefined, false);
     });
+
+    it('setModal', () => {
+        appComponent.setModal(100, false);
+        expect(appComponent.modalConfig).toEqual({
+            countdown: 100,
+            isVisible: false
+        });
+    });
+
+    it('idleServiceEventHandler keepalive', () => {
+        const spyModal = spyOn(appComponent, 'setModal');
+        appComponent.idleServiceEventHandler({type: 'keepalive'});
+        expect(spyModal).not.toHaveBeenCalled();
+    });
 });

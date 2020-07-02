@@ -1,4 +1,5 @@
 import { AppComponent } from './app.component';
+
 describe('AppComponent', () => {
     let appComponent: AppComponent;
     let store: any;
@@ -8,7 +9,7 @@ describe('AppComponent', () => {
     beforeEach(() => {
         store = jasmine.createSpyObj('store', ['pipe', 'dispatch']);
         googleAnalyticsService = jasmine.createSpyObj('GoogleAnalyticsService', ['init']);
-        service = jasmine.createSpyObj('ManageSessionServices', ['appStateChanges']);
+        service = jasmine.createSpyObj('ManageSessionServices', ['appStateChanges', 'init']);
         appComponent = new AppComponent(store, googleAnalyticsService, service);
     });
 
@@ -37,5 +38,21 @@ describe('AppComponent', () => {
         const spyModal = spyOn(appComponent, 'setModal');
         appComponent.idleServiceEventHandler({type: 'modal', countdown: 100, isVisible: true});
         expect(spyModal).toHaveBeenCalledWith(100, true);
+    });
+
+    it('initIdleService', () => {
+        appComponent.initIdleService(10, 100);
+        expect(service.init).toHaveBeenCalledWith({
+            timeout: 10 * 60,
+            idleMilliseconds: (100 * 60) * 1000,
+            idleServiceName: 'idleSession',
+            keepAliveInSeconds: 5 * 60 * 60,
+          });
+    });
+
+    it('staySignedInHandler', () => {
+        const spyModal = spyOn(appComponent, 'setModal');
+        appComponent.staySignedInHandler();
+        expect(spyModal).toHaveBeenCalledWith(undefined, false);
     });
 });

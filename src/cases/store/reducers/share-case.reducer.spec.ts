@@ -1,3 +1,4 @@
+import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
 import * as fromActions from '../actions/share-case.action';
 import * as fromReducer from './share-case.reducer';
 
@@ -62,6 +63,52 @@ describe('Share case reducer', () => {
       const action = new fromActions.AddShareCases(selectedCases);
       const state = fromReducer.shareCasesReducer(initialState, action);
       expect(fromReducer.getShareCases(state).length).toEqual(2);
+    });
+
+    it('should sort users', () => {
+      const sharedCases = [{
+        caseId: '9417373995765131',
+        caseTitle: 'Neha Vs Sanjet',
+        sharedWith: [
+          {
+            idamId: 'u444444',
+            firstName: 'Shaun',
+            lastName: 'Coldwell',
+            email: 'shaun.coldwell@woodford.com'
+          },
+          {
+            idamId: 'u333333',
+            firstName: 'James',
+            lastName: 'Priest',
+            email: 'james.priest@woodford.com'
+          }
+        ]
+      },
+        {
+          caseId: '9417373995765133',
+          caseTitle: 'Sam Green Vs Williams Lee',
+          sharedWith: [
+            {
+              idamId: 'u666666',
+              firstName: 'Kate',
+              lastName: 'Grant',
+              email: 'kate.grant@lambbrooks.com'
+            },
+            {
+              idamId: 'u888888',
+              firstName: 'Joel',
+              lastName: 'Molloy',
+              email: 'joel.molloy@lambbrooks.com'
+            }
+          ]
+        }];
+      const sortedCases: SharedCase[] = fromReducer.sortedUserInCases(sharedCases);
+      expect(sortedCases[0].caseId).toEqual('9417373995765131');
+      expect(sortedCases[0].sharedWith[0].firstName).toEqual('James');
+      expect(sortedCases[0].sharedWith[1].firstName).toEqual('Shaun');
+      expect(sortedCases[1].caseId).toEqual('9417373995765133');
+      expect(sortedCases[1].sharedWith[0].firstName).toEqual('Joel');
+      expect(sortedCases[1].sharedWith[1].firstName).toEqual('Kate');
     });
   });
 });

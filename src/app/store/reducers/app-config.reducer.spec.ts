@@ -1,5 +1,5 @@
-import * as appConfigReducer from './app-config.reducer';
 import * as fromActions from '../actions/';
+import * as appConfigReducer from './app-config.reducer';
 
 describe('App Config Reducer', () => {
     it('should return the default state', () => {
@@ -30,6 +30,46 @@ describe('App Config Reducer', () => {
                 isLoaded: true,
                 hasUserAcceptedTC: true
               }
+        };
+        expect(state).toEqual(expectedState);
+    });
+
+    it('LoadUserDetailsSuccess', () => {
+        const action = new fromActions.LoadUserDetailsSuccess({
+                                                                sessionTimeout: {
+                                                                                idleModalDisplayTime: 100,
+                                                                                totalIdleTime: 100,
+                                                                            }
+                                                                        });
+        const state = appConfigReducer.reducer(appConfigReducer.initialState, action);
+        const expectedState = {
+            ...appConfigReducer.initialState,
+            userDetails: {
+                sessionTimeout: {
+                    idleModalDisplayTime: 100,
+                    totalIdleTime: 100,
+                }
+            }
+        };
+        expect(state).toEqual(expectedState);
+    });
+
+    it('StartIdleSessionTimeout', () => {
+        const action = new fromActions.StartIdleSessionTimeout();
+        const state = appConfigReducer.reducer(appConfigReducer.initialState, action);
+        const expectedState = {
+            ...appConfigReducer.initialState,
+            useIdleSessionTimeout: true
+        };
+        expect(state).toEqual(expectedState);
+    });
+
+    it('StopIdleSessionTimeout', () => {
+        const action = new fromActions.StopIdleSessionTimeout();
+        const state = appConfigReducer.reducer(appConfigReducer.initialState, action);
+        const expectedState = {
+            ...appConfigReducer.initialState,
+            useIdleSessionTimeout: false
         };
         expect(state).toEqual(expectedState);
     });

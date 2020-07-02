@@ -24,7 +24,7 @@ const localConfig = [
 
         browserName: 'chrome',
         acceptInsecureCerts: true,
-        chromeOptions: { args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote '] },
+        chromeOptions: { args: ['--headless', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote '] },
         proxy: {
             proxyType: 'manual',
             httpProxy: 'proxyout.reform.hmcts.net:8080',
@@ -76,7 +76,7 @@ const config = {
         strict: true,
         // format: ['node_modules/cucumber-pretty'],
         format: ['node_modules/cucumber-pretty', 'json:reports/tests/json/results.json'],
-        tags: ['@all','not @ignore'],
+        tags: ['@fullfunctional'],
         require: [
             '../support/timeout.js',
             '../support/hooks.js',
@@ -92,7 +92,7 @@ const config = {
             options: {
                 automaticallyGenerateReport: true,
                 removeExistingJsonReportFile: true,
-                reportName: 'XUI Manage Cases Functional Tests',
+                reportName: 'XUI Manage Cases Full Functional Tests',
                 // openReportInBrowser: true,
                 jsonDir: 'reports/tests/functional',
                 reportPath: 'reports/tests/functional'

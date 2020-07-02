@@ -2,6 +2,7 @@
 var CaseListPage = require("../pageObjects/CaseListPage");
 
 var { defineSupportCode } = require('cucumber');
+const { browser } = require("protractor");
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
     var caseListPage = new CaseListPage();
@@ -102,7 +103,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     When('I sort case list table by column at position {int}', async function (colPos) {
-        await caseListPage.sortTableByColAt(colPos - 1);
+        await caseListPage.sortTableByColAt(colPos);
+    });
+
+    When('I click case at row {int} and navigate to case view page', async function (rowNum) {
+        await caseListPage.clickCaseLinkAtRow(rowNum);
     });
 
 

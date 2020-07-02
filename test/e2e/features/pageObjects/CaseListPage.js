@@ -22,6 +22,8 @@ class CaseListPage{
 
         //case list pagination navigation
         this.paginationInfotext = $(".pagination-top span");
+
+        this.paginationControlsContainer = $(".ngx-pagination");
         this.previousPageLink = $(".ngx-pagination .pagination-previous a");
         this.nextPageLink = $(".ngx-pagination .pagination-next a");
 
@@ -32,6 +34,9 @@ class CaseListPage{
         this.caseSelectionCheckboxes = $$("td .govuk-checkboxes__input");
         this.shareCaseButton = $("#btn-share-button");
         this.resetCaseSelectionLink = $("a.search-result-reset-link");
+
+        //ccd-case-viewer
+        this.ccdCaseViewer = $("ccd-case-viewer");
     }
 
     async amOnPage(){
@@ -148,7 +153,7 @@ class CaseListPage{
             let paginationInfoCurrent = await this.paginationInfotext.getText();
             return paginationInfobefore === paginationInfoCurrent; 
         });
-        await browser.sleep(3000);
+        await BrowserWaits.waitForElement(this.paginationControlsContainer, undefined, "Data load taking too long on pagination");
     }
 
     async clickPaginationPreviousPage() {
@@ -162,8 +167,14 @@ class CaseListPage{
             let paginationInfoCurrent = await this.paginationInfotext.getText();
             return paginationInfobefore === paginationInfoCurrent;
         });
-        await browser.sleep(3000);
+        await BrowserWaits.waitForElement(this.paginationControlsContainer,undefined,"Data load taking too long on pagination");
 
+    }
+
+    async clickCaseLinkAtRow(rowNum){
+        let caseRow = await this.caseListRows.get(rowNum - 1);
+        await caseRow.$(".search-result-column-cell a").click();
+        await BrowserWaits.waitForElement(this.ccdCaseViewer , undefined, "Case view page is not displayed"); 
     }
 
     async sortTableByColAt(colNum){

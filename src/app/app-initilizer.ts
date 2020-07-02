@@ -1,5 +1,5 @@
 import {select, Store} from '@ngrx/store';
-import {take} from 'rxjs/operators';
+import {takeWhile} from 'rxjs/operators';
 import * as fromApp from './store';
 
 /**
@@ -12,10 +12,12 @@ export function initApplication(store: Store<fromApp.State>): VoidFunction {
     store.dispatch(new fromApp.StartAppInitilizer());
     store.dispatch(new fromApp.LoadConfig());
     store.dispatch(new fromApp.LoadFeatureToggleConfig());
+    let take = true;
     store.pipe(
-      select((state: any) => state.appConfig), take(2)).subscribe(appConfig => {
+      select((state: any) => state.appConfig), takeWhile(x => take)).subscribe(appConfig => {
       if (appConfig.config.features && Object.keys(appConfig.config.features).length) {
         store.dispatch(new fromApp.FinishAppInitilizer());
+        take = false;
         resolve(true);
       }
     });

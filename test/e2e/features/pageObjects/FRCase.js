@@ -6,11 +6,11 @@ class FRCase {
         this.caseManager = new CaseManager();
     }
 
-    async createCase(){
+    async createCase(isAccessibilityTest){
         var caseData = {
             "Divorce Case Number": "BV18D00152"
         };
-        await this.caseManager.createCase (caseData);
+        await this.caseManager.createCase(caseData, isAccessibilityTest);
     }
 }
 

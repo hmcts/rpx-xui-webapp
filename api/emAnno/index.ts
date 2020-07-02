@@ -7,10 +7,12 @@ import { Annotation, Annotations } from './models'
 
 const url: string = getConfigValue(SERVICES_EM_ANNO_API_URL)
 
+//TODO: remove this entire folder in favour of proxy
+
 /**
  * getAnnotations
  */
-export async function getAnnotations(req: EnhancedRequest, res: express.Response) {
+export async function getAnnotations(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
 
   const annotationsPath: string = url + req.originalUrl.replace('/em-anno/', '/api/')
 
@@ -18,17 +20,14 @@ export async function getAnnotations(req: EnhancedRequest, res: express.Response
     const {status, data}: {status: number, data: Annotations} = await handleGet(annotationsPath, req)
     res.status(status).send(data)
   } catch (error) {
-    res.status(error.status).send({
-      errorMessage: error.data,
-      errorStatusText: error.statusText,
-    })
+    next(error)
   }
 }
 
 /**
  * postAnnotations
  */
-export async function postAnnotations(req: EnhancedRequest, res: express.Response) {
+export async function postAnnotations(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
 
   const annotationsPath: string = url + req.originalUrl.replace('/em-anno/', '/api/')
   const body: Annotation = req.body
@@ -37,17 +36,14 @@ export async function postAnnotations(req: EnhancedRequest, res: express.Respons
     const {status, data}: {status: number, data: Annotation} = await handlePost(annotationsPath, body, req)
     res.status(status).send(data)
   } catch (error) {
-    res.status(error.status).send({
-      errorMessage: error.data,
-      errorStatusText: error.statusText,
-    })
+    next(error)
   }
 }
 
 /**
  * putAnnotations
  */
-export async function putAnnotations(req: EnhancedRequest, res: express.Response) {
+export async function putAnnotations(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
 
   const annotationsPath: string = url + req.originalUrl.replace('/em-anno/', '/api/')
   const body: Annotation = req.body
@@ -56,17 +52,14 @@ export async function putAnnotations(req: EnhancedRequest, res: express.Response
     const {status, data}: {status: number, data: Annotation}  = await handlePut(annotationsPath, body, req)
     res.status(status).send(data)
   } catch (error) {
-    res.status(error.status).send({
-      errorMessage: error.data,
-      errorStatusText: error.statusText,
-    })
+    next(error)
   }
 }
 
 /**
  * deleteAnnotations
  */
-export async function deleteAnnotations(req: EnhancedRequest, res: express.Response) {
+export async function deleteAnnotations(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
 
   const annotationsPath: string = url + req.originalUrl.replace('/em-anno/', '/api/')
 
@@ -74,9 +67,6 @@ export async function deleteAnnotations(req: EnhancedRequest, res: express.Respo
     const {status, data}: {status: number, data: Annotation} = await handleDelete(annotationsPath, req)
     res.status(status).send(data)
   } catch (error) {
-    res.status(error.status).send({
-      errorMessage: error.data,
-      errorStatusText: error.statusText,
-    })
+    next(error)
   }
 }

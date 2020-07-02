@@ -1,6 +1,7 @@
 
 import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
 import { UserDetails } from '@hmcts/rpx-xui-common-lib/lib/models/user-details.model';
+import {REMOVE_USER_FROM_CASE} from '../actions/share-case.action';
 import * as ShareCasesActions from '../actions/share-case.action';
 
 export interface ShareCasesState {
@@ -86,6 +87,16 @@ export function shareCasesReducer(state: ShareCasesState = initialSharedCasesSta
       return {
         ...state,
         users: action.payload
+      };
+    case ShareCasesActions.REMOVE_USER_FROM_CASE:
+        action.payload.sharedCase.pendingUnshares.push(action.payload.user);
+        return {
+        ...state
+      };
+    case ShareCasesActions.CANCEL_USER_REMOVE_FROM_CASE:
+       action.payload.sharedCase.pendingUnshares.splice(action.payload.sharedCase.pendingUnshares.findIndex(item => item.email === action.payload.user.email), 1)
+       return {
+        ...state
       };
     default:
       return initialSharedCasesState;

@@ -53,4 +53,24 @@ describe('App Config Reducer', () => {
         };
         expect(state).toEqual(expectedState);
     });
+
+    it('StartIdleSessionTimeout', () => {
+        const action = new fromActions.StartIdleSessionTimeout();
+        const state = appConfigReducer.reducer(appConfigReducer.initialState, action);
+        const expectedState = {
+            ...appConfigReducer.initialState,
+            useIdleSessionTimeout: true
+        };
+        expect(state).toEqual(expectedState);
+    });
+
+    it('StopIdleSessionTimeout', () => {
+        const action = new fromActions.StopIdleSessionTimeout();
+        const state = appConfigReducer.reducer(appConfigReducer.initialState, action);
+        const expectedState = {
+            ...appConfigReducer.initialState,
+            useIdleSessionTimeout: false
+        };
+        expect(state).toEqual(expectedState);
+    });
 });

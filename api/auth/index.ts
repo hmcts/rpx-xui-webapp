@@ -59,7 +59,7 @@ export async function authenticateUser(req: any, res, next) {
             req.session.user = userDetails
             res.cookie(cookieUserId, userDetails.id)
             res.cookie(cookieToken, data.access_token)
-            res.cookie('roles', userDetails.roles)
+            res.cookie('roles', userDetails.roles.join(','))
         }
     }
     logger.info('Auth finished, redirecting')

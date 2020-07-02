@@ -39,6 +39,11 @@
     "secure": false,
     "logLevel": "debug"
   },
+  "/payments/*": {
+    "target": "http://localhost:3001",
+    "secure": false,
+    "logLevel": "debug"
+  },
   "/data/*": {
     "target": "http://localhost:3001",
     "secure": false,

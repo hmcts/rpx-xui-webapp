@@ -27,14 +27,13 @@ import { CasesCreateComponent } from './case-create.component';
 import { reducers } from 'src/app/store';
 import * as fromCases from '../../store/reducers';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { EffectsModule } from '@ngrx/effects';
 class MockSortService {
   features = {};
   getFeatureToggle() { }
   getEditorConfiguration() { }
 }
 
-describe('CaseCreateComponent', () => {
+describe('CaseCaseComponent', () => {
   let component: CasesCreateComponent;
   let fixture: ComponentFixture<CasesCreateComponent>;
 
@@ -45,7 +44,6 @@ describe('CaseCreateComponent', () => {
         CaseUIToolkitModule,
         HttpClientTestingModule,
         StoreModule.forRoot({...reducers, cases: combineReducers(fromCases.reducers)}),
-        EffectsModule.forRoot([]),
         SharedModule,
         SearchFiltersModule,
       ],

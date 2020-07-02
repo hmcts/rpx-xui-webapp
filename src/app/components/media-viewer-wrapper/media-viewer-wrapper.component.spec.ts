@@ -5,8 +5,6 @@ import { MediaViewerModule } from '@hmcts/media-viewer';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/window';
 import { AbstractAppConfig } from '@hmcts/ccd-case-ui-toolkit/dist/app.config';
 import createSpyObj = jasmine.createSpyObj;
-import { StoreModule } from '@ngrx/store';
-import { EffectsModule } from '@ngrx/effects';
 
 const GATEWAY_DOCUMENT_URL = 'http://localhost:1234/documents';
 const REMOTE_DOCUMENT_URL = 'https://www.example.com/binary';
@@ -30,9 +28,7 @@ describe('MediaViewerWrapperComponent', () => {
         windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage', 'removeLocalStorage']);
         TestBed.configureTestingModule({
             imports: [
-                MediaViewerModule,
-                StoreModule.forRoot({}),
-                EffectsModule.forRoot([])
+                MediaViewerModule
             ],
             declarations: [
                 MediaViewerWrapperComponent,

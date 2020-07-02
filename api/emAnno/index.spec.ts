@@ -35,14 +35,14 @@ describe('emAnno', () => {
 
     describe('getAnnotations', () => {
         beforeEach(() => {
-            spy = sandbox.stub(emAnnoService, 'handleGet').returns({status: 200, data: {}})
+            spy = sandbox.stub(emAnnoService, 'handleGet').returns('{}')
         })
         it('should call getAnnotations and return the json response', async () => {
             const annotationsPath = `${service}${reqQuery.originalUrl}`
             await getAnnotations(req, res, next)
             expect(emAnnoService.handleGet).to.have.been.calledWith(annotationsPath)
             expect(res.status).to.have.been.calledWith(200)
-            expect(res.send).to.have.been.calledWith({})
+            expect(res.send).to.have.been.calledWith('{}')
         })
 
         it('should return the error', async () => {
@@ -65,14 +65,14 @@ describe('emAnno', () => {
 
     describe('postAnnotations', () => {
         beforeEach(() => {
-            spy = sandbox.stub(emAnnoService, 'handlePost').returns({status: 200, data: {}})
+            spy = sandbox.stub(emAnnoService, 'handlePost').returns('{}')
         })
         it('should call postAnnotations and return the json response', async () => {
             const annotationsPath = `${service}${reqQuery.originalUrl}`
             await postAnnotations(req, res, next)
             expect(emAnnoService.handlePost).to.have.been.calledWith(annotationsPath, req.body)
             expect(res.status).to.have.been.calledWith(200)
-            expect(res.send).to.have.been.calledWith({})
+            expect(res.send).to.have.been.calledWith('{}')
         })
 
         it('should return the error', async () => {
@@ -95,14 +95,14 @@ describe('emAnno', () => {
 
     describe('putAnnotations', () => {
         beforeEach(() => {
-            spy = sandbox.stub(emAnnoService, 'handlePut').returns({status: 200, data: {}})
+            spy = sandbox.stub(emAnnoService, 'handlePut').returns('{}')
         })
         it('should call putAnnotations and return the json response', async () => {
             const annotationsPath = `${service}${reqQuery.originalUrl}`
             await putAnnotations(req, res, next)
             expect(emAnnoService.handlePut).to.have.been.calledWith(annotationsPath, req.body)
             expect(res.status).to.have.been.calledWith(200)
-            expect(res.send).to.have.been.calledWith({})
+            expect(res.send).to.have.been.calledWith('{}')
         })
 
         it('should return the error', async () => {
@@ -125,14 +125,14 @@ describe('emAnno', () => {
 
     describe('deleteAnnotations', () => {
         beforeEach(() => {
-            spy = sandbox.stub(emAnnoService, 'handleDelete').returns({status: 200, data: {}})
+            spy = sandbox.stub(emAnnoService, 'handleDelete').returns('{}')
         })
         it('should call deleteAnnotations and return the json response', async () => {
             const annotationsPath = `${service}${reqQuery.originalUrl}`
             await deleteAnnotations(req, res, next)
             expect(emAnnoService.handleDelete).to.have.been.calledWith(annotationsPath)
             expect(res.status).to.have.been.calledWith(200)
-            expect(res.send).to.have.been.calledWith({})
+            expect(res.send).to.have.been.calledWith('{}')
         })
 
         it('should return the error', async () => {

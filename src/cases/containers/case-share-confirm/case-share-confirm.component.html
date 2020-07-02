@@ -1,0 +1,10 @@
+<exui-page-wrapper
+  [backLink]="'cases'"
+  [fnTitle]="'Share a case'"
+  [title]="'Check and confirm your cases'">
+  <xuilib-share-case-confirm
+    [cases] = "shareCases$ | async"
+    [users]="orgUsers$ | async"
+    (unselect)="deselect($event)">
+  </xuilib-share-case-confirm>
+</exui-page-wrapper>

@@ -17,6 +17,7 @@ export const COOKIES_TOKEN = 'cookies.token'
 export const COOKIES_USER_ID = 'cookies.userId'
 export const COOKIES_SESSION_ID = 'cookies.sessionId'
 
+export const STUB = 'stub'
 export const LOGGING = 'logging'
 export const MAX_LOG_LINE = 'maxLogLine'
 export const HEALTH = 'health'

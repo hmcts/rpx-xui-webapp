@@ -1,3 +1,4 @@
+import { of } from 'rxjs';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
@@ -68,5 +69,13 @@ describe('AppComponent', () => {
         const spyModal = spyOn(appComponent, 'setModal');
         appComponent.idleServiceEventHandler({type: 'keepalive'});
         expect(spyModal).not.toHaveBeenCalled();
+    });
+
+    it('addIdleServiceListener', () => {
+        const spy = spyOn(appComponent, 'idleServiceEventHandler');
+        service.appStateChanges.and.returnValue(of({}));
+        appComponent.addIdleServiceListener();
+        expect(service.appStateChanges).toHaveBeenCalled();
+        expect(spy).toHaveBeenCalledWith({});
     });
 });

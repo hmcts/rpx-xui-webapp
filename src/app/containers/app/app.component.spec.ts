@@ -21,4 +21,21 @@ describe('AppComponent', () => {
         appComponent.signOutHandler();
         expect(store.dispatch).toHaveBeenCalledTimes(2);
     });
+
+    it('idleServiceEventHandler throw Error for Invalidtype', () => {
+        expect(() => appComponent.idleServiceEventHandler({type: 'something'})).toThrow(new Error('Invalid Dispatch session'));
+    });
+
+    it('idleServiceEventHandler signout', () => {
+        const spyModal = spyOn(appComponent, 'setModal');
+        appComponent.idleServiceEventHandler({type: 'signout'});
+        expect(spyModal).toHaveBeenCalledWith(undefined, false);
+        expect(store.dispatch).toHaveBeenCalledTimes(2);
+    });
+
+    it('idleServiceEventHandler modal', () => {
+        const spyModal = spyOn(appComponent, 'setModal');
+        appComponent.idleServiceEventHandler({type: 'modal', countdown: 100, isVisible: true});
+        expect(spyModal).toHaveBeenCalledWith(100, true);
+    });
 });

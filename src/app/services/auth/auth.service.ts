@@ -89,12 +89,21 @@ export class AuthService {
   logOutAndRedirect() {
 
     console.log('logOutAndRedirect');
-    const { hostname, port } = window.location;
+    const { hostname, port } = this.getWindowLocation();
     const portNumber = port ? `:${port}` : '';
 
     const baseUrl = `http://${hostname}${portNumber}`;
 
     const idleSignOutUrl = `${baseUrl}/idle-sign-out`;
-    window.location.href = `api/logout?redirect=${idleSignOutUrl}`;
+    const href = `api/logout?redirect=${idleSignOutUrl}`;
+    this.setWindowLocationHref(href);
+  }
+
+  public getWindowLocation() {
+    return window.location;
+  }
+
+  public setWindowLocationHref(href: string) {
+    window.location.href = href;
   }
 }

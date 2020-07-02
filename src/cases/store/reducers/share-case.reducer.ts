@@ -37,9 +37,10 @@ export function shareCasesReducer(state: ShareCasesState = initialSharedCasesSta
         loading: true
       };
     case ShareCasesActions.LOAD_SHARE_CASES_SUCCESS:
+      const cases: SharedCase[] = sortedUserInCases(action.payload);
       return {
         ...state,
-        shareCases: action.payload,
+        shareCases: cases,
         loading: false
       };
     case ShareCasesActions.LOAD_SHARE_CASES_FAILURE:
@@ -90,6 +91,23 @@ export function shareCasesReducer(state: ShareCasesState = initialSharedCasesSta
     default:
       return initialSharedCasesState;
   }
+}
+
+export function sortedUserInCases(pendingSortedCases: SharedCase[]): SharedCase[] {
+  const cases: SharedCase[] = [];
+  for (const aCase of pendingSortedCases) {
+    if (aCase.sharedWith) {
+      const sortedUsers: UserDetails[] = aCase.sharedWith.slice().sort((user1, user2) => {
+        return user1.firstName > user2.firstName ? 1 : (user2.firstName > user1.firstName ? -1 : 0);
+      });
+      const caseWithSortedUser = {
+        ...aCase,
+        sharedWith: sortedUsers
+      };
+      cases.push(caseWithSortedUser);
+    }
+  }
+  return cases;
 }
 
 export const getShareCases = (state: ShareCasesState) => state.shareCases;

@@ -5,8 +5,6 @@ locals {
     shared_vault_name = "${var.shared_product_name}-${local.local_env}"
 }
 
-<<<<<<< HEAD
-=======
 module "app" {
     source = "git@github.com:hmcts/cnp-module-webapp?ref=master"
     product = "${local.app_full_name}"
@@ -99,7 +97,6 @@ module "app" {
 }
 
 
->>>>>>> master
 data "azurerm_key_vault" "key_vault" {
     name = "${local.shared_vault_name}"
     resource_group_name = "${local.shared_vault_name}"

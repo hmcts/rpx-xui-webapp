@@ -1,9 +1,10 @@
 import { Response } from 'express'
 import { getConfigValue } from '../configuration'
-import { SERVICES_CASE_SHARE_API_URL } from '../configuration/references'
+import { SERVICES_CASE_SHARE_API_URL, STUB } from '../configuration/references'
 import { EnhancedRequest } from '../lib/models'
 import * as stubAPI from './stub-api'
 
+const stub: string = getConfigValue(STUB)
 // TODO: use below url for actual API
 // @ts-ignore
 const url: string = getConfigValue(SERVICES_CASE_SHARE_API_URL)
@@ -13,7 +14,7 @@ const url: string = getConfigValue(SERVICES_CASE_SHARE_API_URL)
  * example: /api/caseshare/
  */
 export async function getRoot(req: EnhancedRequest, res: Response) {
-  if (process.env.STUB) {
+  if (stub) {
     return stubAPI.getRoot(req, res)
   } else {
     // TODO: call actual API if not for stub
@@ -26,7 +27,7 @@ export async function getRoot(req: EnhancedRequest, res: Response) {
  * example: /api/caseshare/db
  */
 export async function getDB(req: EnhancedRequest, res: Response) {
-  if (process.env.STUB) {
+  if (stub) {
     return stubAPI.getDB(req, res)
   } else {
     // TODO: call actual API if not for stub
@@ -39,7 +40,7 @@ export async function getDB(req: EnhancedRequest, res: Response) {
  * example: /api/caseshare/orgs
  */
 export async function getOrgs(req: EnhancedRequest, res: Response) {
-  if (process.env.STUB) {
+  if (stub) {
     return stubAPI.getOrgs(req, res)
   } else {
     // TODO: call actual API if not for stub
@@ -52,7 +53,7 @@ export async function getOrgs(req: EnhancedRequest, res: Response) {
  * example: /api/caseshare/orgs/o111111/users
  */
 export async function getUsersByOrgId(req: EnhancedRequest, res: Response) {
-  if (process.env.STUB) {
+  if (stub) {
     return stubAPI.getUsersByOrgId(req, res)
   } else {
     // TODO: call actual API if not for stub
@@ -65,7 +66,7 @@ export async function getUsersByOrgId(req: EnhancedRequest, res: Response) {
  * example: /api/caseshare/orgs/o111111/users/u111111
  */
 export async function getUserByOrgAndUserId(req: EnhancedRequest, res: Response) {
-  if (process.env.STUB) {
+  if (stub) {
     return stubAPI.getUserByOrgAndUserId(req, res)
   } else {
     // TODO: call actual API if not for stub
@@ -79,7 +80,7 @@ export async function getUserByOrgAndUserId(req: EnhancedRequest, res: Response)
  * example 2: /api/caseshare/orgs/o111111?q=j
  */
 export async function searchUsers(req: EnhancedRequest, res: Response) {
-  if (process.env.STUB) {
+  if (stub) {
     return stubAPI.searchUsers(req, res)
   } else {
     // TODO: call actual API if not for stub
@@ -92,7 +93,7 @@ export async function searchUsers(req: EnhancedRequest, res: Response) {
  * example: /api/caseshare/cases
  */
 export async function getCases(req: EnhancedRequest, res: Response) {
-  if (process.env.STUB) {
+  if (stub) {
     return stubAPI.getCases(req, res)
   } else {
     // TODO: call actual API if not for stub
@@ -105,7 +106,7 @@ export async function getCases(req: EnhancedRequest, res: Response) {
  * example: /api/caseshare/cases/c111111
  */
 export async function getCaseById(req: EnhancedRequest, res: Response) {
-  if (process.env.STUB) {
+  if (stub) {
     return stubAPI.getCaseById(req, res)
   } else {
     // TODO: call actual API if not for stub

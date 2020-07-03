@@ -12,6 +12,8 @@ export const ADD_SHARE_CASE_GO = '[Router] Add Share Case Go';
 export const DELETE_A_SHARE_CASE = '[ShareCase] Delete A Share Case';
 export const LOAD_USERS_FROM_ORG_FOR_CASE = '[LoadUsers] From ORG For A Case';
 export const LOAD_USERS_FROM_ORG_FOR_CASE_SUCCESS = '[LoadUsers] From ORG For A Case Success';
+export const REMOVE_USER_FROM_CASE = '[RemoveUser] Remove User from a case';
+export const CANCEL_USER_REMOVE_FROM_CASE = '[Cancel] Removing User from a case';
 
 export class LoadUserFromOrgForCase implements Action {
   public readonly type = LOAD_USERS_FROM_ORG_FOR_CASE;
@@ -74,5 +76,25 @@ export class DeleteAShareCase implements Action {
   ) {}
 }
 
+export class RemoveUserFromCase implements Action {
+  public readonly type = REMOVE_USER_FROM_CASE;
+  constructor(
+    public payload: {
+      sharedCase: SharedCase;
+      user: UserDetails;
+    }
+  ) {}
+}
+
+export class CancelUserRemovalFromCase implements Action {
+  public readonly type = CANCEL_USER_REMOVE_FROM_CASE;
+  constructor(
+    public payload: {
+      sharedCase: SharedCase;
+      user: UserDetails;
+    }
+  ) {}
+}
+
 export type Actions = NavigateToShareCase | LoadShareCase | LoadShareCaseSuccess | LoadShareCaseFailure
-  | AddShareCases | AddShareCaseGo | DeleteAShareCase | LoadUserFromOrgForCase | LoadUserFromOrgForCaseSuccess;
+  | AddShareCases | AddShareCaseGo | DeleteAShareCase | LoadUserFromOrgForCase | LoadUserFromOrgForCaseSuccess | RemoveUserFromCase | CancelUserRemovalFromCase;

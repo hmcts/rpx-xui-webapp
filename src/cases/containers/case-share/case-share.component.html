@@ -5,6 +5,10 @@
   <xuilib-share-case
     [cases] = "shareCases$ | async"
     [users]="orgUsers$ | async"
-    (unselect)="deselect($event)">
+    (unselect)="deselect($event)"
+    (removeUserFromCase)="removeUserFromCase($event)"
+    (cancelUserRemovalFromCase)="cancelUserRemovalFromCase($event)"
+  >
   </xuilib-share-case>
+
 </exui-page-wrapper>

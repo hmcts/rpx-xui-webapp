@@ -90,14 +90,46 @@ export function shareCasesReducer(state: ShareCasesState = initialSharedCasesSta
         users: action.payload
       };
     case ShareCasesActions.REMOVE_USER_FROM_CASE:
-        action.payload.sharedCase.pendingUnshares.push(action.payload.user);
+        const allCases = state.shareCases.slice();
+        let unsharedUsers = [];
+        for (let i = 0, l = allCases.length; i < l; i++) {
+          if (allCases[i].caseId === action.payload.sharedCase.caseId) {
+            if (allCases[i].pendingUnshares != null) {
+              unsharedUsers = allCases[i].pendingUnshares.slice();
+            }
+            unsharedUsers.push(action.payload.user);
+          }
+          const newSharedCase = {
+            ...allCases[i],
+            pendingUnshares: unsharedUsers
+          };
+          allCases[i] = newSharedCase;
+          break;
+        }
         return {
-        ...state
+        ...state,
+          shareCases: allCases
       };
     case ShareCasesActions.CANCEL_USER_REMOVE_FROM_CASE:
-       action.payload.sharedCase.pendingUnshares.splice(action.payload.sharedCase.pendingUnshares.findIndex(item => item.email === action.payload.user.email), 1)
-       return {
-        ...state
+      const caseList = state.shareCases.slice();
+      let pendingUnsharesTmp = [];
+      for (let i = 0, l = caseList.length; i < l; i++) {
+        if (caseList[i].caseId === action.payload.sharedCase.caseId) {
+          pendingUnsharesTmp = caseList[i].pendingUnshares.slice();
+          console.log('in the loop of cancel user remove : ' + pendingUnsharesTmp.length);
+          pendingUnsharesTmp.splice( pendingUnsharesTmp.findIndex(item => item.email === action.payload.user.email), 1);
+          console.log('in the loop of cancel after user remove : ' + pendingUnsharesTmp.length);
+          const newSharedCase = {
+            ...caseList[i],
+            pendingUnshares: pendingUnsharesTmp
+          };
+          caseList[i] = newSharedCase;
+          break;
+        }
+      }
+      return {
+        ...state,
+         shareCases: caseList
       };
     default:
       return initialSharedCasesState;

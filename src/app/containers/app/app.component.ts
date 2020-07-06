@@ -82,7 +82,7 @@ export class AppComponent implements OnInit {
    */
   public addTimeoutNotificationServiceListener() {
 
-    this.timeoutNotificationsService.eventEmitterChanges().subscribe(event => {
+    this.timeoutNotificationsService.notificationOnChange().subscribe(event => {
       this.timeoutNotificationEventHandler(event);
     });
   }
@@ -197,22 +197,14 @@ export class AppComponent implements OnInit {
 
     const totalIdleTimeInMilliseconds = (totalIdleTime * 60) * 1000;
 
-    const idleConfig: any = {
-      timeout: idleModalDisplayTimeInSeconds,
-      idleMilliseconds: totalIdleTimeInMilliseconds,
-      idleServiceName: 'idleSession',
-      keepAliveInSeconds: 5 * 60 * 60,
-    };
-
     // Api should always take milliseconds
     const newIdleConfig: any = {
       idleModalDisplayTime: idleModalDisplayTimeInMilliseconds,
       totalIdleTime: totalIdleTimeInMilliseconds,
-      idleServiceName: 'idleSession',
-      keepAliveInSeconds: 5 * 60 * 60,
+      idleServiceName: 'idleSession'
     };
 
     // this.idleService.init(idleConfig);
-    this.timeoutNotificationsService.initialiseSessionTimeout(newIdleConfig);
+    this.timeoutNotificationsService.initialise(newIdleConfig);
   }
 }

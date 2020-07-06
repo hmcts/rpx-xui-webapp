@@ -94,3 +94,16 @@ Feature: Case List Selection
         When I sort case list table by column at position 2
         Then I see case list table has 2 rows selected
 
+    Scenario: Verify Share case of selected cases
+        When I click on Case list
+        Then I am on case list page
+        When I select search criteria jurisdiction "Family Divorce" case type "Divorce case - v115.00" state "Any" in case list page
+        When I click search Apply in case list page
+        Then I wait to see case results displayed
+        When I select case at row 1 in case list page
+        When I select case at row 2 in case list page
+        Then I see case list table has 2 rows selected
+        When I click Share Case button
+        Then I see Share Case page is displayed
+        Then I see Share case page has 2 cases listed
+

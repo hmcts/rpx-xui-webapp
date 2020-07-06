@@ -17,7 +17,7 @@ const getFilters = () => getConfigValue(JURISDICTIONS)
  * Manually filtering returned jurisdictions
  * to make available jurisdiction in filters array only
  */
-export async function getJurisdictions(req: express.Request, res: express.Response) {
+export async function getJurisdictions(req: express.Request, res: express.Response, next: express.NextFunction) {
     let url = striptags(req.url)
     url = req.baseUrl  + url
     const headers: any = setHeaders(req)
@@ -34,7 +34,8 @@ export async function getJurisdictions(req: express.Request, res: express.Respon
 
         res.send(amendedJurisdictions)
     } catch (e) {
-        res.status(e.response.status)
-        res.send(e.response.data)
+        next(e)
+        /*res.status(e.response.status)
+        res.send(e.response.data)*/
     }
 }

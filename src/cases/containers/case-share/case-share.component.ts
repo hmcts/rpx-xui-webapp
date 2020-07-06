@@ -46,13 +46,8 @@ export class CaseShareComponent implements OnInit {
     this.store.dispatch(new fromCasesFeature.DeleteAShareCase($event));
   }
 
-  public removeUserFromCase($event) {
-    console.log('removeUserFromCase')
-    this.store.dispatch(new fromCasesFeature.RemoveUserFromCase($event));
-  }
-
-  public cancelUserRemovalFromCase($event) {
-    this.store.dispatch(new fromCasesFeature.CancelUserRemovalFromCase($event));
+  public synchronizeStore($event) {
+    this.store.dispatch(new fromCasesFeature.SynchronizeStateToStore($event));
   }
 
 }

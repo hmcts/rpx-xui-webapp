@@ -3,11 +3,10 @@
   [fnTitle]="'Share a case'"
   [title]="'Add recipient'">
   <xuilib-share-case
-    [cases] = "shareCases$ | async"
+    [shareCases$] = "shareCases$"
     [users]="orgUsers$ | async"
     (unselect)="deselect($event)"
-    (removeUserFromCase)="removeUserFromCase($event)"
-    (cancelUserRemovalFromCase)="cancelUserRemovalFromCase($event)"
+    (synchronizeStore)="synchronizeStore($event)"
   >
   </xuilib-share-case>
 

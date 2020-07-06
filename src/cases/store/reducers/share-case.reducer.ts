@@ -1,7 +1,5 @@
-
 import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
 import { UserDetails } from '@hmcts/rpx-xui-common-lib/lib/models/user-details.model';
-import {REMOVE_USER_FROM_CASE} from '../actions/share-case.action';
 import * as ShareCasesActions from '../actions/share-case.action';
 
 export interface ShareCasesState {
@@ -89,47 +87,10 @@ export function shareCasesReducer(state: ShareCasesState = initialSharedCasesSta
         ...state,
         users: action.payload
       };
-    case ShareCasesActions.REMOVE_USER_FROM_CASE:
-        const allCases = state.shareCases.slice();
-        let unsharedUsers = [];
-        for (let i = 0, l = allCases.length; i < l; i++) {
-          if (allCases[i].caseId === action.payload.sharedCase.caseId) {
-            if (allCases[i].pendingUnshares != null) {
-              unsharedUsers = allCases[i].pendingUnshares.slice();
-            }
-            unsharedUsers.push(action.payload.user);
-          }
-          const newSharedCase = {
-            ...allCases[i],
-            pendingUnshares: unsharedUsers
-          };
-          allCases[i] = newSharedCase;
-          break;
-        }
-        return {
-        ...state,
-          shareCases: allCases
-      };
-    case ShareCasesActions.CANCEL_USER_REMOVE_FROM_CASE:
-      const caseList = state.shareCases.slice();
-      let pendingUnsharesTmp = [];
-      for (let i = 0, l = caseList.length; i < l; i++) {
-        if (caseList[i].caseId === action.payload.sharedCase.caseId) {
-          pendingUnsharesTmp = caseList[i].pendingUnshares.slice();
-          console.log('in the loop of cancel user remove : ' + pendingUnsharesTmp.length);
-          pendingUnsharesTmp.splice( pendingUnsharesTmp.findIndex(item => item.email === action.payload.user.email), 1);
-          console.log('in the loop of cancel after user remove : ' + pendingUnsharesTmp.length);
-          const newSharedCase = {
-            ...caseList[i],
-            pendingUnshares: pendingUnsharesTmp
-          };
-          caseList[i] = newSharedCase;
-          break;
-        }
-      }
+    case ShareCasesActions.SYNCHRONIZE_STATE_TO_STORE:
       return {
         ...state,
-         shareCases: caseList
+        shareCases: action.payload
       };
     default:
       return initialSharedCasesState;

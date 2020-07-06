@@ -1,4 +1,4 @@
-@fr @all
+@fr @fullfunctional
 Feature: FR create case workflow
 
   Background:
@@ -8,7 +8,6 @@ Feature: FR create case workflow
     When I click on create case button
     Then Create case page should be displayed
 
-@smoke
   Scenario Outline:  Start FR Case creation
     When I start case with jurisdiction "<Jurisdiction>" case type "<CaseType>" and event "<Event>"
     Then I am on case form page

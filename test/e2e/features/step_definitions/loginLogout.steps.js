@@ -22,9 +22,9 @@ defineSupportCode(function ({ Given, When, Then }) {
 
     const world = this;
     await BrowserWaits.retryForPageLoad(loginPage.signinTitle,function(message){
-      world.attach("Expert UI Url reload attempt : "+message); 
+      world.attach("Expert UI Url reload attempt : "+message);
     });
-     
+
     expect(await loginPage.signinBtn.isDisplayed()).to.be.true;
 
   });
@@ -111,7 +111,7 @@ defineSupportCode(function ({ Given, When, Then }) {
   });
 
   Given('I am logged into Expert UI with valid user details', async function () {
-    await loginPage.givenIAmLoggedIn(this.config.username, this.config.password); 
+    await loginPage.givenIAmLoggedIn(config.config.params.username, config.config.params.password);
     const world = this;
     await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
       world.attach("Login success page load load attempt : " + message)
@@ -124,9 +124,9 @@ defineSupportCode(function ({ Given, When, Then }) {
 
   Given(/^I am logged into Expert UI with Probate user details$/, async function () {
     browser.sleep(MID_DELAY);
-    await loginPage.emailAddress.sendKeys(this.config.username);
+    await loginPage.emailAddress.sendKeys(config.config.params.username);
     browser.sleep(MID_DELAY);
-    await loginPage.password.sendKeys(this.config.password);
+    await loginPage.password.sendKeys(config.config.params.password);
     await loginPage.clickSignIn();
     browser.sleep(LONG_DELAY);
   });

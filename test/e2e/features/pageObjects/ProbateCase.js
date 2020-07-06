@@ -7,12 +7,12 @@ class ProbateCase {
         this.caseManager = new CaseManager();
     }
 
-    async createCase(caseType) {
+    async createCase(isAccessibilityTest) {
         var caseData = {
         };
 
 
-        await this.caseManager.createCase(caseData);
+        await this.caseManager.createCase(caseData, isAccessibilityTest);
     }
 
 

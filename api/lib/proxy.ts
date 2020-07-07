@@ -12,32 +12,37 @@ import {
 } from '../configuration/references'
 
 import { http } from './http'
-//import * as log4jui from './log4jui'
 import { EnhancedRequest } from './models'
-
-//const logger = log4jui.getLogger('proxy')
+import {exists} from './util'
 
 export function setHeaders(req: EnhancedRequest) {
     const headers: any = {}
 
-    if (req.headers && req.headers['content-type']) {
-        headers['content-type'] = req.headers['content-type']
-    }
+    if (req.headers) {
 
-    if (req.headers && req.headers.accept) {
-        headers.accept = req.headers.accept
-    }
+        if (req.headers['content-type']) {
+            headers['content-type'] = req.headers['content-type']
+        }
 
-    if (req.headers && req.headers.experimental) {
-        headers.experimental = req.headers.experimental
-    }
+        if (req.headers.accept) {
+            headers.accept = req.headers.accept
+        }
 
-    if (req.auth && req.auth.token) {
-        headers.Authorization = `Bearer ${req.auth.token}`
-    }
+        if (exists(req, 'headers.experimental')) {
+            headers.experimental = req.headers.experimental
+        }
 
-    if (req.auth && req.auth.data && req.auth.data.roles && req.auth.data.roles.length > 0) {
-        headers['user-roles'] = req.auth.data.roles.join()
+        if (exists(req, 'headers.Authorization')) {
+            headers.Authorization = req.headers.Authorization
+        }
+
+        if (req.headers['user-roles'] && req.headers['user-roles'].length) {
+            headers['user-roles'] = req.headers['user-roles']
+        }
+
+        if (exists(req, 'headers.ServiceAuthorization')) {
+            headers.ServiceAuthorization = req.headers.ServiceAuthorization
+        }
     }
 
     return headers

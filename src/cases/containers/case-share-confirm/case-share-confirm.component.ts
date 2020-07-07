@@ -1,8 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
-import { UserDetails } from '@hmcts/rpx-xui-common-lib/lib/models/user-details.model';
 import { select, Store } from '@ngrx/store';
-import { initAll } from 'govuk-frontend';
 import { Observable } from 'rxjs';
 import * as fromCasesFeature from '../../store';
 import { LoadShareCase, LoadUserFromOrgForCase } from '../../store/actions';
@@ -17,7 +15,6 @@ export class CaseShareConfirmComponent implements OnInit {
 
   public shareCases$: Observable<SharedCase[]>;
   public shareCases: SharedCase[];
-  public orgUsers$: Observable<UserDetails[]>;
 
   constructor(public store: Store<fromCaseList.State>) {
 
@@ -30,18 +27,6 @@ export class CaseShareConfirmComponent implements OnInit {
     });
     // call api to retrieve case assigned users
     this.store.dispatch(new LoadShareCase(this.shareCases));
-
-    // Hard coded Org Id as this info will come later
-    this.orgUsers$ = this.store.pipe(select(fromCasesFeature.getOrganisationUsersState));
-    this.store.dispatch(new LoadUserFromOrgForCase('o111111'));
-    this.orgUsers$.subscribe(user => console.log(user));
-
-    // initialize javascript for accordion component to enable open/close button
-    setTimeout(() => initAll(), 1000);
-  }
-
-  public deselect($event) {
-    this.store.dispatch(new fromCasesFeature.DeleteAShareCase($event));
   }
 
 }

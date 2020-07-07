@@ -14,7 +14,7 @@ import * as fromRoot from '../../store';
 export class AppComponent implements OnInit {
 
   public timeoutModalConfig = {
-    countdown: 100,
+    countdown: '0 seconds',
     isVisible: false,
   }
 
@@ -69,14 +69,12 @@ export class AppComponent implements OnInit {
       const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
 
       this.addTimeoutNotificationServiceListener();
-      this.initTimeoutService(idleModalDisplayTime, totalIdleTime);
+      this.initTimeoutNotificationService(idleModalDisplayTime, totalIdleTime);
     }
   }
 
   /**
    * Add Timeout Notification Service Listener
-   *
-   * TODO: Change eventEmitterChanges()
    *
    * We listen for Timeout Notification Service events.
    */
@@ -92,15 +90,15 @@ export class AppComponent implements OnInit {
    *
    * The Timeout Notification Service currently has three events that we can handle. These are:
    *
-   * The 'countdown' event which dispatches a readable countdown timer in it's event payload, the countdown
+   * The 'countdown' event. This event dispatches a readable countdown timer in it's event payload. the countdown
    * timer is a readable version of the countdown time ie. '10 seconds' or '1 minute'. Note that this dispatches
    * once per second when the timer has reached less than 60 seconds till the 'sign-out' event is fired.
    *
-   * If it's above a minute this event is dispatched every minute.
+   * If the 'countdown' timer is above a minute this event is dispatched every minute.
    *
    * The 'keep-alive' event dispatches when the User has interacted with the page again.
    *
-   * The 'sign-out' event which dispatches when the countdown timer has come to an end - when the User
+   * The 'sign-out' event dispatches when the countdown timer has come to an end - when the User
    * should be signed out.
    *
    * @param event - {
@@ -115,16 +113,20 @@ export class AppComponent implements OnInit {
     switch (event.eventType) {
       case 'countdown': {
         this.updateTimeoutModal(event.readableCountdown, true);
+        console.log('countdown');
         return;
       }
       case 'sign-out': {
-        this.updateTimeoutModal(undefined, false);
+        console.log('sign out');
+        this.updateTimeoutModal('0 seconds', false);
 
         this.store.dispatch(new fromRoot.StopIdleSessionTimeout());
         this.store.dispatch(new fromRoot.IdleUserLogOut());
         return;
       }
       case 'keep-alive': {
+        console.log('keep alive');
+        this.updateTimeoutModal('0 seconds', false);
         return;
       }
       default: {
@@ -138,7 +140,7 @@ export class AppComponent implements OnInit {
    *
    * Set the modal countdown, and if the modal is visible to the User.
    */
-  public updateTimeoutModal(countdown: number, isVisible: boolean): void {
+  public updateTimeoutModal(countdown: string, isVisible: boolean): void {
     this.timeoutModalConfig = {
         countdown,
         isVisible
@@ -153,7 +155,6 @@ export class AppComponent implements OnInit {
     this.updateTimeoutModal(undefined, false);
   }
 
-  // TODO: Keep consistent naming conventions
   public signOutHandler() {
 
     this.store.dispatch(new fromRoot.StopIdleSessionTimeout());
@@ -161,9 +162,9 @@ export class AppComponent implements OnInit {
   }
 
   /**
-   * Initialise Idle Service
+   * Initialise Timeout Notficiation Service
    *
-   * We initialise the Idle Service which is part of the common lib.
+   * We initialise the Idle Notification Service which is part of the common lib.
    *
    * Why do we use minutes up to this point over seconds, or milliseconds?
    *
@@ -180,31 +181,24 @@ export class AppComponent implements OnInit {
    * Important note: The idleModalDisplayTime IS PART of the totalIdleTime. The idleModalDisplayTime does not get added to the end of
    * the totalIdleTime.
    *
-   * TODO: Clean up the common lib session timeout component.
-   * Note that `timeout` as specified by the common lib, uses seconds as its unit of time. Whereas `idleMilliseconds`
-   * uses milliseconds. This needs to be changed in the common-lib to use minutes as discussed with the BA. But
-   * for now we will do the conversion from minutes used up to this point to units required by the common-lib.
-   *
-   * TODO: keepAliveInSeconds is not required, awaiting Open Id Connect implementation before it's removal
+   * We convert idleModalDisplayTime and totalIdleTime which reaches here in minutes to seconds.
    *
    * @param idleModalDisplayTime - Should reach here in minutes
    * @param totalIdleTime - Should reach here in minutes
    */
-  public initTimeoutService(idleModalDisplayTime, totalIdleTime) {
+  public initTimeoutNotificationService(idleModalDisplayTime, totalIdleTime) {
 
     const idleModalDisplayTimeInSeconds = idleModalDisplayTime * 60;
     const idleModalDisplayTimeInMilliseconds = idleModalDisplayTimeInSeconds * 1000;
 
     const totalIdleTimeInMilliseconds = (totalIdleTime * 60) * 1000;
 
-    // Api should always take milliseconds
-    const newIdleConfig: any = {
+    const timeoutNotificationConfig: any = {
       idleModalDisplayTime: idleModalDisplayTimeInMilliseconds,
       totalIdleTime: totalIdleTimeInMilliseconds,
       idleServiceName: 'idleSession'
     };
 
-    // this.idleService.init(idleConfig);
-    this.timeoutNotificationsService.initialise(newIdleConfig);
+    this.timeoutNotificationsService.initialise(timeoutNotificationConfig);
   }
 }

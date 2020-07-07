@@ -4,8 +4,6 @@
   [title]="'Check and confirm your cases'">
   <xuilib-share-case-confirm
     [cases] = "shareCases$ | async"
-    [users]="orgUsers$ | async"
-    (unselect)="deselect($event)"
     [changeLink]="'/cases/case-share'">
   </xuilib-share-case-confirm>
 </exui-page-wrapper>

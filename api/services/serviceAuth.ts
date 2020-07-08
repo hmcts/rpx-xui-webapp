@@ -17,10 +17,7 @@ export async function postS2SLease() {
     const s2sSecret = getConfigValue(S2S_SECRET)
     const oneTimePassword = otp({ secret: s2sSecret }).totp()
 
-    logger.info('generating from secret  :', s2sSecret,
-        microservice,
-        oneTimePassword
-    )
+    logger.info('generating S2S from secret')
 
     const request = await http.post(`${s2sPath}/lease`, {
         microservice,

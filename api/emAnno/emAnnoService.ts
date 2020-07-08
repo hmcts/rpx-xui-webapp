@@ -1,4 +1,5 @@
-import { AxiosResponse } from 'axios'
+
+import {AxiosResponse} from 'axios'
 import { http } from '../lib/http'
 import * as log4jui from '../lib/log4jui'
 import { EnhancedRequest, JUILogger } from '../lib/models'
@@ -45,7 +46,6 @@ export async function handlePost(annotationsPath: string, body: Annotation, req:
         logger.error(e.message)
         throw e
     }
-
 }
 
 /**
@@ -66,7 +66,6 @@ export async function handlePut(annotationsPath: string, body: Annotation, req: 
         logger.error(e.message)
         throw e
     }
-
 }
 
 /**
@@ -86,5 +85,4 @@ export async function handleDelete(annotationsPath: string, req: EnhancedRequest
         logger.error(e.message)
         throw e
     }
-
 }

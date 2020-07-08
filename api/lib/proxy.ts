@@ -15,7 +15,7 @@ import { http } from './http'
 import { EnhancedRequest } from './models'
 import {exists} from './util'
 
-export function setHeaders(req: EnhancedRequest) {
+export function setHeaders(req: express.Request) {
     const headers: any = {}
 
     if (req.headers) {
@@ -48,7 +48,7 @@ export function setHeaders(req: EnhancedRequest) {
     return headers
 }
 
-export async function get(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
+export async function get(req: express.Request, res: express.Response, next: express.NextFunction) {
     let url = striptags(req.url)
     url = req.baseUrl  + url
     const headers: any = setHeaders(req)

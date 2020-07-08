@@ -89,7 +89,7 @@ export function shareCasesReducer(state: ShareCasesState = initialSharedCasesSta
         users: action.payload
       };
     default:
-      return initialSharedCasesState;
+      return state;
   }
 }
 

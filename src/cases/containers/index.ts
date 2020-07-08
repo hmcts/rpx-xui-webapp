@@ -23,7 +23,6 @@ export const containers: any[] = [
 export * from './case-list/case-list.component';
 export * from './case-create/case-create.component';
 export * from './case-filter/case-filter.component';
-export * from './case-filter/case-filter.component';
 export * from './case-details/case-details.component';
 export * from './case-home/case-home.component';
 export * from './case-create-submit/case-create-submit.component';

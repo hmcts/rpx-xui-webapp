@@ -12,6 +12,7 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import * as converters from 'src/cases/converters/case-converter';
 import * as fromRoot from '../../../app/store';
 import { Router } from '@angular/router';
+import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
 
 /**
  * Entry component wrapper for Case List
@@ -37,6 +38,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public metadataFields$: Observable<string[]>;
   public caseFilterToggle$: Observable<boolean>;
   public jurisdictionsBehaviourSubject$: BehaviorSubject<Jurisdiction[]> = new BehaviorSubject<Jurisdiction[]>([]);
+  public shareCases$: Observable<SharedCase[]>;
 
   public fg: FormGroup;
 
@@ -121,10 +123,11 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.resultSubscription = this.resultView$.subscribe(resultView =>
       this.onResultsViewHandler(resultView));
 
-
     this.findCaseListPaginationMetadata(this.getEvent());
 
     this.userDetails = this.store.pipe(select(fromRoot.getUserDetails));
+    this.shareCases$ = this.store.pipe(select(fromCasesFeature.getShareCaseListState));
+    this.shareCases$.subscribe(shareCases => this.selectedCases = converters.toSearchResultViewItemConverter(shareCases));
   }
 
   public listenToPaginationMetadata = () => {

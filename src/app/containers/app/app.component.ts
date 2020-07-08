@@ -108,16 +108,12 @@ export class AppComponent implements OnInit {
    */
   public timeoutNotificationEventHandler(event) {
 
-    console.log('event.eventType');
-    console.log(event);
     switch (event.eventType) {
       case 'countdown': {
         this.updateTimeoutModal(event.readableCountdown, true);
-        console.log('countdown');
         return;
       }
       case 'sign-out': {
-        console.log('sign out');
         this.updateTimeoutModal('0 seconds', false);
 
         this.store.dispatch(new fromRoot.StopIdleSessionTimeout());
@@ -125,7 +121,6 @@ export class AppComponent implements OnInit {
         return;
       }
       case 'keep-alive': {
-        console.log('keep alive');
         this.updateTimeoutModal('0 seconds', false);
         return;
       }

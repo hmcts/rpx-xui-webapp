@@ -1,5 +1,5 @@
 import * as express from 'express'
-import {getConfigValue} from './index'
+import {getConfigValue, showFeature} from './index'
 import {
   FEATURE_OIDC_ENABLED,
   PROTOCOL,
@@ -25,7 +25,7 @@ async function uiConfigurationRouter(req, res) {
     clientId: getConfigValue(SERVICES_IDAM_CLIENT_ID),
     idamWeb: getConfigValue(SERVICES_IDAM_LOGIN_URL),
     oAuthCallback: getConfigValue(SERVICES_IDAM_OAUTH_CALLBACK_URL),
-    oidcEnabled: true,
+    oidcEnabled: showFeature(FEATURE_OIDC_ENABLED),
     protocol: getConfigValue(PROTOCOL),
   })
 }

@@ -46,8 +46,9 @@ withPipeline(type, product, component) {
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
     enableSecurityScan()
-    env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net' 
+    env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net'
     enableAksStagingDeployment()
+    disableLegacyDeployment()
 
 // Disable pact testing on pipeline
 //
@@ -138,7 +139,7 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/smoke_tests/functional/",
+            reportDir            : "reports/tests/smoke/",
             reportFiles          : 'index.html',
             reportName           : 'PREVIEW Smoke Test'
         ])
@@ -161,7 +162,7 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/smoke_tests/functional/",
+            reportDir            : "reports/tests/smoke/",
             reportFiles          : 'index.html',
             reportName           : 'AAT Smoke Test'
         ])

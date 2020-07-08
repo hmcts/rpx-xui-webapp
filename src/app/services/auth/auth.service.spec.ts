@@ -138,4 +138,13 @@ describe('AuthService', () => {
     }));
   });
 
+  describe('logOutAndRedirect', () => {
+    it('should work', inject([AuthService], (service: AuthService) => {
+      const spy = spyOn(service, 'getWindowLocation').and.returnValue({hostname: 'host', port: 8000});
+      const spyOnSetWindowLocation = spyOn(service, 'setWindowLocationHref');
+      service.logOutAndRedirect();
+      expect(spyOnSetWindowLocation).toHaveBeenCalledWith('api/logout?redirect=http://host:8000/idle-sign-out');
+    }));
+  });
+
 });

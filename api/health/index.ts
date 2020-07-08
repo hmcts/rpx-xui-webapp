@@ -1,14 +1,16 @@
 import * as healthcheck from '@hmcts/nodejs-healthcheck'
 import {getConfigValue, showFeature} from '../configuration'
 import {
-  FEATURE_TERMS_AND_CONDITIONS_ENABLED,
+  FEATURE_REDIS_ENABLED,
+  // FEATURE_TERMS_AND_CONDITIONS_ENABLED,
   SERVICE_S2S_PATH,
   SERVICES_DOCUMENTS_API_PATH,
   SERVICES_EM_ANNO_API_URL,
   SERVICES_IDAM_API_URL,
   SERVICES_IDAM_LOGIN_URL,
-  SERVICES_TERMS_AND_CONDITIONS_URL
+  // SERVICES_TERMS_AND_CONDITIONS_URL
 } from '../configuration/references'
+import {redisHealth} from './redis.health'
 
 export const checkServiceHealth = service => healthcheck.web(`${service}/health`, {
   deadline: 6000,
@@ -30,11 +32,20 @@ export const healthChecks = {
   },
 }
 
-if (showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED)) {
+/*if (showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED)) {
   healthChecks.checks = {...healthChecks.checks, ...{
   termsAndConditions: checkServiceHealth(getConfigValue(SERVICES_TERMS_AND_CONDITIONS_URL)),
     },
   }
+}*/
+
+if (showFeature(FEATURE_REDIS_ENABLED)) {
+  healthChecks.checks = {...healthChecks.checks, ...{
+      redis: healthcheck.raw(async () => {
+        const status = await redisHealth()
+        return status ? healthcheck.up() : healthcheck.down()
+      }),
+    }}
 }
 
 /**

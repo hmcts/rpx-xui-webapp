@@ -182,6 +182,10 @@ class CaseListPage{
         await browser.sleep(1000);
     }
 
+    async clickShareCaseButton(){
+        await this.shareCaseButton.click();
+    }
+
 
 
 

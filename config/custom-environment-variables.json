@@ -32,7 +32,8 @@
       "idamApiUrl": "SERVICES_IDAM_API_URL",
       "idamClientID": "SERVICES_IDAM_CLIENT_ID",
       "idamLoginUrl": "SERVICES_IDAM_LOGIN_URL",
-      "oauthCallbackUrl": "SERVICES_IDAM_OAUTH_CALLBACK_URL"
+      "oauthCallbackUrl": "SERVICES_IDAM_OAUTH_CALLBACK_URL",
+      "iss": "SERVICES_IDAM_ISS_URL"
     },
     "markup_api": "SERVICES_MARKUP_API",
     "payments": "SERVICES_PAYMENTS_URL",

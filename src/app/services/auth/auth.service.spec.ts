@@ -41,7 +41,7 @@ describe('AuthService', () => {
         expect(response).toBeNull();
       });
 
-      const req = httpMock.expectOne('/api/logout?noredirect=true');
+      const req = httpMock.expectOne('/auth/logout?noredirect=true');
       expect(req.request.method).toEqual('GET');
       req.flush(null);
     }));

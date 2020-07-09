@@ -26,7 +26,7 @@ export class AuthService {
   }
 
   public logOut(): Observable<any> {
-    return this.httpService.get('/api/logout?noredirect=true');
+    return this.httpService.get('/auth/logout?noredirect=true');
   }
 
   public logOutAndRedirect() {

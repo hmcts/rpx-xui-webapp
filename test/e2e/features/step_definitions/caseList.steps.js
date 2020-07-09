@@ -128,6 +128,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         } 
     });
 
+    When('I click Share Case button', async function () {
+        await caseListPage.clickShareCaseButton();
+    });
+
     async function validateNoResultsDisplayed(){
         expect(await caseListPage.hasCaseListAnyResults()).to.be.false;
     }

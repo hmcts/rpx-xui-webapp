@@ -21,7 +21,6 @@ export class AppComponent implements OnInit {
   constructor(
     private readonly store: Store<fromRoot.State>,
     private googleAnalyticsService: GoogleAnalyticsService,
-    private readonly idleService: ManageSessionServices,
     private readonly timeoutNotificationsService: TimeoutNotificationsService
   ) {
 

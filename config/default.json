@@ -8,6 +8,7 @@
   "logging": "debug",
   "now": false,
   "maxLogLine": 80,
+  "stub": false,
   "health": {
     "ccdComponentApi": "https://ccd-api-gateway-web-prod.service.core-compute-prod.internal/health",
     "ccdDataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal/health",
@@ -63,7 +64,8 @@
     "secureCookieEnabled": true,
     "helmetEnabled": false,
     "termsAndConditionsEnabled": false,
-    "redisEnabled": false
+    "redisEnabled": false,
+    "oidcEnabled": false
   },
   "helmet": {
     "contentSecurityPolicy": {

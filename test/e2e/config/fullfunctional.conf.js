@@ -77,6 +77,7 @@ const config = {
         // format: ['node_modules/cucumber-pretty'],
         format: ['node_modules/cucumber-pretty', 'json:reports/tests/json/results.json'],
         tags: ['@all','not @ignore'],
+
         require: [
             '../support/timeout.js',
             '../support/hooks.js',

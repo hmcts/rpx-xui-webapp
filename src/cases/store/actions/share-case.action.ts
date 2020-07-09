@@ -12,6 +12,7 @@ export const ADD_SHARE_CASE_GO = '[Router] Add Share Case Go';
 export const DELETE_A_SHARE_CASE = '[ShareCase] Delete A Share Case';
 export const LOAD_USERS_FROM_ORG_FOR_CASE = '[LoadUsers] From ORG For A Case';
 export const LOAD_USERS_FROM_ORG_FOR_CASE_SUCCESS = '[LoadUsers] From ORG For A Case Success';
+export const SYNCHRONIZE_STATE_TO_STORE = '[ShareCase] Synchronize State To Store';
 
 export class LoadUserFromOrgForCase implements Action {
   public readonly type = LOAD_USERS_FROM_ORG_FOR_CASE;
@@ -74,5 +75,11 @@ export class DeleteAShareCase implements Action {
   ) {}
 }
 
+export class SynchronizeStateToStore implements Action {
+  public readonly type = SYNCHRONIZE_STATE_TO_STORE;
+  constructor(public payload: SharedCase[]) {}
+}
+
 export type Actions = NavigateToShareCase | LoadShareCase | LoadShareCaseSuccess | LoadShareCaseFailure
-  | AddShareCases | AddShareCaseGo | DeleteAShareCase | LoadUserFromOrgForCase | LoadUserFromOrgForCaseSuccess;
+  | AddShareCases | AddShareCaseGo | DeleteAShareCase | LoadUserFromOrgForCase | LoadUserFromOrgForCaseSuccess
+  | SynchronizeStateToStore;

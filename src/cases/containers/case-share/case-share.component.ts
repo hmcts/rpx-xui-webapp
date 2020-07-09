@@ -34,7 +34,6 @@ export class CaseShareComponent implements OnInit {
     // Hard coded Org Id as this info will come later
     this.orgUsers$ = this.store.pipe(select(fromCasesFeature.getOrganisationUsersState));
     this.store.dispatch(new LoadUserFromOrgForCase('o111111'));
-    this.orgUsers$.subscribe(user => console.log(user));
 
     // initialize javascript for accordion component to enable open/close button
     setTimeout(() => initAll(), 1000);
@@ -42,6 +41,10 @@ export class CaseShareComponent implements OnInit {
 
   public deselect($event) {
     this.store.dispatch(new fromCasesFeature.DeleteAShareCase($event));
+  }
+
+  public synchronizeStore($event) {
+    this.store.dispatch(new fromCasesFeature.SynchronizeStateToStore($event));
   }
 
 }

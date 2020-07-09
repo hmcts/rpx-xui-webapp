@@ -352,10 +352,10 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@2.64.6-case-sharing-prerelease":
-  version "2.64.6-case-sharing-prerelease"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.64.6-case-sharing-prerelease.tgz#40eecd9fa0510ec6fb880bf5dd4df0227d262410"
-  integrity sha512-5e6Q7MnieIjeNFFWR9BQtnbOr8dFWNKDuPm7ZvZG1SERpspILpiTx2SRzU4Gx4thjjFBkuJiEBJFApWcRu+n/A==
+"@hmcts/ccd-case-ui-toolkit@2.64.7-case-sharing-prerelease":
+  version "2.64.7-case-sharing-prerelease"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.64.7-case-sharing-prerelease.tgz#ad6554cdb4262e908df6b282173e72a8510c0a83"
+  integrity sha512-MJET1QZqAkNIlVCF6A61MEUPxIyHKmzH696O7YKSygMynLC6M9EeXl9h9uxA1vyFthDn31HoxPkw9eI83LZkZg==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
@@ -422,10 +422,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@0.1.17":
-  version "0.1.17"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-0.1.17.tgz#69b3be09b4e1fbfdf3a1c8eeadb82e988809339a"
-  integrity sha512-P3gmxOMlbMtcbqL5MDYYtsJmOw/rXDt37x/14ft/R+CzMBK0ifSDF4UIx5BOVheopU2WwsTgrGOlmDh5yP2WeA==
+"@hmcts/rpx-xui-common-lib@0.1.22":
+  version "0.1.22"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-0.1.22.tgz#61036c29b49fd448fa2722c57d3fa6306640a010"
+  integrity sha512-mWDtn5rbKBe0NXifYFz6OCvidS5Dw/ovuAZ3QFiJdCZwyWMC7rLMH8WCeRWn7RnrMVXirlSPu4ypWUEPEh2KzA==
   dependencies:
     tslib "^1.9.0"
 

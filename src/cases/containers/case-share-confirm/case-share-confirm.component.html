@@ -3,7 +3,7 @@
   [fnTitle]="'Share a case'"
   [title]="'Check and confirm your cases'">
   <xuilib-share-case-confirm
-    [cases] = "shareCases$ | async"
+    [shareCases$]="shareCases$ | async"
     [changeLink]="'/cases/case-share'">
   </xuilib-share-case-confirm>
 </exui-page-wrapper>

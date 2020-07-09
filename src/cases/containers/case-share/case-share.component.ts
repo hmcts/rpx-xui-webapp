@@ -45,4 +45,8 @@ export class CaseShareComponent implements OnInit {
     this.store.dispatch(new fromCasesFeature.DeleteAShareCase($event));
   }
 
+  public synchronizeStore($event) {
+    this.store.dispatch(new fromCasesFeature.SynchronizeStateToStore($event));
+  }
+
 }

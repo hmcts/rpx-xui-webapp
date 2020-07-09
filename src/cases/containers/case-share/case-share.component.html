@@ -3,8 +3,11 @@
   [fnTitle]="'Share a case'"
   [title]="'Add recipient'">
   <xuilib-share-case
-    [cases] = "shareCases$ | async"
+    [shareCases$] = "shareCases$"
     [users]="orgUsers$ | async"
-    (unselect)="deselect($event)">
+    (unselect)="deselect($event)"
+    (synchronizeStore)="synchronizeStore($event)"
+  >
   </xuilib-share-case>
+
 </exui-page-wrapper>

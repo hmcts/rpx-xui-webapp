@@ -1,4 +1,3 @@
-
 import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
 import { UserDetails } from '@hmcts/rpx-xui-common-lib/lib/models/user-details.model';
 import * as ShareCasesActions from '../actions/share-case.action';
@@ -87,6 +86,11 @@ export function shareCasesReducer(state: ShareCasesState = initialSharedCasesSta
       return {
         ...state,
         users: action.payload
+      };
+    case ShareCasesActions.SYNCHRONIZE_STATE_TO_STORE:
+      return {
+        ...state,
+        shareCases: action.payload
       };
     default:
       return state;

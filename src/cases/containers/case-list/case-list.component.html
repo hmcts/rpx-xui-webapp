@@ -42,6 +42,7 @@
             [resultView]="resultView"
             [paginationMetadata]="paginationMetadata"
             [metadataFields]="metadataFields"
+            [preSelectedCases]="selectedCases"
             (changePage)="applyChangePage($event)"
             (selection)="retrieveSelections($event)"
             caseLinkUrlTemplate="case-details/case_id"

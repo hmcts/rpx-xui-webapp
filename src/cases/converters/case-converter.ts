@@ -12,3 +12,15 @@ export function toShareCaseConverter(selectedCases: SearchResultViewItem[]): Sha
   }
   return sharedCases;
 }
+
+export function toSearchResultViewItemConverter(shareCases: SharedCase[]): SearchResultViewItem[] {
+  const searchResultViewItems: SearchResultViewItem[] = [];
+  for (const shareCase of shareCases) {
+    const searchResultViewItem = {
+      case_id: shareCase.caseId,
+      case_fields: null
+    };
+    searchResultViewItems.push(searchResultViewItem);
+  }
+  return searchResultViewItems;
+}

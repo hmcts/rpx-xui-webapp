@@ -11,6 +11,7 @@ import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import * as fromRoot from '../../../app/store';
 import * as fromCasesFeature from '../../store';
 import * as fromCaseList from '../../store/reducers';
+import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
 
 /**
  * Entry component wrapper for Case List
@@ -36,6 +37,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public metadataFields$: Observable<string[]>;
   public caseFilterToggle$: Observable<boolean>;
   public jurisdictionsBehaviourSubject$: BehaviorSubject<Jurisdiction[]> = new BehaviorSubject<Jurisdiction[]>([]);
+  public shareCases$: Observable<SharedCase[]>;
 
   public fg: FormGroup;
 
@@ -119,10 +121,11 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.resultSubscription = this.resultView$.subscribe(resultView =>
       this.onResultsViewHandler(resultView));
 
-
     this.findCaseListPaginationMetadata(this.getEvent());
 
     this.userDetails = this.store.pipe(select(fromRoot.getUserDetails));
+    this.shareCases$ = this.store.pipe(select(fromCasesFeature.getShareCaseListState));
+    this.shareCases$.subscribe(shareCases => this.selectedCases = converters.toSearchResultViewItemConverter(shareCases));
   }
 
   public listenToPaginationMetadata = () => {

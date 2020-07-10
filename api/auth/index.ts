@@ -27,7 +27,7 @@ import * as log4jui from '../lib/log4jui'
 
 const logger = log4jui.getLogger('auth')
 
-const successCallback = (req: Request, res: Response, next: NextFunction) => {
+export const successCallback = (req: Request, res: Response, next: NextFunction) => {
     const {user} = req.session.passport
     const {roles} = user.userinfo
     const {userinfo} = user

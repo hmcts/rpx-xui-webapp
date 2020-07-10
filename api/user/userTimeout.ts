@@ -1,3 +1,5 @@
+import { arrayPatternMatch, sortArray } from '@hmcts/rpx-xui-node-lib'
+
 /**
  * Default Session Idle Time
  *
@@ -14,77 +16,12 @@ export const DEFAULT_SESSION_TIMEOUT = {
 }
 
 /**
- * Is Role Match
- *
- * Checks if a User's role, matches a specified Regular Expression.
- *
- * We use a Regular Expression so that we can set the default session timeout via configuration ie. '.', hence we used
- * JS .match over .includes.
- *
- * There will be a different default session timeout per application, and different session timeouts per user groups
- * hence setting it via configuration.
- *
- * @param role - 'pui-case-manager'
- * @param pattern - 'case-manager' / 'pui-' / '.'
- * @returns {boolean}
- */
-export const isRoleMatch = (role: string, pattern: string): boolean => {
-
-  return Boolean(role.match(new RegExp(pattern)))
-}
-
-/**
- * Any Roles Match
- *
- * Checks an array of roles for pattern matches.
- *
- * @param roles - [
- *  'pui-case-manager',
- *  'pui-finance-manager',
- * ]
- * @param pattern - 'case-manager' / 'pui-' / '.'
- */
-export const anyRolesMatch = (roles: string[], pattern: string): boolean => {
-
-  return roles.filter(role => isRoleMatch(role, pattern)).length > 0
-}
-
-/**
- * Sort User Roles
- *
- * Should sort the User's Roles alphabetically. Why? So that a priority order can be given to the Session Timeout +
- * configuration list.
- *
- * We clone the original array, so that we avoid mutation.
- *
- * Example: If we want a PUI Session Timeout to be given preference over another Session Timeout it would be further
- * up the Session Timeout Configuration list.
- *
- * @param - [
- * 'caseworker-divorce-financialremedy',
- * 'pui-user-manager',
- * 'caseworker-probate-solicitor',
- * 'caseworker',
- * 'caseworker-probate',
- * 'pui-finance-manager',
- * 'caseworker-divorce-solicitor',
- * ]
- * @return - [
- * 'caseworker',
- * 'caseworker-divorce-financialremedy',
- * 'caseworker-divorce-solicitor',
- * 'caseworker-probate',
- * 'caseworker-probate-solicitor',
- * 'pui-user-manager',
- * 'pui-finance-manager',
- * ]
- */
-export const sortUserRoles = (roles: string[]) => roles.sort()
-
-/**
  * Get User Session Timeout
  *
  * We calculate the timeout for this user.
+ *
+ * Firstly sort the User's Roles alphabetically. Why? So that a priority order can be given to the Session Timeout +
+ * configuration list.
  *
  * A user is given a specified timeout based on their User Roles, and a given set of
  * statically configured Session Timeouts, defined by the XUI team for a User Role Group.
@@ -118,10 +55,10 @@ export const sortUserRoles = (roles: string[]) => roles.sort()
  */
 export const getUserSessionTimeout = (userRoles, sessionTimeouts) => {
 
-  const sortedUserRoles = sortUserRoles(userRoles)
+  const sortedUserRoles = sortArray(userRoles)
 
   for (const sessionTimeout of sessionTimeouts) {
-    if (anyRolesMatch(sortedUserRoles, sessionTimeout.pattern)) {
+    if (arrayPatternMatch(sortedUserRoles, sessionTimeout.pattern)) {
       return sessionTimeout
     }
   }

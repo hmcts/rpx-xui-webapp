@@ -31,8 +31,8 @@ export class AuthService {
 
   public logOutAndRedirect() {
     this.logOut().subscribe( () => {
-      this.setWindowLocationHref('/idle-sign-out')
-    })
+      this.setWindowLocationHref('/idle-sign-out');
+    });
   }
 
   public setWindowLocationHref(href: string) {

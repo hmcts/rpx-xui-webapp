@@ -25,7 +25,6 @@ export class CaseShareConfirmComponent implements OnInit {
     this.shareCases$.subscribe(shareCases => {
       this.shareCases = shareCases;
     });
-    
   }
 
 }

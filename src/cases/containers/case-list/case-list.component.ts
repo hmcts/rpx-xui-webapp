@@ -339,6 +339,9 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
   public retrieveSelections(event) {
     this.selectedCases = event;
+    this.store.dispatch(new fromCasesFeature.SynchronizeStateToStore(
+      converters.toShareCaseConverter(this.selectedCases)
+    ));
   }
 
   public checkIfButtonDisabled(): boolean {

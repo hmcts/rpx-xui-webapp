@@ -10,7 +10,7 @@ import { Observable, of } from 'rxjs';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { State } from '../../../app/store/reducers';
 import * as converts from '../../converters/case-converter';
-import { AddShareCases, CaseFilterToggle, FindCaselistPaginationMetadata } from '../../store/actions';
+import { AddShareCases, CaseFilterToggle, FindCaselistPaginationMetadata, SynchronizeStateToStore } from '../../store/actions';
 import { CaseListComponent } from './case-list.component';
 
 describe('CaseListComponent', () => {
@@ -466,6 +466,10 @@ describe('CaseListComponent', () => {
     it('Share a case button is selectable when any case is selected', () => {
       component.retrieveSelections(selectedCases);
       expect(component.checkIfButtonDisabled()).toBeFalsy();
+    });
+    it('Should save share cases to store when selection is changed', () => {
+      component.retrieveSelections(selectedCases);
+      expect(spyOnDispatchToStore).toHaveBeenCalledWith(new SynchronizeStateToStore(converts.toShareCaseConverter(component.selectedCases)));
     });
     it('Should save share cases to store', () => {
       component.retrieveSelections(selectedCases);

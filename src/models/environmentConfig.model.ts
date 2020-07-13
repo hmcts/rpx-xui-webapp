@@ -3,4 +3,5 @@ export interface EnvironmentConfig {
   clientId: string;
   oAuthCallback: string;
   protocol: string;
+  oidcEnabled: string;
 }

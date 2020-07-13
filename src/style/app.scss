@@ -347,5 +347,9 @@ textarea:focus,
 select:focus,
 button:focus {
   outline: 3px solid #ffbf47;
-  outline-offset: 0; 
+  outline-offset: 0;
+}
+
+.stay-signed-in-button {
+  margin-right: 15px;
 }

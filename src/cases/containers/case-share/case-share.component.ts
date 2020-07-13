@@ -15,14 +15,12 @@ import * as fromCaseList from '../../store/reducers';
 })
 export class CaseShareComponent implements OnInit {
 
-  @Input() public backLink: string;
-
   public shareCases$: Observable<SharedCase[]>;
   public shareCases: SharedCase[];
   public orgUsers$: Observable<UserDetails[]>;
 
   constructor(public store: Store<fromCaseList.State>) {
-    this.backLink = 'cases';
+
   }
 
   public ngOnInit() {

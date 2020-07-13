@@ -6,10 +6,10 @@
     <strong style="font-weight: bold">{{timeoutModalConfig.countdown}}</strong>
   </p>
   <p>Any information you have not saved will be lost</p>
-  <button type="submit" class="govuk-button" (click)="staySignedInHandler()">
+  <button type="submit" class="govuk-button stay-signed-in-button" (click)="staySignedInHandler()">
     Stay signed in
   </button>
-  <div>
-    <a (click)="signOutHandler()" [routerLink]="">Sign out</a>
-  </div>
+  <button type="submit" class="govuk-button govuk-button--secondary" (click)="signOutHandler()">
+    Sign out
+  </button>
 </xuilib-session-dialog>

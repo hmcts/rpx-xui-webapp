@@ -25,8 +25,7 @@ export class CaseShareConfirmComponent implements OnInit {
     this.shareCases$.subscribe(shareCases => {
       this.shareCases = shareCases;
     });
-    // call api to retrieve case assigned users
-    this.store.dispatch(new LoadShareCase(this.shareCases));
+    
   }
 
 }

@@ -7,7 +7,12 @@ import {BehaviorSubject, combineLatest, Observable, Subscription} from 'rxjs';
 import { ActionBindingModel } from 'src/cases/models/create-case-actions.model';
 import * as fromCasesFeature from '../../store';
 import * as fromCaseList from '../../store/reducers';
-import { AppConfig } from './../../../app/services/ccd-config/ccd-case.config';
+import { Store, select } from '@ngrx/store';
+import { Observable, Subscription, combineLatest } from 'rxjs';
+import { Jurisdiction, CaseType, CaseState, SearchResultView, PaginationMetadata, WindowService } from '@hmcts/ccd-case-ui-toolkit';
+import { FormGroup } from '@angular/forms';
+import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
+import { SearchFilterService } from 'src/cases/services';
 
 /**
  * Entry component wrapper for Case List

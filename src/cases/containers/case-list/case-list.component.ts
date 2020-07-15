@@ -3,16 +3,12 @@ import { FormGroup } from '@angular/forms';
 import { CaseState, CaseType, Jurisdiction, PaginationMetadata, SearchResultView, WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
 import { select, Store } from '@ngrx/store';
-import {BehaviorSubject, combineLatest, Observable, Subscription} from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { ActionBindingModel } from 'src/cases/models/create-case-actions.model';
 import * as fromCasesFeature from '../../store';
 import * as fromCaseList from '../../store/reducers';
-import { Store, select } from '@ngrx/store';
-import { Observable, Subscription, combineLatest } from 'rxjs';
-import { Jurisdiction, CaseType, CaseState, SearchResultView, PaginationMetadata, WindowService } from '@hmcts/ccd-case-ui-toolkit';
-import { FormGroup } from '@angular/forms';
-import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
-import { SearchFilterService } from 'src/cases/services';
+import { SearchFilterService } from '../../../cases/services';
+import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 
 /**
  * Entry component wrapper for Case List

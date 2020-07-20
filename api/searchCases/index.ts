@@ -29,9 +29,14 @@ export async function getCases(req: express.Request, res: express.Response, next
     }
 }
 
-function prepareElasticQuery(queryParams: object, body: {size?}): object {
+function prepareElasticQuery(queryParams: {page?}, body: {size?}): {} {
     const metaCriteria = queryParams
     let caseCriteria = {}
+    let query: {} = {}
+    const matchList: {}[] = []
+    const size = body.size || 10
+    const page = (queryParams.page || 1) - 1
+    const from = page * size
 
     Object.keys(metaCriteria).map(key => {
         if (key === 'ctid' || key === 'usecase' || key === 'view' || key === 'page') {
@@ -47,8 +52,6 @@ function prepareElasticQuery(queryParams: object, body: {size?}): object {
             delete metaCriteria[key]
         }
     })
-    let query: {} = {}
-    const matchList: object[] = []
 
     if (metaCriteria) {
         for (const criterion of Object.keys(metaCriteria)) {
@@ -97,7 +100,8 @@ function prepareElasticQuery(queryParams: object, body: {size?}): object {
 
     return {
         query,
-        size: body.size,
+        from,
+        size,
     }
 }
 

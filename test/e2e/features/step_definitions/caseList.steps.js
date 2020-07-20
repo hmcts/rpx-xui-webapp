@@ -3,6 +3,8 @@ var CaseListPage = require("../pageObjects/CaseListPage");
 
 var { defineSupportCode } = require('cucumber');
 const { browser } = require("protractor");
+const BrowserWaits = require("../../support/customWaits");
+
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
     var caseListPage = new CaseListPage();
@@ -110,7 +112,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await caseListPage.clickCaseLinkAtRow(rowNum);
     });
 
-
     Then('I see case list selection feature {string} available', async function (featureCondition) {
         this.tableHeaderSelectAllInput = $(".govuk-table__header #select-all");
         this.shareCaseButton = $("#btn-share-button");
@@ -120,7 +121,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             expect(await caseListPage.tableHeaderSelectAllInput.isPresent(), "Table header Select All check box not present").to.be.true;
             expect(await caseListPage.shareCaseButton.isPresent(), "Share Case button not present").to.be.true;
             expect(await caseListPage.resetCaseSelectionLink.isPresent(), "Reset selection button not present").to.be.true;
-
         }else{
             expect(await caseListPage.tableHeaderSelectAllInput.isPresent(), "Table header Select All check box should not be  present").to.be.false;
             expect(await caseListPage.shareCaseButton.isPresent(), "Share Case button should not be  present").to.be.false;

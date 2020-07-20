@@ -33,7 +33,7 @@ function prepareElasticQuery(queryParams: {page?}, body: {size?}): {} {
     const metaCriteria = queryParams
     let caseCriteria = {}
     let query: {} = {}
-    const matchList: {}[] = []
+    const matchList: any[] = []
     const size = body.size || 10
     const page = (queryParams.page || 1) - 1
     const from = page * size
@@ -99,8 +99,8 @@ function prepareElasticQuery(queryParams: {page?}, body: {size?}): {} {
     // };
 
     return {
-        query,
         from,
+        query,
         size,
     }
 }

@@ -1,7 +1,7 @@
+import { getUserSessionTimeout, RoleGroupSessionTimeout } from '@hmcts/rpx-xui-node-lib'
 import { NextFunction, Response } from 'express'
 import { getConfigValue } from '../configuration'
 import { SESSION_TIMEOUTS } from '../configuration/references'
-import { getUserSessionTimeout, RoleGroupSessionTimeout } from '@hmcts/rpx-xui-node-lib'
 
 export async function getUserDetails(req, res: Response, next: NextFunction) {
 

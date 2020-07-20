@@ -17,7 +17,6 @@ export class CaseShareConfirmComponent implements OnInit {
   public shareCases: SharedCase[];
 
   constructor(public store: Store<fromCaseList.State>) {
-
   }
 
   public ngOnInit() {

@@ -6,6 +6,7 @@ import { of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { CaseShareService } from '../../../app/services/case/share-case.service';
 import * as fromRoot from '../../../app/store/index';
+import * as fromActions from '../actions';
 import * as shareCaseActions from '../actions/share-case.action';
 import * as shareCases from '../reducers/share-case.reducer';
 
@@ -72,4 +73,20 @@ export class ShareCaseEffects {
       );
     })
   );
+
+  @Effect()
+  public assignUsersWithCases$ = this.actions$.pipe(
+    ofType(shareCaseActions.ASSIGN_USERS_TO_CASE),
+    map((action: shareCaseActions.AssignUsersToCase) => action.payload),
+    switchMap(payload => {
+      this.payload = payload;
+      console.log('in share-case effects : assignUsersWithCases --- ' + payload.toString())
+      return this.caseShareService.assignUsersWithCases(payload).pipe(
+        map(
+          (response) => new shareCaseActions.AssignUsersToCaseSuccess(response)),
+        catchError(() => of(new fromRoot.Go({ path: ['/service-down']})))
+      );
+    })
+  );
+
 }

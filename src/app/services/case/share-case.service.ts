@@ -14,4 +14,9 @@ export class CaseShareService {
     public getUsersFromOrg(orgId: string): Observable<UserDetails[]> {
         return this.http.get<UserDetails[]>(`api/caseshare/orgs/${orgId}`);
     }
+
+  public assignUsersWithCases(sharedCases: SharedCase[]): Observable<SharedCase[]> {
+      console.log('in CaseShareService and cases and no of cases are ' + sharedCases.length)
+      return this.http.post<SharedCase[]>(`api/caseshare/case-assignments`, {sharedCases});
+  }
 }

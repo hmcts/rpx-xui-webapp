@@ -61,7 +61,7 @@ export async function postUserTermsAndConditions(req: express.Request, res: expr
         errReport = {
             apiError: error.data.message,
             apiStatusCode: error.status,
-            message: 'User Terms and Conditions route error',
+            message: 'assign user error',
         }
         res.status(error.status).send(errReport)
     }

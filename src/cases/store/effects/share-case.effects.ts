@@ -82,7 +82,6 @@ export class ShareCaseEffects {
     switchMap(payload => {
       this.payload = payload;
       const ret: Observable<SharedCase[]> = this.caseShareService.assignUsersWithCases(payload);
-      ret.subscribe(cases => { console.log('effects layer --- ' + JSON.stringify(cases) ) });
       return ret.pipe(
         map(
           (response) => new shareCaseActions.AssignUsersToCaseSuccess(response)),

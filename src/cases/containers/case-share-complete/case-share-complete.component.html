@@ -9,7 +9,7 @@
 <div *ngIf="completeScreenMode === 'PENDING'">
   <h1 class="govuk-heading-xl">Sorry, There is a problem</h1><br/>
   <p class="govuk-body">The following case were not shared: </p>
-  <div *ngFor="let acase of shareCases;">
+  <div *ngFor="let acase of newShareCases;">
     <h2 class="govuk-heading-m case-share-confirm__title">{{ acase.caseTitle }}</h2>
     <div class="case-share-confirm__caption-area">
       <div class="govuk-caption-m case-share-confirm__caption">

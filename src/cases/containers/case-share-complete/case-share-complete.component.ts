@@ -13,6 +13,8 @@ export class CaseShareCompleteComponent implements OnInit {
 
   public shareCases$: Observable<SharedCase[]>;
   public shareCases: SharedCase[];
+  public newShareCases$: Observable<SharedCase[]>;
+  public newShareCases: SharedCase[];
   public completeScreenMode: string;
 
     constructor(public store: Store<fromCaseList.State>) {
@@ -23,20 +25,18 @@ export class CaseShareCompleteComponent implements OnInit {
     this.shareCases$.subscribe(shareCases => {
       this.shareCases = shareCases;
     });
-
     this.store.dispatch(new fromCasesFeature.AssignUsersToCase(this.shareCases));
 
-    this.shareCases$ = this.store.pipe(select(fromCasesFeature.getShareCaseListState));
-    this.shareCases$.subscribe(shareCases => {
-      this.shareCases = shareCases;
+    this.newShareCases$ = this.store.pipe(select(fromCasesFeature.getShareCaseListState));
+    this.newShareCases$.subscribe(shareCases => {
+      this.completeScreenMode = this.checkIfIncomplete(shareCases)
+      this.newShareCases = shareCases
     });
-    this.completeScreenMode = this.checkIfIncomplete(this.shareCases);
+
   }
 
   private checkIfIncomplete(shareCases: SharedCase[]) {
     for (const aCase of shareCases) {
-      console.log('got a pending status or case id -- ' + aCase.caseId
-        + ' and pending length  ' + aCase.pendingShares.length)
       if (aCase.pendingShares != null && aCase.pendingShares.length > 0) {
         return 'PENDING';
       }

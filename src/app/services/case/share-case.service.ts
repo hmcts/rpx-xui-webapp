@@ -17,8 +17,6 @@ export class CaseShareService {
     }
 
   public assignUsersWithCases(sharedCases: SharedCase[]): Observable<SharedCase[]> {
-      const ret: Observable<SharedCase[]> = this.http.post<SharedCase[]>(`api/caseshare/case-assignments`, {sharedCases});
-      ret.subscribe(cases => { console.log('service layer --- ' + JSON.stringify(cases) ) });
-      return ret;
+      return this.http.post<SharedCase[]>(`api/caseshare/case-assignments`, {sharedCases});
   }
 }

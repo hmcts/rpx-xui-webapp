@@ -93,7 +93,6 @@ export function shareCasesReducer(state: ShareCasesState = initialSharedCasesSta
         shareCases: action.payload
       };
     case ShareCasesActions.ASSIGN_USERS_TO_CASE_SUCCESS:
-      console.log(' in reducer  ' + JSON.stringify(action.payload))
       return {
         ...state,
         shareCases: action.payload

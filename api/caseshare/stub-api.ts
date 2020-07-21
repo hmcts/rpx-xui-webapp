@@ -93,14 +93,13 @@ export function getCaseById(req: EnhancedRequest, res: Response) {
 
 export function assignUsersToCase(req: EnhancedRequest, res: Response) {
   const shareCases: SharedCase[] = req.body.sharedCases.slice()
-  console.log(' entry value '  + JSON.stringify(req.body.sharedCases))
   const updatedSharedCases: SharedCase[] = []
   for (const aCase of shareCases) {
     let newPendingShares = aCase.pendingShares.slice()
     const newSharedWith = aCase.sharedWith.slice()
     for (const user of aCase.pendingShares) {
+
       const assignmentId = user.idamId
-      console.log('processing assignment id ' + assignmentId + ' for case id ' + aCase.caseId)
       if (assignmentId === 'u222222') {
         newSharedWith.push(user)
         newPendingShares = []
@@ -117,12 +116,6 @@ export function assignUsersToCase(req: EnhancedRequest, res: Response) {
       sharedWith: newSharedWith,
     }
     updatedSharedCases.push(newSharedCase)
-  }
-
-  console.log(' before exit updatedSharedCases '  + JSON.stringify(updatedSharedCases))
-  for (const aCase of updatedSharedCases) {
-    console.log('API layer ---  case id -- ' + aCase.caseId
-      + ' and pending length  ' + aCase.pendingShares.length)
   }
   return res.send(updatedSharedCases)
 }

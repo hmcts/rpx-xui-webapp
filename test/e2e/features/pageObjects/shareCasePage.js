@@ -3,6 +3,8 @@ const BrowserWaits = require('../../support/customWaits');
 const { browser, $ } = require('protractor');
 
 const ShareCaseData = require('../../utils/shareCaseData');
+
+const CucumberReportLog = require("../../support/reportLogger");
 class ShareCasePage {
 
     constructor() {
@@ -16,6 +18,8 @@ class ShareCasePage {
 
         //User selection element
         this.userEmailInput = $('#add-user xuilib-user-select .govuk-input');
+
+        this.userFilterContainer = $('.mat-autocomplete-panel');
         this.userFilterList = $$('.mat-autocomplete-panel .mat-option-text');
         this.addUserBtn = $('#btn-add-user');
 
@@ -71,6 +75,7 @@ class ShareCasePage {
                 }
             }
             ShareCaseData.AddCaseShareData(caseId,sharedWith,tobeAdded,tobeRemoved);
+            CucumberReportLog.AddJson(ShareCaseData.getCaseWithId(caseId));
         } 
     }
 
@@ -96,6 +101,8 @@ class ShareCasePage {
     }
 
     async getFilteredUsersCount(){
+
+        await BrowserWaits.waitForSeconds(2);
         return await this.userFilterList.count();
     }
 
@@ -118,12 +125,14 @@ class ShareCasePage {
             let usernameEmailText = await user.getText();
             userNameEmails.push(usernameEmailText);
         }
+        CucumberReportLog.AddMessage("Filtered Users : " + JSON.stringify(userNameEmails));
         return userNameEmails; 
     }
 
 
     async selectUserFromFilteredList(userNum){
-        let userToSelect = await this.userFilterList.get(userNum - 1); 
+        let userToSelect = await this.userFilterList.get(userNum - 1);
+        CucumberReportLog.AddMessage("Selected User : "+await userToSelect.getText()); 
         return await userToSelect.click();
     }
 
@@ -135,6 +144,7 @@ class ShareCasePage {
         await this.addUserBtn.click();
         this.testData_lastAddedUser = this.testData_lastSelectedUser;
         this.testData_lastSelectedUser = "";
+        CucumberReportLog.AddMessage("Click Add with user selected : " + this.testData_lastAddedUser );
         await this.testData_markUserWithEmailTobeAdded(this.testData_lastAddedUser);
     }
 
@@ -149,8 +159,13 @@ class ShareCasePage {
     }
 
     async clickDeselectCase(caseNum){
-        let selectedCase = await this.selectedCases.get(caseNum - 1); 
-        await await selectedCase.$('#btn-deselect-case').click();
+        let selectedCase = await this.selectedCases.get(caseNum - 1);
+        CucumberReportLog.AddMessage("Deselecting Case " + await selectedCase.getText()); 
+        await selectedCase.$('#btn-deselect-case').click();  
+        
+        await BrowserWaits.waitForCondition(async () => {
+            return !(await selectedCase.isPresent()); 
+        });
     }
 
     async clickCaseDetailsExpandCollapseBtn(caseNum){
@@ -165,7 +180,7 @@ class ShareCasePage {
 
     async isCaseContentDisplayed(caseNum){
         let selectedCase = await this.selectedCases.get(caseNum - 1); 
-        return await selectedCase.$('.govuk-accordion__section-content').isDisplayed();
+        return await selectedCase.$('.govuk-accordion__section--expanded').isPresent();
     }
 
     async getUsersCount(caseNum){
@@ -198,13 +213,16 @@ class ShareCasePage {
         
         if (actionLinktext === "Remove"){
             ShareCaseData.MarkUserToUnShare(caseid,userEmail);
-            console.log("*********** Marking to Remove "+caseId+" : email "+userEmail);
+            CucumberReportLog.AddMessage(caseid + " Case user uis marked for Unshare "+userEmail);
+            console.log("*********** Marking to Remove " + caseid+" : email "+userEmail);
         } else if (actionLinkLabel.includes("added")){
             ShareCaseData.CancelMarkedForShare(caseid, userEmail);
+            CucumberReportLog.AddMessage(caseid + " Case user uis marked for Share " + userEmail);
             console.log("*********** Cancel to be Added " + caseId + " : email " + userEmail);
  
         }else{
-            ShareCaseData.CancelMarkedForUnShare(caseid, userEmail); 
+            ShareCaseData.CancelMarkedForUnShare(caseid, userEmail);
+            CucumberReportLog.AddMessage(caseid + " canceled Marked or Unshare " + userEmail); 
             console.log("*********** Cancel to be removed " + caseId + " : email " + userEmail); 
         }
     }
@@ -329,6 +347,7 @@ class ShareCasePage {
         if (userToSelect > 0){
             await this.selectUserFromFilteredList(userToSelect);
             this.testData_lastSelectedUser = email;
+            CucumberReportLog.AddMessage("Selected a user not shared with any case : "+email);
         }else{
             throw Error("AllUsers shared with all selected cases. cannot proceed with test step to select a user not shared with atleast one case");
         }
@@ -350,6 +369,7 @@ class ShareCasePage {
         if (userToSelect > 0) {
             await this.selectUserFromFilteredList(userToSelect);
             this.testData_lastSelectedUser = email;
+            CucumberReportLog.AddMessage("Selected a user  shared with atleast one case : " + email);
         } else {
             throw Error("No user is list is shared with any case already. cannot proceed with test step to select a user not shared with atleast one case");
         }
@@ -378,7 +398,7 @@ class ShareCasePage {
     async isAnyUserMarkedToBeRemoved() {
         let casesCount = await this.casesCount();
         for (let i = 1; i <= casesCount; i++) {
-            let usersCountInCase = await this.getUsersCount(caseCounter);
+            let usersCountInCase = await this.getUsersCount(i);
             for (let userCounter = 1; userCounter <= usersCountInCase; userCounter++) {
                 let userActionLabel = await this.getActionStatusLabelForUser(i, userCounter);
                 if (userActionLabel.toLowerCase().includes("remove")) {
@@ -400,9 +420,10 @@ class ShareCasePage {
                 if (actionLinktext.toLowerCase().includes("remove")){
 
                     if(!(await this.isCaseContentDisplayed(caseCounter))){
+                        CucumberReportLog.AddMessage("Expanding Case at pos " + caseCounter);
                         await this.clickCaseDetailsExpandCollapseBtn(caseCounter);
                     }
-
+                    CucumberReportLog.AddMessage("Click Remove link for  case pos" + caseCounter + " user pos " + userCounter);
                     await this.clickActionLinkForUser(caseCounter, userCounter);
                     return;
                 }
@@ -439,8 +460,6 @@ class ShareCasePage {
                     issuesList.push(email + "marked to remove in not persisted " + caseId);
                 }
             } 
-
-f
         } 
         return issuesList;
     }

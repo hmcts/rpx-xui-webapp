@@ -100,8 +100,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     When('I click Remove link for a user already shared a case', async function () {
         await shareCasePage.clickRemoveForAUserInListedCases();
-        expect(await shareCasePage.isLastAddedUserListedInAllCases(), "case(s) in share case list does not have user in list").to.be.true
-        expect(await shareCasePage.isLastAddedUserMarkedTobeAddedInAnyCase(), "case(s) in share case list not marked to be . added").to.be.true
     });
 
     Then('I see a user is marked to be removed in a listed case', async function () {
@@ -120,15 +118,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     //Share Case Confirm Selection Steps
-
-    Then('I see Share Case check and confirm page', async function () {
-        expect(await shareCaseCheckAndConfirmPage.amOnPage(),"Share Case Check and confirm page not displayed").to.be.true;
-    });
-
-    Then('I see Share Case changes are listed as modified in share case page', async function () {
-        let issues = await shareCaseCheckAndConfirmPage.validateShareCaseChangesForListedCases();
-        expect(issues.length, "Share Case check and confirm not matching expected : "+JSON.stringify(issues)).to.equal(0);
-    });
 
  
  

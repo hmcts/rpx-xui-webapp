@@ -1,4 +1,4 @@
-@caseShare @fullfunctional 
+@caseShare @fullfunctional @all 
 Feature: Share Case page features
     User can share case with other users within organisation    
 
@@ -7,7 +7,7 @@ Feature: Share Case page features
         Given I am logged into Expert UI with valid user details
         Then I should be redirected to EUI dashboard page
 
-    @all
+    @all 
     Scenario: Verify User can Deselect a case from list of selected cases
         When I click on Case list
         Then I am on case list page
@@ -122,7 +122,6 @@ Feature: Share Case page features
         Then I see share case page, case 2 has details expanded
         Then I see share case page, case 3 has details expanded
 
-@test
     Scenario: Verify Add user to share a case with
         When I click on Case list
         Then I am on case list page
@@ -148,7 +147,6 @@ Feature: Share Case page features
         Then I see Share Case check and confirm page
         Then I see Share Case changes are listed as modified in share case page
 
-    @test
     Scenario: Verify Add a user with atleast one case already shared
         When I click on Case list
         Then I am on case list page
@@ -173,8 +171,7 @@ Feature: Share Case page features
         When I click continue in share case page
         Then I see Share Case check and confirm page
         Then I see Share Case changes are listed as modified in share case page
-
-    @test 
+        @
     Scenario: Verify Remove user to share a case with
         When I click on Case list
         Then I am on case list page
@@ -194,9 +191,36 @@ Feature: Share Case page features
         When I click continue in share case page
         Then I see Share Case check and confirm page
         Then I see Share Case changes are listed as modified in share case page
+@test
+    Scenario: Verify add and Remove user to share a case with
+        When I click on Case list
+        Then I am on case list page
+        When I select search criteria jurisdiction "Family Divorce" case type "Divorce case - v115.00" state "Any" in case list page
+        When I click search Apply in case list page
+        Then I wait to see case results displayed
+        Then I see case list table header has Select all checkbox column
+        Then I see case list table each case row has checkbox column
+        When I select case at row 1 in case list page
+        When I select case at row 2 in case list page
+        When I select case at row 3 in case list page
+        When I click Share Case button
+        Then I see Share Case page is displayed
+        Then I see Share case page has 3 cases listed
+        When I enter text "@" in user email in share case page
+        Then I see users list filtered with containing text "@"
+        When I select a user not shared with atleast one case listed in share case page
+        Then I see user Add button is enabled in share case page
+        When I click Add user button in share case page
+        When I click Remove link for a user already shared a case
+        Then I see last added user is marked as to be added in cases
+        Then I see a user is marked to be removed in a listed case
+        When I click continue in share case page
+        Then I see Share Case check and confirm page
+        Then I see Share Case changes are listed as modified in share case page
+
 
     @test
-    Scenario: Verify add and Remove user to share a case with
+    Scenario: Verify add and Remove user to share a case with persist on moving awaiy from share ase page
         When I click on Case list
         Then I am on case list page
         When I select search criteria jurisdiction "Family Divorce" case type "Divorce case - v115.00" state "Any" in case list page
@@ -235,4 +259,6 @@ Feature: Share Case page features
         When I click continue in share case page
         Then I see Share Case check and confirm page
         Then I see Share Case changes are listed as modified in share case page
+
+
 

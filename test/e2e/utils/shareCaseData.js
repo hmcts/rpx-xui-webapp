@@ -34,14 +34,14 @@ class ShareCaseData
     }
 
     MarkUserToUnShare(caseid, email) {
-        let caseData = getCaseWithId(caseid);
-        console.log("******* Test data Tracking: => Marking TO BE REMOVED : " + caseId + " : " + email);
+        let caseData = this.getCaseWithId(caseid);
+        console.log("******* Test data Tracking: => Marking TO BE REMOVED : " + caseid + " : " + email);
 
         caseData.markedForUnShare.push(email);
     }
 
     CancelMarkedForShare(caseid, email){
-        let caseData = thus.getCaseWithId(caseid);
+        let caseData = this.getCaseWithId(caseid);
         var index = caseData.markedForShare.indexOf(email);
         if (index > -1) {
             console.log("******* Test data Tracking: => cancel TO BE ADDED : " + caseid + " : " + email);

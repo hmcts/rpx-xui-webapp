@@ -10,6 +10,7 @@ router.use(authInterceptor)
 
 router.get('/caseworkers/:uid/jurisdictions', amendedJurisdictions.getJurisdictions)
 
+// elastic search endpoint
 router.post('/internal/searchCases', searchCases.getCases)
 
 router.get('/*', proxy.get)

@@ -7,7 +7,7 @@ import authInterceptor from './auth'
 const logger = log4jui.getLogger('proxy')
 
 export const onProxyError = (err, req, res) => {
-    logger._logger.error(err)
+    logger.error(err)
     res.status(500).send({
         error: 'Error when connecting to remote server',
         status: 504,
@@ -20,11 +20,11 @@ export const applyProxy = (app, config) => {
         logLevel: getConfigValue(LOGGING),
         logProvider: ()  => {
             return {
-                debug: msg => logger._logger.debug(msg),
-                error: msg => logger._logger.error(msg),
-                info: msg => logger._logger.info(msg),
-                log: msg => logger._logger.info(msg),
-                warn: msg => logger._logger.warn(msg),
+                debug: msg => logger.debug(msg),
+                error: msg => logger.error(msg),
+                info: msg => logger.info(msg),
+                log: msg => logger.info(msg),
+                warn: msg => logger.warn(msg),
             }
         },
         onError: onProxyError,

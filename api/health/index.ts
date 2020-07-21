@@ -1,4 +1,5 @@
 import * as healthcheck from '@hmcts/nodejs-healthcheck'
+import {SESSION, xuiNode} from '@hmcts/rpx-xui-node-lib'
 import {getConfigValue, showFeature} from '../configuration'
 import {
   FEATURE_REDIS_ENABLED,
@@ -10,7 +11,11 @@ import {
   SERVICES_IDAM_LOGIN_URL,
   // SERVICES_TERMS_AND_CONDITIONS_URL
 } from '../configuration/references'
+import * as log4jui from '../lib/log4jui'
+import {JUILogger} from '../lib/models'
 import {redisHealth} from './redis.health'
+
+const logger: JUILogger = log4jui.getLogger('Health')
 
 export const checkServiceHealth = service => healthcheck.web(`${service}/health`, {
   deadline: 6000,
@@ -39,15 +44,6 @@ export const healthChecks = {
   }
 }*/
 
-if (showFeature(FEATURE_REDIS_ENABLED)) {
-  healthChecks.checks = {...healthChecks.checks, ...{
-      redis: healthcheck.raw(async () => {
-        const status = await redisHealth()
-        return status ? healthcheck.up() : healthcheck.down()
-      }),
-    }}
-}
-
 /**
  * Add Reform standard Health Checks for /health and /health/liveness
  * to the application.
@@ -57,5 +53,23 @@ if (showFeature(FEATURE_REDIS_ENABLED)) {
  * @param app
  */
 export const addReformHealthCheck = app => {
-  healthcheck.addTo(app, healthChecks)
+
+  if (showFeature(FEATURE_REDIS_ENABLED)) {
+    xuiNode.on(SESSION.EVENT.REDIS_CLIENT_READY, (redisClient: any) => {
+      app.locals.redisClient = redisClient
+      healthChecks.checks = {...healthChecks.checks, ...{
+          redis: healthcheck.raw(async () => {
+            const status = await redisHealth()
+            return status ? healthcheck.up() : healthcheck.down()
+          }),
+        }}
+
+      healthcheck.addTo(app, healthChecks)
+    })
+    xuiNode.on(SESSION.EVENT.REDIS_CLIENT_ERROR, (error: any) => {
+      logger.error('redis Client error is', error)
+    })
+  } else {
+    healthcheck.addTo(app, healthChecks)
+  }
 }

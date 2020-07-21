@@ -15,6 +15,7 @@ export const APP_INSIGHTS_KEY = 'secrets.rpx.appinsights-instrumentationkey-mc'
 export const COOKIES_TOKEN = 'cookies.token'
 export const COOKIES_USER_ID = 'cookies.userId'
 export const COOKIES_SESSION_ID = 'cookies.sessionId'
+export const COOKIE_ROLES = 'cookies.roles'
 
 export const LOGGING = 'logging'
 export const MAX_LOG_LINE = 'maxLogLine'

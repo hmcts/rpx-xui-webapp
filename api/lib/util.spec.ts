@@ -6,7 +6,7 @@ import * as sinonChai from 'sinon-chai'
 import * as log4jui from './log4jui'
 chai.use(sinonChai)
 
-import {asyncReturnOrError, dotNotation, exists, isObject, isUserTandCPostSuccessful, shorten, some, valueOrNull} from './util'
+import {dotNotation, exists, isObject, isUserTandCPostSuccessful, shorten, some, valueOrNull} from './util'
 
 describe('util', () => {
     describe('isUserTandCPostSuccessful', () => {
@@ -112,42 +112,6 @@ describe('util', () => {
             const object = {access_token: '123', bearer_token: '321'}
             const result = exists(object, 'access_token')
             expect(result).to.equal(true)
-        })
-    })
-    describe('asyncReturnOrError', () => {
-
-        let sandbox
-        let spyObj
-
-        beforeEach( () => {
-            sandbox = sinon.createSandbox()
-            spyObj = {
-                error: sandbox.spy(),
-            }
-            sandbox.stub(log4jui, 'getLogger').returns(spyObj)
-        })
-
-        afterEach( () => {
-            sandbox.restore()
-        })
-
-        it('Should return data if promise is returned', async () => {
-            const promise = Promise.resolve(1)
-
-            const result = await asyncReturnOrError(promise, 'string', null, null, true)
-            expect(result).to.equal(1)
-        })
-
-        it('should log the error and return null on error, with response.status if setResponse is false', async () => {
-            const promise = Promise.reject({
-                response: {
-                    status: 403
-                }
-            })
-            const logger = log4jui.getLogger('util')
-            const result = await asyncReturnOrError(promise, 'string', null, logger, false)
-            expect(logger.error).to.have.been.calledWith('string')
-            expect(result).to.be.null
         })
     })
 })

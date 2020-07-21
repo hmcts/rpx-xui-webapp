@@ -8,7 +8,7 @@ import * as fromCaseList from '../../store/reducers';
 @Component({
   selector: 'exui-case-share-complete',
   templateUrl: './case-share-complete.component.html',
-  styleUrls: ['./case-share-complete.component.scss']
+  styleUrls: ['case-share-complete.component.scss']
 })
 export class CaseShareCompleteComponent implements OnInit {
 

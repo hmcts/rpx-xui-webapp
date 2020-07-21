@@ -92,34 +92,38 @@ export function getCaseById(req: EnhancedRequest, res: Response) {
 }
 
 export function assignUsersToCase(req: EnhancedRequest, res: Response) {
-
   const shareCases: SharedCase[] = req.body.sharedCases.slice()
   console.log(' entry value '  + JSON.stringify(req.body.sharedCases))
   const updatedSharedCases: SharedCase[] = []
-  let tempCase
   for (const aCase of shareCases) {
-    tempCase = aCase
-    let index = 0
+    let newPendingShares = aCase.pendingShares.slice()
+    const newSharedWith = aCase.sharedWith.slice()
     for (const user of aCase.pendingShares) {
-      index++
       const assignmentId = user.idamId
+      console.log('processing assignment id ' + assignmentId + ' for case id ' + aCase.caseId)
       if (assignmentId === 'u222222') {
-        tempCase.pendingShares.splice(index, 1)
-        console.log('about to push user to sharedwith '  + tempCase.sharedWith.length + ' for case id ' + tempCase.caseId)
-        tempCase.sharedWith.push(user)
-        console.log('after  push to sharedwith '  + tempCase.sharedWith.length + ' for case id ' + tempCase.caseId )
+        newSharedWith.push(user)
+        newPendingShares = []
       } else  if (assignmentId === 'u333333') {
-        //keep the pending shares as we they cant be added
+        //keep the pending shares as it is we they cant be added
 
       } else  {
         return res.sendStatus(500)
       }
     }
-    updatedSharedCases.push(tempCase)
+    const newSharedCase = {
+      ...aCase,
+      pendingShares: newPendingShares,
+      sharedWith: newSharedWith,
+    }
+    updatedSharedCases.push(newSharedCase)
   }
-  console.log(' before exit sharedwith '  + tempCase.sharedWith.length + ' for case id ' + tempCase.caseId)
 
   console.log(' before exit updatedSharedCases '  + JSON.stringify(updatedSharedCases))
+  for (const aCase of updatedSharedCases) {
+    console.log('API layer ---  case id -- ' + aCase.caseId
+      + ' and pending length  ' + aCase.pendingShares.length)
+  }
   return res.send(updatedSharedCases)
 }
 

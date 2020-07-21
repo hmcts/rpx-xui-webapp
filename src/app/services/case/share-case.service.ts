@@ -4,6 +4,7 @@ import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.mode
 import { UserDetails } from '@hmcts/rpx-xui-common-lib/lib/models/user-details.model';
 import { Observable } from 'rxjs';
 
+
 @Injectable()
 export class CaseShareService {
     constructor(private readonly http: HttpClient) {}
@@ -16,7 +17,8 @@ export class CaseShareService {
     }
 
   public assignUsersWithCases(sharedCases: SharedCase[]): Observable<SharedCase[]> {
-      console.log('in CaseShareService and cases and no of cases are ' + sharedCases.length)
-      return this.http.post<SharedCase[]>(`api/caseshare/case-assignments`, {sharedCases});
+      const ret: Observable<SharedCase[]> = this.http.post<SharedCase[]>(`api/caseshare/case-assignments`, {sharedCases});
+      ret.subscribe(cases => { console.log('service layer --- ' + JSON.stringify(cases) ) });
+      return ret;
   }
 }

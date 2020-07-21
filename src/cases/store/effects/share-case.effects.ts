@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import {SharedCase} from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { of } from 'rxjs';
+import {Observable, of} from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { CaseShareService } from '../../../app/services/case/share-case.service';
 import * as fromRoot from '../../../app/store/index';
@@ -75,13 +76,14 @@ export class ShareCaseEffects {
   );
 
   @Effect()
-  public assignUsersWithCases$ = this.actions$.pipe(
+  public assignUsersWithCases1$ = this.actions$.pipe(
     ofType(shareCaseActions.ASSIGN_USERS_TO_CASE),
     map((action: shareCaseActions.AssignUsersToCase) => action.payload),
     switchMap(payload => {
       this.payload = payload;
-      console.log('in share-case effects : assignUsersWithCases --- ' + payload.toString())
-      return this.caseShareService.assignUsersWithCases(payload).pipe(
+      const ret: Observable<SharedCase[]> = this.caseShareService.assignUsersWithCases(payload);
+      ret.subscribe(cases => { console.log('effects layer --- ' + JSON.stringify(cases) ) });
+      return ret.pipe(
         map(
           (response) => new shareCaseActions.AssignUsersToCaseSuccess(response)),
         catchError(() => of(new fromRoot.Go({ path: ['/service-down']})))

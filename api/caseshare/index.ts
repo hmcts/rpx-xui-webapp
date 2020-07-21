@@ -122,8 +122,7 @@ export async function getCaseById(req: EnhancedRequest, res: Response) {
 }
 
 export async function postShareCasesToUsers(req: EnhancedRequest, res: Response) {
-  console.log('req.body.toLocaleString() ' + req.body.toLocaleString())
-  console.log('req.body.sharedcases ' + req.body.sharedCases[0].case_id)
+
   if (stub) {
     return stubAPI.assignUsersToCase(req, res)
   } else {

@@ -90,7 +90,7 @@ app.use('/api/healthCheck', healthCheck)
 }*/
 
 app.get('/api/configuration', (req, res) => {
-    res.send(showFeature(req.query.configurationKey))
+    res.send(showFeature(req.query.configurationKey as string))
 })
 
 // TODO: move to proxy route as below

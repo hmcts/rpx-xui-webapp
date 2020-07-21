@@ -114,7 +114,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
       this.onResultsViewHandler(resultView));
 
 
-    if (!this.searchFilterService.getElasticSearch()) {
+    if (!this.searchFilterService.isElasticSearch()) {
       this.findCaseListPaginationMetadata(this.getEvent());
     } else {
       this.getElasticSearchResults(this.getEvent());
@@ -188,7 +188,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   }
 
   public onResultsViewHandler = resultView => {
-    if (this.searchFilterService.getElasticSearch()) {
+    if (this.searchFilterService.isElasticSearch()) {
       const paginationDataFromResult: PaginationMetadata = {
         total_results_count: resultView.total,
         total_pages_count: Math.ceil(resultView.total / this.appConfig.getPaginationPageSize())
@@ -222,7 +222,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
       this.paginationMetadata.total_results_count = paginationMetadata.total_results_count;
 
       const event = this.getEvent();
-      if ( event != null) {
+      if (event != null && !this.searchFilterService.isElasticSearch()) {
         this.store.dispatch(new fromCasesFeature.ApplyCaselistFilter(event));
       }
     }
@@ -232,8 +232,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.searchFilterService.setElasticSearch();
   }
 
-  getElasticSearch(): boolean {
-    return this.searchFilterService.getElasticSearch();
+  isElasticSearch(): boolean {
+    return this.searchFilterService.isElasticSearch();
   }
 
 
@@ -312,7 +312,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
    */
   public applyChangePage(event) {
     this.page = event.selected.page;
-    if (!this.searchFilterService.getElasticSearch()) {
+    if (!this.searchFilterService.isElasticSearch()) {
       this.findCaseListPaginationMetadata(this.getEvent());
     } else {
       this.getElasticSearchResults(this.getEvent());
@@ -328,7 +328,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public applyFilter(event) {
     this.page = event.selected.page;
     this.selected = event.selected;
-    if (!this.searchFilterService.getElasticSearch()) {
+    if (!this.searchFilterService.isElasticSearch()) {
       this.findCaseListPaginationMetadata(this.getEvent());
     } else {
       this.getElasticSearchResults(this.getEvent());

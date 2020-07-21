@@ -24,7 +24,7 @@ export class SearchFilterService {
     this.elasticSearch = !this.elasticSearch;
   }
 
-  getElasticSearch(): boolean {
+  isElasticSearch(): boolean {
     return this.elasticSearch;
   }
 
@@ -33,7 +33,7 @@ export class SearchFilterService {
     const { jurisdictionId, caseTypeId, metadataFilters, caseFilters, view } = this.getParams(payload);
 
     // return this.ccdSearchService.search(jurisdictionId, caseTypeId, metadataFilters, caseFilters, view) as any;
-    return this.getElasticSearch() ?
+    return this.isElasticSearch() ?
           this.ccdSearchService.searchCases(caseTypeId, metadataFilters, caseFilters, view) as any :
           this.ccdSearchService.search(jurisdictionId, caseTypeId, metadataFilters, caseFilters, view) as any;
   }

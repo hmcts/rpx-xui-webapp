@@ -37,10 +37,9 @@ export class CaseShareCompleteComponent implements OnInit {
   }
 
   public checkIfIncomplete(shareCases: SharedCase[]) {
-    for (const aCase of shareCases) {
-      if (aCase.pendingShares != null && aCase.pendingShares.length > 0) {
-        return 'PENDING';
-      }
+    const isPendingShares = (aCase) => aCase.pendingShares != null && aCase.pendingShares.length > 0;
+    if ( shareCases.some(isPendingShares)) {
+      return 'PENDING';
     }
     return 'COMPLETE';
   }

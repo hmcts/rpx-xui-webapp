@@ -81,8 +81,7 @@ export class ShareCaseEffects {
     map((action: shareCaseActions.AssignUsersToCase) => action.payload),
     switchMap(payload => {
       this.payload = payload;
-      const ret: Observable<SharedCase[]> = this.caseShareService.assignUsersWithCases(payload);
-      return ret.pipe(
+      return this.caseShareService.assignUsersWithCases(payload).pipe(
         map(
           (response) => new shareCaseActions.AssignUsersToCaseSuccess(response)),
         catchError(() => of(new fromRoot.Go({ path: ['/service-down']})))

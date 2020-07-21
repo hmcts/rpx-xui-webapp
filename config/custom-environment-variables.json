@@ -79,6 +79,10 @@
     "redisEnabled": {
       "__name": "FEATURE_REDIS_ENABLED",
       "__format": "json"
+    },
+    "oidcEnabled": {
+      "__name": "FEATURE_OIDC_ENABLED",
+      "__format":"json"
     }
   },
   "helmet": {

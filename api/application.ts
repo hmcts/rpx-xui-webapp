@@ -35,7 +35,6 @@ import routes from './routes'
 
 export const app = express()
 if (showFeature(FEATURE_HELMET_ENABLED)) {
-    console.log('Helmet enabled')
     app.use(helmet(getConfigValue(HELMET)))
 }
 

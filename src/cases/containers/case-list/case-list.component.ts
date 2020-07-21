@@ -114,7 +114,11 @@ export class CaseListComponent implements OnInit, OnDestroy {
       this.onResultsViewHandler(resultView));
 
 
-    this.findCaseListPaginationMetadata(this.getEvent());
+    if (!this.searchFilterService.getElasticSearch()) {
+      this.findCaseListPaginationMetadata(this.getEvent());
+    } else {
+      this.getElasticSearchResults(this.getEvent());
+    }
   }
 
   public listenToPaginationMetadata = () => {
@@ -184,6 +188,13 @@ export class CaseListComponent implements OnInit, OnDestroy {
   }
 
   public onResultsViewHandler = resultView => {
+    if (this.searchFilterService.getElasticSearch()) {
+      const paginationDataFromResult: PaginationMetadata = {
+        total_results_count: resultView.total,
+        total_pages_count: Math.ceil(resultView.total / this.appConfig.getPaginationPageSize())
+      }
+      this.onPaginationSubscribeHandler(paginationDataFromResult);
+    }
 
     this.resultsArr = resultView.results;
     this.resultView = {
@@ -287,6 +298,11 @@ export class CaseListComponent implements OnInit, OnDestroy {
       this.store.dispatch(new fromCasesFeature.FindCaselistPaginationMetadata(event));
     }
   }
+  public getElasticSearchResults(event) {
+    if (event != null) {
+      this.store.dispatch(new fromCasesFeature.ApplyCaselistFilter(event));
+    }
+  }
 
   /**
    * applyChangePage
@@ -296,7 +312,11 @@ export class CaseListComponent implements OnInit, OnDestroy {
    */
   public applyChangePage(event) {
     this.page = event.selected.page;
-    this.findCaseListPaginationMetadata(this.getEvent());
+    if (!this.searchFilterService.getElasticSearch()) {
+      this.findCaseListPaginationMetadata(this.getEvent());
+    } else {
+      this.getElasticSearchResults(this.getEvent());
+    }
   }
 
   /**
@@ -308,7 +328,11 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public applyFilter(event) {
     this.page = event.selected.page;
     this.selected = event.selected;
-    this.findCaseListPaginationMetadata(this.getEvent());
+    if (!this.searchFilterService.getElasticSearch()) {
+      this.findCaseListPaginationMetadata(this.getEvent());
+    } else {
+      this.getElasticSearchResults(this.getEvent());
+    }
   }
 
   public toggleFilter() {

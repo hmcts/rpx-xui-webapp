@@ -23,7 +23,7 @@ export async function handleGet(redactionPath: string, req: EnhancedRequest): Pr
         const response = await http.get(redactionPath, { headers })
         return response
     } catch (e) {
-        logger.error(e.message)
+        e.message ? logger.error(e.message) : logger.error('Error in redaction-service get response')
         throw e
     }
 
@@ -44,7 +44,7 @@ export async function handlePost(redactionPath: string, body: Redaction, req: En
         const response = await http.post(redactionPath, body, { headers })
         return response
     } catch (e) {
-        logger.error(e.message)
+        e.message ? logger.error(e.message) : logger.error('Error in redaction-service post response')
         throw e
     }
 
@@ -68,7 +68,7 @@ export async function handlePostBlob(redactionPath: string, body: any, req: Enha
         })
         return response
     } catch (e) {
-        logger.error(e.message)
+        e.message ? logger.error(e.message) : logger.error('Error in redaction-service postBlob response')
         throw e
     }
 
@@ -89,7 +89,7 @@ export async function handlePut(redactionPath: string, body: Redaction, req: Enh
         const response = await http.put(redactionPath, body, { headers })
         return response
     } catch (e) {
-        logger.error(e.message)
+        e.message ? logger.error(e.message) : logger.error('Error in redaction-service put response')
         throw e
     }
 
@@ -109,7 +109,7 @@ export async function handleDelete(redactionPath: string, req: EnhancedRequest):
         const response = await http.delete(redactionPath, { headers })
         return response
     } catch (e) {
-        logger.error(e.message)
+        e.message ? logger.error(e.message) : logger.error('Error in redaction-service delete response')
         throw e
     }
 

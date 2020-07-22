@@ -2,14 +2,14 @@ import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.mode
 import { UserDetails } from '@hmcts/rpx-xui-common-lib/lib/models/user-details.model'
 import { plainToClass } from 'class-transformer'
 import { Response } from 'express'
-import { OrganisationModel } from '../../src/cases/models/organisation/organisation.model'
+//import { OrganisationModel } from '../../src/cases/models/organisation/organisation.model'
 import { EnhancedRequest } from '../lib/models'
 import { DataBaseModel } from './models/data-base.model'
 // @ts-ignore
 import * as dbJson from './stubs/db.json'
 
 const dbModule = plainToClass(DataBaseModel, dbJson)
-const orgs: OrganisationModel[] = dbModule.organisations
+const orgs: any[] = dbModule.organisations
 const cases: SharedCase[] = dbModule.sharedCases
 
 export function getRoot(req: EnhancedRequest, res: Response) {
@@ -53,7 +53,7 @@ export function getUserByOrgAndUserId(req: EnhancedRequest, res: Response) {
 }
 
 export function searchUsers(req: EnhancedRequest, res: Response) {
-    const searchText = req.query.q
+    const searchText = req.query.q as string
     const org = getOrgById(req.params.orgId)
     if (!org) {
       return res.status(404).send('{"errorMessage": "Organisation is not found}"')

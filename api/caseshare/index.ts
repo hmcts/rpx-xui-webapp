@@ -1,14 +1,14 @@
-import {SharedCase} from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
-import * as express from 'express';
+import {SharedCase} from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model'
+import * as express from 'express'
 import { Response } from 'express'
 import * as fromCasesFeature from '../../src/cases/store';
-import {CaseAssignmentResponse} from '../caseshare/responses/assignCaseResponse';
+import {CaseAssignmentResponse} from '../caseshare/responses/assignCaseResponse'
 import { getConfigValue } from '../configuration'
 import {SERVICES_CASE_SHARE_API_URL, STUB} from '../configuration/references'
 import {http} from '../lib/http'
 import { EnhancedRequest } from '../lib/models'
-import {setHeaders} from '../lib/proxy';
-import {postCaseAssignment} from './caseShareUtil';
+import {setHeaders} from '../lib/proxy'
+import {postCaseAssignment} from './caseShareUtil'
 import * as stubAPI from './stub-api'
 
 const stub: string = getConfigValue(STUB)
@@ -166,7 +166,6 @@ export async function postShareCasesToUsersReal(req: express.Request, res: expre
           "case_type_id" : 	aCase.caseTitle,
         }
         const response = await http.post(assignUrl, payload, { headers })
-        const postResponse = response.data as CaseAssignmentResponse
         if ( response.status === 200) {
           newSharedWith.push(user)
           newPendingShares.splice(index, 1)

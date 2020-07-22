@@ -9,6 +9,7 @@ import { CaseFilterToggle, FindCaselistPaginationMetadata } from '../../store/ac
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { PaginationMetadata, WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { of, Observable } from 'rxjs';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 
 describe('CaseListComponent', () => {
   let component: CaseListComponent;
@@ -24,6 +25,7 @@ describe('CaseListComponent', () => {
   const mockDefinitionsService = jasmine.createSpyObj('DefinitionsService', ['getJurisdictions']);
   const mockAppConfig = jasmine.createSpyObj('AppConfig', ['getPaginationPageSize']);
   const mockWindowService = jasmine.createSpyObj('WindowService', ['removeLocalStorage']);
+  const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -42,12 +44,17 @@ describe('CaseListComponent', () => {
           provide: WindowService,
           useValue: mockWindowService
         },
+        {
+          provide: FeatureToggleService,
+          useValue: mockFeatureToggleService
+        },
         provideMockStore(),
       ]
     });
     store = TestBed.get(Store);
     spyOnDispatchToStore = spyOn(store, 'dispatch').and.callThrough();
     spyOnPipeToStore = spyOn(store, 'pipe').and.callThrough();
+    mockFeatureToggleService.isEnabled.and.returnValue(of(true));
 
     fixture = TestBed.createComponent(CaseListComponent);
     component = fixture.componentInstance;

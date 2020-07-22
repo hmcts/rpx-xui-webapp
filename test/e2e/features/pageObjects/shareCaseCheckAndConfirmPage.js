@@ -103,7 +103,7 @@ class ShareCaseCheckAndConfirmPage {
     }
 
     async clickChangeLinkForCase(caseNum){
-        let caseContainer = await this.getcaseContainerWithId(caseId);
+        let caseContainer = await this.getcaseContainerWithId(caseNum);
         await caseContainer.$("a").click(); 
     }
 

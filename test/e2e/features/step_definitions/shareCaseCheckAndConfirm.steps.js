@@ -28,7 +28,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
 
-    When('I click Confirm button in Share Case check and confirm page', async function (casePos) {
+    When('I click Confirm button in Share Case check and confirm page', async function () {
         await shareCaseCheckAndConfirmPage.clickConfirmBtn();
     });
 

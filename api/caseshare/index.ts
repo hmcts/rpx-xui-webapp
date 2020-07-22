@@ -1,7 +1,13 @@
+import {SharedCase} from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model'
+import * as express from 'express'
 import { Response } from 'express'
+import * as fromCasesFeature from '../../src/cases/store';
+import {CaseAssignmentResponse} from '../caseshare/responses/assignCaseResponse'
 import { getConfigValue } from '../configuration'
 import {SERVICES_CASE_SHARE_API_URL, STUB} from '../configuration/references'
 import { EnhancedRequest } from '../lib/models'
+import {setHeaders} from '../lib/proxy'
+import {postCaseAssignment} from './caseShareUtil'
 import * as stubAPI from './stub-api'
 const stub: string = getConfigValue(STUB)
 // TODO: use below url for actual API
@@ -116,6 +122,8 @@ export async function postShareCasesToUsers(req: EnhancedRequest, res: Response)
     return stubAPI.assignUsersToCase(req, res)
   } else {
     // TODO: call actual API if not for stub
-    return this.postShareCasesToUsersReal(req, res)
+    //return this.postShareCasesToUsersReal(req, res)
+    return res.status(500).send('{"errorMessage": "Yet to implement}"')
   }
 }
+

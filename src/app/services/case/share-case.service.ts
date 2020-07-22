@@ -4,6 +4,7 @@ import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.mode
 import { UserDetails } from '@hmcts/rpx-xui-common-lib/lib/models/user-details.model';
 import { Observable } from 'rxjs';
 
+
 @Injectable()
 export class CaseShareService {
     constructor(private readonly http: HttpClient) {}
@@ -14,4 +15,8 @@ export class CaseShareService {
     public getUsersFromOrg(orgId: string): Observable<UserDetails[]> {
         return this.http.get<UserDetails[]>(`api/caseshare/orgs/${orgId}`);
     }
+
+  public assignUsersWithCases(sharedCases: SharedCase[]): Observable<SharedCase[]> {
+      return this.http.post<SharedCase[]>(`api/caseshare/case-assignments`, {sharedCases});
+  }
 }

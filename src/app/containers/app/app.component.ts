@@ -3,6 +3,7 @@ import { GoogleAnalyticsService, TimeoutNotificationsService } from '@hmcts/rpx-
 import { select, Store } from '@ngrx/store';
 import {propsExist} from '../../../../api/lib/objectUtilities';
 import { environment as config } from '../../../environments/environment';
+import * as fromRoot from '../../store';
 
 @Component({
   selector: 'exui-root',
@@ -23,6 +24,7 @@ export class AppComponent implements OnInit {
     private googleAnalyticsService: GoogleAnalyticsService,
     private readonly timeoutNotificationsService: TimeoutNotificationsService
   ) {
+
     this.googleAnalyticsService.init(config.googleAnalyticsKey);
   }
 

@@ -47,8 +47,7 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
       }
     }) as any;
 
-    // TODO: Add back in to use Session Timeouts.
-    // this.store.dispatch(new fromRoot.StartIdleSessionTimeout());
+    this.store.dispatch(new fromRoot.StartIdleSessionTimeout());
   }
 
   ngOnDestroy(): void {

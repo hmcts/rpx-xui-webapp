@@ -1,7 +1,14 @@
+import {SharedCase} from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model'
+import * as express from 'express'
 import { Response } from 'express'
+import * as fromCasesFeature from '../../src/cases/store';
+import {CaseAssignmentResponse} from '../caseshare/responses/assignCaseResponse'
 import { getConfigValue } from '../configuration'
-import { SERVICES_CASE_SHARE_API_URL, STUB } from '../configuration/references'
+import {SERVICES_CASE_SHARE_API_URL, STUB} from '../configuration/references'
+import {http} from '../lib/http'
 import { EnhancedRequest } from '../lib/models'
+import {setHeaders} from '../lib/proxy'
+import {postCaseAssignment} from './caseShareUtil'
 import * as stubAPI from './stub-api'
 
 const stub: string = getConfigValue(STUB)
@@ -111,5 +118,74 @@ export async function getCaseById(req: EnhancedRequest, res: Response) {
   } else {
     // TODO: call actual API if not for stub
     return res.status(500).send('{"errorMessage": "Yet to implement}"')
+  }
+}
+
+export async function postShareCasesToUsers(req: EnhancedRequest, res: Response) {
+  if (stub) {
+    return stubAPI.assignUsersToCase(req, res)
+  } else {
+    // TODO: call actual API if not for stub
+    return this.postShareCasesToUsersReal(req, res)
+  }
+}
+
+export async function postShareCasesToUsersReal(req: express.Request, res: express.Response) {
+  let errReport: any
+  if (!req.body.assignee_id) {
+    errReport = {
+      apiError: 'Assignee id is missing',
+      apiStatusCode: '400',
+      message: 'Case Assignment error',
+    }
+    res.status(400).send(errReport)
+  } else if (!req.body.case_id) {
+      errReport = {
+        apiError: 'Case id is missing',
+        apiStatusCode: '400',
+        message: 'Case Assignment error',
+      }
+      res.status(400).send(errReport)
+    }
+
+  try {
+    const assignUrl =  postCaseAssignment(getConfigValue(SERVICES_CASE_SHARE_API_URL))
+    const headers = setHeaders(req)
+    const shareCases: SharedCase[] = req.body.sharedCases.slice()
+    const updatedSharedCases: SharedCase[] = []
+    for (const aCase of shareCases) {
+      const newPendingShares = aCase.pendingShares.slice()
+      const newSharedWith = aCase.sharedWith.slice()
+      let index = 0
+      for (const user of aCase.pendingShares) {
+        index++
+        const assignmentId = user.idamId
+        const payload = {
+          "assignee_id"	: assignmentId,
+          "case_id"	: aCase.caseId,
+          "case_type_id" : 	aCase.caseTitle,
+        }
+        const response = await http.post(assignUrl, payload, { headers })
+        if ( response.status === 200) {
+          newSharedWith.push(user)
+          newPendingShares.splice(index, 1)
+        }
+      }
+      const newSharedCase = {
+        ...aCase,
+        pendingShares: newPendingShares,
+        sharedWith: newSharedWith,
+      }
+      updatedSharedCases.push(newSharedCase)
+    }
+    res.send(updatedSharedCases)
+
+  } catch (error) {
+    errReport = {
+      apiError: error.data.message,
+      apiStatusCode: error.status,
+      message: 'Case Assign UTl',
+    }
+    res.status(error.status).send(errReport)
   }
 }

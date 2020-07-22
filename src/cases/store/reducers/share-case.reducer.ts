@@ -92,6 +92,11 @@ export function shareCasesReducer(state: ShareCasesState = initialSharedCasesSta
         ...state,
         shareCases: action.payload
       };
+    case ShareCasesActions.ASSIGN_USERS_TO_CASE_SUCCESS:
+      return {
+        ...state,
+        shareCases: action.payload
+      };
     default:
       return state;
   }

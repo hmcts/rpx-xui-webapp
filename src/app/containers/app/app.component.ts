@@ -29,8 +29,11 @@ export class AppComponent implements OnInit {
   }
 
   public ngOnInit() {
+    console.log('app component ngOnInit');
 
     this.store.pipe(select(fromRoot.getUseIdleSessionTimeout)).subscribe(useIdleTimeout => {
+      console.log('useIdleTimeout');
+      console.log(useIdleTimeout);
       if (useIdleTimeout) {
         this.loadAndListenForUserDetails();
       }
@@ -41,6 +44,8 @@ export class AppComponent implements OnInit {
    * Load and Listen for User Details
    */
   public loadAndListenForUserDetails() {
+
+    console.log('loadAndListenForUserDetails');
 
     this.store.pipe(select(fromRoot.getUserDetails)).subscribe(userDetails => this.userDetailsHandler(userDetails))
 
@@ -62,6 +67,9 @@ export class AppComponent implements OnInit {
    * }
    */
   public userDetailsHandler(userDetails) {
+
+    console.log('userDetails');
+    console.log(userDetails);
 
     if (propsExist(userDetails, ['sessionTimeout'] ) && userDetails.sessionTimeout.totalIdleTime > 0) {
 

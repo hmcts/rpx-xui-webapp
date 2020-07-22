@@ -7,7 +7,6 @@ import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { ActionBindingModel } from 'src/cases/models/create-case-actions.model';
 import * as fromCasesFeature from '../../store';
 import * as fromCaseList from '../../store/reducers';
-import { SearchFilterService } from '../../../cases/services';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 
@@ -70,11 +69,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
     private appConfig: AppConfig,
     private definitionsService: DefinitionsService,
     private windowService: WindowService,
-    private searchFilterService: SearchFilterService,
     private featureToggleService: FeatureToggleService,
-  ) {
-    this.elasticSearchFlagSubsription = this.featureToggleService.isEnabled('elastic-search').subscribe(value => this.elasticSearchFlag = value);
-  }
+  ) { }
 
   public ngOnInit() {
 
@@ -125,6 +121,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
     } else {
       this.getElasticSearchResults(this.getEvent());
     }
+
+    this.elasticSearchFlagSubsription = this.featureToggleService.isEnabled('elastic-search').subscribe(value => this.elasticSearchFlag = value);
   }
 
   public listenToPaginationMetadata = () => {

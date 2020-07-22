@@ -478,7 +478,7 @@
   dependencies:
     tslib "^1.9.0"
 
-"@hmcts/rpx-xui-node-lib@^2.22.2":
+"@hmcts/rpx-xui-node-lib@^2.23.4":
   version "2.23.4"
   resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-node-lib/-/rpx-xui-node-lib-2.23.4.tgz#98cf269d286663b718351388a7bd004d236b41c8"
   integrity sha512-X81MoykZIOVdiNYJJ09g9VGv534f6QVw5949Hi9HR7/QMlB329ALlLtvwDVVLzGIxl2GeyqzqTmaLg1oTXHkoA==

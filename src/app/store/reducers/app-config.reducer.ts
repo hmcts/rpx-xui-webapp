@@ -3,6 +3,13 @@ import { TermsAndCondition } from 'src/app/models/TermsAndCondition';
 import { ConfigurationModel } from '../../models/configuration.model';
 import * as fromActions from '../actions/';
 
+interface UserDetails {
+  sessionTimeout: {
+    idleModalDisplayTime: number,
+    totalIdleTime: number,
+  };
+}
+
 export interface AppConfigState {
   config: ConfigurationModel | {};
   termsAndCondition: TermsAndCondition;
@@ -115,3 +122,4 @@ export const getFeatureConfig = (state: AppConfigState) => state.config;
 export const getTandCLoadedConfig = (state: AppConfigState) => state.termsAndCondition;
 export const getTermsConditions = (state: AppConfigState) => state.termsAndConditions;
 export const getUseIdleSessionTimeout = (state: AppConfigState) => state.useIdleSessionTimeout;
+export const getUserDetails = (state: AppConfigState) => state.userDetails;

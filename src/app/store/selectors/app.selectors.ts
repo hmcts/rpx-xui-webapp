@@ -27,6 +27,11 @@ export const getIsTermsAndConditionsFeatureEnabled = createSelector(
   state => state.isTermsAndConditionsFeatureEnabled
 );
 
+export const getUserDetails = createSelector(
+  getConfigState,
+  fromApp.getUserDetails
+);
+
 export const getUseIdleSessionTimeout = createSelector(
   getConfigState,
   fromApp.getUseIdleSessionTimeout

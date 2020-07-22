@@ -61,7 +61,8 @@ import { PaymentLibModule } from '@hmcts/ccpay-web-component';
       disableConsoleLogging: false
     }),
     PaymentLibModule,
-    ExuiCommonLibModule.forRoot({launchDarklyKey: ''})
+    // ExuiCommonLibModule.forRoot({launchDarklyKey: ''})
+    ExuiCommonLibModule.forRoot()
   ],
   providers: [
     {

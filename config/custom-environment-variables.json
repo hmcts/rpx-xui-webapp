@@ -85,7 +85,7 @@
     "oidcEnabled": {
       "__name": "FEATURE_OIDC_ENABLED",
       "__format":"json"
-    },
+    }
   },
   "sessionTimeouts": {
     "__name": "SESSION_TIMEOUTS",

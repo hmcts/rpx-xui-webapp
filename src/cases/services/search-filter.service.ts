@@ -3,11 +3,12 @@ import { SearchService, AbstractAppConfig, HttpService, RequestOptionsBuilder } 
 import { Observable } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { isStringOrNumber, getFilterType, sanitiseMetadataFieldName } from '../utils/utils';
-import { Store } from '@ngrx/store';
-import * as fromCaseList from '../store/reducers';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 
 @Injectable()
 export class SearchFilterService {
+
+  metadataFields: string[];
 
   constructor(
     private ccdSearchService: SearchService,
@@ -16,24 +17,12 @@ export class SearchFilterService {
     private requestOptionsBuilder: RequestOptionsBuilder,
   ) { }
 
-  metadataFields: string[];
-  elasticSearch: boolean = true;
-
-
-  setElasticSearch() {
-    this.elasticSearch = !this.elasticSearch;
-  }
-
-  isElasticSearch(): boolean {
-    return this.elasticSearch;
-  }
-
-  search(payload): Observable<any> {
+  search(payload, isElasticSearchEnabled: boolean = false): Observable<any> {
 
     const { jurisdictionId, caseTypeId, metadataFilters, caseFilters, view } = this.getParams(payload);
 
     // return this.ccdSearchService.search(jurisdictionId, caseTypeId, metadataFilters, caseFilters, view) as any;
-    return this.isElasticSearch() ?
+    return isElasticSearchEnabled ?
           this.ccdSearchService.searchCases(caseTypeId, metadataFilters, caseFilters, view) as any :
           this.ccdSearchService.search(jurisdictionId, caseTypeId, metadataFilters, caseFilters, view) as any;
   }

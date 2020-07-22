@@ -9,6 +9,7 @@ import * as fromCasesFeature from '../../store';
 import * as fromCaseList from '../../store/reducers';
 import { SearchFilterService } from '../../../cases/services';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 
 /**
  * Entry component wrapper for Case List
@@ -61,13 +62,18 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public isVisible: boolean;
   public jurisdictions: Jurisdiction[];
 
+  public elasticSearchFlag: boolean = false;
+  public elasticSearchFlagSubsription: Subscription;
+
   constructor(
     public store: Store<fromCaseList.State>,
     private appConfig: AppConfig,
     private definitionsService: DefinitionsService,
     private windowService: WindowService,
-    private searchFilterService: SearchFilterService
+    private searchFilterService: SearchFilterService,
+    private featureToggleService: FeatureToggleService,
   ) {
+    this.elasticSearchFlagSubsription = this.featureToggleService.isEnabled('elastic-search').subscribe(value => this.elasticSearchFlag = value);
   }
 
   public ngOnInit() {
@@ -114,7 +120,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
       this.onResultsViewHandler(resultView));
 
 
-    if (!this.searchFilterService.isElasticSearch()) {
+    if (!this.elasticSearchFlag) {
       this.findCaseListPaginationMetadata(this.getEvent());
     } else {
       this.getElasticSearchResults(this.getEvent());
@@ -188,7 +194,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   }
 
   public onResultsViewHandler = resultView => {
-    if (this.searchFilterService.isElasticSearch()) {
+    if (this.elasticSearchFlag) {
       const paginationDataFromResult: PaginationMetadata = {
         total_results_count: resultView.total,
         total_pages_count: Math.ceil(resultView.total / this.appConfig.getPaginationPageSize())
@@ -222,20 +228,11 @@ export class CaseListComponent implements OnInit, OnDestroy {
       this.paginationMetadata.total_results_count = paginationMetadata.total_results_count;
 
       const event = this.getEvent();
-      if (event != null && !this.searchFilterService.isElasticSearch()) {
+      if (event != null && !this.elasticSearchFlag) {
         this.store.dispatch(new fromCasesFeature.ApplyCaselistFilter(event));
       }
     }
   }
-
-  setElasticSearch() {
-    this.searchFilterService.setElasticSearch();
-  }
-
-  isElasticSearch(): boolean {
-    return this.searchFilterService.isElasticSearch();
-  }
-
 
   getEvent() {
     let formGroupFromLS = null;
@@ -300,7 +297,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   }
   public getElasticSearchResults(event) {
     if (event != null) {
-      this.store.dispatch(new fromCasesFeature.ApplyCaselistFilter(event));
+      this.store.dispatch(new fromCasesFeature.ApplyCaselistFilterForES(event));
     }
   }
 
@@ -312,7 +309,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
    */
   public applyChangePage(event) {
     this.page = event.selected.page;
-    if (!this.searchFilterService.isElasticSearch()) {
+    if (!this.elasticSearchFlag) {
       this.findCaseListPaginationMetadata(this.getEvent());
     } else {
       this.getElasticSearchResults(this.getEvent());
@@ -328,7 +325,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public applyFilter(event) {
     this.page = event.selected.page;
     this.selected = event.selected;
-    if (!this.searchFilterService.isElasticSearch()) {
+    if (!this.elasticSearchFlag) {
       this.findCaseListPaginationMetadata(this.getEvent());
     } else {
       this.getElasticSearchResults(this.getEvent());
@@ -351,6 +348,9 @@ export class CaseListComponent implements OnInit, OnDestroy {
     }
     if (this.caseFilterToggleSubscription) {
       this.caseFilterToggleSubscription.unsubscribe();
+    }
+    if (this.elasticSearchFlagSubsription) {
+      this.elasticSearchFlagSubsription.unsubscribe();
     }
   }
  }

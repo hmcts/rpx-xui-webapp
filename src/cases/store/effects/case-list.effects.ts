@@ -38,9 +38,20 @@ export class CaseListEffects {
           );
       }));
 
-      @Effect()
-      applySearchFilterToggle$ = this.actions$.pipe(
-        ofType(caselistActions.CASE_FILTER_DISPLAY_TOGGLE),
-        map((action: caselistActions.CaseFilterToggle) => new caselistActions.CaseFilterToggleSuccess(action.payload)),
-            catchError(error => of(new caselistActions.ApplyCaselistFilterFail(error))));
+    @Effect()
+    applyCaselistFiltersForES$ = this.actions$.pipe(
+      ofType(caselistActions.APPLY_CASELIST_FILTER_FOR_ES),
+      map((action: caselistActions.ApplyCaselistFilterForES) => action.payload),
+      switchMap(payload => {
+          return this.searchService.search(payload, true).pipe(
+            map((result: Observable<any>) => new caselistActions.ApplyCaselistFilterSuccess(result)),
+            catchError(error => of(new caselistActions.ApplyCaselistFilterFail(error)))
+          );
+      }));
+
+    @Effect()
+    applySearchFilterToggle$ = this.actions$.pipe(
+      ofType(caselistActions.CASE_FILTER_DISPLAY_TOGGLE),
+      map((action: caselistActions.CaseFilterToggle) => new caselistActions.CaseFilterToggleSuccess(action.payload)),
+          catchError(error => of(new caselistActions.ApplyCaselistFilterFail(error))));
 }

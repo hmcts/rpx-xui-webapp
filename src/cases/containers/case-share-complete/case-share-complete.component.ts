@@ -32,16 +32,6 @@ export class CaseShareCompleteComponent implements OnInit {
     this.newShareCases$.subscribe(shareCases => {
       this.completeScreenMode = this.checkIfIncomplete(shareCases)
       this.newShareCases = shareCases
-    });
-
-  }
-
-  public checkIfIncomplete(shareCases: SharedCase[]) {
-    const isPendingShares = (aCase) => aCase.pendingShares != null && aCase.pendingShares.length > 0;
-    if ( shareCases.some(isPendingShares)) {
-      return 'PENDING';
     }
-    return 'COMPLETE';
-  }
 
 }

@@ -14,8 +14,10 @@ class CucumberReportLog{
         this.scenarioWorld.attach(JSON.stringify(json, null, 2));
     }
 
-    AddScreenshot(decodedImage){
-        this.scenarioWorld.world.attach(decodedImage, 'image/png');
+    async AddScreenshot(browser){
+        const stream = await browser.takeScreenshot(); 
+        const decodedImage = new Buffer(stream.replace(/^data:image\/(png|gif|jpeg);base64,/, ''), 'base64');
+        this.scenarioWorld.attach(decodedImage, 'image/png');
     }
 
 }

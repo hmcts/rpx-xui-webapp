@@ -3,6 +3,8 @@
 
 const BrowserWaits = require('../../support/customWaits');
 const { browser, $ } = require('protractor');
+const CucumberReportLog = require("../../support/reportLogger");
+
 
 const ShareCaseData = require('../../utils/shareCaseData');
 class ShareCaseCheckAndConfirmPage {
@@ -12,6 +14,10 @@ class ShareCaseCheckAndConfirmPage {
         this.summarySelectionContainer = $("#summarySections");
 
         this.selectedCaseConfirmList = $$("xuilib-selected-case-confirm");
+        this.backLink = $(".govuk-back-link");
+        this.confirmBtn = $("#share-case-nav button");
+
+        this.changesSubmissionConfirmationContainer = $('.govuk-panel--confirmation');
     }
 
     async waitForPageToLoad(){
@@ -88,7 +94,28 @@ class ShareCaseCheckAndConfirmPage {
                 }
             }  
         }
+        CucumberReportLog.AddScreenshot(screenShotUtils); 
         return issuesList;
+    }
+
+    async clickBack(){
+        await this.backLink.click();
+    }
+
+    async clickChangeLinkForCase(caseNum){
+        let caseContainer = await this.getcaseContainerWithId(caseId);
+        await caseContainer.$("a").click(); 
+    }
+
+    async clickConfirmBtn(){
+
+        await this.confirmBtn.click();
+    }
+
+    async isSubmissionSuccessful(){
+        await BrowserWaits.waitForElement(this.changesSubmissionConfirmationContainer);
+        const message = await this.changesSubmissionConfirmationContainer.getText(); 
+        return message.includes("Your cases have been updated");
     }
 
 

@@ -133,7 +133,7 @@ class ShareCasePage {
     async selectUserFromFilteredList(userNum){
         let userToSelect = await this.userFilterList.get(userNum - 1);
         CucumberReportLog.AddMessage("Selected User : "+await userToSelect.getText()); 
-        return await userToSelect.click();
+        await userToSelect.click();
     }
 
     async isAddButtonEnabled(){
@@ -434,12 +434,15 @@ class ShareCasePage {
     }
 
     async validateShareCaseChangesPersisted(){
+        CucumberReportLog.AddMessage("Validating expected test data changes");
+
         let casesCount = await this.casesCount();
         let issuesList = [];
         for (let caseCounter = 1; caseCounter <= casesCount; caseCounter++) {
             let caseId = await this.getCaseSubtitle(caseCounter);
             let caseShareData = ShareCaseData.getCaseWithId(caseId);
-            
+            CucumberReportLog.AddJson(caseShareData);
+ 
             for (let shareWithCounter = 0; shareWithCounter < caseShareData.sharedWith.length ; shareWithCounter++){
                 let email = caseShareData.sharedWith[shareWithCounter];
                 if(!(await this.isUserWithEmailListedInCase(caseCounter,email))){

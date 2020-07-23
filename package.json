@@ -68,7 +68,7 @@
     "@hmcts/rpx-xui-common-lib": "0.1.28",
     "@ng-idle/core": "^8.0.0-beta.4",
     "@ng-idle/keepalive": "^8.0.0-beta.4",
-    "@ngrx/effects": "^7.4.0",
+    "@ngrx/effects": "^7.4.0",tsconfig.json
     "@ngrx/router-store": "^7.4.0",
     "@ngrx/store": "^7.4.0",
     "@ngrx/store-devtools": "^7.4.0",
@@ -146,6 +146,7 @@
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",
     "@types/mocha": "^5.2.6",
+    "@types/node": "^12.12.24",
     "@types/shortid": "0.0.29",
     "chai": "^4.2.0",
     "chai-as-promised": "7.1.1",

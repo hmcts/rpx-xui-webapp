@@ -87,7 +87,7 @@ export async function assignCases(req: EnhancedRequest, res: Response) {
           "case_type_id" : 	aCase.caseTitle,
         }
         const {status}: {status: number} = await handlePost(path, payload, req)
-        if ( status === 200) {
+        if ( status === 201) {
           newSharedWith.push(user)
           newPendingShares.splice(index, 1)
         }

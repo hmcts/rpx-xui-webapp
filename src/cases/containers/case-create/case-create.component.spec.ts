@@ -28,6 +28,7 @@ import { reducers } from 'src/app/store';
 import * as fromCases from '../../store/reducers';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { EffectsModule } from '@ngrx/effects';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 class MockSortService {
   features = {};
   getFeatureToggle() { }
@@ -50,6 +51,7 @@ describe('CaseCreateComponent', () => {
         SearchFiltersModule,
       ],
       declarations: [CasesCreateComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         PlaceholderService,
         CasesService,

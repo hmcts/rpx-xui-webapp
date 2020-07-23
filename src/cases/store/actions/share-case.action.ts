@@ -16,7 +16,7 @@ export const SYNCHRONIZE_STATE_TO_STORE = '[ShareCase] Synchronize State To Stor
 
 export class LoadUserFromOrgForCase implements Action {
   public readonly type = LOAD_USERS_FROM_ORG_FOR_CASE;
-  constructor(public payload: string) {}
+  constructor() {}
 }
 
 export class NavigateToShareCase implements Action {

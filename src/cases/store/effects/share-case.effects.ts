@@ -62,9 +62,7 @@ export class ShareCaseEffects {
 
   @Effect() public loadOrgUsers$ = this.actions$.pipe(
     ofType(shareCaseActions.LOAD_USERS_FROM_ORG_FOR_CASE),
-    map((action: shareCaseActions.LoadUserFromOrgForCase) => action.payload),
-    switchMap(payload => {
-      this.payload = payload;
+    switchMap(() => {
       return this.caseShareService.getUsersFromOrg().pipe(
         map(
           (response) => new shareCaseActions.LoadUserFromOrgForCaseSuccess(response)),

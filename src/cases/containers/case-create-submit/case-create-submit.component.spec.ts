@@ -25,6 +25,7 @@ import { HttpModule } from '@angular/http';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { EffectsModule } from '@ngrx/effects';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 class MockSortService {
   features = {};
@@ -84,6 +85,7 @@ describe('CaseCreateSubmitComponent', () => {
         SharedModule
       ],
       declarations: [CaseCreateSubmitComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
           provide: ActivatedRoute,

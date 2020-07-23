@@ -9,6 +9,10 @@ export class CaseShareService {
   constructor(private readonly http: HttpClient) {
   }
 
+  public getUsersFromOrg(): Observable<UserDetails[]> {
+    return this.http.get<UserDetails[]>(`api/caseshare/users`);
+  }
+
   public getShareCases(shareCases: SharedCase[]): Observable<SharedCase[]> {
     const caseIds = shareCases.map(aCase => aCase.caseId).join(',');
     const options = {
@@ -17,10 +21,6 @@ export class CaseShareService {
       }
     };
     return this.http.get<SharedCase[]>(`api/caseshare/cases`, options);
-  }
-
-  public getUsersFromOrg(): Observable<UserDetails[]> {
-    return this.http.get<UserDetails[]>(`api/caseshare/refdata/organisations/users`);
   }
 
 }

@@ -62,5 +62,10 @@
             }
         ]
     },
-    "rulesDirectory": []
+    "rulesDirectory": [],
+    "linterOptions": {
+      "exclude": [
+        "caseshare/stubs/db.json"
+      ]
+    }
 }

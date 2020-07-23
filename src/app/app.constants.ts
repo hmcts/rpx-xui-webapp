@@ -1,4 +1,4 @@
-import { BadgeColour, ContactDetailsDataModel } from '@hmcts/rpx-xui-common-lib';
+import { ContactDetailsDataModel, BadgeColour } from '@hmcts/rpx-xui-common-lib';
 
 const FooterData =  {
   heading: 'Help',
@@ -39,6 +39,8 @@ const navItems = [{
     href: '/cases/case-filter',
     active: false
 }];
+
+const signedOutNavItems = [];
 
 const userNav = {
   label: 'Account navigation',

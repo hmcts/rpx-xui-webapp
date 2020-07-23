@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { APP_INITIALIZER, NgModule, CUSTOM_ELEMENTS_SCHEMA, ErrorHandler } from '@angular/core';
+import {NgIdleKeepaliveModule} from '@ng-idle/keepalive';
 import { AppComponent } from './containers/app/app.component';
 import { environment } from '../environments/environment';
 import { HttpClientModule } from '@angular/common/http';
@@ -28,7 +29,7 @@ import { ProvidersModule } from './providers/providers.module';
 // app routes
 import { ROUTES } from './app.routes';
 import { CookieModule } from 'ngx-cookie';
-import {SharedModule} from './shared/shared.module';
+import { SharedModule } from './shared/shared.module';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MonitoringService } from './services/logger/monitoring.service';
@@ -37,7 +38,14 @@ import { JwtDecodeWrapper } from './services/logger/jwtDecodeWrapper';
 import { AbstractAppInsights, AppInsightsWrapper } from './services/logger/appInsightsWrapper';
 import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler';
 import { AcceptTermsService } from './services/acceptTerms/acceptTerms.service';
-import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule, LAUNCHDARKLYKEY } from '@hmcts/rpx-xui-common-lib';
+import { ENVIRONMENT_CONFIG, EnvironmentConfig } from 'src/models/environmentConfig.model';
+import { CaseShareService } from './services/case/share-case.service';
+
+
+export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): string {
+  return envConfig.launchDarklyClientId || '';
+}
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 
 @NgModule({
@@ -60,8 +68,10 @@ import { PaymentLibModule } from '@hmcts/ccpay-web-component';
       level: NgxLoggerLevel.TRACE,
       disableConsoleLogging: false
     }),
+    ExuiCommonLibModule.forRoot(),
+    NgIdleKeepaliveModule.forRoot(),
     PaymentLibModule,
-    ExuiCommonLibModule.forRoot({launchDarklyKey: ''})
+    ExuiCommonLibModule.forRoot()
   ],
   providers: [
     {
@@ -86,7 +96,9 @@ import { PaymentLibModule } from '@hmcts/ccpay-web-component';
       provide: ErrorHandler,
       useClass: DefaultErrorHandler
     },
-    AcceptTermsService
+    AcceptTermsService,
+    CaseShareService,
+    { provide: LAUNCHDARKLYKEY, useFactory: launchDarklyClientIdFactory, deps: [ENVIRONMENT_CONFIG] },
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

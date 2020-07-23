@@ -11,11 +11,13 @@
 export const S2S_SECRET = 'secrets.rpx.mc-s2s-client-secret'
 export const REDIS_CLOUD_URL = 'secrets.rpx.webapp-redis-connection-string'
 export const APP_INSIGHTS_KEY = 'secrets.rpx.appinsights-instrumentationkey-mc'
+export const LAUNCH_DARKLY_CLIENT_ID = 'secrets.rpx.launch-darkly-client-id'
 
 export const COOKIES_TOKEN = 'cookies.token'
 export const COOKIES_USER_ID = 'cookies.userId'
 export const COOKIES_SESSION_ID = 'cookies.sessionId'
 
+export const STUB = 'stub'
 export const LOGGING = 'logging'
 export const MAX_LOG_LINE = 'maxLogLine'
 export const HEALTH = 'health'
@@ -37,7 +39,10 @@ export const SERVICES_IDAM_OAUTH_CALLBACK_URL = 'services.idam.oauthCallbackUrl'
 export const SERVICE_S2S_PATH = 'services.s2s'
 export const SERVICES_TERMS_AND_CONDITIONS_URL = 'services.termsAndConditions'
 
-export const SERVICES_PAYMENTS_URL = 'services.payments'
+export const SERVICES_PAYMENTS_URL = '' // ;'services.payments'
+
+// TODO: require updates when API is ready
+export const SERVICES_CASE_SHARE_API_URL = 'services.caseShare.api'
 
 export const PROTOCOL = 'protocol'
 export const MICROSERVICE = 'microservice'
@@ -61,6 +66,7 @@ export const FEATURE_PROXY_ENABLED = 'proxyEnabled'
 export const FEATURE_TERMS_AND_CONDITIONS_ENABLED = 'termsAndConditionsEnabled'
 export const FEATURE_HELMET_ENABLED = 'helmetEnabled'
 export const FEATURE_REDIS_ENABLED = 'redisEnabled'
+export const FEATURE_OIDC_ENABLED = 'oidcEnabled'
 
 export const HELMET = 'helmet'
 
@@ -68,3 +74,7 @@ export const REDIS_KEY_PREFIX = 'redis.prefix'
 export const REDIS_TTL = 'redis.ttl'
 
 export const USER_TIMEOUT_IN_SECONDS = 'userTimeoutInSeconds'
+
+export const SESSION_TIMEOUTS = 'sessionTimeouts'
+
+export const CASE_SHARE_PERMISSIONS = 'pui-case-manager'

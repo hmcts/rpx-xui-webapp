@@ -64,6 +64,7 @@ nodejs:
     FEATURE_TERMS_AND_CONDITIONS_ENABLED: false
     FEATURE_HELMET_ENABLED: true
     FEATURE_REDIS_ENABLED: true
+    FEATURE_OIDC_ENABLED: false
 
     # Redis
     REDIS_KEY_PREFIX: 'activity:'
@@ -77,6 +78,7 @@ nodejs:
         - mc-idam-client-secret
         - appinsights-instrumentationkey-mc
         - webapp-redis-connection-string
+        - launch-darkly-client-id
   # Don't modify below here
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}

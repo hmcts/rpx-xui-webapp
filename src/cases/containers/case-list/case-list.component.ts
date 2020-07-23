@@ -1,13 +1,17 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { CaseState, CaseType, Jurisdiction, PaginationMetadata, SearchResultView, WindowService } from '@hmcts/ccd-case-ui-toolkit';
+import { CaseState, CaseType, Jurisdiction, PaginationMetadata, SearchResultView, SearchResultViewItem, WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import {BehaviorSubject, combineLatest, Observable, Subscription} from 'rxjs';
+import * as converters from 'src/cases/converters/case-converter';
 import { ActionBindingModel } from 'src/cases/models/create-case-actions.model';
+import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
+import * as fromRoot from '../../../app/store';
 import * as fromCasesFeature from '../../store';
 import * as fromCaseList from '../../store/reducers';
-import { AppConfig } from './../../../app/services/ccd-config/ccd-case.config';
+import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
 
 /**
  * Entry component wrapper for Case List
@@ -33,6 +37,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public metadataFields$: Observable<string[]>;
   public caseFilterToggle$: Observable<boolean>;
   public jurisdictionsBehaviourSubject$: BehaviorSubject<Jurisdiction[]> = new BehaviorSubject<Jurisdiction[]>([]);
+  public shareCases$: Observable<SharedCase[]>;
 
   public fg: FormGroup;
 
@@ -59,12 +64,17 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public paginationSubscription: Subscription;
   public isVisible: boolean;
   public jurisdictions: Jurisdiction[];
+  public selectedCases: SearchResultViewItem[] = [];
+
+  public userDetails: Observable<any>;
+  public selectionItems: SearchResultViewItem[];
 
   constructor(
     public store: Store<fromCaseList.State>,
     private appConfig: AppConfig,
     private definitionsService: DefinitionsService,
     private windowService: WindowService,
+    private featureToggleService: FeatureToggleService,
   ) {
   }
 
@@ -111,8 +121,11 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.resultSubscription = this.resultView$.subscribe(resultView =>
       this.onResultsViewHandler(resultView));
 
-
     this.findCaseListPaginationMetadata(this.getEvent());
+
+    this.userDetails = this.store.pipe(select(fromRoot.getUserDetails));
+    this.shareCases$ = this.store.pipe(select(fromCasesFeature.getShareCaseListState));
+    this.shareCases$.subscribe(shareCases => this.selectedCases = converters.toSearchResultViewItemConverter(shareCases));
   }
 
   public listenToPaginationMetadata = () => {
@@ -128,18 +141,18 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public setCaseListFilterDefaults = () => {
     this.jurisdictionsBehaviourSubject$
       .subscribe(jurisdictions => {
-        if (jurisdictions.length > 0) {
-          this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
-          if (this.savedQueryParams && this.savedQueryParams.jurisdiction && !this.doesIdExist(this.jurisdictions, this.savedQueryParams.jurisdiction)) {
-            this.windowService.removeLocalStorage('savedQueryParams');
-          }
-          if (this.savedQueryParams) {
-            this.defaults = {
-              jurisdiction_id: this.savedQueryParams.jurisdiction,
-              case_type_id: this.savedQueryParams['case-type'],
-              state_id: this.savedQueryParams['case-state']
-            };
-          } else if (jurisdictions[0] && jurisdictions[0].id && jurisdictions[0].caseTypes[0] && jurisdictions[0].caseTypes[0].states[0]) {
+        this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
+        if (this.savedQueryParams && this.savedQueryParams.jurisdiction && !this.doesIdExist(this.jurisdictions, this.savedQueryParams.jurisdiction)) {
+          this.windowService.removeLocalStorage('savedQueryParams');
+        }
+        if (this.savedQueryParams) {
+          this.defaults = {
+            jurisdiction_id: this.savedQueryParams.jurisdiction,
+            case_type_id: this.savedQueryParams['case-type'],
+            state_id: this.savedQueryParams['case-state']
+          };
+        } else {
+          if (jurisdictions[0] && jurisdictions[0].id && jurisdictions[0].caseTypes[0] && jurisdictions[0].caseTypes[0].states[0]) {
             this.defaults = {
               jurisdiction_id: jurisdictions[0].id,
               case_type_id: jurisdictions[0].caseTypes[0].id,
@@ -302,6 +315,47 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
   public toggleFilter() {
     this.store.dispatch(new fromCasesFeature.CaseFilterToggle(!this.showFilter));
+  }
+
+  /**
+   * isCaseShareVisible()
+   * Determines case share visibility
+   *
+   * @param canShareCases - true
+   * @param shareableJurisdictions - ["IA", "FR"]
+   */
+  public isCaseShareVisible(canShareCases: boolean, shareableJurisdictions: string[]): boolean {
+    return canShareCases && shareableJurisdictions.includes(this.jurisdiction.id);
+  }
+
+  /**
+   * getShareableJurisdictions()
+   * Gets shareable Jurisdictions observable
+   *
+   */
+  public getShareableJurisdictions(): Observable<string[]> {
+    return this.featureToggleService.getValue('shareable-jurisdictions', []);
+  }
+
+  public retrieveSelections(event) {
+    this.selectedCases = event;
+    this.store.dispatch(new fromCasesFeature.SynchronizeStateToStore(
+      converters.toShareCaseConverter(this.selectedCases)
+    ));
+  }
+
+  public checkIfButtonDisabled(): boolean {
+    return !(this.selectedCases.length > 0);
+  }
+
+  public shareCaseSubmit() {
+    this.store.dispatch(new fromCasesFeature.AddShareCases({
+      sharedCases: converters.toShareCaseConverter(this.selectedCases)
+    }));
+  }
+
+  public hasResults() {
+    return this.resultView.results.length > 0;
   }
 
   public ngOnDestroy() {

@@ -8,6 +8,7 @@
   "logging": "debug",
   "now": false,
   "maxLogLine": 80,
+  "stub": false,
   "health": {
     "ccdComponentApi": "https://ccd-api-gateway-web-prod.service.core-compute-prod.internal/health",
     "ccdDataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal/health",
@@ -31,7 +32,6 @@
       "indexUrl": "/",
       "oauthCallbackUrl": "oauth2/callback"
     },
-    "payments": "http://payment-api-prod.service.core-compute-prod.internal",
     "markup_api": "http://em-npa-prod.service.core-compute-prod.internal",
     "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal",
     "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal"
@@ -61,7 +61,8 @@
     "secureCookieEnabled": true,
     "helmetEnabled": false,
     "termsAndConditionsEnabled": false,
-    "redisEnabled": false
+    "redisEnabled": false,
+    "oidcEnabled": false
   },
   "helmet": {
     "contentSecurityPolicy": {
@@ -85,7 +86,8 @@
         "connectSrc": [
           "'self'",
           "*.gov.uk",
-          "dc.services.visualstudio.com"
+          "dc.services.visualstudio.com",
+          "*.launchdarkly.com"
         ],
         "mediaSrc": ["'self'"],
         "objectSrc": ["'self'"],
@@ -118,5 +120,27 @@
     "tls": true,
     "prefix": "activity:",
     "ttl": 86400
-  }
+  },
+  "sessionTimeouts": [
+    {
+      "idleModalDisplayTime": 3,
+      "pattern": "-dwpresponsewriter",
+      "totalIdleTime": 12
+    },
+    {
+      "idleModalDisplayTime": 3,
+      "pattern": "-homeoffice",
+      "totalIdleTime": 12
+    },
+    {
+      "idleModalDisplayTime": 10,
+      "pattern": "-solicitor",
+      "totalIdleTime": 50
+    },
+    {
+      "idleModalDisplayTime": 10,
+      "pattern": ".",
+      "totalIdleTime": 480
+    }
+  ]
 }

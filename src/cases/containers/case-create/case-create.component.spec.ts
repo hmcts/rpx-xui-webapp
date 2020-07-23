@@ -17,12 +17,13 @@ import {
   RequestOptionsBuilder,
   SearchFiltersModule,
 } from '@hmcts/ccd-case-ui-toolkit';
-import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
+import { EffectsModule } from '@ngrx/effects';
+import {combineReducers, StoreModule} from '@ngrx/store';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { RouterTestingModule } from '@angular/router/testing';
 import {combineReducers, StoreModule} from '@ngrx/store';
 import { SharedModule } from '../../../app/shared/shared.module';
-import { AppConfigService } from '../../../app/services/config/configuration.services';
+import * as fromCases from '../../store/reducers';
 import { CasesCreateComponent } from './case-create.component';
 import { reducers } from 'src/app/store';
 import * as fromCases from '../../store/reducers';
@@ -34,7 +35,7 @@ class MockSortService {
   getEditorConfiguration() { }
 }
 
-describe('CaseCreateComponent', () => {
+describe('CaseCaseComponent', () => {
   let component: CasesCreateComponent;
   let fixture: ComponentFixture<CasesCreateComponent>;
 

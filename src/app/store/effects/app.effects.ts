@@ -4,6 +4,7 @@ import { of } from 'rxjs/internal/observable/of';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { TermsConditionsService } from 'src/app/services/terms-and-conditions/terms-and-conditions.service';
+import { UserService } from 'src/app/services/user/user.service';
 import { AppConfigService } from '../../services/config/configuration.services';
 import * as fromActions from '../actions';
 
@@ -13,7 +14,8 @@ export class AppEffects {
     private readonly actions$: Actions,
     private readonly configurationServices: AppConfigService,
     private readonly authService: AuthService,
-    private readonly termsService: TermsConditionsService
+    private readonly termsService: TermsConditionsService,
+    private readonly userService: UserService
   ) { }
 
   @Effect()
@@ -58,12 +60,32 @@ export class AppEffects {
     })
   );
 
+  @Effect({ dispatch: false })
+  public logoutAndRedirect = this.actions$.pipe(
+    ofType(fromActions.IDLE_USER_LOGOUT),
+    map(() => {
+      this.authService.logOutAndRedirect();
+    })
+  );
+
   @Effect()
   public loadTermsConditions$ = this.actions$.pipe(
     ofType(fromActions.LOAD_TERMS_CONDITIONS),
     switchMap(() => {
       return this.termsService.getTermsConditions().pipe(
         map(doc => new fromActions.LoadTermsConditionsSuccess(doc)),
+        catchError(err => of(new fromActions.Go({ path: ['/service-down'] })))
+      );
+    })
+  );
+
+  @Effect()
+  public loadUserDetails$ = this.actions$.pipe(
+    ofType(fromActions.LOAD_USER_DETAILS),
+    switchMap(() => {
+      return this.userService.getUserDetails().pipe(
+        map(userDetails => new fromActions.LoadUserDetailsSuccess(userDetails)),
+        // TODO: catch error
         catchError(err => of(new fromActions.Go({ path: ['/service-down'] })))
       );
     })

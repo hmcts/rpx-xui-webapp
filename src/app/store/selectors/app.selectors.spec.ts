@@ -16,7 +16,15 @@ describe('App Selectors', () => {
     loaded: false,
     loading: false,
     termsAndConditions: null,
-    isTermsAndConditionsFeatureEnabled: false
+    isTermsAndConditionsFeatureEnabled: false,
+    useIdleSessionTimeout: false,
+    userDetails: {
+      sessionTimeout: {
+        idleModalDisplayTime: 0,
+        totalIdleTime: 0,
+      },
+      canShareCases: false
+    }
   };
 
   const appPayload = {
@@ -54,7 +62,15 @@ describe('App Selectors', () => {
     loaded: true,
     loading: false,
     termsAndConditions: null,
-    isTermsAndConditionsFeatureEnabled: false
+    isTermsAndConditionsFeatureEnabled: false,
+    useIdleSessionTimeout: false,
+    userDetails: {
+      sessionTimeout: {
+        idleModalDisplayTime: 0,
+        totalIdleTime: 0,
+      },
+      canShareCases: false
+    }
 };
 
   beforeEach(() => {

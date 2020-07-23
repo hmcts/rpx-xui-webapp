@@ -5,7 +5,7 @@ import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
 import { Store } from '@ngrx/store';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { CaseFilterToggle, FindCaselistPaginationMetadata } from '../../store/actions/case-list.action';
+import { CaseFilterToggle, FindCaselistPaginationMetadata, ApplyCaselistFilterForES } from '../../store/actions/case-list.action';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { PaginationMetadata, WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { of, Observable } from 'rxjs';
@@ -109,6 +109,17 @@ describe('CaseListComponent', () => {
       };
       component.findCaseListPaginationMetadata(event);
       expect(spyOnDispatchToStore).toHaveBeenCalledWith(new FindCaselistPaginationMetadata(event));
+    });
+  });
+
+  describe('getElasticSearchResults', () => {
+
+    it('should dispatch an action to get results from elastic search endpoint.', () => {
+      const event = {
+        test: 'test',
+      };
+      component.getElasticSearchResults(event);
+      expect(spyOnDispatchToStore).toHaveBeenCalledWith(new ApplyCaselistFilterForES(event));
     });
   });
 

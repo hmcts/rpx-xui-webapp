@@ -28,7 +28,7 @@ export async function getCases(req: express.Request, res: express.Response, next
     }
 }
 
-function prepareElasticQuery(queryParams: {page?}, body: {size?}): {} {
+export function prepareElasticQuery(queryParams: {page?}, body: {size?}): {} {
     const metaCriteria = queryParams
     let caseCriteria = {}
     let query: {} = {}

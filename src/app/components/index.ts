@@ -1,6 +1,5 @@
 import { AccessibilityComponent } from './accessibility/accessibility.component';
 import { CookiePolicyComponent } from './cookie-policy/cookie-policy.component';
-import {ExuiPageWrapperComponent} from './exui-mian-wrapper/exui-page-wrapper.component';
 import { GetHelpComponent } from './get-help/get-help.component';
 import {HeaderComponent} from './header/header.component';
 import {HmctsGlobalFooterComponent} from './hmcts-global-footer/hmcts-global-footer.component';
@@ -12,7 +11,6 @@ import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.componen
 import {ServiceDownComponent} from './service-down/service-down.component';
 
 export const components: any[] = [
-  ExuiPageWrapperComponent,
   HmctsGlobalFooterComponent,
   HeaderComponent,
   HmctsGlobalHeaderComponent,
@@ -26,7 +24,6 @@ export const components: any[] = [
   GetHelpComponent
 ];
 
-export * from './exui-mian-wrapper/exui-page-wrapper.component';
 export * from './hmcts-global-footer/hmcts-global-footer.component';
 export * from './header/header.component';
 export * from './hmcts-global-header/hmcts-global-header.component';

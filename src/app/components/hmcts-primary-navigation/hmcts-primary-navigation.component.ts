@@ -15,6 +15,7 @@ export class HmctsPrimaryNavigationComponent {
     @Input() label;
     @Input() items;
     @Input() isBrandedHeader: boolean;
+    @Input() showFindCase: boolean;
 
     showItems: boolean;
     constructor(private route: ActivatedRoute) {

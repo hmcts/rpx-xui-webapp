@@ -109,3 +109,11 @@ export async function getCaseById(req: EnhancedRequest, res: Response) {
     return res.status(500).send('{"errorMessage": "Yet to implement}"')
   }
 }
+
+export async function postShareCasesToUsers(req: EnhancedRequest, res: Response) {
+  if (stub) {
+    return stubAPI.assignCases(req, res)
+  } else {
+    return realAPI.assignCases(req, res)
+  }
+}

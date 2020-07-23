@@ -4,6 +4,7 @@ import { ExuiCcdConnectorComponent } from './exiu-ccd-connector-wrapper/exui-ccd
 import { FooterComponent } from './footer/footer.component';
 import { LegacyTermsAndConditionsComponent } from './legacy-terms-and-conditions/legacy-terms-and-conditions.component';
 import { TermsAndConditionsComponent } from './terms-and-conditions/terms-and-conditions.component';
+import { AppHeaderSignedOutComponent } from './app-header-signed-out/app-header-signed-out.component';
 
 export const containers: any[] = [
   ExuiCcdConnectorComponent,

@@ -7,6 +7,7 @@ import { LegacyTermsAndConditionsComponent } from './containers/legacy-terms-and
 import { AcceptTermsGuard } from './guards/acceptTerms.guard';
 import { AllowAcceptTermsGuard } from './guards/allowAcceptTerms.guard';
 import { AuthGuard } from './services/auth/auth.guard';
+import { SignedOutComponent } from './components/signed-out/signed-out.component';
 
 export const ROUTES: Routes = [
   {
@@ -61,6 +62,10 @@ export const ROUTES: Routes = [
   {
     path: 'get-help',
     component: GetHelpComponent
+  },
+  {
+    path: 'idle-sign-out',
+    component: SignedOutComponent
   },
   {
     path: '**',

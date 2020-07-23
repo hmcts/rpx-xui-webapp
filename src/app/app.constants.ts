@@ -48,6 +48,13 @@ const userNav = {
   }]
 };
 
+const signedOutNavItems = [];
+
+const signedOutUserNav = {
+  label: 'Account navigation',
+  items: []
+};
+
 const helpContactDetails: ContactDetailsDataModel[] = [
   {
     title: 'Probate',
@@ -119,4 +126,6 @@ export class AppConstants {
   static ENVIRONMENT_NAMES = environmentNames;
   static REDIRECT_URL = redirectUrl;
   static HELP_CONTACT_DETAILS = helpContactDetails;
+  static SIGNED_OUT_NAV_ITEMS = signedOutNavItems;
+  static SIGNED_OUT_USER_NAV = signedOutUserNav;
 }

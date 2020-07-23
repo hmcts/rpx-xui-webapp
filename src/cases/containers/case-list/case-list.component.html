@@ -6,7 +6,7 @@
           {{toggleButtonName}}
         </button>
       </div>
-      <div class="hmcts-action-bar__filter"  >
+      <div class="hmcts-action-bar__filter"  *ngIf="isCaseShareVisible((userDetails | async).canShareCases, getShareableJurisdictions() | async)">
         <button id="btn-share-button" class="govuk-button hmcts-button--secondary" type="button"  aria-haspopup="true" aria-expanded="false"
                 [disabled]="checkIfButtonDisabled()" (click)="shareCaseSubmit()">
           Share Case
@@ -34,7 +34,7 @@
         <div aria-live="polite" class="hmcts-filter-layout__content" id="search-result" rightbody="" role="region">
           <ccd-search-result
             *ngIf="resultView"
-            [selectionEnabled]="true"
+            [selectionEnabled]="isCaseShareVisible((userDetails | async).canShareCases, getShareableJurisdictions() | async)"
             [jurisdiction]="jurisdiction"
             [caseType]="caseType"
             [caseState]="caseState"

@@ -1,6 +1,6 @@
 import { TCDocument } from '@hmcts/rpx-xui-common-lib';
-import { TermsAndCondition } from 'src/app/models/TermsAndCondition';
 import { ConfigurationModel } from '../../models/configuration.model';
+import {TermsAndCondition} from '../../models/TermsAndCondition';
 import * as fromActions from '../actions/';
 import {StartIdleSessionTimeout, STOP_IDLE_SESSION_TIMEOUT} from '../actions/app.actions';
 

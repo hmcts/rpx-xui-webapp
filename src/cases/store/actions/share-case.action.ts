@@ -13,6 +13,8 @@ export const DELETE_A_SHARE_CASE = '[ShareCase] Delete A Share Case';
 export const LOAD_USERS_FROM_ORG_FOR_CASE = '[LoadUsers] From ORG For A Case';
 export const LOAD_USERS_FROM_ORG_FOR_CASE_SUCCESS = '[LoadUsers] From ORG For A Case Success';
 export const SYNCHRONIZE_STATE_TO_STORE = '[ShareCase] Synchronize State To Store';
+export const ASSIGN_USERS_TO_CASE = '[ShareCase] Assign Users to Case';
+export const ASSIGN_USERS_TO_CASE_SUCCESS = '[ShareCase] Assign Users to Case Success';
 
 export class LoadUserFromOrgForCase implements Action {
   public readonly type = LOAD_USERS_FROM_ORG_FOR_CASE;
@@ -80,6 +82,16 @@ export class SynchronizeStateToStore implements Action {
   constructor(public payload: SharedCase[]) {}
 }
 
+export class AssignUsersToCase implements Action {
+  public readonly type = ASSIGN_USERS_TO_CASE;
+  constructor(public payload: SharedCase[]) {}
+}
+
+export class AssignUsersToCaseSuccess implements Action {
+  public readonly type = ASSIGN_USERS_TO_CASE_SUCCESS;
+  constructor(public payload: SharedCase[]) {}
+}
+
 export type Actions = NavigateToShareCase | LoadShareCase | LoadShareCaseSuccess | LoadShareCaseFailure
   | AddShareCases | AddShareCaseGo | DeleteAShareCase | LoadUserFromOrgForCase | LoadUserFromOrgForCaseSuccess
-  | SynchronizeStateToStore;
+  | SynchronizeStateToStore | AssignUsersToCase | AssignUsersToCaseSuccess;

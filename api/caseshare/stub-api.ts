@@ -91,6 +91,35 @@ export function getCaseById(req: EnhancedRequest, res: Response) {
     return res.send(foundCase)
 }
 
+export function assignUsersToCase(req: EnhancedRequest, res: Response) {
+  const shareCases: SharedCase[] = req.body.sharedCases.slice()
+  const updatedSharedCases: SharedCase[] = []
+  for (const aCase of shareCases) {
+    let newPendingShares = aCase.pendingShares.slice()
+    const newSharedWith = aCase.sharedWith.slice()
+    for (const user of aCase.pendingShares) {
+
+      const assignmentId = user.idamId
+      if (assignmentId === 'u222222') {
+        newSharedWith.push(user)
+        newPendingShares = []
+      } else  if (assignmentId === 'u333333') {
+        //keep the pending shares as it is we they cant be added
+
+      } else  {
+        return res.sendStatus(500)
+      }
+    }
+    const newSharedCase = {
+      ...aCase,
+      pendingShares: newPendingShares,
+      sharedWith: newSharedWith,
+    }
+    updatedSharedCases.push(newSharedCase)
+  }
+  return res.send(updatedSharedCases)
+}
+
 function getOrgById(orgId: string) {
   return orgs.find(c => c.orgId === orgId)
 }

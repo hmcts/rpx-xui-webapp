@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 export class CaseShareService {
-  constructor(private readonly http: HttpClient) {
+    constructor(private readonly http: HttpClient) {
   }
 
   public getUsersFromOrg(): Observable<UserDetails[]> {

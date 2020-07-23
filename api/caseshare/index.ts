@@ -1,8 +1,6 @@
 import {SharedCase} from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model'
 import * as express from 'express'
 import { Response } from 'express'
-import * as fromCasesFeature from '../../src/cases/store';
-import {CaseAssignmentResponse} from '../caseshare/responses/assignCaseResponse'
 import { getConfigValue } from '../configuration'
 import {SERVICES_CASE_SHARE_API_URL, STUB} from '../configuration/references'
 import {http} from '../lib/http'

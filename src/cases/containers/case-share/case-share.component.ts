@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
 import { UserDetails } from '@hmcts/rpx-xui-common-lib/lib/models/user-details.model';
 import { select, Store } from '@ngrx/store';
@@ -33,7 +33,7 @@ export class CaseShareComponent implements OnInit {
 
     // Hard coded Org Id as this info will come later
     this.orgUsers$ = this.store.pipe(select(fromCasesFeature.getOrganisationUsersState));
-    this.store.dispatch(new LoadUserFromOrgForCase('o111111'));
+    this.store.dispatch(new LoadUserFromOrgForCase());
 
     // initialize javascript for accordion component to enable open/close button
     setTimeout(() => initAll(), 1000);

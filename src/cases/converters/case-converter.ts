@@ -4,9 +4,11 @@ import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.mode
 export function toShareCaseConverter(selectedCases: SearchResultViewItem[]): SharedCase[] {
   const sharedCases: SharedCase[] = [];
   for (const selectCase of selectedCases) {
+    const caseTypeId = selectCase.case_fields && selectCase.case_fields.hasOwnProperty('[CASE_TYPE]') ? selectCase.case_fields['[CASE_TYPE]'] : '';
     const shareCase = {
       caseId: selectCase.case_id,
-      caseTitle: ''
+      caseTitle: '',
+      caseTypeId
     };
     sharedCases.push(shareCase);
   }
@@ -18,7 +20,9 @@ export function toSearchResultViewItemConverter(shareCases: SharedCase[]): Searc
   for (const shareCase of shareCases) {
     const searchResultViewItem = {
       case_id: shareCase.caseId,
-      case_fields: null
+      case_fields: {
+        '[CASE_TYPE]': shareCase.caseTypeId
+      }
     };
     searchResultViewItems.push(searchResultViewItem);
   }

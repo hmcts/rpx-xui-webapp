@@ -1,8 +1,8 @@
 import * as express from 'express'
+import { handlePostBlob } from '../common/crudService'
 import { getConfigValue } from '../configuration'
 import { SERVICES_MARKUP_API_URL } from '../configuration/references'
 import { EnhancedRequest } from '../lib/models'
-import { handlePostBlob } from './redactionService'
 
 const url: string = getConfigValue(SERVICES_MARKUP_API_URL)
 

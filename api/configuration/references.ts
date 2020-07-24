@@ -24,6 +24,7 @@ export const HEALTH = 'health'
 
 export const SERVICES_CCD_COMPONENT_API_PATH = 'services.ccd.componentApi'
 export const SERVICES_CCD_DATA_STORE_API_PATH = 'services.ccd.dataApi'
+export const SERVICES_CCD_CASE_ASSIGNMENT_API_PATH = 'services.ccd.caseAssignmentApi'
 
 export const SERVICES_DOCUMENTS_API_PATH = 'services.documents.api'
 
@@ -41,8 +42,7 @@ export const SERVICES_TERMS_AND_CONDITIONS_URL = 'services.termsAndConditions'
 
 export const SERVICES_PAYMENTS_URL = 'services.payments'
 
-// TODO: require updates when API is ready
-export const SERVICES_CASE_SHARE_API_URL = 'services.caseShare.api'
+export const SERVICES_PRD_API_URL = 'services.prd.api'
 
 export const PROTOCOL = 'protocol'
 export const MICROSERVICE = 'microservice'

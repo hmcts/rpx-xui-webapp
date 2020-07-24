@@ -110,6 +110,7 @@ class ShareCaseCheckAndConfirmPage {
     async clickConfirmBtn(){
 
         await this.confirmBtn.click();
+        ShareCaseData.changesCommited();
     }
 
     async isSubmissionSuccessful(){

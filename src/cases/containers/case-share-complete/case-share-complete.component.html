@@ -1,13 +1,15 @@
 <div *ngIf="completeScreenMode === 'COMPLETE'">
+  <br/>
   <div  class="small_notification" aria-label="Your cases have been updated"  >
     Your cases have been updated
   </div>
-    <h1 class="govuk-heading-xl" >What happens next</h1>
+    <h2 class="govuk-heading-m">What happens next</h2>
     <p class="govuk-body">If you've shared one or more cases, your colleagues will now be able to access them from their case list.</p>
     <a href="/cases">Go back to the case list.</a><br/><br/>
 </div>
 <div *ngIf="completeScreenMode === 'PENDING'">
-  <h1 class="govuk-heading-xl">Sorry, There is a problem</h1><br/>
+  <br>
+  <h1 class="govuk-heading-xl">Sorry, there is a problem</h1><br/>
   <p class="govuk-body">The following case were not shared: </p>
   <div *ngFor="let acase of newShareCases;">
     <h2 class="govuk-heading-m case-share-confirm__title">{{ acase.caseTitle }}</h2>

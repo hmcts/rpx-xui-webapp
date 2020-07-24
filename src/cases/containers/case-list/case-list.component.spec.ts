@@ -10,7 +10,6 @@ import { Observable, of } from 'rxjs';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { State } from '../../../app/store/reducers';
 import * as converts from '../../converters/case-converter';
-import { By } from '@angular/platform-browser';
 import { AddShareCases, CaseFilterToggle, FindCaselistPaginationMetadata, SynchronizeStateToStore } from '../../store/actions';
 import { CaseListComponent } from './case-list.component';
 
@@ -491,52 +490,11 @@ describe('CaseListComponent', () => {
     });
     it('Should save share cases to store', () => {
       component.retrieveSelections(selectedCases);
-      const shareCases: SharedCase[] = converts.toShareCaseConverter(component.selectedCases);
+      const shareCases = {
+        sharedCases: converts.toShareCaseConverter(component.selectedCases)
+      };
       component.shareCaseSubmit();
-      //expect(spyOnDispatchToStore).toHaveBeenCalledWith(new AddShareCases(shareCases));
-      expect(component.checkIfButtonDisabled()).toBeFalsy();
-    });
-    afterEach(() => {
-      selectedCases = [];
-    });
-  });
-
-  describe('Should show share case button', () => {
-    let selectedCases: SearchResultViewItem[] = [];
-    beforeEach(() => {
-      selectedCases = [{
-        case_id: '1',
-        case_fields: {
-          PersonFirstName: 'James',
-          PersonLastName: 'Parker',
-          PersonAddress: '123, Fake Street, Hexton, England, HX08 UTG'
-        }
-      }, {
-        case_id: '2',
-        case_fields: {
-          PersonFirstName: 'Steve',
-          PersonLastName: 'Harris',
-          PersonAddress: 'Davidson House, Forbury Square, Reading, RG1 3EB'
-        }
-      }];
-    });
-    it('Should receive selected cases', () => {
-      component.retrieveSelections(selectedCases);
-      expect(component.selectedCases.length).toEqual(2);
-    });
-    it('Should see the \'Share case\' button greyed out', () => {
-      selectedCases = [];
-      component.retrieveSelections(selectedCases);
-      expect(fixture.debugElement.nativeElement.querySelector('#btn-share-button').textContent).toContain('Share case');
-      expect(component.checkIfButtonDisabled()).toBeTruthy();
-    });
-    it('Share a case button is selectable when any case is selected', () => {
-      component.retrieveSelections(selectedCases);
-      expect(component.checkIfButtonDisabled()).toBeFalsy();
-    });
-    it('Should save share cases to store', () => {
-      component.retrieveSelections(selectedCases);
-      component.shareCaseSubmit();
+      expect(spyOnDispatchToStore).toHaveBeenCalledWith(new AddShareCases(shareCases));
       expect(component.checkIfButtonDisabled()).toBeFalsy();
     });
     afterEach(() => {

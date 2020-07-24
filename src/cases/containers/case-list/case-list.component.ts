@@ -11,7 +11,6 @@ import { AppConfig } from './../../../app/services/ccd-config/ccd-case.config';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import * as converters from 'src/cases/converters/case-converter';
 import * as fromRoot from '../../../app/store';
-import { Router } from '@angular/router';
 import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
 
 /**
@@ -72,7 +71,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
   constructor(
     public store: Store<fromCaseList.State>,
-    public router: Router,
     private appConfig: AppConfig,
     private definitionsService: DefinitionsService,
     private windowService: WindowService,

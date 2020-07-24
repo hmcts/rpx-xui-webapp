@@ -28,9 +28,6 @@
     "prd": {
       "api": "http://rd-professional-api-prod.service.core-compute-prod.internal"
     },
-    "caseShare": {
-      "api": "http://ccd-case-share-api-prod.service.core-compute-prod.internal"
-    },
     "em_anno_api": "http://em-anno-prod.service.core-compute-prod.internal",
     "idam": {
       "idamApiUrl": "https://idam-api.platform.hmcts.net",

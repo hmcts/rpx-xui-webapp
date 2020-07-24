@@ -2,9 +2,9 @@ import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.mode
 import { UserDetails } from '@hmcts/rpx-xui-common-lib/lib/models/user-details.model'
 import { plainToClass } from 'class-transformer'
 import { Response } from 'express'
-import { OrganisationModel } from '../../src/cases/models/organisation/organisation.model'
 import { EnhancedRequest } from '../lib/models'
 import { DataBaseModel } from './models/data-base.model'
+import { OrganisationModel } from './models/organisation.model'
 // @ts-ignore
 import * as dbJson from './stubs/db.json'
 

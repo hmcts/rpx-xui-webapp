@@ -8,7 +8,7 @@
   "logging": "debug",
   "now": false,
   "maxLogLine": 80,
-  "stub": false,
+  "stub": true,
   "health": {
     "ccdComponentApi": "https://ccd-api-gateway-web-prod.service.core-compute-prod.internal/health",
     "ccdDataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal/health",

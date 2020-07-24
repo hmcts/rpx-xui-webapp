@@ -1,6 +1,6 @@
 import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model'
 import { Response } from 'express'
-import {handleGet, handlePost} from '../common/crudService';
+import { handleGet, handlePost } from '../common/crudService'
 import { getConfigValue } from '../configuration'
 import { SERVICES_CCD_CASE_ASSIGNMENT_API_PATH, SERVICES_PRD_API_URL } from '../configuration/references'
 import { EnhancedRequest } from '../lib/models'
@@ -80,11 +80,10 @@ export async function assignCases(req: EnhancedRequest, res: Response) {
       let index = 0
       for (const user of aCase.pendingShares) {
         index++
-        const assignmentId = user.idamId
         const payload = {
-          "assignee_id"	: assignmentId,
+          "assignee_id"	: user.idamId,
           "case_id"	: aCase.caseId,
-          "case_type_id" : 	aCase.caseTitle,
+          "case_type_id" : 	aCase.caseTypeId,
         }
         const {status}: {status: number} = await handlePost(path, payload, req)
         if ( status === 200) {
@@ -100,7 +99,6 @@ export async function assignCases(req: EnhancedRequest, res: Response) {
       updatedSharedCases.push(newSharedCase)
     }
     res.send(updatedSharedCases)
-
   } catch (error) {
     return res.status(error.status).send({
       errorMessage: error.data,

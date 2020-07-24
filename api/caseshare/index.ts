@@ -110,7 +110,7 @@ export async function getCaseById(req: EnhancedRequest, res: Response) {
   }
 }
 
-export async function postShareCasesToUsers(req: EnhancedRequest, res: Response) {
+export async function assignCasesToUsers(req: EnhancedRequest, res: Response) {
   if (stub) {
     return stubAPI.assignCases(req, res)
   } else {

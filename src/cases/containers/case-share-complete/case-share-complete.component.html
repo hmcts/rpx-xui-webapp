@@ -1,11 +1,22 @@
 <div *ngIf="completeScreenMode === 'COMPLETE'">
-  <br/>
-  <div  class="small_notification" aria-label="Your cases have been updated"  >
-    Your cases have been updated
+  <div class="hmcts-width-container">
+    <main role="main" class="govuk-main-wrapper">
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+          <div class="govuk-panel govuk-panel--confirmation">
+            <h1 class="govuk-panel__title" aria-label="Your cases have been updated">
+              Your cases have been updated
+            </h1>
+          </div>
+          <h3 class="govuk-heading-m">What happens next</h3>
+          <p class="govuk-body">If you've shared one or more cases, your colleagues will now be able to access them from their case list.</p>
+          <p class="govuk-body">
+            <span text><a [routerLink]="['/cases']">Go back to the case list.</a></span>
+          </p>
+        </div>
+      </div>
+    </main>
   </div>
-    <h2 class="govuk-heading-m">What happens next</h2>
-    <p class="govuk-body">If you've shared one or more cases, your colleagues will now be able to access them from their case list.</p>
-    <a href="/cases">Go back to the case list.</a><br/><br/>
 </div>
 <div *ngIf="completeScreenMode === 'PENDING'">
   <br>

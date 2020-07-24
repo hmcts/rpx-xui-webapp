@@ -18,7 +18,7 @@ export const ASSIGN_USERS_TO_CASE_SUCCESS = '[ShareCase] Assign Users to Case Su
 
 export class LoadUserFromOrgForCase implements Action {
   public readonly type = LOAD_USERS_FROM_ORG_FOR_CASE;
-  constructor(public payload: string) {}
+  constructor() {}
 }
 
 export class NavigateToShareCase implements Action {

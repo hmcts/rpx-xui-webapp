@@ -8,25 +8,31 @@ describe('case converters', () => {
     const selectedCases = [{
       case_id: '1',
       case_fields: {
+        '[CASE_TYPE]': 'FinancialRemedyContested'
       }
     }, {
       case_id: '2',
       case_fields: {
+        '[CASE_TYPE]': 'FinancialRemedyContested'
       }
     }];
-    const expectedShareCases = [{caseId: '1', caseTitle: ''}, {caseId: '2', caseTitle: ''}];
+    const expectedShareCases = [{caseId: '1', caseTitle: '', caseTypeId: 'FinancialRemedyContested'}, {caseId: '2', caseTitle: '', caseTypeId: 'FinancialRemedyContested'}];
     const shareCases: SharedCase[] = converts.toShareCaseConverter(selectedCases);
     expect(shareCases).toEqual(expectedShareCases);
   });
 
   it('should convert to search result view item', () => {
-    const sharedCases = [{caseId: '1', caseTitle: ''}, {caseId: '2', caseTitle: ''}];
+    const sharedCases = [{caseId: '1', caseTitle: '', caseTypeId: 'FinancialRemedyContested'}, {caseId: '2', caseTitle: '', caseTypeId: 'FinancialRemedyContested'}];
     const expectedSearchResultViewItem = [{
       case_id: '1',
-      case_fields: null
+      case_fields: {
+        '[CASE_TYPE]': 'FinancialRemedyContested'
+      }
     }, {
       case_id: '2',
-      case_fields: null
+      case_fields: {
+        '[CASE_TYPE]': 'FinancialRemedyContested'
+      }
     }];
     const searchResultViewItem: SearchResultViewItem[] = converts.toSearchResultViewItemConverter(sharedCases);
     expect(searchResultViewItem).toEqual(expectedSearchResultViewItem);

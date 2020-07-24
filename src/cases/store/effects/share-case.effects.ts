@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import {SharedCase} from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import {Observable, of} from 'rxjs';
+import { of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { CaseShareService } from '../../../app/services/case/share-case.service';
 import * as fromRoot from '../../../app/store/index';
-import * as fromActions from '../actions';
 import * as shareCaseActions from '../actions/share-case.action';
 import * as shareCases from '../reducers/share-case.reducer';
 
@@ -64,10 +62,8 @@ export class ShareCaseEffects {
 
   @Effect() public loadOrgUsers$ = this.actions$.pipe(
     ofType(shareCaseActions.LOAD_USERS_FROM_ORG_FOR_CASE),
-    map((action: shareCaseActions.LoadUserFromOrgForCase) => action.payload),
-    switchMap(payload => {
-      this.payload = payload;
-      return this.caseShareService.getUsersFromOrg(payload).pipe(
+    switchMap(() => {
+      return this.caseShareService.getUsersFromOrg().pipe(
         map(
           (response) => new shareCaseActions.LoadUserFromOrgForCaseSuccess(response)),
         catchError(() => of(new fromRoot.Go({ path: ['/service-down']})))

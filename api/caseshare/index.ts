@@ -1,18 +1,11 @@
-import {SharedCase} from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model'
-import * as express from 'express'
 import { Response } from 'express'
 import { getConfigValue } from '../configuration'
-import {SERVICES_CASE_SHARE_API_URL, STUB} from '../configuration/references'
-import {http} from '../lib/http'
+import { STUB } from '../configuration/references'
 import { EnhancedRequest } from '../lib/models'
-import {setHeaders} from '../lib/proxy'
-import {postCaseAssignment} from './caseShareUtil'
+import * as realAPI from './real-api'
 import * as stubAPI from './stub-api'
 
-const stub: string = getConfigValue(STUB)
-// TODO: use below url for actual API
-// @ts-ignore
-const url: string = getConfigValue(SERVICES_CASE_SHARE_API_URL)
+const stub: boolean = getConfigValue(STUB)
 
 /**
  * getRoot
@@ -81,15 +74,14 @@ export async function getUserByOrgAndUserId(req: EnhancedRequest, res: Response)
 
 /**
  * searchUsers
- * example 1: /api/caseshare/orgs/o111111?q=
- * example 2: /api/caseshare/orgs/o111111?q=j
+ * example 1: /api/caseshare/users
  */
-export async function searchUsers(req: EnhancedRequest, res: Response) {
+export async function getUsers(req: EnhancedRequest, res: Response) {
   if (stub) {
-    return stubAPI.searchUsers(req, res)
-  } else {
+    return stubAPI.getUsers(req, res)
+   } else {
     // TODO: call actual API if not for stub
-    return res.status(500).send('{"errorMessage": "Yet to implement}"')
+    return realAPI.getUsers(req, res)
   }
 }
 
@@ -101,8 +93,7 @@ export async function getCases(req: EnhancedRequest, res: Response) {
   if (stub) {
     return stubAPI.getCases(req, res)
   } else {
-    // TODO: call actual API if not for stub
-    return res.status(500).send('{"errorMessage": "Yet to implement}"')
+    return realAPI.getCases(req, res)
   }
 }
 
@@ -119,71 +110,10 @@ export async function getCaseById(req: EnhancedRequest, res: Response) {
   }
 }
 
-export async function postShareCasesToUsers(req: EnhancedRequest, res: Response) {
+export async function assignCasesToUsers(req: EnhancedRequest, res: Response) {
   if (stub) {
-    return stubAPI.assignUsersToCase(req, res)
+    return stubAPI.assignCases(req, res)
   } else {
-    // TODO: call actual API if not for stub
-    return this.postShareCasesToUsersReal(req, res)
-  }
-}
-
-export async function postShareCasesToUsersReal(req: express.Request, res: express.Response) {
-  let errReport: any
-  if (!req.body.assignee_id) {
-    errReport = {
-      apiError: 'Assignee id is missing',
-      apiStatusCode: '400',
-      message: 'Case Assignment error',
-    }
-    res.status(400).send(errReport)
-  } else if (!req.body.case_id) {
-      errReport = {
-        apiError: 'Case id is missing',
-        apiStatusCode: '400',
-        message: 'Case Assignment error',
-      }
-      res.status(400).send(errReport)
-    }
-
-  try {
-    const assignUrl =  postCaseAssignment(getConfigValue(SERVICES_CASE_SHARE_API_URL))
-    const headers = setHeaders(req)
-    const shareCases: SharedCase[] = req.body.sharedCases.slice()
-    const updatedSharedCases: SharedCase[] = []
-    for (const aCase of shareCases) {
-      const newPendingShares = aCase.pendingShares.slice()
-      const newSharedWith = aCase.sharedWith.slice()
-      let index = 0
-      for (const user of aCase.pendingShares) {
-        index++
-        const assignmentId = user.idamId
-        const payload = {
-          "assignee_id"	: assignmentId,
-          "case_id"	: aCase.caseId,
-          "case_type_id" : 	aCase.caseTitle,
-        }
-        const response = await http.post(assignUrl, payload, { headers })
-        if ( response.status === 200) {
-          newSharedWith.push(user)
-          newPendingShares.splice(index, 1)
-        }
-      }
-      const newSharedCase = {
-        ...aCase,
-        pendingShares: newPendingShares,
-        sharedWith: newSharedWith,
-      }
-      updatedSharedCases.push(newSharedCase)
-    }
-    res.send(updatedSharedCases)
-
-  } catch (error) {
-    errReport = {
-      apiError: error.data.message,
-      apiStatusCode: error.status,
-      message: 'Case Assign UTl',
-    }
-    res.status(error.status).send(errReport)
+    return realAPI.assignCases(req, res)
   }
 }

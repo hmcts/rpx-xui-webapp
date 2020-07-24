@@ -1,6 +1,8 @@
 
 const BrowserWaits = require('../../support/customWaits');
 const { browser } = require('protractor');
+
+const CucumberReportLogger = require('../../support/reportLogger');
 class CaseListPage{
 
     constructor(){
@@ -82,6 +84,10 @@ class CaseListPage{
 
     async waitForCaseResultsToDisplay(){
         await BrowserWaits.waitForElement(this.searchResultsTopPagination);
+        CucumberReportLogger.AddMessage("Waiting from : " + new Date().toTimeString());
+        await BrowserWaits.waitForSeconds(5);
+        CucumberReportLogger.AddMessage("Waiting To : " + new Date().toTimeString());
+
     }
 
     async waitForNoCaseResultsToDisplay() {
@@ -122,6 +128,7 @@ class CaseListPage{
 
     async isCaseSelectCheckboxSelected(rowNum){
         let checkBoxAtRowNum = await this.caseSelectionCheckboxes.get(rowNum - 1);
+        // await BrowserWaits.waitForElement(checkBoxAtRowNum);
         return await checkBoxAtRowNum.isSelected();
     }
 

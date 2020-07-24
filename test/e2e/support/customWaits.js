@@ -8,6 +8,10 @@ class BrowserWaits{
         this.waitTime = 30000; 
         this.pageErrors = $$(".error-summary");
     }
+
+    async waitForSeconds(waitInSec){
+        await browser.sleep(waitInSec*1000);
+    }
     
     async waitForElement(element){
         await browser.wait(EC.visibilityOf(element), this.waitTime,"Error : "+element.locator().toString());

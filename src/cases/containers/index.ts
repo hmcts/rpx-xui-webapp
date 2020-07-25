@@ -6,6 +6,9 @@ import {CasesCreateComponent} from './case-create/case-create.component';
 import {CaseDetailsComponent} from './case-details/case-details.component';
 import { CaseCreateSubmitComponent } from './case-create-submit/case-create-submit.component';
 import {CaseDetailsHomeComponent} from './case-details-home/case-details-home';
+import { CaseShareComponent } from './case-share/case-share.component';
+import { CaseShareConfirmComponent } from './case-share-confirm/case-share-confirm.component';
+import { CaseShareCompleteComponent } from './case-share-complete/case-share-complete.component';
 
 export const containers: any[] = [
   CaseListComponent,
@@ -15,7 +18,10 @@ export const containers: any[] = [
   CaseDetailsComponent,
   CaseHomeComponent,
   CaseCreateSubmitComponent,
-  CaseDetailsHomeComponent
+  CaseDetailsHomeComponent,
+  CaseShareComponent,
+  CaseShareConfirmComponent,
+  CaseShareCompleteComponent
 ];
 
 export * from './case-list/case-list.component';
@@ -26,3 +32,6 @@ export * from './case-details/case-details.component';
 export * from './case-home/case-home.component';
 export * from './case-create-submit/case-create-submit.component';
 export * from './case-details-home/case-details-home';
+export * from './case-share/case-share.component';
+export * from './case-share-confirm/case-share-confirm.component';
+export * from './case-share-complete/case-share-complete.component';

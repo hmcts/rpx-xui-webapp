@@ -5,7 +5,8 @@
         "target": "es5",
         "types": ["node", "mocha", "rxjs"],
         "baseUrl": ".",
-        "lib": ["es2017", "dom"]
+        "lib": ["es2017", "dom"],
+        "resolveJsonModule": true
     },
     "include": ["**/*.ts", "../*.ts"],
     "exclude": ["**/*.spec.ts"]

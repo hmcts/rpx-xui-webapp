@@ -10,7 +10,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         expect(await caseListPage.amOnPage()).to.be.true;
     });
 
-    When('I select search criteria jurisdiction {string} case type {string} state {string} in case list page', 
+    When('I select search criteria jurisdiction {string} case type {string} state {string} in case list page',
     async function(jurisdiction,caseType,state){
         await caseListPage.selectJurisdiction(jurisdiction);
         await caseListPage.selectCaseType(caseType);

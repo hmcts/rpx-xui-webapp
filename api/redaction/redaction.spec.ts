@@ -4,11 +4,11 @@ import 'mocha'
 import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
 import { mockReq, mockRes } from 'sinon-express-mock'
+import * as redactionService from '../common/crudService'
 import {getConfigValue} from '../configuration'
 import {
-    SERVICES_MARKUP_API_URL,
+  SERVICES_MARKUP_API_URL,
 } from '../configuration/references'
-import * as redactionService from './redactionService'
 import { postRedaction } from './redaction'
 
 chai.use(sinonChai)
@@ -58,10 +58,13 @@ describe('redaction', () => {
             const redactionPath = `${service}${reqQuery.originalUrl}`
             await postRedaction(req, res, next)
             expect(redactionService.handlePostBlob).to.have.been.calledWith(redactionPath, req.body)
-            expect(next).to.have.been.called
+            expect(res.status).to.have.been.calledWith(response.status)
+            expect(res.send).to.have.been.calledWith({
+            errorMessage: response.data,
+            errorStatusText: response.statusText,
+          })
         })
 
     })
 
-   
 })

@@ -16,7 +16,10 @@ describe('App Selectors', () => {
     loaded: false,
     loading: false,
     termsAndConditions: null,
-    isTermsAndConditionsFeatureEnabled: false
+    isTermsAndConditionsFeatureEnabled: false,
+    userDetails: {
+      canShareCases: false
+    }
   };
 
   const appPayload = {
@@ -54,7 +57,10 @@ describe('App Selectors', () => {
     loaded: true,
     loading: false,
     termsAndConditions: null,
-    isTermsAndConditionsFeatureEnabled: false
+    isTermsAndConditionsFeatureEnabled: false,
+    userDetails: {
+      canShareCases: false
+    }
 };
 
   beforeEach(() => {

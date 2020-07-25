@@ -1,10 +1,9 @@
 import * as express from 'express'
+import { handleDelete, handleGet, handlePost, handlePut } from '../common/crudService'
 import { getConfigValue } from '../configuration'
 import { SERVICES_EM_ANNO_API_URL } from '../configuration/references'
 import { EnhancedRequest } from '../lib/models'
-import { handleDelete, handleGet, handlePost, handlePut } from './emAnnoService'
 import { Annotation, Annotations } from './models'
-
 const url: string = getConfigValue(SERVICES_EM_ANNO_API_URL)
 
 //TODO: remove this entire folder in favour of proxy

@@ -2,13 +2,14 @@ var EC = protractor.ExpectedConditions;
 
 class BrowserWaits{
 
-
-
     constructor(){
-        this.waitTime = 30000; 
+        this.waitTime = 30000;
         this.pageErrors = $$(".error-summary");
     }
-    
+
+    async waitForSeconds(waitInSec){
+      await browser.sleep(waitInSec*1000);
+    }
     async waitForElement(element){
         await browser.wait(EC.visibilityOf(element), this.waitTime,"Error : "+element.locator().toString());
     }
@@ -41,7 +42,7 @@ class BrowserWaits{
             nextPage = await browser.getCurrentUrl();
 
             for(let errorMsgCounter = 0; errorMsgCounter < this.pageErrors.length;errorMsgCounter++){
-                pageErrors = pageErrors + " | "+ this.pageErrors[errorMsgCounter].getText(); 
+                pageErrors = pageErrors + " | "+ this.pageErrors[errorMsgCounter].getText();
             }
 
             return currentPageUrl !== nextPage;
@@ -50,7 +51,7 @@ class BrowserWaits{
 
     async retryForPageLoad(element,callback) {
     let retryCounter = 0;
-    
+
     while (retryCounter < 3) {
         try {
             await this.waitForElement(element);
@@ -64,11 +65,11 @@ class BrowserWaits{
             console.log(element.locator().toString() + " .    Retry attempt for page load : " + retryCounter);
 
             await browser.refresh();
-         
+
         }
     }
 }
-    
+
 }
 
-module.exports =new  BrowserWaits(); 
+module.exports =new  BrowserWaits();

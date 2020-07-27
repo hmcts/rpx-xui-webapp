@@ -33,11 +33,9 @@ describe('getUserDetails', () => {
       await getUserDetails(req, res, next)
       const response = {
         canShareCases: true,
-        sessionTimeout: { idleModalDisplayTime: 10, pattern: ".", totalIdleTime: 480 }
       }
       expect(res.send).to.have.been.calledWith(response)
     })
-
 
     it('should return a false response when case share permission is non-existent', async () => {
       const reqQuery = {
@@ -47,7 +45,6 @@ describe('getUserDetails', () => {
       await getUserDetails(req, res, next)
       const response = {
         canShareCases: false,
-        sessionTimeout: { idleModalDisplayTime: 10, pattern: ".", totalIdleTime: 480 }
       }
       expect(res.send).to.have.been.calledWith(response)
     })

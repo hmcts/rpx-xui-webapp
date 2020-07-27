@@ -83,7 +83,7 @@
     "applicationinsights": "1.7.2",
     "applicationinsights-js": "^1.0.20",
     "axios": "^0.18.0",
-    "class-transformer": "^0.1.10",
+    "class-transformer": "^0.2.3",
     "classlist.js": "^1.1.20150312",
     "config": "^3.2.5",
     "connect-redis": "^4.0.4",

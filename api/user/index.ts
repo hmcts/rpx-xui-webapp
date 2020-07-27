@@ -1,7 +1,5 @@
 import { NextFunction, Response } from 'express'
-import { getConfigValue } from '../configuration'
 import { CASE_SHARE_PERMISSIONS } from '../configuration/references'
-import { getUserSessionTimeout } from './userTimeout'
 
 export async function getUserDetails(req, res: Response, next: NextFunction) {
 

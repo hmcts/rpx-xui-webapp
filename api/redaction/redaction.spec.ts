@@ -7,14 +7,13 @@ import { mockReq, mockRes } from 'sinon-express-mock'
 import * as redactionService from '../common/crudService'
 import {getConfigValue} from '../configuration'
 import {
-  SERVICES_MARKUP_API_URL,
+    SERVICES_MARKUP_API_URL,
 } from '../configuration/references'
 import { postRedaction } from './redaction'
 
 chai.use(sinonChai)
 describe('redaction', () => {
 
-    let next
     let sandbox
     let spy: any
     const service: string = getConfigValue(SERVICES_MARKUP_API_URL)
@@ -26,7 +25,6 @@ describe('redaction', () => {
 
     beforeEach(() => {
         sandbox = sinon.createSandbox()
-        next = sandbox.spy()
     })
 
     afterEach(() => {
@@ -39,7 +37,7 @@ describe('redaction', () => {
         })
         it('should call postRedaction and return the json response', async () => {
             const redactionPath = `${service}${reqQuery.originalUrl}`
-            await postRedaction(req, res, next)
+            await postRedaction(req, res)
             expect(redactionService.handlePostBlob).to.have.been.calledWith(redactionPath, req.body)
             expect(res.status).to.have.been.calledWith(200)
             expect(res.send).to.have.been.calledWith({})
@@ -56,15 +54,14 @@ describe('redaction', () => {
             spy = sandbox.stub(redactionService, 'handlePostBlob').throws(response)
 
             const redactionPath = `${service}${reqQuery.originalUrl}`
-            await postRedaction(req, res, next)
+            await postRedaction(req, res)
             expect(redactionService.handlePostBlob).to.have.been.calledWith(redactionPath, req.body)
             expect(res.status).to.have.been.calledWith(response.status)
             expect(res.send).to.have.been.calledWith({
-            errorMessage: response.data,
-            errorStatusText: response.statusText,
-          })
+                errorMessage: response.data,
+                errorStatusText: response.statusText,
+            })
         })
 
     })
-
 })

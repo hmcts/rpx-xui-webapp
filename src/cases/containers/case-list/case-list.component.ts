@@ -3,15 +3,15 @@ import { FormGroup } from '@angular/forms';
 import { CaseState, CaseType, Jurisdiction, PaginationMetadata, SearchResultView, SearchResultViewItem, WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
 import { select, Store } from '@ngrx/store';
 import {BehaviorSubject, combineLatest, Observable, Subscription} from 'rxjs';
+import * as converters from 'src/cases/converters/case-converter';
 import { ActionBindingModel } from 'src/cases/models/create-case-actions.model';
-import {AppConfig} from '../../../app/services/ccd-config/ccd-case.config';
 import * as fromRoot from '../../../app/store';
 import * as fromCasesFeature from '../../store';
 import * as fromCaseList from '../../store/reducers';
-import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
-import * as converters from '../../converters/case-converter'
+import { AppConfig } from './../../../app/services/ccd-config/ccd-case.config';
 
 /**
  * Entry component wrapper for Case List
@@ -19,7 +19,6 @@ import * as converters from '../../converters/case-converter'
  * param TBC
  */
 @Component({
-
   selector: 'exui-case-list',
   templateUrl: 'case-list.component.html',
   encapsulation: ViewEncapsulation.None,
@@ -122,6 +121,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
       this.onResultsViewHandler(resultView));
 
     this.findCaseListPaginationMetadata(this.getEvent());
+
     this.userDetails = this.store.pipe(select(fromRoot.getUserDetails));
     this.shareCases$ = this.store.pipe(select(fromCasesFeature.getShareCaseListState));
     this.shareCases$.subscribe(shareCases => this.selectedCases = converters.toSearchResultViewItemConverter(shareCases));

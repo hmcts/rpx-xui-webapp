@@ -5,12 +5,11 @@ import { PaginationMetadata, SearchResultViewItem, WindowService } from '@hmcts/
 import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
-import * as converts from '../../converters/case-converter';
-import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
-import * as fromRoot from '../../../app/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
+import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { State } from '../../../app/store/reducers';
+import * as converts from '../../converters/case-converter';
 import { AddShareCases, CaseFilterToggle, FindCaselistPaginationMetadata, SynchronizeStateToStore } from '../../store/actions';
 import { CaseListComponent } from './case-list.component';
 
@@ -406,7 +405,7 @@ describe('CaseListComponent', () => {
           name: 'some name',
           description: 'some desc',
           states: [{
-            id: 'some id',
+            id: 'some state id',
             name: 'some name',
             description: 'some desc'
           }]
@@ -415,6 +414,7 @@ describe('CaseListComponent', () => {
       component.setCaseListFilterDefaults();
 
       expect(component.defaults).toBeDefined();
+      expect(component.defaults.state_id).toEqual('some state id');
     });
 
     it('should set the defaults from localStorage.', () => {
@@ -423,7 +423,23 @@ describe('CaseListComponent', () => {
         '"jurisdiction": "Probate", ' +
         '"case-type": "GrantOfRepresentation", ' +
         '"case-state": "BOReadyToIssue"' +
-        '}');
+      '}');
+      component.jurisdictionsBehaviourSubject$.next([{
+        id: 'Probate',
+        name: 'some name',
+        description: 'some desc',
+        caseTypes: [{
+          id: 'GrantOfRepresentation',
+          events: null,
+          name: 'some name',
+          description: 'some desc',
+          states: [{
+            id: 'BOReadyToIssue',
+            name: 'some name',
+            description: 'some desc'
+          }]
+        }]
+      }]);
       component.setCaseListFilterDefaults();
 
       expect(component.defaults.state_id).toEqual('BOReadyToIssue');

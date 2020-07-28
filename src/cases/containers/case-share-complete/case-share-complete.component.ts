@@ -35,10 +35,13 @@ export class CaseShareCompleteComponent implements OnInit {
   }
 
   public checkIfIncomplete(shareCases: SharedCase[]) {
-   if (shareCases.some(aCase => aCase.pendingShares && aCase.pendingShares.length > 0)) {
+    if (shareCases.some(aCase => aCase.pendingShares && aCase.pendingShares.length > 0)) {
       return 'PENDING';
     }
-   return 'COMPLETE';
+    if (shareCases.some(aCase => aCase.pendingUnshares && aCase.pendingUnshares.length > 0)) {
+      return 'PENDING';
+    }
+    return 'COMPLETE';
   }
 
   public showUserAccessBlock(aCase: SharedCase): boolean {

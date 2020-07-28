@@ -105,11 +105,6 @@ export function shareCasesReducer(state: ShareCasesState = initialSharedCasesSta
         ...state,
         shareCases: action.payload
       };
-    case ShareCasesActions.ASSIGN_USERS_TO_CASE_SUCCESS:
-      return {
-        ...state,
-        shareCases: action.payload
-      };
     default:
       return state;
   }
@@ -127,6 +122,8 @@ export function sortedUserInCases(pendingSortedCases: SharedCase[]): SharedCase[
         sharedWith: sortedUsers
       };
       cases.push(caseWithSortedUser);
+    } else {
+      cases.push(aCase);
     }
   }
   return cases;

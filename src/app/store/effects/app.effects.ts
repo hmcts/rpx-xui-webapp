@@ -78,7 +78,7 @@ export class AppEffects {
       return this.userService.getUserDetails().pipe(
         map(userDetails => new fromActions.LoadUserDetailsSuccess(userDetails)),
         // TODO: catch error
-        catchError(err => of(new fromActions.Go({ path: ['/service-down'] })))
+        catchError(err => of(new fromActions.LoadUserDetailsFail(err)))
       );
     })
   );

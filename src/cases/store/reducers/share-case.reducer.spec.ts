@@ -19,6 +19,46 @@ describe('Share case reducer', () => {
       expect(state).toBeDefined();
     });
 
+    it('should load state when navigate to share case', () => {
+      const selectedCases =  [{caseId: '1', caseTitle: 'James123'}, {caseId: '2', caseTitle: 'Steve321'}];
+      const action = new fromActions.NavigateToShareCase(selectedCases);
+      const state = fromReducer.shareCasesReducer(initialState, action);
+      expect(state.shareCases.length).toEqual(2);
+    });
+
+    it('should load share case', () => {
+      const selectedCases =  [];
+      const action = new fromActions.LoadShareCase(selectedCases);
+      const state = fromReducer.shareCasesReducer(initialState, action);
+      expect(state.shareCases.length).toEqual(0);
+      expect(state.loading).toBeTruthy();
+    });
+
+    it('should load share case', () => {
+      const payload = {
+        path: [],
+        sharedCases: [
+          {caseId: '1', caseTitle: 'James123', caseTypeId: 'type1'},
+          {caseId: '2', caseTitle: 'Steve321', caseTypeId: 'type2'}]
+      };
+      const action = new fromActions.AddShareCaseGo(payload);
+      const state = fromReducer.shareCasesReducer(initialState, action);
+      expect(state.shareCases.length).toEqual(2);
+    });
+
+    it('should load share case with case type', () => {
+      initialState = {
+        shareCases: [
+          {caseId: '1', caseTitle: 'James123', caseTypeId: 'type1'},
+          {caseId: '2', caseTitle: 'Steve321', caseTypeId: 'type2'}]
+      };
+      const caseFromNode = [{caseId: '1', caseTitle: 'James123'}, {caseId: '2', caseTitle: 'Steve321'}];
+      const action = new fromActions.LoadShareCaseSuccess(caseFromNode);
+      const state = fromReducer.shareCasesReducer(initialState, action);
+      expect(state.shareCases.length).toEqual(2);
+      expect(state.shareCases[0].caseTypeId).toEqual('type1');
+    });
+
     it('should save selected share cases into store', () => {
       const selectedCases = {
         sharedCases: [{caseId: '1', caseTitle: 'James123'}, {caseId: '2', caseTitle: 'Steve321'}]
@@ -109,6 +149,10 @@ describe('Share case reducer', () => {
       expect(sortedCases[1].caseId).toEqual('9417373995765133');
       expect(sortedCases[1].sharedWith[0].firstName).toEqual('Joel');
       expect(sortedCases[1].sharedWith[1].firstName).toEqual('Kate');
+    });
+
+    afterEach(() => {
+      initialState = {};
     });
   });
 });

@@ -72,14 +72,14 @@ export class ShareCaseEffects {
   );
 
   @Effect()
-  public assignUsersWithCases1$ = this.actions$.pipe(
+  public assignUsersWithCases$ = this.actions$.pipe(
     ofType(shareCaseActions.ASSIGN_USERS_TO_CASE),
     map((action: shareCaseActions.AssignUsersToCase) => action.payload),
     switchMap(payload => {
       this.payload = payload;
       return this.caseShareService.assignUsersWithCases(payload).pipe(
         map(
-          (response) => new shareCaseActions.AssignUsersToCaseSuccess(response)),
+          (response) => new shareCaseActions.SynchronizeStateToStore(response)),
         catchError(() => of(new fromRoot.Go({ path: ['/service-down']})))
       );
     })

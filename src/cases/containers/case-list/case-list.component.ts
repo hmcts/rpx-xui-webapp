@@ -2,16 +2,16 @@ import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { CaseState, CaseType, Jurisdiction, PaginationMetadata, SearchResultView, SearchResultViewItem, WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
 import { select, Store } from '@ngrx/store';
 import {BehaviorSubject, combineLatest, Observable, Subscription} from 'rxjs';
+import * as converters from 'src/cases/converters/case-converter';
 import { ActionBindingModel } from 'src/cases/models/create-case-actions.model';
+import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
+import * as fromRoot from '../../../app/store';
 import * as fromCasesFeature from '../../store';
 import * as fromCaseList from '../../store/reducers';
-import { AppConfig } from './../../../app/services/ccd-config/ccd-case.config';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import * as converters from 'src/cases/converters/case-converter';
-import * as fromRoot from '../../../app/store';
-import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
 
 /**
  * Entry component wrapper for Case List
@@ -67,7 +67,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public selectedCases: SearchResultViewItem[] = [];
 
   public userDetails: Observable<any>;
-  public selectionItems: SearchResultViewItem[];
 
   constructor(
     public store: Store<fromCaseList.State>,
@@ -213,7 +212,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   /**
    * Handles the return of Pagination Metadata.
    *
-   * @param result - {total_pages_count: 33, total_results_count: 811}
+   * @param paginationMetadata - {total_pages_count: 33, total_results_count: 811}
    */
   public onPaginationSubscribeHandler = paginationMetadata => {
 
@@ -222,7 +221,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
       this.paginationMetadata.total_results_count = paginationMetadata.total_results_count;
 
       const event = this.getEvent();
-      if ( event != null) {
+      if ( event !== null) {
         this.store.dispatch(new fromCasesFeature.ApplyCaselistFilter(event));
       }
     }
@@ -285,7 +284,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public getToggleButtonName = (showFilter: boolean): string => showFilter ? 'Hide Filter' : 'Show Filter';
 
   public findCaseListPaginationMetadata(event) {
-    if (event != null) {
+    if (event !== null) {
       this.store.dispatch(new fromCasesFeature.FindCaselistPaginationMetadata(event));
     }
   }
@@ -345,7 +344,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   }
 
   public checkIfButtonDisabled(): boolean {
-    return !(this.selectedCases.length > 0);
+    return this.selectedCases.length === 0;
   }
 
   public shareCaseSubmit() {

@@ -9,7 +9,20 @@ describe('CaseShareComponent', () => {
   let component: CaseShareComponent;
   let fixture: ComponentFixture<CaseShareComponent>;
 
-  let store: MockStore<State>;
+  let mockStore: MockStore<State>;
+  let dispatchSpy: jasmine.Spy;
+
+  const sharedCases = [{
+    caseId: '9417373995765133',
+    caseTitle: 'Sam Green Vs Williams Lee',
+    sharedWith: [
+      {
+        idamId: 'u666666',
+        firstName: 'Kate',
+        lastName: 'Grant',
+        email: 'kate.grant@lambbrooks.com'
+      }]
+  }];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -19,7 +32,8 @@ describe('CaseShareComponent', () => {
         provideMockStore(),
       ]
     }).compileComponents();
-    store = TestBed.get(Store);
+    mockStore = TestBed.get(Store);
+    dispatchSpy = spyOn(mockStore, 'dispatch');
     fixture = TestBed.createComponent(CaseShareComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -27,6 +41,16 @@ describe('CaseShareComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should deselect case', () => {
+    component.deselect(sharedCases);
+    expect(dispatchSpy).toHaveBeenCalled();
+  });
+
+  it('should synchronize to store', () => {
+    component.synchronizeStore(sharedCases);
+    expect(dispatchSpy).toHaveBeenCalled();
   });
 
   afterEach(() => {

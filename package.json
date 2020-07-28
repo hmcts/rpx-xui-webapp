@@ -104,7 +104,6 @@
     "http-proxy-middleware": "^1.0.5",
     "jwt-decode": "^2.2.0",
     "launchdarkly-js-client-sdk": "^2.16.3",
-    "marked": "0.7.0",
     "moment-timezone": "^0.5.28",
     "ngx-cookie": "^4.1.2",
     "ngx-logger": "^4.0.4",
@@ -186,5 +185,8 @@
     "webpack-cli": "^3.3.10",
     "webpack-node-externals": "^1.7.2",
     "webpack-source-map-support": "^2.0.1"
+  },
+  "resolutions": {
+    "ngx-md/marked": "^0.7.0"
   }
 }

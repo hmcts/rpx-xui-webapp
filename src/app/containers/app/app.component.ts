@@ -10,7 +10,7 @@ import { Store } from '@ngrx/store';
   styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
 
   constructor(
     private readonly store: Store<fromRoot.State>,

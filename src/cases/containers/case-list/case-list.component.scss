@@ -15,12 +15,6 @@
   }
 
   .hmcts-action-bar__filter:last-child:after {
-    content: "";
-    background-color: #dee0e2;
-    height: 40px;
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 2px;
+    background-color: transparent;
   }
 }

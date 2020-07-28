@@ -33,6 +33,7 @@ import * as postCodeLookup from './postCodeLookup'
 import {router as markupRouter} from './redaction/markupRoutes'
 import {router as redactionRouter} from './redaction/redactionRoutes'
 import routes from './routes'
+import userRouter from './user/routes'
 
 export const app = express()
 if (showFeature(FEATURE_HELMET_ENABLED)) {
@@ -82,7 +83,7 @@ app.get('/api/addresses', authInterceptor, postCodeLookup.doLookup)
 app.get('/api/monitoring-tools', (req, res) => {
     res.send({key: getConfigValue(APP_INSIGHTS_KEY)})
 })
-
+app.use('/api/user', userRouter)
 app.use('/api/healthCheck', healthCheck)
 
 /*if (showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED)) {

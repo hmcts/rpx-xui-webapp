@@ -1,4 +1,4 @@
-import {Component, ViewEncapsulation} from '@angular/core';
+import {Component, ViewEncapsulation, OnInit} from '@angular/core';
 import { GoogleAnalyticsService } from '@hmcts/rpx-xui-common-lib';
 import { environment as config } from '../../../environments/environment';
 import * as fromRoot from '../../store';
@@ -10,7 +10,7 @@ import { Store } from '@ngrx/store';
   styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class AppComponent {
+export class AppComponent implements OnInit{
 
   constructor(
     private readonly store: Store<fromRoot.State>,

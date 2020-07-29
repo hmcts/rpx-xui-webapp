@@ -30,7 +30,7 @@
     "test:coverage:merge": "./node_modules/.bin/lcov-result-merger './reports/tests/coverage/*/lcov.info' > ./reports/tests/coverage/lcov.info",
     "test:coverage:node": "cd api && yarn coverage",
     "test:coverage:ng": "yarn test:ng --source-map --code-coverage",
-     "test:a11y": "echo 'executed by test:a11y1 in nightly as its more appropriate for this application and framework used for a11y testing. Contact QA for any questions.'",
+    "test:a11y": "echo 'executed by test:a11y1 in nightly as its more appropriate for this application and framework used for a11y testing. Contact QA for any questions.'",
     "test:a11y1": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/accessibility/config/protractor.conf.js",
     "test:all": "yarn test:ng && yarn test:node && yarn test:smoke && yarn test:functional && yarn test:crossbrowser",
     "test:smoke": "sh whitelist.sh && webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/smoke.conf.js",
@@ -60,7 +60,7 @@
     "@angular/platform-browser": "^7.2.13",
     "@angular/platform-browser-dynamic": "^7.2.13",
     "@angular/router": "^7.2.13",
-    "@hmcts/ccd-case-ui-toolkit": "2.63.3-RDM-7120-prerelease",
+    "@hmcts/ccd-case-ui-toolkit": "^2.64.12-case-sharing-prerelease",
     "@hmcts/ccpay-web-component": "3.0.3",
     "@hmcts/frontend": "0.0.39-alpha",
     "@hmcts/media-viewer": "2.2.7",
@@ -185,5 +185,15 @@
     "webpack-cli": "^3.3.10",
     "webpack-node-externals": "^1.7.2",
     "webpack-source-map-support": "^2.0.1"
+  },
+  "resolutions": {
+    "**/**/lodash": "^4.17.19",
+    "**/**/http-proxy": "^1.18.1",
+    "**/**/npm-registry-fetch": "^8.1.1",
+    "**/**/yargs-parser": "^18.1.2",
+    "**/**/minimist": "^1.2.3",
+    "**/**/mem": "^4.0.0",
+    "**/**/braces": "^2.3.1",
+    "**/**/marked": "^0.7.0 "
   }
 }

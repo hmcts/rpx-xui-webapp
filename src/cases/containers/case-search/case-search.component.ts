@@ -6,6 +6,7 @@ import { Observable, combineLatest, Subscription } from 'rxjs';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { ActionBindingModel } from '../../../cases/models/create-case-actions.model';
 import { FormGroup } from '@angular/forms';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 
 /**
  * Entry component wrapper for ccd-search-filters-wrapper ccd-search-result
@@ -52,9 +53,13 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   state: any;
   toggleButtonName: string;
 
+  public elasticSearchFlag: boolean = false;
+  public elasticSearchFlagSubsription: Subscription;
+
   constructor(
     public store: Store<fromCasesFeature.State>,
     private appConfig: AppConfig,
+    private featureToggleService: FeatureToggleService,
   ) {}
 
   ngOnInit(): void {
@@ -105,7 +110,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
         this.paginationMetadata.total_pages_count = result.total_pages_count;
         this.paginationMetadata.total_results_count = result.total_results_count;
         const event = this.getEvent();
-        if ( event != null) {
+        if ( event != null && !this.elasticSearchFlag) {
           this.store.dispatch(new fromCasesFeature.ApplySearchFilter(event));
         }
       }
@@ -124,7 +129,16 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
         hasDrafts: resultView.hasDrafts ? resultView.hasDrafts : () => false
       };
     });
-    this.checkLSAndTrigger();
+
+    this.elasticSearchFlagSubsription = this.featureToggleService.isEnabled('elastic-search').subscribe(value => {
+      this.elasticSearchFlag = value;
+      if (!this.elasticSearchFlag) {
+        this.checkLSAndTrigger();
+      } else {
+        this.getElasticSearchResults();
+      }
+    });
+
   }
 
   getEvent() {
@@ -156,9 +170,18 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   }
 
   checkLSAndTrigger() {
+    console.log(this.elasticSearchFlag);
     const event = this.getEvent();
     if ( event != null) {
       this.store.dispatch(new fromCasesFeature.FindSearchPaginationMetadata(event));
+    }
+  }
+
+  public getElasticSearchResults() {
+    console.log(this.elasticSearchFlag);
+    const event = this.getEvent();
+    if ( event != null) {
+      this.store.dispatch(new fromCasesFeature.ApplySearchFilterForES(event));
     }
   }
 
@@ -168,7 +191,20 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
 
   applyChangePage(event) {
     this.page = event.selected.page;
-    this.checkLSAndTrigger();
+
+    if (!this.elasticSearchFlag) {
+      this.checkLSAndTrigger();
+    } else {
+      this.getElasticSearchResults();
+    }
+  }
+
+  public applyFilter(event) {
+    if (!this.elasticSearchFlag) {
+      this.checkLSAndTrigger();
+    } else {
+      this.getElasticSearchResults();
+    }
   }
 
   ngOnDestroy() {
@@ -183,6 +219,9 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     }
     if (this.caseFilterToggleSubscription) {
       this.caseFilterToggleSubscription.unsubscribe();
+    }
+    if (this.elasticSearchFlagSubsription) {
+      this.elasticSearchFlagSubsription.unsubscribe();
     }
   }
 

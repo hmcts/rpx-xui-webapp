@@ -13,7 +13,8 @@
           [store]="store"
           [fromFeatureStore]="fromCasesFeature">
           <ccd-search-filters-wrapper #ccdComponent
-            [autoApply]="false">
+            (onApply)="applyFilter($event)"  
+          >
           </ccd-search-filters-wrapper>
         </exui-ccd-connector>
       </div>

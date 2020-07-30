@@ -1,4 +1,4 @@
-@caseShare @fullfunctional @all 
+@caseShare @fullfunctional @all @test
 Feature: Share Case page features
     User can share case with other users within organisation    
 
@@ -7,7 +7,7 @@ Feature: Share Case page features
         Given I am logged into Expert UI with valid user details
         Then I should be redirected to EUI dashboard page
 
-    @all 
+    @all  
     Scenario: Verify User can Deselect a case from list of selected cases
         When I click on Case list
         Then I am on case list page
@@ -50,7 +50,7 @@ Feature: Share Case page features
         When I select search criteria jurisdiction "Family Divorce" case type "Contested Financial Remedy" state "Application Drafted" in case list page
         When I click search Apply in case list page
         Then I wait to see case results displayed
-        Then I see case list table has 3 rows selected
+        Then I see case list table has 2 rows selected
 
     Scenario: Verify Case details individual case expand collapse feature
         When I click on Case list
@@ -191,7 +191,7 @@ Feature: Share Case page features
         When I click continue in share case page
         Then I see Share Case check and confirm page
         Then I see Share Case changes are listed as modified in share case page
-@test
+
     Scenario: Verify add and Remove user to share a case with
         When I click on Case list
         Then I am on case list page
@@ -218,7 +218,7 @@ Feature: Share Case page features
         Then I see Share Case check and confirm page
         Then I see Share Case changes are listed as modified in share case page
 
-    @test
+    
     Scenario: Verify back link on check and confirm page and changes persist in Share case page 
         When I click on Case list
         Then I am on case list page
@@ -248,7 +248,7 @@ Feature: Share Case page features
         Then I see Share Case page is displayed
         Then I see share case changes persisted in displayed in Share Case page
 
-    @test
+    
     Scenario: Verify change link on check and confirm page and changes persist in Share case page
         When I click on Case list
         Then I am on case list page
@@ -280,7 +280,7 @@ Feature: Share Case page features
 
 
 
-    @test
+    
     Scenario: Verify add and Remove user to share a case with persist on moving away from share case page
         When I click on Case list
         Then I am on case list page
@@ -321,7 +321,7 @@ Feature: Share Case page features
         Then I see Share Case check and confirm page
         Then I see Share Case changes are listed as modified in share case page
 
-    @test
+    
     Scenario: Verify Completion o share case journey
         When I click on Case list
         Then I am on case list page

@@ -30,15 +30,17 @@ class ShareCasePage {
     }
 
     async waitForPageToLoad(){
-        BrowserWaits.waitForElement(this.shareCaseContainer, undefined, "Share Case container not present");
-        BrowserWaits.waitForElement(this.selectedCases, undefined, "Share Case selected list not present");
-        browser.sleep(2000);
+        await BrowserWaits.waitForElement(this.shareCaseContainer);
+        await BrowserWaits.waitForCondition(async () => {
+            return await this.selectedCases.count() > 0; 
+        });
+        await browser.sleep(2000);
 
     }
     async amOnPage() {
         await this.waitForPageToLoad();
         await this.testData_storeCaseShareDataOnPage();
-        return this.shareCaseContainer.isPresent();
+        return await this.shareCaseContainer.isPresent();
     }
 
     async testData_markUserWithEmailTobeAdded(email){
@@ -171,7 +173,7 @@ class ShareCasePage {
     async clickCaseDetailsExpandCollapseBtn(caseNum){
         let selectedCase = await this.selectedCases.get(caseNum - 1);
         let button = await selectedCase.$('.govuk-accordion__section-button');
-        await BrowserWaits.waitForElement(button, undefined, "Expand/collapse icon not present");
+        await BrowserWaits.waitForElement(button, "Expand/collapse icon not present");
         await browser.sleep(1000);
         await browser.executeScript('arguments[0].scrollIntoView()',
             button);
@@ -303,12 +305,12 @@ class ShareCasePage {
     }
 
     async clickOpenOrCloseAllLink(){
-        await BrowserWaits.waitForElement(this.openCloseAll, undefined, "OpenAll/CloaseAll button not present");
+        await BrowserWaits.waitForElement(this.openCloseAll, "OpenAll/CloaseAll button not present");
         await this.openCloseAll.click();
     }
 
     async getLinkTextForOpenOrCloseAlllink(){
-        await BrowserWaits.waitForElement(this.openCloseAll, undefined, "OpenAll/CloaseAll button not present");
+        await BrowserWaits.waitForElement(this.openCloseAll, "OpenAll/CloaseAll button not present");
         return await this.openCloseAll.getText(); 
     }
 

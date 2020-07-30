@@ -1,4 +1,4 @@
-export interface RawUserModel {
+export interface PRDRawUserModel {
   userIdentifier: string
   email: string
   firstName: string

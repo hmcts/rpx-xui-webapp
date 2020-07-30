@@ -13,7 +13,7 @@ class ShareCaseCheckAndConfirmPage {
         this.pageContainer = $("xuilib-share-case-confirm");
         this.summarySelectionContainer = $("#summarySections");
 
-        this.selectedCaseConfirmList = $$("xuilib-selected-case-confirm");
+        this.selectedCaseConfirmList = $$("xuilib-selected-case-confirm #user-access-block");
         this.backLink = $(".govuk-back-link");
         this.confirmBtn = $("#share-case-nav button");
 
@@ -21,8 +21,8 @@ class ShareCaseCheckAndConfirmPage {
     }
 
     async waitForPageToLoad(){
-        await BrowserWaits.waitForElement(this.pageContainer,undefined,"Share Case Conform your selection page not displayed.");
-        await BrowserWaits.waitForElement(this.summarySelectionContainer, undefined, "Share Case confirm selection summary not displayed");
+        await BrowserWaits.waitForElement(this.pageContainer,"Share Case Conform your selection page not displayed.");
+        await BrowserWaits.waitForElement(this.summarySelectionContainer, "Share Case confirm selection summary not displayed");
 
     }
 
@@ -33,8 +33,11 @@ class ShareCaseCheckAndConfirmPage {
 
     async getCaseIdOfCaseContainer(containerIndex){
         let caseContainer = await this.selectedCaseConfirmList.get(containerIndex);
-        await BrowserWaits.waitForElement(caseContainer.$(".case-share-confirm__caption", undefined, "case sub title not displayed for case at pos " + containerIndex));
-        let caseId = caseContainer.$(".case-share-confirm__caption").getText();
+        if (!caseContainer){
+            throw Error("no Case at position " + containerIndex);
+        }
+        await BrowserWaits.waitForElement(caseContainer.$(".case-share-confirm__caption-area .case-share-confirm__caption"), "case sub title not displayed for case at pos " + containerIndex);
+        let caseId = await caseContainer.$(".case-share-confirm__caption-area .case-share-confirm__caption").getText();
         return caseId; 
     }
 
@@ -42,7 +45,8 @@ class ShareCaseCheckAndConfirmPage {
         let casesCount = await this.selectedCaseConfirmList.count();
         for (let caseCounter = 0; caseCounter < casesCount; caseCounter++){
             let caseContainer = await this.selectedCaseConfirmList.get(caseCounter);
-            let caseId =  await caseContainer.$(".case-share-confirm__caption").getText();
+            await BrowserWaits.waitForElement(caseContainer.$(".case-share-confirm__caption-area .case-share-confirm__caption"), "case sub title not displayed for case at pos " + caseCounter);
+            let caseId = await caseContainer.$(".case-share-confirm__caption-area .case-share-confirm__caption").getText();
             if (caseId.includes(caseid)){
                 return caseContainer;
             } 

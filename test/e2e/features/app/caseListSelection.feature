@@ -1,4 +1,4 @@
-@caselistselection @fullfunctional @all
+@caselistselection @fullfunctional @all @test
 Feature: Case List Selection
 
     Cases in case list page have check to select and multiple cases can be selected across pages that can be shared
@@ -102,8 +102,9 @@ Feature: Case List Selection
         Then I wait to see case results displayed
         When I select case at row 1 in case list page
         When I select case at row 2 in case list page
-        Then I see case list table has 2 rows selected
+        When I select case at row 3 in case list page
+        Then I see case list table has 3 rows selected
         When I click Share Case button
         Then I see Share Case page is displayed
-        Then I see Share case page has 2 cases listed
+        Then I see Share case page has 3 cases listed
 

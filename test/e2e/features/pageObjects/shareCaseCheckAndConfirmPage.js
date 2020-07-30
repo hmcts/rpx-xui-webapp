@@ -33,6 +33,7 @@ class ShareCaseCheckAndConfirmPage {
 
     async getCaseIdOfCaseContainer(containerIndex){
         let caseContainer = await this.selectedCaseConfirmList.get(containerIndex);
+        await BrowserWaits.waitForElement(caseContainer.$(".case-share-confirm__caption", undefined, "case sub title not displayed for case at pos " + containerIndex));
         let caseId = caseContainer.$(".case-share-confirm__caption").getText();
         return caseId; 
     }

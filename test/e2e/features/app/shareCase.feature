@@ -47,7 +47,7 @@ Feature: Share Case page features
         When I click deselect button for case 1 from share case page
         When I click back link in share case page
         Then I am on case list page
-        When I select search criteria jurisdiction "Family Divorce" case type "Divorce case - v115.00" state "Any" in case list page
+        When I select search criteria jurisdiction "Family Divorce" case type "Contested Financial Remedy" state "Application Drafted" in case list page
         When I click search Apply in case list page
         Then I wait to see case results displayed
         Then I see case list table has 3 rows selected

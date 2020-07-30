@@ -289,12 +289,13 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public getToggleButtonName = (showFilter: boolean): string => showFilter ? 'Hide Filter' : 'Show Filter';
 
   public findCaseListPaginationMetadata(event) {
-    if (event != null) {
+    if (event !== null) {
       this.store.dispatch(new fromCasesFeature.FindCaselistPaginationMetadata(event));
     }
   }
+
   public getElasticSearchResults(event) {
-    if (event != null) {
+    if (event !== null) {
       this.store.dispatch(new fromCasesFeature.ApplyCaselistFilterForES(event));
     }
   }

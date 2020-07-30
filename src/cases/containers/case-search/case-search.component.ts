@@ -67,7 +67,6 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     this.resultView = null;
     this.fromCasesFeature = fromCasesFeature;
     this.caseSearchFilterEventsBindings = [
-      { type: 'onApply', action: 'FindSearchPaginationMetadata' },
       { type: 'onReset', action: 'Reset' }
     ];
 
@@ -78,7 +77,6 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     this.caseState$ = this.store.pipe(select(fromCasesFeature.searchFilterCaseState));
     this.resultView$ = this.store.pipe(select(fromCasesFeature.searchFilterResultView));
     this.metadataFields$ = this.store.pipe(select(fromCasesFeature.searchFilterMetadataFields));
-    this.paginationMetadata$ = this.store.pipe(select(fromCasesFeature.getSearchFilterPaginationMetadata));
     this.caseFilterToggle$ = this.store.pipe(select(fromCasesFeature.getSearchFilterToggle));
     this.filterSubscription = combineLatest([
       this.jurisdiction$,
@@ -105,41 +103,70 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
       this.toggleButtonName = this.getToggleButtonName(this.showFilter);
     });
 
-    this.paginationSubscription = this.paginationMetadata$.subscribe(result => {
-      if (typeof result !== 'undefined'  && typeof result.total_pages_count !== 'undefined') {
-        this.paginationMetadata.total_pages_count = result.total_pages_count;
-        this.paginationMetadata.total_results_count = result.total_results_count;
-        const event = this.getEvent();
-        if ( event != null && !this.elasticSearchFlag) {
-          this.store.dispatch(new fromCasesFeature.ApplySearchFilter(event));
-        }
-      }
-    });
-    this.resultSubscription = this.resultView$.subscribe(resultView => {
-      this.resultsArr = resultView.results;
-      this.resultView = {
-        ...resultView,
-        columns: resultView.columns ? resultView.columns : [],
-        results: resultView.results ? resultView.results.map(item => {
-          return {
-            ...item,
-            hydrated_case_fields: null
-          };
-        }) : [],
-        hasDrafts: resultView.hasDrafts ? resultView.hasDrafts : () => false
-      };
-    });
+    this.listenToPaginationMetadata();
+
+    this.resultSubscription = this.resultView$.subscribe(resultView => this.onResultsViewHandler(resultView));
 
     this.elasticSearchFlagSubsription = this.featureToggleService.isEnabled('elastic-search').subscribe(value => {
       this.elasticSearchFlag = value;
-      if (!this.elasticSearchFlag) {
-        this.checkLSAndTrigger();
-      } else {
-        this.getElasticSearchResults();
-      }
+      console.log(this.elasticSearchFlag);
     });
 
+    if (!this.elasticSearchFlag) {
+      this.findCaseListPaginationMetadata();
+    } else {
+      this.getElasticSearchResults();
+    }
+
+
   }
+
+  public listenToPaginationMetadata = () => {
+    this.paginationMetadata$ = this.store.pipe(select(fromCasesFeature.getSearchFilterPaginationMetadata));
+    this.paginationSubscription = this.paginationMetadata$.subscribe(paginationMetadata =>
+      this.onPaginationSubscribeHandler(paginationMetadata));
+  }
+
+  /**
+   * Handles the return of Pagination Metadata.
+   *
+   * @param result - {total_pages_count: 33, total_results_count: 811}
+   */
+  public onPaginationSubscribeHandler = paginationMetadata => {
+
+    if (typeof paginationMetadata !== 'undefined'  && typeof paginationMetadata.total_pages_count !== 'undefined') {
+      this.paginationMetadata.total_pages_count = paginationMetadata.total_pages_count;
+      this.paginationMetadata.total_results_count = paginationMetadata.total_results_count;
+      const event = this.getEvent();
+      if ( event != null && !this.elasticSearchFlag) {
+        this.store.dispatch(new fromCasesFeature.ApplySearchFilter(event));
+      }
+    }
+  }
+
+  public onResultsViewHandler = resultView => {
+
+    if (this.elasticSearchFlag) {
+      const paginationDataFromResult: PaginationMetadata = {
+        total_results_count: resultView.total,
+        total_pages_count: Math.ceil(resultView.total / this.appConfig.getPaginationPageSize())
+      }
+      this.onPaginationSubscribeHandler(paginationDataFromResult);
+    }
+
+    this.resultsArr = resultView.results;
+    this.resultView = {
+      ...resultView,
+      columns: resultView.columns ? resultView.columns : [],
+      results: resultView.results ? resultView.results.map(item => {
+        return {
+          ...item,
+          hydrated_case_fields: null
+        };
+      }) : [],
+      hasDrafts: resultView.hasDrafts ? resultView.hasDrafts : () => false
+    };
+  };
 
   getEvent() {
     let event = null;
@@ -169,8 +196,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     return showFilter ? 'Hide Filter' : 'Show Filter';
   }
 
-  checkLSAndTrigger() {
-    console.log(this.elasticSearchFlag);
+  findCaseListPaginationMetadata() {
     const event = this.getEvent();
     if ( event != null) {
       this.store.dispatch(new fromCasesFeature.FindSearchPaginationMetadata(event));
@@ -178,7 +204,6 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   }
 
   public getElasticSearchResults() {
-    console.log(this.elasticSearchFlag);
     const event = this.getEvent();
     if ( event != null) {
       this.store.dispatch(new fromCasesFeature.ApplySearchFilterForES(event));
@@ -193,7 +218,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     this.page = event.selected.page;
 
     if (!this.elasticSearchFlag) {
-      this.checkLSAndTrigger();
+      this.findCaseListPaginationMetadata();
     } else {
       this.getElasticSearchResults();
     }
@@ -201,7 +226,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
 
   public applyFilter(event) {
     if (!this.elasticSearchFlag) {
-      this.checkLSAndTrigger();
+      this.findCaseListPaginationMetadata();
     } else {
       this.getElasticSearchResults();
     }

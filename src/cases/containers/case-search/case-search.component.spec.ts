@@ -8,6 +8,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { of } from 'rxjs';
 import { Jurisdiction, CaseType, CaseState, SearchResultView, PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 
 describe('CaseSearchComponent', () => {
   let fixture: ComponentFixture<CaseSearchComponent>;
@@ -15,6 +16,7 @@ describe('CaseSearchComponent', () => {
   let store: Store<fromCaseSearchStore.SearchState>;
   let storePipeMock: any;
   let storeDispatchMock: any;
+  const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled']);
 
   const appConfigMock = {
     getPaginationPageSize: () => 10
@@ -36,7 +38,11 @@ describe('CaseSearchComponent', () => {
         CaseSearchComponent
       ],
       providers: [
-        { provide: AppConfig, useValue: appConfigMock }
+        { provide: AppConfig, useValue: appConfigMock },
+        {
+          provide: FeatureToggleService,
+          useValue: mockFeatureToggleService
+        }
       ]
     }).compileComponents();
 
@@ -44,6 +50,7 @@ describe('CaseSearchComponent', () => {
 
     storePipeMock = spyOn(store, 'pipe');
     storeDispatchMock = spyOn(store, 'dispatch');
+    mockFeatureToggleService.isEnabled.and.returnValue(of(true));
 
     fixture = TestBed.createComponent(CaseSearchComponent);
     component = fixture.componentInstance;

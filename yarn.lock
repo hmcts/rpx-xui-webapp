@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@2.64.10-elastic-search-prerelease":
-  version "2.64.10-elastic-search-prerelease"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.64.10-elastic-search-prerelease.tgz#c0681d161f2b742f752d1607e2237a33d466d5e1"
-  integrity sha512-I/qYMqISd3MjCa3tlZS++LrnKPJD/tRinIjAdFv8ZOAfC1aVEI9fQKnhjtWzdvn64JPCjQSjLujf+xsxAm3zsg==
+"@hmcts/ccd-case-ui-toolkit@2.64.12-case-sharing-prerelease":
+  version "2.64.12-case-sharing-prerelease"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.64.12-case-sharing-prerelease.tgz#8c8f2618dc9f46c0414684e351fc9699ebdbd4fe"
+  integrity sha512-sVyNZdWsdoFf0jdTYwQ1u+r13/DfBwz3oDVTZmptmCUgTl7IwoH14+vC6A8h5qBubN64rNm9GQv8GwyDeQaGjw==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"

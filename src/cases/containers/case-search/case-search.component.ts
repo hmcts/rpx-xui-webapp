@@ -107,10 +107,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
 
     this.resultSubscription = this.resultView$.subscribe(resultView => this.onResultsViewHandler(resultView));
 
-    this.elasticSearchFlagSubsription = this.featureToggleService.isEnabled('elastic-search').subscribe(value => {
-      this.elasticSearchFlag = value;
-      console.log(this.elasticSearchFlag);
-    });
+    this.elasticSearchFlagSubsription = this.featureToggleService.isEnabled('elastic-search').subscribe(value => this.elasticSearchFlag = value);
 
     if (!this.elasticSearchFlag) {
       this.findCaseListPaginationMetadata();
@@ -225,6 +222,8 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   }
 
   public applyFilter(event) {
+    this.page = event.selected.page;
+
     if (!this.elasticSearchFlag) {
       this.findCaseListPaginationMetadata();
     } else {

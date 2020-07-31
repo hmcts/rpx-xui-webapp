@@ -63,7 +63,7 @@ describe('CaseSearchComponent', () => {
     component.metadataFields$ = storePipeMock.and.returnValue(of([]));
     fixture.detectChanges();
   });
-  
+
   describe('applyChangePage()', () => {
 
     /**

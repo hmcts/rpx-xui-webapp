@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { CaseState, CaseType, Jurisdiction, PaginationMetadata, SearchResultView, WindowService, SortParameters } from '@hmcts/ccd-case-ui-toolkit';
+import { CaseState, CaseType, Jurisdiction, PaginationMetadata, SearchResultView, WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
 import { select, Store } from '@ngrx/store';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
@@ -63,6 +63,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
   public elasticSearchFlag: boolean = false;
   public elasticSearchFlagSubsription: Subscription;
+
+  public sortParameters: { column: string, order: number } = { column: null, order: null };
 
   constructor(
     public store: Store<fromCaseList.State>,
@@ -255,7 +257,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
     if (formGroupFromLS && jurisdictionFromLS && caseTypeGroupFromLS && metadataFieldsGroupFromLS && caseStateGroupFromLS) {
       return this.createEvent(jurisdictionFromLS, caseTypeGroupFromLS, caseStateGroupFromLS, metadataFieldsGroupFromLS,
-                                formGroupFromLS, this.page);
+                                formGroupFromLS, this.page, this.sortParameters);
     } else {
       return null;
     }
@@ -267,7 +269,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
    * We should think about calling this function makePaginationMetadataQuery as it looks like it's only being used to construct the
    * Case List Pagination Metadata payload?
    */
-  public createEvent = (jurisdiction, caseType, caseState, metadataFields, formGroupValues, page) => {
+  public createEvent = (jurisdiction, caseType, caseState, metadataFields, formGroupValues, page, sortParameters) => {
     return {
       selected: {
         jurisdiction,
@@ -279,7 +281,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
         },
         page,
         view: 'WORKBASKET'
-      }
+      },
+      sortParameters
     };
   }
 
@@ -335,8 +338,13 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.store.dispatch(new fromCasesFeature.CaseFilterToggle(!this.showFilter));
   }
 
-  public sort(sortParameters: SortParameters) {
-    console.log(sortParameters);
+  public sort(sortParameters) {
+    this.sortParameters = {
+      ...this.sortParameters,
+      column: sortParameters.column,
+      order: sortParameters.order
+    };
+    this.getElasticSearchResults(this.getEvent());
   }
 
   public ngOnDestroy() {

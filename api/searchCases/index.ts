@@ -17,7 +17,7 @@ export async function getCases(req: express.Request, res: express.Response, next
 
     try {
         const body = prepareElasticQuery(req.query, req.body)
-
+        console.log(body)
         const response = await http.post(`${getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)}${url}`, body, { headers })
 
         res.status(response.status)
@@ -28,12 +28,13 @@ export async function getCases(req: express.Request, res: express.Response, next
     }
 }
 
-export function prepareElasticQuery(queryParams: {page?}, body: {size?}): {} {
+export function prepareElasticQuery(queryParams: {page?}, body: {size?, sort?}): {} {
     const metaCriteria = queryParams
     let caseCriteria = {}
     let query: {} = {}
     const matchList: any[] = []
     const size = body.size || 10
+    const sort = prepareSort(body.sort)
     const page = (queryParams.page || 1) - 1
     const from = page * size
 
@@ -93,15 +94,24 @@ export function prepareElasticQuery(queryParams: {page?}, body: {size?}): {} {
         },
     }
 
-    // query = {
-    //   match_all: {}
-    // };
-
     return {
         from,
         query,
         size,
+        sort
     }
+}
+
+function prepareSort(params){
+    let sortQuery = []
+    if (params.column && params.order) {
+        sortQuery.push(
+            {
+                [params.column]: params.order === 0 ? 'ASC' : 'DESC'
+            }
+        )
+    }
+    return sortQuery
 }
 
 function handleElasticSearchResponse(json): {} {

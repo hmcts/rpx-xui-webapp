@@ -327,6 +327,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public applyFilter(event) {
     this.page = event.selected.page;
     this.selected = event.selected;
+    this.sortParameters = { column: null, order: null };
     if (!this.elasticSearchFlag) {
       this.findCaseListPaginationMetadata(this.getEvent());
     } else {

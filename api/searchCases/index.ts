@@ -6,6 +6,7 @@ import {
 } from '../configuration/references'
 import { http } from '../lib/http'
 import { setHeaders } from '../lib/proxy'
+import { caseMetaDataFieldNameMapper } from '../lib/util'
 
 /**
  * Manually creating Elastic search query
@@ -17,7 +18,7 @@ export async function getCases(req: express.Request, res: express.Response, next
 
     try {
         const body = prepareElasticQuery(req.query, req.body)
-        console.log(body)
+        console.log(JSON.stringify(body))
         const response = await http.post(`${getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)}${url}`, body, { headers })
 
         res.status(response.status)
@@ -104,10 +105,14 @@ export function prepareElasticQuery(queryParams: {page?}, body: {size?, sort?}):
 
 function prepareSort(params){
     let sortQuery = []
-    if (params.column && params.order) {
+    if (params.column !== null && params.order !== null) {
+        const columnName = params.column.indexOf('[') === -1 ?
+                            `data.${params.column}.keyword` :
+                            `${caseMetaDataFieldNameMapper(params.column.replace('[', '').replace(']', '').toLowerCase())}.keyword`
+        const orderDirection = params.order === 0 ? 'ASC' : 'DESC'
         sortQuery.push(
             {
-                [params.column]: params.order === 0 ? 'ASC' : 'DESC'
+                [columnName]: orderDirection
             }
         )
     }

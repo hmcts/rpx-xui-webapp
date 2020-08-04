@@ -1,7 +1,11 @@
+const PallyActions = require('../helpers/pallyActions');
+
+const baseUrl = 'http://localhost:4200/'; 
+
 const conf = {
     reportPath: "reports/tests/a11y/",
     appName:"EXUI Manage Cases a11y Test Report",
-    baseUrl:'https://manage-case.aat.platform.hmcts.net/',
+    baseUrl: baseUrl,
     params:{
         username:'lukesuperuserxui@mailnesia.com',
         password:'Monday01'
@@ -18,6 +22,25 @@ const conf = {
         {
             url: 'cases/case-search',
             pageElementcss: '.search-block'
+        },
+        {
+            url: 'cases/case-share',
+            pageElementcss: 'exui-case-share #title-selected-cases'
+        },
+        {
+            url: 'cases/case-share',
+            pageElementcss: 'exui-case-share #title-selected-cases',
+            actions: () => {
+                const actions = [];
+                actions.push(...PallyActions.navigateTourl(baseUrl + 'cases/case-share'));
+                actions.push(...PallyActions.waitForPageWithCssLocator('exui-case-share #title-selected-cases'));
+                actions.push(...PallyActions.clickElement('#accordion-with-summary-sections .govuk-accordion__open-all'));
+
+                actions.push(...PallyActions.clickElement('#accordion-with-summary-sections xuilib-selected-case  .govuk-accordion__section-content a'));
+                actions.push(...PallyActions.clickElement('#share-case-nav button'));
+                actions.push(...PallyActions.waitForPageWithCssLocator('exui-case-share-confirm #summarySections'));
+                return actions;
+            }
         }
 
     

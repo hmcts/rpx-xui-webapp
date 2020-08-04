@@ -4,10 +4,9 @@ import { handleGet, handlePost } from '../common/crudService'
 import { getConfigValue } from '../configuration'
 import { SERVICES_CCD_CASE_ASSIGNMENT_API_PATH, SERVICES_PRD_API_URL } from '../configuration/references'
 import { EnhancedRequest } from '../lib/models'
-import { toUserDetails } from './converters/user-converter'
-import { RawCaseUserModel } from './models/raw-case-user.model'
+import { ccdToUserDetails, prdToUserDetails } from './dtos/user-dto'
+import { CCDRawCaseUserModel } from './models/ccd-raw-case-user.model'
 
-const cachedUsers = {}
 const prdUrl: string = getConfigValue(SERVICES_PRD_API_URL)
 const ccdUrl: string = getConfigValue(SERVICES_CCD_CASE_ASSIGNMENT_API_PATH)
 
@@ -15,12 +14,7 @@ export async function getUsers(req: EnhancedRequest, res: Response) {
   try {
     const path = `${prdUrl}/refdata/external/v1/organisations/users?returnRoles=false`
     const {status, data}: {status: number, data: any} = await handleGet(path, req)
-    const users = [...data.users].map(user => toUserDetails(user))
-    for (const user of users) {
-      if (!cachedUsers.hasOwnProperty(user.idamId)) {
-        cachedUsers[user.idamId] = user
-      }
-    }
+    const users = [...data.users].map(user => prdToUserDetails(user))
     return res.status(status).send(users)
   } catch (error) {
     return res.status(error.status).send({
@@ -35,30 +29,15 @@ export async function getCases(req: EnhancedRequest, res: Response) {
     const caseIds = req.query.case_ids
     const path = `${ccdUrl}/case-assignments?case_ids=${caseIds}`
     const {status, data}: {status: number, data: any} = await handleGet(path, req)
-    const caseUsers: RawCaseUserModel[] = [...data.case_users]
-    for (const caseUser of caseUsers) {
-      if (!cachedUsers[caseUser.user_id]) {
-        await getUsers(req, res)
-      }
-    }
+    const caseUsers: CCDRawCaseUserModel[] = [...data.case_assignments]
     const sharedCases: SharedCase[] = []
     for (const caseUser of caseUsers) {
-      if (!sharedCases.some(aCase => aCase.caseId === caseUser.case_id)) {
-        const sharedCase: SharedCase = {
-          caseId: caseUser.case_id,
-          caseTitle: '',
-          sharedWith: [...cachedUsers[caseUser.user_id]],
-        }
-        sharedCases.push(sharedCase)
-      } else {
-        let existingSharedCase = sharedCases.find(aCase => aCase.caseId === caseUser.case_id)
-        const newSharedWith = existingSharedCase.sharedWith.slice()
-        newSharedWith.push(cachedUsers[caseUser.user_id])
-        existingSharedCase = {
-          ...existingSharedCase,
-          sharedWith: newSharedWith,
-        }
+      const sharedCase: SharedCase = {
+        caseId: caseUser.case_id,
+        caseTitle: caseUser.case_title,
+        sharedWith: caseUser.shared_with.map(rawSharedWith => ccdToUserDetails(rawSharedWith)),
       }
+      sharedCases.push(sharedCase)
     }
     return res.status(status).send(sharedCases)
   } catch (error) {

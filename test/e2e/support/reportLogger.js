@@ -17,7 +17,10 @@ class CucumberReportLog{
     async AddScreenshot(browser){
         const stream = await browser.takeScreenshot(); 
         const decodedImage = new Buffer(stream.replace(/^data:image\/(png|gif|jpeg);base64,/, ''), 'base64');
-        this.scenarioWorld.attach(decodedImage, 'image/png');
+        if(this.scenarioWorld){
+            this.scenarioWorld.attach(decodedImage, 'image/png');
+        }
+       
     }
 
 }

@@ -68,7 +68,7 @@ describe('Pa11y Accessibility tests', function () {
         actions.push(...PallyActions.clickElement('#accordion-with-summary-sections xuilib-selected-case  .govuk-accordion__section-content a'));
         actions.push(...PallyActions.clickElement('#share-case-nav button'));
         actions.push(...PallyActions.waitForPageWithCssLocator('exui-case-share-confirm #summarySections'));
-        await pa11ytest(this, actions, baseUrl + 'cases/case-share');
+        await pa11ytest(this, actions, conf.baseUrl + 'cases/case-share');
 
     });
 

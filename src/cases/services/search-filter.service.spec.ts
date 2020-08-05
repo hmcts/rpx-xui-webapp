@@ -99,6 +99,10 @@ describe('SearchFilterService', () => {
                 caseState: CASE_STATE,
                 page: 1,
                 view: 'SEARCH'
+            },
+            sortParameters: {
+                column: 'dummy',
+                order: 0
             }
         };
 
@@ -107,7 +111,7 @@ describe('SearchFilterService', () => {
 
         expect(ccdSearchServiceMock.searchCases).toHaveBeenCalledWith(CASE_TYPE.id, { page: 1, state: CASE_STATE.id }, {
             name: NAME_VALUE
-        }, 'SEARCH');
+        }, 'SEARCH', { column: 'dummy', order: 0 });
 
     });
 

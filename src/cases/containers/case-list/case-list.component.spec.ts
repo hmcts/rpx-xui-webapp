@@ -151,7 +151,7 @@ describe('CaseListComponent', () => {
       const page = 1;
 
       const event = component.createEvent(jurisdiction, caseType, caseState, metadataFields,
-        formGroupValues, page);
+        formGroupValues, page, null);
 
       expect(event.selected.jurisdiction).toEqual(jurisdiction);
       expect(event.selected.caseType).toEqual(caseType);
@@ -202,6 +202,23 @@ describe('CaseListComponent', () => {
       expect(spyOnFindCaseListPaginationMetadata).toHaveBeenCalled();
     });
 
+    it('should call getElasticSearchResults() on page change and LD elastic search enabled.', () => {
+
+      const spyOnGetElasticSearchResults = spyOn(component, 'getElasticSearchResults').and.callThrough();
+
+      const event = {
+        selected: {
+          page: 1,
+        }
+      };
+      component.elasticSearchFlag = true;
+      component.applyChangePage(event);
+
+      expect(spyOnGetElasticSearchResults).toHaveBeenCalled();
+      component.elasticSearchFlag = false;
+    });
+
+
     it('should call findCaseListPaginationMetadata() on page change with values from localStorage.', () => {
 
       const spyOnFindCaseListPaginationMetadata = spyOn(component, 'findCaseListPaginationMetadata').and.callThrough();
@@ -240,7 +257,7 @@ describe('CaseListComponent', () => {
       const page = 1;
 
       event = component.createEvent(jurisdiction, caseType, caseState, metadataFields,
-        formGroupValues, page);
+        formGroupValues, page, null);
     });
 
     it('should call findCaseListPaginationMetadata() on apply of filter.', () => {
@@ -252,6 +269,18 @@ describe('CaseListComponent', () => {
       component.applyFilter(event);
 
       expect(spyOnFindCaseListPaginationMetadata).toHaveBeenCalled();
+    });
+
+    it('should call getElasticSearchResults() on apply of filter and LD elastic search enabled.', () => {
+
+      const spyOnGetElasticSearchResults = spyOn(component, 'getElasticSearchResults').and.callThrough();
+      const spyOnGetEvent = spyOn(component, 'getEvent');
+
+      component.elasticSearchFlag = true;
+      component.applyFilter(event);
+
+      expect(spyOnGetElasticSearchResults).toHaveBeenCalled();
+      component.elasticSearchFlag = false;
     });
 
     it('should update the components page property on apply of a filter change.', () => {
@@ -401,6 +430,20 @@ describe('CaseListComponent', () => {
       expect(component.resultSubscription.unsubscribe).toHaveBeenCalled();
       expect(component.paginationSubscription.unsubscribe).toHaveBeenCalled();
       expect(component.caseFilterToggleSubscription.unsubscribe).toHaveBeenCalled();
+    });
+  });
+
+  describe('sort()', () => {
+
+    it('should update sortParameters', () => {
+      const sortParameters = {
+        column: 'dummy',
+        order: 0
+      };
+
+      component.sort(sortParameters);
+
+      expect(component.sortParameters).toEqual(sortParameters);
     });
   });
 

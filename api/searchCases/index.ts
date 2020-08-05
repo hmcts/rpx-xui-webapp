@@ -35,7 +35,7 @@ export function prepareElasticQuery(queryParams: {page?}, body: {size?, sort?}):
     let query: {} = {}
     const matchList: any[] = []
     const size = body.size || 10
-    const sort = prepareSort(body.sort)
+    const sort = body.sort ? prepareSort(body.sort) : []
     const page = (queryParams.page || 1) - 1
     const from = page * size
 
@@ -58,9 +58,10 @@ export function prepareElasticQuery(queryParams: {page?}, body: {size?, sort?}):
         for (const criterion of Object.keys(metaCriteria)) {
 
             if (metaCriteria[criterion]) {
+                const keyName = caseMetaDataFieldNameMapper(criterion.replace('[', '').replace(']', '').toLowerCase())
                 const match = {
                     match: {
-                        [criterion]: {
+                        [keyName]: {
                             operator: 'and',
                             query: metaCriteria[criterion],
                         },
@@ -105,7 +106,7 @@ export function prepareElasticQuery(queryParams: {page?}, body: {size?, sort?}):
 
 function prepareSort(params){
     let sortQuery = []
-    if (params.column !== null && params.order !== null) {
+    if (params.hasOwnProperty('column') && params.hasOwnProperty('order')) {
         const columnName = params.column.indexOf('[') === -1 ?
                             `data.${params.column}.keyword` :
                             `${caseMetaDataFieldNameMapper(params.column.replace('[', '').replace(']', '').toLowerCase())}.keyword`

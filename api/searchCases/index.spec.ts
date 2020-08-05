@@ -73,8 +73,27 @@ describe('Search Cases Elastic Search', () => {
 
         spy = sandbox.stub(http, 'post').resolves(result2)
         await searchCases.getCases(req, res, next)
-        expect(spy).to.have.been.calledWith(url, {from: 0, query: { bool: { must: [] } }, size: 10})
+        expect(spy).to.have.been.calledWith(url, {from: 0, query: { bool: { must: [] } }, size: 10, sort: []})
         expect(res.send).to.have.been.calledWith(expected)
+    })
+
+    it('should catch an error', async () => {
+        sandbox.restore()
+        const error = {
+            data: {
+                errorDescription: 'You do not have sufficient privileges',
+            },
+            message: 'access denied',
+            status: 403,
+        }
+        const errReport = {
+            apiError: error.message,
+            apiErrorDescription: error.data.errorDescription,
+            statusCode: error.status,
+        }
+        spy = sandbox.stub(http, 'post').throws(error)
+        await searchCases.getCases(req, res, next)
+        expect(next).to.have.been.called
     })
   })
 
@@ -86,7 +105,11 @@ describe('Search Cases Elastic Search', () => {
             'case.param2': 'dummy2'
         }
         const body = {
-            size: 25
+            size: 25,
+            sort: {
+              column: 'dummy',
+              order: 0
+            }
         }
 
         const expected = {
@@ -113,12 +136,65 @@ describe('Search Cases Elastic Search', () => {
                     ]
                 }
             },
-            size: 25
+            size: 25,
+            sort: [
+              {
+                'data.dummy.keyword': 'ASC'
+              }
+            ]
         }
 
         expect(searchCases.prepareElasticQuery(queryParams, body)).to.deep.equal(expected)
     })
-  })
+ 
+    it('should return elastic search query - with metadata', async () => {
+      const queryParams = {
+        page: 2,
+        param: 'dummy',
+        'case.param2': 'dummy2'
+      }
+      const body = {
+          size: 25,
+          sort: {
+            column: '[CASE_REFERENCE]',
+            order: 1
+          }
+      }
 
+      const expected = {
+          from: 25,
+          query: {
+              bool: {
+                  must: [
+                      {
+                          match: {
+                              param: {
+                                  operator: 'and',
+                                  query: 'dummy'
+                              }
+                          }
+                      },
+                      {
+                          match: {
+                              'data.param2': {
+                                  operator: 'and',
+                                  query: 'dummy2'
+                              }
+                          }
+                      }
+                  ]
+              }
+          },
+          size: 25,
+          sort: [
+            {
+              'reference.keyword': 'DESC'
+            }
+          ]
+      }
+
+      expect(searchCases.prepareElasticQuery(queryParams, body)).to.deep.equal(expected)
+    })
+  })
 
 })

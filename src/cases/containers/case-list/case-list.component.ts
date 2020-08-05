@@ -64,7 +64,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public elasticSearchFlag: boolean = false;
   public elasticSearchFlagSubsription: Subscription;
 
-  public sortParameters: { column: string, order: number } = { column: null, order: null };
+  public sortParameters;
 
   constructor(
     public store: Store<fromCaseList.State>,
@@ -327,7 +327,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public applyFilter(event) {
     this.page = event.selected.page;
     this.selected = event.selected;
-    this.sortParameters = { column: null, order: null };
     if (!this.elasticSearchFlag) {
       this.findCaseListPaginationMetadata(this.getEvent());
     } else {

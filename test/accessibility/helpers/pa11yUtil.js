@@ -61,8 +61,8 @@ async function pa11ytest(test, actions, startUrl) {
             session: true,
         }
     ];
-    const testBrowser = await getBrowser(); 
-    const page = await getPage();
+    const testBrowser = await getBrowser();
+    const page = await testBrowser.newPage();;
     await page.setCookie(...cookies);
     // await page.goto("http://localhost:4200/");
 
@@ -91,13 +91,13 @@ async function pa11ytest(test, actions, startUrl) {
         test.a11yResult = result;
         console.log("Test Execution time : " + elapsedTime);
         console.log(err);
-        // await page.close();
+        await page.close();
         // await browser.close();
         throw err;
 
     }
 
-    // await page.close();
+    await page.close();
     // await browser.close();
     const elapsedTime = Date.now() - startTime;
     result.executionTime = elapsedTime;

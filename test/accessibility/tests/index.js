@@ -26,50 +26,46 @@ describe('Pa11y Accessibility tests', function () {
 
     it('Case List Page', async function () {
         const actions = [];
-
-        actions.push(...PallyActions.navigateTourl(conf.baseUrl + 'cases'));
         actions.push(...PallyActions.waitForPageWithCssLocator('ccd-workbasket-filters .heading-h2'))
-
-        await pa11ytest(this, actions);
+        await pa11ytest(this, actions, conf.baseUrl + 'cases');
 
     });
 
     it('Case Search Page', async function () {
         const actions = [];
-
         actions.push(...PallyActions.waitForPageWithCssLocator('.search-block'))
-
         await pa11ytest(this, actions, conf.baseUrl + 'cases/case-search');
 
     });
 
     it('Create Case Page', async function () {
         const actions = [];
-
         actions.push(...PallyActions.waitForPageWithCssLocator('exui-ccd-connector'))
-
         await pa11ytest(this, actions, conf.baseUrl + 'cases/case-filter');
-
     });
 
     it('Share Case page', async function () {
         const actions = [];
-        actions.push(...PallyActions.waitForPageWithCssLocator('exui-case-share #title-selected-cases'))
-        await pa11ytest(this, actions, conf.baseUrl + 'cases/case-share');
+        actions.push(...PallyActions.waitForPageWithCssLocator('exui-case-share #title-selected-cases'));
+        actions.push(...PallyActions.waitForPageWithCssLocator('#accordion-with-summary-sections .govuk-accordion__open-all span'));
 
+        actions.push(...PallyActions.clickElement('#accordion-with-summary-sections .govuk-accordion__open-all'));
+
+        actions.push(...PallyActions.clickElement('#accordion-with-summary-sections xuilib-selected-case  .govuk-accordion__section-content a'));
+        await pa11ytest(this, actions, conf.baseUrl + 'cases/case-share?init=true');
     });
 
     it('Confirm Share a case page', async function () {
         const actions = [];
-
         actions.push(...PallyActions.waitForPageWithCssLocator('exui-case-share #title-selected-cases'));
+        actions.push(...PallyActions.waitForPageWithCssLocator('#accordion-with-summary-sections .govuk-accordion__open-all span'));
+
         actions.push(...PallyActions.clickElement('#accordion-with-summary-sections .govuk-accordion__open-all'));
 
         actions.push(...PallyActions.clickElement('#accordion-with-summary-sections xuilib-selected-case  .govuk-accordion__section-content a'));
         actions.push(...PallyActions.clickElement('#share-case-nav button'));
         actions.push(...PallyActions.waitForPageWithCssLocator('exui-case-share-confirm #summarySections'));
-        await pa11ytest(this, actions, conf.baseUrl + 'cases/case-share');
-
+        await pa11ytest(this, actions, conf.baseUrl + 'cases/case-share?init=true');
     });
 
 
@@ -101,7 +97,6 @@ describe('Pa11y Accessibility tests', function () {
             const actions = [];
             actions.push(...PallyActions.waitForPageWithCssLocator('ccd-case-edit-page h1'))
             await pa11ytest(this, actions, conf.baseUrl + 'cases/case-create/DIVORCE/FinancialRemedyContested/FR_solicitorCreate/' + page.id);
-
         });
 
     });
@@ -112,7 +107,6 @@ describe('Pa11y Accessibility tests', function () {
             const actions = [];
             actions.push(...PallyActions.waitForPageWithCssLocator('ccd-case-edit-page h1'))
             await pa11ytest(this, actions, conf.baseUrl + 'cases/case-create/DIVORCE/GrantOfRepresentation/solicitorCreateApplication/' + page.id);
-
         });
 
     });
@@ -123,7 +117,6 @@ describe('Pa11y Accessibility tests', function () {
             const actions = [];
             actions.push(...PallyActions.waitForPageWithCssLocator('ccd-case-edit-page h1'))
             await pa11ytest(this, actions, conf.baseUrl + 'cases/case-create/DIVORCE/Caveat/solicitorCreateCaveat/' + page.id);
-
         });
 
     });
@@ -134,7 +127,6 @@ describe('Pa11y Accessibility tests', function () {
             const actions = [];
             actions.push(...PallyActions.waitForPageWithCssLocator('ccd-case-edit-page h1'))
             await pa11ytest(this, actions, conf.baseUrl + 'cases/case-create/DIVORCE/Asylum/startAppeal/' + page.id);
-
         });
 
     });

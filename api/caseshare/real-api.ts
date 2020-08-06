@@ -107,7 +107,7 @@ async function doShareCase(req: EnhancedRequest, shareCases: SharedCase[],
   }
 }
 
-// noinspection JSUnusedLocalSymbols
+// @ts-ignore
 async function doUnshareCase(req: EnhancedRequest, shareCases: SharedCase[], updatedSharedCases: SharedCase[]) {
   const path = `${ccdUrl}/case-unassignments`
   const payload = {

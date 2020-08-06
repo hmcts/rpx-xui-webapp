@@ -7,12 +7,16 @@ describe('AppComponent', () => {
     let store: any;
     let googleAnalyticsService: any;
     let timeoutNotificationService: any;
+    let router: any;
+    let title: any;
 
     beforeEach(() => {
         store = jasmine.createSpyObj('store', ['pipe', 'dispatch']);
         googleAnalyticsService = jasmine.createSpyObj('GoogleAnalyticsService', ['init']);
         timeoutNotificationService = jasmine.createSpyObj('TimeoutNotificationsService', ['notificationOnChange', 'initialise']);
-        appComponent = new AppComponent(store, googleAnalyticsService, timeoutNotificationService);
+        router = { events: of() };
+        title = jasmine.createSpyObj('Title', ['setTitle']);
+        appComponent = new AppComponent(store, googleAnalyticsService, timeoutNotificationService, router, title);
     });
 
     it('Truthy', () => {

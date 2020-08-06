@@ -1,16 +1,14 @@
-import { CaseDetailsHomeComponent } from './containers/case-details-home/case-details-home';
-import { CaseHomeComponent } from './containers/case-home/case-home.component';
+import { ModuleWithProviders } from '@angular/core';
 // routes
 import { RouterModule, Routes } from '@angular/router';
-import { ModuleWithProviders } from '@angular/core';
-import { CaseListComponent } from './containers/case-list/case-list.component';
-import { CaseFilterComponent } from './containers/case-filter/case-filter.component';
-
-import { CaseSearchComponent } from './containers/case-search/case-search.component';
-import {CasesCreateComponent, CaseCreateSubmitComponent } from './containers';
-import {viewerRouting as caseViewRouting, editorRouting, CaseResolver} from '@hmcts/ccd-case-ui-toolkit';
-import {CaseDetailsComponent} from './containers/case-details/case-details.component';
+import { CaseResolver, editorRouting, viewerRouting as caseViewRouting } from '@hmcts/ccd-case-ui-toolkit';
 import { HealthCheckGuard } from 'src/app/shared/guards/health-check.guard';
+import { CaseCreateSubmitComponent, CasesCreateComponent } from './containers';
+import { CaseDetailsHomeComponent } from './containers/case-details-home/case-details-home';
+import { CaseFilterComponent } from './containers/case-filter/case-filter.component';
+import { CaseHomeComponent } from './containers/case-home/case-home.component';
+import { CaseListComponent } from './containers/case-list/case-list.component';
+import { CaseSearchComponent } from './containers/case-search/case-search.component';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
 
 export const ROUTES: Routes = [
@@ -23,7 +21,7 @@ export const ROUTES: Routes = [
           component: CaseListComponent,
           canActivate: [ HealthCheckGuard ],
           data: {
-            title: 'HMCTS Manage Cases | Case list'
+            title: 'Case list'
           }
         },
         {
@@ -31,7 +29,7 @@ export const ROUTES: Routes = [
           component: CaseFilterComponent,
           canActivate: [ HealthCheckGuard ],
           data: {
-            title: 'HMCTS Manage Cases | Create a case'
+            title: 'Create a case'
           }
         },
         {
@@ -52,7 +50,7 @@ export const ROUTES: Routes = [
           ],
           canActivate: [ HealthCheckGuard ],
           data: {
-            title: 'HMCTS Manage Cases | Create a case'
+            title: 'Create a case'
           }
         },
         {
@@ -61,7 +59,7 @@ export const ROUTES: Routes = [
           children: editorRouting,
           canActivate: [ HealthCheckGuard ],
           data: {
-            title: 'HMCTS Manage Cases | Find a case'
+            title: 'Find a case'
           }
         },
         {
@@ -72,7 +70,7 @@ export const ROUTES: Routes = [
           children: caseViewRouting,
           canActivate: [ HealthCheckGuard ],
           data: {
-            title: 'HMCTS Manage Cases | Case'
+            title: 'Case Details'
           }
         }
       ]

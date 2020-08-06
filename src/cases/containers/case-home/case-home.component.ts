@@ -1,17 +1,14 @@
-import { ExUITitleService } from 'src/app/shared/services/exui-title.service';
-import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AlertService,
-  NavigationNotifierService,
-  NavigationOrigin,
-  HttpError,
-  ErrorNotifierService
+  ErrorNotifierService, HttpError, NavigationNotifierService,
+  NavigationOrigin
 } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+import { GoActionParams } from 'src/cases/models/go-action-params.model';
 import * as fromRoot from '../../../app/store';
 import * as fromFeature from '../../store';
-import { GoActionParams } from 'src/cases/models/go-action-params.model';
 
 @Component({
   selector: 'exui-case-home',
@@ -23,14 +20,13 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
   public static readonly CASE_CREATED_MSG = 'The case has been created successfully';
   public static readonly DRAFT_DELETED_MSG = 'The draft has been successfully deleted';
 
-  navigationSubscription: Subscription;
+  public navigationSubscription: Subscription;
 
   constructor(
-    private titleService: ExUITitleService,
-    private alertService: AlertService,
-    private errorNotifierService: ErrorNotifierService,
-    private navigationNotifier: NavigationNotifierService,
-    private store: Store<fromFeature.State>,
+    private readonly alertService: AlertService,
+    private readonly errorNotifierService: ErrorNotifierService,
+    private readonly navigationNotifier: NavigationNotifierService,
+    private readonly store: Store<fromFeature.State>,
   ) { }
 
   /**
@@ -40,7 +36,7 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
    * We do not want to be showing the User a Session Timeout modal, if they
    * have yet to be logged in. ie. Viewing an accessibility page.
    */
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.navigationSubscription = this.navigationNotifier.navigation.subscribe(navigation => {
       if (navigation.action) {
         this.actionDispatcher(this.paramHandler(navigation));
@@ -50,7 +46,7 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
     this.store.dispatch(new fromRoot.StartIdleSessionTimeout());
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     if (this.navigationSubscription) {
       this.navigationSubscription.unsubscribe();
     }

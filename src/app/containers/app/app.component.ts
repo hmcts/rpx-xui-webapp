@@ -1,7 +1,9 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import { GoogleAnalyticsService, ManageSessionServices, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Title } from '@angular/platform-browser';
+import { Router, RoutesRecognized } from '@angular/router';
+import { GoogleAnalyticsService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
-import {propsExist} from '../../../../api/lib/objectUtilities';
+import { propsExist } from '../../../../api/lib/objectUtilities';
 import { environment as config } from '../../../environments/environment';
 import * as fromRoot from '../../store';
 
@@ -16,15 +18,26 @@ export class AppComponent implements OnInit {
   public timeoutModalConfig = {
     countdown: '0 seconds',
     isVisible: false,
-  }
+  };
 
   constructor(
     private readonly store: Store<fromRoot.State>,
-    private googleAnalyticsService: GoogleAnalyticsService,
-    private readonly timeoutNotificationsService: TimeoutNotificationsService
+    private readonly googleAnalyticsService: GoogleAnalyticsService,
+    private readonly timeoutNotificationsService: TimeoutNotificationsService,
+    private readonly router: Router,
+    private readonly titleService: Title
   ) {
 
     this.googleAnalyticsService.init(config.googleAnalyticsKey);
+
+    this.router.events.subscribe((data) => {
+      if (data instanceof RoutesRecognized) {
+        const d = data.state.root.firstChild.data;
+        if (d.title) {
+          this.titleService.setTitle(`${d.title} - HM Courts & Tribunals Service - GOV.UK`);
+        }
+      }
+    });
   }
 
   public ngOnInit() {
@@ -41,7 +54,7 @@ export class AppComponent implements OnInit {
    */
   public loadAndListenForUserDetails() {
 
-    this.store.pipe(select(fromRoot.getUserDetails)).subscribe(userDetails => this.userDetailsHandler(userDetails))
+    this.store.pipe(select(fromRoot.getUserDetails)).subscribe(userDetails => this.userDetailsHandler(userDetails));
 
     this.store.dispatch(new fromRoot.LoadUserDetails());
   }

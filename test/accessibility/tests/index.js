@@ -44,31 +44,6 @@ describe('Pa11y Accessibility tests', function () {
         await pa11ytest(this, actions, conf.baseUrl + 'cases/case-filter');
     });
 
-    it('Share Case page', async function () {
-        const actions = [];
-        actions.push(...PallyActions.waitForPageWithCssLocator('exui-case-share #title-selected-cases'));
-        actions.push(...PallyActions.waitForPageWithCssLocator('#accordion-with-summary-sections .govuk-accordion__open-all span'));
-
-        actions.push(...PallyActions.clickElement('#accordion-with-summary-sections .govuk-accordion__open-all'));
-
-        actions.push(...PallyActions.clickElement('#accordion-with-summary-sections xuilib-selected-case  .govuk-accordion__section-content a'));
-        await pa11ytest(this, actions, conf.baseUrl + 'cases/case-share?init=true');
-    });
-
-    it('Confirm Share a case page', async function () {
-        const actions = [];
-        actions.push(...PallyActions.waitForPageWithCssLocator('exui-case-share #title-selected-cases'));
-        actions.push(...PallyActions.waitForPageWithCssLocator('#accordion-with-summary-sections .govuk-accordion__open-all span'));
-
-        actions.push(...PallyActions.clickElement('#accordion-with-summary-sections .govuk-accordion__open-all'));
-
-        actions.push(...PallyActions.clickElement('#accordion-with-summary-sections xuilib-selected-case  .govuk-accordion__section-content a'));
-        actions.push(...PallyActions.clickElement('#share-case-nav button'));
-        actions.push(...PallyActions.waitForPageWithCssLocator('exui-case-share-confirm #summarySections'));
-        await pa11ytest(this, actions, conf.baseUrl + 'cases/case-share?init=true');
-    });
-
-
     const divorceCreateCaseConfig = ccdApi.getSolicitorCreateCaseConfig('DIVORCE','DIVORCE'); 
     divorceCreateCaseConfig.wizard_pages.forEach(page => {
         it('Divorce Create Case Page '+ page.id, async function () {

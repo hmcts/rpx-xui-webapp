@@ -53,7 +53,7 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
   }
 
 // TODO: please revisit
-  paramHandler(navigation: any): GoActionParams {
+  public paramHandler(navigation: any): GoActionParams {
     let params: GoActionParams;
     switch (navigation.action) {
       case NavigationOrigin.DRAFT_DELETED:
@@ -110,11 +110,11 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
     return params;
   }
 
-  actionDispatcher(params: GoActionParams): void {
+  public actionDispatcher(params: GoActionParams): void {
     return this.store.dispatch(new fromRoot.Go(params));
   }
 
-  handleError(error: HttpError, triggerId: string): void {
+  public handleError(error: HttpError, triggerId: string): void {
     if (error.status !== 401 && error.status !== 403) {
       console.log('error during triggering event:', triggerId);
       console.log(error);

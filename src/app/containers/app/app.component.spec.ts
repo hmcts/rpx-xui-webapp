@@ -1,6 +1,5 @@
 import { of } from 'rxjs';
 import { AppComponent } from './app.component';
-import {TimeoutNotificationsService} from '@hmcts/rpx-xui-common-lib';
 
 describe('AppComponent', () => {
     let appComponent: AppComponent;

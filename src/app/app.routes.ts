@@ -76,8 +76,8 @@ export const ROUTES: Routes = [
       title: 'Accessibility Statement'
     }
   },
-  { 
-    path: 'service-down', 
+  {
+    path: 'service-down',
     component: ServiceDownComponent,
     data: {
       title: 'Service Unavailable'

@@ -43,9 +43,11 @@ export function shareCasesReducer(state: ShareCasesState = initialSharedCasesSta
         if (!aCase.hasOwnProperty('caseTypeId')) {
           const caseExists = casesInStore.find(theCase => theCase.caseId === aCase.caseId);
           const caseTypeId = caseExists && caseExists.caseTypeId ? caseExists.caseTypeId : null;
+          const caseTitle = caseExists && caseExists.caseTitle ? caseExists.caseTitle : null;
           const newCase: SharedCase = {
             ...aCase,
-            caseTypeId
+            caseTypeId,
+            caseTitle
           };
           casesWithTypes.push(newCase);
         }

@@ -36,7 +36,7 @@ export async function handlePost<T>(path: string, body: T, req: EnhancedRequest)
         const headers = setHeaders(req)
         return await http.post(path, body, { headers })
     } catch (e) {
-        logger.error(e.message)
+        logger.error(e.status, e.statusText, JSON.stringify(e.data))
         throw e
     }
 }

@@ -26,12 +26,14 @@ describe('case converters', () => {
     const expectedSearchResultViewItem = [{
       case_id: '1',
       case_fields: {
-        '[CASE_TYPE]': 'FinancialRemedyContested'
+        '[CASE_TYPE]': 'FinancialRemedyContested',
+        case_title: ''
       }
     }, {
       case_id: '2',
       case_fields: {
-        '[CASE_TYPE]': 'FinancialRemedyContested'
+        '[CASE_TYPE]': 'FinancialRemedyContested',
+        case_title: ''
       }
     }];
     const searchResultViewItem: SearchResultViewItem[] = converts.toSearchResultViewItemConverter(sharedCases);

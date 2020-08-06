@@ -46,12 +46,3 @@ Feature: search criteria workflow
     Then I wait to see case results displayed
     When I click search Reset in case list page
     Then I see search results on case list page are reset
-
-  Scenario: search criteria reset workflow in search page
-    When I click on search button
-    Then Search page should be displayed
-    When I enter search fields jurisdiction "Family Divorce" case type "Financial Remedy Consented"
-    When I click apply to perform case search
-    Then I see results returned
-    When I reset case search fields
-    Then search criteria details should be reset

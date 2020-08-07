@@ -106,6 +106,20 @@ describe('Pa11y Accessibility tests', function () {
 
     });
 
+    const fplCareSupervisionConfig = ccdApi.getSolicitorCreateCaseConfig('CARE_SUPERVISION_EPO', 'openCase');
+    fplCareSupervisionConfig.wizard_pages.forEach(page => {
+        it.only('FPL Care Supervision Create Case Page ' + page.id, async function () {
+            const actions = [];
+            actions.push(...PallyActions.waitForPageWithCssLocator('ccd-case-edit-page h1'))
+            await pa11ytest(this, actions, conf.baseUrl + 'cases/case-create/DIVORCE/Asylum/startAppeal/' + page.id);
+        });
+
+    });
+
+
+
+
+
 });
 
 

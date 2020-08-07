@@ -59,7 +59,7 @@ app.use(
 app.use(cookieParser())
 
 // app.use(errorStack)
-app.use(bodyParser.json())
+app.use(bodyParser.json({limit: '5mb'}))
 app.use(bodyParser.urlencoded({extended: true}))
 
 tunnel.init()

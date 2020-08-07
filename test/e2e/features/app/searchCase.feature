@@ -45,4 +45,3 @@ Feature: search criteria workflow
     When I click search Apply in case list page
     Then I wait to see case results displayed
     When I click search Reset in case list page
-    Then I see search results on case list page are reset

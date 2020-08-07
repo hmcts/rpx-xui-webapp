@@ -183,4 +183,18 @@ describe('CaseSearchComponent', () => {
     });
   });
 
+  describe('sort()', () => {
+
+    it('should update sortParameters', () => {
+      const sortParameters = {
+        column: 'dummy',
+        order: 0
+      };
+
+      component.sort(sortParameters);
+
+      expect(component.sortParameters).toEqual(sortParameters);
+    });
+  });
+
 });

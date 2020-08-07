@@ -31,6 +31,8 @@
           [metadataFields]="metadataFields"
           (changePage)="applyChangePage($event)"
           caseLinkUrlTemplate="../case-details/case_id"
+          [consumerSortingEnabled]="elasticSearchFlag"
+          (sortHandler)="sort($event)"
         >
         </ccd-search-result>
       </div>

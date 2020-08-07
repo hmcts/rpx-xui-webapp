@@ -56,6 +56,8 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   public elasticSearchFlag: boolean = false;
   public elasticSearchFlagSubsription: Subscription;
 
+  public sortParameters;
+
   constructor(
     public store: Store<fromCasesFeature.State>,
     private appConfig: AppConfig,
@@ -183,7 +185,8 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
           },
           page: this.page,
           view: 'SEARCH'
-        }
+        },
+        sortParameters: this.sortParameters
       };
     }
     return event;
@@ -229,6 +232,15 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     } else {
       this.getElasticSearchResults();
     }
+  }
+
+  public sort(sortParameters) {
+    this.sortParameters = {
+      ...this.sortParameters,
+      column: sortParameters.column,
+      order: sortParameters.order
+    };
+    this.getElasticSearchResults();
   }
 
   ngOnDestroy() {

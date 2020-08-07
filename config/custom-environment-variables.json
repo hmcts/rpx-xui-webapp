@@ -11,6 +11,7 @@
     "__format": "json"
   },
   "maxLogLine": "MAX_LOG_LINE",
+  "stub": "STUB",
   "health": {
     "ccdComponentApi": "HEALTH_CCD_COMPONENT_API",
     "ccdDataApi": "HEALTH_CCD_DATA_API",
@@ -21,10 +22,14 @@
   "services": {
     "ccd": {
       "componentApi": "SERVICES_CCD_COMPONENT_API",
-      "dataApi": "SERVICES_CCD_DATA_STORE_API"
+      "dataApi": "SERVICES_CCD_DATA_STORE_API",
+      "caseAssignmentApi": "SERVICES_CCD_CASE_ASSIGNMENT_API"
     },
     "documents": {
       "api": "SERVICES_DOCUMENTS_API"
+    },
+    "prd": {
+      "api": "SERVICES_PRD_API"
     },
     "caseShare": {
       "api": "SERVICES_CASE_SHARE_API"

@@ -22,8 +22,6 @@ variable "subscription" {
   type = "string"
 }
 
-variable "ilbIp"{}
-
 variable "common_tags" {
   type = "map"
 }

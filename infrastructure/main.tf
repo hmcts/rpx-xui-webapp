@@ -5,7 +5,7 @@ locals {
     shared_vault_name = "${var.shared_product_name}-${local.local_env}"
 }
 
-// This web app is disable
+// This web app is not in used
 module "app" {
     source = "git@github.com:hmcts/cnp-module-webapp?ref=master"
     product = "${local.app_full_name}"

@@ -1,13 +1,13 @@
 import * as express from 'express'
 import * as striptags from 'striptags'
 import {getConfigValue} from '../configuration'
+import { caseMetaDataFiledsMapping } from '../configuration/mappings'
 import {
   SERVICES_CCD_COMPONENT_API_PATH,
 } from '../configuration/references'
 import { http } from '../lib/http'
 import { setHeaders } from '../lib/proxy'
 import { fieldNameMapper } from '../lib/util'
-import { caseMetaDataFiledsMapping } from '../configuration/mappings'
 
 /**
  * Manually creating Elastic search query
@@ -59,7 +59,10 @@ export function prepareElasticQuery(queryParams: {page?}, body: {size?, sort?}):
         for (const criterion of Object.keys(metaCriteria)) {
 
             if (metaCriteria[criterion]) {
-                const keyName = fieldNameMapper(criterion.replace('[', '').replace(']', '').toLowerCase(), caseMetaDataFiledsMapping)
+                const keyName = fieldNameMapper(
+                    criterion.replace('[', '').replace(']', '').toLowerCase(),
+                    caseMetaDataFiledsMapping
+                )
                 const match = {
                     match: {
                         [keyName]: {
@@ -101,20 +104,23 @@ export function prepareElasticQuery(queryParams: {page?}, body: {size?, sort?}):
         from,
         query,
         size,
-        sort
+        sort,
     }
 }
 
-function prepareSort(params){
-    let sortQuery = []
+function prepareSort(params) {
+    const sortQuery = []
     if (params.hasOwnProperty('column') && params.hasOwnProperty('order')) {
         const columnName = params.column.indexOf('[') === -1 ?
                             `data.${params.column}.keyword` :
-                            `${fieldNameMapper(params.column.replace('[', '').replace(']', '').toLowerCase(), caseMetaDataFiledsMapping)}.keyword`
+                            `${fieldNameMapper(
+                                params.column.replace('[', '').replace(']', '').toLowerCase(),
+                                caseMetaDataFiledsMapping
+                            )}.keyword`
         const orderDirection = params.order === 0 ? 'ASC' : 'DESC'
         sortQuery.push(
             {
-                [columnName]: orderDirection
+                [columnName]: orderDirection,
             }
         )
     }

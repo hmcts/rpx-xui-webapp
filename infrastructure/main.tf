@@ -5,24 +5,18 @@ locals {
     shared_vault_name = "${var.shared_product_name}-${local.local_env}"
 }
 
+// This web app is disable
 module "app" {
     source = "git@github.com:hmcts/cnp-module-webapp?ref=master"
     product = "${local.app_full_name}"
     location = "${var.location}"
     env = "${var.env}"
-    ilbIp = "${var.ilbIp}"
     subscription = "${var.subscription}"
-    #capacity     = "${var.capacity}"
-    #is_frontend = "${!(var.env == "preview" || var.env == "spreview") ? 1 : 0}"
-    #additional_host_name = "${var.additional_host_name}"
-    #https_only="true"
     common_tags  = "${var.common_tags}"
     asp_rg = "${local.app_full_name}-${var.env}"
-    asp_name = "${var.shared_product_name}-${var.env}"
     enable_ase = "${var.enable_ase}"
     app_settings = {}
 }
-
 
 data "azurerm_key_vault" "key_vault" {
     name = "${local.shared_vault_name}"

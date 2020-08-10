@@ -19,7 +19,6 @@ export async function getCases(req: express.Request, res: express.Response, next
 
     try {
         const body = prepareElasticQuery(req.query, req.body)
-        console.log(JSON.stringify(body))
         const response = await http.post(`${getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)}${url}`, body, { headers })
 
         res.status(response.status)

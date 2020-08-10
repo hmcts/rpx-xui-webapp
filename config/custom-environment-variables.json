@@ -11,7 +11,10 @@
     "__format": "json"
   },
   "maxLogLine": "MAX_LOG_LINE",
-  "stub": "STUB",
+  "stub": {
+    "__name": "STUB",
+    "__format": "json"
+  },
   "health": {
     "ccdComponentApi": "HEALTH_CCD_COMPONENT_API",
     "ccdDataApi": "HEALTH_CCD_DATA_API",

@@ -236,6 +236,10 @@ class CaseManager {
                 var fileToUpload = path.resolve(__dirname, "../../../documents/dummy.pdf");
                 await ccdField.$('input.form-control').sendKeys(fileToUpload);
 
+                await BrowserWaits.waitForCondition(async () => {
+                    return !(await ccdField.element(by.xpath('span[contains(text(),"Uploading")]')).isPresent()); 
+                });
+ 
                 await browser.sleep(1000);
                 break;
             case "ccd-write-multi-select-list-field":

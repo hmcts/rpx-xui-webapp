@@ -80,7 +80,7 @@ export class ShareCaseEffects {
       this.payload = payload;
       return this.caseShareService.assignUsersWithCases(payload).pipe(
         map(
-          (response) => new shareCaseActions.SynchronizeStateToStore(response)),
+          (response) => new shareCaseActions.AssignUsersToCaseSuccess(response)),
         catchError(() => of(new fromRoot.Go({ path: ['/service-down']})))
       );
     })

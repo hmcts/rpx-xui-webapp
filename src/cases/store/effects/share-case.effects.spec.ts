@@ -13,11 +13,11 @@ import {
   AddShareCaseGo,
   AddShareCases,
   AssignUsersToCase,
+  AssignUsersToCaseSuccess,
   LoadShareCase,
   LoadShareCaseSuccess,
   LoadUserFromOrgForCase,
-  LoadUserFromOrgForCaseSuccess,
-  SynchronizeStateToStore
+  LoadUserFromOrgForCaseSuccess
 } from '../actions';
 import { ShareCaseEffects } from './share-case.effects';
 // tslint:disable-next-line:no-duplicate-imports
@@ -160,7 +160,7 @@ describe('Share Case Effects', () => {
         {caseId: '2', caseTitle: 'Steve321', caseTypeId: 'type2'}];
       caseShareServiceMock.assignUsersWithCases.and.returnValue(of(returnPayload));
       const action = new AssignUsersToCase(requestPayload);
-      const completion = new SynchronizeStateToStore(returnPayload);
+      const completion = new AssignUsersToCaseSuccess(returnPayload);
       actions$ = hot('-a', {a: action});
       const expected = cold('-b', {b: completion});
       expect(effects.assignUsersWithCases$).toBeObservable(expected);

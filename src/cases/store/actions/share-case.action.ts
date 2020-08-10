@@ -87,13 +87,11 @@ export class AssignUsersToCase implements Action {
   constructor(public payload: SharedCase[]) {}
 }
 
-/*
 export class AssignUsersToCaseSuccess implements Action {
   public readonly type = ASSIGN_USERS_TO_CASE_SUCCESS;
   constructor(public payload: SharedCase[]) {}
 }
-*/
 
 export type Actions = NavigateToShareCase | LoadShareCase | LoadShareCaseSuccess | LoadShareCaseFailure
   | AddShareCases | AddShareCaseGo | DeleteAShareCase | LoadUserFromOrgForCase | LoadUserFromOrgForCaseSuccess
-  | SynchronizeStateToStore | AssignUsersToCase;
+  | SynchronizeStateToStore | AssignUsersToCase | AssignUsersToCaseSuccess;

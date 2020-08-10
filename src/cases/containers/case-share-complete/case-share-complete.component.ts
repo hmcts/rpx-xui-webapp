@@ -16,6 +16,8 @@ export class CaseShareCompleteComponent implements OnInit {
   public shareCases: SharedCase[];
   public newShareCases$: Observable<SharedCase[]>;
   public newShareCases: SharedCase[];
+  public shareCaseState$: Observable<fromCasesFeature.ShareCasesState>;
+  public isLoading: boolean;
   public completeScreenMode: string;
 
   constructor(public store: Store<fromCaseList.State>) {}
@@ -27,6 +29,8 @@ export class CaseShareCompleteComponent implements OnInit {
     });
     this.store.dispatch(new fromCasesFeature.AssignUsersToCase(this.shareCases));
 
+    this.shareCaseState$ = this.store.pipe(select(fromCasesFeature.getCaseShareState));
+    this.shareCaseState$.subscribe(state => this.isLoading = state.loading);
     this.newShareCases$ = this.store.pipe(select(fromCasesFeature.getShareCaseListState));
     this.newShareCases$.subscribe(shareCases => {
       this.completeScreenMode = this.checkIfIncomplete(shareCases);
@@ -35,13 +39,15 @@ export class CaseShareCompleteComponent implements OnInit {
   }
 
   public checkIfIncomplete(shareCases: SharedCase[]) {
-    if (shareCases.some(aCase => aCase.pendingShares && aCase.pendingShares.length > 0)) {
-      return 'PENDING';
+    if (this.isLoading) {
+      if (shareCases.some(aCase => aCase.pendingShares && aCase.pendingShares.length > 0)) {
+        return 'PENDING';
+      }
+      if (shareCases.some(aCase => aCase.pendingUnshares && aCase.pendingUnshares.length > 0)) {
+        return 'PENDING';
+      }
+      return 'COMPLETE';
     }
-    if (shareCases.some(aCase => aCase.pendingUnshares && aCase.pendingUnshares.length > 0)) {
-      return 'PENDING';
-    }
-    return 'COMPLETE';
   }
 
   public showUserAccessBlock(aCase: SharedCase): boolean {

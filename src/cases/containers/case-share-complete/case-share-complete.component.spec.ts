@@ -50,6 +50,7 @@ describe('CaseShareCompleteComponent', () => {
           email: 'nick.rodrigues@lambbrooks.com'
         }]
     }];
+    component.isLoading = true;
     const returnValue = component.checkIfIncomplete(sharedCases);
     expect(returnValue).toEqual('PENDING');
   });
@@ -66,6 +67,7 @@ describe('CaseShareCompleteComponent', () => {
           email: 'kate.grant@lambbrooks.com'
         }]
     }];
+    component.isLoading = true;
     const returnValue = component.checkIfIncomplete(sharedCases);
     expect(returnValue).toEqual('COMPLETE');
   });

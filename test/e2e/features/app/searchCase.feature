@@ -44,4 +44,3 @@ Feature: search criteria workflow
     When I select search criteria jurisdiction "Family Divorce" case type "Financial Remedy Consented" state "Any" in case list page
     When I click search Apply in case list page
     Then I wait to see case results displayed
-    When I click search Reset in case list page

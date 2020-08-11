@@ -152,7 +152,7 @@ The application pulls out the secrets directly using `propertiesVolume.addTo()`
 
 Property 'cookies' does not exist on type 'EnhancedRequest' - you will need to make
 sure @types/express-session is added ie.
-`yarn add @types/express-session`
+`yarn add @types/express-session --dev`
 
 ### The following is legacy readme.
 

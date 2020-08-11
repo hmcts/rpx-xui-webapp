@@ -37,8 +37,13 @@ import { JwtDecodeWrapper } from './services/logger/jwtDecodeWrapper';
 import { AbstractAppInsights, AppInsightsWrapper } from './services/logger/appInsightsWrapper';
 import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler';
 import { AcceptTermsService } from './services/acceptTerms/acceptTerms.service';
-import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule, LAUNCHDARKLYKEY } from '@hmcts/rpx-xui-common-lib';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
+import { ENVIRONMENT_CONFIG, EnvironmentConfig } from '../models/environmentConfig.model';
+
+export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): string {
+  return envConfig.launchDarklyClientId || '';
+}
 
 @NgModule({
   declarations: [AppComponent],
@@ -86,7 +91,8 @@ import { PaymentLibModule } from '@hmcts/ccpay-web-component';
       provide: ErrorHandler,
       useClass: DefaultErrorHandler
     },
-    AcceptTermsService
+    AcceptTermsService,
+    { provide: LAUNCHDARKLYKEY, useFactory: launchDarklyClientIdFactory, deps: [ENVIRONMENT_CONFIG] },
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

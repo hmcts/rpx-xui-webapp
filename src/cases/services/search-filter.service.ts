@@ -3,11 +3,12 @@ import { SearchService, AbstractAppConfig, HttpService, RequestOptionsBuilder } 
 import { Observable } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { isStringOrNumber, getFilterType, sanitiseMetadataFieldName } from '../utils/utils';
-import { Store } from '@ngrx/store';
-import * as fromCaseList from '../store/reducers';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 
 @Injectable()
 export class SearchFilterService {
+
+  metadataFields: string[];
 
   constructor(
     private ccdSearchService: SearchService,
@@ -16,13 +17,14 @@ export class SearchFilterService {
     private requestOptionsBuilder: RequestOptionsBuilder,
   ) { }
 
-  metadataFields: string[];
+  search(payload, isElasticSearchEnabled: boolean = false): Observable<any> {
 
-  search(payload): Observable<any> {
+    const { jurisdictionId, caseTypeId, metadataFilters, caseFilters, view, sortParameters } = this.getParams(payload);
 
-    const { jurisdictionId, caseTypeId, metadataFilters, caseFilters, view } = this.getParams(payload);
-
-    return this.ccdSearchService.search(jurisdictionId, caseTypeId, metadataFilters, caseFilters, view) as any;
+    // return this.ccdSearchService.search(jurisdictionId, caseTypeId, metadataFilters, caseFilters, view) as any;
+    return isElasticSearchEnabled ?
+          this.ccdSearchService.searchCases(caseTypeId, metadataFilters, caseFilters, view, sortParameters) as any :
+          this.ccdSearchService.search(jurisdictionId, caseTypeId, metadataFilters, caseFilters, view) as any;
   }
 
   private getParams(payload: any) {
@@ -47,8 +49,9 @@ export class SearchFilterService {
     const caseFilters = filters.caseFilter;
     const metadataFilters = Object.assign(searchParams, filters.metadataFilter);
     const view = filter.view;
+    const sortParameters = payload.sortParameters;
 
-    return { jurisdictionId, caseTypeId, metadataFilters, caseFilters, view };
+    return { jurisdictionId, caseTypeId, metadataFilters, caseFilters, view, sortParameters };
   }
 
   private getCaseFilterFromFormGroup(formGroup?: FormGroup): { caseFilter, metadataFilter } {

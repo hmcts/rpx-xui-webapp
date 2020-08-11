@@ -6,7 +6,7 @@ import * as sinonChai from 'sinon-chai'
 import * as log4jui from './log4jui'
 chai.use(sinonChai)
 
-import {asyncReturnOrError, dotNotation, exists, isObject, isUserTandCPostSuccessful, shorten, some, valueOrNull} from './util'
+import {dotNotation, exists, isObject, isUserTandCPostSuccessful, shorten, some, valueOrNull, fieldNameMapper} from './util'
 
 describe('util', () => {
     describe('isUserTandCPostSuccessful', () => {
@@ -148,6 +148,17 @@ describe('util', () => {
             const result = await asyncReturnOrError(promise, 'string', null, logger, false)
             expect(logger.error).to.have.been.calledWith('string')
             expect(result).to.be.null
+        })
+    })
+    describe('fieldNameMapper', () => {
+        // @todo take a look at this - what values are intended to be passed in?
+        it('Should return mapped value if it is in mapping', () => {
+            const result = fieldNameMapper('dummy', {'dummy': 'singer'})
+            expect(result).to.equal('singer')
+        })
+        it('Should return itself it is not in mapping', () => {
+            const result = fieldNameMapper('dummy', {'dummy2': 'drummer'})
+            expect(result).to.equal('dummy')
         })
     })
 })

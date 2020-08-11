@@ -60,7 +60,7 @@
     "@angular/platform-browser": "^7.2.13",
     "@angular/platform-browser-dynamic": "^7.2.13",
     "@angular/router": "^7.2.13",
-    "@hmcts/ccd-case-ui-toolkit": "^2.64.12-case-sharing-prerelease",
+    "@hmcts/ccd-case-ui-toolkit": "2.64.20-consumer-sorting",
     "@hmcts/ccpay-web-component": "3.0.3",
     "@hmcts/frontend": "0.0.39-alpha",
     "@hmcts/media-viewer": "2.2.7",
@@ -187,6 +187,7 @@
     "webpack-source-map-support": "^2.0.1"
   },
   "resolutions": {
+    "**/**/dot-prop": "^5.1.1",
     "**/**/lodash": "^4.17.19",
     "**/**/http-proxy": "^1.18.1",
     "**/**/npm-registry-fetch": "^8.1.1",

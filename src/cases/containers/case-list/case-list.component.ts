@@ -117,12 +117,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.resultSubscription = this.resultView$.subscribe(resultView =>
       this.onResultsViewHandler(resultView));
 
-
-    if (!this.elasticSearchFlag) {
-      this.findCaseListPaginationMetadata(this.getEvent());
-    } else {
-      this.getElasticSearchResults(this.getEvent());
-    }
+    this.triggerQuery();
 
     this.elasticSearchFlagSubsription = this.featureToggleService.isEnabled('elastic-search').subscribe(value => this.elasticSearchFlag = value);
   }
@@ -198,7 +193,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
       const paginationDataFromResult: PaginationMetadata = {
         total_results_count: resultView.total,
         total_pages_count: Math.ceil(resultView.total / this.appConfig.getPaginationPageSize())
-      }
+      };
       this.onPaginationSubscribeHandler(paginationDataFromResult);
     }
 
@@ -228,7 +223,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
       this.paginationMetadata.total_results_count = paginationMetadata.total_results_count;
 
       const event = this.getEvent();
-      if (event != null && !this.elasticSearchFlag) {
+      if (event !== null && !this.elasticSearchFlag) {
         this.store.dispatch(new fromCasesFeature.ApplyCaselistFilter(event));
       }
     }
@@ -311,11 +306,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
    */
   public applyChangePage(event) {
     this.page = event.selected.page;
-    if (!this.elasticSearchFlag) {
-      this.findCaseListPaginationMetadata(this.getEvent());
-    } else {
-      this.getElasticSearchResults(this.getEvent());
-    }
+    this.triggerQuery();
   }
 
   /**
@@ -327,11 +318,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public applyFilter(event) {
     this.page = event.selected.page;
     this.selected = event.selected;
-    if (!this.elasticSearchFlag) {
-      this.findCaseListPaginationMetadata(this.getEvent());
-    } else {
-      this.getElasticSearchResults(this.getEvent());
-    }
+    this.triggerQuery();
   }
 
   public toggleFilter() {
@@ -345,6 +332,14 @@ export class CaseListComponent implements OnInit, OnDestroy {
       order: sortParameters.order
     };
     this.getElasticSearchResults(this.getEvent());
+  }
+
+  private triggerQuery() {
+    if (!this.elasticSearchFlag) {
+      this.findCaseListPaginationMetadata(this.getEvent());
+    } else {
+      this.getElasticSearchResults(this.getEvent());
+    }
   }
 
   public ngOnDestroy() {

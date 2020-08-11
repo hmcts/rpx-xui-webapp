@@ -111,12 +111,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
 
     this.elasticSearchFlagSubsription = this.featureToggleService.isEnabled('elastic-search').subscribe(value => this.elasticSearchFlag = value);
 
-    if (!this.elasticSearchFlag) {
-      this.findCaseListPaginationMetadata();
-    } else {
-      this.getElasticSearchResults();
-    }
-
+    this.triggerQuery();
 
   }
 
@@ -216,22 +211,12 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
 
   applyChangePage(event) {
     this.page = event.selected.page;
-
-    if (!this.elasticSearchFlag) {
-      this.findCaseListPaginationMetadata();
-    } else {
-      this.getElasticSearchResults();
-    }
+    this.triggerQuery();
   }
 
   public applyFilter(event) {
     this.page = event.selected.page;
-
-    if (!this.elasticSearchFlag) {
-      this.findCaseListPaginationMetadata();
-    } else {
-      this.getElasticSearchResults();
-    }
+    this.triggerQuery();
   }
 
   public sort(sortParameters) {
@@ -241,6 +226,14 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
       order: sortParameters.order
     };
     this.getElasticSearchResults();
+  }
+
+  private triggerQuery() {
+    if (!this.elasticSearchFlag) {
+      this.findCaseListPaginationMetadata();
+    } else {
+      this.getElasticSearchResults();
+    }
   }
 
   ngOnDestroy() {

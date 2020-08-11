@@ -5,10 +5,11 @@ import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
 import { Store } from '@ngrx/store';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { CaseFilterToggle, FindCaselistPaginationMetadata } from '../../store/actions/case-list.action';
+import { CaseFilterToggle, FindCaselistPaginationMetadata, ApplyCaselistFilterForES } from '../../store/actions/case-list.action';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { PaginationMetadata, WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { of, Observable } from 'rxjs';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 
 describe('CaseListComponent', () => {
   let component: CaseListComponent;
@@ -24,6 +25,7 @@ describe('CaseListComponent', () => {
   const mockDefinitionsService = jasmine.createSpyObj('DefinitionsService', ['getJurisdictions']);
   const mockAppConfig = jasmine.createSpyObj('AppConfig', ['getPaginationPageSize']);
   const mockWindowService = jasmine.createSpyObj('WindowService', ['removeLocalStorage']);
+  const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -42,12 +44,17 @@ describe('CaseListComponent', () => {
           provide: WindowService,
           useValue: mockWindowService
         },
+        {
+          provide: FeatureToggleService,
+          useValue: mockFeatureToggleService
+        },
         provideMockStore(),
       ]
     });
     store = TestBed.get(Store);
     spyOnDispatchToStore = spyOn(store, 'dispatch').and.callThrough();
     spyOnPipeToStore = spyOn(store, 'pipe').and.callThrough();
+    mockFeatureToggleService.isEnabled.and.returnValue(of(true));
 
     fixture = TestBed.createComponent(CaseListComponent);
     component = fixture.componentInstance;
@@ -105,6 +112,17 @@ describe('CaseListComponent', () => {
     });
   });
 
+  describe('getElasticSearchResults', () => {
+
+    it('should dispatch an action to get results from elastic search endpoint.', () => {
+      const event = {
+        test: 'test',
+      };
+      component.getElasticSearchResults(event);
+      expect(spyOnDispatchToStore).toHaveBeenCalledWith(new ApplyCaselistFilterForES(event));
+    });
+  });
+
   describe('toggleFilter()', () => {
 
     /**
@@ -133,7 +151,7 @@ describe('CaseListComponent', () => {
       const page = 1;
 
       const event = component.createEvent(jurisdiction, caseType, caseState, metadataFields,
-        formGroupValues, page);
+        formGroupValues, page, null);
 
       expect(event.selected.jurisdiction).toEqual(jurisdiction);
       expect(event.selected.caseType).toEqual(caseType);
@@ -184,6 +202,23 @@ describe('CaseListComponent', () => {
       expect(spyOnFindCaseListPaginationMetadata).toHaveBeenCalled();
     });
 
+    it('should call getElasticSearchResults() on page change and LD elastic search enabled.', () => {
+
+      const spyOnGetElasticSearchResults = spyOn(component, 'getElasticSearchResults').and.callThrough();
+
+      const event = {
+        selected: {
+          page: 1,
+        }
+      };
+      component.elasticSearchFlag = true;
+      component.applyChangePage(event);
+
+      expect(spyOnGetElasticSearchResults).toHaveBeenCalled();
+      component.elasticSearchFlag = false;
+    });
+
+
     it('should call findCaseListPaginationMetadata() on page change with values from localStorage.', () => {
 
       const spyOnFindCaseListPaginationMetadata = spyOn(component, 'findCaseListPaginationMetadata').and.callThrough();
@@ -222,7 +257,7 @@ describe('CaseListComponent', () => {
       const page = 1;
 
       event = component.createEvent(jurisdiction, caseType, caseState, metadataFields,
-        formGroupValues, page);
+        formGroupValues, page, null);
     });
 
     it('should call findCaseListPaginationMetadata() on apply of filter.', () => {
@@ -234,6 +269,18 @@ describe('CaseListComponent', () => {
       component.applyFilter(event);
 
       expect(spyOnFindCaseListPaginationMetadata).toHaveBeenCalled();
+    });
+
+    it('should call getElasticSearchResults() on apply of filter and LD elastic search enabled.', () => {
+
+      const spyOnGetElasticSearchResults = spyOn(component, 'getElasticSearchResults').and.callThrough();
+      const spyOnGetEvent = spyOn(component, 'getEvent');
+
+      component.elasticSearchFlag = true;
+      component.applyFilter(event);
+
+      expect(spyOnGetElasticSearchResults).toHaveBeenCalled();
+      component.elasticSearchFlag = false;
     });
 
     it('should update the components page property on apply of a filter change.', () => {
@@ -383,6 +430,20 @@ describe('CaseListComponent', () => {
       expect(component.resultSubscription.unsubscribe).toHaveBeenCalled();
       expect(component.paginationSubscription.unsubscribe).toHaveBeenCalled();
       expect(component.caseFilterToggleSubscription.unsubscribe).toHaveBeenCalled();
+    });
+  });
+
+  describe('sort()', () => {
+
+    it('should update sortParameters', () => {
+      const sortParameters = {
+        column: 'dummy',
+        order: 0
+      };
+
+      component.sort(sortParameters);
+
+      expect(component.sortParameters).toEqual(sortParameters);
     });
   });
 

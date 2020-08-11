@@ -4,6 +4,7 @@ export const JURISDICTION_SELECTED = '[CreateSearch] Jurisdiction Selected';
 export const APPLIED = '[CreateSearch] Applied';
 export const RESET = '[CreateSearch] Reset';
 export const APPLY_SEARCH_FILTER = '[CreateSearch] Apply Search Filter';
+export const APPLY_SEARCH_FILTER_FOR_ES = '[CreateSearch] Apply Search Filter for ES';
 export const APPLY_SEARCH_FILTER_SUCCESS = '[CreateSearch] Apply Search Filter Success';
 export const APPLY_SEARCH_FILTER_FAIL = '[CreateSearch] Apply Search Filter Fail';
 export const FIND_SEARCH_PAGINATION_METADATA = '[CreateSearch] Find search pagination metadata';
@@ -27,6 +28,12 @@ export class Reset implements Action {
 
 export class ApplySearchFilter implements Action {
   readonly type = APPLY_SEARCH_FILTER;
+  constructor(public payload: any) {
+  }
+}
+
+export class ApplySearchFilterForES implements Action {
+  readonly type = APPLY_SEARCH_FILTER_FOR_ES;
   constructor(public payload: any) {
   }
 }
@@ -76,6 +83,7 @@ export type CaseSearchAction =
   | Applied
   | Reset
   | ApplySearchFilter
+  | ApplySearchFilterForES
   | FindSearchPaginationMetadata
   | SearchResultPageChange
   | FindSearchPaginationMetadataSuccess

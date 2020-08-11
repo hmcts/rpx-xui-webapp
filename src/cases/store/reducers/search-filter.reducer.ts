@@ -51,7 +51,8 @@ export function reducer(
   action: fromCases.CaseSearchAction
 ): SearchState {
   switch (action.type) {
-    case fromCases.APPLY_SEARCH_FILTER: {
+    case fromCases.APPLY_SEARCH_FILTER:
+    case fromCases.APPLY_SEARCH_FILTER_FOR_ES: {
       return {
         ...state,
         filter: {

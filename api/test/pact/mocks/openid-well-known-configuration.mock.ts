@@ -1,6 +1,6 @@
 import { Matchers } from '@pact-foundation/pact'
 
-// tslint:disable-next-line:variable-name
+// tslint:disable
 const { term, string, boolean, eachLike } = Matchers
 
 /* tslint:disable:object-literal-sort-keys */

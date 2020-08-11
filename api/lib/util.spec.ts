@@ -6,7 +6,7 @@ import * as sinonChai from 'sinon-chai'
 import * as log4jui from './log4jui'
 chai.use(sinonChai)
 
-import {dotNotation, exists, isObject, isUserTandCPostSuccessful, shorten, some, valueOrNull, fieldNameMapper} from './util'
+import {asyncReturnOrError, dotNotation, exists, isObject, isUserTandCPostSuccessful, shorten, some, valueOrNull, fieldNameMapper} from './util'
 
 describe('util', () => {
     describe('isUserTandCPostSuccessful', () => {

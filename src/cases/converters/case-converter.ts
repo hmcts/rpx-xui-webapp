@@ -48,8 +48,8 @@ function combineCaseTitleByCaseType(caseTypeId: string, selectCase: SearchResult
       const respondentName = getRespondentName(selectCase);
       return applicantName + showVersus(applicantName, respondentName) + respondentName;
     case 'DIVORCE':
-      const marriagePetitionerName = getValueByPropertyName(selectCase, 'D8MarriagePetitionerName');
-      const marriageRespondentName = getValueByPropertyName(selectCase, 'D8MarriageRespondentName');
+      const marriagePetitionerName = getValueByPropertyName(selectCase, 'D8PetitionerFirstName') + BLANK_SPACE + getValueByPropertyName(selectCase, 'D8PetitionerLastName');
+      const marriageRespondentName = getValueByPropertyName(selectCase, 'D8RespondentFirstName') + BLANK_SPACE + getValueByPropertyName(selectCase, 'D8RespondentLastName');
       return marriagePetitionerName + showVersus(marriagePetitionerName, marriageRespondentName) + marriageRespondentName;
     default:
       return selectCase.case_id;

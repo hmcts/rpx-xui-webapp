@@ -3,7 +3,6 @@ import { SearchService, AbstractAppConfig, HttpService, RequestOptionsBuilder } 
 import { Observable } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { isStringOrNumber, getFilterType, sanitiseMetadataFieldName } from '../utils/utils';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 
 @Injectable()
 export class SearchFilterService {

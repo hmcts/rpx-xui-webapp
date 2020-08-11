@@ -4,6 +4,11 @@
     "secure": false,
     "logLevel": "debug"
   },
+  "/auth/*": {
+    "target": "http://localhost:3001",
+    "secure": false,
+    "logLevel": "debug"
+  },
   "/aggregated/*": {
     "target": "http://localhost:3001",
     "secure": false,

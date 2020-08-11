@@ -1,3 +1,4 @@
+@all
 @fullfunctional
 Feature: Login
 
@@ -24,7 +25,7 @@ Feature: Login
     When I select the sign out link
     Then I should be redirected to the Idam login page
 
-
+   @all
   Scenario: Verify the direct link navigate to login page
     Given I navigate to Expert UI Url direct link
     Then I should be redirected back to Login page after direct link

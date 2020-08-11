@@ -4,6 +4,9 @@ var FRCase = require('../pageObjects/FRCase');
 var ProbateCase = require('../pageObjects/ProbateCase');
 var DivorceCase = require('../pageObjects/Divorcecase');
 
+var IACase = require('../pageObjects/IACase');
+var PublicLawCase = require('../pageObjects/PublicLawCase');
+
 
 var CaseManager = require('../pageObjects/common/CaseManager');
 
@@ -16,6 +19,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     let frCase = new FRCase();
     let probateCase = new ProbateCase();
     let divorceCase = new DivorceCase();
+    let iaCase = new IACase();
+    let publicLawCase = new PublicLawCase();
+
     let caseManager = new CaseManager();
 
     When('I start case with jurisdiction {string} case type {string} and event {string}', async function (jurisidiction, casetype, event) {
@@ -31,8 +37,16 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     When('I create Probate case', { timeout: creatCaseStepTimeout }, async function () {
-        await probateCase.createCase(false);
-    })
+        await probateCase.createCase();
+    });
+
+    When('I create Immigration Asylum case', { timeout: creatCaseStepTimeout }, async function () {
+        await iaCase.createCase();
+    });
+
+    When('I create Public Law case', { timeout: creatCaseStepTimeout }, async function () {
+        await publicLawCase.createCase();
+    });
 
     When('I start case next step', async function () {
         await caseManager.startNextStep(false);

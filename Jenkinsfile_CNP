@@ -22,18 +22,14 @@ def product   = "xui"
 def component = "webapp"
 def vault = "rpx"
 def channel   = '#xui-pipeline'
-def deployToAatOnly = false  // set to true if only deploy upto AAT, set to false will deploy all the way to production
+def deployToAatOnly = true  // set to true if only deploy upto AAT, set to false will deploy all the way to production
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 def secrets = [
   'rpx-${env}': [
-    secret('mc-s2s-client-secret', 'S2S_SECRET'),
-    secret('mc-idam-client-secret', 'IDAM_SECRET'),
-    secret('webapp-redis-connection-string', 'REDISCLOUD_URL'),
     secret('test-email', 'TEST_EMAIL'),
     secret('test-password', 'TEST_PASSWORD'),
-    secret('appinsights-instrumentationkey-mc', 'APPINSIGHTS_INSTRUMENTATIONKEY')
   ],
   ]
 

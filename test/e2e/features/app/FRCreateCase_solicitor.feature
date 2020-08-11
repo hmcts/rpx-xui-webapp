@@ -16,7 +16,6 @@ Feature: FR create case workflow
       | Family Divorce | Financial Remedy Consented | Consent Order Application |
       | Family Divorce | Contested Financial Remedy | Form A Application        |
 
-
   Scenario Outline:  Cancel FR Case creation
     When I start case with jurisdiction "<Jurisdiction>" case type "<CaseType>" and event "<Event>"
     When I click cancel link
@@ -30,9 +29,9 @@ Feature: FR create case workflow
   Scenario Outline:  Create and Submit FR Case
     When I start case with jurisdiction "<Jurisdiction>" case type "<CaseType>" and event "<Event>"
     When I create FR case
-    Then I am on check your answers page 
+    Then I am on check your answers page
     When I submit case
-    Then I see case details page 
+    Then I see case details page
     Examples:
       | Jurisdiction   | CaseType                   | Event                     |
       | Family Divorce | Financial Remedy Consented | Consent Order Application |

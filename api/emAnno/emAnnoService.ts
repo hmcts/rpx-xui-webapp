@@ -1,4 +1,5 @@
-import { AxiosResponse } from 'axios'
+
+import {AxiosResponse} from 'axios'
 import { http } from '../lib/http'
 import * as log4jui from '../lib/log4jui'
 import { EnhancedRequest, JUILogger } from '../lib/models'
@@ -21,7 +22,7 @@ export async function handleGet(annotationsPath: string, req: EnhancedRequest): 
         const response = await http.get(annotationsPath, { headers })
         return response
     } catch (e) {
-        e.message ? logger.error(e.message) : logger.error('Error in em-anno-service get response')
+        logger.error(e.message)
         throw e
     }
 
@@ -42,10 +43,9 @@ export async function handlePost(annotationsPath: string, body: Annotation, req:
         const response = await http.post(annotationsPath, body, { headers })
         return response
     } catch (e) {
-        e.message ? logger.error(e.message) : logger.error('Error in em-anno-service post response')
+        logger.error(e.message)
         throw e
     }
-
 }
 
 /**
@@ -63,10 +63,9 @@ export async function handlePut(annotationsPath: string, body: Annotation, req: 
         const response = await http.put(annotationsPath, body, { headers })
         return response
     } catch (e) {
-        e.message ? logger.error(e.message) : logger.error('Error in em-anno-service put response')
+        logger.error(e.message)
         throw e
     }
-
 }
 
 /**
@@ -83,8 +82,7 @@ export async function handleDelete(annotationsPath: string, req: EnhancedRequest
         const response = await http.delete(annotationsPath, { headers })
         return response
     } catch (e) {
-        e.message ? logger.error(e.message) : logger.error('Error in em-anno-service delete response')
+        logger.error(e.message)
         throw e
     }
-
 }

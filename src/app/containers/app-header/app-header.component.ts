@@ -15,6 +15,7 @@ export class AppHeaderComponent implements OnInit {
   navItems: NavItemsModel[];
   appHeaderTitle: AppTitleModel;
   userNav: UserNavModel;
+  showFindCase: boolean;
 
   constructor(
     private store: Store<fromActions.State>) {
@@ -24,10 +25,12 @@ export class AppHeaderComponent implements OnInit {
     this.appHeaderTitle = AppConstants.APP_HEADER_TITLE;
     this.navItems = AppConstants.NAV_ITEMS;
     this.userNav = AppConstants.USER_NAV;
+    this.showFindCase = true;
   }
 
   onNavigate(event): void {
     if (event === 'sign-out') {
+      this.store.dispatch(new fromActions.StopIdleSessionTimeout());
       return this.store.dispatch(new fromActions.Logout());
     }
   }

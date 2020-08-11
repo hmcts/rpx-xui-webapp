@@ -11,9 +11,8 @@ Feature: Divorce create case workflow
     @all
     Scenario: Start create case for Divorce
         When I start case with jurisdiction "Family Divorce" case type "Divorce case - v115.00" and event "Apply for a divorce"
-       Then I am on case form page 
+       Then I am on case form page
 
-   @ignore
     Scenario: Cancel create case for Divorce
         When I start case with jurisdiction "Family Divorce" case type "Divorce case - v115.00" and event "Apply for a divorce"
         When I click cancel link

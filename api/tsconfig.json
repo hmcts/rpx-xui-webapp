@@ -5,7 +5,10 @@
         "target": "es5",
         "types": ["node", "mocha", "rxjs"],
         "baseUrl": ".",
-        "lib": ["es2017", "dom"]
+        "lib": ["es2017", "dom"],
+        "typeRoots": [
+          "node_modules/@types"
+        ]
     },
     "include": ["**/*.ts", "../*.ts"],
     "exclude": ["**/*.spec.ts"]

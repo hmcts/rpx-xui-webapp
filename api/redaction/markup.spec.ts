@@ -14,7 +14,6 @@ import { deleteMarkup, getMarkup, postMarkup, putMarkup } from './markup'
 chai.use(sinonChai)
 describe('markup', () => {
 
-    let next
     let sandbox
     let spy: any
     const service: string = getConfigValue(SERVICES_MARKUP_API_URL)
@@ -26,7 +25,6 @@ describe('markup', () => {
 
     beforeEach(() => {
         sandbox = sinon.createSandbox()
-        next = sandbox.spy()
     })
 
     afterEach(() => {
@@ -39,7 +37,7 @@ describe('markup', () => {
         })
         it('should call getMarkup and return the json response', async () => {
             const markupPath = `${service}${reqQuery.originalUrl}`
-            await getMarkup(req, res, next)
+            await getMarkup(req, res)
             expect(markupService.handleGet).to.have.been.calledWith(markupPath)
             expect(res.status).to.have.been.calledWith(200)
             expect(res.send).to.have.been.calledWith({})
@@ -56,9 +54,13 @@ describe('markup', () => {
             spy = sandbox.stub(markupService, 'handleGet').throws(response)
 
             const markupPath = `${service}${reqQuery.originalUrl}`
-            await getMarkup(req, res, next)
+            await getMarkup(req, res)
             expect(markupService.handleGet).to.have.been.calledWith(markupPath)
-            expect(next).to.have.been.called
+            expect(res.status).to.have.been.calledWith(response.status)
+            expect(res.send).to.have.been.calledWith({
+                errorMessage: response.data,
+                errorStatusText: response.statusText,
+            })
         })
 
     })
@@ -69,7 +71,7 @@ describe('markup', () => {
         })
         it('should call postMarkup and return the json response', async () => {
             const markupPath = `${service}${reqQuery.originalUrl}`
-            await postMarkup(req, res, next)
+            await postMarkup(req, res)
             expect(markupService.handlePost).to.have.been.calledWith(markupPath, req.body)
             expect(res.status).to.have.been.calledWith(200)
             expect(res.send).to.have.been.calledWith({})
@@ -86,9 +88,13 @@ describe('markup', () => {
             spy = sandbox.stub(markupService, 'handlePost').throws(response)
 
             const markupPath = `${service}${reqQuery.originalUrl}`
-            await postMarkup(req, res, next)
+            await postMarkup(req, res)
             expect(markupService.handlePost).to.have.been.calledWith(markupPath, req.body)
-            expect(next).to.have.been.called
+            expect(res.status).to.have.been.calledWith(response.status)
+            expect(res.send).to.have.been.calledWith({
+                errorMessage: response.data,
+                errorStatusText: response.statusText,
+            })
         })
 
     })
@@ -99,7 +105,7 @@ describe('markup', () => {
         })
         it('should call putMarkup and return the json response', async () => {
             const markupPath = `${service}${reqQuery.originalUrl}`
-            await putMarkup(req, res, next)
+            await putMarkup(req, res)
             expect(markupService.handlePut).to.have.been.calledWith(markupPath, req.body)
             expect(res.status).to.have.been.calledWith(200)
             expect(res.send).to.have.been.calledWith({})
@@ -116,9 +122,13 @@ describe('markup', () => {
             spy = sandbox.stub(markupService, 'handlePut').throws(response)
 
             const markupPath = `${service}${reqQuery.originalUrl}`
-            await putMarkup(req, res, next)
+            await putMarkup(req, res)
             expect(markupService.handlePut).to.have.been.calledWith(markupPath, req.body)
-            expect(next).to.have.been.called
+            expect(res.status).to.have.been.calledWith(response.status)
+            expect(res.send).to.have.been.calledWith({
+                errorMessage: response.data,
+                errorStatusText: response.statusText,
+            })
         })
 
     })
@@ -129,7 +139,7 @@ describe('markup', () => {
         })
         it('should call deleteMarkup and return the json response', async () => {
             const markupPath = `${service}${reqQuery.originalUrl}`
-            await deleteMarkup(req, res, next)
+            await deleteMarkup(req, res)
             expect(markupService.handleDelete).to.have.been.calledWith(markupPath)
             expect(res.status).to.have.been.calledWith(200)
             expect(res.send).to.have.been.calledWith({})
@@ -146,9 +156,13 @@ describe('markup', () => {
             spy = sandbox.stub(markupService, 'handleDelete').throws(response)
 
             const markupPath = `${service}${reqQuery.originalUrl}`
-            await deleteMarkup(req, res, next)
+            await deleteMarkup(req, res)
             expect(markupService.handleDelete).to.have.been.calledWith(markupPath)
-            expect(next).to.have.been.called
+            expect(res.status).to.have.been.calledWith(response.status)
+            expect(res.send).to.have.been.calledWith({
+                errorMessage: response.data,
+                errorStatusText: response.statusText,
+            })
         })
 
     })

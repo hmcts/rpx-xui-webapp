@@ -79,9 +79,9 @@ async function doShareCase(req: EnhancedRequest, shareCases: SharedCase[],
     const newPendingShares = aCase.pendingShares ? aCase.pendingShares.slice() : []
     const newSharedWith = aCase.sharedWith ? aCase.sharedWith.slice() : []
     if (aCase.pendingShares) {
-      for (let i = 0, l = aCase.pendingShares.length; i < l; i++) {
+      for (const pendingShare of aCase.pendingShares) {
         const payload = {
-          'assignee_id': aCase.pendingShares[i].idamId,
+          'assignee_id': pendingShare.idamId,
           'case_id': aCase.caseId,
           'case_type_id': aCase.caseTypeId,
         }
@@ -89,8 +89,8 @@ async function doShareCase(req: EnhancedRequest, shareCases: SharedCase[],
         try {
           const {status}: { status: number } = await handlePost(path, payload, req)
           if (status === 201) {
-            newSharedWith.push(aCase.pendingShares[i])
-            newPendingShares.splice(i, 1)
+            newSharedWith.push(pendingShare)
+            newPendingShares.splice(newPendingShares.findIndex(iShare => iShare.idamId === pendingShare.idamId), 1)
           }
         } catch (error) {
           logger.error('Error message:', JSON.stringify(error.data))

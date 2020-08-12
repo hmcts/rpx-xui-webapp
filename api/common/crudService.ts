@@ -18,7 +18,7 @@ export async function handleGet(path: string, req: EnhancedRequest): Promise<Axi
         const headers = setHeaders(req)
         return await http.get(path, { headers })
     } catch (e) {
-        logger.error(e.message)
+        logger.error(e.status, e.statusText, JSON.stringify(e.data))
         throw e
     }
 }
@@ -57,7 +57,7 @@ export async function handlePostBlob<T>(path: string, body: T, req: EnhancedRequ
       responseType: 'arraybuffer',
     })
   } catch (e) {
-    logger.error(e.message)
+    logger.error(e.status, e.statusText, JSON.stringify(e.data))
     throw e
   }
 }
@@ -76,7 +76,7 @@ export async function handlePut<T>(path: string, body: T, req: EnhancedRequest):
         const headers = setHeaders(req)
         return await http.put(path, body, { headers })
     } catch (e) {
-        logger.error(e.message)
+        logger.error(e.status, e.statusText, JSON.stringify(e.data))
         throw e
     }
 
@@ -94,7 +94,7 @@ export async function handleDelete(path: string, req: EnhancedRequest): Promise<
         const headers = setHeaders(req)
         return await http.delete(path, { headers })
     } catch (e) {
-        logger.error(e.message)
+        logger.error(e.status, e.statusText, JSON.stringify(e.data))
         throw e
     }
 

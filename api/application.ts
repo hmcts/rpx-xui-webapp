@@ -36,8 +36,8 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
 }
 
 // app.use(errorStack)
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.json({limit: '5mb'}))
+app.use(bodyParser.urlencoded({limit: '5mb', extended: true}))
 app.use(cookieParser(getConfigValue(SESSION_SECRET)))
 
 app.use(getXuiNodeMiddleware())

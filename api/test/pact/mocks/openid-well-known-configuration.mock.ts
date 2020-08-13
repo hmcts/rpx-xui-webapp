@@ -5,6 +5,7 @@ const { term, string, boolean, eachLike } = Matchers
 
 export default {
   "request_parameter_supported": boolean(true),
+  // tslint:disable-next-line:object-literal-sort-keys
   "claims_parameter_supported": boolean(false),
   "scopes_supported": eachLike('openid'),
   "issuer": term({

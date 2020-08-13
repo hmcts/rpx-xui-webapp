@@ -30,8 +30,6 @@ const publish = async (): Promise<void> => {
       publishVerificationResult: true,
       tags: ['xui', 'oidc', 'oauth2'],
     }
-
-
     await pact.publishPacts(opts)
 
     console.log('Pact contract publishing complete!')

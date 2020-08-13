@@ -3,7 +3,8 @@
   "cookies": {
     "token": "COOKIE_TOKEN",
     "userId": "COOKIES_USER_ID",
-    "sessionId": "COOKIES_SESSION_ID"
+    "sessionId": "COOKIES_SESSION_ID",
+    "roles": "COOKIES_ROLES"
   },
   "logging": "LOGGING",
   "now": {
@@ -31,7 +32,8 @@
       "idamApiUrl": "SERVICES_IDAM_API_URL",
       "idamClientID": "SERVICES_IDAM_CLIENT_ID",
       "idamLoginUrl": "SERVICES_IDAM_LOGIN_URL",
-      "oauthCallbackUrl": "SERVICES_IDAM_OAUTH_CALLBACK_URL"
+      "oauthCallbackUrl": "SERVICES_IDAM_OAUTH_CALLBACK_URL",
+      "iss": "SERVICES_IDAM_ISS_URL"
     },
     "markup_api": "SERVICES_MARKUP_API",
     "payments": "SERVICES_PAYMENTS_URL",
@@ -79,7 +81,15 @@
     "redisEnabled": {
       "__name": "FEATURE_REDIS_ENABLED",
       "__format": "json"
+    },
+    "oidcEnabled": {
+      "__name": "FEATURE_OIDC_ENABLED",
+      "__format":"json"
     }
+  },
+  "sessionTimeouts": {
+    "__name": "SESSION_TIMEOUTS",
+    "__format": "json"
   },
   "helmet": {
     "__name": "HELMET_CONFIG",

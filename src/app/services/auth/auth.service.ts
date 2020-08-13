@@ -1,88 +1,41 @@
 
 import { Injectable } from '@angular/core';
-import { CookieService } from 'ngx-cookie';
-import * as jwtDecode from 'jwt-decode';
-import { environment as config } from '../../../environments/environment';
-import {EnvironmentService} from '../../shared/services/environment.service';
 
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/share';
-import 'rxjs/add/operator/map';
-import {AppConfigService} from '../config/configuration.services';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
 
 @Injectable()
 export class AuthService {
-  apiBaseUrl;
-  COOKIE_KEYS;
-  user;
   constructor(
-    private cookieService: CookieService,
-    private appConfigService: AppConfigService,
-    private environmentService: EnvironmentService
+    private readonly httpService: HttpClient
   ) {
-    this.COOKIE_KEYS = {
-      TOKEN: config.cookies.token,
-      USER: config.cookies.userId,
-      ROLES: config.cookies.roles,
-    };
-
-    this.user = null;
   }
 
-  canActivate() {
-    console.log('reached can activate');
-    if (!this.isAuthenticated()) {
-      this.loginRedirect();
-      return false;
-    }
-
-    return true;
+  public loginRedirect() {
+    const href = '/auth/login';
+    this.setWindowLocationHref(href);
   }
 
-  /**
-   * Generate the Idam Login url.
-   */
-  generateLoginUrl() {
+  public isAuthenticated(): Observable<boolean> {
+    return this.httpService.get<boolean>('/auth/isAuthenticated');
+  }
 
-    const SCOPE = `profile openid roles manage-user create-user`;
+  public signOut() {
+    const href = '/auth/logout';
+    this.setWindowLocationHref(href);
+  }
 
-    return this.environmentService.config$.map( environmentConfig => {
+  public logOut(): Observable<any> {
+    return this.httpService.get('/auth/logout?noredirect=true');
+  }
 
-      const { clientId, idamWeb, oAuthCallback, protocol } = environmentConfig;
-
-      const port = window.location.port ? `:${window.location.port}` : ``;
-      const API_BASE_URL = `${protocol}://${window.location.hostname}${port}`;
-
-      const callback = `${API_BASE_URL}/${oAuthCallback}`;
-
-      return `${idamWeb}/login?response_type=code&client_id=${clientId}&redirect_uri=${callback}&scope=${SCOPE}`;
+  public logOutAndRedirect() {
+    this.logOut().subscribe( () => {
+      this.setWindowLocationHref('/idle-sign-out');
     });
   }
 
-  loginRedirect() {
-    this.generateLoginUrl().subscribe( url => {
-      window.location.href = url;
-    });
-  }
-
-  decodeJwt(jwt) {
-    return jwtDecode(jwt);
-  }
-
-
-  isAuthenticated(): boolean {
-    const jwt = this.cookieService.get(this.COOKIE_KEYS.TOKEN);
-    if (!jwt) {
-      return false;
-    }
-    const jwtData = this.decodeJwt(jwt);
-    const notExpired = jwtData.exp > Math.round(new Date().getTime() / 1000);
-    // do stuff!!
-    return notExpired;
-  }
-
-
-  signOut() {
-    window.location.href = '/api/logout';
+  public setWindowLocationHref(href: string) {
+    window.location.href = href;
   }
 }

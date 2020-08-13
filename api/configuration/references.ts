@@ -9,6 +9,7 @@
  * This file should be representative of the .json files in the root /config folder
  */
 export const S2S_SECRET = 'secrets.rpx.mc-s2s-client-secret'
+
 export const REDIS_CLOUD_URL = 'secrets.rpx.webapp-redis-connection-string'
 export const APP_INSIGHTS_KEY = 'secrets.rpx.appinsights-instrumentationkey-mc'
 

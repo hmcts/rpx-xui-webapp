@@ -18,6 +18,8 @@ export interface AppConfigState {
   loading: boolean;
   termsAndConditions: TCDocument;
   isTermsAndConditionsFeatureEnabled: boolean;
+  useIdleSessionTimeout: boolean;
+  userDetails: UserDetails;
 }
 
 export const initialState: AppConfigState = {

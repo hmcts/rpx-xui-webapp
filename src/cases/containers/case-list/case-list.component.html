@@ -46,6 +46,8 @@
             (changePage)="applyChangePage($event)"
             (selection)="retrieveSelections($event)"
             caseLinkUrlTemplate="case-details/case_id"
+            [consumerSortingEnabled]="elasticSearchFlag"
+            (sortHandler)="sort($event)"
           >
           </ccd-search-result>
           <div id="info-msg-unselected-case" *ngIf="hasResults() && isCaseShareVisible((userDetails | async).canShareCases, getShareableJurisdictions() | async)" class="form-group">

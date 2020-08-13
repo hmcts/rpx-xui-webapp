@@ -6,8 +6,8 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
 import { select, Store } from '@ngrx/store';
 import {BehaviorSubject, combineLatest, Observable, Subscription} from 'rxjs';
-import * as converters from 'src/cases/converters/case-converter';
-import { ActionBindingModel } from 'src/cases/models/create-case-actions.model';
+import * as converters from '../../converters/case-converter';
+import { ActionBindingModel } from '../../models/create-case-actions.model';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import * as fromRoot from '../../../app/store';
 import * as fromCasesFeature from '../../store';
@@ -66,6 +66,11 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public jurisdictions: Jurisdiction[];
   public selectedCases: SearchResultViewItem[] = [];
 
+  public elasticSearchFlag: boolean = false;
+  public elasticSearchFlagSubsription: Subscription;
+
+  public sortParameters;
+
   public userDetails: Observable<any>;
 
   constructor(
@@ -74,8 +79,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
     private definitionsService: DefinitionsService,
     private windowService: WindowService,
     private featureToggleService: FeatureToggleService,
-  ) {
-  }
+  ) { }
 
   public ngOnInit() {
 
@@ -120,8 +124,9 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.resultSubscription = this.resultView$.subscribe(resultView =>
       this.onResultsViewHandler(resultView));
 
-    this.findCaseListPaginationMetadata(this.getEvent());
+    this.triggerQuery();
 
+    this.elasticSearchFlagSubsription = this.featureToggleService.isEnabled('elastic-search').subscribe(value => this.elasticSearchFlag = value);
     this.userDetails = this.store.pipe(select(fromRoot.getUserDetails));
     this.shareCases$ = this.store.pipe(select(fromCasesFeature.getShareCaseListState));
     this.shareCases$.subscribe(shareCases => this.selectedCases = converters.toSearchResultViewItemConverter(shareCases));
@@ -194,6 +199,13 @@ export class CaseListComponent implements OnInit, OnDestroy {
   }
 
   public onResultsViewHandler = resultView => {
+    if (this.elasticSearchFlag) {
+      const paginationDataFromResult: PaginationMetadata = {
+        total_results_count: resultView.total,
+        total_pages_count: Math.ceil(resultView.total / this.appConfig.getPaginationPageSize())
+      };
+      this.onPaginationSubscribeHandler(paginationDataFromResult);
+    }
 
     this.resultsArr = resultView.results;
     this.resultView = {
@@ -221,13 +233,13 @@ export class CaseListComponent implements OnInit, OnDestroy {
       this.paginationMetadata.total_results_count = paginationMetadata.total_results_count;
 
       const event = this.getEvent();
-      if ( event !== null) {
+      if (event !== null && !this.elasticSearchFlag) {
         this.store.dispatch(new fromCasesFeature.ApplyCaselistFilter(event));
       }
     }
   }
 
-  public getEvent() {
+  getEvent() {
     let formGroupFromLS = null;
     let jurisdictionFromLS = null;
     let caseStateGroupFromLS = null;
@@ -250,7 +262,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
     if (formGroupFromLS && jurisdictionFromLS && caseTypeGroupFromLS && metadataFieldsGroupFromLS && caseStateGroupFromLS) {
       return this.createEvent(jurisdictionFromLS, caseTypeGroupFromLS, caseStateGroupFromLS, metadataFieldsGroupFromLS,
-                                formGroupFromLS, this.page);
+                                formGroupFromLS, this.page, this.sortParameters);
     } else {
       return null;
     }
@@ -262,7 +274,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
    * We should think about calling this function makePaginationMetadataQuery as it looks like it's only being used to construct the
    * Case List Pagination Metadata payload?
    */
-  public createEvent = (jurisdiction, caseType, caseState, metadataFields, formGroupValues, page) => {
+  public createEvent = (jurisdiction, caseType, caseState, metadataFields, formGroupValues, page, sortParameters) => {
     return {
       selected: {
         jurisdiction,
@@ -274,7 +286,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
         },
         page,
         view: 'WORKBASKET'
-      }
+      },
+      sortParameters
     };
   }
 
@@ -289,6 +302,12 @@ export class CaseListComponent implements OnInit, OnDestroy {
     }
   }
 
+  public getElasticSearchResults(event) {
+    if (event !== null) {
+      this.store.dispatch(new fromCasesFeature.ApplyCaselistFilterForES(event));
+    }
+  }
+
   /**
    * applyChangePage
    *
@@ -297,7 +316,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
    */
   public applyChangePage(event) {
     this.page = event.selected.page;
-    this.findCaseListPaginationMetadata(this.getEvent());
+    this.triggerQuery();
   }
 
   /**
@@ -309,7 +328,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public applyFilter(event) {
     this.page = event.selected.page;
     this.selected = event.selected;
-    this.findCaseListPaginationMetadata(this.getEvent());
+    this.triggerQuery();
   }
 
   public toggleFilter() {
@@ -357,6 +376,23 @@ export class CaseListComponent implements OnInit, OnDestroy {
     return this.resultView.results.length > 0;
   }
 
+  public sort(sortParameters) {
+    this.sortParameters = {
+      ...this.sortParameters,
+      column: sortParameters.column,
+      order: sortParameters.order
+    };
+    this.getElasticSearchResults(this.getEvent());
+  }
+
+  private triggerQuery() {
+    if (!this.elasticSearchFlag) {
+      this.findCaseListPaginationMetadata(this.getEvent());
+    } else {
+      this.getElasticSearchResults(this.getEvent());
+    }
+  }
+
   public ngOnDestroy() {
     if (this.filterSubscription) {
       this.filterSubscription.unsubscribe();
@@ -369,6 +405,9 @@ export class CaseListComponent implements OnInit, OnDestroy {
     }
     if (this.caseFilterToggleSubscription) {
       this.caseFilterToggleSubscription.unsubscribe();
+    }
+    if (this.elasticSearchFlagSubsription) {
+      this.elasticSearchFlagSubsription.unsubscribe();
     }
   }
  }

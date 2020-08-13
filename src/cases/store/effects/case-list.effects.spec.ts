@@ -1,16 +1,16 @@
-import { SearchFilterEffects } from './search-filter.effects';
+import { CaseListEffects } from './case-list.effects';
 import { mockedSearchFilters } from '../../../cases/mock/search-filter.mock';
 import { TestBed } from '@angular/core/testing';
 import { SearchFilterService } from '../../../cases/services';
 import { provideMockActions } from '@ngrx/effects/testing';
-import * as fromSearchFilterEffects from './search-filter.effects';
+import * as fromCaseListEffects from './case-list.effects';
 import { of, throwError } from 'rxjs';
-import { ApplySearchFilter, ApplySearchFilterSuccess, ApplySearchFilterFail, ApplySearchFilterForES } from '../actions';
+import { ApplyCaselistFilter, ApplyCaselistFilterSuccess, ApplyCaselistFilterFail, ApplyCaselistFilterForES } from '../actions';
 import { hot, cold } from 'jasmine-marbles';
 
 describe('Pending Organisation Effects', () => {
     let actions$;
-    let effects: SearchFilterEffects;
+    let effects: CaseListEffects;
     const SearchFilterServiceMock = jasmine.createSpyObj('SearchFilterService', [
         'search'
     ]);
@@ -24,60 +24,60 @@ describe('Pending Organisation Effects', () => {
                     provide: SearchFilterService,
                     useValue: SearchFilterServiceMock,
                 },
-                fromSearchFilterEffects.SearchFilterEffects,
+                fromCaseListEffects.CaseListEffects,
                 provideMockActions(() => actions$)
             ]
         });
 
-        effects = TestBed.get(SearchFilterEffects);
+        effects = TestBed.get(CaseListEffects);
 
     });
 
-    describe('applySearchFilters$', () => {
+    describe('applyCaselistFilters$', () => {
         it('should return a collection', () => {
 
             SearchFilterServiceMock.search.and.returnValue(of(payload));
-            const action = new ApplySearchFilter({});
-            const completion = new ApplySearchFilterSuccess(payload);
+            const action = new ApplyCaselistFilter({});
+            const completion = new ApplyCaselistFilterSuccess(payload);
             actions$ = hot('-a', { a: action });
             const expected = cold('-b', { b: completion });
-            expect(effects.applySearchFilters$).toBeObservable(expected);
+            expect(effects.applyCaselistFilters$).toBeObservable(expected);
         });
     });
 
-    describe('applySearchFilters$ error', () => {
-        it('should return a ApplySearchFilterFail', () => {
+    describe('applyCaselistFilters$ error', () => {
+        it('should return a ApplyCaselistFilterFail', () => {
 
             SearchFilterServiceMock.search.and.returnValue(throwError(new Error()));
-            const action = new ApplySearchFilter({});
-            const completion = new ApplySearchFilterFail(new Error());
+            const action = new ApplyCaselistFilter({});
+            const completion = new ApplyCaselistFilterFail(new Error());
             actions$ = hot('-a', { a: action });
             const expected = cold('-b', { b: completion });
-            expect(effects.applySearchFilters$).toBeObservable(expected);
+            expect(effects.applyCaselistFilters$).toBeObservable(expected);
         });
     });
 
-    describe('applySearchFiltersForES$', () => {
+    describe('applyCaselistFiltersForES$', () => {
         it('should return a collection', () => {
 
             SearchFilterServiceMock.search.and.returnValue(of(payload));
-            const action = new ApplySearchFilterForES({});
-            const completion = new ApplySearchFilterSuccess(payload);
+            const action = new ApplyCaselistFilterForES({});
+            const completion = new ApplyCaselistFilterSuccess(payload);
             actions$ = hot('-a', { a: action });
             const expected = cold('-b', { b: completion });
-            expect(effects.applySearchFiltersForES$).toBeObservable(expected);
+            expect(effects.applyCaselistFiltersForES$).toBeObservable(expected);
         });
     });
 
-    describe('applySearchFilterForES$ error', () => {
-        it('should return a ApplySearchFilterFail', () => {
+    describe('applyCaselistFilterForES$ error', () => {
+        it('should return a ApplyCaselistFilterFail', () => {
 
             SearchFilterServiceMock.search.and.returnValue(throwError(new Error()));
-            const action = new ApplySearchFilterForES({});
-            const completion = new ApplySearchFilterFail(new Error());
+            const action = new ApplyCaselistFilterForES({});
+            const completion = new ApplyCaselistFilterFail(new Error());
             actions$ = hot('-a', { a: action });
             const expected = cold('-b', { b: completion });
-            expect(effects.applySearchFiltersForES$).toBeObservable(expected);
+            expect(effects.applyCaselistFiltersForES$).toBeObservable(expected);
         });
     });
 

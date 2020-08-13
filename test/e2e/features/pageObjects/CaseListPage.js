@@ -1,5 +1,8 @@
 
 const BrowserWaits = require('../../support/customWaits');
+const { browser } = require('protractor');
+
+const CucumberReportLogger = require('../../support/reportLogger');
 class CaseListPage{
 
     constructor(){
@@ -18,10 +21,30 @@ class CaseListPage{
         this.noResultsNotification = $("ccd-search-result .notification");
 
         this.caseListRows = $$("ccd-search-result>table>tbody>tr");
+
+        //case list pagination navigation
+        this.paginationInfotext = $(".pagination-top span");
+
+        this.paginationControlsContainer = $(".ngx-pagination");
+        this.previousPageLink = $(".ngx-pagination .pagination-previous a");
+        this.nextPageLink = $(".ngx-pagination .pagination-next a");
+
+        this.sortColumnsIconLinks = $$(".search-result-column-sort a.sort-widget");  
+
+        //Case list selection feature elements
+        this.tableHeaderSelectAllInput = $(".govuk-table__header #select-all");
+        this.caseSelectionCheckboxes = $$("td .govuk-checkboxes__input");
+        this.shareCaseButton = $("#btn-share-button");
+        this.resetCaseSelectionLink = $("a.search-result-reset-link");
+
+        //ccd-case-viewer
+        this.ccdCaseViewer = $("ccd-case-viewer");
     }
 
     async amOnPage(){
-        return this.caselistComponent.isPresent(); 
+        await BrowserWaits.waitForElement(this.caselistComponent);
+        await BrowserWaits.waitForElement(this.searchFilterContainer);
+        return await this.caselistComponent.isPresent(); 
     }
 
     async _waitForSearchComponent(){
@@ -63,6 +86,10 @@ class CaseListPage{
 
     async waitForCaseResultsToDisplay(){
         await BrowserWaits.waitForElement(this.searchResultsTopPagination);
+        CucumberReportLogger.AddMessage("Waiting from : " + new Date().toTimeString());
+        await BrowserWaits.waitForSeconds(5);
+        CucumberReportLogger.AddMessage("Waiting To : " + new Date().toTimeString());
+
     }
 
     async waitForNoCaseResultsToDisplay() {
@@ -80,8 +107,97 @@ class CaseListPage{
     }
 
     async getCountOfCasesListedInPage(){
-        await this.caseListRows.count();
+        return await this.caseListRows.count();
     }
+
+    async isSelectAllColumnDisplayed(){
+        return await this.tableHeaderSelectAllInput.isPresent();
+    }
+
+    async isSelectCheckboxDisplayedForAllCases(){
+        let casesInPage = await this.getCountOfCasesListedInPage();
+        let countOfSelectCheckboxes = await this.caseSelectionCheckboxes.count();
+        return casesInPage === countOfSelectCheckboxes; 
+    }
+
+    async isSelectAllCheckboxSelected(){
+        return await this.tableHeaderSelectAllInput.isSelected();
+    }
+
+    async clickSelectAll(){
+        await this.tableHeaderSelectAllInput.click(); 
+    }
+
+    async isCaseSelectCheckboxSelected(rowNum){
+        let checkBoxAtRowNum = await this.caseSelectionCheckboxes.get(rowNum - 1);
+        // await BrowserWaits.waitForElement(checkBoxAtRowNum);
+        return await checkBoxAtRowNum.isSelected();
+    }
+
+    async clickCaseSelectCheckBoxAtRow(rowNum){
+        let checkBoxAtRowNum = await this.caseSelectionCheckboxes.get(rowNum - 1);
+        await checkBoxAtRowNum.click();
+    }
+
+    async getCountOfCasesSelectedInPage() {
+        let totalCasesInPage = await this.caseSelectionCheckboxes.count();
+        let seledtedCaseCount = 0;
+        for (let counter = 0; counter < totalCasesInPage; counter++){
+            let checkBox = await this.caseSelectionCheckboxes.get(counter);
+            if (await checkBox.isSelected()){
+                seledtedCaseCount++;
+            }
+        }
+        return seledtedCaseCount;
+    }
+
+    async clickPaginationNextPage(){
+       let paginationInfobefore = await this.paginationInfotext.getText();
+        expect(await this.nextPageLink.isPresent(), "Case list next page not present. current page info : " + paginationInfobefore).to.be.true 
+       
+        await browser.executeScript('arguments[0].scrollIntoView()',
+            this.nextPageLink);
+        await this.nextPageLink.click();
+        await BrowserWaits.waitForCondition(async () => {
+            let paginationInfoCurrent = await this.paginationInfotext.getText();
+            return paginationInfobefore === paginationInfoCurrent; 
+        });
+        await BrowserWaits.waitForElement(this.paginationControlsContainer, undefined, "Data load taking too long on pagination");
+    }
+
+    async clickPaginationPreviousPage() {
+        let paginationInfobefore = await this.paginationInfotext.getText();
+        expect(await this.previousPageLink.isPresent(), "Case list previous page not present. current page info : " + paginationInfobefore).to.be.true
+
+        await browser.executeScript('arguments[0].scrollIntoView()',
+            this.previousPageLink);
+        await this.previousPageLink.click();
+        await BrowserWaits.waitForCondition(async () => {
+            let paginationInfoCurrent = await this.paginationInfotext.getText();
+            return paginationInfobefore === paginationInfoCurrent;
+        });
+        await BrowserWaits.waitForElement(this.paginationControlsContainer,undefined,"Data load taking too long on pagination");
+
+    }
+
+    async clickCaseLinkAtRow(rowNum){
+        let caseRow = await this.caseListRows.get(rowNum - 1);
+        await caseRow.$(".search-result-column-cell a").click();
+        await BrowserWaits.waitForElement(this.ccdCaseViewer , undefined, "Case view page is not displayed"); 
+    }
+
+    async sortTableByColAt(colNum){
+        (await this.sortColumnsIconLinks.get(colNum-1)).click();
+        await browser.sleep(1000);
+    }
+
+    async clickShareCaseButton(){
+        await this.shareCaseButton.click();
+    }
+
+
+
+
 }
 
 module.exports = CaseListPage;

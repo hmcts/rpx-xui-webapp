@@ -125,6 +125,15 @@ withPipeline(type, product, component) {
             reportName           : 'XUI Manage Cases Mutation tests'
         ])
 
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "reports/tests/a11y/",
+            reportFiles          : 'Report.html',
+            reportName           : 'Manage Cases a11y Test Report'
+        ])
+
     }
 
     after('smoketest:demo') {

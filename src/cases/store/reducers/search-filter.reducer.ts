@@ -1,6 +1,5 @@
 import { SearchResultView, Jurisdiction, CaseType, CaseState, PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
 import * as fromCases from '../actions/case-search.action';
-import { mockedSearchResultPayload } from 'src/cases/mock/search-filter.mock';
 
 export class SearchStateFilter {
   jurisdiction: Jurisdiction;

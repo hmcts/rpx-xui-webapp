@@ -6,6 +6,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { TermsConditionsService } from 'src/app/services/terms-and-conditions/terms-and-conditions.service';
 import { AppConfigService } from '../../services/config/configuration.services';
 import * as fromActions from '../actions';
+import { UserService } from '../../services/user/user.service';
 
 @Injectable()
 export class AppEffects {
@@ -13,7 +14,8 @@ export class AppEffects {
     private readonly actions$: Actions,
     private readonly configurationServices: AppConfigService,
     private readonly authService: AuthService,
-    private readonly termsService: TermsConditionsService
+    private readonly termsService: TermsConditionsService,
+    private readonly userService: UserService
   ) { }
 
   @Effect()
@@ -65,6 +67,18 @@ export class AppEffects {
       return this.termsService.getTermsConditions().pipe(
         map(doc => new fromActions.LoadTermsConditionsSuccess(doc)),
         catchError(err => of(new fromActions.Go({ path: ['/service-down'] })))
+      );
+    })
+  );
+
+  @Effect()
+  public loadUserDetails$ = this.actions$.pipe(
+    ofType(fromActions.LOAD_USER_DETAILS),
+    switchMap(() => {
+      return this.userService.getUserDetails().pipe(
+        map(userDetails => new fromActions.LoadUserDetailsSuccess(userDetails)),
+        // TODO: catch error
+        catchError(err => of(new fromActions.LoadUserDetailsFail(err)))
       );
     })
   );

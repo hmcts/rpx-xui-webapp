@@ -1,7 +1,15 @@
 import { TCDocument } from '@hmcts/rpx-xui-common-lib';
-import { TermsAndCondition } from 'src/app/models/TermsAndCondition';
 import { ConfigurationModel } from '../../models/configuration.model';
+import {TermsAndCondition} from '../../models/TermsAndCondition';
 import * as fromActions from '../actions/';
+
+interface UserDetails {
+  sessionTimeout: {
+    idleModalDisplayTime: number,
+    totalIdleTime: number,
+  };
+  canShareCases: boolean;
+}
 
 export interface AppConfigState {
   config: ConfigurationModel | {};
@@ -10,6 +18,7 @@ export interface AppConfigState {
   loading: boolean;
   termsAndConditions: TCDocument;
   isTermsAndConditionsFeatureEnabled: boolean;
+  userDetails: UserDetails;
 }
 
 export const initialState: AppConfigState = {
@@ -18,7 +27,14 @@ export const initialState: AppConfigState = {
   loaded: false,
   loading: false,
   termsAndConditions: null,
-  isTermsAndConditionsFeatureEnabled: false
+  isTermsAndConditionsFeatureEnabled: false,
+  userDetails: {
+    sessionTimeout: {
+      idleModalDisplayTime: 0,
+      totalIdleTime: 0,
+    },
+    canShareCases: false
+  }
 };
 
 export function reducer(
@@ -78,6 +94,11 @@ export function reducer(
           ...state,
           isTermsAndConditionsFeatureEnabled: action.payload
         };
+    case fromActions.LOAD_USER_DETAILS_SUCCESS:
+      return {
+        ...state,
+        userDetails: action.payload
+      };
     default:
       return {
         ...state
@@ -90,3 +111,4 @@ export function reducer(
 export const getFeatureConfig = (state: AppConfigState) => state.config;
 export const getTandCLoadedConfig = (state: AppConfigState) => state.termsAndCondition;
 export const getTermsConditions = (state: AppConfigState) => state.termsAndConditions;
+export const getUserDetails = (state: AppConfigState) => state.userDetails;

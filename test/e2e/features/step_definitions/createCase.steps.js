@@ -37,12 +37,12 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
 
   let caseManager = new CaseManager();
 
-  When(/^I click on create case button$/, async function () {
+  When('I click on create case button', async function () {
     //await caseListPage.clickCreateNewCaseButton();
     await headerPage.clickCreateCase();
 
   });
-  Then(/^Create case page should be displayed$/, async function () {
+  Then('Create case page should be displayed', async function () {
      
     expect(await new CreateCaseStartPage().amOnPage()).to.be.true;
   });

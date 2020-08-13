@@ -1,4 +1,3 @@
-const {conf} = require('../config/config');
 class Actions{
    
 

@@ -2,8 +2,14 @@
   <div class="case-list-component">
     <div class="hmcts-action-bar">
       <div class="hmcts-action-bar__filter">
-        <button class="govuk-button hmcts-button--secondary" (click) = "toggleFilter()" type="button"  aria-haspopup="true" aria-expanded="false">
+        <button class="govuk-button hmcts-button--secondary" (click)="toggleFilter()" type="button"  aria-haspopup="true" aria-expanded="false">
           {{toggleButtonName}}
+        </button>
+      </div>
+      <div class="hmcts-action-bar__filter"  *ngIf="isCaseShareVisible((userDetails | async).canShareCases, getShareableJurisdictions() | async)">
+        <button id="btn-share-button" class="govuk-button hmcts-button--secondary" type="button"  aria-haspopup="true" aria-expanded="false"
+                [disabled]="checkIfButtonDisabled()" (click)="shareCaseSubmit()">
+          Share Case
         </button>
       </div>
     </div>
@@ -28,6 +34,7 @@
         <div aria-live="polite" class="hmcts-filter-layout__content" id="search-result" rightbody="" role="region">
           <ccd-search-result
             *ngIf="resultView"
+            [selectionEnabled]="isCaseShareVisible((userDetails | async).canShareCases, getShareableJurisdictions() | async)"
             [jurisdiction]="jurisdiction"
             [caseType]="caseType"
             [caseState]="caseState"
@@ -35,10 +42,24 @@
             [resultView]="resultView"
             [paginationMetadata]="paginationMetadata"
             [metadataFields]="metadataFields"
+            [preSelectedCases]="selectedCases"
             (changePage)="applyChangePage($event)"
+            (selection)="retrieveSelections($event)"
             caseLinkUrlTemplate="case-details/case_id"
           >
           </ccd-search-result>
+          <div id="info-msg-unselected-case" *ngIf="hasResults() && isCaseShareVisible((userDetails | async).canShareCases, getShareableJurisdictions() | async)" class="form-group">
+            <details class="govuk-details" data-module="govuk-details">
+              <summary class="govuk-details__summary">
+                <span id="sp-msg-unselected-case-header" class="govuk-details__summary-text">
+                  Why are some cases unselectable?
+                </span>
+              </summary>
+              <div id="sp-msg-unselected-case-content" class="govuk-details__text">
+                You might not be able to select and share some cases in your current case list. However, you'll be able to select any new cases you create and share them.
+              </div>
+            </details>
+          </div>
         </div>
     </div>
   </div>

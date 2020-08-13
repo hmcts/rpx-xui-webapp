@@ -39,26 +39,27 @@ import * as fromContainers from './containers';
 import * as fromComponents from './components';
 // from services
 import * as fromServices from './services';
-import {ProvidersModule} from '../app/providers/providers.module';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        CaseUIToolkitModule,
-        CreateCaseFiltersModule,
-        SearchResultModule,
-        HttpClientModule,
-        StoreModule.forFeature('cases', reducers),
-        EffectsModule.forFeature(effects),
-        casesRouting,
-        SharedModule,
-        SearchFiltersModule,
-        HttpModule,
-        MatDialogModule,
-        CaseListFiltersModule,
-        WorkbasketFiltersModule
-    ],
+  imports: [
+    CommonModule,
+    CaseUIToolkitModule,
+    CreateCaseFiltersModule,
+    SearchResultModule,
+    HttpClientModule,
+    StoreModule.forFeature('cases', reducers),
+    EffectsModule.forFeature(effects),
+    casesRouting,
+    SharedModule,
+    SearchFiltersModule,
+    HttpModule,
+    MatDialogModule,
+    CaseListFiltersModule,
+    WorkbasketFiltersModule,
+    ExuiCommonLibModule
+  ],
   declarations: [...fromComponents.components, ...fromContainers.containers],
   providers: [
     PlaceholderService,

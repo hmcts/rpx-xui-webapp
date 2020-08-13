@@ -11,6 +11,10 @@
     "__format": "json"
   },
   "maxLogLine": "MAX_LOG_LINE",
+  "stub": {
+    "__name": "STUB",
+    "__format": "json"
+  },
   "health": {
     "ccdComponentApi": "HEALTH_CCD_COMPONENT_API",
     "ccdDataApi": "HEALTH_CCD_DATA_API",
@@ -21,10 +25,17 @@
   "services": {
     "ccd": {
       "componentApi": "SERVICES_CCD_COMPONENT_API",
-      "dataApi": "SERVICES_CCD_DATA_STORE_API"
+      "dataApi": "SERVICES_CCD_DATA_STORE_API",
+      "caseAssignmentApi": "SERVICES_CCD_CASE_ASSIGNMENT_API"
     },
     "documents": {
       "api": "SERVICES_DOCUMENTS_API"
+    },
+    "prd": {
+      "api": "SERVICES_PRD_API"
+    },
+    "caseShare": {
+      "api": "SERVICES_CASE_SHARE_API"
     },
     "em_anno_api": "SERVICES_EM_ANNO_API",
     "idam": {
@@ -47,7 +58,8 @@
       "appinsights-instrumentationkey-mc": "APPINSIGHTS_INSTRUMENTATIONKEY",
       "mc-s2s-client-secret": "S2S_SECRET",
       "mc-idam-client-secret": "IDAM_SECRET",
-      "webapp-redis-connection-string": "REDISCLOUD_URL"
+      "webapp-redis-connection-string": "REDISCLOUD_URL",
+      "launch-darkly-client-id": "LAUNCH_DARKLY_CLIENT_ID"
     }
   },
   "jurisdictions": "JURISDICTIONS",

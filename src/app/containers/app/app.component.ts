@@ -32,7 +32,11 @@ export class AppComponent implements OnInit {
 
     this.router.events.subscribe((data) => {
       if (data instanceof RoutesRecognized) {
-        const d = data.state.root.firstChild.data;
+        let child = data.state.root;
+        do {
+          child = child.firstChild;
+        } while (child.firstChild);
+        const d = child.data;
         if (d.title) {
           this.titleService.setTitle(`${d.title} - HM Courts & Tribunals Service - GOV.UK`);
         }

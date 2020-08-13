@@ -4,6 +4,7 @@ import { AppComponent } from './containers/app/app.component';
 import { environment } from '../environments/environment';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
+import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
 // ngrx modules - START
 import {EffectsModule} from '@ngrx/effects';
 import {MetaReducer, Store, StoreModule} from '@ngrx/store';
@@ -60,8 +61,9 @@ import { PaymentLibModule } from '@hmcts/ccpay-web-component';
       level: NgxLoggerLevel.TRACE,
       disableConsoleLogging: false
     }),
+    ExuiCommonLibModule.forRoot(),
+    NgIdleKeepaliveModule.forRoot(),
     PaymentLibModule,
-    ExuiCommonLibModule.forRoot({launchDarklyKey: ''})
   ],
   providers: [
     {

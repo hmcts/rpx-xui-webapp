@@ -44,8 +44,8 @@
     "test:mutation": "NODE_CONFIG_DIR=./config stryker run stryker.node.conf.js ",
     "test:apiGateway": "echo 'not implemented'",
     "sonar-scan": "node_modules/sonar-scanner/bin/sonar-scanner",
-    "test-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error mocha --timeout 10000 -r ts-node/register -r dotenv-extended/config api/test/pact/**/*.spec.ts dotenv_config_defaults=./api/.env.defaults",
-    "publish-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error mocha --timeout 15000 -r ts-node/register -r dotenv-extended/config api/test/pact/publish/publish.ts dotenv_config_defaults=./api/.env.defaults --reporter spec",
+    "test-pact": "NODE_PATH=. LOG_LEVEL=error mocha --timeout 10000 -r ts-node/register api/test/pact/pact-tests/*.ts",
+    "publish-pact": "NODE_PATH=. LOG_LEVEL=error mocha 'api/test/pact/publish/*.js' --timeout 15000 --reporter spec",
     "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact"
   },
   "private": true,
@@ -130,8 +130,8 @@
     "@angular/compiler-cli": "^7.2.13",
     "@angular/language-service": "~7.2.0",
     "@ngrx/schematics": "^7.4.0",
-    "@pact-foundation/pact": "^9.11.1",
-    "@pact-foundation/pact-node": "^10.9.7",
+    "@pact-foundation/pact": "^9.2.0",
+    "@pact-foundation/pact-node": "^9.0.6",
     "@stryker-mutator/api": "^3.0.1",
     "@stryker-mutator/core": "^3.0.1",
     "@stryker-mutator/html-reporter": "^3.0.1",
@@ -183,6 +183,7 @@
     "webpack-source-map-support": "^2.0.1"
   },
   "resolutions": {
+    "**/**/dot-prop": "^5.1.1",
     "**/**/lodash": "^4.17.19",
     "**/**/http-proxy": "^1.18.1",
     "**/**/npm-registry-fetch": "^8.1.1",
@@ -190,6 +191,7 @@
     "**/**/minimist": "^1.2.3",
     "**/**/mem": "^4.0.0",
     "**/**/braces": "^2.3.1",
-    "**/**/marked": "^0.7.0 "
+    "**/**/marked": "^0.7.0",
+    "**/**/serialize-javascript": "^3.1.0"
   }
 }

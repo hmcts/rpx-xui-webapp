@@ -9,7 +9,6 @@
  * This file should be representative of the .json files in the root /config folder
  */
 export const S2S_SECRET = 'secrets.rpx.mc-s2s-client-secret'
-
 export const REDIS_CLOUD_URL = 'secrets.rpx.webapp-redis-connection-string'
 export const APP_INSIGHTS_KEY = 'secrets.rpx.appinsights-instrumentationkey-mc'
 
@@ -63,7 +62,6 @@ export const FEATURE_PROXY_ENABLED = 'proxyEnabled'
 export const FEATURE_TERMS_AND_CONDITIONS_ENABLED = 'termsAndConditionsEnabled'
 export const FEATURE_HELMET_ENABLED = 'helmetEnabled'
 export const FEATURE_REDIS_ENABLED = 'redisEnabled'
-export const FEATURE_OIDC_ENABLED = 'oidcEnabled'
 
 export const HELMET = 'helmet'
 
@@ -73,9 +71,3 @@ export const REDIS_TTL = 'redis.ttl'
 export const USER_TIMEOUT_IN_SECONDS = 'userTimeoutInSeconds'
 
 export const SESSION_TIMEOUTS = 'sessionTimeouts'
-
-// PACT
-export const PACT_BROKER_URL = 'pact.brokerUrl'
-export const PACT_CONSUMER_VERSION = 'pact.consumerVersion'
-export const PACT_BROKER_USERNAME = 'pact.brokerUsername'
-export const PACT_BROKER_PASSWORD = 'pact.brokerPassword'

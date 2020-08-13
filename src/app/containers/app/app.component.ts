@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import { GoogleAnalyticsService, ManageSessionServices, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
+import { GoogleAnalyticsService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import {propsExist} from '../../../../api/lib/objectUtilities';
 import { environment as config } from '../../../environments/environment';
@@ -11,6 +11,7 @@ import * as fromRoot from '../../store';
   styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
+
 export class AppComponent implements OnInit {
 
   public timeoutModalConfig = {
@@ -28,7 +29,6 @@ export class AppComponent implements OnInit {
   }
 
   public ngOnInit() {
-
     this.store.pipe(select(fromRoot.getUseIdleSessionTimeout)).subscribe(useIdleTimeout => {
       if (useIdleTimeout) {
         this.loadAndListenForUserDetails();
@@ -115,6 +115,7 @@ export class AppComponent implements OnInit {
       case 'sign-out': {
         this.updateTimeoutModal('0 seconds', false);
 
+        console.log('sign-out');
         this.store.dispatch(new fromRoot.StopIdleSessionTimeout());
         this.store.dispatch(new fromRoot.IdleUserLogOut());
         return;

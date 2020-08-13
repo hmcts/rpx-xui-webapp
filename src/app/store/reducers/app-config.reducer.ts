@@ -2,7 +2,6 @@ import { TCDocument } from '@hmcts/rpx-xui-common-lib';
 import { TermsAndCondition } from 'src/app/models/TermsAndCondition';
 import { ConfigurationModel } from '../../models/configuration.model';
 import * as fromActions from '../actions/';
-import {StartIdleSessionTimeout, STOP_IDLE_SESSION_TIMEOUT} from '../actions/app.actions';
 
 interface UserDetails {
   sessionTimeout: {
@@ -122,5 +121,5 @@ export function reducer(
 export const getFeatureConfig = (state: AppConfigState) => state.config;
 export const getTandCLoadedConfig = (state: AppConfigState) => state.termsAndCondition;
 export const getTermsConditions = (state: AppConfigState) => state.termsAndConditions;
-export const getUserDetails = (state: AppConfigState) => state.userDetails;
 export const getUseIdleSessionTimeout = (state: AppConfigState) => state.useIdleSessionTimeout;
+export const getUserDetails = (state: AppConfigState) => state.userDetails;

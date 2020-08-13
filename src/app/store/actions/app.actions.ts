@@ -145,6 +145,7 @@ export class LoadUserDetailsFail {
   constructor(public payload: any) {}
 }
 
+
 export type AppActions =
   | LoadConfig
   | LoadConfigSuccess

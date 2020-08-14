@@ -68,6 +68,7 @@
     "@hmcts/nodejs-healthcheck": "^1.6.0",
     "@hmcts/properties-volume": "^0.0.9",
     "@hmcts/rpx-xui-common-lib": "0.1.29",
+    "@hmcts/rpx-xui-node-lib": "^2.23.4",
     "@ng-idle/core": "^8.0.0-beta.4",
     "@ng-idle/keepalive": "^8.0.0-beta.4",
     "@ngrx/effects": "^7.4.0",
@@ -189,7 +190,6 @@
     "**/**/mem": "^4.0.0",
     "**/**/braces": "^2.3.1",
     "**/**/marked": "^0.7.0",
-    "**/**/dot-prop": "^5.1.1",
     "**/**/serialize-javascript": "^3.1.0"
   }
 }

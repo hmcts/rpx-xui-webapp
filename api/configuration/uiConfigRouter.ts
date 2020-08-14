@@ -1,8 +1,8 @@
 import * as express from 'express'
 import {getConfigValue, showFeature} from './index'
 import {
-  LAUNCH_DARKLY_CLIENT_ID,
   FEATURE_OIDC_ENABLED,
+  LAUNCH_DARKLY_CLIENT_ID,
   PROTOCOL,
   SERVICES_IDAM_CLIENT_ID,
   SERVICES_IDAM_LOGIN_URL,

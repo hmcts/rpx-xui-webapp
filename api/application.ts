@@ -4,9 +4,8 @@ import * as express from 'express'
 import * as helmet from 'helmet'
 // import {router as termsAndCRoutes} from './termsAndConditions/routes'
 // import {router as userTandCRoutes} from './userTermsAndConditions/routes'
-import * as auth from './auth'
-import { router as caseShareRoutes } from './caseshare/routes'
 import {getXuiNodeMiddleware} from './auth'
+import { router as caseShareRoutes } from './caseshare/routes'
 import { getConfigValue, showFeature } from './configuration'
 import {
     APP_INSIGHTS_KEY,

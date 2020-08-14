@@ -4,7 +4,6 @@ import { of } from 'rxjs/internal/observable/of';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { TermsConditionsService } from 'src/app/services/terms-and-conditions/terms-and-conditions.service';
-import { UserService } from 'src/app/services/user/user.service';
 import { AppConfigService } from '../../services/config/configuration.services';
 import * as fromActions from '../actions';
 import { UserService } from '../../services/user/user.service';

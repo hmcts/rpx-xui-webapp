@@ -10,16 +10,12 @@ export let client
 if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
     applicationinsights
         .setup(getConfigValue(APP_INSIGHTS_KEY))
-        .setAutoDependencyCorrelation(true)
-        .setAutoCollectRequests(true)
-        .setAutoCollectPerformance(true)
-        .setAutoCollectExceptions(true)
-        .setAutoCollectDependencies(true)
-        .setAutoCollectConsole(true)
-        .setUseDiskRetryCaching(true)
+        .setDistributedTracingMode(applicationinsights.DistributedTracingModes.AI_AND_W3C)
         .setSendLiveMetrics(true)
-        .setDistributedTracingMode(applicationinsights.DistributedTracingModes.AI)
+        .setAutoCollectConsole(true, true)
         .start()
+
+    applicationinsights.defaultClient.context.tags[applicationinsights.defaultClient.context.keys.cloudRole] = "exuiWebApp"
 
     client = applicationinsights.defaultClient
     client.trackTrace({ message: 'App Insight Activated' })

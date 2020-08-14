@@ -46,6 +46,7 @@ export class CaseShareCompleteComponent implements OnInit {
       if (shareCases.some(aCase => aCase.pendingUnshares && aCase.pendingUnshares.length > 0)) {
         return 'PENDING';
       }
+      this.store.dispatch(new fromCasesFeature.ResetCaseSelection());
       return 'COMPLETE';
     }
   }

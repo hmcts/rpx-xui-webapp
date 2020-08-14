@@ -18,6 +18,7 @@ export interface AppConfigState {
   loading: boolean;
   termsAndConditions: TCDocument;
   isTermsAndConditionsFeatureEnabled: boolean;
+  useIdleSessionTimeout: boolean;
   userDetails: UserDetails;
 }
 
@@ -28,6 +29,7 @@ export const initialState: AppConfigState = {
   loading: false,
   termsAndConditions: null,
   isTermsAndConditionsFeatureEnabled: false,
+  useIdleSessionTimeout: false,
   userDetails: {
     sessionTimeout: {
       idleModalDisplayTime: 0,
@@ -99,6 +101,16 @@ export function reducer(
         ...state,
         userDetails: action.payload
       };
+    case fromActions.START_IDLE_SESSION_TIMEOUT:
+      return {
+        ...state,
+        useIdleSessionTimeout: true
+      };
+    case fromActions.STOP_IDLE_SESSION_TIMEOUT:
+      return {
+        ...state,
+        useIdleSessionTimeout: false
+      };
     default:
       return {
         ...state
@@ -111,4 +123,5 @@ export function reducer(
 export const getFeatureConfig = (state: AppConfigState) => state.config;
 export const getTandCLoadedConfig = (state: AppConfigState) => state.termsAndCondition;
 export const getTermsConditions = (state: AppConfigState) => state.termsAndConditions;
+export const getUseIdleSessionTimeout = (state: AppConfigState) => state.useIdleSessionTimeout;
 export const getUserDetails = (state: AppConfigState) => state.userDetails;

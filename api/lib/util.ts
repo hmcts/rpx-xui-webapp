@@ -1,37 +1,4 @@
-import * as express from 'express'
-import { PostUserAcceptTandCResponse } from '../interface/userAcceptTandCResponse'
-import * as errorStack from './errorStack'
-import { JUILogger } from './models'
-
-export function asyncReturnOrError(
-    promise: any,
-    message: string,
-    res: express.Response | null,
-    logger: JUILogger,
-    setResponse: boolean = true
-): any {
-    return promise
-        .then(data => {
-            return data
-        })
-        .catch(err => {
-            const msg = `${message}`
-
-            logger.error(msg)
-
-            if (setResponse) {
-                let status
-                if (exists(err, 'response.status')) {
-                    status = err.response.status
-                } else {
-                    status = err.statusCode || 500
-                }
-                res.status(status).send(JSON.stringify(errorStack.get()))
-            }
-
-            return null
-        })
-}
+import { PostUserAcceptTandCResponse } from '../interfaces/userAcceptTandCResponse'
 
 export function some(array, predicate) {
     for (const item in array) {

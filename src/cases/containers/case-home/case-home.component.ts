@@ -33,6 +33,13 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
     private store: Store<fromFeature.State>,
   ) { }
 
+  /**
+   * We dispatch an action to start the idle session timeout. We
+   * do this here as this is the first 'authenticated' page the User hits.
+   *
+   * We do not want to be showing the User a Session Timeout modal, if they
+   * have yet to be logged in. ie. Viewing an accessibility page.
+   */
   ngOnInit(): void {
     this.navigationSubscription = this.navigationNotifier.navigation.subscribe(navigation => {
       if (navigation.action) {
@@ -40,6 +47,7 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
       }
     }) as any;
 
+    this.store.dispatch(new fromRoot.StartIdleSessionTimeout());
   }
 
   ngOnDestroy(): void {

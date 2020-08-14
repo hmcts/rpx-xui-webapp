@@ -1,7 +1,8 @@
 import * as express from 'express'
-import {getConfigValue} from './index'
+import {getConfigValue, showFeature} from './index'
 import {
   LAUNCH_DARKLY_CLIENT_ID,
+  FEATURE_OIDC_ENABLED,
   PROTOCOL,
   SERVICES_IDAM_CLIENT_ID,
   SERVICES_IDAM_LOGIN_URL,
@@ -26,6 +27,7 @@ async function uiConfigurationRouter(req, res) {
     idamWeb: getConfigValue(SERVICES_IDAM_LOGIN_URL),
     launchDarklyClientId: getConfigValue(LAUNCH_DARKLY_CLIENT_ID),
     oAuthCallback: getConfigValue(SERVICES_IDAM_OAUTH_CALLBACK_URL),
+    oidcEnabled: showFeature(FEATURE_OIDC_ENABLED),
     protocol: getConfigValue(PROTOCOL),
   })
 }

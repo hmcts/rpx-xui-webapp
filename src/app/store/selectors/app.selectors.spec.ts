@@ -17,6 +17,7 @@ describe('App Selectors', () => {
     loading: false,
     termsAndConditions: null,
     isTermsAndConditionsFeatureEnabled: false,
+    useIdleSessionTimeout: false,
     userDetails: {
       sessionTimeout: {
         idleModalDisplayTime: 0,
@@ -62,6 +63,7 @@ describe('App Selectors', () => {
     loading: false,
     termsAndConditions: null,
     isTermsAndConditionsFeatureEnabled: false,
+    useIdleSessionTimeout: false,
     userDetails: {
       sessionTimeout: {
         idleModalDisplayTime: 0,

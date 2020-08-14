@@ -7,9 +7,9 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class UserService {
-    constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
-    public getUserDetails(): Observable<boolean> {
-        return this.http.get<boolean>(`api/user/details`);
-    }
+  public getUserDetails(): Observable<boolean> {
+    return this.http.get<boolean>(`api/user/details`);
+  }
 }

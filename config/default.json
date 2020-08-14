@@ -3,7 +3,8 @@
   "cookies": {
     "token": "__auth__",
     "userId": "__userid__",
-    "sessionId": "__sessionId__"
+    "sessionId": "__sessionId__",
+    "roles": "roles"
   },
   "logging": "debug",
   "now": false,
@@ -34,7 +35,8 @@
       "idamClientID": "xuiwebapp",
       "idamLoginUrl": "https://hmcts-access.service.gov.uk",
       "indexUrl": "/",
-      "oauthCallbackUrl": "oauth2/callback"
+      "oauthCallbackUrl": "oauth2/callback",
+      "iss": "https://forgerock-am.service.core-compute-idam-prod.internal:8443/openam/oauth2/hmcts"
     },
     "payments": "http://payment-api-prod.service.core-compute-prod.internal",
     "markup_api": "http://em-npa-prod.service.core-compute-prod.internal",
@@ -66,7 +68,8 @@
     "secureCookieEnabled": true,
     "helmetEnabled": false,
     "termsAndConditionsEnabled": false,
-    "redisEnabled": false
+    "redisEnabled": false,
+    "oidcEnabled": false
   },
   "helmet": {
     "contentSecurityPolicy": {
@@ -124,5 +127,27 @@
     "tls": true,
     "prefix": "activity:",
     "ttl": 86400
-  }
+  },
+  "sessionTimeouts": [
+    {
+      "idleModalDisplayTime": 3,
+      "pattern": "-dwpresponsewriter",
+      "totalIdleTime": 12
+    },
+    {
+      "idleModalDisplayTime": 3,
+      "pattern": "-homeoffice",
+      "totalIdleTime": 12
+    },
+    {
+      "idleModalDisplayTime": 10,
+      "pattern": "-solicitor",
+      "totalIdleTime": 50
+    },
+    {
+      "idleModalDisplayTime": 10,
+      "pattern": ".",
+      "totalIdleTime": 480
+    }
+  ]
 }

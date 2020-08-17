@@ -380,7 +380,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.sortParameters = {
       ...this.sortParameters,
       column: sortParameters.column,
-      order: sortParameters.order
+      order: sortParameters.order,
+      type: sortParameters.type
     };
     this.getElasticSearchResults(this.getEvent());
   }

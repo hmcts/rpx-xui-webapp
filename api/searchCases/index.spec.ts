@@ -108,7 +108,8 @@ describe('Search Cases Elastic Search', () => {
             size: 25,
             sort: {
               column: 'dummy',
-              order: 0
+              order: 0,
+              type: 'Text'
             }
         }
 
@@ -157,7 +158,8 @@ describe('Search Cases Elastic Search', () => {
           size: 25,
           sort: {
             column: '[CASE_REFERENCE]',
-            order: 1
+            order: 1,
+            type: 'Text'
           }
       }
 

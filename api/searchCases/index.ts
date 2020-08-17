@@ -109,13 +109,18 @@ export function prepareElasticQuery(queryParams: {page?}, body: {size?, sort?}):
 
 function prepareSort(params) {
     const sortQuery = []
-    if (params.hasOwnProperty('column') && params.hasOwnProperty('order')) {
-        const columnName = params.column.indexOf('[') === -1 ?
-                            `data.${params.column}.keyword` :
-                            `${fieldNameMapper(
-                                params.column.replace('[', '').replace(']', '').toLowerCase(),
-                                caseMetaDataFiledsMapping
-                            )}.keyword`
+    if (params.hasOwnProperty('column') && params.hasOwnProperty('order') && params.hasOwnProperty('type')) {
+        let columnName: string
+
+        if (params.column.indexOf('[') === -1 ) {
+            columnName = `data.${params.column}${isKeywordSuffixNeeded(params.column, params.type)}`
+        } else {
+            const mappedName = fieldNameMapper(
+                params.column.replace('[', '').replace(']', '').toLowerCase(),
+                caseMetaDataFiledsMapping
+            )
+            columnName = `${mappedName}${isKeywordSuffixNeeded(mappedName, params.type)}`
+        }
         const orderDirection = params.order === 0 ? 'ASC' : 'DESC'
         sortQuery.push(
             {
@@ -124,6 +129,13 @@ function prepareSort(params) {
         )
     }
     return sortQuery
+}
+
+function isKeywordSuffixNeeded(columnName, type): string {
+    const types = ['Text', 'TextArea', 'FixedList', 'FixedListEdit', 'MultiSelectList', 'FixedRadioList', 'DynamicList']
+    const specialFields = ['reference', 'jurisdiction', 'state', 'case_type_id']
+    const isText = types.includes(type) || specialFields.includes(columnName)
+    return isText ? '.keyword' : ''
 }
 
 function handleElasticSearchResponse(json): {} {

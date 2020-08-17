@@ -188,7 +188,8 @@ describe('CaseSearchComponent', () => {
     it('should update sortParameters', () => {
       const sortParameters = {
         column: 'dummy',
-        order: 0
+        order: 0,
+        type: 'Text'
       };
 
       component.sort(sortParameters);

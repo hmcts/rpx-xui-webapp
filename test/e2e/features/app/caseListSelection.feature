@@ -1,4 +1,4 @@
-@caselistselection @fullfunctional @all @test
+@caselistselection
 Feature: Case List Selection
 
     Cases in case list page have check to select and multiple cases can be selected across pages that can be shared

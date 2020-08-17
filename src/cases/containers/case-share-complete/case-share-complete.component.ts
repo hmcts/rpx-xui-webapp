@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -10,7 +10,7 @@ import * as fromCaseList from '../../store/reducers';
   templateUrl: './case-share-complete.component.html',
   styleUrls: ['case-share-complete.component.scss']
 })
-export class CaseShareCompleteComponent implements OnInit {
+export class CaseShareCompleteComponent implements OnInit, OnDestroy {
 
   public shareCases$: Observable<SharedCase[]>;
   public shareCases: SharedCase[];
@@ -38,6 +38,12 @@ export class CaseShareCompleteComponent implements OnInit {
     });
   }
 
+  public ngOnDestroy() {
+    if (this.completeScreenMode === 'COMPLETE') {
+      this.store.dispatch(new fromCasesFeature.ResetCaseSelection());
+    }
+  }
+
   public checkIfIncomplete(shareCases: SharedCase[]) {
     if (this.isLoading) {
       if (shareCases.some(aCase => aCase.pendingShares && aCase.pendingShares.length > 0)) {
@@ -46,7 +52,6 @@ export class CaseShareCompleteComponent implements OnInit {
       if (shareCases.some(aCase => aCase.pendingUnshares && aCase.pendingUnshares.length > 0)) {
         return 'PENDING';
       }
-      this.store.dispatch(new fromCasesFeature.ResetCaseSelection());
       return 'COMPLETE';
     }
   }

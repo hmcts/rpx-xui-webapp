@@ -116,7 +116,8 @@ export function shareCasesReducer(state: ShareCasesState = initialSharedCasesSta
     case ShareCasesActions.RESET_CASE_SELECTION:
       return {
         ...state,
-        shareCases: []
+        shareCases: [],
+        loading: false
       };
     default:
       return state;

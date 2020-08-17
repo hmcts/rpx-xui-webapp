@@ -1,4 +1,4 @@
-@caseShare @fullfunctional @all @test
+@caseShare
 Feature: Share Case page features
     User can share case with other users within organisation    
 

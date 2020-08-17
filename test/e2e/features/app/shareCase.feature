@@ -7,7 +7,7 @@ Feature: Share Case page features
         Given I am logged into Expert UI with valid user details
         Then I should be redirected to EUI dashboard page
 
-    @all  
+     
     Scenario: Verify User can Deselect a case from list of selected cases
         When I click on Case list
         Then I am on case list page

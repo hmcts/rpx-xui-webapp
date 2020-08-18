@@ -2,6 +2,9 @@ const ccdApiMock = require('./ccd/ccdApi');
 
 const requestMapping = {
    get:{
+       '/auth/isAuthenticated' : (req,res) => {
+            res.send(true);
+       },
        '/api/organisation': (req,res) => {
            res.send(getOrganisation());
        },

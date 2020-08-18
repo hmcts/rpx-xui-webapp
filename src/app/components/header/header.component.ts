@@ -17,6 +17,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   @Input() navItems: { active: boolean; href: string; }[];
   @Input() title: AppTitleModel;
   @Input() userNav: UserNavModel;
+  @Input() showFindCase: boolean;
   @Output() navigate = new EventEmitter<string>();
 
   public isCaseManager = false;

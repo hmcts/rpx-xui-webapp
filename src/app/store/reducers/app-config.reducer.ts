@@ -3,6 +3,13 @@ import { TermsAndCondition } from 'src/app/models/TermsAndCondition';
 import { ConfigurationModel } from '../../models/configuration.model';
 import * as fromActions from '../actions/';
 
+interface UserDetails {
+  sessionTimeout: {
+    idleModalDisplayTime: number,
+    totalIdleTime: number,
+  };
+}
+
 export interface AppConfigState {
   config: ConfigurationModel | {};
   termsAndCondition: TermsAndCondition;
@@ -10,6 +17,8 @@ export interface AppConfigState {
   loading: boolean;
   termsAndConditions: TCDocument;
   isTermsAndConditionsFeatureEnabled: boolean;
+  useIdleSessionTimeout: boolean;
+  userDetails: UserDetails;
 }
 
 export const initialState: AppConfigState = {
@@ -18,7 +27,14 @@ export const initialState: AppConfigState = {
   loaded: false,
   loading: false,
   termsAndConditions: null,
-  isTermsAndConditionsFeatureEnabled: false
+  isTermsAndConditionsFeatureEnabled: false,
+  useIdleSessionTimeout: false,
+  userDetails: {
+    sessionTimeout: {
+      idleModalDisplayTime: 0,
+      totalIdleTime: 0,
+    }
+  }
 };
 
 export function reducer(
@@ -78,6 +94,21 @@ export function reducer(
           ...state,
           isTermsAndConditionsFeatureEnabled: action.payload
         };
+    case fromActions.LOAD_USER_DETAILS_SUCCESS:
+      return {
+        ...state,
+        userDetails: action.payload
+      };
+    case fromActions.START_IDLE_SESSION_TIMEOUT:
+      return {
+        ...state,
+        useIdleSessionTimeout: true
+      };
+    case fromActions.STOP_IDLE_SESSION_TIMEOUT:
+      return {
+        ...state,
+        useIdleSessionTimeout: false
+      };
     default:
       return {
         ...state
@@ -90,3 +121,5 @@ export function reducer(
 export const getFeatureConfig = (state: AppConfigState) => state.config;
 export const getTandCLoadedConfig = (state: AppConfigState) => state.termsAndCondition;
 export const getTermsConditions = (state: AppConfigState) => state.termsAndConditions;
+export const getUseIdleSessionTimeout = (state: AppConfigState) => state.useIdleSessionTimeout;
+export const getUserDetails = (state: AppConfigState) => state.userDetails;

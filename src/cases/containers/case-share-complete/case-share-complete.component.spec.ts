@@ -111,6 +111,12 @@ describe('CaseShareCompleteComponent', () => {
     expect(component.showUserAccessBlock(case3)).toBeTruthy();
   });
 
+  it('should tidy up shared case if complete', () => {
+    component.completeScreenMode = 'COMPLETE';
+    component.ngOnDestroy();
+    expect(component.shareCases.length).toEqual(0);
+  });
+
   afterEach(() => {
     fixture.destroy();
   });

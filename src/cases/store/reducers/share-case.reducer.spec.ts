@@ -52,11 +52,12 @@ describe('Share case reducer', () => {
           {caseId: '1', caseTitle: 'James123', caseTypeId: 'type1'},
           {caseId: '2', caseTitle: 'Steve321', caseTypeId: 'type2'}]
       };
-      const caseFromNode = [{caseId: '1', caseTitle: 'James123'}, {caseId: '2', caseTitle: 'Steve321'}];
+      const caseFromNode = [{caseId: '1', caseTitle: ''}, {caseId: '2', caseTitle: ''}];
       const action = new fromActions.LoadShareCaseSuccess(caseFromNode);
       const state = fromReducer.shareCasesReducer(initialState, action);
       expect(state.shareCases.length).toEqual(2);
       expect(state.shareCases[0].caseTypeId).toEqual('type1');
+      expect(state.shareCases[0].caseTitle).toEqual('James123');
     });
 
     it('should save selected share cases into store', () => {

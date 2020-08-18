@@ -105,6 +105,12 @@ describe('Share case reducer', () => {
       expect(fromReducer.getShareCases(state).length).toEqual(2);
     });
 
+    it('should reset state if share case completed', () => {
+      const action = new fromActions.ResetCaseSelection();
+      const state = fromReducer.shareCasesReducer(initialState, action);
+      expect(fromReducer.getShareCases(state).length).toEqual(0);
+    });
+
     it('should sort users', () => {
       const sharedCases = [{
         caseId: '9417373995765131',

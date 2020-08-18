@@ -4,6 +4,7 @@ import { AppComponent } from './containers/app/app.component';
 import { environment } from '../environments/environment';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
+import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
 // ngrx modules - START
 import {EffectsModule} from '@ngrx/effects';
 import {MetaReducer, Store, StoreModule} from '@ngrx/store';
@@ -68,7 +69,8 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
       disableConsoleLogging: false
     }),
     ExuiCommonLibModule.forRoot(),
-    PaymentLibModule
+    NgIdleKeepaliveModule.forRoot(),
+    PaymentLibModule,
   ],
   providers: [
     {

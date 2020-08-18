@@ -9,6 +9,7 @@ export const START_APP_INITIALIZER = '[App] Start App initializer';
 export const FINISH_APP_INITIALIZER = '[App] Finish Start App initializer';
 
 export const LOGOUT = '[App] Logout';
+export const IDLE_USER_LOGOUT = '[App] Idle User Logout';
 
 export const LOAD_HAS_ACCEPTED_TC = '[T&C] Lad Has Accepted';
 export const LOAD_HAS_ACCEPTED_TC_SUCCESS = '[T&C] Lad Has Accepted Success';
@@ -29,6 +30,9 @@ export const LOAD_FEATURE_TOGGLE_CONFIG_FAIL = '[App] Load Feature Toggle Config
 export const LOAD_USER_DETAILS = '[App] Load User Details';
 export const LOAD_USER_DETAILS_SUCCESS = '[App] Load User Details Success';
 export const LOAD_USER_DETAILS_FAIL = '[App] Load User Details Success';
+
+export const START_IDLE_SESSION_TIMEOUT = '[App] Start Idle Session Timeout';
+export const STOP_IDLE_SESSION_TIMEOUT = '[App] Stop Idle Session Timeout';
 
 export class LoadConfig implements Action {
   readonly type = APP_LOAD_CONFIG;
@@ -68,6 +72,10 @@ export class FinishAppInitilizer implements Action {
 
 export class Logout implements Action {
   readonly type = LOGOUT;
+}
+
+export class IdleUserLogOut implements Action {
+  readonly type = IDLE_USER_LOGOUT;
 }
 
 export class LoadHasAcceptedTC implements Action {
@@ -118,6 +126,14 @@ export class LoadUserDetails {
   public readonly type = LOAD_USER_DETAILS;
 }
 
+export class StartIdleSessionTimeout {
+  public readonly type = START_IDLE_SESSION_TIMEOUT;
+}
+
+export class StopIdleSessionTimeout {
+  public readonly type = STOP_IDLE_SESSION_TIMEOUT;
+}
+
 // TODO: strong type the payload
 export class LoadUserDetailsSuccess {
   public readonly type = LOAD_USER_DETAILS_SUCCESS;
@@ -128,6 +144,7 @@ export class LoadUserDetailsFail {
   public readonly type = LOAD_USER_DETAILS_FAIL;
   constructor(public payload: any) {}
 }
+
 
 export type AppActions =
   | LoadConfig
@@ -150,4 +167,6 @@ export type AppActions =
   | LoadFeatureToggleConfigFail
   | LoadUserDetails
   | LoadUserDetailsSuccess
-  | LoadUserDetailsFail;
+  | LoadUserDetailsFail
+  | StartIdleSessionTimeout
+  | StopIdleSessionTimeout;

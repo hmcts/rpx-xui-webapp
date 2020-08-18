@@ -1,4 +1,4 @@
-@caselistselection @fullfunctional @all @test
+@caselistselection
 Feature: Case List Selection
 
     Cases in case list page have check to select and multiple cases can be selected across pages that can be shared
@@ -8,7 +8,7 @@ Feature: Case List Selection
         Given I am logged into Expert UI with valid user details
         Then I should be redirected to EUI dashboard page
 
-   @all 
+ 
     Scenario: Can see the checkbox column
         When I click on Case list
         Then I am on case list page
@@ -18,7 +18,7 @@ Feature: Case List Selection
         Then I see case list table header has Select all checkbox column
         Then I see case list table each case row has checkbox column 
 
-    @all
+    
     Scenario: Verify Case list selection and Unselection persistence on navigation to case view 
         When I click on Case list
         Then I am on case list page

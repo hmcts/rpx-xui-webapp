@@ -16,6 +16,7 @@ export const LAUNCH_DARKLY_CLIENT_ID = 'secrets.rpx.launch-darkly-client-id'
 export const COOKIES_TOKEN = 'cookies.token'
 export const COOKIES_USER_ID = 'cookies.userId'
 export const COOKIES_SESSION_ID = 'cookies.sessionId'
+export const COOKIE_ROLES = 'cookies.roles'
 
 export const STUB = 'stub'
 export const LOGGING = 'logging'
@@ -66,6 +67,7 @@ export const FEATURE_PROXY_ENABLED = 'proxyEnabled'
 export const FEATURE_TERMS_AND_CONDITIONS_ENABLED = 'termsAndConditionsEnabled'
 export const FEATURE_HELMET_ENABLED = 'helmetEnabled'
 export const FEATURE_REDIS_ENABLED = 'redisEnabled'
+export const FEATURE_OIDC_ENABLED = 'oidcEnabled'
 
 export const HELMET = 'helmet'
 
@@ -75,3 +77,5 @@ export const REDIS_TTL = 'redis.ttl'
 export const USER_TIMEOUT_IN_SECONDS = 'userTimeoutInSeconds'
 
 export const CASE_SHARE_PERMISSIONS = 'pui-case-manager'
+
+export const SESSION_TIMEOUTS = 'sessionTimeouts'

@@ -56,7 +56,16 @@ export class AppEffects {
   public logout = this.actions$.pipe(
     ofType(fromActions.LOGOUT),
     map(() => {
+      console.log('call Signout auth service.');
       this.authService.signOut();
+    })
+  );
+
+  @Effect({ dispatch: false })
+  public logoutAndRedirect = this.actions$.pipe(
+    ofType(fromActions.IDLE_USER_LOGOUT),
+    map(() => {
+      this.authService.logOutAndRedirect();
     })
   );
 

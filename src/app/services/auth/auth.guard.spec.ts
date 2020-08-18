@@ -1,68 +1,19 @@
 import { inject, TestBed } from '@angular/core/testing';
 import { AuthService } from './auth.service';
 
-import { StoreModule } from '@ngrx/store';
-import {AuthGuard} from './auth.guard';
-import {CookieOptionsProvider, CookieService} from 'ngx-cookie';
-import {AppConfigService} from '../config/configuration.services';
-import {environment} from '../../../environments/environment';
-import {Router} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
-import {EnvironmentService} from '../../shared/services/environment.service';
-
-const config = {
-  config: {
-    cookies: {
-      token: 'bob',
-      userId: 'ben'
-    },
-    services: {
-      idam_web: 'http://idam_url.com'
-    },
-    oauth_callback_url: 'callback_url',
-    api_base_url: 'api_base',
-    idam_client: 'client_name'
-  }
-};
-
-const router = {
-  navigate: () => { }
-};
-
-const cookieService = {
-  get: key => {
-    return cookieService[key];
-  },
-  set: (key, value) => {
-    cookieService[key] = value;
-  },
-  removeAll: () => { }
-};
+import { StoreModule } from '@ngrx/store';
+import { of } from 'rxjs';
+import {AuthGuard} from './auth.guard';
 
 
 class HttpClientMock {
-
-  get() {
+  public get() {
     return 'response';
   }
 }
 
-class AppConfigServiceMock {
-  getRoutesConfig() {
-    return {
-      idam: {
-        idamLoginUrl: 'dummy',
-        idamClientID: 'dummy',
-        oauthCallbackUrl: 'dummy'
-      }
-    };
-  }
-}
-
-const environmentServiceMock = {
-};
-
-describe('AuthService', () => {
+describe('AuthGuard', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -70,21 +21,38 @@ describe('AuthService', () => {
       ],
       providers: [
         AuthService,
-        { provide: AppConfigService, useClass: AppConfigServiceMock},
-        { provide: environment, useValue: config },
-        { provide: Router, useValue: router },
-        { provide: CookieService, useValue: cookieService },
         { provide: HttpClient, useClass: HttpClientMock },
-        { provide: EnvironmentService, useValue: environmentServiceMock},
       ]
     });
   });
 
-  it('should exist', inject([AuthGuard], (gurad: AuthGuard) => {
-    expect(gurad).toBeTruthy();
+  it('should exist', inject([AuthGuard], (guard: AuthGuard) => {
+    expect(guard).toBeTruthy();
   }));
 
-  it('should exist', inject([AuthGuard], (gurad: AuthGuard) => {
-    expect(gurad.canActivate).toBeDefined();
+  it('should exist', inject([AuthGuard], (guard: AuthGuard) => {
+    expect(guard.canActivate).toBeDefined();
   }));
+});
+
+describe('AuthGuard', () => {
+  it('canActivate true', () => {
+    const service = jasmine.createSpyObj('service', ['loginRedirect', 'isAuthenticated']);
+    service.isAuthenticated.and.returnValue(of(true));
+    const guard = new AuthGuard(service);
+    const canActivate = guard.canActivate();
+    canActivate.subscribe(isAct => expect(isAct).toBeTruthy());
+    expect(service.isAuthenticated).toHaveBeenCalled();
+    expect(service.loginRedirect).not.toHaveBeenCalled();
+  });
+
+  it('canActivate false', () => {
+    const service = jasmine.createSpyObj('service', ['loginRedirect', 'isAuthenticated']);
+    service.isAuthenticated.and.returnValue(of(false));
+    const guard = new AuthGuard(service);
+    const canActivate = guard.canActivate();
+    canActivate.subscribe(isAct => expect(isAct).toBeFalsy());
+    expect(service.isAuthenticated).toHaveBeenCalled();
+    expect(service.loginRedirect).toHaveBeenCalled();
+  });
 });

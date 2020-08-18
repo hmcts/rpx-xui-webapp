@@ -27,20 +27,35 @@ describe('getUserDetails', () => {
 
     it('should return a true response when case share permission is existent', async () => {
       const reqQuery = {
-          session: { user: { roles: ['pui-case-manager'] } },
+        session: {
+          passport: {
+            user: {
+              userinfo: {
+                roles: ['pui-case-manager'],
+              },
+            },
+          },
+        },
       }
       req = mockReq(reqQuery)
       await getUserDetails(req, res, next)
       const response = {
-        canShareCases: true
+        canShareCases: true,
       }
       expect(res.send).to.have.been.calledWith(sinon.match(response))
     })
 
-
     it('should return a false response when case share permission is non-existent', async () => {
       const reqQuery = {
-          session: { user: { roles: ['dummy'] } },
+        session: {
+          passport: {
+            user: {
+              userinfo: {
+                roles: ['dummy'],
+              },
+            },
+          },
+        },
       }
       req = mockReq(reqQuery)
       await getUserDetails(req, res, next)
@@ -52,7 +67,15 @@ describe('getUserDetails', () => {
 
     it('should catch an error', async () => {
       const reqQuery = {
-          session: { user: { roles: [] } },
+        session: {
+          passport: {
+            user: {
+              userinfo: {
+                roles: [],
+              },
+            },
+          },
+        },
       }
       req = mockReq(reqQuery)
       res.send.throws()

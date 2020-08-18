@@ -6,7 +6,7 @@ import * as sinonChai from 'sinon-chai'
 import * as log4jui from './log4jui'
 chai.use(sinonChai)
 
-import {asyncReturnOrError, dotNotation, exists, isObject, isUserTandCPostSuccessful, shorten, some, valueOrNull} from './util'
+import {dotNotation, exists, isObject, isUserTandCPostSuccessful, shorten, some, valueOrNull, fieldNameMapper} from './util'
 
 describe('util', () => {
     describe('isUserTandCPostSuccessful', () => {
@@ -114,40 +114,15 @@ describe('util', () => {
             expect(result).to.equal(true)
         })
     })
-    describe('asyncReturnOrError', () => {
-
-        let sandbox
-        let spyObj
-
-        beforeEach( () => {
-            sandbox = sinon.createSandbox()
-            spyObj = {
-                error: sandbox.spy(),
-            }
-            sandbox.stub(log4jui, 'getLogger').returns(spyObj)
+    describe('fieldNameMapper', () => {
+        // @todo take a look at this - what values are intended to be passed in?
+        it('Should return mapped value if it is in mapping', () => {
+            const result = fieldNameMapper('dummy', {'dummy': 'singer'})
+            expect(result).to.equal('singer')
         })
-
-        afterEach( () => {
-            sandbox.restore()
-        })
-
-        it('Should return data if promise is returned', async () => {
-            const promise = Promise.resolve(1)
-
-            const result = await asyncReturnOrError(promise, 'string', null, null, true)
-            expect(result).to.equal(1)
-        })
-
-        it('should log the error and return null on error, with response.status if setResponse is false', async () => {
-            const promise = Promise.reject({
-                response: {
-                    status: 403
-                }
-            })
-            const logger = log4jui.getLogger('util')
-            const result = await asyncReturnOrError(promise, 'string', null, logger, false)
-            expect(logger.error).to.have.been.calledWith('string')
-            expect(result).to.be.null
+        it('Should return itself it is not in mapping', () => {
+            const result = fieldNameMapper('dummy', {'dummy2': 'drummer'})
+            expect(result).to.equal('dummy')
         })
     })
 })

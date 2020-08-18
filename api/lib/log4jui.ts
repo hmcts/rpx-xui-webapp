@@ -1,19 +1,14 @@
 import * as log4js from 'log4js'
 import {getConfigValue} from '../configuration'
 import {
-  COOKIES_SESSION_ID,
   LOG4_J_CONFIG,
   LOGGING,
 } from '../configuration/references'
 import { client } from './appInsights'
-import * as errorStack from './errorStack'
 import { JUILogger } from './models'
-
-import { isReqResSet, request } from './middleware/responseRequest'
 
 // the longest category length we have currently
 const maxCatLength = 14
-const sessionid = getConfigValue(COOKIES_SESSION_ID)
 
 // This is done to mimic log4js calls
 log4js.configure(getConfigValue(LOG4_J_CONFIG))
@@ -41,38 +36,17 @@ export function getLogger(category: string): JUILogger {
     }
 }
 
-export function prepareMessage(fullMessage: string): string {
-    let uid
-    let sessionId
-
-    if (isReqResSet()) {
-        const req = request()
-
-        uid = req.session && req.session.user ? req.session.user.id : null
-        // @ts-ignore
-        sessionId = req.cookies ? req.cookies[sessionid] : null
-    }
-
-    const userString: string = uid && sessionId ? `[${uid} - ${sessionId}] - ` : ''
-    return `${userString}${fullMessage}`
-}
-
 function info(...messages: any[]) {
-    const fullMessage = messages.join(' ')
-
-    this._logger.info(prepareMessage(fullMessage))
+    console.log(...messages)
+    this._logger.info(...messages)
 }
 
 function warn(...messages: any[]) {
-    const fullMessage = messages.join(' ')
-
-    this._logger.warn(prepareMessage(fullMessage))
+    this._logger.warn(...messages)
 }
 
 function debug(...messages: any[]) {
-    const fullMessage = messages.join(' ')
-
-    this._logger.debug(prepareMessage(fullMessage))
+    this._logger.debug(...messages)
 }
 
 function trackRequest(obj: any) {
@@ -82,12 +56,6 @@ function trackRequest(obj: any) {
 }
 
 function error(...messages: any[]) {
-    const fullMessage = messages.join(' ')
+    this._logger.error(...messages)
 
-    const category = this._logger.category
-    this._logger.error(prepareMessage(fullMessage))
-
-    if (getConfigValue(LOGGING) === 'debug' || getConfigValue(LOGGING) === 'error') {
-        errorStack.push([category, fullMessage])
-    }
 }

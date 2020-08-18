@@ -17,7 +17,7 @@ async function getBrowser(){
     if (browser === null){
         browser = await puppeteer.launch({
             ignoreHTTPSErrors: false,
-            headless: true
+            headless: conf.headless
         });
     }
     return browser;

@@ -52,11 +52,12 @@ describe('Share case reducer', () => {
           {caseId: '1', caseTitle: 'James123', caseTypeId: 'type1'},
           {caseId: '2', caseTitle: 'Steve321', caseTypeId: 'type2'}]
       };
-      const caseFromNode = [{caseId: '1', caseTitle: 'James123'}, {caseId: '2', caseTitle: 'Steve321'}];
+      const caseFromNode = [{caseId: '1', caseTitle: ''}, {caseId: '2', caseTitle: ''}];
       const action = new fromActions.LoadShareCaseSuccess(caseFromNode);
       const state = fromReducer.shareCasesReducer(initialState, action);
       expect(state.shareCases.length).toEqual(2);
       expect(state.shareCases[0].caseTypeId).toEqual('type1');
+      expect(state.shareCases[0].caseTitle).toEqual('James123');
     });
 
     it('should save selected share cases into store', () => {
@@ -103,6 +104,33 @@ describe('Share case reducer', () => {
       const action = new fromActions.AddShareCases(selectedCases);
       const state = fromReducer.shareCasesReducer(initialState, action);
       expect(fromReducer.getShareCases(state).length).toEqual(2);
+    });
+
+    it('should load user from org for case success', () => {
+      const sharedCases = [{caseId: '1', caseTitle: 'James123'}, {caseId: '2', caseTitle: 'Steve321'}];
+      const action = new fromActions.LoadShareCaseSuccess(sharedCases);
+      const state = fromReducer.shareCasesReducer(initialState, action);
+      expect(fromReducer.getOrganisationUsers(state)).toBeTruthy();
+    });
+
+    it('should synchronize state to store', () => {
+      const sharedCases = [{caseId: '1', caseTitle: 'James123'}, {caseId: '2', caseTitle: 'Steve321'}];
+      const action = new fromActions.SynchronizeStateToStore(sharedCases);
+      const state = fromReducer.shareCasesReducer(initialState, action);
+      expect(fromReducer.getShareCases(state).length).toEqual(2);
+    });
+
+    it('should synchronize state to store', () => {
+      const sharedCases = [{caseId: '1', caseTitle: 'James123'}, {caseId: '2', caseTitle: 'Steve321'}];
+      const action = new fromActions.AssignUsersToCaseSuccess(sharedCases);
+      const state = fromReducer.shareCasesReducer(initialState, action);
+      expect(fromReducer.getShareCases(state).length).toEqual(2);
+    });
+
+    it('should reset state if share case completed', () => {
+      const action = new fromActions.ResetCaseSelection();
+      const state = fromReducer.shareCasesReducer(initialState, action);
+      expect(fromReducer.getShareCases(state).length).toEqual(0);
     });
 
     it('should sort users', () => {

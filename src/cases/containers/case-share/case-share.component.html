@@ -5,6 +5,7 @@
   <xuilib-share-case
     [shareCases$] = "shareCases$"
     [users]="orgUsers$ | async"
+    [removeUserFromCaseToggleOn]="removeUserFromCaseToggleOn$ | async"
     (unselect)="deselect($event)"
     (synchronizeStore)="synchronizeStore($event)"
     [confirmLink]="'/cases/case-share-confirm'"

@@ -16,7 +16,7 @@ const ccdUrl: string = getConfigValue(SERVICES_CCD_CASE_ASSIGNMENT_API_PATH)
 
 export async function getUsers(req: EnhancedRequest, res: Response) {
   try {
-    const path = `${prdUrl}/refdata/external/v1/organisations/users?returnRoles=false`
+    const path = `${prdUrl}/refdata/external/v1/organisations/users?returnRoles=false&status=active`
     const {status, data}: {status: number, data: any} = await handleGet(path, req)
     const users = [...data.users].map(user => prdToUserDetails(user))
     return res.status(status).send(users)

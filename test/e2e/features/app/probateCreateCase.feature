@@ -20,7 +20,7 @@ Feature: Probate create case workflow
     When I click cancel link
     When I am on case list page
 
-  Scenario: Create and Submit FR Consented Case
+  Scenario: Create and Submit Probate Case
     When I start case with jurisdiction "Manage probate application" case type "Grant of representation" and event "Apply for probate"
     When I create Probate case
     Then I am on check your answers page

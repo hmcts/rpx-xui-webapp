@@ -112,23 +112,8 @@ describe('Pa11y Accessibility tests', function () {
             actions.push(...PallyActions.waitForPageWithCssLocator('ccd-case-edit-page h1'))
             await pa11ytest(this, actions, conf.baseUrl + 'cases/case-create/DIVORCE/GrantOfRepresentation/solicitorCreateApplication/' + page.id);
         });
-
-        // actions.push(...PallyActions.clickElement('#accordion-with-summary-sections xuilib-selected-case  .govuk-accordion__section-content a'));
-        await pa11ytest(this, actions, conf.baseUrl + 'cases/case-share?init=true');
     });
 
- 
-
-    const divorceCreateCaseConfig = ccdApi.getSolicitorCreateCaseConfig('DIVORCE','DIVORCE'); 
-    divorceCreateCaseConfig.wizard_pages.forEach(page => {
-        it('Divorce Create Case Page '+ page.id, async function () {
-            const actions = [];
-            actions.push(...PallyActions.waitForPageWithCssLocator('ccd-case-edit-page h1'))
-            await pa11ytest(this, actions, conf.baseUrl + 'cases/case-create/DIVORCE/DIVORCE/solicitorCreate/' + page.id);
-
-        });
-    });
- 
     const probateCreateCaveat = ccdApi.getSolicitorCreateCaseConfig('Caveat', 'solicitorCreateCaveat');
     probateCreateCaveat.wizard_pages.forEach(page => {
         it('Probate create caveat Create Case Page ' + page.id, async function () {
@@ -152,57 +137,6 @@ describe('Pa11y Accessibility tests', function () {
     const fplCareSupervisionConfig = ccdApi.getSolicitorCreateCaseConfig('CARE_SUPERVISION_EPO', 'openCase');
     fplCareSupervisionConfig.wizard_pages.forEach(page => {
         it('FPL Care Supervision Create Case Page ' + page.id, async function () {
-            const actions = [];
-            actions.push(...PallyActions.waitForPageWithCssLocator('ccd-case-edit-page h1'))
-            await pa11ytest(this, actions, conf.baseUrl + 'cases/case-create/DIVORCE/Asylum/startAppeal/' + page.id);
-        });
-
-    });
-
-    const fr_ConsentedConfig = ccdApi.getSolicitorCreateCaseConfig('FinancialRemedyMVP2', 'FR_solicitorCreate');
-    fr_ConsentedConfig.wizard_pages.forEach(page => {
-        it('FR Consented Create Case Page ' + page.id, async function () {
-            const actions = [];
-            actions.push(...PallyActions.waitForPageWithCssLocator('ccd-case-edit-page h1'))
-            await pa11ytest(this, actions, conf.baseUrl + 'cases/case-create/DIVORCE/FinancialRemedyMVP2/FR_solicitorCreate/' + page.id);
-
-        });
-
-    });
-
-    const fr_ContestedConfig = ccdApi.getSolicitorCreateCaseConfig('FinancialRemedyContested', 'FR_solicitorCreate');
-    fr_ContestedConfig.wizard_pages.forEach(page => {
-        it('FR Contested Create Case Page ' + page.id, async function () {
-            const actions = [];
-            actions.push(...PallyActions.waitForPageWithCssLocator('ccd-case-edit-page h1'))
-            await pa11ytest(this, actions, conf.baseUrl + 'cases/case-create/DIVORCE/FinancialRemedyContested/FR_solicitorCreate/' + page.id);
-        });
-
-    });
-
-    const probateGrantOfrepresentation = ccdApi.getSolicitorCreateCaseConfig('GrantOfRepresentation', 'solicitorCreateApplication');
-    probateGrantOfrepresentation.wizard_pages.forEach(page => {
-        it('Probate Grant Of Representation Create Case Page ' + page.id, async function () {
-            const actions = [];
-            actions.push(...PallyActions.waitForPageWithCssLocator('ccd-case-edit-page h1'))
-            await pa11ytest(this, actions, conf.baseUrl + 'cases/case-create/DIVORCE/GrantOfRepresentation/solicitorCreateApplication/' + page.id);
-        });
-
-    });
-
-    const probateCreateCaveat = ccdApi.getSolicitorCreateCaseConfig('Caveat', 'solicitorCreateCaveat');
-    probateCreateCaveat.wizard_pages.forEach(page => {
-        it('Probate create caveat Create Case Page ' + page.id, async function () {
-            const actions = [];
-            actions.push(...PallyActions.waitForPageWithCssLocator('ccd-case-edit-page h1'))
-            await pa11ytest(this, actions, conf.baseUrl + 'cases/case-create/DIVORCE/Caveat/solicitorCreateCaveat/' + page.id);
-        });
-
-    });
-
-    const iaConfig = ccdApi.getSolicitorCreateCaseConfig('Asylum', 'startAppeal');
-    iaConfig.wizard_pages.forEach(page => {
-        it('IA Create Case Page ' + page.id, async function () {
             const actions = [];
             actions.push(...PallyActions.waitForPageWithCssLocator('ccd-case-edit-page h1'))
             await pa11ytest(this, actions, conf.baseUrl + 'cases/case-create/DIVORCE/Asylum/startAppeal/' + page.id);

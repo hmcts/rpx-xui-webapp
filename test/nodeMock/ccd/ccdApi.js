@@ -11,6 +11,11 @@ const probateCreateCaveatConfig = require('./solicitorCreate/probateCreateCaveat
 
 const iaCreateConfig = require('./solicitorCreate/iaCreateConfig');
 
+const fplTribunalConfig = require('./solicitorCreate/fplTribunalCreateConfig');
+
+const fplCareSupervisionConfig = require('./solicitorCreate/fplCareSupervision');
+
+
 
 
 class CCDApi{
@@ -59,6 +64,18 @@ class CCDApi{
         if (caseType === 'Asylum' && event === 'startAppeal') {
             return iaCreateConfig;
         }
+
+
+
+        if (caseType === 'TRIB_MVP_3_TYPE' && event === 'initiateCase') {
+            return fplTribunalConfig;
+        }
+
+        if (caseType === 'CARE_SUPERVISION_EPO' && event === 'openCase') {
+            return fplCareSupervisionConfig;
+        }
+
+
 
     }
 

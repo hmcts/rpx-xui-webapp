@@ -236,7 +236,13 @@ class CaseManager {
                 var fileToUpload = path.resolve(__dirname, "../../../documents/dummy.pdf");
                 await ccdField.$('input.form-control').sendKeys(fileToUpload);
 
-                await browser.sleep(1000);
+                await BrowserWaits.waitForCondition(async () => {
+                    let isUploadDone = await ccdField.element(by.xpath('span[contains(text(),"Uploading")]')).isPresent();
+                    console.log("file upload status : " + isUploadDone);
+                    return !isUploadDone; 
+                });
+ 
+                await browser.sleep(20000);
                 break;
             case "ccd-write-multi-select-list-field":
                 var selectionFields = ccdField.$$(".multiple-choice input");

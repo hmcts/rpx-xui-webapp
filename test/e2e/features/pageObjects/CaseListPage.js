@@ -102,7 +102,7 @@ class CaseListPage{
 
     async clickFirstCaseLink(){
         let currentPageUrl = await browser.getCurrentUrl();
-        await this.caseListRows.get(0).$("td:nth-of-type(1) a").click();    
+        await this.caseListRows.get(0).$("td a").click();    
         await BrowserWaits.waitForPageNavigation(currentPageUrl);
     }
 

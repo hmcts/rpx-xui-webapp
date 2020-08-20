@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
 import { UserDetails } from '@hmcts/rpx-xui-common-lib/lib/models/user-details.model';
 import { RouterReducerState } from '@ngrx/router-store';
@@ -9,7 +10,6 @@ import { getRouterState, RouterStateUrl } from '../../../app/store/reducers';
 import * as fromCasesFeature from '../../store';
 import { LoadShareCase, LoadUserFromOrgForCase } from '../../store/actions';
 import * as fromCaseList from '../../store/reducers';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 
 @Component({
   selector: 'exui-case-share',

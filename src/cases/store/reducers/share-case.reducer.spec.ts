@@ -120,7 +120,7 @@ describe('Share case reducer', () => {
       expect(fromReducer.getShareCases(state).length).toEqual(2);
     });
 
-    it('should synchronize state to store', () => {
+    it('should assign user to case success', () => {
       const sharedCases = [{caseId: '1', caseTitle: 'James123'}, {caseId: '2', caseTitle: 'Steve321'}];
       const action = new fromActions.AssignUsersToCaseSuccess(sharedCases);
       const state = fromReducer.shareCasesReducer(initialState, action);

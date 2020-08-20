@@ -48,7 +48,7 @@ export interface OrganisationsState {
     error: any;
 }
 
-const initialOrganisationsState = {
+export const initialOrganisationsState = {
     organisations: [],
     loaded: false,
     error: null
@@ -59,7 +59,7 @@ export function organisationsListReducer(
     action: OrganisationActions.OrganisationsActions): OrganisationsState {
     switch (action.type) {
         case OrganisationActions.LOAD_ALL_ORGANISATIONS_SUCCESS: {
-            return {... state, organisations: action.payload };
+            return {... state, organisations: action.payload, loaded: true };
         }
         case OrganisationActions.LOAD_ALL_ORGANISATIONS_FAILURE: {
             return {... state, error: action.payload };
@@ -69,3 +69,5 @@ export function organisationsListReducer(
         }
     }
 }
+
+export const getAllOrganisations = (state: OrganisationsState) => state.organisations;

@@ -16,14 +16,14 @@ export class OrganisationListEffects {
         switchMap(() => {
             return this.organisationService.getActiveOrganisations().pipe(
                 map( (organisations) => {
-                    const organisationsVm: OrganisationVm [] = OrganisationListEffects.getOrganisationVm(organisations);
+                    const organisationsVm: OrganisationVm [] = OrganisationListEffects.mapOrganisation(organisations);
                     return new organisationActions.LoadAllOrganisationsSuccess(organisationsVm);
                 })
             );
         })
       );
 
-      public static getOrganisationVm(organisations: Organisation[]): OrganisationVm [] {
+      public static mapOrganisation(organisations: Organisation[]): OrganisationVm [] {
         const organisationsVm = new Array<OrganisationVm>();
         organisations.forEach(org => {
             organisationsVm.push({

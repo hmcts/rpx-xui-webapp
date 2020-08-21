@@ -15,7 +15,7 @@ export async function handleGetOrganisationsRoute(req: EnhancedRequest, res: Res
         if (response.data.organisations) {
             res.send(response.data.organisations)
         } else {
-            res.send([response.data])
+            res.send(response.data)
         }
     } catch (error) {
         logger.error('Organisations error ' + error)
@@ -35,5 +35,5 @@ export async function handleGetOrganisationsRoute(req: EnhancedRequest, res: Res
 }
 
 function getOrganisationUri(): string {
-    return `${getConfigValue(SERVICES_PRD_API_URL)}/refdata/external/v1/organisations`
+    return `${getConfigValue(SERVICES_PRD_API_URL)}/refdata/external/v1/organisations/status/ACTIVE?address=true`
 }

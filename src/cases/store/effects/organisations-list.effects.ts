@@ -26,16 +26,21 @@ export class OrganisationListEffects {
       public static mapOrganisation(organisations: Organisation[]): OrganisationVm [] {
         const organisationsVm = new Array<OrganisationVm>();
         organisations.forEach(org => {
+            let contactInformation = null;
+            if (org.contactInformation &&  org.contactInformation[0]) {
+                contactInformation = org.contactInformation[0];
+            }
+
             organisationsVm.push({
                 organisationIdentifier: org.organisationIdentifier,
                 name: org.name,
-                addressLine1: org.contactInformation[0] !== null ? org.contactInformation[0].addressLine1 : null,
-                addressLine2: org.contactInformation[0] !== null ? org.contactInformation[0].addressLine2 : null,
-                addressLine3: org.contactInformation[0] !== null ? org.contactInformation[0].addressLine3 : null,
-                townCity: org.contactInformation[0] !== null ? org.contactInformation[0].townCity : null,
-                county: org.contactInformation[0] !== null ? org.contactInformation[0].county : null,
-                country: org.contactInformation[0] !== null ? org.contactInformation[0].country : null,
-                postCode: org.contactInformation[0] !== null ? org.contactInformation[0].postCode : null,
+                addressLine1: contactInformation !== null ? contactInformation.addressLine1 : null,
+                addressLine2: contactInformation !== null ? contactInformation.addressLine2 : null,
+                addressLine3: contactInformation !== null ? contactInformation.addressLine3 : null,
+                townCity: contactInformation !== null ? contactInformation.townCity : null,
+                county: contactInformation !== null ? contactInformation.county : null,
+                country: contactInformation !== null ? contactInformation.country : null,
+                postCode: contactInformation !== null ? contactInformation.postCode : null,
             });
         });
         return organisationsVm;

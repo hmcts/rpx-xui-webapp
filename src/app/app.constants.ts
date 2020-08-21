@@ -50,8 +50,6 @@ const userNav = {
   }]
 };
 
-const signedOutNavItems = [];
-
 const signedOutUserNav = {
   label: 'Account navigation',
   items: []
@@ -123,9 +121,7 @@ export class AppConstants {
   static FOOTER_DATA = null;
   static FOOTER_DATA_NAVIGATION = FooterDataNavigation;
   static NAV_ITEMS = navItems;
-  static SIGNED_OUT_NAV_ITEMS = signedOutNavItems;
   static USER_NAV = userNav;
-  static SIGNED_OUT_USER_NAV = signedOutUserNav;
   static APP_HEADER_TITLE = appHeaderTitle;
   static ENVIRONMENT_NAMES = environmentNames;
   static REDIRECT_URL = redirectUrl;

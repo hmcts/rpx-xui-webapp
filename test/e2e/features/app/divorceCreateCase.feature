@@ -13,12 +13,6 @@ Feature: Divorce create case workflow
         When I start case with jurisdiction "Family Divorce" case type "Divorce case - v115.00" and event "Apply for a divorce"
        Then I am on case form page 
 
-    Scenario: Cancel create case for Divorce
-        When I start case with jurisdiction "Family Divorce" case type "Divorce case - v115.00" and event "Apply for a divorce"
-        When I click cancel link
-        When I am on case list page
-
-
     Scenario: Create and Submit Divorce Consented Case
         When I start case with jurisdiction "Family Divorce" case type "Divorce case - v115.00" and event "Apply for a divorce"
         When I create Divorce case

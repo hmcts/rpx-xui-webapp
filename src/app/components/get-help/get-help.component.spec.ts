@@ -1,8 +1,9 @@
+import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { GetHelpComponent } from '..';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { By } from '@angular/platform-browser';
 import { ContactDetailsComponent } from '@hmcts/rpx-xui-common-lib';
-import {CookieService} from 'ngx-cookie';
+import { CookieService } from 'ngx-cookie';
+import { GetHelpComponent } from '..';
 
 describe('GetHelpComponent', () => {
   let component: GetHelpComponent;
@@ -60,6 +61,16 @@ describe('GetHelpComponent', () => {
     it('should return false if there is not a pui-case-manager user role.', () => {
       const userRoles = 'j:["caseworker"]';
       expect(component.isCaseManager(userRoles)).toBeFalsy();
+    });
+  });
+
+  describe('Verify HTML content on Get help page', () => {
+
+    it('header title should be "Get help"', () => {
+      const getHelpDe: DebugElement = fixture.debugElement;
+      const headerElementDe: DebugElement = getHelpDe.query(By.css('h1'));
+      const headerElementNative: HTMLElement = headerElementDe.nativeElement;
+      expect(headerElementNative.textContent).toEqual('Get help');
     });
   });
 });

@@ -25,10 +25,10 @@ import * as tunnel from './lib/tunnel'
 import openRoutes from './openRoutes'
 import {router as paymentsRouter} from './payments/routes'
 import * as postCodeLookup from './postCodeLookup'
+import {router as markupRouter} from './redaction/markupRoutes'
+import {router as redactionRouter} from './redaction/redactionRoutes'
 import routes from './routes'
-// import {router as termsAndCRoutes} from './termsAndConditions/routes'
 import userRouter from './user/routes'
-// import {router as userTandCRoutes} from './userTermsAndConditions/routes'
 
 export const app = express()
 if (showFeature(FEATURE_HELMET_ENABLED)) {
@@ -36,8 +36,8 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
 }
 
 // app.use(errorStack)
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.json({limit: '5mb'}))
+app.use(bodyParser.urlencoded({limit: '5mb', extended: true}))
 app.use(cookieParser(getConfigValue(SESSION_SECRET)))
 
 app.use(getXuiNodeMiddleware())
@@ -58,7 +58,6 @@ app.get('/api/monitoring-tools', (req, res) => {
 
 app.use('/api/healthCheck', healthCheck)
 app.use('/api/user', userRouter)
-
 /*if (showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED)) {
     app.use('/api/userTermsAndConditions', userTandCRoutes)
     app.use('/api/termsAndConditions', termsAndCRoutes)
@@ -67,6 +66,10 @@ app.use('/api/user', userRouter)
 app.get('/api/configuration', (req, res) => {
     res.send(showFeature(req.query.configurationKey as string))
 })
+
+// TODO: move to proxy route as below
+app.use('/api/markups', markupRouter)
+app.use('/api/redaction', redactionRouter)
 
 // TODO: move these to proxy routes as well
 app.use('/aggregated', routes)

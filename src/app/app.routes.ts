@@ -105,6 +105,10 @@ export const ROUTES: Routes = [
     }
   },
   {
+    path: 'idle-sign-out',
+    component: SignedOutComponent
+  },
+  {
     path: '**',
     redirectTo: '/cases',
     pathMatch: 'full'

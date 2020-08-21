@@ -56,6 +56,7 @@ export class AppEffects {
   public logout = this.actions$.pipe(
     ofType(fromActions.LOGOUT),
     map(() => {
+      console.log('call Signout auth service.');
       this.authService.signOut();
     })
   );

@@ -1,4 +1,3 @@
-
 import * as express from 'express'
 import authInterceptor from '../lib/middleware/auth'
 import { getUserDetails } from './index'

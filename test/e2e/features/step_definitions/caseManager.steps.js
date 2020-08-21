@@ -37,16 +37,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     When('I create Probate case', { timeout: creatCaseStepTimeout }, async function () {
-        await probateCase.createCase();
-    });
-
-    When('I create Immigration Asylum case', { timeout: creatCaseStepTimeout }, async function () {
-        await iaCase.createCase();
-    });
-
-    When('I create Public Law case', { timeout: creatCaseStepTimeout }, async function () {
-        await publicLawCase.createCase();
-    });
+        await probateCase.createCase(false);
+    })
 
     When('I start case next step', async function () {
         await caseManager.startNextStep(false);

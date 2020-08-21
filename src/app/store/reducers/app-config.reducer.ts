@@ -11,6 +11,13 @@ interface UserDetails {
   };
 }
 
+interface UserDetails {
+  sessionTimeout: {
+    idleModalDisplayTime: number,
+    totalIdleTime: number,
+  };
+}
+
 export interface AppConfigState {
   config: ConfigurationModel | {};
   termsAndCondition: TermsAndCondition;

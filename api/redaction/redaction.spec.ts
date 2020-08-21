@@ -4,16 +4,15 @@ import 'mocha'
 import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
 import { mockReq, mockRes } from 'sinon-express-mock'
-import {getConfigValue} from '../configuration'
-import {
-    SERVICES_MARKUP_API_URL,
-} from '../configuration/references'
-import * as redactionService from './redactionService'
+import { getConfigValue } from '../configuration'
+import { SERVICES_MARKUP_API_URL } from '../configuration/references'
 import { postRedaction } from './redaction'
+import * as redactionService from './redactionService'
 
 chai.use(sinonChai)
 describe('redaction', () => {
 
+    let next
     let sandbox
     let spy: any
     const service: string = getConfigValue(SERVICES_MARKUP_API_URL)
@@ -25,6 +24,7 @@ describe('redaction', () => {
 
     beforeEach(() => {
         sandbox = sinon.createSandbox()
+        next = sandbox.spy()
     })
 
     afterEach(() => {
@@ -37,7 +37,7 @@ describe('redaction', () => {
         })
         it('should call postRedaction and return the json response', async () => {
             const redactionPath = `${service}${reqQuery.originalUrl}`
-            await postRedaction(req, res)
+            await postRedaction(req, res, next)
             expect(redactionService.handlePostBlob).to.have.been.calledWith(redactionPath, req.body)
             expect(res.status).to.have.been.calledWith(200)
             expect(res.send).to.have.been.calledWith({})
@@ -54,13 +54,9 @@ describe('redaction', () => {
             spy = sandbox.stub(redactionService, 'handlePostBlob').throws(response)
 
             const redactionPath = `${service}${reqQuery.originalUrl}`
-            await postRedaction(req, res)
+            await postRedaction(req, res, next)
             expect(redactionService.handlePostBlob).to.have.been.calledWith(redactionPath, req.body)
-            expect(res.status).to.have.been.calledWith(response.status)
-            expect(res.send).to.have.been.calledWith({
-                errorMessage: response.data,
-                errorStatusText: response.statusText,
-            })
+            expect(next).to.have.been.called
         })
 
     })

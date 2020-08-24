@@ -70,7 +70,7 @@ describe('GetHelpComponent', () => {
       const getHelpDe: DebugElement = fixture.debugElement;
       const headerElementDe: DebugElement = getHelpDe.query(By.css('h1'));
       const headerElementNative: HTMLElement = headerElementDe.nativeElement;
-      expect(headerElementNative.textContent).toEqual('Get help');
+      expect(headerElementNative.textContent).toEqual('Get Help');
     });
   });
 });

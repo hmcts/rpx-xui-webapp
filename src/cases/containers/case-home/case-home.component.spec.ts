@@ -1,17 +1,13 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import {
-  CaseUIToolkitModule,
-  AlertService,
-  NavigationOrigin,
-  HttpError,
-  ErrorNotifierService
-} from '@hmcts/ccd-case-ui-toolkit';
-import { RouterTestingModule } from '@angular/router/testing';
-import { CaseHomeComponent } from '..';
-import { ExUITitleService } from 'src/app/shared/services/exui-title.service';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { StoreModule, combineReducers, Store } from '@ngrx/store';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import {
+  AlertService, CaseUIToolkitModule,
+  ErrorNotifierService, HttpError, NavigationOrigin
+} from '@hmcts/ccd-case-ui-toolkit';
+import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { reducers } from 'src/app/store';
+import { CaseHomeComponent } from '..';
 import * as fromFeature from '../../store';
 
 describe('CaseHomeComponent', () => {
@@ -32,7 +28,6 @@ describe('CaseHomeComponent', () => {
       ],
       declarations: [CaseHomeComponent],
       providers: [
-        ExUITitleService,
         { provide: AlertService, useValue: mockAlertService },
         { provide: ErrorNotifierService, useValue: mockErrorNotifierService }
       ]

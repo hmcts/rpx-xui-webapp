@@ -2,7 +2,7 @@ import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.mode
 import { Response } from 'express'
 import { handleGet, handlePost } from '../common/crudService'
 import { getConfigValue } from '../configuration'
-import { SERVICES_CCD_CASE_ASSIGNMENT_API_PATH, SERVICES_PRD_API_URL, CASE_SHARE_PERMISSIONS } from '../configuration/references'
+import { CASE_SHARE_PERMISSIONS, SERVICES_CCD_CASE_ASSIGNMENT_API_PATH, SERVICES_PRD_API_URL } from '../configuration/references'
 import * as log4jui from '../lib/log4jui'
 import { EnhancedRequest, JUILogger } from '../lib/models'
 import { toCaseAssigneeMappingModel } from './dtos/case-user-dto'

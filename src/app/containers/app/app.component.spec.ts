@@ -1,3 +1,4 @@
+import { RoutesRecognized } from '@angular/router';
 import { of } from 'rxjs';
 import { AppComponent } from './app.component';
 
@@ -8,12 +9,49 @@ describe('AppComponent', () => {
     let timeoutNotificationService: any;
     let router: any;
     let title: any;
+    let testRoute: RoutesRecognized;
 
     beforeEach(() => {
         store = jasmine.createSpyObj('store', ['pipe', 'dispatch']);
         googleAnalyticsService = jasmine.createSpyObj('GoogleAnalyticsService', ['init']);
         timeoutNotificationService = jasmine.createSpyObj('TimeoutNotificationsService', ['notificationOnChange', 'initialise']);
-        router = { events: of() };
+        testRoute = new RoutesRecognized(1, 'test', 'test', {
+            url: 'test',
+            root: {
+                firstChild: {
+                    data: { title: 'Test' },
+                    url: [],
+                    params: {},
+                    queryParams: {},
+                    fragment: '',
+                    outlet: '',
+                    component: '',
+                    routeConfig: {},
+                    root: null,
+                    parent: null,
+                    firstChild: null,
+                    children: [],
+                    pathFromRoot: [],
+                    paramMap: null,
+                    queryParamMap: null
+                },
+                data: { title: 'Test' },
+                url: [],
+                params: {},
+                queryParams: {},
+                fragment: '',
+                outlet: '',
+                component: '',
+                routeConfig: {},
+                root: null,
+                parent: null,
+                children: [],
+                pathFromRoot: [],
+                paramMap: null,
+                queryParamMap: null
+            }
+        });
+        router = { events: of(testRoute) };
         title = jasmine.createSpyObj('Title', ['setTitle']);
         appComponent = new AppComponent(store, googleAnalyticsService, timeoutNotificationService, router, title);
     });
@@ -21,6 +59,10 @@ describe('AppComponent', () => {
     it('Truthy', () => {
         expect(appComponent).toBeTruthy();
         expect(googleAnalyticsService.init).toHaveBeenCalled();
+    });
+
+    it('Calls title service', () => {
+        expect(title.setTitle).toHaveBeenCalled();
     });
 
     it('signOutHandler', () => {

@@ -16,7 +16,7 @@ Feature: FPL create case workflow
 
     Scenario: Create and Submit FPL case
         When I start case with jurisdiction "Public Law" case type "Care, supervision and EPOs" and event "Start application"
-        When I create Divorce case
+        When I create FPL case
         Then I am on check your answers page
         When I submit case
         Then I see case details page

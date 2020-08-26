@@ -58,7 +58,6 @@ app.get('/api/monitoring-tools', (req, res) => {
 })
 app.use('/api/user', userRouter)
 app.use('/api/healthCheck', healthCheck)
-app.use('/api/user', userRouter)
 /*if (showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED)) {
     app.use('/api/userTermsAndConditions', userTandCRoutes)
     app.use('/api/termsAndConditions', termsAndCRoutes)

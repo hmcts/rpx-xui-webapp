@@ -2,7 +2,7 @@ import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.mode
 import { Response } from 'express'
 import { handleGet, handlePost } from '../common/crudService'
 import { getConfigValue } from '../configuration'
-import { SERVICES_CCD_CASE_ASSIGNMENT_API_PATH, SERVICES_PRD_API_URL } from '../configuration/references'
+import { SERVICES_CCD_CASE_ASSIGNMENT_API_PATH, SERVICES_PRD_API_URL, CASE_SHARE_PERMISSIONS } from '../configuration/references'
 import * as log4jui from '../lib/log4jui'
 import { EnhancedRequest, JUILogger } from '../lib/models'
 import { toCaseAssigneeMappingModel } from './dtos/case-user-dto'
@@ -16,9 +16,12 @@ const ccdUrl: string = getConfigValue(SERVICES_CCD_CASE_ASSIGNMENT_API_PATH)
 
 export async function getUsers(req: EnhancedRequest, res: Response) {
   try {
-    const path = `${prdUrl}/refdata/external/v1/organisations/users?returnRoles=false&status=active`
+    const path = `${prdUrl}/refdata/external/v1/organisations/users?returnRoles=true&status=active`
     const {status, data}: {status: number, data: any} = await handleGet(path, req)
-    const users = [...data.users].map(user => prdToUserDetails(user))
+    const permissions = CASE_SHARE_PERMISSIONS.split(',')
+    const users = [...data.users]
+                  .filter(user => user.roles.some(role => permissions.includes(role)))
+                  .map(user => prdToUserDetails(user))
     return res.status(status).send(users)
   } catch (error) {
     return res.status(error.status).send({

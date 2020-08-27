@@ -3,7 +3,7 @@ Feature: FPL create case workflow
 
     Background:
         When I navigate to Expert UI Url
-        Given I am logged into Expert UI with valid user details
+        Given I am logged into Expert UI with FPL user details
         Then I should be redirected to EUI dashboard page
         When I click on create case button
         Then Create case page should be displayed

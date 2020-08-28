@@ -40,19 +40,16 @@ function getValueByPropertyName(selectCase: SearchResultViewItem, propName: stri
 }
 
 function combineCaseTitleByCaseType(caseTypeId: string, selectCase: SearchResultViewItem): string {
-  switch (caseTypeId) {
-    case 'FinancialRemedyForDAC':
-    case 'FinancialRemedyContested':
-    case 'FinancialRemedyMVP2':
-      const applicantName = getApplicantName(selectCase);
-      const respondentName = getRespondentName(selectCase);
-      return applicantName + showVersus(applicantName, respondentName) + respondentName;
-    case 'DIVORCE':
-      const marriagePetitionerName = getValueByPropertyName(selectCase, 'D8PetitionerFirstName') + BLANK_SPACE + getValueByPropertyName(selectCase, 'D8PetitionerLastName');
-      const marriageRespondentName = getValueByPropertyName(selectCase, 'D8RespondentFirstName') + BLANK_SPACE + getValueByPropertyName(selectCase, 'D8RespondentLastName');
-      return marriagePetitionerName + showVersus(marriagePetitionerName, marriageRespondentName) + marriageRespondentName;
-    default:
-      return selectCase.case_id;
+  if (caseTypeId.indexOf('FinancialRemedy') > 0) {
+    const applicantName = getApplicantName(selectCase);
+    const respondentName = getRespondentName(selectCase);
+    return applicantName + showVersus(applicantName, respondentName) + respondentName;
+  } else if (caseTypeId.indexOf('DIVORCE') > 0) {
+    const marriagePetitionerName = getValueByPropertyName(selectCase, 'D8PetitionerFirstName') + BLANK_SPACE + getValueByPropertyName(selectCase, 'D8PetitionerLastName');
+    const marriageRespondentName = getValueByPropertyName(selectCase, 'D8RespondentFirstName') + BLANK_SPACE + getValueByPropertyName(selectCase, 'D8RespondentLastName');
+    return marriagePetitionerName + showVersus(marriagePetitionerName, marriageRespondentName) + marriageRespondentName;
+  } else {
+    return selectCase.case_id;
   }
 }
 

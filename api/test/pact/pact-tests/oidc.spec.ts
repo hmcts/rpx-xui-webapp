@@ -55,13 +55,18 @@ describe("OpenId Connect API", () => {
 
       // @ts-ignore
       const issuer = await oidc.configure({
+        allowRolesRegex: '.',
         authorizationURL: `${oidcUrl}/authorize`,
         callbackURL: `${provider.mockService.baseUrl}/oauth2/callback`,
         clientID: 'rpx-ao',
         clientSecret: 'secret',
         discoveryEndpoint: `${oidcUrl}/.well-known/openid-configuration`,
+        issuerURL: `${oidcUrl}`,
         logoutURL: `${oidcUrl}/logout`,
+        responseTypes: ['code'],
         scope: 'openid email',
+        sessionKey: 'xui-webapp',
+        tokenEndpointAuthMethod: 'client_secret_post',
         tokenURL: `${oidcUrl}/token`,
         useRoutes: false,
       })

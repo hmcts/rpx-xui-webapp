@@ -636,6 +636,30 @@
     "@otplib/plugin-crypto" "^12.0.1"
     "@otplib/plugin-thirty-two" "^12.0.1"
 
+"@pact-foundation/pact-node@^10.10.1":
+  version "10.10.1"
+  resolved "https://registry.yarnpkg.com/@pact-foundation/pact-node/-/pact-node-10.10.1.tgz#1feab92595acff9ab28b627687960cc15c1d2e68"
+  integrity sha512-N/mgqZ1z/MyD1LiRirUW7Y637Ry3y0k9Jq3kPb+9txz+OVMbkhmyNfBrhrmAuIAd14Bs832yR0kw76x2q1h7Bw==
+  dependencies:
+    "@types/q" "1.0.7"
+    "@types/request" "2.48.2"
+    bunyan "1.8.13"
+    bunyan-prettystream "0.1.3"
+    chalk "2.3.1"
+    check-types "7.3.0"
+    cross-spawn "^7.0.1"
+    libnpmconfig "^1.2.1"
+    mkdirp "1.0.0"
+    q "1.5.1"
+    request "2.88.0"
+    rimraf "2.6.2"
+    sumchecker "^2.0.2"
+    tar "4.4.2"
+    underscore "1.8.3"
+    unixify "1.0.0"
+    unzipper "^0.10.10"
+    url-join "^4.0.0"
+
 "@pact-foundation/pact-node@^10.9.7":
   version "10.10.0"
   resolved "https://registry.yarnpkg.com/@pact-foundation/pact-node/-/pact-node-10.10.0.tgz#f6679d00f022f01cd8cff37a5f0c9f04e230541b"

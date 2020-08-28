@@ -127,7 +127,7 @@
     "@angular/language-service": "~7.2.0",
     "@ngrx/schematics": "^7.4.0",
     "@pact-foundation/pact": "^9.11.1",
-    "@pact-foundation/pact-node": "^10.9.7",
+    "@pact-foundation/pact-node": "^10.10.1",
     "@stryker-mutator/api": "^3.0.1",
     "@stryker-mutator/core": "^3.0.1",
     "@stryker-mutator/html-reporter": "^3.0.1",

@@ -40,11 +40,11 @@ function getValueByPropertyName(selectCase: SearchResultViewItem, propName: stri
 }
 
 function combineCaseTitleByCaseType(caseTypeId: string, selectCase: SearchResultViewItem): string {
-  if (caseTypeId.indexOf('FinancialRemedy') > 0) {
+  if (caseTypeId.includes('FinancialRemedy')) {
     const applicantName = getApplicantName(selectCase);
     const respondentName = getRespondentName(selectCase);
     return applicantName + showVersus(applicantName, respondentName) + respondentName;
-  } else if (caseTypeId.indexOf('DIVORCE') > 0) {
+  } else if (caseTypeId.includes('DIVORCE')) {
     const marriagePetitionerName = getValueByPropertyName(selectCase, 'D8PetitionerFirstName') + BLANK_SPACE + getValueByPropertyName(selectCase, 'D8PetitionerLastName');
     const marriageRespondentName = getValueByPropertyName(selectCase, 'D8RespondentFirstName') + BLANK_SPACE + getValueByPropertyName(selectCase, 'D8RespondentLastName');
     return marriagePetitionerName + showVersus(marriagePetitionerName, marriageRespondentName) + marriageRespondentName;

@@ -1,5 +1,5 @@
 @divorce @fullfunctional
-Feature: Divorce create case workflow
+Feature: IA create case workflow
 
     Background:
         When I navigate to Expert UI Url
@@ -9,13 +9,15 @@ Feature: Divorce create case workflow
         Then Create case page should be displayed
 
     @all
-    Scenario: Start create case for Divorce
-        When I start case with jurisdiction "Family Divorce" case type "Divorce case - v115.00" and event "Apply for a divorce"
-       Then I am on case form page 
+    Scenario: Start create case for IA Start appeal
+        When I start case with jurisdiction "Immigration & Asylum" case type "Appeal* master" and event "Start your appeal"
+        Then I am on case form page
 
-    Scenario: Create and Submit Divorce Consented Case
-        When I start case with jurisdiction "Family Divorce" case type "Divorce case - v115.00" and event "Apply for a divorce"
+
+    Scenario: Create and Submit IA Case start appeal
+        When I start case with jurisdiction "Immigration & Asylum" case type "Appeal* master" and event "Start your appeal"
         When I create Divorce case
         Then I am on check your answers page
         When I submit case
         Then I see case details page
+

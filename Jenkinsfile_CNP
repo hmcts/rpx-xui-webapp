@@ -15,7 +15,7 @@ properties([
 
 // Disable pact testing on pipeline
 //
-// import uk.gov.hmcts.contino.AppPipelineDsl
+import uk.gov.hmcts.contino.AppPipelineDsl
 
 def type      = "nodejs"
 def product   = "xui"
@@ -56,9 +56,9 @@ withPipeline(type, product, component) {
 
 // Disable pact testing on pipeline
 //
-//    enablePactAs([
-//      AppPipelineDsl.PactRoles.CONSUMER
-//    ])
+    enablePactAs([
+      AppPipelineDsl.PactRoles.CONSUMER
+    ])
 
     after('checkout') {
         yarnBuilder.yarn('cache clean')

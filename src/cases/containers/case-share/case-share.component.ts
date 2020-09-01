@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
 import { UserDetails } from '@hmcts/rpx-xui-common-lib/lib/models/user-details.model';
 import { RouterReducerState } from '@ngrx/router-store';
@@ -22,9 +23,10 @@ export class CaseShareComponent implements OnInit {
   public shareCases$: Observable<SharedCase[]>;
   public shareCases: SharedCase[];
   public orgUsers$: Observable<UserDetails[]>;
+  public removeUserFromCaseToggleOn$: Observable<boolean>;
 
-  constructor(public store: Store<fromCaseList.State>) {
-
+  constructor(public store: Store<fromCaseList.State>,
+              public featureToggleService: FeatureToggleService) {
   }
 
   public ngOnInit() {
@@ -41,6 +43,8 @@ export class CaseShareComponent implements OnInit {
       // call api to retrieve users in the same organisation
       this.store.dispatch(new LoadUserFromOrgForCase());
     }
+    this.removeUserFromCaseToggleOn$ = this.featureToggleService.getValue('remove-user-from-case', false);
+
     // initialize javascript for accordion component to enable open/close button
     setTimeout(() => initAll(), 1000);
   }

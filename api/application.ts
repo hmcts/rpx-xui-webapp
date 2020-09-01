@@ -58,14 +58,13 @@ app.get('/api/monitoring-tools', (req, res) => {
 })
 app.use('/api/user', userRouter)
 app.use('/api/healthCheck', healthCheck)
-app.use('/api/user', userRouter)
 /*if (showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED)) {
     app.use('/api/userTermsAndConditions', userTandCRoutes)
     app.use('/api/termsAndConditions', termsAndCRoutes)
 }*/
 
 app.get('/api/configuration', (req, res) => {
-    res.send(showFeature(req.query.configurationKey))
+    res.send(showFeature(req.query.configurationKey as string))
 })
 
 // TODO: move to proxy route as below

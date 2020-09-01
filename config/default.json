@@ -149,5 +149,11 @@
       "pattern": ".",
       "totalIdleTime": 480
     }
-  ]
+  ],
+  "pact": {
+    "brokerUrl": "https://pact-broker.platform.hmcts.net",
+    "consumerVersion": "",
+    "brokerUsername": "",
+    "brokerPassword": ""
+  }
 }

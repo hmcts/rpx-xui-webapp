@@ -51,8 +51,9 @@ describe('Pa11y Accessibility tests', function () {
 
         actions.push(...PallyActions.clickElement('#accordion-with-summary-sections .govuk-accordion__open-all'));
 
-        actions.push(...PallyActions.clickElement('#accordion-with-summary-sections xuilib-selected-case  .govuk-accordion__section-content a'));
-        await pa11ytest(this, actions, conf.baseUrl + 'cases/case-share?init=true');
+        actions.push(...PallyActions.inputField('xuilib-user-select input','@'));
+        actions.push(...PallyActions.clickElement('.mat-autocomplete-visible mat-option span'));
+        actions.push(...PallyActions.clickElement('xuilib-share-case #btn-add-user'));
     });
 
     it('Confirm Share a case page', async function () {
@@ -62,7 +63,10 @@ describe('Pa11y Accessibility tests', function () {
 
         actions.push(...PallyActions.clickElement('#accordion-with-summary-sections .govuk-accordion__open-all'));
 
-        actions.push(...PallyActions.clickElement('#accordion-with-summary-sections xuilib-selected-case  .govuk-accordion__section-content a'));
+        actions.push(...PallyActions.inputField('xuilib-user-select input', '@'));
+        actions.push(...PallyActions.clickElement('.mat-autocomplete-visible mat-option span'));
+        actions.push(...PallyActions.clickElement('xuilib-share-case #btn-add-user'));
+        // actions.push(...PallyActions.clickElement('#accordion-with-summary-sections xuilib-selected-case  .govuk-accordion__section-content a'));
         actions.push(...PallyActions.clickElement('#share-case-nav button'));
         actions.push(...PallyActions.waitForPageWithCssLocator('exui-case-share-confirm #summarySections'));
         await pa11ytest(this, actions, conf.baseUrl + 'cases/case-share?init=true');
@@ -108,7 +112,6 @@ describe('Pa11y Accessibility tests', function () {
             actions.push(...PallyActions.waitForPageWithCssLocator('ccd-case-edit-page h1'))
             await pa11ytest(this, actions, conf.baseUrl + 'cases/case-create/DIVORCE/GrantOfRepresentation/solicitorCreateApplication/' + page.id);
         });
-
     });
 
     const probateCreateCaveat = ccdApi.getSolicitorCreateCaseConfig('Caveat', 'solicitorCreateCaveat');
@@ -124,6 +127,16 @@ describe('Pa11y Accessibility tests', function () {
     const iaConfig = ccdApi.getSolicitorCreateCaseConfig('Asylum', 'startAppeal');
     iaConfig.wizard_pages.forEach(page => {
         it('IA Create Case Page ' + page.id, async function () {
+            const actions = [];
+            actions.push(...PallyActions.waitForPageWithCssLocator('ccd-case-edit-page h1'))
+            await pa11ytest(this, actions, conf.baseUrl + 'cases/case-create/DIVORCE/Asylum/startAppeal/' + page.id);
+        });
+
+    });
+
+    const fplCareSupervisionConfig = ccdApi.getSolicitorCreateCaseConfig('CARE_SUPERVISION_EPO', 'openCase');
+    fplCareSupervisionConfig.wizard_pages.forEach(page => {
+        it('FPL Care Supervision Create Case Page ' + page.id, async function () {
             const actions = [];
             actions.push(...PallyActions.waitForPageWithCssLocator('ccd-case-edit-page h1'))
             await pa11ytest(this, actions, conf.baseUrl + 'cases/case-create/DIVORCE/Asylum/startAppeal/' + page.id);

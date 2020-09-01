@@ -16,6 +16,7 @@ export class MediaViewerWrapperComponent implements OnInit {
     mediaContentType = '';
     mediaAnnotationApiUrl = '';
     toolbarButtons = { showPrint: true };
+    caseId = '';
 
     public constructor(
         private windowService: WindowService
@@ -32,11 +33,13 @@ export class MediaViewerWrapperComponent implements OnInit {
                 document_filename: string
                 content_type: string
                 annotation_api_url?: string
+                case_id?: string
             } = JSON.parse(localStorageMedia);
             this.mediaURL = media.document_binary_url;
             this.mediaFilename = media.document_filename;
             this.mediaContentType = media.content_type;
             this.mediaAnnotationApiUrl = media.annotation_api_url;
+            this.caseId = media.case_id;
         }
     }
 

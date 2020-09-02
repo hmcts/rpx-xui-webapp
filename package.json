@@ -30,11 +30,7 @@
     "test:coverage:merge": "./node_modules/.bin/lcov-result-merger './reports/tests/coverage/*/lcov.info' > ./reports/tests/coverage/lcov.info",
     "test:coverage:node": "cd api && yarn coverage",
     "test:coverage:ng": "yarn test:ng --source-map --code-coverage",
-<<<<<<< HEAD
     "test:a11y": "webdriver-manager update --versions.chrome 2.40 && ng e2e --webdriver-update=false --protractorConfig=./test/accessibility/config/pa11yProtractor.conf.js",
-=======
-    "test:a11y": "ng e2e --protractorConfig=./test/accessibility/config/pa11yProtractor.conf.js",
->>>>>>> master
     "test:a11y1": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/accessibility/config/protractor.conf.js",
     "test:all": "yarn test:ng && yarn test:node && yarn test:smoke && yarn test:functional && yarn test:crossbrowser",
     "test:smoke": "sh whitelist.sh && webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/smoke.conf.js",

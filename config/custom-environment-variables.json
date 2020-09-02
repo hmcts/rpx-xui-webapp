@@ -36,6 +36,7 @@
       "iss": "SERVICES_IDAM_ISS_URL"
     },
     "markup_api": "SERVICES_MARKUP_API",
+    "icp_api": "SERVICES_ICP_API",
     "payments": "SERVICES_PAYMENTS_URL",
     "s2s": "SERVICES_S2S",
     "termsAndConditions": "SERVICES_TERMS_AND_CONDITIONS"

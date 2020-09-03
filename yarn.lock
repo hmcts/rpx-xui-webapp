@@ -8427,10 +8427,10 @@ next-tick@1, next-tick@~1.0.0:
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.0.0.tgz#ca86d1fe8828169b0120208e3dc8424b9db8342c"
   integrity sha1-yobR/ogoFpsBICCOPchCS524NCw=
 
-ng2-material-dropdown@0.11.0:
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/ng2-material-dropdown/-/ng2-material-dropdown-0.11.0.tgz#27a402ef3cbdcaf6791ef4cfd4b257e31db7546f"
-  integrity sha512-wptBo09qKecY0QPTProAThrc4A3ajJTcHE9LTpCG5XZZUhXLBzhnGK8OW33TN8A+K/jqcs7OB74ppYJiqs3nhQ==
+ng2-material-dropdown@0.10.1:
+  version "0.10.1"
+  resolved "https://registry.yarnpkg.com/ng2-material-dropdown/-/ng2-material-dropdown-0.10.1.tgz#0120ce1bbabfb065c62610fe3b572cd09f61b1e1"
+  integrity sha512-dOmk4+T6Rbtk60Un7sxOOFU546z5JEYupSL+RiG0/rN4DmJvxPp297AvA2Qm9LSMNszUZMi55cRzj79zQYu85g==
   dependencies:
     tslib "^1.9.0"
 
@@ -8441,12 +8441,12 @@ ngrx-store-freeze@^0.2.4:
   dependencies:
     deep-freeze-strict "^1.1.1"
 
-ngx-chips@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/ngx-chips/-/ngx-chips-2.1.0.tgz#aa299bcf40dc3e1f6288bf1d29e2fdfe9a132ed3"
-  integrity sha512-OQV4dTfD3nXm5d2mGKUSgwOtJOaMnZ4F+lwXOtd7DWRSUne0JQWwoZNHdOpuS6saBGhqCPDAwq6KxdR5XSgZUQ==
+ngx-chips@1.9.8:
+  version "1.9.8"
+  resolved "https://registry.yarnpkg.com/ngx-chips/-/ngx-chips-1.9.8.tgz#44c8be9456dc228524454428e70d8a49d7fbd9df"
+  integrity sha512-gU8hXByb0QcNLbDi5KuLsEgfuIoaKDDMHWdUPwtnY4gjGGEsg5afUo++raeKPHHc1igp/kYTghmI0xzOpMkqQg==
   dependencies:
-    ng2-material-dropdown "0.11.0"
+    ng2-material-dropdown "0.10.1"
     tslib "^1.9.0"
 
 ngx-cookie@^4.1.2:

@@ -12,7 +12,7 @@ import {
     HELMET,
     PROTOCOL,
     SERVICES_CCD_COMPONENT_API_PATH,
-    SERVICES_DOCUMENTS_API_PATH, SESSION_SECRET, SERVICES_ICP_API_URL,
+    SERVICES_DOCUMENTS_API_PATH, SERVICES_ICP_API_URL, SESSION_SECRET,
 } from './configuration/references'
 import {router as emAnnoRouter} from './emAnno/routes'
 import * as health from './health'

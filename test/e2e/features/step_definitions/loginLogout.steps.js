@@ -118,8 +118,8 @@ defineSupportCode(function ({ Given, When, Then }) {
     });
   });
 
-  Given('I am logged into Expert UI with non professional user details', async function () {
-    await loginPage.givenIAmLoggedIn(this.config.caseworkerUser, this.config.caseworkerPassword);
+  Given('I am logged into Expert UI with FPL user details', async function () {
+    await loginPage.givenIAmLoggedIn("kurt@swansea.gov.uk", "Password12");
     const world = this;
     await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
       world.attach("Login success page load load attempt : " + message)

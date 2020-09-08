@@ -63,6 +63,6 @@ export class MediaViewerWrapperComponent implements OnInit {
     * @param icpJurisdictions - []
     */
     public isIcpEnabled(isEnabled: boolean, icpJurisdictions: string[]): boolean {
-        return icpJurisdictions.includes(this.caseJurisdiction) ? true : isEnabled;
+        return icpJurisdictions && icpJurisdictions.length > 0 ? icpJurisdictions.includes(this.caseJurisdiction) : isEnabled;
     }
 }

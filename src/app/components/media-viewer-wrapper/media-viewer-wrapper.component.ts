@@ -1,5 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
+import { Observable } from 'rxjs';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 
 const MEDIA_VIEWER = 'media-viewer-info';
 
@@ -17,9 +19,14 @@ export class MediaViewerWrapperComponent implements OnInit {
     mediaAnnotationApiUrl = '';
     toolbarButtons = { showPrint: true };
     caseId = '';
+    caseJurisdiction = '';
+
+    icpJurisdictions$: Observable<string[]>;
+    icpEnabled$: Observable<boolean>
 
     public constructor(
-        private windowService: WindowService
+        private windowService: WindowService,
+        private featureToggleService: FeatureToggleService,
     ) {
     }
 
@@ -34,13 +41,28 @@ export class MediaViewerWrapperComponent implements OnInit {
                 content_type: string
                 annotation_api_url?: string
                 case_id?: string
+                case_jurisdiction?: string
             } = JSON.parse(localStorageMedia);
             this.mediaURL = media.document_binary_url;
             this.mediaFilename = media.document_filename;
             this.mediaContentType = media.content_type;
             this.mediaAnnotationApiUrl = media.annotation_api_url;
             this.caseId = media.case_id;
+            this.caseJurisdiction = media.case_jurisdiction;
         }
+
+        this.icpJurisdictions$ = this.featureToggleService.getValue('icp-jurisdictions', []);
+        this.icpEnabled$ = this.featureToggleService.isEnabled('icp-enabled');
     }
 
+    /**
+    * isIcpEnabled()
+    * Determines ICP visibility
+    *
+    * @param isEnabled - true
+    * @param icpJurisdictions - []
+    */
+    public isIcpEnabled(isEnabled: boolean, icpJurisdictions: string[]): boolean {
+        return icpJurisdictions.includes(this.caseJurisdiction) ? true : isEnabled;
+    }
 }

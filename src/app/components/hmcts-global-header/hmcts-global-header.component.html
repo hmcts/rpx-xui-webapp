@@ -1,23 +1,28 @@
-<div class="hmcts-header">
+<div class="hmcts-header" style="border: 1px solid blue;">
+    <!-- A Logo will go here -->
     <div class="hmcts-header__container">
+      <!-- Ok so all we need to do here is choose a header -->
       <ng-container  *ngIf="isBrandedHeader ;else noBrandedHeader">
         <div class="govuk-header__logo">
           <a href="#" class="govuk-header__link govuk-header__link--homepage">
-            <span class="govuk-header__logotype">
-              <span class="govuk-header__logotype-text">
-                MyHMCTS
+              <span class="govuk-header__logotype">
+                <span class="govuk-header__logotype-text">
+                  MyHMCTS
+                </span>
               </span>
-            </span>
           </a>
-        </div>
-        <a class="hmcts-header__link" [routerLink]="headerTitle?.url" [attr.aria-label]="headerTitle?.name" >{{headerTitle?.name}}</a>  
+      </div>
+        <a class="hmcts-header__link" [routerLink]="headerTitle?.url" [attr.aria-label]="headerTitle?.name" >{{headerTitle?.name}}</a>
       </ng-container>
+      <!-- TODO The logo will need to change -->
       <ng-template #noBrandedHeader>
           <div class="hmcts-header__logo">
               <a class="hmcts-header__link" [routerLink]="'/'" [attr.aria-label]="headerTitle?.name" >{{headerTitle?.name}}</a>
           </div>
       </ng-template>
-      <div class="hmcts-header__content">
+      <div>{{ navigation | json}}</div>
+      <!-- We need to re-color this if it's judicial user -->
+      <div class="hmcts-header__content" style="border: 1px solid red;">
           <nav class="hmcts-header__navigation" attr.aria-label="{{navigation.label}}">
               <ul class="hmcts-header__navigation-list" >
                   <li *ngFor="let item of navigation.items; let i = index" class="hmcts-header__navigation-item">

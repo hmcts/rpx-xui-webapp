@@ -4,9 +4,7 @@ import { Store, select } from '@ngrx/store';
 import * as fromRoot from '../../store';
 import {AppTitleModel} from '../../models/app-title.model';
 import {UserNavModel} from '../../models/user-nav.model';
-import { CookieService } from 'ngx-cookie';
 import { Observable, of, Subscription } from 'rxjs';
-import { AppUtils } from 'src/app/app-utils';
 
 @Component({
   selector: 'exui-header',
@@ -26,66 +24,41 @@ import { AppUtils } from 'src/app/app-utils';
  *
  * Therefore application logic needs to be abstracted up a level, to app-header.
  */
-export class HeaderComponent implements OnInit, OnDestroy {
+export class HeaderComponent implements OnInit {
 
   @Input() navItems: { active: boolean; href: string; }[];
   @Input() title: AppTitleModel;
   @Input() userNav: UserNavModel;
   @Input() showFindCase: boolean;
+  @Input() userRoles;
+  @Input() isCaseManager;
+  @Input() showNavItems: Observable<boolean>;
   @Output() navigate = new EventEmitter<string>();
 
   public isCaseManager = false;
-  showNavItems: Observable<boolean>;
-  subscription: Subscription;
 
   constructor(
     public store: Store<fromRoot.State>,
-    private cookieService: CookieService
   ) {}
 
+  public ngOnInit() {
 
-  ngOnInit() {
-     // This is in the wrong location? This should be in app-header.component.ts,
-     // and we should use it to pull out the correct Judicial role, and send
-     // the configuration of the header into this header component.
-     const userRoles = this.cookieService.get('roles');
-     this.isCaseManager = this.getIsCaseManager(userRoles);
-     const observable = this.getObservable(this.store);
-     this.subscription = this.subscribe(observable);
+     console.log('userRoles');
+     console.log(this.userRoles);
+     console.log('this.isCaseManager');
+     console.log(this.isCaseManager);
   }
 
-  // So over here we're subscribing to the nav items
-  subscribe(observable: Observable<string>): Subscription {
-    return  observable.subscribe(url => {
-      this.showNavItems = of(AppUtils.showNavItems(url));
-    });
-  }
+  public onNavigate(event) {
 
-  getObservable(store: Store<fromRoot.State>): Observable<string> {
-    return store.pipe(select(fromRoot.getRouterUrl));
-  }
-
-  // we're doing a simple way of checking what role the User has
-  // the header component is checking.
-  getIsCaseManager(userRoles: string): boolean {
-    return userRoles && userRoles.indexOf('pui-case-manager') !== -1;
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe(this.subscription);
-  }
-
-  unsubscribe(subscription: Subscription) {
-    if (subscription) {
-      subscription.unsubscribe();
-    }
-  }
-
-  onNavigate(event) {
     this.emitNavigate(event, this.navigate);
   }
 
-  emitNavigate(event: any, emitter: EventEmitter<string>) {
+  /**
+   * Emits Sign Out event to the parent.
+   */
+  public emitNavigate(event: any, emitter: EventEmitter<string>) {
+
     emitter.emit(event);
   }
 }

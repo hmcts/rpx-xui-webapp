@@ -41,14 +41,98 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     private cookieService: CookieService) {
   }
 
+  /**
+   * Get User Roles
+   *
+   * Get User Roles from Cookie.
+   */
+  public getUserRoles() {
+
+    return this.cookieService.get('roles');
+  }
+
+  /**
+   * TODO:
+   * Take into consideration:
+   * The judicial header takes precedence over other ones for judges.
+   * In other words, if a user has both judicial roles (see list below) and solicitor roles (e.g. pui-case-manager),
+   * the judicial header should display.
+   * @see EUI-2292
+   * Therefore the array should be in priority order, with the items closer to the top taking precedence.
+   *
+   * We need to be prepared to add new roles and remove existing ones to the list above
+   * as new services are reformed and existing ones evolve. Therefore leverage application vars.
+   * @see comments on EUI-2292
+   */
+  public getRoleBasedThemes = () => {
+
+    return [
+      {
+        roles: ['pui-case-manager'],
+        appTitle: 'Case Manager',
+        navigationItems: [],
+        accountNavigationItems: [],
+        showFindCase: true,
+      },
+      {
+        roles: [
+          'caseworker-sscs-judge',
+          'caseworker-sscs-panelmember',
+          'caseworker-cmc-judge',
+          'caseworker-divorce-judge',
+        ],
+        appTitle: 'Judicial Case Manager',
+        navigationItems: [],
+        accountNavigationItems: [],
+        showFindCase: true,
+      }
+    ];
+  }
+
+  /**
+   * Finds the Application's Theming, based on a User's Roles.
+   *
+   * The application's theme contains Navigation items that the User is able to see, and styling for that User.
+   * ie. To A Judicial User the application is called 'Judicial Case Manager' and has different menu items,
+   * whereas to a Case Worker user the application is called 'Case Manager'.
+   *
+   * TODO: So do we want to go through each of our roles, or do we want to go through the User's roles
+   * So it's a loop of 18 vs. 10. But if we went through the userRoles initially then if we found
+   * a match it would not be prioritise if we go through our role based themes then the priority order still stands.
+   *
+   * We go through the roles of each theme to check if they exist for a User. We do it this way, so that we can
+   * priortise which theme takes precendence, ie. a theme higher up the Role Based Theming array will take
+   * precendence over one that's below it.
+   *
+   * @param userRoles
+   * @return {boolean}
+   */
+  public findTheme = userRoles => {
+    return false;
+  }
 
   // Note that all components use this app-header.component.html, and therefore all components use
   // this: exui-app-header
-  ngOnInit(): void {
+  public ngOnInit(): void {
 
-    // Set the userRoles
-    this.userRoles = this.cookieService.get('roles');
+    this.userRoles = this.getUserRoles();
+    const applicationTheme = this.findTheme(this.userRoles);
     console.log(this.userRoles);
+
+
+    // So we should be able to pass in isOfRoleType(this.userRoles, 'pui-case-manager')
+    // yes they are of this role type, therefore we get back the styles associated with
+
+    // so we should getHeaderStyling
+    // So we would have
+
+    // So we get the userRoles, we then need to pick out the most appriopiate userRole.
+    // This should be priority based ie. the role at the top is given the highest priority
+    // and will be used firstly.
+
+    // So if PUI case manager is part of the roles let's use this one.
+
+    // const appNavAndStyling = getAppNavAndStyling()
 
     this.isCaseManager = this.getIsCaseManager(this.userRoles);
 

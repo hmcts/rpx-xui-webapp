@@ -83,8 +83,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
   ) { }
 
   public ngOnInit() {
-
-    this.store.dispatch(new fromCasesFeature.LoadAllOrganisations());
     this.isVisible = false;
     this.page = 1;
     this.resultView = null;

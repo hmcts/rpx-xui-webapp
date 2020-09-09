@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@^2.64.22-consumer-sorting-prerelease":
-  version "2.64.22-consumer-sorting-prerelease"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.64.22-consumer-sorting-prerelease.tgz#dd637ecad053261f9280f4bb131b6e72046c2497"
-  integrity sha512-DAXLmPXJOLTnddnlFBYYmUFxWdtfUfR+27TUn45B74sj00pOVKVi9avoPvWYFdB+W3JLHlhED3wQzCRWkaIFxA==
+"@hmcts/ccd-case-ui-toolkit@^2.64.30-cacheable-org-service":
+  version "2.64.30-cacheable-org-service"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.64.30-cacheable-org-service.tgz#83faa2161b3449956a83d22ab9db20b46fc621bb"
+  integrity sha512-w1K8w6O2W7h1X9bbD9QhS7RnCPFvoCy5M9ekj1vqWYCs/GqBtaVp2+bWXGrwDGqM9J7LXTRyaofplsDmkBZWPA==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"

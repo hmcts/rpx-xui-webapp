@@ -22,21 +22,6 @@ export const checkServiceHealth = service => healthcheck.web(`${service}/health`
   timeout: 12000,
 })
 
-/**
- * Health Checks
- *
- * Check each 3rd party endpoint to see if it's up and running.
- */
-export const healthChecks = {
-  checks: {
-    documentsApi: checkServiceHealth(getConfigValue(SERVICES_DOCUMENTS_API_PATH)),
-    emmoApi: checkServiceHealth(getConfigValue(SERVICES_EM_ANNO_API_URL)),
-    idamApi: checkServiceHealth(getConfigValue(SERVICES_IDAM_LOGIN_URL)),
-    idamWeb: checkServiceHealth(getConfigValue(SERVICES_IDAM_API_URL)),
-    s2s: checkServiceHealth(getConfigValue(SERVICE_S2S_PATH)),
-  },
-}
-
 /*if (showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED)) {
   healthChecks.checks = {...healthChecks.checks, ...{
   termsAndConditions: checkServiceHealth(getConfigValue(SERVICES_TERMS_AND_CONDITIONS_URL)),

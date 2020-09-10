@@ -49,7 +49,10 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    * TODO: Why does this return with a j: in it.
    * @return j:["pui-caa","payments","caseworker-publiclaw-solicitor"]
    */
-  public getSerialisedUserRolesFromCookie = () => this.cookieService.get('roles');
+  public getSerialisedUserRolesFromCookie() {
+
+    return this.cookieService.get('roles');
+  }
 
   /**
    * Get User Roles
@@ -62,6 +65,9 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    * '"caseworker-divorce-financialremedy-solicitor","caseworker"]';
    */
   public deserialiseUserRoles = (serialisedUserRoles: string): string[] => {
+
+    console.log('serialisedUserRoles');
+    console.log(serialisedUserRoles);
 
     const serialisedUserRolesWithoutJsonPrefix: string = AppUtils.removeJsonPrefix(serialisedUserRoles);
     return AppUtils.getCookieRolesAsArray(serialisedUserRolesWithoutJsonPrefix);
@@ -122,12 +128,20 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    */
   public findAppThemeForUser = (userRoles, themes) => {
 
+    for (const theme of themes) {
+      console.log(theme);
+      for (const role of theme.applyToRoles) {
+        if (userRoles.indexOf(role) > -1) {
+          return theme;
+        }
+      }
+    }
     console.log('userRoles');
     console.log(userRoles);
     console.log('themes');
     console.log(themes);
 
-    return true;
+    // return true;
   }
 
   /**
@@ -152,10 +166,14 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   // this: exui-app-header
   public ngOnInit(): void {
 
-    this.userRoles = this.getSerialisedUserRolesFromCookie();
+    // Need to mock this in the test
+    this.userRoles = this.cookieService.get('roles');
 
-    const serialisedUserRoles = this.getSerialisedUserRolesFromCookie();
-    const userRoles = this.deserialiseUserRoles(serialisedUserRoles);
+    // const serialisedUserRoles = this.getSerialisedUserRolesFromCookie();
+
+    console.log('serialisedUserRoles');
+    console.log(this.userRoles);
+    const userRoles = this.deserialiseUserRoles(this.userRoles);
 
     console.log('userRoles');
     console.log(userRoles);

@@ -75,6 +75,39 @@ describe('AppHeaderComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should find the users theme based on their role', () => {
+
+    // Remember we want exact matches not partial matches
+    const userRoles = 'j:["pui-caa","payments","caseworker-publiclaw-solicitor","caseworker-publiclaw","caseworker-ia-legalrep-solicitor",' +
+      '"caseworker-ia","caseworker-divorce-financialremedy","pui-user-manager","pui-case-manager","caseworker-probate-solicitor",' +
+      '"caseworker","caseworker-probate","caseworker-divorce-financialremedy-solicitor","caseworker-divorce","pui-organisation-manager",' +
+      '"pui-finance-manager","caseworker-divorce-solicitor"]';
+
+    const themes = [
+      {
+        roles: ['pui-case-manager'],
+        appTitle: 'Case Manager',
+        navigationItems: [],
+        accountNavigationItems: [],
+        showFindCase: true,
+      },
+      {
+        roles: [
+          'caseworker-sscs-judge',
+          'caseworker-sscs-panelmember',
+          'caseworker-cmc-judge',
+          'caseworker-divorce-judge',
+        ],
+        appTitle: 'Judicial Case Manager',
+        navigationItems: [],
+        accountNavigationItems: [],
+        showFindCase: true,
+      }
+    ];
+
+    expect(component.findAppNavigationAndStyling(userRoles, themes)).toBeTruthy();
+  });
   //
   // it('should update parameter on ngOnInit', () => {
   //   expect(component.findTheme([],[])).toBe(false);

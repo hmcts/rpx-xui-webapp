@@ -49,10 +49,23 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    * TODO: Why does this return with a j: in it.
    * @return j:["pui-caa","payments","caseworker-publiclaw-solicitor"]
    */
-  public getUserRoles() {
+  public getSerialisedUserRolesFromCookie = () => this.cookieService.get('roles');
 
-    return this.cookieService.get('roles');
-  }
+  /**
+   * Get User Roles
+   *
+   * Takes in a string of serialised User Roles, supplied from the Node layer.
+   *
+   * TODO: Unit test
+   *
+   * @param serialisedUserRoles - 'j:["pui-organisation-manager","caseworker-publiclaw",' +
+   * '"caseworker-divorce-financialremedy-solicitor","caseworker"]';
+   */
+  public deserialiseUserRoles = (serialisedUserRoles: string): string[] => {
+
+    const serialisedUserRolesWithoutJsonPrefix: string = AppUtils.removeJsonPrefix(serialisedUserRoles);
+    return AppUtils.getCookieRolesAsArray(serialisedUserRolesWithoutJsonPrefix);
+  };
 
   /**
    * TODO:
@@ -107,26 +120,51 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    * priortise which theme takes precendence, ie. a theme higher up the Role Based Theming array will take
    * precendence over one that's below it.
    */
-  public findTheme = (userRoles, themes) => {
+  public findAppThemeForUser = (userRoles, themes) => {
 
     console.log('userRoles');
     console.log(userRoles);
     console.log('themes');
     console.log(themes);
 
-    return false;
+    return true;
   }
+
+  /**
+   * Cookie User Roles to Array
+   *
+   * The User Roles within the cookie are stored as a string,
+   * we need to take the string, and convert it to an array.
+   *
+   * We do this as we want a role within the User Role to match
+   * up exactly to a role within the theme.
+   *
+   * If we were to use Reg-Ex over the string, we will find
+   * matching on multiple items, within the cookie string.
+   *
+   * @param cookieUserRoles
+   */
+  // public cookieUserRolesToArray = cookieUserRoles => {
+  //
+  // };
 
   // Note that all components use this app-header.component.html, and therefore all components use
   // this: exui-app-header
   public ngOnInit(): void {
 
-    this.userRoles = this.getUserRoles();
-    const themes = this.getRoleBasedThemes();
+    this.userRoles = this.getSerialisedUserRolesFromCookie();
 
-    const applicationTheme = this.findTheme(this.userRoles, themes);
-    console.log(this.userRoles);
-    console.log(applicationTheme);
+    const serialisedUserRoles = this.getSerialisedUserRolesFromCookie();
+    const userRoles = this.deserialiseUserRoles(serialisedUserRoles);
+
+    console.log('userRoles');
+    console.log(userRoles);
+
+    const themes = this.getRoleBasedThemes();
+    console.log('themes');
+    console.log(themes);
+
+    const applicationTheme = this.findAppThemeForUser(userRoles, themes);
 
     this.isCaseManager = this.getIsCaseManager(this.userRoles);
 

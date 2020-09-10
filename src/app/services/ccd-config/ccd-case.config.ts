@@ -118,4 +118,11 @@ export class AppConfig extends AbstractAppConfig {
     return `${this.getCaseDataUrl()}/internal/banners/`;
   }
 
+  public getPrdUrl(): string {
+    return 'api/caseshare/orgs';
+  }
+
+  public getCacheTimeOut(): number {
+    return 45000;
+  }
 }

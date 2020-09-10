@@ -14,14 +14,14 @@ const storeMock = {
   }
 };
 
-const cookieService = {
-  get: key => {
-    return cookieService[key];
+const cookieServiceMock = {
+  get: () => {
+    return 'j:["pui-organisation-manager", "caseworker-publiclaw", "caseworker-divorce-financialremedy-solicitor", "caseworker"]';
   },
-  set: (key, value) => {
-    cookieService[key] = value;
-  },
-  removeAll: () => { }
+  // set: (key, value) => {
+  //   cookieService[key] = value;
+  // },
+  // removeAll: () => { }
 };
 
 let pipeSpy: jasmine.Spy;
@@ -33,9 +33,9 @@ describe('AppHeaderComponent', () => {
   let fixture: ComponentFixture<AppHeaderComponent>;
   let store: Store<fromActions.State>;
 
-  const mockCookieService = jasmine.createSpyObj('CookieService', [
-    'get',
-  ]);
+  // const mockCookieService = jasmine.createSpyObj('CookieService', [
+  //   'get',
+  // ]);
 
   const mockDetails = {};
 
@@ -59,7 +59,7 @@ describe('AppHeaderComponent', () => {
         },
         {
           provide: CookieService,
-          useValue: mockCookieService,
+          useValue: cookieServiceMock,
         },
         AppHeaderComponent
       ],
@@ -80,7 +80,7 @@ describe('AppHeaderComponent', () => {
     'we should return that theme.', () => {
 
     // Remember we want exact matches not partial matches
-    const userRoles = ['pui-caa', 'caseworker-sscs-judge'];
+    const userRoles = ['pui-case-manager', 'caseworker-sscs-judge'];
 
     const themes = [
       {
@@ -104,7 +104,18 @@ describe('AppHeaderComponent', () => {
       },
     ];
 
-    expect(component.findAppThemeForUser(userRoles, themes)).toEqual({});
+    expect(component.findAppThemeForUser(userRoles, themes)).toEqual({
+      applyToRoles: [
+        'caseworker-sscs-judge',
+        'caseworker-sscs-panelmember',
+        'caseworker-cmc-judge',
+        'caseworker-divorce-judge',
+      ],
+      appTitle: 'Judicial Case Manager',
+      navigationItems: [],
+      accountNavigationItems: [],
+      showFindCase: true,
+    });
   });
   //
   // it('should update parameter on ngOnInit', () => {

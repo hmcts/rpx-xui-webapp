@@ -125,22 +125,27 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    * We go through the roles of each theme to check if they exist for a User. We do it this way, so that we can
    * priortise which theme takes precendence, ie. a theme higher up the Role Based Theming array will take
    * precendence over one that's below it.
+   *
+   * TODO: You are working here, making sure that this func works correctly,
+   * and is tested.
    */
   public findAppThemeForUser = (userRoles, themes) => {
 
-    for (const theme of themes) {
-      console.log(theme);
-      for (const role of theme.applyToRoles) {
-        if (userRoles.indexOf(role) > -1) {
-          return theme;
-        }
-      }
-    }
     console.log('userRoles');
     console.log(userRoles);
     console.log('themes');
     console.log(themes);
 
+    for (const theme of themes) {
+      console.log(theme);
+      for (const role of theme.applyToRoles) {
+        if (userRoles.indexOf(role) > -1) {
+          console.log('Send back theme.');
+          console.log(theme);
+          return theme;
+        }
+      }
+    }
     // return true;
   }
 

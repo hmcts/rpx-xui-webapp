@@ -31,11 +31,11 @@ export class HeaderComponent implements OnInit {
   @Input() userNav: UserNavModel;
   @Input() showFindCase: boolean;
   @Input() userRoles;
-  @Input() isCaseManager;
+  @Input() isCaseManager: boolean = false;
   @Input() showNavItems: Observable<boolean>;
   @Output() navigate = new EventEmitter<string>();
 
-  public isCaseManager = false;
+  // public isCaseManager = false;
 
   constructor(
     public store: Store<fromRoot.State>,

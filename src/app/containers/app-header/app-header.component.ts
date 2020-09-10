@@ -45,6 +45,9 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    * Get User Roles
    *
    * Get User Roles from Cookie.
+   *
+   * TODO: Why does this return with a j: in it.
+   * @return j:["pui-caa","payments","caseworker-publiclaw-solicitor"]
    */
   public getUserRoles() {
 
@@ -103,11 +106,14 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    * We go through the roles of each theme to check if they exist for a User. We do it this way, so that we can
    * priortise which theme takes precendence, ie. a theme higher up the Role Based Theming array will take
    * precendence over one that's below it.
-   *
-   * @param userRoles
-   * @return {boolean}
    */
-  public findTheme = userRoles => {
+  public findTheme = (userRoles, themes) => {
+
+    console.log('userRoles');
+    console.log(userRoles);
+    console.log('themes');
+    console.log(themes);
+
     return false;
   }
 
@@ -116,34 +122,17 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
 
     this.userRoles = this.getUserRoles();
-    const applicationTheme = this.findTheme(this.userRoles);
+    const themes = this.getRoleBasedThemes();
+
+    const applicationTheme = this.findTheme(this.userRoles, themes);
     console.log(this.userRoles);
-
-
-    // So we should be able to pass in isOfRoleType(this.userRoles, 'pui-case-manager')
-    // yes they are of this role type, therefore we get back the styles associated with
-
-    // so we should getHeaderStyling
-    // So we would have
-
-    // So we get the userRoles, we then need to pick out the most appriopiate userRole.
-    // This should be priority based ie. the role at the top is given the highest priority
-    // and will be used firstly.
-
-    // So if PUI case manager is part of the roles let's use this one.
-
-    // const appNavAndStyling = getAppNavAndStyling()
+    console.log(applicationTheme);
 
     this.isCaseManager = this.getIsCaseManager(this.userRoles);
 
     console.log(this.isCaseManager);
     const observable = this.getObservable(this.store);
-    this.subscription = this.subscribe(observable);
-
-    // So we should be able to pass a User in, and be returned the appropiate appHeaderTitle, navItems, and
-    // userNav for that User.
-    // maybe we want a style object that we pass through as well.
-    // So an app header configuration object is passed into app header
+    // this.subscription = this.subscribe(observable);
 
     // The app header changes dependent on the User.
     this.appHeaderTitle = AppConstants.APP_HEADER_TITLE;
@@ -166,13 +155,14 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   }
 
   // So over here we're subscribing to the nav items
-  public subscribe(observable: Observable<string>): Subscription {
-    return observable.subscribe(url => {
-      this.showNavItems = of(AppUtils.showNavItems(url));
-      console.log('hello nav items');
-      console.log(this.showNavItems);
-    });
-  }
+  // TODO: Add back in.
+  // public subscribe(observable: Observable<string>): Subscription {
+  //   return observable.subscribe(url => {
+  //     this.showNavItems = of(AppUtils.showNavItems(url));
+  //     console.log('hello nav items');
+  //     console.log(this.showNavItems);
+  //   });
+  // }
 
   public ngOnDestroy() {
     this.unsubscribe(this.subscription);
@@ -184,8 +174,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     }
   }
 
-
-  onNavigate(event): void {
+  public onNavigate(event): void {
     if (event === 'sign-out') {
       this.store.dispatch(new fromActions.StopIdleSessionTimeout());
       return this.store.dispatch(new fromActions.Logout());

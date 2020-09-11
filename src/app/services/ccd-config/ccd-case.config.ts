@@ -125,5 +125,4 @@ export class AppConfig extends AbstractAppConfig {
   public getCacheTimeOut(): number {
     return 45000;
   }
-
 }

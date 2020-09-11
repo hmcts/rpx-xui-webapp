@@ -43,7 +43,6 @@ import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { ENVIRONMENT_CONFIG, EnvironmentConfig } from 'src/models/environmentConfig.model';
 import { CaseShareService } from './services/case/share-case.service';
 
-
 export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): string {
   return envConfig.launchDarklyClientId || '';
 }

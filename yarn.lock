@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@^2.64.30-cacheable-org-service":
-  version "2.64.30-cacheable-org-service"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.64.30-cacheable-org-service.tgz#83faa2161b3449956a83d22ab9db20b46fc621bb"
-  integrity sha512-w1K8w6O2W7h1X9bbD9QhS7RnCPFvoCy5M9ekj1vqWYCs/GqBtaVp2+bWXGrwDGqM9J7LXTRyaofplsDmkBZWPA==
+"@hmcts/ccd-case-ui-toolkit@^2.64.33-internal-search-api-url-update":
+  version "2.64.33-internal-search-api-url-update"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.64.33-internal-search-api-url-update.tgz#cda8d321dbbda02212b04ac7cab6a5829c5e1691"
+  integrity sha512-SoauJ74mb5ug7CF6Nkw1UTlYsdIJbgwAjvkg673+zRr6glfVonirtTxhYJ9uweoYpwVOVuDVqxoFlzK0YF1qBQ==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
@@ -643,9 +643,9 @@
     "@otplib/plugin-thirty-two" "^12.0.1"
 
 "@pact-foundation/pact-node@^10.9.7":
-  version "10.10.1"
-  resolved "https://registry.yarnpkg.com/@pact-foundation/pact-node/-/pact-node-10.10.1.tgz#1feab92595acff9ab28b627687960cc15c1d2e68"
-  integrity sha512-N/mgqZ1z/MyD1LiRirUW7Y637Ry3y0k9Jq3kPb+9txz+OVMbkhmyNfBrhrmAuIAd14Bs832yR0kw76x2q1h7Bw==
+  version "10.10.0"
+  resolved "https://registry.yarnpkg.com/@pact-foundation/pact-node/-/pact-node-10.10.0.tgz#f6679d00f022f01cd8cff37a5f0c9f04e230541b"
+  integrity sha512-EuGAu3Scredye+msw+Mt9+DIJzBkOZbcgHyt3e4HZuv3bjz9Pi9ElrGk/IP/0HYksAm6rcuDT5vpfpvlQwrW3A==
   dependencies:
     "@types/q" "1.0.7"
     "@types/request" "2.48.2"
@@ -2423,9 +2423,9 @@ buffer-from@^1.0.0, buffer-from@^1.1.0:
   integrity sha512-MQcXEUbCKtEo7bhqEs6560Hyd4XaovZlO/k9V3hjVUF/zwW7KBVdSK4gIt/bzwS9MbR5qob+F5jusZsb0YQK2A==
 
 buffer-indexof-polyfill@~1.0.0:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/buffer-indexof-polyfill/-/buffer-indexof-polyfill-1.0.2.tgz#d2732135c5999c64b277fcf9b1abe3498254729c"
-  integrity sha512-I7wzHwA3t1/lwXQh+A5PbNvJxgfo5r3xulgpYDB5zckTu/Z9oUK9biouBKQUjEqzaz3HnAT6TYoovmE+GqSf7A==
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/buffer-indexof-polyfill/-/buffer-indexof-polyfill-1.0.1.tgz#a9fb806ce8145d5428510ce72f278bb363a638bf"
+  integrity sha1-qfuAbOgUXVQoUQznLyeLs2OmOL8=
 
 buffer-indexof@^1.0.0:
   version "1.1.1"
@@ -5378,13 +5378,13 @@ gherkin@^5.0.0:
   integrity sha1-aEu7A63STq9731RPWAM+so+zxtU=
 
 git-rev-sync@^2.0.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/git-rev-sync/-/git-rev-sync-2.1.0.tgz#f2b6af0b834042d45194cecb83df6eb505164dc1"
-  integrity sha512-qZWv4D3GBm9sHEq5Jvc2rGuwQbz52mJoNAhe/zZS+rlwft7n8BGAG0QCgXt6m+jxn82IwlpOT3UXY81LkFJufA==
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/git-rev-sync/-/git-rev-sync-2.0.0.tgz#82fb77d9281efe7e7947569380dda4d1c19f4cb3"
+  integrity sha512-vnHFv2eocTmt/wHqZm3ksxtVshK4vptT0cEoumk6hAYRFx3do6Qo7xHBTBCv29+r3ZZCQOQ1i328MUCsYF7AUw==
   dependencies:
     escape-string-regexp "1.0.5"
     graceful-fs "4.1.15"
-    shelljs "0.8.4"
+    shelljs "0.7.7"
 
 glob-base@^0.3.0:
   version "0.3.0"
@@ -10807,10 +10807,10 @@ shebang-regex@^3.0.0:
   resolved "https://registry.yarnpkg.com/shebang-regex/-/shebang-regex-3.0.0.tgz#ae16f1644d873ecad843b0307b143362d4c42172"
   integrity sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==
 
-shelljs@0.8.4:
-  version "0.8.4"
-  resolved "https://registry.yarnpkg.com/shelljs/-/shelljs-0.8.4.tgz#de7684feeb767f8716b326078a8a00875890e3c2"
-  integrity sha512-7gk3UZ9kOfPLIAbslLzyWeGiEqx9e3rxwZM0KE6EL8GlGwjym9Mrlx5/p33bWTu9YG6vcS4MBxYZDHYr5lr8BQ==
+shelljs@0.7.7:
+  version "0.7.7"
+  resolved "https://registry.yarnpkg.com/shelljs/-/shelljs-0.7.7.tgz#b2f5c77ef97148f4b4f6e22682e10bba8667cff1"
+  integrity sha1-svXHfvlxSPS09uImguELuoZnz/E=
   dependencies:
     glob "^7.0.0"
     interpret "^1.0.0"

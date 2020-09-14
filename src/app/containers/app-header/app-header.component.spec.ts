@@ -107,14 +107,34 @@ describe('AppHeaderComponent', () => {
       },
     ];
 
+    expect(component.findAppThemeForUser(userRoles, themes)).toEqual(themes[0]);
+  });
+
+  it('should return a default theme if there is no application theme to apply to this user.', () => {
+
+    // Remember we want exact matches not partial matches
+    const userRoles = ['user-role-1', 'user-role-2'];
+
+    // We compare the first set of theme roles first.
+    const themes = [
+      {
+        roles: [
+          'caseworker-sscs-judge',
+          'caseworker-sscs-panelmember',
+          'caseworker-cmc-judge',
+          'caseworker-divorce-judge',
+        ],
+        appTitle: 'Judicial Case Manager',
+      },
+      {
+        roles: ['pui-case-manager'],
+        appTitle: 'Case Manager',
+      },
+    ];
+
     expect(component.findAppThemeForUser(userRoles, themes)).toEqual({
-      roles: [
-        'caseworker-sscs-judge',
-        'caseworker-sscs-panelmember',
-        'caseworker-cmc-judge',
-        'caseworker-divorce-judge',
-      ],
-      appTitle: 'Judicial Case Manager',
+      roles: ['default'],
+      appTitle: 'Default',
       navigationItems: [],
       accountNavigationItems: [],
       showFindCase: true,

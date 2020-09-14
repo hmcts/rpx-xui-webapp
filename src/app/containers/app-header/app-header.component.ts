@@ -36,9 +36,8 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   subscription: Subscription;
   showNavItems: Observable<boolean>;
 
-  constructor(
-    private store: Store<fromActions.State>,
-    private cookieService: CookieService) {
+  constructor(private store: Store<fromActions.State>,
+              private cookieService: CookieService) {
   }
 
   /**
@@ -84,6 +83,9 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    *
    * We need to be prepared to add new roles and remove existing ones to the list above
    * as new services are reformed and existing ones evolve. Therefore leverage application vars.
+   *
+   * TODO: remove url from app Title?
+   *
    * @see comments on EUI-2292
    */
   public getRoleBasedThemes = () => {
@@ -91,9 +93,23 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     return [
       {
         roles: ['pui-case-manager'],
-        appTitle: 'Case Manager',
-        navigationItems: [],
-        accountNavigationItems: [],
+        appTitle: {name: 'Manage Cases test', url: '/'},
+        navigationItems: [{
+          text: 'Case list',
+          href: '/cases',
+          active: false
+        }, {
+          text: 'Create case',
+          href: '/cases/case-filter',
+          active: false
+        }],
+        accountNavigationItems: {
+          label: 'Account navigation',
+          items: [{
+            text: 'Sign out',
+            emit: 'sign-out'
+          }]
+        }, // TODO: Does this need to be an object or array?
         showFindCase: true,
       },
       {
@@ -131,20 +147,19 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    */
   public findAppThemeForUser = (userRoles, themes): any => {
 
-    let themeToApply = null;
+    // Default theme
+    const themeToApply = {
+      roles: ['default'],
+      appTitle: 'Default',
+      navigationItems: [],
+      accountNavigationItems: [],
+      showFindCase: true,
+    }
 
-    // Not breaking properly
     for (const theme of themes) {
-      console.log(theme);
-
-
-      if (!themeToApply) {
-        for (const role of theme.roles) {
-          if (userRoles.indexOf(role) > -1) {
-            console.log('Send back theme.');
-            console.log(theme);
-            themeToApply = theme;
-          }
+      for (const role of theme.roles) {
+        if (userRoles.indexOf(role) > -1) {
+          return theme;
         }
       }
     }
@@ -192,6 +207,10 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
     const applicationTheme = this.findAppThemeForUser(userRoles, themes);
 
+    const {appTitle, accountNavigationItems, navigationItems} = applicationTheme;
+
+    console.log('applicationTheme');
+    console.log(applicationTheme);
     this.isCaseManager = this.getIsCaseManager(this.userRoles);
 
     console.log(this.isCaseManager);
@@ -199,12 +218,12 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     // this.subscription = this.subscribe(observable);
 
     // The app header changes dependent on the User.
-    this.appHeaderTitle = AppConstants.APP_HEADER_TITLE;
+    this.appHeaderTitle = appTitle;
 
     // I guess in the future the navItems,
     // and user nav may change dependent on the User.
-    this.navItems = AppConstants.NAV_ITEMS;
-    this.userNav = AppConstants.USER_NAV;
+    this.navItems = navigationItems;
+    this.userNav = accountNavigationItems;
     this.showFindCase = true;
   }
 

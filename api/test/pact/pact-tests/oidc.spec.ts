@@ -16,12 +16,12 @@ describe("OpenId Connect API", () => {
     MOCK_SERVER_PORT = await getPort()
     idamTestUrl = `http://localhost:${MOCK_SERVER_PORT}`
     provider = new Pact({
-      consumer: 'xui_approve_org',
+      consumer: 'xui_approve_org_oidc',
       dir: path.resolve(__dirname, '../pacts'),
       log: path.resolve(__dirname, '../logs', 'oidc-integration.log'),
       logLevel: 'info',
       port: MOCK_SERVER_PORT,
-      provider: 'Idam_oidc_api',
+      provider: 'Idam_api',
       spec: 2,
     })
     return provider.setup()

@@ -129,24 +129,27 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    * TODO: You are working here, making sure that this func works correctly,
    * and is tested.
    */
-  public findAppThemeForUser = (userRoles, themes) => {
+  public findAppThemeForUser = (userRoles, themes): any => {
 
-    console.log('userRoles');
-    console.log(userRoles);
-    console.log('themes');
-    console.log(themes);
+    let themeToApply = null;
 
+    // Not breaking properly
     for (const theme of themes) {
       console.log(theme);
-      for (const role of theme.applyToRoles) {
-        if (userRoles.indexOf(role) > -1) {
-          console.log('Send back theme.');
-          console.log(theme);
-          return theme;
+
+
+      if (!themeToApply) {
+        for (const role of theme.roles) {
+          if (userRoles.indexOf(role) > -1) {
+            console.log('Send back theme.');
+            console.log(theme);
+            themeToApply = theme;
+          }
         }
       }
     }
-    // return true;
+
+    return themeToApply;
   }
 
   /**

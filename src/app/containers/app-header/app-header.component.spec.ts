@@ -72,19 +72,22 @@ describe('AppHeaderComponent', () => {
     fixture.detectChanges();
   }));
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+  // xit('should create', () => {
+  //   expect(component).toBeTruthy();
+  // });
 
-  it('should run through each themes roles, and check if it matches a User Role, if it does, then' +
-    'we should return that theme.', () => {
+  // run through each themes roles, and check if it matches a User Role, if it does, then' +
+  // 'we should return that theme.
+  it('should return the theme in priority order ie. a theme higher up the themes array' +
+    'will be compared with the user\'s roles first.', () => {
 
     // Remember we want exact matches not partial matches
     const userRoles = ['pui-case-manager', 'caseworker-sscs-judge'];
 
+    // We compare the first set of theme roles first.
     const themes = [
       {
-        applyToRoles: [
+        roles: [
           'caseworker-sscs-judge',
           'caseworker-sscs-panelmember',
           'caseworker-cmc-judge',
@@ -96,7 +99,7 @@ describe('AppHeaderComponent', () => {
         showFindCase: true,
       },
       {
-        applyToRoles: ['pui-case-manager'],
+        roles: ['pui-case-manager'],
         appTitle: 'Case Manager',
         navigationItems: [],
         accountNavigationItems: [],
@@ -105,7 +108,7 @@ describe('AppHeaderComponent', () => {
     ];
 
     expect(component.findAppThemeForUser(userRoles, themes)).toEqual({
-      applyToRoles: [
+      roles: [
         'caseworker-sscs-judge',
         'caseworker-sscs-panelmember',
         'caseworker-cmc-judge',

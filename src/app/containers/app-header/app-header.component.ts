@@ -33,6 +33,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   showFindCase: boolean;
   userRoles: any;
   backgroundColor: string;
+  logoType: string;
   isCaseManager: any;
   subscription: Subscription;
   showNavItems: Observable<boolean>;
@@ -135,7 +136,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
         accountNavigationItems: {
           label: 'Account navigation',
           items: [{
-            text: 'Sign out j',
+            text: 'Sign out d',
             emit: 'sign-out'
           }]
         },
@@ -143,6 +144,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
         // TODO: This is not working.
         showFindCase: false,
         backgroundColor: '#8d0f0e',
+        logoType: 'judicial',
       },
       {
         roles: ['pui-case-manager'],
@@ -165,7 +167,8 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
           }]
         }, // TODO: Does this need to be an object or array?
         showFindCase: true,
-        backgroundColor: '#00a33b',
+        backgroundColor: '#202020',
+        logoType: 'myhmcts',
       },
     ];
   }
@@ -209,24 +212,6 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     return themeToApply;
   }
 
-  /**
-   * Cookie User Roles to Array
-   *
-   * The User Roles within the cookie are stored as a string,
-   * we need to take the string, and convert it to an array.
-   *
-   * We do this as we want a role within the User Role to match
-   * up exactly to a role within the theme.
-   *
-   * If we were to use Reg-Ex over the string, we will find
-   * matching on multiple items, within the cookie string.
-   *
-   * @param cookieUserRoles
-   */
-  // public cookieUserRolesToArray = cookieUserRoles => {
-  //
-  // };
-
   // Note that all components use this app-header.component.html, and therefore all components use
   // this: exui-app-header
   public ngOnInit(): void {
@@ -241,20 +226,23 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     const applicationThemes = this.getApplicationThemes();
 
     // TODO: Change this to test theming
-    const testUserRoles = ['caseworker-sscs-judge'];
+    const testUserRoles = ['caseworker-sscs-panelmember'];
 
     const applicationTheme = this.getUsersTheme(testUserRoles, applicationThemes);
 
-    const {appTitle, accountNavigationItems, backgroundColor, navigationItems, showFindCase} = applicationTheme;
+    const {appTitle, accountNavigationItems, backgroundColor, logoType, navigationItems, showFindCase} = applicationTheme;
 
     console.log('applicationTheme');
     console.log(applicationTheme);
     // TODO: Check what this does.
     // this.isCaseManager = this.getIsCaseManager(this.userRoles);
 
+    // If the user is a Case manager ie. 'pui-case-manager'
+
     // If the User is a case manager then we get a
     // My HMCTS header ie. if they have pui-case-manager
     // as part of their name.
+    // TODO: Do we need this? What does this do?
     this.isCaseManager = true;
 
     console.log(this.isCaseManager);
@@ -272,6 +260,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     this.navItems = navigationItems;
     this.userNav = accountNavigationItems;
     this.backgroundColor = backgroundColor;
+    this.logoType = logoType;
 
 
     // TODO: showFindCase is not working.

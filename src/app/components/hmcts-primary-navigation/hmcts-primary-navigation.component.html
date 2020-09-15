@@ -1,8 +1,8 @@
 <nav *ngIf="showItems" class="hmcts-primary-navigation" style="background-color: transparent" [attr.aria-label]="label">
-  <div class="hmcts-primary-navigation__container" style="border: 1px solid blue;">
-    <div class="govuk-header__logo" *ngIf="isBrandedHeader" style="border: 1px solid pink;"></div>
-    <div class="hmcts-primary-navigation__nav" style="border: 1px solid yellow;">
-      <nav class="hmcts-primary-navigation" aria-label="Primary navigation" style="border: 1px solid red;" style="background-color: transparent">
+  <div class="hmcts-primary-navigation__container">
+    <div class="govuk-header__logo" *ngIf="isBrandedHeader"></div>
+    <div class="hmcts-primary-navigation__nav">
+      <nav class="hmcts-primary-navigation" aria-label="Primary navigation" style="background-color: transparent">
         <ul class="hmcts-primary-navigation__list">
           <li class="hmcts-primary-navigation__item" *ngFor="let item of items" >
             <a class="hmcts-primary-navigation__link" [attr.aria-current]="item.active ? true: null" [routerLink]="item.href">{{item.text}}</a>
@@ -10,7 +10,7 @@
         </ul>
       </nav>
     </div>
-    <div class="hmcts-primary-navigation__search" style="border: 1px solid red;">
+    <div class="hmcts-primary-navigation__search">
       <!-- TODO: Should turn on and off -->
       <a class="hmcts-search-toggle__button" [routerLink]="'/cases/case-search'" style="background-color: transparent">Find case</a>
     </div>

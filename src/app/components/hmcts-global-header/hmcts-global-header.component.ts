@@ -14,6 +14,7 @@ export class HmctsGlobalHeaderComponent {
   @Input() headerTitle: {name: string; url: string};
   @Input() navigation;
   @Input() isBrandedHeader: boolean;
+  @Input() logoType: string;
   @Output() navigate = new EventEmitter<string>();
 
   userValue = true;

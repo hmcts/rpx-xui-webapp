@@ -1,11 +1,11 @@
-<header style="border: 1px solid pink;">
+<header>
   <!-- TODO:include a newly branded logo, note that the logo is quite large -->
   <div [ngStyle]="{'background-color': backgroundColor}">
-    <div>hello</div>
     <exui-hmcts-global-header
     [headerTitle]="title"
     [navigation]="userNav"
     [isBrandedHeader]="isCaseManager"
+    [logoType]="logoType"
     (navigate)="onNavigate($event)">
     </exui-hmcts-global-header>
     <!-- Navigation menu -->

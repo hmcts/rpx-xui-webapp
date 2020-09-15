@@ -48,7 +48,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    * TODO: Why does this return with a j: in it.
    * @return j:["pui-caa","payments","caseworker-publiclaw-solicitor"]
    */
-  public getSerialisedUserRolesFromCookie() {
+  public getSerialisedUserRolesFromCookie(): string {
 
     return this.cookieService.get('roles');
   }
@@ -64,9 +64,6 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    * '"caseworker-divorce-financialremedy-solicitor","caseworker"]';
    */
   public deserialiseUserRoles = (serialisedUserRoles: string): string[] => {
-
-    console.log('serialisedUserRoles');
-    console.log(serialisedUserRoles);
 
     const serialisedUserRolesWithoutJsonPrefix: string = AppUtils.removeJsonPrefix(serialisedUserRoles);
     return AppUtils.getCookieRolesAsArray(serialisedUserRolesWithoutJsonPrefix);
@@ -88,12 +85,12 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    *
    * @see comments on EUI-2292
    */
-  public getRoleBasedThemes = () => {
+  public getApplicationThemes = () => {
 
     return [
       {
         roles: ['pui-case-manager'],
-        appTitle: {name: 'Manage Cases test', url: '/'},
+        appTitle: {name: 'Manage Cases pui-case-manger', url: '/'},
         navigationItems: [{
           text: 'Case list',
           href: '/cases',
@@ -114,14 +111,28 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
       },
       {
         roles: [
-          'caseworker-sscs-judge',
           'caseworker-sscs-panelmember',
           'caseworker-cmc-judge',
+          'pui-caa',
           'caseworker-divorce-judge',
         ],
-        appTitle: 'Judicial Case Manager',
-        navigationItems: [],
-        accountNavigationItems: [],
+        appTitle: {name: 'Manage Cases pui-caa', url: '/'},
+        navigationItems: [{
+          text: 'Case list',
+          href: '/cases',
+          active: false
+        }, {
+          text: 'Create case',
+          href: '/cases/case-filter',
+          active: false
+        }],
+        accountNavigationItems: {
+          label: 'Account navigation',
+          items: [{
+            text: 'Sign out',
+            emit: 'sign-out'
+          }]
+        }, // TODO: Does this need to be an object or array?
         showFindCase: true,
       }
     ];
@@ -145,14 +156,31 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    * TODO: You are working here, making sure that this func works correctly,
    * and is tested.
    */
-  public findAppThemeForUser = (userRoles, themes): any => {
+  public getUsersTheme = (userRoles, themes): any => {
+
+    console.log('getUsersTheme userRoles');
+    console.log(userRoles);
 
     // Default theme
     const themeToApply = {
       roles: ['default'],
-      appTitle: 'Default',
-      navigationItems: [],
-      accountNavigationItems: [],
+      appTitle: {name: 'Manage Cases Default', url: '/'},
+      navigationItems: [{
+        text: 'Case list',
+        href: '/cases',
+        active: false
+      }, {
+        text: 'Create case',
+        href: '/cases/case-filter',
+        active: false
+      }],
+      accountNavigationItems: {
+        label: 'Account navigation',
+        items: [{
+          text: 'Sign out d',
+          emit: 'sign-out'
+        }]
+      }, // TODO: Does this need to be an object or array?
       showFindCase: true,
     }
 
@@ -190,22 +218,17 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
 
     // Need to mock this in the test
+    // TODO: userRoles is needed in the component. remove once we replace.
     this.userRoles = this.cookieService.get('roles');
 
-    // const serialisedUserRoles = this.getSerialisedUserRolesFromCookie();
+    const serialisedUserRoles: string = this.getSerialisedUserRolesFromCookie();
+    const userRoles: string[] = this.deserialiseUserRoles(serialisedUserRoles);
 
-    console.log('serialisedUserRoles');
-    console.log(this.userRoles);
-    const userRoles = this.deserialiseUserRoles(this.userRoles);
+    const applicationThemes = this.getApplicationThemes();
 
-    console.log('userRoles');
-    console.log(userRoles);
+    const testUserRoles = ['pui-caa'];
 
-    const themes = this.getRoleBasedThemes();
-    console.log('themes');
-    console.log(themes);
-
-    const applicationTheme = this.findAppThemeForUser(userRoles, themes);
+    const applicationTheme = this.getUsersTheme(testUserRoles, applicationThemes);
 
     const {appTitle, accountNavigationItems, navigationItems} = applicationTheme;
 

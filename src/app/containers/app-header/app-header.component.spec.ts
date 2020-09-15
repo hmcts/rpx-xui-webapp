@@ -132,7 +132,7 @@ describe('AppHeaderComponent', () => {
       },
     ];
 
-    expect(component.findAppThemeForUser(userRoles, themes)).toEqual({
+    expect(component.getUsersTheme(userRoles, themes)).toEqual({
       roles: ['default'],
       appTitle: 'Default',
       navigationItems: [],

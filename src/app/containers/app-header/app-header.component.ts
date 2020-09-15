@@ -89,8 +89,13 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
     return [
       {
-        roles: ['pui-case-manager'],
-        appTitle: {name: 'Manage Cases pui-case-manger', url: '/'},
+        roles: [
+          'caseworker-sscs-judge',
+          'caseworker-sscs-panelmember',
+          'caseworker-cmc-judge',
+          'caseworker-divorce-judge',
+        ],
+        appTitle: {name: 'Judicial case manager', url: '/'},
         navigationItems: [{
           text: 'Case list',
           href: '/cases',
@@ -110,13 +115,9 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
         showFindCase: true,
       },
       {
-        roles: [
-          'caseworker-sscs-panelmember',
-          'caseworker-cmc-judge',
-          'pui-caa',
-          'caseworker-divorce-judge',
-        ],
-        appTitle: {name: 'Manage Cases pui-caa', url: '/'},
+        roles: ['pui-case-manager'],
+        // TODO: Get rid of url from this?
+        appTitle: {name: 'Manage Cases', url: '/'},
         navigationItems: [{
           text: 'Case list',
           href: '/cases',
@@ -134,7 +135,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
           }]
         }, // TODO: Does this need to be an object or array?
         showFindCase: true,
-      }
+      },
     ];
   }
 
@@ -226,7 +227,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
     const applicationThemes = this.getApplicationThemes();
 
-    const testUserRoles = ['pui-caa'];
+    const testUserRoles = ['caseworker-sscs-judge'];
 
     const applicationTheme = this.getUsersTheme(testUserRoles, applicationThemes);
 
@@ -245,8 +246,8 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
     // I guess in the future the navItems,
     // and user nav may change dependent on the User.
-    this.navItems = navigationItems;
-    this.userNav = accountNavigationItems;
+    this.navItems = AppConstants.NAV_ITEMS;
+    this.userNav = AppConstants.USER_NAV;
     this.showFindCase = true;
   }
 

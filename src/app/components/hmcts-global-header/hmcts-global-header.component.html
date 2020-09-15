@@ -1,4 +1,4 @@
-<div class="hmcts-header" style="border: 1px solid blue;">
+<div class="hmcts-header" style="background-color: transparent">
     <!-- A Logo will go here -->
     <div class="hmcts-header__container">
       <!-- Ok so all we need to do here is choose a header -->
@@ -20,7 +20,6 @@
               <a class="hmcts-header__link" [routerLink]="'/'" [attr.aria-label]="headerTitle?.name" >{{headerTitle?.name}}</a>
           </div>
       </ng-template>
-      <div>{{ navigation | json}}</div>
       <!-- We need to re-color this if it's judicial user -->
       <div class="hmcts-header__content" style="border: 1px solid red;">
           <nav class="hmcts-header__navigation" attr.aria-label="{{navigation.label}}">

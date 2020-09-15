@@ -1,19 +1,21 @@
-<header>
+<header style="border: 1px solid pink;">
   <!-- TODO: This needs to change color, include a newly branded logo, note that the logo is quite large -->
   <!-- TODO: Title needs to be Judicial Case Manager -->
-  <exui-hmcts-global-header
-  [headerTitle]="title"
-  [navigation]="userNav"
-  [isBrandedHeader]="isCaseManager"
-  (navigate)="onNavigate($event)"
-  ></exui-hmcts-global-header>
-  <!-- Navigation menu -->
-  <exui-hmcts-primary-navigation
-  [label]=""
-  [items]="navItems"
-  [isBrandedHeader]="isCaseManager"
-  [showNavItems]="showNavItems | async"
-  ></exui-hmcts-primary-navigation>
+  <div style="background-color: #00a33b">
+    <exui-hmcts-global-header
+    [headerTitle]="title"
+    [navigation]="userNav"
+    [isBrandedHeader]="isCaseManager"
+    (navigate)="onNavigate($event)">
+    </exui-hmcts-global-header>
+    <!-- Navigation menu -->
+    <exui-hmcts-primary-navigation
+    [label]=""
+    [items]="navItems"
+    [isBrandedHeader]="isCaseManager"
+    [showNavItems]="showNavItems | async"
+    ></exui-hmcts-primary-navigation>
+  </div>
   <!-- !Navigation menu -->
   <exui-phase-banner type="beta"></exui-phase-banner>
 </header>

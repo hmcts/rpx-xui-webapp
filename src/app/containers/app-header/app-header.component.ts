@@ -32,6 +32,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   userNav: UserNavModel;
   showFindCase: boolean;
   userRoles: any;
+  backgroundColor: string;
   isCaseManager: any;
   subscription: Subscription;
   showNavItems: Observable<boolean>;
@@ -60,6 +61,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
       }]
     }, // TODO: Does this need to be an object or array?
     showFindCase: true,
+    backgroundColor: '#202020',
   }
 
   /**
@@ -140,6 +142,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
         // TODO: Does this need to be an object or array?
         // TODO: This is not working.
         showFindCase: false,
+        backgroundColor: '#8d0f0e',
       },
       {
         roles: ['pui-case-manager'],
@@ -162,6 +165,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
           }]
         }, // TODO: Does this need to be an object or array?
         showFindCase: true,
+        backgroundColor: '#00a33b',
       },
     ];
   }
@@ -241,12 +245,17 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
     const applicationTheme = this.getUsersTheme(testUserRoles, applicationThemes);
 
-    const {appTitle, accountNavigationItems, navigationItems, showFindCase} = applicationTheme;
+    const {appTitle, accountNavigationItems, backgroundColor, navigationItems, showFindCase} = applicationTheme;
 
     console.log('applicationTheme');
     console.log(applicationTheme);
     // TODO: Check what this does.
-    this.isCaseManager = this.getIsCaseManager(this.userRoles);
+    // this.isCaseManager = this.getIsCaseManager(this.userRoles);
+
+    // If the User is a case manager then we get a
+    // My HMCTS header ie. if they have pui-case-manager
+    // as part of their name.
+    this.isCaseManager = true;
 
     console.log(this.isCaseManager);
 
@@ -262,6 +271,8 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     // and user nav may change dependent on the User.
     this.navItems = navigationItems;
     this.userNav = accountNavigationItems;
+    this.backgroundColor = backgroundColor;
+
 
     // TODO: showFindCase is not working.
     this.showFindCase = showFindCase;

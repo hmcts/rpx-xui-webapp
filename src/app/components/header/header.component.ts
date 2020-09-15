@@ -31,6 +31,7 @@ export class HeaderComponent implements OnInit {
   @Input() userNav: UserNavModel;
   @Input() showFindCase: boolean;
   @Input() userRoles;
+  @Input() backgroundColor: string;
   @Input() isCaseManager: boolean = false;
   @Input() showNavItems: Observable<boolean>;
   @Output() navigate = new EventEmitter<string>();

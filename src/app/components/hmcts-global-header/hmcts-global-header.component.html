@@ -2,7 +2,8 @@
     <!-- A Logo will go here -->
     <div class="hmcts-header__container">
       <!-- Ok so all we need to do here is choose a header -->
-      <ng-container  *ngIf="isBrandedHeader ;else noBrandedHeader">
+      <ng-container  *ngIf="isBrandedHeader;else noBrandedHeader">
+        <!-- Header Logo -->
         <div class="govuk-header__logo">
           <a href="#" class="govuk-header__link govuk-header__link--homepage">
               <span class="govuk-header__logotype">
@@ -11,7 +12,8 @@
                 </span>
               </span>
           </a>
-      </div>
+        </div>
+        <!-- Header title -->
         <a class="hmcts-header__link" [routerLink]="headerTitle?.url" [attr.aria-label]="headerTitle?.name" >{{headerTitle?.name}}</a>
       </ng-container>
       <!-- TODO The logo will need to change -->
@@ -21,7 +23,7 @@
           </div>
       </ng-template>
       <!-- We need to re-color this if it's judicial user -->
-      <div class="hmcts-header__content" style="border: 1px solid red;">
+      <div class="hmcts-header__content" style="border: 1px solid blue;">
           <nav class="hmcts-header__navigation" attr.aria-label="{{navigation.label}}">
               <ul class="hmcts-header__navigation-list" >
                   <li *ngFor="let item of navigation.items; let i = index" class="hmcts-header__navigation-item">

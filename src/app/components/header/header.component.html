@@ -1,7 +1,7 @@
 <header style="border: 1px solid pink;">
-  <!-- TODO: This needs to change color, include a newly branded logo, note that the logo is quite large -->
-  <!-- TODO: Title needs to be Judicial Case Manager -->
-  <div style="background-color: #00a33b">
+  <!-- TODO:include a newly branded logo, note that the logo is quite large -->
+  <div [ngStyle]="{'background-color': backgroundColor}">
+    <div>hello</div>
     <exui-hmcts-global-header
     [headerTitle]="title"
     [navigation]="userNav"

@@ -107,7 +107,7 @@ describe('AppHeaderComponent', () => {
       },
     ];
 
-    expect(component.findAppThemeForUser(userRoles, themes)).toEqual(themes[0]);
+    expect(component.getUsersTheme(userRoles, themes)).toEqual(themes[0]);
   });
 
   it('should return a default theme if there is no application theme to apply to this user.', () => {
@@ -132,13 +132,7 @@ describe('AppHeaderComponent', () => {
       },
     ];
 
-    expect(component.getUsersTheme(userRoles, themes)).toEqual({
-      roles: ['default'],
-      appTitle: 'Default',
-      navigationItems: [],
-      accountNavigationItems: [],
-      showFindCase: true,
-    });
+    expect(component.getUsersTheme(userRoles, themes)).toEqual(component.DEFAULT_THEME);
   });
   //
   // it('should update parameter on ngOnInit', () => {

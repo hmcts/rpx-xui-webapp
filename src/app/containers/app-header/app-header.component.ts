@@ -40,6 +40,28 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
               private cookieService: CookieService) {
   }
 
+  public DEFAULT_THEME = {
+    roles: ['default'],
+    appTitle: {name: 'Manage Cases Default', url: '/'},
+    navigationItems: [{
+      text: 'Case list',
+      href: '/cases',
+      active: false
+    }, {
+      text: 'Create case',
+      href: '/cases/case-filter',
+      active: false
+    }],
+    accountNavigationItems: {
+      label: 'Account navigation',
+      items: [{
+        text: 'Sign out d',
+        emit: 'sign-out'
+      }]
+    }, // TODO: Does this need to be an object or array?
+    showFindCase: true,
+  }
+
   /**
    * Get User Roles
    *
@@ -96,23 +118,28 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
           'caseworker-divorce-judge',
         ],
         appTitle: {name: 'Judicial case manager', url: '/'},
-        navigationItems: [{
-          text: 'Case list',
-          href: '/cases',
-          active: false
-        }, {
-          text: 'Create case',
-          href: '/cases/case-filter',
-          active: false
-        }],
+        navigationItems: [
+          {
+            text: 'Case list',
+            href: '/cases',
+            active: false
+          },
+          {
+            text: 'Create case',
+            href: '/cases/case-filter',
+            active: false
+          }
+        ],
         accountNavigationItems: {
           label: 'Account navigation',
           items: [{
-            text: 'Sign out',
+            text: 'Sign out j',
             emit: 'sign-out'
           }]
-        }, // TODO: Does this need to be an object or array?
-        showFindCase: true,
+        },
+        // TODO: Does this need to be an object or array?
+        // TODO: This is not working.
+        showFindCase: false,
       },
       {
         roles: ['pui-case-manager'],
@@ -163,27 +190,9 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     console.log(userRoles);
 
     // Default theme
-    const themeToApply = {
-      roles: ['default'],
-      appTitle: {name: 'Manage Cases Default', url: '/'},
-      navigationItems: [{
-        text: 'Case list',
-        href: '/cases',
-        active: false
-      }, {
-        text: 'Create case',
-        href: '/cases/case-filter',
-        active: false
-      }],
-      accountNavigationItems: {
-        label: 'Account navigation',
-        items: [{
-          text: 'Sign out d',
-          emit: 'sign-out'
-        }]
-      }, // TODO: Does this need to be an object or array?
-      showFindCase: true,
-    }
+    // TODO: Side effecting
+    // Move default theme to constants file.
+    const themeToApply = this.DEFAULT_THEME;
 
     for (const theme of themes) {
       for (const role of theme.roles) {
@@ -227,11 +236,12 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
     const applicationThemes = this.getApplicationThemes();
 
+    // TODO: Change this to test theming
     const testUserRoles = ['caseworker-sscs-judge'];
 
     const applicationTheme = this.getUsersTheme(testUserRoles, applicationThemes);
 
-    const {appTitle, accountNavigationItems, navigationItems} = applicationTheme;
+    const {appTitle, accountNavigationItems, navigationItems, showFindCase} = applicationTheme;
 
     console.log('applicationTheme');
     console.log(applicationTheme);
@@ -239,16 +249,18 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
     console.log(this.isCaseManager);
     const observable = this.getObservable(this.store);
-    // this.subscription = this.subscribe(observable);
+    this.subscription = this.subscribe(observable);
 
     // The app header changes dependent on the User.
     this.appHeaderTitle = appTitle;
 
     // I guess in the future the navItems,
     // and user nav may change dependent on the User.
-    this.navItems = AppConstants.NAV_ITEMS;
-    this.userNav = AppConstants.USER_NAV;
-    this.showFindCase = true;
+    this.navItems = navigationItems;
+    this.userNav = accountNavigationItems;
+
+    // TODO: showFindCase is not working.
+    this.showFindCase = showFindCase;
   }
 
   // we're doing a simple way of checking what role the User has
@@ -263,13 +275,14 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
   // So over here we're subscribing to the nav items
   // TODO: Add back in.
-  // public subscribe(observable: Observable<string>): Subscription {
-  //   return observable.subscribe(url => {
-  //     this.showNavItems = of(AppUtils.showNavItems(url));
-  //     console.log('hello nav items');
-  //     console.log(this.showNavItems);
-  //   });
-  // }
+  // TODO: What does this do?
+  public subscribe(observable: Observable<string>): Subscription {
+    return observable.subscribe(url => {
+      this.showNavItems = of(AppUtils.showNavItems(url));
+      console.log('hello nav items');
+      console.log(this.showNavItems);
+    });
+  }
 
   public ngOnDestroy() {
     this.unsubscribe(this.subscription);

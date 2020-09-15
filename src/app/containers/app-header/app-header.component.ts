@@ -245,11 +245,15 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
     console.log('applicationTheme');
     console.log(applicationTheme);
+    // TODO: Check what this does.
     this.isCaseManager = this.getIsCaseManager(this.userRoles);
 
     console.log(this.isCaseManager);
-    const observable = this.getObservable(this.store);
-    this.subscription = this.subscribe(observable);
+
+    // TODO: Not sure why we need this
+    // const observable = this.getObservable(this.store);
+    // this.subscription = this.subscribe(observable);
+    this.hideNavigationListener();
 
     // The app header changes dependent on the User.
     this.appHeaderTitle = appTitle;
@@ -269,15 +273,33 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     return userRoles && userRoles.indexOf('pui-case-manager') !== -1;
   }
 
+  /**
+   * Hide Navigation
+   *
+   * We subscribe to the applications router. When the router url has a certain path we do
+   * not show the navigation ie. on the Terms and Conditions page we do not show the navigation,
+   * due to business requirements.
+   *
+   * TODO: Pass in store.
+   */
+  public hideNavigationListener(): void {
+
+    const observable = this.getObservable(this.store);
+    this.subscription = this.subscribe(observable);
+  }
+
   public getObservable(store: Store<fromActions.State>): Observable<string> {
     return store.pipe(select(fromActions.getRouterUrl));
   }
 
-  // So over here we're subscribing to the nav items
-  // TODO: Add back in.
-  // TODO: What does this do?
+  /**
+   * Check if we should show navigation items.
+   */
   public subscribe(observable: Observable<string>): Subscription {
     return observable.subscribe(url => {
+
+      console.log('subscribe url');
+      console.log(url);
       this.showNavItems = of(AppUtils.showNavItems(url));
       console.log('hello nav items');
       console.log(this.showNavItems);

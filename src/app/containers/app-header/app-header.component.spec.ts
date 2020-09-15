@@ -33,11 +33,7 @@ describe('AppHeaderComponent', () => {
   let fixture: ComponentFixture<AppHeaderComponent>;
   let store: Store<fromActions.State>;
 
-  // const mockCookieService = jasmine.createSpyObj('CookieService', [
-  //   'get',
-  // ]);
-
-  const mockDetails = {};
+  const mockDetails = '/cases';
 
   beforeEach(async(() => {
 

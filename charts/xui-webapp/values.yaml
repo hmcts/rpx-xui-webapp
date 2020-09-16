@@ -80,6 +80,7 @@ nodejs:
         - mc-idam-client-secret
         - appinsights-instrumentationkey-mc
         - webapp-redis-connection-string
+        - launch-darkly-client-id
         - mc-pact-ca-bundle-cert
   # Don't modify below here
   image: ${IMAGE_NAME}

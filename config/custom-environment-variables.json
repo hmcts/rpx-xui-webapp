@@ -50,6 +50,7 @@
       "mc-s2s-client-secret": "S2S_SECRET",
       "mc-idam-client-secret": "IDAM_SECRET",
       "webapp-redis-connection-string": "REDISCLOUD_URL",
+      "launch-darkly-client-id": "LAUNCH_DARKLY_CLIENT_ID",
       "mc-pact-ca-bundle-cert": "PACT_CA_BUNDLE_CERT"
     }
   },

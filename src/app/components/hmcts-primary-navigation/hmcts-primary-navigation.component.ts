@@ -14,6 +14,8 @@ export class HmctsPrimaryNavigationComponent {
 
     @Input() label;
     @Input() items;
+    @Input() logoIsUsed;
+    // TODO: Remove
     @Input() isBrandedHeader: boolean;
     @Input() showFindCase: boolean;
 

@@ -13,7 +13,6 @@ export class HmctsGlobalHeaderComponent {
   // }
   @Input() headerTitle: {name: string; url: string};
   @Input() navigation;
-  @Input() isBrandedHeader: boolean;
   @Input() logoType: string;
   @Output() navigate = new EventEmitter<string>();
 
@@ -23,6 +22,4 @@ export class HmctsGlobalHeaderComponent {
   onEmmitEvent(index) {
     this.navigate.emit(this.navigation.items[index].emit);
   }
-
-
 }

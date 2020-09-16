@@ -1,20 +1,17 @@
 <div class="hmcts-header" style="background-color: transparent">
-    <!-- A Logo will go here -->
     <div class="hmcts-header__container">
-      <!-- Ok so all we need to do here is choose a header -->
-      <!-- If the User is a case manager then we add this -->
-      <ng-container  *ngIf="isBrandedHeader;else noBrandedHeader">
-
 
         <ng-container [ngSwitch]="logoType">
-          <!-- Judicial Header Logo -->
+
+          <!-- Logo for Judicial Users -->
           <ng-container *ngSwitchCase="'judicial'">
             <div class="govuk-header__logo" style="margin-bottom: 0px;">
               <img class="img-responsive" src="/assets/images/govuk-crest-jcm.png" width="75px">
             </div>
+            <a style="border: 1px solid blue;" class="hmcts-header__link" [routerLink]="headerTitle?.url" [attr.aria-label]="headerTitle?.name" >{{headerTitle?.name}}</a>
           </ng-container>
-          <!-- !Judicial Header Logo -->
-          <!-- HMCTS Header Logo -->
+
+          <!-- Logo for Case Manager Users -->
           <ng-container *ngSwitchCase="'myhmcts'">
             <div class="govuk-header__logo">
               <a href="#" class="govuk-header__link govuk-header__link--homepage">
@@ -25,20 +22,18 @@
               </span>
               </a>
             </div>
+            <a style="border: 1px solid blue;" class="hmcts-header__link" [routerLink]="headerTitle?.url" [attr.aria-label]="headerTitle?.name" >{{headerTitle?.name}}</a>
           </ng-container>
 
-          <!-- !HMCTS Header Logo -->
-        </ng-container>
-        <!-- Header title -->
-        <a style="border: 1px solid blue;" class="hmcts-header__link" [routerLink]="headerTitle?.url" [attr.aria-label]="headerTitle?.name" >{{headerTitle?.name}}</a>
-      </ng-container>
-      <!-- TODO The logo will need to change -->
-      <ng-template #noBrandedHeader>
-          <div class="hmcts-header__logo">
+          <!-- Logo for Users (Default) -->
+          <ng-container *ngSwitchDefault>
+            <div class="hmcts-header__logo">
               <a class="hmcts-header__link" [routerLink]="'/'" [attr.aria-label]="headerTitle?.name" >{{headerTitle?.name}}</a>
-          </div>
-      </ng-template>
-      <!-- We need to re-color this if it's judicial user -->
+            </div>
+          </ng-container>
+
+        </ng-container>
+
       <div class="hmcts-header__content" style="border: 1px solid red;">
           <nav class="hmcts-header__navigation" attr.aria-label="{{navigation.label}}">
               <ul class="hmcts-header__navigation-list" >

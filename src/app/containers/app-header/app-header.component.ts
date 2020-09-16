@@ -34,6 +34,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   userRoles: any;
   backgroundColor: string;
   logoType: string;
+  logoIsUsed: boolean = false;
   isCaseManager: any;
   subscription: Subscription;
   showNavItems: Observable<boolean>;
@@ -63,6 +64,8 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     }, // TODO: Does this need to be an object or array?
     showFindCase: true,
     backgroundColor: '#202020',
+    logoIsUsed: false,
+    logoType: 'default',
   }
 
   /**
@@ -144,6 +147,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
         // TODO: This is not working.
         showFindCase: false,
         backgroundColor: '#8d0f0e',
+        logoIsUsed: true,
         logoType: 'judicial',
       },
       {
@@ -168,6 +172,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
         }, // TODO: Does this need to be an object or array?
         showFindCase: true,
         backgroundColor: '#202020',
+        logoIsUsed: true,
         logoType: 'myhmcts',
       },
     ];
@@ -237,7 +242,8 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
     const applicationTheme = this.getUsersTheme(testUserRoles, applicationThemes);
 
-    const {appTitle, accountNavigationItems, backgroundColor, logoType, navigationItems, showFindCase} = applicationTheme;
+    // TODO: We shouldn't need logoIsUsed if the two components are one.
+    const {appTitle, accountNavigationItems, backgroundColor, logoIsUsed, logoType, navigationItems, showFindCase} = applicationTheme;
 
     console.log('applicationTheme');
     console.log(applicationTheme);
@@ -269,7 +275,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     this.userNav = accountNavigationItems;
     this.backgroundColor = backgroundColor;
     this.logoType = logoType;
-
+    this.logoIsUsed = logoIsUsed;
 
     // TODO: showFindCase is not working.
     this.showFindCase = showFindCase;

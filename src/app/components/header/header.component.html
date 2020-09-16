@@ -1,10 +1,10 @@
 <header>
-  <!-- TODO:include a newly branded logo, note that the logo is quite large -->
+  <!-- TODO: When we get some time, it might be worth simplifying the header and placing it into
+   one component, so that it's easier to see what's happening here. -->
   <div [ngStyle]="{'background-color': backgroundColor}">
     <exui-hmcts-global-header
     [headerTitle]="title"
     [navigation]="userNav"
-    [isBrandedHeader]="isCaseManager"
     [logoType]="logoType"
     (navigate)="onNavigate($event)">
     </exui-hmcts-global-header>
@@ -12,7 +12,7 @@
     <exui-hmcts-primary-navigation
     [label]=""
     [items]="navItems"
-    [isBrandedHeader]="isCaseManager"
+    [logoIsUsed]="logoIsUsed"
     [showNavItems]="showNavItems | async"
     ></exui-hmcts-primary-navigation>
   </div>

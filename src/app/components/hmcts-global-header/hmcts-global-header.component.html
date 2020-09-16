@@ -8,7 +8,7 @@
             <div class="govuk-header__logo" style="margin-bottom: 0px;">
               <img class="img-responsive" src="/assets/images/govuk-crest-jcm.png" width="75px">
             </div>
-            <a style="border: 1px solid blue;" class="hmcts-header__link" [routerLink]="headerTitle?.url" [attr.aria-label]="headerTitle?.name" >{{headerTitle?.name}}</a>
+            <a class="hmcts-header__link" [routerLink]="headerTitle?.url" [attr.aria-label]="headerTitle?.name" >{{headerTitle?.name}}</a>
           </ng-container>
 
           <!-- Logo for Case Manager Users -->
@@ -22,7 +22,7 @@
               </span>
               </a>
             </div>
-            <a style="border: 1px solid blue;" class="hmcts-header__link" [routerLink]="headerTitle?.url" [attr.aria-label]="headerTitle?.name" >{{headerTitle?.name}}</a>
+            <a class="hmcts-header__link" [routerLink]="headerTitle?.url" [attr.aria-label]="headerTitle?.name" >{{headerTitle?.name}}</a>
           </ng-container>
 
           <!-- Logo for Users (Default) -->
@@ -34,7 +34,7 @@
 
         </ng-container>
 
-      <div class="hmcts-header__content" style="border: 1px solid red;">
+      <div class="hmcts-header__content">
           <nav class="hmcts-header__navigation" attr.aria-label="{{navigation.label}}">
               <ul class="hmcts-header__navigation-list" >
                   <li *ngFor="let item of navigation.items; let i = index" class="hmcts-header__navigation-item">

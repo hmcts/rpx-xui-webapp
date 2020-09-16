@@ -53,7 +53,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
   public DEFAULT_THEME = {
     roles: ['default'],
-    appTitle: {name: 'Manage Cases Default', url: '/'},
+    appTitle: {name: 'Manage Cases', url: '/'},
     navigationItems: [{
       text: 'Case list',
       href: '/cases',
@@ -66,7 +66,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     accountNavigationItems: {
       label: 'Account navigation',
       items: [{
-        text: 'Sign out d',
+        text: 'Sign out',
         emit: 'sign-out'
       }]
     }, // TODO: Does this need to be an object or array?
@@ -130,6 +130,10 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
           'caseworker-sscs-panelmember',
           'caseworker-cmc-judge',
           'caseworker-divorce-judge',
+          'caseworker-divorce-financialremedy-judiciary',
+          'caseworker-probate-judge',
+          'caseworker-ia-iacjudge',
+          'caseworker-publiclaw-judiciary',
         ],
         appTitle: {name: 'Judicial case manager', url: '/'},
         navigationItems: [
@@ -138,16 +142,11 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
             href: '/cases',
             active: false
           },
-          {
-            text: 'Create case',
-            href: '/cases/case-filter',
-            active: false
-          },
         ],
         accountNavigationItems: {
           label: 'Account navigation',
           items: [{
-            text: 'Sign out d',
+            text: 'Sign out',
             emit: 'sign-out'
           }]
         },

@@ -76,5 +76,4 @@ export const SESSION_TIMEOUTS = 'sessionTimeouts'
 // PACT
 export const PACT_BROKER_URL = 'pact.brokerUrl'
 export const PACT_CONSUMER_VERSION = 'pact.consumerVersion'
-export const PACT_BROKER_USERNAME = 'pact.brokerUsername'
-export const PACT_BROKER_PASSWORD = 'pact.brokerPassword'
+export const PACT_CA_BUNDLE_CERT = 'secrets.rpx.mc-pact-ca-bundle-cert'

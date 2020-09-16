@@ -49,7 +49,8 @@
       "appinsights-instrumentationkey-mc": "APPINSIGHTS_INSTRUMENTATIONKEY",
       "mc-s2s-client-secret": "S2S_SECRET",
       "mc-idam-client-secret": "IDAM_SECRET",
-      "webapp-redis-connection-string": "REDISCLOUD_URL"
+      "webapp-redis-connection-string": "REDISCLOUD_URL",
+      "mc-pact-ca-bundle-cert": "PACT_CA_BUNDLE_CERT"
     }
   },
   "jurisdictions": "JURISDICTIONS",
@@ -101,8 +102,6 @@
   },
   "pact": {
     "brokerUrl": "PACT_BROKER_URL",
-    "consumerVersion": "PACT_CONSUMER_VERSION",
-    "brokerUsername": "PACT_BROKER_USERNAME",
-    "brokerPassword": "PACT_BROKER_PASSWORD"
+    "consumerVersion": "PACT_CONSUMER_VERSION"
   }
 }

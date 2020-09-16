@@ -1,20 +1,26 @@
 <header>
-  <!-- TODO: When we get some time, it might be worth simplifying the header and placing it into
-   one component, so that it's easier to see what's happening here. -->
+  <!-- The background color is dynamic so that we can change the background color of the navigation,
+   dependent on the User. -->
   <div [ngStyle]="{'background-color': backgroundColor}">
+
+    <!-- Global Header with Signout Nav -->
     <exui-hmcts-global-header
     [headerTitle]="title"
     [navigation]="userNav"
     [logoType]="logoType"
     (navigate)="onNavigate($event)">
     </exui-hmcts-global-header>
-    <!-- Navigation menu -->
+
+    <!-- Navigation Menu -->
+    <!-- Note: That showNavItems is used specifically on the Terms and Conditions page, to not show
+    the Navigation Menu-->
     <exui-hmcts-primary-navigation
     [label]=""
     [items]="navItems"
     [logoIsUsed]="logoIsUsed"
     [showNavItems]="showNavItems | async"
     ></exui-hmcts-primary-navigation>
+
   </div>
   <!-- !Navigation menu -->
   <exui-phase-banner type="beta"></exui-phase-banner>

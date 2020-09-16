@@ -106,7 +106,10 @@ describe('AppHeaderComponent', () => {
     expect(component.getUsersTheme(userRoles, themes)).toEqual(themes[0]);
   });
 
-  it('should return a default theme if there is no application theme to apply to this user.', () => {
+  // TODO: Should return an internal default theme, if there are no user roles.
+  // Overthinking it, we could just do a release if we need a new tab,
+  // as default.
+  it('should return a default theme if there are no user roles.', () => {
 
     // Remember we want exact matches not partial matches
     const userRoles = ['user-role-1', 'user-role-2'];

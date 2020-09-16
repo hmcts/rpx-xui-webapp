@@ -134,7 +134,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
             text: 'Create case',
             href: '/cases/case-filter',
             active: false
-          }
+          },
         ],
         accountNavigationItems: {
           label: 'Account navigation',
@@ -154,15 +154,18 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
         roles: ['pui-case-manager'],
         // TODO: Get rid of url from this?
         appTitle: {name: 'Manage Cases', url: '/'},
-        navigationItems: [{
-          text: 'Case list',
-          href: '/cases',
-          active: false
-        }, {
-          text: 'Create case',
-          href: '/cases/case-filter',
-          active: false
-        }],
+        navigationItems: [
+          {
+            text: 'Case list',
+            href: '/cases',
+            active: false
+          },
+          {
+            text: 'Create case',
+            href: '/cases/case-filter',
+            active: false
+          }
+        ],
         accountNavigationItems: {
           label: 'Account navigation',
           items: [{
@@ -233,13 +236,14 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     // TODO: Change this to test theming
     // Judicial User
     let testUserRoles = ['caseworker-sscs-panelmember'];
-
+    //
     // pui-case-manager
     testUserRoles = ['pui-case-manager'];
 
     // default a normal user
     testUserRoles = ['normal-user'];
 
+    // TODO: Test for no user roles
     const applicationTheme = this.getUsersTheme(testUserRoles, applicationThemes);
 
     // TODO: We shouldn't need logoIsUsed if the two components are one.
@@ -308,6 +312,9 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
   /**
    * Check if we should show navigation items.
+   *
+   * That showNavItems is used specifically on the Terms and Conditions page, to not show
+   * the Navigation Menu
    */
   public subscribe(observable: Observable<string>): Subscription {
     return observable.subscribe(url => {

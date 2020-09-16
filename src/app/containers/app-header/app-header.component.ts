@@ -38,15 +38,14 @@ export interface Theme {
  */
 export class AppHeaderComponent implements OnInit, OnDestroy {
   private navItems: NavItemsModel[];
-  appHeaderTitle: AppTitleModel;
-  userNav: UserNavModel;
-  showFindCase: boolean;
-  backgroundColor: string;
-  logoType: string;
-  logoIsUsed: boolean = false;
-  isCaseManager: any;
-  subscription: Subscription;
-  showNavItems: Observable<boolean>;
+  private appHeaderTitle: AppTitleModel;
+  private userNav: UserNavModel;
+  private showFindCase: boolean;
+  private backgroundColor: string;
+  private logoType: string;
+  private logoIsUsed: boolean = false;
+  private subscription: Subscription;
+  private showNavItems: Observable<boolean>;
 
   constructor(private store: Store<fromActions.State>,
               private cookieService: CookieService) {
@@ -75,7 +74,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     backgroundColor: '#202020',
     logoIsUsed: false,
     logoType: 'default',
-  }
+  };
 
   /**
    * Get User Roles
@@ -104,7 +103,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
     const serialisedUserRolesWithoutJsonPrefix: string = AppUtils.removeJsonPrefix(serialisedUserRoles);
     return AppUtils.getCookieRolesAsArray(serialisedUserRolesWithoutJsonPrefix);
-  };
+  }
 
   /**
    * TODO:
@@ -205,8 +204,6 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    * Note that we run through Themes first so that our Theme array can be organised in priority order;
    * the top most item is the highest priority theming to be applied. Most likely for a Judicial User.
    *
-   * TODO: Add Type.
-   *
    * @param userRoles - ['pui-case-manager', 'caseworker-sscs-judge']
    * @param themes - [roles, appTitle, navigationItems etc.] - see unit tests
    * @param defaultTheme - The default theme to be applied if we cannot find a matching Theme
@@ -227,36 +224,63 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     return themeToApply;
   }
 
-  // Note that all components use this app-header.component.html, and therefore all components use
-  // this: exui-app-header
+  /**
+   * ngOnInit
+   *
+   * Get the application theme ie. the navigation and styling for the application header for the logged in User.
+   *
+   * We then invoke a subscription to listen for if the User is on a page where we need to hide the navigation.
+   * ie. on the Terms and Conditions page.
+   *
+   * We then setup the Application Header accordingly.
+   */
   public ngOnInit(): void {
-    console.log('app header component');
+
+    const applicationTheme: Theme = this.getApplicationThemeForUser();
+
+    this.hideNavigationListener(this.store);
+
+    this.setAppHeaderProperties(applicationTheme);
+  }
+
+  public getApplicationThemeForUser(): Theme {
 
     const serialisedUserRoles: string = this.getSerialisedUserRolesFromCookie();
     const userRoles: string[] = this.deserialiseUserRoles(serialisedUserRoles);
 
-    const applicationThemes = this.getApplicationThemes();
+    const applicationThemes: Theme[] = this.getApplicationThemes();
 
     // TODO: Change this to test theming
     // Judicial User
-    // let testUserRoles = ['caseworker-sscs-panelmember'];
+    let testUserRoles = ['caseworker-sscs-panelmember'];
     //
     // pui-case-manager
-    // testUserRoles = ['pui-case-manager'];
+    testUserRoles = ['pui-case-manager'];
 
     // default a normal user
-    // testUserRoles = ['normal-user'];
+    testUserRoles = ['normal-user'];
 
-    // TODO: Test for no user roles
-    const applicationTheme = this.getUsersTheme(userRoles, applicationThemes, this.DEFAULT_THEME);
+    return this.getUsersTheme(testUserRoles, applicationThemes, this.DEFAULT_THEME);
+  }
 
-    // TODO: We shouldn't need logoIsUsed if the two components are one.
-    const {appTitle, accountNavigationItems, backgroundColor, logoIsUsed, logoType, navigationItems, showFindCase} = applicationTheme;
+  /**
+   * Set App Header Properties
+   *
+   * Set the app header properties, in one function that takes in the application theme.
+   *
+   * TODO: Unit test.
+   */
+  public setAppHeaderProperties(applicationTheme: Theme): void {
 
-    console.log('applicationTheme');
-    console.log(applicationTheme);
-
-    this.hideNavigationListener(this.store);
+    const {
+      appTitle,
+      accountNavigationItems,
+      backgroundColor,
+      logoIsUsed,
+      logoType,
+      navigationItems,
+      showFindCase,
+    } = applicationTheme;
 
     this.appHeaderTitle = appTitle;
     this.navItems = navigationItems;
@@ -295,11 +319,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   public subscribe(observable: Observable<string>): Subscription {
     return observable.subscribe(url => {
 
-      console.log('subscribe url');
-      console.log(url);
       this.showNavItems = of(AppUtils.showNavItems(url));
-      console.log('hello nav items');
-      console.log(this.showNavItems);
     });
   }
 
@@ -316,6 +336,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   }
 
   public onNavigate(event): void {
+
     if (event === 'sign-out') {
       this.store.dispatch(new fromActions.StopIdleSessionTimeout());
       return this.store.dispatch(new fromActions.Logout());

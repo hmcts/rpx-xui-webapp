@@ -13,6 +13,8 @@ nodejs:
       secrets:
         - mc-s2s-client-secret
         - mc-idam-client-secret
+        - mc-pact-ca-bundle-cert
+        - pp-test
 redis:
   enabled: true
 

@@ -29,6 +29,7 @@ class CaseManager {
     async cancelCaseCreation(){
         await BrowserWaits.waitForElement(this.ccdCaseEdit);
         var thisPageUrl = await browser.getCurrentUrl();
+        await BrowserWaits.waitForElement(this.cancelLink);
         await this.cancelLink.click();
         await BrowserWaits.waitForPageNavigation(thisPageUrl);
     }
@@ -36,7 +37,7 @@ class CaseManager {
     async clickPreviousButton(){
         await BrowserWaits.waitForElement(this.previousBtn); 
         var thisPageUrl = await browser.getCurrentUrl();
-        await this.previousBtn.clilc();
+        await this.previousBtn.click();
         await BrowserWaits.waitForPageNavigation(thisPageUrl); 
     }
 
@@ -72,13 +73,13 @@ class CaseManager {
         var isCheckYourAnswersPage = await checkYouranswers.isPresent();
         if (isCheckYourAnswersPage) {
             var submit = element(by.xpath('//button[@type= "submit"]'));
-
+            await BrowserWaits.waitForElement(submit);
             await browser.executeScript('arguments[0].scrollIntoView()',
                 submit.getWebElement());
 
             var thisPageUrl = await browser.getCurrentUrl();
             await submit.click();
-            BrowserWaits.waitForPageNavigation(thisPageUrl);
+            await BrowserWaits.waitForPageNavigation(thisPageUrl);
             if (isAccessibilityTest) {
                 await accessibilityCheckerAuditor(' Case Submitted ');
             }

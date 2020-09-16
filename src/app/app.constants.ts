@@ -30,6 +30,7 @@ const FooterDataNavigation = {
   ]
 };
 
+// TODO: Deprecate
 const navItems = [{
     text: 'Case list',
     href: '/cases',
@@ -40,6 +41,7 @@ const navItems = [{
     active: false
 }];
 
+// TODO: Deprecate
 const userNav = {
   label: 'Account navigation',
   items: [{
@@ -48,12 +50,107 @@ const userNav = {
   }]
 };
 
+// TODO: Deprecate
 const signedOutNavItems = [];
 
+// TODO: Deprecate
 const signedOutUserNav = {
   label: 'Account navigation',
   items: []
 };
+
+// TODO: Should use Type
+const defaultUserTheme = {
+  roles: ['default'],
+  appTitle: {name: 'Manage Cases', url: '/'},
+  navigationItems: [
+    {
+      text: 'Case list',
+      href: '/cases',
+      active: false
+    },
+    {
+      text: 'Create case',
+      href: '/cases/case-filter',
+      active: false
+    }
+  ],
+  accountNavigationItems: {
+    label: 'Account navigation',
+    items: [
+      {
+        text: 'Sign out',
+        emit: 'sign-out'
+      }
+    ]
+  },
+  showFindCase: true,
+  backgroundColor: '#202020',
+  logoIsUsed: false,
+  logoType: 'default',
+};
+
+// TODO: Should use Type
+const applicationUserThemes =  [
+  {
+    roles: [
+      'caseworker-sscs-judge',
+      'caseworker-sscs-panelmember',
+      'caseworker-cmc-judge',
+      'caseworker-divorce-judge',
+      'caseworker-divorce-financialremedy-judiciary',
+      'caseworker-probate-judge',
+      'caseworker-ia-iacjudge',
+      'caseworker-publiclaw-judiciary',
+    ],
+    appTitle: {name: 'Judicial case manager', url: '/'},
+    navigationItems: [
+      {
+        text: 'Case list',
+        href: '/cases',
+        active: false
+      },
+    ],
+    accountNavigationItems: {
+      label: 'Account navigation',
+      items: [{
+        text: 'Sign out',
+        emit: 'sign-out'
+      }]
+    },
+    showFindCase: false,
+    backgroundColor: '#8d0f0e',
+    logoIsUsed: true,
+    logoType: 'judicial',
+  },
+  {
+    roles: ['pui-case-manager'],
+    appTitle: {name: 'Manage Cases', url: '/'},
+    navigationItems: [
+      {
+        text: 'Case list',
+        href: '/cases',
+        active: false
+      },
+      {
+        text: 'Create case',
+        href: '/cases/case-filter',
+        active: false
+      }
+    ],
+    accountNavigationItems: {
+      label: 'Account navigation',
+      items: [{
+        text: 'Sign out',
+        emit: 'sign-out'
+      }]
+    },
+    showFindCase: true,
+    backgroundColor: '#202020',
+    logoIsUsed: true,
+    logoType: 'myhmcts',
+  },
+];
 
 const helpContactDetails: ContactDetailsDataModel[] = [
   {
@@ -128,4 +225,6 @@ export class AppConstants {
   static HELP_CONTACT_DETAILS = helpContactDetails;
   static SIGNED_OUT_NAV_ITEMS = signedOutNavItems;
   static SIGNED_OUT_USER_NAV = signedOutUserNav;
+  static DEFAULT_USER_THEME = defaultUserTheme;
+  static APPLICATION_USER_THEMES = applicationUserThemes;
 }

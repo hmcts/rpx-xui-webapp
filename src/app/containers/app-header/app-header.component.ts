@@ -8,6 +8,7 @@ import * as fromActions from '../../store';
 import {CookieService} from 'ngx-cookie';
 import {Observable, of, Subscription} from 'rxjs';
 import {AppUtils} from '../../app-utils';
+import {AppConstants} from '../../app.constants';
 
 export interface Theme {
   roles: string[];
@@ -51,30 +52,34 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
               private cookieService: CookieService) {
   }
 
-  public DEFAULT_THEME = {
-    roles: ['default'],
-    appTitle: {name: 'Manage Cases', url: '/'},
-    navigationItems: [{
-      text: 'Case list',
-      href: '/cases',
-      active: false
-    }, {
-      text: 'Create case',
-      href: '/cases/case-filter',
-      active: false
-    }],
-    accountNavigationItems: {
-      label: 'Account navigation',
-      items: [{
-        text: 'Sign out',
-        emit: 'sign-out'
-      }]
-    }, // TODO: Does this need to be an object or array?
-    showFindCase: true,
-    backgroundColor: '#202020',
-    logoIsUsed: false,
-    logoType: 'default',
-  };
+  /**
+   * Get Default Theme
+   */
+  public getDefaultTheme(): Theme {
+
+    return AppConstants.DEFAULT_USER_THEME;
+  }
+
+  /**
+   * TODO:
+   * Take into consideration:
+   * The judicial header takes precedence over other ones for judges.
+   * In other words, if a user has both judicial roles (see list below) and solicitor roles (e.g. pui-case-manager),
+   * the judicial header should display.
+   * @see EUI-2292
+   * Therefore the array should be in priority order, with the items closer to the top taking precedence.
+   *
+   * We need to be prepared to add new roles and remove existing ones to the list above
+   * as new services are reformed and existing ones evolve. Therefore leverage application vars.
+   *
+   * TODO: remove url from app Title?
+   *
+   * @see comments on EUI-2292
+   */
+  public getApplicationThemes = () => {
+
+    return AppConstants.APPLICATION_USER_THEMES;
+  }
 
   /**
    * Get User Roles
@@ -103,89 +108,6 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
     const serialisedUserRolesWithoutJsonPrefix: string = AppUtils.removeJsonPrefix(serialisedUserRoles);
     return AppUtils.getCookieRolesAsArray(serialisedUserRolesWithoutJsonPrefix);
-  }
-
-  /**
-   * TODO:
-   * Take into consideration:
-   * The judicial header takes precedence over other ones for judges.
-   * In other words, if a user has both judicial roles (see list below) and solicitor roles (e.g. pui-case-manager),
-   * the judicial header should display.
-   * @see EUI-2292
-   * Therefore the array should be in priority order, with the items closer to the top taking precedence.
-   *
-   * We need to be prepared to add new roles and remove existing ones to the list above
-   * as new services are reformed and existing ones evolve. Therefore leverage application vars.
-   *
-   * TODO: remove url from app Title?
-   *
-   * @see comments on EUI-2292
-   */
-  public getApplicationThemes = () => {
-
-    return [
-      {
-        roles: [
-          'caseworker-sscs-judge',
-          'caseworker-sscs-panelmember',
-          'caseworker-cmc-judge',
-          'caseworker-divorce-judge',
-          'caseworker-divorce-financialremedy-judiciary',
-          'caseworker-probate-judge',
-          'caseworker-ia-iacjudge',
-          'caseworker-publiclaw-judiciary',
-        ],
-        appTitle: {name: 'Judicial case manager', url: '/'},
-        navigationItems: [
-          {
-            text: 'Case list',
-            href: '/cases',
-            active: false
-          },
-        ],
-        accountNavigationItems: {
-          label: 'Account navigation',
-          items: [{
-            text: 'Sign out',
-            emit: 'sign-out'
-          }]
-        },
-        // TODO: Does this need to be an object or array?
-        // TODO: This is not working.
-        showFindCase: false,
-        backgroundColor: '#8d0f0e',
-        logoIsUsed: true,
-        logoType: 'judicial',
-      },
-      {
-        roles: ['pui-case-manager'],
-        // TODO: Get rid of url from this?
-        appTitle: {name: 'Manage Cases', url: '/'},
-        navigationItems: [
-          {
-            text: 'Case list',
-            href: '/cases',
-            active: false
-          },
-          {
-            text: 'Create case',
-            href: '/cases/case-filter',
-            active: false
-          }
-        ],
-        accountNavigationItems: {
-          label: 'Account navigation',
-          items: [{
-            text: 'Sign out',
-            emit: 'sign-out'
-          }]
-        }, // TODO: Does this need to be an object or array?
-        showFindCase: true,
-        backgroundColor: '#202020',
-        logoIsUsed: true,
-        logoType: 'myhmcts',
-      },
-    ];
   }
 
   /**
@@ -251,15 +173,15 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
     // TODO: Change this to test theming
     // Judicial User
-    let testUserRoles = ['caseworker-sscs-panelmember'];
+    // let testUserRoles = ['caseworker-sscs-panelmember'];
     //
     // pui-case-manager
-    testUserRoles = ['pui-case-manager'];
+    // testUserRoles = ['pui-case-manager'];
 
     // default a normal user
-    testUserRoles = ['normal-user'];
+    // testUserRoles = ['normal-user'];
 
-    return this.getUsersTheme(testUserRoles, applicationThemes, this.DEFAULT_THEME);
+    return this.getUsersTheme(userRoles, applicationThemes, this.getDefaultTheme());
   }
 
   /**

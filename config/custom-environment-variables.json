@@ -51,7 +51,8 @@
       "mc-idam-client-secret": "IDAM_SECRET",
       "webapp-redis-connection-string": "REDISCLOUD_URL",
       "launch-darkly-client-id": "LAUNCH_DARKLY_CLIENT_ID",
-      "mc-pact-ca-bundle-cert": "PACT_CA_BUNDLE_CERT"
+      "mc-pact-ca-bundle-cert": "PACT_CA_BUNDLE_CERT",
+      "pp-test": "PP_TEST"
     }
   },
   "jurisdictions": "JURISDICTIONS",

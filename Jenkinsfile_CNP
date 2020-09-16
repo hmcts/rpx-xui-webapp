@@ -34,7 +34,8 @@ def secrets = [
     secret('test-email', 'TEST_EMAIL'),
     secret('test-password', 'TEST_PASSWORD'),
     secret('appinsights-instrumentationkey-mc', 'APPINSIGHTS_INSTRUMENTATIONKEY'),
-    secret('mc-pact-ca-bundle-cert', 'PACT_CA_BUNDLE_CERT')
+    secret('mc-pact-ca-bundle-cert', 'PACT_CA_BUNDLE_CERT'),
+    secret('pp-test', 'PP_TEST'),
   ],
   ]
 

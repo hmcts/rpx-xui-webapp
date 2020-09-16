@@ -226,7 +226,14 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     const applicationThemes = this.getApplicationThemes();
 
     // TODO: Change this to test theming
-    const testUserRoles = ['caseworker-sscs-panelmember'];
+    // Judicial User
+    let testUserRoles = ['caseworker-sscs-panelmember'];
+
+    // pui-case-manager
+    testUserRoles = ['pui-case-manager'];
+
+    // default a normal user
+    testUserRoles = ['normal-user'];
 
     const applicationTheme = this.getUsersTheme(testUserRoles, applicationThemes);
 
@@ -243,6 +250,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     // My HMCTS header ie. if they have pui-case-manager
     // as part of their name.
     // TODO: Do we need this? What does this do?
+    // if it is
     this.isCaseManager = true;
 
     console.log(this.isCaseManager);

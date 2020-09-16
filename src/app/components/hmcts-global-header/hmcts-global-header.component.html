@@ -2,6 +2,7 @@
     <!-- A Logo will go here -->
     <div class="hmcts-header__container">
       <!-- Ok so all we need to do here is choose a header -->
+      <!-- If the User is a case manager then we add this -->
       <ng-container  *ngIf="isBrandedHeader;else noBrandedHeader">
 
 
@@ -25,10 +26,11 @@
               </a>
             </div>
           </ng-container>
+
           <!-- !HMCTS Header Logo -->
         </ng-container>
         <!-- Header title -->
-        <a class="hmcts-header__link" [routerLink]="headerTitle?.url" [attr.aria-label]="headerTitle?.name" >{{headerTitle?.name}}</a>
+        <a style="border: 1px solid blue;" class="hmcts-header__link" [routerLink]="headerTitle?.url" [attr.aria-label]="headerTitle?.name" >{{headerTitle?.name}}</a>
       </ng-container>
       <!-- TODO The logo will need to change -->
       <ng-template #noBrandedHeader>
@@ -37,7 +39,7 @@
           </div>
       </ng-template>
       <!-- We need to re-color this if it's judicial user -->
-      <div class="hmcts-header__content">
+      <div class="hmcts-header__content" style="border: 1px solid red;">
           <nav class="hmcts-header__navigation" attr.aria-label="{{navigation.label}}">
               <ul class="hmcts-header__navigation-list" >
                   <li *ngFor="let item of navigation.items; let i = index" class="hmcts-header__navigation-item">

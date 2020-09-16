@@ -1,7 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {select, Store} from '@ngrx/store';
 
-import {AppConstants} from '../../app.constants';
 import {NavItemsModel} from '../../models/nav-item.model';
 import {AppTitleModel} from '../../models/app-title.model';
 import {UserNavModel} from '../../models/user-nav.model';
@@ -9,6 +8,17 @@ import * as fromActions from '../../store';
 import {CookieService} from 'ngx-cookie';
 import {Observable, of, Subscription} from 'rxjs';
 import {AppUtils} from '../../app-utils';
+
+export interface Theme {
+  roles: string[];
+  appTitle: AppTitleModel;
+  navigationItems: NavItemsModel[];
+  accountNavigationItems: UserNavModel;
+  showFindCase: boolean;
+  backgroundColor: string;
+  logoIsUsed: boolean;
+  logoType: string;
+}
 
 @Component({
   selector: 'exui-app-header',
@@ -27,11 +37,10 @@ import {AppUtils} from '../../app-utils';
  * components in the component folder are pure.
  */
 export class AppHeaderComponent implements OnInit, OnDestroy {
-  navItems: NavItemsModel[];
+  private navItems: NavItemsModel[];
   appHeaderTitle: AppTitleModel;
   userNav: UserNavModel;
   showFindCase: boolean;
-  userRoles: any;
   backgroundColor: string;
   logoType: string;
   logoIsUsed: boolean = false;
@@ -182,32 +191,30 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Finds the Application's Theming, based on a User's Roles.
+   * Get Users Theme
    *
-   * The application's theme contains Navigation items that the User is able to see, and styling for that User.
-   * ie. To A Judicial User the application is called 'Judicial Case Manager' and has different menu items,
-   * whereas to a Case Worker user the application is called 'Case Manager'.
+   * Find the Application's Theme, it's Styling and Navigation based on the Users roles.
    *
-   * TODO: So do we want to go through each of our roles, or do we want to go through the User's roles
-   * So it's a loop of 18 vs. 10. But if we went through the userRoles initially then if we found
-   * a match it would not be prioritise if we go through our role based themes then the priority order still stands.
+   * An example would be:
    *
-   * We go through the roles of each theme to check if they exist for a User. We do it this way, so that we can
-   * priortise which theme takes precendence, ie. a theme higher up the Role Based Theming array will take
-   * precendence over one that's below it.
+   * For a Judicial User the application is called 'Judicial Case Manager' and has different menu items,
+   * and color, whereas to a Case Manager's this application is called 'Manager Cases'.
    *
-   * TODO: You are working here, making sure that this func works correctly,
-   * and is tested.
+   * In addition to a default User the header is styled completely differently.
+   *
+   * Note that we run through Themes first so that our Theme array can be organised in priority order;
+   * the top most item is the highest priority theming to be applied. Most likely for a Judicial User.
+   *
+   * TODO: Add Type.
+   *
+   * @param userRoles - ['pui-case-manager', 'caseworker-sscs-judge']
+   * @param themes - [roles, appTitle, navigationItems etc.] - see unit tests
+   * @param defaultTheme - The default theme to be applied if we cannot find a matching Theme
+   * for the User's Roles.
    */
-  public getUsersTheme = (userRoles, themes): any => {
+  public getUsersTheme = (userRoles, themes, defaultTheme): Theme => {
 
-    console.log('getUsersTheme userRoles');
-    console.log(userRoles);
-
-    // Default theme
-    // TODO: Side effecting
-    // Move default theme to constants file.
-    const themeToApply = this.DEFAULT_THEME;
+    const themeToApply = defaultTheme;
 
     for (const theme of themes) {
       for (const role of theme.roles) {
@@ -223,10 +230,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   // Note that all components use this app-header.component.html, and therefore all components use
   // this: exui-app-header
   public ngOnInit(): void {
-
-    // Need to mock this in the test
-    // TODO: userRoles is needed in the component. remove once we replace.
-    this.userRoles = this.cookieService.get('roles');
+    console.log('app header component');
 
     const serialisedUserRoles: string = this.getSerialisedUserRolesFromCookie();
     const userRoles: string[] = this.deserialiseUserRoles(serialisedUserRoles);
@@ -235,46 +239,26 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
     // TODO: Change this to test theming
     // Judicial User
-    let testUserRoles = ['caseworker-sscs-panelmember'];
+    // let testUserRoles = ['caseworker-sscs-panelmember'];
     //
     // pui-case-manager
-    testUserRoles = ['pui-case-manager'];
+    // testUserRoles = ['pui-case-manager'];
 
     // default a normal user
-    testUserRoles = ['normal-user'];
+    // testUserRoles = ['normal-user'];
 
     // TODO: Test for no user roles
-    const applicationTheme = this.getUsersTheme(testUserRoles, applicationThemes);
+    const applicationTheme = this.getUsersTheme(userRoles, applicationThemes, this.DEFAULT_THEME);
 
     // TODO: We shouldn't need logoIsUsed if the two components are one.
     const {appTitle, accountNavigationItems, backgroundColor, logoIsUsed, logoType, navigationItems, showFindCase} = applicationTheme;
 
     console.log('applicationTheme');
     console.log(applicationTheme);
-    // TODO: Check what this does.
-    // this.isCaseManager = this.getIsCaseManager(this.userRoles);
 
-    // If the user is a Case manager ie. 'pui-case-manager'
+    this.hideNavigationListener(this.store);
 
-    // If the User is a case manager then we get a
-    // My HMCTS header ie. if they have pui-case-manager
-    // as part of their name.
-    // TODO: Do we need this? What does this do?
-    // if it is
-    this.isCaseManager = true;
-
-    console.log(this.isCaseManager);
-
-    // TODO: Not sure why we need this
-    // const observable = this.getObservable(this.store);
-    // this.subscription = this.subscribe(observable);
-    this.hideNavigationListener();
-
-    // The app header changes dependent on the User.
     this.appHeaderTitle = appTitle;
-
-    // I guess in the future the navItems,
-    // and user nav may change dependent on the User.
     this.navItems = navigationItems;
     this.userNav = accountNavigationItems;
     this.backgroundColor = backgroundColor;
@@ -285,24 +269,16 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     this.showFindCase = showFindCase;
   }
 
-  // we're doing a simple way of checking what role the User has
-  // the header component is checking.
-  public getIsCaseManager(userRoles: string): boolean {
-    return userRoles && userRoles.indexOf('pui-case-manager') !== -1;
-  }
-
   /**
    * Hide Navigation
    *
    * We subscribe to the applications router. When the router url has a certain path we do
    * not show the navigation ie. on the Terms and Conditions page we do not show the navigation,
    * due to business requirements.
-   *
-   * TODO: Pass in store.
    */
-  public hideNavigationListener(): void {
+  public hideNavigationListener(store): void {
 
-    const observable = this.getObservable(this.store);
+    const observable = this.getObservable(store);
     this.subscription = this.subscribe(observable);
   }
 
@@ -328,10 +304,12 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
+
     this.unsubscribe(this.subscription);
   }
 
   public unsubscribe(subscription: Subscription) {
+
     if (subscription) {
       subscription.unsubscribe();
     }

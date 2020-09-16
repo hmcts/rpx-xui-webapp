@@ -21,6 +21,7 @@ export class AppHeaderSignedOutComponent implements OnInit {
     private store: Store<fromActions.State>) {
   }
 
+  // TODO: App Header Signed out component needs to have properties setup.
   ngOnInit(): void {
     this.appHeaderTitle = AppConstants.APP_HEADER_TITLE;
     this.navItems = AppConstants.SIGNED_OUT_NAV_ITEMS;

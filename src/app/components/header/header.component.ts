@@ -30,27 +30,17 @@ export class HeaderComponent implements OnInit {
   @Input() title: AppTitleModel;
   @Input() userNav: UserNavModel;
   @Input() showFindCase: boolean;
-  @Input() userRoles;
   @Input() backgroundColor: string;
   @Input() logoType: string;
-  // TODO: Remove
-  @Input() isCaseManager: boolean = false;
   @Input() logoIsUsed: boolean = false;
   @Input() showNavItems: Observable<boolean>;
   @Output() navigate = new EventEmitter<string>();
-
-  // public isCaseManager = false;
 
   constructor(
     public store: Store<fromRoot.State>,
   ) {}
 
   public ngOnInit() {
-
-     console.log('userRoles');
-     console.log(this.userRoles);
-     console.log('this.isCaseManager');
-     console.log(this.isCaseManager);
   }
 
   public onNavigate(event) {

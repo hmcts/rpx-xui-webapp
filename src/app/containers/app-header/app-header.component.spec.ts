@@ -89,30 +89,72 @@ describe('AppHeaderComponent', () => {
           'caseworker-cmc-judge',
           'caseworker-divorce-judge',
         ],
-        appTitle: 'Judicial Case Manager',
-        navigationItems: [],
-        accountNavigationItems: [],
-        showFindCase: true,
+        appTitle: {name: 'Judicial case manager', url: '/'},
+        navigationItems: [
+          {
+            text: 'Case list',
+            href: '/cases',
+            active: false
+          },
+          {
+            text: 'Create case',
+            href: '/cases/case-filter',
+            active: false
+          },
+        ],
+        accountNavigationItems: {
+          label: 'Account navigation',
+          items: [{
+            text: 'Sign out d',
+            emit: 'sign-out'
+          }]
+        },
+        // TODO: Does this need to be an object or array?
+        // TODO: This is not working.
+        showFindCase: false,
+        backgroundColor: '#8d0f0e',
+        logoIsUsed: true,
+        logoType: 'judicial',
       },
       {
         roles: ['pui-case-manager'],
-        appTitle: 'Case Manager',
-        navigationItems: [],
-        accountNavigationItems: [],
+        // TODO: Get rid of url from this?
+        appTitle: {name: 'Manage Cases', url: '/'},
+        navigationItems: [
+          {
+            text: 'Case list',
+            href: '/cases',
+            active: false
+          },
+          {
+            text: 'Create case',
+            href: '/cases/case-filter',
+            active: false
+          }
+        ],
+        accountNavigationItems: {
+          label: 'Account navigation',
+          items: [{
+            text: 'Sign out',
+            emit: 'sign-out'
+          }]
+        }, // TODO: Does this need to be an object or array?
         showFindCase: true,
+        backgroundColor: '#202020',
+        logoIsUsed: true,
+        logoType: 'myhmcts',
       },
     ];
 
-    expect(component.getUsersTheme(userRoles, themes)).toEqual(themes[0]);
+    const defaultTheme = component.DEFAULT_THEME;
+
+    expect(component.getUsersTheme(userRoles, themes, defaultTheme)).toEqual(themes[0]);
   });
 
-  // TODO: Should return an internal default theme, if there are no user roles.
-  // Overthinking it, we could just do a release if we need a new tab,
-  // as default.
   it('should return a default theme if there are no user roles.', () => {
 
     // Remember we want exact matches not partial matches
-    const userRoles = ['user-role-1', 'user-role-2'];
+    const userRoles = [];
 
     // We compare the first set of theme roles first.
     const themes = [
@@ -130,8 +172,18 @@ describe('AppHeaderComponent', () => {
         appTitle: 'Case Manager',
       },
     ];
+    const defaultTheme = component.DEFAULT_THEME;
 
-    expect(component.getUsersTheme(userRoles, themes)).toEqual(component.DEFAULT_THEME);
+    expect(component.getUsersTheme(userRoles, themes, defaultTheme)).toEqual(component.DEFAULT_THEME);
+  });
+
+  it('should return a default theme if there are no themes.', () => {
+
+    const userRoles = ['pui-case-manager'];
+    const themes = [];
+    const defaultTheme = component.DEFAULT_THEME;
+
+    expect(component.getUsersTheme(userRoles, themes, defaultTheme)).toEqual(component.DEFAULT_THEME);
   });
   //
   // it('should update parameter on ngOnInit', () => {

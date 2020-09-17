@@ -6,7 +6,7 @@ import * as util from 'util'
 import { getConfigValue } from '../../../configuration'
 import {
   PACT_BROKER_URL, PACT_CA_BUNDLE_CERT,
-  PACT_CONSUMER_VERSION, PP_TEST, S2S_SECRET
+  PACT_CONSUMER_VERSION
 } from '../../../configuration/references'
 import {init} from '../../../lib/tunnel'
 
@@ -14,9 +14,6 @@ const writeFile = util.promisify(fs.writeFile)
 const unlink = util.promisify(fs.unlink)
 
 init()
-
-console.log('S2S_SECRET IS ========>>>>> ', getConfigValue(S2S_SECRET))
-console.log('PP_TEST IS ========>>>>> ', getConfigValue(PP_TEST))
 
 const publish = async (): Promise<void> => {
   try {

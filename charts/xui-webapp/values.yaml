@@ -82,7 +82,6 @@ nodejs:
         - webapp-redis-connection-string
         - launch-darkly-client-id
         - mc-pact-ca-bundle-cert
-        - pp-test
   # Don't modify below here
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}

@@ -29,14 +29,12 @@ export class AppUtils {
   /**
    * showNavItems
    *
-   * This takes in the url, and if the url is 'accept-terms-and-conditions'
-   * or 'terms-and-conditions' we do not show the navItems.
+   * Takes in the url. If the url is 'accept-terms-and-conditions' or 'terms-and-conditions' we do not
+   * show the navItems.
    *
    * @param url - '/cases'
    */
   public static showNavItems(url: string): boolean {
-    console.log('url');
-    console.log(url);
     return url.indexOf('accept-terms-and-conditions') < 0 && url.indexOf('terms-and-conditions') < 0;
   }
 

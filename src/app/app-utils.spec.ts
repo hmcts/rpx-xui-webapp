@@ -52,7 +52,6 @@ describe('getEnvironment', () => {
 
   describe('removeJsonPrefix', () => {
 
-    // TODO: Why does it have a j: on it?
     it('should take in the User Roles string from cookie and return the string without the j: prefix.', () => {
 
       const userRolesString = 'j:["pui-organisation-manager","caseworker-publiclaw",' +
@@ -79,14 +78,4 @@ describe('getEnvironment', () => {
       ]);
     });
   });
-
-  // it('helloTest should return false', () => {
-  //
-  //   expect(AppUtils.helloTest()).toEqual(true);
-  // });
-  //
-  // it('helloTest should return false', () => {
-  //
-  //   expect(AppUtils.helloTest()).toEqual(true);
-  // });
 });

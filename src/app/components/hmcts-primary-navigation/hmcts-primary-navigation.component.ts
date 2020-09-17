@@ -8,7 +8,13 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class HmctsPrimaryNavigationComponent {
 
-    @Input() set showNavItems(value) {
+  /**
+   * That showNavItems is used specifically on the Terms and Conditions page, to not show
+   * the Navigation Menu
+   *
+   * @param value
+   */
+  @Input() set showNavItems(value) {
         this.showItems = value;
     }
 

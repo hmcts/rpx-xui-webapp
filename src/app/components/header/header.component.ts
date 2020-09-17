@@ -13,16 +13,6 @@ import { Observable, of, Subscription } from 'rxjs';
 
 /**
  * Header Component
- *
- * This header component is common to both MO and MC, and is doing the work of fetching data from the store,
- * and displaying the items in the header dependent on the User.
- *
- * TODO:
- * If we want to keep our /component folder pure and gradually move these components across to a common lib,
- * we should not have application logic in here ie. this.cookieService.get('roles'), and none of the logic that
- * fetches items from the store, instead they should be passed down into this component.
- *
- * Therefore application logic needs to be abstracted up a level, to app-header.
  */
 export class HeaderComponent implements OnInit {
 

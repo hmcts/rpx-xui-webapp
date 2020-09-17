@@ -30,35 +30,6 @@ const FooterDataNavigation = {
   ]
 };
 
-// TODO: Deprecate
-const navItems = [{
-    text: 'Case list',
-    href: '/cases',
-    active: false
-  }, {
-    text: 'Create case',
-    href: '/cases/case-filter',
-    active: false
-}];
-
-// TODO: Deprecate
-const userNav = {
-  label: 'Account navigation',
-  items: [{
-    text: 'Sign out',
-    emit: 'sign-out'
-  }]
-};
-
-// TODO: Deprecate
-const signedOutNavItems = [];
-
-// TODO: Deprecate
-const signedOutUserNav = {
-  label: 'Account navigation',
-  items: []
-};
-
 // TODO: Should use Type
 const applicationUserThemes =  [
   {
@@ -232,14 +203,10 @@ const appHeaderTitle = {name: 'Manage Cases', url: '/'};
 export class AppConstants {
   static FOOTER_DATA = null;
   static FOOTER_DATA_NAVIGATION = FooterDataNavigation;
-  static NAV_ITEMS = navItems;
-  static USER_NAV = userNav;
   static APP_HEADER_TITLE = appHeaderTitle;
   static ENVIRONMENT_NAMES = environmentNames;
   static REDIRECT_URL = redirectUrl;
   static HELP_CONTACT_DETAILS = helpContactDetails;
-  static SIGNED_OUT_NAV_ITEMS = signedOutNavItems;
-  static SIGNED_OUT_USER_NAV = signedOutUserNav;
   static DEFAULT_USER_THEME = defaultUserTheme;
   static APPLICATION_USER_THEMES = applicationUserThemes;
   static SIGNED_OUT_THEME = signedOutTheme;

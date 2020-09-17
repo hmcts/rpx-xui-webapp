@@ -44,26 +44,26 @@ describe('AppHeaderSignedOutComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should update parameter on ngOnInit', () => {
-    const dummyAppHeaderTitle = {name: 'Dummy', url: '/'};
-    const dummyNavItems = [{
-      text: 'dummy',
-      href: '/dummy',
-      active: false
-    }];
-    const dummyUserNav = {
-      label: 'dummy',
-      items: [{
-        text: 'Sign out',
-        emit: 'sign-out'
-      }]
-    };
-    AppConstants.APP_HEADER_TITLE = dummyAppHeaderTitle;
-    AppConstants.SIGNED_OUT_NAV_ITEMS = dummyNavItems;
-    AppConstants.SIGNED_OUT_USER_NAV = dummyUserNav;
-    component.ngOnInit();
-    expect(component.appHeaderTitle).toBe(dummyAppHeaderTitle);
-    expect(component.navItems).toBe(dummyNavItems);
-    expect(component.userNav).toBe(dummyUserNav);
-  });
+  // it('should update parameter on ngOnInit', () => {
+  //   const dummyAppHeaderTitle = {name: 'Dummy', url: '/'};
+  //   const dummyNavItems = [{
+  //     text: 'dummy',
+  //     href: '/dummy',
+  //     active: false
+  //   }];
+  //   const dummyUserNav = {
+  //     label: 'dummy',
+  //     items: [{
+  //       text: 'Sign out',
+  //       emit: 'sign-out'
+  //     }]
+  //   };
+  //   AppConstants.APP_HEADER_TITLE = dummyAppHeaderTitle;
+  //   AppConstants.SIGNED_OUT_NAV_ITEMS = dummyNavItems;
+  //   AppConstants.SIGNED_OUT_USER_NAV = dummyUserNav;
+  //   component.ngOnInit();
+  //   expect(component.appHeaderTitle).toBe(dummyAppHeaderTitle);
+  //   expect(component.navItems).toBe(dummyNavItems);
+  //   expect(component.userNav).toBe(dummyUserNav);
+  // });
 });

@@ -1,14 +1,14 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {select, Store} from '@ngrx/store';
-
-import {NavItemsModel} from '../../models/nav-item.model';
-import {AppTitleModel} from '../../models/app-title.model';
-import {UserNavModel} from '../../models/user-nav.model';
-import * as fromActions from '../../store';
 import {CookieService} from 'ngx-cookie';
 import {Observable, of, Subscription} from 'rxjs';
+
 import {AppUtils} from '../../app-utils';
 import {AppConstants} from '../../app.constants';
+import {AppTitleModel} from '../../models/app-title.model';
+import {NavItemsModel} from '../../models/nav-item.model';
+import {UserNavModel} from '../../models/user-nav.model';
+import * as fromActions from '../../store';
 
 export interface Theme {
   roles: string[];
@@ -29,13 +29,13 @@ export interface Theme {
 /**
  * AppHeaderComponent
  *
- * TODO: There is no App Header Component in MO.
- * I initially believed that this component could be an unnecessary abstraction.
+ * This application header controls the dynamism of the components it controls.
  *
- * But everywhere in this project we use exui-app-header.
+ * The application header is able to be style dynamically dependent on the User's role.
  *
- * But this takes in application constants and passes it down to other components, which makes sense, so that
- * components in the component folder are pure.
+ * Navigation and Styling update dependent on the Application Theme that have been set
+ *
+ * @see app.constants.ts for application themes and defaults.
  */
 export class AppHeaderComponent implements OnInit, OnDestroy {
 
@@ -63,20 +63,10 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * TODO:
-   * Take into consideration:
-   * The judicial header takes precedence over other ones for judges.
-   * In other words, if a user has both judicial roles (see list below) and solicitor roles (e.g. pui-case-manager),
-   * the judicial header should display.
-   * @see EUI-2292
-   * Therefore the array should be in priority order, with the items closer to the top taking precedence.
+   * Get Application Themes
    *
-   * We need to be prepared to add new roles and remove existing ones to the list above
-   * as new services are reformed and existing ones evolve. Therefore leverage application vars.
-   *
-   * TODO: remove url from app Title?
-   *
-   * @see comments on EUI-2292
+   * Note that the application themes are in priority order, the application theme at the top of
+   * the list is given the highest precedence.
    */
   public getApplicationThemes = () => {
 
@@ -84,11 +74,11 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Get User Roles
+   * Get Serialised User Roles From Cookie
    *
-   * Get User Roles from Cookie.
+   * Note that the cookie's user names have a j: in the string
+   * as Express in the Node layer denotes Json with j:, when it serialises Json into strings.
    *
-   * TODO: Why does this return with a j: in it.
    * @return j:["pui-caa","payments","caseworker-publiclaw-solicitor"]
    */
   public getSerialisedUserRolesFromCookie(): string {
@@ -99,12 +89,11 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   /**
    * Get User Roles
    *
-   * Takes in a string of serialised User Roles, supplied from the Node layer.
-   *
-   * TODO: Unit test
+   * Takes in a string of serialised User Roles, supplied from the Node layer, and deserialises them.
    *
    * @param serialisedUserRoles - 'j:["pui-organisation-manager","caseworker-publiclaw",' +
    * '"caseworker-divorce-financialremedy-solicitor","caseworker"]';
+   * @return ["pui-organisation-manager","caseworker-publiclaw","caseworker-divorce-financialremedy-solicitor","caseworker"]
    */
   public deserialiseUserRoles = (serialisedUserRoles: string): string[] => {
 
@@ -173,16 +162,6 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
     const applicationThemes: Theme[] = this.getApplicationThemes();
 
-    // TODO: Change this to test theming
-    // Judicial User
-    // let testUserRoles = ['caseworker-sscs-panelmember'];
-    //
-    // pui-case-manager
-    // testUserRoles = ['pui-case-manager'];
-
-    // default a normal user
-    // testUserRoles = ['normal-user'];
-
     return this.getUsersTheme(userRoles, applicationThemes, this.getDefaultTheme());
   }
 
@@ -190,8 +169,6 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    * Set App Header Properties
    *
    * Set the app header properties, in one function that takes in the application theme.
-   *
-   * TODO: Unit test.
    */
   public setAppHeaderProperties(applicationTheme: Theme): void {
 
@@ -236,8 +213,8 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   /**
    * Check if we should show navigation items.
    *
-   * That showNavItems is used specifically on the Terms and Conditions page, to not show
-   * the Navigation Menu
+   * That showNavItems property is a function specifically for the Terms and Conditions page, to not show
+   * the Navigation Menu, as this is a business requirement.
    */
   public subscribe(observable: Observable<string>): Subscription {
     return observable.subscribe(url => {

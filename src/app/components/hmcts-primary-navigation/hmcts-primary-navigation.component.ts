@@ -11,8 +11,6 @@ export class HmctsPrimaryNavigationComponent {
   /**
    * That showNavItems is used specifically on the Terms and Conditions page, to not show
    * the Navigation Menu
-   *
-   * @param value
    */
   @Input() set showNavItems(value) {
         this.showItems = value;

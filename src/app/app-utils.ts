@@ -38,9 +38,7 @@ export class AppUtils {
     return url.indexOf('accept-terms-and-conditions') < 0 && url.indexOf('terms-and-conditions') < 0;
   }
 
-  public static isRoleExistsForUser(roleName: string,
-                             cookieService: CookieService,
-                             cookiename: string = 'roles'): boolean {
+  public static isRoleExistsForUser(roleName: string, cookieService: CookieService, cookiename: string = 'roles'): boolean {
     const userRoles = cookieService.get(cookiename);
     return userRoles && userRoles.indexOf(roleName) >= 0;
   }

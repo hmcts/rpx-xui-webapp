@@ -4,7 +4,7 @@ import {StoreModule, Store, Action} from '@ngrx/store';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { AppConstants } from 'src/app/app.constants';
 import * as fromActions from '../../store';
-import { CookieService, CookieModule } from 'ngx-cookie';
+import { CookieService } from 'ngx-cookie';
 import {of} from 'rxjs';
 
 const storeMock = {
@@ -18,10 +18,6 @@ const cookieServiceMock = {
   get: () => {
     return 'j:["pui-organisation-manager", "caseworker-publiclaw", "caseworker-divorce-financialremedy-solicitor", "caseworker"]';
   },
-  // set: (key, value) => {
-  //   cookieService[key] = value;
-  // },
-  // removeAll: () => { }
 };
 
 let pipeSpy: jasmine.Spy;
@@ -146,7 +142,7 @@ describe('AppHeaderComponent', () => {
       },
     ];
 
-    const defaultTheme = component.DEFAULT_THEME;
+    const defaultTheme = AppConstants.DEFAULT_USER_THEME;
 
     expect(component.getUsersTheme(userRoles, themes, defaultTheme)).toEqual(themes[0]);
   });
@@ -172,18 +168,18 @@ describe('AppHeaderComponent', () => {
         appTitle: 'Case Manager',
       },
     ];
-    const defaultTheme = component.DEFAULT_THEME;
+    const defaultTheme = AppConstants.DEFAULT_USER_THEME;
 
-    expect(component.getUsersTheme(userRoles, themes, defaultTheme)).toEqual(component.DEFAULT_THEME);
+    expect(component.getUsersTheme(userRoles, themes, defaultTheme)).toEqual(AppConstants.DEFAULT_USER_THEME);
   });
 
   it('should return a default theme if there are no themes.', () => {
 
     const userRoles = ['pui-case-manager'];
     const themes = [];
-    const defaultTheme = component.DEFAULT_THEME;
+    const defaultTheme = AppConstants.DEFAULT_USER_THEME;
 
-    expect(component.getUsersTheme(userRoles, themes, defaultTheme)).toEqual(component.DEFAULT_THEME);
+    expect(component.getUsersTheme(userRoles, themes, defaultTheme)).toEqual(AppConstants.DEFAULT_USER_THEME);
   });
   //
   // it('should update parameter on ngOnInit', () => {

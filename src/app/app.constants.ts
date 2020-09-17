@@ -60,37 +60,6 @@ const signedOutUserNav = {
 };
 
 // TODO: Should use Type
-const defaultUserTheme = {
-  roles: ['default'],
-  appTitle: {name: 'Manage Cases', url: '/'},
-  navigationItems: [
-    {
-      text: 'Case list',
-      href: '/cases',
-      active: false
-    },
-    {
-      text: 'Create case',
-      href: '/cases/case-filter',
-      active: false
-    }
-  ],
-  accountNavigationItems: {
-    label: 'Account navigation',
-    items: [
-      {
-        text: 'Sign out',
-        emit: 'sign-out'
-      }
-    ]
-  },
-  showFindCase: true,
-  backgroundColor: '#202020',
-  logoIsUsed: false,
-  logoType: 'default',
-};
-
-// TODO: Should use Type
 const applicationUserThemes =  [
   {
     roles: [
@@ -151,6 +120,52 @@ const applicationUserThemes =  [
     logoType: 'myhmcts',
   },
 ];
+
+// TODO: Should use Type
+const defaultUserTheme = {
+  roles: ['default'],
+  appTitle: {name: 'Manage Cases', url: '/'},
+  navigationItems: [
+    {
+      text: 'Case list',
+      href: '/cases',
+      active: false
+    },
+    {
+      text: 'Create case',
+      href: '/cases/case-filter',
+      active: false
+    }
+  ],
+  accountNavigationItems: {
+    label: 'Account navigation',
+    items: [
+      {
+        text: 'Sign out',
+        emit: 'sign-out'
+      }
+    ]
+  },
+  showFindCase: true,
+  backgroundColor: '#202020',
+  logoIsUsed: false,
+  logoType: 'default',
+};
+
+// TODO: Should use Type
+const signedOutTheme = {
+  roles: [],
+  appTitle: {name: '', url: '/'},
+  navigationItems: [],
+  accountNavigationItems: {
+    label: 'Account navigation',
+    items: []
+  },
+  showFindCase: true,
+  backgroundColor: '#202020',
+  logoIsUsed: false,
+  logoType: 'default',
+};
 
 const helpContactDetails: ContactDetailsDataModel[] = [
   {
@@ -227,4 +242,5 @@ export class AppConstants {
   static SIGNED_OUT_USER_NAV = signedOutUserNav;
   static DEFAULT_USER_THEME = defaultUserTheme;
   static APPLICATION_USER_THEMES = applicationUserThemes;
+  static SIGNED_OUT_THEME = signedOutTheme;
 }

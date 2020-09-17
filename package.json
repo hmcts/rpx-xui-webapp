@@ -45,7 +45,8 @@
     "test:apiGateway": "echo 'not implemented'",
     "sonar-scan": "node_modules/sonar-scanner/bin/sonar-scanner",
     "test-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error mocha --timeout 10000 -r ts-node/register -r dotenv-extended/config api/test/pact/**/*.spec.ts dotenv_config_defaults=./api/.env.defaults",
-    "publish-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error node -r ts-node/register -r dotenv-extended/config api/test/pact/publish/publish.ts dotenv_config_defaults=./api/.env.defaults",
+    "publish-pact-old": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error node -r ts-node/register -r dotenv-extended/config api/test/pact/publish/publish.ts dotenv_config_defaults=./api/.env.defaults",
+    "publish-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config nodemon -r dotenv-extended/config --exec ts-node api/test/pact/publish/publish.ts dotenv_config_defaults=./api/.env.defaults",
     "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact"
   },
   "private": true,

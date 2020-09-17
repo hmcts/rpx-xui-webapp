@@ -38,15 +38,17 @@ export interface Theme {
  * components in the component folder are pure.
  */
 export class AppHeaderComponent implements OnInit, OnDestroy {
-  private navItems: NavItemsModel[];
-  private appHeaderTitle: AppTitleModel;
-  private userNav: UserNavModel;
-  private showFindCase: boolean;
-  private backgroundColor: string;
-  private logoType: string;
-  private logoIsUsed: boolean = false;
+
+  public navItems: NavItemsModel[];
+  public appHeaderTitle: AppTitleModel;
+  public userNav: UserNavModel;
+  public showFindCase: boolean;
+  public backgroundColor: string;
+  public logoType: string;
+  public logoIsUsed: boolean = false;
+  public showNavItems: Observable<boolean>;
+
   private subscription: Subscription;
-  private showNavItems: Observable<boolean>;
 
   constructor(private store: Store<fromActions.State>,
               private cookieService: CookieService) {

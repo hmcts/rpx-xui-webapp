@@ -1,6 +1,6 @@
-import { TestBed, async, ComponentFixture } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppHeaderComponent } from './app-header.component';
-import {StoreModule, Store, Action} from '@ngrx/store';
+import { Action, Store, StoreModule } from '@ngrx/store';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { AppConstants } from 'src/app/app.constants';
 import * as fromActions from '../../store';
@@ -224,29 +224,6 @@ describe('AppHeaderComponent', () => {
       expect(component.logoIsUsed).toBe(AppConstants.DEFAULT_USER_THEME.logoIsUsed);
     });
   });
-  //
-  // it('should update parameter on ngOnInit', () => {
-  //   const dummyAppHeaderTitle = {name: 'Dummy', url: '/'};
-  //   const dummyNavItems = [{
-  //     text: 'dummy',
-  //     href: '/dummy',
-  //     active: false
-  //   }];
-  //   const dummyUserNav = {
-  //     label: 'dummy',
-  //     items: [{
-  //       text: 'Sign out',
-  //       emit: 'sign-out'
-  //     }]
-  //   };
-  //   AppConstants.APP_HEADER_TITLE = dummyAppHeaderTitle;
-  //   AppConstants.NAV_ITEMS = dummyNavItems;
-  //   AppConstants.USER_NAV = dummyUserNav;
-  //   component.ngOnInit();
-  //   expect(component.appHeaderTitle).toBe(dummyAppHeaderTitle);
-  //   expect(component.navItems).toBe(dummyNavItems);
-  //   expect(component.userNav).toBe(dummyUserNav);
-  // });
 
   describe('onNavigate()', () => {
 

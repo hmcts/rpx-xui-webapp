@@ -1,6 +1,6 @@
 import { TestBed, async, ComponentFixture } from '@angular/core/testing';
 import { AppHeaderSignedOutComponent } from './app-header-signed-out.component';
-import { StoreModule, Store } from '@ngrx/store';
+import { Store, StoreModule } from '@ngrx/store';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { AppConstants } from 'src/app/app.constants';
 import * as fromActions from '../../store';
@@ -44,26 +44,20 @@ describe('AppHeaderSignedOutComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  // it('should update parameter on ngOnInit', () => {
-  //   const dummyAppHeaderTitle = {name: 'Dummy', url: '/'};
-  //   const dummyNavItems = [{
-  //     text: 'dummy',
-  //     href: '/dummy',
-  //     active: false
-  //   }];
-  //   const dummyUserNav = {
-  //     label: 'dummy',
-  //     items: [{
-  //       text: 'Sign out',
-  //       emit: 'sign-out'
-  //     }]
-  //   };
-  //   AppConstants.APP_HEADER_TITLE = dummyAppHeaderTitle;
-  //   AppConstants.SIGNED_OUT_NAV_ITEMS = dummyNavItems;
-  //   AppConstants.SIGNED_OUT_USER_NAV = dummyUserNav;
-  //   component.ngOnInit();
-  //   expect(component.appHeaderTitle).toBe(dummyAppHeaderTitle);
-  //   expect(component.navItems).toBe(dummyNavItems);
-  //   expect(component.userNav).toBe(dummyUserNav);
-  // });
+  describe('setAppHeaderProperties()', () => {
+
+    it('should take a theme and update the app header properties.', () => {
+
+      const defaultTheme = AppConstants.DEFAULT_USER_THEME;
+
+      component.setAppHeaderProperties(defaultTheme);
+
+      expect(component.appHeaderTitle).toBe(AppConstants.DEFAULT_USER_THEME.appTitle);
+      expect(component.navItems).toBe(AppConstants.DEFAULT_USER_THEME.navigationItems);
+      expect(component.userNav).toBe(AppConstants.DEFAULT_USER_THEME.accountNavigationItems);
+      expect(component.backgroundColor).toBe(AppConstants.DEFAULT_USER_THEME.backgroundColor);
+      expect(component.logoType).toBe(AppConstants.DEFAULT_USER_THEME.logoType);
+      expect(component.logoIsUsed).toBe(AppConstants.DEFAULT_USER_THEME.logoIsUsed);
+    });
+  });
 });

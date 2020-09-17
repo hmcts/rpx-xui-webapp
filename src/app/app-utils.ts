@@ -58,8 +58,6 @@ export class AppUtils {
   /**
    * Get Cookie Roles as Array
    *
-   * Get Cookie Roles as an Array from a string.
-   *
    * @param userRoles - '["pui-organisation-manager","caseworker-publiclaw", "caseworker"]'
    * @return - ['pui-organisation-manager', 'caseworker-publiclaw', 'caseworker', 'etc...']
    */

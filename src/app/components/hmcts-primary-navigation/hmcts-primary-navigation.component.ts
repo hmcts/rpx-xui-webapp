@@ -18,12 +18,10 @@ export class HmctsPrimaryNavigationComponent {
 
     @Input() label;
     @Input() items;
-    @Input() logoIsUsed;
-    // TODO: Remove
-    @Input() isBrandedHeader: boolean;
+    @Input() public logoIsUsed;
     @Input() showFindCase: boolean;
 
-    showItems: boolean;
+    public showItems: boolean;
     constructor(private route: ActivatedRoute) {
 
     }

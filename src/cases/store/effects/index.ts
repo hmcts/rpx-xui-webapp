@@ -1,4 +1,4 @@
-import {CaseCreateEffects} from './case-create.effects';
+import { CaseCreateEffects } from './case-create.effects';
 import { CaseListEffects } from './case-list.effects';
 import { SearchFilterEffects } from './search-filter.effects';
 import { ShareCaseEffects } from './share-case.effects';

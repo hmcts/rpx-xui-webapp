@@ -6,10 +6,10 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
 import { select, Store } from '@ngrx/store';
 import {BehaviorSubject, combineLatest, Observable, Subscription} from 'rxjs';
-import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
-import * as fromRoot from '../../../app/store';
 import * as converters from '../../converters/case-converter';
 import { ActionBindingModel } from '../../models/create-case-actions.model';
+import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
+import * as fromRoot from '../../../app/store';
 import * as fromCasesFeature from '../../store';
 import * as fromCaseList from '../../store/reducers';
 
@@ -75,13 +75,14 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
   constructor(
     public store: Store<fromCaseList.State>,
-    private readonly appConfig: AppConfig,
-    private readonly definitionsService: DefinitionsService,
-    private readonly windowService: WindowService,
-    private readonly featureToggleService: FeatureToggleService
+    private appConfig: AppConfig,
+    private definitionsService: DefinitionsService,
+    private windowService: WindowService,
+    private featureToggleService: FeatureToggleService,
   ) { }
 
   public ngOnInit() {
+
     this.isVisible = false;
     this.page = 1;
     this.resultView = null;

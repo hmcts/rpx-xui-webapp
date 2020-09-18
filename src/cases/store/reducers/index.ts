@@ -27,5 +27,3 @@ export * from './search-filter.reducer';
 export * from './create-case.reducer';
 export * from './case-list.reducer';
 export * from './share-case.reducer';
-
-

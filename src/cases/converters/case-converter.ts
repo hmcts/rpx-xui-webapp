@@ -55,17 +55,18 @@ function combineCaseTitleByCaseType(caseTypeId: string, selectCase: SearchResult
 
 function getApplicantName(selectCase: SearchResultViewItem) {
   return getValueByPropertyName(selectCase, 'applicantFMName') && getValueByPropertyName(selectCase, 'applicantLName') ?
-    getValueByPropertyName(selectCase, 'applicantFMName') + BLANK_SPACE + getValueByPropertyName(selectCase, 'applicantLName') : EMPTY_SPACE;
+    getValueByPropertyName(selectCase, 'applicantFMName') + BLANK_SPACE + getValueByPropertyName(selectCase, 'applicantLName') :
+    getValueByPropertyName(selectCase, 'applicantLName') ? getValueByPropertyName(selectCase, 'applicantLName') : EMPTY_SPACE;
 }
 
 function getRespondentName(selectCase: SearchResultViewItem) {
   let respondentName = getValueByPropertyName(selectCase, 'appRespondentFMName') && getValueByPropertyName(selectCase, 'appRespondentLName') ?
-    getValueByPropertyName(selectCase, 'appRespondentFMName') + BLANK_SPACE +
-    getValueByPropertyName(selectCase, 'appRespondentLName') : EMPTY_SPACE;
+    getValueByPropertyName(selectCase, 'appRespondentFMName') + BLANK_SPACE + getValueByPropertyName(selectCase, 'appRespondentLName') :
+    getValueByPropertyName(selectCase, 'appRespondentLName') ? getValueByPropertyName(selectCase, 'appRespondentLName') : EMPTY_SPACE;
   if (!respondentName) {
     respondentName = getValueByPropertyName(selectCase, 'respondentFMName') && getValueByPropertyName(selectCase, 'respondentLName') ?
-      getValueByPropertyName(selectCase, 'respondentFMName') + BLANK_SPACE +
-      getValueByPropertyName(selectCase, 'respondentLName') : EMPTY_SPACE;
+      getValueByPropertyName(selectCase, 'respondentFMName') + BLANK_SPACE + getValueByPropertyName(selectCase, 'respondentLName') :
+      getValueByPropertyName(selectCase, 'respondentLName') ? getValueByPropertyName(selectCase, 'respondentLName') : EMPTY_SPACE;
   }
   return respondentName;
 }

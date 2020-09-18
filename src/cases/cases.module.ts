@@ -35,8 +35,6 @@ import {SharedModule} from '../app/shared/shared.module';
 import {HttpModule} from '@angular/http';
 // from containers
 import * as fromContainers from './containers';
-// from components
-import * as fromComponents from './components';
 // from services
 import * as fromServices from './services';
 import {ProvidersModule} from '../app/providers/providers.module';
@@ -59,7 +57,7 @@ import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-tr
         CaseListFiltersModule,
         WorkbasketFiltersModule
     ],
-  declarations: [...fromComponents.components, ...fromContainers.containers],
+  declarations: [...fromContainers.containers],
   providers: [
     PlaceholderService,
     CasesService,

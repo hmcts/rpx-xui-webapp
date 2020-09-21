@@ -3,6 +3,12 @@
    dependent on the User. -->
   <div [ngStyle]="{'background-color': backgroundColor}">
 
+    <!-- So if we did use absolute positioning -->
+    <div style="border: 1px solid blue; width: 100px; position: absolute; top: 10px; left: 10%; float:left;">
+      hello
+    </div>
+
+
     <!-- Global Header with Signout Nav -->
     <exui-hmcts-global-header
     [headerTitle]="title"
@@ -13,7 +19,7 @@
 
     <!-- Navigation Menu -->
     <!-- Note: That showNavItems is used specifically on the Terms and Conditions page, to not show
-    the Navigation Menu-->
+    the Navigation Menu -->
     <exui-hmcts-primary-navigation
     [label]=""
     [items]="navItems"

@@ -4,29 +4,33 @@
   <div [ngStyle]="{'background-color': backgroundColor}">
 
     <!-- So if we did use absolute positioning, the logo moves -->
-    <div style="width:100%; border: 1px solid yellow; margin: 0 auto; width: 1220px;">
-      <div style="border: 1px solid blue; width: 100px; position: absolute; top: 10px; float:left;">
-        hello
-      </div>
-    </div>
+    <!--<div style="width:100%; border: 1px solid yellow; margin: 0 auto; width: 1220px;">-->
+      <!--<div style="border: 1px solid blue; width: 100px; position: absolute; top: 10px; float:left;">-->
+        <!--hello-->
+      <!--</div>-->
+    <!--</div>-->
 
     <!-- Global Header with Signout Nav -->
     <exui-hmcts-global-header
     [headerTitle]="title"
     [navigation]="userNav"
     [logoType]="logoType"
-    (navigate)="onNavigate($event)">
+    (navigate)="onNavigate($event)"
+    [label]=""
+    [items]="navItems"
+    [logoIsUsed]="logoIsUsed"
+    [showNavItems]="showNavItems | async">
     </exui-hmcts-global-header>
 
     <!-- Navigation Menu -->
     <!-- Note: That showNavItems is used specifically on the Terms and Conditions page, to not show
     the Navigation Menu -->
-    <exui-hmcts-primary-navigation
-    [label]=""
-    [items]="navItems"
-    [logoIsUsed]="logoIsUsed"
-    [showNavItems]="showNavItems | async"
-    ></exui-hmcts-primary-navigation>
+    <!--<exui-hmcts-primary-navigation-->
+    <!--[label]=""-->
+    <!--[items]="navItems"-->
+    <!--[logoIsUsed]="logoIsUsed"-->
+    <!--[showNavItems]="showNavItems | async"-->
+    <!--&gt;</exui-hmcts-primary-navigation>-->
 
   </div>
   <!-- !Navigation menu -->

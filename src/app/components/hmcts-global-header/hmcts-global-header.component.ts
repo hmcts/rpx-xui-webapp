@@ -8,6 +8,15 @@ import { Store } from '@ngrx/store';
 })
 export class HmctsGlobalHeaderComponent {
 
+  @Input() set showNavItems(value) {
+    this.showItems = value;
+  }
+  @Input() label;
+  @Input() items;
+  @Input() public logoIsUsed;
+  @Input() showFindCase: boolean;
+
+  public showItems: boolean;
   // @Input() set userLoggedIn(value) {
   //     this.userValue = value;
   // }
@@ -21,5 +30,13 @@ export class HmctsGlobalHeaderComponent {
 
   onEmmitEvent(index) {
     this.navigate.emit(this.navigation.items[index].emit);
+  }
+
+  public getHeaderHeight(showItems) {
+    if (showItems) {
+      return 'none';
+    } else {
+      return '88px';
+    }
   }
 }

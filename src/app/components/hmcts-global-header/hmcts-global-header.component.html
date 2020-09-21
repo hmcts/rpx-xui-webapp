@@ -5,10 +5,12 @@
 
           <!-- Logo for Judicial Users -->
           <ng-container *ngSwitchCase="'judicial'">
-            <div class="govuk-header__logo" style="margin-bottom: 0px;">
-              <img class="img-responsive" src="/assets/images/govuk-crest-jcm.png" width="75px">
-            </div>
-            <a class="hmcts-header__link" [routerLink]="headerTitle?.url" [attr.aria-label]="headerTitle?.name" >{{headerTitle?.name}}</a>
+              <div style="position: absolute;" *ngIf="showItems">
+                <img class="img-responsive" src="/assets/images/govuk-crest-jcm.png" width="83px">
+              </div>
+              <div class="govuk-header__logo">
+              </div>
+              <a class="hmcts-header__link" [routerLink]="headerTitle?.url" [attr.aria-label]="headerTitle?.name" >{{headerTitle?.name}}</a>
           </ng-container>
 
           <!-- Logo for Case Manager Users -->
@@ -46,3 +48,21 @@
     </div>
 </div>
 
+<nav *ngIf="showItems" class="hmcts-primary-navigation transparent-background" [attr.aria-label]="label">
+  <div class="hmcts-primary-navigation__container">
+    <div class="govuk-header__logo" *ngIf="logoIsUsed"></div>
+    <div class="hmcts-primary-navigation__nav">
+      <nav class="hmcts-primary-navigation transparent-background" aria-label="Primary navigation">
+        <ul class="hmcts-primary-navigation__list">
+          <li class="hmcts-primary-navigation__item" *ngFor="let item of items" >
+            <a class="hmcts-primary-navigation__link" [attr.aria-current]="item.active ? true: null" [routerLink]="item.href">{{item.text}}</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    <div class="hmcts-primary-navigation__search">
+      <!-- TODO: Should turn on and off -->
+      <a class="hmcts-search-toggle__button transparent-background" [routerLink]="'/cases/case-search'">Find case</a>
+    </div>
+  </div>
+</nav>

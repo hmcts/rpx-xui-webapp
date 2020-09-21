@@ -10,7 +10,7 @@ import { HealthCheckGuard } from './guards/health-check.guard';
 import { HealthCheckService } from './services/health-check.service';
 import { ExUITitleService } from './services/exui-title.service';
 import { MediaViewerModule } from '@hmcts/media-viewer';
-import { CaseUIToolkitModule, WindowService } from '@hmcts/ccd-case-ui-toolkit';
+import { AlertService, CaseUIToolkitModule, WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 
 /**
@@ -34,7 +34,8 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
     HealthCheckGuard,
     HealthCheckService,
     ExUITitleService,
-    WindowService
+    WindowService,
+    AlertService
   ],
 })
 export class SharedModule {}

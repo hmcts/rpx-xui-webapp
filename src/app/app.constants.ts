@@ -43,7 +43,7 @@ const applicationUserThemes =  [
       'caseworker-ia-iacjudge',
       'caseworker-publiclaw-judiciary',
     ],
-    appTitle: {name: 'Judicial case manager', url: '/'},
+    appTitle: {name: 'Judicial Case Manager', url: '/'},
     navigationItems: [
       {
         text: 'Case list',

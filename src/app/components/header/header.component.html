@@ -3,11 +3,12 @@
    dependent on the User. -->
   <div [ngStyle]="{'background-color': backgroundColor}">
 
-    <!-- So if we did use absolute positioning -->
-    <div style="border: 1px solid blue; width: 100px; position: absolute; top: 10px; left: 10%; float:left;">
-      hello
+    <!-- So if we did use absolute positioning, the logo moves -->
+    <div style="width:100%; border: 1px solid yellow; margin: 0 auto; width: 1220px;">
+      <div style="border: 1px solid blue; width: 100px; position: absolute; top: 10px; float:left;">
+        hello
+      </div>
     </div>
-
 
     <!-- Global Header with Signout Nav -->
     <exui-hmcts-global-header

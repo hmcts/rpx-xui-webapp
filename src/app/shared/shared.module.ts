@@ -34,8 +34,7 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
     HealthCheckGuard,
     HealthCheckService,
     ExUITitleService,
-    WindowService,
-    AlertService
+    WindowService
   ],
 })
 export class SharedModule {}

@@ -53,7 +53,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.unsubscribe(this.subscription);
   }
 
-  private unsubscribe(subscription: Subscription) {
+  public unsubscribe(subscription: Subscription) {
     if (subscription) {
       subscription.unsubscribe();
     }
@@ -63,7 +63,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.emitNavigate(event, this.navigate);
   }
 
-  private emitNavigate(event: any, emitter: EventEmitter<string>) {
+  public emitNavigate(event: any, emitter: EventEmitter<string>) {
     emitter.emit(event);
   }
 }

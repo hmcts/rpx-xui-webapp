@@ -1,6 +1,5 @@
-import { HeaderComponent } from './header.component';
 import { of } from 'rxjs';
-
+import { HeaderComponent } from './header.component';
 
 describe('Header Component', () => {
     let mockStore: any;

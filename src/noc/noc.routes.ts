@@ -14,7 +14,7 @@ export const ROUTES: Routes = [
           component: null,
           canActivate: [ HealthCheckGuard ],
           data: {
-            title: 'HMCTS Manage Cases | Case list'
+            title: 'HMCTS Manage Cases | Notice of Change'
           }
         }
       ]

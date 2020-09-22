@@ -40,7 +40,7 @@
           <nav class="hmcts-header__navigation" attr.aria-label="{{navigation.label}}">
               <ul class="hmcts-header__navigation-list" >
                   <li *ngFor="let item of navigation.items; let i = index" class="hmcts-header__navigation-item">
-                      <a class="hmcts-header__navigation-link" (click)="onEmmitEvent(i)" *ngIf="userValue" [routerLink]="">{{item.text}}</a>
+                      <a class="hmcts-header__navigation-link" (click)="onEmitEvent(i)" *ngIf="userValue" [routerLink]="">{{item.text}}</a>
                   </li>
               </ul>
           </nav>

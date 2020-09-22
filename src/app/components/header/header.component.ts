@@ -16,15 +16,15 @@ import { Observable, of, Subscription } from 'rxjs';
  */
 export class HeaderComponent implements OnInit {
 
-  @Input() navItems: { active: boolean; href: string; }[];
-  @Input() title: AppTitleModel;
-  @Input() userNav: UserNavModel;
-  @Input() showFindCase: boolean;
-  @Input() backgroundColor: string;
-  @Input() logoType: string;
-  @Input() logoIsUsed: boolean = false;
-  @Input() showNavItems: Observable<boolean>;
-  @Output() navigate = new EventEmitter<string>();
+  @Input() public navItems: { active: boolean; href: string; }[];
+  @Input() public title: AppTitleModel;
+  @Input() public userNav: UserNavModel;
+  @Input() public showFindCase: boolean;
+  @Input() public backgroundColor: string;
+  @Input() public logoType: string;
+  @Input() public logoIsUsed: boolean = false;
+  @Input() public showNavItems: Observable<boolean>;
+  @Output() public navigate = new EventEmitter<string>();
 
   constructor(
     public store: Store<fromRoot.State>,

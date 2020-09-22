@@ -372,4 +372,8 @@ button:focus {
  */
 .transparent-background {
   background-color: transparent !important;
+
+  a:focus {
+    background-color: #ffdd00 !important;
+  }
 }

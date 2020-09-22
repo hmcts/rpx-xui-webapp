@@ -10,7 +10,7 @@ import { HealthCheckGuard } from './guards/health-check.guard';
 import { HealthCheckService } from './services/health-check.service';
 import { ExUITitleService } from './services/exui-title.service';
 import { MediaViewerModule } from '@hmcts/media-viewer';
-import { AlertService, CaseUIToolkitModule, WindowService } from '@hmcts/ccd-case-ui-toolkit';
+import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 
 /**
@@ -19,7 +19,7 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
  * FormsModule, CommonModule, ReactiveForms etc..
  */
 @NgModule( {
-  imports: [RouterModule, CommonModule, MediaViewerModule, ExuiCommonLibModule.forChild(), CaseUIToolkitModule],
+  imports: [RouterModule, CommonModule, MediaViewerModule, ExuiCommonLibModule.forChild()],
   declarations: [
     ...fromAppComponents.components,
     ...fromAppContainers.containers,

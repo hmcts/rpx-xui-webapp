@@ -1,5 +1,7 @@
 
 var CaseListPage = require("../pageObjects/CaseListPage");
+const CucumberReportLogger = require('../../support/reportLogger');
+
 
 var { defineSupportCode } = require('cucumber');
 const { browser } = require("protractor");
@@ -29,7 +31,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await caseListPage.waitForNoCaseResultsToDisplay();
     });
 
-    Then('I wait to see case results displayed', async function(){
+    Then('I wait to see case results displayed', {timeout : 120*1000} ,async function(){
+        CucumberReportLogger.AddMessage("Step started");
         await caseListPage.waitForCaseResultsToDisplay();
     });
 

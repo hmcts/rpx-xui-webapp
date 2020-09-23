@@ -7,11 +7,13 @@ class CucumberReportLog{
     }
 
     AddMessage(message){
-        this.scenarioWorld.attach(message);
+        this.scenarioWorld.attach(new Date().toTimeString() + " : " + message);
+        console.log(new Date().toTimeString() + " : " + message)
     }
 
     AddJson(json){
         this.scenarioWorld.attach(JSON.stringify(json, null, 2));
+        console.log(JSON.stringify(json, null, 2));
     }
 
     async AddScreenshot(browser){

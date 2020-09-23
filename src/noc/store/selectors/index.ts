@@ -1,1 +1,1 @@
-export const selectors: any[] = [];
+export * from './noc-navigation.selectors';

@@ -40,7 +40,7 @@ export function prepareElasticQuery(queryParams: {page?}, body: {size?, sort?}):
     const from = page * size
 
     Object.keys(metaCriteria).map(key => {
-        if (key === 'ctid' || key === 'use_case' || key === 'view' || key === 'page') {
+        if (key === 'ctid' || key === 'usecase' || key === 'view' || key === 'page') {
             delete metaCriteria[key]
         }
 

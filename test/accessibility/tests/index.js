@@ -149,7 +149,7 @@ describe('Pa11y Accessibility tests', function () {
             const actions = [];
             actions.push(...PallyActions.waitForPageWithCssLocator('ccd-case-edit-page h1'))
             await pa11ytest(this, actions, conf.baseUrl + 'cases/case-create/DIVORCE/Asylum/startAppeal/' + page.id, async (page, issuesArr) => {
-                await CustomValidations.mainContent(page, issuesArr);
+                await CustomValidations.mainContentLandmark(page, issuesArr);
                 await CustomValidations.skipContentLink(page, issuesArr);
 
             });

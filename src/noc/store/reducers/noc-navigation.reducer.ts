@@ -17,19 +17,23 @@ export function nocNavigationReducer(
     state = initialState,
     action: fromNocNavigation.NocNavigationAction
 ): NocNavigationState {
-    switch (action.type) {
+    let reducedState: NocNavigationState = state;
 
+    switch (action.type) {
         case fromNocNavigation.CHANGE_NAVIGATION: {
-            return {
-                ...state,
-                previous: action.payload.previous,
-                current: action.payload.current,
-                next: action.payload.next,
+
+            const { previous, current, next } = action.payload;
+
+            reducedState = {
+                ...reducedState,
+                previous,
+                current,
+                next,
             };
         }
     }
 
-    return state;
+    return reducedState;
 }
 
 export const getPreviousNavigation = (state) => state.previous;

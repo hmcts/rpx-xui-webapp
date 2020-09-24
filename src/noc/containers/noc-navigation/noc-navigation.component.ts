@@ -19,8 +19,8 @@ export class NocNavigationComponent implements OnInit{
   ) { }
 
   ngOnInit() {
-    this.nocNavigationPreviousState$ = this.store.pipe(select(fromFeature.getPreviousNavigation));
-    this.nocNavigationCurrentState$ = this.store.pipe(select(fromFeature.getCurrentNavigation));
-    this.nocNavigationNextState$ = this.store.pipe(select(fromFeature.getNextNavigation));
+    this.nocNavigationPreviousState$ = this.store.pipe(select(fromFeature.previousNavigation));
+    this.nocNavigationCurrentState$ = this.store.pipe(select(fromFeature.currentNavigation));
+    this.nocNavigationNextState$ = this.store.pipe(select(fromFeature.nextNavigation));
   }
 }

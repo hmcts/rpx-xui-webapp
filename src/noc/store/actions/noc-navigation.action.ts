@@ -1,4 +1,4 @@
-import {Action} from '@ngrx/store';
+import { Action } from '@ngrx/store';
 
 export const CHANGE_NAVIGATION = '[NOC Navigation] Change Navigation';
 

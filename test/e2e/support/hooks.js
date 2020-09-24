@@ -101,8 +101,9 @@ defineSupportCode(({ Before,After }) => {
     });
 
     After(async function(scenario) {
+        CucumberReportLog.AddMessage("scenario completed with status : " + scenario.result.status);
         const world = this;
-        await CucumberReportLog.AddScreenshot(browser);
+        await CucumberReportLog.AddScreenshot(global.screenShotUtils);
         if (scenario.result.status === 'failed') {
             let browserLog = await browser.manage().logs().get('browser');
             let browserErrorLogs = []

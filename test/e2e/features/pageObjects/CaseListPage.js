@@ -86,9 +86,9 @@ class CaseListPage{
 
     async waitForCaseResultsToDisplay(){
         await BrowserWaits.waitForElement(this.searchResultsTopPagination);
-        CucumberReportLogger.AddMessage("Waiting from : " + new Date().toTimeString());
-        await BrowserWaits.waitForSeconds(5);
-        CucumberReportLogger.AddMessage("Waiting To : " + new Date().toTimeString());
+        CucumberReportLogger.AddMessage("starting wait for 2 sec for list to render  : " + new Date().toTimeString());
+        await BrowserWaits.waitForSeconds(2);
+        CucumberReportLogger.AddMessage("wait complete : " + new Date().toTimeString());
 
     }
 

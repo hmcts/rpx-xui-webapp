@@ -22,17 +22,7 @@ async function getBrowser(){
     }
     return browser;
 }
-
-async function getPage(){
-    if(page === null){
-        const testBrowser = await getBrowser();
-        page = await testBrowser.newPage();
-    }
-     
-    return page;
-}
-
-async function pa11ytest(test, actions, startUrl) {
+async function pa11ytest(test, actions, startUrl, customValidations) {
     console.log("pally test with actions : " + test.test.title);
     console.log(actions);
 
@@ -62,7 +52,7 @@ async function pa11ytest(test, actions, startUrl) {
         }
     ];
     const testBrowser = await getBrowser();
-    const page = await testBrowser.newPage();;
+    page = await testBrowser.newPage();;
     await page.setCookie(...cookies);
     // await page.goto("http://localhost:4200/");
 
@@ -97,6 +87,10 @@ async function pa11ytest(test, actions, startUrl) {
 
     }
 
+    if (customValidations){
+        await customValidations(page,result.issues);
+    }
+
     await page.close();
     // await browser.close();
     const elapsedTime = Date.now() - startTime;
@@ -113,4 +107,4 @@ async function pa11ytest(test, actions, startUrl) {
 
 
 
-module.exports = { pa11ytest }
+module.exports = { pa11ytest, browser, page }

@@ -6,8 +6,7 @@ import * as fromFeature from '../../store';
 
 @Component({
   selector: 'exui-noc-navigation',
-  templateUrl: 'noc-navigation.component.html',
-  styleUrls: ['noc-navigation.component.scss']
+  templateUrl: 'noc-navigation.component.html'
 })
 export class NocNavigationComponent implements OnInit{
 

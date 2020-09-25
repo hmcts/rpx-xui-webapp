@@ -1,5 +1,5 @@
 <div class="hmcts-header">
-  <a href="#content" class="govuk-skip-link">Skip to main content</a>
+  <a [routerLink]="'.'" fragment="content" class="govuk-skip-link">Skip to main content</a>
     <div class="hmcts-header__container">
       <ng-container  *ngIf="isBrandedHeader ;else noBrandedHeader">
         <div class="govuk-header__logo">

@@ -62,9 +62,9 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
   constructor(
     public store: Store<fromCaseList.State>,
-    private appConfig: AppConfig,
-    private definitionsService: DefinitionsService,
-    private windowService: WindowService,
+    private readonly appConfig: AppConfig,
+    private readonly definitionsService: DefinitionsService,
+    private readonly windowService: WindowService,
   ) {
   }
 
@@ -209,6 +209,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
       this.paginationMetadata.total_results_count = paginationMetadata.total_results_count;
 
       const event = this.getEvent();
+      // tslint:disable-next-line: triple-equals
       if ( event != null) {
         this.store.dispatch(new fromCasesFeature.ApplyCaselistFilter(event));
       }
@@ -272,6 +273,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public getToggleButtonName = (showFilter: boolean): string => showFilter ? 'Hide Filter' : 'Show Filter';
 
   public findCaseListPaginationMetadata(event) {
+    // tslint:disable-next-line: triple-equals
     if (event != null) {
       this.store.dispatch(new fromCasesFeature.FindCaselistPaginationMetadata(event));
     }

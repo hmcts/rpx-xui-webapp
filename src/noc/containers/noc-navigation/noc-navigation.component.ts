@@ -8,7 +8,7 @@ import * as fromFeature from '../../store';
   selector: 'exui-noc-navigation',
   templateUrl: 'noc-navigation.component.html'
 })
-export class NocNavigationComponent implements OnInit{
+export class NocNavigationComponent implements OnInit {
 
   @Output() back = new EventEmitter();
   @Output() continue = new EventEmitter();

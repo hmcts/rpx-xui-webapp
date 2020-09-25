@@ -5,13 +5,12 @@ export interface NocNavigationState {
     current: string;
     next: string;
 }
-  
+
 export const initialState: NocNavigationState = {
     previous: null,
     current: 'START',
     next: 'QUESTION',
 };
-  
 
 export function nocNavigationReducer(
     state = initialState,

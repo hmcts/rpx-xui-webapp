@@ -4,7 +4,8 @@ const AppActions = require('../helpers/applicationActions');
 const PallyActions = require('../helpers/pallyActions');
 
 const assert = require('assert');
-const { pa11ytest, getResults } = require('../helpers/pa11yUtil');
+const { pa11ytest,  page } = require('../helpers/pa11yUtil');
+const CustomValidations = require('../helpers/customeA11yValidations');
 const {conf} = require('../config/config');;
 
 const divorceCaseActions = require('../caseCreationActions/divorce'); 
@@ -27,21 +28,33 @@ describe('Pa11y Accessibility tests', function () {
     it('Case List Page', async function () {
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator('ccd-workbasket-filters .heading-h2'))
-        await pa11ytest(this, actions, conf.baseUrl + 'cases');
+        await pa11ytest(this, actions, conf.baseUrl + 'cases', async (page, issuesArr) => {
+            await CustomValidations.mainContentLandmark(page, issuesArr);
+            await CustomValidations.skipContentLink(page, issuesArr);
+
+        });
 
     });
 
     it('Case Search Page', async function () {
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator('.search-block'))
-        await pa11ytest(this, actions, conf.baseUrl + 'cases/case-search');
+        await pa11ytest(this, actions, conf.baseUrl + 'cases/case-search', async (page, issuesArr) => {
+            await CustomValidations.mainContentLandmark(page, issuesArr);
+            await CustomValidations.skipContentLink(page, issuesArr);
+
+        });
 
     });
 
     it('Create Case Page', async function () {
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator('exui-ccd-connector'))
-        await pa11ytest(this, actions, conf.baseUrl + 'cases/case-filter');
+        await pa11ytest(this, actions, conf.baseUrl + 'cases/case-filter', async (page, issuesArr) => {
+            await CustomValidations.mainContentLandmark(page, issuesArr);
+            await CustomValidations.skipContentLink(page, issuesArr);
+
+        });
     });
 
     const divorceCreateCaseConfig = ccdApi.getSolicitorCreateCaseConfig('DIVORCE','DIVORCE'); 
@@ -49,7 +62,11 @@ describe('Pa11y Accessibility tests', function () {
         it('Divorce Create Case Page '+ page.id, async function () {
             const actions = [];
             actions.push(...PallyActions.waitForPageWithCssLocator('ccd-case-edit-page h1'))
-            await pa11ytest(this, actions, conf.baseUrl + 'cases/case-create/DIVORCE/DIVORCE/solicitorCreate/' + page.id);
+            await pa11ytest(this, actions, conf.baseUrl + 'cases/case-create/DIVORCE/DIVORCE/solicitorCreate/' + page.id, async (page, issuesArr) => {
+                await CustomValidations.mainContentLandmark(page, issuesArr);
+                await CustomValidations.skipContentLink(page, issuesArr);
+
+            });
 
         });
  
@@ -60,7 +77,11 @@ describe('Pa11y Accessibility tests', function () {
         it('FR Consented Create Case Page ' + page.id, async function () {
             const actions = [];
             actions.push(...PallyActions.waitForPageWithCssLocator('ccd-case-edit-page h1'))
-            await pa11ytest(this, actions, conf.baseUrl + 'cases/case-create/DIVORCE/FinancialRemedyMVP2/FR_solicitorCreate/' + page.id);
+            await pa11ytest(this, actions, conf.baseUrl + 'cases/case-create/DIVORCE/FinancialRemedyMVP2/FR_solicitorCreate/' + page.id, async (page, issuesArr) => {
+                await CustomValidations.mainContentLandmark(page, issuesArr);
+                await CustomValidations.skipContentLink(page, issuesArr);
+
+            });
 
         });
 
@@ -71,7 +92,11 @@ describe('Pa11y Accessibility tests', function () {
         it('FR Contested Create Case Page ' + page.id, async function () {
             const actions = [];
             actions.push(...PallyActions.waitForPageWithCssLocator('ccd-case-edit-page h1'))
-            await pa11ytest(this, actions, conf.baseUrl + 'cases/case-create/DIVORCE/FinancialRemedyContested/FR_solicitorCreate/' + page.id);
+            await pa11ytest(this, actions, conf.baseUrl + 'cases/case-create/DIVORCE/FinancialRemedyContested/FR_solicitorCreate/' + page.id, async (page, issuesArr) => {
+                await CustomValidations.mainContentLandmark(page, issuesArr);
+                await CustomValidations.skipContentLink(page, issuesArr);
+
+            });
         });
 
     });
@@ -81,7 +106,11 @@ describe('Pa11y Accessibility tests', function () {
         it('Probate Grant Of Representation Create Case Page ' + page.id, async function () {
             const actions = [];
             actions.push(...PallyActions.waitForPageWithCssLocator('ccd-case-edit-page h1'))
-            await pa11ytest(this, actions, conf.baseUrl + 'cases/case-create/DIVORCE/GrantOfRepresentation/solicitorCreateApplication/' + page.id);
+            await pa11ytest(this, actions, conf.baseUrl + 'cases/case-create/DIVORCE/GrantOfRepresentation/solicitorCreateApplication/' + page.id, async (page, issuesArr) => {
+                await CustomValidations.mainContentLandmark(page, issuesArr);
+                await CustomValidations.skipContentLink(page, issuesArr);
+
+            });
         });
 
     });
@@ -91,7 +120,11 @@ describe('Pa11y Accessibility tests', function () {
         it('Probate create caveat Create Case Page ' + page.id, async function () {
             const actions = [];
             actions.push(...PallyActions.waitForPageWithCssLocator('ccd-case-edit-page h1'))
-            await pa11ytest(this, actions, conf.baseUrl + 'cases/case-create/DIVORCE/Caveat/solicitorCreateCaveat/' + page.id);
+            await pa11ytest(this, actions, conf.baseUrl + 'cases/case-create/DIVORCE/Caveat/solicitorCreateCaveat/' + page.id, async (page, issuesArr) => {
+                await CustomValidations.mainContentLandmark(page, issuesArr);
+                await CustomValidations.skipContentLink(page, issuesArr);
+
+            });
         });
 
     });
@@ -101,7 +134,11 @@ describe('Pa11y Accessibility tests', function () {
         it('IA Create Case Page ' + page.id, async function () {
             const actions = [];
             actions.push(...PallyActions.waitForPageWithCssLocator('ccd-case-edit-page h1'))
-            await pa11ytest(this, actions, conf.baseUrl + 'cases/case-create/DIVORCE/Asylum/startAppeal/' + page.id);
+            await pa11ytest(this, actions, conf.baseUrl + 'cases/case-create/DIVORCE/Asylum/startAppeal/' + page.id, async (page, issuesArr) => {
+                await CustomValidations.mainContentLandmark(page, issuesArr);
+                await CustomValidations.skipContentLink(page, issuesArr);
+
+            });
         });
 
     });
@@ -111,7 +148,11 @@ describe('Pa11y Accessibility tests', function () {
         it('FPL Care Supervision Create Case Page ' + page.id, async function () {
             const actions = [];
             actions.push(...PallyActions.waitForPageWithCssLocator('ccd-case-edit-page h1'))
-            await pa11ytest(this, actions, conf.baseUrl + 'cases/case-create/DIVORCE/Asylum/startAppeal/' + page.id);
+            await pa11ytest(this, actions, conf.baseUrl + 'cases/case-create/DIVORCE/Asylum/startAppeal/' + page.id, async (page, issuesArr) => {
+                await CustomValidations.mainContentLandmark(page, issuesArr);
+                await CustomValidations.skipContentLink(page, issuesArr);
+
+            });
         });
 
     });

@@ -7,7 +7,11 @@ describe('Noc Navigation Reducer', () => {
 
         it('should set correct object', () => {
             const initialState = fromReducer.initialState;
-            const action = new fromActions.ChangeNavigation({});
+            const action = new fromActions.ChangeNavigation({
+                previous: '',
+                current: '',
+                next: ''
+            });
             const state = fromReducer.nocNavigationReducer(initialState, action);
             expect(state).toBeDefined();
         });

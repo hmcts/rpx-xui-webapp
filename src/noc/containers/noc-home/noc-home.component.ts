@@ -13,4 +13,16 @@ export class NocHomeComponent {
     private store: Store<fromFeature.State>,
   ) { }
 
+  public back(event) {
+    console.log('back event triggered ', event);
+  }
+
+  public continue(event) {
+    console.log('continue event triggered ', event);
+  }
+
+  public submit(event) {
+    console.log('submit event triggered ', event);
+  }
+
 }

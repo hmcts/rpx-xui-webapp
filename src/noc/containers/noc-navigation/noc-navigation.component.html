@@ -1,0 +1,6 @@
+<a class="govuk-back-link" href="javascript:void(0)" *ngIf="isVisible((nocNavigationCurrentState$ | async), backVisibilityStates)" (click)="onBack($event)">Back</a>
+<div>
+    <ng-content></ng-content>
+</div>
+<button class="button" type="button" *ngIf="isVisible((nocNavigationCurrentState$ | async), continueVisibilityStates)" (click)="onContinue($event)">Continue</button>
+<button class="button" type="button" *ngIf="isVisible((nocNavigationCurrentState$ | async), submitVisibilityStates)" (click)="onSubmit($event)">Submit</button>

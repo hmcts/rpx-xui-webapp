@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@^2.64.37-organisation-complex-field-type":
-  version "2.64.37-organisation-complex-field-type"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.64.37-organisation-complex-field-type.tgz#a9696bc16f3e01df37480d296a7452b32910e3bf"
-  integrity sha512-dS41S7+5ykc8iolWhDzKJFjERh+zWy0acaxXPozSgyMlNo9qqUNg1WoAL/D4P09vwBoLEs51xlzcs3jVuC9SVQ==
+"@hmcts/ccd-case-ui-toolkit@^2.64.41-reinstate-EUI-2575":
+  version "2.64.41-reinstate-EUI-2575"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.64.41-reinstate-EUI-2575.tgz#fd00b7a4f0d82eee7523fe3b9aac3ad0cf671f25"
+  integrity sha512-wbOTpwk35GD6iwigCCdQg0dTNrFeDcN7odTxNY6QDVNcIByldVIUGWTuWelKXcLeczN3pqsaS7WELMoYUmLtkA==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"

@@ -32,7 +32,7 @@ class CaseListPage{
         this.sortColumnsIconLinks = $$(".search-result-column-sort a.sort-widget");  
 
         //Case list selection feature elements
-        this.tableHeaderSelectAllInput = $(".govuk-table__header #select-all");
+        this.tableHeaderSelectAllInput = $("ccd-search-result #select-all");
         this.caseSelectionCheckboxes = $$("td .govuk-checkboxes__input");
         this.shareCaseButton = $("#btn-share-button");
         this.resetCaseSelectionLink = $("a.search-result-reset-link");

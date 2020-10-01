@@ -179,16 +179,16 @@ class CaseManager {
         switch (ccdFileTagName) {
             case "ccd-write-text-field":
                 let e = ccdField.$('input.form-control');
-                let value = this._fieldValue(fieldName); 
-                await e.sendKeys(value);
-                cucumberReporter.AddMessage(fieldName + " : " + value); 
+                let textvalue = this._fieldValue(fieldName); 
+                await e.sendKeys(textvalue);
+                cucumberReporter.AddMessage(fieldName + " : " + textvalue); 
 
                 break;
             case "ccd-write-text-area-field":
                 let e1 = ccdField.$('textarea.form-control');
-                let value = this._fieldValue(fieldName); 
-                await e1.sendKeys(value)
-                cucumberReporter.AddMessage(fieldName + " : " + value); 
+                let textAreaValue = this._fieldValue(fieldName); 
+                await e1.sendKeys(textAreaValue)
+                cucumberReporter.AddMessage(fieldName + " : " + textAreaValue); 
                 break;
             case "ccd-write-address-field":
                 await ccdField.$('.form-control').sendKeys("SW1");

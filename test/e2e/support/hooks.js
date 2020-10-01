@@ -108,7 +108,7 @@ defineSupportCode(({ Before,After }) => {
             let browserLog = await browser.manage().logs().get('browser');
             let browserErrorLogs = []
             for (let browserLogCounter = 0; browserLogCounter < browserLog.length; browserLogCounter++) {
-                if (browserLog[browserLogCounter].level.value > 900) {
+                if (browserLog[browserLogCounter].level.value > 900 ) {
                     browserErrorLogs.push(browserLog[browserLogCounter]);
                 }
             }

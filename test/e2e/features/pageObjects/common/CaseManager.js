@@ -3,6 +3,7 @@ var CreateCaseStartPage = require('../createCaseStartPage');
 var BrowserWaits = require('../../../support/customWaits');
 const date = require('moment');
 var path = require('path');
+var cucumberReporter = require('../../../support/reportLogger');
 
 const { accessibilityCheckerAuditor } = require('../../../../accessibility/helpers/accessibilityAuditor');
 
@@ -154,6 +155,7 @@ class CaseManager {
         await BrowserWaits.waitForElementClickable(continieElement);
 
         var thisPageUrl = await browser.getCurrentUrl();
+        cucumberReporter.AddMessage("Submitting page: " + thisPageUrl);
         console.log("Submitting : " + thisPageUrl )
         await continieElement.click();
         await BrowserWaits.waitForPageNavigation(thisPageUrl);
@@ -176,34 +178,35 @@ class CaseManager {
         }
         switch (ccdFileTagName) {
             case "ccd-write-text-field":
-                let e = ccdField.$('input.form-control'); 
-                await e.sendKeys(this._fieldValue(fieldName));
+                let e = ccdField.$('input.form-control');
+                let value = this._fieldValue(fieldName); 
+                await e.sendKeys(value);
+                cucumberReporter.AddMessage(fieldName + " : " + value); 
+
                 break;
             case "ccd-write-text-area-field":
                 let e1 = ccdField.$('textarea.form-control');
-                await e1.sendKeys(this._fieldValue(fieldName))
+                let value = this._fieldValue(fieldName); 
+                await e1.sendKeys(value)
+                cucumberReporter.AddMessage(fieldName + " : " + value); 
                 break;
             case "ccd-write-address-field":
                 await ccdField.$('.form-control').sendKeys("SW1");
-
                 await ccdField.$('button').click();
-
                 var addressSelectionField = ccdField.$('select.form-control')
                 await BrowserWaits.waitForElement(addressSelectionField);
-
                 var addressToSelect = addressSelectionField.$("option:nth-of-type(2)");
                 await BrowserWaits.waitForElement(addressToSelect);
-
                 await addressToSelect.click();
-
+                cucumberReporter.AddMessage(fieldName + " : 2nd option selected"); 
                 break;
             case "ccd-write-email-field":
                 await ccdField.$('input.form-control').sendKeys("test@autotest.com ");
-
+                cucumberReporter.AddMessage(fieldName + " : test@autotest.com");  
                 break;
             case "ccd-write-yes-no-field":
                 await ccdField.$('.multiple-choice input').click();
-
+                cucumberReporter.AddMessage(fieldName + " : " + await await ccdField.$('.multiple-choice input').getText());  
                 break;
             case "ccd-write-fixed-list-field":
                 var selectOption = this._fieldValue(fieldName);
@@ -217,7 +220,7 @@ class CaseManager {
                 let selectFieldId = await ccdField.$('select');
                 let id = await selectFieldId.getAttribute('id');
                 let selectionOptionValue = await selectOptionElement.getAttribute('value');
-
+                cucumberReporter.AddMessage(fieldName + " : " + selectionOptionValue); 
                 break;
             case "ccd-write-date-field":
                 var dateValue = this._fieldValue(fieldName);
@@ -226,11 +229,9 @@ class CaseManager {
                 }
                 var today = dateValue.split("-");
                 await ccdField.$('.form-group-day input').sendKeys(today[0]);
-
                 await ccdField.$('.form-group-month input').sendKeys(today[1]);
-
                 await ccdField.$('.form-group-year input').sendKeys(today[2]);
-
+                cucumberReporter.AddMessage(fieldName + " : " + dateValue);  
                 break;
 
             case "ccd-write-document-field":
@@ -242,8 +243,8 @@ class CaseManager {
                     console.log("file upload status : " + isUploadDone);
                     return !isUploadDone; 
                 });
- 
-                await browser.sleep(20000);
+                cucumberReporter.AddMessage(fieldName + " : dummy.pdf");  
+                await browser.sleep(5000);
                 break;
             case "ccd-write-multi-select-list-field":
                 var selectionFields = ccdField.$$(".multiple-choice input");
@@ -251,15 +252,17 @@ class CaseManager {
                 for (var count = 0; count < selectionFieldsCount; count++) {
                     await selectionFields.get(count).click();
                 }
+                cucumberReporter.AddMessage(fieldName + " : all options selected");  
                 break;
 
             case "ccd-write-fixed-radio-list-field":
                 var selectionRadioFields = ccdField.$$(".multiple-choice input");
                 var selectionFieldsCount = await selectionRadioFields.count();
                 await selectionRadioFields.get(0).click();
-
+                cucumberReporter.AddMessage(fieldName + " : first option selected");  
             break;
             case "ccd-write-complex-type-field":
+                cucumberReporter.AddMessage(fieldName + " : complex field values");  
                 var writeFields = ccdField.$$("ccd-field-write");
                 for (var fieldcounter = 0; fieldcounter < await writeFields.count(); fieldcounter++){
                     var isHidden = await writeFields.get(fieldcounter).getAttribute("hidden");
@@ -269,8 +272,10 @@ class CaseManager {
                     var ccdSubField = writeFields.get(fieldcounter).element(by.xpath("./div/*"));
                     await this._writeToField(ccdSubField) 
                 }
+                cucumberReporter.AddMessage(fieldName + " : complex field values");  
             break;
             case "ccd-write-collection-field":
+                cucumberReporter.AddMessage(fieldName + " : complex write collection values");  
                 var addNewBtn = ccdField.$(".panel button");
                 await browser.executeScript('arguments[0].scrollIntoView()',
                     addNewBtn.getWebElement());
@@ -283,11 +288,11 @@ class CaseManager {
                     var subFieldText = await ccdSubField.getText(); 
                     await this._writeToField(ccdSubField) 
                 }
-
+                cucumberReporter.AddMessage(fieldName + " : complex write collection values");  
             break;
             default:
                 console.log("Unknown field type : " + ccdFileTagName);
-
+                cucumberReporter.AddMessage(fieldName + " : unknown field " + ccdFileTagName);  
         }
     }
 

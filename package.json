@@ -64,7 +64,7 @@
     "@hmcts/ccd-case-ui-toolkit": "^2.64.12-case-sharing-prerelease",
     "@hmcts/ccpay-web-component": "3.0.3",
     "@hmcts/frontend": "0.0.39-alpha",
-    "@hmcts/media-viewer": "2.2.7",
+    "@hmcts/media-viewer": "2.5.1",
     "@hmcts/nodejs-healthcheck": "^1.6.0",
     "@hmcts/properties-volume": "^0.0.9",
     "@hmcts/rpx-xui-common-lib": "0.1.20",

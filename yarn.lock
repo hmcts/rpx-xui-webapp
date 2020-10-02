@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@^2.64.42-retain-hidden-value-support":
-  version "2.64.42-retain-hidden-value-support"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.64.42-retain-hidden-value-support.tgz#253807cdffadcedbb5d82097d848bbf2917cd797"
-  integrity sha512-54uSuBh7qI1qslltEYjYN6j9xiNTcN7gThAcTQ8h5isgRZTsfyJAt5dMO70XOeo4P/tx4Apglr9g801fgMHMWA==
+"@hmcts/ccd-case-ui-toolkit@^2.64.44-retain-hidden-value-fix-for-complex-types":
+  version "2.64.44-retain-hidden-value-fix-for-complex-types"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.64.44-retain-hidden-value-fix-for-complex-types.tgz#03d4996433b3c62ebffcd62d24f4ce4a51e346af"
+  integrity sha512-JjKLNcpT1B6r1lTZzkQNj0YCo6oJPqFUgsT6gmo0V+aF1vR5BbSpuhmkVJ3cFzJuU48rB47Iwi27CEU/Pp7aUQ==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"

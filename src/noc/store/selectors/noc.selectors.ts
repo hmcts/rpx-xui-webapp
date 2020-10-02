@@ -11,3 +11,18 @@ export const currentNavigation = createSelector(
     getNocState,
     fromFeature.getNocActiveState
 );
+
+export const lastError = createSelector(
+    getNocState,
+    fromFeature.getLastError
+);
+
+export const questions = createSelector(
+    getNocState,
+    fromFeature.getQuestions
+);
+
+export const answers = createSelector(
+    getNocState,
+    fromFeature.getAnswers
+);

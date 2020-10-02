@@ -1,5 +1,5 @@
-import * as fromActions from '../actions/noc-navigation.action';
-import { Noc } from '../models/noc.state';
+import * as fromActions from '../actions/noc.action';
+import { NocState } from '../models/noc.state';
 import * as fromReducer from './noc.reducer';
 
 describe('Noc Navigation Reducer', () => {
@@ -8,7 +8,7 @@ describe('Noc Navigation Reducer', () => {
 
         it('should set correct object', () => {
             const initialState = fromReducer.initialState;
-            const action = new fromActions.ChangeNavigation(Noc.START);
+            const action = new fromActions.ChangeNavigation(NocState.START);
             const state = fromReducer.nocReducer(initialState, action);
             expect(state).toBeDefined();
         });
@@ -16,9 +16,9 @@ describe('Noc Navigation Reducer', () => {
         describe('Change Navigation action', () => {
             it('should set correct object', () => {
                 const initialState = fromReducer.initialState;
-                const action = new fromActions.ChangeNavigation(Noc.QUESTION);
-                const state = fromReducer.nocReducer(initialState, action);
-                expect(state.state).toEqual(Noc.QUESTION);
+                const action = new fromActions.ChangeNavigation(NocState.QUESTION);
+                const nocState = fromReducer.nocReducer(initialState, action);
+                expect(nocState.state).toEqual(NocState.QUESTION);
             });
         });
 
@@ -27,9 +27,9 @@ describe('Noc Navigation Reducer', () => {
     describe('Get functions', () => {
         it('should get state properties', () => {
             const nocState = {
-                state: Noc.ANSWER_INCOMPLETE
+                state: NocState.ANSWER_INCOMPLETE
             };
-            expect(fromReducer.getNocActiveState(nocState)).toEqual(Noc.ANSWER_INCOMPLETE);
+            expect(fromReducer.getNocActiveState(nocState)).toEqual(NocState.ANSWER_INCOMPLETE);
         });
     });
 });

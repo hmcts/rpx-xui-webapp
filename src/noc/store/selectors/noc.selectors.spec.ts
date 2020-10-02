@@ -2,9 +2,9 @@ import { TestBed } from '@angular/core/testing';
 import { select, Store, StoreModule } from '@ngrx/store';
 import { reducers } from '../index';
 import { initialState, State } from '../reducers';
-import { getNocState } from './noc-navigation.selectors';
+import { getNocState } from './noc.selectors';
 
-describe('Noc Navigation selectors', () => {
+describe('Noc selectors', () => {
   let store: Store<State>;
   beforeEach(() => {
     TestBed.configureTestingModule({

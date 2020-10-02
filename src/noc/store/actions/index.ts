@@ -1,1 +1,1 @@
-export * from './noc-navigation.action';
+export * from './noc.action';

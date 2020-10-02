@@ -1,4 +1,4 @@
-export enum Noc {
+export enum NocState {
     START,
     CASE_REF_VALIDATION_FAILURE,
     CASE_REF_SUBMISSION_FAILURE,
@@ -24,10 +24,6 @@ export interface NocQuestion {
     questionLabel: string;
 }
 
-export interface NocQuestions {
-    questions: NocQuestion[];
-}
-
 export interface NoCAnswer {
     displayOrder: number;
     answer: string;
@@ -38,10 +34,11 @@ export interface NocOptions {
     showRequestType: boolean;
 }
 
-export interface NocState {
-    state: Noc;
+export interface NocStateData {
+    state: NocState;
+    caseReference: string;
     lastError?: NocError;
-    questions: NocQuestions;
+    questions: NocQuestion[];
     answers: NoCAnswer[];
     reason?: string;
     affirmationAgreed: boolean;

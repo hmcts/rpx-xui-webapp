@@ -1,10 +1,10 @@
 import {ActionReducerMap, createFeatureSelector} from '@ngrx/store';
-import { NocState } from '../models/noc.state';
+import { NocStateData } from '../models/noc.state';
 
 import * as fromNoc from './noc.reducer';
 
 export interface State {
-  noc: NocState;
+  noc: NocStateData;
 }
 
 export const reducers: ActionReducerMap<State> = {

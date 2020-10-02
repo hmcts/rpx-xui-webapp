@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { Noc } from 'src/noc/store/models/noc.state';
+import { NocState } from 'src/noc/store/models/noc.state';
 import { backButtonVisibilityStates, continueButtonVisibilityStates, submitButtonVisibilityStates } from '../../constants/navigationVisibilityStates';
 import * as fromFeature from '../../store';
 
@@ -29,7 +29,7 @@ export class NocNavigationComponent implements OnInit {
     this.nocNavigationCurrentState$ = this.store.pipe(select(fromFeature.currentNavigation));
   }
 
-  public isVisible(currentNavigationState: Noc, visibleNavigationStates: Noc[]): boolean {
+  public isVisible(currentNavigationState: NocState, visibleNavigationStates: NocState[]): boolean {
     return visibleNavigationStates.includes(currentNavigationState);
   }
 

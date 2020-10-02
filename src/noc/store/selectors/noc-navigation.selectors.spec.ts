@@ -1,11 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { select, Store, StoreModule } from '@ngrx/store';
 import { reducers } from '../index';
-import { NocNavigationState, initialState } from '../reducers';
-import { getNocNavigationState, previousNavigation, currentNavigation, nextNavigation } from './noc-navigation.selectors';
+import { initialState, State } from '../reducers';
+import { getNocState } from './noc-navigation.selectors';
 
-describe('Search filter selectors', () => {
-  let store: Store<NocNavigationState>;
+describe('Noc Navigation selectors', () => {
+  let store: Store<State>;
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -17,10 +17,10 @@ describe('Search filter selectors', () => {
     spyOn(store, 'dispatch').and.callThrough();
   });
 
-  describe('getNocNavigationState', () => {
+  describe('getNocState', () => {
     it('should return noc navigation state', () => {
       let result;
-      store.pipe(select(getNocNavigationState)).subscribe(value => {
+      store.pipe(select(getNocState)).subscribe(value => {
         result = value;
       });
       expect(result).toEqual(initialState);

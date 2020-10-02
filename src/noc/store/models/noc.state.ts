@@ -12,38 +12,38 @@ export enum Noc {
     SUBMISSION_FAILURE
 }
 
-export interface NocError { 
-    responseCode: number,
-    message: string
+export interface NocError {
+    responseCode: number;
+    message: string;
 }
 
 export interface NocQuestion {
-    displayOrder: number,
-    answerType: string,
-    displayContext: string,
-    questionLabel: string
+    displayOrder: number;
+    answerType: string;
+    displayContext: string;
+    questionLabel: string;
 }
 
 export interface NocQuestions {
-    questions: NocQuestion[]
+    questions: NocQuestion[];
 }
 
-export interface NoCAnswer { 
-    displayOrder: number,
-    answer: string
+export interface NoCAnswer {
+    displayOrder: number;
+    answer: string;
 }
 
-export interface NocOptions { 
-    askForReason:boolean,
-    showRequestType:boolean
+export interface NocOptions {
+    askForReason: boolean;
+    showRequestType: boolean;
 }
 
 export interface NocState {
-    state: Noc,
-    lastError?: NocError,
-    questions: NocQuestions,
-    answers: NoCAnswer[],
-    reason?: string,
-    affirmationAgreed: boolean,
-    options: NocOptions
+    state: Noc;
+    lastError?: NocError;
+    questions: NocQuestions;
+    answers: NoCAnswer[];
+    reason?: string;
+    affirmationAgreed: boolean;
+    options: NocOptions;
 }

@@ -1,6 +1,8 @@
-export const backButtonVisibilityStates = ['START', 'CASE_REF_VALIDATION_FAILURE', 'CASE_REF_SUBMISSION_FAILURE', 'QUESTION', 'ANSWER_INCOMPLETE',
-                                              'ANSWER_SUBMISSION_FAILURE', 'CHECK_ANSWERS', 'AFFIRMATION_NOT_AGREED'];
-export const continueButtonVisibilityStates = ['START', 'CASE_REF_VALIDATION_FAILURE', 'CASE_REF_SUBMISSION_FAILURE', 'QUESTION', 'ANSWER_INCOMPLETE',
-                                                  'ANSWER_SUBMISSION_FAILURE', 'SUBMISSION_SUCCESS_APPROVED', 'SUBMISSION_SUCCESS_REJECTED',
-                                                  'SUBMISSION_SUCCESS_PENDING', 'SUBMISSION_FAILURE'];
-export const submitButtonVisibilityStates = ['CHECK_ANSWERS', 'AFFIRMATION_NOT_AGREED'];
+import { Noc } from '../store/models/noc.state';
+
+export const backButtonVisibilityStates = [Noc.START, Noc.CASE_REF_VALIDATION_FAILURE, Noc.CASE_REF_SUBMISSION_FAILURE, Noc.QUESTION, Noc.ANSWER_INCOMPLETE,
+                                           Noc.ANSWER_SUBMISSION_FAILURE, Noc.CHECK_ANSWERS, Noc.AFFIRMATION_NOT_AGREED];
+export const continueButtonVisibilityStates = [Noc.START, Noc.CASE_REF_VALIDATION_FAILURE, Noc.CASE_REF_SUBMISSION_FAILURE, Noc.QUESTION, Noc.ANSWER_INCOMPLETE,
+                                               Noc.ANSWER_SUBMISSION_FAILURE, Noc.SUBMISSION_SUCCESS_APPROVED, Noc.SUBMISSION_SUCCESS_PENDING,
+                                               Noc.SUBMISSION_FAILURE];
+export const submitButtonVisibilityStates = [Noc.CHECK_ANSWERS, Noc.AFFIRMATION_NOT_AGREED];

@@ -1,4 +1,4 @@
-import * as fromNocNavigation from '../actions/noc-navigation.action';
+import * as fromActions from '../actions';
 import { Noc, NocState } from '../models/noc.state';
 
 export const initialState: NocState = {
@@ -13,12 +13,12 @@ export const initialState: NocState = {
 
 export function nocReducer(
     state = initialState,
-    action: fromNocNavigation.NocNavigationAction
+    action: fromActions.NocNavigationAction
 ): NocState {
     let reducedState: NocState = state;
 
     switch (action.type) {
-        case fromNocNavigation.CHANGE_NAVIGATION: {
+        case fromActions.CHANGE_NAVIGATION: {
 
             reducedState = {
                 ...reducedState,
@@ -30,4 +30,4 @@ export function nocReducer(
     return reducedState;
 }
 
-export const getNocState = (nocState) => nocState.state;
+export const getNocActiveState = (nocState) => nocState.state;

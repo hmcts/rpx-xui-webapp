@@ -1,6 +1,6 @@
-import * as fromReducer from './noc.reducer';
 import * as fromActions from '../actions/noc-navigation.action';
 import { Noc } from '../models/noc.state';
+import * as fromReducer from './noc.reducer';
 
 describe('Noc Navigation Reducer', () => {
 
@@ -29,7 +29,7 @@ describe('Noc Navigation Reducer', () => {
             const nocState = {
                 state: Noc.ANSWER_INCOMPLETE
             };
-            expect(fromReducer.getNocState(nocState)).toEqual(Noc.ANSWER_INCOMPLETE);
+            expect(fromReducer.getNocActiveState(nocState)).toEqual(Noc.ANSWER_INCOMPLETE);
         });
     });
 });

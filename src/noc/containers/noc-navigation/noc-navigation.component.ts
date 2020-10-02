@@ -1,6 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { Noc } from 'src/noc/store/models/noc.state';
 import { backButtonVisibilityStates, continueButtonVisibilityStates, submitButtonVisibilityStates } from '../../constants/navigationVisibilityStates';
 import * as fromFeature from '../../store';
 
@@ -14,25 +15,21 @@ export class NocNavigationComponent implements OnInit {
   @Output() continue = new EventEmitter();
   @Output() submit = new EventEmitter();
 
-  public nocNavigationPreviousState$: Observable<fromFeature.NocNavigationState>;
-  public nocNavigationCurrentState$: Observable<fromFeature.NocNavigationState>;
-  public nocNavigationNextState$: Observable<fromFeature.NocNavigationState>;
+  public nocNavigationCurrentState$: Observable<fromFeature.State>;
 
   public backVisibilityStates = backButtonVisibilityStates;
   public continueVisibilityStates = continueButtonVisibilityStates;
   public submitVisibilityStates = submitButtonVisibilityStates;
 
   constructor(
-    private store: Store<fromFeature.NocNavigationState>,
+    private store: Store<fromFeature.State>,
   ) { }
 
   ngOnInit() {
-    this.nocNavigationPreviousState$ = this.store.pipe(select(fromFeature.previousNavigation));
     this.nocNavigationCurrentState$ = this.store.pipe(select(fromFeature.currentNavigation));
-    this.nocNavigationNextState$ = this.store.pipe(select(fromFeature.nextNavigation));
   }
 
-  public isVisible(currentNavigationState: string, visibleNavigationStates: string[]): boolean {
+  public isVisible(currentNavigationState: Noc, visibleNavigationStates: Noc[]): boolean {
     return visibleNavigationStates.includes(currentNavigationState);
   }
 

@@ -1,1 +1,1 @@
-export const actions: any[] = [];
+export * from './noc-navigation.action';

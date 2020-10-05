@@ -15,5 +15,6 @@ while !(curl -s http://0.0.0.0:1001) > /dev/null
   zap-cli --zap-url http://0.0.0.0 -p 1001 report -o activescan.html -f html
   echo 'Changing owner from $(id -u):$(id -g) to $(id -u):$(id -u)'
   chown -R $(id -u):$(id -u) activescan.html
-  cp *.html functional-output/
-  zap-cli -p 1001 alerts -l Medium
+  curl --fail http://0.0.0.0:1001/OTHER/core/other/jsonreport/?formMethod=GET --output report.json
+  cp activescan.html reports/tests/
+  zap-cli --zap-url http://0.0.0.0 -p 1001 alerts -l High --exit-code False

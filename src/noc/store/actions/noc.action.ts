@@ -1,16 +1,22 @@
 import { Action } from '@ngrx/store';
-import { NocState, NocError, NocQuestion, NoCAnswer } from '../models/noc.state';
+import { NocState, NocError, NocQuestion, NoCAnswer, NocStateData, NocEvent } from '../../models/noc.state';
 
 export const RESET = '[NOC] Reset';
 export const CHANGE_NAVIGATION = '[NOC] Change Navigation';
 export const SET_CASE_REFERENCE = '[NOC] Set Case Reference';
-export const SET_CASE_REF_VALIDATION_FAILURE = '[NOC] Case Reference Validation Failure';
+export const SET_CASE_REF_VALIDATION_FAILURE = '[NOC] Set Case Reference Validation Failure';
 export const GET_QUESTIONS = '[NOC] Get Questions';
-export const SET_CASE_REF_SUBMISSION_FAILURE = '[NOC] Case Reference Submission Failure'
+export const SET_CASE_REF_SUBMISSION_FAILURE = '[NOC] Set Case Reference Submission Failure'
 export const SET_ANSWERS = '[NOC] Set Answers';
 export const SET_ANSWER_INCOMPLETE = '[NOC] Set Answers Incomplete';
 export const CHECK_ANSWERS = '[NOC] Check Answers';
-export const SET_ANSWER_SUBMISSION_FAILURE = '[NOC] Answer Submission Failure'
+export const SET_ANSWER_SUBMISSION_FAILURE = '[NOC] Set Answer Submission Failure';
+export const SET_AFFIRMATION_AGREED = '[NOC] Set Affirmation Agreed';
+export const GET_AFFIRMATION_AGREED = '[NOC] Get Affirmation Agreed';
+export const SUBMIT_NOC = '[NOC] Submit NoC';
+export const SET_SUBMISSION_SUCCESS_APPROVED = '[NOC] Submmission NoC Success Approved';
+export const SET_SUBMISSION_SUCCESS_PENDING = '[NOC] Submmission NoC Success Pending';
+export const SET_SUBMISSION_FAILURE = '[NOC] Submmission NoC Failure';
 
 export class Reset implements Action {
     readonly type = RESET;
@@ -42,7 +48,7 @@ export class SetCaseRefSubmissionFailure implements Action {
 
 export class SetAnswers implements Action {
     readonly type = SET_ANSWERS;
-    constructor(public payload: NoCAnswer[]) {}
+    constructor(public payload: NocEvent) {}
 }
 
 export class SetAnswersIncomplete implements Action {
@@ -59,6 +65,33 @@ export class SetAnswerSubmissionFailure implements Action {
     constructor(public payload: NocError) {}
 }
 
+export class SetAffirmationAgreed implements Action {
+    readonly type = SET_AFFIRMATION_AGREED;
+    constructor(public payload: boolean) {}
+}
+
+export class GetAffirmationAgreed implements Action {
+    readonly type = GET_AFFIRMATION_AGREED;
+}
+
+export class SubmitNoc implements Action {
+    readonly type = SUBMIT_NOC;
+    constructor(public payload: NocEvent) {}
+}
+
+export class SetSubmissionSuccessApproved implements Action {
+    readonly type = SET_SUBMISSION_SUCCESS_APPROVED;
+}
+
+export class SetSubmissionSuccessPending implements Action {
+    readonly type = SET_SUBMISSION_SUCCESS_PENDING;
+}
+
+export class SetSubmissionFailure implements Action {
+    readonly type = SET_SUBMISSION_FAILURE;
+    constructor(public payload: NocError) {}
+}
+
 export type NocAction =
   | Reset
   | ChangeNavigation
@@ -69,4 +102,10 @@ export type NocAction =
   | SetAnswers
   | SetAnswersIncomplete
   | CheckAnswers
-  | SetAnswerSubmissionFailure;
+  | SetAnswerSubmissionFailure
+  | SetAffirmationAgreed
+  | GetAffirmationAgreed
+  | SubmitNoc
+  | SetSubmissionSuccessApproved
+  | SetSubmissionSuccessPending
+  | SetSubmissionFailure;

@@ -1,4 +1,4 @@
-import { NocState } from '../store/models/noc.state';
+import { NocState } from '../models/noc.state';
 
 export const backButtonVisibilityStates = [NocState.START, NocState.CASE_REF_VALIDATION_FAILURE, NocState.CASE_REF_SUBMISSION_FAILURE, NocState.QUESTION, NocState.ANSWER_INCOMPLETE,
                                            NocState.ANSWER_SUBMISSION_FAILURE, NocState.CHECK_ANSWERS, NocState.AFFIRMATION_NOT_AGREED];

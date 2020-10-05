@@ -1,5 +1,5 @@
 import * as fromActions from '../actions';
-import { NocState, NocStateData } from '../models/noc.state';
+import { NocState, NocStateData } from '../../models/noc.state';
 
 export const initialState: NocStateData = {
     state: NocState.START,
@@ -59,7 +59,7 @@ export function nocReducer(
             return {
                 ...currentState,
                 state: NocState.QUESTION,
-                questions: action.payload,
+                questions: action.payload
             }
         }
         case fromActions.SET_ANSWER_INCOMPLETE: {
@@ -74,7 +74,33 @@ export function nocReducer(
             return {
                 ...currentState,
                 state: NocState.CHECK_ANSWERS,
-                answers: action.payload,
+                answers: action.payload
+            }
+        }
+        case fromActions.SET_AFFIRMATION_AGREED: {
+
+            return {
+                ...currentState,
+                affirmationAgreed: action.payload
+            }
+        }
+        case fromActions.SET_SUBMISSION_SUCCESS_APPROVED: {
+            return {
+                ...currentState,
+                state: NocState.SUBMISSION_SUCCESS_APPROVED
+            }
+        }
+        case fromActions.SET_SUBMISSION_SUCCESS_PENDING: {
+            return {
+                ...currentState,
+                state: NocState.SUBMISSION_SUCCESS_PENDING
+            }
+        }
+        case fromActions.SET_SUBMISSION_FAILURE: {
+            return {
+                ...currentState,
+                state: NocState.SUBMISSION_FAILURE,
+                lastError: action.payload
             }
         }
         default: {
@@ -90,4 +116,4 @@ export const getNocActiveState = (nocState) => nocState.state;
 export const getLastError = (nocState) => nocState.lastError;
 export const getQuestions = (nocState) => nocState.questions;
 export const getAnswers = (nocState) => nocState.answers;
-
+export const getAffirmationAgreed = (nocState) => nocState.affirmationAgreed;

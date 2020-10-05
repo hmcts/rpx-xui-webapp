@@ -17,6 +17,11 @@ export interface NocError {
     message: string;
 }
 
+export interface NocEvent {
+    caseReference: string;
+    nocAnswers: NoCAnswer[];
+}
+
 export interface NocQuestion {
     displayOrder: number;
     answerType: string;

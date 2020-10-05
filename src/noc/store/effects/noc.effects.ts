@@ -22,9 +22,9 @@ export class NocEffects {
 
         if (caseReference.length === 16) {
 
-          return this.nocService.getQuestions(payload).pipe(
+          return this.nocService.getNoCQuestions(payload).pipe(
             map(
-              (response) => new nocActions.GetQuestions(response.json())),
+              (response) => new nocActions.GetQuestions(response)),
               catchError(error => of(new nocActions.SetCaseRefSubmissionFailure(error)))
           );
         } else {
@@ -39,16 +39,39 @@ export class NocEffects {
       map((action: nocActions.SetAnswers) => action.payload),
       switchMap(payload => {
 
-        if (payload.length !== 0) {
+        const {caseReference, nocAnswers} = payload;
 
-          return this.nocService.submitAnswers(payload).pipe(
+        if (nocAnswers.length !== 0) {
+
+          return this.nocService.validateNoCAnswers(payload).pipe(
             map(
-              (response) => new nocActions.CheckAnswers(payload)),
+              (response) => new nocActions.CheckAnswers(payload.nocAnswers)),
               catchError(error => of(new nocActions.SetAnswerSubmissionFailure(error)))
           );
         } else {
           return of(new nocActions.SetAnswersIncomplete());
         }
+      })
+    );
+
+    @Effect()
+    submitNoc$ = this.actions$.pipe(
+      ofType(nocActions.SUBMIT_NOC),
+      map((action: nocActions.SubmitNoc) => action.payload),
+      switchMap(payload => {
+
+        return this.nocService.submitNoCEvent(payload).pipe(
+          map(
+            (response: {status?: number}) => {
+              if (response.status === 202) {
+                new nocActions.SetSubmissionSuccessPending();
+              } else {
+                new nocActions.SetSubmissionSuccessApproved();
+              }
+              
+            }),
+            catchError(error => of(new nocActions.SetSubmissionFailure(error)))
+        );
       })
     );
 

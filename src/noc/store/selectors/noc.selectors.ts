@@ -26,3 +26,8 @@ export const answers = createSelector(
     getNocState,
     fromFeature.getAnswers
 );
+
+export const affirmationAgreed = createSelector(
+    getNocState,
+    fromFeature.getAffirmationAgreed
+);

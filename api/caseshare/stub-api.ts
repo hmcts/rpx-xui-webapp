@@ -53,7 +53,7 @@ export function getUserByOrgAndUserId(req: EnhancedRequest, res: Response) {
 }
 
 export function getUsers(req: EnhancedRequest, res: Response) {
-    const searchText = req.query.q
+    const searchText = req.query.q.toString()
     const org = getOrgById('o111111')
     if (!org) {
       return res.status(404).send('{"errorMessage": "Organisation is not found}"')

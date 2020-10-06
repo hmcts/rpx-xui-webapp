@@ -1,26 +1,18 @@
-variable "product" {
-  type = "string"
-}
+variable "product" {}
 
-variable "component" {
-  type = "string"
-}
+variable "component" {}
 
 variable "location" {
-  type = "string"
   default = "UK South"
 }
-variable "env" {
-  type = "string"
-}
+
+variable "env" {}
 
 variable "shared_product_name" {
     default = "rpx"
 }
 
-variable "subscription" {
-  type = "string"
-}
+variable "subscription" {}
 
 variable "common_tags" {
   type = "map"

@@ -5,36 +5,36 @@ locals {
     shared_vault_name = "${var.shared_product_name}-${local.local_env}"
 }
 
-// This web app is not in used
+// (DO NOT REMOVE)
 module "app" {
     source = "git@github.com:hmcts/cnp-module-webapp?ref=master"
-    product = "${local.app_full_name}"
-    location = "${var.location}"
-    env = "${var.env}"
-    subscription = "${var.subscription}"
-    common_tags  = "${var.common_tags}"
+    product = local.app_full_name
+    location = var.location
+    env = var.env
+    subscription = var.subscription
+    common_tags  = var.common_tags
     asp_rg = "${local.app_full_name}-${var.env}"
-    enable_ase = "${var.enable_ase}"
+    enable_ase = var.enable_ase
     app_settings = {}
 }
 
 data "azurerm_key_vault" "key_vault" {
-    name = "${local.shared_vault_name}"
-    resource_group_name = "${local.shared_vault_name}"
+    name = local.shared_vault_name
+    resource_group_name = local.shared_vault_name
 }
 
 data "azurerm_key_vault_secret" "s2s_secret" {
     name = "mc-s2s-client-secret"
-    vault_uri = "${data.azurerm_key_vault.key_vault.vault_uri}"
+    vault_uri = data.azurerm_key_vault.key_vault.vault_uri
 }
 
 data "azurerm_key_vault_secret" "oauth2_secret" {
     name = "mc-idam-client-secret"
-    vault_uri = "${data.azurerm_key_vault.key_vault.vault_uri}"
+    vault_uri = data.azurerm_key_vault.key_vault.vault_uri
 }
 
 provider "azurerm" {
-    version = "1.44.0"
+    features {}
 }
 
 data "azurerm_subnet" "core_infra_redis_subnet" {
@@ -46,14 +46,14 @@ data "azurerm_subnet" "core_infra_redis_subnet" {
 resource "azurerm_key_vault_secret" "redis_connection_string" {
   name = "${var.component}-redis-connection-string"
   value = "redis://ignore:${urlencode(module.redis-cache.access_key)}@${module.redis-cache.host_name}:${module.redis-cache.redis_port}?tls=true"
-  key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
+  key_vault_id = data.azurerm_key_vault.key_vault.id
 }
 
 module "redis-cache" {
   source      = "git@github.com:hmcts/cnp-module-redis?ref=master"
   product     = "${var.shared_product_name}-mc-redis"
-  location    = "${var.location}"
-  env         = "${var.env}"
-  subnetid    = "${data.azurerm_subnet.core_infra_redis_subnet.id}"
-  common_tags = "${var.common_tags}"
+  location    = var.location
+  env         = var.env
+  subnetid    = data.azurerm_subnet.core_infra_redis_subnet.id
+  common_tags = var.common_tags
 }

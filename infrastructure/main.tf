@@ -58,6 +58,11 @@ module "redis-cache" {
   common_tags = var.common_tags
 }
 
+data "azurerm_application_insights" "appinsights" {
+  name                = "${local.app_full_name}-appinsights-${var.env}"
+  resource_group_name = "${local.app_full_name}-${var.env}"
+}
+
 resource "azurerm_key_vault_secret" "app_insights_key" {
   name         = "appinsights-instrumentationkey-mc"
   value        = azurerm_application_insights.appinsights.instrumentation_key

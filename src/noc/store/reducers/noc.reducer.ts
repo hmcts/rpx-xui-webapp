@@ -54,7 +54,7 @@ export function nocReducer(
                 lastError: action.payload
             }
         }
-        case fromActions.GET_QUESTIONS: {
+        case fromActions.SET_QUESTIONS: {
 
             return {
                 ...currentState,

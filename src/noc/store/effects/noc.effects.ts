@@ -24,7 +24,7 @@ export class NocEffects {
 
           return this.nocService.getNoCQuestions(payload).pipe(
             map(
-              (response) => new nocActions.GetQuestions(response)),
+              (response) => new nocActions.SetQuestions(response)),
               catchError(error => of(new nocActions.SetCaseRefSubmissionFailure(error)))
           );
         } else {
@@ -39,13 +39,13 @@ export class NocEffects {
       map((action: nocActions.SetAnswers) => action.payload),
       switchMap(payload => {
 
-        const {caseReference, nocAnswers} = payload;
+        const {nocAnswers} = payload;
 
         if (nocAnswers.length !== 0) {
 
           return this.nocService.validateNoCAnswers(payload).pipe(
             map(
-              (response) => new nocActions.CheckAnswers(payload.nocAnswers)),
+              (response) => new nocActions.CheckAnswers(nocAnswers)),
               catchError(error => of(new nocActions.SetAnswerSubmissionFailure(error)))
           );
         } else {
@@ -62,11 +62,11 @@ export class NocEffects {
 
         return this.nocService.submitNoCEvent(payload).pipe(
           map(
-            (response: {status?: number}) => {
-              if (response.status === 202) {
-                new nocActions.SetSubmissionSuccessPending();
+            (response: {approval_status?: string}) => {
+              if (response.approval_status === 'PENDING') {
+                return new nocActions.SetSubmissionSuccessPending();
               } else {
-                new nocActions.SetSubmissionSuccessApproved();
+                return new nocActions.SetSubmissionSuccessApproved();
               }
               
             }),

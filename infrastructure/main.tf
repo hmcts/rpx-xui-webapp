@@ -57,3 +57,9 @@ module "redis-cache" {
   subnetid    = data.azurerm_subnet.core_infra_redis_subnet.id
   common_tags = var.common_tags
 }
+
+resource "azurerm_key_vault_secret" "app_insights_key" {
+  name         = "appinsights-instrumentationkey-mc"
+  value        = azurerm_application_insights.appinsights.instrumentation_key
+  key_vault_id = data.azurerm_key_vault.key_vault.id
+}

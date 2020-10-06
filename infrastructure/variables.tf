@@ -21,3 +21,8 @@ variable "common_tags" {
 variable "enable_ase" {
     default = false
 }
+
+variable "application_type" {
+  default     = "web"
+  description = "Type of Application Insights (Web/Other)"
+}

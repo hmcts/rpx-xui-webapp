@@ -57,3 +57,27 @@ module "redis-cache" {
   subnetid    = data.azurerm_subnet.core_infra_redis_subnet.id
   common_tags = var.common_tags
 }
+
+resource "azurerm_application_insights" "appinsights" {
+  name                = "${local.app_full_name}-appinsights-${var.env}"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+  application_type    = var.application_type
+
+  tags = var.common_tags
+
+  lifecycle {
+    ignore_changes = [
+      # Ignore changes to appinsights as otherwise upgrading to the Azure provider 2.x
+      # destroys and re-creates this appinsights instance
+      application_type,
+    ]
+  }
+}
+
+resource "azurerm_resource_group" "rg" {
+  name     = "${local.app_full_name}-${var.env}"
+  location = var.location
+
+  tags = var.common_tags
+} 

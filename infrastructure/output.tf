@@ -9,8 +9,3 @@ output "vaultName" {
 output "vaultUri" {
   value = "${data.azurerm_key_vault.key_vault.vault_uri}"
 }
-
-output "appInsightsInstrumentationKey" {
-  value = "${azurerm_application_insights.appinsights.instrumentation_key}"
-}
-

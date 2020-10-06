@@ -23,16 +23,6 @@ data "azurerm_key_vault" "key_vault" {
     resource_group_name = local.shared_vault_name
 }
 
-data "azurerm_key_vault_secret" "s2s_secret" {
-    name = "mc-s2s-client-secret"
-    vault_uri = data.azurerm_key_vault.key_vault.vault_uri
-}
-
-data "azurerm_key_vault_secret" "oauth2_secret" {
-    name = "mc-idam-client-secret"
-    vault_uri = data.azurerm_key_vault.key_vault.vault_uri
-}
-
 provider "azurerm" {
     features {}
 }

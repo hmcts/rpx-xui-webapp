@@ -24,6 +24,19 @@ provider "azurerm" {
     features {}
 }
 
+// This web app is not in used
+module "app" {
+    source = "git@github.com:hmcts/cnp-module-webapp?ref=master"
+    product = "${local.app_full_name}"
+    location = "${var.location}"
+    env = "${var.env}"
+    subscription = "${var.subscription}"
+    common_tags  = "${var.common_tags}"
+    asp_rg = "${local.app_full_name}-${var.env}"
+    enable_ase = "${var.enable_ase}"
+    app_settings = {}
+}
+
 data "azurerm_subnet" "core_infra_redis_subnet" {
   name                 = "core-infra-subnet-1-${var.env}"
   virtual_network_name = "core-infra-vnet-${var.env}"

@@ -22,6 +22,7 @@ import authInterceptor from './lib/middleware/auth'
 import {applyProxy} from './lib/middleware/proxy'
 import {JUILogger} from './lib/models'
 import * as tunnel from './lib/tunnel'
+import {router as nocRouter} from './noc/routes'
 import openRoutes from './openRoutes'
 import {router as paymentsRouter} from './payments/routes'
 import * as postCodeLookup from './postCodeLookup'
@@ -70,6 +71,8 @@ app.get('/api/configuration', (req, res) => {
 // TODO: move to proxy route as below
 app.use('/api/markups', markupRouter)
 app.use('/api/redaction', redactionRouter)
+app.use('/api', nocRouter)
+
 
 // TODO: move these to proxy routes as well
 app.use('/aggregated', routes)

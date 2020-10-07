@@ -68,7 +68,7 @@ export class NocEffects {
               } else {
                 return new nocActions.SetSubmissionSuccessApproved();
               }
-              
+
             }),
             catchError(error => of(new nocActions.SetSubmissionFailure(error)))
         );

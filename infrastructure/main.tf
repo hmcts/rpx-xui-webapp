@@ -5,19 +5,6 @@ locals {
     shared_vault_name = "${var.shared_product_name}-${local.local_env}"
 }
 
-// (DO NOT REMOVE)
-module "app" {
-    source = "git@github.com:hmcts/cnp-module-webapp?ref=master"
-    product = local.app_full_name
-    location = var.location
-    env = var.env
-    subscription = var.subscription
-    common_tags  = var.common_tags
-    asp_rg = "${local.app_full_name}-${var.env}"
-    enable_ase = var.enable_ase
-    app_settings = {}
-}
-
 data "azurerm_key_vault" "key_vault" {
     name = local.shared_vault_name
     resource_group_name = local.shared_vault_name
@@ -58,9 +45,28 @@ module "redis-cache" {
   common_tags = var.common_tags
 }
 
-data "azurerm_application_insights" "appinsights" {
+resource "azurerm_application_insights" "appinsights" {
   name                = "${local.app_full_name}-appinsights-${var.env}"
-  resource_group_name = "${local.app_full_name}-${var.env}"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+  application_type    = var.application_type
+
+  tags = var.common_tags
+
+  lifecycle {
+    ignore_changes = [
+      # Ignore changes to appinsights as otherwise upgrading to the Azure provider 2.x
+      # destroys and re-creates this appinsights instance
+      application_type,
+    ]
+  }
+}
+
+resource "azurerm_resource_group" "rg" {
+  name     = "${local.app_full_name}-${var.env}"
+  location = var.location
+
+  tags = var.common_tags
 }
 
 resource "azurerm_key_vault_secret" "app_insights_key" {

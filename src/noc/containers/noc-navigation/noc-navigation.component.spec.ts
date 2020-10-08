@@ -1,14 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
-import { NocNavigationComponent } from './noc-navigation.component';
-import * as fromNocNavigationStore from '../../store';
-import * as fromRoot from '../../../app/store/reducers';
 import { of } from 'rxjs';
+import * as fromRoot from '../../../app/store/reducers';
+import * as fromNocStore from '../../store';
+import { NocNavigationComponent } from './noc-navigation.component';
 
 describe('NocNavigationComponent', () => {
   let fixture: ComponentFixture<NocNavigationComponent>;
   let component: NocNavigationComponent;
-  let store: Store<fromNocNavigationStore.NocNavigationState>;
+  let store: Store<fromNocStore.State>;
   let storePipeMock: any;
 
   beforeEach(() => {
@@ -16,7 +16,7 @@ describe('NocNavigationComponent', () => {
       imports: [
         StoreModule.forRoot({
           ...fromRoot.reducers,
-          feature: combineReducers(fromNocNavigationStore.reducers),
+          feature: combineReducers(fromNocStore.reducers),
         }),
       ],
       declarations: [
@@ -30,20 +30,18 @@ describe('NocNavigationComponent', () => {
 
     fixture = TestBed.createComponent(NocNavigationComponent);
     component = fixture.componentInstance;
-    component.nocNavigationPreviousState$ = storePipeMock.and.returnValue(of('P'));
-    component.nocNavigationCurrentState$ = storePipeMock.and.returnValue(of('C'));
-    component.nocNavigationNextState$ = storePipeMock.and.returnValue(of('N'));
+    component.nocNavigationCurrentState$ = storePipeMock.and.returnValue(of(0));
     fixture.detectChanges();
   });
 
   describe('isVisible', () => {
     it('should determine button visible if correct state', () => {
-      const expected = component.isVisible('C', ['F', 'G', 'C', 'D']);
+      const expected = component.isVisible(0, [0, 1, 2, 3]);
       expect(expected).toBeTruthy();
     });
 
     it('should determine button invisible if incorrect state', () => {
-      const expected = component.isVisible('X', ['F', 'G', 'C', 'D']);
+      const expected = component.isVisible(5, [0, 1, 2, 3]);
       expect(expected).toBeFalsy();
     });
   });

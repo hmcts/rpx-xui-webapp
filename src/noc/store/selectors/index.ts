@@ -1,1 +1,1 @@
-export * from './noc-navigation.selectors';
+export * from './noc.selectors';

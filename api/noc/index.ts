@@ -4,6 +4,9 @@ import {SERVICES_CCD_DATA_STORE_API_PATH} from '../configuration/references'
 import {EnhancedRequest} from '../lib/models'
 import {NoCQuestions} from './models/noCQuestions.interface'
 import {handleGet} from './noCService'
+import * as mock from './noCService.mock'
+
+mock.init()
 
 const url: string = getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH)
 

@@ -6,7 +6,9 @@ import * as fromNocEffects from './noc.effects';
 import { of, throwError } from 'rxjs';
 import { cold, hot } from 'jasmine-marbles';
 import { CheckAnswers, SetAnswers, SetAnswersIncomplete, SetAnswerSubmissionFailure, SetCaseReference, SetCaseRefSubmissionFailure, SetCaseRefValidationFailure, SetQuestions, SetSubmissionFailure, SetSubmissionSuccessApproved, SetSubmissionSuccessPending, SubmitNoc } from '../actions/noc.action';
-import { NocQuestion, NocError, NoCAnswer } from 'src/noc/models/noc.state';
+import { NocQuestion } from 'src/noc/models/noc-question.interface';
+import { NocError } from 'src/noc/models/noc-error.interface';
+import { NocAnswer } from 'src/noc/models/noc-answer.interface';
 
 describe('Noc Effects', () => {
   let actions$;
@@ -76,7 +78,7 @@ describe('Noc Effects', () => {
   describe('setAnswers$', () => {
     it('should return a response', () => {
 
-      const dummy: NoCAnswer[] = [{
+      const dummy: NocAnswer[] = [{
         displayOrder: 0,
         answer: 'dummy'
       }];
@@ -104,7 +106,7 @@ describe('Noc Effects', () => {
     });
 
     it('should return SetAnswerSubmissionFailure', () => {
-      const dummy: NoCAnswer[] = [{
+      const dummy: NocAnswer[] = [{
         displayOrder: 0,
         answer: 'dummy'
       }];
@@ -127,7 +129,7 @@ describe('Noc Effects', () => {
   describe('submitNoc$', () => {
     it('should return SetSubmissionSuccessPending', () => {
 
-      const dummy: NoCAnswer[] = [{
+      const dummy: NocAnswer[] = [{
         displayOrder: 0,
         answer: 'dummy'
       }];
@@ -146,7 +148,7 @@ describe('Noc Effects', () => {
 
     it('should return SetSubmissionSuccessApproved', () => {
 
-      const dummy: NoCAnswer[] = [{
+      const dummy: NocAnswer[] = [{
         displayOrder: 0,
         answer: 'dummy'
       }];
@@ -164,7 +166,7 @@ describe('Noc Effects', () => {
     });
 
     it('should return SetSubmissionFailure', () => {
-      const dummy: NoCAnswer[] = [{
+      const dummy: NocAnswer[] = [{
         displayOrder: 0,
         answer: 'dummy'
       }];

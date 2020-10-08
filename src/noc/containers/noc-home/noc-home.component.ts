@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { NocState } from '../../models/noc.state';
+import { NocNavigationEvent } from 'src/noc/models/noc-navigation-event.enum';
+import { NocState } from '../../models/noc-state.enum';
 import * as fromFeature from '../../store';
 
 @Component({
@@ -13,6 +14,7 @@ export class NocHomeComponent implements OnInit{
 
   public nocNavigationCurrentState$: Observable<fromFeature.State>;
   public nocState = NocState;
+  public navEvent: NocNavigationEvent;
 
   constructor(
     private store: Store<fromFeature.State>,
@@ -22,16 +24,8 @@ export class NocHomeComponent implements OnInit{
     this.nocNavigationCurrentState$ = this.store.pipe(select(fromFeature.currentNavigation));
   }
 
-  public back(event) {
-    console.log('back event triggered ', event);
-  }
-
-  public continue(event) {
-    console.log('continue event triggered ', event);
-  }
-
-  public submit(event) {
-    console.log('submit event triggered ', event);
+  public onNavEvent(event: NocNavigationEvent) {
+    this.navEvent = event;
   }
 
   public isComponentVisible(currentNavigationState: NocState, requiredNavigationState: NocState): boolean {

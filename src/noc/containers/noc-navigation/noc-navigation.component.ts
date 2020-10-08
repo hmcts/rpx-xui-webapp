@@ -1,7 +1,8 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { NocState } from '../../models/noc.state';
+import { NocNavigationEvent } from 'src/noc/models/noc-navigation-event.enum';
+import { NocState } from 'src/noc/models/noc-state.enum';
 import { backButtonVisibilityStates, continueButtonVisibilityStates, submitButtonVisibilityStates } from '../../constants/navigationVisibilityStates';
 import * as fromFeature from '../../store';
 
@@ -11,15 +12,15 @@ import * as fromFeature from '../../store';
 })
 export class NocNavigationComponent implements OnInit {
 
-  @Output() back = new EventEmitter();
-  @Output() continue = new EventEmitter();
-  @Output() submit = new EventEmitter();
+  @Output() onEvent = new EventEmitter();
 
   public nocNavigationCurrentState$: Observable<fromFeature.State>;
 
   public backVisibilityStates = backButtonVisibilityStates;
   public continueVisibilityStates = continueButtonVisibilityStates;
   public submitVisibilityStates = submitButtonVisibilityStates;
+
+  public nocNavigationEvent = NocNavigationEvent;
 
   constructor(
     private store: Store<fromFeature.State>,
@@ -33,16 +34,8 @@ export class NocNavigationComponent implements OnInit {
     return visibleNavigationStates.includes(currentNavigationState);
   }
 
-  public onBack(event) {
-    this.back.emit(event);
-  }
-
-  public onContinue(event) {
-    this.continue.emit(event);
-  }
-
-  public onSubmit(event) {
-    this.submit.emit(event);
+  public onEventTrigger(event: NocNavigationEvent) {
+    this.onEvent.emit(event);
   }
 
 }

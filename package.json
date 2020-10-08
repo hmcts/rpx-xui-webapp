@@ -102,6 +102,7 @@
     "jwt-decode": "^2.2.0",
     "launchdarkly-js-client-sdk": "^2.16.3",
     "moment-timezone": "^0.5.28",
+    "ngx-chips": "1.9.8",
     "ngx-cookie": "^4.1.2",
     "ngx-logger": "^4.0.4",
     "ngx-md": "^7.0.0",

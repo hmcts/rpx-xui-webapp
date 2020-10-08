@@ -6,7 +6,7 @@
       (continue)="continue($event)"
       (submit)="submit($event)"
     >
-      NOC
+      <exui-noc-case-ref *ngIf="isComponentVisible((nocNavigationCurrentState$ | async), nocState.START)"></exui-noc-case-ref>
     </exui-noc-navigation>
   </exui-page-wrapper>
 </div>

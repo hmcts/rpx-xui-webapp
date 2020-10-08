@@ -10,6 +10,7 @@ import { nocRouting } from './noc.routes';
 import * as fromContainers from './containers';
 import {reducers, effects} from './store';
 import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
+import { NocService } from './services';
 
 @NgModule({
     imports: [
@@ -25,7 +26,8 @@ import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
   providers: [{
       provide: AbstractAppConfig,
       useExisting: AppConfig
-    }
+    },
+    NocService
   ]
 })
 /**

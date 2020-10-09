@@ -1,6 +1,7 @@
 import MockAdapter from 'axios-mock-adapter'
 import * as faker from 'faker/locale/en_GB'
-import {http} from '../lib/http'
+import {httpMock} from './httpMock'
+import {NoCQuestion} from './models/noCQuestion.interface'
 
 // random generator
 export const generator = (schema, min = 1, max) => {
@@ -30,14 +31,14 @@ export const generator = (schema, min = 1, max) => {
 }
 
 export const init = () => {
-    const mock = new MockAdapter(http)
+    const mock = new MockAdapter(httpMock)
 
     const url = /\/api\/NoCQuestions\?caseId/
 
     // schema
     // tslint:disable:object-literal-sort-keys
     // tslint:disable:max-line-length
-    const questionsSchema = [
+    const questionsSchema: NoCQuestion[] = [
         {
             case_type_id: 'AAT',
             order: '{{random.number}}',

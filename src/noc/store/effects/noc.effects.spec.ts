@@ -46,7 +46,7 @@ describe('Noc Effects', () => {
       }];
       NocServiceMock.getNoCQuestions.and.returnValue(of(dummy));
       const action = new SetCaseReference('1223-2212-4422-3131');
-      const completion = new SetQuestions(dummy);
+      const completion = new SetQuestions({questions: dummy, caseReference: '1223221244223131'});
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.setCaseReference$).toBeObservable(expected);

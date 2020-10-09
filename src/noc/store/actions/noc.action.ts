@@ -42,7 +42,7 @@ export class SetCaseRefValidationFailure implements Action {
 
 export class SetQuestions implements Action {
     readonly type = SET_QUESTIONS;
-    constructor(public payload: NocQuestion[]) {}
+    constructor(public payload: {questions: NocQuestion[], caseReference: string}) {}
 }
 
 export class SetCaseRefSubmissionFailure implements Action {

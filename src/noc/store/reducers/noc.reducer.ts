@@ -33,13 +33,6 @@ export function nocReducer(
                 ...initialState
             };
         }
-        case fromActions.SET_CASE_REFERENCE: {
-
-            return {
-                ...currentState,
-                caseReference: action.payload
-            };
-        }
         case fromActions.SET_CASE_REF_VALIDATION_FAILURE: {
 
             return {
@@ -60,7 +53,8 @@ export function nocReducer(
             return {
                 ...currentState,
                 state: NocState.QUESTION,
-                questions: action.payload
+                questions: action.payload.questions,
+                caseReference: action.payload.caseReference
             }
         }
         case fromActions.SET_ANSWER_INCOMPLETE: {

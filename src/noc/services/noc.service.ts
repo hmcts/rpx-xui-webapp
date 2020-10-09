@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { NocEvent } from '../models/noc-event.interface';
 import { NocQuestion } from '../models/noc-question.interface';
 
@@ -11,7 +11,7 @@ export class NocService {
 
   getNoCQuestions(caseId: string): Observable<NocQuestion[]> {
 
-    return null;
+    return of(null);
   }
 
   validateNoCAnswers(nocEvent: NocEvent): Observable<boolean> {

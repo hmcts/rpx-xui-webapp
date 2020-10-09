@@ -1,1 +1,30 @@
-NOC case ref
+<div>
+    <div class="hmcts-page-heading">
+            <div class="hmcts-page-heading__title">
+                <h1 class="govuk-heading-l">Notice of change</h1>
+            </div>
+    </div>
+
+
+    <p>You can use this notice of change (sometimes called a ‘notice of acting’) to acquire the case file from:</p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>a client acting in person</li>
+        <li>a solicitor previously acting on your client’s behalf</li>
+    </ul>
+
+
+            
+    <div class="govuk-form-group ">
+
+        <label class="govuk-label  govuk-!-font-weight-bold" for="casenumber">
+            Online case reference number
+        </label>
+
+        <span id="case-number-hint" class="govuk-hint">
+        This is a 16-digit number from MyHMCTS, for example 1111-2222-3333-4444
+        </span>
+
+        <input class="govuk-input govuk-input--width-10" id="casenumber" name="casenumber" type="text" spellcheck="false" [(ngModel)]="caseRef">
+
+    </div>
+</div>

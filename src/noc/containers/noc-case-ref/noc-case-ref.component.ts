@@ -13,6 +13,7 @@ export class NocCaseRefComponent implements OnChanges {
   @Input() navEvent: NocNavigationEvent = null;
 
   public nocNavigationCurrentState$: Observable<fromFeature.State>;
+  public caseRef: string;
 
   constructor(
     private store: Store<fromFeature.State>,
@@ -32,6 +33,7 @@ export class NocCaseRefComponent implements OnChanges {
       }
       case NocNavigationEvent.CONTINUE: {
         console.log('CONTINUE');
+        this.store.dispatch(new fromFeature.SetCaseReference(this.caseRef));
         break;
       }
     }

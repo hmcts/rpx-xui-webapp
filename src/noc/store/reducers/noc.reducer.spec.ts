@@ -2,7 +2,7 @@ import { NocState } from 'src/noc/models/noc-state.enum';
 import * as fromActions from '../actions/noc.action';
 import * as fromReducer from './noc.reducer';
 
-describe('Noc Navigation Reducer', () => {
+describe('Noc Reducer', () => {
 
     describe('Actions', () => {
 
@@ -31,15 +31,6 @@ describe('Noc Navigation Reducer', () => {
             });
         });
 
-        describe('SetCaseReference action', () => {
-            it('should set correct object', () => {
-                const initialState = fromReducer.initialState;
-                const action = new fromActions.SetCaseReference('abcd');
-                const nocState = fromReducer.nocReducer(initialState, action);
-                expect(nocState.caseReference).toEqual('abcd');
-            });
-        });
-
         describe('SetCaseRefValidationFailure action', () => {
             it('should set correct object', () => {
                 const initialState = fromReducer.initialState;
@@ -60,21 +51,6 @@ describe('Noc Navigation Reducer', () => {
                 expect(nocState.state).toEqual(NocState.CASE_REF_SUBMISSION_FAILURE);
                 expect(nocState.lastError.responseCode).toEqual(400);
                 expect(nocState.lastError.message).toEqual('dummy');
-            });
-        });
-
-        describe('SetQuestions action', () => {
-            it('should set correct object', () => {
-                const initialState = fromReducer.initialState;
-                const action = new fromActions.SetQuestions([{
-                    displayOrder: 0,
-                    answerType: null,
-                    displayContext: null,
-                    questionLabel: 'dummy'
-                }]);
-                const nocState = fromReducer.nocReducer(initialState, action);
-                expect(nocState.state).toEqual(NocState.QUESTION);
-                expect(nocState.questions[0].questionLabel).toEqual('dummy');
             });
         });
 

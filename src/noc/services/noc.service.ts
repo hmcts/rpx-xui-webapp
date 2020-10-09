@@ -1,25 +1,22 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { NoCAnswer, NocEvent, NocQuestion } from '../models/noc.state';
+import { NocEvent, NocQuestion } from '../models/noc.state';
 
 @Injectable()
 export class NocService {
 
-  constructor(
-  ) { }
+  constructor(private readonly http: HttpClient) {}
 
-  getNoCQuestions(caseId: string): Observable<NocQuestion[]> {
+  public getNoCQuestions(caseId: string): Observable<NocQuestion[]> {
+    return this.http.get<NocQuestion[]>(`api/NoCQuestions?caseId=${caseId}`);
+  }
 
+  public validateNoCAnswers(nocEvent: NocEvent): Observable<boolean> {
     return null;
   }
 
-  validateNoCAnswers(nocEvent: NocEvent): Observable<boolean> {
-
-    return null;
-  }
-
-  submitNoCEvent(nocEvent: NocEvent): Observable<any> {
-
+  public submitNoCEvent(nocEvent: NocEvent): Observable<any> {
     return null;
   }
 }

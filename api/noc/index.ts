@@ -24,3 +24,25 @@ export async function getNoCQuestions(req: EnhancedRequest, res: Response, next:
         next(error)
     }
 }
+
+export async function validateNoCQuestions(req: EnhancedRequest, res: Response, next: NextFunction) {
+    const markupPath: string = url + req.originalUrl
+
+    try {
+        const {status, data}: { status: number, data: NoCQuestions } = await handleGet(markupPath, req)
+        res.status(status).send(data)
+    } catch (error) {
+        next(error)
+    }
+}
+
+export async function noCEvents(req: EnhancedRequest, res: Response, next: NextFunction) {
+    const markupPath: string = url + req.originalUrl
+
+    try {
+        const {status, data}: { status: number, data: NoCQuestions } = await handleGet(markupPath, req)
+        res.status(status).send(data)
+    } catch (error) {
+        next(error)
+    }
+}

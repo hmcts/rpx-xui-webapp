@@ -65,12 +65,14 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Get Application Themes
+   * Get Default Application Themes
    *
    * Note that the application themes are in priority order, the application theme at the top of
    * the list is given the highest precedence.
+   *
+   * If Launch Darkly goes down then these Default Application Themes will be used.
    */
-  public getApplicationThemes = () => {
+  public getDefaultApplicationThemes = () => {
 
     return AppConstants.APPLICATION_USER_THEMES;
   }
@@ -151,28 +153,37 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     console.log('ngOnInit')
 
-    const shareableJurisdictions = this.featureToggleService.getValue('shareable-jurisdictions', []);
+    // const shareableJurisdictions = this.featureToggleService.getValue('mc-application-themes', []);
+    //
+    // this.featureToggleService.isEnabled('shareable-jurisdictions').subscribe(value => {
+    //   console.log('shareable-jurisdictions');
+    //   console.log(value);
+    // });
+    //
+    // this.featureToggleService.isEnabled('mc-application-themes').subscribe(value => {
+    //   console.log('mc-application-themes');
+    //   console.log(value);
+    // });
 
-    this.featureToggleService.isEnabled('shareable-jurisdictions').subscribe(value => {
-      console.log('hello2');
-      console.log(value);
+    this.featureToggleService.getValue('mc-application-themes', this.getDefaultApplicationThemes())
+                                .subscribe(applicationThemes => {
+      console.log('mc-application-themes');
+      console.log(applicationThemes);
+
+      const applicationTheme: Theme = this.getApplicationThemeForUser(applicationThemes);
+
+      this.hideNavigationListener(this.store);
+
+      this.setAppHeaderProperties(applicationTheme);
     });
-    console.log('shareableJurisdictions');
-    console.log(shareableJurisdictions);
-
-    const applicationTheme: Theme = this.getApplicationThemeForUser();
-
-    this.hideNavigationListener(this.store);
-
-    this.setAppHeaderProperties(applicationTheme);
   }
 
-  public getApplicationThemeForUser(): Theme {
+  public getApplicationThemeForUser(applicationThemes: Theme[]): Theme {
 
     const serialisedUserRoles: string = this.getSerialisedUserRolesFromCookie();
     const userRoles: string[] = this.deserialiseUserRoles(serialisedUserRoles);
 
-    const applicationThemes: Theme[] = this.getApplicationThemes();
+    // const applicationThemes: Theme[] = this.getApplicationThemes();
 
     return this.getUsersTheme(userRoles, applicationThemes, this.getDefaultTheme());
   }

@@ -1,4 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
+import {FeatureToggleService} from '@hmcts/rpx-xui-common-lib';
 import {select, Store} from '@ngrx/store';
 import {CookieService} from 'ngx-cookie';
 import {Observable, of, Subscription} from 'rxjs';
@@ -51,7 +52,8 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
 
   constructor(private store: Store<fromActions.State>,
-              private cookieService: CookieService) {
+              private cookieService: CookieService,
+              private featureToggleService: FeatureToggleService) {
   }
 
   /**
@@ -147,6 +149,11 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    * We then setup the Application Header accordingly.
    */
   public ngOnInit(): void {
+
+    const shareableJurisdictions = this.featureToggleService.getValue('shareable-jurisdictions', []);
+
+    console.log('shareableJurisdictions');
+    console.log(shareableJurisdictions);
 
     const applicationTheme: Theme = this.getApplicationThemeForUser();
 

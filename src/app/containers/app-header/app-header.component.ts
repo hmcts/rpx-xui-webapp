@@ -149,9 +149,14 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    * We then setup the Application Header accordingly.
    */
   public ngOnInit(): void {
+    console.log('ngOnInit')
 
     const shareableJurisdictions = this.featureToggleService.getValue('shareable-jurisdictions', []);
 
+    this.featureToggleService.isEnabled('shareable-jurisdictions').subscribe(value => {
+      console.log('hello2');
+      console.log(value);
+    });
     console.log('shareableJurisdictions');
     console.log(shareableJurisdictions);
 

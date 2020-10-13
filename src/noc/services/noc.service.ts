@@ -13,10 +13,10 @@ export class NocService {
   }
 
   public validateNoCAnswers(nocEvent: NocEvent): Observable<boolean> {
-    return null;
+    return this.http.post<boolean>('api/ValidateNoCQuestions', nocEvent);
   }
 
   public submitNoCEvent(nocEvent: NocEvent): Observable<any> {
-    return null;
+    return this.http.post<boolean>('api/NoCEvents', nocEvent);
   }
 }

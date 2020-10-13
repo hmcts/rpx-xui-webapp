@@ -76,6 +76,11 @@ const applicationUserThemes =  [
         text: 'Create case',
         href: '/cases/case-filter',
         active: false
+      },
+      {
+        text: 'Notice of change',
+        href: '/noc',
+        active: false
       }
     ],
     accountNavigationItems: {

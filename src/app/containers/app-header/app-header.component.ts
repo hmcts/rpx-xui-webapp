@@ -1,4 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
+import {FeatureToggleService} from '@hmcts/rpx-xui-common-lib';
 import {select, Store} from '@ngrx/store';
 import {CookieService} from 'ngx-cookie';
 import {Observable, of, Subscription} from 'rxjs';
@@ -51,7 +52,8 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
 
   constructor(private store: Store<fromActions.State>,
-              private cookieService: CookieService) {
+              private cookieService: CookieService,
+              private featureToggleService: FeatureToggleService) {
   }
 
   /**
@@ -63,12 +65,14 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Get Application Themes
+   * Get Default Application Themes
    *
    * Note that the application themes are in priority order, the application theme at the top of
    * the list is given the highest precedence.
+   *
+   * If Launch Darkly goes down then these Default Application Themes will be used.
    */
-  public getApplicationThemes = () => {
+  public getDefaultApplicationThemes = () => {
 
     return AppConstants.APPLICATION_USER_THEMES;
   }
@@ -148,19 +152,21 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    */
   public ngOnInit(): void {
 
-    const applicationTheme: Theme = this.getApplicationThemeForUser();
+    this.featureToggleService.getValue('mc-application-themes', this.getDefaultApplicationThemes())
+      .subscribe(applicationThemes => {
 
-    this.hideNavigationListener(this.store);
+        const applicationTheme: Theme = this.getApplicationThemeForUser(applicationThemes);
 
-    this.setAppHeaderProperties(applicationTheme);
+        this.hideNavigationListener(this.store);
+
+        this.setAppHeaderProperties(applicationTheme);
+      });
   }
 
-  public getApplicationThemeForUser(): Theme {
+  public getApplicationThemeForUser(applicationThemes: Theme[]): Theme {
 
     const serialisedUserRoles: string = this.getSerialisedUserRolesFromCookie();
     const userRoles: string[] = this.deserialiseUserRoles(serialisedUserRoles);
-
-    const applicationThemes: Theme[] = this.getApplicationThemes();
 
     return this.getUsersTheme(userRoles, applicationThemes, this.getDefaultTheme());
   }
@@ -189,7 +195,6 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     this.logoType = logoType;
     this.logoIsUsed = logoIsUsed;
 
-    // TODO: showFindCase is not working.
     this.showFindCase = showFindCase;
   }
 

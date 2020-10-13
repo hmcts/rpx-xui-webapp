@@ -26,15 +26,13 @@ const cookieServiceMock = {
   },
 };
 
-const featureToggleServiceMock = createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
-
-// const featureToggleServiceMock = {
-//   getValue: () => {
-//     const subscribe = () => AppConstants.APPLICATION_USER_THEMES;
-//   },
-// };
-
-// featureToggleService = createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
+const featureToggleServiceMock = {
+  getValue: () => {
+    return {
+      subscribe: () => AppConstants.APPLICATION_USER_THEMES,
+    };
+  }
+};
 
 let pipeSpy: jasmine.Spy;
 let dispatchSpy: jasmine.Spy;

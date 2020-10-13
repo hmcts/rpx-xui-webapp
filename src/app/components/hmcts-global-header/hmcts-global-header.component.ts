@@ -8,20 +8,25 @@ import { Store } from '@ngrx/store';
 })
 export class HmctsGlobalHeaderComponent {
 
-  // @Input() set userLoggedIn(value) {
-  //     this.userValue = value;
-  // }
-  @Input() headerTitle: {name: string; url: string};
-  @Input() navigation;
-  @Input() isBrandedHeader: boolean;
-  @Output() navigate = new EventEmitter<string>();
+  @Input() public set showNavItems(value) {
+    this.showItems = value;
+  }
+  @Input() public label;
+  @Input() public items;
+  @Input() public logoIsUsed;
+  @Input() public showFindCase: boolean;
+  @Input() public headerTitle: {name: string; url: string};
+  @Input() public navigation;
+  @Input() public logoType: string;
+  @Output() public navigate = new EventEmitter<string>();
 
-  userValue = true;
+  public showItems: boolean;
+  public userValue = true;
+
   constructor(public store: Store<fromRoot.State>) { }
 
-  onEmmitEvent(index) {
+  public onEmitEvent(index) {
+
     this.navigate.emit(this.navigation.items[index].emit);
   }
-
-
 }

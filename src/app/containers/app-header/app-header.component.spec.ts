@@ -5,6 +5,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { AppConstants } from 'src/app/app.constants';
 import * as fromActions from '../../store';
 import { CookieService } from 'ngx-cookie';
+import {FeatureToggleService} from '@hmcts/rpx-xui-common-lib';
 import {of} from 'rxjs';
 
 const storeMock = {
@@ -24,6 +25,16 @@ const cookieServiceMock = {
     return SERIALISED_ROLES;
   },
 };
+
+const featureToggleServiceMock = createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
+
+// const featureToggleServiceMock = {
+//   getValue: () => {
+//     const subscribe = () => AppConstants.APPLICATION_USER_THEMES;
+//   },
+// };
+
+// featureToggleService = createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
 
 let pipeSpy: jasmine.Spy;
 let dispatchSpy: jasmine.Spy;
@@ -58,6 +69,10 @@ describe('AppHeaderComponent', () => {
           provide: CookieService,
           useValue: cookieServiceMock,
         },
+        {
+          provide: FeatureToggleService,
+          useValue: featureToggleServiceMock,
+        },
         AppHeaderComponent
       ],
     }).compileComponents();
@@ -79,7 +94,7 @@ describe('AppHeaderComponent', () => {
   describe('getApplicationThemes()', () => {
 
     it('should return the applications themes.', () => {
-      expect(component.getApplicationThemes()).toEqual(AppConstants.APPLICATION_USER_THEMES);
+      expect(component.getDefaultApplicationThemes()).toEqual(AppConstants.APPLICATION_USER_THEMES);
     });
   });
 

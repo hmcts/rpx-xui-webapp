@@ -151,39 +151,22 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    * We then setup the Application Header accordingly.
    */
   public ngOnInit(): void {
-    console.log('ngOnInit')
-
-    // const shareableJurisdictions = this.featureToggleService.getValue('mc-application-themes', []);
-    //
-    // this.featureToggleService.isEnabled('shareable-jurisdictions').subscribe(value => {
-    //   console.log('shareable-jurisdictions');
-    //   console.log(value);
-    // });
-    //
-    // this.featureToggleService.isEnabled('mc-application-themes').subscribe(value => {
-    //   console.log('mc-application-themes');
-    //   console.log(value);
-    // });
 
     this.featureToggleService.getValue('mc-application-themes', this.getDefaultApplicationThemes())
-                                .subscribe(applicationThemes => {
-      console.log('mc-application-themes');
-      console.log(applicationThemes);
+      .subscribe(applicationThemes => {
 
-      const applicationTheme: Theme = this.getApplicationThemeForUser(applicationThemes);
+        const applicationTheme: Theme = this.getApplicationThemeForUser(applicationThemes);
 
-      this.hideNavigationListener(this.store);
+        this.hideNavigationListener(this.store);
 
-      this.setAppHeaderProperties(applicationTheme);
-    });
+        this.setAppHeaderProperties(applicationTheme);
+      });
   }
 
   public getApplicationThemeForUser(applicationThemes: Theme[]): Theme {
 
     const serialisedUserRoles: string = this.getSerialisedUserRolesFromCookie();
     const userRoles: string[] = this.deserialiseUserRoles(serialisedUserRoles);
-
-    // const applicationThemes: Theme[] = this.getApplicationThemes();
 
     return this.getUsersTheme(userRoles, applicationThemes, this.getDefaultTheme());
   }
@@ -212,7 +195,6 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     this.logoType = logoType;
     this.logoIsUsed = logoIsUsed;
 
-    // TODO: showFindCase is not working.
     this.showFindCase = showFindCase;
   }
 

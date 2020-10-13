@@ -1,5 +1,6 @@
+import { NocState } from '../../models/noc-state.enum';
+import { NocStateData } from '../../models/noc-state-data.interface';
 import * as fromActions from '../actions';
-import { NocState, NocStateData } from '../../models/noc.state';
 
 export const initialState: NocStateData = {
     state: NocState.START,

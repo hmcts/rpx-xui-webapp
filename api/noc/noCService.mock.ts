@@ -33,8 +33,6 @@ export const generator = (schema, min = 1, max) => {
 export const init = () => {
     const mock = new MockAdapter(httpMock)
 
-    const url = /\/api\/NoCQuestions\?caseId/
-
     // schema
     // tslint:disable:object-literal-sort-keys
     // tslint:disable:max-line-length
@@ -102,11 +100,15 @@ export const init = () => {
     // tslint:enable:object-literal-sort-keys
     // tslint:enable:max-line-length
 
+    const getNoCQuestionsUrl = /\/api\/NoCQuestions\?caseId/
+    const validateNoCQuestionsUrl = /\/api\/ValidateNoCQuestions\?caseId/
+    const postNoCEventsUrl = /\/api\/NoCEvents\?caseId/
+
     // simulate some error if needed
     // mock.onGet(url).networkErrorOnce()
-    mock.onGet(url).timeoutOnce()
+    mock.onGet(getNoCQuestionsUrl).timeoutOnce()
 
-    mock.onGet(url).reply(() => {
+    mock.onGet(getNoCQuestionsUrl).reply(() => {
 
         let questions = []
 
@@ -119,6 +121,15 @@ export const init = () => {
             200,
             questions,
         ]
+    }).onPost(validateNoCQuestionsUrl).reply(200, {
+        OrganisationPolicy: {
+            Organisation: 'orgId',
+        },
+        status_message: 'success',
+    }).onPost(postNoCEventsUrl).reply(200, {
+        approval_status: 'APPROVED',
+        case_role: 'Claimant',
+        status_message: 'success',
     })
 
 }

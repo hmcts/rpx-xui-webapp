@@ -38,7 +38,7 @@ export async function handleGet(noCPath: string, req: EnhancedRequest): Promise<
 export async function handlePost(noCPath: string, body: any, req: EnhancedRequest): Promise<AxiosResponse> {
 
     try {
-        logger.info('posting redaction', noCPath)
+        logger.info('posting noc', noCPath)
         const headers = setHeaders(req)
         return await httpMock.post(noCPath, body, {headers})
     } catch (e) {

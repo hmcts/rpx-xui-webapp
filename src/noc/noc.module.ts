@@ -5,11 +5,12 @@ import { AbstractAppConfig, CaseUIToolkitModule } from '@hmcts/ccd-case-ui-toolk
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { nocRouting } from './noc.routes';
+import { NocService } from 'src/noc/services/index';
+import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
 // from containers
 import * as fromContainers from './containers';
-import {reducers, effects} from './store';
-import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
+import { nocRouting } from './noc.routes';
+import {effects, reducers} from './store';
 
 @NgModule({
     imports: [
@@ -25,7 +26,8 @@ import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
   providers: [{
       provide: AbstractAppConfig,
       useExisting: AppConfig
-    }
+    },
+    NocService
   ]
 })
 /**

@@ -10,6 +10,7 @@ import {
 import * as log4jui from '../../../../api/lib/log4jui';
 import {shorten} from '../../../../api/lib/util';
 import {getAuthToken} from './getToken';
+import {config} from '../config/config';
 
 const s2sSecret = getConfigValue(S2S_SECRET).trim();
 const microservice = getConfigValue(MICROSERVICE);
@@ -32,7 +33,7 @@ export const initAxios = async () => {
   // axios.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
   // axios.defaults.headers.common['ServiceAuthorization'] = s2sToken;
   axios.defaults.withCredentials = true;
-  axios.defaults.baseURL = 'https://manage-case.aat.platform.hmcts.net/';
+  axios.defaults.baseURL = config.baseUrl;
 };
 
 const requestInterceptor = (request) => {

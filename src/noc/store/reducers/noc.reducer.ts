@@ -1,5 +1,4 @@
-import { NocState } from '../../models/noc-state.enum';
-import { NocStateData } from '../../models/noc-state-data.interface';
+import { NocState , NocStateData } from '../../models';
 import * as fromActions from '../actions';
 
 export const initialState: NocStateData = {

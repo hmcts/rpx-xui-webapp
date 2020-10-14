@@ -1,4 +1,4 @@
-import { NocState } from '../../models/noc-state.enum';
+import { NocState } from '../../models';
 import * as fromActions from '../actions/noc.action';
 import * as fromReducer from './noc.reducer';
 

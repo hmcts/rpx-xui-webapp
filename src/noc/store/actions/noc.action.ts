@@ -1,9 +1,6 @@
 import { Action } from '@ngrx/store';
-import { NocAnswer } from '../../models/noc-answer.interface';
-import { NocError } from '../../models/noc-error.interface';
-import { NocEvent } from '../../models/noc-event.interface';
-import { NocQuestion } from '../../models/noc-question.interface';
-import { NocState } from '../../models/noc-state.enum';
+import { NocAnswer, NocError,  NocEvent , NocQuestion , NocState } from '../../models';
+
 export const RESET = '[NOC] Reset';
 export const CHANGE_NAVIGATION = '[NOC] Change Navigation';
 export const SET_CASE_REFERENCE = '[NOC] Set Case Reference';

@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { NocState, NocError, NocQuestion, NoCAnswer, NocStateData, NocEvent } from '../../models/noc.state';
+import { NocAnswer, NocError,  NocEvent , NocQuestion , NocState } from '../../models';
 
 export const RESET = '[NOC] Reset';
 export const CHANGE_NAVIGATION = '[NOC] Change Navigation';
@@ -57,7 +57,7 @@ export class SetAnswersIncomplete implements Action {
 
 export class CheckAnswers implements Action {
     readonly type = CHECK_ANSWERS;
-    constructor(public payload: NoCAnswer[]) {}
+    constructor(public payload: NocAnswer[]) {}
 }
 
 export class SetAnswerSubmissionFailure implements Action {

@@ -1,5 +1,5 @@
+import { NocState , NocStateData } from '../../models';
 import * as fromActions from '../actions';
-import { NocState, NocStateData } from '../../models/noc.state';
 
 export const initialState: NocStateData = {
     state: NocState.START,

@@ -1,5 +1,5 @@
+import { NocState } from '../../models';
 import * as fromActions from '../actions/noc.action';
-import { NocState } from '../../models/noc.state';
 import * as fromReducer from './noc.reducer';
 
 describe('Noc Navigation Reducer', () => {

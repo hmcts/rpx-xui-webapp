@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { NoCAnswer, NocEvent, NocQuestion } from '../models/noc.state';
+import { NocEvent, NocQuestion } from '../models';
 
 @Injectable()
 export class NocService {

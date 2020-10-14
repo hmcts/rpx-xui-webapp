@@ -6,9 +6,7 @@ import * as fromNocEffects from './noc.effects';
 import { of, throwError } from 'rxjs';
 import { cold, hot } from 'jasmine-marbles';
 import { CheckAnswers, SetAnswers, SetAnswersIncomplete, SetAnswerSubmissionFailure, SetCaseReference, SetCaseRefSubmissionFailure, SetCaseRefValidationFailure, SetQuestions, SetSubmissionFailure, SetSubmissionSuccessApproved, SetSubmissionSuccessPending, SubmitNoc } from '../actions/noc.action';
-import { NocQuestion } from 'src/noc/models/noc-question.interface';
-import { NocError } from 'src/noc/models/noc-error.interface';
-import { NocAnswer } from 'src/noc/models/noc-answer.interface';
+import { NocQuestion , NocError , NocAnswer } from '../../models/';
 
 describe('Noc Effects', () => {
   let actions$;

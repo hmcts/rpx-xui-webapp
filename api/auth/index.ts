@@ -67,7 +67,7 @@ export const getXuiNodeMiddleware = () => {
         callbackURL: getConfigValue(SERVICES_IDAM_OAUTH_CALLBACK_URL),
         clientID: idamClient,
         clientSecret: secret,
-        discoveryEndpoint: `${idamWebUrl}/o`,
+        discoveryEndpoint: `${idamWebUrl}/o/.well-known/openid-configuration`,
         issuerURL: issuerUrl,
         logoutURL: idamApiPath,
         responseTypes: ['code'],

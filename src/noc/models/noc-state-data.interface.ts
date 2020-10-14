@@ -13,4 +13,5 @@ export interface NocStateData {
     reason?: string;
     affirmationAgreed: boolean;
     options: NocOptions;
+    validationErrors?: {}
 }

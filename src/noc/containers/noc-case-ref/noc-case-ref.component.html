@@ -1,4 +1,9 @@
 <div>
+    <xuilib-hmcts-error-summary
+        [errorMessages]="mainErrorHandler((lastError$ | async), 'caseRef')"
+        [header]="'There is a problem'"
+    ></xuilib-hmcts-error-summary>
+
     <div class="hmcts-page-heading">
             <div class="hmcts-page-heading__title">
                 <h1 class="govuk-heading-l">Notice of change</h1>
@@ -14,17 +19,18 @@
 
 
             
-    <div class="govuk-form-group ">
+    <div
+        class="govuk-form-group"
+        [class.govuk-form-group--error]="(validationErrors$ | async)?.caseRef || null"
+    >
 
-        <label class="govuk-label  govuk-!-font-weight-bold" for="casenumber">
-            Online case reference number
-        </label>
+        <form [formGroup]="caseRefForm" (ngSubmit)="onSubmit()" >
 
-        <span id="case-number-hint" class="govuk-hint">
-        This is a 16-digit number from MyHMCTS, for example 1111-2222-3333-4444
-        </span>
-
-        <input class="govuk-input govuk-input--width-10" id="casenumber" name="casenumber" type="text" spellcheck="false" [(ngModel)]="caseRef">
-
+            <xuilib-gov-uk-input
+                [config]="caseRefConfig"
+                [group]="caseRefForm"
+                [errorMessage]="(validationErrors$ | async)?.caseRef || null"
+            ></xuilib-gov-uk-input>
+        </form>
     </div>
 </div>

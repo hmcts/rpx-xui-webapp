@@ -5,7 +5,7 @@
       (onEvent)="onNavEvent($event)"
     >
       <exui-noc-case-ref
-        *ngIf="isComponentVisible((nocNavigationCurrentState$ | async), nocState.START)"
+        *ngIf="isComponentVisible((nocNavigationCurrentState$ | async), caseRefVisibilityStates)"
         [navEvent]="navEvent"
       ></exui-noc-case-ref>
     </exui-noc-navigation>

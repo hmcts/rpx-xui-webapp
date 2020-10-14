@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { caseRefVisibilityStates } from 'src/noc/constants';
 import { NocNavigationEvent } from 'src/noc/models/noc-navigation-event.enum';
 import { NocState } from '../../models/noc-state.enum';
 import * as fromFeature from '../../store';
@@ -16,6 +17,8 @@ export class NocHomeComponent implements OnInit{
   public nocState = NocState;
   public navEvent: NocNavigationEvent;
 
+  public caseRefVisibilityStates = caseRefVisibilityStates;
+
   constructor(
     private store: Store<fromFeature.State>,
   ) { }
@@ -28,8 +31,8 @@ export class NocHomeComponent implements OnInit{
     this.navEvent = event;
   }
 
-  public isComponentVisible(currentNavigationState: NocState, requiredNavigationState: NocState): boolean {
-    return currentNavigationState === requiredNavigationState;
+  public isComponentVisible(currentNavigationState: NocState, requiredNavigationState: NocState[]): boolean {
+    return requiredNavigationState.includes(currentNavigationState);
   }
 
 }

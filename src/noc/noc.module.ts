@@ -9,9 +9,8 @@ import { NocService } from 'src/noc/services/index';
 import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
 // from containers
 import * as fromContainers from './containers';
+import { nocRouting } from './noc.routes';
 import {reducers, effects} from './store';
-import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
-import { NocService } from './services';
 import { FormsModule } from '@angular/forms';
 
 @NgModule({

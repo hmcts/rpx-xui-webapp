@@ -19,8 +19,8 @@ defineSupportCode(function ({ Given, When, Then }) {
 
   When(/^I navigate to Expert UI Url$/, async function () {
     const world = this;
-
-    let response = await http.get(config.config.baseUrl +'external/configuration-ui/');
+    let url = config.config.baseUrl.endsWith('/') ? config.config.baseUrl + 'external/configuration-ui/' : config.config.baseUrl + '/external/configuration-ui/'; 
+    let response = await http.get(url);
     world.attach("external/configuration-ui : " + JSON.stringify(response.data, null, 2));
     console.log(JSON.stringify(response.data, null, 2));
     await browser.driver.manage()

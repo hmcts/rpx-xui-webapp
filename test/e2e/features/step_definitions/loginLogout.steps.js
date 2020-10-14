@@ -1,5 +1,6 @@
 'use strict';
 const axios = require('axios');
+const tunnel = require('tunnel');
 
 const loginPage = require('../pageObjects/loginLogoutObjects');
 const { defineSupportCode } = require('cucumber');
@@ -15,14 +16,30 @@ async function waitForElement(el) {
 }
 
 defineSupportCode(function ({ Given, When, Then }) {
-  const http = axios.create({});
 
+  async function  getExternalConfig(){
+    let mainWinHandle = await browser.driver.getWindowHandle()
+    await browser.executeScript('window.open()');
+    let winHandles = await browser.driver.getAllWindowHandles();
+    await browser.switchTo().window(winHandles[1]);
+    let configPath = "external/configuration-ui/";
+    let url = config.config.baseUrl.endsWith("/") ? config.config.baseUrl + configPath : config.config.baseUrl + "/" + configPath
+    await browser.get(url);
+
+    let bodyElement = element(by.css('body pre'));
+    await BrowserWaits.waitForElement(bodyElement);
+    const externalConfig = await bodyElement.getText();
+    await browser.driver.close();
+    await browser.switchTo().window(mainWinHandle);
+    return JSON.parse(externalConfig);
+  }
+  
   When(/^I navigate to Expert UI Url$/, async function () {
     const world = this;
-    let url = config.config.baseUrl.endsWith('/') ? config.config.baseUrl + 'external/configuration-ui/' : config.config.baseUrl + '/external/configuration-ui/'; 
-    let response = await http.get(url);
-    world.attach("external/configuration-ui : " + JSON.stringify(response.data, null, 2));
-    console.log(JSON.stringify(response.data, null, 2));
+    let response = await getExternalConfig(); 
+    world.attach("external/configuration-ui : " + JSON.stringify(response, null, 2));
+    console.log(JSON.stringify(response, null, 2));
+
     await browser.driver.manage()
       .deleteAllCookies();
     await browser.get(config.config.baseUrl);

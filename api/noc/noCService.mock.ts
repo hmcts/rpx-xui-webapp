@@ -101,8 +101,8 @@ export const init = () => {
     // tslint:enable:max-line-length
 
     const getNoCQuestionsUrl = /\/api\/NoCQuestions\?caseId/
-    const validateNoCQuestionsUrl = /\/api\/ValidateNoCQuestions\?caseId/
-    const postNoCEventsUrl = /\/api\/NoCEvents\?caseId/
+    const validateNoCQuestionsUrl = /\/api\/ValidateNoCQuestions/
+    const postNoCEventsUrl = /\/api\/NoCEvents/
 
     // simulate some error if needed
     // mock.onGet(url).networkErrorOnce()

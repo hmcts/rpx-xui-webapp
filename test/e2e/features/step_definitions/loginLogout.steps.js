@@ -1,4 +1,5 @@
 'use strict';
+const axios = require('axios');
 
 const loginPage = require('../pageObjects/loginLogoutObjects');
 const { defineSupportCode } = require('cucumber');
@@ -14,13 +15,18 @@ async function waitForElement(el) {
 }
 
 defineSupportCode(function ({ Given, When, Then }) {
+  const http = axios.create({});
 
   When(/^I navigate to Expert UI Url$/, async function () {
+    const world = this;
+
+    let response = await http.get(config.config.baseUrl +'external/configuration-ui/');
+    world.attach("external/configuration-ui : " + JSON.stringify(response.data, null, 2));
+    console.log(JSON.stringify(response.data, null, 2));
     await browser.driver.manage()
       .deleteAllCookies();
     await browser.get(config.config.baseUrl);
 
-    const world = this;
     await BrowserWaits.retryForPageLoad(loginPage.signinTitle,function(message){
       world.attach("Expert UI Url reload attempt : "+message);
     });

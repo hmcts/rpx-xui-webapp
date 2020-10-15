@@ -184,8 +184,8 @@ describe('Noc Effects', () => {
     });
   });
 
-  describe('noc effects util', () => {
-    it('is404Or5xxError', () => {
+  describe('is404Or5xxError', () => {
+    it('should return isError', () => {
       let isRelaventError = NocEffects.is404Or5xxError(400);
       expect(isRelaventError).toBeFalsy();
 

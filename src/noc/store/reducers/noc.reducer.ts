@@ -63,7 +63,9 @@ export function nocReducer(
                 ...currentState,
                 state: NocState.QUESTION,
                 questions: action.payload.questions,
-                caseReference: action.payload.caseReference
+                caseReference: action.payload.caseReference,
+                validationErrors: null,
+                lastError: null
             }
         }
         case fromActions.SET_ANSWER_INCOMPLETE: {

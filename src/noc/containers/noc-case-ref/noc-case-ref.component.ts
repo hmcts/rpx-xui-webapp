@@ -53,7 +53,7 @@ export class NocCaseRefComponent implements OnChanges {
     this.navigationHandler(NocNavigationEvent.CONTINUE);
   }
 
-  navigationHandler(navEvent: NocNavigationEvent) {
+  public navigationHandler(navEvent: NocNavigationEvent) {
     switch (navEvent) {
       case NocNavigationEvent.BACK: {
         break;
@@ -65,7 +65,7 @@ export class NocCaseRefComponent implements OnChanges {
     }
   }
 
-  mainErrorHandler(error: NocError, id: string) {
+  public mainErrorHandler(error: NocError, id: string) {
     if (error) {
       return [{
         id: id,

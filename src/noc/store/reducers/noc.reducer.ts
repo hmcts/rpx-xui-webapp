@@ -9,7 +9,8 @@ export const initialState: NocStateData = {
     answers: null,
     reason: null,
     affirmationAgreed: false,
-    options: null
+    options: null,
+    validationErrors: null
 };
 
 export function nocReducer(

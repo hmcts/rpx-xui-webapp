@@ -4,15 +4,15 @@ import { of } from 'rxjs';
 import { NocNavigationEvent } from 'src/noc/models/noc-navigation-event.enum';
 import * as fromNocStore from '../../store';
 import * as fromContainers from '../../containers';
-import { NocCaseRefComponent } from './noc-case-ref.component';
+import { NocHomeComponent } from './noc-home.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { NocState } from 'src/noc/models';
 
 describe('NocHomeComponent', () => {
-  let fixture: ComponentFixture<NocCaseRefComponent>;
-  let component: NocCaseRefComponent;
+  let fixture: ComponentFixture<NocHomeComponent>;
+  let component: NocHomeComponent;
   let store: MockStore<fromNocStore.State>;
   let storePipeMock: any;
 
@@ -36,40 +36,32 @@ describe('NocHomeComponent', () => {
 
     storePipeMock = spyOn(store, 'pipe');
 
-    fixture = TestBed.createComponent(NocCaseRefComponent);
+    fixture = TestBed.createComponent(NocHomeComponent);
     component = fixture.componentInstance;
+    component.nocNavigationCurrentState$ = storePipeMock.and.returnValue(of(0));
     fixture.detectChanges();
   });
 
-  describe('onSubmit', () => {
-    it('should call navigationHandler', () => {
-        const navigationHandlerSpy = spyOn(component, 'navigationHandler');
-        component.navEvent = NocNavigationEvent.CONTINUE;
-        component.onSubmit();
-        expect(navigationHandlerSpy).toHaveBeenCalledWith(NocNavigationEvent.CONTINUE);
+  describe('onNavEvent', () => {
+    it('should set navEvent', () => {
+      component.onNavEvent(NocNavigationEvent.CONTINUE);
+      expect(component.navEvent).toEqual(NocNavigationEvent.CONTINUE);
     });
 
   });
 
-  describe('mainErrorHandler', () => {
-    it('should return an error object', () => {
-        const action = component.mainErrorHandler({message: 'dummy', responseCode: 0}, 'dummyId');
-        const expected = [{
-            id: 'dummyId',
-            message: 'dummy'
-          }];
-        expect(action).toEqual(expected);
+  describe('isComponentVisible', () => {
+    it('should determine visibility true', () => {
+      const expected = component.isComponentVisible(NocState.START, [NocState.START, NocState.QUESTION]);
+      expect(expected).toBeTruthy();
     });
 
   });
 
-  describe('navigationHandler', () => {
-    it('should dispatch an action', () => {
-
-        const storeDispatchMock = spyOn(store, 'dispatch');
-        component.navigationHandler(NocNavigationEvent.CONTINUE);
-        
-        expect(storeDispatchMock).toHaveBeenCalled();
+  describe('isComponentVisible', () => {
+    it('should determine visibility false', () => {
+      const expected = component.isComponentVisible(NocState.START, [NocState.CHECK_ANSWERS, NocState.QUESTION]);
+      expect(expected).toBeFalsy();
     });
 
   });

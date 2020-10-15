@@ -159,6 +159,18 @@ describe('Noc Reducer', () => {
             expect(fromReducer.getLastError(nocState)).toEqual(expected);
         });
 
+        it('should get validation error', () => {
+            const nocState = {
+                validationErrors: {
+                    test: 'dummy'
+                }
+            };
+            const expected = {
+                test: 'dummy'
+            };
+            expect(fromReducer.getValidationErrors(nocState)).toEqual(expected);
+        });
+
         it('should get questions', () => {
             const nocState = {
                 questions: [{

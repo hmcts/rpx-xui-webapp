@@ -184,4 +184,31 @@ describe('Noc Effects', () => {
     });
   });
 
+  describe('is404Or5xxError', () => {
+    it('should return isError', () => {
+      let isRelaventError = NocEffects.is404Or5xxError(400);
+      expect(isRelaventError).toBeFalsy();
+
+      isRelaventError = NocEffects.is404Or5xxError(undefined);
+      expect(isRelaventError).toBeFalsy();
+
+
+      isRelaventError = NocEffects.is404Or5xxError(null);
+      expect(isRelaventError).toBeFalsy();
+
+
+      isRelaventError = NocEffects.is404Or5xxError(401);
+      expect(isRelaventError).toBeFalsy();
+
+      isRelaventError = NocEffects.is404Or5xxError(404);
+      expect(isRelaventError).toBeTruthy();
+
+      isRelaventError = NocEffects.is404Or5xxError(501);
+      expect(isRelaventError).toBeTruthy();
+
+      isRelaventError = NocEffects.is404Or5xxError(502);
+      expect(isRelaventError).toBeTruthy();
+    });
+  });
+
 });

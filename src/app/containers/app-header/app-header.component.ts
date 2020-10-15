@@ -72,7 +72,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    *
    * If Launch Darkly goes down then these Default Application Themes will be used.
    */
-  public getDefaultApplicationThemes = () => {
+  public getDefaultApplicationThemes() {
 
     return AppConstants.APPLICATION_USER_THEMES;
   }
@@ -99,7 +99,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    * '"caseworker-divorce-financialremedy-solicitor","caseworker"]';
    * @return ["pui-organisation-manager","caseworker-publiclaw","caseworker-divorce-financialremedy-solicitor","caseworker"]
    */
-  public deserialiseUserRoles = (serialisedUserRoles: string): string[] => {
+  public deserialiseUserRoles(serialisedUserRoles: string): string[] {
 
     const serialisedUserRolesWithoutJsonPrefix: string = AppUtils.removeJsonPrefix(serialisedUserRoles);
     return AppUtils.getCookieRolesAsArray(serialisedUserRolesWithoutJsonPrefix);
@@ -125,7 +125,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    * @param defaultTheme - The default theme to be applied if we cannot find a matching Theme
    * for the User's Roles.
    */
-  public getUsersTheme = (userRoles, themes, defaultTheme): Theme => {
+  public getUsersTheme(userRoles, themes, defaultTheme): Theme {
 
     const themeToApply = defaultTheme;
 
@@ -152,7 +152,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    */
   public ngOnInit(): void {
 
-    this.featureToggleService.getValue('mc-application-themes', this.getDefaultApplicationThemes())
+    this.featureToggleService.getValue<Theme[]>('mc-application-themes', this.getDefaultApplicationThemes())
       .subscribe(applicationThemes => {
 
         const applicationTheme: Theme = this.getApplicationThemeForUser(applicationThemes);

@@ -53,7 +53,9 @@ export class AppUtils {
    *
    * Therefore we need to remove the j: before deserialising the user roles string into an Array.
    */
-  public static removeJsonPrefix = (userRolesFromCookie: string): string => userRolesFromCookie.replace('j:', '');
+  public static removeJsonPrefix(userRolesFromCookie: string): string {
+    return userRolesFromCookie.replace('j:', '');
+  }
 
   /**
    * Get Cookie Roles as Array
@@ -61,5 +63,7 @@ export class AppUtils {
    * @param userRoles - '["pui-organisation-manager","caseworker-publiclaw", "caseworker"]'
    * @return - ['pui-organisation-manager', 'caseworker-publiclaw', 'caseworker', 'etc...']
    */
-  public static getCookieRolesAsArray = (userRoles: string): string[] => JSON.parse(userRoles);
+  public static getCookieRolesAsArray(userRoles: string): string[] {
+    return JSON.parse(userRoles);
+  }
 }

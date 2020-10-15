@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
+import * as fromActions from '../../../app/store/actions';
 import { NocService } from '../../services';
 import * as nocActions from '../actions/noc.action';
 
@@ -25,7 +26,13 @@ export class NocEffects {
           return this.nocService.getNoCQuestions(payload).pipe(
             map(
               (response) => new nocActions.SetQuestions(response)),
-              catchError(error => of(new nocActions.SetCaseRefSubmissionFailure(error)))
+              catchError(error => {
+                if (error && error.status && NocEffects.is404Or5xxError(error.status)) {
+                  return of(new fromActions.Go({ path: ['/service-down'] }));
+                } else {
+                  return of(new nocActions.SetCaseRefSubmissionFailure(error));
+                }
+              })
           );
         } else {
           return of(new nocActions.SetCaseRefValidationFailure());
@@ -75,4 +82,7 @@ export class NocEffects {
       })
     );
 
+    public static is404Or5xxError(errorStatus: any): boolean {
+      return errorStatus && (errorStatus === 404 || (errorStatus >= 500 && errorStatus < 600));
+    }
 }

@@ -35,11 +35,11 @@
     "test:all": "yarn test:ng && yarn test:node && yarn test:smoke && yarn test:functional && yarn test:crossbrowser",
     "test:smoke": "sh whitelist.sh && webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/smoke.conf.js",
     "test:smoke:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/smoke.conf.js --local",
-    "test:functional": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/functional.conf.js",
+    "test:functional": "yarn test:api && webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/functional.conf.js",
     "test:functional:backup": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/conf.js --local",
     "test:functional:local": "protractor ./test/e2e/config/functional.conf.js --local",
     "test:crossbrowser": "webdriver-manager update && protractor ./test/e2e/config/crossbrowser.conf.js",
-    "test:fullfunctional": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/fullfunctional.conf.js",
+    "test:fullfunctional": "yarn test:api && webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/fullfunctional.conf.js",
     "test:fullfunctional:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/fullfunctional.conf.js --local",
     "test:mutation": "NODE_CONFIG_DIR=./config stryker run stryker.node.conf.js ",
     "test:apiGateway": "echo 'not implemented'",
@@ -47,7 +47,7 @@
     "test-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error mocha --timeout 10000 -r ts-node/register -r dotenv-extended/config api/test/pact/**/*.spec.ts dotenv_config_defaults=./api/.env.defaults",
     "publish-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error mocha --timeout 15000 -r ts-node/register -r dotenv-extended/config api/test/pact/publish/publish.ts dotenv_config_defaults=./api/.env.defaults --reporter spec",
     "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact",
-    "test:api:functional": "NODE_PATH=. NODE_CONFIG_DIR=./config node -r ts-node/register -r dotenv-extended/config ./test/integration/tests/test.ts dotenv_config_defaults=./api/.env.defaults"
+    "test:api": "node -r ts-node/register ./test/integration/tests/test.ts dotenv_config_defaults=./api/.env.defaults"
   },
   "private": true,
   "dependencies": {

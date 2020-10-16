@@ -40,23 +40,23 @@ describe('Noc Reducer', () => {
             });
         });
 
-        describe('SetQuestions action', () => {	
-            it('should set correct object', () => {	
-                const initialState = fromReducer.initialState;	
+        describe('SetQuestions action', () => {
+            it('should set correct object', () => {
+                const initialState = fromReducer.initialState;
                 const action = new fromActions.SetQuestions({
-                    questions: [{	
-                        displayOrder: 0,	
-                        answerType: null,	
-                        displayContext: null,	
-                        questionLabel: 'dummy'	
+                    questions: [{
+                        displayOrder: 0,
+                        answerType: null,
+                        displayContext: null,
+                        questionLabel: 'dummy'
                     }],
                     caseReference: 'abcd'
                 });
-                const nocState = fromReducer.nocReducer(initialState, action);	
-                expect(nocState.state).toEqual(NocState.QUESTION);	
+                const nocState = fromReducer.nocReducer(initialState, action);
+                expect(nocState.state).toEqual(NocState.QUESTION);
                 expect(nocState.questions[0].questionLabel).toEqual('dummy');
                 expect(nocState.caseReference).toEqual('abcd');
-            });	
+            });
         });
 
         describe('SetCaseRefSubmissionFailure action', () => {

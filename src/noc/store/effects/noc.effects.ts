@@ -18,7 +18,7 @@ export class NocEffects {
       ofType(nocActions.SET_CASE_REFERENCE),
       map((action: nocActions.SetCaseReference) => action.payload),
       switchMap(payload => {
-        const caseReference = payload.replace(/-/g, '').replace(/ /g, '');
+        const caseReference = payload ? payload.replace(/-/g, '').replace(/ /g, '') : payload = '' ;
 
         if (caseReference.length === 16) {
 

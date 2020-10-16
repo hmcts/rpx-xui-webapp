@@ -1,14 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
-import { of } from 'rxjs';
-import { NocNavigationEvent } from 'src/noc/models/noc-navigation-event.enum';
+import { NocNavigationEvent } from '../../models';
 import * as fromNocStore from '../../store';
 import * as fromContainers from '../../containers';
 import { NocCaseRefComponent } from './noc-case-ref.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { NocState } from 'src/noc/models';
 
 describe('NocHomeComponent', () => {
   let fixture: ComponentFixture<NocCaseRefComponent>;
@@ -21,13 +19,13 @@ describe('NocHomeComponent', () => {
       imports: [
         ReactiveFormsModule
       ],
-      schemas:[
+      schemas: [
         NO_ERRORS_SCHEMA
       ],
       declarations: [
         ...fromContainers.containers
       ],
-      providers:[
+      providers: [
         provideMockStore()
       ]
     }).compileComponents();
@@ -44,7 +42,10 @@ describe('NocHomeComponent', () => {
   describe('onSubmit', () => {
     it('should call navigationHandler', () => {
         const navigationHandlerSpy = spyOn(component, 'navigationHandler');
-        component.navEvent = NocNavigationEvent.CONTINUE;
+        component.navEvent = {
+          event: NocNavigationEvent.CONTINUE,
+          timestamp: 0
+        };
         component.onSubmit();
         expect(navigationHandlerSpy).toHaveBeenCalledWith(NocNavigationEvent.CONTINUE);
     });
@@ -68,7 +69,7 @@ describe('NocHomeComponent', () => {
 
         const storeDispatchMock = spyOn(store, 'dispatch');
         component.navigationHandler(NocNavigationEvent.CONTINUE);
-        
+
         expect(storeDispatchMock).toHaveBeenCalled();
     });
 

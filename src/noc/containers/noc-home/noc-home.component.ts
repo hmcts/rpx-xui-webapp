@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { caseRefVisibilityStates } from 'src/noc/constants';
-import { NocNavigationEvent } from 'src/noc/models/noc-navigation-event.enum';
-import { NocState } from '../../models/noc-state.enum';
+import { NocState, NocNavigationEvent, NocNavigation } from '../../models';
 import * as fromFeature from '../../store';
 
 @Component({
@@ -11,11 +10,12 @@ import * as fromFeature from '../../store';
   templateUrl: 'noc-home.component.html',
   styleUrls: ['noc-home.component.scss']
 })
-export class NocHomeComponent implements OnInit{
+export class NocHomeComponent implements OnInit, OnDestroy {
 
-  public nocNavigationCurrentState$: Observable<fromFeature.State>;
+  public nocNavigationCurrentState: fromFeature.State;
+  private nocNavigationCurrentStateSub: Subscription;
   public nocState = NocState;
-  public navEvent: NocNavigationEvent;
+  public navEvent: NocNavigation;
 
   public caseRefVisibilityStates = caseRefVisibilityStates;
 
@@ -24,15 +24,23 @@ export class NocHomeComponent implements OnInit{
   ) { }
 
   ngOnInit() {
-    this.nocNavigationCurrentState$ = this.store.pipe(select(fromFeature.currentNavigation));
+    this.nocNavigationCurrentStateSub = this.store.pipe(select(fromFeature.currentNavigation)).subscribe(state => this.nocNavigationCurrentState = state);
   }
 
   public onNavEvent(event: NocNavigationEvent) {
-    this.navEvent = event;
+    this.navEvent = {
+      event,
+      timestamp: Date.now()
+    };
   }
 
   public isComponentVisible(currentNavigationState: NocState, requiredNavigationState: NocState[]): boolean {
     return requiredNavigationState.includes(currentNavigationState);
   }
 
+  public ngOnDestroy() {
+    if (this.nocNavigationCurrentStateSub) {
+      this.nocNavigationCurrentStateSub.unsubscribe();
+    }
+  }
 }

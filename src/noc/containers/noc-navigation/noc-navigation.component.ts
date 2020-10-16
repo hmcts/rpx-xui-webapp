@@ -11,7 +11,7 @@ import * as fromFeature from '../../store';
 })
 export class NocNavigationComponent implements OnInit {
 
-  @Output() onEvent = new EventEmitter();
+  @Output() eventTrigger = new EventEmitter();
 
   public nocNavigationCurrentState$: Observable<fromFeature.State>;
 
@@ -34,7 +34,7 @@ export class NocNavigationComponent implements OnInit {
   }
 
   public onEventTrigger(event: NocNavigationEvent) {
-    this.onEvent.emit(event);
+    this.eventTrigger.emit(event);
   }
 
 }

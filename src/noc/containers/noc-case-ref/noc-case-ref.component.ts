@@ -3,8 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { NocError } from '../../models';
-import { NocNavigationEvent } from 'src/noc/models/noc-navigation-event.enum';
+import { NocError, NocNavigation, NocNavigationEvent } from '../../models';
 import * as fromFeature from '../../store';
 
 @Component({
@@ -14,7 +13,7 @@ import * as fromFeature from '../../store';
 })
 export class NocCaseRefComponent implements OnChanges {
 
-  @Input() navEvent: NocNavigationEvent = null;
+  @Input() navEvent: NocNavigation;
 
   public nocNavigationCurrentState$: Observable<fromFeature.State>;
   public caseRefConfig: GovUiConfigModel;
@@ -28,24 +27,28 @@ export class NocCaseRefComponent implements OnChanges {
     private store: Store<fromFeature.State>,
     private formBuilder: FormBuilder
   ) {
-    this.caseRefConfig= {
+    this.caseRefConfig = {
       id: 'caseRef',
       name: 'caseRef',
       hint: 'This is a 16-digit number from MyHMCTS, for example 1111-2222-3333-4444',
       classes: 'govuk-input--width-10',
       label: 'Online case reference number',
       type: 'text'
-    }
+    };
 
     this.caseRefForm = formBuilder.group({ caseRef: null});
 
     this.validationErrors$ = this.store.pipe(select(fromFeature.validationErrors));
     this.lastError$ = this.store.pipe(select(fromFeature.lastError));
+    this.navEvent = {
+      event: null,
+      timestamp: null
+    };
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.navEvent) {
-      this.navigationHandler(this.navEvent);
+    if (changes.navEvent && this.navEvent) {
+      this.navigationHandler(this.navEvent.event);
     }
   }
 
@@ -68,7 +71,7 @@ export class NocCaseRefComponent implements OnChanges {
   public mainErrorHandler(error: NocError, id: string) {
     if (error) {
       return [{
-        id: id,
+        id,
         message: error.message
       }];
     }

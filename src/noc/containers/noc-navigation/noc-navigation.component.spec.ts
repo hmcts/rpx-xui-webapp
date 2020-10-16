@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
-import { NocNavigationEvent } from 'src/noc/models/noc-navigation-event.enum';
+import { NocNavigationEvent } from '../../models';
 import * as fromRoot from '../../../app/store/reducers';
 import * as fromNocStore from '../../store';
 import { NocNavigationComponent } from './noc-navigation.component';
@@ -49,7 +49,7 @@ describe('NocNavigationComponent', () => {
 
   describe('onEventTrigger', () => {
     it('should emit', () => {
-      const backSpy = spyOn(component.onEvent, 'emit');
+      const backSpy = spyOn(component.eventTrigger, 'emit');
       component.onEventTrigger(NocNavigationEvent.BACK);
       expect(backSpy).toHaveBeenCalledWith(NocNavigationEvent.BACK);
     });

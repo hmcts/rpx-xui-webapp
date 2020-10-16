@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { caseRefVisibilityStates } from 'src/noc/constants';
+import { caseRefVisibilityStates } from '../../constants';
 import { NocState, NocNavigationEvent, NocNavigation } from '../../models';
 import * as fromFeature from '../../store';
 

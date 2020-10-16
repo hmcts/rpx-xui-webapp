@@ -12,7 +12,7 @@ import * as fromFeature from '../../store';
 })
 export class NocHomeComponent implements OnInit, OnDestroy {
 
-  public nocNavigationCurrentState: fromFeature.State;
+  public nocNavigationCurrentState: NocState;
   private nocNavigationCurrentStateSub: Subscription;
   public nocState = NocState;
   public navEvent: NocNavigation;

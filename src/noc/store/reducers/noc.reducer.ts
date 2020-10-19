@@ -9,7 +9,8 @@ export const initialState: NocStateData = {
     answers: null,
     reason: null,
     affirmationAgreed: false,
-    options: null
+    options: null,
+    validationErrors: null
 };
 
 export function nocReducer(
@@ -32,18 +33,20 @@ export function nocReducer(
                 ...initialState
             };
         }
-        case fromActions.SET_CASE_REFERENCE: {
-
-            return {
-                ...currentState,
-                caseReference: action.payload
-            };
-        }
         case fromActions.SET_CASE_REF_VALIDATION_FAILURE: {
 
             return {
                 ...currentState,
-                state: NocState.CASE_REF_VALIDATION_FAILURE
+                state: NocState.CASE_REF_VALIDATION_FAILURE,
+                validationErrors: {
+                    caseRef: {
+                        messages: ['You must enter an online case reference number that exactly matches the case details']
+                    }
+                },
+                lastError: {
+                    responseCode: 0,
+                    message: 'Enter a valid online case reference'
+                }
             }
         }
         case fromActions.SET_CASE_REF_SUBMISSION_FAILURE: {
@@ -59,7 +62,10 @@ export function nocReducer(
             return {
                 ...currentState,
                 state: NocState.QUESTION,
-                questions: action.payload
+                questions: action.payload.questions,
+                caseReference: action.payload.caseReference,
+                validationErrors: null,
+                lastError: null
             }
         }
         case fromActions.SET_ANSWER_INCOMPLETE: {
@@ -114,6 +120,7 @@ export function nocReducer(
 
 export const getNocActiveState = (nocState) => nocState.state;
 export const getLastError = (nocState) => nocState.lastError;
+export const getValidationErrors = (nocState) => nocState.validationErrors;
 export const getQuestions = (nocState) => nocState.questions;
 export const getAnswers = (nocState) => nocState.answers;
 export const getAffirmationAgreed = (nocState) => nocState.affirmationAgreed;

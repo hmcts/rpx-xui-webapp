@@ -1,0 +1,36 @@
+<div>
+    <xuilib-hmcts-error-summary
+        [errorMessages]="mainErrorHandler((lastError$ | async), 'caseRef')"
+        [header]="'There is a problem'"
+    ></xuilib-hmcts-error-summary>
+
+    <div class="hmcts-page-heading">
+            <div class="hmcts-page-heading__title">
+                <h1 class="govuk-heading-l">Notice of change</h1>
+            </div>
+    </div>
+
+
+    <p>You can use this notice of change (sometimes called a ‘notice of acting’) to acquire the case file from:</p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>a client acting in person</li>
+        <li>a solicitor previously acting on your client’s behalf</li>
+    </ul>
+
+
+            
+    <div
+        class="govuk-form-group"
+        [class.govuk-form-group--error]="(validationErrors$ | async)?.caseRef || null"
+    >
+
+        <form [formGroup]="caseRefForm" (ngSubmit)="onSubmit()" >
+
+            <xuilib-gov-uk-input
+                [config]="caseRefConfig"
+                [group]="caseRefForm"
+                [errorMessage]="(validationErrors$ | async)?.caseRef || null"
+            ></xuilib-gov-uk-input>
+        </form>
+    </div>
+</div>

@@ -10,7 +10,8 @@ import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
 // from containers
 import * as fromContainers from './containers';
 import { nocRouting } from './noc.routes';
-import {effects, reducers} from './store';
+import {reducers, effects} from './store';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
     imports: [
@@ -20,7 +21,9 @@ import {effects, reducers} from './store';
         StoreModule.forFeature('noc', reducers),
         EffectsModule.forFeature(effects),
         nocRouting,
-        SharedModule
+        SharedModule,
+        FormsModule,
+        ReactiveFormsModule
     ],
   declarations: [...fromContainers.containers],
   providers: [{

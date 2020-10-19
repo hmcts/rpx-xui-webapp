@@ -19,13 +19,13 @@ export class NocEffects {
       ofType(nocActions.SET_CASE_REFERENCE),
       map((action: nocActions.SetCaseReference) => action.payload),
       switchMap(payload => {
-        const caseReference = payload.replace(/-/g, '').replace(/ /g, '');
+        const caseReference = payload ? payload.replace(/-/g, '').replace(/ /g, '') : payload = '' ;
 
         if (caseReference.length === 16) {
 
           return this.nocService.getNoCQuestions(payload).pipe(
             map(
-              (response) => new nocActions.SetQuestions(response)),
+              (response) => new nocActions.SetQuestions({questions: response, caseReference})),
               catchError(error => {
                 if (error && error.status && NocEffects.is404Or5xxError(error.status)) {
                   return of(new fromActions.Go({ path: ['/service-down'] }));

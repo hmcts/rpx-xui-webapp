@@ -11,7 +11,7 @@ import { HealthCheckService } from './services/health-check.service';
 import { ExUITitleService } from './services/exui-title.service';
 import { MediaViewerModule } from '@hmcts/media-viewer';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule, GOV_UI_COMPONENTS } from '@hmcts/rpx-xui-common-lib';
 
 /**
  * Shared Module
@@ -28,7 +28,8 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
   exports: [
     ...fromAppComponents.components,
     ...fromAppContainers.containers,
-    ...fromAppDirectives.directives
+    ...fromAppDirectives.directives,
+    ...GOV_UI_COMPONENTS
   ],
   providers: [
     HealthCheckGuard,

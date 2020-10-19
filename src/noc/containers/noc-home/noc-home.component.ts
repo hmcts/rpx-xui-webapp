@@ -1,5 +1,8 @@
-import { Component } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { select, Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+import { caseRefVisibilityStates } from '../../constants';
+import { NocState, NocNavigationEvent, NocNavigation } from '../../models';
 import * as fromFeature from '../../store';
 
 @Component({
@@ -7,22 +10,37 @@ import * as fromFeature from '../../store';
   templateUrl: 'noc-home.component.html',
   styleUrls: ['noc-home.component.scss']
 })
-export class NocHomeComponent {
+export class NocHomeComponent implements OnInit, OnDestroy {
+
+  public nocNavigationCurrentState: NocState;
+  private nocNavigationCurrentStateSub: Subscription;
+  public nocState = NocState;
+  public navEvent: NocNavigation;
+
+  public caseRefVisibilityStates = caseRefVisibilityStates;
 
   constructor(
     private store: Store<fromFeature.State>,
   ) { }
 
-  public back(event) {
-    console.log('back event triggered ', event);
+  ngOnInit() {
+    this.nocNavigationCurrentStateSub = this.store.pipe(select(fromFeature.currentNavigation)).subscribe(state => this.nocNavigationCurrentState = state);
   }
 
-  public continue(event) {
-    console.log('continue event triggered ', event);
+  public onNavEvent(event: NocNavigationEvent) {
+    this.navEvent = {
+      event,
+      timestamp: Date.now()
+    };
   }
 
-  public submit(event) {
-    console.log('submit event triggered ', event);
+  public isComponentVisible(currentNavigationState: NocState, requiredNavigationState: NocState[]): boolean {
+    return requiredNavigationState.includes(currentNavigationState);
   }
 
+  public ngOnDestroy() {
+    if (this.nocNavigationCurrentStateSub) {
+      this.nocNavigationCurrentStateSub.unsubscribe();
+    }
+  }
 }

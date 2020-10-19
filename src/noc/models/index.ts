@@ -6,3 +6,4 @@ export * from './noc-options.interface';
 export * from './noc-question.interface';
 export * from './noc-state-data.interface';
 export * from './noc-state.enum';
+export * from './noc-navigation.interface';

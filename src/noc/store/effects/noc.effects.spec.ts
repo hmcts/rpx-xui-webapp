@@ -7,6 +7,7 @@ import { of, throwError } from 'rxjs';
 import { cold, hot } from 'jasmine-marbles';
 import { CheckAnswers, SetAnswers, SetAnswersIncomplete, SetAnswerSubmissionFailure, SetCaseReference, SetCaseRefSubmissionFailure, SetCaseRefValidationFailure, SetQuestions, SetSubmissionFailure, SetSubmissionSuccessApproved, SetSubmissionSuccessPending, SubmitNoc } from '../actions/noc.action';
 import { NocQuestion , NocError , NocAnswer } from '../../models/';
+import { Go } from '../../../app/store';
 
 describe('Noc Effects', () => {
   let actions$;
@@ -44,7 +45,7 @@ describe('Noc Effects', () => {
       }];
       NocServiceMock.getNoCQuestions.and.returnValue(of(dummy));
       const action = new SetCaseReference('1223-2212-4422-3131');
-      const completion = new SetQuestions(dummy);
+      const completion = new SetQuestions({questions: dummy, caseReference: '1223221244223131'});
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.setCaseReference$).toBeObservable(expected);
@@ -59,6 +60,15 @@ describe('Noc Effects', () => {
         expect(effects.setCaseReference$).toBeObservable(expected);
     });
 
+    it('should return SetCaseRefValidationFailure when payload is null', () => {
+
+        const action = new SetCaseReference(null);
+        const completion = new SetCaseRefValidationFailure();
+        actions$ = hot('-a', { a: action });
+        const expected = cold('-b', { b: completion });
+        expect(effects.setCaseReference$).toBeObservable(expected);
+    });
+
     it('should return SetCaseRefSubmissionFailure', () => {
         const dummyError: NocError = {
           responseCode: 400,
@@ -67,6 +77,19 @@ describe('Noc Effects', () => {
         NocServiceMock.getNoCQuestions.and.returnValue(throwError(dummyError));
         const action = new SetCaseReference('1223-2212-4422-3131');
         const completion = new SetCaseRefSubmissionFailure(dummyError);
+        actions$ = hot('-a', { a: action });
+        const expected = cold('-b', { b: completion });
+        expect(effects.setCaseReference$).toBeObservable(expected);
+    });
+
+    it('should redirect to service down', () => {
+        const dummyError: NocError = {
+          responseCode: 404,
+          message: 'dummy'
+        };
+        NocServiceMock.getNoCQuestions.and.returnValue(throwError({dummyError, status: 404}));
+        const action = new SetCaseReference('1223-2212-4422-3131');
+        const completion = new Go({ path: ['/service-down'] });
         actions$ = hot('-a', { a: action });
         const expected = cold('-b', { b: completion });
         expect(effects.setCaseReference$).toBeObservable(expected);

@@ -2,11 +2,12 @@
 <div class="govuk-width-container">
   <exui-page-wrapper>
     <exui-noc-navigation
-      (back)="back($event)"
-      (continue)="continue($event)"
-      (submit)="submit($event)"
+      (eventTrigger)="onNavEvent($event)"
     >
-      NOC
+      <exui-noc-case-ref
+        *ngIf="isComponentVisible(nocNavigationCurrentState, caseRefVisibilityStates)"
+        [navEvent]="navEvent"
+      ></exui-noc-case-ref>
     </exui-noc-navigation>
   </exui-page-wrapper>
 </div>

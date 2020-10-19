@@ -31,3 +31,8 @@ export const affirmationAgreed = createSelector(
     getNocState,
     fromFeature.getAffirmationAgreed
 );
+
+export const validationErrors = createSelector(
+    getNocState,
+    fromFeature.getValidationErrors
+);

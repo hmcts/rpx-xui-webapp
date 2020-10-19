@@ -19,7 +19,8 @@ export async function getHeaderWithCookies( username, password) {
 }
 
 async function  authenticateAndGetcookies(username, password)  {
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch(getPuppeteerLaunchOptions());
+
     const page = await browser.newPage();
     await page.goto(config.baseUrl);
     await page.waitForSelector('#username', { visible: true });
@@ -34,3 +35,12 @@ async function  authenticateAndGetcookies(username, password)  {
     await browser.close();
     return cookies;
 };
+
+function getPuppeteerLaunchOptions(){
+    const puppeteerOption = { ignoreHTTPSErrors: true, headless: true, args: [] };
+    if (!config.baseUrl.includes('manage-case.')) {
+        puppeteerOption.args.push('--proxy-server=http://proxyout.reform.hmcts.net:8080');
+    }
+
+    return puppeteerOption;
+}

@@ -13,7 +13,7 @@ import {
     HELMET,
     PROTOCOL,
     SERVICES_CCD_COMPONENT_API_PATH,
-    SERVICES_DOCUMENTS_API_PATH, SESSION_SECRET,
+    SERVICES_DOCUMENTS_API_PATH, SERVICES_ICP_API_URL, SESSION_SECRET,
 } from './configuration/references'
 import {router as emAnnoRouter} from './emAnno/routes'
 import * as health from './health'
@@ -87,6 +87,12 @@ applyProxy(app, {
     rewrite: false,
     source: '/print',
     target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH),
+})
+
+applyProxy(app, {
+    rewrite: false,
+    source: '/icp',
+    target: getConfigValue(SERVICES_ICP_API_URL),
 })
 
 // TODO: works when getting annotation-set but not when creating one?

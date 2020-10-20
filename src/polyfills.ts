@@ -21,6 +21,9 @@
 /** IE10 and IE11 requires the following for NgClass support on SVG elements */
 import 'classlist.js';  // Run `npm install --save classlist.js`.
 
+/* IE9, IE10 and IE11 require all of the following polyfills. **/
+import 'isomorphic-fetch';  // Run `yarn add isomorphic-fetch`.
+
 /**
  * Web Animations `@angular/platform-browser/animations`
  * Only required if AnimationBuilder is used within the application and using IE/Edge or Safari.

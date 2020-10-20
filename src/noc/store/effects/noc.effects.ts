@@ -79,10 +79,6 @@ export class NocEffects {
       })
     );
 
-    public static is404Or5xxError(errorStatus: any): boolean {
-      return errorStatus && (errorStatus === 404 || (errorStatus >= 500 && errorStatus < 600));
-    }
-
     public static handleError(error: any): Observable<Action> {
       if (error && error.status && error.status === 400) {
         // TODO: remove this after integrating with CCD API

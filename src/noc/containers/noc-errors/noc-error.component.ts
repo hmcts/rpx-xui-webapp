@@ -33,7 +33,7 @@ export class NocErrorComponent implements OnChanges {
         break;
       }
       case NocNavigationEvent.CONTINUE:
-      break;
+        break;
       default:
         throw new Error('Invalid option');
     }

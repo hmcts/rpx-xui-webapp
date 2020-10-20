@@ -69,19 +69,6 @@ describe('Noc Effects', () => {
         expect(effects.setCaseReference$).toBeObservable(expected);
     });
 
-    it('should return SetCaseRefSubmissionFailure', () => {
-        const dummyError: NocError = {
-          responseCode: 400,
-          message: 'dummy'
-        };
-        NocServiceMock.getNoCQuestions.and.returnValue(throwError(dummyError));
-        const action = new SetCaseReference('1223-2212-4422-3131');
-        const completion = new SetCaseRefSubmissionFailure(dummyError);
-        actions$ = hot('-a', { a: action });
-        const expected = cold('-b', { b: completion });
-        expect(effects.setCaseReference$).toBeObservable(expected);
-    });
-
     it('should redirect to service down', () => {
         const dummyError: NocError = {
           responseCode: 404,

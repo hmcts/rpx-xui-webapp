@@ -1,5 +1,6 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
 import { NocNavigation, NocNavigationEvent } from 'src/noc/models';
 import * as fromFeature from '../../store';
 
@@ -10,6 +11,7 @@ import * as fromFeature from '../../store';
 
 export class NocErrorComponent implements OnChanges {
   @Input() public navEvent: NocNavigation;
+  public lastError$: Observable<any>;
   constructor(private readonly store: Store<fromFeature.State>) {
     this.navEvent = {
       event: null,
@@ -18,6 +20,7 @@ export class NocErrorComponent implements OnChanges {
   }
 
   public ngOnChanges(changes: SimpleChanges) {
+    this.lastError$ = this.store.pipe(select(fromFeature.lastError));
     if (changes.navEvent && this.navEvent) {
       this.navigationHandler(this.navEvent.event);
     }

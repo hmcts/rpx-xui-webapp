@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { of } from 'rxjs';
+import { Action } from '@ngrx/store';
+import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import * as fromActions from '../../../app/store/actions';
 import { NocService } from '../../services';
@@ -10,12 +11,12 @@ import * as nocActions from '../actions/noc.action';
 export class NocEffects {
 
     constructor(
-        private actions$: Actions,
-        private nocService: NocService,
+        private readonly actions$: Actions,
+        private readonly nocService: NocService,
     ) { }
 
     @Effect()
-    setCaseReference$ = this.actions$.pipe(
+    public setCaseReference$ = this.actions$.pipe(
       ofType(nocActions.SET_CASE_REFERENCE),
       map((action: nocActions.SetCaseReference) => action.payload),
       switchMap(payload => {
@@ -27,11 +28,7 @@ export class NocEffects {
             map(
               (response) => new nocActions.SetQuestions({questions: response, caseReference})),
               catchError(error => {
-                if (error && error.status && NocEffects.is404Or5xxError(error.status)) {
-                  return of(new fromActions.Go({ path: ['/service-down'] }));
-                } else {
-                  return of(new nocActions.SetCaseRefSubmissionFailure(error));
-                }
+                return NocEffects.handleError(error);
               })
           );
         } else {
@@ -41,7 +38,7 @@ export class NocEffects {
     );
 
     @Effect()
-    setAnswers$ = this.actions$.pipe(
+    public setAnswers$ = this.actions$.pipe(
       ofType(nocActions.SET_ANSWERS),
       map((action: nocActions.SetAnswers) => action.payload),
       switchMap(payload => {
@@ -62,7 +59,7 @@ export class NocEffects {
     );
 
     @Effect()
-    submitNoc$ = this.actions$.pipe(
+    public submitNoc$ = this.actions$.pipe(
       ofType(nocActions.SUBMIT_NOC),
       map((action: nocActions.SubmitNoc) => action.payload),
       switchMap(payload => {
@@ -82,7 +79,13 @@ export class NocEffects {
       })
     );
 
-    public static is404Or5xxError(errorStatus: any): boolean {
-      return errorStatus && (errorStatus === 404 || (errorStatus >= 500 && errorStatus < 600));
+    public static handleError(error: any): Observable<Action> {
+      if (error && error.status && error.status === 400) {
+        // TODO: remove this after integrating with CCD API
+        const nocError = {responseCode: 101, message: 'error1'};
+        return of(new nocActions.SetCaseRefSubmissionFailure(nocError));
+      } else {
+        return of(new fromActions.Go({ path: ['/service-down'] }));
+      }
     }
 }

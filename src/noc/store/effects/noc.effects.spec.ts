@@ -1,18 +1,17 @@
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
-import { NocService } from '../../services';
-import { NocEffects } from './noc.effects';
-import * as fromNocEffects from './noc.effects';
-import { of, throwError } from 'rxjs';
 import { cold, hot } from 'jasmine-marbles';
-import { CheckAnswers, SetAnswers, SetAnswersIncomplete, SetAnswerSubmissionFailure, SetCaseReference, SetCaseRefSubmissionFailure, SetCaseRefValidationFailure, SetQuestions, SetSubmissionFailure, SetSubmissionSuccessApproved, SetSubmissionSuccessPending, SubmitNoc } from '../actions/noc.action';
-import { NocQuestion , NocError , NocAnswer } from '../../models/';
+import { of, throwError } from 'rxjs';
 import { Go } from '../../../app/store';
+import { NocAnswer , NocError , NocQuestion } from '../../models/';
+import { NocService } from '../../services';
+import { CheckAnswers, SetAnswers, SetAnswersIncomplete, SetAnswerSubmissionFailure, SetCaseReference, SetCaseRefSubmissionFailure, SetCaseRefValidationFailure, SetQuestions, SetSubmissionFailure, SetSubmissionSuccessApproved, SetSubmissionSuccessPending, SubmitNoc } from '../actions/noc.action';
+import { NocEffects } from './noc.effects';
 
 describe('Noc Effects', () => {
   let actions$;
   let effects: NocEffects;
-  const NocServiceMock = jasmine.createSpyObj('NocService', [
+  const nocServiceMock = jasmine.createSpyObj('NocService', [
       'getNoCQuestions',
       'validateNoCAnswers',
       'submitNoCEvent'
@@ -23,9 +22,9 @@ describe('Noc Effects', () => {
           providers: [
               {
                   provide: NocService,
-                  useValue: NocServiceMock,
+                  useValue: nocServiceMock,
               },
-              fromNocEffects.NocEffects,
+              NocEffects,
               provideMockActions(() => actions$)
           ]
       });
@@ -43,7 +42,7 @@ describe('Noc Effects', () => {
         displayContext: null,
         questionLabel: 'dummy'
       }];
-      NocServiceMock.getNoCQuestions.and.returnValue(of(dummy));
+      nocServiceMock.getNoCQuestions.and.returnValue(of(dummy));
       const action = new SetCaseReference('1223-2212-4422-3131');
       const completion = new SetQuestions({questions: dummy, caseReference: '1223221244223131'});
       actions$ = hot('-a', { a: action });
@@ -69,25 +68,12 @@ describe('Noc Effects', () => {
         expect(effects.setCaseReference$).toBeObservable(expected);
     });
 
-    it('should return SetCaseRefSubmissionFailure', () => {
-        const dummyError: NocError = {
-          responseCode: 400,
-          message: 'dummy'
-        };
-        NocServiceMock.getNoCQuestions.and.returnValue(throwError(dummyError));
-        const action = new SetCaseReference('1223-2212-4422-3131');
-        const completion = new SetCaseRefSubmissionFailure(dummyError);
-        actions$ = hot('-a', { a: action });
-        const expected = cold('-b', { b: completion });
-        expect(effects.setCaseReference$).toBeObservable(expected);
-    });
-
     it('should redirect to service down', () => {
         const dummyError: NocError = {
           responseCode: 404,
           message: 'dummy'
         };
-        NocServiceMock.getNoCQuestions.and.returnValue(throwError({dummyError, status: 404}));
+        nocServiceMock.getNoCQuestions.and.returnValue(throwError({dummyError, status: 404}));
         const action = new SetCaseReference('1223-2212-4422-3131');
         const completion = new Go({ path: ['/service-down'] });
         actions$ = hot('-a', { a: action });
@@ -103,7 +89,7 @@ describe('Noc Effects', () => {
         displayOrder: 0,
         answer: 'dummy'
       }];
-      NocServiceMock.validateNoCAnswers.and.returnValue(of(true));
+      nocServiceMock.validateNoCAnswers.and.returnValue(of(true));
       const action = new SetAnswers({
         caseReference: '1234567812345678',
         nocAnswers: dummy
@@ -135,7 +121,7 @@ describe('Noc Effects', () => {
         responseCode: 400,
         message: 'dummy'
       };
-      NocServiceMock.validateNoCAnswers.and.returnValue(throwError(dummyError));
+      nocServiceMock.validateNoCAnswers.and.returnValue(throwError(dummyError));
       const action = new SetAnswers({
         caseReference: '1234567812345678',
         nocAnswers: dummy
@@ -154,7 +140,7 @@ describe('Noc Effects', () => {
         displayOrder: 0,
         answer: 'dummy'
       }];
-      NocServiceMock.submitNoCEvent.and.returnValue(of({
+      nocServiceMock.submitNoCEvent.and.returnValue(of({
         approval_status: 'PENDING'
       }));
       const action = new SubmitNoc({
@@ -173,7 +159,7 @@ describe('Noc Effects', () => {
         displayOrder: 0,
         answer: 'dummy'
       }];
-      NocServiceMock.submitNoCEvent.and.returnValue(of({
+      nocServiceMock.submitNoCEvent.and.returnValue(of({
         approval_status: 'APPROVED'
       }));
       const action = new SubmitNoc({
@@ -195,7 +181,7 @@ describe('Noc Effects', () => {
         responseCode: 400,
         message: 'dummy'
       };
-      NocServiceMock.submitNoCEvent.and.returnValue(throwError(dummyError));
+      nocServiceMock.submitNoCEvent.and.returnValue(throwError(dummyError));
       const action = new SubmitNoc({
         caseReference: '1234567812345678',
         nocAnswers: dummy
@@ -207,30 +193,17 @@ describe('Noc Effects', () => {
     });
   });
 
-  describe('is404Or5xxError', () => {
-    it('should return isError', () => {
-      let isRelaventError = NocEffects.is404Or5xxError(400);
-      expect(isRelaventError).toBeFalsy();
+  describe('handleError', () => {
+    it('should handle 400', () => {
+      const action$ = NocEffects.handleError({status: 400});
+      action$.subscribe(action => expect(action).toEqual(new SetCaseRefSubmissionFailure({responseCode: 101, message: 'error1'})));
+    });
+  });
 
-      isRelaventError = NocEffects.is404Or5xxError(undefined);
-      expect(isRelaventError).toBeFalsy();
-
-
-      isRelaventError = NocEffects.is404Or5xxError(null);
-      expect(isRelaventError).toBeFalsy();
-
-
-      isRelaventError = NocEffects.is404Or5xxError(401);
-      expect(isRelaventError).toBeFalsy();
-
-      isRelaventError = NocEffects.is404Or5xxError(404);
-      expect(isRelaventError).toBeTruthy();
-
-      isRelaventError = NocEffects.is404Or5xxError(501);
-      expect(isRelaventError).toBeTruthy();
-
-      isRelaventError = NocEffects.is404Or5xxError(502);
-      expect(isRelaventError).toBeTruthy();
+  describe('handleError', () => {
+    it('should handle 500', () => {
+      const action$ = NocEffects.handleError({status: 500});
+      action$.subscribe(action => expect(action).toEqual(new Go({ path: ['/service-down'] })));
     });
   });
 

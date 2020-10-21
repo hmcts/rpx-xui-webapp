@@ -1,13 +1,13 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Store } from '@ngrx/store';
-import { of } from 'rxjs';
-import * as fromNocStore from '../../store';
-import * as fromContainers from '../../containers';
-import { NocHomeComponent } from './noc-home.component';
-import { ReactiveFormsModule } from '@angular/forms';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { NocState, NocNavigationEvent } from '../../models';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+import { Store } from '@ngrx/store';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { of } from 'rxjs';
+import * as fromContainers from '../../containers';
+import { NocNavigationEvent, NocState } from '../../models';
+import * as fromNocStore from '../../store';
+import { NocHomeComponent } from './noc-home.component';
 
 describe('NocHomeComponent', () => {
   let fixture: ComponentFixture<NocHomeComponent>;

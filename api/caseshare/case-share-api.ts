@@ -67,8 +67,9 @@ export async function assignCases(req: EnhancedRequest, res: Response) {
   const afterSharedNumber = updatedSharedCases.reduce((acc, aCase) => acc
     + (aCase.pendingShares ? aCase.pendingShares.length : 0), 0)
   // when none of the users are assigned successfully
+  res.statusMessage = JSON.stringify(updatedErrorMessages.length === 0 ? 'All updated successfully' : updatedErrorMessages)
   if (originalSharedNumber > 0 && originalSharedNumber === afterSharedNumber) {
-    return res.status(500).send(updatedErrorMessages)
+    return res.status(500).send(updatedSharedCases)
   }
   // when all/partial are assigned successfully
   return res.status(201).send(updatedSharedCases)
@@ -88,7 +89,7 @@ async function doShareCase(req: EnhancedRequest, shareCases: SharedCase[],
         if (status === 'rejected') {
           // logger._logger.info(result)
           rejectedPayloads.push(JSON.parse(reason.config.data))
-          updatedErrorMessages.push(`request: ${reason.config.data} response: ${reason.data.status} ${reason.data.message}`)
+          updatedErrorMessages.push(`{request: ${reason.config.data}, response: {${reason.data.status} ${reason.data.message}}}`)
         }
       }
     }).then(() => {

@@ -70,6 +70,7 @@ export async function assignCases(req: EnhancedRequest, res: Response) {
   if (originalSharedNumber > 0 && originalSharedNumber === afterSharedNumber) {
     return res.status(500).send(updatedErrorMessages)
   }
+  // when all/partial are assigned successfully
   return res.status(201).send(updatedSharedCases)
 }
 

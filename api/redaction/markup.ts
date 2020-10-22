@@ -15,7 +15,7 @@ export async function getMarkup(req: EnhancedRequest, res: express.Response, nex
   const markupPath: string = url + req.originalUrl
 
   try {
-    const {status, data}: {status: number, data: Redaction[]} = await handleGet(markupPath, req)
+    const {status, data}: {status: number, data: Redaction[]} = await handleGet(markupPath, req, next)
     res.status(status).send(data)
   } catch (error) {
     next(error)
@@ -31,7 +31,7 @@ export async function postMarkup(req: EnhancedRequest, res: express.Response, ne
   const body: Redaction = req.body
 
   try {
-    const {status, data}: {status: number, data: Redaction} = await handlePost(markupPath, body, req)
+    const {status, data}: {status: number, data: Redaction} = await handlePost(markupPath, body, req, next)
     res.status(status).send(data)
   } catch (error) {
     next(error)
@@ -47,7 +47,7 @@ export async function putMarkup(req: EnhancedRequest, res: express.Response, nex
   const body: Redaction = req.body
 
   try {
-    const {status, data}: {status: number, data: Redaction}  = await handlePut(markupPath, body, req)
+    const {status, data}: {status: number, data: Redaction}  = await handlePut(markupPath, body, req, next)
     res.status(status).send(data)
   } catch (error) {
     next(error)
@@ -62,7 +62,7 @@ export async function deleteMarkup(req: EnhancedRequest, res: express.Response, 
   const markupPath: string = url + req.originalUrl.replace('//', '/')
 
   try {
-    const {status, data}: {status: number, data: Redaction} = await handleDelete(markupPath, req)
+    const {status, data}: {status: number, data: Redaction} = await handleDelete(markupPath, req, next)
     res.status(status).send(data)
   } catch (error) {
     next(error)

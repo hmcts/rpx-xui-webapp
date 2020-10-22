@@ -66,8 +66,8 @@ export async function assignCases(req: EnhancedRequest, res: Response) {
     + (aCase.pendingShares ? aCase.pendingShares.length : 0), 0)
   const afterSharedNumber = updatedSharedCases.reduce((acc, aCase) => acc
     + (aCase.pendingShares ? aCase.pendingShares.length : 0), 0)
-  // when none of the users are assigned successfully
   res.statusMessage = JSON.stringify(updatedErrorMessages.length === 0 ? 'All updated successfully' : updatedErrorMessages)
+  // when none of the users are assigned successfully
   if (originalSharedNumber > 0 && originalSharedNumber === afterSharedNumber) {
     return res.status(500).send(updatedSharedCases)
   }

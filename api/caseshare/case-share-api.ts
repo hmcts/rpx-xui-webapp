@@ -5,12 +5,11 @@ import { getConfigValue } from '../configuration'
 import { CASE_SHARE_PERMISSIONS, SERVICES_CCD_CASE_ASSIGNMENT_API_PATH, SERVICES_PRD_API_URL } from '../configuration/references'
 import * as log4jui from '../lib/log4jui'
 import { EnhancedRequest, JUILogger } from '../lib/models'
-import { toCaseAssigneeMappingModel } from './dtos/case-user-dto'
 import { ccdToUserDetails, prdToUserDetails } from './dtos/user-dto'
 import { CaseAssigneeMappingModel } from './models/case-assignee-mapping.model'
 import { CCDRawCaseUserModel } from './models/ccd-raw-case-user.model'
 
-const logger: JUILogger = log4jui.getLogger('real-api')
+const logger: JUILogger = log4jui.getLogger('case-share-api')
 const prdUrl: string = getConfigValue(SERVICES_PRD_API_URL)
 const ccdUrl: string = getConfigValue(SERVICES_CCD_CASE_ASSIGNMENT_API_PATH)
 
@@ -58,9 +57,9 @@ export async function getCases(req: EnhancedRequest, res: Response) {
 export async function assignCases(req: EnhancedRequest, res: Response) {
   const shareCases: SharedCase[] = req.body.sharedCases.slice()
   const updatedSharedCases: SharedCase[] = []
-  const errorMessages: string[] = []
+  const updatedErrorMessages: string[] = []
   // call share case api
-  await doShareCase(req, shareCases, updatedSharedCases, errorMessages)
+  await doShareCase(req, shareCases, updatedSharedCases, updatedErrorMessages)
   // TODO: call unshare case api
   // await doUnshareCase(req, shareCases, updatedSharedCases)
   const originalSharedNumber = shareCases.reduce((acc, aCase) => acc
@@ -69,36 +68,71 @@ export async function assignCases(req: EnhancedRequest, res: Response) {
     + (aCase.pendingShares ? aCase.pendingShares.length : 0), 0)
   // when none of the users are assigned successfully
   if (originalSharedNumber > 0 && originalSharedNumber === afterSharedNumber) {
-    return res.status(500).send(errorMessages)
+    return res.status(500).send(updatedErrorMessages)
   }
   return res.status(201).send(updatedSharedCases)
 }
 
 async function doShareCase(req: EnhancedRequest, shareCases: SharedCase[],
                            updatedSharedCases: SharedCase[],
-                           errorMessage: string[]) {
-  const path = `${ccdUrl}/case-assignments`
+                           updatedErrorMessages: string[]) {
+  return new Promise((resolve, reject) => {
+    const path = `${ccdUrl}/case-assignments`
+    const promises = promiseBatchCallCaseShare(shareCases, path, req)
+    const rejectedPayloads: CaseAssigneeMappingModel[] = []
+    // @ts-ignore
+    Promise.allSettled(promises).then(results => {
+      for (const result of results) {
+        const {status, reason}: { status: string, reason: any } = result
+        if (status === 'rejected') {
+          // logger._logger.info(result)
+          rejectedPayloads.push(JSON.parse(reason.config.data))
+          updatedErrorMessages.push(`request: ${reason.config.data} response: ${reason.data.status} ${reason.data.message}`)
+        }
+      }
+    }).then(() => {
+      handleRejectedPayloads(shareCases, updatedSharedCases, rejectedPayloads)
+      resolve(updatedSharedCases)
+    })
+  })
+}
+
+function promiseBatchCallCaseShare(shareCases: SharedCase[], path: string, req: EnhancedRequest) {
+  const promises = []
   for (const aCase of shareCases) {
     const newPendingShares = aCase.pendingShares ? aCase.pendingShares.slice() : []
     const newSharedWith = aCase.sharedWith ? aCase.sharedWith.slice() : []
     if (aCase.pendingShares) {
       for (const pendingShare of aCase.pendingShares) {
-        const payload = {
+        const caseAssigneeMappingModel: CaseAssigneeMappingModel = {
           'assignee_id': pendingShare.idamId,
           'case_id': aCase.caseId,
           'case_type_id': aCase.caseTypeId,
         }
-        logger.info('Request payload:', JSON.stringify(payload))
-        try {
-          const {status}: { status: number } = await handlePost(path, payload, req)
-          if (status === 201) {
-            newSharedWith.push(pendingShare)
-            newPendingShares.splice(newPendingShares.findIndex(iShare => iShare.idamId === pendingShare.idamId), 1)
-          }
-        } catch (error) {
-          logger.error('Error message:', JSON.stringify(error.data))
-          errorMessage.push(`${error.status} ${error.statusText} ${JSON.stringify(error.data)}`)
-        }
+        logger.info('Request payload:', JSON.stringify(caseAssigneeMappingModel))
+        const promise = handlePost(path, caseAssigneeMappingModel, req)
+        promises.push(promise)
+      }
+    }
+  }
+  return promises
+}
+
+function handleRejectedPayloads(shareCases: SharedCase[], updatedSharedCases: SharedCase[],
+                                rejectedPayloads: CaseAssigneeMappingModel[]) {
+  for (const aCase of shareCases) {
+    const newPendingShares = aCase.pendingShares ? aCase.pendingShares.slice() : []
+    const newSharedWith = aCase.sharedWith ? aCase.sharedWith.slice() : []
+    for (let i = 0; i < newPendingShares.length; i++) {
+      const foundFailed = rejectedPayloads.filter(rejectedPayload => rejectedPayload.case_id === aCase.caseId)
+        .some(foundPayload => foundPayload.assignee_id === newPendingShares[i].idamId)
+      // can't find on rejected payload that mean it's successfully shared
+      if (!foundFailed) {
+        // remove from pending shares
+        newPendingShares.splice(i, 1)
+        // add to shared with
+        newSharedWith.push(newPendingShares[i])
+        i--
       }
     }
     const newSharedCase = {
@@ -112,49 +146,5 @@ async function doShareCase(req: EnhancedRequest, shareCases: SharedCase[],
 
 // @ts-ignore
 async function doUnshareCase(req: EnhancedRequest, shareCases: SharedCase[], updatedSharedCases: SharedCase[]) {
-  const path = `${ccdUrl}/case-unassignments`
-  const payload = {
-    'case_roles': ['caseworker-caa'],
-    'unassignments': aggregateUnassignments(shareCases),
-  }
-  try {
-    const {status}: { status: number } = await handlePost(path, payload, req)
-    if (status === 201) {
-      for (let i = 0, l = updatedSharedCases.length; i < l; i++) {
-        const newPendingUnshares = updatedSharedCases[i].pendingUnshares.slice()
-        const unassignUsers: string[] = payload.unassignments
-          .filter(unAssignment => unAssignment.case_id === updatedSharedCases[i].caseId)
-          .map(user => user.assignee_id)
-        // remove unassignUsers from pendingUnshares
-        for (const unassignUserId of unassignUsers) {
-          const removeIndex = newPendingUnshares.map(item => item.idamId).indexOf(unassignUserId.toString())
-          if (removeIndex > 0) {
-            newPendingUnshares.splice(removeIndex, 1)
-          }
-        }
-        // add unassignUsers to sharedWith
-        const newSharedWith = updatedSharedCases[i].sharedWith.concat(updatedSharedCases[i].pendingUnshares)
-        const newSharedCase = {
-          ...updatedSharedCases[i],
-          pendingUnshares: newPendingUnshares,
-          sharedWith: newSharedWith,
-        }
-        updatedSharedCases.splice(i, 1)
-        updatedSharedCases.push(newSharedCase)
-      }
-    }
-  } catch (error) {
-    logger.error('Error message:', JSON.stringify(error.data))
-  }
-}
-
-function aggregateUnassignments(shareCases: SharedCase[]): CaseAssigneeMappingModel[] {
-  const unAssignments: CaseAssigneeMappingModel[] = []
-  for (const aCase of shareCases) {
-    if (aCase.pendingUnshares) {
-      const aCaseUnassignments = aCase.pendingUnshares.map(user => toCaseAssigneeMappingModel(user, aCase))
-      unAssignments.concat(aCaseUnassignments)
-    }
-  }
-  return unAssignments
+  // TODO: call unshare case api
 }

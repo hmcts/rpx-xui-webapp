@@ -1,41 +1,15 @@
 import { Response } from 'express'
-import { getConfigValue } from '../configuration'
-import { STUB } from '../configuration/references'
 import { EnhancedRequest } from '../lib/models'
-import * as realAPI from './real-api'
-import * as stubAPI from './stub-api'
+import * as caseShareAPI from './case-share-api'
 
-const stub: boolean = getConfigValue(STUB)
-
-/**
- * searchUsers
- * example 1: /api/caseshare/users
- */
 export async function getUsers(req: EnhancedRequest, res: Response) {
-  if (stub) {
-    return stubAPI.getUsers(req, res)
-   } else {
-    // TODO: call actual API if not for stub
-    return realAPI.getUsers(req, res)
-  }
+  return caseShareAPI.getUsers(req, res)
 }
 
-/**
- * searchUsers
- * example: /api/caseshare/cases
- */
 export async function getCases(req: EnhancedRequest, res: Response) {
-  if (stub) {
-    return stubAPI.getCases(req, res)
-  } else {
-    return realAPI.getCases(req, res)
-  }
+  return caseShareAPI.getCases(req, res)
 }
 
 export async function assignCasesToUsers(req: EnhancedRequest, res: Response) {
-  if (stub) {
-    return stubAPI.assignCases(req, res)
-  } else {
-    return realAPI.assignCases(req, res)
-  }
+  return caseShareAPI.assignCases(req, res)
 }

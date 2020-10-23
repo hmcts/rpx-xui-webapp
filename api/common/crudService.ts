@@ -88,11 +88,14 @@ export async function handlePut<T>(path: string, body: T, req: EnhancedRequest):
  * @param req
  * @returns {Promise<AxiosResponse>}
  */
-export async function handleDelete(path: string, req: EnhancedRequest): Promise<AxiosResponse> {
+export async function handleDelete<T>(path: string, body: T, req: EnhancedRequest): Promise<AxiosResponse> {
     try {
         logger.info('handle delete:', path)
         const headers = setHeaders(req)
-        return await http.delete(path, { headers })
+        return await http.delete(path, { 
+            headers,
+            data: body
+        })
     } catch (e) {
         logger.error(e.status, e.statusText, JSON.stringify(e.data))
         throw e

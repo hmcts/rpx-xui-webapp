@@ -64,7 +64,7 @@ describe('crudService', () => {
         it('should make a delete request', async () => {
             spy = sandbox.stub(http, 'delete').resolves(res)
             const crudPath = '/crud/12345'
-            const response = await handleDelete(crudPath, req)
+            const response = await handleDelete(crudPath, {}, req)
             expect(response.data).to.equal('ok')
         })
     })

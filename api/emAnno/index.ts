@@ -62,9 +62,10 @@ export async function putAnnotations(req: EnhancedRequest, res: express.Response
 export async function deleteAnnotations(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
 
   const annotationsPath: string = url + req.originalUrl.replace('/em-anno/', '/api/')
+  const body = req.body
 
   try {
-    const {status, data}: {status: number, data: Annotation} = await handleDelete(annotationsPath, req)
+    const {status, data}: {status: number, data: Annotation} = await handleDelete(annotationsPath, body, req)
     res.status(status).send(data)
   } catch (error) {
     next(error)

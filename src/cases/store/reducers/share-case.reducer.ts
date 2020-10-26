@@ -16,8 +16,8 @@ export let initialSharedCasesState: ShareCasesState = {
   users: []
 };
 
-export function shareCasesReducer(state: ShareCasesState = initialSharedCasesState,
-                                  action: ShareCasesActions.Actions): ShareCasesState {
+export function shareCasesReducer(action: ShareCasesActions.Actions,
+                                  state: ShareCasesState = initialSharedCasesState): ShareCasesState {
   switch (action.type) {
     case ShareCasesActions.NAVIGATE_TO_SHARE_CASES:
       const navigateToShareCases = state.shareCases.slice();

@@ -24,7 +24,7 @@ export class NocEffects {
 
         if (caseReference.length === 16) {
 
-          return this.nocService.getNoCQuestions(payload).pipe(
+          return this.nocService.getNoCQuestions(caseReference).pipe(
             map(
               (response) => new nocActions.SetQuestions({questions: response, caseReference})),
               catchError(error => {

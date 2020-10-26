@@ -21,7 +21,7 @@ data "azurerm_key_vault_secret" "oauth2_secret" {
 }
 
 provider "azurerm" {
-    version = "1.44.0"
+    features {}
 }
 
 data "azurerm_subnet" "core_infra_redis_subnet" {

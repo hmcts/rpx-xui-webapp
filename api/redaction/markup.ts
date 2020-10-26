@@ -62,7 +62,7 @@ export async function deleteMarkup(req: EnhancedRequest, res: express.Response, 
   const markupPath: string = url + req.originalUrl.replace('//', '/')
 
   try {
-    const {status, data}: {status: number, data: Redaction} = await handleDelete(markupPath, req)
+    const {status, data}: {status: number, data: Redaction} = await handleDelete(markupPath, {}, req)
     res.status(status).send(data)
   } catch (error) {
     next(error)

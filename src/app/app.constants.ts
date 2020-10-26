@@ -1,4 +1,5 @@
 import { BadgeColour, ContactDetailsDataModel } from '@hmcts/rpx-xui-common-lib';
+import {Theme} from './containers/app-header/app-header.component';
 
 const FooterData =  {
   heading: 'Help',
@@ -30,8 +31,7 @@ const FooterDataNavigation = {
   ]
 };
 
-// TODO: Should use Type
-const applicationUserThemes =  [
+const applicationUserThemes: Theme[] =  [
   {
     roles: [
       'caseworker-sscs-judge',
@@ -92,8 +92,7 @@ const applicationUserThemes =  [
   },
 ];
 
-// TODO: Should use Type
-const defaultUserTheme = {
+const defaultUserTheme: Theme = {
   roles: ['default'],
   appTitle: {name: 'Manage Cases', url: '/'},
   navigationItems: [
@@ -123,8 +122,7 @@ const defaultUserTheme = {
   logoType: 'default',
 };
 
-// TODO: Should use Type
-const signedOutTheme = {
+const signedOutTheme: Theme = {
   roles: [],
   appTitle: {name: '', url: '/'},
   navigationItems: [],

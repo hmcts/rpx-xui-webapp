@@ -53,7 +53,6 @@ export class AppHeaderSignedOutComponent implements OnInit {
     this.logoType = logoType;
     this.logoIsUsed = logoIsUsed;
 
-    // TODO: showFindCase is not working.
     this.showFindCase = showFindCase;
   }
 }

@@ -38,6 +38,10 @@ const navItems = [{
     text: 'Create case',
     href: '/cases/case-filter',
     active: false
+}, {
+  text: 'Test New Component',
+  href: '/test-newComponent',
+  active: false
 }];
 
 const userNav = {

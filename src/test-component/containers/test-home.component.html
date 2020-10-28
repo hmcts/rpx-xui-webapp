@@ -1,3 +1,26 @@
-<h1>
-    Test
-</h1>
+<div style="margin: 100px;">
+
+
+    <h1 style="margin-bottom: 10px;">
+        Test Harness for Common components
+    </h1>
+
+    <h3>
+      Due date component:
+      <xuilib-due-date [dueDate]="dueDate"
+                        [highUrgencyCutoff]="highUrgencyCutoff" [mediumUrgencyCutoff]="mediumUrgencyCutoff">
+      </xuilib-due-date>
+    </h3>
+    <table>
+      <tr>
+        <td>Due date</td>
+        <td>Red threshold</td>
+        <td>Orange threshold</td>
+      </tr>
+      <tr>
+        <td><input type="text" [value]="dueDateText" (input)="updateDueDate($event.target.value)" /></td>
+        <td><input type="number" [value]="highUrgencyCutoffText" (input)="updateHighUrgencyCutoff($event.target.value)" /></td>
+        <td><input type="number" [value]="mediumUrgencyCutoffText" (input)="updateMediumUrgencyCutoff($event.target.value)" /></td>
+      </tr>
+    </table>
+</div>

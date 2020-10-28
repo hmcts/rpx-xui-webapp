@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { ModuleWithProviders, NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, ModuleWithProviders, NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
 import { MatDialogModule } from '@angular/material';
 import { RouterModule } from '@angular/router';
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { TestHomeComponent } from './containers/test-home.component';
 
@@ -17,6 +18,7 @@ export const casesRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);
 
 @NgModule({
     imports: [
+        ExuiCommonLibModule,
         CommonModule,
         HttpClientModule,
         SharedModule,
@@ -26,7 +28,8 @@ export const casesRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);
     ],
   declarations: [TestHomeComponent],
   providers: [
-  ]
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class TestComponentModule {
 

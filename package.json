@@ -11,7 +11,7 @@
     "start": "node ./dist/rpx-exui/api/server.bundle.js",
     "start:local": "cd api && yarn start",
     "build:node": "cd api && yarn build",
-    "build:prod": "ng build --prod",
+    "build:prod": "ng build --prod --aot --build-optimizer --output-hashing=none --extract-css=true --vendor-chunk=false --named-chunks=false --common-chunk=false",
     "start:node": "cd api && yarn watch",
     "lint:node": "cd api && yarn lint",
     "test:node": "cd api && yarn test",

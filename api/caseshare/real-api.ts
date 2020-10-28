@@ -3,13 +3,11 @@ import { NextFunction, Response } from 'express'
 import { handleGet, handlePostNonNext } from '../common/crudService'
 import { getConfigValue } from '../configuration'
 import { CASE_SHARE_PERMISSIONS, SERVICES_CCD_CASE_ASSIGNMENT_API_PATH, SERVICES_PRD_API_URL } from '../configuration/references'
-import * as log4jui from '../lib/log4jui'
-import { EnhancedRequest, JUILogger } from '../lib/models'
+import { EnhancedRequest } from '../lib/models'
 import { ccdToUserDetails, prdToUserDetails } from './dtos/user-dto'
 import { CaseAssigneeMappingModel } from './models/case-assignee-mapping.model'
 import { CCDRawCaseUserModel } from './models/ccd-raw-case-user.model'
 
-const logger: JUILogger = log4jui.getLogger('real-api')
 const prdUrl: string = getConfigValue(SERVICES_PRD_API_URL)
 const ccdUrl: string = getConfigValue(SERVICES_CCD_CASE_ASSIGNMENT_API_PATH)
 

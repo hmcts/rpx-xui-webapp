@@ -27,10 +27,12 @@ export class TestHomeComponent {
   }
 
   public updateHighUrgencyCutoff(value: string): void {
+    // tslint:disable-next-line: radix
     this.highUrgencyCutoff = parseInt(value);
   }
 
   public updateMediumUrgencyCutoff(value: string): void {
+    // tslint:disable-next-line: radix
     this.mediumUrgencyCutoff = parseInt(value);
   }
 }

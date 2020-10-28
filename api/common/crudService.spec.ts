@@ -1,5 +1,6 @@
 import * as chai from 'chai'
 import { expect } from 'chai'
+import { NextFunction } from 'express'
 import 'mocha'
 import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
@@ -37,7 +38,8 @@ describe('crudService', () => {
         it('should make a get request', async () => {
             spy = sandbox.stub(http, 'get').resolves(res)
             const crudPath = '/crud/12345'
-            const response = await handleGet(crudPath, req)
+            const next = sinon.mock() as NextFunction
+            const response = await handleGet(crudPath, req, next)
             expect(response.data).to.equal('ok')
         })
     })
@@ -46,7 +48,8 @@ describe('crudService', () => {
         it('should make a post request', async () => {
             spy = sandbox.stub(http, 'post').resolves(res)
             const crudPath = '/crud/12345'
-            const response = await handlePost(crudPath, dummyData, req)
+            const next = sinon.mock() as NextFunction
+            const response = await handlePost(crudPath, dummyData, req, next)
             expect(response.data).to.equal('ok')
         })
     })
@@ -55,7 +58,8 @@ describe('crudService', () => {
         it('should make a put request', async () => {
             spy = sandbox.stub(http, 'put').resolves(res)
             const crudPath = '/crud/12345'
-            const response = await handlePut(crudPath, dummyData, req)
+            const next = sinon.mock() as NextFunction
+            const response = await handlePut(crudPath, dummyData, req, next)
             expect(response.data).to.equal('ok')
         })
     })
@@ -64,7 +68,8 @@ describe('crudService', () => {
         it('should make a delete request', async () => {
             spy = sandbox.stub(http, 'delete').resolves(res)
             const crudPath = '/crud/12345'
-            const response = await handleDelete(crudPath, {}, req)
+            const next = sinon.mock() as NextFunction
+            const response = await handleDelete(crudPath, {}, req, next)
             expect(response.data).to.equal('ok')
         })
     })

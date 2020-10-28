@@ -67,7 +67,7 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getCreateOrUpdateDraftsUrl(ctid: string) {
-      return this.getCaseDataUrl() + `/case-types/${ctid}/drafts/`;
+      return this.getCaseDataUrl() + `/internal/case-types/${ctid}/drafts/`;
   }
 
   public getViewOrDeleteDraftsUrl(did: string) {

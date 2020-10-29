@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@^2.64.46-caselist-selected-check":
-  version "2.64.46-caselist-selected-check"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.64.46-caselist-selected-check.tgz#adb1c133c301fc8352a0e323bcd3ef7f32b933b6"
-  integrity sha512-/BTjJNPAPgviGk/FuXLJNLJ7fxc50Og58jKiO+sV8e01V2Uf+oVrS/hy0UDJm6En5NvSHbCEyf5s2BhVAIOVlQ==
+"@hmcts/ccd-case-ui-toolkit@^2.64.41-reinstate-EUI-2575":
+  version "2.64.41-reinstate-EUI-2575"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.64.41-reinstate-EUI-2575.tgz#fd00b7a4f0d82eee7523fe3b9aac3ad0cf671f25"
+  integrity sha512-wbOTpwk35GD6iwigCCdQg0dTNrFeDcN7odTxNY6QDVNcIByldVIUGWTuWelKXcLeczN3pqsaS7WELMoYUmLtkA==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"

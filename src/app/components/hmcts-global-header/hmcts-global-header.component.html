@@ -1,27 +1,48 @@
-<div class="hmcts-header">
+<div class="hmcts-header transparent-background">
     <div class="hmcts-header__container">
-      <ng-container  *ngIf="isBrandedHeader ;else noBrandedHeader">
-        <div class="govuk-header__logo">
-          <a href="#" class="govuk-header__link govuk-header__link--homepage">
-            <span class="govuk-header__logotype">
-              <span class="govuk-header__logotype-text">
-                MyHMCTS
+
+        <ng-container [ngSwitch]="logoType">
+
+          <!-- Logo for Judicial Users -->
+          <ng-container *ngSwitchCase="'judicial'">
+              <div style="position: absolute;" *ngIf="showItems">
+                <a href="#">
+                  <img class="img-responsive" alt="Gov UK Logo" src="/assets/images/govuk-crest-jcm.png" width="83px">
+                </a>
+              </div>
+              <div class="govuk-header__logo">
+              </div>
+              <a class="hmcts-header__link" [routerLink]="headerTitle?.url" [attr.aria-label]="headerTitle?.name" >{{headerTitle?.name}}</a>
+          </ng-container>
+
+          <!-- Logo for Case Manager Users -->
+          <ng-container *ngSwitchCase="'myhmcts'">
+            <div class="govuk-header__logo">
+              <a href="#" class="govuk-header__link govuk-header__link--homepage">
+              <span class="govuk-header__logotype">
+                <span class="govuk-header__logotype-text">
+                  MyHMCTS
+                </span>
               </span>
-            </span>
-          </a>
-        </div>
-        <a class="hmcts-header__link" [routerLink]="headerTitle?.url" [attr.aria-label]="headerTitle?.name" >{{headerTitle?.name}}</a>  
-      </ng-container>
-      <ng-template #noBrandedHeader>
-          <div class="hmcts-header__logo">
+              </a>
+            </div>
+            <a class="hmcts-header__link" [routerLink]="headerTitle?.url" [attr.aria-label]="headerTitle?.name" >{{headerTitle?.name}}</a>
+          </ng-container>
+
+          <!-- Logo for Users (Default) -->
+          <ng-container *ngSwitchDefault>
+            <div class="hmcts-header__logo">
               <a class="hmcts-header__link" [routerLink]="'/'" [attr.aria-label]="headerTitle?.name" >{{headerTitle?.name}}</a>
-          </div>
-      </ng-template>
+            </div>
+          </ng-container>
+
+        </ng-container>
+
       <div class="hmcts-header__content">
           <nav class="hmcts-header__navigation" attr.aria-label="{{navigation.label}}">
               <ul class="hmcts-header__navigation-list" >
                   <li *ngFor="let item of navigation.items; let i = index" class="hmcts-header__navigation-item">
-                      <a class="hmcts-header__navigation-link" (click)="onEmmitEvent(i)" *ngIf="userValue" [routerLink]="">{{item.text}}</a>
+                      <a class="hmcts-header__navigation-link" (click)="onEmitEvent(i)" *ngIf="userValue" [routerLink]="">{{item.text}}</a>
                   </li>
               </ul>
           </nav>
@@ -29,3 +50,21 @@
     </div>
 </div>
 
+<nav *ngIf="showItems" class="hmcts-primary-navigation transparent-background" [attr.aria-label]="label">
+  <div class="hmcts-primary-navigation__container">
+    <div class="govuk-header__logo" *ngIf="logoIsUsed"></div>
+    <div class="hmcts-primary-navigation__nav">
+      <nav class="hmcts-primary-navigation transparent-background" aria-label="Primary navigation">
+        <ul class="hmcts-primary-navigation__list">
+          <li class="hmcts-primary-navigation__item" *ngFor="let item of items" >
+            <a class="hmcts-primary-navigation__link" [attr.aria-current]="item.active ? true: null" [routerLink]="item.href">{{item.text}}</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    <div class="hmcts-primary-navigation__search">
+      <!-- TODO: Should turn on and off -->
+      <a class="hmcts-search-toggle__button transparent-background" [routerLink]="'/cases/case-search'">Find case</a>
+    </div>
+  </div>
+</nav>

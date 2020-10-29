@@ -114,10 +114,10 @@ function handleRejectedPayloads(shareCases: SharedCase[], rejectedPayloads: Case
         .some(foundPayload => foundPayload.assignee_id === newPendingShares[i].idamId)
       // can't find on rejected payload that mean it's successfully shared
       if (!foundFailed) {
-        // remove from pending shares
-        newPendingShares.splice(i, 1)
         // add to shared with
         newSharedWith.push(newPendingShares[i])
+        // remove from pending shares
+        newPendingShares.splice(i, 1)
         i--
       }
     }

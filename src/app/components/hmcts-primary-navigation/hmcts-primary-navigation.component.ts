@@ -8,16 +8,20 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class HmctsPrimaryNavigationComponent {
 
-    @Input() set showNavItems(value) {
+  /**
+   * That showNavItems is used specifically on the Terms and Conditions page, to not show
+   * the Navigation Menu
+   */
+  @Input() set showNavItems(value) {
         this.showItems = value;
     }
 
     @Input() label;
     @Input() items;
-    @Input() isBrandedHeader: boolean;
+    @Input() public logoIsUsed;
     @Input() showFindCase: boolean;
 
-    showItems: boolean;
+    public showItems: boolean;
     constructor(private route: ActivatedRoute) {
 
     }

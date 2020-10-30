@@ -5,7 +5,7 @@ const authCookiesForUsers = {
 };
 
 
-export async function getHeaderWithCookies( username, password) {
+export async function getSessionCookieString( username, password) {
 
     if (!authCookiesForUsers.hasOwnProperty(username)) {
         authCookiesForUsers[username] = await authenticateAndGetcookies(username, password);
@@ -15,7 +15,7 @@ export async function getHeaderWithCookies( username, password) {
         // console.log(cookie);
         cookieString = `${cookieString}${cookie.name}=${cookie.value};`;
     }
-    return { headers: { Cookie: cookieString}};
+    return cookieString;
 }
 
 async function  authenticateAndGetcookies(username, password)  {
@@ -23,13 +23,18 @@ async function  authenticateAndGetcookies(username, password)  {
 
     const page = await browser.newPage();
     await page.goto(config.baseUrl);
-    await page.waitForSelector('#username', { visible: true });
+    try{
+        await page.waitForSelector('#username', { visible: true });
 
-    await page.type('#username', username);
-    await page.type('#password', password);
+        await page.type('#username', username);
+        await page.type('#password', password);
 
-    await page.click('.button');;
-    await page.waitForSelector('.hmcts-primary-navigation', { visible: true });
+        await page.click('.button');;
+        await page.waitForSelector('.hmcts-primary-navigation', { visible: true });
+    } catch (error) {
+        await browser.close();
+        throw error;
+    }
     const cookies = await page.cookies();
 
     await browser.close();

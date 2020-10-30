@@ -1,0 +1,16 @@
+{
+  "diff": true,
+  "extension": ["ts"],
+  "package": "./package.json",
+  "reporter": "mochawesome",
+ "reporterOptions": {
+   "reportDir" : "reports/tests/api_functional/",
+   "reportFilename": "XIO_MC_API_Functional_Tests"
+ },
+ "reportDir": "reports/tests/api_functional/",
+"reportFilename": "XIO_MC_API_Functional_Tests",
+  "slow": 75,
+  "timeout": 30000,
+  "ui": "bdd",
+  "spec" : ["./test/integration/tests/*.spec.ts"]
+}

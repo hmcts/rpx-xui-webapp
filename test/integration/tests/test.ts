@@ -15,9 +15,11 @@ export const mocha = new Mocha({
     enableTimeouts: false
 });
 
-mocha.addFile('test/integration/tests/utils/setup_axios.ts');
-mocha.addFile('test/integration/tests/nodeApp_endpoints.ts');
-mocha.addFile('test/integration/tests/ccd_endpoints.ts');
+// mocha.addFile('test/integration/tests/utils/setup_axios.ts');
+// mocha.addFile('test/integration/tests/nodeApp_endpoints.ts');
+// mocha.addFile('test/integration/tests/ccd_endpoints.ts');
+mocha.addFile('test/integration/tests/temp.ts');
+
 
 mocha.run( (failures) => {
     console.log(failures);

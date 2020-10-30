@@ -2,6 +2,7 @@ import axios, { AxiosInstance } from 'axios';
 import { config } from '../config/config';
 import { getSessionCookieString } from './authUtil';
 
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 const axiosOptions = {};

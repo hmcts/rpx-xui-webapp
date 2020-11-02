@@ -28,7 +28,10 @@ export  const config =  {
                 'GrantOfRepresentation'
             ]
         }
-    ]
+    ],
+    em: {
+        docId: '249cfa9e-622c-4877-a588-e9daa3fe10d8'
+    }
 };
 
 function getBaseUrl() {

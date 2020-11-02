@@ -12,11 +12,44 @@ export async function getSessionCookieString( username, password) {
     }
     let cookieString = '';
     for (const cookie of authCookiesForUsers[username] ) {
-        // console.log(cookie);
+        // console.log(`${cookie.name} : ${cookie.value}`);
         cookieString = `${cookieString}${cookie.name}=${cookie.value};`;
     }
     return cookieString;
 }
+
+export async function getXSRFToken(username, password) {
+    if (!authCookiesForUsers.hasOwnProperty(username)) {
+        authCookiesForUsers[username] = await authenticateAndGetcookies(username, password);
+    }
+    let xsrfToken = '';
+    for (const cookie of authCookiesForUsers[username]) {
+        // console.log(cookie.name);
+        if (cookie.name === 'XSRF-TOKEN') {
+            xsrfToken = cookie.value;
+            break;
+        }
+    }
+    return xsrfToken;
+}
+
+export async function getUserId(username, password) {
+    if (!authCookiesForUsers.hasOwnProperty(username)) {
+        authCookiesForUsers[username] = await authenticateAndGetcookies(username, password);
+    }
+    let userid = '';
+    for (const cookie of authCookiesForUsers[username]) {
+        // console.log(cookie.name);
+        if (cookie.name === '__userid__') {
+            userid = cookie.value;
+            break;
+        }
+    }
+    return userid;
+}
+
+
+
 
 async function  authenticateAndGetcookies(username, password)  {
     const browser = await puppeteer.launch(getPuppeteerLaunchOptions());

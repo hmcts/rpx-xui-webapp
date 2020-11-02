@@ -41,7 +41,7 @@ class Request {
         return { headers: reqheaders};
     }
 
-    private getResponseFromError(error): any{
+    private getResponseFromError(error): any {
         console.log('error occured : ', error);
         if ( error.response) {
             return error.response;
@@ -79,9 +79,13 @@ class Request {
     }
 
 
-    public async delete(reqpath: string, headers: any) {
+    public async delete(reqpath: string, payload, moreHeaders: any) {
         try {
-            return await http.delete(reqpath, this.getRequestConfig(headers));
+            const requestConfig = this.getRequestConfig(moreHeaders);
+            if (payload){
+                requestConfig['data'] = payload;
+            }
+            return await http.delete(reqpath, requestConfig );
         } catch (error) {
             return this.getResponseFromError(error);
 

@@ -9,6 +9,7 @@
   "logging": "debug",
   "now": false,
   "maxLogLine": 80,
+  "uvThreadpoolSize": 128,
   "health": {
     "ccdComponentApi": "https://ccd-api-gateway-web-prod.service.core-compute-prod.internal/health",
     "ccdDataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal/health",

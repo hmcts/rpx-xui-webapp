@@ -18,7 +18,7 @@ nodejs:
     REFORM_SERVICE_NAME: xui-webapp
     NODE_ENV: production
     NODE_CONFIG_ENV: production
-    UV_THREADPOOL_SIZE: 64
+    UV_THREADPOOL_SIZE: 128
     XUI_ENV: preview
     LOGGING: debug
     MAX_LOG_LINE: 80

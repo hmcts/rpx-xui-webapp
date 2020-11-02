@@ -12,7 +12,7 @@ import {
     HELMET,
     PROTOCOL,
     SERVICES_CCD_COMPONENT_API_PATH,
-    SERVICES_DOCUMENTS_API_PATH, SESSION_SECRET,
+    SERVICES_DOCUMENTS_API_PATH, SESSION_SECRET, UV_THREADPOOL_SIZE
 } from './configuration/references'
 import {router as emAnnoRouter} from './emAnno/routes'
 import * as health from './health'
@@ -42,6 +42,8 @@ app.use(cookieParser(getConfigValue(SESSION_SECRET)))
 
 app.use(getXuiNodeMiddleware())
 tunnel.init()
+
+console.log('UV_THREADPOOL_SIZE', getConfigValue(UV_THREADPOOL_SIZE))
 
 /**
  * Add Reform Standard health checks.

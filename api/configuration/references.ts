@@ -20,6 +20,7 @@ export const COOKIE_ROLES = 'cookies.roles'
 
 export const LOGGING = 'logging'
 export const MAX_LOG_LINE = 'maxLogLine'
+export const UV_THREADPOOL_SIZE = 'uvThreadpoolSize'
 export const HEALTH = 'health'
 
 export const SERVICES_CCD_COMPONENT_API_PATH = 'services.ccd.componentApi'

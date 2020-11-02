@@ -12,6 +12,7 @@
     "__format": "json"
   },
   "maxLogLine": "MAX_LOG_LINE",
+  "uvThreadpoolSize": "UV_THREADPOOL_SIZE",
   "health": {
     "ccdComponentApi": "HEALTH_CCD_COMPONENT_API",
     "ccdDataApi": "HEALTH_CCD_DATA_API",

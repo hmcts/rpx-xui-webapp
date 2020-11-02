@@ -51,15 +51,39 @@ describe('Evidence Manager Endpoints', () => {
         };
         const response = await Request.get(`em-anno/annotation-sets/filter?documentId=${config.em.docId}`, null);
         expect(response.status).to.equal(200);
-        expect(response.data).to.have.property('createdBy');
-        expect(response.data).to.have.property('createdByDetails');
-        expect(response.data).to.have.property('lastModifiedByDetails');
-        expect(response.data).to.have.property('createdDate');
-        expect(response.data).to.have.property('lastModifiedBy');
-        expect(response.data).to.have.property('annotations');
-        expect(response.data).to.have.property('documentId');
-        expect(response.data).to.have.property('id');
+        expect(response.data).to.have.all.keys('createdBy', 'createdByDetails', 'lastModifiedByDetails', 'createdDate', 'lastModifiedBy', 'annotations', 'documentId', 'id','lastModifiedDate');
     });
+
+    it('Put document annotation', async () => {
+        await Request.withSession(userName, password);
+        const xsrfToken = await getXSRFToken(userName, password);
+        const headers = {
+            'X-XSRF-TOKEN': xsrfToken
+        };
+        const response = await Request.put(`em-anno/annotations`, await getAnnotationObject() , headers);
+        expect(response.status).to.equal(200);
+    });
+
+    it('Delete document annotation', async () => {
+        await Request.withSession(userName, password);
+        const xsrfToken = await getXSRFToken(userName, password);
+        const headers = {
+            'X-XSRF-TOKEN': xsrfToken
+        };
+        const annotationsRes = await Request.get(`em-anno/annotation-sets/filter?documentId=${config.em.docId}`, null);
+        let annoIdToDelete = '';
+        if (annotationsRes.data.annotations.length <= 1) {
+            const newannoRes = await Request.put(`em-anno/annotations`, await getAnnotationObject(), headers);
+            expect(newannoRes.status).to.equal(200);
+
+            annoIdToDelete = newannoRes.data.annotations[0].id;
+        } else {
+            annoIdToDelete = annotationsRes.data.annotations[0].id;
+        }
+        const response = await Request.delete(`em-anno/annotations/${annoIdToDelete}`, await getAnnotationObject(), headers);
+        expect(response.status).to.equal(200);
+    });
+
 
     it('Get document bookmarks', async () => {
         await Request.withSession(userName, password);
@@ -73,7 +97,7 @@ describe('Evidence Manager Endpoints', () => {
         expect(response.status).to.equal(200);
         expect(response.data).to.be.an('array');
 
-        expect(response.data[0]).to.have.all.keys('id', 'name', 'documentId', 'createdBy', 'pageNumber', 'xCoordinate', 'yCoordinate', 'parent', 'previous'); 
+        expect(response.data[0]).to.have.all.keys('id', 'name', 'documentId', 'createdBy', 'pageNumber', 'xCoordinate', 'yCoordinate', 'parent', 'previous');
         expect(response.data[0].documentId).to.equal(config.em.docId);
     });
 
@@ -116,7 +140,7 @@ describe('Evidence Manager Endpoints', () => {
 
 
 
-    async function getNewBookmarkIdObject(bookmarkName, docId, pagenum, previd){
+    async function getNewBookmarkIdObject(bookmarkName, docId, pagenum, previd) {
         const userId = await getUserId(userName, password);
         return {
             id: uuid(),
@@ -128,7 +152,40 @@ describe('Evidence Manager Endpoints', () => {
             yCoordinate: -0.6666666666665151,
             parent: null,
             previous: previd
+        };
+    }
+
+    async function getAnnotationObject() {
+        const annoId = uuid();
+        const rectangleId = uuid();
+
+        const response = await Request.get(`em-anno/annotation-sets/filter?documentId=${config.em.docId}`, null);
+
+        let annoSetid = '';
+        if (response.status === 200) {
+            annoSetid = response.data.id;
+        } else {
+            annoSetid = uuid();
         }
+
+        return {
+            id: annoId,
+            color: 'FFFF00',
+            comments: [],
+            page: 1,
+            rectangles: [
+                {
+                    id: rectangleId,
+                    x: 418.564208984375,
+                    y: 761.390625,
+                    width: 212.24658203125,
+                    height: 18
+                }
+            ],
+            type: 'highlight',
+            documentId: config.em.docId,
+            annotationSetId: annoSetid
+        };
     }
 
 });

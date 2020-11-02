@@ -2,6 +2,7 @@ import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
 import * as helmet from 'helmet'
+import * as OS from 'os'
 // import {router as termsAndCRoutes} from './termsAndConditions/routes'
 // import {router as userTandCRoutes} from './userTermsAndConditions/routes'
 import {getXuiNodeMiddleware} from './auth'
@@ -34,6 +35,8 @@ export const app = express()
 if (showFeature(FEATURE_HELMET_ENABLED)) {
     app.use(helmet(getConfigValue(HELMET)))
 }
+
+console.log('logical count of CPUs - ', OS.cpus().length)
 
 // app.use(errorStack)
 app.use(bodyParser.json({limit: '5mb'}))

@@ -43,7 +43,8 @@ app.use(cookieParser(getConfigValue(SESSION_SECRET)))
 app.use(getXuiNodeMiddleware())
 tunnel.init()
 
-console.log('UV_THREADPOOL_SIZE', getConfigValue(UV_THREADPOOL_SIZE))
+console.log('UV_THREADPOOL_SIZE config', getConfigValue(UV_THREADPOOL_SIZE))
+console.log('UV_THREADPOOL_SIZE', process.env.UV_THREADPOOL_SIZE)
 
 /**
  * Add Reform Standard health checks.

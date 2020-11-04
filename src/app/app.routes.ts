@@ -23,7 +23,7 @@ export const ROUTES: Routes = [
   {
     path: 'tasks',
     canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: '../workAllocation/workallocation.module#WorkAllocationModule'
+    loadChildren: '../work-allocation/work-allocation.module#WorkAllocationModule'
   },
   // TODO: remove redundant redirections
   { path: 'case/:jurisdiction/:case-type/:cid', redirectTo: 'cases/case-details/:cid', pathMatch: 'full' },

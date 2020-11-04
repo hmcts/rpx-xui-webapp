@@ -41,7 +41,7 @@
   "protocol": "https",
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",
-  "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS",
+  "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT",
   "loginRoleMatcher": "caseworker",
   "log4JConfig": {
     "appenders": {

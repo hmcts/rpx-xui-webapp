@@ -9,5 +9,5 @@ export default interface Task {
   location: string;
   taskName: string;
   dueDate: Date;
-  actions: TaskAction[]
-};
+  actions: TaskAction[];
+}

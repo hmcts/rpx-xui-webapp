@@ -6,7 +6,7 @@ import { MatDialogModule } from '@angular/material';
 import {SharedModule} from '../app/shared/shared.module';
 // from containers
 import * as fromContainers from './containers';
-import { casesRouting } from './work-allocation-feature.routes';
+import { workAllocationRouting } from './work-allocation-feature.routes';
 
 @NgModule({
     imports: [
@@ -15,7 +15,7 @@ import { casesRouting } from './work-allocation-feature.routes';
         SharedModule,
         HttpModule,
         MatDialogModule,
-        casesRouting
+        workAllocationRouting
     ],
   declarations: [...fromContainers.containers],
   providers: [

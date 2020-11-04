@@ -23,4 +23,4 @@ export const ROUTES: Routes = [
     }
    ];
 
-export const casesRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);
+export const workAllocationRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);

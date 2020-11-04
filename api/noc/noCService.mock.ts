@@ -106,7 +106,7 @@ export const init = () => {
 
     // simulate some error if needed
     // mock.onGet(url).networkErrorOnce()
-    mock.onGet(getNoCQuestionsUrl).timeoutOnce()
+    // mock.onGet(getNoCQuestionsUrl).timeoutOnce()
 
     mock.onGet(getNoCQuestionsUrl).reply(() => {
 

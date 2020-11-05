@@ -1,1 +1,92 @@
 <h1>Task List</h1>
+<div>hello</div>
+<!-- Using the Angular Component Development Kit Table Module, and not Angular Material -->
+<table cdk-table [dataSource]="dataSource$">
+  <tr cdk-header-row *cdkHeaderRowDef="columns"></tr>
+  <!-- loop over every item in our datasource array -->
+  <tr cdk-row *cdkRowDef="let row; columns: columns"></tr>
+
+  <!-- Name column -->
+  <ng-container cdkColumnDef="name">
+    <th cdk-header-cell *cdkHeaderCellDef>Hero name</th>
+    <td cdk-cell *cdkCellDef="let row">{{row.name}}</td>
+  </ng-container>
+
+  <!-- Types column -->
+  <ng-container cdkColumnDef="types">
+    <th cdk-header-cell *cdkHeaderCellDef>Types</th>
+    <td cdk-cell *cdkCellDef="let row">{{row.types}}</td>
+  </ng-container>
+
+  <!-- Attack column -->
+  <ng-container cdkColumnDef="attack">
+    <th cdk-header-cell *cdkHeaderCellDef>Attack</th>
+    <td cdk-cell *cdkCellDef="let row">{{row.attack}}</td>
+  </ng-container>
+
+  <!-- Defence column -->
+  <ng-container cdkColumnDef="defence">
+    <th cdk-header-cell *cdkHeaderCellDef>Defence</th>
+    <td cdk-cell *cdkCellDef="let row">{{row.defence}}</td>
+  </ng-container>
+
+  <!-- Speed column -->
+  <ng-container cdkColumnDef="speed">
+    <th cdk-header-cell *cdkHeaderCellDef>Speed</th>
+    <td cdk-cell *cdkCellDef="let row">{{row.speed}}</td>
+  </ng-container>
+
+  <ng-container cdkColumnDef="healing">
+    <th cdk-header-cell *cdkHeaderCellDef>Healing</th>
+    <td cdk-cell *cdkCellDef="let row">{{row.healing}}</td>
+  </ng-container>
+
+  <ng-container cdkColumnDef="recovery">
+    <th cdk-header-cell *cdkHeaderCellDef>Recovery</th>
+    <td cdk-cell *cdkCellDef="let row">{{row.recovery}}</td>
+  </ng-container>
+
+  <ng-container cdkColumnDef="health">
+    <th cdk-header-cell *cdkHeaderCellDef>Health</th>
+    <td cdk-cell *cdkCellDef="let row">{{row.health}}</td>
+  </ng-container>
+
+  <ng-container cdkColumnDef="levelUp">
+    <th cdk-header-cell *cdkHeaderCellDef></th>
+    <td cdk-cell *cdkCellDef="let row">{{row.health}}</td>
+  </ng-container>
+</table>
+<!--<table cdk-table [dataSource]="dataSource">-->
+  <!--<ng-container cdkColumnDef="username">-->
+    <!--<th cdk-header-cell *cdkHeaderCellDef> User name </th>-->
+    <!--&lt;!&ndash;<td cdk-cell *cdkCellDef="let row"> sdsdsds </td>&ndash;&gt;-->
+    <!--<td cdk-footer-cell *cdkFooterCellDef> User name </td>-->
+  <!--</ng-container>-->
+  <!-- Position Column -->
+  <!--<ng-container cdkColumnDef="position">-->
+    <!--<th cdk-header-cell *cdkHeaderCellDef> No. </th>-->
+    <!--<td cdk-cell *cdkCellDef="let element"> {{element.position}} </td>-->
+  <!--</ng-container>-->
+
+  <!--&lt;!&ndash; Name Column &ndash;&gt;-->
+  <!--<ng-container cdkColumnDef="name">-->
+    <!--<th cdk-header-cell *cdkHeaderCellDef> Name </th>-->
+    <!--<td cdk-cell *cdkCellDef="let element"> {{element.name}} </td>-->
+  <!--</ng-container>-->
+
+  <!--&lt;!&ndash; Weight Column &ndash;&gt;-->
+  <!--<ng-container cdkColumnDef="weight">-->
+    <!--<th cdk-header-cell *cdkHeaderCellDef> Weight </th>-->
+    <!--<td cdk-cell *cdkCellDef="let element"> {{element.weight}} </td>-->
+  <!--</ng-container>-->
+
+  <!--&lt;!&ndash; Symbol Column &ndash;&gt;-->
+  <!--<ng-container cdkColumnDef="symbol">-->
+    <!--<th cdk-header-cell *cdkHeaderCellDef> Symbol </th>-->
+    <!--<td cdk-cell *cdkCellDef="let element"> {{element.symbol}} </td>-->
+  <!--</ng-container>-->
+
+  <!--<tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>-->
+  <!--<tr cdk-row *cdkRowDef="let row; columns: displayedColumns;"></tr>-->
+<!--</table>-->
+<div>End table</div>

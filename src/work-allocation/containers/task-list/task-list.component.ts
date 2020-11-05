@@ -1,53 +1,125 @@
-import {DataSource} from '@angular/cdk/collections';
 import {Component, OnInit} from '@angular/core';
 import {BehaviorSubject, Observable, of} from 'rxjs';
 import { map } from 'rxjs/operators';
-// export interface PeriodicElement {
-//   name: string;
-//   position: number;
-//   weight: number;
-//   symbol: string;
-// }
-//
-// const ELEMENT_DATA: PeriodicElement[] = [
-//   {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
-//   {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
-//   {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},
-//   {position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be'},
-//   {position: 5, name: 'Boron', weight: 10.811, symbol: 'B'},
-//   {position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C'},
-//   {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N'},
-//   {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O'},
-//   {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
-//   {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
-// ];
+import { Task, TaskFieldConfig } from '../../models/tasks';
+import {TaskFieldType, TaskView} from '../../enums';
+// import { TaskFieldType, TaskView } from '../../enums';
 
 const columnNames = [
-  'name',
-  'types',
-  'attack',
-  'defence',
-  'speed',
-  'healing',
-  'recovery',
-  'health',
-  'levelUp',
+  'id',
+  'caseReference',
+  'caseName',
+  'caseCategory',
+  'location',
+  'taskName',
+  'dueDate',
+  'actions',
 ];
 
-const heros = {
-  'Hammerer Maccabeus': {
-    name: 'Hammerer Maccabeus',
-    types: 'Holy/ Fire',
-    attack: 1,
-    defence: 1,
-    speed: 1,
-    healing: 1,
-    recovery: 1,
-    health: 5,
+/**
+ * Fields is the property of the TaskFieldConfig[], containing the configuration
+ * for the fields as returned by the API.
+ *
+ * TODO: Fields should be an Input into this component.
+ * TODO: I believe that the parent component will take in TaskServiceConfig,
+ * and this component will receive TaskFieldConfig[], to set the fields.
+ *
+ * I believe that sorting will handled by the parent component, via the
+ * WP api as this component should only be responsible for the displaying
+ * of the task list.
+ *
+ * TODO: Having a strange issue here where the compiler can't resolve,
+ * TaskFieldType.STRING & TaskView.TASK_LIST
+ */
+const fields: TaskFieldConfig[] = [
+  {
+    name: 'id',
+    type: 'id' as TaskFieldType.STRING,
+    columnLabel: 'Id',
+    views: 0x01,
+  },
+  {
+    name: 'caseReference',
+    type: 'caseReference' as TaskFieldType.STRING,
+    columnLabel: 'Case reference',
+    views: 0x01,
+  },
+  {
+    name: 'caseName',
+    type: 'caseName' as TaskFieldType.STRING,
+    columnLabel: 'Case name',
+    views: 0x01,
+  },
+  {
+    name: 'caseCategory',
+    type: 'caseCategory' as TaskFieldType.STRING,
+    columnLabel: 'Case category',
+    views: 0x01,
+  },
+  {
+    name: 'location',
+    type: 'location' as TaskFieldType.STRING,
+    columnLabel: 'Location',
+    views: 0x01,
+  },
+  {
+    name: 'taskName',
+    type: 'taskName' as TaskFieldType.STRING,
+    columnLabel: 'Task',
+    views: 0x01,
+  },
+  {
+    name: 'dueDate',
+    type: 'dueDate' as TaskFieldType.STRING,
+    columnLabel: 'Due Date',
+    views: 0x01,
+  },
+  {
+    name: 'actions',
+    type: 'actions' as TaskFieldType.STRING,
+    columnLabel: 'Actions',
+    views: 0x01,
   }
-};
+]
 
-const nums = of(1, 2, 3);
+/**
+ * TODO: Should take in tasks from outside datasource.
+ * TODO: Should be passed into this Task List Component
+ *
+ * Not part of EUI-2844
+ */
+const tasks: Task[] = [
+  {
+    id: '1549476532065586',
+    caseReference: '1549 4765 3206 5586',
+    caseName: 'Kili Muso',
+    caseCategory: 'Protection',
+    location: 'Taylor House',
+    taskName: 'Review respondent evidence',
+    dueDate: new Date(628021800000),
+    actions: [
+      {
+        id: 'actionId',
+        title: 'actionTitle',
+      }
+    ]
+  },
+  {
+    id: '1549476532065586',
+    caseReference: '1549 4765 3206 5586',
+    caseName: 'Mankai Lit',
+    caseCategory: 'Revocation',
+    location: 'Taylor House',
+    taskName: 'Review appellant case',
+    dueDate: new Date(628021800000),
+    actions: [
+      {
+        id: 'actionId',
+        title: 'actionTitle',
+      }
+    ]
+  }
+];
 
 @Component({
     selector: 'exui-task-list',
@@ -56,66 +128,42 @@ const nums = of(1, 2, 3);
   })
   export class TaskListComponent implements OnInit {
 
-    // So this should be a component that uses the CDK Table Module
-    // displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
-    // dataSource = new ExampleDataSource()
-
     // You can use this as a single source of truth that gets mapped to other obserables.
-    private heros$ = new BehaviorSubject(heros);
+    // Use a single data source using BehavoirSubject
+    private tasks$ = new BehaviorSubject(tasks);
 
-    // public Obserable for table
-    dataSource$: Observable<any[]>;
+    // TODO: SHould we use a BehaviorSubject for fields?
+
+    /**
+     * The datasource is an Observable of data to be displayed, as per LLD.
+     */
+    public dataSource$: Observable<Task[]>;
 
     // array of column names
-    columns = columnNames;
+    public displayedColumns = columnNames;
+
+    public fields = fields;
 
     constructor() {
-      console.log('hello');
     }
 
-    ngOnInit() {
-      console.log('at ng on init');
-      this.dataSource$ = this.heros$.pipe(map(v => Object.values(v)));
-
-      const squareValues = map((val: number) => val * val);
-      const squaredNums = squareValues(nums);
-
-      squaredNums.subscribe(x => console.log(x));
+    public ngOnInit() {
+      // TODO: Consider renaming dataSource$
+      this.dataSource$ = this.tasks$;
     }
 
-    levelUp(heroName: string) {
-      const updatedHero = this.heros$.value[heroName];
-
-      updatedHero.attack++;
-      updatedHero.defence++;
-      updatedHero.speed++;
-      updatedHero.healing++;
-      updatedHero.recovery++;
-      updatedHero.health++;
-
-      const newHeroData = { ...this.heros$.value, [heroName]: updatedHero };
-
-      this.heros$.next(newHeroData);
+    public levelUp(heroName: string) {
+      // const updatedHero = this.heros$.value[heroName];
+      //
+      // updatedHero.attack++;
+      // updatedHero.defence++;
+      // updatedHero.speed++;
+      // updatedHero.healing++;
+      // updatedHero.recovery++;
+      // updatedHero.health++;
+      //
+      // const newHeroData = { ...this.heros$.value, [heroName]: updatedHero };
+      //
+      // this.heros$.next(newHeroData);
     }
   }
-
-  /**
-   * Data source to provide what data should be rendered in the table. Note that the data source
-   * can retrieve its data in any way. In this case, the data source is provided a reference
-   * to a common data base, ExampleDatabase. It is not the data source's responsibility to manage
-   * the underlying data. Instead, it only needs to take the data and send the table exactly what
-   * should be rendered.
-   *
-   * - Yes
-   */
-  // export class ExampleDataSource extends DataSource<PeriodicElement> {
-  //   /** Stream of data that is provided to the table. */
-  //   data = new BehaviorSubject<PeriodicElement[]>(ELEMENT_DATA);
-  //
-  //   /** Connect function called by the table to retrieve one stream containing the data to render. */
-  //   connect(): Observable<PeriodicElement[]> {
-  //     return this.data;
-  //   }
-  //
-  //   disconnect() {}
-  // }

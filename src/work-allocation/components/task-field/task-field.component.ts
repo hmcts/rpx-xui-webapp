@@ -9,7 +9,7 @@ import { Task, TaskFieldConfig } from './../../models/tasks';
   styleUrls: ['task-field.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class TaskFieldComponent { //implements OnChanges {
+export class TaskFieldComponent {
   /**
    * The configuration for this particular field, which is needed
    * to obtain the correct value from the task and determine how it

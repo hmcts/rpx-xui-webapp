@@ -11,6 +11,7 @@ import { Task, TaskAction, TaskFieldConfig } from '../../models/tasks';
 })
 export class TaskFieldContainerComponent {
 
+  public imageRow: object = { height: '30' };
   private taskAction: TaskAction = {
     id: 'Action ID',
     title: 'Action title'
@@ -98,7 +99,7 @@ export class TaskFieldContainerComponent {
         const d: Date = new Date(parsedDate);
         this.task[config.name] = d;
         this.task[`${config.name}Text`] = d.toLocaleDateString();
-      } 
+      }
     }
   }
 
@@ -112,7 +113,7 @@ export class TaskFieldContainerComponent {
           const d: Date = new Date(parsedDate);
           this.task[config.name] = d;
           this.task[`${config.name}Text`] = `${d.toLocaleDateString()} ${d.toLocaleTimeString()}`;
-        } 
+        }
       }
     }
   }
@@ -125,6 +126,4 @@ export class TaskFieldContainerComponent {
     }
     return undefined;
   }
-
-  public imageRow: object = { height: '30' };
 }

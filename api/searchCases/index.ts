@@ -32,7 +32,7 @@ export async function getCases(req: express.Request, res: express.Response, next
 export function prepareElasticQuery(queryParams: {page?}, body: {size?, sort?}): {} {
     const metaCriteria = queryParams
     let caseCriteria = {}
-    let native_es_query: {} = {}
+    let nativeEsQuery: {} = {}
     const matchList: any[] = []
     const size = body.size || 10
     const sort = body.sort ? prepareSort(body.sort) : []
@@ -93,17 +93,17 @@ export function prepareElasticQuery(queryParams: {page?}, body: {size?, sort?}):
         }
     }
 
-    native_es_query = {
+    nativeEsQuery = {
         query: {
             bool: {
                 must: matchList,
-            }
+            },
         },
     }
 
     return {
         from,
-        native_es_query,
+        native_es_query: nativeEsQuery,
         size,
         sort,
         supplementary_data: ['*'],

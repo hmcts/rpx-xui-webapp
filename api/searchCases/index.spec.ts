@@ -71,9 +71,17 @@ describe('Search Cases Elastic Search', () => {
             total: 0
         }
 
+        const expectedParams = {
+          from: 0,
+          native_es_query: {query: { bool: { must: [] } }},
+          size: 10,
+          sort: [],
+          supplementary_data: ['*'],
+        }
+
         spy = sandbox.stub(http, 'post').resolves(result2)
         await searchCases.getCases(req, res, next)
-        expect(spy).to.have.been.calledWith(url, {from: 0, query: { bool: { must: [] } }, size: 10, sort: []})
+        expect(spy).to.have.been.calledWith(url, expectedParams)
         expect(res.send).to.have.been.calledWith(expected)
     })
 
@@ -115,34 +123,37 @@ describe('Search Cases Elastic Search', () => {
 
         const expected = {
             from: 25,
-            query: {
-                bool: {
-                    must: [
-                        {
-                            match: {
-                                param: {
-                                    operator: 'and',
-                                    query: 'dummy'
-                                }
-                            }
-                        },
-                        {
-                            match: {
-                                'data.param2': {
-                                    operator: 'and',
-                                    query: 'dummy2'
-                                }
-                            }
-                        }
-                    ]
-                }
+            native_es_query: {
+              query: {
+                  bool: {
+                      must: [
+                          {
+                              match: {
+                                  param: {
+                                      operator: 'and',
+                                      query: 'dummy'
+                                  }
+                              }
+                          },
+                          {
+                              match: {
+                                  'data.param2': {
+                                      operator: 'and',
+                                      query: 'dummy2'
+                                  }
+                              }
+                          }
+                      ]
+                  }
+              }
             },
             size: 25,
             sort: [
               {
                 'data.dummy.keyword': 'ASC'
               }
-            ]
+            ],
+            supplementary_data: ['*']
         }
 
         expect(searchCases.prepareElasticQuery(queryParams, body)).to.deep.equal(expected)
@@ -165,34 +176,37 @@ describe('Search Cases Elastic Search', () => {
 
       const expected = {
           from: 25,
-          query: {
-              bool: {
-                  must: [
-                      {
-                          match: {
-                              param: {
-                                  operator: 'and',
-                                  query: 'dummy'
-                              }
-                          }
-                      },
-                      {
-                          match: {
-                              'data.param2': {
-                                  operator: 'and',
-                                  query: 'dummy2'
-                              }
-                          }
-                      }
-                  ]
-              }
+          native_es_query: {
+            query: {
+                bool: {
+                    must: [
+                        {
+                            match: {
+                                param: {
+                                    operator: 'and',
+                                    query: 'dummy'
+                                }
+                            }
+                        },
+                        {
+                            match: {
+                                'data.param2': {
+                                    operator: 'and',
+                                    query: 'dummy2'
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
           },
           size: 25,
           sort: [
             {
               'reference.keyword': 'DESC'
             }
-          ]
+          ],
+          supplementary_data: ['*']
       }
 
       expect(searchCases.prepareElasticQuery(queryParams, body)).to.deep.equal(expected)

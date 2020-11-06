@@ -1,12 +1,13 @@
-import { Task, TaskConfig } from '.';
+import { Task } from '.';
+import JsonConfig from '../json-config';
 
 describe('WorkAllocation', () => {
 
-  describe('TaskConfig', () => {
+  describe('JsonConfig', () => {
 
     it('should correctly coerce a partial JSON object to a Task', () => {
       const JSON: object = { id: 'Bob' };
-      const TASK: Task = TaskConfig.fromJson(JSON);
+      const TASK: Task = JsonConfig.fromJson(JSON);
       expect(TASK).toBeDefined();
       expect(TASK.id).toEqual('Bob');
       expect(TASK.caseName).toBeUndefined();
@@ -19,7 +20,7 @@ describe('WorkAllocation', () => {
           { id: 'Action ID', title: 'Action title' }
         ]
       };
-      const TASK: Task = TaskConfig.fromJson(JSON);
+      const TASK: Task = JsonConfig.fromJson(JSON);
       expect(TASK).toBeDefined();
       expect(TASK.id).toEqual('Bob');
       expect(TASK.caseName).toBeUndefined();
@@ -30,18 +31,18 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle coercion of a null JSON object', () => {
-      const TASK: Task = TaskConfig.fromJson(null);
+      const TASK: Task = JsonConfig.fromJson(null);
       expect(TASK).toBeNull();
     });
 
     it('should handle coercion of an undefined JSON object', () => {
-      const TASK: Task = TaskConfig.fromJson(undefined);
+      const TASK: Task = JsonConfig.fromJson(undefined);
       expect(TASK).toBeUndefined();
     });
 
     it('should handle coercion of an empty JSON object', () => {
       const JSON: object = {};
-      const TASK: Task = TaskConfig.fromJson(JSON);
+      const TASK: Task = JsonConfig.fromJson(JSON);
       expect(TASK).toBeDefined();
       expect(Object.keys.length).toEqual(1);
     });
@@ -51,7 +52,7 @@ describe('WorkAllocation', () => {
         id: 'Bob',
         'surprise-property': 'Surprise value'
       };
-      const TASK: Task = TaskConfig.fromJson(JSON);
+      const TASK: Task = JsonConfig.fromJson(JSON);
       expect(TASK).toBeDefined();
       expect(TASK.id).toEqual('Bob');
       expect(TASK.caseName).toBeUndefined();

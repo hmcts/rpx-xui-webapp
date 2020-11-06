@@ -72,10 +72,12 @@ describe('Search Cases Elastic Search', () => {
         }
 
         const expectedParams = {
-          from: 0,
-          native_es_query: {query: { bool: { must: [] } }},
-          size: 10,
-          sort: [],
+          native_es_query: {
+            from: 0,
+            query: { bool: { must: [] } },
+            size: 10,
+            sort: [],
+          },
           supplementary_data: ['*'],
         }
 
@@ -122,8 +124,8 @@ describe('Search Cases Elastic Search', () => {
         }
 
         const expected = {
-            from: 25,
             native_es_query: {
+              from: 25,
               query: {
                   bool: {
                       must: [
@@ -145,14 +147,14 @@ describe('Search Cases Elastic Search', () => {
                           }
                       ]
                   }
-              }
+              },
+              size: 25,
+              sort: [
+                {
+                  'data.dummy.keyword': 'ASC'
+                }
+              ],
             },
-            size: 25,
-            sort: [
-              {
-                'data.dummy.keyword': 'ASC'
-              }
-            ],
             supplementary_data: ['*']
         }
 
@@ -175,8 +177,8 @@ describe('Search Cases Elastic Search', () => {
       }
 
       const expected = {
-          from: 25,
           native_es_query: {
+            from: 25,
             query: {
                 bool: {
                     must: [
@@ -198,14 +200,14 @@ describe('Search Cases Elastic Search', () => {
                         }
                     ]
                 }
-            }
+            },
+            size: 25,
+            sort: [
+              {
+                'reference.keyword': 'DESC'
+              }
+            ],
           },
-          size: 25,
-          sort: [
-            {
-              'reference.keyword': 'DESC'
-            }
-          ],
           supplementary_data: ['*']
       }
 

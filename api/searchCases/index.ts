@@ -94,18 +94,18 @@ export function prepareElasticQuery(queryParams: {page?}, body: {size?, sort?}):
     }
 
     nativeEsQuery = {
+        from,
         query: {
             bool: {
                 must: matchList,
             },
         },
+        size,
+        sort,
     }
 
     return {
-        from,
         native_es_query: nativeEsQuery,
-        size,
-        sort,
         supplementary_data: ['*'],
     }
 }

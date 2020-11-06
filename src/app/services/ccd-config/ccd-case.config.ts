@@ -21,6 +21,9 @@ export class AppConfig extends AbstractAppConfig {
     this.config =  this.appConfigService.getEditorConfiguration() || {};
   }
 
+  public getCacheTimeOut(): number { return 0; }
+  public getPrdUrl(): string { return ''; }
+
   public load(): Promise<void> {
     return Promise.resolve();
   }

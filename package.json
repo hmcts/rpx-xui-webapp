@@ -46,7 +46,8 @@
     "sonar-scan": "node_modules/sonar-scanner/bin/sonar-scanner",
     "test-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error mocha --timeout 10000 -r ts-node/register -r dotenv-extended/config api/test/pact/**/*.spec.ts dotenv_config_defaults=./api/.env.defaults",
     "publish-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error mocha --timeout 15000 -r ts-node/register -r dotenv-extended/config api/test/pact/publish/publish.ts dotenv_config_defaults=./api/.env.defaults --reporter spec",
-    "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact"
+    "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact",
+    "test:ngIntegration": "ng e2e --protractorConfig=./test/ngIntegration/config/protractor.conf.js"
   },
   "private": true,
   "dependencies": {
@@ -165,6 +166,7 @@
     "karma-coverage-istanbul-reporter": "~2.0.1",
     "karma-jasmine": "~1.1.2",
     "karma-jasmine-html-reporter": "^0.2.2",
+    "mochawesome": "3.1.1",
     "ngrx-store-freeze": "^0.2.4",
     "nodemon": "^2.0.2",
     "pa11y": "^5.3.0",

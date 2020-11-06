@@ -15,6 +15,8 @@ const fplTribunalConfig = require('./solicitorCreate/fplTribunalCreateConfig');
 
 const fplCareSupervisionConfig = require('./solicitorCreate/fplCareSupervision');
 
+const exuiTestCaseType = require('./solicitorCreate/exuiTestCaseType');
+
 
 
 
@@ -75,8 +77,9 @@ class CCDApi{
             return fplCareSupervisionConfig;
         }
 
-
-
+        if (caseType === 'casetype_1' ) {
+            return exuiTestCaseType;
+        }
     }
 
 }

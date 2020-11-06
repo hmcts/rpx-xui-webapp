@@ -43,6 +43,14 @@ function HeaderPage() {
     this.signOut.click();
     browser.sleep(SHORT_DELAY);
   };
+
+  this.isTabPresent = async function(tabDisplatText) {
+    await this.getTabElementWithText(tabDisplatText).isPresent();
+  };
+
+  this.getTabElementWithText = function(tabText) {
+    return element(by.xpath(`//a[contains(text(),'${tabText}')]`)); 
+  };
 }
 
 module.exports = new HeaderPage;

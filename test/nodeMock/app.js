@@ -74,7 +74,7 @@ class MockApp{
 
 const mockInstance = new MockApp();
 
-// mockInstance.init();
-// mockInstance.startServer();
+mockInstance.init();
+mockInstance.startServer();
 
 module.exports = mockInstance;

@@ -1,5 +1,7 @@
 const ccdApiMock = require('./ccd/ccdApi');
 
+const idamProfile = require('./ccd/profile');
+
 const requestMapping = {
    get:{
        '/auth/isAuthenticated' : (req,res) => {
@@ -50,7 +52,9 @@ const requestMapping = {
        },
         '/data/internal/case-types/:jurisdiction/event-triggers/:caseType': (req, res) => {
             res.send(ccdApiMock.getSolicitorCreateCaseConfig(req.params.jurisdiction, req.params.caseType));
-
+        },
+        '/data/internal/profile' : (req,res) => {
+            res.send(idamProfile);
         }
     },
     post:{

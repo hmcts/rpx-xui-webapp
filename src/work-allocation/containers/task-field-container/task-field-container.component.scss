@@ -1,0 +1,34 @@
+table.task-field-testing {
+  margin: 10px 20px 10px 20px;
+  width: calc(100% - 40px);
+  tr {
+    td, th {
+      font-size: 1rem;
+      padding: 10px;
+    }
+    th {
+      background-color: #000000;
+      color: #ffffff;
+      font-weight: 700;
+    }
+  }
+  input, select {
+    font-size: 1rem;
+    min-width: 200px;
+    box-sizing: border-box;
+    padding: 1px 2px;
+    height: 27px;
+  }
+
+  tr td {
+    .image-field_30 .xui-task-field__image-container {
+      height: 30px;
+    }
+    .image-field_50 .xui-task-field__image-container {
+      height: 50px;
+    }
+    .image-field_75 .xui-task-field__image-container {
+      height: 75px;
+    }
+  }
+}

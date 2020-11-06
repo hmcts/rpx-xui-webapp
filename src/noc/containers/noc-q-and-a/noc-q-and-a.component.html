@@ -1,0 +1,9 @@
+<ng-container *ngFor="let question of questions$ | async">
+  <div>
+    <ng-container>
+        <exui-noc-field [questionField]="question"
+                         [formGroup]="formGroup"
+                         [idPrefix]=""></exui-noc-field>
+    </ng-container>
+  </div>
+</ng-container>

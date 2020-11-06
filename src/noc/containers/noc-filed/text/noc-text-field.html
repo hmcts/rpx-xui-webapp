@@ -1,0 +1,9 @@
+<div class="form-group" [ngClass]="{'form-group-error': !textControl.valid && textControl.touched}">
+
+  <label [for]="id()">
+    <span class="form-label" *ngIf="questionField.question_text">{{questionField.question_text}}</span>
+    <span class="error-message" *ngIf="textControl.errors && textControl.touched">{{textControl.errors | ccdFirstError}}</span>
+  </label>
+  <input class="form-control bottom-30" [id]="id()" type="text" [formControl]="textControl">
+
+</div>

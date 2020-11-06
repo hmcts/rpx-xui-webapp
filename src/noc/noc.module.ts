@@ -12,6 +12,8 @@ import * as fromContainers from './containers';
 import { nocRouting } from './noc.routes';
 import {reducers, effects} from './store';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { PaletteService } from './containers/noc-filed/palette.service';
+import { FormValidatorsService } from './containers/noc-filed/form-validators.service';
 
 @NgModule({
     imports: [
@@ -30,7 +32,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
       provide: AbstractAppConfig,
       useExisting: AppConfig
     },
-    NocService
+    NocService,
+    PaletteService,
+    FormValidatorsService
   ]
 })
 /**

@@ -8,6 +8,8 @@
         *ngIf="isComponentVisible(nocNavigationCurrentState, caseRefVisibilityStates)"
         [navEvent]="navEvent"
       ></exui-noc-case-ref>
+      <exui-noc-q-and-a *ngIf="isComponentVisible(nocNavigationCurrentState, qAndAVisibilityStates)">
+      </exui-noc-q-and-a>
       <exui-noc-error *ngIf="isComponentVisible(nocNavigationCurrentState, caseRefErrorStates)" [navEvent]="navEvent"></exui-noc-error>
     </exui-noc-navigation>
   </exui-page-wrapper>

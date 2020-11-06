@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { caseRefVisibilityStates } from '../../constants';
+import { caseRefVisibilityStates, qAndAVisibilityStates } from '../../constants';
 import { NocNavigation, NocNavigationEvent, NocState } from '../../models';
 import * as fromFeature from '../../store';
 
@@ -20,6 +20,7 @@ export class NocHomeComponent implements OnInit, OnDestroy {
   public caseRefVisibilityStates = caseRefVisibilityStates;
   public caseRefErrorStates = [NocState.CASE_REF_SUBMISSION_FAILURE];
 
+  public qAndAVisibilityStates = qAndAVisibilityStates;
 
   constructor(
     private readonly store: Store<fromFeature.State>,
@@ -27,6 +28,7 @@ export class NocHomeComponent implements OnInit, OnDestroy {
 
   public ngOnInit() {
     this.nocNavigationCurrentStateSub = this.store.pipe(select(fromFeature.currentNavigation)).subscribe(state => this.nocNavigationCurrentState = state);
+    console.log('this.nocNavigationCurrentState=' + this.nocNavigationCurrentState);
   }
 
   public onNavEvent(event: NocNavigationEvent) {

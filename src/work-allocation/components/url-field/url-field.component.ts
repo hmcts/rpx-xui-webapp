@@ -15,7 +15,7 @@ export class UrlFieldComponent {
    * be displayed.
    */
   @Input() public label: string;
-  
+
   /**
    * The target for the link. Defaults to "_self".
    */

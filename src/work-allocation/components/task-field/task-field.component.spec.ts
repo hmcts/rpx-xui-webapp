@@ -328,7 +328,7 @@ describe('WorkAllocation', () => {
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
 
       // Give the value of task.happy a string value.
-      task['happy'] = "True";
+      task['happy'] = 'True';
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
 
@@ -397,7 +397,7 @@ describe('WorkAllocation', () => {
       expect(fixture.debugElement.nativeElement.innerText).toBe('1'); // Rounded up.
 
       // Set task.pi to be a string.
-      task['pi'] = "3.14159";
+      task['pi'] = '3.14159';
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('3'); // Numeric string.
 
@@ -461,7 +461,7 @@ describe('WorkAllocation', () => {
       expect(fixture.debugElement.nativeElement.innerText).toBe('0.52'); // Rounded up.
 
       // Set task.pi to be a string.
-      task['pi'] = "3.14159";
+      task['pi'] = '3.14159';
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('3.14'); // Numeric string.
 

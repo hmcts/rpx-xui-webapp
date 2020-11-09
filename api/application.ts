@@ -72,7 +72,6 @@ app.use('/api/markups', markupRouter)
 app.use('/api/redaction', redactionRouter)
 
 // TODO: move these to proxy routes as well
-app.use('/activity', routes)
 app.use('/aggregated', routes)
 app.use('/data', routes)
 

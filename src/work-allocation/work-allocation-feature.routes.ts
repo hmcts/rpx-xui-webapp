@@ -10,6 +10,9 @@ export const ROUTES: Routes = [
       path: '',
       component: TaskHomeComponent
     },
+    // TODO: We probably don't need the following routes,
+    // as these components parents should be TaskHomeComponent.
+    // to discuss.
     {
       path: 'task-list',
       component: TaskListComponent

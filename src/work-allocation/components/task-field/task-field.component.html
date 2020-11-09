@@ -1,9 +1,12 @@
-<ng-container *ngIf="config && task" [ngSwitch]="config.type">
+<ng-container *ngIf="config && task" [ngSwitch]="config.type" class="xui-task-field">
   <ng-container *ngSwitchCase="fieldType.STRING">
     {{ task[config.name] }}
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.DATE_DUE">
     <xuilib-due-date [dueDate]="task[config.name]"></xuilib-due-date>
+  </ng-container>
+  <ng-container *ngSwitchCase="fieldType.DATE_AGE_DAYS">
+    {{ task[config.name] | daysFromToday }}
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.DATE">
     {{ task[config.name] | date:'dd/MM/yyyy'}}
@@ -15,17 +18,15 @@
     {{ task[config.name] | yesNo }}
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.INTEGER">
-    {{ task[config.name] | number:'1.0-0' }}
+    {{ task[config.name] | integer }}
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.DECIMAL_2">
-    {{ task[config.name] | number:'1.2-2' }}
+    {{ task[config.name] | twoDP }}
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.URL">
-    <a [href]="task[config.name]">{{task[config.name]}}</a>
+    <exui-url-field [href]="task[config.name]"></exui-url-field>
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.IMAGE">
-    <div class="xui-task-field__image-container">
-      <img [src]="task[config.name]" alt="Image" />
-    </div>
+    <exui-image-field [src]="task[config.name]"></exui-image-field>
   </ng-container>
 </ng-container>

@@ -26,30 +26,4 @@ export class TaskFieldComponent {
   // This is here for the ngSwitch in the template so we don't have
   // hard-coded strings floating around the place.
   protected fieldType = TaskFieldType;
-
-  // // The value, which is set in handleInputChanges whenever there is
-  // // a change to either the config or the task.
-  // private pValue: any;
-  // public get value(): any {
-  //   return this.pValue;
-  // }
-
-  // // Catch any changes to any of the Input() properties.
-  // public ngOnChanges(): void {
-  //   this.handleInputChanges();
-  // }
-
-
-  // // Set up the value, based on the task and the config.
-  // private handleInputChanges(): void {
-  //   // If we don't have a config, skip out of here.
-  //   if (!this.config) {
-  //     return;
-  //   }
-  //   if (this.task) {
-  //     this.pValue = this.task[this.config.name];
-  //   } else {
-  //     this.pValue = undefined;
-  //   }
-  // }
 }

@@ -4,12 +4,12 @@ import { TaskFieldType, TaskView } from '../../enums';
 import { Task, TaskAction, TaskFieldConfig } from '../../models/tasks';
 
 @Component({
-  selector: 'exui-task-field-container',
-  templateUrl: './task-field-container.component.html',
-  styleUrls: ['task-field-container.component.scss'],
+  selector: 'exui-task-field-wrapper',
+  templateUrl: './task-field-wrapper.component.html',
+  styleUrls: ['task-field-wrapper.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class TaskFieldContainerComponent {
+export class TaskFieldWrapperComponent {
 
   public imageRow: object = { height: '30' };
   private taskAction: TaskAction = {
@@ -36,59 +36,67 @@ export class TaskFieldContainerComponent {
     image: 'https://www.hmctsjobs.co.uk/wp-content/themes/HMCTS/dist/images/HM-CTS-logo.png'
   };
 
-  public caseNameConfig: TaskFieldConfig = {
-    name: 'caseName',
-    type: TaskFieldType.STRING,
-    columnLabel: 'Case name',
-    views: TaskView.ALL_VIEWS
-  };
-  public dueDateConfig: TaskFieldConfig = {
-    name: 'dueDate',
-    type: TaskFieldType.DATE_DUE,
-    columnLabel: 'Due date (component; updates on blur)',
-    views: TaskView.ALL_VIEWS
-  };
-  public dateConfig: TaskFieldConfig = {
-    name: 'dueDate',
-    type: TaskFieldType.DATE,
-    columnLabel: 'Due date (as date; updates on blur)',
-    views: TaskView.ALL_VIEWS
-  };
-  public tomorrowConfig: TaskFieldConfig = {
-    name: 'tomorrow',
-    type: TaskFieldType.DATETIME,
-    columnLabel: 'Tomorrow (with time; updates on blur)',
-    views: TaskView.ALL_VIEWS
-  };
-  public happyConfig: TaskFieldConfig = {
-    name: 'happy',
-    type: TaskFieldType.BOOLEAN,
-    columnLabel: 'Boolean to Yes/No/blank',
-    views: TaskView.ALL_VIEWS
-  };
-  public piAsIntConfig: TaskFieldConfig = {
-    name: 'pi',
-    type: TaskFieldType.INTEGER,
-    columnLabel: 'Number as integer',
-    views: TaskView.ALL_VIEWS
-  };
-  public piTo2DPConfig: TaskFieldConfig = {
-    name: 'pi',
-    type: TaskFieldType.DECIMAL_2,
-    columnLabel: 'Number to 2 decimal places',
-    views: TaskView.ALL_VIEWS
-  };
-  public googleConfig: TaskFieldConfig = {
-    name: 'google',
-    type: TaskFieldType.URL,
-    columnLabel: 'Link (opens in this window)',
-    views: TaskView.ALL_VIEWS
-  };
-  public imageConfig: TaskFieldConfig = {
-    name: 'image',
-    type: TaskFieldType.IMAGE,
-    columnLabel: 'Image (sized to row height)',
-    views: TaskView.ALL_VIEWS
+  public FIELDS = {
+    caseName: {
+      name: 'caseName',
+      type: TaskFieldType.STRING,
+      columnLabel: 'Case name',
+      views: TaskView.ALL_VIEWS
+    },
+    dueDate: {
+      name: 'dueDate',
+      type: TaskFieldType.DATE_DUE,
+      columnLabel: 'Due date (component; updates on blur)',
+      views: TaskView.ALL_VIEWS
+    },
+    daysFromToday: {
+      name: 'dueDate',
+      type: TaskFieldType.DATE_AGE_DAYS,
+      columnLabel: 'Days from today (positive if before today; updates on blur)',
+      views: TaskView.ALL_VIEWS
+    },
+    date: {
+      name: 'dueDate',
+      type: TaskFieldType.DATE,
+      columnLabel: 'Due date (as date; updates on blur)',
+      views: TaskView.ALL_VIEWS
+    },
+    tomorrow: {
+      name: 'tomorrow',
+      type: TaskFieldType.DATETIME,
+      columnLabel: 'Tomorrow (with time; updates on blur)',
+      views: TaskView.ALL_VIEWS
+    },
+    happy: {
+      name: 'happy',
+      type: TaskFieldType.BOOLEAN,
+      columnLabel: 'Boolean to Yes/No/blank',
+      views: TaskView.ALL_VIEWS
+    },
+    piAsInt: {
+      name: 'pi',
+      type: TaskFieldType.INTEGER,
+      columnLabel: 'Number as integer',
+      views: TaskView.ALL_VIEWS
+    },
+    piTo2DP: {
+      name: 'pi',
+      type: TaskFieldType.DECIMAL_2,
+      columnLabel: 'Number to 2 decimal places',
+      views: TaskView.ALL_VIEWS
+    },
+    google: {
+      name: 'google',
+      type: TaskFieldType.URL,
+      columnLabel: 'Link (opens in this window)',
+      views: TaskView.ALL_VIEWS
+    },
+    image: {
+      name: 'image',
+      type: TaskFieldType.IMAGE,
+      columnLabel: 'Image (sized to row height)',
+      views: TaskView.ALL_VIEWS
+    }
   };
 
   public setDate(value: string, config: TaskFieldConfig): void {

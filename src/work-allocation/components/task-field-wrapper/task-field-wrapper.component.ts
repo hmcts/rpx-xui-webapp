@@ -11,7 +11,7 @@ import { Task, TaskAction, TaskFieldConfig } from '../../models/tasks';
 })
 export class TaskFieldWrapperComponent {
 
-  protected imageRow: { height: string } = { height: '30' };
+  public imageRow: { height: string } = { height: '30' };
   private readonly taskAction: TaskAction = {
     id: 'Action ID',
     title: 'Action title'

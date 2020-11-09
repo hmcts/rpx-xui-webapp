@@ -8,9 +8,9 @@ import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
 })
 export class NocTextFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 
-  textControl: FormControl;
+  public textControl: FormControl;
 
-  ngOnInit() {
-    this.textControl = this.registerControl(new FormControl(this.questionField.answer_field));
+  public ngOnInit() {
+    this.textControl = this.registerControl(new FormControl(''));
   }
 }

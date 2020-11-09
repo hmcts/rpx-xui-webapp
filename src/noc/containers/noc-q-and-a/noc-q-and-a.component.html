@@ -1,9 +1,23 @@
-<ng-container *ngFor="let question of questions$ | async">
-  <div>
-    <ng-container>
-        <exui-noc-field [questionField]="question"
-                         [formGroup]="formGroup"
-                         [idPrefix]=""></exui-noc-field>
-    </ng-container>
+<div>
+  <div class="hmcts-page-heading">
+    <div class="hmcts-page-heading__title">
+      <h1 class="govuk-heading-l">Enter details</h1>
+    </div>
   </div>
-</ng-container>
+
+  <p>You must enter the client details exactly as they’re written on the case, including any mistakes.</p>
+
+  <form class="form" [formGroup]="qAndAForm">
+    <fieldset id="fieldset-q-and-a-form">
+      <ng-container *ngFor="let question of questions$ | async">
+        <div>
+          <ng-container>
+            <exui-noc-field [questionField]="question"
+                            [formGroup]="qAndAForm"
+                            [idPrefix]=""></exui-noc-field>
+          </ng-container>
+        </div>
+      </ng-container>
+    </fieldset>
+  </form>
+</div>

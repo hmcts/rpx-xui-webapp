@@ -1,19 +1,29 @@
 import { NocCaseRefComponent } from './noc-case-ref/noc-case-ref.component';
 import { NocErrorComponent } from './noc-errors/noc-error.component';
+import { NocEmailFieldComponent } from './noc-filed/email';
 import { NocFieldComponent } from './noc-filed/noc-field.component';
+import { NocNumberFieldComponent } from './noc-filed/number';
+import { NocPhoneUkFieldComponent } from './noc-filed/phone-uk';
+import { NocPostcodeFieldComponent } from './noc-filed/postcode';
+import { NocTextFieldComponent } from './noc-filed/text';
+import { NocYesNoFieldComponent } from './noc-filed/yes-no';
 import { NocHomeComponent } from './noc-home/noc-home.component';
 import { NocNavigationComponent } from './noc-navigation/noc-navigation.component';
 import { NocQAndAComponent } from './noc-q-and-a/noc-q-and-a.component';
-import { NocTextFieldComponent } from './noc-filed/text/noc-text-field.component';
 
 export const containers: any[] = [
   NocHomeComponent,
   NocNavigationComponent,
   NocErrorComponent,
   NocCaseRefComponent,
+  NocQAndAComponent,
   NocFieldComponent,
   NocTextFieldComponent,
-  NocQAndAComponent
+  NocNumberFieldComponent,
+  NocEmailFieldComponent,
+  NocPhoneUkFieldComponent,
+  NocYesNoFieldComponent,
+  NocPostcodeFieldComponent
 ];
 
 export * from './noc-home/noc-home.component';

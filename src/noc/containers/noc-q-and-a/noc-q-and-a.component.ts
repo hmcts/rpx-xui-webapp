@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { select, Store } from '@ngrx/store';
-import * as fromFeature from '../../store';
-import { Observable } from 'rxjs';
 import { FormGroup } from '@angular/forms';
+import { select, Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
 import { NocQuestion } from '../../models';
+import * as fromFeature from '../../store';
 
 @Component({
   selector: 'exui-noc-q-and-a',
@@ -12,20 +12,18 @@ import { NocQuestion } from '../../models';
 })
 export class NocQAndAComponent implements OnInit {
   @Input()
-  question: NocQuestion;
+  public questions$: Observable<NocQuestion[]>;
 
   @Input()
-  questions: NocQuestion[] = [];
+  public formGroup: FormGroup;
 
-  @Input()
-  formGroup: FormGroup;
+  public qAndAForm: FormGroup;
 
-  public questions$: Observable<any>;
   constructor(private store: Store<fromFeature.State>) { }
 
   public ngOnInit() {
     this.questions$ = this.store.pipe(select(fromFeature.questions));
-    this.questions$.subscribe(ques => console.log('ques=' + JSON.stringify(ques)));
+    this.qAndAForm = new FormGroup({});
   }
 
 }

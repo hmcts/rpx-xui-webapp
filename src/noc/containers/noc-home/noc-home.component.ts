@@ -14,7 +14,6 @@ export class NocHomeComponent implements OnInit, OnDestroy {
 
   public nocNavigationCurrentState: NocState;
   private nocNavigationCurrentStateSub: Subscription;
-  public nocState = NocState;
   public navEvent: NocNavigation;
 
   public caseRefVisibilityStates = caseRefVisibilityStates;
@@ -28,7 +27,6 @@ export class NocHomeComponent implements OnInit, OnDestroy {
 
   public ngOnInit() {
     this.nocNavigationCurrentStateSub = this.store.pipe(select(fromFeature.currentNavigation)).subscribe(state => this.nocNavigationCurrentState = state);
-    console.log('this.nocNavigationCurrentState=' + this.nocNavigationCurrentState);
   }
 
   public onNavEvent(event: NocNavigationEvent) {

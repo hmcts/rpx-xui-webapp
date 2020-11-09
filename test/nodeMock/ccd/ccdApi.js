@@ -16,6 +16,7 @@ const fplTribunalConfig = require('./solicitorCreate/fplTribunalCreateConfig');
 const fplCareSupervisionConfig = require('./solicitorCreate/fplCareSupervision');
 
 const exuiTestCaseType = require('./solicitorCreate/exuiTestCaseType');
+const { isArray } = require("core-js/fn/array");
 
 
 
@@ -27,7 +28,7 @@ class CCDApi{
     }
 
     getWorkbasketInputs(jurisdiction){
-        let workbasketInputs = {};
+        let workbasketInputs = publicLaw;
         switch (jurisdiction){
             case 'DIVORCE':
                 workbasketInputs = divorce;
@@ -36,12 +37,13 @@ class CCDApi{
                 workbasketInputs = probate;
                 break;
             case 'Asylum':
-                workbasketInputs = probate;
+                workbasketInputs = ia;
                 break
             case 'TRIB_MVP_3_TYPE':
                 workbasketInputs = publicLaw;
                 break;
         }
+        return workbasketInputs;
     }
 
     getSolicitorCreateCaseConfig(caseType,event){

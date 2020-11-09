@@ -5,7 +5,7 @@ const { SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants'
 var BrowserWaits = require('../../support/customWaits');
 
 function HeaderPage() {
-
+    this.primaryNavBar = element(by.css("nav.hmcts-primary-navigation ul"));
     this.manageCases = element(by.css(".hmcts-header .hmcts-header__link"));
     this.caseList = element(by.xpath("//a[contains(text(),'Case list')]"));
     this.createCase = element(by.xpath("//li/a[contains(text(),'Create case')]"));
@@ -45,11 +45,17 @@ function HeaderPage() {
   };
 
   this.isTabPresent = async function(tabDisplatText) {
-    await this.getTabElementWithText(tabDisplatText).isPresent();
+
+    return await this.getTabElementWithText(tabDisplatText).isPresent();
   };
 
+  this.waitForPrimaryNavDisplay = async function(){
+    await BrowserWaits.waitForElement(this.primaryNavBar);  
+  };
+
+
   this.getTabElementWithText = function(tabText) {
-    return element(by.xpath(`//a[contains(text(),'${tabText}')]`)); 
+    return this.primaryNavBar.element(by.xpath('//a[contains(text(),"'+tabText+'")]')); 
   };
 }
 

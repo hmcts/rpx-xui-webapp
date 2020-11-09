@@ -72,7 +72,7 @@ module.exports = {
             ],
             "complexACLs": [],
             "display_context": null,
-            "display_context_parameter": "#COLLECTION(allowInsert),#COLLECTION(allowDelete)",
+            "display_context_parameter": "#COLLECTION(allowInsert,allowDelete)",
             "retain_hidden_value": null,
             "formatted_value": null,
             "default_value": null

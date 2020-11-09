@@ -74,6 +74,7 @@ app.use('/api/redaction', redactionRouter)
 app.use('/api/caseshare', caseShareRoutes)
 
 // TODO: move these to proxy routes as well
+app.use('/activity', routes)
 app.use('/aggregated', routes)
 app.use('/data', routes)
 

@@ -8,7 +8,7 @@ import { ImageFieldComponent } from './image-field.component';
   template: `<exui-image-field [src]="src" [alt]="alt"></exui-image-field>`
 })
 class WrapperComponent {
-  @ViewChild(ImageFieldComponent) appComponentRef: ImageFieldComponent;
+  @ViewChild(ImageFieldComponent) public appComponentRef: ImageFieldComponent;
   @Input() public src: string;
   @Input() public alt: string;
 }

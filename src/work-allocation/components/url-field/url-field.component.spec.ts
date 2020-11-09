@@ -8,7 +8,7 @@ import { UrlFieldComponent } from './url-field.component';
   template: `<exui-url-field [href]="href" [label]="label" [target]="target"></exui-url-field>`
 })
 class WrapperComponent {
-  @ViewChild(UrlFieldComponent) appComponentRef: UrlFieldComponent;
+  @ViewChild(UrlFieldComponent) public appComponentRef: UrlFieldComponent;
   @Input() public href: string;
   @Input() public label: string;
   @Input() public target: string;

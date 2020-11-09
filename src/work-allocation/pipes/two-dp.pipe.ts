@@ -9,8 +9,8 @@ import { Pipe, PipeTransform } from '@angular/core';
  */
 @Pipe({name: 'twoDP'})
 export class TwoDPPipe implements PipeTransform {
-  DIGITS_INFO: string = '1.2-2';
-  decimalPipe: DecimalPipe = new DecimalPipe('en-US');
+  private readonly DIGITS_INFO: string = '1.2-2';
+  private readonly decimalPipe: DecimalPipe = new DecimalPipe('en-US');
 
   /**
    * @param value The number to be formatted.
@@ -18,7 +18,7 @@ export class TwoDPPipe implements PipeTransform {
    * When not supplied, uses the value of `LOCALE_ID`, which is `en-US` by default.
    * See [Setting your app locale](guide/i18n#setting-up-the-locale-of-your-app).
    */
-  transform(value: any, locale?: string): string {
+  public transform(value: any, locale?: string): string {
     if (isNaN(Number(value))) {
       return undefined;
     }

@@ -7,18 +7,17 @@ import { Pipe, PipeTransform } from '@angular/core';
  */
 @Pipe({name: 'daysFromToday'})
 export class DaysFromTodayPipe implements PipeTransform {
-
   // The number of seconds in a day, for formatting purposes.
-  SECONDS_IN_A_DAY: number = 60 * 60 * 24;
+  private readonly SECONDS_IN_A_DAY: number = 60 * 60 * 24;
 
-  transform(date: Date): string {
+  public transform(date: Date): string {
     if (date) {
       const diffDays = this.getDiffDays(date, new Date());
-      if (diffDays == 0) {
+      if (diffDays === 0) {
         return '0 days';
       }
 
-      const plural = Math.abs(diffDays) != 1;
+      const plural = Math.abs(diffDays) !== 1;
       const sign = diffDays > 0 ? '+' : '';
       return `${sign}${diffDays} day${plural ? 's' : ''}`;
     }

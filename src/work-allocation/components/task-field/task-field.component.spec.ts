@@ -10,7 +10,7 @@ import { TaskFieldComponent } from './task-field.component';
   template: `<exui-task-field [config]="config" [task]="task"></exui-task-field>`
 })
 class WrapperComponent {
-  @ViewChild(TaskFieldComponent) appComponentRef: TaskFieldComponent;
+  @ViewChild(TaskFieldComponent) public appComponentRef: TaskFieldComponent;
   @Input() public config: TaskFieldConfig;
   @Input() public task: Task;
 }

@@ -11,13 +11,13 @@ import { Task, TaskAction, TaskFieldConfig } from '../../models/tasks';
 })
 export class TaskFieldWrapperComponent {
 
-  public imageRow: object = { height: '30' };
-  private taskAction: TaskAction = {
+  protected imageRow: { height: string } = { height: '30' };
+  private readonly taskAction: TaskAction = {
     id: 'Action ID',
     title: 'Action title'
   };
-  private now: Date = new Date();
-  private tomorrow: Date = new Date(this.now.getTime() + 86400000);
+  private readonly now: Date = new Date();
+  private readonly tomorrow: Date = new Date(this.now.getTime() + 86400000);
   public task: Task = {
     id: 'The task ID',
     caseReference: 'The case reference',
@@ -103,7 +103,7 @@ export class TaskFieldWrapperComponent {
     const fixed: string = this.fixDate(value);
     if (fixed) {
       const parsedDate: number = Date.parse(fixed);
-      if (isNaN(parsedDate) == false) {
+      if (isNaN(parsedDate) === false) {
         const d: Date = new Date(parsedDate);
         this.task[config.name] = d;
         this.task[`${config.name}Text`] = d.toLocaleDateString();
@@ -117,7 +117,7 @@ export class TaskFieldWrapperComponent {
       const fixed: string = this.fixDate(date);
       if (fixed) {
         const parsedDate: number = Date.parse(`${fixed}T${time}`);
-        if (isNaN(parsedDate) == false) {
+        if (isNaN(parsedDate) === false) {
           const d: Date = new Date(parsedDate);
           this.task[config.name] = d;
           this.task[`${config.name}Text`] = `${d.toLocaleDateString()} ${d.toLocaleTimeString()}`;
@@ -129,7 +129,7 @@ export class TaskFieldWrapperComponent {
   // Simply flips dd/MM/yyyy to yyyy-MM-dd for parsing purposes.
   private fixDate(value: string): string {
     const parts: string[] = value.split('/');
-    if (parts.length == 3) {
+    if (parts.length === 3) {
       return parts.reverse().join('-');
     }
     return undefined;

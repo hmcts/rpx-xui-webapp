@@ -66,14 +66,14 @@ describe('Header  Tabs', function () {
     });
 
   
-    it.only('Work allocation Tabs "Task list" and "Task Manager" for role "caseworker-ia-caseofficer"', async function () {
+    it('Work allocation Tabs "Task list" and "Task Manager" for role "caseworker-ia-caseofficer"', async function () {
         await MockApp.startServer();
         await BrowserUtil.browserInitWithAuth(["caseworker-ia-caseofficer"]);
 
         await headerPage.waitForPrimaryNavDisplay();
         await BrowserUtil.waitForLD();
         expect(await headerPage.isTabPresent('Task Manager'), 'Task Manager tab not present, displayed tabs : ' + await headerPage.primaryNavBar.getText()).to.be.true
-        expect(await headerPage.isTabPresent('Task list'), 'Task list tab present, displayed tabs : ' + await headerPage.primaryNavBar.getText()).to.be.false
+        expect(await headerPage.isTabPresent('Task list'), 'Task list tab not present, displayed tabs : ' + await headerPage.primaryNavBar.getText()).to.be.true
 
     });
 

@@ -12,7 +12,7 @@ const headerPage = require('../../e2e/features/pageObjects/headerPage');
 const exuiTestCaseType = require('../../nodeMock/ccd/solicitorCreate/exuiTestCaseType');
 const { createNonNullExpression } = require('typescript');
 
-describe('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
+describe.skip('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
 
     beforeEach(async function (done) {
         MockApp.init();

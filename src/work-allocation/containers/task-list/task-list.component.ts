@@ -1,20 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {BehaviorSubject, Observable, of} from 'rxjs';
-import { map } from 'rxjs/operators';
-import { Task, TaskFieldConfig } from '../../models/tasks';
 import {TaskFieldType, TaskView} from '../../enums';
-// import { TaskFieldType, TaskView } from '../../enums';
-
-const columnNames = [
-  'id',
-  'caseReference',
-  'caseName',
-  'caseCategory',
-  'location',
-  'taskName',
-  'dueDate',
-  'actions',
-];
+import {Task, TaskFieldConfig} from '../../models/tasks';
 
 /**
  * Fields is the property of the TaskFieldConfig[], containing the configuration
@@ -29,54 +16,54 @@ const columnNames = [
  * of the task list.
  *
  * TODO: Having a strange issue here where the compiler can't resolve,
- * TaskFieldType.STRING & TaskView.TASK_LIST
+ * TaskView.TASK_LIST
  */
 const fields: TaskFieldConfig[] = [
   {
     name: 'id',
-    type: 'id' as TaskFieldType.STRING,
+    type: 'id' as TaskFieldType,
     columnLabel: 'Id',
     views: 0x01,
   },
   {
     name: 'caseReference',
-    type: 'caseReference' as TaskFieldType.STRING,
+    type: 'caseReference' as TaskFieldType,
     columnLabel: 'Case reference',
     views: 0x01,
   },
   {
     name: 'caseName',
-    type: 'caseName' as TaskFieldType.STRING,
+    type: 'caseName' as TaskFieldType,
     columnLabel: 'Case name',
     views: 0x01,
   },
   {
     name: 'caseCategory',
-    type: 'caseCategory' as TaskFieldType.STRING,
+    type: 'caseCategory' as TaskFieldType,
     columnLabel: 'Case category',
     views: 0x01,
   },
   {
     name: 'location',
-    type: 'location' as TaskFieldType.STRING,
+    type: 'location' as TaskFieldType,
     columnLabel: 'Location',
     views: 0x01,
   },
   {
     name: 'taskName',
-    type: 'taskName' as TaskFieldType.STRING,
+    type: 'taskName' as TaskFieldType,
     columnLabel: 'Task',
     views: 0x01,
   },
   {
     name: 'dueDate',
-    type: 'dueDate' as TaskFieldType.STRING,
-    columnLabel: 'Due Date',
+    type: 'dueDate' as TaskFieldType,
+    columnLabel: 'Due Dated',
     views: 0x01,
   },
   {
     name: 'actions',
-    type: 'actions' as TaskFieldType.STRING,
+    type: 'actions' as TaskFieldType,
     columnLabel: 'Actions',
     views: 0x01,
   }
@@ -122,48 +109,64 @@ const tasks: Task[] = [
 ];
 
 @Component({
-    selector: 'exui-task-list',
-    templateUrl: './task-list.component.html',
-    styleUrls: ['task-list.component.scss']
-  })
-  export class TaskListComponent implements OnInit {
+  selector: 'exui-task-list',
+  templateUrl: './task-list.component.html',
+  styleUrls: ['task-list.component.scss']
+})
+export class TaskListComponent implements OnInit {
 
-    // You can use this as a single source of truth that gets mapped to other obserables.
-    // Use a single data source using BehavoirSubject
-    private tasks$ = new BehaviorSubject(tasks);
+  @Output() public sortColumn = new EventEmitter<string>();
+  // You can use this as a single source of truth that gets mapped to other obserables.
+  // Use a single data source using BehavoirSubject
+  private tasks$ = new BehaviorSubject(tasks);
 
-    // TODO: SHould we use a BehaviorSubject for fields?
+  // TODO: SHould we use a BehaviorSubject for fields?
 
-    /**
-     * The datasource is an Observable of data to be displayed, as per LLD.
-     */
-    public dataSource$: Observable<Task[]>;
+  /**
+   * The datasource is an Observable of data to be displayed, as per LLD.
+   */
+  public dataSource$: Observable<Task[]>;
 
-    // array of column names
-    public displayedColumns = columnNames;
+  // array of column names
+  public displayedColumns;
 
-    public fields = fields;
+  public fields = fields;
 
-    constructor() {
-    }
-
-    public ngOnInit() {
-      // TODO: Consider renaming dataSource$
-      this.dataSource$ = this.tasks$;
-    }
-
-    public levelUp(heroName: string) {
-      // const updatedHero = this.heros$.value[heroName];
-      //
-      // updatedHero.attack++;
-      // updatedHero.defence++;
-      // updatedHero.speed++;
-      // updatedHero.healing++;
-      // updatedHero.recovery++;
-      // updatedHero.health++;
-      //
-      // const newHeroData = { ...this.heros$.value, [heroName]: updatedHero };
-      //
-      // this.heros$.next(newHeroData);
-    }
+  constructor() {
   }
+
+  // TODO: What happens if the config changes on the fly?
+  // TODO: Consider renaming dataSource$
+  public ngOnInit() {
+
+    this.dataSource$ = this.tasks$;
+
+    this.displayedColumns = this.getDisplayedColumn(fields);
+  }
+
+  /**
+   * Returns the columns to be displayed by the Angular Component Dev Kit table.
+   *
+   * TODO: DisplayedCoulmn is an array of strings specifying the fieldnames to be displayed, in order,
+   * this will have to include the 'manage' column as the last one.
+   *
+   * TODO: Unit test
+   */
+  public getDisplayedColumn(taskFieldConfig: TaskFieldConfig[]) {
+
+    return taskFieldConfig.map(field => field.name);
+  }
+
+  /**
+   * Takes in the fieldname, so it can be output to trigger a new Request to the API
+   * to get a sorted result set.
+   *
+   * TODO: Unit test
+   *
+   * @param fieldName - ie. 'caseName'
+   */
+  public sort(fieldName: string) {
+
+    this.sortColumn.emit(fieldName);
+  }
+}

@@ -2,6 +2,7 @@
 <div>hello</div>
 <!-- Using the Angular Component Development Kit Table Module, and not Angular Material -->
 <!-- The dataSource is an observable to be displayed -->
+<button (click)="sort('caseName')">trigger sort</button>
 <table cdk-table [dataSource]="dataSource$">
 
   <ng-container *ngFor="let field of fields" [cdkColumnDef]="field.name">

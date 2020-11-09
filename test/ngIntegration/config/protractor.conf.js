@@ -22,7 +22,7 @@ exports.config = {
     reporter: 'mochawesome',
      
     reporterOptions: {
-      reportFilename: "MC_NG_Integration",
+      reportFilename: "index.html",
       reportDir: "reports/tests/ngIntegration",
       quiet: true
     },

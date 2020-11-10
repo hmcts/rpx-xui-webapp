@@ -45,7 +45,11 @@ export class TaskListComponent implements OnInit {
    */
   public getDisplayedColumn(taskFieldConfig: TaskFieldConfig[]) {
 
-    return taskFieldConfig.map(field => field.name);
+    const fields = taskFieldConfig.map(field => field.name);
+
+    // So over here we should use bitmasking to add or remove the manage field,
+    // dependent on view.
+    return [...fields, 'manage'];
   }
 
   /**

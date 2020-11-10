@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Task, TaskFieldConfig} from '../../models/tasks';
-import {TaskFieldType} from '../../enums';
+import {Task, TaskFieldConfig} from './../../models/tasks';
+import {TaskFieldType, TaskView} from './../../enums';
 
 @Component({
   selector: 'exui-task-home',
@@ -58,59 +58,71 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
    * TaskView.TASK_LIST
    */
   public fields: TaskFieldConfig[] = [
+    // TODO: Does id need to be in the TaskFieldConfig? probably yeah,
+    // and then is it remove using bitmasking?
     {
       name: 'id',
-      type: 'id' as TaskFieldType,
+      type: TaskFieldType.STRING,
       columnLabel: 'Id',
-      views: 0x01,
+      views: TaskView.TASK_LIST,
     },
     {
       name: 'caseReference',
-      type: 'caseReference' as TaskFieldType,
+      type: TaskFieldType.STRING,
       columnLabel: 'Case reference',
-      views: 0x01,
+      views: TaskView.TASK_LIST,
     },
     {
       name: 'caseName',
-      type: 'caseName' as TaskFieldType,
+      type: TaskFieldType.STRING,
       columnLabel: 'Case name',
-      views: 0x01,
+      views: TaskView.TASK_LIST,
     },
     {
       name: 'caseCategory',
-      type: 'caseCategory' as TaskFieldType,
+      type: TaskFieldType.STRING,
       columnLabel: 'Case category',
-      views: 0x01,
+      views: TaskView.TASK_LIST,
     },
     {
       name: 'location',
-      type: 'location' as TaskFieldType,
+      type: TaskFieldType.STRING,
       columnLabel: 'Location',
-      views: 0x01,
+      views: TaskView.TASK_LIST,
     },
     {
       name: 'taskName',
-      type: 'taskName' as TaskFieldType,
+      type: TaskFieldType.STRING,
       columnLabel: 'Task',
-      views: 0x01,
+      views: TaskView.TASK_LIST,
     },
     {
       name: 'dueDate',
-      type: 'dueDate' as TaskFieldType,
+      type: TaskFieldType.STRING,
       columnLabel: 'Due Dated',
-      views: 0x01,
+      views: TaskView.TASK_LIST,
     },
-    {
-      name: 'actions',
-      type: 'actions' as TaskFieldType,
-      columnLabel: 'Actions',
-      views: 0x01,
-    }
+    // TODO: Does Manage need to be in the TaskFieldConfig?
+    // Probably yeah, and it's removed or enabled via Bitmasking?
+
+    // {
+    //   name: 'actions',
+    //   type: 'actions' as TaskFieldType,
+    //   columnLabel: 'Actions',
+    //   views: 0x01,
+    // },
+    // {
+    //   name: 'manage',
+    //   type: 'manage' as TaskFieldType,
+    //   columnLabel: 'Manage',
+    //   views: 0x01,
+    // }
   ]
 
   constructor() {
   }
 
+  // TODO: Use bitmasking? Yep so use bitmasking to get rid of the id field, I guess.
   public ngOnInit(): void {
     console.log('onInitTaskHome');
   }

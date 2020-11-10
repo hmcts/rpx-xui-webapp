@@ -1,19 +1,35 @@
-
 <!-- Using the Angular Component Development Kit Table Module, and not Angular Material -->
-<!-- The dataSource is an observable to be displayed -->
-<button (click)="sort('caseName')">trigger sort</button>
-<table cdk-table [dataSource]="dataSource$">
+<table cdk-table [dataSource]="dataSource$" class="govuk-table">
 
+  <!-- Column Headers and Cells -->
   <ng-container *ngFor="let field of fields" [cdkColumnDef]="field.name">
-    <th cdk-header-cell *cdkHeaderCellDef>{{field.columnLabel}}</th>
-    <td cdk-cell *cdkCellDef="let row">{{row[field.name]}}</td>
+    <th cdk-header-cell *cdkHeaderCellDef>{{field.columnLabel}}<button (click)="sort(field.name)">sort</button></th>
+    <td cdk-cell *cdkCellDef="let rowData">{{rowData[field.name]}}</td>
   </ng-container>
+
+  <!-- Manage column -->
+  <ng-container cdkColumnDef="manage">
+    <th cdk-header-cell *cdkHeaderCellDef>&nbsp;</th>
+    <!-- TODO: Is this meant to be an @ or * -->
+    <td cdk-cell *cdkCellDef="let rowData">Manage <button>&#9658;</button></td>
+  </ng-container>
+
+  <!-- This row should be under the manage button, we use colSpan here to do this -->
+  <!-- When there is a column definition of actions then we show this -->
+  <!-- TODO: Should this have a column def as it belongs under manage -->
+  <!--<ng-container cdkColumnDef="actions">-->
+    <!--<th cdk-header-cell *cdkHeaderCellDef>&nbsp;</th>-->
+    <!--<td cdk-cell *cdkCellDef="let rowData">Display actions for task</td>-->
+  <!--</ng-container>-->
 
   <!-- Header definition -->
   <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
   <!-- loop over every item in our datasource array -->
   <!-- run through each column -->
+  <!--<tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>-->
   <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
-  <!--<tr cdk-row *cdkRowDef="let row; columns: ['actions']" when="() => true"></tr>-->
+  <!-- TODO: Not sure how to get the actions field to appear -->
+  <!-- TODO: Error: There can only be one default row without a when predicate function.-->
+  <!--<tr cdk-row *cdkRowDef="let row; columns: ['actions']"></tr>-->
 
 </table>

@@ -1,5 +1,8 @@
 <exui-app-header></exui-app-header>
 <div class="govuk-width-container">
-  <exui-task-list [tasks]="tasks" [fields]="fields" (sortByFieldName)="onSortHandler($event)"></exui-task-list>
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+    <h3 class="govuk-heading-m">My tasks</h3>
+    <exui-task-list [tasks]="tasks" [fields]="fields" (sortByFieldName)="onSortHandler($event)"></exui-task-list>
+  </main>
 </div>
 <exui-app-footer></exui-app-footer>

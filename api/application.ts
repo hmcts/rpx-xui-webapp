@@ -29,6 +29,7 @@ import {router as markupRouter} from './redaction/markupRoutes'
 import {router as redactionRouter} from './redaction/redactionRoutes'
 import routes from './routes'
 import userRouter from './user/routes'
+import taskRouter from './workAllocation/routes'
 
 export const app = express()
 if (showFeature(FEATURE_HELMET_ENABLED)) {
@@ -100,6 +101,8 @@ applyProxy(app, {
 app.use('/em-anno', emAnnoRouter)
 
 app.use('/payments', paymentsRouter)
+
+app.use('/workallocation', taskRouter)
 
 // @ts-ignore
 const logger: JUILogger = log4jui.getLogger('Application')

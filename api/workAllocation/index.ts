@@ -1,6 +1,4 @@
 import * as express from 'express'
-import { getConfigValue } from '../configuration'
-import { SERVICES_PAYMENTS_URL } from '../configuration/references'
 import { EnhancedRequest } from '../lib/models'
 import { handleTaskGet } from './taskService'
 

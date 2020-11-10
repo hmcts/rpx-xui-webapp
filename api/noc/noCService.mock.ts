@@ -38,9 +38,69 @@ export const init = () => {
     // tslint:disable:max-line-length
     const questionsSchema: NoCQuestion[] = [
         {
+          case_type_id: "AAT",
+          order: '{{random.number}}',
+          question_text: "What is their first name?",
+          answer_field_type: {
+            id: "Text",
+            type: "Text",
+            min: null,
+            max: null,
+            regular_expression: null,
+            fixed_list_items: [],
+            complex_fields: [],
+            collection_field_type: null,
+          },
+          display_context_parameter: "1",
+          challenge_question_id: "NoC",
+          // tslint:disable-next-line:max-line-length
+          answer_field: `{{address.zipCode}}|{{address.zipCode}}|{{address.zipCode}}:Applicant,{{address.zipCode}}|{{address.zipCode}}|{{address.zipCode}}:Respondent`,
+          question_id: "QuestionId{{random.number}}",
+        },
+        {
+          case_type_id: "AAT",
+          order: '{{random.number}}',
+          question_text: "What is their last name?",
+          answer_field_type: {
+            id: "Text",
+            type: "Text",
+            min: null,
+            max: null,
+            regular_expression: null,
+            fixed_list_items: [],
+            complex_fields: [],
+            collection_field_type: null,
+          },
+          display_context_parameter: "1",
+          challenge_question_id: "NoC",
+          // tslint:disable-next-line:max-line-length
+          answer_field: `{{address.zipCode}}|{{address.zipCode}}|{{address.zipCode}}:Applicant,{{address.zipCode}}|{{address.zipCode}}|{{address.zipCode}}:Respondent`,
+          question_id: "QuestionId{{random.number}}",
+        },
+        {
+          case_type_id: "AAT",
+          order: '{{random.number}}',
+          question_text: 'Do they have children?',
+          answer_field_type: {
+            id: "YesOrNo",
+            type: "YesOrNo",
+            min: null,
+            max: null,
+            regular_expression: null,
+            fixed_list_items: [],
+            complex_fields: [],
+            collection_field_type: null,
+          },
+          display_context_parameter: "1",
+          challenge_question_id: "NoC",
+          // tslint:disable-next-line:max-line-length
+          answer_field: `{{name.findName}}|{{company.companyName}}|{{name.firstName}}:Applicant,{{name.findName}}|{{company.companyName}}|{{name.firstName}}:Respondent`,
+          question_id: "QuestionId{{random.number}}",
+        },
+        {
             case_type_id: 'AAT',
             order: '{{random.number}}',
-            question_text: '{{hacker.phrase}}',
+            question_text: 'How many children do they have?',
             answer_field_type: {
                 id: "Number",
                 type: "Number",
@@ -57,29 +117,47 @@ export const init = () => {
             question_id: "QuestionId{{random.number}}",
         },
         {
-            case_type_id: "AAT",
-            order: '{{random.number}}',
-            question_text: '{{hacker.phrase}}',
-            answer_field_type: {
-                id: "YesOrNo",
-                type: "YesOrNo",
-                min: null,
-                max: null,
-                regular_expression: null,
-                fixed_list_items: [],
-                complex_fields: [],
-                collection_field_type: null,
-            },
-            display_context_parameter: "1",
-            challenge_question_id: "NoC",
-            // tslint:disable-next-line:max-line-length
-            answer_field: `{{name.findName}}|{{company.companyName}}|{{name.firstName}}:Applicant,{{name.findName}}|{{company.companyName}}|{{name.firstName}}:Respondent`,
-            question_id: "QuestionId{{random.number}}",
+          case_type_id: 'AAT',
+          order: '{{random.number}}',
+          question_text: 'What is their telephone number?',
+          answer_field_type: {
+            id: "PhoneUK",
+            type: "PhoneUK",
+            min: null,
+            max: null,
+            regular_expression: null,
+            fixed_list_items: [],
+            complex_fields: [],
+            collection_field_type: null,
+          },
+          display_context_parameter: "1",
+          challenge_question_id: "NoC",
+          answer_field: `{{name.findName}}|{{company.companyName}}|{{name.firstName}}:Applicant,{{name.findName}}|{{company.companyName}}|{{name.firstName}}:Respondent`,
+          question_id: "QuestionId{{random.number}}",
+        },
+        {
+          case_type_id: 'AAT',
+          order: '{{random.number}}',
+          question_text: 'What is their postcode?',
+          answer_field_type: {
+            id: "Postcode",
+            type: "Postcode",
+            min: null,
+            max: null,
+            regular_expression: null,
+            fixed_list_items: [],
+            complex_fields: [],
+            collection_field_type: null,
+          },
+          display_context_parameter: "1",
+          challenge_question_id: "NoC",
+          answer_field: `{{name.findName}}|{{company.companyName}}|{{name.firstName}}:Applicant,{{name.findName}}|{{company.companyName}}|{{name.firstName}}:Respondent`,
+          question_id: "QuestionId{{random.number}}",
         },
         {
             case_type_id: "AAT",
             order: '{{random.number}}',
-            question_text: "What's their Postcode?",
+            question_text: "What is their Email?",
             answer_field_type: {
                 id: "Email",
                 type: "Email",
@@ -112,7 +190,7 @@ export const init = () => {
 
         let questions = []
 
-        questionsSchema.map( schema => { questions = [...questions, ...generator(schema, 5, 20)] })
+        questionsSchema.map( schema => { questions = [...questions, ...generator(schema, 1, 1)] })
 
         questions.sort((a, b) => a.order > b.order ? 1 : -1 )
 

@@ -24,7 +24,11 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
       actions: [
         {
           id: 'actionId',
-          title: 'actionTitle',
+          title: 'Reassign task',
+        },
+        {
+          id: 'actionId',
+          title: 'Release this task',
         }
       ]
     },
@@ -39,7 +43,7 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
       actions: [
         {
           id: 'actionId',
-          title: 'actionTitle',
+          title: 'Release this task',
         }
       ]
     }
@@ -58,14 +62,6 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
    * TaskView.TASK_LIST
    */
   public fields: TaskFieldConfig[] = [
-    // TODO: Does id need to be in the TaskFieldConfig? probably yeah,
-    // and then is it remove using bitmasking?
-    {
-      name: 'id',
-      type: TaskFieldType.STRING,
-      columnLabel: 'Id',
-      views: TaskView.TASK_LIST,
-    },
     {
       name: 'caseReference',
       type: TaskFieldType.STRING,
@@ -102,22 +98,7 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
       columnLabel: 'Due Dated',
       views: TaskView.TASK_LIST,
     },
-    // TODO: Does Manage need to be in the TaskFieldConfig?
-    // Probably yeah, and it's removed or enabled via Bitmasking?
-
-    // {
-    //   name: 'actions',
-    //   type: 'actions' as TaskFieldType,
-    //   columnLabel: 'Actions',
-    //   views: 0x01,
-    // },
-    // {
-    //   name: 'manage',
-    //   type: 'manage' as TaskFieldType,
-    //   columnLabel: 'Manage',
-    //   views: 0x01,
-    // }
-  ]
+  ];
 
   constructor() {
   }

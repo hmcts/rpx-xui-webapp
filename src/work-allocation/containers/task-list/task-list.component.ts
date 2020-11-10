@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {BehaviorSubject, Observable, of} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import {Task, TaskFieldConfig} from '../../models/tasks';
 
 @Component({
@@ -9,8 +9,16 @@ import {Task, TaskFieldConfig} from '../../models/tasks';
 })
 export class TaskListComponent implements OnInit {
 
+  /**
+   * These are the tasks as returned from the WA Api.
+   */
   @Input() public tasks: Task[];
+
+  /**
+   * These are the fields as returned from the WA Api.
+   */
   @Input() public fields: TaskFieldConfig[];
+
   @Output() public sortByFieldName = new EventEmitter<string>();
 
   private tasks$;
@@ -21,6 +29,8 @@ export class TaskListComponent implements OnInit {
   public dataSource$: Observable<Task[]>;
 
   public displayedColumns;
+
+  private _selectedRow;
 
   constructor() {
   }
@@ -38,20 +48,30 @@ export class TaskListComponent implements OnInit {
   /**
    * Returns the columns to be displayed by the Angular Component Dev Kit table.
    *
-   * TODO: DisplayedCoulmn is an array of strings specifying the fieldnames to be displayed, in order,
-   * this will have to include the 'manage' column as the last one.
-   *
    * TODO: Unit test
    */
   public getDisplayedColumn(taskFieldConfig: TaskFieldConfig[]) {
 
     const fields = taskFieldConfig.map(field => field.name);
+    const fieldsWithManageColumn = this.addManageColumn(fields);
 
-    // So over here we should use bitmasking to add or remove the manage field,
-    // dependent on view.
+    return fieldsWithManageColumn;
+  }
+
+  /**
+   * Note that the fields we get from the Work Allocation Api will not contain a 'manage' field.
+   *
+   * Therefore we need to add the 'manage' columnd field within this component.
+   */
+  public addManageColumn(fields: string[]) {
+
     return [...fields, 'manage'];
   }
 
+  // We need to make sure that 'manage' is added here,
+  // we don't need to add 'manage' to the column names
+  // We probably don't need to cut off id as well.
+  // the taskFieldConfig comes from the Api.
   /**
    * Takes in the fieldname, so it can be output to trigger a new Request to the API
    * to get a sorted result set.
@@ -63,5 +83,29 @@ export class TaskListComponent implements OnInit {
   public sort(fieldName: string) {
 
     this.sortByFieldName.emit(fieldName);
+  }
+
+  /**
+   * Set Selected Row
+   *
+   * Open and close the selected row.
+   */
+  public setSelectedRow(row) {
+
+    if (row === this.getSelectedRow()) {
+      this._selectedRow = null;
+    } else {
+      this._selectedRow = row;
+    }
+  }
+
+  public getSelectedRow() {
+
+    return this._selectedRow;
+  }
+
+  public isRowSelected(row) {
+
+    return row === this.getSelectedRow();
   }
 }

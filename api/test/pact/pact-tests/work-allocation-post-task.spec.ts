@@ -5,12 +5,23 @@ import * as path from 'path'
 
 import { EnhancedRequest } from '../../../lib/models'
 import { SearchTaskRequest } from '../../../workAllocation/interfaces/taskSearchParameter'
-import { TaskPost } from '../../../workAllocation/taskService'
+import { taskPost } from '../../../workAllocation/taskService'
 
 describe("Work Allocation API", () => {
 
   let mockServerPort: number
   let provider: Pact
+  const mockRequest = {
+    search_parameters: [
+        {
+          key: 'key1',
+          operator: 'operator1',
+          values: [
+            'value1',
+          ],
+        },
+      ],
+    }
   const mockResponse = {
     "tasks": [
         {
@@ -74,8 +85,8 @@ describe("Work Allocation API", () => {
 
     it('returns success with a 200', async () => {
       const taskUrl: string = `${provider.mockService.baseUrl}/task`
-      const { status } = await TaskPost(taskUrl, {} as SearchTaskRequest, {} as EnhancedRequest)
+      const { status } = await taskPost(taskUrl, mockRequest as SearchTaskRequest, {} as EnhancedRequest)
       expect(status).equal(200)
     })
-  })
+    })
 })

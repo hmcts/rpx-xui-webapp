@@ -1,6 +1,6 @@
 import * as express from 'express'
 import { EnhancedRequest } from '../lib/models'
-import { handleTaskGet, TaskPost } from './taskService'
+import { handleTaskGet, taskPost } from './taskService'
 import { prepareGetTaskUrl, preparePostTaskUrl } from './util'
 
 const baseUrl: string = 'http://localhost:8080'
@@ -29,7 +29,7 @@ export async function postTask(req: EnhancedRequest, res: express.Response, next
   try {
     const getTaskPath: string = preparePostTaskUrl(baseUrl)
 
-    const response = await TaskPost(getTaskPath, req.body, req)
+    const response = await taskPost(getTaskPath, req.body, req)
     res.status(200)
     res.send(response.body)
   } catch (error) {

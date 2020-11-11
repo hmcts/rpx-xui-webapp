@@ -31,7 +31,7 @@ describe("Work Allocation API", () => {
   describe('when requested to complete a task', () => {
     before(() =>
       provider.addInteraction({
-        state: '.well-known endpoint',
+        state: 'task is completed',
         uponReceiving: 'a request for completion',
         withRequest: {
           method: 'POST',
@@ -54,7 +54,7 @@ describe("Work Allocation API", () => {
   describe('when requested to complete a task that is already complete', () => {
     before(() =>
       provider.addInteraction({
-        state: '.well-known endpoint',
+        state: 'task was already complete',
         uponReceiving: 'a request for completion when already complete',
         withRequest: {
           method: 'POST',
@@ -77,7 +77,7 @@ describe("Work Allocation API", () => {
   describe('when making a bad request to complete a task', () => {
     before(() =>
       provider.addInteraction({
-        state: '.well-known endpoint',
+        state: 'a bad request was made',
         uponReceiving: 'a bad request for completion',
         withRequest: {
           method: 'POST',
@@ -106,7 +106,7 @@ describe("Work Allocation API", () => {
   describe('when making a request to complete a forbidden task', () => {
     before(() =>
       provider.addInteraction({
-        state: '.well-known endpoint',
+        state: 'completion of this task is was forbidden',
         uponReceiving: 'a request for completion of a forbidden task',
         withRequest: {
           method: 'POST',
@@ -135,7 +135,7 @@ describe("Work Allocation API", () => {
   describe('when making a request to complete a task but it is unsupported', () => {
     before(() =>
       provider.addInteraction({
-        state: '.well-known endpoint',
+        state: 'this action is unsupported',
         uponReceiving: 'a request for completion but it is unsupported',
         withRequest: {
           method: 'POST',
@@ -164,7 +164,7 @@ describe("Work Allocation API", () => {
   describe('when making a request to complete a task and the server falls over', () => {
     before(() =>
       provider.addInteraction({
-        state: '.well-known endpoint',
+        state: 'the server had an internal error',
         uponReceiving: 'a request for completion and the server falls over',
         withRequest: {
           method: 'POST',

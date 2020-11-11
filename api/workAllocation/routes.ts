@@ -1,11 +1,12 @@
-import * as express from 'express'
-import authInterceptor from '../lib/middleware/auth'
-import { getTask, postTask } from './index'
+import { Router } from 'express'
 
-const router = express.Router({ mergeParams: true })
+import { getTask, postTask } from '.'
+import authInterceptor from '../lib/middleware/auth'
+
+const router = Router({ mergeParams: true })
 
 router.use(authInterceptor)
 router.use('/task/:taskId', getTask)
-router.use('/task/:taskId/complete', postTask)
+router.use('/task/:taskId/:action', postTask)
 
 export default router

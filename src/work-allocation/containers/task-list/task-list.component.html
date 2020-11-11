@@ -1,16 +1,16 @@
 <!-- Using the Angular Component Development Kit Table Module, and not Angular Material -->
-<table cdk-table [dataSource]="dataSource$" class="govuk-table" [multiTemplateDataRows]="true">
+<table cdk-table [dataSource]="dataSource$" class="govuk-table" [multiTemplateDataRows]="true" style="border: 0px solid red;">
 
   <!-- Column Headers and Cells through the field config from the API-->
   <ng-container *ngFor="let field of fields" [cdkColumnDef]="field.name">
-    <th cdk-header-cell *cdkHeaderCellDef>{{field.columnLabel}}<button (click)="onSortHandler(field.name)">sort</button></th>
-    <td cdk-cell *cdkCellDef="let rowData">{{rowData[field.name]}}</td>
+    <th class="govuk-table__header" style="border: 0px solid blue;" cdk-header-cell *cdkHeaderCellDef>{{field.columnLabel}}<button (click)="onSortHandler(field.name)">sort</button></th>
+    <td class="govuk-table__cell" style="border: 0px solid green;" cdk-cell *cdkCellDef="let rowData">{{rowData[field.name]}}</td>
   </ng-container>
 
   <!-- Manage column -->
   <ng-container cdkColumnDef="manage">
-    <th cdk-header-cell *cdkHeaderCellDef>&nbsp;</th>
-    <td cdk-cell *cdkCellDef="let rowData">Manage <button (click)="setSelectedRow(rowData)">&#9658;</button></td>
+    <th class="govuk-table__header" cdk-header-cell *cdkHeaderCellDef>&nbsp;</th>
+    <td class="govuk-table__cell" cdk-cell *cdkCellDef="let rowData">Manage <button (click)="setSelectedRow(rowData)">&#9658;</button></td>
   </ng-container>
 
   <ng-container cdkColumnDef="actions">
@@ -23,11 +23,11 @@
     </td>
   </ng-container>
 
-  <!-- Header definition -->
-  <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+  <!-- Table Header Row -->
+  <tr class="govuk-table__head" style="border: 0px solid pink;" cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
 
-  <!-- Iterate through each column -->
-  <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
+  <!-- Table Row -->
+  <tr class="govuk-table__row" style="border: 0px solid green;" cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
   <tr cdk-row *cdkRowDef="let row; columns: ['actions']" when="() => false"></tr>
 
 </table>

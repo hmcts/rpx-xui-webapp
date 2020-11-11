@@ -17,13 +17,11 @@ export class NocQAndAComponent implements OnInit {
   @Input()
   public formGroup: FormGroup;
 
-  public qAndAForm: FormGroup;
-
   constructor(private store: Store<fromFeature.State>) { }
 
   public ngOnInit() {
     this.questions$ = this.store.pipe(select(fromFeature.questions));
-    this.qAndAForm = new FormGroup({});
+    this.formGroup = new FormGroup({});
   }
 
 }

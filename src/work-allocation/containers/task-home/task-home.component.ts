@@ -21,7 +21,7 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
       caseCategory: 'Protection',
       location: 'Taylor House',
       taskName: 'Review respondent evidence',
-      dueDate: new Date(628021800000),
+      dueDate: new Date(1604938789000),
       actions: [
         {
           id: 'actionId',
@@ -40,7 +40,7 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
       caseCategory: 'Revocation',
       location: 'Taylor House',
       taskName: 'Review appellant case',
-      dueDate: new Date(628021800000),
+      dueDate: new Date(1604506789000),
       actions: [
         {
           id: 'actionId',
@@ -92,7 +92,7 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
     },
     {
       name: 'dueDate',
-      type: TaskFieldType.STRING,
+      type: TaskFieldType.DATE_DUE,
       columnLabel: 'Due Dated',
       views: TaskView.TASK_LIST,
     },

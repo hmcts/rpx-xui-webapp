@@ -3,14 +3,14 @@
 
   <!-- Column Headers and Cells through the field config from the API-->
   <ng-container *ngFor="let field of fields" [cdkColumnDef]="field.name">
-    <th class="govuk-table__header" style="border: 0px solid blue;" cdk-header-cell *cdkHeaderCellDef>{{field.columnLabel}}<button (click)="onSortHandler(field.name)">sort</button></th>
-    <td class="govuk-table__cell" style="border: 0px solid green;" cdk-cell *cdkCellDef="let rowData">{{rowData[field.name]}}</td>
+    <th class="govuk-table__header" cdk-header-cell *cdkHeaderCellDef>{{field.columnLabel}}<button (click)="onSortHandler(field.name)">sort</button></th>
+    <td class="govuk-table__cell" style="border-bottom: 0px solid blue;"  cdk-cell *cdkCellDef="let rowData">{{rowData[field.name]}}</td>
   </ng-container>
 
   <!-- Manage column -->
   <ng-container cdkColumnDef="manage">
     <th class="govuk-table__header" cdk-header-cell *cdkHeaderCellDef>&nbsp;</th>
-    <td class="govuk-table__cell" cdk-cell *cdkCellDef="let rowData">Manage <button (click)="setSelectedRow(rowData)">&#9658;</button></td>
+    <td cdk-cell *cdkCellDef="let rowData" style="border: 0px solid red;" >Manage <button (click)="setSelectedRow(rowData)">&#9658;</button></td>
   </ng-container>
 
   <ng-container cdkColumnDef="actions">
@@ -24,10 +24,10 @@
   </ng-container>
 
   <!-- Table Header Row -->
-  <tr class="govuk-table__head" style="border: 0px solid pink;" cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+  <tr class="govuk-table__row" style="border: 0px solid red;" cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
 
   <!-- Table Row -->
-  <tr class="govuk-table__row" style="border: 0px solid green;" cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
-  <tr cdk-row *cdkRowDef="let row; columns: ['actions']" when="() => false"></tr>
+  <tr class="govuk-table__row" style="border: 0px solid red;" cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
+  <tr style="border-bottom: 1px solid red;" cdk-row *cdkRowDef="let row; columns: ['actions']" when="() => false"></tr>
 
 </table>

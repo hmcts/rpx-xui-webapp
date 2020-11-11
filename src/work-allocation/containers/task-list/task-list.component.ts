@@ -9,6 +9,7 @@ import TaskAction from '../../models/tasks/task-action.model';
   templateUrl: './task-list.component.html',
   styleUrls: ['task-list.component.scss']
 })
+
 export class TaskListComponent implements OnInit {
 
   /**

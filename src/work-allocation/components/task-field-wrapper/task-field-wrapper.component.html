@@ -1,0 +1,68 @@
+<table class="task-field-testing">
+  <tr>
+    <th colspan="3">TaskFieldComponent testing</th>
+  </tr>
+  <tr>
+    <td>{{FIELDS.caseName.columnLabel}}</td>
+    <td><input type="text" [(ngModel)]="task.caseName"/></td>
+    <td><exui-task-field [config]="FIELDS.caseName" [task]="task"></exui-task-field></td>
+  </tr>
+  <tr>
+    <td>{{FIELDS.dueDate.columnLabel}}</td>
+    <td><input type="text" [value]="task.dueDateText" (blur)="setDate($event.target.value, FIELDS.dueDate)"/></td>
+    <td><exui-task-field [config]="FIELDS.dueDate" [task]="task"></exui-task-field></td>
+  </tr>
+  <tr>
+    <td>{{FIELDS.daysFromToday.columnLabel}}</td>
+    <td><input type="text" [value]="task.dueDateText" (blur)="setDate($event.target.value, FIELDS.daysFromToday)"/></td>
+    <td><exui-task-field [config]="FIELDS.daysFromToday" [task]="task"></exui-task-field></td>
+  </tr>
+  <tr>
+    <td>{{FIELDS.date.columnLabel}}</td>
+    <td><input type="text" [value]="task.dueDateText" (blur)="setDate($event.target.value, FIELDS.date)"/></td>
+    <td><exui-task-field [config]="FIELDS.date" [task]="task"></exui-task-field></td>
+  </tr>
+  <tr>
+    <td>{{FIELDS.tomorrow.columnLabel}}</td>
+    <td><input type="text" [value]="task.tomorrowText" (blur)="setDateTime($event.target.value, FIELDS.tomorrow)"/></td>
+    <td><exui-task-field [config]="FIELDS.tomorrow" [task]="task"></exui-task-field></td>
+  </tr>
+  <tr>
+    <td>{{FIELDS.happy.columnLabel}}</td>
+    <td>
+      <select [(ngModel)]="task.happy">
+        <option [ngValue]="">I don't know</option>
+        <option [ngValue]="false">False</option>
+        <option [ngValue]="true">True</option>
+      </select>
+    </td>
+    <td><exui-task-field [config]="FIELDS.happy" [task]="task"></exui-task-field></td>
+  </tr>
+  <tr>
+    <td>{{FIELDS.piAsInt.columnLabel}}</td>
+    <td><input type="text" [(ngModel)]="task.pi"/></td>
+    <td><exui-task-field [config]="FIELDS.piAsInt" [task]="task"></exui-task-field></td>
+  </tr>
+  <tr>
+    <td>{{FIELDS.piTo2DP.columnLabel}}</td>
+    <td><input type="text" [(ngModel)]="task.pi"/></td>
+    <td><exui-task-field [config]="FIELDS.piTo2DP" [task]="task"></exui-task-field></td>
+  </tr>
+  <tr>
+    <td>{{FIELDS.google.columnLabel}}</td>
+    <td><input type="text" [(ngModel)]="task.google"/></td>
+    <td><exui-task-field [config]="FIELDS.google" [task]="task"></exui-task-field></td>
+  </tr>
+  <tr>
+    <td>
+      {{FIELDS.image.columnLabel}}
+      <select [(ngModel)]="imageRow.height">
+        <option value="30">Height 30 (default)</option>
+        <option value="50">Height 50</option>
+        <option value="75">Height 75</option>
+      </select>
+    </td>
+    <td><input type="text" [(ngModel)]="task.image"/></td>
+    <td><exui-task-field [className]="'image-field_' + imageRow.height" [config]="FIELDS.image" [task]="task"></exui-task-field></td>
+  </tr>
+</table>

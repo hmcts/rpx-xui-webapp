@@ -1,27 +1,31 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
 import { MatDialogModule } from '@angular/material';
 import { CdkTableModule } from '@angular/cdk/table';
-import {SharedModule} from '../app/shared/shared.module';
-// from containers
+import { SharedModule } from '../app/shared/shared.module';
+import { WorkAllocationComponentsModule } from './components/work-allocation.components.module';
 import * as fromContainers from './containers';
 import { workAllocationRouting } from './work-allocation-feature.routes';
 
-@NgModule( {
-    imports: [
-        CommonModule,
-        HttpClientModule,
-        SharedModule,
-        HttpModule,
-        MatDialogModule,
-        workAllocationRouting,
-        CdkTableModule,
-    ],
-  declarations: [...fromContainers.containers],
-  providers: [
-  ]
+// from containers
+@NgModule({
+  imports: [
+      CommonModule,
+      HttpClientModule,
+      SharedModule,
+      HttpModule,
+      MatDialogModule,
+      WorkAllocationComponentsModule,
+      workAllocationRouting,
+      CdkTableModule
+  ],
+  declarations: [
+    ...fromContainers.containers
+  ],
+  providers: [],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 
 export class WorkAllocationModule {

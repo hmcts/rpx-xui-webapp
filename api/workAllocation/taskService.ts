@@ -20,3 +20,9 @@ export async function taskPost(path: string, payload: SearchTaskRequest, req: En
     const response: AxiosResponse = await http.post(path, payload, { headers })
     return response
 }
+
+export async function handleUnClaimPost(path: string, req: EnhancedRequest): Promise<any> {
+    const headers = setHeaders(req)
+    const response: AxiosResponse = await http.post(path, { headers })
+    return response
+}

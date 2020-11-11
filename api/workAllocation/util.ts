@@ -6,3 +6,7 @@ export function prepareGetTaskUrl(url: string, taskId: string): string {
 export function preparePostTaskUrl(url: string) {
   return `${url}/task`
 }
+
+export function preparePostTaskUnClaimUrl(url: string, taskId: string) {
+  return `${url}/task/${taskId}/unclaim`
+}

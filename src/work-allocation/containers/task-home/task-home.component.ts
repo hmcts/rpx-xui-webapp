@@ -1,6 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Task, TaskFieldConfig} from './../../models/tasks';
 import {TaskFieldType, TaskView} from './../../enums';
+import InvokedTaskAction from '../../models/tasks/invoked-task-action.model';
 
 @Component({
   selector: 'exui-task-home',
@@ -46,7 +47,7 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
           title: 'Release this task',
         }
       ]
-    }
+    },
   ];
 
   /**
@@ -57,9 +58,6 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
    *
    * The sorting will handled by this component, via the
    * WP api as this component.
-   *
-   * TODO: Having a strange issue here where the compiler can't resolve,
-   * TaskView.TASK_LIST
    */
   public fields: TaskFieldConfig[] = [
     {
@@ -103,8 +101,9 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
   constructor() {
   }
 
-  // TODO: Use bitmasking? Yep so use bitmasking to get rid of the id field, I guess.
+
   public ngOnInit(): void {
+
     console.log('onInitTaskHome');
   }
 
@@ -115,10 +114,24 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
    * the WA Api, once we have these then we need to set the tasks and fields, and pass
    * these into the TaskListComponent.
    *
-   * @param fieldname - ie. 'caseName'
+   * @param fieldName - ie. 'caseName'
    */
   public onSortHandler(fieldName: string): void {
+
+    // Remove after integration
+    console.log('Task Home received Sort on:');
     console.log(fieldName);
+  }
+
+  /**
+   * InvokedTaskAction from the Task List Component, so that we can handle the User's
+   * action.
+   */
+  public onActionHandler(taskAction: InvokedTaskAction): void {
+
+    // Remove after integration
+    console.log('Task Home received InvokedTaskAction:');
+    console.log(taskAction);
   }
 
   public ngOnDestroy(): void {

@@ -1,6 +1,8 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {Task, TaskFieldConfig} from '../../models/tasks';
+import InvokedTaskAction from '../../models/tasks/invoked-task-action.model';
+import TaskAction from '../../models/tasks/task-action.model';
 
 @Component({
   selector: 'exui-task-list',
@@ -10,18 +12,13 @@ import {Task, TaskFieldConfig} from '../../models/tasks';
 export class TaskListComponent implements OnInit {
 
   /**
-   * These are the tasks as returned from the WA Api.
+   * These are the tasks & fields as returned from the WA Api.
    */
   @Input() public tasks: Task[];
-
-  /**
-   * These are the fields as returned from the WA Api.
-   */
   @Input() public fields: TaskFieldConfig[];
 
-  @Output() public sortByFieldName = new EventEmitter<string>();
-
-  private tasks$;
+  @Output() public sortEvent = new EventEmitter<string>();
+  @Output() public actionEvent = new EventEmitter<InvokedTaskAction>();
 
   /**
    * The datasource is an Observable of data to be displayed, as per LLD.
@@ -30,17 +27,15 @@ export class TaskListComponent implements OnInit {
 
   public displayedColumns;
 
-  private _selectedRow;
+  private selectedRow;
 
   constructor() {
   }
 
-  // TODO: What happens if the config changes on the fly?
-  // TODO: Consider renaming dataSource$
   public ngOnInit() {
 
-    this.tasks$ = new BehaviorSubject(this.tasks);
-    this.dataSource$ = this.tasks$;
+    const tasks$ = new BehaviorSubject(this.tasks);
+    this.dataSource$ = tasks$;
 
     this.displayedColumns = this.getDisplayedColumn(this.fields);
   }
@@ -53,25 +48,19 @@ export class TaskListComponent implements OnInit {
   public getDisplayedColumn(taskFieldConfig: TaskFieldConfig[]) {
 
     const fields = taskFieldConfig.map(field => field.name);
-    const fieldsWithManageColumn = this.addManageColumn(fields);
-
-    return fieldsWithManageColumn;
+    return this.addManageColumn(fields);
   }
 
   /**
-   * Note that the fields we get from the Work Allocation Api will not contain a 'manage' field.
+   * Note that the fields we get from the WA Api will not contain a 'manage' field.
    *
-   * Therefore we need to add the 'manage' columnd field within this component.
+   * Therefore we need to add the 'manage' column field within this component, as discussed in the LLD.
    */
   public addManageColumn(fields: string[]) {
 
     return [...fields, 'manage'];
   }
 
-  // We need to make sure that 'manage' is added here,
-  // we don't need to add 'manage' to the column names
-  // We probably don't need to cut off id as well.
-  // the taskFieldConfig comes from the Api.
   /**
    * Takes in the fieldname, so it can be output to trigger a new Request to the API
    * to get a sorted result set.
@@ -80,9 +69,22 @@ export class TaskListComponent implements OnInit {
    *
    * @param fieldName - ie. 'caseName'
    */
-  public sort(fieldName: string) {
+  public onSortHandler(fieldName: string) {
 
-    this.sortByFieldName.emit(fieldName);
+    this.sortEvent.emit(fieldName);
+  }
+
+  /**
+   * Trigger an event to the parent when the User clicks on a Manage action.
+   */
+  public onActionHandler(task: Task, action: TaskAction) {
+
+    const invokedTaskAction: InvokedTaskAction = {
+      task,
+      action
+    };
+
+    this.actionEvent.emit(invokedTaskAction);
   }
 
   /**
@@ -93,15 +95,15 @@ export class TaskListComponent implements OnInit {
   public setSelectedRow(row) {
 
     if (row === this.getSelectedRow()) {
-      this._selectedRow = null;
+      this.selectedRow = null;
     } else {
-      this._selectedRow = row;
+      this.selectedRow = row;
     }
   }
 
   public getSelectedRow() {
 
-    return this._selectedRow;
+    return this.selectedRow;
   }
 
   public isRowSelected(row) {

@@ -3,7 +3,7 @@
 
   <!-- Column Headers and Cells through the field config from the API-->
   <ng-container *ngFor="let field of fields" [cdkColumnDef]="field.name">
-    <th cdk-header-cell *cdkHeaderCellDef>{{field.columnLabel}}<button (click)="sort(field.name)">sort</button></th>
+    <th cdk-header-cell *cdkHeaderCellDef>{{field.columnLabel}}<button (click)="onSortHandler(field.name)">sort</button></th>
     <td cdk-cell *cdkCellDef="let rowData">{{rowData[field.name]}}</td>
   </ng-container>
 
@@ -14,10 +14,10 @@
   </ng-container>
 
   <ng-container cdkColumnDef="actions">
-    <td cdk-cell *cdkCellDef="let rowData" style="border: 1px solid blue;" [attr.colspan]="displayedColumns.length">
+    <td cdk-cell *cdkCellDef="let rowData" [attr.colspan]="displayedColumns.length">
       <ng-container *ngIf="isRowSelected(rowData)">
         <div *ngFor="let action of rowData.actions" class="actions">
-          <div class="action">{{action.title}}</div>
+          <button (click)="onActionHandler(rowData, action)" class="action">{{action.title}}</button>
         </div>
       </ng-container>
     </td>
@@ -25,8 +25,8 @@
 
   <!-- Header definition -->
   <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
-  <!-- loop over every item in our datasource array -->
-  <!-- run through each column -->
+
+  <!-- Iterate through each column -->
   <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
   <tr cdk-row *cdkRowDef="let row; columns: ['actions']" when="() => false"></tr>
 

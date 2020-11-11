@@ -10,7 +10,7 @@ const BrowserWaits = require('../../e2e/support/customWaits');
 
 const headerPage = require('../../e2e/features/pageObjects/headerPage');
 const exuiTestCaseType = require('../../nodeMock/ccd/solicitorCreate/exuiTestCaseType');
-const { createNonNullExpression } = require('typescript');
+const config = require('../config/protractor.conf');
 
 describe.skip('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
 
@@ -34,7 +34,7 @@ describe.skip('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
         await MockApp.startServer();
         await BrowserUtil.browserInitWithAuth(roles);
         await headerPage.isTabPresent('Case list');
-        await browser.get("http://localhost:4200/cases/case-create/exui/casetype_1/submitDraft/page1");
+        await browser.get(`${config.basuUrl}cases/case-create/exui/casetype_1/submitDraft/page1`);
 
         await BrowserWaits.waitForElement(addNewButton);
         expect(await addNewButton.isEnabled()).to.be.false
@@ -48,7 +48,7 @@ describe.skip('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
         await MockApp.startServer();
         await BrowserUtil.browserInitWithAuth(roles);
         await headerPage.isTabPresent('Case list');
-        await browser.get("http://localhost:4200/cases/case-create/exui/casetype_1/submitDraft/page1");
+        await browser.get(`${config.basuUrl}cases/case-create/exui/casetype_1/submitDraft/page1`);
 
         await BrowserWaits.waitForElement(addNewButton);
         expect(await addNewButton.isEnabled()).to.be.true
@@ -62,7 +62,7 @@ describe.skip('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
         await MockApp.startServer();
         await BrowserUtil.browserInitWithAuth(roles);
         await headerPage.isTabPresent('Case list');
-        await browser.get("http://localhost:4200/cases/case-create/exui/casetype_1/submitDraft/page1");
+        await browser.get(`${config.basuUrl}cases/case-create/exui/casetype_1/submitDraft/page1`);
 
         await BrowserWaits.waitForElement(addNewButton);
         expect(await addNewButton.isEnabled()).to.be.true
@@ -76,7 +76,7 @@ describe.skip('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
         await MockApp.startServer();
         await BrowserUtil.browserInitWithAuth(roles);
         await headerPage.isTabPresent('Case list');
-        await browser.get("http://localhost:4200/cases/case-create/exui/casetype_1/submitDraft/page1");
+        await browser.get(`${config.basuUrl}cases/case-create/exui/casetype_1/submitDraft/page1`);
 
         await BrowserWaits.waitForElement(addNewButton);
         expect(await addNewButton.isEnabled()).to.be.false
@@ -90,7 +90,7 @@ describe.skip('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
         await MockApp.startServer();
         await BrowserUtil.browserInitWithAuth(roles);
         await headerPage.isTabPresent('Case list');
-        await browser.get("http://localhost:4200/cases/case-create/exui/casetype_1/submitDraft/page1");
+        await browser.get(`${config.basuUrl}cases/case-create/exui/casetype_1/submitDraft/page1`);
 
         await BrowserWaits.waitForElement(addNewButton);
         expect(await addNewButton.isEnabled()).to.be.true
@@ -103,7 +103,7 @@ describe.skip('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
 
         await BrowserUtil.browserInitWithAuth(roles);
         await headerPage.isTabPresent('Case list');
-        await browser.get("http://localhost:4200/cases/case-create/exui/casetype_1/submitDraft/page1");
+        await browser.get(`${config.basuUrl}cases/case-create/exui/casetype_1/submitDraft/page1`);
 
         await BrowserWaits.waitForElement(addNewButton);
         expect(await addNewButton.isEnabled()).to.be.false

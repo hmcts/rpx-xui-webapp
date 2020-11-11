@@ -5,7 +5,7 @@ import { handleTaskGet } from './taskService'
 const baseUrl: string = 'http://localhost:8080'
 
 /**
- * getPayments
+ * getTasks
  */
 export async function getTask(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
 
@@ -23,4 +23,11 @@ export async function getTask(req: EnhancedRequest, res: express.Response, next:
 
 export function prepareGetTaskUrl(url: string, taskId: string): string {
     return `${url}/task/${taskId}`
+}
+
+/**
+ * postTasks
+ */
+export async function postTask(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
+ throw new Error('Not Implemented')
 }

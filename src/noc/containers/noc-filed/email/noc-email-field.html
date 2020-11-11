@@ -2,7 +2,7 @@
 
   <label [for]="id()">
     <span class="form-label govuk-!-font-weight-bold" questionField.question_text>{{questionField.question_text}}</span>
-    <span class="error-message" *ngIf="emailControl.errors && emailControl.touched">{{emailControl.errors | ccdFirstError}}</span>
+    <span class="error-message" *ngIf="emailControl.errors && emailControl.touched">{{emailControl.errors | nocError}}</span>
   </label>
 
   <input class="govuk-input govuk-input--width-10" [id]="id()" type="email" [formControl]="emailControl">

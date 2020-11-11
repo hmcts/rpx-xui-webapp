@@ -2,7 +2,7 @@
 
   <label class="govuk-label"  [for]="id()">
     <span class="form-label govuk-!-font-weight-bold" *ngIf="questionField.question_text">{{questionField.question_text}}</span>
-    <span class="error-message" *ngIf="postcodeControl.errors && postcodeControl.touched">{{postcodeControl.errors | ccdFirstError}}</span>
+    <span class="error-message" *ngIf="postcodeControl.errors && postcodeControl.touched">{{postcodeControl.errors | nocError}}</span>
   </label>
 
   <input class="govuk-input govuk-input--width-10" [id]="id()" type="text" [formControl]="postcodeControl">

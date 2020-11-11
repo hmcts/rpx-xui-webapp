@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
-import { NocQuestion } from '../../../models';
 
 @Component({
   selector: 'exui-noc-number-field',
@@ -13,9 +12,5 @@ export class NocNumberFieldComponent extends AbstractFieldWriteComponent impleme
 
   public ngOnInit() {
     this.numberControl = this.registerControl(new FormControl(''));
-  }
-
-  protected addValidators(questionField: NocQuestion, control: FormControl): void {
-    console.log('NocNumberFieldComponent addValidators');
   }
 }

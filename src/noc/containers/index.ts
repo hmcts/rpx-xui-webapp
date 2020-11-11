@@ -6,6 +6,7 @@ import { NocNumberFieldComponent } from './noc-filed/number';
 import { NocPhoneUkFieldComponent } from './noc-filed/phone-uk';
 import { NocPostcodeFieldComponent } from './noc-filed/postcode';
 import { NocTextFieldComponent } from './noc-filed/text';
+import { NocErrorPipe } from './noc-filed/utils';
 import { NocYesNoFieldComponent } from './noc-filed/yes-no';
 import { NocHomeComponent } from './noc-home/noc-home.component';
 import { NocNavigationComponent } from './noc-navigation/noc-navigation.component';
@@ -18,6 +19,7 @@ export const containers: any[] = [
   NocCaseRefComponent,
   NocQAndAComponent,
   NocFieldComponent,
+  NocErrorPipe,
   NocTextFieldComponent,
   NocNumberFieldComponent,
   NocEmailFieldComponent,

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { NocQuestion } from '../../models';
+import { NocValidators } from './utils/noc-validators';
 
 @Injectable()
 export class FormValidatorsService {
@@ -8,7 +9,7 @@ export class FormValidatorsService {
 
   public addValidators(nocQuestion: NocQuestion, control: FormControl): FormControl {
     if (nocQuestion.answer_field_type.type) {
-      const validators = [Validators.required];
+      const validators = [];
       if (nocQuestion.answer_field_type.type === 'Text') {
         if (nocQuestion.answer_field_type.regular_expression) {
           validators.push(Validators.pattern(nocQuestion.answer_field_type.regular_expression));
@@ -21,6 +22,10 @@ export class FormValidatorsService {
         if (nocQuestion.answer_field_type.max) {
           validators.push(Validators.maxLength(nocQuestion.answer_field_type.max));
         }
+      } else if (nocQuestion.answer_field_type.type === 'Email') {
+        validators.push(Validators.email);
+      } else if (nocQuestion.answer_field_type.type === 'Number') {
+        validators.push(NocValidators.numberValidator());
       }
       if (control.validator) {
         validators.push(control.validator);

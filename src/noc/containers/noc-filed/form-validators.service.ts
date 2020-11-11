@@ -26,6 +26,10 @@ export class FormValidatorsService {
         validators.push(Validators.email);
       } else if (nocQuestion.answer_field_type.type === 'Number') {
         validators.push(NocValidators.numberValidator());
+      } else if (nocQuestion.answer_field_type.type === 'Postcode') {
+        validators.push(NocValidators.postcodeValidator());
+      } else if (nocQuestion.answer_field_type.type === 'PhoneUK') {
+        validators.push(NocValidators.phoneUKValidator());
       }
       if (control.validator) {
         validators.push(control.validator);

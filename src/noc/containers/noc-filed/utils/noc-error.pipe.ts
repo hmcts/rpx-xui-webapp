@@ -27,6 +27,10 @@ export class NocErrorPipe implements PipeTransform {
       return 'The email is invalid.';
     } else if (keys[0] ===  'number') {
       return 'The number is invalid.';
+    } else if (keys[0] ===  'postcode') {
+      return 'The postcode is invalid.';
+    } else if (keys[0] ===  'phoneUK') {
+      return 'The phone number is invalid.';
     }
     return value[keys[0]];
   }

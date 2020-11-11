@@ -88,14 +88,14 @@ describe("Work Allocation API", () => {
           withRequest: {
               method: 'POST',
               path: '/task',
-              body: BEHAVIOURS.SUCCESS
+              body: mockRequest
           },
       })
     )
 
     it('returns success with a 200', async () => {
       const taskUrl: string = `${provider.mockService.baseUrl}/task`
-      const { status } = await taskPost(taskUrl, BEHAVIOURS.SUCCESS as SearchTaskRequest, {} as EnhancedRequest)
+      const { status } = await taskPost(taskUrl, mockRequest as SearchTaskRequest, {} as EnhancedRequest)
       expect(status).equal(200)
     })
   })

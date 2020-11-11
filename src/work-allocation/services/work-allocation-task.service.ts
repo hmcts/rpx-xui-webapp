@@ -19,7 +19,7 @@ export class WorkAllocationTaskService {
   }
 
   public postTask(task: TaskSearchParameters): Observable<any> {
-    return this.http.post<any>(`${BASE_URL}`, {});
+    return this.http.post<any>(`${BASE_URL}`, task);
   }
 
   public unclaimTask(taskId: string): Observable<any> {

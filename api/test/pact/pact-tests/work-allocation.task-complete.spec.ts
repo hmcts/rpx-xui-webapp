@@ -11,6 +11,15 @@ describe("Work Allocation API", () => {
   let mockServerPort: number;
   let provider: Pact;
 
+  const BEHAVIOURS = {
+    SUCCESS: {},
+    ALREADY_DONE: { behaviour: 'already-done' },
+    BAD_REQUEST: { behaviour: 'bad-request' },
+    FORBIDDEN: { behaviour: 'forbidden' },
+    UNSUPPORTED: { behaviour: 'unsupported' },
+    SERVER_ERROR: { behaviour: 'unsupported' }
+  };
+
   before(async () => {
     mockServerPort = await getPort();
     provider = new Pact({
@@ -35,7 +44,8 @@ describe("Work Allocation API", () => {
         uponReceiving: 'a request for completion',
         withRequest: {
           method: 'POST',
-          path: '/task/200/complete'
+          path: '/task/123456/complete',
+          body: BEHAVIOURS.SUCCESS
         },
         willRespondWith: {
           status: 200,
@@ -45,8 +55,8 @@ describe("Work Allocation API", () => {
     );
 
     it('returns success with a 200', async () => {
-      const taskUrl: string = `${provider.mockService.baseUrl}/task/200/complete`
-      const { status } = await handleTaskPost(taskUrl, {}, {} as EnhancedRequest);
+      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/complete`
+      const { status } = await handleTaskPost(taskUrl, BEHAVIOURS.SUCCESS, {} as EnhancedRequest);
       expect(status).equal(200);
     });
   });
@@ -58,7 +68,8 @@ describe("Work Allocation API", () => {
         uponReceiving: 'a request for completion when already complete',
         withRequest: {
           method: 'POST',
-          path: '/task/204/complete'
+          path: '/task/123456/complete',
+          body: BEHAVIOURS.ALREADY_DONE
         },
         willRespondWith: {
           status: 204,
@@ -68,8 +79,8 @@ describe("Work Allocation API", () => {
     );
 
     it('returns success but with a 204', async () => {
-      const taskUrl: string = `${provider.mockService.baseUrl}/task/204/complete`
-      const { status } = await handleTaskPost(taskUrl, {}, {} as EnhancedRequest);
+      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/complete`
+      const { status } = await handleTaskPost(taskUrl, BEHAVIOURS.ALREADY_DONE, {} as EnhancedRequest);
       expect(status).equal(204);
     });
   });
@@ -81,7 +92,8 @@ describe("Work Allocation API", () => {
         uponReceiving: 'a bad request for completion',
         withRequest: {
           method: 'POST',
-          path: '/task/400/complete'
+          path: '/task/123456/complete',
+          body: BEHAVIOURS.BAD_REQUEST
         },
         willRespondWith: {
           status: 400,
@@ -91,10 +103,10 @@ describe("Work Allocation API", () => {
     );
 
     it('returns failure with a 400', async () => {
-      const taskUrl: string = `${provider.mockService.baseUrl}/task/400/complete`;
+      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/complete`;
       let response: { status: number };
       try {
-        response = await handleTaskPost(taskUrl, {}, {} as EnhancedRequest);
+        response = await handleTaskPost(taskUrl, BEHAVIOURS.BAD_REQUEST, {} as EnhancedRequest);
       } catch (err) {
         response = err;
       }
@@ -110,7 +122,8 @@ describe("Work Allocation API", () => {
         uponReceiving: 'a request for completion of a forbidden task',
         withRequest: {
           method: 'POST',
-          path: '/task/403/complete'
+          path: '/task/123456/complete',
+          body: BEHAVIOURS.FORBIDDEN
         },
         willRespondWith: {
           status: 403,
@@ -120,10 +133,10 @@ describe("Work Allocation API", () => {
     );
 
     it('returns failure with a 403', async () => {
-      const taskUrl: string = `${provider.mockService.baseUrl}/task/403/complete`;
+      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/complete`;
       let response: { status: number };
       try {
-        response = await handleTaskPost(taskUrl, {}, {} as EnhancedRequest);
+        response = await handleTaskPost(taskUrl, BEHAVIOURS.FORBIDDEN, {} as EnhancedRequest);
       } catch (err) {
         response = err;
       }
@@ -139,7 +152,8 @@ describe("Work Allocation API", () => {
         uponReceiving: 'a request for completion but it is unsupported',
         withRequest: {
           method: 'POST',
-          path: '/task/415/complete'
+          path: '/task/123456/complete',
+          body: BEHAVIOURS.UNSUPPORTED
         },
         willRespondWith: {
           status: 415,
@@ -149,10 +163,10 @@ describe("Work Allocation API", () => {
     );
 
     it('returns failure with a 415', async () => {
-      const taskUrl: string = `${provider.mockService.baseUrl}/task/415/complete`;
+      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/complete`;
       let response: { status: number };
       try {
-        response = await handleTaskPost(taskUrl, {}, {} as EnhancedRequest);
+        response = await handleTaskPost(taskUrl, BEHAVIOURS.UNSUPPORTED, {} as EnhancedRequest);
       } catch (err) {
         response = err;
       }
@@ -168,7 +182,8 @@ describe("Work Allocation API", () => {
         uponReceiving: 'a request for completion and the server falls over',
         withRequest: {
           method: 'POST',
-          path: '/task/500/complete'
+          path: '/task/123456/complete',
+          body: BEHAVIOURS.SERVER_ERROR
         },
         willRespondWith: {
           status: 500,
@@ -178,10 +193,10 @@ describe("Work Allocation API", () => {
     );
 
     it('returns failure with a 500', async () => {
-      const taskUrl: string = `${provider.mockService.baseUrl}/task/500/complete`;
+      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/complete`;
       let response: { status: number };
       try {
-        response = await handleTaskPost(taskUrl, {}, {} as EnhancedRequest);
+        response = await handleTaskPost(taskUrl, BEHAVIOURS.SERVER_ERROR, {} as EnhancedRequest);
       } catch (err) {
         response = err;
       }

@@ -545,10 +545,78 @@ describe('WorkAllocation', () => {
       expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
     });
 
-    /**
-     * TODO: Unit testing of the IMAGE type.
-     * I expect it will follow a similar pattern to DATE_DUE and URL.
-     */
+    it('should handle an image type', () => {
+      const EXAMPLE1_IMAGE: string = '/assets/images/test.jpg';
+      const EXAMPLE2_IMAGE: string = '/assets/images/govuk-crest.png';
+
+      // No image shown yet.
+      expect(fixture.debugElement.nativeElement.querySelector('img')).toBeNull();
+
+      // Set up the config and the task.
+      const config: TaskFieldConfig = getConfig('image', TaskFieldType.IMAGE);
+      const task: Task = {
+        id: 'The task ID',
+        caseReference: 'The case reference',
+        caseName: 'The case name',
+        caseCategory: 'The case category',
+        location: 'The location',
+        taskName: 'The task name',
+        dueDate: new Date(),
+        actions: [],
+        image: EXAMPLE1_IMAGE
+      };
+
+      // Add the task and it should work (showing the image component).
+      component.config = config;
+      component.task = task;
+      fixture.detectChanges();
+      let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('img');
+      expect(element).not.toBeNull();
+      expect(element.getAttribute('src')).toBe(EXAMPLE1_IMAGE);
+      expect(element.getAttribute('alt')).toBe('Image');
+
+       // Change the value of task.image
+      task['image'] = EXAMPLE2_IMAGE;
+      fixture.detectChanges();
+      expect(element).not.toBeNull();
+      element = fixture.debugElement.nativeElement.querySelector('img');
+      expect(element.getAttribute('src')).toBe(EXAMPLE2_IMAGE);
+      expect(element.getAttribute('alt')).toBe('Image');
+
+      // Clear out the value of task.image and we should no longer have the anchor.
+      task['image'] = undefined;
+      fixture.detectChanges();
+      expect(fixture.debugElement.nativeElement.querySelector('img')).toBeNull();
+
+      // Add it back for a moment...
+      task['image'] = EXAMPLE1_IMAGE;
+      fixture.detectChanges();
+      expect(element).not.toBeNull();
+      element = fixture.debugElement.nativeElement.querySelector('img');
+      expect(element.getAttribute('src')).toBe(EXAMPLE1_IMAGE);
+      expect(element.getAttribute('alt')).toBe('Image');
+
+      // Make task.image null.
+      task['image'] = null;
+      fixture.detectChanges();
+      expect(fixture.debugElement.nativeElement.querySelector('img')).toBeNull();
+
+      // Add it back for a moment...
+      task['image'] = EXAMPLE1_IMAGE;
+      fixture.detectChanges();
+      expect(element).not.toBeNull();
+      element = fixture.debugElement.nativeElement.querySelector('img');
+      expect(element.getAttribute('src')).toBe(EXAMPLE1_IMAGE);
+      expect(element.getAttribute('alt')).toBe('Image');
+
+      // Entirely remove the property for task.image.
+      expect(task.hasOwnProperty('image')).toBeTruthy();
+      delete task['image'];
+      fixture.detectChanges();
+      expect(task.hasOwnProperty('image')).toBeFalsy();
+      expect(fixture.debugElement.nativeElement.querySelector('img')).toBeNull();
+    });
+
 
   });
 

@@ -4,12 +4,32 @@ import * as getPort from 'get-port'
 import * as path from 'path'
 
 import { EnhancedRequest } from '../../../lib/models'
-import { handleUnClaimPost } from '../../../workAllocation/taskService'
+import { handleTaskPost } from '../../../workAllocation/taskService'
+import { Assignee } from './../../../workAllocation/interfaces/task'
+
+interface Payload {
+  behaviour?: string,
+  assignee: Assignee
+}
 
 describe("Work Allocation API", () => {
 
   let mockServerPort: number
   let provider: Pact
+
+  const ASSIGNEE: Assignee = { id: '987654', userName: 'bob' }
+  const BEHAVIOURS = {
+    SUCCESS: {},
+    ALREADY_DONE: { behaviour: 'already-done' },
+    BAD_REQUEST: { behaviour: 'bad-request' },
+    FORBIDDEN: { behaviour: 'forbidden' },
+    UNSUPPORTED: { behaviour: 'unsupported' },
+    SERVER_ERROR: { behaviour: 'unsupported' }
+  }
+
+  function getPayload(behaviour: { behaviour?: string }): Payload {
+    return { ...behaviour, assignee: { ...ASSIGNEE } }
+  }
 
   before(async () => {
     mockServerPort = await getPort()
@@ -31,11 +51,12 @@ describe("Work Allocation API", () => {
   describe('when requested to unclaim a task', () => {
     before(() =>
       provider.addInteraction({
-        state: 'task is unclaimd',
+        state: 'task is unclaimed',
         uponReceiving: 'a request for completion',
         withRequest: {
           method: 'POST',
-          path: '/task/200/unclaim'
+          path: '/task/123456/unclaim',
+          body: getPayload(BEHAVIOURS.SUCCESS)
         },
         willRespondWith: {
           status: 200,
@@ -45,8 +66,9 @@ describe("Work Allocation API", () => {
     )
 
     it('returns success with a 200', async () => {
-      const taskUrl: string = `${provider.mockService.baseUrl}/task/200/unclaim`
-      const { status } = await handleUnClaimPost(taskUrl, {} as EnhancedRequest)
+      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/unclaim`
+      const payload: any = getPayload(BEHAVIOURS.SUCCESS)
+      const { status } = await handleTaskPost(taskUrl, payload, {} as EnhancedRequest)
       expect(status).equal(200)
     })
   })
@@ -58,7 +80,8 @@ describe("Work Allocation API", () => {
         uponReceiving: 'a request for completion when already unclaim',
         withRequest: {
           method: 'POST',
-          path: '/task/204/unclaim',
+          path: '/task/123456/unclaim',
+          body: getPayload(BEHAVIOURS.ALREADY_DONE)
         },
         willRespondWith: {
           status: 204,
@@ -68,8 +91,9 @@ describe("Work Allocation API", () => {
     )
 
     it('returns success but with a 204', async () => {
-      const taskUrl: string = `${provider.mockService.baseUrl}/task/204/unclaim`
-      const { status } = await handleUnClaimPost(taskUrl, {} as EnhancedRequest)
+      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/unclaim`
+      const payload: any = getPayload(BEHAVIOURS.ALREADY_DONE)
+      const { status } = await handleTaskPost(taskUrl, payload, {} as EnhancedRequest)
       expect(status).equal(204)
     })
   })
@@ -81,7 +105,8 @@ describe("Work Allocation API", () => {
         uponReceiving: 'a bad request for completion',
         withRequest: {
           method: 'POST',
-          path: '/task/400/unclaim'
+          path: '/task/123456/unclaim',
+          body: getPayload(BEHAVIOURS.BAD_REQUEST)
         },
         willRespondWith: {
           status: 400,
@@ -91,10 +116,11 @@ describe("Work Allocation API", () => {
     )
 
     it('returns failure with a 400', async () => {
-      const taskUrl: string = `${provider.mockService.baseUrl}/task/400/unclaim`
+      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/unclaim`
+      const payload: any = getPayload(BEHAVIOURS.BAD_REQUEST)
       let response: { status: number }
       try {
-        response = await handleUnClaimPost(taskUrl, {} as EnhancedRequest)
+        response = await handleTaskPost(taskUrl, payload, {} as EnhancedRequest)
       } catch (err) {
         response = err
       }
@@ -110,7 +136,8 @@ describe("Work Allocation API", () => {
         uponReceiving: 'a request for completion of a forbidden task',
         withRequest: {
           method: 'POST',
-          path: '/task/403/unclaim'
+          path: '/task/123456/unclaim',
+          body: getPayload(BEHAVIOURS.FORBIDDEN)
         },
         willRespondWith: {
           status: 403,
@@ -120,10 +147,11 @@ describe("Work Allocation API", () => {
     )
 
     it('returns failure with a 403', async () => {
-      const taskUrl: string = `${provider.mockService.baseUrl}/task/403/unclaim`
+      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/unclaim`
+      const payload: any = getPayload(BEHAVIOURS.FORBIDDEN)
       let response: { status: number }
       try {
-        response = await handleUnClaimPost(taskUrl, {} as EnhancedRequest)
+        response = await handleTaskPost(taskUrl, payload, {} as EnhancedRequest)
       } catch (err) {
         response = err
       }
@@ -139,7 +167,8 @@ describe("Work Allocation API", () => {
         uponReceiving: 'a request for completion but it is unsupported',
         withRequest: {
           method: 'POST',
-          path: '/task/415/unclaim'
+          path: '/task/123456/unclaim',
+          body: getPayload(BEHAVIOURS.UNSUPPORTED)
         },
         willRespondWith: {
           status: 415,
@@ -149,10 +178,11 @@ describe("Work Allocation API", () => {
     )
 
     it('returns failure with a 415', async () => {
-      const taskUrl: string = `${provider.mockService.baseUrl}/task/415/unclaim`
+      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/unclaim`
+      const payload: any = getPayload(BEHAVIOURS.UNSUPPORTED)
       let response: { status: number }
       try {
-        response = await handleUnClaimPost(taskUrl, {} as EnhancedRequest)
+        response = await handleTaskPost(taskUrl, payload, {} as EnhancedRequest)
       } catch (err) {
         response = err
       }
@@ -168,7 +198,8 @@ describe("Work Allocation API", () => {
         uponReceiving: 'a request for completion and the server falls over',
         withRequest: {
           method: 'POST',
-          path: '/task/500/unclaim'
+          path: '/task/123456/unclaim',
+          body: getPayload(BEHAVIOURS.SERVER_ERROR)
         },
         willRespondWith: {
           status: 500,
@@ -178,10 +209,11 @@ describe("Work Allocation API", () => {
     )
 
     it('returns failure with a 500', async () => {
-      const taskUrl: string = `${provider.mockService.baseUrl}/task/500/unclaim`
+      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/unclaim`
+      const payload: any = getPayload(BEHAVIOURS.SERVER_ERROR)
       let response: { status: number }
       try {
-        response = await handleUnClaimPost(taskUrl, {} as EnhancedRequest)
+        response = await handleTaskPost(taskUrl, payload, {} as EnhancedRequest)
       } catch (err) {
         response = err
       }
@@ -189,4 +221,5 @@ describe("Work Allocation API", () => {
       expect(response.status).equal(500)
     })
   })
+
 })

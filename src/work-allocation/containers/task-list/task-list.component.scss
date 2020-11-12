@@ -6,3 +6,21 @@
     padding: 2px;
   }
 }
+
+/**
+ * Used to override the border-bottom style being set by the GDS .govuk-table__cell
+ */
+.border-none {
+  border: 0px;
+}
+
+.header-cell {
+
+  display: flex;
+
+  .label {}
+  .arrow {
+    border: 1px solid red;
+    padding: 0 0 0 10px;
+  }
+}

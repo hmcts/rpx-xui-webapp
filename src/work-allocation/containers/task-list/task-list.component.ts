@@ -111,4 +111,11 @@ export class TaskListComponent implements OnInit {
 
     return row === this.getSelectedRow();
   }
+
+
+  public isColumnSorted(fieldName) {
+    console.log('isColumnSorted');
+    console.log(fieldName);
+    return true;
+  }
 }

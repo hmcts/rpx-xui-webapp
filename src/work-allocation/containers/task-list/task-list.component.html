@@ -1,10 +1,21 @@
 <!-- Using the Angular Component Development Kit Table Module, and not Angular Material -->
-<table cdk-table [dataSource]="dataSource$" class="govuk-table" [multiTemplateDataRows]="true" style="border: 0px solid red;">
+<table cdk-table [dataSource]="dataSource$" class="govuk-table" [multiTemplateDataRows]="true">
 
   <!-- Column Headers and Cells through the field config from the API-->
   <ng-container *ngFor="let field of fields" [cdkColumnDef]="field.name">
-    <th class="govuk-table__header" cdk-header-cell *cdkHeaderCellDef>{{field.columnLabel}}<button (click)="onSortHandler(field.name)">sort</button></th>
-    <td class="govuk-table__cell" style="border-bottom: 0px solid blue;"  cdk-cell *cdkCellDef="let rowData">
+    <th class="govuk-table__header" (click)="onSortHandler(field.name)" cdk-header-cell *cdkHeaderCellDef>
+      <div class="header-cell">
+        <div class="label">{{field.columnLabel}}</div>
+
+        <ng-container *ngIf="isColumnSorted(field.name); else columnDownArrow" >
+          <div class="arrow">&#9658;</div>
+        </ng-container>
+        <ng-template #columnDownArrow>
+          <div class="arrow">&#9660;</div>
+        </ng-template>
+      </div>
+    </th>
+    <td class="govuk-table__cell border-none" cdk-cell *cdkCellDef="let rowData">
       <exui-task-field [task]="rowData" [config]="field"></exui-task-field>
     </td>
   </ng-container>
@@ -12,7 +23,7 @@
   <!-- Manage column -->
   <ng-container cdkColumnDef="manage">
     <th class="govuk-table__header" cdk-header-cell *cdkHeaderCellDef>&nbsp;</th>
-    <td cdk-cell *cdkCellDef="let rowData" (click)="setSelectedRow(rowData)" style="border: 1px solid red;">
+    <td  class="govuk-table__cell border-none" cdk-cell *cdkCellDef="let rowData" (click)="setSelectedRow(rowData)">
       <div *ngIf="!isRowSelected(rowData); else downArrow">&#9658;&nbsp;Manage</div>
       <ng-template #downArrow>&#9660;&nbsp;Manage</ng-template>
     </td>
@@ -22,17 +33,17 @@
     <td cdk-cell *cdkCellDef="let rowData" [attr.colspan]="displayedColumns.length">
       <ng-container *ngIf="isRowSelected(rowData)">
         <div *ngFor="let action of rowData.actions" class="actions">
-          <button (click)="onActionHandler(rowData, action)" class="action">{{action.title}}</button>
+          <a (click)="onActionHandler(rowData, action)" class="action">{{action.title}}</a>
         </div>
       </ng-container>
     </td>
   </ng-container>
 
   <!-- Table Header Row -->
-  <tr class="govuk-table__row" style="border: 0px solid red;" cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+  <tr class="govuk-table__row" cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
 
   <!-- Table Row -->
-  <tr class="govuk-table__row" style="border: 0px solid red;" cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
-  <tr style="border-bottom: 1px solid red;" cdk-row *cdkRowDef="let row; columns: ['actions']" when="() => false"></tr>
+  <tr class="govuk-table__row" cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
+  <tr cdk-row *cdkRowDef="let row; columns: ['actions']" when="() => false"></tr>
 
 </table>

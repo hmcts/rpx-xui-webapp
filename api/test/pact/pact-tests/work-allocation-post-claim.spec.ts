@@ -34,8 +34,8 @@ describe("Work Allocation API", () => {
   before(async () => {
     mockServerPort = await getPort()
     provider = new Pact({
-      consumer: 'xui_work_allocation_task_assign',
-      provider: 'WorkAllocation_api_assign',
+      consumer: 'xui_work_allocation_task_claim',
+      provider: 'WorkAllocation_api_claim',
       dir: path.resolve(__dirname, '../pacts'),
       log: path.resolve(__dirname, '../logs', 'work-allocation.log'),
       logLevel: 'info',
@@ -48,14 +48,14 @@ describe("Work Allocation API", () => {
   // Write Pact when all tests done
   after(() => provider.finalize())
 
-  describe('when requested to assign a task', () => {
+  describe('when requested to claim a task', () => {
     before(() =>
       provider.addInteraction({
-        state: 'task is assigned',
+        state: 'task is claimed',
         uponReceiving: 'a request for completion',
         withRequest: {
           method: 'POST',
-          path: '/task/123456/assign',
+          path: '/task/123456/claim',
           body: getPayload(BEHAVIOURS.SUCCESS)
         },
         willRespondWith: {
@@ -66,21 +66,21 @@ describe("Work Allocation API", () => {
     )
 
     it('returns success with a 200', async () => {
-      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/assign`
+      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/claim`
       const payload: any = getPayload(BEHAVIOURS.SUCCESS)
       const { status } = await handleTaskPost(taskUrl, payload, {} as EnhancedRequest)
       expect(status).equal(200)
     })
   })
 
-  describe('when requested to assign a task that is already assign', () => {
+  describe('when requested to claim a task that is already claim', () => {
     before(() =>
       provider.addInteraction({
-        state: 'task was already assign',
-        uponReceiving: 'a request for completion when already assign',
+        state: 'task was already claim',
+        uponReceiving: 'a request for completion when already claim',
         withRequest: {
           method: 'POST',
-          path: '/task/123456/assign',
+          path: '/task/123456/claim',
           body: getPayload(BEHAVIOURS.ALREADY_DONE)
         },
         willRespondWith: {
@@ -91,21 +91,21 @@ describe("Work Allocation API", () => {
     )
 
     it('returns success but with a 204', async () => {
-      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/assign`
+      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/claim`
       const payload: any = getPayload(BEHAVIOURS.ALREADY_DONE)
       const { status } = await handleTaskPost(taskUrl, payload, {} as EnhancedRequest)
       expect(status).equal(204)
     })
   })
 
-  describe('when making a bad request to assign a task', () => {
+  describe('when making a bad request to claim a task', () => {
     before(() =>
       provider.addInteraction({
         state: 'a bad request was made',
         uponReceiving: 'a bad request for completion',
         withRequest: {
           method: 'POST',
-          path: '/task/123456/assign',
+          path: '/task/123456/claim',
           body: getPayload(BEHAVIOURS.BAD_REQUEST)
         },
         willRespondWith: {
@@ -116,7 +116,7 @@ describe("Work Allocation API", () => {
     )
 
     it('returns failure with a 400', async () => {
-      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/assign`
+      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/claim`
       const payload: any = getPayload(BEHAVIOURS.BAD_REQUEST)
       let response: { status: number }
       try {
@@ -129,14 +129,14 @@ describe("Work Allocation API", () => {
     })
   })
 
-  describe('when making a request to assign a forbidden task', () => {
+  describe('when making a request to claim a forbidden task', () => {
     before(() =>
       provider.addInteraction({
         state: 'completion of this task is was forbidden',
         uponReceiving: 'a request for completion of a forbidden task',
         withRequest: {
           method: 'POST',
-          path: '/task/123456/assign',
+          path: '/task/123456/claim',
           body: getPayload(BEHAVIOURS.FORBIDDEN)
         },
         willRespondWith: {
@@ -147,7 +147,7 @@ describe("Work Allocation API", () => {
     )
 
     it('returns failure with a 403', async () => {
-      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/assign`
+      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/claim`
       const payload: any = getPayload(BEHAVIOURS.FORBIDDEN)
       let response: { status: number }
       try {
@@ -160,14 +160,14 @@ describe("Work Allocation API", () => {
     })
   })
 
-  describe('when making a request to assign a task but it is unsupported', () => {
+  describe('when making a request to claim a task but it is unsupported', () => {
     before(() =>
       provider.addInteraction({
         state: 'this action is unsupported',
         uponReceiving: 'a request for completion but it is unsupported',
         withRequest: {
           method: 'POST',
-          path: '/task/123456/assign',
+          path: '/task/123456/claim',
           body: getPayload(BEHAVIOURS.UNSUPPORTED)
         },
         willRespondWith: {
@@ -178,7 +178,7 @@ describe("Work Allocation API", () => {
     )
 
     it('returns failure with a 415', async () => {
-      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/assign`
+      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/claim`
       const payload: any = getPayload(BEHAVIOURS.UNSUPPORTED)
       let response: { status: number }
       try {
@@ -191,14 +191,14 @@ describe("Work Allocation API", () => {
     })
   })
 
-  describe('when making a request to assign a task and the server falls over', () => {
+  describe('when making a request to claim a task and the server falls over', () => {
     before(() =>
       provider.addInteraction({
         state: 'the server had an internal error',
         uponReceiving: 'a request for completion and the server falls over',
         withRequest: {
           method: 'POST',
-          path: '/task/123456/assign',
+          path: '/task/123456/claim',
           body: getPayload(BEHAVIOURS.SERVER_ERROR)
         },
         willRespondWith: {
@@ -209,7 +209,7 @@ describe("Work Allocation API", () => {
     )
 
     it('returns failure with a 500', async () => {
-      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/assign`
+      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/claim`
       const payload: any = getPayload(BEHAVIOURS.SERVER_ERROR)
       let response: { status: number }
       try {

@@ -30,9 +30,3 @@ export async function handleTaskPost(path: string, payload: any, req: EnhancedRe
     // see what the status of the response is.
     return response
 }
-
-export async function handleUnClaimPost(path: string, req: EnhancedRequest): Promise<any> {
-    const headers = setHeaders(req)
-    const response: AxiosResponse = await http.post(path, { headers })
-    return response
-}

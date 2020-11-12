@@ -36,8 +36,6 @@ describe('WorkAllocation', () => {
       fixture.detectChanges();
     });
 
-
-
     it('should show only if there is a link', () => {
       // Expect the nativeElement to be empty (no link yet)
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
@@ -96,8 +94,8 @@ describe('WorkAllocation', () => {
     it('should show the label if the label and href is provided', () => {
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
 
-      const label: string = "Example label";
-      const HMCTS_URL: string = "http://hmcts.gov.uk";
+      const label: string = 'Example label';
+      const HMCTS_URL: string = 'http://hmcts.gov.uk';
 
 
       // Add the label and make sure it does not display
@@ -110,7 +108,7 @@ describe('WorkAllocation', () => {
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe(label);
 
-      //Remove href and label should no longer display
+      // Remove href and label should no longer display
       component.href = undefined;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
@@ -119,9 +117,9 @@ describe('WorkAllocation', () => {
     it('should allow a target string to be applied', () => {
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
 
-      const initial: string = "_self";
-      const target: string = "Example label";
-      const HMCTS_URL: string = "http://hmcts.gov.uk";
+      const initial: string = '_self';
+      const target: string = 'Example label';
+      const HMCTS_URL: string = 'http://hmcts.gov.uk';
 
 
       // Verify HTML object does not yet exist

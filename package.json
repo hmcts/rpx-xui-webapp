@@ -13,6 +13,8 @@
     "build:node": "cd api && yarn build",
     "build:prod": "ng build --prod",
     "start:node": "cd api && yarn watch",
+    "start:node:stub": "NODE_CONFIG_ENV=stub cd api && yarn watch",
+    "pact-stub": "$(find . -name pact-stub-service | grep -e 'bin/pact-stub-service$' | head -n 1) ./api/test/pact/pacts/ --port 8080",
     "lint:node": "cd api && yarn lint",
     "test:node": "cd api && yarn test",
     "coverage:node": "cd api && yarn coverage",

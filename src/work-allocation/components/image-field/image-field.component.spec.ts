@@ -49,10 +49,10 @@ describe('WorkAllocation', () => {
       let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('img');
       expect(element.getAttribute('src')).toBe(EXAMPLE_IMAGE);
 
-      //Remove the image src and it should no longer display
+      // Remove the image src and it should no longer display
       component.src = undefined;
       fixture.detectChanges();
-      element= fixture.debugElement.nativeElement.querySelector('img');
+      element = fixture.debugElement.nativeElement.querySelector('img');
       expect(element).toBeNull();
 
       // Add the image src and it should now be available again
@@ -61,10 +61,10 @@ describe('WorkAllocation', () => {
       element = fixture.debugElement.nativeElement.querySelector('img');
       expect(element.getAttribute('src')).toBe(EXAMPLE_IMAGE);
 
-      //Set the image src to null and it should no longer display
+      // Set the image src to null and it should no longer display
       component.src = null;
       fixture.detectChanges();
-      element= fixture.debugElement.nativeElement.querySelector('img');
+      element = fixture.debugElement.nativeElement.querySelector('img');
       expect(element).toBeNull();
 
       // Add the image src and it should now be available again
@@ -89,10 +89,10 @@ describe('WorkAllocation', () => {
       let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('img');
       expect(element.getAttribute('src')).toBe(EXAMPLE1_IMAGE);
 
-      //Replace the image src and it should no longer display
+      // Replace the image src and it should no longer display
       component.src = EXAMPLE2_IMAGE;
       fixture.detectChanges();
-      element= fixture.debugElement.nativeElement.querySelector('img');
+      element = fixture.debugElement.nativeElement.querySelector('img');
       expect(element.getAttribute('src')).toBe(EXAMPLE2_IMAGE);
 
       // Add the image src again and it should now be available again
@@ -101,10 +101,10 @@ describe('WorkAllocation', () => {
       element = fixture.debugElement.nativeElement.querySelector('img');
       expect(element.getAttribute('src')).toBe(EXAMPLE1_IMAGE);
 
-      //Set the image src to null and it should no longer display
+      // Set the image src to null and it should no longer display
       component.src = null;
       fixture.detectChanges();
-      element= fixture.debugElement.nativeElement.querySelector('img');
+      element = fixture.debugElement.nativeElement.querySelector('img');
       expect(element).toBeNull();
 
     });
@@ -128,25 +128,25 @@ describe('WorkAllocation', () => {
       // Set the alt to be the example given
       component.alt = alt_string;
       fixture.detectChanges();
-      element= fixture.debugElement.nativeElement.querySelector('img');
+      element = fixture.debugElement.nativeElement.querySelector('img');
       expect(element.getAttribute('alt')).toBe(alt_string);
 
       // Remove the alt and check whether the default setting is valid
       component.alt = undefined;
       fixture.detectChanges();
-      element= fixture.debugElement.nativeElement.querySelector('img');
+      element = fixture.debugElement.nativeElement.querySelector('img');
       expect(element.getAttribute('alt')).toBe('Image');
 
       // Set the alt to be the example given again
       component.alt = alt_string;
       fixture.detectChanges();
-      element= fixture.debugElement.nativeElement.querySelector('img');
+      element = fixture.debugElement.nativeElement.querySelector('img');
       expect(element.getAttribute('alt')).toBe(alt_string);
 
       // Set the alt and check whether the default setting is valid
       component.alt = null;
       fixture.detectChanges();
-      element= fixture.debugElement.nativeElement.querySelector('img');
+      element = fixture.debugElement.nativeElement.querySelector('img');
       expect(element.getAttribute('alt')).toBe('Image');
 
     });

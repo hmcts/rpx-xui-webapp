@@ -14,3 +14,7 @@ export function preparePostTaskUrlAction(url: string, taskId: string, action: st
 export function preparePostTaskUnClaimUrl(url: string, taskId: string) {
   return `${url}/task/${taskId}/unclaim`
 }
+
+export function preparePostTaskClaimUrl(url: string, taskId: string) {
+  return `${url}/task/${taskId}/unclaim`
+}

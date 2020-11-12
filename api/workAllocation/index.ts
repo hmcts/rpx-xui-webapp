@@ -1,6 +1,6 @@
 import { NextFunction, Response } from 'express'
 import { EnhancedRequest } from '../lib/models'
-import { handleTaskGet, handleTaskPost, taskPost } from './taskService'
+import { handleTaskGet, handleTaskPost, handleUnClaimPost, taskPost } from './taskService'
 import { prepareGetTaskUrl, preparePostTaskUnClaimUrl, preparePostTaskUrl, preparePostTaskUrlAction } from './util'
 
 const baseUrl: string = 'http://localhost:8080'
@@ -37,13 +37,28 @@ export async function postTask(req: EnhancedRequest, res: Response, next: NextFu
 }
 
 /**
+ * Post to Claim as Task
+ */
+export async function postTaskClaim(req: EnhancedRequest, res: Response, next: NextFunction) {
+  try {
+    const postTaskClaimPath: string = preparePostTaskUnClaimUrl(baseUrl, req.params.taskId)
+
+    const response = await handleUnClaimPost(postTaskClaimPath, req)
+    res.status(200)
+    res.send(response.body)
+  } catch (error) {
+    next(error)
+  }
+}
+
+/**
  * Post to Unclaim as Task
  */
 export async function postTaskUnClaim(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
     const postTaskUnclaimPath: string = preparePostTaskUnClaimUrl(baseUrl, req.params.taskId)
 
-    const response = await taskPost(postTaskUnclaimPath, req.body, req)
+    const response = await handleUnClaimPost(postTaskUnclaimPath, req)
     res.status(200)
     res.send(response.body)
   } catch (error) {

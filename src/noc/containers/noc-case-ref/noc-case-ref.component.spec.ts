@@ -1,14 +1,15 @@
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import * as fromContainers from '../../containers';
 import { NocNavigationEvent } from '../../models';
 import * as fromNocStore from '../../store';
-import * as fromContainers from '../../containers';
+import { UtilsModule } from '../noc-field/utils/utils.module';
 import { NocCaseRefComponent } from './noc-case-ref.component';
-import { ReactiveFormsModule } from '@angular/forms';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
 
-describe('NocHomeComponent', () => {
+describe('NocCaseRefComponent', () => {
   let fixture: ComponentFixture<NocCaseRefComponent>;
   let component: NocCaseRefComponent;
   let store: MockStore<fromNocStore.State>;
@@ -17,7 +18,8 @@ describe('NocHomeComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        UtilsModule
       ],
       schemas: [
         NO_ERRORS_SCHEMA

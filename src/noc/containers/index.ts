@@ -19,7 +19,6 @@ export const containers: any[] = [
   NocCaseRefComponent,
   NocQAndAComponent,
   NocFieldComponent,
-  NocErrorPipe,
   NocTextFieldComponent,
   NocNumberFieldComponent,
   NocEmailFieldComponent,

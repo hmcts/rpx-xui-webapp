@@ -4,7 +4,7 @@
 
     <legend>
       <span class="form-label govuk-!-font-weight-bold" *ngIf="questionField.question_text">{{questionField.question_text}}</span>
-      <span class="error-message" *ngIf="yesNoControl.errors && yesNoControl.touched">{{yesNoControl.errors | ccdFirstError}}</span>
+      <span class="error-message" *ngIf="yesNoControl.errors && yesNoControl.touched">{{yesNoControl.errors | nocError}}</span>
     </legend>
 
     <div class="form-group" [id]="id()">

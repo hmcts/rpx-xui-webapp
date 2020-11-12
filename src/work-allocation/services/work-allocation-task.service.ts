@@ -2,7 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
+import { Assignee } from './../models/dtos/task';
+
 const BASE_URL: string = '/workallocation/task/';
+enum ACTION {
+  COMPLETE = 'complete',
+  ASSIGN = 'assign'
+}
 
 @Injectable()
 export class WorkAllocationTaskService {
@@ -15,6 +21,21 @@ export class WorkAllocationTaskService {
    */
   public completeTask(taskId: string): Observable<any> {
     // Make a POST with an empty payload.
-    return this.http.post<any>(`${BASE_URL}${taskId}/complete`, {});
+    return this.http.post<any>(this.getActionUrl(taskId, ACTION.COMPLETE), {});
+  }
+
+
+  /**
+   * Call the API to assign a task to a user.
+   * @param taskId specifies which task should be assigned.
+   * @param assignee specifies who this task should be assigned to.
+   */
+  public assignTask(taskId: string, assignee: Assignee): Observable<any> {
+    // Make a POST with the specified assignee in the payload.
+    return this.http.post<any>(this.getActionUrl(taskId, ACTION.ASSIGN), assignee);
+  }
+
+  private getActionUrl(taskId: string, action: ACTION): string {
+    return `${BASE_URL}${taskId}/${action}`;
   }
 }

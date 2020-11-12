@@ -1,8 +1,8 @@
-interface TaskList {
+export interface TaskList {
     tasks: Task[]
-  }
+}
 
-interface Task {
+export interface Task {
     assignee: Assignee
     caseData: CaseData
     dueDate: Date
@@ -10,30 +10,30 @@ interface Task {
     state: string
 }
 
-interface Assignee {
+export interface Assignee {
     id: string
     userName: string
 }
 
-interface CaseData {
+export interface CaseData {
     category: string
     location: LocationSummary
     name: string
     reference: string
 }
 
-interface LocationSummary {
+export interface LocationSummary {
     id: string
     locationName: string
 }
 
-interface Location {
+export interface Location {
     id: string
     locationName: string
     services: string[]
 }
 
-interface Caseworker {
+export interface Caseworker {
     firstName: string
     lastName: string
     idamId: string

@@ -35,6 +35,10 @@ export class TaskListComponent implements OnInit {
 
   public ngOnInit() {
 
+    // Remove when finished with, checking if this.fields is populated
+    console.log('this.fields');
+    console.log(this.fields);
+
     const tasks$ = new BehaviorSubject(this.tasks);
     this.dataSource$ = tasks$;
 
@@ -47,6 +51,10 @@ export class TaskListComponent implements OnInit {
    * TODO: Unit test
    */
   public getDisplayedColumn(taskFieldConfig: TaskFieldConfig[]) {
+
+    // Remove when finished with, checking if taskFieldConfig is populated
+    console.log('taskFieldConfig');
+    console.log(taskFieldConfig);
 
     const fields = taskFieldConfig.map(field => field.name);
     return this.addManageColumn(fields);
@@ -110,5 +118,10 @@ export class TaskListComponent implements OnInit {
   public isRowSelected(row) {
 
     return row === this.getSelectedRow();
+  }
+
+  public shouldReturnTrue() {
+
+    return true;
   }
 }

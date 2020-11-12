@@ -20,7 +20,7 @@ class WrapperComponent {
   @Input() public tasks: Task[];
 }
 
-fdescribe('TaskListComponent', () => {
+describe('TaskListComponent', () => {
   let component: TaskListComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;

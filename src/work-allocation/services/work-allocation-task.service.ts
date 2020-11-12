@@ -7,8 +7,10 @@ import { Assignee } from './../models/dtos/task';
 
 const BASE_URL: string = '/workallocation/task/';
 enum ACTION {
-  COMPLETE = 'complete',
   ASSIGN = 'assign',
+  CANCEL = 'cancel',
+  CLAIM = 'claim',
+  COMPLETE = 'complete',
   UNCLAIM = 'unclaim'
 }
 

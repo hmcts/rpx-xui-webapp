@@ -1,4 +1,4 @@
-export enum TaskSort { 
-  ASC,
-  DSC
+export enum TaskSort {
+  ASC = 'ascending',
+  DSC = 'descending',
 }

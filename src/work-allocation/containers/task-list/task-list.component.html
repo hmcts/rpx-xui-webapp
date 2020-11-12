@@ -1,19 +1,10 @@
 <!-- Using the Angular Component Development Kit Table Module, and not Angular Material -->
 <table cdk-table [dataSource]="dataSource$" class="govuk-table" [multiTemplateDataRows]="true">
 
-  <!-- Column Headers and Cells through the field config from the API-->
+  <!-- Column Headers and Cells -->
   <ng-container *ngFor="let field of fields" [cdkColumnDef]="field.name">
-    <th class="govuk-table__header" (click)="onSortHandler(field.name)" cdk-header-cell *cdkHeaderCellDef>
-      <div class="header-cell">
-        <div class="label">{{field.columnLabel}}</div>
-
-        <ng-container *ngIf="isColumnSorted(field.name); else columnDownArrow" >
-          <div class="arrow">&#9658;</div>
-        </ng-container>
-        <ng-template #columnDownArrow>
-          <div class="arrow">&#9660;</div>
-        </ng-template>
-      </div>
+    <th class="govuk-table__header" [attr.aria-sort]="isColumnSorted(field.name)" (click)="onSortHandler(field.name)" cdk-header-cell *cdkHeaderCellDef>
+      <button type="button" data-index="0">{{field.columnLabel}}</button>
     </th>
     <td class="govuk-table__cell border-none" cdk-cell *cdkCellDef="let rowData">
       <exui-task-field [task]="rowData" [config]="field"></exui-task-field>

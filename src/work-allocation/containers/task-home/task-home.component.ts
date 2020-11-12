@@ -2,6 +2,8 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Task, TaskFieldConfig} from './../../models/tasks';
 import {TaskFieldType, TaskView} from './../../enums';
 import InvokedTaskAction from '../../models/tasks/invoked-task-action.model';
+import TaskServiceConfig from '../../models/tasks/task-service-config.model';
+import {TaskService, TaskSort} from '../../enums';
 
 @Component({
   selector: 'exui-task-home',
@@ -93,10 +95,17 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
     {
       name: 'dueDate',
       type: TaskFieldType.DATE_DUE,
-      columnLabel: 'Due Dated',
+      columnLabel: 'Date',
       views: TaskView.TASK_LIST,
     },
   ];
+
+  public taskServiceConfig: TaskServiceConfig = {
+    service: TaskService.IAC,
+    defaultSortDirection: TaskSort.DSC,
+    defaultSortFieldName: 'caseName',
+    fields: this.fields,
+  };
 
   constructor() {
   }

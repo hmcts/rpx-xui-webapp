@@ -58,7 +58,7 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
   try {
     const getTaskPath: string = preparePostTaskUrlAction(baseUrl, req.params.taskId, req.params.action)
 
-    const { status, data } = await handleTaskPost(getTaskPath, req.params.payload, req)
+    const { status, data } = await handleTaskPost(getTaskPath, req.body, req)
     res.status(status)
     res.send(data)
   } catch (error) {

@@ -1,12 +1,12 @@
 import { NextFunction, Response } from 'express'
-
 import { EnhancedRequest } from '../lib/models'
-import { handleTaskGet, handleTaskPost } from './taskService'
+import { handleTaskGet, handleTaskPost, taskPost } from './taskService'
+import { prepareGetTaskUrl, preparePostTaskUnClaimUrl, preparePostTaskUrl, preparePostTaskUrlAction } from './util'
 
 const baseUrl: string = 'http://localhost:8080'
 
 /**
- * getTasks
+ * getTask
  */
 export async function getTask(req: EnhancedRequest, res: Response, next: NextFunction) {
 
@@ -21,16 +21,42 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
   }
 }
 
-export function prepareGetTaskUrl(url: string, taskId: string): string {
-    return `${url}/task/${taskId}`
-}
-
 /**
- * postTask
+ * Post to Task
  */
 export async function postTask(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    const getTaskPath: string = preparePostTaskUrl(baseUrl, req.params.taskId, req.params.action)
+    const postTaskPath: string = preparePostTaskUrl(baseUrl)
+
+    const response = await taskPost(postTaskPath, req.body, req)
+    res.status(200)
+    res.send(response.body)
+  } catch (error) {
+    next(error)
+  }
+}
+
+/**
+ * Post to Unclaim as Task
+ */
+export async function postTaskUnClaim(req: EnhancedRequest, res: Response, next: NextFunction) {
+  try {
+    const postTaskUnclaimPath: string = preparePostTaskUnClaimUrl(baseUrl, req.params.taskId)
+
+    const response = await taskPost(postTaskUnclaimPath, req.body, req)
+    res.status(200)
+    res.send(response.body)
+  } catch (error) {
+    next(error)
+  }
+}
+
+/**
+ * postTask Action
+ */
+export async function postTaskAction(req: EnhancedRequest, res: Response, next: NextFunction) {
+  try {
+    const getTaskPath: string = preparePostTaskUrlAction(baseUrl, req.params.taskId, req.params.action)
 
     const { status, data } = await handleTaskPost(getTaskPath, req.params.payload, req)
     res.status(status)
@@ -38,8 +64,4 @@ export async function postTask(req: EnhancedRequest, res: Response, next: NextFu
   } catch (error) {
     next(error)
   }
-}
-
-export function preparePostTaskUrl(url: string, taskId: string, action: string): string {
-  return `${url}/task/${taskId}/${action}`
 }

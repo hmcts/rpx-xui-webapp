@@ -13,7 +13,7 @@ import * as fromFeature from '../../store';
 })
 export class NocCaseRefComponent implements OnChanges {
 
-  @Input() navEvent: NocNavigation;
+  @Input() public navEvent: NocNavigation;
 
   public nocNavigationCurrentState$: Observable<fromFeature.State>;
   public caseRefConfig: GovUiConfigModel;
@@ -24,8 +24,8 @@ export class NocCaseRefComponent implements OnChanges {
   public caseRefForm: FormGroup;
 
   constructor(
-    private store: Store<fromFeature.State>,
-    private formBuilder: FormBuilder
+    private readonly store: Store<fromFeature.State>,
+    private readonly formBuilder: FormBuilder
   ) {
     this.caseRefConfig = {
       id: 'caseRef',
@@ -46,7 +46,7 @@ export class NocCaseRefComponent implements OnChanges {
     };
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  public ngOnChanges(changes: SimpleChanges) {
     if (changes.navEvent && this.navEvent) {
       this.navigationHandler(this.navEvent.event);
     }
@@ -65,6 +65,8 @@ export class NocCaseRefComponent implements OnChanges {
         this.store.dispatch(new fromFeature.SetCaseReference(this.caseRefForm.controls['caseRef'].value));
         break;
       }
+      default:
+        throw new Error('Invalid option');
     }
   }
 

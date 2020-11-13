@@ -36,3 +36,8 @@ export const validationErrors = createSelector(
     getNocState,
     fromFeature.getValidationErrors
 );
+
+export const caseReference = createSelector(
+  getNocState,
+  fromFeature.getCaseReference
+);

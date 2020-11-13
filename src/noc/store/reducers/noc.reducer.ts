@@ -47,7 +47,7 @@ export function nocReducer(
                     responseCode: 0,
                     message: 'Enter a valid online case reference'
                 }
-            }
+            };
         }
         case fromActions.SET_CASE_REF_SUBMISSION_FAILURE: {
 
@@ -55,7 +55,7 @@ export function nocReducer(
                 ...currentState,
                 state: NocState.CASE_REF_SUBMISSION_FAILURE,
                 lastError: action.payload
-            }
+            };
         }
         case fromActions.SET_QUESTIONS: {
 
@@ -66,48 +66,51 @@ export function nocReducer(
                 caseReference: action.payload.caseReference,
                 validationErrors: null,
                 lastError: null
-            }
+            };
         }
         case fromActions.SET_ANSWER_INCOMPLETE: {
-
             return {
                 ...currentState,
                 state: NocState.ANSWER_INCOMPLETE
-            }
+            };
+        }
+        case fromActions.SET_ANSWERS: {
+          return {
+            ...currentState,
+            answers: action.payload.nocAnswers
+          };
         }
         case fromActions.CHECK_ANSWERS: {
-
             return {
                 ...currentState,
                 state: NocState.CHECK_ANSWERS,
                 answers: action.payload
-            }
+            };
         }
         case fromActions.SET_AFFIRMATION_AGREED: {
-
             return {
                 ...currentState,
                 affirmationAgreed: action.payload
-            }
+            };
         }
         case fromActions.SET_SUBMISSION_SUCCESS_APPROVED: {
             return {
                 ...currentState,
                 state: NocState.SUBMISSION_SUCCESS_APPROVED
-            }
+            };
         }
         case fromActions.SET_SUBMISSION_SUCCESS_PENDING: {
             return {
                 ...currentState,
                 state: NocState.SUBMISSION_SUCCESS_PENDING
-            }
+            };
         }
         case fromActions.SET_SUBMISSION_FAILURE: {
             return {
                 ...currentState,
                 state: NocState.SUBMISSION_FAILURE,
                 lastError: action.payload
-            }
+            };
         }
         default: {
 

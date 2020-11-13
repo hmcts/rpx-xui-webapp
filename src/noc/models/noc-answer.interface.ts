@@ -1,5 +1,5 @@
 export interface NocAnswer {
-    question_id: string;
-    question_name: string;
-    value: string;
+  question_id: string;
+  value: string;
+  question_name?: string;
 }

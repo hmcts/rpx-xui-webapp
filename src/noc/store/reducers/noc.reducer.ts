@@ -124,3 +124,4 @@ export const getValidationErrors = (nocState) => nocState.validationErrors;
 export const getQuestions = (nocState) => nocState.questions;
 export const getAnswers = (nocState) => nocState.answers;
 export const getAffirmationAgreed = (nocState) => nocState.affirmationAgreed;
+export const getCaseReference = (nocState) => nocState.caseReference;

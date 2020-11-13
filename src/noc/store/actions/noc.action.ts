@@ -1,12 +1,12 @@
 import { Action } from '@ngrx/store';
-import { NocAnswer, NocError,  NocEvent , NocQuestion , NocState } from '../../models';
+import { NocAnswer, NocError, NocEvent, NocQuestion, NocState } from '../../models';
 
 export const RESET = '[NOC] Reset';
 export const CHANGE_NAVIGATION = '[NOC] Change Navigation';
 export const SET_CASE_REFERENCE = '[NOC] Set Case Reference';
 export const SET_CASE_REF_VALIDATION_FAILURE = '[NOC] Set Case Reference Validation Failure';
 export const SET_QUESTIONS = '[NOC] Set Questions';
-export const SET_CASE_REF_SUBMISSION_FAILURE = '[NOC] Set Case Reference Submission Failure'
+export const SET_CASE_REF_SUBMISSION_FAILURE = '[NOC] Set Case Reference Submission Failure';
 export const SET_ANSWERS = '[NOC] Set Answers';
 export const SET_ANSWER_INCOMPLETE = '[NOC] Set Answers Incomplete';
 export const CHECK_ANSWERS = '[NOC] Check Answers';

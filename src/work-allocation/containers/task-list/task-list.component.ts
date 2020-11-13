@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { Task, TaskFieldConfig, TaskSortField } from '../../models/tasks';
@@ -39,12 +39,8 @@ export class TaskListComponent implements OnChanges {
   private selectedRow: Task;
 
   public ngOnChanges() {
-    if (this.dataSource$) {
-      this.dataSource$.subscribe().unsubscribe();
-    }
     if (this.tasks) {
-      const tasks$ = new BehaviorSubject(this.tasks);
-      this.dataSource$ = tasks$;
+      this.dataSource$ = new BehaviorSubject(this.tasks);
     }
     if (this.fields) {
       this.displayedColumns = this.getDisplayedColumn(this.fields);

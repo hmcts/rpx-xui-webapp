@@ -270,4 +270,4 @@ describe('TaskListComponent', () => {
     // check the emitter had been called and that it gets called with the first field which is caseReference
     expect(component.actionEvent.emit).toHaveBeenCalled();
   });*/
-})
+});

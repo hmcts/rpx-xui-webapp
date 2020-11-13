@@ -3,7 +3,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
 import { MatDialogModule } from '@angular/material';
-
+import { CdkTableModule } from '@angular/cdk/table';
 import { SharedModule } from '../app/shared/shared.module';
 import { WorkAllocationComponentsModule } from './components/work-allocation.components.module';
 import * as fromContainers from './containers';
@@ -18,7 +18,8 @@ import { workAllocationRouting } from './work-allocation-feature.routes';
       HttpModule,
       MatDialogModule,
       WorkAllocationComponentsModule,
-      workAllocationRouting
+      workAllocationRouting,
+      CdkTableModule
   ],
   declarations: [
     ...fromContainers.containers

@@ -12,13 +12,15 @@ export class CaseReferenceFieldComponent implements OnChanges {
 
   private pHref: string;
   public ngOnChanges(): void {
+    let href = undefined;
     if (this.caseReference) {
       // Get rid of the spaces in the caseReference.
       const caseId = this.caseReference.replace(/\s/g, '');
-      this.pHref = `/cases/case-details/${caseId}`;
-    } else {
-      this.pHref = '';
+      if (caseId) {
+        href = `/cases/case-details/${caseId}`;
+      }
     }
+    this.pHref = href;
   }
 
   public get href(): string {

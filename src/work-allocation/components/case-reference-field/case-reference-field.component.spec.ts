@@ -74,6 +74,19 @@ describe('WorkAllocation', () => {
       wrapper.caseReference = null;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
+
+      // Add it back for a moment...
+      wrapper.caseReference = FIRST_CASE_REFERENCE;
+      fixture.detectChanges();
+      expect(element).not.toBeNull();
+      element = fixture.debugElement.nativeElement.querySelector('a');
+      expect(element.textContent.trim()).toBe(FIRST_CASE_REFERENCE);
+      expect(element.getAttribute('href')).toBe(`/cases/case-details/Firstcasereference`); // No spaces
+
+      // Make caseReference a bunch of spaces.
+      wrapper.caseReference = '      ';
+      fixture.detectChanges();
+      expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
     });
 
   });

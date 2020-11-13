@@ -1,7 +1,9 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
 import { WorkAllocationComponentsModule } from 'src/work-allocation/components/work-allocation.components.module';
+import { WorkAllocationTaskService } from 'src/work-allocation/services/work-allocation-task.service';
 
 import { TaskFieldType, TaskService, TaskSort, TaskView } from '../../enums';
 import { Task, TaskFieldConfig, TaskServiceConfig } from './../../models/tasks';
@@ -122,14 +124,15 @@ describe('TaskListComponent', () => {
   let component: TaskListComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
-
+  const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['getTask']);
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
         WorkAllocationComponentsModule,
         CdkTableModule
       ],
-      declarations: [TaskListComponent, WrapperComponent]
+      declarations: [TaskListComponent, WrapperComponent],
+      providers: [{ provide: WorkAllocationTaskService, useValue: mockWorkAllocationService }]
     })
       .compileComponents();
   }));
@@ -142,7 +145,7 @@ describe('TaskListComponent', () => {
     wrapper.tasks = getTasks();
     wrapper.fields = getFields();
     wrapper.taskServiceConfig = getTaskService();
-
+    mockWorkAllocationService.getTask.and.returnValue(of({}));
     fixture.detectChanges();
   });
 

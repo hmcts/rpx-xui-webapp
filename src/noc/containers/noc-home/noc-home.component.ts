@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { caseRefVisibilityStates, qAndAVisibilityStates } from '../../constants';
+import { caseRefVisibilityStates, qAndAVisibilityStates, checkAnswerVisibilityStates } from '../../constants';
 import { NocNavigation, NocNavigationEvent, NocState } from '../../models';
 import * as fromFeature from '../../store';
 
@@ -21,6 +21,8 @@ export class NocHomeComponent implements OnInit, OnDestroy {
 
   public qAndAVisibilityStates = qAndAVisibilityStates;
 
+  public checkAnswerVisibilityStates = checkAnswerVisibilityStates;
+
   constructor(
     private readonly store: Store<fromFeature.State>,
   ) { }
@@ -34,10 +36,24 @@ export class NocHomeComponent implements OnInit, OnDestroy {
       event,
       timestamp: Date.now()
     };
+    this.navigationHandler(event);
   }
 
   public isComponentVisible(currentNavigationState: NocState, requiredNavigationState: NocState[]): boolean {
     return requiredNavigationState.includes(currentNavigationState);
+  }
+
+  public navigationHandler(navEvent: NocNavigationEvent) {
+    switch (navEvent) {
+      case NocNavigationEvent.BACK: {
+        this.store.dispatch(new fromFeature.Reset());
+        break;
+      }
+      case NocNavigationEvent.SUBMIT: {
+        // this.store.dispatch(new fromFeature.SetAnswers(this.caseRefForm.controls));
+        break;
+      }
+    }
   }
 
   public ngOnDestroy() {

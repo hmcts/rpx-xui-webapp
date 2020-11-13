@@ -59,6 +59,7 @@ export class NocCaseRefComponent implements OnChanges {
   public navigationHandler(navEvent: NocNavigationEvent) {
     switch (navEvent) {
       case NocNavigationEvent.BACK: {
+        this.store.dispatch(new fromFeature.Reset());
         break;
       }
       case NocNavigationEvent.CONTINUE: {

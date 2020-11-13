@@ -10,6 +10,10 @@
       ></exui-noc-case-ref>
       <exui-noc-q-and-a *ngIf="isComponentVisible(nocNavigationCurrentState, qAndAVisibilityStates)" [navEvent]="navEvent">
       </exui-noc-q-and-a>
+      <exui-noc-check-and-submit
+        *ngIf="isComponentVisible(nocNavigationCurrentState, checkAnswerVisibilityStates)"
+        [navEvent]="navEvent"
+      ></exui-noc-check-and-submit>
       <exui-noc-error *ngIf="isComponentVisible(nocNavigationCurrentState, caseRefErrorStates)" [navEvent]="navEvent"></exui-noc-error>
     </exui-noc-navigation>
   </exui-page-wrapper>

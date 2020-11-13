@@ -1,0 +1,72 @@
+.actions {
+  display: flex;
+  justify-content: flex-end;
+
+  .action {
+    padding: 2px;
+  }
+}
+/**
+ * Used to override the border-bottom style being set by the GDS .govuk-table__cell
+ */
+.border-none {
+  border: 0px;
+}
+
+.header-cell {
+
+  display: flex;
+
+  .arrow {
+    border: 1px solid red;
+    padding: 0 0 0 10px;
+  }
+}
+
+/**
+ * The "Manage +" button should mirror the GDS accordion functionality. However,
+ * it still needs to be in keeping with the styling within the table.
+ */
+.govuk-accordion__section-button {
+  &.xui-reset {
+    font-size: inherit;
+    margin-right: 10px;
+    text-decoration: underline;
+    font-weight: 400;
+    .govuk-accordion__icon {
+      height: 14px;
+      width: 14px;
+      right: 0;
+    }
+    &[aria-expanded=true] {
+      .govuk-accordion__icon::after {
+        display: none;
+      }
+    }
+  }
+}
+.govuk-table__row {
+  border-bottom: solid 1px #ddd;
+  th {
+    border-bottom-color: #bfc1c3;
+  }
+  &.actions-row {
+    display: none;
+    &.selected {
+      display: table-row;
+    }
+    .cell-actions {
+      text-align: right;
+      .task-action {
+        display: inline-block;
+        color: #1d70b8;
+        text-decoration: underline;
+        margin-right: 40px;
+        cursor: pointer;
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+    }
+  }
+}

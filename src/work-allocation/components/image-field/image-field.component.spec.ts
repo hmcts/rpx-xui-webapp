@@ -116,7 +116,7 @@ describe('WorkAllocation', () => {
 
       // Set up the image
       const EXAMPLE_IMAGE: string = '/assets/images/test.jpg';
-      const alt_string: string = 'Example for alt';
+      const ALT_STRING: string = 'Example for alt';
 
       // Add the image src and it should now be available with default Image alt setting
       component.src = EXAMPLE_IMAGE;
@@ -126,10 +126,10 @@ describe('WorkAllocation', () => {
       expect(element.getAttribute('alt')).toBe('Image');
 
       // Set the alt to be the example given
-      component.alt = alt_string;
+      component.alt = ALT_STRING;
       fixture.detectChanges();
       element = fixture.debugElement.nativeElement.querySelector('img');
-      expect(element.getAttribute('alt')).toBe(alt_string);
+      expect(element.getAttribute('alt')).toBe(ALT_STRING);
 
       // Remove the alt and check whether the default setting is valid
       component.alt = undefined;
@@ -138,10 +138,10 @@ describe('WorkAllocation', () => {
       expect(element.getAttribute('alt')).toBe('Image');
 
       // Set the alt to be the example given again
-      component.alt = alt_string;
+      component.alt = ALT_STRING;
       fixture.detectChanges();
       element = fixture.debugElement.nativeElement.querySelector('img');
-      expect(element.getAttribute('alt')).toBe(alt_string);
+      expect(element.getAttribute('alt')).toBe(ALT_STRING);
 
       // Set the alt and check whether the default setting is valid
       component.alt = null;

@@ -133,7 +133,7 @@ export class TaskHomeComponent implements OnInit {
   public fields: TaskFieldConfig[] = [
     {
       name: 'caseReference',
-      type: TaskFieldType.URL,
+      type: TaskFieldType.CASE_REFERENCE,
       columnLabel: 'Case reference',
       views: TaskView.TASK_LIST,
     },

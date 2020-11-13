@@ -1,2 +1,2 @@
-export * from './caseRefVisibilityStates';
+export * from './pageVisibilityStates';
 export * from './navigationVisibilityStates';

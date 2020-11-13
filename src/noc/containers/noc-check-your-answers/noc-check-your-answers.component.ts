@@ -12,7 +12,7 @@ import * as fromFeature from '../../store';
 })
 export class NocCheckYourAnswersComponent {
   @Input()
-  public answers$: Observable<NocAnswer[]>;
+  public answers: Observable<NocAnswer[]>;
 
   constructor(private store: Store<fromFeature.State>) {  }
 

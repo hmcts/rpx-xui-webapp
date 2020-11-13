@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+import { ExtraOptions, Routes } from '@angular/router';
 import { AccessibilityComponent, CookiePolicyComponent, MediaViewerWrapperComponent,
           PrivacyPolicyComponent, ServiceDownComponent} from './components';
 import { GetHelpComponent } from './components/get-help/get-help.component';
@@ -8,6 +8,10 @@ import { AcceptTermsGuard } from './guards/acceptTerms.guard';
 import { AllowAcceptTermsGuard } from './guards/allowAcceptTerms.guard';
 import { AuthGuard } from './services/auth/auth.guard';
 import { SignedOutComponent } from './components/signed-out/signed-out.component';
+
+export const routingConfiguration: ExtraOptions = {
+  paramsInheritanceStrategy: 'always'
+};
 
 export const ROUTES: Routes = [
   {

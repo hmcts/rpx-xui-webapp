@@ -50,11 +50,11 @@ describe("OpenId Connect API", () => {
       })
     )
 
-    it('returns a json configuration', () => {
+    it('returns a json configuration', async () => {
       const oidcUrl = `${provider.mockService.baseUrl}/o`
 
       // @ts-ignore
-      const issuer = oidc.configure({
+      const issuer = await oidc.configure({
         allowRolesRegex: '.',
         authorizationURL: `${oidcUrl}/authorize`,
         callbackURL: `${provider.mockService.baseUrl}/oauth2/callback`,

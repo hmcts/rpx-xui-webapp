@@ -13,28 +13,21 @@ export const initialState: NocStateData = {
   validationErrors: null
 };
 
-export function nocReducer(
-  currentState = initialState,
-  action: fromActions.NocAction
-): NocStateData {
-
+export function nocReducer(currentState = initialState, action: fromActions.NocAction): NocStateData {
   switch (action.type) {
     case fromActions.CHANGE_NAVIGATION: {
-
       return {
         ...currentState,
         state: action.payload
       };
     }
     case fromActions.RESET: {
-
       return {
         ...currentState,
         ...initialState
       };
     }
     case fromActions.SET_CASE_REF_VALIDATION_FAILURE: {
-
       return {
         ...currentState,
         state: NocState.CASE_REF_VALIDATION_FAILURE,
@@ -50,7 +43,6 @@ export function nocReducer(
       };
     }
     case fromActions.SET_CASE_REF_SUBMISSION_FAILURE: {
-
       return {
         ...currentState,
         state: NocState.CASE_REF_SUBMISSION_FAILURE,
@@ -58,7 +50,6 @@ export function nocReducer(
       };
     }
     case fromActions.SET_QUESTIONS: {
-
       return {
         ...currentState,
         state: NocState.QUESTION,
@@ -113,7 +104,6 @@ export function nocReducer(
       };
     }
     default: {
-
       return {
         ...initialState
       };

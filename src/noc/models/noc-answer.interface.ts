@@ -1,4 +1,5 @@
 export interface NocAnswer {
-    displayOrder: number;
-    answer: string;
+    question_id: string;
+    question_name: string;
+    value: string;
 }

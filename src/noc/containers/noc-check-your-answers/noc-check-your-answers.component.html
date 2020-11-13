@@ -1,0 +1,14 @@
+<div class="noc-answers-table">
+  <div class="noc-answers-row">
+    <div class="noc-answers-col"><b>Change request</b></div>
+    <div class="noc-answers-col">Acquire case file from a solicitor (Notice of Change)</div>
+    <div class="noc-answers-col"></div>
+  </div>
+  <ng-container *ngFor="let answer of answers$ | async">
+    <div class="noc-answers-row">
+        <div class="noc-answers-col">{{ answer.question_name }}</div>
+        <div class="noc-answers-col">{{ answer.value }}</div>
+        <div class="noc-answers-col"><a (click)="onChange(answer)">Change</a></div>
+    </div>
+  </ng-container>
+</div>

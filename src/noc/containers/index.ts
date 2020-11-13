@@ -11,6 +11,8 @@ import { NocYesNoFieldComponent } from './noc-filed/yes-no';
 import { NocHomeComponent } from './noc-home/noc-home.component';
 import { NocNavigationComponent } from './noc-navigation/noc-navigation.component';
 import { NocQAndAComponent } from './noc-q-and-a/noc-q-and-a.component';
+import { NocCheckAndSubmitComponent } from './noc-check-and-submit/noc-check-and-submit.component';
+import { NocCheckYourAnswersComponent } from './noc-check-your-answers/noc-check-your-answers.component';
 
 export const containers: any[] = [
   NocHomeComponent,
@@ -18,6 +20,8 @@ export const containers: any[] = [
   NocErrorComponent,
   NocCaseRefComponent,
   NocQAndAComponent,
+  NocCheckYourAnswersComponent,
+  NocCheckAndSubmitComponent,
   NocFieldComponent,
   NocErrorPipe,
   NocTextFieldComponent,
@@ -34,3 +38,5 @@ export * from './noc-errors/noc-error.component';
 export * from './noc-case-ref/noc-case-ref.component';
 export * from './noc-filed/noc-field.component';
 export * from './noc-q-and-a/noc-q-and-a.component';
+export * from './noc-check-your-answers/noc-check-your-answers.component';
+export * from './noc-check-and-submit/noc-check-and-submit.component';

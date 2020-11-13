@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { NocQuestion } from '../../models';
+import { NocNavigation, NocQuestion } from '../../models';
 import * as fromFeature from '../../store';
 
 @Component({
@@ -17,9 +17,16 @@ export class NocQAndAComponent implements OnInit {
   @Input()
   public formGroup: FormGroup;
 
+  @Input() navEvent: NocNavigation;
+
   public qAndAForm: FormGroup;
 
-  constructor(private store: Store<fromFeature.State>) { }
+  constructor(private store: Store<fromFeature.State>) {
+    this.navEvent = {
+      event: null,
+      timestamp: null
+    };
+  }
 
   public ngOnInit() {
     this.questions$ = this.store.pipe(select(fromFeature.questions));

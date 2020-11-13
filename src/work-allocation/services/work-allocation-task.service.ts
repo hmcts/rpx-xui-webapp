@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { Assignee } from './../models/dtos/task';
 
 const BASE_URL: string = '/workallocation/task/';
-enum ACTION {
+export enum ACTION {
   ASSIGN = 'assign',
   CANCEL = 'cancel',
   CLAIM = 'claim',
@@ -28,6 +28,9 @@ export class WorkAllocationTaskService {
     return this.http.post<any>(this.getActionUrl(taskId, ACTION.COMPLETE), {});
   }
 
+  public cancelTask(taskId: string): Observable<any> {
+    return this.http.post<any>(this.getActionUrl(taskId, ACTION.CANCEL), {});
+  }
 
   /**
    * Call the API to assign a task to a user.
@@ -43,11 +46,15 @@ export class WorkAllocationTaskService {
     return this.http.post<any>(`${BASE_URL}`, task);
   }
 
+  public claimTask(taskId: string): Observable<any> {
+    return this.http.post<any>(this.getActionUrl(taskId, ACTION.CLAIM), {});
+  }
+
   public unclaimTask(taskId: string): Observable<any> {
     return this.http.post<any>(this.getActionUrl(taskId, ACTION.UNCLAIM), {});
   }
 
-  private getActionUrl(taskId: string, action: ACTION): string {
+  public getActionUrl(taskId: string, action: ACTION): string {
     return `${BASE_URL}${taskId}/${action}`;
   }
 }

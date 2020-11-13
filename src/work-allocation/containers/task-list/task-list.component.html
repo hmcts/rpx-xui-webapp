@@ -10,7 +10,7 @@
   <!-- Manage column -->
   <ng-container cdkColumnDef="manage">
     <th cdk-header-cell *cdkHeaderCellDef>&nbsp;</th>
-    <td cdk-cell *cdkCellDef="let rowData">Manage <button (click)="setSelectedRow(rowData)">&#9658;</button></td>
+    <td cdk-cell *cdkCellDef="let rowData">Manage <button id="manage" (click)="setSelectedRow(rowData)">&#9658;</button></td>
   </ng-container>
 
   <ng-container cdkColumnDef="actions">

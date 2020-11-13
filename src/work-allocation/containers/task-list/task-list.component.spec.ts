@@ -6,6 +6,7 @@ import {WorkAllocationComponentsModule} from 'src/work-allocation/components/wor
 import {TaskListComponent} from './task-list.component';
 import {TaskFieldType, TaskView} from '../../enums';
 import {CdkTableModule} from '@angular/cdk/table';
+import { By } from '@angular/platform-browser';
 
 @Component({
   template: `
@@ -105,7 +106,7 @@ function getFields(): TaskFieldConfig[] {
   ];
 }
 
-describe('TaskListComponent', () => {
+fdescribe('TaskListComponent', () => {
   let component: TaskListComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -146,4 +147,116 @@ describe('TaskListComponent', () => {
 
     expect(component.addManageColumn(fields)).toEqual(fieldsWithManage);
   });
+
+  it('should return the columns to be displayed by the Angular Component Dev Kit table.', async () => {
+
+    // create mock getDisplayedColumn variables
+    const taskFieldConfig = getFields();
+    const fields = taskFieldConfig.map(field => field.name);
+    const displayedColumns = component.addManageColumn(fields);
+
+    // test actual function against mock variables
+    expect(component.getDisplayedColumn(taskFieldConfig)).toEqual(displayedColumns);
+
+  });
+
+  it('should take in the field name and trigger a new Request to the API to get a sorted result set.', async () => {
+
+    // mock the emitter and dispatch the connected event
+    spyOn(component.sortEvent, 'emit');
+    const element = fixture.debugElement.nativeElement;
+    const button = element.querySelector('button');
+    button.dispatchEvent(new Event('click'));
+    fixture.detectChanges();
+
+    // check the emitter had been called and that it gets called with the first field which is caseReference
+    expect(component.sortEvent.emit).toHaveBeenCalled();
+    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseReference');
+  });
+
+  it('should open and close the selected row.', async () => {
+
+    // get the 'manage' button and click it
+    let element = fixture.debugElement.nativeElement;
+    const button = element.querySelector('#manage');
+    button.dispatchEvent(new Event('click'));
+    fixture.detectChanges();
+
+    // get the selected row and confirm it is not null
+    const row = component.getSelectedRow();
+    expect(component.getSelectedRow()).not.toBe(null);
+
+    // click the 'manage' button again and confirm that it is null
+    element = fixture.debugElement.nativeElement;
+    button.dispatchEvent(new Event('click'));
+    fixture.detectChanges();
+    expect(component.getSelectedRow()).toBe(null);
+
+    // click the button one last time and confirm selected and equal to earlier given row
+    element = fixture.debugElement.nativeElement;
+    button.dispatchEvent(new Event('click'));
+    fixture.detectChanges();
+    expect(component.getSelectedRow()).not.toBe(null);
+    expect(component.getSelectedRow()).toEqual(row);
+  });
+
+  it('should allow setting the selected row.', async () => {
+
+    // get the 'manage' button and click it
+    let element = fixture.debugElement.nativeElement;
+    const button = element.querySelector('#manage');
+    button.dispatchEvent(new Event('click'));
+    fixture.detectChanges();
+
+    // get the selected row and confirm it is not null
+    const row = component.getSelectedRow();
+    expect(component.getSelectedRow()).not.toBe(null);
+
+    // click the 'manage' button again and confirm that it is null
+    element = fixture.debugElement.nativeElement;
+    button.dispatchEvent(new Event('click'));
+    fixture.detectChanges();
+    expect(component.getSelectedRow()).toBe(null);
+
+    // set the selected row as the earlier defined row
+    component.setSelectedRow(row);
+    fixture.detectChanges();
+    expect(component.getSelectedRow()).not.toBe(null);
+    expect(component.getSelectedRow()).toEqual(row);
+  });
+
+  it('should allow checking the selected row.', async () => {
+
+    // get the 'manage' button and click it
+    let element = fixture.debugElement.nativeElement;
+    const button = element.querySelector('#manage');
+    button.dispatchEvent(new Event('click'));
+    fixture.detectChanges();
+
+    // get the selected row and confirm it is not null
+    const row = component.getSelectedRow();
+    expect(component.getSelectedRow()).not.toBe(null);
+
+    // expect the row to be selected
+    expect(component.isRowSelected(row)).toBeTruthy();
+
+    // click the 'manage' button again and confirm that row is not selected
+    element = fixture.debugElement.nativeElement;
+    button.dispatchEvent(new Event('click'));
+    fixture.detectChanges();
+    expect(component.isRowSelected(row)).toBeFalsy();
+  });
+
+  /*it('should trigger an event to the parent when the User clicks on a Manage action.', async () => {
+
+    // mock the emitter and dispatch the connected event
+    spyOn(component.actionEvent, 'emit');
+    const element = fixture.debugElement.nativeElement;
+    const button = element.querySelector('button');
+    button.dispatchEvent(new Event('click'));
+    fixture.detectChanges();
+
+    // check the emitter had been called and that it gets called with the first field which is caseReference
+    expect(component.actionEvent.emit).toHaveBeenCalled();
+  });*/
 })

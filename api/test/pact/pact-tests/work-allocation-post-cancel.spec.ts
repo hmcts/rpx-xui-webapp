@@ -52,7 +52,7 @@ describe("Work Allocation API", () => {
     before(() =>
       provider.addInteraction({
         state: 'task is cancelled',
-        uponReceiving: 'a request for completion',
+        uponReceiving: 'a request for cancellation',
         withRequest: {
           method: 'POST',
           path: '/task/123456/cancel',
@@ -77,7 +77,7 @@ describe("Work Allocation API", () => {
     before(() =>
       provider.addInteraction({
         state: 'task was already cancel',
-        uponReceiving: 'a request for completion when already cancel',
+        uponReceiving: 'a request for cancellation when already cancel',
         withRequest: {
           method: 'POST',
           path: '/task/123456/cancel',
@@ -102,7 +102,7 @@ describe("Work Allocation API", () => {
     before(() =>
       provider.addInteraction({
         state: 'a bad request was made',
-        uponReceiving: 'a bad request for completion',
+        uponReceiving: 'a bad request for cancellation',
         withRequest: {
           method: 'POST',
           path: '/task/123456/cancel',
@@ -132,8 +132,8 @@ describe("Work Allocation API", () => {
   describe('when making a request to cancel a forbidden task', () => {
     before(() =>
       provider.addInteraction({
-        state: 'completion of this task is was forbidden',
-        uponReceiving: 'a request for completion of a forbidden task',
+        state: 'cancellation of this task is was forbidden',
+        uponReceiving: 'a request for cancellation of a forbidden task',
         withRequest: {
           method: 'POST',
           path: '/task/123456/cancel',
@@ -164,7 +164,7 @@ describe("Work Allocation API", () => {
     before(() =>
       provider.addInteraction({
         state: 'this action is unsupported',
-        uponReceiving: 'a request for completion but it is unsupported',
+        uponReceiving: 'a request for cancellation but it is unsupported',
         withRequest: {
           method: 'POST',
           path: '/task/123456/cancel',
@@ -195,7 +195,7 @@ describe("Work Allocation API", () => {
     before(() =>
       provider.addInteraction({
         state: 'the server had an internal error',
-        uponReceiving: 'a request for completion and the server falls over',
+        uponReceiving: 'a request for cancellation and the server falls over',
         withRequest: {
           method: 'POST',
           path: '/task/123456/cancel',

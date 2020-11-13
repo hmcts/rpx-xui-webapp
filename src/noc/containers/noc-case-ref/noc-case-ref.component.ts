@@ -1,9 +1,9 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
 import { select, Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { NocError, NocNavigation, NocNavigationEvent } from '../../models';
+import { Observable, Subscription } from 'rxjs';
+import { NocError, NocNavigation, NocNavigationEvent, NocState } from '../../models';
 import * as fromFeature from '../../store';
 
 @Component({
@@ -11,7 +11,7 @@ import * as fromFeature from '../../store';
   templateUrl: 'noc-case-ref.component.html',
   styleUrls: ['noc-case-ref.component.scss']
 })
-export class NocCaseRefComponent implements OnChanges {
+export class NocCaseRefComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() public navEvent: NocNavigation;
 
@@ -22,6 +22,9 @@ export class NocCaseRefComponent implements OnChanges {
   public lastError$: Observable<NocError>;
 
   public caseRefForm: FormGroup;
+
+  public nocNavigationCurrentState: NocState;
+  private nocNavigationCurrentStateSub: Subscription;
 
   constructor(
     private readonly store: Store<fromFeature.State>,
@@ -46,6 +49,11 @@ export class NocCaseRefComponent implements OnChanges {
     };
   }
 
+  public ngOnInit() {
+    this.nocNavigationCurrentStateSub = this.store.pipe(select(fromFeature.currentNavigation)).subscribe(
+      state => this.nocNavigationCurrentState = state);
+  }
+
   public ngOnChanges(changes: SimpleChanges) {
     if (changes.navEvent && this.navEvent) {
       this.navigationHandler(this.navEvent.event);
@@ -59,7 +67,11 @@ export class NocCaseRefComponent implements OnChanges {
   public navigationHandler(navEvent: NocNavigationEvent) {
     switch (navEvent) {
       case NocNavigationEvent.BACK: {
-        this.store.dispatch(new fromFeature.Reset());
+        if (this.nocNavigationCurrentState === NocState.QUESTION) {
+          this.store.dispatch(new fromFeature.Reset());
+        } else if(this.nocNavigationCurrentState === NocState.CHECK_ANSWERS) {
+          this.store.dispatch(new fromFeature.ChangeNavigation(NocState.QUESTION));
+        }
         break;
       }
       case NocNavigationEvent.CONTINUE: {
@@ -80,5 +92,11 @@ export class NocCaseRefComponent implements OnChanges {
     }
 
     return null;
+  }
+
+  public ngOnDestroy() {
+    if (this.nocNavigationCurrentStateSub) {
+      this.nocNavigationCurrentStateSub.unsubscribe();
+    }
   }
 }

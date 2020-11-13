@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { NocAnswer } from '../../models';
+import { NocAnswer, NocState } from '../../models';
 import * as fromFeature from '../../store';
 
 @Component({
@@ -17,6 +17,6 @@ export class NocCheckYourAnswersComponent {
   constructor(private store: Store<fromFeature.State>) {  }
 
   public onChange(answer: NocAnswer) {
-    this.store.dispatch(new fromFeature.ChangeNavigation(null));
+    this.store.dispatch(new fromFeature.ChangeNavigation(NocState.QUESTION));
   }
 }

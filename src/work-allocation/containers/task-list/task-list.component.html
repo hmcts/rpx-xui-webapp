@@ -14,17 +14,24 @@
   <!-- Manage column -->
   <ng-container cdkColumnDef="manage">
     <th class="govuk-table__header" cdk-header-cell *cdkHeaderCellDef>&nbsp;</th>
-    <td  class="govuk-table__cell border-none" cdk-cell *cdkCellDef="let rowData" (click)="setSelectedRow(rowData)">
-      <div *ngIf="!isRowSelected(rowData); else downArrow">&#9658;&nbsp;Manage</div>
-      <ng-template #downArrow>&#9660;&nbsp;Manage</ng-template>
+    <td cdk-cell *cdkCellDef="let rowData" class="govuk-table__cell border-none govuk-accordion__section-header">
+      <div class="govuk-accordion__section-heading">
+        <button type="button" (click)="setSelectedRow(rowData)"
+                class="govuk-accordion__section-button xui-reset"
+                [attr.aria-expanded]="isRowSelected(rowData)">
+          Manage
+          <span class="govuk-accordion__icon" aria-hidden="true"></span>
+        </button>
+      </div>
     </td>
   </ng-container>
 
+  <!-- Actions for the selected row -->
   <ng-container cdkColumnDef="actions">
-    <td cdk-cell *cdkCellDef="let rowData" [attr.colspan]="displayedColumns.length">
+    <td cdk-cell *cdkCellDef="let rowData" [attr.colspan]="displayedColumns.length" class="cell-actions">
       <ng-container *ngIf="isRowSelected(rowData)">
-        <div *ngFor="let action of rowData.actions" class="actions">
-          <a (click)="onActionHandler(rowData, action)" class="action">{{action.title}}</a>
+        <div *ngFor="let action of rowData.actions" class="task-action">
+          <a tabindex="0" (click)="onActionHandler(rowData, action)" class="action">{{action.title}}</a>
         </div>
       </ng-container>
     </td>
@@ -34,7 +41,12 @@
   <tr class="govuk-table__row" cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
 
   <!-- Table Row -->
-  <tr class="govuk-table__row" cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
-  <tr cdk-row *cdkRowDef="let row; columns: ['actions']" when="() => false"></tr>
+  <tr class="govuk-table__row" [ngClass]="{ selected: isRowSelected(row) }"
+      cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
+
+  <!-- Table Actions Row-->
+  <tr class="govuk-table__row actions-row" [ngClass]="{ selected: isRowSelected(row) }"
+      [attr.aria-hidden]="!isRowSelected(row)"
+      cdk-row *cdkRowDef="let row; columns: ['actions']"></tr>
 
 </table>

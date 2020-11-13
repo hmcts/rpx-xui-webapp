@@ -1,9 +1,11 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {BehaviorSubject, Observable} from 'rxjs';
-import {Task, TaskFieldConfig} from '../../models/tasks';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+
+import { Task, TaskFieldConfig, TaskSortField } from '../../models/tasks';
 import InvokedTaskAction from '../../models/tasks/invoked-task-action.model';
 import TaskAction from '../../models/tasks/task-action.model';
 import TaskServiceConfig from '../../models/tasks/task-service-config.model';
+import { TaskSort } from './../../enums/task-sort';
 
 @Component({
   selector: 'exui-task-list',
@@ -11,13 +13,14 @@ import TaskServiceConfig from '../../models/tasks/task-service-config.model';
   styleUrls: ['task-list.component.scss']
 })
 
-export class TaskListComponent implements OnInit {
+export class TaskListComponent implements OnInit, OnChanges {
 
   /**
    * These are the tasks & fields as returned from the WA Api.
    */
   @Input() public tasks: Task[];
   @Input() public taskServiceConfig: TaskServiceConfig;
+  @Input() public sortedBy: TaskSortField;
 
   // TODO: Need to re-read the LLD, but I believe it says pass in the taskServiceConfig into this TaskListComponent.
   // Therefore we will not need this.
@@ -31,19 +34,29 @@ export class TaskListComponent implements OnInit {
    */
   public dataSource$: Observable<Task[]>;
 
-  public displayedColumns;
+  public displayedColumns: string[];
 
-  private selectedRow;
-
-  constructor() {
-  }
+  private selectedRow: Task;
 
   public ngOnInit() {
 
-    const tasks$ = new BehaviorSubject(this.tasks);
-    this.dataSource$ = tasks$;
+    // const tasks$ = new BehaviorSubject(this.tasks);
+    // this.dataSource$ = tasks$;
 
-    this.displayedColumns = this.getDisplayedColumn(this.fields);
+    // this.displayedColumns = this.getDisplayedColumn(this.fields);
+  }
+
+  public ngOnChanges() {
+    if (this.dataSource$) {
+      this.dataSource$.subscribe().unsubscribe();
+    }
+    if (this.tasks) {
+      const tasks$ = new BehaviorSubject(this.tasks);
+      this.dataSource$ = tasks$;
+    }
+    if (this.fields) {
+      this.displayedColumns = this.getDisplayedColumn(this.fields);
+    }
   }
 
   /**
@@ -51,7 +64,7 @@ export class TaskListComponent implements OnInit {
    *
    * TODO: Unit test
    */
-  public getDisplayedColumn(taskFieldConfig: TaskFieldConfig[]) {
+  public getDisplayedColumn(taskFieldConfig: TaskFieldConfig[]): string[] {
 
     const fields = taskFieldConfig.map(field => field.name);
     return this.addManageColumn(fields);
@@ -62,7 +75,7 @@ export class TaskListComponent implements OnInit {
    *
    * Therefore we need to add the 'manage' column field within this component, as discussed in the LLD.
    */
-  public addManageColumn(fields: string[]) {
+  public addManageColumn(fields: string[]): string[] {
 
     return [...fields, 'manage'];
   }
@@ -75,7 +88,7 @@ export class TaskListComponent implements OnInit {
    *
    * @param fieldName - ie. 'caseName'
    */
-  public onSortHandler(fieldName: string) {
+  public onSortHandler(fieldName: string): void {
 
     this.sortEvent.emit(fieldName);
   }
@@ -83,7 +96,7 @@ export class TaskListComponent implements OnInit {
   /**
    * Trigger an event to the parent when the User clicks on a Manage action.
    */
-  public onActionHandler(task: Task, action: TaskAction) {
+  public onActionHandler(task: Task, action: TaskAction): void {
 
     const invokedTaskAction: InvokedTaskAction = {
       task,
@@ -98,7 +111,7 @@ export class TaskListComponent implements OnInit {
    *
    * Open and close the selected row.
    */
-  public setSelectedRow(row) {
+  public setSelectedRow(row: Task): void {
 
     if (row === this.getSelectedRow()) {
       this.selectedRow = null;
@@ -107,12 +120,12 @@ export class TaskListComponent implements OnInit {
     }
   }
 
-  public getSelectedRow() {
+  public getSelectedRow(): Task {
 
     return this.selectedRow;
   }
 
-  public isRowSelected(row) {
+  public isRowSelected(row: Task): boolean {
 
     return row === this.getSelectedRow();
   }
@@ -130,14 +143,19 @@ export class TaskListComponent implements OnInit {
    * @param fieldName - 'caseReference'
    * @return 'none' / 'ascending' / 'descending'
    */
-  public isColumnSorted(fieldName) {
-
-    const { defaultSortFieldName, defaultSortDirection } = this.taskServiceConfig;
-
-    if (fieldName === defaultSortFieldName) {
-      return defaultSortDirection;
+  public isColumnSorted(fieldName: string): TaskSort {
+    // If we don't have an actual sortedBy value, default it now.
+    if (!this.sortedBy) {
+      const { defaultSortFieldName, defaultSortDirection } = this.taskServiceConfig;
+      this.sortedBy = { fieldName: defaultSortFieldName, order: defaultSortDirection };
     }
 
-    return 'none';
+    // If this is the field we're sorted by, return the appropriate order.
+    if (this.sortedBy.fieldName === fieldName) {
+      return this.sortedBy.order;
+    }
+
+    // This field is not sorted, return NONE.
+    return TaskSort.NONE;
   }
 }

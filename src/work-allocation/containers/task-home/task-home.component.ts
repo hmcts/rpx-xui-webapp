@@ -1,24 +1,25 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Task, TaskFieldConfig} from './../../models/tasks';
-import {TaskFieldType, TaskView} from './../../enums';
+import { Component, OnInit } from '@angular/core';
+
+import { TaskService, TaskSort } from '../../enums';
 import InvokedTaskAction from '../../models/tasks/invoked-task-action.model';
 import TaskServiceConfig from '../../models/tasks/task-service-config.model';
-import {TaskService, TaskSort} from '../../enums';
+import { TaskFieldType, TaskView } from './../../enums';
+import { Task, TaskFieldConfig, TaskSortField } from './../../models/tasks';
 
 @Component({
   selector: 'exui-task-home',
   templateUrl: 'task-home.component.html',
   styleUrls: ['task-home.component.scss']
 })
-export class TaskHomeComponent implements OnInit, OnDestroy {
+export class TaskHomeComponent implements OnInit {
 
   /**
    * Temp Task List
    */
   public tasks: Task[] = [
     {
-      id: '1549476532065586',
-      caseReference: '1549 4765 3206 5586',
+      id: '12345678901123456',
+      caseReference: '1234 5678 9012 3456',
       caseName: 'Kili Muso',
       caseCategory: 'Protection',
       location: 'Taylor House',
@@ -36,9 +37,77 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
       ]
     },
     {
-      id: '1549476532065586',
-      caseReference: '1549 4765 3206 5586',
+      id: '2345678901234567',
+      caseReference: '2345 6789 0123 4567',
       caseName: 'Mankai Lit',
+      caseCategory: 'Revocation',
+      location: 'Taylor House',
+      taskName: 'Review appellant case',
+      dueDate: new Date(1604506789000),
+      actions: [
+        {
+          id: 'actionId',
+          title: 'Release this task',
+        }
+      ]
+    },
+    {
+      id: '3456789012345678',
+      caseReference: '3456 7890 1234 5678',
+      caseName: 'Bob Cratchit',
+      caseCategory: 'Protection',
+      location: 'Taylor Swift',
+      taskName: 'Review respondent evidence',
+      dueDate: new Date(),
+      actions: [
+        {
+          id: 'actionId',
+          title: 'Reassign task',
+        },
+        {
+          id: 'actionId',
+          title: 'Release this task',
+        }
+      ]
+    },
+    {
+      id: '4567890123456789',
+      caseReference: '4567 8901 2345 6789',
+      caseName: 'Ebenezer Scrooge',
+      caseCategory: 'Revocation',
+      location: 'Bleak House',
+      taskName: 'Review appellant case',
+      dueDate: new Date(),
+      actions: [
+        {
+          id: 'actionId',
+          title: 'Release this task',
+        }
+      ]
+    },
+    {
+      id: '5678901234567890',
+      caseReference: '5678 9012 3456 7890',
+      caseName: 'Oliver Twist',
+      caseCategory: 'Protection',
+      location: 'Orphanage',
+      taskName: 'Give more gruel',
+      dueDate: new Date(new Date().getTime() + (86400 * 5000)),
+      actions: [
+        {
+          id: 'actionId',
+          title: 'Reassign task',
+        },
+        {
+          id: 'actionId',
+          title: 'Release this task',
+        }
+      ]
+    },
+    {
+      id: '6789012345678901',
+      caseReference: '6789 0123 4567 8901',
+      caseName: 'David Copperfield',
       caseCategory: 'Revocation',
       location: 'Taylor House',
       taskName: 'Review appellant case',
@@ -100,20 +169,27 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
     },
   ];
 
+  /**
+   * Mock TaskServiceConfig.
+   */
   public taskServiceConfig: TaskServiceConfig = {
     service: TaskService.IAC,
-    defaultSortDirection: TaskSort.DSC,
-    defaultSortFieldName: 'caseName',
+    defaultSortDirection: TaskSort.ASC,
+    defaultSortFieldName: 'dueDate',
     fields: this.fields,
   };
 
-  constructor() {
-  }
-
+  public sortedBy: TaskSortField;
 
   public ngOnInit(): void {
+    // Set up the default sorting.
+    this.sortedBy = {
+      fieldName: this.taskServiceConfig.defaultSortFieldName,
+      order: this.taskServiceConfig.defaultSortDirection
+    };
 
-    console.log('onInitTaskHome');
+    // Remove after integration.
+    this.sortTasks();
   }
 
   /**
@@ -127,9 +203,19 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
    */
   public onSortHandler(fieldName: string): void {
 
-    // Remove after integration
+    // TODO: Remove everything below after integration.
+    // This is all to prove the mechanism works.
     console.log('Task Home received Sort on:');
     console.log(fieldName);
+    console.log('Faking the sort now');
+    let order: TaskSort = TaskSort.ASC;
+    if (this.sortedBy.fieldName === fieldName && this.sortedBy.order === TaskSort.ASC) {
+      order = TaskSort.DSC;
+    }
+    this.sortedBy = { fieldName, order };
+
+    // Now sort the tasks.
+    this.sortTasks();
   }
 
   /**
@@ -143,6 +229,18 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
     console.log(taskAction);
   }
 
-  public ngOnDestroy(): void {
+  // Remove after integration.
+  private sortTasks(): void {
+    this.tasks = this.tasks.sort((a: Task, b: Task) => {
+      const aVal = a[this.sortedBy.fieldName];
+      const bVal = b[this.sortedBy.fieldName];
+      let sortVal = 0;
+      if (typeof aVal === 'string') {
+        sortVal = aVal.localeCompare(bVal);
+      } else if (aVal instanceof Date) {
+        sortVal = aVal.getTime() - new Date(bVal).getTime();
+      }
+      return this.sortedBy.order === TaskSort.ASC ? sortVal : -sortVal;
+    });
   }
 }

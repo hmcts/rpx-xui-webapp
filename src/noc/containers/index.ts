@@ -1,13 +1,13 @@
 import { NocCaseRefComponent } from './noc-case-ref/noc-case-ref.component';
 import { NocErrorComponent } from './noc-errors/noc-error.component';
-import { NocEmailFieldComponent } from './noc-filed/email';
-import { NocFieldComponent } from './noc-filed/noc-field.component';
-import { NocNumberFieldComponent } from './noc-filed/number';
-import { NocPhoneUkFieldComponent } from './noc-filed/phone-uk';
-import { NocPostcodeFieldComponent } from './noc-filed/postcode';
-import { NocTextFieldComponent } from './noc-filed/text';
-import { NocErrorPipe } from './noc-filed/utils';
-import { NocYesNoFieldComponent } from './noc-filed/yes-no';
+import { NocEmailFieldComponent } from './noc-field/email';
+import { NocFieldComponent } from './noc-field/noc-field.component';
+import { NocNumberFieldComponent } from './noc-field/number';
+import { NocPhoneUkFieldComponent } from './noc-field/phone-uk';
+import { NocPostcodeFieldComponent } from './noc-field/postcode';
+import { NocTextFieldComponent } from './noc-field/text';
+import { NocErrorPipe } from './noc-field/utils';
+import { NocYesNoFieldComponent } from './noc-field/yes-no';
 import { NocHomeComponent } from './noc-home/noc-home.component';
 import { NocNavigationComponent } from './noc-navigation/noc-navigation.component';
 import { NocQAndAComponent } from './noc-q-and-a/noc-q-and-a.component';
@@ -23,7 +23,6 @@ export const containers: any[] = [
   NocCheckYourAnswersComponent,
   NocCheckAndSubmitComponent,
   NocFieldComponent,
-  NocErrorPipe,
   NocTextFieldComponent,
   NocNumberFieldComponent,
   NocEmailFieldComponent,
@@ -36,7 +35,7 @@ export * from './noc-home/noc-home.component';
 export * from './noc-navigation/noc-navigation.component';
 export * from './noc-errors/noc-error.component';
 export * from './noc-case-ref/noc-case-ref.component';
-export * from './noc-filed/noc-field.component';
+export * from './noc-field/noc-field.component';
 export * from './noc-q-and-a/noc-q-and-a.component';
 export * from './noc-check-your-answers/noc-check-your-answers.component';
 export * from './noc-check-and-submit/noc-check-and-submit.component';

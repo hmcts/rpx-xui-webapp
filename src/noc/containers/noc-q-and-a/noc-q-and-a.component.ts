@@ -30,7 +30,7 @@ export class NocQAndAComponent implements OnInit {
 
   public ngOnInit() {
     this.questions$ = this.store.pipe(select(fromFeature.questions));
-    this.qAndAForm = new FormGroup({});
+    this.formGroup = new FormGroup({});
   }
 
 }

@@ -45,16 +45,29 @@ describe('Noc Reducer', () => {
                 const initialState = fromReducer.initialState;
                 const action = new fromActions.SetQuestions({
                     questions: [{
-                        displayOrder: 0,
-                        answerType: null,
-                        displayContext: null,
-                        questionLabel: 'dummy'
+                      case_type_id: 'AAT',
+                      order: '1',
+                      question_text: 'What is their Email?',
+                      answer_field_type: {
+                        id: 'Email',
+                        type: 'Email',
+                        min: null,
+                        max: null,
+                        regular_expression: null,
+                        fixed_list_items: [],
+                        complex_fields: [],
+                        collection_field_type: null
+                      },
+                      display_context_parameter: '1',
+                      challenge_question_id: 'NoC',
+                      answer_field: '',
+                      question_id: 'QuestionId67745'
                     }],
                     caseReference: 'abcd'
                 });
                 const nocState = fromReducer.nocReducer(initialState, action);
                 expect(nocState.state).toEqual(NocState.QUESTION);
-                expect(nocState.questions[0].questionLabel).toEqual('dummy');
+                expect(nocState.questions[0].question_text).toEqual('What is their Email?');
                 expect(nocState.caseReference).toEqual('abcd');
             });
         });

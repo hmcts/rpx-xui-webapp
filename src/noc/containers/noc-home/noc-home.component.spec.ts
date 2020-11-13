@@ -7,6 +7,7 @@ import { of } from 'rxjs';
 import * as fromContainers from '../../containers';
 import { NocNavigationEvent, NocState } from '../../models';
 import * as fromNocStore from '../../store';
+import { UtilsModule } from '../noc-field/utils/utils.module';
 import { NocHomeComponent } from './noc-home.component';
 
 describe('NocHomeComponent', () => {
@@ -18,7 +19,8 @@ describe('NocHomeComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        UtilsModule
       ],
       schemas: [
         NO_ERRORS_SCHEMA

@@ -54,6 +54,10 @@ export class WorkAllocationTaskService {
     return this.http.post<any>(this.getActionUrl(taskId, ACTION.UNCLAIM), {});
   }
 
+  public getTask(taskId: string): Observable<any> {
+    return this.http.get(`${BASE_URL}${taskId}`);
+  }
+
   public getActionUrl(taskId: string, action: ACTION): string {
     return `${BASE_URL}${taskId}/${action}`;
   }

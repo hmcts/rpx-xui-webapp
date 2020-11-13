@@ -1,21 +1,21 @@
-import {Component, Input, Output, ViewChild} from '@angular/core';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { CdkTableModule } from '@angular/cdk/table';
+import { Component, Input, ViewChild } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { WorkAllocationComponentsModule } from 'src/work-allocation/components/work-allocation.components.module';
 
-import {Task, TaskFieldConfig} from './../../models/tasks';
-import {WorkAllocationComponentsModule} from 'src/work-allocation/components/work-allocation.components.module';
-import {TaskListComponent} from './task-list.component';
-import {TaskFieldType, TaskView} from '../../enums';
-import {CdkTableModule} from '@angular/cdk/table';
-import { By } from '@angular/platform-browser';
+import { TaskFieldType, TaskService, TaskSort, TaskView } from '../../enums';
+import { Task, TaskFieldConfig, TaskServiceConfig } from './../../models/tasks';
+import { TaskListComponent } from './task-list.component';
 
 @Component({
   template: `
-    <exui-task-list [fields]='fields' [tasks]='tasks'></exui-task-list>`
+    <exui-task-list [fields]='fields' [tasks]='tasks' [taskServiceConfig]="taskServiceConfig"></exui-task-list>`
 })
 class WrapperComponent {
   @ViewChild(TaskListComponent) public appComponentRef: TaskListComponent;
   @Input() public fields: TaskFieldConfig[];
   @Input() public tasks: Task[];
+  @Input() public taskServiceConfig: TaskServiceConfig;
 }
 
 /**
@@ -44,8 +44,8 @@ function getTasks(): Task[] {
       ]
     },
     {
-      id: '1549476532065586',
-      caseReference: '1549 4765 3206 5586',
+      id: '1549476532065587',
+      caseReference: '1549 4765 3206 5587',
       caseName: 'Mankai Lit',
       caseCategory: 'Revocation',
       location: 'Taylor House',
@@ -106,7 +106,19 @@ function getFields(): TaskFieldConfig[] {
   ];
 }
 
-fdescribe('TaskListComponent', () => {
+/**
+ * Mock TaskServiceConfig.
+ */
+function getTaskService(): TaskServiceConfig {
+  return {
+    service: TaskService.IAC,
+    defaultSortDirection: TaskSort.ASC,
+    defaultSortFieldName: 'dueDate',
+    fields: getFields(),
+  };
+}
+
+describe('TaskListComponent', () => {
   let component: TaskListComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -129,14 +141,9 @@ fdescribe('TaskListComponent', () => {
 
     wrapper.tasks = getTasks();
     wrapper.fields = getFields();
+    wrapper.taskServiceConfig = getTaskService();
 
     fixture.detectChanges();
-  });
-
-  // Unit test works fine to test a pure function
-  it('should be able to hit shouldReturnTrue function', async () => {
-
-    expect(component.shouldReturnTrue()).toBeTruthy();
   });
 
   it('should return the fields as an array with a \'manage\' entry, so that we can' +
@@ -165,7 +172,7 @@ fdescribe('TaskListComponent', () => {
     // mock the emitter and dispatch the connected event
     spyOn(component.sortEvent, 'emit');
     const element = fixture.debugElement.nativeElement;
-    const button = element.querySelector('button');
+    const button = element.querySelector('#sort_by_caseReference');
     button.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
@@ -175,10 +182,11 @@ fdescribe('TaskListComponent', () => {
   });
 
   it('should open and close the selected row.', async () => {
+    const firstTaskId: string = getTasks()[0].id;
 
     // get the 'manage' button and click it
     let element = fixture.debugElement.nativeElement;
-    const button = element.querySelector('#manage');
+    const button = element.querySelector(`#manage_${firstTaskId}`);
     button.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
@@ -198,13 +206,14 @@ fdescribe('TaskListComponent', () => {
     fixture.detectChanges();
     expect(component.getSelectedRow()).not.toBe(null);
     expect(component.getSelectedRow()).toEqual(row);
+    expect(row.id).toEqual(firstTaskId);
   });
 
   it('should allow setting the selected row.', async () => {
-
+    const firstTaskId: string = getTasks()[0].id;
     // get the 'manage' button and click it
     let element = fixture.debugElement.nativeElement;
-    const button = element.querySelector('#manage');
+    const button = element.querySelector(`#manage_${firstTaskId}`);
     button.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
@@ -223,13 +232,15 @@ fdescribe('TaskListComponent', () => {
     fixture.detectChanges();
     expect(component.getSelectedRow()).not.toBe(null);
     expect(component.getSelectedRow()).toEqual(row);
+    expect(row.id).toEqual(firstTaskId);
   });
 
   it('should allow checking the selected row.', async () => {
+    const firstTaskId: string = getTasks()[0].id;
 
     // get the 'manage' button and click it
     let element = fixture.debugElement.nativeElement;
-    const button = element.querySelector('#manage');
+    const button = element.querySelector(`#manage_${firstTaskId}`);
     button.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 

@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { WorkAllocationTaskService } from 'src/work-allocation/services/work-allocation-task.service';
 
 import { Task, TaskFieldConfig, TaskSortField } from '../../models/tasks';
 import InvokedTaskAction from '../../models/tasks/invoked-task-action.model';
@@ -13,7 +14,7 @@ import { TaskSort } from './../../enums/task-sort';
   styleUrls: ['task-list.component.scss']
 })
 
-export class TaskListComponent implements OnChanges {
+export class TaskListComponent implements OnChanges, OnInit {
 
   /**
    * These are the tasks & fields as returned from the WA Api.
@@ -37,6 +38,13 @@ export class TaskListComponent implements OnChanges {
   public displayedColumns: string[];
 
   private selectedRow: Task;
+
+  constructor(private readonly workAllocationTaskService: WorkAllocationTaskService) {}
+
+  public ngOnInit(): void {
+    // Test the getTask
+    this.workAllocationTaskService.getTask('123456').subscribe(task => console.log(task));
+  }
 
   public ngOnChanges() {
     if (this.tasks) {

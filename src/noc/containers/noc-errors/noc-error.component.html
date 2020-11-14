@@ -5,7 +5,7 @@
 </div>
 
 <div class="govuk-width-container">
-    <main class="govuk-main-wrapper " id="main-content" role="main">  
+    <main class="govuk-main-wrapper " id="main-content" role="main">
         <div class="govuk-width-container">
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-two-thirds">
@@ -16,7 +16,7 @@
                         <p class="govuk-body"><a [routerLink]="'/get-help'">Contact us</a> for more information.</p>
                     </ng-container>
                     <ng-container *ngIf="(lastError$ | async)?.responseCode === 102">
-                        <p class="govuk-body">You’ll need to submit a notice of change offline. You can do this by filling in the relevant paper form.</p>
+                        <p class="govuk-body">You'll need to submit a notice of change offline. You can do this by filling in the relevant paper form.</p>
                         <p>You should send the form to the court or tribunal dealing with the case.
                             <a target="blank" href="https://www.gov.uk/find-court-tribunal">Find the right court or tribunal</a>.
                         </p>

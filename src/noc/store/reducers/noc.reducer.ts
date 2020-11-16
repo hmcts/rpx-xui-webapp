@@ -37,7 +37,7 @@ export function nocReducer(currentState = initialState, action: fromActions.NocA
           }
         },
         lastError: {
-          responseCode: 0,
+          status: 0,
           message: 'Enter a valid online case reference'
         }
       };
@@ -72,9 +72,15 @@ export function nocReducer(currentState = initialState, action: fromActions.NocA
       };
     }
     case fromActions.SET_ANSWER_SUBMISSION_FAILURE: {
+      let nextState: NocState;
+      if (action.payload.error && action.payload.error.errorCode === 'answersIncomplete') {
+        nextState = NocState.ANSWER_INCOMPLETE;
+      } else {
+        nextState = NocState.ANSWER_SUBMISSION_FAILURE;
+      }
       return {
         ...currentState,
-        state: NocState.ANSWER_SUBMISSION_FAILURE,
+        state: nextState,
         validationErrors: action.payload,
         lastError: action.payload
       };
@@ -83,7 +89,9 @@ export function nocReducer(currentState = initialState, action: fromActions.NocA
       return {
         ...currentState,
         state: NocState.CHECK_ANSWERS,
-        answers: action.payload
+        answers: action.payload,
+        validationErrors: null,
+        lastError: null
       };
     }
     case fromActions.SET_AFFIRMATION_AGREED: {

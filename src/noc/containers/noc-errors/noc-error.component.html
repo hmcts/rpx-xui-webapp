@@ -1,6 +1,6 @@
 
 <div style="width:1220px; display: flex; margin: 0 auto;">
-    <p style="margin-bottom: 0px;">
+    <p style="margin-bottom: 0;">
     </p>
 </div>
 
@@ -11,11 +11,11 @@
                 <div class="govuk-grid-column-two-thirds">
                     <h1 class="govuk-heading-l" id="cookies">Something went wrong</h1>
                     <p class="govuk-body">Your notice of change request has not been submitted.</p>
-                    <ng-container *ngIf="(lastError$ | async)?.responseCode === 101">
+                    <ng-container *ngIf="(lastError$ | async)?.status === 101">
                         <p class="govuk-body">A notice of change is already in progress for this case.</p>
                         <p class="govuk-body"><a [routerLink]="'/get-help'">Contact us</a> for more information.</p>
                     </ng-container>
-                    <ng-container *ngIf="(lastError$ | async)?.responseCode === 102">
+                    <ng-container *ngIf="(lastError$ | async)?.status === 102">
                         <p class="govuk-body">You'll need to submit a notice of change offline. You can do this by filling in the relevant paper form.</p>
                         <p>You should send the form to the court or tribunal dealing with the case.
                             <a target="blank" href="https://www.gov.uk/find-court-tribunal">Find the right court or tribunal</a>.

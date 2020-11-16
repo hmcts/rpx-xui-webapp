@@ -76,12 +76,12 @@ describe('Noc Reducer', () => {
             it('should set correct object', () => {
                 const initialState = fromReducer.initialState;
                 const action = new fromActions.SetCaseRefSubmissionFailure({
-                    responseCode: 400,
+                    status: 400,
                     message: 'dummy'
                 });
                 const nocState = fromReducer.nocReducer(initialState, action);
                 expect(nocState.state).toEqual(NocState.CASE_REF_SUBMISSION_FAILURE);
-                expect(nocState.lastError.responseCode).toEqual(400);
+                expect(nocState.lastError.status).toEqual(400);
                 expect(nocState.lastError.message).toEqual('dummy');
             });
         });
@@ -139,12 +139,12 @@ describe('Noc Reducer', () => {
             it('should set correct object', () => {
                 const initialState = fromReducer.initialState;
                 const action = new fromActions.SetSubmissionFailure({
-                    responseCode: 400,
+                    status: 400,
                     message: 'dummy'
                 });
                 const nocState = fromReducer.nocReducer(initialState, action);
                 expect(nocState.state).toEqual(NocState.SUBMISSION_FAILURE);
-                expect(nocState.lastError.responseCode).toEqual(400);
+                expect(nocState.lastError.status).toEqual(400);
                 expect(nocState.lastError.message).toEqual('dummy');
             });
         });

@@ -209,21 +209,31 @@ export const init = () => {
       },
       status_message: 'success',
   })
-  // more than one party
+  // EUI-2397: scenario 1
+  // answers are incomplete/invalid
+/*  .onPost(validateNoCQuestionsUrl).reply(400, {
+    errorCode: 'answersIncomplete',
+    errorMessage: 'Answers are incorrect and do not match system record.',
+  })*/
+  // EUI-2397: scenario 2
+  // matched more than one party
 /*  .onPost(validateNoCQuestionsUrl).reply(400, {
     errorCode: 'moreThanOneParty',
     errorMessage: 'Answers match more than one party on the case',
   })*/
+  // EUI-2397: scenario 3
   // invalid case reference
 /*  .onPost(validateNoCQuestionsUrl).reply(400, {
     errorCode: 'invalidCaseRef',
     errorMessage: 'invalid case reference',
   })*/
+  // EUI-2397: scenario 4
   // organisation already has access to this case
 /*  .onPost(validateNoCQuestionsUrl).reply(400, {
     errorCode: 'organisationHasAccess',
     errorMessage: 'Your organisation already has access to this case',
   })*/
+  // EUI-2397: scenario 5
   // noc in progress
 /*  .onPost(validateNoCQuestionsUrl).reply(400, {
       errorCode: 'nocInProgress',

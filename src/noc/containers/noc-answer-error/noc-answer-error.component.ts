@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { NocHttpError } from '../../models';
 import * as fromFeature from '../../store';
 
 @Component({
@@ -10,7 +11,7 @@ import * as fromFeature from '../../store';
 })
 export class NocAnswerErrorComponent implements OnInit {
 
-  public lastError$: Observable<any>;
+  public lastError$: Observable<NocHttpError>;
 
   constructor(private readonly store: Store<fromFeature.State>) {
   }

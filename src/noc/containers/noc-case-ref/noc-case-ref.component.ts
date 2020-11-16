@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
-import { NocError, NocNavigation, NocNavigationEvent, NocState } from '../../models';
+import { NocHttpError, NocNavigation, NocNavigationEvent, NocState } from '../../models';
 import * as fromFeature from '../../store';
 
 @Component({
@@ -18,7 +18,7 @@ export class NocCaseRefComponent implements OnInit, OnChanges, OnDestroy {
   public caseRefConfig: GovUiConfigModel;
 
   public validationErrors$: Observable<{}>;
-  public lastError$: Observable<NocError>;
+  public lastError$: Observable<NocHttpError>;
 
   public caseRefForm: FormGroup;
 
@@ -82,7 +82,7 @@ export class NocCaseRefComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  public mainErrorHandler(error: NocError, id: string) {
+  public mainErrorHandler(error: NocHttpError, id: string) {
     if (error) {
       return [{
         id,

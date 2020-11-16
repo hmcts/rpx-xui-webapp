@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { NocAnswer, NocEvent, NocNavigation, NocNavigationEvent, NocQuestion, NocState } from '../../models';
+import { NocAnswer, NocEvent, NocHttpError, NocNavigation, NocNavigationEvent, NocQuestion, NocState } from '../../models';
 import * as fromFeature from '../../store';
 
 @Component({
@@ -22,10 +22,15 @@ export class NocQAndAComponent implements OnInit, OnChanges, OnDestroy {
   private nocNavigationCurrentStateSub: Subscription;
   public nocCaseReference: string;
   private nocCaseReferenceSub: Subscription;
+  public lastError$: Observable<NocHttpError>;
+  public lastError: NocHttpError;
 
   constructor(private readonly store: Store<fromFeature.State>) { }
 
   public ngOnInit() {
+    this.lastError$ = this.store.pipe(select(fromFeature.lastError));
+    this.setPossibleIncorrectAnswerError();
+
     this.questions$ = this.store.pipe(select(fromFeature.questions));
     this.answers$ = this.store.pipe(select(fromFeature.answers));
     this.formGroup = new FormGroup({});
@@ -33,6 +38,21 @@ export class NocQAndAComponent implements OnInit, OnChanges, OnDestroy {
       state => this.nocNavigationCurrentState = state);
     this.nocCaseReferenceSub = this.store.pipe(select(fromFeature.caseReference)).subscribe(
       caseReference => this.nocCaseReference = caseReference);
+  }
+
+  public setPossibleIncorrectAnswerError(): void {
+    this.lastError$.subscribe( lastError => {
+      this.lastError = lastError;
+      if (this.lastError && this.lastError.error.errorCode === 'answersIncomplete') {
+        Object.keys(this.formGroup.controls).forEach(key => {
+          if (this.formGroup.controls[key].value) {
+            this.formGroup.controls[key].setErrors({
+              possibleIncorrectAnswer: true
+            });
+          }
+        });
+      }
+    });
   }
 
   public answerInStore(questionId: string): Observable<string> {

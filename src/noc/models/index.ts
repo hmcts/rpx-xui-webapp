@@ -1,4 +1,5 @@
 export * from './noc-answer.interface';
+export * from './noc-http-error.interface';
 export * from './noc-error.interface';
 export * from './noc-event.interface';
 export * from './noc-navigation-event.enum';

@@ -45,6 +45,9 @@ describe('NocHomeComponent', () => {
 
   describe('onNavEvent', () => {
     it('should set navEvent', () => {
+      // Need to set a valid NoC navigation state on the component
+      component.nocNavigationCurrentState = NocState.QUESTION;
+
       // Using the NocNavigationEvent.BACK event here because NocNavigationEvent.CONTINUE isn't handled by noc-home
       // component at present
       component.onNavEvent(NocNavigationEvent.BACK);

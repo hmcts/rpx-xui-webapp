@@ -13,7 +13,6 @@ import { TaskSort } from './../../enums/task-sort';
   templateUrl: './task-list.component.html',
   styleUrls: ['task-list.component.scss']
 })
-
 export class TaskListComponent implements OnChanges, OnInit {
 
   /**
@@ -61,11 +60,9 @@ export class TaskListComponent implements OnChanges, OnInit {
    * TODO: Unit test
    */
   public getDisplayedColumn(taskFieldConfig: TaskFieldConfig[]): string[] {
-
     // Remove when finished with, checking if taskFieldConfig is populated
     console.log('taskFieldConfig');
     console.log(taskFieldConfig);
-
     const fields = taskFieldConfig.map(field => field.name);
     return this.addManageColumn(fields);
   }

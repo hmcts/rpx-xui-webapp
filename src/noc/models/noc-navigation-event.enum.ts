@@ -2,6 +2,6 @@ export enum NocNavigationEvent {
     BACK,
     CONTINUE,
     SUBMIT,
-    SETANSWERS,
-    CHECKANSWERS
+    SET_ANSWERS,
+    CHECK_ANSWERS
 }

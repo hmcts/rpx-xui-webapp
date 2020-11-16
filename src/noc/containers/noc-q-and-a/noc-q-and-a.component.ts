@@ -45,12 +45,12 @@ export class NocQAndAComponent implements OnInit, OnChanges, OnDestroy {
         // (necessary because the "Back" navigation event is triggered from multiple states)
         if (this.nocNavigationCurrentState === NocState.QUESTION) {
           this.store.dispatch(new fromFeature.ChangeNavigation(NocState.START));
-        } else if(this.nocNavigationCurrentState === NocState.CHECK_ANSWERS) {
+        } else if (this.nocNavigationCurrentState === NocState.CHECK_ANSWERS) {
           this.store.dispatch(new fromFeature.ChangeNavigation(NocState.QUESTION));
         }
         break;
       }
-      case NocNavigationEvent.SETANSWERS: {
+      case NocNavigationEvent.SET_ANSWERS: {
         // Check the current navigation state is the correct one (i.e. NocState.QUESTION) before proceeding
         // (necessary because the "Continue" navigation event is triggered from multiple states)
         if (this.nocNavigationCurrentState === NocState.QUESTION) {

@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { provideMockStore } from '@ngrx/store/testing';
+import { of } from 'rxjs';
 import { UtilsModule } from '../utils/utils.module';
 import { NocEmailFieldComponent } from './noc-email-field.component';
 
@@ -31,6 +32,8 @@ describe('NocEmailFieldComponent', () => {
     answer_field: '',
     question_id: 'question1',
   };
+  const ANSWER_VALUE = of('test@test.com');
+
   let component: NocEmailFieldComponent;
   let fixture: ComponentFixture<NocEmailFieldComponent>;
 
@@ -55,6 +58,7 @@ describe('NocEmailFieldComponent', () => {
     component = fixture.componentInstance;
     component.formGroup = FORM_GROUP;
     component.registerControl = REGISTER_CONTROL;
+    component.answerValue$ = ANSWER_VALUE;
     // @ts-ignore
     component.questionField = QUESTION_FIELD;
     fixture.detectChanges();

@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { provideMockStore } from '@ngrx/store/testing';
+import { of } from 'rxjs';
 import { UtilsModule } from '../utils/utils.module';
 import { NocTextFieldComponent } from './noc-text-field.component';
 
@@ -31,6 +32,7 @@ describe('NocTextFieldComponent', () => {
     answer_field: '',
     question_id: 'question5',
   };
+  const ANSWER_VALUE = of('John');
   let component: NocTextFieldComponent;
   let fixture: ComponentFixture<NocTextFieldComponent>;
 
@@ -55,6 +57,7 @@ describe('NocTextFieldComponent', () => {
     component = fixture.componentInstance;
     component.formGroup = FORM_GROUP;
     component.registerControl = REGISTER_CONTROL;
+    component.answerValue$ = ANSWER_VALUE;
     // @ts-ignore
     component.questionField = QUESTION_FIELD;
     fixture.detectChanges();

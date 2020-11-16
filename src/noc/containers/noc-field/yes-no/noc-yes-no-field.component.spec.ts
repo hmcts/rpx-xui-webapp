@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { provideMockStore } from '@ngrx/store/testing';
+import { of } from 'rxjs';
 import { UtilsModule } from '../utils/utils.module';
 import { NocYesNoFieldComponent } from './noc-yes-no-field.component';
 import { YesNoService } from './yes-no.service';
@@ -32,6 +33,7 @@ describe('NocYesNoFieldComponent', () => {
     answer_field: '',
     question_id: 'question6',
   };
+  const ANSWER_VALUE = of('Yes');
   let component: NocYesNoFieldComponent;
   let fixture: ComponentFixture<NocYesNoFieldComponent>;
 
@@ -57,6 +59,7 @@ describe('NocYesNoFieldComponent', () => {
     component = fixture.componentInstance;
     component.formGroup = FORM_GROUP;
     component.registerControl = REGISTER_CONTROL;
+    component.answerValue$ = ANSWER_VALUE;
     // @ts-ignore
     component.questionField = QUESTION_FIELD;
     fixture.detectChanges();

@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { provideMockStore } from '@ngrx/store/testing';
+import { of } from 'rxjs';
 import { UtilsModule } from '../utils/utils.module';
 import { NocNumberFieldComponent } from './noc-number-field.component';
 
@@ -31,6 +32,7 @@ describe('NocNumberFieldComponent', () => {
     answer_field: '',
     question_id: 'question2',
   };
+  const ANSWER_VALUE = of('123');
   let component: NocNumberFieldComponent;
   let fixture: ComponentFixture<NocNumberFieldComponent>;
 
@@ -55,6 +57,7 @@ describe('NocNumberFieldComponent', () => {
     component = fixture.componentInstance;
     component.formGroup = FORM_GROUP;
     component.registerControl = REGISTER_CONTROL;
+    component.answerValue$ = ANSWER_VALUE;
     // @ts-ignore
     component.questionField = QUESTION_FIELD;
     fixture.detectChanges();

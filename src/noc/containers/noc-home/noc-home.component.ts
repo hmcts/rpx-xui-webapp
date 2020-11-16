@@ -47,15 +47,21 @@ export class NocHomeComponent implements OnInit, OnDestroy {
   public navigationHandler(navEvent: NocNavigationEvent) {
     switch (navEvent) {
       case NocNavigationEvent.BACK: {
-        if (this.nocNavigationCurrentState === NocState.QUESTION) {
-          this.store.dispatch(new fromFeature.Reset());
-        } else if (this.nocNavigationCurrentState === NocState.CHECK_ANSWERS) {
-          this.store.dispatch(new fromFeature.ChangeNavigation(NocState.QUESTION));
-        } else if (this.nocNavigationCurrentState === NocState.ANSWER_SUBMISSION_FAILURE) {
-          this.store.dispatch(new fromFeature.Reset());
+        switch (this.nocNavigationCurrentState) {
+          case NocState.QUESTION:
+          case NocState.ANSWER_SUBMISSION_FAILURE:
+            this.store.dispatch(new fromFeature.Reset());
+            break;
+          case NocState.CHECK_ANSWERS:
+            this.store.dispatch(new fromFeature.ChangeNavigation(NocState.QUESTION));
+            break;
+          default:
+            throw new Error('Invalid NoC state');
         }
         break;
       }
+      default:
+        throw new Error('Invalid NoC navigation event');
     }
   }
 

@@ -45,8 +45,10 @@ describe('NocHomeComponent', () => {
 
   describe('onNavEvent', () => {
     it('should set navEvent', () => {
-      component.onNavEvent(NocNavigationEvent.CONTINUE);
-      expect(component.navEvent.event).toEqual(NocNavigationEvent.CONTINUE);
+      // Using the NocNavigationEvent.BACK event here because NocNavigationEvent.CONTINUE isn't handled by noc-home
+      // component at present
+      component.onNavEvent(NocNavigationEvent.BACK);
+      expect(component.navEvent.event).toEqual(NocNavigationEvent.BACK);
     });
 
   });

@@ -56,7 +56,7 @@ describe('NocCaseRefComponent', () => {
 
   describe('mainErrorHandler', () => {
     it('should return an error object', () => {
-        const action = component.mainErrorHandler({message: 'dummy', responseCode: 0}, 'dummyId');
+        const action = component.mainErrorHandler({message: 'dummy', status: 0}, 'dummyId');
         const expected = [{
             id: 'dummyId',
             message: 'dummy'

@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { select, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { NocAnswer, NocState } from '../../models';
 import * as fromFeature from '../../store';
@@ -12,7 +11,7 @@ import * as fromFeature from '../../store';
 })
 export class NocCheckYourAnswersComponent {
   @Input()
-  public answers: Observable<NocAnswer[]>;
+  public qAndA$: Observable<NocAnswer[]>;
 
   constructor(private store: Store<fromFeature.State>) {  }
 

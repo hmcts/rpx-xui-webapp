@@ -11,6 +11,7 @@ export class NocNumberFieldComponent extends AbstractFieldWriteComponent impleme
   public numberControl: FormControl;
 
   public ngOnInit() {
-    this.numberControl = this.registerControl(new FormControl(''));
+    this.setAnswer();
+    this.numberControl = this.registerControl(new FormControl(this.answerValue));
   }
 }

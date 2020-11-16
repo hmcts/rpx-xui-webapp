@@ -2,6 +2,7 @@ import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@
 import { FormGroup } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { NocAnswer, NocEvent, NocNavigation, NocNavigationEvent, NocQuestion, NocState } from '../../models';
 import * as fromFeature from '../../store';
 
@@ -13,6 +14,7 @@ import * as fromFeature from '../../store';
 export class NocQAndAComponent implements OnInit, OnChanges, OnDestroy {
 
   public questions$: Observable<NocQuestion[]>;
+  public answers$: Observable<NocAnswer[]>;
   public formGroup: FormGroup;
   @Input() public navEvent: NocNavigation;
 
@@ -25,6 +27,7 @@ export class NocQAndAComponent implements OnInit, OnChanges, OnDestroy {
 
   public ngOnInit() {
     this.questions$ = this.store.pipe(select(fromFeature.questions));
+    this.answers$ = this.store.pipe(select(fromFeature.answers));
     this.formGroup = new FormGroup({});
     this.nocNavigationCurrentStateSub = this.store.pipe(select(fromFeature.currentNavigation)).subscribe(
       state => this.nocNavigationCurrentState = state);
@@ -32,8 +35,18 @@ export class NocQAndAComponent implements OnInit, OnChanges, OnDestroy {
       caseReference => this.nocCaseReference = caseReference);
   }
 
+  public answerInStore(questionId: string): Observable<string> {
+    return this.answers$.pipe(map(answers => {
+      if (answers) {
+        return answers.find(answer => answer.question_id === questionId).value || '';
+      } else {
+        return '';
+      }
+    }));
+  }
+
   public ngOnChanges(changes: SimpleChanges) {
-    if (changes.navEvent && this.navEvent) {
+    if (this.nocNavigationCurrentState === NocState.QUESTION && changes.navEvent && this.navEvent) {
       this.navigationHandler(this.navEvent.event);
     }
   }
@@ -45,7 +58,7 @@ export class NocQAndAComponent implements OnInit, OnChanges, OnDestroy {
         // (necessary because the "Back" navigation event is triggered from multiple states)
         if (this.nocNavigationCurrentState === NocState.QUESTION) {
           this.store.dispatch(new fromFeature.ChangeNavigation(NocState.START));
-        } else if(this.nocNavigationCurrentState === NocState.CHECK_ANSWERS) {
+        } else if (this.nocNavigationCurrentState === NocState.CHECK_ANSWERS) {
           this.store.dispatch(new fromFeature.ChangeNavigation(NocState.QUESTION));
         }
         break;

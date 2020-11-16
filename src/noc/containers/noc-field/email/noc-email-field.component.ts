@@ -11,6 +11,7 @@ export class NocEmailFieldComponent extends AbstractFieldWriteComponent implemen
   public emailControl: FormControl;
 
   public ngOnInit() {
-    this.emailControl = this.registerControl(new FormControl(''));
+    this.setAnswer();
+    this.emailControl = this.registerControl(new FormControl(this.answerValue));
   }
 }

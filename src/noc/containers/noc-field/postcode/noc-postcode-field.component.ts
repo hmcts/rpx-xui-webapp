@@ -11,6 +11,7 @@ export class NocPostcodeFieldComponent extends AbstractFieldWriteComponent imple
   public postcodeControl: FormControl;
 
   public ngOnInit() {
-    this.postcodeControl = this.registerControl(new FormControl(''));
+    this.setAnswer();
+    this.postcodeControl = this.registerControl(new FormControl(this.answerValue));
   }
 }

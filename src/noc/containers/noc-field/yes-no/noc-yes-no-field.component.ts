@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { YesNoService } from './yes-no.service';
 import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
+import { YesNoService } from './yes-no.service';
 
 @Component({
   selector: 'exui-noc-yes-no-field',
@@ -17,7 +17,8 @@ export class NocYesNoFieldComponent extends AbstractFieldWriteComponent implemen
   }
 
   public ngOnInit() {
-    this.yesNoControl = this.registerControl(new FormControl(this.yesNoService.format('')));
+    this.setAnswer();
+    this.yesNoControl = this.registerControl(new FormControl(this.yesNoService.format(this.answerValue)));
   }
 
 }

@@ -7,7 +7,6 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
-// from containers
 import * as fromContainers from './containers';
 import { NocEmailFieldComponent } from './containers/noc-field/email';
 import { FormValidatorsService } from './containers/noc-field/form-validators.service';

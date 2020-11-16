@@ -71,6 +71,14 @@ export function nocReducer(currentState = initialState, action: fromActions.NocA
         answers: action.payload.nocAnswers
       };
     }
+    case fromActions.SET_ANSWER_SUBMISSION_FAILURE: {
+      return {
+        ...currentState,
+        state: NocState.ANSWER_SUBMISSION_FAILURE,
+        validationErrors: action.payload,
+        lastError: action.payload
+      };
+    }
     case fromActions.CHECK_ANSWERS: {
       return {
         ...currentState,

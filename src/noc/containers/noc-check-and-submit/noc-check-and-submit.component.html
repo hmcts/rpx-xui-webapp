@@ -1,10 +1,12 @@
-<div>
-  <div class="hmcts-page-heading">
-    <div class="hmcts-page-heading__title">
-      <h1 class="govuk-heading-l">Check and submit</h1>
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-three-quarters-from-desktop">
+    <div class="hmcts-page-heading">
+      <div class="hmcts-page-heading__title">
+        <h1 class="govuk-heading-l">Check and submit</h1>
+      </div>
     </div>
-  </div>
-  <div>
-    <exui-noc-check-your-answers [answers]="answers$"></exui-noc-check-your-answers>
+    <div>
+      <exui-noc-check-your-answers [qAndA$]="qAndA$"></exui-noc-check-your-answers>
+    </div>
   </div>
 </div>

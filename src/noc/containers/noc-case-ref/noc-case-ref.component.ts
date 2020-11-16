@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
 import { select, Store } from '@ngrx/store';
@@ -15,7 +15,6 @@ export class NocCaseRefComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() public navEvent: NocNavigation;
 
-  public nocNavigationCurrentState$: Observable<fromFeature.State>;
   public caseRefConfig: GovUiConfigModel;
 
   public validationErrors$: Observable<{}>;
@@ -55,7 +54,7 @@ export class NocCaseRefComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   public ngOnChanges(changes: SimpleChanges) {
-    if (changes.navEvent && this.navEvent) {
+    if (this.nocNavigationCurrentState === NocState.START && changes.navEvent && this.navEvent) {
       this.navigationHandler(this.navEvent.event);
     }
   }
@@ -69,7 +68,7 @@ export class NocCaseRefComponent implements OnInit, OnChanges, OnDestroy {
       case NocNavigationEvent.BACK: {
         if (this.nocNavigationCurrentState === NocState.QUESTION) {
           this.store.dispatch(new fromFeature.Reset());
-        } else if(this.nocNavigationCurrentState === NocState.CHECK_ANSWERS) {
+        } else if (this.nocNavigationCurrentState === NocState.CHECK_ANSWERS) {
           this.store.dispatch(new fromFeature.ChangeNavigation(NocState.QUESTION));
         }
         break;

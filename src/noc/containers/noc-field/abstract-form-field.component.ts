@@ -1,5 +1,6 @@
 import { Input } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import { Observable } from 'rxjs';
 import { NocQuestion } from '../../models';
 
 export abstract class AbstractFormFieldComponent {
@@ -8,10 +9,15 @@ export abstract class AbstractFormFieldComponent {
   public questionField: NocQuestion;
 
   @Input()
+  public answerValue$?: Observable<string>;
+
+  @Input()
   public formGroup?: FormGroup;
 
   @Input()
   public registerControl?: <T extends AbstractControl> (control: T) => T;
+
+  public answerValue: string = '';
 
   protected defaultControlRegister(): (control: FormControl) => AbstractControl {
     return control => {
@@ -31,4 +37,7 @@ export abstract class AbstractFormFieldComponent {
     // No validators by default, override this method to add validators to the form control
   }
 
+  protected setAnswer(): void {
+    this.answerValue$.subscribe(answer => this.answerValue = answer);
+  }
 }

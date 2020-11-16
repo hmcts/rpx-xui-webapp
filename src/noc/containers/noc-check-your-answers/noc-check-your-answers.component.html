@@ -1,14 +1,18 @@
-<div class="noc-answers-table">
-  <div class="noc-answers-row">
-    <div class="noc-answers-col"><strong>Change request</strong></div>
-    <div class="noc-answers-col">Acquire case file from a solicitor (Notice of Change)</div>
-    <div class="noc-answers-col"></div>
+<div class="govuk-summary-list govuk-!-margin-bottom-9">
+  <div class="govuk-summary-list__row">
+    <div class="govuk-summary-list__key">Change request</div>
+    <div class="govuk-summary-list__value">Notice of change</div>
+    <div class="govuk-summary-list__actions"></div>
   </div>
-  <ng-container *ngFor="let answer of answers | async">
-    <div class="noc-answers-row">
-        <div class="noc-answers-col"><strong>{{ answer.question_id }}</strong></div>
-        <div class="noc-answers-col">{{ answer.value }}</div>
-        <div class="noc-answers-col"><a (click)="onChange(answer)">Change</a></div>
+  <ng-container *ngFor="let qAndA of qAndA$ | async">
+    <div class="govuk-summary-list__row">
+        <div class="govuk-summary-list__key">{{ qAndA.question_text | async }}</div>
+        <div class="govuk-summary-list__value">{{ qAndA.value }}</div>
+        <div class="govuk-summary-list__actions">
+          <a class="govuk-link" href="javascript:void(0)" (click)="onChange(qAndA)">
+            Change
+          </a>
+        </div>
     </div>
   </ng-container>
 </div>

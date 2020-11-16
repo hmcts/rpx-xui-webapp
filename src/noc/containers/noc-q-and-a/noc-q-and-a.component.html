@@ -13,6 +13,7 @@
         <div>
           <ng-container>
             <exui-noc-field [questionField]="question"
+                            [answerValue$]="answerInStore(question.question_id)"
                             [formGroup]="formGroup"
                             [idPrefix]=""></exui-noc-field>
           </ng-container>

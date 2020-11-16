@@ -11,7 +11,8 @@ export class NocPhoneUkFieldComponent extends AbstractFieldWriteComponent implem
   public phoneUkControl: FormControl;
 
   public ngOnInit() {
-    this.phoneUkControl = this.registerControl(new FormControl(''));
+    this.setAnswer();
+    this.phoneUkControl = this.registerControl(new FormControl(this.answerValue));
   }
 
 }

@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { caseRefVisibilityStates, qAndAVisibilityStates, checkAnswerVisibilityStates } from '../../constants';
+import { caseRefVisibilityStates, qAndAVisibilityStates, answerErrorVisibilityStates, checkAnswerVisibilityStates } from '../../constants';
 import { NocNavigation, NocNavigationEvent, NocState } from '../../models';
 import * as fromFeature from '../../store';
 
@@ -20,6 +20,7 @@ export class NocHomeComponent implements OnInit, OnDestroy {
   public caseRefErrorStates = [NocState.CASE_REF_SUBMISSION_FAILURE];
 
   public qAndAVisibilityStates = qAndAVisibilityStates;
+  public answerErrorVisibilityStates = answerErrorVisibilityStates;
 
   public checkAnswerVisibilityStates = checkAnswerVisibilityStates;
 
@@ -48,20 +49,13 @@ export class NocHomeComponent implements OnInit, OnDestroy {
       case NocNavigationEvent.BACK: {
         if (this.nocNavigationCurrentState === NocState.QUESTION) {
           this.store.dispatch(new fromFeature.Reset());
-        } else if(this.nocNavigationCurrentState === NocState.CHECK_ANSWERS) {
+        } else if (this.nocNavigationCurrentState === NocState.CHECK_ANSWERS) {
           this.store.dispatch(new fromFeature.ChangeNavigation(NocState.QUESTION));
+        } else if (this.nocNavigationCurrentState === NocState.ANSWER_SUBMISSION_FAILURE) {
+          this.store.dispatch(new fromFeature.Reset());
         }
         break;
       }
-      // case NocNavigationEvent.SETANSWERS: {
-      //   // this.store.pipe(select(fromFeature.answers)).subscribe(answers => {
-      //   //   this.store.dispatch(new fromFeature.SetAnswers(answers));
-      //   // });
-      //   this.store.pipe(select(fromFeature.questions)).subscribe(questions => {
-      //     this.store.dispatch(new fromFeature.SetQuestions(questions));
-      //   });
-      //   break;
-      // }
     }
   }
 

@@ -11,6 +11,7 @@ export class NocTextFieldComponent extends AbstractFieldWriteComponent implement
   public textControl: FormControl;
 
   public ngOnInit() {
-    this.textControl = this.registerControl(new FormControl(''));
+    this.setAnswer();
+    this.textControl = this.registerControl(new FormControl(this.answerValue));
   }
 }

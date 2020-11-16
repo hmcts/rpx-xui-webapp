@@ -2,7 +2,7 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
-import { CaseReferenceFieldComponent } from './case-reference-field.component';
+import { CASE_DETAILS_URL, CaseReferenceFieldComponent } from './case-reference-field.component';
 
 @Component({
   template: `<exui-case-reference-field [caseReference]="caseReference"></exui-case-reference-field>`
@@ -47,7 +47,7 @@ describe('WorkAllocation', () => {
       let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(FIRST_CASE_REFERENCE);
-      expect(element.getAttribute('href')).toBe(`/cases/case-details/Firstcasereference`); // No spaces
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}Firstcasereference`); // No spaces
 
       // Change the value of caseReference.
       wrapper.caseReference = SECOND_CASE_REFERENCE;
@@ -55,7 +55,7 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe(SECOND_CASE_REFERENCE);
-      expect(element.getAttribute('href')).toBe(`/cases/case-details/sEc0ndC@53REFERENCE`); // No spaces
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}sEc0ndC@53REFERENCE`); // No spaces
 
       // Clear out the value of caseReference and we should no longer have the anchor.
       wrapper.caseReference = undefined;
@@ -68,7 +68,7 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe(FIRST_CASE_REFERENCE);
-      expect(element.getAttribute('href')).toBe(`/cases/case-details/Firstcasereference`); // No spaces
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}Firstcasereference`); // No spaces
 
       // Make caseReference null.
       wrapper.caseReference = null;
@@ -81,7 +81,7 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe(FIRST_CASE_REFERENCE);
-      expect(element.getAttribute('href')).toBe(`/cases/case-details/Firstcasereference`); // No spaces
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}Firstcasereference`); // No spaces
 
       // Make caseReference a bunch of spaces.
       wrapper.caseReference = '      ';

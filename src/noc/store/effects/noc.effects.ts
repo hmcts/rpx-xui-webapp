@@ -4,7 +4,6 @@ import { Action } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import * as fromActions from '../../../app/store/actions';
-import { NocHttpError } from '../../models';
 import { NocService } from '../../services';
 import * as nocActions from '../actions/noc.action';
 
@@ -82,13 +81,7 @@ export class NocEffects {
 
     public static handleError(error: any): Observable<Action> {
       if (error && error.status && error.status === 400) {
-        // TODO: remove this after integrating with CCD API
-        const httpError: NocHttpError = {
-          status: 101,
-          statusText: 'error1',
-          message: 'error1',
-        };
-        return of(new nocActions.SetCaseRefSubmissionFailure(httpError));
+        return of(new nocActions.SetCaseRefSubmissionFailure(error));
       } else {
         return of(new fromActions.Go({ path: ['/service-down'] }));
       }

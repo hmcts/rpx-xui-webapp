@@ -3,7 +3,7 @@ import { provideMockActions } from '@ngrx/effects/testing';
 import { cold, hot } from 'jasmine-marbles';
 import { of, throwError } from 'rxjs';
 import { Go } from '../../../app/store';
-import { NocAnswer, NocError, NocQuestion } from '../../models/';
+import { NocAnswer, NocHttpError, NocQuestion } from '../../models/';
 import { NocService } from '../../services';
 import {
   CheckAnswers,
@@ -94,8 +94,8 @@ describe('Noc Effects', () => {
     });
 
     it('should redirect to service down', () => {
-      const dummyError: NocError = {
-        responseCode: 404,
+      const dummyError: NocHttpError = {
+        status: 404,
         message: 'dummy'
       };
       nocServiceMock.getNoCQuestions.and.returnValue(throwError({dummyError, status: 404}));
@@ -142,8 +142,8 @@ describe('Noc Effects', () => {
         question_id: '0',
         value: 'dummy'
       }];
-      const dummyError: NocError = {
-        responseCode: 400,
+      const dummyError: NocHttpError = {
+        status: 400,
         message: 'dummy'
       };
       nocServiceMock.validateNoCAnswers.and.returnValue(throwError(dummyError));
@@ -202,8 +202,8 @@ describe('Noc Effects', () => {
         question_id: '0',
         value: 'dummy'
       }];
-      const dummyError: NocError = {
-        responseCode: 400,
+      const dummyError: NocHttpError = {
+        status: 400,
         message: 'dummy'
       };
       nocServiceMock.submitNoCEvent.and.returnValue(throwError(dummyError));
@@ -220,8 +220,8 @@ describe('Noc Effects', () => {
 
   describe('handleError', () => {
     it('should handle 400', () => {
-      const action$ = NocEffects.handleError({status: 400});
-      action$.subscribe(action => expect(action).toEqual(new SetCaseRefSubmissionFailure({responseCode: 101, message: 'error1'})));
+      const action$ = NocEffects.handleError({status: 400, message: 'error'});
+      action$.subscribe(action => expect(action).toEqual(new SetCaseRefSubmissionFailure({status: 400, message: 'error'})));
     });
   });
 

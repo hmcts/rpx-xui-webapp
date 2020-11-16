@@ -46,44 +46,24 @@ export class NocQAndAComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   public ngOnChanges(changes: SimpleChanges) {
+    // Check the current navigation state is the correct one (i.e. NocState.QUESTION) before proceeding
+    // (necessary because some navigation events are triggered from multiple states)
     if (this.nocNavigationCurrentState === NocState.QUESTION && changes.navEvent && this.navEvent) {
       this.navigationHandler(this.navEvent.event);
     }
   }
 
   public navigationHandler(navEvent: NocNavigationEvent) {
-    switch (navEvent) {
-      case NocNavigationEvent.BACK: {
-        // Check the current navigation state is the correct one (i.e. NocState.QUESTION) before proceeding
-        // (necessary because the "Back" navigation event is triggered from multiple states)
-        if (this.nocNavigationCurrentState === NocState.QUESTION) {
-          this.store.dispatch(new fromFeature.ChangeNavigation(NocState.START));
-        } else if (this.nocNavigationCurrentState === NocState.CHECK_ANSWERS) {
-          this.store.dispatch(new fromFeature.ChangeNavigation(NocState.QUESTION));
-        }
-        break;
-      }
-      case NocNavigationEvent.SET_ANSWERS: {
-        // Check the current navigation state is the correct one (i.e. NocState.QUESTION) before proceeding
-        // (necessary because the "Continue" navigation event is triggered from multiple states)
-        if (this.nocNavigationCurrentState === NocState.QUESTION) {
-          // Set answers on store
-          if (this.formGroup) {
-            const nocAnswers: NocAnswer[] = [];
-            Object.keys(this.formGroup.value).forEach(key => {
-              nocAnswers.push({question_id: key, value: this.formGroup.value[key]});
-            });
-            const nocEvent: NocEvent = {
-              caseReference: this.nocCaseReference,
-              nocAnswers
-            };
-            this.store.dispatch(new fromFeature.SetAnswers(nocEvent));
-          }
-        }
-        break;
-      }
-      default:
-        throw new Error('Invalid option');
+    if (navEvent === NocNavigationEvent.SET_ANSWERS && this.formGroup) {
+      const nocAnswers: NocAnswer[] = [];
+      Object.keys(this.formGroup.value).forEach(key => {
+        nocAnswers.push({question_id: key, value: this.formGroup.value[key]});
+      });
+      const nocEvent: NocEvent = {
+        caseReference: this.nocCaseReference,
+        nocAnswers
+      };
+      this.store.dispatch(new fromFeature.SetAnswers(nocEvent));
     }
   }
 

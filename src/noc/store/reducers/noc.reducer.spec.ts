@@ -99,12 +99,12 @@ describe('Noc Reducer', () => {
             it('should set correct object', () => {
                 const initialState = fromReducer.initialState;
                 const action = new fromActions.CheckAnswers([{
-                    displayOrder: 0,
-                    answer: 'dummy'
+                    question_id: '0',
+                    value: 'dummy'
                 }]);
                 const nocState = fromReducer.nocReducer(initialState, action);
                 expect(nocState.state).toEqual(NocState.CHECK_ANSWERS);
-                expect(nocState.answers[0].answer).toEqual('dummy');
+                expect(nocState.answers[0].value).toEqual('dummy');
             });
         });
 

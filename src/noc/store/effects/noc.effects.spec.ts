@@ -111,8 +111,8 @@ describe('Noc Effects', () => {
     it('should return a response', () => {
 
       const dummy: NocAnswer[] = [{
-        displayOrder: 0,
-        answer: 'dummy'
+        question_id: '0',
+        value: 'dummy'
       }];
       nocServiceMock.validateNoCAnswers.and.returnValue(of(true));
       const action = new SetAnswers({
@@ -139,8 +139,8 @@ describe('Noc Effects', () => {
 
     it('should return SetAnswerSubmissionFailure', () => {
       const dummy: NocAnswer[] = [{
-        displayOrder: 0,
-        answer: 'dummy'
+        question_id: '0',
+        value: 'dummy'
       }];
       const dummyError: NocError = {
         responseCode: 400,
@@ -162,8 +162,8 @@ describe('Noc Effects', () => {
     it('should return SetSubmissionSuccessPending', () => {
 
       const dummy: NocAnswer[] = [{
-        displayOrder: 0,
-        answer: 'dummy'
+        question_id: '0',
+        value: 'dummy'
       }];
       nocServiceMock.submitNoCEvent.and.returnValue(of({
         approval_status: 'PENDING'
@@ -181,8 +181,8 @@ describe('Noc Effects', () => {
     it('should return SetSubmissionSuccessApproved', () => {
 
       const dummy: NocAnswer[] = [{
-        displayOrder: 0,
-        answer: 'dummy'
+        question_id: '0',
+        value: 'dummy'
       }];
       nocServiceMock.submitNoCEvent.and.returnValue(of({
         approval_status: 'APPROVED'
@@ -199,8 +199,8 @@ describe('Noc Effects', () => {
 
     it('should return SetSubmissionFailure', () => {
       const dummy: NocAnswer[] = [{
-        displayOrder: 0,
-        answer: 'dummy'
+        question_id: '0',
+        value: 'dummy'
       }];
       const dummyError: NocError = {
         responseCode: 400,

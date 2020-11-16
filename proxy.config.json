@@ -29,6 +29,11 @@
     "secure": false,
     "logLevel": "debug"
   },
+  "/workallocation/*": {
+    "target": "http://localhost:3001",
+    "secure": false,
+    "logLevel": "debug"
+  },
   "/print/*": {
     "target": "http://localhost:3001",
     "secure": false,
@@ -40,6 +45,11 @@
     "logLevel": "debug"
   },
   "/data/*": {
+    "target": "http://localhost:3001",
+    "secure": false,
+    "logLevel": "debug"
+  },
+  "/activity/*": {
     "target": "http://localhost:3001",
     "secure": false,
     "logLevel": "debug"

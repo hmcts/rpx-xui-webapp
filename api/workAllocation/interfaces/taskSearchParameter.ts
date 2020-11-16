@@ -1,8 +1,8 @@
-interface TaskSearchParameters {
+export interface TaskSearchParameters {
     parameters: TaskSearchParameter[]
 }
 
-interface TaskSearchParameter {
+export interface TaskSearchParameter {
     ccdId?: string
     eventId?: string
     jurisdiction?: string[]
@@ -12,3 +12,15 @@ interface TaskSearchParameter {
     state?: string[]
     user?: string[]
 }
+
+export interface SearchTaskRequest {
+    search_parameters: [
+      {
+        key: string,
+        operator: string,
+        values: [
+          string
+        ]
+      }
+    ]
+  }

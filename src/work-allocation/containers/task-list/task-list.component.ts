@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { WorkAllocationTaskService } from 'src/work-allocation/services/work-allocation-task.service';
 
 import { Task, TaskFieldConfig, TaskSortField } from '../../models/tasks';
 import InvokedTaskAction from '../../models/tasks/invoked-task-action.model';
@@ -12,8 +13,7 @@ import { TaskSort } from './../../enums/task-sort';
   templateUrl: './task-list.component.html',
   styleUrls: ['task-list.component.scss']
 })
-
-export class TaskListComponent implements OnInit, OnChanges {
+export class TaskListComponent implements OnChanges, OnInit {
 
   /**
    * These are the tasks & fields as returned from the WA Api.
@@ -38,21 +38,16 @@ export class TaskListComponent implements OnInit, OnChanges {
 
   private selectedRow: Task;
 
-  public ngOnInit() {
+  constructor(private readonly workAllocationTaskService: WorkAllocationTaskService) {}
 
-    // const tasks$ = new BehaviorSubject(this.tasks);
-    // this.dataSource$ = tasks$;
-
-    // this.displayedColumns = this.getDisplayedColumn(this.fields);
+  public ngOnInit(): void {
+    // Test the getTask
+    this.workAllocationTaskService.getTask('123456').subscribe(task => console.log(task));
   }
 
   public ngOnChanges() {
-    if (this.dataSource$) {
-      this.dataSource$.subscribe().unsubscribe();
-    }
     if (this.tasks) {
-      const tasks$ = new BehaviorSubject(this.tasks);
-      this.dataSource$ = tasks$;
+      this.dataSource$ = new BehaviorSubject(this.tasks);
     }
     if (this.fields) {
       this.displayedColumns = this.getDisplayedColumn(this.fields);
@@ -65,7 +60,9 @@ export class TaskListComponent implements OnInit, OnChanges {
    * TODO: Unit test
    */
   public getDisplayedColumn(taskFieldConfig: TaskFieldConfig[]): string[] {
-
+    // Remove when finished with, checking if taskFieldConfig is populated
+    console.log('taskFieldConfig');
+    console.log(taskFieldConfig);
     const fields = taskFieldConfig.map(field => field.name);
     return this.addManageColumn(fields);
   }

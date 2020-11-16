@@ -58,7 +58,6 @@ export class TaskListComponent implements OnChanges, OnInit {
   /**
    * Returns the columns to be displayed by the Angular Component Dev Kit table.
    *
-   * TODO: Unit test
    */
   public getDisplayedColumn(taskFieldConfig: TaskFieldConfig[]): string[] {
 
@@ -84,12 +83,13 @@ export class TaskListComponent implements OnChanges, OnInit {
    * Takes in the fieldname, so it can be output to trigger a new Request to the API
    * to get a sorted result set.
    *
-   * TODO: Unit test
    *
    * @param fieldName - ie. 'caseName'
    */
   public onSortHandler(fieldName: string): void {
+    this.sortedBy.fieldName = fieldName;
 
+    // emit the task sort field to get relevant information
     this.sortEvent.emit(fieldName);
   }
 
@@ -150,6 +150,7 @@ export class TaskListComponent implements OnChanges, OnInit {
       this.sortedBy = { fieldName: defaultSortFieldName, order: defaultSortDirection };
     }
 
+
     // If this is the field we're sorted by, return the appropriate order.
     if (this.sortedBy.fieldName === fieldName) {
       return this.sortedBy.order;
@@ -157,5 +158,22 @@ export class TaskListComponent implements OnChanges, OnInit {
 
     // This field is not sorted, return NONE.
     return TaskSort.NONE;
+  }
+
+  /**
+   * Takes in the fieldname, so the the order can be received for the purpose of testing.
+   *
+   *
+   * @param fieldName - ie. 'caseName'
+   */
+  public setSortOrder(fieldName: string): void {
+    // set the sorting of the html in the logic via this.sortedBy
+    if (this.isColumnSorted(fieldName) === TaskSort.ASC) {
+      this.sortedBy.order = TaskSort.DSC;
+    } else if (this.isColumnSorted(fieldName) === TaskSort.DSC) {
+      this.sortedBy.order = TaskSort.NONE;
+    } else {
+      this.sortedBy.order = TaskSort.ASC;
+    }
   }
 }

@@ -32,7 +32,7 @@
     <td cdk-cell *cdkCellDef="let rowData" [attr.colspan]="displayedColumns.length" class="cell-actions">
       <ng-container *ngIf="isRowSelected(rowData)">
         <div *ngFor="let action of rowData.actions" class="task-action">
-          <a tabindex="0" (click)="onActionHandler(rowData, action)" class="action">{{action.title}}</a>
+          <a tabindex="0" (click)="onActionHandler(rowData, action)" class="action" [id]="'action_' + action.id">{{action.title}}</a>
         </div>
       </ng-container>
     </td>

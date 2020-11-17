@@ -1,6 +1,5 @@
 import { SearchResultView, Jurisdiction, CaseType, CaseState, PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
 import * as fromCases from '../actions/case-search.action';
-import { mockedSearchResultPayload } from 'src/cases/mock/search-filter.mock';
 
 export class SearchStateFilter {
   jurisdiction: Jurisdiction;
@@ -51,7 +50,8 @@ export function reducer(
   action: fromCases.CaseSearchAction
 ): SearchState {
   switch (action.type) {
-    case fromCases.APPLY_SEARCH_FILTER: {
+    case fromCases.APPLY_SEARCH_FILTER:
+    case fromCases.APPLY_SEARCH_FILTER_FOR_ES: {
       return {
         ...state,
         filter: {

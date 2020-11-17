@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { of } from 'rxjs';
+import { NocAnswer } from '../../models';
 import { NocCheckAndSubmitComponent } from './noc-check-and-submit.component';
 
 describe('NocCheckAndSubmitComponent', () => {
@@ -16,10 +17,22 @@ describe('NocCheckAndSubmitComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(NocCheckAndSubmitComponent);
     component = fixture.componentInstance;
+    component.qAndA$ = of(null);
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should assign the input value of our component', () => {
+    const answers =  new Array<NocAnswer>({
+      question_id: 'Question_123456', value: 'bob', question_text: of('What is your first name?')
+    }, {
+      question_id: 'Question_678910', value: 'the builder', question_text: of('What is your last name?')
+    });
+    component.qAndA$ = of(answers);
+    fixture.detectChanges();
+    expect(component.qAndA$).toEqual(answers);
   });
 });

@@ -39,55 +39,55 @@ describe('NocErrorPipe', () => {
     const message = nocError.transform({
       required: true
     });
-    expect(message).toBe('This field is required.');
+    expect(message).toBe('This field is required');
   });
 
   it('should return pattern error message', () => {
     const message = nocError.transform({
       pattern: true
     });
-    expect(message).toBe('The data entered is not valid for this type of field.');
+    expect(message).toBe('The data entered is not valid for this type of field');
   });
 
   it('should return min length error message', () => {
     const message = nocError.transform({
       minlength: true
     });
-    expect(message).toBe('Required minimum length.');
+    expect(message).toBe('Required minimum length');
   });
 
   it('should return max length error message', () => {
     const message = nocError.transform({
       maxlength: true
     });
-    expect(message).toBe('Exceeds maximum length.');
+    expect(message).toBe('Exceeds maximum length');
   });
 
   it('should return email error message', () => {
     const message = nocError.transform({
       email: true
     });
-    expect(message).toBe('The email is invalid.');
+    expect(message).toBe('The email is invalid');
   });
 
   it('should return number error message', () => {
     const message = nocError.transform({
       number: true
     });
-    expect(message).toBe('The number is invalid.');
+    expect(message).toBe('The number is invalid');
   });
 
   it('should return postcode error message', () => {
     const message = nocError.transform({
       postcode: true
     });
-    expect(message).toBe('The postcode is invalid.');
+    expect(message).toBe('The postcode is invalid');
   });
 
   it('should phoneUK postcode error message', () => {
     const message = nocError.transform({
       phoneUK: true
     });
-    expect(message).toBe('The phone number is invalid.');
+    expect(message).toBe('The phone number is invalid');
   });
 });

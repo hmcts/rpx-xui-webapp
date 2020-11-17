@@ -21,7 +21,7 @@ const CASE_STATE: CaseState = CASE_STATE_1;
 
 describe('SearchFilterService', () => {
     let searchFilterService: SearchFilterService;
-    const ccdSearchServiceMock = createSpyObj<SearchService>('SearchService', ['search']);
+    const ccdSearchServiceMock = createSpyObj<SearchService>('SearchService', ['search', 'searchCases']);
     const abstractAppConfigMock = createSpyObj<AbstractAppConfig>('AbstractAppConfig', ['getCaseDataUrl']);
     const httpService = createSpyObj<HttpService>('HttpService', ['get']);
     const requestOptionsBuilder = createSpyObj<RequestOptionsBuilder>('RequestOptionsBuilder', ['buildOptions']);
@@ -78,6 +78,40 @@ describe('SearchFilterService', () => {
         expect(ccdSearchServiceMock.search).toHaveBeenCalledWith(JURISDICTION.id, CASE_TYPE.id, { page: 1, state: CASE_STATE.id }, {
             name: NAME_VALUE
         }, 'SEARCH');
+
+    });
+
+    it('should make inputs fields turn into query parameters when calling searchCases', () => {
+        const nameControl = new FormControl();
+        const NAME_VALUE = 'something';
+
+        nameControl.setValue(NAME_VALUE);
+
+        const filterContents = {
+            name: nameControl
+        };
+        const formGroupDummy = new FormGroup(filterContents);
+        const filter = {
+            selected: {
+                formGroup: formGroupDummy,
+                jurisdiction: JURISDICTION,
+                caseType: CASE_TYPES[0],
+                caseState: CASE_STATE,
+                page: 1,
+                view: 'SEARCH'
+            },
+            sortParameters: {
+                column: 'dummy',
+                order: 0
+            }
+        };
+
+        searchFilterService.search(filter, true);
+
+
+        expect(ccdSearchServiceMock.searchCases).toHaveBeenCalledWith(CASE_TYPE.id, { page: 1, state: CASE_STATE.id }, {
+            name: NAME_VALUE
+        }, 'SEARCH', { column: 'dummy', order: 0 });
 
     });
 

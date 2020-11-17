@@ -19,12 +19,22 @@
     "secure": false,
     "logLevel": "debug"
   },
+  "/workallocation/*": {
+    "target": "http://localhost:3001",
+    "secure": false,
+    "logLevel": "debug"
+  },
   "/external/*": {
     "target": "http://localhost:3001",
     "secure": false,
     "logLevel": "debug"
   },
   "/em-anno/*": {
+    "target": "http://localhost:3001",
+    "secure": false,
+    "logLevel": "debug"
+  },
+  "/icp/*": {
     "target": "http://localhost:3001",
     "secure": false,
     "logLevel": "debug"

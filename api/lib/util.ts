@@ -51,3 +51,7 @@ export function isObject(o) {
 export function isUserTandCPostSuccessful(postResponse: PostUserAcceptTandCResponse, userId: string): any {
     return postResponse.userId === userId
 }
+
+export function fieldNameMapper(fieldName: string, mapping: {}): string {
+    return mapping[fieldName] ? mapping[fieldName] : fieldName
+}

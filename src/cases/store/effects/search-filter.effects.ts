@@ -38,10 +38,21 @@ export class SearchFilterEffects {
           );
       }));
 
-      @Effect()
-      applySearchFilterToggle$ = this.actions$.pipe(
-        ofType(caseSearchActions.SEARCH_FILTER_DISPLAY_TOGGLE),
-        map((action: caseSearchActions.SearchFilterToggle) => new caseSearchActions.SearchFilterToggleSuccess(action.payload)),
-            catchError(error => of(new caseSearchActions.ApplySearchFilterFail(error))));
+    @Effect()
+    applySearchFiltersForES$ = this.actions$.pipe(
+      ofType(caseSearchActions.APPLY_SEARCH_FILTER_FOR_ES),
+      map((action: caseSearchActions.ApplySearchFilterForES) => action.payload),
+      switchMap(payload => {
+          return this.searchService.search(payload, true).pipe(
+            map((result: Observable<any>) => new caseSearchActions.ApplySearchFilterSuccess(result)),
+            catchError(error => of(new caseSearchActions.ApplySearchFilterFail(error)))
+          );
+      }));
+
+    @Effect()
+    applySearchFilterToggle$ = this.actions$.pipe(
+      ofType(caseSearchActions.SEARCH_FILTER_DISPLAY_TOGGLE),
+      map((action: caseSearchActions.SearchFilterToggle) => new caseSearchActions.SearchFilterToggleSuccess(action.payload)),
+          catchError(error => of(new caseSearchActions.ApplySearchFilterFail(error))));
 
 }

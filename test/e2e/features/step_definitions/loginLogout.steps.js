@@ -15,6 +15,47 @@ async function waitForElement(el) {
 
 defineSupportCode(function ({ Given, When, Then }) {
 
+
+  async function loginattemptCheckAndRelogin(username, password, world) {
+
+    let loginAttemptRetryCounter = 1;
+
+    while (loginAttemptRetryCounter < 3) {
+
+      try {
+        await browserWaits.waitForstalenessOf(loginPage.emailAddress, 5);
+        break;
+      } catch (err) {
+        let emailFieldValue = await loginPage.getEmailFieldValue();
+        if (!emailFieldValue.includes(username)) {
+          if (loginAttemptRetryCounter === 1) {
+            firstAttemptFailedLogins++;
+          }
+          if (loginAttemptRetryCounter === 2) {
+            secondAttemptFailedLogins++;
+          }
+
+          console.log(err + " email field is still present with empty value indicating  Login page reloaded due to EUI-1856 : Login re attempt " + loginAttemptRetryCounter);
+          world.attach(err + " email field is still present with empty value indicating Login page reloaded due to EUI-1856 : Login re attempt " + loginAttemptRetryCounter);
+          await loginPage.loginWithCredentials(username, password);
+          loginAttemptRetryCounter++;
+        }
+      }
+    }
+    console.log("ONE ATTEMPT:  EUI-1856 issue occured / total logins => " + firstAttemptFailedLogins + " / " + loginAttempts);
+    world.attach("ONE ATTEMPT:  EUI-1856 issue occured / total logins => " + firstAttemptFailedLogins + " / " + loginAttempts);
+
+    console.log("TWO ATTEMPT: EUI-1856 issue occured / total logins => " + secondAttemptFailedLogins + " / " + loginAttempts);
+    world.attach("TWO ATTEMPT: EUI-1856 issue occured / total logins => " + secondAttemptFailedLogins + " / " + loginAttempts);
+
+
+  }
+
+  let loginAttempts = 0;
+  let firstAttemptFailedLogins = 0;
+  let secondAttemptFailedLogins = 0;
+
+
   When('I navigate to Expert UI Url', async function () {
     await browser.driver.manage()
       .deleteAllCookies();
@@ -61,6 +102,9 @@ defineSupportCode(function ({ Given, When, Then }) {
     // browser.sleep(SHORT_DELAY);
     await loginPage.signinBtn.click();
     browser.sleep(SHORT_DELAY);
+
+    loginAttempts++;
+    await loginattemptCheckAndRelogin(this.config.username, this.config.password, this);
 
   });
 
@@ -113,14 +157,23 @@ defineSupportCode(function ({ Given, When, Then }) {
   Given('I am logged into Expert UI with valid user details', async function () {
     await loginPage.givenIAmLoggedIn(config.config.params.username, config.config.params.password);
     const world = this;
+
+    loginAttempts++;
+    await loginattemptCheckAndRelogin(config.config.params.username, config.config.params.password, this);
+
     await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
       world.attach("Login success page load load attempt : " + message)
     });
+
   });
 
   Given('I am logged into Expert UI with non professional user details', async function () {
     await loginPage.givenIAmLoggedIn(this.config.caseworkerUser, this.config.caseworkerPassword);
     const world = this;
+
+    loginAttempts++;
+    await loginattemptCheckAndRelogin(this.config.caseworkerUser, this.config.caseworkerPassword, this);
+
     await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
       world.attach("Login success page load load attempt : " + message)
     });
@@ -129,6 +182,10 @@ defineSupportCode(function ({ Given, When, Then }) {
   Given('I am logged into Expert UI with FPL user details', async function () {
     await loginPage.givenIAmLoggedIn("kurt@swansea.gov.uk", "Password12");
     const world = this;
+
+    loginAttempts++;
+    await loginattemptCheckAndRelogin("kurt@swansea.gov.uk", "Password12", this);
+
     await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
       world.attach("Login success page load load attempt : " + message)
     });
@@ -145,6 +202,9 @@ defineSupportCode(function ({ Given, When, Then }) {
     await loginPage.password.sendKeys(config.config.params.password);
     await loginPage.clickSignIn();
     browser.sleep(LONG_DELAY);
+
+    loginAttempts++;
+    await loginattemptCheckAndRelogin(config.config.params.username, config.config.params.password, this);
   });
 
   Given(/^I navigate to Expert UI Url direct link$/, async function () {

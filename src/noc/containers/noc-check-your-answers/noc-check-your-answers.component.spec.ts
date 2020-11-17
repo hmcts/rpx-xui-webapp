@@ -1,5 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { NocAnswer } from '../../models';
 import { NocCheckYourAnswersComponent } from './noc-check-your-answers.component';
@@ -11,7 +12,10 @@ describe('NocCheckYourAnswersComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [ NocCheckYourAnswersComponent ]
+      declarations: [ NocCheckYourAnswersComponent ],
+      providers: [
+        provideMockStore()
+      ]
     })
     .compileComponents();
   }));

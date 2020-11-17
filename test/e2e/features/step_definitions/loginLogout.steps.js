@@ -23,7 +23,7 @@ defineSupportCode(function ({ Given, When, Then }) {
     while (loginAttemptRetryCounter < 3) {
 
       try {
-        await browserWaits.waitForstalenessOf(loginPage.emailAddress, 5);
+        await BrowserWaits.waitForstalenessOf(loginPage.emailAddress, 5);
         break;
       } catch (err) {
         let emailFieldValue = await loginPage.getEmailFieldValue();

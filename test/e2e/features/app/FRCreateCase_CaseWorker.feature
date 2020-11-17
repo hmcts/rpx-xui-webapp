@@ -1,4 +1,3 @@
-@fr @fullfunctional
 Feature: FR create case workflow - Case Worker
 
     Background:
@@ -8,7 +7,7 @@ Feature: FR create case workflow - Case Worker
         When I click on create case button
         Then Create case page should be displayed
 
-    @all
+    @all @fullfunctional
    Scenario Outline: Start FR Case Creation
         When I start case with jurisdiction "<Jurisdiction>" case type "<CaseType>" and event "<Event>"
         Then I am on case form page
@@ -16,7 +15,6 @@ Feature: FR create case workflow - Case Worker
     | Jurisdiction | CaseType| Event |
     | Family Divorce | Financial Remedy Consented | Consent Order Application |
     | Family Divorce | Contested Financial Remedy | Form A Application |
-
 
     Scenario Outline:  Create and Submit FR Casese
         When I start case with jurisdiction "<Jurisdiction>" case type "<CaseType>" and event "<Event>"

@@ -230,7 +230,7 @@ describe('TaskListComponent', () => {
     fixture.detectChanges();
 
     // get the selected row and confirm it is not null
-    const row1 = component.getSelectedRow();
+    const firstRow = component.getSelectedRow();
     expect(component.getSelectedRow()).not.toBe(null);
 
     // click the 'manage' button again and confirm that it is null
@@ -244,8 +244,8 @@ describe('TaskListComponent', () => {
     button.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     expect(component.getSelectedRow()).not.toBe(null);
-    expect(component.getSelectedRow()).toEqual(row1);
-    expect(row1.id).toEqual(firstTaskId);
+    expect(component.getSelectedRow()).toEqual(firstRow);
+    expect(firstRow.id).toEqual(firstTaskId);
 
     // click the button for the second task
     element = fixture.debugElement.nativeElement;
@@ -254,9 +254,9 @@ describe('TaskListComponent', () => {
     fixture.detectChanges();
 
     // get the selected row and confirm it is not null and is the secondTaskId
-    const row2 = component.getSelectedRow();
+    const secondRow = component.getSelectedRow();
     expect(component.getSelectedRow()).not.toBe(null);
-    expect(row2.id).toEqual(secondTaskId);
+    expect(secondRow.id).toEqual(secondTaskId);
   });
 
   it('should allow setting the selected row.', async () => {
@@ -265,51 +265,51 @@ describe('TaskListComponent', () => {
 
     // get the 'manage' button and click it
     let element = fixture.debugElement.nativeElement;
-    const button1 = element.querySelector(`#manage_${firstTaskId}`);
-    const button2 = element.querySelector(`#manage_${secondTaskId}`);
-    button1.dispatchEvent(new Event('click'));
+    const firstButton = element.querySelector(`#manage_${firstTaskId}`);
+    const secondButton = element.querySelector(`#manage_${secondTaskId}`);
+    firstButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
     // get the selected row and confirm it is not null
-    const row1 = component.getSelectedRow();
+    const firstRow = component.getSelectedRow();
     expect(component.getSelectedRow()).not.toBe(null);
 
     // click the 'manage' button again and confirm that it is null
     element = fixture.debugElement.nativeElement;
-    button1.dispatchEvent(new Event('click'));
+    firstButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     expect(component.getSelectedRow()).toBe(null);
 
     // set the selected row as the earlier defined row
-    component.setSelectedRow(row1);
+    component.setSelectedRow(firstRow);
     fixture.detectChanges();
     expect(component.getSelectedRow()).not.toBe(null);
-    expect(component.getSelectedRow()).toEqual(row1);
-    expect(row1.id).toEqual(firstTaskId);
+    expect(component.getSelectedRow()).toEqual(firstRow);
+    expect(firstRow.id).toEqual(firstTaskId);
 
     // click the 'manage' button again and confirm that it is selected
     element = fixture.debugElement.nativeElement;
-    button2.dispatchEvent(new Event('click'));
+    secondButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
-    const row2 = component.getSelectedRow();
+    const secondRow = component.getSelectedRow();
     expect(component.getSelectedRow()).not.toBe(null);
 
     // set the selected row as the earlier defined row
-    component.setSelectedRow(row1);
+    component.setSelectedRow(firstRow);
     fixture.detectChanges();
     expect(component.getSelectedRow()).not.toBe(null);
-    expect(component.getSelectedRow()).toEqual(row1);
-    expect(row1.id).toEqual(firstTaskId);
+    expect(component.getSelectedRow()).toEqual(firstRow);
+    expect(firstRow.id).toEqual(firstTaskId);
 
     // set the selected row as the later defined row
-    component.setSelectedRow(row2);
+    component.setSelectedRow(secondRow);
     fixture.detectChanges();
     expect(component.getSelectedRow()).not.toBe(null);
-    expect(component.getSelectedRow()).toEqual(row2);
-    expect(row2.id).toEqual(secondTaskId);
+    expect(component.getSelectedRow()).toEqual(secondRow);
+    expect(secondRow.id).toEqual(secondTaskId);
 
     // click selected row again and confirm null
-    component.setSelectedRow(row2);
+    component.setSelectedRow(secondRow);
     fixture.detectChanges();
     expect(component.getSelectedRow()).toBe(null);
   });
@@ -320,39 +320,39 @@ describe('TaskListComponent', () => {
 
     // get the 'manage' button and click it
     let element = fixture.debugElement.nativeElement;
-    const button1 = element.querySelector(`#manage_${firstTaskId}`);
-    const button2 = element.querySelector(`#manage_${secondTaskId}`);
-    button1.dispatchEvent(new Event('click'));
+    const firstButton = element.querySelector(`#manage_${firstTaskId}`);
+    const secondButton = element.querySelector(`#manage_${secondTaskId}`);
+    firstButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
     // get the selected row and confirm it is not null
-    const row1 = component.getSelectedRow();
+    const firstRow = component.getSelectedRow();
     expect(component.getSelectedRow()).not.toBe(null);
 
     // expect the row to be selected
-    expect(component.isRowSelected(row1)).toBeTruthy();
+    expect(component.isRowSelected(firstRow)).toBeTruthy();
 
     // click the 'manage' button for the second row and confirm that initial row is not selected
     element = fixture.debugElement.nativeElement;
-    button2.dispatchEvent(new Event('click'));
+    secondButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
-    const row2 = component.getSelectedRow();
-    expect(component.isRowSelected(row1)).toBeFalsy();
-    expect(component.isRowSelected(row2)).toBeTruthy();
+    const secondRow = component.getSelectedRow();
+    expect(component.isRowSelected(firstRow)).toBeFalsy();
+    expect(component.isRowSelected(secondRow)).toBeTruthy();
 
     // click the 'manage' button for the initial row and confirm that second row is not selected
     element = fixture.debugElement.nativeElement;
-    button1.dispatchEvent(new Event('click'));
+    firstButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
-    expect(component.isRowSelected(row1)).toBeTruthy();
-    expect(component.isRowSelected(row2)).toBeFalsy();
+    expect(component.isRowSelected(firstRow)).toBeTruthy();
+    expect(component.isRowSelected(secondRow)).toBeFalsy();
 
     // click the 'manage' button for the initial row and confirm that neither are selected
     element = fixture.debugElement.nativeElement;
-    button1.dispatchEvent(new Event('click'));
+    firstButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
-    expect(component.isRowSelected(row1)).toBeFalsy();
-    expect(component.isRowSelected(row2)).toBeFalsy();
+    expect(component.isRowSelected(firstRow)).toBeFalsy();
+    expect(component.isRowSelected(secondRow)).toBeFalsy();
   });
 
   it('should trigger an event to the parent when the User clicks on an action.', async () => {
@@ -370,14 +370,14 @@ describe('TaskListComponent', () => {
     // mock the emitter and click the first manage button
     spyOn(component.actionEvent, 'emit');
     const element = fixture.debugElement.nativeElement;
-    const button1 = element.querySelector(`#manage_${firstTaskId}`);
-    const button2 = element.querySelector(`#manage_${secondTaskId}`);
-    button1.dispatchEvent(new Event('click'));
+    const firstButton = element.querySelector(`#manage_${firstTaskId}`);
+    const secondButton = element.querySelector(`#manage_${secondTaskId}`);
+    firstButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
     // check the emitter had been called and that it gets called with the first invoked task action
-    const anchor1 = element.querySelector(`#action_${firstActionId}`);
-    anchor1.dispatchEvent(new Event('click'));
+    const firstAnchor = element.querySelector(`#action_${firstActionId}`);
+    firstAnchor.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     expect(component.actionEvent.emit).toHaveBeenCalled();
     let task = firstTask;
@@ -385,8 +385,8 @@ describe('TaskListComponent', () => {
     expect(component.actionEvent.emit).toHaveBeenCalledWith({task, action});
 
     // check the emitter had been called and that it gets called with the second invoked task action
-    const anchor2 = element.querySelector(`#action_${secondActionId}`);
-    anchor2.dispatchEvent(new Event('click'));
+    const secondAnchor = element.querySelector(`#action_${secondActionId}`);
+    secondAnchor.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     expect(component.actionEvent.emit).toHaveBeenCalled();
     task = firstTask;
@@ -394,12 +394,12 @@ describe('TaskListComponent', () => {
     expect(component.actionEvent.emit).toHaveBeenCalledWith({task, action});
 
     // click the second button in order to show the last action anchor
-    button2.dispatchEvent(new Event('click'));
+    secondButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
     // check the emitter had been called and that it gets called with the third invoked task action
-    const anchor3 = element.querySelector(`#action_${secondActionId}`);
-    anchor3.dispatchEvent(new Event('click'));
+    const thirdAnchor = element.querySelector(`#action_${secondActionId}`);
+    thirdAnchor.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     expect(component.actionEvent.emit).toHaveBeenCalled();
     task = secondTask;
@@ -416,10 +416,10 @@ describe('TaskListComponent', () => {
     // mock the emitter and dispatch the connected event (with example case field buttons selected)
     spyOn(component.sortEvent, 'emit');
     const element = fixture.debugElement.nativeElement;
-    const button1 = element.querySelector('#sort_by_caseReference');
-    const button2 = element.querySelector('#sort_by_caseCategory');
-    component.setSortOrder('caseReference');
-    button1.dispatchEvent(new Event('click'));
+    const firstButton = element.querySelector('#sort_by_caseReference');
+    const secondButton = element.querySelector('#sort_by_caseCategory');
+    component.sortedBy.order = TaskSort.ASC;
+    firstButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
     // check the case reference is being sorted via ascending
@@ -429,8 +429,8 @@ describe('TaskListComponent', () => {
     expect(component.isColumnSorted('caseCategory')).toBe(TaskSort.NONE);
 
     // check that the case reference is being sorted via descending
-    component.setSortOrder('caseReference');
-    button1.dispatchEvent(new Event('click'));
+    component.sortedBy.order = TaskSort.DSC;
+    firstButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     expect(component.sortEvent.emit).toHaveBeenCalled();
     expect(component.sortEvent.emit).toHaveBeenCalledWith('caseReference');
@@ -438,8 +438,8 @@ describe('TaskListComponent', () => {
     expect(component.isColumnSorted('caseCategory')).toBe(TaskSort.NONE);
 
     // check that the case reference is not being sorted
-    component.setSortOrder('caseReference');
-    button1.dispatchEvent(new Event('click'));
+    component.sortedBy.order = TaskSort.NONE;
+    firstButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     expect(component.sortEvent.emit).toHaveBeenCalled();
     expect(component.sortEvent.emit).toHaveBeenCalledWith('caseReference');
@@ -447,8 +447,8 @@ describe('TaskListComponent', () => {
     expect(component.isColumnSorted('caseCategory')).toBe(TaskSort.NONE);
 
     // click the second example button and verify that sorting is for case category
-    component.setSortOrder('caseCategory');
-    button2.dispatchEvent(new Event('click'));
+    component.sortedBy.order = TaskSort.ASC;
+    secondButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     expect(component.sortEvent.emit).toHaveBeenCalled();
     expect(component.sortEvent.emit).toHaveBeenCalledWith('caseCategory');
@@ -456,8 +456,7 @@ describe('TaskListComponent', () => {
     expect(component.isColumnSorted('caseCategory')).toBe(TaskSort.ASC);
 
     // click the first example button and verify that sorting is again for case reference
-    component.setSortOrder('caseReference');
-    button1.dispatchEvent(new Event('click'));
+    firstButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     expect(component.sortEvent.emit).toHaveBeenCalled();
     expect(component.sortEvent.emit).toHaveBeenCalledWith('caseReference');

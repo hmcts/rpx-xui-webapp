@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { WorkAllocationTaskService } from 'src/work-allocation/services/work-allocation-task.service';
 
 import { Task, TaskFieldConfig, TaskSortField } from '../../models/tasks';
 import InvokedTaskAction from '../../models/tasks/invoked-task-action.model';
@@ -39,11 +38,10 @@ export class TaskListComponent implements OnChanges, OnInit {
 
   private selectedRow: Task;
 
-  constructor(private readonly workAllocationTaskService: WorkAllocationTaskService) {}
+  constructor() {}
 
   public ngOnInit(): void {
-    // Test the getTask
-    this.workAllocationTaskService.getTask('123456').subscribe(task => console.log(task));
+
   }
 
   public ngOnChanges() {
@@ -60,10 +58,6 @@ export class TaskListComponent implements OnChanges, OnInit {
    *
    */
   public getDisplayedColumn(taskFieldConfig: TaskFieldConfig[]): string[] {
-
-    // Remove when finished with, checking if taskFieldConfig is populated
-    console.log('taskFieldConfig');
-    console.log(taskFieldConfig);
 
     const fields = taskFieldConfig.map(field => field.name);
     return this.addManageColumn(fields);
@@ -160,20 +154,4 @@ export class TaskListComponent implements OnChanges, OnInit {
     return TaskSort.NONE;
   }
 
-  /**
-   * Takes in the fieldname, so the the order can be received for the purpose of testing.
-   *
-   *
-   * @param fieldName - ie. 'caseName'
-   */
-  public setSortOrder(fieldName: string): void {
-    // set the sorting of the html in the logic via this.sortedBy
-    if (this.isColumnSorted(fieldName) === TaskSort.ASC) {
-      this.sortedBy.order = TaskSort.DSC;
-    } else if (this.isColumnSorted(fieldName) === TaskSort.DSC) {
-      this.sortedBy.order = TaskSort.NONE;
-    } else {
-      this.sortedBy.order = TaskSort.ASC;
-    }
-  }
 }

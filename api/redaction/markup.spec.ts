@@ -4,11 +4,11 @@ import 'mocha'
 import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
 import { mockReq, mockRes } from 'sinon-express-mock'
-import {getConfigValue} from '../configuration'
+import * as markupService from '../common/crudService'
+import { getConfigValue } from '../configuration'
 import {
   SERVICES_MARKUP_API_URL,
 } from '../configuration/references'
-import * as markupService from './redactionService'
 import { deleteMarkup, getMarkup, postMarkup, putMarkup } from './markup'
 
 chai.use(sinonChai)

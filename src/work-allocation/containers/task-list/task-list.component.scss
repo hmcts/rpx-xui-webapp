@@ -30,13 +30,15 @@
 .govuk-accordion__section-button {
   &.xui-reset {
     font-size: inherit;
-    margin-right: 10px;
+    margin-right: 20px;
     text-decoration: underline;
     font-weight: 400;
     .govuk-accordion__icon {
       height: 14px;
       width: 14px;
       right: 0;
+      top: 16px;
+      margin-top: 0;
     }
     &[aria-expanded=true] {
       .govuk-accordion__icon::after {
@@ -49,6 +51,9 @@
   border-bottom: solid 1px #ddd;
   th {
     border-bottom-color: #bfc1c3;
+  }
+  .cdk-column-manage {
+    text-align: right;
   }
   &.actions-row {
     display: none;

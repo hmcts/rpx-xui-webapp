@@ -15,6 +15,7 @@ import {
   MAX_LOG_LINE,
   PROTOCOL,
   SERVICE_S2S_PATH,
+  SERVICES_CCD_CASE_ASSIGNMENT_API_PATH,
   SERVICES_CCD_COMPONENT_API_PATH,
   SERVICES_CCD_DATA_STORE_API_PATH,
   SERVICES_DOCUMENTS_API_PATH,
@@ -23,6 +24,7 @@ import {
   SERVICES_IDAM_LOGIN_URL,
   SERVICES_IDAM_OAUTH_CALLBACK_URL,
   SERVICES_PAYMENTS_URL,
+  SERVICES_PRD_API_URL,
   SERVICES_TERMS_AND_CONDITIONS_URL,
 } from './references'
 
@@ -55,9 +57,11 @@ export const applicationConfiguration = () => {
     oAuthCallback: getConfigValue(SERVICES_IDAM_OAUTH_CALLBACK_URL),
     payments: getConfigValue(SERVICES_PAYMENTS_URL),
     protocol: getConfigValue(PROTOCOL),
+    servicesCcdCaseAssignmentPath: getConfigValue(SERVICES_CCD_CASE_ASSIGNMENT_API_PATH),
     servicesCcdComponentPath: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH),
     servicesCcdDataStorePath: getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH),
     servicesDocumentApiPath: getConfigValue(SERVICES_DOCUMENTS_API_PATH),
+    servicesPrdApiPath: getConfigValue(SERVICES_PRD_API_URL),
     servicesS2sPath: getConfigValue(SERVICE_S2S_PATH),
     servicesTermsAndConditionsPath: getConfigValue(SERVICES_TERMS_AND_CONDITIONS_URL),
   }

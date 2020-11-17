@@ -1,4 +1,5 @@
 var EC = protractor.ExpectedConditions;
+const CucumberReporter = require('./reportLogger');
 
 class BrowserWaits{
 
@@ -8,9 +9,19 @@ class BrowserWaits{
         this.waitTime = 30000; 
         this.pageErrors = $$(".error-summary");
     }
-    
-    async waitForElement(element){
-        await browser.wait(EC.visibilityOf(element), this.waitTime,"Error : "+element.locator().toString());
+
+    async waitForSeconds(waitInSec){
+        await browser.sleep(waitInSec*1000);
+    }
+   
+
+
+    async waitForElement(element,message){
+        const startTime = Date.now();
+        CucumberReporter.AddMessage("starting wait for element max in sec " + this.waitTime / 1000 + " : " + element.locator().toString());
+        await browser.wait(EC.visibilityOf(element), this.waitTime,"Error : "+element.locator().toString() + " => "+message);
+        CucumberReporter.AddMessage("wait done in sec " + (Date.now() - startTime ) / 1000); 
+
     }
 
     async waitForPresenceOfElement(element){
@@ -18,7 +29,10 @@ class BrowserWaits{
     }
 
     async waitForElementClickable(element) {
+        const startTime = Date.now();
+        CucumberReporter.AddMessage("starting wait for element clickable max in sec " + this.waitTime / 1000 + " : " + element.locator().toString());
         await browser.wait(EC.elementToBeClickable(element), this.waitTime, "Error : " + element.locator().toString());
+        CucumberReporter.AddMessage("wait done in sec " + (Date.now() - startTime) / 1000); 
     }
 
     async waitForCondition(condition){
@@ -47,6 +61,17 @@ class BrowserWaits{
             return currentPageUrl !== nextPage;
         }, this.waitTime, "Navigation to next page taking too long " + this.waitTime + ". Current page " + currentPageUrl + ". Errors => " + pageErrors);
     }
+
+    async waitForBrowserReadyState(waitInSec) {
+        let resolvedWaitTime = waitInSec ? waitInSec * 1000 : this.waitTime;
+
+        CucumberReporter.AddMessage("Started step");
+        await this.waitForCondition(async () => {
+            let browserState = await browser.executeScript('return document.readyState;');
+            CucumberReporter.AddMessage('browser readyState value  "' + browserState + '"');
+            return browserState === 'complete';
+        }, resolvedWaitTime);
+    } 
 
     async retryForPageLoad(element,callback) {
     let retryCounter = 0;

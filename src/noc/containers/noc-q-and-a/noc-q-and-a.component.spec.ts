@@ -1,9 +1,9 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { NocNavigationEvent } from 'src/noc/models';
 import * as fromNocStore from '../../store';
 import { NocErrorPipe } from '../noc-field/utils';
 import { NocQAndAComponent } from './noc-q-and-a.component';
@@ -28,6 +28,7 @@ describe('NocQAndAComponent', () => {
     })
     .compileComponents();
     store = TestBed.get(Store);
+    spyOn(store, 'dispatch').and.callThrough();
   }));
 
   beforeEach(() => {
@@ -39,5 +40,35 @@ describe('NocQAndAComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('navigationHandler', () => {
+    const FORM_GROUP_WITH_ANSWERS = new FormGroup({
+      question1: new FormControl('An answer'),
+      question2: new FormControl('Another answer')
+    });
+    const caseReference = '1111222233334444';
+
+    beforeEach(() => {
+      component.formGroup = FORM_GROUP_WITH_ANSWERS;
+      component.nocCaseReference = caseReference;
+    });
+
+    it('should handle the SET_ANSWERS NoC navigation event and set the question answers on the store', () => {
+      component.navigationHandler(NocNavigationEvent.SET_ANSWERS);
+      expect(store.dispatch).toHaveBeenCalledWith(new fromNocStore.SetAnswers({
+        caseReference,
+        nocAnswers: [
+          {
+            question_id: 'question1',
+            value: 'An answer'
+          },
+          {
+            question_id: 'question2',
+            value: 'Another answer'
+          }
+        ]
+      }));
+    });
   });
 });

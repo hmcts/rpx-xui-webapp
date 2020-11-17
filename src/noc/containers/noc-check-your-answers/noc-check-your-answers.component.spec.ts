@@ -26,13 +26,14 @@ describe('NocCheckYourAnswersComponent', () => {
   });
 
   it('should assign the input value of our component', () => {
-    const answers =  new Array<NocAnswer>({
+    const answers: NocAnswer[] = [{
       question_id: 'Question_123456', value: 'bob', question_text: of('What is your first name?')
     }, {
       question_id: 'Question_678910', value: 'the builder', question_text: of('What is your last name?')
-    });
-    component.qAndA$ = of(answers);
+    }]
+    const answers$ = of(answers);
+    component.qAndA$ = answers$;
     fixture.detectChanges();
-    expect(component.qAndA$).toEqual(answers);
+    expect(component.qAndA$).toEqual(answers$);
   });
 });

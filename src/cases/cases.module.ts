@@ -33,32 +33,33 @@ import {EffectsModule} from '@ngrx/effects';
 import {reducers, effects} from './store';
 import {SharedModule} from '../app/shared/shared.module';
 import {HttpModule} from '@angular/http';
-// from containers
-import * as fromContainers from './containers';
 // from components
 import * as fromComponents from './components';
+// from containers
+import * as fromContainers from './containers';
 // from services
 import * as fromServices from './services';
-import {ProvidersModule} from '../app/providers/providers.module';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        CaseUIToolkitModule,
-        CreateCaseFiltersModule,
-        SearchResultModule,
-        HttpClientModule,
-        StoreModule.forFeature('cases', reducers),
-        EffectsModule.forFeature(effects),
-        casesRouting,
-        SharedModule,
-        SearchFiltersModule,
-        HttpModule,
-        MatDialogModule,
-        CaseListFiltersModule,
-        WorkbasketFiltersModule
-    ],
+  imports: [
+    CommonModule,
+    CaseUIToolkitModule,
+    CreateCaseFiltersModule,
+    SearchResultModule,
+    HttpClientModule,
+    StoreModule.forFeature('cases', reducers),
+    EffectsModule.forFeature(effects),
+    casesRouting,
+    SharedModule,
+    SearchFiltersModule,
+    HttpModule,
+    MatDialogModule,
+    CaseListFiltersModule,
+    WorkbasketFiltersModule,
+    ExuiCommonLibModule
+  ],
   declarations: [...fromComponents.components, ...fromContainers.containers],
   providers: [
     PlaceholderService,

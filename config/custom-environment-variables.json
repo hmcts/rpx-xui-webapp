@@ -12,6 +12,10 @@
     "__format": "json"
   },
   "maxLogLine": "MAX_LOG_LINE",
+  "stub": {
+    "__name": "STUB",
+    "__format": "json"
+  },
   "health": {
     "ccdComponentApi": "HEALTH_CCD_COMPONENT_API",
     "ccdDataApi": "HEALTH_CCD_DATA_API",
@@ -22,10 +26,17 @@
   "services": {
     "ccd": {
       "componentApi": "SERVICES_CCD_COMPONENT_API",
-      "dataApi": "SERVICES_CCD_DATA_STORE_API"
+      "dataApi": "SERVICES_CCD_DATA_STORE_API",
+      "caseAssignmentApi": "SERVICES_CCD_CASE_ASSIGNMENT_API"
     },
     "documents": {
       "api": "SERVICES_DOCUMENTS_API"
+    },
+    "prd": {
+      "api": "SERVICES_PRD_API"
+    },
+    "caseShare": {
+      "api": "SERVICES_CASE_SHARE_API"
     },
     "em_anno_api": "SERVICES_EM_ANNO_API",
     "idam": {
@@ -36,6 +47,7 @@
       "iss": "SERVICES_IDAM_ISS_URL"
     },
     "markup_api": "SERVICES_MARKUP_API",
+    "icp_api": "SERVICES_ICP_API",
     "payments": "SERVICES_PAYMENTS_URL",
     "s2s": "SERVICES_S2S",
     "termsAndConditions": "SERVICES_TERMS_AND_CONDITIONS"

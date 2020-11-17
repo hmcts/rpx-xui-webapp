@@ -8,8 +8,8 @@ const port = 3001;
 
 class MockApp{
     init(){
-        this.conf = { 
-            get: { ...requestMapping.get},
+        this.conf = {
+            get: { ...requestMapping.get },
             post: { ...requestMapping.post },
             put: { ...requestMapping.put },
             delete: { ...requestMapping.delete }
@@ -21,6 +21,7 @@ class MockApp{
 
     async startServer(){
         const app = express();
+        app.use(express.json()) 
         for (const [key, value] of Object.entries(this.conf.get)) {
             app.get(key, value);
         }
@@ -49,6 +50,7 @@ class MockApp{
         this.configurations = { };
     }
 
+   
     onGet(path, callback){
         this.conf.get[path] = callback; 
     }
@@ -74,7 +76,7 @@ class MockApp{
 
 const mockInstance = new MockApp();
 
-// mockInstance.init();
+// mockInstance.init();;
 // mockInstance.startServer();
 
 module.exports = mockInstance;

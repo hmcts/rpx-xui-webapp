@@ -7,6 +7,7 @@ import { AbstractAppConfig } from '@hmcts/ccd-case-ui-toolkit/dist/app.config';
 import createSpyObj = jasmine.createSpyObj;
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 
 const GATEWAY_DOCUMENT_URL = 'http://localhost:1234/documents';
 const REMOTE_DOCUMENT_URL = 'https://www.example.com/binary';
@@ -22,12 +23,14 @@ describe('MediaViewerWrapperComponent', () => {
     let fixture: ComponentFixture<MediaViewerWrapperComponent>;
     let windowService;
     let mockAppConfig: any;
+    let featureToggleService;
 
     beforeEach(async(() => {
         mockAppConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getDocumentManagementUrl', 'getRemoteDocumentManagementUrl']);
         mockAppConfig.getDocumentManagementUrl.and.returnValue(GATEWAY_DOCUMENT_URL);
         mockAppConfig.getRemoteDocumentManagementUrl.and.returnValue(REMOTE_DOCUMENT_URL);
         windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage', 'removeLocalStorage']);
+        featureToggleService = createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
         TestBed.configureTestingModule({
             imports: [
                 MediaViewerModule,
@@ -40,7 +43,8 @@ describe('MediaViewerWrapperComponent', () => {
             ],
             providers: [
                 { provide: AbstractAppConfig, useValue: mockAppConfig },
-                { provide: WindowService, useValue: windowService }
+                { provide: WindowService, useValue: windowService },
+                { provide: FeatureToggleService, useValue: featureToggleService}
             ]
         })
             .compileComponents();
@@ -66,4 +70,26 @@ describe('MediaViewerWrapperComponent', () => {
         expect(component.mediaContentType).toBe('pdf');
     });
 
+
+    describe('isIcpEnabled', () => {
+        it('should return true when icp-enabled is true and jurisdiction is empty', () => {
+            component.caseJurisdiction = 'dummy';
+            expect(component.isIcpEnabled(true, [])).toBeTruthy();
+        });
+
+        it('should return false when icp-enabled is false and jurisdiction is empty', () => {
+            component.caseJurisdiction = 'dummy';
+            expect(component.isIcpEnabled(false, [])).toBeFalsy();
+        });
+
+        it('should return true when icp-enabled is false but jurisdiction is not empty and correct', () => {
+            component.caseJurisdiction = 'dummy';
+            expect(component.isIcpEnabled(false, ['dummy'])).toBeTruthy();
+        });
+
+        it('should return false when icp-enabled is false and jurisdiction is not empty but is wrong ', () => {
+            component.caseJurisdiction = 'dummy';
+            expect(component.isIcpEnabled(false, ['dummy1'])).toBeFalsy();
+        });
+    });
 });

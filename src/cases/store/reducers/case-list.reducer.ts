@@ -51,7 +51,8 @@ export function caselistReducer(
   action: fromCases.CaselistAction
 ): CaselistState {
   switch (action.type) {
-    case fromCases.APPLY_CASELIST_FILTER: {
+    case fromCases.APPLY_CASELIST_FILTER:
+    case fromCases.APPLY_CASELIST_FILTER_FOR_ES: {
       return {
         ...state,
         filter: {

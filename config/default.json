@@ -9,6 +9,7 @@
   "logging": "debug",
   "now": false,
   "maxLogLine": 80,
+  "stub": false,
   "health": {
     "ccdComponentApi": "https://ccd-api-gateway-web-prod.service.core-compute-prod.internal/health",
     "ccdDataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal/health",
@@ -19,10 +20,14 @@
   "services": {
     "ccd": {
       "componentApi": "https://ccd-api-gateway-web-prod.service.core-compute-prod.internal",
-      "dataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal"
+      "dataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal",
+      "caseAssignmentApi": "http://aac-manage-case-assignment-prod.service.core-compute-prod.internal"
     },
     "documents": {
       "api": "http://dm-store-prod.service.core-compute-prod.internal"
+    },
+    "prd": {
+      "api": "http://rd-professional-api-prod.service.core-compute-prod.internal"
     },
     "em_anno_api": "http://em-anno-prod.service.core-compute-prod.internal",
     "idam": {
@@ -35,6 +40,7 @@
     },
     "payments": "http://payment-api-prod.service.core-compute-prod.internal",
     "markup_api": "http://em-npa-prod.service.core-compute-prod.internal",
+    "icp_api": "http://em-icp-prod.service.core-compute-prod.internal",
     "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal",
     "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal"
   },

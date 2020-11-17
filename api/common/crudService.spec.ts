@@ -1,21 +1,21 @@
 import * as chai from 'chai'
 import { expect } from 'chai'
+import { NextFunction } from 'express'
 import 'mocha'
 import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
 import { mockReq, mockRes } from 'sinon-express-mock'
 import { http } from '../lib/http'
-import { handleDelete, handleGet, handlePost, handlePut } from './redactionService'
-import { Redaction } from './redactionModels'
+import { handleDelete, handleGet, handlePost, handlePut } from './crudService'
 
 chai.use(sinonChai)
-describe('redactionService', () => {
+describe('crudService', () => {
 
-    const dummyRedaction: Redaction = {
-        redactionId: 'dummy',
-        documentId: 'dummy',
-        page: 1,
-        rectangles: []
+    const dummyData = {
+      crudId: 'dummy',
+      documentId: 'dummy',
+      page: 1,
+      rectangles: [],
     }
 
     let sandbox
@@ -37,8 +37,9 @@ describe('redactionService', () => {
 
         it('should make a get request', async () => {
             spy = sandbox.stub(http, 'get').resolves(res)
-            const redactionPath = '/redaction/12345'
-            const response = await handleGet(redactionPath, req)
+            const crudPath = '/crud/12345'
+            const next = sinon.mock() as NextFunction
+            const response = await handleGet(crudPath, req, next)
             expect(response.data).to.equal('ok')
         })
     })
@@ -46,8 +47,9 @@ describe('redactionService', () => {
     describe('handlePost', () => {
         it('should make a post request', async () => {
             spy = sandbox.stub(http, 'post').resolves(res)
-            const redactionPath = '/redaction/12345'
-            const response = await handlePost(redactionPath, dummyRedaction, req)
+            const crudPath = '/crud/12345'
+            const next = sinon.mock() as NextFunction
+            const response = await handlePost(crudPath, dummyData, req, next)
             expect(response.data).to.equal('ok')
         })
     })
@@ -55,8 +57,9 @@ describe('redactionService', () => {
     describe('handlePut', () => {
         it('should make a put request', async () => {
             spy = sandbox.stub(http, 'put').resolves(res)
-            const redactionPath = '/redaction/12345'
-            const response = await handlePut(redactionPath, dummyRedaction, req)
+            const crudPath = '/crud/12345'
+            const next = sinon.mock() as NextFunction
+            const response = await handlePut(crudPath, dummyData, req, next)
             expect(response.data).to.equal('ok')
         })
     })
@@ -64,8 +67,9 @@ describe('redactionService', () => {
     describe('handleDelete', () => {
         it('should make a delete request', async () => {
             spy = sandbox.stub(http, 'delete').resolves(res)
-            const redactionPath = '/redaction/12345'
-            const response = await handleDelete(redactionPath, req)
+            const crudPath = '/crud/12345'
+            const next = sinon.mock() as NextFunction
+            const response = await handleDelete(crudPath, {}, req, next)
             expect(response.data).to.equal('ok')
         })
     })

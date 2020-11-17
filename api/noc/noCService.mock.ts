@@ -239,6 +239,12 @@ export const init = () => {
       errorCode: 'nocInProgress',
       errorMessage: 'The case has an ongoing NoC Request',
   })*/
+  // EUI-2401
+  // any other server errors
+/*  .onPost(validateNoCQuestionsUrl).reply(500, {
+      errorCode: 'nocInProgress',
+      errorMessage: 'internal error',
+  })*/
   .onPost(postNoCEventsUrl).reply(200, {
     approval_status: 'APPROVED',
     case_role: 'Claimant',

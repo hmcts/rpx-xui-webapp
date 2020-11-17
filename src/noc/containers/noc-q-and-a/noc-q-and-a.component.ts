@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
@@ -11,7 +11,7 @@ import * as fromFeature from '../../store';
   templateUrl: './noc-q-and-a.component.html',
   styleUrls: ['./noc-q-and-a.component.scss']
 })
-export class NocQAndAComponent implements OnInit, OnChanges, OnDestroy {
+export class NocQAndAComponent implements OnInit, OnDestroy {
 
   public questions$: Observable<NocQuestion[]>;
   public answers$: Observable<NocAnswer[]>;
@@ -24,6 +24,7 @@ export class NocQAndAComponent implements OnInit, OnChanges, OnDestroy {
   private nocCaseReferenceSub: Subscription;
   public lastError$: Observable<NocHttpError>;
   public lastError: NocHttpError;
+  public allAnswerEmpty: boolean = false;
 
   constructor(private readonly store: Store<fromFeature.State>) { }
 
@@ -55,22 +56,32 @@ export class NocQAndAComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
+  public setAllAnswerEmptyError(): void {
+    Object.keys(this.formGroup.controls).forEach(key => {
+      this.formGroup.controls[key].setErrors({
+        allAnswerEmpty: true
+      });
+    });
+  }
+
+  public purgeAllAnswerEmptyError(): void {
+    Object.keys(this.formGroup.controls).forEach(key => {
+      if (this.formGroup.controls[key].errors
+        && this.formGroup.controls[key].errors.hasOwnProperty('allAnswerEmpty')) {
+        this.formGroup.controls[key].setErrors(null);
+      }
+    });
+  }
+
   public answerInStore(questionId: string): Observable<string> {
     return this.answers$.pipe(map(answers => {
       if (answers) {
-        return answers.find(answer => answer.question_id === questionId).value || '';
+        const foundAnswer = answers.find(answer => answer.question_id === questionId);
+        return foundAnswer ? foundAnswer.value : '';
       } else {
         return '';
       }
     }));
-  }
-
-  public ngOnChanges(changes: SimpleChanges) {
-    // Check the current navigation state is the correct one (i.e. NocState.QUESTION) before proceeding
-    // (necessary because some navigation events are triggered from multiple states)
-    if (this.nocNavigationCurrentState === NocState.QUESTION && changes.navEvent && this.navEvent) {
-      this.navigationHandler(this.navEvent.event);
-    }
   }
 
   public navigationHandler(navEvent: NocNavigationEvent) {
@@ -83,8 +94,32 @@ export class NocQAndAComponent implements OnInit, OnChanges, OnDestroy {
         caseReference: this.nocCaseReference,
         nocAnswers
       };
-      this.store.dispatch(new fromFeature.SetAnswers(nocEvent));
+      if (this.validForm()) {
+        this.store.dispatch(new fromFeature.SetAnswers(nocEvent));
+      }
     }
+  }
+
+  public validForm(): boolean {
+    // if all values are empty then the form is invalid
+    const allControlValues: string[] = Object.values(this.formGroup.value);
+    this.allAnswerEmpty = allControlValues.every(value => value === null || value === '');
+    if (this.allAnswerEmpty) {
+      this.setAllAnswerEmptyError();
+      return false;
+    } else {
+      this.purgeAllAnswerEmptyError();
+    }
+    // if an error is found but the error is not 'possibleIncorrectAnswer'(back end validation error) then the form is invalid
+    const allControlKeys: string[] = Object.keys(this.formGroup.controls);
+    for (const controlKey of allControlKeys) {
+      if (this.formGroup.controls[controlKey].errors
+        && !this.formGroup.controls[controlKey].errors.hasOwnProperty('possibleIncorrectAnswer')
+        && this.formGroup.controls[controlKey].invalid) {
+        return false;
+      }
+    }
+    return true;
   }
 
   public ngOnDestroy() {

@@ -1,5 +1,5 @@
 <div>
-  <ng-container *ngIf="(lastError$ | async)?.error.errorCode === 'answersIncomplete'">
+  <ng-container *ngIf="(lastError$ | async)?.error.errorCode === 'answersIncomplete' || allAnswerEmpty">
     <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
       <h2 class="govuk-error-summary__title" id="error-summary-title">
         There is a problem
@@ -21,7 +21,7 @@
 
   <p>You must enter the client details exactly as they're written on the case, including any mistakes.</p>
 
-  <ng-container *ngIf="(lastError$ | async)?.error.errorCode === 'answersIncomplete'">
+  <ng-container *ngIf="(lastError$ | async)?.error.errorCode === 'answersIncomplete' || allAnswerEmpty">
     <span id="" class="govuk-error-message">
       <span class="govuk-visually-hidden">Error:</span> The client details must exactly match as they’re written on the case, including any mistakes.
     </span>

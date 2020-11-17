@@ -35,8 +35,6 @@ export const containers: any[] = [
 export * from './noc-home/noc-home.component';
 export * from './noc-navigation/noc-navigation.component';
 export * from './noc-errors/noc-error.component';
-export * from './noc-case-ref/noc-case-ref.component';
 export * from './noc-field/noc-field.component';
-export * from './noc-q-and-a/noc-q-and-a.component';
 export * from './noc-check-your-answers/noc-check-your-answers.component';
 export * from './noc-check-and-submit/noc-check-and-submit.component';

@@ -3,6 +3,7 @@
   <exui-page-wrapper>
     <exui-noc-navigation (eventTrigger)="onNavEvent($event)">
       <exui-noc-case-ref
+        #nocCaseRef
         *ngIf="isComponentVisible(nocNavigationCurrentState, caseRefVisibilityStates)"
         [navEvent]="navEvent">
       </exui-noc-case-ref>
@@ -11,6 +12,7 @@
         [navEvent]="navEvent">
       </exui-noc-error>
       <exui-noc-q-and-a
+        #nocQandA
         *ngIf="isComponentVisible(nocNavigationCurrentState, qAndAVisibilityStates)"
         [navEvent]="navEvent">
       </exui-noc-q-and-a>

@@ -7,6 +7,7 @@ import { ValidationErrors } from '@angular/forms';
 export class NocErrorPipe implements PipeTransform {
 
   public transform(value: ValidationErrors): string {
+
     if (!value) {
       return '';
     }
@@ -32,6 +33,8 @@ export class NocErrorPipe implements PipeTransform {
     } else if (keys[0] ===  'phoneUK') {
       return 'The phone number is invalid.';
     } else if (keys[0] ===  'possibleIncorrectAnswer') {
+      return '';
+    } else if (keys[0] ===  'allAnswerEmpty') {
       return '';
     }
     return value[keys[0]];

@@ -1,9 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { caseRefVisibilityStates, qAndAVisibilityStates, answerErrorVisibilityStates, checkAnswerVisibilityStates } from '../../constants';
+import { answerErrorVisibilityStates, caseRefVisibilityStates, checkAnswerVisibilityStates, qAndAVisibilityStates } from '../../constants';
 import { NocNavigation, NocNavigationEvent, NocState } from '../../models';
 import * as fromFeature from '../../store';
+import { NocCaseRefComponent } from '../noc-case-ref/noc-case-ref.component';
+import { NocQAndAComponent } from '../noc-q-and-a/noc-q-and-a.component';
 
 @Component({
   selector: 'exui-noc-home',
@@ -11,6 +13,12 @@ import * as fromFeature from '../../store';
   styleUrls: ['noc-home.component.scss']
 })
 export class NocHomeComponent implements OnInit, OnDestroy {
+
+  @ViewChild('nocCaseRef', { read: NocCaseRefComponent })
+  public nocCaseRefComponent: NocCaseRefComponent;
+
+  @ViewChild('nocQandA', { read: NocQAndAComponent })
+  public nocQandAComponent: NocQAndAComponent;
 
   public nocNavigationCurrentState: NocState;
   private nocNavigationCurrentStateSub: Subscription;
@@ -49,11 +57,33 @@ export class NocHomeComponent implements OnInit, OnDestroy {
       case NocNavigationEvent.BACK: {
         switch (this.nocNavigationCurrentState) {
           case NocState.QUESTION:
+          case NocState.ANSWER_INCOMPLETE:
           case NocState.ANSWER_SUBMISSION_FAILURE:
             this.store.dispatch(new fromFeature.Reset());
             break;
           case NocState.CHECK_ANSWERS:
             this.store.dispatch(new fromFeature.ChangeNavigation(NocState.QUESTION));
+            break;
+          default:
+            throw new Error('Invalid NoC state');
+        }
+        break;
+      }
+      case NocNavigationEvent.CONTINUE: {
+        switch (this.nocNavigationCurrentState) {
+          case NocState.START:
+            this.nocCaseRefComponent.navigationHandler(navEvent);
+            break;
+          default:
+            throw new Error('Invalid NoC state');
+        }
+        break;
+      }
+      case NocNavigationEvent.SET_ANSWERS: {
+        switch (this.nocNavigationCurrentState) {
+          case NocState.QUESTION:
+          case NocState.ANSWER_INCOMPLETE:
+            this.nocQandAComponent.navigationHandler(navEvent);
             break;
           default:
             throw new Error('Invalid NoC state');

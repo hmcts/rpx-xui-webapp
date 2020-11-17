@@ -4,6 +4,7 @@ import { Action } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import * as fromActions from '../../../app/store/actions';
+import { NocHttpError } from '../../models';
 import { NocService } from '../../services';
 import * as nocActions from '../actions/noc.action';
 
@@ -28,7 +29,7 @@ export class NocEffects {
             map(
               (response) => new nocActions.SetQuestions({questions: response, caseReference})),
               catchError(error => {
-                return NocEffects.handleError(error);
+                return NocEffects.handleError(error, nocActions.SET_CASE_REFERENCE);
               })
           );
         } else {
@@ -50,7 +51,9 @@ export class NocEffects {
           return this.nocService.validateNoCAnswers(payload).pipe(
             map(
               (response) => new nocActions.CheckAnswers(nocAnswers)),
-              catchError(error => of(new nocActions.SetAnswerSubmissionFailure(error)))
+              catchError(error => {
+                return NocEffects.handleError(error, nocActions.SET_ANSWERS);
+              })
           );
         } else {
           return of(new nocActions.SetAnswersIncomplete());
@@ -72,16 +75,26 @@ export class NocEffects {
               } else {
                 return new nocActions.SetSubmissionSuccessApproved();
               }
-
             }),
-            catchError(error => of(new nocActions.SetSubmissionFailure(error)))
+            catchError(error => {
+              return NocEffects.handleError(error, nocActions.SUBMIT_NOC);
+            })
         );
       })
     );
 
-    public static handleError(error: any): Observable<Action> {
+    public static handleError(error: NocHttpError, action: string): Observable<Action> {
       if (error && error.status && error.status === 400) {
-        return of(new nocActions.SetCaseRefSubmissionFailure(error));
+        switch (action) {
+          case nocActions.SET_CASE_REFERENCE:
+            return of(new nocActions.SetCaseRefSubmissionFailure(error));
+          case nocActions.SET_ANSWERS:
+            return of(new nocActions.SetAnswerSubmissionFailure(error));
+          case nocActions.SUBMIT_NOC:
+            return of(new nocActions.SetSubmissionFailure(error));
+          default:
+            return of(new fromActions.Go({ path: ['/service-down'] }));
+        }
       } else {
         return of(new fromActions.Go({ path: ['/service-down'] }));
       }

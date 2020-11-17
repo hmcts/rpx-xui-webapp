@@ -3,8 +3,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { of } from 'rxjs';
 import * as fromContainers from '../../containers';
-import { NocNavigationEvent } from '../../models';
+import { NocNavigationEvent, NocState } from '../../models';
 import * as fromNocStore from '../../store';
 import { UtilsModule } from '../noc-field/utils/utils.module';
 import { NocCaseRefComponent } from './noc-case-ref.component';
@@ -35,7 +36,7 @@ describe('NocCaseRefComponent', () => {
     store = TestBed.get(Store);
 
     storePipeMock = spyOn(store, 'pipe');
-
+    storePipeMock.and.returnValue(of(NocState.START));
     fixture = TestBed.createComponent(NocCaseRefComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

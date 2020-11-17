@@ -1,46 +1,38 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { Store } from '@ngrx/store';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 import { NocAnswer } from '../../models';
-import * as fromNocStore from '../../store';
 import { NocCheckYourAnswersComponent } from './noc-check-your-answers.component';
 
 describe('NocCheckYourAnswersComponent', () => {
-  const NOC_ANSWERS: Observable<NocAnswer[]> = of([{
-    question_id: 'q111111',
-    question_text: of('first name?'),
-    value: 'John'
-  }, {
-    question_id: 'q222222',
-    question_text: of('last name?'),
-    value: 'Priest'
-  }]);
-
-  let store: MockStore<fromNocStore.State>;
   let component: NocCheckYourAnswersComponent;
   let fixture: ComponentFixture<NocCheckYourAnswersComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NocCheckYourAnswersComponent ],
-      providers: [
-        provideMockStore()
-      ]
+      declarations: [ NocCheckYourAnswersComponent ]
     })
     .compileComponents();
-    store = TestBed.get(Store);
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(NocCheckYourAnswersComponent);
     component = fixture.componentInstance;
-    component.qAndA$ = NOC_ANSWERS;
+    component.qAndA$ = of(null);
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should assign the input value of our component', () => {
+    const answers =  new Array<NocAnswer>({
+      question_id: 'Question_123456', value: 'bob', question_text: of('What is your first name?')
+    }, {
+      question_id: 'Question_678910', value: 'the builder', question_text: of('What is your last name?')
+    });
+    component.qAndA$ = of(answers);
+    fixture.detectChanges();
+    expect(component.qAndA$).toEqual(answers);
   });
 });

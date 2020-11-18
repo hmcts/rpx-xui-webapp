@@ -3,6 +3,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AbstractAppConfig, CaseUIToolkitModule } from '@hmcts/ccd-case-ui-toolkit';
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { SharedModule } from 'src/app/shared/shared.module';
@@ -32,7 +33,8 @@ import { effects, reducers } from './store';
       SharedModule,
       FormsModule,
       ReactiveFormsModule,
-      UtilsModule
+      UtilsModule,
+      ExuiCommonLibModule
   ],
   declarations: [...fromContainers.containers],
   entryComponents: [

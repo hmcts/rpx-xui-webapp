@@ -1,8 +1,6 @@
 import { Component, Input, OnChanges } from '@angular/core';
 
-// Make the base URL for case details a constant.
-// TODO: Put this somewhere more appopriate.
-export const CASE_DETAILS_URL: string = '/cases/case-details/';
+import { AppConstants } from '../../../app/app.constants';
 
 @Component({
   selector: 'exui-case-reference-field',
@@ -21,7 +19,7 @@ export class CaseReferenceFieldComponent implements OnChanges {
       // Get rid of the spaces in the caseReference.
       const caseId = this.caseReference.replace(/\s/g, '');
       if (caseId) {
-        href = `${CASE_DETAILS_URL}${caseId}`;
+        href = `${AppConstants.CASE_DETAILS_URL}${caseId}`;
       }
     }
     this.pHref = href;

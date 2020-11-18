@@ -1,8 +1,9 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { AppConstants } from '../../../app/app.constants';
 import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
-import { CASE_DETAILS_URL, CaseReferenceFieldComponent } from './case-reference-field.component';
+import { CaseReferenceFieldComponent } from './case-reference-field.component';
 
 @Component({
   template: `<exui-case-reference-field [caseReference]="caseReference"></exui-case-reference-field>`
@@ -15,6 +16,10 @@ class WrapperComponent {
 describe('WorkAllocation', () => {
 
   describe('CaseReferenceFieldComponent', () => {
+    const CASE_DETAILS_URL: string = AppConstants.CASE_DETAILS_URL;
+    const CASE_REFERENCE: string = 'Case reference';
+    const CASE_REFERENCE_IN_URL: string = 'Casereference';
+
     let component: CaseReferenceFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
@@ -34,57 +39,92 @@ describe('WorkAllocation', () => {
       fixture.detectChanges();
     });
 
-    it('should handle a CASE_REFERENCE type', () => {
-      const FIRST_CASE_REFERENCE: string = 'First case reference';
-      const SECOND_CASE_REFERENCE: string = 'sEc0nd C@53 REFERENCE';
+    it('should only show a link when it has a case reference', () => {
+      // No anchor shown yet.
+      expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
+
+      // Add the caseReference and it should work (showing the link).
+      wrapper.caseReference = CASE_REFERENCE;
+      fixture.detectChanges();
+      let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
+      expect(element).not.toBeNull();
+      expect(element.textContent.trim()).toBe(CASE_REFERENCE);
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_REFERENCE_IN_URL}`); // No spaces
+    });
+
+    it('should allow the case reference to be changed', () => {
+      const NEW_CASE_REFERENCE: string = 'n3w C@53    REFERENCE';
 
       // No anchor shown yet.
       expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
 
       // Add the caseReference and it should work (showing the link).
-      wrapper.caseReference = FIRST_CASE_REFERENCE;
+      wrapper.caseReference = CASE_REFERENCE;
       fixture.detectChanges();
       let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
-      expect(element.textContent.trim()).toBe(FIRST_CASE_REFERENCE);
-      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}Firstcasereference`); // No spaces
+      expect(element.textContent.trim()).toBe(CASE_REFERENCE);
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_REFERENCE_IN_URL}`); // No spaces
 
       // Change the value of caseReference.
-      wrapper.caseReference = SECOND_CASE_REFERENCE;
+      wrapper.caseReference = NEW_CASE_REFERENCE;
       fixture.detectChanges();
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
-      expect(element.textContent.trim()).toBe(SECOND_CASE_REFERENCE);
-      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}sEc0ndC@53REFERENCE`); // No spaces
+      expect(element.textContent.trim()).toBe(NEW_CASE_REFERENCE);
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}n3wC@53REFERENCE`); // No spaces
+    });
+
+    it('should remove the link if case reference is changed to undefined', () => {
+      // No anchor shown yet.
+      expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
+
+      // Add the caseReference and it should work (showing the link).
+      wrapper.caseReference = CASE_REFERENCE;
+      fixture.detectChanges();
+      let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
+      expect(element).not.toBeNull();
+      expect(element.textContent.trim()).toBe(CASE_REFERENCE);
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_REFERENCE_IN_URL}`); // No spaces
 
       // Clear out the value of caseReference and we should no longer have the anchor.
       wrapper.caseReference = undefined;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
+    });
 
-      // Add it back for a moment...
-      wrapper.caseReference = FIRST_CASE_REFERENCE;
+    it('should remove the link if case reference is changed to null', () => {
+      // No anchor shown yet.
+      expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
+
+      // Add the caseReference and it should work (showing the link).
+      wrapper.caseReference = CASE_REFERENCE;
       fixture.detectChanges();
+      let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
-      element = fixture.debugElement.nativeElement.querySelector('a');
-      expect(element.textContent.trim()).toBe(FIRST_CASE_REFERENCE);
-      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}Firstcasereference`); // No spaces
+      expect(element.textContent.trim()).toBe(CASE_REFERENCE);
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_REFERENCE_IN_URL}`); // No spaces
 
-      // Make caseReference null.
+      // Make caseReference undefined and we should no longer have the anchor.
       wrapper.caseReference = null;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
+    });
 
-      // Add it back for a moment...
-      wrapper.caseReference = FIRST_CASE_REFERENCE;
+    it('should not show the link if case reference is simply a bunch of spaces', () => {
+      // No anchor shown yet.
+      expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
+
+      // Add the caseReference and it should work (showing the link).
+      wrapper.caseReference = CASE_REFERENCE;
       fixture.detectChanges();
+      let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
-      element = fixture.debugElement.nativeElement.querySelector('a');
-      expect(element.textContent.trim()).toBe(FIRST_CASE_REFERENCE);
-      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}Firstcasereference`); // No spaces
+      expect(element.textContent.trim()).toBe(CASE_REFERENCE);
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_REFERENCE_IN_URL}`); // No spaces
 
-      // Make caseReference a bunch of spaces.
-      wrapper.caseReference = '      ';
+      // Make the caseReference a bunch of spaces and we should no longer have the anchor.
+      wrapper.caseReference = '       ';
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
     });

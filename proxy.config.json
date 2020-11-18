@@ -29,6 +29,11 @@
     "secure": false,
     "logLevel": "debug"
   },
+  "/icp/*": {
+    "target": "http://localhost:3001",
+    "secure": false,
+    "logLevel": "debug"
+  },
   "/print/*": {
     "target": "http://localhost:3001",
     "secure": false,

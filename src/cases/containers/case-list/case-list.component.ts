@@ -83,8 +83,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public sortParameters;
 
   public userDetails: Observable<any>;
-  public shareableJurisdictions: string[];
-  public userCanShareCases: boolean;
   public get isCaseShareVisible(): boolean {
     return this.pIsCaseShareVisible;
   }
@@ -152,7 +150,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
       this.userDetails,
       this.shareableJurisdictions$,
       this.jurisdiction$
-    ]).subscribe(this.setupCaseShareVisibility);
+    ]).subscribe(result => this.setupCaseShareVisibility(result));
     this.shareCases$ = this.store.pipe(select(fromCasesFeature.getShareCaseListState));
     this.shareCases$.subscribe(shareCases => this.selectedCases = converters.toSearchResultViewItemConverter(shareCases));
   }

@@ -369,77 +369,52 @@ describe('CaseListComponent', () => {
   describe('isCaseShareVisible', () => {
 
     it('should return true when case share available and jurisdiction is shareable', () => {
-
-      component.jurisdiction = {
-        name: 'bongo',
-        caseTypes: [],
-        description: 'drums',
-        id: 'dummy'
-      };
-      component.userCanShareCases = true;
-      component.shareableJurisdictions = ['dummy'];
-      component.setupCaseShareVisibility();
-
+      const result = [
+        { canShareCases: true },
+        [ 'dummy' ],
+        { id: 'dummy' }
+      ];
+      component.setupCaseShareVisibility(result);
       expect(component.isCaseShareVisible).toBeTruthy();
     });
 
     it('should return false when jurisdiction is not shareable.', () => {
-
-      component.jurisdiction = {
-        name: 'bongo',
-        caseTypes: [],
-        description: 'drums',
-        id: 'dummy1'
-      };
-      component.userCanShareCases = true;
-      component.shareableJurisdictions = ['dummy'];
-      component.setupCaseShareVisibility();
-
+      const result = [
+        { canShareCases: true },
+        [ 'dummy1' ],
+        { id: 'dummy' }
+      ];
+      component.setupCaseShareVisibility(result);
       expect(component.isCaseShareVisible).toBeFalsy();
     });
 
     it('should return false when there are no shareable jurisdictions.', () => {
-
-      component.jurisdiction = {
-        name: 'bongo',
-        caseTypes: [],
-        description: 'drums',
-        id: 'dummy1'
-      };
-      component.userCanShareCases = true;
-      component.shareableJurisdictions = [];
-      component.setupCaseShareVisibility();
-
+      const result = [
+        { canShareCases: true },
+        [],
+        { id: 'dummy' }
+      ];
+      component.setupCaseShareVisibility(result);
       expect(component.isCaseShareVisible).toBeFalsy();
     });
 
     it('should return false when the jurisdiction is shareable but sharing is disabled.', () => {
-
-      component.jurisdiction = {
-        name: 'bongo',
-        caseTypes: [],
-        description: 'drums',
-        id: 'dummy1'
-      };
-      component.userCanShareCases = false;
-      component.shareableJurisdictions = ['dummy1'];
-      component.setupCaseShareVisibility();
-
+      const result = [
+        { canShareCases: false },
+        [ 'dummy' ],
+        { id: 'dummy' }
+      ];
+      component.setupCaseShareVisibility(result);
       expect(component.isCaseShareVisible).toBeFalsy();
     });
 
     it('should return false when there are no shareable jurisdictions and sharing is disabled.', () => {
-
-      component.jurisdiction = {
-        name: 'bongo',
-        caseTypes: [],
-        description: 'drums',
-        id: 'dummy1'
-      };
-      component.userCanShareCases = false;
-      component.shareableJurisdictions = [];
-      component.setupCaseShareVisibility();
-
+      const result = [
+        { canShareCases: false },
+        [],
+        { id: 'dummy' }
+      ];
+      component.setupCaseShareVisibility(result);
       expect(component.isCaseShareVisible).toBeFalsy();
     });
   });

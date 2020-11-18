@@ -152,19 +152,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
       this.userDetails,
       this.shareableJurisdictions$,
       this.jurisdiction$
-    ]).subscribe(result => {
-      const [ userDetails, shareableJurisdictions, jurisdiction ] = result;
-      const currentVisibility = this.isCaseShareVisible;
-      if (userDetails && shareableJurisdictions && jurisdiction) {
-        this.pIsCaseShareVisible = userDetails.canShareCases && shareableJurisdictions.includes(jurisdiction.id);
-      } else {
-        this.pIsCaseShareVisible = false;
-      }
-      // If this has changed, get the components to reevaluate their bindings.
-      if (currentVisibility !== this.isCaseShareVisible) {
-        this.cd.detectChanges();
-      }
-    });
+    ]).subscribe(this.setupCaseShareVisibility);
     this.shareCases$ = this.store.pipe(select(fromCasesFeature.getShareCaseListState));
     this.shareCases$.subscribe(shareCases => this.selectedCases = converters.toSearchResultViewItemConverter(shareCases));
   }
@@ -370,6 +358,20 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
   public toggleFilter() {
     this.store.dispatch(new fromCasesFeature.CaseFilterToggle(!this.showFilter));
+  }
+
+  public setupCaseShareVisibility(result: any[]): void {
+    const [ userDetails, shareableJurisdictions, jurisdiction ] = result;
+    const currentVisibility = this.isCaseShareVisible;
+    if (userDetails && shareableJurisdictions && jurisdiction) {
+      this.pIsCaseShareVisible = userDetails.canShareCases && shareableJurisdictions.includes(jurisdiction.id);
+    } else {
+      this.pIsCaseShareVisible = false;
+    }
+    // If this has changed, get the components to reevaluate their bindings.
+    if (currentVisibility !== this.isCaseShareVisible) {
+      this.cd.detectChanges();
+    }
   }
 
   /**

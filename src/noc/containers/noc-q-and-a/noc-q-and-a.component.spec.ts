@@ -70,5 +70,10 @@ describe('NocQAndAComponent', () => {
         ]
       }));
     });
+
+    afterEach(() => {
+      component = null;
+      fixture.destroy();
+    });
   });
 });

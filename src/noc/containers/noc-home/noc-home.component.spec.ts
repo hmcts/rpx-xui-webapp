@@ -72,4 +72,8 @@ describe('NocHomeComponent', () => {
 
   });
 
+  afterEach(() => {
+    component = null;
+    fixture.destroy();
+  });
 });

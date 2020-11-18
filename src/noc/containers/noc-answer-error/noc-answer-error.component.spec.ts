@@ -30,4 +30,9 @@ describe('NocAnswerErrorComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  afterEach(() => {
+    component = null;
+    fixture.destroy();
+  });
 });

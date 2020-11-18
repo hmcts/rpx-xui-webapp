@@ -2,7 +2,6 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
-import { HttpModule } from '@angular/http';
 import { MatDialogModule } from '@angular/material';
 
 import { SharedModule } from '../app/shared/shared.module';
@@ -18,7 +17,6 @@ import { workAllocationRouting } from './work-allocation-feature.routes';
     CommonModule,
     HttpClientModule,
     SharedModule,
-    HttpModule,
     MatDialogModule,
     WorkAllocationComponentsModule,
     workAllocationRouting,

@@ -46,7 +46,7 @@ describe('WorkAllocation', () => {
       // Add the caseReference and it should work (showing the link).
       wrapper.caseReference = CASE_REFERENCE;
       fixture.detectChanges();
-      let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
+      const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(CASE_REFERENCE);
       expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_REFERENCE_IN_URL}`); // No spaces
@@ -82,7 +82,7 @@ describe('WorkAllocation', () => {
       // Add the caseReference and it should work (showing the link).
       wrapper.caseReference = CASE_REFERENCE;
       fixture.detectChanges();
-      let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
+      const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(CASE_REFERENCE);
       expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_REFERENCE_IN_URL}`); // No spaces
@@ -100,7 +100,7 @@ describe('WorkAllocation', () => {
       // Add the caseReference and it should work (showing the link).
       wrapper.caseReference = CASE_REFERENCE;
       fixture.detectChanges();
-      let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
+      const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(CASE_REFERENCE);
       expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_REFERENCE_IN_URL}`); // No spaces
@@ -118,7 +118,7 @@ describe('WorkAllocation', () => {
       // Add the caseReference and it should work (showing the link).
       wrapper.caseReference = CASE_REFERENCE;
       fixture.detectChanges();
-      let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
+      const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(CASE_REFERENCE);
       expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_REFERENCE_IN_URL}`); // No spaces

@@ -617,6 +617,58 @@ describe('WorkAllocation', () => {
       expect(fixture.debugElement.nativeElement.querySelector('img')).toBeNull();
     });
 
+    it('should handle a CASE_REFERENCE type', () => {
+      // No anchor shown yet.
+      expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
+
+      // Set up the config and the task.
+      const config: TaskFieldConfig = getConfig('caseReference', TaskFieldType.CASE_REFERENCE);
+      const task: Task = {
+        id: 'The task ID',
+        caseReference: 'The case reference',
+        caseName: 'The case name',
+        caseCategory: 'The case category',
+        location: 'The location',
+        taskName: 'The task name',
+        dueDate: new Date(),
+        actions: []
+      };
+
+      // Add the task and it should work (showing the link).
+      component.config = config;
+      component.task = task;
+      fixture.detectChanges();
+      let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
+      expect(element).not.toBeNull();
+      expect(element.textContent.trim()).toBe(task.caseReference);
+      expect(element.getAttribute('href')).toBe(`/cases/case-details/Thecasereference`); // No spaces
+
+      // Change the value of task.caseReference.
+      task.caseReference = 'NEW CASE REFERENCE';
+      fixture.detectChanges();
+      expect(element).not.toBeNull();
+      element = fixture.debugElement.nativeElement.querySelector('a');
+      expect(element.textContent.trim()).toBe('NEW CASE REFERENCE');
+      expect(element.getAttribute('href')).toBe(`/cases/case-details/NEWCASEREFERENCE`); // No spaces
+
+      // Clear out the value of task.link and we should no longer have the anchor.
+      task.caseReference = undefined;
+      fixture.detectChanges();
+      expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
+
+      // Add it back for a moment...
+      task.caseReference = 'The case reference';
+      fixture.detectChanges();
+      expect(element).not.toBeNull();
+      element = fixture.debugElement.nativeElement.querySelector('a');
+      expect(element.textContent.trim()).toBe('The case reference');
+      expect(element.getAttribute('href')).toBe(`/cases/case-details/Thecasereference`);
+
+      // Make task.link null.
+      task.caseReference = null;
+      fixture.detectChanges();
+      expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
+    });
 
   });
 

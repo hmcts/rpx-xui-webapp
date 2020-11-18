@@ -201,6 +201,9 @@ const redirectUrl = {
 
 const appHeaderTitle = {name: 'Manage Cases', url: '/'};
 
+// Making the base URL for case details a constant.
+const caseDetailsUrl: string = '/cases/case-details/';
+
 
 export class AppConstants {
   static FOOTER_DATA = null;
@@ -213,4 +216,5 @@ export class AppConstants {
   static APPLICATION_USER_THEMES = applicationUserThemes;
   static SIGNED_OUT_THEME = signedOutTheme;
   static FEATURE_NAMES = FeatureNames;
+  static CASE_DETAILS_URL = caseDetailsUrl;
 }

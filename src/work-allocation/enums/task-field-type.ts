@@ -11,5 +11,6 @@ export enum TaskFieldType {
   URL,            // Contains a link (opens in the same window/tab)
   IMAGE,          // Contains a image
   BADGE,          // Display an image based on row data
-  LOCATION_ID     // Look up location name via service
+  LOCATION_ID,    // Look up location name via service,
+  CASE_REFERENCE  // Displays a link to a case with the case reference as the label
 }

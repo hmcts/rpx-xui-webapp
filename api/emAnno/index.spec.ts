@@ -4,11 +4,11 @@ import 'mocha'
 import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
 import { mockReq, mockRes } from 'sinon-express-mock'
+import * as emAnnoService from '../common/crudService'
 import {getConfigValue} from '../configuration'
 import {
   SERVICES_EM_ANNO_API_URL,
 } from '../configuration/references'
-import * as emAnnoService from './emAnnoService'
 import { deleteAnnotations, getAnnotations, postAnnotations, putAnnotations } from './index'
 
 chai.use(sinonChai)

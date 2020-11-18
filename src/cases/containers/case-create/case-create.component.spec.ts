@@ -1,37 +1,38 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import {
-  CaseUIToolkitModule,
-  DraftService,
-  AlertService,
-  HttpService,
-  AuthService as CCDAuthService,
-  CasesService,
-  HttpErrorService,
   AbstractAppConfig,
+  AlertService,
+  AuthService as CCDAuthService,
   CaseEditWizardGuard,
-  RouterHelperService,
+  CasesService,
+  CaseUIToolkitModule,
   DocumentManagementService,
+  DraftService,
+  HttpErrorService,
+  HttpService,
   PageValidationService,
   PlaceholderService,
-  SearchService,
   RequestOptionsBuilder,
+  RouterHelperService,
   SearchFiltersModule,
+  SearchService,
 } from '@hmcts/ccd-case-ui-toolkit';
-import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
-import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
-import { RouterTestingModule } from '@angular/router/testing';
-import {combineReducers, StoreModule} from '@ngrx/store';
-import { SharedModule } from '../../../app/shared/shared.module';
-import { AppConfigService } from '../../../app/services/config/configuration.services';
-import { CasesCreateComponent } from './case-create.component';
-import { reducers } from 'src/app/store';
-import * as fromCases from '../../store/reducers';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { EffectsModule } from '@ngrx/effects';
+import {combineReducers, StoreModule} from '@ngrx/store';
+import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
+import { reducers } from 'src/app/store';
+import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
+import { AppConfigService } from '../../../app/services/config/configuration.services';
+import { SharedModule } from '../../../app/shared/shared.module';
+import * as fromCases from '../../store/reducers';
+import { CasesCreateComponent } from './case-create.component';
 class MockSortService {
-  features = {};
-  getFeatureToggle() { }
-  getEditorConfiguration() { }
+  public features = {};
+  public getFeatureToggle() { }
+  public getEditorConfiguration() { }
 }
 
 describe('CaseCreateComponent', () => {
@@ -50,6 +51,7 @@ describe('CaseCreateComponent', () => {
         SearchFiltersModule,
       ],
       declarations: [CasesCreateComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         PlaceholderService,
         CasesService,

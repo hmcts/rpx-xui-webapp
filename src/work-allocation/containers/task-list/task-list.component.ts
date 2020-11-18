@@ -81,8 +81,6 @@ export class TaskListComponent implements OnChanges, OnInit {
    * @param fieldName - ie. 'caseName'
    */
   public onSortHandler(fieldName: string): void {
-    this.sortedBy.fieldName = fieldName;
-
     // emit the task sort field to get relevant information
     this.sortEvent.emit(fieldName);
   }

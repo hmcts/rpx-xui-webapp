@@ -408,60 +408,36 @@ describe('TaskListComponent', () => {
   });
 
   it('should allow a check to verify whether column sorted.', async () => {
-
-    // expect the column to not be sorted yet
-    expect(component.isColumnSorted('caseReference')).toBe(TaskSort.NONE);
-    expect(component.isColumnSorted('caseCategory')).toBe(TaskSort.NONE);
-
     // mock the emitter and dispatch the connected event (with example case field buttons selected)
     spyOn(component.sortEvent, 'emit');
     const element = fixture.debugElement.nativeElement;
-    const firstButton = element.querySelector('#sort_by_caseReference');
-    const secondButton = element.querySelector('#sort_by_caseCategory');
-    component.sortedBy.order = TaskSort.ASC;
-    firstButton.dispatchEvent(new Event('click'));
+    const referenceButton = element.querySelector('#sort_by_caseReference');
+    const categoryButton = element.querySelector('#sort_by_caseCategory');
+    const dueDateButton = element.querySelector('#sort_by_dueDate');
+    referenceButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
     // check the case reference is being sorted via ascending
     expect(component.sortEvent.emit).toHaveBeenCalled();
     expect(component.sortEvent.emit).toHaveBeenCalledWith('caseReference');
-    expect(component.isColumnSorted('caseReference')).toBe(TaskSort.ASC);
-    expect(component.isColumnSorted('caseCategory')).toBe(TaskSort.NONE);
 
     // check that the case reference is being sorted via descending
-    component.sortedBy.order = TaskSort.DSC;
-    firstButton.dispatchEvent(new Event('click'));
+    referenceButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     expect(component.sortEvent.emit).toHaveBeenCalled();
     expect(component.sortEvent.emit).toHaveBeenCalledWith('caseReference');
-    expect(component.isColumnSorted('caseReference')).toBe(TaskSort.DSC);
-    expect(component.isColumnSorted('caseCategory')).toBe(TaskSort.NONE);
-
-    // check that the case reference is not being sorted
-    component.sortedBy.order = TaskSort.NONE;
-    firstButton.dispatchEvent(new Event('click'));
-    fixture.detectChanges();
-    expect(component.sortEvent.emit).toHaveBeenCalled();
-    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseReference');
-    expect(component.isColumnSorted('caseReference')).toBe(TaskSort.NONE);
-    expect(component.isColumnSorted('caseCategory')).toBe(TaskSort.NONE);
 
     // click the second example button and verify that sorting is for case category
-    component.sortedBy.order = TaskSort.ASC;
-    secondButton.dispatchEvent(new Event('click'));
+    categoryButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     expect(component.sortEvent.emit).toHaveBeenCalled();
     expect(component.sortEvent.emit).toHaveBeenCalledWith('caseCategory');
-    expect(component.isColumnSorted('caseReference')).toBe(TaskSort.NONE);
-    expect(component.isColumnSorted('caseCategory')).toBe(TaskSort.ASC);
 
     // click the first example button and verify that sorting is again for case reference
-    firstButton.dispatchEvent(new Event('click'));
+    dueDateButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     expect(component.sortEvent.emit).toHaveBeenCalled();
-    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseReference');
-    expect(component.isColumnSorted('caseReference')).toBe(TaskSort.ASC);
-    expect(component.isColumnSorted('caseCategory')).toBe(TaskSort.NONE);
+    expect(component.sortEvent.emit).toHaveBeenCalledWith('dueDate');
   });
 
 });

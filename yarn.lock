@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@^2.64.50-case-share-hot-fix":
-  version "2.64.50-case-share-hot-fix"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.64.50-case-share-hot-fix.tgz#9f9ed40fc7355670e0e71fa0bf484ddc0d2209a2"
-  integrity sha512-YzB1y1hrW3FWT9AAVUBBwsdSq3peOvVAj1CiPWHQGej1CBKtWYN27pvRF9NzX6zfATaZPAa5SwgTLgXcRzlzHg==
+"@hmcts/ccd-case-ui-toolkit@^2.64.51-retain-hidden-value-complex-and-collection-types-fix":
+  version "2.64.51-retain-hidden-value-complex-and-collection-types-fix"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.64.51-retain-hidden-value-complex-and-collection-types-fix.tgz#5a9db36534d77692dc53c5fb5747d21edf3f1e49"
+  integrity sha512-j9ovg0CQx+/JtMTH3Bmrfsoi7/IdWv3BM7rWS6N98a8nichG8o9UFO8HnNZg49hudOg4PZKQ+Pacirt2bUyVOQ==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"

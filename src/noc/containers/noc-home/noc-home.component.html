@@ -1,29 +1,33 @@
 <exui-app-header></exui-app-header>
 <div class="govuk-width-container">
-  <exui-page-wrapper>
-    <exui-noc-navigation (eventTrigger)="onNavEvent($event)">
-      <exui-noc-case-ref
-        #nocCaseRef
-        *ngIf="isComponentVisible(nocNavigationCurrentState, caseRefVisibilityStates)"
-        [navEvent]="navEvent">
-      </exui-noc-case-ref>
-      <exui-noc-error
-        *ngIf="isComponentVisible(nocNavigationCurrentState, caseRefErrorStates)"
-        [navEvent]="navEvent">
-      </exui-noc-error>
-      <exui-noc-q-and-a
-        #nocQandA
-        *ngIf="isComponentVisible(nocNavigationCurrentState, qAndAVisibilityStates)"
-        [navEvent]="navEvent">
-      </exui-noc-q-and-a>
-      <exui-noc-answer-error
-        *ngIf="isComponentVisible(nocNavigationCurrentState, answerErrorVisibilityStates)">
-      </exui-noc-answer-error>
-      <exui-noc-check-and-submit
-        *ngIf="isComponentVisible(nocNavigationCurrentState, checkAnswerVisibilityStates)"
-        [navEvent]="navEvent">
-      </exui-noc-check-and-submit>
-    </exui-noc-navigation>
-  </exui-page-wrapper>
+  <div class="page">
+    <main id="content" role="main">
+      <div class="govuk-grid-row">
+        <exui-noc-navigation (eventTrigger)="onNavEvent($event)">
+          <exui-noc-case-ref
+            #nocCaseRef
+            *ngIf="isComponentVisible(nocNavigationCurrentState, caseRefVisibilityStates)"
+            [navEvent]="navEvent">
+          </exui-noc-case-ref>
+          <exui-noc-error
+            *ngIf="isComponentVisible(nocNavigationCurrentState, caseRefErrorStates)"
+            [navEvent]="navEvent">
+          </exui-noc-error>
+          <exui-noc-q-and-a
+            #nocQandA
+            *ngIf="isComponentVisible(nocNavigationCurrentState, qAndAVisibilityStates)"
+            [navEvent]="navEvent">
+          </exui-noc-q-and-a>
+          <exui-noc-answer-error
+            *ngIf="isComponentVisible(nocNavigationCurrentState, answerErrorVisibilityStates)">
+          </exui-noc-answer-error>
+          <exui-noc-check-and-submit
+            *ngIf="isComponentVisible(nocNavigationCurrentState, checkAnswerVisibilityStates)"
+            [navEvent]="navEvent">
+          </exui-noc-check-and-submit>
+        </exui-noc-navigation>
+      </div>
+    </main>
+  </div>
 </div>
 <exui-app-footer></exui-app-footer>

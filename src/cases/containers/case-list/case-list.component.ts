@@ -47,6 +47,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public caseFilterToggle$: Observable<boolean>;
   public jurisdictionsBehaviourSubject$: BehaviorSubject<Jurisdiction[]> = new BehaviorSubject<Jurisdiction[]>([]);
   public shareCases$: Observable<SharedCase[]>;
+  public shareableJurisdictions$: Observable<string[]>;
 
   public fg: FormGroup;
 
@@ -60,8 +61,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public filterSubscription: Subscription;
   public resultSubscription: Subscription;
   public caseFilterToggleSubscription: Subscription;
-  public featureToggleSubscription: Subscription;
-  public userDetailsSubscription: Subscription;
+  public isCaseShareVisibleSubscription: Subscription;
 
   public resultsArr: any[] = [];
 
@@ -112,10 +112,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
       this.jurisdictions = jurisdictions;
     });
 
-    this.featureToggleSubscription = this.featureToggleService.getValue('shareable-jurisdictions', []).subscribe(value => {
-      this.shareableJurisdictions = value;
-      this.setupCaseShareVisibility();
-    });
+    this.shareableJurisdictions$ = this.featureToggleService.getValue('shareable-jurisdictions', []);
 
     this.setCaseListFilterDefaults();
 
@@ -151,9 +148,22 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
     this.elasticSearchFlagSubsription = this.featureToggleService.isEnabled('elastic-search').subscribe(value => this.elasticSearchFlag = value);
     this.userDetails = this.store.pipe(select(fromRoot.getUserDetails));
-    this.userDetailsSubscription = this.userDetails.subscribe(value => {
-      this.userCanShareCases = value ? value.canShareCases : false;
-      this.setupCaseShareVisibility();
+    this.isCaseShareVisibleSubscription = combineLatest([
+      this.userDetails,
+      this.shareableJurisdictions$,
+      this.jurisdiction$
+    ]).subscribe(result => {
+      const [ userDetails, shareableJurisdictions, jurisdiction ] = result;
+      const currentVisibility = this.isCaseShareVisible;
+      if (userDetails && shareableJurisdictions && jurisdiction) {
+        this.pIsCaseShareVisible = userDetails.canShareCases && shareableJurisdictions.includes(jurisdiction.id);
+      } else {
+        this.pIsCaseShareVisible = false;
+      }
+      // If this has changed, get the components to reevaluate their bindings.
+      if (currentVisibility !== this.isCaseShareVisible) {
+        this.cd.detectChanges();
+      }
     });
     this.shareCases$ = this.store.pipe(select(fromCasesFeature.getShareCaseListState));
     this.shareCases$.subscribe(shareCases => this.selectedCases = converters.toSearchResultViewItemConverter(shareCases));
@@ -217,7 +227,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.metadataFields = {
       ...result[3]
     };
-    this.setupCaseShareVisibility();
   }
 
   public onToogleHandler = showFilter => {
@@ -363,19 +372,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.store.dispatch(new fromCasesFeature.CaseFilterToggle(!this.showFilter));
   }
 
-  public setupCaseShareVisibility(): void {
-    const currentVisibility = this.isCaseShareVisible;
-    if (this.userCanShareCases && this.shareableJurisdictions) {
-      this.pIsCaseShareVisible = this.shareableJurisdictions.includes(this.jurisdiction.id);
-    } else {
-      this.pIsCaseShareVisible = false;
-    }
-    // If this has changed, get the components to reevaluate their bindings.
-    if (currentVisibility !== this.isCaseShareVisible) {
-      this.cd.detectChanges();
-    }
-  }
-
   /**
    * getShareableJurisdictions()
    * Gets shareable Jurisdictions observable
@@ -442,11 +438,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
     if (this.elasticSearchFlagSubsription) {
       this.elasticSearchFlagSubsription.unsubscribe();
     }
-    if (this.featureToggleSubscription) {
-      this.featureToggleSubscription.unsubscribe();
-    }
-    if (this.userDetailsSubscription) {
-      this.userDetailsSubscription.unsubscribe();
+    if (this.isCaseShareVisibleSubscription) {
+      this.isCaseShareVisibleSubscription.unsubscribe();
     }
   }
  }

@@ -22,7 +22,7 @@ function HeaderPage() {
   this.clickCaseList = async function () {
     await this.caseList.click();
 
-    var searchPageHeader = element(by.xpath("//*[@id = 'content']//h1[text() = 'Case List']"));
+    var searchPageHeader = element(by.xpath("//*[@id = 'content']//h1[contains(text(),'Case List')]"));
     await BrowserWaits.waitForElement(searchPageHeader);
   };
 
@@ -35,7 +35,7 @@ function HeaderPage() {
   this.clickFindCase = async function () {
     await this.findCase.click();
 
-    var searchPageHeader = element(by.xpath("//*[@id = 'content']//h1[text() = 'Search']"));
+    var searchPageHeader = element(by.xpath("//*[@id = 'content']//h1[contains(text() , 'Search')]"));
     await BrowserWaits.waitForElement(searchPageHeader); 
   };
 

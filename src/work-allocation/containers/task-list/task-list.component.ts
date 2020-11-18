@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { Task, TaskFieldConfig, TaskSortField } from '../../models/tasks';
@@ -13,7 +13,7 @@ import { TaskSort } from './../../enums/task-sort';
   styleUrls: ['task-list.component.scss']
 })
 
-export class TaskListComponent implements OnChanges {
+export class TaskListComponent implements OnChanges, OnInit {
 
   /**
    * These are the tasks & fields as returned from the WA Api.
@@ -38,6 +38,12 @@ export class TaskListComponent implements OnChanges {
 
   private selectedRow: Task;
 
+  constructor() {}
+
+  public ngOnInit(): void {
+
+  }
+
   public ngOnChanges() {
     if (this.tasks) {
       this.dataSource$ = new BehaviorSubject(this.tasks);
@@ -50,13 +56,8 @@ export class TaskListComponent implements OnChanges {
   /**
    * Returns the columns to be displayed by the Angular Component Dev Kit table.
    *
-   * TODO: Unit test
    */
   public getDisplayedColumn(taskFieldConfig: TaskFieldConfig[]): string[] {
-
-    // Remove when finished with, checking if taskFieldConfig is populated
-    console.log('taskFieldConfig');
-    console.log(taskFieldConfig);
 
     const fields = taskFieldConfig.map(field => field.name);
     return this.addManageColumn(fields);
@@ -76,12 +77,13 @@ export class TaskListComponent implements OnChanges {
    * Takes in the fieldname, so it can be output to trigger a new Request to the API
    * to get a sorted result set.
    *
-   * TODO: Unit test
    *
    * @param fieldName - ie. 'caseName'
    */
   public onSortHandler(fieldName: string): void {
+    this.sortedBy.fieldName = fieldName;
 
+    // emit the task sort field to get relevant information
     this.sortEvent.emit(fieldName);
   }
 
@@ -142,6 +144,7 @@ export class TaskListComponent implements OnChanges {
       this.sortedBy = { fieldName: defaultSortFieldName, order: defaultSortDirection };
     }
 
+
     // If this is the field we're sorted by, return the appropriate order.
     if (this.sortedBy.fieldName === fieldName) {
       return this.sortedBy.order;
@@ -150,4 +153,5 @@ export class TaskListComponent implements OnChanges {
     // This field is not sorted, return NONE.
     return TaskSort.NONE;
   }
+
 }

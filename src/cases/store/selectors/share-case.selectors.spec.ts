@@ -18,7 +18,7 @@ describe('Share case selectors', () => {
 
   describe('get share case state', () => {
     it('should return search state', () => {
-      const caseListComponent = new CaseListComponent(store, null, null, null, null);
+      const caseListComponent = new CaseListComponent(store, null, null, null, null, null);
       caseListComponent.selectedCases = [{
         case_id: '1',
         case_fields: {

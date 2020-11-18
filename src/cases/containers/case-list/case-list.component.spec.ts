@@ -7,10 +7,17 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
+
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { State } from '../../../app/store/reducers';
 import * as converts from '../../converters/case-converter';
-import { AddShareCases, CaseFilterToggle, FindCaselistPaginationMetadata, SynchronizeStateToStore, ApplyCaselistFilterForES } from '../../store/actions';
+import {
+  AddShareCases,
+  ApplyCaselistFilterForES,
+  CaseFilterToggle,
+  FindCaselistPaginationMetadata,
+  SynchronizeStateToStore,
+} from '../../store/actions';
 import { CaseListComponent } from './case-list.component';
 
 describe('CaseListComponent', () => {
@@ -275,7 +282,6 @@ describe('CaseListComponent', () => {
     it('should call getElasticSearchResults() on apply of filter and LD elastic search enabled.', () => {
 
       const spyOnGetElasticSearchResults = spyOn(component, 'getElasticSearchResults').and.callThrough();
-      const spyOnGetEvent = spyOn(component, 'getEvent');
 
       component.elasticSearchFlag = true;
       component.applyFilter(event);
@@ -360,9 +366,9 @@ describe('CaseListComponent', () => {
     });
   });
 
-  describe('isCaseShareVisible()', () => {
+  describe('isCaseShareVisible', () => {
 
-    it('should return true when case share available.', () => {
+    it('should return true when case share available and jurisdiction is shareable', () => {
 
       component.jurisdiction = {
         name: 'bongo',
@@ -370,8 +376,11 @@ describe('CaseListComponent', () => {
         description: 'drums',
         id: 'dummy'
       };
+      component.userCanShareCases = true;
+      component.shareableJurisdictions = ['dummy'];
+      component.setupCaseShareVisibility();
 
-      expect(component.isCaseShareVisible(true, ['dummy'])).toBeTruthy();
+      expect(component.isCaseShareVisible).toBeTruthy();
     });
 
     it('should return false when jurisdiction is not shareable.', () => {
@@ -382,8 +391,11 @@ describe('CaseListComponent', () => {
         description: 'drums',
         id: 'dummy1'
       };
+      component.userCanShareCases = true;
+      component.shareableJurisdictions = ['dummy'];
+      component.setupCaseShareVisibility();
 
-      expect(component.isCaseShareVisible(true, ['dummy'])).toBeFalsy();
+      expect(component.isCaseShareVisible).toBeFalsy();
     });
 
     it('should return false when there are no shareable jurisdictions.', () => {
@@ -394,8 +406,11 @@ describe('CaseListComponent', () => {
         description: 'drums',
         id: 'dummy1'
       };
+      component.userCanShareCases = true;
+      component.shareableJurisdictions = [];
+      component.setupCaseShareVisibility();
 
-      expect(component.isCaseShareVisible(true, [])).toBeFalsy();
+      expect(component.isCaseShareVisible).toBeFalsy();
     });
 
     it('should return false when the jurisdiction is shareable but sharing is disabled.', () => {
@@ -406,8 +421,11 @@ describe('CaseListComponent', () => {
         description: 'drums',
         id: 'dummy1'
       };
+      component.userCanShareCases = false;
+      component.shareableJurisdictions = ['dummy1'];
+      component.setupCaseShareVisibility();
 
-      expect(component.isCaseShareVisible(false, ['dummy1'])).toBeFalsy();
+      expect(component.isCaseShareVisible).toBeFalsy();
     });
 
     it('should return false when there are no shareable jurisdictions and sharing is disabled.', () => {
@@ -418,8 +436,11 @@ describe('CaseListComponent', () => {
         description: 'drums',
         id: 'dummy1'
       };
+      component.userCanShareCases = false;
+      component.shareableJurisdictions = [];
+      component.setupCaseShareVisibility();
 
-      expect(component.isCaseShareVisible(false, [])).toBeFalsy();
+      expect(component.isCaseShareVisible).toBeFalsy();
     });
   });
 
@@ -516,7 +537,7 @@ describe('CaseListComponent', () => {
         },
         canShareCases: true
       }));
-      spyOn(component, 'isCaseShareVisible').and.returnValue(true);
+      spyOnProperty(component, 'isCaseShareVisible').and.returnValue(true);
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.querySelector('#btn-share-button').textContent).toContain('Share Case');
       expect(component.checkIfButtonDisabled()).toBeTruthy();
@@ -576,7 +597,7 @@ describe('CaseListComponent', () => {
       component.onResultsViewHandler(resultView);
       expect(component.hasResults()).toBeTruthy();
       spyOn(component, 'hasResults').and.returnValue(true);
-      spyOn(component, 'isCaseShareVisible').and.returnValue(true);
+      spyOnProperty(component, 'isCaseShareVisible').and.returnValue(true);
       fixture.detectChanges();
       const infoHeader = fixture.debugElement.query(By.css('#sp-msg-unselected-case-header')).nativeElement;
       expect(infoHeader.innerHTML).toContain('Why are some cases unselectable?');

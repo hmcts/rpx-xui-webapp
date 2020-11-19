@@ -6,8 +6,15 @@ import { setHeaders } from '../lib/proxy'
 
 const logger: JUILogger = log4jui.getLogger('task-service')
 
-export async function handleCaseWorketGetAll(path: string, req: EnhancedRequest): Promise<any> {
-    logger.info('getting tasks for', path)
+export async function handleCaseWorkerGetAll(path: string, req: EnhancedRequest): Promise<any> {
+    logger.info('getting all caseworkers for', path)
+    const headers = setHeaders(req)
+    const response: AxiosResponse = await http.get(path, { headers })
+    return response.data
+}
+
+export async function handleCaseWorkerForLocation(path: string, req: EnhancedRequest): Promise<any> {
+    logger.info('get caseworkers for Location', path)
     const headers = setHeaders(req)
     const response: AxiosResponse = await http.get(path, { headers })
     return response.data

@@ -3,19 +3,19 @@ import { assert } from 'chai'
 import * as getPort from 'get-port'
 import * as path from 'path'
 import { EnhancedRequest } from '../../../lib/models'
-import { handleCaseWorkerGetAll } from '../../../workAllocation/caseWorkerService'
+import { handleCaseWorkerForLocation } from '../../../workAllocation/caseWorkerService'
 
-describe("Work Allocation Caseworker API", () => {
+describe("Work Allocation for location Caseworker API", () => {
 
     let MOCK_SERVER_PORT
     let workallocationUrl
     let provider
     const mockResponse = [
         {
-          "firstName": "string",
-          "lastName": "string",
-          "idamId": "string",
-          "location": "Location",
+          "firstName": "firstName",
+          "lastName": "lastName",
+          "idamId": "XXX-XXX-XX",
+          "location": "Location123",
         }
       ]
 
@@ -23,7 +23,7 @@ describe("Work Allocation Caseworker API", () => {
         MOCK_SERVER_PORT = await getPort()
         workallocationUrl = `http://localhost:${MOCK_SERVER_PORT}`
         provider = new Pact({
-          consumer: 'xui_get_work_allocation_caseworker',
+          consumer: 'xui_get_caseworker_location',
           dir: path.resolve(__dirname, '../pacts'),
           log: path.resolve(__dirname, '../logs', 'work-allocation.log'),
           logLevel: 'info',
@@ -40,14 +40,14 @@ describe("Work Allocation Caseworker API", () => {
       // verify with Pact, and reset expectations
     // afterEach(() => provider.verify())
 
-    describe('when a request to get caseworker', () => {
+    describe('when a request to get caseworkers', () => {
         before(() =>
           provider.addInteraction({
             state: '.well-known endpoint',
             uponReceiving: 'a request for configuration',
             withRequest: {
               method: 'GET',
-              path: '/caseworker',
+              path: '/caseworker/location/location123',
             },
             willRespondWith: {
               status: 200,
@@ -57,9 +57,9 @@ describe("Work Allocation Caseworker API", () => {
           })
         )
 
-        it('returns caseworkers', async () => {
-            const caseworkerUrl = `${provider.mockService.baseUrl}/caseworker`
-            assert.isDefined(handleCaseWorkerGetAll(caseworkerUrl, {} as EnhancedRequest))
+        it('returns caseworkers For location', async () => {
+            const caseworkerUrl = `${provider.mockService.baseUrl}/caseworker/location/location123`
+            assert.isDefined(handleCaseWorkerForLocation(caseworkerUrl, {} as EnhancedRequest))
         })
     })
 })

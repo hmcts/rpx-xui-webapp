@@ -48,6 +48,12 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public jurisdictionsBehaviourSubject$: BehaviorSubject<Jurisdiction[]> = new BehaviorSubject<Jurisdiction[]>([]);
   public shareCases$: Observable<SharedCase[]>;
   public shareableJurisdictions$: Observable<string[]>;
+  private pIsCaseShareVisible$: Observable<boolean>;
+  public get isCaseShareVisible$(): Observable<boolean> {
+    // This is a getter simply because some unit tests rely on being
+    // able to spy on it for mocking.
+    return this.pIsCaseShareVisible$;
+  }
 
   public fg: FormGroup;
 
@@ -61,7 +67,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public filterSubscription: Subscription;
   public resultSubscription: Subscription;
   public caseFilterToggleSubscription: Subscription;
-  public isCaseShareVisibleSubscription: Subscription;
 
   public resultsArr: any[] = [];
 
@@ -83,10 +88,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public sortParameters;
 
   public userDetails: Observable<any>;
-  public get isCaseShareVisible(): boolean {
-    return this.pIsCaseShareVisible;
-  }
-  private pIsCaseShareVisible: boolean;
 
   constructor(
     public store: Store<fromCaseList.State>,
@@ -146,11 +147,12 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
     this.elasticSearchFlagSubsription = this.featureToggleService.isEnabled('elastic-search').subscribe(value => this.elasticSearchFlag = value);
     this.userDetails = this.store.pipe(select(fromRoot.getUserDetails));
-    this.isCaseShareVisibleSubscription = combineLatest([
-      this.userDetails,
-      this.shareableJurisdictions$,
-      this.jurisdiction$
-    ]).subscribe(result => this.setupCaseShareVisibility(result));
+    this.pIsCaseShareVisible$ = combineLatest([
+      this.userDetails, this.shareableJurisdictions$, this.jurisdiction$
+    ]).mergeMap(project => {
+      this.cd.detectChanges();
+      return Observable.of(this.caseShareIsVisible(project));
+    });
     this.shareCases$ = this.store.pipe(select(fromCasesFeature.getShareCaseListState));
     this.shareCases$.subscribe(shareCases => this.selectedCases = converters.toSearchResultViewItemConverter(shareCases));
   }
@@ -358,18 +360,12 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.store.dispatch(new fromCasesFeature.CaseFilterToggle(!this.showFilter));
   }
 
-  public setupCaseShareVisibility(result: any[]): void {
-    const [ userDetails, shareableJurisdictions, jurisdiction ] = result;
-    const currentVisibility = this.isCaseShareVisible;
+  public caseShareIsVisible(project: any[]): boolean {
+    const [ userDetails, shareableJurisdictions, jurisdiction ] = project;
     if (userDetails && shareableJurisdictions && jurisdiction) {
-      this.pIsCaseShareVisible = userDetails.canShareCases && shareableJurisdictions.includes(jurisdiction.id);
-    } else {
-      this.pIsCaseShareVisible = false;
+      return userDetails.canShareCases && shareableJurisdictions.includes(jurisdiction.id);
     }
-    // If this has changed, get the components to reevaluate their bindings.
-    if (currentVisibility !== this.isCaseShareVisible) {
-      this.cd.detectChanges();
-    }
+    return false;
   }
 
   /**
@@ -437,9 +433,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
     }
     if (this.elasticSearchFlagSubsription) {
       this.elasticSearchFlagSubsription.unsubscribe();
-    }
-    if (this.isCaseShareVisibleSubscription) {
-      this.isCaseShareVisibleSubscription.unsubscribe();
     }
   }
  }

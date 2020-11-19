@@ -41,7 +41,7 @@ export async function handleCaseWorkerDetails(path: string, req: EnhancedRequest
     return response.data
 }
 
-export async function search(path: string, payload: string | any, req: EnhancedRequest): Promise<any> {
+export async function handlePostSearch(path: string, payload: string | any, req: EnhancedRequest): Promise<any> {
     logger.info('post search', payload)
     const headers = setHeaders(req)
     const response: AxiosResponse = await http.post(path, payload, { headers })

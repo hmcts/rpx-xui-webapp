@@ -2,7 +2,7 @@ import { NextFunction, Response } from 'express'
 
 import { EnhancedRequest } from '../lib/models'
 import { handleTaskGet, handleTaskPost, handleTaskSearch } from './taskService'
-import { prepareGetTaskUrl, prepareSearchTaskUrl, preparePostTaskUrlAction } from './util'
+import { prepareGetTaskUrl, preparePostTaskUrlAction, prepareSearchTaskUrl } from './util'
 
 export const baseUrl: string = 'http://localhost:8080'
 

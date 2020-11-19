@@ -1,4 +1,5 @@
 import { TaskSearchParameters } from 'api/workAllocation/interfaces/taskSearchParameter';
+
 import { ACTION, WorkAllocationTaskService } from './work-allocation-task.service';
 
 describe('WorkAllocation service', () => {
@@ -9,47 +10,53 @@ describe('WorkAllocation service', () => {
         expect(workAllocationService).toBeTruthy();
     });
 
+    it('getTask', () => {
+        const workAllocationService = new WorkAllocationTaskService(mockHttpService);
+        workAllocationService.getTask('123456');
+        expect(mockHttpService.get).toHaveBeenCalledWith('/workallocation/task/123456');
+    });
+
     it('getActionUrl', () => {
-        const userService = new WorkAllocationTaskService(mockHttpService);
-        const url = userService.getActionUrl('123456', ACTION.ASSIGN);
+        const workAllocationService = new WorkAllocationTaskService(mockHttpService);
+        const url = workAllocationService.getActionUrl('123456', ACTION.ASSIGN);
         expect(url).toEqual('/workallocation/task/123456/assign');
     });
 
     it('assign Task', () => {
-        const userService = new WorkAllocationTaskService(mockHttpService);
+        const workAllocationService = new WorkAllocationTaskService(mockHttpService);
         const assignee = {id: 'id1', userName: 'userName'};
-        userService.assignTask('123456', assignee);
+        workAllocationService.assignTask('123456', assignee);
         expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task/123456/assign', assignee);
     });
 
     it('complete Task', () => {
-        const userService = new WorkAllocationTaskService(mockHttpService);
-        userService.completeTask('123456');
+        const workAllocationService = new WorkAllocationTaskService(mockHttpService);
+        workAllocationService.completeTask('123456');
         expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task/123456/complete', {});
     });
 
     it('cancel Task', () => {
-        const userService = new WorkAllocationTaskService(mockHttpService);
-        userService.cancelTask('123456');
+        const workAllocationService = new WorkAllocationTaskService(mockHttpService);
+        workAllocationService.cancelTask('123456');
         expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task/123456/cancel', {});
     });
 
     it('claim Task', () => {
-        const userService = new WorkAllocationTaskService(mockHttpService);
-        userService.claimTask('123456');
+        const workAllocationService = new WorkAllocationTaskService(mockHttpService);
+        workAllocationService.claimTask('123456');
         expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task/123456/claim', {});
     });
 
     it('unclaim Task', () => {
-        const userService = new WorkAllocationTaskService(mockHttpService);
-        userService.unclaimTask('123456');
+        const workAllocationService = new WorkAllocationTaskService(mockHttpService);
+        workAllocationService.unclaimTask('123456');
         expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task/123456/unclaim', {});
     });
 
     it('post Task', () => {
-        const userService = new WorkAllocationTaskService(mockHttpService);
+        const workAllocationService = new WorkAllocationTaskService(mockHttpService);
         const searchParam = {} as TaskSearchParameters;
-        userService.postTask(searchParam);
+        workAllocationService.postTask(searchParam);
         expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task/', searchParam);
     });
 });

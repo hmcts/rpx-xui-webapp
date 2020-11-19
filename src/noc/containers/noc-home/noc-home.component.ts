@@ -74,6 +74,9 @@ export class NocHomeComponent implements OnInit, OnDestroy {
           case NocState.START:
             this.nocCaseRefComponent.navigationHandler(navEvent);
             break;
+          case NocState.CASE_REF_VALIDATION_FAILURE:
+            this.nocCaseRefComponent.navigationHandler(navEvent);
+            break;
           default:
             throw new Error('Invalid NoC state');
         }

@@ -32,12 +32,11 @@ export function nocReducer(currentState = initialState, action: fromActions.NocA
         ...currentState,
         state: NocState.CASE_REF_VALIDATION_FAILURE,
         validationErrors: {
-          caseRef: {
-            messages: ['You must enter an online case reference number that exactly matches the case details']
-          }
+          status: 400,
+          message: 'You must enter an online case reference number that exactly matches the case details'
         },
         lastError: {
-          status: 0,
+          status: 400,
           message: 'Enter a valid online case reference'
         }
       };

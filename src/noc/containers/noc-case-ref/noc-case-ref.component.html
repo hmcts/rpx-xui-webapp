@@ -1,8 +1,18 @@
 <div>
-    <xuilib-hmcts-error-summary
-        [errorMessages]="mainErrorHandler((lastError$ | async), 'caseRef')"
-        [header]="'There is a problem'"
-    ></xuilib-hmcts-error-summary>
+    <ng-container *ngIf="(lastError$ | async)?.message">
+      <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+        <h2 class="govuk-error-summary__title" id="error-summary-title">
+          There is a problem
+        </h2>
+        <div class="govuk-error-summary__body">
+          <ul class="govuk-list govuk-error-summary__list">
+            <li>
+              <a href="noc#caseRef">{{(lastError$ | async)?.message}}</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </ng-container>
 
     <div class="hmcts-page-heading">
             <div class="hmcts-page-heading__title">
@@ -10,26 +20,21 @@
             </div>
     </div>
 
-
     <p>You can use this notice of change (sometimes called a 'notice of acting') to acquire the case file from:</p>
     <ul class="govuk-list govuk-list--bullet">
         <li>a client acting in person</li>
         <li>a solicitor previously acting on your client's behalf</li>
     </ul>
 
-
-
     <div
         class="govuk-form-group"
-        [class.govuk-form-group--error]="(validationErrors$ | async)?.caseRef || null"
+        [class.govuk-form-group--error]="(validationErrors$ | async)?.message || null"
     >
-
         <form [formGroup]="caseRefForm" (ngSubmit)="onSubmit()" >
-
             <xuilib-gov-uk-input
                 [config]="caseRefConfig"
                 [group]="caseRefForm"
-                [errorMessage]="(validationErrors$ | async)?.caseRef || null"
+                [errorMessage]="{messages: [(validationErrors$ | async)?.message || null]}"
             ></xuilib-gov-uk-input>
         </form>
     </div>

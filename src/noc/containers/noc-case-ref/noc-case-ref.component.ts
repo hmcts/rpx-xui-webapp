@@ -17,7 +17,7 @@ export class NocCaseRefComponent implements OnInit, OnDestroy {
 
   public caseRefConfig: GovUiConfigModel;
 
-  public validationErrors$: Observable<{}>;
+  public validationErrors$: Observable<NocHttpError>;
   public lastError$: Observable<NocHttpError>;
 
   public caseRefForm: FormGroup;
@@ -74,17 +74,6 @@ export class NocCaseRefComponent implements OnInit, OnDestroy {
       default:
         throw new Error('Invalid option');
     }
-  }
-
-  public mainErrorHandler(error: NocHttpError, id: string) {
-    if (error) {
-      return [{
-        id,
-        message: error.message
-      }];
-    }
-
-    return null;
   }
 
   public ngOnDestroy() {

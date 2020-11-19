@@ -1,12 +1,16 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideMockStore } from '@ngrx/store/testing';
+import { Store } from '@ngrx/store';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { NocAnswer } from '../../models';
+import * as fromNocStore from '../../store';
 import { UtilsModule } from '../noc-field/utils/utils.module';
 import { NocCheckYourAnswersComponent } from './noc-check-your-answers.component';
 
 describe('NocCheckYourAnswersComponent', () => {
+  let store: MockStore<fromNocStore.State>;
+  let spyOnPipeToStore = jasmine.createSpy();
   let component: NocCheckYourAnswersComponent;
   let fixture: ComponentFixture<NocCheckYourAnswersComponent>;
 
@@ -25,6 +29,9 @@ describe('NocCheckYourAnswersComponent', () => {
   }));
 
   beforeEach(() => {
+    store = TestBed.get(Store);
+    spyOnPipeToStore = spyOn(store, 'pipe').and.callThrough();
+    spyOnPipeToStore.and.returnValue(of('1231123112311231'));
     fixture = TestBed.createComponent(NocCheckYourAnswersComponent);
     component = fixture.componentInstance;
     component.qAndA$ = of(null);

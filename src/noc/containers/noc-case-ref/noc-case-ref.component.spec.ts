@@ -54,18 +54,6 @@ describe('NocCaseRefComponent', () => {
     });
   });
 
-  describe('mainErrorHandler', () => {
-    it('should return an error object', () => {
-        const action = component.mainErrorHandler({message: 'dummy', status: 400 }, 'dummyId');
-        const expected = [{
-            id: 'dummyId',
-            message: 'dummy'
-          }];
-        expect(action).toEqual(expected);
-    });
-
-  });
-
   describe('navigationHandler', () => {
     it('should dispatch an action', () => {
 

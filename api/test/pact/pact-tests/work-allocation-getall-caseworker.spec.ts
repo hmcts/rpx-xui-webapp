@@ -15,7 +15,11 @@ describe("Work Allocation Caseworker API", () => {
           "firstName": "string",
           "lastName": "string",
           "idamId": "string",
-          "location": "Location",
+          "location": {
+            "id": "string",
+            "locationName": "string",
+            "services": []
+          },
         }
       ]
 

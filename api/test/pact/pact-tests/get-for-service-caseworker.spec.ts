@@ -3,7 +3,7 @@ import { assert } from 'chai'
 import * as getPort from 'get-port'
 import * as path from 'path'
 import { EnhancedRequest } from '../../../lib/models'
-import { handleCaseWorkerForLocation } from '../../../workAllocation/caseWorkerService'
+import { handleCaseWorkerForService } from '../../../workAllocation/caseWorkerService'
 
 describe("Work Allocation for location Caseworker API", () => {
 
@@ -20,7 +20,7 @@ describe("Work Allocation for location Caseworker API", () => {
             "locationName": "string",
             "services": []
           },
-        }
+        },
       ]
 
     before(async () => {
@@ -51,7 +51,7 @@ describe("Work Allocation for location Caseworker API", () => {
             uponReceiving: 'a request for configuration',
             withRequest: {
               method: 'GET',
-              path: '/caseworker/location/location123',
+              path: '/caseworker/service/service123',
             },
             willRespondWith: {
               status: 200,
@@ -62,8 +62,8 @@ describe("Work Allocation for location Caseworker API", () => {
         )
 
         it('returns caseworkers For location', async () => {
-            const caseworkerUrl = `${provider.mockService.baseUrl}/caseworker/location/location123`
-            assert.isDefined(handleCaseWorkerForLocation(caseworkerUrl, {} as EnhancedRequest))
+            const caseworkerUrl = `${provider.mockService.baseUrl}/caseworker/service/service123`
+            assert.isDefined(handleCaseWorkerForService(caseworkerUrl, {} as EnhancedRequest))
         })
     })
 })

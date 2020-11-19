@@ -19,3 +19,31 @@ export async function handleCaseWorkerForLocation(path: string, req: EnhancedReq
     const response: AxiosResponse = await http.get(path, { headers })
     return response.data
 }
+
+export async function handleCaseWorkerForService(path: string, req: EnhancedRequest): Promise<any> {
+    logger.info('get caseworkers for Service', path)
+    const headers = setHeaders(req)
+    const response: AxiosResponse = await http.get(path, { headers })
+    return response.data
+}
+
+export async function handleCaseWorkerForLocationAndService(path: string, req: EnhancedRequest): Promise<any> {
+    logger.info('get caseworkers for Location and Service', path)
+    const headers = setHeaders(req)
+    const response: AxiosResponse = await http.get(path, { headers })
+    return response.data
+}
+
+export async function handleCaseWorkerDetails(path: string, req: EnhancedRequest): Promise<any> {
+    logger.info('get caseworkers Details', path)
+    const headers = setHeaders(req)
+    const response: AxiosResponse = await http.get(path, { headers })
+    return response.data
+}
+
+export async function search(path: string, payload: string | any, req: EnhancedRequest): Promise<any> {
+    logger.info('post search', payload)
+    const headers = setHeaders(req)
+    const response: AxiosResponse = await http.post(path, payload, { headers })
+    return response
+}

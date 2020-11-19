@@ -1,12 +1,11 @@
-
-export function prepareGetTaskUrl(url: string, taskId: string): string {
-    return `${url}/task/${taskId}`
+export function prepareGetTaskUrl(baseUrl: string, taskId: string): string {
+  return `${baseUrl}/task/${taskId}`
 }
 
-export function preparePostTaskUrl(url: string) {
-  return `${url}/task`
+export function preparePostTaskUrlAction(baseUrl: string, taskId: string, action: string): string {
+  return `${baseUrl}/task/${taskId}/${action}`
 }
 
-export function preparePostTaskUrlAction(url: string, taskId: string, action: string): string {
-  return `${url}/task/${taskId}/${action}`
+export function prepareSearchTaskUrl(baseUrl: string) {
+  return `${baseUrl}/task`
 }

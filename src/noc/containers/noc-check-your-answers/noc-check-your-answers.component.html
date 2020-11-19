@@ -4,12 +4,21 @@
     <div class="govuk-summary-list__value">Notice of change</div>
     <div class="govuk-summary-list__actions"></div>
   </div>
+  <div class="govuk-summary-list__row">
+    <div class="govuk-summary-list__key">Case number</div>
+    <div class="govuk-summary-list__value">{{ caseReference$ | async | caseReference }}</div>
+    <div class="govuk-summary-list__actions">
+      <a class="govuk-link" href="javascript:void(0)" (click)="navToRef()">
+        Change
+      </a>
+    </div>
+  </div>
   <ng-container *ngFor="let qAndA of qAndA$ | async">
     <div class="govuk-summary-list__row">
         <div class="govuk-summary-list__key">{{ qAndA.question_text | async }}</div>
         <div class="govuk-summary-list__value">{{ qAndA.value }}</div>
         <div class="govuk-summary-list__actions">
-          <a class="govuk-link" href="javascript:void(0)" (click)="onChange(qAndA)">
+          <a class="govuk-link" href="javascript:void(0)" (click)="navToQAndA(qAndA)">
             Change
           </a>
         </div>

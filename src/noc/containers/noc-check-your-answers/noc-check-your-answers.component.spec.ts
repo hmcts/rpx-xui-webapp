@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { NocAnswer } from '../../models';
+import { UtilsModule } from '../noc-field/utils/utils.module';
 import { NocCheckYourAnswersComponent } from './noc-check-your-answers.component';
 
 describe('NocCheckYourAnswersComponent', () => {
@@ -13,6 +14,9 @@ describe('NocCheckYourAnswersComponent', () => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [ NocCheckYourAnswersComponent ],
+      imports: [
+        UtilsModule
+      ],
       providers: [
         provideMockStore()
       ]
@@ -36,7 +40,7 @@ describe('NocCheckYourAnswersComponent', () => {
       question_id: 'Question_123456', value: 'bob', question_text: of('What is your first name?')
     }, {
       question_id: 'Question_678910', value: 'the builder', question_text: of('What is your last name?')
-    }]
+    }];
     const answers$ = of(answers);
     component.qAndA$ = answers$;
     fixture.detectChanges();

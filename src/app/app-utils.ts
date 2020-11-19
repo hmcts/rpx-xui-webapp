@@ -1,6 +1,8 @@
+import { CookieService } from 'ngx-cookie';
 
 import { AppConstants } from './app.constants';
-import { CookieService } from 'ngx-cookie';
+import { NavItemsModel } from './models/nav-item.model';
+
 
 export class AppUtils {
 
@@ -65,5 +67,17 @@ export class AppUtils {
    */
   public static getCookieRolesAsArray(userRoles: string): string[] {
     return JSON.parse(userRoles);
+  }
+
+  /**
+   * Set the active property on the navigation items.
+   */
+  public static setActiveLink(items: NavItemsModel[], currentUrl: string): NavItemsModel[] {
+    return items.map(item => {
+      return {
+        ...item,
+        active: item.href === currentUrl
+      };
+    });
   }
 }

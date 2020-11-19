@@ -1,6 +1,6 @@
-import {AppConstants} from './app.constants';
-
-import {AppUtils} from './app-utils';
+import {NavItemsModel} from './models/nav-item.model';
+import { AppUtils } from './app-utils';
+import { AppConstants } from './app.constants';
 
 describe('getEnvironment', () => {
 
@@ -38,44 +38,116 @@ describe('getEnvironment', () => {
       AppConstants.ENVIRONMENT_NAMES.perftest);
   });
 
-  it('show Nav Items', () => {
+});
+
+describe('showNavItems', () => {
+
+  it('should show only appropriate navigation items', () => {
     expect(AppUtils.showNavItems('SomeItems')).toEqual(true);
     expect(AppUtils.showNavItems('accept-terms-and-conditions')).toEqual(false);
   });
 
-  it('isRoleExistsForUser', () => {
+});
+
+describe('isRoleExistsForUser', () => {
+
+  it('should correctly indicate when a role exists for a user', () => {
     const mockService = jasmine.createSpyObj('mockService', ['get']);
     mockService.get.and.returnValue('role1,role2,role3');
     const roleExists = AppUtils.isRoleExistsForUser('role1', mockService);
     expect(roleExists).toEqual(true);
   });
 
-  describe('removeJsonPrefix', () => {
-
-    it('should take in the User Roles string from cookie and return the string without the j: prefix.', () => {
-
-      const userRolesString = 'j:["pui-organisation-manager","caseworker-publiclaw",' +
-        '"caseworker-divorce-financialremedy-solicitor","caseworker"]';
-
-      const expectedUserRolesString = userRolesString.replace('j:', '');
-
-      expect(AppUtils.removeJsonPrefix(userRolesString)).toEqual(expectedUserRolesString);
-    });
+  it('should correctly indicate when a role does not exist for a user', () => {
+    const mockService = jasmine.createSpyObj('mockService', ['get']);
+    mockService.get.and.returnValue('role1,role2,role3');
+    const roleExists = AppUtils.isRoleExistsForUser('role4', mockService);
+    expect(roleExists).toEqual(false);
   });
 
-  describe('getCookieRolesAsArray', () => {
+});
 
-    it('should take in the User Roles string (which comes from the cookie), and return an Array of User Roles.', () => {
+describe('removeJsonPrefix', () => {
 
-      const userRoles = '["pui-organisation-manager","caseworker-publiclaw",' +
-        '"caseworker-divorce-financialremedy-solicitor","caseworker"]';
+  it('should take in the User Roles string from cookie and return the string without the j: prefix.', () => {
 
-      expect(AppUtils.getCookieRolesAsArray(userRoles)).toEqual([
-        'pui-organisation-manager',
-        'caseworker-publiclaw',
-        'caseworker-divorce-financialremedy-solicitor',
-        'caseworker',
-      ]);
-    });
+    const userRolesString = 'j:["pui-organisation-manager","caseworker-publiclaw",' +
+      '"caseworker-divorce-financialremedy-solicitor","caseworker"]';
+
+    const expectedUserRolesString = userRolesString.replace('j:', '');
+
+    expect(AppUtils.removeJsonPrefix(userRolesString)).toEqual(expectedUserRolesString);
   });
+});
+
+describe('getCookieRolesAsArray', () => {
+
+  it('should take in the User Roles string (which comes from the cookie), and return an Array of User Roles.', () => {
+
+    const userRoles = '["pui-organisation-manager","caseworker-publiclaw",' +
+      '"caseworker-divorce-financialremedy-solicitor","caseworker"]';
+
+    expect(AppUtils.getCookieRolesAsArray(userRoles)).toEqual([
+      'pui-organisation-manager',
+      'caseworker-publiclaw',
+      'caseworker-divorce-financialremedy-solicitor',
+      'caseworker',
+    ]);
+  });
+});
+
+describe('setActiveLink', () => {
+
+  it('should correctly flag an item as being active', () => {
+    const ITEMS: NavItemsModel[] = [
+      { href: '/a', active: false, text: 'A' },
+      { href: '/b', active: false, text: 'B' },
+      { href: '/c', active: false, text: 'C' }
+    ];
+    const CURRENT_URL: string = '/a';
+    const result = AppUtils.setActiveLink(ITEMS, CURRENT_URL);
+    expect(result.length).toEqual(ITEMS.length);
+    expect(result[0].active).toEqual(true);
+    expect(result[1].active).toEqual(false);
+    expect(result[2].active).toEqual(false);
+
+    // Also check that it hasn't impacted our original ITEMS.
+    expect(ITEMS[0].active).toEqual(false);
+  });
+
+  it('should correctly deactivate a previously active item', () => {
+    const ITEMS: NavItemsModel[] = [
+      { href: '/a', active: true, text: 'A' },
+      { href: '/b', active: false, text: 'B' },
+      { href: '/c', active: false, text: 'C' }
+    ];
+    const CURRENT_URL: string = '/b';
+    const result = AppUtils.setActiveLink(ITEMS, CURRENT_URL);
+    expect(result.length).toEqual(ITEMS.length);
+    expect(result[0].active).toEqual(false);
+    expect(result[1].active).toEqual(true);
+    expect(result[2].active).toEqual(false);
+
+    // Also check that it hasn't impacted our original ITEMS.
+    expect(ITEMS[0].active).toEqual(true);
+    expect(ITEMS[1].active).toEqual(false);
+  });
+
+  it('should correctly deactivate all items when the URL matches none of them', () => {
+    const ITEMS: NavItemsModel[] = [
+      { href: '/a', active: true, text: 'A' },
+      { href: '/b', active: false, text: 'B' },
+      { href: '/c', active: false, text: 'C' }
+    ];
+    const CURRENT_URL: string = '/d';
+    const result = AppUtils.setActiveLink(ITEMS, CURRENT_URL);
+    expect(result.length).toEqual(ITEMS.length);
+    expect(result[0].active).toEqual(false);
+    expect(result[1].active).toEqual(false);
+    expect(result[2].active).toEqual(false);
+
+    // Also check that it hasn't impacted our original ITEMS.
+    expect(ITEMS[0].active).toEqual(true);
+  });
+
 });

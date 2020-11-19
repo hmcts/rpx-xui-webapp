@@ -1,14 +1,15 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {FeatureToggleService} from '@hmcts/rpx-xui-common-lib';
-import {select, Store} from '@ngrx/store';
-import {CookieService} from 'ngx-cookie';
-import {Observable, of, Subscription} from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { select, Store } from '@ngrx/store';
+import { CookieService } from 'ngx-cookie';
+import { Observable, of, Subscription } from 'rxjs';
 
-import {AppUtils} from '../../app-utils';
-import {AppConstants} from '../../app.constants';
-import {AppTitleModel} from '../../models/app-title.model';
-import {NavItemsModel} from '../../models/nav-item.model';
-import {UserNavModel} from '../../models/user-nav.model';
+import { AppUtils } from '../../app-utils';
+import { AppConstants } from '../../app.constants';
+import { AppTitleModel } from '../../models/app-title.model';
+import { NavItemsModel } from '../../models/nav-item.model';
+import { UserNavModel } from '../../models/user-nav.model';
 import * as fromActions from '../../store';
 
 export interface Theme {
@@ -53,7 +54,8 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
   constructor(private store: Store<fromActions.State>,
               private cookieService: CookieService,
-              private featureToggleService: FeatureToggleService) {
+              private featureToggleService: FeatureToggleService,
+              private readonly router: Router) {
   }
 
   /**
@@ -189,7 +191,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     } = applicationTheme;
 
     this.appHeaderTitle = appTitle;
-    this.navItems = navigationItems;
+    this.navItems = AppUtils.setActiveLink(navigationItems, this.router.url);
     this.userNav = accountNavigationItems;
     this.backgroundColor = backgroundColor;
     this.logoType = logoType;

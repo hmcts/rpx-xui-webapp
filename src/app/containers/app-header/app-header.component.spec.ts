@@ -1,12 +1,14 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { AppHeaderComponent } from './app-header.component';
-import { Action, Store, StoreModule } from '@ngrx/store';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { AppConstants } from 'src/app/app.constants';
-import * as fromActions from '../../store';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { Action, Store, StoreModule } from '@ngrx/store';
 import { CookieService } from 'ngx-cookie';
-import {FeatureToggleService} from '@hmcts/rpx-xui-common-lib';
-import {of} from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
+import { AppConstants } from 'src/app/app.constants';
+
+import * as fromActions from '../../store';
+import { AppHeaderComponent } from './app-header.component';
 
 const storeMock = {
   pipe: () => {
@@ -70,6 +72,13 @@ describe('AppHeaderComponent', () => {
         {
           provide: FeatureToggleService,
           useValue: featureToggleServiceMock,
+        },
+        {
+          provide: Router,
+          useValue: {
+            events: new BehaviorSubject<Event>(null),
+            url: '/something-or-other'
+          }
         },
         AppHeaderComponent
       ],
@@ -230,7 +239,7 @@ describe('AppHeaderComponent', () => {
       component.setAppHeaderProperties(defaultTheme);
 
       expect(component.appHeaderTitle).toBe(AppConstants.DEFAULT_USER_THEME.appTitle);
-      expect(component.navItems).toBe(AppConstants.DEFAULT_USER_THEME.navigationItems);
+      expect(component.navItems).toEqual(AppConstants.DEFAULT_USER_THEME.navigationItems);
       expect(component.userNav).toBe(AppConstants.DEFAULT_USER_THEME.accountNavigationItems);
       expect(component.backgroundColor).toBe(AppConstants.DEFAULT_USER_THEME.backgroundColor);
       expect(component.logoType).toBe(AppConstants.DEFAULT_USER_THEME.logoType);

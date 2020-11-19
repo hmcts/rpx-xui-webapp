@@ -1,7 +1,7 @@
-import { Router } from 'express';
+import { Router } from 'express'
 
-import { getTask, postTaskAction, searchTask } from '.';
-import authInterceptor from '../lib/middleware/auth';
+import { getTask, postTaskAction, searchTask } from '.'
+import authInterceptor from '../lib/middleware/auth'
 
 const router = Router({ mergeParams: true })
 

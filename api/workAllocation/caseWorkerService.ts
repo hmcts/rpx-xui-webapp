@@ -4,7 +4,7 @@ import * as log4jui from '../lib/log4jui'
 import { EnhancedRequest, JUILogger } from '../lib/models'
 import { setHeaders } from '../lib/proxy'
 
-const logger: JUILogger = log4jui.getLogger('task-service')
+const logger: JUILogger = log4jui.getLogger('caseworker-service')
 
 export async function handleCaseWorkerGetAll(path: string, req: EnhancedRequest): Promise<any> {
     logger.info('getting all caseworkers for', path)

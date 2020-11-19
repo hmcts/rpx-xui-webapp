@@ -1,11 +1,11 @@
-import { Pact } from '@pact-foundation/pact'
-import { assert, expect } from 'chai'
-import * as getPort from 'get-port'
-import * as path from 'path'
+import { Pact } from '@pact-foundation/pact';
+import { assert, expect } from 'chai';
+import * as getPort from 'get-port';
+import * as path from 'path';
 
-import { EnhancedRequest } from '../../../lib/models'
-import { SearchTaskRequest } from '../../../workAllocation/interfaces/taskSearchParameter'
-import { taskPost } from '../../../workAllocation/taskService'
+import { EnhancedRequest } from '../../../lib/models';
+import { SearchTaskRequest } from '../../../workAllocation/interfaces/taskSearchParameter';
+import { handleTaskSearch } from '../../../workAllocation/taskService';
 
 describe("Work Allocation API", () => {
 
@@ -95,7 +95,7 @@ describe("Work Allocation API", () => {
 
     it('returns success with a 200', async () => {
       const taskUrl: string = `${provider.mockService.baseUrl}/task`
-      const { status } = await taskPost(taskUrl, mockRequest as SearchTaskRequest, {} as EnhancedRequest)
+      const { status } = await handleTaskSearch(taskUrl, mockRequest as SearchTaskRequest, {} as EnhancedRequest)
       expect(status).equal(200)
     })
   })
@@ -121,7 +121,7 @@ describe("Work Allocation API", () => {
       const taskUrl: string = `${provider.mockService.baseUrl}/task`
       let response: { status: number }
       try {
-        response = await taskPost(taskUrl, BEHAVIOURS.SERVER_ERROR, {} as EnhancedRequest)
+        response = await handleTaskSearch(taskUrl, BEHAVIOURS.SERVER_ERROR, {} as EnhancedRequest)
       } catch (err) {
         response = err
       }
@@ -151,7 +151,7 @@ describe("Work Allocation API", () => {
       const taskUrl: string = `${provider.mockService.baseUrl}/task`
       let response: { status: number }
       try {
-        response = await taskPost(taskUrl, BEHAVIOURS.BAD_REQUEST, {} as EnhancedRequest)
+        response = await handleTaskSearch(taskUrl, BEHAVIOURS.BAD_REQUEST, {} as EnhancedRequest)
       } catch (err) {
         response = err
       }
@@ -181,7 +181,7 @@ describe("Work Allocation API", () => {
       const taskUrl: string = `${provider.mockService.baseUrl}/task`
       let response: { status: number }
       try {
-        response = await taskPost(taskUrl, BEHAVIOURS.FORBIDDEN, {} as EnhancedRequest)
+        response = await handleTaskSearch(taskUrl, BEHAVIOURS.FORBIDDEN, {} as EnhancedRequest)
       } catch (err) {
         response = err
       }

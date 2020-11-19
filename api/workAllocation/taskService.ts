@@ -15,8 +15,8 @@ export async function handleTaskGet(path: string, req: EnhancedRequest): Promise
     return response.data
 }
 
-export async function taskPost(path: string, payload: SearchTaskRequest | any, req: EnhancedRequest): Promise<any> {
-    logger.info('post task for', payload)
+export async function handleTaskSearch(path: string, payload: SearchTaskRequest | any, req: EnhancedRequest): Promise<any> {
+    logger.info('search task for', payload)
     const headers = setHeaders(req)
     const response: AxiosResponse = await http.post(path, payload, { headers })
     return response

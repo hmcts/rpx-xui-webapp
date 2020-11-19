@@ -1,9 +1,10 @@
-import { NextFunction, Response } from 'express'
-import { EnhancedRequest } from '../lib/models'
-import { handleTaskGet, handleTaskPost, taskPost } from './taskService'
-import { prepareGetTaskUrl, preparePostTaskUrl, preparePostTaskUrlAction } from './util'
+import { NextFunction, Response } from 'express';
 
-const baseUrl: string = 'http://localhost:8080'
+import { EnhancedRequest } from '../lib/models';
+import { handleTaskGet, handleTaskPost, handleTaskSearch } from './taskService';
+import { prepareGetTaskUrl, prepareSearchTaskUrl, preparePostTaskUrlAction } from './util';
+
+export const baseUrl: string = 'http://localhost:8080'
 
 /**
  * getTask
@@ -22,22 +23,22 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
 }
 
 /**
- * Post to Task
+ * Post to search for a Task.
  */
-export async function postTask(req: EnhancedRequest, res: Response, next: NextFunction) {
+export async function searchTask(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    const postTaskPath: string = preparePostTaskUrl(baseUrl)
+    const postTaskPath: string = prepareSearchTaskUrl(baseUrl)
 
-    const response = await taskPost(postTaskPath, req.body, req)
-    res.status(200)
-    res.send(response.body)
+    const { status, data } = await handleTaskSearch(postTaskPath, req.body, req)
+    res.status(status)
+    res.send(data)
   } catch (error) {
     next(error)
   }
 }
 
 /**
- * postTask Action
+ * Post to invoke an action on a Task.
  */
 export async function postTaskAction(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {

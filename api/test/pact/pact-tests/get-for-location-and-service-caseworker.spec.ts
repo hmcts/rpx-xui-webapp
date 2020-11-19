@@ -3,9 +3,9 @@ import { assert } from 'chai'
 import * as getPort from 'get-port'
 import * as path from 'path'
 import { EnhancedRequest } from '../../../lib/models'
-import { handleCaseWorkerForLocationAndService } from '../../../workAllocation/caseWorkerService'
+import { handleCaseWorkerForLocation } from '../../../workAllocation/caseWorkerService'
 
-describe("Work Allocation for service Caseworker API", () => {
+describe("Work Allocation for location and service Caseworker API", () => {
 
     let MOCK_SERVER_PORT
     let workallocationUrl
@@ -20,14 +20,14 @@ describe("Work Allocation for service Caseworker API", () => {
             "locationName": "string",
             "services": []
           },
-        },
+        }
       ]
 
     before(async () => {
         MOCK_SERVER_PORT = await getPort()
         workallocationUrl = `http://localhost:${MOCK_SERVER_PORT}`
         provider = new Pact({
-          consumer: 'xui_get_caseworker_location',
+          consumer: 'xui_get_caseworker_location_service',
           dir: path.resolve(__dirname, '../pacts'),
           log: path.resolve(__dirname, '../logs', 'work-allocation.log'),
           logLevel: 'info',
@@ -51,7 +51,7 @@ describe("Work Allocation for service Caseworker API", () => {
             uponReceiving: 'a request for configuration',
             withRequest: {
               method: 'GET',
-              path: '/caseworker/service/service123',
+              path: '/caseworker/location/location123/service/service123',
             },
             willRespondWith: {
               status: 200,
@@ -61,9 +61,9 @@ describe("Work Allocation for service Caseworker API", () => {
           })
         )
 
-        it('returns caseworkers For service', async () => {
-            const caseworkerUrl = `${provider.mockService.baseUrl}/caseworker/service/service123`
-            assert.isDefined(handleCaseWorkerForLocationAndService(caseworkerUrl, {} as EnhancedRequest))
+        it('returns caseworkers For location and service', async () => {
+            const caseworkerUrl = `${provider.mockService.baseUrl}/caseworker/location/location123/service/service123`
+            assert.isDefined(handleCaseWorkerForLocation(caseworkerUrl, {} as EnhancedRequest))
         })
     })
 })

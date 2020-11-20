@@ -37,6 +37,7 @@ export const successCallback = (req: Request, res: Response, next: NextFunction)
     const cookieRoles = getConfigValue(COOKIE_ROLES)
 
     logger.info('Setting session and cookies')
+
     res.cookie(cookieUserId, userinfo.uid)
     res.cookie(cookieToken, accessToken)
     res.cookie(cookieRoles, roles)

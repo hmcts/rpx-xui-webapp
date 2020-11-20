@@ -1,4 +1,5 @@
 @import '~@hmcts/ccd-case-ui-toolkit/dist/cut-styles/components/typography';
+@import '~govuk-frontend/govuk/all';
 @import 'shims';
 @import 'conditionals';
 @import 'measurements';
@@ -10,6 +11,10 @@ $path: "/assets/";
 $fa-font-path: "/node_modules/font-awesome/fonts";
 $govuk-frontend-toolkit-image-path: "/assets";
 $govuk-template-image-path: "/assets";
+
+$govuk-compatibility-govukelements: true;
+$govuk-compatibility-govuktemplate: true;
+$govuk-compatibility-govukfrontendtoolkit: true;
 
 @import "govuk-elements";
 
@@ -352,4 +357,28 @@ button:focus {
 
 .stay-signed-in-button {
   margin-right: 15px;
+}
+
+/**
+ * We require a dynamic background-color for EXUI users. ie. Red for Judicial users, Black for Case Manager,
+ * and other users.
+ *
+ * The Judicial Branding is off brand to usual HMCTS branding, as it's red.
+ *
+ * The HMCTS branding is always one color.
+ *
+ * We need to over-ride the background-color within the HMCTS components, as its not dynamic therefore
+ * we use !important.
+ *
+ * Other options would be 1. We use [ngStyle] as a property for all HMCTS components, where background-color is used or 2.
+ * Ask them to change their library to use transparent.
+ *
+ * The better option for us now is to use !important.
+ */
+.transparent-background {
+  background-color: transparent !important;
+
+  a:focus {
+    background-color: #ffdd00 !important;
+  }
 }

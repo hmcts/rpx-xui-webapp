@@ -1,6 +1,6 @@
 import { TCDocument } from '@hmcts/rpx-xui-common-lib';
-import { TermsAndCondition } from 'src/app/models/TermsAndCondition';
 import { ConfigurationModel } from '../../models/configuration.model';
+import {TermsAndCondition} from '../../models/TermsAndCondition';
 import * as fromActions from '../actions/';
 
 interface UserDetails {
@@ -8,6 +8,7 @@ interface UserDetails {
     idleModalDisplayTime: number,
     totalIdleTime: number,
   };
+  canShareCases: boolean;
 }
 
 export interface AppConfigState {
@@ -33,7 +34,8 @@ export const initialState: AppConfigState = {
     sessionTimeout: {
       idleModalDisplayTime: 0,
       totalIdleTime: 0,
-    }
+    },
+    canShareCases: false
   }
 };
 

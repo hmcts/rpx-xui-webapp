@@ -7,6 +7,7 @@ nodejs:
      SERVICES_IDAM_LOGIN_URL: https://idam-web-public.aat.platform.hmcts.net
      REDISCLOUD_URL: redis://ignore:fake-password@${SERVICE_NAME}-redis-master:6379
      LAUNCH_DARKLY_CLIENT_ID: 5de6610b23ce5408280f2268
+     STUB: true
      DEBUG: xuiNode:*
   keyVaults:
     rpx:

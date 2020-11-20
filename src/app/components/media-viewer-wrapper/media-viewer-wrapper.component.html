@@ -6,6 +6,8 @@
                     [contentType]="mediaContentType"
                     [enableAnnotations]="true"
                     [enableRedactions]="true"
+                    [enableICP]="isIcpEnabled((icpEnabled$ | async), (icpJurisdictions$ | async))"
+                    [caseId]="caseId"
                     [toolbarButtonOverrides]="toolbarButtons">
     </mv-media-viewer>
 </div>

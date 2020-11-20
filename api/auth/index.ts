@@ -37,6 +37,7 @@ export const successCallback = (req: Request, res: Response, next: NextFunction)
     const cookieRoles = getConfigValue(COOKIE_ROLES)
 
     logger.info('Setting session and cookies')
+
     res.cookie(cookieUserId, userinfo.uid)
     res.cookie(cookieToken, accessToken)
     res.cookie(cookieRoles, roles)
@@ -67,7 +68,7 @@ export const getXuiNodeMiddleware = () => {
         callbackURL: getConfigValue(SERVICES_IDAM_OAUTH_CALLBACK_URL),
         clientID: idamClient,
         clientSecret: secret,
-        discoveryEndpoint: `${idamWebUrl}/o`,
+        discoveryEndpoint: `${idamWebUrl}/o/.well-known/openid-configuration`,
         issuerURL: issuerUrl,
         logoutURL: idamApiPath,
         responseTypes: ['code'],

@@ -1,4 +1,3 @@
-@divorce @fullfunctional
 Feature: IA create case workflow
 
     Background:
@@ -8,12 +7,12 @@ Feature: IA create case workflow
         When I click on create case button
         Then Create case page should be displayed
 
-    @all
+    
     Scenario: Start create case for IA Start appeal
-        When I start case with jurisdiction "Immigration & Asylum" case type "Appeal* master" and event "Start your appeal"
+        When I start case with jurisdiction "Immigration & Asylum" case type "Asylum" and event "Start your appeal"
         Then I am on case form page
 
-
+    @ignore
     Scenario: Create and Submit IA Case start appeal
         When I start case with jurisdiction "Immigration & Asylum" case type "Appeal* master" and event "Start your appeal"
         When I create Divorce case

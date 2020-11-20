@@ -4,6 +4,7 @@ export const CASELIST_JURISDICTION_SELECTED = '[CreateCaselist] Jurisdiction Sel
 export const CASELIST_APPLIED = '[CreateCaselist] Applied';
 export const CASELIST_RESET = '[CreateCaselist] Reset';
 export const APPLY_CASELIST_FILTER = '[CreateCaselist] Apply Caselist Filter';
+export const APPLY_CASELIST_FILTER_FOR_ES = '[CreateCaselist] Apply Caselist Filter for ES';
 export const APPLY_CASELIST_FILTER_SUCCESS = '[CreateCaselist] Apply Caselist Filter Success';
 export const APPLY_CASELIST_FILTER_FAIL = '[CreateCaselist] Apply Caselist Filter Fail';
 export const FIND_CASELIST_PAGINATION_METADATA = '[CreateCaselist] Find caselist pagination metadata';
@@ -27,6 +28,12 @@ export class CaseListReset implements Action {
 
 export class ApplyCaselistFilter implements Action {
   readonly type = APPLY_CASELIST_FILTER;
+  constructor(public payload: any) {
+  }
+}
+
+export class ApplyCaselistFilterForES implements Action {
+  readonly type = APPLY_CASELIST_FILTER_FOR_ES;
   constructor(public payload: any) {
   }
 }
@@ -76,6 +83,7 @@ export type CaselistAction =
   | CaseListApplied
   | CaseListReset
   | ApplyCaselistFilter
+  | ApplyCaselistFilterForES
   | FindCaselistPaginationMetadata
   | CaselistResultPageChange
   | CaseFilterToggle

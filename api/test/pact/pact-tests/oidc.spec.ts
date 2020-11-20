@@ -5,7 +5,7 @@ import * as getPort from 'get-port'
 import * as path from 'path'
 import mockResponse from '../mocks/openid-well-known-configuration.mock'
 
-describe("OpenId Connect API", () => {
+describe('OpenId Connect API', () => {
 
   let MOCK_SERVER_PORT
   let idamTestUrl
@@ -16,12 +16,12 @@ describe("OpenId Connect API", () => {
     MOCK_SERVER_PORT = await getPort()
     idamTestUrl = `http://localhost:${MOCK_SERVER_PORT}`
     provider = new Pact({
-      consumer: 'xui_approve_org',
+      consumer: 'xui_approve_org_oidc',
       dir: path.resolve(__dirname, '../pacts'),
       log: path.resolve(__dirname, '../logs', 'oidc-integration.log'),
       logLevel: 'info',
       port: MOCK_SERVER_PORT,
-      provider: 'Idam_oidc_api',
+      provider: 'Idam_api',
       spec: 2,
     })
     return provider.setup()
@@ -55,13 +55,18 @@ describe("OpenId Connect API", () => {
 
       // @ts-ignore
       const issuer = await oidc.configure({
+        allowRolesRegex: '.',
         authorizationURL: `${oidcUrl}/authorize`,
         callbackURL: `${provider.mockService.baseUrl}/oauth2/callback`,
         clientID: 'rpx-ao',
         clientSecret: 'secret',
         discoveryEndpoint: `${oidcUrl}/.well-known/openid-configuration`,
+        issuerURL: `${oidcUrl}`,
         logoutURL: `${oidcUrl}/logout`,
+        responseTypes: ['code'],
         scope: 'openid email',
+        sessionKey: 'xui-webapp',
+        tokenEndpointAuthMethod: 'client_secret_post',
         tokenURL: `${oidcUrl}/token`,
         useRoutes: false,
       })

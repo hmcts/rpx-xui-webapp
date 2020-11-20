@@ -138,12 +138,12 @@
     {
       "idleModalDisplayTime": 3,
       "pattern": "-dwpresponsewriter",
-      "totalIdleTime": 12
+      "totalIdleTime": 30
     },
     {
       "idleModalDisplayTime": 3,
       "pattern": "-homeoffice",
-      "totalIdleTime": 12
+      "totalIdleTime": 240
     },
     {
       "idleModalDisplayTime": 10,

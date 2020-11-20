@@ -9,3 +9,7 @@ export function preparePostTaskUrlAction(baseUrl: string, taskId: string, action
 export function prepareSearchTaskUrl(baseUrl: string) {
   return `${baseUrl}/task`
 }
+
+export function prepareGetLocationUrl(baseUrl: string, locationId: string): string {
+  return `${baseUrl}/location/${locationId}`
+}

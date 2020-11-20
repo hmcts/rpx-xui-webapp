@@ -11,13 +11,13 @@ describe('Work Allocation for location and service Caseworker API', () => {
     let workallocationUrl
     let provider
     const mockResponse = {
-          "firstName": "firstName",
-          "lastName": "lastName",
-          "idamId": "XXX-XXX-XX",
-          "location": {
-            "id": "string",
-            "locationName": "string",
-            "services": []
+          'firstName': 'firstName',
+          'lastName': 'lastName',
+          'idamId': 'XXX-XXX-XX',
+          'location': {
+            'id': 'string',
+            'locationName': 'string',
+            'services': []
           },
         }
 

@@ -18,7 +18,7 @@ import openRoutes from './openRoutes'
 import {initProxy} from './proxy.config'
 import routes from './routes'
 import * as searchCases from './searchCases'
-import taskRouter from './workAllocation/routes'
+// import taskRouter from './workAllocation/routes'
 
 export const app = express()
 if (showFeature(FEATURE_HELMET_ENABLED)) {

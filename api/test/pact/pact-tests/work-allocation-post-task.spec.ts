@@ -7,7 +7,7 @@ import { EnhancedRequest } from '../../../lib/models';
 import { SearchTaskRequest } from '../../../workAllocation/interfaces/taskSearchParameter';
 import { handleTaskSearch } from '../../../workAllocation/taskService';
 
-describe("Work Allocation API", () => {
+describe('Work Allocation API', () => {
 
   const BEHAVIOURS = {
     SUCCESS: {},

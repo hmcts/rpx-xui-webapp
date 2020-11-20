@@ -9,16 +9,12 @@ import { setHeaders } from '../lib/proxy'
 // TODO: task-service or work-allocation-service?
 const logger: JUILogger = log4jui.getLogger('task-service')
 
-// TODO: getLocations or handleLocationsGet? To Discuss
 export async function handleLocationGet(path: string, req: EnhancedRequest): Promise<any> {
     logger.info('get location for', path)
     const headers = setHeaders(req)
 
-    // Hits the 3rd party service or the mock service
-    // we currently do not know if we need to pull off params we'll probably need to
-    // but for now leave it
     const response: AxiosResponse = await http.get(path, { headers })
-    return response
+    return response;
 }
 
 //

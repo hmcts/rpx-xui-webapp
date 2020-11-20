@@ -14,11 +14,13 @@ export const baseUrl: string = 'http://localhost:8080'
 export async function getLocation(req: EnhancedRequest, res: Response, next: NextFunction) {
 
   try {
+
     const locationPath: string = prepareGetLocationUrl(baseUrl, req.params.locationId)
 
-    const jsonResponse = await handleLocationGet(locationPath, req)
+    const locationResponse = await handleLocationGet(locationPath, req)
+
     res.status(200)
-    res.send(jsonResponse)
+    res.send(locationResponse.data)
   } catch (error) {
     next(error)
   }

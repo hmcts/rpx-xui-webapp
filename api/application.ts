@@ -46,7 +46,7 @@ app.use('/external', openRoutes)
 app.post('/data/internal/searchCases', authInterceptor, searchCases.getCases)
 app.use('/api', routes)
 
-app.use('/workallocation', taskRouter)
+// app.use('/workallocation', taskRouter)
 
 // @ts-ignore
 const logger: JUILogger = log4jui.getLogger('Application')

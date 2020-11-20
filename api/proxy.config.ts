@@ -63,4 +63,10 @@ export const initProxy = (app: Express) => {
         source: '/payments',
         target: getConfigValue(SERVICES_PAYMENTS_URL),
     })
+
+    applyProxy(app, {
+        rewrite: false,
+        source: '/workallocation',
+        target: 'http://localhost:8080',
+    })
 }

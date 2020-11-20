@@ -5,7 +5,7 @@ import * as getPort from 'get-port'
 import * as path from 'path'
 import mockResponse from '../mocks/openid-well-known-configuration.mock'
 
-describe("OpenId Connect API", () => {
+describe('OpenId Connect API', () => {
 
   let MOCK_SERVER_PORT
   let idamTestUrl

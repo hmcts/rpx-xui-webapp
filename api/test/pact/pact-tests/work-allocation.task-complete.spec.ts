@@ -6,7 +6,7 @@ import * as path from 'path';
 import { EnhancedRequest } from '../../../lib/models';
 import { handleTaskPost } from '../../../workAllocation/taskService';
 
-describe("Work Allocation API", () => {
+describe('Work Allocation API', () => {
 
   let mockServerPort: number;
   let provider: Pact;

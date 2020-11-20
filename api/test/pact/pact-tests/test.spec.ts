@@ -4,7 +4,7 @@ import * as getPort from 'get-port'
 import * as path from 'path'
 import { getDetails } from '../../../services/idam'
 
-describe("Reference Data API", () => {
+describe('Reference Data API', () => {
 
   let MOCK_SERVER_PORT
   let idamTestUrl
@@ -32,7 +32,7 @@ describe("Reference Data API", () => {
   // verify with Pact, and reset expectations
   afterEach(() => provider.verify())
 
-  describe("get /details", () => {
+  describe('get /details', () => {
 
     const EXPECTED_BODY = {
       active: true,

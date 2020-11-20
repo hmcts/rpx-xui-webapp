@@ -1,4 +1,5 @@
 import {createProxyMiddleware as proxy, Options} from 'http-proxy-middleware'
+import * as zlib from 'zlib'
 import {getConfigValue} from '../../configuration'
 import {LOGGING} from '../../configuration/references'
 import * as log4jui from '../log4jui'
@@ -29,6 +30,28 @@ export const applyProxy = (app, config) => {
         },
         onError: onProxyError,
         target: config.target,
+    }
+
+    if (config.onReq) {
+        options.selfHandleResponse = true
+        options.onProxyRes = config.onReq
+    }
+
+    if (config.onRes) {
+        options.selfHandleResponse = true
+
+        options.onProxyRes = (proxyRes, req, res) => {
+            let originalBody = Buffer.from([])
+            proxyRes.on('data', data => {
+                originalBody = Buffer.concat([originalBody, data])
+            })
+
+            proxyRes.on('end', () => {
+                const bodyString = zlib.gunzipSync(originalBody).toString('utf8')
+                const data = JSON.parse(bodyString)
+                config.onRes(data, req, res)
+            })
+        }
     }
 
     if (false !== config.rewrite) {

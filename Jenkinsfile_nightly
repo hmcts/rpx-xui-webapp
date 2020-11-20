@@ -76,6 +76,15 @@ withNightlyPipeline(type, product, component) {
             reportFiles          : 'mochawesome.html',
             reportName           : 'API Functional Test'
         ])
+
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "reports/tests/ngIntegration/",
+            reportFiles          : 'index.html',
+            reportName           : 'AAT NG Integration Test'
+        ])
     }
 
     after('mutationTest') {

@@ -176,6 +176,15 @@ withPipeline(type, product, component) {
             reportFiles          : 'mochawesome.html',
             reportName           : 'PREVIEW API Functional Test'
         ])
+
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "reports/tests/ngIntegration/",
+            reportFiles          : 'index.html',
+            reportName           : 'PREVIEW NG Integration Test'
+        ])
     }
 
 
@@ -207,6 +216,14 @@ withPipeline(type, product, component) {
             reportDir            : "reports/tests/api_functional/",
             reportFiles          : 'mochawesome.html',
             reportName           : 'AAT API Functional Test'
+        ])
+         publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "reports/tests/ngIntegration/",
+            reportFiles          : 'index.html',
+            reportName           : 'AAT NG Integration Test'
         ])
     }
 }

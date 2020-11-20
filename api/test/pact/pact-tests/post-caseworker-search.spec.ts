@@ -6,7 +6,7 @@ import * as path from 'path'
 import { EnhancedRequest } from '../../../lib/models'
 import { handlePostSearch } from '../../../workAllocation/caseWorkerService'
 
-describe("Case worker API", () => {
+describe('Case worker API', () => {
 
   let mockServerPort: number
   let provider: Pact

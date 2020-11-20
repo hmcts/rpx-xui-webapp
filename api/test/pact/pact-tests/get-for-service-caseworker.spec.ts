@@ -5,7 +5,7 @@ import * as path from 'path'
 import { EnhancedRequest } from '../../../lib/models'
 import { handleCaseWorkerForLocationAndService } from '../../../workAllocation/caseWorkerService'
 
-describe("Work Allocation for service Caseworker API", () => {
+describe('Work Allocation for service Caseworker API', () => {
 
     let MOCK_SERVER_PORT
     let workallocationUrl

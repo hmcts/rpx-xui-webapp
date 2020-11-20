@@ -12,7 +12,7 @@ interface Payload {
   assignee: Assignee
 }
 
-describe("Work Allocation API", () => {
+describe('Work Allocation API', () => {
 
   let mockServerPort: number
   let provider: Pact

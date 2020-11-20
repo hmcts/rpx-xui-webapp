@@ -8,7 +8,9 @@ import { OrganisationModel } from './models/organisation.model'
 import * as dbJson from './stubs/db.json'
 
 const dbModule = plainToClass(DataBaseModel, dbJson)
+// @ts-ignore
 const orgs: OrganisationModel[] = dbModule.organisations
+// @ts-ignore
 const cases: SharedCase[] = dbModule.sharedCases
 
 export function getUsers(req: EnhancedRequest, res: Response) {

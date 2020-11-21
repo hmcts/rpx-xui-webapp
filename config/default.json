@@ -9,6 +9,7 @@
   "logging": "debug",
   "now": false,
   "maxLogLine": 80,
+  "stub": false,
   "health": {
     "ccdComponentApi": "https://ccd-api-gateway-web-prod.service.core-compute-prod.internal/health",
     "ccdDataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal/health",
@@ -19,10 +20,14 @@
   "services": {
     "ccd": {
       "componentApi": "https://ccd-api-gateway-web-prod.service.core-compute-prod.internal",
-      "dataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal"
+      "dataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal",
+      "caseAssignmentApi": "http://aac-manage-case-assignment-prod.service.core-compute-prod.internal"
     },
     "documents": {
       "api": "http://dm-store-prod.service.core-compute-prod.internal"
+    },
+    "prd": {
+      "api": "http://rd-professional-api-prod.service.core-compute-prod.internal"
     },
     "em_anno_api": "http://em-anno-prod.service.core-compute-prod.internal",
     "idam": {
@@ -35,13 +40,14 @@
     },
     "payments": "http://payment-api-prod.service.core-compute-prod.internal",
     "markup_api": "http://em-npa-prod.service.core-compute-prod.internal",
+    "icp_api": "http://em-icp-prod.service.core-compute-prod.internal",
     "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal",
     "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal"
   },
   "protocol": "https",
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",
-  "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS",
+  "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT",
   "loginRoleMatcher": "caseworker",
   "log4JConfig": {
     "appenders": {
@@ -75,7 +81,8 @@
           "'self'",
           "'unsafe-inline'",
           "https://fonts.googleapis.com",
-          "https://fonts.gstatic.com"
+          "https://fonts.gstatic.com",
+          "http://tagmanager.google.com/"
         ],
         "scriptSrc": [
           "'self'",
@@ -89,7 +96,8 @@
           "'self'",
           "*.gov.uk",
           "dc.services.visualstudio.com",
-          "*.launchdarkly.com"
+          "*.launchdarkly.com",
+          "www.google-analytics.com"
         ],
         "mediaSrc": ["'self'"],
         "objectSrc": ["'self'"],
@@ -99,7 +107,10 @@
           "data:",
           "https://www.google-analytics.com",
           "https://www.googletagmanager.com",
-          "https://raw.githubusercontent.com/hmcts/"
+          "https://raw.githubusercontent.com/hmcts/",
+          "http://stats.g.doubleclick.net/",
+          "http://ssl.gstatic.com/",
+          "http://www.gstatic.com/"
         ]
       }
     },
@@ -127,12 +138,12 @@
     {
       "idleModalDisplayTime": 3,
       "pattern": "-dwpresponsewriter",
-      "totalIdleTime": 12
+      "totalIdleTime": 30
     },
     {
       "idleModalDisplayTime": 3,
       "pattern": "-homeoffice",
-      "totalIdleTime": 12
+      "totalIdleTime": 240
     },
     {
       "idleModalDisplayTime": 10,

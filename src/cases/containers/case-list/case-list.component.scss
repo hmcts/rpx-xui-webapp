@@ -1,12 +1,12 @@
-.case-list-component{
-  .search-block{
+.case-list-component {
+  .search-block {
     clear: both;
     overflow: hidden;
-    .filter-block{
+    .filter-block {
       float: left;
       width: 22%;
     }
-    .results-block{
+    .results-block {
       float: left;
       width: 70%;
       margin-left: 2vw;
@@ -14,9 +14,11 @@
     }
   }
 
-  .hmcts-action-bar__filter:after {
+  .hmcts-action-bar__filter:last-child:after {
     background-color: transparent;
   }
-}
 
-  
+  .govuk-details {
+    margin-top: 30px;
+  }
+}

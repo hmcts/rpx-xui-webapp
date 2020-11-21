@@ -93,7 +93,6 @@ describe('Evidence Manager Endpoints', () => {
             'X-XSRF-TOKEN': xsrfToken
         };
         const response = await Request.get(`em-anno/${config.em.docId}/bookmarks`, null);
-        console.log(response.data);
         expect(response.status).to.equal(200);
         expect(response.data).to.be.an('array');
 

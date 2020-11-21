@@ -85,7 +85,7 @@ describe('CCD Endpoints',  () => {
             experimental: true,
             'X-XSRF-TOKEN': xsrfToken
         };
-        const response = await Request.post('data/case-types/GrantOfRepresentation/drafts/', draftsReqBody, headers);
+        const response = await Request.post('data/internal/case-types/GrantOfRepresentation/drafts/', draftsReqBody, headers);
         expect(response.status).to.equal(200, 'drafts url request failed GrantOfRepresentation');
     });
 
@@ -103,8 +103,6 @@ describe('CCD Endpoints',  () => {
     it('Get Case details', async () => {
         await Request.withSession(userName, password);
         const casesResponse = await getCasesForCaseType('DIVORCE', 'FinancialRemedyMVP2');
-
-        console.log(casesResponse.data);
         const caseId = casesResponse.data.results[0].case_id;
 
         const xsrfToken = await getXSRFToken(userName, password);

@@ -40,9 +40,8 @@ describe('nodeApp endpoint', () => {
   it('api/user/details', async () => {
     await Request.withSession(userName, password);
     const response = await Request.get('api/user/details', null);
-    console.log(response.data);
     expect(response.status).to.equal(200);
-    expect(response.data).to.have.all.keys( 'sessionTimeout');
+    expect(response.data).to.have.all.keys('canShareCases', 'sessionTimeout');
   });
 
   it('api/user/details without session', async () => {

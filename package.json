@@ -50,7 +50,7 @@
     "publish-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error mocha --timeout 15000 -r ts-node/register -r dotenv-extended/config api/test/pact/publish/publish.ts dotenv_config_defaults=./api/.env.defaults --reporter spec",
     "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact",
     "test:api": "mocha -r ts-node/register --config ./test/integration/tests/mocha.json --reporter mochawesome --reporter-options reportDir=reports/tests/api_functional,reportFilename=mochawesome",
-    "test:ngIntegration": "ng e2e --protractorConfig=./test/ngIntegration/config/protractor.conf.js"
+    "test:ngIntegration": "webdriver-manager update --versions.chrome 2.40 && ng e2e --protractorConfig=./test/ngIntegration/config/protractor.conf.js"
   },
   "private": true,
   "dependencies": {

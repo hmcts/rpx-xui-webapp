@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { TaskService, TaskSort } from '../../enums';
 import InvokedTaskAction from '../../models/tasks/invoked-task-action.model';
 import TaskServiceConfig from '../../models/tasks/task-service-config.model';
+import { NavItemsModel } from './../../../app/models/nav-item.model';
 import { TaskFieldType, TaskView } from './../../enums';
 import { Task, TaskFieldConfig, TaskSortField } from './../../models/tasks';
 
@@ -14,6 +15,9 @@ import { Task, TaskFieldConfig, TaskSortField } from './../../models/tasks';
 })
 export class TaskHomeComponent implements OnInit {
 
+  /**
+   * Take in the Router so we can determine which of the lists to show.
+   */
   constructor(private readonly router: Router) {}
 
   /**
@@ -124,6 +128,13 @@ export class TaskHomeComponent implements OnInit {
     },
   ];
 
+  private readonly CASE_REFERENCE_FIELD: TaskFieldConfig = {
+    name: 'caseReference',
+    type: TaskFieldType.CASE_REFERENCE,
+    columnLabel: 'Case reference',
+    views: TaskView.TASK_LIST,
+  };
+
   /**
    * Mock TaskFieldConfig[]
    *
@@ -134,12 +145,7 @@ export class TaskHomeComponent implements OnInit {
    * WP api as this component.
    */
   public fields: TaskFieldConfig[] = [
-    {
-      name: 'caseReference',
-      type: TaskFieldType.CASE_REFERENCE,
-      columnLabel: 'Case reference',
-      views: TaskView.TASK_LIST,
-    },
+    this.CASE_REFERENCE_FIELD,
     {
       name: 'caseName',
       type: TaskFieldType.STRING,
@@ -182,6 +188,15 @@ export class TaskHomeComponent implements OnInit {
     fields: this.fields,
   };
 
+  private readonly MY_TASKS: NavItemsModel = { text: 'My tasks', href: '/tasks', active: true };
+  /**
+   * The sub-navigation items.
+   */
+  public subNavigationItems: NavItemsModel[] = [
+    this.MY_TASKS,
+    { text: 'Available tasks', href: '/tasks/available', active: false }
+  ];
+
   public sortedBy: TaskSortField;
 
   public ngOnInit(): void {
@@ -193,6 +208,9 @@ export class TaskHomeComponent implements OnInit {
 
     // Remove after integration.
     this.sortTasks();
+
+    // Set up the active navigation item.
+    this.setupActiveNavigationItem();
   }
 
   /**
@@ -246,5 +264,20 @@ export class TaskHomeComponent implements OnInit {
       }
       return this.sortedBy.order === TaskSort.ASC ? sortVal : -sortVal;
     });
+  }
+
+
+  private setupActiveNavigationItem(): void {
+    if (this.subNavigationItems) {
+      for (const item of this.subNavigationItems) {
+        item.active = item.href === this.router.url;
+      }
+    }
+    // Set up the fields, based on the current URL.
+    if (this.router.url === this.MY_TASKS.href) {
+      this.CASE_REFERENCE_FIELD.type = TaskFieldType.CASE_REFERENCE;
+    } else {
+      this.CASE_REFERENCE_FIELD.type = TaskFieldType.STRING;
+    }
   }
 }

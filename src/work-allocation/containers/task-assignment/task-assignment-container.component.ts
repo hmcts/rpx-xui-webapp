@@ -9,11 +9,10 @@ import { Assignee, Caseworker } from './../../models/dtos/task';
 import { Task, TaskFieldConfig } from './../../models/tasks';
 
 @Component({
-    selector: 'exui-task-container-assignment',
-    templateUrl: 'task-assignment-container.component.html',
-    styleUrls: ['task-home-container.component.scss']
-  })
-
+  selector: 'exui-task-container-assignment',
+  templateUrl: 'task-assignment-container.component.html',
+  styleUrls: ['task-home-container.component.scss']
+})
 export class TaskAssignmentContainerComponent implements OnInit {
    public tasks: any [];
    public sortedBy: any;

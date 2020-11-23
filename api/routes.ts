@@ -12,6 +12,14 @@ const router = express.Router({ mergeParams: true })
 
 router.use('/healthCheck', healthCheck)
 
+router.get('/monitoring-tools', (req, res) => {
+    res.send({key: getConfigValue(APP_INSIGHTS_KEY)})
+})
+
+router.get('/configuration', (req, res) => {
+    res.send(showFeature(req.query.configurationKey as string))
+})
+
 router.use(authInterceptor)
 
 router.use('/user', userRouter)
@@ -19,16 +27,9 @@ router.use('/user', userRouter)
 // TODO: potentially can be moved to proxy but with onRes callback
 router.use('/caseshare', caseShareRoutes)
 
-router.get('/configuration', (req, res) => {
-    res.send(showFeature(req.query.configurationKey as string))
-})
-
-router.get('/monitoring-tools', (req, res) => {
-    res.send({key: getConfigValue(APP_INSIGHTS_KEY)})
-})
 
 /*if (showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED)) {
-    router.use('/userTermsAndConditions', userTandCRoutes)
+    router.use('/userTermsAndConditions',  userTandCRoutes)
     router.use('/termsAndConditions', termsAndCRoutes)
 }*/
 

@@ -72,7 +72,7 @@ export function nocReducer(currentState = initialState, action: fromActions.NocA
     }
     case fromActions.SET_ANSWER_SUBMISSION_FAILURE: {
       let nextState: NocState;
-      if (action.payload.error && action.payload.error.errorCode === 'answersIncomplete') {
+      if (action.payload.error && action.payload.error.code === 'answersIncomplete') {
         nextState = NocState.ANSWER_INCOMPLETE;
       } else {
         nextState = NocState.ANSWER_SUBMISSION_FAILURE;
@@ -99,16 +99,30 @@ export function nocReducer(currentState = initialState, action: fromActions.NocA
         affirmationAgreed: action.payload
       };
     }
+    case fromActions.SET_AFFIRMATION_DISAGREE_ERROR: {
+      return {
+        ...currentState,
+        affirmationAgreed: false,
+        validationErrors: {
+          status: 430,
+          message: 'You must confirm the information you have provided'
+        }
+      };
+    }
     case fromActions.SET_SUBMISSION_SUCCESS_APPROVED: {
       return {
         ...currentState,
-        state: NocState.SUBMISSION_SUCCESS_APPROVED
+        state: NocState.SUBMISSION_SUCCESS_APPROVED,
+        validationErrors: null,
+        lastError: null
       };
     }
     case fromActions.SET_SUBMISSION_SUCCESS_PENDING: {
       return {
         ...currentState,
-        state: NocState.SUBMISSION_SUCCESS_PENDING
+        state: NocState.SUBMISSION_SUCCESS_PENDING,
+        validationErrors: null,
+        lastError: null
       };
     }
     case fromActions.SET_SUBMISSION_FAILURE: {
@@ -120,7 +134,7 @@ export function nocReducer(currentState = initialState, action: fromActions.NocA
     }
     default: {
       return {
-        ...initialState
+        ...currentState
       };
     }
   }

@@ -1,3 +1,4 @@
+import { NocAffirmationComponent } from './noc-affirmation/noc-affirmation.component';
 import { NocAnswerErrorComponent } from './noc-answer-error/noc-answer-error.component';
 import { NocCaseRefComponent } from './noc-case-ref/noc-case-ref.component';
 import { NocCheckAndSubmitComponent } from './noc-check-and-submit/noc-check-and-submit.component';
@@ -16,6 +17,7 @@ import { NocTimeFieldComponent } from './noc-field/time';
 import { NocHomeComponent } from './noc-home/noc-home.component';
 import { NocNavigationComponent } from './noc-navigation/noc-navigation.component';
 import { NocQAndAComponent } from './noc-q-and-a/noc-q-and-a.component';
+import { NocSubmitSuccessComponent } from './noc-submit-success/noc-submit-success.component';
 
 export const containers: any[] = [
   NocHomeComponent,
@@ -26,6 +28,8 @@ export const containers: any[] = [
   NocAnswerErrorComponent,
   NocCheckYourAnswersComponent,
   NocCheckAndSubmitComponent,
+  NocAffirmationComponent,
+  NocSubmitSuccessComponent,
   NocFieldComponent,
   NocTextFieldComponent,
   NocNumberFieldComponent,
@@ -42,5 +46,3 @@ export * from './noc-home/noc-home.component';
 export * from './noc-navigation/noc-navigation.component';
 export * from './noc-errors/noc-error.component';
 export * from './noc-field/noc-field.component';
-export * from './noc-check-your-answers/noc-check-your-answers.component';
-export * from './noc-check-and-submit/noc-check-and-submit.component';

@@ -42,4 +42,9 @@ describe('NocCheckAndSubmitComponent', () => {
     fixture.detectChanges();
     expect(component.qAndA$).toEqual(answers$);
   });
+
+  afterEach(() => {
+    component = null;
+    fixture.destroy();
+  });
 });

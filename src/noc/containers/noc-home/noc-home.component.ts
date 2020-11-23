@@ -1,10 +1,12 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { answerErrorVisibilityStates, caseRefVisibilityStates, checkAnswerVisibilityStates, qAndAVisibilityStates } from '../../constants';
+import { answerErrorVisibilityStates, caseRefVisibilityStates, checkAnswerVisibilityStates, nocSubmitSuccessStates, qAndAVisibilityStates } from '../../constants';
 import { NocNavigation, NocNavigationEvent, NocState } from '../../models';
 import * as fromFeature from '../../store';
 import { NocCaseRefComponent } from '../noc-case-ref/noc-case-ref.component';
+import { NocCheckAndSubmitComponent } from '../noc-check-and-submit/noc-check-and-submit.component';
 import { NocQAndAComponent } from '../noc-q-and-a/noc-q-and-a.component';
 
 @Component({
@@ -20,6 +22,9 @@ export class NocHomeComponent implements OnInit, OnDestroy {
   @ViewChild('nocQandA', { read: NocQAndAComponent })
   public nocQandAComponent: NocQAndAComponent;
 
+  @ViewChild('nocCheckAndSubmit', { read: NocCheckAndSubmitComponent })
+  public nocCheckAndSubmitComponent: NocCheckAndSubmitComponent;
+
   public nocNavigationCurrentState: NocState;
   private nocNavigationCurrentStateSub: Subscription;
   public navEvent: NocNavigation;
@@ -31,9 +36,11 @@ export class NocHomeComponent implements OnInit, OnDestroy {
   public answerErrorVisibilityStates = answerErrorVisibilityStates;
 
   public checkAnswerVisibilityStates = checkAnswerVisibilityStates;
+  public nocSubmitSuccessStates = nocSubmitSuccessStates;
 
   constructor(
     private readonly store: Store<fromFeature.State>,
+    private readonly router: Router
   ) { }
 
   public ngOnInit() {
@@ -56,6 +63,11 @@ export class NocHomeComponent implements OnInit, OnDestroy {
     switch (navEvent) {
       case NocNavigationEvent.BACK: {
         switch (this.nocNavigationCurrentState) {
+          case NocState.START:
+            this.router.navigateByUrl('').then(r => {
+              return;
+            });
+            break;
           case NocState.QUESTION:
           case NocState.ANSWER_INCOMPLETE:
           case NocState.ANSWER_SUBMISSION_FAILURE:
@@ -63,6 +75,10 @@ export class NocHomeComponent implements OnInit, OnDestroy {
             break;
           case NocState.CHECK_ANSWERS:
             this.store.dispatch(new fromFeature.ChangeNavigation(NocState.QUESTION));
+            break;
+          case NocState.SUBMISSION_SUCCESS_PENDING:
+          case NocState.SUBMISSION_SUCCESS_APPROVED:
+            this.store.dispatch(new fromFeature.Reset());
             break;
           default:
             throw new Error('Invalid NoC state');
@@ -93,6 +109,16 @@ export class NocHomeComponent implements OnInit, OnDestroy {
         }
         break;
       }
+      case NocNavigationEvent.CHECK_ANSWERS: {
+        switch (this.nocNavigationCurrentState) {
+          case NocState.CHECK_ANSWERS:
+            this.nocCheckAndSubmitComponent.navigationHandler(navEvent);
+            break;
+          default:
+            throw new Error('Invalid NoC state');
+        }
+        break;
+      }
       default:
         throw new Error('Invalid NoC navigation event');
     }
@@ -102,5 +128,6 @@ export class NocHomeComponent implements OnInit, OnDestroy {
     if (this.nocNavigationCurrentStateSub) {
       this.nocNavigationCurrentStateSub.unsubscribe();
     }
+    this.store.dispatch(new fromFeature.Reset());
   }
 }

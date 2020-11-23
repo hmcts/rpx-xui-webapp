@@ -238,9 +238,9 @@ export const init = () => {
   // tslint:enable:object-literal-sort-keys
   // tslint:enable:max-line-length
 
-  const getNoCQuestionsUrl = /\/api\/NoCQuestions\?caseId/
-  const validateNoCQuestionsUrl = /\/api\/ValidateNoCQuestions/
-  const postNoCEventsUrl = /\/api\/NoCEvents/
+  const getNoCQuestionsUrl = /\/api\/nocQuestions\?caseId/
+  const validateNoCQuestionsUrl = /\/api\/validateNoCQuestions/
+  const postNoCEventsUrl = /\/api\/submitNoCEvents/
 
   // simulate some error if needed
   // mock.onGet(url).networkErrorOnce()
@@ -267,48 +267,59 @@ export const init = () => {
       OrganisationPolicy: {
           Organisation: 'orgId',
       },
+      code: '',
       status_message: 'success',
   })
   // EUI-2397: scenario 1
-  // answers are incomplete/invalid
+  // answers are incomplete/incorrect
 /*  .onPost(validateNoCQuestionsUrl).reply(400, {
-    errorCode: 'answersIncomplete',
-    errorMessage: 'Answers are incorrect and do not match system record.',
+    code: 'answersIncomplete',
+    status_message: 'Answers are incorrect and do not match system record',
   })*/
   // EUI-2397: scenario 2
   // matched more than one party
 /*  .onPost(validateNoCQuestionsUrl).reply(400, {
-    errorCode: 'moreThanOneParty',
-    errorMessage: 'Answers match more than one party on the case',
+    code: 'moreThanOneParty',
+    status_message: 'Answers match more than one party on the case',
   })*/
   // EUI-2397: scenario 3
   // invalid case reference
 /*  .onPost(validateNoCQuestionsUrl).reply(400, {
-    errorCode: 'invalidCaseRef',
-    errorMessage: 'invalid case reference',
+    code: 'invalidCaseRef',
+    status_message: 'invalid case reference',
   })*/
   // EUI-2397: scenario 4
   // organisation already has access to this case
 /*  .onPost(validateNoCQuestionsUrl).reply(400, {
-    errorCode: 'organisationHasAccess',
-    errorMessage: 'Your organisation already has access to this case',
+    code: 'organisationHasAccess',
+    status_message: 'Your organisation already has access to this case',
   })*/
   // EUI-2397: scenario 5
   // noc in progress
 /*  .onPost(validateNoCQuestionsUrl).reply(400, {
-      errorCode: 'nocInProgress',
-      errorMessage: 'The case has an ongoing NoC Request',
+      code: 'nocInProgress',
+      status_message: 'The case has an ongoing NoC Request',
   })*/
   // EUI-2401
   // any other server errors
 /*  .onPost(validateNoCQuestionsUrl).reply(500, {
-      errorCode: 'nocInProgress',
-      errorMessage: 'internal error',
+      code: 'nocInProgress',
+      status_message: 'internal error',
   })*/
-  .onPost(postNoCEventsUrl).reply(200, {
+  // EUI-2322
+  // Scenario 1
+/*  .onPost(postNoCEventsUrl).reply(201, {
+    approval_status: 'PENDING',
+    case_role: 'Claimant',
+    code: '',
+    status_message: 'success',
+  })*/
+  // EUI-2322
+  // Scenario 2
+  .onPost(postNoCEventsUrl).reply(201, {
     approval_status: 'APPROVED',
     case_role: 'Claimant',
+    code: '',
     status_message: 'success',
   })
-
 }

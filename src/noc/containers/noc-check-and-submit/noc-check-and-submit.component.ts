@@ -1,8 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { NocAnswer, NocNavigation, NocQuestion } from '../../models';
+import { NocAnswer, NocEvent, NocHttpError, NocNavigation, NocNavigationEvent, NocQuestion } from '../../models';
 import * as fromFeature from '../../store';
 
 @Component({
@@ -10,7 +11,7 @@ import * as fromFeature from '../../store';
   templateUrl: './noc-check-and-submit.component.html',
   styleUrls: ['./noc-check-and-submit.component.scss']
 })
-export class NocCheckAndSubmitComponent implements OnInit {
+export class NocCheckAndSubmitComponent implements OnInit, OnDestroy {
   @Input()
   public navEvent: NocNavigation;
 
@@ -20,6 +21,19 @@ export class NocCheckAndSubmitComponent implements OnInit {
 
   @Input()
   public qAndA$: Observable<NocAnswer[]>;
+
+  public submitForm: FormGroup;
+
+  public affirmationAgreedSub: Subscription;
+  public affirmationAgreed: boolean = false;
+
+  public validationErrors$: Observable<NocHttpError>;
+
+  public caseReferenceSub: Subscription;
+  public caseRefernce: string;
+
+  public nocAnswersSub: Subscription;
+  public nocAnswers: NocAnswer[];
 
   constructor(private store: Store<fromFeature.State>) {
     this.navEvent = {
@@ -50,6 +64,41 @@ export class NocCheckAndSubmitComponent implements OnInit {
         });
         return answersWithQuestionText;
       }));
+    this.affirmationAgreedSub = this.store.pipe(select(fromFeature.affirmationAgreed)).subscribe(
+      affirmationAgree => this.affirmationAgreed = affirmationAgree);
+    this.validationErrors$ = this.store.pipe(select(fromFeature.validationErrors));
+    this.caseReferenceSub = this.store.pipe(select(fromFeature.caseReference)).subscribe(
+      caseReference => this.caseRefernce = caseReference);
+    this.nocAnswersSub = this.store.pipe(select(fromFeature.answers)).subscribe(
+      nocAnswers => this.nocAnswers = nocAnswers);
   }
 
+  public navigationHandler(navEvent: NocNavigationEvent) {
+    switch (navEvent) {
+      case NocNavigationEvent.CHECK_ANSWERS: {
+        this.verifyAndSubmitNoC();
+        break;
+      }
+      default:
+        throw new Error('Invalid option');
+    }
+  }
+
+  public verifyAndSubmitNoC(): void {
+    if (this.affirmationAgreed) {
+      const nocEvent: NocEvent = {
+        caseReference: this.caseRefernce,
+        nocAnswers: this.nocAnswers
+      };
+      this.store.dispatch(new fromFeature.SubmitNoc(nocEvent));
+    } else {
+      this.store.dispatch(new fromFeature.SetAffirmationDisagreeError());
+    }
+  }
+
+  public ngOnDestroy(): void {
+    this.affirmationAgreedSub.unsubscribe();
+    this.caseReferenceSub.unsubscribe();
+    this.nocAnswersSub.unsubscribe();
+  }
 }

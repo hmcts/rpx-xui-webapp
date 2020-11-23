@@ -44,7 +44,7 @@ export class NocQAndAComponent implements OnInit, OnDestroy {
   public setPossibleIncorrectAnswerError(): void {
     this.lastError$.subscribe( lastError => {
       this.lastError = lastError;
-      if (this.lastError && this.lastError.error && this.lastError.error.errorCode === 'answersIncomplete') {
+      if (this.lastError && this.lastError.error && this.lastError.error.code === 'answersIncomplete') {
         Object.keys(this.formGroup.controls).forEach(key => {
           if (this.formGroup.controls[key].value) {
             this.formGroup.controls[key].setErrors({

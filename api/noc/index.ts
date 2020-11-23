@@ -37,7 +37,7 @@ export async function validateNoCQuestions(req: EnhancedRequest, res: Response, 
     }
 }
 
-export async function noCEvents(req: EnhancedRequest, res: Response, next: NextFunction) {
+export async function submitNoCEvents(req: EnhancedRequest, res: Response, next: NextFunction) {
     const markupPath: string = url + req.originalUrl
     const body: any = req.body
 

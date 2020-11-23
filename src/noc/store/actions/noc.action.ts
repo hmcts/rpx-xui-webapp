@@ -12,11 +12,11 @@ export const SET_ANSWER_INCOMPLETE = '[NOC] Set Answers Incomplete';
 export const CHECK_ANSWERS = '[NOC] Check Answers';
 export const SET_ANSWER_SUBMISSION_FAILURE = '[NOC] Set Answer Submission Failure';
 export const SET_AFFIRMATION_AGREED = '[NOC] Set Affirmation Agreed';
-export const GET_AFFIRMATION_AGREED = '[NOC] Get Affirmation Agreed';
+export const SET_AFFIRMATION_DISAGREE_ERROR = '[NOC] Set Affirmation Disagree Error';
 export const SUBMIT_NOC = '[NOC] Submit NoC';
-export const SET_SUBMISSION_SUCCESS_APPROVED = '[NOC] Submmission NoC Success Approved';
-export const SET_SUBMISSION_SUCCESS_PENDING = '[NOC] Submmission NoC Success Pending';
-export const SET_SUBMISSION_FAILURE = '[NOC] Submmission NoC Failure';
+export const SET_SUBMISSION_SUCCESS_APPROVED = '[NOC] Submission NoC Success Approved';
+export const SET_SUBMISSION_SUCCESS_PENDING = '[NOC] Submission NoC Success Pending';
+export const SET_SUBMISSION_FAILURE = '[NOC] Submission NoC Failure';
 
 export class Reset implements Action {
     public readonly type = RESET;
@@ -70,8 +70,8 @@ export class SetAffirmationAgreed implements Action {
     constructor(public payload: boolean) {}
 }
 
-export class GetAffirmationAgreed implements Action {
-    public readonly type = GET_AFFIRMATION_AGREED;
+export class SetAffirmationDisagreeError implements Action {
+    public readonly type = SET_AFFIRMATION_DISAGREE_ERROR;
 }
 
 export class SubmitNoc implements Action {
@@ -104,7 +104,7 @@ export type NocAction =
   | CheckAnswers
   | SetAnswerSubmissionFailure
   | SetAffirmationAgreed
-  | GetAffirmationAgreed
+  | SetAffirmationDisagreeError
   | SubmitNoc
   | SetSubmissionSuccessApproved
   | SetSubmissionSuccessPending

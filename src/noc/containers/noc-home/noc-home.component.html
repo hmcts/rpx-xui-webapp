@@ -22,9 +22,13 @@
             *ngIf="isComponentVisible(nocNavigationCurrentState, answerErrorVisibilityStates)">
           </exui-noc-answer-error>
           <exui-noc-check-and-submit
+            #nocCheckAndSubmit
             *ngIf="isComponentVisible(nocNavigationCurrentState, checkAnswerVisibilityStates)"
             [navEvent]="navEvent">
           </exui-noc-check-and-submit>
+          <exui-noc-submit-success
+            *ngIf="isComponentVisible(nocNavigationCurrentState, nocSubmitSuccessStates)">
+          </exui-noc-submit-success>
         </exui-noc-navigation>
       </div>
     </main>

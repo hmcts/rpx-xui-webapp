@@ -27,7 +27,7 @@ describe('NocService', () => {
             expect(response).toBeNull();
           });
 
-          const req = httpMock.expectOne('api/NoCQuestions?caseId=123456');
+          const req = httpMock.expectOne('api/nocQuestions?caseId=123456');
           expect(req.request.method).toEqual('GET');
           req.flush(null);
         }));

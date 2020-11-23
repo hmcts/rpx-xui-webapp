@@ -1,6 +1,7 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
@@ -20,7 +21,8 @@ describe('NocHomeComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         ReactiveFormsModule,
-        UtilsModule
+        UtilsModule,
+        RouterTestingModule
       ],
       schemas: [
         NO_ERRORS_SCHEMA

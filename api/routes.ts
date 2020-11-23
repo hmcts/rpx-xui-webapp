@@ -35,12 +35,8 @@ router.use('/noc', nocRouter)
     router.use('/termsAndConditions', termsAndCRoutes)
 }*/
 
-router.get('/monitoring-tools', (req, res) => {
-    res.send({key: getConfigValue(APP_INSIGHTS_KEY)})
-})
-
 /*if (showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED)) {
-    router.use('/userTermsAndConditions', userTandCRoutes)
+    router.use('/userTermsAndConditions',  userTandCRoutes)
     router.use('/termsAndConditions', termsAndCRoutes)
 }*/
 

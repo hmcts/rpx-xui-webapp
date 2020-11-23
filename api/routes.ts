@@ -27,7 +27,6 @@ router.use('/user', userRouter)
 // TODO: potentially can be moved to proxy but with onRes callback
 router.use('/caseshare', caseShareRoutes)
 
-
 /*if (showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED)) {
     router.use('/userTermsAndConditions',  userTandCRoutes)
     router.use('/termsAndConditions', termsAndCRoutes)

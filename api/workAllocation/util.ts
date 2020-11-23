@@ -29,3 +29,11 @@ export function prepareCaseWorkerForService(baseUrl: string, serviceId: string) 
 export function prepareCaseWorkerForLocationAndService(baseUrl: string, locationId: string, serviceId: string) {
   return `${baseUrl}/task/location/${locationId}/service/${serviceId}`
 }
+
+export function prepareLocationUrl(baseUrl: string) {
+  return `${baseUrl}/location`
+}
+
+export function prepareGetLocationUrl(baseUrl: string, locationId: string): string {
+  return `${baseUrl}/location/${locationId}`
+}

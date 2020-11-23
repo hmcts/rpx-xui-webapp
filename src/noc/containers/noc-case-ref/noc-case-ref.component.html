@@ -28,8 +28,7 @@
 
     <div
         class="govuk-form-group"
-        [class.govuk-form-group--error]="(validationErrors$ | async)?.message || null"
-    >
+        [class.govuk-form-group--error]="(validationErrors$ | async)?.message || null">
         <form [formGroup]="caseRefForm" (ngSubmit)="onSubmit()" >
             <xuilib-gov-uk-input
                 [config]="caseRefConfig"

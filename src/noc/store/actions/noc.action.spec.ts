@@ -81,8 +81,8 @@ describe('Noc Actions', () => {
 
   describe('GetAffirmationAgreed', () => {
     it('should create an action', () => {
-      const action = new fromNocAction.GetAffirmationAgreed();
-      expect(action.type).toBe(fromNocAction.GET_AFFIRMATION_AGREED);
+      const action = new fromNocAction.SetAffirmationDisagreeError();
+      expect(action.type).toBe(fromNocAction.SET_AFFIRMATION_DISAGREE_ERROR);
     });
   });
 

@@ -1,5 +1,19 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-three-quarters-from-desktop">
+
+    <div *ngIf="(validationErrors$ | async)?.message" class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+      <h2 class="govuk-error-summary__title" id="error-summary-title">
+        There is a problem
+      </h2>
+      <div class="govuk-error-summary__body">
+        <ul class="govuk-list govuk-error-summary__list">
+          <li>
+            <a href="noc#affirmation">You must confirm the information you've provided</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
     <div class="hmcts-page-heading">
       <div class="hmcts-page-heading__title">
         <h1 class="govuk-heading-l">Check and submit</h1>
@@ -7,6 +21,9 @@
     </div>
     <div>
       <exui-noc-check-your-answers [qAndA$]="qAndA$"></exui-noc-check-your-answers>
+    </div>
+    <div>
+      <exui-noc-affirmation [affirmationAgreed]="affirmationAgreed"></exui-noc-affirmation>
     </div>
   </div>
 </div>

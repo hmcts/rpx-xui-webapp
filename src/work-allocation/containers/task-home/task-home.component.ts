@@ -23,14 +23,14 @@ export class TaskHomeComponent implements OnInit {
   /**
    * Temp Task List
    */
-  public tasks: Task[] = [
+  public allTasks: Task[] = [
     {
-      id: '12345678901123456',
-      caseReference: '1234 5678 9012 3456',
+      id: '1604075580956811',
+      caseReference: '1604 0755 8095 6811',
       caseName: 'Kili Muso',
-      caseCategory: 'Protection',
+      caseCategory: 'Grant of representation',
       location: 'Taylor House',
-      taskName: 'Review respondent evidence',
+      taskName: 'Apply for probate',
       dueDate: new Date(1604938789000),
       actions: [
         {
@@ -127,6 +127,8 @@ export class TaskHomeComponent implements OnInit {
       ]
     },
   ];
+
+  public tasks: Task[] = this.allTasks.slice(0, 2);
 
   private readonly CASE_REFERENCE_FIELD: TaskFieldConfig = {
     name: 'caseReference',
@@ -253,17 +255,19 @@ export class TaskHomeComponent implements OnInit {
 
   // Remove after integration.
   private sortTasks(): void {
-    this.tasks = this.tasks.sort((a: Task, b: Task) => {
-      const aVal = a[this.sortedBy.fieldName];
-      const bVal = b[this.sortedBy.fieldName];
-      let sortVal = 0;
-      if (typeof aVal === 'string') {
-        sortVal = aVal.localeCompare(bVal);
-      } else if (aVal instanceof Date) {
-        sortVal = aVal.getTime() - new Date(bVal).getTime();
-      }
-      return this.sortedBy.order === TaskSort.ASC ? sortVal : -sortVal;
-    });
+    if (this.tasks && this.sortedBy) {
+      this.tasks = this.tasks.sort((a: Task, b: Task) => {
+        const aVal = a[this.sortedBy.fieldName];
+        const bVal = b[this.sortedBy.fieldName];
+        let sortVal = 0;
+        if (typeof aVal === 'string') {
+          sortVal = aVal.localeCompare(bVal);
+        } else if (aVal instanceof Date) {
+          sortVal = aVal.getTime() - new Date(bVal).getTime();
+        }
+        return this.sortedBy.order === TaskSort.ASC ? sortVal : -sortVal;
+      });
+    }
   }
 
 
@@ -276,8 +280,12 @@ export class TaskHomeComponent implements OnInit {
     // Set up the fields, based on the current URL.
     if (this.router.url === this.MY_TASKS.href) {
       this.CASE_REFERENCE_FIELD.type = TaskFieldType.CASE_REFERENCE;
+      this.tasks = this.allTasks.slice(0, 2);
+      this.sortTasks();
     } else {
       this.CASE_REFERENCE_FIELD.type = TaskFieldType.STRING;
+      this.tasks = this.allTasks.slice(2);
+      this.sortTasks();
     }
   }
 }

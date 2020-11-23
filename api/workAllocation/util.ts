@@ -10,6 +10,10 @@ export function prepareSearchTaskUrl(baseUrl: string) {
   return `${baseUrl}/task`
 }
 
-export function prepareGetLocationUrl(baseUrl: string, locationId: string): string {
+export function prepareGetLocationByIdUrl(baseUrl: string, locationId: string): string {
   return `${baseUrl}/location/${locationId}`
+}
+
+export function prepareGetLocationsUrl(baseUrl: string): string {
+  return `${baseUrl}/location`
 }

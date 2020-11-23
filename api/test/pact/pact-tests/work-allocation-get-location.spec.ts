@@ -5,33 +5,12 @@ import * as path from 'path';
 
 import { EnhancedRequest } from '../../../lib/models';
 import { handleLocationGet } from '../../../workAllocation/locationService';
-import { Assignee } from './../../../workAllocation/interfaces/task';
+import { SERVER_ERROR, SUCCESS} from '../constants/behaviors';
 
-// TODO: Not needed for location?
-interface Payload {
-  behaviour?: string,
-  assignee: Assignee
-}
-
-// TODO: Rename to something more granular
-describe('Work Allocation API', () => {
+describe('Work Allocation Location API', () => {
 
   let mockServerPort: number
   let provider: Pact
-
-  const ASSIGNEE: Assignee = { id: '987654', userName: 'bob' };
-  const BEHAVIOURS = {
-    SUCCESS: {},
-    ALREADY_DONE: { behaviour: 'already-done' },
-    BAD_REQUEST: { behaviour: 'bad-request' },
-    FORBIDDEN: { behaviour: 'forbidden' },
-    UNSUPPORTED: { behaviour: 'unsupported' },
-    SERVER_ERROR: { behaviour: 'unsupported' }
-  };
-
-  function getPayload(behaviour: { behaviour?: string }): Payload {
-    return { ...behaviour, assignee: { ...ASSIGNEE } }
-  }
 
   before(async () => {
     mockServerPort = await getPort();
@@ -63,7 +42,7 @@ describe('Work Allocation API', () => {
         willRespondWith: {
           status: 200,
           headers: {'Content-Type': 'application/json'},
-          body: {},
+          body: SUCCESS,
         }
       })
     )
@@ -75,7 +54,6 @@ describe('Work Allocation API', () => {
 
       expect(status).equal(200);
     });
-
   })
 
   describe('Should return server error', () => {
@@ -90,7 +68,7 @@ describe('Work Allocation API', () => {
         },
         willRespondWith: {
           status: 500,
-          body: BEHAVIOURS.SERVER_ERROR,
+          body: SERVER_ERROR,
           headers: {'Content-Type': 'application/json'}
         }
       })
@@ -113,7 +91,7 @@ describe('Work Allocation API', () => {
         response = err;
       }
 
-      expect(response.data).deep.equal(BEHAVIOURS.SERVER_ERROR);
+      expect(response.data).deep.equal(SERVER_ERROR);
       expect(response.status).equal(500);
     });
   });

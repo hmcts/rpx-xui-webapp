@@ -39,6 +39,7 @@ export const initProxy = (app: Express) => {
         rewrite: false,
         source: '/icp',
         target: getConfigValue(SERVICES_ICP_API_URL),
+        ws: true,
     })
 
     applyProxy(app, {

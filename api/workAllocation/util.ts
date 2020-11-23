@@ -17,3 +17,23 @@ export function prepareGetLocationByIdUrl(baseUrl: string, locationId: string): 
 export function prepareGetLocationsUrl(baseUrl: string): string {
   return `${baseUrl}/location`
 }
+
+export function prepareCaseWorkerUrl(baseUrl: string) {
+  return `${baseUrl}/caseworker`
+}
+
+export function prepareCaseWorkerSearchUrl(baseUrl: string) {
+  return `${baseUrl}/caseworker/search`
+}
+
+export function prepareCaseWorkerForLocation(baseUrl: string, locationId: string) {
+  return `${baseUrl}/task/location/${locationId}`
+}
+
+export function prepareCaseWorkerForService(baseUrl: string, serviceId: string) {
+  return `${baseUrl}/task/service/${serviceId}`
+}
+
+export function prepareCaseWorkerForLocationAndService(baseUrl: string, locationId: string, serviceId: string) {
+  return `${baseUrl}/task/location/${locationId}/service/${serviceId}`
+}

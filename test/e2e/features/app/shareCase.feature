@@ -1,13 +1,12 @@
-@caseShare
 Feature: Share Case page features
-    User can share case with other users within organisation    
+    User can share case with other users within organisation
 
     Background: Login as professional user
         When I navigate to Expert UI Url
         Given I am logged into Expert UI with valid user details
         Then I should be redirected to EUI dashboard page
 
-     
+
     Scenario: Verify User can Deselect a case from list of selected cases
         When I click on Case list
         Then I am on case list page
@@ -77,7 +76,7 @@ Feature: Share Case page features
         Then I see share case page, case 1 has details collpased
         Then I see share case page, case 2 has details collpased
         Then I see share case page, case 3 has details collpased
-        
+
     Scenario: Verify Case details Open all/Close all
         When I click on Case list
         Then I am on case list page
@@ -218,8 +217,8 @@ Feature: Share Case page features
         Then I see Share Case check and confirm page
         Then I see Share Case changes are listed as modified in share case page
 
-    
-    Scenario: Verify back link on check and confirm page and changes persist in Share case page 
+
+    Scenario: Verify back link on check and confirm page and changes persist in Share case page
         When I click on Case list
         Then I am on case list page
         When I select search criteria jurisdiction "Family Divorce" case type "Divorce case - v115.00" state "Any" in case list page
@@ -248,7 +247,7 @@ Feature: Share Case page features
         Then I see Share Case page is displayed
         Then I see share case changes persisted in displayed in Share Case page
 
-    
+
     Scenario: Verify change link on check and confirm page and changes persist in Share case page
         When I click on Case list
         Then I am on case list page
@@ -319,7 +318,7 @@ Feature: Share Case page features
     #     Then I see Share Case check and confirm page
     #     Then I see Share Case changes are listed as modified in share case page
 
-    
+
     Scenario: Verify Completion o share case journey
         When I click on Case list
         Then I am on case list page

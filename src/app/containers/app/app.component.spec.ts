@@ -1,23 +1,22 @@
 import { of } from 'rxjs';
 import { AppComponent } from './app.component';
-import {TimeoutNotificationsService} from '@hmcts/rpx-xui-common-lib';
 
 describe('AppComponent', () => {
     let appComponent: AppComponent;
     let store: any;
-    let googleAnalyticsService: any;
+    let googleTagManagerService: any;
     let timeoutNotificationService: any;
 
     beforeEach(() => {
         store = jasmine.createSpyObj('store', ['pipe', 'dispatch']);
-        googleAnalyticsService = jasmine.createSpyObj('GoogleAnalyticsService', ['init']);
+        googleTagManagerService = jasmine.createSpyObj('GoogleTagManagerService', ['init']);
         timeoutNotificationService = jasmine.createSpyObj('TimeoutNotificationsService', ['notificationOnChange', 'initialise']);
-        appComponent = new AppComponent(store, googleAnalyticsService, timeoutNotificationService);
+        appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService);
     });
 
     it('Truthy', () => {
         expect(appComponent).toBeTruthy();
-        expect(googleAnalyticsService.init).toHaveBeenCalled();
+        expect(googleTagManagerService.init).toHaveBeenCalled();
     });
 
     it('signOutHandler', () => {

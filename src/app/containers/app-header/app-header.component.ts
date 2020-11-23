@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { CookieService } from 'ngx-cookie';
@@ -163,6 +163,13 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
         this.setAppHeaderProperties(applicationTheme);
       });
+
+    // Set up the active link whenever we detect that navigation has completed.
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.setupActiveNavLink(this.navItems);
+      }
+    });
   }
 
   public getApplicationThemeForUser(applicationThemes: Theme[]): Theme {
@@ -191,7 +198,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     } = applicationTheme;
 
     this.appHeaderTitle = appTitle;
-    this.navItems = AppUtils.setActiveLink(navigationItems, this.router.url);
+    this.setupActiveNavLink(navigationItems);
     this.userNav = accountNavigationItems;
     this.backgroundColor = backgroundColor;
     this.logoType = logoType;
@@ -248,5 +255,9 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
       this.store.dispatch(new fromActions.StopIdleSessionTimeout());
       return this.store.dispatch(new fromActions.Logout());
     }
+  }
+
+  private setupActiveNavLink(items: NavItemsModel[]): void {
+    this.navItems = AppUtils.setActiveLink(items, this.router.url);
   }
 }

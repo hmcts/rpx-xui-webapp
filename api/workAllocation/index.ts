@@ -9,7 +9,7 @@ import { handleLocationGet, handleLocationGetAll } from './locationService'
 import { handleTaskGet, handleTaskPost, handleTaskSearch } from './taskService'
 import { prepareCaseWorkerForLocation, prepareCaseWorkerForLocationAndService,
   prepareCaseWorkerForService, prepareCaseWorkerSearchUrl, prepareCaseWorkerUrl, prepareGetTaskUrl,
-  preparePostTaskUrlAction, prepareSearchTaskUrl, prepareGetLocationUrl, prepareLocationUrl } from './util'
+  preparePostTaskUrlAction, prepareSearchTaskUrl } from './util'
 
 export const baseUrl: string = 'http://localhost:8080'
 
@@ -133,38 +133,6 @@ export async function searchCaseWorker(req: EnhancedRequest, res: Response, next
     const { status, data } = await handlePostSearch(postTaskPath, req.body, req)
     res.status(status)
     res.send(data)
-  } catch (error) {
-    next(error)
-  }
-}
-
-/**
- * getLocation
- */
-export async function getLocation(req: EnhancedRequest, res: Response, next: NextFunction) {
-
-  try {
-    const getLocationPath: string = prepareGetLocationUrl(baseUrl, req.params.locationId)
-
-    const jsonResponse = await handleLocationGet(getLocationPath, req)
-    res.status(200)
-    res.send(jsonResponse)
-  } catch (error) {
-    next(error)
-  }
-}
-
-/**
- * Get All Locations
- */
-export async function getAllLocations(req: EnhancedRequest, res: Response, next: NextFunction) {
-
-  try {
-    const getLocationPath: string = prepareLocationUrl(baseUrl)
-
-    const jsonResponse = await handleLocationGetAll(getLocationPath, req)
-    res.status(200)
-    res.send(jsonResponse)
   } catch (error) {
     next(error)
   }

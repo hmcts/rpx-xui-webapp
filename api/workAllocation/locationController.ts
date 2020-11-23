@@ -9,8 +9,6 @@ export const baseUrl: string = 'http://localhost:8080'
 /**
  * getLocation
  *
- * TODO: Unit test
- *
  * Get the location using the location id.
  */
 export async function getLocationById(req: EnhancedRequest, res: Response, next: NextFunction) {
@@ -18,7 +16,6 @@ export async function getLocationById(req: EnhancedRequest, res: Response, next:
   try {
 
     const path: string = prepareGetLocationByIdUrl(baseUrl, req.params.locationId)
-
     const locationById = await handleLocationGet(path, req)
 
     res.status(200)
@@ -31,14 +28,12 @@ export async function getLocationById(req: EnhancedRequest, res: Response, next:
 /**
  * Get locations
  *
- * TODO: Unit test
  */
 export async function getLocations(req: EnhancedRequest, res: Response, next: NextFunction) {
 
   try {
 
     const path: string = prepareGetLocationsUrl(baseUrl)
-
     const locations = await handleLocationGet(path, req)
 
     res.status(200)

@@ -5,7 +5,7 @@ import * as path from 'path'
 import { EnhancedRequest } from '../../../lib/models'
 import { handleTaskGet } from '../../../workAllocation/taskService'
 
-describe("Work Allocation API", () => {
+describe('Work Allocation API', () => {
 
     let MOCK_SERVER_PORT
     let workallocationUrl

@@ -1,9 +1,9 @@
 import 'mocha';
 
-import * as chai from 'chai'
+import * as chai from 'chai';
 import {expect} from 'chai';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai'
+import * as sinonChai from 'sinon-chai';
 import {mockReq, mockRes} from 'sinon-express-mock';
 
 import {http} from '../lib/http';
@@ -45,14 +45,11 @@ describe('workAllocation', () => {
       });
       const response = mockRes();
 
-      // Call production code
       await getLocationById(req, response, next);
 
-      // Should have the correct URL.
       const args = spy.getCall(0).args;
       expect(args[0]).to.equal(`${baseUrl}/location/${LOCATION_ID}`);
 
-      // Should have received the HTTP response. The get simply returns the data.
       expect(response.send).to.have.been.calledWith(sinon.match(SUCCESS_RESPONSE.data));
     });
 
@@ -83,11 +80,9 @@ describe('workAllocation', () => {
 
       await getLocations(req, response, next);
 
-      // Should have the correct URL.
       const args = spy.getCall(0).args;
       expect(args[0]).to.equal(`${baseUrl}/location`);
 
-      // Should have received the HTTP response. The get simply returns the data.
       expect(response.send).to.have.been.calledWith(sinon.match(SUCCESS_RESPONSE.data));
     });
 

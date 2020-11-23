@@ -36,7 +36,7 @@ describe('Location Service', () => {
 
       const args = spy.getCall(0).args;
 
-      expect(args[0]).to.equal(path); // Correct url.
+      expect(args[0]).to.equal(path);
     });
   });
 

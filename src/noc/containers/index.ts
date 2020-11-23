@@ -10,6 +10,9 @@ import { NocPhoneUkFieldComponent } from './noc-field/phone-uk';
 import { NocPostcodeFieldComponent } from './noc-field/postcode';
 import { NocTextFieldComponent } from './noc-field/text';
 import { NocYesNoFieldComponent } from './noc-field/yes-no';
+import { NocDateFieldComponent } from './noc-field/date';
+import { NocDateTimeFieldComponent } from './noc-field/datetime';
+import { NocTimeFieldComponent } from './noc-field/time';
 import { NocHomeComponent } from './noc-home/noc-home.component';
 import { NocNavigationComponent } from './noc-navigation/noc-navigation.component';
 import { NocQAndAComponent } from './noc-q-and-a/noc-q-and-a.component';
@@ -29,7 +32,10 @@ export const containers: any[] = [
   NocEmailFieldComponent,
   NocPhoneUkFieldComponent,
   NocYesNoFieldComponent,
-  NocPostcodeFieldComponent
+  NocPostcodeFieldComponent,
+  NocDateFieldComponent,
+  NocDateTimeFieldComponent,
+  NocTimeFieldComponent
 ];
 
 export * from './noc-home/noc-home.component';

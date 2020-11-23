@@ -43,4 +43,40 @@ describe('NocValidators', () => {
     const phoneUKValidator = NocValidators.phoneUKValidator();
     expect(phoneUKValidator(control)).toBeUndefined();
   });
+
+  it('dateValidator invalid case', () => {
+    control.setValue('24/12/2019');
+    const validator = NocValidators.dateValidator();
+    expect(validator(control)).toEqual({date: true});
+  });
+
+  it('dateValidator valid case', () => {
+    control.setValue('24/13/2019');
+    const validator = NocValidators.dateValidator();
+    expect(validator(control)).toBeUndefined();
+  });
+
+  it('dateTimeValidator invalid case', () => {
+    control.setValue('24/12/2019 09:15:00');
+    const validator = NocValidators.dateTimeValidator();
+    expect(validator(control)).toEqual({datetime: true});
+  });
+
+  it('dateTimeValidator valid case', () => {
+    control.setValue('24/13/2019 30:15:00');
+    const validator = NocValidators.dateTimeValidator();
+    expect(validator(control)).toBeUndefined();
+  });
+
+  it('timeValidator invalid case', () => {
+    control.setValue('09:15:00');
+    const validator = NocValidators.timeValidator();
+    expect(validator(control)).toEqual({time: true});
+  });
+
+  it('timeValidator valid case', () => {
+    control.setValue('30:15:00');
+    const validator = NocValidators.timeValidator();
+    expect(validator(control)).toBeUndefined();
+  });
 });

@@ -5,4 +5,5 @@ export type FieldTypeEnum =
   | 'YesOrNo'
   | 'Date'
   | 'DateTime'
+  | 'Time'
   | 'Email';

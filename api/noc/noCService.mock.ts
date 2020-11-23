@@ -174,6 +174,66 @@ export const init = () => {
       answer_field: null,
       question_id: 'QuestionId{{random.number}}',
     },
+    {
+      case_type_id: 'AAT',
+      order: '{{random.number}}',
+      question_text: 'What is the current date?',
+      answer_field_type: {
+        id: 'Date',
+        type: 'Date',
+        min: null,
+        max: null,
+        regular_expression: null,
+        fixed_list_items: [],
+        complex_fields: [],
+        collection_field_type: null,
+      },
+      display_context_parameter: '1',
+      challenge_question_id: 'NoC',
+      // tslint:disable-next-line:max-line-length
+      answer_field: null,
+      question_id: 'QuestionId{{random.number}}',
+    },
+    {
+      case_type_id: 'AAT',
+      order: '{{random.number}}',
+      question_text: 'What is the current date and time?',
+      answer_field_type: {
+        id: 'DateTime',
+        type: 'DateTime',
+        min: null,
+        max: null,
+        regular_expression: null,
+        fixed_list_items: [],
+        complex_fields: [],
+        collection_field_type: null,
+      },
+      display_context_parameter: '1',
+      challenge_question_id: 'NoC',
+      // tslint:disable-next-line:max-line-length
+      answer_field: null,
+      question_id: 'QuestionId{{random.number}}',
+    },
+    {
+      case_type_id: 'AAT',
+      order: '{{random.number}}',
+      question_text: 'What is the current time?',
+      answer_field_type: {
+        id: 'Time',
+        type: 'Time',
+        min: null,
+        max: null,
+        regular_expression: null,
+        fixed_list_items: [],
+        complex_fields: [],
+        collection_field_type: null,
+      },
+      display_context_parameter: '1',
+      challenge_question_id: 'NoC',
+      // tslint:disable-next-line:max-line-length
+      answer_field: null,
+      question_id: 'QuestionId{{random.number}}',
+    },
   ]
   // tslint:enable:object-literal-sort-keys
   // tslint:enable:max-line-length

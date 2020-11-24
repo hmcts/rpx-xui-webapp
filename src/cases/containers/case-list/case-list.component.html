@@ -33,6 +33,7 @@
         </div>
         <div aria-live="polite" class="hmcts-filter-layout__content" id="search-result" rightbody="" role="region">
           <ccd-search-result
+            #ccdSearchResult
             *ngIf="resultView"
             [selectionEnabled]="isCaseShareVisible((userDetails | async).canShareCases, getShareableJurisdictions() | async)"
             [jurisdiction]="jurisdiction"

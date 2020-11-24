@@ -15,13 +15,14 @@ function HeaderPage() {
     this.contentHeader = $("#content h1");
 
   this.clickManageCases = function () {
+    await BrowserWaits.waitForElement(this.manageCases);  
     this.manageCases.click();
     browser.sleep(SHORT_DELAY);
   };
 
   this.clickCaseList = async function () {
+    await BrowserWaits.waitForElement(this.caseList);  
     await this.caseList.click();
-
     var searchPageHeader = element(by.xpath("//*[@id = 'content']//h1[contains(text(),'Case List')]"));
     await BrowserWaits.waitForElement(searchPageHeader);
   };
@@ -34,6 +35,7 @@ function HeaderPage() {
   };
 
   this.clickFindCase = async function () {
+    await BrowserWaits.waitForElement(this.findCase);  
     await this.findCase.click();
 
     var searchPageHeader = element(by.xpath("//*[@id = 'content']//h1[contains(text() , 'Search')]"));
@@ -41,6 +43,7 @@ function HeaderPage() {
   };
 
   this.clickSignOut = function () {
+    await BrowserWaits.waitForElement(this.signOut);  
     this.signOut.click();
     browser.sleep(SHORT_DELAY);
   };

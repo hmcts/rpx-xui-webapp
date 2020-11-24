@@ -12,9 +12,9 @@ describe('Work Allocation Location API', () => {
   let provider: Pact
   const location = [
     {
-        "id": "string",
-        "locationName": "string",
-        "services": []
+        'id': 'string',
+        'locationName': 'string',
+        'services': []
     }
   ]
 

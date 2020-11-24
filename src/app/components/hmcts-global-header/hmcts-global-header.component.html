@@ -50,7 +50,7 @@
     </div>
 </div>
 
-<nav *ngIf="showItems" class="hmcts-primary-navigation transparent-background" [attr.aria-label]="label">
+<nav *ngIf="showItems" class="hmcts-primary-navigation transparent-background">
   <div class="hmcts-primary-navigation__container">
     <div class="govuk-header__logo" *ngIf="logoIsUsed"></div>
     <div class="hmcts-primary-navigation__nav">
@@ -64,7 +64,10 @@
     </div>
     <div class="hmcts-primary-navigation__search">
       <!-- TODO: Should turn on and off -->
-      <a class="hmcts-search-toggle__button transparent-background" [routerLink]="'/cases/case-search'">Find case</a>
+      <div class="hmcts-primary-navigation__item">
+        <a class="hmcts-search-toggle__button hmcts-primary-navigation__link transparent-background"
+          [attr.aria-current]="currentUrl === '/cases/case-search' ? true : null" [routerLink]="'/cases/case-search'">Find case</a>
+      </div>
     </div>
   </div>
 </nav>

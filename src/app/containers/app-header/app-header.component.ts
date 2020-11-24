@@ -55,7 +55,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   constructor(private store: Store<fromActions.State>,
               private cookieService: CookieService,
               private featureToggleService: FeatureToggleService,
-              private readonly router: Router) {
+              public router: Router) {
   }
 
   /**

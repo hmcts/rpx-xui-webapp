@@ -166,9 +166,13 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   public getApplicationThemeForUser(applicationThemes: Theme[]): Theme {
 
     const serialisedUserRoles: string = this.getSerialisedUserRolesFromCookie();
-    const userRoles: string[] = this.deserialiseUserRoles(serialisedUserRoles);
+    const defaultTheme = this.getDefaultTheme();
 
-    return this.getUsersTheme(userRoles, applicationThemes, this.getDefaultTheme());
+    if (serialisedUserRoles) {
+      const userRoles: string[] = this.deserialiseUserRoles(serialisedUserRoles);
+      return this.getUsersTheme(userRoles, applicationThemes, defaultTheme);
+    }
+    return defaultTheme;
   }
 
   /**

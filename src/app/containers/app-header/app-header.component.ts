@@ -52,9 +52,9 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
   private subscription: Subscription;
 
-  constructor(private store: Store<fromActions.State>,
-              private cookieService: CookieService,
-              private featureToggleService: FeatureToggleService,
+  constructor(private readonly store: Store<fromActions.State>,
+              private readonly cookieService: CookieService,
+              private readonly featureToggleService: FeatureToggleService,
               public router: Router) {
   }
 

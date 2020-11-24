@@ -41,7 +41,6 @@ describe('HmctsGlobalHeaderComponent', () => {
 
   it('should show the Case search button as inactive when the currentUrl does not match', () => {
     const searchButton = fixture.debugElement.nativeElement.querySelector('.hmcts-search-toggle__button');
-    console.log('searchButton');
     expect(searchButton).toBeDefined();
     expect(searchButton.textContent).toBe('Find case');
     expect(searchButton.getAttribute('aria-current')).not.toEqual('true');
@@ -49,7 +48,7 @@ describe('HmctsGlobalHeaderComponent', () => {
 
   it('should show the Case search button as active when the currentUrl matches', () => {
     // Get hold of the search button.
-    let searchButton = fixture.debugElement.nativeElement.querySelector('.hmcts-search-toggle__button');
+    const searchButton = fixture.debugElement.nativeElement.querySelector('.hmcts-search-toggle__button');
     expect(searchButton.getAttribute('aria-current')).not.toEqual('true');
 
     // And get its href value.

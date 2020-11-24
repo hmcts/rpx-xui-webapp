@@ -23,8 +23,14 @@ export const initProxy = (app: Express) => {
         source: [
             '/print',
             '/data',
-            '/api/addresses',
         ],
+        target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH),
+    })
+
+    applyProxy(app, {
+        rewrite: true,
+        rewriteUrl: '/addresses',
+        source: '/api/addresses',
         target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH),
     })
 

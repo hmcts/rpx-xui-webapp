@@ -14,7 +14,7 @@ function HeaderPage() {
 
     this.contentHeader = $("#content h1");
 
-  this.clickManageCases = function () {
+  this.clickManageCases = async function () {
     await BrowserWaits.waitForElement(this.manageCases);  
     this.manageCases.click();
     browser.sleep(SHORT_DELAY);
@@ -42,7 +42,7 @@ function HeaderPage() {
     await BrowserWaits.waitForElement(searchPageHeader); 
   };
 
-  this.clickSignOut = function () {
+  this.clickSignOut = async function () {
     await BrowserWaits.waitForElement(this.signOut);  
     this.signOut.click();
     browser.sleep(SHORT_DELAY);

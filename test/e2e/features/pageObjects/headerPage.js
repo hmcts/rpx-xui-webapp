@@ -27,6 +27,7 @@ function HeaderPage() {
   };
 
   this.clickCreateCase = async function () {
+    await BrowserWaits.waitForElement(this.createCase); 
     await this.createCase.click();
     await BrowserWaits.waitForElement($('#cc-jurisdiction'));
 

@@ -13,5 +13,5 @@ export async function handleLocationGet(path: string, req: EnhancedRequest): Pro
     const headers = setHeaders(req)
 
     const response: AxiosResponse = await http.get(path, { headers })
-    return response;
+    return response
 }

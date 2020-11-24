@@ -5,7 +5,7 @@ import * as path from 'path';
 
 import { EnhancedRequest } from '../../../lib/models';
 import { handleLocationGet } from '../../../workAllocation/locationService';
-import { SERVER_ERROR, SUCCESS} from '../constants/behaviors';
+import { SERVER_ERROR, SUCCESS} from '../constants/behaviours.spec';
 
 describe('Work Allocation Location API', () => {
 

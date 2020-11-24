@@ -10,7 +10,7 @@ describe('Work Allocation Location API', () => {
     let MOCK_SERVER_PORT
     let workallocationUrl
     let provider
-    const mockResponse = [{
+    const location = [{
         'id': 'string',
         'locationName': 'string',
         'services': []
@@ -49,7 +49,7 @@ describe('Work Allocation Location API', () => {
             willRespondWith: {
               status: 200,
               headers: {'Content-Type': 'application/json'},
-              body: mockResponse,
+              body: location,
             },
           })
         )

@@ -5,7 +5,6 @@ import {
   handleCaseWorkerForLocation, handleCaseWorkerForLocationAndService,
   handleCaseWorkerForService, handleCaseWorkerGetAll,
   handlePostSearch } from './caseWorkerService'
-import { handleLocationGet, handleLocationGetAll } from './locationService'
 import { handleTaskGet, handleTaskPost, handleTaskSearch } from './taskService'
 import { prepareCaseWorkerForLocation, prepareCaseWorkerForLocationAndService,
   prepareCaseWorkerForService, prepareCaseWorkerSearchUrl, prepareCaseWorkerUrl, prepareGetTaskUrl,

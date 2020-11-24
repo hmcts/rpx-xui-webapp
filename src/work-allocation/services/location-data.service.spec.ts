@@ -6,17 +6,17 @@ describe('WorkAllocation service', () => {
     it('should be Truthy', () => {
       const workAllocationService = new LocationDataService(mockHttpService);
       expect(workAllocationService).toBeTruthy();
-  });
+    });
 
-  it('getLocations', () => {
+    it('getLocations', () => {
       const workAllocationService = new LocationDataService(mockHttpService);
       workAllocationService.getLocations();
       expect(mockHttpService.get).toHaveBeenCalledWith(LocationDataService.locationUrl);
-  });
+    });
 
-  it('getLocation', () => {
+    it('getLocation', () => {
       const workAllocationService = new LocationDataService(mockHttpService);
       workAllocationService.getLocation('location123');
       expect(mockHttpService.get).toHaveBeenCalledWith(`${LocationDataService.locationUrl}/location123`);
-  });
+    });
 });

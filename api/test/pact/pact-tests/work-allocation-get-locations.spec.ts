@@ -10,6 +10,13 @@ describe('Work Allocation Location API', () => {
 
   let mockServerPort: number
   let provider: Pact
+  const location = [
+    {
+        "id": "string",
+        "locationName": "string",
+        "services": []
+    }
+  ]
 
   before(async () => {
     mockServerPort = await getPort();
@@ -46,7 +53,7 @@ describe('Work Allocation Location API', () => {
         willRespondWith: {
           status: 200,
           headers: {'Content-Type': 'application/json'},
-          body: LOCATION_BODY,
+          body: location,
         }
       })
     )

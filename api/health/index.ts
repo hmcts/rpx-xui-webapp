@@ -3,13 +3,9 @@ import {SESSION, xuiNode} from '@hmcts/rpx-xui-node-lib'
 import {getConfigValue, showFeature} from '../configuration'
 import {
   FEATURE_REDIS_ENABLED,
-  // FEATURE_TERMS_AND_CONDITIONS_ENABLED,
   SERVICE_S2S_PATH,
   SERVICES_DOCUMENTS_API_PATH,
   SERVICES_EM_ANNO_API_URL,
-  SERVICES_IDAM_API_URL,
-  SERVICES_IDAM_LOGIN_URL,
-  // SERVICES_TERMS_AND_CONDITIONS_URL
 } from '../configuration/references'
 import * as log4jui from '../lib/log4jui'
 import {JUILogger} from '../lib/models'
@@ -31,18 +27,9 @@ export const healthChecks = {
   checks: {
     documentsApi: checkServiceHealth(getConfigValue(SERVICES_DOCUMENTS_API_PATH)),
     emmoApi: checkServiceHealth(getConfigValue(SERVICES_EM_ANNO_API_URL)),
-    idamApi: checkServiceHealth(getConfigValue(SERVICES_IDAM_LOGIN_URL)),
-    idamWeb: checkServiceHealth(getConfigValue(SERVICES_IDAM_API_URL)),
     s2s: checkServiceHealth(getConfigValue(SERVICE_S2S_PATH)),
   },
 }
-
-/*if (showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED)) {
-  healthChecks.checks = {...healthChecks.checks, ...{
-  termsAndConditions: checkServiceHealth(getConfigValue(SERVICES_TERMS_AND_CONDITIONS_URL)),
-    },
-  }
-}*/
 
 /**
  * Add Reform standard Health Checks for /health and /health/liveness

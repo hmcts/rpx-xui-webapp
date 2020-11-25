@@ -18,9 +18,15 @@ import openRoutes from './openRoutes'
 import {initProxy} from './proxy.config'
 import routes from './routes'
 import * as searchCases from './searchCases'
-// import taskRouter from './workAllocation/routes'
+import taskRouter from './workAllocation/routes'
 
 export const app = express()
+
+/**
+ * Add Reform Standard health checks.
+ */
+health.addReformHealthCheck(app)
+
 if (showFeature(FEATURE_HELMET_ENABLED)) {
     app.use(helmet(getConfigValue(HELMET)))
 }
@@ -36,11 +42,6 @@ initProxy(app)
 
 app.use(bodyParser.json({limit: '5mb'}))
 app.use(bodyParser.urlencoded({limit: '5mb', extended: true}))
-
-/**
- * Add Reform Standard health checks.
- */
-health.addReformHealthCheck(app)
 
 app.use('/external', openRoutes)
 app.post('/data/internal/searchCases', authInterceptor, searchCases.getCases)

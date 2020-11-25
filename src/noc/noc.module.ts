@@ -16,6 +16,9 @@ import { PaletteService } from './containers/noc-field/palette.service';
 import { NocPhoneUkFieldComponent } from './containers/noc-field/phone-uk';
 import { NocPostcodeFieldComponent } from './containers/noc-field/postcode';
 import { NocTextFieldComponent } from './containers/noc-field/text';
+import { NocDateFieldComponent } from './containers/noc-field/date';
+import { NocDateTimeFieldComponent } from './containers/noc-field/datetime';
+import { NocTimeFieldComponent } from './containers/noc-field/time';
 import { UtilsModule } from './containers/noc-field/utils/utils.module';
 import { NocYesNoFieldComponent, YesNoService } from './containers/noc-field/yes-no';
 import { nocRouting } from './noc.routes';
@@ -43,7 +46,10 @@ import { effects, reducers } from './store';
     NocEmailFieldComponent,
     NocPhoneUkFieldComponent,
     NocYesNoFieldComponent,
-    NocPostcodeFieldComponent
+    NocPostcodeFieldComponent,
+    NocDateFieldComponent,
+    NocDateTimeFieldComponent,
+    NocTimeFieldComponent
   ],
   providers: [{
       provide: AbstractAppConfig,

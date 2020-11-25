@@ -6,6 +6,9 @@ import { NocEmailFieldComponent } from './email/noc-email-field.component';
 import { NocPhoneUkFieldComponent } from './phone-uk/noc-phone-uk-field.component';
 import { NocYesNoFieldComponent } from './yes-no';
 import { NocPostcodeFieldComponent } from './postcode';
+import { NocDateFieldComponent } from './date';
+import { NocDateTimeFieldComponent } from './datetime';
+import { NocTimeFieldComponent } from './time';
 
 @Injectable()
 export class PaletteService {
@@ -24,6 +27,12 @@ export class PaletteService {
         return NocYesNoFieldComponent;
       case 'Postcode':
         return NocPostcodeFieldComponent;
+      case 'Date':
+        return NocDateFieldComponent;
+      case 'DateTime':
+        return NocDateTimeFieldComponent;
+      case 'Time':
+        return NocTimeFieldComponent;
       default:
         return NocTextFieldComponent;
     }

@@ -30,6 +30,12 @@ export class FormValidatorsService {
         validators.push(NocValidators.postcodeValidator());
       } else if (nocQuestion.answer_field_type.type === 'PhoneUK') {
         validators.push(NocValidators.phoneUKValidator());
+      } else if (nocQuestion.answer_field_type.type === 'Date') {
+        validators.push(NocValidators.dateValidator());
+      } else if (nocQuestion.answer_field_type.type === 'DateTime') {
+        validators.push(NocValidators.dateTimeValidator());
+      } else if (nocQuestion.answer_field_type.type === 'Time') {
+        validators.push(NocValidators.timeValidator());
       }
       if (control.validator) {
         validators.push(control.validator);

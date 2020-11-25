@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TaskSearchParameters } from 'api/workAllocation/interfaces/taskSearchParameter';
 import { Observable } from 'rxjs';
+import { Task } from '../models/tasks';
 
 import { Assignee } from './../models/dtos/task';
 
@@ -14,7 +15,7 @@ export enum ACTION {
   UNCLAIM = 'unclaim'
 }
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class WorkAllocationTaskService {
 
   constructor(private readonly http: HttpClient) {}
@@ -54,8 +55,8 @@ export class WorkAllocationTaskService {
     return this.http.post<any>(this.getActionUrl(taskId, ACTION.UNCLAIM), {});
   }
 
-  public getTask(taskId: string): Observable<any> {
-    return this.http.get(`${BASE_URL}${taskId}`);
+  public getTask(taskId: string): Observable<Task> {
+    return this.http.get<Task>(`${BASE_URL}${taskId}`);
   }
 
   public getActionUrl(taskId: string, action: ACTION): string {

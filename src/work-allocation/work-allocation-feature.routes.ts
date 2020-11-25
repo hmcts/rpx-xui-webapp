@@ -1,10 +1,12 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HealthCheckGuard } from 'src/app/shared/guards/health-check.guard';
+import { TaskAssignmentComponent } from './containers';
 import { TaskHomeComponent } from './containers/task-home/task-home.component';
 import { TaskListComponent } from './containers/task-list/task-list.component';
 import { TaskManagerComponent } from './containers/task-manager/task-manager.component';
 import { WorkAllocationFeatureToggleGuard } from './guards/work-allocation-feature-toggle.guard';
+import { TaskResolver } from './resolvers/task.resolver';
 
 export const ROUTES: Routes = [
     {
@@ -18,7 +20,15 @@ export const ROUTES: Routes = [
     {
       path: 'task-list',
       component: TaskListComponent,
-      canActivate: [WorkAllocationFeatureToggleGuard]
+      // canActivate: [WorkAllocationFeatureToggleGuard]
+    },
+    {
+      path: 'task-list/reassign/:taskId',
+      component: TaskAssignmentComponent,
+      // canActivate: [WorkAllocationFeatureToggleGuard],
+      resolve: {
+        task: TaskResolver
+      }
     },
     {
       path: 'task-manager',

@@ -27,13 +27,13 @@ export function prepareCaseWorkerSearchUrl(baseUrl: string) {
 }
 
 export function prepareCaseWorkerForLocation(baseUrl: string, locationId: string) {
-  return `${baseUrl}/task/location/${locationId}`
+  return `${baseUrl}/caseworker/location/${locationId}`
 }
 
 export function prepareCaseWorkerForService(baseUrl: string, serviceId: string) {
-  return `${baseUrl}/task/service/${serviceId}`
+  return `${baseUrl}/caseworker/service/${serviceId}`
 }
 
 export function prepareCaseWorkerForLocationAndService(baseUrl: string, locationId: string, serviceId: string) {
-  return `${baseUrl}/task/location/${locationId}/service/${serviceId}`
+  return `${baseUrl}/caseworker/location/${locationId}/service/${serviceId}`
 }

@@ -1,4 +1,3 @@
-import { Caseworker } from 'api/workAllocation/interfaces/task';
 import { CaseworkerDataService } from './case-worker-data.service';
 
 describe('WorkAllocation service', () => {

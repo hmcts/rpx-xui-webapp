@@ -8,9 +8,7 @@ export const backButtonVisibilityStates = [
   NocState.ANSWER_INCOMPLETE,
   NocState.ANSWER_SUBMISSION_FAILURE,
   NocState.CHECK_ANSWERS,
-  NocState.AFFIRMATION_NOT_AGREED,
-  NocState.SUBMISSION_SUCCESS_PENDING,
-  NocState.SUBMISSION_SUCCESS_APPROVED
+  NocState.AFFIRMATION_NOT_AGREED
 ];
 
 export const continueButtonVisibilityStates = [

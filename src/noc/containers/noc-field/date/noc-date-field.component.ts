@@ -58,9 +58,9 @@ export class NocDateFieldComponent extends AbstractFieldWriteComponent implement
   private getValues(): string {
     if (this.dateGroup.value.day || this.dateGroup.value.month || this.dateGroup.value.year) {
       return [
-        this.dateGroup.value.year ? this.dateGroup.value.year : '',
+        this.dateGroup.value.day ? this.pad(this.dateGroup.value.day) : '',
         this.dateGroup.value.month ? this.pad(this.dateGroup.value.month) : '',
-        this.dateGroup.value.day ? this.pad(this.dateGroup.value.day) : ''
+        this.dateGroup.value.year ? this.dateGroup.value.year : ''
       ].join('/');
     }
     return null;

@@ -80,9 +80,9 @@ export class NocDateTimeFieldComponent extends AbstractFieldWriteComponent imple
   private getValues(): string {
     if (this.datetimeGroup.value.day || this.datetimeGroup.value.month || this.datetimeGroup.value.year || this.datetimeGroup.value.hour || this.datetimeGroup.value.minute || this.datetimeGroup.value.second) {
       const date = [
-        this.datetimeGroup.value.day ? this.datetimeGroup.value.day : '',
+        this.datetimeGroup.value.day ? this.pad(this.datetimeGroup.value.day) : '',
         this.datetimeGroup.value.month ? this.pad(this.datetimeGroup.value.month) : '',
-        this.datetimeGroup.value.day ? this.pad(this.datetimeGroup.value.year) : ''
+        this.datetimeGroup.value.year ? this.datetimeGroup.value.year : ''
       ].join('/');
         const time = [
           this.datetimeGroup.value.hour ? this.pad(this.datetimeGroup.value.hour) : '',

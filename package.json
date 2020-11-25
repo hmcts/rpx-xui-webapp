@@ -124,6 +124,7 @@
     "web-animations-js": "^2.3.2",
     "xlsx": "^0.15.4",
     "zone.js": "~0.8.26",
+    "mochawesome": "^6.1.1",
     "mochawesome-merge": "^4.1.0",
     "mochawesome-report-generator": "^5.1.0"
   },
@@ -192,7 +193,7 @@
     "webpack-source-map-support": "^2.0.1",
     "base-64": "^0.1.0",
     "node-fetch": "^2.6.1",
-      "mocha": "^8.1.1",
+    "mocha": "^8.1.1",
     "uuid": "^8.3.1" 
         
   },

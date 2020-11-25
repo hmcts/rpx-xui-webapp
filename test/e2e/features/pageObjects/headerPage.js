@@ -15,32 +15,36 @@ function HeaderPage() {
 
     this.contentHeader = $("#content h1");
 
-  this.clickManageCases = function () {
+  this.clickManageCases = async function () {
+    await BrowserWaits.waitForElement(this.manageCases);  
     this.manageCases.click();
     browser.sleep(SHORT_DELAY);
   };
 
   this.clickCaseList = async function () {
+    await BrowserWaits.waitForElement(this.caseList);  
     await this.caseList.click();
-
     var searchPageHeader = element(by.xpath("//*[@id = 'content']//h1[contains(text(),'Case List')]"));
     await BrowserWaits.waitForElement(searchPageHeader);
   };
 
   this.clickCreateCase = async function () {
+    await BrowserWaits.waitForElement(this.createCase); 
     await this.createCase.click();
     await BrowserWaits.waitForElement($('#cc-jurisdiction'));
 
   };
 
   this.clickFindCase = async function () {
+    await BrowserWaits.waitForElement(this.findCase);  
     await this.findCase.click();
 
     var searchPageHeader = element(by.xpath("//*[@id = 'content']//h1[contains(text() , 'Search')]"));
     await BrowserWaits.waitForElement(searchPageHeader); 
   };
 
-  this.clickSignOut = function () {
+  this.clickSignOut = async function () {
+    await BrowserWaits.waitForElement(this.signOut);  
     this.signOut.click();
     browser.sleep(SHORT_DELAY);
   };

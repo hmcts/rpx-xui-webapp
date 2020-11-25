@@ -18,7 +18,6 @@ import openRoutes from './openRoutes'
 import {initProxy} from './proxy.config'
 import routes from './routes'
 import * as searchCases from './searchCases'
-import taskRouter from './workAllocation/routes'
 
 export const app = express()
 
@@ -46,8 +45,6 @@ app.use(bodyParser.urlencoded({limit: '5mb', extended: true}))
 app.use('/external', openRoutes)
 app.post('/data/internal/searchCases', authInterceptor, searchCases.getCases)
 app.use('/api', routes)
-
-// app.use('/workallocation', taskRouter)
 
 // @ts-ignore
 const logger: JUILogger = log4jui.getLogger('Application')

@@ -1,5 +1,4 @@
-import { TaskSearchParameters } from 'api/workAllocation/interfaces/taskSearchParameter';
-
+import {TaskSearchParameters} from '../models/dtos/task-search-parameter';
 import { ACTION, WorkAllocationTaskService } from './work-allocation-task.service';
 
 describe('WorkAllocation service', () => {

@@ -1,9 +1,9 @@
 import { Router } from 'express'
 
-import { getLocationById, getLocations } from './locationController'
 import { getAllCaseWorkers, getAllCaseWorkersForLocation, getCaseWorkersForLocationAndService,
         getCaseWorkersForService, getTask, postTaskAction, searchCaseWorker, searchTask } from '.'
 import authInterceptor from '../lib/middleware/auth'
+import { getLocationById, getLocations } from './locationController'
 
 const router = Router({ mergeParams: true })
 

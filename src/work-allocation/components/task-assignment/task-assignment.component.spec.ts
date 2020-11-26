@@ -66,7 +66,7 @@ describe('WorkAllocation', () => {
 
     const getSelect = (id: string): HTMLSelectElement => {
       return fixture.debugElement.nativeElement.querySelector(id);
-    }
+    };
 
     beforeEach(async(() => {
       TestBed.configureTestingModule({
@@ -192,7 +192,7 @@ describe('WorkAllocation', () => {
         expect(wrapper.emittedEvents.includes(JB)).toBeTruthy();
 
         // And now let's choose "Select name" again.
-        select.value = select.options[0].value; // 
+        select.value = select.options[0].value;
         select.dispatchEvent(new Event('change'));
         fixture.detectChanges();
         fixture.whenStable().then(() => {

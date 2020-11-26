@@ -58,9 +58,9 @@ export class NocTimeFieldComponent extends AbstractFieldWriteComponent implement
   private getValues(): string {
     if (this.timeGroup.value.hour || this.timeGroup.value.minute || this.timeGroup.value.second) {
       return [
-        this.timeGroup.value.hour ? this.pad(this.timeGroup.value.hour) : '',
-        this.timeGroup.value.minute ? this.pad(this.timeGroup.value.minute) : '',
-        this.timeGroup.value.second ? this.pad(this.timeGroup.value.second) : ''
+        this.timeGroup.value.hour !== null ? this.pad(this.timeGroup.value.hour) : '',
+        this.timeGroup.value.minute !== null ? this.pad(this.timeGroup.value.minute) : '',
+        this.timeGroup.value.second !== null ? this.pad(this.timeGroup.value.second) : ''
       ].join(':');
     }
     return null;

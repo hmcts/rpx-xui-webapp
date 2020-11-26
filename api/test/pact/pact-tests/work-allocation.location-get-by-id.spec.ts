@@ -1,11 +1,12 @@
 import { Pact } from '@pact-foundation/pact';
-import { assert, expect } from 'chai';
+import { expect } from 'chai';
 import * as getPort from 'get-port';
 import * as path from 'path';
 
 import { EnhancedRequest } from '../../../lib/models';
 import { handleLocationGet } from '../../../workAllocation/locationService';
-import { SERVER_ERROR, SUCCESS} from '../constants/behaviours.spec';
+import { SERVER_ERROR } from '../constants/work-allocation/behaviours.spec';
+import { LOCATIONS } from './../constants/work-allocation/locations.spec';
 
 describe('Work Allocation Location API', () => {
 
@@ -15,7 +16,7 @@ describe('Work Allocation Location API', () => {
   before(async () => {
     mockServerPort = await getPort();
     provider = new Pact({
-      consumer: 'xui_work_allocation_get_location',
+      consumer: 'xui_work_allocation_location_get_by_id',
       provider: 'WorkAllocation_api_location', // TODO: Need to clarify naming conventions here, as we're using different ones.
       dir: path.resolve(__dirname, '../pacts'),
       log: path.resolve(__dirname, '../logs', 'work-allocation.log'),
@@ -29,27 +30,51 @@ describe('Work Allocation Location API', () => {
   // Write Pact when all tests done
   after(() => provider.finalize());
 
-  // TODO: SHould this be a .well-known-endpoint or something else.
-  describe('should return location when locationId is sent in via params.', () => {
+  describe('request to get a location with id of a', () => {
     before(() =>
       provider.addInteraction({
-        state: 'location is given',
-        uponReceiving: 'a request for location',
+        state: 'Location A is returned',
+        uponReceiving: 'a request for location with an id of a',
         withRequest: {
           method: 'GET',
-          path: '/location/42',
+          path: '/location/a'
         },
         willRespondWith: {
           status: 200,
           headers: {'Content-Type': 'application/json'},
-          body: SUCCESS,
+          body: LOCATIONS.A,
         }
       })
     )
 
-    it('returns success with a 200', async () => {
+    it('returns Location A', async () => {
+      const locationPath: string = `${provider.mockService.baseUrl}/location/a`;
+      const { status } = await handleLocationGet(locationPath, {} as EnhancedRequest);
 
-      const locationPath: string = `${provider.mockService.baseUrl}/location/42`;
+      expect(status).equal(200);
+    });
+  })
+
+
+  describe('request to get a location with id of b', () => {
+    before(() =>
+      provider.addInteraction({
+        state: 'Location B is returned',
+        uponReceiving: 'a request for location with an id of b',
+        withRequest: {
+          method: 'GET',
+          path: '/location/b'
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {'Content-Type': 'application/json'},
+          body: LOCATIONS.B,
+        }
+      })
+    )
+
+    it('returns Location B', async () => {
+      const locationPath: string = `${provider.mockService.baseUrl}/location/b`;
       const { status } = await handleLocationGet(locationPath, {} as EnhancedRequest);
 
       expect(status).equal(200);

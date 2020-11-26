@@ -230,7 +230,7 @@ export class TaskHomeComponent implements OnInit {
     // Remove after integration
     console.log('Task Home received InvokedTaskAction:');
     console.log(taskAction.task.id);
-    this.router.navigate([`/reassign/${taskAction.task.id}`]);
+    this.router.navigate([`/tasks/task-list/reassign/123456`]);
   }
 
   // Remove after integration.

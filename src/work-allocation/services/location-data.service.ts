@@ -1,7 +1,10 @@
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+
 import { Location } from '../models/dtos/task';
 
+@Injectable()
 export class LocationDataService {
     public static locationUrl: string = '/workallocation/location';
     public constructor(private readonly http: HttpClient) {}

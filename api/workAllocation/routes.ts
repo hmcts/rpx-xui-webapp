@@ -16,10 +16,10 @@ router.use('/task', searchTask)
 router.use('/location/:locationId', getLocationById)
 router.use('/location', getLocations)
 
-router.use('/caseworker', getAllCaseWorkers)
+router.use('/caseworker/location/:locationId/service/:serviceId', getCaseWorkersForLocationAndService)
 router.use('/caseworker/location/:locationId', getAllCaseWorkersForLocation)
 router.use('/caseworker/service/:serviceId', getCaseWorkersForService)
-router.use('/caseworker/location/:locationId/service/:serviceId', getCaseWorkersForLocationAndService)
 router.use('/caseworker/search', searchCaseWorker)
+router.use('/caseworker', getAllCaseWorkers)
 
 export default router

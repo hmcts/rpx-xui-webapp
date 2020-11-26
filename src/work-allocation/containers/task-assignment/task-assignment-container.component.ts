@@ -1,19 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { TaskService, TaskSort } from '../../enums';
+import { TaskFieldType, TaskService, TaskSort, TaskView } from '../../enums';
+import { TaskFieldConfig } from '../../models/tasks';
 import TaskServiceConfig from '../../models/tasks/task-service-config.model';
-import { TaskFieldType, TaskView } from './../../enums';
-import { TaskFieldConfig } from './../../models/tasks';
 
 @Component({
-    selector: 'exui-task-assignment',
-    templateUrl: 'task-assignment.component.html',
-    styleUrls: ['task-home.component.scss']
+    selector: 'exui-task-container-assignment',
+    templateUrl: 'task-assignment-container.component.html',
+    styleUrls: ['task-home-container.component.scss']
   })
 
-export class TaskAssignmentComponent implements OnInit {
+export class TaskAssignmentContainerComponent implements OnInit {
    private tasks: any [];
-    constructor(private route: ActivatedRoute) {}
+    constructor(private readonly route: ActivatedRoute) {}
     /**
      * Mock TaskFieldConfig[]
      *

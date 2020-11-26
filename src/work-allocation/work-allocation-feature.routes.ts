@@ -1,7 +1,7 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HealthCheckGuard } from 'src/app/shared/guards/health-check.guard';
-import { TaskAssignmentComponent } from './containers';
+import { TaskAssignmentContainerComponent } from './containers';
 import { TaskHomeComponent } from './containers/task-home/task-home.component';
 import { TaskListComponent } from './containers/task-list/task-list.component';
 import { TaskManagerComponent } from './containers/task-manager/task-manager.component';
@@ -24,7 +24,7 @@ export const ROUTES: Routes = [
     },
     {
       path: 'task-list/reassign/:taskId',
-      component: TaskAssignmentComponent,
+      component: TaskAssignmentContainerComponent,
       // canActivate: [WorkAllocationFeatureToggleGuard],
       resolve: {
         task: TaskResolver

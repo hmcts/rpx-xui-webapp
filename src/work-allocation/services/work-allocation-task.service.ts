@@ -56,7 +56,8 @@ export class WorkAllocationTaskService {
   }
 
   public getTask(taskId: string): Observable<Task> {
-    return this.http.get<Task>(`${BASE_URL}${taskId}`);
+    const url = `${BASE_URL}${taskId}`;
+    return this.http.get<Task>(url);
   }
 
   public getActionUrl(taskId: string, action: ACTION): string {

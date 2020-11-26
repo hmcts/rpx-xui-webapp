@@ -1,1 +1,18 @@
-<h1>task assingment</h1>
+<exui-app-header></exui-app-header>
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper" id="main-content" role="main">
+      <h1 class="govuk-heading-m">Reassign a task</h1>
+      <p>Reassign a task to a colleague.</p>
+      <exui-task-list [taskServiceConfig]="taskServiceConfig" [tasks]="tasks" [fields]="fields" [sortedBy]="sortedBy"
+                      (sortEvent)="onSortHandler($event)" (actionEvent)="onActionHandler($event)"></exui-task-list>
+      <h2 class="govuk-heading-m">Choose a colleague</h2>
+      <div class="govuk-form-group">
+
+      </div>
+      <button class="govuk-button" type="submit">Reassign</button>
+      <a href="/mvp-4-WA/task-list/mytasks-open" role="button" draggable="false" class="govuk-button govuk-button--secondary">
+        Cancel and go back
+      </a>
+    </main>
+  </div>
+<exui-app-footer></exui-app-footer>

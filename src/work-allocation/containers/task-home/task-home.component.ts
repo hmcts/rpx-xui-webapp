@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { TaskService, TaskSort } from '../../enums';
 import InvokedTaskAction from '../../models/tasks/invoked-task-action.model';
@@ -12,6 +13,8 @@ import { Task, TaskFieldConfig, TaskSortField } from './../../models/tasks';
   styleUrls: ['task-home.component.scss']
 })
 export class TaskHomeComponent implements OnInit {
+
+  constructor(private router: Router) {}
 
   /**
    * Temp Task List
@@ -226,7 +229,8 @@ export class TaskHomeComponent implements OnInit {
 
     // Remove after integration
     console.log('Task Home received InvokedTaskAction:');
-    console.log(taskAction);
+    console.log(taskAction.task.id);
+    this.router.navigate([`/reassign/${taskAction.task.id}`]);
   }
 
   // Remove after integration.

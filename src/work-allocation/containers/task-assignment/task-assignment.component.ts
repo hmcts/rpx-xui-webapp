@@ -69,6 +69,7 @@ export class TaskAssignmentComponent implements OnInit {
         fields: this.fields,
       };
     public ngOnInit(): void {
+      console.log(this.route.snapshot.data);
       this.tasks = [
         {
           id: '12345678901123456',
@@ -89,5 +90,9 @@ export class TaskAssignmentComponent implements OnInit {
             }
           ]
         }];
+    }
+
+    public reAssign(): void {
+      console.log('Re-Assign');
     }
 }

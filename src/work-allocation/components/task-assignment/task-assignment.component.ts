@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 import { Caseworker, Location } from './../../models/dtos/task';
 import { CaseworkerDataService } from './../../services/case-worker-data.service';
@@ -6,12 +6,22 @@ import { LocationDataService } from './../../services/location-data.service';
 
 @Component({
   selector: 'exui-task-assignment',
-  templateUrl: './task-assignment.component.html',
-  styleUrls: ['task-assignment.component.scss']
+  templateUrl: './task-assignment.component.html'
 })
-export class TaskAssignmentComponent {
+export class TaskAssignmentComponent implements OnInit {
 
-  @Input() public excludeCaseworkers: Caseworker[];
+  @Input()
+  public get excludeCaseworkers(): Caseworker[] {
+    return this.pExcludeCaseworkers;
+  }
+  public set excludeCaseworkers(value: Caseworker[]) {
+    if (this.pExcludeCaseworkers !== value) {
+      this.pExcludeCaseworkers = value;
+      if (this.pAllCaseworkers && this.pAllCaseworkers.length > 0) {
+        this.setupCaseworkers(this.pAllCaseworkers);
+      }
+    }
+  }
 
   /**
    * Emit an event to notify the parent component that the selected
@@ -31,6 +41,7 @@ export class TaskAssignmentComponent {
     return this.pLocation;
   }
   public set location(value: Location) {
+    value = value || this.ALL_LOCATIONS; // undefined or null means "All"
     if (this.pLocation !== value) {
       this.pLocation = value;
       this.handleLocationChanged();
@@ -67,15 +78,23 @@ export class TaskAssignmentComponent {
   private pLocations: Location[];
   private pCaseworker: Caseworker = null;
   private pCaseworkers: Caseworker[];
+  private pAllCaseworkers: Caseworker[]; // Holds the unfiltered list for the location.
+  private pExcludeCaseworkers: Caseworker[];
 
   constructor(
     private readonly locationService: LocationDataService,
     private readonly caseworkerService: CaseworkerDataService
   ) {
+  }
+
+  public ngOnInit(): void {
     // Get the locations for this component.
     this.locationService.getLocations().subscribe(locations => {
       this.pLocations = [ ...locations ];
     });
+
+    // Also get the caseworkers at the initial location (which may be "All").
+    this.handleLocationChanged();
   }
 
   /**
@@ -86,7 +105,7 @@ export class TaskAssignmentComponent {
    */
   public caseworkerIsSelectable(caseworker: Caseworker): boolean {
     if (this.excludeCaseworkers) {
-      return this.excludeCaseworkers.includes(caseworker) === false;
+      return !this.excludeCaseworkers.includes(caseworker);
     }
     return true;
   }
@@ -95,13 +114,6 @@ export class TaskAssignmentComponent {
   private handleLocationChanged(): void {
     // When the location is changed, remove the caseworker selection.
     this.caseworker = null;
-
-    // If we have no location selected, clear out the selectable caseworkers.
-    // And jump out early.
-    if (!this.location) {
-      this.pCaseworkers = [];
-      return;
-    }
 
     // If "All" is selected as the location, we need all caseworkers at all locations.
     if (this.location === this.ALL_LOCATIONS) {
@@ -116,8 +128,9 @@ export class TaskAssignmentComponent {
     }
   }
 
-  // Sets up the caseworkers, ensuring that excluded ones are filtered out.
+  // Sets up the caseworkers, ensuring that excluded ones that are filtered out.
   private setupCaseworkers(caseworkers: Caseworker[]): void {
+    this.pAllCaseworkers = [ ...caseworkers ];
     this.pCaseworkers = [ ...caseworkers ].filter(item => {
       return this.caseworkerIsSelectable(item);
     });

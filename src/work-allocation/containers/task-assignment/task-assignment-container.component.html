@@ -9,6 +9,7 @@
                         (sortEvent)="onSortHandler($event)" (actionEvent)="onActionHandler($event)">
         </exui-task-list>
         <h2 class="govuk-heading-m">Choose a colleague</h2>
+        <exui-task-assignment (caseworkerChanged)="onCaseworkerChanged($event)"></exui-task-assignment>
         <button class="govuk-button" type="submit" (click)="reAssign()">Reassign</button>
         <a routerLink="/tasks" role="button" draggable="false" class="govuk-button govuk-button--secondary">
           Cancel and go back

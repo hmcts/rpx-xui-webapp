@@ -1,14 +1,14 @@
 import { Injectable, Type } from '@angular/core';
 import { NocQuestion } from '../../models';
-import { NocNumberFieldComponent } from './number';
-import { NocTextFieldComponent } from './text';
-import { NocEmailFieldComponent } from './email/noc-email-field.component';
-import { NocPhoneUkFieldComponent } from './phone-uk/noc-phone-uk-field.component';
-import { NocYesNoFieldComponent } from './yes-no';
-import { NocPostcodeFieldComponent } from './postcode';
 import { NocDateFieldComponent } from './date';
 import { NocDateTimeFieldComponent } from './datetime';
+import { NocEmailFieldComponent } from './email';
+import { NocNumberFieldComponent } from './number';
+import { NocPhoneUkFieldComponent } from './phone-uk';
+import { NocPostcodeFieldComponent } from './postcode';
+import { NocTextFieldComponent } from './text';
 import { NocTimeFieldComponent } from './time';
+import { NocYesNoFieldComponent } from './yes-no';
 
 @Injectable()
 export class PaletteService {

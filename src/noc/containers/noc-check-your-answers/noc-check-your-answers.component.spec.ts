@@ -3,14 +3,15 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
-import { NocAnswer } from '../../models';
-import * as fromNocStore from '../../store';
+import { NocAnswer, NocState } from '../../models';
+import * as fromFeature from '../../store';
 import { UtilsModule } from '../noc-field/utils/utils.module';
 import { NocCheckYourAnswersComponent } from './noc-check-your-answers.component';
 
 describe('NocCheckYourAnswersComponent', () => {
-  let store: MockStore<fromNocStore.State>;
+  let store: MockStore<fromFeature.State>;
   let spyOnPipeToStore = jasmine.createSpy();
+  let spyOnDispatchToStore = jasmine.createSpy();
   let component: NocCheckYourAnswersComponent;
   let fixture: ComponentFixture<NocCheckYourAnswersComponent>;
 
@@ -31,6 +32,7 @@ describe('NocCheckYourAnswersComponent', () => {
   beforeEach(() => {
     store = TestBed.get(Store);
     spyOnPipeToStore = spyOn(store, 'pipe').and.callThrough();
+    spyOnDispatchToStore = spyOn(store, 'dispatch').and.callThrough();
     spyOnPipeToStore.and.returnValue(of('1231123112311231'));
     fixture = TestBed.createComponent(NocCheckYourAnswersComponent);
     component = fixture.componentInstance;
@@ -52,5 +54,20 @@ describe('NocCheckYourAnswersComponent', () => {
     component.qAndA$ = answers$;
     fixture.detectChanges();
     expect(component.qAndA$).toEqual(answers$);
+  });
+
+  it('should navToRef', () => {
+    component.navToRef();
+    expect(spyOnDispatchToStore).toHaveBeenCalledWith(new fromFeature.ChangeNavigation(NocState.START));
+  });
+
+  it('should navToQAndA', () => {
+    const answer: NocAnswer = {
+      question_id: 'q1',
+      question_text: of('name'),
+      value: 'James',
+    };
+    component.navToQAndA(answer);
+    expect(spyOnDispatchToStore).toHaveBeenCalledWith(new fromFeature.ChangeNavigation(NocState.QUESTION));
   });
 });

@@ -90,4 +90,18 @@ describe('NocErrorPipe', () => {
     });
     expect(message).toBe('The phone number is invalid');
   });
+
+  it('should should possibleIncorrectAnswer error message', () => {
+    const message = nocError.transform({
+      possibleIncorrectAnswer: true
+    });
+    expect(message).toBe('');
+  });
+
+  it('should should allAnswerEmpty error message', () => {
+    const message = nocError.transform({
+      allAnswerEmpty: true
+    });
+    expect(message).toBe('');
+  });
 });

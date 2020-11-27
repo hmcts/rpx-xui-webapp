@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { of } from 'rxjs';
 import { NocNavigationEvent } from 'src/noc/models';
 import * as fromNocStore from '../../store';
 import { NocErrorPipe } from '../noc-field/utils';
@@ -71,9 +72,54 @@ describe('NocQAndAComponent', () => {
       }));
     });
 
-    afterEach(() => {
-      component = null;
-      fixture.destroy();
+    it('should setPossibleIncorrectAnswerError', () => {
+      component.lastError$ = of({
+        status: 400,
+        message: 'Bad request',
+        error: {
+          code: 'answersIncomplete',
+          status_message: 'Answers are incorrect and do not match system record'
+        }
+      });
+      component.setPossibleIncorrectAnswerError();
+      Object.keys(component.formGroup.controls).forEach(key => {
+          expect(component.formGroup.controls[key].getError('possibleIncorrectAnswer')).toBeTruthy();
+      });
     });
+
+    it('should setAllAnswerEmptyError', () => {
+      component.setAllAnswerEmptyError();
+      Object.keys(component.formGroup.controls).forEach(key => {
+        expect(component.formGroup.controls[key].getError('allAnswerEmpty')).toBeTruthy();
+      });
+    });
+
+    it('should purgeAllAnswerEmptyError', () => {
+      component.purgeAllAnswerEmptyError();
+      Object.keys(component.formGroup.controls).forEach(key => {
+        expect(component.formGroup.controls[key].getError('allAnswerEmpty')).toBeFalsy();
+      });
+    });
+
+    it('should get answerInStore', () => {
+      component.answers$ = of([{
+        question_id: 'Q111111',
+        value: 'A111111'
+      }]);
+      const answer1$ = component.answerInStore('Q111111');
+      answer1$.toPromise().then(result => {
+        expect(result).toBe('A111111');
+      });
+      const answer2$ = component.answerInStore('Q222222');
+      answer2$.toPromise().then(result => {
+        expect(result).toBeFalsy();
+      });
+    });
+
+  });
+
+  afterEach(() => {
+    component = null;
+    fixture.destroy();
   });
 });

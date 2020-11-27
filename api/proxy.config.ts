@@ -3,6 +3,7 @@ import {Express} from 'express'
 import * as amendedJurisdictions from './amendedJurisdictions'
 import {getConfigValue} from './configuration'
 import {
+    SERVICES_CCD_ACTIVITY_API_PATH,
     SERVICES_CCD_COMPONENT_API_PATH,
     SERVICES_DOCUMENTS_API_PATH, SERVICES_EM_ANNO_API_URL,
     SERVICES_ICP_API_URL, SERVICES_MARKUP_API_URL, SERVICES_PAYMENTS_URL
@@ -11,6 +12,13 @@ import {applyProxy} from './lib/middleware/proxy'
 import * as searchCases from './searchCases'
 
 export const initProxy = (app: Express) => {
+    applyProxy(app, {
+        source: [
+            '/activity',
+        ],
+        target: getConfigValue(SERVICES_CCD_ACTIVITY_API_PATH),
+    })
+
     applyProxy(app, {
         rewrite: false,
         source: '/documents',

@@ -1,14 +1,14 @@
-import { CaseDetailsHomeComponent } from './containers/case-details-home/case-details-home';
 import { ModuleWithProviders } from '@angular/core';
-import { CaseHomeComponent } from './containers/case-home/case-home.component';
 // routes
 import { RouterModule, Routes } from '@angular/router';
-import { CaseListComponent } from './containers/case-list/case-list.component';
 import { CaseResolver, editorRouting, viewerRouting as caseViewRouting } from '@hmcts/ccd-case-ui-toolkit';
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
+import { CaseCreateSubmitComponent, CasesCreateComponent, CaseShareCompleteComponent, CaseShareComponent, CaseShareConfirmComponent } from './containers';
+import { CaseDetailsHomeComponent } from './containers/case-details-home/case-details-home';
 import { CaseFilterComponent } from './containers/case-filter/case-filter.component';
+import { CaseHomeComponent } from './containers/case-home/case-home.component';
+import { CaseListComponent } from './containers/case-list/case-list.component';
 import { CaseSearchComponent } from './containers/case-search/case-search.component';
-import { CasesCreateComponent, CaseCreateSubmitComponent, CaseShareComponent, CaseShareConfirmComponent, CaseShareCompleteComponent } from './containers';
 import { ActivityResolver } from './resolvers/activity.resolver';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
 

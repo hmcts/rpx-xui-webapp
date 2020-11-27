@@ -36,7 +36,7 @@ export class NocValidators {
   public static dateValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (control.value === null || control.value === '') { return; }
-      if (!moment(control.value.toString(), "DD/MM/YYYY", true).isValid()) {
+      if (!moment(control.value.toString(), 'DD/MM/YYYY', true).isValid()) {
         return { date: true };
       }
       return;
@@ -46,7 +46,7 @@ export class NocValidators {
   public static dateTimeValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (control.value === null || control.value === '') { return; }
-      if (!moment(control.value.toString(), "DD/MM/YYYY HH:mm:ss", true).isValid()) {
+      if (!moment(control.value.toString(), 'DD/MM/YYYY HH:mm:ss', true).isValid()) {
         return { datetime: true };
       }
       return;
@@ -56,7 +56,7 @@ export class NocValidators {
   public static timeValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (control.value === null || control.value === '') { return; }
-      if (!moment(control.value.toString(), "HH:mm:ss", true).isValid()) {
+      if (!moment(control.value.toString(), 'HH:mm:ss', true).isValid()) {
         return { time: true };
       }
       return;

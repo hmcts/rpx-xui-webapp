@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormBuilder, AbstractControl, Validator, ValidationErrors, Validators } from '@angular/forms';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
 
 @Component({
   selector: 'exui-noc-time-field',
   templateUrl: './noc-time-field.html'
 })
-export class NocTimeFieldComponent extends AbstractFieldWriteComponent implements OnInit {
+export class NocTimeFieldComponent extends AbstractFieldWriteComponent implements OnInit, AfterViewInit {
 
   public timeControl: FormControl;
   public timeGroup: FormGroup;
@@ -28,11 +28,11 @@ export class NocTimeFieldComponent extends AbstractFieldWriteComponent implement
     }
   }
 
-  ngAfterViewInit(): void {
-    this.timeGroup.valueChanges.subscribe(data => { 
+  public ngAfterViewInit(): void {
+    this.timeGroup.valueChanges.subscribe(data => {
       this.timeControl.setValue(this.getValues());
     });
-  } 
+  }
 
   public hourId() {
     return this.id + '-hour';

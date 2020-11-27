@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder, AbstractControl, Validator, ValidationErrors, Validators } from '@angular/forms';
 import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
 
@@ -6,7 +6,7 @@ import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
   selector: 'exui-noc-datetime-field',
   templateUrl: './noc-datetime-field.html'
 })
-export class NocDateTimeFieldComponent extends AbstractFieldWriteComponent implements OnInit {
+export class NocDateTimeFieldComponent extends AbstractFieldWriteComponent implements OnInit, AfterViewInit {
 
   public datetimeControl: FormControl;
   public datetimeGroup: FormGroup;
@@ -31,11 +31,11 @@ export class NocDateTimeFieldComponent extends AbstractFieldWriteComponent imple
     }
   }
 
-  ngAfterViewInit(): void {
-    this.datetimeGroup.valueChanges.subscribe(data => { 
+  public ngAfterViewInit(): void {
+    this.datetimeGroup.valueChanges.subscribe(data => {
       this.datetimeControl.setValue(this.getValues());
     });
-  } 
+  }
 
   public dayId() {
     return this.id + '-day';
@@ -84,12 +84,12 @@ export class NocDateTimeFieldComponent extends AbstractFieldWriteComponent imple
         this.datetimeGroup.value.month ? this.pad(this.datetimeGroup.value.month) : '',
         this.datetimeGroup.value.year ? this.datetimeGroup.value.year : ''
       ].join('/');
-        const time = [
+      const time = [
         this.datetimeGroup.value.hour !== null ? this.pad(this.datetimeGroup.value.hour) : '',
         this.datetimeGroup.value.minute !== null ? this.pad(this.datetimeGroup.value.minute) : '',
         this.datetimeGroup.value.second !== null ? this.pad(this.datetimeGroup.value.second) : ''
         ].join(':');
-        return date + ' ' + time;
+      return date + ' ' + time;
     }
     return null;
   }

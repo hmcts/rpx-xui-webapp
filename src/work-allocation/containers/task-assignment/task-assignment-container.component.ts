@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TaskFieldType, TaskService, TaskSort, TaskView } from '../../enums';
-import { TaskFieldConfig } from '../../models/tasks';
+import InvokedTaskAction from '../../models/tasks/invoked-task-action.model';
 import TaskServiceConfig from '../../models/tasks/task-service-config.model';
+import { Caseworker } from './../../models/dtos/task';
+import { Task, TaskFieldConfig, TaskSortField } from './../../models/tasks';
 
 @Component({
     selector: 'exui-task-container-assignment',
@@ -11,8 +13,9 @@ import TaskServiceConfig from '../../models/tasks/task-service-config.model';
   })
 
 export class TaskAssignmentContainerComponent implements OnInit {
-   private tasks: any [];
-    constructor(private readonly route: ActivatedRoute) {}
+   public tasks: any [];
+   public sortedBy: any;
+    constructor(private readonly route: ActivatedRoute, private readonly router: Router) {}
     /**
      * Mock TaskFieldConfig[]
      *
@@ -68,6 +71,11 @@ export class TaskAssignmentContainerComponent implements OnInit {
         fields: this.fields,
       };
     public ngOnInit(): void {
+          // Set up the default sorting.
+      this.sortedBy = {
+        fieldName: this.taskServiceConfig.defaultSortFieldName,
+        order: this.taskServiceConfig.defaultSortDirection
+      };
       console.log(this.route.snapshot.data);
       this.tasks = [
         {
@@ -94,4 +102,61 @@ export class TaskAssignmentContainerComponent implements OnInit {
     public reAssign(): void {
       console.log('Re-Assign');
     }
+
+    /**
+     * We need to sort the Task List based on the fieldName.
+     *
+     * Following on from this function we will need to retrieve the sorted tasks from
+     * the WA Api, once we have these then we need to set the tasks and fields, and pass
+     * these into the TaskListComponent.
+     *
+     * @param fieldName - ie. 'caseName'
+     */
+    public onSortHandler(fieldName: string): void {
+
+      // TODO: Remove everything below after integration.
+      // This is all to prove the mechanism works.
+      console.log('Task Home received Sort on:');
+      console.log(fieldName);
+      console.log('Faking the sort now');
+      let order: TaskSort = TaskSort.ASC;
+      if (this.sortedBy.fieldName === fieldName && this.sortedBy.order === TaskSort.ASC) {
+        order = TaskSort.DSC;
+      }
+      this.sortedBy = { fieldName, order };
+
+      // Now sort the tasks.
+      this.sortTasks();
+    }
+
+      // Remove after integration.
+    private sortTasks(): void {
+    this.tasks = this.tasks.sort((a: Task, b: Task) => {
+      const aVal = a[this.sortedBy.fieldName];
+      const bVal = b[this.sortedBy.fieldName];
+      let sortVal = 0;
+      if (typeof aVal === 'string') {
+        sortVal = aVal.localeCompare(bVal);
+      } else if (aVal instanceof Date) {
+        sortVal = aVal.getTime() - new Date(bVal).getTime();
+      }
+      return this.sortedBy.order === TaskSort.ASC ? sortVal : -sortVal;
+    });
+  }
+
+  /**
+   * InvokedTaskAction from the Task List Component, so that we can handle the User's
+   * action.
+   */
+  public onActionHandler(taskAction: InvokedTaskAction): void {
+
+    // Remove after integration
+    console.log('Task Home received InvokedTaskAction:');
+    console.log(taskAction.task.id);
+    this.router.navigate([`/tasks/task-list/reassign/123456`]);
+  }
+
+  public onCaseworkerChanged(caseworker: Caseworker): void {
+    console.log('onCaseworkerChanged', caseworker);
+  }
 }

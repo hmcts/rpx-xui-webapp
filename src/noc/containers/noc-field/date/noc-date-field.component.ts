@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormBuilder, AbstractControl, Validator, ValidationErrors, Validators } from '@angular/forms';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
 
 @Component({
   selector: 'exui-noc-date-field',
   templateUrl: './noc-date-field.html'
 })
-export class NocDateFieldComponent extends AbstractFieldWriteComponent implements OnInit {
+export class NocDateFieldComponent extends AbstractFieldWriteComponent implements OnInit, AfterViewInit {
 
   public dateControl: FormControl;
   public dateGroup: FormGroup;
@@ -28,11 +28,11 @@ export class NocDateFieldComponent extends AbstractFieldWriteComponent implement
     }
   }
 
-  ngAfterViewInit(): void {
-    this.dateGroup.valueChanges.subscribe(data => { 
+  public ngAfterViewInit(): void {
+    this.dateGroup.valueChanges.subscribe(data => {
       this.dateControl.setValue(this.getValues());
     });
-  } 
+  }
 
   public dayId() {
     return this.id + '-day';

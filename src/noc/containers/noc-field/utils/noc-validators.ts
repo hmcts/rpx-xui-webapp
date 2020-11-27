@@ -36,7 +36,6 @@ export class NocValidators {
   public static dateValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (control.value === null || control.value === '') { return; }
-      // moment('24/12/2019', "DD MM YYYY", true);
       if (!moment(control.value.toString(), "DD/MM/YYYY", true).isValid()) {
         return { date: true };
       }
@@ -47,17 +46,8 @@ export class NocValidators {
   public static dateTimeValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (control.value === null || control.value === '') { return; }
-      const [datePart, timePart] = control.value.toString().split(' ');
-      if (timePart[0].length > 1) {
-        // moment('24/12/2019 15:15:00', "DD MM YYYY HH:mm:ss", true);
-        if (!moment(control.value.toString(), "DD/MM/YYYY HH:mm:ss", true).isValid()) {
-          return { datetime: true };
-        }
-      } else {
-        // moment('24/12/2019 09:15:00', "DD MM YYYY hh:mm:ss", true);
-        if (!moment(control.value.toString(), "DD/MM/YYYY hh:mm:ss", true).isValid()) {
-          return { datetime: true };
-        }
+      if (!moment(control.value.toString(), "DD/MM/YYYY HH:mm:ss", true).isValid()) {
+        return { datetime: true };
       }
       return;
     };
@@ -66,17 +56,8 @@ export class NocValidators {
   public static timeValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (control.value === null || control.value === '') { return; }
-      const parts = control.value.toString().split(':');
-      if (parts[0].length > 1) {
-        // moment('15:15:00', "hh:mm:ss", true);
-        if (!moment(control.value.toString(), "HH:mm:ss", true).isValid()) {
-          return { time: true };
-        }
-      } else {
-        // moment('09:15:00', "hh:mm:ss", true);
-        if (!moment(control.value.toString(), "hh:mm:ss", true).isValid()) {
-          return { time: true };
-        }
+      if (!moment(control.value.toString(), "HH:mm:ss", true).isValid()) {
+        return { time: true };
       }
       return;
     };

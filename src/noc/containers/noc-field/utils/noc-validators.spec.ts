@@ -44,39 +44,51 @@ describe('NocValidators', () => {
     expect(phoneUKValidator(control)).toBeUndefined();
   });
 
-  it('dateValidator invalid case', () => {
+  it('dateValidator valid case', () => {
     control.setValue('24/12/2019');
+    const validator = NocValidators.dateValidator();
+    expect(validator(control)).toBeUndefined();
+  });
+
+  it('dateValidator invalid case', () => {
+    control.setValue('24/13/2019');
     const validator = NocValidators.dateValidator();
     expect(validator(control)).toEqual({date: true});
   });
 
-  it('dateValidator valid case', () => {
-    control.setValue('24/13/2019');
-    const validator = NocValidators.dateValidator();
+  it('dateTimeValidator valid 12 hour case', () => {
+    control.setValue('24/12/2019 09:15:00');
+    const validator = NocValidators.dateTimeValidator();
+    expect(validator(control)).toBeUndefined();
+  });
+
+  it('dateTimeValidator valid 24 hour case', () => {
+    control.setValue('24/12/2019 22:00:00');
+    const validator = NocValidators.dateTimeValidator();
     expect(validator(control)).toBeUndefined();
   });
 
   it('dateTimeValidator invalid case', () => {
-    control.setValue('24/12/2019 09:15:00');
+    control.setValue('24/13/2019 30:15:00');
     const validator = NocValidators.dateTimeValidator();
     expect(validator(control)).toEqual({datetime: true});
   });
 
-  it('dateTimeValidator valid case', () => {
-    control.setValue('24/13/2019 30:15:00');
-    const validator = NocValidators.dateTimeValidator();
+  it('timeValidator valid 12 hour case', () => {
+    control.setValue('09:15:00');
+    const validator = NocValidators.timeValidator();
+    expect(validator(control)).toBeUndefined();
+  });
+
+  it('timeValidator valid 24 hour case', () => {
+    control.setValue('22:00:00');
+    const validator = NocValidators.timeValidator();
     expect(validator(control)).toBeUndefined();
   });
 
   it('timeValidator invalid case', () => {
-    control.setValue('09:15:00');
-    const validator = NocValidators.timeValidator();
-    expect(validator(control)).toEqual({time: true});
-  });
-
-  it('timeValidator valid case', () => {
     control.setValue('30:15:00');
     const validator = NocValidators.timeValidator();
-    expect(validator(control)).toBeUndefined();
+    expect(validator(control)).toEqual({time: true});
   });
 });

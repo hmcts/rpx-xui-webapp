@@ -20,12 +20,12 @@ export const ROUTES: Routes = [
     {
       path: 'task-list',
       component: TaskListComponent,
-      // canActivate: [WorkAllocationFeatureToggleGuard]
+      canActivate: [WorkAllocationFeatureToggleGuard]
     },
     {
       path: 'task-list/reassign/:taskId',
       component: TaskAssignmentContainerComponent,
-      // canActivate: [WorkAllocationFeatureToggleGuard],
+      canActivate: [WorkAllocationFeatureToggleGuard],
       resolve: {
         task: TaskResolver
       }

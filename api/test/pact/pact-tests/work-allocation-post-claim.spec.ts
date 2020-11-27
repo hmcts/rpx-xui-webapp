@@ -5,11 +5,10 @@ import * as path from 'path'
 
 import { EnhancedRequest } from '../../../lib/models'
 import { handleTaskPost } from '../../../workAllocation/taskService'
-import { Assignee } from './../../../workAllocation/interfaces/task'
 
 interface Payload {
   behaviour?: string,
-  assignee: Assignee
+  assignee: any
 }
 
 describe('Work Allocation API', () => {
@@ -17,7 +16,7 @@ describe('Work Allocation API', () => {
   let mockServerPort: number
   let provider: Pact
 
-  const ASSIGNEE: Assignee = { id: '987654', userName: 'bob' }
+  const ASSIGNEE: any = { id: '987654', userName: 'bob' }
   const BEHAVIOURS = {
     SUCCESS: {},
     ALREADY_DONE: { behaviour: 'already-done' },

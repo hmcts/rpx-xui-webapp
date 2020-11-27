@@ -15,6 +15,9 @@ import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-tr
 export const ROUTES: Routes = [
     {
       path: '',
+      resolve: {
+        activity: ActivityResolver,
+      },
       component: CaseHomeComponent,
       children: [
         {

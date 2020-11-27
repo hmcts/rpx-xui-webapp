@@ -1,7 +1,16 @@
+.govuk-width-container {
+  margin-left: 0;
+}
+
 .govuk-grid-row {
+  margin-left: 0;
   margin-top: 20px;
 }
 
 .govuk-panel--confirmation {
   background: #28a197;
+}
+
+.govuk-grid-column-two-thirds {
+  padding-left: 0;
 }

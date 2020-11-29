@@ -2,7 +2,7 @@
 
   <label class="govuk-label" [for]="id()">
     <span class="form-label govuk-!-font-weight-bold" *ngIf="questionField.question_text">{{questionField.question_text}}</span>
-    <span class="error-message" *ngIf="dateControl.errors && dateControl.touched">{{dateControl.errors | nocError}}</span>
+    <span class="error-message" *ngIf="dateControl.errors && dateGroup.touched">{{dateControl.errors | nocError}}</span>
   </label>
 
   <div class="form-date" [formGroup]="dateGroup">
@@ -12,6 +12,8 @@
         class="form-control govuk-input govuk-input--width-10"
         [id]="dayId()"
         type="number"
+        oninput="this.value=this.value.slice(0,this.maxLength)"
+        maxlength="2"
         formControlName="day">
     </div>
     <div class="form-group form-group-month">
@@ -20,6 +22,8 @@
         class="form-control govuk-input govuk-input--width-10"
         [id]="monthId()"
         type="number"
+        oninput="this.value=this.value.slice(0,this.maxLength)"
+        maxlength="2"
         formControlName="month">
     </div>
     <div class="form-group form-group-year">
@@ -28,6 +32,8 @@
         class="form-control govuk-input govuk-input--width-10"
         [id]="yearId()"
         type="number"
+        oninput="this.value=this.value.slice(0,this.maxLength)"
+        maxlength="4"
         formControlName="year">
     </div>
   </div>

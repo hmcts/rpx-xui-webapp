@@ -91,6 +91,27 @@ describe('NocErrorPipe', () => {
     expect(message).toBe('The phone number is invalid');
   });
 
+  it('should return date error message', () => {
+    const message = nocError.transform({
+      date: true
+    });
+    expect(message).toBe('The date is invalid');
+  });
+
+  it('should return datetime error message', () => {
+    const message = nocError.transform({
+      datetime: true
+    });
+    expect(message).toBe('The datetime is invalid');
+  });
+
+  it('should return time error message', () => {
+    const message = nocError.transform({
+      time: true
+    });
+    expect(message).toBe('The time is invalid');
+  });
+
   it('should should possibleIncorrectAnswer error message', () => {
     const message = nocError.transform({
       possibleIncorrectAnswer: true

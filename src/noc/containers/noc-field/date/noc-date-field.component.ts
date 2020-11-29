@@ -23,14 +23,22 @@ export class NocDateFieldComponent extends AbstractFieldWriteComponent implement
       month: [null, Validators.required],
       year: [null, Validators.required],
     });
-    if (this.dateControl.value !== null) {
-      this.setValues(this.dateControl.value);
+    if (this.dateControl.value) {
+      const dateValues = this.dateControl.value.split('/');
+      this.dateGroup.controls['day'].setValue(dateValues[0] || '');
+      this.dateGroup.controls['month'].setValue(dateValues[1] || '');
+      this.dateGroup.controls['year'].setValue(dateValues[2] || '');
     }
   }
 
   public ngAfterViewInit(): void {
     this.dateGroup.valueChanges.subscribe(data => {
-      this.dateControl.setValue(this.getValues());
+      const val = [
+        this.dateGroup.value.day !== null ? this.pad(this.dateGroup.value.day) : '',
+        this.dateGroup.value.month !== null ? this.pad(this.dateGroup.value.month) : '',
+        this.dateGroup.value.year !== null ? this.dateGroup.value.year : ''
+      ].join('/');
+      this.dateControl.setValue(val);
     });
   }
 
@@ -44,26 +52,6 @@ export class NocDateFieldComponent extends AbstractFieldWriteComponent implement
 
   public yearId() {
     return this.id + '-year';
-  }
-
-  private setValues(obj: string): void {
-    if (obj) {
-      const dateValues = obj.split('/');
-      this.dateGroup.controls['day'].setValue(dateValues[0] || '');
-      this.dateGroup.controls['month'].setValue(dateValues[1] || '');
-      this.dateGroup.controls['year'].setValue(dateValues[2] || '');
-    }
-  }
-
-  private getValues(): string {
-    if (this.dateGroup.value.day || this.dateGroup.value.month || this.dateGroup.value.year) {
-      return [
-        this.dateGroup.value.day ? this.pad(this.dateGroup.value.day) : '',
-        this.dateGroup.value.month ? this.pad(this.dateGroup.value.month) : '',
-        this.dateGroup.value.year ? this.dateGroup.value.year : ''
-      ].join('/');
-    }
-    return null;
   }
 
   private pad(num: any, padNum = 2): string {

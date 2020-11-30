@@ -39,7 +39,7 @@ export const init = () => {
   const questionsSchema: NoCQuestion[] = [
     {
       case_type_id: 'AAT',
-      order: '{{random.number}}',
+      order: '1',
       question_text: 'What is their first name?',
       answer_field_type: {
         id: 'Text',
@@ -59,7 +59,7 @@ export const init = () => {
     },
     {
       case_type_id: 'AAT',
-      order: '{{random.number}}',
+      order: '2',
       question_text: 'What is their last name?',
       answer_field_type: {
         id: 'Text',
@@ -79,7 +79,7 @@ export const init = () => {
     },
     {
       case_type_id: 'AAT',
-      order: '{{random.number}}',
+      order: '3',
       question_text: 'Do they have children?',
       answer_field_type: {
         id: 'YesOrNo',
@@ -99,7 +99,7 @@ export const init = () => {
     },
     {
       case_type_id: 'AAT',
-      order: '{{random.number}}',
+      order: '4',
       question_text: 'How many children do they have?',
       answer_field_type: {
         id: 'Number',
@@ -118,7 +118,7 @@ export const init = () => {
     },
     {
       case_type_id: 'AAT',
-      order: '{{random.number}}',
+      order: '5',
       question_text: 'What is their telephone number?',
       answer_field_type: {
         id: 'PhoneUK',
@@ -137,7 +137,7 @@ export const init = () => {
     },
     {
       case_type_id: 'AAT',
-      order: '{{random.number}}',
+      order: '6',
       question_text: 'What is their postcode?',
       answer_field_type: {
         id: 'Postcode',
@@ -156,7 +156,7 @@ export const init = () => {
     },
     {
       case_type_id: 'AAT',
-      order: '{{random.number}}',
+      order: '7',
       question_text: 'What is their Email?',
       answer_field_type: {
         id: 'Email',
@@ -176,7 +176,7 @@ export const init = () => {
     },
     {
       case_type_id: 'AAT',
-      order: '{{random.number}}',
+      order: '8',
       question_text: 'What is the current date?',
       answer_field_type: {
         id: 'Date',
@@ -196,7 +196,7 @@ export const init = () => {
     },
     {
       case_type_id: 'AAT',
-      order: '{{random.number}}',
+      order: '9',
       question_text: 'What is the current date and time?',
       answer_field_type: {
         id: 'DateTime',
@@ -216,7 +216,7 @@ export const init = () => {
     },
     {
       case_type_id: 'AAT',
-      order: '{{random.number}}',
+      order: '10',
       question_text: 'What is the current time?',
       answer_field_type: {
         id: 'Time',

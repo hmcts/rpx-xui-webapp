@@ -1,4 +1,4 @@
-import { NocState, NocStateData } from '../../models';
+import { NocQuestion, NocState, NocStateData } from '../../models';
 import * as fromActions from '../actions';
 
 export const initialState: NocStateData = {
@@ -52,7 +52,7 @@ export function nocReducer(currentState = initialState, action: fromActions.NocA
       return {
         ...currentState,
         state: NocState.QUESTION,
-        questions: action.payload.questions,
+        questions: orderQuestions(action.payload.questions),
         caseReference: action.payload.caseReference,
         validationErrors: null,
         lastError: null
@@ -138,6 +138,12 @@ export function nocReducer(currentState = initialState, action: fromActions.NocA
       };
     }
   }
+}
+
+export function orderQuestions(questions: NocQuestion[]): NocQuestion[] {
+  return questions.slice().sort((question1, question2) => {
+    return Number(question1.order) > Number(question2.order) ? 1 : Number(question2.order) > Number(question1.order) ? -1 : 0;
+  });
 }
 
 export const getNocActiveState = (nocState) => nocState.state;

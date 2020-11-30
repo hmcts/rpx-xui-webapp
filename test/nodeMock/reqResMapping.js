@@ -1,4 +1,6 @@
 const ccdApiMock = require('./ccd/ccdApi');
+const WAReqResMappings  = require('./workAllocation/reqResMapping');
+
 
 const requestMapping = {
    get:{
@@ -60,7 +62,8 @@ const requestMapping = {
 
         , '/data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/cases/pagination_metadata' : (req,res) => {
           res.send({ "total_results_count": 400, "total_pages_count": 16 });
-        }
+        },
+        ...WAReqResMappings
     },
     post:{
         '/api/inviteUser': (req,res) => {

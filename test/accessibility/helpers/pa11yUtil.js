@@ -32,7 +32,7 @@ async function getPage(){
     return page;
 }
 
-async function pa11ytest(test, actions, startUrl) {
+async function pa11ytest(test, actions, startUrl,roles) {
     console.log("pally test with actions : " + test.test.title);
     console.log(actions);
 
@@ -54,6 +54,15 @@ async function pa11ytest(test, actions, startUrl) {
         {
             name: '__auth__',
             value: token,
+            domain: 'localhost:4200',
+            path: '/',
+            httpOnly: false,
+            secure: false,
+            session: true,
+        },
+        {
+            name: 'roles',
+            value: encodeURIComponent(roles ? 'j:'+JSON.stringify(roles) : 'j:["pui-case-manager"]'),
             domain: 'localhost:4200',
             path: '/',
             httpOnly: false,

@@ -6,6 +6,7 @@ describe('AppComponent', () => {
     let appComponent: AppComponent;
     let store: any;
     let googleTagManagerService: any;
+    let googleAnalyticsService: any;
     let timeoutNotificationService: any;
     let router: any;
     let title: any;
@@ -13,9 +14,9 @@ describe('AppComponent', () => {
 
     beforeEach(() => {
         store = jasmine.createSpyObj('store', ['pipe', 'dispatch']);
+        googleAnalyticsService = jasmine.createSpyObj('GoogleAnalyticsService', ['init']);
         googleTagManagerService = jasmine.createSpyObj('GoogleTagManagerService', ['init']);
         timeoutNotificationService = jasmine.createSpyObj('TimeoutNotificationsService', ['notificationOnChange', 'initialise']);
-        appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService);
         testRoute = new RoutesRecognized(1, 'test', 'test', {
             url: 'test',
             root: {
@@ -59,7 +60,7 @@ describe('AppComponent', () => {
 
     it('Truthy', () => {
         expect(appComponent).toBeTruthy();
-        expect(googleTagManagerService.init).toHaveBeenCalled();
+        expect(googleAnalyticsService.init).toHaveBeenCalled();
     });
 
     it('Calls title service', () => {

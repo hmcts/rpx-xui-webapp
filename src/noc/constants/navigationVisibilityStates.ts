@@ -8,7 +8,8 @@ export const backButtonVisibilityStates = [
   NocState.ANSWER_INCOMPLETE,
   NocState.ANSWER_SUBMISSION_FAILURE,
   NocState.CHECK_ANSWERS,
-  NocState.AFFIRMATION_NOT_AGREED
+  NocState.AFFIRMATION_NOT_AGREED,
+  NocState.SUBMISSION_FAILURE
 ];
 
 export const continueButtonVisibilityStates = [
@@ -18,8 +19,7 @@ export const continueButtonVisibilityStates = [
 
 export const setAnswersButtonVisibilityStates = [
   NocState.QUESTION,
-  NocState.ANSWER_INCOMPLETE,
-  NocState.SUBMISSION_FAILURE
+  NocState.ANSWER_INCOMPLETE
 ];
 
 export const checkAnswersButtonVisibilityStates = [NocState.CHECK_ANSWERS];

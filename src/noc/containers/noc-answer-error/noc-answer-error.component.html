@@ -3,7 +3,7 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <ng-container *ngIf="(lastError$ | async)?.error.code === 'moreThanOneParty'">
-        <h1 class="govuk-heading-l" id="cookies">Your request cannot be submitted online</h1>
+        <h1 class="govuk-heading-l" id="moreThanOneParty">Your request cannot be submitted online</h1>
         <p class="govuk-body">Your answers match more than one party on the case.</p>
         <p> You can fill out a <a href="https://www.gov.uk/government/publications/form-n434-notice-of-change-of-solicitor">paper form</a>
           to complete a notice of change for this case offline. If you do this, you won’t be able to access the case online.</p>
@@ -25,7 +25,7 @@
         <p class="govuk-body"><a href="get-help">Contact us</a> for more information.</p>
       </ng-container>
       <ng-container *ngIf="(lastError$ | async)?.error.code === 'cantFileOnline'">
-        <h1 class="govuk-heading-l" id="cookies">Your request cannot be submitted online</h1>
+        <h1 class="govuk-heading-l" id="cantFileOnline">Your request cannot be submitted online</h1>
         <p class="govuk-body">You can't currently file an online notice of change for this case.</p>
         <p> You can fill out a <a href="https://www.gov.uk/government/publications/form-n434-notice-of-change-of-solicitor">paper form</a>
           to complete a notice of change for this case offline. If you do this, you won’t be able to access the case online.</p>

@@ -78,6 +78,7 @@ export class NocHomeComponent implements OnInit, OnDestroy {
             break;
           case NocState.SUBMISSION_SUCCESS_PENDING:
           case NocState.SUBMISSION_SUCCESS_APPROVED:
+          case NocState.SUBMISSION_FAILURE:
             this.store.dispatch(new fromFeature.Reset());
             break;
           default:

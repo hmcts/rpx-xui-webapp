@@ -23,14 +23,22 @@ export class NocTimeFieldComponent extends AbstractFieldWriteComponent implement
       minute: [null, Validators.required],
       second: [null, Validators.required]
     });
-    if (this.timeControl.value !== null) {
-      this.setValues(this.timeControl.value);
+    if (this.timeControl.value) {
+      const timeParts = this.timeControl.value.split(':');
+      this.timeGroup.controls['hour'].setValue(timeParts[0] || '');
+      this.timeGroup.controls['minute'].setValue(timeParts[1] || '');
+      this.timeGroup.controls['second'].setValue(timeParts[2] || '');
     }
   }
 
   public ngAfterViewInit(): void {
     this.timeGroup.valueChanges.subscribe(data => {
-      this.timeControl.setValue(this.getValues());
+      const val = [
+        this.timeGroup.value.hour !== null ? this.pad(this.timeGroup.value.hour) : '',
+        this.timeGroup.value.minute !== null ? this.pad(this.timeGroup.value.minute) : '',
+        this.timeGroup.value.second !== null ? this.pad(this.timeGroup.value.second) : ''
+      ].join(':');
+      this.timeControl.setValue(val);
     });
   }
 
@@ -44,26 +52,6 @@ export class NocTimeFieldComponent extends AbstractFieldWriteComponent implement
 
   public secondId() {
     return this.id + '-second';
-  }
-
-  private setValues(obj: string): void {
-    if (obj) {
-      const timeParts = obj.split(':');
-      this.timeGroup.controls['hour'].setValue(timeParts[0] || '');
-      this.timeGroup.controls['minute'].setValue(timeParts[1] || '');
-      this.timeGroup.controls['second'].setValue(timeParts[2] || '');
-    }
-  }
-
-  private getValues(): string {
-    if (this.timeGroup.value.hour || this.timeGroup.value.minute || this.timeGroup.value.second) {
-      return [
-        this.timeGroup.value.hour !== null ? this.pad(this.timeGroup.value.hour) : '',
-        this.timeGroup.value.minute !== null ? this.pad(this.timeGroup.value.minute) : '',
-        this.timeGroup.value.second !== null ? this.pad(this.timeGroup.value.second) : ''
-      ].join(':');
-    }
-    return null;
   }
 
   private pad(num: any, padNum = 2): string {

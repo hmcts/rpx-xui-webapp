@@ -26,14 +26,34 @@ export class NocDateTimeFieldComponent extends AbstractFieldWriteComponent imple
       minute: [null, Validators.required],
       second: [null, Validators.required]
     });
-    if (this.datetimeControl.value !== null) {
-      this.setValues(this.datetimeControl.value);
+    if (this.datetimeControl.value) {
+      const [datePart, timePart] = this.datetimeControl.value.split(' ');
+      const dateValues = datePart.split('/');
+      this.datetimeGroup.controls['day'].setValue(dateValues[0] || '');
+      this.datetimeGroup.controls['month'].setValue(dateValues[1] || '');
+      this.datetimeGroup.controls['year'].setValue(dateValues[2] || '');
+      if (timePart) {
+        const timeParts = timePart.split(':');
+        this.datetimeGroup.controls['hour'].setValue(timeParts[0] || '');
+        this.datetimeGroup.controls['minute'].setValue(timeParts[1] || '');
+        this.datetimeGroup.controls['second'].setValue(timeParts[2] || '');
+      }
     }
   }
 
   public ngAfterViewInit(): void {
     this.datetimeGroup.valueChanges.subscribe(data => {
-      this.datetimeControl.setValue(this.getValues());
+      const date = [
+        this.datetimeGroup.value.day !== null ? this.pad(this.datetimeGroup.value.day) : '',
+        this.datetimeGroup.value.month !== null ? this.pad(this.datetimeGroup.value.month) : '',
+        this.datetimeGroup.value.year !== null ? this.datetimeGroup.value.year : ''
+      ].join('/');
+      const time = [
+        this.datetimeGroup.value.hour !== null ? this.pad(this.datetimeGroup.value.hour) : '',
+        this.datetimeGroup.value.minute !== null ? this.pad(this.datetimeGroup.value.minute) : '',
+        this.datetimeGroup.value.second !== null ? this.pad(this.datetimeGroup.value.second) : ''
+        ].join(':');
+      this.datetimeControl.setValue(`${date} ${time}`);
     });
   }
 
@@ -59,39 +79,6 @@ export class NocDateTimeFieldComponent extends AbstractFieldWriteComponent imple
 
   public secondId() {
     return this.id + '-second';
-  }
-
-  private setValues(obj: string): void {
-    if (obj) {
-      const [datePart, timePart] = obj.split(' ');
-      const dateValues = datePart.split('/');
-      this.datetimeGroup.controls['day'].setValue(dateValues[0] || '');
-      this.datetimeGroup.controls['month'].setValue(dateValues[1] || '');
-      this.datetimeGroup.controls['year'].setValue(dateValues[2] || '');
-      if (timePart) {
-        const timeParts = timePart.split(':');
-        this.datetimeGroup.controls['hour'].setValue(timeParts[0] || '');
-        this.datetimeGroup.controls['minute'].setValue(timeParts[1] || '');
-        this.datetimeGroup.controls['second'].setValue(timeParts[2] || '');
-      }
-    }
-  }
-
-  private getValues(): string {
-    if (this.datetimeGroup.value.day || this.datetimeGroup.value.month || this.datetimeGroup.value.year || this.datetimeGroup.value.hour || this.datetimeGroup.value.minute || this.datetimeGroup.value.second) {
-      const date = [
-        this.datetimeGroup.value.day ? this.pad(this.datetimeGroup.value.day) : '',
-        this.datetimeGroup.value.month ? this.pad(this.datetimeGroup.value.month) : '',
-        this.datetimeGroup.value.year ? this.datetimeGroup.value.year : ''
-      ].join('/');
-      const time = [
-        this.datetimeGroup.value.hour !== null ? this.pad(this.datetimeGroup.value.hour) : '',
-        this.datetimeGroup.value.minute !== null ? this.pad(this.datetimeGroup.value.minute) : '',
-        this.datetimeGroup.value.second !== null ? this.pad(this.datetimeGroup.value.second) : ''
-        ].join(':');
-      return date + ' ' + time;
-    }
-    return null;
   }
 
   private pad(num: any, padNum = 2): string {

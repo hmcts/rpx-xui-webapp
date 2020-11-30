@@ -2,7 +2,7 @@
 
   <label class="govuk-label" [for]="id()">
     <span class="form-label govuk-!-font-weight-bold" *ngIf="questionField.question_text">{{questionField.question_text}}</span>
-    <span class="error-message" *ngIf="datetimeControl.errors && datetimeControl.touched">{{datetimeControl.errors | nocError}}</span>
+    <span class="error-message" *ngIf="datetimeControl.errors && datetimeGroup.touched">{{datetimeControl.errors | nocError}}</span>
   </label>
 
   <div class="form-date" [formGroup]="datetimeGroup">
@@ -12,6 +12,8 @@
         class="form-control govuk-input govuk-input--width-10"
         [id]="dayId()"
         type="number"
+        oninput="this.value=this.value.slice(0,this.maxLength)"
+        maxlength="2"
         formControlName="day">
     </div>
     <div class="form-group form-group-month">
@@ -20,6 +22,8 @@
         class="form-control govuk-input govuk-input--width-10"
         [id]="monthId()"
         type="number"
+        oninput="this.value=this.value.slice(0,this.maxLength)"
+        maxlength="2"
         formControlName="month">
     </div>
     <div class="form-group form-group-year">
@@ -28,6 +32,8 @@
         class="form-control govuk-input govuk-input--width-10"
         [id]="yearId()"
         type="number"
+        oninput="this.value=this.value.slice(0,this.maxLength)"
+        maxlength="4"
         formControlName="year">
     </div>
     <div class="form-group form-group-hour">
@@ -36,6 +42,8 @@
         class="form-control govuk-input govuk-input--width-10"
         [id]="hourId()"
         type="number"
+        oninput="this.value=this.value.slice(0,this.maxLength)"
+        maxlength="2"
         formControlName="hour">
     </div>
     <div class="form-group form-group-minute">
@@ -44,6 +52,8 @@
         class="form-control govuk-input govuk-input--width-10"
         [id]="minuteId()"
         type="number"
+        oninput="this.value=this.value.slice(0,this.maxLength)"
+        maxlength="2"
         formControlName="minute">
     </div>
     <div class="form-group form-group-second">
@@ -52,6 +62,8 @@
         class="form-control govuk-input govuk-input--width-10"
         [id]="secondId()"
         type="number"
+        oninput="this.value=this.value.slice(0,this.maxLength)"
+        maxlength="2"
         formControlName="second">
     </div>
   </div>

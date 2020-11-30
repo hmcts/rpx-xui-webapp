@@ -32,6 +32,22 @@ export class NocErrorPipe implements PipeTransform {
       return 'The postcode is invalid';
     } else if (keys[0] ===  'phoneUK') {
       return 'The phone number is invalid';
+    } else if (keys[0] ===  'date' || keys[0] ===  'datetime') {
+      if (keys[1]) {
+        if (keys[2]) {
+          return `The date must include a valid ${keys[1]}`;
+        }
+        return `The date must include a ${keys[1]}`;
+      }
+      return 'The date is invalid';
+    } else if (keys[0] ===  'time') {
+      if (keys[1]) {
+        if (keys[2]) {
+          return `The time must include a valid ${keys[1]}`;
+        }
+        return `The time must include a ${keys[1]}`;
+      }
+      return 'The time is invalid';
     } else if (keys[0] ===  'possibleIncorrectAnswer') {
       return '';
     } else if (keys[0] ===  'allAnswerEmpty') {

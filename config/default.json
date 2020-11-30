@@ -81,7 +81,8 @@
           "'self'",
           "'unsafe-inline'",
           "https://fonts.googleapis.com",
-          "https://fonts.gstatic.com"
+          "https://fonts.gstatic.com",
+          "http://tagmanager.google.com/"
         ],
         "scriptSrc": [
           "'self'",
@@ -95,7 +96,8 @@
           "'self'",
           "*.gov.uk",
           "dc.services.visualstudio.com",
-          "*.launchdarkly.com"
+          "*.launchdarkly.com",
+          "www.google-analytics.com"
         ],
         "mediaSrc": ["'self'"],
         "objectSrc": ["'self'"],
@@ -105,7 +107,10 @@
           "data:",
           "https://www.google-analytics.com",
           "https://www.googletagmanager.com",
-          "https://raw.githubusercontent.com/hmcts/"
+          "https://raw.githubusercontent.com/hmcts/",
+          "http://stats.g.doubleclick.net/",
+          "http://ssl.gstatic.com/",
+          "http://www.gstatic.com/"
         ]
       }
     },
@@ -133,12 +138,12 @@
     {
       "idleModalDisplayTime": 3,
       "pattern": "-dwpresponsewriter",
-      "totalIdleTime": 12
+      "totalIdleTime": 30
     },
     {
       "idleModalDisplayTime": 3,
       "pattern": "-homeoffice",
-      "totalIdleTime": 12
+      "totalIdleTime": 240
     },
     {
       "idleModalDisplayTime": 10,

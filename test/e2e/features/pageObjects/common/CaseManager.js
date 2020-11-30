@@ -167,7 +167,10 @@ class CaseManager {
 
 
     async _writeToField(ccdField) {
-
+        const isElementDisplayed = await ccdField.isDisplayed(); 
+        if (!isElementDisplayed) {
+            return;
+        }
         var ccdFileTagName = await ccdField.getTagName();
         var fieldName = "";
         try {
@@ -176,6 +179,7 @@ class CaseManager {
         catch (err) {
             fieldName = "Not inline field label";
         }
+        console.log("===> Case Field : " + fieldName);
         switch (ccdFileTagName) {
             case "ccd-write-text-field":
                 let e = ccdField.$('input.form-control');

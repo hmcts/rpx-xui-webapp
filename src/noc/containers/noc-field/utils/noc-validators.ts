@@ -41,26 +41,26 @@ export class NocValidators {
         if (dateValues[0]) {
           const number = Number(dateValues[0]);
           if (number === 0 || number > 31) {
-            return { datetime: true, day: true, valid: false };
+            return { date: true, day: true, valid: false };
           }
         } else {
-          return { datetime: true, day: true };
+          return { date: true, day: true };
         }
         if (dateValues[1]) {
           const number = Number(dateValues[1]);
           if (number === 0 || number > 12) {
-            return { datetime: true, month: true, valid: false };
+            return { date: true, month: true, valid: false };
           }
         } else {
-          return { datetime: true, month: true };
+          return { date: true, month: true };
         }
         if (dateValues[2]) {
           const number = Number(dateValues[2]);
           if (number === 0 || dateValues[2].length < 4) {
-            return { datetime: true, year: true, valid: false };
+            return { date: true, year: true, valid: false };
           }
         } else {
-          return { datetime: true, year: true };
+          return { date: true, year: true };
         }
       }
       if (!moment(control.value.toString(), 'DD/MM/YYYY', true).isValid()) {
@@ -143,26 +143,26 @@ export class NocValidators {
         if (timeValues[0]) {
           const number = Number(timeValues[0]);
           if (number > 23) {
-            return { datetime: true, hour: true, valid: false };
+            return { time: true, hour: true, valid: false, message: '' };
           }
         } else {
-          return { datetime: true, hour: true };
+          return { time: true, hour: true };
         }
         if (timeValues[1]) {
           const number = Number(timeValues[1]);
           if (number > 59) {
-            return { datetime: true, minute: true, valid: false };
+            return { time: true, minute: true, valid: false };
           }
         } else {
-          return { datetime: true, minute: true };
+          return { time: true, minute: true };
         }
         if (timeValues[2]) {
           const number = Number(timeValues[2]);
           if (number > 59) {
-            return { datetime: true, second: true, valid: false };
+            return { time: true, second: true, valid: false };
           }
         } else {
-          return { datetime: true, second: true };
+          return { time: true, second: true };
         }
       }
       if (!moment(control.value.toString(), 'HH:mm:ss', true).isValid()) {

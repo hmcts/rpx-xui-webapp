@@ -25,6 +25,7 @@ export class NocQAndAComponent implements OnInit, OnDestroy {
   public lastError$: Observable<NocHttpError>;
   public lastError: NocHttpError;
   public allAnswerEmpty: boolean = false;
+  public allAnswerValid: boolean = true;
 
   constructor(private readonly store: Store<fromFeature.State>) { }
 
@@ -103,6 +104,7 @@ export class NocQAndAComponent implements OnInit, OnDestroy {
   public validForm(): boolean {
     // if all values are empty then the form is invalid
     const allControlValues: string[] = Object.values(this.formGroup.value);
+    this.allAnswerValid = this.formGroup.valid;
     this.allAnswerEmpty = allControlValues.every(value => value === null || value === '');
     if (this.allAnswerEmpty) {
       this.setAllAnswerEmptyError();

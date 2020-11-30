@@ -308,12 +308,12 @@ export const init = () => {
   })*/
   // EUI-2322
   // Scenario 1
-/*  .onPost(postNoCEventsUrl).reply(201, {
+ /* .onPost(postNoCEventsUrl).reply(201, {
     approval_status: 'PENDING',
     case_role: 'Claimant',
     code: '',
     status_message: 'success',
-  })*/
+  }) */
   // EUI-2322
   // Scenario 2
   .onPost(postNoCEventsUrl).reply(201, {
@@ -322,4 +322,19 @@ export const init = () => {
     code: '',
     status_message: 'success',
   })
+  // EUI-2323
+  // Scenario 1
+/*  .onPost(postNoCEventsUrl).reply(500, {
+    code: 'nocInProgress',
+    status_message: 'internal error',
+  }) */
+  // EUI-2323
+  // Scenario 2
+  // .onGet(getNoCQuestionsUrl).networkError();
+  // EUI-2385
+  // Scenario 1
+/*  .onPost(postNoCEventsUrl).reply(501, {
+    code: '',
+    status_message: 'invalid answer',
+  }) */
 }

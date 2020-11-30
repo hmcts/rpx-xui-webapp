@@ -316,12 +316,12 @@ export const init = () => {
   }) */
   // EUI-2322
   // Scenario 2
-  .onPost(postNoCEventsUrl).reply(201, {
+  /* .onPost(postNoCEventsUrl).reply(201, {
     approval_status: 'APPROVED',
     case_role: 'Claimant',
     code: '',
     status_message: 'success',
-  })
+  }) */
   // EUI-2323
   // Scenario 1
 /*  .onPost(postNoCEventsUrl).reply(500, {
@@ -333,8 +333,38 @@ export const init = () => {
   // .onGet(getNoCQuestionsUrl).networkError();
   // EUI-2385
   // Scenario 1
-/*  .onPost(postNoCEventsUrl).reply(501, {
-    code: '',
-    status_message: 'invalid answer',
+  /* .onPost(postNoCEventsUrl).reply(400, {
+    code: 'invalidCaseRef',
+    status_message: 'Invalid answer',
+  }) */
+  // EUI-2385
+  // Scenario 2
+  .onPost(postNoCEventsUrl).reply(400, {
+    code: 'cantFileOnline',
+    status_message: 'Answers match more than one party on the case',
+  })
+  // EUI-2385
+  // Scenario 3
+  /* .onPost(postNoCEventsUrl).reply(400, {
+    code: 'invalidCaseRef',
+    status_message: 'Invalid case reference number',
+  }) */
+  // EUI-2385
+  // Scenario 4
+  /* .onPost(postNoCEventsUrl).reply(400, {
+    code: 'organisationHasAccess',
+    status_message: 'You already have access to the case',
+  }) */
+  // EUI-2385
+  // Scenario 5
+  /* .onPost(postNoCEventsUrl).reply(400, {
+    code: 'nocInProgress',
+    status_message: 'NOC in progress',
+  }) */
+  // EUI-2385
+  // Scenario 6
+  /* .onPost(postNoCEventsUrl).reply(400, {
+    code: 'invalidCaseRef',
+    status_message: 'Another NOC request has been actioned',
   }) */
 }

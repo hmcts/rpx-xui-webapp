@@ -56,7 +56,7 @@ export class NocValidators {
         }
         if (dateValues[2]) {
           const number = Number(dateValues[2]);
-          if (number === 0 || dateValues[2].length() < 4) {
+          if (number === 0 || dateValues[2].length < 4) {
             return { datetime: true, year: true, valid: false };
           }
         } else {
@@ -94,7 +94,7 @@ export class NocValidators {
         }
         if (dateValues[2]) {
           const number = Number(dateValues[2]);
-          if (number === 0 || dateValues[2].length() < 4) {
+          if (number === 0 || dateValues[2].length < 4) {
             return { datetime: true, year: true, valid: false };
           }
         } else {

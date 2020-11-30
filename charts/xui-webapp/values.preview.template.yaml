@@ -17,3 +17,9 @@ nodejs:
 redis:
   enabled: true
 
+tags:
+  idam-pr: true
+idam-pr:
+  redirect_uris:
+    XUI:
+      - https://${SERVICE_FQDN}/oauth2/callback

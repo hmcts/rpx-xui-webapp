@@ -15,6 +15,7 @@ import { Task, TaskFieldConfig, TaskSortField } from './../../models/tasks';
 export class TaskAssignmentContainerComponent implements OnInit {
    public tasks: any [];
    public sortedBy: any;
+   public showManage: boolean = false;
     constructor(private readonly route: ActivatedRoute, private readonly router: Router) {}
     /**
      * Mock TaskFieldConfig[]

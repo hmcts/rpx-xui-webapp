@@ -110,7 +110,8 @@
           "https://raw.githubusercontent.com/hmcts/",
           "http://stats.g.doubleclick.net/",
           "http://ssl.gstatic.com/",
-          "http://www.gstatic.com/"
+          "http://www.gstatic.com/",
+          "https://fonts.gstatic.com"
         ]
       }
     },

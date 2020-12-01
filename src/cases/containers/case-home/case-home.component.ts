@@ -41,6 +41,7 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
    * have yet to be logged in. ie. Viewing an accessibility page.
    */
   ngOnInit(): void {
+    console.log('Case home component.');
     this.navigationSubscription = this.navigationNotifier.navigation.subscribe(navigation => {
       if (navigation.action) {
         this.actionDispatcher(this.paramHandler(navigation));

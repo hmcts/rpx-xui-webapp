@@ -9,6 +9,8 @@ import {BehaviorSubject, combineLatest, Observable, Subscription} from 'rxjs';
 import * as converters from '../../converters/case-converter';
 import { ActionBindingModel } from '../../models/create-case-actions.model';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
+import { JURISDICTIONS_CASE_TYPE_AND_STATES_LEGACY } from './jur-case-types-and-states-legacy';
+import { JURISDICTIONS_CASE_TYPE_AND_STATES } from './jur-case-types-and-states';
 import * as fromRoot from '../../../app/store';
 import * as fromCasesFeature from '../../store';
 import * as fromCaseList from '../../store/reducers';
@@ -63,7 +65,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public page: number;
   public paginationSubscription: Subscription;
   public isVisible: boolean;
-  public jurisdictions: Jurisdiction[];
+  public jurisdictions; //: Jurisdiction[];
   public selectedCases: SearchResultViewItem[] = [];
 
   public elasticSearchFlag: boolean = false;
@@ -82,6 +84,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   ) { }
 
   public ngOnInit() {
+    console.log('case list component.');
 
     this.isVisible = false;
     this.page = 1;
@@ -91,7 +94,16 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
     this.jurisdictionsBehaviourSubject$.subscribe( jurisdictions => {
       this.isVisible = jurisdictions.length > 0;
-      this.jurisdictions = jurisdictions;
+
+      console.log('jurisdictions');
+      console.log(jurisdictions);
+
+      // this.jurisdictions = jurisdictions;
+      /**
+       * Use a compact Jurisdiction Case Type and States file, with only the information
+       * we require on the UI.
+       */
+      this.jurisdictions = JURISDICTIONS_CASE_TYPE_AND_STATES;
     });
 
     this.setCaseListFilterDefaults();
@@ -145,17 +157,24 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public setCaseListFilterDefaults = () => {
     this.jurisdictionsBehaviourSubject$
       .subscribe(jurisdictions => {
+        console.log('setCaseListFilterDefaults.');
         if (jurisdictions.length > 0) {
+          console.log('jurisdictions');
+          console.log(jurisdictions);
+          // This does nothing
           this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
           if (this.savedQueryParams && this.savedQueryParams.jurisdiction && !this.doesIdExist(this.jurisdictions, this.savedQueryParams.jurisdiction)) {
             this.windowService.removeLocalStorage('savedQueryParams');
           }
+
           if (this.savedQueryParams) {
+
             this.defaults = {
               jurisdiction_id: this.savedQueryParams.jurisdiction,
               case_type_id: this.savedQueryParams['case-type'],
               state_id: this.savedQueryParams['case-state']
             };
+            // sets the defaults which don't work
           } else if (jurisdictions[0] && jurisdictions[0].id && jurisdictions[0].caseTypes[0] && jurisdictions[0].caseTypes[0].states[0]) {
             this.defaults = {
               jurisdiction_id: jurisdictions[0].id,
@@ -298,6 +317,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
   public findCaseListPaginationMetadata(event) {
     if (event !== null) {
+      console.log('event');
+      console.log(event);
       this.store.dispatch(new fromCasesFeature.FindCaselistPaginationMetadata(event));
     }
   }
@@ -326,6 +347,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
    * to dispatch an Action to get the Pagination Metadata for the filter selection.
    */
   public applyFilter(event) {
+    console.log('event');
+    console.log(event.selected);
     this.page = event.selected.page;
     this.selected = event.selected;
     this.triggerQuery();
@@ -390,6 +413,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
     if (!this.elasticSearchFlag) {
       this.findCaseListPaginationMetadata(this.getEvent());
     } else {
+      console.log('this.getEvent()');
+      console.log(this.getEvent());
       this.getElasticSearchResults(this.getEvent());
     }
   }

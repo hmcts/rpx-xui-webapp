@@ -1,4 +1,4 @@
-export const JURISDICTIONS_CASE_TYPE_AND_STATES_LEGACY = [
+export const CASEWORKER_JURISDICTIONS_DATASET_FROM_CCD = [
   {
     "id": "DIVORCE",
     "name": "Family Divorce",

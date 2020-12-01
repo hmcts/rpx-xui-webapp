@@ -217,11 +217,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public setCaseListFilterDefaults = () => {
     this.jurisdictionsBehaviourSubject$
       .subscribe(jurisdictions => {
-        console.log('setCaseListFilterDefaults.');
         if (jurisdictions.length > 0) {
-          console.log('jurisdictions');
-          console.log(jurisdictions);
-          // This does nothing
           this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
           if (this.savedQueryParams && this.savedQueryParams.jurisdiction && !this.doesIdExist(this.jurisdictions, this.savedQueryParams.jurisdiction)) {
             this.windowService.removeLocalStorage('savedQueryParams');
@@ -377,7 +373,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
   public findCaseListPaginationMetadata(event) {
     if (event !== null) {
-      console.log('event');
+      console.log('check the event on \'Apply\' click.');
       console.log(event);
       this.store.dispatch(new fromCasesFeature.FindCaselistPaginationMetadata(event));
     }

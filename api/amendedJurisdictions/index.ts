@@ -27,19 +27,11 @@ export async function getJurisdictions(req: express.Request, res: express.Respon
     try {
         const response = await http.get(`${getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)}${url}`, { headers })
 
-        console.log('response');
-        console.log(response.data);
-
         const filters = { jurisdiction: getFilters() }
 
         const amendedJurisdictions = [...response.data].filter(o => {
-          console.log('o');
-          console.log(o);
           return filters.jurisdiction.includes(o.id)
         })
-
-        console.log('amendedJurisdictions');
-        console.log(amendedJurisdictions);
 
         res.status(200)
 

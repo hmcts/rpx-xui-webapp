@@ -14,6 +14,7 @@
         type="number"
         oninput="this.value=this.value.slice(0,this.maxLength)"
         maxlength="2"
+        [ngClass]="{'govuk-input--error': !timeControl.valid}"
         formControlName="hour">
     </div>
     <div class="form-group form-group-minute">
@@ -24,6 +25,7 @@
         type="number"
         oninput="this.value=this.value.slice(0,this.maxLength)"
         maxlength="2"
+        [ngClass]="{'govuk-input--error': !timeControl.valid}"
         formControlName="minute">
     </div>
     <div class="form-group form-group-second">
@@ -34,6 +36,7 @@
         type="number"
         oninput="this.value=this.value.slice(0,this.maxLength)"
         maxlength="2"
+        [ngClass]="{'govuk-input--error': !timeControl.valid}"
         formControlName="second">
     </div>
   </div>

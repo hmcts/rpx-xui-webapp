@@ -9,19 +9,6 @@ describe('App Config Reducer', () => {
         expect(state).toEqual(appConfigReducer.initialState);
     });
 
-    it('Logout', () => {
-      const action = new fromActions.Logout();
-      const state = appConfigReducer.reducer(appConfigReducer.initialState, action);
-      const expectedState = {
-          ...appConfigReducer.initialState,
-          termsAndCondition: {
-              isLoaded: true,
-              hasUserAcceptedTC: false
-            }
-      };
-      expect(state).toEqual(expectedState);
-   });
-
     it('Has accepted TC Success', () => {
         const action = new fromActions.LoadHasAcceptedTCSuccess(false);
         const state = appConfigReducer.reducer(appConfigReducer.initialState, action);
@@ -61,18 +48,7 @@ describe('App Config Reducer', () => {
         expect(state).toEqual(expectedState);
     });
 
-    it('feature toggle config success', () => {
-      const action = new fromActions.LoadFeatureToggleConfigSuccess(true);
-      const state = appConfigReducer.reducer(appConfigReducer.initialState, action);
-      const expectedState = {
-          ...appConfigReducer.initialState,
-          termsAndCondition: {
-              isLoaded: true,
-              hasUserAcceptedTC: false
-            }
-      };
-      expect(state).toEqual(expectedState);
-  });
+
 
     it('LoadUserDetailsSuccess', () => {
         const action = new fromActions.LoadUserDetailsSuccess({
@@ -147,4 +123,3 @@ describe('App Config Reducer', () => {
         expect(state).toEqual(expectedState);
     });
 });
-

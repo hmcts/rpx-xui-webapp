@@ -9,8 +9,8 @@ import {BehaviorSubject, combineLatest, Observable, Subscription} from 'rxjs';
 import * as converters from '../../converters/case-converter';
 import { ActionBindingModel } from '../../models/create-case-actions.model';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
-import { JURISDICTIONS_CASE_TYPE_AND_STATES_LEGACY } from './jur-case-types-and-states-legacy';
-import { JURISDICTIONS_CASE_TYPE_AND_STATES } from './jur-case-types-and-states';
+import { CASEWORKER_JURISDICTIONS_DATASET_FROM_CCD } from './caseworker-jurisdictions-from-ccd';
+import { CASEWORKER_JURISDICTIONS_SUBSET } from './caseworkers-jurisdictions-subset';
 import * as fromRoot from '../../../app/store';
 import * as fromCasesFeature from '../../store';
 import * as fromCaseList from '../../store/reducers';
@@ -83,6 +83,53 @@ export class CaseListComponent implements OnInit, OnDestroy {
     private featureToggleService: FeatureToggleService,
   ) { }
 
+  /**
+   * getCaseworkersJurisdictionsSubset
+   *
+   * Currently we are returned a Json object of 40,000 lines which is used to configured our search filter.
+   *
+   * The following shows how we only need around 800 lines of this original Json object.
+   *
+   * The following func removes the properties that are not required within the application. I've tested it
+   * and the application works correctly, of course we would need to run it by QA to make sure everything
+   * is still working correctly.
+   *
+   * TODO: Temporary
+   * @param jurisdictions
+   */
+  private getCaseworkersJurisdictionsSubset (jurisdictions) {
+
+    return jurisdictions.map(caseTypeOriginal => {
+
+      const caseTypeFocussedForUi = caseTypeOriginal.caseTypes.map(caseType => {
+
+        /**
+         * Pick only the id and name from states, as this is all the UI needs.
+         */
+        const states = caseType.states.map (state => {
+          return {
+            id: state.id,
+            name: state.name
+          };
+        });
+
+        /**
+         * Pick only the id, description, name and states, as this is all the UI needs.
+         */
+        return {
+          id: caseType.id,
+          description: caseType.description,
+          name: caseType.name,
+          states,
+        };
+      });
+
+      caseTypeOriginal.caseTypes = caseTypeFocussedForUi as any;
+
+      return caseTypeOriginal;
+    })
+  }
+
   public ngOnInit() {
     console.log('case list component.');
 
@@ -95,15 +142,28 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.jurisdictionsBehaviourSubject$.subscribe( jurisdictions => {
       this.isVisible = jurisdictions.length > 0;
 
-      console.log('jurisdictions');
-      console.log(jurisdictions);
-
-      // this.jurisdictions = jurisdictions;
       /**
-       * Use a compact Jurisdiction Case Type and States file, with only the information
-       * we require on the UI.
+       * Use the 40,000 line Json structure returned by CCD.
        */
-      this.jurisdictions = JURISDICTIONS_CASE_TYPE_AND_STATES;
+      // this.jurisdictions = jurisdictions;
+
+      /**
+       * Use a subset of the 40,000 lines (800 lines) only the data we require for the filter.
+       */
+      this.jurisdictions = this.getCaseworkersJurisdictionsSubset(jurisdictions);
+
+      /**
+       * Use the Json subset on disk.
+       */
+      // this.jurisdictions = CASEWORKER_JURISDICTIONS_SUBSET;
+
+      /**
+       * Original dataset returned from CCD, on disk.
+       */
+      // this.jurisdictions = CASEWORKER_JURISDICTIONS_DATASET_FROM_CCD;
+
+      console.log('jurisdictions');
+      console.log(this.jurisdictions);
     });
 
     this.setCaseListFilterDefaults();

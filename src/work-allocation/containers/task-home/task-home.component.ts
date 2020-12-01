@@ -14,7 +14,7 @@ import { Task, TaskFieldConfig, TaskSortField } from './../../models/tasks';
 })
 export class TaskHomeComponent implements OnInit {
 
-  constructor(private router: Router) {}
+  constructor(private readonly router: Router) {}
 
   /**
    * Temp Task List

@@ -40,7 +40,7 @@ export class WorkAllocationTaskService {
    */
   public assignTask(taskId: string, assignee: Assignee): Observable<any> {
     // Make a POST with the specified assignee in the payload.
-    return this.http.post<any>(this.getActionUrl(taskId, ACTION.ASSIGN), assignee);
+    return this.http.post<any>(this.getActionUrl(taskId, ACTION.ASSIGN), { assignee });
   }
 
   public postTask(task: TaskSearchParameters): Observable<any> {

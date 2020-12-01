@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { WorkAllocationTaskService } from 'src/work-allocation/services/work-allocation-task.service';
+
 import { TaskFieldType, TaskService, TaskSort, TaskView } from '../../enums';
 import InvokedTaskAction from '../../models/tasks/invoked-task-action.model';
 import TaskServiceConfig from '../../models/tasks/task-service-config.model';
-import { Caseworker } from './../../models/dtos/task';
-import { Task, TaskFieldConfig, TaskSortField } from './../../models/tasks';
+import { Assignee, Caseworker } from './../../models/dtos/task';
+import { Task, TaskFieldConfig } from './../../models/tasks';
 
 @Component({
     selector: 'exui-task-container-assignment',
@@ -16,7 +18,31 @@ export class TaskAssignmentContainerComponent implements OnInit {
    public tasks: any [];
    public sortedBy: any;
    public showManage: boolean = false;
-    constructor(private readonly route: ActivatedRoute, private readonly router: Router) {}
+   public caseworker: Caseworker;
+   private readonly MOCK_TASK: Task = {
+    id: '123456',
+    caseReference: '1234 5678 9012 3456',
+    caseName: 'Kili Muso',
+    caseCategory: 'Protection',
+    location: 'Taylor House',
+    taskName: 'Review respondent evidence',
+    dueDate: new Date(1604938789000),
+    actions: [
+      {
+        id: 'actionId',
+        title: 'Reassign task',
+      },
+      {
+        id: 'actionId',
+        title: 'Release this task',
+      }
+    ]
+  };
+    constructor(
+      private readonly taskService: WorkAllocationTaskService,
+      private readonly route: ActivatedRoute,
+      private readonly router: Router
+    ) {}
     /**
      * Mock TaskFieldConfig[]
      *
@@ -72,36 +98,33 @@ export class TaskAssignmentContainerComponent implements OnInit {
         fields: this.fields,
       };
     public ngOnInit(): void {
-          // Set up the default sorting.
+      // Set up the default sorting.
       this.sortedBy = {
         fieldName: this.taskServiceConfig.defaultSortFieldName,
         order: this.taskServiceConfig.defaultSortDirection
       };
-      console.log(this.route.snapshot.data);
-      this.tasks = [
-        {
-          id: '12345678901123456',
-          caseReference: '1234 5678 9012 3456',
-          caseName: 'Kili Muso',
-          caseCategory: 'Protection',
-          location: 'Taylor House',
-          taskName: 'Review respondent evidence',
-          dueDate: new Date(1604938789000),
-          actions: [
-            {
-              id: 'actionId',
-              title: 'Reassign task',
-            },
-            {
-              id: 'actionId',
-              title: 'Release this task',
-            }
-          ]
-        }];
+      console.log('Got the task from the resolver', this.route.snapshot.data);
+      console.log('However, we need something more like this, which is what we will use for now', this.MOCK_TASK);
+      this.tasks = [ this.MOCK_TASK ];
     }
 
     public reAssign(): void {
-      console.log('Re-Assign');
+      if (!this.caseworker) {
+        console.log('No caseworker selected. This is part of the unhappy path that is not yet done.');
+        return;
+      }
+      // const assignee: Assignee = {
+      //   id: this.caseworker.idamId,
+      //   userName: `${this.caseworker.firstName} ${this.caseworker.lastName}`
+      // };
+      const assignee: Assignee = {
+        id: '987654',
+        userName: 'bob'
+      };
+      console.log('Reassigning, but using a fake assignee for the PACT stub', assignee);
+      this.taskService.assignTask(this.tasks[0].id, assignee).subscribe(() => {
+        console.log('assignment was successful: received a 200 status');
+      });
     }
 
     /**
@@ -159,5 +182,6 @@ export class TaskAssignmentContainerComponent implements OnInit {
 
   public onCaseworkerChanged(caseworker: Caseworker): void {
     console.log('onCaseworkerChanged', caseworker);
+    this.caseworker = caseworker;
   }
 }

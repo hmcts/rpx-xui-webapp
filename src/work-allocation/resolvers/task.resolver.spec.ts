@@ -1,5 +1,6 @@
-import { ActivatedRoute, ActivatedRouteSnapshot, convertToParamMap, RouterStateSnapshot } from '@angular/router';
+import { RouterStateSnapshot } from '@angular/router';
 import { of } from 'rxjs';
+
 import { Task } from '../models/tasks';
 import { TaskResolver } from './task.resolver';
 

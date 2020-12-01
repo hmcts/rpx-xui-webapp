@@ -47,9 +47,7 @@ describe('App Config Reducer', () => {
         };
         expect(state).toEqual(expectedState);
     });
-
-
-
+    
     it('LoadUserDetailsSuccess', () => {
         const action = new fromActions.LoadUserDetailsSuccess({
                                                                 sessionTimeout: {

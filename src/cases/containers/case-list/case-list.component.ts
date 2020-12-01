@@ -86,7 +86,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   /**
    * getCaseworkersJurisdictionsSubset
    *
-   * Currently we are returned a Json object of 40,000 lines which is used to configured our search filter.
+   * Currently we are returned a Json object of 40,000 lines (3Mb) which is used to configured our search filter.
    *
    * The following shows how we only need around 800 lines of this original Json object.
    *

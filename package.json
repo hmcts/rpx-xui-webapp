@@ -13,6 +13,8 @@
     "build:node": "cd api && yarn build",
     "build:prod": "ng build --prod",
     "start:node": "cd api && yarn watch",
+    "start:node:stub": "NODE_CONFIG_ENV=stub cd api && yarn watch",
+    "pact-stub": "$(find . -name pact-stub-service | grep -e 'bin/pact-stub-service$' | head -n 1) ./api/test/pact/pacts/ --port 8080",
     "lint:node": "cd api && yarn lint",
     "test:node": "cd api && yarn test",
     "coverage:node": "cd api && yarn coverage",
@@ -67,7 +69,7 @@
     "@hmcts/media-viewer": "2.5.1",
     "@hmcts/nodejs-healthcheck": "^1.6.0",
     "@hmcts/properties-volume": "^0.0.9",
-    "@hmcts/rpx-xui-common-lib": "0.1.38",
+    "@hmcts/rpx-xui-common-lib": "0.1.45",
     "@hmcts/rpx-xui-node-lib": "^2.24.2",
     "@ng-idle/core": "^8.0.0-beta.4",
     "@ng-idle/keepalive": "^8.0.0-beta.4",
@@ -121,7 +123,10 @@
     "tslib": "^1.9.0",
     "web-animations-js": "^2.3.2",
     "xlsx": "^0.15.4",
-    "zone.js": "~0.8.26"
+    "zone.js": "~0.8.26",
+    "mochawesome": "^6.1.1",
+    "mochawesome-merge": "^4.1.0",
+    "mochawesome-report-generator": "^5.1.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.13.0",
@@ -185,7 +190,12 @@
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10",
     "webpack-node-externals": "^1.7.2",
-    "webpack-source-map-support": "^2.0.1"
+    "webpack-source-map-support": "^2.0.1",
+    "base-64": "^0.1.0",
+    "node-fetch": "^2.6.1",
+      "mocha": "^8.1.1"
+      
+        
   },
   "resolutions": {
     "**/**/dot-prop": "^5.1.1",

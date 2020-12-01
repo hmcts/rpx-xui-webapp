@@ -1,6 +1,10 @@
 import { BadgeColour, ContactDetailsDataModel } from '@hmcts/rpx-xui-common-lib';
 import {Theme} from './containers/app-header/app-header.component';
 
+const FeatureNames = {
+  workAllocation: 'MC_Work_Allocation'
+};
+
 const FooterData =  {
   heading: 'Help',
   email: {
@@ -197,6 +201,9 @@ const redirectUrl = {
 
 const appHeaderTitle = {name: 'Manage Cases', url: '/'};
 
+// Making the base URL for case details a constant.
+const caseDetailsUrl: string = '/cases/case-details/';
+
 
 export class AppConstants {
   static FOOTER_DATA = null;
@@ -208,4 +215,6 @@ export class AppConstants {
   static DEFAULT_USER_THEME = defaultUserTheme;
   static APPLICATION_USER_THEMES = applicationUserThemes;
   static SIGNED_OUT_THEME = signedOutTheme;
+  static FEATURE_NAMES = FeatureNames;
+  static CASE_DETAILS_URL = caseDetailsUrl;
 }

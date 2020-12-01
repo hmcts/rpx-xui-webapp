@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import { GoogleAnalyticsService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
+import { GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import {propsExist} from '../../../../api/lib/objectUtilities';
 import { environment as config } from '../../../environments/environment';
@@ -17,15 +17,15 @@ export class AppComponent implements OnInit {
   public timeoutModalConfig = {
     countdown: '0 seconds',
     isVisible: false,
-  }
+  };
 
   constructor(
     private readonly store: Store<fromRoot.State>,
-    private googleAnalyticsService: GoogleAnalyticsService,
+    private googleTagManagerService: GoogleTagManagerService,
     private readonly timeoutNotificationsService: TimeoutNotificationsService
   ) {
 
-    this.googleAnalyticsService.init(config.googleAnalyticsKey);
+    this.googleTagManagerService.init(config.googleTagManagerKey);
   }
 
   public ngOnInit() {

@@ -61,6 +61,16 @@ function loginLogoutObjects() {
     this.setDefaultTimeout(60 * 1000);
   };
 
+  this.getEmailFieldValue = async function () {
+    return await this.emailAddress.getAttribute('value');
+  };
+
+  this.loginWithCredentials = async function (username, password) {
+    await BrowserWaits.waitForElement(this.emailAddress);
+    await this.enterUrEmail(username);
+    await this.enterPassword(password);
+    await this.clickSignIn();
+  };
 
 }
 

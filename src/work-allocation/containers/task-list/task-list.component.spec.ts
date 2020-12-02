@@ -5,6 +5,7 @@ import { of } from 'rxjs';
 import { WorkAllocationComponentsModule } from 'src/work-allocation/components/work-allocation.components.module';
 import { WorkAllocationTaskService } from 'src/work-allocation/services/work-allocation-task.service';
 
+import { Location } from '@angular/common';
 import { TaskFieldType, TaskService, TaskSort, TaskView } from '../../enums';
 import { Task, TaskAction, TaskFieldConfig, TaskServiceConfig, TaskSortField } from './../../models/tasks';
 import { TaskListComponent } from './task-list.component';
@@ -125,15 +126,20 @@ describe('TaskListComponent', () => {
   let component: TaskListComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
+  let location: jasmine.SpyObj<Location>;
   const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['getTask']);
   beforeEach(async(() => {
+    location = jasmine.createSpyObj('Location', ['path']);
+    location.path.and.returnValue('');
     TestBed.configureTestingModule({
       imports: [
         WorkAllocationComponentsModule,
         CdkTableModule
       ],
       declarations: [TaskListComponent, WrapperComponent],
-      providers: [{ provide: WorkAllocationTaskService, useValue: mockWorkAllocationService }]
+      providers: [
+        { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
+        { provide: Location, useValue: location }]
     })
       .compileComponents();
   }));
@@ -440,4 +446,12 @@ describe('TaskListComponent', () => {
     expect(component.sortEvent.emit).toHaveBeenCalledWith('dueDate');
   });
 
+  it('selectTaskFromUrlHash', () => {
+    const task = {} as Task;
+    location.path.and.returnValue('tasklist#manage_12345678');
+    task.id = '12345678';
+    const tasks = [task];
+    const returnTask = component.selectTaskFromUrlHash(location, tasks);
+    expect(task).toEqual(returnTask);
+  });
 });

@@ -1,9 +1,0 @@
-<nav class="hmcts-sub-navigation" aria-label="Sub navigation" *ngIf="items">
-  <ul class="hmcts-sub-navigation__list">
-    <li *ngFor="let item of items" class="hmcts-sub-navigation__item">
-      <a class="hmcts-sub-navigation__link" [attr.aria-current]="item.active ? 'page' : ''" [routerLink]="item.href">
-        {{item.text}}
-      </a>
-    </li>
-  </ul>
-</nav>

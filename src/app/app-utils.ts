@@ -1,6 +1,7 @@
+import { ActivatedRouteSnapshot } from '@angular/router';
+import { CookieService } from 'ngx-cookie';
 
 import { AppConstants } from './app.constants';
-import { CookieService } from 'ngx-cookie';
 
 export class AppUtils {
 
@@ -65,5 +66,17 @@ export class AppUtils {
    */
   public static getCookieRolesAsArray(userRoles: string): string[] {
     return JSON.parse(userRoles);
+  }
+
+  /**
+   * Get the data at the lowest child element of the activated route.
+   * @param activatedRoute The starting (parent) route to use.
+   */
+  public static getRouteData(activatedRoute: ActivatedRouteSnapshot): any {
+    let child = activatedRoute;
+    while (child && child.firstChild) {
+      child = child.firstChild;
+    }
+    return child ? child.data : null;
   }
 }

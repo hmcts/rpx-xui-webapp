@@ -12,7 +12,7 @@ const MockApp = require('../../nodeMock/app');
 
 const ccdApi = require('../../nodeMock/ccd/ccdApi');
 
-describe.only('Work Allocation: ', function () {
+describe('Work Allocation: ', function () {
 
     beforeEach(async function (done) {
         MockApp.init()
@@ -35,8 +35,7 @@ describe.only('Work Allocation: ', function () {
         await MockApp.startServer();
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator('exui-task-container-assignment h1'))
-        await pa11ytest(this, actions, conf.baseUrl + 'tasks/task-list/reassign/123456');
-
+        await pa11ytest(this, actions, conf.baseUrl + 'tasks/reassign/123456');
     });
 
 

@@ -1,9 +1,10 @@
-<exui-app-header></exui-app-header>
-<div class="govuk-width-container">
-  <main class="govuk-main-wrapper" id="main-content" role="main">
-    <h3 class="govuk-heading-m">My tasks</h3>
-    <exui-task-list [taskServiceConfig]="taskServiceConfig" [tasks]="tasks" [fields]="fields" [sortedBy]="sortedBy"
-                    (sortEvent)="onSortHandler($event)" (actionEvent)="onActionHandler($event)"></exui-task-list>
-  </main>
-</div>
-<exui-app-footer></exui-app-footer>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+  <h3 class="govuk-heading-xl">{{pageTitle}}</h3>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <p>See your tasks and view tasks available for you to pick up.</p>
+      <xuilib-hmcts-sub-navigation [items]="subNavigationItems" label="Sub navigation"></xuilib-hmcts-sub-navigation>
+    </div>
+  </div>
+  <router-outlet></router-outlet>
+</main>

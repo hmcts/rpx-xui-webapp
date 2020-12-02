@@ -102,7 +102,7 @@ describe('NocErrorPipe', () => {
     const message = nocError.transform({
       datetime: true
     });
-    expect(message).toBe('The datetime is invalid');
+    expect(message).toBe('The date and time is invalid');
   });
 
   it('should return time error message', () => {

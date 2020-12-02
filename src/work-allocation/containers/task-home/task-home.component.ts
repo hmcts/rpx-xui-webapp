@@ -1,23 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRouteSnapshot, NavigationEnd, Router, RoutesRecognized } from '@angular/router';
+import { SubNavigation } from '@hmcts/rpx-xui-common-lib';
 
-import { TaskService, TaskSort } from '../../enums';
-import InvokedTaskAction from '../../models/tasks/invoked-task-action.model';
-import TaskServiceConfig from '../../models/tasks/task-service-config.model';
-import { TaskFieldType, TaskView } from './../../enums';
-import { Task, TaskFieldConfig, TaskSortField } from './../../models/tasks';
+import { AppUtils } from './../../../app/app-utils';
+import { Task, TaskSortField } from './../../models/tasks';
 
 @Component({
   selector: 'exui-task-home',
-  templateUrl: 'task-home.component.html',
-  styleUrls: ['task-home.component.scss']
+  templateUrl: 'task-home.component.html'
 })
 export class TaskHomeComponent implements OnInit {
 
-  constructor(private readonly router: Router) {}
-
   /**
-   * Temp Task List
+   * Take in the Router so we can navigate when actions are clicked and
+   * to identify which sub-navigation item to highlight.
    */
   public tasks: Task[] = [
     {
@@ -244,127 +240,56 @@ export class TaskHomeComponent implements OnInit {
     },
   ];
 
+  private readonly MY_TASKS: SubNavigation = { text: 'My tasks', href: '/tasks/list', active: true };
   /**
-   * Mock TaskFieldConfig[]
-   *
-   * Fields is the property of the TaskFieldConfig[], containing the configuration
-   * for the fields as returned by the API.
-   *
-   * The sorting will handled by this component, via the
-   * WP api as this component.
+   * The sub-navigation items.
    */
-  public fields: TaskFieldConfig[] = [
-    {
-      name: 'caseReference',
-      type: TaskFieldType.CASE_REFERENCE,
-      columnLabel: 'Case reference',
-      views: TaskView.TASK_LIST,
-    },
-    {
-      name: 'caseName',
-      type: TaskFieldType.STRING,
-      columnLabel: 'Case name',
-      views: TaskView.TASK_LIST,
-    },
-    {
-      name: 'caseCategory',
-      type: TaskFieldType.STRING,
-      columnLabel: 'Case category',
-      views: TaskView.TASK_LIST,
-    },
-    {
-      name: 'location',
-      type: TaskFieldType.STRING,
-      columnLabel: 'Location',
-      views: TaskView.TASK_LIST,
-    },
-    {
-      name: 'taskName',
-      type: TaskFieldType.STRING,
-      columnLabel: 'Task',
-      views: TaskView.TASK_LIST,
-    },
-    {
-      name: 'dueDate',
-      type: TaskFieldType.DATE_DUE,
-      columnLabel: 'Date',
-      views: TaskView.TASK_LIST,
-    },
+  public subNavigationItems: SubNavigation[] = [
+    this.MY_TASKS,
+    { text: 'Available tasks', href: '/tasks/available', active: false }
   ];
 
-  /**
-   * Mock TaskServiceConfig.
-   */
-  public taskServiceConfig: TaskServiceConfig = {
-    service: TaskService.IAC,
-    defaultSortDirection: TaskSort.ASC,
-    defaultSortFieldName: 'dueDate',
-    fields: this.fields,
-  };
-
   public sortedBy: TaskSortField;
+  public pageTitle: string;
+
+  constructor(private readonly router: Router) {}
 
   public ngOnInit(): void {
-    // Set up the default sorting.
-    this.sortedBy = {
-      fieldName: this.taskServiceConfig.defaultSortFieldName,
-      order: this.taskServiceConfig.defaultSortDirection
-    };
-
-    // Remove after integration.
-    this.sortTasks();
-  }
-
-  /**
-   * We need to sort the Task List based on the fieldName.
-   *
-   * Following on from this function we will need to retrieve the sorted tasks from
-   * the WA Api, once we have these then we need to set the tasks and fields, and pass
-   * these into the TaskListComponent.
-   *
-   * @param fieldName - ie. 'caseName'
-   */
-  public onSortHandler(fieldName: string): void {
-
-    // TODO: Remove everything below after integration.
-    // This is all to prove the mechanism works.
-    console.log('Task Home received Sort on:');
-    console.log(fieldName);
-    console.log('Faking the sort now');
-    let order: TaskSort = TaskSort.ASC;
-    if (this.sortedBy.fieldName === fieldName && this.sortedBy.order === TaskSort.ASC) {
-      order = TaskSort.DSC;
-    }
-    this.sortedBy = { fieldName, order };
-
-    // Now sort the tasks.
-    this.sortTasks();
-  }
-
-  /**
-   * InvokedTaskAction from the Task List Component, so that we can handle the User's
-   * action.
-   */
-  public onActionHandler(taskAction: InvokedTaskAction): void {
-
-    // Remove after integration
-    console.log('Task Home received InvokedTaskAction:');
-    console.log(taskAction.task.id);
-    this.router.navigate([`/tasks/task-list/reassign/123456`]);
-  }
-
-  // Remove after integration.
-  private sortTasks(): void {
-    this.tasks = this.tasks.sort((a: Task, b: Task) => {
-      const aVal = a[this.sortedBy.fieldName];
-      const bVal = b[this.sortedBy.fieldName];
-      let sortVal = 0;
-      if (typeof aVal === 'string') {
-        sortVal = aVal.localeCompare(bVal);
-      } else if (aVal instanceof Date) {
-        sortVal = aVal.getTime() - new Date(bVal).getTime();
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        // Set up the active navigation item.
+        this.setupActiveSubNavigationItem(this.router.url);
       }
-      return this.sortedBy.order === TaskSort.ASC ? sortVal : -sortVal;
+      if (event instanceof RoutesRecognized) {
+        // Set up the page data.
+        this.setupPageData(event.state.root);
+      }
     });
+    // Set up the active navigation item.
+    this.setupActiveSubNavigationItem(this.router.url);
+
+    // Set up the page data.
+    this.setupPageData(this.router.routerState.root.snapshot);
+  }
+
+  /**
+   * Set the active sub-navigation item, based on the supplied active url.
+   * @param activeUrl The URL considered active.
+   */
+  public setupActiveSubNavigationItem(activeUrl: string): void {
+    if (this.subNavigationItems) {
+      for (const item of this.subNavigationItems) {
+        item.active = item.href === activeUrl;
+      }
+    }
+  }
+
+  /**
+   * Sets up the page data (the title) for the activated route.
+   * @param activatedRoute The activated (parent) route to start with.
+   */
+  public setupPageData(activatedRoute: ActivatedRouteSnapshot): void {
+    const data = AppUtils.getRouteData(activatedRoute);
+    this.pageTitle = data ? data.subTitle : 'Task list';
   }
 }

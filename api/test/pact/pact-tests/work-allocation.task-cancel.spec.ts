@@ -1,11 +1,11 @@
-import { Pact } from '@pact-foundation/pact'
-import { assert, expect } from 'chai'
-import * as getPort from 'get-port'
-import * as path from 'path'
+import { Pact } from '@pact-foundation/pact';
+import { assert, expect } from 'chai';
+import * as getPort from 'get-port';
+import * as path from 'path';
 
-import { EnhancedRequest } from '../../../lib/models'
-import { handleTaskPost } from '../../../workAllocation/taskService'
-import { Assignee } from './../../../workAllocation/interfaces/task'
+import { EnhancedRequest } from '../../../lib/models';
+import { Assignee } from '../../../workAllocation/interfaces/task';
+import { handleTaskPost } from '../../../workAllocation/taskService';
 
 interface Payload {
   behaviour?: string,
@@ -14,10 +14,10 @@ interface Payload {
 
 describe('Work Allocation API', () => {
 
-  let mockServerPort: number
-  let provider: Pact
+  let mockServerPort: number;
+  let provider: Pact;
 
-  const ASSIGNEE: Assignee = { id: '987654', userName: 'bob' }
+  const ASSIGNEE: Assignee = { id: '987654', userName: 'bob' };
   const BEHAVIOURS = {
     SUCCESS: {},
     ALREADY_DONE: { behaviour: 'already-done' },
@@ -25,14 +25,14 @@ describe('Work Allocation API', () => {
     FORBIDDEN: { behaviour: 'forbidden' },
     UNSUPPORTED: { behaviour: 'unsupported' },
     SERVER_ERROR: { behaviour: 'unsupported' }
-  }
+  };
 
   function getPayload(behaviour: { behaviour?: string }): Payload {
-    return { ...behaviour, assignee: { ...ASSIGNEE } }
+    return { ...behaviour, assignee: { ...ASSIGNEE } };
   }
 
   before(async () => {
-    mockServerPort = await getPort()
+    mockServerPort = await getPort();
     provider = new Pact({
       consumer: 'xui_work_allocation_task_cancel',
       provider: 'WorkAllocation_api_cancel',
@@ -41,8 +41,8 @@ describe('Work Allocation API', () => {
       logLevel: 'info',
       port: mockServerPort,
       spec: 2
-    })
-    return provider.setup()
+    });
+    return provider.setup();
   })
 
   // Write Pact when all tests done

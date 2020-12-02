@@ -6,7 +6,7 @@ import { WorkAllocationTaskService } from 'src/work-allocation/services/work-all
 import { TaskFieldType, TaskService, TaskSort, TaskView } from '../../enums';
 import TaskServiceConfig from '../../models/tasks/task-service-config.model';
 import { Assignee, Caseworker } from './../../models/dtos/task';
-import { Task, TaskFieldConfig } from './../../models/tasks';
+import { TaskFieldConfig } from './../../models/tasks';
 
 @Component({
   selector: 'exui-task-container-assignment',
@@ -18,25 +18,6 @@ export class TaskAssignmentContainerComponent implements OnInit {
   public sortedBy: any;
   public showManage: boolean = false;
   public caseworker: Caseworker;
-  private readonly MOCK_TASK: Task = {
-    id: '123456',
-    caseReference: '1234 5678 9012 3456',
-    caseName: 'Kili Muso',
-    caseCategory: 'Protection',
-    location: 'Taylor House',
-    taskName: 'Review respondent evidence',
-    dueDate: new Date(1604938789000),
-    actions: [
-      {
-        id: 'actionId',
-        title: 'Reassign task',
-      },
-      {
-        id: 'actionId',
-        title: 'Release this task',
-      }
-    ]
-  };
 
   constructor(
     private readonly taskService: WorkAllocationTaskService,
@@ -105,14 +86,16 @@ export class TaskAssignmentContainerComponent implements OnInit {
       fieldName: this.taskServiceConfig.defaultSortFieldName,
       order: this.taskServiceConfig.defaultSortDirection
     };
-    console.log('Got the task from the resolver', this.route.snapshot.data);
-    console.log('However, we need something more like this, which is what we will use for now', this.MOCK_TASK);
-    this.tasks = [ this.MOCK_TASK ];
+
+    // Get the task from the route, which will have been put there by the resolver.
+    const { task } = this.route.snapshot.data.task;
+    this.tasks = [ task ];
   }
 
   public reAssign(): void {
     if (!this.caseworker) {
       console.log('No caseworker selected. This is part of the unhappy path that is not yet done.');
+      alert('Please select a caseworker');
       return;
     }
     // const assignee: Assignee = {
@@ -131,7 +114,6 @@ export class TaskAssignmentContainerComponent implements OnInit {
   }
 
   public onCaseworkerChanged(caseworker: Caseworker): void {
-    console.log('onCaseworkerChanged', caseworker);
     this.caseworker = caseworker;
   }
 }

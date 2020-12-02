@@ -29,95 +29,28 @@ describe('Work Allocation for location and service Caseworker API', () => {
   // Write Pact when all tests done
   after(() => provider.finalize())
 
-  describe('when requested to get a caseworker with id of 1', () => {
-    before(() =>
-      provider.addInteraction({
-        state: 'John Smith is returned',
-        uponReceiving: 'a request for a caseworker with an id of 1',
-        withRequest: {
-          method: 'GET',
-          path: '/caseworker/1'
-        },
-        willRespondWith: {
-          status: 200,
-          headers: {'Content-Type': 'application/json'},
-          body: CASEWORKERS.JOHN_SMITH
-        }
+  for (const key in CASEWORKERS) {
+    describe(`when requested to get a caseworker with id of ${CASEWORKERS[key].idamId}`, () => {
+      before(() =>
+        provider.addInteraction({
+          state: `${CASEWORKERS[key].firstName} ${CASEWORKERS[key].lastName} is returned`,
+          uponReceiving: `a request for a caseworker with an id of ${CASEWORKERS[key].idamId}`,
+          withRequest: {
+            method: 'GET',
+            path: `/caseworker/${CASEWORKERS[key].idamId}`
+          },
+          willRespondWith: {
+            status: 200,
+            headers: {'Content-Type': 'application/json'},
+            body: CASEWORKERS[key]
+          }
+        })
+      )
+
+      it(`returns ${CASEWORKERS[key].firstName} ${CASEWORKERS[key].lastName}`, async () => {
+          const caseworkerUrl = `${provider.mockService.baseUrl}/caseworker/${CASEWORKERS[key].idamId}`;
+          assert.isDefined(handleCaseWorkerDetails(caseworkerUrl, {} as EnhancedRequest));
       })
-    )
-
-    it('returns John Smith', async () => {
-        const caseworkerUrl = `${provider.mockService.baseUrl}/caseworker/1`;
-        assert.isDefined(handleCaseWorkerDetails(caseworkerUrl, {} as EnhancedRequest));
     })
-  })
-
-  describe('when requested to get a caseworker with id of 2', () => {
-    before(() =>
-      provider.addInteraction({
-        state: 'Jane Doe is returned',
-        uponReceiving: 'a request for a caseworker with an id of 2',
-        withRequest: {
-          method: 'GET',
-          path: '/caseworker/2'
-        },
-        willRespondWith: {
-          status: 200,
-          headers: {'Content-Type': 'application/json'},
-          body: CASEWORKERS.JANE_DOE
-        }
-      })
-    )
-
-    it('returns Jane Doe', async () => {
-        const caseworkerUrl = `${provider.mockService.baseUrl}/caseworker/2`;
-        assert.isDefined(handleCaseWorkerDetails(caseworkerUrl, {} as EnhancedRequest));
-    })
-  })
-
-  describe('when requested to get a caseworker with id of 3', () => {
-    before(() =>
-      provider.addInteraction({
-        state: 'Joseph Bloggs is returned',
-        uponReceiving: 'a request for a caseworker with an id of 3',
-        withRequest: {
-          method: 'GET',
-          path: '/caseworker/3'
-        },
-        willRespondWith: {
-          status: 200,
-          headers: {'Content-Type': 'application/json'},
-          body: CASEWORKERS.JOSEPH_BLOGGS
-        }
-      })
-    )
-
-    it('returns Joseph Bloggs', async () => {
-        const caseworkerUrl = `${provider.mockService.baseUrl}/caseworker/3`;
-        assert.isDefined(handleCaseWorkerDetails(caseworkerUrl, {} as EnhancedRequest));
-    })
-  })
-
-  describe('when requested to get a caseworker with id of 4', () => {
-    before(() =>
-      provider.addInteraction({
-        state: 'Noah Body is returned',
-        uponReceiving: 'a request for a caseworker with an id of 4',
-        withRequest: {
-          method: 'GET',
-          path: '/caseworker/4'
-        },
-        willRespondWith: {
-          status: 200,
-          headers: {'Content-Type': 'application/json'},
-          body: CASEWORKERS.NOAH_BODY
-        }
-      })
-    )
-
-    it('returns Noah Body', async () => {
-        const caseworkerUrl = `${provider.mockService.baseUrl}/caseworker/4`;
-        assert.isDefined(handleCaseWorkerDetails(caseworkerUrl, {} as EnhancedRequest));
-    })
-  })
+  }
 })

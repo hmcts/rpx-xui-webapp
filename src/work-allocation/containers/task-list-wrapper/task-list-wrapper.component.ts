@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { WorkAllocationTaskService } from 'src/work-allocation/services/work-allocation-task.service';
 
 import { TaskService, TaskSort } from '../../enums';
+import { SearchTaskRequest } from '../../models/dtos/search-task-request';
 import { Task, TaskFieldConfig, TaskSortField } from '../../models/tasks';
 import InvokedTaskAction from '../../models/tasks/invoked-task-action.model';
 import TaskServiceConfig from '../../models/tasks/task-service-config.model';
@@ -14,7 +16,10 @@ export class TaskListWrapperComponent implements OnInit {
   /**
    * Take in the Router so we can navigate when actions are clicked.
    */
-  constructor(private readonly router: Router) {}
+  constructor(
+    protected taskService: WorkAllocationTaskService,
+    private readonly router: Router
+  ) {}
 
   public get tasks(): Task[] {
     return [];
@@ -50,8 +55,35 @@ export class TaskListWrapperComponent implements OnInit {
       order: this.taskServiceConfig.defaultSortDirection
     };
 
-    // Remove after integration.
-    this.sortTasks();
+    this.loadTasks();
+  }
+
+  /**
+   * Load the tasks to display in the component.
+   * NOTE: This should be overridden by a component that
+   * needs different behaviour.
+   */
+  public loadTasks(): void {
+    const searchTaskRequest = this.getSearchTaskRequest();
+    this.taskService.searchTask(searchTaskRequest).subscribe(result => {
+      this.tasks = result.tasks;
+    });
+  }
+
+  /**
+   * Get a search task request appropriate to the current view,
+   * sort order, etc.
+   */
+  public getSearchTaskRequest(): SearchTaskRequest {
+    return {
+      search_parameters: [
+        {
+          key: this.sortedBy.fieldName,
+          operator: 'available',
+          values: [ this.sortedBy.order ]
+        }
+      ]
+    };
   }
 
   /**
@@ -76,8 +108,7 @@ export class TaskListWrapperComponent implements OnInit {
     }
     this.sortedBy = { fieldName, order };
 
-    // Now sort the tasks.
-    this.sortTasks();
+    this.loadTasks();
   }
 
   /**
@@ -85,27 +116,9 @@ export class TaskListWrapperComponent implements OnInit {
    * action.
    */
   public onActionHandler(taskAction: InvokedTaskAction): void {
-
     // Remove after integration
     console.log('Task Home received InvokedTaskAction:');
-    console.log(taskAction.task.id);
-    this.router.navigate([`/tasks/reassign/123456`]);
-  }
-
-  // Remove after integration.
-  private sortTasks(): void {
-    if (this.tasks && this.sortedBy) {
-      this.tasks = this.tasks.sort((a: Task, b: Task) => {
-        const aVal = a[this.sortedBy.fieldName];
-        const bVal = b[this.sortedBy.fieldName];
-        let sortVal = 0;
-        if (typeof aVal === 'string') {
-          sortVal = aVal.localeCompare(bVal);
-        } else if (aVal instanceof Date) {
-          sortVal = aVal.getTime() - new Date(bVal).getTime();
-        }
-        return this.sortedBy.order === TaskSort.ASC ? sortVal : -sortVal;
-      });
-    }
+    console.log(taskAction);
+    this.router.navigate([`/tasks/${taskAction.action.id}/${taskAction.task.id}`]);
   }
 }

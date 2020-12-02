@@ -122,6 +122,126 @@ export class TaskHomeComponent implements OnInit {
         }
       ]
     },
+    {
+      id: '6789012345678902',
+      caseReference: '6789 0123 4567 8901',
+      caseName: 'David Copperfield',
+      caseCategory: 'Revocation',
+      location: 'Taylor House',
+      taskName: 'Review appellant case',
+      dueDate: new Date(1604506789000),
+      actions: [
+        {
+          id: 'actionId',
+          title: 'Release this task',
+        }
+      ]
+    },
+    {
+      id: '6789012345678903',
+      caseReference: '6789 0123 4567 8901',
+      caseName: 'David Copperfield',
+      caseCategory: 'Revocation',
+      location: 'Taylor House',
+      taskName: 'Review appellant case',
+      dueDate: new Date(1604506789000),
+      actions: [
+        {
+          id: 'actionId',
+          title: 'Release this task',
+        }
+      ]
+    },
+    {
+      id: '6789012345678904',
+      caseReference: '6789 0123 4567 8901',
+      caseName: 'David Copperfield',
+      caseCategory: 'Revocation',
+      location: 'Taylor House',
+      taskName: 'Review appellant case',
+      dueDate: new Date(1604506789000),
+      actions: [
+        {
+          id: 'actionId',
+          title: 'Release this task',
+        }
+      ]
+    },
+    {
+      id: '6789012345678905',
+      caseReference: '6789 0123 4567 8901',
+      caseName: 'David Copperfield',
+      caseCategory: 'Revocation',
+      location: 'Taylor House',
+      taskName: 'Review appellant case',
+      dueDate: new Date(1604506789000),
+      actions: [
+        {
+          id: 'actionId',
+          title: 'Release this task',
+        }
+      ]
+    },
+    {
+      id: '67890123456789066',
+      caseReference: '6789 0123 4567 8901',
+      caseName: 'David Copperfield',
+      caseCategory: 'Revocation',
+      location: 'Taylor House',
+      taskName: 'Review appellant case',
+      dueDate: new Date(1604506789000),
+      actions: [
+        {
+          id: 'actionId',
+          title: 'Release this task',
+        }
+      ]
+    },
+    {
+      id: '6789012345678907',
+      caseReference: '6789 0123 4567 8901',
+      caseName: 'David Copperfield',
+      caseCategory: 'Revocation',
+      location: 'Taylor House',
+      taskName: 'Review appellant case',
+      dueDate: new Date(1604506789000),
+      actions: [
+        {
+          id: 'actionId',
+          title: 'Release this task',
+        }
+      ]
+    },
+    {
+      id: '6789012345678908',
+      caseReference: '6789 0123 4567 8901',
+      caseName: 'David Copperfield',
+      caseCategory: 'Revocation',
+      location: 'Taylor House',
+      taskName: 'Review appellant case',
+      dueDate: new Date(1604506789000),
+      actions: [
+        {
+          id: 'actionId',
+          title: 'Release this task',
+        }
+      ]
+    },
+    {
+      id: '6789012345678909',
+      caseReference: '6789 0123 4567 8901',
+      caseName: 'David Copperfield',
+      caseCategory: 'Revocation',
+      location: 'Taylor House',
+      taskName: 'Review appellant case',
+      dueDate: new Date(1604506789000),
+      actions: [
+        {
+          id: 'actionId',
+          title: 'Release this task',
+        }
+      ]
+    },
   ];
 
   /**

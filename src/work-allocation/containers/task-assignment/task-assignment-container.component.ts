@@ -109,6 +109,7 @@ export class TaskAssignmentContainerComponent implements OnInit {
     }
 
     public reAssign(): void {
+      this.router.navigate(['/tasks'], {fragment: 'manage_5678901234567890'});
       if (!this.caseworker) {
         console.log('No caseworker selected. This is part of the unhappy path that is not yet done.');
         return;

@@ -99,7 +99,7 @@ export class TaskAssignmentContainerComponent implements OnInit {
     defaultSortFieldName: 'dueDate',
     fields: this.fields,
   };
-
+  private readonly manageLink = 'manage_5678901234567890';
   public ngOnInit(): void {
     // Set up the default sorting.
     this.sortedBy = {
@@ -112,7 +112,7 @@ export class TaskAssignmentContainerComponent implements OnInit {
   }
 
   public reAssign(): void {
-    this.router.navigate(['/tasks'], {fragment: 'manage_5678901234567890'});
+    this.router.navigate(['/tasks'], {fragment: this.manageLink});
     if (!this.caseworker) {
       console.log('No caseworker selected. This is part of the unhappy path that is not yet done.');
       return;

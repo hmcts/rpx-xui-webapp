@@ -9,7 +9,7 @@ import {InfoMessage, InfoMessageType} from './../../enums';
 export class InfoMessageComponent implements OnInit {
 
   /**
-   * The type of message to display.
+   * The type of message to display. ie. Success, Warning or Information message.
    */
   @Input() public infoMessageType: InfoMessageType;
 

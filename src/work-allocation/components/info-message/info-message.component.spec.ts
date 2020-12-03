@@ -52,9 +52,9 @@ describe('WorkAllocation', () => {
     });
 
     /**
-     * We should show the Information Message visual if the InfoMessageType is 'information',
-     * the Warning Message visual if the InfoMessageType is 'warning', and
-     * the Success Message visual if the InfoMessageType is 'success'.
+     * We should show the 'information' message visual if the InfoMessageType is 'information',
+     * the 'warning' message visual if the InfoMessageType is 'warning', and
+     * the 'success' message visual if the InfoMessageType is 'success'.
      */
     it('should take in an info message type ie.\'success\', and the correct Information Message Visual should be shown' +
       'to the user.', () => {

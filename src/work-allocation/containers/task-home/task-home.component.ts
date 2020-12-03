@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRouteSnapshot, NavigationEnd, Router, RoutesRecognized } from '@angular/router';
 import { SubNavigation } from '@hmcts/rpx-xui-common-lib';
 
+import { InfoMessage, InfoMessageType } from '../../enums';
 import { AppUtils } from './../../../app/app-utils';
 import { TaskSortField } from './../../models/tasks';
 
@@ -28,6 +29,9 @@ export class TaskHomeComponent implements OnInit {
 
   public sortedBy: TaskSortField;
   public pageTitle: string;
+
+  public infoMessageType: InfoMessageType = InfoMessageType.SUCCESS;
+  public infoMessage: InfoMessage = InfoMessage.TASK_NO_LONGER_AVAILABLE;
 
   public ngOnInit(): void {
     this.router.events.subscribe(event => {

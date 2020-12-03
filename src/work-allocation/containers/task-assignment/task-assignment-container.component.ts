@@ -99,7 +99,7 @@ export class TaskAssignmentContainerComponent implements OnInit {
     defaultSortFieldName: 'dueDate',
     fields: this.fields,
   };
-  private readonly manageLink = 'manage_5678901234567890';
+  public readonly manageLink = 'manage_5678901234567890';
   public ngOnInit(): void {
     // Set up the default sorting.
     this.sortedBy = {

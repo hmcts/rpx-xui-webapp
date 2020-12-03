@@ -5,6 +5,7 @@ import * as helmet from 'helmet'
 // import {router as termsAndCRoutes} from './termsAndConditions/routes'
 // import {router as userTandCRoutes} from './userTermsAndConditions/routes'
 import {getXuiNodeMiddleware} from './auth'
+import { router as caseShareRoutes } from './caseshare/routes'
 import { getConfigValue, showFeature } from './configuration'
 import {
     APP_INSIGHTS_KEY,
@@ -12,7 +13,7 @@ import {
     HELMET,
     PROTOCOL,
     SERVICES_CCD_COMPONENT_API_PATH,
-    SERVICES_DOCUMENTS_API_PATH, SESSION_SECRET,
+    SERVICES_DOCUMENTS_API_PATH, SERVICES_ICP_API_URL, SESSION_SECRET,
 } from './configuration/references'
 import {router as emAnnoRouter} from './emAnno/routes'
 import * as health from './health'
@@ -29,6 +30,7 @@ import {router as markupRouter} from './redaction/markupRoutes'
 import {router as redactionRouter} from './redaction/redactionRoutes'
 import routes from './routes'
 import userRouter from './user/routes'
+import taskRouter from './workAllocation/routes'
 
 export const app = express()
 if (showFeature(FEATURE_HELMET_ENABLED)) {
@@ -55,9 +57,8 @@ app.get('/api/addresses', authInterceptor, postCodeLookup.doLookup)
 app.get('/api/monitoring-tools', (req, res) => {
     res.send({key: getConfigValue(APP_INSIGHTS_KEY)})
 })
-
-app.use('/api/healthCheck', healthCheck)
 app.use('/api/user', userRouter)
+app.use('/api/healthCheck', healthCheck)
 /*if (showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED)) {
     app.use('/api/userTermsAndConditions', userTandCRoutes)
     app.use('/api/termsAndConditions', termsAndCRoutes)
@@ -70,6 +71,8 @@ app.get('/api/configuration', (req, res) => {
 // TODO: move to proxy route as below
 app.use('/api/markups', markupRouter)
 app.use('/api/redaction', redactionRouter)
+
+app.use('/api/caseshare', caseShareRoutes)
 
 // TODO: move these to proxy routes as well
 app.use('/aggregated', routes)
@@ -87,6 +90,12 @@ applyProxy(app, {
     target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH),
 })
 
+applyProxy(app, {
+    rewrite: false,
+    source: '/icp',
+    target: getConfigValue(SERVICES_ICP_API_URL),
+})
+
 // TODO: works when getting annotation-set but not when creating one?
 /*applyProxy(app, {
     rewrite: true,
@@ -99,6 +108,8 @@ applyProxy(app, {
 app.use('/em-anno', emAnnoRouter)
 
 app.use('/payments', paymentsRouter)
+
+app.use('/workallocation', taskRouter)
 
 // @ts-ignore
 const logger: JUILogger = log4jui.getLogger('Application')

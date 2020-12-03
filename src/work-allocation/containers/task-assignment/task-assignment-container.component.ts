@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { WorkAllocationTaskService } from 'src/work-allocation/services/work-allocation-task.service';
 
 import { TaskFieldType, TaskService, TaskSort, TaskView } from '../../enums';
@@ -41,7 +41,8 @@ export class TaskAssignmentContainerComponent implements OnInit {
   constructor(
     private readonly taskService: WorkAllocationTaskService,
     private readonly route: ActivatedRoute,
-    private readonly location: Location
+    private readonly location: Location,
+    private readonly router: Router
   ) {}
 
   /**
@@ -98,7 +99,7 @@ export class TaskAssignmentContainerComponent implements OnInit {
     defaultSortFieldName: 'dueDate',
     fields: this.fields,
   };
-
+  public readonly manageLink = 'manage_5678901234567890';
   public ngOnInit(): void {
     // Set up the default sorting.
     this.sortedBy = {
@@ -111,6 +112,7 @@ export class TaskAssignmentContainerComponent implements OnInit {
   }
 
   public reAssign(): void {
+    this.router.navigate(['/tasks'], {fragment: this.manageLink});
     if (!this.caseworker) {
       console.log('No caseworker selected. This is part of the unhappy path that is not yet done.');
       return;

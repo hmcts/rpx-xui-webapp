@@ -6,99 +6,74 @@ import * as path from 'path';
 import { EnhancedRequest } from '../../../lib/models';
 import { SearchTaskRequest } from '../../../workAllocation/interfaces/taskSearchParameter';
 import { handleTaskSearch } from '../../../workAllocation/taskService';
+import { BEHAVIOURS } from './../constants/work-allocation/behaviours.spec';
+import { TASKS_SORTED_BY } from './../constants/work-allocation/tasks.spec';
 
 describe('Work Allocation API', () => {
 
-  const BEHAVIOURS = {
-    SUCCESS: {},
-    ALREADY_DONE: { behaviour: 'already-done' },
-    BAD_REQUEST: { behaviour: 'bad-request' },
-    FORBIDDEN: { behaviour: 'forbidden' },
-    UNSUPPORTED: { behaviour: 'unsupported' },
-    SERVER_ERROR: { behaviour: 'unsupported' }
-  }
-
   let mockServerPort: number
   let provider: Pact
-  const mockRequest = {
-    search_parameters: [
-        {
-          key: 'key1',
-          operator: 'operator1',
-          values: [
-            'value1',
-          ],
-        },
-      ],
-    }
-  const mockResponse = {
-    "tasks": [
-        {
-          "assignee": "string",
-          "auto_assigned": true,
-          "case_category": "string",
-          "case_id": "string",
-          "case_name": "string",
-          "case_type_id": "string",
-          "created_date": "2020-09-05T14:47:01.250542+01:00",
-          "due_date": "2020-09-05T14:47:01.250542+01:00",
-          "execution_type": "string",
-          "id": "string",
-          "jurisdiction": "string",
-          "location": "string",
-          "location_name": "string",
-          "name": "string",
-          "region": "string",
-          "security_classification": "string",
-          "task_state": "string",
-          "task_system": "string",
-          "task_title": "string",
-          "type": "string",
-        },
-      ],
-  }
 
   before(async () => {
-    mockServerPort = await getPort()
+    mockServerPort = await getPort();
     provider = new Pact({
-      consumer: 'xui_work_allocation_post_task',
-      provider: 'WorkAllocation_api_post',
+      consumer: 'xui_work_allocation_task_search',
+      provider: 'WorkAllocation_api_task',
       dir: path.resolve(__dirname, '../pacts'),
       log: path.resolve(__dirname, '../logs', 'work-allocation.log'),
       logLevel: 'info',
       port: mockServerPort,
       spec: 2
-    })
-    return provider.setup()
+    });
+    return provider.setup();
   })
 
   // Write Pact when all tests done
   after(() => provider.finalize())
 
-  describe('when requested to post a task', () => {
-    before(() =>
-      provider.addInteraction({
-        state: '.well-known endpoint',
-        uponReceiving: 'a request for task',
-        willRespondWith: {
-            body: mockResponse,
-            headers: {'Content-Type': 'application/json'},
-            status: 200,
-          },
-          withRequest: {
-              method: 'POST',
-              path: '/task',
-              body: mockRequest
-          },
-      })
-    )
+  // Create an end point for each group of sorted tasks.
+  for (const key in TASKS_SORTED_BY) {
+    // Do one for each of ascending and descending.
+    for (const order of ['ascending', 'descending']) {
+      for (const operator of ['my', 'available']) {
+        const request: SearchTaskRequest = {
+          search_parameters: [
+            { key, operator, values: [ order ] },
+          ]
+        };
+        let response = [ ...TASKS_SORTED_BY[key] ];
+        if (order === 'descending') {
+          response = [ ...response.reverse() ];
+        }
 
-    it('returns success with a 200', async () => {
-      const taskUrl: string = `${provider.mockService.baseUrl}/task`
-      const { status } = await handleTaskSearch(taskUrl, mockRequest as SearchTaskRequest, {} as EnhancedRequest)
-      expect(status).equal(200)
-    })
-  })
+        describe(`when requested to search for ${operator} tasks in ${order} order of ${key}`, () => {
+          before(() =>
+            provider.addInteraction({
+              state: 'a list of appropriate tasks are returned',
+              uponReceiving: `a valid request to search for ${operator} tasks in ${order} order of ${key}`,
+              withRequest: {
+                method: 'POST',
+                path: '/task',
+                body: request
+              },
+              willRespondWith: {
+                body: { tasks: response },
+                headers: {'Content-Type': 'application/json'},
+                status: 200
+              }
+            })
+          )
+      
+          it('returns success with a 200', async () => {
+            const taskUrl: string = `${provider.mockService.baseUrl}/task`
+            const { status } = await handleTaskSearch(taskUrl, request, {} as EnhancedRequest)
+            expect(status).equal(200)
+          })
+        })
+
+      }
+    }
+  }
 
   describe('when making a request task and the server falls over', () => {
     before(() =>

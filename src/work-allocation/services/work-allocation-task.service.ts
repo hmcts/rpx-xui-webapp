@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Task } from '../models/tasks';
 
+import { Task } from '../models/tasks';
+import { SearchTaskRequest } from './../models/dtos/search-task-request';
 import { Assignee } from './../models/dtos/task';
 import { TaskSearchParameters } from './../models/dtos/task-search-parameter';
 
@@ -45,6 +46,10 @@ export class WorkAllocationTaskService {
 
   public postTask(task: TaskSearchParameters): Observable<any> {
     return this.http.post<any>(`${BASE_URL}`, task);
+  }
+
+  public searchTask(searchRequest: SearchTaskRequest): Observable<any> {
+    return this.http.post<any>(`${BASE_URL}`, searchRequest);
   }
 
   public claimTask(taskId: string): Observable<any> {

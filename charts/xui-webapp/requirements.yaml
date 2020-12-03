@@ -7,6 +7,6 @@ dependencies:
     repository: "https://charts.bitnami.com/bitnami"
     condition: redis.enabled
   - name: idam-pr
-    version: ~2.2.5
+    version: ~2.2.6
     repository: '@hmctspublic'
     condition: idam-pr.enabled

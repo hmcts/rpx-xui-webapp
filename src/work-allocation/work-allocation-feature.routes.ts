@@ -35,6 +35,11 @@ export const ROUTES: Routes = [
             path: 'available',
             component: AvailableTasksComponent,
             data: { subTitle: 'Available tasks' }
+          },
+          {
+            path: 'unavailable',
+            component: AvailableTasksComponent,
+            data: { subTitle: 'Available tasks (but with errors)', operator: 'unavailable' }
           }
         ]
       },

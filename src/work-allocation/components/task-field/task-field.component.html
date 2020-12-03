@@ -3,7 +3,7 @@
     {{ task[config.name] }}
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.DATE_DUE">
-    <xuilib-due-date [dueDate]="task[config.name]"></xuilib-due-date>
+    <xuilib-due-date [dueDate]="toDate(task[config.name])"></xuilib-due-date>
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.DATE_AGE_DAYS">
     {{ task[config.name] | daysFromToday }}

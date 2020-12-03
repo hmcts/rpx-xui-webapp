@@ -22,25 +22,6 @@ export class TaskAssignmentContainerComponent implements OnInit {
   public errorTitle: string;
   public errorDesc: string;
   public caseworker: Caseworker;
-  private readonly MOCK_TASK: Task = {
-    id: '123456',
-    caseReference: '1234 5678 9012 3456',
-    caseName: 'Kili Muso',
-    caseCategory: 'Protection',
-    location: 'Taylor House',
-    taskName: 'Review respondent evidence',
-    dueDate: new Date(1604938789000),
-    actions: [
-      {
-        id: 'actionId',
-        title: 'Reassign task',
-      },
-      {
-        id: 'actionId',
-        title: 'Release this task',
-      }
-    ]
-  };
 
   constructor(
     private readonly taskService: WorkAllocationTaskService,
@@ -111,9 +92,10 @@ export class TaskAssignmentContainerComponent implements OnInit {
       fieldName: this.taskServiceConfig.defaultSortFieldName,
       order: this.taskServiceConfig.defaultSortDirection
     };
-    console.log('Got the task from the resolver', this.route.snapshot.data);
-    console.log('However, we need something more like this, which is what we will use for now', this.MOCK_TASK);
-    this.tasks = [ this.MOCK_TASK ];
+
+    // Get the task from the route, which will have been put there by the resolver.
+    const { task } = this.route.snapshot.data.task;
+    this.tasks = [ task ];
   }
 
   public reAssign(): void {
@@ -123,24 +105,21 @@ export class TaskAssignmentContainerComponent implements OnInit {
       this.errorDesc = "You must select a name";
       return;
     }
-    // const assignee: Assignee = {
-    //   id: this.caseworker.idamId,
-    //   userName: `${this.caseworker.firstName} ${this.caseworker.lastName}`
-    // };
     const assignee: Assignee = {
-      id: '987654',
-      userName: 'bob'
+      id: this.caseworker.idamId,
+      userName: `${this.caseworker.firstName} ${this.caseworker.lastName}`
     };
     console.log('Reassigning, but using a fake assignee for the PACT stub', assignee);
     this.taskService.assignTask(this.tasks[0].id, assignee).subscribe(
       err => {this.router.navigate([WorkAllocationUtils.handleTaskAssignErrorResult(err.status)])},
       () => {console.log('assignment was successful: received a 200 status');
       this.location.back();
+    }, error => {
+      console.error('There was an error when attempting to assign', error);
     });
   }
 
   public onCaseworkerChanged(caseworker: Caseworker): void {
-    console.log('onCaseworkerChanged', caseworker);
     this.caseworker = caseworker;
   }
 }

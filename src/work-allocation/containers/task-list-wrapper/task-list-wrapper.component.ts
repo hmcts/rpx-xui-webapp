@@ -18,7 +18,7 @@ export class TaskListWrapperComponent implements OnInit {
    */
   constructor(
     protected taskService: WorkAllocationTaskService,
-    private readonly router: Router
+    protected router: Router
   ) {}
 
   public get tasks(): Task[] {
@@ -67,6 +67,8 @@ export class TaskListWrapperComponent implements OnInit {
     const searchTaskRequest = this.getSearchTaskRequest();
     this.taskService.searchTask(searchTaskRequest).subscribe(result => {
       this.tasks = result.tasks;
+    }, error => {
+      console.error('There was an error', error);
     });
   }
 

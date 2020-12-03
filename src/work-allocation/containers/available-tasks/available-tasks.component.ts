@@ -1,3 +1,6 @@
+import {AppUtils} from './../../../app/app-utils';
+import {Router} from '@angular/router';
+import {WorkAllocationTaskService} from 'src/work-allocation/services/work-allocation-task.service';
 import { Component } from '@angular/core';
 
 import { TaskFieldType, TaskView } from '../../enums';
@@ -10,6 +13,16 @@ import { TaskListWrapperComponent } from './../task-list-wrapper/task-list-wrapp
   templateUrl: 'available-tasks.component.html'
 })
 export class AvailableTasksComponent extends TaskListWrapperComponent {
+
+  /**
+   * Take in the Router so we can navigate when actions are clicked.
+   */
+  constructor(
+    protected taskService: WorkAllocationTaskService,
+    protected router: Router
+  ) {
+    super(taskService, router);
+  }
 
   // List of tasks
   private pTasks: Task[];
@@ -75,11 +88,14 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
   }
 
   public getSearchTaskRequest(): SearchTaskRequest {
+    const activatedRoute = this.router.routerState.root.snapshot;
+    const data = AppUtils.getRouteData(activatedRoute);
+    const operator = data.operator || 'available';
     return {
       search_parameters: [
         {
           key: this.sortedBy.fieldName,
-          operator: 'available',
+          operator,
           values: [ this.sortedBy.order ]
         }
       ]

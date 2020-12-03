@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 
 import {InfoMessage, InfoMessageType} from './../../enums';
 
@@ -6,19 +6,14 @@ import {InfoMessage, InfoMessageType} from './../../enums';
   selector: 'exui-info-message',
   templateUrl: './info-message.component.html',
 })
-export class InfoMessageComponent implements OnInit {
+export class InfoMessageComponent {
 
   /**
    * The type of message to display. ie. Success, Warning or Information message.
    */
-  @Input() public infoMessageType: InfoMessageType;
+  @Input() public type: InfoMessageType;
 
-  @Input() public infoMessage: InfoMessage;
+  @Input() public message: InfoMessage;
 
-  public infoMessageType = InfoMessageType;
-
-  constructor() {}
-
-  public ngOnInit(): void {
-  }
+  protected infoMessageType = InfoMessageType;
 }

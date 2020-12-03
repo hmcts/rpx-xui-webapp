@@ -6,12 +6,12 @@ import { WorkAllocationComponentsModule } from './../work-allocation.components.
 import { InfoMessageComponent } from './info-message.component';
 
 @Component({
-  template: `<exui-info-message [infoMessageType]="infoMessageType" [infoMessage]="infoMessage"></exui-info-message>`
+  template: `<exui-info-message [type]="type" [message]="message"></exui-info-message>`
 })
 class WrapperComponent {
   @ViewChild(InfoMessageComponent) public appComponentRef: InfoMessageComponent;
-  @Input() public infoMessageType: InfoMessageType;
-  @Input() public infoMessage: InfoMessage;
+  @Input() public type: InfoMessageType;
+  @Input() public message: InfoMessage;
 }
 
 describe('WorkAllocation', () => {
@@ -43,8 +43,8 @@ describe('WorkAllocation', () => {
      */
     it('should take in a message, and show the message to the User.', () => {
 
-      component.infoMessageType = InfoMessageType.SUCCESS;
-      component.infoMessage = InfoMessage.TASK_NO_LONGER_AVAILABLE;
+      component.type = InfoMessageType.SUCCESS;
+      component.message = InfoMessage.TASK_NO_LONGER_AVAILABLE;
 
       fixture.detectChanges();
 
@@ -59,22 +59,22 @@ describe('WorkAllocation', () => {
     it('should take in an info message type ie.\'success\', and the correct Information Message Visual should be shown' +
       'to the user.', () => {
 
-      component.infoMessageType = InfoMessageType.SUCCESS;
-      component.infoMessage = InfoMessage.TASK_NO_LONGER_AVAILABLE;
+      component.type = InfoMessageType.SUCCESS;
+      component.message = InfoMessage.TASK_NO_LONGER_AVAILABLE;
 
       fixture.detectChanges();
 
       expect(fixture.debugElement.nativeElement.innerText).toContain(InfoMessageType.SUCCESS);
 
-      component.infoMessageType = InfoMessageType.WARNING;
-      component.infoMessage = InfoMessage.TASK_NO_LONGER_AVAILABLE;
+      component.type = InfoMessageType.WARNING;
+      component.message = InfoMessage.TASK_NO_LONGER_AVAILABLE;
 
       fixture.detectChanges();
 
       expect(fixture.debugElement.nativeElement.innerText).toContain(InfoMessageType.WARNING);
 
-      component.infoMessageType = InfoMessageType.INFO;
-      component.infoMessage = InfoMessage.TASK_NO_LONGER_AVAILABLE;
+      component.type = InfoMessageType.INFO;
+      component.message = InfoMessage.TASK_NO_LONGER_AVAILABLE;
 
       fixture.detectChanges();
 

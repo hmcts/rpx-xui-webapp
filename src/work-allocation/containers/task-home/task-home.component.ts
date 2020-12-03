@@ -31,7 +31,7 @@ export class TaskHomeComponent implements OnInit {
   public pageTitle: string;
 
   public infoMessageType: InfoMessageType = InfoMessageType.SUCCESS;
-  public infoMessage: InfoMessage = InfoMessage.TASK_NO_LONGER_AVAILABLE;
+  public infoMessage: InfoMessage = InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS;
 
   public ngOnInit(): void {
     this.router.events.subscribe(event => {

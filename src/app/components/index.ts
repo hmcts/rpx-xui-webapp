@@ -10,6 +10,8 @@ import {PhaseBannerComponent} from './phase-banner/phase-banner.component';
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 import {ServiceDownComponent} from './service-down/service-down.component';
 import { SignedOutComponent } from './signed-out/signed-out.component';
+import { AccessForbiddenComponent } from './access-forbidden/access-forbidden.component';
+import { ErrorMessageComponent } from './error-message/error-message.component';
 
 export const components: any[] = [
   HmctsGlobalFooterComponent,
@@ -21,6 +23,8 @@ export const components: any[] = [
   AccessibilityComponent,
   PhaseBannerComponent,
   ServiceDownComponent,
+  AccessForbiddenComponent,
+  ErrorMessageComponent,
   MediaViewerWrapperComponent,
   GetHelpComponent,
   SignedOutComponent
@@ -32,6 +36,7 @@ export * from './hmcts-global-header/hmcts-global-header.component';
 export * from './hmcts-primary-navigation/hmcts-primary-navigation.component';
 export * from './phase-banner/phase-banner.component';
 export * from './service-down/service-down.component';
+export * from './access-forbidden/access-forbidden.component';
 export * from './cookie-policy/cookie-policy.component';
 export * from './privacy-policy/privacy-policy.component';
 export * from './accessibility/accessibility.component';

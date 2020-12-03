@@ -1,4 +1,5 @@
 <exui-app-header></exui-app-header>
+<exui-error-message *ngIf="showProblem" [title]="errorTitle" [errorDesc]="errorDesc"></exui-error-message>
 <div class="govuk-width-container">
     <main class="govuk-main-wrapper" id="main-content" role="main">
       <h1 class="govuk-heading-xl">Reassign a task</h1>

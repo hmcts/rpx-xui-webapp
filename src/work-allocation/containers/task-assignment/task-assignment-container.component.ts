@@ -7,6 +7,7 @@ import InvokedTaskAction from '../../models/tasks/invoked-task-action.model';
 import TaskServiceConfig from '../../models/tasks/task-service-config.model';
 import { Assignee, Caseworker } from './../../models/dtos/task';
 import { Task, TaskFieldConfig } from './../../models/tasks';
+import WorkAllocationUtils from './../../work-allocation.utils';
 
 @Component({
     selector: 'exui-task-container-assignment',
@@ -18,6 +19,9 @@ export class TaskAssignmentContainerComponent implements OnInit {
    public tasks: any [];
    public sortedBy: any;
    public showManage: boolean = false;
+   public showProblem: boolean = false;
+   public errorTitle: string;
+   public errorDesc: string;
    public caseworker: Caseworker;
    private readonly MOCK_TASK: Task = {
     id: '123456',
@@ -110,7 +114,9 @@ export class TaskAssignmentContainerComponent implements OnInit {
 
     public reAssign(): void {
       if (!this.caseworker) {
-        console.log('No caseworker selected. This is part of the unhappy path that is not yet done.');
+        this.showProblem = true;
+        this.errorTitle = "There is a problem";
+        this.errorDesc = "You must select a name";
         return;
       }
       // const assignee: Assignee = {
@@ -122,9 +128,10 @@ export class TaskAssignmentContainerComponent implements OnInit {
         userName: 'bob'
       };
       console.log('Reassigning, but using a fake assignee for the PACT stub', assignee);
-      this.taskService.assignTask(this.tasks[0].id, assignee).subscribe(() => {
-        console.log('assignment was successful: received a 200 status');
-      });
+      this.taskService.assignTask(this.tasks[0].id, assignee).subscribe(
+        err => {this.router.navigate([WorkAllocationUtils.handleTaskAssignErrorResult(err.status)])},
+        () => console.log('assignment was successful: received a 200 status')
+      );
     }
 
     /**

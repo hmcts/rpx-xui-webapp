@@ -3,7 +3,7 @@ import { ActivatedRouteSnapshot, NavigationEnd, Router, RoutesRecognized } from 
 import { SubNavigation } from '@hmcts/rpx-xui-common-lib';
 
 import { AppUtils } from './../../../app/app-utils';
-import { TaskSortField } from './../../models/tasks';
+import { Task, TaskSortField } from './../../models/tasks';
 
 @Component({
   selector: 'exui-task-home',
@@ -15,8 +15,6 @@ export class TaskHomeComponent implements OnInit {
    * Take in the Router so we can navigate when actions are clicked and
    * to identify which sub-navigation item to highlight.
    */
-  constructor(private readonly router: Router) {}
-
   private readonly MY_TASKS: SubNavigation = { text: 'My tasks', href: '/tasks/list', active: true };
   /**
    * The sub-navigation items.
@@ -28,6 +26,8 @@ export class TaskHomeComponent implements OnInit {
 
   public sortedBy: TaskSortField;
   public pageTitle: string;
+
+  constructor(private readonly router: Router) {}
 
   public ngOnInit(): void {
     this.router.events.subscribe(event => {

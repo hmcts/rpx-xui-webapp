@@ -63,31 +63,92 @@ const DAVID_COPPERFIELD = {
   location: 'Taylor House',
   taskName: 'Review appellant case',
   dueDate: new Date(1604506789000),
-  actions: [ ACTIONS.RELEASE ]
+  actions: [ ACTIONS.REASSIGN ]
+};
+
+const BRAD_REQUEST = {
+  id: '400',
+  caseReference: '0400 0400 0400 0400',
+  caseName: 'Brad Request',
+  caseCategory: 'Will Fail',
+  location: 'Dodgy Location',
+  taskName: 'Assess errors',
+  dueDate: new Date(),
+  actions: [ ACTIONS.REASSIGN ]
+};
+
+const AL_REDDY_DUNNE = {
+  id: '204',
+  caseReference: '0204 0204 0204 0204',
+  caseName: 'Al Reddy-Dunne',
+  caseCategory: 'Will Fail',
+  location: 'Dodgy Location',
+  taskName: 'Assess errors',
+  dueDate: new Date(),
+  actions: [ ACTIONS.REASSIGN ]
+};
+
+const NAT_ALLOWED = {
+  id: '403',
+  caseReference: '0403 0403 0403 0403',
+  caseName: 'Nat Allowed',
+  caseCategory: 'Will Fail',
+  location: 'Dodgy Location',
+  taskName: 'Assess errors',
+  dueDate: new Date(),
+  actions: [ ACTIONS.REASSIGN ]
+};
+
+const ANNE_SUPPORTED = {
+  id: '415',
+  caseReference: '0415 0415 0415 0415',
+  caseName: 'Anne Supported',
+  caseCategory: 'Will Fail',
+  location: 'Dodgy Location',
+  taskName: 'Assess errors',
+  dueDate: new Date(),
+  actions: [ ACTIONS.REASSIGN ]
+};
+
+const SIR_VAN_ERROR = {
+  id: '500',
+  caseReference: '0500 0500 0500 0500',
+  caseName: 'Sir Van Error',
+  caseCategory: 'Will Fail',
+  location: 'Dodgy Location',
+  taskName: 'Assess errors',
+  dueDate: new Date(),
+  actions: [ ACTIONS.REASSIGN ]
 };
 
 const SORTED_BY_CASE_REFERENCE = [
+  AL_REDDY_DUNNE, BRAD_REQUEST, NAT_ALLOWED, ANNE_SUPPORTED, SIR_VAN_ERROR,
   KILI_MUSO, MANKAI_LIT, BOB_CRATCHITT, EBENEZER_SCROOGE, OLIVER_TWIST, DAVID_COPPERFIELD
 ];
 
 const SORTED_BY_CASE_NAME = [
-  BOB_CRATCHITT, DAVID_COPPERFIELD, EBENEZER_SCROOGE, KILI_MUSO, MANKAI_LIT, OLIVER_TWIST
+  AL_REDDY_DUNNE, ANNE_SUPPORTED, BOB_CRATCHITT, BRAD_REQUEST, DAVID_COPPERFIELD,
+  EBENEZER_SCROOGE, KILI_MUSO, MANKAI_LIT, NAT_ALLOWED, OLIVER_TWIST, SIR_VAN_ERROR
 ];
 
 const SORTED_BY_CATEGORY = [
-  KILI_MUSO, BOB_CRATCHITT, OLIVER_TWIST, DAVID_COPPERFIELD, EBENEZER_SCROOGE, MANKAI_LIT
+  KILI_MUSO, BOB_CRATCHITT, OLIVER_TWIST, DAVID_COPPERFIELD, EBENEZER_SCROOGE, MANKAI_LIT,
+  AL_REDDY_DUNNE, BRAD_REQUEST, NAT_ALLOWED, ANNE_SUPPORTED, SIR_VAN_ERROR
 ];
 
 const SORTED_BY_LOCATION = [
-  EBENEZER_SCROOGE, OLIVER_TWIST, KILI_MUSO, DAVID_COPPERFIELD, MANKAI_LIT, BOB_CRATCHITT
+  EBENEZER_SCROOGE, AL_REDDY_DUNNE, BRAD_REQUEST, NAT_ALLOWED, ANNE_SUPPORTED,
+  SIR_VAN_ERROR, OLIVER_TWIST, KILI_MUSO, DAVID_COPPERFIELD, MANKAI_LIT, BOB_CRATCHITT
 ];
 
 const SORTED_BY_TASK = [
-  KILI_MUSO, OLIVER_TWIST, EBENEZER_SCROOGE, DAVID_COPPERFIELD, MANKAI_LIT, BOB_CRATCHITT
+  KILI_MUSO, AL_REDDY_DUNNE, BRAD_REQUEST, NAT_ALLOWED, ANNE_SUPPORTED, SIR_VAN_ERROR,
+  OLIVER_TWIST, EBENEZER_SCROOGE, DAVID_COPPERFIELD, MANKAI_LIT, BOB_CRATCHITT
 ];
 
 const SORTED_BY_DUE_DATE = [
-  MANKAI_LIT, DAVID_COPPERFIELD, KILI_MUSO, BOB_CRATCHITT, EBENEZER_SCROOGE, OLIVER_TWIST
+  MANKAI_LIT, DAVID_COPPERFIELD, KILI_MUSO, BOB_CRATCHITT, EBENEZER_SCROOGE,
+  AL_REDDY_DUNNE, BRAD_REQUEST, NAT_ALLOWED, ANNE_SUPPORTED, SIR_VAN_ERROR, OLIVER_TWIST
 ];
 
 export const TASKS = {
@@ -97,6 +158,20 @@ export const TASKS = {
   KILI_MUSO,
   MANKAI_LIT,
   OLIVER_TWIST
+};
+
+export const BAD_TASKS = {
+  BRAD_REQUEST,
+  AL_REDDY_DUNNE,
+  NAT_ALLOWED,
+  ANNE_SUPPORTED,
+  SIR_VAN_ERROR
+}
+
+
+export const ALL_TASKS = {
+  ...TASKS,
+  ...BAD_TASKS
 };
 
 export const TASKS_SORTED_BY = {

@@ -34,7 +34,7 @@ describe('Work Allocation Location API', () => {
    */
   describe('should return all locations.', () => {
 
-    const LOCATION_BODY = [ LOCATIONS.A, LOCATIONS.B ];
+    const LOCATION_BODY = [ LOCATIONS.A, LOCATIONS.B, LOCATIONS.C ];
 
     before(() =>
       provider.addInteraction({

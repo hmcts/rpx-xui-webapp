@@ -5,7 +5,7 @@ import * as path from 'path';
 
 import { EnhancedRequest } from '../../../lib/models';
 import { handleTaskGet } from '../../../workAllocation/taskService';
-import { TASKS } from './../constants/work-allocation/tasks.spec';
+import {TASKS, ALL_TASKS} from './../constants/work-allocation/tasks.spec';
 
 describe('Work Allocation API', () => {
 
@@ -30,26 +30,27 @@ describe('Work Allocation API', () => {
   after(() => provider.finalize());
 
   // Loop through the tasks and test each one.
-  for (const key in TASKS) {
-    describe(`when requested to get task with id ${TASKS[key].id}`, () => {
+  for (const key in ALL_TASKS) {
+    const task = ALL_TASKS[key];
+    describe(`when requested to get task with id ${task.id}`, () => {
       before(() =>
         provider.addInteraction({
           state: 'appropriate task is returned',
-          uponReceiving: `a request for task with id ${TASKS[key].id}`,
+          uponReceiving: `a request for task with id ${task.id}`,
           withRequest: {
             method: 'GET',
-            path: `/task/${TASKS[key].id}`
+            path: `/task/${task.id}`
           },
           willRespondWith: {
             status: 200,
             headers: {'Content-Type': 'application/json'},
-            body: { task: TASKS[key] }
+            body: { task }
           }
         })
       )
 
       it('returns appropriate task', async () => {
-        const taskUrl = `${provider.mockService.baseUrl}/task/${TASKS[key].id}`;
+        const taskUrl = `${provider.mockService.baseUrl}/task/${task.id}`;
         const data = handleTaskGet(taskUrl, {} as EnhancedRequest);
         assert.isDefined(data);
       })

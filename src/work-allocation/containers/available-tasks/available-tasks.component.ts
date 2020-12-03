@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 
 import { TaskFieldType, TaskView } from '../../enums';
-import { Task, TaskFieldConfig } from '../../models/tasks';
 import { SearchTaskRequest } from '../../models/dtos/search-task-request';
+import { Task, TaskFieldConfig } from '../../models/tasks';
 import { TaskListWrapperComponent } from './../task-list-wrapper/task-list-wrapper.component';
 
 @Component({

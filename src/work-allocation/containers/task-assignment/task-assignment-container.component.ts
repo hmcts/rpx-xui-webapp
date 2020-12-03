@@ -94,22 +94,18 @@ export class TaskAssignmentContainerComponent implements OnInit {
 
   public reAssign(): void {
     if (!this.caseworker) {
-      console.log('No caseworker selected. This is part of the unhappy path that is not yet done.');
-      alert('Please select a caseworker');
+      console.error('No caseworker selected. This is part of the unhappy path that is not yet done.');
       return;
     }
-    // const assignee: Assignee = {
-    //   id: this.caseworker.idamId,
-    //   userName: `${this.caseworker.firstName} ${this.caseworker.lastName}`
-    // };
     const assignee: Assignee = {
-      id: '987654',
-      userName: 'bob'
+      id: this.caseworker.idamId,
+      userName: `${this.caseworker.firstName} ${this.caseworker.lastName}`
     };
-    console.log('Reassigning, but using a fake assignee for the PACT stub', assignee);
     this.taskService.assignTask(this.tasks[0].id, assignee).subscribe(() => {
-      console.log('assignment was successful: received a 200 status');
+      console.log('assignment was successful');
       this.location.back();
+    }, error => {
+      console.error('There was an error when attempting to assign', error);
     });
   }
 

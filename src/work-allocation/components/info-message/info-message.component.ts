@@ -15,5 +15,5 @@ export class InfoMessageComponent {
 
   @Input() public message: InfoMessage;
 
-  protected infoMessageType = InfoMessageType;
+  public infoMessageType = InfoMessageType;
 }

@@ -32,7 +32,8 @@ export class TaskFieldComponent {
    */
   public toDate(value: string | number | Date): Date {
     if (value) {
-      return new Date(value);
+      const d = new Date(value);
+      return isNaN(d.getTime()) ? null : d;
     }
     return null;
   }

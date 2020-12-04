@@ -35,15 +35,15 @@
  import 'core-js/es6/set';
  import 'core-js/es6/promise';
  import 'core-js/fn/promise/finally';
- import 'core-js/es7/array';
  import 'core-js/es7/object';
+ import 'core-js/es7/array';
+
+ /** IE10 and IE11 requires the following for NgClass support on SVG elements */
+ import 'classlist.js';  // Run `npm install --save classlist.js`.
 
  /* Evergreen browsers require these. **/
  import 'core-js/es6/reflect';
  import 'core-js/es7/reflect';
-
- /** IE10 and IE11 requires the following for NgClass support on SVG elements */
- import 'classlist.js';  // Run `npm install --save classlist.js`.
 
  /**
   * Web Animations `@angular/platform-browser/animations`
@@ -84,7 +84,62 @@
   * Zone JS is required by default for Angular itself.
   */
  if (document['documentMode'] || /Edge/.test(navigator.userAgent)) {
-     (window as any).__Zone_enable_cross_context_check = true;
+  (window as any).__Zone_enable_cross_context_check = true;
  }
  import 'zone.js/dist/zone';  // Included with Angular CLI.
  import 'zone.js/dist/zone-error';
+
+ if (!Element.prototype.matches) {
+  Element.prototype.matches = (Element.prototype as any).msMatchesSelector || Element.prototype.webkitMatchesSelector;
+ }
+
+ if (!Object.getOwnPropertyDescriptor(Element.prototype,'classList')){
+  if (HTMLElement&&Object.getOwnPropertyDescriptor(HTMLElement.prototype,'classList')){
+      Object.defineProperty(Element.prototype,'classList',Object.getOwnPropertyDescriptor(HTMLElement.prototype,'classList'));
+  }
+}
+
+Object.defineProperty(Element.prototype, 'classList', {
+    get: function() {
+        var self = this, bValue = self.className.split(" ")
+
+        bValue.add = function (){
+            var b;
+            for(i in arguments){
+                b = true;
+                for (var j = 0; j<bValue.length;j++)
+                    if (bValue[j] == arguments[i]){
+                        b = false
+                        break
+                    }
+                if(b)
+                    self.className += (self.className?" ":"")+arguments[i]
+            }
+        }
+        bValue.remove = function(){
+            self.className = ""
+            for(i in arguments)
+                for (var j = 0; j<bValue.length;j++)
+                    if(bValue[j] != arguments[i])
+                        self.className += (self.className?" " :"")+bValue[j]
+        }
+        bValue.toggle = function(x){
+            var b;
+            if(x){
+                self.className = ""
+                b = false;
+                for (var j = 0; j<bValue.length;j++)
+                    if(bValue[j] != x){
+                        self.className += (self.className?" " :"")+bValue[j]
+                        b = false
+                    } else b = true
+                if(!b)
+                    self.className += (self.className?" ":"")+x
+            } else throw new TypeError("Failed to execute 'toggle': 1 argument required")
+            return !b;
+        }
+
+        return bValue; 
+    },
+    enumerable: false
+})

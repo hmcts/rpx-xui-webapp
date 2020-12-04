@@ -66,6 +66,9 @@ const requestMapping = {
         },
         '/api/caseshare/orgs': (req, res) => {
             res.send(getCaseShareOrgs());
+        },
+        '/data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/cases/pagination_metadata': (req,res) => {
+            res.send();
         }
 
 
@@ -587,7 +590,7 @@ function getWorkbasketCases(){
       }
     });
   }
-    return { columns: cols, results: rows };
+    return { columns: cols, results: rows ,total: 1200};
 
  
 }

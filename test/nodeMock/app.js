@@ -5,7 +5,9 @@ var bodyParser = require('body-parser');
 
 let { requestMapping,configurations} = require('./reqResMapping');
 const { browser } = require('protractor');
-const CCDCaseConfig = require('./ccd/ccdCaseConfig/caseCreateConfigGenerator')
+const CCDCaseConfig = require('./ccd/ccdCaseConfig/caseCreateConfigGenerator');
+const CCDCaseDetails = require('./ccd/ccdCaseConfig/caseDetailsConfigGenerator');
+
 const port = 3001;
 
 
@@ -88,9 +90,47 @@ const mockInstance = new MockApp();
 module.exports = mockInstance;
 
 
-// mockInstance.init();
-// createCustomCCDCaseConfig();
-// mockInstance.startServer();
+mockInstance.init();
+createCustomCCDCaseConfig();
+createCustomCaseDetails();
+mockInstance.startServer();
+
+
+
+function createCustomCaseDetails(){
+    const caseConfig = new CCDCaseConfig('TEST_CaseType', 'Test case type hidden field retain value', 'test description');
+ 
+    function getArrayItmeById(arrayObj, id){
+        return arrayObj.filter(obj => obj.id === id);
+    }
+
+
+    const caseTemplate = require('./temp');
+
+    const largeCaseDetails = JSON.parse(JSON.stringify(caseTemplate));
+    const CasePeopleTabTab = getArrayItmeById(largeCaseDetails.tabs, 'CasePeopleTab')[0];
+    const childrenField = getArrayItmeById(CasePeopleTabTab.fields, 'children1')[0];
+    const respodentsField = getArrayItmeById(CasePeopleTabTab.fields, 'respondents1')[0];
+
+    const confidentialPeopleTab = getArrayItmeById(largeCaseDetails.tabs, 'Confidential')[0]; 
+
+    for (let children = 0; children < 20 ; children++){
+        childrenField.value.push({ "id": new Date(), "value": childrenField.value[0].value});
+    } 
+
+    for (let respondents = 0; respondents < 20; respondents++) {
+        respodentsField.value.push({ "id": new Date(), "value": respodentsField.value[0].value });
+    }
+   
+    // CasePeopleTabTab.fields = [];
+    // confidentialPeopleTab.fields = [];
+   
+
+    mockInstance.onGet('/data/internal/cases/:caseid', (req, res) => {
+        res.send(largeCaseDetails);
+    });
+
+}
 
 
 
@@ -102,17 +142,41 @@ function createCustomCCDCaseConfig(){
     const caseConfig = new CCDCaseConfig('TEST_CaseType', 'Test case type hidden field retain value', 'test description');
     const page1 = caseConfig.addWizardPage('HiddenFieldPage_1', 'Hidden field retain value test page');
 
-    let testFieldShowYesNo = caseConfig.addCCDFieldToPage(page1, "YesOrNo", "showTestField", "Show Test Field?");
-    testFieldShowYesNo.value = true;
+    const listItems = [
+        {
+            "code": "item1",
+            "label": "Item 1"
+        },
+        {
+            "code": "item2",
+            "label": "Item 2"
+        },
+        {
+            "code": "item3",
+            "label": "Item 3"
+        }
+    ] 
 
-    let complexField = caseConfig.addCCDFieldToPage(page1, scenario.fieldType, "complexField", "Complex field");
+    const dynamicListVal = {
+        "value": listItems[2],
+        "list_items": listItems 
+    }
+
+    let topLevelDynamicList = caseConfig.addCCDFieldToPage(page1, "DynamicList", "topLevelDL", "Top level Dynamic List");
+    // topLevelDynamicList.field_type.fixed_list_items = listItems ;  
+    topLevelDynamicList.value = dynamicListVal; 
+    
+   
+    let complexField = caseConfig.addCCDFieldToPage(page1, "Complex", "complexField", "Complex field");
+
+    complexField.field_type.complex_fields.push(caseConfig.getCCDFieldTemplateCopy("Text","testText","Test text"));
+    let dynamicList = caseConfig.getCCDFieldTemplateCopy("DynamicList", "dynamicList", "Dynamic List");
+    complexField.field_type.complex_fields.push(dynamicList);
     complexField.value = {
-            "document_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/a612199d-9972-4b99-b653-5ec7c310e21a",
-            "document_binary_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/a612199d-9972-4b99-b653-5ec7c310e21a/binary",
-            "document_filename": "Redacted-dm-store135044941749889827327305460282199740737.pdf"
-    }; 
-    complexField.retain_hidden_value = scenario.retainHiddenField;
-    complexField.show_condition = `${testFieldShowYesNo.id}=\"Yes\"`;
+       "testText" : "test value input",
+        "dynamicList": dynamicListVal
+    }
+
 
     setUpcaseConfig(caseConfig.caseConfigTemplate);
 }

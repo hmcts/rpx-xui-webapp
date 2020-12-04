@@ -33,7 +33,6 @@ export const applyProxy = (app, config) => {
     }
 
     if (config.onReq) {
-        options.selfHandleResponse = true
         options.onProxyReq = config.onReq
     }
 
@@ -42,7 +41,7 @@ export const applyProxy = (app, config) => {
             modifyResponse(res, proxyRes, body => {
                 if (body) {
                     // modify some information
-                    body = config.onRes(body)
+                    body = config.onRes(proxyRes, req, res, body)
                 }
                 return body // return value can be a promise
             })
@@ -59,9 +58,15 @@ export const applyProxy = (app, config) => {
         }
     }
 
+    let middlewares = [authInterceptor]
+
+    if (config.middlewares) {
+        middlewares = [...middlewares, ...config.middlewares]
+    }
+
     if (config.filter) {
-        app.use(config.source, authInterceptor, proxy(config.filter, options))
+        app.use(config.source, middlewares, proxy(config.filter, options))
     } else {
-        app.use(config.source, authInterceptor, proxy(options))
+        app.use(config.source, middlewares, proxy(options))
     }
 }

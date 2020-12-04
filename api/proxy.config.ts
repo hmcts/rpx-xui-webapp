@@ -1,3 +1,4 @@
+import * as bodyParser from 'body-parser'
 import {Express} from 'express'
 import * as amendedJurisdictions from './amendedJurisdictions'
 import {getConfigValue} from './configuration'
@@ -7,6 +8,7 @@ import {
     SERVICES_ICP_API_URL, SERVICES_MARKUP_API_URL, SERVICES_PAYMENTS_URL
 } from './configuration/references'
 import {applyProxy} from './lib/middleware/proxy'
+import * as searchCases from './searchCases'
 
 export const initProxy = (app: Express) => {
     applyProxy(app, {
@@ -28,6 +30,15 @@ export const initProxy = (app: Express) => {
     })
 
     applyProxy(app, {
+        middlewares: [bodyParser.json()],
+        onReq: searchCases.modifyRequest,
+        onRes: searchCases.handleElasticSearchResponse,
+        rewrite: false,
+        source: '/data/internal/searchCases',
+        target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH),
+    })
+
+    applyProxy(app, {
         rewrite: true,
         rewriteUrl: '/addresses',
         source: '/api/addresses',
@@ -35,6 +46,7 @@ export const initProxy = (app: Express) => {
     })
 
     applyProxy(app, {
+        onReq: amendedJurisdictions.checkCachedJurisdictions,
         onRes: amendedJurisdictions.getJurisdictions,
         rewrite: false,
         source: '/aggregated',

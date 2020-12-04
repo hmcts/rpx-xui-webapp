@@ -25,8 +25,9 @@ class MockLocationDataService {
         return Observable.of(LOCATION_A);
       case LOCATION_B.id:
         return Observable.of(LOCATION_B);
+      default:
+        return Observable.of(LOCATION_C);
     }
-    return Observable.of(LOCATION_C);
   }
   public getLocations(): Observable<Location[]> {
     return Observable.of([ LOCATION_A, LOCATION_B, LOCATION_C ]);
@@ -43,8 +44,9 @@ class MockCaseworkerDataService {
         return Observable.of([ JD, JS ]);
       case LOCATION_B.id:
         return Observable.of([ JB, NB ]);
+      default:
+        return Observable.of([ undefined ]);
     }
-    return Observable.of([ undefined ]);
   }
 }
 

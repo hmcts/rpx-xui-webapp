@@ -20,5 +20,5 @@ describe('WorkAllocation', () => {
       service.getLocation('location123');
       expect(mockHttpService.get).toHaveBeenCalledWith(`${LocationDataService.locationUrl}/location123`);
     });
-  })
+  });
 });

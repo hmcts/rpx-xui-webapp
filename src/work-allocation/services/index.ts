@@ -6,4 +6,4 @@ export {
   CaseworkerDataService,
   LocationDataService,
   WorkAllocationTaskService
-}
+};

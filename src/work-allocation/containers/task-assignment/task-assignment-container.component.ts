@@ -4,8 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { TaskFieldType, TaskService, TaskSort, TaskView } from '../../enums';
 import { Assignee, Caseworker } from '../../models/dtos';
-import { WorkAllocationTaskService } from '../../services';
 import { TaskFieldConfig, TaskServiceConfig } from '../../models/tasks';
+import { WorkAllocationTaskService } from '../../services';
 
 @Component({
   selector: 'exui-task-container-assignment',

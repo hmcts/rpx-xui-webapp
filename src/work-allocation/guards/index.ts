@@ -2,4 +2,4 @@ import { WorkAllocationFeatureToggleGuard } from './work-allocation-feature-togg
 
 export {
   WorkAllocationFeatureToggleGuard
-}
+};

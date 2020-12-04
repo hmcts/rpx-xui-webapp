@@ -44,5 +44,5 @@ describe('WorkAllocation service', () => {
       service.getDetails('123456');
       expect(mockHttpService.get).toHaveBeenCalledWith(`${CaseworkerDataService.caseWorkerUrl}/123456`);
     });
-  })
+  });
 });

@@ -2,8 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { Task } from '../models/tasks';
 import { Assignee, SearchTaskRequest, TaskSearchParameters } from '../models/dtos';
+import { Task } from '../models/tasks';
 
 const BASE_URL: string = '/workallocation/task/';
 export enum ACTION {

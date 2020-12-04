@@ -66,5 +66,5 @@ describe('WorkAllocation', () => {
       service.searchTask(searchRequest);
       expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task/', searchRequest);
     });
-  })
+  });
 });

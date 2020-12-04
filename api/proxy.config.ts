@@ -46,6 +46,7 @@ export const initProxy = (app: Express) => {
     })
 
     applyProxy(app, {
+        onReq: amendedJurisdictions.checkCachedJurisdictions,
         onRes: amendedJurisdictions.getJurisdictions,
         rewrite: false,
         source: '/aggregated',

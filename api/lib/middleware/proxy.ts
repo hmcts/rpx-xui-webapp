@@ -41,7 +41,7 @@ export const applyProxy = (app, config) => {
             modifyResponse(res, proxyRes, body => {
                 if (body) {
                     // modify some information
-                    body = config.onRes(body)
+                    body = config.onRes(proxyRes, req, res, body)
                 }
                 return body // return value can be a promise
             })

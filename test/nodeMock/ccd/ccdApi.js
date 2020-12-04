@@ -17,6 +17,7 @@ const fplCareSupervisionConfig = require('./solicitorCreate/fplCareSupervision')
 
 const exuiTestCaseType = require('./solicitorCreate/exuiTestCaseType');
 const { isArray } = require("core-js/fn/array");
+const CCDCaseConfig = require('./ccdCaseConfig/caseCreateConfigGenerator');
 
 
 
@@ -84,9 +85,127 @@ class CCDApi{
         }
     }
 
+    get(){
+        return {
+            '/aggregated/caseworkers/:uid/jurisdictions': (req, res) => {
+                res.send(this.getJurisdictions());
+            },
+            '/data/internal/case-types/:jurisdiction/work-basket-inputs': (req, res) => {
+                res.send(this.getWorkbasketInputs(req.params.jurisdiction));
+            },
+            '/data/internal/case-types/:jurisdiction/event-triggers/:caseType': (req, res) => {
+                res.send(this.getSolicitorCreateCaseConfig(req.params.jurisdiction, req.params.caseType));
+            },
+            '/data/internal/cases/:caseid/event-triggers/:eventId': (req, res) => {
+                res.send(getSingleFieldCaseEventConfig(req.params.eventId));
+            }
+        }
+    }
+
+    post(){
+        return {
+            '/api/inviteUser': (req, res) => {
+                res.send({ "userIdentifier": "97ecc487-cdeb-42a8-b794-84840a4testc", "idamStatus": null });
+            },
+            '/data/case-types/:caseType/validate': (req, res) => {
+                const responseBody = {
+                    data: req.body.data,
+                    "_links": { "self": { "href": "http://ccd-data-store-api-demo.service.core-compute-demo.internal" + req.path + "?pageId=" + req.query.pageId } }
+                }
+                res.send(responseBody)
+            },
+            '/data/case-types/:caseType/cases': (req, res) => {
+                const responseBody = {
+                    id: Date.now(),
+                    data: req.body.data,
+                    "_links": { "self": { "href": "http://ccd-data-store-api-demo.service.core-compute-demo.internal" + req.path + "?ignore-warning=false" } }
+                }
+                res.send(responseBody)
+            },
+            '/data/cases/:caseid/events': (req, res) => {
+                const responseBody = {
+                    id: Date.now(),
+                    data: req.body.data,
+                    "_links": { "self": { "href": "http://ccd-data-store-api-demo.service.core-compute-demo.internal" + req.path + "?ignore-warning=false" } }
+                }
+                res.send(responseBody);
+            }, 
+        }
+    }
 }
 
 module.exports = new CCDApi();
 
+
+
+function getSingleFieldCaseEventConfig(eventId){
+    const eventConfig = {
+        eventId: eventId,
+        pages:[
+            {
+                pageId: eventId+'_1',
+                fields:[]
+            }
+        ]
+    }
+
+    switch (eventId){
+        case "text":
+            eventConfig.pages[0].fields.push({ type: "Text" , id: "simpletext",value:"Sample test text value ABC"});
+            break;
+        case "dynamicList":
+            const listItems = [
+                {"code": "item1","label": "Item 1"},
+                { "code": "item2", "label": "Item 2" },
+                { "code": "item3", "label": "Item 3" },               
+            ]
+            eventConfig.pages[0].fields.push({
+                type: "DynamicList", id: "dynamicListField", value: {"value": listItems[2],"list_items": listItems} 
+            });
+            break;
+    }
+
+    return getCaseConfig(eventConfig);
+}
+
+
+
+function getCaseConfig(eventConfig) {
+    const eventId = eventConfig.eventId;
+
+    const caseConfig = new CCDCaseConfig('MockEvent_' + eventId, 'Mock event for ' + eventId, 'Mock event description');
+   
+    eventConfig.pages.forEach((page,idx) => {
+        const wizardPage = caseConfig.addWizardPage(eventId + '_'+idx, 'Mock Page ' + eventId+" "+idx);
+        
+        page.fields.forEach((field,fieldIdx) => {
+            let ccdCaseField = caseConfig.addCCDFieldToPage(wizardPage, field.type, field.id, field.label ? field.label : "Test "+field.id);
+            ConfigureCCDField(caseConfig, ccdCaseField, field);
+            if(field.value){
+                ccdCaseField.value = field.value
+            }
+        });  
+        
+    });
+    
+    return caseConfig.caseConfigTemplate;
+}
+
+function ConfigureCCDField(caseConfig, parentField, fieldConfig) {
+    if (fieldConfig.type === "Complex") {
+        field.complexFields.forEach((complexFieldConfig) => {
+            const complexCCDField = caseConfig.getCCDFieldTemplateCopy(complexFieldConfig.type, complexFieldConfig.id, complexFieldConfig.label ? complexFieldConfig.lbel : " Complex field " + complexFieldConfig.id)
+            parentField.field_type.complex_fields.push(complexCCDField);
+            ConfigureCCDField(caseConfig, complexCCDField, complexFieldConfig);
+        });
+    }
+
+    if (fieldConfig.type === "Collection") {
+        const collectionCCDField = caseConfig.getCCDFieldTemplateCopy(fieldConfig.collectionField.type, fieldConfig.collectionField.id, fieldConfig.collectionField.label ? fieldConfig.collectionField.lbel : " Complex field " + fieldConfig.collectionField.id)
+        parentField.field_type.collection_field_type = collectionCCDField;
+        ConfigureCCDField(caseConfig, collectionCCDField, fieldConfig.collectionField);
+
+    }
+}
 
 

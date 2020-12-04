@@ -3,9 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { Task } from '../models/tasks';
-import { SearchTaskRequest } from './../models/dtos/search-task-request';
-import { Assignee } from './../models/dtos/task';
-import { TaskSearchParameters } from './../models/dtos/task-search-parameter';
+import { Assignee, SearchTaskRequest, TaskSearchParameters } from '../models/dtos';
 
 const BASE_URL: string = '/workallocation/task/';
 export enum ACTION {

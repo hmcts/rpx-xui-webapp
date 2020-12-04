@@ -1,12 +1,11 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { WorkAllocationTaskService } from 'src/work-allocation/services/work-allocation-task.service';
 
 import { TaskFieldType, TaskService, TaskSort, TaskView } from '../../enums';
-import TaskServiceConfig from '../../models/tasks/task-service-config.model';
-import { Assignee, Caseworker } from './../../models/dtos/task';
-import { TaskFieldConfig } from './../../models/tasks';
+import { Assignee, Caseworker } from '../../models/dtos';
+import { WorkAllocationTaskService } from '../../services';
+import { TaskFieldConfig, TaskServiceConfig } from '../../models/tasks';
 
 @Component({
   selector: 'exui-task-container-assignment',
@@ -80,7 +79,7 @@ export class TaskAssignmentContainerComponent implements OnInit {
     defaultSortFieldName: 'dueDate',
     fields: this.fields,
   };
-  public readonly manageLink = 'manage_5678901234567890';
+  public manageLink = '';
   public ngOnInit(): void {
     // Set up the default sorting.
     this.sortedBy = {
@@ -90,6 +89,7 @@ export class TaskAssignmentContainerComponent implements OnInit {
 
     // Get the task from the route, which will have been put there by the resolver.
     const { task } = this.route.snapshot.data.task;
+    this.manageLink = `manage_${task.id}`;
     this.tasks = [ task ];
   }
 

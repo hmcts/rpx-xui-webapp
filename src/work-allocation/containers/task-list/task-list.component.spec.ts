@@ -1,12 +1,12 @@
 import { CdkTableModule } from '@angular/cdk/table';
+import { Location } from '@angular/common';
 import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
-import { WorkAllocationComponentsModule } from 'src/work-allocation/components/work-allocation.components.module';
-import { WorkAllocationTaskService } from 'src/work-allocation/services/work-allocation-task.service';
 
-import { Location } from '@angular/common';
+import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { TaskFieldType, TaskService, TaskSort, TaskView } from '../../enums';
+import { WorkAllocationTaskService } from '../../services/work-allocation-task.service';
 import { Task, TaskAction, TaskFieldConfig, TaskServiceConfig, TaskSortField } from './../../models/tasks';
 import { TaskListComponent } from './task-list.component';
 
@@ -139,7 +139,8 @@ describe('TaskListComponent', () => {
       declarations: [TaskListComponent, WrapperComponent],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
-        { provide: Location, useValue: location }]
+        { provide: Location, useValue: location }
+      ]
     })
       .compileComponents();
   }));
@@ -236,21 +237,21 @@ describe('TaskListComponent', () => {
     fixture.detectChanges();
 
     // get the selected row and confirm it is not null
-    const firstRow = component.getSelectedRow();
-    expect(component.getSelectedRow()).not.toBe(null);
+    const firstRow = component.getSelectedTask();
+    expect(component.getSelectedTask()).not.toBe(null);
 
     // click the 'manage' button again and confirm that it is null
     element = fixture.debugElement.nativeElement;
     button.dispatchEvent(new Event('click'));
     fixture.detectChanges();
-    expect(component.getSelectedRow()).toBe(null);
+    expect(component.getSelectedTask()).toBe(null);
 
     // click the button one last time and confirm selected and equal to earlier given row
     element = fixture.debugElement.nativeElement;
     button.dispatchEvent(new Event('click'));
     fixture.detectChanges();
-    expect(component.getSelectedRow()).not.toBe(null);
-    expect(component.getSelectedRow()).toEqual(firstRow);
+    expect(component.getSelectedTask()).not.toBe(null);
+    expect(component.getSelectedTask()).toEqual(firstRow);
     expect(firstRow.id).toEqual(firstTaskId);
 
     // click the button for the second task
@@ -260,8 +261,8 @@ describe('TaskListComponent', () => {
     fixture.detectChanges();
 
     // get the selected row and confirm it is not null and is the secondTaskId
-    const secondRow = component.getSelectedRow();
-    expect(component.getSelectedRow()).not.toBe(null);
+    const secondRow = component.getSelectedTask();
+    expect(component.getSelectedTask()).not.toBe(null);
     expect(secondRow.id).toEqual(secondTaskId);
   });
 
@@ -277,47 +278,47 @@ describe('TaskListComponent', () => {
     fixture.detectChanges();
 
     // get the selected row and confirm it is not null
-    const firstRow = component.getSelectedRow();
-    expect(component.getSelectedRow()).not.toBe(null);
+    const firstRow = component.getSelectedTask();
+    expect(component.getSelectedTask()).not.toBe(null);
 
     // click the 'manage' button again and confirm that it is null
     element = fixture.debugElement.nativeElement;
     firstButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
-    expect(component.getSelectedRow()).toBe(null);
+    expect(component.getSelectedTask()).toBe(null);
 
     // set the selected row as the earlier defined row
-    component.setSelectedRow(firstRow);
+    component.setSelectedTask(firstRow);
     fixture.detectChanges();
-    expect(component.getSelectedRow()).not.toBe(null);
-    expect(component.getSelectedRow()).toEqual(firstRow);
+    expect(component.getSelectedTask()).not.toBe(null);
+    expect(component.getSelectedTask()).toEqual(firstRow);
     expect(firstRow.id).toEqual(firstTaskId);
 
     // click the 'manage' button again and confirm that it is selected
     element = fixture.debugElement.nativeElement;
     secondButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
-    const secondRow = component.getSelectedRow();
-    expect(component.getSelectedRow()).not.toBe(null);
+    const secondRow = component.getSelectedTask();
+    expect(component.getSelectedTask()).not.toBe(null);
 
     // set the selected row as the earlier defined row
-    component.setSelectedRow(firstRow);
+    component.setSelectedTask(firstRow);
     fixture.detectChanges();
-    expect(component.getSelectedRow()).not.toBe(null);
-    expect(component.getSelectedRow()).toEqual(firstRow);
+    expect(component.getSelectedTask()).not.toBe(null);
+    expect(component.getSelectedTask()).toEqual(firstRow);
     expect(firstRow.id).toEqual(firstTaskId);
 
     // set the selected row as the later defined row
-    component.setSelectedRow(secondRow);
+    component.setSelectedTask(secondRow);
     fixture.detectChanges();
-    expect(component.getSelectedRow()).not.toBe(null);
-    expect(component.getSelectedRow()).toEqual(secondRow);
+    expect(component.getSelectedTask()).not.toBe(null);
+    expect(component.getSelectedTask()).toEqual(secondRow);
     expect(secondRow.id).toEqual(secondTaskId);
 
     // click selected row again and confirm null
-    component.setSelectedRow(secondRow);
+    component.setSelectedTask(secondRow);
     fixture.detectChanges();
-    expect(component.getSelectedRow()).toBe(null);
+    expect(component.getSelectedTask()).toBe(null);
   });
 
   it('should allow checking the selected row.', async () => {
@@ -332,33 +333,33 @@ describe('TaskListComponent', () => {
     fixture.detectChanges();
 
     // get the selected row and confirm it is not null
-    const firstRow = component.getSelectedRow();
-    expect(component.getSelectedRow()).not.toBe(null);
+    const firstRow = component.getSelectedTask();
+    expect(component.getSelectedTask()).not.toBe(null);
 
     // expect the row to be selected
-    expect(component.isRowSelected(firstRow)).toBeTruthy();
+    expect(component.isTaskSelected(firstRow)).toBeTruthy();
 
     // click the 'manage' button for the second row and confirm that initial row is not selected
     element = fixture.debugElement.nativeElement;
     secondButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
-    const secondRow = component.getSelectedRow();
-    expect(component.isRowSelected(firstRow)).toBeFalsy();
-    expect(component.isRowSelected(secondRow)).toBeTruthy();
+    const secondRow = component.getSelectedTask();
+    expect(component.isTaskSelected(firstRow)).toBeFalsy();
+    expect(component.isTaskSelected(secondRow)).toBeTruthy();
 
     // click the 'manage' button for the initial row and confirm that second row is not selected
     element = fixture.debugElement.nativeElement;
     firstButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
-    expect(component.isRowSelected(firstRow)).toBeTruthy();
-    expect(component.isRowSelected(secondRow)).toBeFalsy();
+    expect(component.isTaskSelected(firstRow)).toBeTruthy();
+    expect(component.isTaskSelected(secondRow)).toBeFalsy();
 
     // click the 'manage' button for the initial row and confirm that neither are selected
     element = fixture.debugElement.nativeElement;
     firstButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
-    expect(component.isRowSelected(firstRow)).toBeFalsy();
-    expect(component.isRowSelected(secondRow)).toBeFalsy();
+    expect(component.isTaskSelected(firstRow)).toBeFalsy();
+    expect(component.isTaskSelected(secondRow)).toBeFalsy();
   });
 
   it('should trigger an event to the parent when the User clicks on an action.', async () => {
@@ -446,12 +447,21 @@ describe('TaskListComponent', () => {
     expect(component.sortEvent.emit).toHaveBeenCalledWith('dueDate');
   });
 
-  it('selectTaskFromUrlHash', () => {
-    const task = {} as Task;
-    location.path.and.returnValue('tasklist#manage_12345678');
-    task.id = '12345678';
-    const tasks = [task];
-    const returnTask = component.selectTaskFromUrlHash(location, tasks);
-    expect(task).toEqual(returnTask);
+  it('should select appropriate task from location hash', () => {
+    const id = '12345678';
+    location.path.and.returnValue(`tasklist#manage_${id}`);
+    const task = { id } as Task;
+    wrapper.tasks = [ task ];
+    fixture.detectChanges();
+    expect(component.getSelectedTask()).toEqual(task);
+  });
+
+  it('should handle a location hash for a task that does not exist', () => {
+    const id = '12345678';
+    location.path.and.returnValue(`tasklist#manage_999999`); // Wrong id.
+    const task = { id } as Task;
+    wrapper.tasks = [ task ];
+    fixture.detectChanges();
+    expect(component.getSelectedTask()).toBeNull();
   });
 });

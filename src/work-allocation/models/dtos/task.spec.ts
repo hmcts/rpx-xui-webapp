@@ -1,5 +1,5 @@
-import { JsonConfig } from '../tasks';
-import {Task} from './task';
+import { Task } from '.';
+import JsonConfig from '../json-config';
 
 describe('WorkAllocation Task', () => {
     describe('JsonConfig', () => {

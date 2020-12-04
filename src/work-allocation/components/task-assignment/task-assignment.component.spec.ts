@@ -1,16 +1,16 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Observable } from 'rxjs';
-import { WorkAllocationComponentsModule } from 'src/work-allocation/components/work-allocation.components.module';
 
-import { Caseworker, Location } from './../../models/dtos/task';
-import { CaseworkerDataService } from './../../services/case-worker-data.service';
-import { LocationDataService } from './../../services/location-data.service';
+import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
+import { Caseworker, Location } from '../../models/dtos';
+import { CaseworkerDataService, LocationDataService } from './../../services';
 import { TaskAssignmentComponent } from './task-assignment.component';
 
 // Locations.
 const LOCATION_A: Location = { id: 'a', locationName: 'Location A', services: ['a'] };
 const LOCATION_B: Location = { id: 'b', locationName: 'Location B', services: ['a', 'b'] };
+const LOCATION_C: Location = { id: 'c', locationName: 'Location C', services: ['c'] };
 
 // Caseworkers.
 const JS = { firstName: 'John',   lastName: 'Smith',  idamId: '1', location: LOCATION_A };
@@ -20,13 +20,16 @@ const NB = { firstName: 'Noah',   lastName: 'Body',   idamId: '4', location: LOC
 
 class MockLocationDataService {
   public getLocation(locationId: string): Observable<Location> {
-    if (locationId === LOCATION_A.id) {
-      return Observable.of(LOCATION_A);
+    switch (locationId) {
+      case LOCATION_A.id:
+        return Observable.of(LOCATION_A);
+      case LOCATION_B.id:
+        return Observable.of(LOCATION_B);
     }
-    return Observable.of(LOCATION_B);
+    return Observable.of(LOCATION_C);
   }
   public getLocations(): Observable<Location[]> {
-    return Observable.of([ LOCATION_A, LOCATION_B ]);
+    return Observable.of([ LOCATION_A, LOCATION_B, LOCATION_C ]);
   }
 }
 
@@ -35,10 +38,13 @@ class MockCaseworkerDataService {
     return Observable.of([ JD, JS, JB, NB ]);
   }
   public getForLocation(locationId: string): Observable<Caseworker[]> {
-    if (locationId === LOCATION_A.id) {
-      return Observable.of([ JD, JS ]);
+    switch (locationId) {
+      case LOCATION_A.id:
+        return Observable.of([ JD, JS ]);
+      case LOCATION_B.id:
+        return Observable.of([ JB, NB ]);
     }
-    return Observable.of([ JB, NB ]);
+    return Observable.of([ undefined ]);
   }
 }
 
@@ -102,10 +108,11 @@ describe('WorkAllocation', () => {
       const select: HTMLSelectElement = getSelect('#task_assignment_location');
       expect(select).toBeDefined();
       expect(select.options).toBeDefined();
-      expect(select.options.length).toEqual(3);
+      expect(select.options.length).toEqual(4);
       expect(select.options[0].label).toEqual(component.ALL_LOCATIONS.locationName);
       expect(select.options[1].textContent).toEqual(LOCATION_A.locationName);
       expect(select.options[2].textContent).toEqual(LOCATION_B.locationName);
+      expect(select.options[3].textContent).toEqual(LOCATION_C.locationName);
     });
 
     it('should have appropriate default options shown in the caseworker select', () => {
@@ -200,6 +207,22 @@ describe('WorkAllocation', () => {
           expect(wrapper.emittedEvents.length).toBe(2);
           expect(wrapper.emittedEvents[1]).toBeNull();
         });
+      });
+    });
+
+    it('should handle an undefined caseworker', () => {
+      const locationsSelect: HTMLSelectElement = getSelect('#task_assignment_location');
+
+      // Now let's select a new location (Location A).
+      locationsSelect.value = locationsSelect.options[3].value; // Location C.
+      locationsSelect.dispatchEvent(new Event('change'));
+      fixture.detectChanges();
+      fixture.whenStable().then(() => {
+        expect(component.caseworkers.length).toBe(1); // Only Location C people (undefined)
+        const caseworkersSelect: HTMLSelectElement = getSelect('#task_assignment_caseworker');
+        expect(caseworkersSelect.options.length).toEqual(2);  // Location C people + "Select name"
+        expect(caseworkersSelect.options[0].label).toEqual('Select name');
+        expect(caseworkersSelect.options[1].textContent).toBe(''); // Undefined caseworker.
       });
     });
 

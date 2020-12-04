@@ -1,35 +1,28 @@
-import * as express from 'express'
-import * as striptags from 'striptags'
-import {getConfigValue} from '../configuration'
 import { caseMetaDataFiledsMapping } from '../configuration/mappings'
-import {
-  SERVICES_CCD_COMPONENT_API_PATH,
-} from '../configuration/references'
-import { http } from '../lib/http'
-import { setHeaders } from '../lib/proxy'
 import { fieldNameMapper } from '../lib/util'
 
 /**
  * Manually creating Elastic search query
  */
-export async function getCases(req: express.Request, res: express.Response, next: express.NextFunction) {
-    let url = striptags(req.url)
-    url = req.baseUrl  + url
-    const headers: any = setHeaders(req)
+export function modifyRequest(proxyReq, req) {
+    const request = prepareElasticQuery(req.query, req.body)
 
-    try {
-        const body = prepareElasticQuery(req.query, req.body)
-        const response = await http.post(`${getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)}${url}`, body, { headers })
+    // Write out body changes to the proxyReq stream
+    const body = JSON.stringify(request)
 
-        res.status(response.status)
+    // Update header
+    proxyReq.setHeader('content-type', 'application/json')
+    proxyReq.setHeader('content-length', body.length)
 
-        res.send(handleElasticSearchResponse(response.data))
-    } catch (e) {
-        next(e)
-    }
+    // Write out body changes to the proxyReq stream
+    proxyReq.write(body)
+
+    // Remove body-parser body object from the request
+    delete req.body
+    proxyReq.end()
 }
 
-export function prepareElasticQuery(queryParams: {page?}, body: {size?, sort?}): {} {
+export function prepareElasticQuery(queryParams: {page?}, body: any): {} {
     const metaCriteria = queryParams
     let caseCriteria = {}
     let nativeEsQuery: {} = {}
@@ -141,7 +134,7 @@ function isKeywordSuffixNeeded(columnName, type): string {
     return isText ? '.keyword' : ''
 }
 
-function handleElasticSearchResponse(json): {} {
+export function handleElasticSearchResponse(json): {} {
 
     const results = json.cases.map(caseObj => {
       caseObj.case_fields = caseObj.fields

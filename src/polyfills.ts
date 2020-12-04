@@ -18,45 +18,45 @@
  * BROWSER POLYFILLS
  */
 
- /** IE9, IE10 and IE11 requires all of the following polyfills. **/
-import 'core-js/es6/symbol';
-import 'core-js/es6/object';
-import 'core-js/es6/function';
-import 'core-js/es6/parse-int';
-import 'core-js/es6/parse-float';
-import 'core-js/es6/number';
-import 'core-js/es6/math';
-import 'core-js/es6/string';
-import 'core-js/es6/date';
-import 'core-js/es6/array';
-import 'core-js/es6/regexp';
-import 'core-js/es6/map';
-import 'core-js/es6/weak-map';
-import 'core-js/es6/set';
-import 'core-js/es6/promise';
-import 'core-js/fn/promise/finally';
+ /** IE9, IE10 and IE11 requires all of the following polyfills. */
+ import 'core-js/es6/symbol';
+ import 'core-js/es6/object';
+ import 'core-js/es6/function';
+ import 'core-js/es6/parse-int';
+ import 'core-js/es6/parse-float';
+ import 'core-js/es6/number';
+ import 'core-js/es6/math';
+ import 'core-js/es6/string';
+ import 'core-js/es6/date';
+ import 'core-js/es6/array';
+ import 'core-js/es6/regexp';
+ import 'core-js/es6/map';
+ import 'core-js/es6/weak-map';
+ import 'core-js/es6/set';
+ import 'core-js/es6/promise';
+ import 'core-js/fn/promise/finally';
+ import 'core-js/es7/array';
+ import 'core-js/es7/object';
 
-/** Evergreen browsers require these. **/
-import 'core-js/es6/reflect'; // IE10 and IE11 requires the following for the Reflect API.
-import 'core-js/es7/reflect'; // Used for reflect-metadata in JIT. If you use AOT (and only Angular decorators), you can remove.
-import 'core-js/es7/array';
-import 'core-js/es7/object';
+ /* Evergreen browsers require these. **/
+ import 'core-js/es6/reflect';
+ import 'core-js/es7/reflect';
 
-/** IE10 and IE11 requires the following for NgClass support on SVG elements */
-import 'classlist.js';  // Run `npm install --save classlist.js`.
+ /** IE10 and IE11 requires the following for NgClass support on SVG elements */
+ import 'classlist.js';  // Run `npm install --save classlist.js`.
 
-/**
-* Web Animations `@angular/platform-browser/animations`
-* Only required if AnimationBuilder is used within the application and using IE/Edge or Safari.
-* Standard animation support in Angular DOES NOT require any polyfills (as of Angular 6.0).
-* IE10 and IE11 requires the following to support `@angular/animation`. 
-*/
-import 'web-animations-js';  // Run `npm install --save web-animations-js`.
+ /**
+  * Web Animations `@angular/platform-browser/animations`
+  * Only required if AnimationBuilder is used within the application and using IE/Edge or Safari.
+  * Standard animation support in Angular DOES NOT require any polyfills (as of Angular 6.0).
+  * IE10 and IE11 requires the following to support `@angular/animation`.
+  */
+ import 'web-animations-js';  // Run `npm install --save web-animations-js`.
 
-/* IE9, IE10 and IE11 require all of the following polyfills. **/
-import 'isomorphic-fetch';  // Run `yarn add isomorphic-fetch`.
+ /* IE9, IE10 and IE11 require all of the following polyfills. **/
+ import 'isomorphic-fetch';  // Run `yarn add isomorphic-fetch`.
 
-/**
+ /**
   * By default, zone.js will patch all possible macroTask and DomEvents
   * user can disable parts of macroTask/DomEvents patch by setting following flags
   * because those flags need to be set before `zone.js` being loaded, and webpack
@@ -78,12 +78,13 @@ import 'isomorphic-fetch';  // Run `yarn add isomorphic-fetch`.
   *
   *  (window as any).__Zone_enable_cross_context_check = true;
   *
-*/
- 
-/***************************************************************************************************
-* Zone JS is required by default for Angular itself.
-*/
-if (document['documentMode'] || /Edge/.test(navigator.userAgent)) {
-    (window as any).__Zone_enable_cross_context_check = true;
-}
-import 'zone.js/dist/zone';  // Included with Angular CLI.
+  */
+
+ /***************************************************************************************************
+  * Zone JS is required by default for Angular itself.
+  */
+ if (document['documentMode'] || /Edge/.test(navigator.userAgent)) {
+     (window as any).__Zone_enable_cross_context_check = true;
+ }
+ import 'zone.js/dist/zone';  // Included with Angular CLI.
+ import 'zone.js/dist/zone-error';

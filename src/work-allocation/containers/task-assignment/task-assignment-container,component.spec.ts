@@ -87,12 +87,12 @@ describe('TaskAssignmentContainerComponent', () => {
       declarations: [
           TaskAssignmentContainerComponent, WrapperComponent, ErrorMessageComponent, TaskListComponent
         ],
-      imports: [WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientModule, RouterTestingModule],
+      imports: [WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientModule, RouterTestingModule.withRoutes([{path: 'reassign/1549476532065586', component: TaskAssignmentContainerComponent}])],
       providers: [{ provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
       {provide: ActivatedRoute, useValue: {
         data: {
           subscribe: (fn: (value: Data) => void) => fn({
-            tasks: TASKS
+            taskid: TASKS
           }),
         },
         params: Observable.of(getTasks[0])}}]

@@ -4,11 +4,12 @@ import { WorkAllocationTaskService } from 'src/work-allocation/services/work-all
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { TaskService, TaskSort } from '../../enums';
+import { TaskService, TaskSort, InfoMessageType, InfoMessage } from '../../enums';
 import { SearchTaskRequest } from '../../models/dtos/search-task-request';
 import { Task, TaskFieldConfig, TaskSortField } from '../../models/tasks';
 import InvokedTaskAction from '../../models/tasks/invoked-task-action.model';
 import TaskServiceConfig from '../../models/tasks/task-service-config.model';
+import WorkAllocationUtils from '../../work-allocation.utils';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html'
@@ -18,6 +19,9 @@ export class TaskListWrapperComponent implements OnInit {
   public state$: Observable<object>;
 
   public badRequest: Boolean = false;
+
+  public messages: any[];
+
   /**
    * Take in the Router so we can navigate when actions are clicked.
    */
@@ -59,8 +63,10 @@ export class TaskListWrapperComponent implements OnInit {
     // check if an error has been returned with the page
     this.state$ = this.route.paramMap
     .pipe(map(() => window.history.state))
+    // if an error has been returned from the page then return the correct info messages
     if (this.badRequestPresent()) {
-      this.badRequest = true;
+      this.messages = [{infoMessage: InfoMessage.TASK_NO_LONGER_AVAILABLE, infoMessageType: InfoMessageType.WARNING},
+                       {infoMessage: InfoMessage.LIST_OF_AVAILABLE_TASKS_REFRESHED, infoMessageType: InfoMessageType.INFO}]
     }
     // Set up the default sorting.
     this.sortedBy = {
@@ -81,7 +87,8 @@ export class TaskListWrapperComponent implements OnInit {
     this.taskService.searchTask(searchTaskRequest).subscribe(result => {
       this.tasks = result.tasks;
     }, error => {
-      console.error('There was an error', error);
+      const navigateTo = WorkAllocationUtils.handleTaskAssignErrorResult(error.status)
+      this.router.navigate([navigateTo]);
     });
   }
 

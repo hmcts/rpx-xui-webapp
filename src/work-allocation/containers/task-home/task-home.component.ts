@@ -4,7 +4,7 @@ import { SubNavigation } from '@hmcts/rpx-xui-common-lib';
 
 import { InfoMessage, InfoMessageType } from '../../enums';
 import { AppUtils } from './../../../app/app-utils';
-import { Task, TaskSortField } from './../../models/tasks';
+import { TaskSortField } from './../../models/tasks';
 
 @Component({
   selector: 'exui-task-home',

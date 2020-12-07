@@ -1,5 +1,5 @@
-import { JsonConfig } from '../tasks';
-import {TaskSearchParameters} from './task-search-parameter';
+import { TaskSearchParameters } from '.';
+import JsonConfig from '../json-config';
 
 describe('WorkAllocation TaskSearchParameters', () => {
     describe('JsonConfig', () => {

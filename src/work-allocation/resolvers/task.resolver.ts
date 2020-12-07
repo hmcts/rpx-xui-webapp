@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs';
+
 import { Task } from '../models/tasks';
-import { WorkAllocationTaskService } from '../services/work-allocation-task.service';
+import { WorkAllocationTaskService } from '../services';
 
 @Injectable({ providedIn: 'root' })
 export class TaskResolver implements Resolve<Task> {

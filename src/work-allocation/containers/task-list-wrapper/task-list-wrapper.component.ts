@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { WorkAllocationTaskService } from 'src/work-allocation/services/work-allocation-task.service';
 
-import { TaskService, TaskSort } from '../../enums';
+import { TaskService, TaskSort, TaskActionIds } from '../../enums';
 import { SearchTaskRequest } from '../../models/dtos/search-task-request';
 import { Task, TaskFieldConfig, TaskSortField } from '../../models/tasks';
 import InvokedTaskAction from '../../models/tasks/invoked-task-action.model';
 import TaskServiceConfig from '../../models/tasks/task-service-config.model';
-import {WorkAllocationTaskService} from '../../services/work-allocation-task.service';
+import { WorkAllocationTaskService } from '../../services/work-allocation-task.service';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html'
@@ -35,10 +34,6 @@ export class TaskListWrapperComponent implements OnInit {
 
   public get taskServiceConfig(): TaskServiceConfig {
     return this.defaultTaskServiceConfig;
-  }
-
-  public get taskService(): WorkAllocationTaskService {
-    return this.taskService;
   }
 
   /**
@@ -73,6 +68,27 @@ export class TaskListWrapperComponent implements OnInit {
     this.taskService.searchTask(searchTaskRequest).subscribe(result => {
       this.tasks = result.tasks;
     });
+  }
+
+  /**
+   * User claims a task.
+   *
+   * Does this link into assign tasks?
+   */
+  public claimTask(taskId): void {
+
+    console.log('claimTask');
+    console.log(taskId);
+
+    this.taskService.claimTask(taskId).subscribe(claimTask => {
+      console.log('claimTask Response');
+      console.log(claimTask);
+    });
+  }
+
+  public navigateToTask(actionId, taskId): void {
+
+    this.router.navigate([`/tasks/${actionId}/${taskId}`]);
   }
 
   /**
@@ -124,6 +140,18 @@ export class TaskListWrapperComponent implements OnInit {
     // Remove after integration
     console.log('Task Home received InvokedTaskAction:');
     console.log(taskAction);
-    this.router.navigate([`/tasks/${taskAction.action.id}/${taskAction.task.id}`]);
+    switch (taskAction.action.id) {
+      case TaskActionIds.REASSIGN:
+        this.navigateToTask(taskAction.action.id, taskAction.task.id);
+        break;
+      case TaskActionIds.CLAIM:
+        console.log('claim task');
+        this.claimTask(taskAction.task.id);
+        break;
+      default:
+        this.navigateToTask(taskAction.action.id, taskAction.task.id);
+    }
+    // On an Assignment if the service returns a 200 then we need to popup a message
+    // on this page.
   }
 }

@@ -26,9 +26,9 @@ export const NO_CASEWORKER_ASSIGNED: Caseworker = {
 })
 export class TaskManagerFilterComponent {
   // Protected instances of the exported constants.
-  protected readonly ALL_LOCATIONS: Location = ALL_LOCATIONS;
-  protected readonly ALL_CASEWORKERS: Caseworker = ALL_CASEWORKERS;
-  protected readonly NO_CASEWORKER_ASSIGNED: Caseworker = NO_CASEWORKER_ASSIGNED;
+  public readonly ALL_LOCATIONS: Location = ALL_LOCATIONS;
+  public readonly ALL_CASEWORKERS: Caseworker = ALL_CASEWORKERS;
+  public readonly NO_CASEWORKER_ASSIGNED: Caseworker = NO_CASEWORKER_ASSIGNED;
 
   /**
    * The caseworkers that are available to be selected from.

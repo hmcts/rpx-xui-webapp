@@ -7,7 +7,7 @@ const LOCATION_A: Location = { id: 'a', locationName: 'Taylor House', services: 
 const LOCATION_B: Location = { id: 'b', locationName: 'Taylor Swift', services: [ 'a', 'b' ] };
 export function getMockLocations(): Location[] {
   return [ LOCATION_A, LOCATION_B ];
-};
+}
 
 export function getMockCaseworkers(): Caseworker[] {
   return [
@@ -24,7 +24,7 @@ export function getMockCaseworkers(): Caseworker[] {
       location: LOCATION_B
     }
   ];
-};
+}
 
 /**
  * Mock tasks

@@ -1,4 +1,3 @@
-import {CaseworkerDisplayName} from './../../pipes/caseworker-display-name.pipe';
 import { CdkTableModule } from '@angular/cdk/table';
 import { Location } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
@@ -10,11 +9,10 @@ import { of } from 'rxjs';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import * as dtos from '../../models/dtos';
 import { Task } from '../../models/tasks';
-import { WorkAllocationTaskService } from '../../services';
 import { getMockCaseworkers, getMockLocations, getMockTasks } from '../../tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
-import { CaseworkerDataService } from './../../services/caseworker-data.service';
-import { LocationDataService } from './../../services/location-data.service';
+import { CaseworkerDisplayName } from './../../pipes/caseworker-display-name.pipe';
+import { CaseworkerDataService, LocationDataService, WorkAllocationTaskService } from './../../services';
 import { TaskManagerListComponent } from './task-manager-list.component';
 
 @Component({

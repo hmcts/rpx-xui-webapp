@@ -11,7 +11,7 @@
       <h2 class="govuk-heading-m">Choose a colleague</h2>
       <exui-task-assignment (caseworkerChanged)="onCaseworkerChanged($event)" [showProblem]="showProblem"></exui-task-assignment>
       <button class="govuk-button task-assignment-btn" type="submit" (click)="reAssign()">Reassign</button>
-      <a routerLink="/tasks" role="button" draggable="false" class="govuk-button govuk-button--secondary cancel-back-btn">
+      <a routerLink="/tasks" [fragment]="manageLink" role="button" draggable="false" class="govuk-button govuk-button--secondary cancel-back-btn">
         Cancel and go back
       </a>
     </div>

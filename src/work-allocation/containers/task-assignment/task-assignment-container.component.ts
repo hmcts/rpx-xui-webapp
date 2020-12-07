@@ -9,6 +9,7 @@ import { Assignee, Caseworker } from './../../models/dtos/task';
 import { Task, TaskFieldConfig } from './../../models/tasks';
 import WorkAllocationUtils from './../../work-allocation.utils';
 
+
 @Component({
   selector: 'exui-task-container-assignment',
   templateUrl: 'task-assignment-container.component.html',
@@ -26,8 +27,9 @@ export class TaskAssignmentContainerComponent implements OnInit {
   constructor(
     private readonly taskService: WorkAllocationTaskService,
     private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly location: Location
+
+    private readonly location: Location,
+    private readonly router: Router
   ) {}
 
   
@@ -86,7 +88,7 @@ export class TaskAssignmentContainerComponent implements OnInit {
     defaultSortFieldName: 'dueDate',
     fields: this.fields,
   };
-
+  public readonly manageLink = 'manage_5678901234567890';
   public ngOnInit(): void {
     // Set up the default sorting.
     this.sortedBy = {
@@ -100,6 +102,7 @@ export class TaskAssignmentContainerComponent implements OnInit {
   }
 
   public reAssign(): void {
+    this.router.navigate(['/tasks'], {fragment: this.manageLink});
     if (!this.caseworker) {
       this.showProblem = true;
       this.errorTitle = "There is a problem";

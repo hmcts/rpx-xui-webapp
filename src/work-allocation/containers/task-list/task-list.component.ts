@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -43,12 +44,25 @@ export class TaskListComponent implements OnChanges, OnInit {
 
   private selectedRow: Task;
 
-  constructor(private activatedRoute: ActivatedRoute) {
-    
+  constructor(private readonly location: Location) {
   }
 
   public ngOnInit(): void {
-    
+    const taskFromUrl = this.selectTaskFromUrlHash(this.location, this.tasks);
+    if (taskFromUrl) {
+      this.setSelectedRow(taskFromUrl);
+    }
+  }
+
+  public selectTaskFromUrlHash(location: Location, tasks: Task[]): Task | null {
+    const url = location.path(true);
+    const hashValue = url.substring(url.indexOf('#') + 1);
+    if (hashValue && hashValue.indexOf('manage_') === 0) {
+      const selectedTaskId = hashValue.replace('manage_', '');
+      const selectedTask = tasks.find(task => task.id === selectedTaskId);
+      return selectedTask;
+    }
+    return null;
   }
 
   public ngOnChanges() {
@@ -111,7 +125,6 @@ export class TaskListComponent implements OnChanges, OnInit {
    * Open and close the selected row.
    */
   public setSelectedRow(row: Task): void {
-
     if (row === this.getSelectedRow()) {
       this.selectedRow = null;
     } else {

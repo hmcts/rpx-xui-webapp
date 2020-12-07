@@ -50,10 +50,20 @@ async function pa11ytest(test, actions, startUrl) {
         data: 'foobar'
     }, 'secret', { expiresIn: 60 * 60 });
 
+    const encodedRoles = encodeURIComponent('j:["pui-case-manager"]')
     const cookies = [
         {
             name: '__auth__',
             value: token,
+            domain: 'localhost:4200',
+            path: '/',
+            httpOnly: false,
+            secure: false,
+            session: true,
+        },
+        {
+            name: 'roles',
+            value: encodedRoles,
             domain: 'localhost:4200',
             path: '/',
             httpOnly: false,

@@ -1,4 +1,5 @@
 import { ACTIONS } from './actions.spec';
+import { CASEWORKERS, toAssignee } from './caseworkers.spec';
 
 const KILI_MUSO = {
   id: '1604075580956811',
@@ -8,7 +9,8 @@ const KILI_MUSO = {
   location: 'Taylor House',
   taskName: 'Apply for probate',
   dueDate: new Date(1604938789000),
-  actions: [ ACTIONS.REASSIGN, ACTIONS.RELEASE ]
+  actions: [ ACTIONS.REASSIGN, ACTIONS.RELEASE ],
+  assignee: toAssignee(CASEWORKERS.JOHN_SMITH).userName
 };
 
 const MANKAI_LIT = {
@@ -19,7 +21,8 @@ const MANKAI_LIT = {
   location: 'Taylor House',
   taskName: 'Review appellant case',
   dueDate: new Date(1604506789000),
-  actions: [ ACTIONS.RELEASE ]
+  actions: [ ACTIONS.RELEASE ],
+  assignee: toAssignee(CASEWORKERS.JANE_DOE).userName
 };
 
 const BOB_CRATCHITT = {
@@ -121,6 +124,41 @@ const SIR_VAN_ERROR = {
   actions: [ ACTIONS.REASSIGN ]
 };
 
+export const TASKS_ARRAY = [
+  KILI_MUSO, MANKAI_LIT, BOB_CRATCHITT, EBENEZER_SCROOGE, OLIVER_TWIST, DAVID_COPPERFIELD,
+  BRAD_REQUEST, AL_REDDY_DUNNE, NAT_ALLOWED, ANNE_SUPPORTED, SIR_VAN_ERROR
+];
+export const filterByAssignee = (tasks: any[], assigneeName: string) => {
+  return tasks.filter((task: any) => {
+    return task.assignee === assigneeName;
+  });
+};
+export const filterByLocations = (tasks: any[], locationNames: string[]) => {
+  locationNames = locationNames || [];
+  return tasks.filter((task: { location: string }) => {
+    return locationNames.includes(task.location);
+  });
+};
+export const getUnassignedTasks = () => {
+  return TASKS_ARRAY.filter((task: any) => {
+    return !task.assignee;
+  });
+};
+export const sortTasks = (tasks: any[], field: string, order: string) => {
+  return tasks.sort((a: any, b: any) => {
+    const aVal = a[field], bVal = b[field];
+    let sortVal = 0;
+    if (typeof aVal === 'string') {
+      sortVal = aVal.localeCompare(bVal);
+    } else if (aVal instanceof Date) {
+      sortVal = aVal.getTime() - new Date(bVal).getTime();
+    } else if (!aVal && bVal) {
+      sortVal = 1;
+    }
+    return order === 'ascending' ? sortVal : -sortVal;
+  });
+};
+
 const SORTED_BY_CASE_REFERENCE = [
   AL_REDDY_DUNNE, BRAD_REQUEST, NAT_ALLOWED, ANNE_SUPPORTED, SIR_VAN_ERROR,
   KILI_MUSO, MANKAI_LIT, BOB_CRATCHITT, EBENEZER_SCROOGE, OLIVER_TWIST, DAVID_COPPERFIELD
@@ -182,3 +220,7 @@ export const TASKS_SORTED_BY = {
   taskName: [ ...SORTED_BY_TASK ],
   dueDate: [ ...SORTED_BY_DUE_DATE ]
 };
+
+export const SORTABLE_FIELDS = [
+  'caseReference', 'caseName', 'caseCategory', 'location', 'taskName', 'dueDate', 'assignee'
+];

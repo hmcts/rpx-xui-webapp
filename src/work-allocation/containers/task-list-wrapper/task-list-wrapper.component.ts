@@ -17,7 +17,7 @@ export class TaskListWrapperComponent implements OnInit {
    */
   constructor(
     protected taskService: WorkAllocationTaskService,
-    private readonly router: Router
+    protected router: Router
   ) {}
 
   private pTasks: Task[];

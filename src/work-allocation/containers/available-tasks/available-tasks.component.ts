@@ -3,6 +3,10 @@ import { Component } from '@angular/core';
 import { TaskFieldType, TaskView } from '../../enums';
 import { Task, TaskFieldConfig } from '../../models/tasks';
 import { TaskListWrapperComponent } from './../task-list-wrapper/task-list-wrapper.component';
+import InvokedTaskAction from '../../models/tasks/invoked-task-action.model';
+import {Location} from '@angular/common';
+import {WorkAllocationTaskService} from '../../services/work-allocation-task.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'exui-available-tasks',
@@ -25,11 +29,11 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
       actions: [
         {
           id: 'actionId',
-          title: 'Reassign task',
+          title: 'Assign to me',
         },
         {
           id: 'actionId',
-          title: 'Release this task',
+          title: 'Assign to me and go to case',
         }
       ]
     },
@@ -44,8 +48,8 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
       actions: [
         {
           id: 'actionId',
-          title: 'Release this task',
-        }
+          title: 'Assign to me',
+        },
       ]
     },
     {
@@ -59,11 +63,11 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
       actions: [
         {
           id: 'actionId',
-          title: 'Reassign task',
+          title: 'Assign to me',
         },
         {
           id: 'actionId',
-          title: 'Release this task',
+          title: 'Assign to me and go to case',
         }
       ]
     },
@@ -78,8 +82,8 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
       actions: [
         {
           id: 'actionId',
-          title: 'Release this task',
-        }
+          title: 'Assign to me',
+        },
       ]
     },
     {
@@ -93,11 +97,11 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
       actions: [
         {
           id: 'actionId',
-          title: 'Reassign task',
+          title: 'Assign to me',
         },
         {
           id: 'actionId',
-          title: 'Release this task',
+          title: 'Assign to me and go to case',
         }
       ]
     },
@@ -112,8 +116,8 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
       actions: [
         {
           id: 'actionId',
-          title: 'Release this task',
-        }
+          title: 'Assign to me',
+        },
       ]
     },
   ];
@@ -177,5 +181,22 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
   }
   public set tasks(value: Task[]) {
     this.pTasks = value;
+  }
+
+  /**
+   * InvokedTaskAction from the Task List Component, so that we can handle the User's
+   * action.
+   *
+   * TODO: See if this should be in the parent
+   */
+  public onActionHandler(taskAction: InvokedTaskAction): void {
+
+    // Remove after integration
+    console.log('Available tasks received InvokedTaskAction:');
+    console.log(taskAction);
+
+    this.taskService.claimTask('taskId').subscribe(() => {
+      console.log('claiming a task was successful.');
+    });
   }
 }

@@ -5,6 +5,7 @@ import { TaskService, TaskSort } from '../../enums';
 import { Task, TaskFieldConfig, TaskSortField } from '../../models/tasks';
 import InvokedTaskAction from '../../models/tasks/invoked-task-action.model';
 import TaskServiceConfig from '../../models/tasks/task-service-config.model';
+import {WorkAllocationTaskService} from '../../services/work-allocation-task.service';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html'
@@ -14,7 +15,9 @@ export class TaskListWrapperComponent implements OnInit {
   /**
    * Take in the Router so we can navigate when actions are clicked.
    */
-  constructor(private readonly router: Router) {}
+  constructor(private readonly router: Router,
+              private readonly workAllocationTaskService: WorkAllocationTaskService
+  ) {}
 
   public get tasks(): Task[] {
     return [];
@@ -29,6 +32,10 @@ export class TaskListWrapperComponent implements OnInit {
 
   public get taskServiceConfig(): TaskServiceConfig {
     return this.defaultTaskServiceConfig;
+  }
+
+  public get taskService(): WorkAllocationTaskService {
+    return this.workAllocationTaskService;
   }
 
   /**

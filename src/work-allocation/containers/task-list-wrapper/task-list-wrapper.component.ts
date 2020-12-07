@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { WorkAllocationTaskService } from 'src/work-allocation/services/work-allocation-task.service';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { TaskService, TaskSort } from '../../enums';
 import { SearchTaskRequest } from '../../models/dtos/search-task-request';
@@ -13,12 +15,16 @@ import TaskServiceConfig from '../../models/tasks/task-service-config.model';
 })
 export class TaskListWrapperComponent implements OnInit {
 
+  public state$: Observable<object>;
+
+  public badRequest: Boolean = false;
   /**
    * Take in the Router so we can navigate when actions are clicked.
    */
   constructor(
     protected taskService: WorkAllocationTaskService,
-    protected router: Router
+    protected router: Router,
+    protected route: ActivatedRoute
   ) {}
 
   public get tasks(): Task[] {
@@ -49,6 +55,13 @@ export class TaskListWrapperComponent implements OnInit {
   public sortedBy: TaskSortField;
 
   public ngOnInit(): void {
+
+    // check if an error has been returned with the page
+    this.state$ = this.route.paramMap
+    .pipe(map(() => window.history.state))
+    if (this.badRequestPresent()) {
+      this.badRequest = true;
+    }
     // Set up the default sorting.
     this.sortedBy = {
       fieldName: this.taskServiceConfig.defaultSortFieldName,
@@ -86,6 +99,17 @@ export class TaskListWrapperComponent implements OnInit {
         }
       ]
     };
+  }
+
+  // Check if the task list has been routed to because of an error
+  public badRequestPresent(): boolean {
+
+    if (this.route.snapshot.paramMap.get('badRequest') === 'true') {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 
   /**

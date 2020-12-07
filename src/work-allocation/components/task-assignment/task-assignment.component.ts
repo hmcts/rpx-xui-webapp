@@ -10,6 +10,7 @@ import { LocationDataService } from './../../services/location-data.service';
 })
 export class TaskAssignmentComponent implements OnInit {
 
+  @Input() public showProblem: Boolean
   @Input()
   public get excludeCaseworkers(): Caseworker[] {
     return this.pExcludeCaseworkers;

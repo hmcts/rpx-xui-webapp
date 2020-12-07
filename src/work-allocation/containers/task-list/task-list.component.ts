@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 
 import { Task, TaskFieldConfig, TaskSortField } from '../../models/tasks';
@@ -40,8 +41,6 @@ export class TaskListComponent implements OnChanges, OnInit {
 
   
 
-  public badRequest: Boolean = false;
-
   private selectedRow: Task;
 
   constructor(private activatedRoute: ActivatedRoute) {
@@ -49,10 +48,7 @@ export class TaskListComponent implements OnChanges, OnInit {
   }
 
   public ngOnInit(): void {
-    // check if an error has been returned with the page
-    if (this.badRequestPresent()) {
-      this.badRequest = true;
-    }
+    
   }
 
   public ngOnChanges() {
@@ -131,16 +127,6 @@ export class TaskListComponent implements OnChanges, OnInit {
   public isRowSelected(row: Task): boolean {
 
     return row === this.getSelectedRow();
-  }
-
-  public badRequestPresent(): boolean {
-
-    if (this.activatedRoute.parent.snapshot.url[3].path === 'bad-request') {
-      return true;
-    }
-    else {
-      return false;
-    }
   }
 
   /**

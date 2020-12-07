@@ -30,6 +30,7 @@ export class TaskAssignmentContainerComponent implements OnInit {
     private readonly location: Location
   ) {}
 
+  
 
   /**
    * Mock TaskFieldConfig[]
@@ -111,12 +112,14 @@ export class TaskAssignmentContainerComponent implements OnInit {
     };
     console.log('Reassigning, but using a fake assignee for the PACT stub', assignee);
     this.taskService.assignTask(this.tasks[0].id, assignee).subscribe(
-      err => {this.router.navigate([WorkAllocationUtils.handleTaskAssignErrorResult(err.status)])},
       () => {console.log('assignment was successful: received a 200 status');
       this.location.back();
     }, error => {
-      console.error('There was an error when attempting to assign', error);
-    });
+      const navigateTo = WorkAllocationUtils.handleTaskAssignErrorResult(error.status)
+      if (navigateTo === "/tasks") {
+        this.router.navigate([navigateTo], {state: {badRequest: 'true'}})
+      }
+      this.router.navigate([navigateTo])});
   }
 
   public onCaseworkerChanged(caseworker: Caseworker): void {

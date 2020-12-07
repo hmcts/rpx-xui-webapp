@@ -1,5 +1,5 @@
 import {AppUtils} from './../../../app/app-utils';
-import {Router} from '@angular/router';
+import {Router, ActivatedRoute} from '@angular/router';
 import {WorkAllocationTaskService} from 'src/work-allocation/services/work-allocation-task.service';
 import { Component } from '@angular/core';
 
@@ -19,9 +19,10 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
    */
   constructor(
     protected taskService: WorkAllocationTaskService,
-    protected router: Router
+    protected router: Router,
+    protected route: ActivatedRoute
   ) {
-    super(taskService, router);
+    super(taskService, router, route);
   }
 
   // List of tasks

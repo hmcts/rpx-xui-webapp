@@ -75,10 +75,6 @@
       "__name": "FEATURE_APP_INSIGHTS_ENABLED",
       "__format": "json"
     },
-    "proxyEnabled": {
-      "__name": "FEATURE_PROXY_ENABLED",
-      "__format": "json"
-    },
     "secureCookieEnabled": {
       "__name": "FEATURE_SECURE_COOKIE_ENABLED",
       "__format": "json"

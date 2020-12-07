@@ -12,7 +12,6 @@ import {
 import * as health from './health'
 import * as log4jui from './lib/log4jui'
 import {JUILogger} from './lib/models'
-import * as tunnel from './lib/tunnel'
 import openRoutes from './openRoutes'
 import {initProxy} from './proxy.config'
 import routes from './routes'
@@ -30,8 +29,6 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
 
 app.use(cookieParser(getConfigValue(SESSION_SECRET)))
 
-// TODO: remove tunnel and configurations
-tunnel.init()
 app.use(getXuiNodeMiddleware())
 
 // applyProxy needs to be used before bodyParser

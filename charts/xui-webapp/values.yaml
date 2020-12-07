@@ -26,8 +26,6 @@ nodejs:
     MICROSERVICE: xui_webapp
     SESSION_SECRET: secretSauce
     ALLOW_CONFIG_MUTATIONS: 1
-    MC_HTTP_PROXY: http://172.16.0.7:8080
-    MC_NO_PROXY: localhost
     NOW: false
     STUB: false
     # Health Endpoints
@@ -68,7 +66,6 @@ nodejs:
     #Feature Flags
     FEATURE_APP_INSIGHTS_ENABLED: true
     FEATURE_SECURE_COOKIE_ENABLED: true
-    FEATURE_PROXY_ENABLED: false
     FEATURE_TERMS_AND_CONDITIONS_ENABLED: false
     FEATURE_HELMET_ENABLED: true
     FEATURE_REDIS_ENABLED: true

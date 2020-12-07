@@ -64,7 +64,6 @@ export const LOG4_J_CONFIG = 'log4JConfig'
 
 export const FEATURE_SECURE_COOKIE_ENABLED = 'secureCookieEnabled'
 export const FEATURE_APP_INSIGHTS_ENABLED = 'appInsightsEnabled'
-export const FEATURE_PROXY_ENABLED = 'proxyEnabled'
 export const FEATURE_TERMS_AND_CONDITIONS_ENABLED = 'termsAndConditionsEnabled'
 export const FEATURE_HELMET_ENABLED = 'helmetEnabled'
 export const FEATURE_REDIS_ENABLED = 'redisEnabled'

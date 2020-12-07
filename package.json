@@ -96,7 +96,6 @@
     "form-data": "^2.5.1",
     "get-port": "^5.1.1",
     "git-rev-sync": "^2.0.0",
-    "global-agent": "^2.1.7",
     "govuk-frontend": "^3.1.0",
     "govuk_frontend_toolkit": "^8.2.0",
     "helmet": "^3.21.3",
@@ -104,6 +103,9 @@
     "isomorphic-fetch": "^3.0.0",
     "jwt-decode": "^2.2.0",
     "launchdarkly-js-client-sdk": "^2.16.3",
+    "mochawesome": "^6.1.1",
+    "mochawesome-merge": "^4.1.0",
+    "mochawesome-report-generator": "^5.1.0",
     "moment-timezone": "^0.5.28",
     "ngx-chips": "1.9.8",
     "ngx-cookie": "^4.1.2",
@@ -122,10 +124,7 @@
     "tslib": "^1.9.0",
     "web-animations-js": "^2.3.2",
     "xlsx": "^0.15.4",
-    "zone.js": "~0.8.26",
-    "mochawesome": "^6.1.1",
-    "mochawesome-merge": "^4.1.0",
-    "mochawesome-report-generator": "^5.1.0"
+    "zone.js": "~0.8.26"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.13.0",
@@ -147,12 +146,12 @@
     "@types/ejs": "^2.6.3",
     "@types/express": "^4.16.1",
     "@types/express-session": "^1.17.0",
-    "@types/global-agent": "^2.1.0",
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",
     "@types/mocha": "^5.2.6",
     "@types/shortid": "0.0.29",
     "@types/sinon": "^7.0.13",
+    "base-64": "^0.1.0",
     "chai": "^4.2.0",
     "chai-as-promised": "7.1.1",
     "codelyzer": "~4.5.0",
@@ -170,7 +169,9 @@
     "karma-coverage-istanbul-reporter": "~2.0.1",
     "karma-jasmine": "~1.1.2",
     "karma-jasmine-html-reporter": "^0.2.2",
+    "mocha": "^8.1.1",
     "ngrx-store-freeze": "^0.2.4",
+    "node-fetch": "^2.6.1",
     "nodemon": "^2.0.2",
     "pa11y": "^5.3.0",
     "protractor": "~5.4.0",
@@ -187,12 +188,7 @@
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10",
     "webpack-node-externals": "^1.7.2",
-    "webpack-source-map-support": "^2.0.1",
-    "base-64": "^0.1.0",
-    "node-fetch": "^2.6.1",
-      "mocha": "^8.1.1"
-      
-        
+    "webpack-source-map-support": "^2.0.1"
   },
   "resolutions": {
     "**/**/dot-prop": "^5.1.1",

@@ -65,7 +65,6 @@
   },
   "feature": {
     "appInsightsEnabled": true,
-    "proxyEnabled": false,
     "secureCookieEnabled": true,
     "helmetEnabled": false,
     "termsAndConditionsEnabled": false,

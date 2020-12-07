@@ -18,13 +18,14 @@ describe('Work Allocation API', () => {
   let provider: Pact
 
   const ASSIGNEE: Assignee = { id: '987654', userName: 'bob' }
+  // TODO: Use Constants file.
   const BEHAVIOURS = {
     SUCCESS: {},
     ALREADY_DONE: { behaviour: 'already-done' },
     BAD_REQUEST: { behaviour: 'bad-request' },
     FORBIDDEN: { behaviour: 'forbidden' },
     UNSUPPORTED: { behaviour: 'unsupported' },
-    SERVER_ERROR: { behaviour: 'unsupported' }
+    SERVER_ERROR: { behaviour: 'server-error' }
   }
 
   function getPayload(behaviour: { behaviour?: string }): Payload {
@@ -74,6 +75,7 @@ describe('Work Allocation API', () => {
   })
 
   describe('when requested to assign a task that is already assign', () => {
+
     before(() =>
       provider.addInteraction({
         state: 'task was already assign',

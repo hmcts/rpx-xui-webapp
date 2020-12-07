@@ -9,7 +9,7 @@ import {
   TaskHomeComponent,
   TaskManagerComponent,
   TaskManagerListComponent,
-  WorkAllocationHomeComponent,
+  WorkAllocationHomeComponent
 } from './containers';
 import { WorkAllocationFeatureToggleGuard } from './guards';
 import { TaskResolver } from './resolvers';

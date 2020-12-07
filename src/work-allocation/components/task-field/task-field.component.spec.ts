@@ -670,6 +670,59 @@ describe('WorkAllocation', () => {
       expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
     });
 
+    it('should appropriately parse an ISO date string with toDate', () => {
+      const DATE = '2020-12-03T15:00:00';
+      const output = component.toDate(DATE);
+      expect(output).toBeDefined();
+      expect(output.getFullYear()).toEqual(2020);
+      expect(output.getMonth()).toEqual(11); // 0-based.
+      expect(output.getDate()).toEqual(3);
+      expect(output.getHours()).toEqual(15);
+      expect(output.getMinutes()).toEqual(0);
+    })
+
+    it('should appropriately parse a number with toDate', () => {
+      const DATE = '2020-12-03T15:00:00';
+      const EPOCH = Date.parse(DATE);
+      const output = component.toDate(EPOCH);
+      expect(output).toBeDefined();
+      expect(output.getFullYear()).toEqual(2020);
+      expect(output.getMonth()).toEqual(11); // 0-based.
+      expect(output.getDate()).toEqual(3);
+      expect(output.getHours()).toEqual(15);
+      expect(output.getMinutes()).toEqual(0);
+    })
+
+    it('should appropriately parse a date with toDate', () => {
+      const DATE = new Date(2020, 11, 3, 15, 0, 0);
+      const output = component.toDate(DATE);
+      expect(output).toBeDefined();
+      expect(output.getFullYear()).toEqual(2020);
+      expect(output.getMonth()).toEqual(11); // 0-based.
+      expect(output.getDate()).toEqual(3);
+      expect(output.getHours()).toEqual(15);
+      expect(output.getMinutes()).toEqual(0);
+    })
+
+    it('should appropriately handle an invalid input in toDate', () => {
+      const output = component.toDate('bob');
+      expect(output).toBeNull();
+    })
+
+    it('should appropriately handle an null input in toDate', () => {
+      const output = component.toDate(null);
+      expect(output).toBeNull();
+    })
+
+    it('should appropriately handle an undefined input in toDate', () => {
+      const output = component.toDate(undefined);
+      expect(output).toBeNull();
+    })
+
+    it('should appropriately handle an empty string input in toDate', () => {
+      const output = component.toDate('');
+      expect(output).toBeNull();
+    })
   });
 
 });

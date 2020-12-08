@@ -20,7 +20,7 @@ export class TaskListWrapperComponent implements OnInit {
   constructor(
     protected taskService: WorkAllocationTaskService,
     private readonly router: Router,
-    protected infoMessageCommService: InfoMessageCommService,
+    private readonly infoMessageCommService: InfoMessageCommService,
   ) {}
 
   public get tasks(): Task[] {
@@ -38,8 +38,17 @@ export class TaskListWrapperComponent implements OnInit {
     return this.defaultTaskServiceConfig;
   }
 
+  /**
+   * Communicate what information message needs to be displayed.
+   */
   public get messageService(): InfoMessageCommService {
+
     return this.infoMessageCommService;
+  }
+
+  public get route(): Router {
+
+    return this.router;
   }
 
   /**
@@ -74,27 +83,6 @@ export class TaskListWrapperComponent implements OnInit {
     this.taskService.searchTask(searchTaskRequest).subscribe(result => {
       this.tasks = result.tasks;
     });
-  }
-
-  /**
-   * User claims a task.
-   *
-   * Does this link into assign tasks?
-   */
-  public claimTask(taskId): void {
-
-    console.log('claimTask');
-    console.log(taskId);
-
-    this.taskService.claimTask(taskId).subscribe(claimTask => {
-      console.log('claimTask Response');
-      console.log(claimTask);
-    });
-  }
-
-  public navigateToTask(actionId, taskId): void {
-
-    this.router.navigate([`/tasks/${actionId}/${taskId}`]);
   }
 
   /**
@@ -141,25 +129,9 @@ export class TaskListWrapperComponent implements OnInit {
   /**
    * InvokedTaskAction from the Task List Component, so that we can handle the User's
    * action.
-   *
-   * TODO: Remove claim from here, as it's available in available-tasks.
    */
   public onActionHandler(taskAction: InvokedTaskAction): void {
-    // Remove after integration
-    console.log('Task Home received InvokedTaskAction:');
-    console.log(taskAction);
-    switch (taskAction.action.id) {
-      case TaskActionIds.REASSIGN:
-        this.navigateToTask(taskAction.action.id, taskAction.task.id);
-        break;
-      case TaskActionIds.CLAIM:
-        console.log('claim task');
-        this.claimTask(taskAction.task.id);
-        break;
-      default:
-        this.navigateToTask(taskAction.action.id, taskAction.task.id);
-    }
-    // On an Assignment if the service returns a 200 then we need to popup a message
-    // on this page.
+
+    this.router.navigate([`/tasks/${taskAction.action.id}/${taskAction.task.id}`]);
   }
 }

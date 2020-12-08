@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import {Observable, Subject} from 'rxjs';
-import {InfoMessage, InfoMessageType} from '../enums';
+import { Subject } from 'rxjs';
+import { InfoMessage, InfoMessageType } from '../enums';
 
 @Injectable()
 export class InfoMessageCommService {

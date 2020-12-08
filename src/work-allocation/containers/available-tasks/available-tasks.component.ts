@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 
-import { InfoMessage, InfoMessageType, TaskActionIds, TaskFieldType, TaskView } from '../../enums';
-import { SearchTaskRequest } from '../../models/dtos/search-task-request';
-import { Task, TaskFieldConfig } from '../../models/tasks';
-import { TaskListWrapperComponent } from './../task-list-wrapper/task-list-wrapper.component';
+import {InfoMessage, InfoMessageType, TaskActionIds, TaskFieldType, TaskView} from '../../enums';
+import {SearchTaskRequest} from '../../models/dtos/search-task-request';
+import {Task, TaskFieldConfig} from '../../models/tasks';
+import {TaskListWrapperComponent} from './../task-list-wrapper/task-list-wrapper.component';
 import InvokedTaskAction from '../../models/tasks/invoked-task-action.model';
 
 @Component({
@@ -90,41 +90,57 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
   }
 
   /**
-   * User claims a task.
-   *
-   * Does this link into assign tasks?
+   * A User 'Claims' themselves a task aka. 'Assign to me'.
    */
   public claimTask(taskId): void {
 
-    console.log('claimTask');
-    console.log(taskId);
+    this.taskService.claimTask(taskId).subscribe(() => {
 
-    // this.messageService.emitInfoMessageChange(
-    //   InfoMessageType.WARNING,
-    //   InfoMessage.TASK_NO_LONGER_AVAILABLE
-    // );
+        this.messageService.emitInfoMessageChange(
+          InfoMessageType.SUCCESS,
+          InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS
+        );
+      }, error => {
 
-    // Emit change
-    this.messageService.emitInfoMessageChange(
-      InfoMessageType.SUCCESS,
-      InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS
-    );
-
-    this.taskService.claimTask(taskId).subscribe(claimTask => {
-      console.log('claimTask Response');
-      console.log(claimTask);
-    });
+        this.claimTaskErrors(error.status);
+      });
   }
 
-  // TODO: Remove switch
+  /**
+   * Navigate the User to the correct error page, or throw an on page warning
+   * that the Task is no longer available.
+   */
+  public claimTaskErrors(status): void {
+
+    switch (status) {
+      case 401:
+      case 403:
+        this.route.navigate([`/not-authorised`]);
+        break;
+      case 500:
+        this.route.navigate([`/service-down`]);
+        break;
+      default:
+        this.messageService.emitInfoMessageChange(
+          InfoMessageType.WARNING,
+          InfoMessage.TASK_NO_LONGER_AVAILABLE,
+        );
+    }
+  }
+
+  /**
+   * Handle a User Claiming a Task
+   *
+   * TODO: This function will need to handle 'Assign to me and go to case' - EUI-2963.
+   */
   public onActionHandler(taskAction: InvokedTaskAction): void {
-    // Remove after integration
-    console.log('Available Task component received InvokedTaskAction:');
-    console.log(taskAction);
+
     switch (taskAction.action.id) {
       case TaskActionIds.CLAIM:
-        console.log('claim task');
         this.claimTask(taskAction.task.id);
+        break;
+      case TaskActionIds.CLAIM_AND_NAVIGATE:
+        // EUI-2963
         break;
       default:
     }

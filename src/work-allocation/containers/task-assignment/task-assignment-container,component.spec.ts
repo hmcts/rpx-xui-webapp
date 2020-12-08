@@ -6,6 +6,8 @@ import { WorkAllocationComponentsModule } from 'src/work-allocation/components/w
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ActivatedRoute, RouterModule, Data, Router } from '@angular/router';
+import {StoreModule} from '@ngrx/store';
+import {reducers} from 'src/app/store';
 
 import { Caseworker, Location } from './../../models/dtos/task';
 import { CaseworkerDataService } from './../../services/case-worker-data.service';
@@ -87,7 +89,7 @@ describe('TaskAssignmentContainerComponent', () => {
       declarations: [
           TaskAssignmentContainerComponent, WrapperComponent, ErrorMessageComponent, TaskListComponent
         ],
-      imports: [WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientModule, RouterTestingModule.withRoutes([{path: 'reassign/1549476532065586', component: TaskAssignmentContainerComponent}])],
+      imports: [WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientModule, StoreModule.forRoot({...reducers}), RouterTestingModule],
       providers: [{ provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
       {provide: ActivatedRoute, useValue: {
         data: {

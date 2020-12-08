@@ -1,5 +1,5 @@
-<ng-container ngFor*="let message of messages"></ng-container>
-  <exui-info-message [InfoMessage]="message.infoMessage" [InfoMessageType]="message.infoMessageType"></exui-info-message>
+<ng-container ngIf*="badRequest" ngFor*="let message of messages">
+  <exui-info-message [message]="message.infoMessage" [type]="message.infoMessageType"></exui-info-message>
 </ng-container>
 <exui-task-list [taskServiceConfig]="taskServiceConfig" [tasks]="tasks" [fields]="fields" [sortedBy]="sortedBy"
   (sortEvent)="onSortHandler($event)" (actionEvent)="onActionHandler($event)"></exui-task-list>

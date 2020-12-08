@@ -35,11 +35,8 @@ export class NocErrorPipe implements PipeTransform {
     } else if (keys[0] ===  'date') {
       return 'The date is invalid';
     } else if (keys[0] ===  'datetime') {
-         `The date and time must include a valid ${keys[1]}`;
-         `The date and time must include a ${keys[1]}`;
       return 'The date and time is invalid';
     } else if (keys[0] ===  'time') {
-
       return 'The time is invalid';
     } else if (keys[0] ===  'possibleIncorrectAnswer') {
       return '';

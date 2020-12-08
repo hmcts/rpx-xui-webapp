@@ -8,7 +8,6 @@ import { SearchTaskRequest } from '../../../workAllocation/interfaces/taskSearch
 import { handleTaskSearch } from '../../../workAllocation/taskService';
 import { SORTABLE_FIELDS, sortTasks, TASKS_ARRAY } from '../constants/work-allocation/tasks.spec';
 import { ALL_CASEWORKERS } from './../constants/work-allocation/caseworkers.spec';
-import { LOCATIONS_ARRAY } from './../constants/work-allocation/locations.spec';
 import { filterByAssignee } from './../constants/work-allocation/tasks.spec';
 
 describe('Work Allocation API', () => {
@@ -33,8 +32,6 @@ describe('Work Allocation API', () => {
   // Write Pact when all tests done
   after(() => provider.finalize());
 
-  const operator = 'manager';
-  const locationNames = LOCATIONS_ARRAY.map(loc => loc.locationName);
   // Create an end point for each group of sorted tasks.
   for (const key of SORTABLE_FIELDS) {
     for (const caseworker of ALL_CASEWORKERS) {
@@ -44,8 +41,7 @@ describe('Work Allocation API', () => {
       for (const order of ['ascending', 'descending']) {
         const request: SearchTaskRequest = {
           search_parameters: [
-            { key, operator, values: [ order ] },
-            { key: 'location', operator: 'IN', values: [ ...locationNames ] },
+            { key, operator: 'sort', values: [ order ] },
             { key: 'assignee', operator: 'IN', values }
           ]
         };

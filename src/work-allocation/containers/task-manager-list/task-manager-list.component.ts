@@ -133,7 +133,7 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
       search_parameters: [
         {
           key: this.sortedBy.fieldName,
-          operator: 'manager',
+          operator: 'sort',
           values: [ this.sortedBy.order ]
         },
         this.getLocationParameter(),

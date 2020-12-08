@@ -33,7 +33,6 @@ describe('Work Allocation API', () => {
   // Write Pact when all tests done
   after(() => provider.finalize());
 
-  const operator = 'manager';
   for (const caseworker of ALL_CASEWORKERS) {
     const caseworkerName = `${caseworker.firstName} ${caseworker.lastName}`;
     const baseTasks = filterByAssignee(TASKS_ARRAY, caseworkerName);
@@ -43,7 +42,8 @@ describe('Work Allocation API', () => {
       for (const locationKey in LOCATIONS) {
         const location = LOCATIONS[locationKey];
         let values = [ location.locationName ];
-        // Don't do this for ALL as we already have that one.
+        // Don't do this for ALL as we already have that one in the
+        // search-by-caseworker test.
         if (location === LOCATIONS.ALL) {
           continue;
         }
@@ -51,7 +51,7 @@ describe('Work Allocation API', () => {
         for (const order of ['ascending', 'descending']) {
           const request: SearchTaskRequest = {
             search_parameters: [
-              { key, operator, values: [ order ] },
+              { key, operator: 'sort', values: [ order ] },
               { key: 'location', operator: 'IN', values },
               { key: 'assignee', operator: 'IN', values: [ caseworkerName ] }
             ]

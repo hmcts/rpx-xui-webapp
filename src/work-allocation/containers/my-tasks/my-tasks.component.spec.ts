@@ -86,9 +86,11 @@ describe('MyTasksComponent', () => {
 
     const searchRequest = component.getSearchTaskRequest();
     // Make sure the search request looks right.
-    expect(searchRequest.search_parameters.length).toEqual(1);
+    expect(searchRequest.search_parameters.length).toEqual(2);
     expect(searchRequest.search_parameters[0].key).toEqual('caseReference');
     expect(searchRequest.search_parameters[0].values).toContain('ascending');
+    expect(searchRequest.search_parameters[1].key).toEqual('assignee');
+    expect(searchRequest.search_parameters[1].values).toContain('John Smith');
 
     // Let's also make sure that the tasks were re-requested with the new sorting.
     expect(mockTaskService.searchTask).toHaveBeenCalledWith(searchRequest);
@@ -99,9 +101,11 @@ describe('MyTasksComponent', () => {
 
     const newSearchRequest = component.getSearchTaskRequest();
     // Make sure the search request looks right.
-    expect(newSearchRequest.search_parameters.length).toEqual(1);
+    expect(newSearchRequest.search_parameters.length).toEqual(2);
     expect(newSearchRequest.search_parameters[0].key).toEqual('caseReference');
     expect(newSearchRequest.search_parameters[0].values).toContain('descending'); // Important!
+    expect(newSearchRequest.search_parameters[1].key).toEqual('assignee');
+    expect(newSearchRequest.search_parameters[1].values).toContain('John Smith');
 
     // Let's also make sure that the tasks were re-requested with the new sorting.
     expect(mockTaskService.searchTask).toHaveBeenCalledWith(newSearchRequest);

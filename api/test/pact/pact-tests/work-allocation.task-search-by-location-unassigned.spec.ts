@@ -6,10 +6,8 @@ import * as path from 'path';
 import { EnhancedRequest } from '../../../lib/models';
 import { SearchTaskRequest } from '../../../workAllocation/interfaces/taskSearchParameter';
 import { handleTaskSearch } from '../../../workAllocation/taskService';
-import { SORTABLE_FIELDS, sortTasks, TASKS_ARRAY } from '../constants/work-allocation/tasks.spec';
-import { ALL_CASEWORKERS } from './../constants/work-allocation/caseworkers.spec';
-import { LOCATIONS, LOCATIONS_ARRAY } from './../constants/work-allocation/locations.spec';
-import { filterByLocations, getUnassignedTasks } from './../constants/work-allocation/tasks.spec';
+import { filterByLocations, getUnassignedTasks, SORTABLE_FIELDS, sortTasks } from '../constants/work-allocation/tasks.spec';
+import { LOCATION_COMBINATIONS } from '../constants/work-allocation/locations.spec';
 
 describe('Work Allocation API', () => {
 
@@ -19,7 +17,7 @@ describe('Work Allocation API', () => {
   before(async () => {
     mockServerPort = await getPort();
     provider = new Pact({
-      consumer: 'xui_work_allocation_task_search_by_location',
+      consumer: 'xui_work_allocation_task_search_by_locations_unassigned',
       provider: 'WorkAllocation_api_task',
       dir: path.resolve(__dirname, '../pacts'),
       log: path.resolve(__dirname, '../logs', 'work-allocation.log'),
@@ -33,33 +31,28 @@ describe('Work Allocation API', () => {
   // Write Pact when all tests done
   after(() => provider.finalize());
 
-  const caseworkerNames = ALL_CASEWORKERS.map(cw => `${cw.firstName} ${cw.lastName}`);
-  const baseTasks = [ ...TASKS_ARRAY ];
+  const baseTasks = [ ...getUnassignedTasks() ];
   
   // Create an end point for each group of sorted tasks.
   for (const key of SORTABLE_FIELDS) {
-    for (const locationKey in LOCATIONS) {
-      const location = LOCATIONS[locationKey];
-      let values = [ location.locationName ];
-      if (location === LOCATIONS.ALL) {
-        values = LOCATIONS_ARRAY.map(l => l.locationName).sort();
-      }
+    for (const combination of LOCATION_COMBINATIONS) {
+      const values = combination.map(l => l.locationName).sort();
       // Do one for each of ascending and descending.
       for (const order of ['ascending', 'descending']) {
         const request: SearchTaskRequest = {
           search_parameters: [
             { key, operator: 'sort', values: [ order ] },
             { key: 'location', operator: 'IN', values },
-            { key: 'assignee', operator: 'IN', values: [ ...caseworkerNames ] }
+            { key: 'assignee', operator: 'IN', values: [] }
           ]
         };
         const tasks = sortTasks(filterByLocations(baseTasks, values), key, order);
 
-        describe(`when requested to search for all tasks at ${location.locationName} in ${order} order of ${key}`, () => {
+        describe(`when requested to search for unassigned tasks at any of [${values.join(', ')}] in ${order} order of ${key}`, () => {
           before(() =>
             provider.addInteraction({
               state: 'a list of appropriate tasks are returned',
-              uponReceiving: `a valid request to search for all tasks at ${location.locationName} in ${order} order of ${key}`,
+              uponReceiving: `a valid request to search for unassigned tasks at any of [${values.join(', ')}] in ${order} order of ${key}`,
               withRequest: {
                 method: 'POST',
                 path: '/task',

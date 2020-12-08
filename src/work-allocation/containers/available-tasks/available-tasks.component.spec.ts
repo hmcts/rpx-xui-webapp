@@ -7,10 +7,11 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
+import * as dtos from '../../models/dtos';
 import { Task } from '../../models/tasks';
-import { WorkAllocationTaskService } from '../../services';
-import { getMockTasks } from '../../tests/utils.spec';
+import { getMockLocations, getMockTasks } from '../../tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
+import { LocationDataService, WorkAllocationTaskService } from './../../services';
 import { AvailableTasksComponent } from './available-tasks.component';
 
 @Component({
@@ -27,6 +28,8 @@ describe('AvailableTasksComponent', () => {
 
   let location: jasmine.SpyObj<Location>;
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
+  const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
+  const mockLocations: dtos.Location[] = getMockLocations();
 
   beforeEach(async(() => {
     location = jasmine.createSpyObj('Location', ['path']);
@@ -41,7 +44,8 @@ describe('AvailableTasksComponent', () => {
       declarations: [ AvailableTasksComponent, WrapperComponent, TaskListComponent ],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
-        { provide: Location, useValue: location }
+        { provide: Location, useValue: location },
+        { provide: LocationDataService, useValue: mockLocationService }
       ]
     }).compileComponents();
   }));
@@ -52,6 +56,7 @@ describe('AvailableTasksComponent', () => {
     component = wrapper.appComponentRef;
     const tasks: Task[] = getMockTasks();
     mockTaskService.searchTask.and.returnValue(of({ tasks }));
+    mockLocationService.getLocations.and.returnValue(of(mockLocations));
     fixture.detectChanges();
   });
 
@@ -83,9 +88,11 @@ describe('AvailableTasksComponent', () => {
 
     const searchRequest = component.getSearchTaskRequest();
     // Make sure the search request looks right.
-    expect(searchRequest.search_parameters.length).toEqual(1);
+    expect(searchRequest.search_parameters.length).toEqual(3);
     expect(searchRequest.search_parameters[0].key).toEqual('caseReference');
     expect(searchRequest.search_parameters[0].values).toContain('ascending');
+    expect(searchRequest.search_parameters[1].key).toEqual('location');
+    expect(searchRequest.search_parameters[2].key).toEqual('assignee');
 
     // Let's also make sure that the tasks were re-requested with the new sorting.
     expect(mockTaskService.searchTask).toHaveBeenCalledWith(searchRequest);
@@ -96,9 +103,11 @@ describe('AvailableTasksComponent', () => {
 
     const newSearchRequest = component.getSearchTaskRequest();
     // Make sure the search request looks right.
-    expect(newSearchRequest.search_parameters.length).toEqual(1);
+    expect(newSearchRequest.search_parameters.length).toEqual(3);
     expect(newSearchRequest.search_parameters[0].key).toEqual('caseReference');
     expect(newSearchRequest.search_parameters[0].values).toContain('descending'); // Important!
+    expect(newSearchRequest.search_parameters[1].key).toEqual('location');
+    expect(searchRequest.search_parameters[2].key).toEqual('assignee');
 
     // Let's also make sure that the tasks were re-requested with the new sorting.
     expect(mockTaskService.searchTask).toHaveBeenCalledWith(newSearchRequest);

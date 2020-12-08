@@ -64,10 +64,9 @@ export class TaskListWrapperComponent implements OnInit {
 
   /**
    * Load the tasks to display in the component.
-   * NOTE: This should be overridden by a component that
-   * needs different behaviour.
    */
   public loadTasks(): void {
+    // Should this clear out the existing set first?
     const searchTaskRequest = this.getSearchTaskRequest();
     this.taskService.searchTask(searchTaskRequest).subscribe(result => {
       // Swap the commenting on these two lines to see the behaviour

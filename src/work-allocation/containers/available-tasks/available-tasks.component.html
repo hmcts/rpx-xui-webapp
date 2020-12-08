@@ -1,4 +1,20 @@
-<h3 class="govuk-heading-m">Location filter placeholder...</h3>
+<details class="govuk-details" data-module="govuk-details" role="group" (toggle)="onDetailsToggle($event)">
+  <summary class="govuk-details__summary" role="button">
+    <span class="govuk-details__summary-text">Filter by location</span>
+  </summary>
+  <xuilib-checkbox-list class="available-tasks_location-filter"
+    [options]="locations" [labelFunction]="locationLabelFunction" [preselection]="preselection">
+  </xuilib-checkbox-list>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
+      <button class="govuk-button govuk-!-margin-right-1" type="submit"
+              (click)="applyFilter()">Apply</button>
+      <button class="govuk-button govuk-button--secondary"
+              (click)="cancelFilter()">Cancel</button>
+    </div>
+  </div>
+</details>
 <exui-task-list
   [taskServiceConfig]="taskServiceConfig" [tasks]="tasks" [fields]="fields"
   [sortedBy]="sortedBy" [emptyMessage]="emptyMessage"

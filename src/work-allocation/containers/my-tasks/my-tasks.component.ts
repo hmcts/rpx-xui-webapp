@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 import { TaskFieldType, TaskView } from '../../enums';
-import { SearchTaskRequest } from '../../models/dtos';
+import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
 import { TaskFieldConfig } from '../../models/tasks';
 import { TaskListWrapperComponent } from './../task-list-wrapper/task-list-wrapper.component';
 
@@ -72,10 +72,16 @@ export class MyTasksComponent extends TaskListWrapperComponent {
       search_parameters: [
         {
           key: this.sortedBy.fieldName,
-          operator: 'my',
+          operator: 'sort',
           values: [ this.sortedBy.order ]
-        }
+        },
+        this.getCaseworkerParameter()
       ]
     };
+  }
+
+  private getCaseworkerParameter(): SearchTaskParameter {
+    // Always pretend to be John Smith for "My" tasks.
+    return { key: 'assignee', operator: 'IN', values: [ 'John Smith' ] };
   }
 }

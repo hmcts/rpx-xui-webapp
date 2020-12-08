@@ -173,9 +173,9 @@ const helpContactDetails: ContactDetailsDataModel[] = [
   {
     title: 'Family Public Law and Adoption',
     badgeColour: BadgeColour.BADGE_RED,
-    email: 'fpla@justice.gov.uk',
+    email: 'contactfpl@justice.gov.uk',
     phone: '0330 808 4424',
-    openingTimes: 'Monday to Friday, 8:30am to 5pm (excluding public holidays)'
+    openingTimes: 'Monday to Friday, 9am to 5pm (excluding public holidays)'
   }
 ];
 
@@ -202,6 +202,9 @@ const redirectUrl = {
 
 const appHeaderTitle = {name: 'Manage Cases', url: '/'};
 
+// Making the base URL for case details a constant.
+const caseDetailsUrl: string = '/cases/case-details/';
+
 
 export class AppConstants {
   static FOOTER_DATA = null;
@@ -214,4 +217,5 @@ export class AppConstants {
   static APPLICATION_USER_THEMES = applicationUserThemes;
   static SIGNED_OUT_THEME = signedOutTheme;
   static FEATURE_NAMES = FeatureNames;
+  static CASE_DETAILS_URL = caseDetailsUrl;
 }

@@ -1,0 +1,41 @@
+table.task-field-testing {
+  margin: 20px;
+  width: calc(100% - 40px);
+  border-collapse: collapse;
+  tr {
+    td, th {
+      font-size: 1rem;
+      padding: 4px;
+      border-bottom: none;
+    }
+    th {
+      background-color: #000000;
+      color: #ffffff;
+      font-weight: 700;
+    }
+    &:nth-child(even) {
+      td {
+        background-color: #f0f0f0;
+      }
+    }
+  }
+  input, select {
+    font-size: 1rem;
+    min-width: 200px;
+    box-sizing: border-box;
+    padding: 1px 2px;
+    height: 27px;
+  }
+
+  tr td {
+    .image-field_30 .xui-image-field__container {
+      height: 30px;
+    }
+    .image-field_50 .xui-image-field__container {
+      height: 50px;
+    }
+    .image-field_75 .xui-image-field__container {
+      height: 75px;
+    }
+  }
+}

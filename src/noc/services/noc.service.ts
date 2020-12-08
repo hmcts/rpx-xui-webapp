@@ -10,14 +10,14 @@ export class NocService {
   constructor(private readonly http: HttpClient) {}
 
   public getNoCQuestions(caseId: string): Observable<NocQuestion[]> {
-    return this.http.get<NocQuestion[]>(`api/nocQuestions?caseId=${caseId}`);
+    return this.http.get<NocQuestion[]>(`api/noc/nocQuestions?caseId=${caseId}`);
   }
 
   public validateNoCAnswers(nocEvent: NocEvent): Observable<boolean> {
-    return this.http.post<boolean>('api/validateNoCQuestions', nocEvent);
+    return this.http.post<boolean>('api/noc/validateNoCQuestions', nocEvent);
   }
 
   public submitNoCEvent(nocEvent: NocEvent): Observable<NocApproveStatus> {
-    return this.http.post<NocApproveStatus>('api/submitNoCEvents', nocEvent);
+    return this.http.post<NocApproveStatus>('api/noc/submitNoCEvents', nocEvent);
   }
 }

@@ -238,9 +238,9 @@ export const init = () => {
   // tslint:enable:object-literal-sort-keys
   // tslint:enable:max-line-length
 
-  const getNoCQuestionsUrl = /\/api\/nocQuestions\?caseId/
-  const validateNoCQuestionsUrl = /\/api\/validateNoCQuestions/
-  const postNoCEventsUrl = /\/api\/submitNoCEvents/
+  const getNoCQuestionsUrl = /\/api\/noc\/nocQuestions\?caseId/
+  const validateNoCQuestionsUrl = /\/api\/noc\/validateNoCQuestions/
+  const postNoCEventsUrl = /\/api\/noc\/submitNoCEvents/
 
   // simulate some error if needed
   // mock.onGet(url).networkErrorOnce()
@@ -316,12 +316,12 @@ export const init = () => {
   }) */
   // EUI-2322
   // Scenario 2
-  /* .onPost(postNoCEventsUrl).reply(201, {
+  .onPost(postNoCEventsUrl).reply(201, {
     approval_status: 'APPROVED',
     case_role: 'Claimant',
     code: '',
     status_message: 'success',
-  }) */
+  })
   // EUI-2323
   // Scenario 1
 /*  .onPost(postNoCEventsUrl).reply(500, {
@@ -339,10 +339,10 @@ export const init = () => {
   }) */
   // EUI-2385
   // Scenario 2
-  .onPost(postNoCEventsUrl).reply(400, {
+/*  .onPost(postNoCEventsUrl).reply(400, {
     code: 'cantFileOnline',
     status_message: 'Answers match more than one party on the case',
-  })
+  })*/
   // EUI-2385
   // Scenario 3
   /* .onPost(postNoCEventsUrl).reply(400, {

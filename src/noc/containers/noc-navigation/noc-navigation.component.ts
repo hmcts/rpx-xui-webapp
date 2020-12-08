@@ -2,12 +2,13 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { NocNavigationEvent, NocState } from '../../models';
-import { backButtonVisibilityStates, continueButtonVisibilityStates, submitButtonVisibilityStates } from '../../constants';
+import { backButtonVisibilityStates, continueButtonVisibilityStates, submitButtonVisibilityStates, setAnswersButtonVisibilityStates, checkAnswersButtonVisibilityStates } from '../../constants';
 import * as fromFeature from '../../store';
 
 @Component({
   selector: 'exui-noc-navigation',
-  templateUrl: 'noc-navigation.component.html'
+  templateUrl: 'noc-navigation.component.html',
+  styleUrls: ['noc-navigation.component.scss']
 })
 export class NocNavigationComponent implements OnInit {
 
@@ -18,6 +19,8 @@ export class NocNavigationComponent implements OnInit {
   public backVisibilityStates = backButtonVisibilityStates;
   public continueVisibilityStates = continueButtonVisibilityStates;
   public submitVisibilityStates = submitButtonVisibilityStates;
+  public setAnswersButtonVisibilityStates = setAnswersButtonVisibilityStates;
+  public checkAnswersButtonVisibilityStates = checkAnswersButtonVisibilityStates;
 
   public nocNavigationEvent = NocNavigationEvent;
 

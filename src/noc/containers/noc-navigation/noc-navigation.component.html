@@ -3,4 +3,6 @@
     <ng-content></ng-content>
 </div>
 <button class="button" type="button" *ngIf="isVisible((nocNavigationCurrentState$ | async), continueVisibilityStates)" (click)="onEventTrigger(nocNavigationEvent.CONTINUE)">Continue</button>
-<button class="button" type="button" *ngIf="isVisible((nocNavigationCurrentState$ | async), submitVisibilityStates)" (click)="onEventTrigger(nocNavigationEvent.SUBMIT)">Submit</button>
+<button class="button" type="button" *ngIf="isVisible((nocNavigationCurrentState$ | async), setAnswersButtonVisibilityStates)" (click)="onEventTrigger(nocNavigationEvent.SET_ANSWERS)">Continue</button>
+<button class="button" type="button" *ngIf="isVisible((nocNavigationCurrentState$ | async), checkAnswersButtonVisibilityStates)" (click)="onEventTrigger(nocNavigationEvent.CHECK_ANSWERS)">Submit</button>
+

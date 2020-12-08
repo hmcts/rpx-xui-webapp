@@ -1,4 +1,7 @@
+import { Observable } from 'rxjs';
+
 export interface NocAnswer {
-    displayOrder: number;
-    answer: string;
+  question_id: string;
+  question_text?: Observable<string>;
+  value: string;
 }

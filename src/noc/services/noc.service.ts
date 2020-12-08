@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { NocEvent, NocQuestion } from '../models';
+import { NocApproveStatus } from '../models/noc-approve-status.interface';
 
 @Injectable()
 export class NocService {
@@ -9,14 +10,14 @@ export class NocService {
   constructor(private readonly http: HttpClient) {}
 
   public getNoCQuestions(caseId: string): Observable<NocQuestion[]> {
-    return this.http.get<NocQuestion[]>(`api/NoCQuestions?caseId=${caseId}`);
+    return this.http.get<NocQuestion[]>(`api/nocQuestions?caseId=${caseId}`);
   }
 
   public validateNoCAnswers(nocEvent: NocEvent): Observable<boolean> {
-    return this.http.post<boolean>('api/ValidateNoCQuestions', nocEvent);
+    return this.http.post<boolean>('api/validateNoCQuestions', nocEvent);
   }
 
-  public submitNoCEvent(nocEvent: NocEvent): Observable<any> {
-    return this.http.post<boolean>('api/NoCEvents', nocEvent);
+  public submitNoCEvent(nocEvent: NocEvent): Observable<NocApproveStatus> {
+    return this.http.post<NocApproveStatus>('api/submitNoCEvents', nocEvent);
   }
 }

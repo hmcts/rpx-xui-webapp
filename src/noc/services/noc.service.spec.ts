@@ -27,7 +27,7 @@ describe('NocService', () => {
             expect(response).toBeNull();
           });
 
-          const req = httpMock.expectOne('api/NoCQuestions?caseId=123456');
+          const req = httpMock.expectOne('api/nocQuestions?caseId=123456');
           expect(req.request.method).toEqual('GET');
           req.flush(null);
         }));
@@ -40,7 +40,7 @@ describe('NocService', () => {
             expect(response).toBeNull();
           });
 
-          const req = httpMock.expectOne('api/ValidateNoCQuestions');
+          const req = httpMock.expectOne('api/validateNoCQuestions');
           expect(req.request.method).toEqual('POST');
           req.flush(null);
         }));
@@ -53,7 +53,7 @@ describe('NocService', () => {
             expect(response).toBeNull();
           });
 
-          const req = httpMock.expectOne('api/NoCEvents');
+          const req = httpMock.expectOne('api/submitNoCEvents');
           expect(req.request.method).toEqual('POST');
           req.flush(null);
         }));

@@ -1,11 +1,8 @@
 import { SimpleChange, SimpleChanges } from '@angular/core';
-import { ComponentFixture } from '@angular/core/testing';
-import { MockStore } from '@ngrx/store/testing';
 import { NocNavigationEvent } from '../../models';
-import * as fromNocStore from '../../store';
 import { NocErrorComponent } from './noc-error.component';
 
-describe('NocHomeComponent', () => {
+describe('NocErrorComponent', () => {
     let component: NocErrorComponent;
     let store: any;
 

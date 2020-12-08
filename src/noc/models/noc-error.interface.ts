@@ -1,4 +1,4 @@
 export interface NocError {
-    responseCode: number;
-    message: string;
+  code: string;
+  status_message: string;
 }

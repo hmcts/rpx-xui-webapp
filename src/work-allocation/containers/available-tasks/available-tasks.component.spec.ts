@@ -7,11 +7,10 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import * as dtos from '../../models/dtos';
 import { Task } from '../../models/tasks';
-import { getMockLocations, getMockTasks } from '../../tests/utils.spec';
+import { getMockTasks } from '../../tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
-import { LocationDataService, WorkAllocationTaskService } from './../../services';
+import { WorkAllocationTaskService } from './../../services';
 import { AvailableTasksComponent } from './available-tasks.component';
 
 @Component({
@@ -28,8 +27,6 @@ describe('AvailableTasksComponent', () => {
 
   let location: jasmine.SpyObj<Location>;
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
-  const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
-  const mockLocations: dtos.Location[] = getMockLocations();
 
   beforeEach(async(() => {
     location = jasmine.createSpyObj('Location', ['path']);
@@ -44,8 +41,7 @@ describe('AvailableTasksComponent', () => {
       declarations: [ AvailableTasksComponent, WrapperComponent, TaskListComponent ],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
-        { provide: Location, useValue: location },
-        { provide: LocationDataService, useValue: mockLocationService }
+        { provide: Location, useValue: location }
       ]
     }).compileComponents();
   }));
@@ -56,7 +52,6 @@ describe('AvailableTasksComponent', () => {
     component = wrapper.appComponentRef;
     const tasks: Task[] = getMockTasks();
     mockTaskService.searchTask.and.returnValue(of({ tasks }));
-    mockLocationService.getLocations.and.returnValue(of(mockLocations));
     fixture.detectChanges();
   });
 

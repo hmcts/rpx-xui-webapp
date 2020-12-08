@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { TaskService, TaskSort } from '../../enums';
-import { SearchTaskRequest } from '../../models/dtos';
+import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
 import { DEFAULT_EMPTY_MESSAGE } from '../task-list/task-list.component';
@@ -84,12 +84,16 @@ export class TaskListWrapperComponent implements OnInit {
   public getSearchTaskRequest(): SearchTaskRequest {
     return {
       search_parameters: [
-        {
-          key: this.sortedBy.fieldName,
-          operator: 'available',
-          values: [ this.sortedBy.order ]
-        }
+        this.getSortParameter()
       ]
+    };
+  }
+
+  public getSortParameter(): SearchTaskParameter {
+    return {
+      key: this.sortedBy.fieldName,
+      operator: 'sort',
+      values: [ this.sortedBy.order ]
     };
   }
 

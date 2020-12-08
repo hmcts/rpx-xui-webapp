@@ -1,3 +1,4 @@
+import { AvailableTasksFilterComponent } from './available-tasks-filter/available-tasks-filter.component';
 import { CaseReferenceFieldComponent } from './case-reference-field/case-reference-field.component';
 import { ImageFieldComponent } from './image-field/image-field.component';
 import { InfoMessageComponent } from './info-message/info-message.component';
@@ -7,6 +8,7 @@ import { TaskManagerFilterComponent } from './task-manager-filter/task-manager-f
 import { UrlFieldComponent } from './url-field/url-field.component';
 
 export const components: any[] = [
+  AvailableTasksFilterComponent,
   CaseReferenceFieldComponent,
   ImageFieldComponent,
   InfoMessageComponent,
@@ -16,6 +18,7 @@ export const components: any[] = [
   UrlFieldComponent
 ];
 
+export * from './available-tasks-filter/available-tasks-filter.component';
 export * from './case-reference-field/case-reference-field.component';
 export * from './image-field/image-field.component';
 export * from './info-message/info-message.component';

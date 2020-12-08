@@ -9,6 +9,7 @@ import { handleTaskSearch } from '../../../workAllocation/taskService';
 import { ALL_CASEWORKERS } from '../constants/work-allocation/caseworkers.spec';
 import { LOCATIONS } from '../constants/work-allocation/locations.spec';
 import { filterByLocations, SORTABLE_FIELDS, sortTasks, TASKS_ARRAY } from '../constants/work-allocation/tasks.spec';
+import { LOCATIONS_ARRAY } from './../constants/work-allocation/locations.spec';
 import { filterByAssignee } from './../constants/work-allocation/tasks.spec';
 
 describe('Work Allocation API', () => {
@@ -42,10 +43,8 @@ describe('Work Allocation API', () => {
       for (const locationKey in LOCATIONS) {
         const location = LOCATIONS[locationKey];
         let values = [ location.locationName ];
-        // Don't do this for ALL as we already have that one in the
-        // search-by-caseworker test.
         if (location === LOCATIONS.ALL) {
-          continue;
+          values = LOCATIONS_ARRAY.map(l => l.locationName).sort();
         }
         // Do one for each of ascending and descending.
         for (const order of ['ascending', 'descending']) {

@@ -70,14 +70,14 @@ export class MyTasksComponent extends TaskListWrapperComponent {
   public getSearchTaskRequest(): SearchTaskRequest {
     return {
       search_parameters: [
-        {
-          key: this.sortedBy.fieldName,
-          operator: 'sort',
-          values: [ this.sortedBy.order ]
-        },
+        this.getSortParameter(),
         this.getCaseworkerParameter()
       ]
     };
+  }
+
+  public loadTasks(): void {
+    super.loadTasks();
   }
 
   private getCaseworkerParameter(): SearchTaskParameter {

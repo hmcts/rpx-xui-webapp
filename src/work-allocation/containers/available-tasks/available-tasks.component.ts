@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 
-import { TaskFieldType, TaskView } from '../../enums';
+import { InfoMessage, InfoMessageType, TaskActionIds, TaskFieldType, TaskView } from '../../enums';
 import { SearchTaskRequest } from '../../models/dtos/search-task-request';
 import { Task, TaskFieldConfig } from '../../models/tasks';
 import { TaskListWrapperComponent } from './../task-list-wrapper/task-list-wrapper.component';
+import InvokedTaskAction from '../../models/tasks/invoked-task-action.model';
 
 @Component({
   selector: 'exui-available-tasks',
@@ -13,9 +14,11 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
 
   // List of tasks
   private pTasks: Task[];
+
   public get tasks(): Task[] {
     return this.pTasks;
   }
+
   public set tasks(value: Task[]) {
     this.pTasks = value;
   }
@@ -80,9 +83,50 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
         {
           key: this.sortedBy.fieldName,
           operator: 'available',
-          values: [ this.sortedBy.order ]
+          values: [this.sortedBy.order]
         }
       ]
     };
+  }
+
+  /**
+   * User claims a task.
+   *
+   * Does this link into assign tasks?
+   */
+  public claimTask(taskId): void {
+
+    console.log('claimTask');
+    console.log(taskId);
+
+    // this.messageService.emitInfoMessageChange(
+    //   InfoMessageType.WARNING,
+    //   InfoMessage.TASK_NO_LONGER_AVAILABLE
+    // );
+
+    // Emit change
+    this.messageService.emitInfoMessageChange(
+      InfoMessageType.SUCCESS,
+      InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS
+    );
+
+    this.taskService.claimTask(taskId).subscribe(claimTask => {
+      console.log('claimTask Response');
+      console.log(claimTask);
+    });
+  }
+
+  // TODO: Remove switch
+  public onActionHandler(taskAction: InvokedTaskAction): void {
+    // Remove after integration
+    console.log('Available Task component received InvokedTaskAction:');
+    console.log(taskAction);
+    switch (taskAction.action.id) {
+      case TaskActionIds.CLAIM:
+        console.log('claim task');
+        this.claimTask(taskAction.task.id);
+        break;
+      default:
+    }
   }
 }

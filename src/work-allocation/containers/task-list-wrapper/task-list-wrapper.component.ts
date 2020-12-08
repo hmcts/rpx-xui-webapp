@@ -7,6 +7,7 @@ import { Task, TaskFieldConfig, TaskSortField } from '../../models/tasks';
 import InvokedTaskAction from '../../models/tasks/invoked-task-action.model';
 import TaskServiceConfig from '../../models/tasks/task-service-config.model';
 import { WorkAllocationTaskService } from '../../services/work-allocation-task.service';
+import {InfoMessageCommService} from '../../services/info-message-comms.service';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html'
@@ -18,7 +19,8 @@ export class TaskListWrapperComponent implements OnInit {
    */
   constructor(
     protected taskService: WorkAllocationTaskService,
-    private readonly router: Router
+    private readonly router: Router,
+    protected infoMessageCommService: InfoMessageCommService,
   ) {}
 
   public get tasks(): Task[] {
@@ -34,6 +36,10 @@ export class TaskListWrapperComponent implements OnInit {
 
   public get taskServiceConfig(): TaskServiceConfig {
     return this.defaultTaskServiceConfig;
+  }
+
+  public get messageService(): InfoMessageCommService {
+    return this.infoMessageCommService;
   }
 
   /**
@@ -135,6 +141,8 @@ export class TaskListWrapperComponent implements OnInit {
   /**
    * InvokedTaskAction from the Task List Component, so that we can handle the User's
    * action.
+   *
+   * TODO: Remove claim from here, as it's available in available-tasks.
    */
   public onActionHandler(taskAction: InvokedTaskAction): void {
     // Remove after integration

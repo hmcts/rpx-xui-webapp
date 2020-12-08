@@ -30,7 +30,7 @@ const BOB_CRATCHITT = {
   location: 'Taylor Swift',
   taskName: 'Review respondent evidence',
   dueDate: new Date(),
-  actions: [ ACTIONS.REASSIGN, ACTIONS.RELEASE ]
+  actions: [ ACTIONS.CLAIM, ACTIONS.RELEASE ]
 };
 
 const EBENEZER_SCROOGE = {
@@ -85,7 +85,7 @@ const AL_REDDY_DUNNE = {
   location: 'Dodgy Location',
   taskName: 'Assess errors',
   dueDate: new Date(),
-  actions: [ ACTIONS.REASSIGN ]
+  actions: [ ACTIONS.CLAIM, ACTIONS.REASSIGN ]
 };
 
 const NAT_ALLOWED = {
@@ -96,7 +96,7 @@ const NAT_ALLOWED = {
   location: 'Dodgy Location',
   taskName: 'Assess errors',
   dueDate: new Date(),
-  actions: [ ACTIONS.REASSIGN ]
+  actions: [ ACTIONS.CLAIM, ACTIONS.REASSIGN ]
 };
 
 const ANNE_SUPPORTED = {
@@ -107,7 +107,7 @@ const ANNE_SUPPORTED = {
   location: 'Dodgy Location',
   taskName: 'Assess errors',
   dueDate: new Date(),
-  actions: [ ACTIONS.REASSIGN ]
+  actions: [ ACTIONS.CLAIM, ACTIONS.REASSIGN ]
 };
 
 const SIR_VAN_ERROR = {
@@ -118,7 +118,7 @@ const SIR_VAN_ERROR = {
   location: 'Dodgy Location',
   taskName: 'Assess errors',
   dueDate: new Date(),
-  actions: [ ACTIONS.REASSIGN ]
+  actions: [ ACTIONS.CLAIM, ACTIONS.REASSIGN ]
 };
 
 const SORTED_BY_CASE_REFERENCE = [

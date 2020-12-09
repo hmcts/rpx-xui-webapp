@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { InfoMessageCommService } from 'src/work-allocation/services/info-message-comms.service';
 
 import {
   ALL_CASEWORKERS,
@@ -77,10 +78,11 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
     protected taskService: WorkAllocationTaskService,
     protected router: Router,
     protected route: ActivatedRoute,
+    protected infoMessageCommService: InfoMessageCommService,
     private readonly caseworkerService: CaseworkerDataService,
     private readonly locationService: LocationDataService
   ) {
-    super(taskService, router, route);
+    super(taskService, router, route, infoMessageCommService);
   }
 
   public get fields(): TaskFieldConfig[] {

@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-import { Caseworker } from './../models/dtos/task';
+import { Caseworker } from '../models/dtos';
 
 /*
  * Returns a formatted display name for a Caseworker.

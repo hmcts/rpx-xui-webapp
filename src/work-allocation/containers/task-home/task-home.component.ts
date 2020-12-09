@@ -4,8 +4,9 @@ import { SubNavigation } from '@hmcts/rpx-xui-common-lib';
 
 import { InfoMessage, InfoMessageType } from '../../enums';
 import { AppUtils } from './../../../app/app-utils';
+
+import { InfoMessageCommService } from '../../services/info-message-comms.service';
 import { Task, TaskSortField } from './../../models/tasks';
-import {InfoMessageCommService} from '../../services/info-message-comms.service';
 
 @Component({
   selector: 'exui-task-home',
@@ -30,8 +31,8 @@ export class TaskHomeComponent implements OnInit {
   public pageTitle: string;
 
   public showInfoMessage: boolean = false;
-  public infoMessageType: InfoMessageType;// = InfoMessageType.SUCCESS;
-  public infoMessage: InfoMessage; // = InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS;
+  public infoMessageType: InfoMessageType;
+  public infoMessage: InfoMessage;
 
   constructor(private readonly router: Router,
               private readonly infoMessageCommService: InfoMessageCommService) {}

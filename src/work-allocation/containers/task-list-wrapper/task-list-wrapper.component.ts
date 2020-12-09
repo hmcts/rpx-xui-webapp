@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { TaskService, TaskSort, TaskActionIds } from '../../enums';
-import { SearchTaskRequest } from '../../models/dtos/search-task-request';
-import { Task, TaskFieldConfig, TaskSortField } from '../../models/tasks';
-import InvokedTaskAction from '../../models/tasks/invoked-task-action.model';
-import TaskServiceConfig from '../../models/tasks/task-service-config.model';
-import { WorkAllocationTaskService } from '../../services/work-allocation-task.service';
+import { TaskService, TaskSort } from '../../enums';
+import { SearchTaskRequest } from '../../models/dtos';
+import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
+import { WorkAllocationTaskService } from '../../services';
+import { DEFAULT_EMPTY_MESSAGE } from '../task-list/task-list.component';
 import {InfoMessageCommService} from '../../services/info-message-comms.service';
 
 @Component({
@@ -23,11 +22,12 @@ export class TaskListWrapperComponent implements OnInit {
     private readonly infoMessageCommService: InfoMessageCommService,
   ) {}
 
+  private pTasks: Task[];
   public get tasks(): Task[] {
-    return [];
+    return this.pTasks;
   }
   public set tasks(value: Task[]) {
-    // To be overridden.
+    this.pTasks = value;
   }
 
   public get fields(): TaskFieldConfig[] {
@@ -36,6 +36,10 @@ export class TaskListWrapperComponent implements OnInit {
 
   public get taskServiceConfig(): TaskServiceConfig {
     return this.defaultTaskServiceConfig;
+  }
+
+  public get emptyMessage(): string {
+    return DEFAULT_EMPTY_MESSAGE;
   }
 
   /**
@@ -81,7 +85,11 @@ export class TaskListWrapperComponent implements OnInit {
   public loadTasks(): void {
     const searchTaskRequest = this.getSearchTaskRequest();
     this.taskService.searchTask(searchTaskRequest).subscribe(result => {
+      // Swap the commenting on these two lines to see the behaviour
+      // when no tasks are returned.
+      // NOTE: Do not commit them in a swapped state!
       this.tasks = result.tasks;
+      // this.tasks = [];
     });
   }
 
@@ -111,7 +119,6 @@ export class TaskListWrapperComponent implements OnInit {
    * @param fieldName - ie. 'caseName'
    */
   public onSortHandler(fieldName: string): void {
-
     // TODO: Remove everything below after integration.
     // This is all to prove the mechanism works.
     console.log('Task Home received Sort on:');
@@ -131,7 +138,9 @@ export class TaskListWrapperComponent implements OnInit {
    * action.
    */
   public onActionHandler(taskAction: InvokedTaskAction): void {
-
+    // Remove after integration
+    console.log('Task Home received InvokedTaskAction:');
+    console.log(taskAction);
     this.router.navigate([`/tasks/${taskAction.action.id}/${taskAction.task.id}`]);
   }
 }

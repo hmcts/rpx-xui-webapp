@@ -2,10 +2,11 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { Location } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
+import { InfoMessage, InfoMessageType } from 'src/work-allocation/enums';
 
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Task } from '../../models/tasks';
@@ -21,15 +22,15 @@ class WrapperComponent {
   @ViewChild(MyTasksComponent) public appComponentRef: MyTasksComponent;
 }
 
-describe('MyTasksComponent', () => {
+fdescribe('MyTasksComponent', () => {
   let component: MyTasksComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
 
   let location: jasmine.SpyObj<Location>;
   let router: Router;
+  let route: ActivatedRoute;
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
-
   beforeEach(async(() => {
     location = jasmine.createSpyObj('Location', ['path']);
     location.path.and.returnValue('');
@@ -147,5 +148,18 @@ describe('MyTasksComponent', () => {
     fixture.detectChanges();
     // Ensure the correct attempt has been made to navigate.
     expect(navigateSpy).toHaveBeenCalledWith([`/tasks/${actionId}/${task.id}`]);
+  });
+
+  it('should set the correct error messages where appropriate', () => {
+    const navigateSpy = spyOn(router, 'navigate');
+    const element = fixture.debugElement.nativeElement;
+    
+    component.badRequest = true;
+    component.messages = [{infoMessage: InfoMessage.TASK_NO_LONGER_AVAILABLE, infoMessageType: InfoMessageType.WARNING},
+      {infoMessage: InfoMessage.LIST_OF_AVAILABLE_TASKS_REFRESHED, infoMessageType: InfoMessageType.INFO}];
+    fixture.detectChanges();
+    
+    const infoMessage = element.querySelector(`#infoMessage`);
+    expect(infoMessage.innerText).toBe(InfoMessageType.WARNING + InfoMessage.TASK_NO_LONGER_AVAILABLE);
   });
 });

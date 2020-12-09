@@ -1,6 +1,8 @@
-<ng-container ngIf*="badRequest" ngFor*="let message of messages">
-  <exui-info-message [message]="message.infoMessage" [type]="message.infoMessageType"></exui-info-message>
+<div *ngIf="badRequest">
+<ng-container *ngFor="let message of messages">
+  <exui-info-message id="infoMessage" [message]="message.infoMessage" [type]="message.infoMessageType"></exui-info-message>
 </ng-container>
+</div>
 <exui-task-list
   [taskServiceConfig]="taskServiceConfig" [tasks]="tasks" [fields]="fields"
   [sortedBy]="sortedBy" [emptyMessage]="emptyMessage"

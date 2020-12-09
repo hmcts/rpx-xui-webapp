@@ -18,8 +18,6 @@ def product   = "xui"
 def component = "webapp"
 def channel   = '#xui-pipeline'
 
-def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
-
 withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
 
@@ -29,14 +27,9 @@ withNightlyPipeline(type, product, component) {
     enableCrossBrowserTest()
 
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net/'
-
-    after('checkout') {
-        yarnBuilder.yarn('cache clean')
-    }
-
+    after('checkout') {sh 'yarn cache clean'}
     after('build') {
-        yarnBuilder.yarn('build')
-
+        sh 'npm run build'
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -54,8 +47,7 @@ withNightlyPipeline(type, product, component) {
             reportName           : 'ng lint Report'
         ])
 
-        yarnBuilder.yarn('test:a11y')
-
+        sh 'yarn test:a11y'
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,

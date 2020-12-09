@@ -13,8 +13,6 @@ properties([
 
 @Library("Infrastructure")
 
-import uk.gov.hmcts.contino.AppPipelineDsl
-
 def type      = "nodejs"
 def product   = "xui"
 def component = "webapp"
@@ -31,9 +29,11 @@ withNightlyPipeline(type, product, component) {
     enableCrossBrowserTest()
 
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net/'
+  
       after('checkout') {
         yarnBuilder.yarn('cache clean')
     }
+  
     after('build') {
         yarnBuilder.yarn('build')
       
@@ -54,7 +54,7 @@ withNightlyPipeline(type, product, component) {
             reportName           : 'ng lint Report'
         ])
 
-        sh 'yarn test:a11y'
+        yarnBuilder.yarn('test:a11y')
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,

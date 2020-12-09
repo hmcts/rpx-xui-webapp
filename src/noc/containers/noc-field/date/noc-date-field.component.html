@@ -14,7 +14,6 @@
         type="number"
         oninput="this.value=this.value.slice(0,this.maxLength)"
         maxlength="2"
-        [ngClass]="{'govuk-input--error': !dateControl.valid}"
         formControlName="day">
     </div>
     <div class="form-group form-group-month">
@@ -25,7 +24,6 @@
         type="number"
         oninput="this.value=this.value.slice(0,this.maxLength)"
         maxlength="2"
-        [ngClass]="{'govuk-input--error': !dateControl.valid}"
         formControlName="month">
     </div>
     <div class="form-group form-group-year">
@@ -36,7 +34,6 @@
         type="number"
         oninput="this.value=this.value.slice(0,this.maxLength)"
         maxlength="4"
-        [ngClass]="{'govuk-input--error': !dateControl.valid}"
         formControlName="year">
     </div>
   </div>

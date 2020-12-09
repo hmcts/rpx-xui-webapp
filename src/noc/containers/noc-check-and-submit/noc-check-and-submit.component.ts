@@ -58,9 +58,7 @@ export class NocCheckAndSubmitComponent implements OnInit, OnDestroy {
             )),
             value: answer.value
           };
-          if (answer.value) {
-            answersWithQuestionText.push(nocAnswerWithQuestionText);
-          }
+          answersWithQuestionText.push(nocAnswerWithQuestionText);
         });
         return answersWithQuestionText;
       }));

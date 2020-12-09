@@ -13,8 +13,7 @@ properties([
 
 @Library("Infrastructure")
 
-// Disable pact testing on pipeline
-//
+// Enable pact testing on pipeline
 import uk.gov.hmcts.contino.AppPipelineDsl
 
 def type      = "nodejs"

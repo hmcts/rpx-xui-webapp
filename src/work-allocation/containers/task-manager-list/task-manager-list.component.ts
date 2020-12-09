@@ -9,7 +9,12 @@ import {
 import { TaskFieldType, TaskView } from '../../enums';
 import { Caseworker, Location, SearchTaskRequest } from '../../models/dtos';
 import { TaskFieldConfig } from '../../models/tasks';
-import { CaseworkerDataService, LocationDataService, WorkAllocationTaskService } from '../../services';
+import {
+  CaseworkerDataService,
+  InfoMessageCommService,
+  LocationDataService,
+  WorkAllocationTaskService,
+} from '../../services';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 import { CaseworkerDisplayName } from './../../pipes/caseworker-display-name.pipe';
 
@@ -76,10 +81,11 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
   constructor(
     protected taskService: WorkAllocationTaskService,
     protected router: Router,
+    protected infoMessageCommService: InfoMessageCommService,
     private readonly caseworkerService: CaseworkerDataService,
     private readonly locationService: LocationDataService
   ) {
-    super(taskService, router);
+    super(taskService, router, infoMessageCommService);
   }
 
   public get fields(): TaskFieldConfig[] {

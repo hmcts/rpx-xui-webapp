@@ -11,7 +11,7 @@ describe('NocErrorComponent', () => {
         component = new NocErrorComponent(store);
     });
 
-    it('ngOnChanges', () => {
+    it('ngOnChanges should trigger navigationHandler', () => {
         const simpleChanges = {} as SimpleChanges;
         simpleChanges.navEvent = {} as SimpleChange;
         component.navEvent.event = NocNavigationEvent.CONTINUE;
@@ -20,12 +20,12 @@ describe('NocErrorComponent', () => {
         expect(store.pipe).toHaveBeenCalled();
     });
 
-    it('navigationHandler CONTINUE', () => {
+    it('navigationHandler should trigger BACK event', () => {
         component.navigationHandler(NocNavigationEvent.BACK);
         expect(store.dispatch).toHaveBeenCalled();
     });
 
-    it('navigationHandler BACK', () => {
+    it('navigationHandler should trigger Continue event', () => {
         component.navigationHandler(NocNavigationEvent.CONTINUE);
         expect(store.dispatch).not.toHaveBeenCalled();
     });

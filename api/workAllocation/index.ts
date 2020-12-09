@@ -47,15 +47,9 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
  * Post to invoke an action on a Task.
  */
 export async function postTaskAction(req: EnhancedRequest, res: Response, next: NextFunction) {
-  console.log('postTaskAction');
-  console.log(req.params.taskId);
-  console.log(req.params.action);
 
   try {
     const getTaskPath: string = preparePostTaskUrlAction(baseUrl, req.params.taskId, req.params.action)
-
-    console.log('getTaskPath');
-    console.log(getTaskPath);
 
     const { status, data } = await handleTaskPost(getTaskPath, req.body, req)
     res.status(status)

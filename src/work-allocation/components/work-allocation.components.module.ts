@@ -6,6 +6,8 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 
 import * as fromComponents from '.';
 import * as fromPipes from '../pipes';
+
+import { InfoMessageCommService } from '../services/info-message-comms.service';
 import { CaseworkerDataService, LocationDataService } from './../services';
 
 // from containers
@@ -20,7 +22,7 @@ import { CaseworkerDataService, LocationDataService } from './../services';
     ...fromComponents.components,
     ...fromPipes.pipes
   ],
-  providers: [CaseworkerDataService, LocationDataService],
+  providers: [CaseworkerDataService, LocationDataService, InfoMessageCommService],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   exports: [
     ...fromComponents.components,

@@ -6,6 +6,7 @@ import { HmctsGlobalFooterComponent } from './hmcts-global-footer/hmcts-global-f
 import { HmctsGlobalHeaderComponent } from './hmcts-global-header/hmcts-global-header.component';
 import { HmctsPrimaryNavigationComponent } from './hmcts-primary-navigation/hmcts-primary-navigation.component';
 import { MediaViewerWrapperComponent } from './media-viewer-wrapper/media-viewer-wrapper.component';
+import { NotAuthorisedComponent } from './not-authorised/not-authorised.component';
 import { PhaseBannerComponent } from './phase-banner/phase-banner.component';
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 import { ServiceDownComponent } from './service-down/service-down.component';
@@ -17,6 +18,7 @@ export const components: any[] = [
   HmctsGlobalHeaderComponent,
   HmctsPrimaryNavigationComponent,
   CookiePolicyComponent,
+  NotAuthorisedComponent,
   PrivacyPolicyComponent,
   AccessibilityComponent,
   PhaseBannerComponent,
@@ -38,3 +40,4 @@ export * from './accessibility/accessibility.component';
 export * from './media-viewer-wrapper/media-viewer-wrapper.component';
 export * from './get-help/get-help.component';
 export * from './signed-out/signed-out.component';
+export * from './not-authorised/not-authorised.component';

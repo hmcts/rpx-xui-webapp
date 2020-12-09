@@ -18,7 +18,6 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
         .setAutoCollectConsole(true)
         .setUseDiskRetryCaching(true)
         .setSendLiveMetrics(true)
-        .setDistributedTracingMode(applicationinsights.DistributedTracingModes.AI_AND_W3C)
         .start()
 
     client = applicationinsights.defaultClient

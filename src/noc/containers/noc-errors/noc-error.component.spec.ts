@@ -30,7 +30,7 @@ describe('NocErrorComponent', () => {
         expect(store.dispatch).not.toHaveBeenCalled();
     });
 
-    it('navigationHandler SUBMIT', () => {
+    it('navigationHandler should throw an error when trying to SUBMIT with invalid option', () => {
         expect(() => component.navigationHandler(NocNavigationEvent.SUBMIT)).toThrowError('Invalid option');
     });
 });

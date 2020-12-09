@@ -3,7 +3,7 @@
     <span class="govuk-details__summary-text">Filter by location</span>
   </summary>
   <xuilib-checkbox-list class="available-tasks_location-filter"
-    (selectionChange)="onSelectionChange($event)" [options]="locations"
+    (selectionChange)="onSelectionChange()" [options]="locations"
     [labelFunction]="locationLabelFunction" [preselection]="preselection">
   </xuilib-checkbox-list>
   <div class="govuk-grid-row">

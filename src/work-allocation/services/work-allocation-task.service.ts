@@ -50,9 +50,6 @@ export class WorkAllocationTaskService {
     return this.http.post<any>(`${BASE_URL}`, searchRequest);
   }
 
-  // SHould we catch the error here, no, because the item that is using it should
-  // be returned the data, and it should be handled there. otherwise this
-  // func is side-effecting.
   public claimTask(taskId: string): Observable<any> {
     return this.http.post<any>(this.getActionUrl(taskId, ACTION.CLAIM), {});
   }

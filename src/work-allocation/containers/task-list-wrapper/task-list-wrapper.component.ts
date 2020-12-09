@@ -5,8 +5,8 @@ import { TaskService, TaskSort } from '../../enums';
 import { SearchTaskRequest } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
+import { InfoMessageCommService } from '../../services/info-message-comms.service';
 import { DEFAULT_EMPTY_MESSAGE } from '../task-list/task-list.component';
-import {InfoMessageCommService} from '../../services/info-message-comms.service';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html'

@@ -12,6 +12,7 @@ import TaskServiceConfig from '../../models/tasks/task-service-config.model';
 import WorkAllocationUtils from '../../work-allocation.utils';
 
 @Component({
+  selector: 'exui-task-list-wrapper',
   templateUrl: 'task-list-wrapper.component.html'
 })
 export class TaskListWrapperComponent implements OnInit {

@@ -7,10 +7,14 @@ import { EnhancedRequest } from '../../../lib/models';
 import { SearchTaskRequest } from '../../../workAllocation/interfaces/taskSearchParameter';
 import { handleTaskSearch } from '../../../workAllocation/taskService';
 import { ALL_CASEWORKERS } from '../constants/work-allocation/caseworkers.spec';
-import { LOCATIONS } from '../constants/work-allocation/locations.spec';
-import { filterByLocations, SORTABLE_FIELDS, sortTasks, TASKS_ARRAY } from '../constants/work-allocation/tasks.spec';
-import { LOCATIONS_ARRAY } from './../constants/work-allocation/locations.spec';
-import { filterByAssignee } from './../constants/work-allocation/tasks.spec';
+import { LOCATIONS, LOCATIONS_ARRAY } from '../constants/work-allocation/locations.spec';
+import {
+  filterByAssignee,
+  filterByLocations,
+  SORTABLE_FIELDS,
+  sortTasks,
+  TASKS_ARRAY,
+} from '../constants/work-allocation/tasks.spec';
 
 describe('Work Allocation API', () => {
 
@@ -36,7 +40,7 @@ describe('Work Allocation API', () => {
 
   for (const caseworker of ALL_CASEWORKERS) {
     const caseworkerName = `${caseworker.firstName} ${caseworker.lastName}`;
-    const baseTasks = filterByAssignee(TASKS_ARRAY, caseworkerName);
+    const baseTasks = filterByAssignee(TASKS_ARRAY, [ caseworkerName ]);
 
     // Create an end point for each group of sorted tasks.
     for (const key of SORTABLE_FIELDS) {

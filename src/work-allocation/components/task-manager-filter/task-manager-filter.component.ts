@@ -10,7 +10,7 @@ export const ALL_LOCATIONS: Location = {
 export const ALL_CASEWORKERS: Caseworker = {
   idamId: '**ALL_CASEWORKERS**',
   firstName: 'All',
-  lastName: 'Caseworkers',
+  lastName: 'caseworkers',
   location: ALL_LOCATIONS
 };
 export const NO_CASEWORKER_ASSIGNED: Caseworker = {

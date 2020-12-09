@@ -6,8 +6,8 @@ import * as path from 'path';
 import { EnhancedRequest } from '../../../lib/models';
 import { SearchTaskRequest } from '../../../workAllocation/interfaces/taskSearchParameter';
 import { handleTaskSearch } from '../../../workAllocation/taskService';
-import { filterByLocations, getUnassignedTasks, SORTABLE_FIELDS, sortTasks } from '../constants/work-allocation/tasks.spec';
 import { LOCATION_COMBINATIONS } from '../constants/work-allocation/locations.spec';
+import { filterByLocations, getUnassignedTasks, SORTABLE_FIELDS, sortTasks } from '../constants/work-allocation/tasks.spec';
 
 describe('Work Allocation API', () => {
 

@@ -6,9 +6,8 @@ import * as path from 'path';
 import { EnhancedRequest } from '../../../lib/models';
 import { SearchTaskRequest } from '../../../workAllocation/interfaces/taskSearchParameter';
 import { handleTaskSearch } from '../../../workAllocation/taskService';
-import { SORTABLE_FIELDS, sortTasks, TASKS_ARRAY } from '../constants/work-allocation/tasks.spec';
-import { ALL_CASEWORKERS } from './../constants/work-allocation/caseworkers.spec';
-import { filterByAssignee } from './../constants/work-allocation/tasks.spec';
+import { filterByAssignee, SORTABLE_FIELDS, sortTasks, TASKS_ARRAY } from '../constants/work-allocation/tasks.spec';
+import { ALL_CASEWORKERS } from '../constants/work-allocation/caseworkers.spec';
 
 describe('Work Allocation API', () => {
 
@@ -45,7 +44,7 @@ describe('Work Allocation API', () => {
             { key: 'assignee', operator: 'IN', values }
           ]
         };
-        const tasks = sortTasks(filterByAssignee(TASKS_ARRAY, caseworkerName), key, order);
+        const tasks = sortTasks(filterByAssignee(TASKS_ARRAY, [ caseworkerName ]), key, order);
 
         describe(`when requested to search for all tasks for ${caseworkerName} in ${order} order of ${key}`, () => {
           before(() =>

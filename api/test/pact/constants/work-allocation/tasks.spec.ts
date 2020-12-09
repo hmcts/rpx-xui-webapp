@@ -128,9 +128,9 @@ export const TASKS_ARRAY = [
   KILI_MUSO, MANKAI_LIT, BOB_CRATCHITT, EBENEZER_SCROOGE, OLIVER_TWIST, DAVID_COPPERFIELD,
   BRAD_REQUEST, AL_REDDY_DUNNE, NAT_ALLOWED, ANNE_SUPPORTED, SIR_VAN_ERROR
 ];
-export const filterByAssignee = (tasks: any[], assigneeName: string) => {
+export const filterByAssignee = (tasks: any[], assigneeNames: string[]) => {
   return tasks.filter((task: any) => {
-    return task.assignee === assigneeName;
+    return assigneeNames.includes(task.assignee);
   });
 };
 export const filterByLocations = (tasks: any[], locationNames: string[]) => {

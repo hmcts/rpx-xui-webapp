@@ -1,10 +1,10 @@
 
-import WorkAllocationConstants from './constants/work-allocation.constants'
+import WorkAllocationConstants from './constants/work-allocation.constants';
 
 export default class WorkAllocationUtils {
 
-  static handleTaskAssignErrorResult(status: Number): String {
-    switch(status) {
+  public static handleTaskAssignErrorResult(status: number): string {
+    switch (status) {
       case 500: {
         return WorkAllocationConstants.unexpectedConditionErrorLink;
       }

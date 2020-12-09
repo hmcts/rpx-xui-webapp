@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { WorkAllocationTaskService } from 'src/work-allocation/services/work-allocation-task.service';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { TaskService, TaskSort, InfoMessageType, InfoMessage } from '../../enums';
-import { Task, TaskFieldConfig, TaskSortField } from '../../models/tasks';
-import InvokedTaskAction from '../../models/tasks/invoked-task-action.model';
-import TaskServiceConfig from '../../models/tasks/task-service-config.model';
-import WorkAllocationUtils from '../../work-allocation.utils';
 import { DEFAULT_EMPTY_MESSAGE } from '../task-list/task-list.component';
+import { InfoMessage, InfoMessageType, TaskService, TaskSort } from '../../enums';
+import InvokedTaskAction from '../../models/tasks/invoked-task-action.model';
 import { SearchTaskRequest } from 'api/workAllocation/interfaces/taskSearchParameter';
+import { Task, TaskFieldConfig, TaskSortField } from '../../models/tasks';
+import TaskServiceConfig from '../../models/tasks/task-service-config.model';
+import { WorkAllocationTaskService } from 'src/work-allocation/services/work-allocation-task.service';
+import WorkAllocationUtils from '../../work-allocation.utils';
 
 @Component({
   selector: 'exui-task-list-wrapper',
@@ -20,7 +20,7 @@ export class TaskListWrapperComponent implements OnInit {
 
   public state$: Observable<object>;
 
-  public badRequest: Boolean = false;
+  public badRequest: boolean = false;
 
   public messages: any[];
 
@@ -66,14 +66,13 @@ export class TaskListWrapperComponent implements OnInit {
   public sortedBy: TaskSortField;
 
   public ngOnInit(): void {
-
     // check if an error has been returned with the page
     this.state$ = this.route.paramMap
-    .pipe(map(() => window.history.state))
+    .pipe(map(() => window.history.state));
     // if an error has been returned from the page then return the correct info messages
     if (this.badRequestPresent()) {
       this.messages = [{infoMessage: InfoMessage.TASK_NO_LONGER_AVAILABLE, infoMessageType: InfoMessageType.WARNING},
-                       {infoMessage: InfoMessage.LIST_OF_AVAILABLE_TASKS_REFRESHED, infoMessageType: InfoMessageType.INFO}]
+                       {infoMessage: InfoMessage.LIST_OF_AVAILABLE_TASKS_REFRESHED, infoMessageType: InfoMessageType.INFO}];
     }
     // Set up the default sorting.
     this.sortedBy = {
@@ -97,7 +96,7 @@ export class TaskListWrapperComponent implements OnInit {
       // NOTE: Do not commit them in a swapped state!
       this.tasks = result.tasks;
     }, error => {
-      const navigateTo = WorkAllocationUtils.handleTaskAssignErrorResult(error.status)
+      const navigateTo = WorkAllocationUtils.handleTaskAssignErrorResult(error.status);
       this.router.navigate([navigateTo]);
     });
   }
@@ -123,8 +122,7 @@ export class TaskListWrapperComponent implements OnInit {
 
     if (this.route.snapshot.paramMap.get('badRequest') === 'true') {
       return true;
-    }
-    else {
+    } else {
       return false;
     }
   }

@@ -2,9 +2,9 @@ import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { Assignee, Caseworker } from '../../models/dtos';
 import { TaskFieldType, TaskService, TaskSort, TaskView } from '../../enums';
 import WorkAllocationUtils from './../../work-allocation.utils';
-import { Assignee, Caseworker } from '../../models/dtos';
 import { TaskFieldConfig, TaskServiceConfig } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
 
@@ -29,8 +29,6 @@ export class TaskAssignmentContainerComponent implements OnInit {
     private readonly location: Location,
     private readonly router: Router
   ) {}
-
-  
 
   /**
    * Mock TaskFieldConfig[]
@@ -104,8 +102,8 @@ export class TaskAssignmentContainerComponent implements OnInit {
     this.router.navigate(['/tasks'], {fragment: this.manageLink});
     if (!this.caseworker) {
       this.showProblem = true;
-      this.errorTitle = "There is a problem";
-      this.errorDesc = "You must select a name";
+      this.errorTitle = 'There is a problem';
+      this.errorDesc = 'You must select a name';
       return;
     }
     const assignee: Assignee = {
@@ -115,13 +113,14 @@ export class TaskAssignmentContainerComponent implements OnInit {
     console.log('Reassigning, but using a fake assignee for the PACT stub', assignee);
     this.taskService.assignTask(this.tasks[0].id, assignee).subscribe(
       () => {console.log('assignment was successful: received a 200 status');
-      this.location.back();
+             this.location.back();
     }, error => {
-      const navigateTo = WorkAllocationUtils.handleTaskAssignErrorResult(error.status)
-      if (navigateTo === "/tasks") {
-        this.router.navigate([navigateTo], {state: {badRequest: 'true'}})
+      const navigateTo = WorkAllocationUtils.handleTaskAssignErrorResult(error.status);
+      if (navigateTo === '/tasks') {
+        this.router.navigate([navigateTo], {state: {badRequest: 'true'}});
       }
-      this.router.navigate([navigateTo])});
+      this.router.navigate([navigateTo]);
+    });
   }
 
   public onCaseworkerChanged(caseworker: Caseworker): void {

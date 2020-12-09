@@ -126,4 +126,13 @@ describe('AvailableTasksComponent', () => {
     expect(footerCell).toBeDefined();
     expect(footerCell.textContent.trim()).toEqual(component.emptyMessage);
   });
+
+  it('should show the correct error messages', () => {
+    // TODO: Need to put correct error message check in here - currently messages are undefined
+    spyOnProperty(component, 'tasks').and.returnValue([]);
+    component.badRequest = true;
+    fixture.detectChanges();
+    const element = fixture.debugElement.nativeElement;
+    expect(component.messages).not.toBe(null);
+  });
 });

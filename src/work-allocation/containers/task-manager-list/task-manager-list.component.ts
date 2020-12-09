@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import {
   ALL_CASEWORKERS,
@@ -76,10 +76,11 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
   constructor(
     protected taskService: WorkAllocationTaskService,
     protected router: Router,
+    protected route: ActivatedRoute,
     private readonly caseworkerService: CaseworkerDataService,
     private readonly locationService: LocationDataService
   ) {
-    super(taskService, router);
+    super(taskService, router, route);
   }
 
   public get fields(): TaskFieldConfig[] {

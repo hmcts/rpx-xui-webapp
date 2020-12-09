@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { AccessibilityComponent, CookiePolicyComponent, MediaViewerWrapperComponent,
-          PrivacyPolicyComponent, ServiceDownComponent, AccessForbiddenComponent, ErrorMessageComponent} from './components';
+import { AccessibilityComponent, AccessForbiddenComponent, CookiePolicyComponent, ErrorMessageComponent, MediaViewerWrapperComponent,
+         NotAuthorisedComponent, PrivacyPolicyComponent, ServiceDownComponent} from './components';
 import { GetHelpComponent } from './components/get-help/get-help.component';
 import { AcceptTcWrapperComponent, TermsAndConditionsComponent } from './containers';
 import { LegacyTermsAndConditionsComponent } from './containers/legacy-terms-and-conditions/legacy-terms-and-conditions.component';
@@ -65,6 +65,7 @@ export const ROUTES: Routes = [
   { path: 'service-down', component: ServiceDownComponent },
   { path: 'access-forbidden', component: AccessForbiddenComponent },
   { path: 'error-message', component: ErrorMessageComponent },
+  { path: 'not-authorised', component: NotAuthorisedComponent },
   { path: 'media-viewer', component: MediaViewerWrapperComponent },
   {
     path: 'get-help',

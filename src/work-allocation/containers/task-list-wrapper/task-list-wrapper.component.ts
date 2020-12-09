@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+import { InfoMessageCommService } from '../../services/info-message-comms.service';
 import { DEFAULT_EMPTY_MESSAGE } from '../task-list/task-list.component';
 import { InfoMessage, InfoMessageType, TaskService, TaskSort } from '../../enums';
 import InvokedTaskAction from '../../models/tasks/invoked-task-action.model';
@@ -30,7 +31,8 @@ export class TaskListWrapperComponent implements OnInit {
   constructor(
     protected taskService: WorkAllocationTaskService,
     protected router: Router,
-    protected route: ActivatedRoute
+    protected route: ActivatedRoute,
+    protected infoMessageCommService: InfoMessageCommService
   ) {}
 
   private pTasks: Task[];
@@ -51,6 +53,19 @@ export class TaskListWrapperComponent implements OnInit {
 
   public get emptyMessage(): string {
     return DEFAULT_EMPTY_MESSAGE;
+  }
+
+  /**
+   * Communicate what information message needs to be displayed.
+   */
+  public get messageService(): InfoMessageCommService {
+
+    return this.infoMessageCommService;
+  }
+
+  public get specifiedRouter(): Router {
+
+    return this.router;
   }
 
   /**

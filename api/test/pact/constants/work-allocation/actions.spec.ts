@@ -8,7 +8,7 @@ const CANCEL = {
 };
 const CLAIM = {
   id: 'claim',
-  title: 'Assign task to me',
+  title: 'Assign to me',
 };
 const COMPLETE = {
   id: 'complete',

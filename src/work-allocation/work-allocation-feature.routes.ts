@@ -46,7 +46,7 @@ export const ROUTES: Routes = [
         component: TaskManagerComponent,
         canActivate: [ HealthCheckGuard, WorkAllocationFeatureToggleGuard ],
         data: {
-          title: 'HMCTS Manage WorkAllocation | Task Manager'
+          title: 'HMCTS Manage WorkAllocation | Task manager'
         },
         children: [
           {

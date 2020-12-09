@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
+
+import { InfoMessage, InfoMessageType, TaskActionIds, TaskFieldType, TaskView } from '../../enums';
+import { InformationMessage } from '../../models/comms';
 import { Location, SearchTaskRequest } from '../../models/dtos';
-import {InfoMessage, InfoMessageType, TaskActionIds, TaskFieldType, TaskView} from '../../enums';
-import { TaskFieldConfig } from '../../models/tasks';
-import { TaskListWrapperComponent } from './../task-list-wrapper/task-list-wrapper.component';
-import {InformationMessage} from '../../models/comms/infomation-message.model';
-import InvokedTaskAction from '../../models/tasks/invoked-task-action.model';
+import { InvokedTaskAction, TaskFieldConfig } from '../../models/tasks';
+import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
 export const AVAILABLE_TASKS_CONFIG: TaskFieldConfig[] = [
   {

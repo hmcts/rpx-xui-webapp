@@ -14,7 +14,7 @@ Feature: Probate create case workflow
     When I start case with jurisdiction "Manage probate application" case type "Grant of representation" and event "Apply for probate"
     Then I am on case form page
 
-@crossbrowser
+
   Scenario: Cancel create case for Probate
     When I start case with jurisdiction "Manage probate application" case type "Grant of representation" and event "Apply for probate"
     When I click cancel link

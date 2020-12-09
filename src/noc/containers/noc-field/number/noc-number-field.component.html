@@ -1,0 +1,10 @@
+<div class="govuk-form-group" [ngClass]="{'form-group-error': !numberControl.valid}">
+
+  <label class="govuk-label" [for]="id()">
+    <span class="form-label govuk-!-font-weight-bold" *ngIf="questionField.question_text">{{questionField.question_text}}</span>
+    <span class="error-message" *ngIf="numberControl.errors && numberControl.touched">{{numberControl.errors | nocError}}</span>
+  </label>
+
+  <input class="govuk-input govuk-input--width-10" [id]="id()" type="number" [formControl]="numberControl">
+
+</div>

@@ -49,4 +49,38 @@ describe('getEnvironment', () => {
     const roleExists = AppUtils.isRoleExistsForUser('role1', mockService);
     expect(roleExists).toEqual(true);
   });
+
+  describe('removeJsonPrefix', () => {
+
+    it('should take in the User Roles string from cookie and return the string without the j: prefix.', () => {
+
+      const userRolesString = 'j:["pui-organisation-manager","caseworker-publiclaw",' +
+        '"caseworker-divorce-financialremedy-solicitor","caseworker"]';
+
+      const expectedUserRolesString = userRolesString.replace('j:', '');
+
+      expect(AppUtils.removeJsonPrefix(userRolesString)).toEqual(expectedUserRolesString);
+    });
+  });
+
+  describe('getCookieRolesAsArray', () => {
+
+    it('should take in the User Roles string (which comes from the cookie), and return an Array of User Roles.', () => {
+
+      const userRoles = '["pui-organisation-manager","caseworker-publiclaw",' +
+        '"caseworker-divorce-financialremedy-solicitor","caseworker"]';
+
+      expect(AppUtils.getCookieRolesAsArray(userRoles)).toEqual([
+        'pui-organisation-manager',
+        'caseworker-publiclaw',
+        'caseworker-divorce-financialremedy-solicitor',
+        'caseworker',
+      ]);
+    });
+  });
+
+  it('add padding', () => {
+    expect(AppUtils.pad('1')).toEqual('01');
+    expect(AppUtils.pad('1', 3)).toEqual('001');
+  });
 });

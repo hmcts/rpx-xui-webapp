@@ -18,17 +18,20 @@ export const COOKIES_USER_ID = 'cookies.userId'
 export const COOKIES_SESSION_ID = 'cookies.sessionId'
 export const COOKIE_ROLES = 'cookies.roles'
 
+export const STUB = 'stub'
 export const LOGGING = 'logging'
 export const MAX_LOG_LINE = 'maxLogLine'
 export const HEALTH = 'health'
 
 export const SERVICES_CCD_COMPONENT_API_PATH = 'services.ccd.componentApi'
 export const SERVICES_CCD_DATA_STORE_API_PATH = 'services.ccd.dataApi'
+export const SERVICES_CCD_CASE_ASSIGNMENT_API_PATH = 'services.ccd.caseAssignmentApi'
 
 export const SERVICES_DOCUMENTS_API_PATH = 'services.documents.api'
 
 export const SERVICES_EM_ANNO_API_URL = 'services.em_anno_api'
 export const SERVICES_MARKUP_API_URL = 'services.markup_api'
+export const SERVICES_ICP_API_URL = 'services.icp_api'
 
 export const SERVICES_IDAM_API_URL = 'services.idam.idamApiUrl'
 export const SERVICES_IDAM_CLIENT_ID = 'services.idam.idamClientID'
@@ -40,6 +43,8 @@ export const SERVICE_S2S_PATH = 'services.s2s'
 export const SERVICES_TERMS_AND_CONDITIONS_URL = 'services.termsAndConditions'
 
 export const SERVICES_PAYMENTS_URL = 'services.payments'
+
+export const SERVICES_PRD_API_URL = 'services.prd.api'
 
 export const PROTOCOL = 'protocol'
 export const MICROSERVICE = 'microservice'
@@ -71,6 +76,8 @@ export const REDIS_KEY_PREFIX = 'redis.prefix'
 export const REDIS_TTL = 'redis.ttl'
 
 export const USER_TIMEOUT_IN_SECONDS = 'userTimeoutInSeconds'
+
+export const CASE_SHARE_PERMISSIONS = 'pui-case-manager'
 
 export const SESSION_TIMEOUTS = 'sessionTimeouts'
 

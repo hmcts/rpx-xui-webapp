@@ -1,0 +1,40 @@
+<div class="govuk-form-group" [ngClass]="{'form-group-error': !dateControl.valid}">
+
+  <label class="govuk-label" [for]="id()">
+    <span class="form-label govuk-!-font-weight-bold" *ngIf="questionField.question_text">{{questionField.question_text}}</span>
+    <span class="error-message" *ngIf="dateControl.errors && dateGroup.touched">{{dateControl.errors | nocError}}</span>
+  </label>
+
+  <div class="form-date" [formGroup]="dateGroup">
+    <div class="form-group form-group-day">
+      <label class="form-label" [for]="dayId()">Day</label>
+      <input #dayInput
+        class="form-control govuk-input govuk-input--width-10"
+        [id]="dayId()"
+        type="number"
+        oninput="this.value=this.value.slice(0,this.maxLength)"
+        maxlength="2"
+        formControlName="day">
+    </div>
+    <div class="form-group form-group-month">
+      <label class="form-label" [for]="monthId()">Month</label>
+      <input #monthInput
+        class="form-control govuk-input govuk-input--width-10"
+        [id]="monthId()"
+        type="number"
+        oninput="this.value=this.value.slice(0,this.maxLength)"
+        maxlength="2"
+        formControlName="month">
+    </div>
+    <div class="form-group form-group-year">
+      <label class="form-label" [for]="yearId()">Year</label>
+      <input #yearInput
+        class="form-control govuk-input govuk-input--width-10"
+        [id]="yearId()"
+        type="number"
+        oninput="this.value=this.value.slice(0,this.maxLength)"
+        maxlength="4"
+        formControlName="year">
+    </div>
+  </div>
+</div>

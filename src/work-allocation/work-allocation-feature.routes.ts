@@ -1,15 +1,18 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HealthCheckGuard } from 'src/app/shared/guards/health-check.guard';
 
-import { AvailableTasksComponent } from './containers/available-tasks/available-tasks.component';
-import { MyTasksComponent } from './containers/my-tasks/my-tasks.component';
-import { TaskAssignmentContainerComponent } from './containers/task-assignment/task-assignment-container.component';
-import { TaskHomeComponent } from './containers/task-home/task-home.component';
-import { TaskManagerComponent } from './containers/task-manager/task-manager.component';
-import { WorkAllocationHomeComponent } from './containers/work-allocation-home/work-allocation-home.component';
-import { WorkAllocationFeatureToggleGuard } from './guards/work-allocation-feature-toggle.guard';
-import { TaskResolver } from './resolvers/task.resolver';
+import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
+import {
+  AvailableTasksComponent,
+  MyTasksComponent,
+  TaskAssignmentContainerComponent,
+  TaskHomeComponent,
+  TaskManagerComponent,
+  TaskManagerListComponent,
+  WorkAllocationHomeComponent
+} from './containers';
+import { WorkAllocationFeatureToggleGuard } from './guards';
+import { TaskResolver } from './resolvers';
 
 export const ROUTES: Routes = [
   {
@@ -49,7 +52,13 @@ export const ROUTES: Routes = [
         canActivate: [ HealthCheckGuard, WorkAllocationFeatureToggleGuard ],
         data: {
           title: 'HMCTS Manage WorkAllocation | Task Manager'
-        }
+        },
+        children: [
+          {
+            path: '',
+            component: TaskManagerListComponent
+          }
+        ]
       },
       {
         path: 'reassign/:taskId',

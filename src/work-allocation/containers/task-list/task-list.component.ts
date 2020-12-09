@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
@@ -10,13 +10,13 @@ import TaskAction from '../../models/tasks/task-action.model';
 import TaskServiceConfig from '../../models/tasks/task-service-config.model';
 import { TaskSort } from './../../enums/task-sort';
 
+export const DEFAULT_EMPTY_MESSAGE = 'There are no tasks that match your selection.';
 @Component({
   selector: 'exui-task-list',
   templateUrl: './task-list.component.html',
   styleUrls: ['task-list.component.scss']
 })
-
-export class TaskListComponent implements OnChanges, OnInit {
+export class TaskListComponent implements OnChanges {
 
   /**
    * These are the tasks & fields as returned from the WA Api.
@@ -25,6 +25,11 @@ export class TaskListComponent implements OnChanges, OnInit {
   @Input() public taskServiceConfig: TaskServiceConfig;
   @Input() public sortedBy: TaskSortField;
   @Input() public showManage: boolean = true;
+
+  /**
+   * The message to display when there are no tasks to display in the list.
+   */
+  @Input() public emptyMessage: string = DEFAULT_EMPTY_MESSAGE;
 
   // TODO: Need to re-read the LLD, but I believe it says pass in the taskServiceConfig into this TaskListComponent.
   // Therefore we will not need this.
@@ -40,27 +45,17 @@ export class TaskListComponent implements OnChanges, OnInit {
 
   public displayedColumns: string[];
 
-  
 
-  private selectedRow: Task;
+  private selectedTask: Task;
 
   constructor(private readonly location: Location) {
   }
 
-  public ngOnInit(): void {
-    const taskFromUrl = this.selectTaskFromUrlHash(this.location, this.tasks);
-    if (taskFromUrl) {
-      this.setSelectedRow(taskFromUrl);
-    }
-  }
-
-  public selectTaskFromUrlHash(location: Location, tasks: Task[]): Task | null {
-    const url = location.path(true);
+  public selectTaskFromUrlHash(url: string): Task | null {
     const hashValue = url.substring(url.indexOf('#') + 1);
     if (hashValue && hashValue.indexOf('manage_') === 0) {
       const selectedTaskId = hashValue.replace('manage_', '');
-      const selectedTask = tasks.find(task => task.id === selectedTaskId);
-      return selectedTask;
+      return this.tasks.find(task => task.id === selectedTaskId) || null;
     }
     return null;
   }
@@ -68,6 +63,7 @@ export class TaskListComponent implements OnChanges, OnInit {
   public ngOnChanges() {
     if (this.tasks) {
       this.dataSource$ = new BehaviorSubject(this.tasks);
+      this.selectedTask = this.selectTaskFromUrlHash(this.location.path(true));
     }
     if (this.fields) {
       this.displayedColumns = this.getDisplayedColumn(this.fields);
@@ -79,7 +75,6 @@ export class TaskListComponent implements OnChanges, OnInit {
    *
    */
   public getDisplayedColumn(taskFieldConfig: TaskFieldConfig[]): string[] {
-
     const fields = taskFieldConfig.map(field => field.name);
     return this.showManage ? this.addManageColumn(fields) : fields;
   }
@@ -90,7 +85,6 @@ export class TaskListComponent implements OnChanges, OnInit {
    * Therefore we need to add the 'manage' column field within this component, as discussed in the LLD.
    */
   public addManageColumn(fields: string[]): string[] {
-
     return [...fields, 'manage'];
   }
 
@@ -124,22 +118,20 @@ export class TaskListComponent implements OnChanges, OnInit {
    *
    * Open and close the selected row.
    */
-  public setSelectedRow(row: Task): void {
-    if (row === this.getSelectedRow()) {
-      this.selectedRow = null;
+  public setSelectedTask(row: Task): void {
+    if (row === this.selectedTask) {
+      this.selectedTask = null;
     } else {
-      this.selectedRow = row;
+      this.selectedTask = row;
     }
   }
 
-  public getSelectedRow(): Task {
-
-    return this.selectedRow;
+  public getSelectedTask(): Task {
+    return this.selectedTask;
   }
 
-  public isRowSelected(row: Task): boolean {
-
-    return row === this.getSelectedRow();
+  public isTaskSelected(task: Task): boolean {
+    return task === this.selectedTask;
   }
 
   /**

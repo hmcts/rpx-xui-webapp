@@ -17,9 +17,9 @@
     <th class="govuk-table__header" cdk-header-cell *cdkHeaderCellDef>&nbsp;</th>
     <td cdk-cell *cdkCellDef="let rowData" class="govuk-table__cell border-none govuk-accordion__section-header">
       <div class="govuk-accordion__section-heading">
-        <button type="button" [id]="'manage_' + rowData.id" (click)="setSelectedRow(rowData)"
+        <button type="button" [id]="'manage_' + rowData.id" (click)="setSelectedTask(rowData)"
                 class="govuk-accordion__section-button xui-reset"
-                [attr.aria-expanded]="isRowSelected(rowData)">
+                [attr.aria-expanded]="isTaskSelected(rowData)">
           Manage
           <span class="govuk-accordion__icon" aria-hidden="true"></span>
         </button>
@@ -30,7 +30,7 @@
   <!-- Actions for the selected row -->
   <ng-container cdkColumnDef="actions">
     <td cdk-cell *cdkCellDef="let rowData" [attr.colspan]="displayedColumns.length" class="cell-actions">
-      <ng-container *ngIf="isRowSelected(rowData)">
+      <ng-container *ngIf="isTaskSelected(rowData)">
         <div *ngFor="let action of rowData.actions" class="task-action">
           <a tabindex="0" (click)="onActionHandler(rowData, action)" class="action" [id]="'action_' + action.id">{{action.title}}</a>
         </div>
@@ -38,16 +38,27 @@
     </td>
   </ng-container>
 
+  <!-- No tasks to display -->
+  <ng-container cdkColumnDef="footer">
+    <td cdk-footer-cell *cdkFooterCellDef [attr.colspan]="displayedColumns.length" class="cell-footer">
+      {{emptyMessage}}
+    </td>
+  </ng-container>
+
   <!-- Table Header Row -->
   <tr class="govuk-table__row" cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
 
   <!-- Table Row -->
-  <tr class="govuk-table__row" [ngClass]="{ selected: isRowSelected(row) }"
+  <tr class="govuk-table__row" [ngClass]="{ selected: isTaskSelected(row) }"
       cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
 
   <!-- Table Actions Row-->
-  <tr class="govuk-table__row actions-row" [ngClass]="{ selected: isRowSelected(row) }"
-      [attr.aria-hidden]="!isRowSelected(row)"
+  <tr class="govuk-table__row actions-row" [ngClass]="{ selected: isTaskSelected(row) }"
+      [attr.aria-hidden]="!isTaskSelected(row)"
       cdk-row *cdkRowDef="let row; columns: ['actions']"></tr>
+
+  <!-- Table Footer Row -->
+  <tr class="govuk-table__row footer-row" [ngClass]="{ shown: tasks?.length === 0 }"
+      [attr.aria-hidden]="tasks?.length !== 0" cdk-footer-row *cdkFooterRowDef="['footer']"></tr>
 
 </table>

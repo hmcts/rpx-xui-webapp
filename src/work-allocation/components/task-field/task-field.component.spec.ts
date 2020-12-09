@@ -679,7 +679,7 @@ describe('WorkAllocation', () => {
       expect(output.getDate()).toEqual(3);
       expect(output.getHours()).toEqual(15);
       expect(output.getMinutes()).toEqual(0);
-    })
+    });
 
     it('should appropriately parse a number with toDate', () => {
       const DATE = '2020-12-03T15:00:00';
@@ -691,7 +691,7 @@ describe('WorkAllocation', () => {
       expect(output.getDate()).toEqual(3);
       expect(output.getHours()).toEqual(15);
       expect(output.getMinutes()).toEqual(0);
-    })
+    });
 
     it('should appropriately parse a date with toDate', () => {
       const DATE = new Date(2020, 11, 3, 15, 0, 0);
@@ -702,27 +702,27 @@ describe('WorkAllocation', () => {
       expect(output.getDate()).toEqual(3);
       expect(output.getHours()).toEqual(15);
       expect(output.getMinutes()).toEqual(0);
-    })
+    });
 
     it('should appropriately handle an invalid input in toDate', () => {
       const output = component.toDate('bob');
       expect(output).toBeNull();
-    })
+    });
 
     it('should appropriately handle an null input in toDate', () => {
       const output = component.toDate(null);
       expect(output).toBeNull();
-    })
+    });
 
     it('should appropriately handle an undefined input in toDate', () => {
       const output = component.toDate(undefined);
       expect(output).toBeNull();
-    })
+    });
 
     it('should appropriately handle an empty string input in toDate', () => {
       const output = component.toDate('');
       expect(output).toBeNull();
-    })
+    });
   });
 
 });

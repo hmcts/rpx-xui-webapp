@@ -106,3 +106,10 @@ export const USEFUL_CASEWORKERS = [
 export const USELESS_CASEWORKERS = [
   AL_REDDY_DUNNE, ANNE_SUPPORTED, BRAD_REQUEST, NAT_ALLOWED, SIR_VAN_ERROR
 ];
+
+export const toAssignee = (caseworker: { idamId: string, firstName: string, lastName: string }) => {
+  return {
+    id: caseworker.idamId,
+    userName: `${caseworker.firstName} ${caseworker.lastName}`
+  };
+};

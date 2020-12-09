@@ -5,11 +5,12 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { TaskService, TaskSort, InfoMessageType, InfoMessage } from '../../enums';
-import { SearchTaskRequest } from '../../models/dtos/search-task-request';
 import { Task, TaskFieldConfig, TaskSortField } from '../../models/tasks';
 import InvokedTaskAction from '../../models/tasks/invoked-task-action.model';
 import TaskServiceConfig from '../../models/tasks/task-service-config.model';
 import WorkAllocationUtils from '../../work-allocation.utils';
+import { DEFAULT_EMPTY_MESSAGE } from '../task-list/task-list.component';
+import { SearchTaskRequest } from 'api/workAllocation/interfaces/taskSearchParameter';
 
 @Component({
   selector: 'exui-task-list-wrapper',
@@ -32,11 +33,12 @@ export class TaskListWrapperComponent implements OnInit {
     protected route: ActivatedRoute
   ) {}
 
+  private pTasks: Task[];
   public get tasks(): Task[] {
-    return [];
+    return this.pTasks;
   }
   public set tasks(value: Task[]) {
-    // To be overridden.
+    this.pTasks = value;
   }
 
   public get fields(): TaskFieldConfig[] {
@@ -45,6 +47,10 @@ export class TaskListWrapperComponent implements OnInit {
 
   public get taskServiceConfig(): TaskServiceConfig {
     return this.defaultTaskServiceConfig;
+  }
+
+  public get emptyMessage(): string {
+    return DEFAULT_EMPTY_MESSAGE;
   }
 
   /**
@@ -86,6 +92,9 @@ export class TaskListWrapperComponent implements OnInit {
   public loadTasks(): void {
     const searchTaskRequest = this.getSearchTaskRequest();
     this.taskService.searchTask(searchTaskRequest).subscribe(result => {
+      // Swap the commenting on these two lines to see the behaviour
+      // when no tasks are returned.
+      // NOTE: Do not commit them in a swapped state!
       this.tasks = result.tasks;
     }, error => {
       const navigateTo = WorkAllocationUtils.handleTaskAssignErrorResult(error.status)
@@ -130,7 +139,6 @@ export class TaskListWrapperComponent implements OnInit {
    * @param fieldName - ie. 'caseName'
    */
   public onSortHandler(fieldName: string): void {
-
     // TODO: Remove everything below after integration.
     // This is all to prove the mechanism works.
     console.log('Task Home received Sort on:');

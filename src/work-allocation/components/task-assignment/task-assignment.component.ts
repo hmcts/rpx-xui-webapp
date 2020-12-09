@@ -1,8 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
-import { Caseworker, Location } from './../../models/dtos/task';
-import { CaseworkerDataService } from './../../services/case-worker-data.service';
-import { LocationDataService } from './../../services/location-data.service';
+import { Caseworker, Location } from '../../models/dtos';
+import { CaseworkerDataService, LocationDataService } from '../../services';
 
 @Component({
   selector: 'exui-task-assignment',

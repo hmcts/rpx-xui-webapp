@@ -4,7 +4,7 @@ import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
 
 @Component({
   selector: 'exui-noc-text-field',
-  templateUrl: './noc-text-field.html'
+  templateUrl: './noc-text-field.component.html'
 })
 export class NocTextFieldComponent extends AbstractFieldWriteComponent implements OnInit {
 

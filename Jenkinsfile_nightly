@@ -13,10 +13,14 @@ properties([
 
 @Library("Infrastructure")
 
+import uk.gov.hmcts.contino.AppPipelineDsl
+
 def type      = "nodejs"
 def product   = "xui"
 def component = "webapp"
 def channel   = '#xui-pipeline'
+
+def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
@@ -27,9 +31,12 @@ withNightlyPipeline(type, product, component) {
     enableCrossBrowserTest()
 
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net/'
-    after('checkout') {sh 'yarn cache clean'}
+      after('checkout') {
+        yarnBuilder.yarn('cache clean')
+    }
     after('build') {
-        sh 'npm run build'
+        yarnBuilder.yarn('build')
+      
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,

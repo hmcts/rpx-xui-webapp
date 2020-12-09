@@ -5,6 +5,7 @@ import { TaskService, TaskSort } from '../../enums';
 import { SearchTaskRequest } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
+import { InfoMessageCommService } from '../../services/info-message-comms.service';
 import { DEFAULT_EMPTY_MESSAGE } from '../task-list/task-list.component';
 
 @Component({
@@ -17,7 +18,8 @@ export class TaskListWrapperComponent implements OnInit {
    */
   constructor(
     protected taskService: WorkAllocationTaskService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly infoMessageCommService: InfoMessageCommService,
   ) {}
 
   private pTasks: Task[];
@@ -38,6 +40,19 @@ export class TaskListWrapperComponent implements OnInit {
 
   public get emptyMessage(): string {
     return DEFAULT_EMPTY_MESSAGE;
+  }
+
+  /**
+   * Communicate what information message needs to be displayed.
+   */
+  public get messageService(): InfoMessageCommService {
+
+    return this.infoMessageCommService;
+  }
+
+  public get route(): Router {
+
+    return this.router;
   }
 
   /**

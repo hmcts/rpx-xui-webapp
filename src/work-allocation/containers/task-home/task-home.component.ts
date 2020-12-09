@@ -4,7 +4,9 @@ import { SubNavigation } from '@hmcts/rpx-xui-common-lib';
 
 import { InfoMessage, InfoMessageType } from '../../enums';
 import { AppUtils } from './../../../app/app-utils';
-import { TaskSortField } from './../../models/tasks';
+
+import { InfoMessageCommService } from '../../services/info-message-comms.service';
+import { Task, TaskSortField } from './../../models/tasks';
 
 @Component({
   selector: 'exui-task-home',
@@ -28,10 +30,12 @@ export class TaskHomeComponent implements OnInit {
   public sortedBy: TaskSortField;
   public pageTitle: string;
 
-  public infoMessageType: InfoMessageType = InfoMessageType.SUCCESS;
-  public infoMessage: InfoMessage = InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS;
+  public showInfoMessage: boolean = false;
+  public infoMessageType: InfoMessageType;
+  public infoMessage: InfoMessage;
 
-  constructor(private readonly router: Router) {}
+  constructor(private readonly router: Router,
+              private readonly infoMessageCommService: InfoMessageCommService) {}
 
   public ngOnInit(): void {
     this.router.events.subscribe(event => {
@@ -49,6 +53,21 @@ export class TaskHomeComponent implements OnInit {
 
     // Set up the page data.
     this.setupPageData(this.router.routerState.root.snapshot);
+
+    this.subscribeToInfoMessageCommService();
+  }
+
+  /**
+   * TODO: Unit test
+   */
+  public subscribeToInfoMessageCommService(): void {
+
+    this.infoMessageCommService.infoMessageChangeEmitted$.subscribe(message => {
+
+      this.infoMessageType = message.type;
+      this.infoMessage = message.message;
+      this.showInfoMessage = true;
+    });
   }
 
   /**

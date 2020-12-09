@@ -34,28 +34,23 @@ export class NocTimeFieldComponent extends AbstractFieldWriteComponent implement
   public ngAfterViewInit(): void {
     this.timeGroup.valueChanges.subscribe(data => {
       const val = [
-        this.timeGroup.value.hour !== null ? this.pad(this.timeGroup.value.hour) : '',
-        this.timeGroup.value.minute !== null ? this.pad(this.timeGroup.value.minute) : '',
-        this.timeGroup.value.second !== null ? this.pad(this.timeGroup.value.second) : ''
+        this.timeGroup.value.hour !== null ? this.timeGroup.value.hour.padStart(2, '0') : '',
+        this.timeGroup.value.minute !== null ? this.timeGroup.value.minute.padStart(2, '0') : '',
+        this.timeGroup.value.second !== null ? this.timeGroup.value.second.padStart(2, '0') : ''
       ].join(':');
       this.timeControl.setValue(val);
     });
   }
 
   public hourId() {
-    return this.id + '-hour';
+    return `${this.id}-hour`;
   }
 
   public minuteId() {
-    return this.id + '-minute';
+    return `${this.id}-minute`;
   }
 
   public secondId() {
-    return this.id + '-second';
-  }
-
-  private pad(num: any, padNum = 2): string {
-    const val = (num !== undefined && num !== null) ? num.toString() : '';
-    return val.length >= padNum ? val : new Array(padNum - val.length + 1).join('0') + val;
+    return `${this.id}-second`;
   }
 }

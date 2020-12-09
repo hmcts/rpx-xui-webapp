@@ -44,45 +44,40 @@ export class NocDateTimeFieldComponent extends AbstractFieldWriteComponent imple
   public ngAfterViewInit(): void {
     this.datetimeGroup.valueChanges.subscribe(data => {
       const date = [
-        this.datetimeGroup.value.day !== null ? this.pad(this.datetimeGroup.value.day) : '',
-        this.datetimeGroup.value.month !== null ? this.pad(this.datetimeGroup.value.month) : '',
+        this.datetimeGroup.value.day !== null ? this.datetimeGroup.value.day.padStart(2, '0') : '',
+        this.datetimeGroup.value.month !== null ? this.datetimeGroup.value.month.padStart(2, '0') : '',
         this.datetimeGroup.value.year !== null ? this.datetimeGroup.value.year : ''
       ].join('/');
       const time = [
-        this.datetimeGroup.value.hour !== null ? this.pad(this.datetimeGroup.value.hour) : '',
-        this.datetimeGroup.value.minute !== null ? this.pad(this.datetimeGroup.value.minute) : '',
-        this.datetimeGroup.value.second !== null ? this.pad(this.datetimeGroup.value.second) : ''
+        this.datetimeGroup.value.hour !== null ? this.datetimeGroup.value.hour.padStart(2, '0') : '',
+        this.datetimeGroup.value.minute !== null ? this.datetimeGroup.value.minute.padStart(2, '0') : '',
+        this.datetimeGroup.value.second !== null ? this.datetimeGroup.value.second.padStart(2, '0') : ''
         ].join(':');
       this.datetimeControl.setValue(`${date} ${time}`);
     });
   }
 
   public dayId() {
-    return this.id + '-day';
+    return `${this.id}-day`;
   }
 
   public monthId() {
-    return this.id + '-month';
+    return `${this.id}-month`;
   }
 
   public yearId() {
-    return this.id + '-year';
+    return `${this.id}-year`;
   }
 
   public hourId() {
-    return this.id + '-hour';
+    return `${this.id}-hour`;
   }
 
   public minuteId() {
-    return this.id + '-minute';
+    return `${this.id}-minute`;
   }
 
   public secondId() {
-    return this.id + '-second';
-  }
-
-  private pad(num: any, padNum = 2): string {
-    const val = (num !== undefined && num !== null) ? num.toString() : '';
-    return val.length >= padNum ? val : new Array(padNum - val.length + 1).join('0') + val;
+    return `${this.id}-second`;
   }
 }

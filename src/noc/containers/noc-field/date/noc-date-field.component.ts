@@ -34,8 +34,8 @@ export class NocDateFieldComponent extends AbstractFieldWriteComponent implement
   public ngAfterViewInit(): void {
     this.dateGroup.valueChanges.subscribe(data => {
       const val = [
-        this.dateGroup.value.day !== null ? this.pad(this.dateGroup.value.day) : '',
-        this.dateGroup.value.month !== null ? this.pad(this.dateGroup.value.month) : '',
+        this.dateGroup.value.day !== null ? this.dateGroup.value.day.padStart(2, '0') : '',
+        this.dateGroup.value.month !== null ? this.dateGroup.value.month.padStart(2, '0') : '',
         this.dateGroup.value.year !== null ? this.dateGroup.value.year : ''
       ].join('/');
       this.dateControl.setValue(val);
@@ -43,19 +43,14 @@ export class NocDateFieldComponent extends AbstractFieldWriteComponent implement
   }
 
   public dayId() {
-    return this.id + '-day';
+    return `${this.id}-day`;
   }
 
   public monthId() {
-    return this.id + '-month';
+    return `${this.id}-month`;
   }
 
   public yearId() {
-    return this.id + '-year';
-  }
-
-  private pad(num: any, padNum = 2): string {
-    const val = (num !== undefined && num !== null) ? num.toString() : '';
-    return val.length >= padNum ? val : new Array(padNum - val.length + 1).join('0') + val;
+    return `${this.id}-year`;
   }
 }

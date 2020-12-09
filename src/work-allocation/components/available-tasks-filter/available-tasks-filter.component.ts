@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { CheckboxListComponent } from '@hmcts/rpx-xui-common-lib';
 
 import { Location } from '../../models/dtos';
@@ -13,8 +13,13 @@ export const AVAILABLE_TASKS_FILTER_ID = 'AVAILABLE_TASKS_FILTER';
 })
 export class AvailableTasksFilterComponent implements OnInit {
   @ViewChild(CheckboxListComponent)
-  private readonly locationFilter: CheckboxListComponent<Location>;
-  private detailsElement: HTMLDetailsElement;
+  public readonly locationFilter: CheckboxListComponent<Location>;
+  @ViewChild('filterDetails')
+  public readonly filterDetails: ElementRef<HTMLDetailsElement>;
+
+  public get detailsElement(): HTMLDetailsElement {
+    return this.filterDetails ? this.filterDetails.nativeElement : undefined;
+  }
 
   @Input()
   public get selection(): Location[] {
@@ -49,13 +54,13 @@ export class AvailableTasksFilterComponent implements OnInit {
 
 
   public ngOnInit(): void {
+    let preselection: Location[] = [ this.DEFAULT_LOCATION ];
     // See if we have anything stored in the session for the filter.
     const stored: string = sessionStorage.getItem(AVAILABLE_TASKS_FILTER_ID);
     if (stored) {
-      this.preselection = [ ...JSON.parse(stored) ];
-    } else {
-      this.preselection = [ this.DEFAULT_LOCATION ];
+      preselection = [ ...JSON.parse(stored) ];
     }
+    this.preselection = preselection;
     // Get the locations for the checkbox filter component.
     this.locationService.getLocations().subscribe(locations => {
       this.locations = [ ...locations ];
@@ -96,17 +101,6 @@ export class AvailableTasksFilterComponent implements OnInit {
     this.locationFilter.selection = this.selection;
     if (this.detailsElement) {
       this.detailsElement.open = false;
-    }
-  }
-
-  /**
-   * Listen for the <details></details> element being toggled so that
-   * we can get a reference to it and then collapse it again if the
-   * user cancels the filtering activity.
-   */
-  public onDetailsToggle(event: { target: HTMLDetailsElement }): void {
-    if (!this.detailsElement) {
-      this.detailsElement = event.target;
     }
   }
 }

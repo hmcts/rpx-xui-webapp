@@ -20,10 +20,9 @@ import { TaskManagerListComponent } from './task-manager-list.component';
 })
 class WrapperComponent {
   @ViewChild(TaskManagerListComponent) public appComponentRef: TaskManagerListComponent;
-  // TODO: Add inputs for the filtering.
 }
 
-describe('AvailableTasksComponent', () => {
+describe('TaskManagerListComponent', () => {
   let component: TaskManagerListComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;

@@ -31,7 +31,7 @@ describe('TaskListWrapperComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
-     it('should initialise', async () => {
-      
-    }); 
+  it('should initialise', async () => {
+
+  });
 });

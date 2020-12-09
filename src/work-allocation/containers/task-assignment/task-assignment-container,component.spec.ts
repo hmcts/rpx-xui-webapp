@@ -37,7 +37,7 @@ const NB = { firstName: 'Noah',   lastName: 'Body',   idamId: '4', location: LOC
     @Input() public tasks: Task[];
   }
 
-  /**
+/**
  * Mock tasks
  */
 function getTasks(): Task[] {

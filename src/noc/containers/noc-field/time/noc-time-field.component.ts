@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
+import { AppUtils } from 'src/app/app-utils'
 
 @Component({
   selector: 'exui-noc-time-field',
@@ -34,9 +35,9 @@ export class NocTimeFieldComponent extends AbstractFieldWriteComponent implement
   public ngAfterViewInit(): void {
     this.timeGroup.valueChanges.subscribe(data => {
       const val = [
-        this.timeGroup.value.hour !== null ? this.timeGroup.value.hour.padStart(2, '0') : '',
-        this.timeGroup.value.minute !== null ? this.timeGroup.value.minute.padStart(2, '0') : '',
-        this.timeGroup.value.second !== null ? this.timeGroup.value.second.padStart(2, '0') : ''
+        this.timeGroup.value.hour !== null ? AppUtils.pad(this.timeGroup.value.hour) : '',
+        this.timeGroup.value.minute !== null ? AppUtils.pad(this.timeGroup.value.minute) : '',
+        this.timeGroup.value.second !== null ? AppUtils.pad(this.timeGroup.value.second) : ''
       ].join(':');
       this.timeControl.setValue(val);
     });

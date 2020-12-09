@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
+import { AppUtils } from 'src/app/app-utils';
 
 @Component({
   selector: 'exui-noc-date-field',
@@ -34,8 +35,8 @@ export class NocDateFieldComponent extends AbstractFieldWriteComponent implement
   public ngAfterViewInit(): void {
     this.dateGroup.valueChanges.subscribe(data => {
       const val = [
-        this.dateGroup.value.day !== null ? this.dateGroup.value.day.padStart(2, '0') : '',
-        this.dateGroup.value.month !== null ? this.dateGroup.value.month.padStart(2, '0') : '',
+        this.dateGroup.value.day !== null ? AppUtils.pad(this.dateGroup.value.day) : '',
+        this.dateGroup.value.month !== null ? AppUtils.pad(this.dateGroup.value.month) : '',
         this.dateGroup.value.year !== null ? this.dateGroup.value.year : ''
       ].join('/');
       this.dateControl.setValue(val);

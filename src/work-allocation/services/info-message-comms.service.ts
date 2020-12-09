@@ -1,21 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { InfoMessage, InfoMessageType } from '../enums';
+import { InformationMessage } from '../models/comms/infomation-message.model';
 
 @Injectable()
 export class InfoMessageCommService {
   public constructor() {}
 
-  // TODO: type
-  private emitChangeSource = new Subject<any>();
+  private infoMessageSource = new Subject<InformationMessage>();
 
-  public changeEmitted$ = this.emitChangeSource.asObservable();
+  public infoMessageChangeEmitted$ = this.infoMessageSource.asObservable();
 
-  // TODO: emitInfoMessageChange
+  public emitInfoMessageChange(message: InformationMessage) {
 
-  public emitInfoMessageChange(type: InfoMessageType, message: InfoMessage) {
-
-    // TODO: Check if this is the right way to send a payload in NG.
-    this.emitChangeSource.next({type, message});
+    this.infoMessageSource.next(message);
   }
 }

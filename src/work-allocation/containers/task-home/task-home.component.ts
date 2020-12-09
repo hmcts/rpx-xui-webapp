@@ -56,10 +56,12 @@ export class TaskHomeComponent implements OnInit {
     this.subscribeToInfoMessageCommService();
   }
 
+  /**
+   * TODO: Unit test
+   */
   public subscribeToInfoMessageCommService(): void {
-    this.infoMessageCommService.changeEmitted$.subscribe(message => {
-      console.log('message received.');
-      console.log(message);
+
+    this.infoMessageCommService.infoMessageChangeEmitted$.subscribe(message => {
 
       this.infoMessageType = message.type;
       this.infoMessage = message.message;

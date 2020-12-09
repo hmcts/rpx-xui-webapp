@@ -3,6 +3,7 @@ import {Component} from '@angular/core';
 import {InfoMessage, InfoMessageType, TaskActionIds, TaskFieldType, TaskView} from '../../enums';
 import {SearchTaskRequest} from '../../models/dtos/search-task-request';
 import {Task, TaskFieldConfig} from '../../models/tasks';
+import { InformationMessage } from '../../models/comms/infomation-message.model';
 import {TaskListWrapperComponent} from './../task-list-wrapper/task-list-wrapper.component';
 import InvokedTaskAction from '../../models/tasks/invoked-task-action.model';
 
@@ -91,15 +92,19 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
 
   /**
    * A User 'Claims' themselves a task aka. 'Assign to me'.
+   *
+   * TODO: Unit test
    */
   public claimTask(taskId): void {
 
     this.taskService.claimTask(taskId).subscribe(() => {
 
-        this.messageService.emitInfoMessageChange(
-          InfoMessageType.SUCCESS,
-          InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS
-        );
+        const message: InformationMessage = {
+          type: InfoMessageType.SUCCESS,
+          message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS,
+        };
+
+        this.messageService.emitInfoMessageChange(message);
       }, error => {
 
         this.claimTaskErrors(error.status);
@@ -109,8 +114,15 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
   /**
    * Navigate the User to the correct error page, or throw an on page warning
    * that the Task is no longer available.
+   *
+   * TODO: Unit test
    */
   public claimTaskErrors(status): void {
+
+    const message: InformationMessage = {
+      type: InfoMessageType.WARNING,
+      message: InfoMessage.TASK_NO_LONGER_AVAILABLE,
+    };
 
     switch (status) {
       case 401:
@@ -121,16 +133,14 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
         this.route.navigate([`/service-down`]);
         break;
       default:
-        this.messageService.emitInfoMessageChange(
-          InfoMessageType.WARNING,
-          InfoMessage.TASK_NO_LONGER_AVAILABLE,
-        );
+        this.messageService.emitInfoMessageChange(message);
     }
   }
 
   /**
    * Handle a User Claiming a Task
    *
+   * TODO: Unit test
    * TODO: This function will need to handle 'Assign to me and go to case' - EUI-2963.
    */
   public onActionHandler(taskAction: InvokedTaskAction): void {

@@ -1,21 +1,36 @@
 import * as express from 'express'
-import * as amendedJurisdictions from './amendedJurisdictions'
+import { router as caseShareRoutes } from './caseshare/routes'
+import {getConfigValue, showFeature} from './configuration'
+import {APP_INSIGHTS_KEY} from './configuration/references'
+import healthCheck from './healthCheck'
 import authInterceptor from './lib/middleware/auth'
-import * as proxy from './lib/proxy'
-import * as searchCases from './searchCases'
+import userRouter from './user/routes'
+// import {router as termsAndCRoutes} from './termsAndConditions/routes'
+// import {router as userTandCRoutes} from './userTermsAndConditions/routes'
 
 const router = express.Router({ mergeParams: true })
 
+router.use('/healthCheck', healthCheck)
+
+router.get('/monitoring-tools', (req, res) => {
+    res.send({key: getConfigValue(APP_INSIGHTS_KEY)})
+})
+
+router.get('/configuration', (req, res) => {
+    res.send(showFeature(req.query.configurationKey as string))
+})
+
 router.use(authInterceptor)
 
-router.get('/caseworkers/:uid/jurisdictions', amendedJurisdictions.getJurisdictions)
+router.use('/user', userRouter)
 
-// elastic search endpoint
-router.post('/internal/searchCases', searchCases.getCases)
+// TODO: potentially can be moved to proxy but with onRes callback
+router.use('/caseshare', caseShareRoutes)
 
-router.get('/*', proxy.get)
-router.post('/*', proxy.post)
-router.put('/*', proxy.put)
+/*if (showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED)) {
+    router.use('/userTermsAndConditions',  userTandCRoutes)
+    router.use('/termsAndConditions', termsAndCRoutes)
+}*/
 
 // @ts-ignore
 export default router

@@ -1,21 +1,19 @@
+import { CdkTableModule } from '@angular/cdk/table';
+import { HttpClientModule } from '@angular/common/http';
 import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Observable } from 'rxjs';
-import { CdkTableModule } from '@angular/cdk/table';
-import { WorkAllocationComponentsModule } from 'src/work-allocation/components/work-allocation.components.module';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
-import { ActivatedRoute, Data, } from '@angular/router';
-import {StoreModule} from '@ngrx/store';
-import {reducers} from 'src/app/store';
-
-import { WorkAllocationTaskService } from 'src/work-allocation/services/work-allocation-task.service';
-import { TaskAssignmentContainerComponent, TaskListComponent} from '..';
-import { ErrorMessageComponent } from './../../../app/components';
-import { Task } from './../../models/tasks';
+import { ActivatedRoute, Data } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TASKS } from 'api/test/pact/constants/work-allocation/tasks.spec';
+import { Observable } from 'rxjs';
+import { WorkAllocationComponentsModule } from 'src/work-allocation/components/work-allocation.components.module';
 import { Location } from 'src/work-allocation/models/dtos';
+import { WorkAllocationTaskService } from 'src/work-allocation/services/work-allocation-task.service';
+
+import { TaskAssignmentContainerComponent, TaskListComponent } from '..';
+import { ErrorMessageComponent } from '../../../app/components';
+import { Task } from '../../models/tasks';
 
 
 // Locations.
@@ -86,7 +84,7 @@ describe('TaskAssignmentContainerComponent', () => {
       declarations: [
           TaskAssignmentContainerComponent, WrapperComponent, ErrorMessageComponent, TaskListComponent
         ],
-      imports: [WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientModule, StoreModule.forRoot({...reducers}), RouterTestingModule],
+      imports: [WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientModule, RouterTestingModule],
       providers: [{ provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
       {provide: ActivatedRoute, useValue: {
         data: {

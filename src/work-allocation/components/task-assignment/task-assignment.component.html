@@ -15,7 +15,7 @@
       <span class="govuk-visually-hidden">Error:</span> You must select a name
     </span>
     <select id="task_assignment_caseworker" name="task_assignment_caseworker"
-            [ngClass]="{'govuk-select task-assignment__caseworker': !badRequest, 'govuk-select govuk-select--error task-assignment__caseworker': badRequest}"
+            [ngClass]="{'govuk-select task-assignment__caseworker': !showProblem, 'govuk-select govuk-select--error task-assignment__caseworker': showProblem}"
             [(ngModel)]="caseworker">
       <option [selected]="caseworker === null" [ngValue]="null">Select name</option>
       <option *ngFor="let cw of caseworkers" [ngValue]="cw">{{cw | caseworkerDisplayName}}</option>

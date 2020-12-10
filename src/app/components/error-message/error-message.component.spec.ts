@@ -1,24 +1,25 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+
 import { ErrorMessageComponent } from '..';
 
 @Component({
-    template: `<exui-error-message [title]="title" [errorDesc]="errorDesc"></exui-error-message>`
+  template: `<exui-error-message [title]="title" [errorDesc]="errorDesc"></exui-error-message>`
 })
 class WrapperComponent {
-    @ViewChild(ErrorMessageComponent) public appComponentRef: ErrorMessageComponent;
-    @Input() public title: string;
-    @Input() public errorDesc: string;
+  @ViewChild(ErrorMessageComponent) public appComponentRef: ErrorMessageComponent;
+  @Input() public title: string;
+  @Input() public errorDesc: string;
 }
 
 describe('ErrorMessageComponent', () => {
-    let component: ErrorMessageComponent;
-    let wrapper: WrapperComponent;
-    let fixture: ComponentFixture<WrapperComponent>;
+  let component: ErrorMessageComponent;
+  let wrapper: WrapperComponent;
+  let fixture: ComponentFixture<WrapperComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-       declarations: [ WrapperComponent, ErrorMessageComponent ]
+      declarations: [ WrapperComponent, ErrorMessageComponent ]
     })
     .compileComponents();
   }));

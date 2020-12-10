@@ -1,5 +1,7 @@
+import { AccessForbiddenComponent } from './access-forbidden/access-forbidden.component';
 import { AccessibilityComponent } from './accessibility/accessibility.component';
 import { CookiePolicyComponent } from './cookie-policy/cookie-policy.component';
+import { ErrorMessageComponent } from './error-message/error-message.component';
 import { GetHelpComponent } from './get-help/get-help.component';
 import { HeaderComponent } from './header/header.component';
 import { HmctsGlobalFooterComponent } from './hmcts-global-footer/hmcts-global-footer.component';
@@ -11,8 +13,6 @@ import { PhaseBannerComponent } from './phase-banner/phase-banner.component';
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 import { ServiceDownComponent } from './service-down/service-down.component';
 import { SignedOutComponent } from './signed-out/signed-out.component';
-import { AccessForbiddenComponent } from './access-forbidden/access-forbidden.component';
-import { ErrorMessageComponent } from './error-message/error-message.component';
 
 export const components: any[] = [
   HmctsGlobalFooterComponent,

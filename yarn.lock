@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@^2.65.6":
-  version "2.65.6"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.65.6.tgz#37ad108a2fcd0ee66eccb6b8e4fae4d7bee16d8d"
-  integrity sha512-Wbx1HlzhnKUeTjmz5wVtkJjNZEyoXgzXCMWP6QWIntX0+wPv2ZVmoTPYhtg5SEN09OcicsTlXUyc7YbsjpM9Tg==
+"@hmcts/ccd-case-ui-toolkit@^2.67.0-performance-tabs":
+  version "2.67.0-performance-tabs"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.67.0-performance-tabs.tgz#9569efcab3a7bc101da1a13d943b3e9327ced842"
+  integrity sha512-uckBihXAIuhtw8vLMkgRbMAeDunXQTOk8zjr+qB1pBdcR1xShBGfbNStzdeabYZ6p5QJZ/u9DCmWdYZJSS+T4A==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
@@ -437,10 +437,10 @@
   resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.39-alpha.tgz#782d4a4698dae040dd72b26711f04a8d8299d25c"
   integrity sha512-M1364rFLuvktYz5+jVjJ5ZmNUx0/SgoAvH3RsIaT2wFqFf92emuiRyXqax5oSEC5kM9Jpw0rcxEcRbBJWMoglg==
 
-"@hmcts/media-viewer@2.5.1":
-  version "2.5.1"
-  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-2.5.1.tgz#53c257285aac3ffc6e675fbfc2ef0c4dfe5cb1a0"
-  integrity sha512-6NxPzBpHjZNSVnhgg3u+QjEmKxHR5VxBOjaWNDM9vxzOejgy9bwrwUIBFb/X6JbOIgLEj2DLmSpTPXYTBsgeCw==
+"@hmcts/media-viewer@2.6.4":
+  version "2.6.4"
+  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-2.6.4.tgz#fe0ae5a3a7fd1e628b14cd11960a9e1b18b484ed"
+  integrity sha512-XTi/lNSzdvpDuvzS/zKYePuIbA7z9ty6aTtxvhyMhVG9DS+Ju1ZzgzXlxATHAVACYq7tPWj00CtG1YCk8FHBpA==
   dependencies:
     "@swimlane/ngx-datatable" "^16.0.2"
     angular-tree-component "^8.5.6"
@@ -3045,11 +3045,6 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-classlist.js@^1.1.20150312:
-  version "1.1.20150312"
-  resolved "https://registry.yarnpkg.com/classlist.js/-/classlist.js-1.1.20150312.tgz#1d70842f7022f08d9ac086ce69e5b250f2c57789"
-  integrity sha1-HXCEL3Ai8I2awIbOaeWyUPLFd4k=
-
 clean-css@4.2.1:
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/clean-css/-/clean-css-4.2.1.tgz#2d411ef76b8569b6d0c84068dabe85b0aa5e5c17"
@@ -4330,6 +4325,11 @@ electron-to-chromium@^1.3.338:
   version "1.3.340"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.340.tgz#5d4fe78e984d4211194cf5a52e08069543da146f"
   integrity sha512-hRFBAglhcj5iVYH+o8QU0+XId1WGoc0VGowJB1cuJAt3exHGrivZvWeAO5BRgBZqwZtwxjm8a5MQeGoT/Su3ww==
+
+eligrey-classlist.js@^1.2.20180112:
+  version "1.2.20180112"
+  resolved "https://registry.yarnpkg.com/eligrey-classlist.js/-/eligrey-classlist.js-1.2.20180112.tgz#4a9c1950f8e562396f566df37108336cf7e148f2"
+  integrity sha512-iMBFVBLlbl3cxVc5PAtfteYL1URKRHiRJzwVBo07GPcAtf8LOhvSjUqAdb21ws3CyHQL9zFo4IVDyjtwaZpVCQ==
 
 elliptic@^6.0.0:
   version "6.5.2"

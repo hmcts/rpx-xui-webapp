@@ -1,18 +1,17 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {RouterTestingModule} from '@angular/router/testing';
-import {StoreModule} from '@ngrx/store';
-import {reducers} from 'src/app/store';
 import { CdkTableModule } from '@angular/cdk/table';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { StoreModule } from '@ngrx/store';
+import { reducers } from 'src/app/store';
 
-import {TaskListWrapperComponent, TaskListComponent} from '..';
+import { TaskListComponent, TaskListWrapperComponent } from '..';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { InfoMessage, InfoMessageType } from '../../enums';
 
 describe('TaskListWrapperComponent', () => {
   let component: TaskListWrapperComponent;
   let fixture: ComponentFixture<TaskListWrapperComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         WorkAllocationComponentsModule,
@@ -22,15 +21,16 @@ describe('TaskListWrapperComponent', () => {
       ],
       declarations: [TaskListWrapperComponent, TaskListComponent],
       providers: []
-    })
-      .compileComponents();
-  }));
-
-  beforeEach(() => {
+    }).compileComponents();
     fixture = TestBed.createComponent(TaskListWrapperComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
+
+  afterEach(() => {
+    fixture.destroy();
+  });
+
   it('should initialise', async () => {
 
   });

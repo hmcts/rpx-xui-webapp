@@ -1,7 +1,7 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Location } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
@@ -28,7 +28,7 @@ describe('AvailableTasksComponent', () => {
   let location: jasmine.SpyObj<Location>;
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     location = jasmine.createSpyObj('Location', ['path']);
     location.path.and.returnValue('');
     TestBed.configureTestingModule({
@@ -44,7 +44,11 @@ describe('AvailableTasksComponent', () => {
         { provide: Location, useValue: location }
       ]
     }).compileComponents();
-  }));
+  });
+
+  afterEach(() => {
+    fixture.destroy();
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(WrapperComponent);

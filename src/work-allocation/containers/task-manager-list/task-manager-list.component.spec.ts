@@ -1,7 +1,7 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Location } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
@@ -36,7 +36,7 @@ describe('AvailableTasksComponent', () => {
   const mockCaseworkers: dtos.Caseworker[] = getMockCaseworkers();
   const caseworkerDiplayName: CaseworkerDisplayName = new CaseworkerDisplayName();
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     location = jasmine.createSpyObj('Location', ['path']);
     location.path.and.returnValue('');
     TestBed.configureTestingModule({
@@ -54,9 +54,6 @@ describe('AvailableTasksComponent', () => {
         { provide: LocationDataService, useValue: mockLocationService }
       ]
     }).compileComponents();
-  }));
-
-  beforeEach(() => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
@@ -65,6 +62,10 @@ describe('AvailableTasksComponent', () => {
     mockLocationService.getLocations.and.returnValue(of(mockLocations));
     mockCaseworkerService.getAll.and.returnValue(of(mockCaseworkers));
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    fixture.destroy();
   });
 
   it('should make a call to load tasks using the default search request', () => {

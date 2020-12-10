@@ -1,7 +1,7 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Location } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
@@ -12,7 +12,7 @@ import { WorkAllocationComponentsModule } from '../../components/work-allocation
 import { Task } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
 import { getMockTasks } from '../../tests/utils.spec';
-import { TaskListComponent } from './../task-list/task-list.component';
+import { TaskListComponent } from '../task-list/task-list.component';
 import { MyTasksComponent } from './my-tasks.component';
 
 @Component({
@@ -30,7 +30,7 @@ describe('MyTasksComponent', () => {
   let location: jasmine.SpyObj<Location>;
   let router: Router;
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
-  beforeEach(async(() => {
+  beforeEach(() => {
     location = jasmine.createSpyObj('Location', ['path']);
     location.path.and.returnValue('');
     TestBed.configureTestingModule({
@@ -46,9 +46,6 @@ describe('MyTasksComponent', () => {
         { provide: Location, useValue: location }
       ]
     }).compileComponents();
-  }));
-
-  beforeEach(() => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
@@ -56,6 +53,10 @@ describe('MyTasksComponent', () => {
     const tasks: Task[] = getMockTasks();
     mockTaskService.searchTask.and.returnValue(of({ tasks }));
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    fixture.destroy();
   });
 
   it('should make a call to load tasks using the default search request', () => {

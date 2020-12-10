@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Observable } from 'rxjs';
 
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
@@ -76,29 +76,23 @@ describe('WorkAllocation', () => {
       return fixture.debugElement.nativeElement.querySelector(id);
     };
 
-    beforeEach(async(() => {
+    beforeEach(() => {
       TestBed.configureTestingModule({
         declarations: [ WrapperComponent ],
         imports: [ WorkAllocationComponentsModule ],
         providers: [
-          {
-            provide: LocationDataService,
-            useClass: MockLocationDataService
-          },
-          {
-            provide: CaseworkerDataService,
-            useClass: MockCaseworkerDataService
-          }
+          { provide: LocationDataService, useClass: MockLocationDataService },
+          { provide: CaseworkerDataService, useClass: MockCaseworkerDataService }
         ]
-      })
-      .compileComponents();
-    }));
-
-    beforeEach(() => {
+      }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
       component = wrapper.ref;
       fixture.detectChanges();
+    });
+
+    afterEach(() => {
+      fixture.destroy();
     });
 
     it('should be defined', () => {

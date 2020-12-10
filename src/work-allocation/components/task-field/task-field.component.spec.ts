@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TaskFieldType, TaskView } from './../../enums';
 import { Task, TaskFieldConfig } from './../../models/tasks';
@@ -31,19 +31,19 @@ describe('WorkAllocation', () => {
       };
     }
 
-    beforeEach(async(() => {
+    beforeEach(() => {
       TestBed.configureTestingModule({
         declarations: [ WrapperComponent ],
         imports: [ WorkAllocationComponentsModule ]
-      })
-      .compileComponents();
-    }));
-
-    beforeEach(() => {
+      }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
       component = wrapper.appComponentRef;
       fixture.detectChanges();
+    });
+
+    afterEach(() => {
+      fixture.destroy();
     });
 
     it('should show only if there is both a config and a task set', () => {

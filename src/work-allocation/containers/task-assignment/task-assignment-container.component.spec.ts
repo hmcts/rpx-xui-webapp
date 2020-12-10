@@ -1,7 +1,7 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { HttpClientModule } from '@angular/common/http';
 import { Component, Input, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Data } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -27,13 +27,12 @@ const JB = { firstName: 'Joseph', lastName: 'Bloggs', idamId: '3', location: LOC
 const NB = { firstName: 'Noah',   lastName: 'Body',   idamId: '4', location: LOCATION_B };
 
 @Component({
-    template: `
-      <exui-task-container-assignment></exui-task-container-assignment>`
-  })
-  class WrapperComponent {
-    @ViewChild(TaskAssignmentContainerComponent) public appComponentRef: TaskAssignmentContainerComponent;
-    @Input() public tasks: Task[];
-  }
+  template: `<exui-task-container-assignment></exui-task-container-assignment>`
+})
+class WrapperComponent {
+  @ViewChild(TaskAssignmentContainerComponent) public appComponentRef: TaskAssignmentContainerComponent;
+  @Input() public tasks: Task[];
+}
 
 /**
  * Mock tasks
@@ -63,47 +62,44 @@ function getTasks(): Task[] {
   ];
 }
 
-/* @Component({
-  selector: 'exui-task-list',
-  template: `<div></div>`
-})
-class MockTaskListComponent {} */
-
 describe('TaskAssignmentContainerComponent', () => {
   let component: TaskAssignmentContainerComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
   const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['getTask']);
 
-/*   let location: Location;
-  let router: Router; */
-
-
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [
-          TaskAssignmentContainerComponent, WrapperComponent, ErrorMessageComponent, TaskListComponent
-        ],
-      imports: [WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientModule, RouterTestingModule],
-      providers: [{ provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
-      {provide: ActivatedRoute, useValue: {
-        data: {
-          subscribe: (fn: (value: Data) => void) => fn({
-            taskid: TASKS
-          }),
-        },
-        params: Observable.of(getTasks[0])}}]
-    })
-      .compileComponents();
-  }));
-
-  beforeEach(() => {
+        TaskAssignmentContainerComponent, WrapperComponent, ErrorMessageComponent, TaskListComponent
+      ],
+      imports: [
+        WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientModule, RouterTestingModule
+      ],
+      providers: [
+        { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
+        {
+          provide: ActivatedRoute, useValue: {
+            data: {
+              subscribe: (fn: (value: Data) => void) => fn({
+                taskid: TASKS.BOB_CRATCHITT.id
+              }),
+            },
+            params: Observable.of(getTasks[0])
+          }
+        }
+      ]
+    }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
 
     wrapper.tasks = null;
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    fixture.destroy();
   });
 
   /* it('should allow changing the caseworker', async () => {

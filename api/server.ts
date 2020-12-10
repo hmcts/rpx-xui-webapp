@@ -25,7 +25,7 @@ app.use([removeCacheHeaders, express.static(path.join(__dirname, '..', 'assets')
 app.use([removeCacheHeaders, express.static(path.join(__dirname, '..'), { index: false, cacheControl: false })])
 
 app.use('/*', (req, res) => {
-    res.set('Cache-Control', 'no-store, max-age=0, must-revalidate, proxy-revalidate')
+    res.set('Cache-Control', 'no-store, s-maxage=0, max-age=0, must-revalidate, proxy-revalidate')
     res.render('../index', {
         providers: [
             { provide: 'REQUEST', useValue: req },

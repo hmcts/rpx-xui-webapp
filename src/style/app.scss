@@ -360,6 +360,10 @@ button:focus {
   margin-right: 15px;
 }
 
+.app-pane {
+  outline: 0;
+}
+
 /**
  * We require a dynamic background-color for EXUI users. ie. Red for Judicial users, Black for Case Manager,
  * and other users.

@@ -507,19 +507,19 @@ describe('CCD casefields, retain_hidden_field setting', function () {
             expect(caseEventSubmitRequestBody.data[parentComplexField.id][childComplex.id]).to.have.property(grandchildText.id);
 
             if (scenario.parentComplex.display && scenario.childText.display){
-                expect(caseEventSubmitRequestBody.data[parentComplexField.id][childText.id]).to.equal("Child text value new");
+                expect(caseEventSubmitRequestBody.data[parentComplexField.id][childText.id], "For field" + childText.id).to.equal("Child text value new");
             } else if (scenario.childText.retainValue) {
-                expect(caseEventSubmitRequestBody.data[parentComplexField.id][childText.id]).to.equal("Child text value old");
+                expect(caseEventSubmitRequestBody.data[parentComplexField.id][childText.id], "For field" + childText.id).to.equal("Child text value old");
             } else {
-                expect(caseEventSubmitRequestBody.data[parentComplexField.id][childText.id]).to.equal(null);
+                expect(caseEventSubmitRequestBody.data[parentComplexField.id][childText.id], "For field" + childText.id).to.equal(null);
             }
 
             if (scenario.parentComplex.display && scenario.childComplex.display && scenario.grandchildText.display) {
-                expect(caseEventSubmitRequestBody.data[parentComplexField.id][childComplex.id][grandchildText.id]).to.equal("Grand Child text value new");
+                expect(caseEventSubmitRequestBody.data[parentComplexField.id][childComplex.id][grandchildText.id], "For field" + grandchildText.id).to.equal("Grand Child text value new");
             } else if (scenario.childText.retainValue) {
-                expect(caseEventSubmitRequestBody.data[parentComplexField.id][childComplex.id][grandchildText.id]).to.equal("Grand Child text value old");
+                expect(caseEventSubmitRequestBody.data[parentComplexField.id][childComplex.id][grandchildText.id], "For field" + grandchildText.id).to.equal("Grand Child text value old");
             } else {
-                expect(caseEventSubmitRequestBody.data[parentComplexField.id][childComplex.id][grandchildText.id]).to.equal(null);
+                expect(caseEventSubmitRequestBody.data[parentComplexField.id][childComplex.id][grandchildText.id], "For field" + grandchildText.id).to.equal(null);
             }
  
         });

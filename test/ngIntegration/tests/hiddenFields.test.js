@@ -414,7 +414,7 @@ describe('CCD casefields, retain_hidden_field setting', function () {
             grandchildText: { display: false, retainValue: true },
         } 
     ].forEach(scenario => {
-        it.only(`Deep complex field : ${scenario.testName}`, async function () {
+        it(`Deep complex field : ${scenario.testName}`, async function () {
             // CCD case config setup start 
 
             const caseConfig = new CCDCaseConfig('TEST_CaseType', 'Test case type hidden field retain value', 'test description');

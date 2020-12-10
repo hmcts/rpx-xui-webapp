@@ -24,7 +24,7 @@ app.set('views', __dirname)
 app.use([noCache, express.static(path.join(__dirname, '..', 'assets'), { index: false, cacheControl: false })])
 app.use([noCache, express.static(path.join(__dirname, '..'), { index: false, cacheControl: false })])
 
-app.use('/*', noCache, (req, res) => {
+app.use('/*', (req, res) => {
     res.render('../index', {
         providers: [
             { provide: 'REQUEST', useValue: req },

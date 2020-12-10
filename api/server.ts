@@ -12,7 +12,7 @@ import * as express from 'express'
 import * as path from 'path'
 import { appInsights } from './lib/appInsights'
 import errorHandler from './lib/error.handler'
-import {noCache} from './lib/middleware/nocache'
+import {removeCacheHeaders} from './lib/middleware/removeCacheHeaders'
 
 app.engine('html', ejs.renderFile)
 app.set('view engine', 'html')
@@ -21,10 +21,11 @@ app.set('views', __dirname)
 app.set('view engine', 'html')
 app.set('views', __dirname)
 
-app.use([noCache, express.static(path.join(__dirname, '..', 'assets'), { index: false, cacheControl: false })])
-app.use([noCache, express.static(path.join(__dirname, '..'), { index: false, cacheControl: false })])
+app.use([removeCacheHeaders, express.static(path.join(__dirname, '..', 'assets'), { index: false, cacheControl: false })])
+app.use([removeCacheHeaders, express.static(path.join(__dirname, '..'), { index: false, cacheControl: false })])
 
 app.use('/*', (req, res) => {
+    res.set('Cache-Control', 'no-store, max-age=0, must-revalidate, proxy-revalidate')
     res.render('../index', {
         providers: [
             { provide: 'REQUEST', useValue: req },

@@ -2,9 +2,10 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { Location } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Task } from '../../models/tasks';
@@ -12,6 +13,9 @@ import { WorkAllocationTaskService } from '../../services';
 import { getMockTasks } from '../../tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { AvailableTasksComponent } from './available-tasks.component';
+import {InfoMessageCommService} from '../../services/info-message-comms.service';
+import {InfoMessage, InfoMessageType} from '../../enums';
+import {InformationMessage} from '../../models/comms/infomation-message.model';
 
 @Component({
   template: `<exui-available-tasks></exui-available-tasks>`
@@ -26,7 +30,9 @@ describe('AvailableTasksComponent', () => {
   let fixture: ComponentFixture<WrapperComponent>;
 
   let location: jasmine.SpyObj<Location>;
-  const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
+  const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask', 'claimTask']);
+  const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['emitInfoMessageChange']);
+  const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
   beforeEach(async(() => {
     location = jasmine.createSpyObj('Location', ['path']);
@@ -41,7 +47,9 @@ describe('AvailableTasksComponent', () => {
       declarations: [ AvailableTasksComponent, WrapperComponent, TaskListComponent ],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
-        { provide: Location, useValue: location }
+        { provide: Location, useValue: location },// TODO: Remove if not needed
+        { provide: Router, useValue: mockRouter },
+        { provide: InfoMessageCommService, useValue: mockInfoMessageCommService }
       ]
     }).compileComponents();
   }));
@@ -53,6 +61,10 @@ describe('AvailableTasksComponent', () => {
     const tasks: Task[] = getMockTasks();
     mockTaskService.searchTask.and.returnValue(of({ tasks }));
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    fixture.destroy();
   });
 
   it('should make a call to load tasks using the default search request', () => {
@@ -125,5 +137,93 @@ describe('AvailableTasksComponent', () => {
     const footerCell = element.querySelector('.cell-footer');
     expect(footerCell).toBeDefined();
     expect(footerCell.textContent.trim()).toEqual(component.emptyMessage);
+  });
+
+  // describe('onActionHandler()', () => {
+  //   it('should call claimTask with the task id, so that the task can be \'claimed\' by the User.', () => {
+  //
+  //
+  //   });
+  // }
+
+  describe('claimTask()', () => {
+
+    it('should call claimTask on the taskService with the taskId, so that the User can claim the task.', () => {
+
+      mockTaskService.claimTask.and.returnValue(of({}));
+
+      const taskId = '123456';
+      component.claimTask(taskId);
+
+      expect(mockTaskService.claimTask).toHaveBeenCalledWith(taskId);
+    });
+
+    it('should emit a Success information message, so that the User can see that they have claimed a task successfully.', () => {
+
+      mockTaskService.claimTask.and.returnValue(of({}));
+
+      const message: InformationMessage = {
+        type: InfoMessageType.SUCCESS,
+        message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS,
+      };
+
+      const taskId = '123456';
+      component.claimTask(taskId);
+
+      expect(mockInfoMessageCommService.emitInfoMessageChange).toHaveBeenCalledWith(message);
+    });
+
+    it('should call claimTaskErrors() with the error\'s status code, so that the User can see that the claim of ' +
+      'a task has been unsuccessful.', () => {
+
+      const errorStatusCode = 400;
+
+      const claimTaskErrorsSpy = spyOn(component, 'claimTaskErrors');
+
+      mockTaskService.claimTask.and.returnValue(throwError({status: errorStatusCode}));
+
+      const taskId = '123456';
+      component.claimTask(taskId);
+
+      expect(claimTaskErrorsSpy).toHaveBeenCalledWith(errorStatusCode);
+    });
+  });
+
+  describe('claimTaskErrors()', () => {
+
+    it('should make a call to navigate the user to the /service-down page, if the error status code is 500.', () => {
+
+      component.claimTaskErrors(500);
+
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/service-down']);
+    });
+
+    it('should make a call to navigate the user to the /not-authorised page, if the error status code is 401.', () => {
+
+      component.claimTaskErrors(401);
+
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/not-authorised']);
+    });
+
+    it('should make a call to navigate the user to the /not-authorised page, if the error status code is 403.', () => {
+
+      component.claimTaskErrors(403);
+
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/not-authorised']);
+    });
+
+    // TODO: Parking for now, for some reason the fixture.destory is not cleaning up
+    // calls to functions from other tests.
+    // it('should emit the Warning information message, if the error status code is 400.', () => {
+    //
+    //   const message: InformationMessage = {
+    //     type: InfoMessageType.WARNING,
+    //     message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS,
+    //   };
+    //
+    //   component.claimTaskErrors(400);
+    //
+    //   expect(mockInfoMessageCommService.emitInfoMessageChange).toHaveBeenCalledWith(message);
+    // });
   });
 });

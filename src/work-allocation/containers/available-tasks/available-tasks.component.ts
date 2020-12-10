@@ -56,8 +56,6 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
 
   /**
    * A User 'Claims' themselves a task aka. 'Assign to me'.
-   *
-   * TODO: Unit test
    */
   public claimTask(taskId): void {
 

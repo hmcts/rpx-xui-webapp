@@ -25,7 +25,6 @@ export class TaskAssignmentContainerComponent implements OnInit {
   constructor(
     private readonly taskService: WorkAllocationTaskService,
     private readonly route: ActivatedRoute,
-
     private readonly location: Location,
     private readonly router: Router
   ) {}
@@ -98,8 +97,7 @@ export class TaskAssignmentContainerComponent implements OnInit {
     this.tasks = [ task ];
   }
 
-  public reAssign(): void {
-    this.router.navigate(['/tasks'], {fragment: this.manageLink});
+  public reassign(): void {
     if (!this.caseworker) {
       this.showProblem = true;
       this.errorTitle = 'There is a problem';
@@ -111,13 +109,15 @@ export class TaskAssignmentContainerComponent implements OnInit {
       userName: `${this.caseworker.firstName} ${this.caseworker.lastName}`
     };
     console.log('Reassigning, but using a fake assignee for the PACT stub', assignee);
-    this.taskService.assignTask(this.tasks[0].id, assignee).subscribe(
-      () => {console.log('assignment was successful: received a 200 status');
-             this.location.back();
+    this.taskService.assignTask(this.tasks[0].id, assignee).subscribe(() => {
+      console.log('assignment was successful: received a 200 status');
+      this.location.back();
     }, error => {
       const navigateTo = WorkAllocationUtils.handleTaskAssignErrorResult(error.status);
+      // TODO: This should not be hard-coded to '/tasks' as it should also work
+      // for Available tasks and the Task manager, which are on different routes.
       if (navigateTo === '/tasks') {
-        this.router.navigate([navigateTo], {state: {badRequest: 'true'}});
+        this.router.navigate([navigateTo], { fragment: this.manageLink, state: { badRequest: 'true' } });
       }
       this.router.navigate([navigateTo]);
     });

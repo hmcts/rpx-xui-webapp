@@ -12,6 +12,10 @@ class CaseEdit{
         await $(`#${caseFieldId}`).sendKeys(inputtext);
     }
 
+    getSubmitButton(){
+        return this.submitBtn;
+    }
+
     async  clickSubmit() {
         await BrowserWaits.waitForElement(this.submitBtn);
         await this.submitBtn.click();

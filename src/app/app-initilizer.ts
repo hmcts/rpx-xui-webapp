@@ -15,7 +15,6 @@ export function initApplication(store: Store<fromApp.State>): VoidFunction {
     let take = true;
     store.pipe(
       select((state: any) => state.appConfig), takeWhile(x => take)).subscribe(appConfig => {
-        console.log('initApplication:', appConfig);
         if (appConfig.config.features && Object.keys(appConfig.config.features).length) {
           store.dispatch(new fromApp.FinishAppInitilizer());
           take = false;

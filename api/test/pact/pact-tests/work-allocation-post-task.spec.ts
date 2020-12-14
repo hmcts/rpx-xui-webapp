@@ -4,7 +4,6 @@ import * as getPort from 'get-port';
 import * as path from 'path';
 
 import { EnhancedRequest } from '../../../lib/models';
-import { SearchTaskRequest } from '../../../workAllocation/interfaces/taskSearchParameter';
 import { handleTaskSearch } from '../../../workAllocation/taskService';
 
 describe('Work Allocation API', () => {
@@ -95,7 +94,7 @@ describe('Work Allocation API', () => {
 
     it('returns success with a 200', async () => {
       const taskUrl: string = `${provider.mockService.baseUrl}/task`
-      const { status } = await handleTaskSearch(taskUrl, mockRequest as SearchTaskRequest, {} as EnhancedRequest)
+      const { status } = await handleTaskSearch(taskUrl, mockRequest as any, {} as EnhancedRequest)
       expect(status).equal(200)
     })
   })

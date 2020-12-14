@@ -2,8 +2,15 @@ const ccdApiMock = require('./ccd/ccdApi');
 const WAReqResMappings  = require('./workAllocation/reqResMapping');
 
 
+const idamProfile = require('./ccd/profile');
+const dummyCaseDetails = require('./ccd/caseDetails_data');
+
 const requestMapping = {
    get:{
+       '/auth/login' : (req,res) => {
+           res.set('Location' , 'https://idam-web-public.aat.platform.hmcts.net/o/authorize?client_id=xuiwebapp&scope=profile%20openid%20roles%20manage-user%20create-user&response_type=code&redirect_uri=https%3A%2F%2Fmanage-case.aat.platform.hmcts.net%2Foauth2%2Fcallback&state=FqsiMTALn8m7qKRHNAAqlBoXUj57XSdenjnk_fplRzM&prompt=login&nonce=-XwicqlfV3vpe7GNIe9v5QFrlOzFR7VUDcjBBuYyUBc');
+           res.status(302).send();
+       },
        '/auth/isAuthenticated' : (req,res) => {
             res.send(true);
        },
@@ -52,22 +59,45 @@ const requestMapping = {
        },
         '/data/internal/case-types/:jurisdiction/event-triggers/:caseType': (req, res) => {
             res.send(ccdApiMock.getSolicitorCreateCaseConfig(req.params.jurisdiction, req.params.caseType));
-
-        }
-        ,
-
-        '/aggregated/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/cases': (req, res) => {
-                     res.send(getWorkbasketCases());     
-        }
-
-        , '/data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/cases/pagination_metadata' : (req,res) => {
-          res.send({ "total_results_count": 400, "total_pages_count": 16 });
         },
-        ...WAReqResMappings
+        '/data/internal/profile' : (req,res) => {
+            res.send(idamProfile);
+        },
+        '/data/internal/cases/:caseid': (req,res) => {
+            res.send(dummyCaseDetails);
+        },
+        '/api/caseshare/orgs': (req, res) => {
+            res.send(getCaseShareOrgs());
+        }
+
+
     },
     post:{
         '/api/inviteUser': (req,res) => {
             res.send({"userIdentifier":"97ecc487-cdeb-42a8-b794-84840a4testc","idamStatus":null});
+        },
+        '/data/case-types/:caseType/validate' : (req,res) => {
+            const responseBody = {
+                data: req.body.data,
+                "_links": { "self": { "href": "http://ccd-data-store-api-demo.service.core-compute-demo.internal" + req.path + "?pageId=" + req.query.pageId } }
+            }
+            res.send(responseBody)
+        },
+        '/data/case-types/:caseType/cases': (req,res) => {
+            const responseBody = {
+                id: Date.now(),
+                data: req.body.data,
+                "_links": { "self": { "href": "http://ccd-data-store-api-demo.service.core-compute-demo.internal" + req.path + "?ignore-warning=false" } }
+            }
+            res.send(responseBody)
+        },
+        '/data/cases/:caseid/events': (req,res) => {
+            const responseBody = {
+                id: Date.now(),
+                data: req.body.data,
+                "_links": { "self": { "href": "http://ccd-data-store-api-demo.service.core-compute-demo.internal" + req.path + "?ignore-warning=false" } }
+            }
+            res.send(responseBody);
         },
         '/data/internal/searchCases' : (req,res) => {
             res.send(getWorkbasketCases());
@@ -167,6 +197,191 @@ function getShareCases(){
 function organisationUsers(){
 
     return [{ "idamId": "u111111", "firstName": "Joe", "lastName": "Elliott", "email": "joe.elliott@woodford.com" }, { "idamId": "u222222", "firstName": "Steve", "lastName": "Harrison", "email": "steve.harrison@woodford.com" }, { "idamId": "u333333", "firstName": "James", "lastName": "Priest", "email": "james.priest@woodford.com" }, { "idamId": "u444444", "firstName": "Shaun", "lastName": "Coldwell", "email": "shaun.coldwell@woodford.com" }];
+}
+
+function getCaseShareOrgs(){
+    return [
+        {
+            "name": "Uday2 Test Org",
+            "organisationIdentifier": "W98ZZ5W",
+            "contactInformation": [
+                {
+                    "addressLine1": "Minerva House",
+                    "addressLine2": null,
+                    "addressLine3": null,
+                    "townCity": "Town",
+                    "county": "Berkshire",
+                    "country": null,
+                    "postCode": "SE1 9BB"
+                }
+            ]
+        },
+        {
+            "name": "org-name9",
+            "organisationIdentifier": "36D1IN0",
+            "contactInformation": [
+                {
+                    "addressLine1": "Minerva House",
+                    "addressLine2": "addressLine2",
+                    "addressLine3": "addressLine3",
+                    "townCity": "some-town-city",
+                    "county": "some-county",
+                    "country": "some-country",
+                    "postCode": "SE1 9BB"
+                }
+            ]
+        },
+        {
+            "name": "some-org-name",
+            "organisationIdentifier": "HTIXPV9",
+            "contactInformation": [
+                {
+                    "addressLine1": "Minerva House",
+                    "addressLine2": null,
+                    "addressLine3": null,
+                    "townCity": null,
+                    "county": null,
+                    "country": null,
+                    "postCode": "SE1 9BB"
+                }
+            ]
+        },
+        {
+            "name": "gmjbGiAqBs",
+            "organisationIdentifier": "99MYB0D",
+            "contactInformation": [
+                {
+                    "addressLine1": "Minerva House",
+                    "addressLine2": "addressLine2",
+                    "addressLine3": "addressLine3",
+                    "townCity": "some-town-city",
+                    "county": "some-county",
+                    "country": "some-country",
+                    "postCode": "SE1 9BB"
+                }
+            ]
+        },
+        {
+            "name": "some-org-name",
+            "organisationIdentifier": "74UIZZ0",
+            "contactInformation": [
+                {
+                    "addressLine1": "Minerva House",
+                    "addressLine2": null,
+                    "addressLine3": null,
+                    "townCity": null,
+                    "county": null,
+                    "country": null,
+                    "postCode": "SE1 9BB"
+                }
+            ]
+        },
+        {
+            "name": "rkOGPHNIxf",
+            "organisationIdentifier": "C5E2CNJ",
+            "contactInformation": [
+                {
+                    "addressLine1": "Minerva House",
+                    "addressLine2": "addressLine2",
+                    "addressLine3": "addressLine3",
+                    "townCity": "some-town-city",
+                    "county": "some-county",
+                    "country": "some-country",
+                    "postCode": "SE1 9BB"
+                }
+            ]
+        },
+        {
+            "name": "fSlJfKIEtN",
+            "organisationIdentifier": "RAHN4V8",
+            "contactInformation": [
+                {
+                    "addressLine1": "Minerva House",
+                    "addressLine2": "addressLine2",
+                    "addressLine3": "addressLine3",
+                    "townCity": "some-town-city",
+                    "county": "some-county",
+                    "country": "some-country",
+                    "postCode": "SE1 9BB"
+                }
+            ]
+        },
+        {
+            "name": "QmjIflnSBY",
+            "organisationIdentifier": "7U5ESY2",
+            "contactInformation": [
+                {
+                    "addressLine1": "Minerva House",
+                    "addressLine2": "addressLine2",
+                    "addressLine3": "addressLine3",
+                    "townCity": "some-town-city",
+                    "county": "some-county",
+                    "country": "some-country",
+                    "postCode": "SE1 9BB"
+                }
+            ]
+        },
+        {
+            "name": "kdaDTEAlyk",
+            "organisationIdentifier": "XXP0053",
+            "contactInformation": [
+                {
+                    "addressLine1": "Minerva House",
+                    "addressLine2": "addressLine2",
+                    "addressLine3": "addressLine3",
+                    "townCity": "some-town-city",
+                    "county": "some-county",
+                    "country": "some-country",
+                    "postCode": "SE1 9BB"
+                }
+            ]
+        },
+        {
+            "name": "MHQYvohRQp",
+            "organisationIdentifier": "Q6BPWMH",
+            "contactInformation": [
+                {
+                    "addressLine1": "Minerva House",
+                    "addressLine2": "addressLine2",
+                    "addressLine3": "addressLine3",
+                    "townCity": "some-town-city",
+                    "county": "some-county",
+                    "country": "some-country",
+                    "postCode": "SE1 9BB"
+                }
+            ]
+        },
+        {
+            "name": "uKUqhbHcDn",
+            "organisationIdentifier": "F3BY6VF",
+            "contactInformation": [
+                {
+                    "addressLine1": "Minerva House",
+                    "addressLine2": "addressLine2",
+                    "addressLine3": "addressLine3",
+                    "townCity": "some-town-city",
+                    "county": "some-county",
+                    "country": "some-country",
+                    "postCode": "SE1 9BB"
+                }
+            ]
+        },
+        {
+            "name": "Lousy Overpriced LawyerS",
+            "organisationIdentifier": "US4JC82",
+            "contactInformation": [
+                {
+                    "addressLine1": "Minerva House",
+                    "addressLine2": "Unit 10 Victoria Station",
+                    "addressLine3": null,
+                    "townCity": "london",
+                    "county": "Orange County",
+                    "country": null,
+                    "postCode": "SE1 9BB"
+                }
+            ]
+        }
+    ];
 }
 
 function getWorkbasketCases(){

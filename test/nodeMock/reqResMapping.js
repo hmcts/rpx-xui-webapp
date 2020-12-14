@@ -63,7 +63,7 @@ const requestMapping = {
         , '/data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/cases/pagination_metadata' : (req,res) => {
           res.send({ "total_results_count": 400, "total_pages_count": 16 });
         },
-        ...WAReqResMappings
+        ...WAReqResMappings.get
     },
     post:{
         '/api/inviteUser': (req,res) => {
@@ -74,7 +74,8 @@ const requestMapping = {
         },
         '/api/caseshare/case-assignments': (req, res) => {
             res.send( []);
-        }
+        },
+      ...WAReqResMappings.post
 
     },
     put:{

@@ -1,6 +1,5 @@
 import { expect } from 'chai';
 // import mocha from 'mocha';
-import { config } from './config/config';
 import { getXSRFToken } from './utils/authUtil'
 // import { mocha } from './test';
 import Request from './utils/request';

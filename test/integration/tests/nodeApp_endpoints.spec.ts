@@ -1,6 +1,4 @@
 import { expect } from 'chai';
-import {mocha} from './test';
-import {http} from './utils';
 import Request from './utils/request';
 
 describe('nodeApp endpoint', () => {

@@ -1,4 +1,6 @@
 const ccdApiMock = require('./ccd/ccdApi');
+const WAReqResMappings  = require('./workAllocation/reqResMapping');
+
 
 const idamProfile = require('./ccd/profile');
 const dummyCaseDetails = require('./ccd/caseDetails_data');
@@ -66,7 +68,9 @@ const requestMapping = {
         },
         '/api/caseshare/orgs': (req, res) => {
             res.send(getCaseShareOrgs());
-        }
+        },
+        ...WAReqResMappings.get
+
 
 
     },
@@ -102,7 +106,8 @@ const requestMapping = {
         },
         '/api/caseshare/case-assignments': (req, res) => {
             res.send( []);
-        }
+        },
+        ...WAReqResMappings.post
 
     },
     put:{

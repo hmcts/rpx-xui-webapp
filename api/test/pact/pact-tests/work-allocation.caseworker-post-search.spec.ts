@@ -1,37 +1,26 @@
-import { Pact } from '@pact-foundation/pact'
-import { assert, expect } from 'chai'
-import * as getPort from 'get-port'
-import * as path from 'path'
+import { Pact } from '@pact-foundation/pact';
+import { expect } from 'chai';
+import * as getPort from 'get-port';
+import * as path from 'path';
 
-import { EnhancedRequest } from '../../../lib/models'
-import { handlePostSearch } from '../../../workAllocation/caseWorkerService'
+import { EnhancedRequest } from '../../../lib/models';
+import { handlePostSearch } from '../../../workAllocation/caseWorkerService';
+import { SUCCESS } from './../constants/work-allocation/behaviours.spec';
+import { CASEWORKERS } from './../constants/work-allocation/caseworkers.spec';
 
 describe('Case worker API', () => {
 
-  let mockServerPort: number
-  let provider: Pact
+  let mockServerPort: number;
+  let provider: Pact;
 
   const SEARCH_TERM: string = 'term'
-  const ALREADY_DONE_TERM: string = 'already done term'
-  const BAD_REQUEST_TERM: string = 'bad request term'
-  const FORBIDDEN_TERM: string = 'forbidden term'
-  const UNSUPPORTED_TERM: string = 'unsupported term'
-  const SERVER_ERROR_TERM: string = 'server error term'
 
-  const BEHAVIOURS = {
-    SUCCESS: {},
-    ALREADY_DONE: SEARCH_TERM,
-    BAD_REQUEST: { behaviour: 'bad-request' },
-    FORBIDDEN: { behaviour: 'forbidden' },
-    UNSUPPORTED: { behaviour: 'unsupported' },
-    SERVER_ERROR: { behaviour: 'unsupported' }
-  }
 
   before(async () => {
     mockServerPort = await getPort()
     provider = new Pact({
-      consumer: 'xui_caseworker_search',
-      provider: 'WorkAllocation_api_cancel',
+      consumer: 'xui_work_allocation_caseworker_post_search',
+      provider: 'WorkAllocation_api_caseworker',
       dir: path.resolve(__dirname, '../pacts'),
       log: path.resolve(__dirname, '../logs', 'work-allocation.log'),
       logLevel: 'info',
@@ -55,14 +44,15 @@ describe('Case worker API', () => {
         },
         willRespondWith: {
           status: 200,
-          headers: {'Content-Type': 'application/json'}
+          headers: {'Content-Type': 'application/json'},
+          body: CASEWORKERS.JOHN_SMITH
         }
       })
     )
 
     it('returns success with a 200', async () => {
       const searchUrl: string = `${provider.mockService.baseUrl}/caseworker/search/${SEARCH_TERM}`
-      const payload: any = BEHAVIOURS.SUCCESS
+      const payload: any = SUCCESS;
       const { status } = await handlePostSearch(searchUrl, payload, {} as EnhancedRequest)
       expect(status).equal(200)
     })

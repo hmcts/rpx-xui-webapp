@@ -13,7 +13,7 @@
   </ng-container>
 
   <!-- Manage column -->
-  <ng-container cdkColumnDef="manage">
+  <ng-container *ngIf="showManage" cdkColumnDef="manage">
     <th class="govuk-table__header" cdk-header-cell *cdkHeaderCellDef>&nbsp;</th>
     <td cdk-cell *cdkCellDef="let rowData" class="govuk-table__cell border-none govuk-accordion__section-header">
       <div class="govuk-accordion__section-heading">

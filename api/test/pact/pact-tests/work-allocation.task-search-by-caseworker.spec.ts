@@ -4,10 +4,9 @@ import * as getPort from 'get-port';
 import * as path from 'path';
 
 import { EnhancedRequest } from '../../../lib/models';
-import { SearchTaskRequest } from '../../../workAllocation/interfaces/taskSearchParameter';
 import { handleTaskSearch } from '../../../workAllocation/taskService';
-import { filterByAssignee, SORTABLE_FIELDS, sortTasks, TASKS_ARRAY } from '../constants/work-allocation/tasks.spec';
 import { ALL_CASEWORKERS } from '../constants/work-allocation/caseworkers.spec';
+import { filterByAssignee, SORTABLE_FIELDS, sortTasks, TASKS_ARRAY } from '../constants/work-allocation/tasks.spec';
 
 describe('Work Allocation API', () => {
 
@@ -38,7 +37,7 @@ describe('Work Allocation API', () => {
       const values = [ caseworkerName ];
       // Do one for each of ascending and descending.
       for (const order of ['ascending', 'descending']) {
-        const request: SearchTaskRequest = {
+        const request: any = {
           search_parameters: [
             { key, operator: 'sort', values: [ order ] },
             { key: 'assignee', operator: 'IN', values }

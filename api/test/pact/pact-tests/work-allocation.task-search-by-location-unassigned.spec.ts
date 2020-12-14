@@ -4,7 +4,6 @@ import * as getPort from 'get-port';
 import * as path from 'path';
 
 import { EnhancedRequest } from '../../../lib/models';
-import { SearchTaskRequest } from '../../../workAllocation/interfaces/taskSearchParameter';
 import { handleTaskSearch } from '../../../workAllocation/taskService';
 import { LOCATION_COMBINATIONS } from '../constants/work-allocation/locations.spec';
 import { filterByLocations, getUnassignedTasks, SORTABLE_FIELDS, sortTasks } from '../constants/work-allocation/tasks.spec';
@@ -39,7 +38,7 @@ describe('Work Allocation API', () => {
       const values = combination.map(l => l.locationName).sort();
       // Do one for each of ascending and descending.
       for (const order of ['ascending', 'descending']) {
-        const request: SearchTaskRequest = {
+        const request: any = {
           search_parameters: [
             { key, operator: 'sort', values: [ order ] },
             { key: 'location', operator: 'IN', values },

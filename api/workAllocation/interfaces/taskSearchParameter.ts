@@ -13,14 +13,12 @@ export interface TaskSearchParameter {
     user?: string[]
 }
 
+export interface SearchTaskParameter {
+  key: string
+  operator: string
+  values: string[]
+}
+
 export interface SearchTaskRequest {
-    search_parameters: [
-      {
-        key: string,
-        operator: string,
-        values: [
-          string
-        ]
-      }
-    ]
-  }
+  search_parameters: SearchTaskParameter[]
+}

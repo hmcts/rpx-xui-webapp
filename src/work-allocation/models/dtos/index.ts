@@ -14,6 +14,7 @@ export interface Caseworker {
   idamId: string;
   firstName: string;
   lastName: string;
+  email: string;
   location: Location;
 }
 

@@ -5,7 +5,7 @@ import * as path from 'path';
 
 import { EnhancedRequest } from '../../../lib/models';
 import { handleLocationGet } from '../../../workAllocation/locationService';
-import { LOCATIONS } from './../constants/work-allocation/locations.spec';
+import { LOCATIONS_ARRAY } from './../constants/work-allocation/locations.spec';
 
 describe('Work Allocation Location API', () => {
 
@@ -34,8 +34,6 @@ describe('Work Allocation Location API', () => {
    */
   describe('should return all locations.', () => {
 
-    const LOCATION_BODY = [ LOCATIONS.A, LOCATIONS.B, LOCATIONS.C ];
-
     before(() =>
       provider.addInteraction({
         state: 'locations are returned',
@@ -47,7 +45,7 @@ describe('Work Allocation Location API', () => {
         willRespondWith: {
           status: 200,
           headers: {'Content-Type': 'application/json'},
-          body: LOCATION_BODY
+          body: LOCATIONS_ARRAY
         }
       })
     )
@@ -57,7 +55,7 @@ describe('Work Allocation Location API', () => {
       const locationPath: string = `${provider.mockService.baseUrl}/location`;
       const response = await handleLocationGet(locationPath, {} as EnhancedRequest);
 
-      expect(response.data).deep.equal(LOCATION_BODY);
+      expect(response.data).deep.equal(LOCATIONS_ARRAY);
       expect(response.status).equal(200);
     });
   });

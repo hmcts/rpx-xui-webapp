@@ -1,5 +1,32 @@
 import { TaskFieldType, TaskService, TaskSort, TaskView } from '../enums';
+import { Location } from '../models/dtos';
 import { Task, TaskFieldConfig, TaskServiceConfig } from '../models/tasks';
+import { Caseworker } from './../../../api/workAllocation/interfaces/task';
+
+const LOCATION_A: Location = { id: 'a', locationName: 'Taylor House', services: [ 'a' ] };
+const LOCATION_B: Location = { id: 'b', locationName: 'Taylor Swift', services: [ 'a', 'b' ] };
+export function getMockLocations(): Location[] {
+  return [ LOCATION_A, LOCATION_B ];
+}
+
+export function getMockCaseworkers(): Caseworker[] {
+  return [
+    {
+      firstName: 'John',
+      lastName: 'Smith',
+      idamId: '1',
+      email: 'j.s@caseworkers.gov.uk',
+      location: LOCATION_A
+    },
+    {
+      firstName: 'Jane',
+      lastName: 'Doe',
+      idamId: '2',
+      email: 'j.doe@caseworkers.gov.uk',
+      location: LOCATION_B
+    }
+  ];
+}
 
 /**
  * Mock tasks

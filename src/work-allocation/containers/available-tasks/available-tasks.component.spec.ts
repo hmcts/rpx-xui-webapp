@@ -8,13 +8,12 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
 
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import {InfoMessage, InfoMessageType, TaskActionIds} from '../../enums';
-import {InformationMessage} from '../../models/comms/infomation-message.model';
-import { Task } from '../../models/tasks';
-import InvokedTaskAction from '../../models/tasks/invoked-task-action.model';
-import { WorkAllocationTaskService } from '../../services';
-import {InfoMessageCommService} from '../../services/info-message-comms.service';
-import { getMockTasks } from '../../tests/utils.spec';
+import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
+import { InformationMessage } from '../../models/comms';
+import * as dtos from '../../models/dtos';
+import { InvokedTaskAction, Task } from '../../models/tasks';
+import { InfoMessageCommService, LocationDataService, WorkAllocationTaskService } from '../../services';
+import { getMockLocations, getMockTasks } from '../../tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { AvailableTasksComponent } from './available-tasks.component';
 
@@ -31,6 +30,9 @@ describe('AvailableTasksComponent', () => {
   let fixture: ComponentFixture<WrapperComponent>;
 
   let location: jasmine.SpyObj<Location>;
+
+  const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
+  const mockLocations: dtos.Location[] = getMockLocations();
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask', 'claimTask']);
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['emitInfoMessageChange']);
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
@@ -49,6 +51,7 @@ describe('AvailableTasksComponent', () => {
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
         { provide: Location, useValue: location },
+        { provide: LocationDataService, useValue: mockLocationService },
         { provide: Router, useValue: mockRouter },
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService }
       ]
@@ -59,6 +62,7 @@ describe('AvailableTasksComponent', () => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
+    mockLocationService.getLocations.and.returnValue(of(mockLocations));
     const tasks: Task[] = getMockTasks();
     mockTaskService.searchTask.and.returnValue(of({ tasks }));
     fixture.detectChanges();
@@ -96,9 +100,11 @@ describe('AvailableTasksComponent', () => {
 
     const searchRequest = component.getSearchTaskRequest();
     // Make sure the search request looks right.
-    expect(searchRequest.search_parameters.length).toEqual(1);
+    expect(searchRequest.search_parameters.length).toEqual(3);
     expect(searchRequest.search_parameters[0].key).toEqual('caseReference');
     expect(searchRequest.search_parameters[0].values).toContain('ascending');
+    expect(searchRequest.search_parameters[1].key).toEqual('location');
+    expect(searchRequest.search_parameters[2].key).toEqual('assignee');
 
     // Let's also make sure that the tasks were re-requested with the new sorting.
     expect(mockTaskService.searchTask).toHaveBeenCalledWith(searchRequest);
@@ -109,9 +115,11 @@ describe('AvailableTasksComponent', () => {
 
     const newSearchRequest = component.getSearchTaskRequest();
     // Make sure the search request looks right.
-    expect(newSearchRequest.search_parameters.length).toEqual(1);
+    expect(newSearchRequest.search_parameters.length).toEqual(3);
     expect(newSearchRequest.search_parameters[0].key).toEqual('caseReference');
     expect(newSearchRequest.search_parameters[0].values).toContain('descending'); // Important!
+    expect(newSearchRequest.search_parameters[1].key).toEqual('location');
+    expect(newSearchRequest.search_parameters[2].key).toEqual('assignee');
 
     // Let's also make sure that the tasks were re-requested with the new sorting.
     expect(mockTaskService.searchTask).toHaveBeenCalledWith(newSearchRequest);
@@ -138,6 +146,35 @@ describe('AvailableTasksComponent', () => {
     const footerCell = element.querySelector('.cell-footer');
     expect(footerCell).toBeDefined();
     expect(footerCell.textContent.trim()).toEqual(component.emptyMessage);
+  });
+
+  it('should load tasks when the a new location selection is applied', () => {
+    const element = fixture.debugElement.nativeElement;
+
+    // Click on the summary.
+    const summary = element.querySelector('#toggleFilter');
+    summary.dispatchEvent(new Event('click'));
+
+    // Now click on the "Select all" option.
+    const selectAll = element.querySelector('#select_all');
+    selectAll.dispatchEvent(new Event('change'));
+
+    // And NOW click on "Apply".
+    const apply = element.querySelector('#applyFilter');
+    apply.dispatchEvent(new Event('click'));
+
+    const searchRequest = component.getSearchTaskRequest();
+    // Make sure the search request looks right.
+    expect(searchRequest.search_parameters.length).toEqual(3);
+    expect(searchRequest.search_parameters[0].operator).toEqual('sort');
+    expect(searchRequest.search_parameters[1].key).toEqual('location');
+    for (const loc of mockLocations) {
+      expect(searchRequest.search_parameters[1].values).toContain(loc.locationName);
+    }
+    expect(searchRequest.search_parameters[2].key).toEqual('assignee');
+
+    // Let's also make sure that the tasks were re-requested with the new sorting.
+    expect(mockTaskService.searchTask).toHaveBeenCalledWith(searchRequest);
   });
 
   describe('claimTask()', () => {

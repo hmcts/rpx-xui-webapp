@@ -3,7 +3,6 @@ import { v4 as  uuid } from 'uuid';
 // import mocha from 'mocha';
 import { config } from './config/config';
 import { getUserId, getXSRFToken } from './utils/authUtil';
-// import { mocha } from './test';
 import Request from './utils/request';
 
 

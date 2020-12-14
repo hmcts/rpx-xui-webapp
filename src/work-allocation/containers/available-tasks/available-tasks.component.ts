@@ -85,6 +85,10 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
     };
 
     switch (status) {
+      case 400:
+        this.messageService.emitInfoMessageChange(message);
+        this.loadTasks();
+        break;
       case 401:
       case 403:
         this.route.navigate(['/not-authorised']);

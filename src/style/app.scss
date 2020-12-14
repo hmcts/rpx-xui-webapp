@@ -24,6 +24,7 @@ $govuk-compatibility-govukfrontendtoolkit: true;
 @import "./markdown";
 @import "./print";
 @import "./vendor/prism.scss";
+@import "./material";
 
 body {
   margin: 0;

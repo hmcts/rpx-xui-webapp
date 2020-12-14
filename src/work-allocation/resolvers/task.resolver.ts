@@ -7,11 +7,11 @@ import { WorkAllocationTaskService } from '../services';
 
 @Injectable({ providedIn: 'root' })
 export class TaskResolver implements Resolve<Task> {
-    constructor(private readonly service: WorkAllocationTaskService) {}
+  constructor(private readonly service: WorkAllocationTaskService) {}
 
-    public resolve(
-      route: ActivatedRouteSnapshot,
-      state: RouterStateSnapshot): Observable<Task> {
-      return this.service.getTask(route.paramMap.get('taskId'));
-    }
+  public resolve(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot): Observable<Task> {
+    return this.service.getTask(route.paramMap.get('taskId'));
+  }
 }

@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Caseworker, Location } from '../../models/dtos';
-import { CaseworkerDataService, LocationDataService } from './../../services';
+import { CaseworkerDataService, LocationDataService } from '../../services';
 import { TaskAssignmentComponent } from './task-assignment.component';
 
 // Locations.
@@ -227,7 +227,6 @@ describe('WorkAllocation', () => {
         expect(caseworkersSelect.options[1].textContent).toBe(''); // Undefined caseworker.
       });
     });
-
   });
 
 });

@@ -14,7 +14,7 @@ module.exports = function (config) {
         tsconfigFile: 'tsconfig.json',
         mochaOptions: {
             files: [ "dist/out-tsc/api/{,!(test)/**/}*.spec.js" ],
-            timeout: 5000
+            // timeout: 5000,
         },
         htmlReporter: {
             baseDir: 'reports/tests/mutation/node/' 

@@ -6,9 +6,7 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 
 import * as fromComponents from '.';
 import * as fromPipes from '../pipes';
-
-import { InfoMessageCommService } from '../services/info-message-comms.service';
-import { CaseworkerDataService, LocationDataService } from './../services';
+import { CaseworkerDataService, InfoMessageCommService, LocationDataService } from '../services';
 
 // from containers
 @NgModule({

@@ -33,8 +33,10 @@ export class TaskHomeComponent implements OnInit {
   public infoMessageType: InfoMessageType;
   public infoMessage: InfoMessage;
 
-  constructor(private readonly router: Router,
-              private readonly infoMessageCommService: InfoMessageCommService) {}
+  constructor(
+    private readonly router: Router,
+    private readonly infoMessageCommService: InfoMessageCommService
+  ) {}
 
   public ngOnInit(): void {
     this.router.events.subscribe(event => {

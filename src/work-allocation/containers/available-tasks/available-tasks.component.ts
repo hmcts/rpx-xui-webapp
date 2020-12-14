@@ -56,8 +56,6 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
 
   /**
    * A User 'Claims' themselves a task aka. 'Assign to me'.
-   *
-   * TODO: Unit test
    */
   public claimTask(taskId): void {
 
@@ -78,8 +76,6 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
   /**
    * Navigate the User to the correct error page, or throw an on page warning
    * that the Task is no longer available.
-   *
-   * TODO: Unit test
    */
   public claimTaskErrors(status): void {
 
@@ -104,7 +100,6 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
   /**
    * Handle a User Claiming a Task
    *
-   * TODO: Unit test
    * TODO: This function will need to handle 'Assign to me and go to case' - EUI-2963.
    */
   public onActionHandler(taskAction: InvokedTaskAction): void {

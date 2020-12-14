@@ -12,7 +12,7 @@ const MockApp = require('../../nodeMock/app');
 
 const ccdApi = require('../../nodeMock/ccd/ccdApi');
 
-describe.only('Work Allocation: ', function () {
+describe('Work Allocation: ', function () {
 
     beforeEach(async function (done) {
         MockApp.init()

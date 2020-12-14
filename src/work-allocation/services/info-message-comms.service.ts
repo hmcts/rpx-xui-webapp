@@ -7,7 +7,7 @@ import { InformationMessage } from '../models/comms';
 export class InfoMessageCommService {
   public constructor() {}
 
-  private readonly infoMessageSource = new Subject<InformationMessage>();
+  public infoMessageSource = new Subject<InformationMessage>();
 
   public infoMessageChangeEmitted$ = this.infoMessageSource.asObservable();
 

@@ -2,9 +2,8 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild }
 import { CheckboxListComponent } from '@hmcts/rpx-xui-common-lib';
 
 import { Location } from '../../models/dtos';
-import { LocationDataService } from './../../services/location-data.service';
-
-export const AVAILABLE_TASKS_FILTER_ID = 'AVAILABLE_TASKS_FILTER';
+import { LocationDataService, SessionStorageService } from '../../services';
+import { FilterConstants } from '../constants';
 
 @Component({
   selector: 'exui-available-tasks-filter',
@@ -28,7 +27,6 @@ export class AvailableTasksFilterComponent implements OnInit {
   public set selection(value: Location[]) {
     if (this.pSelection !== value) {
       this.pSelection = value;
-      this.selectionChanged.emit(this.pSelection);
     }
   }
   private pSelection: Location[] = [];
@@ -50,13 +48,16 @@ export class AvailableTasksFilterComponent implements OnInit {
   /**
    * Take in the locationService so we can navigate when actions are clicked.
    */
-  constructor(private readonly locationService: LocationDataService) {}
+  constructor(
+    private readonly locationService: LocationDataService,
+    private readonly sessionStorageService: SessionStorageService
+  ) {}
 
 
   public ngOnInit(): void {
     let preselection: Location[] = [ this.DEFAULT_LOCATION ];
     // See if we have anything stored in the session for the filter.
-    const stored: string = sessionStorage.getItem(AVAILABLE_TASKS_FILTER_ID);
+    const stored: string = this.sessionStorageService.getItem(FilterConstants.Session.AvailableTasks);
     if (stored) {
       preselection = [ ...JSON.parse(stored) ];
     }
@@ -89,7 +90,7 @@ export class AvailableTasksFilterComponent implements OnInit {
   public applyFilter(): void {
     this.selection = [ ...this.locationFilter.selection ];
     const toStore: string = JSON.stringify(this.selection);
-    sessionStorage.setItem(AVAILABLE_TASKS_FILTER_ID, toStore);
+    this.sessionStorageService.setItem(FilterConstants.Session.AvailableTasks, toStore);
     this.selectionChanged.emit(this.selection);
   }
 

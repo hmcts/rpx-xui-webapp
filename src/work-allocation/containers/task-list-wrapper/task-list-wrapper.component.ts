@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { TaskService, TaskSort } from '../../enums';
 import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
-import { WorkAllocationTaskService } from '../../services';
-import { InfoMessageCommService } from '../../services/info-message-comms.service';
+import { InfoMessageCommService, SessionStorageService, WorkAllocationTaskService } from '../../services';
 import { DEFAULT_EMPTY_MESSAGE } from '../task-list/task-list.component';
 
 @Component({
@@ -17,9 +16,11 @@ export class TaskListWrapperComponent implements OnInit {
    * Take in the Router so we can navigate when actions are clicked.
    */
   constructor(
+    protected ref: ChangeDetectorRef,
     protected taskService: WorkAllocationTaskService,
     protected router: Router,
-    protected infoMessageCommService: InfoMessageCommService
+    protected infoMessageCommService: InfoMessageCommService,
+    protected sessionStorageService: SessionStorageService
   ) {}
 
   private pTasks: Task[];
@@ -43,19 +44,6 @@ export class TaskListWrapperComponent implements OnInit {
   }
 
   /**
-   * Communicate what information message needs to be displayed.
-   */
-  public get messageService(): InfoMessageCommService {
-
-    return this.infoMessageCommService;
-  }
-
-  public get route(): Router {
-
-    return this.router;
-  }
-
-  /**
    * Mock TaskServiceConfig.
    */
   private readonly defaultTaskServiceConfig: TaskServiceConfig = {
@@ -67,12 +55,29 @@ export class TaskListWrapperComponent implements OnInit {
 
   public sortedBy: TaskSortField;
 
+  /**
+   * To be overridden.
+   */
+  public get sortSessionKey(): string {
+    return 'sortSessionKey';
+  }
+
   public ngOnInit(): void {
-    // Set up the default sorting.
-    this.sortedBy = {
-      fieldName: this.taskServiceConfig.defaultSortFieldName,
-      order: this.taskServiceConfig.defaultSortDirection
-    };
+    // Try to get the sort order out of the session.
+    const stored = this.sessionStorageService.getItem(this.sortSessionKey);
+    if (stored) {
+      const { fieldName, order } = JSON.parse(stored);
+      this.sortedBy = {
+        fieldName,
+        order: order as TaskSort
+      };
+    } else {
+      // Otherwise, set up the default sorting.
+      this.sortedBy = {
+        fieldName: this.taskServiceConfig.defaultSortFieldName,
+        order: this.taskServiceConfig.defaultSortDirection
+      };
+    }
 
     this.loadTasks();
   }
@@ -88,6 +93,7 @@ export class TaskListWrapperComponent implements OnInit {
       // when no tasks are returned.
       // NOTE: Do not commit them in a swapped state!
       this.tasks = result.tasks;
+      this.ref.detectChanges();
       // this.tasks = [];
     });
   }
@@ -132,6 +138,7 @@ export class TaskListWrapperComponent implements OnInit {
       order = TaskSort.DSC;
     }
     this.sortedBy = { fieldName, order };
+    this.sessionStorageService.setItem(this.sortSessionKey, JSON.stringify(this.sortedBy));
 
     this.loadTasks();
   }

@@ -9,9 +9,9 @@ import { of } from 'rxjs';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import * as dtos from '../../models/dtos';
 import { Task } from '../../models/tasks';
+import { LocationDataService, WorkAllocationTaskService } from '../../services';
 import { getMockLocations, getMockTasks } from '../../tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
-import { LocationDataService, WorkAllocationTaskService } from './../../services';
 import { AvailableTasksComponent } from './available-tasks.component';
 
 @Component({

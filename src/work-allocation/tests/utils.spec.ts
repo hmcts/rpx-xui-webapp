@@ -15,12 +15,14 @@ export function getMockCaseworkers(): Caseworker[] {
       firstName: 'John',
       lastName: 'Smith',
       idamId: '1',
+      email: 'j.s@caseworkers.gov.uk',
       location: LOCATION_A
     },
     {
       firstName: 'Jane',
       lastName: 'Doe',
       idamId: '2',
+      email: 'j.doe@caseworkers.gov.uk',
       location: LOCATION_B
     }
   ];

@@ -7,7 +7,8 @@ import { of } from 'rxjs';
 import * as dtos from '../../models/dtos';
 import { LocationDataService } from '../../services';
 import { getMockLocations } from '../../tests/utils.spec';
-import { AVAILABLE_TASKS_FILTER_ID, AvailableTasksFilterComponent } from './available-tasks-filter.component';
+import { FilterConstants } from '../constants';
+import { AvailableTasksFilterComponent } from './available-tasks-filter.component';
 
 @Component({
   template: `<exui-available-tasks-filter (selectionChanged)="onSelectionChanged($event)"></exui-available-tasks-filter>`
@@ -29,7 +30,7 @@ describe('AvailableTasksFilterComponent', () => {
   const mockLocations: dtos.Location[] = getMockLocations();
   const mockSavedFilter = JSON.stringify([ mockLocations[0] ]);
   const mocksessionStore = {
-    [AVAILABLE_TASKS_FILTER_ID]: mockSavedFilter
+    [FilterConstants.Session.AvailableTasks]: mockSavedFilter
   };
 
   beforeEach(async(() => {
@@ -59,7 +60,7 @@ describe('AvailableTasksFilterComponent', () => {
   });
 
   it('should attempt to load a saved filter from session storage on load', () => {
-    expect(sessionStorage.getItem).toHaveBeenCalledWith(AVAILABLE_TASKS_FILTER_ID);
+    expect(sessionStorage.getItem).toHaveBeenCalledWith(FilterConstants.Session.AvailableTasks);
     expect(component.preselection).toBeDefined();
     expect(component.preselection.length).toEqual(1);
     expect(component.preselection[0].locationName).toEqual(mockLocations[0].locationName);
@@ -146,6 +147,6 @@ describe('AvailableTasksFilterComponent', () => {
 
     // And also make sure we had an attempt to save the filter.
     const toStore = JSON.stringify(component.selection);
-    expect(sessionStorage.setItem).toHaveBeenCalledWith(AVAILABLE_TASKS_FILTER_ID, toStore);
+    expect(sessionStorage.setItem).toHaveBeenCalledWith(FilterConstants.Session.AvailableTasks, toStore);
   });
 });

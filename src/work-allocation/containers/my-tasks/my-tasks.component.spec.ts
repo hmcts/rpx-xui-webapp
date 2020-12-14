@@ -11,7 +11,7 @@ import { WorkAllocationComponentsModule } from '../../components/work-allocation
 import { Task } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
 import { getMockTasks } from '../../tests/utils.spec';
-import { TaskListComponent } from './../task-list/task-list.component';
+import { TaskListComponent } from '../task-list/task-list.component';
 import { MyTasksComponent } from './my-tasks.component';
 
 @Component({

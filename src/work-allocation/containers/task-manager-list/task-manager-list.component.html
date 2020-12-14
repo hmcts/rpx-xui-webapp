@@ -1,5 +1,5 @@
 <exui-task-manager-filter [locations]="locations" [caseworkers]="caseworkers"
-  (locationChanged)="onLocationChanged($event)" (caseworkerChanged)="onCaseworkerChanged($event)">
+  (selectionChanged)="onSelectionChanged($event)">
 </exui-task-manager-filter>
 <p>
   Displaying <span class="govuk-!-font-weight-bold">{{taskCount}}</span> {{tasksLabel}}.

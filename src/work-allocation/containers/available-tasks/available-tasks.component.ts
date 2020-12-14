@@ -1,60 +1,26 @@
 import { Component } from '@angular/core';
 
-import { InfoMessage, InfoMessageType, TaskActionIds, TaskFieldType, TaskView } from '../../enums';
+import { ConfigConstants, SortConstants } from '../../components/constants';
+import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
 import { InformationMessage } from '../../models/comms';
 import { Location, SearchTaskRequest } from '../../models/dtos';
 import { InvokedTaskAction, TaskFieldConfig } from '../../models/tasks';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
-export const AVAILABLE_TASKS_CONFIG: TaskFieldConfig[] = [
-  {
-    name: 'caseReference',
-    type: TaskFieldType.STRING,
-    columnLabel: 'Case reference',
-    views: TaskView.TASK_LIST,
-  },
-  {
-    name: 'caseName',
-    type: TaskFieldType.STRING,
-    columnLabel: 'Case name',
-    views: TaskView.TASK_LIST,
-  },
-  {
-    name: 'caseCategory',
-    type: TaskFieldType.STRING,
-    columnLabel: 'Case category',
-    views: TaskView.TASK_LIST,
-  },
-  {
-    name: 'location',
-    type: TaskFieldType.STRING,
-    columnLabel: 'Location',
-    views: TaskView.TASK_LIST,
-  },
-  {
-    name: 'taskName',
-    type: TaskFieldType.STRING,
-    columnLabel: 'Task',
-    views: TaskView.TASK_LIST,
-  },
-  {
-    name: 'dueDate',
-    type: TaskFieldType.DATE_DUE,
-    columnLabel: 'Date',
-    views: TaskView.TASK_LIST,
-  }
-];
 
-export const AVAILABLE_TASKS_FILTER_ID = 'AVAILABLE_TASKS_FILTER';
 @Component({
   selector: 'exui-available-tasks',
   templateUrl: 'available-tasks.component.html'
 })
 export class AvailableTasksComponent extends TaskListWrapperComponent {
-  private selectedLocations: Location[] = [];
+  private selectedLocations: Location[];
 
   public get fields(): TaskFieldConfig[] {
-    return AVAILABLE_TASKS_CONFIG;
+    return ConfigConstants.AvailableTasks;
+  }
+
+  public get sortSessionKey(): string {
+    return SortConstants.Session.AvailableTasks;
   }
 
   /**
@@ -79,12 +45,18 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
     this.loadTasks();
   }
 
+  public loadTasks(): void {
+    if (this.selectedLocations) {
+      super.loadTasks();
+    }
+  }
+
   private getLocationParameter() {
-    return {
-      key: 'location',
-      operator: 'IN',
-      values: this.selectedLocations.map(loc => loc.locationName).sort()
-    };
+    let values = [];
+    if (this.selectedLocations) {
+      values = this.selectedLocations.map(loc => loc.locationName).sort();
+    }
+    return { key: 'location', operator: 'IN', values };
   }
 
   /**
@@ -101,7 +73,7 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
         message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS,
       };
 
-      this.messageService.emitInfoMessageChange(message);
+      this.infoMessageCommService.emitInfoMessageChange(message);
     }, error => {
 
       this.claimTaskErrors(error.status);
@@ -124,13 +96,13 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
     switch (status) {
       case 401:
       case 403:
-        this.route.navigate(['/not-authorised']);
+        this.router.navigate(['/not-authorised']);
         break;
       case 500:
-        this.route.navigate(['/service-down']);
+        this.router.navigate(['/service-down']);
         break;
       default:
-        this.messageService.emitInfoMessageChange(message);
+        this.infoMessageCommService.emitInfoMessageChange(message);
     }
   }
 

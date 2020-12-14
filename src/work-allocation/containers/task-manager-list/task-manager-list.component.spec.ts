@@ -1,18 +1,24 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Location } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 
+import { FilterConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import * as dtos from '../../models/dtos';
 import { Task } from '../../models/tasks';
+import { CaseworkerDisplayName } from '../../pipes';
+import {
+  CaseworkerDataService,
+  LocationDataService,
+  SessionStorageService,
+  WorkAllocationTaskService,
+} from '../../services';
 import { getMockCaseworkers, getMockLocations, getMockTasks } from '../../tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
-import { CaseworkerDisplayName } from './../../pipes/caseworker-display-name.pipe';
-import { CaseworkerDataService, LocationDataService, WorkAllocationTaskService } from './../../services';
 import { TaskManagerListComponent } from './task-manager-list.component';
 
 @Component({
@@ -31,11 +37,12 @@ describe('TaskManagerListComponent', () => {
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
   const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
   const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
+  const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const mockLocations: dtos.Location[] = getMockLocations();
   const mockCaseworkers: dtos.Caseworker[] = getMockCaseworkers();
   const caseworkerDiplayName: CaseworkerDisplayName = new CaseworkerDisplayName();
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     location = jasmine.createSpyObj('Location', ['path']);
     location.path.and.returnValue('');
     TestBed.configureTestingModule({
@@ -49,13 +56,11 @@ describe('TaskManagerListComponent', () => {
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
         { provide: Location, useValue: location },
+        { provide: SessionStorageService, useValue: mockSessionStorageService },
         { provide: CaseworkerDataService, useValue: mockCaseworkerService },
         { provide: LocationDataService, useValue: mockLocationService }
       ]
     }).compileComponents();
-  }));
-
-  beforeEach(() => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
@@ -64,6 +69,11 @@ describe('TaskManagerListComponent', () => {
     mockLocationService.getLocations.and.returnValue(of(mockLocations));
     mockCaseworkerService.getAll.and.returnValue(of(mockCaseworkers));
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    fixture.destroy();
+    sessionStorage.removeItem(FilterConstants.Session.TaskManager);
   });
 
   it('should make a call to load tasks using the default search request', () => {
@@ -159,7 +169,7 @@ describe('TaskManagerListComponent', () => {
     expect(searchRequest.search_parameters[1].values.length).toEqual(mockLocations.length);
     expect(searchRequest.search_parameters[2].key).toEqual('assignee');
     expect(searchRequest.search_parameters[2].values.length).toEqual(1);
-    const caseworkerName = caseworkerDiplayName.transform(mockCaseworkers[0]);
+    const caseworkerName = caseworkerDiplayName.transform(mockCaseworkers[0], false);
     expect(searchRequest.search_parameters[2].values).toContain(caseworkerName);
 
     // Let's also make sure that the tasks were re-requested with the new sorting.

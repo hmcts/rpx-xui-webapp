@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 import { Caseworker, Location } from '../../models/dtos';
 import { CaseworkerDataService, LocationDataService } from '../../services';
+import { FilterConstants } from '../constants';
 
 @Component({
   selector: 'exui-task-assignment',
@@ -29,11 +30,7 @@ export class TaskAssignmentComponent implements OnInit {
    */
   @Output() public caseworkerChanged: EventEmitter<Caseworker> = new EventEmitter<Caseworker>();
 
-  public readonly ALL_LOCATIONS: Location = {
-    id: '**ALL_LOCATIONS**',
-    locationName: 'All',
-    services: []
-  };
+  public readonly ALL_LOCATIONS: Location = FilterConstants.Options.Locations.ALL;
 
   @Input()
   public get location(): Location {

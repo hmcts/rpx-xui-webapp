@@ -8,14 +8,15 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
 
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
+import {InfoMessage, InfoMessageType, TaskActionIds} from '../../enums';
+import {InformationMessage} from '../../models/comms/infomation-message.model';
 import { Task } from '../../models/tasks';
+import InvokedTaskAction from '../../models/tasks/invoked-task-action.model';
 import { WorkAllocationTaskService } from '../../services';
+import {InfoMessageCommService} from '../../services/info-message-comms.service';
 import { getMockTasks } from '../../tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { AvailableTasksComponent } from './available-tasks.component';
-import {InfoMessageCommService} from '../../services/info-message-comms.service';
-import {InfoMessage, InfoMessageType} from '../../enums';
-import {InformationMessage} from '../../models/comms/infomation-message.model';
 
 @Component({
   template: `<exui-available-tasks></exui-available-tasks>`
@@ -139,13 +140,6 @@ describe('AvailableTasksComponent', () => {
     expect(footerCell.textContent.trim()).toEqual(component.emptyMessage);
   });
 
-  // describe('onActionHandler()', () => {
-  //   it('should call claimTask with the task id, so that the task can be \'claimed\' by the User.', () => {
-  //
-  //
-  //   });
-  // }
-
   describe('claimTask()', () => {
 
     it('should call claimTask on the taskService with the taskId, so that the User can claim the task.', () => {
@@ -225,5 +219,38 @@ describe('AvailableTasksComponent', () => {
     //
     //   expect(mockInfoMessageCommService.emitInfoMessageChange).toHaveBeenCalledWith(message);
     // });
+  });
+
+  describe('onActionHandler()', () => {
+
+    it('should call claimTask with the task id, so that the task can be \'claimed\' by the User.', () => {
+
+      const claimTaskSpy = spyOn(component, 'claimTask');
+
+      const TASK_ID = '2345678901234567';
+      const taskAction: InvokedTaskAction = {
+        action: {
+          id: TaskActionIds.CLAIM,
+          title: 'Assign to me',
+        },
+        task: {
+          id: TASK_ID,
+          caseReference: '2345 6789 0123 4567',
+          caseName: 'Mankai Lit',
+          caseCategory: 'Revocation',
+          location: 'Taylor House',
+          taskName: 'Review appellant case',
+          dueDate: new Date(1604506789000),
+          actions: [ {
+            id: TaskActionIds.CLAIM,
+            title: 'Assign to me',
+          } ]
+        }
+      };
+
+      component.onActionHandler(taskAction);
+
+      expect(claimTaskSpy).toHaveBeenCalledWith(TASK_ID);
+    });
   });
 });

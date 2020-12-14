@@ -6,7 +6,7 @@
       <!-- Caseworker -->
       <div class="govuk-date-input__item">
         <div class="govuk-form-group">
-          <label for="task_assignment_caseworker" class="govuk-label">Name</label>
+          <label for="task_assignment_caseworker" class="govuk-label">Assignee</label>
           <select id="task_assignment_caseworker" name="task_assignment_caseworker" class="govuk-select task-assignment__caseworker"
                   [(ngModel)]="caseworker">
             <option [ngValue]="ALL_CASEWORKERS">{{ALL_CASEWORKERS | caseworkerDisplayName}}</option>
@@ -19,7 +19,7 @@
       <!-- Location -->
       <div class="govuk-date-input__item">
         <div class="govuk-form-group">
-          <label for="task_assignment_location" class="govuk-label">Location</label>
+          <label for="task_assignment_location" class="govuk-label">Task location</label>
           <select id="task_assignment_location" name="task_assignment_location" class="govuk-select task-assignment__location"
                   [(ngModel)]="location">
             <option [ngValue]="ALL_LOCATIONS">{{ALL_LOCATIONS.locationName}}</option>

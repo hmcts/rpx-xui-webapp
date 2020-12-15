@@ -1,11 +1,12 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { TaskService, TaskSort } from '../../enums';
+import {InfoMessage, InfoMessageType, TaskService, TaskSort} from '../../enums';
 import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
 import { InfoMessageCommService, SessionStorageService, WorkAllocationTaskService } from '../../services';
 import { DEFAULT_EMPTY_MESSAGE } from '../task-list/task-list.component';
+import {InformationMessage} from '../../models/comms';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html'
@@ -95,6 +96,32 @@ export class TaskListWrapperComponent implements OnInit {
       this.tasks = result.tasks;
       this.ref.detectChanges();
       // this.tasks = [];
+    });
+  }
+
+  // on the return of the refreshed tasks we should throw up a refresh message.
+  // make DRY with the above if this works.
+  // Ok so this works,
+  // but we'll have to make the thing a list?
+  public refreshTasks(): void {
+
+    console.log('refresh tasks.');
+    const searchTaskRequest = this.getSearchTaskRequest();
+    this.taskService.searchTask(searchTaskRequest).subscribe(result => {
+      // Swap the commenting on these two lines to see the behaviour
+      // when no tasks are returned.
+      // NOTE: Do not commit them in a swapped state!
+      this.tasks = result.tasks;
+      this.ref.detectChanges();
+
+      const message: InformationMessage = {
+        type: InfoMessageType.INFO,
+        message: InfoMessage.LIST_OF_AVAILABLE_TASKS_REFRESHED,
+      };
+
+      // TODO: Let's send through messages as a list so that you can have one on
+      // top of the other?
+      this.infoMessageCommService.addMessage(message);
     });
   }
 

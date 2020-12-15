@@ -1,6 +1,8 @@
 <main class="govuk-main-wrapper" id="main-content" role="main">
 
-  <exui-info-message *ngIf="showInfoMessage" [type]="infoMessageType" [message]="infoMessage"></exui-info-message>
+  <ng-container *ngFor="let infoMessage of infoMessages">
+    <exui-info-message *ngIf="showInfoMessage" [type]="infoMessage.type" [message]="infoMessage.message"></exui-info-message>
+  </ng-container>
 
   <h3 class="govuk-heading-xl">{{pageTitle}}</h3>
   <div class="govuk-grid-row">

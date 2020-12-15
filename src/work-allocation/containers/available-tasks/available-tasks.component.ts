@@ -91,7 +91,7 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
 
     switch (status) {
       case 400:
-        this.messageService.emitInfoMessageChange(message);
+        this.infoMessageCommService.emitInfoMessageChange(message);
         this.loadTasks();
         break;
       case 401:

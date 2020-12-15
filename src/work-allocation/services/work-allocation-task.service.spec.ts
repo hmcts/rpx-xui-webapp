@@ -1,4 +1,4 @@
-import {TaskSearchParameters} from '../models/dtos/task-search-parameter';
+import { TaskSearchParameters } from './../models/dtos/task-search-parameter';
 import { ACTION, WorkAllocationTaskService } from './work-allocation-task.service';
 
 describe('WorkAllocation service', () => {
@@ -25,7 +25,7 @@ describe('WorkAllocation service', () => {
         const workAllocationService = new WorkAllocationTaskService(mockHttpService);
         const assignee = {id: 'id1', userName: 'userName'};
         workAllocationService.assignTask('123456', assignee);
-        expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task/123456/assign', assignee);
+        expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task/123456/assign', { assignee });
     });
 
     it('complete Task', () => {

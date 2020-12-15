@@ -354,7 +354,7 @@ describe('CCD casefields, retain_hidden_field setting', function () {
             testName:           "all fields displayed and have retainValue true",
             parentComplex:      { display: true, retainValue: true },
             childText:          { display: true, retainValue: true },
-            childComplex:       { display: true, retainValue: false },
+            childComplex:       { display: true, retainValue: true },
             grandchildText:     { display: true, retainValue: true },
         },
         {
@@ -493,55 +493,35 @@ describe('CCD casefields, retain_hidden_field setting', function () {
             });
 
             await CCDCaseEditPage.waitForChecYourAnswersPage();
+            // await browser.sleep(200000);
+            await browser.executeScript('arguments[0].scrollIntoView()', CCDCaseEditPage.getSubmitButton().getWebElement());
             await CCDCaseEditPage.clickSubmit();
             await BrowserWaits.waitForCondition(async () => {
                 return !(await CCDCaseEditPage.isCheckYourAnswersPagePresent());
             });
 
-            //when parent Objec displayed
-            if(scenario.parentComplex.display){
-                expect(caseEventSubmitRequestBody.data).to.have.property(parentComplexField.id);
-                //child test displayed
-                if (scenario.childText.display){
-                    expect(caseEventSubmitRequestBody.data[parentComplexField.id]).to.have.property(childText.id);
-                    expect(caseEventSubmitRequestBody.data[parentComplexField.id][childText.id]).to.equal("Child text value new");
-                //child text hidden
-                }else if(scenario.childText.retainValue){
-                    expect(caseEventSubmitRequestBody.data[parentComplexField.id]).to.not.have.property(childText.id); 
-                }else{
-                    expect(caseEventSubmitRequestBody.data[parentComplexField.id]).to.have.property(childText.id);  
-                    expect(caseEventSubmitRequestBody.data[parentComplexField.id][childText.id]).to.equal(null);  
-                }
 
-                //child compled filed displayed
-                if (scenario.childComplex.display) {
-                    expect(caseEventSubmitRequestBody.data[parentComplexField.id]).to.have.property(childComplex.id);
-                    //grand child Text dislayed
-                    if(scenario.grandchildText.display){
-                        expect(caseEventSubmitRequestBody.data[parentComplexField.id][childComplex.id]).to.have.property(grandchildText.id);
-                        expect(caseEventSubmitRequestBody.data[parentComplexField.id][childComplex.id][grandchildText.id]).to.equal("Grand Child text value new");
-                    //grand child Text hidden
-                    } else if (scenario.grandchildText.retainValue){
-                        expect(caseEventSubmitRequestBody.data[parentComplexField.id][childComplex.id]).to.not.have.property(grandchildText.id); 
-                    }else{
-                        expect(caseEventSubmitRequestBody.data[parentComplexField.id][childComplex.id]).to.have.property(grandchildText.id); 
-                        expect(caseEventSubmitRequestBody.data[parentComplexField.id][childText.id][grandchildText.id]).to.equal(null);
-                    }
-                    //childCompled filed hidden
-                } else if (scenario.childComplex.retainValue) {
-                    expect(caseEventSubmitRequestBody.data[parentComplexField.id]).to.not.have.property(childComplex.id);
-                } else {
-                    expect(caseEventSubmitRequestBody.data[parentComplexField.id]).to.have.property(childComplex.id);
-                    expect(validateAllValuesNullInObject(caseEventSubmitRequestBody.data[parentComplexField.id][childComplex.id]), "object has non null values").to.be.true;
-                }
+            expect(caseEventSubmitRequestBody.data).to.have.property(parentComplexField.id);
+            expect(caseEventSubmitRequestBody.data[parentComplexField.id]).to.have.property(childText.id);
+            expect(caseEventSubmitRequestBody.data[parentComplexField.id]).to.have.property(childComplex.id);
+            expect(caseEventSubmitRequestBody.data[parentComplexField.id][childComplex.id]).to.have.property(grandchildText.id);
 
-            //when parent object hidden
-            } else if (scenario.parentComplex.retainValue){
-                expect(caseEventSubmitRequestBody.data).to.not.have.property(parentComplexField.id);
-            }else{
-                expect(caseEventSubmitRequestBody.data).to.have.property(parentComplexField.id);
-                expect(validateAllValuesNullInObject(caseEventSubmitRequestBody.data[parentComplexField.id]), "object has non null values").to.be.true; 
+            if (scenario.parentComplex.display && scenario.childText.display){
+                expect(caseEventSubmitRequestBody.data[parentComplexField.id][childText.id], "For field" + childText.id).to.equal("Child text value new");
+            } else if (scenario.childText.retainValue) {
+                expect(caseEventSubmitRequestBody.data[parentComplexField.id][childText.id], "For field" + childText.id).to.equal("Child text value old");
+            } else {
+                expect(caseEventSubmitRequestBody.data[parentComplexField.id][childText.id], "For field" + childText.id).to.equal(null);
             }
+
+            if (scenario.parentComplex.display && scenario.childComplex.display && scenario.grandchildText.display) {
+                expect(caseEventSubmitRequestBody.data[parentComplexField.id][childComplex.id][grandchildText.id], "For field" + grandchildText.id).to.equal("Grand Child text value new");
+            } else if (scenario.childText.retainValue) {
+                expect(caseEventSubmitRequestBody.data[parentComplexField.id][childComplex.id][grandchildText.id], "For field" + grandchildText.id).to.equal("Grand Child text value old");
+            } else {
+                expect(caseEventSubmitRequestBody.data[parentComplexField.id][childComplex.id][grandchildText.id], "For field" + grandchildText.id).to.equal(null);
+            }
+ 
         });
     });
 

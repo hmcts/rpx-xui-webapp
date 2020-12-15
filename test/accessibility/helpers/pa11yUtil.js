@@ -32,7 +32,7 @@ async function getPage(){
     return page;
 }
 
-async function pa11ytest(test, actions, startUrl) {
+async function pa11ytest(test, actions, startUrl,roles) {
     console.log("pally test with actions : " + test.test.title);
     console.log(actions);
 

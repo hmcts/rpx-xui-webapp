@@ -21,6 +21,7 @@ export class TaskListComponent implements OnChanges, OnInit {
   @Input() public tasks: Task[];
   @Input() public taskServiceConfig: TaskServiceConfig;
   @Input() public sortedBy: TaskSortField;
+  @Input() public showManage: boolean = true;
 
   // TODO: Need to re-read the LLD, but I believe it says pass in the taskServiceConfig into this TaskListComponent.
   // Therefore we will not need this.
@@ -60,7 +61,7 @@ export class TaskListComponent implements OnChanges, OnInit {
   public getDisplayedColumn(taskFieldConfig: TaskFieldConfig[]): string[] {
 
     const fields = taskFieldConfig.map(field => field.name);
-    return this.addManageColumn(fields);
+    return this.showManage ? this.addManageColumn(fields) : fields;
   }
 
   /**

@@ -4,21 +4,12 @@ import * as getPort from 'get-port';
 import * as path from 'path';
 
 import { EnhancedRequest } from '../../../lib/models';
-import { Assignee } from '../../../workAllocation/interfaces/task';
 import { handleTaskPost } from '../../../workAllocation/taskService';
 import { ACTIONS } from '../constants/work-allocation/actions.spec';
-import { USEFUL_CASEWORKERS, USELESS_CASEWORKERS } from '../constants/work-allocation/caseworkers.spec';
+import { toAssignee, USEFUL_CASEWORKERS, USELESS_CASEWORKERS } from '../constants/work-allocation/caseworkers.spec';
 import { TASKS } from '../constants/work-allocation/tasks.spec';
 
 describe('Work Allocation API', () => {
-
-  // Get an Assignee from a caseworker.
-  function getAssignee(caseworker: { idamId: string, firstName: string, lastName: string }): Assignee {
-    return {
-      id: caseworker.idamId,
-      userName: `${caseworker.firstName} ${caseworker.lastName}`
-    };
-  }
 
   let mockServerPort: number
   let provider: Pact
@@ -46,7 +37,7 @@ describe('Work Allocation API', () => {
     const task = TASKS[taskKey];
     // First the successful requests.
     for (const caseworker of USEFUL_CASEWORKERS) {
-      const assignee = getAssignee(caseworker);
+      const assignee = toAssignee(caseworker);
       describe(`when requested to ${actionKey} task '${task.caseName}' to/for ${assignee.userName}`, () => {
         before(() =>
           provider.addInteraction({
@@ -75,7 +66,7 @@ describe('Work Allocation API', () => {
 
     // And now the bad requests.
     for (const caseworker of USELESS_CASEWORKERS) {
-      const assignee = getAssignee(caseworker);
+      const assignee = toAssignee(caseworker);
       const status: number = parseInt(assignee.id);
       describe(`when requested to ${actionKey} task '${task.caseName}' to/for ${assignee.userName}`, () => {
         before(() =>

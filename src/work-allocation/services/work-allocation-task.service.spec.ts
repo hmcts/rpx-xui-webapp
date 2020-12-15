@@ -57,14 +57,14 @@ describe('WorkAllocation', () => {
       const service = new WorkAllocationTaskService(mockHttpService);
       const searchParam = {} as TaskSearchParameters;
       service.postTask(searchParam);
-      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task/', searchParam);
+      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task', searchParam);
     });
 
     it('searchTask should make correct api call', () => {
       const service = new WorkAllocationTaskService(mockHttpService);
       const searchRequest = {} as SearchTaskRequest;
       service.searchTask(searchRequest);
-      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task/', searchRequest);
+      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task', searchRequest);
     });
   });
 });

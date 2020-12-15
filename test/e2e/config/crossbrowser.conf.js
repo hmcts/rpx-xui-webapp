@@ -3,6 +3,8 @@ const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));
+var screenShotUtils = require("protractor-screenshot-utils").ProtractorScreenShotUtils;
+
 
 const config = {
   framework: 'custom',
@@ -117,6 +119,10 @@ const config = {
     global.expect = chai.expect;
     global.assert = chai.assert;
     global.should = chai.should;
+
+    global.screenShotUtils = new screenShotUtils({
+      browserInstance: browser
+    });
   }
 };
 

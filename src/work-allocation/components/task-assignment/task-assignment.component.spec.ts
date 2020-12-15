@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Caseworker, Location } from '../../models/dtos';
-import { CaseworkerDataService, LocationDataService } from './../../services';
+import { CaseworkerDataService, LocationDataService } from '../../services';
 import { TaskAssignmentComponent } from './task-assignment.component';
 
 // Locations.
@@ -13,10 +13,10 @@ const LOCATION_B: Location = { id: 'b', locationName: 'Location B', services: ['
 const LOCATION_C: Location = { id: 'c', locationName: 'Location C', services: ['c'] };
 
 // Caseworkers.
-const JS = { firstName: 'John',   lastName: 'Smith',  idamId: '1', location: LOCATION_A };
-const JD = { firstName: 'Jane',   lastName: 'Doe',    idamId: '2', location: LOCATION_A };
-const JB = { firstName: 'Joseph', lastName: 'Bloggs', idamId: '3', location: LOCATION_B };
-const NB = { firstName: 'Noah',   lastName: 'Body',   idamId: '4', location: LOCATION_B };
+const JS = { firstName: 'John',   lastName: 'Smith',  idamId: '1', email: 'j.s@cw.gov.uk', location: LOCATION_A };
+const JD = { firstName: 'Jane',   lastName: 'Doe',    idamId: '2', email: 'j.d@cw.gov.uk', location: LOCATION_A };
+const JB = { firstName: 'Joseph', lastName: 'Bloggs', idamId: '3', email: 'j.b@cw.gov.uk', location: LOCATION_B };
+const NB = { firstName: 'Noah',   lastName: 'Body',   idamId: '4', email: 'n.b@cw.gov.uk', location: LOCATION_B };
 
 class MockLocationDataService {
   public getLocation(locationId: string): Observable<Location> {
@@ -125,10 +125,10 @@ describe('WorkAllocation', () => {
       expect(select.options).toBeDefined();
       expect(select.options.length).toEqual(5); // For all locations + "Select name"
       expect(select.options[0].label).toEqual('Select name');
-      expect(select.options[1].textContent).toEqual(`${JD.firstName} ${JD.lastName}`);
-      expect(select.options[2].textContent).toEqual(`${JS.firstName} ${JS.lastName}`);
-      expect(select.options[3].textContent).toEqual(`${JB.firstName} ${JB.lastName}`);
-      expect(select.options[4].textContent).toEqual(`${NB.firstName} ${NB.lastName}`);
+      expect(select.options[1].textContent).toEqual('Jane Doe - j.d@cw.gov.uk');
+      expect(select.options[2].textContent).toEqual('John Smith - j.s@cw.gov.uk');
+      expect(select.options[3].textContent).toEqual('Joseph Bloggs - j.b@cw.gov.uk');
+      expect(select.options[4].textContent).toEqual('Noah Body - n.b@cw.gov.uk');
     });
 
     it('should appropriately filter any excluded caseworkers', () => {
@@ -139,10 +139,10 @@ describe('WorkAllocation', () => {
       expect(select.options).toBeDefined();
       expect(select.options.length).toEqual(5); // For all locations + "Select name"
       expect(select.options[0].label).toEqual('Select name');
-      expect(select.options[1].textContent).toEqual(`${JD.firstName} ${JD.lastName}`);
-      expect(select.options[2].textContent).toEqual(`${JS.firstName} ${JS.lastName}`);
-      expect(select.options[3].textContent).toEqual(`${JB.firstName} ${JB.lastName}`);
-      expect(select.options[4].textContent).toEqual(`${NB.firstName} ${NB.lastName}`);
+      expect(select.options[1].textContent).toEqual('Jane Doe - j.d@cw.gov.uk');
+      expect(select.options[2].textContent).toEqual('John Smith - j.s@cw.gov.uk');
+      expect(select.options[3].textContent).toEqual('Joseph Bloggs - j.b@cw.gov.uk');
+      expect(select.options[4].textContent).toEqual('Noah Body - n.b@cw.gov.uk');
 
       // Now exclude Jane Doe and Noah Body.
       component.excludeCaseworkers = [ JD, NB ];
@@ -151,8 +151,8 @@ describe('WorkAllocation', () => {
       select = getSelect('#task_assignment_caseworker');
       expect(select.options.length).toEqual(3); // Non-excluded + "Select name"
       expect(select.options[0].label).toEqual('Select name');
-      expect(select.options[1].textContent).toEqual(`${JS.firstName} ${JS.lastName}`);
-      expect(select.options[2].textContent).toEqual(`${JB.firstName} ${JB.lastName}`);
+      expect(select.options[1].textContent).toEqual('John Smith - j.s@cw.gov.uk');
+      expect(select.options[2].textContent).toEqual('Joseph Bloggs - j.b@cw.gov.uk');
 
       // Now change it so only John Smith is excluded.
       component.excludeCaseworkers = [ JS ];
@@ -161,9 +161,9 @@ describe('WorkAllocation', () => {
       select = getSelect('#task_assignment_caseworker');
       expect(select.options.length).toEqual(4); // Non-excluded + "Select name"
       expect(select.options[0].label).toEqual('Select name');
-      expect(select.options[1].textContent).toEqual(`${JD.firstName} ${JD.lastName}`);
-      expect(select.options[2].textContent).toEqual(`${JB.firstName} ${JB.lastName}`);
-      expect(select.options[3].textContent).toEqual(`${NB.firstName} ${NB.lastName}`);
+      expect(select.options[1].textContent).toEqual('Jane Doe - j.d@cw.gov.uk');
+      expect(select.options[2].textContent).toEqual('Joseph Bloggs - j.b@cw.gov.uk');
+      expect(select.options[3].textContent).toEqual('Noah Body - n.b@cw.gov.uk');
     });
 
     it('should handle the location being changed and refresh list of caseworkers', () => {
@@ -178,8 +178,8 @@ describe('WorkAllocation', () => {
         const caseworkersSelect: HTMLSelectElement = getSelect('#task_assignment_caseworker');
         expect(caseworkersSelect.options.length).toEqual(3);  // Location A people + "Select name"
         expect(caseworkersSelect.options[0].label).toEqual('Select name');
-        expect(caseworkersSelect.options[1].textContent).toEqual(`${JD.firstName} ${JD.lastName}`);
-        expect(caseworkersSelect.options[2].textContent).toEqual(`${JS.firstName} ${JS.lastName}`);
+        expect(caseworkersSelect.options[1].textContent).toEqual('Jane Doe - j.d@cw.gov.uk');
+        expect(caseworkersSelect.options[2].textContent).toEqual('John Smith - j.s@cw.gov.uk');
       });
     });
 
@@ -227,7 +227,6 @@ describe('WorkAllocation', () => {
         expect(caseworkersSelect.options[1].textContent).toBe(''); // Undefined caseworker.
       });
     });
-
   });
 
 });

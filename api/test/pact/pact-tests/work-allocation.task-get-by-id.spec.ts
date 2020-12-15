@@ -5,7 +5,7 @@ import * as path from 'path';
 
 import { EnhancedRequest } from '../../../lib/models';
 import { handleTaskGet } from '../../../workAllocation/taskService';
-import {TASKS, ALL_TASKS} from './../constants/work-allocation/tasks.spec';
+import { ALL_TASKS } from './../constants/work-allocation/tasks.spec';
 
 describe('Work Allocation API', () => {
 

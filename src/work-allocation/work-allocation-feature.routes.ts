@@ -8,6 +8,7 @@ import {
   TaskAssignmentContainerComponent,
   TaskHomeComponent,
   TaskManagerComponent,
+  TaskManagerListComponent,
   WorkAllocationHomeComponent,
 } from './containers';
 import { WorkAllocationFeatureToggleGuard } from './guards';
@@ -45,8 +46,14 @@ export const ROUTES: Routes = [
         component: TaskManagerComponent,
         canActivate: [ HealthCheckGuard, WorkAllocationFeatureToggleGuard ],
         data: {
-          title: 'HMCTS Manage WorkAllocation | Task Manager'
-        }
+          title: 'HMCTS Manage WorkAllocation | Task manager'
+        },
+        children: [
+          {
+            path: '',
+            component: TaskManagerListComponent
+          }
+        ]
       },
       {
         path: 'reassign/:taskId',

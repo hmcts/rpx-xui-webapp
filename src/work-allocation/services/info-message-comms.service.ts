@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { InformationMessage } from '../models/comms/infomation-message.model';
+
+import { InformationMessage } from '../models/comms';
 
 @Injectable()
 export class InfoMessageCommService {

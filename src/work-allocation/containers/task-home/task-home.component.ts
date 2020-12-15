@@ -2,11 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRouteSnapshot, NavigationEnd, Router, RoutesRecognized } from '@angular/router';
 import { SubNavigation } from '@hmcts/rpx-xui-common-lib';
 
+import { AppUtils } from '../../../app/app-utils';
 import { InfoMessage, InfoMessageType } from '../../enums';
-import { AppUtils } from './../../../app/app-utils';
-
-import { InfoMessageCommService } from '../../services/info-message-comms.service';
-import { Task, TaskSortField } from './../../models/tasks';
+import { TaskSortField } from '../../models/tasks';
+import { InfoMessageCommService } from '../../services';
 
 @Component({
   selector: 'exui-task-home',
@@ -34,8 +33,10 @@ export class TaskHomeComponent implements OnInit {
   public infoMessageType: InfoMessageType;
   public infoMessage: InfoMessage;
 
-  constructor(private readonly router: Router,
-              private readonly infoMessageCommService: InfoMessageCommService) {}
+  constructor(
+    private readonly router: Router,
+    private readonly infoMessageCommService: InfoMessageCommService
+  ) {}
 
   public ngOnInit(): void {
     this.router.events.subscribe(event => {

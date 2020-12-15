@@ -66,11 +66,7 @@ const requestMapping = {
         '/api/caseshare/orgs': (req, res) => {
             res.send(getCaseShareOrgs());
         },
-        ...WAReqResMappings.get
-
-
-
-        , '/data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/cases/pagination_metadata' : (req,res) => {
+        '/data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/cases/pagination_metadata' : (req,res) => {
           res.send({ "total_results_count": 400, "total_pages_count": 16 });
         },
         ...WAReqResMappings.get

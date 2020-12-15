@@ -88,9 +88,9 @@ const mockInstance = new MockApp();
 module.exports = mockInstance;
 
 
-// mockInstance.init();
-// createCustomCCDCaseConfig();
-// mockInstance.startServer();
+mockInstance.init();
+createCustomCCDCaseConfig();
+mockInstance.startServer();
 
 
 

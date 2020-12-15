@@ -46,11 +46,13 @@ module.exports = {
             });
         },
         '/workallocation/caseworker': (req, res) => {
-            res.send([
-                {
-                    "firstName": "Jane",
+            const caseWorkers = [];
+            for(let ctr = 0; ctr < 40; ctr++){
+                caseWorkers.push({
+                    "firstName": "Jane "+ctr,
                     "lastName": "Doe",
                     "idamId": "2",
+                    "email": "testemail"+ctr+"@testdomain.com",
                     "location": {
                         "id": "a",
                         "locationName": "Location A",
@@ -58,46 +60,9 @@ module.exports = {
                             "a"
                         ]
                     }
-                },
-                {
-                    "firstName": "John",
-                    "lastName": "Smith",
-                    "idamId": "1",
-                    "location": {
-                        "id": "a",
-                        "locationName": "Location A",
-                        "services": [
-                            "a"
-                        ]
-                    }
-                },
-                {
-                    "firstName": "Joseph",
-                    "lastName": "Bloggs",
-                    "idamId": "3",
-                    "location": {
-                        "id": "b",
-                        "locationName": "Location B",
-                        "services": [
-                            "a",
-                            "b"
-                        ]
-                    }
-                },
-                {
-                    "firstName": "Noah",
-                    "lastName": "Body",
-                    "idamId": "4",
-                    "location": {
-                        "id": "b",
-                        "locationName": "Location B",
-                        "services": [
-                            "a",
-                            "b"
-                        ]
-                    }
-                }
-            ]);
+                });
+            }
+            res.send(caseWorkers);
         }
     },
     post: {

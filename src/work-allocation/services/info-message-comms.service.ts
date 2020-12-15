@@ -38,6 +38,8 @@ export class InfoMessageCommService {
   public removeAllMessages() {
 
     this.infoMessages = [];
+
+    this.infoMessageSource.next(this.infoMessages);
   };
 
   public addMessage(message: InformationMessage) {

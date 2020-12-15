@@ -59,10 +59,6 @@ export class TaskHomeComponent implements OnInit {
     this.subscribeToInfoMessageCommService();
   }
 
-  /**
-   * TODO: Unit test
-   * TODO: Should be infoMessages
-   */
   public subscribeToInfoMessageCommService(): void {
 
     this.infoMessageCommService.infoMessageChangeEmitted$.subscribe(messages => {
@@ -91,5 +87,7 @@ export class TaskHomeComponent implements OnInit {
   public setupPageData(activatedRoute: ActivatedRouteSnapshot): void {
     const data = AppUtils.getRouteData(activatedRoute);
     this.pageTitle = data ? data.subTitle : 'Task list';
+
+    this.infoMessageCommService.removeAllMessages();
   }
 }

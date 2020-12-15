@@ -118,7 +118,7 @@ export class TaskListWrapperComponent implements OnInit {
     });
   }
 
-  public getTasks(): Observable {
+  public getTasks(): Observable<any> {
 
     const searchTaskRequest = this.getSearchTaskRequest();
     return this.taskService.searchTask(searchTaskRequest);

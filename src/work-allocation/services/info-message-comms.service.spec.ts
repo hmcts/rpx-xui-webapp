@@ -4,9 +4,9 @@ import { InfoMessageCommService } from './info-message-comms.service';
 
 describe('WorkAllocation: InfoMessageCommService', () => {
 
-  describe('emitInfoMessageChange()', () => {
+  describe('addMessage()', () => {
 
-    it('should take in an information message, and pass it to the Subjects next() function, so that any subscribers' +
+    it('should add an information message, and pass it to the Subjects next() function, so that any subscribers' +
       'to infoMessageChangeEmitted$ can be updated with the correct information message.', () => {
 
       const service = new InfoMessageCommService();
@@ -18,7 +18,7 @@ describe('WorkAllocation: InfoMessageCommService', () => {
         message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS,
       };
 
-      service.emitInfoMessageChange(message);
+      service.addMessage(message);
 
       expect(mockInfoMessageSource).toHaveBeenCalledWith(message);
     });

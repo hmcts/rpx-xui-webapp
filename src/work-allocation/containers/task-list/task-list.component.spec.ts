@@ -4,10 +4,11 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 
+import { ConfigConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { TaskFieldType, TaskService, TaskSort, TaskView } from '../../enums';
-import { WorkAllocationTaskService } from '../../services/work-allocation-task.service';
-import { Task, TaskAction, TaskFieldConfig, TaskServiceConfig, TaskSortField } from './../../models/tasks';
+import { TaskService, TaskSort } from '../../enums';
+import { Task, TaskAction, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
+import { WorkAllocationTaskService } from '../../services';
 import { TaskListComponent } from './task-list.component';
 
 @Component({
@@ -69,45 +70,7 @@ function getTasks(): Task[] {
  * Mock fields
  */
 function getFields(): TaskFieldConfig[] {
-
-  return [
-    {
-      name: 'caseReference',
-      type: TaskFieldType.STRING,
-      columnLabel: 'Case reference',
-      views: TaskView.TASK_LIST,
-    },
-    {
-      name: 'caseName',
-      type: TaskFieldType.STRING,
-      columnLabel: 'Case name',
-      views: TaskView.TASK_LIST,
-    },
-    {
-      name: 'caseCategory',
-      type: TaskFieldType.STRING,
-      columnLabel: 'Case category',
-      views: TaskView.TASK_LIST,
-    },
-    {
-      name: 'location',
-      type: TaskFieldType.STRING,
-      columnLabel: 'Location',
-      views: TaskView.TASK_LIST,
-    },
-    {
-      name: 'taskName',
-      type: TaskFieldType.STRING,
-      columnLabel: 'Task',
-      views: TaskView.TASK_LIST,
-    },
-    {
-      name: 'dueDate',
-      type: TaskFieldType.STRING,
-      columnLabel: 'Due Dated',
-      views: TaskView.TASK_LIST,
-    },
-  ];
+  return ConfigConstants.AvailableTasks;
 }
 
 /**
@@ -129,7 +92,7 @@ describe('TaskListComponent', () => {
   let location: jasmine.SpyObj<Location>;
   const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['getTask']);
   beforeEach(async(() => {
-    location = jasmine.createSpyObj('Location', ['path']);
+    location = jasmine.createSpyObj('Location', ['path', 'replaceState']);
     location.path.and.returnValue('');
     TestBed.configureTestingModule({
       imports: [
@@ -454,6 +417,7 @@ describe('TaskListComponent', () => {
     wrapper.tasks = [ task ];
     fixture.detectChanges();
     expect(component.getSelectedTask()).toEqual(task);
+    expect(location.replaceState).toHaveBeenCalledWith(`tasklist#manage_${id}`);
   });
 
   it('should handle a location hash for a task that does not exist', () => {
@@ -463,5 +427,6 @@ describe('TaskListComponent', () => {
     wrapper.tasks = [ task ];
     fixture.detectChanges();
     expect(component.getSelectedTask()).toBeNull();
+    expect(location.replaceState).toHaveBeenCalledWith('tasklist');
   });
 });

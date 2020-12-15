@@ -43,7 +43,7 @@ describe('TaskManagerListComponent', () => {
   const caseworkerDiplayName: CaseworkerDisplayName = new CaseworkerDisplayName();
 
   beforeEach(() => {
-    location = jasmine.createSpyObj('Location', ['path']);
+    location = jasmine.createSpyObj('Location', ['path', 'replaceState']);
     location.path.and.returnValue('');
     TestBed.configureTestingModule({
       imports: [

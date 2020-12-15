@@ -1,11 +1,11 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { ListConstants } from '../../components/constants';
 import { TaskService, TaskSort } from '../../enums';
 import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
 import { InfoMessageCommService, SessionStorageService, WorkAllocationTaskService } from '../../services';
-import { DEFAULT_EMPTY_MESSAGE } from '../task-list/task-list.component';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html'
@@ -40,7 +40,7 @@ export class TaskListWrapperComponent implements OnInit {
   }
 
   public get emptyMessage(): string {
-    return DEFAULT_EMPTY_MESSAGE;
+    return ListConstants.EmptyMessage.Default;
   }
 
   /**

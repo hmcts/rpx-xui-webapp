@@ -8,10 +8,8 @@
       </exui-task-list>
       <h2 class="govuk-heading-m">Choose a colleague</h2>
       <exui-task-assignment (caseworkerChanged)="onCaseworkerChanged($event)"></exui-task-assignment>
-      <button class="govuk-button task-assignment-btn" type="submit" (click)="reAssign()">Reassign</button>
-      <a routerLink="/tasks" [fragment]="manageLink" role="button" draggable="false" class="govuk-button govuk-button--secondary cancel-back-btn">
-        Cancel and go back
-      </a>
+      <button class="govuk-button govuk-!-margin-right-1" type="submit" (click)="reassign()">Reassign</button>
+      <button class="govuk-button govuk-button--secondary" type="submit" (click)="cancel()">Cancel and go back</button>
     </div>
   </div>
 </main>

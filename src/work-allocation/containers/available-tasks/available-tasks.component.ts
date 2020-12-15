@@ -7,7 +7,6 @@ import { Location, SearchTaskRequest } from '../../models/dtos';
 import { InvokedTaskAction, TaskFieldConfig } from '../../models/tasks';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
-
 @Component({
   selector: 'exui-available-tasks',
   templateUrl: 'available-tasks.component.html'
@@ -62,7 +61,7 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
   /**
    * A User 'Claims' themselves a task aka. 'Assign to me'.
    */
-  public claimTask(taskId): void {
+  public claimTask(taskId: string): void {
 
     this.taskService.claimTask(taskId).subscribe(() => {
 
@@ -82,7 +81,7 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
    * Navigate the User to the correct error page, or throw an on page warning
    * that the Task is no longer available.
    */
-  public claimTaskErrors(status): void {
+  public claimTaskErrors(status: any): void {
 
     const message: InformationMessage = {
       type: InfoMessageType.WARNING,
@@ -117,6 +116,8 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
         // EUI-2963
         break;
       default:
+        super.onActionHandler(taskAction);
+        break;
     }
   }
 }

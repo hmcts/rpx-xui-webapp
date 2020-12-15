@@ -38,7 +38,7 @@ describe('AvailableTasksComponent', () => {
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
   beforeEach(async(() => {
-    location = jasmine.createSpyObj('Location', ['path']);
+    location = jasmine.createSpyObj('Location', ['path', 'replaceState']);
     location.path.and.returnValue('');
     TestBed.configureTestingModule({
       imports: [

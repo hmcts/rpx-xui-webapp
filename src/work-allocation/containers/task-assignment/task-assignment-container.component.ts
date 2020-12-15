@@ -1,8 +1,9 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
-import { TaskFieldType, TaskService, TaskSort, TaskView } from '../../enums';
+import { ConfigConstants } from '../../components/constants';
+import { TaskService, TaskSort } from '../../enums';
 import { Assignee, Caseworker } from '../../models/dtos';
 import { TaskFieldConfig, TaskServiceConfig } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
@@ -21,57 +22,12 @@ export class TaskAssignmentContainerComponent implements OnInit {
   constructor(
     private readonly taskService: WorkAllocationTaskService,
     private readonly route: ActivatedRoute,
-    private readonly location: Location,
-    private readonly router: Router
+    private readonly location: Location
   ) {}
 
-  /**
-   * Mock TaskFieldConfig[]
-   *
-   * Fields is the property of the TaskFieldConfig[], containing the configuration
-   * for the fields as returned by the API.
-   *
-   * The sorting will handled by this component, via the
-   * WP api as this component.
-   */
-  public fields: TaskFieldConfig[] = [
-    {
-      name: 'caseReference',
-      type: TaskFieldType.CASE_REFERENCE,
-      columnLabel: 'Case reference',
-      views: TaskView.TASK_LIST,
-    },
-    {
-      name: 'caseName',
-      type: TaskFieldType.STRING,
-      columnLabel: 'Case name',
-      views: TaskView.TASK_LIST,
-    },
-    {
-      name: 'caseCategory',
-      type: TaskFieldType.STRING,
-      columnLabel: 'Case category',
-      views: TaskView.TASK_LIST,
-    },
-    {
-      name: 'location',
-      type: TaskFieldType.STRING,
-      columnLabel: 'Location',
-      views: TaskView.TASK_LIST,
-    },
-    {
-      name: 'taskName',
-      type: TaskFieldType.STRING,
-      columnLabel: 'Task',
-      views: TaskView.TASK_LIST,
-    },
-    {
-      name: 'dueDate',
-      type: TaskFieldType.DATE_DUE,
-      columnLabel: 'Date',
-      views: TaskView.TASK_LIST,
-    }
-  ];
+  public get fields(): TaskFieldConfig[] {
+    return ConfigConstants.TaskActions;
+  }
 
   public taskServiceConfig: TaskServiceConfig = {
     service: TaskService.IAC,
@@ -93,8 +49,7 @@ export class TaskAssignmentContainerComponent implements OnInit {
     this.tasks = [ task ];
   }
 
-  public reAssign(): void {
-    this.router.navigate(['/tasks'], {fragment: this.manageLink});
+  public reassign(): void {
     if (!this.caseworker) {
       console.error('No caseworker selected. This is part of the unhappy path that is not yet done.');
       return;
@@ -109,6 +64,10 @@ export class TaskAssignmentContainerComponent implements OnInit {
     }, error => {
       console.error('There was an error when attempting to assign', error);
     });
+  }
+
+  public cancel(): void {
+    this.location.back();
   }
 
   public onCaseworkerChanged(caseworker: Caseworker): void {

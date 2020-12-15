@@ -2,13 +2,10 @@ import { Location } from '@angular/common';
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { Task, TaskFieldConfig, TaskSortField } from '../../models/tasks';
-import InvokedTaskAction from '../../models/tasks/invoked-task-action.model';
-import TaskAction from '../../models/tasks/task-action.model';
-import TaskServiceConfig from '../../models/tasks/task-service-config.model';
-import { TaskSort } from './../../enums/task-sort';
+import { ListConstants } from '../../components/constants';
+import { TaskSort } from '../../enums';
+import { InvokedTaskAction, Task, TaskAction, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
 
-export const DEFAULT_EMPTY_MESSAGE = 'There are no tasks that match your selection.';
 @Component({
   selector: 'exui-task-list',
   templateUrl: './task-list.component.html',
@@ -27,7 +24,7 @@ export class TaskListComponent implements OnChanges {
   /**
    * The message to display when there are no tasks to display in the list.
    */
-  @Input() public emptyMessage: string = DEFAULT_EMPTY_MESSAGE;
+  @Input() public emptyMessage: string = ListConstants.EmptyMessage.Default;
 
   // TODO: Need to re-read the LLD, but I believe it says pass in the taskServiceConfig into this TaskListComponent.
   // Therefore we will not need this.
@@ -60,7 +57,7 @@ export class TaskListComponent implements OnChanges {
   public ngOnChanges() {
     if (this.tasks) {
       this.dataSource$ = new BehaviorSubject(this.tasks);
-      this.selectedTask = this.selectTaskFromUrlHash(this.location.path(true));
+      this.setSelectedTask(this.selectTaskFromUrlHash(this.location.path(true)));
     }
     if (this.fields) {
       this.displayedColumns = this.getDisplayedColumn(this.fields);
@@ -121,6 +118,9 @@ export class TaskListComponent implements OnChanges {
     } else {
       this.selectedTask = row;
     }
+
+    // Now change the URL to update the hash.
+    this.setupHash();
   }
 
   public getSelectedTask(): Task {
@@ -159,6 +159,18 @@ export class TaskListComponent implements OnChanges {
 
     // This field is not sorted, return NONE.
     return TaskSort.NONE;
+  }
+
+  private setupHash(): void {
+    if (this.showManage) {
+      const currentPath = this.location.path(true);
+      const basePath = currentPath.split('#')[0];
+      if (this.selectedTask) {
+        this.location.replaceState(`${basePath}#manage_${this.selectedTask.id}`);
+      } else {
+        this.location.replaceState(basePath);
+      }
+    }
   }
 
 }

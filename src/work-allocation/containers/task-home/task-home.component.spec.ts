@@ -5,8 +5,8 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 
-import { WorkAllocationComponentsModule } from './../../components/work-allocation.components.module';
-import { WorkAllocationTaskService } from './../../services/work-allocation-task.service';
+import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
+import { WorkAllocationTaskService } from '../../services';
 import { TaskHomeComponent } from './task-home.component';
 
 @Component({

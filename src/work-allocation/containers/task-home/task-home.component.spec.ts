@@ -51,4 +51,19 @@ describe('TaskHomeComponent', () => {
   it('should create', () => {
     expect(component).toBeDefined();
   });
+
+  describe('routeActive', () => {
+    it('should correctly identify an active route without a hash', () => {
+      expect(component.routeActive('/tasks/list', '/tasks/list')).toBeTruthy();
+    });
+    it('should correctly identify an active route with a hash', () => {
+      expect(component.routeActive('/tasks/list', '/tasks/list#manage_123456')).toBeTruthy();
+    });
+    it('should correctly identify an inactive route without a hash', () => {
+      expect(component.routeActive('/tasks/list', '/tasks/available')).toBeFalsy();
+    });
+    it('should correctly identify an inactive route with a hash', () => {
+      expect(component.routeActive('/tasks/list', '/tasks/available#manage_123456')).toBeFalsy();
+    });
+  });
 });

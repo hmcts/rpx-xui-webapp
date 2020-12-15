@@ -78,7 +78,7 @@ export class TaskHomeComponent implements OnInit {
   public setupActiveSubNavigationItem(activeUrl: string): void {
     if (this.subNavigationItems) {
       for (const item of this.subNavigationItems) {
-        item.active = item.href === activeUrl;
+        item.active = this.routeActive(item.href, activeUrl);
       }
     }
   }
@@ -90,5 +90,13 @@ export class TaskHomeComponent implements OnInit {
   public setupPageData(activatedRoute: ActivatedRouteSnapshot): void {
     const data = AppUtils.getRouteData(activatedRoute);
     this.pageTitle = data ? data.subTitle : 'Task list';
+  }
+
+  /**
+   * Identify whether a route's url is considered a match for the current url.
+   */
+  public routeActive(routeUrl: string, currentUrl: string): boolean {
+    const currentBase = currentUrl.split('#')[0];
+    return routeUrl === currentBase;
   }
 }

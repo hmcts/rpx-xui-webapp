@@ -89,7 +89,7 @@ export class TaskListWrapperComponent implements OnInit {
    */
   public loadTasks(): void {
     // Should this clear out the existing set first?
-    this.getTasks().subscribe(result => {
+    this.performSearch().subscribe(result => {
       // Swap the commenting on these two lines to see the behaviour
       // when no tasks are returned.
       // NOTE: Do not commit them in a swapped state!
@@ -104,7 +104,7 @@ export class TaskListWrapperComponent implements OnInit {
    */
   public refreshTasks(): void {
 
-    this.getTasks().subscribe(result => {
+    this.performSearch().subscribe(result => {
 
       this.tasks = result.tasks;
       this.ref.detectChanges();
@@ -118,7 +118,7 @@ export class TaskListWrapperComponent implements OnInit {
     });
   }
 
-  public getTasks(): Observable<any> {
+  public performSearch(): Observable<any> {
 
     const searchTaskRequest = this.getSearchTaskRequest();
     return this.taskService.searchTask(searchTaskRequest);

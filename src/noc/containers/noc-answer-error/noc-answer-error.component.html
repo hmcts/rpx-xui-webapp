@@ -1,0 +1,37 @@
+<div class="govuk-width-container">
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <ng-container *ngIf="(lastError$ | async)?.error.code === 'moreThanOneParty'">
+        <h1 class="govuk-heading-l" id="moreThanOneParty">Your request cannot be submitted online</h1>
+        <p class="govuk-body">Your answers match more than one party on the case.</p>
+        <p> You can fill out a <a href="https://www.gov.uk/government/publications/form-n434-notice-of-change-of-solicitor">paper form</a>
+          to complete a notice of change for this case offline. If you do this, you won’t be able to access the case online.</p>
+      </ng-container>
+      <ng-container *ngIf="(lastError$ | async)?.error.code === 'invalidCaseRef'">
+        <h1 class="govuk-heading-l" id="invalidCaseRef">Something went wrong</h1>
+        <p class="govuk-body">Your notice of change request has not been submitted.</p>
+        <p class="govuk-body"><a href="get-help">Contact us</a> for help.</p>
+      </ng-container>
+      <ng-container *ngIf="(lastError$ | async)?.error.code === 'organisationHasAccess'">
+        <h1 class="govuk-heading-l" id="organisationHasAccess">Your organisation already has access to this case</h1>
+        <p>You or a colleague are already representing this client on this case.</p>
+        <p><a href="cases">View case list</a></p>
+      </ng-container>
+      <ng-container *ngIf="(lastError$ | async)?.error.code === 'nocInProgress'">
+        <h1 class="govuk-heading-l" id="nocInProgress">Something went wrong</h1>
+        <p class="govuk-body">Your notice of change request has not been submitted.</p>
+        <p class="govuk-body">A notice of change is already in progress for this case.</p>
+        <p class="govuk-body"><a href="get-help">Contact us</a> for more information.</p>
+      </ng-container>
+      <ng-container *ngIf="(lastError$ | async)?.error.code === 'cantFileOnline'">
+        <h1 class="govuk-heading-l" id="cantFileOnline">Your request cannot be submitted online</h1>
+        <p class="govuk-body">You can't currently file an online notice of change for this case.</p>
+        <p> You can fill out a <a href="https://www.gov.uk/government/publications/form-n434-notice-of-change-of-solicitor">paper form</a>
+          to complete a notice of change for this case offline. If you do this, you won’t be able to access the case online.</p>
+        <p><a href="cases">View case list</a></p>
+      </ng-container>
+    </div>
+  </div>
+
+</div>

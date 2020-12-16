@@ -2,7 +2,8 @@ import { BadgeColour, ContactDetailsDataModel } from '@hmcts/rpx-xui-common-lib'
 import {Theme} from './containers/app-header/app-header.component';
 
 const FeatureNames = {
-  workAllocation: 'MC_Work_Allocation'
+  workAllocation: 'MC_Work_Allocation',
+  noticeOfChange: 'MC_Notice_of_Change'
 };
 
 const FooterData =  {

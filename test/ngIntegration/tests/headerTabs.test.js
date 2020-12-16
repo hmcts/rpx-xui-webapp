@@ -44,7 +44,7 @@ describe('Header  Tabs', function () {
 
     });
 
-    it('Work allocation Tabs not present without roles "caseworker-ia-admofficer" and "caseworker-ia-caseofficer"', async function () {
+    it.skip('Work allocation Tabs not present without roles "caseworker-ia-admofficer" and "caseworker-ia-caseofficer"', async function () {
         await MockApp.startServer();
         await BrowserUtil.browserInitWithAuth(["caseworker-divorce-financialremedy-solicitor"]);
 
@@ -55,7 +55,7 @@ describe('Header  Tabs', function () {
 
     });
 
-    it('Work allocation Tabs "Task list" and "Task Manager" for role "caseworker-ia-admofficer"', async function () {
+    it.skip('Work allocation Tabs "Task list" and "Task Manager" for role "caseworker-ia-admofficer"', async function () {
         await MockApp.startServer();
         await BrowserUtil.browserInitWithAuth(["caseworker-ia-admofficer"]);
 
@@ -67,7 +67,7 @@ describe('Header  Tabs', function () {
     });
 
   
-    it('Work allocation Tabs "Task list" and "Task Manager" for role "caseworker-ia-caseofficer"', async function () {
+    it.skip('Work allocation Tabs "Task list" and "Task Manager" for role "caseworker-ia-caseofficer"', async function () {
         await MockApp.startServer();
         await BrowserUtil.browserInitWithAuth(["caseworker-ia-caseofficer"]);
 
@@ -79,7 +79,7 @@ describe('Header  Tabs', function () {
     });
 
 
-    it('Work allocation Tabs for role "caseworker-ia-caseofficer", "caseworker-ia-admofficer"', async function () {
+    it.skip('Work allocation Tabs for role "caseworker-ia-caseofficer", "caseworker-ia-admofficer"', async function () {
         await MockApp.startServer();
         await BrowserUtil.browserInitWithAuth(["caseworker-ia-caseofficer", "caseworker-ia-admofficer"]);
 

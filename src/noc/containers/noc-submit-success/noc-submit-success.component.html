@@ -1,0 +1,55 @@
+<div class="govuk-width-container">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div *ngIf="(currentNavigation$ | async) === nocState.SUBMISSION_SUCCESS_APPROVED">
+        <div class="govuk-panel govuk-panel--confirmation">
+          <h1 class="govuk-panel__title">
+            Notice of change successful<br><br>
+            <div class="govuk-panel__body">
+              You're now representing a client on case <br>
+              {{ caseReference$ | async | caseReference}}
+            </div>
+          </h1>
+        </div>
+        <p class="govuk-body govuk-!-margin-top-6">If the client had legal representation, we've sent an email to their
+          solicitor.</p>
+        <h2 class="govuk-heading-m ">What happens next</h2>
+        <p class="govuk-body">
+          This case will now appear in your case list.
+        </p>
+        <div class="govuk-warning-text">
+          <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+          <strong class="govuk-warning-text__text">
+            <span class="govuk-warning-text__assistive">Warning</span>
+            You should now amend the case details, for example the unique solicitor reference and the correspondence
+            address.
+          </strong>
+        </div>
+        <p class="govuk-body">
+          You must also inform all parties involved in the case.
+        </p>
+        <p class="govuk-body">
+          This is a new online process - you don’t need to file any further documents to the court.
+        </p>
+        <p class="govuk-body"><a href="cases/case-details/{{ caseReference$ | async }}">View this case</a></p>
+        <p class="govuk-body"><a href="cases">View case list</a></p>
+      </div>
+
+      <div *ngIf="(currentNavigation$ | async) === nocState.SUBMISSION_SUCCESS_PENDING">
+        <div class="govuk-panel govuk-panel--confirmation">
+          <h1 class="govuk-panel__title">
+            Notice of change request submitted<br><br>
+            <div class="govuk-panel__body">
+              Wait for us to review this request
+            </div>
+          </h1>
+        </div>
+        <h2 class="govuk-heading-m  govuk-!-margin-top-6">What happens next</h2>
+        <p>We’re reviewing your request.</p>
+        <p>We’ll send you confirmation of our decision.</p>
+        <p>Once this notice of change has been approved, the case will be assigned to your organisation. The Case Access Administrator (CAA) will then be able to give you access.</p>
+      </div>
+
+    </div>
+  </div>
+</div>

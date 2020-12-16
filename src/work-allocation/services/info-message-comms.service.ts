@@ -39,13 +39,23 @@ export class InfoMessageCommService {
 
     this.infoMessages = [];
 
-    this.infoMessageSource.next(this.infoMessages);
+    this.emitMessages(this.infoMessages);
   };
 
   public addMessage(message: InformationMessage) {
 
     this.infoMessages.push(message);
 
-    this.infoMessageSource.next(this.infoMessages);
+    this.emitMessages(this.infoMessages);
+  }
+
+  public emitMessages(messages) {
+
+    this.infoMessageSource.next(messages);
+  }
+
+  public getMessages() {
+
+    return this.infoMessages;
   }
 }

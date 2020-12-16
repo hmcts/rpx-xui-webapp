@@ -43,6 +43,11 @@ export const ROUTES: Routes = [
     redirectTo: 'cases/case-details/:cid/trigger/:triggerPath/:triggerPath2', pathMatch: 'full'
   },
   {
+    path: 'noc',
+    canActivate: [AuthGuard, AcceptTermsGuard],
+    loadChildren: '../noc/noc.module#NocModule'
+  },
+  {
     path: 'cookies',
     component: CookiePolicyComponent
   },

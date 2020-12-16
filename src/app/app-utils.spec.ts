@@ -78,4 +78,9 @@ describe('getEnvironment', () => {
       ]);
     });
   });
+
+  it('add padding', () => {
+    expect(AppUtils.pad('1')).toEqual('01');
+    expect(AppUtils.pad('1', 3)).toEqual('001');
+  });
 });

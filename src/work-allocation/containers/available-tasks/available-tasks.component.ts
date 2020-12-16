@@ -71,7 +71,7 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
         message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS,
       };
 
-      this.infoMessageCommService.emitInfoMessageChange(message);
+      this.infoMessageCommService.nextMessage(message);
     }, error => {
 
       this.claimTaskErrors(error.status);
@@ -90,6 +90,10 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
     };
 
     switch (status) {
+      case 400:
+        this.infoMessageCommService.nextMessage(message);
+        this.refreshTasks();
+        break;
       case 401:
       case 403:
         this.router.navigate(['/not-authorised']);
@@ -98,7 +102,7 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
         this.router.navigate(['/service-down']);
         break;
       default:
-        this.infoMessageCommService.emitInfoMessageChange(message);
+        this.infoMessageCommService.nextMessage(message);
     }
   }
 

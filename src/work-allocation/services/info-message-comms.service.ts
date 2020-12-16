@@ -27,7 +27,7 @@ export class InfoMessageCommService {
   private infoMessages = [];
 
   /**
-   * Remove all previous messages, and add a new message.
+   * Helper function to remove all previous messages, and add a new message.
    */
   public nextMessage(message: InformationMessage) {
 

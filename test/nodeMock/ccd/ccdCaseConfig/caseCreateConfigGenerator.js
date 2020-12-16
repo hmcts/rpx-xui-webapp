@@ -169,7 +169,48 @@ class CCDCaseConfig {
         return template;
     }
 
-  
+
+
+    getCaseConfig(eventConfig) {
+        const eventId = eventConfig.eventId;
+
+        const caseConfig = new CCDCaseConfig('MockEvent_' + eventId, 'Mock event for ' + eventId, 'Mock event description');
+
+        eventConfig.pages.forEach((page, idx) => {
+            const wizardPage = caseConfig.addWizardPage(eventId + '_' + idx, 'Mock Page ' + eventId + " " + idx);
+
+            page.fields.forEach((field, fieldIdx) => {
+                let ccdCaseField = caseConfig.addCCDFieldToPage(wizardPage, field.type, field.id, field.label ? field.label : "Test " + field.id);
+                this.ConfigureCCDField(caseConfig, ccdCaseField, field);
+                if (field.value) {
+                    ccdCaseField.value = field.value
+                }
+            });
+
+        });
+
+        return caseConfig.caseConfigTemplate;
+    }
+
+    ConfigureCCDField(caseConfig, parentField, fieldConfig) {
+        if (fieldConfig.type === "Complex") {
+            fieldConfig.complexFields.forEach((complexFieldConfig) => {
+                const complexCCDField = this.getCCDFieldTemplateCopy(complexFieldConfig.type, complexFieldConfig.id, complexFieldConfig.label ? complexFieldConfig.lbel : " Complex field " + complexFieldConfig.id)
+                parentField.field_type.complex_fields.push(complexCCDField);
+                this.ConfigureCCDField(caseConfig, complexCCDField, complexFieldConfig);
+            });
+        }
+
+        if (fieldConfig.type === "Collection") {
+            const collectionCCDField = this.getCCDFieldTemplateCopy(fieldConfig.collectionField.type, fieldConfig.collectionField.id, fieldConfig.collectionField.label ? fieldConfig.collectionField.lbel : " Complex field " + fieldConfig.collectionField.id)
+            parentField.field_type.collection_field_type = collectionCCDField;
+            this.ConfigureCCDField(caseConfig, collectionCCDField, fieldConfig.collectionField);
+
+        }
+    }
+
+
+    
 
 }
 

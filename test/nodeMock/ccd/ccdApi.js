@@ -139,6 +139,7 @@ module.exports = new CCDApi();
 
 
 function getSingleFieldCaseEventConfig(eventId){
+    const caseConfigGenerator =  new CCDCaseConfig();
     const eventConfig = {
         eventId: eventId,
         pages:[
@@ -162,50 +163,17 @@ function getSingleFieldCaseEventConfig(eventId){
             eventConfig.pages[0].fields.push({
                 type: "DynamicList", id: "dynamicListField", value: {"value": listItems[2],"list_items": listItems} 
             });
+            eventConfig.pages[0].fields.push({
+                type: "Complex", id: "dynamicListInComplexField", complexFields : [
+                    { type: "DynamicList", id: "dynamicListField", label: "Field Dynamic list"}
+                ] 
+                , value: { "dynamicListField" : {  "value": listItems[2], "list_items": listItems }}
+            });
             break;
     }
 
-    return getCaseConfig(eventConfig);
+    return caseConfigGenerator.getCaseConfig(eventConfig);
 }
 
-
-
-function getCaseConfig(eventConfig) {
-    const eventId = eventConfig.eventId;
-
-    const caseConfig = new CCDCaseConfig('MockEvent_' + eventId, 'Mock event for ' + eventId, 'Mock event description');
-   
-    eventConfig.pages.forEach((page,idx) => {
-        const wizardPage = caseConfig.addWizardPage(eventId + '_'+idx, 'Mock Page ' + eventId+" "+idx);
-        
-        page.fields.forEach((field,fieldIdx) => {
-            let ccdCaseField = caseConfig.addCCDFieldToPage(wizardPage, field.type, field.id, field.label ? field.label : "Test "+field.id);
-            ConfigureCCDField(caseConfig, ccdCaseField, field);
-            if(field.value){
-                ccdCaseField.value = field.value
-            }
-        });  
-        
-    });
-    
-    return caseConfig.caseConfigTemplate;
-}
-
-function ConfigureCCDField(caseConfig, parentField, fieldConfig) {
-    if (fieldConfig.type === "Complex") {
-        field.complexFields.forEach((complexFieldConfig) => {
-            const complexCCDField = caseConfig.getCCDFieldTemplateCopy(complexFieldConfig.type, complexFieldConfig.id, complexFieldConfig.label ? complexFieldConfig.lbel : " Complex field " + complexFieldConfig.id)
-            parentField.field_type.complex_fields.push(complexCCDField);
-            ConfigureCCDField(caseConfig, complexCCDField, complexFieldConfig);
-        });
-    }
-
-    if (fieldConfig.type === "Collection") {
-        const collectionCCDField = caseConfig.getCCDFieldTemplateCopy(fieldConfig.collectionField.type, fieldConfig.collectionField.id, fieldConfig.collectionField.label ? fieldConfig.collectionField.lbel : " Complex field " + fieldConfig.collectionField.id)
-        parentField.field_type.collection_field_type = collectionCCDField;
-        ConfigureCCDField(caseConfig, collectionCCDField, fieldConfig.collectionField);
-
-    }
-}
 
 

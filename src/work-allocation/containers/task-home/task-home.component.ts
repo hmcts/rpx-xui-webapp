@@ -32,7 +32,7 @@ export class TaskHomeComponent implements OnInit {
 
   public showInfoMessage: boolean = false;
 
-  private infoMessages: InformationMessage[];
+  public infoMessages: InformationMessage[];
 
   constructor(
     private readonly router: Router,

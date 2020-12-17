@@ -51,41 +51,41 @@ describe('Header  Tabs', function () {
         await headerPage.waitForPrimaryNavDisplay();
         await BrowserUtil.waitForLD();
         expect(await headerPage.isTabPresent('Task list'), 'Task list tab not present, displayed tabs : ' + await headerPage.primaryNavBar.getText()).to.be.false
-        expect(await headerPage.isTabPresent('Task Manager'), 'Task Manager tab present, displayed tabs : ' + await headerPage.primaryNavBar.getText()).to.be.false
+        expect(await headerPage.isTabPresent('Task manager'), 'Task manager tab present, displayed tabs : ' + await headerPage.primaryNavBar.getText()).to.be.false
 
     });
 
-    it.skip('Work allocation Tabs "Task list" and "Task Manager" for role "caseworker-ia-admofficer"', async function () {
+    it('Work allocation Tabs "Task list" and "Task manager" for role "caseworker-ia-admofficer"', async function () {
         await MockApp.startServer();
         await BrowserUtil.browserInitWithAuth(["caseworker-ia-admofficer"]);
 
         await headerPage.waitForPrimaryNavDisplay();
         await BrowserUtil.waitForLD();
         expect(await headerPage.isTabPresent('Task list'), 'Task list tab not present, displayed tabs : ' + await headerPage.primaryNavBar.getText()).to.be.true
-        expect(await headerPage.isTabPresent('Task Manager'), 'Task Manager tab present, displayed tabs : ' + await headerPage.primaryNavBar.getText()).to.be.false
+        expect(await headerPage.isTabPresent('Task manager'), 'Task manager tab present, displayed tabs : ' + await headerPage.primaryNavBar.getText()).to.be.false
  
     });
 
   
-    it.skip('Work allocation Tabs "Task list" and "Task Manager" for role "caseworker-ia-caseofficer"', async function () {
+    it('Work allocation Tabs "Task list" and "Task manager" for role "caseworker-ia-caseofficer"', async function () {
         await MockApp.startServer();
         await BrowserUtil.browserInitWithAuth(["caseworker-ia-caseofficer"]);
 
         await headerPage.waitForPrimaryNavDisplay();
         await BrowserUtil.waitForLD();
-        expect(await headerPage.isTabPresent('Task Manager'), 'Task Manager tab not present, displayed tabs : ' + await headerPage.primaryNavBar.getText()).to.be.true
+        expect(await headerPage.isTabPresent('Task manager'), 'Task manager tab not present, displayed tabs : ' + await headerPage.primaryNavBar.getText()).to.be.true
         expect(await headerPage.isTabPresent('Task list'), 'Task list tab not present, displayed tabs : ' + await headerPage.primaryNavBar.getText()).to.be.true
 
     });
 
 
-    it.skip('Work allocation Tabs for role "caseworker-ia-caseofficer", "caseworker-ia-admofficer"', async function () {
+    it('Work allocation Tabs for role "caseworker-ia-caseofficer", "caseworker-ia-admofficer"', async function () {
         await MockApp.startServer();
         await BrowserUtil.browserInitWithAuth(["caseworker-ia-caseofficer", "caseworker-ia-admofficer"]);
 
         await headerPage.waitForPrimaryNavDisplay();
         await BrowserUtil.waitForLD();
-        expect(await headerPage.isTabPresent('Task Manager'), 'Task Manager tab not present, displayed tabs : ' + await headerPage.primaryNavBar.getText()).to.be.true
+        expect(await headerPage.isTabPresent('Task manager'), 'Task manager tab not present, displayed tabs : ' + await headerPage.primaryNavBar.getText()).to.be.true
         expect(await headerPage.isTabPresent('Task list'), 'Task list tab not present' + await headerPage.primaryNavBar.getText()).to.be.true
 
     });

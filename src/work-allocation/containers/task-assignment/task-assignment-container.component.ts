@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { ErrorMessage } from '../../../app/models';
 import { ConfigConstants } from '../../components/constants';
 import { InfoMessage, InfoMessageType, TaskService, TaskSort } from '../../enums';
 import { InformationMessage } from '../../models/comms';
@@ -8,15 +9,18 @@ import { Assignee, Caseworker } from '../../models/dtos';
 import { TaskFieldConfig, TaskServiceConfig } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 
+export const NAME_ERROR: ErrorMessage = {
+  title: 'There is a problem',
+  description: 'You must select a name',
+  fieldId: 'task_assignment_caseworker'
+};
 @Component({
   selector: 'exui-task-container-assignment',
   templateUrl: 'task-assignment-container.component.html',
   styleUrls: ['task-assignment-container.component.scss']
 })
 export class TaskAssignmentContainerComponent implements OnInit {
-  public showProblem: boolean = false;
-  public errorTitle: string;
-  public errorDesc: string;
+  public error: ErrorMessage = null;
   public tasks: any [];
   public sortedBy: any;
   public showManage: boolean = false;
@@ -61,11 +65,10 @@ export class TaskAssignmentContainerComponent implements OnInit {
 
   public reassign(): void {
     if (!this.caseworker) {
-      this.showProblem = true;
-      this.errorTitle = 'There is a problem';
-      this.errorDesc = 'You must select a name';
+      this.error = NAME_ERROR;
       return;
     }
+    this.error = null;
     const assignee: Assignee = {
       id: this.caseworker.idamId,
       userName: `${this.caseworker.firstName} ${this.caseworker.lastName}`

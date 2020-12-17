@@ -7,9 +7,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable } from 'rxjs';
 
-// import { ErrorMessageComponent } from '../../../app/components';
+import { ErrorMessageComponent } from '../../../app/components';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { TaskAssignmentContainerComponent, TaskListComponent } from '../../containers';
+import { TaskListComponent } from '../../containers';
+import {
+  NAME_ERROR,
+  TaskAssignmentContainerComponent,
+} from '../../containers/task-assignment/task-assignment-container.component';
 import { Assignee } from '../../models/dtos';
 import { Task } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
@@ -43,8 +47,8 @@ describe('TaskAssignmentContainerComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [
-        TaskAssignmentContainerComponent, WrapperComponent, TaskListComponent, NothingComponent
-        // ErrorMessageComponent
+        TaskAssignmentContainerComponent, WrapperComponent, TaskListComponent,
+        ErrorMessageComponent, NothingComponent
       ],
       imports: [
         WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientModule,
@@ -103,15 +107,14 @@ describe('TaskAssignmentContainerComponent', () => {
 
   it('should send an error message when a caseworker is not selected and there is an attempt to assign', () => {
     expect(component.caseworker).toBeUndefined();
-    expect(component.showProblem).toBeFalsy();
-    expect(component.errorTitle).toBeUndefined();
-    expect(component.errorDesc).toBeUndefined();
+    expect(component.error).toBeNull();
 
     component.reassign();
     fixture.detectChanges();
-    expect(component.showProblem).toBeTruthy();
-    expect(component.errorTitle).toEqual('There is a problem');
-    expect(component.errorDesc).toEqual('You must select a name');
+    expect(component.error).not.toBeNull();
+    expect(component.error.title).toEqual(NAME_ERROR.title);
+    expect(component.error.description).toEqual(NAME_ERROR.description);
+    expect(component.error.fieldId).toEqual(NAME_ERROR.fieldId);
 
   });
 

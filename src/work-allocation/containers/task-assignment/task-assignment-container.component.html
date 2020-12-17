@@ -1,4 +1,5 @@
-<!-- <exui-error-message *ngIf="showProblem" [title]="errorTitle" [errorDesc]="errorDesc"></exui-error-message> -->
+<exui-error-message *ngIf="error" [error]="error"></exui-error-message>
+
 <main class="govuk-main-wrapper" id="main-content" role="main">
   <h1 class="govuk-heading-xl">Reassign a task</h1>
   <div class="govuk-grid-row">
@@ -12,7 +13,7 @@
 
       <h2 class="govuk-heading-m">Choose a colleague</h2>
       <exui-task-assignment
-        (caseworkerChanged)="onCaseworkerChanged($event)" [showProblem]="showProblem">
+        (caseworkerChanged)="onCaseworkerChanged($event)" [showProblem]="error">
       </exui-task-assignment>
 
       <button class="govuk-button govuk-!-margin-right-1" type="submit" (click)="reassign()">Reassign</button>

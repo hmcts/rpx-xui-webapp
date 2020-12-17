@@ -1,8 +1,10 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 
 import { ListConstants } from '../../components/constants';
-import { TaskService, TaskSort } from '../../enums';
+import { InfoMessage, InfoMessageType, TaskService, TaskSort } from '../../enums';
+import { InformationMessage } from '../../models/comms';
 import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
 import { InfoMessageCommService, SessionStorageService, WorkAllocationTaskService } from '../../services';
@@ -97,8 +99,7 @@ export class TaskListWrapperComponent implements OnInit {
    */
   public loadTasks(): void {
     // Should this clear out the existing set first?
-    const searchRequest = this.getSearchTaskRequest();
-    this.taskService.searchTask({ searchRequest, view: this.view }).subscribe(result => {
+    this.performSearch().subscribe(result => {
       // Swap the commenting on these two lines to see the behaviour
       // when no tasks are returned.
       // NOTE: Do not commit them in a swapped state!
@@ -106,6 +107,30 @@ export class TaskListWrapperComponent implements OnInit {
       this.ref.detectChanges();
       // this.tasks = [];
     });
+  }
+
+  /**
+   * On the return of the refreshed tasks, we throw up a refresh message.
+   */
+  public refreshTasks(): void {
+
+    this.performSearch().subscribe(result => {
+
+      this.tasks = result.tasks;
+      this.ref.detectChanges();
+
+      const message: InformationMessage = {
+        type: InfoMessageType.INFO,
+        message: InfoMessage.LIST_OF_AVAILABLE_TASKS_REFRESHED,
+      };
+
+      this.infoMessageCommService.addMessage(message);
+    });
+  }
+
+  public performSearch(): Observable<any> {
+    const searchRequest = this.getSearchTaskRequest();
+    return this.taskService.searchTask({ searchRequest, view: this.view });
   }
 
   /**

@@ -6,6 +6,7 @@ import { AppUtils } from '../../../app/app-utils';
 import { InfoMessage, InfoMessageType } from '../../enums';
 import { TaskSortField } from '../../models/tasks';
 import { InfoMessageCommService } from '../../services';
+import { InformationMessage } from '../../models/comms';
 
 @Component({
   selector: 'exui-task-home',
@@ -30,8 +31,8 @@ export class TaskHomeComponent implements OnInit {
   public pageTitle: string;
 
   public showInfoMessage: boolean = false;
-  public infoMessageType: InfoMessageType;
-  public infoMessage: InfoMessage;
+
+  public infoMessages: InformationMessage[];
 
   constructor(
     private readonly router: Router,
@@ -58,15 +59,11 @@ export class TaskHomeComponent implements OnInit {
     this.subscribeToInfoMessageCommService();
   }
 
-  /**
-   * TODO: Unit test
-   */
   public subscribeToInfoMessageCommService(): void {
 
-    this.infoMessageCommService.infoMessageChangeEmitted$.subscribe(message => {
+    this.infoMessageCommService.infoMessageChangeEmitted$.subscribe(messages => {
 
-      this.infoMessageType = message.type;
-      this.infoMessage = message.message;
+      this.infoMessages = messages;
       this.showInfoMessage = true;
     });
   }
@@ -90,5 +87,7 @@ export class TaskHomeComponent implements OnInit {
   public setupPageData(activatedRoute: ActivatedRouteSnapshot): void {
     const data = AppUtils.getRouteData(activatedRoute);
     this.pageTitle = data ? data.subTitle : 'Task list';
+
+    this.infoMessageCommService.removeAllMessages();
   }
 }

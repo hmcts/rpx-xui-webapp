@@ -31,7 +31,7 @@ describe('AvailableTasksComponent', () => {
   const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
   const mockLocations: dtos.Location[] = getMockLocations();
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask', 'claimTask']);
-  const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['emitInfoMessageChange']);
+  const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['nextMessage']);
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
   beforeEach(async(() => {
@@ -199,7 +199,7 @@ describe('AvailableTasksComponent', () => {
       const taskId = '123456';
       component.claimTask(taskId);
 
-      expect(mockInfoMessageCommService.emitInfoMessageChange).toHaveBeenCalledWith(message);
+      expect(mockInfoMessageCommService.nextMessage).toHaveBeenCalledWith(message);
     });
 
     it('should call claimTaskErrors() with the error\'s status code, so that the User can see that the claim of ' +

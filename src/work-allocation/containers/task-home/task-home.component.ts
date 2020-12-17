@@ -3,9 +3,7 @@ import { ActivatedRouteSnapshot, NavigationEnd, Router, RoutesRecognized } from 
 import { SubNavigation } from '@hmcts/rpx-xui-common-lib';
 
 import { AppUtils } from '../../../app/app-utils';
-import { InformationMessage } from '../../models/comms';
 import { TaskSortField } from '../../models/tasks';
-import { InfoMessageCommService } from '../../services';
 
 @Component({
   selector: 'exui-task-home',
@@ -29,33 +27,13 @@ export class TaskHomeComponent implements OnInit {
   public sortedBy: TaskSortField;
   public pageTitle: string;
 
-  public showInfoMessage: boolean = false;
-
-  public infoMessages: InformationMessage[];
-
-  /**
-   * Flag to indicate whether or not messages should be retained at
-   * this point, having been set on another route. The flag is passed
-   * through the router and so is held in window.history.state.
-   */
-  private get retainMessages(): boolean {
-    if (window && window.history && window.history.state) {
-      return !!window.history.state.retainMessages;
-    }
-    return false;
-  }
-
-  constructor(
-    private readonly router: Router,
-    private readonly infoMessageCommService: InfoMessageCommService
-  ) {}
+  constructor(private readonly router: Router) {}
 
   public ngOnInit(): void {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         // Set up the active navigation item.
         this.setupActiveSubNavigationItem(this.router.url);
-        this.resetMessages();
       }
       if (event instanceof RoutesRecognized) {
         // Set up the page data.
@@ -67,16 +45,6 @@ export class TaskHomeComponent implements OnInit {
 
     // Set up the page data.
     this.setupPageData(this.router.routerState.root.snapshot);
-
-    this.subscribeToInfoMessageCommService();
-  }
-
-  public subscribeToInfoMessageCommService(): void {
-
-    this.infoMessageCommService.infoMessageChangeEmitted$.subscribe(messages => {
-      this.infoMessages = messages;
-      this.showInfoMessage = true;
-    });
   }
 
   /**
@@ -98,14 +66,6 @@ export class TaskHomeComponent implements OnInit {
   public setupPageData(activatedRoute: ActivatedRouteSnapshot): void {
     const data = AppUtils.getRouteData(activatedRoute);
     this.pageTitle = data ? data.subTitle : 'Task list';
-  }
-
-  public resetMessages(): void {
-    // Remove all the messages unless they've been specifically flagged
-    // to be retained this one time.
-    if (!this.retainMessages) {
-      this.infoMessageCommService.removeAllMessages();
-    }
   }
 
   public isActiveUrl(url: string, currentUrl: string): boolean {

@@ -2,6 +2,8 @@
 
 const express = require('express');
 var bodyParser = require('body-parser');
+const minimist = require('minimist');
+
 
 let { requestMapping,configurations} = require('./reqResMapping');
 const { browser } = require('protractor');
@@ -86,9 +88,12 @@ class MockApp{
 
 }
 
+
 const mockInstance = new MockApp();
 module.exports = mockInstance;
-if (process.argv.slice(2)[0]){
+
+const args = minimist(process.argv)
+if (args.standalone){
     mockInstance.init();
     // createCustomCCDCaseConfig();
     // createCustomCaseDetails();

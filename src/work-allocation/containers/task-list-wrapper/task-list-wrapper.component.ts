@@ -96,6 +96,9 @@ export class TaskListWrapperComponent implements OnInit {
       this.tasks = result.tasks;
       this.ref.detectChanges();
       // this.tasks = [];
+    }, error => {
+
+      this.performSearchErrorHandler(error.status);
     });
   }
 
@@ -115,7 +118,27 @@ export class TaskListWrapperComponent implements OnInit {
       };
 
       this.infoMessageCommService.addMessage(message);
+    }, error => {
+
+      this.performSearchErrorHandler(error.status);
     });
+  }
+
+  public performSearchErrorHandler(status): void {
+
+    switch (status) {
+      case 401:
+      case 403:
+        this.router.navigate(['/not-authorised']);
+        break;
+      case 500:
+        this.router.navigate(['/service-down']);
+        break;
+      default:
+        // If it's anything other than a 401, 403, or 500, we should not
+        // send the User to an error page, but allow the User to refresh their page and try again.
+        // No scenario covering this currently.
+    }
   }
 
   public performSearch(): Observable<any> {

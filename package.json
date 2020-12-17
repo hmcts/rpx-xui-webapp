@@ -29,6 +29,7 @@
     "lint:ng": "ng lint",
     "e2e": "ng e2e",
     "test:coverage": "echo 'not implemented'",
+    "test:coverage:all": "yarn test:coverage:ng && yarn test:coverage:node",
     "test:coverage:merge": "./node_modules/.bin/lcov-result-merger './reports/tests/coverage/*/lcov.info' > ./reports/tests/coverage/lcov.info",
     "test:coverage:node": "cd api && yarn coverage",
     "test:coverage:ng": "yarn test:ng --source-map --code-coverage",

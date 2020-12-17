@@ -41,6 +41,7 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
    * @param locations The currently selected locations.
    */
   public onLocationsChanged(locations: Location[]): void {
+    this.infoMessageCommService.removeAllMessages();
     this.selectedLocations = [ ...locations ];
     this.loadTasks();
   }
@@ -70,7 +71,7 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
         type: InfoMessageType.SUCCESS,
         message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS,
       };
-
+      this.refreshTasks();
       this.infoMessageCommService.nextMessage(message);
     }, error => {
 

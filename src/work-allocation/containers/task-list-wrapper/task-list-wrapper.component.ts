@@ -62,6 +62,17 @@ export class TaskListWrapperComponent implements OnInit {
     return 'sortSessionKey';
   }
 
+  /**
+   * To be overridden.
+   */
+  public get view(): string {
+    return 'default';
+  }
+
+  private get returnUrl(): string {
+    return this.router ? this.router.url : '/tasks';
+  }
+
   public ngOnInit(): void {
     // Try to get the sort order out of the session.
     const stored = this.sessionStorageService.getItem(this.sortSessionKey);
@@ -78,7 +89,6 @@ export class TaskListWrapperComponent implements OnInit {
         order: this.taskServiceConfig.defaultSortDirection
       };
     }
-
     this.loadTasks();
   }
 
@@ -87,8 +97,8 @@ export class TaskListWrapperComponent implements OnInit {
    */
   public loadTasks(): void {
     // Should this clear out the existing set first?
-    const searchTaskRequest = this.getSearchTaskRequest();
-    this.taskService.searchTask(searchTaskRequest).subscribe(result => {
+    const searchRequest = this.getSearchTaskRequest();
+    this.taskService.searchTask({ searchRequest, view: this.view }).subscribe(result => {
       // Swap the commenting on these two lines to see the behaviour
       // when no tasks are returned.
       // NOTE: Do not commit them in a swapped state!
@@ -128,11 +138,6 @@ export class TaskListWrapperComponent implements OnInit {
    * @param fieldName - ie. 'caseName'
    */
   public onSortHandler(fieldName: string): void {
-    // TODO: Remove everything below after integration.
-    // This is all to prove the mechanism works.
-    console.log('Task Home received Sort on:');
-    console.log(fieldName);
-    console.log('Faking the sort now');
     let order: TaskSort = TaskSort.ASC;
     if (this.sortedBy.fieldName === fieldName && this.sortedBy.order === TaskSort.ASC) {
       order = TaskSort.DSC;
@@ -148,9 +153,7 @@ export class TaskListWrapperComponent implements OnInit {
    * action.
    */
   public onActionHandler(taskAction: InvokedTaskAction): void {
-    // Remove after integration
-    console.log('Task Home received InvokedTaskAction:');
-    console.log(taskAction);
-    this.router.navigate([`/tasks/${taskAction.action.id}/${taskAction.task.id}`]);
+    const state = { returnUrl: this.returnUrl };
+    this.router.navigate([`/tasks/${taskAction.action.id}/${taskAction.task.id}`], { state });
   }
 }

@@ -1,5 +1,4 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { Location } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
@@ -29,8 +28,6 @@ describe('AvailableTasksComponent', () => {
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
 
-  let location: jasmine.SpyObj<Location>;
-
   const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
   const mockLocations: dtos.Location[] = getMockLocations();
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask', 'claimTask']);
@@ -38,8 +35,6 @@ describe('AvailableTasksComponent', () => {
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
   beforeEach(async(() => {
-    location = jasmine.createSpyObj('Location', ['path', 'replaceState']);
-    location.path.and.returnValue('');
     TestBed.configureTestingModule({
       imports: [
         CdkTableModule,
@@ -50,7 +45,6 @@ describe('AvailableTasksComponent', () => {
       declarations: [ AvailableTasksComponent, WrapperComponent, TaskListComponent ],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
-        { provide: Location, useValue: location },
         { provide: LocationDataService, useValue: mockLocationService },
         { provide: Router, useValue: mockRouter },
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService }
@@ -73,8 +67,9 @@ describe('AvailableTasksComponent', () => {
   });
 
   it('should make a call to load tasks using the default search request', () => {
-    const defaultSearchRequest = component.getSearchTaskRequest();
-    expect(mockTaskService.searchTask).toHaveBeenCalledWith(defaultSearchRequest);
+    const searchRequest = component.getSearchTaskRequest();
+    const payload = { searchRequest, view: component.view };
+    expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
     expect(component.tasks).toBeDefined();
     expect(component.tasks.length).toEqual(2);
   });
@@ -107,7 +102,8 @@ describe('AvailableTasksComponent', () => {
     expect(searchRequest.search_parameters[2].key).toEqual('assignee');
 
     // Let's also make sure that the tasks were re-requested with the new sorting.
-    expect(mockTaskService.searchTask).toHaveBeenCalledWith(searchRequest);
+    const payload = { searchRequest, view: component.view };
+    expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
 
     // Do it all over again to make sure it reverses the order.
     button.dispatchEvent(new Event('click'));
@@ -122,7 +118,8 @@ describe('AvailableTasksComponent', () => {
     expect(newSearchRequest.search_parameters[2].key).toEqual('assignee');
 
     // Let's also make sure that the tasks were re-requested with the new sorting.
-    expect(mockTaskService.searchTask).toHaveBeenCalledWith(newSearchRequest);
+    const newPayload = { searchRequest: newSearchRequest, view: component.view };
+    expect(mockTaskService.searchTask).toHaveBeenCalledWith(newPayload);
   });
 
   it('should not show the footer when there are tasks', () => {
@@ -134,7 +131,7 @@ describe('AvailableTasksComponent', () => {
     expect(footerRowClass).not.toContain('shown');
   });
 
-  it('should show the footer when there no tasks', () => {
+  it('should show the footer when there are no tasks', () => {
     spyOnProperty(component, 'tasks').and.returnValue([]);
     fixture.detectChanges();
     const element = fixture.debugElement.nativeElement;
@@ -174,7 +171,8 @@ describe('AvailableTasksComponent', () => {
     expect(searchRequest.search_parameters[2].key).toEqual('assignee');
 
     // Let's also make sure that the tasks were re-requested with the new sorting.
-    expect(mockTaskService.searchTask).toHaveBeenCalledWith(searchRequest);
+    const payload = { searchRequest, view: component.view };
+    expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
   });
 
   describe('claimTask()', () => {

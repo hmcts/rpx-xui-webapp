@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { ConfigConstants, SortConstants } from '../../components/constants';
+import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
 import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
 import { InformationMessage } from '../../models/comms';
 import { Location, SearchTaskRequest } from '../../models/dtos';
@@ -20,6 +20,10 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
 
   public get sortSessionKey(): string {
     return SortConstants.Session.AvailableTasks;
+  }
+
+  public get view(): string {
+    return ListConstants.View.AvailableTasks;
   }
 
   /**

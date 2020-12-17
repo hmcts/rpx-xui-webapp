@@ -10,6 +10,7 @@ import { LOCATIONS, LOCATIONS_ARRAY } from '../constants/work-allocation/locatio
 import {
   filterByAssignee,
   filterByLocations,
+  freshTasks,
   SORTABLE_FIELDS,
   sortTasks,
   TASKS_ARRAY,
@@ -36,10 +37,11 @@ describe('Work Allocation API', () => {
 
   // Write Pact when all tests done
   after(() => provider.finalize());
+  const baseTasks = freshTasks(TASKS_ARRAY);
 
   for (const caseworker of ALL_CASEWORKERS) {
     const caseworkerName = `${caseworker.firstName} ${caseworker.lastName}`;
-    const baseTasks = filterByAssignee(TASKS_ARRAY, [ caseworkerName ]);
+    const caseworkerTasks = filterByAssignee(baseTasks, [ caseworkerName ]);
 
     // Create an end point for each group of sorted tasks.
     for (const key of SORTABLE_FIELDS) {
@@ -58,7 +60,7 @@ describe('Work Allocation API', () => {
               { key: 'assignee', operator: 'IN', values: [ caseworkerName ] }
             ]
           };
-          const tasks = sortTasks(filterByLocations(baseTasks, values), key, order);
+          const tasks = sortTasks(filterByLocations(caseworkerTasks, values), key, order);
   
           describe(`when requested to search for ${caseworkerName}'s tasks at ${location.locationName} in ${order} order of ${key}`, () => {
             before(() =>

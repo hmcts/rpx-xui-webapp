@@ -10,6 +10,8 @@ import { FilterConstants } from '../constants';
 })
 export class TaskAssignmentComponent implements OnInit {
 
+  @Input() public showProblem: boolean;
+  
   @Input()
   public get excludeCaseworkers(): Caseworker[] {
     return this.pExcludeCaseworkers;

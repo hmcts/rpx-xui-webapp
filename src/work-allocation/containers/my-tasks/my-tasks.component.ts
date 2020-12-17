@@ -19,6 +19,10 @@ export class MyTasksComponent extends TaskListWrapperComponent {
     return SortConstants.Session.MyTasks;
   }
 
+  public get view(): string {
+    return ListConstants.View.MyTasks;
+  }
+
   public get fields(): TaskFieldConfig[] {
     return ConfigConstants.MyTasks;
   }

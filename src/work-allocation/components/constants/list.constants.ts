@@ -6,5 +6,10 @@ export const LIST_CONSTANTS = {
     AvailableTasks: DEFAULT_EMPTY_MESSAGE,
     MyTasks: 'You have no assigned tasks.',
     TaskManager: DEFAULT_EMPTY_MESSAGE
+  },
+  View: {
+    AvailableTasks: 'AvailableTasks',
+    MyTasks: 'MyTasks',
+    TaskManager: 'TaskManager'
   }
 };

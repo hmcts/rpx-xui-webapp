@@ -1,5 +1,5 @@
-import { Location } from '@angular/common';
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { ListConstants } from '../../components/constants';
@@ -42,14 +42,15 @@ export class TaskListComponent implements OnChanges {
 
   private selectedTask: Task;
 
-  constructor(private readonly location: Location) {
-  }
+  constructor(private readonly router: Router) {}
 
   public selectTaskFromUrlHash(url: string): Task | null {
-    const hashValue = url.substring(url.indexOf('#') + 1);
-    if (hashValue && hashValue.indexOf('manage_') === 0) {
-      const selectedTaskId = hashValue.replace('manage_', '');
-      return this.tasks.find(task => task.id === selectedTaskId) || null;
+    if (url) {
+      const hashValue = url.substring(url.indexOf('#') + 1);
+      if (hashValue && hashValue.indexOf('manage_') === 0) {
+        const selectedTaskId = hashValue.replace('manage_', '');
+        return this.tasks.find(task => task.id === selectedTaskId) || null;
+      }
     }
     return null;
   }
@@ -57,7 +58,7 @@ export class TaskListComponent implements OnChanges {
   public ngOnChanges() {
     if (this.tasks) {
       this.dataSource$ = new BehaviorSubject(this.tasks);
-      this.setSelectedTask(this.selectTaskFromUrlHash(this.location.path(true)));
+      this.setSelectedTask(this.selectTaskFromUrlHash(this.router.url));
     }
     if (this.fields) {
       this.displayedColumns = this.getDisplayedColumn(this.fields);
@@ -163,12 +164,12 @@ export class TaskListComponent implements OnChanges {
 
   private setupHash(): void {
     if (this.showManage) {
-      const currentPath = this.location.path(true);
+      const currentPath = this.router.url || '';
       const basePath = currentPath.split('#')[0];
       if (this.selectedTask) {
-        this.location.replaceState(`${basePath}#manage_${this.selectedTask.id}`);
+        this.router.navigate([ basePath ], { fragment: `manage_${this.selectedTask.id}` });
       } else {
-        this.location.replaceState(basePath);
+        this.router.navigate([ basePath ]);
       }
     }
   }

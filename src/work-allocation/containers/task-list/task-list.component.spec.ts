@@ -1,8 +1,8 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { Location } from '@angular/common';
 import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
+import {Router, NavigationExtras} from '@angular/router';
+import {of, Observable} from 'rxjs';
 
 import { ConfigConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
@@ -85,15 +85,33 @@ function getTaskService(): TaskServiceConfig {
   };
 }
 
+class MockRouter {
+  private pUrl: string = 'bob';
+  public get url(): string {
+    return this.pUrl;
+  }
+  public set url(value: string) {
+    this.pUrl = value;
+  }
+  private pNavigateCalls: any[] = [];
+  public get navigateCalls(): any[] {
+    return this.pNavigateCalls;
+  }
+  public navigate(commands: any[], extras?: NavigationExtras): Observable<boolean> {
+    this.pNavigateCalls.push({ commands, extras });
+    return of(true);
+  }
+}
+
 describe('TaskListComponent', () => {
   let component: TaskListComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
-  let location: jasmine.SpyObj<Location>;
+  let mockRouter: MockRouter = new MockRouter();
+  let routerSpy: jasmine.SpyObj<any>;
   const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['getTask']);
-  beforeEach(async(() => {
-    location = jasmine.createSpyObj('Location', ['path', 'replaceState']);
-    location.path.and.returnValue('');
+  beforeEach((() => {
+    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     TestBed.configureTestingModule({
       imports: [
         WorkAllocationComponentsModule,
@@ -102,13 +120,9 @@ describe('TaskListComponent', () => {
       declarations: [TaskListComponent, WrapperComponent],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
-        { provide: Location, useValue: location }
+        { provide: Router, useValue: mockRouter }
       ]
-    })
-      .compileComponents();
-  }));
-
-  beforeEach(() => {
+    }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
@@ -118,7 +132,7 @@ describe('TaskListComponent', () => {
     wrapper.taskServiceConfig = getTaskService();
     mockWorkAllocationService.getTask.and.returnValue(of({}));
     fixture.detectChanges();
-  });
+  }));
 
   it('should return the fields as an array with a \'manage\' entry, so that we can' +
     'display the manage column in the table.', async () => {
@@ -410,23 +424,35 @@ describe('TaskListComponent', () => {
     expect(component.sortEvent.emit).toHaveBeenCalledWith('dueDate');
   });
 
-  it('should select appropriate task from location hash', () => {
+  describe('act upon deep linking', () => {
     const id = '12345678';
-    location.path.and.returnValue(`tasklist#manage_${id}`);
-    const task = { id } as Task;
-    wrapper.tasks = [ task ];
-    fixture.detectChanges();
-    expect(component.getSelectedTask()).toEqual(task);
-    expect(location.replaceState).toHaveBeenCalledWith(`tasklist#manage_${id}`);
-  });
 
-  it('should handle a location hash for a task that does not exist', () => {
-    const id = '12345678';
-    location.path.and.returnValue(`tasklist#manage_999999`); // Wrong id.
-    const task = { id } as Task;
-    wrapper.tasks = [ task ];
-    fixture.detectChanges();
-    expect(component.getSelectedTask()).toBeNull();
-    expect(location.replaceState).toHaveBeenCalledWith('tasklist');
+    it('should select appropriate task from location hash', () => {
+      spyOnProperty(mockRouter, 'url', 'get').and.returnValue(`taskList#manage_${id}`);
+      const navigateCallsBefore = mockRouter.navigateCalls.length;
+      const task = { id } as Task;
+      wrapper.tasks = [ task ];
+      fixture.detectChanges();
+      expect(component.getSelectedTask()).toEqual(task);
+      expect(mockRouter.navigateCalls.length).toBeGreaterThan(navigateCallsBefore);
+      const lastNavigateCall = mockRouter.navigateCalls.pop();
+      expect(lastNavigateCall).toBeDefined();
+      expect(lastNavigateCall.commands).toEqual([ 'taskList' ]);
+      expect(lastNavigateCall.extras).toEqual({ fragment: `manage_${id}` });
+    });
+
+    it('should handle a location hash for a task that does not exist', () => {
+      spyOnProperty(mockRouter, 'url', 'get').and.returnValue(`taskList#manage_${id}`);
+      const navigateCallsBefore = mockRouter.navigateCalls.length;
+      const task = { id: '99999999' } as Task;
+      wrapper.tasks = [ task ];
+      fixture.detectChanges();
+      expect(component.getSelectedTask()).toBeNull();
+      expect(mockRouter.navigateCalls.length).toBeGreaterThan(navigateCallsBefore);
+      const lastNavigateCall = mockRouter.navigateCalls.pop();
+      expect(lastNavigateCall).toBeDefined();
+      expect(lastNavigateCall.commands).toEqual([ 'taskList' ]);
+      expect(lastNavigateCall.extras).toBeUndefined();
+    });
   });
 });

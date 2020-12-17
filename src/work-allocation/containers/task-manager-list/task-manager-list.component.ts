@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { ConfigConstants, FilterConstants, SortConstants } from '../../components/constants';
+import { ConfigConstants, FilterConstants, ListConstants, SortConstants } from '../../components/constants';
 import { Caseworker, Location, SearchTaskRequest } from '../../models/dtos';
 import { TaskFieldConfig } from '../../models/tasks';
 import { CaseworkerDisplayName } from '../../pipes';
@@ -54,6 +54,10 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
 
   public get sortSessionKey(): string {
     return SortConstants.Session.TaskManager;
+  }
+
+  public get view(): string {
+    return ListConstants.View.TaskManager;
   }
 
   public ngOnInit(): void {

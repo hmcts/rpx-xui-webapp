@@ -1,15 +1,23 @@
+<!-- <exui-error-message *ngIf="showProblem" [title]="errorTitle" [errorDesc]="errorDesc"></exui-error-message> -->
 <main class="govuk-main-wrapper" id="main-content" role="main">
   <h1 class="govuk-heading-xl">Reassign a task</h1>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
+
       <p>Reassign a task to a colleague.</p>
-      <exui-task-list [taskServiceConfig]="taskServiceConfig" [tasks]="tasks" [fields]="fields" [sortedBy]="sortedBy"
-                      [showManage]="showManage">
+      <exui-task-list
+        [taskServiceConfig]="taskServiceConfig" [tasks]="tasks" [fields]="fields"
+        [sortedBy]="sortedBy" [showManage]="showManage">
       </exui-task-list>
+
       <h2 class="govuk-heading-m">Choose a colleague</h2>
-      <exui-task-assignment (caseworkerChanged)="onCaseworkerChanged($event)"></exui-task-assignment>
+      <exui-task-assignment
+        (caseworkerChanged)="onCaseworkerChanged($event)" [showProblem]="showProblem">
+      </exui-task-assignment>
+
       <button class="govuk-button govuk-!-margin-right-1" type="submit" (click)="reassign()">Reassign</button>
       <button class="govuk-button govuk-button--secondary" type="submit" (click)="cancel()">Cancel and go back</button>
+
     </div>
   </div>
 </main>

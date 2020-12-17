@@ -41,5 +41,20 @@ export const ACTIONS = {
   CLAIM,
   COMPLETE,
   REASSIGN,
-  RELEASE
+  RELEASE,
 };
+
+export const TASK_ACTIONS = {
+  AVAILABLE: [ CLAIM, CLAIM_AND_GO, ],
+  MANAGER: {
+    ASSIGNED: [ REASSIGN, RELEASE, COMPLETE, CANCEL, ],
+    UNASSIGNED: [ ASSIGN, COMPLETE, CANCEL, ],
+  },
+  MY: [ REASSIGN, RELEASE, GO, ],
+};
+
+export enum ActionViews {
+  MY = 'MyTasks',
+  AVAILABLE = 'AvailableTasks',
+  MANAGER = 'TaskManager',
+}

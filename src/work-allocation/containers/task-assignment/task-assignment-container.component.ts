@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { ErrorMessage } from '../../../app/models';
 import { ConfigConstants } from '../../components/constants';
-import { InfoMessage, InfoMessageType, TaskService, TaskSort } from '../../enums';
+import { Assignment, InfoMessage, InfoMessageType, TaskService, TaskSort } from '../../enums';
 import { InformationMessage } from '../../models/comms';
 import { Assignee, Caseworker } from '../../models/dtos';
 import { TaskFieldConfig, TaskServiceConfig } from '../../models/tasks';
@@ -25,6 +25,9 @@ export class TaskAssignmentContainerComponent implements OnInit {
   public sortedBy: any;
   public showManage: boolean = false;
   public caseworker: Caseworker;
+  public verb: Assignment;
+
+  private successMessage: InfoMessage;
 
   constructor(
     private readonly taskService: WorkAllocationTaskService,
@@ -61,9 +64,11 @@ export class TaskAssignmentContainerComponent implements OnInit {
     // Get the task from the route, which will have been put there by the resolver.
     const { task } = this.route.snapshot.data.task;
     this.tasks = [ task ];
+    this.verb = this.route.snapshot.data.verb as Assignment;
+    this.successMessage = this.route.snapshot.data.successMessage as InfoMessage;
   }
 
-  public reassign(): void {
+  public assign(): void {
     if (!this.caseworker) {
       this.error = NAME_ERROR;
       return;
@@ -92,7 +97,7 @@ export class TaskAssignmentContainerComponent implements OnInit {
   }
 
   public cancel(): void {
-    this.returnWithMessage(null, {});
+    this.returnWithMessages([], {});
   }
 
   public onCaseworkerChanged(caseworker: Caseworker): void {
@@ -100,22 +105,31 @@ export class TaskAssignmentContainerComponent implements OnInit {
   }
 
   private reportSuccessAndReturn(): void {
-    this.returnWithMessage({
-      type: InfoMessageType.SUCCESS,
-      message: InfoMessage.ASSIGNED_TASK,
-    }, { badRequest: false });
+    const message = this.successMessage;
+    this.returnWithMessages(
+      [
+        { type: InfoMessageType.SUCCESS, message }
+      ],
+      { badRequest: false }
+    );
   }
 
   private reportUnavailableErrorAndReturn(): void {
-    this.returnWithMessage({
-      type: InfoMessageType.WARNING,
-      message: InfoMessage.TASK_NO_LONGER_AVAILABLE,
-    }, { badRequest: true });
+    this.returnWithMessages(
+      [
+        { type: InfoMessageType.WARNING, message: InfoMessage.TASK_NO_LONGER_AVAILABLE },
+        { type: InfoMessageType.INFO, message: InfoMessage.LIST_OF_TASKS_REFRESHED }
+      ],
+      { badRequest: true }
+    );
   }
 
-  private returnWithMessage(message: InformationMessage, state: any): void {
-    if (message) {
-      this.messageService.nextMessage(message);
+  private returnWithMessages(messages: InformationMessage[], state: any): void {
+    if (messages.length > 0) {
+      this.messageService.removeAllMessages();
+      for (const message of messages) {
+        this.messageService.addMessage(message);
+      }
     }
     this.router.navigateByUrl(this.returnUrl, { state: { ...state, retainMessages: true } });
   }

@@ -11,6 +11,7 @@ import {
   TaskManagerListComponent,
   WorkAllocationHomeComponent,
 } from './containers';
+import { Assignment, InfoMessage } from './enums';
 import { WorkAllocationFeatureToggleGuard } from './guards';
 import { TaskResolver } from './resolvers';
 
@@ -56,11 +57,23 @@ export const ROUTES: Routes = [
         ]
       },
       {
-        path: 'reassign/:taskId',
+        path: ':taskId/reassign',
         component: TaskAssignmentContainerComponent,
         canActivate: [ WorkAllocationFeatureToggleGuard ],
-        resolve: {
-          task: TaskResolver
+        resolve: { task: TaskResolver },
+        data: {
+          verb: Assignment.Reassign,
+          successMessage: InfoMessage.REASSIGNED_TASK
+        }
+      },
+      {
+        path: ':taskId/assign',
+        component: TaskAssignmentContainerComponent,
+        canActivate: [ WorkAllocationFeatureToggleGuard ],
+        resolve: { task: TaskResolver },
+        data: {
+          verb: Assignment.Assign,
+          successMessage: InfoMessage.ASSIGNED_TASK
         }
       }
     ]

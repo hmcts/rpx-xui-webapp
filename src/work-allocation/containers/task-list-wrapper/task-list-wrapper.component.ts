@@ -179,6 +179,6 @@ export class TaskListWrapperComponent implements OnInit {
    */
   public onActionHandler(taskAction: InvokedTaskAction): void {
     const state = { returnUrl: this.returnUrl };
-    this.router.navigate([`/tasks/${taskAction.action.id}/${taskAction.task.id}`], { state });
+    this.router.navigate([`/tasks/${taskAction.task.id}/${taskAction.action.id}`], { state });
   }
 }

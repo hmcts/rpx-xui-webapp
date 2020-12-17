@@ -1,8 +1,8 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, Input, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import {Router, NavigationExtras} from '@angular/router';
-import {of, Observable} from 'rxjs';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { NavigationExtras, Router } from '@angular/router';
+import { Observable, of } from 'rxjs';
 
 import { ConfigConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
@@ -93,7 +93,7 @@ class MockRouter {
   public set url(value: string) {
     this.pUrl = value;
   }
-  private pNavigateCalls: any[] = [];
+  private readonly pNavigateCalls: any[] = [];
   public get navigateCalls(): any[] {
     return this.pNavigateCalls;
   }
@@ -107,8 +107,8 @@ describe('TaskListComponent', () => {
   let component: TaskListComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
-  let mockRouter: MockRouter = new MockRouter();
   let routerSpy: jasmine.SpyObj<any>;
+  const mockRouter: MockRouter = new MockRouter();
   const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['getTask']);
   beforeEach((() => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);

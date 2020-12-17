@@ -112,8 +112,8 @@ export class TaskAssignmentContainerComponent implements OnInit {
 
   private returnWithMessage(message: InformationMessage, state: any): void {
     if (message) {
-      this.messageService.emitInfoMessageChange(message);
+      this.messageService.nextMessage(message);
     }
-    this.router.navigateByUrl(this.returnUrl, { state: { ...state, message } });
+    this.router.navigateByUrl(this.returnUrl, { state: { ...state, retainMessages: true } });
   }
 }

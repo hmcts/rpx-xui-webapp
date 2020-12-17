@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import {Subject, BehaviorSubject} from 'rxjs';
 
 import { InformationMessage } from '../models/comms';
 
@@ -7,7 +7,7 @@ import { InformationMessage } from '../models/comms';
 export class InfoMessageCommService {
   public constructor() {}
 
-  public infoMessageSource = new Subject<InformationMessage[]>();
+  public infoMessageSource = new BehaviorSubject<InformationMessage[]>([]);
 
   public infoMessageChangeEmitted$ = this.infoMessageSource.asObservable();
 
@@ -40,7 +40,7 @@ export class InfoMessageCommService {
     this.infoMessages = [];
 
     this.emitMessages(this.infoMessages);
-  };
+  }
 
   public addMessage(message: InformationMessage) {
 

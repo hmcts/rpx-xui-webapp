@@ -1,4 +1,3 @@
-import {InfoMessageContainerComponent} from './../info-message-container/info-message-container.component';
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -7,6 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
+import { InfoMessageContainerComponent } from '../../containers/info-message-container/info-message-container.component';
 import { WorkAllocationTaskService } from '../../services';
 import { TaskHomeComponent } from './task-home.component';
 

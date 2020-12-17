@@ -72,6 +72,7 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
   }
 
   public onSelectionChanged(selection: { location: Location, caseworker: Caseworker }): void {
+    this.infoMessageCommService.removeAllMessages();
     this.selectedLocation = selection.location;
     this.selectedCaseworker = selection.caseworker;
     this.loadTasks();

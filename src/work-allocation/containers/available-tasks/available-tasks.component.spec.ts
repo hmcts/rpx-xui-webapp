@@ -31,7 +31,8 @@ describe('AvailableTasksComponent', () => {
   const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
   const mockLocations: dtos.Location[] = getMockLocations();
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask', 'claimTask']);
-  const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['nextMessage']);
+  const mockInfoMessageCommService =
+    jasmine.createSpyObj('mockInfoMessageCommService', ['addMessage', 'getMessage', 'emitMessages', 'nextMessage', 'removeAllMessages']);
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
   beforeEach(async(() => {

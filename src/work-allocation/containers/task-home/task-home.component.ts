@@ -3,10 +3,9 @@ import { ActivatedRouteSnapshot, NavigationEnd, Router, RoutesRecognized } from 
 import { SubNavigation } from '@hmcts/rpx-xui-common-lib';
 
 import { AppUtils } from '../../../app/app-utils';
-import { InfoMessage, InfoMessageType } from '../../enums';
+import { InformationMessage } from '../../models/comms';
 import { TaskSortField } from '../../models/tasks';
 import { InfoMessageCommService } from '../../services';
-import { InformationMessage } from '../../models/comms';
 
 @Component({
   selector: 'exui-task-home',

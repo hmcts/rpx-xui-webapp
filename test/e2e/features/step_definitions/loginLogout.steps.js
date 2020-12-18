@@ -150,7 +150,7 @@ defineSupportCode(function ({ Given, When, Then }) {
     await expect(loginPage.dashboard_header.getText())
       .to
       .eventually
-      .equal('Case List');
+      .contains('Case List');
 
   });
 

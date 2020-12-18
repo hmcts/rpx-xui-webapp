@@ -40,7 +40,7 @@ export class InfoMessageCommService {
     this.infoMessages = [];
 
     this.emitMessages(this.infoMessages);
-  };
+  }
 
   public addMessage(message: InformationMessage) {
 

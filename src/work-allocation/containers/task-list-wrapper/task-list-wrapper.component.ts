@@ -1,13 +1,13 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 
-import {InfoMessage, InfoMessageType, TaskService, TaskSort} from '../../enums';
+import { InfoMessage, InfoMessageType, TaskService, TaskSort } from '../../enums';
+import { InformationMessage } from '../../models/comms';
 import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
 import { InfoMessageCommService, SessionStorageService, WorkAllocationTaskService } from '../../services';
 import { DEFAULT_EMPTY_MESSAGE } from '../task-list/task-list.component';
-import {InformationMessage} from '../../models/comms';
-import {Observable} from 'rxjs';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html'

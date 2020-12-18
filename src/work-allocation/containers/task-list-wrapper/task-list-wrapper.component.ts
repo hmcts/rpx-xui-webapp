@@ -3,10 +3,10 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { InfoMessage, InfoMessageType, TaskService, TaskSort } from '../../enums';
-import { InformationMessage } from '../../models/comms';
 import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
 import { InfoMessageCommService, SessionStorageService, WorkAllocationTaskService } from '../../services';
+import { handleFatalErrors } from '../../utils';
 import { DEFAULT_EMPTY_MESSAGE } from '../task-list/task-list.component';
 
 @Component({
@@ -97,8 +97,7 @@ export class TaskListWrapperComponent implements OnInit {
       this.ref.detectChanges();
       // this.tasks = [];
     }, error => {
-
-      this.performSearchErrorHandler(error.status);
+      handleFatalErrors(error.status, this.router);
     });
   }
 
@@ -112,33 +111,13 @@ export class TaskListWrapperComponent implements OnInit {
       this.tasks = result.tasks;
       this.ref.detectChanges();
 
-      const message: InformationMessage = {
+      this.infoMessageCommService.addMessage({
         type: InfoMessageType.INFO,
         message: InfoMessage.LIST_OF_AVAILABLE_TASKS_REFRESHED,
-      };
-
-      this.infoMessageCommService.addMessage(message);
+      });
     }, error => {
-
-      this.performSearchErrorHandler(error.status);
+      handleFatalErrors(error.status, this.router);
     });
-  }
-
-  public performSearchErrorHandler(status): void {
-
-    switch (status) {
-      case 401:
-      case 403:
-        this.router.navigate(['/not-authorised']);
-        break;
-      case 500:
-        this.router.navigate(['/service-down']);
-        break;
-      default:
-        // If it's anything other than a 401, 403, or 500, we should not
-        // send the User to an error page, but allow the User to refresh their page and try again.
-        // No scenario covering this currently.
-    }
   }
 
   public performSearch(): Observable<any> {

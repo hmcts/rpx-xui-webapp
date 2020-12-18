@@ -1,7 +1,7 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Location } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
@@ -38,7 +38,7 @@ describe('AvailableTasksComponent', () => {
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     location = jasmine.createSpyObj('Location', ['path']);
     location.path.and.returnValue('');
     TestBed.configureTestingModule({
@@ -57,9 +57,6 @@ describe('AvailableTasksComponent', () => {
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService }
       ]
     }).compileComponents();
-  }));
-
-  beforeEach(() => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
@@ -242,6 +239,12 @@ describe('AvailableTasksComponent', () => {
       component.claimTaskErrors(403);
 
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/not-authorised']);
+    });
+
+    it('should refresh the tasks if the error status code is 400.', () => {
+      const refreshTasksSpy = spyOn(component, 'refreshTasks');
+      component.claimTaskErrors(400);
+      expect(refreshTasksSpy).toHaveBeenCalled();
     });
 
     // TODO: Parking for now, for some reason the fixture.destory is not cleaning up

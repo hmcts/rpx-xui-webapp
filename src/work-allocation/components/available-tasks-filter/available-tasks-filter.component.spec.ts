@@ -1,6 +1,7 @@
 import { Location } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 
@@ -32,6 +33,7 @@ describe('AvailableTasksFilterComponent', () => {
   const mocksessionStore = {
     [FilterConstants.Session.AvailableTasks]: mockSavedFilter
   };
+  const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -40,7 +42,8 @@ describe('AvailableTasksFilterComponent', () => {
       ],
       declarations: [ AvailableTasksFilterComponent, WrapperComponent ],
       providers: [
-        { provide: LocationDataService, useValue: mockLocationService }
+        { provide: LocationDataService, useValue: mockLocationService },
+        { provide: Router, useValue: mockRouter }
       ]
     }).compileComponents();
   }));

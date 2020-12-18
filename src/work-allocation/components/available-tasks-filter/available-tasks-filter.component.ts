@@ -1,8 +1,10 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { CheckboxListComponent } from '@hmcts/rpx-xui-common-lib';
 
 import { Location } from '../../models/dtos';
 import { LocationDataService, SessionStorageService } from '../../services';
+import { handleFatalErrors } from '../../utils';
 import { FilterConstants } from '../constants';
 
 @Component({
@@ -50,7 +52,8 @@ export class AvailableTasksFilterComponent implements OnInit {
    */
   constructor(
     private readonly locationService: LocationDataService,
-    private readonly sessionStorageService: SessionStorageService
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly router: Router
   ) {}
 
 
@@ -65,6 +68,8 @@ export class AvailableTasksFilterComponent implements OnInit {
     // Get the locations for the checkbox filter component.
     this.locationService.getLocations().subscribe(locations => {
       this.locations = [ ...locations ];
+    }, error => {
+      handleFatalErrors(error.status, this.router);
     });
   }
 

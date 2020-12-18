@@ -2,11 +2,10 @@ import { Component } from '@angular/core';
 
 import { ConfigConstants, SortConstants } from '../../components/constants';
 import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
-import { InformationMessage } from '../../models/comms';
 import { Location, SearchTaskRequest } from '../../models/dtos';
 import { InvokedTaskAction, TaskFieldConfig } from '../../models/tasks';
+import { handleFatalErrors } from '../../utils';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
-
 
 @Component({
   selector: 'exui-available-tasks',
@@ -63,16 +62,14 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
   /**
    * A User 'Claims' themselves a task aka. 'Assign to me'.
    */
-  public claimTask(taskId): void {
+  public claimTask(taskId: string): void {
 
     this.taskService.claimTask(taskId).subscribe(() => {
-
-      const message: InformationMessage = {
+      this.infoMessageCommService.nextMessage({
         type: InfoMessageType.SUCCESS,
         message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS,
-      };
+      });
       this.refreshTasks();
-      this.infoMessageCommService.nextMessage(message);
     }, error => {
 
       this.claimTaskErrors(error.status);
@@ -83,27 +80,17 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
    * Navigate the User to the correct error page, or throw an on page warning
    * that the Task is no longer available.
    */
-  public claimTaskErrors(status): void {
+  public claimTaskErrors(status: number): void {
 
-    const message: InformationMessage = {
-      type: InfoMessageType.WARNING,
-      message: InfoMessage.TASK_NO_LONGER_AVAILABLE,
-    };
-
-    switch (status) {
-      case 400:
-        this.infoMessageCommService.nextMessage(message);
+    const handledStatus = handleFatalErrors(status, this.router);
+    if (handledStatus > 0) {
+      this.infoMessageCommService.nextMessage({
+        type: InfoMessageType.WARNING,
+        message: InfoMessage.TASK_NO_LONGER_AVAILABLE,
+      });
+      if (handledStatus === 400) {
         this.refreshTasks();
-        break;
-      case 401:
-      case 403:
-        this.router.navigate(['/not-authorised']);
-        break;
-      case 500:
-        this.router.navigate(['/service-down']);
-        break;
-      default:
-        this.infoMessageCommService.nextMessage(message);
+      }
     }
   }
 

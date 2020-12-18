@@ -71,7 +71,7 @@ export class TaskListWrapperComponent implements OnInit {
     return 'default';
   }
 
-  private get returnUrl(): string {
+  public get returnUrl(): string {
     return this.router ? this.router.url : '/tasks';
   }
 

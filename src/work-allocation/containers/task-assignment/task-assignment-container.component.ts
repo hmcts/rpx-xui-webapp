@@ -5,7 +5,7 @@ import { ErrorMessage } from '../../../app/models';
 import { ConfigConstants } from '../../components/constants';
 import { InfoMessage, InfoMessageType, TaskService, TaskSort } from '../../enums';
 import { InformationMessage } from '../../models/comms';
-import { Assignee, Caseworker } from '../../models/dtos';
+import { Assignee, Caseworker, Location } from '../../models/dtos';
 import { TaskFieldConfig, TaskServiceConfig } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 
@@ -25,6 +25,8 @@ export class TaskAssignmentContainerComponent implements OnInit {
   public sortedBy: any;
   public showManage: boolean = false;
   public caseworker: Caseworker;
+  public excludedCaseworkers: Caseworker[];
+  public location: Location;
 
   constructor(
     private readonly taskService: WorkAllocationTaskService,
@@ -34,7 +36,7 @@ export class TaskAssignmentContainerComponent implements OnInit {
   ) {}
 
   public get fields(): TaskFieldConfig[] {
-    return ConfigConstants.TaskActions;
+    return this.showAssigneeColumn ? ConfigConstants.TaskActionsWithAssignee : ConfigConstants.TaskActions;
   }
 
   private get returnUrl(): string {
@@ -43,6 +45,13 @@ export class TaskAssignmentContainerComponent implements OnInit {
       url = window.history.state.returnUrl;
     }
     return url || '/tasks/list';
+  }
+
+  private get showAssigneeColumn(): boolean {
+    if (window && window.history && window.history.state) {
+      return !!window.history.state.showAssigneeColumn;
+    }
+    return false;
   }
 
   public taskServiceConfig: TaskServiceConfig = {
@@ -61,6 +70,15 @@ export class TaskAssignmentContainerComponent implements OnInit {
     // Get the task from the route, which will have been put there by the resolver.
     const { task } = this.route.snapshot.data.task;
     this.tasks = [ task ];
+    if (task.assignee) {
+      const names: string[] = task.assignee.split(' ');
+      const firstName = names.shift();
+      const lastName = names.join(' ');
+      this.excludedCaseworkers = [ { firstName, lastName } as Caseworker ];
+    }
+    if (task.location) {
+      this.location = { locationName: task.location } as Location;
+    }
   }
 
   public reassign(): void {

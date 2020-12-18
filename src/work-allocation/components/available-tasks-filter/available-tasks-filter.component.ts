@@ -33,9 +33,6 @@ export class AvailableTasksFilterComponent implements OnInit {
 
   public locations: Location[];
   public preselection: Location[];
-  private readonly DEFAULT_LOCATION = {
-    id: 'a', locationName: 'Taylor House', services: [ 'a' ]
-  };
   private handledInitialSelection = false;
 
   /**
@@ -55,7 +52,7 @@ export class AvailableTasksFilterComponent implements OnInit {
 
 
   public ngOnInit(): void {
-    let preselection: Location[] = [ this.DEFAULT_LOCATION ];
+    let preselection: Location[] = [ FilterConstants.Defaults.LOCATION ];
     // See if we have anything stored in the session for the filter.
     const stored: string = this.sessionStorageService.getItem(FilterConstants.Session.AvailableTasks);
     if (stored) {

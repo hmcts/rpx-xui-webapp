@@ -145,7 +145,7 @@ describe('WorkAllocation', () => {
       expect(select.options[4].textContent).toEqual('Noah Body - n.b@cw.gov.uk');
 
       // Now exclude Jane Doe and Noah Body.
-      component.excludeCaseworkers = [ JD, NB ];
+      wrapper.excludeCaseworkers = [ JD, NB ];
       fixture.detectChanges();
       expect(component.caseworkers.length).toBe(2); // Shouldn't include excluded.
       select = getSelect('#task_assignment_caseworker');
@@ -155,7 +155,7 @@ describe('WorkAllocation', () => {
       expect(select.options[2].textContent).toEqual('Joseph Bloggs - j.b@cw.gov.uk');
 
       // Now change it so only John Smith is excluded.
-      component.excludeCaseworkers = [ JS ];
+      wrapper.excludeCaseworkers = [ JS ];
       fixture.detectChanges();
       expect(component.caseworkers.length).toBe(3); // Shouldn't include excluded.
       select = getSelect('#task_assignment_caseworker');

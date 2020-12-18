@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 import { Caseworker, Location } from '../../models/dtos';
+import { CaseworkerDisplayName } from '../../pipes';
 import { CaseworkerDataService, LocationDataService } from '../../services';
 import { FilterConstants } from '../constants';
 
@@ -39,7 +40,7 @@ export class TaskAssignmentComponent implements OnInit {
     return this.pLocation;
   }
   public set location(value: Location) {
-    value = value || this.ALL_LOCATIONS; // undefined or null means "All"
+    value = value || this.ALL_LOCATIONS;
     if (this.pLocation !== value) {
       this.pLocation = value;
       this.handleLocationChanged();
@@ -72,12 +73,13 @@ export class TaskAssignmentComponent implements OnInit {
     return this.pCaseworkers;
   }
 
-  private pLocation: Location = this.ALL_LOCATIONS;
+  private pLocation: Location = null;
   private pLocations: Location[];
   private pCaseworker: Caseworker = null;
   private pCaseworkers: Caseworker[];
   private pAllCaseworkers: Caseworker[]; // Holds the unfiltered list for the location.
   private pExcludeCaseworkers: Caseworker[];
+  private readonly caseworkerDisplayName: CaseworkerDisplayName = new CaseworkerDisplayName();
 
   constructor(
     private readonly locationService: LocationDataService,
@@ -89,6 +91,7 @@ export class TaskAssignmentComponent implements OnInit {
     // Get the locations for this component.
     this.locationService.getLocations().subscribe(locations => {
       this.pLocations = [ ...locations ];
+      this.location = this.vetLocation(this.location);
     });
 
     // Also get the caseworkers at the initial location (which may be "All").
@@ -103,7 +106,12 @@ export class TaskAssignmentComponent implements OnInit {
    */
   public caseworkerIsSelectable(caseworker: Caseworker): boolean {
     if (this.excludeCaseworkers) {
-      return !this.excludeCaseworkers.includes(caseworker);
+      // This check may well change once we integrate with the API but
+      // it's unlikely to be an object reference check in any case.
+      const shortName = this.caseworkerDisplayName.transform(caseworker, false);
+      return !this.excludeCaseworkers.find(ex => {
+        return this.caseworkerDisplayName.transform(ex, false) === shortName;
+      });
     }
     return true;
   }
@@ -118,7 +126,7 @@ export class TaskAssignmentComponent implements OnInit {
       this.caseworkerService.getAll().subscribe(caseworkers => {
         this.setupCaseworkers(caseworkers);
       });
-    } else {
+    } else if (this.location && this.location.id) {
       // Otherwise, get the caseworkers at the specifed location.
       this.caseworkerService.getForLocation(this.location.id).subscribe(caseworkers => {
         this.setupCaseworkers(caseworkers);
@@ -132,6 +140,14 @@ export class TaskAssignmentComponent implements OnInit {
     this.pCaseworkers = [ ...caseworkers ].filter(item => {
       return this.caseworkerIsSelectable(item);
     });
+  }
+
+  public vetLocation(toVet: Location): Location {
+    if (toVet && this.locations) {
+      const vetted = this.locations.find(loc => loc.locationName === toVet.locationName);
+      return vetted || this.ALL_LOCATIONS;
+    }
+    return toVet;
   }
 
 }

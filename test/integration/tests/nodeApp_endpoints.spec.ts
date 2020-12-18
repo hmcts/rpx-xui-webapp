@@ -1,4 +1,6 @@
 import { expect } from 'chai';
+import {http} from './utils';
+
 import Request from './utils/request';
 
 describe('nodeApp endpoint', () => {

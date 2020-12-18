@@ -2,9 +2,6 @@ const ccdApiMock = require('./ccd/ccdApi');
 const WAReqResMappings  = require('./workAllocation/reqResMapping');
 
 
-const idamProfile = require('./ccd/profile');
-const dummyCaseDetails = require('./ccd/caseDetails_data');
-
 const requestMapping = {
    get:{
        '/auth/login' : (req,res) => {
@@ -73,6 +70,10 @@ const requestMapping = {
 
 
 
+        , '/data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/cases/pagination_metadata' : (req,res) => {
+          res.send({ "total_results_count": 400, "total_pages_count": 16 });
+        },
+        ...WAReqResMappings.get
     },
     post:{
         '/api/inviteUser': (req,res) => {
@@ -107,7 +108,7 @@ const requestMapping = {
         '/api/caseshare/case-assignments': (req, res) => {
             res.send( []);
         },
-        ...WAReqResMappings.post
+      ...WAReqResMappings.post
 
     },
     put:{

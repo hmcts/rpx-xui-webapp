@@ -74,4 +74,21 @@
       }
     }
   }
+  &.footer-row {
+    display: none;
+    .empty-message {
+      display: none;
+    }
+    &.shown {
+      display: table-row;
+      &.empty {
+        .empty-message {
+          display: inline;
+        }
+        .loading {
+          display: none;
+        }
+      }
+    }
+  }
 }

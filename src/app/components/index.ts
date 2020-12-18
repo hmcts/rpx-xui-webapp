@@ -1,14 +1,15 @@
 import { AccessibilityComponent } from './accessibility/accessibility.component';
 import { CookiePolicyComponent } from './cookie-policy/cookie-policy.component';
 import { GetHelpComponent } from './get-help/get-help.component';
-import {HeaderComponent} from './header/header.component';
-import {HmctsGlobalFooterComponent} from './hmcts-global-footer/hmcts-global-footer.component';
-import {HmctsGlobalHeaderComponent} from './hmcts-global-header/hmcts-global-header.component';
-import {HmctsPrimaryNavigationComponent} from './hmcts-primary-navigation/hmcts-primary-navigation.component';
+import { HeaderComponent } from './header/header.component';
+import { HmctsGlobalFooterComponent } from './hmcts-global-footer/hmcts-global-footer.component';
+import { HmctsGlobalHeaderComponent } from './hmcts-global-header/hmcts-global-header.component';
+import { HmctsPrimaryNavigationComponent } from './hmcts-primary-navigation/hmcts-primary-navigation.component';
 import { MediaViewerWrapperComponent } from './media-viewer-wrapper/media-viewer-wrapper.component';
-import {PhaseBannerComponent} from './phase-banner/phase-banner.component';
+import { NotAuthorisedComponent } from './not-authorised/not-authorised.component';
+import { PhaseBannerComponent } from './phase-banner/phase-banner.component';
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
-import {ServiceDownComponent} from './service-down/service-down.component';
+import { ServiceDownComponent } from './service-down/service-down.component';
 import { SignedOutComponent } from './signed-out/signed-out.component';
 
 export const components: any[] = [
@@ -17,6 +18,7 @@ export const components: any[] = [
   HmctsGlobalHeaderComponent,
   HmctsPrimaryNavigationComponent,
   CookiePolicyComponent,
+  NotAuthorisedComponent,
   PrivacyPolicyComponent,
   AccessibilityComponent,
   PhaseBannerComponent,
@@ -38,3 +40,4 @@ export * from './accessibility/accessibility.component';
 export * from './media-viewer-wrapper/media-viewer-wrapper.component';
 export * from './get-help/get-help.component';
 export * from './signed-out/signed-out.component';
+export * from './not-authorised/not-authorised.component';

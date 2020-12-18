@@ -1,18 +1,16 @@
 module.exports = {
-   get: {
 
+    get: {
         '/workallocation/location': (req, res) => {
-            res.send([
-                {
-                    id: "1234",
-                    locationName: "testloc2",
-                    services: ['test 1', 'test2']
-                }, {
-                    id: "2345",
-                    locationName: "testloc2",
-                    services: ['test 1', 'test2']
-                }
-            ]);
+            const locations = [];
+            for(let i = 0; i < 60 ; i++){
+                locations.push({
+                    id: "1234"+i,
+                    locationName: "testloc 2"+i,
+                    services: ['test 1'+1, 'test2'+1]
+                });
+            }
+            res.send(locations);
         },
         '/workallocation/location/:locationId': (req, res) => {
             res.send({
@@ -101,5 +99,33 @@ module.exports = {
                 }
             ]);
         }
-   } 
+    },
+    post: {
+        '/workallocation/task/' : (req,res) => {
+            const tasks = [];
+            for(let  i = 0; i < 20; i++){
+                tasks.push({
+                    "id": "56789012345678"+i,
+                    "caseReference": "5678 9012 3456 78"+i,
+                    "caseName": "Oliver Twist"+1,
+                    "caseCategory": "Protection",
+                    "location": "Orphanage",
+                    "taskName": "Give more gruel",
+                    "dueDate": "2020-12-19T09:41:38.695Z",
+                    "actions": [
+                        {
+                            "id": "reassign",
+                            "title": "Reassign task"
+                        },
+                        {
+                            "id": "unclaim",
+                            "title": "Release this task"
+                        }
+                    ]
+                });
+            }
+
+            res.send({ tasks : tasks});
+        }
+    } 
 }

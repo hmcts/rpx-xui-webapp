@@ -1,3 +1,15 @@
-<h1>Task Manager</h1>
-<exui-task-field-wrapper></exui-task-field-wrapper>
-<exui-task-assignment (caseworkerChanged)="onCaseworkerChanged($event)"></exui-task-assignment>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+
+  <!-- TODO: Add info message in when we need it -->
+  <!--<exui-info-message [type]="infoMessageType" [message]="infoMessage"></exui-info-message>-->
+  
+  <h3 class="govuk-heading-xl">Task manager</h3>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <p>
+        Filter tasks by assignee and location. Select unassigned from the assignee dropdown to see available tasks.
+      </p>
+    </div>
+  </div>
+  <router-outlet></router-outlet>
+</main>

@@ -1,12 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+
+import { Assignee, SearchTaskRequest, TaskSearchParameters } from '../models/dtos';
 import { Task } from '../models/tasks';
 
-import { Assignee } from './../models/dtos/task';
-import { TaskSearchParameters } from './../models/dtos/task-search-parameter';
-
-const BASE_URL: string = '/workallocation/task/';
+const BASE_URL: string = '/workallocation/task';
 export enum ACTION {
   ASSIGN = 'assign',
   CANCEL = 'cancel',
@@ -47,6 +46,10 @@ export class WorkAllocationTaskService {
     return this.http.post<any>(`${BASE_URL}`, task);
   }
 
+  public searchTask(searchRequest: SearchTaskRequest): Observable<any> {
+    return this.http.post<any>(`${BASE_URL}`, searchRequest);
+  }
+
   public claimTask(taskId: string): Observable<any> {
     return this.http.post<any>(this.getActionUrl(taskId, ACTION.CLAIM), {});
   }
@@ -56,11 +59,11 @@ export class WorkAllocationTaskService {
   }
 
   public getTask(taskId: string): Observable<Task> {
-    const url = `${BASE_URL}${taskId}`;
+    const url = `${BASE_URL}/${taskId}`;
     return this.http.get<Task>(url);
   }
 
   public getActionUrl(taskId: string, action: ACTION): string {
-    return `${BASE_URL}${taskId}/${action}`;
+    return `${BASE_URL}/${taskId}/${action}`;
   }
 }

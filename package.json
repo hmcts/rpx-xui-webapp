@@ -71,7 +71,7 @@
     "@hmcts/media-viewer": "2.6.4",
     "@hmcts/nodejs-healthcheck": "^1.6.0",
     "@hmcts/properties-volume": "^0.0.9",
-    "@hmcts/rpx-xui-common-lib": "0.1.48",
+    "@hmcts/rpx-xui-common-lib": "0.1.53",
     "@hmcts/rpx-xui-node-lib": "^2.24.2",
     "@ng-idle/core": "^8.0.0-beta.4",
     "@ng-idle/keepalive": "^8.0.0-beta.4",
@@ -158,7 +158,6 @@
     "@types/mocha": "^8.0.3",
     "@types/shortid": "0.0.29",
     "@types/sinon": "^7.0.13",
-    "base-64": "^0.1.0",
     "chai": "^4.2.0",
     "chai-as-promised": "7.1.1",
     "codelyzer": "~4.5.0",
@@ -197,7 +196,8 @@
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10",
     "webpack-node-externals": "^1.7.2",
-    "webpack-source-map-support": "^2.0.1"
+    "webpack-source-map-support": "^2.0.1",
+    "base-64": "^0.1.0"
   },
   "resolutions": {
     "**/**/dot-prop": "^5.1.1",

@@ -1,0 +1,35 @@
+ <div id="affirmation-section" class="govuk-form-group" [ngClass]="{'govuk-form-group--error': (validationErrors$ | async)?.message}">
+    <div class="govuk-form-group">
+
+      <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
+        <p>When you’re satisfied that all the information is as written on the case, you should tick to “sign”.</p>
+        <div *ngIf="(validationErrors$ | async)?.message">
+          <span id="tickbox-warning" class="govuk-error-message">
+            <span class="govuk-visually-hidden">Error:</span>
+              Tick the box to confirm all these details are accurate and match what is written on the case
+          </span>
+        </div>
+        <div class="govuk-checkboxes">
+          <div class="govuk-checkboxes__item">
+            <input class="govuk-checkboxes__input" id="affirmation" name="affirmation" type="checkbox"
+                   [checked]="affirmationAgreed"
+                   (change)="onChangeAffirmation(this.$event)">
+            <label class="govuk-label govuk-checkboxes__label" for="affirmation">
+              I confirm all these details are as written on the case are accurate.
+            </label>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+ </div>
+ <div id="notification-section" class="govuk-form-group">
+  <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Notifications</h2>
+
+  <p class="govuk-body  govuk-!-margin-bottom-7">If the client had legal representation, we’ll let the previous legal
+    firm or solicitor know that they’re no longer representing this client.</p>
+
+  <div class="govuk-inset-text">
+    After you submit a notice of change, you might have to wait a few seconds before you receive confirmation.
+  </div>
+ </div>
+

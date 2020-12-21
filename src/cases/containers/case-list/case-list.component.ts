@@ -153,8 +153,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
           if (this.savedQueryParams) {
             this.defaults = {
               jurisdiction_id: this.savedQueryParams.jurisdiction,
-              case_type_id: this.savedQueryParams['case-type'],
-              state_id: this.savedQueryParams['case-state']
+              case_type_id: this.savedQueryParams['case-type'] ? this.savedQueryParams['case-type'] : '',
+              state_id: this.savedQueryParams['case-state'] ? this.savedQueryParams['case-state'] : ''
             };
           } else if (jurisdictions[0] && jurisdictions[0].id && jurisdictions[0].caseTypes[0] && jurisdictions[0].caseTypes[0].states[0]) {
             this.defaults = {

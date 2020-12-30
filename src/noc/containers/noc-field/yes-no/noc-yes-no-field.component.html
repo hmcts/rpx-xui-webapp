@@ -1,0 +1,21 @@
+<div class="govuk-form-group" [id]="id()" [ngClass]="{'form-group-error': !yesNoControl.valid}">
+
+	<fieldset class="inline">
+
+    <legend>
+      <span class="form-label govuk-!-font-weight-bold" *ngIf="questionField.question_text">{{questionField.question_text}}</span>
+      <span class="error-message" *ngIf="yesNoControl.errors && yesNoControl.touched">{{yesNoControl.errors | nocError}}</span>
+    </legend>
+
+    <div class="form-group" [id]="id()">
+
+  	  <div class="multiple-choice" *ngFor="let value of yesNoValues" [ngClass]="{selected: yesNoControl.value === value}">
+  	    <input class="form-control" [id]="id()+'-'+value" [attr.name]="id()" [name]="id()" type="radio" [formControl]="yesNoControl" [value]="value">
+  	    <label class="form-label" [for]="id()+'-'+value">{{value}}</label>
+  	  </div>
+
+    </div>
+
+	</fieldset>
+
+</div>

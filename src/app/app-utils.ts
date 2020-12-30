@@ -66,4 +66,16 @@ export class AppUtils {
   public static getCookieRolesAsArray(userRoles: string): string[] {
     return JSON.parse(userRoles);
   }
+
+  /**
+   * Add padding
+   *
+   * @param num - '1'
+   * @param padNum - '2'
+   * @return - 01
+   */
+  public static pad(num: string, padNum = 2): string {
+    const val = (num !== undefined && num !== null) ? num.toString() : '';
+    return val.length >= padNum ? val : new Array(padNum - val.length + 1).join('0') + val;
+  }
 }

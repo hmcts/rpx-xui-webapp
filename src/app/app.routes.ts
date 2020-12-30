@@ -1,14 +1,16 @@
-import { Routes } from '@angular/router';
-import {
-  AccessibilityComponent, CookiePolicyComponent, MediaViewerWrapperComponent,
-  PrivacyPolicyComponent, ServiceDownComponent
-} from './components';
+import { ExtraOptions, Routes } from '@angular/router';
+import { AccessibilityComponent, CookiePolicyComponent, MediaViewerWrapperComponent,
+          PrivacyPolicyComponent, ServiceDownComponent} from './components';
 import { GetHelpComponent } from './components/get-help/get-help.component';
 import { SignedOutComponent } from './components/signed-out/signed-out.component';
 import { AcceptTcWrapperComponent, TermsAndConditionsComponent } from './containers';
 import { LegacyTermsAndConditionsComponent } from './containers/legacy-terms-and-conditions/legacy-terms-and-conditions.component';
 import { AcceptTermsGuard } from './guards/acceptTerms.guard';
 import { AuthGuard } from './services/auth/auth.guard';
+
+export const routingConfiguration: ExtraOptions = {
+  paramsInheritanceStrategy: 'always'
+};
 
 export const ROUTES: Routes = [
   {
@@ -38,6 +40,11 @@ export const ROUTES: Routes = [
   {
     path: 'case/:jurisdiction/:case-type/:cid/trigger/:triggerPath/:triggerPath2',
     redirectTo: 'cases/case-details/:cid/trigger/:triggerPath/:triggerPath2', pathMatch: 'full'
+  },
+  {
+    path: 'noc',
+    canActivate: [AuthGuard, AcceptTermsGuard],
+    loadChildren: '../noc/noc.module#NocModule'
   },
   {
     path: 'cookies',

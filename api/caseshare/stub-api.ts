@@ -1,5 +1,4 @@
 import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model'
-import { UserDetails } from '@hmcts/rpx-xui-common-lib/lib/models/user-details.model'
 import { plainToClass } from 'class-transformer'
 import { Response } from 'express'
 import { EnhancedRequest } from '../lib/models'
@@ -9,51 +8,13 @@ import { OrganisationModel } from './models/organisation.model'
 import * as dbJson from './stubs/db.json'
 
 const dbModule = plainToClass(DataBaseModel, dbJson)
+// @ts-ignore
 const orgs: OrganisationModel[] = dbModule.organisations
+// @ts-ignore
 const cases: SharedCase[] = dbModule.sharedCases
 
-export function getRoot(req: EnhancedRequest, res: Response) {
-  return res.status(400).send('{"errorMessage": "Bad request}"')
-}
-
-export function getDB(req: EnhancedRequest, res: Response) {
-  return res.send(dbJson)
-}
-
-export function getOrgs(req: EnhancedRequest, res: Response) {
-  if (!orgs) {
-    return res.status(404).send('{"errorMessage": "Organisations are not found}"')
-  }
-  return res.send(orgs)
-}
-
-export function getUsersByOrgId(req: EnhancedRequest, res: Response) {
-    const org = getOrgById(req.params.orgId)
-    if (!org) {
-      return res.status(404).send('{"errorMessage": "Organisation is not found}"')
-    }
-    const users: UserDetails[] = org.users
-    if (!users) {
-      return res.status(404).send('{"errorMessage": "Users is not found}"')
-    }
-    return res.send(users)
-}
-
-export function getUserByOrgAndUserId(req: EnhancedRequest, res: Response) {
-    const org = getOrgById(req.params.orgId)
-    if (!org) {
-      return res.status(404).send('{"errorMessage": "Organisation is not found}"')
-    }
-    const users: UserDetails[] = org.users
-    const user = users.find(u => u.idamId === req.params.uid)
-    if (!user) {
-      return res.status(404).send('{"errorMessage": "User is not found}"')
-    }
-    return res.send(user)
-}
-
 export function getUsers(req: EnhancedRequest, res: Response) {
-    const searchText = req.query.q
+    const searchText = req.query.q.toString()
     const org = getOrgById('o111111')
     if (!org) {
       return res.status(404).send('{"errorMessage": "Organisation is not found}"')
@@ -78,17 +39,6 @@ export function getCases(req: EnhancedRequest, res: Response) {
       return res.status(404).send('{"errorMessage": "Cases are not found}"')
     }
     return res.send(cases)
-}
-
-export function getCaseById(req: EnhancedRequest, res: Response) {
-    if (!cases) {
-      return res.status(404).send('{"errorMessage": "Cases are not found}"')
-    }
-    const foundCase = cases.find(aCase => aCase.caseId === req.params.caseId)
-    if (!foundCase) {
-      return res.status(404).send('{"errorMessage": "Case is not found}"')
-    }
-    return res.send(foundCase)
 }
 
 export function assignCases(req: EnhancedRequest, res: Response) {

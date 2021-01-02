@@ -5,10 +5,13 @@ const chai = require('chai');
 const { SpecReporter } = require('jasmine-spec-reporter');
 const screenShotUtils = require("protractor-screenshot-utils").ProtractorScreenShotUtils;
 
+
 exports.config = {
   allScriptsTimeout: 11000,
   specs: [
-    '../tests/*.js'
+    '../tests/*.js',
+    '../tests/**/*.js'
+
   ],
   exclude: ['../tests/hiddenFields.test.js', '../tests/caseFieldCollectionsPermissions.test.js'],
   capabilities: {

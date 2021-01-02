@@ -115,4 +115,5 @@ class WorkAllocationMockData{
 
 }
 
-module.exports = new WorkAllocationMockData(); 
+module.exports = new WorkAllocationMockData();
+ 

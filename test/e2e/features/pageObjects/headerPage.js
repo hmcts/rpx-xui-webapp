@@ -10,6 +10,11 @@ function HeaderPage() {
     this.manageCases = element(by.css(".hmcts-header .hmcts-header__link"));
     this.caseList = element(by.xpath("//a[contains(text(),'Case list')]"));
     this.createCase = element(by.xpath("//li/a[contains(text(),'Create case')]"));
+
+    this.taskList = element(by.xpath("//li/a[contains(text(),'Task list')]"));
+    this.taskManager = element(by.xpath("//li/a[contains(text(),'Task manager')]"));
+
+
     this.findCase = element(by.xpath("//a[contains(text(),'Find case')]"));
     this.signOut = element(by.xpath("//a[contains(text(),'Sign out')]"));
 
@@ -18,7 +23,7 @@ function HeaderPage() {
   this.clickManageCases = async function () {
     await BrowserWaits.waitForElement(this.manageCases);  
     this.manageCases.click();
-    browser.sleep(SHORT_DELAY);
+    await BrowserWaits.waitForElement($('exui-case-list'));  
   };
 
   this.clickCaseList = async function () {
@@ -32,8 +37,18 @@ function HeaderPage() {
     await BrowserWaits.waitForElement(this.createCase); 
     await this.createCase.click();
     await BrowserWaits.waitForElement($('#cc-jurisdiction'));
-
   };
+
+  this.clickTaskList = async function () {
+    await BrowserWaits.waitForElement(this.taskList);
+    await this.taskList.click();
+  };
+
+  this.clickTaskManager = async function () {
+    await BrowserWaits.waitForElement(this.taskManager);
+    await this.taskManager.click();
+  };
+
 
   this.clickFindCase = async function () {
     await BrowserWaits.waitForElement(this.findCase);  

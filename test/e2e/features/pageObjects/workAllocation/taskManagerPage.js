@@ -14,22 +14,33 @@ class TaskManagerPage extends TaskList{
     }
 
     async amOnPage(){
-        await BrowserWaits.waitForElement(this.taskManagerlist); 
+        try{
+            await BrowserWaits.waitForElement(this.taskManagerlist); 
+            return true;
+        }catch(err){
+            console.log("Task manager page not displayed : "+err);
+            return false;
+        }
     }
 
     async getTaskCountInDisplayLabel(){
+        expect(await this.amOnPage(), "Not on Task manager page ").to.be.true;
+
         return await this.tasksCountInDisplayLabel.getText(); 
     }
 
     async getCaseworkerFilterOptions(){
+        expect(await this.amOnPage(), "Not on Task manager page ").to.be.true;
         return this.getFilterOptionsFromSelect(this.caseWorkerFilter);
     }
 
     async getLocationFilterOptions() {
+        expect(await this.amOnPage(), "Not on Task manager page ").to.be.true;
         return this.getFilterOptionsFromSelect(this.locationFilter);
     }
 
     async getFilterOptionsFromSelect(selectElement){
+        expect(await this.amOnPage(), "Not on Task manager page ").to.be.true;
         const optionValues = [];
         const optionsCount = await selectElement.$$('option').count();
         for (let i = 0; i < optionsCount; i++) {
@@ -39,10 +50,12 @@ class TaskManagerPage extends TaskList{
     }
 
     async selectCaseworkerFilter(optionDisplayText){
+        expect(await this.amOnPage(), "Not on Task manager page ").to.be.true;
         await this.caseWorkerFilter.element(by.xpath(`//option[text() = '${optionDisplayText}']`)).click(); 
     }
 
     async selectLocationFilter(optionDisplayText) {
+        expect(await this.amOnPage(), "Not on Task manager page ").to.be.true;
         await this.locationFilter.element(by.xpath(`//option[text() = '${optionDisplayText}']`)).click();
     }
   

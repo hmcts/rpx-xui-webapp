@@ -13,6 +13,7 @@ import {
   SessionStorageService,
   WorkAllocationTaskService,
 } from '../../services';
+import { handleFatalErrors } from '../../utils';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
 @Component({
@@ -66,9 +67,13 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
     // Get the caseworkers and locations for this component.
     this.caseworkerService.getAll().subscribe(caseworkers => {
       this.caseworkers = [ ...caseworkers ];
+    }, error => {
+      handleFatalErrors(error.status, this.router);
     });
     this.locationService.getLocations().subscribe(locations => {
       this.locations = [ ...locations ];
+    }, error => {
+      handleFatalErrors(error.status, this.router);
     });
   }
 

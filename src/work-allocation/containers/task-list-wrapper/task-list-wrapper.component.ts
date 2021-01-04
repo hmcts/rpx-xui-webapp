@@ -4,10 +4,10 @@ import { Observable } from 'rxjs';
 
 import { ListConstants } from '../../components/constants';
 import { InfoMessage, InfoMessageType, TaskService, TaskSort } from '../../enums';
-import { InformationMessage } from '../../models/comms';
 import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
 import { InfoMessageCommService, SessionStorageService, WorkAllocationTaskService } from '../../services';
+import { handleFatalErrors } from '../../utils';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html'
@@ -106,6 +106,8 @@ export class TaskListWrapperComponent implements OnInit {
       this.tasks = result.tasks;
       this.ref.detectChanges();
       // this.tasks = [];
+    }, error => {
+      handleFatalErrors(error.status, this.router);
     });
   }
 
@@ -119,12 +121,12 @@ export class TaskListWrapperComponent implements OnInit {
       this.tasks = result.tasks;
       this.ref.detectChanges();
 
-      const message: InformationMessage = {
+      this.infoMessageCommService.addMessage({
         type: InfoMessageType.INFO,
         message: InfoMessage.LIST_OF_AVAILABLE_TASKS_REFRESHED,
-      };
-
-      this.infoMessageCommService.addMessage(message);
+      });
+    }, error => {
+      handleFatalErrors(error.status, this.router);
     });
   }
 

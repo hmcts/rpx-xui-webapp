@@ -28,7 +28,6 @@ class WorkAllocationMockData{
     }
 
     getTaskList(count,actions){
-
         const taskActions = actions ? actions : [
             { "id": "reassign", "title": "Reassign task" },
             {"id": "unclaim","title": "Release this task"}

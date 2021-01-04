@@ -8,7 +8,6 @@ class TaskListTable{
         this.tableRows = $$('exui-task-list table tbody>tr:not(.actions-row)');
         this.tableHeaderColumns = $$('exui-task-list table thead th');
         this.tableFooter = $('exui-task-list table tfoot td');
-
         this.taskActionsRows = $$('exui-task-list table tbody>tr.actions-row');
         this.displayedtaskActionRow = $('tr.actions-row[aria-hidden=false]');
     }
@@ -105,6 +104,9 @@ class TaskListTable{
             }
         } 
         return displayedActionRows;
+    }
+    async getTableRow(index){
+        return await this.tableRows.get(index);
     }
 }
 

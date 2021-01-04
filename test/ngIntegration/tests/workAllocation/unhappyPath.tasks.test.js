@@ -23,7 +23,6 @@ describe.only('Unhappy path: ', function () {
 
     async function setErrorRespondeCodeOnApi(method ,endpoint, responseCode){
         await MockApp.stopServer();
-        MockApp.init();
         if(method === 'GET'){
             MockApp.onGet(endpoint, (req,res) => {
                 res.status(responseCode).send({ error: "Mock error "});
@@ -37,6 +36,12 @@ describe.only('Unhappy path: ', function () {
         }
         await MockApp.startServer();
 
+    }
+
+    async function setMockResponse(callback) {
+        await MockApp.stopServer();
+        callback(); 
+        await MockApp.startServer();
     }
 
     async function resetMock(){
@@ -77,15 +82,24 @@ describe.only('Unhappy path: ', function () {
     });
 
     const testErrorResponseCodes = [500, 400, 401,403];
+    const myTask_actions = ["Reassign task", "Unassign task"];
+    const availableTask_actions = ["Assign to me", ];
+    const taskManager_action = ["Reassign task", "Unassign task"];
 
-    it.only(`My Tasks on error `, async function () {
+
+    it(`My Tasks on error `, async function () {
 
         await BrowserUtil.browserInitWithAuth(["caseworker-ia-caseofficer", "caseworker-ia-admofficer"]);
         await headerPage.waitForPrimaryNavDisplay()
         await BrowserUtil.waitForLD();
-
+        setMockResponse(() => {
+            MockApp.onPost('/workallocation/task/', (req,res) => {
+                res.send(workAllocationMockData.getMyTasks(10));
+            });
+        });
         // expect(await tasklistPage.amOnPage()).to.be.true;
         for (const responseCode of testErrorResponseCodes) {
+
             await headerPage.clickManageCases();
             await setErrorRespondeCodeOnApi('POST', '/workallocation/task/', responseCode);
             await headerPage.clickTaskList();
@@ -101,7 +115,7 @@ describe.only('Unhappy path: ', function () {
         softAssertion.finally();
     });
 
-    it.only(`Available  tasks on error `, async function () {
+    it(`Available  tasks on error `, async function () {
 
         await BrowserUtil.browserInitWithAuth(["caseworker-ia-caseofficer", "caseworker-ia-admofficer"]);
         await headerPage.waitForPrimaryNavDisplay()
@@ -143,7 +157,7 @@ describe.only('Unhappy path: ', function () {
     });
 
 
-    it.only(`Task manager tasks on error `, async function () {
+    it(`Task manager tasks on error `, async function () {
 
         await BrowserUtil.browserInitWithAuth(["caseworker-ia-caseofficer", "caseworker-ia-admofficer"]);
         await headerPage.waitForPrimaryNavDisplay()
@@ -156,7 +170,7 @@ describe.only('Unhappy path: ', function () {
             await headerPage.clickTaskManager();
 
             const isErrorPageDisplayed = await errorPage.isErrorPageDisplayed();
-            await softAssertion.assert(async () => expect(isErrorPageDisplayed, "/workallocation/task/ on error, error page not displayed" + responseCode).to.be.true);
+            await softAssertion.assert(async () => expect(isErrorPageDisplayed, "/workallocation/task/ on error, error page not displayed " + responseCode).to.be.true);
             if (isErrorPageDisplayed) {
                 const errorMessageDisplayed = await errorPage.getErrorMessage();
                 await softAssertion.assert(async () => expect(errorMessageDisplayed, "/workallocation/task/ on error,Error message does not match " + responseCode).to.contains(errorMessageForResponseCode(responseCode)));
@@ -169,7 +183,7 @@ describe.only('Unhappy path: ', function () {
             await headerPage.clickTaskManager();
 
             const isErrorPageDisplayed = await errorPage.isErrorPageDisplayed();
-            await softAssertion.assert(async () => expect(isErrorPageDisplayed, "/workallocation/location on error, error page not displayed" + responseCode).to.be.true);
+            await softAssertion.assert(async () => expect(isErrorPageDisplayed, "/workallocation/location on error, error page not displayed " + responseCode).to.be.true);
             if (isErrorPageDisplayed) {
                 const errorMessageDisplayed = await errorPage.getErrorMessage();
                 await softAssertion.assert(async () => expect(errorMessageDisplayed, "/workallocation/location on error,Error message does not match " + responseCode).to.contains(errorMessageForResponseCode(responseCode)));
@@ -182,7 +196,7 @@ describe.only('Unhappy path: ', function () {
             await headerPage.clickTaskManager();
 
             const isErrorPageDisplayed = await errorPage.isErrorPageDisplayed();
-            await softAssertion.assert(async () => expect(isErrorPageDisplayed, "/workallocation/caseworker on error, error page not displayed" + responseCode).to.be.true);
+            await softAssertion.assert(async () => expect(isErrorPageDisplayed, "/workallocation/caseworker on error, error page not displayed " + responseCode).to.be.true);
             if (isErrorPageDisplayed) {
                 const errorMessageDisplayed = await errorPage.getErrorMessage();
                 await softAssertion.assert(async () => expect(errorMessageDisplayed, "/workallocation/caseworkeron error,Error message does not match " + responseCode).to.contains(errorMessageForResponseCode(responseCode)));
@@ -190,6 +204,7 @@ describe.only('Unhappy path: ', function () {
         };
         softAssertion.finally();
     });
+
 
 
 

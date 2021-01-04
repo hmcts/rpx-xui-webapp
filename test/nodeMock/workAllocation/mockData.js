@@ -1,6 +1,38 @@
 class WorkAllocationMockData{
 
-    getTaskList(count){
+    getMyTasks(count){
+        const taskActions = [ 
+            { "id": "reassign", "title": "Reassign task" }, 
+            { "id": "unclaim", "title": "Unassign task" }, 
+            { "id": "go", "title": "Go to case" }
+        ]; 
+        return this.getTaskList(count, taskActions); 
+    }
+
+    getAvailableTasks(count){
+        const taskActions = [
+            { "id": "claim", "title": "Assign to me" }, 
+            { "id": "claimAndGo", "title": "Assign to me and go to case" }
+        ];
+        return this.getTaskList(count, taskActions); 
+    }
+
+    getTaskManagerTasks(count){
+        const taskActions = [
+            { "id": "reassign", "title": "Reassign task" }, 
+            { "id": "unclaim", "title": "Unassign task" }, 
+            { "id": "complete", "title": "Mark as done" }, 
+            { "id": "cancel", "title": "Cancel task" }
+        ];
+        return this.getTaskList(count, taskActions); 
+    }
+
+    getTaskList(count,actions){
+
+        const taskActions = actions ? actions : [
+            { "id": "reassign", "title": "Reassign task" },
+            {"id": "unclaim","title": "Release this task"}
+        ];
         const tasks = [];
         for (let i = 0; i < count; i++) {
             tasks.push({
@@ -11,16 +43,7 @@ class WorkAllocationMockData{
                 "location": "Orphanage",
                 "taskName": "Give more gruel",
                 "dueDate": "2020-12-19T09:41:38.695Z",
-                "actions": [
-                    {
-                        "id": "reassign",
-                        "title": "Reassign task"
-                    },
-                    {
-                        "id": "unclaim",
-                        "title": "Release this task"
-                    }
-                ]
+                "actions": taskActions
             });
         }
         return { tasks: tasks };

@@ -15,6 +15,7 @@ const port = 3001;
 
 class MockApp{
     init(){
+        this.intercepts =[];
         this.conf = {
             get: { ...requestMapping.get },
             post: { ...requestMapping.post },
@@ -26,11 +27,20 @@ class MockApp{
         return "done";
     }
 
+    addIntercept(url,callback){
+        this.intercepts.push({url: url, callback: callback})
+    }
+
     async startServer(){
         const app = express();
         app.use(bodyParser.urlencoded({ extended: false }));
         app.use(bodyParser.json());
-        app.use(express.json()) 
+        app.use(express.json()); 
+
+        this.intercepts.forEach(intercept =>{
+            app.use(intercept.url, intercept.callback);
+        }); 
+
         for (const [key, value] of Object.entries(this.conf.get)) {
             app.get(key, value);
         }
@@ -138,54 +148,6 @@ function createCustomCaseDetails(){
 
 }
 
-
-
-function createCustomCCDCaseConfig(){
-    // const scenario = { fieldType: "Collection", showField: false, retainHiddenField: false };
-
-    const scenario = { fieldType: "Document", showField: false, retainHiddenField: true };
-
-    const caseConfig = new CCDCaseConfig('TEST_CaseType', 'Test case type hidden field retain value', 'test description');
-    const page1 = caseConfig.addWizardPage('HiddenFieldPage_1', 'Hidden field retain value test page');
-
-    const listItems = [
-        {
-            "code": "item1",
-            "label": "Item 1"
-        },
-        {
-            "code": "item2",
-            "label": "Item 2"
-        },
-        {
-            "code": "item3",
-            "label": "Item 3"
-        }
-    ] 
-
-    const dynamicListVal = {
-        "value": listItems[2],
-        "list_items": listItems 
-    }
-
-    let topLevelDynamicList = caseConfig.addCCDFieldToPage(page1, "DynamicList", "topLevelDL", "Top level Dynamic List");
-    // topLevelDynamicList.field_type.fixed_list_items = listItems ;  
-    topLevelDynamicList.value = dynamicListVal; 
-    
-   
-    let complexField = caseConfig.addCCDFieldToPage(page1, "Complex", "complexField", "Complex field");
-
-    complexField.field_type.complex_fields.push(caseConfig.getCCDFieldTemplateCopy("Text","testText","Test text"));
-    let dynamicList = caseConfig.getCCDFieldTemplateCopy("DynamicList", "dynamicList", "Dynamic List");
-    complexField.field_type.complex_fields.push(dynamicList);
-    complexField.value = {
-       "testText" : "test value input",
-        "dynamicList": dynamicListVal
-    }
-
-
-    setUpcaseConfig(caseConfig.caseConfigTemplate);
-}
 
 
 function setUpcaseConfig(caseConfig) {

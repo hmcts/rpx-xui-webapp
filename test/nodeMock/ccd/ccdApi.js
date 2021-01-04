@@ -18,6 +18,8 @@ const fplCareSupervisionConfig = require('./solicitorCreate/fplCareSupervision')
 const exuiTestCaseType = require('./solicitorCreate/exuiTestCaseType');
 const { isArray } = require("core-js/fn/array");
 const CCDCaseConfig = require('./ccdCaseConfig/caseCreateConfigGenerator');
+const CCDWorkBasketInputGenerator = require('./ccdCaseConfig/workBasketInputGenerator');
+
 
 
 
@@ -85,95 +87,112 @@ class CCDApi{
         }
     }
 
-    get(){
-        return {
-            '/aggregated/caseworkers/:uid/jurisdictions': (req, res) => {
-                res.send(this.getJurisdictions());
-            },
-            '/data/internal/case-types/:jurisdiction/work-basket-inputs': (req, res) => {
-                res.send(this.getWorkbasketInputs(req.params.jurisdiction));
-            },
-            '/data/internal/case-types/:jurisdiction/event-triggers/:caseType': (req, res) => {
-                res.send(this.getSolicitorCreateCaseConfig(req.params.jurisdiction, req.params.caseType));
-            },
-            '/data/internal/cases/:caseid/event-triggers/:eventId': (req, res) => {
-                res.send(getSingleFieldCaseEventConfig(req.params.eventId));
-            }
+    getSingleFieldCaseEventConfig(eventId) {
+        const customCase = new CCDCaseConfig("testCaseType", "Test jurisdiction", "test description");
+        customCase.addWizardPage("testPage1", "Test Page 1");
+        switch (eventId) {
+            case "text":
+                customCase.addCaseField({ id: "tesxt", type: "Text", label: "Text field", value: "Sample test text value ABC" })
+                break;
+            case "dynamicList":
+                const listItems = [
+                    { "code": "item1", "label": "Item 1" },
+                    { "code": "item2", "label": "Item 2" },
+                    { "code": "item3", "label": "Item 3" },
+                ];
+
+                customCase.addCaseField({
+                    label: "test field won label", type: "DynamicList", id: "dynamicListField", value: { "value": listItems[2], "list_items": listItems }
+                })
+                customCase.addCaseField({
+                    type: "Complex", id: "dynamicListInComplexField", complex_fields: [
+                        { type: "DynamicList", id: "dynamicListField", label: "Field Dynamic list" }
+                    ]
+                    , value: { "dynamicListField": { "value": listItems[2], "list_items": listItems } }
+                })
+                break;
+            case "test":
+                return this.getCustomCase();
+                break; 
         }
+
+        return customCase.getCase();
     }
 
-    post(){
-        return {
-            '/api/inviteUser': (req, res) => {
-                res.send({ "userIdentifier": "97ecc487-cdeb-42a8-b794-84840a4testc", "idamStatus": null });
-            },
-            '/data/case-types/:caseType/validate': (req, res) => {
-                const responseBody = {
-                    data: req.body.data,
-                    "_links": { "self": { "href": "http://ccd-data-store-api-demo.service.core-compute-demo.internal" + req.path + "?pageId=" + req.query.pageId } }
-                }
-                res.send(responseBody)
-            },
-            '/data/case-types/:caseType/cases': (req, res) => {
-                const responseBody = {
-                    id: Date.now(),
-                    data: req.body.data,
-                    "_links": { "self": { "href": "http://ccd-data-store-api-demo.service.core-compute-demo.internal" + req.path + "?ignore-warning=false" } }
-                }
-                res.send(responseBody)
-            },
-            '/data/cases/:caseid/events': (req, res) => {
-                const responseBody = {
-                    id: Date.now(),
-                    data: req.body.data,
-                    "_links": { "self": { "href": "http://ccd-data-store-api-demo.service.core-compute-demo.internal" + req.path + "?ignore-warning=false" } }
-                }
-                res.send(responseBody);
-            }, 
-        }
+    getWorkbasketInputs(){
+        const ccdWorkBasketInputGenerator = new CCDWorkBasketInputGenerator();
+        return ccdWorkBasketInputGenerator
+            .addField({ id: "simpletext", type: "Text", label: "Simple text input" })
+            .addField({ id: "radioInput", type: "FixedRadioList", label: "Simple Radio input", list: [{ code: "a", label: "A" }, { code: "b", label: "B" }, { code: "c", label: "C" }] })
+            .addField({ id: "radioYesorNo", type: "YesOrNo", label: "Simple Yes or No input" })
+            .addField({ id: "fixedListItem", type: "FixedList", label: "fixed listinput", list: [{ code: "a", label: "A" }, { code: "b", label: "B" }, { code: "c", label: "C" }] })
+            .addField({ id: "multiSelectItem", type: "MultiSelectList", label: "Multi select input", list: [{ code: "a", label: "A" }, { code: "b", label: "B" }, { code: "c", label: "C" }] })
+
+            .getConfig();
+
+
     }
+
+    getCustomCase(){
+            const job = {
+                id: "TextField0", type: "Complex", label: "Text Field 0",
+                complex_fields: [
+                    { id: "Title", type: "Text", label: "Title" },
+                    { id: "Description", type: "Text", label: "Description" },
+                ]
+            };
+
+            const personFields = [
+                { id: "Title", type: "Text", label: "Title" },
+                { id: "FirstName", type: "Text", label: "First Name" },
+                { id: "LastName", type: "Text", label: "Last name" },
+                { id: "MaidenName", type: "Text", label: "Maiden Name" },
+                {
+                    id: "Gender", type: "FixedRadioList", label: "Select your gender",
+                    list: [{ code: "male", label: "Male" }, { code: "female", label: "Female" }, { code: "notGiven", label: "Not given" }]
+                },
+                job
+            ];;
+
+            const customCase = new CCDCaseConfig("testCaseType", "Test jurisdiction", "test description");
+
+            return customCase
+                .setEventProps({show_summary: true})
+                .addWizardPage("testPage1", "Test Page 1")
+                .addCaseField({ id: "TextField0", type: "Text", label: "Text Field 0" })
+                .addCaseField({ id: "TextField1", type: "Text", label: "Text Field 1" })
+                .setFieldProps({ show_condition: 'TextField0!="Hide TextField1" AND TextField0!="Hide all"' })
+                .addCaseField({ id: "TextField2", type: "Text", label: "Text Field 2" })
+                .setFieldProps({ show_condition: 'TextField0!="Hide TextField2" AND TextField0!="Hide all"' })
+                .addCaseField({ id: "TextField3", type: "Text", label: "Text Field 3" })
+
+                .addWizardPage("testPage2", "Test Page 2")
+                .addCaseField({
+                    id: "Gender", type: "FixedRadioList", label: "Select your gender",
+                    list: [{ code: "male", label: "Male" }, { code: "female", label: "Female" }, { code: "notGiven", label: "Not given" }]
+                })
+                .setFieldProps({ show_condition: 'TextField0!="Hide all"' })
+                .addCaseField({
+                    id: "optionsMultiVal", type: "FixedList", label: "Select all that match",
+                    list: [{ code: "a", label: "Option A" }, { code: "b", label: "Option B" }, { code: "c", label: "Option c" }]
+                })
+                .addCaseField({ id: "person1", type: "Complex", label: "Person 1", complex_fields: personFields })
+                .setFieldProps({ show_condition: 'TextField0!="Hide all"' })
+                .addCaseField({ id: "person2", type: "Complex", label: "Person 2", complex_fields: personFields })
+                .setFieldProps({ show_condition: 'TextField0!="Hide all"' })
+                .addCaseField({ id: "people", type: "Collection", label: "People", collection_field_type: { id: "person2", type: "Complex", label: "Person 2", complex_fields: personFields } })
+                .setFieldProps({ show_condition: 'TextField0!="Hide all"' })
+                .getCase();
+        
+ 
+    }
+
 }
 
 module.exports = new CCDApi();
 
 
 
-function getSingleFieldCaseEventConfig(eventId){
-    const caseConfigGenerator =  new CCDCaseConfig();
-    const eventConfig = {
-        eventId: eventId,
-        pages:[
-            {
-                pageId: eventId+'_1',
-                fields:[]
-            }
-        ]
-    }
-
-    switch (eventId){
-        case "text":
-            eventConfig.pages[0].fields.push({ type: "Text" , id: "simpletext",value:"Sample test text value ABC"});
-            break;
-        case "dynamicList":
-            const listItems = [
-                {"code": "item1","label": "Item 1"},
-                { "code": "item2", "label": "Item 2" },
-                { "code": "item3", "label": "Item 3" },               
-            ]
-            eventConfig.pages[0].fields.push({
-                type: "DynamicList", id: "dynamicListField", value: {"value": listItems[2],"list_items": listItems} 
-            });
-            eventConfig.pages[0].fields.push({
-                type: "Complex", id: "dynamicListInComplexField", complexFields : [
-                    { type: "DynamicList", id: "dynamicListField", label: "Field Dynamic list"}
-                ] 
-                , value: { "dynamicListField" : {  "value": listItems[2], "list_items": listItems }}
-            });
-            break;
-    }
-
-    return caseConfigGenerator.getCaseConfig(eventConfig);
-}
-
+ 
 
 

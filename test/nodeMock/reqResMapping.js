@@ -1,5 +1,7 @@
 const ccdApiMock = require('./ccd/ccdApi');
 const WAReqResMappings  = require('./workAllocation/reqResMapping');
+const ccdReqResMapping = require('./ccd/reqResMapping');
+
 
 
 const idamProfile = require('./ccd/profile');
@@ -63,7 +65,7 @@ const requestMapping = {
             res.send();
         },
         ...WAReqResMappings.get,
-        ...ccdApiMock.get()
+        ...ccdReqResMapping.get
 
 
     },
@@ -75,7 +77,7 @@ const requestMapping = {
             res.send( []);
         },
         ...WAReqResMappings.post,
-        ...ccdApiMock.post()
+        ...ccdReqResMapping.post
 
     },
     put:{

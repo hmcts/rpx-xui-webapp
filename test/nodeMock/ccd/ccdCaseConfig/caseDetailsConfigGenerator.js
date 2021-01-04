@@ -1,5 +1,5 @@
+const CCDCaseField = require('./CCDCaseField');
 
-const CCDCaseConfig = require('./caseCreateConfigGenerator');
 const caseDetailsConfig = {
   "case_id": "1606297307593887",
   "_links": {
@@ -30,16 +30,20 @@ const caseDetailsConfig = {
   "events": [ ]
 };
 
-class CCDCaseDetails {
+class CCDCaseDetails extends CCDCaseField{
     eventIdCounter = 10000;
     triggerOrderCounter = 0;
     tabOrderCounter = 0;
     caseDetailsTemplate = JSON.parse(JSON.stringify(caseDetailsConfig));
     constructor(name) {
+        super();
+
         this.caseConfig = new CCDCaseConfig("test","test","test"); 
         this.caseDetailsTemplate.case_type.id = this.toCamelCase(name);
         this.caseDetailsTemplate.case_type.name = name;
         this.caseDetailsTemplate.case_type.description = "Mock case description "+name;
+
+        this.currentTab = null;
 
     }
 
@@ -54,19 +58,33 @@ class CCDCaseDetails {
             "show_condition": null
         }
         this.caseDetailsTemplate.tabs.push(tab);
-        return tab;
+        this.currentTab = tab;
+        return this;
     }
 
     addHistoryTab(tabLabel){
         const historyTab = this.addTab(tabLabel ? tabLabel : "Mock tab History");
-        const historyViewer = this.caseConfig.getCCDFieldTemplateCopy("CaseHistoryViewer", "caseHistory", "Mock History View");
+        const historyViewer = this.caseConfig.getCCDFieldTemplateCopy({id: "CaseHistoryViewer", type: "caseHistory", label: "Mock History View"});
         historyViewer.value = this.caseDetailsTemplate.events;
-        historyTab.fields.push(historyViewer)
+        historyTab.fields.push(historyViewer);
+        return this;
     }
 
-    addFieldToTab(tab, caseField){
-        tab.fields.push(caseField);
+    // addFieldToTab(tab, caseField){
+    //     tab.fields.push(caseField);
+    //     return this;
+    // }
+
+    addFieldWithConfigToTab( fieldConfig) {
+        if (!this.currentTab){
+            throw new Error("No tab added. Add a tab before adding a Case field");
+        }
+        let ccdCaseField = this.getCCDFieldTemplateCopy(fieldConfig);
+        
+        this.currentTab.fields.push(caseField);
+        return this;
     }
+
 
    setState(name){
        this.caseDetailsTemplate.state = {
@@ -74,7 +92,8 @@ class CCDCaseDetails {
            "name":name,
            "description": "Mock state description for "+name,
            "title_display": null
-       }; 
+       };
+       return this; 
    }
    
     addEvent(eventName, stateName, eventDate){
@@ -93,6 +112,7 @@ class CCDCaseDetails {
             "state_id": this.toCamelCase(stateName),
             "significant_item": null
         });
+        return this
    }
 
     addTrigger(name) {
@@ -105,28 +125,15 @@ class CCDCaseDetails {
             "order": this.triggerOrderCounter
             
         });
+        return this
     }
 
     addMetadata(ccdField) {
         ccdField.metadata = true;
         this.caseDetailsTemplate.metadataFields.push(ccdField);
+        return this;
     }
 
-
-
-
-    toCamelCase(str) {
-        return str.split(' ').map(function (word, index) {
-            // If it is the first word make sure to lowercase all the chars.
-            if (index == 0) {
-                return word.toLowerCase();
-            }
-            // If it is not the first word only upper case the first char and lowercase the rest.
-            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-        }).join('');
-    }
-
-    
 }
 
 

@@ -8,6 +8,7 @@ import { InformationMessage } from '../../models/comms';
 import { Assignee, Caseworker, Location } from '../../models/dtos';
 import { TaskFieldConfig, TaskServiceConfig } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
+import { handleFatalErrors } from '../../utils';
 
 export const NAME_ERROR: ErrorMessage = {
   title: 'There is a problem',
@@ -94,17 +95,9 @@ export class TaskAssignmentContainerComponent implements OnInit {
     this.taskService.assignTask(this.tasks[0].id, assignee).subscribe(() => {
       this.reportSuccessAndReturn();
     }, error => {
-      switch (error.status) {
-        case 401:
-        case 403:
-          this.router.navigate(['/not-authorised']);
-          break;
-        case 500:
-          this.router.navigate(['/service-down']);
-          break;
-        default:
-          this.reportUnavailableErrorAndReturn();
-          break;
+      const handledStatus = handleFatalErrors(error.status, this.router);
+      if (handledStatus > 0) {
+        this.reportUnavailableErrorAndReturn();
       }
     });
   }

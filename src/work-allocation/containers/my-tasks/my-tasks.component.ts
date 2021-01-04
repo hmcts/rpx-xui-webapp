@@ -36,10 +36,6 @@ export class MyTasksComponent extends TaskListWrapperComponent {
     };
   }
 
-  public loadTasks(): void {
-    super.loadTasks();
-  }
-
   private getCaseworkerParameter(): SearchTaskParameter {
     // TODO: Replace this defaulting after integrating with the API.
     const cw = FilterConstants.Defaults.CASEWORKER;

@@ -1,8 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { Caseworker, Location } from '../../models/dtos';
 import { CaseworkerDisplayName } from '../../pipes';
 import { CaseworkerDataService, LocationDataService } from '../../services';
+import { handleFatalErrors } from '../../utils';
 import { FilterConstants } from '../constants';
 
 @Component({
@@ -82,6 +84,7 @@ export class TaskAssignmentComponent implements OnInit {
   private readonly caseworkerDisplayName: CaseworkerDisplayName = new CaseworkerDisplayName();
 
   constructor(
+    private readonly router: Router,
     private readonly locationService: LocationDataService,
     private readonly caseworkerService: CaseworkerDataService
   ) {
@@ -92,6 +95,8 @@ export class TaskAssignmentComponent implements OnInit {
     this.locationService.getLocations().subscribe(locations => {
       this.pLocations = [ ...locations ];
       this.location = this.vetLocation(this.location);
+    }, error => {
+      handleFatalErrors(error.status, this.router);
     });
 
     // Also get the caseworkers at the initial location (which may be "All").
@@ -125,11 +130,15 @@ export class TaskAssignmentComponent implements OnInit {
     if (this.location === this.ALL_LOCATIONS) {
       this.caseworkerService.getAll().subscribe(caseworkers => {
         this.setupCaseworkers(caseworkers);
+      }, error => {
+        handleFatalErrors(error.status, this.router);
       });
     } else if (this.location && this.location.id) {
       // Otherwise, get the caseworkers at the specifed location.
       this.caseworkerService.getForLocation(this.location.id).subscribe(caseworkers => {
         this.setupCaseworkers(caseworkers);
+      }, error => {
+        handleFatalErrors(error.status, this.router);
       });
     }
   }

@@ -1,5 +1,6 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
@@ -75,26 +76,18 @@ describe('WorkAllocation', () => {
     const getSelect = (id: string): HTMLSelectElement => {
       return fixture.debugElement.nativeElement.querySelector(id);
     };
+    const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
-    beforeEach(async(() => {
+    beforeEach(() => {
       TestBed.configureTestingModule({
         declarations: [ WrapperComponent ],
         imports: [ WorkAllocationComponentsModule ],
         providers: [
-          {
-            provide: LocationDataService,
-            useClass: MockLocationDataService
-          },
-          {
-            provide: CaseworkerDataService,
-            useClass: MockCaseworkerDataService
-          }
+          { provide: Router, useValue: mockRouter },
+          { provide: LocationDataService, useClass: MockLocationDataService },
+          { provide: CaseworkerDataService, useClass: MockCaseworkerDataService }
         ]
-      })
-      .compileComponents();
-    }));
-
-    beforeEach(() => {
+      }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
       component = wrapper.ref;

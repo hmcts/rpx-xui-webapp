@@ -19,6 +19,9 @@ module.exports = {
     post: {
         '/workallocation/task/' : (req,res) => {
             res.send(workAllocationMockData.getTaskList(10));
+        },
+        '/workallocation/task/:taskId/assign':  (req,res) => {
+            res.send();
         }
     } 
 }

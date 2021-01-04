@@ -8,6 +8,9 @@ const BrowserWaits = require('../../../e2e/support/customWaits');
 const headerPage = require('../../../e2e/features/pageObjects/headerPage');
 const taskManagerPage = require('../../../e2e/features/pageObjects/workAllocation/taskManagerPage');
 const tasklistPage = require('../../../e2e/features/pageObjects/workAllocation/taskListPage');
+const taskAssignmentPage = require('../../../e2e/features/pageObjects/workAllocation/taskAssignmentPage');
+
+
 
 const workAllocationMockData = require('../../../nodeMock/workAllocation/mockData');
 const CaselistPage = require('../../../e2e/features/pageObjects/CaseListPage');
@@ -88,13 +91,19 @@ describe.only('Unhappy path: ', function () {
 
 
 
-    it(`My Tasks - action link page errors`, async function () {
+    it.only(`My Tasks - Reassign page errors`, async function () {
         await BrowserUtil.browserInitWithAuth(["caseworker-ia-caseofficer", "caseworker-ia-admofficer"]);
         await headerPage.waitForPrimaryNavDisplay()
         await BrowserUtil.waitForLD();
 
         // expect(await tasklistPage.amOnPage()).to.be.true;
-        for (const action of myTask_actions) {
+        const reassignEndpoints = [
+            { name: "Task details", url: "/workallocation/task/:taskId"},
+            { name: "Locations", url: "/workallocation/location" },
+            { name: "caseworkers", url: "/workallocation/caseworker/location/:locationId" }
+
+        ];
+        for (const endPoint of reassignEndpoints){
             for (const responseCode of testErrorResponseCodes) {
                 setMockResponse(() => {
                     MockApp.onPost('/workallocation/task/', (req, res) => {
@@ -102,7 +111,7 @@ describe.only('Unhappy path: ', function () {
                     });
                 });
                 await headerPage.clickManageCases();
-                await setErrorRespondeCodeOnApi('GET', '/workallocation/task/:taskId', responseCode);
+                await setErrorRespondeCodeOnApi('GET', endPoint.url, responseCode);
                 await headerPage.clickTaskList();
                 await tasklistPage.amOnPage();
                 expect(await tasklistPage.isMyTasksDisplayed(), "Default My tasks tab page not displayed").to.be.true;
@@ -110,19 +119,70 @@ describe.only('Unhappy path: ', function () {
                 await tasklistPage.clickManageLinkForTaskAt(1);
                 expect(await tasklistPage.isTaskActionRowForTaskDisplayed(1), "Task actions for selected task not displayed").to.be.true;
 
-                await tasklistPage.clickTaskAction(action);
+                await tasklistPage.clickTaskAction("Reassign task");
 
                 const isErrorPageDisplayed = await errorPage.isErrorPageDisplayed();
-                await softAssertion.assert(async () => expect(isErrorPageDisplayed, `For action ${action} on task details ${responseCode} status response, error page not displayed`).to.be.true);
+                await softAssertion.assert(async () => expect(isErrorPageDisplayed, `For action Reassign on ${endPoint.name} status code ${responseCode} status response, error page not displayed`).to.be.true);
                 if (isErrorPageDisplayed) {
                     const errorMessageDisplayed = await errorPage.getErrorMessage();
-                    await softAssertion.assert(async () => expect(errorMessageDisplayed, `For action ${action} on task details ${responseCode} status response, error message does not match`).to.contains(errorMessageForResponseCode(responseCode)));
+                    await softAssertion.assert(async () => expect(errorMessageDisplayed, `For action Reassign on ${endPoint.name} status code ${responseCode} status response, error message does not match`).to.contains(errorMessageForResponseCode(responseCode)));
                 }
             }
+
         }
+        
 
         softAssertion.finally();
     });
+
+
+    it.only(`My Tasks - Reassign submit errors`, async function () {
+        await BrowserUtil.browserInitWithAuth(["caseworker-ia-caseofficer", "caseworker-ia-admofficer"]);
+        await headerPage.waitForPrimaryNavDisplay()
+        await BrowserUtil.waitForLD();
+
+    
+        for (const responseCode of testErrorResponseCodes) {
+            setMockResponse(() => {
+                MockApp.onPost('/workallocation/task/', (req, res) => {
+                    res.send(workAllocationMockData.getMyTasks(10));
+                });
+            });
+            await headerPage.clickManageCases();
+            await headerPage.clickTaskList();
+            await tasklistPage.amOnPage();
+            expect(await tasklistPage.isMyTasksDisplayed(), "Default My tasks tab page not displayed").to.be.true;
+
+            await tasklistPage.clickManageLinkForTaskAt(1);
+            expect(await tasklistPage.isTaskActionRowForTaskDisplayed(1), "Task actions for selected task not displayed").to.be.true;
+
+            await tasklistPage.clickTaskAction("Reassign task");
+            expect(await taskAssignmentPage.amOnPage(),"Not on task assignment page").to.be.true; 
+
+            const locations = await taskAssignmentPage.getLocationOptions();
+            const caseworkers = await taskAssignmentPage.getCaseworkerOptions();
+
+            await taskAssignmentPage.selectLocation(locations[1]);
+            await taskAssignmentPage.selectCaseworker(caseworkers[1]);
+
+            setErrorRespondeCodeOnApi('POST', '/workallocation/task/:taskId/assign', responseCode);
+            await taskAssignmentPage.clickReassignBtn();
+
+
+            const isErrorPageDisplayed = await errorPage.isErrorPageDisplayed();
+            await softAssertion.assert(async () => expect(isErrorPageDisplayed, `For action Reassign on submit status code ${responseCode} status response, error page not displayed`).to.be.true);
+            if (isErrorPageDisplayed) {
+                const errorMessageDisplayed = await errorPage.getErrorMessage();
+                await softAssertion.assert(async () => expect(errorMessageDisplayed, `For action Reassign on submit status code ${responseCode} status response, error message does not match`).to.contains(errorMessageForResponseCode(responseCode)));
+            }
+        }
+
+    
+
+
+        softAssertion.finally();
+    });
+
 
 
 

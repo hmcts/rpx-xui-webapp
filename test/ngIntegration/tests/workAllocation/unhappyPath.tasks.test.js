@@ -18,7 +18,7 @@ const SoftAssert = require('../../util/softAssert');
 
 
 const caseListPage = new CaselistPage();
-describe.only('Unhappy path: ', function () {
+describe('Unhappy path: ', function () {
     BrowserWaits.setDefaultWaitTime(2000);
 
     async function setErrorRespondeCodeOnApi(method ,endpoint, responseCode){

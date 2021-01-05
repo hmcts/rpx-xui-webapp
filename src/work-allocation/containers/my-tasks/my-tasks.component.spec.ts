@@ -53,17 +53,7 @@ describe('MyTasksComponent', () => {
     fixture.detectChanges();
   });
 
-  /**
-   * TODO
-   * This has started randomly failing when running a lot of tests but runs just
-   * fine in isolation or with only a few other tests running (just this suite,
-   * for example).
-   *
-   * The error message is not at all helpful and none of my attempts at debugging
-   * or logging progress have borne any fruit so far. Therefore, I'm just going
-   * to xit for the time being and come back to it at some point.
-   */
-  xit('should make a call to load tasks using the default search request', () => {
+  it('should make a call to load tasks using the default search request', () => {
     const searchRequest = component.getSearchTaskRequest();
     const payload = { searchRequest, view: component.view };
     expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);

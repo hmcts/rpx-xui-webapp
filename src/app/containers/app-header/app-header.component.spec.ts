@@ -1,12 +1,13 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { AppHeaderComponent } from './app-header.component';
-import { Action, Store, StoreModule } from '@ngrx/store';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { AppConstants } from 'src/app/app.constants';
-import * as fromActions from '../../store';
-import { CookieService } from 'ngx-cookie';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import {FeatureToggleService} from '@hmcts/rpx-xui-common-lib';
+import { Action, Store, StoreModule } from '@ngrx/store';
+import { CookieService } from 'ngx-cookie';
 import {of} from 'rxjs';
+import { AppConstants } from 'src/app/app.constants';
+import { LoggerService } from '../../services/logger/logger.service';
+import * as fromActions from '../../store';
+import { AppHeaderComponent } from './app-header.component';
 
 const storeMock = {
   pipe: () => {
@@ -33,6 +34,8 @@ const featureToggleServiceMock = {
     };
   }
 };
+
+const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
 
 let pipeSpy: jasmine.Spy;
 let dispatchSpy: jasmine.Spy;
@@ -70,6 +73,10 @@ describe('AppHeaderComponent', () => {
         {
           provide: FeatureToggleService,
           useValue: featureToggleServiceMock,
+        },
+        {
+          provide: LoggerService,
+          useValue: loggerServiceMock,
         },
         AppHeaderComponent
       ],
@@ -245,6 +252,13 @@ describe('AppHeaderComponent', () => {
       expect(dispatchSpy).toHaveBeenCalledTimes(0);
       component.onNavigate('sign-out');
       expect(dispatchSpy).toHaveBeenCalledWith(new fromActions.Logout());
+    });
+  });
+
+  describe('getApplicationThemeForUser()', () => {
+    it('get default theme when no roles', () => {
+      const themes = component.getApplicationThemeForUser([]);
+      expect(themes).toEqual(AppConstants.DEFAULT_USER_THEME);
     });
   });
 });

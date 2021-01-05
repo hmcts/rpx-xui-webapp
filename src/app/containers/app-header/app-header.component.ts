@@ -3,6 +3,7 @@ import {FeatureToggleService} from '@hmcts/rpx-xui-common-lib';
 import {select, Store} from '@ngrx/store';
 import {CookieService} from 'ngx-cookie';
 import {Observable, of, Subscription} from 'rxjs';
+import { LoggerService } from '../../services/logger/logger.service';
 
 import {AppUtils} from '../../app-utils';
 import {AppConstants} from '../../app.constants';
@@ -53,7 +54,8 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
   constructor(private store: Store<fromActions.State>,
               private cookieService: CookieService,
-              private featureToggleService: FeatureToggleService) {
+              private featureToggleService: FeatureToggleService,
+              private loggerService: LoggerService) {
   }
 
   /**
@@ -166,9 +168,17 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   public getApplicationThemeForUser(applicationThemes: Theme[]): Theme {
 
     const serialisedUserRoles: string = this.getSerialisedUserRolesFromCookie();
-    const userRoles: string[] = this.deserialiseUserRoles(serialisedUserRoles);
+    const defaultTheme = this.getDefaultTheme();
 
-    return this.getUsersTheme(userRoles, applicationThemes, this.getDefaultTheme());
+    if (serialisedUserRoles) {
+      try {
+          const userRoles: string[] = this.deserialiseUserRoles(serialisedUserRoles);
+          return this.getUsersTheme(userRoles, applicationThemes, defaultTheme);
+      } catch (error) {
+        this.loggerService.error(error);
+      }
+    }
+    return defaultTheme;
   }
 
   /**

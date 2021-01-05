@@ -4,7 +4,7 @@ import { CheckboxListComponent } from '@hmcts/rpx-xui-common-lib';
 
 import { Location } from '../../models/dtos';
 import { LocationDataService, SessionStorageService } from '../../services';
-import { handleFatalErrors } from '../../utils';
+import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 import { FilterConstants } from '../constants';
 
 @Component({
@@ -13,6 +13,7 @@ import { FilterConstants } from '../constants';
   styleUrls: ['available-tasks-filter.component.scss']
 })
 export class AvailableTasksFilterComponent implements OnInit {
+
   @ViewChild(CheckboxListComponent)
   public readonly locationFilter: CheckboxListComponent<Location>;
   @ViewChild('filterDetails')
@@ -66,7 +67,7 @@ export class AvailableTasksFilterComponent implements OnInit {
     this.locationService.getLocations().subscribe(locations => {
       this.locations = [ ...locations ];
     }, error => {
-      handleFatalErrors(error.status, this.router);
+      handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
     });
   }
 

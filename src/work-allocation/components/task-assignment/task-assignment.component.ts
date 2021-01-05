@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Caseworker, Location } from '../../models/dtos';
 import { CaseworkerDisplayName } from '../../pipes';
 import { CaseworkerDataService, LocationDataService } from '../../services';
-import { handleFatalErrors } from '../../utils';
+import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 import { FilterConstants } from '../constants';
 
 @Component({
@@ -96,7 +96,7 @@ export class TaskAssignmentComponent implements OnInit {
       this.pLocations = [ ...locations ];
       this.location = this.vetLocation(this.location);
     }, error => {
-      handleFatalErrors(error.status, this.router);
+      handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
     });
 
     // Also get the caseworkers at the initial location (which may be "All").
@@ -131,14 +131,14 @@ export class TaskAssignmentComponent implements OnInit {
       this.caseworkerService.getAll().subscribe(caseworkers => {
         this.setupCaseworkers(caseworkers);
       }, error => {
-        handleFatalErrors(error.status, this.router);
+        handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
       });
     } else if (this.location && this.location.id) {
       // Otherwise, get the caseworkers at the specifed location.
       this.caseworkerService.getForLocation(this.location.id).subscribe(caseworkers => {
         this.setupCaseworkers(caseworkers);
       }, error => {
-        handleFatalErrors(error.status, this.router);
+        handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
       });
     }
   }

@@ -7,7 +7,7 @@ import { InfoMessage, InfoMessageType, TaskService, TaskSort } from '../../enums
 import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
 import { InfoMessageCommService, SessionStorageService, WorkAllocationTaskService } from '../../services';
-import { handleFatalErrors } from '../../utils';
+import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html'
@@ -189,7 +189,7 @@ export class TaskListWrapperComponent implements OnInit {
       this.tasks = result.tasks;
       this.ref.detectChanges();
     }, error => {
-      handleFatalErrors(error.status, this.router);
+      handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
     });
   }
 }

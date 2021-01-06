@@ -12,7 +12,7 @@
       </exui-task-list>
 
       <h2 class="govuk-heading-m">Choose a colleague</h2>
-      <exui-task-assignment
+      <exui-task-assignment [excludeCaseworkers]="excludedCaseworkers" [location]="location"
         (caseworkerChanged)="onCaseworkerChanged($event)" [showProblem]="error">
       </exui-task-assignment>
 

@@ -1,17 +1,25 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
-import { Observable } from 'rxjs';
+import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
+import { EMPTY, Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 import { Task } from '../models/tasks';
 import { WorkAllocationTaskService } from '../services';
+import { handleFatalErrors } from '../utils';
 
 @Injectable({ providedIn: 'root' })
 export class TaskResolver implements Resolve<Task> {
-  constructor(private readonly service: WorkAllocationTaskService) {}
+  constructor(
+    private readonly service: WorkAllocationTaskService,
+    private readonly router: Router
+  ) {}
 
-  public resolve(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<Task> {
-    return this.service.getTask(route.paramMap.get('taskId'));
+  public resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Task> {
+    return this.service.getTask(route.paramMap.get('taskId')).pipe(
+      catchError(error => {
+        handleFatalErrors(error.status, this.router);
+        return EMPTY;
+      })
+    );
   }
 }

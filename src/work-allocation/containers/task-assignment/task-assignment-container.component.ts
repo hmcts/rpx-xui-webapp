@@ -5,9 +5,10 @@ import { ErrorMessage } from '../../../app/models';
 import { ConfigConstants } from '../../components/constants';
 import { Assignment, InfoMessage, InfoMessageType, TaskService, TaskSort } from '../../enums';
 import { InformationMessage } from '../../models/comms';
-import { Assignee, Caseworker } from '../../models/dtos';
+import { Assignee, Caseworker, Location } from '../../models/dtos';
 import { TaskFieldConfig, TaskServiceConfig } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
+import { handleFatalErrors } from '../../utils';
 
 export const NAME_ERROR: ErrorMessage = {
   title: 'There is a problem',
@@ -28,6 +29,8 @@ export class TaskAssignmentContainerComponent implements OnInit {
   public verb: Assignment;
 
   private successMessage: InfoMessage;
+  public excludedCaseworkers: Caseworker[];
+  public location: Location;
 
   constructor(
     private readonly taskService: WorkAllocationTaskService,
@@ -37,7 +40,7 @@ export class TaskAssignmentContainerComponent implements OnInit {
   ) {}
 
   public get fields(): TaskFieldConfig[] {
-    return ConfigConstants.TaskActions;
+    return this.showAssigneeColumn ? ConfigConstants.TaskActionsWithAssignee : ConfigConstants.TaskActions;
   }
 
   private get returnUrl(): string {
@@ -46,6 +49,13 @@ export class TaskAssignmentContainerComponent implements OnInit {
       url = window.history.state.returnUrl;
     }
     return url || '/tasks/list';
+  }
+
+  private get showAssigneeColumn(): boolean {
+    if (window && window.history && window.history.state) {
+      return !!window.history.state.showAssigneeColumn;
+    }
+    return false;
   }
 
   public taskServiceConfig: TaskServiceConfig = {
@@ -66,6 +76,15 @@ export class TaskAssignmentContainerComponent implements OnInit {
     this.tasks = [ task ];
     this.verb = this.route.snapshot.data.verb as Assignment;
     this.successMessage = this.route.snapshot.data.successMessage as InfoMessage;
+    if (task.assignee) {
+      const names: string[] = task.assignee.split(' ');
+      const firstName = names.shift();
+      const lastName = names.join(' ');
+      this.excludedCaseworkers = [ { firstName, lastName } as Caseworker ];
+    }
+    if (task.location) {
+      this.location = { locationName: task.location } as Location;
+    }
   }
 
   public assign(): void {
@@ -81,23 +100,15 @@ export class TaskAssignmentContainerComponent implements OnInit {
     this.taskService.assignTask(this.tasks[0].id, assignee).subscribe(() => {
       this.reportSuccessAndReturn();
     }, error => {
-      switch (error.status) {
-        case 401:
-        case 403:
-          this.router.navigate(['/not-authorised']);
-          break;
-        case 500:
-          this.router.navigate(['/service-down']);
-          break;
-        default:
-          this.reportUnavailableErrorAndReturn();
-          break;
+      const handledStatus = handleFatalErrors(error.status, this.router);
+      if (handledStatus > 0) {
+        this.reportUnavailableErrorAndReturn();
       }
     });
   }
 
   public cancel(): void {
-    this.returnWithMessages([], {});
+    this.returnWithMessage(null, {});
   }
 
   public onCaseworkerChanged(caseworker: Caseworker): void {
@@ -106,30 +117,22 @@ export class TaskAssignmentContainerComponent implements OnInit {
 
   private reportSuccessAndReturn(): void {
     const message = this.successMessage;
-    this.returnWithMessages(
-      [
-        { type: InfoMessageType.SUCCESS, message }
-      ],
+    this.returnWithMessage(
+      { type: InfoMessageType.SUCCESS, message },
       { badRequest: false }
     );
   }
 
   private reportUnavailableErrorAndReturn(): void {
-    this.returnWithMessages(
-      [
-        { type: InfoMessageType.WARNING, message: InfoMessage.TASK_NO_LONGER_AVAILABLE },
-        { type: InfoMessageType.INFO, message: InfoMessage.LIST_OF_TASKS_REFRESHED }
-      ],
+    this.returnWithMessage(
+      { type: InfoMessageType.WARNING, message: InfoMessage.TASK_NO_LONGER_AVAILABLE },
       { badRequest: true }
     );
   }
 
-  private returnWithMessages(messages: InformationMessage[], state: any): void {
-    if (messages.length > 0) {
-      this.messageService.removeAllMessages();
-      for (const message of messages) {
-        this.messageService.addMessage(message);
-      }
+  private returnWithMessage(message: InformationMessage, state: any): void {
+    if (message) {
+      this.messageService.nextMessage(message);
     }
     this.router.navigateByUrl(this.returnUrl, { state: { ...state, retainMessages: true } });
   }

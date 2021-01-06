@@ -1,18 +1,31 @@
+import {TaskActionIds} from './../../enums/task-action-ids';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { ListConstants } from '../../components/constants';
 import { InfoMessage, InfoMessageType, TaskService, TaskSort } from '../../enums';
-import { InformationMessage } from '../../models/comms';
 import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
 import { InfoMessageCommService, SessionStorageService, WorkAllocationTaskService } from '../../services';
+import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html'
 })
 export class TaskListWrapperComponent implements OnInit {
+
+  /**
+   * Flag to indicate whether or not we've arrived here following a bad
+   * request with a flag having been set on another route. The flag is
+   * passed through the router and so is held in window.history.state.
+   */
+  private get wasBadRequest(): boolean {
+    if (window && window.history && window.history.state) {
+      return !!window.history.state.badRequest;
+    }
+    return false;
+  }
 
   /**
    * Take in the Router so we can navigate when actions are clicked.
@@ -71,7 +84,7 @@ export class TaskListWrapperComponent implements OnInit {
     return 'default';
   }
 
-  private get returnUrl(): string {
+  public get returnUrl(): string {
     return this.router ? this.router.url : '/tasks';
   }
 
@@ -98,34 +111,22 @@ export class TaskListWrapperComponent implements OnInit {
    * Load the tasks to display in the component.
    */
   public loadTasks(): void {
-    // Should this clear out the existing set first?
-    this.performSearch().subscribe(result => {
-      // Swap the commenting on these two lines to see the behaviour
-      // when no tasks are returned.
-      // NOTE: Do not commit them in a swapped state!
-      this.tasks = result.tasks;
-      this.ref.detectChanges();
-      // this.tasks = [];
-    });
+    if (this.wasBadRequest) {
+      this.refreshTasks();
+    } else {
+      this.doLoad();
+    }
   }
 
   /**
    * On the return of the refreshed tasks, we throw up a refresh message.
    */
   public refreshTasks(): void {
-
-    this.performSearch().subscribe(result => {
-
-      this.tasks = result.tasks;
-      this.ref.detectChanges();
-
-      const message: InformationMessage = {
-        type: InfoMessageType.INFO,
-        message: InfoMessage.LIST_OF_AVAILABLE_TASKS_REFRESHED,
-      };
-
-      this.infoMessageCommService.addMessage(message);
+    this.infoMessageCommService.addMessage({
+      type: InfoMessageType.INFO,
+      message: InfoMessage.LIST_OF_TASKS_REFRESHED,
     });
+    this.doLoad();
   }
 
   public performSearch(): Observable<any> {
@@ -178,7 +179,21 @@ export class TaskListWrapperComponent implements OnInit {
    * action.
    */
   public onActionHandler(taskAction: InvokedTaskAction): void {
-    const state = { returnUrl: this.returnUrl };
+    const state = {
+      returnUrl: this.returnUrl,
+      showAssigneeColumn: taskAction.action.id !== TaskActionIds.ASSIGN
+    };
     this.router.navigate([`/tasks/${taskAction.task.id}/${taskAction.action.id}`], { state });
+  }
+
+  // Do the actual load. This is separate as it's called from two methods.
+  private doLoad(): void {
+    // Should this clear out the existing set first?
+    this.performSearch().subscribe(result => {
+      this.tasks = result.tasks;
+      this.ref.detectChanges();
+    }, error => {
+      handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
+    });
   }
 }

@@ -3,7 +3,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable } from 'rxjs';
 
@@ -16,7 +16,7 @@ import {
 } from '../../containers/task-assignment/task-assignment-container.component';
 import { Assignee } from '../../models/dtos';
 import { Task } from '../../models/tasks';
-import { WorkAllocationTaskService } from '../../services';
+import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { getMockCaseworkers, getMockTasks } from '../../tests/utils.spec';
 
 @Component({
@@ -36,13 +36,14 @@ describe('TaskAssignmentContainerComponent', () => {
   let component: TaskAssignmentContainerComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
-  let router: Router;
 
   const mockTasks = getMockTasks();
   const mockCaseworkers = getMockCaseworkers();
   const mockWorkAllocationService = {
     assignTask: jasmine.createSpy('assignTask').and.returnValue(Observable.of({}))
   };
+  const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
+  const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -70,13 +71,14 @@ describe('TaskAssignmentContainerComponent', () => {
             },
             params: Observable.of({ task: mockTasks[0] })
           }
-        }
+        },
+        { provide: InfoMessageCommService, useValue: mockInfoMessageCommService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
-    router = TestBed.get(Router);
+    // router = TestBed.get(Router);
 
     wrapper.tasks = null;
     fixture.detectChanges();

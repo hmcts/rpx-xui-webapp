@@ -1,5 +1,4 @@
 import { ExtraOptions, Routes } from '@angular/router';
-
 import {
   AccessibilityComponent,
   CookiePolicyComponent,
@@ -54,38 +53,76 @@ export const ROUTES: Routes = [
   },
   {
     path: 'cookies',
-    component: CookiePolicyComponent
+    component: CookiePolicyComponent,
+    data: {
+      title: 'Cookie Policy'
+    }
   },
   {
     path: 'privacy-policy',
-    component: PrivacyPolicyComponent
+    component: PrivacyPolicyComponent,
+    data: {
+      title: 'Privacy Policy'
+    }
   },
   {
     path: 'terms-and-conditions',
-    component: TermsAndConditionsComponent
+    component: TermsAndConditionsComponent,
+    data: {
+      title: 'Terms and Conditions'
+    }
   },
   {
     path: 'legacy-terms-and-conditions',
-    component: LegacyTermsAndConditionsComponent
+    component: LegacyTermsAndConditionsComponent,
+    data: {
+      title: 'Terms and Conditions'
+    }
   },
   {
     path: 'accept-terms-and-conditions',
-    component: AcceptTcWrapperComponent
+    component: AcceptTcWrapperComponent,
+    data: {
+      title: 'Accept Terms and Conditions'
+    }
   },
   {
     path: 'accessibility',
-    component: AccessibilityComponent
+    component: AccessibilityComponent,
+    data: {
+      title: 'Accessibility Statement'
+    }
+  },
+  {
+    path: 'service-down',
+    component: ServiceDownComponent,
+    data: {
+      title: 'Service Unavailable'
+    }
+  },
+  {
+    path: 'media-viewer',
+    component: MediaViewerWrapperComponent,
+    data: {
+      title: 'View Document'
+    }
   },
   { path: 'service-down', component: ServiceDownComponent },
   { path: 'not-authorised', component: NotAuthorisedComponent },
   { path: 'media-viewer', component: MediaViewerWrapperComponent },
   {
     path: 'get-help',
-    component: GetHelpComponent
+    component: GetHelpComponent,
+    data: {
+      title: 'Get Help'
+    }
   },
   {
     path: 'idle-sign-out',
-    component: SignedOutComponent
+    component: SignedOutComponent,
+    data: {
+      title: 'You have been signed out'
+    }
   },
   {
     path: '**',

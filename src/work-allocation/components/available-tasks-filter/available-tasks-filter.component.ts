@@ -1,8 +1,10 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { CheckboxListComponent } from '@hmcts/rpx-xui-common-lib';
 
 import { Location } from '../../models/dtos';
 import { LocationDataService, SessionStorageService } from '../../services';
+import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 import { FilterConstants } from '../constants';
 
 @Component({
@@ -11,6 +13,7 @@ import { FilterConstants } from '../constants';
   styleUrls: ['available-tasks-filter.component.scss']
 })
 export class AvailableTasksFilterComponent implements OnInit {
+
   @ViewChild(CheckboxListComponent)
   public readonly locationFilter: CheckboxListComponent<Location>;
   @ViewChild('filterDetails')
@@ -33,9 +36,6 @@ export class AvailableTasksFilterComponent implements OnInit {
 
   public locations: Location[];
   public preselection: Location[];
-  private readonly DEFAULT_LOCATION = {
-    id: 'a', locationName: 'Taylor House', services: [ 'a' ]
-  };
   private handledInitialSelection = false;
 
   /**
@@ -50,12 +50,13 @@ export class AvailableTasksFilterComponent implements OnInit {
    */
   constructor(
     private readonly locationService: LocationDataService,
-    private readonly sessionStorageService: SessionStorageService
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly router: Router
   ) {}
 
 
   public ngOnInit(): void {
-    let preselection: Location[] = [ this.DEFAULT_LOCATION ];
+    let preselection: Location[] = [ FilterConstants.Defaults.LOCATION ];
     // See if we have anything stored in the session for the filter.
     const stored: string = this.sessionStorageService.getItem(FilterConstants.Session.AvailableTasks);
     if (stored) {
@@ -65,6 +66,8 @@ export class AvailableTasksFilterComponent implements OnInit {
     // Get the locations for the checkbox filter component.
     this.locationService.getLocations().subscribe(locations => {
       this.locations = [ ...locations ];
+    }, error => {
+      handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
     });
   }
 

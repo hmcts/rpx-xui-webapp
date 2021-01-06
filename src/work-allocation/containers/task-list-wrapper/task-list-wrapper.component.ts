@@ -1,14 +1,14 @@
-import {TaskActionIds} from './../../enums/task-action-ids';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { ListConstants } from '../../components/constants';
-import { InfoMessage, InfoMessageType, TaskService, TaskSort } from '../../enums';
+import { InfoMessage, InfoMessageType, TaskActionIds, TaskService, TaskSort } from '../../enums';
 import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
 import { InfoMessageCommService, SessionStorageService, WorkAllocationTaskService } from '../../services';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
+
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html'

@@ -4,11 +4,16 @@
   <!-- Column Headers and Cells -->
   <ng-container *ngFor="let field of fields" [cdkColumnDef]="field.name">
     <th class="govuk-table__header" [attr.aria-sort]="isColumnSorted(field.name)" cdk-header-cell *cdkHeaderCellDef>
-      <button type="button" [id]="'sort_by_' + field.name" data-index="0"
+      <button *ngIf="field.name!='alert'" type="button" [id]="'sort_by_' + field.name" data-index="0"
               (click)="onSortHandler(field.name)" >{{field.columnLabel}}</button>
     </th>
     <td class="govuk-table__cell border-none" cdk-cell *cdkCellDef="let rowData">
-      <exui-task-field [task]="rowData" [config]="field"></exui-task-field>
+      <exui-task-field *ngIf="field.name!='alert'" [task]="rowData" [config]="field"></exui-task-field>
+      <svg [id]="'alert_' + rowData.id" *ngIf="field.name=='alert'&&rowData.alert&&showAlert" class="hmcts-banner__icon" fill="currentColor" role="presentation" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25" height="25" width="25" path="" style="fill: orange">
+        <title>This case has more than one task. Review needed.</title>
+        <path d="M13.7,18.5h-2.4v-2.4h2.4V18.5z M12.5,13.7c-0.7,0-1.2-0.5-1.2-1.2V7.7c0-0.7,0.5-1.2,1.2-1.2s1.2,0.5,1.2,1.2v4.8
+        C13.7,13.2,13.2,13.7,12.5,13.7z M12.5,0.5c-6.6,0-12,5.4-12,12s5.4,12,12,12s12-5.4,12-12S19.1,0.5,12.5,0.5z"></path>
+      </svg>
     </td>
   </ng-container>
 

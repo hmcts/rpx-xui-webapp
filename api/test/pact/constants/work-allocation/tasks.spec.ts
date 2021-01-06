@@ -7,6 +7,7 @@ const KILI_MUSO = {
   caseName: 'Kili Muso',
   caseCategory: 'Grant of representation',
   location: 'Taylor House',
+  alert: true,
   taskName: 'Apply for probate',
   dueDate: new Date(1604938789000),
   actions: [ ACTIONS.REASSIGN, ACTIONS.RELEASE ],
@@ -19,6 +20,7 @@ const MANKAI_LIT = {
   caseName: 'Mankai Lit',
   caseCategory: 'Revocation',
   location: 'Taylor House',
+  alert: false,
   taskName: 'Review appellant case',
   dueDate: new Date(1604506789000),
   actions: [ ACTIONS.RELEASE ],
@@ -28,9 +30,10 @@ const MANKAI_LIT = {
 const BOB_CRATCHITT = {
   id: '3456789012345678',
   caseReference: '3456 7890 1234 5678',
-  caseName: 'Bob Cratchit',
+  caseName: 'Bob J Cratchit',
   caseCategory: 'Protection',
   location: 'Taylor Swift',
+  alert: true,
   taskName: 'Review respondent evidence',
   dueDate: new Date(),
   actions: [ ACTIONS.CLAIM ]
@@ -64,6 +67,7 @@ const DAVID_COPPERFIELD = {
   caseName: 'David Copperfield',
   caseCategory: 'Revocation',
   location: 'Taylor House',
+  alert: true,
   taskName: 'Review appellant case',
   dueDate: new Date(1604506789000),
   actions: [ ACTIONS.REASSIGN ]

@@ -34,6 +34,12 @@ const LOCATION: TaskFieldConfig = {
   columnLabel: 'Location',
   views: TaskView.ALL_VIEWS
 };
+const ALERT: TaskFieldConfig = {
+  name: 'alert',
+  type: TaskFieldType.BOOLEAN,
+  columnLabel: 'Alert',
+  views: TaskView.TASK_LIST
+};
 const TASK_NAME: TaskFieldConfig = {
   name: 'taskName',
   type: TaskFieldType.STRING,
@@ -58,13 +64,13 @@ const ASSIGNEE: TaskFieldConfig = {
  * The views.
  */
 const AVAILABLE_TASKS: TaskFieldConfig[] = [
-  CASE_REFERENCE_AS_TEXT, CASE_NAME, CASE_CATEGORY, LOCATION, TASK_NAME, DUE_DATE
+  CASE_REFERENCE_AS_TEXT, CASE_NAME, CASE_CATEGORY, LOCATION, ALERT, TASK_NAME, DUE_DATE
 ];
 const MY_TASKS: TaskFieldConfig[] = [
-  CASE_REFERENCE_AS_LINK, CASE_NAME, CASE_CATEGORY, LOCATION, TASK_NAME, DUE_DATE
+  CASE_REFERENCE_AS_LINK, CASE_NAME, CASE_CATEGORY, LOCATION, ALERT, TASK_NAME, DUE_DATE
 ];
 const TASK_MANAGER: TaskFieldConfig[] = [
-  CASE_REFERENCE_AS_LINK, CASE_NAME, CASE_CATEGORY, LOCATION, TASK_NAME, DUE_DATE, ASSIGNEE
+  CASE_REFERENCE_AS_LINK, CASE_NAME, CASE_CATEGORY, LOCATION, ALERT, TASK_NAME, DUE_DATE, ASSIGNEE
 ];
 
 export const CONFIG_CONSTANTS = {

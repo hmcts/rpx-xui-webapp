@@ -90,7 +90,13 @@ describe('TaskManagerListComponent', () => {
     expect(headerCells).toBeDefined();
     expect(headerCells.length).toEqual(fields.length + 1); // Extra one for Manage +;
     for (let i = 0; i < fields.length; i++) {
-      expect(headerCells[i].textContent).toEqual(fields[i].columnLabel);
+      if (fields[i].name!='alert') {
+        expect(headerCells[i].textContent).toEqual(fields[i].columnLabel);
+      }
+      else {
+        // If field is Alert expect column to not exist
+        expect(headerCells[i].textContent).toEqual('');
+      }
     }
     // Make sure Manage + heading is blank.
     expect(headerCells[headerCells.length - 1].textContent.trim()).toEqual('');

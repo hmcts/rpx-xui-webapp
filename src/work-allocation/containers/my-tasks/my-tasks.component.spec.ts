@@ -75,14 +75,20 @@ describe('MyTasksComponent', () => {
     expect(component.tasks.length).toEqual(2);
   });
 
-  it('should have all columns, including "Manage +"', () => {
+  it('should have all column headers, including "Manage +"', () => {
     const element = fixture.debugElement.nativeElement;
     const headerCells = element.querySelectorAll('.govuk-table__header');
     const fields = component.fields;
     expect(headerCells).toBeDefined();
     expect(headerCells.length).toEqual(fields.length + 1); // Extra one for Manage +;
     for (let i = 0; i < fields.length; i++) {
-      expect(headerCells[i].textContent).toEqual(fields[i].columnLabel);
+      if (fields[i].name!='alert') {
+        expect(headerCells[i].textContent).toEqual(fields[i].columnLabel);
+      }
+      else {
+        // If field is Alert expect no text content in the header
+        expect(headerCells[i].textContent).toEqual('');
+      }
     }
     // Make sure Manage + heading is blank.
     expect(headerCells[headerCells.length - 1].textContent.trim()).toEqual('');

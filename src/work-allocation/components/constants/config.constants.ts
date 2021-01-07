@@ -40,7 +40,7 @@ const DERIVED_ICON: TaskFieldConfig = {
   type: TaskFieldType.DERIVED_ICON,
   columnLabel: null,
   views: TaskView.ALL_VIEWS,
-  // sourcColumn and matchValue values currently defined in DIC file
+  // sourcColumn and matchValue values currently defined in DI constants file
   sourceColumn: DERIVED_ICON_CONSTANTS.SOURCE_COLUMN,
   matchValue: DERIVED_ICON_CONSTANTS.MATCH_VALUE
 };

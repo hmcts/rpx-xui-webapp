@@ -1,6 +1,6 @@
 dependencies:
   - name: nodejs
-    version: ~1.9.0
+    version: 2.3.3
     repository: '@hmctspublic'
   - name: redis
     version: ~10.0.0

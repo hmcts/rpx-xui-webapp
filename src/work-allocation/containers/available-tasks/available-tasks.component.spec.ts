@@ -80,7 +80,7 @@ describe('AvailableTasksComponent', () => {
     expect(component.tasks.length).toEqual(2);
   });
 
-  it('should have all column headers apart from DerivedIcon, including "Manage +"', () => {
+  it('should have all column headers, including "Manage +"', () => {
     const element = fixture.debugElement.nativeElement;
     const headerCells = element.querySelectorAll('.govuk-table__header');
     const fields = component.fields;
@@ -88,7 +88,7 @@ describe('AvailableTasksComponent', () => {
     expect(headerCells.length).toEqual(fields.length + 1); // Extra one for Manage +;
     for (let i = 0; i < fields.length; i++) {
       // ensure derivedIcon has no header and every other field does
-      if (fields[i].name !== 'derivedIcon') {
+      if (fields[i].columnLabel) {
         expect(headerCells[i].textContent).toEqual(fields[i].columnLabel);
       } else {
         expect(headerCells[i].textContent).toEqual('');

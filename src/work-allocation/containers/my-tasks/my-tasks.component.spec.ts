@@ -83,7 +83,7 @@ describe('MyTasksComponent', () => {
     expect(headerCells.length).toEqual(fields.length + 1); // Extra one for Manage +;
     for (let i = 0; i < fields.length; i++) {
       // ensure derivedIcon has no header and every other field does
-      if (fields[i].name !== 'derivedIcon') {
+      if (fields[i].columnLabel) {
         expect(headerCells[i].textContent).toEqual(fields[i].columnLabel);
       } else {
         expect(headerCells[i].textContent).toEqual('');

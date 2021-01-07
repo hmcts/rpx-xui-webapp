@@ -23,6 +23,9 @@ export class TaskFieldComponent {
    */
   @Input() public task: Task;
 
+  @Input() public sourceColumn: string;
+  @Input() public matchValue: any;
+
   // This is here for the ngSwitch in the template so we don't have
   // hard-coded strings floating around the place.
   protected fieldType = TaskFieldType;
@@ -37,4 +40,6 @@ export class TaskFieldComponent {
     }
     return null;
   }
+
+
 }

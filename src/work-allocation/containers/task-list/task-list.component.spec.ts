@@ -12,7 +12,7 @@ import { TaskListComponent } from './task-list.component';
 
 @Component({
   template: `
-    <exui-task-list [fields]='fields' [tasks]='tasks' [taskServiceConfig]="taskServiceConfig" [sortedBy]="TaskSortField" [showAlert]="showAlert"></exui-task-list>`
+    <exui-task-list [fields]='fields' [tasks]='tasks' [taskServiceConfig]="taskServiceConfig" [sortedBy]="TaskSortField" ></exui-task-list>`
 })
 class WrapperComponent {
   @ViewChild(TaskListComponent) public appComponentRef: TaskListComponent;
@@ -20,7 +20,6 @@ class WrapperComponent {
   @Input() public tasks: Task[];
   @Input() public taskServiceConfig: TaskServiceConfig;
   @Input() public sortedBy: TaskSortField;
-  @Input() public showAlert: boolean;
 }
 
 /**
@@ -35,7 +34,6 @@ function getTasks(): Task[] {
       caseName: 'Kili Muso',
       caseCategory: 'Protection',
       location: 'Taylor House',
-      alert: true,
       taskName: 'Review respondent evidence',
       dueDate: new Date(628021800000),
       actions: [
@@ -55,7 +53,6 @@ function getTasks(): Task[] {
       caseName: 'Mankai Lit',
       caseCategory: 'Revocation',
       location: 'Taylor House',
-      alert: false,
       taskName: 'Review appellant case',
       dueDate: new Date(628021800000),
       actions: [
@@ -99,9 +96,9 @@ function getFields(): TaskFieldConfig[] {
       views: TaskView.TASK_LIST,
     },
     {
-      name: 'alert',
-      type: TaskFieldType.BOOLEAN,
-      columnLabel: '',
+      name: 'derivedIcon',
+      type: TaskFieldType.DERIVED_ICON,
+      columnLabel: null,
       views: TaskView.TASK_LIST,
     },
     {
@@ -162,7 +159,6 @@ describe('TaskListComponent', () => {
     wrapper.tasks = getTasks();
     wrapper.fields = getFields();
     wrapper.taskServiceConfig = getTaskService();
-    wrapper.showAlert = true;
     mockWorkAllocationService.getTask.and.returnValue(of({}));
     fixture.detectChanges();
   });
@@ -475,60 +471,4 @@ describe('TaskListComponent', () => {
     expect(component.getSelectedTask()).toBeNull();
   });
 
-  it('should show an alert icon for certain rows', () => {
-    // set relevant variables
-    const firstTask: Task = getTasks()[0];
-    const secondTask: Task = getTasks()[1];
-    const firstTaskId: string = firstTask.id;
-    const secondTaskId: string = secondTask.id;
-
-    // attempt to get both icons
-    let element = fixture.debugElement.nativeElement;
-    var firstIcon = element.querySelector(`#alert_${firstTaskId}`);
-    var secondIcon = element.querySelector(`#alert_${secondTaskId}`);
-
-    // as the first task has an alert condition, the icon should be visible
-    expect(firstIcon).not.toBe(null);
-
-    // as the second task does not have an alert condition, the icon should not be visible
-    expect(secondIcon).toBe(null);
-
-    firstTask.alert = false;
-    secondTask.alert = true;
-    wrapper.tasks = [firstTask,secondTask];
-    fixture.detectChanges();
-
-    // attempt to get both icons
-    var firstIcon = element.querySelector(`#alert_${firstTaskId}`);
-    var secondIcon = element.querySelector(`#alert_${secondTaskId}`);
-
-    // the above tasks' alert are reversed so the icon is ronly displayed on the secon row
-    expect(firstIcon).toBe(null);
-    expect(secondIcon).not.toBe(null);
-
-    firstTask.alert = true;
-    wrapper.tasks = [firstTask,secondTask];
-    fixture.detectChanges();
-
-    // attempt to get both icons
-    var firstIcon = element.querySelector(`#alert_${firstTaskId}`);
-    var secondIcon = element.querySelector(`#alert_${secondTaskId}`);
-    
-    // the icon should be displayed on both rows
-    expect(firstIcon).not.toBe(null);
-    expect(secondIcon).not.toBe(null);
-
-    // now need to be sure alert icons not shown when not needed
-    component.showAlert = false;
-    wrapper.showAlert = false;
-    fixture.detectChanges();
-
-    // attempt to get both icons
-    var firstIcon = element.querySelector(`#alert_${firstTaskId}`);
-    var secondIcon = element.querySelector(`#alert_${secondTaskId}`);
-
-    // the icon should not be shown on either row
-    expect(firstIcon).toBe(null);
-    expect(secondIcon).toBe(null);
-  });
 });

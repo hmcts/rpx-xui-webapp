@@ -4,7 +4,7 @@
     <div class="govuk-grid-column-full">
       <p>Reassign a task to a colleague.</p>
       <exui-task-list [taskServiceConfig]="taskServiceConfig" [tasks]="tasks" [fields]="fields" [sortedBy]="sortedBy"
-                      [showManage]="showManage" [showAlert]="false">
+                      [showManage]="showManage" >
       </exui-task-list>
       <h2 class="govuk-heading-m">Choose a colleague</h2>
       <exui-task-assignment (caseworkerChanged)="onCaseworkerChanged($event)"></exui-task-assignment>

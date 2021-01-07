@@ -56,6 +56,7 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
     return SortConstants.Session.TaskManager;
   }
 
+
   public ngOnInit(): void {
     super.ngOnInit();
     // Get the caseworkers and locations for this component.

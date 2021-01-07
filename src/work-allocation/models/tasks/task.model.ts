@@ -7,7 +7,6 @@ export default interface Task {
   caseName: string;
   caseCategory: string;
   location: string;
-  alert?: boolean;
   taskName: string;
   dueDate: Date;
   actions: TaskAction[];

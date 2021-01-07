@@ -82,11 +82,10 @@ describe('MyTasksComponent', () => {
     expect(headerCells).toBeDefined();
     expect(headerCells.length).toEqual(fields.length + 1); // Extra one for Manage +;
     for (let i = 0; i < fields.length; i++) {
-      if (fields[i].name!='alert') {
+      // ensure derivedIcon has no header and every other field does
+      if (fields[i].name !== 'derivedIcon') {
         expect(headerCells[i].textContent).toEqual(fields[i].columnLabel);
-      }
-      else {
-        // If field is Alert expect no text content in the header
+      } else {
         expect(headerCells[i].textContent).toEqual('');
       }
     }

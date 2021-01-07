@@ -2,17 +2,16 @@ import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
-import { TaskActionConstants } from './components/constants';
 import {
   AvailableTasksComponent,
   MyTasksComponent,
-  TaskActionContainerComponent,
   TaskAssignmentContainerComponent,
   TaskHomeComponent,
   TaskManagerComponent,
   TaskManagerListComponent,
   WorkAllocationHomeComponent,
 } from './containers';
+import { Assignment, InfoMessage } from './enums';
 import { WorkAllocationFeatureToggleGuard } from './guards';
 import { TaskResolver } from './resolvers';
 
@@ -34,16 +33,12 @@ export const ROUTES: Routes = [
           {
             path: 'list',
             component: MyTasksComponent,
-            data: {
-              title: 'HMCTS Manage Cases | My tasks', subTitle: 'My tasks'
-            }
+            data: { subTitle: 'My tasks' }
           },
           {
             path: 'available',
             component: AvailableTasksComponent,
-            data: {
-              title: 'HMCTS Manage Cases | Available tasks', subTitle: 'Available tasks'
-            }
+            data: { subTitle: 'Available tasks' }
           }
         ]
       },
@@ -52,7 +47,7 @@ export const ROUTES: Routes = [
         component: TaskManagerComponent,
         canActivate: [ HealthCheckGuard, WorkAllocationFeatureToggleGuard ],
         data: {
-          title: 'HMCTS Manage Cases | Task manager'
+          title: 'HMCTS Manage WorkAllocation | Task manager'
         },
         children: [
           {
@@ -62,36 +57,24 @@ export const ROUTES: Routes = [
         ]
       },
       {
-        path: ':taskId',
-        resolve: { task: TaskResolver },
+        path: ':taskId/reassign',
+        component: TaskAssignmentContainerComponent,
         canActivate: [ WorkAllocationFeatureToggleGuard ],
-        children: [
-          {
-            path: 'assign',
-            component: TaskAssignmentContainerComponent,
-            data: TaskActionConstants.Assign
-          },
-          {
-            path: 'reassign',
-            component: TaskAssignmentContainerComponent,
-            data: TaskActionConstants.Reassign
-          },
-          {
-            path: 'cancel',
-            component: TaskActionContainerComponent,
-            data: TaskActionConstants.Cancel
-          },
-          {
-            path: 'complete',
-            component: TaskActionContainerComponent,
-            data: TaskActionConstants.MarkAsDone
-          },
-          {
-            path: 'unclaim',
-            component: TaskActionContainerComponent,
-            data: TaskActionConstants.Unassign
-          }
-        ]
+        resolve: { task: TaskResolver },
+        data: {
+          verb: Assignment.Reassign,
+          successMessage: InfoMessage.REASSIGNED_TASK
+        }
+      },
+      {
+        path: ':taskId/assign',
+        component: TaskAssignmentContainerComponent,
+        canActivate: [ WorkAllocationFeatureToggleGuard ],
+        resolve: { task: TaskResolver },
+        data: {
+          verb: Assignment.Assign,
+          successMessage: InfoMessage.ASSIGNED_TASK
+        }
       }
     ]
   }

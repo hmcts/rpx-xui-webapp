@@ -124,10 +124,10 @@ export class TaskAssignmentContainerComponent implements OnInit {
   }
 
   private reportUnavailableErrorAndReturn(): void {
-    this.returnWithMessage(
-      { type: InfoMessageType.WARNING, message: InfoMessage.TASK_NO_LONGER_AVAILABLE },
-      { badRequest: true }
-    );
+    this.returnWithMessage({
+      type: InfoMessageType.WARNING,
+      message: InfoMessage.TASK_NO_LONGER_AVAILABLE,
+    }, { badRequest: true });
   }
 
   private returnWithMessage(message: InformationMessage, state: any): void {

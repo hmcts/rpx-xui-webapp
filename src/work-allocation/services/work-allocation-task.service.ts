@@ -24,11 +24,12 @@ export class WorkAllocationTaskService {
    * @param taskId specifies which task should be completed.
    */
   public completeTask(taskId: string): Observable<any> {
-    return this.performActionOnTask(taskId, ACTION.COMPLETE);
+    // Make a POST with an empty payload.
+    return this.http.post<any>(this.getActionUrl(taskId, ACTION.COMPLETE), {});
   }
 
   public cancelTask(taskId: string): Observable<any> {
-    return this.performActionOnTask(taskId, ACTION.CANCEL);
+    return this.http.post<any>(this.getActionUrl(taskId, ACTION.CANCEL), {});
   }
 
   /**
@@ -50,21 +51,16 @@ export class WorkAllocationTaskService {
   }
 
   public claimTask(taskId: string): Observable<any> {
-    return this.performActionOnTask(taskId, ACTION.CLAIM);
+    return this.http.post<any>(this.getActionUrl(taskId, ACTION.CLAIM), {});
   }
 
   public unclaimTask(taskId: string): Observable<any> {
-    return this.performActionOnTask(taskId, ACTION.UNCLAIM);
+    return this.http.post<any>(this.getActionUrl(taskId, ACTION.UNCLAIM), {});
   }
 
   public getTask(taskId: string): Observable<Task> {
     const url = `${BASE_URL}/${taskId}`;
     return this.http.get<Task>(url);
-  }
-
-  public performActionOnTask(taskId: string, action: ACTION): Observable<any> {
-    // Make a POST with an empty payload.
-    return this.http.post<any>(this.getActionUrl(taskId, action), {});
   }
 
   public getActionUrl(taskId: string, action: ACTION): string {

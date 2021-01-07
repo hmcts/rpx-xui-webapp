@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { ErrorMessage } from '../../../app/models';
 import { ConfigConstants } from '../../components/constants';
-import { InfoMessage, InfoMessageType, TaskActionType, TaskService, TaskSort } from '../../enums';
+import { Assignment, InfoMessage, InfoMessageType, TaskService, TaskSort } from '../../enums';
 import { InformationMessage } from '../../models/comms';
 import { Assignee, Caseworker, Location } from '../../models/dtos';
 import { TaskFieldConfig, TaskServiceConfig } from '../../models/tasks';
@@ -26,7 +26,7 @@ export class TaskAssignmentContainerComponent implements OnInit {
   public sortedBy: any;
   public showManage: boolean = false;
   public caseworker: Caseworker;
-  public verb: TaskActionType;
+  public verb: Assignment;
 
   private successMessage: InfoMessage;
   public excludedCaseworkers: Caseworker[];
@@ -74,7 +74,7 @@ export class TaskAssignmentContainerComponent implements OnInit {
     // Get the task from the route, which will have been put there by the resolver.
     const { task } = this.route.snapshot.data.task;
     this.tasks = [ task ];
-    this.verb = this.route.snapshot.data.verb as TaskActionType;
+    this.verb = this.route.snapshot.data.verb as Assignment;
     this.successMessage = this.route.snapshot.data.successMessage as InfoMessage;
     if (task.assignee) {
       const names: string[] = task.assignee.split(' ');
@@ -124,10 +124,10 @@ export class TaskAssignmentContainerComponent implements OnInit {
   }
 
   private reportUnavailableErrorAndReturn(): void {
-    this.returnWithMessage(
-      { type: InfoMessageType.WARNING, message: InfoMessage.TASK_NO_LONGER_AVAILABLE },
-      { badRequest: true }
-    );
+    this.returnWithMessage({
+      type: InfoMessageType.WARNING,
+      message: InfoMessage.TASK_NO_LONGER_AVAILABLE,
+    }, { badRequest: true });
   }
 
   private returnWithMessage(message: InformationMessage, state: any): void {

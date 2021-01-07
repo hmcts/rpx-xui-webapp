@@ -1,5 +1,4 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { Location } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -33,7 +32,6 @@ describe('TaskManagerListComponent', () => {
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
 
-  let location: jasmine.SpyObj<Location>;
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
   const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
   const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
@@ -43,8 +41,6 @@ describe('TaskManagerListComponent', () => {
   const caseworkerDiplayName: CaseworkerDisplayName = new CaseworkerDisplayName();
 
   beforeEach(() => {
-    location = jasmine.createSpyObj('Location', ['path']);
-    location.path.and.returnValue('');
     TestBed.configureTestingModule({
       imports: [
         CdkTableModule,
@@ -55,7 +51,6 @@ describe('TaskManagerListComponent', () => {
       declarations: [ TaskManagerListComponent, WrapperComponent, TaskListComponent ],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
-        { provide: Location, useValue: location },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
         { provide: CaseworkerDataService, useValue: mockCaseworkerService },
         { provide: LocationDataService, useValue: mockLocationService }
@@ -77,8 +72,9 @@ describe('TaskManagerListComponent', () => {
   });
 
   it('should make a call to load tasks using the default search request', () => {
-    const defaultSearchRequest = component.getSearchTaskRequest();
-    expect(mockTaskService.searchTask).toHaveBeenCalledWith(defaultSearchRequest);
+    const searchRequest = component.getSearchTaskRequest();
+    const payload = { searchRequest, view: component.view };
+    expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
     expect(component.tasks).toBeDefined();
     expect(component.tasks.length).toEqual(2);
   });
@@ -113,7 +109,8 @@ describe('TaskManagerListComponent', () => {
     expect(searchRequest.search_parameters[2].values.length).toEqual(mockCaseworkers.length);
 
     // Let's also make sure that the tasks were re-requested with the new sorting.
-    expect(mockTaskService.searchTask).toHaveBeenCalledWith(searchRequest);
+    const payload = { searchRequest, view: component.view };
+    expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
 
     // Do it all over again to make sure it reverses the order.
     button.dispatchEvent(new Event('click'));
@@ -130,7 +127,8 @@ describe('TaskManagerListComponent', () => {
     expect(newSearchRequest.search_parameters[2].values.length).toEqual(mockCaseworkers.length);
 
     // Let's also make sure that the tasks were re-requested with the new sorting.
-    expect(mockTaskService.searchTask).toHaveBeenCalledWith(newSearchRequest);
+    const newPayload = { searchRequest: newSearchRequest, view: component.view };
+    expect(mockTaskService.searchTask).toHaveBeenCalledWith(newPayload);
   });
 
   it('should handle selecting a location on the filter', async () => {
@@ -151,7 +149,8 @@ describe('TaskManagerListComponent', () => {
     expect(searchRequest.search_parameters[2].values.length).toEqual(mockCaseworkers.length);
 
     // Let's also make sure that the tasks were re-requested with the new sorting.
-    expect(mockTaskService.searchTask).toHaveBeenCalledWith(searchRequest);
+    const payload = { searchRequest, view: component.view };
+    expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
   });
 
   it('should handle selecting a caseworker on the filter', async () => {
@@ -173,7 +172,8 @@ describe('TaskManagerListComponent', () => {
     expect(searchRequest.search_parameters[2].values).toContain(caseworkerName);
 
     // Let's also make sure that the tasks were re-requested with the new sorting.
-    expect(mockTaskService.searchTask).toHaveBeenCalledWith(searchRequest);
+    const payload = { searchRequest, view: component.view };
+    expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
   });
 
   it('should handle selecting unassigned on the caseworkers filter', async () => {
@@ -193,7 +193,8 @@ describe('TaskManagerListComponent', () => {
     expect(searchRequest.search_parameters[2].values.length).toEqual(0);
 
     // Let's also make sure that the tasks were re-requested with the new sorting.
-    expect(mockTaskService.searchTask).toHaveBeenCalledWith(searchRequest);
+    const payload = { searchRequest, view: component.view };
+    expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
   });
 
   it('should not show the footer when there are tasks', () => {

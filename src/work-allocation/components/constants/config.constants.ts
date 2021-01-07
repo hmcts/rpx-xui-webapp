@@ -66,9 +66,17 @@ const MY_TASKS: TaskFieldConfig[] = [
 const TASK_MANAGER: TaskFieldConfig[] = [
   CASE_REFERENCE_AS_LINK, CASE_NAME, CASE_CATEGORY, LOCATION, TASK_NAME, DUE_DATE, ASSIGNEE
 ];
+const TASK_ACTIONS: TaskFieldConfig[] = [
+  ...MY_TASKS
+];
+const TASK_ACTIONS_WITH_ASSIGNEE: TaskFieldConfig[] = [
+  ...TASK_MANAGER
+];
 
 export const CONFIG_CONSTANTS = {
   AvailableTasks: AVAILABLE_TASKS,
   MyTasks: MY_TASKS,
+  TaskActions: TASK_ACTIONS,
+  TaskActionsWithAssignee: TASK_ACTIONS_WITH_ASSIGNEE,
   TaskManager: TASK_MANAGER
 };

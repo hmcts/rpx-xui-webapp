@@ -1,5 +1,6 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
@@ -75,26 +76,18 @@ describe('WorkAllocation', () => {
     const getSelect = (id: string): HTMLSelectElement => {
       return fixture.debugElement.nativeElement.querySelector(id);
     };
+    const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
-    beforeEach(async(() => {
+    beforeEach(() => {
       TestBed.configureTestingModule({
         declarations: [ WrapperComponent ],
         imports: [ WorkAllocationComponentsModule ],
         providers: [
-          {
-            provide: LocationDataService,
-            useClass: MockLocationDataService
-          },
-          {
-            provide: CaseworkerDataService,
-            useClass: MockCaseworkerDataService
-          }
+          { provide: Router, useValue: mockRouter },
+          { provide: LocationDataService, useClass: MockLocationDataService },
+          { provide: CaseworkerDataService, useClass: MockCaseworkerDataService }
         ]
-      })
-      .compileComponents();
-    }));
-
-    beforeEach(() => {
+      }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
       component = wrapper.ref;
@@ -145,7 +138,7 @@ describe('WorkAllocation', () => {
       expect(select.options[4].textContent).toEqual('Noah Body - n.b@cw.gov.uk');
 
       // Now exclude Jane Doe and Noah Body.
-      component.excludeCaseworkers = [ JD, NB ];
+      wrapper.excludeCaseworkers = [ JD, NB ];
       fixture.detectChanges();
       expect(component.caseworkers.length).toBe(2); // Shouldn't include excluded.
       select = getSelect('#task_assignment_caseworker');
@@ -155,7 +148,7 @@ describe('WorkAllocation', () => {
       expect(select.options[2].textContent).toEqual('Joseph Bloggs - j.b@cw.gov.uk');
 
       // Now change it so only John Smith is excluded.
-      component.excludeCaseworkers = [ JS ];
+      wrapper.excludeCaseworkers = [ JS ];
       fixture.detectChanges();
       expect(component.caseworkers.length).toBe(3); // Shouldn't include excluded.
       select = getSelect('#task_assignment_caseworker');

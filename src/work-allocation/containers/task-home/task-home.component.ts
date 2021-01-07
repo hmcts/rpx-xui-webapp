@@ -3,9 +3,7 @@ import { ActivatedRouteSnapshot, NavigationEnd, Router, RoutesRecognized } from 
 import { SubNavigation } from '@hmcts/rpx-xui-common-lib';
 
 import { AppUtils } from '../../../app/app-utils';
-import { InformationMessage } from '../../models/comms';
 import { TaskSortField } from '../../models/tasks';
-import { InfoMessageCommService } from '../../services';
 
 @Component({
   selector: 'exui-task-home',
@@ -29,14 +27,7 @@ export class TaskHomeComponent implements OnInit {
   public sortedBy: TaskSortField;
   public pageTitle: string;
 
-  public showInfoMessage: boolean = false;
-
-  public infoMessages: InformationMessage[];
-
-  constructor(
-    private readonly router: Router,
-    private readonly infoMessageCommService: InfoMessageCommService
-  ) {}
+  constructor(private readonly router: Router) {}
 
   public ngOnInit(): void {
     this.router.events.subscribe(event => {
@@ -54,17 +45,6 @@ export class TaskHomeComponent implements OnInit {
 
     // Set up the page data.
     this.setupPageData(this.router.routerState.root.snapshot);
-
-    this.subscribeToInfoMessageCommService();
-  }
-
-  public subscribeToInfoMessageCommService(): void {
-
-    this.infoMessageCommService.infoMessageChangeEmitted$.subscribe(messages => {
-
-      this.infoMessages = messages;
-      this.showInfoMessage = true;
-    });
   }
 
   /**
@@ -74,7 +54,7 @@ export class TaskHomeComponent implements OnInit {
   public setupActiveSubNavigationItem(activeUrl: string): void {
     if (this.subNavigationItems) {
       for (const item of this.subNavigationItems) {
-        item.active = item.href === activeUrl;
+        item.active = this.isActiveUrl(item.href, activeUrl);
       }
     }
   }
@@ -86,7 +66,12 @@ export class TaskHomeComponent implements OnInit {
   public setupPageData(activatedRoute: ActivatedRouteSnapshot): void {
     const data = AppUtils.getRouteData(activatedRoute);
     this.pageTitle = data ? data.subTitle : 'Task list';
+  }
 
-    this.infoMessageCommService.removeAllMessages();
+  public isActiveUrl(url: string, currentUrl: string): boolean {
+    if (url && currentUrl) {
+      return currentUrl.indexOf(url) === 0;
+    }
+    return false;
   }
 }

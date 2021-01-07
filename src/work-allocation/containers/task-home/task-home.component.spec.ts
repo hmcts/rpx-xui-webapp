@@ -1,12 +1,13 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 
-import { WorkAllocationComponentsModule } from './../../components/work-allocation.components.module';
-import { WorkAllocationTaskService } from './../../services/work-allocation-task.service';
+import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
+import { InfoMessageContainerComponent } from '../../containers/info-message-container/info-message-container.component';
+import { WorkAllocationTaskService } from '../../services';
 import { TaskHomeComponent } from './task-home.component';
 
 @Component({
@@ -23,7 +24,7 @@ describe('TaskHomeComponent', () => {
   let router: Router;
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         CdkTableModule,
@@ -31,16 +32,11 @@ describe('TaskHomeComponent', () => {
         RouterTestingModule,
         WorkAllocationComponentsModule
       ],
-      declarations: [TaskHomeComponent, WrapperComponent],
+      declarations: [TaskHomeComponent, WrapperComponent, InfoMessageContainerComponent],
       providers: [
-        { provide: WorkAllocationTaskService, useValue: mockTaskService },
-        { provide: Location, useValue: location }
+        { provide: WorkAllocationTaskService, useValue: mockTaskService }
       ]
-    })
-      .compileComponents();
-  }));
-
-  beforeEach(() => {
+    }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;

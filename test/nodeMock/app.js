@@ -2,7 +2,7 @@
 
 const express = require('express');
 var bodyParser = require('body-parser');
-
+const minimist = require('minimist');
 let { requestMapping,configurations} = require('./reqResMapping');
 const { browser } = require('protractor');
 const CCDCaseConfig = require('./ccd/ccdCaseConfig/caseCreateConfigGenerator')
@@ -56,8 +56,6 @@ class MockApp{
         }else{
             console.log("Mock server is null or undefined");
         }
-        this.conf = {  };
-        this.configurations = { };
     }
 
    
@@ -84,13 +82,17 @@ class MockApp{
 
 }
 
+
 const mockInstance = new MockApp();
 module.exports = mockInstance;
 
+const args = minimist(process.argv);
+if (args.standalone){
+    mockInstance.init();
+    // createCustomCCDCaseConfig();
+    mockInstance.startServer();
+}
 
-// mockInstance.init();
-// createCustomCCDCaseConfig();
-// mockInstance.startServer();
 
 
 

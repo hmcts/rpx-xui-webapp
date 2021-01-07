@@ -46,8 +46,8 @@ export class WorkAllocationTaskService {
     return this.http.post<any>(`${BASE_URL}`, task);
   }
 
-  public searchTask(searchRequest: SearchTaskRequest): Observable<any> {
-    return this.http.post<any>(`${BASE_URL}`, searchRequest);
+  public searchTask(body: { searchRequest: SearchTaskRequest, view: string }): Observable<any> {
+    return this.http.post<any>(`${BASE_URL}`, body);
   }
 
   public claimTask(taskId: string): Observable<any> {

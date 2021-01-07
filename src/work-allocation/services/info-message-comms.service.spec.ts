@@ -90,7 +90,7 @@ describe('WorkAllocation: InfoMessageCommService', () => {
 
       const refreshMessage: InformationMessage = {
         type: InfoMessageType.INFO,
-        message: InfoMessage.LIST_OF_AVAILABLE_TASKS_REFRESHED,
+        message: InfoMessage.LIST_OF_TASKS_REFRESHED,
       };
 
       service.addMessage(warningMessage);

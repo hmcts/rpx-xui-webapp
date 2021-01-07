@@ -1,77 +1,59 @@
-import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { TaskFieldType, TaskService, TaskSort, TaskView } from '../../enums';
-import { Assignee, Caseworker } from '../../models/dtos';
+import { ErrorMessage } from '../../../app/models';
+import { ConfigConstants } from '../../components/constants';
+import { InfoMessage, InfoMessageType, TaskService, TaskSort } from '../../enums';
+import { InformationMessage } from '../../models/comms';
+import { Assignee, Caseworker, Location } from '../../models/dtos';
 import { TaskFieldConfig, TaskServiceConfig } from '../../models/tasks';
-import { WorkAllocationTaskService } from '../../services';
+import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
+import { handleFatalErrors } from '../../utils';
 
+export const NAME_ERROR: ErrorMessage = {
+  title: 'There is a problem',
+  description: 'You must select a name',
+  fieldId: 'task_assignment_caseworker'
+};
 @Component({
   selector: 'exui-task-container-assignment',
   templateUrl: 'task-assignment-container.component.html',
   styleUrls: ['task-assignment-container.component.scss']
 })
 export class TaskAssignmentContainerComponent implements OnInit {
+  public error: ErrorMessage = null;
   public tasks: any [];
   public sortedBy: any;
   public showManage: boolean = false;
   public caseworker: Caseworker;
+  public excludedCaseworkers: Caseworker[];
+  public location: Location;
 
   constructor(
     private readonly taskService: WorkAllocationTaskService,
     private readonly route: ActivatedRoute,
-    private readonly location: Location,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly messageService: InfoMessageCommService
   ) {}
 
-  /**
-   * Mock TaskFieldConfig[]
-   *
-   * Fields is the property of the TaskFieldConfig[], containing the configuration
-   * for the fields as returned by the API.
-   *
-   * The sorting will handled by this component, via the
-   * WP api as this component.
-   */
-  public fields: TaskFieldConfig[] = [
-    {
-      name: 'caseReference',
-      type: TaskFieldType.CASE_REFERENCE,
-      columnLabel: 'Case reference',
-      views: TaskView.TASK_LIST,
-    },
-    {
-      name: 'caseName',
-      type: TaskFieldType.STRING,
-      columnLabel: 'Case name',
-      views: TaskView.TASK_LIST,
-    },
-    {
-      name: 'caseCategory',
-      type: TaskFieldType.STRING,
-      columnLabel: 'Case category',
-      views: TaskView.TASK_LIST,
-    },
-    {
-      name: 'location',
-      type: TaskFieldType.STRING,
-      columnLabel: 'Location',
-      views: TaskView.TASK_LIST,
-    },
-    {
-      name: 'taskName',
-      type: TaskFieldType.STRING,
-      columnLabel: 'Task',
-      views: TaskView.TASK_LIST,
-    },
-    {
-      name: 'dueDate',
-      type: TaskFieldType.DATE_DUE,
-      columnLabel: 'Date',
-      views: TaskView.TASK_LIST,
+  public get fields(): TaskFieldConfig[] {
+    return this.showAssigneeColumn ? ConfigConstants.TaskActionsWithAssignee : ConfigConstants.TaskActions;
+  }
+
+  private get returnUrl(): string {
+    let url;
+    if (window && window.history && window.history.state) {
+      url = window.history.state.returnUrl;
     }
-  ];
+    return url || '/tasks/list';
+  }
+
+  private get showAssigneeColumn(): boolean {
+    if (window && window.history && window.history.state) {
+      return !!window.history.state.showAssigneeColumn;
+    }
+    return false;
+  }
 
   public taskServiceConfig: TaskServiceConfig = {
     service: TaskService.IAC,
@@ -79,7 +61,6 @@ export class TaskAssignmentContainerComponent implements OnInit {
     defaultSortFieldName: 'dueDate',
     fields: this.fields,
   };
-  public manageLink = '';
   public ngOnInit(): void {
     // Set up the default sorting.
     this.sortedBy = {
@@ -89,29 +70,64 @@ export class TaskAssignmentContainerComponent implements OnInit {
 
     // Get the task from the route, which will have been put there by the resolver.
     const { task } = this.route.snapshot.data.task;
-    this.manageLink = `manage_${task.id}`;
     this.tasks = [ task ];
+    if (task.assignee) {
+      const names: string[] = task.assignee.split(' ');
+      const firstName = names.shift();
+      const lastName = names.join(' ');
+      this.excludedCaseworkers = [ { firstName, lastName } as Caseworker ];
+    }
+    if (task.location) {
+      this.location = { locationName: task.location } as Location;
+    }
   }
 
-  public reAssign(): void {
-    this.router.navigate(['/tasks'], {fragment: this.manageLink});
+  public reassign(): void {
     if (!this.caseworker) {
-      console.error('No caseworker selected. This is part of the unhappy path that is not yet done.');
+      this.error = NAME_ERROR;
       return;
     }
+    this.error = null;
     const assignee: Assignee = {
       id: this.caseworker.idamId,
       userName: `${this.caseworker.firstName} ${this.caseworker.lastName}`
     };
     this.taskService.assignTask(this.tasks[0].id, assignee).subscribe(() => {
-      console.log('assignment was successful');
-      this.location.back();
+      this.reportSuccessAndReturn();
     }, error => {
-      console.error('There was an error when attempting to assign', error);
+      const handledStatus = handleFatalErrors(error.status, this.router);
+      if (handledStatus > 0) {
+        this.reportUnavailableErrorAndReturn();
+      }
     });
+  }
+
+  public cancel(): void {
+    this.returnWithMessage(null, {});
   }
 
   public onCaseworkerChanged(caseworker: Caseworker): void {
     this.caseworker = caseworker;
+  }
+
+  private reportSuccessAndReturn(): void {
+    this.returnWithMessage({
+      type: InfoMessageType.SUCCESS,
+      message: InfoMessage.ASSIGNED_TASK,
+    }, { badRequest: false });
+  }
+
+  private reportUnavailableErrorAndReturn(): void {
+    this.returnWithMessage({
+      type: InfoMessageType.WARNING,
+      message: InfoMessage.TASK_NO_LONGER_AVAILABLE,
+    }, { badRequest: true });
+  }
+
+  private returnWithMessage(message: InformationMessage, state: any): void {
+    if (message) {
+      this.messageService.nextMessage(message);
+    }
+    this.router.navigateByUrl(this.returnUrl, { state: { ...state, retainMessages: true } });
   }
 }

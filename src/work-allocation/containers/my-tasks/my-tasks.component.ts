@@ -32,10 +32,6 @@ export class MyTasksComponent extends TaskListWrapperComponent {
     return ConfigConstants.MyTasks;
   }
 
-  // placeholder for derivedIcon values for myTasks until correct assignment/location given
-  public sourceColumn: string = 'location';
-  public matchValue: any = 'Taylor House';
-
   public getSearchTaskRequest(): SearchTaskRequest {
     return {
       search_parameters: [

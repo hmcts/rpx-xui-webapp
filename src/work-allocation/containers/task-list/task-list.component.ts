@@ -23,8 +23,6 @@ export class TaskListComponent implements OnChanges {
   @Input() public taskServiceConfig: TaskServiceConfig;
   @Input() public sortedBy: TaskSortField;
   @Input() public showManage: boolean = true;
-  @Input() public sourceColumn: string;
-  @Input() public matchValue: any;
 
   /**
    * The message to display when there are no tasks to display in the list.

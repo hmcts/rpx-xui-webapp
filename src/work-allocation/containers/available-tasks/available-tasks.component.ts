@@ -23,10 +23,6 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
     return SortConstants.Session.AvailableTasks;
   }
 
-  // placeholder for derivedIcon values for myTasks until correct assignment/location given
-  public sourceColumn: string = 'location';
-  public matchValue: any = 'Taylor House';
-
   /**
    * Override the default.
    */

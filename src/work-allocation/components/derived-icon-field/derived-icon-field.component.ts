@@ -22,5 +22,11 @@ export class DerivedIconFieldComponent {
    */
   @Input() public matchValue: any;
 
-
+  public get showIcon(): boolean {
+    if (this.task && this.sourceColumn && this.task[this.sourceColumn]===this.matchValue) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

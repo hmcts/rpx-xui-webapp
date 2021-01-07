@@ -1,6 +1,6 @@
 import { TaskFieldType, TaskView } from '../../enums';
 import { TaskFieldConfig } from '../../models/tasks';
-import { DERIVED_ICON_CONSTANTS as DIC } from './derived-icon.constants';
+import { DERIVED_ICON_CONSTANTS} from './derived-icon.constants';
 
 /**
  * The individual fields.
@@ -41,8 +41,8 @@ const DERIVED_ICON: TaskFieldConfig = {
   columnLabel: null,
   views: TaskView.ALL_VIEWS,
   // sourcColumn and matchValue values currently defined in DIC file
-  sourceColumn: DIC.SOURCE_COLUMN,
-  matchValue: DIC.MATCH_VALUE
+  sourceColumn: DERIVED_ICON_CONSTANTS.SOURCE_COLUMN,
+  matchValue: DERIVED_ICON_CONSTANTS.MATCH_VALUE
 };
 const TASK_NAME: TaskFieldConfig = {
   name: 'taskName',

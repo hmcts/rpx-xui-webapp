@@ -17,7 +17,7 @@ const CCDWorkbasketConfig = require('../../nodeMock/ccd/ccdCaseConfig/workBasket
 
 const headerPage = require('../../e2e/features/pageObjects/headerPage');
 
-describe('Header  Tabs', function () {
+describe('Workbasket and Case list', function () {
 
     function getWorkBasketConfig(){
         const workBasketConfig = new CCDWorkbasketConfig();

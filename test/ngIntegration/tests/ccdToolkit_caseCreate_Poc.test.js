@@ -17,7 +17,7 @@ const CCDCaseConfig = require('../../nodeMock/ccd/ccdCaseConfig/caseCreateConfig
 
 const headerPage = require('../../e2e/features/pageObjects/headerPage');
 
-describe('Header  Tabs', function () {
+describe('Case Create pages', function () {
 
     function getTestJurisdiction(scenario){
         const job = {
@@ -93,7 +93,7 @@ describe('Header  Tabs', function () {
 
     it('Should be able to see the test jurisdiction create case page', async () => {
         MockApp.onGet('/data/internal/case-types/:jurisdiction/event-triggers/:caseType', (req, res) => {
-            caseConfig = getTestJurisdiction(scenario);
+            caseConfig = getTestJurisdiction();
             res.send(caseConfig);
         });
         await MockApp.startServer();
@@ -107,7 +107,7 @@ describe('Header  Tabs', function () {
 
     it('Cancel button should return the case list page', async () => {
         MockApp.onGet('/data/internal/case-types/:jurisdiction/event-triggers/:caseType', (req, res) => {
-            caseConfig = getTestJurisdiction(scenario);
+            caseConfig = getTestJurisdiction();
             res.send(caseConfig);
         });
         await MockApp.startServer();
@@ -126,7 +126,7 @@ describe('Header  Tabs', function () {
     [1,2].forEach(pageNum => {
         it(`Validate the existence of page ${pageNum} create case form page fields against the API response`, async () => {
             MockApp.onGet('/data/internal/case-types/:jurisdiction/event-triggers/:caseType', (req, res) => {
-                caseConfig = getTestJurisdiction(scenario);
+                caseConfig = getTestJurisdiction();
                 res.send(caseConfig);
             });
             await MockApp.startServer();

@@ -18,7 +18,7 @@ const MANKAI_LIT = {
   caseReference: '2345 6789 0123 4567',
   caseName: 'Mankai Lit',
   caseCategory: 'Revocation',
-  location: 'Dodgy Location',
+  location: 'Taylor House',
   taskName: 'Review appellant case',
   dueDate: new Date(1604506789000),
   actions: [ ACTIONS.RELEASE ],

@@ -2,8 +2,9 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild }
 import { Router } from '@angular/router';
 import { CheckboxListComponent } from '@hmcts/rpx-xui-common-lib';
 
+import { SessionStorageService } from '../../../app/services';
 import { Location } from '../../models/dtos';
-import { LocationDataService, SessionStorageService } from '../../services';
+import { LocationDataService } from '../../services';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 import { FilterConstants } from '../constants';
 

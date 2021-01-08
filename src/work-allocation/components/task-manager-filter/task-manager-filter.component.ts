@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 
+import { SessionStorageService } from '../../../app/services';
 import { Caseworker, Location } from '../../models/dtos';
-import { SessionStorageService } from '../../services';
 import { FilterConstants } from '../constants';
 
 @Component({

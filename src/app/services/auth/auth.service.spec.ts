@@ -3,7 +3,7 @@ import { inject, TestBed } from '@angular/core/testing';
 import { StoreModule } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
-import { SessionStorageService } from './../session-storage/session-storage.service';
+import { SessionStorageService } from '../session-storage/session-storage.service';
 import { AuthService } from './auth.service';
 
 describe('AuthService', () => {
@@ -21,7 +21,7 @@ describe('AuthService', () => {
     });
   });
 
-  it('should be created', inject([AuthService],(service: AuthService) => {
+  it('should be created', inject([AuthService], (service: AuthService) => {
     expect(service).toBeTruthy();
   }));
 
@@ -36,8 +36,8 @@ describe('AuthService', () => {
         const req = httpMock.expectOne('/auth/isAuthenticated');
         expect(req.request.method).toEqual('GET');
         req.flush('false');
-      })
-    );
+      }
+    ));
   });
 
   describe('logOut', () => {

@@ -134,7 +134,6 @@ describe('WorkAllocation', () => {
       let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('.due-date');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe('TODAY');
-      expect(element.getAttribute('aria-label')).toBe('Due today');
 
       // Change the value of task.dueDate.
       task.dueDate = new Date(task.dueDate.getTime() - 86400000); // Yesterday.
@@ -142,7 +141,6 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('.due-date');
       expect(element.textContent.trim()).toBe('+1 day');
-      expect(element.getAttribute('aria-label')).toBe('Overdue by 1 day');
 
       // Clear out the value of task.dueDate and we should no longer have the control.
       task.dueDate = undefined;
@@ -155,7 +153,6 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('.due-date');
       expect(element.textContent.trim()).toBe('+1 day');
-      expect(element.getAttribute('aria-label')).toBe('Overdue by 1 day');
 
       // Set the value of task.dueDate to be null.
       task.dueDate = null;

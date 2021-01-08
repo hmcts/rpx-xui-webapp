@@ -93,11 +93,11 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
       // constant below removes spaces from caseReference to get caseId
       const caseId = task.caseReference.replace(/\s/g, "");
       // navigates to case details page for specific case id
-      this.router.navigate([`/cases/case-details/${caseId}` ]).then(() => {
-        this.alertService.setPreserveAlerts(true);
-        this.alertService.success("Hello");
-        console.log('test');
-      });;
+      this.router.navigate([`/cases/case-details/${caseId}`], {
+        state: {
+          showMessage: true, 
+          messageText: 'please type your message Text'}
+        });
     }, error => {
 
       this.claimTaskErrors(error.status);

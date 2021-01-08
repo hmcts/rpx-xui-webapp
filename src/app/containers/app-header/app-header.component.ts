@@ -52,7 +52,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   public userRoles: string[];
   public featureToggleKey: string;
   public serviceMessageCookie: string;
-  
+
   private serialisedUserRoles: string;
   private subscription: Subscription;
 

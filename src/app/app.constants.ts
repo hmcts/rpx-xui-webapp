@@ -205,6 +205,8 @@ const appHeaderTitle = {name: 'Manage Cases', url: '/'};
 // Making the base URL for case details a constant.
 const caseDetailsUrl: string = '/cases/case-details/';
 
+const serviceMessagesFeatureToggleKey: string = 'mc-service-messages';
+const serviceMessageCookie = 'service_messages';
 
 export class AppConstants {
   static FOOTER_DATA = null;
@@ -218,4 +220,6 @@ export class AppConstants {
   static SIGNED_OUT_THEME = signedOutTheme;
   static FEATURE_NAMES = FeatureNames;
   static CASE_DETAILS_URL = caseDetailsUrl;
+  static SERVICE_MESSAGES_FEATURE_TOGGLE_KEY = serviceMessagesFeatureToggleKey;
+  static SERVICE_MESSAGE_COOKIE = serviceMessageCookie;
 }

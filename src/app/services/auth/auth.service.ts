@@ -22,10 +22,12 @@ export class AuthService {
 
   public signOut() {
     const href = '/auth/logout';
+    this.clearSessionStorage();
     this.setWindowLocationHref(href);
   }
 
   public logOut(): Observable<any> {
+    this.clearSessionStorage();
     return this.httpService.get('/auth/logout?noredirect=true');
   }
 
@@ -37,5 +39,9 @@ export class AuthService {
 
   public setWindowLocationHref(href: string) {
     window.location.href = href;
+  }
+
+  private clearSessionStorage() {
+    window.sessionStorage.clear();
   }
 }

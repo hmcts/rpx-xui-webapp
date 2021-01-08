@@ -49,7 +49,11 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   public logoType: string;
   public logoIsUsed: boolean = false;
   public showNavItems: Observable<boolean>;
-
+  public userRoles: string[];
+  public featureToggleKey: string;
+  public serviceMessageCookie: string;
+  
+  private serialisedUserRoles: string;
   private subscription: Subscription;
 
   constructor(private store: Store<fromActions.State>,
@@ -153,6 +157,10 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    * We then setup the Application Header accordingly.
    */
   public ngOnInit(): void {
+    this.serialisedUserRoles = this.getSerialisedUserRolesFromCookie();
+    this.userRoles = this.deserialiseUserRoles(this.serialisedUserRoles);
+    this.featureToggleKey = AppConstants.SERVICE_MESSAGES_FEATURE_TOGGLE_KEY;
+    this.serviceMessageCookie = AppConstants.SERVICE_MESSAGE_COOKIE;
 
     this.featureToggleService.getValue<Theme[]>('mc-application-themes', this.getDefaultApplicationThemes())
       .subscribe(applicationThemes => {
@@ -167,13 +175,12 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
   public getApplicationThemeForUser(applicationThemes: Theme[]): Theme {
 
-    const serialisedUserRoles: string = this.getSerialisedUserRolesFromCookie();
     const defaultTheme = this.getDefaultTheme();
 
-    if (serialisedUserRoles) {
+    if (this.serialisedUserRoles) {
       try {
-          const userRoles: string[] = this.deserialiseUserRoles(serialisedUserRoles);
-          return this.getUsersTheme(userRoles, applicationThemes, defaultTheme);
+          const userRolesDeserialised: string[] = this.deserialiseUserRoles(this.serialisedUserRoles);
+          return this.getUsersTheme(userRolesDeserialised, applicationThemes, defaultTheme);
       } catch (error) {
         this.loggerService.error(error);
       }

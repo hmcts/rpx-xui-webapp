@@ -1,8 +1,16 @@
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
-import { inject, TestBed } from '@angular/core/testing';
-import { StoreModule } from '@ngrx/store';
-import {Observable} from 'rxjs';
 import { AuthService } from './auth.service';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { inject, TestBed } from '@angular/core/testing';
+import { Observable } from 'rxjs';
+import { StoreModule } from '@ngrx/store';
+
+let sessionStorageSpy: jasmine.Spy;
+let store = {};
+const sessionStorageMock = {
+  clear: () => {
+    store = {};
+  },
+}
 
 describe('AuthService', () => {
 
@@ -16,6 +24,7 @@ describe('AuthService', () => {
         AuthService,
       ]
     });
+    sessionStorageSpy = spyOn(window.sessionStorage, 'clear').and.callFake(sessionStorageMock.clear);
   });
 
   it('should be created', inject([AuthService], (service: AuthService) => {
@@ -24,7 +33,7 @@ describe('AuthService', () => {
 
   describe('isAuthenticated', () => {
     it('should make a call to check authentication', inject([HttpTestingController, AuthService], (httpMock: HttpTestingController, service: AuthService) => {
-      service.isAuthenticated().subscribe( response => {
+      service.isAuthenticated().subscribe(response => {
         expect(JSON.parse(String(response))).toBeFalsy();
       });
 
@@ -37,7 +46,7 @@ describe('AuthService', () => {
 
   describe('logOut', () => {
     it('should make a call to logOut', inject([HttpTestingController, AuthService], (httpMock: HttpTestingController, service: AuthService) => {
-      service.logOut().subscribe( response => {
+      service.logOut().subscribe(response => {
         expect(response).toBeNull();
       });
 
@@ -46,6 +55,18 @@ describe('AuthService', () => {
       req.flush(null);
     }));
 
+    it('should clear the sessionStorage', inject([AuthService], async (service: AuthService) => {
+      service.logOut().subscribe(() => {
+        expect(sessionStorageSpy).toHaveBeenCalledTimes(1);
+      });
+    }));
+  });
+
+  describe('signout', () => {
+    it('should clear the session storage', inject([AuthService], (service: AuthService) => {
+      service.signOut();
+      expect(sessionStorageSpy).toHaveBeenCalledTimes(1);
+    }));
   });
 
   describe('logOutAndRedirect', () => {

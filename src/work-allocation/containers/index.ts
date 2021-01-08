@@ -1,4 +1,5 @@
 import { AvailableTasksComponent } from './available-tasks/available-tasks.component';
+import { InfoMessageContainerComponent } from './info-message-container/info-message-container.component';
 import { MyTasksComponent } from './my-tasks/my-tasks.component';
 import { TaskAssignmentContainerComponent } from './task-assignment/task-assignment-container.component';
 import { TaskHomeComponent } from './task-home/task-home.component';
@@ -9,12 +10,13 @@ import { TaskManagerComponent } from './task-manager/task-manager.component';
 import { WorkAllocationHomeComponent } from './work-allocation-home/work-allocation-home.component';
 
 export const containers: any[] = [
-  AvailableTasksComponent, MyTasksComponent, TaskAssignmentContainerComponent,
-  TaskHomeComponent, TaskListComponent, TaskListWrapperComponent, TaskManagerComponent,
-  TaskManagerListComponent, WorkAllocationHomeComponent
+  AvailableTasksComponent, InfoMessageContainerComponent, MyTasksComponent,
+  TaskAssignmentContainerComponent, TaskHomeComponent, TaskListComponent,
+  TaskListWrapperComponent, TaskManagerComponent, TaskManagerListComponent, WorkAllocationHomeComponent
 ];
 
 export * from './available-tasks/available-tasks.component';
+export * from './info-message-container/info-message-container.component';
 export * from './my-tasks/my-tasks.component';
 export * from './task-assignment/task-assignment-container.component';
 export * from './task-home/task-home.component';

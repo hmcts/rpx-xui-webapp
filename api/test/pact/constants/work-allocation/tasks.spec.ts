@@ -1,4 +1,3 @@
-import { ACTIONS } from './actions.spec';
 import { CASEWORKERS, toAssignee } from './caseworkers.spec';
 
 const KILI_MUSO = {
@@ -9,7 +8,6 @@ const KILI_MUSO = {
   location: 'Taylor House',
   taskName: 'Apply for probate',
   dueDate: new Date(1604938789000),
-  actions: [ ACTIONS.REASSIGN, ACTIONS.RELEASE ],
   assignee: toAssignee(CASEWORKERS.JOHN_SMITH).userName
 };
 
@@ -21,7 +19,6 @@ const MANKAI_LIT = {
   location: 'Taylor House',
   taskName: 'Review appellant case',
   dueDate: new Date(1604506789000),
-  actions: [ ACTIONS.RELEASE ],
   assignee: toAssignee(CASEWORKERS.JANE_DOE).userName
 };
 
@@ -32,8 +29,7 @@ const BOB_CRATCHITT = {
   caseCategory: 'Protection',
   location: 'Taylor Swift',
   taskName: 'Review respondent evidence',
-  dueDate: new Date(),
-  actions: [ ACTIONS.CLAIM ]
+  dueDate: new Date()
 };
 
 const EBENEZER_SCROOGE = {
@@ -43,8 +39,7 @@ const EBENEZER_SCROOGE = {
   caseCategory: 'Revocation',
   location: 'Bleak House',
   taskName: 'Review appellant case',
-  dueDate: new Date(),
-  actions: [ ACTIONS.RELEASE ]
+  dueDate: new Date()
 };
 
 const OLIVER_TWIST = {
@@ -54,8 +49,7 @@ const OLIVER_TWIST = {
   caseCategory: 'Protection',
   location: 'Orphanage',
   taskName: 'Give more gruel',
-  dueDate: new Date(new Date().getTime() + (86400 * 5000)),
-  actions: [ ACTIONS.REASSIGN, ACTIONS.RELEASE ]
+  dueDate: new Date(new Date().getTime() + (86400 * 5000))
 };
 
 const DAVID_COPPERFIELD = {
@@ -66,8 +60,7 @@ const DAVID_COPPERFIELD = {
   location: 'Taylor House',
   alert: true,
   taskName: 'Review appellant case',
-  dueDate: new Date(1604506789000),
-  actions: [ ACTIONS.REASSIGN ]
+  dueDate: new Date(1604506789000)
 };
 
 const BRAD_REQUEST = {
@@ -77,8 +70,7 @@ const BRAD_REQUEST = {
   caseCategory: 'Will Fail',
   location: 'Dodgy Location',
   taskName: 'Assess errors',
-  dueDate: new Date(),
-  actions: [ ACTIONS.CLAIM, ACTIONS.REASSIGN ]
+  dueDate: new Date()
 };
 
 const AL_REDDY_DUNNE = {
@@ -88,8 +80,7 @@ const AL_REDDY_DUNNE = {
   caseCategory: 'Will Fail',
   location: 'Dodgy Location',
   taskName: 'Assess errors',
-  dueDate: new Date(),
-  actions: [ ACTIONS.CLAIM, ACTIONS.REASSIGN ]
+  dueDate: new Date()
 };
 
 const NAT_AUTHORISED = {
@@ -99,8 +90,7 @@ const NAT_AUTHORISED = {
   caseCategory: 'Will Fail',
   location: 'Dodgy Location',
   taskName: 'Assess errors',
-  dueDate: new Date(),
-  actions: [ ACTIONS.CLAIM, ACTIONS.REASSIGN ]
+  dueDate: new Date()
 };
 
 const NAT_ALLOWED = {
@@ -110,8 +100,7 @@ const NAT_ALLOWED = {
   caseCategory: 'Will Fail',
   location: 'Dodgy Location',
   taskName: 'Assess errors',
-  dueDate: new Date(),
-  actions: [ ACTIONS.CLAIM, ACTIONS.REASSIGN ]
+  dueDate: new Date()
 };
 
 const ANNE_SUPPORTED = {
@@ -121,8 +110,7 @@ const ANNE_SUPPORTED = {
   caseCategory: 'Will Fail',
   location: 'Dodgy Location',
   taskName: 'Assess errors',
-  dueDate: new Date(),
-  actions: [ ACTIONS.CLAIM, ACTIONS.REASSIGN ]
+  dueDate: new Date()
 };
 
 const SIR_VAN_ERROR = {
@@ -132,8 +120,7 @@ const SIR_VAN_ERROR = {
   caseCategory: 'Will Fail',
   location: 'Dodgy Location',
   taskName: 'Assess errors',
-  dueDate: new Date(),
-  actions: [ ACTIONS.CLAIM, ACTIONS.REASSIGN ]
+  dueDate: new Date()
 };
 
 export const TASKS_ARRAY = [
@@ -156,6 +143,11 @@ export const getUnassignedTasks = () => {
     return !task.assignee;
   });
 };
+export const freshTasks = (tasks: any[]): any[] => {
+  return tasks.map(task => {
+    return { ...task };
+  });
+}
 export const sortTasks = (tasks: any[], field: string, order: string) => {
   return tasks.sort((a: any, b: any) => {
     const aVal = a[field], bVal = b[field];

@@ -1,7 +1,7 @@
-import { TaskFieldType, TaskService, TaskSort, TaskView } from '../enums';
-import { Location } from '../models/dtos';
+import { ConfigConstants } from '../components/constants';
+import { TaskService, TaskSort } from '../enums';
+import { Caseworker, Location } from '../models/dtos';
 import { Task, TaskFieldConfig, TaskServiceConfig } from '../models/tasks';
-import { Caseworker } from './../../../api/workAllocation/interfaces/task';
 
 const LOCATION_A: Location = { id: 'a', locationName: 'Taylor House', services: [ 'a' ] };
 const LOCATION_B: Location = { id: 'b', locationName: 'Taylor Swift', services: [ 'a', 'b' ] };
@@ -74,44 +74,7 @@ export function getMockTasks(): Task[] {
  * Mock fields
  */
 export function getMockTaskFieldConfig(): TaskFieldConfig[] {
-  return [
-    {
-      name: 'caseReference',
-      type: TaskFieldType.STRING,
-      columnLabel: 'Case reference',
-      views: TaskView.TASK_LIST,
-    },
-    {
-      name: 'caseName',
-      type: TaskFieldType.STRING,
-      columnLabel: 'Case name',
-      views: TaskView.TASK_LIST,
-    },
-    {
-      name: 'caseCategory',
-      type: TaskFieldType.STRING,
-      columnLabel: 'Case category',
-      views: TaskView.TASK_LIST,
-    },
-    {
-      name: 'location',
-      type: TaskFieldType.STRING,
-      columnLabel: 'Location',
-      views: TaskView.TASK_LIST,
-    },
-    {
-      name: 'taskName',
-      type: TaskFieldType.STRING,
-      columnLabel: 'Task',
-      views: TaskView.TASK_LIST,
-    },
-    {
-      name: 'dueDate',
-      type: TaskFieldType.STRING,
-      columnLabel: 'Due Dated',
-      views: TaskView.TASK_LIST,
-    }
-  ];
+  return ConfigConstants.AvailableTasks;
 }
 
 /**

@@ -1,3 +1,4 @@
+import { ListConstants } from '../components/constants';
 import { SearchTaskRequest, TaskSearchParameters } from '../models/dtos';
 import { ACTION, WorkAllocationTaskService } from './work-allocation-task.service';
 
@@ -63,8 +64,9 @@ describe('WorkAllocation', () => {
     it('searchTask should make correct api call', () => {
       const service = new WorkAllocationTaskService(mockHttpService);
       const searchRequest = {} as SearchTaskRequest;
-      service.searchTask(searchRequest);
-      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task', searchRequest);
+      const view = ListConstants.View.MyTasks;
+      service.searchTask({ searchRequest, view });
+      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task', { searchRequest, view });
     });
   });
 });

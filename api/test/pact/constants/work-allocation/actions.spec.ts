@@ -12,15 +12,27 @@ const CLAIM = {
 };
 const COMPLETE = {
   id: 'complete',
-  title: 'Complete task',
-};
-const REASSIGN = {
-  id: 'reassign',
-  title: 'Reassign task',
+  title: 'Mark as done',
 };
 const RELEASE = {
   id: 'unclaim',
-  title: 'Release this task',
+  title: 'Unassign task',
+};
+const CLAIM_AND_GO = {
+  id: 'claimAndGo',
+  title: 'Assign to me and go to case',
+};
+const GO = {
+  id: 'go',
+  title: 'Go to case',
+};
+
+/**
+ * This should become "assign" as there's no actual "reassign" API call.
+ */
+const REASSIGN = {
+  id: 'reassign',
+  title: 'Reassign task',
 };
 
 export const ACTIONS = {

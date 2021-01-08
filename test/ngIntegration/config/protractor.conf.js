@@ -5,15 +5,18 @@ const chai = require('chai');
 const { SpecReporter } = require('jasmine-spec-reporter');
 const screenShotUtils = require("protractor-screenshot-utils").ProtractorScreenShotUtils;
 
+
 exports.config = {
   allScriptsTimeout: 11000,
   specs: [
-    '../tests/*.js'
+    '../tests/*.js',
+    '../tests/**/*.js'
+
   ],
   exclude: ['../tests/hiddenFields.test.js', '../tests/caseFieldCollectionsPermissions.test.js'],
   capabilities: {
     'browserName': 'chrome',
-    'chromeOptions': { args: ['--headless', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks', '--disable-notifications'] }
+    'chromeOptions': { args: ['--headless1', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks', '--disable-notifications'] }
 
   },
   directConnect: true,

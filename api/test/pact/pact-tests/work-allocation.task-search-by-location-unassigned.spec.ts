@@ -6,7 +6,13 @@ import * as path from 'path';
 import { EnhancedRequest } from '../../../lib/models';
 import { handleTaskSearch } from '../../../workAllocation/taskService';
 import { LOCATION_COMBINATIONS } from '../constants/work-allocation/locations.spec';
-import { filterByLocations, getUnassignedTasks, SORTABLE_FIELDS, sortTasks } from '../constants/work-allocation/tasks.spec';
+import {
+  filterByLocations,
+  freshTasks,
+  getUnassignedTasks,
+  SORTABLE_FIELDS,
+  sortTasks,
+} from '../constants/work-allocation/tasks.spec';
 
 describe('Work Allocation API', () => {
 
@@ -30,7 +36,7 @@ describe('Work Allocation API', () => {
   // Write Pact when all tests done
   after(() => provider.finalize());
 
-  const baseTasks = [ ...getUnassignedTasks() ];
+  const baseTasks = freshTasks(getUnassignedTasks());
   
   // Create an end point for each group of sorted tasks.
   for (const key of SORTABLE_FIELDS) {

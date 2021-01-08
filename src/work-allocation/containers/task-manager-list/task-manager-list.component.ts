@@ -1,9 +1,10 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { ConfigConstants, FilterConstants, SortConstants } from '../../components/constants';
+import { ConfigConstants, FilterConstants, ListConstants, SortConstants } from '../../components/constants';
+import { TaskActionIds } from '../../enums';
 import { Caseworker, Location, SearchTaskRequest } from '../../models/dtos';
-import { TaskFieldConfig } from '../../models/tasks';
+import { InvokedTaskAction, TaskFieldConfig } from '../../models/tasks';
 import { CaseworkerDisplayName } from '../../pipes';
 import {
   CaseworkerDataService,
@@ -12,6 +13,7 @@ import {
   SessionStorageService,
   WorkAllocationTaskService,
 } from '../../services';
+import { handleFatalErrors } from '../../utils';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
 @Component({
@@ -56,15 +58,22 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
     return SortConstants.Session.TaskManager;
   }
 
+  public get view(): string {
+    return ListConstants.View.TaskManager;
+  }
 
   public ngOnInit(): void {
     super.ngOnInit();
     // Get the caseworkers and locations for this component.
     this.caseworkerService.getAll().subscribe(caseworkers => {
       this.caseworkers = [ ...caseworkers ];
+    }, error => {
+      handleFatalErrors(error.status, this.router);
     });
     this.locationService.getLocations().subscribe(locations => {
       this.locations = [ ...locations ];
+    }, error => {
+      handleFatalErrors(error.status, this.router);
     });
   }
 
@@ -115,5 +124,18 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
       values = this.caseworkers.map(cw => this.caseworkerDisplayName.transform(cw, false));
     }
     return { key: 'assignee', operator: 'IN', values };
+  }
+
+  /**
+   * InvokedTaskAction from the Task List Component, so that we can handle the User's
+   * action.
+   */
+  public onActionHandler(taskAction: InvokedTaskAction): void {
+    if (taskAction.action.id === TaskActionIds.REASSIGN) {
+      const state = { returnUrl: this.returnUrl, showAssigneeColumn: true };
+      this.router.navigate([`/tasks/${taskAction.action.id}/${taskAction.task.id}`], { state });
+    } else {
+      super.onActionHandler(taskAction);
+    }
   }
 }

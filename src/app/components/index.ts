@@ -1,5 +1,6 @@
 import { AccessibilityComponent } from './accessibility/accessibility.component';
 import { CookiePolicyComponent } from './cookie-policy/cookie-policy.component';
+import { ErrorMessageComponent } from './error-message/error-message.component';
 import { GetHelpComponent } from './get-help/get-help.component';
 import { HeaderComponent } from './header/header.component';
 import { HmctsGlobalFooterComponent } from './hmcts-global-footer/hmcts-global-footer.component';
@@ -23,6 +24,7 @@ export const components: any[] = [
   AccessibilityComponent,
   PhaseBannerComponent,
   ServiceDownComponent,
+  ErrorMessageComponent,
   MediaViewerWrapperComponent,
   GetHelpComponent,
   SignedOutComponent
@@ -34,6 +36,7 @@ export * from './hmcts-global-header/hmcts-global-header.component';
 export * from './hmcts-primary-navigation/hmcts-primary-navigation.component';
 export * from './phase-banner/phase-banner.component';
 export * from './service-down/service-down.component';
+export * from './error-message/error-message.component';
 export * from './cookie-policy/cookie-policy.component';
 export * from './privacy-policy/privacy-policy.component';
 export * from './accessibility/accessibility.component';

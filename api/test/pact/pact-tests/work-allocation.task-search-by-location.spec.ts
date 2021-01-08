@@ -10,6 +10,7 @@ import { LOCATIONS, LOCATIONS_ARRAY } from '../constants/work-allocation/locatio
 import {
   filterByAssignee,
   filterByLocations,
+  freshTasks,
   SORTABLE_FIELDS,
   sortTasks,
   TASKS_ARRAY,
@@ -38,7 +39,7 @@ describe('Work Allocation API', () => {
   after(() => provider.finalize());
 
   const caseworkerNames = ALL_CASEWORKERS.map(cw => `${cw.firstName} ${cw.lastName}`);
-  const baseTasks = filterByAssignee(TASKS_ARRAY, caseworkerNames)
+  const baseTasks = freshTasks(filterByAssignee(TASKS_ARRAY, caseworkerNames));
   
   // Create an end point for each group of sorted tasks.
   for (const key of SORTABLE_FIELDS) {

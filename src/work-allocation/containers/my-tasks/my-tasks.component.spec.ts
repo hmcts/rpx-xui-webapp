@@ -1,5 +1,4 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { Location } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
@@ -26,13 +25,10 @@ describe('MyTasksComponent', () => {
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
 
-  let location: jasmine.SpyObj<Location>;
   let router: Router;
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
 
   beforeEach(async(() => {
-    location = jasmine.createSpyObj('Location', ['path']);
-    location.path.and.returnValue('');
     TestBed.configureTestingModule({
       imports: [
         CdkTableModule,
@@ -42,8 +38,7 @@ describe('MyTasksComponent', () => {
       ],
       declarations: [ MyTasksComponent, WrapperComponent, TaskListComponent ],
       providers: [
-        { provide: WorkAllocationTaskService, useValue: mockTaskService },
-        { provide: Location, useValue: location }
+        { provide: WorkAllocationTaskService, useValue: mockTaskService }
       ]
     }).compileComponents();
   }));
@@ -58,19 +53,10 @@ describe('MyTasksComponent', () => {
     fixture.detectChanges();
   });
 
-  /**
-   * TODO
-   * This has started randomly failing when running a lot of tests but runs just
-   * fine in isolation or with only a few other tests running (just this suite,
-   * for example).
-   *
-   * The error message is not at all helpful and none of my attempts at debugging
-   * or logging progress have borne any fruit so far. Therefore, I'm just going
-   * to xit for the time being and come back to it at some point.
-   */
-  xit('should make a call to load tasks using the default search request', () => {
-    const defaultSearchRequest = component.getSearchTaskRequest();
-    expect(mockTaskService.searchTask).toHaveBeenCalledWith(defaultSearchRequest);
+  it('should make a call to load tasks using the default search request', () => {
+    const searchRequest = component.getSearchTaskRequest();
+    const payload = { searchRequest, view: component.view };
+    expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
     expect(component.tasks).toBeDefined();
     expect(component.tasks.length).toEqual(2);
   });
@@ -108,7 +94,8 @@ describe('MyTasksComponent', () => {
     expect(searchRequest.search_parameters[1].values).toContain('John Smith');
 
     // Let's also make sure that the tasks were re-requested with the new sorting.
-    expect(mockTaskService.searchTask).toHaveBeenCalledWith(searchRequest);
+    const payload = { searchRequest, view: component.view };
+    expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
 
     // Do it all over again to make sure it reverses the order.
     button.dispatchEvent(new Event('click'));
@@ -123,7 +110,8 @@ describe('MyTasksComponent', () => {
     expect(newSearchRequest.search_parameters[1].values).toContain('John Smith');
 
     // Let's also make sure that the tasks were re-requested with the new sorting.
-    expect(mockTaskService.searchTask).toHaveBeenCalledWith(newSearchRequest);
+    const newPayload = { searchRequest: newSearchRequest, view: component.view };
+    expect(mockTaskService.searchTask).toHaveBeenCalledWith(newPayload);
   });
 
   it('should not show the footer when there are tasks', () => {
@@ -165,6 +153,6 @@ describe('MyTasksComponent', () => {
     actionLink.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     // Ensure the correct attempt has been made to navigate.
-    expect(navigateSpy).toHaveBeenCalledWith([`/tasks/${actionId}/${task.id}`]);
+    expect(navigateSpy).toHaveBeenCalledWith([`/tasks/${actionId}/${task.id}`], jasmine.any(Object));
   });
 });

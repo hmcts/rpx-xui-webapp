@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { Observable } from 'rxjs';
 
 import { ListConstants } from '../../components/constants';
@@ -34,7 +35,8 @@ export class TaskListWrapperComponent implements OnInit {
     protected taskService: WorkAllocationTaskService,
     protected router: Router,
     protected infoMessageCommService: InfoMessageCommService,
-    protected sessionStorageService: SessionStorageService
+    protected sessionStorageService: SessionStorageService,
+    protected alertService: AlertService
   ) {}
 
   private pTasks: Task[];

@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
+import { NavigationOrigin } from '@hmcts/ccd-case-ui-toolkit';
 
 import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
 import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
 import { Location, SearchTaskRequest } from '../../models/dtos';
-import { InvokedTaskAction, TaskFieldConfig } from '../../models/tasks';
+import { InvokedTaskAction, Task, TaskFieldConfig } from '../../models/tasks';
 import { handleFatalErrors } from '../../utils';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
@@ -81,6 +82,29 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
   }
 
   /**
+   * A User 'Claims' themselves a task and goes to the case details page for that case aka. 'Assign to me'.
+   */
+  public claimTaskAndGo(task: Task): void {
+    this.taskService.claimTask(task.id).subscribe(() => {
+      this.infoMessageCommService.nextMessage({
+        type: InfoMessageType.SUCCESS,
+        message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS,
+      });
+      // constant below removes spaces from caseReference to get caseId
+      const caseId = task.caseReference.replace(/\s/g, "");
+      // navigates to case details page for specific case id
+      this.router.navigate([`/cases/case-details/${caseId}` ]).then(() => {
+        this.alertService.setPreserveAlerts(true);
+        this.alertService.success("Hello");
+        console.log('test');
+      });;
+    }, error => {
+
+      this.claimTaskErrors(error.status);
+    });
+  }
+
+  /**
    * Navigate the User to the correct error page, or throw an on page warning
    * that the Task is no longer available.
    */
@@ -100,17 +124,15 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
 
   /**
    * Handle a User Claiming a Task
-   *
-   * TODO: This function will need to handle 'Assign to me and go to case' - EUI-2963.
    */
   public onActionHandler(taskAction: InvokedTaskAction): void {
-
+    console.log(taskAction.action.id);
     switch (taskAction.action.id) {
       case TaskActionIds.CLAIM:
         this.claimTask(taskAction.task.id);
         break;
-      case TaskActionIds.CLAIM_AND_NAVIGATE:
-        // EUI-2963
+      case TaskActionIds.CLAIM_AND_GO:
+        this.claimTaskAndGo(taskAction.task);
         break;
       default:
         super.onActionHandler(taskAction);

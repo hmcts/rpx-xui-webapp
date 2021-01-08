@@ -8,7 +8,7 @@ const KILI_MUSO = {
   location: 'Taylor House',
   taskName: 'Apply for probate',
   dueDate: new Date(1604938789000),
-  assignee: toAssignee(CASEWORKERS.JOHN_SMITH).userName
+  //assignee: toAssignee(CASEWORKERS.JOHN_SMITH).userName
 };
 
 const MANKAI_LIT = {
@@ -19,7 +19,7 @@ const MANKAI_LIT = {
   location: 'Taylor House',
   taskName: 'Review appellant case',
   dueDate: new Date(1604506789000),
-  assignee: toAssignee(CASEWORKERS.JANE_DOE).userName
+  //assignee: toAssignee(CASEWORKERS.JANE_DOE).userName
 };
 
 const BOB_CRATCHITT = {
@@ -39,7 +39,7 @@ const EBENEZER_SCROOGE = {
   caseCategory: 'Revocation',
   location: 'Bleak House',
   taskName: 'Review appellant case',
-  dueDate: new Date()
+  dueDate: new Date(1604506789000)
 };
 
 const OLIVER_TWIST = {

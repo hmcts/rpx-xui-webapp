@@ -12,7 +12,7 @@ class WorkAllocationMockData{
     getAvailableTasks(count){
         const taskActions = [
             { "id": "claim", "title": "Assign to me" }, 
-            { "id": "claimAndGo", "title": "Assign to me and go to case" }
+            { "id": "claim-and-go", "title": "Assign to me and go to case" }
         ];
         return this.getTaskList(count, taskActions); 
     }

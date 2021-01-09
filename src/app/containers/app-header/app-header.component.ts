@@ -179,8 +179,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
     if (this.serialisedUserRoles) {
       try {
-          const userRolesDeserialised: string[] = this.deserialiseUserRoles(this.serialisedUserRoles);
-          return this.getUsersTheme(userRolesDeserialised, applicationThemes, defaultTheme);
+          return this.getUsersTheme(this.userRoles, applicationThemes, defaultTheme);
       } catch (error) {
         this.loggerService.error(error);
       }

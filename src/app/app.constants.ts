@@ -206,7 +206,7 @@ const appHeaderTitle = {name: 'Manage Cases', url: '/'};
 const caseDetailsUrl: string = '/cases/case-details/';
 
 const serviceMessagesFeatureToggleKey: string = 'mc-service-messages';
-const serviceMessageCookie = 'service_messages';
+const serviceMessageCookie: string = 'service_messages';
 
 export class AppConstants {
   static FOOTER_DATA = null;

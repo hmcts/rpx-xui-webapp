@@ -172,6 +172,11 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 
 https://tools.hmcts.net/confluence/display/EUI/EXUI+Low+Level+Design
 
+## Pact Tests 
+
+For executing the Pact integration tests please Run `yarn test-pact` 
+For publishing pacts to the broker please Run `yarn publish-pact`
+
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go and check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).

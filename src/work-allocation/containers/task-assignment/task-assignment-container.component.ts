@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { ErrorMessage } from '../../../app/models';
 import { ConfigConstants } from '../../components/constants';
-import { InfoMessage, InfoMessageType, TaskService, TaskSort } from '../../enums';
+import { InfoMessage, InfoMessageType, TaskActionType, TaskService, TaskSort } from '../../enums';
 import { InformationMessage } from '../../models/comms';
 import { Assignee, Caseworker, Location } from '../../models/dtos';
 import { TaskFieldConfig, TaskServiceConfig } from '../../models/tasks';
@@ -26,6 +26,9 @@ export class TaskAssignmentContainerComponent implements OnInit {
   public sortedBy: any;
   public showManage: boolean = false;
   public caseworker: Caseworker;
+  public verb: TaskActionType;
+
+  private successMessage: InfoMessage;
   public excludedCaseworkers: Caseworker[];
   public location: Location;
 
@@ -71,6 +74,8 @@ export class TaskAssignmentContainerComponent implements OnInit {
     // Get the task from the route, which will have been put there by the resolver.
     const { task } = this.route.snapshot.data.task;
     this.tasks = [ task ];
+    this.verb = this.route.snapshot.data.verb as TaskActionType;
+    this.successMessage = this.route.snapshot.data.successMessage as InfoMessage;
     if (task.assignee) {
       const names: string[] = task.assignee.split(' ');
       const firstName = names.shift();
@@ -82,7 +87,7 @@ export class TaskAssignmentContainerComponent implements OnInit {
     }
   }
 
-  public reassign(): void {
+  public assign(): void {
     if (!this.caseworker) {
       this.error = NAME_ERROR;
       return;
@@ -111,17 +116,18 @@ export class TaskAssignmentContainerComponent implements OnInit {
   }
 
   private reportSuccessAndReturn(): void {
-    this.returnWithMessage({
-      type: InfoMessageType.SUCCESS,
-      message: InfoMessage.ASSIGNED_TASK,
-    }, { badRequest: false });
+    const message = this.successMessage;
+    this.returnWithMessage(
+      { type: InfoMessageType.SUCCESS, message },
+      { badRequest: false }
+    );
   }
 
   private reportUnavailableErrorAndReturn(): void {
-    this.returnWithMessage({
-      type: InfoMessageType.WARNING,
-      message: InfoMessage.TASK_NO_LONGER_AVAILABLE,
-    }, { badRequest: true });
+    this.returnWithMessage(
+      { type: InfoMessageType.WARNING, message: InfoMessage.TASK_NO_LONGER_AVAILABLE },
+      { badRequest: true }
+    );
   }
 
   private returnWithMessage(message: InformationMessage, state: any): void {

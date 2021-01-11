@@ -4,11 +4,12 @@ import { Observable } from 'rxjs';
 
 import { SessionStorageService } from '../../../app/services';
 import { ListConstants } from '../../components/constants';
-import { InfoMessage, InfoMessageType, TaskService, TaskSort } from '../../enums';
+import { InfoMessage, InfoMessageType, TaskActionIds, TaskService, TaskSort } from '../../enums';
 import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
+
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html'
@@ -179,8 +180,11 @@ export class TaskListWrapperComponent implements OnInit {
    * action.
    */
   public onActionHandler(taskAction: InvokedTaskAction): void {
-    const state = { returnUrl: this.returnUrl };
-    this.router.navigate([`/tasks/${taskAction.action.id}/${taskAction.task.id}`], { state });
+    const state = {
+      returnUrl: this.returnUrl,
+      showAssigneeColumn: taskAction.action.id !== TaskActionIds.ASSIGN
+    };
+    this.router.navigate([`/tasks/${taskAction.task.id}/${taskAction.action.id}`], { state });
   }
 
   // Do the actual load. This is separate as it's called from two methods.

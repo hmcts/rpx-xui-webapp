@@ -107,14 +107,15 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
 
     switch (taskAction.action.id) {
       case TaskActionIds.CLAIM:
-        this.claimTask(taskAction.task.id);
-        break;
-      case TaskActionIds.CLAIM_AND_NAVIGATE:
+        return this.claimTask(taskAction.task.id);
+      case TaskActionIds.CLAIM_AND_GO:
         // EUI-2963
+        console.warn(`'Claim and go to case' is not yet implemented`);
         break;
       default:
-        super.onActionHandler(taskAction);
-        break;
+        // This should never be hit as there should be only 2 actions (above)
+        // that the user can select from in this list... but just in case.
+        return super.onActionHandler(taskAction);
     }
   }
 }

@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { SessionStorageService } from '../../../app/services';
 import { ConfigConstants, FilterConstants, ListConstants, SortConstants } from '../../components/constants';
 import { TaskActionIds } from '../../enums';
 import { Caseworker, Location, SearchTaskRequest } from '../../models/dtos';
@@ -10,7 +11,6 @@ import {
   CaseworkerDataService,
   InfoMessageCommService,
   LocationDataService,
-  SessionStorageService,
   WorkAllocationTaskService,
 } from '../../services';
 import { handleFatalErrors } from '../../utils';

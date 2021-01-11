@@ -18,4 +18,11 @@ export class SessionStorageService {
   public setItem(key: string, value: string): void {
     sessionStorage.setItem(key, value);
   }
+
+  /**
+   * Clear all the items held in session storage.
+   */
+  public clear(): void {
+    sessionStorage.clear();
+  }
 }

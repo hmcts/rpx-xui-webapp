@@ -94,8 +94,8 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
       // navigates to case details page for specific case id
       this.router.navigate([`/cases/case-details/${caseId}`], {
         state: {
-          showMessage: true, 
-          messageText: 'You\'ve assigned yourself a task. It\'s available in My tasks'}
+          showMessage: true,
+          messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS}
         });
     }, error => {
 
@@ -125,7 +125,6 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
    * Handle a User Claiming a Task
    */
   public onActionHandler(taskAction: InvokedTaskAction): void {
-    console.log(taskAction.action.id);
     switch (taskAction.action.id) {
       case TaskActionIds.CLAIM:
         this.claimTask(taskAction.task.id);

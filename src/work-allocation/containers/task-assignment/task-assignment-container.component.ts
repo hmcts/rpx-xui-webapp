@@ -28,7 +28,7 @@ export class TaskAssignmentContainerComponent implements OnInit {
   public caseworker: Caseworker;
   public verb: TaskActionType;
 
-  private successMessage: InfoMessage;
+  public successMessage: InfoMessage;
   public excludedCaseworkers: Caseworker[];
   public location: Location;
 

@@ -4,7 +4,6 @@ import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 
 import { ConfigConstants, FilterConstants, ListConstants, SortConstants } from '../../components/constants';
 import { TaskActionIds } from '../../enums';
-import { SessionStorageService } from '../../../app/services';
 import { Caseworker, Location, SearchTaskRequest } from '../../models/dtos';
 import { InvokedTaskAction, TaskFieldConfig } from '../../models/tasks';
 import { CaseworkerDisplayName } from '../../pipes';
@@ -15,6 +14,7 @@ import {
   WorkAllocationTaskService,
 } from '../../services';
 import { handleFatalErrors } from '../../utils';
+import { SessionStorageService } from '../../../app/services';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
 @Component({

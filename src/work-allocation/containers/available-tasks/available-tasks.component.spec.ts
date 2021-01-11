@@ -67,7 +67,7 @@ function getTasks(): Task[] {
   ];
 }
 
-fdescribe('AvailableTasksComponent', () => {
+describe('AvailableTasksComponent', () => {
   let component: AvailableTasksComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -78,7 +78,7 @@ fdescribe('AvailableTasksComponent', () => {
   const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
-  const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy'])
+  const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -274,15 +274,15 @@ fdescribe('AvailableTasksComponent', () => {
       expect(mockTaskService.claimTask).toHaveBeenCalledWith(firstTask.id);
     });
 
-    /* it('should navigate to the case-details page.', () => {
-
-      mockTaskService.claimTask.and.returnValue(of({}));
-
+    it('should call claimTask on the taskService with the taskId, so that the User can claim the task.', () => {
       const firstTask = getTasks()[1];
       component.claimTaskAndGo(firstTask);
-
-      expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${firstTask.id}`]);
-    }); */
+      expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${firstTask.id}`], {
+        state: {
+          showMessage: true,
+          messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS}
+    });
+  });
 
     it('should call claimTaskErrors() with the error\'s status code, so that the User can see that the claim of ' +
       'a task has been unsuccessful.', () => {

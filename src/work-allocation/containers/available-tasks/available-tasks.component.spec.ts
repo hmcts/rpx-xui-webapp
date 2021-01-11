@@ -67,7 +67,7 @@ function getTasks(): Task[] {
   ];
 }
 
-fdescribe('AvailableTasksComponent', () => {
+describe('AvailableTasksComponent', () => {
   let component: AvailableTasksComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -78,7 +78,7 @@ fdescribe('AvailableTasksComponent', () => {
   const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
-  const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy'])
+  const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
 
 
   beforeEach(() => {

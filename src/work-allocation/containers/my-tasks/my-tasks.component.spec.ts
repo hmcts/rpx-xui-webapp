@@ -3,6 +3,7 @@ import { Component, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 
@@ -27,6 +28,7 @@ describe('MyTasksComponent', () => {
 
   let router: Router;
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
+  const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -38,7 +40,8 @@ describe('MyTasksComponent', () => {
       ],
       declarations: [ MyTasksComponent, WrapperComponent, TaskListComponent ],
       providers: [
-        { provide: WorkAllocationTaskService, useValue: mockTaskService }
+        { provide: WorkAllocationTaskService, useValue: mockTaskService },
+        { provide: AlertService, useValue: mockAlertService }
       ]
     }).compileComponents();
   }));

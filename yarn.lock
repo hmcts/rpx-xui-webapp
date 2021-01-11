@@ -478,10 +478,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@0.1.58-beta":
-  version "0.1.58-beta"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-0.1.58-beta.tgz#837fc4532f70d54f95419ba0b59d1ecf1bfb006c"
-  integrity sha512-6uRBHwdXT8KaUqdKhJO6YA/Z+N6c1xtB+zlxXn7BywXpzZssg3nulLkHlSJfgflQwpZSPckdkKVCh437guWBQw==
+"@hmcts/rpx-xui-common-lib@0.1.59":
+  version "0.1.59"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-0.1.59.tgz#761eda6e5e7969fd91de53650c3229e6eb0779bb"
+  integrity sha512-juJl02NeF/egdwHCNBB+FgawyJF1MgVYqhhEwVsLUYfrz9C3pLBuN/nmwBDSD6NB3iFE70IjJ06CdBeKg951sA==
   dependencies:
     tslib "^1.9.0"
 

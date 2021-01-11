@@ -121,7 +121,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.caseListFilterEventsBindings = [
       { type: 'onApply', action: 'FindCaselistPaginationMetadata' },
       { type: 'onReset', action: 'CaseListReset' }
-     ];
+    ];
 
     this.paginationSize = this.appConfig.getPaginationPageSize();
 
@@ -443,4 +443,4 @@ export class CaseListComponent implements OnInit, OnDestroy {
       this.elasticSearchFlagSubsription.unsubscribe();
     }
   }
- }
+}

@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { NavigationOrigin } from '@hmcts/ccd-case-ui-toolkit';
 
 import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
 import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
@@ -91,7 +90,7 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
         message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS,
       });
       // constant below removes spaces from caseReference to get caseId
-      const caseId = task.caseReference.replace(/\s/g, "");
+      const caseId = task.caseReference.replace(/\s/g, '');
       // navigates to case details page for specific case id
       this.router.navigate([`/cases/case-details/${caseId}`], {
         state: {

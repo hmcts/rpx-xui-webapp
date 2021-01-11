@@ -1,0 +1,21 @@
+<div class="exui-task-assignment">
+
+  <div class="govuk-form-group">
+    <label for="task_assignment_location" class="govuk-label">Location</label>
+    <select id="task_assignment_location" name="task_assignment_location" class="govuk-select task-assignment__location"
+            [(ngModel)]="location">
+      <option [ngValue]="ALL_LOCATIONS">{{ALL_LOCATIONS.locationName}}</option>
+      <option *ngFor="let loc of locations" [ngValue]="loc">{{loc.locationName}}</option>
+    </select>
+  </div>
+
+  <div class="govuk-form-group">
+    <label for="task_assignment_caseworker" class="govuk-label">Name</label>
+    <select id="task_assignment_caseworker" name="task_assignment_caseworker" class="govuk-select task-assignment__caseworker"
+            [(ngModel)]="caseworker">
+      <option [selected]="caseworker === null" [ngValue]="null">Select name</option>
+      <option *ngFor="let cw of caseworkers" [ngValue]="cw">{{cw | caseworkerDisplayName}}</option>
+    </select>
+  </div>
+  
+</div>

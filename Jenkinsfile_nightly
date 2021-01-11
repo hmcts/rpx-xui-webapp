@@ -18,6 +18,8 @@ def product   = "xui"
 def component = "webapp"
 def channel   = '#xui-pipeline'
 
+def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
+
 withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
 
@@ -27,9 +29,14 @@ withNightlyPipeline(type, product, component) {
     enableCrossBrowserTest()
 
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net/'
-    after('checkout') {sh 'yarn cache clean'}
+  
+      after('checkout') {
+        yarnBuilder.yarn('cache clean')
+    }
+  
     after('build') {
-        sh 'npm run build'
+        yarnBuilder.yarn('build')
+      
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -47,7 +54,7 @@ withNightlyPipeline(type, product, component) {
             reportName           : 'ng lint Report'
         ])
 
-        sh 'yarn test:a11y'
+        yarnBuilder.yarn('test:a11y')
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -66,6 +73,24 @@ withNightlyPipeline(type, product, component) {
             reportDir            : "reports/tests/functional/",
             reportFiles          : 'index.html',
             reportName           : 'XUI Manage Cases Full functional Tests'
+        ])
+
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "reports/tests/api_functional/",
+            reportFiles          : 'mochawesome.html',
+            reportName           : 'API Functional Test'
+        ])
+
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "reports/tests/ngIntegration/",
+            reportFiles          : 'index.html',
+            reportName           : 'AAT NG Integration Test'
         ])
     }
 

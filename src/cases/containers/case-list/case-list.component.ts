@@ -1,10 +1,11 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import {
   CaseState,
   CaseType,
   Jurisdiction,
   PaginationMetadata,
+  SearchResultComponent,
   SearchResultView,
   SearchResultViewItem,
   WindowService,
@@ -34,6 +35,7 @@ import * as fromCaseList from '../../store/reducers';
   styleUrls: ['case-list.component.scss']
 })
 export class CaseListComponent implements OnInit, OnDestroy {
+  @ViewChild('ccdSearchResult') public ccdSearchResult: SearchResultComponent; // EUI-2906
   public defaults: any;
   public caseListFilterEventsBindings: ActionBindingModel[];
   public fromCasesFeature: any;
@@ -119,7 +121,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.caseListFilterEventsBindings = [
       { type: 'onApply', action: 'FindCaselistPaginationMetadata' },
       { type: 'onReset', action: 'CaseListReset' }
-     ];
+    ];
 
     this.paginationSize = this.appConfig.getPaginationPageSize();
 
@@ -353,6 +355,12 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public applyFilter(event) {
     this.page = event.selected.page;
     this.selected = event.selected;
+    // EUI-2906. Reset the sort order when changing the filter.
+    this.sortParameters = undefined;
+    if (this.ccdSearchResult) {
+      // EUI-2906. We also need to reset the sort parameters on the SearchResultComponent.
+      this.ccdSearchResult.consumerSortParameters = { column: null, order: null, type: null };
+    }
     this.triggerQuery();
   }
 
@@ -435,4 +443,4 @@ export class CaseListComponent implements OnInit, OnDestroy {
       this.elasticSearchFlagSubsription.unsubscribe();
     }
   }
- }
+}

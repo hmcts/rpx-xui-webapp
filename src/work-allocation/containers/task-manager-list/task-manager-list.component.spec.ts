@@ -6,17 +6,13 @@ import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 
+import { SessionStorageService } from '../../../app/services';
 import { FilterConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import * as dtos from '../../models/dtos';
 import { Task } from '../../models/tasks';
 import { CaseworkerDisplayName } from '../../pipes';
-import {
-  CaseworkerDataService,
-  LocationDataService,
-  SessionStorageService,
-  WorkAllocationTaskService,
-} from '../../services';
+import { CaseworkerDataService, LocationDataService, WorkAllocationTaskService } from '../../services';
 import { getMockCaseworkers, getMockLocations, getMockTasks } from '../../tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { TaskManagerListComponent } from './task-manager-list.component';

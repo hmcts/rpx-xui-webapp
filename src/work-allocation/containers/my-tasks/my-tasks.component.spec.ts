@@ -151,6 +151,6 @@ describe('MyTasksComponent', () => {
     actionLink.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     // Ensure the correct attempt has been made to navigate.
-    expect(navigateSpy).toHaveBeenCalledWith([`/tasks/${actionId}/${task.id}`], jasmine.any(Object));
+    expect(navigateSpy).toHaveBeenCalledWith([`/tasks/${task.id}/${actionId}`], jasmine.any(Object));
   });
 });

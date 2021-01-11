@@ -80,7 +80,6 @@ fdescribe('AvailableTasksComponent', () => {
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy'])
 
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [

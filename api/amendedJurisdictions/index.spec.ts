@@ -35,7 +35,7 @@ describe('Amended Jurisdiction', () => {
               fun()
           },
       },
-      url: 'fdafu4543543/binary',
+      url: 'aggregated/caseworkers/:uid/jurisdictions?access=read',
   })
 
     result0 = {

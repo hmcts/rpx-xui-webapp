@@ -10,6 +10,7 @@ import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortFi
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 
+
 @Component({
   templateUrl: 'task-list-wrapper.component.html'
 })

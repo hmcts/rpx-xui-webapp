@@ -8,6 +8,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Observable } from 'rxjs';
 
 import { ErrorMessageComponent } from '../../../app/components';
+import { TaskActionConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { TaskListComponent } from '../../containers';
 import {
@@ -66,7 +67,8 @@ describe('TaskAssignmentContainerComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                task: { task: mockTasks[0] }
+                task: { task: mockTasks[0] },
+                ...TaskActionConstants.Reassign
               }
             },
             params: Observable.of({ task: mockTasks[0] })
@@ -78,9 +80,9 @@ describe('TaskAssignmentContainerComponent', () => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
-    // router = TestBed.get(Router);
 
     wrapper.tasks = null;
+    window.history.pushState({ returnUrl: 'tasks/list', showAssigneeColumn: false }, '', 'tasks/list');
     fixture.detectChanges();
   });
 

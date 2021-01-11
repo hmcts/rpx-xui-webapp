@@ -1,6 +1,6 @@
-import {NavItemsModel} from './models/nav-item.model';
 import { AppUtils } from './app-utils';
 import { AppConstants } from './app.constants';
+import { NavItemsModel } from './models/nav-item.model';
 
 describe('getEnvironment', () => {
 
@@ -150,4 +150,8 @@ describe('setActiveLink', () => {
     expect(ITEMS[0].active).toEqual(true);
   });
 
+  it('add padding', () => {
+    expect(AppUtils.pad('1')).toEqual('01');
+    expect(AppUtils.pad('1', 3)).toEqual('001');
+  });
 });

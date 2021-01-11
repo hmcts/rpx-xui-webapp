@@ -10,6 +10,7 @@ import { AppConstants } from '../../app.constants';
 import { AppTitleModel } from '../../models/app-title.model';
 import { NavItemsModel } from '../../models/nav-item.model';
 import { UserNavModel } from '../../models/user-nav.model';
+import { LoggerService } from '../../services/logger/logger.service';
 import * as fromActions from '../../store';
 
 export interface Theme {
@@ -52,11 +53,13 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
   private subscription: Subscription;
 
-  constructor(private readonly store: Store<fromActions.State>,
-              private readonly cookieService: CookieService,
-              private readonly featureToggleService: FeatureToggleService,
-              public router: Router) {
-  }
+  constructor(
+    private readonly store: Store<fromActions.State>,
+    private readonly cookieService: CookieService,
+    private readonly featureToggleService: FeatureToggleService,
+    private readonly loggerService: LoggerService,
+    public router: Router
+  ) {}
 
   /**
    * Get Default Theme
@@ -175,9 +178,17 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   public getApplicationThemeForUser(applicationThemes: Theme[]): Theme {
 
     const serialisedUserRoles: string = this.getSerialisedUserRolesFromCookie();
-    const userRoles: string[] = this.deserialiseUserRoles(serialisedUserRoles);
+    const defaultTheme = this.getDefaultTheme();
 
-    return this.getUsersTheme(userRoles, applicationThemes, this.getDefaultTheme());
+    if (serialisedUserRoles) {
+      try {
+          const userRoles: string[] = this.deserialiseUserRoles(serialisedUserRoles);
+          return this.getUsersTheme(userRoles, applicationThemes, defaultTheme);
+      } catch (error) {
+        this.loggerService.error(error);
+      }
+    }
+    return defaultTheme;
   }
 
   /**

@@ -1,10 +1,12 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { provideMockStore } from '@ngrx/store/testing';
 
 import { HmctsGlobalHeaderComponent } from './hmcts-global-header.component';
 
 describe('HmctsGlobalHeaderComponent', () => {
+  let nocStoreSpy: jasmine.Spy;
   let component: HmctsGlobalHeaderComponent;
   let fixture: ComponentFixture<HmctsGlobalHeaderComponent>;
 
@@ -12,7 +14,10 @@ describe('HmctsGlobalHeaderComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ HmctsGlobalHeaderComponent ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      imports: [ RouterTestingModule ]
+      imports: [ RouterTestingModule ],
+      providers: [
+        provideMockStore()
+      ]
     })
     .compileComponents();
   }));
@@ -32,6 +37,7 @@ describe('HmctsGlobalHeaderComponent', () => {
         { text: 'Nav item 2', emit: '#1' }
       ]
     };
+    nocStoreSpy = spyOn(component.nocStore, 'dispatch');
     fixture.detectChanges();
   });
 
@@ -60,5 +66,10 @@ describe('HmctsGlobalHeaderComponent', () => {
 
     // And now it should show be "active", which gives a different rendering.
     expect(searchButton.getAttribute('aria-current')).toEqual('true');
+  });
+
+  it('should onEmitSubMenu', () => {
+    component.onEmitSubMenu({href: '/noc'});
+    expect(nocStoreSpy).toHaveBeenCalled();
   });
 });

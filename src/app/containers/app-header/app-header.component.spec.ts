@@ -7,6 +7,7 @@ import { CookieService } from 'ngx-cookie';
 import { BehaviorSubject, of } from 'rxjs';
 import { AppConstants } from 'src/app/app.constants';
 
+import { LoggerService } from '../../services/logger/logger.service';
 import * as fromActions from '../../store';
 import { AppHeaderComponent } from './app-header.component';
 
@@ -35,6 +36,8 @@ const featureToggleServiceMock = {
     };
   }
 };
+
+const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
 
 let pipeSpy: jasmine.Spy;
 let dispatchSpy: jasmine.Spy;
@@ -79,6 +82,10 @@ describe('AppHeaderComponent', () => {
             events: new BehaviorSubject<Event>(null),
             url: '/something-or-other'
           }
+        },
+        {
+          provide: LoggerService,
+          useValue: loggerServiceMock
         },
         AppHeaderComponent
       ],
@@ -254,6 +261,13 @@ describe('AppHeaderComponent', () => {
       expect(dispatchSpy).toHaveBeenCalledTimes(0);
       component.onNavigate('sign-out');
       expect(dispatchSpy).toHaveBeenCalledWith(new fromActions.Logout());
+    });
+  });
+
+  describe('getApplicationThemeForUser()', () => {
+    it('get default theme when no roles', () => {
+      const themes = component.getApplicationThemeForUser([]);
+      expect(themes).toEqual(AppConstants.DEFAULT_USER_THEME);
     });
   });
 });

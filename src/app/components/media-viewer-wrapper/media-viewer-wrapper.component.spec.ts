@@ -8,6 +8,7 @@ import createSpyObj = jasmine.createSpyObj;
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { RouterTestingModule } from '@angular/router/testing';
 
 const GATEWAY_DOCUMENT_URL = 'http://localhost:1234/documents';
 const REMOTE_DOCUMENT_URL = 'https://www.example.com/binary';
@@ -35,7 +36,8 @@ describe('MediaViewerWrapperComponent', () => {
             imports: [
                 MediaViewerModule,
                 StoreModule.forRoot({}),
-                EffectsModule.forRoot([])
+                EffectsModule.forRoot([]),
+                RouterTestingModule
             ],
             declarations: [
                 MediaViewerWrapperComponent,

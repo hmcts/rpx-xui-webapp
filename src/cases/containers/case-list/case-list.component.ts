@@ -1,15 +1,25 @@
-import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { CaseState, CaseType, Jurisdiction, PaginationMetadata, SearchResultView, SearchResultViewItem, WindowService } from '@hmcts/ccd-case-ui-toolkit';
+import {
+  CaseState,
+  CaseType,
+  Jurisdiction,
+  PaginationMetadata,
+  SearchResultComponent,
+  SearchResultView,
+  SearchResultViewItem,
+  WindowService,
+} from '@hmcts/ccd-case-ui-toolkit';
 import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
 import { select, Store } from '@ngrx/store';
-import {BehaviorSubject, combineLatest, Observable, Subscription} from 'rxjs';
-import * as converters from '../../converters/case-converter';
-import { ActionBindingModel } from '../../models/create-case-actions.model';
+import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
+
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import * as fromRoot from '../../../app/store';
+import * as converters from '../../converters/case-converter';
+import { ActionBindingModel } from '../../models/create-case-actions.model';
 import * as fromCasesFeature from '../../store';
 import * as fromCaseList from '../../store/reducers';
 
@@ -25,6 +35,7 @@ import * as fromCaseList from '../../store/reducers';
   styleUrls: ['case-list.component.scss']
 })
 export class CaseListComponent implements OnInit, OnDestroy {
+  @ViewChild('ccdSearchResult') public ccdSearchResult: SearchResultComponent; // EUI-2906
   public defaults: any;
   public caseListFilterEventsBindings: ActionBindingModel[];
   public fromCasesFeature: any;
@@ -38,6 +49,13 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public caseFilterToggle$: Observable<boolean>;
   public jurisdictionsBehaviourSubject$: BehaviorSubject<Jurisdiction[]> = new BehaviorSubject<Jurisdiction[]>([]);
   public shareCases$: Observable<SharedCase[]>;
+  public shareableJurisdictions$: Observable<string[]>;
+  private pIsCaseShareVisible$: Observable<boolean>;
+  public get isCaseShareVisible$(): Observable<boolean> {
+    // This is a getter simply because some unit tests rely on being
+    // able to spy on it for mocking.
+    return this.pIsCaseShareVisible$;
+  }
 
   public fg: FormGroup;
 
@@ -75,10 +93,11 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
   constructor(
     public store: Store<fromCaseList.State>,
-    private appConfig: AppConfig,
-    private definitionsService: DefinitionsService,
-    private windowService: WindowService,
-    private featureToggleService: FeatureToggleService,
+    private readonly appConfig: AppConfig,
+    private readonly definitionsService: DefinitionsService,
+    private readonly windowService: WindowService,
+    private readonly featureToggleService: FeatureToggleService,
+    private readonly cd: ChangeDetectorRef
   ) { }
 
   public ngOnInit() {
@@ -93,6 +112,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
       this.isVisible = jurisdictions.length > 0;
       this.jurisdictions = jurisdictions;
     });
+
+    this.shareableJurisdictions$ = this.featureToggleService.getValue('shareable-jurisdictions', []);
 
     this.setCaseListFilterDefaults();
 
@@ -128,6 +149,12 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
     this.elasticSearchFlagSubsription = this.featureToggleService.isEnabled('elastic-search').subscribe(value => this.elasticSearchFlag = value);
     this.userDetails = this.store.pipe(select(fromRoot.getUserDetails));
+    this.pIsCaseShareVisible$ = combineLatest([
+      this.userDetails, this.shareableJurisdictions$, this.jurisdiction$
+    ]).mergeMap(project => {
+      this.cd.detectChanges();
+      return Observable.of(this.caseShareIsVisible(project));
+    });
     this.shareCases$ = this.store.pipe(select(fromCasesFeature.getShareCaseListState));
     this.shareCases$.subscribe(shareCases => this.selectedCases = converters.toSearchResultViewItemConverter(shareCases));
   }
@@ -239,7 +266,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
     }
   }
 
-  getEvent() {
+  public getEvent() {
     let formGroupFromLS = null;
     let jurisdictionFromLS = null;
     let caseStateGroupFromLS = null;
@@ -328,6 +355,12 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public applyFilter(event) {
     this.page = event.selected.page;
     this.selected = event.selected;
+    // EUI-2906. Reset the sort order when changing the filter.
+    this.sortParameters = undefined;
+    if (this.ccdSearchResult) {
+      // EUI-2906. We also need to reset the sort parameters on the SearchResultComponent.
+      this.ccdSearchResult.consumerSortParameters = { column: null, order: null, type: null };
+    }
     this.triggerQuery();
   }
 
@@ -335,15 +368,12 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.store.dispatch(new fromCasesFeature.CaseFilterToggle(!this.showFilter));
   }
 
-  /**
-   * isCaseShareVisible()
-   * Determines case share visibility
-   *
-   * @param canShareCases - true
-   * @param shareableJurisdictions - ["IA", "FR"]
-   */
-  public isCaseShareVisible(canShareCases: boolean, shareableJurisdictions: string[]): boolean {
-    return canShareCases && shareableJurisdictions.includes(this.jurisdiction.id);
+  public caseShareIsVisible(project: any[]): boolean {
+    const [ userDetails, shareableJurisdictions, jurisdiction ] = project;
+    if (userDetails && shareableJurisdictions && jurisdiction) {
+      return userDetails.canShareCases && shareableJurisdictions.includes(jurisdiction.id);
+    }
+    return false;
   }
 
   /**
@@ -372,8 +402,10 @@ export class CaseListComponent implements OnInit, OnDestroy {
     }));
   }
 
-  public hasResults() {
-    return this.resultView.results.length > 0;
+  public hasResults(): boolean {
+    // With the adjusted change detection mechanism, we need to check that
+    // we actually have a result view and it has results.
+    return this.resultView && (this.resultView.results || []).length > 0;
   }
 
   public sort(sortParameters) {

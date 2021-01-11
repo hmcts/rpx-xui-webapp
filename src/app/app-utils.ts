@@ -14,7 +14,7 @@ export class AppUtils {
     if (matched && matched[0]) {
       switch (matched[0]) {
         case AppConstants.ENVIRONMENT_NAMES.aat:
-         case AppConstants.ENVIRONMENT_NAMES.localhost:
+        case AppConstants.ENVIRONMENT_NAMES.localhost:
         case AppConstants.ENVIRONMENT_NAMES.pr:
           return AppConstants.ENVIRONMENT_NAMES.aat;
         case AppConstants.ENVIRONMENT_NAMES.demo:
@@ -79,5 +79,17 @@ export class AppUtils {
         active: item.href === currentUrl
       };
     });
+  }
+
+  /**
+   * Add padding
+   *
+   * @param num - '1'
+   * @param padNum - '2'
+   * @return - 01
+   */
+  public static pad(num: string, padNum = 2): string {
+    const val = (num !== undefined && num !== null) ? num.toString() : '';
+    return val.length >= padNum ? val : new Array(padNum - val.length + 1).join('0') + val;
   }
 }

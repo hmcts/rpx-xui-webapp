@@ -27,7 +27,7 @@ import { initApplication } from './app-initilizer';
 // common provider
 import { ProvidersModule } from './providers/providers.module';
 // app routes
-import { ROUTES } from './app.routes';
+import { ROUTES, routingConfiguration } from './app.routes';
 import { CookieModule } from 'ngx-cookie';
 import { SharedModule } from './shared/shared.module';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
@@ -55,7 +55,7 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
     CookieModule.forRoot(),
     HttpClientModule,
     ProvidersModule.forRoot(),
-    RouterModule.forRoot(ROUTES),
+    RouterModule.forRoot(ROUTES, routingConfiguration),
     StoreModule.forRoot(reducers, { metaReducers }),
     EffectsModule.forRoot(effects),
     StoreRouterConnectingModule,

@@ -6,7 +6,7 @@
           {{toggleButtonName}}
         </button>
       </div>
-      <div class="hmcts-action-bar__filter"  *ngIf="isCaseShareVisible((userDetails | async).canShareCases, getShareableJurisdictions() | async)">
+      <div class="hmcts-action-bar__filter"  *ngIf="isCaseShareVisible$ | async">
         <button id="btn-share-button" class="govuk-button hmcts-button--secondary" type="button"  aria-haspopup="true" aria-expanded="false"
                 [disabled]="checkIfButtonDisabled()" (click)="shareCaseSubmit()">
           Share Case
@@ -33,8 +33,9 @@
         </div>
         <div aria-live="polite" class="hmcts-filter-layout__content" id="search-result" rightbody="" role="region">
           <ccd-search-result
+            #ccdSearchResult
             *ngIf="resultView"
-            [selectionEnabled]="isCaseShareVisible((userDetails | async).canShareCases, getShareableJurisdictions() | async)"
+            [selectionEnabled]="isCaseShareVisible$ | async"
             [jurisdiction]="jurisdiction"
             [caseType]="caseType"
             [caseState]="caseState"
@@ -50,7 +51,7 @@
             (sortHandler)="sort($event)"
           >
           </ccd-search-result>
-          <div id="info-msg-unselected-case" *ngIf="hasResults() && isCaseShareVisible((userDetails | async).canShareCases, getShareableJurisdictions() | async)" class="form-group">
+          <div id="info-msg-unselected-case" *ngIf="hasResults() && (isCaseShareVisible$ | async)" class="form-group">
             <details class="govuk-details" data-module="govuk-details">
               <summary class="govuk-details__summary">
                 <span id="sp-msg-unselected-case-header" class="govuk-details__summary-text">

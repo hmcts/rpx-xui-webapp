@@ -49,10 +49,10 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
     res.status(status);
 
-    // Assign actions to the tasks on the data from the API.
+     // Assign actions to the tasks on the data from the API.
     if (data) {
       assignActionsToTasks(data.tasks, req.body.view);
-    }
+    } 
 
     // Send the (possibly modified) data back in the Response.
     res.send(data);

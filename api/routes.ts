@@ -7,9 +7,6 @@ import authInterceptor from './lib/middleware/auth'
 import { router as nocRouter } from './noc/routes'
 import userRouter from './user/routes'
 
-// import {router as termsAndCRoutes} from './termsAndConditions/routes'
-// import {router as userTandCRoutes} from './userTermsAndConditions/routes'
-
 const router = express.Router({ mergeParams: true })
 
 router.use('/healthCheck', healthCheck)

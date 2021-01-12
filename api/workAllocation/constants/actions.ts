@@ -26,7 +26,7 @@ const GO = {
   id: 'go',
   title: 'Go to case',
 };
-  
+
 /**
  * This should become "assign" as there's no actual "reassign" API call.
  */
@@ -34,7 +34,7 @@ const REASSIGN = {
   id: 'reassign',
   title: 'Reassign task',
 };
-  
+
 export const ACTIONS = {
   ASSIGN,
   CANCEL,
@@ -43,7 +43,7 @@ export const ACTIONS = {
   REASSIGN,
   RELEASE,
 };
-  
+
 export const TASK_ACTIONS = {
   AVAILABLE: [ CLAIM, CLAIM_AND_GO, ],
   MANAGER: {
@@ -52,7 +52,7 @@ export const TASK_ACTIONS = {
   },
   MY: [ REASSIGN, RELEASE, GO, ],
 };
-  
+
 export enum ActionViews {
   MY = 'MyTasks',
   AVAILABLE = 'AvailableTasks',

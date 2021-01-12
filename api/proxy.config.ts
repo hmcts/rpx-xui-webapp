@@ -11,7 +11,6 @@ import {
 import {applyProxy} from './lib/middleware/proxy'
 import * as searchCases from './searchCases'
 
-
 export const initProxy = (app: Express) => {
     applyProxy(app, {
         source: [

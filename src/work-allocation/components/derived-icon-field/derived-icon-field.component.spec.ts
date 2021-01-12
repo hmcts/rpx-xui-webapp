@@ -1,8 +1,9 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Task } from 'src/work-allocation/models/tasks';
 
-import { WorkAllocationComponentsModule } from './../work-allocation.components.module';
+import { Task } from '../../models/tasks';
+import { getMockTasks } from '../../tests/utils.spec';
+import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
 import { DerivedIconFieldComponent } from './derived-icon-field.component';
 
 @Component({
@@ -19,44 +20,8 @@ class WrapperComponent {
  * Mock tasks
  */
 function getTasks(): Task[] {
-
-    return [
-      {
-        id: '1549476532065586',
-        caseReference: '1549 4765 3206 5586',
-        caseName: 'Kili Muso',
-        caseCategory: 'Protection',
-        location: 'Taylor House',
-        taskName: 'Review respondent evidence',
-        dueDate: new Date(628021800000),
-        actions: [
-          {
-            id: 'actionId1',
-            title: 'Reassign task',
-          },
-          {
-            id: 'actionId2',
-            title: 'Release this task',
-          }
-        ]
-      },
-      {
-        id: '1549476532065587',
-        caseReference: '1549 4765 3206 5587',
-        caseName: 'Mankai Lit',
-        caseCategory: 'Revocation',
-        location: 'Taylor House',
-        taskName: 'Review appellant case',
-        dueDate: new Date(628021800000),
-        actions: [
-          {
-            id: 'actionId2',
-            title: 'Release this task',
-          }
-        ]
-      },
-    ];
-  }
+  return getMockTasks();
+}
 
 describe('WorkAllocation', () => {
 
@@ -119,34 +84,34 @@ describe('WorkAllocation', () => {
     });
 
     it('should allow swapping the match for different constraints', () => {
-        // Expect the nativeElement to be empty (no icon yet)
-        let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('svg');
-        
-        // Set up the column names
-        const firstExampleColumn: string = 'location';
-        const secondExampleColumn: string = 'caseName';
-        
-        // Set the task, column and value to match with
-        component.task = getTasks()[0];
-        component.sourceColumn = firstExampleColumn;
-        component.matchValue = 'Taylor House';
-        fixture.detectChanges();
-        element = fixture.debugElement.nativeElement.querySelector('svg');
-        expect(element).not.toBe(null);
-        
-        // Set the task, column and value to match with secondly
-        component.task = getTasks()[0];
-        component.sourceColumn = secondExampleColumn;
-        component.matchValue = 'Kili Muso';
-        fixture.detectChanges();
-        element = fixture.debugElement.nativeElement.querySelector('svg');
-        expect(element).not.toBe(null);
+      // Expect the nativeElement to be empty (no icon yet)
+      let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('svg');
 
-        // Should not match as task's caseName is different
-        component.task = getTasks()[1];
-        fixture.detectChanges();
-        element = fixture.debugElement.nativeElement.querySelector('svg');
-        expect(element).toBe(null);
+      // Set up the column names
+      const firstExampleColumn: string = 'location';
+      const secondExampleColumn: string = 'caseName';
+
+      // Set the task, column and value to match with
+      component.task = getTasks()[0];
+      component.sourceColumn = firstExampleColumn;
+      component.matchValue = 'Taylor House';
+      fixture.detectChanges();
+      element = fixture.debugElement.nativeElement.querySelector('svg');
+      expect(element).not.toBe(null);
+
+      // Set the task, column and value to match with secondly
+      component.task = getTasks()[0];
+      component.sourceColumn = secondExampleColumn;
+      component.matchValue = 'Kili Muso';
+      fixture.detectChanges();
+      element = fixture.debugElement.nativeElement.querySelector('svg');
+      expect(element).not.toBe(null);
+
+      // Should not match as task's caseName is different
+      component.task = getTasks()[1];
+      fixture.detectChanges();
+      element = fixture.debugElement.nativeElement.querySelector('svg');
+      expect(element).toBe(null);
     });
 
     it('should show the correct text content', () => {
@@ -156,7 +121,7 @@ describe('WorkAllocation', () => {
         // Set up the column names
         const firstExampleColumn: string = 'location';
         const hoverWarning: string = 'This case has more than one task. Review needed.';
-        
+
         // Set the task, column and value to match with
         component.task = getTasks()[0];
         component.sourceColumn = firstExampleColumn;

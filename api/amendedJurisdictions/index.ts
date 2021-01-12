@@ -9,7 +9,7 @@ const jurisdictions = /aggregated\/.+jurisdictions\?/
  */
 export const getJurisdictions = (proxyRes, req, res, data: any[]) => {
    if (!Array.isArray(data)
-        || !jurisdictions.test(req.url)) {
+        && !jurisdictions.test(req.url)) {
         return data
     }
     const filters = getConfigValue(JURISDICTIONS)

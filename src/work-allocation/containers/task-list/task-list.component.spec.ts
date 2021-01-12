@@ -9,6 +9,7 @@ import { WorkAllocationComponentsModule } from '../../components/work-allocation
 import { TaskService, TaskSort } from '../../enums';
 import { Task, TaskAction, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
+import { getMockTasks } from '../../tests/utils.spec';
 import { TaskListComponent } from './task-list.component';
 
 @Component({
@@ -27,43 +28,7 @@ class WrapperComponent {
  * Mock tasks
  */
 function getTasks(): Task[] {
-
-  return [
-    {
-      id: '1549476532065586',
-      caseReference: '1549 4765 3206 5586',
-      caseName: 'Kili Muso',
-      caseCategory: 'Protection',
-      location: 'Taylor House',
-      taskName: 'Review respondent evidence',
-      dueDate: new Date(628021800000),
-      actions: [
-        {
-          id: 'actionId1',
-          title: 'Reassign task',
-        },
-        {
-          id: 'actionId2',
-          title: 'Release this task',
-        }
-      ]
-    },
-    {
-      id: '1549476532065587',
-      caseReference: '1549 4765 3206 5587',
-      caseName: 'Mankai Lit',
-      caseCategory: 'Revocation',
-      location: 'Taylor House',
-      taskName: 'Review appellant case',
-      dueDate: new Date(628021800000),
-      actions: [
-        {
-          id: 'actionId2',
-          title: 'Release this task',
-        }
-      ]
-    },
-  ];
+  return getMockTasks();
 }
 
 /**

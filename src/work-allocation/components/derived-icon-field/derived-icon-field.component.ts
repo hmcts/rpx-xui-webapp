@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { Task } from 'src/work-allocation/models/tasks';
+
+import { Task } from '../../models/tasks';
 
 @Component({
   selector: 'exui-derived-icon-field',
@@ -23,7 +24,7 @@ export class DerivedIconFieldComponent {
   @Input() public matchValue: any;
 
   public get showIcon(): boolean {
-    if (this.task && this.sourceColumn && this.task[this.sourceColumn]===this.matchValue) {
+    if (this.task && this.sourceColumn && this.task[this.sourceColumn] === this.matchValue) {
       return true;
     } else {
       return false;

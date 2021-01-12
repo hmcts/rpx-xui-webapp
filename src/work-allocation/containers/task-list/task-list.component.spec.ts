@@ -13,7 +13,7 @@ import { TaskListComponent } from './task-list.component';
 
 @Component({
   template: `
-    <exui-task-list [fields]='fields' [tasks]='tasks' [taskServiceConfig]="taskServiceConfig" [sortedBy]="TaskSortField"></exui-task-list>`
+    <exui-task-list [fields]='fields' [tasks]='tasks' [taskServiceConfig]="taskServiceConfig" [sortedBy]="TaskSortField" ></exui-task-list>`
 })
 class WrapperComponent {
   @ViewChild(TaskListComponent) public appComponentRef: TaskListComponent;
@@ -455,4 +455,5 @@ describe('TaskListComponent', () => {
       expect(lastNavigateCall.extras).toBeUndefined();
     });
   });
+
 });

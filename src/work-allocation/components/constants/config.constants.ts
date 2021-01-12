@@ -1,5 +1,6 @@
 import { TaskFieldType, TaskView } from '../../enums';
 import { TaskFieldConfig } from '../../models/tasks';
+import { DERIVED_ICON_CONSTANTS} from './derived-icon.constants';
 
 /**
  * The individual fields.
@@ -34,6 +35,15 @@ const LOCATION: TaskFieldConfig = {
   columnLabel: 'Location',
   views: TaskView.ALL_VIEWS
 };
+const DERIVED_ICON: TaskFieldConfig = {
+  name: 'derivedIcon',
+  type: TaskFieldType.DERIVED_ICON,
+  columnLabel: null,
+  views: TaskView.ALL_VIEWS,
+  // sourcColumn and matchValue values currently defined in DI constants file
+  sourceColumn: DERIVED_ICON_CONSTANTS.SOURCE_COLUMN,
+  matchValue: DERIVED_ICON_CONSTANTS.MATCH_VALUE
+};
 const TASK_NAME: TaskFieldConfig = {
   name: 'taskName',
   type: TaskFieldType.STRING,
@@ -58,10 +68,10 @@ const ASSIGNEE: TaskFieldConfig = {
  * The views.
  */
 const AVAILABLE_TASKS: TaskFieldConfig[] = [
-  CASE_REFERENCE_AS_TEXT, CASE_NAME, CASE_CATEGORY, LOCATION, TASK_NAME, DUE_DATE
+  CASE_REFERENCE_AS_TEXT, CASE_NAME, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME, DUE_DATE
 ];
 const MY_TASKS: TaskFieldConfig[] = [
-  CASE_REFERENCE_AS_LINK, CASE_NAME, CASE_CATEGORY, LOCATION, TASK_NAME, DUE_DATE
+  CASE_REFERENCE_AS_LINK, CASE_NAME, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME, DUE_DATE
 ];
 const TASK_MANAGER: TaskFieldConfig[] = [
   CASE_REFERENCE_AS_LINK, CASE_NAME, CASE_CATEGORY, LOCATION, TASK_NAME, DUE_DATE, ASSIGNEE

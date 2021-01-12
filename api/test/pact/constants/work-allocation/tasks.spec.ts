@@ -25,7 +25,7 @@ const MANKAI_LIT = {
 const BOB_CRATCHITT = {
   id: '3456789012345678',
   caseReference: '3456 7890 1234 5678',
-  caseName: 'Bob Cratchit',
+  caseName: 'Bob J Cratchit',
   caseCategory: 'Protection',
   location: 'Taylor Swift',
   taskName: 'Review respondent evidence',
@@ -58,6 +58,7 @@ const DAVID_COPPERFIELD = {
   caseName: 'David Copperfield',
   caseCategory: 'Revocation',
   location: 'Taylor House',
+  alert: true,
   taskName: 'Review appellant case',
   dueDate: new Date(1604506789000)
 };

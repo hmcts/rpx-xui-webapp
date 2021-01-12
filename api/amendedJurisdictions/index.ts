@@ -12,7 +12,6 @@ export const getJurisdictions = (proxyRes, req, res, data: any[]) => {
         || !jurisdictions.test(req.url)) {
         return data
     }
-
     const filters = getConfigValue(JURISDICTIONS)
     req.session.jurisdictions = [...data].filter(o => filters.includes(o.id))
     return req.session.jurisdictions

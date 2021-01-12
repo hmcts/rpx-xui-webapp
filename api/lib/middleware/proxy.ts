@@ -33,7 +33,6 @@ export const applyProxy = (app, config) => {
     }
 
     if (config.onReq) {
-        options.selfHandleResponse = true
         options.onProxyReq = config.onReq
     }
 

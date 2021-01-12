@@ -61,7 +61,7 @@ describe('Amended Jurisdiction', () => {
     sandbox.restore()
   })
 
-  it('should filter jurisdicitons for the jurisdictions endpoint',  () => {
+  it('should filter jurisdictions for the jurisdictions endpoint',  () => {
     const data = [
       {
         id: 'PROBATE',

@@ -105,48 +105,12 @@ module.exports = mockInstance;
 const args = minimist(process.argv)
 if (args.standalone){
     mockInstance.init();
-    // createCustomCCDCaseConfig();
+    // complexDynamicListeventConfig();
+    // collectionDynamicListeventConfig()
     // createCustomCaseDetails();
     mockInstance.startServer()
 }
 
-
-
-
-function createCustomCaseDetails(){
-    const caseConfig = new CCDCaseConfig('TEST_CaseType', 'Test case type hidden field retain value', 'test description');
- 
-    function getArrayItmeById(arrayObj, id){
-        return arrayObj.filter(obj => obj.id === id);
-    }
-
-
-    const caseTemplate = require('./temp');
-
-    const largeCaseDetails = JSON.parse(JSON.stringify(caseTemplate));
-    const CasePeopleTabTab = getArrayItmeById(largeCaseDetails.tabs, 'CasePeopleTab')[0];
-    const childrenField = getArrayItmeById(CasePeopleTabTab.fields, 'children1')[0];
-    const respodentsField = getArrayItmeById(CasePeopleTabTab.fields, 'respondents1')[0];
-
-    const confidentialPeopleTab = getArrayItmeById(largeCaseDetails.tabs, 'Confidential')[0]; 
-
-    for (let children = 0; children < 20 ; children++){
-        childrenField.value.push({ "id": new Date(), "value": childrenField.value[0].value});
-    } 
-
-    for (let respondents = 0; respondents < 20; respondents++) {
-        respodentsField.value.push({ "id": new Date(), "value": respodentsField.value[0].value });
-    }
-   
-    // CasePeopleTabTab.fields = [];
-    // confidentialPeopleTab.fields = [];
-   
-
-    mockInstance.onGet('/data/internal/cases/:caseid', (req, res) => {
-        res.send(largeCaseDetails);
-    });
-
-}
 
 
 
@@ -175,4 +139,5 @@ function setUpcaseConfig(caseConfig) {
     });
 
 }
+
 

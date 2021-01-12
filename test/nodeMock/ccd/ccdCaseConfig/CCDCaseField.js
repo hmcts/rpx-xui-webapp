@@ -129,7 +129,7 @@ class CCDcaseField{
             });
         } else if (fieldConfig.type === "Collection") {
             const collectionCCDField = this.getCCDFieldTemplateCopy(fieldConfig.collection_field_type)
-            parentField.field_type.collection_field_type = collectionCCDField;
+            parentField.field_type.collection_field_type = collectionCCDField.field_type;
             // this.ConfigureCCDField(collectionCCDField, fieldConfig.collectionField);
 
         }

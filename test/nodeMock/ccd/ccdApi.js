@@ -113,7 +113,10 @@ class CCDApi{
                 break;
             case "test":
                 return this.getCustomCase();
-                break; 
+                break;
+            default:
+                return mockEvents[eventId]();
+
         }
 
         return customCase.getCase();
@@ -159,29 +162,29 @@ class CCDApi{
             return customCase
                 .setEventProps({show_summary: true})
                 .addWizardPage("testPage1", "Test Page 1")
-                .addCaseField({ id: "TextField0", type: "Text", label: "Text Field 0" })
-                .addCaseField({ id: "TextField1", type: "Text", label: "Text Field 1" })
-                .setFieldProps({ show_condition: 'TextField0!="Hide TextField1" AND TextField0!="Hide all"' })
-                .addCaseField({ id: "TextField2", type: "Text", label: "Text Field 2" })
-                .setFieldProps({ show_condition: 'TextField0!="Hide TextField2" AND TextField0!="Hide all"' })
-                .addCaseField({ id: "TextField3", type: "Text", label: "Text Field 3" })
+                    .addCaseField({ id: "TextField0", type: "Text", label: "Text Field 0" })
+                    .addCaseField({ id: "TextField1", type: "Text", label: "Text Field 1" })
+                        .setFieldProps({ show_condition: 'TextField0!="Hide TextField1" AND TextField0!="Hide all"' })
+                    .addCaseField({ id: "TextField2", type: "Text", label: "Text Field 2" })
+                        .setFieldProps({ show_condition: 'TextField0!="Hide TextField2" AND TextField0!="Hide all"' })
+                    .addCaseField({ id: "TextField3", type: "Text", label: "Text Field 3" })
 
                 .addWizardPage("testPage2", "Test Page 2")
-                .addCaseField({
-                    id: "Gender", type: "FixedRadioList", label: "Select your gender",
-                    list: [{ code: "male", label: "Male" }, { code: "female", label: "Female" }, { code: "notGiven", label: "Not given" }]
-                })
-                .setFieldProps({ show_condition: 'TextField0!="Hide all"' })
-                .addCaseField({
-                    id: "optionsMultiVal", type: "FixedList", label: "Select all that match",
-                    list: [{ code: "a", label: "Option A" }, { code: "b", label: "Option B" }, { code: "c", label: "Option c" }]
-                })
-                .addCaseField({ id: "person1", type: "Complex", label: "Person 1", complex_fields: personFields })
-                .setFieldProps({ show_condition: 'TextField0!="Hide all"' })
-                .addCaseField({ id: "person2", type: "Complex", label: "Person 2", complex_fields: personFields })
-                .setFieldProps({ show_condition: 'TextField0!="Hide all"' })
-                .addCaseField({ id: "people", type: "Collection", label: "People", collection_field_type: { id: "person2", type: "Complex", label: "Person 2", complex_fields: personFields } })
-                .setFieldProps({ show_condition: 'TextField0!="Hide all"' })
+                    .addCaseField({
+                        id: "Gender", type: "FixedRadioList", label: "Select your gender",
+                        list: [{ code: "male", label: "Male" }, { code: "female", label: "Female" }, { code: "notGiven", label: "Not given" }]
+                    })
+                        .setFieldProps({ show_condition: 'TextField0!="Hide all"' })
+                    .addCaseField({
+                        id: "optionsMultiVal", type: "FixedList", label: "Select all that match",
+                        list: [{ code: "a", label: "Option A" }, { code: "b", label: "Option B" }, { code: "c", label: "Option c" }]
+                    })
+                    .addCaseField({ id: "person1", type: "Complex", label: "Person 1", complex_fields: personFields })
+                        .setFieldProps({ show_condition: 'TextField0!="Hide all"' })
+                    .addCaseField({ id: "person2", type: "Complex", label: "Person 2", complex_fields: personFields })
+                        .setFieldProps({ show_condition: 'TextField0!="Hide all"' })
+                    .addCaseField({ id: "people", type: "Collection", label: "People", collection_field_type: { id: "person2", type: "Complex", label: "Person 2", complex_fields: personFields } })
+                        .setFieldProps({ show_condition: 'TextField0!="Hide all"' })
                 .getCase();
         
  
@@ -190,6 +193,62 @@ class CCDApi{
 }
 
 module.exports = new CCDApi();
+
+
+const listItems = [
+    {
+        "code": "item1",
+        "label": "Item 1"
+    },
+    {
+        "code": "item2",
+        "label": "Item 2"
+    },
+    {
+        "code": "item3",
+        "label": "Item 3"
+    }
+]
+const mockEvents = {
+    "complexDynamicList": () =>{
+        const caseConfig = new CCDCaseConfig('TEST_CaseType', 'Dynamic list tests', 'Dynamic list tests');
+
+        const dynamicListVal = { "value": listItems[2], "list_items": listItems };
+
+        return caseConfig
+            .setEventProps({})
+            .addWizardPage("simpleDynamicList", "Root level dynamic list")
+            .addCaseField({ id: "testDynamicList", type: "DynamicList", label: "Sample Dynamic List", value: dynamicListVal })
+            // .addWizardPage("complexFieldDynamicList", "Complex field level dynamic list")
+            .addCaseField({
+                id: "complexWithDynamicList", type: "Complex", label: "Comples having dynamic list", value: { "testComplexDynamicList": dynamicListVal }, complex_fields: [
+                    { id: "testComplexDynamicList", type: "DynamicList", label: "Complex Dynamic List", }
+                ]
+            })
+            .getCase();
+    },
+
+
+    "collectionDynamicList": () => {
+        const caseConfig = new CCDCaseConfig('TEST_CaseType', 'Dynamic list tests', 'Dynamic list tests');
+
+        return caseConfig
+            .setEventProps({})
+            .addWizardPage("simpleDynamicList", "Root level dynamic list")
+            .addCaseField({ id: "testDynamicList", type: "DynamicList", label: "Sample Dynamic List", value: { "value": listItems[2], "list_items": listItems } })
+                    .setFieldProps({ display_context_parameter: "#COLLECTION(allowInsert,allowDelete)" })
+                .addCaseField({
+                    id: "collectionDYnamicList", type: "Collection", label: "Collection DL",
+                    collection_field_type: { id: "testCollectionDynamicList", type: "DynamicList", label: "Collection Dynamic List", },
+                    value: [
+                        { id:1, value : { "value": listItems[2], "list_items": listItems }},
+                        { id: 1, value:{ "value": listItems[1], "list_items": listItems }}
+                    ]
+                })
+                    .setFieldProps({ display_context_parameter: "#COLLECTION(allowInsert,allowDelete)"})
+            .getCase();
+    }
+};
 
 
 

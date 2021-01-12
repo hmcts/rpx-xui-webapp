@@ -114,7 +114,7 @@ describe('TaskAssignmentContainerComponent', () => {
     expect(component.error).toBeNull();
 
 
-    component.reassign();
+    component.assign();
     fixture.detectChanges();
     expect(component.error).not.toBeNull();
     expect(component.error.title).toEqual(NAME_ERROR.title);
@@ -128,7 +128,7 @@ describe('TaskAssignmentContainerComponent', () => {
     component.caseworker = caseworker;
     fixture.detectChanges();
 
-    component.reassign();
+    component.assign();
 
     fixture.detectChanges();
     const assignee: Assignee = {

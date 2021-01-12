@@ -3,9 +3,8 @@ import { Router } from '@angular/router';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 
 import { ConfigConstants, FilterConstants, ListConstants, SortConstants } from '../../components/constants';
-import { TaskActionIds } from '../../enums';
 import { Caseworker, Location, SearchTaskRequest } from '../../models/dtos';
-import { InvokedTaskAction, TaskFieldConfig } from '../../models/tasks';
+import { TaskFieldConfig } from '../../models/tasks';
 import { CaseworkerDisplayName } from '../../pipes';
 import {
   CaseworkerDataService,
@@ -126,18 +125,5 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
       values = this.caseworkers.map(cw => this.caseworkerDisplayName.transform(cw, false));
     }
     return { key: 'assignee', operator: 'IN', values };
-  }
-
-  /**
-   * InvokedTaskAction from the Task List Component, so that we can handle the User's
-   * action.
-   */
-  public onActionHandler(taskAction: InvokedTaskAction): void {
-    if (taskAction.action.id === TaskActionIds.REASSIGN) {
-      const state = { returnUrl: this.returnUrl, showAssigneeColumn: true };
-      this.router.navigate([`/tasks/${taskAction.action.id}/${taskAction.task.id}`], { state });
-    } else {
-      super.onActionHandler(taskAction);
-    }
   }
 }

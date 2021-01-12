@@ -24,49 +24,6 @@ class WrapperComponent {
   @ViewChild(AvailableTasksComponent) public appComponentRef: AvailableTasksComponent;
 }
 
-/**
- * Mock tasks
- */
-function getTasks(): Task[] {
-
-  return [
-    {
-      id: '1549476532065586',
-      caseReference: '1549 4765 3206 5586',
-      caseName: 'Kili Muso',
-      caseCategory: 'Protection',
-      location: 'Taylor House',
-      taskName: 'Review respondent evidence',
-      dueDate: new Date(628021800000),
-      actions: [
-        {
-          id: 'actionId1',
-          title: 'Reassign task',
-        },
-        {
-          id: 'actionId2',
-          title: 'Release this task',
-        }
-      ]
-    },
-    {
-      id: '1549476532065587',
-      caseReference: '1549 4765 3206 5587',
-      caseName: 'Mankai Lit',
-      caseCategory: 'Revocation',
-      location: 'Taylor House',
-      taskName: 'Review appellant case',
-      dueDate: new Date(628021800000),
-      actions: [
-        {
-          id: 'actionId2',
-          title: 'Release this task',
-        }
-      ]
-    },
-  ];
-}
-
 describe('AvailableTasksComponent', () => {
   let component: AvailableTasksComponent;
   let wrapper: WrapperComponent;
@@ -268,14 +225,14 @@ describe('AvailableTasksComponent', () => {
 
       mockTaskService.claimTask.and.returnValue(of({}));
 
-      const firstTask = getTasks()[1];
+      const firstTask = getMockTasks()[1];
       component.claimTaskAndGo(firstTask);
 
       expect(mockTaskService.claimTask).toHaveBeenCalledWith(firstTask.id);
     });
 
     it('should call claimTask on the taskService with the taskId, so that the User can claim the task.', () => {
-      const firstTask = getTasks()[1];
+      const firstTask = getMockTasks()[1];
       component.claimTaskAndGo(firstTask);
       expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${firstTask.id}`], {
         state: {
@@ -293,7 +250,7 @@ describe('AvailableTasksComponent', () => {
 
       mockTaskService.claimTask.and.returnValue(throwError({status: errorStatusCode}));
 
-      const firstTask = getTasks()[1];
+      const firstTask = getMockTasks()[1];
       component.claimTaskAndGo(firstTask);
 
       expect(claimTaskErrorsSpy).toHaveBeenCalledWith(errorStatusCode);

@@ -85,10 +85,6 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
    */
   public claimTaskAndGo(task: Task): void {
     this.taskService.claimTask(task.id).subscribe(() => {
-      this.infoMessageCommService.nextMessage({
-        type: InfoMessageType.SUCCESS,
-        message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS,
-      });
       // constant below removes spaces from caseReference to get caseId
       const caseId = task.caseReference.replace(/\s/g, '');
       // navigates to case details page for specific case id
@@ -127,14 +123,11 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
   public onActionHandler(taskAction: InvokedTaskAction): void {
     switch (taskAction.action.id) {
       case TaskActionIds.CLAIM:
-        this.claimTask(taskAction.task.id);
-        break;
+        return this.claimTask(taskAction.task.id);
       case TaskActionIds.CLAIM_AND_GO:
-        this.claimTaskAndGo(taskAction.task);
-        break;
+        return this.claimTaskAndGo(taskAction.task);
       default:
-        super.onActionHandler(taskAction);
-        break;
+        return super.onActionHandler(taskAction);
     }
   }
 }

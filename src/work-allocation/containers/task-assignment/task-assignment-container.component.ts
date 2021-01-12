@@ -87,7 +87,7 @@ export class TaskAssignmentContainerComponent implements OnInit {
     }
   }
 
-  public reassign(): void {
+  public assign(): void {
     if (!this.caseworker) {
       this.error = NAME_ERROR;
       return;
@@ -116,10 +116,11 @@ export class TaskAssignmentContainerComponent implements OnInit {
   }
 
   private reportSuccessAndReturn(): void {
-    this.returnWithMessage({
-      type: InfoMessageType.SUCCESS,
-      message: InfoMessage.ASSIGNED_TASK,
-    }, { badRequest: false });
+    const message = this.successMessage;
+    this.returnWithMessage(
+      { type: InfoMessageType.SUCCESS, message },
+      { badRequest: false }
+    );
   }
 
   private reportUnavailableErrorAndReturn(): void {

@@ -1,22 +1,26 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import {
-  AlertService, CaseUIToolkitModule,
-  ErrorNotifierService, HttpError, NavigationOrigin
-} from '@hmcts/ccd-case-ui-toolkit';
-import { combineReducers, Store, StoreModule } from '@ngrx/store';
-import { reducers } from 'src/app/store';
-import { InfoMessage } from 'src/work-allocation/enums';
-import { CaseDetailsHomeComponent } from '..';
 import * as fromFeature from '../../store';
 
-describe('CaseDetailsHomeComponent', () => {
+import {
+  AlertService,
+  CaseUIToolkitModule,
+  ErrorNotifierService
+} from '@hmcts/ccd-case-ui-toolkit';
+import { ComponentFixture, TestBed, async } from '@angular/core/testing';
+import { Store, StoreModule, combineReducers } from '@ngrx/store';
+
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CaseDetailsHomeComponent } from '..';
+import { InfoMessage } from 'src/work-allocation/enums';
+import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { reducers } from 'src/app/store';
+
+fdescribe('CaseDetailsHomeComponent', () => {
   let component: CaseDetailsHomeComponent;
   let fixture: ComponentFixture<CaseDetailsHomeComponent>;
   const mockAlertService = jasmine.createSpyObj('alertService', ['success', 'setPreserveAlerts', 'error']);
   const mockErrorNotifierService = jasmine.createSpyObj('ErrorNotifierService', ['announceError']);
+  let mockRouter: jasmine.SpyObj<Router>;
   let store: Store<fromFeature.State>;
   let storeDispatchMock: any;
 
@@ -37,20 +41,44 @@ describe('CaseDetailsHomeComponent', () => {
       .compileComponents();
   }));
 
-  beforeEach(() => {
+  describe('entering page normally', () => {
 
-    store = TestBed.get(Store);
-    storeDispatchMock = spyOn(store, 'dispatch');
-    fixture = TestBed.createComponent(CaseDetailsHomeComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    beforeEach(() => {
+      store = TestBed.get(Store);
+      storeDispatchMock = spyOn(store, 'dispatch');
+      fixture = TestBed.createComponent(CaseDetailsHomeComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    });
+
+    it('should create', () => {
+      expect(component).toBeTruthy();
+    });
+
+    it('should not have a success message that is shown', () => {
+      expect(mockAlertService.success).not.toHaveBeenCalled();
+    });
+
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  describe('redirected from available-tasks assignment', () => {
+
+    beforeEach(() => {
+      mockRouter = TestBed.get(Router);
+      spyOn(mockRouter, 'getCurrentNavigation').and.returnValues({extras: { state: { showMessage: true, messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS}}});
+      store = TestBed.get(Store);
+      storeDispatchMock = spyOn(store, 'dispatch');
+      fixture = TestBed.createComponent(CaseDetailsHomeComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    });
+
+    it('should not have a success message that is shown', () => {
+      // as data has been set up beforehand to have been redirected from avialable tasks
+      // the alert service will have been called
+      expect(mockAlertService.success).toHaveBeenCalled();
+    });
+
   });
 
-  /* it('should allow a success message to be shown if sent from assign and go (available-tasks)', () => {
-    spyOnProperty(mockRouter, 'getCurrentNavigation').and.returnValue({extras: { state: { showMessage: true, messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS}}});
-  }); */
 });

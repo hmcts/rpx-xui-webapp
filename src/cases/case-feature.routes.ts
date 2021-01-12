@@ -12,6 +12,7 @@ import { CaseSearchComponent } from './containers/case-search/case-search.compon
 import { ActivityResolver } from './resolvers/activity.resolver';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
 
+
 export const ROUTES: Routes = [
     {
       path: '',
@@ -25,7 +26,7 @@ export const ROUTES: Routes = [
           component: CaseListComponent,
           canActivate: [ HealthCheckGuard ],
           data: {
-            title: 'HMCTS Manage Cases | Case list'
+            title: 'Case list'
           }
         },
         {
@@ -57,7 +58,7 @@ export const ROUTES: Routes = [
           component: CaseFilterComponent,
           canActivate: [ HealthCheckGuard ],
           data: {
-            title: 'HMCTS Manage Cases | Create a case'
+            title: 'Create a case'
           }
         },
         {
@@ -78,7 +79,7 @@ export const ROUTES: Routes = [
           ],
           canActivate: [ HealthCheckGuard ],
           data: {
-            title: 'HMCTS Manage Cases | Create a case'
+            title: 'Create a case'
           }
         },
         {
@@ -87,7 +88,7 @@ export const ROUTES: Routes = [
           children: editorRouting,
           canActivate: [ HealthCheckGuard ],
           data: {
-            title: 'HMCTS Manage Cases | Find a case'
+            title: 'Find a case'
           }
         },
         {
@@ -98,7 +99,7 @@ export const ROUTES: Routes = [
           children: caseViewRouting,
           canActivate: [ HealthCheckGuard ],
           data: {
-            title: 'HMCTS Manage Cases | Case'
+            title: 'Case Details'
           }
         }
       ]

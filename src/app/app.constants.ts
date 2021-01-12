@@ -2,7 +2,8 @@ import { BadgeColour, ContactDetailsDataModel } from '@hmcts/rpx-xui-common-lib'
 import {Theme} from './containers/app-header/app-header.component';
 
 const FeatureNames = {
-  workAllocation: 'MC_Work_Allocation'
+  workAllocation: 'MC_Work_Allocation',
+  noticeOfChange: 'MC_Notice_of_Change'
 };
 
 const FooterData =  {
@@ -172,9 +173,9 @@ const helpContactDetails: ContactDetailsDataModel[] = [
   {
     title: 'Family Public Law and Adoption',
     badgeColour: BadgeColour.BADGE_RED,
-    email: 'fpla@justice.gov.uk',
+    email: 'contactfpl@justice.gov.uk',
     phone: '0330 808 4424',
-    openingTimes: 'Monday to Friday, 8:30am to 5pm (excluding public holidays)'
+    openingTimes: 'Monday to Friday, 9am to 5pm (excluding public holidays)'
   }
 ];
 

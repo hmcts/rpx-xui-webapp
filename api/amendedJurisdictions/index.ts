@@ -5,10 +5,21 @@ import { JURISDICTIONS } from '../configuration/references'
  * Manually filtering returned jurisdictions
  * to make available jurisdiction in filters array only
  */
-export const getJurisdictions = (data: any[]) => {
+export const getJurisdictions = (proxyRes, req, res, data: any[]) => {
+    console.log('data', data)
     if (!Array.isArray(data)) {
         return data
     }
     const filters = getConfigValue(JURISDICTIONS)
-    return [...data].filter(o => filters.includes(o.id))
+    console.log('filters', filters)
+    req.session.jurisdictions = [...data].filter(o => filters.includes(o.id))
+    return req.session.jurisdictions
+}
+
+export const checkCachedJurisdictions = (proxyReq, req, res) => {
+    if (req.session.jurisdictions) {
+        console.log('inside', req.session.jurisdictions)
+        res.send(req.session.jurisdictions)
+        proxyReq.end()
+    }
 }

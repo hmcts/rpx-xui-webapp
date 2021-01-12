@@ -20,7 +20,7 @@ export const getJurisdictions = (proxyRes, req, res, data: any[]) => {
 
 export const checkCachedJurisdictions = (proxyReq, req, res) => {
     if (jurisdictions.test(req.url)) {
-      if (req.session.jurisdictions) {
+        if (req.session.jurisdictions) {
         res.send(req.session.jurisdictions)
         proxyReq.end()
         }

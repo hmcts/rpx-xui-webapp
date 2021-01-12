@@ -10,12 +10,12 @@ import { Store, StoreModule, combineReducers } from '@ngrx/store';
 
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CaseDetailsHomeComponent } from '..';
-import { InfoMessage } from 'src/work-allocation/enums';
+import { InfoMessage } from '../../../work-allocation/enums';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { reducers } from 'src/app/store';
+import { reducers } from '../../../app/store';
 
-fdescribe('CaseDetailsHomeComponent', () => {
+describe('CaseDetailsHomeComponent', () => {
   let component: CaseDetailsHomeComponent;
   let fixture: ComponentFixture<CaseDetailsHomeComponent>;
   const mockAlertService = jasmine.createSpyObj('alertService', ['success', 'setPreserveAlerts', 'error']);

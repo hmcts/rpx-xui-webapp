@@ -1,15 +1,15 @@
 import { TestBed } from '@angular/core/testing';
+import { FormControl, FormGroup } from '@angular/forms';
+import {
+    AbstractAppConfig, CaseState, CaseType, HttpService, Jurisdiction,
+    RequestOptionsBuilder, SearchService
+} from '@hmcts/ccd-case-ui-toolkit';
+import { combineReducers, Store, StoreModule } from '@ngrx/store';
+import * as fromRoot from '../../app/store/reducers';
+import { CASE_STATE_1, CASE_TYPE_1, JURISDICTION_1 } from '../mock/search-filter.mock';
+import * as fromCaseSearchStore from '../store';
 import createSpyObj = jasmine.createSpyObj;
 import { SearchFilterService } from './';
-import {
-    SearchService, Jurisdiction, CaseType, CaseState, AbstractAppConfig,
-    HttpService, RequestOptionsBuilder
-} from '@hmcts/ccd-case-ui-toolkit';
-import { FormControl, FormGroup } from '@angular/forms';
-import { JURISDICTION_1, CASE_TYPE_1, CASE_STATE_1 } from '../mock/search-filter.mock';
-import { StoreModule, combineReducers, Store } from '@ngrx/store';
-import * as fromRoot from '../../app/store/reducers';
-import * as fromCaseSearchStore from '../store';
 
 const JURISDICTION: Jurisdiction = JURISDICTION_1;
 

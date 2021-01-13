@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HmctsPrimaryNavigationComponent } from './hmcts-primary-navigation.component';
 import { RouterTestingModule } from '@angular/router/testing';
+import { HmctsPrimaryNavigationComponent } from './hmcts-primary-navigation.component';
 
 describe('HmctsPrimaryNavigationComponent', () => {
   let component: HmctsPrimaryNavigationComponent;

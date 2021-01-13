@@ -1,46 +1,45 @@
-import { NgModule, Optional, SkipSelf, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
-import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { HttpClientModule } from '@angular/common/http';
+import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
 import { MatDialogModule } from '@angular/material';
+import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
+import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
 
 import {
-    CaseUIToolkitModule,
-    DraftService,
-    HttpService,
-    AuthService as CCDAuthService,
-    CasesService,
-    HttpErrorService,
     AbstractAppConfig,
+    AlertService,
+    AuthService as CCDAuthService,
     CaseEditWizardGuard,
-    RouterHelperService,
+    CaseListFiltersModule,
+    CasesService,
+    CaseUIToolkitModule,
+    CreateCaseFiltersModule,
     DocumentManagementService,
+    DraftService,
+    HttpErrorService,
+    HttpService,
     PageValidationService,
     PlaceholderService,
     RequestOptionsBuilder,
+    RouterHelperService,
     SearchFiltersModule,
     SearchResultModule,
-    CreateCaseFiltersModule,
-    CaseListFiltersModule,
-    AlertService,
     WorkbasketFiltersModule,
 } from '@hmcts/ccd-case-ui-toolkit';
 
-import { casesRouting } from './case-feature.routes';
-import {StoreModule} from '@ngrx/store';
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import {EffectsModule} from '@ngrx/effects';
-import {reducers, effects} from './store';
+import {StoreModule} from '@ngrx/store';
 import {SharedModule} from '../app/shared/shared.module';
-import {HttpModule} from '@angular/http';
+import { casesRouting } from './case-feature.routes';
 // from components
 import * as fromComponents from './components';
 // from containers
 import * as fromContainers from './containers';
+import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
 // from services
 import * as fromServices from './services';
-import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
-import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import {effects, reducers} from './store';
 
 @NgModule({
   imports: [
@@ -54,7 +53,7 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
     casesRouting,
     SharedModule,
     SearchFiltersModule,
-    HttpModule,
+    HttpClientModule,
     MatDialogModule,
     CaseListFiltersModule,
     WorkbasketFiltersModule,
@@ -90,7 +89,7 @@ export class CasesModule {
     CasesModule.forRoot();
   }
 
-  static forRoot(): ModuleWithProviders {
+  public static forRoot(): ModuleWithProviders {
     return {
       ngModule: CasesModule,
       providers: [

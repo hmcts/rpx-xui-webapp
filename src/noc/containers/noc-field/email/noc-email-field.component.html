@@ -1,7 +1,7 @@
 <div class="govuk-form-group" [ngClass]="{'form-group-error': !emailControl.valid}">
 
   <label [for]="id()">
-    <span class="form-label govuk-!-font-weight-bold" questionField.question_text>{{questionField.question_text}}</span>
+    <span class="form-label govuk-!-font-weight-bold" questionField.questionText>{{questionField.questionText}}</span>
     <span class="error-message" *ngIf="emailControl.errors && emailControl.touched">{{emailControl.errors | nocError}}</span>
   </label>
 

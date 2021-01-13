@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
-import { Observable } from 'rxjs';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { Observable } from 'rxjs';
 
 const MEDIA_VIEWER = 'media-viewer-info';
 
@@ -13,24 +13,24 @@ const MEDIA_VIEWER = 'media-viewer-info';
 })
 export class MediaViewerWrapperComponent implements OnInit {
 
-    mediaURL = '';
-    mediaFilename = '';
-    mediaContentType = '';
-    mediaAnnotationApiUrl = '';
-    toolbarButtons = { showPrint: true };
-    caseId = '';
-    caseJurisdiction = '';
+    public mediaURL = '';
+    public mediaFilename = '';
+    public mediaContentType = '';
+    public mediaAnnotationApiUrl = '';
+    public toolbarButtons = { showPrint: true };
+    public caseId = '';
+    public caseJurisdiction = '';
 
-    icpJurisdictions$: Observable<string[]>;
-    icpEnabled$: Observable<boolean>
+    public icpJurisdictions$: Observable<string[]>;
+    public icpEnabled$: Observable<boolean>;
 
     public constructor(
-        private windowService: WindowService,
-        private featureToggleService: FeatureToggleService,
+        private readonly windowService: WindowService,
+        private readonly featureToggleService: FeatureToggleService,
     ) {
     }
 
-    async ngOnInit() {
+    public async ngOnInit() {
 
 
         const localStorageMedia = this.windowService.getLocalStorage(MEDIA_VIEWER);

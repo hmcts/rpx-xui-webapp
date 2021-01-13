@@ -14,66 +14,66 @@ export const SEARCH_FILTER_DISPLAY_TOGGLE = '[CreateSearch] toggle search filter
 export const SEARCH_FILTER_DISPLAY_TOGGLE_SUCCESS = '[CreateSearch] toggle search filter success';
 
 export class JurisdictionSelected implements Action {
-  readonly type = JURISDICTION_SELECTED;
+  public readonly type = JURISDICTION_SELECTED;
 }
 
 export class Applied implements Action {
-  readonly type = APPLIED;
+  public readonly type = APPLIED;
   constructor(public payload: any) {}
 }
 
 export class Reset implements Action {
-  readonly type = RESET;
+  public readonly type = RESET;
 }
 
 export class ApplySearchFilter implements Action {
-  readonly type = APPLY_SEARCH_FILTER;
+  public readonly type = APPLY_SEARCH_FILTER;
   constructor(public payload: any) {
   }
 }
 
 export class ApplySearchFilterForES implements Action {
-  readonly type = APPLY_SEARCH_FILTER_FOR_ES;
+  public readonly type = APPLY_SEARCH_FILTER_FOR_ES;
   constructor(public payload: any) {
   }
 }
 
 export class FindSearchPaginationMetadata implements Action {
-  readonly type = FIND_SEARCH_PAGINATION_METADATA;
+  public readonly type = FIND_SEARCH_PAGINATION_METADATA;
   constructor(public payload: any) {
   }
 }
 
 export class SearchResultPageChange implements Action {
-  readonly type = SEARCH_RESULT_PAGE_CHANGE;
+  public readonly type = SEARCH_RESULT_PAGE_CHANGE;
   constructor(public payload: any) {
   }
 }
 
 export class FindSearchPaginationMetadataSuccess implements Action {
-  readonly type = FIND_SEARCH_PAGINATION_METADATA_SUCCESS;
+  public readonly type = FIND_SEARCH_PAGINATION_METADATA_SUCCESS;
   constructor(public payload: any) {
   }
 }
 
 export class ApplySearchFilterSuccess implements Action {
-  readonly type = APPLY_SEARCH_FILTER_SUCCESS;
+  public readonly type = APPLY_SEARCH_FILTER_SUCCESS;
   constructor(public payload: any) {}
 }
 
 export class ApplySearchFilterFail implements Action {
-  readonly type = APPLY_SEARCH_FILTER_FAIL;
+  public readonly type = APPLY_SEARCH_FILTER_FAIL;
   constructor(public payload: any) {
   }
 }
 
 export class SearchFilterToggle implements Action {
-  readonly type = SEARCH_FILTER_DISPLAY_TOGGLE;
+  public readonly type = SEARCH_FILTER_DISPLAY_TOGGLE;
   constructor(public payload: any) {
   }
 }
 export class SearchFilterToggleSuccess implements Action {
-  readonly type = SEARCH_FILTER_DISPLAY_TOGGLE_SUCCESS;
+  public readonly type = SEARCH_FILTER_DISPLAY_TOGGLE_SUCCESS;
   constructor(public payload: any) {
   }
 }

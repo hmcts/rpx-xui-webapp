@@ -1,7 +1,5 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {Store} from '@ngrx/store';
-import * as fromCaseCreate from '../../store/reducers';
-import {ActionBindingModel} from '../../models/create-case-actions.model';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ActionBindingModel } from '../../models/create-case-actions.model';
 import * as fromCasesFeature from '../../store';
 /**
  * Entry component wrapper for CCD-CASE-FILTER component
@@ -29,12 +27,13 @@ import * as fromCasesFeature from '../../store';
   encapsulation: ViewEncapsulation.None
 })
 export class CaseFilterComponent implements OnInit {
-  startButtonText: string;
-  caseCreatFilterBindings: ActionBindingModel[];
-  fromCasesFeature: any;
-  constructor(private store: Store<fromCaseCreate.State>) {}
+  public startButtonText: string;
+  public caseCreatFilterBindings: ActionBindingModel[];
+  public fromCasesFeature: any;
 
-  ngOnInit(): void {
+  constructor() {}
+
+  public ngOnInit(): void {
     this.fromCasesFeature = fromCasesFeature;
     this.startButtonText = 'Start'; // TODO add this to some config file.
     /**

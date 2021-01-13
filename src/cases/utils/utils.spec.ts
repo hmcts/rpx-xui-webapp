@@ -1,4 +1,4 @@
-import { sanitiseMetadataFieldName, isStringOrNumber, getFilterType } from './utils';
+import { getFilterType, isStringOrNumber, sanitiseMetadataFieldName } from './utils';
 
 
 describe('Utils', () => {

@@ -1,13 +1,13 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { hot, cold } from 'jasmine-marbles';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
-import { CaseCreateEffects } from './case-create.effects';
-import { LoggerService } from 'src/app/services/logger/logger.service';
-import { CreateCaseLoaded, ApplyChange, CaseCreateFilterApply, CreateCaseReset } from '../actions/create-case.action';
-import { NewCaseLoadedSuccessfully, CreateCaseGo, Go } from '../../../app/store/actions';
 import { provideMockActions } from '@ngrx/effects/testing';
+import { cold, hot } from 'jasmine-marbles';
+import { LoggerService } from 'src/app/services/logger/logger.service';
+import { CreateCaseGo, Go, NewCaseLoadedSuccessfully } from '../../../app/store/actions';
+import { ApplyChange, CaseCreateFilterApply, CreateCaseLoaded, CreateCaseReset } from '../actions/create-case.action';
+import { CaseCreateEffects } from './case-create.effects';
 
 describe('CaseCreate Effects', () => {
 

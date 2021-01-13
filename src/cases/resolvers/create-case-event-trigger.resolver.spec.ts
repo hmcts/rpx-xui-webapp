@@ -1,7 +1,7 @@
+import createSpyObj = jasmine.createSpyObj;
+import { CaseEventTrigger, createCaseEventTrigger, DRAFT_PREFIX, DRAFT_QUERY_PARAM, HttpError } from '@hmcts/ccd-case-ui-toolkit';
 import { Observable } from 'rxjs';
 import { CreateCaseEventTriggerResolver } from './create-case-event-trigger.resolver';
-import createSpyObj = jasmine.createSpyObj;
-import { DRAFT_PREFIX, DRAFT_QUERY_PARAM, createCaseEventTrigger, HttpError, CaseEventTrigger } from '@hmcts/ccd-case-ui-toolkit';
 
 describe('CreateCaseFieldsResolver', () => {
 
@@ -15,7 +15,7 @@ describe('CreateCaseFieldsResolver', () => {
   const EVENT_TRIGGER_ID = 'enterCaseIntoLegacy';
   const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger(EVENT_TRIGGER_ID, 'Into legacy', 'caseId', true, []);
 
-  const DRAFT_ID = DRAFT_PREFIX + '12345';
+  const DRAFT_ID = `${DRAFT_PREFIX}12345`;
   const EVENT_TRIGGER_OBS: Observable<CaseEventTrigger> = Observable.of(EVENT_TRIGGER);
   const ERROR: HttpError = {
     timestamp: '',
@@ -51,6 +51,8 @@ describe('CreateCaseFieldsResolver', () => {
           return CASE_TYPE;
         case PARAM_EVENT_ID:
           return EVENT_TRIGGER_ID;
+        default:
+          return null;
       }
     });
 
@@ -58,6 +60,8 @@ describe('CreateCaseFieldsResolver', () => {
       switch (key) {
         case QUERY_PARAM_IGNORE_WARNINGS:
           return IGNORE_WARNINGS;
+        default:
+          return null;
       }
     });
   });
@@ -131,6 +135,8 @@ describe('CreateCaseFieldsResolver', () => {
           return IGNORE_WARNINGS;
         case DRAFT_QUERY_PARAM:
           return DRAFT_ID;
+        default:
+          return null;
       }
     });
     casesService.getEventTrigger.and.returnValue(EVENT_TRIGGER_OBS);

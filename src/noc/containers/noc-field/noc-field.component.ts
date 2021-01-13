@@ -19,9 +19,9 @@ export class NocFieldComponent extends AbstractFieldWriteComponent implements On
   @ViewChild('fieldContainer', {read: ViewContainerRef})
   public fieldContainer: ViewContainerRef;
 
-  constructor(private resolver: ComponentFactoryResolver,
-              private paletteService: PaletteService,
-              private formValidatorsService: FormValidatorsService) {
+  constructor(private readonly resolver: ComponentFactoryResolver,
+              private readonly paletteService: PaletteService,
+              private readonly formValidatorsService: FormValidatorsService) {
     super();
   }
 
@@ -32,7 +32,7 @@ export class NocFieldComponent extends AbstractFieldWriteComponent implements On
   public ngOnInit(): void {
     const componentClass = this.paletteService.getFieldComponentClass(this.questionField);
 
-    const injector = Injector.create([], this.fieldContainer.parentInjector);
+    const injector = Injector.create([], this.fieldContainer.injector);
     const component = this.resolver.resolveComponentFactory(componentClass).create(injector);
 
     // Provide component @Inputs

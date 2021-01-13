@@ -14,7 +14,7 @@ export class YesNoService {
   private static readonly NO = 'No';
   private static readonly EMPTY = null;
 
-  format(value: any): string {
+  public format(value: any): string {
 
     if (this.isYes(value)) {
       return YesNoService.YES;
@@ -31,9 +31,9 @@ export class YesNoService {
         return value;
       case 'string':
         return YesNoService.YES_INPUTS.indexOf(value.toUpperCase()) !== -1;
+      default:
+        return false;
     }
-
-    return false;
   }
 
   private isNo(value: any): boolean {
@@ -42,8 +42,8 @@ export class YesNoService {
         return !value;
       case 'string':
         return YesNoService.NO_INPUTS.indexOf(value.toUpperCase()) !== -1;
+      default:
+        return false;
     }
-
-    return false;
   }
 }

@@ -36,23 +36,23 @@ describe('Noc Effects', () => {
   describe('setCaseReference$', () => {
     it('should return a response', () => {
       const dummy: NocQuestion[] = [{
-        case_type_id: 'AAT',
+        caseTypeId: 'AAT',
         order: '1',
-        question_text: 'What is their Email?',
-        answer_field_type: {
+        questionText: 'What is their Email?',
+        answerFieldType: {
           id: 'Email',
           type: 'Email',
           min: null,
           max: null,
-          regular_expression: null,
-          fixed_list_items: [],
-          complex_fields: [],
-          collection_field_type: null
+          regularExpression: null,
+          fixedListItems: [],
+          complexFields: [],
+          collectionFieldType: null
         },
-        display_context_parameter: '1',
-        challenge_question_id: 'NoC',
-        answer_field: '',
-        question_id: 'QuestionId67745'
+        displayContextParameter: '1',
+        challengeQuestionId: 'NoC',
+        answerField: '',
+        questionId: 'QuestionId67745'
       }];
       nocServiceMock.getNoCQuestions.and.returnValue(of(dummy));
       const action = new nocActions.SetCaseReference('1223-2212-4422-3131');

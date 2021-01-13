@@ -35,76 +35,76 @@ export const START_IDLE_SESSION_TIMEOUT = '[App] Start Idle Session Timeout';
 export const STOP_IDLE_SESSION_TIMEOUT = '[App] Stop Idle Session Timeout';
 
 export class LoadConfig implements Action {
-  readonly type = APP_LOAD_CONFIG;
+  public readonly type = APP_LOAD_CONFIG;
 }
 
 export class LoadFeatureToggleConfig implements Action {
-  readonly type = LOAD_FEATURE_TOGGLE_CONFIG;
+  public readonly type = LOAD_FEATURE_TOGGLE_CONFIG;
 }
 
 export class LoadFeatureToggleConfigSuccess implements Action {
-  readonly type = LOAD_FEATURE_TOGGLE_CONFIG_SUCCESS;
+  public readonly type = LOAD_FEATURE_TOGGLE_CONFIG_SUCCESS;
   constructor(public payload: any) { }
 }
 
 export class LoadFeatureToggleConfigFail implements Action {
-  readonly type = LOAD_FEATURE_TOGGLE_CONFIG_FAIL;
+  public readonly type = LOAD_FEATURE_TOGGLE_CONFIG_FAIL;
   constructor(public payload: any) { }
 }
 
 export class LoadConfigSuccess implements Action {
-  readonly type = APP_LOAD_CONFIG_SUCCESS;
+  public readonly type = APP_LOAD_CONFIG_SUCCESS;
   constructor(public payload: any) { }
 }
 
 export class LoadConfigFail implements Action {
-  readonly type = APP_LOAD_CONFIG_FAIL;
+  public readonly type = APP_LOAD_CONFIG_FAIL;
   constructor(public payload: any) { }
 }
 
 export class StartAppInitilizer implements Action {
-  readonly type = START_APP_INITIALIZER;
+  public readonly type = START_APP_INITIALIZER;
 }
 
 export class FinishAppInitilizer implements Action {
-  readonly type = FINISH_APP_INITIALIZER;
+  public readonly type = FINISH_APP_INITIALIZER;
 }
 
 export class Logout implements Action {
-  readonly type = LOGOUT;
+  public readonly type = LOGOUT;
 }
 
 export class IdleUserLogOut implements Action {
-  readonly type = IDLE_USER_LOGOUT;
+  public readonly type = IDLE_USER_LOGOUT;
 }
 
 export class LoadHasAcceptedTC implements Action {
   constructor(public payload: string) {}
-  readonly type = LOAD_HAS_ACCEPTED_TC;
+  public readonly type = LOAD_HAS_ACCEPTED_TC;
 }
 
 export class LoadHasAcceptedTCSuccess implements Action {
-  readonly type = LOAD_HAS_ACCEPTED_TC_SUCCESS;
+  public readonly type = LOAD_HAS_ACCEPTED_TC_SUCCESS;
   constructor(public payload: boolean) {}
 }
 
 export class LoadHasAcceptedTCFail implements Action {
-  readonly type = LOAD_HAS_ACCEPTED_TC_FAIL;
+  public readonly type = LOAD_HAS_ACCEPTED_TC_FAIL;
   constructor(public payload: boolean) {}
 }
 
 export class AcceptTandC implements Action {
-  readonly type = ACCEPT_T_AND_C;
+  public readonly type = ACCEPT_T_AND_C;
   constructor(public payload: string) {}
 }
 
 export class AcceptTandCSuccess implements Action {
-  readonly type = ACCEPT_T_AND_C_SUCCESS;
+  public readonly type = ACCEPT_T_AND_C_SUCCESS;
   constructor(public payload: boolean) {}
 }
 
 export class AcceptTandCFail implements Action {
-  readonly type = ACCEPT_T_AND_C_FAIL;
+  public readonly type = ACCEPT_T_AND_C_FAIL;
   constructor(public payload: boolean) {}
 }
 

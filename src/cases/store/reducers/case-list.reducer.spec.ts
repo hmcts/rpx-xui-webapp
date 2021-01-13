@@ -1,6 +1,6 @@
-import * as filterCaseList from './case-list.reducer';
-import * as fromCases from '../actions/case-list.action';
 import { SearchResultView } from '@hmcts/ccd-case-ui-toolkit';
+import * as fromCases from '../actions/case-list.action';
+import * as filterCaseList from './case-list.reducer';
 
 describe('CaseList Filter Reducer', () => {
   describe('undefined action', () => {

@@ -35,7 +35,7 @@ export class NocCheckAndSubmitComponent implements OnInit, OnDestroy {
   public nocAnswersSub: Subscription;
   public nocAnswers: NocAnswer[];
 
-  constructor(private store: Store<fromFeature.State>) {
+  constructor(private readonly store: Store<fromFeature.State>) {
     this.navEvent = {
       event: null,
       timestamp: null
@@ -53,7 +53,7 @@ export class NocCheckAndSubmitComponent implements OnInit, OnDestroy {
             question_id: answer.question_id,
             question_text: this.questions$.pipe(map(
               questions => {
-                return questions.find(ques => ques.question_id === answer.question_id).question_text;
+                return questions.find(ques => ques.questionId === answer.question_id).questionText;
               }
             )),
             value: answer.value

@@ -1,22 +1,22 @@
 import { Injectable } from '@angular/core';
-import { SearchService, AbstractAppConfig, HttpService, RequestOptionsBuilder } from '@hmcts/ccd-case-ui-toolkit';
-import { Observable } from 'rxjs';
 import { FormGroup } from '@angular/forms';
-import { isStringOrNumber, getFilterType, sanitiseMetadataFieldName } from '../utils/utils';
+import { AbstractAppConfig, HttpService, RequestOptionsBuilder, SearchService } from '@hmcts/ccd-case-ui-toolkit';
+import { Observable } from 'rxjs';
+import { getFilterType, isStringOrNumber, sanitiseMetadataFieldName } from '../utils/utils';
 
 @Injectable()
 export class SearchFilterService {
 
-  metadataFields: string[];
+  public metadataFields: string[];
 
   constructor(
-    private ccdSearchService: SearchService,
-    private appConfig: AbstractAppConfig,
-    private httpService: HttpService,
-    private requestOptionsBuilder: RequestOptionsBuilder,
+    private readonly ccdSearchService: SearchService,
+    private readonly appConfig: AbstractAppConfig,
+    private readonly httpService: HttpService,
+    private readonly requestOptionsBuilder: RequestOptionsBuilder,
   ) { }
 
-  search(payload, isElasticSearchEnabled: boolean = false): Observable<any> {
+  public search(payload, isElasticSearchEnabled: boolean = false): Observable<any> {
 
     const { jurisdictionId, caseTypeId, metadataFilters, caseFilters, view, sortParameters } = this.getParams(payload);
 
@@ -68,7 +68,7 @@ export class SearchFilterService {
   private buildFormDetails(parentPrefix: string, target: object, formGroupValue: object): void {
     let prefix = parentPrefix;
     if (parentPrefix && parentPrefix.length > 0) {
-      prefix = parentPrefix + '.';
+      prefix = `${parentPrefix}.`;
     }
     for (let attributeName of Object.keys(formGroupValue)) {
       const value = formGroupValue[attributeName];
@@ -83,8 +83,8 @@ export class SearchFilterService {
   }
 
   public findPaginationMetadata(payload): Observable<any> {
-    const { jurisdictionId, caseTypeId, metadataFilters, caseFilters, view } = this.getParams(payload);
-    const url = this.appConfig.getCaseDataUrl() + `/caseworkers/:uid`
+    const { jurisdictionId, caseTypeId, metadataFilters, caseFilters } = this.getParams(payload);
+    const url = `${this.appConfig.getCaseDataUrl()}/caseworkers/:uid`
       + `/jurisdictions/${jurisdictionId}`
       + `/case-types/${caseTypeId}`
       + `/cases/pagination_metadata`;

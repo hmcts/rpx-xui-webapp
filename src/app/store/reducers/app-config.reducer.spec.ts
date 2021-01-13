@@ -53,7 +53,7 @@ describe('App Config Reducer', () => {
         };
 
         console.log(expectedState);
-        console.log(state.userDetails)
+        console.log(state.userDetails);
         expect(state.userDetails).toEqual(expectedState);
     });
 

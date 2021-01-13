@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {Store} from '@ngrx/store';
 
 import {AppConstants} from '../../app.constants';
 import {AppTitleModel} from '../../models/app-title.model';

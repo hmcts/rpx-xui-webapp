@@ -1,6 +1,5 @@
-
-import { AppConstants } from './app.constants';
 import { CookieService } from 'ngx-cookie';
+import { AppConstants } from './app.constants';
 
 export class AppUtils {
 
@@ -21,6 +20,8 @@ export class AppUtils {
           return AppConstants.ENVIRONMENT_NAMES.ithc;
         case AppConstants.ENVIRONMENT_NAMES.perftest:
           return AppConstants.ENVIRONMENT_NAMES.perftest;
+        default:
+          return AppConstants.ENVIRONMENT_NAMES.prod;
       }
     }
     return AppConstants.ENVIRONMENT_NAMES.prod;

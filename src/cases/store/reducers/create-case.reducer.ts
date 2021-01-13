@@ -48,11 +48,10 @@ export function reducerCreateCase(
       };
     }
 
+    default:
+      return state;
   }
-
-  return state;
 }
-
 
 export const getCreatedCase = (state: CasesState) => state.createdCase;
 export const  getCaseFiltersState = (state: CasesState) => state.createCaseFilters;

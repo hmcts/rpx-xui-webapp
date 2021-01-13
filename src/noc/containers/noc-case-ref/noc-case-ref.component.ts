@@ -38,7 +38,7 @@ export class NocCaseRefComponent implements OnInit, OnDestroy {
       type: 'text'
     };
 
-    this.caseRefForm = formBuilder.group({ caseRef: null});
+    this.caseRefForm = this.formBuilder.group({ caseRef: null});
 
     this.validationErrors$ = this.store.pipe(select(fromFeature.validationErrors));
     this.lastError$ = this.store.pipe(select(fromFeature.lastError));

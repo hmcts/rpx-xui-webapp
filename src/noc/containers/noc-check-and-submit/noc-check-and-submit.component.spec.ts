@@ -15,41 +15,41 @@ describe('NocCheckAndSubmitComponent', () => {
   let spyOnDispatchToStore = jasmine.createSpy();
 
   const nocQuestions: NocQuestion[] = [{
-    case_type_id: 't1',
+    caseTypeId: 't1',
     order: '1',
-    question_text: 'first name',
-    answer_field_type: {
+    questionText: 'first name',
+    answerFieldType: {
       id: 'q1',
       type: 'text',
       min: null,
       max: null,
-      regular_expression: null,
-      fixed_list_items: null,
-      complex_fields: null,
-      collection_field_type: null,
+      regularExpression: null,
+      fixedListItems: null,
+      complexFields: null,
+      collectionFieldType: null,
     },
-    display_context_parameter: '',
-    challenge_question_id: '',
-    answer_field: '',
-    question_id: 'q1'
+    displayContextParameter: '',
+    challengeQuestionId: '',
+    answerField: '',
+    questionId: 'q1'
   }, {
-    case_type_id: 't2',
+    caseTypeId: 't2',
     order: '2',
-    question_text: 'last name',
-    answer_field_type: {
+    questionText: 'last name',
+    answerFieldType: {
       id: 'q2',
       type: 'text',
       min: null,
       max: null,
-      regular_expression: null,
-      fixed_list_items: null,
-      complex_fields: null,
-      collection_field_type: null,
+      regularExpression: null,
+      fixedListItems: null,
+      complexFields: null,
+      collectionFieldType: null,
     },
-    display_context_parameter: '',
-    challenge_question_id: '',
-    answer_field: '',
-    question_id: 'q2'
+    displayContextParameter: '',
+    challengeQuestionId: '',
+    answerField: '',
+    questionId: 'q2'
   }];
 
   const nocAnswers: NocAnswer[] = [{

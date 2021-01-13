@@ -24,11 +24,11 @@ export abstract class AbstractFormFieldComponent {
       if (!this.formGroup) {
         return null;
       }
-      if (this.formGroup.controls[this.questionField.question_id]) {
-        return this.formGroup.get(this.questionField.question_id);
+      if (this.formGroup.controls[this.questionField.questionId]) {
+        return this.formGroup.get(this.questionField.questionId);
       }
       this.addValidators(this.questionField, control);
-      this.formGroup.addControl(this.questionField.question_id, control);
+      this.formGroup.addControl(this.questionField.questionId, control);
       return control;
     };
   }

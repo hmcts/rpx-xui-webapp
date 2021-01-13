@@ -1,6 +1,6 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable, Optional } from '@angular/core';
 import { AppInsights } from 'applicationinsights-js';
-import { HttpClient } from '@angular/common/http';
 import { AbstractAppInsights} from './appInsightsWrapper';
 
 export interface IMonitoringService {
@@ -11,39 +11,39 @@ export interface IMonitoringService {
 }
 
 export class MonitorConfig implements Microsoft.ApplicationInsights.IConfig {
-  instrumentationKey?: string;
-  endpointUrl?: string;
-  emitLineDelimitedJson?: boolean;
-  accountId?: string;
-  sessionRenewalMs?: number;
-  sessionExpirationMs?: number;
-  maxBatchSizeInBytes?: number;
-  maxBatchInterval?: number;
-  enableDebug?: boolean;
-  disableExceptionTracking?: boolean;
-  disableTelemetry?: boolean;
-  verboseLogging?: boolean;
-  diagnosticLogInterval?: number;
-  samplingPercentage?: number;
-  autoTrackPageVisitTime?: boolean;
-  disableAjaxTracking?: boolean;
-  overridePageViewDuration?: boolean;
-  maxAjaxCallsPerView?: number;
-  disableDataLossAnalysis?: boolean;
-  disableCorrelationHeaders?: boolean;
-  correlationHeaderExcludedDomains?: string[];
-  disableFlushOnBeforeUnload?: boolean;
-  enableSessionStorageBuffer?: boolean;
-  isCookieUseDisabled?: boolean;
-  cookieDomain?: string;
-  isRetryDisabled?: boolean;
-  url?: string;
-  isStorageUseDisabled?: boolean;
-  isBeaconApiDisabled?: boolean;
-  sdkExtension?: string;
-  isBrowserLinkTrackingEnabled?: boolean;
-  appId?: string;
-  enableCorsCorrelation?: boolean;
+  public instrumentationKey?: string;
+  public endpointUrl?: string;
+  public emitLineDelimitedJson?: boolean;
+  public accountId?: string;
+  public sessionRenewalMs?: number;
+  public sessionExpirationMs?: number;
+  public maxBatchSizeInBytes?: number;
+  public maxBatchInterval?: number;
+  public enableDebug?: boolean;
+  public disableExceptionTracking?: boolean;
+  public disableTelemetry?: boolean;
+  public verboseLogging?: boolean;
+  public diagnosticLogInterval?: number;
+  public samplingPercentage?: number;
+  public autoTrackPageVisitTime?: boolean;
+  public disableAjaxTracking?: boolean;
+  public overridePageViewDuration?: boolean;
+  public maxAjaxCallsPerView?: number;
+  public disableDataLossAnalysis?: boolean;
+  public disableCorrelationHeaders?: boolean;
+  public correlationHeaderExcludedDomains?: string[];
+  public disableFlushOnBeforeUnload?: boolean;
+  public enableSessionStorageBuffer?: boolean;
+  public isCookieUseDisabled?: boolean;
+  public cookieDomain?: string;
+  public isRetryDisabled?: boolean;
+  public url?: string;
+  public isStorageUseDisabled?: boolean;
+  public isBeaconApiDisabled?: boolean;
+  public sdkExtension?: string;
+  public isBrowserLinkTrackingEnabled?: boolean;
+  public appId?: string;
+  public enableCorsCorrelation?: boolean;
 }
 
 
@@ -51,27 +51,27 @@ export class MonitorConfig implements Microsoft.ApplicationInsights.IConfig {
 @Injectable()
 export class MonitoringService implements IMonitoringService {
 
-  constructor(private http: HttpClient, @Optional() private config?: MonitorConfig,
-              @Optional() private appInsights?: AbstractAppInsights) {
+  constructor(private readonly http: HttpClient, @Optional() private config?: MonitorConfig,
+              @Optional() private readonly appInsights?: AbstractAppInsights) {
                 if (!appInsights) {
                 appInsights = AppInsights;
               }
             }
 
-  logPageView(name?: string, url?: string, properties?: any,
-              measurements?: any, duration?: number) {
+  public logPageView(name?: string, url?: string, properties?: any,
+                     measurements?: any, duration?: number) {
     this.send(() => {
       this.appInsights.trackPageView(name, url, properties, measurements, duration);
     });
   }
 
-  logEvent(name: string, properties?: any, measurements?: any) {
+  public logEvent(name: string, properties?: any, measurements?: any) {
     this.send(() => {
       this.appInsights.trackEvent(name, properties, measurements);
     });
   }
 
-  logException(exception: Error) {
+  public logException(exception: Error) {
     this.send(() => {
       this.appInsights.trackException(exception);
     });

@@ -45,29 +45,29 @@ describe('Noc Reducer', () => {
         const initialState = fromReducer.initialState;
         const action = new fromActions.SetQuestions({
           questions: [{
-            case_type_id: 'AAT',
+            caseTypeId: 'AAT',
             order: '1',
-            question_text: 'What is their Email?',
-            answer_field_type: {
+            questionText: 'What is their Email?',
+            answerFieldType: {
               id: 'Email',
               type: 'Email',
               min: null,
               max: null,
-              regular_expression: null,
-              fixed_list_items: [],
-              complex_fields: [],
-              collection_field_type: null
+              regularExpression: null,
+              fixedListItems: [],
+              complexFields: [],
+              collectionFieldType: null
             },
-            display_context_parameter: '1',
-            challenge_question_id: 'NoC',
-            answer_field: '',
-            question_id: 'QuestionId67745'
+            displayContextParameter: '1',
+            challengeQuestionId: 'NoC',
+            answerField: '',
+            questionId: 'QuestionId67745'
           }],
           caseReference: 'abcd'
         });
         const nocState = fromReducer.nocReducer(initialState, action);
         expect(nocState.state).toEqual(NocState.QUESTION);
-        expect(nocState.questions[0].question_text).toEqual('What is their Email?');
+        expect(nocState.questions[0].questionText).toEqual('What is their Email?');
         expect(nocState.caseReference).toEqual('abcd');
       });
     });
@@ -228,65 +228,65 @@ describe('Noc Reducer', () => {
   describe('Order questions', () => {
     it('should order questions before save to store', () => {
       const nocQuestionsBeforeSort: NocQuestion[] = [{
-        case_type_id: 'AAT',
+        caseTypeId: 'AAT',
         order: '1',
-        question_text: 'What is their first name?',
-        answer_field_type: {
+        questionText: 'What is their first name?',
+        answerFieldType: {
           id: 'Text',
           type: 'Text',
           min: null,
           max: null,
-          regular_expression: null,
-          fixed_list_items: [],
-          complex_fields: [],
-          collection_field_type: null,
+          regularExpression: null,
+          fixedListItems: [],
+          complexFields: [],
+          collectionFieldType: null,
         },
-        display_context_parameter: '1',
-        challenge_question_id: 'NoC',
+        displayContextParameter: '1',
+        challengeQuestionId: 'NoC',
         // tslint:disable-next-line:max-line-length
-        answer_field: null,
-        question_id: 'QuestionId-1',
+        answerField: null,
+        questionId: 'QuestionId-1',
       }, {
-        case_type_id: 'AAT',
+        caseTypeId: 'AAT',
         order: '10',
-        question_text: 'What is the current time?',
-        answer_field_type: {
+        questionText: 'What is the current time?',
+        answerFieldType: {
           id: 'Time',
           type: 'Time',
           min: null,
           max: null,
-          regular_expression: null,
-          fixed_list_items: [],
-          complex_fields: [],
-          collection_field_type: null,
+          regularExpression: null,
+          fixedListItems: [],
+          complexFields: [],
+          collectionFieldType: null,
         },
-        display_context_parameter: '1',
-        challenge_question_id: 'NoC',
-        answer_field: null,
-        question_id: 'QuestionId-10',
+        displayContextParameter: '1',
+        challengeQuestionId: 'NoC',
+        answerField: null,
+        questionId: 'QuestionId-10',
       }, {
-        case_type_id: 'AAT',
+        caseTypeId: 'AAT',
         order: '5',
-        question_text: 'What is their telephone number?',
-        answer_field_type: {
+        questionText: 'What is their telephone number?',
+        answerFieldType: {
           id: 'PhoneUK',
           type: 'PhoneUK',
           min: null,
           max: null,
-          regular_expression: null,
-          fixed_list_items: [],
-          complex_fields: [],
-          collection_field_type: null,
+          regularExpression: null,
+          fixedListItems: [],
+          complexFields: [],
+          collectionFieldType: null,
         },
-        display_context_parameter: '1',
-        challenge_question_id: 'NoC',
-        answer_field: null,
-        question_id: 'QuestionId-5',
+        displayContextParameter: '1',
+        challengeQuestionId: 'NoC',
+        answerField: null,
+        questionId: 'QuestionId-5',
       }];
       const nocQuestionsAfterSort = fromReducer.orderQuestions(nocQuestionsBeforeSort);
-      expect(nocQuestionsAfterSort[0].question_id).toBe('QuestionId-1');
-      expect(nocQuestionsAfterSort[1].question_id).toBe('QuestionId-5');
-      expect(nocQuestionsAfterSort[2].question_id).toBe('QuestionId-10');
+      expect(nocQuestionsAfterSort[0].questionId).toBe('QuestionId-1');
+      expect(nocQuestionsAfterSort[1].questionId).toBe('QuestionId-5');
+      expect(nocQuestionsAfterSort[2].questionId).toBe('QuestionId-10');
     });
   });
 });

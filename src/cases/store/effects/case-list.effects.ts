@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { map, switchMap, catchError } from 'rxjs/operators';
-import { of, Observable } from 'rxjs';
-import * as caselistActions from '../actions/case-list.action';
+import { Observable, of } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { SearchFilterService } from '../../../cases/services';
+import * as caselistActions from '../actions/case-list.action';
 
 @Injectable()
 export class CaseListEffects {
-    payload: any;
+    public payload: any;
     constructor(
-        private actions$: Actions,
-        private searchService: SearchFilterService,
+        private readonly actions$: Actions,
+        private readonly searchService: SearchFilterService,
     ) { }
 
     @Effect()
-    applyPageMetadata$ = this.actions$.pipe(
+    public applyPageMetadata$ = this.actions$.pipe(
         ofType(caselistActions.FIND_CASELIST_PAGINATION_METADATA),
         map((action: caselistActions.FindCaselistPaginationMetadata) => action.payload),
         switchMap(payload => {
@@ -28,7 +28,7 @@ export class CaseListEffects {
     );
 
     @Effect()
-    applyCaselistFilters$ = this.actions$.pipe(
+    public applyCaselistFilters$ = this.actions$.pipe(
       ofType(caselistActions.APPLY_CASELIST_FILTER),
       map((action: caselistActions.ApplyCaselistFilter) => action.payload),
       switchMap(payload => {
@@ -39,7 +39,7 @@ export class CaseListEffects {
       }));
 
     @Effect()
-    applyCaselistFiltersForES$ = this.actions$.pipe(
+    public applyCaselistFiltersForES$ = this.actions$.pipe(
       ofType(caselistActions.APPLY_CASELIST_FILTER_FOR_ES),
       map((action: caselistActions.ApplyCaselistFilterForES) => action.payload),
       switchMap(payload => {
@@ -50,7 +50,7 @@ export class CaseListEffects {
       }));
 
     @Effect()
-    applySearchFilterToggle$ = this.actions$.pipe(
+    public applySearchFilterToggle$ = this.actions$.pipe(
       ofType(caselistActions.CASE_FILTER_DISPLAY_TOGGLE),
       map((action: caselistActions.CaseFilterToggle) => new caselistActions.CaseFilterToggleSuccess(action.payload)),
           catchError(error => of(new caselistActions.ApplyCaselistFilterFail(error))));

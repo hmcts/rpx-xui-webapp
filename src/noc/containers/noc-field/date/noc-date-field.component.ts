@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
 import { AppUtils } from 'src/app/app-utils';
+import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
 
 @Component({
   selector: 'exui-noc-date-field',
@@ -12,7 +12,7 @@ export class NocDateFieldComponent extends AbstractFieldWriteComponent implement
   public dateControl: FormControl;
   public dateGroup: FormGroup;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private readonly formBuilder: FormBuilder) {
     super();
   }
 

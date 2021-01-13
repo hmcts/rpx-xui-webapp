@@ -1,32 +1,12 @@
 import { BadgeColour, ContactDetailsDataModel } from '@hmcts/rpx-xui-common-lib';
 import {Theme} from './containers/app-header/app-header.component';
 
-const FeatureNames = {
+const featureNames = {
   workAllocation: 'MC_Work_Allocation',
   noticeOfChange: 'MC_Notice_of_Change'
 };
 
-const FooterData =  {
-  heading: 'Help',
-  email: {
-    address: 'contactprobate@justice.gov.uk',
-    text: 'contactprobate@justice.gov.uk'
-  },
-  phone: {
-    text: '0300 303 0648'
-  },
-  opening: {
-    text: 'Monday to Friday, 9.30am to 5pm (excluding public holidays)'
-  },
-  probate: {
-    text: 'For Probate you can contact:'
-  },
-  otherContact: {
-    text: 'For all other services: contact your service representative for further help and information.'
-  }
-};
-
-const FooterDataNavigation = {
+const footerDataNavigation = {
   items: [
     { text: 'Accessibility', href: '/accessibility', target: '_blank' },
     { text: 'Terms and conditions', href: '/terms-and-conditions', target: '_blank' },
@@ -207,15 +187,15 @@ const caseDetailsUrl: string = '/cases/case-details/';
 
 
 export class AppConstants {
-  static FOOTER_DATA = null;
-  static FOOTER_DATA_NAVIGATION = FooterDataNavigation;
-  static APP_HEADER_TITLE = appHeaderTitle;
-  static ENVIRONMENT_NAMES = environmentNames;
-  static REDIRECT_URL = redirectUrl;
-  static HELP_CONTACT_DETAILS = helpContactDetails;
-  static DEFAULT_USER_THEME = defaultUserTheme;
-  static APPLICATION_USER_THEMES = applicationUserThemes;
-  static SIGNED_OUT_THEME = signedOutTheme;
-  static FEATURE_NAMES = FeatureNames;
-  static CASE_DETAILS_URL = caseDetailsUrl;
+  public static FOOTER_DATA = null;
+  public static FOOTER_DATA_NAVIGATION = footerDataNavigation;
+  public static APP_HEADER_TITLE = appHeaderTitle;
+  public static ENVIRONMENT_NAMES = environmentNames;
+  public static REDIRECT_URL = redirectUrl;
+  public static HELP_CONTACT_DETAILS = helpContactDetails;
+  public static DEFAULT_USER_THEME = defaultUserTheme;
+  public static APPLICATION_USER_THEMES = applicationUserThemes;
+  public static SIGNED_OUT_THEME = signedOutTheme;
+  public static FEATURE_NAMES = featureNames;
+  public static CASE_DETAILS_URL = caseDetailsUrl;
 }

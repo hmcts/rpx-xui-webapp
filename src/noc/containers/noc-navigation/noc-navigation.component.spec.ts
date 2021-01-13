@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
-import { NocNavigationEvent } from '../../models';
 import * as fromRoot from '../../../app/store/reducers';
+import { NocNavigationEvent } from '../../models';
 import * as fromNocStore from '../../store';
 import { NocNavigationComponent } from './noc-navigation.component';
 

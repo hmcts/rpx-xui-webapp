@@ -1,7 +1,7 @@
-import * as fromFilter from './search-filter.reducer';
-import * as fromActions from '../actions/case-search.action';
-import { mockedSearchFilters, mockedSearchFiltersCaseState } from '../../../cases/mock/search-filter.mock';
 import { CaseState, CaseType, Jurisdiction, SearchResultView } from '@hmcts/ccd-case-ui-toolkit';
+import { mockedSearchFilters, mockedSearchFiltersCaseState } from '../../../cases/mock/search-filter.mock';
+import * as fromActions from '../actions/case-search.action';
+import * as fromFilter from './search-filter.reducer';
 
 describe('Search Filter Reducer', () => {
 

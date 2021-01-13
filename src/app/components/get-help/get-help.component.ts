@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import { AppConstants } from 'src/app/app.constants';
 import { ContactDetailsDataModel } from '@hmcts/rpx-xui-common-lib';
 import {CookieService} from 'ngx-cookie';
+import { AppConstants } from 'src/app/app.constants';
 
 @Component({
     selector: 'exui-get-help',
@@ -13,7 +13,7 @@ export class GetHelpComponent implements OnInit {
     public caseManager = false;
 
     constructor(
-      private cookieService: CookieService
+      private readonly cookieService: CookieService
     ) {}
 
   public ngOnInit() {

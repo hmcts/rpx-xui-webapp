@@ -1,7 +1,7 @@
 <div class="govuk-form-group" [ngClass]="{'form-group-error': !textControl.valid}">
 
   <label class="govuk-label"  [for]="id()">
-    <span class="form-label govuk-!-font-weight-bold" *ngIf="questionField.question_text">{{questionField.question_text}}</span>
+    <span class="form-label govuk-!-font-weight-bold" *ngIf="questionField.questionText">{{questionField.questionText}}</span>
     <span class="error-message" *ngIf="textControl.errors && textControl.touched">{{textControl.errors | nocError}}</span>
   </label>
 

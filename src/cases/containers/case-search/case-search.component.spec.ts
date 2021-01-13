@@ -1,20 +1,19 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { CaseSearchComponent } from './case-search.component';
-import { Store, StoreModule, combineReducers } from '@ngrx/store';
-import * as fromCaseSearchStore from '../../store';
-import { RouterTestingModule } from '@angular/router/testing';
-import * as fromRoot from '../../../app/store/reducers';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
-import { of } from 'rxjs';
-import { Jurisdiction, CaseType, CaseState, SearchResultView, PaginationMetadata } from '@hmcts/ccd-case-ui-toolkit';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { CaseState, CaseType, Jurisdiction, PaginationMetadata, SearchResultView } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { ApplySearchFilterForES, SearchFilterToggle } from '../../store';
+import { combineReducers, Store, StoreModule } from '@ngrx/store';
+import { of } from 'rxjs';
+import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
+import * as fromRoot from '../../../app/store/reducers';
+import { reducers, SearchFilterToggle, SearchState } from '../../store';
+import { CaseSearchComponent } from './case-search.component';
 
 describe('CaseSearchComponent', () => {
   let fixture: ComponentFixture<CaseSearchComponent>;
   let component: CaseSearchComponent;
-  let store: Store<fromCaseSearchStore.SearchState>;
+  let store: Store<SearchState>;
   let storePipeMock: any;
   let storeDispatchMock: any;
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled']);
@@ -29,7 +28,7 @@ describe('CaseSearchComponent', () => {
         RouterTestingModule,
         StoreModule.forRoot({
           ...fromRoot.reducers,
-          feature: combineReducers(fromCaseSearchStore.reducers),
+          feature: combineReducers(reducers),
         }),
       ],
       schemas: [
@@ -107,21 +106,11 @@ describe('CaseSearchComponent', () => {
     let event;
 
     beforeEach(() => {
-
-      const jurisdiction = { id: 'PROBATE' };
-      const caseType = { id: 'GrantOfRepresentation' };
-      const caseState = { id: 'CaseCreated' };
-      const metadataFields = ['[CASE_REFERENCE]'];
-      const formGroupValues = {};
-      const page = 1;
-
       event = component.getEvent();
     });
 
     it('should call findCaseListPaginationMetadata() on apply of filter.', () => {
-
       const spyOnFindCaseListPaginationMetadata = spyOn(component, 'findCaseListPaginationMetadata').and.callThrough();
-      const spyOnGetEvent = spyOn(component, 'getEvent');
 
       event = {
         selected: {
@@ -148,11 +137,14 @@ describe('CaseSearchComponent', () => {
   });
 
   describe('getElasticSearchResults', () => {
-
     it('should dispatch an action to get results from elastic search endpoint.', () => {
-      const spyOnGetEvent = spyOn(component, 'getEvent').and.returnValue({});
+      localStorage.setItem('search-form-group-value', JSON.stringify({}));
+      localStorage.setItem('search-jurisdiction', JSON.stringify({}));
+      localStorage.setItem('search-caseType', JSON.stringify({}));
+      localStorage.setItem('search-metadata-fields', JSON.stringify({}));
+
       component.getElasticSearchResults();
-      expect(storeDispatchMock).toHaveBeenCalledWith(new ApplySearchFilterForES({}));
+      expect(storeDispatchMock).toHaveBeenCalled();
     });
   });
 

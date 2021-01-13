@@ -1,17 +1,16 @@
-import { CaseListEffects } from './case-list.effects';
-import { mockedSearchFilters } from '../../../cases/mock/search-filter.mock';
 import { TestBed } from '@angular/core/testing';
-import { SearchFilterService } from '../../../cases/services';
 import { provideMockActions } from '@ngrx/effects/testing';
-import * as fromCaseListEffects from './case-list.effects';
+import { cold, hot } from 'jasmine-marbles';
 import { of, throwError } from 'rxjs';
-import { ApplyCaselistFilter, ApplyCaselistFilterSuccess, ApplyCaselistFilterFail, ApplyCaselistFilterForES } from '../actions';
-import { hot, cold } from 'jasmine-marbles';
+import { mockedSearchFilters } from '../../../cases/mock/search-filter.mock';
+import { SearchFilterService } from '../../../cases/services';
+import { ApplyCaselistFilter, ApplyCaselistFilterFail, ApplyCaselistFilterForES, ApplyCaselistFilterSuccess } from '../actions';
+import { CaseListEffects } from './case-list.effects';
 
 describe('Pending Organisation Effects', () => {
     let actions$;
     let effects: CaseListEffects;
-    const SearchFilterServiceMock = jasmine.createSpyObj('SearchFilterService', [
+    const searchFilterServiceMock = jasmine.createSpyObj('SearchFilterService', [
         'search'
     ]);
 
@@ -22,21 +21,20 @@ describe('Pending Organisation Effects', () => {
             providers: [
                 {
                     provide: SearchFilterService,
-                    useValue: SearchFilterServiceMock,
+                    useValue: searchFilterServiceMock,
                 },
-                fromCaseListEffects.CaseListEffects,
+                CaseListEffects,
                 provideMockActions(() => actions$)
             ]
         });
 
         effects = TestBed.get(CaseListEffects);
-
     });
 
     describe('applyCaselistFilters$', () => {
         it('should return a collection', () => {
 
-            SearchFilterServiceMock.search.and.returnValue(of(payload));
+            searchFilterServiceMock.search.and.returnValue(of(payload));
             const action = new ApplyCaselistFilter({});
             const completion = new ApplyCaselistFilterSuccess(payload);
             actions$ = hot('-a', { a: action });
@@ -48,7 +46,7 @@ describe('Pending Organisation Effects', () => {
     describe('applyCaselistFilters$ error', () => {
         it('should return a ApplyCaselistFilterFail', () => {
 
-            SearchFilterServiceMock.search.and.returnValue(throwError(new Error()));
+            searchFilterServiceMock.search.and.returnValue(throwError(new Error()));
             const action = new ApplyCaselistFilter({});
             const completion = new ApplyCaselistFilterFail(new Error());
             actions$ = hot('-a', { a: action });
@@ -60,7 +58,7 @@ describe('Pending Organisation Effects', () => {
     describe('applyCaselistFiltersForES$', () => {
         it('should return a collection', () => {
 
-            SearchFilterServiceMock.search.and.returnValue(of(payload));
+            searchFilterServiceMock.search.and.returnValue(of(payload));
             const action = new ApplyCaselistFilterForES({});
             const completion = new ApplyCaselistFilterSuccess(payload);
             actions$ = hot('-a', { a: action });
@@ -72,7 +70,7 @@ describe('Pending Organisation Effects', () => {
     describe('applyCaselistFilterForES$ error', () => {
         it('should return a ApplyCaselistFilterFail', () => {
 
-            SearchFilterServiceMock.search.and.returnValue(throwError(new Error()));
+            searchFilterServiceMock.search.and.returnValue(throwError(new Error()));
             const action = new ApplyCaselistFilterForES({});
             const completion = new ApplyCaselistFilterFail(new Error());
             actions$ = hot('-a', { a: action });

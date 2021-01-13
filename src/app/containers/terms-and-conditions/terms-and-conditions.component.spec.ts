@@ -1,12 +1,12 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Action, Store } from '@ngrx/store';
 import { of } from 'rxjs';
-import { TermsAndConditionsComponent } from './terms-and-conditions.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TermsConditionsService } from 'src/app/services/terms-and-conditions/terms-and-conditions.service';
-import { By } from '@angular/platform-browser';
+import { TermsAndConditionsComponent } from './terms-and-conditions.component';
 
 const storeMock = {
     pipe: () => of(null),

@@ -3,7 +3,7 @@
 	<fieldset class="inline">
 
     <legend>
-      <span class="form-label govuk-!-font-weight-bold" *ngIf="questionField.question_text">{{questionField.question_text}}</span>
+      <span class="form-label govuk-!-font-weight-bold" *ngIf="questionField.questionText">{{questionField.questionText}}</span>
       <span class="error-message" *ngIf="yesNoControl.errors && yesNoControl.touched">{{yesNoControl.errors | nocError}}</span>
     </legend>
 

@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormBuilder, AbstractControl, Validator, ValidationErrors, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AppUtils } from 'src/app/app-utils';
 import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
-import { AppUtils } from 'src/app/app-utils'
 @Component({
   selector: 'exui-noc-datetime-field',
   templateUrl: './noc-datetime-field.component.html'
@@ -11,7 +11,7 @@ export class NocDateTimeFieldComponent extends AbstractFieldWriteComponent imple
   public datetimeControl: FormControl;
   public datetimeGroup: FormGroup;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private readonly formBuilder: FormBuilder) {
     super();
   }
 

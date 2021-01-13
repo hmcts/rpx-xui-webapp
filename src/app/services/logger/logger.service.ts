@@ -1,10 +1,10 @@
-import { MonitoringService } from './monitoring.service';
-import { NGXLogger } from 'ngx-logger';
 import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie';
+import { NGXLogger } from 'ngx-logger';
 import { environment as config } from '../../../environments/environment';
 import { CryptoWrapper } from './cryptoWrapper';
 import { JwtDecodeWrapper } from './jwtDecodeWrapper';
+import { MonitoringService } from './monitoring.service';
 
 export interface ILoggerService {
     trace(message: any, ...additional: any[]): void;
@@ -20,56 +20,56 @@ export interface ILoggerService {
 @Injectable()
 
 export class LoggerService implements ILoggerService {
-    COOKIE_KEYS;
-    constructor(private monitoringService: MonitoringService,
-                private ngxLogger: NGXLogger,
-                private cookieService: CookieService,
-                private cryptoWrapper: CryptoWrapper,
-                private jwtDecodeWrapper: JwtDecodeWrapper) {
+    public COOKIE_KEYS;
+    constructor(private readonly monitoringService: MonitoringService,
+                private readonly ngxLogger: NGXLogger,
+                private readonly cookieService: CookieService,
+                private readonly cryptoWrapper: CryptoWrapper,
+                private readonly jwtDecodeWrapper: JwtDecodeWrapper) {
                     this.COOKIE_KEYS = {
                         TOKEN: config.cookies.token,
                         USER: config.cookies.userId
                       };
     }
 
-    trace(message: any, ...additional: any[]): void {
+    public trace(message: any, ...additional: any[]): void {
         const formattedMessage = this.getMessage(message);
         this.ngxLogger.trace(formattedMessage);
         this.monitoringService.logEvent(message);
     }
-    debug(message: any, ...additional: any[]): void {
+    public debug(message: any, ...additional: any[]): void {
         const formattedMessage = this.getMessage(message);
         this.ngxLogger.debug(formattedMessage);
         this.monitoringService.logEvent(message);
     }
-    info(message: any, ...additional: any[]): void {
+    public info(message: any, ...additional: any[]): void {
         const formattedMessage = this.getMessage(message);
         this.ngxLogger.info(formattedMessage);
         this.monitoringService.logEvent(message);
     }
-    log(message: any, ...additional: any[]): void {
+    public log(message: any, ...additional: any[]): void {
         const formattedMessage = this.getMessage(message);
         this.ngxLogger.log(formattedMessage);
         this.monitoringService.logEvent(message);
     }
-    warn(message: any, ...additional: any[]): void {
+    public warn(message: any, ...additional: any[]): void {
         const formattedMessage = this.getMessage(message);
         this.ngxLogger.warn(formattedMessage);
         this.monitoringService.logEvent(message);
     }
-    error(message: any, ...additional: any[]): void {
+    public error(message: any, ...additional: any[]): void {
        this.ngxLogger.error(message);
        const formattedMessage = this.getMessage(message);
        const error = new Error(formattedMessage);
        this.monitoringService.logException(error);
     }
-    fatal(message: any, ...additional: any[]): void {
+    public fatal(message: any, ...additional: any[]): void {
         this.ngxLogger.fatal(message);
         const formattedMessage = this.getMessage(message);
         const error = new Error(formattedMessage);
         this.monitoringService.logException(error);
     }
-    getMessage(message: any): string {
+    public getMessage(message: any): string {
         const jwt = this.cookieService.get(this.COOKIE_KEYS.TOKEN);
         let encryptedMessage = '';
         if (jwt) {

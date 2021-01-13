@@ -1,8 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 
 import {select, Store} from '@ngrx/store';
-import * as fromCaseCreate from '../../store';
 import {Subscription} from 'rxjs';
+import * as fromCaseCreate from '../../store';
 /**
  * Case Details Component
  * It consumes ccd-case-view component
@@ -14,17 +14,17 @@ import {Subscription} from 'rxjs';
 })
 export class CaseDetailsComponent implements OnInit, OnDestroy {
 
-  constructor(private store: Store<fromCaseCreate.State>) {}
+  constructor(private readonly store: Store<fromCaseCreate.State>) {}
 
-  caseId: string;
-  $caeIdSubscription: Subscription;
+  public caseId: string;
+  public $caeIdSubscription: Subscription;
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.$caeIdSubscription = this.store.pipe(select(fromCaseCreate.getCaseId))
       .subscribe(caseId => this.caseId = caseId);
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.$caeIdSubscription.unsubscribe();
   }
 

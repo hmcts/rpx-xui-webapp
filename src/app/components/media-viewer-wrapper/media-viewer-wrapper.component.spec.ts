@@ -1,14 +1,14 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MediaViewerWrapperComponent } from './media-viewer-wrapper.component';
-import { DocumentUrlPipe } from '@hmcts/ccd-case-ui-toolkit/dist/shared/components/palette/document/document-url.pipe';
-import { MediaViewerModule } from '@hmcts/media-viewer';
-import { WindowService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/window';
+import { RouterTestingModule } from '@angular/router/testing';
 import { AbstractAppConfig } from '@hmcts/ccd-case-ui-toolkit/dist/app.config';
+import { DocumentUrlPipe } from '@hmcts/ccd-case-ui-toolkit/dist/shared/components/palette/document/document-url.pipe';
+import { WindowService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/window';
+import { MediaViewerModule } from '@hmcts/media-viewer';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { EffectsModule } from '@ngrx/effects';
 import createSpyObj = jasmine.createSpyObj;
 import { StoreModule } from '@ngrx/store';
-import { EffectsModule } from '@ngrx/effects';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { RouterTestingModule } from '@angular/router/testing';
+import { MediaViewerWrapperComponent } from './media-viewer-wrapper.component';
 
 const GATEWAY_DOCUMENT_URL = 'http://localhost:1234/documents';
 const REMOTE_DOCUMENT_URL = 'https://www.example.com/binary';

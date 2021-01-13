@@ -1,39 +1,36 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import {
-  CaseUIToolkitModule,
-  DraftService,
-  AlertService,
-  HttpService,
-  AuthService as CCDAuthService,
-  CasesService,
-  HttpErrorService,
   AbstractAppConfig,
+  AlertService,
+  AuthService as CCDAuthService,
   CaseEditWizardGuard,
-  RouterHelperService,
+  CasesService,
+  CaseUIToolkitModule,
+  CreateCaseFiltersModule,
   DocumentManagementService,
+  DraftService,
+  HttpErrorService,
+  HttpService,
   PageValidationService,
   PlaceholderService,
-  SearchService,
   RequestOptionsBuilder,
-  SearchFiltersModule, CreateCaseFiltersModule,
+  RouterHelperService,
+  SearchFiltersModule, SearchService,
 } from '@hmcts/ccd-case-ui-toolkit';
-import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
-import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
-import { RouterTestingModule } from '@angular/router/testing';
 import { combineReducers, StoreModule } from '@ngrx/store';
-import { HttpModule } from '@angular/http';
-import { SharedModule } from '../../../app/shared/shared.module';
+import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
+import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { AppConfigService } from '../../../app/services/config/configuration.services';
-import { CaseFilterComponent } from './case-filter.component';
-import { reducers } from '../../store/reducers';
-import * as fromCases from '../../store/reducers/';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { SharedModule } from '../../../app/shared/shared.module';
 import * as fromCaseCreate from '../../store/reducers';
+import { CaseFilterComponent } from './case-filter.component';
 
 class MockSortService {
-  features = {};
-  getFeatureToggle() { }
-  getEditorConfiguration() { }
+  public features = {};
+  public getFeatureToggle() { }
+  public getEditorConfiguration() { }
 }
 describe('Case Filter Component', () => {
   let component: CaseFilterComponent;
@@ -45,8 +42,8 @@ describe('Case Filter Component', () => {
         RouterTestingModule,
         CaseUIToolkitModule,
         HttpClientTestingModule,
-        StoreModule.forRoot({ ...reducers, cases: combineReducers(fromCases.reducers) }),
-        HttpModule,
+        StoreModule.forRoot({ ...fromCaseCreate.reducers, cases: combineReducers(fromCaseCreate.reducers) }),
+        HttpClientTestingModule,
         SharedModule,
         SearchFiltersModule,
         CreateCaseFiltersModule,

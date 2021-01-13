@@ -1,7 +1,7 @@
-import {AppConfigService} from './configuration.services';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
 import {StoreModule} from '@ngrx/store';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import {AppConfigService} from './configuration.services';
 
 describe('Configuration Service', () => {
   let httpClientSpy: { get: jasmine.Spy };

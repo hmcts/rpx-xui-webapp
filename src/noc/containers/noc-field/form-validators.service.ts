@@ -8,33 +8,33 @@ export class FormValidatorsService {
   private static readonly REGEX_WHITESPACES: string = '^[^ ]+(?:\\s+[^ ]+)*$';
 
   public addValidators(nocQuestion: NocQuestion, control: FormControl): FormControl {
-    if (nocQuestion.answer_field_type.type) {
+    if (nocQuestion.answerFieldType.type) {
       const validators = [];
-      if (nocQuestion.answer_field_type.type === 'Text') {
-        if (nocQuestion.answer_field_type.regular_expression) {
-          validators.push(Validators.pattern(nocQuestion.answer_field_type.regular_expression));
+      if (nocQuestion.answerFieldType.type === 'Text') {
+        if (nocQuestion.answerFieldType.regularExpression) {
+          validators.push(Validators.pattern(nocQuestion.answerFieldType.regularExpression));
         } else {
           validators.push(Validators.pattern(FormValidatorsService.REGEX_WHITESPACES));
         }
-        if (nocQuestion.answer_field_type.min) {
-          validators.push(Validators.minLength(nocQuestion.answer_field_type.min));
+        if (nocQuestion.answerFieldType.min) {
+          validators.push(Validators.minLength(nocQuestion.answerFieldType.min));
         }
-        if (nocQuestion.answer_field_type.max) {
-          validators.push(Validators.maxLength(nocQuestion.answer_field_type.max));
+        if (nocQuestion.answerFieldType.max) {
+          validators.push(Validators.maxLength(nocQuestion.answerFieldType.max));
         }
-      } else if (nocQuestion.answer_field_type.type === 'Email') {
+      } else if (nocQuestion.answerFieldType.type === 'Email') {
         validators.push(Validators.email);
-      } else if (nocQuestion.answer_field_type.type === 'Number') {
+      } else if (nocQuestion.answerFieldType.type === 'Number') {
         validators.push(NocValidators.numberValidator());
-      } else if (nocQuestion.answer_field_type.type === 'Postcode') {
+      } else if (nocQuestion.answerFieldType.type === 'Postcode') {
         validators.push(NocValidators.postcodeValidator());
-      } else if (nocQuestion.answer_field_type.type === 'PhoneUK') {
+      } else if (nocQuestion.answerFieldType.type === 'PhoneUK') {
         validators.push(NocValidators.phoneUKValidator());
-      } else if (nocQuestion.answer_field_type.type === 'Date') {
+      } else if (nocQuestion.answerFieldType.type === 'Date') {
         validators.push(NocValidators.dateValidator());
-      } else if (nocQuestion.answer_field_type.type === 'DateTime') {
+      } else if (nocQuestion.answerFieldType.type === 'DateTime') {
         validators.push(NocValidators.dateTimeValidator());
-      } else if (nocQuestion.answer_field_type.type === 'Time') {
+      } else if (nocQuestion.answerFieldType.type === 'Time') {
         validators.push(NocValidators.timeValidator());
       }
       if (control.validator) {

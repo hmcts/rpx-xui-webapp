@@ -1,4 +1,4 @@
-import { Directive, Input, TemplateRef, ViewContainerRef, OnInit } from '@angular/core';
+import { Directive, Input, OnInit, TemplateRef, ViewContainerRef } from '@angular/core';
 import {ConfigurationModel} from '../../models/configuration.model';
 import {AppConfigService} from '../../services/config/configuration.services';
 
@@ -6,16 +6,16 @@ import {AppConfigService} from '../../services/config/configuration.services';
   selector: '[exuiFeatureToggle]'
 })
 export class FeatureToggleDirective implements OnInit {
-  @Input() exuiFeatureToggle: string;
-  config: ConfigurationModel;
+  @Input() public exuiFeatureToggle: string;
+  public config: ConfigurationModel;
 
   constructor(
-    private templateRef: TemplateRef<any>,
-    private viewContainer: ViewContainerRef,
-    private appConfigService: AppConfigService
+    private readonly templateRef: TemplateRef<any>,
+    private readonly viewContainer: ViewContainerRef,
+    private readonly appConfigService: AppConfigService
   ) {}
 
-  ngOnInit() {
+  public ngOnInit() {
     this.config = this.appConfigService.getFeatureToggle() || {};
     if (this.isEnabled()) {
       this.viewContainer.createEmbeddedView(this.templateRef);
@@ -24,7 +24,7 @@ export class FeatureToggleDirective implements OnInit {
     }
   }
 
-  isEnabled() {
+  public isEnabled() {
     if (!this.config[this.exuiFeatureToggle]) {
       return true;
     }

@@ -5,7 +5,6 @@ import { CookieService } from 'ngx-cookie';
 import { Observable, of } from 'rxjs';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { AppUtils } from '../app-utils';
-import { TermsConditionsService } from '../services/terms-and-conditions/terms-and-conditions.service';
 import * as fromApp from '../store';
 
 @Injectable({

@@ -7,6 +7,6 @@ export abstract class AbstractFieldWriteComponent extends AbstractFormFieldCompo
   public idPrefix = '';
 
   public id() {
-    return this.idPrefix + this.questionField.question_id;
+    return this.idPrefix + this.questionField.questionId;
   }
 }

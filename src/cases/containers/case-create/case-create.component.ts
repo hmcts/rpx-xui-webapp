@@ -1,10 +1,10 @@
 import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
-import * as fromCaseCreate from '../../store';
 import {select, Store} from '@ngrx/store';
-import * as fromCases from '../../../cases/store';
-import * as fromRoot from '../../../app/store';
-import {ActionBindingModel} from '../../models/create-case-actions.model';
 import {Subscription} from 'rxjs';
+import * as fromRoot from '../../../app/store';
+import * as fromCases from '../../../cases/store';
+import {ActionBindingModel} from '../../models/create-case-actions.model';
+import * as fromCaseCreate from '../../store';
 /**
  * Entry component wrapper for CddCreateCaseFilter
  * Smart Component consuming <ccd-case-create>
@@ -16,16 +16,16 @@ import {Subscription} from 'rxjs';
   encapsulation: ViewEncapsulation.None
 })
 export class CasesCreateComponent implements OnInit, OnDestroy {
-  caseCreateInputs: {jurisdictionId: string; caseTypeId: string; eventId: string};
+  public caseCreateInputs: {jurisdictionId: string; caseTypeId: string; eventId: string};
 
-  caseCreateEventsBindings: ActionBindingModel[];
-  fromCasesFeature: any;
-  $inputSubscription: Subscription;
+  public caseCreateEventsBindings: ActionBindingModel[];
+  public fromCasesFeature: any;
+  public $inputSubscription: Subscription;
 
-  constructor(private store: Store<fromCaseCreate.State>) {
+  constructor(private readonly store: Store<fromCaseCreate.State>) {
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.fromCasesFeature = fromCases;
     // TODO try to be nice and remove subscription use pipe | instead
     this.$inputSubscription = this.store.pipe(select(fromCases.getCreateCaseFilterState))
@@ -49,7 +49,7 @@ export class CasesCreateComponent implements OnInit, OnDestroy {
 
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.$inputSubscription.unsubscribe();
   }
 

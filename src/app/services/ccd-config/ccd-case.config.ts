@@ -16,7 +16,7 @@ import {AppConfigService} from '../config/configuration.services';
 export class AppConfig extends AbstractAppConfig {
 
   protected config: CaseEditorConfig;
-  constructor(private appConfigService: AppConfigService) {
+  constructor(private readonly appConfigService: AppConfigService) {
     super();
     this.config =  this.appConfigService.getEditorConfiguration() || {};
   }
@@ -58,20 +58,15 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getCaseHistoryUrl(caseId: string, eventId: string) {
-    return (
-      this.getCaseDataUrl() +
-      `/internal` +
-      `/cases/${caseId}` +
-      `/events/${eventId}`
-    );
+    return `${this.getCaseDataUrl()}/internal/cases/${caseId}/events/${eventId}`;
   }
 
   public getCreateOrUpdateDraftsUrl(ctid: string) {
-      return this.getCaseDataUrl() + `/internal/case-types/${ctid}/drafts/`;
+    return `${this.getCaseDataUrl()}/internal/case-types/${ctid}/drafts/`;
   }
 
   public getViewOrDeleteDraftsUrl(did: string) {
-    return this.getCaseDataUrl() + `/drafts/${did}`;
+    return `${this.getCaseDataUrl()}/drafts/${did}`;
   }
 
   public getActivityUrl() {

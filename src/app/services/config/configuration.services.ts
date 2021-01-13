@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 
-import * as fromApp from '../../store';
-import {Store, select} from '@ngrx/store';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import {ConfigurationModel} from '../../models/configuration.model';
-import {catchError, take} from 'rxjs/operators';
+import {select, Store} from '@ngrx/store';
 import {throwError} from 'rxjs';
+import {catchError, take} from 'rxjs/operators';
+import {ConfigurationModel} from '../../models/configuration.model';
+import * as fromApp from '../../store';
 
 /**
  *  Configuration Services responsible for fetching initial config data needed for app to run
@@ -15,12 +15,12 @@ import {throwError} from 'rxjs';
 @Injectable()
 export class AppConfigService {
 
-  constructor(private http: HttpClient,  private store: Store<fromApp.State>) {}
+  constructor(private readonly http: HttpClient,  private readonly store: Store<fromApp.State>) {}
   private configuration: ConfigurationModel | any;
   /**
    * Loading configuration json file
    */
-  load(): Observable<any> {
+  public load(): Observable<any> {
     const jsonFile = `assets/config/config.json`;
     return this.http.get(jsonFile).pipe(
       catchError(this.handleError)
@@ -30,7 +30,7 @@ export class AppConfigService {
    * Getting configuration from the store
    * and setting it to private var
    */
-  setConfiguration() {
+  public setConfiguration() {
     this.store.pipe(select(fromApp.getAppFeatures), take(1)).subscribe(config => {
       this.configuration = config;
     });
@@ -38,19 +38,19 @@ export class AppConfigService {
   /**
    * Returning features config
    */
-  getFeatureToggle() {
+  public getFeatureToggle() {
     return this.configuration.features;
   }
   /**
    * Returning caseEditorConfig config
    */
-  getEditorConfiguration() {
+  public getEditorConfiguration() {
     return this.configuration.caseEditorConfig;
   }
   /**
    * Returning urls config
    */
-  getRoutesConfig() {
+  public getRoutesConfig() {
     return this.configuration.urls;
   }
 

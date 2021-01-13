@@ -1,10 +1,13 @@
 import * as express from 'express'
-import {getConfigValue} from '../configuration'
+import { getConfigValue } from '../configuration'
 import {
   HEALTH,
 } from '../configuration/references'
+import { healthEndpoints } from '../configuration/health'
 import { http } from '../lib/http'
+import * as log4jui from '../lib/log4jui'
 export const router = express.Router({ mergeParams: true })
+const logger = log4jui.getLogger('outgoing')
 
 router.get('/', healthCheckRoute)
 
@@ -48,11 +51,12 @@ export function getPromises(path): any[] {
         }
     }
 
-    const health = getConfigValue(HEALTH)
+    // const health = getConfigValue(HEALTH)
 
     if (healthCheckEndpointDictionary[path]) {
         healthCheckEndpointDictionary[path].forEach(endpoint => {
-            Promises.push(http.get(health[endpoint]))
+            // Promises.push(http.get(health[endpoint]))
+            Promises.push(http.get(healthEndpoints()[endpoint]))
         })
     }
     return Promises
@@ -60,26 +64,5 @@ export function getPromises(path): any[] {
 
 export async function healthCheckRoute(req, res) {
     res.send({ healthState: true })
-    /*try {
-        const path = req.query.path
-        let PromiseArr = []
-        let response = { healthState: true }
-
-        if (path !== '') {
-            PromiseArr = that.getPromises(path)
-        }
-
-        // comment out following block to bypass actual check
-        await Promise.all(PromiseArr).then().catch(() => {
-            response = { healthState: false }
-        })
-
-        logger.info('response::', response)
-        res.send(response)
-    } catch (error) {
-        console.log(error)
-        logger.info('error', { healthState: false })
-        res.status(error.status).send({ healthState: false })
-    }*/
 }
 export default router

@@ -1,4 +1,4 @@
-@fullfunctional @test
+@test
 Feature: IA create case workflow
 
     Background:

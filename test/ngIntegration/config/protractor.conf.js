@@ -9,15 +9,18 @@ const screenShotUtils = require("protractor-screenshot-utils").ProtractorScreenS
 exports.config = {
   allScriptsTimeout: 11000,
   specs: [
-    '../tests/*.js',
-    '../tests/**/*.js'
+    '../tests/*.test.js',
+    '../tests/**/*.test.js'
 
   ],
-  exclude: ['../tests/hiddenFields.test.js', '../tests/caseFieldCollectionsPermissions.test.js'],
+  exclude: [
+    '../tests/hiddenFields.test.js', 
+    '../tests/caseFieldCollectionsPermissions.test.js',
+    '../tests/workAllocation/*.test.js'
+],
   capabilities: {
     'browserName': 'chrome',
-    'chromeOptions': { args: ['--headless1', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks', '--disable-notifications'] }
-
+    'chromeOptions': { args: ['--headless', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks', '--disable-notifications'] }
   },
   directConnect: true,
   baseUrl: 'http://localhost:4200/',

@@ -21,8 +21,8 @@ const SoftAssert = require('../../util/softAssert');
 
 
 const caseListPage = new CaselistPage();
-describe.only('Unhappy path: ', function () {
-    BrowserWaits.setDefaultWaitTime(2000);
+describe('Unhappy path task actions: ', function () {
+    // BrowserWaits.setDefaultWaitTime(2000);
 
     async function setErrorRespondeCodeOnApi(method, endpoint, responseCode) {
         await MockApp.stopServer();
@@ -91,7 +91,7 @@ describe.only('Unhappy path: ', function () {
 
 
 
-    it.only(`My Tasks - Reassign page errors`, async function () {
+    it(`My Tasks - Reassign page errors`, async function () {
         await BrowserUtil.browserInitWithAuth(["caseworker-ia-caseofficer", "caseworker-ia-admofficer"]);
         await headerPage.waitForPrimaryNavDisplay()
         await BrowserUtil.waitForLD();
@@ -136,7 +136,7 @@ describe.only('Unhappy path: ', function () {
     });
 
 
-    it.only(`My Tasks - Reassign submit errors`, async function () {
+    it(`My Tasks - Reassign submit errors`, async function () {
         await BrowserUtil.browserInitWithAuth(["caseworker-ia-caseofficer", "caseworker-ia-admofficer"]);
         await headerPage.waitForPrimaryNavDisplay()
         await BrowserUtil.waitForLD();
@@ -186,7 +186,7 @@ describe.only('Unhappy path: ', function () {
 
 
 
-    it.skip(`Available - action link page errors`, async function () {
+    it(`Available - action link page errors`, async function () {
         await BrowserUtil.browserInitWithAuth(["caseworker-ia-caseofficer", "caseworker-ia-admofficer"]);
         await headerPage.waitForPrimaryNavDisplay()
         await BrowserUtil.waitForLD();
@@ -225,7 +225,7 @@ describe.only('Unhappy path: ', function () {
         softAssertion.finally();
     });
 
-    it.skip(`Task Manager - action link page errors`, async function () {
+    it(`Task Manager - action link page errors`, async function () {
         await BrowserUtil.browserInitWithAuth(["caseworker-ia-caseofficer", "caseworker-ia-admofficer"]);
         await headerPage.waitForPrimaryNavDisplay()
         await BrowserUtil.waitForLD();

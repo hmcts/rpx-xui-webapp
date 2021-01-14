@@ -11,12 +11,11 @@ class TaskListPage extends TaskList {
 
         this.myTasksContaine = $('exui-my-tasks');
         this.availableTasksContainer = $('exui-available-tasks');
-
     }
 
     async amOnPage() {
         try{
-            await BrowserWaits.waitForElement(this.subNavListContainer);
+            await BrowserWaits.waitForElement(this.myTasksTab);
             return true;
         }
         catch(err){
@@ -31,14 +30,14 @@ class TaskListPage extends TaskList {
     }
 
     async clickAvailableTasks(){
-        expect(await this.amOnPage(), "Not on Task lict page ").to.be.true;
+        expect(await this.amOnPage(), "Not on Task list page ").to.be.true;
         await this.availableTasksTab.click();
     }
 
 
 
     async isMyTasksDisplayed(){
-        expect(await this.amOnPage(), "Not on Task lict page ").to.be.true;
+        expect(await this.amOnPage(), "Not on Task list page ").to.be.true;
         try {
             await BrowserWaits.waitForElement(this.myTasksContaine);
             return true;
@@ -59,9 +58,9 @@ class TaskListPage extends TaskList {
         }
     }
 
-    async getTaskCountInDisplayLabel() {
-        return await this.tasksCountInDisplayLabel.getText();
-    }
+    // async getTaskCountInDisplayLabel() {
+    //     return await this.tasksCountInDisplayLabel.getText();
+    // }
 
 }
 

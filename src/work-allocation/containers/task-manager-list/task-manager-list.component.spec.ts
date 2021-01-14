@@ -85,7 +85,12 @@ describe('TaskManagerListComponent', () => {
     expect(headerCells).toBeDefined();
     expect(headerCells.length).toEqual(fields.length + 1); // Extra one for Manage +;
     for (let i = 0; i < fields.length; i++) {
-      expect(headerCells[i].textContent).toEqual(fields[i].columnLabel);
+      // ensure derivedIcon has no header and every other field does
+      if (fields[i].columnLabel) {
+        expect(headerCells[i].textContent).toEqual(fields[i].columnLabel);
+      } else {
+        expect(headerCells[i].textContent).toEqual('');
+      }
     }
     // Make sure Manage + heading is blank.
     expect(headerCells[headerCells.length - 1].textContent.trim()).toEqual('');

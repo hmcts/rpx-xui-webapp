@@ -6,10 +6,10 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable } from 'rxjs';
-import { TaskActionConstants } from 'src/work-allocation/components/constants';
 
 import { TaskListComponent } from '..';
 import { ErrorMessageComponent } from '../../../app/components';
+import { TaskActionConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Task } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';

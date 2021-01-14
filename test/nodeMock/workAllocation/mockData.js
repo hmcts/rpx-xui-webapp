@@ -110,12 +110,15 @@ class WorkAllocationMockData{
 
     getLocationList(count){
         const locations = [];
-        for(let i = 0; i < count ; i++){
+        for(let i = 0; i < count - 1 ; i++){
             locations.push(this.getLocation(9000+i));
         }
+        locations.push({
+            id: 'a', locationName: 'Taylor House', services: ['a']
+        });
         return locations;
     }
 
 }
 
-module.exports = new WorkAllocationMockData(); 
+module.exports = new WorkAllocationMockData();

@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@^2.67.3-tab-name-replaceAll":
-  version "2.67.3-tab-name-replaceAll"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.67.3-tab-name-replaceAll.tgz#82f54583e36f6eb32c22229b1671651079164d82"
-  integrity sha512-6f8gyZgJyQyzRiqqfJc/2rnpA9pkuhD2c4neTfecCnzdOddJ3aaHugdtaugQWwdEyJbhZBVbZdvRc2stapuEQA==
+"@hmcts/ccd-case-ui-toolkit@2.67.6-ie-textbox-expand-issue":
+  version "2.67.6-ie-textbox-expand-issue"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.67.6-ie-textbox-expand-issue.tgz#9db00f78974c73efa5c9378c75fb4a7468dfea98"
+  integrity sha512-FXJ/q4rPaCjeHoHYhSmydkjlcevgildiZnnYPq0OlctO7dWUOVsYyY1f03DeHANb7tUWHVhgcswq9ILYkkuLAQ==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"

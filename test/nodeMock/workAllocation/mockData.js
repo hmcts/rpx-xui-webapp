@@ -14,7 +14,9 @@ class WorkAllocationMockData{
             { "id": "claim", "title": "Assign to me" },
             { "id": "claim-and-go", "title": "Assign to me and go to case" }
         ];
-        return this.getTaskList(count, taskActions); 
+        let tasks =  this.getTaskList(count, taskActions); 
+        tasks.tasks.forEach(task => task.assignee = null);
+        return tasks;
     }
 
     getTaskManagerTasks(count){
@@ -42,6 +44,7 @@ class WorkAllocationMockData{
                 "location": "Orphanage",
                 "taskName": "Give more gruel",
                 "dueDate": "2020-12-19T09:41:38.695Z",
+                "assignee": "test assginee "+i,
                 "actions": taskActions
             });
         }

@@ -12,5 +12,5 @@
   "slow": 75,
   "timeout": 30000,
   "ui": "bdd",
-  "spec" : ["./test/integration/tests/prdApi.spec.ts"]
+  "spec" : ["./test/integration/tests/*.spec.ts"]
 }

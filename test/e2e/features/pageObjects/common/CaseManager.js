@@ -224,7 +224,7 @@ class CaseManager {
             case "ccd-write-fixed-list-field":
                 var selectOption = this._fieldValue(fieldName);
                 var selectOptionElement = ccdField.$('select option:nth-of-type(2)'); 
-                if (selectOption.includes(fieldName)) {
+                if (!selectOption.includes(fieldName)) {
                     selectOptionElement = ccdField.element(by.xpath("select//option[text() = '" + selectOption+"']")); 
 
                 }

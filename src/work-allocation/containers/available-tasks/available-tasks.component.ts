@@ -4,7 +4,7 @@ import { ConfigConstants, ListConstants, SortConstants } from '../../components/
 import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
 import { Location, SearchTaskRequest } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskFieldConfig } from '../../models/tasks';
-import { handleFatalErrors } from '../../utils';
+import { handleFatalErrors, REDIRECTS } from '../../utils';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
 @Component({
@@ -105,7 +105,8 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
    */
   public claimTaskErrors(status: number): void {
 
-    const handledStatus = handleFatalErrors(status, this.router);
+    const REDIRECT_404 = [{ status: 404, redirectTo: REDIRECTS.ServiceDown }];
+    const handledStatus = handleFatalErrors(status, this.router, REDIRECT_404);
     if (handledStatus > 0) {
       this.infoMessageCommService.nextMessage({
         type: InfoMessageType.WARNING,

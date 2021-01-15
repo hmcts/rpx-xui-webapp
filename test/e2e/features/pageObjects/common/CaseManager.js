@@ -252,7 +252,7 @@ class CaseManager {
                 var selectOption = this._fieldValue(fieldName);
                 var selectOptionElement = ccdField.$('option:nth-of-type(2)'); 
                 if (!selectOption.includes(fieldName)) {
-                    selectOptionElement = ccdField.element(by.xpath("select//option[text() = '" + selectOption+"']")); 
+                    selectOptionElement = ccdField.element(by.xpath("//option[contains(text() , '" + selectOption+"')]")); 
 
                 }
                 await selectOptionElement.click();

@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@^2.67.3-tab-name-replaceAll":
-  version "2.67.3-tab-name-replaceAll"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.67.3-tab-name-replaceAll.tgz#82f54583e36f6eb32c22229b1671651079164d82"
-  integrity sha512-6f8gyZgJyQyzRiqqfJc/2rnpA9pkuhD2c4neTfecCnzdOddJ3aaHugdtaugQWwdEyJbhZBVbZdvRc2stapuEQA==
+"@hmcts/ccd-case-ui-toolkit@2.67.7-radio-button-issue":
+  version "2.67.7-radio-list-button-issue"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.67.7-radio-list-button-issue.tgz#32778849843e776fad72080c3471db21e5279b07"
+  integrity sha512-gzO6LyJBs4vm3tcGdfkksuZtZ9lGj6ni3RblJUvapK2P+X/kjsJD5yX1O3AvucOo18w6AfR0REWkjNXb4V+n9Q==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"

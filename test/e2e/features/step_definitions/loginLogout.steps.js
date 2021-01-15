@@ -20,10 +20,34 @@ defineSupportCode(function ({ Given, When, Then }) {
 
     let loginAttemptRetryCounter = 1;
 
-    while (loginAttemptRetryCounter < 3) {
+    while (loginAttemptRetryCounter < 5) {
 
       try {
-        await BrowserWaits.waitForstalenessOf(loginPage.emailAddress, 5);
+        // await BrowserWaits.waitForstalenessOf(loginPage.emailAddress, 5);
+
+        await BrowserWaits.waitForCondition(async () => {
+          let isEmailFieldDisplayed = await loginPage.emailAddress.isPresent() ;
+          let emailValuePresent = true
+          if (isEmailFieldDisplayed){
+            let emailValue = "";
+            try{
+              let emailValue = await loginPage.emailAddress.getText();
+              emailValuePresent = emailValue !== "";
+            }catch(err){
+
+            } 
+          }
+          if (!emailValuePresent && isEmailFieldDisplayed ){
+            throw new Error("Login page refreshed/rerendered");
+          } else if (isEmailFieldDisplayed && emailValuePresent ){
+            return false;
+          }else{
+            return true;
+          }
+
+           
+        });
+
         break;
       } catch (err) {
         let emailFieldValue = await loginPage.getEmailFieldValue();

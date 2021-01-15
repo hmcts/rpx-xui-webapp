@@ -16,8 +16,7 @@
   <ng-container *ngFor="let qAndA of qAndA$ | async">
     <div class="govuk-summary-list__row">
         <div class="govuk-summary-list__key">{{ qAndA.question_text | async }}</div>
-        <div class="govuk-summary-list__value">{{ (qAndA.question_type| async) === 'DateTime'?
-          qAndA.value.replace('T', ' ').replace('.000', ''): qAndA.value}}</div>
+        <div class="govuk-summary-list__value">{{ (qAndA.question_type| async) === 'DateTime'? (qAndA.value | formatDateTime): qAndA.value}}</div>
         <div class="govuk-summary-list__actions">
           <a class="govuk-link" href="javascript:void(0)" (click)="navToQAndA(qAndA)">
             Change

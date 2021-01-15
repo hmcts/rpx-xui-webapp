@@ -16,12 +16,8 @@ function loginLogoutObjects() {
 
 
   this.givenIAmLoggedIn = async function (email,password) {
-    await BrowserWaits.waitForElement(this.signinTitle);
- 
-    await this.enterUrEmail(email);
-    await this.enterPassword(password);
-    await this.clickSignIn();
-    await BrowserWaits.retryForPageLoad(this.signOutlink);
+    await BrowserWaits.waitForElement(this.signinTitle);;
+    await this.loginWithCredentials(email, password);
     
   };
 

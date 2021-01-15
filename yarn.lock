@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@2.68.0-prerelease-conditional-show-perf":
-  version "2.68.0-prerelease-conditional-show-perf"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.68.0-prerelease-conditional-show-perf.tgz#9a56dc1f78b8ccfe968ed4a9259c49187ba5c271"
-  integrity sha512-zH2lkTk4wz0l3KERA/yVvv1C167SgcomPlevNG9HOHIYsMjHpejD+19Xw7VQy2znNskteotXB5O4nQH+s9/emg==
+"@hmcts/ccd-case-ui-toolkit@2.68.2-prerelease-conditional-show-perf":
+  version "2.68.2-prerelease-conditional-show-perf"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.68.2-prerelease-conditional-show-perf.tgz#f70508605bf79af19fa9309cd1b9eefe1e2988aa"
+  integrity sha512-Vpa9cJHyX6ANm7W5ZHwh/fVVIxO/cdugAiPc4xY/eBvzfO8ZnMptKFR1Nm0vPW3fvC48KAIASzJvF2Bf/s2Zdg==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
@@ -3028,10 +3028,10 @@ circular-dependency-plugin@5.0.2:
   resolved "https://registry.yarnpkg.com/circular-dependency-plugin/-/circular-dependency-plugin-5.0.2.tgz#da168c0b37e7b43563fb9f912c1c007c213389ef"
   integrity sha512-oC7/DVAyfcY3UWKm0sN/oVoDedQDQiw/vIiAnuTWTpE5s0zWf7l3WY417Xw/Fbi/QbAjctAkxgMiS9P0s3zkmA==
 
-class-transformer@^0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/class-transformer/-/class-transformer-0.2.3.tgz#598c92ca71dcca73f91ccb875d74a3847ccfa32d"
-  integrity sha512-qsP+0xoavpOlJHuYsQJsN58HXSl8Jvveo+T37rEvCEeRfMWoytAyR0Ua/YsFgpM6AZYZ/og2PJwArwzJl1aXtQ==
+class-transformer@^0.3.2:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/class-transformer/-/class-transformer-0.3.2.tgz#779ef5f124784324b40f8e927c774bd96cdecd4b"
+  integrity sha512-9QY6QXBH/+Gt1C3HBmJCrgY6+EFpIa6aLjfDnlXFx0zQl/HjrCE7qoaI0srNrxpMIfsobCpgUdDG5JYtJOpVsw==
 
 class-utils@^0.3.5:
   version "0.3.6"

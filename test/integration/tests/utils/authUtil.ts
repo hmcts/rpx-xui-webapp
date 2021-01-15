@@ -56,18 +56,31 @@ async function  authenticateAndGetcookies(username, password)  {
 
     const page = await browser.newPage();
     await page.goto(config.baseUrl);
-    try{
-        await page.waitForSelector('#username', { visible: true });
 
-        await page.type('#username', username);
-        await page.type('#password', password);
+    let isLoginSuccess = false;
+    let loginAttemptsCounter = 0;
+    while (loginAttemptsCounter < 5 && !isLoginSuccess){
+        try {
+            await page.waitForSelector('#username', { visible: true });
 
-        await page.click('.button');;
-        await page.waitForSelector('.hmcts-primary-navigation', { visible: true });
-    } catch (error) {
-        await browser.close();
-        throw error;
+            await page.type('#username', username);
+            await page.type('#password', password);
+
+            await page.click('.button');;
+            await page.waitForSelector('.hmcts-primary-navigation', { visible: true, timeout: 20000 });
+            isLoginSuccess = true;
+        } catch (error) {
+            let usernameInput = await page.$eval('#username', element => element.value);
+            if (usernameInput === "") {
+                loginAttemptsCounter++;
+                console.log("Login error : " + error.message);
+            } else {
+                await browser.close();
+                throw error;
+            };
+        }
     }
+    
     const cookies = await page.cookies();
 
     await browser.close();

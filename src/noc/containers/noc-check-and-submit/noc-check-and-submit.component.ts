@@ -56,6 +56,11 @@ export class NocCheckAndSubmitComponent implements OnInit, OnDestroy {
                 return questions.find(ques => ques.question_id === answer.question_id).question_text;
               }
             )),
+            question_type: this.questions$.pipe(map(
+              questions => {
+                return questions.find(ques => ques.question_id === answer.question_id).answer_field_type.type;
+              }
+            )),
             value: answer.value
           };
           answersWithQuestionText.push(nocAnswerWithQuestionText);
@@ -85,8 +90,8 @@ export class NocCheckAndSubmitComponent implements OnInit, OnDestroy {
   public verifyAndSubmitNoC(): void {
     if (this.affirmationAgreed) {
       const nocEvent: NocEvent = {
-        caseReference: this.caseRefernce,
-        nocAnswers: this.nocAnswers
+        case_id: this.caseRefernce,
+        answers: this.nocAnswers
       };
       this.store.dispatch(new fromFeature.SubmitNoc(nocEvent));
     } else {

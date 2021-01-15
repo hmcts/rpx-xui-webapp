@@ -19,9 +19,9 @@ export class NocFieldComponent extends AbstractFieldWriteComponent implements On
   @ViewChild('fieldContainer', {read: ViewContainerRef})
   public fieldContainer: ViewContainerRef;
 
-  constructor(private resolver: ComponentFactoryResolver,
-              private paletteService: PaletteService,
-              private formValidatorsService: FormValidatorsService) {
+  constructor(private readonly resolver: ComponentFactoryResolver,
+              private readonly paletteService: PaletteService,
+              private readonly formValidatorsService: FormValidatorsService) {
     super();
   }
 

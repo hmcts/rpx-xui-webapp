@@ -119,8 +119,8 @@ describe('NocCheckAndSubmitComponent', () => {
   it('should verify and submit NoC', () => {
     component.affirmationAgreed = true;
     const nocEvent: NocEvent = {
-      caseReference: '1111222233334444',
-      nocAnswers: [{
+      case_id: '1111222233334444',
+      answers: [{
         question_id: 'q1',
         value: 'a1'
       }]

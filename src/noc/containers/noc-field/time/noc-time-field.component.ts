@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AppUtils } from 'src/app/app-utils';
 import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
-import { AppUtils } from 'src/app/app-utils'
 
 @Component({
   selector: 'exui-noc-time-field',

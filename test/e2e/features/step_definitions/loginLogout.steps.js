@@ -21,18 +21,19 @@ defineSupportCode(function ({ Given, When, Then }) {
     let loginAttemptRetryCounter = 1;
 
     while (loginAttemptRetryCounter < 5) {
+      let emailFieldValue = "";
 
       try {
         // await BrowserWaits.waitForstalenessOf(loginPage.emailAddress, 5);
-
         await BrowserWaits.waitForCondition(async () => {
           let isEmailFieldDisplayed = await loginPage.emailAddress.isPresent() ;
           let emailValuePresent = true
           if (isEmailFieldDisplayed){
             let emailValue = "";
             try{
-              let emailValue = await loginPage.emailAddress.getText();
-              emailValuePresent = emailValue !== "";
+              emailFieldValue = await loginPage.emailAddress.getText();
+
+              emailValuePresent = emailFieldValue !== "";
             }catch(err){
 
             } 
@@ -41,6 +42,9 @@ defineSupportCode(function ({ Given, When, Then }) {
             throw new Error("Login page refreshed/rerendered");
           } else if (isEmailFieldDisplayed && emailValuePresent ){
             return false;
+          }
+          else if(await loginPage.isLoginCredentialsErrorDisplayed()){
+            throw new Error("Login credentials error displayed");           
           }else{
             return true;
           }
@@ -50,7 +54,6 @@ defineSupportCode(function ({ Given, When, Then }) {
 
         break;
       } catch (err) {
-        let emailFieldValue = await loginPage.getEmailFieldValue();
         if (!emailFieldValue.includes(username)) {
           if (loginAttemptRetryCounter === 1) {
             firstAttemptFailedLogins++;

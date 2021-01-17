@@ -11,7 +11,9 @@ class IACCase {
         var caseData = {
             "Home Office Reference/Case ID" : "012345678",
             "Appeal number[0]." : "IA123451234",
-            "Has your client appealed against any other UK immigration decisions?": "No"
+            "Other appeals" : "No",
+            "Has your client appealed against any other UK immigration decisions?": "No",
+
         };
 
 

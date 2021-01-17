@@ -1,4 +1,4 @@
-@test
+@fullfunctional
 Feature: IA create case workflow
 
     Background:
@@ -13,7 +13,6 @@ Feature: IA create case workflow
         When I start case with jurisdiction "Immigration & Asylum" case type "Appeal* master" and event "Start your appeal"
         Then I am on case form page
 
-    @ignore
     Scenario: Create and Submit IA Case start appeal
         When I start case with jurisdiction "Immigration & Asylum" case type "Appeal* master" and event "Start your appeal"
         When I create IAC case

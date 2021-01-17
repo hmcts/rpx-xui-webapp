@@ -66,8 +66,46 @@ async function  authenticateAndGetcookies(username, password)  {
             await page.type('#username', username);
             await page.type('#password', password);
 
-            await page.click('.button');;
-            await page.waitForSelector('.hmcts-primary-navigation', { visible: true, timeout: 20000 });
+            await page.click('.button');
+
+            const primaryNavElement = page.$('.hmcts-primary-navigation');
+            const loginEmailField = page.$('#username'); 
+ 
+            // await new Promise((resolve,reject) => {
+            //     let interval = setInterval(async () => {
+            //         console.log("Checing login status : " + new Date().toTimeString());
+            //         if (primaryNavElement != undefined){
+            //             resolve('Login successful');
+            //         } else if (loginEmailField != undefined){
+            //             let usernameInput = await page.$eval('#username', element => element.value);
+            //             if (usernameInput === ""){
+            //                 reject("Login page reloaded, first time login issue");
+            //             }
+            //         }
+            //     },10000);
+            // });
+
+            let waitCounter = 0;
+            while (waitCounter < 20){
+                await setTimeout(() => {
+                    console.log(waitCounter+"  : timeout sleep " + new Date().toTimeString());
+                }, 1000);
+                waitCounter++;
+                if (primaryNavElement != undefined) {
+                    break;
+                }
+                else if (loginEmailField != undefined) {
+                    let usernameInput = await page.$eval('#username', element => element.value);
+                    if (usernameInput === ""){
+                       throw new Error("Login page reloaded. "); 
+                     }
+                }
+            }
+            await page.waitForSelector('.hmcts-primary-navigation', { visible: true, timeout: 10000 });
+
+            // await page.waitForSelector('.hmcts-primary-navigation', { visible: true, timeout: 10000 });
+
+
             isLoginSuccess = true;
         } catch (error) {
             let usernameInput = await page.$eval('#username', element => element.value);
@@ -88,7 +126,7 @@ async function  authenticateAndGetcookies(username, password)  {
 };
 
 function getPuppeteerLaunchOptions(){
-    const puppeteerOption = { ignoreHTTPSErrors: true, headless: true, args: [] };
+    const puppeteerOption = { ignoreHTTPSErrors: true, headless: false, args: [] };
     if (!config.baseUrl.includes('manage-case.')) {
         puppeteerOption.args.push('--proxy-server=http://proxyout.reform.hmcts.net:8080');
     }

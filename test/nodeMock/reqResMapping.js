@@ -2,7 +2,6 @@ const ccdApiMock = require('./ccd/ccdApi');
 const WAReqResMappings  = require('./workAllocation/reqResMapping');
 const nodeAppReqResMappings = require('./nodeApp/reqResMapping');
 
-
 const dummyCaseDetails = require('./ccd/caseDetails_data');
 
 const requestMapping = {

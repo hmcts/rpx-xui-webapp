@@ -19,7 +19,7 @@ const RELEASE = {
   title: 'Unassign task',
 };
 const CLAIM_AND_GO = {
-  id: 'claimAndGo',
+  id: 'claim-and-go',
   title: 'Assign to me and go to case',
 };
 const GO = {

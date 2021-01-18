@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { Observable } from 'rxjs';
 
 import { SessionStorageService } from '../../../app/services';
@@ -9,7 +10,6 @@ import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
-
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html'
@@ -36,7 +36,8 @@ export class TaskListWrapperComponent implements OnInit {
     protected taskService: WorkAllocationTaskService,
     protected router: Router,
     protected infoMessageCommService: InfoMessageCommService,
-    protected sessionStorageService: SessionStorageService
+    protected sessionStorageService: SessionStorageService,
+    protected alertService: AlertService
   ) {}
 
   private pTasks: Task[];

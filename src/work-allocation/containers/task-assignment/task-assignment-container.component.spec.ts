@@ -113,6 +113,7 @@ describe('TaskAssignmentContainerComponent', () => {
     expect(component.caseworker).toBeUndefined();
     expect(component.error).toBeNull();
 
+
     component.assign();
     fixture.detectChanges();
     expect(component.error).not.toBeNull();
@@ -128,6 +129,7 @@ describe('TaskAssignmentContainerComponent', () => {
     fixture.detectChanges();
 
     component.assign();
+
     fixture.detectChanges();
     const assignee: Assignee = {
       id: caseworker.idamId,

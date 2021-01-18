@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 
-import { SessionStorageService } from '../../../app/services';
 import { ConfigConstants, FilterConstants, ListConstants, SortConstants } from '../../components/constants';
 import { Caseworker, Location, SearchTaskRequest } from '../../models/dtos';
 import { TaskFieldConfig } from '../../models/tasks';
@@ -13,6 +13,7 @@ import {
   WorkAllocationTaskService,
 } from '../../services';
 import { handleFatalErrors } from '../../utils';
+import { SessionStorageService } from '../../../app/services';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
 @Component({
@@ -36,9 +37,10 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
     protected infoMessageCommService: InfoMessageCommService,
     protected sessionStorageService: SessionStorageService,
     private readonly caseworkerService: CaseworkerDataService,
-    private readonly locationService: LocationDataService
+    private readonly locationService: LocationDataService,
+    protected alertService: AlertService
   ) {
-    super(ref, taskService, router, infoMessageCommService, sessionStorageService);
+    super(ref, taskService, router, infoMessageCommService, sessionStorageService, alertService);
   }
 
   public get fields(): TaskFieldConfig[] {

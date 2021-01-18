@@ -3,8 +3,8 @@ import { Component } from '@angular/core';
 import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
 import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
 import { Location, SearchTaskRequest } from '../../models/dtos';
-import { InvokedTaskAction, TaskFieldConfig } from '../../models/tasks';
-import { handleFatalErrors } from '../../utils';
+import { InvokedTaskAction, Task, TaskFieldConfig } from '../../models/tasks';
+import { handleFatalErrors, REDIRECTS } from '../../utils';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
 @Component({
@@ -81,12 +81,32 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
   }
 
   /**
+   * A User 'Claims' themselves a task and goes to the case details page for that case aka. 'Assign to me'.
+   */
+  public claimTaskAndGo(task: Task): void {
+    this.taskService.claimTask(task.id).subscribe(() => {
+      // constant below removes spaces from caseReference to get caseId
+      const caseId = task.caseReference.replace(/\s/g, '');
+      // navigates to case details page for specific case id
+      this.router.navigate([`/cases/case-details/${caseId}`], {
+        state: {
+          showMessage: true,
+          messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS}
+        });
+    }, error => {
+
+      this.claimTaskErrors(error.status);
+    });
+  }
+
+  /**
    * Navigate the User to the correct error page, or throw an on page warning
    * that the Task is no longer available.
    */
   public claimTaskErrors(status: number): void {
 
-    const handledStatus = handleFatalErrors(status, this.router);
+    const REDIRECT_404 = [{ status: 404, redirectTo: REDIRECTS.ServiceDown }];
+    const handledStatus = handleFatalErrors(status, this.router, REDIRECT_404);
     if (handledStatus > 0) {
       this.infoMessageCommService.nextMessage({
         type: InfoMessageType.WARNING,
@@ -100,21 +120,15 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
 
   /**
    * Handle a User Claiming a Task
-   *
-   * TODO: This function will need to handle 'Assign to me and go to case' - EUI-2963.
    */
   public onActionHandler(taskAction: InvokedTaskAction): void {
-
+    console.log(taskAction.action.id);
     switch (taskAction.action.id) {
       case TaskActionIds.CLAIM:
         return this.claimTask(taskAction.task.id);
       case TaskActionIds.CLAIM_AND_GO:
-        // EUI-2963
-        console.warn(`'Claim and go to case' is not yet implemented`);
-        break;
+        return this.claimTaskAndGo(taskAction.task);
       default:
-        // This should never be hit as there should be only 2 actions (above)
-        // that the user can select from in this list... but just in case.
         return super.onActionHandler(taskAction);
     }
   }

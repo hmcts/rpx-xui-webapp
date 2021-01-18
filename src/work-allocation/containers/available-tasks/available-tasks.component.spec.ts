@@ -3,6 +3,7 @@ import { Component, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
 
@@ -34,7 +35,7 @@ describe('AvailableTasksComponent', () => {
   const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
-
+  const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -49,7 +50,8 @@ describe('AvailableTasksComponent', () => {
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
         { provide: LocationDataService, useValue: mockLocationService },
         { provide: Router, useValue: mockRouter },
-        { provide: InfoMessageCommService, useValue: mockInfoMessageCommService }
+        { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
+        { provide: AlertService, useValue: mockAlertService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
@@ -217,6 +219,44 @@ describe('AvailableTasksComponent', () => {
 
       const taskId = '123456';
       component.claimTask(taskId);
+
+      expect(claimTaskErrorsSpy).toHaveBeenCalledWith(errorStatusCode);
+    });
+  });
+
+  describe('claimTaskAndGo()', () => {
+
+    it('should call claimTask on the taskService with the taskId, so that the User can claim the task.', () => {
+
+      mockTaskService.claimTask.and.returnValue(of({}));
+
+      const firstTask = getMockTasks()[1];
+      component.claimTaskAndGo(firstTask);
+
+      expect(mockTaskService.claimTask).toHaveBeenCalledWith(firstTask.id);
+    });
+
+    it('should call claimTask on the taskService with the taskId, so that the User can claim the task.', () => {
+      const firstTask = getMockTasks()[1];
+      component.claimTaskAndGo(firstTask);
+      expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${firstTask.id}`], {
+        state: {
+          showMessage: true,
+          messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS}
+    });
+  });
+
+    it('should call claimTaskErrors() with the error\'s status code, so that the User can see that the claim of ' +
+      'a task has been unsuccessful.', () => {
+
+      const errorStatusCode = 400;
+
+      const claimTaskErrorsSpy = spyOn(component, 'claimTaskErrors');
+
+      mockTaskService.claimTask.and.returnValue(throwError({status: errorStatusCode}));
+
+      const firstTask = getMockTasks()[1];
+      component.claimTaskAndGo(firstTask);
 
       expect(claimTaskErrorsSpy).toHaveBeenCalledWith(errorStatusCode);
     });

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { MatDialogModule } from '@angular/material';
+import { AlertService, CaseUIToolkitModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 
 import { SharedModule } from '../app/shared/shared.module';
@@ -15,6 +16,7 @@ import { workAllocationRouting } from './work-allocation-feature.routes';
 // from containers
 @NgModule({
   imports: [
+    CaseUIToolkitModule,
     CommonModule,
     HttpClientModule,
     SharedModule,
@@ -27,7 +29,7 @@ import { workAllocationRouting } from './work-allocation-feature.routes';
   declarations: [
     ...fromContainers.containers
   ],
-  providers: [WorkAllocationTaskService, WorkAllocationFeatureToggleGuard],
+  providers: [WorkAllocationTaskService, WorkAllocationFeatureToggleGuard, AlertService],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class WorkAllocationModule {

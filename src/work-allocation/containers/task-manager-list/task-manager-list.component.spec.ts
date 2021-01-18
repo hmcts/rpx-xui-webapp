@@ -2,6 +2,7 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { Component, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 
@@ -31,6 +32,7 @@ describe('TaskManagerListComponent', () => {
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
   const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
   const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
+  const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const mockLocations: dtos.Location[] = getMockLocations();
   const mockCaseworkers: dtos.Caseworker[] = getMockCaseworkers();
@@ -49,7 +51,8 @@ describe('TaskManagerListComponent', () => {
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
         { provide: CaseworkerDataService, useValue: mockCaseworkerService },
-        { provide: LocationDataService, useValue: mockLocationService }
+        { provide: LocationDataService, useValue: mockLocationService },
+        { provide: AlertService, useValue: mockAlertService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);

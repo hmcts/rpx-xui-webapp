@@ -20,6 +20,7 @@ defineSupportCode(function ({ Given, When, Then }) {
 
     let loginAttemptRetryCounter = 1;
 
+
     while (loginAttemptRetryCounter < 5) {
       let emailFieldValue = "";
 
@@ -32,14 +33,17 @@ defineSupportCode(function ({ Given, When, Then }) {
             let emailValue = "";
             try{
               emailFieldValue = await loginPage.emailAddress.getText();
-
               emailValuePresent = emailFieldValue !== "";
             }catch(err){
 
             } 
           }
           if (!emailValuePresent && isEmailFieldDisplayed ){
-            throw new Error("Login page refreshed/rerendered");
+            await BrowserWaits.waitForSeconds(2);
+            isEmailFieldDisplayed = await loginPage.emailAddress.isPresent();
+            if (isEmailFieldDisplayed){
+              throw new Error("Login page refreshed/rerendered");
+            }
           } else if (isEmailFieldDisplayed && emailValuePresent ){
             return false;
           }
@@ -162,9 +166,9 @@ defineSupportCode(function ({ Given, When, Then }) {
 
   Then(/^I select the sign out link$/, async function () {
     browser.sleep(SHORT_DELAY);
-    await expect(loginPage.signOutlink.isDisplayed()).to.eventually.be.true;
+    await expect(loginPage.getSignOutLink().isDisplayed()).to.eventually.be.true;
     browser.sleep(SHORT_DELAY);
-    await loginPage.signOutlink.click();
+    await loginPage.getSignOutLink().click();
     browser.sleep(SHORT_DELAY);
   });
 

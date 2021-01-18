@@ -22,6 +22,10 @@ function loginLogoutObjects() {
     
   };
 
+  this.getSignOutLink = function(){
+    return element(by.xpath("//a[@class='hmcts-header__navigation-link']"));
+  }
+
   this.isLoginCredentialsErrorDisplayed = async function(){
     return await this.incorrectCredentialsErrorHeader.isPresent(); 
   }

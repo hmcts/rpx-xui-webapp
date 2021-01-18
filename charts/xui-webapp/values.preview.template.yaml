@@ -16,4 +16,6 @@ nodejs:
         - mc-idam-client-secret
 redis:
   enabled: true
-
+feature:
+  oidcEnabled: false
+  

@@ -1,4 +1,4 @@
-import { handleFatalErrors, REDIRECTS, treatAsFatal, WILDCARD_SERVICE_DOWN } from './work-allocation.utils';
+import { handleFatalErrors, REDIRECTS, treatAsFatal, WILDCARD_SERVICE_DOWN } from './work-allocation-utils';
 
 describe('WorkAllocationUtils', () => {
     const mockRouter = {

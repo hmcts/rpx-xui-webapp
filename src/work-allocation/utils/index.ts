@@ -1,1 +1,1 @@
-export * from './work-allocation.utils';
+export * from './work-allocation-utils';

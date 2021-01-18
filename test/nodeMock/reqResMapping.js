@@ -4,8 +4,6 @@ const nodeAppReqResMappings = require('./nodeApp/reqResMapping');
 
 const dummyCaseDetails = require('./ccd/caseDetails_data');
 
-const dummyCaseDetails = require('./ccd/caseDetails_data');
-
 const requestMapping = {
    get:{
         ...nodeAppReqResMappings.get,

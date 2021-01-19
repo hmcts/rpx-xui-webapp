@@ -27,6 +27,9 @@ describe('Pa11y Accessibility tests', function () {
         await MockApp.startServer();
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator('ccd-workbasket-filters .heading-h2'))
+        actions.push(...PallyActions.clickElement('ccd-workbasket-filters button'));
+
+        actions.push(...PallyActions.waitForPageWithCssLocator('pagination-template'))
         await pa11ytest(this, actions, conf.baseUrl + 'cases');
 
     });

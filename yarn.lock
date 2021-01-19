@@ -401,7 +401,7 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@2.67.7-radio-button-issue":
+"@hmcts/ccd-case-ui-toolkit@2.67.7-radio-list-button-issue":
   version "2.67.7-radio-list-button-issue"
   resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.67.7-radio-list-button-issue.tgz#32778849843e776fad72080c3471db21e5279b07"
   integrity sha512-gzO6LyJBs4vm3tcGdfkksuZtZ9lGj6ni3RblJUvapK2P+X/kjsJD5yX1O3AvucOo18w6AfR0REWkjNXb4V+n9Q==

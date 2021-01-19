@@ -14,10 +14,11 @@ async function waitForElement(el) {
 }
 
 defineSupportCode(function ({ Given, When, Then }) {
-
+  let invalidCredentialsCounter = 0;
+  let testCounter = 0;
 
   async function loginattemptCheckAndRelogin(username, password, world) {
-
+    testCounter++;
     let loginAttemptRetryCounter = 1;
 
     while (loginAttemptRetryCounter < 5) {
@@ -27,29 +28,31 @@ defineSupportCode(function ({ Given, When, Then }) {
         // await BrowserWaits.waitForstalenessOf(loginPage.emailAddress, 5);
         await BrowserWaits.waitForCondition(async () => {
           let isEmailFieldDisplayed = await loginPage.emailAddress.isPresent() ;
-          let emailValuePresent = true
+          let credentialsErrorPresent = await loginPage.isLoginCredentialsErrorDisplayed();
+          let isEmailValuePresent = false;
           if (isEmailFieldDisplayed){
-            let emailValue = "";
-            try{
-              emailFieldValue = await loginPage.emailAddress.getText();
-
-              emailValuePresent = emailFieldValue !== "";
-            }catch(err){
-
-            } 
+            let isEmailValuePresent = (await loginPage.emailAddress.getText()) !== "";
           }
-          if (!emailValuePresent && isEmailFieldDisplayed ){
-            throw new Error("Login page refreshed/rerendered");
-          } else if (isEmailFieldDisplayed && emailValuePresent ){
+          let errorMessage = "";
+          if (credentialsErrorPresent){
+            invalidCredentialsCounter++;
+            errorMessage = testCounter + " Credentials error occured " + invalidCredentialsCounter;
+          }
+
+          if (isEmailFieldDisplayed && !isEmailValuePresent){
+            errorMessage = errorMessage +" : " +testCounter+" login page refresh ";
+          }
+          // console.log(testCounter +" : error message =>"+errorMessage+"<=");
+          if (errorMessage !== ""){
+            throw new Error(errorMessage);
+          } else if (isEmailFieldDisplayed && emailValuePresent){
+            console.log(testCounter + "  ");
+
             return false;
-          }
-          else if(await loginPage.isLoginCredentialsErrorDisplayed()){
-            throw new Error("Login credentials error displayed");           
           }else{
             return true;
           }
-
-           
+ 
         });
 
         break;
@@ -62,9 +65,12 @@ defineSupportCode(function ({ Given, When, Then }) {
             secondAttemptFailedLogins++;
           }
 
+
           console.log(err + " email field is still present with empty value indicating  Login page reloaded due to EUI-1856 : Login re attempt " + loginAttemptRetryCounter);
           world.attach(err + " email field is still present with empty value indicating Login page reloaded due to EUI-1856 : Login re attempt " + loginAttemptRetryCounter);
-          
+        console.log(err); 
+          await browser.driver.manage()
+            .deleteAllCookies();
           await browser.get(config.config.baseUrl);
           await BrowserWaits.waitForElement(loginPage.emailAddress);
           await loginPage.loginWithCredentials(username, password);
@@ -164,7 +170,12 @@ defineSupportCode(function ({ Given, When, Then }) {
     browser.sleep(SHORT_DELAY);
     await expect(loginPage.signOutlink.isDisplayed()).to.eventually.be.true;
     browser.sleep(SHORT_DELAY);
-    await loginPage.signOutlink.click();
+    try{
+      await loginPage.getSignOutLink().click();
+    }catch(err){
+      await browser.sleep(SHORT_DELAY);
+      await loginPage.getSignOutLink().click();
+    }
     browser.sleep(SHORT_DELAY);
   });
 

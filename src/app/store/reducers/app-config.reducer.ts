@@ -3,7 +3,7 @@ import { ConfigurationModel } from '../../models/configuration.model';
 import {TermsAndCondition} from '../../models/TermsAndCondition';
 import * as fromActions from '../actions/';
 
-interface UserDetails {
+export interface UserDetails {
   sessionTimeout: {
     idleModalDisplayTime: number,
     totalIdleTime: number,

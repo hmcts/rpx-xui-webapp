@@ -1,4 +1,3 @@
-import {TASKS} from './../constants/work-allocation/tasks.spec';
 import { Pact } from '@pact-foundation/pact';
 import { somethingLike } from '@pact-foundation/pact/dsl/matchers';
 import { expect } from 'chai';
@@ -7,6 +6,7 @@ import * as path from 'path';
 
 import { EnhancedRequest } from '../../../lib/models';
 import { handleTaskSearch } from '../../../workAllocation/taskService';
+import { TASKS } from '../constants/work-allocation/tasks.spec';
 
 describe('Work Allocation API', () => {
 

@@ -3,8 +3,8 @@ import { assert, expect } from 'chai';
 import * as getPort from 'get-port';
 import * as path from 'path';
 
-import { EnhancedRequest } from '../../../lib/models';
-import { handleTaskPost } from '../../../workAllocation/taskService';
+import { EnhancedRequest } from '../../../../lib/models';
+import { handleTaskPost } from '../../../../workAllocation/taskService';
 
 describe('Work Allocation API', () => {
 

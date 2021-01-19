@@ -3,9 +3,9 @@ import { assert } from 'chai';
 import * as getPort from 'get-port';
 import * as path from 'path';
 
-import { EnhancedRequest } from '../../../lib/models';
-import { handleCaseWorkerDetails } from '../../../workAllocation/caseWorkerService';
-import { CASEWORKERS } from './../constants/work-allocation/caseworkers.spec';
+import { EnhancedRequest } from '../../../../lib/models';
+import { handleCaseWorkerDetails } from '../../../../workAllocation/caseWorkerService';
+import { CASEWORKERS } from '../../constants/work-allocation/caseworkers.spec';
 
 describe('Work Allocation for location and service Caseworker API', () => {
 

@@ -3,10 +3,10 @@ import { expect } from 'chai';
 import * as getPort from 'get-port';
 import * as path from 'path';
 
-import { EnhancedRequest } from '../../../lib/models';
-import { handlePostSearch } from '../../../workAllocation/caseWorkerService';
-import { SUCCESS } from './../constants/work-allocation/behaviours.spec';
-import { CASEWORKERS } from './../constants/work-allocation/caseworkers.spec';
+import { EnhancedRequest } from '../../../../lib/models';
+import { handlePostSearch } from '../../../../workAllocation/caseWorkerService';
+import { SUCCESS } from '../../constants/work-allocation/behaviours.spec';
+import { CASEWORKERS } from '../../constants/work-allocation/caseworkers.spec';
 
 describe('Case worker API', () => {
 

@@ -2,7 +2,7 @@ import { Pact } from '@pact-foundation/pact'
 import { expect } from 'chai'
 import * as getPort from 'get-port'
 import * as path from 'path'
-import { getDetails } from '../../../services/idam'
+import { getDetails } from '../../../../services/idam'
 
 describe('Reference Data API', () => {
 

@@ -3,10 +3,10 @@ import { expect } from 'chai';
 import * as getPort from 'get-port';
 import * as path from 'path';
 
-import { EnhancedRequest } from '../../../lib/models';
-import { handleLocationGet } from '../../../workAllocation/locationService';
-import { SERVER_ERROR } from '../constants/work-allocation/behaviours.spec';
-import { LOCATIONS } from './../constants/work-allocation/locations.spec';
+import { EnhancedRequest } from '../../../../lib/models';
+import { handleLocationGet } from '../../../../workAllocation/locationService';
+import { SERVER_ERROR } from '../../constants/work-allocation/behaviours.spec';
+import { LOCATIONS } from '../../constants/work-allocation/locations.spec';
 
 describe('Work Allocation Location API', () => {
 

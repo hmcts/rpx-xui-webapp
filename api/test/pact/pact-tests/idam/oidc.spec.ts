@@ -3,7 +3,7 @@ import { Pact } from '@pact-foundation/pact'
 import { assert } from 'chai'
 import * as getPort from 'get-port'
 import * as path from 'path'
-import mockResponse from '../mocks/openid-well-known-configuration.mock'
+import mockResponse from '../../mocks/openid-well-known-configuration.mock'
 
 describe('OpenId Connect API', () => {
 

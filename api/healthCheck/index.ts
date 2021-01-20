@@ -47,9 +47,12 @@ export function getPromises(path): any[] {
 
     if (healthCheckEndpointDictionary[path]) {
         healthCheckEndpointDictionary[path].forEach(endpoint => {
+            console.log('healthEndpoints')
+            console.log(healthEndpoints()[endpoint])
             Promises.push(http.get(healthEndpoints()[endpoint]))
         })
     }
+
     return Promises
 }
 

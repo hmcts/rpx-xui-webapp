@@ -208,10 +208,6 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
       showFindCase,
     } = applicationTheme;
 
-    // current ability to decapatilise the 'Cases'
-    if (appTitle.name === 'Manage Cases') {
-      appTitle.name = 'Manage cases';
-    }
     this.appHeaderTitle = appTitle;
     this.setupActiveNavLink(navigationItems);
     this.userNav = accountNavigationItems;

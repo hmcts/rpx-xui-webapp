@@ -6,7 +6,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 
 import { HmctsGlobalHeaderComponent } from './hmcts-global-header.component';
 
-fdescribe('HmctsGlobalHeaderComponent', () => {
+describe('HmctsGlobalHeaderComponent', () => {
   let nocStoreSpy: jasmine.Spy;
   let component: HmctsGlobalHeaderComponent;
   let fixture: ComponentFixture<HmctsGlobalHeaderComponent>;
@@ -58,8 +58,9 @@ fdescribe('HmctsGlobalHeaderComponent', () => {
     expect(component.tab).toEqual(caseList);
 
     // verify correct tab set after changing url
-    expect(component.setActiveTab()).toEqual(taskList);
-    expect(component.setActiveTab()).toEqual(taskManager);
+    expect(component.setActiveTab('/tasks/list')).toEqual(taskList);
+    expect(component.setActiveTab('/tasks/task-manager')).toEqual(taskManager);
+    expect(component.setActiveTab('/cases')).toEqual(caseList);
   });
 
   it('should show the Case search button as inactive when the currentUrl does not match', () => {
@@ -89,10 +90,10 @@ fdescribe('HmctsGlobalHeaderComponent', () => {
     let menuItem = {href: '/noc', text: null};
     component.onEmitSubMenu(menuItem);
     expect(nocStoreSpy).toHaveBeenCalled();
-    expect(component.selectedItem).toEqual(menuItem);
+    expect(component.tab).toEqual(null);
 
     menuItem = {href: '/tasks/list', text: 'Task list'};
     component.onEmitSubMenu(menuItem);
-    expect(component.selectedItem).toEqual(menuItem);
+    expect(component.tab).toEqual('Task list');
   });
 });

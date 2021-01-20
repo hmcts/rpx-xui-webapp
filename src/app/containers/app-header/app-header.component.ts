@@ -4,7 +4,7 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
 import { combineLatest } from 'rxjs';
-import { UserDetails } from 'src/app/store/reducers/app-config.reducer';
+import { UserDetails } from 'src/app/models/user-details.model';
 
 import { AppUtils } from '../../app-utils';
 import { AppConstants } from '../../app.constants';

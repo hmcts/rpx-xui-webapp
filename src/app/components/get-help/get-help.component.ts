@@ -4,7 +4,7 @@ import { ContactDetailsDataModel } from '@hmcts/rpx-xui-common-lib';
 import * as fromRoot from '../../store';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { UserDetails } from '../../store/reducers/app-config.reducer';
+import { UserDetails } from '../../../app/models/user-details.model';
 
 @Component({
     selector: 'exui-get-help',

@@ -1,23 +1,8 @@
 import { TCDocument } from '@hmcts/rpx-xui-common-lib';
+import { UserDetails } from '../../../app/models/user-details.model';
 import { ConfigurationModel } from '../../models/configuration.model';
 import {TermsAndCondition} from '../../models/TermsAndCondition';
 import * as fromActions from '../actions/';
-
-export interface UserDetails {
-  sessionTimeout: {
-    idleModalDisplayTime: number,
-    totalIdleTime: number,
-  };
-  canShareCases: boolean;
-  userInfo: {
-    id: string,
-    forename: string,
-    surname: string,
-    email: string,
-    active: boolean,
-    roles: string []
-  }
-}
 
 export interface AppConfigState {
   config: ConfigurationModel | {};

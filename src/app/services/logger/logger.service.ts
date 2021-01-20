@@ -72,7 +72,7 @@ export class LoggerService implements ILoggerService {
         if(userInfoStr) {
             const userInfo = JSON.parse(userInfoStr);
             if(userInfo && userInfo.email) {
-                const userIdEncrypted = this.cryptoWrapper.encrypt(userInfo.userInfo.email);
+                const userIdEncrypted = this.cryptoWrapper.encrypt(userInfo.email);
                 const encryptedMessage = `User - ${userIdEncrypted.toString()}, Message - ${message}, Timestamp - ${Date.now()}`
                 return encryptedMessage;
             }

@@ -58,7 +58,7 @@
         <ul class="hmcts-primary-navigation__list">
           <li class="hmcts-primary-navigation__item" *ngFor="let item of items" >
             
-            <a class="hmcts-primary-navigation__link" (click)="onEmitSubMenu(item)" [attr.aria-current]="item === selectedItem || setTab === item.text ? true: null" [routerLink]="item.href">{{item.text}}</a>
+            <a class="hmcts-primary-navigation__link" (click)="onEmitSubMenu(item)" [attr.aria-current]="(item === selectedItem || tab === item.text) ? true: null" [routerLink]="item.href">{{item.text}}</a>
           
           </li>
         </ul>

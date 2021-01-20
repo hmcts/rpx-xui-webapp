@@ -52,6 +52,12 @@ export class HmctsGlobalHeaderComponent implements OnInit {
       case '/cases/case-filter': {
         return 'Create case';
       }
+      case 'cases/case-search': {
+        return 'Find case';
+      }
+      case '/noc': {
+        return 'Notice of change';
+      }
       default: {
         return null;
       }

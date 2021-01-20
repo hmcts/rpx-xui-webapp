@@ -31,7 +31,7 @@ export interface EnvironmentConfigServices {
   ccdDataApi: string,
   idamApi: string,
   s2s: string,
-  feeAndPayApi: string,
+  // feeAndPayApi: string,
   termsAndConditions: string,
 }
 

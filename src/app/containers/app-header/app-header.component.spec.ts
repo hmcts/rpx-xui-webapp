@@ -22,12 +22,6 @@ const storeMock = {
  */
 const SERIALISED_ROLES = 'j:["pui-organisation-manager", "caseworker-publiclaw", "caseworker-divorce-financialremedy-solicitor", "caseworker"]';
 
-const cookieServiceMock = {
-  get: () => {
-    return SERIALISED_ROLES;
-  },
-};
-
 const featureToggleServiceMock = {
   getValue: () => {
     return {
@@ -68,10 +62,6 @@ describe('AppHeaderComponent', () => {
           useValue: storeMock,
         },
         {
-          provide: CookieService,
-          useValue: cookieServiceMock,
-        },
-        {
           provide: FeatureToggleService,
           useValue: featureToggleServiceMock,
         },
@@ -96,13 +86,6 @@ describe('AppHeaderComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));
-
-  describe('getDefaultTheme()', () => {
-
-    it('should return the applications default theme.', () => {
-      expect(component.getDefaultTheme()).toEqual(AppConstants.DEFAULT_USER_THEME);
-    });
-  });
 
   describe('getApplicationThemes()', () => {
 
@@ -265,7 +248,7 @@ describe('AppHeaderComponent', () => {
 
   describe('getApplicationThemeForUser()', () => {
     it('get default theme when no roles', () => {
-      const themes = component.getApplicationThemeForUser([]);
+      const themes = component.getApplicationThemeForUser([], []);
       expect(themes).toEqual(AppConstants.DEFAULT_USER_THEME);
     });
   });

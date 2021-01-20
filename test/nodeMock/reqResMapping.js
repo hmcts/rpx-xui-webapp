@@ -58,6 +58,9 @@ const requestMapping = {
         '/data/internal/cases/:caseid': (req,res) => {
             res.send(dummyCaseDetails);
         },
+        '/data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:casetype/cases/pagination_metadata': (req, res) => {
+            res.send(getWorkbasketCases());
+        },
         '/api/caseshare/orgs': (req, res) => {
             res.send(getCaseShareOrgs());
         },
@@ -469,7 +472,7 @@ function getWorkbasketCases(){
   ];
 
   let rows = [];
-  for(let rowCounter = 0; rowCounter< 25 ; rowCounter++){
+  for(let rowCounter = 0; rowCounter< 250 ; rowCounter++){
     rows.push({
       "case_id": "1571254417214566",
       "case_fields": {
@@ -562,7 +565,5 @@ function getWorkbasketCases(){
       }
     });
   }
-    return { columns: cols, results: rows ,total: 1200};
-
- 
+    return { columns: cols, results: rows ,total: 1200}; 
 }

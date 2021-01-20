@@ -1,10 +1,11 @@
-import {Component, EventEmitter, Input, OnInit, Output, OnDestroy} from '@angular/core';
-import { Store, select } from '@ngrx/store';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
 
+import { AppTitleModel } from '../../models/app-title.model';
+import { UserNavModel } from '../../models/user-nav.model';
 import * as fromRoot from '../../store';
-import {AppTitleModel} from '../../models/app-title.model';
-import {UserNavModel} from '../../models/user-nav.model';
-import { Observable, of, Subscription } from 'rxjs';
+import { NavItemsModel } from './../../models/nav-item.model';
 
 @Component({
   selector: 'exui-header',
@@ -16,7 +17,7 @@ import { Observable, of, Subscription } from 'rxjs';
  */
 export class HeaderComponent implements OnInit {
 
-  @Input() public navItems: { active: boolean; href: string; }[];
+  @Input() public navItems: NavItemsModel[];
   @Input() public title: AppTitleModel;
   @Input() public userNav: UserNavModel;
   @Input() public showFindCase: boolean;
@@ -24,6 +25,7 @@ export class HeaderComponent implements OnInit {
   @Input() public logoType: string;
   @Input() public logoIsUsed: boolean = false;
   @Input() public showNavItems: Observable<boolean>;
+  @Input() public currentUrl: string;
   @Output() public navigate = new EventEmitter<string>();
 
   constructor(

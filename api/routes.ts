@@ -1,10 +1,12 @@
 import * as express from 'express'
 import { router as caseShareRoutes } from './caseshare/routes'
-import {getConfigValue, showFeature} from './configuration'
-import {APP_INSIGHTS_KEY} from './configuration/references'
+import { getConfigValue, showFeature } from './configuration'
+import { APP_INSIGHTS_KEY } from './configuration/references'
 import healthCheck from './healthCheck'
 import authInterceptor from './lib/middleware/auth'
+import { router as nocRouter } from './noc/routes'
 import userRouter from './user/routes'
+
 // import {router as termsAndCRoutes} from './termsAndConditions/routes'
 // import {router as userTandCRoutes} from './userTermsAndConditions/routes'
 
@@ -26,6 +28,7 @@ router.use('/user', userRouter)
 
 // TODO: potentially can be moved to proxy but with onRes callback
 router.use('/caseshare', caseShareRoutes)
+router.use('/noc', nocRouter)
 
 /*if (showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED)) {
     router.use('/userTermsAndConditions',  userTandCRoutes)

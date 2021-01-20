@@ -52,9 +52,10 @@ export class HmctsGlobalHeaderComponent implements OnInit {
       case '/cases/case-filter': {
         return 'Create case';
       }
-      case 'cases/case-search': {
+      // currently this is set via the url so not needed
+      /* case 'cases/case-search': {
         return 'Find case';
-      }
+      } */
       case '/noc': {
         return 'Notice of change';
       }
@@ -65,12 +66,14 @@ export class HmctsGlobalHeaderComponent implements OnInit {
   }
 
   public onEmitEvent(index: number): void {
+    console.log('here')
     this.navigate.emit(this.navigation.items[index].emit);
   }
 
   public onEmitSubMenu(menuItem: any) {
     // remove the setting of selected item via url
     this.tab = menuItem.text;
+    console.log(menuItem.text);
     if (menuItem.href === '/noc') {
       this.nocStore.dispatch(new fromNocStore.Reset());
     }

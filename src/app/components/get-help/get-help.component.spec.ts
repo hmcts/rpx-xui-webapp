@@ -3,7 +3,6 @@ import { GetHelpComponent } from '..';
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { ContactDetailsComponent } from '@hmcts/rpx-xui-common-lib';
-import {CookieService} from 'ngx-cookie';
 
 describe('GetHelpComponent', () => {
   let component: GetHelpComponent;
@@ -17,10 +16,7 @@ describe('GetHelpComponent', () => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [ GetHelpComponent, ContactDetailsComponent ],
-      providers: [{
-        provide: CookieService,
-        useValue: mockCookieService,
-      }]
+      providers: []
     })
     .compileComponents();
   }));

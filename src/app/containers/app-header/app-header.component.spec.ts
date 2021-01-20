@@ -3,7 +3,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Action, Store, StoreModule } from '@ngrx/store';
-import { CookieService } from 'ngx-cookie';
 import { BehaviorSubject, of } from 'rxjs';
 import { AppConstants } from 'src/app/app.constants';
 

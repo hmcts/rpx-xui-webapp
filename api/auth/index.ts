@@ -40,7 +40,6 @@ export const successCallback = (req: Request, res: Response, next: NextFunction)
 
     res.cookie(cookieUserId, userinfo.uid)
     res.cookie(cookieToken, accessToken)
-    res.cookie(cookieRoles, roles)
 
     if (!req.isRefresh) {
         return res.redirect('/')

@@ -1,8 +1,5 @@
-import { CookieService } from 'ngx-cookie';
-
 import { AppConstants } from './app.constants';
 import { NavItemsModel } from './models/nav-item.model';
-
 
 export class AppUtils {
 
@@ -38,11 +35,6 @@ export class AppUtils {
    */
   public static showNavItems(url: string): boolean {
     return url.indexOf('accept-terms-and-conditions') < 0 && url.indexOf('terms-and-conditions') < 0;
-  }
-
-  public static isRoleExistsForUser(roleName: string, cookieService: CookieService, cookiename: string = 'roles'): boolean {
-    const userRoles = cookieService.get(cookiename);
-    return userRoles && userRoles.indexOf(roleName) >= 0;
   }
 
   /**

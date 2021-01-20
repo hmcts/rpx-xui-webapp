@@ -1,10 +1,9 @@
 import { MonitoringService } from './monitoring.service';
 import { NGXLogger } from 'ngx-logger';
 import { Injectable } from '@angular/core';
-import { CookieService } from 'ngx-cookie';
 import { environment as config } from '../../../environments/environment';
 import { CryptoWrapper } from './cryptoWrapper';
-import { JwtDecodeWrapper } from './jwtDecodeWrapper';
+import { SessionStorageService } from '../session-storage/session-storage.service';
 
 export interface ILoggerService {
     trace(message: any, ...additional: any[]): void;
@@ -23,9 +22,8 @@ export class LoggerService implements ILoggerService {
     COOKIE_KEYS;
     constructor(private monitoringService: MonitoringService,
                 private ngxLogger: NGXLogger,
-                private cookieService: CookieService,
-                private cryptoWrapper: CryptoWrapper,
-                private jwtDecodeWrapper: JwtDecodeWrapper) {
+                private sessionStorageService: SessionStorageService,
+                private cryptoWrapper: CryptoWrapper) {
                     this.COOKIE_KEYS = {
                         TOKEN: config.cookies.token,
                         USER: config.cookies.userId
@@ -70,17 +68,15 @@ export class LoggerService implements ILoggerService {
         this.monitoringService.logException(error);
     }
     getMessage(message: any): string {
-        const jwt = this.cookieService.get(this.COOKIE_KEYS.TOKEN);
-        let encryptedMessage = '';
-        if (jwt) {
-            const jwtData = this.jwtDecodeWrapper.decode(jwt);
-            if (jwtData) {
-                const userIdEncrypted = this.cryptoWrapper.encrypt(jwtData.sub);
-                encryptedMessage = `User - ${userIdEncrypted.toString()}, Message - ${message}, Timestamp - ${Date.now()}`;
+        const userInfoStr = this.sessionStorageService.getItem('userDetails');
+        if(userInfoStr) {
+            const userInfo = JSON.parse(userInfoStr);
+            if(userInfo && userInfo.email) {
+                const userIdEncrypted = this.cryptoWrapper.encrypt(userInfo.userInfo.email);
+                const encryptedMessage = `User - ${userIdEncrypted.toString()}, Message - ${message}, Timestamp - ${Date.now()}`
+                return encryptedMessage;
             }
-        } else {
-            encryptedMessage = `Message - ${message}, Timestamp - ${Date.now()}`;
         }
-        return encryptedMessage;
+        return `Message - ${message}, Timestamp - ${Date.now()}`;
     }
 }

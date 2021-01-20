@@ -34,7 +34,7 @@ const healthCheckEndpointDictionary = {
     in health check, because the url for a healthcheck
     endpoint may be different from a regular endpoint
 */
-function getPromises(path, req: Request): any[] {
+function getPromises(path): any[] {
     const Promises = []
     /* Checking whether path can be simplified, ie route has parameters*/
     const dictionaryKeys = Object.keys(healthCheckEndpointDictionary).reverse()
@@ -63,7 +63,7 @@ export async function healthCheckRoute(req, res) {
         let response = { healthState: true }
 
         if (path !== '') {
-            PromiseArr = getPromises(path, req)
+            PromiseArr = getPromises(path)
         }
 
         // comment out following block to bypass actual check

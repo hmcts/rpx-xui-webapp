@@ -6,20 +6,39 @@
  * Request usually represent the body.Request and Responses are those that are returned from the downstream call.
  * @see
  * http://rd-professional-api-aat.service.core-compute-aat.internal/swagger-ui.html#
- * for Swagger docs [VPN + FOXY PROXY 'On']
  *
  */
 
 
-export interface organisation {
-  companyNumber: string,
-  companyUrl: string,
+
+export interface Organisation {
   name: string,
   organisationIdentifier: string,
+  companyNumber: string,
+  companyUrl: string,
   sraId: string,
   sraRegulated: boolean,
   status: string,
-  contactInformation: contactInformation,
-  superUser: superUser,
-  paymentAccount: Array<string>
+  contactInformation: {
+    addressLine1: string,
+    addressLine2: string,
+    addressLine3: string,
+    country: string,
+    county: string,
+    postCode: string,
+    townCity: string,
+  }
+  superUser: {
+    firstName: string,
+    lastName: string,
+    email: string
+  },
+  paymentAccount: [
+    string
+  ]
 }
+
+const contactInformation = {
+
+}
+

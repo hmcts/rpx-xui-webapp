@@ -1,27 +1,24 @@
-import axios from 'axios';
-
+import axios from 'axios'
 
 export async function getUsers(path: string) {
-  let axiosConfig = {
+  const axiosConfig = {
     headers: {
+      'Authorization':  'Bearer some-access-token',
       'Content-Type': 'application/json',
-    }
-};
-
-return  axios.get(path,axiosConfig);
+      'ServiceAuthorization': 'serviceAuthToken',
+    },
+  }
+  return  axios.get(path, axiosConfig)
 }
 
-export async function getOrganisationDetails(path:string) {
-  let axiosConfig = {
+export async function getOrganisationDetails(path: string) {
+  const axiosConfig = {
     headers: {
+      'Authorization':  'Bearer some-access-token',
       'Content-Type': 'application/json',
-      "Authorization":  "Bearer some-access-token",
-      "ServiceAuthorization": "serviceAuthToken"
-    }
-  };
-
-const response =  axios.get(path,axiosConfig);
-return response;
-
+      'ServiceAuthorization': 'serviceAuthToken',
+    },
+  }
+  const response =  axios.get(path, axiosConfig)
+  return response
 }
-

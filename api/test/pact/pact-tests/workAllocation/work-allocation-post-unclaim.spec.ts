@@ -2,9 +2,9 @@ import { Pact } from '@pact-foundation/pact'
 import { assert, expect } from 'chai'
 import * as getPort from 'get-port'
 import * as path from 'path'
-
 import { EnhancedRequest } from '../../../../lib/models'
 import { handleTaskPost } from '../../../../workAllocation/taskService'
+
 
 interface Payload {
   behaviour?: string,
@@ -35,7 +35,7 @@ describe('Work Allocation API', () => {
     provider = new Pact({
       consumer: 'xui_work_allocation_task_unclaim',
       provider: 'WorkAllocation_api_unclaim',
-      dir: path.resolve(__dirname, '../pacts'),
+      dir: path.resolve(__dirname, '../../pacts'),
       log: path.resolve(__dirname, '../logs', 'work-allocation.log'),
       logLevel: 'info',
       port: mockServerPort,

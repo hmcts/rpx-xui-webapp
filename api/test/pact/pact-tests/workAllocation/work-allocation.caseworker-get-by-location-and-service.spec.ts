@@ -2,10 +2,10 @@ import { Pact } from '@pact-foundation/pact';
 import { assert } from 'chai';
 import * as getPort from 'get-port';
 import * as path from 'path';
-
 import { EnhancedRequest } from '../../../../lib/models';
 import { handleCaseWorkerForLocationAndService } from '../../../../workAllocation/caseWorkerService';
 import { CASEWORKERS_BY_LOCATION_AND_SERVICE } from '../../constants/work-allocation/caseworkers.spec';
+
 
 describe('Work Allocation for location and service Caseworker API', () => {
 
@@ -16,7 +16,7 @@ describe('Work Allocation for location and service Caseworker API', () => {
     mockServerPort = await getPort()
     provider = new Pact({
       consumer: 'xui_work-allocation_caseworker_get_by_location_and_service',
-      dir: path.resolve(__dirname, '../pacts'),
+      dir: path.resolve(__dirname, '../../pacts'),
       log: path.resolve(__dirname, '../logs', 'work-allocation.log'),
       logLevel: 'info',
       port: mockServerPort,

@@ -16,7 +16,7 @@ describe('Reference Data API', () => {
     idamTestUrl = `http://localhost:${MOCK_SERVER_PORT}`
     provider = new Pact({
       consumer: 'xui_approve_org',
-      dir: path.resolve(__dirname, '../pacts'),
+      dir: path.resolve(__dirname, '../../pacts'),
       log: path.resolve(__dirname, '../logs', 'sidam-integration.log'),
       logLevel: 'info',
       port: MOCK_SERVER_PORT,

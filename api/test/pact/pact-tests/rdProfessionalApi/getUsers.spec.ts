@@ -18,7 +18,7 @@ describe("RD Professional API Interactions with webapp", () => {
     mockServerPort = await getPort()
     provider = new Pact({
       consumer: "XUIWebapp",
-      provider: "RdProfessionalApi",
+      provider: "rd_professional_api",
       log: path.resolve(process.cwd(), "api/test/pact/logs", "mockserver-integration.log"),
       dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
       logLevel: 'info',
@@ -48,8 +48,10 @@ describe("RD Professional API Interactions with webapp", () => {
           path: "/refdata/external/v1/organisations/users",
           query: "returnRoles=true&status=active",
           headers: {
-            "Content-Type": "application/json",
-          }
+            'Authorization':  'Bearer some-access-token',
+            'Content-Type': 'application/json',
+            'ServiceAuthorization': 'serviceAuthToken',
+          },
         },
         willRespondWith: {
           status: 200,

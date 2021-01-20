@@ -2,7 +2,7 @@ import { Pact } from '@pact-foundation/pact';
 import { expect } from 'chai';
 import * as getPort from 'get-port';
 import * as path from 'path';
-import { organisation } from '../../pactFixtures.spec';
+import { Organisation } from '../../pactFixtures.spec';
 import { getOrganisationDetails } from '../../pactUtil';
 
 
@@ -19,7 +19,7 @@ describe("RD Professional API call for get organisations", () => {
     mockServerPort = await getPort()
     provider = new Pact({
       consumer: "XUIWebapp",
-      provider: "RdProfessionalApi",
+      provider: "rd_professional_api",
       log: path.resolve(process.cwd(), "api/test/pact/logs", "mockserver-integration.log"),
       dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
       logLevel: 'info',
@@ -73,14 +73,14 @@ describe("RD Professional API call for get organisations", () => {
 
       const resp =  getOrganisationDetails(path);
       resp.then((response) => {
-        const responseDto:organisation[] = <organisation[]> response.data
+        const responseDto:Organisation[] = <Organisation[]> response.data
         assertResponse(responseDto);
       }).then(done,done)
     })
    })
 })
 
-function assertResponse(dto:organisation[]): void{
+function assertResponse(dto:Organisation[]): void{
   expect(dto).to.be.not.null;
   for(var element of dto ) {
     expect(element.companyNumber).to.equal("A1000");
@@ -92,7 +92,7 @@ function assertResponse(dto:organisation[]): void{
   }
 }
 
-const getOrganisationResponse:organisation[] = [
+const getOrganisationResponse:Organisation[] = [
   {
     companyNumber:somethingLike('A1000'),
     companyUrl: somethingLike('www.google.com'),
@@ -109,7 +109,6 @@ const getOrganisationResponse:organisation[] = [
       county: somethingLike("Westminster"),
       postCode: somethingLike("WC1A3BD"),
       townCity: somethingLike("Westminster")
-
     },
     superUser: {
       firstName:somethingLike("Joe"),

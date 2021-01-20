@@ -9,7 +9,7 @@ import {
   SERVICES_EM_ANNO_API_URL,
   SERVICES_IDAM_API_URL,
   SERVICES_IDAM_LOGIN_URL,
-  // SERVICES_TERMS_AND_CONDITIONS_URL
+  SERVICES_TERMS_AND_CONDITIONS_URL
 } from '../configuration/references'
 import * as log4jui from '../lib/log4jui'
 import {JUILogger} from '../lib/models'
@@ -29,11 +29,12 @@ export const checkServiceHealth = service => healthcheck.web(`${service}/health`
  */
 export const healthChecks = {
   checks: {
-    // documentsApi: checkServiceHealth(getConfigValue(SERVICES_DOCUMENTS_API_PATH)),
-    // emmoApi: checkServiceHealth(getConfigValue(SERVICES_EM_ANNO_API_URL)),
-    // idamApi: checkServiceHealth(getConfigValue(SERVICES_IDAM_LOGIN_URL)),
-    // idamWeb: checkServiceHealth(getConfigValue(SERVICES_IDAM_API_URL)),
+    documentsApi: checkServiceHealth(getConfigValue(SERVICES_DOCUMENTS_API_PATH)),
+    emmoApi: checkServiceHealth(getConfigValue(SERVICES_EM_ANNO_API_URL)),
+    idamApi: checkServiceHealth(getConfigValue(SERVICES_IDAM_LOGIN_URL)),
+    idamWeb: checkServiceHealth(getConfigValue(SERVICES_IDAM_API_URL)),
     s2s: checkServiceHealth(getConfigValue(SERVICE_S2S_PATH)),
+    termsAndConditions: checkServiceHealth(getConfigValue(SERVICES_TERMS_AND_CONDITIONS_URL)),
   },
 }
 

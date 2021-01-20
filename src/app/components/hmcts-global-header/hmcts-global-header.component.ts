@@ -27,7 +27,7 @@ export class HmctsGlobalHeaderComponent implements OnInit {
   public showItems: boolean;
   public userValue = true;
   public selectedItem;
-  public setTab;
+  public tab;
 
   constructor(
     public nocStore: Store<fromNocStore.State>,
@@ -35,31 +35,26 @@ export class HmctsGlobalHeaderComponent implements OnInit {
 
   public ngOnInit() {
     // set the active tab via the url in the router
-    this.setActiveTab();
+    this.tab = this.setActiveTab();
   }
 
   public setActiveTab() {
-    this.setTab = null;
+    this.tab = null;
     switch (this.router.url) {
       case '/tasks/list': {
-        this.setTab = 'Task list';
-        break;
+        return 'Task list';
       }
       case '/tasks/task-manager': {
-        this.setTab = 'Task manager';
-        break;
+        return 'Task manager';
       }
       case '/cases': {
-        this.setTab = 'Case list';
-        break;
+        return 'Case list';
       }
       case '/cases/case-filter': {
-        this.setTab = 'Create case';
-        break;
+        return 'Create case';
       }
       default: {
-        this.setTab = null;
-        break;
+        return null;
       }
     }
   }
@@ -70,7 +65,7 @@ export class HmctsGlobalHeaderComponent implements OnInit {
 
   public onEmitSubMenu(menuItem: any) {
     // remove the setting of selected item via url
-    this.setTab = null;
+    this.tab = null;
 
     // set the selected item
     this.selectedItem = menuItem;

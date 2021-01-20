@@ -1,14 +1,16 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 
 import { HmctsGlobalHeaderComponent } from './hmcts-global-header.component';
 
-describe('HmctsGlobalHeaderComponent', () => {
+fdescribe('HmctsGlobalHeaderComponent', () => {
   let nocStoreSpy: jasmine.Spy;
   let component: HmctsGlobalHeaderComponent;
   let fixture: ComponentFixture<HmctsGlobalHeaderComponent>;
+  let mockRouter: jasmine.SpyObj<Router>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -23,6 +25,8 @@ describe('HmctsGlobalHeaderComponent', () => {
   }));
 
   beforeEach(() => {
+    mockRouter = TestBed.get(Router);
+    spyOnProperty(mockRouter, 'url').and.returnValues('/cases','/tasks/list','/tasks/task-manager');
     fixture = TestBed.createComponent(HmctsGlobalHeaderComponent);
     component = fixture.componentInstance;
     component.headerTitle = {
@@ -43,6 +47,19 @@ describe('HmctsGlobalHeaderComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should set the active tab based on the router', () => {
+    const caseList = 'Case list';
+    const taskList = 'Task list';
+    const taskManager = 'Task manager';
+
+    // verify tab originally set
+    expect(component.tab).toEqual(caseList);
+
+    // verify correct tab set after changing url
+    expect(component.setActiveTab()).toEqual(taskList);
+    expect(component.setActiveTab()).toEqual(taskManager);
   });
 
   it('should show the Case search button as inactive when the currentUrl does not match', () => {
@@ -69,7 +86,13 @@ describe('HmctsGlobalHeaderComponent', () => {
   });
 
   it('should onEmitSubMenu', () => {
-    component.onEmitSubMenu({href: '/noc'});
+    let menuItem = {href: '/noc', text: null};
+    component.onEmitSubMenu(menuItem);
     expect(nocStoreSpy).toHaveBeenCalled();
+    expect(component.selectedItem).toEqual(menuItem);
+
+    menuItem = {href: '/tasks/list', text: 'Task list'};
+    component.onEmitSubMenu(menuItem);
+    expect(component.selectedItem).toEqual(menuItem);
   });
 });

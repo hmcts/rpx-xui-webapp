@@ -161,7 +161,7 @@ describe('AppHeaderComponent', () => {
         },
         {
           roles: ['pui-case-manager'],
-          appTitle: {name: 'Manage Cases', url: '/'},
+          appTitle: {name: 'Manage cases', url: '/'},
           navigationItems: [
             {
               text: 'Case list',

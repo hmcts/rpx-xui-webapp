@@ -49,7 +49,6 @@
       </div>
     </div>
 </div>
-
 <nav *ngIf="showItems" class="hmcts-primary-navigation transparent-background" [attr.aria-label]="label">
   <div class="hmcts-primary-navigation__container">
     <div class="govuk-header__logo" *ngIf="logoIsUsed"></div>
@@ -57,7 +56,9 @@
       <nav class="hmcts-primary-navigation transparent-background" aria-label="Primary navigation">
         <ul class="hmcts-primary-navigation__list">
           <li class="hmcts-primary-navigation__item" *ngFor="let item of items" >
-            <a class="hmcts-primary-navigation__link" (click)="onEmitSubMenu(item)" [attr.aria-current]="item.active ? true: null" [routerLink]="item.href">{{item.text}}</a>
+            
+            <a class="hmcts-primary-navigation__link" (click)="onEmitSubMenu(item)" [attr.aria-current]="item === selectedItem || setTab === item.text ? true: null" [routerLink]="item.href">{{item.text}}</a>
+          
           </li>
         </ul>
       </nav>

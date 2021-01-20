@@ -2,7 +2,6 @@ import {AUTH, AuthOptions, xuiNode} from '@hmcts/rpx-xui-node-lib'
 import {NextFunction, Request, Response} from 'express'
 import {getConfigValue, showFeature} from '../configuration'
 import {
-    COOKIE_ROLES,
     COOKIES_TOKEN,
     COOKIES_USER_ID,
     FEATURE_OIDC_ENABLED,
@@ -29,12 +28,10 @@ const logger = log4jui.getLogger('auth')
 
 export const successCallback = (req: Request, res: Response, next: NextFunction) => {
     const {user} = req.session.passport
-    const {roles} = user.userinfo
     const {userinfo} = user
     const {accessToken} = user.tokenset
     const cookieToken = getConfigValue(COOKIES_TOKEN)
     const cookieUserId = getConfigValue(COOKIES_USER_ID)
-    const cookieRoles = getConfigValue(COOKIE_ROLES)
 
     logger.info('Setting session and cookies')
 

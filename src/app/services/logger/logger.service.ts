@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { environment as config } from '../../../environments/environment';
 import { CryptoWrapper } from './cryptoWrapper';
 import { SessionStorageService } from '../session-storage/session-storage.service';
-import { UserInfo } from '../../models/user-details.model'; 
+import { UserInfo } from '../../models/user-details.model';
 
 export interface ILoggerService {
     trace(message: any, ...additional: any[]): void;
@@ -70,9 +70,9 @@ export class LoggerService implements ILoggerService {
     }
     getMessage(message: any): string {
         const userInfoStr = this.sessionStorageService.getItem('userDetails');
-        if(userInfoStr) {
+        if (userInfoStr) {
             const userInfo: UserInfo = JSON.parse(userInfoStr);
-            if(userInfo && userInfo.email) {
+            if (userInfo && userInfo.email) {
                 const userIdEncrypted = this.cryptoWrapper.encrypt(userInfo.email);
                 const encryptedMessage = `User - ${userIdEncrypted.toString()}, Message - ${message}, Timestamp - ${Date.now()}`
                 return encryptedMessage;

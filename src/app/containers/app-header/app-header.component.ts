@@ -141,7 +141,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     this.setAppHeaderProperties(this.defaultTheme);
     const applicationThemes$ = this.featureToggleService.getValue<Theme[]>('mc-application-themes', this.getDefaultApplicationThemes());
     combineLatest(this.userDetails$, applicationThemes$).subscribe(([userDetails, applicationThemes]) => {
-        if(userDetails.userInfo){
+        if (userDetails.userInfo) {
           const applicationTheme: Theme = this.getApplicationThemeForUser(applicationThemes, userDetails.userInfo.roles);
           this.hideNavigationListener(this.store);
           this.setAppHeaderProperties(applicationTheme);

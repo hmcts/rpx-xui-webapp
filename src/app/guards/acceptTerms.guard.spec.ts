@@ -19,7 +19,6 @@ describe('Accept terms guard', () => {
     });
 
     xit('returns true for non pui users', (done: any) => {
-        //mockCookie.get.and.returnValue('zui-case-manager');
         guard.canActivate().subscribe(access => {
             expect(access).toBeTruthy();
             done();

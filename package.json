@@ -46,7 +46,7 @@
     "test:mutation": "NODE_CONFIG_DIR=./config stryker run stryker.node.conf.js ",
     "test:apiGateway": "echo 'not implemented'",
     "sonar-scan": "node_modules/sonar-scanner/bin/sonar-scanner",
-    "test-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error mocha --timeout 10000 -r ts-node/register -r dotenv-extended/config api/test/pact/**/*.spec.ts dotenv_config_defaults=./api/.env.defaults",
+    "test-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error mocha --timeout 10000 -r ts-node/register -r dotenv-extended/config api/test/pact/pact-tests/case-share/**/*.spec.ts dotenv_config_defaults=./api/.env.defaults",
     "publish-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error mocha --timeout 15000 -r ts-node/register -r dotenv-extended/config api/test/pact/publish/publish.ts dotenv_config_defaults=./api/.env.defaults --reporter spec",
     "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact",
     "test:api": "mocha -r ts-node/register --config ./test/integration/tests/mocha.json --reporter mochawesome --reporter-options reportDir=reports/tests/api_functional,reportFilename=mochawesome",

@@ -3,6 +3,9 @@ import { expect } from 'chai'
 import * as path from 'path'
 import { getDetails } from '../../../../services/idam'
 import * as getPort from "get-port";
+import {some} from "../../../../lib/util";
+import {eachLike} from "@pact-foundation/pact/dsl/matchers";
+import arrayContaining = jasmine.arrayContaining;
 const {Matchers} = require('@pact-foundation/pact');
 const {somethingLike} = Matchers;
 
@@ -26,11 +29,10 @@ describe("Idam API user details", async() => {
     "forename": somethingLike("Joe"),
     "surname": somethingLike("Bloggs"),
     "email": somethingLike("joe.bloggs@hmcts.net"),
-    "active": true,
-    "roles": [
-      "solicitor",
-      "caseworker"
-    ]
+    "active": somethingLike(true),
+    "roles":somethingLike([
+      somethingLike("solicitor"),somethingLike("caseworker")
+    ])
   }
   // Setup the provider
   before(() => provider.setup())

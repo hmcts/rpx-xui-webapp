@@ -2,8 +2,8 @@ import { Pact } from '@pact-foundation/pact';
 import {assert, expect} from 'chai';
 import * as getPort from 'get-port';
 import * as path from 'path';
-import {CaseAssignmentResponseDto} from "../pactFixtures";
-import {getCaseAssignments} from "../pactUtils";
+import {CaseAssignmentResponseDto} from "../../pactFixtures";
+import {getCaseAssignments} from "../../pactUtil";
 const {Matchers} = require('@pact-foundation/pact');
 const {somethingLike, like, eachLike} = Matchers;
 

@@ -2,7 +2,7 @@ import { Pact } from '@pact-foundation/pact';
 import { expect } from 'chai';
 import * as getPort from 'get-port';
 import * as path from 'path';
-import { Organisation } from '../../pactFixtures.spec';
+import { Organisation } from '../../pactFixtures';
 import { getOrganisationDetails } from '../../pactUtil';
 
 

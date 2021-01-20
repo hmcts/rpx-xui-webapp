@@ -1,7 +1,7 @@
 import { Pact } from '@pact-foundation/pact'
 import { expect } from 'chai'
 import * as path from 'path'
-import {getIdamUsersByEmail} from '../pactUtils';
+import {getIdamUsersByEmail} from '../../pactUtil';
 import * as getPort from "get-port";
 const {Matchers} = require('@pact-foundation/pact');
 const {somethingLike} = Matchers;
@@ -17,7 +17,7 @@ describe("Idam Get user by email", async() => {
     log: path.resolve(process.cwd(), "api/test/pact/logs", "mockserver-integration.log"),
     dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
     spec: 2,
-    consumer: "xui_manageOrg_user_details",
+    consumer: "XUIWebapp",
     provider: "Idam_api",
     pactfileWriteMode: "merge",
   })

@@ -26,7 +26,7 @@ fdescribe('HmctsGlobalHeaderComponent', () => {
 
   beforeEach(() => {
     mockRouter = TestBed.get(Router);
-    spyOnProperty(mockRouter, 'url').and.returnValues('/cases','/tasks/list','/tasks/task-manager');
+    spyOnProperty(mockRouter, 'url').and.returnValues('/cases', '/tasks/list', '/tasks/task-manager');
     fixture = TestBed.createComponent(HmctsGlobalHeaderComponent);
     component = fixture.componentInstance;
     component.headerTitle = {

@@ -71,10 +71,11 @@ describe('Logger service', () => {
     it('should be able to get a message', () => {
         const service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedSessionStorageService,
         mockedCryptoWrapper);
+        // slice off the last two characters of string to ensure no accidental discrepancies
+        const expectedMessage = `Message - message, Timestamp - ${Date.now()}`.slice(0, -2);
         const returnedMessage = service.getMessage('message');
         expect(mockedMonitoringService.logEvent).toHaveBeenCalled();
-        console.log(returnedMessage);
         expect(returnedMessage).not.toBeNull();
-        expect(returnedMessage).toBe(`Message - message, Timestamp - ${Date.now()}`);
+        expect(returnedMessage.slice(0, -2)).toBe(expectedMessage);
     });
 });

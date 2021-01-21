@@ -45,9 +45,10 @@ export function getPromises(path): any[] {
         }
     }
     if (healthCheckEndpointDictionary[path]) {
+        console.log(healthCheckEndpointDictionary[path]);
         healthCheckEndpointDictionary[path].forEach(endpoint => {
             // TODO: Have health config for this.
-            console.log('healthEndpoints')
+            console.log('healthEndpoints', endpoint)
             console.log(healthEndpoints()[endpoint])
             Promises.push(http.get(healthEndpoints()[endpoint]))
         })
@@ -56,7 +57,7 @@ export function getPromises(path): any[] {
 }
 
 export async function healthCheckRoute(req, res) {
-    res.send({ healthState: true })
+    // res.send({ healthState: true })
     try {
         const path = req.query.path
         let PromiseArr = []

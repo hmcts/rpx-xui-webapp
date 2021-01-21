@@ -45,7 +45,7 @@ export function getPromises(path): any[] {
         }
     }
     if (healthCheckEndpointDictionary[path]) {
-        console.log(healthCheckEndpointDictionary[path]);
+        console.log(healthCheckEndpointDictionary[path])
         healthCheckEndpointDictionary[path].forEach(endpoint => {
             // TODO: Have health config for this.
             console.log('healthEndpoints', endpoint)

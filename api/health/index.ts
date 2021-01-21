@@ -5,6 +5,8 @@ import {
   FEATURE_REDIS_ENABLED,
   // FEATURE_TERMS_AND_CONDITIONS_ENABLED,
   SERVICE_S2S_PATH,
+  SERVICES_CCD_COMPONENT_API_PATH,
+  SERVICES_CCD_DATA_STORE_API_PATH,
   SERVICES_DOCUMENTS_API_PATH,
   SERVICES_EM_ANNO_API_URL,
   SERVICES_IDAM_API_URL,
@@ -29,6 +31,8 @@ export const checkServiceHealth = service => healthcheck.web(`${service}/health`
  */
 export const healthChecks = {
   checks: {
+    ccdComponentApi: checkServiceHealth(getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)),
+    ccdDataApi: checkServiceHealth(getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH)),
     documentsApi: checkServiceHealth(getConfigValue(SERVICES_DOCUMENTS_API_PATH)),
     emmoApi: checkServiceHealth(getConfigValue(SERVICES_EM_ANNO_API_URL)),
     idamApi: checkServiceHealth(getConfigValue(SERVICES_IDAM_LOGIN_URL)),

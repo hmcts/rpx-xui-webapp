@@ -40,9 +40,9 @@ export async function handlePost<T>(path: string, body: T, req: EnhancedRequest,
     }
 }
 
-export async function handlePostNonNext<T>(path: string, body: T, req: EnhancedRequest): Promise<AxiosResponse> {
+export async function sendPost<T>(path: string, body: T, req: EnhancedRequest): Promise<AxiosResponse> {
   try {
-    logger.info('handle post with non next:', path)
+    logger.info('send post request to:', path)
     const headers = setHeaders(req)
     return await http.post(path, body, { headers })
   } catch (e) {
@@ -107,4 +107,18 @@ export async function handleDelete<T>(path: string, body: T, req: EnhancedReques
     } catch (e) {
         next(e)
     }
+}
+
+export async function sendDelete<T>(path: string, body: T, req: EnhancedRequest): Promise<AxiosResponse> {
+  try {
+    logger.info('send delete request to:', path)
+    const headers = setHeaders(req)
+    return await http.delete(path, {
+      data: body,
+      headers,
+    })
+  } catch (e) {
+    logger.error(e.status, e.statusText, JSON.stringify(e.data))
+    throw e
+  }
 }

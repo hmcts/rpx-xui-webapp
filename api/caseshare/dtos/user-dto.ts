@@ -1,6 +1,6 @@
-import { UserDetails } from '@hmcts/rpx-xui-common-lib/lib/models/user-details.model'
 import { CCDRawUserModel } from '../models/ccd-raw-user.model'
 import { PRDRawUserModel } from '../models/prd-raw-user.model'
+import { UserDetails } from '../models/user-details.model'
 
 export function prdToUserDetails(rawUser: PRDRawUserModel): UserDetails {
   return {
@@ -13,6 +13,7 @@ export function prdToUserDetails(rawUser: PRDRawUserModel): UserDetails {
 
 export function ccdToUserDetails(rawUser: CCDRawUserModel): UserDetails {
   return {
+    caseRoles: rawUser.case_roles,
     email: rawUser.email,
     firstName: rawUser.first_name,
     idamId: rawUser.idam_id,

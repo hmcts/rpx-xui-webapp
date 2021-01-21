@@ -136,16 +136,19 @@ function isKeywordSuffixNeeded(columnName, type): string {
 
 export function handleElasticSearchResponse(proxyRes, req, res, json): {} {
 
-    const results = json.cases.map(caseObj => {
-      caseObj.case_fields = caseObj.fields
-      caseObj.case_fields_formatted = caseObj.fields_formatted
-      delete caseObj.fields
-      delete caseObj.fields_formatted
-      return caseObj
-    })
+    let results = null
+    if (json.cases) {
+      results = json.cases.map(caseObj => {
+        caseObj.case_fields = caseObj.fields
+        caseObj.case_fields_formatted = caseObj.fields_formatted
+        delete caseObj.fields
+        delete caseObj.fields_formatted
+        return caseObj
+      })
+    }
 
     const handledResponse = {
-        'columns': json.headers[0].fields,
+        'columns': json.headers ? json.headers[0].fields : null,
         'results': results,
         'total': json.total,
     }

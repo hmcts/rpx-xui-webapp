@@ -43,7 +43,7 @@ export class CaseShareComponent implements OnInit {
       // call api to retrieve users in the same organisation
       this.store.dispatch(new LoadUserFromOrgForCase());
     }
-    this.removeUserFromCaseToggleOn$ = this.featureToggleService.getValue('remove-user-from-case', false);
+    this.removeUserFromCaseToggleOn$ = this.featureToggleService.getValue('remove-user-from-case-mo', false);
 
     // initialize javascript for accordion component to enable open/close button
     setTimeout(() => initAll(), 1000);

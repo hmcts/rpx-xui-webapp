@@ -1,12 +1,14 @@
-import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model'
 import { NextFunction, Response } from 'express'
-import { handleGet, handlePostNonNext } from '../common/crudService'
+import { handleGet, sendDelete, sendPost } from '../common/crudService'
 import { getConfigValue } from '../configuration'
 import { CASE_SHARE_PERMISSIONS, SERVICES_CCD_CASE_ASSIGNMENT_API_PATH, SERVICES_PRD_API_URL } from '../configuration/references'
 import { EnhancedRequest } from '../lib/models'
 import { ccdToUserDetails, prdToUserDetails } from './dtos/user-dto'
 import { CaseAssigneeMappingModel } from './models/case-assignee-mapping.model'
+import { SharedCase } from './models/case-share.model'
 import { CCDRawCaseUserModel } from './models/ccd-raw-case-user.model'
+import { UnassignedCaseModel } from './models/unassigned-case.model'
+import { UserDetails } from './models/user-details.model'
 
 const prdUrl: string = getConfigValue(SERVICES_PRD_API_URL)
 const ccdUrl: string = getConfigValue(SERVICES_CCD_CASE_ASSIGNMENT_API_PATH)
@@ -50,11 +52,13 @@ export async function assignCases(req: EnhancedRequest, res: Response, next: Nex
   const shareCases: SharedCase[] = req.body.sharedCases.slice()
 
   // call share case api
-  const {updatedSharedCases, updatedErrorMessages}:
-    { updatedSharedCases: SharedCase[], updatedErrorMessages: string[] } = await doShareCase(req, shareCases)
+  const updatedSharedCases: SharedCase[] = []
+  const updatedErrorMessages: string[] = []
+  // const {updatedSharedCases, updatedErrorMessages}:
+  //   { updatedSharedCases: SharedCase[], updatedErrorMessages: string[] } = await doShareCase(req, shareCases)
 
   // TODO: call unshare case api
-  // await doUnshareCase(req, shareCases, updatedSharedCases)
+  await doUnshareCase(req, shareCases, updatedSharedCases)
 
   const originalSharedNumber = shareCases.reduce((acc, aCase) => acc
     + (aCase.pendingShares ? aCase.pendingShares.length : 0), 0)
@@ -94,14 +98,18 @@ async function doShareCase(req: EnhancedRequest, shareCases: SharedCase[]):
 
 function promiseCaseShareBatchCall(shareCases: SharedCase[], path: string, req: EnhancedRequest) {
   // @ts-ignore
-  return shareCases.flatMap(sharedCase => sharedCase.pendingShares.flatMap( pendingShare => {
-    const caseAssigneeMappingModel: CaseAssigneeMappingModel = {
-      'assignee_id': pendingShare.idamId,
-      'case_id': sharedCase.caseId,
-      'case_type_id': sharedCase.caseTypeId,
+  return shareCases.flatMap(sharedCase => {
+    if (sharedCase && sharedCase.pendingShares && sharedCase.pendingShares.length > 0) {
+      sharedCase.pendingShares.flatMap( pendingShare => {
+        const caseAssigneeMappingModel: CaseAssigneeMappingModel = {
+          'assignee_id': pendingShare.idamId,
+          'case_id': sharedCase.caseId,
+          'case_type_id': sharedCase.caseTypeId,
+        }
+        return sendPost(path, caseAssigneeMappingModel, req)
+      })
     }
-    return handlePostNonNext(path, caseAssigneeMappingModel, req)
-  }))
+  })
 }
 
 function handleRejectedPayloads(shareCases: SharedCase[], rejectedPayloads: CaseAssigneeMappingModel[]): SharedCase[] {
@@ -134,4 +142,21 @@ function handleRejectedPayloads(shareCases: SharedCase[], rejectedPayloads: Case
 // @ts-ignore
 async function doUnshareCase(req: EnhancedRequest, shareCases: SharedCase[], updatedSharedCases: SharedCase[]) {
   // TODO: call unshare case api
+  const path = `${ccdUrl}/case-assignments`
+  const unassignedCaseModels = []
+  for (const aCase of shareCases) {
+    const userDetails: UserDetails[] = aCase.pendingUnshares
+    for (const aUser of userDetails) {
+      const unassignedCaseModel: UnassignedCaseModel = {
+        assignee_id: aUser.idamId,
+        case_id: aCase.caseId,
+        case_roles: aUser.caseRoles,
+      }
+      unassignedCaseModels.push(unassignedCaseModel)
+    }
+  }
+  const payload = {
+    unassignments: unassignedCaseModels,
+  }
+  return sendDelete(path, payload, req)
 }

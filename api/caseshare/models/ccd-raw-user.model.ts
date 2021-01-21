@@ -1,7 +1,7 @@
 export interface CCDRawUserModel {
-  idam_id: string
-  first_name: string
-  last_name: string
+  case_roles: []
   email: string
-  case_roles: string[]
+  first_name: string
+  idam_id: string
+  last_name: string
 }

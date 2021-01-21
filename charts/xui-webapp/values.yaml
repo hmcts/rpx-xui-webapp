@@ -39,10 +39,10 @@ nodejs:
     # Health Endpoints
     HEALTH_CCD_COMPONENT_API: https://gateway-ccd.{{ .Values.global.environment }}.platform.hmcts.net
     HEALTH_CCD_DATA_API: http://ccd-data-store-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
-    HEALTH_DOCUMENTS_API: http://dm-store-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
-    HEALTH_EM_ANNO_API: http://em-anno-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
-    HEALTH_S2S_SERVICE: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
-    HEALTH_TERMS_AND_CONDITIONS_API: http://xui-terms-and-conditions-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    HEALTH_DOCUMENTS_API: http://dm-store-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
+    HEALTH_EM_ANNO_API: http://em-anno-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
+    HEALTH_S2S_SERVICE: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
+    HEALTH_TERMS_AND_CONDITIONS_API: http://xui-terms-and-conditions-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
     # Services CCD Endpoints
     SERVICES_CCD_COMPONENT_API: https://gateway-ccd.{{ .Values.global.environment }}.platform.hmcts.net
     SERVICES_CCD_DATA_STORE_API: http://ccd-data-store-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal

@@ -74,7 +74,9 @@ export const addReformHealthCheck = app => {
     xuiNode.on(SESSION.EVENT.REDIS_CLIENT_ERROR, (error: any) => {
       logger.error('redis Client error is', error)
     })
-  } else {
-    healthcheck.addTo(app, healthChecks)
   }
+  healthcheck.addTo(app, healthChecks)
+  // else {
+  //   healthcheck.addTo(app, healthChecks)
+  // }
 }

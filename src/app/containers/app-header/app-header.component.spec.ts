@@ -3,12 +3,13 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Action, Store, StoreModule } from '@ngrx/store';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
 import { AppConstants } from 'src/app/app.constants';
+import { UserDetails, UserInfo } from 'src/app/models/user-details.model';
 
 import { LoggerService } from '../../services/logger/logger.service';
 import * as fromActions from '../../store';
-import { AppHeaderComponent } from './app-header.component';
+import { AppHeaderComponent, Theme } from './app-header.component';
 
 const storeMock = {
   pipe: () => {
@@ -34,6 +35,7 @@ const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
 
 let pipeSpy: jasmine.Spy;
 let dispatchSpy: jasmine.Spy;
+let appHeaderPropertiesSpy: jasmine.Spy;
 
 describe('AppHeaderComponent', () => {
 
@@ -250,6 +252,46 @@ describe('AppHeaderComponent', () => {
     it('get default theme when no roles', () => {
       const themes = component.getApplicationThemeForUser([], []);
       expect(themes).toEqual(AppConstants.DEFAULT_USER_THEME);
+    });
+  });
+
+  describe('observable testing', async () => {
+    
+    it('should allow running of combinelatest', async () => {
+      // set boolean to check combinelatest runs on the two observables correctly
+      let checkCombineLatestRuns: boolean = false;
+      // then set up the two observables with mock values
+      let applicationTheme: Theme;
+      appHeaderPropertiesSpy = spyOn(component, 'setAppHeaderProperties');
+      const userInfo: UserInfo = {id: '1', forename: 'Test',surname: 'User', email: 'testemail', active: true, roles: ['pui-case-manager']};
+      const userDetails: UserDetails = {sessionTimeout: {
+        idleModalDisplayTime: 100,
+        totalIdleTime: 0,
+      },
+      canShareCases: true,
+      userInfo: userInfo};
+      const userDetails$ = Observable.of(userDetails);
+      const applicationThemes = AppConstants.APPLICATION_USER_THEMES;
+      const applicationThemes$ = Observable.of(applicationThemes);
+      // call combinelatest with the two mock values so we are testing with usable data
+      combineLatest(userDetails$,applicationThemes$).subscribe(([userDetails, applicationThemes]) => {
+        // within the subscribe set the check as true and get application theme to ensure correct running
+        checkCombineLatestRuns = true;
+        applicationTheme = component.getApplicationThemeForUser(applicationThemes, userDetails.userInfo.roles);
+        // note the other methods actually called within not relevant as are tested elsewhere
+      });
+      // expect settings to be correct
+      expect(checkCombineLatestRuns).toBeTruthy();
+      expect(applicationTheme).toEqual(applicationThemes[1]);
+    }); 
+
+    describe('subscribe()', async () => {
+      it('should allow subscribing to an observable', () => {
+        // ensure that the component's subscribe method runs with mock data
+        const url = '/tasks/list';
+        const exObservable$ =   Observable.of(url);
+        expect(component.subscribe(exObservable$)).toBeTruthy();
+      })
     });
   });
 });

@@ -34,25 +34,16 @@ app.use(cookieParser(getConfigValue(SESSION_SECRET)))
 
 app.use(helmet.contentSecurityPolicy({
     directives: {
+        connectSrc: [
+            '\'self\'',
+            'www.google-analytics.com',
+        ],
         defaultSrc: [
-            '\'self\''
+            '\'self\'',
         ],
         fontSrc: [
             '\'self\' data:',
-            'fonts.gstatic.com'
-        ],
-        scriptSrc: [
-            '\'self\'',
-            'www.google-analytics.com',
-            'www.googletagmanager.com',
-            `'nonce-${nonce}'`
-        ],
-        connectSrc: [
-            '\'self\'',
-            'www.google-analytics.com'
-        ],
-        mediaSrc: [
-            '\'self\''
+            'fonts.gstatic.com',
         ],
         imgSrc: [
             '\'self\'',
@@ -60,16 +51,25 @@ app.use(helmet.contentSecurityPolicy({
             'www.google-analytics.com',
             'stats.g.doubleclick.net',
             'ssl.gstatic.com',
-            'www.gstatic.com'
+            'www.gstatic.com',
+        ],
+        mediaSrc: [
+            '\'self\'',
+        ],
+        scriptSrc: [
+            '\'self\'',
+            'www.google-analytics.com',
+            'www.googletagmanager.com',
+            `'nonce-${nonce}'`,
         ],
         styleSrc: [
             '\'self\'',
             '\'unsafe-inline\'',
             'tagmanager.google.com',
-            'fonts.googleapis.com'
-        ]
-    }
-}));
+            'fonts.googleapis.com',
+        ],
+    },
+}))
 
 // TODO: remove tunnel and configurations
 tunnel.init()

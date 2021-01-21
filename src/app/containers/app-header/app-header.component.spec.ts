@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Action, Store, StoreModule } from '@ngrx/store';
-import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, of, Subscription } from 'rxjs';
 import { AppConstants } from 'src/app/app.constants';
 import { UserDetails, UserInfo } from 'src/app/models/user-details.model';
 
@@ -34,21 +34,26 @@ const featureToggleServiceMock = {
 const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
 
 let pipeSpy: jasmine.Spy;
+let pipeStateSpy: jasmine.Spy;
 let dispatchSpy: jasmine.Spy;
-let appHeaderPropertiesSpy: jasmine.Spy;
+let subscribeSpy: jasmine.Spy;
 
 describe('AppHeaderComponent', () => {
 
   let component: AppHeaderComponent;
   let fixture: ComponentFixture<AppHeaderComponent>;
   let store: Store<fromActions.State>;
+  let subscriptionMock: Subscription = new Subscription;
+  let stateStoreMock: Store<fromActions.State> = new Store<fromActions.State>(null, null, null);
 
   const mockDetails = '/cases';
 
   beforeEach(async(() => {
 
     pipeSpy = spyOn(storeMock, 'pipe').and.returnValue(of(mockDetails));
+    pipeStateSpy = spyOn(stateStoreMock, 'pipe').and.returnValue(of(mockDetails));
     dispatchSpy = spyOn(storeMock, 'dispatch');
+    subscribeSpy = spyOn(subscriptionMock, 'unsubscribe');
 
     TestBed.configureTestingModule({
       imports: [
@@ -262,7 +267,6 @@ describe('AppHeaderComponent', () => {
       let checkCombineLatestRuns: boolean = false;
       // then set up the two observables with mock values
       let applicationTheme: Theme;
-      appHeaderPropertiesSpy = spyOn(component, 'setAppHeaderProperties');
       const userInfo: UserInfo = {id: '1', forename: 'Test',surname: 'User', email: 'testemail', active: true, roles: ['pui-case-manager']};
       const userDetails: UserDetails = {sessionTimeout: {
         idleModalDisplayTime: 100,
@@ -291,6 +295,29 @@ describe('AppHeaderComponent', () => {
         const url = '/tasks/list';
         const exObservable$ =   Observable.of(url);
         expect(component.subscribe(exObservable$)).toBeTruthy();
+      })
+    });
+
+    describe('unsubscribe()', async () => {
+      it('should allow unsubscribing from a subscription', () => {
+        component.unsubscribe(subscriptionMock);
+        expect(subscribeSpy).toHaveBeenCalled();
+      })
+    });
+
+    describe('getObservable()', async () => {
+      it('should allow getting an observable from the store', () => {
+        const observable = component.getObservable(stateStoreMock);
+        expect(observable).not.toBe(undefined);
+      })
+    });
+
+    describe('hideNavigationListener()', async () => {
+      it('should be able to set a subscription', () => {
+        // the internal methods of the hideNavigationListener has been tested so we want to make sure this runs without issue
+        const subscription = component.hideNavigationListener(stateStoreMock);
+        // will be undefined as Observable not returned from the store
+        expect(subscription).toBeUndefined();
       })
     });
   });

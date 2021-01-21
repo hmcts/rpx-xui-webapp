@@ -2,8 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
-import { Observable, of, Subscription } from 'rxjs';
-import { combineLatest } from 'rxjs';
+import { combineLatest, Observable, of, Subscription } from 'rxjs';
 import { UserDetails } from 'src/app/models/user-details.model';
 
 import { AppUtils } from '../../app-utils';
@@ -140,7 +139,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     this.userDetails$ = this.store.pipe(select(fromActions.getUserDetails));
     this.setAppHeaderProperties(this.defaultTheme);
     const applicationThemes$ = this.featureToggleService.getValue<Theme[]>('mc-application-themes', this.getDefaultApplicationThemes());
-    combineLatest(this.userDetails$, applicationThemes$).subscribe(([userDetails, applicationThemes]) => {
+    combineLatest([this.userDetails$, applicationThemes$]).subscribe(([userDetails, applicationThemes]) => {
         if (userDetails.userInfo) {
           const applicationTheme: Theme = this.getApplicationThemeForUser(applicationThemes, userDetails.userInfo.roles);
           this.hideNavigationListener(this.store);

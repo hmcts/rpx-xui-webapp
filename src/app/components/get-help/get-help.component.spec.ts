@@ -1,26 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { GetHelpComponent } from '..';
-import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { ContactDetailsComponent } from '@hmcts/rpx-xui-common-lib';
+import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
+import { GetHelpComponent } from '..';
 import { of } from 'rxjs';
-import { provideMockStore } from '@ngrx/store/testing';
 import { Store } from '@ngrx/store';
-import { AppConfig } from 'src/app/services/ccd-config/ccd-case.config';
 
 describe('GetHelpComponent', () => {
   let component: GetHelpComponent;
   let fixture: ComponentFixture<GetHelpComponent>;
   let mockStore: any;
-  let mockAppConfig: any;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [GetHelpComponent, ContactDetailsComponent],
-      providers: [{
-        provide: AppConfig,
-        useValue: mockAppConfig
-      },
+      providers: [
       {
         provide: Store,
         useValue: mockStore
@@ -59,7 +53,7 @@ describe('GetHelpComponent', () => {
             roles: ['pui-case-manager']
           }
         };
-        mockStore.pipe.and.returnValue(of(userDetails))
+        mockStore.pipe.and.returnValue(of(userDetails));
         component.ngOnInit();
         expect(component.caseManager).toBeTruthy();
       });
@@ -80,7 +74,7 @@ describe('GetHelpComponent', () => {
             roles: ['somerole']
           }
         };
-        mockStore.pipe.and.returnValue(of(userDetails))
+        mockStore.pipe.and.returnValue(of(userDetails));
         component.ngOnInit();
         expect(component.caseManager).toBeFalsy();
       });

@@ -21,6 +21,14 @@ describe('Logger service', () => {
         expect(mockedNgxLogger.info).toHaveBeenCalled();
     });
 
+    it('should be able to call log', () => {
+        const service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedSessionStorageService,
+        mockedCryptoWrapper);
+        service.log('message');
+        expect(mockedMonitoringService.logEvent).toHaveBeenCalled();
+        expect(mockedNgxLogger.log).toHaveBeenCalled();
+    });
+
     it('should be able to call warn', () => {
         const service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedSessionStorageService,
         mockedCryptoWrapper);
@@ -58,5 +66,15 @@ describe('Logger service', () => {
         service.trace('message');
         expect(mockedMonitoringService.logEvent).toHaveBeenCalled();
         expect(mockedNgxLogger.trace).toHaveBeenCalled();
+    });
+
+    it('should be able to get a message', () => {
+        const service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedSessionStorageService,
+        mockedCryptoWrapper);
+        const returnedMessage = service.getMessage('message');
+        expect(mockedMonitoringService.logEvent).toHaveBeenCalled();
+        console.log(returnedMessage);
+        expect(returnedMessage).not.toBeNull();
+        expect(returnedMessage).toBe(`Message - message, Timestamp - ${Date.now()}`);
     });
 });

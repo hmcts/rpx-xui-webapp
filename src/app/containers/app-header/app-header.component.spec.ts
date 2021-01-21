@@ -21,7 +21,7 @@ const storeMock = {
 /**
  * Serialised roles as returned from the Node layer.
  */
-const SERIALISED_ROLES = 'j:["pui-organisation-manager", "caseworker-publiclaw", "caseworker-divorce-financialremedy-solicitor", "caseworker"]';
+// const SERIALISED_ROLES = 'j:["pui-organisation-manager", "caseworker-publiclaw", "caseworker-divorce-financialremedy-solicitor", "caseworker"]';
 
 const featureToggleServiceMock = {
   getValue: () => {
@@ -43,8 +43,8 @@ describe('AppHeaderComponent', () => {
   let component: AppHeaderComponent;
   let fixture: ComponentFixture<AppHeaderComponent>;
   let store: Store<fromActions.State>;
-  let subscriptionMock: Subscription = new Subscription;
-  let stateStoreMock: Store<fromActions.State> = new Store<fromActions.State>(null, null, null);
+  const subscriptionMock: Subscription = new Subscription();
+  const stateStoreMock: Store<fromActions.State> = new Store<fromActions.State>(null, null, null);
 
   const mockDetails = '/cases';
 
@@ -261,33 +261,33 @@ describe('AppHeaderComponent', () => {
   });
 
   describe('observable testing', async () => {
-    
+
     it('should allow running of combinelatest', async () => {
       // set boolean to check combinelatest runs on the two observables correctly
       let checkCombineLatestRuns: boolean = false;
       // then set up the two observables with mock values
       let applicationTheme: Theme;
-      const userInfo: UserInfo = {id: '1', forename: 'Test',surname: 'User', email: 'testemail', active: true, roles: ['pui-case-manager']};
+      const userInfo: UserInfo = {id: '1', forename: 'Test', surname: 'User', email: 'testemail', active: true, roles: ['pui-case-manager']};
       const userDetails: UserDetails = {sessionTimeout: {
         idleModalDisplayTime: 100,
         totalIdleTime: 0,
       },
       canShareCases: true,
-      userInfo: userInfo};
+      userInfo};
       const userDetails$ = Observable.of(userDetails);
       const applicationThemes = AppConstants.APPLICATION_USER_THEMES;
       const applicationThemes$ = Observable.of(applicationThemes);
       // call combinelatest with the two mock values so we are testing with usable data
-      combineLatest(userDetails$,applicationThemes$).subscribe(([userDetails, applicationThemes]) => {
+      combineLatest([userDetails$, applicationThemes$]).subscribe(([givenUserDetails, givenApplicationThemes]) => {
         // within the subscribe set the check as true and get application theme to ensure correct running
         checkCombineLatestRuns = true;
-        applicationTheme = component.getApplicationThemeForUser(applicationThemes, userDetails.userInfo.roles);
+        applicationTheme = component.getApplicationThemeForUser(givenApplicationThemes, givenUserDetails.userInfo.roles);
         // note the other methods actually called within not relevant as are tested elsewhere
       });
       // expect settings to be correct
       expect(checkCombineLatestRuns).toBeTruthy();
       expect(applicationTheme).toEqual(applicationThemes[1]);
-    }); 
+    });
 
     describe('subscribe()', async () => {
       it('should allow subscribing to an observable', () => {
@@ -295,21 +295,21 @@ describe('AppHeaderComponent', () => {
         const url = '/tasks/list';
         const exObservable$ =   Observable.of(url);
         expect(component.subscribe(exObservable$)).toBeTruthy();
-      })
+      });
     });
 
     describe('unsubscribe()', async () => {
       it('should allow unsubscribing from a subscription', () => {
         component.unsubscribe(subscriptionMock);
         expect(subscribeSpy).toHaveBeenCalled();
-      })
+      });
     });
 
     describe('getObservable()', async () => {
       it('should allow getting an observable from the store', () => {
         const observable = component.getObservable(stateStoreMock);
         expect(observable).not.toBe(undefined);
-      })
+      });
     });
 
     describe('hideNavigationListener()', async () => {
@@ -318,7 +318,7 @@ describe('AppHeaderComponent', () => {
         const subscription = component.hideNavigationListener(stateStoreMock);
         // will be undefined as Observable not returned from the store
         expect(subscription).toBeUndefined();
-      })
+      });
     });
   });
 });

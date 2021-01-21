@@ -2,8 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import { AppConstants } from 'src/app/app.constants';
 import { ContactDetailsDataModel } from '@hmcts/rpx-xui-common-lib';
 import * as fromRoot from '../../store';
-import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { select, Store } from '@ngrx/store';
 import { UserDetails } from '../../../app/models/user-details.model';
 
 @Component({
@@ -16,7 +16,7 @@ export class GetHelpComponent implements OnInit {
     public caseManager = false;
 
     constructor(
-      private store: Store<fromRoot.State>,
+      private readonly store: Store<fromRoot.State>,
     ) {}
 
   public ngOnInit() {

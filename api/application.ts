@@ -2,7 +2,8 @@ import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
 import * as helmet from 'helmet'
-import {getXuiNodeMiddleware} from './auth'
+import * as nonce from 'nonce'
+import { getXuiNodeMiddleware } from './auth'
 import { getConfigValue, showFeature } from './configuration'
 import {
     FEATURE_HELMET_ENABLED,
@@ -11,10 +12,10 @@ import {
 } from './configuration/references'
 import * as health from './health'
 import * as log4jui from './lib/log4jui'
-import {JUILogger} from './lib/models'
+import { JUILogger } from './lib/models'
 import * as tunnel from './lib/tunnel'
 import openRoutes from './openRoutes'
-import {initProxy} from './proxy.config'
+import { initProxy } from './proxy.config'
 import routes from './routes'
 import taskRouter from './workAllocation/routes'
 
@@ -31,6 +32,45 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
 
 app.use(cookieParser(getConfigValue(SESSION_SECRET)))
 
+app.use(helmet.contentSecurityPolicy({
+    directives: {
+        defaultSrc: [
+            '\'self\''
+        ],
+        fontSrc: [
+            '\'self\' data:',
+            'fonts.gstatic.com'
+        ],
+        scriptSrc: [
+            '\'self\'',
+            'www.google-analytics.com',
+            'www.googletagmanager.com',
+            `'nonce-${nonce}'`
+        ],
+        connectSrc: [
+            '\'self\'',
+            'www.google-analytics.com'
+        ],
+        mediaSrc: [
+            '\'self\''
+        ],
+        imgSrc: [
+            '\'self\'',
+            '\'self\' data:',
+            'www.google-analytics.com',
+            'stats.g.doubleclick.net',
+            'ssl.gstatic.com',
+            'www.gstatic.com'
+        ],
+        styleSrc: [
+            '\'self\'',
+            '\'unsafe-inline\'',
+            'tagmanager.google.com',
+            'fonts.googleapis.com'
+        ]
+    }
+}));
+
 // TODO: remove tunnel and configurations
 tunnel.init()
 app.use(getXuiNodeMiddleware())
@@ -38,8 +78,8 @@ app.use(getXuiNodeMiddleware())
 // applyProxy needs to be used before bodyParser
 initProxy(app)
 
-app.use(bodyParser.json({limit: '5mb'}))
-app.use(bodyParser.urlencoded({limit: '5mb', extended: true}))
+app.use(bodyParser.json({ limit: '5mb' }))
+app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }))
 
 // TODO: No dash?
 // TODO: taskRouter should be called workAllocationRouter

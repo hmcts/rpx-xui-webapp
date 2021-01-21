@@ -11,12 +11,12 @@
   "maxLogLine": 80,
   "stub": false,
   "health": {
-    "ccdComponentApi": "https://ccd-api-gateway-web-prod.service.core-compute-prod.internal",
-    "ccdDataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal",
-    "documentsApi": "http://dm-store-prod.service.core-compute-prod.internal",
-    "em_anno_api": "http://em-anno-prod.service.core-compute-prod.internal",
-    "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal",
-    "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal"
+    "ccdComponentApi": "https://ccd-api-gateway-web-prod.service.core-compute-prod.internal/health",
+    "ccdDataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal/health",
+    "documentsApi": "http://dm-store-prod.service.core-compute-prod.internal/health",
+    "em_anno_api": "http://em-anno-prod.service.core-compute-prod.internal/health",
+    "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal/health",
+    "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal/health"
   },
   "services": {
     "ccd": {

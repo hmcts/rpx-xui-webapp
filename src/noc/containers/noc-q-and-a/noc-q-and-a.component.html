@@ -20,11 +20,12 @@
     </div>
   </div>
 
-  <p>You must enter the client details exactly as they're written on the case, including any mistakes.</p>
+  <p>You must enter the client details exactly as they’re written on the case, including any mistakes.
+     For example, if the client’s last name is Smyth but it has been spelled ‘Smith’, you should enter Smith</p>
 
   <ng-container *ngIf="(lastError$ | async)?.error.code === 'answers-not-matched-any-litigant' || allAnswerEmpty">
     <span id="" class="govuk-error-message">
-      <span class="govuk-visually-hidden">Error:</span> The client details must exactly match as they’re written on the case, including any mistakes.
+      <span class="govuk-visually-hidden">Error:</span> Enter the client details exactly as they’re written on the case, including any mistakes
     </span>
   </ng-container>
 

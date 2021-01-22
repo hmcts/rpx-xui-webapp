@@ -21,7 +21,7 @@ import taskRouter from './workAllocation/routes'
 
 export const app = express()
 
-const nonce = n();
+const nonce = n()
 
 /**
  * Add Reform Standard health checks.

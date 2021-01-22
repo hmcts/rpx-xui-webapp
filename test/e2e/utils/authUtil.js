@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer');
+const config = require('./config/config');
 
 class Auth {
 
@@ -57,7 +58,7 @@ class Auth {
         const browser = await puppeteer.launch(this.getPuppeteerLaunchOptions());
 
         const page = await browser.newPage();
-        await page.goto(this.getBaseUrl());
+        await page.goto(config.getBaseUrl());
         try {
             await page.waitForSelector('#username', { visible: true });
 
@@ -77,19 +78,11 @@ class Auth {
 
     getPuppeteerLaunchOptions() {
         const puppeteerOption = { ignoreHTTPSErrors: true, headless: true, args: [] };
-        if (!this.getBaseUrl().includes('manage-case.')) {
+        if (!config.getBaseUrl().includes('manage-case.')) {
             puppeteerOption.args.push('--proxy-server=http://proxyout.reform.hmcts.net:8080');
         }
 
         return puppeteerOption;
-    }
-     getBaseUrl() {
-        let baseurl = process.env.TEST_URL ? process.env.TEST_URL : 'https://manage-case.aat.platform.hmcts.net/';
-    
-        if (!baseurl.endsWith('/')) {
-            baseurl += '/';
-        }
-        return baseurl;
     }
 
 }

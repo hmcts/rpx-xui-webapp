@@ -7,10 +7,10 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 const axiosOptions = {
-    baseURL:"https://manage-case.aat.platform.hmcts.net"
+    baseURL: config.getBaseUrl()
 };
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = "https://manage-case.aat.platform.hmcts.net";
+axios.defaults.baseURL = config.getBaseUrl();
 const http = axios.create(axiosOptions);
 
 const requestInterceptor = (request) => {

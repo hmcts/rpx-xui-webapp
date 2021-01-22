@@ -37,10 +37,12 @@ class TcPage {
     async validateWorkbasketInputs() {
         let workBasketFields = this.workBasketInputsAPiRes ? this.workBasketInputsAPiRes : await this.getWorkbasketAPIRes();
         let WBfieldIdPresent;
-        for (var i = 0; i < workBasketFields.workbasketInputs.length; i++) {
-            WBfieldIdPresent = $(`#${workBasketFields.workbasketInputs[i].field.id}`);
-            await BrowserWaits.waitForElement(WBfieldIdPresent);
-            expect(await WBfieldIdPresent.isPresent(), `Case creation ${WBfieldIdPresent} field should be present`).to.be.true;
+        if(workBasketFields){
+            for (var i = 0; i < workBasketFields.workbasketInputs.length; i++) {
+                WBfieldIdPresent = $(`#${workBasketFields.workbasketInputs[i].field.id}`);
+                await BrowserWaits.waitForElement(WBfieldIdPresent);
+                expect(await WBfieldIdPresent.isPresent(), `Case creation ${WBfieldIdPresent} field should be present`).to.be.true;
+            }
         }
     }
 
@@ -57,10 +59,12 @@ class TcPage {
     async validateSearchInputs() {
         let searchInputFields = this.searchInputsAPiRes ? this.searchInputsAPiRes : await this.getSearchInputsAPIRes();
         let SIfieldIdPresent;
-        for (var i = 0; i < searchInputFields.searchInputs.length; i++) {
-            SIfieldIdPresent = $(`#${searchInputFields.searchInputs[i].field.id}`);
-            await BrowserWaits.waitForElement(SIfieldIdPresent);
-            expect(await SIfieldIdPresent.isPresent(), `Case creation ${SIfieldIdPresent} field should be present`).to.be.true;
+        if(searchInputFields){
+            for (var i = 0; i < searchInputFields.searchInputs.length; i++) {
+                SIfieldIdPresent = $(`#${searchInputFields.searchInputs[i].field.id}`);
+                await BrowserWaits.waitForElement(SIfieldIdPresent);
+                expect(await SIfieldIdPresent.isPresent(), `Case creation ${SIfieldIdPresent} field should be present`).to.be.true;
+            }
         }
     }
 
@@ -98,7 +102,7 @@ class TcPage {
 
     async wizardPageFormFieldValidations(pageNo) {
         let wizardPage = this.caseCreationApiRes ? this.caseCreationApiRes : await this.getCaseCreationpagesApiRes();
-        let wizardPage1 = wizardPage.wizard_pages[pageNo].wizard_page_fields;
+        if(wizardPage && pageNo) let wizardPage1 = wizardPage.wizard_pages[pageNo].wizard_page_fields;
         let fieldIdPresent;
         for (var i = 1; i < wizardPage1.length; i++) {
             let caseField = await this.caseCreationApiRes.case_fields.find(caseObj => caseObj.id == wizardPage1[i].case_field_id);
@@ -140,12 +144,15 @@ class TcPage {
         let count = await thLable.count();
         console.log("count:" + count);
         let caseResultsThTitle = [];
-        for (let i = index; i < count; i++) {
-            let thText = thLable.get(i).$$(".search-result-column-label");
-            let text = await thText.getText();
-            caseResultsThTitle.push(`${text}`);
+        if(index && count){
+            for (let i = index; i < count; i++) {
+                let thText = thLable.get(i).$$(".search-result-column-label");
+                let text = await thText.getText();
+                caseResultsThTitle.push(`${text}`);
+            }
+            return await caseResultsThTitle;
         }
-        return await caseResultsThTitle;
+        
     }
 
     async caseResultsThTitleApiRes(URL) {

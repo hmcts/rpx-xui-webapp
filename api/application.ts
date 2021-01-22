@@ -5,9 +5,10 @@ import * as helmet from 'helmet'
 import {getXuiNodeMiddleware} from './auth'
 import { getConfigValue, showFeature } from './configuration'
 import {
-    FEATURE_HELMET_ENABLED,
-    HELMET, PROTOCOL,
-    SESSION_SECRET,
+  FEATURE_HELMET_ENABLED,
+  HELMET,
+  PROTOCOL,
+  SESSION_SECRET,
 } from './configuration/references'
 import * as health from './health'
 import * as log4jui from './lib/log4jui'
@@ -20,11 +21,6 @@ import taskRouter from './workAllocation/routes'
 
 export const app = express()
 
-/**
- * Add Reform Standard health checks.
- */
-health.addReformHealthCheck(app)
-
 if (showFeature(FEATURE_HELMET_ENABLED)) {
     app.use(helmet(getConfigValue(HELMET)))
 }
@@ -33,6 +29,11 @@ app.use(cookieParser(getConfigValue(SESSION_SECRET)))
 
 // TODO: remove tunnel and configurations
 tunnel.init()
+/**
+ * Add Reform Standard health checks.
+ */
+health.addReformHealthCheck(app)
+
 app.use(getXuiNodeMiddleware())
 
 // applyProxy needs to be used before bodyParser

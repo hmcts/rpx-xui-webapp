@@ -102,29 +102,31 @@ class TcPage {
 
     async wizardPageFormFieldValidations(pageNo) {
         let wizardPage = this.caseCreationApiRes ? this.caseCreationApiRes : await this.getCaseCreationpagesApiRes();
-        if(wizardPage && pageNo) let wizardPage1 = wizardPage.wizard_pages[pageNo].wizard_page_fields;
+        let wizardPage1 = wizardPage.wizard_pages[pageNo].wizard_page_fields;
         let fieldIdPresent;
-        for (var i = 1; i < wizardPage1.length; i++) {
-            let caseField = await this.caseCreationApiRes.case_fields.find(caseObj => caseObj.id == wizardPage1[i].case_field_id);
-            console.log("type:::" + caseField.field_type.type);
-            if (wizardPage1[i].case_field_id != "Organisation1") {
-                if (caseField.field_type.type == "Complex") {
-                    if (caseField.field_type.complex_fields.length == 1) {
-                        if (caseField.field_type.complex_fields[0].field_type == "Text") {
-                            fieldIdPresent = $(`#${wizardPage1[i].case_field_id}`);
+
+        if(wizardPage1){
+            for (var i = 1; i < wizardPage1.length; i++) {
+                let caseField = await this.caseCreationApiRes.case_fields.find(caseObj => caseObj.id == wizardPage1[i].case_field_id);
+                if (wizardPage1[i].case_field_id != "Organisation1") {
+                    if (caseField.field_type.type == "Complex") {
+                        if (caseField.field_type.complex_fields.length == 1) {
+                            if (caseField.field_type.complex_fields[0].field_type == "Text") {
+                                fieldIdPresent = $(`#${wizardPage1[i].case_field_id}`);
+                            }
+                        } else {
+                            fieldIdPresent = $(`#${wizardPage1[i].case_field_id}_${wizardPage1[i].case_field_id}`);
                         }
                     } else {
-                        fieldIdPresent = $(`#${wizardPage1[i].case_field_id}_${wizardPage1[i].case_field_id}`);
+                        fieldIdPresent = $(`#${wizardPage1[i].case_field_id}`);
                     }
-                } else {
-                    fieldIdPresent = $(`#${wizardPage1[i].case_field_id}`);
+                    console.log("Againest api response fields validation::" + await fieldIdPresent);
+                    await BrowserWaits.waitForElement(fieldIdPresent);
+                    expect(await fieldIdPresent.isPresent(), `Case creation ${fieldIdPresent} field should be present`).to.be.true;
                 }
-                console.log("Againest api response fields validation::" + await fieldIdPresent);
-                await BrowserWaits.waitForElement(fieldIdPresent);
-                expect(await fieldIdPresent.isPresent(), `Case creation ${fieldIdPresent} field should be present`).to.be.true;
-            }
-
-        };
+            };
+        }
+        
     }
 
     async getCasesApiReq(reqURL) {
@@ -142,9 +144,10 @@ class TcPage {
         let thLable = $$("ccd-search-result>table>thead tr th");
         await BrowserWaits.waitForElement($("ccd-search-result>table>thead tr th"));
         let count = await thLable.count();
-        console.log("count:" + count);
+        console.log("count:" + count+ "index:::"+index);
         let caseResultsThTitle = [];
-        if(index && count){
+        if(count){
+            console.log("inside if count:" + count+ "index:::"+index);
             for (let i = index; i < count; i++) {
                 let thText = thLable.get(i).$$(".search-result-column-label");
                 let text = await thText.getText();

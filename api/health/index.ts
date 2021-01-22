@@ -12,7 +12,7 @@ import {
   SERVICES_IDAM_LOGIN_URL,
   SERVICES_TERMS_AND_CONDITIONS_URL
 } from '../configuration/references'
-import { redisHealth } from './redis.health';
+import { redisHealth } from './redis.health'
 
 export const checkServiceHealth = service => healthcheck.web(`${service}/health`, {
   deadline: 6000,

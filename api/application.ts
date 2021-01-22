@@ -2,7 +2,7 @@ import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
 import * as helmet from 'helmet'
-import * as nonce from 'nonce'
+import * as n from 'nonce'
 import { getXuiNodeMiddleware } from './auth'
 import { getConfigValue, showFeature } from './configuration'
 import {
@@ -20,6 +20,8 @@ import routes from './routes'
 import taskRouter from './workAllocation/routes'
 
 export const app = express()
+
+const nonce = n();
 
 /**
  * Add Reform Standard health checks.
@@ -51,6 +53,7 @@ app.use(helmet.contentSecurityPolicy({
             '\'self\'',
             '\'self\' data:',
             'www.google-analytics.com',
+            'www.googletagmanager.com',
             'stats.g.doubleclick.net',
             'ssl.gstatic.com',
             'www.gstatic.com',

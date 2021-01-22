@@ -1,8 +1,11 @@
  <div id="affirmation-section" class="govuk-form-group" [ngClass]="{'govuk-form-group--error': (validationErrors$ | async)?.message}">
     <div class="govuk-form-group">
-
       <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
-        <p>When you’re satisfied that all the information is as written on the case, you should tick to “sign”.</p>
+        <p>You should tick to 'sign' when:</p>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>you’re satisfied that all the information is accurate and matches what is written on the case</li>
+          <li>you have served notice of this change on every party to the claim (including the former legal representative)</li>
+        </ul>
         <div *ngIf="(validationErrors$ | async)?.message">
           <span id="tickbox-warning" class="govuk-error-message">
             <span class="govuk-visually-hidden">Error:</span>
@@ -16,6 +19,24 @@
                    (change)="onChangeAffirmation(this.$event)">
             <label class="govuk-label govuk-checkboxes__label" for="affirmation">
               I confirm all these details are accurate and match what is written on the case.
+            </label>
+          </div>
+        </div>
+      </fieldset>
+      <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
+        <div *ngIf="(validationErrors$ | async)?.message">
+          <span id="tickbox-warning" class="govuk-error-message">
+            <span class="govuk-visually-hidden">Error:</span>
+            Tick the box to confirm you’ve served notice of this change on every party to the claim and on the former legal representative
+          </span>
+        </div>
+        <div class="govuk-checkboxes">
+          <div class="govuk-checkboxes__item">
+            <input class="govuk-checkboxes__input" id="affirmation" name="affirmation" type="checkbox"
+                   [checked]="affirmationAgreed"
+                   (change)="onChangeAffirmation(this.$event)">
+            <label class="govuk-label govuk-checkboxes__label" for="affirmation">
+              I have served notice of this change on every party to the claim and on the former legal representative.
             </label>
           </div>
         </div>

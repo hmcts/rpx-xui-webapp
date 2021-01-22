@@ -12,12 +12,12 @@ export enum NoCErrorMap {
 
 export const CASE_REF_DEFAULT_VALIDATION_ERROR = {
   status: 400,
-  message: 'You must enter an online case reference number that exactly matches the case details'
+  message: 'Enter an online case reference number that exactly matches the case details'
 };
 
 export const CASE_REF_DEFAULT_LAST_ERROR: NocHttpError = {
   status: 400,
-  message: 'Enter a valid online case reference'
+  message: 'Enter an online case reference number that exactly matches the case details'
 };
 
 export const AFFIRMATION_DEFAULT_DISAGREE_ERROR = {

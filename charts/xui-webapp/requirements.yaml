@@ -1,8 +1,8 @@
 dependencies:
   - name: nodejs
-    version: 2.3.3
+    version: 2.3.4
     repository: '@hmctspublic'
   - name: redis
-    version: ~10.0.0
+    version: 10.6.18
     repository: "https://charts.bitnami.com/bitnami"
     condition: redis.enabled

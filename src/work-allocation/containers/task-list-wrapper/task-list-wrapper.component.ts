@@ -40,6 +40,8 @@ export class TaskListWrapperComponent implements OnInit {
     protected alertService: AlertService
   ) {}
 
+  public specificPage: string = '';
+
   private pTasks: Task[];
   public get tasks(): Task[] {
     return this.pTasks;
@@ -181,11 +183,15 @@ export class TaskListWrapperComponent implements OnInit {
    * action.
    */
   public onActionHandler(taskAction: InvokedTaskAction): void {
+    if (this.returnUrl.includes('manager')) {
+      this.specificPage = 'manager';
+    }
     const state = {
       returnUrl: this.returnUrl,
       showAssigneeColumn: taskAction.action.id !== TaskActionIds.ASSIGN
     };
-    this.router.navigate([`/tasks/${taskAction.task.id}/${taskAction.action.id}`], { state });
+    console.log(this.returnUrl);
+    this.router.navigate([`/tasks/${taskAction.task.id}/${taskAction.action.id}/${this.specificPage}`], { state });
   }
 
   // Do the actual load. This is separate as it's called from two methods.

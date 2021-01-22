@@ -40,6 +40,8 @@ app.use(helmet.contentSecurityPolicy({
         ],
         defaultSrc: [
             '\'self\'',
+            '\'unsafe-eval\'',
+            '\'unsafe-inline\'',
         ],
         fontSrc: [
             '\'self\' data:',
@@ -59,6 +61,7 @@ app.use(helmet.contentSecurityPolicy({
         scriptSrc: [
             '\'self\'',
             '\'unsafe-eval\'',
+            '\'unsafe-inline\'',
             'www.google-analytics.com',
             'www.googletagmanager.com',
             `'nonce-${nonce}'`,

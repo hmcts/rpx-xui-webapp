@@ -118,6 +118,7 @@
     "ngx-md": "^7.0.0",
     "ngx-pagination": "^3.2.1",
     "node-http-proxy-json": "^0.1.9",
+    "nonce": "^1.0.4",
     "p-iteration": "^1.1.7",
     "protractor-screenshot-utils": "^1.0.5",
     "rxjs": "^6.0.0",

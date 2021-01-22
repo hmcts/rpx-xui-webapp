@@ -2,6 +2,7 @@ import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
 import * as helmet from 'helmet'
+import * as nonce from 'nonce'
 import { getXuiNodeMiddleware } from './auth'
 import { getConfigValue, showFeature } from './configuration'
 import {
@@ -60,6 +61,7 @@ app.use(helmet.contentSecurityPolicy({
             '\'unsafe-eval\'',
             'www.google-analytics.com',
             'www.googletagmanager.com',
+            `'nonce-${nonce}'`,
         ],
         styleSrc: [
             '\'self\'',

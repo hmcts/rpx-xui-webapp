@@ -140,27 +140,39 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     this.setAppHeaderProperties(this.defaultTheme);
     const applicationThemes$ = this.featureToggleService.getValue<Theme[]>('mc-application-themes', this.getDefaultApplicationThemes());
     combineLatest([this.userDetails$, applicationThemes$]).subscribe(([userDetails, applicationThemes]) => {
-        if (userDetails.userInfo) {
-          const applicationTheme: Theme = this.getApplicationThemeForUser(applicationThemes, userDetails.userInfo.roles);
-          this.hideNavigationListener(this.store);
-          this.setAppHeaderProperties(applicationTheme);
-        }
+        this.setHeaderContent(userDetails, applicationThemes);
       });
 
     // Set up the active link whenever we detect that navigation has completed.
     this.router.events.subscribe(event => {
-      if (event instanceof NavigationEnd) {
-        this.setupActiveNavLink(this.navItems);
-      }
+      this.setNavigationEnd(event);
     });
+  }
+
+  public setHeaderContent(userDetails, applicationThemes) {
+    if (userDetails.userInfo) {
+      const applicationTheme: Theme = this.getApplicationThemeForUser(applicationThemes, userDetails.userInfo.roles);
+      this.hideNavigationListener(this.store);
+      this.setAppHeaderProperties(applicationTheme);
+    }
+  }
+
+  public setNavigationEnd(event) {
+    if (event instanceof NavigationEnd) {
+      this.setupActiveNavLink(this.navItems);
+    }
   }
 
   public getApplicationThemeForUser(applicationThemes: Theme[], userRoles: string[]): Theme {
     try {
         return this.getUsersTheme(userRoles, applicationThemes, this.defaultTheme);
     } catch (error) {
-      this.loggerService.error(error);
+      return this.logErrorAndReturnDefaultTheme(error);
     }
+  }
+
+  public logErrorAndReturnDefaultTheme(error): Theme {
+    this.loggerService.error(error);
     return this.defaultTheme;
   }
 

@@ -12,6 +12,7 @@ import {
   SERVICES_IDAM_LOGIN_URL,
   SERVICES_TERMS_AND_CONDITIONS_URL
 } from '../configuration/references'
+import { redisHealth } from './redis.health';
 
 export const checkServiceHealth = service => healthcheck.web(`${service}/health`, {
   deadline: 6000,
@@ -40,10 +41,10 @@ export const addReformHealthCheck = app => {
   }
 
   if (showFeature(FEATURE_REDIS_ENABLED)) {
-    config.checks = {
-      ...config.checks, ...{
-        redis: healthcheck.raw(() => {
-          return app.locals.redisClient.connected ? healthcheck.up() : healthcheck.down()
+    config.checks = {...config.checks, ...{
+        redis: healthcheck.raw(async () => {
+          const status = await redisHealth()
+          return status ? healthcheck.up() : healthcheck.down()
         }),
       },
     }

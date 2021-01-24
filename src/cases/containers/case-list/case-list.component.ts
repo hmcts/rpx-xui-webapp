@@ -181,13 +181,13 @@ export class CaseListComponent implements OnInit, OnDestroy {
             this.defaults = {
               jurisdiction_id: this.savedQueryParams.jurisdiction,
               case_type_id: this.savedQueryParams['case-type'],
-              state_id: this.savedQueryParams['case-state']
+              state_id: null
             };
           } else if (jurisdictions[0] && jurisdictions[0].id && jurisdictions[0].caseTypes[0] && jurisdictions[0].caseTypes[0].states[0]) {
             this.defaults = {
               jurisdiction_id: jurisdictions[0].id,
               case_type_id: jurisdictions[0].caseTypes[0].id,
-              state_id: jurisdictions[0].caseTypes[0].states[0].id
+              state_id: null
             };
           }
         }
@@ -273,10 +273,10 @@ export class CaseListComponent implements OnInit, OnDestroy {
     let caseTypeGroupFromLS = null;
     this.setCaseListFilterDefaults();
     if (this.selected) {
-      formGroupFromLS = this.selected.formGroup.value;
+      formGroupFromLS = this.selected.formGroup ? (this.selected.formGroup.value ? this.selected.formGroup.value : this.selected.formGroup) : null;
       jurisdictionFromLS = { id: this.selected.jurisdiction.id};
       caseTypeGroupFromLS = { id: this.selected.caseType.id };
-      caseStateGroupFromLS = { id: this.selected.caseState.id };
+      caseStateGroupFromLS = { id: this.selected.caseState ? this.selected.caseState.id : null };
     } else if (this.savedQueryParams) {
       this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
       formGroupFromLS = JSON.parse(localStorage.getItem('workbasket-filter-form-group-value'));
@@ -287,7 +287,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
     const metadataFieldsGroupFromLS = ['[CASE_REFERENCE]', '[CREATED_DATE]'];
 
-    if (formGroupFromLS && jurisdictionFromLS && caseTypeGroupFromLS && metadataFieldsGroupFromLS && caseStateGroupFromLS) {
+    if (jurisdictionFromLS && caseTypeGroupFromLS && caseStateGroupFromLS && metadataFieldsGroupFromLS) {
       return this.createEvent(jurisdictionFromLS, caseTypeGroupFromLS, caseStateGroupFromLS, metadataFieldsGroupFromLS,
                                 formGroupFromLS, this.page, this.sortParameters);
     } else {
@@ -309,7 +309,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
         caseState,
         metadataFields,
         formGroup: {
-          value: formGroupValues
+          value: (formGroupValues ? formGroupValues : {})
         },
         page,
         view: 'WORKBASKET'

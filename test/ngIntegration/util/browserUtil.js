@@ -1,5 +1,6 @@
 const { browser } = require("protractor");
 const jwt = require('jsonwebtoken');
+const MockApp = require('../../nodeMock/app');
 
 class BrowserUtil{
 
@@ -41,6 +42,25 @@ class BrowserUtil{
 
         await this.gotoHomePage();
     }
+
+    setUserDetailsWithRoles(rolesArray) {
+        MockApp.onGet('/api/user/details', (req, res) => {
+            res.send({
+                "canShareCases": true, "sessionTimeout": {
+                    "idleModalDisplayTime": 10, "pattern": "-solicitor", "totalIdleTime": 50
+                },
+                "userInfo": {
+                    "id": "41a90c39-d756-4eba-8e85-5b5bf56b31f5",
+                    "forename": "Luke",
+                    "surname": "Wilson",
+                    "email": "lukesuperuserxui@mailnesia.com",
+                    "active": true,
+                    "roles": rolesArray
+                }
+            });
+        });
+}
+
 
     async waitForLD(){
         let startTime = new Date();

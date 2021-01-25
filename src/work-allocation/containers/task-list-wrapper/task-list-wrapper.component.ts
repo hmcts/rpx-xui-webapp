@@ -185,7 +185,7 @@ export class TaskListWrapperComponent implements OnInit {
   public onActionHandler(taskAction: InvokedTaskAction): void {
     if (this.returnUrl.includes('manager')) {
       this.specificPage = 'manager';
-    } 
+    }
     const state = {
       returnUrl: this.returnUrl,
       showAssigneeColumn: taskAction.action.id !== TaskActionIds.ASSIGN

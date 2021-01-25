@@ -59,7 +59,7 @@ app.use(helmet.contentSecurityPolicy({
             'stats.g.doubleclick.net',
             'ssl.gstatic.com',
             'www.gstatic.com',
-            'https://fonts.gstatic.com'
+            'https://fonts.gstatic.com',
         ],
         mediaSrc: [
             '\'self\'',

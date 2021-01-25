@@ -38,19 +38,19 @@ app.use(helmet.contentSecurityPolicy({
     directives: {
         connectSrc: [
             '\'self\'',
-            'www.google-analytics.com',
+            'https://www.google-analytics.com',
         ],
         defaultSrc: [
             '\'self\'',
         ],
         fontSrc: [
             '\'self\' data:',
-            'fonts.gstatic.com',
+            'https://fonts.gstatic.com',
         ],
         imgSrc: [
             '\'self\'',
             '\'self\' data:',
-            'www.google-analytics.com',
+            'https://www.google-analytics.com',
             'www.googletagmanager.com',
             'stats.g.doubleclick.net',
             'ssl.gstatic.com',
@@ -63,15 +63,16 @@ app.use(helmet.contentSecurityPolicy({
             '\'self\'',
             '\'unsafe-eval\'',
             '\'unsafe-inline\'',
-            'www.google-analytics.com',
+            'https://www.google-analytics.com',
+            'https://ssl.google-analytics.com',
             'www.googletagmanager.com',
-            `'nonce-${nonce}'`,
+            `'nonce-${nonce()}'`,
         ],
         styleSrc: [
             '\'self\'',
-            '\'unsafe-inline\'',
-            'tagmanager.google.com',
-            'fonts.googleapis.com',
+            '\'unsafe-inline\' https://www.googletagmanager.com',
+            'http://tagmanager.google.com/',
+            'https://fonts.gstatic.com',
         ],
     },
 }))

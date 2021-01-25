@@ -38,7 +38,10 @@ app.use(helmet.contentSecurityPolicy({
     directives: {
         connectSrc: [
             '\'self\'',
-            'https://www.google-analytics.com',
+            '*.gov.uk',
+            'dc.services.visualstudio.com',
+            '*.launchdarkly.com',
+            'www.google-analytics.com',
         ],
         defaultSrc: [
             '\'self\'',
@@ -52,9 +55,11 @@ app.use(helmet.contentSecurityPolicy({
             '\'self\' data:',
             'https://www.google-analytics.com',
             'www.googletagmanager.com',
+            'https://raw.githubusercontent.com/hmcts/',
             'stats.g.doubleclick.net',
             'ssl.gstatic.com',
             'www.gstatic.com',
+            'https://fonts.gstatic.com'
         ],
         mediaSrc: [
             '\'self\'',
@@ -66,6 +71,7 @@ app.use(helmet.contentSecurityPolicy({
             'www.google-analytics.com',
             'ssl.google-analytics.com',
             'www.googletagmanager.com',
+            'az416426.vo.msecnd.net',
             `'nonce-${nonce()}'`,
         ],
         styleSrc: [

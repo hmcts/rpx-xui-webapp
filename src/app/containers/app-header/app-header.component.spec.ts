@@ -18,11 +18,6 @@ const storeMock = {
   }
 };
 
-/**
- * Serialised roles as returned from the Node layer.
- */
-// const SERIALISED_ROLES = 'j:["pui-organisation-manager", "caseworker-publiclaw", "caseworker-divorce-financialremedy-solicitor", "caseworker"]';
-
 const featureToggleServiceMock = {
   getValue: () => {
     return {

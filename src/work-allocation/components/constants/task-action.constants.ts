@@ -16,5 +16,9 @@ export const TASK_ACTION_CONSTANTS = {
   Unassign: {
     verb: TaskActionType.Unassign, successMessage: InfoMessage.UNASSIGNED_TASK,
     description: 'Unassign this task. This will send it back to the available task list for someone to pick up.'
+  },
+  UnassignNonManager: {
+    verb: TaskActionType.Unassign, successMessage: InfoMessage.UNASSIGNED_TASK_NOW_IN_AVAILABLE_TASKS,
+    description: 'Unassign this task. This will send it back to the available task list for someone to pick up.'
   }
 };

@@ -88,8 +88,18 @@ export const ROUTES: Routes = [
           },
           {
             path: 'unclaim',
-            component: TaskActionContainerComponent,
-            data: TaskActionConstants.Unassign
+            children: [
+              {
+                path: 'manager',
+                component: TaskActionContainerComponent,
+                data: TaskActionConstants.Unassign
+              },
+              {
+                path: '',
+                component: TaskActionContainerComponent,
+                data: TaskActionConstants.UnassignNonManager
+              }
+            ]
           }
         ]
       }

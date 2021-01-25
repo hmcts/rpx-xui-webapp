@@ -1,3 +1,5 @@
+import { NavigationExtras } from '@angular/router';
+import { Observable, of } from 'rxjs';
 import { ConfigConstants } from '../components/constants';
 import { TaskService, TaskSort } from '../enums';
 import { Caseworker, Location } from '../models/dtos';
@@ -87,4 +89,22 @@ export function getMockTaskServiceConfig(): TaskServiceConfig {
     defaultSortFieldName: 'dueDate',
     fields: getMockTaskFieldConfig()
   };
+}
+
+export class MockRouter {
+  private pUrl: string = 'bob';
+  public get url(): string {
+    return this.pUrl;
+  }
+  public set url(value: string) {
+    this.pUrl = value;
+  }
+  private readonly pNavigateCalls: any[] = [];
+  public get navigateCalls(): any[] {
+    return this.pNavigateCalls;
+  }
+  public navigate(commands: any[], extras?: NavigationExtras): Observable<boolean> {
+    this.pNavigateCalls.push({ commands, extras });
+    return of(true);
+  }
 }

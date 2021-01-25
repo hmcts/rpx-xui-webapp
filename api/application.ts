@@ -42,7 +42,6 @@ app.use(helmet.contentSecurityPolicy({
         ],
         defaultSrc: [
             '\'self\'',
-            '\'unsafe-inline\'',
         ],
         fontSrc: [
             '\'self\' data:',

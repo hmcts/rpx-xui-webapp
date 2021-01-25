@@ -65,6 +65,6 @@ export const applicationConfiguration = () => {
     servicesPrdApiPath: getConfigValue(SERVICES_PRD_API_URL),
     servicesS2sPath: getConfigValue(SERVICE_S2S_PATH),
     servicesTermsAndConditionsPath: getConfigValue(SERVICES_TERMS_AND_CONDITIONS_URL),
-    workAllocationTaskPath: getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH)
+    workAllocationTaskPath: getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH),
   }
 }

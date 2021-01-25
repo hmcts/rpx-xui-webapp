@@ -14,15 +14,15 @@ import { getMockTasks } from 'src/work-allocation/tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { TaskListWrapperComponent } from './task-list-wrapper.component';
 
-describe('TaskListWrapperComponent', () => {
+fdescribe('TaskListWrapperComponent', () => {
   let component: TaskListWrapperComponent;
   let fixture: ComponentFixture<TaskListWrapperComponent>;
-  const mockRef = jasmine.createSpyObj('mockRef', []);
+  const mockRef = jasmine.createSpyObj('mockRef', ['']);
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
   const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['searchTask', 'getTask']);
-  const mockInfoMessageCommService =  jasmine.createSpyObj('mockAlertService', []);
+  const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem']);
-  const mockAlertService =  jasmine.createSpyObj('mockAlertService', []);
+  const mockAlertService = jasmine.createSpyObj('mockAlertService', ['']);
   beforeEach((() => {
     TestBed.configureTestingModule({
       imports: [
@@ -53,6 +53,9 @@ describe('TaskListWrapperComponent', () => {
   });
 
   /* it('should handle an action', () => {
-    component.onActionHandler();
+    const exampleTask = getMockTasks()[0];
+    const exampleAction = exampleTask.actions[0];
+    const exampleTaskAction = { task: exampleTask, action: exampleAction };
+    component.onActionHandler(exampleTaskAction);
   }); */
 });

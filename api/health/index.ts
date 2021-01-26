@@ -1,6 +1,6 @@
+import * as HealthCheck from '@hmcts/nodejs-healthcheck'
 import {SESSION, xuiNode} from '@hmcts/rpx-xui-node-lib'
 import { getConfigValue, showFeature } from '../configuration'
-import * as HealthCheck from '@hmcts/nodejs-healthcheck'
 import {
   FEATURE_REDIS_ENABLED,
   FEATURE_TERMS_AND_CONDITIONS_ENABLED,

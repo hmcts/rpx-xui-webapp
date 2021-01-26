@@ -1,6 +1,5 @@
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
-import * as crypto from 'crypto'
 import * as express from 'express'
 import * as helmet from 'helmet'
 import { getXuiNodeMiddleware } from './auth'
@@ -20,8 +19,6 @@ import routes from './routes'
 import taskRouter from './workAllocation/routes'
 
 export const app = express()
-
-const nonce = crypto.randomBytes(16).toString('base64')
 
 /**
  * Add Reform Standard health checks.
@@ -68,7 +65,7 @@ app.use(helmet.contentSecurityPolicy({
         scriptSrc: [
             '\'self\'',
             '\'unsafe-eval\'',
-            `\'nonce-${nonce}\'`,
+            `\'nonce-helloworld\'`,
             'www.google-analytics.com',
             'ssl.google-analytics.com',
             'www.googletagmanager.com',

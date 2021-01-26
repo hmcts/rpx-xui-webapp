@@ -125,4 +125,8 @@ export class AppConfig extends AbstractAppConfig {
   public getCacheTimeOut(): number {
     return 45000;
   }
+
+  public getWorkAllocationApiUrl(): string {
+    return this.config.work_allocation_api_url;
+  }
 }

@@ -1,7 +1,6 @@
-import {app} from '../application'
 import {SESSION, xuiNode} from '@hmcts/rpx-xui-node-lib'
-import * as healthcheck from '@hmcts/nodejs-healthcheck'
 import { getConfigValue, showFeature } from '../configuration'
+import * as HealthCheck from '@hmcts/nodejs-healthcheck'
 import {
   FEATURE_REDIS_ENABLED,
   FEATURE_TERMS_AND_CONDITIONS_ENABLED,
@@ -14,12 +13,11 @@ import {
   SERVICES_IDAM_LOGIN_URL,
   SERVICES_TERMS_AND_CONDITIONS_URL
 } from '../configuration/references'
-import { redisHealth } from './redis.health'
 import * as log4jui from '../lib/log4jui'
 import {JUILogger} from '../lib/models'
 const logger: JUILogger = log4jui.getLogger('RedisHealth')
 
-export const checkServiceHealth = service => healthcheck.web(`${service}/health`, {
+export const checkServiceHealth = service => HealthCheck.web(`${service}/health`, {
   deadline: 6000,
   timeout: 6000,
 })
@@ -48,8 +46,8 @@ export const addReformHealthCheck = app => {
     xuiNode.on(SESSION.EVENT.REDIS_CLIENT_READY, (redisClient: any) => {
       console.log('REDIS EVENT FIRED!!')
       config.checks = {...config.checks, ...{
-          redis: healthcheck.raw(() => {
-            return redisClient.connected ? healthcheck.up() : healthcheck.down()
+          redis: HealthCheck.raw(() => {
+            return redisClient.connected ? HealthCheck.up() : HealthCheck.down()
           }),
         },
       }
@@ -59,5 +57,5 @@ export const addReformHealthCheck = app => {
     })
   }
   console.log('config', config)
-  healthcheck.addTo(app, config)
+  HealthCheck.addTo(app, config)
 }

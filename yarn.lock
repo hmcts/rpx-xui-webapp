@@ -402,9 +402,9 @@
     "@hapi/hoek" "^9.0.0"
 
 "@hmcts/ccd-case-ui-toolkit@2.67.9-ie-textbox-expand-issue":
-  version "2.67.6-ie-textbox-expand-issue"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.67.6-ie-textbox-expand-issue.tgz#9db00f78974c73efa5c9378c75fb4a7468dfea98"
-  integrity sha512-FXJ/q4rPaCjeHoHYhSmydkjlcevgildiZnnYPq0OlctO7dWUOVsYyY1f03DeHANb7tUWHVhgcswq9ILYkkuLAQ==
+  version "2.67.9-ie-textbox-expand-issue"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.67.9-ie-textbox-expand-issue.tgz#7c070099b5923e2c17fc0c13e9646bcde97ec377"
+  integrity sha512-A5eAgRR0OsaayM6j2Qw2oLtIuLnkMcTKdeNTucQ/S9Kzgm31yGa/ZxO2YKXUryJLdh/00YPMUlsiV3a/aIBHPQ==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"

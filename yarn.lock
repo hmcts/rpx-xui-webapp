@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@2.67.6-ie-textbox-expand-issue":
+"@hmcts/ccd-case-ui-toolkit@2.67.9-ie-textbox-expand-issue":
   version "2.67.6-ie-textbox-expand-issue"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.67.5-dynamiclist-fix-in-complex.tgz#4732b2d41e1a24ab0fb6e40b9f419e0eca77abc0"
-  integrity sha512-1wTT+HXTZEj9i1lDCHi3byBKhWqg1rk7j+iFABWkX7WvXwca6/pE8vVqhvF5HikC7BJegUWhgjz8mcAU2xRUSA==
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.67.6-ie-textbox-expand-issue.tgz#9db00f78974c73efa5c9378c75fb4a7468dfea98"
+  integrity sha512-FXJ/q4rPaCjeHoHYhSmydkjlcevgildiZnnYPq0OlctO7dWUOVsYyY1f03DeHANb7tUWHVhgcswq9ILYkkuLAQ==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"

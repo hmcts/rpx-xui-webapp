@@ -63,29 +63,29 @@ describe('CCD Endpoints',  () => {
     //     }
     // }
 
-    it('Case creation drafts request for probate', async  () => {
-        await Request.withSession(userName, password);
-        const createCaseResponse = await Request.get(getSolicitorCreateUrl('GrantOfRepresentation', 'solicitorCreateApplication'), null);
+    // it('Case creation drafts request for probate', async  () => {
+    //     await Request.withSession(userName, password);
+    //     const createCaseResponse = await Request.get(getSolicitorCreateUrl('GrantOfRepresentation', 'solicitorCreateApplication'), null);
 
-        const draftsReqBody = {
-            data: {},
-            event: {
-                id: 'solicitorCreateApplication',
-                summary: '',
-                description: ''
-            },
-            event_token: createCaseResponse.event_token,
-            ignore_warning: false
-        };
+    //     const draftsReqBody = {
+    //         data: {},
+    //         event: {
+    //             id: 'solicitorCreateApplication',
+    //             summary: '',
+    //             description: ''
+    //         },
+    //         event_token: createCaseResponse.event_token,
+    //         ignore_warning: false
+    //     };
 
-        const xsrfToken = await getXSRFToken(userName, password);
-        const headers = {
-            experimental: true,
-            'X-XSRF-TOKEN': xsrfToken
-        };
-        const response = await Request.post('data/internal/case-types/GrantOfRepresentation/drafts/', draftsReqBody, headers);
-        expect(response.status).to.equal(201, 'drafts url request failed GrantOfRepresentation');
-    });
+    //     const xsrfToken = await getXSRFToken(userName, password);
+    //     const headers = {
+    //         experimental: true,
+    //         'X-XSRF-TOKEN': xsrfToken
+    //     };
+    //     const response = await Request.post('data/case-types/GrantOfRepresentation/drafts/', draftsReqBody, headers);
+    //     expect(response.status).to.equal(201, 'drafts url request failed GrantOfRepresentation');
+    // });
 
     it('user profile request', async () => {
         await Request.withSession(userName, password);

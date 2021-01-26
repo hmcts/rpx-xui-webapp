@@ -3,6 +3,7 @@
 const { SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants');
 
 var BrowserWaits = require('../../support/customWaits');
+const CucumberReportLogger = require('../../support/reportLogger');
 
 function loginLogoutObjects() {
 
@@ -63,6 +64,7 @@ function loginLogoutObjects() {
 
   this.loginWithCredentials = async function (username, password) {
     await BrowserWaits.waitForElement(this.emailAddress);
+    CucumberReportLogger.AddMessage("IDAM URL :" + await browser.getCurrentUrl());
     await this.enterUrEmail(username);
     await this.enterPassword(password);
     await this.clickSignIn();

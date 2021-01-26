@@ -6,6 +6,7 @@ const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../sup
 const config = require('../../config/conf.js');
 const EC = protractor.ExpectedConditions;
 const BrowserWaits = require("../../support/customWaits");
+const CucumberReportLogger = require('../../support/reportLogger');
 
 async function waitForElement(el) {
   await browser.wait(result => {
@@ -86,6 +87,7 @@ defineSupportCode(function ({ Given, When, Then }) {
   When('I navigate to Expert UI Url', async function () {
     await browser.driver.manage()
       .deleteAllCookies();
+    CucumberReportLogger.AddMessage("App base url : " + config.config.baseUrl);
     await browser.get(config.config.baseUrl);
 
     const world = this;

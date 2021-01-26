@@ -42,24 +42,25 @@ app.use(helmet.contentSecurityPolicy({
             'dc.services.visualstudio.com',
             '*.launchdarkly.com',
             'www.google-analytics.com',
+            'stats.g.doubleclick.net',
         ],
         defaultSrc: [
             '\'self\'',
         ],
         fontSrc: [
             '\'self\' data:',
-            'https://fonts.gstatic.com',
+            'fonts.gstatic.com',
         ],
         imgSrc: [
             '\'self\'',
             '\'self\' data:',
-            'https://www.google-analytics.com',
+            'www.google-analytics.com',
             'www.googletagmanager.com',
-            'https://raw.githubusercontent.com/hmcts/',
+            'raw.githubusercontent.com/hmcts/',
             'stats.g.doubleclick.net',
             'ssl.gstatic.com',
             'www.gstatic.com',
-            'https://fonts.gstatic.com',
+            'fonts.gstatic.com',
         ],
         mediaSrc: [
             '\'self\'',
@@ -67,7 +68,6 @@ app.use(helmet.contentSecurityPolicy({
         scriptSrc: [
             '\'self\'',
             '\'unsafe-eval\'',
-            '\'unsafe-inline\'',
             'www.google-analytics.com',
             'ssl.google-analytics.com',
             'www.googletagmanager.com',
@@ -76,9 +76,9 @@ app.use(helmet.contentSecurityPolicy({
         ],
         styleSrc: [
             '\'self\'',
-            '\'unsafe-inline\' https://www.googletagmanager.com',
-            'http://tagmanager.google.com/',
-            'https://fonts.gstatic.com',
+            '\'unsafe-inline\'',
+            'tagmanager.google.com/',
+            'fonts.gstatic.com',
         ],
     },
 }))

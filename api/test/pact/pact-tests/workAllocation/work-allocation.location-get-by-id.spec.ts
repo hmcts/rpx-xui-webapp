@@ -2,11 +2,11 @@ import { Pact } from '@pact-foundation/pact';
 import { expect } from 'chai';
 import * as getPort from 'get-port';
 import * as path from 'path';
+import { EnhancedRequest } from '../../../../lib/models';
+import { handleLocationGet } from '../../../../workAllocation/locationService';
+import { SERVER_ERROR } from '../../constants/work-allocation/behaviours.spec';
+import { LOCATIONS } from '../../constants/work-allocation/locations.spec';
 
-import { EnhancedRequest } from '../../../lib/models';
-import { handleLocationGet } from '../../../workAllocation/locationService';
-import { SERVER_ERROR } from '../constants/work-allocation/behaviours.spec';
-import { LOCATIONS } from './../constants/work-allocation/locations.spec';
 
 describe('Work Allocation Location API', () => {
 
@@ -18,7 +18,7 @@ describe('Work Allocation Location API', () => {
     provider = new Pact({
       consumer: 'xui_work_allocation_location_get_by_id',
       provider: 'WorkAllocation_api_location', // TODO: Need to clarify naming conventions here, as we're using different ones.
-      dir: path.resolve(__dirname, '../pacts'),
+      dir: path.resolve(__dirname, '../../pacts'),
       log: path.resolve(__dirname, '../logs', 'work-allocation.log'),
       logLevel: 'info',
       port: mockServerPort,

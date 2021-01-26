@@ -50,17 +50,6 @@ const config = {
       maxInstances: 1
     },
 
-  {
-        browserName: 'internet explorer',
-        platform: 'Windows 10',
-        version: 'latest',
-        name: 'IE-TEST',
-        tunnelIdentifier: 'reformtunnel',
-        extendedDebugging: true,
-        sharedTestFiles: false,
-        maxInstances: 1
-
-    },
 
     {
       browserName: 'safari',

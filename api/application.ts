@@ -72,7 +72,7 @@ app.use(helmet.contentSecurityPolicy({
             'ssl.google-analytics.com',
             'www.googletagmanager.com',
             'az416426.vo.msecnd.net',
-            `'nonce-${nonce()}'`,
+            `'nonce-helloworld'`,
         ],
         styleSrc: [
             '\'self\'',

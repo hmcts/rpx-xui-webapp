@@ -1,5 +1,6 @@
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
+import * as crypto from 'crypto'
 import * as express from 'express'
 import * as helmet from 'helmet'
 import { getXuiNodeMiddleware } from './auth'
@@ -9,7 +10,6 @@ import {
     HELMET, PROTOCOL,
     SESSION_SECRET,
 } from './configuration/references'
-import * as crypto from 'crypto'
 import * as health from './health'
 import * as log4jui from './lib/log4jui'
 import { JUILogger } from './lib/models'
@@ -21,7 +21,7 @@ import taskRouter from './workAllocation/routes'
 
 export const app = express()
 
-const nonce = crypto.randomBytes(16).toString('base64');
+const nonce = crypto.randomBytes(16).toString('base64')
 
 /**
  * Add Reform Standard health checks.

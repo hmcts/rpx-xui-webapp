@@ -2,10 +2,10 @@ import { Pact } from '@pact-foundation/pact';
 import { assert } from 'chai';
 import * as getPort from 'get-port';
 import * as path from 'path';
-import { EnhancedRequest } from '../../../../lib/models';
-import { handleCaseWorkerForLocationAndService } from '../../../../workAllocation/caseWorkerService';
-import { CASEWORKERS_BY_SERVICE } from '../../constants/work-allocation/caseworkers.spec';
-import { SERVICES } from '../../constants/work-allocation/services.spec';
+import { EnhancedRequest } from '../../../lib/models';
+import { handleCaseWorkerForLocationAndService } from '../../../workAllocation/caseWorkerService';
+import { CASEWORKERS_BY_SERVICE } from '../constants/work-allocation/caseworkers.spec';
+import { SERVICES } from '../constants/work-allocation/services.spec';
 
 describe('Work Allocation for service Caseworker API', () => {
 

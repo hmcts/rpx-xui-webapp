@@ -68,11 +68,11 @@ app.use(helmet.contentSecurityPolicy({
         scriptSrc: [
             '\'self\'',
             '\'unsafe-eval\'',
+            `\'nonce-${nonce}\'`,
             'www.google-analytics.com',
             'ssl.google-analytics.com',
             'www.googletagmanager.com',
             'az416426.vo.msecnd.net',
-            `'nonce-${nonce}'`,
         ],
         styleSrc: [
             '\'self\'',

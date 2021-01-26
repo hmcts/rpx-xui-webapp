@@ -18,13 +18,18 @@ module.exports = {
     },
     post: {
         '/workallocation/task/' : (req,res) => {
-            res.send(workAllocationMockData.getAvailableTasks(10));
+            res.send(workAllocationMockData.getAvailableTasks(1));
         },
         '/workallocation/task/:taskId/assign':  (req,res) => {
             res.send();
         },
         '/workallocation/task/:taskId/claim' : (req,res) => {
             res.status(404).send();
+        },
+        '/workallocation/task/:ccdId/complete': (req,res) => {
+            res.send();
         }
+
+       s 
     } 
 }

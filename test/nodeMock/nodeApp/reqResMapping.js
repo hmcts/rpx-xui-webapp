@@ -26,8 +26,11 @@ module.exports = {
             res.send({ "healthState": true });
         }, 
         '/data/internal/profile': (req, res) => {
-            res.send(idamProfile);
+            res.send();
         },
+        '/api/addresses': (req,res) => {
+            res.send(nodeAppMockData.getAddresses());
+        }
     },
     post: {
         

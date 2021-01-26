@@ -1,7 +1,7 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { PaginationMetadata, SearchResultViewItem, WindowService } from '@hmcts/ccd-case-ui-toolkit';
+import { AlertService, PaginationMetadata, SearchResultViewItem, WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
@@ -35,6 +35,7 @@ describe('CaseListComponent', () => {
   const mockAppConfig = jasmine.createSpyObj('AppConfig', ['getPaginationPageSize']);
   const mockWindowService = jasmine.createSpyObj('WindowService', ['removeLocalStorage']);
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['getValue', 'isEnabled']);
+  const mockAlertService = jasmine.createSpyObj('alertService', ['error']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -56,6 +57,10 @@ describe('CaseListComponent', () => {
         {
           provide: FeatureToggleService,
           useValue: mockFeatureToggleService
+        },
+        {
+          provide: AlertService,
+          useValue: mockAlertService
         },
         provideMockStore(),
       ]

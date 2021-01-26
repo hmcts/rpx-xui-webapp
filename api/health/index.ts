@@ -1,3 +1,5 @@
+import {app} from '../application'
+import {SESSION, xuiNode} from '@hmcts/rpx-xui-node-lib'
 import * as healthcheck from '@hmcts/nodejs-healthcheck'
 import { getConfigValue, showFeature } from '../configuration'
 import {
@@ -13,6 +15,9 @@ import {
   SERVICES_TERMS_AND_CONDITIONS_URL
 } from '../configuration/references'
 import { redisHealth } from './redis.health'
+import * as log4jui from '../lib/log4jui'
+import {JUILogger} from '../lib/models'
+const logger: JUILogger = log4jui.getLogger('RedisHealth')
 
 export const checkServiceHealth = service => healthcheck.web(`${service}/health`, {
   deadline: 6000,
@@ -40,14 +45,30 @@ export const addReformHealthCheck = app => {
     }
   }
 
+  // if (showFeature(FEATURE_REDIS_ENABLED)) {
+  //   config.checks = {...config.checks, ...{
+  //       redis: healthcheck.raw(async () => {
+  //         const status = await redisHealth()
+  //         return status ? healthcheck.up() : healthcheck.down()
+  //       }),
+  //     },
+  //   }
+  // }
+
   if (showFeature(FEATURE_REDIS_ENABLED)) {
-    config.checks = {...config.checks, ...{
-        redis: healthcheck.raw(async () => {
-          const status = await redisHealth()
-          return status ? healthcheck.up() : healthcheck.down()
-        }),
-      },
-    }
+    xuiNode.on(SESSION.EVENT.REDIS_CLIENT_READY, (redisClient: any) => {
+      console.log('REDIS EVENT FIRED!!')
+      app.locals.redisClient = redisClient
+      config.checks = {...config.checks, ...{
+          redis: healthcheck.raw(() => {
+            return app.locals.redisClient.connected ? healthcheck.up() : healthcheck.down()
+          }),
+        },
+      }
+    })
+    xuiNode.on(SESSION.EVENT.REDIS_CLIENT_ERROR, (error: any) => {
+      logger.error('redis Client error is', error)
+    })
   }
 
   console.log('config', config)

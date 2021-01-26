@@ -44,24 +44,12 @@ export const addReformHealthCheck = app => {
       },
     }
   }
-
-  // if (showFeature(FEATURE_REDIS_ENABLED)) {
-  //   config.checks = {...config.checks, ...{
-  //       redis: healthcheck.raw(async () => {
-  //         const status = await redisHealth()
-  //         return status ? healthcheck.up() : healthcheck.down()
-  //       }),
-  //     },
-  //   }
-  // }
-
   if (showFeature(FEATURE_REDIS_ENABLED)) {
     xuiNode.on(SESSION.EVENT.REDIS_CLIENT_READY, (redisClient: any) => {
       console.log('REDIS EVENT FIRED!!')
-      app.locals.redisClient = redisClient
       config.checks = {...config.checks, ...{
           redis: healthcheck.raw(() => {
-            return app.locals.redisClient.connected ? healthcheck.up() : healthcheck.down()
+            return redisClient.connected ? healthcheck.up() : healthcheck.down()
           }),
         },
       }
@@ -70,8 +58,6 @@ export const addReformHealthCheck = app => {
       logger.error('redis Client error is', error)
     })
   }
-
   console.log('config', config)
-
   healthcheck.addTo(app, config)
 }

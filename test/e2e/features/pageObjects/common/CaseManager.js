@@ -71,8 +71,21 @@ class CaseManager {
         await this.createCaseStartPage.selectEvent(event);
 
         var thisPageUrl = await browser.getCurrentUrl();
-        await this.createCaseStartPage.clickStartButton();
-        await BrowserWaits.waitForPageNavigation(thisPageUrl)
+
+        let startCasePageRetry = 0;
+        let isCaseStartPageDisplayed = false;
+        while (startCasePageRetry < 3 && !isCaseStartPageDisplayed){
+            try{
+                await this.createCaseStartPage.clickStartButton();
+                await BrowserWaits.waitForPageNavigation(thisPageUrl);
+                isCaseStartPageDisplayed = true;
+            }
+            catch(err){
+                cucumberReporter.AddMessage("Case start page not displayed in  30sec. Retrying again");  
+                startCasePageRetry++; 
+            }
+        }
+        
    } 
 
     async createCase( caseData,isAccessibilityTest) {

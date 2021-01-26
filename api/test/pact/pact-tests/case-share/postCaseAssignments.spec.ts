@@ -15,12 +15,12 @@ describe('Post Cases from CaseAssignment Api', () => {
   before(async () => {
     mockServerPort = await getPort()
     provider = new Pact({
-      consumer: 'XUIWebApp',
+      consumer: 'xui_webApp',
       log: path.resolve(process.cwd(), "api/test/pact/logs", "mockserver-integration.log"),
       dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
       logLevel: 'info',
       port: mockServerPort,
-      provider: 'CaseShare_api___', //TODO TBD
+      provider: 'acc_manageCaseAssignment',
       spec: 2,
       pactfileWriteMode: "merge"
     })
@@ -34,20 +34,20 @@ describe('Post Cases from CaseAssignment Api', () => {
   afterEach(() => provider.verify())
 
   let mockRequest = {
-    "case_type_id": somethingLike("ecb5edf4-2f5f-4031-a0ec"),
-    "case_id":somethingLike("1583841721773828"),
-    "assignee_id":somethingLike("PROBATE")
+    "case_type_id": "PROBATE" ,
+    "case_id": "1583841721773828" ,
+    "assignee_id": "0a5874a4-3f38-4bbd-ba4c"
   }
 
   let mockResponse:AssignAccessWithinOrganisationDto ={
-      status_message:somethingLike("Role [Defendant] from the organisation policy successfully assigned to the assignee.")
+      status_message:somethingLike("Roles Role1,Role2 from the organisation policies successfully assigned to the assignee.")
   }
 
   describe('When Cases are assigned to Users', () => {
     before(done =>{
       const interaction = {
-        state: 'Then a status message is returned',
-        uponReceiving: 'A Request for cases to be assigned',
+        state: 'A Case and an assignee exists',
+        uponReceiving: 'A request for that case to be assigned',
         withRequest: {
           method: "POST",
           path: "/case-assignments",
@@ -55,16 +55,15 @@ describe('Post Cases from CaseAssignment Api', () => {
             "Content-Type": "application/json",
             "ServiceAuthorization": "ServiceAuthToken",
             "Authorization": "Bearer some-access-token"
-          }
+          },
+          body: mockRequest
         },
         willRespondWith: {
           status: 201,
           headers: {
             "Content-Type": "application/json"
           },
-          body: {
-            mockResponse
-          }
+          body: mockResponse
         }
       }
       // @ts-ignore
@@ -92,5 +91,5 @@ describe('Post Cases from CaseAssignment Api', () => {
 })
 
 function assertCaseAssignmentResponses(response:AssignAccessWithinOrganisationDto){
-  expect(response.status_message).to.be.equal('Role [Defendant] from the organisation policy successfully assigned to the assignee');
+  expect(response.status_message).to.be.equal('Roles Role1,Role2 from the organisation policies successfully assigned to the assignee.');
 }

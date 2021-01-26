@@ -15,12 +15,12 @@ describe('Get Cases from CaseAssignment Api', () => {
   before(async () => {
     mockServerPort = await getPort()
     provider = new Pact({
-      consumer: 'XUIWebApp',
+      consumer: 'xui_webApp',
       log: path.resolve(process.cwd(), "api/test/pact/logs", "mockserver-integration.log"),
       dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
       logLevel: 'info',
       port: mockServerPort,
-      provider: 'CaseShare_api___', //TODO TBD
+      provider: 'acc_manageCaseAssignment',
       spec: 2,
       pactfileWriteMode: "merge"
     })
@@ -58,13 +58,12 @@ describe('Get Cases from CaseAssignment Api', () => {
   describe('when requested to get case assignments for array of CaseIds ', () => {
     before(done =>{
       const interaction = {
-        state: 'all the cases are retrieved',
-        uponReceiving: 'a request for cases',
+        state: 'Case assignments exist for case Ids',
+        uponReceiving: 'a request for those cases',
         withRequest: {
           method: "GET",
           path: "/case-assignments",
-          //query:"case_ids=100&case_ids=200",
-          query:"case_ids=100,200",
+          query:"case_ids=12345678,87654321",
           headers: {
             "Content-Type": "application/json",
             "ServiceAuthorization": "ServiceAuthToken",
@@ -76,9 +75,7 @@ describe('Get Cases from CaseAssignment Api', () => {
           headers: {
             "Content-Type": "application/json"
           },
-          body: {
-            caseAssignmentResponseDto
-          }
+          body: caseAssignmentResponseDto
         }
       }
       // @ts-ignore
@@ -87,9 +84,9 @@ describe('Get Cases from CaseAssignment Api', () => {
       })
     })
 
-    it('Returns CaseAssingments Response', async () => {
+    it('Returns CaseAssignments Response', async () => {
 
-      const taskUrl:string  = `${provider.mockService.baseUrl}/case-assignments?case_ids=100,200`;
+      const taskUrl:string  = `${provider.mockService.baseUrl}/case-assignments?case_ids=12345678,87654321`;
       const resp =  getCaseAssignments(taskUrl)
         resp.then((axResponse) => {
             const responseDto:CaseAssignmentResponseDto = <CaseAssignmentResponseDto> axResponse.data

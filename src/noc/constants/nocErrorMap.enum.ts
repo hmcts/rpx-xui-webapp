@@ -1,5 +1,3 @@
-import { NocHttpError } from '../models';
-
 export enum NoCErrorMap {
   ANSWERS_NOT_IDENTIFY_LITIGANT = 'answers-not-identify-litigant',
   HAS_REPRESENTED = 'has-represented',
@@ -11,16 +9,16 @@ export enum NoCErrorMap {
 }
 
 export const CASE_REF_DEFAULT_VALIDATION_ERROR = {
-  status: 400,
-  message: 'Enter an online case reference number that exactly matches the case details'
-};
-
-export const CASE_REF_DEFAULT_LAST_ERROR: NocHttpError = {
-  status: 400,
+  code: 'CASE_REF_DEFAULT_VALIDATION_ERROR',
   message: 'Enter an online case reference number that exactly matches the case details'
 };
 
 export const AFFIRMATION_DEFAULT_DISAGREE_ERROR = {
-  status: 430,
-  message: 'You must confirm the information you have provided'
+  code: 'AFFIRMATION_DEFAULT_DISAGREE_ERROR',
+  message: 'Tick the box to confirm all the information is accurate and matches what is written on the case'
+};
+
+export const AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR = {
+  code: 'AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR',
+  message: 'Tick the box to confirm you’ve served notice of this change on every party to the claim and on the former legal representative'
 };

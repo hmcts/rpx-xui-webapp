@@ -1,6 +1,4 @@
 import {
-  AFFIRMATION_DEFAULT_DISAGREE_ERROR,
-  CASE_REF_DEFAULT_LAST_ERROR,
   CASE_REF_DEFAULT_VALIDATION_ERROR
 } from '../../constants/nocErrorMap.enum';
 import { NocQuestion, NocState, NocStateData } from '../../models';
@@ -14,6 +12,7 @@ export const initialState: NocStateData = {
   answers: null,
   reason: null,
   affirmationAgreed: false,
+  notifyEveryParty: false,
   options: null,
   validationErrors: null
 };
@@ -37,17 +36,15 @@ export function nocReducer(currentState = initialState, action: fromActions.NocA
         ...currentState,
         state: NocState.CASE_REF_VALIDATION_FAILURE,
         validationErrors: CASE_REF_DEFAULT_VALIDATION_ERROR,
-        lastError: CASE_REF_DEFAULT_LAST_ERROR
       };
     }
     case fromActions.SET_CASE_REF_SUBMISSION_FAILURE: {
       let nextState: NocState;
-      let validationErrors = action.payload;
-      let lastError = action.payload;
+      let validationErrors;
+      const lastError = action.payload;
       if (action.payload.error && (action.payload.error.code === 'case-id-invalid' || action.payload.error.code === 'case-not-found')) {
         nextState = NocState.CASE_REF_VALIDATION_FAILURE;
         validationErrors = CASE_REF_DEFAULT_VALIDATION_ERROR;
-        lastError = CASE_REF_DEFAULT_LAST_ERROR;
       } else {
         nextState = NocState.CASE_REF_SUBMISSION_FAILURE;
       }
@@ -109,11 +106,16 @@ export function nocReducer(currentState = initialState, action: fromActions.NocA
         affirmationAgreed: action.payload
       };
     }
-    case fromActions.SET_AFFIRMATION_DISAGREE_ERROR: {
+    case fromActions.SET_NOTIFY_EVERY_PARTY: {
       return {
         ...currentState,
-        affirmationAgreed: false,
-        validationErrors: AFFIRMATION_DEFAULT_DISAGREE_ERROR
+        notifyEveryParty: action.payload
+      };
+    }
+    case fromActions.SET_AFFIRMATION_ERROR: {
+      return {
+        ...currentState,
+        validationErrors: action.payload
       };
     }
     case fromActions.SET_SUBMISSION_SUCCESS_APPROVED: {
@@ -159,4 +161,5 @@ export const getValidationErrors = (nocState) => nocState.validationErrors;
 export const getQuestions = (nocState) => nocState.questions;
 export const getAnswers = (nocState) => nocState.answers;
 export const getAffirmationAgreed = (nocState) => nocState.affirmationAgreed;
+export const getNotifyEveryParty = (nocState) => nocState.notifyEveryParty;
 export const getCaseReference = (nocState) => nocState.caseReference;

@@ -7,7 +7,9 @@
       <div class="govuk-error-summary__body">
         <ul class="govuk-list govuk-error-summary__list">
           <li>
-            Enter the details in the correct format
+            <span id="error-answers-not-correct" class="govuk-error-message">
+              Enter the client details exactly as they’re written on the case, including any mistakes
+            </span>
           </li>
         </ul>
       </div>
@@ -24,8 +26,8 @@
      example, if the client’s last name is Smyth but it has been spelled ‘Smith’, you should enter Smith.</p>
 
   <ng-container *ngIf="(lastError$ | async)?.error.code === 'answers-not-matched-any-litigant' || allAnswerEmpty">
-    <span id="" class="govuk-error-message">
-      <span class="govuk-visually-hidden">Error:</span>Enter the client details exactly as they’re written on the case, including any mistakes
+    <span id="error-answers-not-matched" class="govuk-error-message">
+      Enter the client details exactly as they’re written on the case, including any mistakes
     </span>
   </ng-container>
 

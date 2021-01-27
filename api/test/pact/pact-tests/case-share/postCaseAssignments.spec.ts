@@ -46,7 +46,7 @@ describe('Post Cases from CaseAssignment Api', () => {
   describe('When Cases are assigned to Users', () => {
     before(done =>{
       const interaction = {
-        state: 'A Case and an assignee exists',
+        state: 'A Case ID 12345678 with an assignee exists',
         uponReceiving: 'A request for that case to be assigned',
         withRequest: {
           method: "POST",

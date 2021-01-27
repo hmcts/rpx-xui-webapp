@@ -63,6 +63,7 @@ export class NocHomeComponent implements OnInit, OnDestroy {
       case NocNavigationEvent.BACK: {
         switch (this.nocNavigationCurrentState) {
           case NocState.START:
+          case NocState.CASE_REF_VALIDATION_FAILURE:
             this.router.navigateByUrl('').then(r => {
               return;
             });

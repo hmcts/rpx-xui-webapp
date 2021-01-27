@@ -65,7 +65,7 @@ app.use(helmet.contentSecurityPolicy({
         scriptSrc: [
             '\'self\'',
             '\'unsafe-eval\'',
-            '\'unsafe-inline\'',
+            `'nonce-YTyyb8Jp5BMBYlAmEZmdBA=='`,
             'www.google-analytics.com',
             'ssl.google-analytics.com',
             'www.googletagmanager.com',

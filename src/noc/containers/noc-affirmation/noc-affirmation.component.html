@@ -1,4 +1,4 @@
- <div id="affirmation-section" class="govuk-form-group" [ngClass]="{'govuk-form-group--error': (validationErrors$ | async)?.message}">
+ <div id="affirmation-section" class="govuk-form-group">
     <div class="govuk-form-group">
       <fieldset class="govuk-fieldset" aria-describedby="sign-affirmation">
         <p>You should tick to 'sign' when:</p>
@@ -6,34 +6,40 @@
           <li>You’re satisfied that all the information is accurate and matches what is written on the case</li>
           <li>You have served notice of this change on every party to the claim (including the former legal representative)</li>
         </ul>
-        <div *ngIf="hasDisagreeError$ | async">
-          <span id="tickbox-warning-affirmation" class="govuk-error-message">
-            Tick the box to confirm all these details are accurate and match what is written on the case
-          </span>
-        </div>
-        <div class="govuk-checkboxes">
-          <div class="govuk-checkboxes__item">
-            <input class="govuk-checkboxes__input" id="affirmation" name="affirmation" type="checkbox"
-                   [checked]="affirmationAgreed"
-                   (change)="onChangeAffirmation(this.$event)">
-            <label class="govuk-label govuk-checkboxes__label" for="affirmation">
-              I confirm all these details are accurate and match what is written on the case.
-            </label>
+        <div [ngClass]="{'govuk-form-group--error': hasDisagreeError$ | async}">
+          <div *ngIf="hasDisagreeError$ | async">
+            <span id="tickbox-warning-affirmation" class="govuk-error-message">
+              <span class="govuk-visually-hidden">Error:</span>
+              Tick the box to confirm all these details are accurate and match what is written on the case
+            </span>
+          </div>
+          <div class="govuk-checkboxes">
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="affirmation" name="affirmation" type="checkbox"
+                     [checked]="affirmationAgreed"
+                     (change)="onChangeAffirmation(this.$event)">
+              <label class="govuk-label govuk-checkboxes__label" for="affirmation">
+                I confirm all these details are accurate and match what is written on the case.
+              </label>
+            </div>
           </div>
         </div>
-        <div *ngIf="hasNotifyEveryPartyError$ | async">
-          <span id="tickbox-warning-noticeEveryParty" class="govuk-error-message">
-            Tick the box to confirm you’ve served notice of this change on every party to the claim and on the former legal representative
-          </span>
-        </div>
-        <div class="govuk-checkboxes">
-          <div class="govuk-checkboxes__item">
-            <input class="govuk-checkboxes__input" id="notifyEveryParty" name="notifyEveryParty" type="checkbox"
-                   [checked]="notifyEveryParty"
-                   (change)="onNotifyEveryParty(this.$event)">
-            <label class="govuk-label govuk-checkboxes__label" for="notifyEveryParty">
-              I have served notice of this change on every party to the claim and on the former legal representative.
-            </label>
+        <div [ngClass]="{'govuk-form-group--error': hasNotifyEveryPartyError$ | async}">
+          <div *ngIf="hasNotifyEveryPartyError$ | async">
+            <span id="tickbox-warning-noticeEveryParty" class="govuk-error-message">
+              <span class="govuk-visually-hidden">Error:</span>
+              Tick the box to confirm you’ve served notice of this change on every party to the claim and on the former legal representative
+            </span>
+          </div>
+          <div class="govuk-checkboxes">
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="notifyEveryParty" name="notifyEveryParty" type="checkbox"
+                     [checked]="notifyEveryParty"
+                     (change)="onNotifyEveryParty(this.$event)">
+              <label class="govuk-label govuk-checkboxes__label" for="notifyEveryParty">
+                I have served notice of this change on every party to the claim and on the former legal representative.
+              </label>
+            </div>
           </div>
         </div>
       </fieldset>

@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
+import { AFFIRMATION_DEFAULT_DISAGREE_ERROR, AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR } from '../../constants/nocErrorMap.enum';
 import { NocAnswer, NocEvent, NocNavigationEvent, NocQuestion } from '../../models';
 import * as fromFeature from '../../store';
 import { NocCheckAndSubmitComponent } from './noc-check-and-submit.component';
@@ -118,6 +119,7 @@ describe('NocCheckAndSubmitComponent', () => {
 
   it('should verify and submit NoC', () => {
     component.affirmationAgreed = true;
+    component.notifyEveryParty = true;
     const nocEvent: NocEvent = {
       case_id: '1111222233334444',
       answers: [{
@@ -136,8 +138,13 @@ describe('NocCheckAndSubmitComponent', () => {
 
   it('should set affirmation disagree error', () => {
     component.affirmationAgreed = false;
+    component.notifyEveryParty = false;
+    const affirmationError = {
+      AFFIRMATION_DEFAULT_DISAGREE_ERROR,
+      AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR
+    };
     component.verifyAndSubmitNoC();
-    expect(spyOnDispatchToStore).toHaveBeenCalledWith(new fromFeature.SetAffirmationDisagreeError());
+    expect(spyOnDispatchToStore).toHaveBeenCalledWith(new fromFeature.SetAffirmationError(affirmationError));
   });
 
   afterEach(() => {

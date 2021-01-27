@@ -3,7 +3,7 @@
     "name": "xui_work_allocation_location_get_by_id"
   },
   "provider": {
-    "name": "WorkAllocation_api_location"
+    "name": "WorkAllocation_api"
   },
   "interactions": [
     {

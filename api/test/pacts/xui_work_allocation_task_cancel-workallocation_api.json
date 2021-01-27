@@ -1,17 +1,17 @@
 {
   "consumer": {
-    "name": "xui_work_allocation_task_unclaim"
+    "name": "xui_work_allocation_task_cancel"
   },
   "provider": {
-    "name": "WorkAllocation_api_unclaim"
+    "name": "WorkAllocation_api"
   },
   "interactions": [
     {
-      "description": "a request for completion",
-      "providerState": "task is unclaimed",
+      "description": "a request for cancellation",
+      "providerState": "task is cancelled",
       "request": {
         "method": "POST",
-        "path": "/task/123456/unclaim",
+        "path": "/task/123456/cancel",
         "body": {
           "assignee": {
             "id": "987654",
@@ -27,11 +27,11 @@
       }
     },
     {
-      "description": "a request for completion when already unclaim",
-      "providerState": "task was already unclaim",
+      "description": "a request for cancellation when already cancel",
+      "providerState": "task was already cancel",
       "request": {
         "method": "POST",
-        "path": "/task/123456/unclaim",
+        "path": "/task/123456/cancel",
         "body": {
           "behaviour": "already-done",
           "assignee": {
@@ -48,11 +48,11 @@
       }
     },
     {
-      "description": "a bad request for completion",
+      "description": "a bad request for cancellation",
       "providerState": "a bad request was made",
       "request": {
         "method": "POST",
-        "path": "/task/123456/unclaim",
+        "path": "/task/123456/cancel",
         "body": {
           "behaviour": "bad-request",
           "assignee": {
@@ -69,11 +69,11 @@
       }
     },
     {
-      "description": "a request for completion of a forbidden task",
-      "providerState": "completion of this task is was forbidden",
+      "description": "a request for cancellation of a forbidden task",
+      "providerState": "cancellation of this task is was forbidden",
       "request": {
         "method": "POST",
-        "path": "/task/123456/unclaim",
+        "path": "/task/123456/cancel",
         "body": {
           "behaviour": "forbidden",
           "assignee": {
@@ -90,11 +90,11 @@
       }
     },
     {
-      "description": "a request for completion but it is unsupported",
+      "description": "a request for cancellation but it is unsupported",
       "providerState": "this action is unsupported",
       "request": {
         "method": "POST",
-        "path": "/task/123456/unclaim",
+        "path": "/task/123456/cancel",
         "body": {
           "behaviour": "unsupported",
           "assignee": {

@@ -20,7 +20,7 @@ describe('Work Allocation Caseworker API', () => {
       log: path.resolve(__dirname, '../logs', 'work-allocation.log'),
       logLevel: 'info',
       port: mockServerPort,
-      provider: 'WorkAllocation_api_caseworker',
+      provider: 'WorkAllocation_api',
       spec: 2,
     })
     return provider.setup()

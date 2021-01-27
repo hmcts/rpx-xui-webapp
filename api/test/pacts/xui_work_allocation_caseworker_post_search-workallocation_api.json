@@ -3,7 +3,7 @@
     "name": "xui_work_allocation_caseworker_post_search"
   },
   "provider": {
-    "name": "WorkAllocation_api_caseworker"
+    "name": "WorkAllocation_api"
   },
   "interactions": [
     {

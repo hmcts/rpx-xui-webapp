@@ -3,7 +3,7 @@
     "name": "xui_work_allocation_task_assign"
   },
   "provider": {
-    "name": "WorkAllocation_api_assign"
+    "name": "WorkAllocation_api"
   },
   "interactions": [
     {

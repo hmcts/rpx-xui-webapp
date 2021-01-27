@@ -20,7 +20,7 @@ describe('Case worker API', () => {
     mockServerPort = await getPort()
     provider = new Pact({
       consumer: 'xui_work_allocation_caseworker_post_search',
-      provider: 'WorkAllocation_api_caseworker',
+      provider: 'WorkAllocation_api',
       dir: path.resolve(__dirname, '../../pacts'),
       log: path.resolve(__dirname, '../logs', 'work-allocation.log'),
       logLevel: 'info',

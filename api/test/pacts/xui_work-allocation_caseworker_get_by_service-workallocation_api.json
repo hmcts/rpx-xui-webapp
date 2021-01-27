@@ -1,17 +1,17 @@
 {
   "consumer": {
-    "name": "xui_work-allocation_caseworker_get_by_location_and_service"
+    "name": "xui_work-allocation_caseworker_get_by_service"
   },
   "provider": {
-    "name": "WorkAllocation_api_caseworker"
+    "name": "WorkAllocation_api"
   },
   "interactions": [
     {
-      "description": "a request for location A and service A caseworkers",
-      "providerState": "all the caseworkers for location A and service A are returned",
+      "description": "a request for 'service a' caseworkers",
+      "providerState": "all the caseworkers for 'service a' are returned",
       "request": {
         "method": "GET",
-        "path": "/caseworker/location/a/service/a"
+        "path": "/caseworker/service/a"
       },
       "response": {
         "status": 200,
@@ -44,50 +44,44 @@
                 "a"
               ]
             }
+          },
+          {
+            "firstName": "Joseph",
+            "lastName": "Bloggs",
+            "idamId": "3",
+            "email": "joe.bloggs@caseworkers.gov.uk",
+            "location": {
+              "id": "b",
+              "locationName": "Taylor Swift",
+              "services": [
+                "a",
+                "b"
+              ]
+            }
+          },
+          {
+            "firstName": "Noah",
+            "lastName": "Body",
+            "idamId": "4",
+            "email": "noah.body@caseworkers.gov.uk",
+            "location": {
+              "id": "b",
+              "locationName": "Taylor Swift",
+              "services": [
+                "a",
+                "b"
+              ]
+            }
           }
         ]
       }
     },
     {
-      "description": "a request for location A and service B caseworkers",
-      "providerState": "all the caseworkers for location A and service B are returned",
+      "description": "a request for 'service b' caseworkers",
+      "providerState": "all the caseworkers for 'service b' are returned",
       "request": {
         "method": "GET",
-        "path": "/caseworker/location/a/service/b"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "body": [
-
-        ]
-      }
-    },
-    {
-      "description": "a request for location A and service C caseworkers",
-      "providerState": "all the caseworkers for location A and service C are returned",
-      "request": {
-        "method": "GET",
-        "path": "/caseworker/location/a/service/c"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "body": [
-
-        ]
-      }
-    },
-    {
-      "description": "a request for location B and service A caseworkers",
-      "providerState": "all the caseworkers for location B and service A are returned",
-      "request": {
-        "method": "GET",
-        "path": "/caseworker/location/b/service/a"
+        "path": "/caseworker/service/b"
       },
       "response": {
         "status": 200,
@@ -127,106 +121,11 @@
       }
     },
     {
-      "description": "a request for location B and service B caseworkers",
-      "providerState": "all the caseworkers for location B and service B are returned",
+      "description": "a request for 'service c' caseworkers",
+      "providerState": "all the caseworkers for 'service c' are returned",
       "request": {
         "method": "GET",
-        "path": "/caseworker/location/b/service/b"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "body": [
-          {
-            "firstName": "Joseph",
-            "lastName": "Bloggs",
-            "idamId": "3",
-            "email": "joe.bloggs@caseworkers.gov.uk",
-            "location": {
-              "id": "b",
-              "locationName": "Taylor Swift",
-              "services": [
-                "a",
-                "b"
-              ]
-            }
-          },
-          {
-            "firstName": "Noah",
-            "lastName": "Body",
-            "idamId": "4",
-            "email": "noah.body@caseworkers.gov.uk",
-            "location": {
-              "id": "b",
-              "locationName": "Taylor Swift",
-              "services": [
-                "a",
-                "b"
-              ]
-            }
-          }
-        ]
-      }
-    },
-    {
-      "description": "a request for location B and service C caseworkers",
-      "providerState": "all the caseworkers for location B and service C are returned",
-      "request": {
-        "method": "GET",
-        "path": "/caseworker/location/b/service/c"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "body": [
-
-        ]
-      }
-    },
-    {
-      "description": "a request for location C and service A caseworkers",
-      "providerState": "all the caseworkers for location C and service A are returned",
-      "request": {
-        "method": "GET",
-        "path": "/caseworker/location/c/service/a"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "body": [
-
-        ]
-      }
-    },
-    {
-      "description": "a request for location C and service B caseworkers",
-      "providerState": "all the caseworkers for location C and service B are returned",
-      "request": {
-        "method": "GET",
-        "path": "/caseworker/location/c/service/b"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "body": [
-
-        ]
-      }
-    },
-    {
-      "description": "a request for location C and service C caseworkers",
-      "providerState": "all the caseworkers for location C and service C are returned",
-      "request": {
-        "method": "GET",
-        "path": "/caseworker/location/c/service/c"
+        "path": "/caseworker/service/c"
       },
       "response": {
         "status": 200,

@@ -1,18 +1,22 @@
 {
   "consumer": {
-    "name": "xui_work_allocation_task_complete"
+    "name": "xui_work_allocation_task_claim"
   },
   "provider": {
-    "name": "WorkAllocation_api_complete"
+    "name": "WorkAllocation_api"
   },
   "interactions": [
     {
       "description": "a request for completion",
-      "providerState": "task is completed",
+      "providerState": "task is claimed",
       "request": {
         "method": "POST",
-        "path": "/task/123456/complete",
+        "path": "/task/123456/claim",
         "body": {
+          "assignee": {
+            "id": "987654",
+            "userName": "bob"
+          }
         }
       },
       "response": {
@@ -23,13 +27,17 @@
       }
     },
     {
-      "description": "a request for completion when already complete",
-      "providerState": "task was already complete",
+      "description": "a request for completion when already claim",
+      "providerState": "task was already claim",
       "request": {
         "method": "POST",
-        "path": "/task/123456/complete",
+        "path": "/task/123456/claim",
         "body": {
-          "behaviour": "already-done"
+          "behaviour": "already-done",
+          "assignee": {
+            "id": "987654",
+            "userName": "bob"
+          }
         }
       },
       "response": {
@@ -44,9 +52,13 @@
       "providerState": "a bad request was made",
       "request": {
         "method": "POST",
-        "path": "/task/123456/complete",
+        "path": "/task/123456/claim",
         "body": {
-          "behaviour": "bad-request"
+          "behaviour": "bad-request",
+          "assignee": {
+            "id": "987654",
+            "userName": "bob"
+          }
         }
       },
       "response": {
@@ -61,9 +73,13 @@
       "providerState": "completion of this task is was forbidden",
       "request": {
         "method": "POST",
-        "path": "/task/123456/complete",
+        "path": "/task/123456/claim",
         "body": {
-          "behaviour": "forbidden"
+          "behaviour": "forbidden",
+          "assignee": {
+            "id": "987654",
+            "userName": "bob"
+          }
         }
       },
       "response": {
@@ -78,9 +94,13 @@
       "providerState": "this action is unsupported",
       "request": {
         "method": "POST",
-        "path": "/task/123456/complete",
+        "path": "/task/123456/claim",
         "body": {
-          "behaviour": "unsupported"
+          "behaviour": "unsupported",
+          "assignee": {
+            "id": "987654",
+            "userName": "bob"
+          }
         }
       },
       "response": {

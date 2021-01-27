@@ -1,17 +1,232 @@
 {
   "consumer": {
-    "name": "xui_work_allocation_caseworker_get_by_location"
+    "name": "xui_work-allocation_caseworker_get_by_location_and_service"
   },
   "provider": {
-    "name": "WorkAllocation_api_caseworker"
+    "name": "WorkAllocation_api"
   },
   "interactions": [
     {
-      "description": "a request for All caseworkers",
-      "providerState": "all the caseworkers at All are retrieved",
+      "description": "a request for location A and service A caseworkers",
+      "providerState": "all the caseworkers for location A and service A are returned",
       "request": {
         "method": "GET",
-        "path": "/caseworker"
+        "path": "/caseworker/location/a/service/a"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": [
+          {
+            "firstName": "Jane",
+            "lastName": "Doe",
+            "idamId": "2",
+            "email": "jane.doe@caseworkers.gov.uk",
+            "location": {
+              "id": "a",
+              "locationName": "Taylor House",
+              "services": [
+                "a"
+              ]
+            }
+          },
+          {
+            "firstName": "John",
+            "lastName": "Smith",
+            "idamId": "1",
+            "email": "john.smith@caseworkers.gov.uk",
+            "location": {
+              "id": "a",
+              "locationName": "Taylor House",
+              "services": [
+                "a"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "description": "a request for location A and service B caseworkers",
+      "providerState": "all the caseworkers for location A and service B are returned",
+      "request": {
+        "method": "GET",
+        "path": "/caseworker/location/a/service/b"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": [
+
+        ]
+      }
+    },
+    {
+      "description": "a request for location A and service C caseworkers",
+      "providerState": "all the caseworkers for location A and service C are returned",
+      "request": {
+        "method": "GET",
+        "path": "/caseworker/location/a/service/c"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": [
+
+        ]
+      }
+    },
+    {
+      "description": "a request for location B and service A caseworkers",
+      "providerState": "all the caseworkers for location B and service A are returned",
+      "request": {
+        "method": "GET",
+        "path": "/caseworker/location/b/service/a"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": [
+          {
+            "firstName": "Joseph",
+            "lastName": "Bloggs",
+            "idamId": "3",
+            "email": "joe.bloggs@caseworkers.gov.uk",
+            "location": {
+              "id": "b",
+              "locationName": "Taylor Swift",
+              "services": [
+                "a",
+                "b"
+              ]
+            }
+          },
+          {
+            "firstName": "Noah",
+            "lastName": "Body",
+            "idamId": "4",
+            "email": "noah.body@caseworkers.gov.uk",
+            "location": {
+              "id": "b",
+              "locationName": "Taylor Swift",
+              "services": [
+                "a",
+                "b"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "description": "a request for location B and service B caseworkers",
+      "providerState": "all the caseworkers for location B and service B are returned",
+      "request": {
+        "method": "GET",
+        "path": "/caseworker/location/b/service/b"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": [
+          {
+            "firstName": "Joseph",
+            "lastName": "Bloggs",
+            "idamId": "3",
+            "email": "joe.bloggs@caseworkers.gov.uk",
+            "location": {
+              "id": "b",
+              "locationName": "Taylor Swift",
+              "services": [
+                "a",
+                "b"
+              ]
+            }
+          },
+          {
+            "firstName": "Noah",
+            "lastName": "Body",
+            "idamId": "4",
+            "email": "noah.body@caseworkers.gov.uk",
+            "location": {
+              "id": "b",
+              "locationName": "Taylor Swift",
+              "services": [
+                "a",
+                "b"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "description": "a request for location B and service C caseworkers",
+      "providerState": "all the caseworkers for location B and service C are returned",
+      "request": {
+        "method": "GET",
+        "path": "/caseworker/location/b/service/c"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": [
+
+        ]
+      }
+    },
+    {
+      "description": "a request for location C and service A caseworkers",
+      "providerState": "all the caseworkers for location C and service A are returned",
+      "request": {
+        "method": "GET",
+        "path": "/caseworker/location/c/service/a"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": [
+
+        ]
+      }
+    },
+    {
+      "description": "a request for location C and service B caseworkers",
+      "providerState": "all the caseworkers for location C and service B are returned",
+      "request": {
+        "method": "GET",
+        "path": "/caseworker/location/c/service/b"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": [
+
+        ]
+      }
+    },
+    {
+      "description": "a request for location C and service C caseworkers",
+      "providerState": "all the caseworkers for location C and service C are returned",
+      "request": {
+        "method": "GET",
+        "path": "/caseworker/location/c/service/c"
       },
       "response": {
         "status": 200,
@@ -59,227 +274,6 @@
             }
           },
           {
-            "firstName": "Jane",
-            "lastName": "Doe",
-            "idamId": "2",
-            "email": "jane.doe@caseworkers.gov.uk",
-            "location": {
-              "id": "a",
-              "locationName": "Taylor House",
-              "services": [
-                "a"
-              ]
-            }
-          },
-          {
-            "firstName": "John",
-            "lastName": "Smith",
-            "idamId": "1",
-            "email": "john.smith@caseworkers.gov.uk",
-            "location": {
-              "id": "a",
-              "locationName": "Taylor House",
-              "services": [
-                "a"
-              ]
-            }
-          },
-          {
-            "firstName": "Joseph",
-            "lastName": "Bloggs",
-            "idamId": "3",
-            "email": "joe.bloggs@caseworkers.gov.uk",
-            "location": {
-              "id": "b",
-              "locationName": "Taylor Swift",
-              "services": [
-                "a",
-                "b"
-              ]
-            }
-          },
-          {
-            "firstName": "Nat",
-            "lastName": "Allowed",
-            "idamId": "403",
-            "email": "nat.allowed.403@gmail.com",
-            "location": {
-              "id": "c",
-              "locationName": "Dodgy Location",
-              "services": [
-                "c"
-              ]
-            }
-          },
-          {
-            "firstName": "Noah",
-            "lastName": "Body",
-            "idamId": "4",
-            "email": "noah.body@caseworkers.gov.uk",
-            "location": {
-              "id": "b",
-              "locationName": "Taylor Swift",
-              "services": [
-                "a",
-                "b"
-              ]
-            }
-          },
-          {
-            "firstName": "Sir",
-            "lastName": "Van Error",
-            "idamId": "500",
-            "email": "sir.van@error500.org",
-            "location": {
-              "id": "c",
-              "locationName": "Dodgy Location",
-              "services": [
-                "c"
-              ]
-            }
-          }
-        ]
-      }
-    },
-    {
-      "description": "a request for Taylor House caseworkers",
-      "providerState": "all the caseworkers at Taylor House are retrieved",
-      "request": {
-        "method": "GET",
-        "path": "/caseworker/location/a"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "body": [
-          {
-            "firstName": "Jane",
-            "lastName": "Doe",
-            "idamId": "2",
-            "email": "jane.doe@caseworkers.gov.uk",
-            "location": {
-              "id": "a",
-              "locationName": "Taylor House",
-              "services": [
-                "a"
-              ]
-            }
-          },
-          {
-            "firstName": "John",
-            "lastName": "Smith",
-            "idamId": "1",
-            "email": "john.smith@caseworkers.gov.uk",
-            "location": {
-              "id": "a",
-              "locationName": "Taylor House",
-              "services": [
-                "a"
-              ]
-            }
-          }
-        ]
-      }
-    },
-    {
-      "description": "a request for Taylor Swift caseworkers",
-      "providerState": "all the caseworkers at Taylor Swift are retrieved",
-      "request": {
-        "method": "GET",
-        "path": "/caseworker/location/b"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "body": [
-          {
-            "firstName": "Joseph",
-            "lastName": "Bloggs",
-            "idamId": "3",
-            "email": "joe.bloggs@caseworkers.gov.uk",
-            "location": {
-              "id": "b",
-              "locationName": "Taylor Swift",
-              "services": [
-                "a",
-                "b"
-              ]
-            }
-          },
-          {
-            "firstName": "Noah",
-            "lastName": "Body",
-            "idamId": "4",
-            "email": "noah.body@caseworkers.gov.uk",
-            "location": {
-              "id": "b",
-              "locationName": "Taylor Swift",
-              "services": [
-                "a",
-                "b"
-              ]
-            }
-          }
-        ]
-      }
-    },
-    {
-      "description": "a request for Dodgy Location caseworkers",
-      "providerState": "all the caseworkers at Dodgy Location are retrieved",
-      "request": {
-        "method": "GET",
-        "path": "/caseworker/location/c"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "body": [
-          {
-            "firstName": "Al",
-            "lastName": "Reddy-Dunne",
-            "idamId": "204",
-            "email": "al.reddydunne204@hotmail.co.uk",
-            "location": {
-              "id": "c",
-              "locationName": "Dodgy Location",
-              "services": [
-                "c"
-              ]
-            }
-          },
-          {
-            "firstName": "Anne",
-            "lastName": "Supported",
-            "idamId": "415",
-            "email": "anne_supported_415@dodgy-url.net",
-            "location": {
-              "id": "c",
-              "locationName": "Dodgy Location",
-              "services": [
-                "c"
-              ]
-            }
-          },
-          {
-            "firstName": "Brad",
-            "lastName": "Request",
-            "idamId": "400",
-            "email": "brad.request400@hotmail.com",
-            "location": {
-              "id": "c",
-              "locationName": "Dodgy Location",
-              "services": [
-                "c"
-              ]
-            }
-          },
-          {
             "firstName": "Nat",
             "lastName": "Allowed",
             "idamId": "403",
@@ -306,34 +300,6 @@
             }
           }
         ]
-      }
-    },
-    {
-      "description": "a request for Bleak House caseworkers",
-      "providerState": "all the caseworkers at Bleak House are retrieved",
-      "request": {
-        "method": "GET",
-        "path": "/caseworker/location/d"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/json"
-        }
-      }
-    },
-    {
-      "description": "a request for Orphanage caseworkers",
-      "providerState": "all the caseworkers at Orphanage are retrieved",
-      "request": {
-        "method": "GET",
-        "path": "/caseworker/location/e"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/json"
-        }
       }
     }
   ],

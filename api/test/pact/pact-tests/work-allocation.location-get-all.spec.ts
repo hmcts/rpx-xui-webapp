@@ -15,7 +15,7 @@ describe('Work Allocation Location API', () => {
     mockServerPort = await getPort();
     provider = new Pact({
       consumer: 'xui_work_allocation_location_get_all',
-      provider: 'WorkAllocation_api_location', // TODO: Need to clarify naming conventions here, as we're using different ones.
+      provider: 'WorkAllocation_api', // TODO: Need to clarify naming conventions here, as we're using different ones.
       dir: path.resolve(__dirname, '../../pacts'),
       log: path.resolve(__dirname, '../logs', 'work-allocation.log'),
       logLevel: 'info',

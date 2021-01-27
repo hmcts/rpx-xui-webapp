@@ -59,43 +59,4 @@ describe('Work Allocation Location API', () => {
       });
     })
   }
-
-  describe('Should return server error', () => {
-    before(() =>
-      provider.addInteraction({
-        state: 'the server had an internal error',
-        uponReceiving: 'a request for completion and the server falls over',
-        withRequest: {
-          method: 'GET',
-          path: '/location/error500',
-        },
-        willRespondWith: {
-          status: 500,
-          body: SERVER_ERROR,
-          headers: {'Content-Type': 'application/json'}
-        }
-      })
-    )
-
-    /**
-     * A random url, has no interaction with PACT therefore it returns a 500 error.
-     *
-     * Therefore testing that response.data returns BEHAVIOURS.SERVER_ERROR.
-     */
-    it('returns failure with a 500', async () => {
-
-      const locationPath: string = `${provider.mockService.baseUrl}/location/error500`;
-
-      let response: { status: number, data: object };
-
-      try {
-        response = await handleLocationGet(locationPath, {} as EnhancedRequest);
-      } catch (err) {
-        response = err;
-      }
-
-      expect(response.data).deep.equal(SERVER_ERROR);
-      expect(response.status).equal(500);
-    });
-  });
 });

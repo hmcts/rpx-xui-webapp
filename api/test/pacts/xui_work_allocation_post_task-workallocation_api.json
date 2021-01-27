@@ -56,57 +56,6 @@
           ]
         }
       }
-    },
-    {
-      "description": "a request to server falls over",
-      "providerState": "the server had an internal error",
-      "request": {
-        "method": "POST",
-        "path": "/task",
-        "body": {
-          "behaviour": "unsupported"
-        }
-      },
-      "response": {
-        "status": 500,
-        "headers": {
-          "Content-Type": "application/json"
-        }
-      }
-    },
-    {
-      "description": "a request the server throw 400",
-      "providerState": "the server had an internal error",
-      "request": {
-        "method": "POST",
-        "path": "/task",
-        "body": {
-          "behaviour": "bad-request"
-        }
-      },
-      "response": {
-        "status": 400,
-        "headers": {
-          "Content-Type": "application/json"
-        }
-      }
-    },
-    {
-      "description": "a request of a forbidden task",
-      "providerState": "task is was forbidden",
-      "request": {
-        "method": "POST",
-        "path": "/task",
-        "body": {
-          "behaviour": "forbidden"
-        }
-      },
-      "response": {
-        "status": 403,
-        "headers": {
-          "Content-Type": "application/json"
-        }
-      }
     }
   ],
   "metadata": {

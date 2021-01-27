@@ -111,23 +111,6 @@
           ]
         }
       }
-    },
-    {
-      "description": "a request for completion and the server falls over",
-      "providerState": "the server had an internal error",
-      "request": {
-        "method": "GET",
-        "path": "/location/error500"
-      },
-      "response": {
-        "status": 500,
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "body": {
-          "behaviour": "server-error"
-        }
-      }
     }
   ],
   "metadata": {

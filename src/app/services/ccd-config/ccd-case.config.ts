@@ -127,6 +127,7 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getWorkAllocationApiUrl(): string {
-    return 'workallocation';
+    // pass explicitly null to feature toggle workAllocation api
+    return null;
   }
 }

@@ -6,6 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
   AbstractAppConfig,
+  AlertService,
   AuthService as CCDAuthService,
   CaseEventData,
   CaseEventTrigger,
@@ -110,6 +111,7 @@ describe('CaseCreateSubmitComponent', () => {
         CasesService,
         CCDAuthService,
         DraftService,
+        AlertService,
         HttpErrorService,
         AppConfigService,
         AppConfig,

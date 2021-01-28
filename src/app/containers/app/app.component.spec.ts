@@ -5,6 +5,7 @@ import { AppComponent } from './app.component';
 describe('AppComponent', () => {
     let appComponent: AppComponent;
     let store: any;
+    let googleTagManagerService: any;
     let timeoutNotificationService: any;
     let router: any;
     let title: any;
@@ -12,6 +13,7 @@ describe('AppComponent', () => {
 
     beforeEach(() => {
         store = jasmine.createSpyObj('store', ['pipe', 'dispatch']);
+        googleTagManagerService = jasmine.createSpyObj('GoogleTagManagerService', ['init']);
         timeoutNotificationService = jasmine.createSpyObj('TimeoutNotificationsService', ['notificationOnChange', 'initialise']);
         testRoute = new RoutesRecognized(1, 'test', 'test', {
             url: 'test',
@@ -51,7 +53,7 @@ describe('AppComponent', () => {
         });
         router = { events: of(testRoute) };
         title = jasmine.createSpyObj('Title', ['setTitle']);
-        appComponent = new AppComponent(store, timeoutNotificationService, router, title);
+        appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService, router, title);
     });
 
     it('Truthy', () => {

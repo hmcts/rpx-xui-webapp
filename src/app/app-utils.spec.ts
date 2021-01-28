@@ -49,24 +49,6 @@ describe('showNavItems', () => {
 
 });
 
-describe('isRoleExistsForUser', () => {
-
-  it('should correctly indicate when a role exists for a user', () => {
-    const mockService = jasmine.createSpyObj('mockService', ['get']);
-    mockService.get.and.returnValue('role1,role2,role3');
-    const roleExists = AppUtils.isRoleExistsForUser('role1', mockService);
-    expect(roleExists).toEqual(true);
-  });
-
-  it('should correctly indicate when a role does not exist for a user', () => {
-    const mockService = jasmine.createSpyObj('mockService', ['get']);
-    mockService.get.and.returnValue('role1,role2,role3');
-    const roleExists = AppUtils.isRoleExistsForUser('role4', mockService);
-    expect(roleExists).toEqual(false);
-  });
-
-});
-
 describe('removeJsonPrefix', () => {
 
   it('should take in the User Roles string from cookie and return the string without the j: prefix.', () => {

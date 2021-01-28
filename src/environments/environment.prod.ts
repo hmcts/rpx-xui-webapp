@@ -5,7 +5,9 @@ export const environment = {
      token: '__auth__',
      userId: '__userid__',
      roles: 'roles',
-   }
+   },
+   googleAnalyticsKey: 'UA-124734893-1',
+   googleTagManagerKey: 'GTM-TQ7PKDF'
 };
 
 /**

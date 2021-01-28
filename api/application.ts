@@ -31,55 +31,6 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
 
 app.use(cookieParser(getConfigValue(SESSION_SECRET)))
 
-app.use(helmet.contentSecurityPolicy({
-    directives: {
-        connectSrc: [
-            '\'self\'',
-            '*.gov.uk',
-            'dc.services.visualstudio.com',
-            '*.launchdarkly.com',
-            'www.google-analytics.com',
-            'stats.g.doubleclick.net',
-        ],
-        defaultSrc: [
-            '\'self\'',
-        ],
-        fontSrc: [
-            '\'self\' data:',
-            'fonts.gstatic.com',
-        ],
-        imgSrc: [
-            '\'self\'',
-            '\'self\' data:',
-            'www.google-analytics.com',
-            'www.googletagmanager.com',
-            'raw.githubusercontent.com/hmcts/',
-            'stats.g.doubleclick.net',
-            'ssl.gstatic.com',
-            'www.gstatic.com',
-            'fonts.gstatic.com',
-        ],
-        mediaSrc: [
-            '\'self\'',
-        ],
-        scriptSrc: [
-            '\'self\'',
-            '\'unsafe-eval\'',
-            `'nonce-YTyyb8Jp5BMBYlAmEZmdBA=='`,
-            'www.google-analytics.com',
-            'ssl.google-analytics.com',
-            'www.googletagmanager.com',
-            'az416426.vo.msecnd.net',
-        ],
-        styleSrc: [
-            '\'self\'',
-            '\'unsafe-inline\'',
-            'tagmanager.google.com/',
-            'fonts.gstatic.com',
-        ],
-    },
-}))
-
 // TODO: remove tunnel and configurations
 tunnel.init()
 app.use(getXuiNodeMiddleware())

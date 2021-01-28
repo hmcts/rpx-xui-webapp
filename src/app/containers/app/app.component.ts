@@ -1,9 +1,10 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router, RoutesRecognized } from '@angular/router';
-import { TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
+import { GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { propsExist } from '../../../../api/lib/objectUtilities';
+import { environment as config } from '../../../environments/environment';
 import * as fromRoot from '../../store';
 
 @Component({
@@ -22,10 +23,13 @@ export class AppComponent implements OnInit {
 
   constructor(
     private readonly store: Store<fromRoot.State>,
+    private readonly googleTagManagerService: GoogleTagManagerService,
     private readonly timeoutNotificationsService: TimeoutNotificationsService,
     private readonly router: Router,
     private readonly titleService: Title
   ) {
+
+    this.googleTagManagerService.init(config.googleTagManagerKey);
 
     this.router.events.subscribe((data) => {
       if (data instanceof RoutesRecognized) {

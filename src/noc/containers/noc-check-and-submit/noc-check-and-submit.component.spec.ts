@@ -147,6 +147,27 @@ describe('NocCheckAndSubmitComponent', () => {
     expect(spyOnDispatchToStore).toHaveBeenCalledWith(new fromFeature.SetAffirmationError(affirmationError));
   });
 
+  it('should set affirmation no error', () => {
+    component.affirmationAgreed = true;
+    component.notifyEveryParty = false;
+    const affirmationError = {
+      AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR
+    };
+    component.verifyAndSubmitNoC();
+    expect(spyOnDispatchToStore).toHaveBeenCalledWith(new fromFeature.SetAffirmationError(affirmationError));
+  });
+
+  it('should set affirmation error', () => {
+    component.affirmationAgreed = false;
+    component.notifyEveryParty = true;
+    const affirmationError = {
+      AFFIRMATION_DEFAULT_DISAGREE_ERROR
+    };
+    component.verifyAndSubmitNoC();
+    expect(spyOnDispatchToStore).toHaveBeenCalledWith(new fromFeature.SetAffirmationError(affirmationError));
+  });
+
+
   afterEach(() => {
     component = null;
     fixture.destroy();

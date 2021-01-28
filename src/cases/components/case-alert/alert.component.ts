@@ -1,8 +1,8 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { AlertService, Alert, AlertLevel } from '@hmcts/ccd-case-ui-toolkit';
-import { select } from '@ngrx/store';
-import { Subscription, Observable } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Alert, AlertService } from '@hmcts/ccd-case-ui-toolkit';
+import { select } from '@ngrx/store';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'exui-alert',
@@ -11,29 +11,87 @@ import { Router } from '@angular/router';
 })
 
 export class AlertComponent implements OnInit, OnDestroy {
-  message = '';
-  level = '';
-  currentUrl = '';
-  alertMessageObservable: Observable<Alert>;
-  alertMessageSubscription: Subscription;
-  routeSubscription: Subscription;
+  public alertMessage = '';
+  public alertLevel = '';
+  public successMessage = '';
+  public errorMessage = '';
+  public warningMessage = '';
 
-  constructor(private alertService: AlertService, private router: Router) {
+  public alertMessageSubscription: Subscription;
+  public successMessageSubscription: Subscription;
+  public errorMessageSubscription: Subscription;
+  public warningMessageSubscription: Subscription;
+  public routeSubscription: Subscription;
+
+  private alertMessageObservable: Observable<Alert>;
+  private successMessageObservable: Observable<Alert>;
+  private errorMessageObservable: Observable<Alert>;
+  private warningMessageObservable: Observable<Alert>;
+
+  constructor(
+    private readonly alertService: AlertService,
+    private readonly router: Router
+  ) {}
+
+  public ngOnInit() {
+    this.setAlertMessage();
+    this.setSuccessMessage();
+    this.setErrorMessage();
+    this.setWarningMessage();
   }
 
-  ngOnInit() {
+  public setAlertMessage() {
+    // currently only used for default messages but kept in because of possible reversion to earlier techniques if necessary
     this.alertMessageObservable = this.alertService.alerts.pipe(select( alert => alert));
-    this.routeSubscription = this.router.events.subscribe((val) => this.message = '');
+    this.routeSubscription = this.router.events.subscribe(() => this.alertMessage = '');
     this.alertMessageSubscription = this.alertMessageObservable.subscribe(alert => {
       if (alert) {
-        this.message = alert.message;
-        this.level = alert.level;
+        this.alertMessage = alert.message;
+        this.alertLevel = alert.level;
       }
     });
   }
 
-  ngOnDestroy() {
+  // next three methods are to ensure different message types can be displayed at same time
+  public setSuccessMessage() {
+    // specific observable connection to success messages
+    this.successMessageObservable = this.alertService.successes.pipe(select( alert => alert));
+    this.routeSubscription = this.router.events.subscribe(() => this.successMessage = '');
+    this.successMessageSubscription = this.successMessageObservable.subscribe(alert => {
+      if (alert) {
+        this.successMessage = alert.message;
+      }
+    });
+  }
+
+  public setErrorMessage() {
+    // specific observable connection to error messages
+    this.errorMessageObservable = this.alertService.errors.pipe(select( alert => alert));
+    this.routeSubscription = this.router.events.subscribe(() => this.errorMessage = '');
+    this.errorMessageSubscription = this.errorMessageObservable.subscribe(alert => {
+      if (alert) {
+        this.errorMessage = alert.message;
+      }
+    });
+  }
+
+  public setWarningMessage() {
+    // specific observable connection to warning messages
+    this.warningMessageObservable = this.alertService.warnings.pipe(select( alert => alert));
+    this.routeSubscription = this.router.events.subscribe(() => this.warningMessage = '');
+    this.warningMessageSubscription = this.warningMessageObservable.subscribe(alert => {
+      if (alert) {
+        this.warningMessage = alert.message;
+      }
+    });
+  }
+
+  public ngOnDestroy() {
+    // unsubscribe from all subscriptions
     this.alertMessageSubscription.unsubscribe();
+    this.successMessageSubscription.unsubscribe();
+    this.errorMessageSubscription.unsubscribe();
+    this.warningMessageSubscription.unsubscribe();
     this.routeSubscription.unsubscribe();
   }
 }

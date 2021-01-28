@@ -1,13 +1,13 @@
-import { AlertComponent } from './alert.component';
-import { async, ComponentFixture, TestBed, fakeAsync } from '@angular/core/testing';
-import { AlertComponent as CCDAlertComponent } from '@hmcts/ccd-case-ui-toolkit/dist/components/banners/alert/alert.component';
-import {AlertIconClassPipe} from '@hmcts/ccd-case-ui-toolkit/dist/components/banners/alert/alert-icon-class.pipe';
-import { AlertService, Alert } from '@hmcts/ccd-case-ui-toolkit';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs/internal/observable/of';
-import {ConnectableObservable} from 'rxjs';
-import { publish } from 'rxjs/internal/operators/publish';
+import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
+import { AlertIconClassPipe } from '@hmcts/ccd-case-ui-toolkit/dist/components/banners/alert/alert-icon-class.pipe';
+import {
+  AlertComponent as CCDAlertComponent,
+} from '@hmcts/ccd-case-ui-toolkit/dist/components/banners/alert/alert.component';
+
+import { AlertComponent } from './alert.component';
 
 describe('AlertComponent', () => {
   let component: AlertComponent;
@@ -37,22 +37,41 @@ describe('AlertComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have updated the value of message and level in ngOnInit', async () => {
-    const alertService = fixture.debugElement.injector.get(AlertService);
-    alertService.push({message: 'message', level: 'success'});
+  it('should have updated the value of message and level in ngOnInit for message method', async () => {
+    const alertService = fixture.debugElement.injector.get<AlertService>(AlertService);
+    alertService.message('message');
     component.ngOnInit();
     await fixture.whenStable();
     fixture.detectChanges();
-    expect(component.message).toEqual('message');
-    expect(component.level).toEqual('success');
+    expect(component.alertMessage).toEqual('message');
+    expect(component.alertLevel).toEqual('message');
+  });
+
+  it('should have updated the value of message in ngOnInit for error, success and warning methods', async () => {
+    const alertService = fixture.debugElement.injector.get<AlertService>(AlertService);
+    alertService.error('error message');
+    alertService.success('success message');
+    alertService.warning('warning message');
+    component.ngOnInit();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(component.errorMessage).toEqual('error message');
+    expect(component.successMessage).toEqual('success message');
+    expect(component.warningMessage).toEqual('warning message');
   });
 
   it('should unsubscribe onDestroy', () => {
     spyOn(component.alertMessageSubscription, 'unsubscribe').and.callThrough();
+    spyOn(component.errorMessageSubscription, 'unsubscribe').and.callThrough();
+    spyOn(component.successMessageSubscription, 'unsubscribe').and.callThrough();
+    spyOn(component.warningMessageSubscription, 'unsubscribe').and.callThrough();
     spyOn(component.routeSubscription, 'unsubscribe').and.callThrough();
 
     component.ngOnDestroy();
     expect(component.alertMessageSubscription.unsubscribe).toHaveBeenCalled();
+    expect(component.errorMessageSubscription.unsubscribe).toHaveBeenCalled();
+    expect(component.successMessageSubscription.unsubscribe).toHaveBeenCalled();
+    expect(component.warningMessageSubscription.unsubscribe).toHaveBeenCalled();
     expect(component.routeSubscription.unsubscribe).toHaveBeenCalled();
   });
 

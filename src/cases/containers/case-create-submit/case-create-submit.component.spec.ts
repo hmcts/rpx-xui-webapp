@@ -6,7 +6,6 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
   AbstractAppConfig,
-  AlertService,
   AuthService as CCDAuthService,
   CaseEventData,
   CaseEventTrigger,
@@ -18,6 +17,7 @@ import {
   HttpErrorService,
   RequestOptionsBuilder,
   SearchService,
+  AlertService
 } from '@hmcts/ccd-case-ui-toolkit';
 import { EffectsModule } from '@ngrx/effects';
 import {combineReducers, StoreModule} from '@ngrx/store';
@@ -73,7 +73,6 @@ describe('CaseCreateSubmitComponent', () => {
   let fixture: ComponentFixture<CaseCreateSubmitComponent>;
   let casesService: CasesService;
   let draftService: DraftService;
-  const mockAlertService = jasmine.createSpyObj('alertService', ['error']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -114,6 +113,7 @@ describe('CaseCreateSubmitComponent', () => {
         DraftService,
         HttpErrorService,
         AppConfigService,
+        AlertService,
         AppConfig,
         {
           provide: SearchService,
@@ -128,11 +128,7 @@ describe('CaseCreateSubmitComponent', () => {
         {
           provide: AppConfigService,
           useClass: MockSortService
-        },
-        {
-          provide: AlertService,
-          useValue: mockAlertService
-        },
+        }
       ]
     })
       .compileComponents();

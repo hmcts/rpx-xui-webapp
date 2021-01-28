@@ -14,6 +14,10 @@ import {AppConfigService} from '../config/configuration.services';
 
 @Injectable()
 export class AppConfig extends AbstractAppConfig {
+  
+  getWorkAllocationApiUrl(): string {
+    throw new Error('Method not implemented.');
+  }
 
   protected config: CaseEditorConfig;
   constructor(private appConfigService: AppConfigService) {

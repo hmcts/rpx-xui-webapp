@@ -8,9 +8,10 @@ import { UserDetails } from '../../../app/models/user-details.model';
   providedIn: 'root'
 })
 export class UserService {
+  public static userApiUrl = 'api/user/details'
   constructor(private readonly http: HttpClient) {}
 
   public getUserDetails(): Observable<UserDetails> {
-    return this.http.get<UserDetails>(`api/user/details`);
+    return this.http.get<UserDetails>(UserService.userApiUrl);
   }
 }

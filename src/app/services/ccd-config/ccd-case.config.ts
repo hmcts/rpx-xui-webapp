@@ -4,6 +4,7 @@ import {
   CaseEditorConfig
 } from '@hmcts/ccd-case-ui-toolkit';
 import {AppConfigService} from '../config/configuration.services';
+import { UserService } from '../user/user.service';
 
 
 /**
@@ -129,5 +130,9 @@ export class AppConfig extends AbstractAppConfig {
   public getWorkAllocationApiUrl(): string {
     // pass explicitly null to feature toggle workAllocation api
     return null;
+  }
+
+  public getUserInfoApiUrl(): string {
+    return UserService.userApiUrl;
   }
 }

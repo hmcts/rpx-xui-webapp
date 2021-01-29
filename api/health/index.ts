@@ -1,5 +1,5 @@
 import * as HealthCheck from '@hmcts/nodejs-healthcheck'
-import {SESSION, xuiNode} from '@hmcts/rpx-xui-node-lib'
+import { SESSION, xuiNode } from '@hmcts/rpx-xui-node-lib'
 import { getConfigValue, showFeature } from '../configuration'
 import {
   FEATURE_REDIS_ENABLED,
@@ -14,7 +14,7 @@ import {
   SERVICES_TERMS_AND_CONDITIONS_URL
 } from '../configuration/references'
 import * as log4jui from '../lib/log4jui'
-import {JUILogger} from '../lib/models'
+import { JUILogger } from '../lib/models'
 const logger: JUILogger = log4jui.getLogger('health')
 
 export const checkServiceHealth = service => HealthCheck.web(`${service}/health`, {

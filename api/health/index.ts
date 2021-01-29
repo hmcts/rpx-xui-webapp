@@ -15,7 +15,7 @@ import {
 } from '../configuration/references'
 import * as log4jui from '../lib/log4jui'
 import {JUILogger} from '../lib/models'
-const logger: JUILogger = log4jui.getLogger('RedisHealth')
+const logger: JUILogger = log4jui.getLogger('health')
 
 export const checkServiceHealth = service => HealthCheck.web(`${service}/health`, {
   deadline: 6000,
@@ -44,7 +44,7 @@ export const addReformHealthCheck = app => {
   }
   if (showFeature(FEATURE_REDIS_ENABLED)) {
     xuiNode.on(SESSION.EVENT.REDIS_CLIENT_READY, (redisClient: any) => {
-      console.log('REDIS EVENT FIRED!!')
+      logger.info('REDIS EVENT FIRED!!')
       config.checks = {...config.checks, ...{
           redis: HealthCheck.raw(() => {
             return redisClient.connected ? HealthCheck.up() : HealthCheck.down()
@@ -56,6 +56,6 @@ export const addReformHealthCheck = app => {
       logger.error('redis Client error is', error)
     })
   }
-  console.log('config', config)
+  logger.info('config', config)
   HealthCheck.addTo(app, config)
 }

@@ -15,6 +15,7 @@
     "ccdDataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal/health",
     "documentsApi": "http://dm-store-prod.service.core-compute-prod.internal/health",
     "em_anno_api": "http://em-anno-prod.service.core-compute-prod.internal/health",
+    "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal/health",
     "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal/health"
   },
   "services": {

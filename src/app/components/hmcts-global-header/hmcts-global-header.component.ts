@@ -66,14 +66,12 @@ export class HmctsGlobalHeaderComponent implements OnInit {
   }
 
   public onEmitEvent(index: number): void {
-    console.log('here')
     this.navigate.emit(this.navigation.items[index].emit);
   }
 
   public onEmitSubMenu(menuItem: any) {
     // remove the setting of selected item via url
     this.tab = menuItem.text;
-    console.log(menuItem.text);
     if (menuItem.href === '/noc') {
       this.nocStore.dispatch(new fromNocStore.Reset());
     }

@@ -1,11 +1,11 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { ChangeDetectorRef} from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NavigationExtras, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 import { SessionStorageService } from 'src/app/services';
 import { WorkAllocationComponentsModule } from 'src/work-allocation/components/work-allocation.components.module';
 import { Task } from 'src/work-allocation/models/tasks';

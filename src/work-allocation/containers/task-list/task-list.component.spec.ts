@@ -1,8 +1,8 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NavigationExtras, Router } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { Router } from '@angular/router';
+import { of } from 'rxjs';
 
 import { ConfigConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';

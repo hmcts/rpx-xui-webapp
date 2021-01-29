@@ -29,7 +29,7 @@ export const SERVICES_CCD_CASE_ASSIGNMENT_API_PATH = 'services.ccd.caseAssignmen
 export const SERVICES_WORK_ALLOCATION_TASK_API_PATH = 'services.work_allocation.taskApi'
 
 export const SERVICES_DOCUMENTS_API_PATH = 'services.documents.api'
-
+export const SERVICES_FEE_AND_PAY_API_PATH = 'services.feeAndPayApi'
 export const SERVICES_EM_ANNO_API_URL = 'services.em_anno_api'
 export const SERVICES_MARKUP_API_URL = 'services.markup_api'
 export const SERVICES_ICP_API_URL = 'services.icp_api'

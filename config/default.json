@@ -16,7 +16,7 @@
     "documentsApi": "http://dm-store-prod.service.core-compute-prod.internal/health",
     "em_anno_api": "http://em-anno-prod.service.core-compute-prod.internal/health",
     "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal/health",
-    "workAllocationHealthApi": "http://wa-task-management-api-prod.service.core-compute-prod.internal/health"
+    "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal/health"
   },
   "services": {
     "ccd": {

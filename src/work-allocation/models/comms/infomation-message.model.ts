@@ -1,4 +1,4 @@
-import {InfoMessage, InfoMessageType} from './../../enums';
+import { InfoMessage, InfoMessageType } from './../../enums';
 
 export interface InformationMessage {
   type: InfoMessageType;

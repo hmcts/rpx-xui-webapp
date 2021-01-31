@@ -6,6 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
   AbstractAppConfig,
+  AlertService,
   AuthService as CCDAuthService,
   CaseEventData,
   CaseEventTrigger,
@@ -72,6 +73,7 @@ describe('CaseCreateSubmitComponent', () => {
   let fixture: ComponentFixture<CaseCreateSubmitComponent>;
   let casesService: CasesService;
   let draftService: DraftService;
+  const mockAlertService = jasmine.createSpyObj('alertService', ['error']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -126,7 +128,11 @@ describe('CaseCreateSubmitComponent', () => {
         {
           provide: AppConfigService,
           useClass: MockSortService
-        }
+        },
+        {
+          provide: AlertService,
+          useValue: mockAlertService
+        },
       ]
     })
       .compileComponents();

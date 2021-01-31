@@ -28,9 +28,11 @@ export interface EnvironmentConfigExceptionOptions {
 }
 
 export interface EnvironmentConfigServices {
+  ccdComponentApi: string,
   ccdDataApi: string,
   idamApi: string,
   s2s: string,
+  termsAndConditions: string,
 }
 
 export interface EnvironmentConfigProxy {

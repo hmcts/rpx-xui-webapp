@@ -1,65 +1,87 @@
 
 @fullfunctional
-Feature: Test case type case list and find case workflow
+Feature: Test case type case creation and case details validations
 
   Background:
     When I navigate to Expert UI Url
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     
-    Scenario: Validate workbasket inputs against the API response
-        When I click on Case list
-        Then I am on case list page
-        When I select search criteria jurisdiction "Family Divorce" case type "XUI Test Case type" state "Case created" in case list page
-        When I click search Apply in case list page
-        Then Validate workbasket inputs against the API response
-
-     Scenario: Validate workbasket complex values against the API response
-        When I click on Case list
-        Then I am on case list page
-        When I select search criteria jurisdiction "Family Divorce" case type "XUI Test Case type" state "Case created" in case list page
-        When I click search Apply in case list page
-        Then Validate workbasket inputs complex values against the API response
-          
-    Scenario: Validate workbasket update on case type change
-        When I click on Case list
-        Then I am on case list page
-        When I select search criteria jurisdiction "Family Divorce" case type "XUI Test Case type" state "Case created" in case list page
-        When I click search Apply in case list page
-        Then I wait to see case results displayed
-        When I select search criteria jurisdiction "Family Divorce" case type "Divorce case - v115.00" state "Any" in case list page
-        When I click search Apply in case list page
-
-    Scenario: validating the case list headers against api response
-        When I click on Case list
-        Then I am on case list page
-        When I select search criteria jurisdiction "Family Divorce" case type "XUI Test Case type" state "Case created" in case list page
-        When I click search Apply in case list page
-        Then I wait to see case results displayed
-        Then validating the case list header against the api response
+    Scenario: Validate tabs in case details page against API response
+        When I click on search button
+        Then Search page should be displayed
+        When I enter search fields jurisdiction "Family Divorce" case type "XUI Test Case type"
+        When I click apply to perform case search
+        Then I see results returned
+        When I open first case in search results
+        Then I see case details page
+        Then I should be able to see tabs in case details page
     
-    Scenario: Validate search-inputs against the API response
-        When I click on search button
-        Then Search page should be displayed
-        When I enter search fields jurisdiction "Family Divorce" case type "XUI Test Case type"
-        When I click apply to perform case search
-        Then Validate search inputs against the API response
-
-    Scenario: Validating the search inputs case list headers against api response
+    Scenario: Validate tab details in case details page against API response
         When I click on search button
         Then Search page should be displayed
         When I enter search fields jurisdiction "Family Divorce" case type "XUI Test Case type"
         When I click apply to perform case search
         Then I see results returned
-        Then Validating the search inputs case list headers against api response
-
-    Scenario: Validate search inputs on case type change
+        When I open first case in search results
+        Then I see case details page
+        Then I should be validate tab details in case details page
+    
+    Scenario: Validate Case event next step trigger actions
         When I click on search button
         Then Search page should be displayed
         When I enter search fields jurisdiction "Family Divorce" case type "XUI Test Case type"
-        When I reset case search fields 
-        When I enter search fields jurisdiction "Family Divorce" case type "Divorce case - v115.00"
         When I click apply to perform case search
         Then I see results returned
+        When I open first case in search results
+        Then I see case details page
+        Then Validate Case event next step trigger actions
+    
+    Scenario: Validate Case event update, populating form page
+        When I click on search button
+        Then Search page should be displayed
+        When I enter search fields jurisdiction "Family Divorce" case type "XUI Test Case type"
+        When I click apply to perform case search
+        Then I see results returned
+        When I open first case in search results
+        Then I see case details page
+        Then Validate Case event update populating form page
+    
+    Scenario: Start create case page form fields validating against API response
+        When I click on create case button
+        Then Create case page should be displayed
+        When I start case with jurisdiction "Family Divorce" case type "XUI Test Case type" and event "Create a case"
+        Then I am on case form page
+        Then Validate create case form pages fields against the api response
+    
+    Scenario: Validate Case event check your answers summary page links 	
+        When I click on create case button
+        Then Create case page should be displayed
+        When I start case with jurisdiction "Family Divorce" case type "XUI Test Case type" and event "Create a case"
+        Then I am on case form page
+        Then I should be able to fill the form pages 
+        Then Should be able to see check your answers summary page links 
+
+    Scenario: Validate check your answers summary page 		
+        When I click on create case button
+        Then Create case page should be displayed
+        When I start case with jurisdiction "Family Divorce" case type "XUI Test Case type" and event "Create a case"
+        Then I am on case form page
+        Then I should be able to fill the form pages 
+        Then Validate check your answer summery page
+
+    Scenario: Validate mandatory fields condition check in page 	
+        When I click on create case button
+        Then Create case page should be displayed
+        When I start case with jurisdiction "Family Divorce" case type "XUI Test Case type" and event "Create a case"
+        Then I am on case form page
+        Then Validate mandatory fields functionality
+    
+    Scenario:  Validate event pages display show condition logic	
+        When I click on create case button
+        Then Create case page should be displayed
+        When I start case with jurisdiction "Family Divorce" case type "XUI Test Case type" and event "Create a case"
+        Then I am on case form page
+        Then Validate event pages display show condition logic
 
    

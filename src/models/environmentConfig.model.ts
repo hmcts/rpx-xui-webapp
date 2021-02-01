@@ -9,4 +9,6 @@ export interface EnvironmentConfig {
   protocol: string;
   oidcEnabled: string;
   launchDarklyClientId?: string;
+  appInsightsKey?: string;
+  isAppInsightsEnabled?: boolean;
 }

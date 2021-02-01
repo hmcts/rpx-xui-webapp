@@ -1,96 +1,74 @@
 import { Injectable, Optional } from '@angular/core';
-import { AppInsights } from 'applicationinsights-js';
-import { HttpClient } from '@angular/common/http';
-import { AbstractAppInsights} from './appInsightsWrapper';
+import { ApplicationInsights, IApplicationInsights, IConfig, IConfiguration, ITelemetryPlugin } from '@microsoft/applicationinsights-web'
+import { EnvironmentService } from '../../shared/services/environment.service';
 
 export interface IMonitoringService {
-  logPageView(name?: string, url?: string, properties?: any,
-              measurements?: any, duration?: number);
+  logPageView(name?: string, uri?: string, properties?: any,
+              measurements?: any, refUri?: string,
+              pageType?: string, isLoggedIn?: boolean);
   logEvent(name: string, properties?: any, measurements?: any);
   logException(exception: Error);
 }
 
-export class MonitorConfig implements Microsoft.ApplicationInsights.IConfig {
-  instrumentationKey?: string;
-  endpointUrl?: string;
-  emitLineDelimitedJson?: boolean;
-  accountId?: string;
-  sessionRenewalMs?: number;
-  sessionExpirationMs?: number;
-  maxBatchSizeInBytes?: number;
-  maxBatchInterval?: number;
-  enableDebug?: boolean;
-  disableExceptionTracking?: boolean;
-  disableTelemetry?: boolean;
-  verboseLogging?: boolean;
-  diagnosticLogInterval?: number;
-  samplingPercentage?: number;
-  autoTrackPageVisitTime?: boolean;
-  disableAjaxTracking?: boolean;
-  overridePageViewDuration?: boolean;
-  maxAjaxCallsPerView?: number;
-  disableDataLossAnalysis?: boolean;
-  disableCorrelationHeaders?: boolean;
-  correlationHeaderExcludedDomains?: string[];
-  disableFlushOnBeforeUnload?: boolean;
-  enableSessionStorageBuffer?: boolean;
-  isCookieUseDisabled?: boolean;
-  cookieDomain?: string;
-  isRetryDisabled?: boolean;
-  url?: string;
-  isStorageUseDisabled?: boolean;
-  isBeaconApiDisabled?: boolean;
-  sdkExtension?: string;
-  isBrowserLinkTrackingEnabled?: boolean;
-  appId?: string;
-  enableCorsCorrelation?: boolean;
-}
-
-
-
 @Injectable()
 export class MonitoringService implements IMonitoringService {
-
-  constructor(private http: HttpClient, @Optional() private config?: MonitorConfig,
-              @Optional() private appInsights?: AbstractAppInsights) {
-                if (!appInsights) {
-                appInsights = AppInsights;
-              }
+  constructor(private readonly environmentService: EnvironmentService,
+              @Optional() public appInsights?: ApplicationInsights) {
+                this.appInsights = appInsights;
             }
 
-  logPageView(name?: string, url?: string, properties?: any,
-              measurements?: any, duration?: number) {
-    this.send(() => {
-      this.appInsights.trackPageView(name, url, properties, measurements, duration);
-    });
-  }
-
-  logEvent(name: string, properties?: any, measurements?: any) {
-    this.send(() => {
-      this.appInsights.trackEvent(name, properties, measurements);
-    });
-  }
-
-  logException(exception: Error) {
-    this.send(() => {
-      this.appInsights.trackException(exception);
-    });
-  }
-
-  private send(func: () => any): void {
-    if (this.config && this.config.instrumentationKey) {
-      func();
-    } else {
-      this.http.get('/api/monitoring-tools').subscribe(it => {
-        this.config = {
-          // tslint:disable-next-line: no-string-literal
-          instrumentationKey: it['key']
-        };
-        if (!this.appInsights.config) {
-          this.appInsights.downloadAndSetup(this.config);
-        }
-        func();
+  public logPageView(name?: string, 
+              uri?: string, 
+              properties?: any,
+              measurements?: any, 
+              refUri?: string, 
+              pageType?: string, 
+              isLoggedIn?: boolean) {
+      this.send(this.appInsights, () => {
+        this.appInsights.trackPageView({name, uri, properties, measurements, refUri, pageType, isLoggedIn});
       });
+  }
+
+  public logEvent(name: string, properties?: any, measurements?: any) {
+    this.send(this.appInsights, () => {
+      this.appInsights.trackEvent({name}, properties);
+    });
+  }
+
+  public logException(exception: Error) {
+    this.send(this.appInsights, () => {
+      this.appInsights.trackException({exception});
+    });
+  }
+
+  public send(appInsights: ApplicationInsights, func: () => any): void {
+    const isAppInsightsEnabled = this.environmentService.get('isAppInsightsEnabled');
+    if(isAppInsightsEnabled) {
+      if(!appInsights) {
+        this.appInsights = this.initialiseAppInsights();
+      }
+      func()
     }
+  }
+
+  public initialiseAppInsights(): ApplicationInsights {
+    const appInsightsKey = this.environmentService.get('appInsightsKey');
+    const config = MonitoringService.getConfig(appInsightsKey);
+    const applicationInsights = MonitoringService.getAppInsightsInstance(config);
+    applicationInsights.loadAppInsights();
+    return applicationInsights;
+  }
+
+  public static getConfig(appInsightsKey: string): IConfiguration & IConfig {
+    return {
+      disableTelemetry: true,
+      instrumentationKey: appInsightsKey
+    };
+  }
+
+  public static getAppInsightsInstance(config: IConfiguration & IConfig) {
+    return new ApplicationInsights({
+      config
+    });
   }
 }

@@ -1,6 +1,8 @@
 import * as express from 'express'
 import {getConfigValue, showFeature} from './index'
 import {
+  APP_INSIGHTS_KEY,
+  FEATURE_APP_INSIGHTS_ENABLED,
   FEATURE_OIDC_ENABLED,
   LAUNCH_DARKLY_CLIENT_ID,
   PROTOCOL,
@@ -29,6 +31,8 @@ async function uiConfigurationRouter(req, res) {
     oAuthCallback: getConfigValue(SERVICES_IDAM_OAUTH_CALLBACK_URL),
     oidcEnabled: showFeature(FEATURE_OIDC_ENABLED),
     protocol: getConfigValue(PROTOCOL),
+    isAppInsightsEnabled: showFeature(FEATURE_APP_INSIGHTS_ENABLED),
+    appInsightsKey: getConfigValue(APP_INSIGHTS_KEY)
   })
 }
 

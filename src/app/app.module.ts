@@ -35,7 +35,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MonitoringService } from './services/logger/monitoring.service';
 import { CryptoWrapper } from './services/logger/cryptoWrapper';
 import { JwtDecodeWrapper } from './services/logger/jwtDecodeWrapper';
-import { AbstractAppInsights, AppInsightsWrapper } from './services/logger/appInsightsWrapper';
 import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler';
 import { AcceptTermsService } from './services/acceptTerms/acceptTerms.service';
 import { ExuiCommonLibModule, LAUNCHDARKLYKEY } from '@hmcts/rpx-xui-common-lib';
@@ -82,14 +81,10 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
       deps: [Store],
       multi: true
     },
-    JwtDecodeWrapper,
-    CryptoWrapper,
     MonitoringService,
     LoggerService,
-    {
-      provide: AbstractAppInsights,
-      useClass: AppInsightsWrapper
-    },
+    JwtDecodeWrapper,
+    CryptoWrapper,
     {
       provide: ErrorHandler,
       useClass: DefaultErrorHandler

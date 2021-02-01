@@ -510,6 +510,11 @@ describe('CaseListComponent', () => {
 
       expect(component.defaults.state_id).toEqual(null);
     });
+
+    it('getEvent returns null.', () => {
+      const event = component.getEvent();
+      expect(event).toEqual(null);
+    });
   });
 
   describe('Should show share case button', () => {

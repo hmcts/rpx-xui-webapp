@@ -10,6 +10,8 @@ const { browser } = require('protractor');
 const CCDCaseConfig = require('./ccd/ccdCaseConfig/caseCreateConfigGenerator');
 const CCDCaseDetails = require('./ccd/ccdCaseConfig/caseDetailsConfigGenerator');
 
+const { getDLCaseConfig} = require('../ngIntegration/mockData/ccdCaseMock');
+
 const port = 3001;
 
 
@@ -105,7 +107,8 @@ module.exports = mockInstance;
 const args = minimist(process.argv)
 if (args.standalone){
     mockInstance.init();
-    // complexDynamicListeventConfig();
+    setUpcaseConfig();
+    // getDLCaseConfig();
     // collectionDynamicListeventConfig()
     // createCustomCaseDetails();
     mockInstance.startServer()
@@ -116,7 +119,7 @@ if (args.standalone){
 
 function setUpcaseConfig(caseConfig) {
     mockInstance.onGet('/data/internal/cases/:caseid/event-triggers/:eventId', (req, res) => {
-        res.send(caseConfig);
+        res.send(getDLCaseConfig().getCase());
     });
 
     mockInstance.onPost('/data/case-types/:caseType/validate', (req, res) => {

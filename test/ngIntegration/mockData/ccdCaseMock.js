@@ -53,4 +53,53 @@ function getTestJurisdiction(scenario) {
 }
 
 
-module.exports = { getTestJurisdiction }
+function getDLCaseConfig(scenario) {
+    const job = {
+        id: "job", type: "Complex", label: "Job details",
+        complex_fields: [
+            { id: "Title", type: "Text", label: "Title" },
+            { id: "Description", type: "Text", label: "Description" },
+        ]
+    };
+
+    const personFields = [
+        { id: "Title", type: "Text", label: "Title" },
+        { id: "FirstName", type: "Text", label: "First Name" },
+        { id: "LastName", type: "Text", label: "Last name" },
+        { id: "MaidenName", type: "Text", label: "Maiden Name" },
+        {
+            id: "Gender", type: "FixedRadioList", label: "Select your gender",
+            list: [{ code: "male", label: "Male" }, { code: "female", label: "Female" }, { code: "notGiven", label: "Not given" }]
+        },
+        job
+    ];;
+
+    const customCase = new CCDCaseConfig("testCaseType", "Test jurisdiction", "test description");
+
+    const listItems = [
+     { code: "male", label: "Male" }, { code: "female", label: "Female" }, { code: "notGiven", label: "Not given" }
+    ]
+
+    customCase
+        .setEventProps(scenario ? scenario : {})
+        .addWizardPage("testPage1", "Test Page 1")
+        .addCaseField({ id: "dl", type: "DynamicList", label: "Root DL", value: { value: listItems[1], list_items: listItems }})
+        .addCaseField({ id: "coll", type: "Collection", label: "Coll wth DL", collection_field_type: { id: "dl", type: "DynamicList", label: "Dl list", complex_fields: personFields },
+            value: { coll: [{ value: listItems[1], list_items: listItems }] }
+        })
+        .setFieldProps({
+            acls: [
+                {
+                    "role": "caseworker-probate-solicitor",
+                    "create": true,
+                    "read": true,
+                    "update": true,
+                    "delete": false
+                }
+            ] }) 
+        .getCase();
+    return customCase;
+}
+
+
+module.exports = { getTestJurisdiction, getDLCaseConfig}

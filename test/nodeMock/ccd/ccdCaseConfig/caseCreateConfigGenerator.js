@@ -44,6 +44,9 @@ class CCDCaseConfig extends CCDCaseField{
         this.currentWizardPage = null;
         this.currentCaseField = null;
 
+        this.currentComplexField = null;
+        this.currentCollectionField = null;
+
     }
     
     addWizardPage(id, label){
@@ -60,8 +63,7 @@ class CCDCaseConfig extends CCDCaseField{
    
 
     addCCDFieldToPage(wizardPage,fieldConfig){
-        const ccdField = this.getCCDFieldTemplateCopy(fieldConfig);
-
+        
         this.caseConfigTemplate.case_fields.push(ccdField);
         wizardPage.wizard_page_fields.push({
             "case_field_id": fieldConfig.id,
@@ -79,6 +81,17 @@ class CCDCaseConfig extends CCDCaseField{
         }
         const ccdField = this.getCCDFieldTemplateCopy(fieldConfig);
 
+        if (ccdField.field_type.type === "Complex") {
+            this.currentComplexField = ccdField;
+            this.currentCollectionField = null;
+        } else if (ccdField.field_type.type === "Collection") {
+            this.currentComplexField = null;
+            this.currentCollectionField = ccdField;
+        } else {
+            this.currentComplexField = null;
+            this.currentCollectionField = null;
+        }
+
         this.caseConfigTemplate.case_fields.push(ccdField);
         this.currentWizardPage.wizard_page_fields.push({
             "case_field_id": ccdField.id,
@@ -88,6 +101,11 @@ class CCDCaseConfig extends CCDCaseField{
         }); 
         this.currentCaseField = ccdField; 
         return this; 
+    }
+
+    setComplexField(fieldConfig){
+        this.currentComplexField.field_type.complex_fields.push(his.getCCDFieldTemplateCopy(fieldConfig));
+        return this;
     }
 
     setEventProps(fieldprops) {

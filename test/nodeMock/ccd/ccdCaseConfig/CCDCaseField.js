@@ -114,6 +114,10 @@ class CCDcaseField{
         if (fieldConfig.value) {
             template.value = fieldConfig.value
         }
+
+        if (fieldConfig.props){
+            this.setObjectProps(template, fieldConfig.props);
+        }
         return template;
     }
 

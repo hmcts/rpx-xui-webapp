@@ -54,49 +54,62 @@ function getTestJurisdiction(scenario) {
 
 
 function getDLCaseConfig(scenario) {
-    const job = {
-        id: "job", type: "Complex", label: "Job details",
-        complex_fields: [
-            { id: "Title", type: "Text", label: "Title" },
-            { id: "Description", type: "Text", label: "Description" },
-        ]
-    };
-
-    const personFields = [
-        { id: "Title", type: "Text", label: "Title" },
-        { id: "FirstName", type: "Text", label: "First Name" },
-        { id: "LastName", type: "Text", label: "Last name" },
-        { id: "MaidenName", type: "Text", label: "Maiden Name" },
-        {
-            id: "Gender", type: "FixedRadioList", label: "Select your gender",
-            list: [{ code: "male", label: "Male" }, { code: "female", label: "Female" }, { code: "notGiven", label: "Not given" }]
-        },
-        job
-    ];;
-
+    
     const customCase = new CCDCaseConfig("testCaseType", "Test jurisdiction", "test description");
 
     const listItems = [
      { code: "male", label: "Male" }, { code: "female", label: "Female" }, { code: "notGiven", label: "Not given" }
     ]
 
+
+
+
     customCase
         .setEventProps(scenario ? scenario : {})
         .addWizardPage("testPage1", "Test Page 1")
         .addCaseField({ id: "dl", type: "DynamicList", label: "Root DL", value: { value: listItems[1], list_items: listItems }})
-        .addCaseField({ id: "coll", type: "Collection", label: "Coll wth DL", collection_field_type: { id: "dl", type: "DynamicList", label: "Dl list", complex_fields: personFields },
-            value: { coll: [{ value: listItems[1], list_items: listItems }] }
-        })
-        .setFieldProps({
-            acls: [
+      
+     
+
+
+        .addCaseField({
+            id: "coll", type: "Collection", label: "collection complex in complex with DL", collection_field_type:
+            {
+                id: "complexDl", type: "Complex", label: "Complex collection", complex_fields: [
+                    { id: "complexl1", type: "Complex", label: "Complex level 1", complex_fields: [{ id: "dl", type: "DynamicList", label: "DL1" }] },
+
+                    { id: "complexl2", type: "Complex", label: "Complex level 2", complex_fields: [{ id: "dl", type: "DynamicList", label: "DL2" }] },
+                ]
+            },
+            value: [
                 {
-                    "role": "caseworker-probate-solicitor",
-                    "create": true,
-                    "read": true,
-                    "update": true,
-                    "delete": false
+                    complexDl: {
+                        complexl1: { dl: { value: listItems[1], list_items: listItems }, dl1: { value: listItems[2], list_items: listItems } },
+                        complexl2: { dl: { value: listItems[1], list_items: listItems }, dl2: { value: listItems[2], list_items: listItems } }
+                    }
                 }
-            ] }) 
+            ]
+        })
+        .setFieldProps({ display_context_parameter: "#COLLECTION(allowInsert,allowDelete)" })
+
+
+
+        // .addCaseField({ id: "coll", type: "Collection", label: "Coll wth DL", collection_field_type: 
+        // { id: "complexDl", type: "Complex", label: "Complex collection", complex_fields: [
+        //     { id: "dl1", type: "DynamicList", label: "first DL" },
+        //     { id: "dl2", type: "DynamicList", label: "second dl" }
+        // ] },
+         
+        // value: [
+        //     { complexDl: { dl1: { value: listItems[1], list_items: listItems }, dl2: { value: listItems[2], list_items: listItems } }}
+        //     ]
+        // })
+        // .setFieldProps({ display_context_parameter: "#COLLECTION(allowInsert,allowDelete)"})
+      
+        
+
+
+
         .getCase();
     return customCase;
 }

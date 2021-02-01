@@ -18,6 +18,7 @@ import {
   HttpErrorService,
   RequestOptionsBuilder,
   SearchService,
+  AlertService
 } from '@hmcts/ccd-case-ui-toolkit';
 import { EffectsModule } from '@ngrx/effects';
 import {combineReducers, StoreModule} from '@ngrx/store';
@@ -114,6 +115,7 @@ describe('CaseCreateSubmitComponent', () => {
         DraftService,
         HttpErrorService,
         AppConfigService,
+        AlertService,
         AppConfig,
         {
           provide: SearchService,

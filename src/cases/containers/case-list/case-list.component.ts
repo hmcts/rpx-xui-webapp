@@ -309,7 +309,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
         caseState,
         metadataFields,
         formGroup: {
-          value: (formGroupValues ? formGroupValues : {})
+          value: formGroupValues ? formGroupValues : {}
         },
         page,
         view: 'WORKBASKET'

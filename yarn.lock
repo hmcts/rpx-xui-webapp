@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@^2.67.10-feature-toggle-work-allocation":
-  version "2.67.10-feature-toggle-work-allocation"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.67.10-feature-toggle-work-allocation.tgz#a81a1305338b63811a6a1484921295584f236164"
-  integrity sha512-vZiUdELXtULa1k66eQndxlE5oqKZ27/2AX5Elf/BkJKshDp46dcFcZiZ66X1Vs1t0HcONnE+NIDjzEaR9qvZ5Q==
+"@hmcts/ccd-case-ui-toolkit@^2.68.9-alpha":
+  version "2.68.9-alpha"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.68.9-alpha.tgz#6e622de6dd12372aa3e06563df25fdc046f04962"
+  integrity sha512-CyTjjck90FZF/0t6UAmbtoX02AVU9FR6K/o9pG5cC3KM+VSqGRdGkzNqHdrsirJjYWvnwkt3rwlaSr4iyxkS4g==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"

@@ -446,7 +446,7 @@ describe('CaseListComponent', () => {
       component.setCaseListFilterDefaults();
 
       expect(component.defaults).toBeDefined();
-      expect(component.defaults.state_id).toEqual('some state id');
+      expect(component.defaults.state_id).toEqual(null);
     });
 
     it('should set the defaults from localStorage.', () => {
@@ -454,7 +454,7 @@ describe('CaseListComponent', () => {
       localStorageGetItemSpy.and.returnValue('{' +
         '"jurisdiction": "Probate", ' +
         '"case-type": "GrantOfRepresentation", ' +
-        '"case-state": "BOReadyToIssue"' +
+        '"case-state": null' +
       '}');
       component.jurisdictionsBehaviourSubject$.next([{
         id: 'Probate',
@@ -474,7 +474,7 @@ describe('CaseListComponent', () => {
       }]);
       component.setCaseListFilterDefaults();
 
-      expect(component.defaults.state_id).toEqual('BOReadyToIssue');
+      expect(component.defaults.state_id).toEqual(null);
     });
   });
 

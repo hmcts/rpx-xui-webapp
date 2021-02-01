@@ -11,6 +11,11 @@ const { accessibilityCheckerAuditor } = require('../../../../accessibility/helpe
 class CaseManager {
 
     constructor() {
+        this.manageCasesHeaderLink = $('.hmcts-header__link');
+        this.caseListContainer = $('exui-case-list');
+
+        this.caseCreateheaderLink = element(by.xpath('//a[contains(@class ,"hmcts-primary-navigation__link")][contains(text(),"Create case")]'));
+
         this.continueBtn = new Button('button', 'Continue');
 
         this.submitBtn = $("form button[@type = 'submit']");
@@ -46,13 +51,44 @@ class CaseManager {
     }
 
     async startCaseCreation(jurisdiction, caseType, event){
-        await this.createCaseStartPage.selectJurisdiction(jurisdiction);
+
+        let retryOnJurisdiction = 0;
+        let isJurisdictionSelected = false;
+        while (retryOnJurisdiction < 3 && !isJurisdictionSelected){
+            try{
+                await this.createCaseStartPage.selectJurisdiction(jurisdiction);
+                isJurisdictionSelected = true;
+            }
+            catch(error){
+                cucumberReporter.AddMessage("Jurisdiction option not found after 30sec. Retrying again"); 
+                retryOnJurisdiction++; 
+                await this.manageCasesHeaderLink.click();
+                await await BrowserWaits.waitForElement(this.caseListContainer);
+                await this.caseCreateheaderLink.click();
+                await this.createCaseStartPage.amOnPage();
+            }
+        }
+
+
         await this.createCaseStartPage.selectCaseType(caseType);
         await this.createCaseStartPage.selectEvent(event);
 
         var thisPageUrl = await browser.getCurrentUrl();
-        await this.createCaseStartPage.clickStartButton();
-        await BrowserWaits.waitForPageNavigation(thisPageUrl)
+
+        let startCasePageRetry = 0;
+        let isCaseStartPageDisplayed = false;
+        while (startCasePageRetry < 3 && !isCaseStartPageDisplayed){
+            try{
+                await this.createCaseStartPage.clickStartButton();
+                await BrowserWaits.waitForPageNavigation(thisPageUrl);
+                isCaseStartPageDisplayed = true;
+            }
+            catch(err){
+                cucumberReporter.AddMessage("Case start page not displayed in  30sec. Retrying again");  
+                startCasePageRetry++; 
+            }
+        }
+        
    } 
 
     async createCase( caseData,isAccessibilityTest,tcTypeStatus) {

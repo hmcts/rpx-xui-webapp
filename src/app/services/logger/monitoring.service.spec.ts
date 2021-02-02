@@ -7,7 +7,7 @@ describe('Monitoring service', () => {
     beforeEach(() => {
         mockedEnvService = jasmine.createSpyObj('mockedEnvService', ['get']);
         mockedAppInsights = jasmine.createSpyObj('mockedAppInsights', ['downloadAndSetup', 'trackException', 'trackEvent',
-        'trackPageView']);
+        'trackPageView', 'loadAppInsights']);
     })
 
     it('should be Truthy', () => {
@@ -78,5 +78,17 @@ describe('Monitoring service', () => {
         const config = MonitoringService.getConfig('somekey');
         expect(config.instrumentationKey).toEqual('somekey');
         expect(config.disableTelemetry).toBeTruthy();
+    });
+
+    it('initialiseAppInsights', () => {
+        const service = new MonitoringService(mockedEnvService, mockedAppInsights);
+        const spyOnAppInstance = spyOn(MonitoringService, 'getAppInsightsInstance');
+        spyOnAppInstance.and.returnValue(mockedAppInsights);
+
+        const result = service.initialiseAppInsights();
+        expect(mockedAppInsights.loadAppInsights).toHaveBeenCalled();
+        expect(mockedEnvService.get).toHaveBeenCalledWith('appInsightsKey');
+        expect(result).toEqual(mockedAppInsights);
+        expect(spyOnAppInstance).toHaveBeenCalled();
     });
 });

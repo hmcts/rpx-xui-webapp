@@ -10,11 +10,6 @@ class BrowserWaits{
         this.pageErrors = $$(".error-summary");
     }
 
-    setDefaultWaitTime(defaultWait){
-        this.waitTime = defaultWait; 
- 
-    }
-
     async waitForSeconds(waitInSec){
         await browser.sleep(waitInSec*1000);
     }

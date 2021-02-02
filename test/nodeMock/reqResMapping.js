@@ -1,17 +1,37 @@
 const ccdApiMock = require('./ccd/ccdApi');
 const WAReqResMappings  = require('./workAllocation/reqResMapping');
-const nodeAppReqResMappings = require('./nodeApp/reqResMapping');
 
+
+const idamProfile = require('./ccd/profile');
 const dummyCaseDetails = require('./ccd/caseDetails_data');
 
 const requestMapping = {
    get:{
-        ...nodeAppReqResMappings.get,
-        ...WAReqResMappings.get, 
+       '/auth/login' : (req,res) => {
+           res.set('Location' , 'https://idam-web-public.aat.platform.hmcts.net/o/authorize?client_id=xuiwebapp&scope=profile%20openid%20roles%20manage-user%20create-user&response_type=code&redirect_uri=https%3A%2F%2Fmanage-case.aat.platform.hmcts.net%2Foauth2%2Fcallback&state=FqsiMTALn8m7qKRHNAAqlBoXUj57XSdenjnk_fplRzM&prompt=login&nonce=-XwicqlfV3vpe7GNIe9v5QFrlOzFR7VUDcjBBuYyUBc');
+           res.status(302).send();
+       },
+       '/auth/isAuthenticated' : (req,res) => {
+            res.send(true);
+       },
        '/api/organisation': (req,res) => {
            res.send(getOrganisation());
        },
-       
+       '/external/configuration-ui': (req,res) => {
+           res.send({"googleAnalyticsKey":"UA-124734893-4","idamWeb":"https://idam-web-public.aat.platform.hmcts.net","launchDarklyClientId":"5de6610b23ce5408280f2268","manageCaseLink":"https://xui-webapp-aat.service.core-compute-aat.internal/cases","manageOrgLink":"https://xui-mo-webapp-aat.service.core-compute-aat.internal","protocol":"http"});
+       },
+        '/external/config/ui': (req, res) => {
+            res.send({ "googleAnalyticsKey": "UA-124734893-4", "idamWeb": "https://idam-web-public.aat.platform.hmcts.net", "launchDarklyClientId": "5de6610b23ce5408280f2268", "manageCaseLink": "https://xui-webapp-aat.service.core-compute-aat.internal/cases", "manageOrgLink": "https://xui-mo-webapp-aat.service.core-compute-aat.internal", "protocol": "http" });
+        },
+       '/external/configuration': (req,res) => {
+           res.send(""+getConfigurationValue(req.query.configurationKey));
+       },
+        '/api/configuration': (req, res) => {
+            res.send("" + getConfigurationValue(req.query.configurationKey));
+        },
+       '/api/healthCheck': (req,res) => {
+           res.send({"healthState":true});
+       },
        '/api/userList':(req,res) => {
             res.send(getUsersList());
        },
@@ -40,6 +60,9 @@ const requestMapping = {
         '/data/internal/case-types/:jurisdiction/event-triggers/:caseType': (req, res) => {
             res.send(ccdApiMock.getSolicitorCreateCaseConfig(req.params.jurisdiction, req.params.caseType));
         },
+        '/data/internal/profile' : (req,res) => {
+            res.send(idamProfile);
+        },
         '/data/internal/cases/:caseid': (req,res) => {
             res.send(dummyCaseDetails);
         },
@@ -49,13 +72,12 @@ const requestMapping = {
         '/api/caseshare/orgs': (req, res) => {
             res.send(getCaseShareOrgs());
         },
-         '/data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/cases/pagination_metadata' : (req,res) => {
-          res.send({ "total_results_count": 400, "total_pages_count": 16 });
-        },
+        ...WAReqResMappings.get
+
+
+
     },
     post:{
-        ...nodeAppReqResMappings.post,
-        ...WAReqResMappings.post,
         '/api/inviteUser': (req,res) => {
             res.send({"userIdentifier":"97ecc487-cdeb-42a8-b794-84840a4testc","idamStatus":null});
         },
@@ -87,8 +109,8 @@ const requestMapping = {
         },
         '/api/caseshare/case-assignments': (req, res) => {
             res.send( []);
-        }
-      
+        },
+        ...WAReqResMappings.post
 
     },
     put:{
@@ -100,6 +122,15 @@ const requestMapping = {
 
 }
 
+const configurations = {
+    'feature.termsAndConditionsEnabled':false,
+    'termsAndConditionsEnabled':false
+
+}
+
+function getConfigurationValue(configurationKey){
+    return configurations[configurationKey]; 
+}
 
 function getOrganisation(){
     return {"organisationIdentifier":"VRSFNPV","name":"Test sreekanth org","status":"ACTIVE","sraId":null,"sraRegulated":false,"companyNumber":null,"companyUrl":null,"superUser":{"firstName":"test","lastName":"test","email":"sreekanth_su1@mailinator.com"},"paymentAccount":[],"contactInformation":[{"addressLine1":"Flat 39","addressLine2":"Sheraton House","addressLine3":null,"townCity":"London","county":"Essex","country":null,"postCode":"SW1V 3BZ","dxAddress":[]}]}
@@ -115,7 +146,7 @@ function getJurisdictions(){
 }
 
 
-module.exports = { requestMapping};
+module.exports = { requestMapping,configurations};
 
 function getShareCases(){
     return [

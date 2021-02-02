@@ -1,50 +1,29 @@
-import { CdkTableModule } from '@angular/cdk/table';
-import { Component, ViewChild } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
-
-import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { InfoMessageContainerComponent } from '../../containers/info-message-container/info-message-container.component';
-import { WorkAllocationTaskService } from '../../services';
-import { TaskHomeComponent } from './task-home.component';
-
-@Component({
-  template: `<exui-task-home></exui-task-home>`
-})
-class WrapperComponent {
-  @ViewChild(TaskHomeComponent) public appComponentRef: TaskHomeComponent;
-}
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {RouterTestingModule} from '@angular/router/testing';
+import {StoreModule} from '@ngrx/store';
+import {reducers} from 'src/app/store';
+import {TaskHomeComponent} from '..';
 
 describe('TaskHomeComponent', () => {
   let component: TaskHomeComponent;
-  let wrapper: WrapperComponent;
-  let fixture: ComponentFixture<WrapperComponent>;
-  let router: Router;
-  const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
+  let fixture: ComponentFixture<TaskHomeComponent>;
 
-  beforeEach(() => {
+
+  beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        CdkTableModule,
-        ExuiCommonLibModule,
         RouterTestingModule,
-        WorkAllocationComponentsModule
+        StoreModule.forRoot({...reducers}),
       ],
-      declarations: [TaskHomeComponent, WrapperComponent, InfoMessageContainerComponent],
-      providers: [
-        { provide: WorkAllocationTaskService, useValue: mockTaskService }
-      ]
-    }).compileComponents();
-    fixture = TestBed.createComponent(WrapperComponent);
-    wrapper = fixture.componentInstance;
-    component = wrapper.appComponentRef;
-    router = TestBed.get(Router);
-    fixture.detectChanges();
-  });
+      declarations: [TaskHomeComponent],
+      providers: []
+    })
+      .compileComponents();
+  }));
 
-  it('should create', () => {
-    expect(component).toBeDefined();
+  beforeEach(() => {
+    fixture = TestBed.createComponent(TaskHomeComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 });

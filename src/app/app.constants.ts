@@ -70,7 +70,7 @@ const applicationUserThemes: Theme[] =  [
   },
   {
     roles: ['pui-case-manager'],
-    appTitle: {name: 'Manage cases', url: '/'},
+    appTitle: {name: 'Manage Cases', url: '/'},
     navigationItems: [
       {
         text: 'Case list',
@@ -99,7 +99,7 @@ const applicationUserThemes: Theme[] =  [
 
 const defaultUserTheme: Theme = {
   roles: ['default'],
-  appTitle: {name: 'Manage cases', url: '/'},
+  appTitle: {name: 'Manage Cases', url: '/'},
   navigationItems: [
     {
       text: 'Case list',
@@ -200,7 +200,7 @@ const redirectUrl = {
 
 
 
-const appHeaderTitle = {name: 'Manage cases', url: '/'};
+const appHeaderTitle = {name: 'Manage Cases', url: '/'};
 
 // Making the base URL for case details a constant.
 const caseDetailsUrl: string = '/cases/case-details/';

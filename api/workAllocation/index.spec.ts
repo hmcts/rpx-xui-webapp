@@ -73,8 +73,7 @@ describe('workAllocation', () => {
       spy = sandbox.stub(http, 'post').resolves(res);
       const req = mockReq({
         body: {
-          searchRequest: { search_parameters: [] },
-          view: 'view'
+          search: 'criteria'
         }
       });
       const response = mockRes();
@@ -83,7 +82,7 @@ describe('workAllocation', () => {
       // Should have the correct URL and the appropriate payload.
       const args = spy.getCall(0).args;
       expect(args[0]).to.equal(`${baseUrl}/task`);
-      expect(args[1]).to.deep.equal({ search_parameters: [] });
+      expect(args[1]).to.deep.equal({ search: 'criteria' });
 
       // Should have received the HTTP response. The search simply returns the data.
       expect(response.send).to.have.been.calledWith(sinon.match(SUCCESS_RESPONSE.data));

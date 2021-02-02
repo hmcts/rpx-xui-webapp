@@ -73,4 +73,3 @@ stryker-tmp/
 # stryker temp files
 .stryker-tmp
 stryker.log
-log/pact.log

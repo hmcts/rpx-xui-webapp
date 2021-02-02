@@ -1,19 +1,14 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Router } from '@angular/router';
 
-import { Caseworker, Location } from '../../models/dtos';
-import { CaseworkerDisplayName } from '../../pipes';
-import { CaseworkerDataService, LocationDataService } from '../../services';
-import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
-import { FilterConstants } from '../constants';
+import { Caseworker, Location } from './../../models/dtos/task';
+import { CaseworkerDataService } from './../../services/case-worker-data.service';
+import { LocationDataService } from './../../services/location-data.service';
 
 @Component({
   selector: 'exui-task-assignment',
   templateUrl: './task-assignment.component.html'
 })
 export class TaskAssignmentComponent implements OnInit {
-
-  @Input() public showProblem: boolean;
 
   @Input()
   public get excludeCaseworkers(): Caseworker[] {
@@ -35,14 +30,18 @@ export class TaskAssignmentComponent implements OnInit {
    */
   @Output() public caseworkerChanged: EventEmitter<Caseworker> = new EventEmitter<Caseworker>();
 
-  public readonly ALL_LOCATIONS: Location = FilterConstants.Options.Locations.ALL;
+  public readonly ALL_LOCATIONS: Location = {
+    id: '**ALL_LOCATIONS**',
+    locationName: 'All',
+    services: []
+  };
 
   @Input()
   public get location(): Location {
     return this.pLocation;
   }
   public set location(value: Location) {
-    value = value || this.ALL_LOCATIONS;
+    value = value || this.ALL_LOCATIONS; // undefined or null means "All"
     if (this.pLocation !== value) {
       this.pLocation = value;
       this.handleLocationChanged();
@@ -75,16 +74,14 @@ export class TaskAssignmentComponent implements OnInit {
     return this.pCaseworkers;
   }
 
-  private pLocation: Location = null;
+  private pLocation: Location = this.ALL_LOCATIONS;
   private pLocations: Location[];
   private pCaseworker: Caseworker = null;
   private pCaseworkers: Caseworker[];
   private pAllCaseworkers: Caseworker[]; // Holds the unfiltered list for the location.
   private pExcludeCaseworkers: Caseworker[];
-  private readonly caseworkerDisplayName: CaseworkerDisplayName = new CaseworkerDisplayName();
 
   constructor(
-    private readonly router: Router,
     private readonly locationService: LocationDataService,
     private readonly caseworkerService: CaseworkerDataService
   ) {
@@ -94,9 +91,6 @@ export class TaskAssignmentComponent implements OnInit {
     // Get the locations for this component.
     this.locationService.getLocations().subscribe(locations => {
       this.pLocations = [ ...locations ];
-      this.location = this.vetLocation(this.location);
-    }, error => {
-      handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
     });
 
     // Also get the caseworkers at the initial location (which may be "All").
@@ -111,12 +105,7 @@ export class TaskAssignmentComponent implements OnInit {
    */
   public caseworkerIsSelectable(caseworker: Caseworker): boolean {
     if (this.excludeCaseworkers) {
-      // This check may well change once we integrate with the API but
-      // it's unlikely to be an object reference check in any case.
-      const shortName = this.caseworkerDisplayName.transform(caseworker, false);
-      return !this.excludeCaseworkers.find(ex => {
-        return this.caseworkerDisplayName.transform(ex, false) === shortName;
-      });
+      return !this.excludeCaseworkers.includes(caseworker);
     }
     return true;
   }
@@ -130,15 +119,11 @@ export class TaskAssignmentComponent implements OnInit {
     if (this.location === this.ALL_LOCATIONS) {
       this.caseworkerService.getAll().subscribe(caseworkers => {
         this.setupCaseworkers(caseworkers);
-      }, error => {
-        handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
       });
-    } else if (this.location && this.location.id) {
+    } else {
       // Otherwise, get the caseworkers at the specifed location.
       this.caseworkerService.getForLocation(this.location.id).subscribe(caseworkers => {
         this.setupCaseworkers(caseworkers);
-      }, error => {
-        handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
       });
     }
   }
@@ -149,14 +134,6 @@ export class TaskAssignmentComponent implements OnInit {
     this.pCaseworkers = [ ...caseworkers ].filter(item => {
       return this.caseworkerIsSelectable(item);
     });
-  }
-
-  public vetLocation(toVet: Location): Location {
-    if (toVet && this.locations) {
-      const vetted = this.locations.find(loc => loc.locationName === toVet.locationName);
-      return vetted || this.ALL_LOCATIONS;
-    }
-    return toVet;
   }
 
 }

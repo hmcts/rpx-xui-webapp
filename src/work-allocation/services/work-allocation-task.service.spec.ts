@@ -1,72 +1,61 @@
-import { ListConstants } from '../components/constants';
-import { SearchTaskRequest, TaskSearchParameters } from '../models/dtos';
+import { TaskSearchParameters } from './../models/dtos/task-search-parameter';
 import { ACTION, WorkAllocationTaskService } from './work-allocation-task.service';
 
-describe('WorkAllocation', () => {
-  const mockHttpService = jasmine.createSpyObj('mockHttpService', ['put', 'get', 'post']);
+describe('WorkAllocation service', () => {
+    const mockHttpService = jasmine.createSpyObj('mockHttpService', ['put', 'get', 'post']);
 
-  describe('WorkAllocationTaskService', () => {
     it('should be Truthy', () => {
-      const service = new WorkAllocationTaskService(mockHttpService);
-      expect(service).toBeTruthy();
+        const workAllocationService = new WorkAllocationTaskService(mockHttpService);
+        expect(workAllocationService).toBeTruthy();
     });
 
-    it('getTask should make correct api call', () => {
-      const service = new WorkAllocationTaskService(mockHttpService);
-      service.getTask('123456');
-      expect(mockHttpService.get).toHaveBeenCalledWith('/workallocation/task/123456');
+    it('getTask', () => {
+        const workAllocationService = new WorkAllocationTaskService(mockHttpService);
+        workAllocationService.getTask('123456');
+        expect(mockHttpService.get).toHaveBeenCalledWith('/workallocation/task/123456');
     });
 
-    it('getActionUrl should correctly format the url', () => {
-      const service = new WorkAllocationTaskService(mockHttpService);
-      const url = service.getActionUrl('123456', ACTION.ASSIGN);
-      expect(url).toEqual('/workallocation/task/123456/assign');
+    it('getActionUrl', () => {
+        const workAllocationService = new WorkAllocationTaskService(mockHttpService);
+        const url = workAllocationService.getActionUrl('123456', ACTION.ASSIGN);
+        expect(url).toEqual('/workallocation/task/123456/assign');
     });
 
-    it('assignTask should make correct api call', () => {
-      const service = new WorkAllocationTaskService(mockHttpService);
-      const assignee = {id: 'id1', userName: 'userName'};
-      service.assignTask('123456', assignee);
-      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task/123456/assign', { assignee });
+    it('assign Task', () => {
+        const workAllocationService = new WorkAllocationTaskService(mockHttpService);
+        const assignee = {id: 'id1', userName: 'userName'};
+        workAllocationService.assignTask('123456', assignee);
+        expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task/123456/assign', { assignee });
     });
 
-    it('completeTask should make correct api call', () => {
-      const service = new WorkAllocationTaskService(mockHttpService);
-      service.completeTask('123456');
-      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task/123456/complete', {});
+    it('complete Task', () => {
+        const workAllocationService = new WorkAllocationTaskService(mockHttpService);
+        workAllocationService.completeTask('123456');
+        expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task/123456/complete', {});
     });
 
-    it('cancelTask should make correct api call', () => {
-      const service = new WorkAllocationTaskService(mockHttpService);
-      service.cancelTask('123456');
-      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task/123456/cancel', {});
+    it('cancel Task', () => {
+        const workAllocationService = new WorkAllocationTaskService(mockHttpService);
+        workAllocationService.cancelTask('123456');
+        expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task/123456/cancel', {});
     });
 
-    it('claimTask should make correct api call', () => {
-      const service = new WorkAllocationTaskService(mockHttpService);
-      service.claimTask('123456');
-      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task/123456/claim', {});
+    it('claim Task', () => {
+        const workAllocationService = new WorkAllocationTaskService(mockHttpService);
+        workAllocationService.claimTask('123456');
+        expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task/123456/claim', {});
     });
 
-    it('unclaimTask should make correct api call', () => {
-      const service = new WorkAllocationTaskService(mockHttpService);
-      service.unclaimTask('123456');
-      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task/123456/unclaim', {});
+    it('unclaim Task', () => {
+        const workAllocationService = new WorkAllocationTaskService(mockHttpService);
+        workAllocationService.unclaimTask('123456');
+        expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task/123456/unclaim', {});
     });
 
-    it('postTask should make correct api call', () => {
-      const service = new WorkAllocationTaskService(mockHttpService);
-      const searchParam = {} as TaskSearchParameters;
-      service.postTask(searchParam);
-      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task', searchParam);
+    it('post Task', () => {
+        const workAllocationService = new WorkAllocationTaskService(mockHttpService);
+        const searchParam = {} as TaskSearchParameters;
+        workAllocationService.postTask(searchParam);
+        expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task/', searchParam);
     });
-
-    it('searchTask should make correct api call', () => {
-      const service = new WorkAllocationTaskService(mockHttpService);
-      const searchRequest = {} as SearchTaskRequest;
-      const view = ListConstants.View.MyTasks;
-      service.searchTask({ searchRequest, view });
-      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task', { searchRequest, view });
-    });
-  });
 });

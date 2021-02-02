@@ -29,7 +29,6 @@
     "lint:ng": "ng lint",
     "e2e": "ng e2e",
     "test:coverage": "echo 'not implemented'",
-    "test:coverage:all": "yarn test:coverage:ng && yarn test:coverage:node",
     "test:coverage:merge": "./node_modules/.bin/lcov-result-merger './reports/tests/coverage/*/lcov.info' > ./reports/tests/coverage/lcov.info",
     "test:coverage:node": "cd api && yarn coverage",
     "test:coverage:ng": "yarn test:ng --source-map --code-coverage",
@@ -51,8 +50,7 @@
     "publish-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error mocha --timeout 15000 -r ts-node/register -r dotenv-extended/config api/test/pact/publish/publish.ts dotenv_config_defaults=./api/.env.defaults --reporter spec",
     "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact",
     "test:api": "mocha -r ts-node/register --config ./test/integration/tests/mocha.json --reporter mochawesome --reporter-options reportDir=reports/tests/api_functional,reportFilename=mochawesome",
-    "test:ngIntegration": "webdriver-manager update --versions.chrome 2.40 && ng e2e --webdriver-update=false --protractorConfig=./test/ngIntegration/config/protractor.conf.js",
-    "test:nodeMock": "nodemon test/nodeMock/app --standalone"
+    "test:ngIntegration": "webdriver-manager update --versions.chrome 2.40 && ng e2e --webdriver-update=false --protractorConfig=./test/ngIntegration/config/protractor.conf.js"
   },
   "private": true,
   "dependencies": {
@@ -73,7 +71,7 @@
     "@hmcts/media-viewer": "2.6.4",
     "@hmcts/nodejs-healthcheck": "^1.7.0",
     "@hmcts/properties-volume": "^0.0.9",
-    "@hmcts/rpx-xui-common-lib": "0.1.53",
+    "@hmcts/rpx-xui-common-lib": "0.1.48",
     "@hmcts/rpx-xui-node-lib": "^2.24.3",
     "@ng-idle/core": "^8.0.0-beta.4",
     "@ng-idle/keepalive": "^8.0.0-beta.4",
@@ -160,6 +158,7 @@
     "@types/mocha": "^8.0.3",
     "@types/shortid": "0.0.29",
     "@types/sinon": "^7.0.13",
+    "base-64": "^0.1.0",
     "chai": "^4.2.0",
     "chai-as-promised": "7.1.1",
     "codelyzer": "~4.5.0",
@@ -198,8 +197,7 @@
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10",
     "webpack-node-externals": "^1.7.2",
-    "webpack-source-map-support": "^2.0.1",
-    "base-64": "^0.1.0"
+    "webpack-source-map-support": "^2.0.1"
   },
   "resolutions": {
     "**/**/dot-prop": "^5.1.1",

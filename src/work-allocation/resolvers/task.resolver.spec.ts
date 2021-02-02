@@ -6,17 +6,16 @@ import { TaskResolver } from './task.resolver';
 
 describe('Task Resolver', () => {
 
-    it('resolves on success', () => {
+    it('resolve', () => {
         const mockService = jasmine.createSpyObj('WorkAllocationTaskService', ['getTask']);
         mockService.getTask.and.returnValue(of({} as Task));
-        const mockRouter = jasmine.createSpyObj('Router', [ 'navigate' ]);
-        const taskResolver = new TaskResolver(mockService, mockRouter);
+        const taskResolver = new TaskResolver(mockService);
         const route = jasmine.createSpyObj('Route', ['']);
         route.paramMap = {
-            get: () => {
-                return 'somevalue';
-            }
-        };
+                get: () => {
+                    return 'somevalue';
+                }
+            };
         const task$ = taskResolver.resolve(route, {} as RouterStateSnapshot);
         expect(mockService.getTask).toHaveBeenCalledWith('somevalue');
         task$.subscribe(task => expect(task).toEqual({} as Task));

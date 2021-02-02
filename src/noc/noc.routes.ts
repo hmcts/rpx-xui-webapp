@@ -15,7 +15,7 @@ export const ROUTES: Routes = [
         component: null,
         canActivate: [ HealthCheckGuard, FeatureToggleGuard ],
         data: {
-          title: 'HMCTS Manage cases | Notice of Change',
+          title: 'HMCTS Manage Cases | Notice of Change',
           needsFeaturesEnabled: [ AppConstants.FEATURE_NAMES.noticeOfChange ],
           featureDisabledRedirect: '/'
         }

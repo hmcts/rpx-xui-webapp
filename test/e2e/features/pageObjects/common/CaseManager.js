@@ -202,7 +202,7 @@ class CaseManager {
     }
 
 
-    async _writeToField(ccdField,parentFieldName) {
+    async _writeToField(ccdField) {
         const isElementDisplayed = await ccdField.isDisplayed(); 
         if (!isElementDisplayed) {
             return;
@@ -210,20 +210,11 @@ class CaseManager {
         var ccdFileTagName = await ccdField.getTagName();
         var fieldName = "";
         try {
-            if (ccdFileTagName.includes("ccd-write-collection-field")){
-                console.log("collection field name");
-                fieldName = await ccdField.$('h2.heading-h2').getText();
-                fieldName = fieldName.trim();
-                console.log("collection field name is" + fieldName);
-
-            }else{
-                fieldName = await ccdField.$('.form-label').getText();
-            }
+            fieldName = await ccdField.$('.form-label').getText();
         }
         catch (err) {
-            console.log(err);
+            fieldName = "Not inline field label";
         }
-        fieldName = parentFieldName ? `${parentFieldName}.${fieldName}` : fieldName; 
         console.log("===> Case Field : " + fieldName);
         switch (ccdFileTagName) {
             case "ccd-write-text-field":
@@ -259,9 +250,9 @@ class CaseManager {
                 break;
             case "ccd-write-fixed-list-field":
                 var selectOption = this._fieldValue(fieldName);
-                var selectOptionElement = ccdField.$('option:nth-of-type(2)'); 
-                if (!selectOption.includes(fieldName)) {
-                    selectOptionElement = ccdField.element(by.xpath("//option[contains(text() , '" + selectOption+"')]")); 
+                var selectOptionElement = ccdField.$('select option:nth-of-type(2)'); 
+                if (selectOption.includes(fieldName) &&  selectOption === "") {
+                    selectOptionElement = ccdField.element(by.xpath("select//option[text() = '" + selectOption+"']")); 
 
                 }
                 await selectOptionElement.click();
@@ -319,30 +310,24 @@ class CaseManager {
                        continue; 
                     }
                     var ccdSubField = writeFields.get(fieldcounter).element(by.xpath("./div/*"));
-                    await this._writeToField(ccdSubField, fieldName) 
+                    await this._writeToField(ccdSubField) 
                 }
                 cucumberReporter.AddMessage(fieldName + " : complex field values");  
             break;
             case "ccd-write-collection-field":
                 cucumberReporter.AddMessage(fieldName + " : complex write collection values");  
                 var addNewBtn = ccdField.$(".panel button");
-
-                // let arrval = this._fieldValue(fieldName); 
-                // if (!(arrval instanceof Array)){
-                //     break;
-                // }
                 await browser.executeScript('arguments[0].scrollIntoView()',
                     addNewBtn.getWebElement());
                 await addNewBtn.click();
                 var writeFields = ccdField.$$(".panel > .form-group > .form-group>ccd-field-write");
                 var writeFieldsCount = await writeFields.count();
 
-                for (var count = 0; count < writeFieldsCount; count++) {
+                for (var count = 0; count < writeFieldsCount; count++){
                     var ccdSubField = writeFields.get(count).element(by.xpath("./div/*"));
-                    var subFieldText = await ccdSubField.getText();
-                    await this._writeToField(ccdSubField, `${fieldName}[0]`)
+                    var subFieldText = await ccdSubField.getText(); 
+                    await this._writeToField(ccdSubField) 
                 }
-               
                 cucumberReporter.AddMessage(fieldName + " : complex write collection values");  
             break;
             default:
@@ -353,7 +338,7 @@ class CaseManager {
 
     _fieldValue(fieldName) {;
         var value = "fieldName";
-        console.log("Read field value : " + fieldName);
+
         if (this.caseData[fieldName]) {
             value = this.caseData[fieldName];
         } else if (fieldName.includes('Optional')){

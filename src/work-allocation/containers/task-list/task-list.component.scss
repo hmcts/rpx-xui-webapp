@@ -69,24 +69,7 @@
         margin-right: 40px;
         cursor: pointer;
         &:last-child {
-          margin-right: 20px;
-        }
-      }
-    }
-  }
-  &.footer-row {
-    display: none;
-    .empty-message {
-      display: none;
-    }
-    &.shown {
-      display: table-row;
-      &.empty {
-        .empty-message {
-          display: inline;
-        }
-        .loading {
-          display: none;
+          margin-right: 0;
         }
       }
     }

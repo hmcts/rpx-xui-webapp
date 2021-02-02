@@ -45,7 +45,10 @@
             }
         ],
         "quotemark": false,
-        "semicolon": { "severity": "warning" },
+        "semicolon": [
+            true,
+            "never"
+        ],
         "trailing-comma": [
             true,
             {

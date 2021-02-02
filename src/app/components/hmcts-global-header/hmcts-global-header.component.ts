@@ -1,5 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Store } from '@ngrx/store';
 
 import * as fromNocStore from '../../../noc/store';
@@ -10,7 +9,7 @@ import { UserNavModel } from '../../models/user-nav.model';
     selector: 'exui-hmcts-global-header',
     templateUrl: './hmcts-global-header.component.html'
 })
-export class HmctsGlobalHeaderComponent implements OnInit {
+export class HmctsGlobalHeaderComponent {
 
   @Input() public set showNavItems(value: boolean) {
     this.showItems = value;
@@ -26,52 +25,14 @@ export class HmctsGlobalHeaderComponent implements OnInit {
 
   public showItems: boolean;
   public userValue = true;
-  public tab;
 
-  constructor(
-    public nocStore: Store<fromNocStore.State>,
-    private readonly router: Router) { }
-
-  public ngOnInit() {
-    // set the active tab via the url in the router
-    this.tab = this.setActiveTab(this.router.url);
-  }
-
-  public setActiveTab(url: string) {
-    this.tab = null;
-    switch (url) {
-      case '/tasks/list': {
-        return 'Task list';
-      }
-      case '/tasks/task-manager': {
-        return 'Task manager';
-      }
-      case '/cases': {
-        return 'Case list';
-      }
-      case '/cases/case-filter': {
-        return 'Create case';
-      }
-      // currently this is set via the url so not needed
-      /* case 'cases/case-search': {
-        return 'Find case';
-      } */
-      case '/noc': {
-        return 'Notice of change';
-      }
-      default: {
-        return null;
-      }
-    }
-  }
+  constructor(public nocStore: Store<fromNocStore.State>) { }
 
   public onEmitEvent(index: number): void {
     this.navigate.emit(this.navigation.items[index].emit);
   }
 
   public onEmitSubMenu(menuItem: any) {
-    // remove the setting of selected item via url
-    this.tab = menuItem.text;
     if (menuItem.href === '/noc') {
       this.nocStore.dispatch(new fromNocStore.Reset());
     }

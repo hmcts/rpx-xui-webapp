@@ -3,7 +3,6 @@ var CaseListPage = require("../pageObjects/CaseListPage");
 var FRCase = require('../pageObjects/FRCase');
 var ProbateCase = require('../pageObjects/ProbateCase');
 var DivorceCase = require('../pageObjects/Divorcecase');
-var IACCase = require('../pageObjects/iacCase'); 
 
 
 var CaseManager = require('../pageObjects/common/CaseManager');
@@ -17,10 +16,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     let frCase = new FRCase();
     let probateCase = new ProbateCase();
     let divorceCase = new DivorceCase();
-    let iacCase = new IACCase();
-
     let caseManager = new CaseManager();
-
 
     When('I start case with jurisdiction {string} case type {string} and event {string}', async function (jurisidiction, casetype, event) {
         await caseManager.startCaseCreation(jurisidiction, casetype, event);
@@ -36,10 +32,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     When('I create Probate case', { timeout: creatCaseStepTimeout }, async function () {
         await probateCase.createCase(false);
-    })
-
-    When('I create IAC case', { timeout: creatCaseStepTimeout }, async function () {
-        await iacCase.createCase(false);
     })
 
     When('I start case next step', async function () {

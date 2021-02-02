@@ -83,16 +83,10 @@ export const initProxy = (app: Express) => {
         target: getConfigValue(SERVICES_PAYMENTS_URL),
     })
 
-    /**
-     * Commenting this out as it's completely bypassing the API this way,
-     * which is not we want right now. If that's to be the long-term
-     * solution, we'll need to move the logic around adding actions out
-     * of the node layer.
-     */
-    // applyProxy(app, {
-    //     rewrite: true,
-    //     rewriteUrl: '',
-    //     source: '/workallocation',
-    //     target: 'http://localhost:8080',
-    // })
+    applyProxy(app, {
+        rewrite: true,
+        rewriteUrl: '',
+        source: '/workallocation',
+        target: 'http://localhost:8080',
+    })
 }

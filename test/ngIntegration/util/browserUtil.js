@@ -39,7 +39,7 @@ class BrowserUtil{
             this.addCookie('roles', encodedRoles);
         }
 
-        // await this.gotoHomePage();
+        await this.gotoHomePage();
     }
 
     async waitForLD(){

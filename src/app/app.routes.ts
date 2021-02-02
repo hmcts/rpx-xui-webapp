@@ -1,15 +1,10 @@
 import { ExtraOptions, Routes } from '@angular/router';
-import {
-  AccessibilityComponent,
-  CookiePolicyComponent,
-  GetHelpComponent,
-  MediaViewerWrapperComponent,
-  NotAuthorisedComponent,
-  PrivacyPolicyComponent,
-  ServiceDownComponent,
-  SignedOutComponent,
-} from './components';
-import { AcceptTcWrapperComponent, LegacyTermsAndConditionsComponent, TermsAndConditionsComponent } from './containers';
+import { AccessibilityComponent, CookiePolicyComponent, MediaViewerWrapperComponent,
+          PrivacyPolicyComponent, ServiceDownComponent} from './components';
+import { GetHelpComponent } from './components/get-help/get-help.component';
+import { SignedOutComponent } from './components/signed-out/signed-out.component';
+import { AcceptTcWrapperComponent, TermsAndConditionsComponent } from './containers';
+import { LegacyTermsAndConditionsComponent } from './containers/legacy-terms-and-conditions/legacy-terms-and-conditions.component';
 import { AcceptTermsGuard } from './guards/acceptTerms.guard';
 import { AuthGuard } from './services/auth/auth.guard';
 
@@ -107,9 +102,6 @@ export const ROUTES: Routes = [
       title: 'View Document'
     }
   },
-  { path: 'service-down', component: ServiceDownComponent },
-  { path: 'not-authorised', component: NotAuthorisedComponent },
-  { path: 'media-viewer', component: MediaViewerWrapperComponent },
   {
     path: 'get-help',
     component: GetHelpComponent,

@@ -518,53 +518,53 @@ describe('CaseListComponent', () => {
 
     it('jurisdiction matches createEvent jurisdiction.', () => {
       const data = { metadataFieldsGroupFromLS: undefined,
-        jurisdictionFromLS: {id: "PUBLICLAW"},
+        jurisdictionFromLS: {id: 'PUBLICLAW'},
         caseStateGroupFromLS: {id: null},
-        caseTypeGroupFromLS: { id: "CARE_SUPERVISION_EPO" },
-        formGroupFromLS: { 
-          "[CASE_REFERENCE]": null,
-          caseLocalAuthority: "BNS",
+        caseTypeGroupFromLS: { id: 'CARE_SUPERVISION_EPO' },
+        formGroupFromLS: {
+          '[CASE_REFERENCE]': null,
+          caseLocalAuthority: 'BNS',
           caseName: null,
           dateSubmitted: null,
           evidenceHandled: null,
           familyManCaseNumber: null
-        }, 
-      }
+        },
+      };
       const event = component.createEvent(data.jurisdictionFromLS, data.caseTypeGroupFromLS, data.caseStateGroupFromLS, data.metadataFieldsGroupFromLS, data.formGroupFromLS, 1, undefined);
       expect(event.selected.jurisdiction).toEqual(data.jurisdictionFromLS);
     });
 
     it('case type matches createEvent case type.', () => {
       const data = { metadataFieldsGroupFromLS: undefined,
-        jurisdictionFromLS: {id: "PUBLICLAW"},
+        jurisdictionFromLS: {id: 'PUBLICLAW'},
         caseStateGroupFromLS: {id: null},
-        caseTypeGroupFromLS: { id: "CARE_SUPERVISION_EPO" },
-        formGroupFromLS: { 
-          "[CASE_REFERENCE]": null,
-          caseLocalAuthority: "BNS",
+        caseTypeGroupFromLS: { id: 'CARE_SUPERVISION_EPO' },
+        formGroupFromLS: {
+          '[CASE_REFERENCE]': null,
+          caseLocalAuthority: 'BNS',
           caseName: null,
           dateSubmitted: null,
           evidenceHandled: null,
           familyManCaseNumber: null
-        }, 
-      }
+        },
+      };
       const event = component.createEvent(data.jurisdictionFromLS, data.caseTypeGroupFromLS, data.caseStateGroupFromLS, data.metadataFieldsGroupFromLS, data.formGroupFromLS, 1, undefined);
       expect(event.selected.caseType).toEqual(data.caseTypeGroupFromLS);
     });
     it('form group matches createEvent formgroup.', () => {
       const data = { metadataFieldsGroupFromLS: undefined,
-        jurisdictionFromLS: {id: "PUBLICLAW"},
+        jurisdictionFromLS: {id: 'PUBLICLAW'},
         caseStateGroupFromLS: {id: null},
-        caseTypeGroupFromLS: { id: "CARE_SUPERVISION_EPO" },
-        formGroupFromLS: { 
-          "[CASE_REFERENCE]": null,
-          caseLocalAuthority: "BNS",
+        caseTypeGroupFromLS: { id: 'CARE_SUPERVISION_EPO' },
+        formGroupFromLS: {
+          '[CASE_REFERENCE]': null,
+          caseLocalAuthority: 'BNS',
           caseName: null,
           dateSubmitted: null,
           evidenceHandled: null,
           familyManCaseNumber: null
-        }, 
-      }
+        },
+      };
       const event = component.createEvent(data.jurisdictionFromLS, data.caseTypeGroupFromLS, data.caseStateGroupFromLS, data.metadataFieldsGroupFromLS, data.formGroupFromLS, 1, undefined);
       expect(event.selected.formGroup.value).toEqual(data.formGroupFromLS);
     });

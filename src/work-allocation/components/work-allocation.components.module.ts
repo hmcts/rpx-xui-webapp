@@ -6,8 +6,7 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 
 import * as fromComponents from '.';
 import * as fromPipes from '../pipes';
-import { CaseworkerDataService } from './../services/case-worker-data.service';
-import { LocationDataService } from './../services/location-data.service';
+import { CaseworkerDataService, InfoMessageCommService, LocationDataService } from '../services';
 
 // from containers
 @NgModule({
@@ -21,7 +20,7 @@ import { LocationDataService } from './../services/location-data.service';
     ...fromComponents.components,
     ...fromPipes.pipes
   ],
-  providers: [CaseworkerDataService, LocationDataService],
+  providers: [CaseworkerDataService, LocationDataService, InfoMessageCommService],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   exports: [
     ...fromComponents.components,

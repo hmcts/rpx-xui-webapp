@@ -55,8 +55,8 @@ Feature: Test case type case list and find case workflow
     Scenario: Validate search inputs on case type change
         When I click on search button
         Then Search page should be displayed
-        When I enter search fields jurisdiction "Family Divorce" case type "XUI Test Case type"
-        When I reset case search fields 
         When I enter search fields jurisdiction "Family Divorce" case type "Divorce case - v115.00"
+        When I reset case search fields 
+        When I enter search fields jurisdiction "Family Divorce" case type "XUI Test Case type"
         When I click apply to perform case search
         Then I see results returned

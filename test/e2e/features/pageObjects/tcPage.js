@@ -85,7 +85,7 @@ class TcPage {
                 }
                 var selectionRadioFields = $$(".multiple-choice label");
                 var selectionFieldsCount = await selectionRadioFields.count();
-                console.log("selectionFieldsCount" + selectionFieldsCount);
+                // console.log("selectionFieldsCount" + selectionFieldsCount);
                 for (let i = 0; i < selectionFieldsCount; i++) {
                     let fixedListValue = await selectionRadioFields.get(i).getText();
                     webResList.push(fixedListValue);
@@ -125,7 +125,7 @@ class TcPage {
                     } else {
                         fieldIdPresent = $(`#${wizardPage1[i].case_field_id}`);
                     }
-                    console.log("Againest api response fields validation::" + await fieldIdPresent);
+                    // console.log("Againest api response fields validation::" + await fieldIdPresent);
                     await BrowserWaits.waitForElement(fieldIdPresent);
                     expect(await fieldIdPresent.isPresent(), `Case creation ${fieldIdPresent} field should be present`).to.be.true;
                 }
@@ -150,10 +150,10 @@ class TcPage {
         let thLable = $$("ccd-search-result>table>thead tr th");
         await BrowserWaits.waitForElement($("ccd-search-result>table>thead tr th"));
         let count = await thLable.count();
-        console.log("count:" + count + "index:::" + index);
+        // console.log("count:" + count + "index:::" + index);
         let caseResultsThTitle = [];
         if (count) {
-            console.log("inside if count:" + count + "index:::" + index);
+            // console.log("inside if count:" + count + "index:::" + index);
             for (let i = index; i < count; i++) {
                 let thText = thLable.get(i).$$(".search-result-column-label");
                 let text = await thText.getText();
@@ -253,13 +253,6 @@ class TcPage {
     }
 
     async clickNextStepTriggerActions() {
-        let next_step = $("#next-step");
-        await BrowserWaits.waitForElement(next_step);
-        let thisPageUrl = await browser.getCurrentUrl();
-        await $("#next-step").element(this._getOptionSelectorWithText("Update case")).click();
-        await BrowserWaits.waitForElement($("ccd-event-trigger >form button"));
-        $("ccd-event-trigger >form button").click();
-        await BrowserWaits.waitForPageNavigation(thisPageUrl);
         await BrowserWaits.waitForElement(this.ccdCaseEdit);
         expect(this.ccdCaseEdit.isPresent()).to.be.equal;
     }

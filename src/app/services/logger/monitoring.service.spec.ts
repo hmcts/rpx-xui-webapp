@@ -73,4 +73,10 @@ describe('Monitoring service', () => {
         service.send(mockedAppInsights, obj.someFunction);
         expect(spyOnSomeFunc).toHaveBeenCalled();
     });
+
+    it('getConfig', () => {
+        const config = MonitoringService.getConfig('somekey');
+        expect(config.instrumentationKey).toEqual('somekey');
+        expect(config.disableTelemetry).toBeTruthy();
+    });
 });

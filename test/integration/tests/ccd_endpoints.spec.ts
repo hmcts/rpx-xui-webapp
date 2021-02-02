@@ -83,7 +83,6 @@ describe('CCD Endpoints',  () => {
     //         experimental: true,
     //         'X-XSRF-TOKEN': xsrfToken
     //     };
-    //     const response = await Request.post('data/case-types/GrantOfRepresentation/drafts/', draftsReqBody, headers);
     //     const response = await Request.post('data/internal/case-types/GrantOfRepresentation/drafts/', draftsReqBody, headers);
     //     expect(response.status).to.equal(201, 'drafts url request failed GrantOfRepresentation');
     // });

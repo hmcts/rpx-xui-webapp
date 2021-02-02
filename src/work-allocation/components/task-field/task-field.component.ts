@@ -26,17 +26,4 @@ export class TaskFieldComponent {
   // This is here for the ngSwitch in the template so we don't have
   // hard-coded strings floating around the place.
   protected fieldType = TaskFieldType;
-
-  /**
-   * Convert a string, number, or Date to date object.
-   */
-  public toDate(value: string | number | Date): Date {
-    if (value) {
-      const d = new Date(value);
-      return isNaN(d.getTime()) ? null : d;
-    }
-    return null;
-  }
-
-
 }

@@ -1,139 +1,187 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { WorkAllocationTaskService } from 'src/work-allocation/services/work-allocation-task.service';
 
-import { ErrorMessage } from '../../../app/models';
-import { ConfigConstants } from '../../components/constants';
-import { InfoMessage, InfoMessageType, TaskActionType, TaskService, TaskSort } from '../../enums';
-import { InformationMessage } from '../../models/comms';
-import { Assignee, Caseworker, Location } from '../../models/dtos';
-import { TaskFieldConfig, TaskServiceConfig } from '../../models/tasks';
-import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
-import { handleFatalErrors } from '../../utils';
+import { TaskFieldType, TaskService, TaskSort, TaskView } from '../../enums';
+import InvokedTaskAction from '../../models/tasks/invoked-task-action.model';
+import TaskServiceConfig from '../../models/tasks/task-service-config.model';
+import { Assignee, Caseworker } from './../../models/dtos/task';
+import { Task, TaskFieldConfig } from './../../models/tasks';
 
-export const NAME_ERROR: ErrorMessage = {
-  title: 'There is a problem',
-  description: 'You must select a name',
-  fieldId: 'task_assignment_caseworker'
-};
 @Component({
-  selector: 'exui-task-container-assignment',
-  templateUrl: 'task-assignment-container.component.html',
-  styleUrls: ['task-assignment-container.component.scss']
-})
+    selector: 'exui-task-container-assignment',
+    templateUrl: 'task-assignment-container.component.html',
+    styleUrls: ['task-home-container.component.scss']
+  })
+
 export class TaskAssignmentContainerComponent implements OnInit {
-  public error: ErrorMessage = null;
-  public tasks: any [];
-  public sortedBy: any;
-  public showManage: boolean = false;
-  public caseworker: Caseworker;
-  public verb: TaskActionType;
-
-  public successMessage: InfoMessage;
-  public excludedCaseworkers: Caseworker[];
-  public location: Location;
-
-  constructor(
-    private readonly taskService: WorkAllocationTaskService,
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly messageService: InfoMessageCommService
-  ) {}
-
-  public get fields(): TaskFieldConfig[] {
-    return this.showAssigneeColumn ? ConfigConstants.TaskActionsWithAssignee : ConfigConstants.TaskActions;
-  }
-
-  private get returnUrl(): string {
-    let url;
-    if (window && window.history && window.history.state) {
-      url = window.history.state.returnUrl;
-    }
-    return url || '/tasks/list';
-  }
-
-  private get showAssigneeColumn(): boolean {
-    if (window && window.history && window.history.state) {
-      return !!window.history.state.showAssigneeColumn;
-    }
-    return false;
-  }
-
-  public taskServiceConfig: TaskServiceConfig = {
-    service: TaskService.IAC,
-    defaultSortDirection: TaskSort.ASC,
-    defaultSortFieldName: 'dueDate',
-    fields: this.fields,
-  };
-  public ngOnInit(): void {
-    // Set up the default sorting.
-    this.sortedBy = {
-      fieldName: this.taskServiceConfig.defaultSortFieldName,
-      order: this.taskServiceConfig.defaultSortDirection
-    };
-
-    // Get the task from the route, which will have been put there by the resolver.
-    const { task } = this.route.snapshot.data.task;
-    this.tasks = [ task ];
-    this.verb = this.route.snapshot.data.verb as TaskActionType;
-    this.successMessage = this.route.snapshot.data.successMessage as InfoMessage;
-    if (task.assignee) {
-      const names: string[] = task.assignee.split(' ');
-      const firstName = names.shift();
-      const lastName = names.join(' ');
-      this.excludedCaseworkers = [ { firstName, lastName } as Caseworker ];
-    }
-    if (task.location) {
-      this.location = { locationName: task.location } as Location;
-    }
-  }
-
-  public assign(): void {
-    if (!this.caseworker) {
-      this.error = NAME_ERROR;
-      return;
-    }
-    this.error = null;
-    const assignee: Assignee = {
-      id: this.caseworker.idamId,
-      userName: `${this.caseworker.firstName} ${this.caseworker.lastName}`
-    };
-    this.taskService.assignTask(this.tasks[0].id, assignee).subscribe(() => {
-      this.reportSuccessAndReturn();
-    }, error => {
-      const handledStatus = handleFatalErrors(error.status, this.router);
-      if (handledStatus > 0) {
-        this.reportUnavailableErrorAndReturn();
+   public tasks: any [];
+   public sortedBy: any;
+   public showManage: boolean = false;
+   public caseworker: Caseworker;
+   private readonly MOCK_TASK: Task = {
+    id: '123456',
+    caseReference: '1234 5678 9012 3456',
+    caseName: 'Kili Muso',
+    caseCategory: 'Protection',
+    location: 'Taylor House',
+    taskName: 'Review respondent evidence',
+    dueDate: new Date(1604938789000),
+    actions: [
+      {
+        id: 'actionId',
+        title: 'Reassign task',
+      },
+      {
+        id: 'actionId',
+        title: 'Release this task',
       }
+    ]
+  };
+    constructor(
+      private readonly taskService: WorkAllocationTaskService,
+      private readonly route: ActivatedRoute,
+      private readonly router: Router
+    ) {}
+    /**
+     * Mock TaskFieldConfig[]
+     *
+     * Fields is the property of the TaskFieldConfig[], containing the configuration
+     * for the fields as returned by the API.
+     *
+     * The sorting will handled by this component, via the
+     * WP api as this component.
+     */
+    public fields: TaskFieldConfig[] = [
+        {
+        name: 'caseReference',
+        type: TaskFieldType.CASE_REFERENCE,
+        columnLabel: 'Case reference',
+        views: TaskView.TASK_LIST,
+        },
+        {
+        name: 'caseName',
+        type: TaskFieldType.STRING,
+        columnLabel: 'Case name',
+        views: TaskView.TASK_LIST,
+        },
+        {
+        name: 'caseCategory',
+        type: TaskFieldType.STRING,
+        columnLabel: 'Case category',
+        views: TaskView.TASK_LIST,
+        },
+        {
+        name: 'location',
+        type: TaskFieldType.STRING,
+        columnLabel: 'Location',
+        views: TaskView.TASK_LIST,
+        },
+        {
+        name: 'taskName',
+        type: TaskFieldType.STRING,
+        columnLabel: 'Task',
+        views: TaskView.TASK_LIST,
+        },
+        {
+        name: 'dueDate',
+        type: TaskFieldType.DATE_DUE,
+        columnLabel: 'Date',
+        views: TaskView.TASK_LIST,
+        },
+    ];
+
+    public taskServiceConfig: TaskServiceConfig = {
+        service: TaskService.IAC,
+        defaultSortDirection: TaskSort.ASC,
+        defaultSortFieldName: 'dueDate',
+        fields: this.fields,
+      };
+    public ngOnInit(): void {
+      // Set up the default sorting.
+      this.sortedBy = {
+        fieldName: this.taskServiceConfig.defaultSortFieldName,
+        order: this.taskServiceConfig.defaultSortDirection
+      };
+      console.log('Got the task from the resolver', this.route.snapshot.data);
+      console.log('However, we need something more like this, which is what we will use for now', this.MOCK_TASK);
+      this.tasks = [ this.MOCK_TASK ];
+    }
+
+    public reAssign(): void {
+      if (!this.caseworker) {
+        console.log('No caseworker selected. This is part of the unhappy path that is not yet done.');
+        return;
+      }
+      // const assignee: Assignee = {
+      //   id: this.caseworker.idamId,
+      //   userName: `${this.caseworker.firstName} ${this.caseworker.lastName}`
+      // };
+      const assignee: Assignee = {
+        id: '987654',
+        userName: 'bob'
+      };
+      console.log('Reassigning, but using a fake assignee for the PACT stub', assignee);
+      this.taskService.assignTask(this.tasks[0].id, assignee).subscribe(() => {
+        console.log('assignment was successful: received a 200 status');
+      });
+    }
+
+    /**
+     * We need to sort the Task List based on the fieldName.
+     *
+     * Following on from this function we will need to retrieve the sorted tasks from
+     * the WA Api, once we have these then we need to set the tasks and fields, and pass
+     * these into the TaskListComponent.
+     *
+     * @param fieldName - ie. 'caseName'
+     */
+    public onSortHandler(fieldName: string): void {
+
+      // TODO: Remove everything below after integration.
+      // This is all to prove the mechanism works.
+      console.log('Task Home received Sort on:');
+      console.log(fieldName);
+      console.log('Faking the sort now');
+      let order: TaskSort = TaskSort.ASC;
+      if (this.sortedBy.fieldName === fieldName && this.sortedBy.order === TaskSort.ASC) {
+        order = TaskSort.DSC;
+      }
+      this.sortedBy = { fieldName, order };
+
+      // Now sort the tasks.
+      this.sortTasks();
+    }
+
+      // Remove after integration.
+    private sortTasks(): void {
+    this.tasks = this.tasks.sort((a: Task, b: Task) => {
+      const aVal = a[this.sortedBy.fieldName];
+      const bVal = b[this.sortedBy.fieldName];
+      let sortVal = 0;
+      if (typeof aVal === 'string') {
+        sortVal = aVal.localeCompare(bVal);
+      } else if (aVal instanceof Date) {
+        sortVal = aVal.getTime() - new Date(bVal).getTime();
+      }
+      return this.sortedBy.order === TaskSort.ASC ? sortVal : -sortVal;
     });
   }
 
-  public cancel(): void {
-    this.returnWithMessage(null, {});
+  /**
+   * InvokedTaskAction from the Task List Component, so that we can handle the User's
+   * action.
+   */
+  public onActionHandler(taskAction: InvokedTaskAction): void {
+
+    // Remove after integration
+    console.log('Task Home received InvokedTaskAction:');
+    console.log(taskAction.task.id);
+    this.router.navigate([`/tasks/task-list/reassign/123456`]);
   }
 
   public onCaseworkerChanged(caseworker: Caseworker): void {
+    console.log('onCaseworkerChanged', caseworker);
     this.caseworker = caseworker;
-  }
-
-  private reportSuccessAndReturn(): void {
-    const message = this.successMessage;
-    this.returnWithMessage(
-      { type: InfoMessageType.SUCCESS, message },
-      { badRequest: false }
-    );
-  }
-
-  private reportUnavailableErrorAndReturn(): void {
-    this.returnWithMessage({
-      type: InfoMessageType.WARNING,
-      message: InfoMessage.TASK_NO_LONGER_AVAILABLE,
-    }, { badRequest: true });
-  }
-
-  private returnWithMessage(message: InformationMessage, state: any): void {
-    if (message) {
-      this.messageService.nextMessage(message);
-    }
-    this.router.navigateByUrl(this.returnUrl, { state: { ...state, retainMessages: true } });
   }
 }

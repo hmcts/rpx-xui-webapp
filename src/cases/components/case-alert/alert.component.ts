@@ -1,8 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { Alert, AlertService } from '@hmcts/ccd-case-ui-toolkit';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { AlertService, Alert, AlertLevel } from '@hmcts/ccd-case-ui-toolkit';
 import { select } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'exui-alert',
@@ -11,21 +11,19 @@ import { Observable, Subscription } from 'rxjs';
 })
 
 export class AlertComponent implements OnInit, OnDestroy {
-  public message = '';
-  public level = '';
-  public alertMessageSubscription: Subscription;
-  public routeSubscription: Subscription;
+  message = '';
+  level = '';
+  currentUrl = '';
+  alertMessageObservable: Observable<Alert>;
+  alertMessageSubscription: Subscription;
+  routeSubscription: Subscription;
 
-  private alertMessageObservable: Observable<Alert>;
+  constructor(private alertService: AlertService, private router: Router) {
+  }
 
-  constructor(
-    private readonly alertService: AlertService,
-    private readonly router: Router
-  ) {}
-
-  public ngOnInit() {
+  ngOnInit() {
     this.alertMessageObservable = this.alertService.alerts.pipe(select( alert => alert));
-    this.routeSubscription = this.router.events.subscribe(() => this.message = '');
+    this.routeSubscription = this.router.events.subscribe((val) => this.message = '');
     this.alertMessageSubscription = this.alertMessageObservable.subscribe(alert => {
       if (alert) {
         this.message = alert.message;
@@ -34,7 +32,7 @@ export class AlertComponent implements OnInit, OnDestroy {
     });
   }
 
-  public ngOnDestroy() {
+  ngOnDestroy() {
     this.alertMessageSubscription.unsubscribe();
     this.routeSubscription.unsubscribe();
   }

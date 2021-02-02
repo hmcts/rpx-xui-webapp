@@ -369,6 +369,38 @@ describe('CaseListComponent', () => {
 
       expect(component.resultsArr).toEqual([{ case_id: 'DRAFT274146' }]);
     });
+
+    it('should set the components resultsArr hasDrafts property on return of subscription is false.', () => {
+
+      const resultView = {
+        columns: [],
+        results: [
+          {
+            case_id: 'DRAFT274146',
+          }
+        ],
+        result_error: null
+      };
+
+      component.onResultsViewHandler(resultView);
+      expect(component.resultView.hasDrafts()).toEqual(false);
+    });
+
+    it('should set the components resultsArr property on return of subscription and then call hasResults.', () => {
+
+      const resultView = {
+        columns: [],
+        results: [
+          {
+            case_id: 'DRAFT274146',
+          }
+        ],
+        result_error: null
+      };
+
+      component.onResultsViewHandler(resultView);
+      expect(component.hasResults()).toEqual(true);
+    });
   });
 
   describe('caseShareIsVisible', () => {

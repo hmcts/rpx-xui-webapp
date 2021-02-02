@@ -12,18 +12,32 @@ export interface IMonitoringService {
 
 @Injectable()
 export class MonitoringService implements IMonitoringService {
+
+  public static getConfig(appInsightsKey: string): IConfiguration & IConfig {
+    return {
+      disableTelemetry: true,
+      instrumentationKey: appInsightsKey
+    };
+  }
+
+  public static getAppInsightsInstance(config: IConfiguration & IConfig) {
+    return new ApplicationInsights({
+      config
+    });
+  }
+
   constructor(private readonly environmentService: EnvironmentService,
               @Optional() public appInsights?: ApplicationInsights) {
                 this.appInsights = appInsights;
             }
 
-  public logPageView(name?: string, 
-              uri?: string, 
-              properties?: any,
-              measurements?: any, 
-              refUri?: string, 
-              pageType?: string, 
-              isLoggedIn?: boolean) {
+  public logPageView(name?: string,
+                     uri?: string,
+                     properties?: any,
+                     measurements?: any,
+                     refUri?: string,
+                     pageType?: string,
+                     isLoggedIn?: boolean) {
       this.send(this.appInsights, () => {
         this.appInsights.trackPageView({name, uri, properties, measurements, refUri, pageType, isLoggedIn});
       });
@@ -42,9 +56,11 @@ export class MonitoringService implements IMonitoringService {
   }
 
   public send(appInsights: ApplicationInsights, func: () => any): void {
+    console.log('send1', appInsights);
     const isAppInsightsEnabled = this.environmentService.get('isAppInsightsEnabled');
-    if(isAppInsightsEnabled) {
-      if(!appInsights) {
+    console.log('send2', isAppInsightsEnabled);
+    if (isAppInsightsEnabled) {
+      if (!appInsights) {
         this.appInsights = this.initialiseAppInsights();
       }
       func()
@@ -57,18 +73,5 @@ export class MonitoringService implements IMonitoringService {
     const applicationInsights = MonitoringService.getAppInsightsInstance(config);
     applicationInsights.loadAppInsights();
     return applicationInsights;
-  }
-
-  public static getConfig(appInsightsKey: string): IConfiguration & IConfig {
-    return {
-      disableTelemetry: true,
-      instrumentationKey: appInsightsKey
-    };
-  }
-
-  public static getAppInsightsInstance(config: IConfiguration & IConfig) {
-    return new ApplicationInsights({
-      config
-    });
   }
 }

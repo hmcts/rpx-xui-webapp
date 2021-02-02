@@ -1,54 +1,54 @@
-import { HttpClient } from '@angular/common/http';
-import { TestBed, inject } from '@angular/core/testing';
-import { MonitoringService, IMonitoringService, MonitorConfig } from './monitoring.service';
-import { Observable, of } from 'rxjs';
+import { MonitoringService } from './monitoring.service';
 
 describe('Monitoring service', () => {
-    const mockedHttpClient = jasmine.createSpyObj('mockedHttpClient', {get: of({key: 'Some Value'})});
-    const mockedAppInsights = jasmine.createSpyObj('mockedAppInsights', ['downloadAndSetup', 'trackException', 'trackEvent',
-    'trackPageView']);
-    const mockedConfig = new MonitorConfig();
+    let mockedEnvService: any;
+    let mockedAppInsights: any;
+
+    beforeEach(() => {
+        mockedEnvService = jasmine.createSpyObj('mockedEnvService', ['get']);
+        mockedAppInsights = jasmine.createSpyObj('mockedAppInsights', ['downloadAndSetup', 'trackException', 'trackEvent',
+        'trackPageView']);
+    })
 
     it('should be Truthy', () => {
-        const service = new MonitoringService(mockedHttpClient);
+        const service = new MonitoringService(mockedEnvService);
         expect(service).toBeTruthy();
     });
 
-    it('should be able to LogException and Should not call the http service', () => {
-        mockedConfig.instrumentationKey = 'somevalue';
-        const service = new MonitoringService(mockedHttpClient, mockedConfig, mockedAppInsights);
+    it('should be able to LogException when AppInsights is enabled', () => {
+        const service = new MonitoringService(mockedEnvService, mockedAppInsights);
         expect(service).toBeTruthy();
+        mockedEnvService.get.and.returnValue(true);
         service.logException(new Error('Some ErrorMesssage'));
-        expect(mockedHttpClient.get).not.toHaveBeenCalled();
+        expect(mockedEnvService.get).toHaveBeenCalled();
         expect(mockedAppInsights.downloadAndSetup).not.toHaveBeenCalled();
         expect(mockedAppInsights.trackException).toHaveBeenCalled();
     });
 
     it('should be able to LogEvent', () => {
-        mockedConfig.instrumentationKey = 'somevalue';
-        const service = new MonitoringService(mockedHttpClient, mockedConfig, mockedAppInsights);
+        const service = new MonitoringService(mockedEnvService, mockedAppInsights);
         expect(service).toBeTruthy();
+        mockedEnvService.get.and.returnValue(true);
         service.logEvent('name', [], []);
-        expect(mockedHttpClient.get).not.toHaveBeenCalled();
+        expect(mockedEnvService.get).toHaveBeenCalled();
         expect(mockedAppInsights.downloadAndSetup).not.toHaveBeenCalled();
         expect(mockedAppInsights.trackEvent).toHaveBeenCalled();
     });
 
     it('should be able to LogPageview', () => {
-        mockedConfig.instrumentationKey = 'somevalue';
-        const service = new MonitoringService(mockedHttpClient, mockedConfig, mockedAppInsights);
+        const service = new MonitoringService(mockedEnvService, mockedAppInsights);
         expect(service).toBeTruthy();
-        service.logPageView('name', null, [], [], 1);
-        expect(mockedHttpClient.get).not.toHaveBeenCalled();
+        mockedEnvService.get.and.returnValue(true);
+        service.logPageView('name', null, [], []);
+        expect(mockedEnvService.get).toHaveBeenCalled();
         expect(mockedAppInsights.downloadAndSetup).not.toHaveBeenCalled();
         expect(mockedAppInsights.trackPageView).toHaveBeenCalled();
     });
 
     it('should be able to LogPageview', () => {
-        mockedConfig.instrumentationKey = null;
-        const service = new MonitoringService(mockedHttpClient, mockedConfig, mockedAppInsights);
+        const service = new MonitoringService(mockedEnvService, mockedAppInsights);
         expect(service).toBeTruthy();
-        service.logPageView('name', null, [], [], 1);
-        expect(mockedHttpClient.get).toHaveBeenCalled();
+        service.logPageView('name', null, [], []);
+        expect(mockedEnvService.get).toHaveBeenCalled();
     });
 });

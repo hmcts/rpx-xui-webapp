@@ -25,14 +25,14 @@ router.get('/', uiConfigurationRouter)
  */
 async function uiConfigurationRouter(req, res) {
   res.status(200).send({
+    appInsightsKey: getConfigValue(APP_INSIGHTS_KEY),
     clientId: getConfigValue(SERVICES_IDAM_CLIENT_ID),
     idamWeb: getConfigValue(SERVICES_IDAM_LOGIN_URL),
+    isAppInsightsEnabled: showFeature(FEATURE_APP_INSIGHTS_ENABLED),
     launchDarklyClientId: getConfigValue(LAUNCH_DARKLY_CLIENT_ID),
     oAuthCallback: getConfigValue(SERVICES_IDAM_OAUTH_CALLBACK_URL),
     oidcEnabled: showFeature(FEATURE_OIDC_ENABLED),
     protocol: getConfigValue(PROTOCOL),
-    isAppInsightsEnabled: showFeature(FEATURE_APP_INSIGHTS_ENABLED),
-    appInsightsKey: getConfigValue(APP_INSIGHTS_KEY)
   })
 }
 

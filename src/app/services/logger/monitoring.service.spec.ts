@@ -51,4 +51,26 @@ describe('Monitoring service', () => {
         service.logPageView('name', null, [], []);
         expect(mockedEnvService.get).toHaveBeenCalled();
     });
+
+    it('should be able to not send when appInsights is not enabled', () => {
+        const obj = {
+            someFunction: () => {}
+        };
+        mockedEnvService.get.and.returnValue(false);
+        const spyOnSomeFunc =  spyOn(obj, 'someFunction');
+        const service = new MonitoringService(mockedEnvService, mockedAppInsights);
+        service.send(mockedAppInsights, obj.someFunction);
+        expect(spyOnSomeFunc).not.toHaveBeenCalled();
+    });
+
+    it('should be able to send when appInsights is enabled', () => {
+        const obj = {
+            someFunction: () => {}
+        };
+        mockedEnvService.get.and.returnValue(true);
+        const spyOnSomeFunc =  spyOn(obj, 'someFunction');
+        const service = new MonitoringService(mockedEnvService, mockedAppInsights);
+        service.send(mockedAppInsights, obj.someFunction);
+        expect(spyOnSomeFunc).toHaveBeenCalled();
+    });
 });

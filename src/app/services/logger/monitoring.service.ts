@@ -1,5 +1,5 @@
 import { Injectable, Optional } from '@angular/core';
-import { ApplicationInsights, IApplicationInsights, IConfig, IConfiguration, ITelemetryPlugin } from '@microsoft/applicationinsights-web'
+import { ApplicationInsights, IConfig, IConfiguration } from '@microsoft/applicationinsights-web'
 import { EnvironmentService } from '../../shared/services/environment.service';
 
 export interface IMonitoringService {
@@ -56,9 +56,7 @@ export class MonitoringService implements IMonitoringService {
   }
 
   public send(appInsights: ApplicationInsights, func: () => any): void {
-    console.log('send1', appInsights);
     const isAppInsightsEnabled = this.environmentService.get('isAppInsightsEnabled');
-    console.log('send2', isAppInsightsEnabled);
     if (isAppInsightsEnabled) {
       if (!appInsights) {
         this.appInsights = this.initialiseAppInsights();

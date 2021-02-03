@@ -37,6 +37,10 @@ class CaseEdit{
         }else{
             fieldId = fieldConfig.id 
         }
+        const fieldIsPresent = await $('#' + fieldId).isPresent();
+        if (!fieldIsPresent){
+            return fieldIsPresent; 
+        } 
         return await $('#' + fieldId).isDisplayed();
     }
 
@@ -175,7 +179,16 @@ class CaseEdit{
     }
 
     async inputComplexField(fieldConfig, value, parentid){
+        let fieldValue = {}
+       
+        if (fieldConfig.field_type.id === "AddressGlobalUK" || fieldConfig.field_type.id === "AddressUK"){
+            return await this.inputaddressGlobalUK(fieldConfig, value, parentid);
+        }
 
+        if (fieldConfig.field_type.id === "AddressGlobalUK"){
+            return await inputOrganisationField(fieldConfig, value, parentid);
+        }
+        
         let thisFieldId = null;
         if (parentid){
             thisFieldId = parentid + "_" + fieldConfig.id;
@@ -183,13 +196,57 @@ class CaseEdit{
         else{
             thisFieldId =  fieldConfig.id;
          }
-        let fieldValue = {};
+        ;
         for (const complexFiedlConfig of fieldConfig.field_type.complex_fields){
             fieldValue[complexFiedlConfig.id] = await this.inputCaseField(complexFiedlConfig, value ? value[complexFiedlConfig.id]: null, thisFieldId);
         }
 
         return fieldValue; 
     }
+
+    async inputaddressGlobalUK(fieldConfig, value, parentid) {
+        // await BrowserWaits.waitForSeconds(600);
+        // let thisFieldId = this.getFieldId(`${fieldConfig.id}_${fieldConfig.id}`, parentid);
+       
+        let fieldValue = {};
+        const postCodeInput = $(`#${fieldConfig.id}_${fieldConfig.id} #postcodeLookup input`);
+        const postCodeFindAddressBtn = $(`#${fieldConfig.id}_${fieldConfig.id} #postcodeLookup button`);
+        const postCodeAddressSelect = $(`#${fieldConfig.id}_${fieldConfig.id} #selectAddress select`);
+        const postCodeAddressSelectOption = $(`#${fieldConfig.id}_${fieldConfig.id} #selectAddress select option:nth-of-type(2)`);
+
+
+        await postCodeInput.sendKeys('sw1');
+        await postCodeFindAddressBtn.click();
+        await BrowserWaits.waitForElement(postCodeAddressSelect);
+        await BrowserWaits.waitForElement(postCodeAddressSelectOption);
+        await postCodeAddressSelectOption.click();
+
+        await BrowserWaits.waitForSeconds(10);
+
+        for (const complexFiedlConfig of fieldConfig.field_type.complex_fields) {
+            let value = await $(`#${this.getFieldId(complexFiedlConfig.id, fieldConfig.id )}`).getAttribute("value");
+            fieldValue[complexFiedlConfig.id] = value;
+        }
+
+        return fieldValue;
+    }
+
+    async inputOrganisationField(fieldConfig, value, parentid){
+        const searchOrgInputText = $(`#${fieldConfig.id}_${fieldConfig.id} #search-org-text`);
+        const orgResults = $$(`#${fieldConfig.id}_${fieldConfig.id} .scroll-container .td-select`);
+        
+        const organisationId = $(`#${fieldConfig.id}_${fieldConfig.id} ccd-write-organisation-complex-field input[@name = 'organisationID']`);
+        const organisationName = $(`#${fieldConfig.id}_${fieldConfig.id} ccd-write-organisation-complex-field input[@name = 'organisationName']`);
+ 
+        await searchOrgInputText.sendKeys("test");
+        await BrowserWaits.waitForElement(orgResults);
+        await orgResults.get(1).click();
+        
+        let fieldValue = {};
+        fieldValue['organisationID'] = await organisationId.getAttribute("value");
+        fieldValue['organisationName'] = await organisationName.getAttribute("value");
+        return fieldValue; 
+    } 
 
     async getSummaryPageDisplayElements(){
         await this.waitForChecYourAnswersPage();
@@ -273,6 +330,8 @@ class CaseEdit{
     }
 
     async inputCaseField(fieldConfig, value, parentId){
+        // await BrowserWaits.waitForSeconds(1);
+        console.log(`******** input : parentId ${parentId} , value ${value}, fieldId ${fieldConfig.id}`);
         let fieldValue = null;
         switch (fieldConfig.field_type.type){
             case "Text":
@@ -302,6 +361,7 @@ class CaseEdit{
             case "MultiSelectList":
                 fieldValue = await this.inputMultiSelectListField(fieldConfig, value, parentId);
                 break;
+         
 
         } 
         return fieldValue;

@@ -137,6 +137,15 @@ class CCDCaseConfig extends CCDCaseField{
     getCase(){
         return this.caseConfigTemplate; 
     }
+
+    getWizardPageConfig(pageId){
+        return this.caseConfigTemplate.wizard_pages.filter(wizardpage => wizardpage.id === pageId )[0];
+    }
+
+    getCaseFieldConfig(caseFieldId){
+        return this.caseConfigTemplate.case_fields.filter(caseField => caseField.id === caseFieldId)[0];
+
+    }
   
 
     

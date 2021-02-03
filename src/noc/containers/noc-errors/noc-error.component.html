@@ -1,4 +1,3 @@
-
 <div style="width:1220px; display: flex; margin: 0 auto;">
     <p style="margin-bottom: 0;">
     </p>
@@ -47,7 +46,7 @@
                       <ng-container *ngSwitchDefault>
                         <h1 class="govuk-heading-l" id="generic-error">Something went wrong</h1>
                         <p class="govuk-body">Your notice of change request has not been submitted.</p>
-                        <p class="govuk-body">{{(lastError$ | async)?.error.message}}.</p>
+                        <p class="govuk-body">{{(lastError$ | async)?.error.message}}</p>
                         <p class="govuk-body"><a href="/get-help">Contact us</a> for more information.</p>
                       </ng-container>
                     </ng-container>

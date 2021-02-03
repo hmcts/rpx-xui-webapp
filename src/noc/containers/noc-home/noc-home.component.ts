@@ -69,17 +69,16 @@ export class NocHomeComponent implements OnInit, OnDestroy {
             });
             break;
           case NocState.QUESTION:
+          case NocState.CASE_REF_SUBMISSION_FAILURE:
           case NocState.ANSWER_INCOMPLETE:
           case NocState.ANSWER_SUBMISSION_FAILURE:
-            this.store.dispatch(new fromFeature.Reset());
-            break;
-          case NocState.CHECK_ANSWERS:
-            this.store.dispatch(new fromFeature.ChangeNavigation(NocState.QUESTION));
-            break;
           case NocState.SUBMISSION_SUCCESS_PENDING:
           case NocState.SUBMISSION_SUCCESS_APPROVED:
           case NocState.SUBMISSION_FAILURE:
             this.store.dispatch(new fromFeature.Reset());
+            break;
+          case NocState.CHECK_ANSWERS:
+            this.store.dispatch(new fromFeature.ChangeNavigation(NocState.QUESTION));
             break;
           default:
             throw new Error('Invalid NoC state');

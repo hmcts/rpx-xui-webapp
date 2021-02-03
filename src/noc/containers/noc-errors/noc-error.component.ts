@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { NocHttpError, NocNavigation, NocNavigationEvent } from 'src/noc/models';
+import { NocHttpError, NocNavigation } from 'src/noc/models';
 import { NoCErrorMap } from '../../constants/nocErrorMap.enum';
 import * as fromFeature from '../../store';
 
@@ -22,21 +22,6 @@ export class NocErrorComponent implements OnChanges {
 
   public ngOnChanges(changes: SimpleChanges) {
     this.lastError$ = this.store.pipe(select(fromFeature.lastError));
-    if (changes.navEvent && this.navEvent) {
-      this.navigationHandler(this.navEvent.event);
-    }
   }
 
-  public navigationHandler(navEvent: NocNavigationEvent) {
-    switch (navEvent) {
-      case NocNavigationEvent.BACK: {
-        this.store.dispatch(new fromFeature.Reset());
-        break;
-      }
-      case NocNavigationEvent.CONTINUE:
-        break;
-      default:
-        throw new Error('Invalid option');
-    }
-  }
 }

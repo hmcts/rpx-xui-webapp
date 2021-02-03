@@ -1,22 +1,24 @@
 import { LocationDataService } from './location-data.service';
 
-describe('WorkAllocation service', () => {
-    const mockHttpService = jasmine.createSpyObj('mockHttpService', ['put', 'get', 'post']);
+describe('WorkAllocation', () => {
+  const mockHttpService = jasmine.createSpyObj('mockHttpService', ['put', 'get', 'post']);
 
+  describe('LocationDataService', () => {
     it('should be Truthy', () => {
-      const workAllocationService = new LocationDataService(mockHttpService);
-      expect(workAllocationService).toBeTruthy();
+      const service = new LocationDataService(mockHttpService);
+      expect(service).toBeTruthy();
     });
 
-    it('getLocations', () => {
-      const workAllocationService = new LocationDataService(mockHttpService);
-      workAllocationService.getLocations();
+    it('getLocations should make correct api call', () => {
+      const service = new LocationDataService(mockHttpService);
+      service.getLocations();
       expect(mockHttpService.get).toHaveBeenCalledWith(LocationDataService.locationUrl);
     });
 
-    it('getLocation', () => {
-      const workAllocationService = new LocationDataService(mockHttpService);
-      workAllocationService.getLocation('location123');
+    it('getLocation should make correct api call', () => {
+      const service = new LocationDataService(mockHttpService);
+      service.getLocation('location123');
       expect(mockHttpService.get).toHaveBeenCalledWith(`${LocationDataService.locationUrl}/location123`);
     });
+  });
 });

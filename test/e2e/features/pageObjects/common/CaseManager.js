@@ -202,7 +202,7 @@ class CaseManager {
     }
 
 
-    async _writeToField(ccdField) {
+    async _writeToField(ccdField,parentFieldName) {
         const isElementDisplayed = await ccdField.isDisplayed(); 
         if (!isElementDisplayed) {
             return;
@@ -210,11 +210,20 @@ class CaseManager {
         var ccdFileTagName = await ccdField.getTagName();
         var fieldName = "";
         try {
-            fieldName = await ccdField.$('.form-label').getText();
+            if (ccdFileTagName.includes("ccd-write-collection-field")){
+                console.log("collection field name");
+                fieldName = await ccdField.$('h2.heading-h2').getText();
+                fieldName = fieldName.trim();
+                console.log("collection field name is" + fieldName);
+
+            }else{
+                fieldName = await ccdField.$('.form-label').getText();
+            }
         }
         catch (err) {
-            fieldName = "Not inline field label";
+            console.log(err);
         }
+        fieldName = parentFieldName ? `${parentFieldName}.${fieldName}` : fieldName; 
         console.log("===> Case Field : " + fieldName);
         switch (ccdFileTagName) {
             case "ccd-write-text-field":
@@ -251,7 +260,7 @@ class CaseManager {
             case "ccd-write-fixed-list-field":
                 var selectOption = this._fieldValue(fieldName);
                 var selectOptionElement = ccdField.$('select option:nth-of-type(2)'); 
-                if (selectOption.includes(fieldName) &&  selectOption === "") {
+                if (selectOption.includes(fieldName)) {
                     selectOptionElement = ccdField.element(by.xpath("select//option[text() = '" + selectOption+"']")); 
 
                 }
@@ -310,24 +319,30 @@ class CaseManager {
                        continue; 
                     }
                     var ccdSubField = writeFields.get(fieldcounter).element(by.xpath("./div/*"));
-                    await this._writeToField(ccdSubField) 
+                    await this._writeToField(ccdSubField, fieldName) 
                 }
                 cucumberReporter.AddMessage(fieldName + " : complex field values");  
             break;
             case "ccd-write-collection-field":
                 cucumberReporter.AddMessage(fieldName + " : complex write collection values");  
                 var addNewBtn = ccdField.$(".panel button");
+
+                // let arrval = this._fieldValue(fieldName); 
+                // if (!(arrval instanceof Array)){
+                //     break;
+                // }
                 await browser.executeScript('arguments[0].scrollIntoView()',
                     addNewBtn.getWebElement());
                 await addNewBtn.click();
                 var writeFields = ccdField.$$(".panel > .form-group > .form-group>ccd-field-write");
                 var writeFieldsCount = await writeFields.count();
 
-                for (var count = 0; count < writeFieldsCount; count++){
+                for (var count = 0; count < writeFieldsCount; count++) {
                     var ccdSubField = writeFields.get(count).element(by.xpath("./div/*"));
-                    var subFieldText = await ccdSubField.getText(); 
-                    await this._writeToField(ccdSubField) 
+                    var subFieldText = await ccdSubField.getText();
+                    await this._writeToField(ccdSubField, `${fieldName}[0]`)
                 }
+               
                 cucumberReporter.AddMessage(fieldName + " : complex write collection values");  
             break;
             default:
@@ -338,7 +353,7 @@ class CaseManager {
 
     _fieldValue(fieldName) {;
         var value = "fieldName";
-
+        console.log("Read field value : " + fieldName);
         if (this.caseData[fieldName]) {
             value = this.caseData[fieldName];
         } else if (fieldName.includes('Optional')){

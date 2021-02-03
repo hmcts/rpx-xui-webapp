@@ -47,7 +47,6 @@ describe('Header  Tabs', function () {
     });
 
     it('Work allocation Tabs not present without roles "caseworker-ia-admofficer" and "caseworker-ia-caseofficer"', async function () {
-        BrowserUtil.setUserDetailsWithRoles(["caseworker-divorce-financialremedy-solicitor"]);
         await MockApp.startServer();
         await BrowserUtil.gotoHomePage();
 

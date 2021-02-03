@@ -1,16 +1,19 @@
-
-
 const express = require('express');
 var bodyParser = require('body-parser');
+const minimist = require('minimist');
 
-let { requestMapping,configurations} = require('./reqResMapping');
+
+let { requestMapping, configurations } = require('./reqResMapping');
 const { browser } = require('protractor');
-const CCDCaseConfig = require('./ccd/ccdCaseConfig/caseCreateConfigGenerator')
+const CCDCaseConfig = require('./ccd/ccdCaseConfig/caseCreateConfigGenerator');
+const CCDCaseDetails = require('./ccd/ccdCaseConfig/caseDetailsConfigGenerator');
+
 const port = 3001;
 
 
-class MockApp{
-    init(){
+class MockApp {
+    init() {
+        this.intercepts = [];
         this.conf = {
             get: { ...requestMapping.get },
             post: { ...requestMapping.post },
@@ -22,11 +25,20 @@ class MockApp{
         return "done";
     }
 
-    async startServer(){
+    addIntercept(url, callback) {
+        this.intercepts.push({ url: url, callback: callback })
+    }
+
+    async startServer() {
         const app = express();
         app.use(bodyParser.urlencoded({ extended: false }));
         app.use(bodyParser.json());
-        app.use(express.json()) 
+        app.use(express.json());
+
+        this.intercepts.forEach(intercept => {
+            app.use(intercept.url, intercept.callback);
+        });
+
         for (const [key, value] of Object.entries(this.conf.get)) {
             app.get(key, value);
         }
@@ -49,73 +61,55 @@ class MockApp{
 
     }
 
-    async stopServer(){
-        if (this.server){
+    async stopServer() {
+        if (this.server) {
             await this.server.close();
             this.server = null;
-        }else{
+        } else {
             console.log("Mock server is null or undefined");
         }
-        this.conf = {  };
-        this.configurations = { };
-    }
-
-   
-    onGet(path, callback){
-        this.conf.get[path] = callback; 
+        this.conf = {};
+        this.configurations = {};
     }
 
 
-    onPost(path, callback){
-        this.conf.post[path] = callback; 
+    onGet(path, callback) {
+        this.conf.get[path] = callback;
     }
 
-    onPut(path, callback){
-        this.conf.put[path] = callback; 
+
+    onPost(path, callback) {
+        this.conf.post[path] = callback;
     }
 
-    onDelete(path, callback){
-        this.conf.delete[path] = callback; 
+    onPut(path, callback) {
+        this.conf.put[path] = callback;
     }
 
-    setConfig(configKey,value){
-       this.configurations[configKey] = value; 
+    onDelete(path, callback) {
+        this.conf.delete[path] = callback;
+    }
+
+    setConfig(configKey, value) {
+        this.configurations[configKey] = value;
     }
 
 }
+
 
 const mockInstance = new MockApp();
 module.exports = mockInstance;
 
-
-// mockInstance.init();
-// createCustomCCDCaseConfig();
-// mockInstance.startServer();
-
-
-
-function createCustomCCDCaseConfig(){
-    // const scenario = { fieldType: "Collection", showField: false, retainHiddenField: false };
-
-    const scenario = { fieldType: "Document", showField: false, retainHiddenField: true };
-
-    const caseConfig = new CCDCaseConfig('TEST_CaseType', 'Test case type hidden field retain value', 'test description');
-    const page1 = caseConfig.addWizardPage('HiddenFieldPage_1', 'Hidden field retain value test page');
-
-    let testFieldShowYesNo = caseConfig.addCCDFieldToPage(page1, "YesOrNo", "showTestField", "Show Test Field?");
-    testFieldShowYesNo.value = true;
-
-    let complexField = caseConfig.addCCDFieldToPage(page1, scenario.fieldType, "complexField", "Complex field");
-    complexField.value = {
-            "document_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/a612199d-9972-4b99-b653-5ec7c310e21a",
-            "document_binary_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/a612199d-9972-4b99-b653-5ec7c310e21a/binary",
-            "document_filename": "Redacted-dm-store135044941749889827327305460282199740737.pdf"
-    }; 
-    complexField.retain_hidden_value = scenario.retainHiddenField;
-    complexField.show_condition = `${testFieldShowYesNo.id}=\"Yes\"`;
-
-    setUpcaseConfig(caseConfig.caseConfigTemplate);
+const args = minimist(process.argv)
+if (args.standalone) {
+    mockInstance.init();
+    // complexDynamicListeventConfig();
+    // collectionDynamicListeventConfig()
+    // createCustomCaseDetails();
+    mockInstance.startServer()
 }
+
+
 
 
 function setUpcaseConfig(caseConfig) {
@@ -143,4 +137,3 @@ function setUpcaseConfig(caseConfig) {
     });
 
 }
-

@@ -401,6 +401,7 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
+
 "@hmcts/ccd-case-ui-toolkit@^2.67.10-feature-toggle-work-allocation":
   version "2.67.10-feature-toggle-work-allocation"
   resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.67.10-feature-toggle-work-allocation.tgz#a81a1305338b63811a6a1484921295584f236164"
@@ -451,10 +452,10 @@
     tslib "^1.9.0"
     uuid "^3.3.2"
 
-"@hmcts/nodejs-healthcheck@^1.6.0":
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/@hmcts/nodejs-healthcheck/-/nodejs-healthcheck-1.6.0.tgz#ecc2002f2617b207c0cc48c6c11198e53fc8bb68"
-  integrity sha512-i9PsSbbZoI7fghnVNi6sWnwvWnJdTtEz0ytBuCogpLOVQLpeMh1FTub79AxAxIdJIvpS/s6lyGg5U+gk2mdhxA==
+"@hmcts/nodejs-healthcheck@^1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@hmcts/nodejs-healthcheck/-/nodejs-healthcheck-1.7.0.tgz#82b496d8f23f32d9670564ada3e773a55f544721"
+  integrity sha512-98hPAZdRkHbFkr35HXG3Pr03C6RDM7GKDSfIxm+AZVauaxZ0L02v0cv2pq4ueee6mD+rctQ4aczg1juYfkOHEQ==
   dependencies:
     "@hmcts/nodejs-logging" "^3.0.1"
     js-yaml "^3.8.4"
@@ -478,10 +479,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@0.1.48":
-  version "0.1.48"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-0.1.48.tgz#8cb3a33dbfac0b4b63a189007df38c7b91346907"
-  integrity sha512-cLjjb98eYpx3Ruf2thaLaRfUDkb0teCx4W50sp9HFCuvZJD08ivruCrfcvU1U3M8AaGjlOF2172QHvzzvGAQ6A==
+"@hmcts/rpx-xui-common-lib@0.1.53":
+  version "0.1.53"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-0.1.53.tgz#a6bf38cc70c36682724486dc370848e848e0e3d7"
+  integrity sha512-nVYev8j7FhvMA0MQTvKpF9PNWjaM2IKJoGaoljfaaPKDlRiZZ9z4Gi/npb/WijCG+JJQfBV+bGLgFtHkljG32A==
   dependencies:
     tslib "^1.9.0"
 
@@ -8820,6 +8821,13 @@ ngx-chips@1.9.8:
   integrity sha512-gU8hXByb0QcNLbDi5KuLsEgfuIoaKDDMHWdUPwtnY4gjGGEsg5afUo++raeKPHHc1igp/kYTghmI0xzOpMkqQg==
   dependencies:
     ng2-material-dropdown "0.10.1"
+    tslib "^1.9.0"
+
+ngx-cookie@^4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/ngx-cookie/-/ngx-cookie-4.1.2.tgz#ab2fafc6ee7f23b7ad92f8427dc714894e60aa31"
+  integrity sha512-BU3q+116mSQZvf8WsnKDxyWFy10LtxSvZz1YIjD7pmaSFpiKdWmHTHn0qLgm3OoIL9TfInQ7Ij46rKJWPD+4Kw==
+  dependencies:
     tslib "^1.9.0"
 
 ngx-logger@^4.0.4:

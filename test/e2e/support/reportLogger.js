@@ -26,12 +26,15 @@ class CucumberReportLog{
         if (!this.scenarioWorld) {
             return;
         }
-        const stream = await onbrowser.takeScreenshot(); 
-        const decodedImage = new Buffer(stream.replace(/^data:image\/(png|gif|jpeg);base64,/, ''), 'base64');
-        if(this.scenarioWorld){
-            this.scenarioWorld.attach(decodedImage, 'image/png');
-        }
+        const decodedImage = await getScreenshot(onbrowser);
+        this.scenarioWorld.attach(decodedImage, 'image/png');
        
+    }
+
+    async getScreenshot(onbrowser){
+        const stream = await onbrowser.takeScreenshot();
+        const decodedImage = new Buffer(stream.replace(/^data:image\/(png|gif|jpeg);base64,/, ''), 'base64');
+        return decodedImage; 
     }
 
 }

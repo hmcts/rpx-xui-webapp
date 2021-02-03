@@ -50,7 +50,8 @@
     "publish-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error mocha --timeout 15000 -r ts-node/register -r dotenv-extended/config api/test/pact/publish/publish.ts dotenv_config_defaults=./api/.env.defaults --reporter spec",
     "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact",
     "test:api": "mocha -r ts-node/register --config ./test/integration/tests/mocha.json --reporter mochawesome --reporter-options reportDir=reports/tests/api_functional,reportFilename=mochawesome",
-    "test:ngIntegration": "webdriver-manager update --versions.chrome 2.40 && ng e2e --webdriver-update=false --protractorConfig=./test/ngIntegration/config/protractor.conf.js"
+    "test:ngIntegration": "webdriver-manager update --versions.chrome 2.40 && ng e2e --webdriver-update=false --protractorConfig=./test/ngIntegration/config/protractor.conf.js",
+    "test:nodeMock": "nodemon ./test/nodeMock/app.js --standalone"
   },
   "private": true,
   "dependencies": {
@@ -108,7 +109,7 @@
     "isomorphic-fetch": "^3.0.0",
     "jwt-decode": "^2.2.0",
     "launchdarkly-js-client-sdk": "^2.16.3",
-    "mochawesome": "^6.1.1",
+    "mochawesome": "^6.2.1",
     "mochawesome-merge": "^4.1.0",
     "mochawesome-report-generator": "^5.1.0",
     "moment-timezone": "^0.5.28",

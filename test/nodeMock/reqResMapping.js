@@ -1,5 +1,8 @@
 const ccdApiMock = require('./ccd/ccdApi');
 const WAReqResMappings  = require('./workAllocation/reqResMapping');
+const ccdReqResMapping = require('./ccd/reqResMapping');
+const nodeAppReqResMappings = require('./nodeApp/reqResMapping');
+
 
 
 const idamProfile = require('./ccd/profile');
@@ -7,31 +10,15 @@ const dummyCaseDetails = require('./ccd/caseDetails_data');
 
 const requestMapping = {
    get:{
-       '/auth/login' : (req,res) => {
-           res.set('Location' , 'https://idam-web-public.aat.platform.hmcts.net/o/authorize?client_id=xuiwebapp&scope=profile%20openid%20roles%20manage-user%20create-user&response_type=code&redirect_uri=https%3A%2F%2Fmanage-case.aat.platform.hmcts.net%2Foauth2%2Fcallback&state=FqsiMTALn8m7qKRHNAAqlBoXUj57XSdenjnk_fplRzM&prompt=login&nonce=-XwicqlfV3vpe7GNIe9v5QFrlOzFR7VUDcjBBuYyUBc');
-           res.status(302).send();
-       },
-       '/auth/isAuthenticated' : (req,res) => {
-            res.send(true);
-       },
+        ...nodeAppReqResMappings.get,
+        ...WAReqResMappings.get,
+        ...ccdReqResMapping.get,
+
+       
        '/api/organisation': (req,res) => {
            res.send(getOrganisation());
        },
-       '/external/configuration-ui': (req,res) => {
-           res.send({"googleAnalyticsKey":"UA-124734893-4","idamWeb":"https://idam-web-public.aat.platform.hmcts.net","launchDarklyClientId":"5de6610b23ce5408280f2268","manageCaseLink":"https://xui-webapp-aat.service.core-compute-aat.internal/cases","manageOrgLink":"https://xui-mo-webapp-aat.service.core-compute-aat.internal","protocol":"http"});
-       },
-        '/external/config/ui': (req, res) => {
-            res.send({ "googleAnalyticsKey": "UA-124734893-4", "idamWeb": "https://idam-web-public.aat.platform.hmcts.net", "launchDarklyClientId": "5de6610b23ce5408280f2268", "manageCaseLink": "https://xui-webapp-aat.service.core-compute-aat.internal/cases", "manageOrgLink": "https://xui-mo-webapp-aat.service.core-compute-aat.internal", "protocol": "http" });
-        },
-       '/external/configuration': (req,res) => {
-           res.send(""+getConfigurationValue(req.query.configurationKey));
-       },
-        '/api/configuration': (req, res) => {
-            res.send("" + getConfigurationValue(req.query.configurationKey));
-        },
-       '/api/healthCheck': (req,res) => {
-           res.send({"healthState":true});
-       },
+       
        '/api/userList':(req,res) => {
             res.send(getUsersList());
        },
@@ -50,67 +37,29 @@ const requestMapping = {
        '/api/caseshare/users': (req,res) => {
            res.send(organisationUsers());
        },
-       '/aggregated/caseworkers/:uid/jurisdictions':(req,res) =>{
-           res.send(ccdApiMock.getJurisdictions());
-       },
-       '/data/internal/case-types/:jurisdiction/work-basket-inputs' : (req,res) => {
-           res.send(ccdApiMock.getWorkbasketInputs(req.params.jurisdiction));
-
-       },
-        '/data/internal/case-types/:jurisdiction/event-triggers/:caseType': (req, res) => {
-            res.send(ccdApiMock.getSolicitorCreateCaseConfig(req.params.jurisdiction, req.params.caseType));
-        },
         '/data/internal/profile' : (req,res) => {
             res.send(idamProfile);
         },
         '/data/internal/cases/:caseid': (req,res) => {
             res.send(dummyCaseDetails);
         },
-        '/data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:casetype/cases/pagination_metadata': (req, res) => {
-            res.send(getWorkbasketCases());
-        },
         '/api/caseshare/orgs': (req, res) => {
             res.send(getCaseShareOrgs());
         },
-        ...WAReqResMappings.get
-
-
+        '/data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/cases/pagination_metadata': (req,res) => {
+            res.send();
+        }
 
     },
     post:{
-        '/api/inviteUser': (req,res) => {
-            res.send({"userIdentifier":"97ecc487-cdeb-42a8-b794-84840a4testc","idamStatus":null});
-        },
-        '/data/case-types/:caseType/validate' : (req,res) => {
-            const responseBody = {
-                data: req.body.data,
-                "_links": { "self": { "href": "http://ccd-data-store-api-demo.service.core-compute-demo.internal" + req.path + "?pageId=" + req.query.pageId } }
-            }
-            res.send(responseBody)
-        },
-        '/data/case-types/:caseType/cases': (req,res) => {
-            const responseBody = {
-                id: Date.now(),
-                data: req.body.data,
-                "_links": { "self": { "href": "http://ccd-data-store-api-demo.service.core-compute-demo.internal" + req.path + "?ignore-warning=false" } }
-            }
-            res.send(responseBody)
-        },
-        '/data/cases/:caseid/events': (req,res) => {
-            const responseBody = {
-                id: Date.now(),
-                data: req.body.data,
-                "_links": { "self": { "href": "http://ccd-data-store-api-demo.service.core-compute-demo.internal" + req.path + "?ignore-warning=false" } }
-            }
-            res.send(responseBody);
-        },
-        '/data/internal/searchCases' : (req,res) => {
-            res.send(getWorkbasketCases());
-        },
+        ...WAReqResMappings.post,
+        ...ccdReqResMapping.post,
+        ...WAReqResMappings.post,
+        
         '/api/caseshare/case-assignments': (req, res) => {
             res.send( []);
-        },
-        ...WAReqResMappings.post
+        }
+       
 
     },
     put:{
@@ -388,214 +337,4 @@ function getCaseShareOrgs(){
             ]
         }
     ];
-}
-
-function getWorkbasketCases(){
-  let cols = [{
-      "label": "Case reference",
-      "order": 1,
-      "metadata": true,
-      "case_field_id": "[CASE_REFERENCE]",
-      "case_field_type": {
-        "id": "Number",
-        "type": "Number",
-        "min": null,
-        "max": null,
-        "regular_expression": null,
-        "fixed_list_items": [],
-        "complex_fields": [],
-        "collection_field_type": null
-      },
-      "display_context_parameter": null
-    },
-    {
-      "label": "Your reference",
-      "order": 2,
-      "metadata": false,
-      "case_field_id": "solsSolicitorAppReference",
-      "case_field_type": {
-        "id": "solsSolicitorAppReference-1dfb2a37-bfdf-4ff8-a174-41de34b4598a",
-        "type": "Text",
-        "min": null,
-        "max": 100,
-        "regular_expression": null,
-        "fixed_list_items": [],
-        "complex_fields": [],
-        "collection_field_type": null
-      },
-      "display_context_parameter": null
-    },
-    {
-      "label": "First name(s) of deceased",
-      "order": 3,
-      "metadata": false,
-      "case_field_id": "deceasedForenames",
-      "case_field_type": {
-        "id": "deceasedForenames-bae1ec6b-5cd4-41a2-bd4d-89258d36421e",
-        "type": "Text",
-        "min": 1,
-        "max": null,
-        "regular_expression": null,
-        "fixed_list_items": [],
-        "complex_fields": [],
-        "collection_field_type": null
-      },
-      "display_context_parameter": null
-    },
-    {
-      "label": "Last name(s) of deceased",
-      "order": 4,
-      "metadata": false,
-      "case_field_id": "deceasedSurname",
-      "case_field_type": {
-        "id": "deceasedSurname-4af50392-b07a-40a8-9e8a-e310faddb800",
-        "type": "Text",
-        "min": 1,
-        "max": null,
-        "regular_expression": null,
-        "fixed_list_items": [],
-        "complex_fields": [],
-        "collection_field_type": null
-      },
-      "display_context_parameter": null
-    },
-    {
-      "label": "Date of death",
-      "order": 5,
-      "metadata": false,
-      "case_field_id": "deceasedDateOfDeath",
-      "case_field_type": {
-        "id": "Date",
-        "type": "Date",
-        "min": null,
-        "max": null,
-        "regular_expression": null,
-        "fixed_list_items": [],
-        "complex_fields": [],
-        "collection_field_type": null
-      },
-      "display_context_parameter": null
-    },
-    {
-      "label": "Case printed",
-      "order": 6,
-      "metadata": false,
-      "case_field_id": "casePrinted",
-      "case_field_type": {
-        "id": "FixedList-casePrintedTypes",
-        "type": "FixedList",
-        "min": null,
-        "max": null,
-        "regular_expression": null,
-        "fixed_list_items": [
-          {
-            "code": "Yes",
-            "label": "Yes",
-            "order": null
-          }
-        ],
-        "complex_fields": [],
-        "collection_field_type": null
-      },
-      "display_context_parameter": null
-    }
-  ];
-
-  let rows = [];
-  for(let rowCounter = 0; rowCounter< 250 ; rowCounter++){
-    rows.push({
-      "case_id": "1571254417214566",
-      "case_fields": {
-        "solsConfirmSignSOT2": "You will sign a statement of truth on your client’s behalf.",
-        "solsConfirmSignSOT3": "The executor believes that all the information stated in the legal statement is true. They have authorised ${solsSolicitorFirmName} to sign a statement of truth on their behalf.",
-        "immovableEstateInfo": "You are unable to apply online unless the estate in England and Wales consists wholly of immovable property.",
-        "solicitorMainApplicantInfo": "You cannot apply for letters of administration if you are a solicitor applying as an executor.",
-        "solsSolicitorPhoneNumber": "07963732122",
-        "[LAST_STATE_MODIFIED_DATE]": null,
-        "solsConfirmSignSOT1": "You won’t be able to make changes to the legal statement and declaration after continuing.",
-        "solsDiedOrNotApplyingInfo": "You can’t use this service if an executor/residuary legatee/devisee in trust is alive or applying.",
-        "solsLifeInterestInfo": "You can’t use this service if there is a life interest in respect of the estate.",
-        "solsBeforeSubmitPage": "* Check the information you've given. You can do this on the next pagesn* Review the legal statement and declarationn* Get authorisation from your client to confirm and sign the statement of truth on their behalf",
-        "solsEntitledMinorityInfo": "You can’t use this service if there is a beneficiary under the age of 18.",
-        "[CASE_REFERENCE]": 1571254417214566,
-        "solsStartPage": "# Check you can use this service to apply for a grant.",
-        "[STATE]": "SolAppCreated",
-        "solsSolicitorFirmName": "3ewq",
-        "solsResiduaryInfo": "You can’t use this service if you are not named in the will as a residuary legatee or devisee.",
-        "solsSolicitorEmail": "wdwedwe@gmail.com",
-        "solsMinorityInterestInfo": "You can’t use this service if there is a minority interest.",
-        "solsApplicantSiblingsInfo": "You can’t use this service if the applicant has any siblings.",
-        "deceasedNameSection": "### What's the full name of the deceased? nUse the name on the death certificate",
-        "solsIht400extraInfo": "You'll need to send a stamped (receipted) IHT 421 with this application.",
-        "solsExecutorInfoSection": "Enter all executors named in the will. Only 4 lay executors can apply.",
-        "[JURISDICTION]": "PROBATE",
-        "[CREATED_DATE]": "2019-10-16T19:33:37.257",
-        "solsApplicantNameSection": "## Applicant name",
-        "solsSolicitorAddress": {
-          "County": "",
-          "Country": "United Kingdom",
-          "PostCode": "SW20 0D",
-          "PostTown": "Livingston",
-          "AddressLine1": "69 Haymarket Crescent",
-          "AddressLine2": "",
-          "AddressLine3": ""
-        },
-        "solsReviewLegalStatement2": "You can print the legal statement and declaration and ask your client to sign it for your own records. A photocopy of the signed statement should be submitted along with your evidence in support. nIf you are providing a notarial copy or a court sealed copy of the will please also provide a cover letter with the application indicating where the original will is and why it cannot be released.",
-        "solsReviewLegalStatement1": "This is the legal statement and declaration for you and your client to review. If there are no changes, your client can authorise you to declare on their behalf.",
-        "[SECURITY_CLASSIFICATION]": "PUBLIC",
-        "englishWillNo": "A translation will be required.",
-        "[CASE_TYPE]": "GrantOfRepresentation",
-        "solsSolicitorAppReference": "wdew",
-        "noProofEntitlement": "The will is not entitled to proof in England and Wales.",
-        "[LAST_MODIFIED_DATE]": "2020-07-23T15:19:16.093575"
-      },
-      "case_fields_formatted": {
-        "solsConfirmSignSOT2": "You will sign a statement of truth on your client’s behalf.",
-        "solsConfirmSignSOT3": "The executor believes that all the information stated in the legal statement is true. They have authorised ${solsSolicitorFirmName} to sign a statement of truth on their behalf.",
-        "immovableEstateInfo": "You are unable to apply online unless the estate in England and Wales consists wholly of immovable property.",
-        "solicitorMainApplicantInfo": "You cannot apply for letters of administration if you are a solicitor applying as an executor.",
-        "solsSolicitorPhoneNumber": "07963732122",
-        "[LAST_STATE_MODIFIED_DATE]": null,
-        "solsConfirmSignSOT1": "You won’t be able to make changes to the legal statement and declaration after continuing.",
-        "solsDiedOrNotApplyingInfo": "You can’t use this service if an executor/residuary legatee/devisee in trust is alive or applying.",
-        "solsLifeInterestInfo": "You can’t use this service if there is a life interest in respect of the estate.",
-        "solsBeforeSubmitPage": "* Check the information you've given. You can do this on the next pagesn* Review the legal statement and declarationn* Get authorisation from your client to confirm and sign the statement of truth on their behalf",
-        "solsEntitledMinorityInfo": "You can’t use this service if there is a beneficiary under the age of 18.",
-        "[CASE_REFERENCE]": 1571254417214566,
-        "solsStartPage": "# Check you can use this service to ap.",
-        "[STATE]": "SolAppCreated",
-        "solsSolicitorFirmName": "3ewq",
-        "solsResiduaryInfo": "You can’t use this sisee.",
-        "solsSolicitorEmail": "wdwedwe@gmail.com",
-        "solsMinorityInterestInfo": "You can’t use this service if there is a minority interest.",
-        "solsApplicantSiblingsInfo": "You can’t use this service if the applicant has any siblings.",
-        "deceasedNameSection": "### What's the full namn the death certificate",
-        "solsIht400extraInfo": "You'll need to send a stamped (receipted) IHT 421 with this application.",
-        "solsExecutorInfoSection": "Enter all executors named in the will. Only 4 lay executors can apply.",
-        "[JURISDICTION]": "PROBATE",
-        "[CREATED_DATE]": "2019-10-16T19:33:37.257",
-        "solsApplicantNameSection": "## Applicant name",
-        "solsSolicitorAddress": {
-          "County": "",
-          "Country": "United Kingdom",
-          "PostCode": "SW20 0D",
-          "PostTown": "Livingston",
-          "AddressLine1": "69 Haymarket Crescent",
-          "AddressLine2": "",
-          "AddressLine3": ""
-        },
-        "solsReviewLegalStatement2": "You can print the legal statement and declaration and ask your client to sign it for your own records. A photocopy of the signed statement should be submitted along with your evidence in support. nIf you are providing a notarial copy or a court sealed copy of the will please also provide a cover letter with the application indicating where the original will is and why it cannot be released.",
-        "solsReviewLegalStatement1": "This is the legal statement and declaration for you and your client to review. If there are no changes, your client can authorise you to declare on their behalf.",
-        "[SECURITY_CLASSIFICATION]": "PUBLIC",
-        "englishWillNo": "A translation will be required.",
-        "[CASE_TYPE]": "GrantOfRepresentation",
-        "solsSolicitorAppReference": "wdew",
-        "noProofEntitlement": "The will is not entitled to proof in England and Wales.",
-        "[LAST_MODIFIED_DATE]": "2020-07-23T15:19:16.093575"
-      }
-    });
-  }
-    return { columns: cols, results: rows, total:250 };
-
- 
 }

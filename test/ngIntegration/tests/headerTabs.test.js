@@ -19,7 +19,9 @@ describe('Header  Tabs', function () {
     });
     afterEach(async function (done) {
         await MockApp.stopServer();
+        // await BrowserUtil.addScreenshot(this, browser); 
         done();
+
     });
 
     it('Case list tab present', async function () {
@@ -44,7 +46,7 @@ describe('Header  Tabs', function () {
 
     });
 
-    it.skip('Work allocation Tabs not present without roles "caseworker-ia-admofficer" and "caseworker-ia-caseofficer"', async function () {
+    it('Work allocation Tabs not present without roles "caseworker-ia-admofficer" and "caseworker-ia-caseofficer"', async function () {
         await MockApp.startServer();
         await BrowserUtil.browserInitWithAuth(["caseworker-divorce-financialremedy-solicitor"]);
 

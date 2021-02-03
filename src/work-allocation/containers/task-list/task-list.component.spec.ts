@@ -1,15 +1,15 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NavigationExtras, Router } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { Router } from '@angular/router';
+import { of } from 'rxjs';
 
 import { ConfigConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { TaskService, TaskSort } from '../../enums';
 import { Task, TaskAction, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
-import { getMockTasks } from '../../tests/utils.spec';
+import { getMockTasks, MockRouter } from '../../tests/utils.spec';
 import { TaskListComponent } from './task-list.component';
 
 @Component({
@@ -48,24 +48,6 @@ function getTaskService(): TaskServiceConfig {
     defaultSortFieldName: 'dueDate',
     fields: getFields(),
   };
-}
-
-class MockRouter {
-  private pUrl: string = 'bob';
-  public get url(): string {
-    return this.pUrl;
-  }
-  public set url(value: string) {
-    this.pUrl = value;
-  }
-  private readonly pNavigateCalls: any[] = [];
-  public get navigateCalls(): any[] {
-    return this.pNavigateCalls;
-  }
-  public navigate(commands: any[], extras?: NavigationExtras): Observable<boolean> {
-    this.pNavigateCalls.push({ commands, extras });
-    return of(true);
-  }
 }
 
 describe('TaskListComponent', () => {

@@ -122,7 +122,6 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
    * Handle a User Claiming a Task
    */
   public onActionHandler(taskAction: InvokedTaskAction): void {
-    console.log(taskAction.action.id);
     switch (taskAction.action.id) {
       case TaskActionIds.CLAIM:
         return this.claimTask(taskAction.task.id);

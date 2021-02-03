@@ -163,7 +163,7 @@ class ShareCasePage {
     async clickDeselectCase(caseNum){
         let selectedCase = await this.selectedCases.get(caseNum - 1);
         CucumberReportLog.AddMessage("Deselecting Case " + await selectedCase.getText()); 
-        await selectedCase.$('#btn-deselect-case').click();  
+        await selectedCase.$("[id^='btn-deselect-case']").click();  
         
         await BrowserWaits.waitForCondition(async () => {
             return !(await selectedCase.isPresent()); 

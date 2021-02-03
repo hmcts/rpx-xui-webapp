@@ -108,40 +108,36 @@ const args = minimist(process.argv)
 if (args.standalone){
     mockInstance.init();
 
-    // setUpcaseConfig();
+    setUpcaseConfig();
     // getDLCaseConfig();
     // collectionDynamicListeventConfig()
     // createCustomCaseDetails();
     mockInstance.startServer()
 }
 
+function setUpcaseConfig(){
+
+} 
 
 
+function setUpcaseConfig() {
+    const { getTestJurisdiction }  = require('../ngIntegration/mockData/ccdCaseMock');
+    mockInstance.onGet('/data/internal/case-types/:jurisdiction/event-triggers/:caseType', (req, res) => {
+        const caseEventConfig = getTestJurisdiction();
 
-function setUpcaseConfig(caseConfig) {
+        // const page1 = caseEventConfig.getWizardPageConfig("testPage1");
+        // page1.label = "For demo 123456"
 
+        // const textField0 = caseEventConfig.getCaseFieldConfig("TextField0");
+        // textField0.display_context = "MANDATORY";
 
-    // mockInstance.onGet('/data/internal/cases/:caseid/event-triggers/:eventId', (req, res) => {
-    //     res.send(getDLCaseConfig().getCase());
-    // });
+        // textField0.show_summary_change_option = false;
+        // textField0.show_summary_content_option = true;
 
-    mockInstance.onPost('/data/case-types/:caseType/validate', (req, res) => {
-        caseValidationRequestBody = req.body;
-        const responseBody = {
-            data: req.body.data,
-            "_links": { "self": { "href": "http://ccd-data-store-api-aat.service.core-compute-demo.internal" + req.path + "?pageId=" + req.query.pageId } }
-        }
-        res.send(responseBody);
-    });
+        // const page2 = caseEventConfig.getWizardPageConfig("testPage2");
+        // page2.show_condition = "TextField0=\"SHOW\"";
 
-    mockInstance.onPost('/data/cases/:caseid/events', (req, res) => {
-        caseEventSubmitRequestBody = req.body;
-        const responseBody = {
-            id: Date.now(),
-            data: req.body.data,
-            "_links": { "self": { "href": "http://ccd-data-store-api-demo.service.core-compute-demo.internal" + req.path + "?ignore-warning=false" } }
-        }
-        res.send(responseBody)
+        res.send(caseEventConfig.getCase());
     });
 
 }

@@ -53,29 +53,37 @@ export async function assignCases(req: EnhancedRequest, res: Response, next: Nex
 
   // call share case api
   const updatedSharedCases: SharedCase[] = []
-  const updatedErrorMessages: string[] = []
+  // const updatedErrorMessages: string[] = []
   // const {updatedSharedCases, updatedErrorMessages}:
-  //   { updatedSharedCases: SharedCase[], updatedErrorMessages: string[] } = await doShareCase(req, shareCases)
+  //    { updatedSharedCases: SharedCase[], updatedErrorMessages: string[] } = await doShareCase(req, shareCases)
 
-  // TODO: call unshare case api
-  await doUnshareCase(req, shareCases, updatedSharedCases)
-
-  const originalSharedNumber = shareCases.reduce((acc, aCase) => acc
-    + (aCase.pendingShares ? aCase.pendingShares.length : 0), 0)
-  const afterSharedNumber = updatedSharedCases.reduce((acc, aCase) => acc
-    + (aCase.pendingShares ? aCase.pendingShares.length : 0), 0)
-
-  // when none of the users are assigned successfully
-  if (originalSharedNumber > 0 && originalSharedNumber === afterSharedNumber) {
-    return res.status(500).send(updatedErrorMessages)
-  }
-
-  // when all/partial are assigned successfully
+  const shareCasePromise = doShareCase(req, shareCases)
+  // await doUnshareCase(req, shareCases, updatedSharedCases)
+  const unShareCasePromise = doUnshareCase(req, shareCases)
+  const allPromises = [shareCasePromise, unShareCasePromise]
+  // @ts-ignore
+  const allResults = await Promise.allSettled(allPromises)
+  allResults.forEach(result => {
+    const {status, reason, value}: {status: string, reason: any, value: any } = result
+    console.log(`all requests have been handled: ${status} ${value}`)
+  })
   return res.status(201).send(updatedSharedCases)
+  // const originalSharedNumber = shareCases.reduce((acc, aCase) => acc
+  //   + (aCase.pendingShares ? aCase.pendingShares.length : 0), 0)
+  // const afterSharedNumber = updatedSharedCases.reduce((acc, aCase) => acc
+  //   + (aCase.pendingShares ? aCase.pendingShares.length : 0), 0)
+  //
+  // // when none of the users are assigned successfully
+  // if (originalSharedNumber > 0 && originalSharedNumber === afterSharedNumber) {
+  //   return res.status(500).send(updatedErrorMessages)
+  // }
+  //
+  // // when all/partial are assigned successfully
+  // return res.status(201).send(updatedSharedCases)
 }
 
 async function doShareCase(req: EnhancedRequest, shareCases: SharedCase[]):
-  Promise<{updatedSharedCases: SharedCase[], updatedErrorMessages: string[]}> {
+  Promise<{action: string, rejectedPayloads: CaseAssigneeMappingModel[], updatedErrorMessages: string[]}> {
   const path = `${ccdUrl}/case-assignments`
   const promises = promiseCaseShareBatchCall(shareCases, path, req)
   // @ts-ignore
@@ -89,11 +97,16 @@ async function doShareCase(req: EnhancedRequest, shareCases: SharedCase[]):
       updatedErrorMessages.push(`{request: ${reason.config.data}, response: {${reason.data.status} ${reason.data.message}}}`)
     }
   })
-  const updatedSharedCases: SharedCase[] = handleRejectedPayloads(shareCases, rejectedPayloads)
   return {
+    'action': 'doShare',
+    rejectedPayloads,
     updatedErrorMessages,
-    updatedSharedCases,
   }
+  // const updatedSharedCases: SharedCase[] = handleRejectedPayloads(shareCases, rejectedPayloads)
+  // return {
+  //   updatedErrorMessages,
+  //   updatedSharedCases,
+  // }
 }
 
 function promiseCaseShareBatchCall(shareCases: SharedCase[], path: string, req: EnhancedRequest) {
@@ -140,10 +153,12 @@ function handleRejectedPayloads(shareCases: SharedCase[], rejectedPayloads: Case
 }
 
 // @ts-ignore
-async function doUnshareCase(req: EnhancedRequest, shareCases: SharedCase[], updatedSharedCases: SharedCase[]) {
+async function doUnshareCase(req: EnhancedRequest, shareCases: SharedCase[]):
+  Promise<{action: string, response: any }> {
   // TODO: call unshare case api
   const path = `${ccdUrl}/case-assignments`
   const unassignedCaseModels = []
+  let response = null
   for (const aCase of shareCases) {
     const userDetails: UserDetails[] = aCase.pendingUnshares
     for (const aUser of userDetails) {
@@ -158,5 +173,11 @@ async function doUnshareCase(req: EnhancedRequest, shareCases: SharedCase[], upd
   const payload = {
     unassignments: unassignedCaseModels,
   }
-  return sendDelete(path, payload, req)
+  if (unassignedCaseModels.length > 0) {
+    response = sendDelete(path, payload, req)
+  }
+  return {
+    'action': 'doUnShare',
+    response,
+  }
 }

@@ -28,7 +28,7 @@ const publish = async (): Promise<void> => {
         path.resolve(__dirname, '../pacts/'),
       ],
       publishVerificationResult: true,
-      tags: ['xui', 'oidc', 'oauth2'],
+      tags: ['xui', 'oidc', 'oauth2', 'Dev'],
     }
 
     await pact.publishPacts(opts)

@@ -107,7 +107,8 @@ module.exports = mockInstance;
 const args = minimist(process.argv)
 if (args.standalone){
     mockInstance.init();
-    setUpcaseConfig();
+
+    // setUpcaseConfig();
     // getDLCaseConfig();
     // collectionDynamicListeventConfig()
     // createCustomCaseDetails();
@@ -118,9 +119,11 @@ if (args.standalone){
 
 
 function setUpcaseConfig(caseConfig) {
-    mockInstance.onGet('/data/internal/cases/:caseid/event-triggers/:eventId', (req, res) => {
-        res.send(getDLCaseConfig().getCase());
-    });
+
+
+    // mockInstance.onGet('/data/internal/cases/:caseid/event-triggers/:eventId', (req, res) => {
+    //     res.send(getDLCaseConfig().getCase());
+    // });
 
     mockInstance.onPost('/data/case-types/:caseType/validate', (req, res) => {
         caseValidationRequestBody = req.body;

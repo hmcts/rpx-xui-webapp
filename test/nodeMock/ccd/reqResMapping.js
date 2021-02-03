@@ -13,6 +13,9 @@ module.exports = {
             },
             '/data/internal/cases/:caseid/event-triggers/:eventId': (req, res) => {
                 res.send(ccdMockData.getSingleFieldCaseEventConfig(req.params.eventId));
+            },
+            '/data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:casetype/cases/pagination_metadata': (req, res) => {
+                res.send(ccdMockData.getWorkbasketCases());
             }
         },
     post: {
@@ -42,6 +45,9 @@ module.exports = {
                     "_links": { "self": { "href": "http://ccd-data-store-api-demo.service.core-compute-demo.internal" + req.path + "?ignore-warning=false" } }
                 }
                 res.send(responseBody);
+            },
+            '/data/internal/searchCases': (req, res) => {
+                res.send(ccdMockData.getWorkbasketCases());
             }, 
         
         }

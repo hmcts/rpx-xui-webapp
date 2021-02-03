@@ -451,10 +451,10 @@
     tslib "^1.9.0"
     uuid "^3.3.2"
 
-"@hmcts/nodejs-healthcheck@^1.6.0":
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/@hmcts/nodejs-healthcheck/-/nodejs-healthcheck-1.6.0.tgz#ecc2002f2617b207c0cc48c6c11198e53fc8bb68"
-  integrity sha512-i9PsSbbZoI7fghnVNi6sWnwvWnJdTtEz0ytBuCogpLOVQLpeMh1FTub79AxAxIdJIvpS/s6lyGg5U+gk2mdhxA==
+"@hmcts/nodejs-healthcheck@^1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@hmcts/nodejs-healthcheck/-/nodejs-healthcheck-1.7.0.tgz#82b496d8f23f32d9670564ada3e773a55f544721"
+  integrity sha512-98hPAZdRkHbFkr35HXG3Pr03C6RDM7GKDSfIxm+AZVauaxZ0L02v0cv2pq4ueee6mD+rctQ4aczg1juYfkOHEQ==
   dependencies:
     "@hmcts/nodejs-logging" "^3.0.1"
     js-yaml "^3.8.4"

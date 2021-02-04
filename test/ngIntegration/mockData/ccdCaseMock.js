@@ -67,9 +67,11 @@ function getDLCaseConfig(scenario) {
     customCase
         .setEventProps(scenario ? scenario : {})
         .addWizardPage("testPage1", "Test Page 1")
-        .addCaseField({ id: "dl", type: "DynamicList", label: "Root DL", value: { value: listItems[1], list_items: listItems }})
+        .addCaseField({ id: "dl1", type: "DynamicList", label: "Root DL 1", value: { value: listItems[1], list_items: listItems }})
       
-     
+        .addWizardPage("testPage2", "Test Page 2")
+        .addCaseField({ id: "dl2", type: "DynamicList", label: "Root DL 2", value: null })
+
 
 
         .addCaseField({

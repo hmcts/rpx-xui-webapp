@@ -124,8 +124,12 @@ function setUpcaseConfig(caseConfig) {
 
     mockInstance.onPost('/data/case-types/:caseType/validate', (req, res) => {
         caseValidationRequestBody = req.body;
+        let pageId = req.query.pageId;
+        if (pageId === "testPage1"){
+            caseValidationRequestBody.data.dl2 = { value: { code: "Testitem_1234", label: "Test item 1234" }, list_items: [{ code: "Testitem_1234", label: "Test item 1234" }, { code: "Testitem_12345", label: "Test item 12345" }]}
+        }
         const responseBody = {
-            data: req.body.data,
+            data: caseValidationRequestBody.data,
             "_links": { "self": { "href": "http://ccd-data-store-api-aat.service.core-compute-demo.internal" + req.path + "?pageId=" + req.query.pageId } }
         }
         res.send(responseBody);

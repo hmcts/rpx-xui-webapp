@@ -27,6 +27,7 @@ import {
   SERVICES_PRD_API_URL,
   SERVICES_TERMS_AND_CONDITIONS_URL,
   SERVICES_WORK_ALLOCATION_TASK_API_PATH,
+  SERVICES_ROLE_ASSIGNMENT_API_PATH
 } from './references'
 
 /**
@@ -66,5 +67,6 @@ export const applicationConfiguration = () => {
     servicesS2sPath: getConfigValue(SERVICE_S2S_PATH),
     servicesTermsAndConditionsPath: getConfigValue(SERVICES_TERMS_AND_CONDITIONS_URL),
     workAllocationTaskPath: getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH),
+    roleAssignmentPath: getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH)
   }
 }

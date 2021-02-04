@@ -42,6 +42,9 @@
     "work_allocation": {
       "taskApi": "http://wa-task-management-api-prod.service.core-compute-prod.internal"
     },
+    "role_assignment": {
+      "roleApi": "http://am-role-assignment-service-prod.service.core-compute-prod.internal"
+    },
     "payments": "http://payment-api-prod.service.core-compute-prod.internal",
     "markup_api": "http://em-npa-prod.service.core-compute-prod.internal",
     "icp_api": "http://em-icp-prod.service.core-compute-prod.internal",

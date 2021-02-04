@@ -147,7 +147,7 @@ describe('NocCheckAndSubmitComponent', () => {
     expect(spyOnDispatchToStore).toHaveBeenCalledWith(new fromFeature.SetAffirmationError(affirmationError));
   });
 
-  it('should set affirmation no error', () => {
+  it('should set notify error', () => {
     component.affirmationAgreed = true;
     component.notifyEveryParty = false;
     const affirmationError = {
@@ -157,7 +157,7 @@ describe('NocCheckAndSubmitComponent', () => {
     expect(spyOnDispatchToStore).toHaveBeenCalledWith(new fromFeature.SetAffirmationError(affirmationError));
   });
 
-  it('should set notifyEveryParty no error', () => {
+  it('should set affirmation error', () => {
     component.affirmationAgreed = false;
     component.notifyEveryParty = true;
     const affirmationError = {

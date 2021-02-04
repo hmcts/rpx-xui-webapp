@@ -82,7 +82,7 @@
     "@types/crypto-js": "^3.1.43",
     "@types/sinon": "^7.0.13",
     "accessibility-checker": "^3.0.6",
-    "applicationinsights": "1.7.2",
+    "applicationinsights": "1.8.8",
     "applicationinsights-js": "^1.0.20",
     "axios": "^0.18.0",
     "class-transformer": "^0.1.10",

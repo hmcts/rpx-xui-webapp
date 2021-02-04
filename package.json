@@ -62,7 +62,7 @@
     "@angular/platform-browser-dynamic": "^7.2.13",
     "@angular/router": "^7.2.13",
     "@hmcts/ccd-case-ui-toolkit": "2.64.20-consumer-sorting",
-    "@hmcts/ccpay-web-component": "3.0.3",
+    "@hmcts/ccpay-web-component": "3.0.26",
     "@hmcts/frontend": "0.0.39-alpha",
     "@hmcts/media-viewer": "2.2.7",
     "@hmcts/nodejs-healthcheck": "^1.6.0",

@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
 import { ListConstants } from '../../components/constants';
 import { InfoMessage, InfoMessageType, TaskActionIds, TaskService, TaskSort } from '../../enums';
-import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
+import { SearchTaskRequest, SortParameter } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
@@ -144,17 +144,15 @@ export class TaskListWrapperComponent implements OnInit {
    */
   public getSearchTaskRequest(): SearchTaskRequest {
     return {
-      search_parameters: [
-        this.getSortParameter()
-      ]
+      search_parameters: [],
+      sorting_parameters: [this.getSortParameter()]
     };
   }
 
-  public getSortParameter(): SearchTaskParameter {
+  public getSortParameter(): SortParameter {
     return {
-      key: this.sortedBy.fieldName,
-      operator: 'sort',
-      values: [ this.sortedBy.order ]
+      sort_by: this.sortedBy.fieldName,
+      sort_order: this.sortedBy.order
     };
   }
 

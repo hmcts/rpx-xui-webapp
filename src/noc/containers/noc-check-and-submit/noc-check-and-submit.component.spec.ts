@@ -147,7 +147,7 @@ describe('NocCheckAndSubmitComponent', () => {
     expect(spyOnDispatchToStore).toHaveBeenCalledWith(new fromFeature.SetAffirmationError(affirmationError));
   });
 
-  it('should set notify error', () => {
+  it('should set affirmation agreed error when user does not cofirm answers are accurate', () => {
     component.affirmationAgreed = true;
     component.notifyEveryParty = false;
     const affirmationError = {

@@ -23,7 +23,6 @@ export class AlertComponent implements OnInit, OnDestroy {
   public warningMessageSubscription: Subscription;
   public routeSubscription: Subscription;
 
-  private alertMessageObservable: Observable<Alert>;
   private successMessageObservable: Observable<Alert>;
   private errorMessageObservable: Observable<Alert>;
   private warningMessageObservable: Observable<Alert>;
@@ -34,22 +33,9 @@ export class AlertComponent implements OnInit, OnDestroy {
   ) { }
 
   public ngOnInit() {
-    this.setAlertMessage();
     this.setSuccessMessage();
     this.setErrorMessage();
     this.setWarningMessage();
-  }
-
-  public setAlertMessage() {
-    // currently only used for default messages but kept in because of possible reversion to earlier techniques if necessary
-    this.alertMessageObservable = this.alertService.alerts.pipe(select(alert => alert));
-    this.routeSubscription = this.router.events.subscribe(() => this.alertMessage = '');
-    this.alertMessageSubscription = this.alertMessageObservable.subscribe(alert => {
-      if (alert) {
-        this.alertMessage = alert.message;
-        this.alertLevel = alert.level;
-      }
-    });
   }
 
   // next three methods are to ensure different message types can be displayed at same time
@@ -94,7 +80,6 @@ export class AlertComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy() {
     // unsubscribe from all subscriptions
-    this.alertMessageSubscription.unsubscribe();
     this.successMessageSubscription.unsubscribe();
     this.errorMessageSubscription.unsubscribe();
     this.warningMessageSubscription.unsubscribe();

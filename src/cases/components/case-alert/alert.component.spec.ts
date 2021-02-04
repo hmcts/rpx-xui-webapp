@@ -37,16 +37,6 @@ describe('AlertComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have updated the value of message and level in ngOnInit for message method', async () => {
-    const alertService = fixture.debugElement.injector.get<AlertService>(AlertService);
-    alertService.message('message');
-    component.ngOnInit();
-    await fixture.whenStable();
-    fixture.detectChanges();
-    expect(component.alertMessage).toEqual('message');
-    expect(component.alertLevel).toEqual('message');
-  });
-
   it('should have updated the value of message in ngOnInit for error, success and warning methods', async () => {
     const alertService = fixture.debugElement.injector.get<AlertService>(AlertService);
     alertService.error('error message');
@@ -61,14 +51,12 @@ describe('AlertComponent', () => {
   });
 
   it('should unsubscribe onDestroy', () => {
-    spyOn(component.alertMessageSubscription, 'unsubscribe').and.callThrough();
     spyOn(component.errorMessageSubscription, 'unsubscribe').and.callThrough();
     spyOn(component.successMessageSubscription, 'unsubscribe').and.callThrough();
     spyOn(component.warningMessageSubscription, 'unsubscribe').and.callThrough();
     spyOn(component.routeSubscription, 'unsubscribe').and.callThrough();
 
     component.ngOnDestroy();
-    expect(component.alertMessageSubscription.unsubscribe).toHaveBeenCalled();
     expect(component.errorMessageSubscription.unsubscribe).toHaveBeenCalled();
     expect(component.successMessageSubscription.unsubscribe).toHaveBeenCalled();
     expect(component.warningMessageSubscription.unsubscribe).toHaveBeenCalled();

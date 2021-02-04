@@ -1,3 +1,4 @@
+import { getConfigValue } from '../configuration';
 import { NextFunction, Response } from 'express';
 
 import { EnhancedRequest } from '../lib/models';
@@ -20,6 +21,7 @@ import {
   preparePostTaskUrlAction,
   prepareSearchTaskUrl,
 } from './util';
+import { SERVICES_WORK_ALLOCATION_TASK_API_PATH } from '../configuration/references'
 
 export const baseUrl: string = 'http://localhost:8080'
 
@@ -44,7 +46,8 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
  */
 export async function searchTask(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    const postTaskPath: string = prepareSearchTaskUrl(baseUrl);
+    const url = getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH)
+    const postTaskPath: string = prepareSearchTaskUrl(url);
     const searchRequest = req.body.searchRequest;
     const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
     res.status(status);

@@ -70,6 +70,11 @@ export function assignActionsToTasks(tasks: any[], view: any): void {
           task.actions = task.actions || [];
           break;
       }
+      task.caseReference = task.case_id
+      task.dueDate = task.due_date
+      task.taskName = task.name
+      task.caseName = task.case_name
+      task.caseCategory = task.case_category
     }
   }
 }

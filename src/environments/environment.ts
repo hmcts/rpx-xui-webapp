@@ -11,7 +11,7 @@ export const environment = {
     userId: '__userid__',
     roles: 'roles',
   },
-  googleAnalyticsKey: 'UA-124734893-2',
+  googleAnalyticsKey: 'UA-124734893-1',
   googleTagManagerKey: 'GTM-TQ7PKDF'
 };
 /**

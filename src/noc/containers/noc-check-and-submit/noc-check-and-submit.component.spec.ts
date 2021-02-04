@@ -147,6 +147,27 @@ describe('NocCheckAndSubmitComponent', () => {
     expect(spyOnDispatchToStore).toHaveBeenCalledWith(new fromFeature.SetAffirmationError(affirmationError));
   });
 
+  it('should set notify every party error when user doesn not notify every related party', () => {
+    component.affirmationAgreed = true;
+    component.notifyEveryParty = false;
+    const affirmationError = {
+      AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR
+    };
+    component.verifyAndSubmitNoC();
+    expect(spyOnDispatchToStore).toHaveBeenCalledWith(new fromFeature.SetAffirmationError(affirmationError));
+  });
+
+  it('should set affirmation agreed error when user does not confirm their answers are accurate', () => {
+    component.affirmationAgreed = false;
+    component.notifyEveryParty = true;
+    const affirmationError = {
+      AFFIRMATION_DEFAULT_DISAGREE_ERROR
+    };
+    component.verifyAndSubmitNoC();
+    expect(spyOnDispatchToStore).toHaveBeenCalledWith(new fromFeature.SetAffirmationError(affirmationError));
+  });
+
+
   afterEach(() => {
     component = null;
     fixture.destroy();

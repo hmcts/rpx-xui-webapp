@@ -104,6 +104,12 @@ describe('NocHomeComponent', () => {
       expect(storeDispatchMock).toHaveBeenCalledWith(new fromNocStore.Reset());
     });
 
+    it('should navigate to case ref page when click back button if on submission successful page', () => {
+      component.nocNavigationCurrentState = NocState.SUBMISSION_SUCCESS_PENDING;
+      component.navigationHandler(NocNavigationEvent.BACK);
+      expect(storeDispatchMock).toHaveBeenCalledWith(new fromNocStore.Reset());
+    });
+
     it('should throw error Invalid NoC state', () => {
       component.nocNavigationCurrentState = NocState.AFFIRMATION_NOT_AGREED;
       expect(() => { component.navigationHandler(NocNavigationEvent.BACK); }).toThrow(new Error('Invalid NoC state'));

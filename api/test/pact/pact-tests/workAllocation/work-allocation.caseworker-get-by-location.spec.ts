@@ -5,6 +5,7 @@ import * as path from 'path';
 import { EnhancedRequest } from '../../../../lib/models';
 import { handleCaseWorkerForLocation } from '../../../../workAllocation/caseWorkerService';
 import { CASEWORKERS_BY_LOCATION } from '../../constants/work-allocation/caseworkers.spec';
+import { LOCATIONS } from '../../constants/work-allocation/locations.spec';
 
 
 describe('Work Allocation for location Caseworker API', () => {

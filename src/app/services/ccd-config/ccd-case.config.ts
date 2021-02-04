@@ -125,7 +125,9 @@ export class AppConfig extends AbstractAppConfig {
   public getCacheTimeOut(): number {
     return 45000;
   }
+
   public getWorkAllocationApiUrl(): string {
-    return 'workallocationApiUrlmissing'
+    // pass explicitly null to feature toggle workAllocation api
+    return null;
   }
 }

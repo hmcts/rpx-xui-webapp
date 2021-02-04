@@ -2,9 +2,9 @@ import { Pact } from '@pact-foundation/pact'
 import { assert, expect } from 'chai'
 import * as getPort from 'get-port'
 import * as path from 'path'
+import { EnhancedRequest } from '../../../../lib/models'
+import { handleTaskPost } from '../../../../workAllocation/taskService'
 
-import { EnhancedRequest } from '../../../lib/models'
-import { handleTaskPost } from '../../../workAllocation/taskService'
 
 interface Payload {
   behaviour?: string,
@@ -33,9 +33,9 @@ describe('Work Allocation API', () => {
   before(async () => {
     mockServerPort = await getPort()
     provider = new Pact({
-      consumer: 'xui_work_allocation_task_cancel',
-      provider: 'WorkAllocation_api_cancel',
-      dir: path.resolve(__dirname, '../pacts'),
+      consumer: 'xui_work_allocation_task_unclaim',
+      provider: 'WorkAllocation_api_unclaim',
+      dir: path.resolve(__dirname, '../../pacts'),
       log: path.resolve(__dirname, '../logs', 'work-allocation.log'),
       logLevel: 'info',
       port: mockServerPort,
@@ -47,14 +47,14 @@ describe('Work Allocation API', () => {
   // Write Pact when all tests done
   after(() => provider.finalize())
 
-  describe('when requested to cancel a task', () => {
+  describe('when requested to unclaim a task', () => {
     before(() =>
       provider.addInteraction({
-        state: 'task is cancelled',
-        uponReceiving: 'a request for cancellation',
+        state: 'task is unclaimed',
+        uponReceiving: 'a request for completion',
         withRequest: {
           method: 'POST',
-          path: '/task/123456/cancel',
+          path: '/task/123456/unclaim',
           body: getPayload(BEHAVIOURS.SUCCESS)
         },
         willRespondWith: {
@@ -65,21 +65,21 @@ describe('Work Allocation API', () => {
     )
 
     it('returns success with a 200', async () => {
-      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/cancel`
+      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/unclaim`
       const payload: any = getPayload(BEHAVIOURS.SUCCESS)
       const { status } = await handleTaskPost(taskUrl, payload, {} as EnhancedRequest)
       expect(status).equal(200)
     })
   })
 
-  describe('when requested to cancel a task that is already cancel', () => {
+  describe('when requested to unclaim a task that is already unclaim', () => {
     before(() =>
       provider.addInteraction({
-        state: 'task was already cancel',
-        uponReceiving: 'a request for cancellation when already cancel',
+        state: 'task was already unclaim',
+        uponReceiving: 'a request for completion when already unclaim',
         withRequest: {
           method: 'POST',
-          path: '/task/123456/cancel',
+          path: '/task/123456/unclaim',
           body: getPayload(BEHAVIOURS.ALREADY_DONE)
         },
         willRespondWith: {
@@ -90,21 +90,21 @@ describe('Work Allocation API', () => {
     )
 
     it('returns success but with a 204', async () => {
-      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/cancel`
+      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/unclaim`
       const payload: any = getPayload(BEHAVIOURS.ALREADY_DONE)
       const { status } = await handleTaskPost(taskUrl, payload, {} as EnhancedRequest)
       expect(status).equal(204)
     })
   })
 
-  describe('when making a bad request to cancel a task', () => {
+  describe('when making a bad request to unclaim a task', () => {
     before(() =>
       provider.addInteraction({
         state: 'a bad request was made',
-        uponReceiving: 'a bad request for cancellation',
+        uponReceiving: 'a bad request for completion',
         withRequest: {
           method: 'POST',
-          path: '/task/123456/cancel',
+          path: '/task/123456/unclaim',
           body: getPayload(BEHAVIOURS.BAD_REQUEST)
         },
         willRespondWith: {
@@ -115,7 +115,7 @@ describe('Work Allocation API', () => {
     )
 
     it('returns failure with a 400', async () => {
-      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/cancel`
+      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/unclaim`
       const payload: any = getPayload(BEHAVIOURS.BAD_REQUEST)
       let response: { status: number }
       try {
@@ -128,14 +128,14 @@ describe('Work Allocation API', () => {
     })
   })
 
-  describe('when making a request to cancel a forbidden task', () => {
+  describe('when making a request to unclaim a forbidden task', () => {
     before(() =>
       provider.addInteraction({
-        state: 'cancellation of this task is was forbidden',
-        uponReceiving: 'a request for cancellation of a forbidden task',
+        state: 'completion of this task is was forbidden',
+        uponReceiving: 'a request for completion of a forbidden task',
         withRequest: {
           method: 'POST',
-          path: '/task/123456/cancel',
+          path: '/task/123456/unclaim',
           body: getPayload(BEHAVIOURS.FORBIDDEN)
         },
         willRespondWith: {
@@ -146,7 +146,7 @@ describe('Work Allocation API', () => {
     )
 
     it('returns failure with a 403', async () => {
-      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/cancel`
+      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/unclaim`
       const payload: any = getPayload(BEHAVIOURS.FORBIDDEN)
       let response: { status: number }
       try {
@@ -159,14 +159,14 @@ describe('Work Allocation API', () => {
     })
   })
 
-  describe('when making a request to cancel a task but it is unsupported', () => {
+  describe('when making a request to unclaim a task but it is unsupported', () => {
     before(() =>
       provider.addInteraction({
         state: 'this action is unsupported',
-        uponReceiving: 'a request for cancellation but it is unsupported',
+        uponReceiving: 'a request for completion but it is unsupported',
         withRequest: {
           method: 'POST',
-          path: '/task/123456/cancel',
+          path: '/task/123456/unclaim',
           body: getPayload(BEHAVIOURS.UNSUPPORTED)
         },
         willRespondWith: {
@@ -177,7 +177,7 @@ describe('Work Allocation API', () => {
     )
 
     it('returns failure with a 415', async () => {
-      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/cancel`
+      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/unclaim`
       const payload: any = getPayload(BEHAVIOURS.UNSUPPORTED)
       let response: { status: number }
       try {
@@ -190,14 +190,14 @@ describe('Work Allocation API', () => {
     })
   })
 
-  describe('when making a request to cancel a task and the server falls over', () => {
+  describe('when making a request to unclaim a task and the server falls over', () => {
     before(() =>
       provider.addInteraction({
         state: 'the server had an internal error',
-        uponReceiving: 'a request for cancellation and the server falls over',
+        uponReceiving: 'a request for completion and the server falls over',
         withRequest: {
           method: 'POST',
-          path: '/task/123456/cancel',
+          path: '/task/123456/unclaim',
           body: getPayload(BEHAVIOURS.SERVER_ERROR)
         },
         willRespondWith: {
@@ -208,7 +208,7 @@ describe('Work Allocation API', () => {
     )
 
     it('returns failure with a 500', async () => {
-      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/cancel`
+      const taskUrl: string = `${provider.mockService.baseUrl}/task/123456/unclaim`
       const payload: any = getPayload(BEHAVIOURS.SERVER_ERROR)
       let response: { status: number }
       try {

@@ -92,7 +92,7 @@ export function mapCaseworkerData(caseWorkerData: any[]): any[] {
   return caseWorkerData
 }
 
-export function prepareRoleApiRequest(): any {
+export function prepareRoleApiRequest(locationId?: number): any {
   let locationIds = []
   ALL_LOCATIONS.forEach((location) => {
     locationIds = [...locationIds, location.id]
@@ -102,8 +102,11 @@ export function prepareRoleApiRequest(): any {
       validAt: Date.UTC,
       attributes: {
           jurisdiction: ['IA'],
-          primaryLocation: [... locationIds, '538351']
+          primaryLocation: []
       }
+  }
+  if (locationId) {
+    payload.attributes.primaryLocation = [locationId]
   }
   return payload
 }

@@ -10,9 +10,7 @@ WORKDIR ${WORKDIR}
 
 COPY --chown=hmcts:hmcts ./ /opt/app/
 
-RUN npm rebuild node-sass && yarn build && rm -r node_modules/ && rm -r ~/.cache/yarn
-
-RUN yarn build && rm -r node_modules/ && rm -r ~/.cache/yarn
+RUN npm rebuild node-sass && yarn install && yarn build && rm -r node_modules/ && rm -r ~/.cache/yarn
 
 EXPOSE 3000
 

@@ -68,7 +68,7 @@
     "@hmcts/ccd-case-ui-toolkit": "^2.68.9-alpha",
     "@hmcts/ccpay-web-component": "3.0.3",
     "@hmcts/frontend": "0.0.39-alpha",
-    "@hmcts/media-viewer": "file:./src/assets/hmcts-media-viewer-2.6.6-EUI-3086.tgz",
+    "@hmcts/media-viewer": "file:./src/hmcts-media-viewer-2.6.6-EUI-3086.tgz",
     "@hmcts/nodejs-healthcheck": "^1.7.0",
     "@hmcts/properties-volume": "^0.0.9",
     "@hmcts/rpx-xui-common-lib": "0.1.48",

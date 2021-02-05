@@ -47,3 +47,28 @@ export async function handlePostSearch(path: string, payload: string | any, req:
     const response: AxiosResponse = await http.post(path, payload, { headers })
     return response
 }
+
+export async function handlePostRoleAssingnments(path: string, payload: any, req: EnhancedRequest): Promise<any> {
+    const headers = setHeaders(req)
+    const response: AxiosResponse = await http.post(path, payload, { headers })
+    return response
+}
+
+export async function handlePostCaseWorkersRefData(path: string, userIds: any, req: EnhancedRequest): Promise<any> {
+    const payload = {
+        userIds
+    }
+    const headers = setHeaders(req)
+    const response: AxiosResponse = await http.post(path, payload, { headers })
+    return response
+}
+
+export function getUserIdsFromRoleApiResponse(response: any): Array<string> {
+    let userIds = new Array<string>()
+    if (response && response.roleAssignmentResponse) {
+        response.roleAssignmentResponse.forEach(roleAssingment => {
+           userIds = [...userIds, roleAssingment.actorId]
+       });
+    }
+    return userIds
+}

@@ -6,8 +6,10 @@ import {
   handleCaseWorkerForLocation,
   handleCaseWorkerForLocationAndService,
   handleCaseWorkerForService,
-  handleCaseWorkerGetAll,
+  handlePostRoleAssingnments,
   handlePostSearch,
+  handlePostCaseWorkersRefData,
+  getUserIdsFromRoleApiResponse
 } from './caseWorkerService';
 import { handleTaskGet, handleTaskPost, handleTaskSearch } from './taskService';
 import {
@@ -16,12 +18,14 @@ import {
   prepareCaseWorkerForLocationAndService,
   prepareCaseWorkerForService,
   prepareCaseWorkerSearchUrl,
-  prepareCaseWorkerUrl,
+  prepareRoleApiUrl,
+  prepareRoleApiRequest,
   prepareGetTaskUrl,
   preparePostTaskUrlAction,
   prepareSearchTaskUrl,
+  mapCaseworkerData
 } from './util';
-import { SERVICES_WORK_ALLOCATION_TASK_API_PATH } from '../configuration/references'
+import { SERVICES_WORK_ALLOCATION_TASK_API_PATH, SERVICES_ROLE_ASSIGNMENT_API_PATH, SERVICES_CASE_CASEWORKER_REF_PATH } from '../configuration/references'
 
 export const baseUrl: string = 'http://localhost:8080'
 
@@ -83,14 +87,19 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
 /**
  * Get All CaseWorkers
  */
-export async function getAllCaseWorkers(req: EnhancedRequest, res: Response, next: NextFunction) {
-
+export async function getAllCaseWorkers(req: EnhancedRequest, res: Response, next: NextFunction) {  
   try {
-    const getCaseWorkerPath: string = prepareCaseWorkerUrl(baseUrl)
-
-    const jsonResponse = await handleCaseWorkerGetAll(getCaseWorkerPath, req)
-    res.status(200)
-    res.send(jsonResponse)
+    const roleApiBaseUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH)
+    const roleApiPath: string = prepareRoleApiUrl(roleApiBaseUrl)
+    const payload = prepareRoleApiRequest()
+    const { status, data } = await handlePostRoleAssingnments(roleApiPath, payload, req)
+    const userIds = getUserIdsFromRoleApiResponse(data)
+    const caseWorkerRefBaseUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH)
+    const userUrl = `${caseWorkerRefBaseUrl}refdata/case-worker/users/fetchUsersById`
+    const userResponse = await handlePostCaseWorkersRefData(userUrl, userIds, req)
+    const caseWorkerReferenceData = mapCaseworkerData(userResponse.data)
+    res.status(userResponse.status)
+    res.send(caseWorkerReferenceData)
   } catch (error) {
     next(error)
   }

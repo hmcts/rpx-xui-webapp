@@ -20,7 +20,7 @@ export function prepareGetLocationsUrl(baseUrl: string): string {
   return `${baseUrl}/location`
 }
 
-export function prepareCaseWorkerUrl(baseUrl: string) {
+export function prepareRoleApiUrl(baseUrl: string) {
   return `${baseUrl}/am/role-assignments/query`
 }
 
@@ -77,4 +77,28 @@ export function assignActionsToTasks(tasks: any[], view: any): void {
       task.caseCategory = task.case_category
     }
   }
+}
+
+export function mapCaseworkerData(caseWorkerData: any[]): any[] {
+  if(caseWorkerData) {
+    caseWorkerData.forEach((caseWorker: any) => {
+      caseWorker.idamId = caseWorker.id
+      caseWorker.firstName = caseWorker.first_name
+      caseWorker.lastName = caseWorker.last_name
+      caseWorker.email = caseWorker.email_id
+    })
+  }
+  return caseWorkerData
+}
+
+export function prepareRoleApiRequest(): any{
+  const payload =  {
+      roleName: ['tribunal-caseworker','senior-tribunal-caseworker'],
+      validAt: Date.UTC,
+      attributes: {
+          jurisdiction: ['IA'],
+          primaryLocation: ['538351']
+      }
+  }
+  return payload
 }

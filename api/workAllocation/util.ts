@@ -1,4 +1,5 @@
 import { ActionViews, TASK_ACTIONS } from './constants/actions';
+import { ALL_LOCATIONS } from './constants/locations';
 
 export function prepareGetTaskUrl(baseUrl: string, taskId: string): string {
   return `${baseUrl}/task/${taskId}`
@@ -91,13 +92,17 @@ export function mapCaseworkerData(caseWorkerData: any[]): any[] {
   return caseWorkerData
 }
 
-export function prepareRoleApiRequest(): any{
+export function prepareRoleApiRequest(): any {
+  let locationIds = []
+  ALL_LOCATIONS.forEach((location) => {
+    locationIds = [...locationIds, location.id]
+  })
   const payload =  {
       roleName: ['tribunal-caseworker','senior-tribunal-caseworker'],
       validAt: Date.UTC,
       attributes: {
           jurisdiction: ['IA'],
-          primaryLocation: ['538351']
+          primaryLocation: [... locationIds, '538351']
       }
   }
   return payload

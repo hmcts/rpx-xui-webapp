@@ -68,7 +68,7 @@ export async function assignCases(req: EnhancedRequest, res: Response, next: Nex
   let rejectedCount: number = 0
 
   allResults.forEach(result => {
-    const {status, reason, value}: {status: string, reason: any, value: any } = result
+    const {status, reason}: {status: string, reason: any} = result
     if (status === 'rejected') {
       if (reason.config.method === 'post') {
         rejectedShareCasePayloads.push(JSON.parse(reason.config.data))

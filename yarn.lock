@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@^2.68.9-alpha":
-  version "2.68.9-alpha"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.68.9-alpha.tgz#6e622de6dd12372aa3e06563df25fdc046f04962"
-  integrity sha512-CyTjjck90FZF/0t6UAmbtoX02AVU9FR6K/o9pG5cC3KM+VSqGRdGkzNqHdrsirJjYWvnwkt3rwlaSr4iyxkS4g==
+"@hmcts/ccd-case-ui-toolkit@2.70.0-workbasket-submit":
+  version "2.70.0-workbasket-submit"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.70.0-workbasket-submit.tgz#1e4939514aea4d8a5b2564943e21705e15ac9bbb"
+  integrity sha512-D+eIFIGN9xq+B/HZGFh0bEuJnOqYBgmvRMBl5Zb0UR7+XkUauZTPbinHjg5ul7T+mDfTmuKytN7G/gBsE5kuJg==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
@@ -478,10 +478,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@0.1.48":
-  version "0.1.48"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-0.1.48.tgz#8cb3a33dbfac0b4b63a189007df38c7b91346907"
-  integrity sha512-cLjjb98eYpx3Ruf2thaLaRfUDkb0teCx4W50sp9HFCuvZJD08ivruCrfcvU1U3M8AaGjlOF2172QHvzzvGAQ6A==
+"@hmcts/rpx-xui-common-lib@0.1.61":
+  version "0.1.61"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-0.1.61.tgz#77d3052d270968ec2bb8b776d6ddd9f90baaa9d0"
+  integrity sha512-45zGo30h8qfHnZSARnYPfuSPsToSNJmBCARHOz3f2iwkPZysX8ORCg8FAV1KKjnrTR98KMR+3CgD6SJSfemdDA==
   dependencies:
     tslib "^1.9.0"
 

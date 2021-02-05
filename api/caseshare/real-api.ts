@@ -65,24 +65,13 @@ export async function assignCases(req: EnhancedRequest, res: Response, next: Nex
   // @ts-ignore
   const allResults = await Promise.allSettled(allPromises)
 
-  const updatedErrorMessages: string[] = []
-  const rejectedShareCasePayloads: CaseAssigneeMappingModel[] = []
-  let rejectedUnShareCaseReason: any = null
-  let rejectedCount: number = 0
+  const { updatedErrorMessages,
+          rejectedShareCasePayloads,
+          rejectedUnShareCaseReason,
+          rejectedCount } = handleRejectedResponse(allResults)
 
-  allResults.forEach(result => {
-    const {status, reason}: {status: string, reason: any} = result
-    if (status === 'rejected') {
-      if (reason.config.method === 'post') {
-        rejectedShareCasePayloads.push(JSON.parse(reason.config.data))
-        updatedErrorMessages.push(`{request: ${reason.config.data}, response: {${reason.data.status} ${reason.data.message}}}`)
-      } else if (reason.config.method === 'delete') {
-        rejectedUnShareCaseReason = reason
-      }
-      rejectedCount ++
-    }
-  })
   const updatedSharedCases: SharedCase[] = handleSharedCase(shareCases, rejectedShareCasePayloads)
+
   const finalSharedCases = handleUnSharedCase(updatedSharedCases, rejectedUnShareCaseReason)
   // when none of the apis successfully
   if (allPromises.length === rejectedCount) {
@@ -134,6 +123,31 @@ function doUnShareCase(req: EnhancedRequest, shareCases: SharedCase[]): any {
     promise = sendDelete(path, payload, req)
   }
   return promise
+}
+
+function handleRejectedResponse(allResults: any):
+  { updatedErrorMessages: string[],
+    rejectedShareCasePayloads: CaseAssigneeMappingModel[],
+    rejectedUnShareCaseReason: any,
+    rejectedCount: number} {
+  const updatedErrorMessages: string[] = []
+  const rejectedShareCasePayloads: CaseAssigneeMappingModel[] = []
+  let rejectedUnShareCaseReason: any = null
+  let rejectedCount: number = 0
+
+  allResults.forEach(result => {
+    const {status, reason}: {status: string, reason: any} = result
+    if (status === 'rejected') {
+      if (reason.config.method === 'post') {
+        rejectedShareCasePayloads.push(JSON.parse(reason.config.data))
+        updatedErrorMessages.push(`{request: ${reason.config.data}, response: {${reason.data.status} ${reason.data.message}}}`)
+      } else if (reason.config.method === 'delete') {
+        rejectedUnShareCaseReason = reason
+      }
+      rejectedCount ++
+    }
+  })
+  return { updatedErrorMessages, rejectedShareCasePayloads, rejectedUnShareCaseReason, rejectedCount }
 }
 
 function handleSharedCase(shareCases: SharedCase[], rejectedPayloads: CaseAssigneeMappingModel[]): SharedCase[] {

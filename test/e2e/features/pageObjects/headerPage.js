@@ -8,11 +8,19 @@ function HeaderPage() {
 
     this.primaryNavBar = element(by.css("nav.hmcts-primary-navigation ul"));
     this.manageCases = element(by.css(".hmcts-header .hmcts-header__link"));
-    this.caseList = element(by.xpath("//a[contains(text(),'Case list')]"));
-    this.createCase = element(by.xpath("//li/a[contains(text(),'Create case')]"));
+    this.caseList = function(){
+      return element(by.xpath("//a[contains(text(),'Case list')]"))
+    };
+    this.createCase =  function() { 
+      return element(by.xpath("//li/a[contains(text(),'Create case')]")) 
+    };
 
-    this.taskList = element(by.xpath("//li/a[contains(text(),'Task list')]"));
-    this.taskManager = element(by.xpath("//li/a[contains(text(),'Task manager')]"));
+    this.taskList = function(){
+      return element(by.xpath("//li/a[contains(text(),'Task list')]"))
+    };
+    this.taskManager = function() {
+      element(by.xpath("//li/a[contains(text(),'Task manager')]"))
+    };
 
 
     this.findCase = element(by.xpath("//a[contains(text(),'Find case')]"));
@@ -27,26 +35,26 @@ function HeaderPage() {
   };
 
   this.clickCaseList = async function () {
-    await BrowserWaits.waitForElement(this.caseList);  
-    await this.caseList.click();
+    await BrowserWaits.waitForElement(this.caseList());  
+    await this.caseList().click();
     var searchPageHeader = element(by.xpath("//*[@id = 'content']//h1[contains(text(),'Case List')]"));
     await BrowserWaits.waitForElement(searchPageHeader);
   };
 
   this.clickCreateCase = async function () {
-    await BrowserWaits.waitForElement(this.createCase); 
-    await this.createCase.click();
+    await BrowserWaits.waitForElement(this.createCase()); 
+    await this.createCase().click();
     await BrowserWaits.waitForElement($('#cc-jurisdiction'));
   };
 
   this.clickTaskList = async function () {
-    await BrowserWaits.waitForElement(this.taskList);
-    await this.taskList.click();
+    await BrowserWaits.waitForElement(this.taskList());
+    await this.taskList().click();
   };
 
   this.clickTaskManager = async function () {
-    await BrowserWaits.waitForElement(this.taskManager);
-    await this.taskManager.click();
+    await BrowserWaits.waitForElement(this.taskManager());
+    await this.taskManager().click();
   };
 
 

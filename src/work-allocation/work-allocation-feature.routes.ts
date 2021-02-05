@@ -35,14 +35,14 @@ export const ROUTES: Routes = [
             path: 'list',
             component: MyTasksComponent,
             data: {
-              title: 'HMCTS Manage Cases | My tasks', subTitle: 'My tasks'
+              title: 'HMCTS Manage cases | My tasks', subTitle: 'My tasks'
             }
           },
           {
             path: 'available',
             component: AvailableTasksComponent,
             data: {
-              title: 'HMCTS Manage Cases | Available tasks', subTitle: 'Available tasks'
+              title: 'HMCTS Manage cases | Available tasks', subTitle: 'Available tasks'
             }
           }
         ]
@@ -52,7 +52,7 @@ export const ROUTES: Routes = [
         component: TaskManagerComponent,
         canActivate: [ HealthCheckGuard, WorkAllocationFeatureToggleGuard ],
         data: {
-          title: 'HMCTS Manage Cases | Task manager'
+          title: 'HMCTS Manage cases | Task manager'
         },
         children: [
           {
@@ -88,8 +88,18 @@ export const ROUTES: Routes = [
           },
           {
             path: 'unclaim',
-            component: TaskActionContainerComponent,
-            data: TaskActionConstants.Unassign
+            children: [
+              {
+                path: 'manager',
+                component: TaskActionContainerComponent,
+                data: TaskActionConstants.Unassign
+              },
+              {
+                path: '',
+                component: TaskActionContainerComponent,
+                data: TaskActionConstants.UnassignNonManager
+              }
+            ]
           }
         ]
       }

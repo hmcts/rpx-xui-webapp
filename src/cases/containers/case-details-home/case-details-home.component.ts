@@ -25,7 +25,7 @@ export class CaseDetailsHomeComponent implements OnInit {
     if (this.extras && this.extras.state && this.extras.state.showMessage && this.extras.state.messageText) {
       this.alertService.success(this.extras.state.messageText);
     }
-    this.activatedRoute.data.subscribe(data => console.log('Activated router data is', data));
+    this.activatedRoute.data.subscribe(data => data);
   }
 
 }

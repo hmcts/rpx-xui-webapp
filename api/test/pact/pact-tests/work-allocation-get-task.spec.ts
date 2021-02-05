@@ -2,8 +2,8 @@ import { Pact } from '@pact-foundation/pact'
 import { assert } from 'chai'
 import * as getPort from 'get-port'
 import * as path from 'path'
-import { EnhancedRequest } from '../../../../lib/models'
-import { handleTaskGet } from '../../../../workAllocation/taskService'
+import { EnhancedRequest } from '../../../lib/models'
+import { handleTaskGet } from '../../../workAllocation/taskService'
 
 describe('Work Allocation API', () => {
 

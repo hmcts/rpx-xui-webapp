@@ -96,10 +96,10 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
   public getSearchTaskRequest(): SearchTaskRequest {
     return {
       search_parameters: [
-        this.getSortParameter(),
         this.getLocationParameter(),
         this.getCaseworkerParameter()
-      ]
+      ],
+      sorting_parameters: [this.getSortParameter()]
     };
   }
 

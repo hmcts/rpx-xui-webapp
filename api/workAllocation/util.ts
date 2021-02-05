@@ -21,7 +21,7 @@ export function prepareGetLocationsUrl(baseUrl: string): string {
 }
 
 export function prepareCaseWorkerUrl(baseUrl: string) {
-  return `${baseUrl}/caseworker`
+  return `${baseUrl}/am/role-assignments/query`
 }
 
 export function prepareCaseWorkerSearchUrl(baseUrl: string) {

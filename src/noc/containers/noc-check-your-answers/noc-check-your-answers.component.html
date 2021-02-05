@@ -1,27 +1,28 @@
 <div class="govuk-summary-list govuk-!-margin-bottom-9">
-  <div class="govuk-summary-list__row">
-    <div class="govuk-summary-list__key">Request</div>
-    <div class="govuk-summary-list__value">Notice of change</div>
-    <div class="govuk-summary-list__actions"></div>
-  </div>
-  <div class="govuk-summary-list__row">
-    <div class="govuk-summary-list__key">Case number</div>
-    <div class="govuk-summary-list__value">{{ caseReference$ | async | caseReference }}</div>
-    <div class="govuk-summary-list__actions">
-      <a class="govuk-link" href="javascript:void(0)" (click)="navToRef()">
-        Change
-      </a>
-    </div>
-  </div>
-  <ng-container *ngFor="let qAndA of qAndA$ | async">
-    <div class="govuk-summary-list__row">
-        <div class="govuk-summary-list__key">{{ qAndA.question_text | async }}</div>
-        <div class="govuk-summary-list__value">{{ (qAndA.question_type| async) === 'DateTime'? (qAndA.value | formatDateTime): qAndA.value}}</div>
-        <div class="govuk-summary-list__actions">
-          <a class="govuk-link" href="javascript:void(0)" (click)="navToQAndA(qAndA)">
-            Change
-          </a>
+  <div style="white-space:pre; column-gap:35%; width:7%">
+        <div class="govuk-summary-list__row">
+          <div class="govuk-summary-list__key">Request</div>
+          <div class="govuk-summary-list__value">Notice of change</div>
+          <div class="govuk-summary-list__actions"></div>
         </div>
+
+        <div class="govuk-summary-list__row">
+          <div class="govuk-summary-list__key">Case number</div>
+          <div class="govuk-summary-list__value">{{ caseReference$ | async | caseReference }}</div>
+          <div class="govuk-summary-list__actions">
+            <a class="govuk-link" href="javascript:void(0)" (click)="navToRef()">
+              Change
+            </a>
+          </div>
+        </div>
+        <ng-container *ngFor="let qAndA of qAndA$ | async">
+          <div class="govuk-summary-list__row">
+              <div class="govuk-summary-list__key">{{ qAndA.question_text | async }}</div>
+              <div class="govuk-summary-list__value">{{ qAndA.value }}</div>
+              <div class="govuk-summary-list__actions">
+                &nbsp;
+              </div>
+          </div>
+        </ng-container>
     </div>
-  </ng-container>
 </div>

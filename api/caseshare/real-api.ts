@@ -52,15 +52,14 @@ export async function assignCases(req: EnhancedRequest, res: Response, next: Nex
   const shareCases: SharedCase[] = req.body.sharedCases.slice()
 
   let allPromises
-  let updatedSharedCases: SharedCase[]
 
   // call share case api(the n call)
-  const shareCasePromise = doShareCase(req, shareCases)
-  allPromises = [...shareCasePromise]
+  const shareCasePromises = doShareCase(req, shareCases)
+  allPromises = [...shareCasePromises]
   // call unShare case api(the 1 batch call)
-  const unShareCasePromise = doUnshareCase(req, shareCases)
+  const unShareCasePromise = doUnShareCase(req, shareCases)
   if (unShareCasePromise !== null) {
-    allPromises = [...shareCasePromise, unShareCasePromise]
+    allPromises = [...shareCasePromises, unShareCasePromise]
   }
 
   // @ts-ignore
@@ -83,13 +82,13 @@ export async function assignCases(req: EnhancedRequest, res: Response, next: Nex
       rejectedCount ++
     }
   })
-  updatedSharedCases = handleSharedCase(shareCases, rejectedShareCasePayloads)
-  updatedSharedCases = handleUnSharedCase(updatedSharedCases, rejectedUnShareCaseReason)
+  const updatedSharedCases: SharedCase[] = handleSharedCase(shareCases, rejectedShareCasePayloads)
+  const finalSharedCases = handleUnSharedCase(updatedSharedCases, rejectedUnShareCaseReason)
   // when none of the apis successfully
   if (allPromises.length === rejectedCount) {
     return res.status(500).send(updatedErrorMessages)
   } else {
-    return res.status(201).send(updatedSharedCases)
+    return res.status(201).send(finalSharedCases)
   }
 }
 
@@ -113,7 +112,7 @@ function doShareCase(req: EnhancedRequest, shareCases: SharedCase[]): any[] {
   return promises
 }
 
-function doUnshareCase(req: EnhancedRequest, shareCases: SharedCase[]): any {
+function doUnShareCase(req: EnhancedRequest, shareCases: SharedCase[]): any {
   const path = `${ccdUrl}/case-assignments`
   const unassignedCaseModels = []
   let promise = null

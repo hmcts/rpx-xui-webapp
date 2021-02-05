@@ -51,14 +51,18 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
 export async function assignCases(req: EnhancedRequest, res: Response, next: NextFunction) {
   const shareCases: SharedCase[] = req.body.sharedCases.slice()
 
+  let allPromises
   let updatedSharedCases: SharedCase[]
 
   // call share case api(the n call)
   const shareCasePromise = doShareCase(req, shareCases)
+  allPromises = [...shareCasePromise]
   // call unShare case api(the 1 batch call)
   const unShareCasePromise = doUnshareCase(req, shareCases)
+  if (unShareCasePromise !== null) {
+    allPromises = [...shareCasePromise, unShareCasePromise]
+  }
 
-  const allPromises = [...shareCasePromise, unShareCasePromise]
   // @ts-ignore
   const allResults = await Promise.allSettled(allPromises)
 
@@ -91,10 +95,6 @@ export async function assignCases(req: EnhancedRequest, res: Response, next: Nex
 
 function doShareCase(req: EnhancedRequest, shareCases: SharedCase[]): any[] {
   const path = `${ccdUrl}/case-assignments`
-  return promiseCaseShareBatchCall(shareCases, path, req)
-}
-
-function promiseCaseShareBatchCall(shareCases: SharedCase[], path: string, req: EnhancedRequest) {
   const promises = []
   // @ts-ignore
   shareCases.flatMap(sharedCase => {

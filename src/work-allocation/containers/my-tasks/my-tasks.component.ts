@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
+import { UserInfo } from 'src/app/models/user-details.model';
 
-import { ConfigConstants, FilterConstants, ListConstants, SortConstants } from '../../components/constants';
-import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
+import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
+import { SearchTaskRequest } from '../../models/dtos';
 import { TaskFieldConfig } from '../../models/tasks';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
@@ -28,18 +29,15 @@ export class MyTasksComponent extends TaskListWrapperComponent {
   }
 
   public getSearchTaskRequest(): SearchTaskRequest {
-    return {
-      search_parameters: [
-        this.getSortParameter(),
-        this.getCaseworkerParameter()
-      ]
-    };
-  }
-
-  private getCaseworkerParameter(): SearchTaskParameter {
-    // TODO: Replace this defaulting after integrating with the API.
-    const cw = FilterConstants.Defaults.CASEWORKER;
-    const name = `${cw.firstName} ${cw.lastName}`;
-    return { key: 'assignee', operator: 'IN', values: [ name ] };
+    const userInfoStr = this.sessionStorageService.getItem('userDetails');
+    if (userInfoStr) {
+        const userInfo: UserInfo = JSON.parse(userInfoStr);
+        return {
+          search_parameters: [
+            { key: 'user', operator: 'IN', values: [ userInfo.id ] },
+          ],
+          sorting_parameters: [this.getSortParameter()]
+        };
+    }
   }
 }

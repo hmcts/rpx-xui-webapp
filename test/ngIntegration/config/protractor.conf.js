@@ -16,7 +16,7 @@ exports.config = {
   exclude: [
     '../tests/hiddenFields.test.js', 
     '../tests/caseFieldCollectionsPermissions.test.js',
-    '../tests/workAllocation/*.test.js'
+    '../tests/workAllocation1/*.test.js'
 ],
   capabilities: {
     'browserName': 'chrome',

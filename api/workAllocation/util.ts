@@ -101,12 +101,11 @@ export function prepareRoleApiRequest(locationId?: number): any {
       roleName: ['tribunal-caseworker','senior-tribunal-caseworker'],
       validAt: Date.UTC,
       attributes: {
-          jurisdiction: ['IA'],
-          primaryLocation: []
+          jurisdiction: ['IA']
       }
   }
   if (locationId) {
-    payload.attributes.primaryLocation = [locationId]
+    payload.attributes['primaryLocation'] = [locationId]
   }
   return payload
 }

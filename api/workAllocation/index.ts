@@ -100,7 +100,7 @@ export async function getAllCaseWorkers(req: EnhancedRequest, res: Response, nex
     const { data } = await handlePostRoleAssingnments(roleApiPath, payload, req)
     const userIds = getUserIdsFromRoleApiResponse(data)
     const caseWorkerRefBaseUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH)
-    const userUrl = `${caseWorkerRefBaseUrl}refdata/case-worker/users/fetchUsersById`
+    const userUrl = `${caseWorkerRefBaseUrl}/refdata/case-worker/users/fetchUsersById`
     const userResponse = await handlePostCaseWorkersRefData(userUrl, userIds, req)
     const caseWorkerReferenceData = mapCaseworkerData(userResponse.data)
     res.status(userResponse.status)

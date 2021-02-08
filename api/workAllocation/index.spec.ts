@@ -1,18 +1,18 @@
 import 'mocha';
 
-import * as chai from 'chai'
-import { expect } from 'chai';
+import * as chai from 'chai';
+import {expect} from 'chai';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai'
-import { mockReq, mockRes } from 'sinon-express-mock';
+import * as sinonChai from 'sinon-chai';
+import {mockReq, mockRes} from 'sinon-express-mock';
 
-import { http } from '../lib/http';
-import { baseUrl, getTask, postTaskAction, searchTask } from '.';
+import {baseUrl, getTask, postTaskAction, searchTask} from '.';
+import {http} from '../lib/http';
 
 chai.use(sinonChai);
 describe('workAllocation', () => {
 
-  const SUCCESS_RESPONSE = { status: 200, data: 'ok' };
+  const SUCCESS_RESPONSE = {status: 200, data: 'ok'};
   let sandbox: sinon.SinonSandbox;
   let next: any;
   let spy: any;
@@ -34,8 +34,8 @@ describe('workAllocation', () => {
       spy = sandbox.stub(http, 'get').resolves(res);
       const req = mockReq({
         params: {
-          taskId: '123456'
-        }
+          taskId: '123456',
+        },
       });
       const response = mockRes();
       await getTask(req, response, next);
@@ -52,8 +52,8 @@ describe('workAllocation', () => {
       spy = sandbox.stub(http, 'get').resolves(res);
       const req = mockReq({
         params: {
-          taskId: '123456'
-        }
+          taskId: '123456',
+        },
       });
       const response = mockRes();
 
@@ -73,17 +73,17 @@ describe('workAllocation', () => {
       spy = sandbox.stub(http, 'post').resolves(res);
       const req = mockReq({
         body: {
-          searchRequest: { search_parameters: [] },
-          view: 'view'
-        }
+          searchRequest: {search_parameters: []},
+          view: 'view',
+        },
       });
       const response = mockRes();
       await searchTask(req, response, next);
 
       // Should have the correct URL and the appropriate payload.
       const args = spy.getCall(0).args;
-      expect(args[0]).to.equal(`${baseUrl}/task`);
-      expect(args[1]).to.deep.equal({ search_parameters: [] });
+      expect(args[0]).to.equal(`http://wa-task-management-api-prod.service.core-compute-prod.internal/task`);
+      expect(args[1]).to.deep.equal({search_parameters: []});
 
       // Should have received the HTTP response. The search simply returns the data.
       expect(response.send).to.have.been.calledWith(sinon.match(SUCCESS_RESPONSE.data));
@@ -93,8 +93,8 @@ describe('workAllocation', () => {
       spy = sandbox.stub(http, 'post').resolves(res);
       const req = mockReq({
         body: {
-          search: 'criteria'
-        }
+          search: 'criteria',
+        },
       });
       const response = mockRes();
 
@@ -112,13 +112,13 @@ describe('workAllocation', () => {
 
     it('should make a post request and respond appropriately', async () => {
       spy = sandbox.stub(http, 'post').resolves(res);
-      const body = { assignee: { name: 'bob', id: 'bob01' } };
+      const body = {assignee: {name: 'bob', id: 'bob01'}};
       const req = mockReq({
+        body,
         params: {
+          action: 'assign',
           taskId: '123456',
-          action: 'assign'
         },
-        body
       });
       const response = mockRes();
       await postTaskAction(req, response, next);
@@ -134,13 +134,13 @@ describe('workAllocation', () => {
 
     it('should handle an exception being thrown', async () => {
       spy = sandbox.stub(http, 'post').resolves(res);
-      const body = { assignee: { name: 'bob', id: 'bob01' } };
+      const body = {assignee: {name: 'bob', id: 'bob01'}};
       const req = mockReq({
+        body,
         params: {
+          action: 'assign',
           taskId: '123456',
-          action: 'assign'
         },
-        body
       });
       const response = mockRes();
 

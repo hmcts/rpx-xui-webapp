@@ -81,7 +81,7 @@ export function assignActionsToTasks(tasks: any[], view: any): void {
 }
 
 export function mapCaseworkerData(caseWorkerData: any[]): any[] {
-  if(caseWorkerData) {
+  if (caseWorkerData) {
     caseWorkerData.forEach((caseWorker: any) => {
       caseWorker.idamId = caseWorker.id
       caseWorker.firstName = caseWorker.first_name
@@ -94,18 +94,20 @@ export function mapCaseworkerData(caseWorkerData: any[]): any[] {
 
 export function prepareRoleApiRequest(locationId?: number): any {
   let locationIds = []
-  ALL_LOCATIONS.forEach((location) => {
+  ALL_LOCATIONS.forEach(location => {
     locationIds = [...locationIds, location.id]
   })
+  const attributes: any = {
+    jurisdiction: ['IA'],
+  };
+
   const payload =  {
-      roleName: ['tribunal-caseworker','senior-tribunal-caseworker'],
-      validAt: Date.UTC,
-      attributes: {
-          jurisdiction: ['IA']
-      }
+    attributes,
+    roleName: ['tribunal-caseworker', 'senior-tribunal-caseworker'],
+    validAt: Date.UTC,
   }
   if (locationId) {
-    payload.attributes['primaryLocation'] = [locationId]
+    payload.attributes.primaryLocation = [locationId]
   }
   return payload
 }

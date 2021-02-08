@@ -1,31 +1,35 @@
-import { getConfigValue } from '../configuration';
 import { NextFunction, Response } from 'express';
 
+import { getConfigValue } from '../configuration';
+import {
+  SERVICES_CASE_CASEWORKER_REF_PATH,
+  SERVICES_ROLE_ASSIGNMENT_API_PATH,
+  SERVICES_WORK_ALLOCATION_TASK_API_PATH,
+} from '../configuration/references';
 import { EnhancedRequest } from '../lib/models';
 import {
+  getUserIdsFromRoleApiResponse,
   handleCaseWorkerForLocation,
   handleCaseWorkerForLocationAndService,
   handleCaseWorkerForService,
+  handlePostCaseWorkersRefData,
   handlePostRoleAssingnments,
   handlePostSearch,
-  handlePostCaseWorkersRefData,
-  getUserIdsFromRoleApiResponse
 } from './caseWorkerService';
 import { handleTaskGet, handleTaskPost, handleTaskSearch } from './taskService';
 import {
   assignActionsToTasks,
+  mapCaseworkerData,
   prepareCaseWorkerForLocation,
   prepareCaseWorkerForLocationAndService,
   prepareCaseWorkerForService,
   prepareCaseWorkerSearchUrl,
-  prepareRoleApiUrl,
-  prepareRoleApiRequest,
   prepareGetTaskUrl,
   preparePostTaskUrlAction,
+  prepareRoleApiRequest,
+  prepareRoleApiUrl,
   prepareSearchTaskUrl,
-  mapCaseworkerData
 } from './util';
-import { SERVICES_WORK_ALLOCATION_TASK_API_PATH, SERVICES_ROLE_ASSIGNMENT_API_PATH, SERVICES_CASE_CASEWORKER_REF_PATH } from '../configuration/references'
 
 export const baseUrl: string = 'http://localhost:8080'
 
@@ -74,7 +78,8 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
 export async function postTaskAction(req: EnhancedRequest, res: Response, next: NextFunction) {
 
   try {
-    const getTaskPath: string = preparePostTaskUrlAction(baseUrl, req.params.taskId, req.params.action)
+    const url = getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH)
+    const getTaskPath: string = preparePostTaskUrlAction(url, req.params.taskId, req.params.action)
 
     const { status, data } = await handleTaskPost(getTaskPath, req.body, req)
     res.status(status)
@@ -87,12 +92,12 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
 /**
  * Get All CaseWorkers
  */
-export async function getAllCaseWorkers(req: EnhancedRequest, res: Response, next: NextFunction) {  
+export async function getAllCaseWorkers(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
     const roleApiBaseUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH)
     const roleApiPath: string = prepareRoleApiUrl(roleApiBaseUrl)
     const payload = prepareRoleApiRequest()
-    const { status, data } = await handlePostRoleAssingnments(roleApiPath, payload, req)
+    const { data } = await handlePostRoleAssingnments(roleApiPath, payload, req)
     const userIds = getUserIdsFromRoleApiResponse(data)
     const caseWorkerRefBaseUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH)
     const userUrl = `${caseWorkerRefBaseUrl}refdata/case-worker/users/fetchUsersById`

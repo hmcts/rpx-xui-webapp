@@ -15,12 +15,17 @@ function loginLogoutObjects() {
   this.failure_error_heading = element(by.css("[id='validation-error-summary-heading']"));
   this.dashboard_header= element(by.css("[class='govuk-heading-xl']"));
 
+  this.incorrectCredentialsErrorHeader = element(by.xpath('//h2[@id = "validation-error-summary-heading"][contains(text(),"Incorrect email or password")]'));
 
   this.givenIAmLoggedIn = async function (email,password) {
     await BrowserWaits.waitForElement(this.signinTitle);;
     await this.loginWithCredentials(email, password);
     
   };
+
+  this.isLoginCredentialsErrorDisplayed = async function () {
+    return await this.incorrectCredentialsErrorHeader.isPresent();
+  }
 
   this.givenIAmUnauthenticatedUser = async function () {
     await this.enterUrEmail("test@gmail.com");

@@ -106,14 +106,16 @@ function doUnShareCase(req: EnhancedRequest, shareCases: SharedCase[]): any {
   const unassignedCaseModels = []
   let promise = null
   for (const aCase of shareCases) {
-    const userDetails: UserDetails[] = aCase.pendingUnshares
-    for (const aUser of userDetails) {
-      const unassignedCaseModel: UnassignedCaseModel = {
-        assignee_id: aUser.idamId,
-        case_id: aCase.caseId,
-        case_roles: aUser.caseRoles,
+    if (aCase.pendingUnshares && aCase.pendingUnshares.length > 0) {
+      const userDetails: UserDetails[] = aCase.pendingUnshares
+      for (const aUser of userDetails) {
+        const unassignedCaseModel: UnassignedCaseModel = {
+          assignee_id: aUser.idamId,
+          case_id: aCase.caseId,
+          case_roles: aUser.caseRoles,
+        }
+        unassignedCaseModels.push(unassignedCaseModel)
       }
-      unassignedCaseModels.push(unassignedCaseModel)
     }
   }
   const payload = {
@@ -182,13 +184,17 @@ function handleUnSharedCase(shareCases: SharedCase[], rejectedUnShareCaseReason:
   const returnSharedCases: SharedCase[] = []
   if (!rejectedUnShareCaseReason) {
     for (const aCase of updatedSharedCases) {
-      const filteredArray = aCase.sharedWith.filter(user => !aCase.pendingUnshares.some(pUser => pUser.idamId === user.idamId))
-      const newCase: SharedCase = {
-        ...aCase,
-        pendingUnshares: [],
-        sharedWith: filteredArray,
+      if (aCase.pendingUnshares && aCase.pendingUnshares.length > 0) {
+        const filteredArray = aCase.sharedWith.filter(user => !aCase.pendingUnshares.some(pUser => pUser.idamId === user.idamId))
+        const newCase: SharedCase = {
+          ...aCase,
+          pendingUnshares: [],
+          sharedWith: filteredArray,
+        }
+        returnSharedCases.push(newCase)
+      } else {
+        returnSharedCases.push(aCase)
       }
-      returnSharedCases.push(newCase)
     }
     return returnSharedCases
   } else {

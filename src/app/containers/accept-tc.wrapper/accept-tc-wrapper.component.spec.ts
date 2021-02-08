@@ -15,7 +15,7 @@ describe('Accept Tc Wrapper Component', () => {
         mockStore = jasmine.createSpyObj('mockStore', ['unsubscribe', 'dispatch']);
         mockService = jasmine.createSpyObj('mockService', ['get']);
         mockActions = jasmine.createSpyObj('mockActions', ['pipe']);
-        component = new AcceptTcWrapperComponent(mockStore, mockService, mockActions);
+        component = new AcceptTcWrapperComponent(mockStore, mockActions);
     });
 
     it('should create', () => {
@@ -37,10 +37,5 @@ describe('Accept Tc Wrapper Component', () => {
     it('should getObservable', () => {
         component.getObservable(mockActions, 'Some Action');
         expect(mockActions.pipe).toHaveBeenCalled();
-    });
-
-    it('should onAcceptTandC', () => {
-        component.onAcceptTandC();
-        expect(mockStore.dispatch).toHaveBeenCalled();
     });
 });

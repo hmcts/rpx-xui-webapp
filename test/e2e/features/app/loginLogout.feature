@@ -37,7 +37,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -46,7 +46,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -55,7 +55,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -64,7 +64,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -73,7 +73,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -82,7 +82,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -91,7 +91,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -100,7 +100,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -109,7 +109,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -118,7 +118,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -127,7 +127,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -136,7 +136,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -145,7 +145,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -154,7 +154,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -163,7 +163,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -172,7 +172,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -181,7 +181,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -190,7 +190,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -199,7 +199,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -208,7 +208,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -218,7 +218,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -227,7 +227,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -236,7 +236,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -245,7 +245,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -254,7 +254,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -263,7 +263,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -272,7 +272,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -281,7 +281,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -290,7 +290,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -299,7 +299,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -308,7 +308,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -317,7 +317,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -326,7 +326,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -335,7 +335,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -344,7 +344,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -353,7 +353,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -362,7 +362,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -371,7 +371,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -380,7 +380,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -389,7 +389,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -399,7 +399,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -408,7 +408,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -417,7 +417,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -426,7 +426,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -435,7 +435,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -444,7 +444,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -453,7 +453,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -462,7 +462,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -471,7 +471,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -480,7 +480,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -489,7 +489,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -498,7 +498,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -507,7 +507,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -516,7 +516,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -525,7 +525,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -534,7 +534,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -543,7 +543,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -552,7 +552,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -561,7 +561,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -570,7 +570,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -580,7 +580,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -589,7 +589,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -598,7 +598,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -607,7 +607,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -616,7 +616,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -625,7 +625,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -634,7 +634,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -643,7 +643,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -652,7 +652,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -661,7 +661,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -670,7 +670,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -679,7 +679,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -688,7 +688,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -697,7 +697,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -706,7 +706,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -715,7 +715,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -724,7 +724,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -733,7 +733,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -742,7 +742,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -751,7 +751,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -761,7 +761,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -770,7 +770,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -779,7 +779,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -788,7 +788,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -797,7 +797,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -806,7 +806,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -815,7 +815,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -824,7 +824,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -833,7 +833,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -842,7 +842,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -851,7 +851,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -860,7 +860,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -869,7 +869,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -878,7 +878,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -887,7 +887,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -896,7 +896,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -905,7 +905,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -914,7 +914,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -923,7 +923,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 
@@ -932,7 +932,7 @@ Feature: Login
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
     When I select the sign out link
-    Then I should be redirected to the Idam login pag
+    Then I should be redirected to the Idam login page
 
 
 

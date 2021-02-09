@@ -175,10 +175,10 @@ defineSupportCode(function ({ Given, When, Then }) {
     await expect(loginPage.signOutlink.isDisplayed()).to.eventually.be.true;
     browser.sleep(SHORT_DELAY);
     try{
-      await loginPage.getSignOutLink().click();
+      await loginPage.signOutlink.click();
     }catch(err){
       await browser.sleep(SHORT_DELAY);
-      await loginPage.getSignOutLink().click();
+      await loginPage.signOutlink.click();
     }
     browser.sleep(SHORT_DELAY);
   });

@@ -67,12 +67,7 @@ describe('AvailableTasksComponent', () => {
     fixture.destroy();
   });
 
-  // TODO: Need to ensure testing of all sorting/searching parameters implemented correctly
-
   it('should make a call to load tasks using the default search request', () => {
-    const searchRequest = component.getSearchTaskRequest();
-    // const payload = { searchRequest, view: component.view };
-    // expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
     expect(component.tasks).toBeDefined();
     expect(component.tasks.length).toEqual(2);
   });
@@ -95,9 +90,7 @@ describe('AvailableTasksComponent', () => {
     expect(headerCells[headerCells.length - 1].textContent.trim()).toEqual('');
   });
 
-  // TODO: Re-implement test and ensure passes
-
-/*   it('should handle a click to sort on the caseReference heading', async () => {
+  it('should handle a click to sort on the caseReference heading', async () => {
     const element = fixture.debugElement.nativeElement;
     const button = element.querySelector('#sort_by_caseReference');
     button.dispatchEvent(new Event('click'));
@@ -109,6 +102,9 @@ describe('AvailableTasksComponent', () => {
     expect(searchRequest.search_parameters[0].key).toEqual('location');
     expect(searchRequest.search_parameters[0].values).toContain('a');
     expect(searchRequest.search_parameters[1].key).toEqual('state');
+
+    expect(searchRequest.sorting_parameters[0].sort_order).toBe('asc');
+    expect(searchRequest.sorting_parameters[0].sort_by).toBe('caseReference');
 
     // Let's also make sure that the tasks were re-requested with the new sorting.
     const payload = { searchRequest, view: component.view };
@@ -122,14 +118,15 @@ describe('AvailableTasksComponent', () => {
     // Make sure the search request looks right.
     expect(newSearchRequest.search_parameters.length).toEqual(2);
     expect(newSearchRequest.search_parameters[0].key).toEqual('location');
-    expect(newSearchRequest.search_parameters[1].key).toEqual('user');
+    expect(newSearchRequest.search_parameters[1].key).toEqual('state');
 
-    expect(newSearchRequest.sorting_parameters[0]).toContain('descending'); // Important!
+    expect(newSearchRequest.sorting_parameters[0].sort_order).toBe('desc'); // Important!
+    expect(newSearchRequest.sorting_parameters[0].sort_by).toBe('caseReference'); // Important!
 
     // Let's also make sure that the tasks were re-requested with the new sorting.
     const newPayload = { searchRequest: newSearchRequest, view: component.view };
     expect(mockTaskService.searchTask).toHaveBeenCalledWith(newPayload);
-  }); */
+  });
 
   it('should not show the footer when there are tasks', () => {
     const element = fixture.debugElement.nativeElement;

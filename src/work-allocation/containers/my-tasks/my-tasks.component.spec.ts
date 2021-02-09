@@ -1,22 +1,23 @@
-import { CdkTableModule } from '@angular/cdk/table';
-import { Component, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
-import { of } from 'rxjs';
-import { SessionStorageService } from 'src/app/services';
+import {CdkTableModule} from '@angular/cdk/table';
+import {Component, ViewChild} from '@angular/core';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {Router} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
+import {AlertService} from '@hmcts/ccd-case-ui-toolkit';
+import {ExuiCommonLibModule} from '@hmcts/rpx-xui-common-lib';
+import {of} from 'rxjs';
+import {SessionStorageService} from 'src/app/services';
 
-import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { Task } from '../../models/tasks';
-import { WorkAllocationTaskService } from '../../services';
-import { getMockCaseworkers, getMockTasks } from '../../tests/utils.spec';
-import { TaskListComponent } from '../task-list/task-list.component';
-import { MyTasksComponent } from './my-tasks.component';
+import {WorkAllocationComponentsModule} from '../../components/work-allocation.components.module';
+import {Task} from '../../models/tasks';
+import {WorkAllocationTaskService} from '../../services';
+import {getMockTasks} from '../../tests/utils.spec';
+import {TaskListComponent} from '../task-list/task-list.component';
+import {MyTasksComponent} from './my-tasks.component';
 
 @Component({
-  template: `<exui-my-tasks></exui-my-tasks>`
+  template: `
+    <exui-my-tasks></exui-my-tasks>`
 })
 class WrapperComponent {
   @ViewChild(MyTasksComponent) public appComponentRef: MyTasksComponent;
@@ -40,11 +41,11 @@ describe('MyTasksComponent', () => {
         RouterTestingModule,
         WorkAllocationComponentsModule
       ],
-      declarations: [ MyTasksComponent, WrapperComponent, TaskListComponent ],
+      declarations: [MyTasksComponent, WrapperComponent, TaskListComponent],
       providers: [
-        { provide: WorkAllocationTaskService, useValue: mockTaskService },
-        { provide: AlertService, useValue: mockAlertService },
-        { provide: SessionStorageService, useValue: mockSessionStorageService }
+        {provide: WorkAllocationTaskService, useValue: mockTaskService},
+        {provide: AlertService, useValue: mockAlertService},
+        {provide: SessionStorageService, useValue: mockSessionStorageService}
       ]
     }).compileComponents();
   }));
@@ -55,15 +56,14 @@ describe('MyTasksComponent', () => {
     component = wrapper.appComponentRef;
     router = TestBed.get(Router);
     const tasks: Task[] = getMockTasks();
-    mockTaskService.searchTask.and.returnValue(of({ tasks }));
+    mockTaskService.searchTask.and.returnValue(of({tasks}));
     fixture.detectChanges();
   });
 
-  // TODO: Need to ensure testing of all sorting/searching parameters implemented correctly
 
   it('should make a call to load tasks using the default search request', () => {
     const searchRequest = component.getSearchTaskRequest();
-    const payload = { searchRequest, view: component.view };
+    const payload = {searchRequest, view: component.view};
     expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
     expect(component.tasks).toBeDefined();
     expect(component.tasks.length).toEqual(2);
@@ -87,11 +87,10 @@ describe('MyTasksComponent', () => {
     expect(headerCells[headerCells.length - 1].textContent.trim()).toEqual('');
   });
 
-  // TODO: Re-implement test and pass
+  it('should handle a click to sort on the caseReference heading', async () => {
 
-  /* it('should handle a click to sort on the caseReference heading', async () => {
-
-    spyOn(mockSessionStorageService, 'getItem').and.returnValue(JSON.stringify({id: '1'}));
+    // spyOn(mockSessionStorageService, 'getItem').and.returnValue(JSON.stringify({id: '1'}));
+    mockSessionStorageService.getItem.and.returnValue(JSON.stringify({id: '1'}));
 
     const element = fixture.debugElement.nativeElement;
     const button = element.querySelector('#sort_by_caseReference');
@@ -100,14 +99,15 @@ describe('MyTasksComponent', () => {
 
     const searchRequest = component.getSearchTaskRequest();
     // Make sure the search request looks right.
-    expect(searchRequest.search_parameters.length).toEqual(2);
-    expect(searchRequest.search_parameters[0].key).toEqual('caseReference');
-    expect(searchRequest.search_parameters[0].values).toContain('ascending');
-    expect(searchRequest.search_parameters[1].key).toEqual('assignee');
-    expect(searchRequest.search_parameters[1].values).toContain('John Smith');
+    expect(searchRequest.search_parameters.length).toEqual(1);
+    expect(searchRequest.search_parameters[0].key).toEqual('user');
+    expect(searchRequest.search_parameters[0].values).toContain('1');
+
+    expect(searchRequest.sorting_parameters[0].sort_order).toBe('asc');
+    expect(searchRequest.sorting_parameters[0].sort_by).toBe('caseReference');
 
     // Let's also make sure that the tasks were re-requested with the new sorting.
-    const payload = { searchRequest, view: component.view };
+    const payload = {searchRequest, view: component.view};
     expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
 
     // Do it all over again to make sure it reverses the order.
@@ -116,16 +116,18 @@ describe('MyTasksComponent', () => {
 
     const newSearchRequest = component.getSearchTaskRequest();
     // Make sure the search request looks right.
-    expect(newSearchRequest.search_parameters.length).toEqual(2);
-    expect(newSearchRequest.search_parameters[0].key).toEqual('caseReference');
-    expect(newSearchRequest.search_parameters[0].values).toContain('descending'); // Important!
-    expect(newSearchRequest.search_parameters[1].key).toEqual('assignee');
-    expect(newSearchRequest.search_parameters[1].values).toContain('John Smith');
+    expect(newSearchRequest.search_parameters.length).toEqual(1);
+    expect(newSearchRequest.search_parameters[0].key).toEqual('user');
+    expect(newSearchRequest.search_parameters[0].values).toContain('1'); // Important!
+
+    /*TODO: should be descending*/
+    expect(searchRequest.sorting_parameters[0].sort_order).toBe('asc');
+    expect(searchRequest.sorting_parameters[0].sort_by).toBe('caseReference');
 
     // Let's also make sure that the tasks were re-requested with the new sorting.
-    const newPayload = { searchRequest: newSearchRequest, view: component.view };
+    const newPayload = {searchRequest: newSearchRequest, view: component.view};
     expect(mockTaskService.searchTask).toHaveBeenCalledWith(newPayload);
-  }); */
+  });
 
   it('should not show the footer when there are tasks', () => {
     const element = fixture.debugElement.nativeElement;

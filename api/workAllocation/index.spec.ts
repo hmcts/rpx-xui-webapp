@@ -5,7 +5,7 @@ import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import {mockReq, mockRes} from 'sinon-express-mock';
 
-import {baseWorkflowTaskUrl, getTask, postTaskAction, searchTask} from '.';
+import {baseWorkAllocationTaskUrl, getTask, postTaskAction, searchTask} from '.';
 import {http} from '../lib/http';
 
 chai.use(sinonChai);
@@ -43,7 +43,7 @@ describe('workAllocation', () => {
 
       // Should have the correct URL.
       const args = spy.getCall(0).args;
-      expect(args[0]).to.equal(`${baseWorkflowTaskUrl}/task/123456`);
+      expect(args[0]).to.equal(`${baseWorkAllocationTaskUrl}/task/123456`);
 
       // Should have received the HTTP response. The get simply returns the data.
       expect(response.send).to.have.been.calledWith(sinon.match(SUCCESS_RESPONSE.data));
@@ -83,7 +83,7 @@ describe('workAllocation', () => {
 
       // Should have the correct URL and the appropriate payload.
       const args = spy.getCall(0).args;
-      expect(args[0]).to.equal(`${baseWorkflowTaskUrl}/task`);
+      expect(args[0]).to.equal(`${baseWorkAllocationTaskUrl}/task`);
       expect(args[1]).to.deep.equal({search_parameters: []});
 
       // Should have received the HTTP response. The search simply returns the data.
@@ -126,7 +126,7 @@ describe('workAllocation', () => {
 
       // Should have the correct URL and the appropriate payload.
       const args = spy.getCall(0).args;
-      expect(args[0]).to.equal(`${baseWorkflowTaskUrl}/task/123456/assign`);
+      expect(args[0]).to.equal(`${baseWorkAllocationTaskUrl}/task/123456/assign`);
       expect(args[1]).to.deep.equal(body);
 
       // Should have received the HTTP response. The search simply returns the data.

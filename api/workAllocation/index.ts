@@ -39,7 +39,8 @@ export const baseUrl: string = 'http://localhost:8080'
 export async function getTask(req: EnhancedRequest, res: Response, next: NextFunction) {
 
   try {
-    const getTaskPath: string = prepareGetTaskUrl(baseUrl, req.params.taskId)
+    const url = getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH)
+    const getTaskPath: string = prepareGetTaskUrl(url, req.params.taskId)
 
     const jsonResponse = await handleTaskGet(getTaskPath, req)
     res.status(200)

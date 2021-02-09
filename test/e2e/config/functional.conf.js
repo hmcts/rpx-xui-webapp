@@ -71,14 +71,13 @@ const config = {
             browserInstance: browser
         });
         browser.get(config.baseUrl);
-        BrowserUtil.
     },
 
     cucumberOpts: {
         strict: true,
         // format: ['node_modules/cucumber-pretty'],
         format: ['node_modules/cucumber-pretty', 'json:reports/tests/json/results.json'],
-        tags: ['@test'],
+        tags: ['@IDAMDebug'],
         require: [
             '../support/timeout.js',
             '../support/hooks.js',

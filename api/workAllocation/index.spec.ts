@@ -1,15 +1,15 @@
-import 'mocha';
-
 import * as chai from 'chai';
 import {expect} from 'chai';
+import 'mocha';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import {mockReq, mockRes} from 'sinon-express-mock';
 
-import {baseUrl, getTask, postTaskAction, searchTask} from '.';
+import {baseWorkflowTaskUrl, getTask, postTaskAction, searchTask} from '.';
 import {http} from '../lib/http';
 
 chai.use(sinonChai);
+
 describe('workAllocation', () => {
 
   const SUCCESS_RESPONSE = {status: 200, data: 'ok'};
@@ -31,6 +31,7 @@ describe('workAllocation', () => {
   describe('getTask', () => {
 
     it('should make a get request and respond appropriately', async () => {
+
       spy = sandbox.stub(http, 'get').resolves(res);
       const req = mockReq({
         params: {
@@ -42,7 +43,7 @@ describe('workAllocation', () => {
 
       // Should have the correct URL.
       const args = spy.getCall(0).args;
-      expect(args[0]).to.equal(`${baseUrl}/task/123456`);
+      expect(args[0]).to.equal(`${baseWorkflowTaskUrl}/task/123456`);
 
       // Should have received the HTTP response. The get simply returns the data.
       expect(response.send).to.have.been.calledWith(sinon.match(SUCCESS_RESPONSE.data));
@@ -82,7 +83,7 @@ describe('workAllocation', () => {
 
       // Should have the correct URL and the appropriate payload.
       const args = spy.getCall(0).args;
-      expect(args[0]).to.equal(`http://wa-task-management-api-prod.service.core-compute-prod.internal/task`);
+      expect(args[0]).to.equal(`${baseWorkflowTaskUrl}/task`);
       expect(args[1]).to.deep.equal({search_parameters: []});
 
       // Should have received the HTTP response. The search simply returns the data.
@@ -125,7 +126,7 @@ describe('workAllocation', () => {
 
       // Should have the correct URL and the appropriate payload.
       const args = spy.getCall(0).args;
-      expect(args[0]).to.equal(`${baseUrl}/task/123456/assign`);
+      expect(args[0]).to.equal(`${baseWorkflowTaskUrl}/task/123456/assign`);
       expect(args[1]).to.deep.equal(body);
 
       // Should have received the HTTP response. The search simply returns the data.

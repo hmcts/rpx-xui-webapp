@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@2.69.1-fix-replace-document-issue":
-  version "2.69.1-fix-replace-document-issue"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.69.1-fix-replace-document-issue.tgz#4dd677163efe014476b872b02a898bafa393adb1"
-  integrity sha512-sL+Nxk0o8aV7pbWS0pny72NbzhJVEw3S5f98NUhR3LefdPuqu9mwzp3jN/vLnGAIXGvD/A09qwLIYp9NPo2T7w==
+"@hmcts/ccd-case-ui-toolkit@2.70.0-fix-alert-service":
+  version "2.70.0-fix-alert-service"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.70.0-fix-alert-service.tgz#5d780e4ece26a3d3d9189ef7521cc433644ecab5"
+  integrity sha512-9p23K36Lwx2NmeCi7kwFosfNCufNUNbHWO6svYXPEZEbdcchCy67twyeutmmPVA4ygRmWg4fDMPotpugSbJxdw==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
@@ -9016,11 +9016,6 @@ nodemon@^2.0.2:
     touch "^3.1.0"
     undefsafe "^2.0.2"
     update-notifier "^2.5.0"
-
-nonce@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/nonce/-/nonce-1.0.4.tgz#ee7302ade8c1bef476f301b8c91f5cc51a487612"
-  integrity sha1-7nMCrejBvvR28wG4yR9cxRpIdhI=
 
 noop6@^1.0.1:
   version "1.0.8"

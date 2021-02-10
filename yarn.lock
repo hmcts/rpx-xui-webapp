@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@2.70.0-fix-alert-service":
-  version "2.70.0-fix-alert-service"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.70.0-fix-alert-service.tgz#5d780e4ece26a3d3d9189ef7521cc433644ecab5"
-  integrity sha512-9p23K36Lwx2NmeCi7kwFosfNCufNUNbHWO6svYXPEZEbdcchCy67twyeutmmPVA4ygRmWg4fDMPotpugSbJxdw==
+"@hmcts/ccd-case-ui-toolkit@2.70.1-fix-alert-service":
+  version "2.70.1-fix-alert-service"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.70.1-fix-alert-service.tgz#992eb8174c9c30481a211604a7119a62def0dd22"
+  integrity sha512-sHfmOv+FH9f7Mqe3gtJFO8s0Ks1csCyUwOop3Qf9/i7DfJ8ATR1Up4O4Ra8Hhq0SF5bvky63Rw+rH1CsZq0WIQ==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"

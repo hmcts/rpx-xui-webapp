@@ -22,34 +22,17 @@ function HeaderPage() {
   };
 
   this.clickCaseList = async function () {
-    let present = await this.caseList.isPresent();
-    while (present) {
-      try {
-        await BrowserWaits.waitForElement(this.caseList);
-        await this.caseList.click();
-        var searchPageHeader = element(by.xpath("//*[@id = 'content']//h1[contains(text(),'Case List')]"));
-        await BrowserWaits.waitForElement(searchPageHeader);
-        present = false;
-      } catch (e) {
-        present = true;
-      }
-
-    }
-
+    await BrowserWaits.waitForElement(this.caseList);  
+    await this.caseList.click();
+    var searchPageHeader = element(by.xpath("//*[@id = 'content']//h1[contains(text(),'Case List')]"));
+    await BrowserWaits.waitForElement(searchPageHeader);
   };
 
   this.clickCreateCase = async function () {
-    let present = await this.createCase.isPresent();
-    while (present) {
-      try {
-        await BrowserWaits.waitForElement(this.createCase);
-        await this.createCase.click();
-        await BrowserWaits.waitForElement($('#cc-jurisdiction'));
-        present = false;
-      } catch (e) {
-        present = true;
-      }
-    }
+    await BrowserWaits.waitForElement(this.createCase); 
+    await this.createCase.click();
+    await BrowserWaits.waitForElement($('#cc-jurisdiction'));
+
   };
 
   this.clickFindCase = async function () {

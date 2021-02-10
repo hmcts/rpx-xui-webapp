@@ -13,7 +13,6 @@ Feature: Test case type case creation and case details validations
         When I start case with jurisdiction "Family Divorce" case type "XUI Test Case type" and event "Create a case"
         Then I am on case form page
         Then Validate create case form pages fields against the api response
-        Then Should be able to see check your answers summary page links 
 
     Scenario: Validate check your answers summary page 		
         When I click on create case button
@@ -60,7 +59,7 @@ Feature: Test case type case creation and case details validations
         Then Search page should be displayed
         When I enter search fields jurisdiction "Family Divorce" case type "XUI Test Case type"
         When I click apply to perform case search
-        Then I wait to see case results displayed
+        Then I see results returned
         When I open first case in search results
         Then I see case details page
         Then I should be validate tab details in case details page
@@ -70,7 +69,7 @@ Feature: Test case type case creation and case details validations
         Then Search page should be displayed
         When I enter search fields jurisdiction "Family Divorce" case type "XUI Test Case type"
         When I click apply to perform case search
-        Then I wait to see case results displayed
+        Then I see results returned
         When I open first case in search results
         Then I see case details page
         Then Validate Case event next step trigger actions
@@ -80,7 +79,7 @@ Feature: Test case type case creation and case details validations
         Then Search page should be displayed
         When I enter search fields jurisdiction "Family Divorce" case type "XUI Test Case type"
         When I click apply to perform case search
-        Then I wait to see case results displayed
+        Then I see results returned
         When I open first case in search results
         Then I see case details page
         When I start case next step "Update case"

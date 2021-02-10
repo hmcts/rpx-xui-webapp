@@ -6,6 +6,7 @@ const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../sup
 const config = require('../../config/conf.js');
 const EC = protractor.ExpectedConditions;
 const BrowserWaits = require("../../support/customWaits");
+const BrowserUtil = require('../../../ngIntegration/util/browserUtil');
 
 async function waitForElement(el) {
   await browser.wait(result => {
@@ -142,6 +143,7 @@ defineSupportCode(function ({ Given, When, Then }) {
   Then('I should be redirected to EUI dashboard page', async function () {
 
     const world = this;
+    await BrowserUtil.waitForLD();
     await BrowserWaits.retryForPageLoad($("exui-header"), function(message){
       world.attach("Redirected to EUI dashboard , attempt reload : "+message);
     });

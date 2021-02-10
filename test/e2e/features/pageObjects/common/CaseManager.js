@@ -4,7 +4,8 @@ var BrowserWaits = require('../../../support/customWaits');
 const date = require('moment');
 var path = require('path');
 var cucumberReporter = require('../../../support/reportLogger');
-var TcPage = require('../tcPage');
+var CaseEditPage = require('../caseEditPage');
+const BrowserUtil = require('../../../../ngIntegration/util/browserUtil');
 
 const { accessibilityCheckerAuditor } = require('../../../../accessibility/helpers/accessibilityAuditor');
 
@@ -31,7 +32,8 @@ class CaseManager {
         this.caseNextStepSelect = $("select#next-step");
         this.nextStepGoButton = $(".event-trigger button");
         this.createCaseStartPage = new CreateCaseStartPage();
-        this.tcPage = new TcPage();
+        this.caseEditPage = new CaseEditPage();
+        this.createCaseContainer= $("ccd-create-case-filters form");
 
     }
 
@@ -50,6 +52,10 @@ class CaseManager {
         await BrowserWaits.waitForPageNavigation(thisPageUrl); 
     }
 
+    async _waitForSearchComponent(){
+        await BrowserWaits.waitForElement(this.createCaseContainer);
+    }
+
     async startCaseCreation(jurisdiction, caseType, event){
 
         let retryOnJurisdiction = 0;
@@ -62,7 +68,9 @@ class CaseManager {
             catch(error){
                 cucumberReporter.AddMessage("Jurisdiction option not found after 30sec. Retrying again"); 
                 retryOnJurisdiction++; 
+                await BrowserUtil.waitForLD();
                 await this.manageCasesHeaderLink.click();
+                await this._waitForSearchComponent();
                 await await BrowserWaits.waitForElement(this.caseListContainer);
                 await this.caseCreateheaderLink.click();
                 await this.createCaseStartPage.amOnPage();
@@ -172,7 +180,7 @@ class CaseManager {
         await BrowserWaits.waitForElement(currentPageElement);
         if(pageCounter!="null") {
            if(pageCounter>=1) pageCounter++;
-            await this.tcPage.wizardPageFormFieldValidations(pageCounter);
+            await this.caseEditPage.wizardPageFormFieldValidations(pageCounter);
         }
         var fields = element.all(by.css(this.formFields));
         for (let count = 0; count < await fields.count(); count++) {
@@ -195,12 +203,14 @@ class CaseManager {
             continieElement.getWebElement())
 
         await BrowserWaits.waitForElement(continieElement);
+        browser.waitForAngular();
         await BrowserWaits.waitForElementClickable(continieElement);
 
         var thisPageUrl = await browser.getCurrentUrl();
         cucumberReporter.AddMessage("Submitting page: " + thisPageUrl);
         console.log("Submitting : " + thisPageUrl )
         await continieElement.click();
+        browser.waitForAngular();
         await BrowserWaits.waitForPageNavigation(thisPageUrl);
 
         var nextPageUrl = await browser.getCurrentUrl();
@@ -404,7 +414,7 @@ class CaseManager {
             let objValue = keyVal ? keyVal : value;
             this.checkURanswerPageVal.push({ [objKey]: objValue })
         }
-        if (page == "tcPage") {
+        if (page == "caseEditPage") {
             return this.checkURanswerPageVal;
         }
     }

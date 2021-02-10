@@ -1,46 +1,20 @@
-var Request = require('../../utils/request');
+var CcdApi = require('../../utils/ccdApi');
 var BrowserWaits = require('../../support/customWaits');
 const CucumberReportLogger = require('../../support/reportLogger');
 Button = require('./webdriver-components/button.js');
 
-class TcPage {
+class caseEditPage {
     constructor() {
         this.userName = 'lukesuperuserxui@mailnesia.com';
         this.password = 'Monday01';
         this.searchResultsTopPagination = $("ccd-search-result .pagination-top");
         this.ccdCaseEdit = $('ccd-case-edit')
-        this.caseCreationApiRes;
-        this.workBasketInputsAPiRes;
-        this.searchInputsAPiRes;
-        this.casesApiRes;
         this.continueButton = new Button('button[type=submit]');
         this.checkURanswerPageData;
     }
 
-    async getCaseCreationpagesApiRes() {
-        if (!this.caseCreationApiRes) {
-            await Request.withSession(this.userName, this.password);
-            let reqPath = `data/internal/case-types/xuiTestCaseType/event-triggers/createCase?ignore-warning=false`;
-            const response = await Request.get(reqPath, { experimental: true });
-            expect(response.status, `${reqPath} ccd api faild status code: ${response.status}`).to.eql(200);
-            this.caseCreationApiRes = response.data;
-        }
-        return this.caseCreationApiRes;
-    }
-
-    async getWorkbasketAPIRes() {
-        if (!this.workBasketInputsAPiRes) {
-            await Request.withSession(this.userName, this.password);
-            let reqPath = `data/internal/case-types/xuiTestCaseType/work-basket-inputs`;
-            const response = await Request.get(reqPath, { experimental: true });
-            expect(response.status, `${reqPath} ccd api faild status code: ${response.status}`).to.eql(200);
-            this.workBasketInputsAPiRes = response.data;
-        }
-        return this.workBasketInputsAPiRes;
-    }
-
-    async validateWorkbasketInputs() {
-        let workBasketFields = this.workBasketInputsAPiRes ? this.workBasketInputsAPiRes : await this.getWorkbasketAPIRes();
+    async validateWorkbasketInputs(reqPath) {
+        let workBasketFields = await CcdApi.getWorkbasketAPIRes(reqPath);
         let WBfieldIdPresent;
         if (workBasketFields) {
             for (var i = 0; i < workBasketFields.workbasketInputs.length; i++) {
@@ -51,19 +25,8 @@ class TcPage {
         }
     }
 
-    async getSearchInputsAPIRes() {
-        if (!this.searchInputsAPiRes) {
-            await Request.withSession(this.userName, this.password);
-            let reqPath = `data/internal/case-types/xuiTestCaseType/search-inputs`;
-            const response = await Request.get(reqPath, { experimental: true });
-            expect(response.status, `${reqPath} ccd api faild status code: ${response.status}`).to.eql(200);
-            this.searchInputsAPiRes = response.data;
-        }
-        return this.searchInputsAPiRes;
-    }
-
-    async validateSearchInputs() {
-        let searchInputFields = this.searchInputsAPiRes ? this.searchInputsAPiRes : await this.getSearchInputsAPIRes();
+    async validateSearchInputs(reqPath) {
+        let searchInputFields = await CcdApi.getSearchInputsAPIRes(reqPath);
         let SIfieldIdPresent;
         if (searchInputFields) {
             for (var i = 0; i < searchInputFields.searchInputs.length; i++) {
@@ -97,49 +60,13 @@ class TcPage {
         }
     }
 
-    async validateWorkbasketInputsComplexValues() {
-        let workBasketFields = this.workBasketInputsAPiRes ? this.workBasketInputsAPiRes : await this.getWorkbasketAPIRes();
+    async validateWorkbasketInputsComplexValues(reqPath) {
+        let workBasketFields = await CcdApi.getWorkbasketAPIRes(reqPath);
         if (workBasketFields) {
             for (var i = 0; i < workBasketFields.workbasketInputs.length; i++) {
                 await this.complexFieldVal(workBasketFields.workbasketInputs[i].field);
             }
         }
-    }
-
-    async wizardPageFormFieldValidations(pageNo) {
-        let wizardPage = this.caseCreationApiRes ? this.caseCreationApiRes : await this.getCaseCreationpagesApiRes();
-        let wizardPage1 = wizardPage.wizard_pages[pageNo].wizard_page_fields;
-        let fieldIdPresent;
-        if (wizardPage1) {
-            for (var i = 1; i < wizardPage1.length; i++) {
-                let caseField = await this.caseCreationApiRes.case_fields.find(caseObj => caseObj.id == wizardPage1[i].case_field_id);
-                if (wizardPage1[i].case_field_id != "Organisation1") {
-                    if (caseField.field_type.type == "Complex") {
-                        if (caseField.field_type.complex_fields.length == 1) {
-                            if (caseField.field_type.complex_fields[0].field_type == "Text") {
-                                fieldIdPresent = $(`#${wizardPage1[i].case_field_id}`);
-                            }
-                        } else {
-                            fieldIdPresent = $(`#${wizardPage1[i].case_field_id}_${wizardPage1[i].case_field_id}`);
-                        }
-                    } else {
-                        fieldIdPresent = $(`#${wizardPage1[i].case_field_id}`);
-                    }
-                    // console.log("Againest api response fields validation::" + await fieldIdPresent);
-                    await BrowserWaits.waitForElement(fieldIdPresent);
-                    expect(await fieldIdPresent.isPresent(), `Case creation ${fieldIdPresent} field should be present`).to.be.true;
-                }
-            };
-        }
-
-    }
-
-    async getCasesApiReq(reqURL) {
-        await Request.withSession(this.userName, this.password);
-        let reqData = { size: 25 }
-        const response = await Request.post(reqURL, reqData, { experimental: true });
-        expect(response.status, `${reqURL} ccd api faild status code: ${response.status}`).to.eql(200);
-        return response.data;
     }
 
     async workBasketHeaders(index) {
@@ -150,10 +77,8 @@ class TcPage {
         let thLable = $$("ccd-search-result>table>thead tr th");
         await BrowserWaits.waitForElement($("ccd-search-result>table>thead tr th"));
         let count = await thLable.count();
-        // console.log("count:" + count + "index:::" + index);
         let caseResultsThTitle = [];
         if (count) {
-            // console.log("inside if count:" + count + "index:::" + index);
             for (let i = index; i < count; i++) {
                 let thText = thLable.get(i).$$(".search-result-column-label");
                 let text = await thText.getText();
@@ -165,36 +90,12 @@ class TcPage {
     }
 
     async caseResultsThTitleApiRes(URL) {
-        let response = await this.getCasesApiReq(URL);
+        let response = await CcdApi.getCasesApiReq(URL);
         return await response.columns.map(data => data.label)
     }
 
-    async getCurrentUrl() {
-        let publicUrl;
-        const currentUrl = await browser.wait(() => {
-            return browser.getCurrentUrl().then((url) => {
-                publicUrl = url;
-                this.caseId = publicUrl.split('/').slice(5, 6).join('/');
-                return this.caseId;
-            }).catch((error) => {
-                return error;
-            });
-        });
-        return currentUrl;
-    }
-
-    async getCaseResultsResponse() {
-        let caseId = this.caseId ? this.caseId : await this.getCurrentUrl();
-        await Request.withSession(this.userName, this.password);
-        let reqPath = `data/internal/cases/${caseId}`;
-        const response = await Request.get(reqPath, { experimental: true });
-        expect(response.status, `${reqPath} ccd api faild status code: ${response.status}`).to.eql(200);
-        this.caseResponse = response.data;
-        return this.caseResponse;
-    }
-
     async seeCaseDetailsPageTabs() {
-        let caseDetailsRes = this.caseResponse ? this.caseResponse : await this.getCaseResultsResponse();
+        let caseDetailsRes = await CcdApi.getCaseResultsResponse();
         let thLable = $$(".mat-tab-list .mat-tab-labels .mat-tab-label");
         await BrowserWaits.waitForElement($(".mat-tab-list .mat-tab-labels .mat-tab-label"));
         let tabsCount = await thLable.count();
@@ -210,12 +111,11 @@ class TcPage {
     }
 
     async caseDetailsCheck() {
-        let caseDetailsRes = this.caseResponse ? this.caseResponse : await this.getCaseResultsResponse();
+        let caseDetailsRes = await CcdApi.getCaseResultsResponse();
         this.caseDetailsTabs = $$("mat-tab-body table tbody>div>tbody");
         let fieldCount = await this.caseDetailsTabs.count();
         let tabName = "Tab 2";
         let tab = await caseDetailsRes.tabs.find(tab => tab.label == tabName);
-
         for (let count = 0; count < fieldCount; count++) {
             let complexFieldTable = await this.caseDetailsTabs.get(count).element(by.xpath('./*'));
             let thCF = complexFieldTable.$$("tr th");
@@ -235,7 +135,7 @@ class TcPage {
     }
 
     async nextStepTriggerApiRes() {
-        let caseDetailsRes = this.caseResponse ? this.caseResponse : await this.getCaseResultsResponse();
+        let caseDetailsRes = await CcdApi.getCaseResultsResponse();
         let res = caseDetailsRes.triggers.map(trigger => trigger.name);
         return res;
     }
@@ -262,33 +162,44 @@ class TcPage {
     }
 
     async wizardPageFormFieldValidations(pageNo) {
-        let wizardPage = this.caseCreationApiRes ? this.caseCreationApiRes : await this.getCaseCreationpagesApiRes();
+        let wizardPage = await CcdApi.getCaseCreationpagesApiRes();
         let wizardPage1 = wizardPage.wizard_pages[pageNo].wizard_page_fields;
         let fieldIdPresent;
-        for (var i = 1; i < wizardPage1.length; i++) {
-            let caseField = await this.caseCreationApiRes.case_fields.find(caseObj => caseObj.id == wizardPage1[i].case_field_id);
-            // console.log("type:::" + caseField.field_type.type);
-            if (wizardPage1[i].case_field_id != "Organisation1") {
-                if (caseField.field_type.type == "Complex" && wizardPage1[i].case_field_id != "CaseLink1") {
-                    if (caseField.field_type.complex_fields.length == 1) {
-                        if (caseField.field_type.complex_fields[0].field_type == "Text") {
-                            fieldIdPresent = $(`#${wizardPage1[i].case_field_id}`);
-                        }
-                    } else {
-                        fieldIdPresent = $(`#${wizardPage1[i].case_field_id}_${wizardPage1[i].case_field_id}`);
-                    }
-                } else {
-                    // console.log("wizard page:::" + wizardPage1[i].case_field_id);
-                    fieldIdPresent = $(`#${wizardPage1[i].case_field_id}`);
+        if (wizardPage1) {
+            for (var i = 1; i < wizardPage1.length; i++) {
+                let caseField = await wizardPage.case_fields.find(caseObj => caseObj.id == wizardPage1[i].case_field_id);
+                if (wizardPage1[i].case_field_id != "Organisation1") {
+                    fieldIdPresent = await this._getFieldId(caseField, wizardPage1[i]);
+                    await BrowserWaits.waitForElement(fieldIdPresent);
+                    expect(await fieldIdPresent.isPresent(), `Case creation ${fieldIdPresent} field should be present`).to.be.true;
                 }
-                // console.log("Againest api response field id::" + wizardPage1[i].case_field_id + ":::fieldIdPresent::" + fieldIdPresent);
-                await BrowserWaits.waitForElement(fieldIdPresent);
-                expect(await fieldIdPresent.isPresent(), `Case creation ${fieldIdPresent} field should be present`).to.be.true;
-            }
 
-        };
+            }
+        }
+
     }
 
+    async _getFieldId(caseField, wizardPage1) {
+        let fieldIdPresent;
+        switch (caseField.field_type.type) {
+            case "Complex":
+                if (wizardPage1.case_field_id != "CaseLink1") {
+                    if (caseField.field_type.complex_fields.length && caseField.field_type.complex_fields.length == 1) {
+                        if (caseField.field_type.complex_fields[0].field_type == "Text") {
+                            fieldIdPresent = $(`#${wizardPage1.case_field_id}`);
+                        }
+                    } else {
+                        fieldIdPresent = $(`#${wizardPage1.case_field_id}_${wizardPage1.case_field_id}`);
+                    }
+                } else {
+                    fieldIdPresent = $(`#${wizardPage1.case_field_id}`);
+                }
+                return fieldIdPresent;
+            default:
+                return $(`#${wizardPage1.case_field_id}`);;
+        }
+
+    }
     async validateSummeryPageLinks() {
         let checkURanswerPage = element.all(by.xpath(`//table[@class='form-table']/tbody/tr`));
         await BrowserWaits.waitForElement($("ccd-case-edit-submit form table tbody tr"));
@@ -408,4 +319,4 @@ class TcPage {
 
 
 }
-module.exports = TcPage;
+module.exports = caseEditPage;

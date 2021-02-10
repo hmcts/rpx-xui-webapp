@@ -68,17 +68,9 @@ class CreateCaseStartPage {
   }
 
   async amOnPage(){
-    let present = await $(this.header).isPresent();
-    while (present) {
-      try {
-        BrowserWaits.waitForElementClickable($('#cc-jurisdiction'));
-        let header = await this.getPageHeader();
-        present = false;
-        return header === 'Create Case';
-      } catch (e) {
-        present = true;
-      }
-    }
+    BrowserWaits.waitForElementClickable($('#cc-jurisdiction'));
+    let header = await this.getPageHeader();
+    return header === 'Create Case';
   }
 
 }

@@ -70,7 +70,6 @@ describe('TaskManagerListComponent', () => {
     sessionStorage.removeItem(FilterConstants.Session.TaskManager);
   });
 
-  // TODO: Need to ensure testing of all sorting/searching parameters implemented correctly
 
   it('should make a call to load tasks using the default search request', () => {
     const searchRequest = component.getSearchTaskRequest();
@@ -98,9 +97,8 @@ describe('TaskManagerListComponent', () => {
     expect(headerCells[headerCells.length - 1].textContent.trim()).toEqual('');
   });
 
-  // TODO: Need to re-implement and pass test
 
-  /* it('should handle a click to sort on the caseReference heading', async () => {
+  it('should handle a click to sort on the caseReference heading', async () => {
     const element = fixture.debugElement.nativeElement;
     const button = element.querySelector('#sort_by_caseReference');
     button.dispatchEvent(new Event('click'));
@@ -125,18 +123,16 @@ describe('TaskManagerListComponent', () => {
     const newSearchRequest = component.getSearchTaskRequest();
     // Make sure the search request looks right.
     expect(newSearchRequest.search_parameters.length).toEqual(2);
-    expect(newSearchRequest.search_parameters[1].key).toEqual('location');
-    expect(newSearchRequest.search_parameters[1].values.length).toEqual(mockLocations.length);
-    expect(newSearchRequest.search_parameters[2].key).toEqual('assignee');
-    expect(newSearchRequest.search_parameters[2].values.length).toEqual(mockCaseworkers.length);
+    expect(newSearchRequest.search_parameters[1].key).toEqual('user');
+    expect(newSearchRequest.search_parameters[1].values.length).toEqual(0);
 
-    expect(newSearchRequest.sorting_parameters[0]).toContain('caseReference');
-    expect(newSearchRequest.sorting_parameters[0]).toContain('descending'); // Important!
+    expect(newSearchRequest.sorting_parameters[0].sort_by).toBe('caseReference');
+    expect(newSearchRequest.sorting_parameters[0].sort_order).toBe('desc'); // Important!
 
     // Let's also make sure that the tasks were re-requested with the new sorting.
     const newPayload = { searchRequest: newSearchRequest, view: component.view };
     expect(mockTaskService.searchTask).toHaveBeenCalledWith(newPayload);
-  }); */
+  });
 
   it('should handle selecting a location on the filter', async () => {
     const element = fixture.debugElement.nativeElement;

@@ -45,6 +45,8 @@ describe('AlertComponent', () => {
     component.ngOnInit();
     await fixture.whenStable();
     fixture.detectChanges();
+
+    // expect the relevant messages to equal correct values
     expect(component.errorMessage).toEqual('error message');
     expect(component.successMessage).toEqual('success message');
     expect(component.warningMessage).toEqual('warning message');
@@ -56,6 +58,7 @@ describe('AlertComponent', () => {
     spyOn(component.warningMessageSubscription, 'unsubscribe').and.callThrough();
     spyOn(component.routeSubscription, 'unsubscribe').and.callThrough();
 
+    // espect unsubscribe to have been called
     component.ngOnDestroy();
     expect(component.errorMessageSubscription.unsubscribe).toHaveBeenCalled();
     expect(component.successMessageSubscription.unsubscribe).toHaveBeenCalled();

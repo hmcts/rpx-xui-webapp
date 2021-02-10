@@ -2,7 +2,7 @@ import {NextFunction, Response} from 'express';
 import {getConfigValue} from '../configuration';
 import {SERVICES_CASE_CASEWORKER_REF_PATH,
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
-  SERVICES_WORK_ALLOCATION_TASK_API_PATH, } from '../configuration/references';
+  SERVICES_WORK_ALLOCATION_TASK_API_PATH } from '../configuration/references';
 import {EnhancedRequest} from '../lib/models';
 import {getUserIdsFromRoleApiResponse,
   handleCaseWorkerForLocation,
@@ -28,6 +28,7 @@ export const baseWorkAllocationTaskUrl = getConfigValue(SERVICES_WORK_ALLOCATION
 export const baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);
 export const baseRoleAssignmentUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
 export const baseUrl: string = 'http://localhost:8080';
+import { applicationCache } from '../lib/cache/index'
 
 /**
  * getTask
@@ -88,15 +89,26 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
  */
 export async function getAllCaseWorkers(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
-    const payload = prepareRoleApiRequest();
-    const { data } = await handlePostRoleAssingnments(roleApiPath, payload, req);
-    const userIds = getUserIdsFromRoleApiResponse(data);
-    const userUrl = `${baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
-    const userResponse = await handlePostCaseWorkersRefData(userUrl, userIds, req);
-    const caseWorkerReferenceData = mapCaseworkerData(userResponse.data);
-    res.status(userResponse.status);
-    res.send(caseWorkerReferenceData);
+      applicationCache.get('ALL_CASEWORKERS', async (err, casewokers) => {
+      if (!casewokers) {
+        console.log('not using redis cache');
+        const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
+        const payload = prepareRoleApiRequest();
+        const { data } = await handlePostRoleAssingnments(roleApiPath, payload, req);
+        const userIds = getUserIdsFromRoleApiResponse(data);
+        const userUrl = `${baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
+        const userResponse = await handlePostCaseWorkersRefData(userUrl, userIds, req);
+        const caseWorkerReferenceData = mapCaseworkerData(userResponse.data);
+        applicationCache.set('ALL_CASEWORKERS', caseWorkerReferenceData)
+        res.status(userResponse.status);
+        res.send(caseWorkerReferenceData);
+      } else {
+        res.status(200);
+        res.send(casewokers);
+        console.log('using  redis cache');
+        return
+      }
+    });
   } catch (error) {
     next(error);
   }

@@ -19,6 +19,9 @@ const publish = async (): Promise<void> => {
       // @ts-ignore
       getConfigValue(PACT_CONSUMER_VERSION) : git.short()
 
+    const certPath = path.resolve(__dirname, "../cer/ca-bundle.crt")
+    process.env.SSL_CERT_FILE = certPath
+
     const opts = {
       consumerVersion,
       pactBroker,

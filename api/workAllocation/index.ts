@@ -28,8 +28,6 @@ export const baseWorkAllocationTaskUrl = getConfigValue(SERVICES_WORK_ALLOCATION
 export const baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);
 export const baseRoleAssignmentUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
 export const baseUrl: string = 'http://localhost:8080';
-import { getApplicationCache } from '../lib/cache/index';
-const CACHE_KEY_CASEWORKERS = 'ALL_CASEWORKERS';
 /**
  * getTask
  */
@@ -89,9 +87,9 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
  */
 export async function getAllCaseWorkers(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-      const applicationCache = getApplicationCache();
-      applicationCache.get(CACHE_KEY_CASEWORKERS, async (err, casewokers) => {
-      if (!casewokers) {
+      
+      if (!req.session.casewokers) {
+        console.log('no session')
         const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
         const payload = prepareRoleApiRequest();
         const { data } = await handlePostRoleAssingnments(roleApiPath, payload, req);
@@ -99,15 +97,15 @@ export async function getAllCaseWorkers(req: EnhancedRequest, res: Response, nex
         const userUrl = `${baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
         const userResponse = await handlePostCaseWorkersRefData(userUrl, userIds, req);
         const caseWorkerReferenceData = mapCaseworkerData(userResponse.data);
-        applicationCache.set(CACHE_KEY_CASEWORKERS, caseWorkerReferenceData)
+        req.session.casewokers = caseWorkerReferenceData;
         res.status(userResponse.status);
         res.send(caseWorkerReferenceData);
       } else {
+        console.log('session')
         res.status(200);
-        res.send(casewokers);
+        res.send(req.session.casewokers);
         return
       }
-    });
   } catch (error) {
     next(error);
   }

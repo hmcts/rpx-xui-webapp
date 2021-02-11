@@ -87,9 +87,7 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
  */
 export async function getAllCaseWorkers(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-      
       if (!req.session.casewokers) {
-        console.log('no session')
         const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
         const payload = prepareRoleApiRequest();
         const { data } = await handlePostRoleAssingnments(roleApiPath, payload, req);
@@ -101,7 +99,6 @@ export async function getAllCaseWorkers(req: EnhancedRequest, res: Response, nex
         res.status(userResponse.status);
         res.send(caseWorkerReferenceData);
       } else {
-        console.log('session')
         res.status(200);
         res.send(req.session.casewokers);
         return

@@ -37,16 +37,6 @@ describe('AlertComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have updated the value of message and level in ngOnInit', async () => {
-    const alertService = fixture.debugElement.injector.get(AlertService);
-    alertService.push({message: 'message', level: 'success'});
-    component.ngOnInit();
-    await fixture.whenStable();
-    fixture.detectChanges();
-    expect(component.message).toEqual('message');
-    expect(component.level).toEqual('success');
-  });
-
   it('should unsubscribe onDestroy', () => {
     spyOn(component.alertMessageSubscription, 'unsubscribe').and.callThrough();
     spyOn(component.routeSubscription, 'unsubscribe').and.callThrough();

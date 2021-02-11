@@ -11,6 +11,7 @@ import {getUserIdsFromRoleApiResponse,
   handlePostCaseWorkersRefData,
   handlePostRoleAssingnments,
   handlePostSearch, } from './caseWorkerService';
+import { Caseworker } from './interfaces/task';
 import {handleTaskGet, handleTaskPost, handleTaskSearch} from './taskService';
 import {assignActionsToTasks,
   mapCaseworkerData,
@@ -56,7 +57,8 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
 
      // Assign actions to the tasks on the data from the API.
     if (data) {
-      assignActionsToTasks(data.tasks, req.body.view);
+      const caseworkers = await cacheAllCaseWorkers(req, res);
+      assignActionsToTasks(data.tasks, req.body.view, caseworkers);
     }
 
     // Send the (possibly modified) data back in the Response.
@@ -87,25 +89,26 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
  */
 export async function getAllCaseWorkers(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-      if (!req.session.casewokers) {
-        const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
-        const payload = prepareRoleApiRequest();
-        const { data } = await handlePostRoleAssingnments(roleApiPath, payload, req);
-        const userIds = getUserIdsFromRoleApiResponse(data);
-        const userUrl = `${baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
-        const userResponse = await handlePostCaseWorkersRefData(userUrl, userIds, req);
-        const caseWorkerReferenceData = mapCaseworkerData(userResponse.data);
-        req.session.casewokers = caseWorkerReferenceData;
-        res.status(userResponse.status);
-        res.send(caseWorkerReferenceData);
-      } else {
-        res.status(200);
-        res.send(req.session.casewokers);
-        return
-      }
+      const caseworkers = await cacheAllCaseWorkers(req, res);
+      res.status(200)
+      res.send(caseworkers);
   } catch (error) {
     next(error);
   }
+}
+
+export async function cacheAllCaseWorkers(req: EnhancedRequest, res: Response): Promise<Caseworker[]> {
+  if (!req.session.casewokers) {
+    const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
+    const payload = prepareRoleApiRequest();
+    const { data } = await handlePostRoleAssingnments(roleApiPath, payload, req);
+    const userIds = getUserIdsFromRoleApiResponse(data);
+    const userUrl = `${baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
+    const userResponse = await handlePostCaseWorkersRefData(userUrl, userIds, req);
+    const caseWorkerReferenceData = mapCaseworkerData(userResponse.data);
+    req.session.casewokers = caseWorkerReferenceData;
+  }
+  return req.session.casewokers as Caseworker[];
 }
 
 /**

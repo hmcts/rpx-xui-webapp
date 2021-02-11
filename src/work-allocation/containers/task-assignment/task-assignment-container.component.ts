@@ -93,11 +93,7 @@ export class TaskAssignmentContainerComponent implements OnInit {
       return;
     }
     this.error = null;
-    const assignee: Assignee = {
-      id: this.caseworker.idamId,
-      userName: `${this.caseworker.firstName} ${this.caseworker.lastName}`
-    };
-    this.taskService.assignTask(this.tasks[0].id, assignee).subscribe(() => {
+    this.taskService.assignTask(this.tasks[0].id, {userId: this.caseworker.idamId}).subscribe(() => {
       this.reportSuccessAndReturn();
     }, error => {
       const handledStatus = handleFatalErrors(error.status, this.router);

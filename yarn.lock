@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@^2.68.9-alpha":
-  version "2.68.9-alpha"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.68.9-alpha.tgz#6e622de6dd12372aa3e06563df25fdc046f04962"
-  integrity sha512-CyTjjck90FZF/0t6UAmbtoX02AVU9FR6K/o9pG5cC3KM+VSqGRdGkzNqHdrsirJjYWvnwkt3rwlaSr4iyxkS4g==
+"@hmcts/ccd-case-ui-toolkit@2.70.3-button-labels":
+  version "2.70.3-button-labels"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.70.3-button-labels.tgz#3e3ea717582f15afd2439d15cc58c0c138a23476"
+  integrity sha512-jHNjT93fbG1X4BugL8sFl4eveUuYpzNZMc/MdOXGDvGQWMV7hi1YCbOQrAmwRvQYNLxHigNqwrzOEj3UnyH5tA==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
@@ -9016,11 +9016,6 @@ nodemon@^2.0.2:
     touch "^3.1.0"
     undefsafe "^2.0.2"
     update-notifier "^2.5.0"
-
-nonce@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/nonce/-/nonce-1.0.4.tgz#ee7302ade8c1bef476f301b8c91f5cc51a487612"
-  integrity sha1-7nMCrejBvvR28wG4yR9cxRpIdhI=
 
 noop6@^1.0.1:
   version "1.0.8"

@@ -28,7 +28,7 @@ export const baseWorkAllocationTaskUrl = getConfigValue(SERVICES_WORK_ALLOCATION
 export const baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);
 export const baseRoleAssignmentUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
 export const baseUrl: string = 'http://localhost:8080';
-import { applicationCache } from '../lib/cache/index';
+import { getApplicationCache } from '../lib/cache/index';
 const CACHE_KEY_CASEWORKERS = 'ALL_CASEWORKERS';
 /**
  * getTask
@@ -89,6 +89,7 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
  */
 export async function getAllCaseWorkers(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
+      const applicationCache = getApplicationCache();
       applicationCache.get(CACHE_KEY_CASEWORKERS, async (err, casewokers) => {
       if (!casewokers) {
         const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);

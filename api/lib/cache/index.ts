@@ -4,8 +4,11 @@ import * as redisStore from 'cache-manager-redis-store';
 import { getConfigValue, showFeature } from '../../configuration';
 import { FEATURE_REDIS_ENABLED, REDIS_CLOUD_URL } from '../../configuration/references';
 
-console.log('Redis Connection string', getConfigValue(REDIS_CLOUD_URL))
-const redisConfig = { store: redisStore, config: getConfigValue(REDIS_CLOUD_URL), ttl: 600 }
-const isRedisEnabled = showFeature(FEATURE_REDIS_ENABLED)
-export const applicationCache = isRedisEnabled ? cacheManager.caching(redisConfig) : cacheManager.caching(MemoryStore);
-console.log('applicationCache', applicationCache.store)
+export function getApplicationCache(): cacheManager.Cache {
+    console.log('Redis Connection string', getConfigValue(REDIS_CLOUD_URL))
+    const redisConfig = { store: redisStore, config: getConfigValue(REDIS_CLOUD_URL), ttl: 600 }
+    const isRedisEnabled = showFeature(FEATURE_REDIS_ENABLED)
+    const applicationCache = isRedisEnabled ? cacheManager.caching(redisConfig) : cacheManager.caching(MemoryStore);
+    console.log('applicationCache', applicationCache.store);
+    return applicationCache;
+}

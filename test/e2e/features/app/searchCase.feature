@@ -1,4 +1,4 @@
-@search @fullfunctional @test
+@search @fullfunctional
 Feature: search criteria workflow
 
   Background:

@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Subscription} from 'rxjs';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import { ActivatedRouteSnapshot, NavigationEnd, Router, RoutesRecognized } from '@angular/router';
 import { SubNavigation } from '@hmcts/rpx-xui-common-lib';
 
@@ -9,7 +10,7 @@ import { TaskSortField } from '../../models/tasks';
   selector: 'exui-task-home',
   templateUrl: 'task-home.component.html'
 })
-export class TaskHomeComponent implements OnInit {
+export class TaskHomeComponent implements OnInit, OnDestroy {
 
   /**
    * Take in the Router so we can navigate when actions are clicked and
@@ -26,11 +27,12 @@ export class TaskHomeComponent implements OnInit {
 
   public sortedBy: TaskSortField;
   public pageTitle: string;
+  private routeSubscription: Subscription;
 
   constructor(private readonly router: Router) {}
 
   public ngOnInit(): void {
-    this.router.events.subscribe(event => {
+    this.routeSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         // Set up the active navigation item.
         this.setupActiveSubNavigationItem(this.router.url);
@@ -45,6 +47,12 @@ export class TaskHomeComponent implements OnInit {
 
     // Set up the page data.
     this.setupPageData(this.router.routerState.root.snapshot);
+  }
+
+  public ngOnDestroy(): void {
+    if (this.routeSubscription) {
+      this.routeSubscription.unsubscribe();
+    }
   }
 
   /**

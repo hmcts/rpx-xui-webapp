@@ -1,7 +1,7 @@
-import {Subscription} from 'rxjs';
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRouteSnapshot, NavigationEnd, Router, RoutesRecognized } from '@angular/router';
 import { SubNavigation } from '@hmcts/rpx-xui-common-lib';
+import { Subscription } from 'rxjs';
 
 import { AppUtils } from '../../../app/app-utils';
 import { TaskSortField } from '../../models/tasks';

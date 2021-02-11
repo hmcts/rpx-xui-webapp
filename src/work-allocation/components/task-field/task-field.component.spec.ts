@@ -134,7 +134,7 @@ describe('WorkAllocation', () => {
       let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('.due-date');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe('TODAY');
-      expect(element.getAttribute('aria-label')).toBe('Due today');
+      expect(element.getAttribute('aria-label')).toBe('This task is due to be completed today');
 
       // Change the value of task.dueDate.
       task.dueDate = new Date(task.dueDate.getTime() - 86400000); // Yesterday.

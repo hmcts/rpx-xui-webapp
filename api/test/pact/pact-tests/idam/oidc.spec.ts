@@ -1,12 +1,14 @@
-import { oidc } from '@hmcts/rpx-xui-node-lib'
-import { assert } from 'chai'
-import mockResponse from '../../mocks/openid-well-known-configuration.mock'
-import { PactTestSetup } from '../settings/provider.mock'
+import { oidc } from '@hmcts/rpx-xui-node-lib';
+import { assert } from 'chai';
+import mockResponse from '../../mocks/openid-well-known-configuration.mock';
+import { PactTestSetup } from '../settings/provider.mock';
 
 const pactSetUp = new PactTestSetup({ provider: 'Idam_api', port: 8000 });
 
 
 describe('OpenId Connect API', () => {
+    // Write Pact when all tests done
+    after(() => pactSetUp.provider.finalize())
 
   describe('when a request to .well-known endpoint is made', () => {
     before( async () => {
@@ -26,7 +28,7 @@ describe('OpenId Connect API', () => {
       })
     })
 
-    afterEach(() => pactSetUp.provider.verify())
+    after(() => pactSetUp.provider.verify())
 
     it('returns a json configuration', async () => {
       const oidcUrl = `${pactSetUp.provider.mockService.baseUrl}/o`

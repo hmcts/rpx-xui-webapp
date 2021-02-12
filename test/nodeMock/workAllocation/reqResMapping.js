@@ -14,11 +14,14 @@ module.exports = {
         },
         '/workallocation/caseworker': (req, res) => {
             res.send(workAllocationMockData.getCaseworkersList(20));
+        },
+        '/workallocation/caseworker/location/:locId': (req, res) => {
+            res.send(workAllocationMockData.getCaseworkersList(10));
         }
     },
     post: {
         '/workallocation/task/' : (req,res) => {
-            res.send(workAllocationMockData.getAvailableTasks(10));
+            res.send(workAllocationMockData.getMyTasks(10));
         },
         '/workallocation/task/:taskId/assign':  (req,res) => {
             res.send();

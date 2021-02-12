@@ -23,5 +23,13 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     });
 
+    Then('I see primary navigation tab {string} in header', async function(headerlabel){
+        expect(await headerPage.isTabPresent(headerlabel), headerlabel+" r tab is not present").to.be.true; 
+    })
+
+    Then('I do not see primary navigation tab {string} in header', async function (headerlabel) {
+        expect(await headerPage.isTabPresent(headerlabel), headerlabel + " r tab is not expected to present").to.be.false;
+    })
+
 
 });

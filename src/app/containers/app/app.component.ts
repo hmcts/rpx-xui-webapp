@@ -51,6 +51,7 @@ export class AppComponent implements OnInit {
         this.loadAndListenForUserDetails();
       }
     });
+    this.store.dispatch(new fromRoot.StartIdleSessionTimeout());
   }
 
   /**

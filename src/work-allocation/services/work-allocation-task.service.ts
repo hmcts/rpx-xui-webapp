@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { Assignee, SearchTaskRequest, TaskSearchParameters } from '../models/dtos';
+import { SearchTaskRequest, TaskSearchParameters } from '../models/dtos';
 import { Task } from '../models/tasks';
 
 const BASE_URL: string = '/workallocation/task';

@@ -43,7 +43,6 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
       }
     }) as any;
 
-    this.store.dispatch(new fromRoot.StartIdleSessionTimeout());
   }
 
   public ngOnDestroy(): void {

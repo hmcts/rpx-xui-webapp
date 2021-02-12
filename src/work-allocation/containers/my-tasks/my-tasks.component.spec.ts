@@ -93,7 +93,7 @@ describe('MyTasksComponent', () => {
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify({id: '1'}));
 
     const element = fixture.debugElement.nativeElement;
-    const button = element.querySelector('#sort_by_caseReference');
+    const button = element.querySelector('#sort_by_caseId');
     button.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
@@ -104,7 +104,7 @@ describe('MyTasksComponent', () => {
     expect(searchRequest.search_parameters[0].values).toContain('1');
 
     expect(searchRequest.sorting_parameters[0].sort_order).toBe('asc');
-    expect(searchRequest.sorting_parameters[0].sort_by).toBe('caseReference');
+    expect(searchRequest.sorting_parameters[0].sort_by).toBe('caseId');
 
     // Let's also make sure that the tasks were re-requested with the new sorting.
     const payload = {searchRequest, view: component.view};
@@ -122,7 +122,7 @@ describe('MyTasksComponent', () => {
 
     /*TODO: should be descending*/
     expect(searchRequest.sorting_parameters[0].sort_order).toBe('asc');
-    expect(searchRequest.sorting_parameters[0].sort_by).toBe('caseReference');
+    expect(searchRequest.sorting_parameters[0].sort_by).toBe('caseId');
 
     // Let's also make sure that the tasks were re-requested with the new sorting.
     const newPayload = {searchRequest: newSearchRequest, view: component.view};

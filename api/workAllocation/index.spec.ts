@@ -7,6 +7,7 @@ import {mockReq, mockRes} from 'sinon-express-mock';
 
 import {baseWorkAllocationTaskUrl, getTask, postTaskAction, searchTask} from '.';
 import {http} from '../lib/http';
+import { mockTasks } from './taskTestData';
 
 chai.use(sinonChai);
 
@@ -77,17 +78,22 @@ describe('workAllocation', () => {
           searchRequest: {search_parameters: []},
           view: 'view',
         },
+        session: {
+          caseworkers: null
+        }
       });
-      const response = mockRes();
+      const response = mockRes({
+        data: mockTasks
+      });
       await searchTask(req, response, next);
-
       // Should have the correct URL and the appropriate payload.
       const args = spy.getCall(0).args;
       expect(args[0]).to.equal(`${baseWorkAllocationTaskUrl}/task`);
       expect(args[1]).to.deep.equal({search_parameters: []});
 
       // Should have received the HTTP response. The search simply returns the data.
-      expect(response.send).to.have.been.calledWith(sinon.match(SUCCESS_RESPONSE.data));
+      expect(response.data.length).to.equal(3);
+      expect(response.data[0].jurisdiction).to.equal('IA');
     });
 
     it('should handle an exception being thrown', async () => {

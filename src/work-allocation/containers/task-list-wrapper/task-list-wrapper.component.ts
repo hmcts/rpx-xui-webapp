@@ -181,14 +181,15 @@ export class TaskListWrapperComponent implements OnInit {
    * action.
    */
   public onActionHandler(taskAction: InvokedTaskAction): void {
-    if (this.returnUrl.includes('manager')) {
+    if (this.returnUrl.includes('manager')  && taskAction.action.id === TaskActionIds.RELEASE) {
       this.specificPage = 'manager';
     }
     const state = {
       returnUrl: this.returnUrl,
       showAssigneeColumn: taskAction.action.id !== TaskActionIds.ASSIGN
     };
-    this.router.navigate([`/tasks/${taskAction.task.id}/${taskAction.action.id}/${this.specificPage}`], { state });
+    const actionUrl = `/tasks/${taskAction.task.id}/${taskAction.action.id}/${this.specificPage}`;
+    this.router.navigate([actionUrl], { state });
   }
 
   // Do the actual load. This is separate as it's called from two methods.

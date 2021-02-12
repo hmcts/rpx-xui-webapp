@@ -100,7 +100,7 @@ describe('TaskManagerListComponent', () => {
 
   it('should handle a click to sort on the caseReference heading', async () => {
     const element = fixture.debugElement.nativeElement;
-    const button = element.querySelector('#sort_by_caseReference');
+    const button = element.querySelector('#sort_by_caseId');
     button.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
@@ -126,7 +126,7 @@ describe('TaskManagerListComponent', () => {
     expect(newSearchRequest.search_parameters[1].key).toEqual('user');
     expect(newSearchRequest.search_parameters[1].values.length).toEqual(0);
 
-    expect(newSearchRequest.sorting_parameters[0].sort_by).toBe('caseReference');
+    expect(newSearchRequest.sorting_parameters[0].sort_by).toBe('caseId');
     expect(newSearchRequest.sorting_parameters[0].sort_order).toBe('desc'); // Important!
 
     // Let's also make sure that the tasks were re-requested with the new sorting.

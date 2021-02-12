@@ -143,19 +143,18 @@ export class TaskListComponent implements OnChanges {
    * TODO: Think about moving 'none' to task sort model.
    *
    * @param fieldName - 'caseReference'
-   * @return 'none' / 'ascending' / 'descending'
+   * @return 'none' / 'asc' / 'desc'
    */
-  public isColumnSorted(fieldName: string): TaskSort {
+  public isColumnSorted(fieldName: string): string {
     // If we don't have an actual sortedBy value, default it now.
     if (!this.sortedBy) {
       const { defaultSortFieldName, defaultSortDirection } = this.taskServiceConfig;
       this.sortedBy = { fieldName: defaultSortFieldName, order: defaultSortDirection };
     }
 
-
     // If this is the field we're sorted by, return the appropriate order.
     if (this.sortedBy.fieldName === fieldName) {
-      return this.sortedBy.order;
+      return this.sortedBy.order === TaskSort.ASC ? 'ascending' : 'descending'
     }
 
     // This field is not sorted, return NONE.

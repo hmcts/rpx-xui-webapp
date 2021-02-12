@@ -1,6 +1,6 @@
 export interface Assignee {
-  id: string;
-  userName: string;
+  userId: string;
+  userName?: string;
 }
 
 export interface CaseData {

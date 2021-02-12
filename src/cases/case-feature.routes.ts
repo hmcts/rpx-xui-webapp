@@ -2,7 +2,7 @@ import { ModuleWithProviders } from '@angular/core';
 // routes
 import { RouterModule, Routes } from '@angular/router';
 import { CaseResolver, editorRouting, viewerRouting as caseViewRouting } from '@hmcts/ccd-case-ui-toolkit';
-import { HealthCheckGuard } from 'src/app/shared/guards/health-check.guard';
+import { HealthCheckGuard } from '@shared/guards/health-check.guard';
 import { CaseCreateSubmitComponent, CasesCreateComponent, CaseShareCompleteComponent, CaseShareComponent, CaseShareConfirmComponent } from './containers';
 import { CaseDetailsHomeComponent } from './containers/case-details-home/case-details-home';
 import { CaseFilterComponent } from './containers/case-filter/case-filter.component';

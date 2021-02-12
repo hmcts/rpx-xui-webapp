@@ -26,7 +26,7 @@ import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { reducers } from 'src/app/store';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { AppConfigService } from '../../../app/services/config/configuration.services';
-import { SharedModule } from '../../../app/shared/shared.module';
+import { SharedModule } from '@shared/shared.module';
 import * as fromCases from '../../store/reducers';
 import { CasesCreateComponent } from './case-create.component';
 class MockSortService {

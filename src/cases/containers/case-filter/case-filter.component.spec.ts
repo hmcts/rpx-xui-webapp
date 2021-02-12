@@ -22,7 +22,7 @@ import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { RouterTestingModule } from '@angular/router/testing';
 import { combineReducers, StoreModule } from '@ngrx/store';
 import { HttpModule } from '@angular/http';
-import { SharedModule } from '../../../app/shared/shared.module';
+import { SharedModule } from '@shared/shared.module';
 import { AppConfigService } from '../../../app/services/config/configuration.services';
 import { CaseFilterComponent } from './case-filter.component';
 import { reducers } from '../../store/reducers';

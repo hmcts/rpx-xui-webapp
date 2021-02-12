@@ -24,7 +24,7 @@ import {combineReducers, StoreModule} from '@ngrx/store';
 import { of } from 'rxjs';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { AppConfigService } from '../../../app/services/config/configuration.services';
-import { SharedModule } from '../../../app/shared/shared.module';
+import { SharedModule } from '@shared/shared.module';
 import * as fromCases from '../../store/reducers';
 import { CaseCreateSubmitComponent } from './case-create-submit.component';
 

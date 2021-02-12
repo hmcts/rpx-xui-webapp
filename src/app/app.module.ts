@@ -29,7 +29,7 @@ import { ProvidersModule } from './providers/providers.module';
 // app routes
 import { ROUTES, routingConfiguration } from './app.routes';
 import { CookieModule } from 'ngx-cookie';
-import { SharedModule } from './shared/shared.module';
+import { SharedModule } from '@shared/shared.module';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MonitoringService } from './services/logger/monitoring.service';

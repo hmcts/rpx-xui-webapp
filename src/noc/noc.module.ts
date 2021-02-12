@@ -6,7 +6,7 @@ import { AbstractAppConfig, CaseUIToolkitModule } from '@hmcts/ccd-case-ui-toolk
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { SharedModule } from 'src/app/shared/shared.module';
+import { SharedModule } from '@shared/shared.module';
 import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
 import * as fromContainers from './containers';
 import { NocEmailFieldComponent } from './containers/noc-field/email';

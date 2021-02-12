@@ -4,7 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { MatDialogModule } from '@angular/material';
 
-import { SharedModule } from '../app/shared/shared.module';
+import { SharedModule } from '@shared/shared.module';
 import { WorkAllocationComponentsModule } from './components/work-allocation.components.module';
 import * as fromContainers from './containers';
 import { WorkAllocationFeatureToggleGuard } from './guards/work-allocation-feature-toggle.guard';

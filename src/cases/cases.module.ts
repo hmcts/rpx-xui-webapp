@@ -31,7 +31,7 @@ import { casesRouting } from './case-feature.routes';
 import {StoreModule} from '@ngrx/store';
 import {EffectsModule} from '@ngrx/effects';
 import {reducers, effects} from './store';
-import {SharedModule} from '../app/shared/shared.module';
+import {SharedModule} from '@shared/shared.module';
 import {HttpModule} from '@angular/http';
 // from components
 import * as fromComponents from './components';

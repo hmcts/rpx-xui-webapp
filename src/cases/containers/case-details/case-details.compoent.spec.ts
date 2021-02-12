@@ -21,7 +21,7 @@ import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { RouterTestingModule } from '@angular/router/testing';
 import {combineReducers, StoreModule} from '@ngrx/store';
-import { SharedModule } from '../../../app/shared/shared.module';
+import { SharedModule } from '@shared/shared.module';
 import { AppConfigService } from '../../../app/services/config/configuration.services';
 
 import { reducers } from 'src/app/store';

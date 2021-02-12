@@ -1,4 +1,4 @@
-import { HttpEvent,HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -7,14 +7,14 @@ export class HttpDefaultInterceptor implements HttpInterceptor {
 
     constructor() { }
 
-    intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         if (req.headers.has('X-Powered-By') || req.headers.has('x-powered-by')) {
-            req = req.clone({ 
+            req = req.clone({
                 headers: req.headers
-                .delete('X-Powered-By','XUI Server 1.0')
-                .delete('X-Powered-By','Express')
-                .delete('x-powered-by','XUI Server 1.0')
-                .delete('x-powered-by','Express')
+                .delete('X-Powered-By', 'XUI Server 1.0')
+                .delete('X-Powered-By', 'Express')
+                .delete('x-powered-by', 'XUI Server 1.0')
+                .delete('x-powered-by', 'Express')
             });
         }
         req = req.clone({

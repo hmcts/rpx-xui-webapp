@@ -350,14 +350,22 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             });
 
             await taskAssignmentPage.clickReassignBtn();
+            softAssertion.setScenario(`Scenario validation: POST /workallocation/task/:taskId/assign error response ${responseCode} `);
 
-            const isErrorPageDisplayed = await errorPage.isErrorPageDisplayed();
-            softAssertion.setScenario(`Scenario validation: POST /workallocation/task/:taskId/assign error response ${responseCode} `); 
-            await softAssertion.assert(async () => expect(isErrorPageDisplayed, `For action Reassign on submit status code ${responseCode} status response, error page not displayed`).to.be.true);
-            if (isErrorPageDisplayed) {
-                const errorMessageDisplayed = await errorPage.getErrorMessage();
-                await softAssertion.assert(async () => expect(errorMessageDisplayed, `For action Reassign on submit status code ${responseCode} status response, error message does not match`).to.contains(errorMessageForResponseCode(responseCode)));
+            if (responseCode === 400){
+                const isErrorMessageBannerDisplayed = await taskAssignmentPage.isBannerMessageDisplayed(); 
+                await softAssertion.assert(async () => expect(isErrorMessageBannerDisplayed, `For action Reassign on submit status code ${responseCode} status response, error message banner not displayed`).to.be.true);
+                
+            }else{
+                const isErrorPageDisplayed = await errorPage.isErrorPageDisplayed();
+                await softAssertion.assert(async () => expect(isErrorPageDisplayed, `For action Reassign on submit status code ${responseCode} status response, error page not displayed`).to.be.true);
+                if (isErrorPageDisplayed) {
+                    const errorMessageDisplayed = await errorPage.getErrorMessage();
+                    await softAssertion.assert(async () => expect(errorMessageDisplayed, `For action Reassign on submit status code ${responseCode} status response, error message does not match`).to.contains(errorMessageForResponseCode(responseCode)));
+                }
             }
+
+           
         }
         softAssertion.finally();
     });

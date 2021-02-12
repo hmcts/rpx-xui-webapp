@@ -84,6 +84,7 @@ export const getXuiNodeMiddleware = () => {
             httpOnly: true,
             maxAge: 28800000,
             secure: showFeature(FEATURE_SECURE_COOKIE_ENABLED),
+            sameSite: 'strict'
         },
         name: 'xui-webapp',
         resave: false,

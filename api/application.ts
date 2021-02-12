@@ -25,6 +25,9 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
     app.use(helmet(getConfigValue(HELMET)))
 }
 
+app.disable('x-powered-by')
+app.disable('X-Powered-By')
+
 app.use(cookieParser(getConfigValue(SESSION_SECRET)))
 
 // TODO: remove tunnel and configurations

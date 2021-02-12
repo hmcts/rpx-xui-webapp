@@ -57,18 +57,20 @@ async function pa11ytest(test, actions, startUrl,roles) {
             value: token,
             domain: 'localhost:4200',
             path: '/',
-            httpOnly: false,
+            httpOnly: true,
             secure: false,
             session: true,
+            sameSite: true
         },
         {
             name: 'roles',
             value: encodedRoles,
             domain: 'localhost:4200',
             path: '/',
-            httpOnly: false,
+            httpOnly: true,
             secure: false,
             session: true,
+            sameSite: true
         }
     ];
     const testBrowser = await getBrowser();

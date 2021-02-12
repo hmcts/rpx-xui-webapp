@@ -18,31 +18,6 @@ const requestMapping = {
        '/api/jurisdictions':(req,res) => {
             res.send(getJurisdictions());
        },
-       '/api/user/details': (req,res) => {
-           res.send({"canShareCases":true,"sessionTimeout":{"idleModalDisplayTime":10,"pattern":"-solicitor","totalIdleTime":50,
-               "userInfo": {
-                   "id": "41a90c39-d756-4eba-8e85-5b5bf56b31f5",
-                   "forename": "Luke",
-                   "surname": "Wilson",
-                   "email": "lukesuperuserxui@mailnesia.com",
-                   "active": true,
-                   "roles": [
-                       "caseworker-divorce-solicitor",
-                       "caseworker-ia",
-                       "caseworker-ia-legalrep-solicitor",
-                       "caseworker-probate",
-                       "caseworker-probate-solicitor",
-                       "caseworker-publiclaw",
-                       "caseworker-publiclaw-solicitor",
-                       "pui-caa",
-                       "pui-case-manager",
-                       "pui-finance-manager",
-                       "pui-organisation-manager",
-                       "pui-user-manager"
-                   ]
-               } 
-        }}); 
-       },
        '/api/unassignedcases':(req,res) => {
            res.send(createCaseData(5));
        },

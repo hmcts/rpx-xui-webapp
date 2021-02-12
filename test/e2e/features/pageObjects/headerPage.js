@@ -19,7 +19,7 @@ function HeaderPage() {
       return element(by.xpath("//li/a[contains(text(),'Task list')]"))
     };
     this.taskManager = function() {
-      element(by.xpath("//li/a[contains(text(),'Task manager')]"))
+      return element(by.xpath("//li/a[contains(text(),'Task manager')]"))
     };
 
 
@@ -30,7 +30,7 @@ function HeaderPage() {
 
   this.clickManageCases = async function () {
     await BrowserWaits.waitForElement(this.manageCases);  
-    this.manageCases.click();
+    await this.manageCases.click();
     await BrowserWaits.waitForElement($('exui-case-list'));  
   };
 

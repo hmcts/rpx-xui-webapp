@@ -1,4 +1,3 @@
-const { browser } = require("protractor");
 const jwt = require('jsonwebtoken');
 const MockApp = require('../../nodeMock/app');
 
@@ -63,19 +62,26 @@ class BrowserUtil{
 
 
     async waitForLD(){
+        return await this.waitForNetworkResponse('app.launchdarkly.com/sdk/evalx');
+    }
+
+
+    async waitForNetworkResponse(url){
         let startTime = new Date();
         let elapsedTime = 0;
         let ldDone = false;
         while (!ldDone && elapsedTime < 15) {
             let perf = await browser.executeScript("return window.performance.getEntriesByType('resource')");
-            perf.forEach(async ( perfitem) => {
-                if (perfitem.name.includes('app.launchdarkly.com/sdk/evalx')) {
+            perf.forEach((perfitem) => {
+                if (perfitem.name.includes(url)) {
                     ldDone = true;
                     // await browser.sleep(2000);
-                } 
-            }); 
-            elapsedTime = (new Date() - startTime)/1000;
+                    return true;
+                }
+            });
+            elapsedTime = (new Date() - startTime) / 1000;
         }
+        return false;
     }
 
 }

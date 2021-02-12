@@ -1,5 +1,6 @@
 const TaskList = require('./taskListTable');
 const BrowserWaits = require('../../../support/customWaits');
+var cucumberReporter = require('../../../support/reportLogger');
 
 class TaskListPage extends TaskList {
 
@@ -11,6 +12,9 @@ class TaskListPage extends TaskList {
 
         this.myTasksContaine = $('exui-my-tasks');
         this.availableTasksContainer = $('exui-available-tasks');
+
+        this.bannerMessageContainer = $('exui-info-message ') 
+        this.infoMessages = $$('exui-info-message .hmcts-banner__message');
     }
 
     async amOnPage() {
@@ -19,7 +23,7 @@ class TaskListPage extends TaskList {
             return true;
         }
         catch(err){
-            console.log("Task list page not displayed: "+err);
+            cucumberReporter.AddMessage("Task list page not displayed: " + err);
             return false;
         }
     }
@@ -42,7 +46,7 @@ class TaskListPage extends TaskList {
             await BrowserWaits.waitForElement(this.myTasksContaine);
             return true;
         } catch (err) {
-            console.log("My Tasks page not displayed: " + err);
+            cucumberReporter.AddMessage("My Tasks list page not displayed: " + err);
             return false;
         }
     }
@@ -53,14 +57,45 @@ class TaskListPage extends TaskList {
             await BrowserWaits.waitForElement(this.availableTasksContainer); 
             return true;
         }catch(err){
-            console.log("Available tasks page not displayed: " + err);
+            cucumberReporter.AddMessage("Available Tasks list page not displayed: " + err);
             return false;
         }
     }
 
-    // async getTaskCountInDisplayLabel() {
-    //     return await this.tasksCountInDisplayLabel.getText();
-    // }
+    async isBannerMessageDisplayed(){
+        try{
+            await BrowserWaits.waitForElement(this.bannerMessageContainer);
+            return true;
+        }catch(err){
+            cucumberReporter.AddMessage("message banner not displayed: " + err);
+
+            return false;
+        }
+    }
+
+    async getBannerMessagesDisplayed(){
+        expect(await this.isBannerMessageDisplayed(),"Message banner not displayed").to.be.true; 
+        const messagescount = await this.infoMessages.count();
+        const messages = [];
+        for (let i = 0; i < messagescount; i++){
+            const message = await this.infoMessages.get(i).getText();
+
+            const submessagestrings = message.split("\n");
+            messages.push(...submessagestrings); 
+        } 
+        return messages;
+    }
+
+    async isBannermessageWithTextDisplayed(messageText) {
+        const messages = await this.getBannerMessagesDisplayed();
+
+        for(const message of messages){
+            if (message.includes(messageText)){
+                return true;
+            }
+        }
+        return false;
+    }
 
 }
 

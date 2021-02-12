@@ -8,6 +8,8 @@ const EC = protractor.ExpectedConditions;
 const BrowserWaits = require("../../support/customWaits");
 const CucumberReportLogger = require('../../support/reportLogger');
 
+const BrowserUtil = require('../../../ngIntegration/util/browserUtil');
+
 async function waitForElement(el) {
   await browser.wait(result => {
     return element(by.className(el)).isPresent();
@@ -173,10 +175,10 @@ defineSupportCode(function ({ Given, When, Then }) {
     await expect(loginPage.signOutlink.isDisplayed()).to.eventually.be.true;
     browser.sleep(SHORT_DELAY);
     try{
-      await loginPage.getSignOutLink().click();
+      await loginPage.signOutlink.click();
     }catch(err){
       await browser.sleep(SHORT_DELAY);
-      await loginPage.getSignOutLink().click();
+      await loginPage.signOutlink.click();
     }
     browser.sleep(SHORT_DELAY);
   });
@@ -194,6 +196,8 @@ defineSupportCode(function ({ Given, When, Then }) {
       .to
       .eventually
       .contains('Case List');
+
+    await BrowserUtil.waitForLD();
 
   });
 
@@ -251,6 +255,35 @@ defineSupportCode(function ({ Given, When, Then }) {
     loginAttempts++;
     await loginattemptCheckAndRelogin(config.config.params.username, config.config.params.password, this);
   });
+
+
+  Given('I am logged into Expert UI caseworker-ia-adm user details', async function () {
+    await loginPage.givenIAmLoggedIn(config.config.params.caseworker_iac_adm_username, config.config.params.caseworker_iac_adm_password);
+    const world = this;
+
+    loginAttempts++;
+    await loginattemptCheckAndRelogin(config.config.params.caseworker_iac_adm_username, config.config.params.caseworker_iac_adm_password, this);
+
+    await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
+      world.attach("Login success page load load attempt : " + message)
+    });
+
+  });
+
+  Given('I am logged into Expert UI caseworker-ia-caseofficer user details', async function () {
+    await loginPage.givenIAmLoggedIn(config.config.params.caseworker_iac_off_username, config.config.params.caseworker_iac_off_password);
+    const world = this;
+
+    loginAttempts++;
+    await loginattemptCheckAndRelogin(config.config.params.caseworker_iac_off_username, config.config.params.caseworker_iac_off_password, this);
+
+    await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
+      world.attach("Login success page load load attempt : " + message)
+    });
+
+  });
+
+
 
   Given(/^I navigate to Expert UI Url direct link$/, async function () {
     await browser.driver.manage()

@@ -4,7 +4,6 @@ const minimist = require('minimist');
 
 var screenShotUtils = require("protractor-screenshot-utils").ProtractorScreenShotUtils;
 
-const BrowserUtil = require('.././../ngIntegration/util/browserUtil');
 chai.use(chaiAsPromised);
 
 const argv = minimist(process.argv.slice(2));
@@ -15,7 +14,7 @@ const jenkinsConfig = [
         browserName: 'chrome',
         acceptInsecureCerts: true,
         nogui: true,
-        chromeOptions: { args: ['--headless1', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'] }
+        chromeOptions: { args: ['--headless', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'] }
     }
 ];
 
@@ -40,19 +39,9 @@ const config = {
     SELENIUM_PROMISE_MANAGER: false,
     framework: 'custom',
     frameworkPath: require.resolve('protractor-cucumber-framework'),
-    specs: ['../features/**/*.feature'],
-    baseUrl: process.env.TEST_URL || 'http://localhost:3000/',
+    specs: ['../tests/features/**/*.feature'],
+    baseUrl: 'http://localhost:4200/',
     params: {
-        serverUrls: process.env.TEST_URL || 'http://localhost:3000/',
-        targetEnv: argv.env || 'local',
-        username: 'lukesuperuserxui@mailnesia.com',
-        password: 'Monday01',
-        caseworkerUser: 'mahesh_fr_courtadmn@mailinator.com',
-        caseworkerPassword: 'London01',
-        fr_judge_username: process.env.FR_EMAIL,
-        fr_judge_password: process.env.FR_PASSWORD,
-        sscs_username: process.env.SSCS_EMAIL,
-        sscs_password: process.env.SSCS_PASSWORD
 
     },
     directConnect: true,
@@ -70,21 +59,24 @@ const config = {
         global.screenShotUtils = new screenShotUtils({
             browserInstance: browser
         });
-        browser.get(config.baseUrl);
     },
 
     cucumberOpts: {
         strict: true,
         // format: ['node_modules/cucumber-pretty'],
-        format: ['node_modules/cucumber-pretty', 'json:reports/tests/json/results.json'],
-        tags: ['@test'],
+        format: ['node_modules/cucumber-pretty', 'json:reports/ngIntegrationtests/json/results.json'],
+        tags: ['@ng'],
         require: [
-            '../support/timeout.js',
-            '../support/hooks.js',
-            '../support/world.js',
-            '../support/*.js',
-            '../features/step_definitions/*.steps.js'
-        ]    },
+            '../../e2e/support/timeout.js',
+            '../util/cucumberHooks.js',
+            '../../e2e/support/hooks.js',
+            '../../e2e/support/world.js',
+            '../../e2e/support/*.js',
+            '../tests/stepDefinitions/*.steps.js',
+            '../../e2e/features/step_definitions/*.steps.js'
+
+        ]
+    },
 
     plugins: [
         {
@@ -94,8 +86,8 @@ const config = {
                 removeExistingJsonReportFile: true,
                 reportName: 'XUI Manage Cases Functional Tests',
                 // openReportInBrowser: true,
-                jsonDir: 'reports/tests/functional',
-                reportPath: 'reports/tests/functional'
+                jsonDir: 'reports/tests/ngIntegration',
+                reportPath: 'reports/tests/ngIntegration'
             }
         }
     ]

@@ -1,5 +1,5 @@
-const BrowserWaits = require('../../e2e/support/customWaits');
-
+const BrowserWaits = require('../../../e2e/support/customWaits');
+const reportLogger = require('../../../e2e/support/reportLogger');
 
 class CaseEdit{
 
@@ -20,6 +20,16 @@ class CaseEdit{
 
     async waitForPage(){
         await BrowserWaits.waitForElement($('ccd-case-edit-page')); 
+    }
+
+    async amOnPage(){
+        try{
+            await this.waitForPage();
+            return true; 
+        }catch(error){
+            reportLogger.AddMessage("Error waiting for case edit page :" +error);
+            return false;
+        }
     }
 
     async getPageTitle(){
@@ -262,7 +272,7 @@ class CaseEdit{
     }
 
     async clickCancelLinkInEditPage() {
-        await this.waitForPage();
+        expect(await this.amOnPage(),"Not in case edit page").to.be.true;
         return await this.cancelLinkInEditPage.click();
     }
 
@@ -365,6 +375,22 @@ class CaseEdit{
 
         } 
         return fieldValue;
+    }
+
+    async validateCheckYourAnswersPage(eventConfig){
+        expect(await this.isCheckYourAnswersPagePresent(),"Not on check your answers page").to.be.true;
+        const isHeadingPresent = await this.checkYourAnswersHeading.isPresent();
+        const isHeadingDescPresent = await this.checkYourAnswersHeadingDescription.isPresent();
+        const summaryRowsCount = await this.checkYourAnswersSummaryRows.count()
+        if (eventConfig.show_summary) {
+            expect(isHeadingPresent, "Check your answers header text not displayed").to.be.true;
+            expect(isHeadingDescPresent, "Check your answers header description text not displayed").to.be.true;
+            expect(summaryRowsCount, "Check your answers summary rows count is 0").to.be.above(0);
+        } else {
+            expect(isHeadingPresent, "Check your answers header text displayed").to.be.false;
+            expect(isHeadingDescPresent, "Check your answers header description text displayed").to.be.false;
+            expect(summaryRowsCount, "Check your answers summary rows count is not 0").to.equal(0);
+        }
     }
 
 }

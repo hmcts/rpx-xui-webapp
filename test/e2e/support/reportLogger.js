@@ -26,13 +26,14 @@ class CucumberReportLog{
         if (!this.scenarioWorld) {
             return;
         }
-        const decodedImage = await getScreenshot(onbrowser);
+        const decodedImage = await this.getScreenshot(onbrowser);
         this.scenarioWorld.attach(decodedImage, 'image/png');
        
     }
 
     async getScreenshot(onbrowser){
-        const stream = await onbrowser.takeScreenshot();
+        const scrrenshotBrowser = onbrowser ? onbrowser : browser;
+        const stream = await scrrenshotBrowser.takeScreenshot();
         const decodedImage = new Buffer(stream.replace(/^data:image\/(png|gif|jpeg);base64,/, ''), 'base64');
         return decodedImage; 
     }

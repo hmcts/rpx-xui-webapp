@@ -113,16 +113,37 @@ class CCDCaseConfig extends CCDCaseField{
         return this;
     }
 
+    updateEventProps(fieldprops) {
+        this.setObjectProps(this.caseConfigTemplate, fieldprops);
+        return this;
+    }
+
     setFieldProps(fieldprops){
         this.checkPageAndFiedlSet();
         this.setObjectProps(this.currentCaseField,fieldprops);
         return this; 
     }
 
+    updateFieldProps(fieldId, fieldprops) {
+        const fieldConfig = this.getCaseFieldConfig(fieldId);
+
+        this.setObjectProps(fieldConfig, fieldprops);
+        return this;
+    }
+
+    
+
     setFieldTypeProps(fieldTypeprops){
         this.checkPageAndFiedlSet();
         this.setObjectProps(this.currentCaseField.field_type, fieldTypeprops);
         return this; 
+    }
+
+    updateFieldTypeProps(fieldId, fieldTypeprops) {
+        const fieldConfig = this.getCaseFieldConfig(fieldId);
+
+        this.setObjectProps(fieldConfig.field_type, fieldTypeprops);
+        return this;
     }
 
     checkPageAndFiedlSet(){
@@ -143,11 +164,15 @@ class CCDCaseConfig extends CCDCaseField{
     }
 
     getCaseFieldConfig(caseFieldId){
-        return this.caseConfigTemplate.case_fields.filter(caseField => caseField.id === caseFieldId)[0];
+        const fields = this.caseConfigTemplate.case_fields.filter(caseField => caseField.id === caseFieldId);
+        if (fields.length === 0){
+            const fieldsIds = this.caseConfigTemplate.case_fields.map(caseField => caseField.id);
+            throw new Error(`Fields with id ${caseFieldId} not found in case event config fields: ${JSON.stringify(fieldsIds)}`);
+        } 
+        return fields[0];
 
     }
-  
-
+ 
     
 }
 

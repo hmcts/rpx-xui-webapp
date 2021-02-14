@@ -7,7 +7,7 @@ const { browser } = require('protractor');
 const BrowserUtil = require('../util/browserUtil');
 const BrowserWaits = require('../../e2e/support/customWaits');
 
-const CaseEditPage = require('../util/ccdCaseEditPages');
+const CaseEditPage = require('./pageObjects/ccdCaseEditPages');
 const CaseDetailsPage = require('../util/caseDetailsPage');
 const CaseListPage = require('../util/caselistPage');
 

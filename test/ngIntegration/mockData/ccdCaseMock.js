@@ -1,4 +1,5 @@
 const CCDCaseConfig = require('../../nodeMock/ccd/ccdCaseConfig/caseCreateConfigGenerator');
+const CCDWorkbasketConfig = require('../../nodeMock/ccd/ccdCaseConfig/workBasketInputGenerator');
 
 function getTestJurisdiction(scenario) {
     const job = {
@@ -61,9 +62,6 @@ function getDLCaseConfig(scenario) {
      { code: "male", label: "Male" }, { code: "female", label: "Female" }, { code: "notGiven", label: "Not given" }
     ]
 
-
-
-
     customCase
         .setEventProps(scenario ? scenario : {})
         .addWizardPage("testPage1", "Test Page 1")
@@ -115,4 +113,17 @@ function getDLCaseConfig(scenario) {
 }
 
 
-module.exports = { getTestJurisdiction, getDLCaseConfig}
+function getMockJurisdictionWorkbaseketConfig(){
+    const workBasketConfig = new CCDWorkbasketConfig();
+    workBasketConfig
+        .addField({ id: "simpletext", type: "Text", label: "Simple text input" })
+        .addField({ id: "radioInput", type: "FixedRadioList", label: "Simple Radio input", list: [{ code: "a", label: "A" }, { code: "b", label: "B" }, { code: "c", label: "C" }] })
+        .addField({ id: "radioYesorNo", type: "YesOrNo", label: "Simple Yes or No input" })
+        .addField({ id: "fixedListItem", type: "FixedList", label: "fixed listinput", list: [{ code: "a", label: "A" }, { code: "b", label: "B" }, { code: "c", label: "C" }] })
+        .addField({ id: "multiSelectItem", type: "MultiSelectList", label: "Multi select input", list: [{ code: "a", label: "A" }, { code: "b", label: "B" }, { code: "c", label: "C" }] })
+
+        .getConfig();
+    return workBasketConfig;
+}
+
+module.exports = { getTestJurisdiction, getMockJurisdictionWorkbaseketConfig, getDLCaseConfig}

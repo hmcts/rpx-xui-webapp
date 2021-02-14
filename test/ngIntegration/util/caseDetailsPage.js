@@ -83,6 +83,7 @@ class CaseDetailsPage{
             throw new error("Event trigger Go button not enabled");
         }
     }
+    
 }
 
 module.exports = new CaseDetailsPage(); 

@@ -1,4 +1,4 @@
-;
+
 
 
 const assert = require('assert');
@@ -23,7 +23,7 @@ describe('Workbasket and Case list', function () {
         const workBasketConfig = new CCDWorkbasketConfig();
         return workBasketConfig
             .addField({ id:"simpletext", type:"Text",label: "Simple text input"})
-            .addField({ id: "radioInput", type: "FixedRadioList", label: "Simple Radio input", list: [{ code: "a", label: "A" }, { code: "b", label: "B" }, { code: "c", label: "C" }]})
+            // .addField({ id: "radioInput", type: "FixedRadioList", label: "Simple Radio input", list: [{ code: "a", label: "A" }, { code: "b", label: "B" }, { code: "c", label: "C" }]})
             .addField({ id: "radioYesorNo", type: "YesOrNo", label: "Simple Yes or No input"})
             .addField({ id: "fixedListItem", type: "FixedList", label: "fixed listinput", list: [{ code: "a", label: "A" }, { code: "b", label: "B" }, { code: "c", label: "C" }] } )
             .addField({ id: "multiSelectItem", type: "MultiSelectList", label: "Multi select input", list: [{ code: "a", label: "A" }, { code: "b", label: "B" }, { code: "c", label: "C" }] })
@@ -95,7 +95,7 @@ describe('Workbasket and Case list', function () {
         caseListReq = null;
         await CaseListPage.clickApplyWorkbasketFilters(); 
         await BrowserWaits.waitForCondition(async () =>  caseListReq !== null   );
-
+        await BrowserWaits.waitForSeconds(40);
         for (const key of Object.keys(workbasketInputValues)){
             if (workbasketInputValues[key]  instanceof Array) {
                 workbasketInputValues[key].forEach( (val,index) => {

@@ -336,7 +336,7 @@ class CaseManager {
         }
     }
 
-    _fieldValue(fieldName) {;
+    _fieldValue(fieldName) {
         var value = "fieldName";
 
         if (this.caseData[fieldName]) {

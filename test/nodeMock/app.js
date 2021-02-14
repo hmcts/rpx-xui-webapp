@@ -115,24 +115,21 @@ if (args.standalone){
     mockInstance.startServer()
 }
 
-function setUpcaseConfig(){
-
-} 
-
-
 function setUpcaseConfig() {
     const { getTestJurisdiction }  = require('../ngIntegration/mockData/ccdCaseMock');
     mockInstance.onGet('/data/internal/case-types/:jurisdiction/event-triggers/:caseType', (req, res) => {
         const caseEventConfig = getTestJurisdiction();
 
+        let multiSelectListField = caseEventConfig.getCaseFieldConfig("MultiSelectListField");
         // const page1 = caseEventConfig.getWizardPageConfig("testPage1");
         // page1.label = "For demo 123456"
 
-        // const textField0 = caseEventConfig.getCaseFieldConfig("TextField0");
-        // textField0.display_context = "MANDATORY";
+        const textField0 = caseEventConfig.getCaseFieldConfig("TextField0");
+        textField0.display_context = "MANDATORY";
 
         // textField0.show_summary_change_option = false;
         // textField0.show_summary_content_option = true;
+        multiSelectListField.show_condition = "Gender=\"notGiven\"";
 
         // const page2 = caseEventConfig.getWizardPageConfig("testPage2");
         // page2.show_condition = "TextField0=\"SHOW\"";

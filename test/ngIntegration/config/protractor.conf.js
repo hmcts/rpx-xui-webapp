@@ -8,8 +8,10 @@ const screenShotUtils = require("protractor-screenshot-utils").ProtractorScreenS
 exports.config = {
   allScriptsTimeout: 11000,
   specs: [
-    '../tests/*.js',
-    '../tests/**/*.js'
+    // '../tests/*.js',
+    // '../tests/**/*.js'
+    '../tests/ccdToolkit_testCaseType.test.js',
+    '../tests/ccdToolkit_Caselist_Poc.test.js'
   ],
   exclude: ['../tests/hiddenFields.test.js', '../tests/caseFieldCollectionsPermissions.test.js'],
   capabilities: {

@@ -19,35 +19,77 @@ function getTestJurisdiction(scenario) {
             list: [{ code: "male", label: "Male" }, { code: "female", label: "Female" }, { code: "notGiven", label: "Not given" }]
         },
         job
-    ];;
+    ];
 
+    const complexType_1 =[
+        { id: "YesOrNoField", type: "YesOrNo", label: "YesOrNo" },
+        {
+            id: "Gender", type: "FixedRadioList", label: "Select your gender",
+            list: [{ code: "male", label: "Male" }, { code: "female", label: "Female" }, { code: "notGiven", label: "Not given" }]
+        },
+        { id: "TextAreaField", type: "TextArea", label: "TextArea" },
+    ];
+    const ComplexType_2 =[
+        { id: "AddressUKField", type: "AddressUK", label: "Uk Address"},
+        { id: "DateTimeField", type: "DateTime", label: "Date Time" },
+        
+        { id: "DateTimeField", type: "DateTime", label: "Date Time" },
+        { id: "optionsMultiVal", type: "FixedList", label: "Select all that match",
+          list: [{ code: "a", label: "Option A" }, { code: "b", label: "Option B" }, { code: "c", label: "Option c" }] 
+        }
+    ];
+
+    
     const customCase = new CCDCaseConfig("testCaseType", "Test jurisdiction", "test description");
 
     customCase
         .setEventProps(scenario ? scenario : {})
         .addWizardPage("testPage1", "Test Page 1")
         .addCaseField({ id: "TextField0", type: "Text", label: "Text Field 0" })
+        .addCaseField({
+            id: "Gender", type: "FixedRadioList", label: "Select your gender",
+            list: [{ code: "male", label: "Male" }, { code: "female", label: "Female" }, { code: "notGiven", label: "Not given" }]
+        })
+        .addCaseField({
+            id: "MultiSelectListField", type: "MultiSelectList", label: "Select Items",
+            list: [{ code: "item_1", label: "Item 1" }, { code: "item_2", label: "Item 2" }, { code: "item_3", label: "Item 3" }]
+        })
+        // .setFieldProps({ show_condition: 'TextField0="Show MultiSelectListField"'})
+        .addCaseField({id: "AddressGlobalUKField", type: "AddressGlobalUK", label: "Global Uk Address"})
+        .addCaseField({id: "AddressUKField", type: "AddressUK", label: "Uk Address"})
         .addCaseField({ id: "TextField1", type: "Text", label: "Text Field 1" })
         .setFieldProps({ show_condition: 'TextField0!="Hide TextField1" AND TextField0!="Hide all"' })
         .addCaseField({ id: "TextField2", type: "Text", label: "Text Field 2" })
         .setFieldProps({ show_condition: 'TextField0!="Hide TextField2" AND TextField0!="Hide all"' })
         .addCaseField({ id: "TextField3", type: "Text", label: "Text Field 3" })
+        .addCaseField({ id: "TextAreaField", type: "TextArea", label: "TextArea" })
         .addWizardPage("testPage2", "Test Page 2")
-        .addCaseField({
-            id: "Gender", type: "FixedRadioList", label: "Select your gender",
-            list: [{ code: "male", label: "Male" }, { code: "female", label: "Female" }, { code: "notGiven", label: "Not given" }]
-        })
+        // .addCaseField({id: "CaseLinkField", type: "CaseLink", label: "CaseLink"})
+        .addCaseField({id: "AddressGlobalField", type: "AddressGlobal", label: "Global Address"})
+        // .addCaseField({id: "OrganisationField", type: "Organisation", label: "Organisation"})
+        .addWizardPage("testPage3", "Test Page 3")
+        .addCaseField({ id: "NumberField", type: "Number", label: "Number" })
+        .addCaseField({ id: "EmailField", type: "Email", label: "Email" })
+        .addCaseField({ id: "PhoneUKField", type: "PhoneUK", label: "PhoneUK" })
+        .addCaseField({ id: "DateField", type: "Date", label: "Date" })
+        .addCaseField({ id: "DateTimeField", type: "DateTime", label: "Date Time" })
+        .addCaseField({ id: "MoneyGBPField", type: "MoneyGBP", label: "MoneyGBP" })
         .setFieldProps({ show_condition: 'TextField0!="Hide all"' })
+        .addWizardPage("testPage4", "Test Page 4")
+        .addCaseField({ id: "YesOrNoField", type: "YesOrNo", label: "YesOrNo" })
+        .addCaseField({ id: "PostcodeField", type: "Postcode", label: "Postcode" })
         .addCaseField({
             id: "optionsMultiVal", type: "FixedList", label: "Select all that match",
             list: [{ code: "a", label: "Option A" }, { code: "b", label: "Option B" }, { code: "c", label: "Option c" }]
         })
-        .addCaseField({ id: "person1", type: "Complex", label: "Person 1", complex_fields: personFields })
-        .setFieldProps({ show_condition: 'TextField0!="Hide all"' })
-        .addCaseField({ id: "person2", type: "Complex", label: "Person 2", complex_fields: personFields })
-        .setFieldProps({ show_condition: 'TextField0!="Hide all"' })
-        .addCaseField({ id: "people", type: "Collection", label: "People", collection_field_type: { id: "person2", type: "Complex", label: "Person 2", complex_fields: personFields } })
-        .setFieldProps({ show_condition: 'TextField0!="Hide all"' })
+        .addCaseField({ id: "ComplexType_1", type: "Complex", label: "ComplexType 1", complex_fields: complexType_1 })
+        .addCaseField({ id: "ComplexType_2", type: "Complex", label: "ComplexType 2", complex_fields: ComplexType_2 })
+        // .addCaseField({ id: "person1", type: "Complex", label: "Person 1", complex_fields: personFields })
+        // .setFieldProps({ show_condition: 'TextField0!="Hide all"' })
+        // .addCaseField({ id: "person2", type: "Complex", label: "Person 2", complex_fields: personFields })
+        // .setFieldProps({ show_condition: 'TextField0!="Hide all"' })
+        // .addCaseField({ id: "people", type: "Collection", label: "People", collection_field_type: { id: "person2", type: "Complex", label: "Person 2", complex_fields: personFields } })
+        // .setFieldProps({ show_condition: 'TextField0!="Hide all"' })
         .getCase();
     return customCase;
 }

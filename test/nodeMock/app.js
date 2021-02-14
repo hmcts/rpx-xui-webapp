@@ -72,8 +72,7 @@ class MockApp{
         }else{
             console.log("Mock server is null or undefined");
         }
-        this.conf = {  };
-        this.configurations = { };
+      
     }
 
    

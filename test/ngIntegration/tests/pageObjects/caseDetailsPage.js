@@ -1,4 +1,4 @@
-const BrowserWaits = require('../../e2e/support/customWaits');
+const BrowserWaits = require('../../../e2e/support/customWaits');
 
 class CaseDetailsPage{
 

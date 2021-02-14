@@ -1,5 +1,5 @@
-const BrowserWaits = require('../../e2e/support/customWaits');
-
+const BrowserWaits = require('../../../e2e/support/customWaits');
+const reportLogger = require('../../../e2e/support/reportLogger');
 
 class CaseEdit {
 
@@ -22,7 +22,17 @@ class CaseEdit {
         await BrowserWaits.waitForElement($('ccd-case-edit-page'));
     }
 
-    async getPageTitle() {
+    async amOnPage(){
+        try{
+            await this.waitForPage();
+            return true; 
+        }catch(error){
+            reportLogger.AddMessage("Error waiting for case edit page :" +error);
+            return false;
+        }
+    }
+
+    async getPageTitle(){
         return await $('ccd-case-edit-page h1').getText();
     }
 
@@ -290,7 +300,7 @@ class CaseEdit {
     }
 
     async clickCancelLinkInEditPage() {
-        await this.waitForPage();
+        expect(await this.amOnPage(),"Not in case edit page").to.be.true;
         return await this.cancelLinkInEditPage.click();
     }
 
@@ -406,23 +416,20 @@ class CaseEdit {
         return fieldValue;
     }
 
-    async _formFill(caseConfig, wizardPage) {
-
-        const thisPageEventData = {};
-
-        for (const pageField of wizardPage.wizard_page_fields) {
-
-            const fieldConfig = caseConfig.case_fields.filter(field => field.id === pageField.case_field_id)[0];
-            let isFieldDisplayed =await this.isFieldDisplayed(fieldConfig);
-            if (!fieldConfig.show_condition || isFieldDisplayed){
-
-                expect(await this.isFieldDisplayed(fieldConfig)).to.be.true;
-                thisPageEventData[fieldConfig.id] = await this.inputCaseField(fieldConfig); 
-            }
-            // expect(await this.isFieldDisplayed(fieldConfig)).to.be.true;
-            // thisPageEventData[fieldConfig.id] = await this.inputCaseField(fieldConfig);
+    async validateCheckYourAnswersPage(eventConfig){
+        expect(await this.isCheckYourAnswersPagePresent(),"Not on check your answers page").to.be.true;
+        const isHeadingPresent = await this.checkYourAnswersHeading.isPresent();
+        const isHeadingDescPresent = await this.checkYourAnswersHeadingDescription.isPresent();
+        const summaryRowsCount = await this.checkYourAnswersSummaryRows.count()
+        if (eventConfig.show_summary) {
+            expect(isHeadingPresent, "Check your answers header text not displayed").to.be.true;
+            expect(isHeadingDescPresent, "Check your answers header description text not displayed").to.be.true;
+            expect(summaryRowsCount, "Check your answers summary rows count is 0").to.be.above(0);
+        } else {
+            expect(isHeadingPresent, "Check your answers header text displayed").to.be.false;
+            expect(isHeadingDescPresent, "Check your answers header description text displayed").to.be.false;
+            expect(summaryRowsCount, "Check your answers summary rows count is not 0").to.equal(0);
         }
-         return thisPageEventData;
     }
 
 }

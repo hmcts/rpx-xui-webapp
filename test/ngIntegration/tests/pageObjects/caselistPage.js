@@ -1,4 +1,5 @@
-const BrowserWaits = require('../../e2e/support/customWaits');
+const BrowserWaits = require('../../../e2e/support/customWaits');
+const reportLogger = require('../../../e2e/support/reportLogger');
 
 class CaseListPage{
 
@@ -9,7 +10,13 @@ class CaseListPage{
 
 
     async amOnPage(){
-        await BrowserWaits.waitForElement(this.pageContainer); 
+        try{
+            await BrowserWaits.waitForElement(this.pageContainer); 
+            return true;
+        }catch(error){
+            reportLogger.AddMessage("Error waiting for case list page "+error);
+            return false;
+        }
     }
 
     async isWorkbasketFilterDisplayed(fieldConfig){

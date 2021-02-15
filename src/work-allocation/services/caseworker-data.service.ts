@@ -9,7 +9,7 @@ import { Caseworker } from '../models/dtos';
 @Injectable()
 export class CaseworkerDataService {
   public static caseWorkerUrl: string = '/workallocation/caseworker';
-  public static caseworkersKey: string;
+  public static caseworkersKey: string = 'caseworkers';
   public constructor(private readonly http: HttpClient, private readonly sessionStorageService: SessionStorageService) {}
 
   public getAll(): Observable<Caseworker[]> {

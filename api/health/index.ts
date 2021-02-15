@@ -14,7 +14,13 @@ import {
   SERVICES_TERMS_AND_CONDITIONS_URL,
   SERVICES_WORK_ALLOCATION_TASK_API_PATH,
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
-  SERVICES_CASE_CASEWORKER_REF_PATH
+  SERVICES_CASE_CASEWORKER_REF_PATH,
+  FEATURE_WORKALLOCATION_ENABLED,
+  FEATURE_ROLE_ENABLED,
+  FEATURE_CASEWORKER_REF_ENABLED,
+  CHECK_FEATURE_WORKALLOCATION_ENABLED,
+  CHECK_FEATURE_ROLE_ENABLED,
+  CHECK_FEATURE_CASEWORKER_REF_ENABLED
 } from '../configuration/references'
 import * as log4jui from '../lib/log4jui'
 import { JUILogger } from '../lib/models'
@@ -25,7 +31,22 @@ export const checkServiceHealth = service => HealthCheck.web(`${service}/health`
   timeout: 6000,
 })
 
-const config = {
+export interface healthChecks {
+  checks: {
+    ccdComponentApi: any,
+    ccdDataApi: any,
+    documentsApi: any,
+    emmoApi: any,
+    idamApi: any,
+    idamWeb: any,
+    s2s: any,
+    workAllocationApi?: any,
+    roleApi?: any,
+    caseworkerRefApi?: any,
+  }
+}
+
+const config: healthChecks = {
   checks: {
     ccdComponentApi: checkServiceHealth(getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)),
     ccdDataApi: checkServiceHealth(getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH)),
@@ -34,10 +55,17 @@ const config = {
     idamApi: checkServiceHealth(getConfigValue(SERVICES_IDAM_LOGIN_URL)),
     idamWeb: checkServiceHealth(getConfigValue(SERVICES_IDAM_API_URL)),
     s2s: checkServiceHealth(getConfigValue(SERVICE_S2S_PATH)),
-    workAllocationApi: checkServiceHealth(getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH)),
-    roleApi: checkServiceHealth(getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH)),
-    caseworkerRefApi: checkServiceHealth(getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH)),
   },
+}
+
+if (getConfigValue(CHECK_FEATURE_WORKALLOCATION_ENABLED)) {
+  config.checks.workAllocationApi = checkServiceHealth(getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH))
+}
+if (getConfigValue(CHECK_FEATURE_ROLE_ENABLED)) {
+  config.checks.roleApi = checkServiceHealth(getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH))
+}
+if (getConfigValue(CHECK_FEATURE_CASEWORKER_REF_ENABLED)) {
+  config.checks.caseworkerRefApi = checkServiceHealth(getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH))
 }
 
 export const addReformHealthCheck = app => {
@@ -51,7 +79,8 @@ export const addReformHealthCheck = app => {
   if (showFeature(FEATURE_REDIS_ENABLED)) {
     xuiNode.on(SESSION.EVENT.REDIS_CLIENT_READY, (redisClient: any) => {
       logger.info('REDIS EVENT FIRED!!')
-      config.checks = {...config.checks, ...{
+      config.checks = {
+        ...config.checks, ...{
           redis: HealthCheck.raw(() => {
             return redisClient.connected ? HealthCheck.up() : HealthCheck.down()
           }),

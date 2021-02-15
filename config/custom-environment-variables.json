@@ -111,6 +111,18 @@
     "oidcEnabled": {
       "__name": "FEATURE_OIDC_ENABLED",
       "__format":"json"
+    },
+    "workAllocationEnabled": {
+      "__name": "FEATURE_WORKALLOCATION_ENABLED",
+      "__format":"json"
+    },
+    "roleEnabled": {
+      "__name": "FEATURE_ROLE_ENABLED",
+      "__format":"json"
+    },
+    "caseworkerRefEnabled": {
+      "__name": "FEATURE_CASEWORKER_REF_ENABLED",
+      "__format":"json"
     }
   },
   "helmet": {

@@ -25,4 +25,5 @@ nodejs:
         - mc-idam-client-secret
 redis:
   enabled: true
-
+workAllocation: 
+  enabled: true

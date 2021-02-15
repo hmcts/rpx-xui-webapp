@@ -72,6 +72,13 @@ export const FEATURE_TERMS_AND_CONDITIONS_ENABLED = 'termsAndConditionsEnabled'
 export const FEATURE_HELMET_ENABLED = 'helmetEnabled'
 export const FEATURE_REDIS_ENABLED = 'redisEnabled'
 export const FEATURE_OIDC_ENABLED = 'oidcEnabled'
+export const FEATURE_WORKALLOCATION_ENABLED = 'workAllocationEnabled'
+export const FEATURE_ROLE_ENABLED = 'roleEnabled'
+export const FEATURE_CASEWORKER_REF_ENABLED = 'caseworkerRefEnabled'
+
+export const CHECK_FEATURE_WORKALLOCATION_ENABLED = 'feature.workAllocationEnabled'
+export const CHECK_FEATURE_ROLE_ENABLED = 'feature.roleEnabled'
+export const CHECK_FEATURE_CASEWORKER_REF_ENABLED = 'feature.caseworkerRefEnabled'
 
 export const HELMET = 'helmet'
 

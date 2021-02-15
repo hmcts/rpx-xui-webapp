@@ -1,7 +1,10 @@
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+
 import { Caseworker } from '../models/dtos/task';
 
+@Injectable()
 export class CaseworkerDataService {
     public static caseWorkerUrl: string = '/workallocation/caseworker';
     public constructor(private readonly http: HttpClient) {}

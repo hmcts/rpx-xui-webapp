@@ -150,7 +150,7 @@ defineSupportCode(function ({ Given, When, Then }) {
     await expect(loginPage.dashboard_header.getText())
       .to
       .eventually
-      .equal('Case List');
+      .contains('Case List');
 
   });
 
@@ -193,6 +193,8 @@ defineSupportCode(function ({ Given, When, Then }) {
 
   Given('I am logged into Expert UI with valid Case Worker user details', async function () {
     await loginPage.givenIAmLoggedIn(this.config.caseworkerUser, this.config.caseworkerPassword);
+    loginAttempts++;
+    await loginattemptCheckAndRelogin(this.config.caseworkerUser, this.config.caseworkerPassword, this);
   })
 
   Given(/^I am logged into Expert UI with Probate user details$/, async function () {

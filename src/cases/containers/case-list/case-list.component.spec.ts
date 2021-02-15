@@ -1,16 +1,23 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { PaginationMetadata, SearchResultViewItem, WindowService } from '@hmcts/ccd-case-ui-toolkit';
+import { AlertService, PaginationMetadata, SearchResultViewItem, WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
+
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { State } from '../../../app/store/reducers';
 import * as converts from '../../converters/case-converter';
-import { AddShareCases, CaseFilterToggle, FindCaselistPaginationMetadata, SynchronizeStateToStore, ApplyCaselistFilterForES } from '../../store/actions';
+import {
+  AddShareCases,
+  ApplyCaselistFilterForES,
+  CaseFilterToggle,
+  FindCaselistPaginationMetadata,
+  SynchronizeStateToStore,
+} from '../../store/actions';
 import { CaseListComponent } from './case-list.component';
 
 describe('CaseListComponent', () => {
@@ -28,6 +35,7 @@ describe('CaseListComponent', () => {
   const mockAppConfig = jasmine.createSpyObj('AppConfig', ['getPaginationPageSize']);
   const mockWindowService = jasmine.createSpyObj('WindowService', ['removeLocalStorage']);
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['getValue', 'isEnabled']);
+  const mockAlertService = jasmine.createSpyObj('alertService', ['error']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -49,6 +57,10 @@ describe('CaseListComponent', () => {
         {
           provide: FeatureToggleService,
           useValue: mockFeatureToggleService
+        },
+        {
+          provide: AlertService,
+          useValue: mockAlertService
         },
         provideMockStore(),
       ]
@@ -275,7 +287,6 @@ describe('CaseListComponent', () => {
     it('should call getElasticSearchResults() on apply of filter and LD elastic search enabled.', () => {
 
       const spyOnGetElasticSearchResults = spyOn(component, 'getElasticSearchResults').and.callThrough();
-      const spyOnGetEvent = spyOn(component, 'getEvent');
 
       component.elasticSearchFlag = true;
       component.applyFilter(event);
@@ -358,68 +369,85 @@ describe('CaseListComponent', () => {
 
       expect(component.resultsArr).toEqual([{ case_id: 'DRAFT274146' }]);
     });
-  });
 
-  describe('isCaseShareVisible()', () => {
+    it('should set the components resultsArr hasDrafts property on return of subscription is false.', () => {
 
-    it('should return true when case share available.', () => {
-
-      component.jurisdiction = {
-        name: 'bongo',
-        caseTypes: [],
-        description: 'drums',
-        id: 'dummy'
+      const resultView = {
+        columns: [],
+        results: [
+          {
+            case_id: 'DRAFT274146',
+          }
+        ],
+        result_error: null
       };
 
-      expect(component.isCaseShareVisible(true, ['dummy'])).toBeTruthy();
+      component.onResultsViewHandler(resultView);
+      expect(component.resultView.hasDrafts()).toEqual(false);
+    });
+
+    it('should set the components resultsArr property on return of subscription and then call hasResults.', () => {
+
+      const resultView = {
+        columns: [],
+        results: [
+          {
+            case_id: 'DRAFT274146',
+          }
+        ],
+        result_error: null
+      };
+
+      component.onResultsViewHandler(resultView);
+      expect(component.hasResults()).toEqual(true);
+    });
+  });
+
+  describe('caseShareIsVisible', () => {
+
+    it('should return true when case share available and jurisdiction is shareable', () => {
+      const result = [
+        { canShareCases: true },
+        [ 'dummy' ],
+        { id: 'dummy' }
+      ];
+      expect(component.caseShareIsVisible(result)).toBeTruthy();
     });
 
     it('should return false when jurisdiction is not shareable.', () => {
-
-      component.jurisdiction = {
-        name: 'bongo',
-        caseTypes: [],
-        description: 'drums',
-        id: 'dummy1'
-      };
-
-      expect(component.isCaseShareVisible(true, ['dummy'])).toBeFalsy();
+      const result = [
+        { canShareCases: true },
+        [ 'dummy1' ],
+        { id: 'dummy' }
+      ];
+      expect(component.caseShareIsVisible(result)).toBeFalsy();
     });
 
     it('should return false when there are no shareable jurisdictions.', () => {
-
-      component.jurisdiction = {
-        name: 'bongo',
-        caseTypes: [],
-        description: 'drums',
-        id: 'dummy1'
-      };
-
-      expect(component.isCaseShareVisible(true, [])).toBeFalsy();
+      const result = [
+        { canShareCases: true },
+        [],
+        { id: 'dummy' }
+      ];
+      expect(component.caseShareIsVisible(result)).toBeFalsy();
     });
 
     it('should return false when the jurisdiction is shareable but sharing is disabled.', () => {
-
-      component.jurisdiction = {
-        name: 'bongo',
-        caseTypes: [],
-        description: 'drums',
-        id: 'dummy1'
-      };
-
-      expect(component.isCaseShareVisible(false, ['dummy1'])).toBeFalsy();
+      const result = [
+        { canShareCases: false },
+        [ 'dummy' ],
+        { id: 'dummy' }
+      ];
+      expect(component.caseShareIsVisible(result)).toBeFalsy();
     });
 
     it('should return false when there are no shareable jurisdictions and sharing is disabled.', () => {
-
-      component.jurisdiction = {
-        name: 'bongo',
-        caseTypes: [],
-        description: 'drums',
-        id: 'dummy1'
-      };
-
-      expect(component.isCaseShareVisible(false, [])).toBeFalsy();
+      const result = [
+        { canShareCases: false },
+        [],
+        { id: 'dummy' }
+      ];
+      expect(component.caseShareIsVisible(result)).toBeFalsy();
     });
   });
 
@@ -455,10 +483,39 @@ describe('CaseListComponent', () => {
       component.setCaseListFilterDefaults();
 
       expect(component.defaults).toBeDefined();
-      expect(component.defaults.state_id).toEqual('some state id');
+      expect(component.defaults.state_id).toEqual(null);
     });
 
     it('should set the defaults from localStorage.', () => {
+      const localStorageGetItemSpy = spyOn(localStorage, 'getItem');
+      localStorageGetItemSpy.and.returnValue('{' +
+        '"jurisdiction": "Probate", ' +
+        '"case-type": "GrantOfRepresentation", ' +
+        '"case-state": null' +
+      '}');
+      component.jurisdictionsBehaviourSubject$.next([{
+        id: 'Probate',
+        name: 'some name',
+        description: 'some desc',
+        caseTypes: [{
+          id: 'GrantOfRepresentation',
+          events: null,
+          name: 'some name',
+          description: 'some desc',
+          states: [{
+            id: 'BOReadyToIssue',
+            name: 'some name',
+            description: 'some desc'
+          }]
+        }]
+      }]);
+      component.setCaseListFilterDefaults();
+
+      expect(component.defaults.state_id).toEqual(null);
+      expect(component.defaults.state_id).toBeNull(null);
+    });
+
+    it('should set the defaults from localStorage, case state is null.', () => {
       const localStorageGetItemSpy = spyOn(localStorage, 'getItem');
       localStorageGetItemSpy.and.returnValue('{' +
         '"jurisdiction": "Probate", ' +
@@ -483,7 +540,65 @@ describe('CaseListComponent', () => {
       }]);
       component.setCaseListFilterDefaults();
 
-      expect(component.defaults.state_id).toEqual('BOReadyToIssue');
+      expect(component.defaults.state_id).toEqual(null);
+    });
+
+    it('getEvent returns null.', () => {
+      const event = component.getEvent();
+      expect(event).toEqual(null);
+    });
+
+    it('jurisdiction matches createEvent jurisdiction.', () => {
+      const data = { metadataFieldsGroupFromLS: undefined,
+        jurisdictionFromLS: {id: 'PUBLICLAW'},
+        caseStateGroupFromLS: {id: null},
+        caseTypeGroupFromLS: { id: 'CARE_SUPERVISION_EPO' },
+        formGroupFromLS: {
+          '[CASE_REFERENCE]': null,
+          caseLocalAuthority: 'BNS',
+          caseName: null,
+          dateSubmitted: null,
+          evidenceHandled: null,
+          familyManCaseNumber: null
+        },
+      };
+      const event = component.createEvent(data.jurisdictionFromLS, data.caseTypeGroupFromLS, data.caseStateGroupFromLS, data.metadataFieldsGroupFromLS, data.formGroupFromLS, 1, undefined);
+      expect(event.selected.jurisdiction).toEqual(data.jurisdictionFromLS);
+    });
+
+    it('case type matches createEvent case type.', () => {
+      const data = { metadataFieldsGroupFromLS: undefined,
+        jurisdictionFromLS: {id: 'PUBLICLAW'},
+        caseStateGroupFromLS: {id: null},
+        caseTypeGroupFromLS: { id: 'CARE_SUPERVISION_EPO' },
+        formGroupFromLS: {
+          '[CASE_REFERENCE]': null,
+          caseLocalAuthority: 'BNS',
+          caseName: null,
+          dateSubmitted: null,
+          evidenceHandled: null,
+          familyManCaseNumber: null
+        },
+      };
+      const event = component.createEvent(data.jurisdictionFromLS, data.caseTypeGroupFromLS, data.caseStateGroupFromLS, data.metadataFieldsGroupFromLS, data.formGroupFromLS, 1, undefined);
+      expect(event.selected.caseType).toEqual(data.caseTypeGroupFromLS);
+    });
+    it('form group matches createEvent formgroup.', () => {
+      const data = { metadataFieldsGroupFromLS: undefined,
+        jurisdictionFromLS: {id: 'PUBLICLAW'},
+        caseStateGroupFromLS: {id: null},
+        caseTypeGroupFromLS: { id: 'CARE_SUPERVISION_EPO' },
+        formGroupFromLS: {
+          '[CASE_REFERENCE]': null,
+          caseLocalAuthority: 'BNS',
+          caseName: null,
+          dateSubmitted: null,
+          evidenceHandled: null,
+          familyManCaseNumber: null
+        },
+      };
+      const event = component.createEvent(data.jurisdictionFromLS, data.caseTypeGroupFromLS, data.caseStateGroupFromLS, data.metadataFieldsGroupFromLS, data.formGroupFromLS, 1, undefined);
+      expect(event.selected.formGroup.value).toEqual(data.formGroupFromLS);
     });
   });
 
@@ -516,7 +631,7 @@ describe('CaseListComponent', () => {
         },
         canShareCases: true
       }));
-      spyOn(component, 'isCaseShareVisible').and.returnValue(true);
+      spyOnProperty(component, 'isCaseShareVisible$').and.returnValue(Observable.of(true));
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.querySelector('#btn-share-button').textContent).toContain('Share Case');
       expect(component.checkIfButtonDisabled()).toBeTruthy();
@@ -576,7 +691,7 @@ describe('CaseListComponent', () => {
       component.onResultsViewHandler(resultView);
       expect(component.hasResults()).toBeTruthy();
       spyOn(component, 'hasResults').and.returnValue(true);
-      spyOn(component, 'isCaseShareVisible').and.returnValue(true);
+      spyOnProperty(component, 'isCaseShareVisible$').and.returnValue(Observable.of(true));
       fixture.detectChanges();
       const infoHeader = fixture.debugElement.query(By.css('#sp-msg-unselected-case-header')).nativeElement;
       expect(infoHeader.innerHTML).toContain('Why are some cases unselectable?');

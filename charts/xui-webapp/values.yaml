@@ -11,8 +11,14 @@ redis:
 nodejs:
   aadIdentityName: xui
   applicationPort: 3000
-  memoryLimits: 1024Mi
-  cpuLimits: 1000m
+  cpuRequests: 250m
+  cpuLimits: 2000m
+  memoryRequests: 512Mi
+  memoryLimits: 2048Mi
+  autoscaling:        # Default is false
+    enabled: true 
+    maxReplicas: 16    # Required setting
+    targetCPUUtilizationPercentage: 80 # Default is 80% target CPU utilization
   environment:
     REFORM_TEAM: rpx
     REFORM_SERVICE_NAME: xui-webapp
@@ -35,6 +41,7 @@ nodejs:
     HEALTH_CCD_DATA_API: http://ccd-data-store-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
     HEALTH_DOCUMENTS_API: http://dm-store-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
     HEALTH_EM_ANNO_API: http://em-anno-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
+    HEALTH_S2S_SERVICE: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
     HEALTH_TERMS_AND_CONDITIONS_API: http://xui-terms-and-conditions-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
     # Services CCD Endpoints
     SERVICES_CCD_COMPONENT_API: https://gateway-ccd.{{ .Values.global.environment }}.platform.hmcts.net
@@ -90,3 +97,5 @@ nodejs:
   # Don't modify below here
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
+  redis:
+  enabled: true

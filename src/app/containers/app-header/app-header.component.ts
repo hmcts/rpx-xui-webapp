@@ -1,14 +1,16 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {FeatureToggleService} from '@hmcts/rpx-xui-common-lib';
-import {select, Store} from '@ngrx/store';
-import {CookieService} from 'ngx-cookie';
-import {Observable, of, Subscription} from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { select, Store } from '@ngrx/store';
+import { CookieService } from 'ngx-cookie';
+import { Observable, of, Subscription } from 'rxjs';
 
-import {AppUtils} from '../../app-utils';
-import {AppConstants} from '../../app.constants';
-import {AppTitleModel} from '../../models/app-title.model';
-import {NavItemsModel} from '../../models/nav-item.model';
-import {UserNavModel} from '../../models/user-nav.model';
+import { AppUtils } from '../../app-utils';
+import { AppConstants } from '../../app.constants';
+import { AppTitleModel } from '../../models/app-title.model';
+import { NavItemsModel } from '../../models/nav-item.model';
+import { UserNavModel } from '../../models/user-nav.model';
+import { LoggerService } from '../../services/logger/logger.service';
 import * as fromActions from '../../store';
 
 export interface Theme {
@@ -51,10 +53,13 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
   private subscription: Subscription;
 
-  constructor(private store: Store<fromActions.State>,
-              private cookieService: CookieService,
-              private featureToggleService: FeatureToggleService) {
-  }
+  constructor(
+    private readonly store: Store<fromActions.State>,
+    private readonly cookieService: CookieService,
+    private readonly featureToggleService: FeatureToggleService,
+    private readonly loggerService: LoggerService,
+    public router: Router
+  ) {}
 
   /**
    * Get Default Theme
@@ -161,14 +166,29 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
         this.setAppHeaderProperties(applicationTheme);
       });
+
+    // Set up the active link whenever we detect that navigation has completed.
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.setupActiveNavLink(this.navItems);
+      }
+    });
   }
 
   public getApplicationThemeForUser(applicationThemes: Theme[]): Theme {
 
     const serialisedUserRoles: string = this.getSerialisedUserRolesFromCookie();
-    const userRoles: string[] = this.deserialiseUserRoles(serialisedUserRoles);
+    const defaultTheme = this.getDefaultTheme();
 
-    return this.getUsersTheme(userRoles, applicationThemes, this.getDefaultTheme());
+    if (serialisedUserRoles) {
+      try {
+          const userRoles: string[] = this.deserialiseUserRoles(serialisedUserRoles);
+          return this.getUsersTheme(userRoles, applicationThemes, defaultTheme);
+      } catch (error) {
+        this.loggerService.error(error);
+      }
+    }
+    return defaultTheme;
   }
 
   /**
@@ -189,7 +209,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     } = applicationTheme;
 
     this.appHeaderTitle = appTitle;
-    this.navItems = navigationItems;
+    this.setupActiveNavLink(navigationItems);
     this.userNav = accountNavigationItems;
     this.backgroundColor = backgroundColor;
     this.logoType = logoType;
@@ -246,5 +266,9 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
       this.store.dispatch(new fromActions.StopIdleSessionTimeout());
       return this.store.dispatch(new fromActions.Logout());
     }
+  }
+
+  private setupActiveNavLink(items: NavItemsModel[]): void {
+    this.navItems = AppUtils.setActiveLink(items, this.router.url);
   }
 }

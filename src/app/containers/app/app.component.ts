@@ -1,7 +1,9 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Title } from '@angular/platform-browser';
+import { Router, RoutesRecognized } from '@angular/router';
 import { GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
-import {propsExist} from '../../../../api/lib/objectUtilities';
+import { propsExist } from '../../../../api/lib/objectUtilities';
 import { environment as config } from '../../../environments/environment';
 import * as fromRoot from '../../store';
 
@@ -21,11 +23,26 @@ export class AppComponent implements OnInit {
 
   constructor(
     private readonly store: Store<fromRoot.State>,
-    private googleTagManagerService: GoogleTagManagerService,
-    private readonly timeoutNotificationsService: TimeoutNotificationsService
+    private readonly googleTagManagerService: GoogleTagManagerService,
+    private readonly timeoutNotificationsService: TimeoutNotificationsService,
+    private readonly router: Router,
+    private readonly titleService: Title
   ) {
 
     this.googleTagManagerService.init(config.googleTagManagerKey);
+
+    this.router.events.subscribe((data) => {
+      if (data instanceof RoutesRecognized) {
+        let child = data.state.root;
+        do {
+          child = child.firstChild;
+        } while (child.firstChild);
+        const d = child.data;
+        if (d.title) {
+          this.titleService.setTitle(`${d.title} - HM Courts & Tribunals Service - GOV.UK`);
+        }
+      }
+    });
   }
 
   public ngOnInit() {
@@ -41,7 +58,7 @@ export class AppComponent implements OnInit {
    */
   public loadAndListenForUserDetails() {
 
-    this.store.pipe(select(fromRoot.getUserDetails)).subscribe(userDetails => this.userDetailsHandler(userDetails))
+    this.store.pipe(select(fromRoot.getUserDetails)).subscribe(userDetails => this.userDetailsHandler(userDetails));
 
     this.store.dispatch(new fromRoot.LoadUserDetails());
   }

@@ -26,9 +26,7 @@ import {
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
   SERVICES_TERMS_AND_CONDITIONS_URL,
   SERVICES_WORK_ALLOCATION_TASK_API_PATH,
-  FEATURE_WORKALLOCATION_ENABLED,
-  FEATURE_ROLE_ENABLED,
-  FEATURE_CASEWORKER_REF_ENABLED
+  FEATURE_WORKALLOCATION_ENABLED
 } from './references';
 
 /**
@@ -54,8 +52,6 @@ export const applicationConfiguration = () => {
     featureSecureCookieEnabled: showFeature(FEATURE_SECURE_COOKIE_ENABLED),
     featureTermsAndConditionsEnabled: showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED),
     featureWorkAllocationEnabled: showFeature(FEATURE_WORKALLOCATION_ENABLED),
-    featureRoleEnabled: showFeature(FEATURE_ROLE_ENABLED),
-    featureCaseworkerRefEnabled: showFeature(FEATURE_CASEWORKER_REF_ENABLED),
     health: getConfigValue(HEALTH),
     idamApiUrl: getConfigValue(SERVICES_IDAM_API_URL),
     idamWeb: getConfigValue(SERVICES_IDAM_LOGIN_URL),

@@ -90,8 +90,7 @@ nodejs:
     FEATURE_HELMET_ENABLED: true
     FEATURE_REDIS_ENABLED: true
     FEATURE_OIDC_ENABLED: false
-    FEATURE_WORKALLOCATION_ENABLED: true
-    FEATURE_ROLE_ENABLED: false
+    FEATURE_WORKALLOCATION_ENABLED: false
 
     # Redis
     REDIS_KEY_PREFIX: 'activity:'
@@ -111,5 +110,3 @@ nodejs:
   ingressHost: ${SERVICE_FQDN}
   redis:
   enabled: true
-  workAllocation:
-    enabled: true

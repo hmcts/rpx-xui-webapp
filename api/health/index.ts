@@ -11,7 +11,10 @@ import {
   SERVICES_EM_ANNO_API_URL,
   SERVICES_IDAM_API_URL,
   SERVICES_IDAM_LOGIN_URL,
-  SERVICES_TERMS_AND_CONDITIONS_URL
+  SERVICES_TERMS_AND_CONDITIONS_URL,
+  SERVICES_WORK_ALLOCATION_TASK_API_PATH,
+  SERVICES_ROLE_ASSIGNMENT_API_PATH,
+  SERVICES_CASE_CASEWORKER_REF_PATH
 } from '../configuration/references'
 import * as log4jui from '../lib/log4jui'
 import { JUILogger } from '../lib/models'
@@ -31,6 +34,9 @@ const config = {
     idamApi: checkServiceHealth(getConfigValue(SERVICES_IDAM_LOGIN_URL)),
     idamWeb: checkServiceHealth(getConfigValue(SERVICES_IDAM_API_URL)),
     s2s: checkServiceHealth(getConfigValue(SERVICE_S2S_PATH)),
+    workAllocationApi: checkServiceHealth(getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH)),
+    roleApi: checkServiceHealth(getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH)),
+    caseworkerRefApi: checkServiceHealth(getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH)),
   },
 }
 

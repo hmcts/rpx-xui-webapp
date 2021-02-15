@@ -1,12 +1,15 @@
 import {getConfigValue} from '../configuration'
 import { JURISDICTIONS } from '../configuration/references'
 
+const jurisdictions = /aggregated\/.+jurisdictions\?/
+
 /**
  * Manually filtering returned jurisdictions
  * to make available jurisdiction in filters array only
  */
 export const getJurisdictions = (proxyRes, req, res, data: any[]) => {
-    if (!Array.isArray(data)) {
+    if (!Array.isArray(data)
+        || !jurisdictions.test(req.url)) {
         return data
     }
     const filters = getConfigValue(JURISDICTIONS)
@@ -15,8 +18,10 @@ export const getJurisdictions = (proxyRes, req, res, data: any[]) => {
 }
 
 export const checkCachedJurisdictions = (proxyReq, req, res) => {
-    if (req.session.jurisdictions) {
-        res.send(req.session.jurisdictions)
-        proxyReq.end()
+    if (jurisdictions.test(req.url)) {
+        if (req.session.jurisdictions) {
+            res.send(req.session.jurisdictions)
+            proxyReq.end()
+        }
     }
 }

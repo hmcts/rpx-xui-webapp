@@ -5,16 +5,16 @@ import {
   FEATURE_REDIS_ENABLED,
   FEATURE_TERMS_AND_CONDITIONS_ENABLED,
   SERVICE_S2S_PATH,
+  SERVICES_CASE_CASEWORKER_REF_PATH,
   SERVICES_CCD_COMPONENT_API_PATH,
   SERVICES_CCD_DATA_STORE_API_PATH,
   SERVICES_DOCUMENTS_API_PATH,
   SERVICES_EM_ANNO_API_URL,
   SERVICES_IDAM_API_URL,
   SERVICES_IDAM_LOGIN_URL,
-  SERVICES_TERMS_AND_CONDITIONS_URL,
-  SERVICES_WORK_ALLOCATION_TASK_API_PATH,
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
-  SERVICES_CASE_CASEWORKER_REF_PATH
+  SERVICES_TERMS_AND_CONDITIONS_URL,
+  SERVICES_WORK_ALLOCATION_TASK_API_PATH
 } from '../configuration/references'
 import * as log4jui from '../lib/log4jui'
 import { JUILogger } from '../lib/models'
@@ -27,16 +27,16 @@ export const checkServiceHealth = service => HealthCheck.web(`${service}/health`
 
 const config = {
   checks: {
+    caseworkerRefApi: checkServiceHealth(getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH)),
     ccdComponentApi: checkServiceHealth(getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)),
     ccdDataApi: checkServiceHealth(getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH)),
     documentsApi: checkServiceHealth(getConfigValue(SERVICES_DOCUMENTS_API_PATH)),
     emmoApi: checkServiceHealth(getConfigValue(SERVICES_EM_ANNO_API_URL)),
     idamApi: checkServiceHealth(getConfigValue(SERVICES_IDAM_LOGIN_URL)),
     idamWeb: checkServiceHealth(getConfigValue(SERVICES_IDAM_API_URL)),
+    roleApi: checkServiceHealth(getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH)),
     s2s: checkServiceHealth(getConfigValue(SERVICE_S2S_PATH)),
     workAllocationApi: checkServiceHealth(getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH)),
-    roleApi: checkServiceHealth(getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH)),
-    caseworkerRefApi: checkServiceHealth(getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH)),
   },
 }
 

@@ -26,7 +26,7 @@ export const checkServiceHealth = service => HealthCheck.web(`${service}/health`
   timeout: 6000,
 })
 
-export interface healthChecks {
+export interface HealthChecks {
   checks: {
     ccdComponentApi: any,
     ccdDataApi: any,
@@ -41,7 +41,7 @@ export interface healthChecks {
   }
 }
 
-const config: healthChecks = {
+const config: HealthChecks = {
   checks: {
     ccdComponentApi: checkServiceHealth(getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)),
     ccdDataApi: checkServiceHealth(getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH)),

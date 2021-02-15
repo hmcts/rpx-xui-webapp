@@ -195,3 +195,833 @@ Feature: Login
     Then I should be redirected to the Idam login page
 
 
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+
+
+
+  @IDAMDebug
+  Scenario: login and log out from EUI with valid user
+    Given I am logged into Expert UI with valid user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
+

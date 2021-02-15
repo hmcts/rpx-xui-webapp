@@ -2,25 +2,20 @@ import * as HealthCheck from '@hmcts/nodejs-healthcheck'
 import { SESSION, xuiNode } from '@hmcts/rpx-xui-node-lib'
 import { getConfigValue, showFeature } from '../configuration'
 import {
+  CHECK_FEATURE_WORKALLOCATION_ENABLED,
   FEATURE_REDIS_ENABLED,
   FEATURE_TERMS_AND_CONDITIONS_ENABLED,
   SERVICE_S2S_PATH,
+  SERVICES_CASE_CASEWORKER_REF_PATH,
   SERVICES_CCD_COMPONENT_API_PATH,
   SERVICES_CCD_DATA_STORE_API_PATH,
   SERVICES_DOCUMENTS_API_PATH,
   SERVICES_EM_ANNO_API_URL,
   SERVICES_IDAM_API_URL,
   SERVICES_IDAM_LOGIN_URL,
-  SERVICES_TERMS_AND_CONDITIONS_URL,
-  SERVICES_WORK_ALLOCATION_TASK_API_PATH,
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
-  SERVICES_CASE_CASEWORKER_REF_PATH,
-  FEATURE_WORKALLOCATION_ENABLED,
-  FEATURE_ROLE_ENABLED,
-  FEATURE_CASEWORKER_REF_ENABLED,
-  CHECK_FEATURE_WORKALLOCATION_ENABLED,
-  CHECK_FEATURE_ROLE_ENABLED,
-  CHECK_FEATURE_CASEWORKER_REF_ENABLED
+  SERVICES_TERMS_AND_CONDITIONS_URL,
+  SERVICES_WORK_ALLOCATION_TASK_API_PATH
 } from '../configuration/references'
 import * as log4jui from '../lib/log4jui'
 import { JUILogger } from '../lib/models'
@@ -60,12 +55,8 @@ const config: healthChecks = {
 
 if (getConfigValue(CHECK_FEATURE_WORKALLOCATION_ENABLED)) {
   config.checks.workAllocationApi = checkServiceHealth(getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH))
-}
-if (getConfigValue(CHECK_FEATURE_ROLE_ENABLED)) {
-  config.checks.roleApi = checkServiceHealth(getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH))
-}
-if (getConfigValue(CHECK_FEATURE_CASEWORKER_REF_ENABLED)) {
   config.checks.caseworkerRefApi = checkServiceHealth(getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH))
+  config.checks.roleApi = checkServiceHealth(getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH))
 }
 
 export const addReformHealthCheck = app => {

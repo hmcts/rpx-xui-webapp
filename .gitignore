@@ -73,3 +73,7 @@ stryker-tmp/
 # stryker temp files
 .stryker-tmp
 stryker.log
+
+# yalc
+.yalc/
+yalc.lock

@@ -50,7 +50,8 @@
     "publish-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error mocha --timeout 15000 -r ts-node/register -r dotenv-extended/config api/test/pact/publish/publish.ts dotenv_config_defaults=./api/.env.defaults --reporter spec",
     "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact",
     "test:api": "mocha -r ts-node/register --config ./test/integration/tests/mocha.json --reporter mochawesome --reporter-options reportDir=reports/tests/api_functional,reportFilename=mochawesome",
-    "test:ngIntegration": "webdriver-manager update --versions.chrome 2.40 && ng e2e --webdriver-update=false --protractorConfig=./test/ngIntegration/config/protractor.conf.js"
+    "test:ngIntegration": "webdriver-manager update --versions.chrome 2.40 && ng e2e --webdriver-update=false --protractorConfig=./test/ngIntegration/config/protractor.conf.js",
+    "test:nodeMock": "nodemon ./test/nodeMock/app.js --standalone"
   },
   "private": true,
   "dependencies": {
@@ -65,7 +66,7 @@
     "@angular/platform-browser": "^7.2.13",
     "@angular/platform-browser-dynamic": "^7.2.13",
     "@angular/router": "^7.2.13",
-    "@hmcts/ccd-case-ui-toolkit": "^2.68.9-alpha",
+    "@hmcts/ccd-case-ui-toolkit": "2.71.2-conditional-show-perf",
     "@hmcts/ccpay-web-component": "3.0.3",
     "@hmcts/frontend": "0.0.39-alpha",
     "@hmcts/media-viewer": "2.6.4",
@@ -86,7 +87,7 @@
     "applicationinsights-js": "^1.0.20",
     "axios": "^0.21.1",
     "axios-mock-adapter": "^1.18.2",
-    "class-transformer": "^0.2.3",
+    "class-transformer": "^0.3.2",
     "config": "^3.2.5",
     "cookie-parser": "^1.4.4",
     "core-js": "^2.5.4",

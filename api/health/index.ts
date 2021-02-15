@@ -2,6 +2,7 @@ import * as HealthCheck from '@hmcts/nodejs-healthcheck'
 import { SESSION, xuiNode } from '@hmcts/rpx-xui-node-lib'
 import { getConfigValue, showFeature } from '../configuration'
 import {
+  CHECK_FEATURE_WORKALLOCATION_ENABLED,
   FEATURE_REDIS_ENABLED,
   FEATURE_TERMS_AND_CONDITIONS_ENABLED,
   SERVICE_S2S_PATH,
@@ -25,19 +26,37 @@ export const checkServiceHealth = service => HealthCheck.web(`${service}/health`
   timeout: 6000,
 })
 
-const config = {
+export interface healthChecks {
   checks: {
-    caseworkerRefApi: checkServiceHealth(getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH)),
+    ccdComponentApi: any,
+    ccdDataApi: any,
+    documentsApi: any,
+    emmoApi: any,
+    idamApi: any,
+    idamWeb: any,
+    s2s: any,
+    workAllocationApi?: any,
+    roleApi?: any,
+    caseworkerRefApi?: any,
+  }
+}
+
+const config: healthChecks = {
+  checks: {
     ccdComponentApi: checkServiceHealth(getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)),
     ccdDataApi: checkServiceHealth(getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH)),
     documentsApi: checkServiceHealth(getConfigValue(SERVICES_DOCUMENTS_API_PATH)),
     emmoApi: checkServiceHealth(getConfigValue(SERVICES_EM_ANNO_API_URL)),
     idamApi: checkServiceHealth(getConfigValue(SERVICES_IDAM_LOGIN_URL)),
     idamWeb: checkServiceHealth(getConfigValue(SERVICES_IDAM_API_URL)),
-    roleApi: checkServiceHealth(getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH)),
     s2s: checkServiceHealth(getConfigValue(SERVICE_S2S_PATH)),
-    workAllocationApi: checkServiceHealth(getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH)),
   },
+}
+
+if (getConfigValue(CHECK_FEATURE_WORKALLOCATION_ENABLED)) {
+  config.checks.workAllocationApi = checkServiceHealth(getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH))
+  config.checks.caseworkerRefApi = checkServiceHealth(getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH))
+  config.checks.roleApi = checkServiceHealth(getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH))
 }
 
 export const addReformHealthCheck = app => {
@@ -51,7 +70,8 @@ export const addReformHealthCheck = app => {
   if (showFeature(FEATURE_REDIS_ENABLED)) {
     xuiNode.on(SESSION.EVENT.REDIS_CLIENT_READY, (redisClient: any) => {
       logger.info('REDIS EVENT FIRED!!')
-      config.checks = {...config.checks, ...{
+      config.checks = {
+        ...config.checks, ...{
           redis: HealthCheck.raw(() => {
             return redisClient.connected ? HealthCheck.up() : HealthCheck.down()
           }),

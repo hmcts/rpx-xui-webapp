@@ -18,8 +18,8 @@ describe("RD Professional API call for get organisations", () => {
   before(async() => {
     mockServerPort = await getPort()
     provider = new Pact({
-      consumer: "XUIWebapp",
-      provider: "rd_professional_api",
+      consumer: "xui_webApp",
+      provider: "referenceData_organisationalExternalUsers",
       log: path.resolve(process.cwd(), "api/test/pact/logs", "mockserver-integration.log"),
       dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
       logLevel: 'info',
@@ -42,8 +42,8 @@ describe("RD Professional API call for get organisations", () => {
 
     before(done => {
       const interaction = {
-        state: "Organisations exists in the ref data",
-        uponReceiving: "On receiving get active organisations with addresss",
+        state: "Organisations exists with status of Active",
+        uponReceiving: "On receiving a request for those organisations",
         withRequest: {
           method: "GET",
           path: "/refdata/external/v1/organisations/status/ACTIVE",
@@ -83,38 +83,20 @@ describe("RD Professional API call for get organisations", () => {
 function assertResponse(dto:Organisation[]): void{
   expect(dto).to.be.not.null;
   for(var element of dto ) {
-    expect(element.companyNumber).to.equal("A1000");
-    expect(element.companyUrl).to.equal("www.google.com");
-    expect(element.sraId).to.equal("sraId");
+    expect(element.name).to.equal("TheOrganisation");
     expect(element.organisationIdentifier).to.equal("K100");
-    expect(element.superUser.firstName).to.equal("Joe");
-    expect(element.superUser.lastName).to.equal("Bloggs");
   }
 }
 
 const getOrganisationResponse:Organisation[] = [
   {
-    companyNumber:somethingLike('A1000'),
-    companyUrl: somethingLike('www.google.com'),
     name: somethingLike('TheOrganisation'),
     organisationIdentifier: somethingLike('K100'),
-    sraId: somethingLike('sraId'),
-    sraRegulated: somethingLike(true),
-    status: somethingLike('success'),
-    contactInformation: {
-      addressLine1: somethingLike("pettyfrance"),
-      addressLine2: somethingLike("London"),
-      addressLine3: somethingLike("near palace"),
-      country: somethingLike("UK"),
-      county: somethingLike("Westminster"),
-      postCode: somethingLike("WC1A3BD"),
-      townCity: somethingLike("Westminster")
-    },
-    superUser: {
-      firstName:somethingLike("Joe"),
-      lastName:somethingLike("Bloggs"),
-      email:somethingLike("this@that.com")
-    },
-    paymentAccount: somethingLike(["abckd"])
+    contactInformation:  eachLike({
+      addressLine1: 'addressLine1',
+      addressLine2: 'addressLine2',
+      country: 'country',
+      postCode: 'Ha5 1BJ'
+    })
   }
 ]

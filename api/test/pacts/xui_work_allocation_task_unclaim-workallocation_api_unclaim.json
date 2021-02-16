@@ -1,0 +1,119 @@
+{
+  "consumer": {
+    "name": "xui_work_allocation_task_unclaim"
+  },
+  "provider": {
+    "name": "WorkAllocation_api_unclaim"
+  },
+  "interactions": [
+    {
+      "description": "a request for completion",
+      "providerState": "task is unclaimed",
+      "request": {
+        "method": "POST",
+        "path": "/task/123456/unclaim",
+        "body": {
+          "assignee": {
+            "id": "987654",
+            "userName": "bob"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "description": "a request for completion when already unclaim",
+      "providerState": "task was already unclaim",
+      "request": {
+        "method": "POST",
+        "path": "/task/123456/unclaim",
+        "body": {
+          "behaviour": "already-done",
+          "assignee": {
+            "id": "987654",
+            "userName": "bob"
+          }
+        }
+      },
+      "response": {
+        "status": 204,
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "description": "a bad request for completion",
+      "providerState": "a bad request was made",
+      "request": {
+        "method": "POST",
+        "path": "/task/123456/unclaim",
+        "body": {
+          "behaviour": "bad-request",
+          "assignee": {
+            "id": "987654",
+            "userName": "bob"
+          }
+        }
+      },
+      "response": {
+        "status": 400,
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "description": "a request for completion of a forbidden task",
+      "providerState": "completion of this task is was forbidden",
+      "request": {
+        "method": "POST",
+        "path": "/task/123456/unclaim",
+        "body": {
+          "behaviour": "forbidden",
+          "assignee": {
+            "id": "987654",
+            "userName": "bob"
+          }
+        }
+      },
+      "response": {
+        "status": 403,
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "description": "a request for completion but it is unsupported",
+      "providerState": "this action is unsupported",
+      "request": {
+        "method": "POST",
+        "path": "/task/123456/unclaim",
+        "body": {
+          "behaviour": "unsupported",
+          "assignee": {
+            "id": "987654",
+            "userName": "bob"
+          }
+        }
+      },
+      "response": {
+        "status": 415,
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  }
+}

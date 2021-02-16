@@ -74,3 +74,6 @@ stryker-tmp/
 .stryker-tmp
 stryker.log
 log/pact.log
+
+# Test env files
+/test/*.env

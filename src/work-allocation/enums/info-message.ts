@@ -6,5 +6,6 @@ export enum InfoMessage {
   MARKED_TASK_AS_DONE = 'You\'ve marked a task as done.',
   REASSIGNED_TASK = 'You\'ve reassigned a task to somebody else.',
   TASK_NO_LONGER_AVAILABLE = 'The task is no longer available.',
-  UNASSIGNED_TASK = 'You\'ve unassigned a task.'
+  UNASSIGNED_TASK = 'You\'ve unassigned a task.',
+  UNASSIGNED_TASK_NOW_IN_AVAILABLE_TASKS = 'You\'ve unassigned a task. It\'s now in Available tasks.'
 }

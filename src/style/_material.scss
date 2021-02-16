@@ -20,13 +20,22 @@ $outlineColor: #bfc1c3;
     height: 42px !important;
     margin: 0 4px 7px 4px;
     border-top: 3px solid #fff;
-    background-color: #dee0e2;
-    color: #1d70b8;
+    background-color: #f3f2f1;
+    color: #000;
     opacity: 1 !important;
+    text-decoration: underline;
+
+    .mat-tab-label-content {
+        border-bottom: 4px solid transparent;
+    }
 
     &.cdk-focused {
-        border-top: 3px solid #ffdd00;
-        border-bottom: 4px solid #000;
+        text-decoration: none;
+    
+        .mat-tab-label-content {
+            background-color: #ffdd00;
+            border-bottom: 4px solid #000;
+        }
     }
 
     &.mat-tab-label-active {    
@@ -37,9 +46,15 @@ $outlineColor: #bfc1c3;
         border-right: 1px solid $outlineColor;   
         background: #fff;
         margin: 1px 4px 0 4px;
+        text-decoration: none;
+
         &.cdk-focused {
-            border-top: 3px solid #ffdd00;
-            border-bottom: 4px solid #000;
+            text-decoration: none;
+        
+            .mat-tab-label-content {
+                background-color: #ffdd00;
+                border-bottom: 4px solid #000;
+            }
         }
 
         .mat-tab-label-content {

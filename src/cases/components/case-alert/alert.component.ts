@@ -22,7 +22,7 @@ export class AlertComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.alertMessageObservable = this.alertService.alerts.pipe(select( alert => alert));
+    this.alertMessageObservable = this.alertService.errors.pipe(select( alert => alert));
     this.routeSubscription = this.router.events.subscribe((val) => this.message = '');
     this.alertMessageSubscription = this.alertMessageObservable.subscribe(alert => {
       if (alert) {

@@ -103,14 +103,12 @@ defineSupportCode(function ({ Given, When, Then }) {
 
 
   When('I navigate to Expert UI Url', async function () {
-    await browser.driver.manage()
-      .deleteAllCookies();
-    CucumberReportLogger.AddMessage("App base url : " + config.config.baseUrl);
-    await browser.get(config.config.baseUrl);
-
-    const world = this;
-    await BrowserWaits.retryForPageLoad(loginPage.signinTitle,function(message){
-      world.attach("Expert UI Url reload attempt : "+message);
+    await BrowserWaits.retryWithActionCallback(async function(){
+      await browser.driver.manage()
+        .deleteAllCookies();
+      CucumberReportLogger.AddMessage("App base url : " + config.config.baseUrl);
+      await browser.get(config.config.baseUrl); 
+      await BrowserWaits.waitForElement(loginPage.signinTitle); 
     });
 
     expect(await loginPage.signinBtn.isDisplayed()).to.be.true;

@@ -6,6 +6,7 @@ const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../sup
 const config = require('../../config/conf.js');
 const EC = protractor.ExpectedConditions;
 const BrowserWaits = require("../../support/customWaits");
+const CucumberReportLogger = require('../../support/reportLogger');
 
 async function waitForElement(el) {
   await browser.wait(result => {
@@ -15,18 +16,49 @@ async function waitForElement(el) {
 
 defineSupportCode(function ({ Given, When, Then }) {
 
+  let invalidCredentialsCounter = 0;
+  let testCounter = 0;
 
   async function loginattemptCheckAndRelogin(username, password, world) {
-
+    testCounter++;
     let loginAttemptRetryCounter = 1;
 
-    while (loginAttemptRetryCounter < 3) {
+    while (loginAttemptRetryCounter < 5) {
+      let emailFieldValue = "";
 
       try {
-        await BrowserWaits.waitForstalenessOf(loginPage.emailAddress, 5);
+        // await BrowserWaits.waitForstalenessOf(loginPage.emailAddress, 5);
+        await BrowserWaits.waitForCondition(async () => {
+          let isEmailFieldDisplayed = await loginPage.emailAddress.isPresent();
+          let credentialsErrorPresent = await loginPage.isLoginCredentialsErrorDisplayed();
+          let isEmailValuePresent = false;
+          if (isEmailFieldDisplayed) {
+            let isEmailValuePresent = (await loginPage.emailAddress.getText()) !== "";
+          }
+          let errorMessage = "";
+          if (credentialsErrorPresent) {
+            invalidCredentialsCounter++;
+            errorMessage = testCounter + " Credentials error occured " + invalidCredentialsCounter;
+          }
+
+          if (isEmailFieldDisplayed && !isEmailValuePresent) {
+            errorMessage = errorMessage + " : " + testCounter + " login page refresh ";
+          }
+          // console.log(testCounter +" : error message =>"+errorMessage+"<=");
+          if (errorMessage !== "") {
+            throw new Error(errorMessage);
+          } else if (isEmailFieldDisplayed && emailValuePresent) {
+            console.log(testCounter + "  ");
+
+            return false;
+          } else {
+            return true;
+          }
+
+        });
+
         break;
       } catch (err) {
-        let emailFieldValue = await loginPage.getEmailFieldValue();
         if (!emailFieldValue.includes(username)) {
           if (loginAttemptRetryCounter === 1) {
             firstAttemptFailedLogins++;
@@ -35,8 +67,14 @@ defineSupportCode(function ({ Given, When, Then }) {
             secondAttemptFailedLogins++;
           }
 
+
           console.log(err + " email field is still present with empty value indicating  Login page reloaded due to EUI-1856 : Login re attempt " + loginAttemptRetryCounter);
           world.attach(err + " email field is still present with empty value indicating Login page reloaded due to EUI-1856 : Login re attempt " + loginAttemptRetryCounter);
+          console.log(err);
+          await browser.driver.manage()
+            .deleteAllCookies();
+          await browser.get(config.config.baseUrl);
+          await BrowserWaits.waitForElement(loginPage.emailAddress);
           await loginPage.loginWithCredentials(username, password);
           loginAttemptRetryCounter++;
         }
@@ -48,8 +86,8 @@ defineSupportCode(function ({ Given, When, Then }) {
     console.log("TWO ATTEMPT: EUI-1856 issue occured / total logins => " + secondAttemptFailedLogins + " / " + loginAttempts);
     world.attach("TWO ATTEMPT: EUI-1856 issue occured / total logins => " + secondAttemptFailedLogins + " / " + loginAttempts);
 
-
   }
+
 
   let loginAttempts = 0;
   let firstAttemptFailedLogins = 0;
@@ -59,6 +97,7 @@ defineSupportCode(function ({ Given, When, Then }) {
   When('I navigate to Expert UI Url', async function () {
     await browser.driver.manage()
       .deleteAllCookies();
+    CucumberReportLogger.AddMessage("App base url : " + config.config.baseUrl);
     await browser.get(config.config.baseUrl);
 
     const world = this;

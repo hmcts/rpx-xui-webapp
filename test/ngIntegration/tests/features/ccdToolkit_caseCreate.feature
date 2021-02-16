@@ -23,6 +23,7 @@ Feature: Case edit pages
         When I click cancel in case edit page
         Then I see case list page displayed
 
+@test
     Scenario Outline:  Validate config pages and fields 
         Given I set MOCK event "caseConfig" props
             | show_summary | <show_summary> |
@@ -37,5 +38,23 @@ Feature: Case edit pages
 
     Examples:
         | show_summary | 
-        | YES |
-        | NO  |
+        | true |
+        | false  |
+
+    Scenario:  Validate summary page fields
+        Given I set MOCK event "caseConfig" props
+            | show_summary | YES |
+        Given I set MOCK event config "caseConfig" field "TextField0" properties
+            | show_summary_change_option | YES |
+        Given I set MOCK with user roles
+            | role                      |
+            | caseworker-ia-caseofficer |
+            | caseworker-ia-admofficer  |
+        Given I restart MockApp
+        Given I navigate page route "cases/case-create/Test_Jurisdiction/Test_case/testEvent/testPage"
+        Then I see case edit page displayed
+
+        Then I validate config "caseConfig" case edit wizard pages and fields in pages
+
+
+

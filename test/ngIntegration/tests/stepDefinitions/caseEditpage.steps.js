@@ -28,13 +28,25 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
      Then('I validate config {string} case edit wizard pages and fields in pages', async function(configReference){
          const caseConfigInstance = global.scenarioData[configReference];
-         const caseConfig = caseConfigInstance.getCase(); 
+         const caseConfig = caseConfigInstance.getCase();
+         let validateReq = null; 
          MockApp.addIntercept('/data/case-types/:caseType/validate', (req, res, next) => {
              validateReq = req.body;
+            //  console.log("/data/case-types/:caseType/validate req received : " + JSON.stringify(validateReq,2)); 
              next();
          });
 
+         let submissionReq = null; 
+         MockApp.addIntercept('/data/case-types/:caseType/cases', (req, res, next) => {
+             submissionReq = req.body;
+             console.log("/data/case-types/:caseType/cases req received : " + submissionReq); 
+             next();
+         });
+         await MockApp.stopServer();
+         await MockApp.startServer();
 
+
+         let eventData = {};
          for (const wizardPage of caseConfig.wizard_pages) {
              await caseEditPage.waitForPage();
              expect(await caseEditPage.getPageTitle()).to.contains(wizardPage.label);
@@ -53,12 +65,18 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
              }
              validateReq = null;
              await caseEditPage.clickContinue();
-             await BrowserWaits.waitForCondition(async () => validateReq !== null);
+             await BrowserWaits.waitForCondition(function () { return validateReq !== null; });
+             expect(validateReq.data).to.deep.equal( thisPageEventData);
+             eventData = Object.assign(eventData, thisPageEventData)
+ 
          }
          await caseEditPage.waitForChecYourAnswersPage();
          await caseEditPage.validateCheckYourAnswersPage(caseConfig);
        
          await caseEditPage.clickSubmit();
+         await BrowserWaits.waitForCondition(async () => submissionReq !== null);
+         expect(submissionReq.data).to.deep.equal(eventData);
+
          await caseDetailsPage.amOnPage()
          
     });

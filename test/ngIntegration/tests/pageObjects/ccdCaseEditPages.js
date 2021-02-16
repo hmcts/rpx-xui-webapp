@@ -1,6 +1,7 @@
 const BrowserWaits = require('../../../e2e/support/customWaits');
 const reportLogger = require('../../../e2e/support/reportLogger');
 
+const SoftAssert = require('../../util/softAssert');
 class CaseEdit {
 
     checkYourAnswersPageElement = $(".check-your-answers");
@@ -165,10 +166,11 @@ class CaseEdit {
         if (inputOption) {
             inputoptionId = inputOption;
         } else {
-            selectedVal = fieldConfig.field_type.fixed_list_items[0].code;
+            selectedVal = fieldConfig.field_type.fixed_list_items[0];
             inputoptionId = selectedVal;
         }
-        await $(`#${this.getFieldId(fieldConfig.id, parentId)}-${inputoptionId}`).click();
+        await $(`#${this.getFieldId(fieldConfig.id, parentId)}-${inputoptionId.code}`).click();
+
         return selectedVal;
     }
 
@@ -179,15 +181,14 @@ class CaseEdit {
         if (inputOption) {
             selectedVal = inputOption;
         } else {
-            selectedVal = fieldConfig.field_type.fixed_list_items[0].code;
+            selectedVal = fieldConfig.field_type.fixed_list_items[0];
         }
-        await $(`#${this.getFieldId(fieldConfig.id, parentId)} option[ng-reflect-ng-value="${selectedVal}"]`).click();
+        await $(`#${this.getFieldId(fieldConfig.id, parentId)} option[ng-reflect-ng-value="${selectedVal.code}"]`).click();
         return selectedVal;
     }
 
 
     async inputMultiSelectListField(fieldConfig, inputOptions, parentId) {
-
         let inputoptionId = [];
         let selectedVal = [];
         if (inputOptions) {
@@ -403,33 +404,55 @@ class CaseEdit {
                 break;
             case "FixedRadioList":
                 fieldValue = await this.inputFixedRadioListField(fieldConfig, value, parentId);
+                fieldValue = fieldValue.code
                 break;
             case "FixedList":
                 fieldValue = await this.inputFixedListField(fieldConfig, value, parentId);
+                fieldValue = fieldValue.code
                 break;
             case "MultiSelectList":
-                fieldValue = await this.inputMultiSelectListField(fieldConfig, value, parentId);
+                const multiSelectVal = await this.inputMultiSelectListField(fieldConfig, value, parentId);
+                const fieldValues = [];
+                for (const val of multiSelectVal){
+                    fieldValues.push(val.code);
+                }
+                fieldValue = fieldValues; 
                 break;
 
 
         }
+        reportLogger.AddMessage("Field set value for " + fieldConfig.field_type.type)
+        reportLogger.AddJson(JSON.stringify(fieldValue))
+
         return fieldValue;
     }
 
     async validateCheckYourAnswersPage(eventConfig){
-        expect(await this.isCheckYourAnswersPagePresent(),"Not on check your answers page").to.be.true;
+        const softAssert = new SoftAssert();
+        softAssert.setScenario("Check yours answers page content");
+        await softAssert.assert(async () => expect(await this.isCheckYourAnswersPagePresent(), "Not on check your answers page").to.be.true );
+        
         const isHeadingPresent = await this.checkYourAnswersHeading.isPresent();
         const isHeadingDescPresent = await this.checkYourAnswersHeadingDescription.isPresent();
         const summaryRowsCount = await this.checkYourAnswersSummaryRows.count()
         if (eventConfig.show_summary) {
-            expect(isHeadingPresent, "Check your answers header text not displayed").to.be.true;
-            expect(isHeadingDescPresent, "Check your answers header description text not displayed").to.be.true;
-            expect(summaryRowsCount, "Check your answers summary rows count is 0").to.be.above(0);
+            await softAssert.assert(async() => expect(isHeadingPresent, "Check your answers header text not displayed").to.be.true);
+            await softAssert.assert(async() => expect(isHeadingDescPresent, "Check your answers header description text not displayed").to.be.true);
+            await softAssert.assert(async() => expect(summaryRowsCount, "Check your answers summary rows count is 0").to.be.above(0));
         } else {
-            expect(isHeadingPresent, "Check your answers header text displayed").to.be.false;
-            expect(isHeadingDescPresent, "Check your answers header description text displayed").to.be.false;
-            expect(summaryRowsCount, "Check your answers summary rows count is not 0").to.equal(0);
+            await softAssert.assert(async() => expect(isHeadingPresent, "Check your answers header text displayed").to.be.false);
+            await softAssert.assert(async() => expect(isHeadingDescPresent, "Check your answers header description text displayed").to.be.false);
+            await softAssert.assert(async() => expect(summaryRowsCount, "Check your answers summary rows count is not 0").to.equal(0));
         }
+
+        for (const caseField of eventConfig.case_fields){
+            softAssert.setScenario(`"${caseField.label}" Field display for condition show_summary_change_option value "${caseField.show_summary_change_option}" validation`);
+            const fieldHeader = element(by.xpath(`//ccd-case-edit-submit//*[contains(@class, "form-table")]//tr//th//span[text() = "${caseField.label}"]`))
+            const isFieldExpectedToDisplay = caseField.show_summary_change_option ? true : false;
+            const onFailMessage = `case field ${caseField.label} with show_summary_change_option value ${caseField.show_summary_change_option} failed. is ${isFieldExpectedToDisplay ? "not displayed" : "displayed"} `;
+            await softAssert.assert(async () => expect(await fieldHeader.isPresent(), onFailMessage ).to.equal(isFieldExpectedToDisplay));
+        }
+        softAssert.finally();
     }
 
 }

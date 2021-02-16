@@ -54,7 +54,7 @@ class Request {
 
     public async get(reqpath: string, headers: any){
         try {
-            return await http.get(reqpath, this.getRequestConfig(headers));
+            return await this.retryRequest(() =>  http.get(reqpath, this.getRequestConfig(headers)));
         } catch (error) {
             return this.getResponseFromError(error);
         }
@@ -62,7 +62,7 @@ class Request {
 
     public async post(reqpath: string, data, headers: any) {
         try {
-            return await http.post(reqpath, data, this.getRequestConfig(headers));
+            return await this.retryRequest(() =>http.post(reqpath, data, this.getRequestConfig(headers)));
         } catch (error) {
             return this.getResponseFromError(error);
 
@@ -71,7 +71,7 @@ class Request {
 
     public async put(reqpath: string, data, headers: any){
         try {
-         return await http.put(reqpath, data, this.getRequestConfig(headers));
+            return await this.retryRequest(() =>http.put(reqpath, data, this.getRequestConfig(headers)));
         } catch (error) {
             return this.getResponseFromError(error);
 
@@ -85,10 +85,39 @@ class Request {
             if (payload){
                 requestConfig['data'] = payload;
             }
-            return await http.delete(reqpath, requestConfig );
+            return await this.retryRequest(() =>http.delete(reqpath, requestConfig ));
         } catch (error) {
             return this.getResponseFromError(error);
 
+        }
+    }
+
+    async retryRequest(callback){
+        let retryAttemptCounter = 0;
+        let isCallbackSuccess = false;
+        let retVal = null;
+
+        const retryErrorLogs = [];
+        while (retryAttemptCounter < 3 && !retVal){
+            try {
+                console.log("in retry function : retry attempt " + retryAttemptCounter);
+
+                retVal = await callback();
+                isCallbackSuccess = true;
+            } catch (err) {
+                retryErrorLogs.push(err);
+                retryAttemptCounter++;
+                console.log(`API request error: "${err.code}" syscall : ${err.syscall} => Retrying atempt ${retryAttemptCounter}`);
+                if (err.response) {
+                    retVal = err.response;
+                }
+            }
+        }
+
+        if(retVal){
+            return retVal;
+        }else{
+            throw new Error("Errors occured in retry attempts "+JSON.stringify(retryErrorLogs));
         }
     }
 }

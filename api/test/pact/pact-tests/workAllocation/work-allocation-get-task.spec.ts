@@ -2,8 +2,8 @@ import { Pact } from '@pact-foundation/pact'
 import { assert } from 'chai'
 import * as getPort from 'get-port'
 import * as path from 'path'
-import { EnhancedRequest } from '../../../lib/models'
-import { handleTaskGet } from '../../../workAllocation/taskService'
+import { EnhancedRequest } from '../../../../lib/models'
+import { handleTaskGet } from '../../../../workAllocation/taskService'
 
 describe('Work Allocation API', () => {
 
@@ -40,7 +40,7 @@ describe('Work Allocation API', () => {
         workallocationUrl = `http://localhost:${MOCK_SERVER_PORT}`
         provider = new Pact({
           consumer: 'xui_get_work_allocation_task',
-          dir: path.resolve(__dirname, '../pacts'),
+          dir: path.resolve(__dirname, '../../pacts'),
           log: path.resolve(__dirname, '../logs', 'work-allocation.log'),
           logLevel: 'info',
           port: MOCK_SERVER_PORT,

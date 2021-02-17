@@ -21,8 +21,8 @@
 <div *ngIf="completeScreenMode === 'PENDING'">
   <br>
   <h1 class="govuk-heading-xl">Sorry, there is a problem</h1><br/>
-  <p class="govuk-body" *ngIf="removeUserFromCaseToggleOn$ | async">We couldn’t share or remove access to the following cases:</p>
-  <p class="govuk-body" *ngIf="!(removeUserFromCaseToggleOn$ | async)">We couldn’t share access to the following cases:</p>
+  <p class="govuk-body" *ngIf="removeUserFromCaseToggleOn$ | async" id="add-and-remove-user-error">We couldn’t share or remove access to the following cases:</p>
+  <p class="govuk-body" *ngIf="!(removeUserFromCaseToggleOn$ | async)" id="remove-user-error">We couldn’t share access to the following cases:</p>
   <div *ngFor="let acase of newShareCases;">
     <div *ngIf="showUserAccessBlock(acase)">
       <h2 class="govuk-heading-m case-share-confirm__title">{{ acase.caseTitle }}</h2>
@@ -58,8 +58,8 @@
       </table>
     </div>
   </div>
-  <p class="govuk-body" *ngIf="removeUserFromCaseToggleOn$ | async">Access to all your other selected cases was shared or removed.</p>
-  <p class="govuk-body" *ngIf="!(removeUserFromCaseToggleOn$ | async)">Access to all your other selected cases was shared.</p>
+  <p class="govuk-body" *ngIf="removeUserFromCaseToggleOn$ | async" id="add-and-remove-user-info">Access to all your other selected cases was shared or removed.</p>
+  <p class="govuk-body" *ngIf="!(removeUserFromCaseToggleOn$ | async)" id="remove-user-info">Access to all your other selected cases was shared.</p>
   <p class="govuk-body">Try again or <a href="get-help">get help</a> if you’re still having problems</p>
 </div>
 

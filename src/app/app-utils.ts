@@ -66,10 +66,16 @@ export class AppUtils {
    * Set the active property on the navigation items.
    */
   public static setActiveLink(items: NavItemsModel[], currentUrl: string): NavItemsModel[] {
+    let fullUrl = false;
+    for (const checkItem of items) {
+      if (checkItem.href === currentUrl || currentUrl === '/cases/case-search') {
+        fullUrl = true;
+      }
+    }
     return items.map(item => {
       return {
         ...item,
-        active: item.href === currentUrl
+        active: fullUrl ? item.href === currentUrl : currentUrl.indexOf(item.href) === 0
       };
     });
   }

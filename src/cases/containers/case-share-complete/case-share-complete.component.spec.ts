@@ -1,12 +1,12 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
-import { of } from 'rxjs';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { of } from 'rxjs';
 import { State } from '../../../app/store/reducers';
 import { CaseShareCompleteComponent } from './case-share-complete.component';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 
 describe('CaseShareCompleteComponent', () => {
   let component: CaseShareCompleteComponent;
@@ -124,18 +124,24 @@ describe('CaseShareCompleteComponent', () => {
     expect(component.shareCases.length).toEqual(0);
   });
 
-  it('should not see remove user from case if feature is toggled off', () => {
+  it('should not see remove user info from case if remove user feature is toggled on', () => {
+    component.completeScreenMode = 'PENDING';
     component.removeUserFromCaseToggleOn$ = of(false);
     fixture.detectChanges();
-    const removeUserFromCaseToggleOn = fixture.debugElement.nativeElement.querySelector('#remove-user-error');
-    expect(removeUserFromCaseToggleOn).toBeFalsy();
+    const removeUserError = fixture.debugElement.nativeElement.querySelector('#remove-user-error');
+    expect(removeUserError).toBeTruthy();
+    const removeUserInfo = fixture.debugElement.nativeElement.querySelector('#remove-user-info');
+    expect(removeUserInfo).toBeTruthy();
   });
 
-  it('should see remove user from case if feature is toggled on', () => {
+  it('should see remove user info from case if remove user feature is toggled on', () => {
+    component.completeScreenMode = 'PENDING';
     component.removeUserFromCaseToggleOn$ = of(true);
     fixture.detectChanges();
-    const removeUserFromCaseToggleOn = fixture.debugElement.nativeElement.querySelector('#add-and-remove-user-error');
-    expect(removeUserFromCaseToggleOn).toBeTruthy();
+    const addAndRemoveUserError = fixture.debugElement.nativeElement.querySelector('#add-and-remove-user-error');
+    expect(addAndRemoveUserError).toBeTruthy();
+    const addAndRemoveUserInfo = fixture.debugElement.nativeElement.querySelector('#add-and-remove-user-info');
+    expect(addAndRemoveUserInfo).toBeTruthy();
   });
 
   afterEach(() => {

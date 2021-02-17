@@ -94,8 +94,8 @@ defineSupportCode(function ({ Given, When, Then }) {
     console.log("TWO ATTEMPT: EUI-1856 issue occured / total logins => " + secondAttemptFailedLogins + " / " + loginAttempts);
     world.attach("TWO ATTEMPT: EUI-1856 issue occured / total logins => " + secondAttemptFailedLogins + " / " + loginAttempts);
 
-
   }
+
 
   let loginAttempts = 0;
   let firstAttemptFailedLogins = 0;

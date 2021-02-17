@@ -22,7 +22,7 @@ describe('CCD Endpoints', () => {
             experimental: true,
             'X-XSRF-TOKEN': xsrfToken
         };
-        const response = await Request.get('api/addresses?postcode=E1', headers);
+        const response = await Request.get('api/addresses?postcode=E1', headers, 200);
         expect(response.status).to.equal(200);
         expect(response.data).to.have.property('results');
         expect(response.data).to.have.property('header');

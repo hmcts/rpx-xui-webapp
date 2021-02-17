@@ -136,4 +136,14 @@ describe('setActiveLink', () => {
     expect(AppUtils.pad('1')).toEqual('01');
     expect(AppUtils.pad('1', 3)).toEqual('001');
   });
+
+  fit ('should check the tabs correctly', () => {
+    let ITEMS: NavItemsModel[] = [
+      { href: '/a', active: false, text: 'A' },
+      { href: '/b', active: false, text: 'B' },
+      { href: '/c', active: false, text: 'C' }
+    ];
+    let CURRENT_URL: string = '/a';
+    expect(AppUtils.checkTabs(ITEMS, CURRENT_URL)).toEqual([ true, '' ]);
+  }) 
 });

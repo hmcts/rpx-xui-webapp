@@ -100,7 +100,7 @@ export class AppUtils {
         // if cases we need an equivalence to stop confusion in tab selection
         continue;
       }
-      // if the href partly matches, find the largest tab name for which the url partly matches
+      // if the href partly matches, find the largest href for which the url partly matches
       if (checkHrefs.some(url => currentUrl.indexOf(url) === 0)) {
         if (maxLength < checkItem.href.length) {
           maxLength = checkItem.href.length;

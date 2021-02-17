@@ -19,6 +19,7 @@ const exuiTestCaseType = require('./solicitorCreate/exuiTestCaseType');
 const { isArray } = require("core-js/fn/array");
 const CCDCaseConfig = require('./ccdCaseConfig/caseCreateConfigGenerator');
 const CCDWorkBasketInputGenerator = require('./ccdCaseConfig/workBasketInputGenerator');
+const CCDSearchInputGenerator = require('./ccdCaseConfig/searchInputGenerator');
 
 
 
@@ -47,6 +48,25 @@ class CCDApi{
                 break;
         }
         return workbasketInputs;
+    }
+
+    getsearchCaseInputs(jurisdiction){
+        let searchInputs = publicLaw;
+        switch (jurisdiction){
+            case 'DIVORCE':
+                searchInputs = divorce;
+                break;
+            case 'GrantOfRepresentation':
+                searchInputs = probate;
+                break;
+            case 'Asylum':
+                searchInputs = ia;
+                break
+            case 'TRIB_MVP_3_TYPE':
+                searchInputs = publicLaw;
+                break;
+        }
+        return searchInputs;
     }
 
     getSolicitorCreateCaseConfig(caseType,event){
@@ -132,8 +152,18 @@ class CCDApi{
             .addField({ id: "multiSelectItem", type: "MultiSelectList", label: "Multi select input", list: [{ code: "a", label: "A" }, { code: "b", label: "B" }, { code: "c", label: "C" }] })
 
             .getConfig();
+    }
 
+    getsearchCaseInputs(){
+        const ccdSearchInputGenerator = new CCDSearchInputGenerator();
+        return ccdSearchInputGenerator
+            .addField({ id: "simpletext", type: "Text", label: "Simple text input" })
+            .addField({ id: "radioInput", type: "FixedRadioList", label: "Simple Radio input", list: [{ code: "a", label: "A" }, { code: "b", label: "B" }, { code: "c", label: "C" }] })
+            .addField({ id: "radioYesorNo", type: "YesOrNo", label: "Simple Yes or No input" })
+            .addField({ id: "fixedListItem", type: "FixedList", label: "fixed listinput", list: [{ code: "a", label: "A" }, { code: "b", label: "B" }, { code: "c", label: "C" }] })
+            .addField({ id: "multiSelectItem", type: "MultiSelectList", label: "Multi select input", list: [{ code: "a", label: "A" }, { code: "b", label: "B" }, { code: "c", label: "C" }] })
 
+            .getConfig();
     }
 
     getCustomCase(){

@@ -8,6 +8,9 @@ module.exports = {
             '/data/internal/case-types/:jurisdiction/work-basket-inputs': (req, res) => {
                 res.send(ccdMockData.getWorkbasketInputs(req.params.jurisdiction));
             },
+            '/data/internal/case-types/:jurisdiction/search-inputs': (req, res) => {
+                res.send(ccdMockData.getsearchCaseInputs(req.params.jurisdiction));
+            },
             '/data/internal/case-types/:jurisdiction/event-triggers/:caseType': (req, res) => {
                 res.send(ccdMockData.getSolicitorCreateCaseConfig(req.params.jurisdiction, req.params.caseType));
             },

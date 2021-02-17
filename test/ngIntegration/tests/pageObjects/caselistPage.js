@@ -1,5 +1,6 @@
 const BrowserWaits = require('../../../e2e/support/customWaits');
 const reportLogger = require('../../../e2e/support/reportLogger');
+const ccdApi = require('../../../nodeMock/ccd/ccdApi');
 
 class CaseListPage{
 
@@ -7,7 +8,9 @@ class CaseListPage{
     dynamicFiltersContainer = $('#dynamicFilters');
     applyBtnWorkbasketFilters = $('ccd-workbasket-filters button:not(.button-secondary)');
     resetBtnWorkbasketFilters = $('ccd-workbasket-filters button.button-secondary]');
-
+    caseListTableHead = $("ccd-search-result>table>thead tr th");
+    caseListTableTr = $$("ccd-search-result>table>tbody>tr");
+    caseResultsPagination = $('ccd-search-result .pagination-top');
 
     async amOnPage(){
         try{
@@ -20,8 +23,30 @@ class CaseListPage{
     }
 
     async isWorkbasketFilterDisplayed(fieldConfig){
-        await this.amOnPage(); 
+        // await this.amOnPage(); 
         return await this.dynamicFiltersContainer.$(`#dynamicFilters .form-group #${fieldConfig.field.id}`).isDisplayed(); 
+    }
+
+    async validateDynamicFields(dynamicfield){
+
+        if (dynamicfield.field.field_type.type.includes("List")) {
+            const fieldConfigList = dynamicfield.field.field_type.fixed_list_items;
+            console.log("fieldConfigList:::",JSON.stringify(fieldConfigList));
+            const listValuesRendered = await this.getFieldListValues(dynamicfield);
+            console.log("listValuesRendered:::",JSON.stringify(listValuesRendered));
+            expect(listValuesRendered.length, JSON.stringify(listValuesRendered) + " " + JSON.stringify(fieldConfigList)).to.equal(fieldConfigList.length)
+            fieldConfigList.forEach(listItem => {
+                expect(listValuesRendered.includes(listItem.code)).to.be.true
+            });
+
+        } else if (dynamicfield.field.field_type.type.includes("YesOrNo")) {
+            const listValuesRendered = await this.getFieldListValues(dynamicfield);
+            expect(listValuesRendered.length).to.equal(2);
+            ["Yes", "No"].forEach(item => {
+                expect(listValuesRendered.includes(item)).to.be.true
+            });
+        }
+
     }
 
     async getFieldListValues(fieldConfig){
@@ -99,6 +124,71 @@ class CaseListPage{
         await browser.executeScript('arguments[0].scrollIntoView()', this.applyBtnWorkbasketFilters);
         await this.applyBtnWorkbasketFilters.click(); 
     }
+
+
+    async caseDataValidation(){
+
+        let caseFields = await this.validateCaseFields();
+        let cases = ccdApi.getWorkbasketCases();
+        console.log("caseFields::",JSON.stringify(caseFields));
+        for (const caseObj in cases.columns){
+            console.log("cases.columns[caseObj].label::",cases.columns[caseObj].label);
+            expect(caseFields).to.be.contain(cases.columns[caseObj].label);
+        }
+
+        let caseValues = await this.validateCaseValues();
+
+        for (const casevalue in caseValues){
+            let thObj = cases.columns.find(caseObj=>caseObj.label == caseFields[casevalue]);
+            let thKey = thObj.case_field_id;
+
+            let value = cases.results[0].case_fields[thKey] ? cases.results[0].case_fields[thKey] : "";
+
+            expect(caseValues).to.be.contain(value.toString());
+
+        }
+
+    }
+    async validateCaseFields(){
+
+        await BrowserWaits.waitForElement(this.caseResultsPagination);
+        let thLable = $$("ccd-search-result>table>thead tr th");
+        await BrowserWaits.waitForElement(this.caseListTableHead);
+        let count = await thLable.count();
+        console.log("count::",count);
+        let caseResultsThTitle = [];
+        if (count) {
+            for (let i = 1; i < count; i++) {
+                let thText = thLable.get(i).$$(".search-result-column-label");
+                let text = await thText.getText();
+                caseResultsThTitle.push(`${text}`);
+            }
+            return await caseResultsThTitle;
+        }
+    }
+
+    async validateCaseValues() {
+        await BrowserWaits.waitForElement(this.caseResultsPagination);
+        let caseListTd = element.all(by.xpath(`//table/tbody/tr[1]/td`));
+        let tdCount = await caseListTd.count();
+        // let caseListTd = element.all(by.xpath(`//table/tbody/tr[1]/td`));
+        await BrowserWaits.waitForElement(this.caseListTableHead);
+        console.log("tdCount",tdCount);
+        let caseData = [];
+        for (let i = 1; i < tdCount; i++) {
+            let thText = caseListTd.get(i).$$("ccd-field-read-label");
+            let text = await thText.getText();
+            let updatedText =await text.toString().replace(/-/g, "");
+            caseData.push(`${updatedText}`);
+        }
+        return await caseData;
+    }
+
+    async getCasesCount(){
+        await BrowserWaits.waitForElement(this.caseResultsPagination);
+       return await this.caseListTableTr.count();
+    }
+    
 
 }
 

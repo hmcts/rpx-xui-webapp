@@ -10,7 +10,7 @@ const CucumberReporter = require('../../../e2e/support/reportLogger');
 
 const headerpage = require('../../../e2e/features/pageObjects/headerPage');
 
-const { getTestJurisdiction,getMockJurisdictionWorkbaseketConfig } = require('../../mockData/ccdCaseMock');
+const { getTestJurisdiction, getMockJurisdictionWorkbaseketConfig, getMockJurisdictionSearchInputConfig } = require('../../mockData/ccdCaseMock');
 const getEventConfig = require('../../mockData/ccdMockEventConfigs');
 
 
@@ -36,6 +36,15 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         global.scenarioData[workbasketRef] = workbasetConfigurator;
         MockApp.onGet('/data/internal/case-types/:jurisdiction/work-basket-inputs', (req, res) => {
             res.send(workbasetConfigurator.getConfig());
+        });
+
+    });
+
+    Given('I set mock case searchinput config {string}', async function(searchInputRef){
+        const searchInputConfigurator = getMockJurisdictionSearchInputConfig();
+        global.scenarioData[searchInputRef] = searchInputConfigurator;
+        MockApp.onGet('/data/internal/case-types/:jurisdiction/search-inputs', (req, res) => {
+            res.send(searchInputConfigurator.getConfig());
         });
 
     });

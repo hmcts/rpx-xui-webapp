@@ -12,6 +12,7 @@ const headerpage = require('../../../e2e/features/pageObjects/headerPage');
 
 const { getTestJurisdiction } = require('../../mockData/ccdCaseMock');
 
+const ccdApi = require('../../../nodeMock/ccd/ccdApi');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
@@ -64,24 +65,39 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const workbasketConfig = global.scenarioData[workbasketConfigRef].getConfig();
 
         for (const dynamicfield of workbasketConfig.workbasketInputs) {
-            if (dynamicfield.field.field_type.type.includes("List")) {
-                const fieldConfigList = dynamicfield.field.field_type.fixed_list_items;
-                const listValuesRendered = await caseListPage.getFieldListValues(dynamicfield);
-                expect(listValuesRendered.length, JSON.stringify(listValuesRendered) + " " + JSON.stringify(fieldConfigList)).to.equal(fieldConfigList.length)
-                fieldConfigList.forEach(listItem => {
-                    expect(listValuesRendered.includes(listItem.code)).to.be.true
-                });
 
-            } else if (dynamicfield.field.field_type.type.includes("YesOrNo")) {
-                const listValuesRendered = await caseListPage.getFieldListValues(dynamicfield);
-                expect(listValuesRendered.length).to.equal(2);
-                ["Yes", "No"].forEach(item => {
-                    expect(listValuesRendered.includes(item)).to.be.true
-                });
-            }
+            await caseListPage.validateDynamicFields(dynamicfield);
+            
             expect(await caseListPage.isWorkbasketFilterDisplayed(dynamicfield)).to.be.true
         }
     });
 
+    Then('I Validate case fields displayed and values {string}', async function(workbasketConfigRef){
+        const workbasketConfig = global.scenarioData[workbasketConfigRef].getConfig();
+        const workbasketInputValues = {}
+        for (const dynamicfield of workbasketConfig.workbasketInputs) {
+            workbasketInputValues[dynamicfield.field.id] = await caseListPage.inputWorkbasketFilter(dynamicfield);
+        }
+
+        await caseListPage.clickApplyWorkbasketFilters();
+        await caseListPage.caseDataValidation();
+
+    })
+
+    Then('I Validate total cases count {string}', async function(workbasketConfigRef){
+        const workbasketConfig = global.scenarioData[workbasketConfigRef].getConfig();
+        let reqData = { size: 250 }
+
+        const workbasketInputValues = {}
+        for (const dynamicfield of workbasketConfig.workbasketInputs) {
+            workbasketInputValues[dynamicfield.field.id] = await caseListPage.inputWorkbasketFilter(dynamicfield);
+        }
+
+        await caseListPage.clickApplyWorkbasketFilters();
+
+        let cases = ccdApi.getWorkbasketCases();
+        let totalCount = await caseListPage.getCasesCount();
+        expect(reqData.size).to.equal(totalCount);
+    });
 
 });

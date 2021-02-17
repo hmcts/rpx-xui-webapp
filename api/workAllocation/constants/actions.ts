@@ -4,7 +4,7 @@ const ASSIGN = {
 };
 const CANCEL = {
   id: 'cancel',
-  title: 'Cancel task'
+  title: 'Cancel task',
 };
 const CLAIM = {
   id: 'claim',
@@ -48,9 +48,9 @@ export const TASK_ACTIONS = {
   AVAILABLE: [CLAIM, CLAIM_AND_GO],
   MANAGER: {
     ASSIGNED: [REASSIGN, RELEASE, COMPLETE, CANCEL],
-    UNASSIGNED: [ASSIGN, COMPLETE, CANCEL]
+    UNASSIGNED: [ASSIGN, COMPLETE, CANCEL],
   },
-  MY: [REASSIGN, RELEASE, GO]
+  MY: [REASSIGN, RELEASE, GO],
 };
 
 export enum ActionViews {

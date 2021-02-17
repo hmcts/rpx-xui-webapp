@@ -2,9 +2,9 @@ import * as HealthCheck from '@hmcts/nodejs-healthcheck'
 import { SESSION, xuiNode } from '@hmcts/rpx-xui-node-lib'
 import { getConfigValue, showFeature } from '../configuration'
 import {
-  FEATURE_WORKALLOCATION_ENABLED,
   FEATURE_REDIS_ENABLED,
   FEATURE_TERMS_AND_CONDITIONS_ENABLED,
+  FEATURE_WORKALLOCATION_ENABLED,
   SERVICE_S2S_PATH,
   SERVICES_CASE_CASEWORKER_REF_PATH,
   SERVICES_CCD_COMPONENT_API_PATH,

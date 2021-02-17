@@ -4,6 +4,7 @@ import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import * as fromCasesFeature from '../../store';
 import * as fromCaseList from '../../store/reducers';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 
 @Component({
   selector: 'exui-case-share-complete',
@@ -19,8 +20,9 @@ export class CaseShareCompleteComponent implements OnInit, OnDestroy {
   public shareCaseState$: Observable<fromCasesFeature.ShareCasesState>;
   public isLoading: boolean;
   public completeScreenMode: string;
+  public removeUserFromCaseToggleOn$: Observable<boolean>;
 
-  constructor(public store: Store<fromCaseList.State>) {}
+  constructor(public store: Store<fromCaseList.State> , public featureToggleService: FeatureToggleService) {}
 
   public ngOnInit() {
     this.shareCases$ = this.store.pipe(select(fromCasesFeature.getShareCaseListState));
@@ -36,7 +38,9 @@ export class CaseShareCompleteComponent implements OnInit, OnDestroy {
       this.completeScreenMode = this.checkIfIncomplete(shareCases);
       this.newShareCases = shareCases;
     });
+    this.removeUserFromCaseToggleOn$ = this.featureToggleService.getValue('remove-user-from-case-mc', false);
   }
+
 
   public ngOnDestroy() {
     if (this.completeScreenMode === 'COMPLETE') {

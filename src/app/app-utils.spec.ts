@@ -137,13 +137,37 @@ describe('setActiveLink', () => {
     expect(AppUtils.pad('1', 3)).toEqual('001');
   });
 
-  fit ('should check the tabs correctly', () => {
-    let ITEMS: NavItemsModel[] = [
-      { href: '/a', active: false, text: 'A' },
-      { href: '/b', active: false, text: 'B' },
-      { href: '/c', active: false, text: 'C' }
-    ];
-    let CURRENT_URL: string = '/a';
-    expect(AppUtils.checkTabs(ITEMS, CURRENT_URL)).toEqual([ true, '' ]);
-  }) 
+  const mockItems: NavItemsModel[] = [
+    // fill with actual mock data
+    { href: '/tasks', active: false, text: 'A' },
+    { href: '/tasks/task-manager', active: false, text: 'B' },
+    { href: '/cases', active: false, text: 'C' },
+    { href: '/cases/case-filter', active: false, text: 'D' }
+  ];
+
+  it ('should check the tabs correctly', () => {
+    // verify matching url returns true
+    expect(AppUtils.checkTabs(mockItems, '/tasks/task-manager')).toEqual([ true, '' ]);
+    // verify matching url given as longest matching href
+    expect(AppUtils.checkTabs(mockItems, '/tasks/task-manager/random-parameter')).toEqual([ false, '/tasks/task-manager' ]);
+    // verify case-search returns true
+    expect(AppUtils.checkTabs(mockItems, '/cases/case-search')).toEqual([ true, '' ]);
+    // verify tasks matches (should this ever be the case)
+    expect(AppUtils.checkTabs(mockItems, '/tasks')).toEqual([ true, '' ]);
+    // verify the internal task lists set the tab correctly
+    expect(AppUtils.checkTabs(mockItems, '/tasks/list')).toEqual([ false, '/tasks']);
+    expect(AppUtils.checkTabs(mockItems, '/tasks/available')).toEqual([ false, '/tasks']);
+    // verify tab not set for action page within tasks and any additional url snippet for cases
+    expect(AppUtils.checkTabs(mockItems, '/tasks/assign')).toEqual([ false, '']);
+    expect(AppUtils.checkTabs(mockItems, '/cases/random-parameter')).toEqual([ false, '']);
+
+  });
+
+  it('should correctly set the fullUrl value', () => {
+    // note: mockItems[0].href = '/tasks'
+    expect(AppUtils.isFullUrl(mockItems[0].href, '/tasks')).toBeTruthy();
+    expect(AppUtils.isFullUrl(mockItems[0].href, '/tasks/task-manager')).toBeFalsy();
+    expect(AppUtils.isFullUrl(mockItems[0].href, '/cases/case-search')).toBeTruthy();
+    expect(AppUtils.isFullUrl(mockItems[0].href, '/task')).toBeFalsy();
+  })
 });

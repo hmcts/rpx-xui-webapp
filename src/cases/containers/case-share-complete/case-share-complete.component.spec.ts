@@ -124,22 +124,30 @@ describe('CaseShareCompleteComponent', () => {
     expect(component.shareCases.length).toEqual(0);
   });
 
-  it('should not see remove user info from case if remove user feature is toggled on', () => {
+  it('should see add user info from case if remove user feature is toggled off', () => {
     component.completeScreenMode = 'PENDING';
     component.removeUserFromCaseToggleOn$ = of(false);
     fixture.detectChanges();
-    const removeUserError = fixture.debugElement.nativeElement.querySelector('#remove-user-error');
+    const removeUserError = fixture.debugElement.nativeElement.querySelector('#add-user-error');
     expect(removeUserError).toBeTruthy();
-    const removeUserInfo = fixture.debugElement.nativeElement.querySelector('#remove-user-info');
+    const addAndRemoveUserError = fixture.debugElement.nativeElement.querySelector('#add-and-remove-user-error');
+    expect(addAndRemoveUserError).toBeFalsy();
+    const removeUserInfo = fixture.debugElement.nativeElement.querySelector('#add-user-info');
     expect(removeUserInfo).toBeTruthy();
+    const addAndRemoveUserInfo = fixture.debugElement.nativeElement.querySelector('#add-and-remove-user-info');
+    expect(addAndRemoveUserInfo).toBeFalsy();
   });
 
   it('should see remove user info from case if remove user feature is toggled on', () => {
     component.completeScreenMode = 'PENDING';
     component.removeUserFromCaseToggleOn$ = of(true);
     fixture.detectChanges();
+    const removeUserError = fixture.debugElement.nativeElement.querySelector('#add-user-error');
+    expect(removeUserError).toBeFalsy();
     const addAndRemoveUserError = fixture.debugElement.nativeElement.querySelector('#add-and-remove-user-error');
     expect(addAndRemoveUserError).toBeTruthy();
+    const removeUserInfo = fixture.debugElement.nativeElement.querySelector('#add-user-info');
+    expect(removeUserInfo).toBeFalsy();
     const addAndRemoveUserInfo = fixture.debugElement.nativeElement.querySelector('#add-and-remove-user-info');
     expect(addAndRemoveUserInfo).toBeTruthy();
   });

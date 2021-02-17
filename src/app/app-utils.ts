@@ -67,17 +67,59 @@ export class AppUtils {
    */
   public static setActiveLink(items: NavItemsModel[], currentUrl: string): NavItemsModel[] {
     let fullUrl = false;
-    for (const checkItem of items) {
-      if (checkItem.href === currentUrl || currentUrl === '/cases/case-search') {
-        fullUrl = true;
-      }
-    }
+    let matchingUrl = '';
+    [fullUrl, matchingUrl] = AppUtils.checkTabs(items, currentUrl);
     return items.map(item => {
       return {
         ...item,
-        active: fullUrl ? item.href === currentUrl : currentUrl.indexOf(item.href) === 0
+        active: fullUrl ? item.href === currentUrl : item.href === matchingUrl
       };
     });
+  }
+
+  /**
+   * Tab logic - Works out which tab needs to be selected via the current tab urls and the given url
+   *
+   * @param items - the tab urls
+   * @param currrentUrl - the url being tested
+   * @return - a list including boolean stating whether the full url is given or the similar matching url
+   */
+  public static checkTabs(items: NavItemsModel[], currentUrl: string): any[] {
+    let fullUrl = false;
+    let maxLength = 0;
+    let matchingUrl = '';
+    let checkHrefs = [];
+    for (const checkItem of items) {
+      // allow checking of /tasks urls properly
+      checkHrefs = checkItem.href === '/tasks' ? ['/tasks/list', '/tasks/available'] : [checkItem.href];
+      fullUrl = AppUtils.isFullUrl(checkItem.href, currentUrl);
+      if (fullUrl) {
+        break;
+      }
+      if (checkItem.href === '/cases') {
+        // if cases we need an equivalence to stop confusion in tab selection
+        continue;
+      }
+      // if the href partly matches, find the largest tab name for which the url partly matches
+      if (checkHrefs.some(url => currentUrl.indexOf(url) === 0)) {
+        if (maxLength < checkItem.href.length) {
+          maxLength = checkItem.href.length;
+          matchingUrl = checkItem.href;
+        }
+      }
+    }
+    return [fullUrl, matchingUrl];
+  }
+
+  /**
+   * Check if item's href is equivalent to the current url
+   *
+   * @param href - one of the tab urls
+   * @param currrentUrl - the url being tested
+   * @return - boolean value
+   */
+  public static isFullUrl(href: string, currentUrl: string): boolean {
+    return href === currentUrl || currentUrl === '/cases/case-search';
   }
 
   /**

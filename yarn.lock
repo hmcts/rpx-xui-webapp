@@ -437,9 +437,9 @@
   resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.39-alpha.tgz#782d4a4698dae040dd72b26711f04a8d8299d25c"
   integrity sha512-M1364rFLuvktYz5+jVjJ5ZmNUx0/SgoAvH3RsIaT2wFqFf92emuiRyXqax5oSEC5kM9Jpw0rcxEcRbBJWMoglg==
 
-"@hmcts/media-viewer@file:./src/hmcts-media-viewer-v2.6.7-RC.tgz":
-  version "2.6.7-RC"
-  resolved "file:./src/hmcts-media-viewer-v2.6.7-RC.tgz#ca4777c80f17b7d652270d4464c6efd8a0fcb7b1"
+"@hmcts/media-viewer@file:./src/hmcts-media-viewer-v2.6.7-RC2.tgz":
+  version "2.6.7-RC2"
+  resolved "file:./src/hmcts-media-viewer-v2.6.7-RC2.tgz#04350b13816dee339b4d541dae2804a23497d4c8"
   dependencies:
     "@swimlane/ngx-datatable" "^16.0.2"
     angular-tree-component "^8.5.6"

@@ -18,6 +18,7 @@ class CaseEdit {
 
     checkYourAnswersSummaryRows = $$('.check-your-answers .form-table tr');
 
+    errorSummaryContainer = $('.error-summary');
 
     async waitForPage() {
         await BrowserWaits.waitForElement($('ccd-case-edit-page'));
@@ -32,6 +33,17 @@ class CaseEdit {
             return false;
         }
     }
+
+    async isErrorSummaryDisplayed(){
+        try {
+            await BrowserWaits.waitForElement(this.errorSummaryContainer);
+            return true;
+        } catch (error) {
+            reportLogger.AddMessage("Error waiting for case edit page :" + error);
+            return false;
+        }
+    }
+
 
     async getPageTitle(){
         return await $('ccd-case-edit-page h1').getText();
@@ -171,7 +183,7 @@ class CaseEdit {
         }
         await $(`#${this.getFieldId(fieldConfig.id, parentId)}-${inputoptionId.code}`).click();
 
-        return selectedVal;
+        return inputoptionId;
     }
 
     async inputFixedListField(fieldConfig, inputOption, parentId) {

@@ -108,5 +108,55 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     });
 
+    When('I input fields in case edit page from event {string} with values', async function (eventConfigRef, datatable){
+        const caseConfigInstance = global.scenarioData[eventConfigRef];
+        const caseConfig = caseConfigInstance.getCase(); 
+        const fieldValues = datatable.hashes();
 
+        for (const fieldValue of fieldValues){
+            const fieldConfig = caseConfigInstance.getCaseFieldConfig(fieldValue.fieldId);
+
+            let value = fieldValue.value;
+            if(fieldConfig.field_type.type.toLowerCase().includes("list")){
+                value = null;
+                for (const listItem of fieldConfig.field_type.fixed_list_items){
+                    console.log(`${fieldValue.value} is in ${JSON.stringify(listItem)}`);
+                    if (listItem.code === fieldValue.value){
+                        value = listItem;
+                        break; 
+                    } 
+                } 
+                if (value === null) {
+                    throw new Error(`${fieldValue.fieldId} is list item and Provided value "${fieldValue.value}" not present in fieldConfig fixed_list_items ${JSON.stringify(fieldConfig.field_type.fixed_list_items)} ` );
+                }
+            } 
+            await caseEditPage.inputCaseField(fieldConfig, value);
+        }
+    });
+
+    Then('I validate fields display in case edit page from event {string}', async function (eventConfigRef, datatable){
+        const caseConfigInstance = global.scenarioData[eventConfigRef];
+        const caseConfig = caseConfigInstance.getCase();
+        const fieldValues = datatable.hashes();
+        for (const fieldValue of fieldValues) {
+            const fieldConfig = caseConfigInstance.getCaseFieldConfig(fieldValue.fieldId)
+            const isExpectedToDisplay = fieldValue.isDisplayed.includes("true") ? true : false;
+            expect(await caseEditPage.isFieldDisplayed(fieldConfig), `${fieldValue.fieldId} is ${isExpectedToDisplay ? "not": ""} displayed`).to.equal(isExpectedToDisplay);
+        }
+
+    });
+
+    Then('I validate event page continue on validate request error status code {int}', async function(statusCode){
+        let validateReq = null;
+        MockApp.onPost('/data/case-types/:caseType/validate', (req, res, next) => {
+            validateReq = req.body;
+            res.status(statusCode).send("Data validation error!");
+        });
+        await MockApp.stopServer();
+        await MockApp.startServer();
+
+        await caseEditPage.clickContinue();
+        expect(await caseEditPage.isErrorSummaryDisplayed(),' Error summary banner is not displayed').to.be.true;
+       
+    });
 });

@@ -64,7 +64,7 @@ const config = {
     cucumberOpts: {
         strict: true,
         // format: ['node_modules/cucumber-pretty'],
-        format: ['node_modules/cucumber-pretty', 'json:reports/ngIntegrationtests/json/results.json'],
+        format: ['node_modules/cucumber-pretty', 'json:reports/tests/ngIntegrationtests/json/results.json'],
         tags: ['@ng'],
         require: [
             '../../e2e/support/timeout.js',

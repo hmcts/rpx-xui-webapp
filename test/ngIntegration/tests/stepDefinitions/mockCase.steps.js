@@ -27,7 +27,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Given('I set MOCK event {string} props', async function(caseConfigReference, dataTable){
         const caseConfig = global.scenarioData[caseConfigReference]; 
-        const eventprops = dataTable.rowsHash();
+        const eventprops = convertDatatablePropsToccdObj(dataTable);
         caseConfig.updateEventProps(eventprops);
     });
 
@@ -59,9 +59,23 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Given('I set MOCK event config {string} field {string} properties', async function(eventConfigRef, fieldId, datatable){
         const eventConfig = global.scenarioData[eventConfigRef];
-        const fieldProps = datatable.rowsHash(); 
+        const fieldProps = convertDatatablePropsToccdObj(datatable); 
         eventConfig.updateFieldProps(fieldId, fieldProps); 
     });
 
+
  
 });
+
+function convertDatatablePropsToccdObj(datatable){
+    const tableRowshash = datatable.rowsHash();
+    for (const key in tableRowshash){
+
+        if (tableRowshash[key].toUpperCase() === "YES"){
+            tableRowshash[key] = true; 
+        } else if (tableRowshash[key].toUpperCase() === "NO"){
+            tableRowshash[key] = false; 
+        }
+    } 
+    return tableRowshash;
+}

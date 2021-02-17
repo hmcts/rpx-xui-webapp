@@ -125,7 +125,6 @@ export class TaskAssignmentComponent implements OnInit {
   private handleLocationChanged(): void {
     // When the location is changed, remove the caseworker selection.
     this.caseworker = null;
-
     // If "All" is selected as the location, we need all caseworkers at all locations.
     if (this.location === this.ALL_LOCATIONS) {
       this.caseworkerService.getAll().subscribe(caseworkers => {
@@ -135,8 +134,9 @@ export class TaskAssignmentComponent implements OnInit {
       });
     } else if (this.location && this.location.id) {
       // Otherwise, get the caseworkers at the specifed location.
-      this.caseworkerService.getForLocation(this.location.id).subscribe(caseworkers => {
-        this.setupCaseworkers(caseworkers);
+      this.caseworkerService.getAll().subscribe(caseworkers => {
+        const locationCaseWorkers = caseworkers.filter(cw => cw.location.id === this.location.id);
+        this.setupCaseworkers(locationCaseWorkers);
       }, error => {
         handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
       });

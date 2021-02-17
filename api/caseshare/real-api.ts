@@ -142,10 +142,10 @@ function handleRejectedResponse(allResults: any):
     if (status === 'rejected') {
       if (reason.config.method === 'post') {
         rejectedShareCasePayloads.push(JSON.parse(reason.config.data))
-        updatedErrorMessages.push(`{request: ${reason.config.data}, response: {${reason.data.status} ${reason.data.message}}}`)
       } else if (reason.config.method === 'delete') {
         rejectedUnShareCaseReason = reason
       }
+      updatedErrorMessages.push(`{request: ${reason.config.data}, response: {${reason.data.status} ${reason.data.message}}}`)
       rejectedCount ++
     }
   })

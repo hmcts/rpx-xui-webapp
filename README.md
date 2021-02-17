@@ -18,7 +18,7 @@ NODE_CONFIG_ENV=development sets the machine so that the config that is used is 
 
 @see https://github.com/lorenwest/node-config/wiki/Configuration-Files
 
-## Startup the Angular service locally
+## Startup the Angular service locally 
 
 Run `yarn start:ng` to start up the UI.
 

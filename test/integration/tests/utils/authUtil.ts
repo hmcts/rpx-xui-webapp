@@ -1,5 +1,6 @@
 import * as puppeteer from 'puppeteer';
 import {config} from '../config/config';
+import {reporterMsg} from './helper'
 const authCookiesForUsers = {
 
 };
@@ -52,6 +53,7 @@ export async function getUserId(username, password) {
 
 
 async function  authenticateAndGetcookies(username, password)  {
+
     const browser = await puppeteer.launch(getPuppeteerLaunchOptions());
 
     const page = await browser.newPage();

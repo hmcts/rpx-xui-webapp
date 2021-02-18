@@ -94,10 +94,6 @@ class CaseManager {
         var isCheckYourAnswersPage = false;
         let pageCounter = 1;
         while (!isCheckYourAnswersPage) {
-            if (isAccessibilityTest){
-               
-                await accessibilityCheckerAuditor(); 
-            }
             await this._formFillPage();
             var checkYouranswers = $(".check-your-answers");
             isCheckYourAnswersPage = await checkYouranswers.isPresent();
@@ -115,11 +111,11 @@ class CaseManager {
                 submit.getWebElement());
 
             var thisPageUrl = await browser.getCurrentUrl();
-            await submit.click();
-            await BrowserWaits.waitForPageNavigation(thisPageUrl);
-            if (isAccessibilityTest) {
-                await accessibilityCheckerAuditor(' Case Submitted ');
-            }
+
+            await BrowserWaits.retryWithActionCallback(async () => {
+                await submit.click();
+                await BrowserWaits.waitForPageNavigation(thisPageUrl)
+            });           
         }else{
             throw new  Error("Not in case creation check your answers page");
         }
@@ -144,10 +140,7 @@ class CaseManager {
 
         await this.nextStepGoButton.click();
         await BrowserWaits.waitForPageNavigation(thisPageUrl);
-        if (isAccessibilityTest) {
-            await accessibilityCheckerAuditor('CasenextStep ' + stepName); 
-        }
-
+    
     }
 
 
@@ -193,9 +186,12 @@ class CaseManager {
         var thisPageUrl = await browser.getCurrentUrl();
         cucumberReporter.AddMessage("Submitting page: " + thisPageUrl);
         console.log("Submitting : " + thisPageUrl )
-        await continieElement.click();
-        await BrowserWaits.waitForPageNavigation(thisPageUrl);
 
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await continieElement.click();
+            await BrowserWaits.waitForPageNavigation(thisPageUrl);
+        });
+     
         var nextPageUrl = await browser.getCurrentUrl();
 
 

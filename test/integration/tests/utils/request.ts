@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 import { config } from '../config/config';
 import { getSessionCookieString } from './authUtil';
+import {reporterMsg, reporterJson} from './helper'
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
@@ -19,7 +20,7 @@ http.interceptors.request.use(requestInterceptor);
 
 
 class Request {
-
+    private testContext;
     private cookieString: string = '';
     public async withSession(username: string, password: string) {
         this.cookieString = await getSessionCookieString(username, password);
@@ -92,7 +93,7 @@ class Request {
         }
     }
 
-    async retryRequest(callback,expectedStatus){
+    async retryRequest(callback,expectedResponsecode){
         let retryAttemptCounter = 0;
         let isCallbackSuccess = false;
         let retVal = null;
@@ -106,7 +107,14 @@ class Request {
             error = null;
             try {
                 retVal = await callback();
-                isCallbackSuccess = true;
+                if (expectedResponsecode  ){
+                    if (expectedResponsecode === retVal.status){
+                        isCallbackSuccess = true;
+                    }
+                    else{
+                        reporterMsg("Expected status not matching " + JSON.stringify(retVal));   
+                    }
+                }
             } catch (err) {
                 // retryErrorLogs.push(err.response ? err.response : err);
                 error = err;
@@ -116,10 +124,10 @@ class Request {
             }
 
 
-            if (expectedStatus instanceof Array){
-                isExpectedResponseReceived = expectedStatus.includes(retVal.status); 
+            if (expectedResponsecode instanceof Array){
+                isExpectedResponseReceived = expectedResponsecode.includes(retVal.status); 
             }else{
-                isExpectedResponseReceived = expectedStatus === retVal.status 
+                isExpectedResponseReceived = expectedResponsecode === retVal.status 
             }
 
             if (!isExpectedResponseReceived){

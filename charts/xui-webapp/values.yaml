@@ -109,3 +109,6 @@ nodejs:
   ingressHost: ${SERVICE_FQDN}
   redis:
   enabled: true
+idam-pr:
+  enabled: false
+

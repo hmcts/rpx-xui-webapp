@@ -1,7 +1,7 @@
 import { Pact } from '@pact-foundation/pact'
 import { expect } from 'chai'
 import * as path from 'path'
-import {getIdamUsersByEmail} from '../../pactUtil';
+import { getDetails } from '../../../../services/idam'
 import * as getPort from "get-port";
 const {Matchers} = require('@pact-foundation/pact');
 const {somethingLike} = Matchers;
@@ -9,16 +9,15 @@ const {somethingLike} = Matchers;
 let mockServerPort: number;
 let provider: Pact;
 
-describe("Idam Get user by email", async() => {
-  mockServerPort = await getPort()
-
-  provider = new Pact({
+describe("Idam API user details", async() => {
+    mockServerPort = await getPort()
+    provider = new Pact({
     port: mockServerPort,
     log: path.resolve(process.cwd(), "api/test/pact/logs", "mockserver-integration.log"),
     dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
     spec: 2,
-    consumer: "XUIWebapp",
-    provider: "Idam_api",
+    consumer: "xui_webApp",
+    provider: "idamApi_users",
     pactfileWriteMode: "merge",
   })
 
@@ -27,11 +26,10 @@ describe("Idam Get user by email", async() => {
     "forename": somethingLike("Joe"),
     "surname": somethingLike("Bloggs"),
     "email": somethingLike("joe.bloggs@hmcts.net"),
-    "active": true,
-    "roles": [
-      "solicitor",
-      "caseworker"
-    ]
+    "active": somethingLike(true),
+    "roles":somethingLike([
+      somethingLike("solicitor"),somethingLike("caseworker")
+    ])
   }
   // Setup the provider
   before(() => provider.setup())
@@ -39,16 +37,17 @@ describe("Idam Get user by email", async() => {
   after(() => provider.finalize())
   // verify with Pact, and reset expectations
   afterEach(() => provider.verify())
-  describe("get /users?email", () => {
+  describe("get /details", () => {
+
+    const jwt = 'some-access-token';
 
     before(done => {
       const interaction = {
-        state: "a user exists",
-        uponReceiving: "Receiving a request to get details based on emailId ",
+        state: "a valid user exists",
+        uponReceiving: "a request for that user:",
         withRequest: {
           method: "GET",
-          path: "/users",
-          query:"email=joe@bloggs.net",
+          path: "/details",
           headers: {
                Authorization: "Bearer some-access-token"
           },
@@ -66,22 +65,21 @@ describe("Idam Get user by email", async() => {
         done()
       })
     })
-    it("Returns the correct response", (done) => {
-      const taskUrl = `${provider.mockService.baseUrl}/users?email=joe@bloggs.net`;
+    it("returns the correct response", (done) => {
+      const taskUrl = `${provider.mockService.baseUrl}`;
 
-      const response:Promise<any>  = getIdamUsersByEmail(taskUrl);
+      const response:Promise<any>  = getDetails(taskUrl,jwt);
 
       response.then((axiosResponse) => {
-        const dto:IdamGetDetailsResponseDto = <IdamGetDetailsResponseDto> axiosResponse.data;
+        const dto:IdamGetDetailsResponseDto = <IdamGetDetailsResponseDto> axiosResponse;
         assertResponses(dto);
       }).then(done,done)
     })
   })
 })
 
-
 function assertResponses(dto:IdamGetDetailsResponseDto){
-  expect(dto.id).to.be.equal('abc123');
+  expect(dto.active).to.be.equal(true);
   expect(dto.email).to.be.equal('joe.bloggs@hmcts.net');
   expect(dto.forename).to.be.equal('Joe');
   expect(dto.surname).to.be.equal('Bloggs');
@@ -94,6 +92,6 @@ export interface IdamGetDetailsResponseDto{
   forename:string,
   surname:string,
   email:string,
-  active:boolean,
+  active:boolean
   roles:string[]
 }

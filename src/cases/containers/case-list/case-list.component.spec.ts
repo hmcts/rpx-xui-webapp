@@ -1,7 +1,7 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { PaginationMetadata, SearchResultViewItem, WindowService } from '@hmcts/ccd-case-ui-toolkit';
+import { AlertService, PaginationMetadata, SearchResultViewItem, WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services/definitions/definitions.service';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
@@ -35,6 +35,7 @@ describe('CaseListComponent', () => {
   const mockAppConfig = jasmine.createSpyObj('AppConfig', ['getPaginationPageSize']);
   const mockWindowService = jasmine.createSpyObj('WindowService', ['removeLocalStorage']);
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['getValue', 'isEnabled']);
+  const mockAlertService = jasmine.createSpyObj('alertService', ['error']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -56,6 +57,10 @@ describe('CaseListComponent', () => {
         {
           provide: FeatureToggleService,
           useValue: mockFeatureToggleService
+        },
+        {
+          provide: AlertService,
+          useValue: mockAlertService
         },
         provideMockStore(),
       ]
@@ -364,6 +369,38 @@ describe('CaseListComponent', () => {
 
       expect(component.resultsArr).toEqual([{ case_id: 'DRAFT274146' }]);
     });
+
+    it('should set the components resultsArr hasDrafts property on return of subscription is false.', () => {
+
+      const resultView = {
+        columns: [],
+        results: [
+          {
+            case_id: 'DRAFT274146',
+          }
+        ],
+        result_error: null
+      };
+
+      component.onResultsViewHandler(resultView);
+      expect(component.resultView.hasDrafts()).toEqual(false);
+    });
+
+    it('should set the components resultsArr property on return of subscription and then call hasResults.', () => {
+
+      const resultView = {
+        columns: [],
+        results: [
+          {
+            case_id: 'DRAFT274146',
+          }
+        ],
+        result_error: null
+      };
+
+      component.onResultsViewHandler(resultView);
+      expect(component.hasResults()).toEqual(true);
+    });
   });
 
   describe('caseShareIsVisible', () => {
@@ -446,10 +483,39 @@ describe('CaseListComponent', () => {
       component.setCaseListFilterDefaults();
 
       expect(component.defaults).toBeDefined();
-      expect(component.defaults.state_id).toEqual('some state id');
+      expect(component.defaults.state_id).toEqual(null);
     });
 
     it('should set the defaults from localStorage.', () => {
+      const localStorageGetItemSpy = spyOn(localStorage, 'getItem');
+      localStorageGetItemSpy.and.returnValue('{' +
+        '"jurisdiction": "Probate", ' +
+        '"case-type": "GrantOfRepresentation", ' +
+        '"case-state": null' +
+      '}');
+      component.jurisdictionsBehaviourSubject$.next([{
+        id: 'Probate',
+        name: 'some name',
+        description: 'some desc',
+        caseTypes: [{
+          id: 'GrantOfRepresentation',
+          events: null,
+          name: 'some name',
+          description: 'some desc',
+          states: [{
+            id: 'BOReadyToIssue',
+            name: 'some name',
+            description: 'some desc'
+          }]
+        }]
+      }]);
+      component.setCaseListFilterDefaults();
+
+      expect(component.defaults.state_id).toEqual(null);
+      expect(component.defaults.state_id).toBeNull(null);
+    });
+
+    it('should set the defaults from localStorage, case state is null.', () => {
       const localStorageGetItemSpy = spyOn(localStorage, 'getItem');
       localStorageGetItemSpy.and.returnValue('{' +
         '"jurisdiction": "Probate", ' +
@@ -474,7 +540,65 @@ describe('CaseListComponent', () => {
       }]);
       component.setCaseListFilterDefaults();
 
-      expect(component.defaults.state_id).toEqual('BOReadyToIssue');
+      expect(component.defaults.state_id).toEqual(null);
+    });
+
+    it('getEvent returns null.', () => {
+      const event = component.getEvent();
+      expect(event).toEqual(null);
+    });
+
+    it('jurisdiction matches createEvent jurisdiction.', () => {
+      const data = { metadataFieldsGroupFromLS: undefined,
+        jurisdictionFromLS: {id: 'PUBLICLAW'},
+        caseStateGroupFromLS: {id: null},
+        caseTypeGroupFromLS: { id: 'CARE_SUPERVISION_EPO' },
+        formGroupFromLS: {
+          '[CASE_REFERENCE]': null,
+          caseLocalAuthority: 'BNS',
+          caseName: null,
+          dateSubmitted: null,
+          evidenceHandled: null,
+          familyManCaseNumber: null
+        },
+      };
+      const event = component.createEvent(data.jurisdictionFromLS, data.caseTypeGroupFromLS, data.caseStateGroupFromLS, data.metadataFieldsGroupFromLS, data.formGroupFromLS, 1, undefined);
+      expect(event.selected.jurisdiction).toEqual(data.jurisdictionFromLS);
+    });
+
+    it('case type matches createEvent case type.', () => {
+      const data = { metadataFieldsGroupFromLS: undefined,
+        jurisdictionFromLS: {id: 'PUBLICLAW'},
+        caseStateGroupFromLS: {id: null},
+        caseTypeGroupFromLS: { id: 'CARE_SUPERVISION_EPO' },
+        formGroupFromLS: {
+          '[CASE_REFERENCE]': null,
+          caseLocalAuthority: 'BNS',
+          caseName: null,
+          dateSubmitted: null,
+          evidenceHandled: null,
+          familyManCaseNumber: null
+        },
+      };
+      const event = component.createEvent(data.jurisdictionFromLS, data.caseTypeGroupFromLS, data.caseStateGroupFromLS, data.metadataFieldsGroupFromLS, data.formGroupFromLS, 1, undefined);
+      expect(event.selected.caseType).toEqual(data.caseTypeGroupFromLS);
+    });
+    it('form group matches createEvent formgroup.', () => {
+      const data = { metadataFieldsGroupFromLS: undefined,
+        jurisdictionFromLS: {id: 'PUBLICLAW'},
+        caseStateGroupFromLS: {id: null},
+        caseTypeGroupFromLS: { id: 'CARE_SUPERVISION_EPO' },
+        formGroupFromLS: {
+          '[CASE_REFERENCE]': null,
+          caseLocalAuthority: 'BNS',
+          caseName: null,
+          dateSubmitted: null,
+          evidenceHandled: null,
+          familyManCaseNumber: null
+        },
+      };
+      const event = component.createEvent(data.jurisdictionFromLS, data.caseTypeGroupFromLS, data.caseStateGroupFromLS, data.metadataFieldsGroupFromLS, data.formGroupFromLS, 1, undefined);
+      expect(event.selected.formGroup.value).toEqual(data.formGroupFromLS);
     });
   });
 

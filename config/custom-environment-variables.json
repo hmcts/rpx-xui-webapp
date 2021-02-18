@@ -22,6 +22,7 @@
     "ccdActivityApi": "HEALTH_CCD_ACTIVITY_API",
     "documentsApi": "HEALTH_DOCUMENTS_API",
     "em_anno_api": "HEALTH_EM_ANNO_API",
+    "s2s": "HEALTH_S2S_SERVICE",
     "termsAndConditions": "HEALTH_TERMS_AND_CONDITIONS_API"
   },
   "services": {

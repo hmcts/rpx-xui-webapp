@@ -50,21 +50,24 @@
     </div>
 </div>
 
-<nav *ngIf="showItems" class="hmcts-primary-navigation transparent-background" [attr.aria-label]="label">
+<nav *ngIf="showItems" class="hmcts-primary-navigation transparent-background">
   <div class="hmcts-primary-navigation__container">
     <div class="govuk-header__logo" *ngIf="logoIsUsed"></div>
     <div class="hmcts-primary-navigation__nav">
       <nav class="hmcts-primary-navigation transparent-background" aria-label="Primary navigation">
         <ul class="hmcts-primary-navigation__list">
           <li class="hmcts-primary-navigation__item" *ngFor="let item of items" >
-            <a class="hmcts-primary-navigation__link" (click)="onEmitSubMenu(item)" [attr.aria-current]="item.active ? true: null" [routerLink]="item.href">{{item.text}}</a>
+            <a class="hmcts-primary-navigation__link" (click)="onEmitSubMenu(item)" [attr.aria-current]="(tab === item.text && !(currentUrl === '/cases/case-search')) ? true: null" [routerLink]="item.href">{{item.text}}</a>
           </li>
         </ul>
       </nav>
     </div>
     <div class="hmcts-primary-navigation__search">
       <!-- TODO: Should turn on and off -->
-      <a class="hmcts-search-toggle__button transparent-background" [routerLink]="'/cases/case-search'">Find case</a>
+      <div class="hmcts-primary-navigation__item">
+        <a class="hmcts-search-toggle__button hmcts-primary-navigation__link transparent-background"
+          [attr.aria-current]="currentUrl === '/cases/case-search' ? true : null" [routerLink]="'/cases/case-search'">Find case</a>
+      </div>
     </div>
   </div>
 </nav>

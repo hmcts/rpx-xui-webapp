@@ -1,12 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+
+import { Assignee, SearchTaskRequest, TaskSearchParameters } from '../models/dtos';
 import { Task } from '../models/tasks';
 
-import { Assignee } from '../models/dtos/task';
-import {TaskSearchParameters} from '../models/dtos/task-search-parameter'
-
-const BASE_URL: string = '/workallocation/task/';
+const BASE_URL: string = '/workallocation/task';
 export enum ACTION {
   ASSIGN = 'assign',
   CANCEL = 'cancel',
@@ -25,12 +24,11 @@ export class WorkAllocationTaskService {
    * @param taskId specifies which task should be completed.
    */
   public completeTask(taskId: string): Observable<any> {
-    // Make a POST with an empty payload.
-    return this.http.post<any>(this.getActionUrl(taskId, ACTION.COMPLETE), {});
+    return this.performActionOnTask(taskId, ACTION.COMPLETE);
   }
 
   public cancelTask(taskId: string): Observable<any> {
-    return this.http.post<any>(this.getActionUrl(taskId, ACTION.CANCEL), {});
+    return this.performActionOnTask(taskId, ACTION.CANCEL);
   }
 
   /**
@@ -47,20 +45,29 @@ export class WorkAllocationTaskService {
     return this.http.post<any>(`${BASE_URL}`, task);
   }
 
+  public searchTask(body: { searchRequest: SearchTaskRequest, view: string }): Observable<any> {
+    return this.http.post<any>(`${BASE_URL}`, body);
+  }
+
   public claimTask(taskId: string): Observable<any> {
-    return this.http.post<any>(this.getActionUrl(taskId, ACTION.CLAIM), {});
+    return this.performActionOnTask(taskId, ACTION.CLAIM);
   }
 
   public unclaimTask(taskId: string): Observable<any> {
-    return this.http.post<any>(this.getActionUrl(taskId, ACTION.UNCLAIM), {});
+    return this.performActionOnTask(taskId, ACTION.UNCLAIM);
   }
 
   public getTask(taskId: string): Observable<Task> {
-    const url = `${BASE_URL}${taskId}`;
+    const url = `${BASE_URL}/${taskId}`;
     return this.http.get<Task>(url);
   }
 
+  public performActionOnTask(taskId: string, action: ACTION): Observable<any> {
+    // Make a POST with an empty payload.
+    return this.http.post<any>(this.getActionUrl(taskId, action), {});
+  }
+
   public getActionUrl(taskId: string, action: ACTION): string {
-    return `${BASE_URL}${taskId}/${action}`;
+    return `${BASE_URL}/${taskId}/${action}`;
   }
 }

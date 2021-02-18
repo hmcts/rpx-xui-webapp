@@ -2,10 +2,9 @@ import { Pact } from '@pact-foundation/pact';
 import { expect } from 'chai';
 import * as getPort from 'get-port';
 import * as path from 'path';
-
 import { EnhancedRequest } from '../../../lib/models';
 import { handleLocationGet } from '../../../workAllocation/locationService';
-import { LOCATIONS } from './../constants/work-allocation/locations.spec';
+import { LOCATIONS_ARRAY } from '../constants/work-allocation/locations.spec';
 
 describe('Work Allocation Location API', () => {
 
@@ -17,7 +16,7 @@ describe('Work Allocation Location API', () => {
     provider = new Pact({
       consumer: 'xui_work_allocation_location_get_all',
       provider: 'WorkAllocation_api_location', // TODO: Need to clarify naming conventions here, as we're using different ones.
-      dir: path.resolve(__dirname, '../pacts'),
+      dir: path.resolve(__dirname, '../../pacts'),
       log: path.resolve(__dirname, '../logs', 'work-allocation.log'),
       logLevel: 'info',
       port: mockServerPort,
@@ -34,8 +33,6 @@ describe('Work Allocation Location API', () => {
    */
   describe('should return all locations.', () => {
 
-    const LOCATION_BODY = [ LOCATIONS.A, LOCATIONS.B ];
-
     before(() =>
       provider.addInteraction({
         state: 'locations are returned',
@@ -47,7 +44,7 @@ describe('Work Allocation Location API', () => {
         willRespondWith: {
           status: 200,
           headers: {'Content-Type': 'application/json'},
-          body: LOCATION_BODY
+          body: LOCATIONS_ARRAY
         }
       })
     )
@@ -57,7 +54,7 @@ describe('Work Allocation Location API', () => {
       const locationPath: string = `${provider.mockService.baseUrl}/location`;
       const response = await handleLocationGet(locationPath, {} as EnhancedRequest);
 
-      expect(response.data).deep.equal(LOCATION_BODY);
+      expect(response.data).deep.equal(LOCATIONS_ARRAY);
       expect(response.status).equal(200);
     });
   });

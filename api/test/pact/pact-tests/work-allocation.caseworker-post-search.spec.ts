@@ -2,11 +2,11 @@ import { Pact } from '@pact-foundation/pact';
 import { expect } from 'chai';
 import * as getPort from 'get-port';
 import * as path from 'path';
-
 import { EnhancedRequest } from '../../../lib/models';
 import { handlePostSearch } from '../../../workAllocation/caseWorkerService';
-import { SUCCESS } from './../constants/work-allocation/behaviours.spec';
-import { CASEWORKERS } from './../constants/work-allocation/caseworkers.spec';
+import { SUCCESS } from '../constants/work-allocation/behaviours.spec';
+import { CASEWORKERS } from '../constants/work-allocation/caseworkers.spec';
+
 
 describe('Case worker API', () => {
 
@@ -21,7 +21,7 @@ describe('Case worker API', () => {
     provider = new Pact({
       consumer: 'xui_work_allocation_caseworker_post_search',
       provider: 'WorkAllocation_api_caseworker',
-      dir: path.resolve(__dirname, '../pacts'),
+      dir: path.resolve(__dirname, '../../pacts'),
       log: path.resolve(__dirname, '../logs', 'work-allocation.log'),
       logLevel: 'info',
       port: mockServerPort,

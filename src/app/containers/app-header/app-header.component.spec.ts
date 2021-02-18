@@ -1,10 +1,12 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import {FeatureToggleService} from '@hmcts/rpx-xui-common-lib';
+import { Router } from '@angular/router';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Action, Store, StoreModule } from '@ngrx/store';
 import { CookieService } from 'ngx-cookie';
-import {of} from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { AppConstants } from 'src/app/app.constants';
+
 import { LoggerService } from '../../services/logger/logger.service';
 import * as fromActions from '../../store';
 import { AppHeaderComponent } from './app-header.component';
@@ -75,8 +77,15 @@ describe('AppHeaderComponent', () => {
           useValue: featureToggleServiceMock,
         },
         {
+          provide: Router,
+          useValue: {
+            events: new BehaviorSubject<Event>(null),
+            url: '/something-or-other'
+          }
+        },
+        {
           provide: LoggerService,
-          useValue: loggerServiceMock,
+          useValue: loggerServiceMock
         },
         AppHeaderComponent
       ],
@@ -161,7 +170,7 @@ describe('AppHeaderComponent', () => {
         },
         {
           roles: ['pui-case-manager'],
-          appTitle: {name: 'Manage Cases', url: '/'},
+          appTitle: {name: 'Manage cases', url: '/'},
           navigationItems: [
             {
               text: 'Case list',
@@ -237,7 +246,7 @@ describe('AppHeaderComponent', () => {
       component.setAppHeaderProperties(defaultTheme);
 
       expect(component.appHeaderTitle).toBe(AppConstants.DEFAULT_USER_THEME.appTitle);
-      expect(component.navItems).toBe(AppConstants.DEFAULT_USER_THEME.navigationItems);
+      expect(component.navItems).toEqual(AppConstants.DEFAULT_USER_THEME.navigationItems);
       expect(component.userNav).toBe(AppConstants.DEFAULT_USER_THEME.accountNavigationItems);
       expect(component.backgroundColor).toBe(AppConstants.DEFAULT_USER_THEME.backgroundColor);
       expect(component.logoType).toBe(AppConstants.DEFAULT_USER_THEME.logoType);

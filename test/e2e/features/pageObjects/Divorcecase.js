@@ -13,7 +13,8 @@ class DivorceCase {
             'Marriage date':'01-01-2005',
             'Fact': '5-year separation',
             'Date the petitioner decided the marriage was over':'01-01-2011',
-            'Date the petitioner and respondent started living apart': '01-01-2012'
+            'Date the petitioner and respondent started living apart': '01-01-2012',
+            "Respondent's solicitor's Phone number": "02012345678" 
         };
         await this.caseManager.createCase(caseData, isAccessibilityTest);
     }

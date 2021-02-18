@@ -6,7 +6,7 @@ const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));
 const { setDefaultTimeout } = require('cucumber');
 
-setDefaultTimeout(60 * 1000);
+setDefaultTimeout(180 * 1000);
 
 function processRecursive(part) {
     if (part in config.lookups) {

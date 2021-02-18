@@ -4,7 +4,8 @@ import { AppConstants } from '../../../app/app.constants';
 
 @Component({
   selector: 'exui-case-reference-field',
-  templateUrl: './case-reference-field.component.html'
+  templateUrl: './case-reference-field.component.html',
+  styleUrls: ['case-reference-field.component.scss']
 })
 export class CaseReferenceFieldComponent implements OnChanges {
   /**

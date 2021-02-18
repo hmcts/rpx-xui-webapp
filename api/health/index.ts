@@ -2,9 +2,9 @@ import * as HealthCheck from '@hmcts/nodejs-healthcheck'
 import { SESSION, xuiNode } from '@hmcts/rpx-xui-node-lib'
 import { getConfigValue, showFeature } from '../configuration'
 import {
-  CHECK_FEATURE_WORKALLOCATION_ENABLED,
   FEATURE_REDIS_ENABLED,
   FEATURE_TERMS_AND_CONDITIONS_ENABLED,
+  FEATURE_WORKALLOCATION_ENABLED,
   SERVICE_S2S_PATH,
   SERVICES_CASE_CASEWORKER_REF_PATH,
   SERVICES_CCD_COMPONENT_API_PATH,
@@ -53,7 +53,7 @@ const config: HealthChecks = {
   },
 }
 
-if (getConfigValue(CHECK_FEATURE_WORKALLOCATION_ENABLED)) {
+if (showFeature(FEATURE_WORKALLOCATION_ENABLED)) {
   config.checks.workAllocationApi = checkServiceHealth(getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH))
   config.checks.caseworkerRefApi = checkServiceHealth(getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH))
   config.checks.roleApi = checkServiceHealth(getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH))

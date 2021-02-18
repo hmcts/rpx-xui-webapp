@@ -52,72 +52,103 @@ class Request {
         }
     }
 
-    public async get(reqpath: string, headers: any){
+    public async get(reqpath: string, headers: any, expectedStatus:any){
         try {
-            return await this.retryRequest(() =>  http.get(reqpath, this.getRequestConfig(headers)));
+            return await this.retryRequest(() => http.get(reqpath, this.getRequestConfig(headers)), expectedStatus);
         } catch (error) {
             return this.getResponseFromError(error);
         }
     }
 
-    public async post(reqpath: string, data, headers: any) {
+    public async post(reqpath: string, data, headers: any, expectedStatus: number) {
         try {
-            return await this.retryRequest(() =>http.post(reqpath, data, this.getRequestConfig(headers)));
-        } catch (error) {
-            return this.getResponseFromError(error);
-
-        }
-    }
-
-    public async put(reqpath: string, data, headers: any){
-        try {
-            return await this.retryRequest(() =>http.put(reqpath, data, this.getRequestConfig(headers)));
+            return await this.retryRequest(() => http.post(reqpath, data, this.getRequestConfig(headers)), expectedStatus);
         } catch (error) {
             return this.getResponseFromError(error);
 
         }
     }
 
+    public async put(reqpath: string, data, headers: any, expectedStatus: number){
+        try {
+            return await this.retryRequest(() => http.put(reqpath, data, this.getRequestConfig(headers)), expectedStatus);
+        } catch (error) {
+            return this.getResponseFromError(error);
 
-    public async delete(reqpath: string, payload, moreHeaders: any) {
+        }
+    }
+
+
+    public async delete(reqpath: string, payload, moreHeaders: any, expectedStatus:any) {
         try {
             const requestConfig = this.getRequestConfig(moreHeaders);
             if (payload){
                 requestConfig['data'] = payload;
             }
-            return await this.retryRequest(() =>http.delete(reqpath, requestConfig ));
+            return await this.retryRequest(() => http.delete(reqpath, requestConfig), expectedStatus);
         } catch (error) {
             return this.getResponseFromError(error);
 
         }
     }
 
-    async retryRequest(callback){
+    async retryRequest(callback,expectedStatus){
         let retryAttemptCounter = 0;
         let isCallbackSuccess = false;
         let retVal = null;
 
         const retryErrorLogs = [];
-        while (retryAttemptCounter < 3 && !retVal){
+        let error = null;
+        let isExpectedResponseReceived = false
+        while (retryAttemptCounter <= 3 && !isExpectedResponseReceived){
+            isExpectedResponseReceived = false;
+            retVal = null;
+            error = null;
             try {
-                console.log("in retry function : retry attempt " + retryAttemptCounter);
-
                 retVal = await callback();
                 isCallbackSuccess = true;
             } catch (err) {
-                retryErrorLogs.push(err);
-                retryAttemptCounter++;
-                console.log(`API request error: "${err.code}" syscall : ${err.syscall} => Retrying atempt ${retryAttemptCounter}`);
-                if (err.response) {
-                    retVal = err.response;
-                }
+                // retryErrorLogs.push(err.response ? err.response : err);
+                error = err;
+                console.log(err);
+                retVal = err.response ? err.response : null; 
+                
             }
+
+
+            if (expectedStatus instanceof Array){
+                isExpectedResponseReceived = expectedStatus.includes(retVal.status); 
+            }else{
+                isExpectedResponseReceived = expectedStatus === retVal.status 
+            }
+
+            if (!isExpectedResponseReceived){
+                console.log(retVal);
+                console.log(error);
+                retryAttemptCounter++;
+                const status = retVal  ? retVal.status : "unknown";
+                const responseBody = retVal  ? retVal.body : "unknown"; 
+                let errorMessage = retVal ? `STATUS CODE : ${status} =>RESPONSE BODY :  ${responseBody}` : `unknown request error occured  ` 
+                retryErrorLogs.push(`\n Retry ${retryAttemptCounter -1 } : ${errorMessage}`);
+
+                console.log(` Unexpected response : ${errorMessage}`);
+                console.log(` Retrying atempt ${retryAttemptCounter}`);
+
+                let sleepInSec = retryAttemptCounter *2; 
+                await new Promise((resolve,reject) => {
+                    setTimeout(() => {
+                        console.log(`Sleep for ${sleepInSec} sec before retry`);
+                        resolve(true);
+                    }, sleepInSec*1000);
+                });
+            } 
+            
         }
 
-        if(retVal){
+        if (isExpectedResponseReceived){
             return retVal;
         }else{
-            throw new Error("Errors occured in retry attempts "+JSON.stringify(retryErrorLogs));
+            throw new Error("Following errors occured in retry attempts "+(retryErrorLogs));
         }
     }
 }

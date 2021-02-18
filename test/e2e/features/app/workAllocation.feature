@@ -1,4 +1,4 @@
-@test
+@fullfunctionalt
 Feature: Work allocations task list, Available list and Task manager
 
     Scenario: View tasks, E2E journey of Caseworker-ia-adm user  

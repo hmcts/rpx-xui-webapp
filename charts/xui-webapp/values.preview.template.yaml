@@ -18,6 +18,7 @@ nodejs:
      HEALTH_CASE_CASEWORKER_API: http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal/health
      STUB: true
      DEBUG: xuiNode:*
+     FEATURE_WORKALLOCATION_ENABLED: true
   keyVaults:
     rpx:
       secrets:
@@ -25,4 +26,3 @@ nodejs:
         - mc-idam-client-secret
 redis:
   enabled: true
-

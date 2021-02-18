@@ -83,7 +83,10 @@
     "helmetEnabled": false,
     "termsAndConditionsEnabled": false,
     "redisEnabled": false,
-    "oidcEnabled": false
+    "oidcEnabled": false,
+    "workAllocationEnabled": false,
+    "roleEnabled": false,
+    "caseworkerRefEnabled": false
   },
   "helmet": {
     "contentSecurityPolicy": {

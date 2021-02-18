@@ -111,6 +111,10 @@
     "oidcEnabled": {
       "__name": "FEATURE_OIDC_ENABLED",
       "__format":"json"
+    },
+    "workAllocationEnabled": {
+      "__name": "FEATURE_WORKALLOCATION_ENABLED",
+      "__format":"json"
     }
   },
   "helmet": {

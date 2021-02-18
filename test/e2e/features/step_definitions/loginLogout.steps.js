@@ -1,6 +1,8 @@
 'use strict';
 
 const loginPage = require('../pageObjects/loginLogoutObjects');
+const headerPage = require('../pageObjects/headerPage');
+
 const { defineSupportCode } = require('cucumber');
 const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants');
 const config = require('../../config/conf.js');
@@ -45,6 +47,11 @@ defineSupportCode(function ({ Given, When, Then }) {
           if (isEmailFieldDisplayed && !isEmailValuePresent){
             errorMessage = errorMessage +" : " +testCounter+" login page refresh ";
           }
+
+          const currentUrl = await browser.getCurrentUrl();
+          if (!isEmailFieldDisplayed && currentUrl.includes("idam-web-public")){
+            errorMessage = errorMessage + ":" +testCounter+" Unknown IDAM service error occured. See attached screenshot ";
+          }
           // console.log(testCounter +" : error message =>"+errorMessage+"<=");
           if (errorMessage !== ""){
             throw new Error(errorMessage);
@@ -69,8 +76,8 @@ defineSupportCode(function ({ Given, When, Then }) {
           }
 
 
-          console.log(err + " email field is still present with empty value indicating  Login page reloaded due to EUI-1856 : Login re attempt " + loginAttemptRetryCounter);
-          world.attach(err + " email field is still present with empty value indicating Login page reloaded due to EUI-1856 : Login re attempt " + loginAttemptRetryCounter);
+          console.log(err + " : Login re attempt " + loginAttemptRetryCounter);
+          world.attach(err + " : Login re attempt " + loginAttemptRetryCounter);
         console.log(err); 
           await browser.driver.manage()
             .deleteAllCookies();

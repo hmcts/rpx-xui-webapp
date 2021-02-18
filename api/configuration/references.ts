@@ -73,6 +73,8 @@ export const FEATURE_HELMET_ENABLED = 'helmetEnabled'
 export const FEATURE_REDIS_ENABLED = 'redisEnabled'
 export const FEATURE_OIDC_ENABLED = 'oidcEnabled'
 
+export const FEATURE_WORKALLOCATION_ENABLED = 'workAllocationEnabled'
+
 export const HELMET = 'helmet'
 
 export const REDIS_KEY_PREFIX = 'redis.prefix'

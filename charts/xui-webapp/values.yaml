@@ -17,8 +17,7 @@ nodejs:
   memoryLimits: 2048Mi
   autoscaling:        # Default is false
     enabled: true 
-    minReplicas: 13
-    maxReplicas: 22    # Required setting
+    maxReplicas: 16    # Required setting
     targetCPUUtilizationPercentage: 80 # Default is 80% target CPU utilization
   environment:
     REFORM_TEAM: rpx
@@ -90,6 +89,7 @@ nodejs:
     FEATURE_HELMET_ENABLED: true
     FEATURE_REDIS_ENABLED: true
     FEATURE_OIDC_ENABLED: false
+    FEATURE_WORKALLOCATION_ENABLED: false
 
     # Redis
     REDIS_KEY_PREFIX: 'activity:'

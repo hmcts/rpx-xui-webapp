@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@^2.67.10-feature-toggle-work-allocation":
-  version "2.67.10-feature-toggle-work-allocation"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.67.10-feature-toggle-work-allocation.tgz#a81a1305338b63811a6a1484921295584f236164"
-  integrity sha512-vZiUdELXtULa1k66eQndxlE5oqKZ27/2AX5Elf/BkJKshDp46dcFcZiZ66X1Vs1t0HcONnE+NIDjzEaR9qvZ5Q==
+"@hmcts/ccd-case-ui-toolkit@2.71.3-conditional-show-perf":
+  version "2.71.3-conditional-show-perf"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.71.3-conditional-show-perf.tgz#5c71d69507787aa9a276ae22ed3a8e51d10db9de"
+  integrity sha512-QAcK762hE1c8ab/9uNSPQM00MJaMpGnn2zK2pHAgZ4PjfozBLfuwLA1ThsH6oq6TJSBXnYQgIDtLNeV20jucKg==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
@@ -1991,11 +1991,11 @@ axe-core@^3.5.1:
   integrity sha512-JRuxixN5bPHre+815qnyqBQzNpRTqGxLWflvjr4REpGZ5o0WXm+ik2IS4PZ01EnacWmVRB4jCPWFiYENMiiasA==
 
 axios-mock-adapter@^1.18.2:
-  version "1.18.2"
-  resolved "https://registry.yarnpkg.com/axios-mock-adapter/-/axios-mock-adapter-1.18.2.tgz#01fa9e88e692e8f1bbc1ad1200dde672486e03c7"
-  integrity sha512-e5aTsPy2Viov22zNpFTlid76W1Scz82pXeEwwCXdtO85LROhHAF8pHF2qDhiyMONLxKyY3lQ+S4UCsKgrlx8Hw==
+  version "1.19.0"
+  resolved "https://registry.yarnpkg.com/axios-mock-adapter/-/axios-mock-adapter-1.19.0.tgz#9d72e321a6c5418e1eff067aa99761a86c5188a4"
+  integrity sha512-D+0U4LNPr7WroiBDvWilzTMYPYTuZlbo6BI8YHZtj7wYQS8NkARlP9KBt8IWWHTQJ0q/8oZ0ClPBtKCCkx8cQg==
   dependencies:
-    fast-deep-equal "^3.1.1"
+    fast-deep-equal "^3.1.3"
     is-buffer "^2.0.3"
 
 axios@^0.21.0, axios@^0.21.1:
@@ -3028,10 +3028,10 @@ circular-dependency-plugin@5.0.2:
   resolved "https://registry.yarnpkg.com/circular-dependency-plugin/-/circular-dependency-plugin-5.0.2.tgz#da168c0b37e7b43563fb9f912c1c007c213389ef"
   integrity sha512-oC7/DVAyfcY3UWKm0sN/oVoDedQDQiw/vIiAnuTWTpE5s0zWf7l3WY417Xw/Fbi/QbAjctAkxgMiS9P0s3zkmA==
 
-class-transformer@^0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/class-transformer/-/class-transformer-0.2.3.tgz#598c92ca71dcca73f91ccb875d74a3847ccfa32d"
-  integrity sha512-qsP+0xoavpOlJHuYsQJsN58HXSl8Jvveo+T37rEvCEeRfMWoytAyR0Ua/YsFgpM6AZYZ/og2PJwArwzJl1aXtQ==
+class-transformer@^0.3.2:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/class-transformer/-/class-transformer-0.3.2.tgz#779ef5f124784324b40f8e927c774bd96cdecd4b"
+  integrity sha512-9QY6QXBH/+Gt1C3HBmJCrgY6+EFpIa6aLjfDnlXFx0zQl/HjrCE7qoaI0srNrxpMIfsobCpgUdDG5JYtJOpVsw==
 
 class-utils@^0.3.5:
   version "0.3.6"
@@ -5013,6 +5013,11 @@ fast-deep-equal@^3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-3.1.1.tgz#545145077c501491e33b15ec408c294376e94ae4"
   integrity sha512-8UEa58QDLauDNfpbrX55Q9jrGHThw2ZMdOky5Gl1CDtVeJDPVrG4Jxx1N8jw2gkWaff5UUuX1KJd+9zGe2B+ZA==
+
+fast-deep-equal@^3.1.3:
+  version "3.1.3"
+  resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-3.1.3.tgz#3a7d56b559d6cbc3eb512325244e619a65c6c525"
+  integrity sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==
 
 fast-glob@^3.1.1:
   version "3.2.4"

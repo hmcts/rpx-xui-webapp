@@ -1,6 +1,8 @@
 'use strict';
 
 const loginPage = require('../pageObjects/loginLogoutObjects');
+const headerPage = require('../pageObjects/headerPage');
+
 const { defineSupportCode } = require('cucumber');
 const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants');
 const config = require('../../config/conf.js');
@@ -45,6 +47,11 @@ defineSupportCode(function ({ Given, When, Then }) {
           if (isEmailFieldDisplayed && !isEmailValuePresent){
             errorMessage = errorMessage +" : " +testCounter+" login page refresh ";
           }
+
+          const currentUrl = await browser.getCurrentUrl();
+          if (!isEmailFieldDisplayed && currentUrl.includes("idam-web-public")){
+            errorMessage = errorMessage + ":" +testCounter+" Unknown IDAM service error occured. See attached screenshot ";
+          }
           // console.log(testCounter +" : error message =>"+errorMessage+"<=");
           if (errorMessage !== ""){
             throw new Error(errorMessage);
@@ -69,8 +76,8 @@ defineSupportCode(function ({ Given, When, Then }) {
           }
 
 
-          console.log(err + " email field is still present with empty value indicating  Login page reloaded due to EUI-1856 : Login re attempt " + loginAttemptRetryCounter);
-          world.attach(err + " email field is still present with empty value indicating Login page reloaded due to EUI-1856 : Login re attempt " + loginAttemptRetryCounter);
+          console.log(err + " : Login re attempt " + loginAttemptRetryCounter);
+          world.attach(err + " : Login re attempt " + loginAttemptRetryCounter);
         console.log(err); 
           await browser.driver.manage()
             .deleteAllCookies();
@@ -87,8 +94,8 @@ defineSupportCode(function ({ Given, When, Then }) {
     console.log("TWO ATTEMPT: EUI-1856 issue occured / total logins => " + secondAttemptFailedLogins + " / " + loginAttempts);
     world.attach("TWO ATTEMPT: EUI-1856 issue occured / total logins => " + secondAttemptFailedLogins + " / " + loginAttempts);
 
-
   }
+
 
   let loginAttempts = 0;
   let firstAttemptFailedLogins = 0;
@@ -96,14 +103,12 @@ defineSupportCode(function ({ Given, When, Then }) {
 
 
   When('I navigate to Expert UI Url', async function () {
-    await browser.driver.manage()
-      .deleteAllCookies();
-    CucumberReportLogger.AddMessage("App base url : " + config.config.baseUrl);
-    await browser.get(config.config.baseUrl);
-
-    const world = this;
-    await BrowserWaits.retryForPageLoad(loginPage.signinTitle,function(message){
-      world.attach("Expert UI Url reload attempt : "+message);
+    await BrowserWaits.retryWithActionCallback(async function(){
+      await browser.driver.manage()
+        .deleteAllCookies();
+      CucumberReportLogger.AddMessage("App base url : " + config.config.baseUrl);
+      await browser.get(config.config.baseUrl); 
+      await BrowserWaits.waitForElement(loginPage.signinTitle); 
     });
 
     expect(await loginPage.signinBtn.isDisplayed()).to.be.true;
@@ -175,10 +180,10 @@ defineSupportCode(function ({ Given, When, Then }) {
     await expect(loginPage.signOutlink.isDisplayed()).to.eventually.be.true;
     browser.sleep(SHORT_DELAY);
     try{
-      await loginPage.getSignOutLink().click();
+      await loginPage.signOutlink.click();
     }catch(err){
       await browser.sleep(SHORT_DELAY);
-      await loginPage.getSignOutLink().click();
+      await loginPage.signOutlink.click();
     }
     browser.sleep(SHORT_DELAY);
   });

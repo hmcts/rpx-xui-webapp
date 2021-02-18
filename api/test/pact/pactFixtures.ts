@@ -11,11 +11,6 @@
 export interface Organisation {
   name: string,
   organisationIdentifier: string,
-  companyNumber: string,
-  companyUrl: string,
-  sraId: string,
-  sraRegulated: boolean,
-  status: string,
   contactInformation: {
     addressLine1: string,
     addressLine2: string,
@@ -25,14 +20,20 @@ export interface Organisation {
     postCode: string,
     townCity: string,
   }
-  superUser: {
-    firstName: string,
-    lastName: string,
-    email: string
-  },
-  paymentAccount: [
-    string
-  ]
+}
+
+export interface ProfessionalUserResponse {
+  organisationIdentifier: string,
+  users: ProfessionalUserDetails[]
+}
+
+export interface ProfessionalUserDetails {
+  userIdentifier: string,
+  firstName: string,
+  lastName: string,
+  email: string,
+  idamStatus: string,
+  roles: string[]
 }
 
 export interface CaseAssignmentResponseDto {

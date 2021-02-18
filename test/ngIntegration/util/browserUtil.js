@@ -1,4 +1,3 @@
-const { browser } = require("protractor");
 const jwt = require('jsonwebtoken');
 
 class BrowserUtil{

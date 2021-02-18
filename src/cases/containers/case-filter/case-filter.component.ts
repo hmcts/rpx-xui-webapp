@@ -36,7 +36,7 @@ export class CaseFilterComponent implements OnInit {
 
   ngOnInit(): void {
     this.fromCasesFeature = fromCasesFeature;
-    this.startButtonText = 'Start'; // TODO add this to some config file.
+    this.startButtonText = 'Start now'; // TODO add this to some config file.
     /**
      * Mapping CCD components eventsBindings to ExUI Actions
      */

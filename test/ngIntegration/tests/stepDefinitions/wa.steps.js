@@ -95,14 +95,14 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             //  expect(headerColId).to.contains(sortColumnInRequestParam);
              tasksRequested = false;
              sortColumnInRequestParam = "";
-             expect(await taskListPage.getColumnSortState(headerName)).to.equal("asc");
+             expect(await taskListPage.getColumnSortState(headerName)).to.equal("ascending");
 
              await taskListPage.clickColumnHeader(headerName);
              await BrowserWaits.waitForCondition(async () => { return tasksRequested });
             //  expect(headerColId).to.contains(sortColumnInRequestParam);
              sortColumnInRequestParam = "";
              tasksRequested = false;
-             expect(await taskListPage.getColumnSortState(headerName)).to.equal("desc");
+             expect(await taskListPage.getColumnSortState(headerName)).to.equal("descending");
          }
  
      });
@@ -114,13 +114,13 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         expect(await taskListPage.getColumnSortState(columnHeaders[1])).to.equal("none");
 
         await taskListPage.clickColumnHeader(columnHeaders[1]);
-        expect(await taskListPage.getColumnSortState(columnHeaders[1])).to.equal("asc");
+        expect(await taskListPage.getColumnSortState(columnHeaders[1])).to.equal("ascending");
 
         await headerPage.getTabElementWithText('Case list').click();
         expect(await caseListPage.amOnPage()).to.be.true;
         await headerPage.getTabElementWithText('Task list').click();
         await taskListPage.amOnPage();
-        expect(await taskListPage.getColumnSortState(columnHeaders[1])).to.equal("asc");
+        expect(await taskListPage.getColumnSortState(columnHeaders[1])).to.equal("ascending");
 
     }); 
 

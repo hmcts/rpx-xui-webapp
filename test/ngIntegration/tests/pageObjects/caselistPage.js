@@ -31,9 +31,9 @@ class CaseListPage{
 
         if (dynamicfield.field.field_type.type.includes("List")) {
             const fieldConfigList = dynamicfield.field.field_type.fixed_list_items;
-            console.log("fieldConfigList:::",JSON.stringify(fieldConfigList));
+            // console.log("fieldConfigList:::",JSON.stringify(fieldConfigList));
             const listValuesRendered = await this.getFieldListValues(dynamicfield);
-            console.log("listValuesRendered:::",JSON.stringify(listValuesRendered));
+            // console.log("listValuesRendered:::",JSON.stringify(listValuesRendered));
             expect(listValuesRendered.length, JSON.stringify(listValuesRendered) + " " + JSON.stringify(fieldConfigList)).to.equal(fieldConfigList.length)
             fieldConfigList.forEach(listItem => {
                 expect(listValuesRendered.includes(listItem.code)).to.be.true
@@ -130,22 +130,22 @@ class CaseListPage{
 
         let caseFields = await this.validateCaseFields();
         let cases = ccdApi.getWorkbasketCases();
-        console.log("caseFields::",JSON.stringify(caseFields));
         for (const caseObj in cases.columns){
-            console.log("cases.columns[caseObj].label::",cases.columns[caseObj].label);
             expect(caseFields).to.be.contain(cases.columns[caseObj].label);
         }
 
         let caseValues = await this.validateCaseValues();
 
         for (const casevalue in caseValues){
-            let thObj = cases.columns.find(caseObj=>caseObj.label == caseFields[casevalue]);
-            let thKey = thObj.case_field_id;
-
-            let value = cases.results[0].case_fields[thKey] ? cases.results[0].case_fields[thKey] : "";
-
-            expect(caseValues).to.be.contain(value.toString());
-
+            if(caseFields[casevalue]){
+                let thObj = cases.columns.find(caseObj=>caseObj.label == caseFields[casevalue]);
+            
+                let thKey = thObj.case_field_id;
+    
+                let value = cases.results[0].case_fields[thKey] ? cases.results[0].case_fields[thKey] : "";
+    
+                expect(caseValues).to.be.contain(value.toString());
+            }
         }
 
     }
@@ -158,7 +158,7 @@ class CaseListPage{
         console.log("count::",count);
         let caseResultsThTitle = [];
         if (count) {
-            for (let i = 1; i < count; i++) {
+            for (let i = 0; i < count; i++) {
                 let thText = thLable.get(i).$$(".search-result-column-label");
                 let text = await thText.getText();
                 caseResultsThTitle.push(`${text}`);
@@ -175,7 +175,7 @@ class CaseListPage{
         await BrowserWaits.waitForElement(this.caseListTableHead);
         console.log("tdCount",tdCount);
         let caseData = [];
-        for (let i = 1; i < tdCount; i++) {
+        for (let i = 0; i < tdCount; i++) {
             let thText = caseListTd.get(i).$$("ccd-field-read-label");
             let text = await thText.getText();
             let updatedText =await text.toString().replace(/-/g, "");

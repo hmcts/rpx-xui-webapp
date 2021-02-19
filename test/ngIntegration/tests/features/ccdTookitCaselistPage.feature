@@ -12,7 +12,7 @@ Feature: Case list page
         Given I navigate page route "cases"
         Then I see case list page displayed
         Then I validate workbasket "workbasketConfig" fields displayed
-    
+
     Scenario: Validate search fiters to contain workbasket params
         Given I set MOCK with user roles
             | role                      |
@@ -48,7 +48,8 @@ Feature: Case list page
         Given I navigate page route "cases"
         Then I see case list page displayed
         Then I Validate total cases count "workbasketConfig"
-        When I click case list pagination "next" page
+        When I click search case pagination "next" page
         Then I wait to see case results displayed
-        When I click case list pagination "previous" page
+        When I click search case pagination "previous" page
         Then I wait to see case results displayed
+        

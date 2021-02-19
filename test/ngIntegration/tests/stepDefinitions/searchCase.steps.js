@@ -13,7 +13,7 @@ const headerpage = require('../../../e2e/features/pageObjects/headerPage');
 
 const { getTestJurisdiction } = require('../../mockData/ccdCaseMock');
 
-const ccdApi = require('../../../nodeMock/ccd/ccdApi');
+const caseDetailsData = require('../../../nodeMock/ccd/caseDetails_data');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
@@ -54,7 +54,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         caseListReq = null;
         await searchCasePage.clickApplySearchCaseFilters();
         await BrowserWaits.waitForCondition(async () => caseListReq !== null);
-        console.log("caseListReq:::",JSON.stringify(caseListReq))
 
         for (const key of Object.keys(searchCaseInputValues)) {
             if (searchCaseInputValues[key] instanceof Array) {
@@ -62,8 +61,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                     expect(caseListReq["case." + key + "." + index]).to.equal(val);
                 });
             } else {
-                console.log("searchCaseInputValues:::"+searchCaseInputValues[key])
-                expect(caseListReq[key]).to.equal(searchCaseInputValues[key]);
+                let caseKey = key.toLowerCase();
+                expect(caseListReq[caseKey]).to.equal(searchCaseInputValues[key]);
             }
         }
     });
@@ -98,12 +97,49 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         for (const dynamicfield of searchCaseConfig.searchInputs) {
             searchCaseInputValues[dynamicfield.field.id] = await caseListPage.inputWorkbasketFilter(dynamicfield);
         }
-
-
         await searchCasePage.clickApplySearchCaseFilters();
-
         let totalCount = await caseListPage.getCasesCount();
         expect(reqData.size).to.equal(totalCount);
     });
+
+    When('I click search case pagination {string} page', async function (prevnext) {
+        if (prevnext.toLowerCase() === "next"){
+            await searchCasePage.clickPaginationNextPage();
+        } else if (prevnext.toLowerCase() === "previous"){
+            await searchCasePage.clickPaginationPreviousPage();
+        }
+    });
+
+    Then('I Validate case event trigger actions listed {string}', async function (searchCaseConfigReference) {
+        const searchCaseConfig = global.scenarioData[searchCaseConfigReference].getConfig();
+        let caseListReq = null;
+        MockApp.addIntercept('/data/internal/searchCases', (req, res, next) => {
+            console.log("Add intercpy called");
+            caseListReq = req.query;
+            next();
+        })
+
+        await MockApp.stopServer();
+        await MockApp.startServer();
+
+        const searchCaseInputValues = {}
+        for (const dynamicfield of searchCaseConfig.searchInputs) {
+            searchCaseInputValues[dynamicfield.field.id] = await caseListPage.inputWorkbasketFilter(dynamicfield);
+        }
+
+        caseListReq = null;
+        
+        await searchCasePage.clickApplySearchCaseFilters();
+        await searchCasePage.openFirstCaseInResults();
+        let nextStepDropDownData = await searchCasePage.nextStepTriggerActions()
+        console.log("nextStepDropDownData::"+JSON.stringify(nextStepDropDownData));
+        console.log("caseDetailsData.triggers::"+JSON.stringify(caseDetailsData.triggers));
+        for (const eventObj in caseDetailsData.triggers) {
+            console.log("eventObj::"+JSON.stringify(caseDetailsData.triggers[eventObj]));
+            expect(nextStepDropDownData).to.be.contain(caseDetailsData.triggers[eventObj].name);
+        }
+        
+    });
+
 
 });

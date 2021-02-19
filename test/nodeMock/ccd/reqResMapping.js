@@ -102,7 +102,7 @@ module.exports = {
             },
             '/data/internal/searchCases': (req, res) => {
                 res.send(ccdMockData.getWorkbasketCases());
-            }, 
+            },
         
         }
 }

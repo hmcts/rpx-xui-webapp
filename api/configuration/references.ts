@@ -82,6 +82,7 @@ export const SESSION_TIMEOUTS = 'sessionTimeouts'
 
 // PACT
 export const PACT_BROKER_URL = 'pact.brokerUrl'
+export const PACT_BRANCH_NAME = 'pact.branchName'
 export const PACT_CONSUMER_VERSION = 'pact.consumerVersion'
 export const PACT_BROKER_USERNAME = 'pact.brokerUsername'
 export const PACT_BROKER_PASSWORD = 'pact.brokerPassword'

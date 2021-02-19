@@ -52,9 +52,12 @@ withPipeline(type, product, component) {
     enableAksStagingDeployment()
     disableLegacyDeployment()
 
-    enablePactAs([
-      AppPipelineDsl.PactRoles.CONSUMER
-    ])
+    onMaster() {
+        env.PACT_BRANCH_NAME = 'master'
+        enablePactAs([
+                AppPipelineDsl.PactRoles.CONSUMER
+        ])
+    }
 
     after('checkout') {
         yarnBuilder.yarn('cache clean')

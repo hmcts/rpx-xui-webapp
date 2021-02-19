@@ -6,14 +6,18 @@ import {
   PACT_BROKER_PASSWORD,
   PACT_BROKER_URL,
   PACT_BROKER_USERNAME,
-  PACT_CONSUMER_VERSION
+  PACT_CONSUMER_VERSION,
+  PACT_BRANCH_NAME
 } from '../../../configuration/references'
 
 const publish = async (): Promise<void> => {
   try {
 
     const pactBroker = getConfigValue(PACT_BROKER_URL) ?
-      getConfigValue(PACT_BROKER_URL) : 'https://pact-broker.platform.hmcts.net'
+        getConfigValue(PACT_BROKER_URL) : 'http://localhost:80'
+
+    const pactTag = getConfigValue(PACT_BRANCH_NAME) ?
+        getConfigValue(PACT_BRANCH_NAME) : 'Dev'
 
     const consumerVersion = getConfigValue(PACT_CONSUMER_VERSION) !== '' ?
       // @ts-ignore
@@ -31,7 +35,7 @@ const publish = async (): Promise<void> => {
         path.resolve(__dirname, '../pacts/'),
       ],
       publishVerificationResult: true,
-      tags: ['xui', 'oidc', 'oauth2', 'Dev'],
+      tags: [pactTag],
     }
 
     await pact.publishPacts(opts)

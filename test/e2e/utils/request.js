@@ -1,7 +1,6 @@
 
 const axios = require('axios');
 const config = require('./config/config');
-const auth = require('./authUtil');
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
@@ -25,8 +24,18 @@ class Request {
 
      cookieString = '';
      async withSession(username, password) {
-        this.cookieString = await auth.getSessionCookieString(username, password);
+        this.cookieString = await this.getCookieString()
     }
+    async getCookieString(){
+        let cookieString = '';
+        await browser.manage().getCookies().then(function(cookiesArray){
+			for(let i=0; i<cookiesArray.length;i++){
+                cookieString = `${cookieString}${cookiesArray[i].name}=${cookiesArray[i].value};`;
+			}
+		})
+        return cookieString;
+    }
+    
 
      clearSession() {
         this.cookieString = '';

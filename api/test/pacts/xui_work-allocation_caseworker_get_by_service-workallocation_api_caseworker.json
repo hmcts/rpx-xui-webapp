@@ -1,0 +1,210 @@
+{
+  "consumer": {
+    "name": "xui_work-allocation_caseworker_get_by_service"
+  },
+  "provider": {
+    "name": "WorkAllocation_api_caseworker"
+  },
+  "interactions": [
+    {
+      "description": "a request for 'service a' caseworkers",
+      "providerState": "all the caseworkers for 'service a' are returned",
+      "request": {
+        "method": "GET",
+        "path": "/caseworker/service/a"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": [
+          {
+            "firstName": "Jane",
+            "lastName": "Doe",
+            "idamId": "2",
+            "email": "jane.doe@caseworkers.gov.uk",
+            "location": {
+              "id": "a",
+              "locationName": "Taylor House",
+              "services": [
+                "a"
+              ]
+            }
+          },
+          {
+            "firstName": "John",
+            "lastName": "Smith",
+            "idamId": "1",
+            "email": "john.smith@caseworkers.gov.uk",
+            "location": {
+              "id": "a",
+              "locationName": "Taylor House",
+              "services": [
+                "a"
+              ]
+            }
+          },
+          {
+            "firstName": "Joseph",
+            "lastName": "Bloggs",
+            "idamId": "3",
+            "email": "joe.bloggs@caseworkers.gov.uk",
+            "location": {
+              "id": "b",
+              "locationName": "Taylor Swift",
+              "services": [
+                "a",
+                "b"
+              ]
+            }
+          },
+          {
+            "firstName": "Noah",
+            "lastName": "Body",
+            "idamId": "4",
+            "email": "noah.body@caseworkers.gov.uk",
+            "location": {
+              "id": "b",
+              "locationName": "Taylor Swift",
+              "services": [
+                "a",
+                "b"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "description": "a request for 'service b' caseworkers",
+      "providerState": "all the caseworkers for 'service b' are returned",
+      "request": {
+        "method": "GET",
+        "path": "/caseworker/service/b"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": [
+          {
+            "firstName": "Joseph",
+            "lastName": "Bloggs",
+            "idamId": "3",
+            "email": "joe.bloggs@caseworkers.gov.uk",
+            "location": {
+              "id": "b",
+              "locationName": "Taylor Swift",
+              "services": [
+                "a",
+                "b"
+              ]
+            }
+          },
+          {
+            "firstName": "Noah",
+            "lastName": "Body",
+            "idamId": "4",
+            "email": "noah.body@caseworkers.gov.uk",
+            "location": {
+              "id": "b",
+              "locationName": "Taylor Swift",
+              "services": [
+                "a",
+                "b"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "description": "a request for 'service c' caseworkers",
+      "providerState": "all the caseworkers for 'service c' are returned",
+      "request": {
+        "method": "GET",
+        "path": "/caseworker/service/c"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": [
+          {
+            "firstName": "Al",
+            "lastName": "Reddy-Dunne",
+            "idamId": "204",
+            "email": "al.reddydunne204@hotmail.co.uk",
+            "location": {
+              "id": "c",
+              "locationName": "Dodgy Location",
+              "services": [
+                "c"
+              ]
+            }
+          },
+          {
+            "firstName": "Anne",
+            "lastName": "Supported",
+            "idamId": "415",
+            "email": "anne_supported_415@dodgy-url.net",
+            "location": {
+              "id": "c",
+              "locationName": "Dodgy Location",
+              "services": [
+                "c"
+              ]
+            }
+          },
+          {
+            "firstName": "Brad",
+            "lastName": "Request",
+            "idamId": "400",
+            "email": "brad.request400@hotmail.com",
+            "location": {
+              "id": "c",
+              "locationName": "Dodgy Location",
+              "services": [
+                "c"
+              ]
+            }
+          },
+          {
+            "firstName": "Nat",
+            "lastName": "Allowed",
+            "idamId": "403",
+            "email": "nat.allowed.403@gmail.com",
+            "location": {
+              "id": "c",
+              "locationName": "Dodgy Location",
+              "services": [
+                "c"
+              ]
+            }
+          },
+          {
+            "firstName": "Sir",
+            "lastName": "Van Error",
+            "idamId": "500",
+            "email": "sir.van@error500.org",
+            "location": {
+              "id": "c",
+              "locationName": "Dodgy Location",
+              "services": [
+                "c"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  }
+}

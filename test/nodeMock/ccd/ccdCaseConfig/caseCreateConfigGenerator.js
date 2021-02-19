@@ -29,9 +29,6 @@ const wizardPageTemplate = {
     "retries_timeout_mid_event": []
 };
 
-
-
-
 class CCDCaseConfig extends CCDCaseField{
 
     caseConfigTemplate = JSON.parse(JSON.stringify(configTemplate));

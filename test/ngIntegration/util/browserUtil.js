@@ -1,4 +1,3 @@
-const { browser } = require("protractor");
 const jwt = require('jsonwebtoken');
 const reportLogger = require('../../e2e/support/reportLogger');
 // const addContext = require('mochawesome/addContext');
@@ -41,7 +40,7 @@ class BrowserUtil{
             this.addCookie('roles', encodedRoles);
         }
 
-        await this.gotoHomePage();
+        // await this.gotoHomePage();
     }
 
     async waitForLD(){

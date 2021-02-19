@@ -5,7 +5,6 @@ const nodeAppReqResMappings = require('./nodeApp/reqResMapping');
 
 
 
-const idamProfile = require('./ccd/profile');
 const dummyCaseDetails = require('./ccd/caseDetails_data');
 
 const requestMapping = {
@@ -71,15 +70,6 @@ const requestMapping = {
 
 }
 
-const configurations = {
-    'feature.termsAndConditionsEnabled':false,
-    'termsAndConditionsEnabled':false
-
-}
-
-function getConfigurationValue(configurationKey){
-    return configurations[configurationKey]; 
-}
 
 function getOrganisation(){
     return {"organisationIdentifier":"VRSFNPV","name":"Test sreekanth org","status":"ACTIVE","sraId":null,"sraRegulated":false,"companyNumber":null,"companyUrl":null,"superUser":{"firstName":"test","lastName":"test","email":"sreekanth_su1@mailinator.com"},"paymentAccount":[],"contactInformation":[{"addressLine1":"Flat 39","addressLine2":"Sheraton House","addressLine3":null,"townCity":"London","county":"Essex","country":null,"postCode":"SW1V 3BZ","dxAddress":[]}]}
@@ -95,7 +85,7 @@ function getJurisdictions(){
 }
 
 
-module.exports = { requestMapping,configurations};
+module.exports = { requestMapping};
 
 function getShareCases(){
     return [

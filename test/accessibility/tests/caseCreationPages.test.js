@@ -37,7 +37,7 @@ describe('Pa11y Accessibility tests', function () {
 
    
 
-    const mockCaseType = getTestJurisdiction();
+    const mockCaseType = getTestJurisdiction().getCase();
     mockCaseType.wizard_pages.forEach(page => {
         if (!page.show_condition){
             it('Mock case type Case Page ' + page.id, async function () {

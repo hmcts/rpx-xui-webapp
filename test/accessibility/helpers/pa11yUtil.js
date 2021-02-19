@@ -60,7 +60,7 @@ async function pa11ytest(test, actions, startUrl,roles) {
             httpOnly: true,
             secure: false,
             session: true,
-            sameSite: true
+            sameSite: 'strict',
         },
         {
             name: 'roles',
@@ -70,7 +70,7 @@ async function pa11ytest(test, actions, startUrl,roles) {
             httpOnly: true,
             secure: false,
             session: true,
-            sameSite: true
+            sameSite: 'strict',
         }
     ];
     const testBrowser = await getBrowser();

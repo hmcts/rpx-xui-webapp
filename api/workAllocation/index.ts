@@ -1,14 +1,25 @@
-import { NextFunction, Response } from 'express'
+import { NextFunction, Response } from 'express';
 
-import { EnhancedRequest } from '../lib/models'
+import { EnhancedRequest } from '../lib/models';
 import {
-  handleCaseWorkerForLocation, handleCaseWorkerForLocationAndService,
-  handleCaseWorkerForService, handleCaseWorkerGetAll,
-  handlePostSearch } from './caseWorkerService'
-import { handleTaskGet, handleTaskPost, handleTaskSearch } from './taskService'
-import { prepareCaseWorkerForLocation, prepareCaseWorkerForLocationAndService,
-  prepareCaseWorkerForService, prepareCaseWorkerSearchUrl, prepareCaseWorkerUrl, prepareGetTaskUrl,
-  preparePostTaskUrlAction, prepareSearchTaskUrl } from './util'
+  handleCaseWorkerForLocation,
+  handleCaseWorkerForLocationAndService,
+  handleCaseWorkerForService,
+  handleCaseWorkerGetAll,
+  handlePostSearch,
+} from './caseWorkerService';
+import { handleTaskGet, handleTaskPost, handleTaskSearch } from './taskService';
+import {
+  assignActionsToTasks,
+  prepareCaseWorkerForLocation,
+  prepareCaseWorkerForLocationAndService,
+  prepareCaseWorkerForService,
+  prepareCaseWorkerSearchUrl,
+  prepareCaseWorkerUrl,
+  prepareGetTaskUrl,
+  preparePostTaskUrlAction,
+  prepareSearchTaskUrl,
+} from './util';
 
 export const baseUrl: string = 'http://localhost:8080'
 
@@ -33,13 +44,20 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
  */
 export async function searchTask(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    const postTaskPath: string = prepareSearchTaskUrl(baseUrl)
+    const postTaskPath: string = prepareSearchTaskUrl(baseUrl);
+    const searchRequest = req.body.searchRequest;
+    const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
+    res.status(status);
 
-    const { status, data } = await handleTaskSearch(postTaskPath, req.body, req)
-    res.status(status)
-    res.send(data)
+     // Assign actions to the tasks on the data from the API.
+    if (data) {
+      assignActionsToTasks(data.tasks, req.body.view);
+    }
+
+    // Send the (possibly modified) data back in the Response.
+    res.send(data);
   } catch (error) {
-    next(error)
+    next(error);
   }
 }
 
@@ -47,6 +65,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
  * Post to invoke an action on a Task.
  */
 export async function postTaskAction(req: EnhancedRequest, res: Response, next: NextFunction) {
+
   try {
     const getTaskPath: string = preparePostTaskUrlAction(baseUrl, req.params.taskId, req.params.action)
 

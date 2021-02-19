@@ -94,8 +94,7 @@
                 "**/*.spec.js",
                 "test/**",
                 "config/**",
-                "src/environments/**",
-                "src/work-allocation/components/task-field-wrapper/**"
+                "src/environments/**"
             ],
             "main": "src/test.ts",
             "polyfills": "src/polyfills.ts",

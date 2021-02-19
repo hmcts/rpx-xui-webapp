@@ -1,0 +1,99 @@
+{
+  "consumer": {
+    "name": "xui_work_allocation_task_complete"
+  },
+  "provider": {
+    "name": "WorkAllocation_api_complete"
+  },
+  "interactions": [
+    {
+      "description": "a request for completion",
+      "providerState": "task is completed",
+      "request": {
+        "method": "POST",
+        "path": "/task/123456/complete",
+        "body": {
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "description": "a request for completion when already complete",
+      "providerState": "task was already complete",
+      "request": {
+        "method": "POST",
+        "path": "/task/123456/complete",
+        "body": {
+          "behaviour": "already-done"
+        }
+      },
+      "response": {
+        "status": 204,
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "description": "a bad request for completion",
+      "providerState": "a bad request was made",
+      "request": {
+        "method": "POST",
+        "path": "/task/123456/complete",
+        "body": {
+          "behaviour": "bad-request"
+        }
+      },
+      "response": {
+        "status": 400,
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "description": "a request for completion of a forbidden task",
+      "providerState": "completion of this task is was forbidden",
+      "request": {
+        "method": "POST",
+        "path": "/task/123456/complete",
+        "body": {
+          "behaviour": "forbidden"
+        }
+      },
+      "response": {
+        "status": 403,
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "description": "a request for completion but it is unsupported",
+      "providerState": "this action is unsupported",
+      "request": {
+        "method": "POST",
+        "path": "/task/123456/complete",
+        "body": {
+          "behaviour": "unsupported"
+        }
+      },
+      "response": {
+        "status": 415,
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  }
+}

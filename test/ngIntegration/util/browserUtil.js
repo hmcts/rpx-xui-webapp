@@ -1,4 +1,3 @@
-const { browser } = require("protractor");
 const jwt = require('jsonwebtoken');
 
 class BrowserUtil{
@@ -39,7 +38,7 @@ class BrowserUtil{
             this.addCookie('roles', encodedRoles);
         }
 
-        await this.gotoHomePage();
+        // await this.gotoHomePage();
     }
 
     async waitForLD(){

@@ -54,43 +54,27 @@ class Request {
     }
 
     public async get(reqpath: string, headers: any, expectedStatus:any){
-        try {
-            return await this.retryRequest(() => http.get(reqpath, this.getRequestConfig(headers)), expectedStatus);
-        } catch (error) {
-            return this.getResponseFromError(error);
-        }
+        return await this.retryRequest(() => http.get(reqpath, this.getRequestConfig(headers)), expectedStatus);
+
     }
 
     public async post(reqpath: string, data, headers: any, expectedStatus: number) {
-        try {
-            return await this.retryRequest(() => http.post(reqpath, data, this.getRequestConfig(headers)), expectedStatus);
-        } catch (error) {
-            return this.getResponseFromError(error);
+        return await this.retryRequest(() => http.post(reqpath, data, this.getRequestConfig(headers)), expectedStatus);
 
-        }
     }
 
     public async put(reqpath: string, data, headers: any, expectedStatus: number){
-        try {
-            return await this.retryRequest(() => http.put(reqpath, data, this.getRequestConfig(headers)), expectedStatus);
-        } catch (error) {
-            return this.getResponseFromError(error);
+        return await this.retryRequest(() => http.put(reqpath, data, this.getRequestConfig(headers)), expectedStatus);
 
-        }
     }
 
 
     public async delete(reqpath: string, payload, moreHeaders: any, expectedStatus:any) {
-        try {
-            const requestConfig = this.getRequestConfig(moreHeaders);
-            if (payload){
-                requestConfig['data'] = payload;
-            }
-            return await this.retryRequest(() => http.delete(reqpath, requestConfig), expectedStatus);
-        } catch (error) {
-            return this.getResponseFromError(error);
-
+        const requestConfig = this.getRequestConfig(moreHeaders);
+        if (payload) {
+            requestConfig['data'] = payload;
         }
+        return await this.retryRequest(() => http.delete(reqpath, requestConfig), expectedStatus);
     }
 
     async retryRequest(callback,expectedResponsecode){
@@ -107,14 +91,6 @@ class Request {
             error = null;
             try {
                 retVal = await callback();
-                if (expectedResponsecode  ){
-                    if (expectedResponsecode === retVal.status){
-                        isCallbackSuccess = true;
-                    }
-                    else{
-                        reporterMsg("Expected status not matching " + JSON.stringify(retVal));   
-                    }
-                }
             } catch (err) {
                 // retryErrorLogs.push(err.response ? err.response : err);
                 error = err;

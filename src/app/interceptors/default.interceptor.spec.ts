@@ -1,7 +1,7 @@
-import {TestBed, inject} from '@angular/core/testing';
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
-import {HTTP_INTERCEPTORS, HttpClient} from '@angular/common/http';
-import {HttpDefaultInterceptor} from './default.interceptor';
+import { TestBed, inject } from '@angular/core/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
+import { HttpDefaultInterceptor } from './default.interceptor';
 
 describe('HttpDefaultInterceptor', () => {
     beforeEach(() => TestBed.configureTestingModule({

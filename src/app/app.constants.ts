@@ -205,6 +205,8 @@ const appHeaderTitle = {name: 'Manage Cases', url: '/'};
 // Making the base URL for case details a constant.
 const caseDetailsUrl: string = '/cases/case-details/';
 
+// Create Case button text
+const buttonText: string = 'Start now';
 
 export class AppConstants {
   static FOOTER_DATA = null;
@@ -218,4 +220,5 @@ export class AppConstants {
   static SIGNED_OUT_THEME = signedOutTheme;
   static FEATURE_NAMES = FeatureNames;
   static CASE_DETAILS_URL = caseDetailsUrl;
+  static CREATE_CASE_BUTTON_TEXT = buttonText;
 }

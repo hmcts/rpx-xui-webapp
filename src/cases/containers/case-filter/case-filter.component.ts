@@ -3,6 +3,7 @@ import {Store} from '@ngrx/store';
 import * as fromCaseCreate from '../../store/reducers';
 import {ActionBindingModel} from '../../models/create-case-actions.model';
 import * as fromCasesFeature from '../../store';
+import { AppConstants } from '../../../app/app.constants';
 /**
  * Entry component wrapper for CCD-CASE-FILTER component
  * Smart Component
@@ -36,7 +37,7 @@ export class CaseFilterComponent implements OnInit {
 
   ngOnInit(): void {
     this.fromCasesFeature = fromCasesFeature;
-    this.startButtonText = 'Start now'; // TODO add this to some config file.
+    this.startButtonText = AppConstants.CREATE_CASE_BUTTON_TEXT; // TODO add this to some config file.
     /**
      * Mapping CCD components eventsBindings to ExUI Actions
      */

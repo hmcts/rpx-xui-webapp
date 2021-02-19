@@ -15,7 +15,6 @@ export function modifyRequest(proxyReq, req) {
     proxyReq.setHeader('content-length', body.length)
 
     // Write out body changes to the proxyReq stream
-    console.log(body);
     proxyReq.write(body)
 
     // Remove body-parser body object from the request
@@ -97,8 +96,6 @@ export function prepareElasticQuery(queryParams: {page?}, body: any): {} {
         size,
         sort,
     }
-
-    console.log(nativeEsQuery);
 
     return {
         native_es_query: nativeEsQuery,

@@ -10,7 +10,7 @@ module.exports = {
             res.send(workAllocationMockData.getLocation(req.params.locationId));
         },
         '/workallocation/task/:taskId': (req, res) => {
-            res.send(workAllocationMockData.getTaskDetails());
+            res.status(200).send(workAllocationMockData.getTaskDetails());
         },
         '/workallocation/caseworker': (req, res) => {
             res.send(workAllocationMockData.getCaseworkersList(20));
@@ -21,13 +21,13 @@ module.exports = {
     },
     post: {
         '/workallocation/task/' : (req,res) => {
-            res.send(workAllocationMockData.getMyTasks(10));
+            res.send(workAllocationMockData.getAvailableTasks(10));
         },
         '/workallocation/task/:taskId/assign':  (req,res) => {
             res.send();
         },
         '/workallocation/task/:taskId/claim' : (req,res) => {
-            res.status(404).send();
+            res.send();
         }
     } 
 }

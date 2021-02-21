@@ -8,6 +8,17 @@ function HeaderPage() {
 
     this.primaryNavBar = element(by.css("nav.hmcts-primary-navigation ul"));
     this.manageCases = element(by.css(".hmcts-header .hmcts-header__link"));
+
+    this.headerAppLogoLink = $('.hmcts-header__logo a');
+
+    this.amOnApp = async function(){
+      return await this.headerAppLogoLink.isPresent();
+    }
+
+    this.clickAppLogoLink = async function(){
+       await this.headerAppLogoLink.click(); 
+    }
+
     this.caseList = function(){
       return element(by.xpath("//a[contains(text(),'Case list')]"))
     };

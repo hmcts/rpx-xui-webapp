@@ -52,7 +52,7 @@ class TaskListPage extends TaskList {
     }
 
     async isAvailableTasksDisplayed(){
-        expect(await this.amOnPage(), "Not on Task lict page ").to.be.true;
+        expect(await this.amOnPage(), "Not on Task list page ").to.be.true;
         try{
             await BrowserWaits.waitForElement(this.availableTasksContainer); 
             return true;

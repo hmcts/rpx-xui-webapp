@@ -3,9 +3,7 @@
 const express = require('express');
 var bodyParser = require('body-parser');
 const minimist = require('minimist');
-
-
-let { requestMapping,configurations} = require('./reqResMapping');
+let { requestMapping} = require('./reqResMapping');
 const { browser } = require('protractor');
 const CCDCaseConfig = require('./ccd/ccdCaseConfig/caseCreateConfigGenerator');
 const CCDCaseDetails = require('./ccd/ccdCaseConfig/caseDetailsConfigGenerator');
@@ -24,7 +22,7 @@ class MockApp{
             put: { ...requestMapping.put },
             delete: { ...requestMapping.delete }
         };
-        this.configurations = Object.assign({}, configurations);
+        // this.configurations = Object.assign({}, configurations);
         console.log("Mock Config Initialized");
         return "done";
     }
@@ -69,11 +67,11 @@ class MockApp{
         if (this.server){
             await this.server.close();
             this.server = null;
+            console.log("Mock server stopped");
+
         }else{
             console.log("Mock server is null or undefined");
         }
-        this.conf = {  };
-        this.configurations = { };
     }
 
    

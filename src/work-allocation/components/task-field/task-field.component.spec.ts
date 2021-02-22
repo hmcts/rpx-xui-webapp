@@ -134,7 +134,7 @@ describe('WorkAllocation', () => {
       let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('.due-date');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe('TODAY');
-      expect(element.getAttribute('aria-label')).toBe('Due today');
+      expect(element.getAttribute('aria-label')).toBe('This task is due to be completed today');
 
       // Change the value of task.dueDate.
       task.dueDate = new Date(task.dueDate.getTime() - 86400000); // Yesterday.
@@ -142,7 +142,7 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('.due-date');
       expect(element.textContent.trim()).toBe('+1 day');
-      expect(element.getAttribute('aria-label')).toBe('Overdue by 1 day');
+      expect(element.getAttribute('aria-label')).toBe('This task is 1 day past its due date');
 
       // Clear out the value of task.dueDate and we should no longer have the control.
       task.dueDate = undefined;
@@ -155,7 +155,7 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('.due-date');
       expect(element.textContent.trim()).toBe('+1 day');
-      expect(element.getAttribute('aria-label')).toBe('Overdue by 1 day');
+      expect(element.getAttribute('aria-label')).toBe('This task is 1 day past its due date');
 
       // Set the value of task.dueDate to be null.
       task.dueDate = null;
@@ -670,6 +670,59 @@ describe('WorkAllocation', () => {
       expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
     });
 
+    it('should appropriately parse an ISO date string with toDate', () => {
+      const DATE = '2020-12-03T15:00:00';
+      const output = component.toDate(DATE);
+      expect(output).toBeDefined();
+      expect(output.getFullYear()).toEqual(2020);
+      expect(output.getMonth()).toEqual(11); // 0-based.
+      expect(output.getDate()).toEqual(3);
+      expect(output.getHours()).toEqual(15);
+      expect(output.getMinutes()).toEqual(0);
+    });
+
+    it('should appropriately parse a number with toDate', () => {
+      const DATE = '2020-12-03T15:00:00';
+      const EPOCH = Date.parse(DATE);
+      const output = component.toDate(EPOCH);
+      expect(output).toBeDefined();
+      expect(output.getFullYear()).toEqual(2020);
+      expect(output.getMonth()).toEqual(11); // 0-based.
+      expect(output.getDate()).toEqual(3);
+      expect(output.getHours()).toEqual(15);
+      expect(output.getMinutes()).toEqual(0);
+    });
+
+    it('should appropriately parse a date with toDate', () => {
+      const DATE = new Date(2020, 11, 3, 15, 0, 0);
+      const output = component.toDate(DATE);
+      expect(output).toBeDefined();
+      expect(output.getFullYear()).toEqual(2020);
+      expect(output.getMonth()).toEqual(11); // 0-based.
+      expect(output.getDate()).toEqual(3);
+      expect(output.getHours()).toEqual(15);
+      expect(output.getMinutes()).toEqual(0);
+    });
+
+    it('should appropriately handle an invalid input in toDate', () => {
+      const output = component.toDate('bob');
+      expect(output).toBeNull();
+    });
+
+    it('should appropriately handle an null input in toDate', () => {
+      const output = component.toDate(null);
+      expect(output).toBeNull();
+    });
+
+    it('should appropriately handle an undefined input in toDate', () => {
+      const output = component.toDate(undefined);
+      expect(output).toBeNull();
+    });
+
+    it('should appropriately handle an empty string input in toDate', () => {
+      const output = component.toDate('');
+      expect(output).toBeNull();
+    });
   });
 
 });

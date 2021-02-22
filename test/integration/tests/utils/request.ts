@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 import { config } from '../config/config';
 import { getSessionCookieString } from './authUtil';
+import {reporterMsg, reporterJson} from './helper'
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
@@ -19,7 +20,7 @@ http.interceptors.request.use(requestInterceptor);
 
 
 class Request {
-
+    private testContext;
     private cookieString: string = '';
     public async withSession(username: string, password: string) {
         this.cookieString = await getSessionCookieString(username, password);
@@ -52,62 +53,68 @@ class Request {
         }
     }
 
-    public async get(reqpath: string, headers: any){
+    public async get(reqpath: string, headers: any, expectedResponsecode: number){
         try {
-            return await this.retryRequest(() =>  http.get(reqpath, this.getRequestConfig(headers)));
+            return await this.retryRequest(() => http.get(reqpath, this.getRequestConfig(headers)), expectedResponsecode);
         } catch (error) {
             return this.getResponseFromError(error);
         }
     }
 
-    public async post(reqpath: string, data, headers: any) {
+    public async post(reqpath: string, data, headers: any, expectedResponsecode: number) {
         try {
-            return await this.retryRequest(() =>http.post(reqpath, data, this.getRequestConfig(headers)));
-        } catch (error) {
-            return this.getResponseFromError(error);
-
-        }
-    }
-
-    public async put(reqpath: string, data, headers: any){
-        try {
-            return await this.retryRequest(() =>http.put(reqpath, data, this.getRequestConfig(headers)));
+            return await this.retryRequest(() => http.post(reqpath, data, this.getRequestConfig(headers)), expectedResponsecode);
         } catch (error) {
             return this.getResponseFromError(error);
 
         }
     }
 
+    public async put(reqpath: string, data, headers: any, expectedResponsecode: number){
+        try {
+            return await this.retryRequest(() => http.put(reqpath, data, this.getRequestConfig(headers)), expectedResponsecode);
+        } catch (error) {
+            return this.getResponseFromError(error);
 
-    public async delete(reqpath: string, payload, moreHeaders: any) {
+        }
+    }
+
+
+    public async delete(reqpath: string, payload, moreHeaders: any, expectedResponsecode: number) {
         try {
             const requestConfig = this.getRequestConfig(moreHeaders);
             if (payload){
                 requestConfig['data'] = payload;
             }
-            return await this.retryRequest(() =>http.delete(reqpath, requestConfig ));
+            return await this.retryRequest(() => http.delete(reqpath, requestConfig), expectedResponsecode);
         } catch (error) {
             return this.getResponseFromError(error);
 
         }
     }
 
-    async retryRequest(callback){
+    async retryRequest(callback, expectedResponsecode:number){
         let retryAttemptCounter = 0;
         let isCallbackSuccess = false;
         let retVal = null;
 
         const retryErrorLogs = [];
-        while (retryAttemptCounter < 3 && !retVal){
+        while (retryAttemptCounter < 3 && !retVal && !isCallbackSuccess){
             try {
-                console.log("in retry function : retry attempt " + retryAttemptCounter);
-
+                reporterMsg("in retry function : retry attempt " + retryAttemptCounter);
                 retVal = await callback();
-                isCallbackSuccess = true;
+                if (expectedResponsecode  ){
+                    if (expectedResponsecode === retVal.status){
+                        isCallbackSuccess = true;
+                    }
+                    else{
+                        reporterMsg("Expected status not matching " + JSON.stringify(retVal));   
+                    }
+                }
             } catch (err) {
                 retryErrorLogs.push(err);
                 retryAttemptCounter++;
-                console.log(`API request error: "${err.code}" syscall : ${err.syscall} => Retrying atempt ${retryAttemptCounter}`);
+                reporterMsg(`API request error: "${err.code}" syscall : ${err.syscall} => Retrying atempt ${retryAttemptCounter}`);
                 if (err.response) {
                     retVal = err.response;
                 }

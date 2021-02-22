@@ -3,11 +3,11 @@ import * as git from 'git-rev-sync'
 import * as path from 'path'
 import { getConfigValue } from '../../../configuration'
 import {
+  PACT_BRANCH_NAME,
   PACT_BROKER_PASSWORD,
   PACT_BROKER_URL,
   PACT_BROKER_USERNAME,
-  PACT_CONSUMER_VERSION,
-  PACT_BRANCH_NAME
+  PACT_CONSUMER_VERSION
 } from '../../../configuration/references'
 
 const publish = async (): Promise<void> => {

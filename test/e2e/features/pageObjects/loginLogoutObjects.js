@@ -3,6 +3,7 @@
 const { SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants');
 
 var BrowserWaits = require('../../support/customWaits');
+const CucumberReportLogger = require('../../support/reportLogger');
 
 function loginLogoutObjects() {
 
@@ -14,16 +15,17 @@ function loginLogoutObjects() {
   this.failure_error_heading = element(by.css("[id='validation-error-summary-heading']"));
   this.dashboard_header= element(by.css("[class='govuk-heading-xl']"));
 
+  this.incorrectCredentialsErrorHeader = element(by.xpath('//h2[@id = "validation-error-summary-heading"][contains(text(),"Incorrect email or password")]'));
 
   this.givenIAmLoggedIn = async function (email,password) {
-    await BrowserWaits.waitForElement(this.signinTitle);
- 
-    await this.enterUrEmail(email);
-    await this.enterPassword(password);
-    await this.clickSignIn();
-    await BrowserWaits.retryForPageLoad(this.signOutlink);
+    await BrowserWaits.waitForElement(this.signinTitle);;
+    await this.loginWithCredentials(email, password);
     
   };
+
+  this.isLoginCredentialsErrorDisplayed = async function(){
+    return await this.incorrectCredentialsErrorHeader.isPresent(); 
+  }
 
   this.givenIAmUnauthenticatedUser = async function () {
     await this.enterUrEmail("test@gmail.com");
@@ -36,13 +38,13 @@ function loginLogoutObjects() {
 
   this.enterUrEmail = async function (email) {
     await BrowserWaits.waitForElement(this.emailAddress);
-
+    await this.emailAddress.clear();
     await this.emailAddress.sendKeys(email);
   };
 
   this.enterPassword = async function (password) {
     await BrowserWaits.waitForElement(this.password);
-
+    await this.password.clear();
     await this.password.sendKeys(password);
   };
 
@@ -67,6 +69,7 @@ function loginLogoutObjects() {
 
   this.loginWithCredentials = async function (username, password) {
     await BrowserWaits.waitForElement(this.emailAddress);
+    CucumberReportLogger.AddMessage("IDAM URL :" + await browser.getCurrentUrl());
     await this.enterUrEmail(username);
     await this.enterPassword(password);
     await this.clickSignIn();

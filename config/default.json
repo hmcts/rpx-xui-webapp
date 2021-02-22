@@ -49,6 +49,15 @@
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",
   "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT",
+  "wildcardSearchFields": {
+    "Benefit": [
+      "generatedSurname",
+      "appeal.appellant.name.lastName"
+    ]
+  },
+  "wildcardSearchRoles": [
+    "caseworker"
+  ],
   "loginRoleMatcher": "caseworker",
   "log4JConfig": {
     "appenders": {

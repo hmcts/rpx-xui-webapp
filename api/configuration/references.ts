@@ -55,6 +55,10 @@ export const ENVIRONMENT = 'environment'
 
 export const JURISDICTIONS = 'jurisdictions'
 
+export const WILDCARD_SEARCH_FIELDS = 'wildcardSearchFields'
+
+export const WILDCARD_SEARCH_ROLES = 'wildcardSearchRoles'
+
 export const IDAM_SECRET = 'secrets.rpx.mc-idam-client-secret'
 
 export const LOGIN_ROLE_MATCHER = 'loginRoleMatcher'

@@ -29,7 +29,7 @@ export function modifyRequest(proxyReq, req) {
 
 export function userCanPerformWildCardSearch(userInfo: UserInfo): boolean {
   const allowedRoles = getConfigValue(WILDCARD_SEARCH_ROLES) as string[]
-  return userInfo.roles.filter((role: string) => allowedRoles
+  return userInfo && userInfo.roles && userInfo.roles.filter((role: string) => allowedRoles
     .map((allowedRole: string) => allowedRole.toLowerCase())
     .indexOf(role.toLowerCase()) >= 0).length > 0
 }

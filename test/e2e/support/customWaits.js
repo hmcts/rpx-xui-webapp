@@ -41,7 +41,7 @@ class BrowserWaits{
     }
 
     async waitForCondition(condition){
-        await browser.wait( condition(), this.waitTime);
+        await browser.wait( condition, this.waitTime);
     }
 
     async waitForConditionAsync(condition,waitInMillisec){

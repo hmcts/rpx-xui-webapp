@@ -1,4 +1,6 @@
 const jwt = require('jsonwebtoken');
+const reportLogger = require('../../e2e/support/reportLogger');
+// const addContext = require('mochawesome/addContext');
 
 class BrowserUtil{
 
@@ -55,6 +57,15 @@ class BrowserUtil{
             }); 
             elapsedTime = (new Date() - startTime)/1000;
         }
+    }
+
+    async addScreenshot(thisTest, onBrowser){
+        // addContext(thisTest, {
+        //     title: "screenshot",
+        //     // value: await reportLogger.getScreenshot(global.screenShotUtils),
+        //     value: "test"
+
+        // });
     }
 
 }

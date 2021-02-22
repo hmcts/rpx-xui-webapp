@@ -46,10 +46,11 @@ class CCDcaseField{
 
         switch (fieldConfig.type) {
             case "AddressGlobalUK":
+            case "AddressGlobal":
             case "AddressUK":
                 template.field_type.id = fieldConfig.type;
                 template.field_type.type = "Complex";
-                const add1 = this.getCCDFieldTemplateCopy({type: "Text", id: "AddressLine1", label: "Building and Street"});
+                const add1 = this.getCCDFieldTemplateCopy({ type: "Text", id: "AddressLine1", label: "Building and Street"});
                 const add2 = this.getCCDFieldTemplateCopy({ type: "Text", id: "AddressLine2", label:"Address Line 2"});
                 const add3 = this.getCCDFieldTemplateCopy({ type: "Text", id: "AddressLine3", label:"Address Line 3"});
                 const postTown = this.getCCDFieldTemplateCopy({ type: "Text", id: "PostTown", label:"Town or City"});
@@ -103,8 +104,10 @@ class CCDcaseField{
                 template.field_type.type = fieldConfig.type;
         }
 
-        if(fieldConfig.list){
-            template.field_type.fixed_list_items = fieldConfig.list; 
+
+        if (fieldConfig.fixed_list_items || fieldConfig.list){
+            let listItems = fieldConfig.fixed_list_items ? fieldConfig.fixed_list_items : fieldConfig.list; 
+            template.field_type.fixed_list_items = listItems; 
         }
 
 

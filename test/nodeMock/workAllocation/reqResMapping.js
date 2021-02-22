@@ -17,14 +17,15 @@ module.exports = {
         }
     },
     post: {
-        '/workallocation/task/' : (req,res) => {
+        '/workallocation/task/': (req, res) => {
             res.send(workAllocationMockData.getAvailableTasks(10));
         },
-        '/workallocation/task/:taskId/assign':  (req,res) => {
+        '/workallocation/task/:taskId/assign': (req, res) => {
             res.send();
         },
-        '/workallocation/task/:taskId/claim' : (req,res) => {
+        '/workallocation/task/:taskId/claim': (req, res) => {
             res.status(404).send();
         }
-    } 
+    }
 }
+

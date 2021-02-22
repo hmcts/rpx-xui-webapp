@@ -24,12 +24,11 @@ module.exports = {
         },
         '/api/healthCheck': (req, res) => {
             res.send({ "healthState": true });
-        }, 
+        },
         '/data/internal/profile': (req, res) => {
             res.send(idamProfile);
         },
     },
     post: {
-        
     }
 }

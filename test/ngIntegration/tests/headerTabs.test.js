@@ -19,7 +19,9 @@ describe('Header  Tabs', function () {
     });
     afterEach(async function (done) {
         await MockApp.stopServer();
+        // await BrowserUtil.addScreenshot(this, browser); 
         done();
+
     });
 
     it('Case list tab present', async function () {

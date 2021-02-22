@@ -6,11 +6,9 @@ import { HttpDefaultInterceptor } from './default.interceptor';
 describe('HttpDefaultInterceptor', () => {
     beforeEach(() => TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
-            providers: [{
-                        provide: HTTP_INTERCEPTORS,
-                        useClass: HttpDefaultInterceptor,
-                        multi: true
-            }]
+            providers: [
+                { provide: HTTP_INTERCEPTORS, useClass: HttpDefaultInterceptor, multi: true },
+            ]
     }));
 
     describe('intercept HTTP requests', () => {

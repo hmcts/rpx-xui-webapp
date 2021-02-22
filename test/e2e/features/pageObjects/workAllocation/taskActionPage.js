@@ -39,12 +39,12 @@ class TaskActionPage extends TaskList {
     }
 
     async clickUnassignBtn() {
-        expect(await this.amOnPage(), "Not on task assignment page").to.be.true;
+        expect(await this.amOnPage(), "Not on task action page").to.be.true;
         await this.unassignBtn.click();
     }
 
     async clickCancelBtn() {
-        expect(await this.amOnPage(), "Not on task assignment page").to.be.true;
+        expect(await this.amOnPage(), "Not on task action page").to.be.true;
         await this.cancelBtn.click();
     }
 

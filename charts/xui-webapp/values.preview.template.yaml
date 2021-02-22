@@ -22,4 +22,8 @@ nodejs:
         - mc-idam-client-secret
 redis:
   enabled: true
-
+idam-pr:
+  enabled: true
+  redirect_uris:
+    XUI:
+      - https://${SERVICE_FQDN}/oauth2/callback

@@ -2,6 +2,7 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { SessionStorageService } from 'src/app/services';
 
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Caseworker, Location } from '../../models/dtos';
@@ -39,15 +40,11 @@ class MockCaseworkerDataService {
   public getAll(): Observable<Caseworker[]> {
     return Observable.of([ JD, JS, JB, NB ]);
   }
-  public getForLocation(locationId: string): Observable<Caseworker[]> {
-    switch (locationId) {
-      case LOCATION_A.id:
-        return Observable.of([ JD, JS ]);
-      case LOCATION_B.id:
-        return Observable.of([ JB, NB ]);
-      default:
-        return Observable.of([ undefined ]);
-    }
+}
+
+class MockSessionStorageService {
+  public getItem(): string {
+    return '{"id":"2","forename":"Mr.","surname":"Test","email":"mrtest@mailinator.com","active":true,"roles":["caseworker"]}';
   }
 }
 
@@ -85,7 +82,8 @@ describe('WorkAllocation', () => {
         providers: [
           { provide: Router, useValue: mockRouter },
           { provide: LocationDataService, useClass: MockLocationDataService },
-          { provide: CaseworkerDataService, useClass: MockCaseworkerDataService }
+          { provide: CaseworkerDataService, useClass: MockCaseworkerDataService },
+          { provide: SessionStorageService, useClass: MockSessionStorageService }
         ]
       }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);
@@ -112,51 +110,44 @@ describe('WorkAllocation', () => {
 
     it('should have appropriate default options shown in the caseworker select', () => {
       expect(component.caseworkers).toBeDefined();
-      expect(component.caseworkers.length).toBe(4); // For all locations.
+      expect(component.caseworkers.length).toBe(2); // For all locations.
       const select: HTMLSelectElement = getSelect('#task_assignment_caseworker');
       expect(select).toBeDefined();
       expect(select.options).toBeDefined();
-      expect(select.options.length).toEqual(5); // For all locations + "Select name"
+      expect(select.options.length).toEqual(3); // For all locations + "Select name"
       expect(select.options[0].label).toEqual('Select name');
       expect(select.options[1].textContent).toEqual('Jane Doe - j.d@cw.gov.uk');
       expect(select.options[2].textContent).toEqual('John Smith - j.s@cw.gov.uk');
-      expect(select.options[3].textContent).toEqual('Joseph Bloggs - j.b@cw.gov.uk');
-      expect(select.options[4].textContent).toEqual('Noah Body - n.b@cw.gov.uk');
     });
 
     it('should appropriately filter any excluded caseworkers', () => {
       expect(component.caseworkers).toBeDefined();
-      expect(component.caseworkers.length).toBe(4); // For all locations.
+      expect(component.caseworkers.length).toBe(2); // For all locations.
       let select: HTMLSelectElement = getSelect('#task_assignment_caseworker');
       expect(select).toBeDefined();
       expect(select.options).toBeDefined();
-      expect(select.options.length).toEqual(5); // For all locations + "Select name"
+      expect(select.options.length).toEqual(3); // For all locations + "Select name"
       expect(select.options[0].label).toEqual('Select name');
       expect(select.options[1].textContent).toEqual('Jane Doe - j.d@cw.gov.uk');
       expect(select.options[2].textContent).toEqual('John Smith - j.s@cw.gov.uk');
-      expect(select.options[3].textContent).toEqual('Joseph Bloggs - j.b@cw.gov.uk');
-      expect(select.options[4].textContent).toEqual('Noah Body - n.b@cw.gov.uk');
 
       // Now exclude Jane Doe and Noah Body.
-      wrapper.excludeCaseworkers = [ JD, NB ];
+      wrapper.excludeCaseworkers = [ JD ];
       fixture.detectChanges();
-      expect(component.caseworkers.length).toBe(2); // Shouldn't include excluded.
+      expect(component.caseworkers.length).toBe(1); // Shouldn't include excluded.
       select = getSelect('#task_assignment_caseworker');
-      expect(select.options.length).toEqual(3); // Non-excluded + "Select name"
+      expect(select.options.length).toEqual(2); // Non-excluded + "Select name"
       expect(select.options[0].label).toEqual('Select name');
       expect(select.options[1].textContent).toEqual('John Smith - j.s@cw.gov.uk');
-      expect(select.options[2].textContent).toEqual('Joseph Bloggs - j.b@cw.gov.uk');
 
       // Now change it so only John Smith is excluded.
       wrapper.excludeCaseworkers = [ JS ];
       fixture.detectChanges();
-      expect(component.caseworkers.length).toBe(3); // Shouldn't include excluded.
+      expect(component.caseworkers.length).toBe(1); // Shouldn't include excluded.
       select = getSelect('#task_assignment_caseworker');
-      expect(select.options.length).toEqual(4); // Non-excluded + "Select name"
+      expect(select.options.length).toEqual(2); // Non-excluded + "Select name"
       expect(select.options[0].label).toEqual('Select name');
       expect(select.options[1].textContent).toEqual('Jane Doe - j.d@cw.gov.uk');
-      expect(select.options[2].textContent).toEqual('Joseph Bloggs - j.b@cw.gov.uk');
-      expect(select.options[3].textContent).toEqual('Noah Body - n.b@cw.gov.uk');
     });
 
     it('should handle the location being changed and refresh list of caseworkers', () => {
@@ -184,21 +175,21 @@ describe('WorkAllocation', () => {
       // ... and shouldn't have had any change events fired yet.
       expect(wrapper.emittedEvents.length).toBe(0);
 
-      // Now let's select a caseworker (Joseph Bloggs).
-      select.value = select.options[3].value; // Joseph Bloggs.
+      // Now let's select a caseworker.
+      select.value = select.options[2].value; // John Smith.
       select.dispatchEvent(new Event('change'));
       fixture.detectChanges();
       fixture.whenStable().then(() => {
-        expect(component.caseworker).toBe(JB); // Joseph Bloggs selected.
+        expect(component.caseworker).toBe(JS); // John Smith selected.
         expect(wrapper.emittedEvents.length).toBe(1);
-        expect(wrapper.emittedEvents.includes(JB)).toBeTruthy();
+        expect(wrapper.emittedEvents.includes(JS)).toBeTruthy();
 
         // And now let's choose "Select name" again.
         select.value = select.options[0].value;
         select.dispatchEvent(new Event('change'));
         fixture.detectChanges();
         fixture.whenStable().then(() => {
-          expect(component.caseworker).toBeNull(); // Joseph Bloggs selected.
+          expect(component.caseworker).toBeNull(); // John Smith selected.
           expect(wrapper.emittedEvents.length).toBe(2);
           expect(wrapper.emittedEvents[1]).toBeNull();
         });
@@ -213,12 +204,84 @@ describe('WorkAllocation', () => {
       locationsSelect.dispatchEvent(new Event('change'));
       fixture.detectChanges();
       fixture.whenStable().then(() => {
-        expect(component.caseworkers.length).toBe(1); // Only Location C people (undefined)
+        expect(component.caseworkers.length).toBe(0); // Only Location C people (undefined)
         const caseworkersSelect: HTMLSelectElement = getSelect('#task_assignment_caseworker');
-        expect(caseworkersSelect.options.length).toEqual(2);  // Location C people + "Select name"
+        expect(caseworkersSelect.options.length).toEqual(1);  // Location C people + "Select name"
         expect(caseworkersSelect.options[0].label).toEqual('Select name');
-        expect(caseworkersSelect.options[1].textContent).toBe(''); // Undefined caseworker.
       });
+    });
+
+    it('should set the user ID correctly', () => {
+      // currently set to JD
+      component.setUserId();
+      expect(component.userId).toEqual('2');
+    });
+
+    it('should check if a caseworker is the user (assigned caseworker)', () => {
+      // only one caseworker is the assigned caseworker (JD)
+      expect(component.isAssignedCaseworker('2')).toBeTruthy();
+      expect(component.isAssignedCaseworker('3')).toBeFalsy();
+      expect(component.isAssignedCaseworker(undefined)).toBeFalsy();
+    });
+
+    it('should set the assigned caseworker', () => {
+      component.assignedCaseworker = undefined;
+      fixture.detectChanges();
+
+      // initial setting is with assigned caseworker JD
+      component.setAssignedCaseworker();
+      expect(component.assignedCaseworker).toEqual(JD);
+
+      component.userId = '3';
+      fixture.detectChanges();
+
+      // Setting should now be JB
+      component.setAssignedCaseworker();
+      expect(component.assignedCaseworker).toEqual(JB);
+    });
+
+    it('should check if a caseworkers location matches the current selected location', () => {
+      const locationsSelect: HTMLSelectElement = getSelect('#task_assignment_location');
+
+      // Now let's select a new location (Location A).
+      locationsSelect.value = locationsSelect.options[1].value; // Location A.
+      locationsSelect.dispatchEvent(new Event('change'));
+      fixture.detectChanges();
+
+      // JS is at location, JB is not
+      expect(component.locationMatches(JB)).toBeFalsy();
+      expect(component.locationMatches(JS)).toBeTruthy();
+
+      // Now let's select a new location (Location B).
+      locationsSelect.value = locationsSelect.options[2].value; // Location B.
+      locationsSelect.dispatchEvent(new Event('change'));
+      fixture.detectChanges();
+
+      // JB is at location, JS is not
+      expect(component.locationMatches(JB)).toBeTruthy();
+      expect(component.locationMatches(JS)).toBeFalsy();
+
+      // Now let's select a new location (Location C).
+      locationsSelect.value = locationsSelect.options[3].value; // Location C.
+      locationsSelect.dispatchEvent(new Event('change'));
+      fixture.detectChanges();
+
+      // Neither caseworker is at location
+      expect(component.locationMatches(JB)).toBeFalsy();
+      expect(component.locationMatches(JS)).toBeFalsy();
+    });
+
+    it('should set the selected location', () => {
+      // initial setting is with assigned caseworker JD, location a
+      component.setSelectedLocation();
+      expect(component.location.id).toEqual('a');
+
+      // Now check with JB, location b
+      component.assignedCaseworker = JB;
+      fixture.detectChanges();
+      expect(component.assignedCaseworker).toEqual(JB);
+      component.setSelectedLocation();
+      expect(component.location.id).toEqual('b');
     });
   });
 

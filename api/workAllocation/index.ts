@@ -64,8 +64,8 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     // Assign actions to the tasks on the data from the API.
     if (data) {
       const caseworkers: Caseworker[] =
-       req.session.casewokers ?
-       req.session.casewokers as Caseworker[] :
+       req.session.caseworkers ?
+       req.session.caseworkers as Caseworker[] :
        await retrieveAllCaseWorkers(req, res);
       assignActionsToTasks(data.tasks, req.body.view, caseworkers);
     }
@@ -97,10 +97,11 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
  */
 export async function getAllCaseWorkers(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    const caseworkers: Caseworker[] =
-     req.session.casewokers ?
-     req.session.casewokers as Caseworker[] :
-     await retrieveAllCaseWorkers(req, res);
+    let caseworkers: Caseworker[]
+    if (req.session.caseworkers) {
+      caseworkers = req.session.caseworkers as Caseworker[]
+    }
+    caseworkers = await retrieveAllCaseWorkers(req, res);
     res.status(200);
     res.send(caseworkers);
   } catch (error) {
@@ -116,7 +117,7 @@ export async function retrieveAllCaseWorkers(req: EnhancedRequest, res: Response
   const userUrl = `${baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
   const userResponse = await handlePostCaseWorkersRefData(userUrl, userIds, req);
   const caseWorkerReferenceData = mapCaseworkerData(userResponse.data);
-  req.session.casewokers = caseWorkerReferenceData;
+  req.session.caseworkers = caseWorkerReferenceData;
   return caseWorkerReferenceData;
 }
 

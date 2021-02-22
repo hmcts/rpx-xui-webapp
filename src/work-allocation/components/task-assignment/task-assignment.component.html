@@ -5,7 +5,7 @@
     <select id="task_assignment_location" name="task_assignment_location" class="govuk-select task-assignment__location"
             [(ngModel)]="location">
       <option [ngValue]="ALL_LOCATIONS">{{ALL_LOCATIONS.locationName}}</option>
-      <option *ngFor="let loc of locations" [ngValue]="loc">{{loc.locationName}}</option>
+      <option *ngFor="let loc of locations" [ngValue]="loc" >{{loc.locationName}}</option>
     </select>
   </div>
 

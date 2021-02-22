@@ -26,7 +26,7 @@ describe('Case share ', () => {
             experimental: true,
             'X-XSRF-TOKEN': xsrfToken
         };
-        const response = await Request.get(`caseshare/orgs`, headers);
+        const response = await Request.get(`caseshare/orgs`, headers, 200);
         expect(response.status).to.equal(200);
     });
 
@@ -38,7 +38,7 @@ describe('Case share ', () => {
             experimental: true,
             'X-XSRF-TOKEN': xsrfToken
         };
-        const response = await Request.get(`caseshare/users`, headers);
+        const response = await Request.get(`caseshare/users`, headers, 200);
         expect(response.status).to.equal(200);
     });
 
@@ -50,7 +50,7 @@ describe('Case share ', () => {
             experimental: true,
             'X-XSRF-TOKEN': xsrfToken
         };
-        const response = await Request.get(`caseshare/cases`, headers);
+        const response = await Request.get(`caseshare/cases`, headers, 200);
         expect(response.status).to.equal(200);
     });
 
@@ -62,7 +62,7 @@ describe('Case share ', () => {
             experimental: true,
             'X-XSRF-TOKEN': xsrfToken
         };
-        const response = await Request.get(`caseshare/case-assignments`, headers);
+        const response = await Request.get(`caseshare/case-assignments`, headers, 200);
         expect(response.status).to.equal(200);
     });
 

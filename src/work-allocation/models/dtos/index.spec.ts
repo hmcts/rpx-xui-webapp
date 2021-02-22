@@ -6,7 +6,7 @@ describe('WorkAllocation', () => {
 
     it('should correctly coerce a partial JSON object to a Task', () => {
       const JSON: object = {
-        assignee: { id: 'id1', userName: 'userName' },
+        assignee: { userId: 'id1', userName: 'userName' },
         caseData: {
           category: 'category',
           location: { id: 'locationId', locationName: 'locationName' },
@@ -20,7 +20,7 @@ describe('WorkAllocation', () => {
       const TASK: Task = JsonConfig.fromJson(JSON);
       expect(TASK).toBeDefined();
       expect(TASK.name).toEqual('taskName');
-      expect(TASK.assignee.id).toEqual('id1');
+      expect(TASK.assignee.userId).toEqual('id1');
       expect(TASK.assignee.userName).toEqual('userName');
       expect(TASK.caseData.category).toEqual('category');
       expect(TASK.caseData.location.id).toEqual('locationId');

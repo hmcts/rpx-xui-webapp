@@ -20,10 +20,6 @@ const { isArray } = require("core-js/fn/array");
 const CCDCaseConfig = require('./ccdCaseConfig/caseCreateConfigGenerator');
 const CCDWorkBasketInputGenerator = require('./ccdCaseConfig/workBasketInputGenerator');
 
-
-
-
-
 class CCDApi{
 
     getJurisdictions(){

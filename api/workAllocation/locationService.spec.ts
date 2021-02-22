@@ -1,20 +1,17 @@
+import * as chai from 'chai';
+import {expect} from 'chai';
 import 'mocha';
-
-import * as chai from 'chai'
-import { expect } from 'chai';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai'
-import { mockReq, mockRes } from 'sinon-express-mock';
-
-import { http } from '../lib/http';
-import { handleLocationGet } from './locationService';
+import * as sinonChai from 'sinon-chai';
+import {mockReq, mockRes} from 'sinon-express-mock';
+import {ALL_LOCATIONS} from './constants/locations';
+import {handleLocationGet} from './locationService';
 
 chai.use(sinonChai);
 describe('Location Service', () => {
 
   let sandbox: sinon.SinonSandbox;
-  let spy: any;
-  const res = mockRes({ status: 200, data: 'ok' });
+  const res = mockRes({status: 200, data: ALL_LOCATIONS});
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -27,16 +24,11 @@ describe('Location Service', () => {
   describe('handleLocationGet()', () => {
 
     it('should make a get request', async () => {
-
-      spy = sandbox.stub(http, 'get').resolves(res);
       const path = '/location';
       const req = mockReq();
 
-      await handleLocationGet(path, req);
-
-      const args = spy.getCall(0).args;
-
-      expect(args[0]).to.equal(path);
+      const {data} = await handleLocationGet(path, req);
+      expect(data).to.equal(ALL_LOCATIONS);
     });
   });
 

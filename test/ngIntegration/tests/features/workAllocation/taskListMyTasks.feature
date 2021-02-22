@@ -42,7 +42,7 @@ Feature: My Tasks Task list
         When I click on header tab Task list
         Then I see Task list sub navigation tabs
         Then I see My tasks page displayed
-        Then I validate sort column persist in session
+        Then I validate My tasks sort column persist in session
 
 
 

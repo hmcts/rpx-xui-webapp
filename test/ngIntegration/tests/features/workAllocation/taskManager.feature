@@ -42,9 +42,7 @@ Feature: Task manager
         When I click on header tab Task manager
 
         Then I see Task manager page displayed
-        Then I validate sort column persist in session
-
-
+        Then I validate Task manager tasks sort column persist in session
 
     Scenario: Task manager error responses
         Given I set MOCK with user roles

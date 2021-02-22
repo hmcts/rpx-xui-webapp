@@ -112,6 +112,7 @@ describe('CaseCreateSubmitComponent', () => {
         CasesService,
         CCDAuthService,
         DraftService,
+        AlertService,
         HttpErrorService,
         AppConfigService,
         AppConfig,

@@ -1,6 +1,8 @@
 const ccdApiMock = require('./ccd/ccdApi');
 const WAReqResMappings  = require('./workAllocation/reqResMapping');
 const nodeAppReqResMappings = require('./nodeApp/reqResMapping');
+const ccdReqResMapping = require('./ccd/reqResMapping');
+
 
 const dummyCaseDetails = require('./ccd/caseDetails_data');
 
@@ -27,15 +29,8 @@ const requestMapping = {
        '/api/caseshare/users': (req,res) => {
            res.send(organisationUsers());
        },
-       '/aggregated/caseworkers/:uid/jurisdictions':(req,res) =>{
-           res.send(ccdApiMock.getJurisdictions());
-       },
-       '/data/internal/case-types/:jurisdiction/work-basket-inputs' : (req,res) => {
-           res.send(ccdApiMock.getWorkbasketInputs(req.params.jurisdiction));
-
-       },
-        '/data/internal/case-types/:jurisdiction/event-triggers/:caseType': (req, res) => {
-            res.send(ccdApiMock.getSolicitorCreateCaseConfig(req.params.jurisdiction, req.params.caseType));
+        '/data/internal/profile' : (req,res) => {
+            res.send(idamProfile);
         },
         '/data/internal/cases/:caseid': (req,res) => {
             res.send(dummyCaseDetails);
@@ -46,46 +41,23 @@ const requestMapping = {
         '/api/caseshare/orgs': (req, res) => {
             res.send(getCaseShareOrgs());
         },
-         '/data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/cases/pagination_metadata' : (req,res) => {
-          res.send({ "total_results_count": 400, "total_pages_count": 16 });
+        '/data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/cases/pagination_metadata': (req,res) => {
+            res.send();
         },
+        ...WAReqResMappings.get,
+        ...ccdReqResMapping.get
+
+
     },
     post:{
-        ...nodeAppReqResMappings.post,
-        ...WAReqResMappings.post,
-        '/api/inviteUser': (req,res) => {
-            res.send({"userIdentifier":"97ecc487-cdeb-42a8-b794-84840a4testc","idamStatus":null});
-        },
-        '/data/case-types/:caseType/validate' : (req,res) => {
-            const responseBody = {
-                data: req.body.data,
-                "_links": { "self": { "href": "http://ccd-data-store-api-demo.service.core-compute-demo.internal" + req.path + "?pageId=" + req.query.pageId } }
-            }
-            res.send(responseBody)
-        },
-        '/data/case-types/:caseType/cases': (req,res) => {
-            const responseBody = {
-                id: Date.now(),
-                data: req.body.data,
-                "_links": { "self": { "href": "http://ccd-data-store-api-demo.service.core-compute-demo.internal" + req.path + "?ignore-warning=false" } }
-            }
-            res.send(responseBody)
-        },
-        '/data/cases/:caseid/events': (req,res) => {
-            const responseBody = {
-                id: Date.now(),
-                data: req.body.data,
-                "_links": { "self": { "href": "http://ccd-data-store-api-demo.service.core-compute-demo.internal" + req.path + "?ignore-warning=false" } }
-            }
-            res.send(responseBody);
-        },
         '/data/internal/searchCases' : (req,res) => {
             res.send(getWorkbasketCases());
         },
         '/api/caseshare/case-assignments': (req, res) => {
             res.send( []);
-        }
-      
+        },
+        ...WAReqResMappings.post,
+        ...ccdReqResMapping.post
 
     },
     put:{
@@ -561,7 +533,5 @@ function getWorkbasketCases(){
       }
     });
   }
-    return { columns: cols, results: rows, total:250 };
-
- 
+    return { columns: cols, results: rows ,total: 1200}; 
 }

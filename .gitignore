@@ -74,7 +74,7 @@ stryker-tmp/
 # stryker temp files
 .stryker-tmp
 stryker.log
-log/pact.log
 
-# Test env files
-/test/*.env
+# yalc
+.yalc/
+yalc.lock

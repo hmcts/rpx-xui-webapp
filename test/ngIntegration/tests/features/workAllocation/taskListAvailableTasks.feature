@@ -1,4 +1,4 @@
-@ng 
+@ng @test
 Feature: Available Tasks Task list
 
     Background: Mock and browser setup
@@ -48,7 +48,7 @@ Feature: Available Tasks Task list
         When I click sub navigation tab Available tasks
 
         Then I see Available tasks page displayed
-        Then I validate sort column persist in session
+        Then I validate Available tasks sort column persist in session
 
 
 

@@ -4,7 +4,6 @@ Feature: Task actions
     Background: Mock and browser setup
         Given I init MockApp
 
-
     Scenario: My Tasks reassign page errors
         Given I set MOCK with user roles
             | role                      |

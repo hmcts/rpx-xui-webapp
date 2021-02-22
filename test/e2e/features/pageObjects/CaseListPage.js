@@ -102,8 +102,19 @@ class CaseListPage{
 
     async clickFirstCaseLink(){
         let currentPageUrl = await browser.getCurrentUrl();
-        await this.caseListRows.get(0).$("td a").click();    
-        await BrowserWaits.waitForPageNavigation(currentPageUrl);
+
+        let isNavigationSuccess = false;
+        let retryAttemptsCounter = 0;
+        while (retryAttemptsCounter <= 3 && !isNavigationSuccess ){
+            try{
+                await this.caseListRows.get(0).$("td a").click();
+                await BrowserWaits.waitForPageNavigation(currentPageUrl); 
+                isNavigationSuccess = true;
+            }catch(err){
+                retryAttemptsCounter++;
+                CucumberReportLogger.AddMessage(`Error openning first case from case list. Retrying attempt ${retryAttemptsCounter} :   ${err}`); 
+            }
+        } 
     }
 
     async getCountOfCasesListedInPage(){

@@ -56,7 +56,7 @@ export function prepareElasticQuery(queryParams: { page? }, body: any, user: Use
       const newKey = key.replace('case.', '')
       caseCriteria = {
         ...caseCriteria,
-        [newKey]: metaCriteria[key]
+        [newKey]: metaCriteria[key],
       }
       delete metaCriteria[key]
     }
@@ -74,9 +74,9 @@ export function prepareElasticQuery(queryParams: { page? }, body: any, user: Use
           match: {
             [keyName]: {
               operator: 'and',
-              query: metaCriteria[criterion]
-            }
-          }
+              query: metaCriteria[criterion],
+            },
+          },
         }
         matchList.push(match)
       }
@@ -97,17 +97,17 @@ export function prepareElasticQuery(queryParams: { page? }, body: any, user: Use
           fieldsToApplyWildCardSearchesTo[caseType].indexOf(criterion) >= 0) {
           match = {
             wildcard: {
-              [field]: `*${searchTerm.toLowerCase()}*`
-            }
+              [field]: `*${searchTerm.toLowerCase()}*`,
+            },
           }
         } else {
           match = {
             match: {
               [field]: {
                 operator: 'and',
-                query: searchTerm
-              }
-            }
+                query: searchTerm,
+              },
+            },
           }
         }
         matchList.push(match)
@@ -119,16 +119,16 @@ export function prepareElasticQuery(queryParams: { page? }, body: any, user: Use
     from,
     query: {
       bool: {
-        must: matchList
-      }
+        must: matchList,
+      },
     },
     size,
-    sort
+    sort,
   }
 
   return {
     native_es_query: nativeEsQuery,
-    supplementary_data: ['*']
+    supplementary_data: ['*'],
   }
 }
 
@@ -149,7 +149,7 @@ function prepareSort(params) {
     const orderDirection = params.order === 0 ? 'ASC' : 'DESC'
     sortQuery.push(
       {
-        [columnName]: orderDirection
+        [columnName]: orderDirection,
       }
     )
   }
@@ -176,7 +176,7 @@ export function handleElasticSearchResponse(proxyRes, req, res, json): {} {
     return {
       'columns': json.headers[0].fields,
       'results': results,
-      'total': json.total
+      'total': json.total,
     }
   }
   return {}

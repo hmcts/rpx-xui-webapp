@@ -14,7 +14,7 @@ export class CaseworkerDataService {
 
   public getAll(): Observable<Caseworker[]> {
     if (this.sessionStorageService.getItem(CaseworkerDataService.caseworkersKey)) {
-      const caseworkers =  JSON.parse(this.sessionStorageService.getItem(CaseworkerDataService.caseworkersKey));
+      const caseworkers = JSON.parse(this.sessionStorageService.getItem(CaseworkerDataService.caseworkersKey));
       return of(caseworkers as Caseworker[]);
     }
     return this.http.get<Caseworker[]>(CaseworkerDataService.caseWorkerUrl).pipe(

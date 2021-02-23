@@ -1,11 +1,15 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router, RoutesRecognized } from '@angular/router';
-import { GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
+import { GoogleTagManagerService, LoadingService as CommonLibLoadingService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
+import { combineLatest, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { LOADING_SERVICES } from 'src/app/app.module';
 import { propsExist } from '../../../../api/lib/objectUtilities';
 import { environment as config } from '../../../environments/environment';
 import * as fromRoot from '../../store';
+import { LoadingService as CCDLoadingService } from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({
   selector: 'exui-root',
@@ -21,12 +25,16 @@ export class AppComponent implements OnInit {
     isVisible: false,
   };
 
+  public showSpinner$: Observable<boolean>;
+
   constructor(
     private readonly store: Store<fromRoot.State>,
     private readonly googleTagManagerService: GoogleTagManagerService,
     private readonly timeoutNotificationsService: TimeoutNotificationsService,
     private readonly router: Router,
-    private readonly titleService: Title
+    private readonly titleService: Title,
+    private commonLibLoadingService: CommonLibLoadingService,
+    private ccdLibLoadingService: CCDLoadingService
   ) {
 
     this.googleTagManagerService.init(config.googleTagManagerKey);
@@ -51,6 +59,11 @@ export class AppComponent implements OnInit {
         this.loadAndListenForUserDetails();
       }
     });
+
+    this.showSpinner$ = combineLatest([
+      this.ccdLibLoadingService.isLoading,
+      this.commonLibLoadingService.isLoading
+    ]).pipe(map(states => states.reduce((c, s) => c || s, false)));
   }
 
   /**

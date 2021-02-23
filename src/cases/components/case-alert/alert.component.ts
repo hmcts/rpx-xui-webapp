@@ -28,11 +28,15 @@ export class AlertComponent implements OnInit, OnDestroy {
     this.routeSubscription = this.router.events.subscribe(() => this.message = '');
     this.alertMessageSubscription = this.alertMessageObservable.subscribe(alert => {
       if (alert) {
-        var msg = alert.message
-        var caseid = msg.match(/[0-9]{16}/g).toString();
-        var caseIdHyphen = msg.match(/([0-9][0-9][0-9][0-9])/g).join("-");
-        this.message = msg.replace(caseid,caseIdHyphen);
-        this.level = alert.level;
+          const msg = alert.message;
+          const caseId = msg.match(/[0-9]{16}/g);
+          if(caseId){
+            const caseIdHyphen = msg.match(/([0-9][0-9][0-9][0-9])/g).join("-");
+            this.message = msg.replace(caseId.toString(),caseIdHyphen);
+          }else{
+            this.message = msg;
+          }
+          this.level = alert.level;
       }
     });
   }

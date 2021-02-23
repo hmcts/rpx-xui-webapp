@@ -71,7 +71,8 @@ export const addReformHealthCheck = app => {
     xuiNode.on(SESSION.EVENT.REDIS_CLIENT_READY, (redisClient: any) => {
       logger.info('REDIS EVENT FIRED!!')
       config.checks = {
-        ...config.checks, ...{
+        ...config.checks,
+        ...{
           redis: HealthCheck.raw(() => {
             return redisClient.connected ? HealthCheck.up() : HealthCheck.down()
           }),

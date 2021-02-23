@@ -1,12 +1,12 @@
 import * as chai from 'chai';
-import {expect} from 'chai';
+import { expect } from 'chai';
 import 'mocha';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
-import {mockReq, mockRes} from 'sinon-express-mock';
+import { mockReq, mockRes } from 'sinon-express-mock';
 
-import {baseWorkAllocationTaskUrl, getTask, postTaskAction, searchTask} from '.';
-import {http} from '../lib/http';
+import { baseWorkAllocationTaskUrl, getTask, postTaskAction, searchTask } from '.';
+import { http } from '../lib/http';
 import { mockTasks } from './taskTestData';
 
 chai.use(sinonChai);

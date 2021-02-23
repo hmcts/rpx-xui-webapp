@@ -1,4 +1,4 @@
-@fullfunctionalt
+@fullfunctional
 Feature: Work allocations task list, Available list and Task manager
 
     Scenario: View tasks, E2E journey of Caseworker-ia-adm user  
@@ -28,7 +28,7 @@ Feature: Work allocations task list, Available list and Task manager
         Then I see task action suceess confirmation banner
         When I click My tasks tab
         Then I see Task list table displaying some tasks
-        When I Unclaim my task and note taskId wuth reference "UnassignTask"
+        When I Unclaim my task and note taskId with reference "UnassignTask"
         # Then I see task id with reference "assingedTomeTask" displayed in table
         When I select the sign out link
         Then I should be redirected to the Idam login page

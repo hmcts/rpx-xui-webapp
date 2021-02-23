@@ -51,6 +51,7 @@ export async function handlePostSearch(path: string, payload: string | any, req:
 
 export async function handlePostRoleAssingnments(path: string, payload: any, req: EnhancedRequest): Promise<any> {
     const headers = setHeaders(req)
+    // For MVP we are expecting maximum 80 caseworkers
     headers.pageNumber = 0
     headers.size = MAX_RECORDS
     // sort
@@ -71,8 +72,8 @@ export async function handlePostCaseWorkersRefData(path: string, userIds: any, r
 export function getUserIdsFromRoleApiResponse(response: any): string [] {
     let userIds = new Array<string>()
     if (response && response.roleAssignmentResponse) {
-        response.roleAssignmentResponse.forEach(roleAssingment => {
-           userIds = [...userIds, roleAssingment.actorId]
+        response.roleAssignmentResponse.forEach(roleAssignment => {
+           userIds = [...userIds, roleAssignment.actorId]
        });
     }
     return userIds

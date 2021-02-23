@@ -118,9 +118,10 @@ class TaskListTable{
     }
 
     async clickManageLinkForTaskAt(position){
-        const taskrow = await this.getTableRowAt(position);
-        await taskrow.$('button[id^="manage_"]').click();
-
+        await BrowserWaits.retryWithActionCallback(async () => {
+            const taskrow = await this.getTableRowAt(position);
+            await taskrow.$('button[id^="manage_"]').click();
+        });
     }
 
     async isTaskActionPresent(taskAction){

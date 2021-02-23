@@ -39,7 +39,7 @@ export interface SortParameter {
 
 export interface SearchTaskRequest {
   search_parameters: SearchTaskParameter[];
-  sorting_parameters: SortParameter [];
+  sorting_parameters: SortParameter[];
 }
 
 export interface Task {

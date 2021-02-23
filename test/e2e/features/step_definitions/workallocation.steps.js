@@ -1,6 +1,8 @@
 
 const taskListPage = require('../pageObjects/workAllocation/taskListPage');
 const taskAssignmentPage = require('../pageObjects/workAllocation/taskAssignmentPage');
+const taskActionPage = require('../pageObjects/workAllocation/taskActionPage');
+
 
 const taskmanagerPage = require('../pageObjects/workAllocation/taskManagerPage');
 var { defineSupportCode } = require('cucumber');
@@ -111,7 +113,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
        }
     });
 
-    When('I Unclaim my task and note taskId wuth reference {string}', async function (taskIdReference) {
+    When('I Unclaim my task and note taskId with reference {string}', async function (taskIdReference) {
         const tasksCount = await taskListPage.getTaskListCountInTable();
         reportLogger.AddMessage("Total tasks listed  " + tasksCount);
 
@@ -124,9 +126,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             expect(await taskListPage.isTaskActionBarDisplayedForAtPos(i), "Task actions row not displayed for task at row " + i).to.be.true;
             await taskListPage.clickTaskAction("Unassign task");
 
-            expect(await taskAssignmentPage.amOnPage(),"Unassign task page not displayed").to.be.true;
-            await taskAssignmentPage.clickUnassignBtn();
-            const messages = await taskAssignmentPage.getBannerMessagesDisplayed();
+            expect(await taskActionPage.amOnPage(),"Unassign task page not displayed").to.be.true;
+            await taskActionPage.clickUnassignBtn();
+            const messages = await taskActionPage.getBannerMessagesDisplayed();
 
 
             if (await taskListPage.isMyTasksDisplayed()) {

@@ -31,13 +31,13 @@ export class MyTasksComponent extends TaskListWrapperComponent {
   public getSearchTaskRequest(): SearchTaskRequest {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
-        const userInfo: UserInfo = JSON.parse(userInfoStr);
-        return {
-          search_parameters: [
-            { key: 'user', operator: 'IN', values: [ userInfo.id ] },
-          ],
-          sorting_parameters: [this.getSortParameter()]
-        };
+      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      return {
+        search_parameters: [
+          { key: 'user', operator: 'IN', values: [ userInfo.id ] },
+        ],
+        sorting_parameters: [this.getSortParameter()]
+      };
     }
   }
 }

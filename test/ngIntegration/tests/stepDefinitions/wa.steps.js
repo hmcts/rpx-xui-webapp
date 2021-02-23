@@ -282,7 +282,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }
         }
 
-        for (const responseCode of testErrorResponseCodes) {
+        for (const responseCode of [500, 401, 403]) {
             await headerPage.clickManageCases();
             await MockUtil.resetMock();
             await MockUtil.setMockResponse("GET", "/workallocation/location", (req, res) => {

@@ -38,17 +38,15 @@ import { JwtDecodeWrapper } from './services/logger/jwtDecodeWrapper';
 import { AbstractAppInsights, AppInsightsWrapper } from './services/logger/appInsightsWrapper';
 import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler';
 import { AcceptTermsService } from './services/acceptTerms/acceptTerms.service';
-import { ExuiCommonLibModule, HasLoadingState, LAUNCHDARKLYKEY, LoadingService as LibLoadingService } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule, HasLoadingState, LAUNCHDARKLYKEY } from '@hmcts/rpx-xui-common-lib';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { ENVIRONMENT_CONFIG, EnvironmentConfig } from '../models/environmentConfig.model';
 import { CaseShareService } from './services/case/share-case.service';
-import { LoadingModule, LoadingService as CCDLoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { LoadingModule } from '@hmcts/ccd-case-ui-toolkit';
 
 export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): string {
   return envConfig.launchDarklyClientId || '';
 }
-
-export const LOADING_SERVICES = new InjectionToken<HasLoadingState>('Services that implement the HasLoadingState interface');
 
 @NgModule({
   declarations: [AppComponent],
@@ -98,8 +96,6 @@ export const LOADING_SERVICES = new InjectionToken<HasLoadingState>('Services th
       provide: ErrorHandler,
       useClass: DefaultErrorHandler
     },
-    { provide: LOADING_SERVICES, useClass: CCDLoadingService, multi: true },
-    { provide: LOADING_SERVICES, useClass: LibLoadingService, multi: true },
     AcceptTermsService,
     CaseShareService,
     { provide: LAUNCHDARKLYKEY, useFactory: launchDarklyClientIdFactory, deps: [ENVIRONMENT_CONFIG] },

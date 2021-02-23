@@ -5,7 +5,6 @@ import { GoogleTagManagerService, LoadingService as CommonLibLoadingService, Tim
 import { select, Store } from '@ngrx/store';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { LOADING_SERVICES } from 'src/app/app.module';
 import { propsExist } from '../../../../api/lib/objectUtilities';
 import { environment as config } from '../../../environments/environment';
 import * as fromRoot from '../../store';

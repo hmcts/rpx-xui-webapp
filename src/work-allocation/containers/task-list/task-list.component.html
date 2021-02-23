@@ -3,7 +3,7 @@
 
   <!-- Column Headers and Cells -->
   <ng-container *ngFor="let field of fields" [cdkColumnDef]="field.name">
-    <th class="govuk-table__header" [attr.aria-sort]="isColumnSorted(field.sortName)" cdk-header-cell *cdkHeaderCellDef>
+    <th class="govuk-table__header" [attr.aria-sort]="getColumnSortedSetting(field.sortName)" cdk-header-cell *cdkHeaderCellDef>
       <button *ngIf="field.columnLabel" type="button" [id]="'sort_by_' + field.sortName" data-index="0"
               (click)="onSortHandler(field.sortName)" >{{field.columnLabel}}</button>
     </th>

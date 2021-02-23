@@ -175,6 +175,12 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 
+## Running Consumer Driven Contract tests (pact)
+
+Run `yarn test-pact` to execute the Pact tests 
+For publishing the pacts to broker execute `yarn publish-pact`
+
+
 ## Integration Documentation
 
 https://tools.hmcts.net/confluence/display/EUI/EXUI+Low+Level+Design

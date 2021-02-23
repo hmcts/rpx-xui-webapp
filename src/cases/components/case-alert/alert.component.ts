@@ -30,10 +30,12 @@ export class AlertComponent implements OnInit, OnDestroy {
       if (alert) {
           const msg = alert.message;
           const caseId = msg.match(/[0-9]{16}/g);
-          if(caseId) {
-            const caseIdHyphen = msg.match(/([0-9][0-9][0-9][0-9])/g).join("-");
-            this.message = msg.replace(caseId.toString(),caseIdHyphen);
-          }else {
+          if (caseId) {
+
+            const caseIdHyphen = msg.match(/([0-9][0-9][0-9][0-9])/g).join('-');
+            this.message = msg.replace(caseId.toString(), caseIdHyphen);
+
+          } else {
             this.message = msg;
           }
           this.level = alert.level;

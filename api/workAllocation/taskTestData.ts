@@ -2,7 +2,7 @@ import { Task } from "./interfaces/task";
 
 export const mockTasks: Task[] = [
   {
-    "Assignee": "94785",
+    "assignee": "94785",
     "actions": [
       {
         "id": "cancel",

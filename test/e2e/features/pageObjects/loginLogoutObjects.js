@@ -38,13 +38,13 @@ function loginLogoutObjects() {
 
   this.enterUrEmail = async function (email) {
     await BrowserWaits.waitForElement(this.emailAddress);
-
+    await this.emailAddress.clear();
     await this.emailAddress.sendKeys(email);
   };
 
   this.enterPassword = async function (password) {
     await BrowserWaits.waitForElement(this.password);
-
+    await this.password.clear();
     await this.password.sendKeys(password);
   };
 

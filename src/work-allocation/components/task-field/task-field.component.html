@@ -3,7 +3,7 @@
     {{ task[config.name] }}
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.DATE_DUE">
-    <xuilib-due-date [dueDate]="task[config.name]"></xuilib-due-date>
+    <xuilib-due-date [dueDate]="toDate(task[config.name])"></xuilib-due-date>
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.DATE_AGE_DAYS">
     {{ task[config.name] | daysFromToday }}
@@ -31,5 +31,8 @@
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.CASE_REFERENCE">
     <exui-case-reference-field [caseReference]="task[config.name]"></exui-case-reference-field>
+  </ng-container>
+  <ng-container *ngSwitchCase="fieldType.DERIVED_ICON">
+    <exui-derived-icon-field [task]="task" [sourceColumn]="config.sourceColumn" [matchValue]="config.matchValue"></exui-derived-icon-field>
   </ng-container>
 </ng-container>

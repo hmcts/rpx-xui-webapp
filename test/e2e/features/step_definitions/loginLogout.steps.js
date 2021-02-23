@@ -1,12 +1,16 @@
 'use strict';
 
 const loginPage = require('../pageObjects/loginLogoutObjects');
+const headerPage = require('../pageObjects/headerPage');
+
 const { defineSupportCode } = require('cucumber');
 const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants');
 const config = require('../../config/conf.js');
 const EC = protractor.ExpectedConditions;
 const BrowserWaits = require("../../support/customWaits");
 const CucumberReportLogger = require('../../support/reportLogger');
+
+const BrowserUtil = require('../../../ngIntegration/util/browserUtil');
 
 async function waitForElement(el) {
   await browser.wait(result => {
@@ -15,7 +19,6 @@ async function waitForElement(el) {
 }
 
 defineSupportCode(function ({ Given, When, Then }) {
-
   let invalidCredentialsCounter = 0;
   let testCounter = 0;
 
@@ -44,6 +47,11 @@ defineSupportCode(function ({ Given, When, Then }) {
           if (isEmailFieldDisplayed && !isEmailValuePresent) {
             errorMessage = errorMessage + " : " + testCounter + " login page refresh ";
           }
+
+          const currentUrl = await browser.getCurrentUrl();
+          if (!isEmailFieldDisplayed && currentUrl.includes("idam-web-public")) {
+            errorMessage = errorMessage + ":" +testCounter+" Unknown IDAM service error occured. See attached screenshot ";
+          }
           // console.log(testCounter +" : error message =>"+errorMessage+"<=");
           if (errorMessage !== "") {
             throw new Error(errorMessage);
@@ -54,7 +62,6 @@ defineSupportCode(function ({ Given, When, Then }) {
           } else {
             return true;
           }
-
         });
 
         break;
@@ -67,10 +74,9 @@ defineSupportCode(function ({ Given, When, Then }) {
             secondAttemptFailedLogins++;
           }
 
-
-          console.log(err + " email field is still present with empty value indicating  Login page reloaded due to EUI-1856 : Login re attempt " + loginAttemptRetryCounter);
-          world.attach(err + " email field is still present with empty value indicating Login page reloaded due to EUI-1856 : Login re attempt " + loginAttemptRetryCounter);
-          console.log(err);
+          console.log(err + " : Login re attempt " + loginAttemptRetryCounter);
+          world.attach(err + " : Login re attempt " + loginAttemptRetryCounter);
+          console.log(err); 
           await browser.driver.manage()
             .deleteAllCookies();
           await browser.get(config.config.baseUrl);
@@ -95,14 +101,12 @@ defineSupportCode(function ({ Given, When, Then }) {
 
 
   When('I navigate to Expert UI Url', async function () {
-    await browser.driver.manage()
-      .deleteAllCookies();
-    CucumberReportLogger.AddMessage("App base url : " + config.config.baseUrl);
-    await browser.get(config.config.baseUrl);
-
-    const world = this;
-    await BrowserWaits.retryForPageLoad(loginPage.signinTitle,function(message){
-      world.attach("Expert UI Url reload attempt : "+message);
+    await BrowserWaits.retryWithActionCallback(async function(){
+      await browser.driver.manage()
+        .deleteAllCookies();
+      CucumberReportLogger.AddMessage("App base url : " + config.config.baseUrl);
+      await browser.get(config.config.baseUrl); 
+      await BrowserWaits.waitForElement(loginPage.signinTitle); 
     });
 
     expect(await loginPage.signinBtn.isDisplayed()).to.be.true;
@@ -173,7 +177,12 @@ defineSupportCode(function ({ Given, When, Then }) {
     browser.sleep(SHORT_DELAY);
     await expect(loginPage.signOutlink.isDisplayed()).to.eventually.be.true;
     browser.sleep(SHORT_DELAY);
-    await loginPage.signOutlink.click();
+    try{
+      await loginPage.signOutlink.click();
+    }catch(err){
+      await browser.sleep(SHORT_DELAY);
+      await loginPage.signOutlink.click();
+    }
     browser.sleep(SHORT_DELAY);
   });
 
@@ -190,6 +199,8 @@ defineSupportCode(function ({ Given, When, Then }) {
       .to
       .eventually
       .contains('Case List');
+
+    await BrowserUtil.waitForLD();
 
   });
 
@@ -247,6 +258,35 @@ defineSupportCode(function ({ Given, When, Then }) {
     loginAttempts++;
     await loginattemptCheckAndRelogin(config.config.params.username, config.config.params.password, this);
   });
+
+
+  Given('I am logged into Expert UI caseworker-ia-adm user details', async function () {
+    await loginPage.givenIAmLoggedIn(config.config.params.caseworker_iac_adm_username, config.config.params.caseworker_iac_adm_password);
+    const world = this;
+
+    loginAttempts++;
+    await loginattemptCheckAndRelogin(config.config.params.caseworker_iac_adm_username, config.config.params.caseworker_iac_adm_password, this);
+
+    await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
+      world.attach("Login success page load load attempt : " + message)
+    });
+
+  });
+
+  Given('I am logged into Expert UI caseworker-ia-caseofficer user details', async function () {
+    await loginPage.givenIAmLoggedIn(config.config.params.caseworker_iac_off_username, config.config.params.caseworker_iac_off_password);
+    const world = this;
+
+    loginAttempts++;
+    await loginattemptCheckAndRelogin(config.config.params.caseworker_iac_off_username, config.config.params.caseworker_iac_off_password, this);
+
+    await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
+      world.attach("Login success page load load attempt : " + message)
+    });
+
+  });
+
+
 
   Given(/^I navigate to Expert UI Url direct link$/, async function () {
     await browser.driver.manage()

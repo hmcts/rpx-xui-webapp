@@ -26,6 +26,7 @@ export const HEALTH = 'health'
 export const SERVICES_CCD_COMPONENT_API_PATH = 'services.ccd.componentApi'
 export const SERVICES_CCD_DATA_STORE_API_PATH = 'services.ccd.dataApi'
 export const SERVICES_CCD_CASE_ASSIGNMENT_API_PATH = 'services.ccd.caseAssignmentApi'
+export const SERVICES_WORK_ALLOCATION_TASK_API_PATH = 'services.work_allocation.taskApi'
 
 export const SERVICES_DOCUMENTS_API_PATH = 'services.documents.api'
 export const SERVICES_EM_ANNO_API_URL = 'services.em_anno_api'
@@ -82,6 +83,7 @@ export const SESSION_TIMEOUTS = 'sessionTimeouts'
 
 // PACT
 export const PACT_BROKER_URL = 'pact.brokerUrl'
+export const PACT_BRANCH_NAME = 'pact.branchName'
 export const PACT_CONSUMER_VERSION = 'pact.consumerVersion'
 export const PACT_BROKER_USERNAME = 'pact.brokerUsername'
 export const PACT_BROKER_PASSWORD = 'pact.brokerPassword'

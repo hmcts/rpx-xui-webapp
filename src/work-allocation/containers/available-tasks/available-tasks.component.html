@@ -1,0 +1,6 @@
+<exui-available-tasks-filter (selectionChanged)="onLocationsChanged($event)"></exui-available-tasks-filter>
+<exui-task-list
+  [taskServiceConfig]="taskServiceConfig" [tasks]="tasks" [fields]="fields"
+  [sortedBy]="sortedBy" [emptyMessage]="emptyMessage"
+  (sortEvent)="onSortHandler($event)" (actionEvent)="onActionHandler($event)">
+</exui-task-list>

@@ -22,11 +22,53 @@ import taskRouter from './workAllocation/routes'
 export const app = express()
 
 if (showFeature(FEATURE_HELMET_ENABLED)) {
-    app.use(helmet(getConfigValue(HELMET)))
+  app.use(helmet(getConfigValue(HELMET)))
+  app.use(helmet.contentSecurityPolicy({
+    directives: {
+      fontSrc: ['\'self\' data:'],
+      defaultSrc:['\'self\''],
+      scriptSrc: [
+        '\'self\'',
+        '\'unsafe-inline\'',
+        'www.google-analytics.com',
+        'hmctspiwik.useconnect.co.uk',
+        'vcc-eu4.8x8.com',
+        'vcc-eu4b.8x8.com'
+      ],
+      connectSrc: ['\'self\''],
+      mediaSrc: ['\'self\''],
+      frameSrc: [
+        '\'self\'',
+        'vcc-eu4.8x8.com',
+        'vcc-eu4b.8x8.com'
+      ],
+      imgSrc: [
+        '\'self\'',
+        'www.google-analytics.com',
+        'hmctspiwik.useconnect.co.uk',
+        'vcc-eu4.8x8.com',
+        'vcc-eu4b.8x8.com'
+      ]
+    }
+  }))
+  // app.use(helmet.xframe());
+  // app.use(helmet.xframe('sameorigin')) // SAMEORIGIN
+  app.use(helmet.noSniff())
+  app.use(helmet.frameguard({ action: 'deny' }))
+  app.use(helmet.referrerPolicy({ policy: 'origin' }))
+  app.use(helmet.hidePoweredBy())
+  app.use((req, res, next) => {
+    res.setHeader('X-Robots-Tag', 'noindex')
+    res.setHeader('Cache-Control', 'no-cache, max-age=0, must-revalidate, no-store')
+    next()
+  })
+  app.get('/robots.txt', (req, res) => {
+    res.type('text/plain')
+    res.send('User-agent: *\nDisallow: /')
+  })
+  app.disable('x-powered-by')
+  app.disable('X-Powered-By')
 }
-
-app.disable('x-powered-by')
-app.disable('X-Powered-By')
 
 app.use(cookieParser(getConfigValue(SESSION_SECRET)))
 

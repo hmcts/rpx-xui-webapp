@@ -145,7 +145,7 @@ export class TaskListComponent implements OnChanges {
    * @param fieldName - 'caseReference'
    * @return 'none' / 'asc' / 'desc'
    */
-  public isColumnSorted(fieldName: string): string {
+  public getColumnSortedSetting(fieldName: string): string {
     // If we don't have an actual sortedBy value, default it now.
     if (!this.sortedBy) {
       const { defaultSortFieldName, defaultSortDirection } = this.taskServiceConfig;

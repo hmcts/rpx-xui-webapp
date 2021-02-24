@@ -35,7 +35,7 @@ export class AlertComponent implements OnInit, OnDestroy {
     });
   }
 
-  public hyphenate (msg: string): string{
+  public hyphenate(msg: string): string {
     const caseId = msg.match(/[0-9]{16}/g);
     if (caseId) {
       const caseIdHyphen = msg.match(/([0-9][0-9][0-9][0-9])/g).join('-');

@@ -13,9 +13,13 @@ import { FilterConstants } from '../constants';
   templateUrl: './available-tasks-filter.component.html',
   styleUrls: ['available-tasks-filter.component.scss']
 })
-export class AvailableTasksFilterComponent implements OnInit, AfterViewInit {
+export class AvailableTasksFilterComponent implements OnInit {
 
-  @ViewChild(CheckboxListComponent) intialLocationFilter: CheckboxListComponent<Location>;
+  @ViewChild(CheckboxListComponent) set content(content: CheckboxListComponent<Location>) {
+    if (content) {
+      this.locationFilter = content;
+    }
+  };
   @ViewChild('filterDetails')
   public readonly filterDetails: ElementRef<HTMLDetailsElement>;
 
@@ -54,10 +58,6 @@ export class AvailableTasksFilterComponent implements OnInit, AfterViewInit {
     private readonly sessionStorageService: SessionStorageService,
     private readonly router: Router
   ) {}
-
-  public ngAfterViewInit() {
-    this.locationFilter = this.intialLocationFilter;
-  }
 
   public ngOnInit(): void {
     let preselection: Location[] = [ FilterConstants.Defaults.LOCATION ];

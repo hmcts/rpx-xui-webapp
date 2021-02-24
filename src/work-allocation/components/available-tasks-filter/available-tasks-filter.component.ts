@@ -15,8 +15,11 @@ import { FilterConstants } from '../constants';
 })
 export class AvailableTasksFilterComponent implements OnInit {
 
+  public locationFilter: any;
   @ViewChild(CheckboxListComponent)
-  public readonly locationFilter: CheckboxListComponent<Location>;
+  set lf(returnedLocationFilter: CheckboxListComponent<Location>) {
+    this.locationFilter = returnedLocationFilter;
+  }
   @ViewChild('filterDetails')
   public readonly filterDetails: ElementRef<HTMLDetailsElement>;
 

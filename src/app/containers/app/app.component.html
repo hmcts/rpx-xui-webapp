@@ -1,5 +1,4 @@
 <router-outlet></router-outlet>
-<xuilib-loading-spinner *ngIf="showSpinner$ | async"></xuilib-loading-spinner>
 <xuilib-session-dialog positionTop="300px" *ngIf="timeoutModalConfig.isVisible" (close)="staySignedInHandler()">
   <h3 class="govuk-heading-m">We are about to sign you out</h3>
   <p class="govuk-body">For your security, we will sign you out of your account in

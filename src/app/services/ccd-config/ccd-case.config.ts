@@ -26,6 +26,12 @@ export class AppConfig extends AbstractAppConfig {
     super();
     this.config = this.appConfigService.getEditorConfiguration() || {};
     this.featureToggleWorkAllocation();
+    this.config = {...this.appConfigService.getEditorConfiguration()} || {};
+    this.config.document_management_secure_enabled = true;
+
+    this.featureToggleService.getValue('mc-document-secure-mode-enabled', false).subscribe({
+      next: (val) => this.config.document_management_secure_enabled = val
+    });
   }
 
   private featureToggleWorkAllocation(): void {
@@ -58,6 +64,14 @@ export class AppConfig extends AbstractAppConfig {
 
   public getDocumentManagementUrl() {
     return this.config.document_management_url;
+  }
+
+  public getDocumentManagementUrlV2() {
+    return this.config.document_management_url_v2;
+  }
+
+  public getDocumentSecureMode() {
+    return this.config.document_management_secure_enabled;
   }
 
   public getRemoteDocumentManagementUrl() {

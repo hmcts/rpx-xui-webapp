@@ -62,10 +62,10 @@ export const getXuiNodeMiddleware = () => {
     const password = getConfigValue(SYSTEM_USER_PASSWORD)
 
     const routeCredential = {
-        userName,
         password,
         routes: ['/workallocation/caseworker'],
-        scope: 'openid profile roles manage-user create-user'
+        scope: 'openid profile roles manage-user create-user',
+        userName,
     }
 
     //TODO: we can move these out into proper config at some point to tidy up even further
@@ -79,12 +79,12 @@ export const getXuiNodeMiddleware = () => {
         issuerURL: issuerUrl,
         logoutURL: idamApiPath,
         responseTypes: ['code'],
+        routeCredential,
         scope: 'profile openid roles manage-user create-user',
         sessionKey: 'xui-webapp',
         tokenEndpointAuthMethod: 'client_secret_post',
         tokenURL: tokenUrl,
         useRoutes: true,
-        routeCredential
     }
 
     const baseStoreOptions = {

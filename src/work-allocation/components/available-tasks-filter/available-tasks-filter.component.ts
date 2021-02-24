@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { CheckboxListComponent } from '@hmcts/rpx-xui-common-lib';
 
@@ -13,13 +13,9 @@ import { FilterConstants } from '../constants';
   templateUrl: './available-tasks-filter.component.html',
   styleUrls: ['available-tasks-filter.component.scss']
 })
-export class AvailableTasksFilterComponent implements OnInit {
+export class AvailableTasksFilterComponent implements OnInit, AfterViewInit {
 
-  public locationFilter: any;
-  @ViewChild(CheckboxListComponent)
-  set lf(returnedLocationFilter: CheckboxListComponent<Location>) {
-    this.locationFilter = returnedLocationFilter;
-  }
+  @ViewChild(CheckboxListComponent) intialLocationFilter: CheckboxListComponent<Location>;
   @ViewChild('filterDetails')
   public readonly filterDetails: ElementRef<HTMLDetailsElement>;
 
@@ -38,6 +34,7 @@ export class AvailableTasksFilterComponent implements OnInit {
   }
   private pSelection: Location[] = [];
 
+  public locationFilter: CheckboxListComponent<Location>;
   public locations: Location[];
   public preselection: Location[];
   private handledInitialSelection = false;
@@ -58,6 +55,9 @@ export class AvailableTasksFilterComponent implements OnInit {
     private readonly router: Router
   ) {}
 
+  public ngAfterViewInit() {
+    this.locationFilter = this.intialLocationFilter;
+  }
 
   public ngOnInit(): void {
     let preselection: Location[] = [ FilterConstants.Defaults.LOCATION ];

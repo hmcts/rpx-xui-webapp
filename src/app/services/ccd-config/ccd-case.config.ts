@@ -20,10 +20,10 @@ export class AppConfig extends AbstractAppConfig {
 
   constructor(
     private appConfigService: AppConfigService,
-    private readonly featureToggleService: FeatureToggleService) {
+    private featureToggleService: FeatureToggleService) {
     super();
     this.config = {...this.appConfigService.getEditorConfiguration()} || {};
-    
+
     this.featureToggleService.getValue('mc-document-secure-mode-enabled', false).subscribe({
       next: (val) => this.config.document_management_secure_enabled = val
     });

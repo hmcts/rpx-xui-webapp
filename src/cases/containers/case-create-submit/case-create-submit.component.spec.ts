@@ -19,6 +19,7 @@ import {
   RequestOptionsBuilder,
   SearchService,
 } from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import {combineReducers, StoreModule} from '@ngrx/store';
 import { of } from 'rxjs';
@@ -66,6 +67,12 @@ const SANITISED_EDIT_FORM: CaseEventData = {
   },
   event_token: 'test-token',
   ignore_warning: false
+};
+
+class MockFeatureToggleService {
+  getValue() {
+    return of()
+  }
 };
 
 describe('CaseCreateSubmitComponent', () => {
@@ -134,6 +141,10 @@ describe('CaseCreateSubmitComponent', () => {
           provide: AlertService,
           useValue: mockAlertService
         },
+        {
+          provide: FeatureToggleService,
+          useClass: MockFeatureToggleService
+        }
       ]
     })
       .compileComponents();

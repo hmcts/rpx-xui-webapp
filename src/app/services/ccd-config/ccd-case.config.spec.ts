@@ -4,6 +4,8 @@ import { AppConfig } from './ccd-case.config';
 import {AppConfigService} from '../config/configuration.services';
 import {StoreModule} from '@ngrx/store';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { of } from 'rxjs';
 
 class MockConfigService {
   config;
@@ -16,6 +18,12 @@ class MockConfigService {
   }
 }
 
+class MockFeatureToggleService {
+  getValue() {
+    return of()
+  }
+};
+
 describe('AppConfiguration', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -27,6 +35,7 @@ describe('AppConfiguration', () => {
         AppConfig,
         AppConfigService,
         { provide: AppConfigService, useClass: MockConfigService },
+        { provide: FeatureToggleService, useClass: MockFeatureToggleService },
       ]
     });
   });

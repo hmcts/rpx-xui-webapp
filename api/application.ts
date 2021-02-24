@@ -18,6 +18,7 @@ import openRoutes from './openRoutes'
 import { initProxy } from './proxy.config'
 import routes from './routes'
 import taskRouter from './workAllocation/routes'
+import * as csrf from 'csurf'
 
 export const app = express()
 
@@ -47,6 +48,7 @@ app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }))
 app.use('/workallocation', taskRouter)
 app.use('/external', openRoutes)
 app.use('/api', routes)
+app.use(csrf({ cookie: true, ignoreMethods: ["GET"] }));
 
 // @ts-ignore
 const logger: JUILogger = log4jui.getLogger('Application')

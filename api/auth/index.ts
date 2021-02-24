@@ -20,7 +20,9 @@ import {
     SERVICES_IDAM_ISS_URL,
     SERVICES_IDAM_LOGIN_URL,
     SERVICES_IDAM_OAUTH_CALLBACK_URL,
-    SESSION_SECRET
+    SESSION_SECRET,
+    SYSTEM_USER_NAME,
+    SYSTEM_USER_PASSWORD
 } from '../configuration/references'
 import * as log4jui from '../lib/log4jui'
 
@@ -56,6 +58,15 @@ export const getXuiNodeMiddleware = () => {
     const idamApiPath = getConfigValue(SERVICES_IDAM_API_URL)
     const s2sSecret = getConfigValue(S2S_SECRET)
     const tokenUrl = `${getConfigValue(SERVICES_IDAM_API_URL)}/oauth2/token`
+    const userName = getConfigValue(SYSTEM_USER_NAME)
+    const password = getConfigValue(SYSTEM_USER_PASSWORD)
+
+    const routeCredential = {
+        userName,
+        password,
+        routes: ['/workallocation/caseworker'],
+        scope: 'openid profile roles manage-user create-user'
+    }
 
     //TODO: we can move these out into proper config at some point to tidy up even further
     const options: AuthOptions = {
@@ -73,6 +84,7 @@ export const getXuiNodeMiddleware = () => {
         tokenEndpointAuthMethod: 'client_secret_post',
         tokenURL: tokenUrl,
         useRoutes: true,
+        routeCredential
     }
 
     const baseStoreOptions = {

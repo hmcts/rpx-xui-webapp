@@ -69,6 +69,12 @@ const SANITISED_EDIT_FORM: CaseEventData = {
   ignore_warning: false
 };
 
+class MockFeatureToggleService {
+  getValue() {
+    return of()
+  }
+};
+
 describe('CaseCreateSubmitComponent', () => {
   let component: CaseCreateSubmitComponent;
   let fixture: ComponentFixture<CaseCreateSubmitComponent>;
@@ -137,8 +143,10 @@ describe('CaseCreateSubmitComponent', () => {
           provide: AlertService,
           useValue: mockAlertService
         },
-        FeatureToggleService,
-        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
+        {
+          provide: FeatureToggleService,
+          useClass: MockFeatureToggleService
+        }
       ]
     })
       .compileComponents();

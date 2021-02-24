@@ -25,18 +25,9 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
   app.use(helmet(getConfigValue(HELMET)))
   app.use(helmet.contentSecurityPolicy({
     directives: {
+      connectSrc: ['\'self\''],
       defaultSrc: ['\'self\''],
       fontSrc: ['\'self\' data:'],
-      scriptSrc: [
-        '\'self\'',
-        '\'unsafe-inline\'',
-        'www.google-analytics.com',
-        'hmctspiwik.useconnect.co.uk',
-        'vcc-eu4.8x8.com',
-        'vcc-eu4b.8x8.com',
-      ],
-      connectSrc: ['\'self\''],
-      mediaSrc: ['\'self\''],
       frameSrc: [
         '\'self\'',
         'vcc-eu4.8x8.com',
@@ -44,6 +35,15 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
       ],
       imgSrc: [
         '\'self\'',
+        'www.google-analytics.com',
+        'hmctspiwik.useconnect.co.uk',
+        'vcc-eu4.8x8.com',
+        'vcc-eu4b.8x8.com',
+      ],
+      mediaSrc: ['\'self\''],
+      scriptSrc: [
+        '\'self\'',
+        '\'unsafe-inline\'',
         'www.google-analytics.com',
         'hmctspiwik.useconnect.co.uk',
         'vcc-eu4.8x8.com',

@@ -9,6 +9,8 @@
     "api_url": "/aggregated",
     "case_data_url": "/data",
     "document_management_url": "/documents",
+    "document_management_url_v2": "/documents/v2",
+    "document_management_secure_enabled": true,
     "login_url": "/login",
     "oauth2_client_id": "ccd_gateway",
     "postcode_lookup_url": "/api/addresses?postcode=${postcode}",

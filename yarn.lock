@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@2.64.7-loading-spinner":
-  version "2.64.7-loading-spinner"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.64.7-loading-spinner.tgz#fae1f1ba193be98c5c1e828821ea6da64079afc9"
-  integrity sha512-yirCsxagWpIP/cwm/E72lBZRP4+WZi7XgMP+W44xm4CtBdOrhh472A/XlZfluWKFVxoht3Vtvn4mXNQbXquQFg==
+"@hmcts/ccd-case-ui-toolkit@2.72.7-loading-spinner-prerelease":
+  version "2.72.7-loading-spinner-prerelease"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.72.7-loading-spinner-prerelease.tgz#6aa25281f0b00b9da21d3df89324b9ebc314bbbf"
+  integrity sha512-4h4xYXY+lbBFMF2OM+IRyEv4XXkPfBheeoHZGIvaHIKOHwHY22cBLTJs96p0/ecD0azqHCTYduJZFeICXg39dA==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"

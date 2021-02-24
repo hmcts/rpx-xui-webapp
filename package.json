@@ -67,7 +67,7 @@
     "@angular/platform-browser": "^7.2.13",
     "@angular/platform-browser-dynamic": "^7.2.13",
     "@angular/router": "^7.2.13",
-    "@hmcts/ccd-case-ui-toolkit": "2.64.7-loading-spinner",
+    "@hmcts/ccd-case-ui-toolkit": "2.72.7-loading-spinner-prerelease",
     "@hmcts/ccpay-web-component": "3.0.3",
     "@hmcts/frontend": "0.0.39-alpha",
     "@hmcts/media-viewer": "2.6.4",
@@ -160,6 +160,7 @@
     "@types/mocha": "^8.0.3",
     "@types/shortid": "0.0.29",
     "@types/sinon": "^7.0.13",
+    "base-64": "^0.1.0",
     "chai": "^4.2.0",
     "chai-as-promised": "7.1.1",
     "codelyzer": "~4.5.0",
@@ -198,8 +199,7 @@
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10",
     "webpack-node-externals": "^1.7.2",
-    "webpack-source-map-support": "^2.0.1",
-    "base-64": "^0.1.0"
+    "webpack-source-map-support": "^2.0.1"
   },
   "resolutions": {
     "**/**/dot-prop": "^5.1.1",

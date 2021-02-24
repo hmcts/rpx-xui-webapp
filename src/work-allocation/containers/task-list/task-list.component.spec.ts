@@ -107,13 +107,13 @@ describe('TaskListComponent', () => {
     // mock the emitter and dispatch the connected event
     spyOn(component.sortEvent, 'emit');
     const element = fixture.debugElement.nativeElement;
-    const button = element.querySelector('#sort_by_caseId');
+    const button = element.querySelector('#sort_by_caseReference');
     button.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
     // check the emitter had been called and that it gets called with the first field which is caseReference
     expect(component.sortEvent.emit).toHaveBeenCalled();
-    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseId');
+    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseReference');
   });
 
   it('should allow sorting for different columns.', async () => {
@@ -131,13 +131,13 @@ describe('TaskListComponent', () => {
 
     // mock the emitter and dispatch the connected event to a column to the right
     element = fixture.debugElement.nativeElement;
-    button = element.querySelector('#sort_by_taskTitle');
+    button = element.querySelector('#sort_by_taskName');
     button.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
     // check the emitter had been called and that it gets called with the new field defined which is taskName
     expect(component.sortEvent.emit).toHaveBeenCalled();
-    expect(component.sortEvent.emit).toHaveBeenCalledWith('taskTitle');
+    expect(component.sortEvent.emit).toHaveBeenCalledWith('taskName');
 
     // mock the emitter and dispatch the connected event to a column to the left
     element = fixture.debugElement.nativeElement;
@@ -342,7 +342,7 @@ describe('TaskListComponent', () => {
     // mock the emitter and dispatch the connected event (with example case field buttons selected)
     spyOn(component.sortEvent, 'emit');
     const element = fixture.debugElement.nativeElement;
-    const referenceButton = element.querySelector('#sort_by_caseId');
+    const referenceButton = element.querySelector('#sort_by_caseReference');
     const categoryButton = element.querySelector('#sort_by_caseCategory');
     const dueDateButton = element.querySelector('#sort_by_dueDate');
     referenceButton.dispatchEvent(new Event('click'));
@@ -350,13 +350,13 @@ describe('TaskListComponent', () => {
 
     // check the case reference is being sorted via ascending
     expect(component.sortEvent.emit).toHaveBeenCalled();
-    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseId');
+    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseReference');
 
     // check that the case reference is being sorted via descending
     referenceButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     expect(component.sortEvent.emit).toHaveBeenCalled();
-    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseId');
+    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseReference');
 
     // click the second example button and verify that sorting is for case category
     categoryButton.dispatchEvent(new Event('click'));

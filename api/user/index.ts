@@ -12,12 +12,10 @@ export async function getUserDetails(req, res: Response, next: NextFunction) {
     const canShareCases = roles.some(role => permissions.includes(role))
     const sessionTimeouts = getConfigValue(SESSION_TIMEOUTS) as RoleGroupSessionTimeout[]
     const sessionTimeout = getUserSessionTimeout(roles, sessionTimeouts)
-    const userInfo = req.session.passport.user.userinfo
 
     res.send({
       canShareCases,
       sessionTimeout,
-      userInfo,
     })
   } catch (error) {
     next(error)

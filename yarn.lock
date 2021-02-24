@@ -8827,6 +8827,13 @@ ngx-chips@1.9.8:
     ng2-material-dropdown "0.10.1"
     tslib "^1.9.0"
 
+ngx-cookie@^4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/ngx-cookie/-/ngx-cookie-4.1.2.tgz#ab2fafc6ee7f23b7ad92f8427dc714894e60aa31"
+  integrity sha512-BU3q+116mSQZvf8WsnKDxyWFy10LtxSvZz1YIjD7pmaSFpiKdWmHTHn0qLgm3OoIL9TfInQ7Ij46rKJWPD+4Kw==
+  dependencies:
+    tslib "^1.9.0"
+
 ngx-logger@^4.0.4:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/ngx-logger/-/ngx-logger-4.1.1.tgz#1bf0a32321d46c5b4fde92341864020bc502cd5b"

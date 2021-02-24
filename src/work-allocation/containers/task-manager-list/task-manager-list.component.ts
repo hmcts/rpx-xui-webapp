@@ -96,19 +96,19 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
   public getSearchTaskRequest(): SearchTaskRequest {
     return {
       search_parameters: [
+        this.getSortParameter(),
         this.getLocationParameter(),
         this.getCaseworkerParameter()
-      ],
-      sorting_parameters: [this.getSortParameter()]
+      ]
     };
   }
 
   private getLocationParameter() {
     let values: string[];
     if (this.selectedLocation && this.selectedLocation !== FilterConstants.Options.Locations.ALL) {
-      values = [ this.selectedLocation.id ];
+      values = [ this.selectedLocation.locationName ];
     } else {
-      values = this.locations.map(loc => loc.id);
+      values = this.locations.map(loc => loc.locationName);
     }
     return { key: 'location', operator: 'IN', values };
   }
@@ -119,11 +119,11 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
       if (this.selectedCaseworker === FilterConstants.Options.Caseworkers.UNASSIGNED) {
         values = [];
       } else {
-        values = [this.selectedCaseworker.idamId]
+        values = [ this.caseworkerDisplayName.transform(this.selectedCaseworker, false) ];
       }
     } else {
-      values = []
+      values = this.caseworkers.map(cw => this.caseworkerDisplayName.transform(cw, false));
     }
-    return { key: 'user', operator: 'IN', values };
+    return { key: 'assignee', operator: 'IN', values };
   }
 }

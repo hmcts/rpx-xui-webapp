@@ -26,12 +26,13 @@ describe('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
     const addNewButton = element(by.xpath("//div[@id = 'textCollection']//button[text() = 'Add new']"));
     const removeButton = element(by.xpath("//div[@id = 'textCollection']//button[text() = 'Remove']"));
     
+    const roles = ["caseworker-divorce-financialremedy-solicitor"];
 
     it('display_context_parameter null', async function () {
         setUpcaseConfig(null); 
 
         await MockApp.startServer();
-        await BrowserUtil.gotoHomePage();
+        await BrowserUtil.browserInitWithAuth(roles);
         await headerPage.isTabPresent('Case list');
         await browser.get(`cases/case-create/exui/casetype_1/submitDraft/page1`);
 
@@ -45,8 +46,7 @@ describe('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
         setUpcaseConfig("#COLLECTION(allowInsert,allowDelete)"); 
 
         await MockApp.startServer();
-        await BrowserUtil.gotoHomePage();
-
+        await BrowserUtil.browserInitWithAuth(roles);
         await headerPage.isTabPresent('Case list');
         await browser.get(`cases/case-create/exui/casetype_1/submitDraft/page1`);
 
@@ -60,7 +60,7 @@ describe('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
         setUpcaseConfig("#COLLECTION(allowInsert)"); 
 
         await MockApp.startServer();
-        await BrowserUtil.gotoHomePage();
+        await BrowserUtil.browserInitWithAuth(roles);
         await headerPage.isTabPresent('Case list');
         await browser.get(`cases/case-create/exui/casetype_1/submitDraft/page1`);
 
@@ -74,7 +74,7 @@ describe('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
         setUpcaseConfig("#COLLECTION(allowDelete)"); 
 
         await MockApp.startServer();
-        await BrowserUtil.gotoHomePage();
+        await BrowserUtil.browserInitWithAuth(roles);
         await headerPage.isTabPresent('Case list');
         await browser.get(`cases/case-create/exui/casetype_1/submitDraft/page1`);
 
@@ -88,7 +88,7 @@ describe('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
         setUpcaseConfig("#TABLE(AddressLine1,AddressLine2),#COLLECTION(allowInsert,allowDelete)"); 
 
         await MockApp.startServer();
-        await BrowserUtil.gotoHomePage();
+        await BrowserUtil.browserInitWithAuth(roles);
         await headerPage.isTabPresent('Case list');
         await browser.get(`cases/case-create/exui/casetype_1/submitDraft/page1`);
 
@@ -101,7 +101,7 @@ describe('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
         setUpcaseConfig("#COLLECTION()"); 
         await MockApp.startServer();
 
-        await BrowserUtil.gotoHomePage();
+        await BrowserUtil.browserInitWithAuth(roles);
         await headerPage.isTabPresent('Case list');
         await browser.get(`cases/case-create/exui/casetype_1/submitDraft/page1`);
 

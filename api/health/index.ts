@@ -4,18 +4,14 @@ import { getConfigValue, showFeature } from '../configuration'
 import {
   FEATURE_REDIS_ENABLED,
   FEATURE_TERMS_AND_CONDITIONS_ENABLED,
-  FEATURE_WORKALLOCATION_ENABLED,
   SERVICE_S2S_PATH,
-  SERVICES_CASE_CASEWORKER_REF_PATH,
   SERVICES_CCD_COMPONENT_API_PATH,
   SERVICES_CCD_DATA_STORE_API_PATH,
   SERVICES_DOCUMENTS_API_PATH,
   SERVICES_EM_ANNO_API_URL,
   SERVICES_IDAM_API_URL,
   SERVICES_IDAM_LOGIN_URL,
-  SERVICES_ROLE_ASSIGNMENT_API_PATH,
-  SERVICES_TERMS_AND_CONDITIONS_URL,
-  SERVICES_WORK_ALLOCATION_TASK_API_PATH
+  SERVICES_TERMS_AND_CONDITIONS_URL
 } from '../configuration/references'
 import * as log4jui from '../lib/log4jui'
 import { JUILogger } from '../lib/models'
@@ -26,22 +22,7 @@ export const checkServiceHealth = service => HealthCheck.web(`${service}/health`
   timeout: 6000,
 })
 
-export interface HealthChecks {
-  checks: {
-    ccdComponentApi: any,
-    ccdDataApi: any,
-    documentsApi: any,
-    emmoApi: any,
-    idamApi: any,
-    idamWeb: any,
-    s2s: any,
-    workAllocationApi?: any,
-    roleApi?: any,
-    caseworkerRefApi?: any,
-  }
-}
-
-const config: HealthChecks = {
+const config = {
   checks: {
     ccdComponentApi: checkServiceHealth(getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)),
     ccdDataApi: checkServiceHealth(getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH)),
@@ -51,12 +32,6 @@ const config: HealthChecks = {
     idamWeb: checkServiceHealth(getConfigValue(SERVICES_IDAM_API_URL)),
     s2s: checkServiceHealth(getConfigValue(SERVICE_S2S_PATH)),
   },
-}
-
-if (showFeature(FEATURE_WORKALLOCATION_ENABLED)) {
-  config.checks.workAllocationApi = checkServiceHealth(getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH))
-  config.checks.caseworkerRefApi = checkServiceHealth(getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH))
-  config.checks.roleApi = checkServiceHealth(getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH))
 }
 
 export const addReformHealthCheck = app => {
@@ -70,9 +45,7 @@ export const addReformHealthCheck = app => {
   if (showFeature(FEATURE_REDIS_ENABLED)) {
     xuiNode.on(SESSION.EVENT.REDIS_CLIENT_READY, (redisClient: any) => {
       logger.info('REDIS EVENT FIRED!!')
-      config.checks = {
-        ...config.checks,
-        ...{
+      config.checks = {...config.checks, ...{
           redis: HealthCheck.raw(() => {
             return redisClient.connected ? HealthCheck.up() : HealthCheck.down()
           }),

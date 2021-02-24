@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { UserDetails } from '../../../app/models/user-details.model';
 
 // TODO: Write unit tests
 @Injectable({
@@ -10,7 +9,7 @@ import { UserDetails } from '../../../app/models/user-details.model';
 export class UserService {
   constructor(private readonly http: HttpClient) {}
 
-  public getUserDetails(): Observable<UserDetails> {
-    return this.http.get<UserDetails>(`api/user/details`);
+  public getUserDetails(): Observable<boolean> {
+    return this.http.get<boolean>(`api/user/details`);
   }
 }

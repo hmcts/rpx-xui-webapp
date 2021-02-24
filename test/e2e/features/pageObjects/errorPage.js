@@ -1,11 +1,11 @@
 const BrowserWaits = require('../../support/customWaits');
 
-const reportLogger = require('../../support/reportLogger');
+
 
 class ErrorPage{
 
     constructor(){
-        this.title = element(by.xpath("//main[@id='main-content']//h1[contains(text(),'Sorry')]"))
+        this.title = $('#main-content h1')
         this.tryAgainMessage = element(by.xpath("//p[contains(text(),'Try again later')]"))
     }
 
@@ -16,7 +16,6 @@ class ErrorPage{
             console.log('Error messge displayed : ' + headermessage);
             return headermessage.includes('Sorry'); 
         }catch(err){
-            reportLogger.AddMessage("error page not displayed : "+err);
             return false;
         }
         

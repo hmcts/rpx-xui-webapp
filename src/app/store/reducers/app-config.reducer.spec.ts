@@ -41,20 +41,20 @@ describe('App Config Reducer', () => {
                                                                     idleModalDisplayTime: 100,
                                                                     totalIdleTime: 100,
                                                                 },
-                                                                canShareCases: false,
-                                                                userInfo: null
+                                                                canShareCases: false
                                                             });
         const state = appConfigReducer.reducer(appConfigReducer.initialState, action);
         const expectedState = {
             ...appConfigReducer.initialState.userDetails,
             sessionTimeout: {
                 idleModalDisplayTime: 100,
-                totalIdleTime: 100
-            },
-            userInfo: null
+                totalIdleTime: 100,
+            }
         };
-        expect(state.userDetails.userInfo).toEqual(expectedState.userInfo);
-        expect(state.userDetails.sessionTimeout).toEqual(expectedState.sessionTimeout);
+
+        console.log(expectedState);
+        console.log(state.userDetails)
+        expect(state.userDetails).toEqual(expectedState);
     });
 
     it('StartIdleSessionTimeout', () => {

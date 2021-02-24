@@ -49,6 +49,20 @@ describe('HmctsGlobalHeaderComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should set the active tab based on the router', () => {
+    const caseList = 'Case list';
+    const taskList = 'Task list';
+    const taskManager = 'Task manager';
+
+    // verify tab originally set
+    expect(component.tab).toEqual(caseList);
+
+    // verify correct tab set after changing url
+    expect(component.setActiveTab('/tasks/list')).toEqual(taskList);
+    expect(component.setActiveTab('/tasks/task-manager')).toEqual(taskManager);
+    expect(component.setActiveTab('/cases')).toEqual(caseList);
+  });
+
   it('should show the Case search button as inactive when the currentUrl does not match', () => {
     const searchButton = fixture.debugElement.nativeElement.querySelector('.hmcts-search-toggle__button');
     expect(searchButton).toBeDefined();
@@ -73,8 +87,13 @@ describe('HmctsGlobalHeaderComponent', () => {
   });
 
   it('should onEmitSubMenu', () => {
-    const menuItem = {href: '/noc', text: null};
+    let menuItem = {href: '/noc', text: null};
     component.onEmitSubMenu(menuItem);
     expect(nocStoreSpy).toHaveBeenCalled();
+    expect(component.tab).toEqual(null);
+
+    menuItem = {href: '/tasks/list', text: 'Task list'};
+    component.onEmitSubMenu(menuItem);
+    expect(component.tab).toEqual('Task list');
   });
 });

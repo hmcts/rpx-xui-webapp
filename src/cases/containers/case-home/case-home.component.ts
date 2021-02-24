@@ -1,15 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AlertService,
-  ErrorNotifierService,
-  HttpError,
-  NavigationNotifierService,
-  NavigationOrigin,
+  ErrorNotifierService, HttpError, NavigationNotifierService,
+  NavigationOrigin
 } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { GoActionParams } from 'src/cases/models/go-action-params.model';
-
 import * as fromRoot from '../../../app/store';
 import * as fromFeature from '../../store';
 
@@ -45,6 +42,8 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
         this.actionDispatcher(this.paramHandler(navigation));
       }
     }) as any;
+
+    this.store.dispatch(new fromRoot.StartIdleSessionTimeout());
   }
 
   public ngOnDestroy(): void {

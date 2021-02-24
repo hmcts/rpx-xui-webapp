@@ -1,5 +1,5 @@
 export enum TaskSort {
-  ASC = 'asc',
-  DSC = 'desc',
+  ASC = 'ascending',
+  DSC = 'descending',
   NONE = 'none'
 }

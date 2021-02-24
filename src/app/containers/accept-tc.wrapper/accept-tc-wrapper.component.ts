@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Actions, ofType } from '@ngrx/effects';
 import { Action, Store } from '@ngrx/store';
+import { CookieService } from 'ngx-cookie';
 import { Observable, Subscription } from 'rxjs';
 import * as fromApp from '../../../../src/app/store/index';
 import * as fromStore from '../../store';
@@ -15,6 +16,7 @@ import * as fromStore from '../../store';
 export class AcceptTcWrapperComponent implements OnInit, OnDestroy {
   subscription: Subscription;
   constructor(private store: Store<fromApp.State>,
+              private cookieService: CookieService,
               private actions$: Actions) {
   }
 
@@ -29,6 +31,8 @@ export class AcceptTcWrapperComponent implements OnInit, OnDestroy {
   }
 
   onAcceptTandC() {
+    const uid = this.cookieService.get('__userid__');
+    this.dispatchAction(this.store, new fromStore.AcceptTandC(uid));
   }
 
   ngOnDestroy() {

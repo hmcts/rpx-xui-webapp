@@ -28,10 +28,6 @@ module.exports = {
         '/data/internal/profile': (req, res) => {
             res.send(idamProfile);
         },
-
-        '/api/user/details': (req, res) => {
-            res.send(nodeAppMockData.getUserDetailsTemplate());
-        }
     },
     post: {
         

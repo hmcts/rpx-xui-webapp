@@ -1,40 +1,27 @@
 import { NextFunction, Response } from 'express';
-import { getConfigValue } from '../configuration';
-import {
-  SERVICES_CASE_CASEWORKER_REF_PATH,
-  SERVICES_ROLE_ASSIGNMENT_API_PATH,
-  SERVICES_WORK_ALLOCATION_TASK_API_PATH
-} from '../configuration/references';
+
 import { EnhancedRequest } from '../lib/models';
 import {
-  getUserIdsFromRoleApiResponse,
   handleCaseWorkerForLocation,
   handleCaseWorkerForLocationAndService,
   handleCaseWorkerForService,
-  handlePostCaseWorkersRefData,
-  handlePostRoleAssingnments,
-  handlePostSearch
+  handleCaseWorkerGetAll,
+  handlePostSearch,
 } from './caseWorkerService';
-import { Caseworker } from './interfaces/task';
 import { handleTaskGet, handleTaskPost, handleTaskSearch } from './taskService';
 import {
   assignActionsToTasks,
-  mapCaseworkerData,
   prepareCaseWorkerForLocation,
   prepareCaseWorkerForLocationAndService,
   prepareCaseWorkerForService,
   prepareCaseWorkerSearchUrl,
+  prepareCaseWorkerUrl,
   prepareGetTaskUrl,
   preparePostTaskUrlAction,
-  prepareRoleApiRequest,
-  prepareRoleApiUrl,
-  prepareSearchTaskUrl
+  prepareSearchTaskUrl,
 } from './util';
 
-export const baseWorkAllocationTaskUrl = getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH);
-export const baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);
-export const baseRoleAssignmentUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
-export const baseUrl: string = 'http://localhost:8080';
+export const baseUrl: string = 'http://localhost:8080'
 
 /**
  * getTask
@@ -42,13 +29,13 @@ export const baseUrl: string = 'http://localhost:8080';
 export async function getTask(req: EnhancedRequest, res: Response, next: NextFunction) {
 
   try {
-    const getTaskPath: string = prepareGetTaskUrl(baseWorkAllocationTaskUrl, req.params.taskId);
+    const getTaskPath: string = prepareGetTaskUrl(baseUrl, req.params.taskId)
 
-    const jsonResponse = await handleTaskGet(getTaskPath, req);
-    res.status(200);
-    res.send(jsonResponse);
+    const jsonResponse = await handleTaskGet(getTaskPath, req)
+    res.status(200)
+    res.send(jsonResponse)
   } catch (error) {
-    next(error);
+    next(error)
   }
 }
 
@@ -57,17 +44,14 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
  */
 export async function searchTask(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    const postTaskPath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
+    const postTaskPath: string = prepareSearchTaskUrl(baseUrl);
     const searchRequest = req.body.searchRequest;
     const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
     res.status(status);
-    // Assign actions to the tasks on the data from the API.
+
+     // Assign actions to the tasks on the data from the API.
     if (data) {
-      const caseworkers: Caseworker[] =
-       req.session.casewokers ?
-       req.session.casewokers as Caseworker[] :
-       await retrieveAllCaseWorkers(req, res);
-      assignActionsToTasks(data.tasks, req.body.view, caseworkers);
+      assignActionsToTasks(data.tasks, req.body.view);
     }
 
     // Send the (possibly modified) data back in the Response.
@@ -83,12 +67,13 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
 export async function postTaskAction(req: EnhancedRequest, res: Response, next: NextFunction) {
 
   try {
-    const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.params.taskId, req.params.action);
-    const { status, data } = await handleTaskPost(getTaskPath, req.body, req);
-    res.status(status);
-    res.send(data);
+    const getTaskPath: string = preparePostTaskUrlAction(baseUrl, req.params.taskId, req.params.action)
+
+    const { status, data } = await handleTaskPost(getTaskPath, req.body, req)
+    res.status(status)
+    res.send(data)
   } catch (error) {
-    next(error);
+    next(error)
   }
 }
 
@@ -96,28 +81,16 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
  * Get All CaseWorkers
  */
 export async function getAllCaseWorkers(req: EnhancedRequest, res: Response, next: NextFunction) {
-  try {
-    const caseworkers: Caseworker[] =
-     req.session.casewokers ?
-     req.session.casewokers as Caseworker[] :
-     await retrieveAllCaseWorkers(req, res);
-    res.status(200);
-    res.send(caseworkers);
-  } catch (error) {
-    next(error);
-  }
-}
 
-export async function retrieveAllCaseWorkers(req: EnhancedRequest, res: Response): Promise<Caseworker[]> {
-  const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
-  const payload = prepareRoleApiRequest();
-  const { data } = await handlePostRoleAssingnments(roleApiPath, payload, req);
-  const userIds = getUserIdsFromRoleApiResponse(data);
-  const userUrl = `${baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
-  const userResponse = await handlePostCaseWorkersRefData(userUrl, userIds, req);
-  const caseWorkerReferenceData = mapCaseworkerData(userResponse.data);
-  req.session.casewokers = caseWorkerReferenceData;
-  return caseWorkerReferenceData;
+  try {
+    const getCaseWorkerPath: string = prepareCaseWorkerUrl(baseUrl)
+
+    const jsonResponse = await handleCaseWorkerGetAll(getCaseWorkerPath, req)
+    res.status(200)
+    res.send(jsonResponse)
+  } catch (error) {
+    next(error)
+  }
 }
 
 /**
@@ -126,13 +99,13 @@ export async function retrieveAllCaseWorkers(req: EnhancedRequest, res: Response
 export async function getAllCaseWorkersForLocation(req: EnhancedRequest, res: Response, next: NextFunction) {
 
   try {
-    const getCaseWorkerPath: string = prepareCaseWorkerForLocation(baseCaseWorkerRefUrl, req.params.locationId);
+    const getCaseWorkerPath: string = prepareCaseWorkerForLocation(baseUrl, req.params.locationId)
 
-    const jsonResponse = await handleCaseWorkerForLocation(getCaseWorkerPath, req);
-    res.status(200);
-    res.send(jsonResponse);
+    const jsonResponse = await handleCaseWorkerForLocation(getCaseWorkerPath, req)
+    res.status(200)
+    res.send(jsonResponse)
   } catch (error) {
-    next(error);
+    next(error)
   }
 }
 
@@ -142,13 +115,13 @@ export async function getAllCaseWorkersForLocation(req: EnhancedRequest, res: Re
 export async function getCaseWorkersForService(req: EnhancedRequest, res: Response, next: NextFunction) {
 
   try {
-    const getCaseWorkerPath: string = prepareCaseWorkerForService(baseUrl, req.params.serviceId);
+    const getCaseWorkerPath: string = prepareCaseWorkerForService(baseUrl, req.params.serviceId)
 
-    const jsonResponse = await handleCaseWorkerForService(getCaseWorkerPath, req);
-    res.status(200);
-    res.send(jsonResponse);
+    const jsonResponse = await handleCaseWorkerForService(getCaseWorkerPath, req)
+    res.status(200)
+    res.send(jsonResponse)
   } catch (error) {
-    next(error);
+    next(error)
   }
 }
 
@@ -158,13 +131,13 @@ export async function getCaseWorkersForService(req: EnhancedRequest, res: Respon
 export async function getCaseWorkersForLocationAndService(req: EnhancedRequest, res: Response, next: NextFunction) {
 
   try {
-    // tslint:disable-next-line:max-line-length
-    const getCaseWorkerPath: string = prepareCaseWorkerForLocationAndService(baseUrl, req.params.locationId, req.params.serviceId);
-    const jsonResponse = await handleCaseWorkerForLocationAndService(getCaseWorkerPath, req);
-    res.status(200);
-    res.send(jsonResponse);
+    const getCaseWorkerPath: string = prepareCaseWorkerForLocationAndService(baseUrl, req.params.locationId, req.params.serviceId)
+
+    const jsonResponse = await handleCaseWorkerForLocationAndService(getCaseWorkerPath, req)
+    res.status(200)
+    res.send(jsonResponse)
   } catch (error) {
-    next(error);
+    next(error)
   }
 }
 
@@ -173,12 +146,12 @@ export async function getCaseWorkersForLocationAndService(req: EnhancedRequest, 
  */
 export async function searchCaseWorker(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    const postTaskPath: string = prepareCaseWorkerSearchUrl(baseUrl);
+    const postTaskPath: string = prepareCaseWorkerSearchUrl(baseUrl)
 
-    const { status, data } = await handlePostSearch(postTaskPath, req.body, req);
-    res.status(status);
-    res.send(data);
+    const { status, data } = await handlePostSearch(postTaskPath, req.body, req)
+    res.status(status)
+    res.send(data)
   } catch (error) {
-    next(error);
+    next(error)
   }
 }

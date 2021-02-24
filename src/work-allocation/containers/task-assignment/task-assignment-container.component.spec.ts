@@ -132,7 +132,8 @@ describe('TaskAssignmentContainerComponent', () => {
 
     fixture.detectChanges();
     const assignee: Assignee = {
-      userId: caseworker.idamId
+      id: caseworker.idamId,
+      userName: `${caseworker.firstName} ${caseworker.lastName}`
     };
     expect(mockWorkAllocationService.assignTask).toHaveBeenCalledWith(mockTasks[0].id, assignee);
   });

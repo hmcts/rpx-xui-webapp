@@ -1,6 +1,6 @@
 export interface Assignee {
-  userId: string;
-  userName?: string;
+  id: string;
+  userName: string;
 }
 
 export interface CaseData {
@@ -32,14 +32,8 @@ export interface SearchTaskParameter {
   operator: string;
   values: string[];
 }
-export interface SortParameter {
-  sort_by: string;
-  sort_order: string;
-}
-
 export interface SearchTaskRequest {
   search_parameters: SearchTaskParameter[];
-  sorting_parameters: SortParameter[];
 }
 
 export interface Task {

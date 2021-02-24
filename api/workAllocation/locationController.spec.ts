@@ -1,18 +1,18 @@
+import 'mocha';
+
 import * as chai from 'chai';
 import {expect} from 'chai';
-import 'mocha';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import {mockReq, mockRes} from 'sinon-express-mock';
 
 import {http} from '../lib/http';
-import {ALL_LOCATIONS} from './constants/locations';
 import {baseUrl, getLocationById, getLocations} from './locationController';
 
 chai.use(sinonChai);
 describe('workAllocation', () => {
 
-  const SUCCESS_RESPONSE = {status: 200, data: ALL_LOCATIONS};
+  const SUCCESS_RESPONSE = {status: 200, data: 'ok'};
   let sandbox: sinon.SinonSandbox;
   let next: any;
   let spy: any;
@@ -37,14 +37,18 @@ describe('workAllocation', () => {
 
     it('should make a get request and respond appropriately', async () => {
 
+      spy = sandbox.stub(http, GET).resolves(res);
       const req = mockReq({
         params: {
-          locationId: LOCATION_ID,
-        },
+          locationId: LOCATION_ID
+        }
       });
       const response = mockRes();
 
       await getLocationById(req, response, next);
+
+      const args = spy.getCall(0).args;
+      expect(args[0]).to.equal(`${baseUrl}/location/${LOCATION_ID}`);
 
       expect(response.send).to.have.been.calledWith(sinon.match(SUCCESS_RESPONSE.data));
     });
@@ -53,8 +57,8 @@ describe('workAllocation', () => {
       spy = sandbox.stub(http, GET).resolves(res);
       const req = mockReq({
         params: {
-          locationId: LOCATION_ID,
-        },
+          locationId: LOCATION_ID
+        }
       });
       const response = mockRes();
 
@@ -75,6 +79,9 @@ describe('workAllocation', () => {
       const response = mockRes();
 
       await getLocations(req, response, next);
+
+      const args = spy.getCall(0).args;
+      expect(args[0]).to.equal(`${baseUrl}/location`);
 
       expect(response.send).to.have.been.calledWith(sinon.match(SUCCESS_RESPONSE.data));
     });

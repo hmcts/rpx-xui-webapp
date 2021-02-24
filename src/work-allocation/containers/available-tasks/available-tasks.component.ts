@@ -32,10 +32,10 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
   public getSearchTaskRequest(): SearchTaskRequest {
     return {
       search_parameters: [
+        this.getSortParameter(),
         this.getLocationParameter(),
-        { key: 'state', operator: 'IN', values: ['unassigned'] }
-      ],
-      sorting_parameters: [this.getSortParameter()]
+        { key: 'assignee', operator: 'IN', values: [] } // Unassigned.
+      ]
     };
   }
 
@@ -50,16 +50,15 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
   }
 
   public loadTasks(): void {
-    // TODO: Need to check whether this functionality is needed
-    // if (this.selectedLocations) {
-    super.loadTasks();
-    // }
+    if (this.selectedLocations) {
+      super.loadTasks();
+    }
   }
 
   private getLocationParameter() {
     let values = [];
     if (this.selectedLocations) {
-      values = this.selectedLocations.map(loc => loc.id).sort();
+      values = this.selectedLocations.map(loc => loc.locationName).sort();
     }
     return { key: 'location', operator: 'IN', values };
   }

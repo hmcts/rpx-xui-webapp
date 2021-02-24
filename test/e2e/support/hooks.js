@@ -94,10 +94,10 @@ const CucumberReportLog = require("./reportLogger");
 
 
 defineSupportCode(({ Before,After }) => {
-    Before(function (scenario) {
-        global.scenarioData = {};
+    Before(function (scenario, done) {
         const world = this;
         CucumberReportLog.setScenarioWorld(this);
+        done();
     });
 
     After(async function(scenario) {

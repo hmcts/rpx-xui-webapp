@@ -25,9 +25,9 @@ describe('WorkAllocation', () => {
 
     it('assignTask should make correct api call', () => {
       const service = new WorkAllocationTaskService(mockHttpService);
-      const user = {id: 'id1'};
-      service.assignTask('123456', user);
-      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task/123456/assign', user);
+      const assignee = {id: 'id1', userName: 'userName'};
+      service.assignTask('123456', assignee);
+      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task/123456/assign', { assignee });
     });
 
     it('completeTask should make correct api call', () => {

@@ -1,32 +1,24 @@
 import {Component, OnInit} from '@angular/core';
 import { AppConstants } from 'src/app/app.constants';
 import { ContactDetailsDataModel } from '@hmcts/rpx-xui-common-lib';
-import * as fromRoot from '../../store';
-import { Observable } from 'rxjs';
-import { select, Store } from '@ngrx/store';
-import { UserDetails } from '../../../app/models/user-details.model';
+import {CookieService} from 'ngx-cookie';
 
 @Component({
     selector: 'exui-get-help',
     templateUrl: './get-help.component.html'
 })
 export class GetHelpComponent implements OnInit {
-    public userDetails$: Observable<any>;
+
     public helpContactDetails: ContactDetailsDataModel[] = AppConstants.HELP_CONTACT_DETAILS;
     public caseManager = false;
 
     constructor(
-      private readonly store: Store<fromRoot.State>,
+      private cookieService: CookieService
     ) {}
 
   public ngOnInit() {
-    this.store.dispatch(new fromRoot.LoadUserDetails());
-    this.userDetails$ = this.store.pipe(select(fromRoot.getUserDetails));
-    this.userDetails$.subscribe((userDetail: UserDetails) => {
-      if (userDetail && userDetail.userInfo) {
-        this.caseManager = userDetail.userInfo.roles && userDetail.userInfo.roles.includes('pui-case-manager');
-      }
-    });
+    const userRoles = this.cookieService.get('roles');
+    this.caseManager = this.isCaseManager(userRoles);
   }
 
   /**

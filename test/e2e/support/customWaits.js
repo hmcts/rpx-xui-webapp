@@ -41,31 +41,7 @@ class BrowserWaits{
     }
 
     async waitForCondition(condition){
-        await browser.wait( condition, this.waitTime);
-    }
-
-    async waitForConditionAsync(condition,waitInMillisec){
-        const waitForMillisec = waitInMillisec ? waitInMillisec : this.waitTime; 
-        await new Promise((resolve,reject) => {
-            const conditionCheckInterval = setInterval(async () => {
-                let isConditionMet = false; 
-                try{
-                    isConditionMet = await condition();
-                }catch(err){
-                    CucumberReporter.AddMessage("Error waiting for condition " + err); 
-                }
-                if (isConditionMet) {
-                    clearInterval(conditionCheckInterval);
-                    resolve(true);
-                }
-            }, 500);
-
-            setTimeout(() => {
-                clearInterval(conditionCheckInterval);
-                reject(new Error(`wait condition not satisfied after total wait time ${waitForMillisec}`));
-            }, waitForMillisec)
-        });
-  
+        await browser.wait(condition(), this.waitTime);
     }
 
      async waitForSelector(selector) {
@@ -124,7 +100,7 @@ class BrowserWaits{
     }
        
     
-    async retryWithActionCallback( callback,actionMessage) {
+    async retryWithActionCallback( callback) {
         let retryCounter = 0;
         let isSuccess = false;
         while (retryCounter < 3) {
@@ -135,7 +111,7 @@ class BrowserWaits{
             }
             catch (err) {
                 retryCounter += 1;
-                CucumberReporter.AddMessage(`Actions success Condition ${actionMessage ? actionMessage : ''} failed ${err}. `); 
+                CucumberReporter.AddMessage(`Actions success Condition failed ${err}. `); 
                 CucumberReporter.AddMessage(`Retrying attempt ${retryCounter}. `); 
             }
         }

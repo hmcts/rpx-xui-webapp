@@ -23,8 +23,7 @@ describe('App Selectors', () => {
         idleModalDisplayTime: 0,
         totalIdleTime: 0,
       },
-      canShareCases: false,
-      userInfo: null
+      canShareCases: false
     }
   };
 
@@ -70,8 +69,7 @@ describe('App Selectors', () => {
         idleModalDisplayTime: 0,
         totalIdleTime: 0,
       },
-      canShareCases: false,
-      userInfo: null
+      canShareCases: false
     }
 };
 

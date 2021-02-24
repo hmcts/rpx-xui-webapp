@@ -92,9 +92,7 @@ export class AvailableTasksFilterComponent implements OnInit {
    * Also save the applied filter to the session storage.
    */
   public applyFilter(): void {
-    if (this.locationFilter) {
-      this.selection = [ ...this.locationFilter.selection ];
-    }
+    this.selection = [ ...this.locationFilter.selection ];
     const toStore: string = JSON.stringify(this.selection);
     this.sessionStorageService.setItem(FilterConstants.Session.AvailableTasks, toStore);
     this.selectionChanged.emit(this.selection);

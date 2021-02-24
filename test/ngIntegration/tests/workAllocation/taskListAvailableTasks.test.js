@@ -147,7 +147,7 @@ describe('Task list page', function () {
                 await headerPage.clickTaskList();
                 await taskListPage.amOnPage();
                 MockUtil.setMockResponse("POST", "/workallocation/task/", (req, res) => {
-                    res.status(responseCode).send(workAllocationMockData.getAvailableTasks(10));
+                    res.status(responseCode).send(workAllocationMockData.getMyTasks(10));
                 });
 
                 await taskListPage.clickAvailableTasks();

@@ -1,5 +1,8 @@
-import {Injectable} from '@angular/core';
-import {AbstractAppConfig, CaseEditorConfig} from '@hmcts/ccd-case-ui-toolkit';
+import { Injectable } from '@angular/core';
+import {
+  AbstractAppConfig,
+  CaseEditorConfig
+} from '@hmcts/ccd-case-ui-toolkit';
 import {AppConfigService} from '../config/configuration.services';
 
 
@@ -13,10 +16,9 @@ import {AppConfigService} from '../config/configuration.services';
 export class AppConfig extends AbstractAppConfig {
 
   protected config: CaseEditorConfig;
-
   constructor(private appConfigService: AppConfigService) {
     super();
-    this.config = this.appConfigService.getEditorConfiguration() || {};
+    this.config =  this.appConfigService.getEditorConfiguration() || {};
   }
 
   public load(): Promise<void> {
@@ -65,7 +67,7 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getCreateOrUpdateDraftsUrl(ctid: string) {
-    return this.getCaseDataUrl() + `/internal/case-types/${ctid}/drafts/`;
+      return this.getCaseDataUrl() + `/internal/case-types/${ctid}/drafts/`;
   }
 
   public getViewOrDeleteDraftsUrl(did: string) {

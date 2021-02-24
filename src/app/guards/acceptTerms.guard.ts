@@ -2,9 +2,7 @@ import { Injectable } from '@angular/core';
 import { CanActivate } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
-import { filter, map, switchMap, tap } from 'rxjs/operators';
-import { AppUtils } from '../app-utils';
-import { TermsConditionsService } from '../services/terms-and-conditions/terms-and-conditions.service';
+import { switchMap } from 'rxjs/operators';
 import * as fromApp from '../store';
 
 @Injectable({

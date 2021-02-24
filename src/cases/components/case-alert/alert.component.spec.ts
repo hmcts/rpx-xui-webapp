@@ -40,13 +40,11 @@ describe('AlertComponent', () => {
   it('should have updated the value of message and level in ngOnInit', async () => {
     const alertService = fixture.debugElement.injector.get<AlertService>(AlertService);
     alertService.push({message: 'message', level: 'success'});
-    component.message = '1234567890123456';
     component.ngOnInit();
     await fixture.whenStable();
     fixture.detectChanges();
     expect(component.message).toEqual('message');
     expect(component.level).toEqual('success');
-    expect(component.message).toEqual('1234-5678-9012-3456');
   });
 
   it('should unsubscribe onDestroy', () => {
@@ -56,6 +54,11 @@ describe('AlertComponent', () => {
     component.ngOnDestroy();
     expect(component.alertMessageSubscription.unsubscribe).toHaveBeenCalled();
     expect(component.routeSubscription.unsubscribe).toHaveBeenCalled();
+  });
+
+  it('should hyphenate every 4th digit of alert', () => {
+    component.message = '1234567890123456';
+    expect(component.hyphenate('1234567890123456')).toBe('1234-5678-9012-3456');
   });
 
 });

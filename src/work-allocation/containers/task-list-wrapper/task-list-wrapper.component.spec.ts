@@ -85,7 +85,7 @@ describe('TaskListWrapperComponent', () => {
 
       // need to verify correct properties were called
       const lastNavigateCall = mockRouter.navigateCalls.pop();
-      expect(lastNavigateCall.commands).toEqual([`/tasks/${exampleTask.id}/${secondAction.id}/manager`]);
+      expect(lastNavigateCall.commands).toEqual([`/tasks/${exampleTask.id}/${secondAction.id}/`]);
       const exampleNavigateCall = { state: { returnUrl: '/tasks/manager', showAssigneeColumn: true } };
       expect(lastNavigateCall.extras).toEqual(exampleNavigateCall);
     });

@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
 import { ListConstants } from '../../components/constants';
 import { InfoMessage, InfoMessageType, TaskActionIds, TaskService, TaskSort } from '../../enums';
-import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
+import { SearchTaskRequest, SortParameter } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
@@ -144,17 +144,15 @@ export class TaskListWrapperComponent implements OnInit {
    */
   public getSearchTaskRequest(): SearchTaskRequest {
     return {
-      search_parameters: [
-        this.getSortParameter()
-      ]
+      search_parameters: [],
+      sorting_parameters: [this.getSortParameter()]
     };
   }
 
-  public getSortParameter(): SearchTaskParameter {
+  public getSortParameter(): SortParameter {
     return {
-      key: this.sortedBy.fieldName,
-      operator: 'sort',
-      values: [ this.sortedBy.order ]
+      sort_by: this.sortedBy.fieldName,
+      sort_order: this.sortedBy.order
     };
   }
 
@@ -183,14 +181,15 @@ export class TaskListWrapperComponent implements OnInit {
    * action.
    */
   public onActionHandler(taskAction: InvokedTaskAction): void {
-    if (this.returnUrl.includes('manager')) {
+    if (this.returnUrl.includes('manager')  && taskAction.action.id === TaskActionIds.RELEASE) {
       this.specificPage = 'manager';
     }
     const state = {
       returnUrl: this.returnUrl,
       showAssigneeColumn: taskAction.action.id !== TaskActionIds.ASSIGN
     };
-    this.router.navigate([`/tasks/${taskAction.task.id}/${taskAction.action.id}/${this.specificPage}`], { state });
+    const actionUrl = `/tasks/${taskAction.task.id}/${taskAction.action.id}/${this.specificPage}`;
+    this.router.navigate([actionUrl], { state });
   }
 
   // Do the actual load. This is separate as it's called from two methods.

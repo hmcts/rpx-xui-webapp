@@ -56,11 +56,11 @@ const config = {
     sscs_username: process.env.SSCS_EMAIL,
     sscs_password: process.env.SSCS_PASSWORD,
 
-    caseworker_iac_adm_username: process.env.CASEWORKER_IAC_ADM_USERNAME,
-    caseworker_iac_adm_password: process.env.CASEWORKER_IAC_ADM_PASSWORD,
+    caseworker_iac_adm_username: process.env.CASEWORKER_IAC_ADM_USERNAME ? process.env.CASEWORKER_IAC_ADM_USERNAME :'udaytest12@mailinator.com' ,
+    caseworker_iac_adm_password: process.env.CASEWORKER_IAC_ADM_PASSWORD ? process.env.CASEWORKER_IAC_ADM_PASSWORD : 'Welcome01',
 
-    caseworker_iac_off_username: process.env.CASEWORKER_IAC_OFF_USERNAME,
-    caseworker_iac_off_password: process.env.CASEWORKER_IAC_OFF_PASSWORD
+    caseworker_iac_off_username: process.env.CASEWORKER_IAC_OFF_USERNAME ? process.env.CASEWORKER_IAC_OFF_USERNAME :'udaytest12@mailinator.com' ,
+    caseworker_iac_off_password: process.env.CASEWORKER_IAC_OFF_PASSWORD ? process.env.CASEWORKER_IAC_OFF_PASSWORD :'Welcome01' 
 
   },
   directConnect: true,

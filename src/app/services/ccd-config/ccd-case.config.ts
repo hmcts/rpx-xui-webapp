@@ -33,8 +33,7 @@ export class AppConfig extends AbstractAppConfig {
       next: (val) => this.config.document_management_secure_enabled = val
     });
     this.config = {...this.appConfigService.getEditorConfiguration()} || {};
-    this.config.document_management_secure_enabled = true;
-
+    
     this.featureToggleService.getValue('mc-document-secure-mode-enabled', false).subscribe({
       next: (val) => this.config.document_management_secure_enabled = val
     });

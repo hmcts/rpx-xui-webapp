@@ -45,6 +45,9 @@ export const handleFatalErrors = (status: number, navigator: Navigator, fatals?:
     case 503:
       navigator.navigate([ REDIRECTS.ServiceDown ]);
       return 0; // 0 indicates it has been handled.
+    case 400:
+      navigator.navigate([ REDIRECTS.ServiceDown ]);
+      return 400;
     default:
       // If it's anything other than a 401, 403, 500, or 503, we should not
       // send the User to an error page. This should be handled within

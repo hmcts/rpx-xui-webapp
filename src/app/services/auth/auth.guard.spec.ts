@@ -5,6 +5,7 @@ import {HttpClient} from '@angular/common/http';
 import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
 import {AuthGuard} from './auth.guard';
+import { SessionStorageService } from '../session-storage/session-storage.service';
 
 
 class HttpClientMock {
@@ -21,6 +22,7 @@ describe('AuthGuard', () => {
       ],
       providers: [
         AuthService,
+        SessionStorageService,
         { provide: HttpClient, useClass: HttpClientMock },
       ]
     });

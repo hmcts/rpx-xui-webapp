@@ -20,6 +20,13 @@ describe('Session storage service', () => {
     expect(sessionStorage.setItem).toHaveBeenCalledWith('exampleKey', 'exampleValue');
   });
 
+  it('should remove an item after reading it when remove is set to true', () => {
+    const service = new SessionStorageService();
+    service.getItem('exampleKey');
+    expect(sessionStorage.getItem).toHaveBeenCalledWith('exampleKey');
+    expect(sessionStorage.removeItem).toHaveBeenCalledWith('exampleKey');
+  });
+
   it('should allow getting the item', () => {
     const service = new SessionStorageService();
     service.getItem('exampleKey');

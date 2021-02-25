@@ -43,6 +43,7 @@ export const handleFatalErrors = (status: number, navigator: Navigator, fatals?:
       return 0; // 0 indicates it has been handled.
     case 500:
     case 503:
+    case 400:
       navigator.navigate([ REDIRECTS.ServiceDown ]);
       return 0; // 0 indicates it has been handled.
     default:

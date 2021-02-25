@@ -1,12 +1,11 @@
 import { inject, TestBed } from '@angular/core/testing';
 import { AuthService } from './auth.service';
-
-import {HttpClient} from '@angular/common/http';
-import { StoreModule } from '@ngrx/store';
-import { of } from 'rxjs';
-import {AuthGuard} from './auth.guard';
 import { SessionStorageService } from '../session-storage/session-storage.service';
 
+import { HttpClient } from '@angular/common/http';
+import { StoreModule } from '@ngrx/store';
+import { of } from 'rxjs';
+import { AuthGuard } from './auth.guard';
 
 class HttpClientMock {
   public get() {
@@ -39,22 +38,27 @@ describe('AuthGuard', () => {
 
 describe('AuthGuard', () => {
   it('canActivate true', () => {
-    const service = jasmine.createSpyObj('service', ['loginRedirect', 'isAuthenticated']);
-    service.isAuthenticated.and.returnValue(of(true));
-    const guard = new AuthGuard(service);
+    const authService = jasmine.createSpyObj('authService', ['loginRedirect', 'isAuthenticated']);
+    const sessionService = jasmine.createSpyObj('sessionService', ['getItem', 'setItem', 'removeItem']);
+
+    authService.isAuthenticated.and.returnValue(of(true));
+    const guard = new AuthGuard(authService, sessionService);
     const canActivate = guard.canActivate();
     canActivate.subscribe(isAct => expect(isAct).toBeTruthy());
-    expect(service.isAuthenticated).toHaveBeenCalled();
-    expect(service.loginRedirect).not.toHaveBeenCalled();
+    expect(authService.isAuthenticated).toHaveBeenCalled();
+    expect(authService.loginRedirect).not.toHaveBeenCalled();
   });
 
   it('canActivate false', () => {
-    const service = jasmine.createSpyObj('service', ['loginRedirect', 'isAuthenticated']);
-    service.isAuthenticated.and.returnValue(of(false));
-    const guard = new AuthGuard(service);
+    const authService = jasmine.createSpyObj('authService', ['loginRedirect', 'isAuthenticated']);
+    const sessionService = jasmine.createSpyObj('sessionService', ['getItem', 'setItem', 'removeItem']);
+
+    authService.isAuthenticated.and.returnValue(of(false));
+    const guard = new AuthGuard(authService, sessionService);
+
     const canActivate = guard.canActivate();
     canActivate.subscribe(isAct => expect(isAct).toBeFalsy());
-    expect(service.isAuthenticated).toHaveBeenCalled();
-    expect(service.loginRedirect).toHaveBeenCalled();
+    expect(authService.isAuthenticated).toHaveBeenCalled();
+    expect(authService.loginRedirect).toHaveBeenCalled();
   });
 });

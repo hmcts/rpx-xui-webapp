@@ -9,6 +9,7 @@ var { defineSupportCode } = require('cucumber');
 
 const reportLogger = require('../../support/reportLogger');
 const Browserutil = require('../../../ngIntegration/util/browserUtil');
+const BrowserWaits = require('../../support/customWaits');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
@@ -24,8 +25,23 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         expect(await taskListPage.isTableDisplayed(), "Task list table is not present").to.be.true;
     });
 
-    Then('I see Task list table displaying some tasks', async function () {
-        expect(await taskListPage.getTaskListCountInTable(), "Task list has no rows displayed ").to.be.greaterThan(0);
+    Then('I see Task list My tasks table displaying some tasks', async function () { 
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await taskListPage.getTaskListCountInTable(), "Task list has no rows displayed ").to.be.greaterThan(0);
+        });
+    });
+
+    Then('I see Task list Available tasks table displaying some tasks', async function () {
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await taskListPage.getTaskListCountInTable(), "Task list has no rows displayed ").to.be.greaterThan(0);
+        });
+    });
+
+
+    Then('I see Task manager table displaying some tasks', async function () {
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await taskListPage.getTaskListCountInTable(), "Task list has no rows displayed ").to.be.greaterThan(0);
+        });
     });
 
 
@@ -118,15 +134,20 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         reportLogger.AddMessage("Total tasks listed  " + tasksCount);
 
         for (let i = 1; i <= tasksCount; i++) {
-            const isActionBarDisplayed = await taskListPage.isTaskActionBarDisplayedForAtPos(i);
-            if (!isActionBarDisplayed) {
-                await taskListPage.clickManageLinkForTaskAt(i);
-            }
-            scenarioData[taskIdReference] = await taskListPage.getColumnValueForTaskAt('Case reference', i);
-            expect(await taskListPage.isTaskActionBarDisplayedForAtPos(i), "Task actions row not displayed for task at row " + i).to.be.true;
-            await taskListPage.clickTaskAction("Unassign task");
+           
+            await BrowserWaits.retryWithActionCallback(async () => {
+                const isActionBarDisplayed = await taskListPage.isTaskActionBarDisplayedForAtPos(i);
+                if (!isActionBarDisplayed) {
+                    await taskListPage.clickManageLinkForTaskAt(i);
+                }
+                scenarioData[taskIdReference] = await taskListPage.getColumnValueForTaskAt('Case reference', i);
 
-            expect(await taskActionPage.amOnPage(),"Unassign task page not displayed").to.be.true;
+                expect(await taskListPage.isTaskActionBarDisplayedForAtPos(i), "Task actions row not displayed for task at row " + i).to.be.true;
+                await taskListPage.clickTaskAction("Unassign task");
+                expect(await taskActionPage.amOnPage(), "Unassign task page not displayed").to.be.true;
+            }, "Action to navigate to Unassign task page");
+
+
             await taskActionPage.clickUnassignBtn();
             const messages = await taskActionPage.getBannerMessagesDisplayed();
 

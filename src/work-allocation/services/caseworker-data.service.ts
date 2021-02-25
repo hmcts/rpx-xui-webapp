@@ -1,16 +1,25 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { SessionStorageService } from 'src/app/services';
 
 import { Caseworker } from '../models/dtos';
 
 @Injectable()
 export class CaseworkerDataService {
   public static caseWorkerUrl: string = '/workallocation/caseworker';
-  public constructor(private readonly http: HttpClient) {}
+  public static caseworkersKey: string = 'caseworkers';
+  public constructor(private readonly http: HttpClient, private readonly sessionStorageService: SessionStorageService) {}
 
   public getAll(): Observable<Caseworker[]> {
-    return this.http.get<Caseworker[]>(CaseworkerDataService.caseWorkerUrl);
+    if (this.sessionStorageService.getItem(CaseworkerDataService.caseworkersKey)) {
+      const caseworkers = JSON.parse(this.sessionStorageService.getItem(CaseworkerDataService.caseworkersKey));
+      return of(caseworkers as Caseworker[]);
+    }
+    return this.http.get<Caseworker[]>(CaseworkerDataService.caseWorkerUrl).pipe(
+      tap(caseworkers => this.sessionStorageService.setItem(CaseworkerDataService.caseworkersKey, JSON.stringify(caseworkers)))
+    );
   }
   public getForLocation(locationId: string): Observable<Caseworker[]> {
     return this.http.get<Caseworker[]>(`${CaseworkerDataService.caseWorkerUrl}/location/${locationId}`);

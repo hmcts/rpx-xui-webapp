@@ -41,7 +41,26 @@ class BrowserWaits{
     }
 
     async waitForCondition(condition){
-        await browser.wait(condition(), this.waitTime);
+        await browser.wait( condition, this.waitTime);
+    }
+
+    async waitForConditionAsync(condition,waitInMillisec){
+        const waitForMillisec = waitInMillisec ? waitInMillisec : this.waitTime; 
+        await new Promise((resolve,reject) => {
+            const conditionCheckInterval = setInterval(async () => {
+                let isConditionMet = await condition();
+                if (isConditionMet) {
+                    clearInterval(conditionCheckInterval);
+                    resolve(true);
+                }
+            }, 500);
+
+            setTimeout(() => {
+                clearInterval(conditionCheckInterval);
+                reject(new Error("wait condition not satisfied after total wait time {waitForMillisec}"));
+            }, waitForMillisec)
+        });
+  
     }
 
      async waitForSelector(selector) {

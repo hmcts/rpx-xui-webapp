@@ -13,13 +13,9 @@ import { FilterConstants } from '../constants';
   templateUrl: './available-tasks-filter.component.html',
   styleUrls: ['available-tasks-filter.component.scss']
 })
-export class AvailableTasksFilterComponent implements OnInit, AfterViewInit {
+export class AvailableTasksFilterComponent implements OnInit {
 
-  @ViewChild(CheckboxListComponent) set content(content: CheckboxListComponent<Location>) {
-    if (content) {
-      this.locationFilter = content;
-    }
-  };
+  @ViewChild('locationFilter') public locationFilter: CheckboxListComponent<Location>;
   @ViewChild('filterDetails')
   public readonly filterDetails: ElementRef<HTMLDetailsElement>;
 
@@ -38,7 +34,6 @@ export class AvailableTasksFilterComponent implements OnInit, AfterViewInit {
   }
   private pSelection: Location[] = [];
 
-  public locationFilter: CheckboxListComponent<Location>;
   public locations: Location[];
   public preselection: Location[];
   private handledInitialSelection = false;
@@ -54,7 +49,6 @@ export class AvailableTasksFilterComponent implements OnInit, AfterViewInit {
    * Take in the locationService so we can navigate when actions are clicked.
    */
   constructor(
-    private changeDetector: ChangeDetectorRef,
     private readonly locationService: LocationDataService,
     private readonly sessionStorageService: SessionStorageService,
     private readonly router: Router
@@ -74,10 +68,6 @@ export class AvailableTasksFilterComponent implements OnInit, AfterViewInit {
     }, error => {
       handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
     });
-  }
-
-  public ngAfterViewInit() {
-    this.changeDetector.detectChanges();
   }
 
   public onSelectionChange(): void {
@@ -100,7 +90,6 @@ export class AvailableTasksFilterComponent implements OnInit, AfterViewInit {
    * Also save the applied filter to the session storage.
    */
   public applyFilter(): void {
-    this.changeDetector.detectChanges();
     if (this.locationFilter) {
       this.selection = [ ...this.locationFilter.selection ];
     }

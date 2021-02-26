@@ -30,7 +30,6 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
    * Override the default.
    */
   public getSearchTaskRequest(): SearchTaskRequest {
-    console.log('getting search request');
     return {
       search_parameters: [
         this.getLocationParameter(),
@@ -45,7 +44,6 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
    * @param locations The currently selected locations.
    */
   public onLocationsChanged(locations: Location[]): void {
-    console.log('locations have changed with', locations)
     this.infoMessageCommService.removeAllMessages();
     this.selectedLocations = [ ...locations ];
     this.loadTasks();
@@ -60,13 +58,9 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
 
   private getLocationParameter() {
     let values = [];
-    console.log('values is empty', values);
-    console.log('current selected locations are', this.selectedLocations);
     if (this.selectedLocations) {
-      console.log('selected locations not empty', this.selectedLocations);
       values = this.selectedLocations.map(loc => loc.id).sort();
     }
-    console.log('values are', values);
     return { key: 'location', operator: 'IN', values };
   }
 

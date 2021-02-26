@@ -75,12 +75,12 @@ describe('AuthGuard', () => {
     it('store current path when unauthenticated', () => {
       authService.isAuthenticated.and.returnValue(of(false));
       windowLocationService.getPathName.and.returnValue('/cases/1234');
-  
+
       const guard = new AuthGuard(authService, sessionStorageService, windowLocationService);
-  
+
       const canActivate = guard.canActivate();
       canActivate.subscribe(isAct => expect(isAct).toBeFalsy());
-  
+
       expect(authService.isAuthenticated).toHaveBeenCalled();
       expect(authService.loginRedirect).toHaveBeenCalled();
       expect(sessionStorageService.setItem).toHaveBeenCalledWith('redirectUrl', '/cases/1234')
@@ -92,40 +92,40 @@ describe('AuthGuard', () => {
       authService.isAuthenticated.and.returnValue(of(true));
       authService.setWindowLocationHref.and.callThrough();
       windowLocationService.getPathName.and.returnValue('/cases');
-  
+
       const guard = new AuthGuard(authService, sessionStorageService, windowLocationService);
-  
+
       const canActivate = guard.canActivate();
       canActivate.subscribe(isAct => expect(isAct).toBeTruthy());
-  
+
       expect(authService.setWindowLocationHref).not.toHaveBeenCalled();
     });
-  
+
     it('should change window location to the storedRedirectUrl', () => {
       authService.isAuthenticated.and.returnValue(of(true));
       authService.setWindowLocationHref.and.callThrough();
       windowLocationService.getPathName.and.returnValue('/');
       sessionStorageService.getItem.and.returnValue('/cheesecakes/1');
-  
+
       const guard = new AuthGuard(authService, sessionStorageService, windowLocationService);
-  
+
       const canActivate = guard.canActivate();
       canActivate.subscribe(isAct => expect(isAct).toBeTruthy());
-  
+
       expect(authService.setWindowLocationHref).toHaveBeenCalledWith('/cheesecakes/1');
     });
-  
+
     it('should not change the path when a redirectUrl is not found', () => {
       authService.isAuthenticated.and.returnValue(of(true));
       authService.setWindowLocationHref.and.callThrough();
       windowLocationService.getPathName.and.returnValue('/');
       sessionStorageService.getItem.and.returnValue(null);
-  
+
       const guard = new AuthGuard(authService, sessionStorageService, windowLocationService);
-  
+
       const canActivate = guard.canActivate();
       canActivate.subscribe(isAct => expect(isAct).toBeTruthy());
-  
+
       expect(authService.setWindowLocationHref).not.toHaveBeenCalledWith('/cheesecakes/1');
     });
   });

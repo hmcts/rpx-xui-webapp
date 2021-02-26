@@ -1,5 +1,6 @@
 const TaskList = require('./taskListTable');
 const BrowserWaits = require('../../../support/customWaits');
+var cucumberReporter = require('../../../support/reportLogger');
 
 class TaskActionPage extends TaskList {
 

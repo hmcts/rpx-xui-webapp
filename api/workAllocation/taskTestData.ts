@@ -2,7 +2,6 @@ import { Task } from "./interfaces/task";
 
 export const mockTasks: Task[] = [
   {
-    "Assignee": "94785",
     "actions": [
       {
         "id": "cancel",
@@ -21,6 +20,7 @@ export const mockTasks: Task[] = [
         "title": "Unassign task",
       },
     ],
+    "assignee": "94785",
     "assigneeName": null,
     "auto_assigned": false,
     "caseCategory": "protection",
@@ -61,6 +61,7 @@ export const mockTasks: Task[] = [
         "title": "Mark as done",
       },
     ],
+    "assignee": "94785",
     "assigneeName": null,
     "auto_assigned": false,
     "caseCategory": "protection",

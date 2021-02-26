@@ -11,13 +11,13 @@ import { AuthService } from './auth.service';
 export class AuthGuard implements CanActivate {
 
   constructor(
-      public authService: AuthService,
-      private readonly sessionStorage: SessionStorageService,
-      private readonly windowLocationService: WindowLocationService
+    public authService: AuthService,
+    private readonly sessionStorage: SessionStorageService,
+    private readonly windowLocationService: WindowLocationService
   ) { }
 
   public canActivate(): Observable<boolean> {
-    return this.authService.isAuthenticated().map( isAuth => {
+    return this.authService.isAuthenticated().map(isAuth => {
       if (!isAuth) {
         this.storeRedirectUrl();
         this.authService.loginRedirect();
@@ -25,7 +25,7 @@ export class AuthGuard implements CanActivate {
       }
 
       this.redirectToStoredUrl();
-      
+
       return true;
     });
   }

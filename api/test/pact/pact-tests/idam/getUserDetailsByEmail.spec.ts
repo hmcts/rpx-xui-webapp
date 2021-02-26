@@ -3,25 +3,14 @@ import {expect} from 'chai'
 import * as path from 'path'
 import {getIdamUsersByEmail} from '../../pactUtil';
 import * as getPort from "get-port";
+import { PactTestSetup } from '../settings/provider.mock';
+
 
 const {Matchers} = require('@pact-foundation/pact');
 const {somethingLike} = Matchers;
-
-let mockServerPort: number;
-let provider: Pact;
+const pactSetUp = new PactTestSetup({ provider: 'idamApi_users', port: 8000 });
 
 describe("Idam Get user by email", async () => {
-    mockServerPort = await getPort()
-
-    provider = new Pact({
-        port: mockServerPort,
-        log: path.resolve(process.cwd(), "api/test/pact/logs", "mockserver-integration.log"),
-        dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
-        spec: 2,
-        consumer: "xui_webApp",
-        provider: "idamApi_users",
-        pactfileWriteMode: "merge",
-    })
 
     const RESPONSE_BODY = {
         "id": somethingLike("abc123"),
@@ -33,16 +22,12 @@ describe("Idam Get user by email", async () => {
             somethingLike("solicitor"), somethingLike("caseworker")
         ])
     }
-    // Setup the provider
-    before(() => provider.setup())
-    // Write Pact when all tests done
-    after(() => provider.finalize())
-    // verify with Pact, and reset expectations
-    afterEach(() => provider.verify())
+
     describe("get /users?email", () => {
 
-        before(done => {
-            const interaction = {
+        before(async () => {
+          await pactSetUp.provider.setup()
+          const interaction = {
                 state: "a user exists with email joe@bloggs.net",
                 uponReceiving: "a request for that user by email",
                 withRequest: {
@@ -62,19 +47,20 @@ describe("Idam Get user by email", async () => {
                 },
             }
             // @ts-ignore
-            provider.addInteraction(interaction).then(() => {
-                done()
-            })
+            pactSetUp.provider.addInteraction(interaction)
         })
-        it("Returns the correct response", (done) => {
-            const taskUrl = `${provider.mockService.baseUrl}/users?email=joe@bloggs.net`;
+        it("Returns the correct response", async () => {
+            const taskUrl = `${pactSetUp.provider.mockService.baseUrl}/users?email=joe@bloggs.net`;
 
             const response: Promise<any> = getIdamUsersByEmail(taskUrl);
 
             response.then((axiosResponse) => {
                 const dto: IdamGetDetailsResponseDto = <IdamGetDetailsResponseDto>axiosResponse.data;
                 assertResponses(dto);
-            }).then(done, done)
+            }).then(() => {
+              pactSetUp.provider.verify()
+              pactSetUp.provider.finalize()
+            })
         })
     })
 })

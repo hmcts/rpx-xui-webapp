@@ -12,6 +12,9 @@ describe('Session storage service', () => {
     spyOn(sessionStorage, 'clear').and.callFake(() => {
       mockStore = {};
     });
+    spyOn(sessionStorage, 'removeItem').and.callFake((key) => {
+      delete mockStore[key];
+    });
   });
 
   it('should allow setting the item', () => {
@@ -20,9 +23,9 @@ describe('Session storage service', () => {
     expect(sessionStorage.setItem).toHaveBeenCalledWith('exampleKey', 'exampleValue');
   });
 
-  it('should remove an item after reading it when remove is set to true', () => {
+  it('should remove an item after reading it when removeAfterRead is set to true', () => {
     const service = new SessionStorageService();
-    service.getItem('exampleKey');
+    service.getItem('exampleKey', true);
     expect(sessionStorage.getItem).toHaveBeenCalledWith('exampleKey');
     expect(sessionStorage.removeItem).toHaveBeenCalledWith('exampleKey');
   });

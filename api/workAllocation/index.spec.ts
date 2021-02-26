@@ -7,7 +7,7 @@ import { mockReq, mockRes } from 'sinon-express-mock';
 
 import { baseWorkAllocationTaskUrl, getTask, postTaskAction, searchTask } from '.';
 import { http } from '../lib/http';
-import { mockTasks } from './taskTestData';
+import { mockTasks } from './taskTestData.spec';
 
 chai.use(sinonChai);
 
@@ -75,7 +75,7 @@ describe('workAllocation', () => {
       spy = sandbox.stub(http, 'post').resolves(res);
       const req = mockReq({
         body: {
-          searchRequest: {search_parameters: []},
+          searchRequest: { search_parameters: [] },
           view: 'view',
         },
         session: {

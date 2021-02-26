@@ -101,8 +101,8 @@ function getBDDTags() {
         process.env.TEST_URL.includes("pr-") ||
         process.env.TEST_URL.includes("localhost")) {
         tags.push("@ng");
-    } else {
-        tags.push("@none");
+    }else{
+        tags.push("@none"); 
     }
 
     console.log(`BDD tags ${JSON.stringify(tags)}`);

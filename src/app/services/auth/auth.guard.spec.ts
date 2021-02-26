@@ -89,7 +89,6 @@ describe('AuthGuard', () => {
     authService.setWindowLocationHref.and.callThrough();
     windowLocationService.getPathName.and.returnValue('/cases');
     
-
     const guard = new AuthGuard(authService, sessionStorageService, windowLocationService);
 
     const canActivate = guard.canActivate();

@@ -16,7 +16,10 @@
     "documentsApi": "http://dm-store-prod.service.core-compute-prod.internal/health",
     "em_anno_api": "http://em-anno-prod.service.core-compute-prod.internal/health",
     "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal/health",
-    "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal/health"
+    "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal/health",
+    "taskApi": "http://wa-task-management-api-prod.service.core-compute-prod.internal/health",
+    "roleApi": "http://am-role-assignment-service-prod.service.core-compute-prod.internal/health",
+    "caseworkerApi": "http://rd-caseworker-ref-api-prod.service.core-compute-prod.internal/health"
   },
   "services": {
     "ccd": {
@@ -41,6 +44,12 @@
     },
     "work_allocation": {
       "taskApi": "http://wa-task-management-api-prod.service.core-compute-prod.internal"
+    },
+    "role_assignment": {
+      "roleApi": "http://am-role-assignment-service-prod.service.core-compute-prod.internal"
+    },
+    "case": {
+      "caseworkerApi": "http://rd-caseworker-ref-api-prod.service.core-compute-prod.internal"
     },
     "payments": "http://payment-api-prod.service.core-compute-prod.internal",
     "markup_api": "http://em-npa-prod.service.core-compute-prod.internal",
@@ -74,7 +83,10 @@
     "helmetEnabled": false,
     "termsAndConditionsEnabled": false,
     "redisEnabled": false,
-    "oidcEnabled": false
+    "oidcEnabled": false,
+    "workAllocationEnabled": false,
+    "roleEnabled": false,
+    "caseworkerRefEnabled": false
   },
   "helmet": {
     "contentSecurityPolicy": {

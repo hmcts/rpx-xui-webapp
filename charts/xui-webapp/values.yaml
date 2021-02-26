@@ -17,8 +17,7 @@ nodejs:
   memoryLimits: 2048Mi
   autoscaling:        # Default is false
     enabled: true 
-    minReplicas: 13
-    maxReplicas: 22    # Required setting
+    maxReplicas: 16    # Required setting
     targetCPUUtilizationPercentage: 80 # Default is 80% target CPU utilization
   environment:
     REFORM_TEAM: rpx
@@ -44,10 +43,19 @@ nodejs:
     HEALTH_EM_ANNO_API: http://em-anno-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
     HEALTH_S2S_SERVICE: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
     HEALTH_TERMS_AND_CONDITIONS_API: http://xui-terms-and-conditions-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
+    HEALTH_WORK_ALLOCATION_TASK_API: http://wa-task-management-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
+    HEALTH_ROLE_ASSIGNMENT_API: http://am-role-assignment-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
+    HEALTH_CASE_CASEWORKER_API: http://rd-caseworker-ref-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
     # Services CCD Endpoints
     SERVICES_CCD_COMPONENT_API: https://gateway-ccd.{{ .Values.global.environment }}.platform.hmcts.net
     SERVICES_CCD_DATA_STORE_API: http://ccd-data-store-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     SERVICES_CCD_CASE_ASSIGNMENT_API: http://aac-manage-case-assignment-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services work allocation endpoints
+    SERVICES_WORK_ALLOCATION_TASK_API: http://wa-task-management-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services role  endpoints
+    SERVICES_ROLE_ASSIGNMENT_API: http://am-role-assignment-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services case endpoints
+    SERVICES_CASE_CASEWORKER_API: http://rd-caseworker-ref-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services Documents Endpoints
     SERVICES_DOCUMENTS_API: http://dm-store-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services PRD
@@ -81,6 +89,7 @@ nodejs:
     FEATURE_HELMET_ENABLED: true
     FEATURE_REDIS_ENABLED: true
     FEATURE_OIDC_ENABLED: false
+    FEATURE_WORKALLOCATION_ENABLED: false
 
     # Redis
     REDIS_KEY_PREFIX: 'activity:'
@@ -98,7 +107,8 @@ nodejs:
   # Don't modify below here
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
-
+  redis:
+  enabled: true
 idam-pr:
   enabled: false
 

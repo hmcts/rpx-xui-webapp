@@ -23,8 +23,9 @@ describe('Header  Tabs', function () {
     });
 
     it('Case list tab present', async function () {
+        BrowserUtil.setUserDetailsWithRoles(["caseworker-ia-caseofficer", "caseworker-ia-admofficer"]);
         await MockApp.startServer();
-        await BrowserUtil.browserInitWithAuth(["caseworker-ia-caseofficer", "caseworker-ia-admofficer"]);   
+        await BrowserUtil.gotoHomePage();
 
         await headerPage.waitForPrimaryNavDisplay() 
         await BrowserUtil.waitForLD();
@@ -34,8 +35,9 @@ describe('Header  Tabs', function () {
     });
 
     it('Create Case tab present', async function () {
+        BrowserUtil.setUserDetailsWithRoles(["caseworker-ia-caseofficer", "caseworker-ia-admofficer"]);
         await MockApp.startServer();
-        await BrowserUtil.browserInitWithAuth(["caseworker-ia-caseofficer", "caseworker-ia-admofficer"])
+        await BrowserUtil.gotoHomePage();
 
         await headerPage.waitForPrimaryNavDisplay() 
         await BrowserUtil.waitForLD();
@@ -45,8 +47,9 @@ describe('Header  Tabs', function () {
     });
 
     it('Work allocation Tabs not present without roles "caseworker-ia-admofficer" and "caseworker-ia-caseofficer"', async function () {
+        BrowserUtil.setUserDetailsWithRoles(["caseworker-divorce-financialremedy-solicitor"]);
         await MockApp.startServer();
-        await BrowserUtil.browserInitWithAuth(["caseworker-divorce-financialremedy-solicitor"]);
+        await BrowserUtil.gotoHomePage();
 
         await headerPage.waitForPrimaryNavDisplay();
         await BrowserUtil.waitForLD();
@@ -56,8 +59,9 @@ describe('Header  Tabs', function () {
     });
 
     it('Work allocation Tabs "Task list" and "Task manager" for role "caseworker-ia-admofficer"', async function () {
+        BrowserUtil.setUserDetailsWithRoles(["caseworker-ia-admofficer"]);
         await MockApp.startServer();
-        await BrowserUtil.browserInitWithAuth(["caseworker-ia-admofficer"]);
+        await BrowserUtil.gotoHomePage();
 
         await headerPage.waitForPrimaryNavDisplay();
         await BrowserUtil.waitForLD();
@@ -68,8 +72,9 @@ describe('Header  Tabs', function () {
 
   
     it('Work allocation Tabs "Task list" and "Task manager" for role "caseworker-ia-caseofficer"', async function () {
+        BrowserUtil.setUserDetailsWithRoles(["caseworker-ia-caseofficer"]);
         await MockApp.startServer();
-        await BrowserUtil.browserInitWithAuth(["caseworker-ia-caseofficer"]);
+        await BrowserUtil.gotoHomePage();
 
         await headerPage.waitForPrimaryNavDisplay();
         await BrowserUtil.waitForLD();
@@ -80,8 +85,9 @@ describe('Header  Tabs', function () {
 
 
     it('Work allocation Tabs for role "caseworker-ia-caseofficer", "caseworker-ia-admofficer"', async function () {
+        BrowserUtil.setUserDetailsWithRoles(["caseworker-ia-caseofficer", "caseworker-ia-admofficer"]);
         await MockApp.startServer();
-        await BrowserUtil.browserInitWithAuth(["caseworker-ia-caseofficer", "caseworker-ia-admofficer"]);
+        await BrowserUtil.gotoHomePage();
 
         await headerPage.waitForPrimaryNavDisplay();
         await BrowserUtil.waitForLD();
@@ -91,5 +97,7 @@ describe('Header  Tabs', function () {
     });
         
 });
+
+
 
 

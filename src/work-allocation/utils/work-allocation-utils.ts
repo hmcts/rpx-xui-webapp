@@ -49,7 +49,7 @@ export const handleFatalErrors = (status: number, navigator: Navigator, fatals?:
       navigator.navigate([ REDIRECTS.ServiceDown ]);
       return 400;
     default:
-      // If it's anything other than a 401, 403, 500, or 503, we should not
+      // If it's anything other than a 400, 401, 403, 500, or 503, we should not
       // send the User to an error page. This should be handled within
       // the component so just return the status.
 

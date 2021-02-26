@@ -24,9 +24,6 @@ const requestMapping = {
        '/api/jurisdictions':(req,res) => {
             res.send(getJurisdictions());
        },
-       '/api/user/details': (req,res) => {
-           res.send({"canShareCases":true,"sessionTimeout":{"idleModalDisplayTime":10,"pattern":"-solicitor","totalIdleTime":50}}); 
-       },
        '/api/unassignedcases':(req,res) => {
            res.send(createCaseData(5));
        },

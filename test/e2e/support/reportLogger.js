@@ -23,6 +23,7 @@ class CucumberReportLog{
     }
 
     async AddScreenshot(onbrowser){
+        onbrowser = onbrowser ? onbrowser : browser; 
         if (!this.scenarioWorld) {
             return;
         }

@@ -64,8 +64,8 @@ const config = {
     cucumberOpts: {
         strict: true,
         // format: ['node_modules/cucumber-pretty'],
-        format: ['node_modules/cucumber-pretty', 'json:reports/tests/ngIntegrationtests/json/results.json'],
-        tags: ['@ng'],
+        format: ['node_modules/cucumber-pretty', 'json:reports/ngIntegrationtests/json/results.json'],
+        tags: getBDDTags(),
         require: [
             '../../e2e/support/timeout.js',
             '../util/cucumberHooks.js',
@@ -95,5 +95,18 @@ const config = {
 
 };
 
+function getBDDTags() {
+    const tags = [];
+    if (!process.env.TEST_URL ||
+        process.env.TEST_URL.includes("pr-") ||
+        process.env.TEST_URL.includes("localhost")) {
+        tags.push("@ng");
+    }else{
+        tags.push("@none"); 
+    }
+
+    console.log(`BDD tags ${JSON.stringify(tags)}`);
+    return tags;
+}
 
 exports.config = config;

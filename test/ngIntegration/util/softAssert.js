@@ -53,12 +53,15 @@ class SoftAssert {
                 errCounter++;
                 errors = `${errors} \n  ${error}`;
             }
-            scrs = errors + "\n\n" + scrs;  
+
+            let scrs = errors +" \n \n All Scenarios: \n"; 
+            for (const scr of this.scenarios) {
+                scrs = `${scrs} \n ${scr}`;
+            } 
+            errors = errors +"\n\n";
             expect(false, `${this.assertions.length} of ${this.assertCount} assertions failed => Error(s) :` + scrs).to.be.true
-        }
-        else{
-            reportLogger.AddMessage("All assertions passed :\n\n " + scrs);
-        }
+
+       } 
     }
 
 

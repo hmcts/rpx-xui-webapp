@@ -1,13 +1,12 @@
 @ng
 Feature: Navigation header tabs
-    Background: Start mock app
-        Given I start MockApp
 
     Scenario: Header Tabs Present with ia ad and case officer roles
         Given I set MOCK with user roles
-            | role                      |
+            | role |
             | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
+            | caseworker-ia-admofficer |
+        Given I start MockApp
         Given I navigate to home page
         Then I see primary navigation tab "Case list" in header
         Then I see primary navigation tab "Create case" in header
@@ -16,8 +15,9 @@ Feature: Navigation header tabs
 
     Scenario: Header Tabs Present with out ia-adm and ia-caseofficer roles
         Given I set MOCK with user roles
-            | role                         |
+            | role                      |
             | caseworker-divorce-solicitor |
+        Given I start MockApp
         Given I navigate to home page
         Then I see primary navigation tab "Case list" in header
         Then I see primary navigation tab "Create case" in header
@@ -28,6 +28,7 @@ Feature: Navigation header tabs
         Given I set MOCK with user roles
             | role                      |
             | caseworker-ia-caseofficer |
+        Given I start MockApp
         Given I navigate to home page
         Then I see primary navigation tab "Case list" in header
         Then I see primary navigation tab "Create case" in header
@@ -36,8 +37,9 @@ Feature: Navigation header tabs
 
     Scenario: Header Tabs Present with IA ADM role
         Given I set MOCK with user roles
-            | role                     |
-            | caseworker-ia-admofficer |
+            | role                      |
+            | caseworker-ia-admofficer  |
+        Given I start MockApp
         Given I navigate to home page
         Then I see primary navigation tab "Case list" in header
         Then I see primary navigation tab "Create case" in header

@@ -69,5 +69,6 @@ const configurations = {
 
 }
 
+
 module.exports = new NodeAppMockData();
 

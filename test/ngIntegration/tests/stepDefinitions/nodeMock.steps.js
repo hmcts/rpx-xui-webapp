@@ -27,7 +27,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Given('I start MockApp', async function () {
-        await MockApp.startServer();
+       await MockApp.startServer();
     });
 
     Given('I stop MockApp', async function () {
@@ -39,21 +39,18 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await MockApp.startServer();
     });
 
-    When('I set MOCK with user roles', async function (rolesTable) {
-
+    When('I set MOCK with user roles', async function(rolesTable){
         const roles = [];
         const rolesTablerows = rolesTable.rows();
-        for (const row of rolesTablerows) {
+        for (const row of rolesTablerows){
             roles.push(row[0]);
         }
 
-        await browserUtil.browserInitWithAuth(roles);
-
-        // const userDetails = nodeAppMockData.getUserDetailsWithRoles(roles);
-        // CucumberReporter.AddJson(userDetails)
-        // MockApp.onGet('/api/user/details', (req, res) => {
-        //     res.send(userDetails);
-        // });
-    });
+        const userDetails = nodeAppMockData.getUserDetailsWithRoles(roles);
+        CucumberReporter.AddJson(userDetails)
+        MockApp.onGet('/api/user/details', (req,res) => {
+            res.send(userDetails);
+        });
+     });
 
 });

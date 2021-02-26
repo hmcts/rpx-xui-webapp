@@ -36,16 +36,35 @@ class WorkAllocationMockData {
         ];
         const tasks = [];
         for (let i = 0; i < count; i++) {
+            const taskDueDate = `"2021-02-16T18:58:48.987+0000"`;
             tasks.push({
-                "id": "56789012345678" + i,
-                "caseReference": "5678 9012 3456 78" + i,
-                "caseName": "Oliver Twist" + 1,
-                "caseCategory": "Protection",
-                "location": "Orphanage",
-                "taskName": "Give more gruel",
-                "dueDate": "2020-12-19T09:41:38.695Z",
-                "assignee": "test assginee " + i,
-                "actions": taskActions
+                "id": "00b8bef2-7089-11eb-b34d-4e1650b0295"+i,
+                "name": "task name "+i,
+                "assignee": "b8c3049c-af32-4230-bf6c-33b29df6847"+i,
+                "type": "wa-task-configuration-api-task",
+                "task_state": "assigned",
+                "task_system": "SELF",
+                "security_classification": "PUBLIC",
+                "task_title": "task name"+i,
+                "created_date": "2021-02-16T18:58:48.987+0000",
+                "due_date": "2021-02-16T18:58:48.987+0000",
+                "location_name": "Taylor House "+i,
+                "location": "76532"+i,
+                "execution_type": "Case Management Task",
+                "jurisdiction": "IA",
+                "region": "1",
+                "case_type_id": "Asylum",
+                "case_id": "161350192272981"+i,
+                "case_category": "protection",
+                "case_name": "Bob Smith",
+                "auto_assigned": false,
+                "warnings": false,
+                "actions": taskActions,
+                "dueDate": "2021-02-16T18:58:48.987+0000",
+                "taskName": "task name "+i,
+                "caseName": "Bob Smith"+i,
+                "caseCategory": "protection",
+                "assigneeName": null
             });
         }
         return { tasks: tasks };

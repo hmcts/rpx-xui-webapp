@@ -95,7 +95,6 @@ export class AvailableTasksFilterComponent implements OnInit {
     if (this.locationFilter) {
       this.selection = [ ...this.locationFilter.selection ];
     }
-    console.log('selected locations are ', JSON.stringify(this.selection));
     const toStore: string = JSON.stringify(this.selection);
     this.sessionStorageService.setItem(FilterConstants.Session.AvailableTasks, toStore);
     this.selectionChanged.emit(this.selection);

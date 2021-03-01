@@ -6,33 +6,38 @@ import { DERIVED_ICON_CONSTANTS} from './derived-icon.constants';
  * The individual fields.
  */
 const CASE_REFERENCE_AS_LINK: TaskFieldConfig = {
-  name: 'caseReference',
+  name: 'case_id',
   type: TaskFieldType.CASE_REFERENCE,
   columnLabel: 'Case reference',
+  sortName: 'caseId',
   views: TaskView.ALL_VIEWS
 };
 const CASE_REFERENCE_AS_TEXT: TaskFieldConfig = {
-  name: 'caseReference',
+  name: 'case_id',
   type: TaskFieldType.STRING,
   columnLabel: 'Case reference',
+  sortName: 'caseId',
   views: TaskView.ALL_VIEWS
 };
 const CASE_NAME: TaskFieldConfig = {
-  name: 'caseName',
+  name: 'case_name',
   type: TaskFieldType.STRING,
   columnLabel: 'Case name',
+  sortName: 'caseName',
   views: TaskView.ALL_VIEWS
 };
 const CASE_CATEGORY: TaskFieldConfig = {
-  name: 'caseCategory',
+  name: 'case_category',
   type: TaskFieldType.STRING,
   columnLabel: 'Case category',
+  sortName: 'caseCategory',
   views: TaskView.ALL_VIEWS
 };
 const LOCATION: TaskFieldConfig = {
-  name: 'location',
+  name: 'location_name',
   type: TaskFieldType.STRING,
   columnLabel: 'Location',
+  sortName: 'locationName',
   views: TaskView.ALL_VIEWS
 };
 const DERIVED_ICON: TaskFieldConfig = {
@@ -45,21 +50,24 @@ const DERIVED_ICON: TaskFieldConfig = {
   matchValue: DERIVED_ICON_CONSTANTS.MATCH_VALUE
 };
 const TASK_NAME: TaskFieldConfig = {
-  name: 'taskName',
+  name: 'task_title',
   type: TaskFieldType.STRING,
   columnLabel: 'Task',
+  sortName: 'taskTitle',
   views: TaskView.ALL_VIEWS
 };
 const DUE_DATE: TaskFieldConfig = {
   name: 'dueDate',
   type: TaskFieldType.DATE_DUE,
   columnLabel: 'Date',
+  sortName: 'dueDate',
   views: TaskView.ALL_VIEWS
 };
 const ASSIGNEE: TaskFieldConfig = {
-  name: 'assignee',
+  name: 'assigneeName',
   type: TaskFieldType.STRING,
   columnLabel: 'Assignee',
+  sortName: 'assignee',
   views: TaskView.ALL_VIEWS
 };
 

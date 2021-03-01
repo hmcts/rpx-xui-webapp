@@ -5,6 +5,9 @@ import {getConfigValue} from './configuration'
 import {
     SERVICES_CCD_COMPONENT_API_PATH,
     SERVICES_DOCUMENTS_API_PATH, SERVICES_EM_ANNO_API_URL, SERVICES_EM_HRS_API_PATH,
+    SERVICES_DOCUMENTS_API_PATH,
+    SERVICES_DOCUMENTS_API_PATH_V2,
+    SERVICES_EM_ANNO_API_URL,
     SERVICES_ICP_API_URL, SERVICES_MARKUP_API_URL, SERVICES_PAYMENTS_URL
 } from './configuration/references'
 import {applyProxy} from './lib/middleware/proxy'
@@ -30,6 +33,12 @@ export const initProxy = (app: Express) => {
         rewrite: false,
         source: '/hearing-recordings',
         target: getConfigValue(SERVICES_EM_HRS_API_PATH),
+    })
+
+    applyProxy(app, {
+        rewrite: false,
+        source: '/documentsv2',
+        target: getConfigValue(SERVICES_DOCUMENTS_API_PATH_V2),
     })
 
     applyProxy(app, {

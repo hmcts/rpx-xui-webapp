@@ -1,0 +1,389 @@
+I, [2021-02-10T18:07:08.341829 #23072]  INFO -- : Registered expected interaction GET /o/.well-known/openid-configuration
+D, [2021-02-10T18:07:08.342657 #23072] DEBUG -- : {
+  "description": "a request for configuration",
+  "providerState": ".well-known endpoint",
+  "request": {
+    "method": "GET",
+    "path": "/o/.well-known/openid-configuration"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "request_parameter_supported": {
+        "json_class": "Pact::SomethingLike",
+        "contents": true
+      },
+      "claims_parameter_supported": {
+        "json_class": "Pact::SomethingLike",
+        "contents": false
+      },
+      "scopes_supported": {
+        "json_class": "Pact::ArrayLike",
+        "contents": "openid",
+        "min": 1
+      },
+      "issuer": {
+        "json_class": "Pact::Term",
+        "data": {
+          "generate": "https://idam-web-public.aat.platform.hmcts.net/o",
+          "matcher": {
+            "json_class": "Regexp",
+            "o": 0,
+            "s": "/o$"
+          }
+        }
+      },
+      "id_token_encryption_enc_values_supported": {
+        "json_class": "Pact::ArrayLike",
+        "contents": "A256GCM",
+        "min": 1
+      },
+      "acr_values_supported": [
+
+      ],
+      "authorization_endpoint": {
+        "json_class": "Pact::Term",
+        "data": {
+          "generate": "https://idam-web-public.aat.platform.hmcts.net/o/authorize",
+          "matcher": {
+            "json_class": "Regexp",
+            "o": 0,
+            "s": "/o/authorize$"
+          }
+        }
+      },
+      "request_object_encryption_enc_values_supported": {
+        "json_class": "Pact::ArrayLike",
+        "contents": "A256GCM",
+        "min": 1
+      },
+      "rcs_request_encryption_alg_values_supported": {
+        "json_class": "Pact::ArrayLike",
+        "contents": "RSA-OAEP",
+        "min": 1
+      },
+      "claims_supported": [
+
+      ],
+      "rcs_request_signing_alg_values_supported": {
+        "json_class": "Pact::ArrayLike",
+        "contents": "PS384",
+        "min": 1
+      },
+      "token_endpoint_auth_methods_supported": {
+        "json_class": "Pact::ArrayLike",
+        "contents": "client_secret_post",
+        "min": 1
+      },
+      "token_endpoint": {
+        "json_class": "Pact::Term",
+        "data": {
+          "generate": "https://idam-web-public.aat.platform.hmcts.net/o/token",
+          "matcher": {
+            "json_class": "Regexp",
+            "o": 0,
+            "s": "/o/token$"
+          }
+        }
+      },
+      "response_types_supported": {
+        "json_class": "Pact::ArrayLike",
+        "contents": "code",
+        "min": 1
+      },
+      "request_uri_parameter_supported": {
+        "json_class": "Pact::SomethingLike",
+        "contents": true
+      },
+      "rcs_response_encryption_enc_values_supported": {
+        "json_class": "Pact::ArrayLike",
+        "contents": "A256GCM",
+        "min": 1
+      },
+      "end_session_endpoint": {
+        "json_class": "Pact::Term",
+        "data": {
+          "generate": "https://idam-web-public.aat.platform.hmcts.net/o/endSession",
+          "matcher": {
+            "json_class": "Regexp",
+            "o": 0,
+            "s": "/o/endSession$"
+          }
+        }
+      },
+      "rcs_request_encryption_enc_values_supported": {
+        "json_class": "Pact::ArrayLike",
+        "contents": "A256GCM",
+        "min": 1
+      },
+      "version": {
+        "json_class": "Pact::SomethingLike",
+        "contents": "3.0"
+      },
+      "rcs_response_encryption_alg_values_supported": {
+        "json_class": "Pact::ArrayLike",
+        "contents": "RSA-OAEP",
+        "min": 1
+      },
+      "userinfo_endpoint": {
+        "json_class": "Pact::Term",
+        "data": {
+          "generate": "https://idam-web-public.aat.platform.hmcts.net/o/userinfo",
+          "matcher": {
+            "json_class": "Regexp",
+            "o": 0,
+            "s": "/o/userinfo$"
+          }
+        }
+      },
+      "id_token_encryption_alg_values_supported": {
+        "json_class": "Pact::ArrayLike",
+        "contents": "RSA-OAEP",
+        "min": 1
+      },
+      "jwks_uri": {
+        "json_class": "Pact::Term",
+        "data": {
+          "generate": "https://idam-web-public.aat.platform.hmcts.net/o/jwks",
+          "matcher": {
+            "json_class": "Regexp",
+            "o": 0,
+            "s": "/o/jwks$"
+          }
+        }
+      },
+      "subject_types_supported": {
+        "json_class": "Pact::ArrayLike",
+        "contents": "public",
+        "min": 1
+      },
+      "id_token_signing_alg_values_supported": {
+        "json_class": "Pact::ArrayLike",
+        "contents": "ES384",
+        "min": 1
+      },
+      "request_object_signing_alg_values_supported": {
+        "json_class": "Pact::ArrayLike",
+        "contents": "ES384",
+        "min": 1
+      },
+      "request_object_encryption_alg_values_supported": {
+        "json_class": "Pact::ArrayLike",
+        "contents": "RSA-OAEP",
+        "min": 1
+      },
+      "rcs_response_signing_alg_values_supported": {
+        "json_class": "Pact::ArrayLike",
+        "contents": "PS384",
+        "min": 1
+      }
+    }
+  },
+  "metadata": null
+}
+W, [2021-02-10T18:07:08.374311 #23072]  WARN -- : Verifying - actual interactions do not match expected interactions. 
+Missing requests:
+	GET /o/.well-known/openid-configuration
+
+
+W, [2021-02-10T18:07:08.374404 #23072]  WARN -- : Missing requests:
+	GET /o/.well-known/openid-configuration
+
+
+I, [2021-02-10T18:07:08.376663 #23072]  INFO -- : Received request GET /o/.well-known/openid-configuration
+D, [2021-02-10T18:07:08.376869 #23072] DEBUG -- : {
+  "path": "/o/.well-known/openid-configuration",
+  "query": "",
+  "method": "get",
+  "headers": {
+    "User-Agent": "openid-client/3.15.9 (https://github.com/panva/node-openid-client)",
+    "Accept": "application/json",
+    "Accept-Encoding": "gzip, deflate",
+    "Host": "127.0.0.1:59138",
+    "Request-Context": "appId=cid-v1:",
+    "Connection": "close",
+    "Version": "HTTP/1.1"
+  }
+}
+I, [2021-02-10T18:07:08.377697 #23072]  INFO -- : Found matching response for GET /o/.well-known/openid-configuration
+D, [2021-02-10T18:07:08.378952 #23072] DEBUG -- : {
+  "status": 200,
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": {
+    "request_parameter_supported": {
+      "json_class": "Pact::SomethingLike",
+      "contents": true
+    },
+    "claims_parameter_supported": {
+      "json_class": "Pact::SomethingLike",
+      "contents": false
+    },
+    "scopes_supported": {
+      "json_class": "Pact::ArrayLike",
+      "contents": "openid",
+      "min": 1
+    },
+    "issuer": {
+      "json_class": "Pact::Term",
+      "data": {
+        "generate": "https://idam-web-public.aat.platform.hmcts.net/o",
+        "matcher": {
+          "json_class": "Regexp",
+          "o": 0,
+          "s": "/o$"
+        }
+      }
+    },
+    "id_token_encryption_enc_values_supported": {
+      "json_class": "Pact::ArrayLike",
+      "contents": "A256GCM",
+      "min": 1
+    },
+    "acr_values_supported": [
+
+    ],
+    "authorization_endpoint": {
+      "json_class": "Pact::Term",
+      "data": {
+        "generate": "https://idam-web-public.aat.platform.hmcts.net/o/authorize",
+        "matcher": {
+          "json_class": "Regexp",
+          "o": 0,
+          "s": "/o/authorize$"
+        }
+      }
+    },
+    "request_object_encryption_enc_values_supported": {
+      "json_class": "Pact::ArrayLike",
+      "contents": "A256GCM",
+      "min": 1
+    },
+    "rcs_request_encryption_alg_values_supported": {
+      "json_class": "Pact::ArrayLike",
+      "contents": "RSA-OAEP",
+      "min": 1
+    },
+    "claims_supported": [
+
+    ],
+    "rcs_request_signing_alg_values_supported": {
+      "json_class": "Pact::ArrayLike",
+      "contents": "PS384",
+      "min": 1
+    },
+    "token_endpoint_auth_methods_supported": {
+      "json_class": "Pact::ArrayLike",
+      "contents": "client_secret_post",
+      "min": 1
+    },
+    "token_endpoint": {
+      "json_class": "Pact::Term",
+      "data": {
+        "generate": "https://idam-web-public.aat.platform.hmcts.net/o/token",
+        "matcher": {
+          "json_class": "Regexp",
+          "o": 0,
+          "s": "/o/token$"
+        }
+      }
+    },
+    "response_types_supported": {
+      "json_class": "Pact::ArrayLike",
+      "contents": "code",
+      "min": 1
+    },
+    "request_uri_parameter_supported": {
+      "json_class": "Pact::SomethingLike",
+      "contents": true
+    },
+    "rcs_response_encryption_enc_values_supported": {
+      "json_class": "Pact::ArrayLike",
+      "contents": "A256GCM",
+      "min": 1
+    },
+    "end_session_endpoint": {
+      "json_class": "Pact::Term",
+      "data": {
+        "generate": "https://idam-web-public.aat.platform.hmcts.net/o/endSession",
+        "matcher": {
+          "json_class": "Regexp",
+          "o": 0,
+          "s": "/o/endSession$"
+        }
+      }
+    },
+    "rcs_request_encryption_enc_values_supported": {
+      "json_class": "Pact::ArrayLike",
+      "contents": "A256GCM",
+      "min": 1
+    },
+    "version": {
+      "json_class": "Pact::SomethingLike",
+      "contents": "3.0"
+    },
+    "rcs_response_encryption_alg_values_supported": {
+      "json_class": "Pact::ArrayLike",
+      "contents": "RSA-OAEP",
+      "min": 1
+    },
+    "userinfo_endpoint": {
+      "json_class": "Pact::Term",
+      "data": {
+        "generate": "https://idam-web-public.aat.platform.hmcts.net/o/userinfo",
+        "matcher": {
+          "json_class": "Regexp",
+          "o": 0,
+          "s": "/o/userinfo$"
+        }
+      }
+    },
+    "id_token_encryption_alg_values_supported": {
+      "json_class": "Pact::ArrayLike",
+      "contents": "RSA-OAEP",
+      "min": 1
+    },
+    "jwks_uri": {
+      "json_class": "Pact::Term",
+      "data": {
+        "generate": "https://idam-web-public.aat.platform.hmcts.net/o/jwks",
+        "matcher": {
+          "json_class": "Regexp",
+          "o": 0,
+          "s": "/o/jwks$"
+        }
+      }
+    },
+    "subject_types_supported": {
+      "json_class": "Pact::ArrayLike",
+      "contents": "public",
+      "min": 1
+    },
+    "id_token_signing_alg_values_supported": {
+      "json_class": "Pact::ArrayLike",
+      "contents": "ES384",
+      "min": 1
+    },
+    "request_object_signing_alg_values_supported": {
+      "json_class": "Pact::ArrayLike",
+      "contents": "ES384",
+      "min": 1
+    },
+    "request_object_encryption_alg_values_supported": {
+      "json_class": "Pact::ArrayLike",
+      "contents": "RSA-OAEP",
+      "min": 1
+    },
+    "rcs_response_signing_alg_values_supported": {
+      "json_class": "Pact::ArrayLike",
+      "contents": "PS384",
+      "min": 1
+    }
+  }
+}
+I, [2021-02-10T18:07:08.401215 #23072]  INFO -- : Cleared interactions
+I, [2021-02-10T18:07:08.410990 #23072]  INFO -- : Writing pact for Idam_api to /Users/srihan/Workspace/moj/pact/rpx-xui-webapp/api/test/pact/pacts/xui_approve_org_oidc-idam_api.json

@@ -13,8 +13,12 @@ nodejs:
      HEALTH_EM_ANNO_API: http://em-anno-aat.service.core-compute-aat.internal/health
      HEALTH_S2S_SERVICE: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal/health
      HEALTH_TERMS_AND_CONDITIONS_API: http://xui-terms-and-conditions-aat.service.core-compute-aat.internal/health
+     HEALTH_WORK_ALLOCATION_TASK_API: http://wa-task-management-api-aat.service.core-compute-aat.internal/health
+     HEALTH_ROLE_ASSIGNMENT_API: http://am-role-assignment-service-aat.service.core-compute-aat.internal/health
+     HEALTH_CASE_CASEWORKER_API: http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal/health
      STUB: false
      DEBUG: xuiNode:*
+     FEATURE_WORKALLOCATION_ENABLED: true
   keyVaults:
     rpx:
       secrets:

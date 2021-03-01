@@ -86,28 +86,10 @@ export class TaskAssignmentComponent implements OnInit {
   }
 
   /**
-   * Sets the private logged in user id
+   * Gets the caseworker's location
    */
-  public set userId(value: string) {
-    if (this.pUserId !== value) {
-      this.pUserId = value;
-    }
-  }
-
-  /**
-   * Gets the private logged in user id
-   */
-  public get assignedCaseworker(): Caseworker {
-    return this.pAssignedCaseworker;
-  }
-
-  /**
-   * Sets the private logged in user id
-   */
-  public set assignedCaseworker(value: Caseworker) {
-    if (this.pAssignedCaseworker !== value) {
-      this.pAssignedCaseworker = value;
-    }
+  public get caseworkerLocation(): Location {
+    return this.pCaseworkerLocation;
   }
 
   private pLocation: Location = null;
@@ -117,7 +99,9 @@ export class TaskAssignmentComponent implements OnInit {
   private pAllCaseworkers: Caseworker[]; // Holds the unfiltered list for the location.
   private pExcludeCaseworkers: Caseworker[];
   private pUserId: string;
-  private pAssignedCaseworker: Caseworker;
+  // pCaseworkerLocation is the caseworker that sets the location of the location dropdown
+  // Note: Setter for caseworkerLocation may come in useful if the selected location needs to be set via the caseworker assigned to the task
+  private pCaseworkerLocation: Location;
   private readonly caseworkerDisplayName: CaseworkerDisplayName = new CaseworkerDisplayName();
 
   constructor(
@@ -132,7 +116,7 @@ export class TaskAssignmentComponent implements OnInit {
 
     // set the user details in order to get initially selected location
     this.setupUserId();
-    this.setupAssignedCaseworker();
+    this.setupCaseworkerLocation();
 
 
     // Get the locations for this component.
@@ -155,23 +139,27 @@ export class TaskAssignmentComponent implements OnInit {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      this.userId = userInfo.id;
+      this.pUserId = userInfo.id;
     }
   }
 
   /**
-   * Using set user id, gets caseworker details for the logged in caseworker
+   * Using set user id, gets caseworker details for the caseworker which will set the selected location
+   * (caseworker for the purpose of selecting location in dropdown currently the logged in user)
    */
-  private setupAssignedCaseworker(): void {
+  private setupCaseworkerLocation(): void {
     this.caseworkerService.getAll().subscribe(caseworkers => {
-      const assignedCaseworker = caseworkers.find(cw => this.isAssignedCaseworker(cw.idamId));
-      this.assignedCaseworker = assignedCaseworker;
+      const assignedCaseworker = caseworkers.find(cw => this.isLoggedInUser(cw.idamId));
+      this.pCaseworkerLocation = assignedCaseworker.location;
     }, error => {
       handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
     });
   }
 
-  private isAssignedCaseworker(idamId: string): boolean {
+  /**
+   * Checks if the caseworker matches the caseworker that will set the location
+   */
+  private isLoggedInUser(idamId: string): boolean {
     return idamId === this.pUserId;
   }
 
@@ -245,11 +233,11 @@ export class TaskAssignmentComponent implements OnInit {
   }
 
   /**
-   * Sets up the selected location in the dropdown via assigned caseworker
+   * Sets up the selected location in the dropdown via caseworker for location
    */
   private setupSelectedLocation(): void {
-    if (this.assignedCaseworker && this.assignedCaseworker.location) {
-      this.location = this.locations.find(loc => loc.id === this.assignedCaseworker.location.id);
+    if (this.caseworkerLocation) {
+      this.location = this.locations.find(loc => loc.id === this.caseworkerLocation.id);
     }
   }
 

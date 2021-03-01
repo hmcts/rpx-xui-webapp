@@ -8,6 +8,7 @@ import { Caseworker, Location } from '../../models/dtos';
 import { CaseworkerDataService, LocationDataService } from '../../services';
 import { SessionStorageService } from '../../../app/services';
 import { TaskAssignmentComponent } from './task-assignment.component';
+import { sortArray } from '@hmcts/rpx-xui-node-lib';
 
 // Locations.
 const LOCATION_A: Location = { id: 'a', locationName: 'Location A', services: ['a'] };
@@ -216,12 +217,8 @@ describe('WorkAllocation', () => {
       expect(component.userId).toEqual('2');
     });
 
-    it('should set the assigned caseworker', () => {
-      component.assignedCaseworker = JD;
-      fixture.detectChanges();
-
-      // initial setting is with assigned caseworker JD
-      expect(component.assignedCaseworker).toEqual(JD);
+    it('should set the caseworkers location', () => {
+      expect(component.caseworkerLocation).toEqual(JD.location);
     });
 
     it('should set the selected location', () => {

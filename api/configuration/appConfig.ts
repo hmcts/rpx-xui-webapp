@@ -18,6 +18,7 @@ import {
   SERVICES_CCD_COMPONENT_API_PATH,
   SERVICES_CCD_DATA_STORE_API_PATH,
   SERVICES_DOCUMENTS_API_PATH,
+  SERVICES_DOCUMENTS_API_PATH_V2,
   SERVICES_IDAM_API_URL,
   SERVICES_IDAM_CLIENT_ID,
   SERVICES_IDAM_LOGIN_URL,
@@ -26,7 +27,7 @@ import {
   SERVICES_PRD_API_URL,
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
   SERVICES_TERMS_AND_CONDITIONS_URL,
-  SERVICES_WORK_ALLOCATION_TASK_API_PATH
+  SERVICES_WORK_ALLOCATION_TASK_API_PATH,
 } from './references';
 
 /**
@@ -65,6 +66,7 @@ export const applicationConfiguration = () => {
     servicesCcdComponentPath: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH),
     servicesCcdDataStorePath: getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH),
     servicesDocumentApiPath: getConfigValue(SERVICES_DOCUMENTS_API_PATH),
+    servicesDocumentApiV2Path: getConfigValue(SERVICES_DOCUMENTS_API_PATH_V2),
     servicesPrdApiPath: getConfigValue(SERVICES_PRD_API_URL),
     servicesS2sPath: getConfigValue(SERVICE_S2S_PATH),
     servicesTermsAndConditionsPath: getConfigValue(SERVICES_TERMS_AND_CONDITIONS_URL),

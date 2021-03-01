@@ -34,7 +34,8 @@
       "caseAssignmentApi": "SERVICES_CCD_CASE_ASSIGNMENT_API"
     },
     "documents": {
-      "api": "SERVICES_DOCUMENTS_API"
+      "api": "SERVICES_DOCUMENTS_API",
+      "api-v2": "SERVICES_DOCUMENTS_API_V2"
     },
     "prd": {
       "api": "SERVICES_PRD_API"

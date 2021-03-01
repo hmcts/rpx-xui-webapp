@@ -28,7 +28,8 @@
       "caseAssignmentApi": "http://aac-manage-case-assignment-prod.service.core-compute-prod.internal"
     },
     "documents": {
-      "api": "http://dm-store-prod.service.core-compute-prod.internal"
+      "api": "http://dm-store-prod.service.core-compute-prod.internal",
+      "api-v2": "http://ccd-case-document-am-api-prod.service.core-compute-prod.internal/v2"
     },
     "prd": {
       "api": "http://rd-professional-api-prod.service.core-compute-prod.internal"

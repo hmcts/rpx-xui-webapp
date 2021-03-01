@@ -100,9 +100,9 @@ class Request {
             }
 
 
-            if (expectedResponsecode instanceof Array){
+            if (retVal && expectedResponsecode instanceof Array){
                 isExpectedResponseReceived = expectedResponsecode.includes(retVal.status); 
-            }else{
+            } else if (retVal){
                 isExpectedResponseReceived = expectedResponsecode === retVal.status 
             }
 

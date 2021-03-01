@@ -83,7 +83,8 @@ export function assignActionsToTasks(tasks: any[], view: any, caseworkers: Casew
 
 function getAssigneeName(task: any, caseworkers: Caseworker[]): string {
   if (task.assignee && caseworkers.some(cw => cw.idamId === task.assignee)) {
-    return caseworkers.filter(cw => cw.idamId === task.assignee)[0].firstName;
+    const assignedCW = caseworkers.filter(cw => cw.idamId === task.assignee)[0];
+    return `${assignedCW.firstName} ${assignedCW.lastName}`;
   }
   return null
 }
@@ -122,10 +123,6 @@ export function mapCaseworkerPrimaryLocation(baseLocation: LocationApi[]): Locat
 }
 
 export function prepareRoleApiRequest(locationId?: number): any {
-  let locationIds = []
-  ALL_LOCATIONS.forEach(location => {
-    locationIds = [...locationIds, location.id]
-  })
   const attributes: any = {
     jurisdiction: ['IA'],
   };

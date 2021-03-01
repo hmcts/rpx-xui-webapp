@@ -282,7 +282,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }
         }
 
-        for (const responseCode of [500, 401, 403]) {
+        for (const responseCode of testErrorResponseCodes) {
             await headerPage.clickManageCases();
             await MockUtil.resetMock();
             await MockUtil.setMockResponse("GET", "/workallocation/location", (req, res) => {
@@ -426,16 +426,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 const isErrorPageDisplayed = await errorPage.isErrorPageDisplayed();
 
                 softAssertion.setScenario(`Scenario validation: on action ${action} GET /workallocation/task/:taskId/claim error response ${responseCode} `); 
-                if(responseCode === 400){
-                    expect(await taskAssignmentPage.isBannerMessageDisplayed(),"Error message banner not displayed on 400").to.be.true
-                    expect(await taskAssignmentPage.isBannermessageWithTextDisplayed("The task is no longer available"), "Error message banner not displayed on 400").to.be.true;
-
-                }else{
-                    await softAssertion.assert(async () => expect(isErrorPageDisplayed, `For action ${action} on task details ${responseCode} status response, error page not displayed`).to.be.true);
-                    if (isErrorPageDisplayed) {
-                        const errorMessageDisplayed = await errorPage.getErrorMessage();
-                        await softAssertion.assert(async () => expect(errorMessageDisplayed, `For action ${action} on task details ${responseCode} status response, error message does not match`).to.contains(errorMessageForResponseCode(responseCode)));
-                    }
+                await softAssertion.assert(async () => expect(isErrorPageDisplayed, `For action ${action} on task details ${responseCode} status response, error page not displayed`).to.be.true);
+                if (isErrorPageDisplayed) {
+                    const errorMessageDisplayed = await errorPage.getErrorMessage();
+                    await softAssertion.assert(async () => expect(errorMessageDisplayed, `For action ${action} on task details ${responseCode} status response, error message does not match`).to.contains(errorMessageForResponseCode(responseCode)));
                 }
             } 
         }

@@ -215,8 +215,12 @@ class CaseManager {
 
 
     }
-
-
+    async excludeFieldValues(fieldName){
+        let excludedValues = ["Building and Street","Address Line 2", "Address Line 3", "Town or City", "County", "Postcode/Zipcode","Country"]
+        var found = excludedValues.includes(fieldName);
+        return found;
+    }
+    
     async _writeToField(ccdField,parentFieldName) {
         const isElementDisplayed = await ccdField.isDisplayed(); 
         if (!isElementDisplayed) {
@@ -239,6 +243,12 @@ class CaseManager {
         catch (err) {
             console.log(err);
         }
+
+        if(parentFieldName){
+            let status = await this.excludeFieldValues(fieldName);
+            if(status) return;
+        } 
+
         fieldName1 = fieldName;
         fieldName = parentFieldName ? `${parentFieldName}.${fieldName}` : fieldName; 
         console.log("===> Case Field : " + fieldName);

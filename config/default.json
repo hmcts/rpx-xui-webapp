@@ -48,8 +48,11 @@
   "protocol": "https",
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",
-  "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT",
+  "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,TEST",
   "wildcardSearchFields": {
+    "TestAddressBookCase2":[
+      "caseRecordingReference"
+    ],
     "Benefit": [
       "generatedSurname",
       "appeal.appellant.name.lastName"

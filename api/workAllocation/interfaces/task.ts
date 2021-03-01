@@ -17,7 +17,6 @@ export interface Task {
     jurisdiction: string
     region: string
     case_type_id: string
-    case_id: string
     case_category: string
     case_name: string
     auto_assigned: boolean
@@ -28,6 +27,7 @@ export interface Task {
     dueDate: string
     taskName: string
     caseName: string
+    caseReference: string
     caseCategory: string
     assigneeName: string
     name: string

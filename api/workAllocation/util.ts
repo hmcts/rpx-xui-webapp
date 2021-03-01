@@ -1,5 +1,4 @@
 import { ActionViews, TASK_ACTIONS } from './constants/actions';
-import { ALL_LOCATIONS } from './constants/locations';
 import { Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/task';
 
 export function prepareGetTaskUrl(baseUrl: string, taskId: string): string {

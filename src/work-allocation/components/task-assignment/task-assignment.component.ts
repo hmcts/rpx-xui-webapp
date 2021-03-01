@@ -141,7 +141,7 @@ export class TaskAssignmentComponent implements OnInit {
   }
 
   public isAssignedCaseworker(idamId: string): boolean {
-    return idamId === this.userId ? true : false
+    return idamId === this.userId;
   }
 
   /**

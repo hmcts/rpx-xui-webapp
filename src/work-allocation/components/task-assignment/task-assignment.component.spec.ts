@@ -8,7 +8,6 @@ import { Caseworker, Location } from '../../models/dtos';
 import { CaseworkerDataService, LocationDataService } from '../../services';
 import { SessionStorageService } from '../../../app/services';
 import { TaskAssignmentComponent } from './task-assignment.component';
-import { sortArray } from '@hmcts/rpx-xui-node-lib';
 
 // Locations.
 const LOCATION_A: Location = { id: 'a', locationName: 'Location A', services: ['a'] };

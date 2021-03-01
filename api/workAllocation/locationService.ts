@@ -1,17 +1,14 @@
-import { AxiosResponse } from 'axios'
-
-import { http } from '../lib/http'
-import * as log4jui from '../lib/log4jui'
-import { EnhancedRequest, JUILogger } from '../lib/models'
-import { setHeaders } from '../lib/proxy'
-
-// TODO: task-service or work-allocation-service?
-const logger: JUILogger = log4jui.getLogger('task-service')
+import {EnhancedRequest} from '../lib/models';
+import {ALL_LOCATIONS} from './constants/locations';
 
 export async function handleLocationGet(path: string, req: EnhancedRequest): Promise<any> {
-    logger.info('get location for', path)
-    const headers = setHeaders(req)
-
-    const response: AxiosResponse = await http.get(path, { headers })
-    return response
+  /*TODO: Implement get location - currently using given data without endpoint connection*/
+  const response = {
+    data: ALL_LOCATIONS,
+  };
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve(response);
+    }, 0);
+  });
 }

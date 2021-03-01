@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@^2.67.3-tab-name-replaceAll":
-  version "2.67.3-tab-name-replaceAll"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.67.3-tab-name-replaceAll.tgz#82f54583e36f6eb32c22229b1671651079164d82"
-  integrity sha512-6f8gyZgJyQyzRiqqfJc/2rnpA9pkuhD2c4neTfecCnzdOddJ3aaHugdtaugQWwdEyJbhZBVbZdvRc2stapuEQA==
+"@hmcts/ccd-case-ui-toolkit@2.72.1-do-not-send-empty-documents":
+  version "2.72.1-do-not-send-empty-documents"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.72.1-do-not-send-empty-documents.tgz#e8a885fe0e2c0dc40a0a28c856c19b64114d9a83"
+  integrity sha512-mJTJY+BuFiTsv2jWYxLMe64k11CMi+/dysKDd3SfUt/1DJvPDx6rDsxX6csg9Sl9/0BtZbWKZlRjwiJxFykbww==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
@@ -451,10 +451,10 @@
     tslib "^1.9.0"
     uuid "^3.3.2"
 
-"@hmcts/nodejs-healthcheck@^1.6.0":
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/@hmcts/nodejs-healthcheck/-/nodejs-healthcheck-1.6.0.tgz#ecc2002f2617b207c0cc48c6c11198e53fc8bb68"
-  integrity sha512-i9PsSbbZoI7fghnVNi6sWnwvWnJdTtEz0ytBuCogpLOVQLpeMh1FTub79AxAxIdJIvpS/s6lyGg5U+gk2mdhxA==
+"@hmcts/nodejs-healthcheck@^1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@hmcts/nodejs-healthcheck/-/nodejs-healthcheck-1.7.0.tgz#82b496d8f23f32d9670564ada3e773a55f544721"
+  integrity sha512-98hPAZdRkHbFkr35HXG3Pr03C6RDM7GKDSfIxm+AZVauaxZ0L02v0cv2pq4ueee6mD+rctQ4aczg1juYfkOHEQ==
   dependencies:
     "@hmcts/nodejs-logging" "^3.0.1"
     js-yaml "^3.8.4"
@@ -478,10 +478,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@0.1.48":
-  version "0.1.48"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-0.1.48.tgz#8cb3a33dbfac0b4b63a189007df38c7b91346907"
-  integrity sha512-cLjjb98eYpx3Ruf2thaLaRfUDkb0teCx4W50sp9HFCuvZJD08ivruCrfcvU1U3M8AaGjlOF2172QHvzzvGAQ6A==
+"@hmcts/rpx-xui-common-lib@0.1.53":
+  version "0.1.53"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-0.1.53.tgz#a6bf38cc70c36682724486dc370848e848e0e3d7"
+  integrity sha512-nVYev8j7FhvMA0MQTvKpF9PNWjaM2IKJoGaoljfaaPKDlRiZZ9z4Gi/npb/WijCG+JJQfBV+bGLgFtHkljG32A==
   dependencies:
     tslib "^1.9.0"
 
@@ -2065,11 +2065,11 @@ axe-core@^3.5.1:
   integrity sha512-JRuxixN5bPHre+815qnyqBQzNpRTqGxLWflvjr4REpGZ5o0WXm+ik2IS4PZ01EnacWmVRB4jCPWFiYENMiiasA==
 
 axios-mock-adapter@^1.18.2:
-  version "1.18.2"
-  resolved "https://registry.yarnpkg.com/axios-mock-adapter/-/axios-mock-adapter-1.18.2.tgz#01fa9e88e692e8f1bbc1ad1200dde672486e03c7"
-  integrity sha512-e5aTsPy2Viov22zNpFTlid76W1Scz82pXeEwwCXdtO85LROhHAF8pHF2qDhiyMONLxKyY3lQ+S4UCsKgrlx8Hw==
+  version "1.19.0"
+  resolved "https://registry.yarnpkg.com/axios-mock-adapter/-/axios-mock-adapter-1.19.0.tgz#9d72e321a6c5418e1eff067aa99761a86c5188a4"
+  integrity sha512-D+0U4LNPr7WroiBDvWilzTMYPYTuZlbo6BI8YHZtj7wYQS8NkARlP9KBt8IWWHTQJ0q/8oZ0ClPBtKCCkx8cQg==
   dependencies:
-    fast-deep-equal "^3.1.1"
+    fast-deep-equal "^3.1.3"
     is-buffer "^2.0.3"
 
 axios@^0.21.0, axios@^0.21.1:
@@ -3102,10 +3102,10 @@ circular-dependency-plugin@5.0.2:
   resolved "https://registry.yarnpkg.com/circular-dependency-plugin/-/circular-dependency-plugin-5.0.2.tgz#da168c0b37e7b43563fb9f912c1c007c213389ef"
   integrity sha512-oC7/DVAyfcY3UWKm0sN/oVoDedQDQiw/vIiAnuTWTpE5s0zWf7l3WY417Xw/Fbi/QbAjctAkxgMiS9P0s3zkmA==
 
-class-transformer@^0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/class-transformer/-/class-transformer-0.2.3.tgz#598c92ca71dcca73f91ccb875d74a3847ccfa32d"
-  integrity sha512-qsP+0xoavpOlJHuYsQJsN58HXSl8Jvveo+T37rEvCEeRfMWoytAyR0Ua/YsFgpM6AZYZ/og2PJwArwzJl1aXtQ==
+class-transformer@^0.3.2:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/class-transformer/-/class-transformer-0.3.2.tgz#779ef5f124784324b40f8e927c774bd96cdecd4b"
+  integrity sha512-9QY6QXBH/+Gt1C3HBmJCrgY6+EFpIa6aLjfDnlXFx0zQl/HjrCE7qoaI0srNrxpMIfsobCpgUdDG5JYtJOpVsw==
 
 class-utils@^0.3.5:
   version "0.3.6"
@@ -5087,6 +5087,11 @@ fast-deep-equal@^3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-3.1.1.tgz#545145077c501491e33b15ec408c294376e94ae4"
   integrity sha512-8UEa58QDLauDNfpbrX55Q9jrGHThw2ZMdOky5Gl1CDtVeJDPVrG4Jxx1N8jw2gkWaff5UUuX1KJd+9zGe2B+ZA==
+
+fast-deep-equal@^3.1.3:
+  version "3.1.3"
+  resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-3.1.3.tgz#3a7d56b559d6cbc3eb512325244e619a65c6c525"
+  integrity sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==
 
 fast-glob@^3.1.1:
   version "3.2.4"
@@ -8894,13 +8899,6 @@ ngx-chips@1.9.8:
   integrity sha512-gU8hXByb0QcNLbDi5KuLsEgfuIoaKDDMHWdUPwtnY4gjGGEsg5afUo++raeKPHHc1igp/kYTghmI0xzOpMkqQg==
   dependencies:
     ng2-material-dropdown "0.10.1"
-    tslib "^1.9.0"
-
-ngx-cookie@^4.1.2:
-  version "4.1.2"
-  resolved "https://registry.yarnpkg.com/ngx-cookie/-/ngx-cookie-4.1.2.tgz#ab2fafc6ee7f23b7ad92f8427dc714894e60aa31"
-  integrity sha512-BU3q+116mSQZvf8WsnKDxyWFy10LtxSvZz1YIjD7pmaSFpiKdWmHTHn0qLgm3OoIL9TfInQ7Ij46rKJWPD+4Kw==
-  dependencies:
     tslib "^1.9.0"
 
 ngx-logger@^4.0.4:

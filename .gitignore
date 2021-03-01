@@ -48,6 +48,7 @@ testem.log
 api/.nyc_output
 /api/test/pact/logs/
 /api/test/pact/pacts/
+/api/test/pacts/
 
 # Do not commit local files
 /config/local*.*
@@ -73,3 +74,7 @@ stryker-tmp/
 # stryker temp files
 .stryker-tmp
 stryker.log
+
+# yalc
+.yalc/
+yalc.lock

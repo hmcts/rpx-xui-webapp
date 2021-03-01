@@ -1,8 +1,6 @@
-import { CookieService } from 'ngx-cookie';
-
+import { ActivatedRouteSnapshot } from '@angular/router';
 import { AppConstants } from './app.constants';
 import { NavItemsModel } from './models/nav-item.model';
-
 
 export class AppUtils {
 
@@ -40,11 +38,6 @@ export class AppUtils {
     return url.indexOf('accept-terms-and-conditions') < 0 && url.indexOf('terms-and-conditions') < 0;
   }
 
-  public static isRoleExistsForUser(roleName: string, cookieService: CookieService, cookiename: string = 'roles'): boolean {
-    const userRoles = cookieService.get(cookiename);
-    return userRoles && userRoles.indexOf(roleName) >= 0;
-  }
-
   /**
    * Remove Json Prefix from cookie string
    *
@@ -73,12 +66,60 @@ export class AppUtils {
    * Set the active property on the navigation items.
    */
   public static setActiveLink(items: NavItemsModel[], currentUrl: string): NavItemsModel[] {
+    let fullUrl = false;
+    let matchingUrl = '';
+    [fullUrl, matchingUrl] = AppUtils.checkTabs(items, currentUrl);
     return items.map(item => {
       return {
         ...item,
-        active: item.href === currentUrl
+        active: fullUrl ? item.href === currentUrl : item.href === matchingUrl
       };
     });
+  }
+
+  /**
+   * Tab logic - Works out which tab needs to be selected via the current tab urls and the given url
+   *
+   * @param items - the tab urls
+   * @param currrentUrl - the url being tested
+   * @return - a list including boolean stating whether the full url is given or the similar matching url
+   */
+  public static checkTabs(items: NavItemsModel[], currentUrl: string): any[] {
+    let fullUrl = false;
+    let maxLength = 0;
+    let matchingUrl = '';
+    let checkHrefs = [];
+    for (const checkItem of items) {
+      // allow checking of /tasks urls properly
+      checkHrefs = checkItem.href === '/tasks' ? ['/tasks/list', '/tasks/available'] : [checkItem.href];
+      fullUrl = AppUtils.isFullUrl(checkItem.href, currentUrl);
+      if (fullUrl) {
+        break;
+      }
+      if (checkItem.href === '/cases') {
+        // if cases we need an equivalence to stop confusion in tab selection
+        continue;
+      }
+      // if the href partly matches, find the largest href for which the url partly matches
+      if (checkHrefs.some(url => currentUrl.indexOf(url) === 0)) {
+        if (maxLength < checkItem.href.length) {
+          maxLength = checkItem.href.length;
+          matchingUrl = checkItem.href;
+        }
+      }
+    }
+    return [fullUrl, matchingUrl];
+  }
+
+  /**
+   * Check if item's href is equivalent to the current url
+   *
+   * @param href - one of the tab urls
+   * @param currrentUrl - the url being tested
+   * @return - boolean value
+   */
+  public static isFullUrl(href: string, currentUrl: string): boolean {
+    return href === currentUrl || currentUrl === '/cases/case-search';
   }
 
   /**
@@ -91,5 +132,17 @@ export class AppUtils {
   public static pad(num: string, padNum = 2): string {
     const val = (num !== undefined && num !== null) ? num.toString() : '';
     return val.length >= padNum ? val : new Array(padNum - val.length + 1).join('0') + val;
+  }
+
+  /**
+   * Get the data at the lowest child element of the activated route.
+   * @param activatedRoute The starting (parent) route to use.
+   */
+  public static getRouteData(activatedRoute: ActivatedRouteSnapshot): any {
+    let child = activatedRoute;
+    while (child && child.firstChild) {
+      child = child.firstChild;
+    }
+    return child ? child.data : null;
   }
 }

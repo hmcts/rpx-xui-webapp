@@ -21,7 +21,11 @@
     "ccdDataApi": "HEALTH_CCD_DATA_API",
     "documentsApi": "HEALTH_DOCUMENTS_API",
     "em_anno_api": "HEALTH_EM_ANNO_API",
-    "termsAndConditions": "HEALTH_TERMS_AND_CONDITIONS_API"
+    "s2s": "HEALTH_S2S_SERVICE",
+    "termsAndConditions": "HEALTH_TERMS_AND_CONDITIONS_API",
+    "taskApi": "HEALTH_WORK_ALLOCATION_TASK_API",
+    "roleApi": "HEALTH_ROLE_ASSIGNMENT_API",
+    "caseworkerApi": "HEALTH_CASE_CASEWORKER_API"
   },
   "services": {
     "ccd": {
@@ -45,6 +49,15 @@
       "idamLoginUrl": "SERVICES_IDAM_LOGIN_URL",
       "oauthCallbackUrl": "SERVICES_IDAM_OAUTH_CALLBACK_URL",
       "iss": "SERVICES_IDAM_ISS_URL"
+    },
+    "work_allocation": {
+      "taskApi": "SERVICES_WORK_ALLOCATION_TASK_API"
+    },
+    "role_assignment": {
+      "roleApi": "SERVICES_ROLE_ASSIGNMENT_API"
+    },
+    "case": {
+      "caseworkerApi": "SERVICES_CASE_CASEWORKER_API"
     },
     "markup_api": "SERVICES_MARKUP_API",
     "icp_api": "SERVICES_ICP_API",
@@ -98,6 +111,10 @@
     "oidcEnabled": {
       "__name": "FEATURE_OIDC_ENABLED",
       "__format":"json"
+    },
+    "workAllocationEnabled": {
+      "__name": "FEATURE_WORKALLOCATION_ENABLED",
+      "__format":"json"
     }
   },
   "helmet": {
@@ -114,6 +131,7 @@
   },
   "pact": {
     "brokerUrl": "PACT_BROKER_URL",
+    "branchName": "PACT_BRANCH_NAME",
     "consumerVersion": "PACT_CONSUMER_VERSION",
     "brokerUsername": "PACT_BROKER_USERNAME",
     "brokerPassword": "PACT_BROKER_PASSWORD"

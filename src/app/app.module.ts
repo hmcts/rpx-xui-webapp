@@ -28,13 +28,11 @@ import { initApplication } from './app-initilizer';
 import { ProvidersModule } from './providers/providers.module';
 // app routes
 import { ROUTES, routingConfiguration } from './app.routes';
-import { CookieModule } from 'ngx-cookie';
 import { SharedModule } from './shared/shared.module';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MonitoringService } from './services/logger/monitoring.service';
 import { CryptoWrapper } from './services/logger/cryptoWrapper';
-import { JwtDecodeWrapper } from './services/logger/jwtDecodeWrapper';
 import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler';
 import { AcceptTermsService } from './services/acceptTerms/acceptTerms.service';
 import { ExuiCommonLibModule, LAUNCHDARKLYKEY } from '@hmcts/rpx-xui-common-lib';
@@ -51,7 +49,6 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    CookieModule.forRoot(),
     HttpClientModule,
     ProvidersModule.forRoot(),
     RouterModule.forRoot(ROUTES, routingConfiguration),
@@ -81,9 +78,9 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
       deps: [Store],
       multi: true
     },
+    CryptoWrapper,
     MonitoringService,
     LoggerService,
-    JwtDecodeWrapper,
     CryptoWrapper,
     {
       provide: ErrorHandler,

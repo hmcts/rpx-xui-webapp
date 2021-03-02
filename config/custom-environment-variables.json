@@ -37,8 +37,10 @@
       "caseAssignmentApi": "SERVICES_CCD_CASE_ASSIGNMENT_API"
     },
     "documents": {
-      "api": "SERVICES_DOCUMENTS_API",
-      "api-v2": "SERVICES_DOCUMENTS_API_V2"
+      "api": "SERVICES_DOCUMENTS_API"
+    },
+    "documentsv2": {
+      "api": "SERVICES_DOCUMENTS_API_V2"
     },
     "em_hrs_api": "SERVICES_EM_HRS_API",
     "prd": {

@@ -66,7 +66,4 @@ describe('Case share ', () => {
         expect(response.status).to.equal(200);
     });
 
-
-
-
 });

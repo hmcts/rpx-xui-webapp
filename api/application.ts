@@ -1,5 +1,6 @@
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
+import * as csrf from 'csurf'
 import * as express from 'express'
 import * as helmet from 'helmet'
 import { getXuiNodeMiddleware } from './auth'
@@ -13,6 +14,7 @@ import {
 import * as health from './health'
 import * as log4jui from './lib/log4jui'
 import { JUILogger } from './lib/models'
+import * as session from 'express-session'
 import * as tunnel from './lib/tunnel'
 import openRoutes from './openRoutes'
 import { initProxy } from './proxy.config'
@@ -23,54 +25,86 @@ export const app = express()
 
 if (showFeature(FEATURE_HELMET_ENABLED)) {
   app.use(helmet(getConfigValue(HELMET)))
-  app.use(helmet.contentSecurityPolicy({
-    directives: {
-      connectSrc: ['\'self\''],
-      defaultSrc: ['\'self\''],
-      fontSrc: ['\'self\' data:'],
-      frameSrc: [
-        '\'self\'',
-        'vcc-eu4.8x8.com',
-        'vcc-eu4b.8x8.com',
-      ],
-      imgSrc: [
-        '\'self\'',
-        'www.google-analytics.com',
-        'hmctspiwik.useconnect.co.uk',
-        'vcc-eu4.8x8.com',
-        'vcc-eu4b.8x8.com',
-      ],
-      mediaSrc: ['\'self\''],
-      scriptSrc: [
-        '\'self\'',
-        '\'unsafe-inline\'',
-        'www.google-analytics.com',
-        'hmctspiwik.useconnect.co.uk',
-        'vcc-eu4.8x8.com',
-        'vcc-eu4b.8x8.com',
-      ],
-    },
-  }))
-  // app.use(helmet.xframe());
-  // app.use(helmet.xframe('sameorigin')) // SAMEORIGIN
-  app.use(helmet.noSniff())
-  app.use(helmet.frameguard({ action: 'deny' }))
-  app.use(helmet.referrerPolicy({ policy: 'origin' }))
-  app.use(helmet.hidePoweredBy())
+  app.use(helmet.noSniff()) // sets X-Content-Type-Options to prevent browsers from MIME-sniffing a response away from the declared content-type.
+  app.use(helmet.frameguard({ action: 'deny' })) // sets the X-Frame-Options header to provide clickjacking protection
+  app.use(helmet.referrerPolicy({ policy: ['origin'] })) //sets the Referrer-Policy header which controls what information is set in the Referer header.
+  app.use(helmet.hidePoweredBy()) // removes the X-Powered-By header
+  app.use(helmet.hsts({ maxAge: 28800000 })) // sets Strict-Transport-Security header that enforces secure (HTTP over SSL/TLS) connections to the server.
+  app.use(helmet.xssFilter()) // disables browsers' cross-site scripting filter by setting the X-XSS-Protection header to 0
   app.use((req, res, next) => {
     res.setHeader('X-Robots-Tag', 'noindex')
-    res.setHeader('Cache-Control', 'no-cache, max-age=0, must-revalidate, no-store')
+    res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate, proxy-revalidate')
     next()
   })
   app.get('/robots.txt', (req, res) => {
     res.type('text/plain')
     res.send('User-agent: *\nDisallow: /')
   })
+  app.get('/sitemap.xml', (req, res) => {
+    res.type('text/xml')
+    res.send('User-agent: *\nDisallow: /')
+  })
   app.disable('x-powered-by')
   app.disable('X-Powered-By')
+  app.use(session({  
+    secret: getConfigValue(SESSION_SECRET),
+    cookie: {
+      httpOnly: true,
+      secure: true,
+      maxAge: 28800000,
+      sameSite: 'strict',
+    }
+  }))
+  app.use(helmet.contentSecurityPolicy({
+    directives: {
+      connectSrc: [
+        '\'self\'',
+        '*.gov.uk',
+        'dc.services.visualstudio.com',
+        '*.launchdarkly.com',
+        'www.google-analytics.com'
+      ],
+      defaultSrc: [`'self'`],
+      fontSrc: ['\'self\'', 'https://fonts.gstatic.com', 'data:'],
+      formAction: [`'none'`],
+      frameAncestors: [`'self'`],
+      frameSrc: [`'self'`],
+      imgSrc: [
+        '\'self\'',
+        'data:',
+        'https://www.google-analytics.com',
+        'https://www.googletagmanager.com',
+        'https://raw.githubusercontent.com/hmcts/',
+        'http://stats.g.doubleclick.net/',
+        'http://ssl.gstatic.com/',
+        'http://www.gstatic.com/',
+        'https://fonts.gstatic.com'
+      ],
+      mediaSrc: ['\'self\''],
+      scriptSrc: [
+        '\'self\'',
+        'www.google-analytics.com',
+        'www.googletagmanager.com',
+        'az416426.vo.msecnd.net'
+      ],
+      styleSrc: [
+        '\'self\'',
+        'https://fonts.googleapis.com',
+        'https://fonts.gstatic.com',
+        'http://tagmanager.google.com/'
+      ],
+    },
+  }))
 }
 
 app.use(cookieParser(getConfigValue(SESSION_SECRET)))
+
+app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: true, secure: true, sameSite: 'strict' } }))
+app.use(function (req, res, next) {
+  res.cookie('XSRF-TOKEN', req.csrfToken())
+  res.locals.csrftoken = req.csrfToken()
+  next()
+})
 
 // TODO: remove tunnel and configurations
 tunnel.init()

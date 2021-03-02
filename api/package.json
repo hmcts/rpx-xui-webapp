@@ -13,5 +13,10 @@
         "start": "node -r dotenv-extended/config ../dist/rpx-exui/api/server.bundle.js"
     },
     "private": true,
-    "dependencies": {}
+    "dependencies": {},
+    "devDependencies": {
+        "@types/cookie-parser": "^1.4.2",
+        "@types/csurf": "^1.11.0",
+        "@types/helmet": "^4.0.0"
+    }
 }

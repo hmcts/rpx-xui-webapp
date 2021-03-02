@@ -75,7 +75,9 @@
       "mc-s2s-client-secret": "S2S_SECRET",
       "mc-idam-client-secret": "IDAM_SECRET",
       "webapp-redis-connection-string": "REDISCLOUD_URL",
-      "launch-darkly-client-id": "LAUNCH_DARKLY_CLIENT_ID"
+      "launch-darkly-client-id": "LAUNCH_DARKLY_CLIENT_ID",
+      "system-user-name": "SYSTEM_USER_NAME",
+      "system-user-password": "SYSTEM_USER_PASSWORD"
     }
   },
   "jurisdictions": "JURISDICTIONS",

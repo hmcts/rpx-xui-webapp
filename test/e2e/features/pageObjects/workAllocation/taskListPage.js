@@ -38,7 +38,9 @@ class TaskListPage extends TaskList {
         await this.availableTasksTab.click();
     }
 
-
+    async amOnMyTasksTab(){
+        return await this.myTasksContaine.isDisplayed();
+    }
 
     async isMyTasksDisplayed(){
         expect(await this.amOnPage(), "Not on Task list page ").to.be.true;

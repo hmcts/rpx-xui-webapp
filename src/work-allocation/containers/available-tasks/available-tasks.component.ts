@@ -49,13 +49,6 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
     this.loadTasks();
   }
 
-  public loadTasks(): void {
-    // TODO: Need to check whether this functionality is needed
-    // if (this.selectedLocations) {
-    super.loadTasks();
-    // }
-  }
-
   private getLocationParameter() {
     let values = [];
     if (this.selectedLocations) {

@@ -23,7 +23,7 @@ class TaskListTable{
             let isTableFooterDispayed = await this.tableFooter.isDisplayed();
             cucumberReporter.AddMessage(`Waiting for task list table condition : row count is ${tableRowsCount} or table foorter displayed ${isTableFooterDispayed}`);
             return tableRowsCount > 0 || isTableFooterDispayed; 
-        });
+        },45000);
     }
 
     async isTableDisplayed(){

@@ -22,8 +22,7 @@ export interface Task {
     auto_assigned: boolean
     actions: TaskAction[]
     execution_type: string
-    Assignee?: string
-    assignee?: string
+    assignee: string
     dueDate: string
     taskName: string
     caseName: string

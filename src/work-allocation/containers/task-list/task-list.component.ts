@@ -140,6 +140,8 @@ export class TaskListComponent implements OnChanges {
    *
    * We then set the sort table header to reflect this.
    *
+   * 'ascending'/'descending' needed to set sorting instead of 'asc'/'desc' which does not sort correctly
+   *
    * TODO: Think about moving 'none' to task sort model.
    *
    * @param fieldName - 'caseReference'

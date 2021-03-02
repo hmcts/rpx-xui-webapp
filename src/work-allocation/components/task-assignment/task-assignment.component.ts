@@ -219,7 +219,7 @@ export class TaskAssignmentComponent implements OnInit {
    */
   private setupCaseworkers(caseworkers: Caseworker[]): void {
     this.pAllCaseworkers = [...caseworkers];
-    this.pCaseworkers = [...caseworkers].filter(item => {
+    this.pCaseworkers = this.pAllCaseworkers.filter(item => {
       return this.caseworkerIsSelectable(item);
     });
   }

@@ -60,6 +60,10 @@ export const JURISDICTIONS = 'jurisdictions'
 
 export const IDAM_SECRET = 'secrets.rpx.mc-idam-client-secret'
 
+export const SYSTEM_USER_NAME = 'secrets.rpx.system-user-name'
+
+export const SYSTEM_USER_PASSWORD = 'secrets.rpx.system-user-password'
+
 export const LOGIN_ROLE_MATCHER = 'loginRoleMatcher'
 
 export const LOG4_J_CONFIG = 'log4JConfig'

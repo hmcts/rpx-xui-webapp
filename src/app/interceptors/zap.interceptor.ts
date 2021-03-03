@@ -1,4 +1,4 @@
-import { HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpXsrfTokenExtractor } from '@angular/common/http';
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpXsrfTokenExtractor } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -8,7 +8,7 @@ export class HttpZapInterceptor implements HttpInterceptor {
   constructor(private tokenExtractor: HttpXsrfTokenExtractor) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const token = this.tokenExtractor.getToken() as string;
+    const token = this.tokenExtractor.getToken();
     if (token !== null && !req.headers.has('X-XSRF-TOKEN')) {
         req = req.clone({ headers: req.headers.set('X-XSRF-TOKEN', token) });
     }

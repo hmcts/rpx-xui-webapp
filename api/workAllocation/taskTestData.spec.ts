@@ -111,7 +111,7 @@ export const mockTasks: Task[] = [
     "auto_assigned": false,
     "caseCategory": "protection",
     "caseName": "Bob Smith",
-    "caseReference": "1612969989251149",
+    "case_id": "1612969989251149",
     "case_category": "protection",
     "case_name": "Bob Smith",
     "case_type_id": "Asylum",

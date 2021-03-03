@@ -81,7 +81,7 @@ describe('WorkAllocation', () => {
 
     it('should handle a STRING type', () => {
       // Set up the config and the task.
-      const config: TaskFieldConfig = getConfig('caseReference', TaskFieldType.STRING);
+      const config: TaskFieldConfig = getConfig('case_id', TaskFieldType.STRING);
       const task: Task = {
         id: 'The task ID',
         case_id: 'The case reference',
@@ -97,15 +97,15 @@ describe('WorkAllocation', () => {
       component.config = config;
       component.task = task;
       fixture.detectChanges();
-      expect(fixture.debugElement.nativeElement.innerText).toBe(task.caseReference);
+      expect(fixture.debugElement.nativeElement.innerText).toBe(task.case_id);
 
-      // Change the value of task.caseReference.
-      task.caseReference = 'Bob';
+      // Change the value of task.case_id.
+      task.case_id = 'Bob';
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('Bob');
 
-      // Clear out the value of task.caseReference.
-      task.caseReference = undefined;
+      // Clear out the value of task.case_id.
+      task.case_id = undefined;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
     });
@@ -118,7 +118,7 @@ describe('WorkAllocation', () => {
       const config: TaskFieldConfig = getConfig('dueDate', TaskFieldType.DATE_DUE);
       const task: Task = {
         id: 'The task ID',
-        caseReference: 'The case reference',
+        case_id: 'The case reference',
         caseName: 'The case name',
         caseCategory: 'The case category',
         location: 'The location',
@@ -168,7 +168,7 @@ describe('WorkAllocation', () => {
       const config: TaskFieldConfig = getConfig('dueDate', TaskFieldType.DATE_AGE_DAYS);
       const task: Task = {
         id: 'The task ID',
-        caseReference: 'The case reference',
+        case_id: 'The case reference',
         caseName: 'The case name',
         caseCategory: 'The case category',
         location: 'The location',
@@ -214,7 +214,7 @@ describe('WorkAllocation', () => {
       const config: TaskFieldConfig = getConfig('dueDate', TaskFieldType.DATE);
       const task: Task = {
         id: 'The task ID',
-        caseReference: 'The case reference',
+        case_id: 'The case reference',
         caseName: 'The case name',
         caseCategory: 'The case category',
         location: 'The location',
@@ -245,7 +245,7 @@ describe('WorkAllocation', () => {
       const config: TaskFieldConfig = getConfig('dueDate', TaskFieldType.DATETIME);
       const task: Task = {
         id: 'The task ID',
-        caseReference: 'The case reference',
+        case_id: 'The case reference',
         caseName: 'The case name',
         caseCategory: 'The case category',
         location: 'The location',
@@ -276,7 +276,7 @@ describe('WorkAllocation', () => {
       const config: TaskFieldConfig = getConfig('happy', TaskFieldType.BOOLEAN);
       const task: Task = {
         id: 'The task ID',
-        caseReference: 'The case reference',
+        case_id: 'The case reference',
         caseName: 'The case name',
         caseCategory: 'The case category',
         location: 'The location',
@@ -350,7 +350,7 @@ describe('WorkAllocation', () => {
       const config: TaskFieldConfig = getConfig('pi', TaskFieldType.INTEGER);
       const task: Task = {
         id: 'The task ID',
-        caseReference: 'The case reference',
+        case_id: 'The case reference',
         caseName: 'The case name',
         caseCategory: 'The case category',
         location: 'The location',
@@ -414,7 +414,7 @@ describe('WorkAllocation', () => {
       const config: TaskFieldConfig = getConfig('pi', TaskFieldType.DECIMAL_2);
       const task: Task = {
         id: 'The task ID',
-        caseReference: 'The case reference',
+        case_id: 'The case reference',
         caseName: 'The case name',
         caseCategory: 'The case category',
         location: 'The location',
@@ -484,7 +484,7 @@ describe('WorkAllocation', () => {
       const config: TaskFieldConfig = getConfig('link', TaskFieldType.URL);
       const task: Task = {
         id: 'The task ID',
-        caseReference: 'The case reference',
+        case_id: 'The case reference',
         caseName: 'The case name',
         caseCategory: 'The case category',
         location: 'The location',
@@ -556,7 +556,7 @@ describe('WorkAllocation', () => {
       const config: TaskFieldConfig = getConfig('image', TaskFieldType.IMAGE);
       const task: Task = {
         id: 'The task ID',
-        caseReference: 'The case reference',
+        case_id: 'The case reference',
         caseName: 'The case name',
         caseCategory: 'The case category',
         location: 'The location',
@@ -622,10 +622,10 @@ describe('WorkAllocation', () => {
       expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
 
       // Set up the config and the task.
-      const config: TaskFieldConfig = getConfig('caseReference', TaskFieldType.CASE_REFERENCE);
+      const config: TaskFieldConfig = getConfig('case_id', TaskFieldType.CASE_REFERENCE);
       const task: Task = {
         id: 'The task ID',
-        caseReference: 'The case reference',
+        case_id: 'The case reference',
         caseName: 'The case name',
         caseCategory: 'The case category',
         location: 'The location',
@@ -640,32 +640,32 @@ describe('WorkAllocation', () => {
       fixture.detectChanges();
       let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
-      expect(element.textContent.trim()).toBe(task.caseReference);
-      expect(element.getAttribute('href')).toBe(`/cases/case-details/Thecasereference`); // No spaces
+      expect(element.textContent.trim()).toBe(task.case_id);
+      expect(element.getAttribute('href')).toBe(`/cases/case-details/The case reference`); // Spaces allowed
 
-      // Change the value of task.caseReference.
-      task.caseReference = 'NEW CASE REFERENCE';
+      // Change the value of task.case_id.
+      task.case_id = 'NEW CASE REFERENCE';
       fixture.detectChanges();
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe('NEW CASE REFERENCE');
-      expect(element.getAttribute('href')).toBe(`/cases/case-details/NEWCASEREFERENCE`); // No spaces
+      expect(element.getAttribute('href')).toBe(`/cases/case-details/NEW CASE REFERENCE`); // Spaces allowed
 
       // Clear out the value of task.link and we should no longer have the anchor.
-      task.caseReference = undefined;
+      task.case_id = undefined;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
 
       // Add it back for a moment...
-      task.caseReference = 'The case reference';
+      task.case_id = 'The case reference';
       fixture.detectChanges();
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe('The case reference');
-      expect(element.getAttribute('href')).toBe(`/cases/case-details/Thecasereference`);
+      expect(element.getAttribute('href')).toBe(`/cases/case-details/The case reference`);
 
       // Make task.link null.
-      task.caseReference = null;
+      task.case_id = null;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
     });

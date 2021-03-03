@@ -71,7 +71,6 @@ const config = {
             browserInstance: browser
         });
         browser.get(config.baseUrl);
-        BrowserUtil.
     },
 
     cucumberOpts: {

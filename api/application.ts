@@ -1,8 +1,9 @@
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
+import * as csrf from 'csurf'
 import * as express from 'express'
 import * as helmet from 'helmet'
-import {getXuiNodeMiddleware} from './auth'
+import { getXuiNodeMiddleware } from './auth'
 import { getConfigValue, showFeature } from './configuration'
 import {
   FEATURE_HELMET_ENABLED,
@@ -12,10 +13,10 @@ import {
 } from './configuration/references'
 import * as health from './health'
 import * as log4jui from './lib/log4jui'
-import {JUILogger} from './lib/models'
+import { JUILogger } from './lib/models'
 import * as tunnel from './lib/tunnel'
 import openRoutes from './openRoutes'
-import {initProxy} from './proxy.config'
+import { initProxy } from './proxy.config'
 import routes from './routes'
 import taskRouter from './workAllocation/routes'
 
@@ -39,14 +40,15 @@ app.use(getXuiNodeMiddleware())
 // applyProxy needs to be used before bodyParser
 initProxy(app)
 
-app.use(bodyParser.json({limit: '5mb'}))
-app.use(bodyParser.urlencoded({limit: '5mb', extended: true}))
+app.use(bodyParser.json({ limit: '5mb' }))
+app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }))
 
 // TODO: No dash?
 // TODO: taskRouter should be called workAllocationRouter
 app.use('/workallocation', taskRouter)
 app.use('/external', openRoutes)
 app.use('/api', routes)
+app.use(csrf({ cookie: true, ignoreMethods: ["GET"] }));
 
 // @ts-ignore
 const logger: JUILogger = log4jui.getLogger('Application')

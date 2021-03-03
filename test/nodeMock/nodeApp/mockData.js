@@ -4,6 +4,12 @@ class NodeAppMockData{
         return configurations[configurationKey];
     }
 
+    getUserDetailsWithRoles(roles){
+        const userDetails = this.getUserDetailsTemplate();
+        userDetails.userInfo.roles = roles;
+        return userDetails;
+    }
+
     getUIConfiguration(){
         return {
             "googleAnalyticsKey": "UA-124734893-4",
@@ -15,56 +21,43 @@ class NodeAppMockData{
         };
     }
 
-    getAddresses(postcode){
-        const addresses = {
-            "header": {
-                "uri": "https://api.ordnancesurvey.co.uk/places/v1/addresses/postcode?postcode=SW1",
-                "query": "postcode=SW1",
-                "offset": 0,
-                "totalresults": 254579,
-                "format": "JSON",
-                "dataset": "DPA",
-                "lr": "EN,CY",
-                "maxresults": 100,
-                "epoch": "81",
-                "output_srs": "EPSG:27700"
+    getUserDetailsTemplate(){
+        return {
+            "canShareCases": true,
+            "sessionTimeout": {
+                "idleModalDisplayTime": 10,
+                "pattern": "-solicitor",
+                "totalIdleTime": 50
             },
-            "results" :[]
-        }
-
-        for(let i = 1; i< 100; i++){
-            addresses.results.push({
-                "DPA": {
-                    "UPRN": "12101281"+i,
-                    "UDPRN": "2392690"+i,
-                    "ADDRESS": i+", ALTHORPE MEWS, LONDON, SW11 3PD",
-                    "BUILDING_NUMBER": "11"+i,
-                    "THOROUGHFARE_NAME": "ALTHORPE MEWS",
-                    "POST_TOWN": "LONDON",
-                    "POSTCODE": "SW11 3PD",
-                    "RPC": "2",
-                    "X_COORDINATE": 526874.0,
-                    "Y_COORDINATE": 176714.0,
-                    "STATUS": "APPROVED",
-                    "LOGICAL_STATUS_CODE": "1",
-                    "CLASSIFICATION_CODE": "RD08",
-                    "CLASSIFICATION_CODE_DESCRIPTION": "Sheltered Accommodation",
-                    "LOCAL_CUSTODIAN_CODE": 5960,
-                    "LOCAL_CUSTODIAN_CODE_DESCRIPTION": "WANDSWORTH",
-                    "POSTAL_ADDRESS_CODE": "D",
-                    "POSTAL_ADDRESS_CODE_DESCRIPTION": "A record which is linked to PAF",
-                    "BLPU_STATE_CODE": null,
-                    "BLPU_STATE_CODE_DESCRIPTION": "Unknown/Not applicable",
-                    "TOPOGRAPHY_LAYER_TOID": "osgb1000042165547",
-                    "LAST_UPDATE_DATE": "13/02/2019",
-                    "ENTRY_DATE": "19/03/2002",
-                    "LANGUAGE": "EN",
-                    "MATCH": 1.0,
-                    "MATCH_DESCRIPTION": "EXACT"
-                }
-            });
-        }
-        return addresses;
+            "userInfo": {
+                "id": "41a90c39-d756-4eba-8e85-5b5bf56b31f5",
+                "forename": "Luke",
+                "surname": "Wilson",
+                "email": "lukesuperuserxui@mailnesia.com",
+                "active": true,
+                "roles": [
+                    "caseworker-ia-caseofficer",
+                    "caseworker",
+                    "caseworker-divorce",
+                    "caseworker-divorce-financialremedy",
+                    "caseworker-divorce-financialremedy-solicitor",
+                    "caseworker-divorce-solicitor",
+                    "caseworker-ia",
+                    "caseworker-ia-legalrep-solicitor",
+                    "caseworker-probate",
+                    "caseworker-probate-authoriser",
+                    "caseworker-probate-solicitor",
+                    "caseworker-publiclaw",
+                    "caseworker-publiclaw-solicitor",
+                    "payments",
+                    "pui-caa",
+                    "pui-case-manager",
+                    "pui-finance-manager",
+                    "pui-organisation-manager",
+                    "pui-user-manager"
+                ]
+            }
+        }; 
     }
 }
 

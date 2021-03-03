@@ -10,7 +10,7 @@ exports.config = {
   allScriptsTimeout: 11000,
   specs: [
     '../tests/*.test.js',
-    '../tests/workAllocation/*.test.js'
+    '../tests/**/*.test.js'
 
   ],
   exclude: [

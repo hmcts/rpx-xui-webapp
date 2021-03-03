@@ -48,6 +48,7 @@ testem.log
 api/.nyc_output
 /api/test/pact/logs/
 /api/test/pact/pacts/
+/api/test/pacts/
 
 # Do not commit local files
 /config/local*.*
@@ -77,3 +78,7 @@ log/pact.log
 
 # Test env files
 /test/*.env
+
+# yalc
+.yalc/
+yalc.lock

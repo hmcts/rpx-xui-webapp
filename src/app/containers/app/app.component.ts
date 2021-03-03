@@ -1,8 +1,9 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router, RoutesRecognized } from '@angular/router';
-import { GoogleAnalyticsService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
+import { GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
+
 import { propsExist } from '../../../../api/lib/objectUtilities';
 import { environment as config } from '../../../environments/environment';
 import * as fromRoot from '../../store';
@@ -23,13 +24,13 @@ export class AppComponent implements OnInit {
 
   constructor(
     private readonly store: Store<fromRoot.State>,
-    private readonly googleAnalyticsService: GoogleAnalyticsService,
+    private readonly googleTagManagerService: GoogleTagManagerService,
     private readonly timeoutNotificationsService: TimeoutNotificationsService,
     private readonly router: Router,
     private readonly titleService: Title
   ) {
 
-    this.googleAnalyticsService.init(config.googleAnalyticsKey);
+    this.googleTagManagerService.init(config.googleTagManagerKey);
 
     this.router.events.subscribe((data) => {
       if (data instanceof RoutesRecognized) {
@@ -51,6 +52,12 @@ export class AppComponent implements OnInit {
         this.loadAndListenForUserDetails();
       }
     });
+
+    // Moved here from CaseHomeComponent as this needs to be app-wide, and
+    // not just happening for the Case view. Moreover, it has an impact on
+    // the rendering of the menu as it triggers an action that gets hold of
+    // the user's profile.
+    this.store.dispatch(new fromRoot.StartIdleSessionTimeout());
   }
 
   /**
@@ -80,8 +87,6 @@ export class AppComponent implements OnInit {
   public userDetailsHandler(userDetails) {
 
     if (propsExist(userDetails, ['sessionTimeout'] ) && userDetails.sessionTimeout.totalIdleTime > 0) {
-
-      console.log(userDetails.sessionTimeout);
       const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
 
       this.addTimeoutNotificationServiceListener();

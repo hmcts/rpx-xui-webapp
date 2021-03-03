@@ -10,26 +10,24 @@ module.exports = {
             res.send(workAllocationMockData.getLocation(req.params.locationId));
         },
         '/workallocation/task/:taskId': (req, res) => {
-            res.send(workAllocationMockData.getTaskDetails());
+            res.status(200).send(workAllocationMockData.getTaskDetails());
         },
         '/workallocation/caseworker': (req, res) => {
             res.send(workAllocationMockData.getCaseworkersList(20));
+        },
+        '/workallocation/caseworker/location/:locId': (req, res) => {
+            res.send(workAllocationMockData.getCaseworkersList(10));
         }
     },
     post: {
         '/workallocation/task/' : (req,res) => {
-            res.send(workAllocationMockData.getAvailableTasks(1));
+            res.send(workAllocationMockData.getAvailableTasks(10));
         },
         '/workallocation/task/:taskId/assign':  (req,res) => {
             res.send();
         },
         '/workallocation/task/:taskId/claim' : (req,res) => {
-            res.status(404).send();
-        },
-        '/workallocation/task/:ccdId/complete': (req,res) => {
             res.send();
         }
-
-       s 
     } 
 }

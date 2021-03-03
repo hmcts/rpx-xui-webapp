@@ -31,10 +31,10 @@ const wizardPageTemplate = {
 
 
 
-class CCDCaseConfig extends CCDCaseField {
+class CCDCaseConfig extends CCDCaseField{
 
     caseConfigTemplate = JSON.parse(JSON.stringify(configTemplate));
-    constructor(id, name, description) {
+    constructor(id, name, description){
         super();
         this.caseConfigTemplate.id = id;
         this.caseConfigTemplate.name = name;
@@ -42,6 +42,9 @@ class CCDCaseConfig extends CCDCaseField {
 
         this.currentWizardPage = null;
         this.currentCaseField = null;
+
+        this.currentComplexField = null;
+        this.currentCollectionField = null;
 
     }
 
@@ -51,16 +54,14 @@ class CCDCaseConfig extends CCDCaseField {
         wizardPage.label = label;
         wizardPage.order = this.caseConfigTemplate.wizard_pages.length;
         this.caseConfigTemplate.wizard_pages.push(wizardPage);
-        this.currentWizardPage = wizardPage;
+        this.currentWizardPage = wizardPage; 
         this.currentCaseField = null;
-        return this;
+        return this; 
     }
 
 
-
-    addCCDFieldToPage(wizardPage, fieldConfig) {
-        const ccdField = this.getCCDFieldTemplateCopy(fieldConfig);
-
+    addCCDFieldToPage(wizardPage,fieldConfig){
+        
         this.caseConfigTemplate.case_fields.push(ccdField);
         wizardPage.wizard_page_fields.push({
             "case_field_id": fieldConfig.id,
@@ -72,9 +73,21 @@ class CCDCaseConfig extends CCDCaseField {
     };
 
 
-    addCaseField(fieldConfig) {
-        if (!this.currentWizardPage) {
+    addCaseField(fieldConfig){
+        if (!this.currentWizardPage){
             throw new Error("No wizard page added. Add a wizard page before adding case field");
+        }
+        const ccdField = this.getCCDFieldTemplateCopy(fieldConfig);
+
+        if (ccdField.field_type.type === "Complex") {
+            this.currentComplexField = ccdField;
+            this.currentCollectionField = null;
+        } else if (ccdField.field_type.type === "Collection") {
+            this.currentComplexField = null;
+            this.currentCollectionField = ccdField;
+        } else {
+            this.currentComplexField = null;
+            this.currentCollectionField = null;
         }
         const ccdField = this.getCCDFieldTemplateCopy(fieldConfig);
 
@@ -84,8 +97,13 @@ class CCDCaseConfig extends CCDCaseField {
             "order": this.currentWizardPage.wizard_page_fields.length,
             "page_column_no": 1,
             "complex_field_overrides": []
-        });
-        this.currentCaseField = ccdField;
+        }); 
+        this.currentCaseField = ccdField; 
+        return this; 
+    }
+
+    setComplexField(fieldConfig){
+        this.currentComplexField.field_type.complex_fields.push(his.getCCDFieldTemplateCopy(fieldConfig));
         return this;
     }
 
@@ -94,11 +112,34 @@ class CCDCaseConfig extends CCDCaseField {
         return this;
     }
 
-    setFieldProps(fieldprops) {
+    setFieldProps(fieldprops){
         this.checkPageAndFiedlSet();
-        this.setObjectProps(this.currentCaseField, fieldprops);
-        return this;
+        this.setObjectProps(this.currentCaseField,fieldprops);
+        return this; 
     }
+
+    setFieldTypeProps(fieldTypeprops){
+        this.checkPageAndFiedlSet();
+        this.setObjectProps(this.currentCaseField.field_type, fieldTypeprops);
+        return this; 
+    }
+
+    checkPageAndFiedlSet(){
+        if (!this.currentWizardPage) {
+            throw new Error("No wizard page added.");
+        }
+        if (!this.currentCaseField) {
+            throw new Error("No case field added.");
+        }  
+    }
+
+    getCase(){
+        return this.caseConfigTemplate; 
+    }
+  
+
+    
+}
 
     setFieldTypeProps(fieldTypeprops) {
         this.checkPageAndFiedlSet();

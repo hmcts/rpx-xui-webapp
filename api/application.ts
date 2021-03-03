@@ -100,11 +100,6 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
 app.use(cookieParser(getConfigValue(SESSION_SECRET)))
 
 app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: true, secure: true, sameSite: 'strict' } }))
-app.use((req, res, next) => {
-  res.cookie('XSRF-TOKEN', req.csrfToken())
-  res.locals.csrftoken = req.csrfToken()
-  next()
-})
 
 // TODO: remove tunnel and configurations
 tunnel.init()

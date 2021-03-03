@@ -2,6 +2,7 @@ import { Task } from "./interfaces/task";
 
 export const mockTasks: Task[] = [
   {
+    "assignee": "94785",
     "actions": [
       {
         "id": "cancel",
@@ -20,13 +21,12 @@ export const mockTasks: Task[] = [
         "title": "Unassign task",
       },
     ],
-    "assignee": "94785",
     "assigneeName": null,
     "auto_assigned": false,
     "caseCategory": "protection",
     "caseName": "Bob Smith",
-    "case_id": "1612969732000512",
     "case_category": "protection",
+    "case_id": "1612969732000512",
     "case_name": "Bob Smith",
     "case_type_id": "Asylum",
     "created_date": "2021-02-10T15:08:57.860+0000",
@@ -61,13 +61,13 @@ export const mockTasks: Task[] = [
         "title": "Mark as done",
       },
     ],
-    "assignee": "94785",
+    "assignee": "12345",
     "assigneeName": null,
     "auto_assigned": false,
     "caseCategory": "protection",
     "caseName": "Bob Smith",
-    "case_id": "1612969886074875",
     "case_category": "protection",
+    "case_id": "1612969886074875",
     "case_name": "Bob Smith",
     "case_type_id": "Asylum",
     "created_date": "2021-02-10T15:11:31.296+0000",
@@ -111,8 +111,8 @@ export const mockTasks: Task[] = [
     "auto_assigned": false,
     "caseCategory": "protection",
     "caseName": "Bob Smith",
-    "caseReference": "1612969989251149",
     "case_category": "protection",
+    "case_id": "1612969989251149",
     "case_name": "Bob Smith",
     "case_type_id": "Asylum",
     "created_date": "2021-02-10T15:13:13.905+0000",

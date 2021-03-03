@@ -6,14 +6,14 @@ import { DERIVED_ICON_CONSTANTS} from './derived-icon.constants';
  * The individual fields.
  */
 const CASE_REFERENCE_AS_LINK: TaskFieldConfig = {
-  name: 'caseReference',
+  name: 'case_id',
   type: TaskFieldType.CASE_REFERENCE,
   columnLabel: 'Case reference',
   sortName: 'caseId',
   views: TaskView.ALL_VIEWS
 };
 const CASE_REFERENCE_AS_TEXT: TaskFieldConfig = {
-  name: 'caseReference',
+  name: 'case_id',
   type: TaskFieldType.STRING,
   columnLabel: 'Case reference',
   sortName: 'caseId',

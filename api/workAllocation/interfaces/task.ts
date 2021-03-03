@@ -16,6 +16,7 @@ export interface Task {
     location: string
     jurisdiction: string
     region: string
+    case_id: string
     case_type_id: string
     case_category: string
     case_name: string
@@ -26,7 +27,6 @@ export interface Task {
     dueDate: string
     taskName: string
     caseName: string
-    caseReference: string
     caseCategory: string
     assigneeName: string
     name: string

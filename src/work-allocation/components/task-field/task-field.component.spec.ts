@@ -54,7 +54,7 @@ describe('WorkAllocation', () => {
       const config: TaskFieldConfig = getConfig('caseName', TaskFieldType.STRING);
       const task: Task = {
         id: 'The task ID',
-        caseReference: 'The case reference',
+        case_id: 'The case reference',
         caseName: 'The case name',
         caseCategory: 'The case category',
         location: 'The location',
@@ -84,7 +84,7 @@ describe('WorkAllocation', () => {
       const config: TaskFieldConfig = getConfig('caseReference', TaskFieldType.STRING);
       const task: Task = {
         id: 'The task ID',
-        caseReference: 'The case reference',
+        case_id: 'The case reference',
         caseName: 'The case name',
         caseCategory: 'The case category',
         location: 'The location',

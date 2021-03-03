@@ -1,5 +1,5 @@
 import { ActionViews, TASK_ACTIONS } from './constants/actions';
-import { Caseworker } from './interfaces/task';
+import { Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/task';
 
 export function prepareGetTaskUrl(baseUrl: string, taskId: string): string {
   return `${baseUrl}/task/${taskId}`
@@ -53,17 +53,17 @@ export function assignActionsToTasks(tasks: any[], view: any, caseworkers: Casew
     for (const task of tasks) {
       switch (view) {
         case ActionViews.MY:
-          task.actions = [ ...TASK_ACTIONS.MY ];
+          task.actions = [...TASK_ACTIONS.MY];
           break;
         case ActionViews.AVAILABLE:
-          task.actions = [ ...TASK_ACTIONS.AVAILABLE ];
+          task.actions = [...TASK_ACTIONS.AVAILABLE];
           break;
         case ActionViews.MANAGER:
           // Unassigned tasks have different actions to assigned ones.
           if (task.assignee) {
-            task.actions = [ ...TASK_ACTIONS.MANAGER.ASSIGNED ];
+            task.actions = [...TASK_ACTIONS.MANAGER.ASSIGNED];
           } else {
-            task.actions = [ ...TASK_ACTIONS.MANAGER.UNASSIGNED ];
+            task.actions = [...TASK_ACTIONS.MANAGER.UNASSIGNED];
           }
           break;
         default:
@@ -88,16 +88,37 @@ function getAssigneeName(task: any, caseworkers: Caseworker[]): string {
   return null
 }
 
-export function mapCaseworkerData(caseWorkerData: any[]): any[] {
+export function mapCaseworkerData(caseWorkerData: CaseworkerApi[]): Caseworker[] {
+  const caseworkers: Caseworker[] = []
   if (caseWorkerData) {
-    caseWorkerData.forEach((caseWorker: any) => {
-      caseWorker.idamId = caseWorker.id
-      caseWorker.firstName = caseWorker.first_name
-      caseWorker.lastName = caseWorker.last_name
-      caseWorker.email = caseWorker.email_id
+    caseWorkerData.forEach((caseWorkerApi: CaseworkerApi) => {
+      const thisCaseWorker: Caseworker = {
+        email: caseWorkerApi.email_id,
+        firstName: caseWorkerApi.first_name,
+        idamId: caseWorkerApi.id,
+        lastName: caseWorkerApi.last_name,
+        location: mapCaseworkerPrimaryLocation(caseWorkerApi.base_location),
+      }
+      caseworkers.push(thisCaseWorker)
     })
   }
-  return caseWorkerData
+  return caseworkers
+}
+
+export function mapCaseworkerPrimaryLocation(baseLocation: LocationApi[]): Location {
+  let primaryLocation: Location = null
+  if (baseLocation) {
+    baseLocation.forEach((location: LocationApi) => {
+      if (location.is_primary) {
+        primaryLocation = {
+          id: location.location_id,
+          locationName: location.location,
+          services: location.services,
+        }
+      }
+    })
+  }
+  return primaryLocation
 }
 
 export function prepareRoleApiRequest(locationId?: number): any {
@@ -105,7 +126,7 @@ export function prepareRoleApiRequest(locationId?: number): any {
     jurisdiction: ['IA'],
   };
 
-  const payload =  {
+  const payload = {
     attributes,
     roleName: ['tribunal-caseworker', 'senior-tribunal-caseworker'],
     validAt: Date.UTC,

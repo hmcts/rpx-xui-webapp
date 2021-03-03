@@ -19,6 +19,9 @@ describe('HttpZapInterceptor', () => {
                 mock.verify();
             })
         );
+    });
+
+    describe('intercept HTTP requests', () => {
         it('should add X-Content-Type-Options to Headers', inject([HttpClient, HttpTestingController],
             (http: HttpClient, mock: HttpTestingController) => {
                 http.get('/api').subscribe(response => expect(response).toBeTruthy());
@@ -26,6 +29,9 @@ describe('HttpZapInterceptor', () => {
                 mock.verify();
             })
         );
+    });
+
+    describe('intercept HTTP requests', () => {
         it('should not have X-Powered-By in Headers', inject([HttpClient, HttpTestingController],
             (http: HttpClient, mock: HttpTestingController) => {
                 http.get('/api').subscribe(response => expect(response).toBeTruthy());

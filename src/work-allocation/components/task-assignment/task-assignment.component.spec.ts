@@ -7,6 +7,7 @@ import { SessionStorageService } from 'src/app/services';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Caseworker, Location } from '../../models/dtos';
 import { CaseworkerDataService, LocationDataService } from '../../services';
+import { SessionStorageService } from '../../../app/services';
 import { TaskAssignmentComponent } from './task-assignment.component';
 
 // Locations.
@@ -213,75 +214,16 @@ describe('WorkAllocation', () => {
 
     it('should set the user ID correctly', () => {
       // currently set to JD
-      component.setUserId();
       expect(component.userId).toEqual('2');
     });
 
-    it('should check if a caseworker is the user (assigned caseworker)', () => {
-      // only one caseworker is the assigned caseworker (JD)
-      expect(component.isAssignedCaseworker('2')).toBeTruthy();
-      expect(component.isAssignedCaseworker('3')).toBeFalsy();
-      expect(component.isAssignedCaseworker(undefined)).toBeFalsy();
-    });
-
-    it('should set the assigned caseworker', () => {
-      component.assignedCaseworker = undefined;
-      fixture.detectChanges();
-
-      // initial setting is with assigned caseworker JD
-      component.setAssignedCaseworker();
-      expect(component.assignedCaseworker).toEqual(JD);
-
-      component.userId = '3';
-      fixture.detectChanges();
-
-      // Setting should now be JB
-      component.setAssignedCaseworker();
-      expect(component.assignedCaseworker).toEqual(JB);
-    });
-
-    it('should check if a caseworkers location matches the current selected location', () => {
-      const locationsSelect: HTMLSelectElement = getSelect('#task_assignment_location');
-
-      // Now let's select a new location (Location A).
-      locationsSelect.value = locationsSelect.options[1].value; // Location A.
-      locationsSelect.dispatchEvent(new Event('change'));
-      fixture.detectChanges();
-
-      // JS is at location, JB is not
-      expect(component.locationMatches(JB)).toBeFalsy();
-      expect(component.locationMatches(JS)).toBeTruthy();
-
-      // Now let's select a new location (Location B).
-      locationsSelect.value = locationsSelect.options[2].value; // Location B.
-      locationsSelect.dispatchEvent(new Event('change'));
-      fixture.detectChanges();
-
-      // JB is at location, JS is not
-      expect(component.locationMatches(JB)).toBeTruthy();
-      expect(component.locationMatches(JS)).toBeFalsy();
-
-      // Now let's select a new location (Location C).
-      locationsSelect.value = locationsSelect.options[3].value; // Location C.
-      locationsSelect.dispatchEvent(new Event('change'));
-      fixture.detectChanges();
-
-      // Neither caseworker is at location
-      expect(component.locationMatches(JB)).toBeFalsy();
-      expect(component.locationMatches(JS)).toBeFalsy();
+    it('should set the caseworkers location', () => {
+      expect(component.caseworkerLocation).toEqual(JD.location);
     });
 
     it('should set the selected location', () => {
       // initial setting is with assigned caseworker JD, location a
-      component.setSelectedLocation();
       expect(component.location.id).toEqual('a');
-
-      // Now check with JB, location b
-      component.assignedCaseworker = JB;
-      fixture.detectChanges();
-      expect(component.assignedCaseworker).toEqual(JB);
-      component.setSelectedLocation();
-      expect(component.location.id).toEqual('b');
     });
   });
 

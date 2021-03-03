@@ -2,6 +2,7 @@ import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as csrf from 'csurf'
 import * as express from 'express'
+import * as session from 'express-session'
 import * as helmet from 'helmet'
 import { getXuiNodeMiddleware } from './auth'
 import { getConfigValue, showFeature } from './configuration'
@@ -14,7 +15,6 @@ import {
 import * as health from './health'
 import * as log4jui from './lib/log4jui'
 import { JUILogger } from './lib/models'
-import * as session from 'express-session'
 import * as tunnel from './lib/tunnel'
 import openRoutes from './openRoutes'
 import { initProxy } from './proxy.config'
@@ -25,12 +25,12 @@ export const app = express()
 
 if (showFeature(FEATURE_HELMET_ENABLED)) {
   app.use(helmet(getConfigValue(HELMET)))
-  app.use(helmet.noSniff()) // sets X-Content-Type-Options to prevent browsers from MIME-sniffing a response away from the declared content-type.
-  app.use(helmet.frameguard({ action: 'deny' })) // sets the X-Frame-Options header to provide clickjacking protection
-  app.use(helmet.referrerPolicy({ policy: ['origin'] })) //sets the Referrer-Policy header which controls what information is set in the Referer header.
-  app.use(helmet.hidePoweredBy()) // removes the X-Powered-By header
-  app.use(helmet.hsts({ maxAge: 28800000 })) // sets Strict-Transport-Security header that enforces secure (HTTP over SSL/TLS) connections to the server.
-  app.use(helmet.xssFilter()) // disables browsers' cross-site scripting filter by setting the X-XSS-Protection header to 0
+  app.use(helmet.noSniff())
+  app.use(helmet.frameguard({ action: 'deny' }))
+  app.use(helmet.referrerPolicy({ policy: ['origin'] }))
+  app.use(helmet.hidePoweredBy())
+  app.use(helmet.hsts({ maxAge: 28800000 }))
+  app.use(helmet.xssFilter())
   app.use((req, res, next) => {
     res.setHeader('X-Robots-Tag', 'noindex')
     res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate, proxy-revalidate')
@@ -46,14 +46,14 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
   })
   app.disable('x-powered-by')
   app.disable('X-Powered-By')
-  app.use(session({  
-    secret: getConfigValue(SESSION_SECRET),
+  app.use(session({
     cookie: {
       httpOnly: true,
-      secure: true,
       maxAge: 28800000,
       sameSite: 'strict',
-    }
+      secure: true,
+    },
+    secret: getConfigValue(SESSION_SECRET),
   }))
   app.use(helmet.contentSecurityPolicy({
     directives: {
@@ -62,7 +62,7 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
         '*.gov.uk',
         'dc.services.visualstudio.com',
         '*.launchdarkly.com',
-        'www.google-analytics.com'
+        'www.google-analytics.com',
       ],
       defaultSrc: [`'self'`],
       fontSrc: ['\'self\'', 'https://fonts.gstatic.com', 'data:'],
@@ -78,20 +78,20 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
         'http://stats.g.doubleclick.net/',
         'http://ssl.gstatic.com/',
         'http://www.gstatic.com/',
-        'https://fonts.gstatic.com'
+        'https://fonts.gstatic.com',
       ],
       mediaSrc: ['\'self\''],
       scriptSrc: [
         '\'self\'',
         'www.google-analytics.com',
         'www.googletagmanager.com',
-        'az416426.vo.msecnd.net'
+        'az416426.vo.msecnd.net',
       ],
       styleSrc: [
         '\'self\'',
         'https://fonts.googleapis.com',
         'https://fonts.gstatic.com',
-        'http://tagmanager.google.com/'
+        'http://tagmanager.google.com/',
       ],
     },
   }))
@@ -100,7 +100,7 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
 app.use(cookieParser(getConfigValue(SESSION_SECRET)))
 
 app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: true, secure: true, sameSite: 'strict' } }))
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
   res.cookie('XSRF-TOKEN', req.csrfToken())
   res.locals.csrftoken = req.csrfToken()
   next()

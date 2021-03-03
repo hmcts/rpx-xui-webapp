@@ -2,7 +2,6 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { SessionStorageService } from 'src/app/services';
 
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Caseworker, Location } from '../../models/dtos';

@@ -123,7 +123,6 @@ describe('AvailableTasksFilterComponent', () => {
 
     // And it should now be changed back to what it was before.
     const selectionAfterCancel = [ ...component.locationFilter.selection ];
-
     expect(selectionAfterCancel.length).toEqual(startingSelection.length);
     expect(selectionAfterCancel[0].locationName).toEqual(startingSelection[0].locationName);
   });

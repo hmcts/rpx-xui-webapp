@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { CheckboxListComponent } from '@hmcts/rpx-xui-common-lib';
 
@@ -55,6 +55,7 @@ export class AvailableTasksFilterComponent implements OnInit {
     private readonly router: Router
   ) {}
 
+
   public ngOnInit(): void {
     let preselection: Location[] = [ FilterConstants.Defaults.LOCATION ];
     // See if we have anything stored in the session for the filter.
@@ -109,5 +110,4 @@ export class AvailableTasksFilterComponent implements OnInit {
       this.detailsElement.open = false;
     }
   }
-
 }

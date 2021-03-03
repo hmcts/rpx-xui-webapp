@@ -104,9 +104,6 @@ export class TaskAssignmentComponent implements OnInit {
   private pCaseworkerLocation: Location;
   private readonly caseworkerDisplayName: CaseworkerDisplayName = new CaseworkerDisplayName();
 
-  public userId: string;
-  public assignedCaseworker: Caseworker;
-
   constructor(
     private readonly router: Router,
     private readonly locationService: LocationDataService,
@@ -120,6 +117,7 @@ export class TaskAssignmentComponent implements OnInit {
     // set the user details in order to get initially selected location
     this.setupUserId();
     this.setupCaseworkerLocation();
+
 
     // Get the locations for this component.
     this.locationService.getLocations().subscribe(locations => {
@@ -163,34 +161,6 @@ export class TaskAssignmentComponent implements OnInit {
    */
   private isLoggedInUser(idamId: string): boolean {
     return idamId === this.pUserId;
-  }
-
-  /**
-   * Sets the logged in user id
-   */
-  public setUserId(): void {
-    const userInfoStr = this.sessionStorageService.getItem('userDetails');
-    if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
-      this.userId = userInfo.id;
-    }
-    return undefined;
-  }
-
-  /**
-   * Using set user id, gets caseworker details for the logged in caseworker
-   */
-  public setAssignedCaseworker(): void {
-    this.caseworkerService.getAll().subscribe(caseworkers => {
-      const assignedCaseworker = caseworkers.find(cw => this.isAssignedCaseworker(cw.idamId));
-      this.assignedCaseworker = assignedCaseworker;
-    }, error => {
-      handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
-    });
-  }
-
-  public isAssignedCaseworker(idamId: string): boolean {
-    return idamId === this.userId ? true : false
   }
 
   /**

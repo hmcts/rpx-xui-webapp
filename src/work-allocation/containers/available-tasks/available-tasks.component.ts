@@ -79,9 +79,9 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
    */
   public claimTaskAndGo(task: Task): void {
     this.taskService.claimTask(task.id).subscribe(() => {
-      const caseRedirectUrl = `/cases/case-details/${task.caseReference}`
+      const goToCaseUrl = `/cases/case-details/${task.caseReference}`
       // navigates to case details page for specific case id
-      this.router.navigate([caseRedirectUrl], {
+      this.router.navigate([goToCaseUrl], {
         state: {
           showMessage: true,
           messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS}

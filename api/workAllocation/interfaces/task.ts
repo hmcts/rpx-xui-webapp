@@ -60,10 +60,25 @@ export interface Location {
     services: string[]
 }
 
+export interface LocationApi {
+    location_id: string
+    location: string
+    is_primary: boolean
+    services: string[]
+}
+
 export interface Caseworker {
     firstName: string
     lastName: string
     idamId: string
     email: string
     location: Location
+}
+
+export interface CaseworkerApi {
+    first_name: string
+    last_name: string
+    id: string
+    email_id: string
+    base_location: LocationApi[]
 }

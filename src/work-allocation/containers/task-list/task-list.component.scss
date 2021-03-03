@@ -13,6 +13,22 @@
   border: 0px;
 }
 
+.increased_highlight {
+  padding-right: 20px;
+
+  &:hover{
+    padding-right: 20px;
+  }
+
+  &:after{
+    right: 0.5px;
+  }
+  
+  &:before{
+    right: 0.5px;
+  }
+}
+
 .header-cell {
 
   display: flex;

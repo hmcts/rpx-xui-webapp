@@ -157,7 +157,7 @@ export class TaskAssignmentComponent implements OnInit {
   }
 
   /**
-   * Checks if the caseworker matches the caseworker that will set the location
+   * Checks if the current caseworker matches the caseworker that will set the location (logged in user)
    */
   private isLoggedInUser(idamId: string): boolean {
     return idamId === this.pUserId;

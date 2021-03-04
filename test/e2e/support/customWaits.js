@@ -19,7 +19,10 @@ class BrowserWaits{
         await browser.sleep(waitInSec*1000);
     }
    
+    async waitForElementTime(element,waitTime) {
+        await browser.wait(EC.presenceOf(element), waitTime ? waitTime :  10000, "Error : " + element.locator().toString());
 
+    }
 
     async waitForElement(element,message){
         const startTime = Date.now();

@@ -4,6 +4,8 @@ import { AppConfig } from './ccd-case.config';
 import {AppConfigService} from '../config/configuration.services';
 import {StoreModule} from '@ngrx/store';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { of } from 'rxjs';
 
 class MockConfigService {
   config;
@@ -16,7 +18,10 @@ class MockConfigService {
   }
 }
 
+const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled'])
+
 describe('AppConfiguration', () => {
+  mockFeatureToggleService.isEnabled.and.returnValue(of(false));
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -27,6 +32,8 @@ describe('AppConfiguration', () => {
         AppConfig,
         AppConfigService,
         { provide: AppConfigService, useClass: MockConfigService },
+        FeatureToggleService,
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
       ]
     });
   });

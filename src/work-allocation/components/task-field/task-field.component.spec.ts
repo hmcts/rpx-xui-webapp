@@ -670,6 +670,38 @@ describe('WorkAllocation', () => {
       expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
     });
 
+    it('should handle a CASE_REFERENCE_AS_STRING type', () => {
+
+      // Set up the config and the task.
+      const config: TaskFieldConfig = getConfig('case_id', TaskFieldType.CASE_REFERENCE_STRING);
+      const task: Task = {
+        id: 'The task ID',
+        case_id: '1234567890987654',
+        caseName: 'The case name',
+        caseCategory: 'The case category',
+        location: 'The location',
+        taskName: 'The task name',
+        dueDate: new Date(),
+        actions: []
+      };
+
+      // Add the task and it should work (showing the case reference).
+      component.config = config;
+      component.task = task;
+      fixture.detectChanges();
+      expect(fixture.debugElement.nativeElement.innerText).toBe('1234-5678-9098-7654');
+
+      // Change the value of task.case_id.
+      task.case_id = '9876543210123456';
+      fixture.detectChanges();
+      expect(fixture.debugElement.nativeElement.innerText).toBe('9876-5432-1012-3456');
+
+      // Clear out the value of task.case_id.
+      task.case_id = undefined;
+      fixture.detectChanges();
+      expect(fixture.debugElement.nativeElement.innerText).toBe('');
+    });
+
     it('should appropriately parse an ISO date string with toDate', () => {
       const DATE = '2020-12-03T15:00:00';
       const output = component.toDate(DATE);

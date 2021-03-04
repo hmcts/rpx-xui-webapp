@@ -1,3 +1,4 @@
+
 const CCDCaseField = require('./CCDCaseField');
 const configTemplate = {
     "id": "FR_solicitorCreate",
@@ -6,7 +7,7 @@ const configTemplate = {
     "case_id": null,
     "case_fields": [],
     "event_token": "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJpcTlxNWs5NW85cWllNTk5NnU1MmEyNGhqYiIsInN1YiI6IjQxYTkwYzM5LWQ3NTYtNGViYS04ZTg1LTViNWJmNTZiMzFmNSIsImlhdCI6MTU5NjU0NzA2NSwiZXZlbnQtaWQiOiJGUl9zb2xpY2l0b3JDcmVhdGUiLCJjYXNlLXR5cGUtaWQiOiJGaW5hbmNpYWxSZW1lZHlDb250ZXN0ZWQiLCJqdXJpc2RpY3Rpb24taWQiOiJESVZPUkNFIiwiY2FzZS12ZXJzaW9uIjoiYmYyMWE5ZThmYmM1YTM4NDZmYjA1YjRmYTA4NTllMDkxN2IyMjAyZiJ9.QXtddQWsWbl8H8tKvM-SViK-E9JrFeU6bS0wlt5eJ0o",
-    "wizard_pages": [],
+    "wizard_pages": [ ],
     "show_summary": true,
     "show_event_notes": false,
     "end_button_label": null,
@@ -28,9 +29,6 @@ const wizardPageTemplate = {
     "retries_timeout_mid_event": []
 };
 
-
-
-
 class CCDCaseConfig extends CCDCaseField{
 
     caseConfigTemplate = JSON.parse(JSON.stringify(configTemplate));
@@ -47,8 +45,8 @@ class CCDCaseConfig extends CCDCaseField{
         this.currentCollectionField = null;
 
     }
-
-    addWizardPage(id, label) {
+    
+    addWizardPage(id, label){
         let wizardPage = JSON.parse(JSON.stringify(wizardPageTemplate));
         wizardPage.id = id;
         wizardPage.label = label;
@@ -59,6 +57,7 @@ class CCDCaseConfig extends CCDCaseField{
         return this; 
     }
 
+   
 
     addCCDFieldToPage(wizardPage,fieldConfig){
         
@@ -68,7 +67,7 @@ class CCDCaseConfig extends CCDCaseField{
             "order": wizardPage.wizard_page_fields.length,
             "page_column_no": 1,
             "complex_field_overrides": []
-        });
+        }); 
         return ccdField;
     };
 
@@ -89,7 +88,6 @@ class CCDCaseConfig extends CCDCaseField{
             this.currentComplexField = null;
             this.currentCollectionField = null;
         }
-        const ccdField = this.getCCDFieldTemplateCopy(fieldConfig);
 
         this.caseConfigTemplate.case_fields.push(ccdField);
         this.currentWizardPage.wizard_page_fields.push({
@@ -112,16 +110,37 @@ class CCDCaseConfig extends CCDCaseField{
         return this;
     }
 
+    updateEventProps(fieldprops) {
+        this.setObjectProps(this.caseConfigTemplate, fieldprops);
+        return this;
+    }
+
     setFieldProps(fieldprops){
         this.checkPageAndFiedlSet();
         this.setObjectProps(this.currentCaseField,fieldprops);
         return this; 
     }
 
+    updateFieldProps(fieldId, fieldprops) {
+        const fieldConfig = this.getCaseFieldConfig(fieldId);
+
+        this.setObjectProps(fieldConfig, fieldprops);
+        return this;
+    }
+
+    
+
     setFieldTypeProps(fieldTypeprops){
         this.checkPageAndFiedlSet();
         this.setObjectProps(this.currentCaseField.field_type, fieldTypeprops);
         return this; 
+    }
+
+    updateFieldTypeProps(fieldId, fieldTypeprops) {
+        const fieldConfig = this.getCaseFieldConfig(fieldId);
+
+        this.setObjectProps(fieldConfig.field_type, fieldTypeprops);
+        return this;
     }
 
     checkPageAndFiedlSet(){
@@ -136,32 +155,23 @@ class CCDCaseConfig extends CCDCaseField{
     getCase(){
         return this.caseConfigTemplate; 
     }
-  
 
+    getWizardPageConfig(pageId){
+        return this.caseConfigTemplate.wizard_pages.filter(wizardpage => wizardpage.id === pageId )[0];
+    }
+
+    getCaseFieldConfig(caseFieldId){
+        const fields = this.caseConfigTemplate.case_fields.filter(caseField => caseField.id === caseFieldId);
+        if (fields.length === 0){
+            const fieldsIds = this.caseConfigTemplate.case_fields.map(caseField => caseField.id);
+            throw new Error(`Fields with id ${caseFieldId} not found in case event config fields: ${JSON.stringify(fieldsIds)}`);
+        } 
+        return fields[0];
+
+    }
+ 
     
 }
 
-    setFieldTypeProps(fieldTypeprops) {
-        this.checkPageAndFiedlSet();
-        this.setObjectProps(this.currentCaseField.field_type, fieldTypeprops);
-        return this;
-    }
-
-    checkPageAndFiedlSet() {
-        if (!this.currentWizardPage) {
-            throw new Error("No wizard page added.");
-        }
-        if (!this.currentCaseField) {
-            throw new Error("No case field added.");
-        }
-    }
-
-    getCase() {
-        return this.caseConfigTemplate;
-    }
-
-
-
-}
-
 module.exports = CCDCaseConfig;
+

@@ -16,7 +16,7 @@ nodejs:
   memoryRequests: 512Mi
   memoryLimits: 2048Mi
   autoscaling:        # Default is false
-    enabled: true
+    enabled: true 
     maxReplicas: 16    # Required setting
     targetCPUUtilizationPercentage: 80 # Default is 80% target CPU utilization
   environment:

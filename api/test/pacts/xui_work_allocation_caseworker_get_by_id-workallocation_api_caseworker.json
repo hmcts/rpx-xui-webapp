@@ -1,0 +1,260 @@
+{
+  "consumer": {
+    "name": "xui_work_allocation_caseworker_get_by_id"
+  },
+  "provider": {
+    "name": "WorkAllocation_api_caseworker"
+  },
+  "interactions": [
+    {
+      "description": "a request for a caseworker with an id of 1",
+      "providerState": "John Smith is returned",
+      "request": {
+        "method": "GET",
+        "path": "/caseworker/1"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "firstName": "John",
+          "lastName": "Smith",
+          "idamId": "1",
+          "email": "john.smith@caseworkers.gov.uk",
+          "location": {
+            "id": "a",
+            "locationName": "Taylor House",
+            "services": [
+              "a"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "description": "a request for a caseworker with an id of 2",
+      "providerState": "Jane Doe is returned",
+      "request": {
+        "method": "GET",
+        "path": "/caseworker/2"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "firstName": "Jane",
+          "lastName": "Doe",
+          "idamId": "2",
+          "email": "jane.doe@caseworkers.gov.uk",
+          "location": {
+            "id": "a",
+            "locationName": "Taylor House",
+            "services": [
+              "a"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "description": "a request for a caseworker with an id of 3",
+      "providerState": "Joseph Bloggs is returned",
+      "request": {
+        "method": "GET",
+        "path": "/caseworker/3"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "firstName": "Joseph",
+          "lastName": "Bloggs",
+          "idamId": "3",
+          "email": "joe.bloggs@caseworkers.gov.uk",
+          "location": {
+            "id": "b",
+            "locationName": "Taylor Swift",
+            "services": [
+              "a",
+              "b"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "description": "a request for a caseworker with an id of 4",
+      "providerState": "Noah Body is returned",
+      "request": {
+        "method": "GET",
+        "path": "/caseworker/4"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "firstName": "Noah",
+          "lastName": "Body",
+          "idamId": "4",
+          "email": "noah.body@caseworkers.gov.uk",
+          "location": {
+            "id": "b",
+            "locationName": "Taylor Swift",
+            "services": [
+              "a",
+              "b"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "description": "a request for a caseworker with an id of 400",
+      "providerState": "Brad Request is returned",
+      "request": {
+        "method": "GET",
+        "path": "/caseworker/400"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "firstName": "Brad",
+          "lastName": "Request",
+          "idamId": "400",
+          "email": "brad.request400@hotmail.com",
+          "location": {
+            "id": "c",
+            "locationName": "Dodgy Location",
+            "services": [
+              "c"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "description": "a request for a caseworker with an id of 204",
+      "providerState": "Al Reddy-Dunne is returned",
+      "request": {
+        "method": "GET",
+        "path": "/caseworker/204"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "firstName": "Al",
+          "lastName": "Reddy-Dunne",
+          "idamId": "204",
+          "email": "al.reddydunne204@hotmail.co.uk",
+          "location": {
+            "id": "c",
+            "locationName": "Dodgy Location",
+            "services": [
+              "c"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "description": "a request for a caseworker with an id of 403",
+      "providerState": "Nat Allowed is returned",
+      "request": {
+        "method": "GET",
+        "path": "/caseworker/403"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "firstName": "Nat",
+          "lastName": "Allowed",
+          "idamId": "403",
+          "email": "nat.allowed.403@gmail.com",
+          "location": {
+            "id": "c",
+            "locationName": "Dodgy Location",
+            "services": [
+              "c"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "description": "a request for a caseworker with an id of 415",
+      "providerState": "Anne Supported is returned",
+      "request": {
+        "method": "GET",
+        "path": "/caseworker/415"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "firstName": "Anne",
+          "lastName": "Supported",
+          "idamId": "415",
+          "email": "anne_supported_415@dodgy-url.net",
+          "location": {
+            "id": "c",
+            "locationName": "Dodgy Location",
+            "services": [
+              "c"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "description": "a request for a caseworker with an id of 500",
+      "providerState": "Sir Van Error is returned",
+      "request": {
+        "method": "GET",
+        "path": "/caseworker/500"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "firstName": "Sir",
+          "lastName": "Van Error",
+          "idamId": "500",
+          "email": "sir.van@error500.org",
+          "location": {
+            "id": "c",
+            "locationName": "Dodgy Location",
+            "services": [
+              "c"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  }
+}

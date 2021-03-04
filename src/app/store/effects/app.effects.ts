@@ -7,6 +7,7 @@ import { TermsConditionsService } from 'src/app/services/terms-and-conditions/te
 import { AppConfigService } from '../../services/config/configuration.services';
 import * as fromActions from '../actions';
 import { UserService } from '../../services/user/user.service';
+import { SessionStorageService } from 'src/app/services/session-storage/session-storage.service';
 
 @Injectable()
 export class AppEffects {
@@ -15,7 +16,8 @@ export class AppEffects {
     private readonly configurationServices: AppConfigService,
     private readonly authService: AuthService,
     private readonly termsService: TermsConditionsService,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly sessionStorageService: SessionStorageService
   ) { }
 
   @Effect()
@@ -85,8 +87,8 @@ export class AppEffects {
     ofType(fromActions.LOAD_USER_DETAILS),
     switchMap(() => {
       return this.userService.getUserDetails().pipe(
+        tap((userDetails) => this.sessionStorageService.setItem('userDetails', JSON.stringify(userDetails.userInfo))),
         map(userDetails => new fromActions.LoadUserDetailsSuccess(userDetails)),
-        // TODO: catch error
         catchError(err => of(new fromActions.LoadUserDetailsFail(err)))
       );
     })

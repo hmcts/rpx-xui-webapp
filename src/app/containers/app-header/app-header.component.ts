@@ -2,8 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
-import { CookieService } from 'ngx-cookie';
-import { Observable, of, Subscription } from 'rxjs';
+import { combineLatest, Observable, of, Subscription } from 'rxjs';
+import { UserDetails } from 'src/app/models/user-details.model';
 
 import { AppUtils } from '../../app-utils';
 import { AppConstants } from '../../app.constants';
@@ -52,22 +52,15 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   public showNavItems: Observable<boolean>;
 
   private subscription: Subscription;
+  public userDetails$: Observable<UserDetails>;
+  public defaultTheme: Theme = AppConstants.DEFAULT_USER_THEME;
 
   constructor(
     private readonly store: Store<fromActions.State>,
-    private readonly cookieService: CookieService,
     private readonly featureToggleService: FeatureToggleService,
     private readonly loggerService: LoggerService,
     public router: Router
   ) {}
-
-  /**
-   * Get Default Theme
-   */
-  public getDefaultTheme(): Theme {
-
-    return AppConstants.DEFAULT_USER_THEME;
-  }
 
   /**
    * Get Default Application Themes
@@ -80,19 +73,6 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   public getDefaultApplicationThemes() {
 
     return AppConstants.APPLICATION_USER_THEMES;
-  }
-
-  /**
-   * Get Serialised User Roles From Cookie
-   *
-   * Note that the cookie's user names have a j: in the string
-   * as Express in the Node layer denotes Json with j:, when it serialises Json into strings.
-   *
-   * @return j:["pui-caa","payments","caseworker-publiclaw-solicitor"]
-   */
-  public getSerialisedUserRolesFromCookie(): string {
-
-    return this.cookieService.get('roles');
   }
 
   /**
@@ -156,39 +136,44 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    * We then setup the Application Header accordingly.
    */
   public ngOnInit(): void {
-
-    this.featureToggleService.getValue<Theme[]>('mc-application-themes', this.getDefaultApplicationThemes())
-      .subscribe(applicationThemes => {
-
-        const applicationTheme: Theme = this.getApplicationThemeForUser(applicationThemes);
-
-        this.hideNavigationListener(this.store);
-
-        this.setAppHeaderProperties(applicationTheme);
+    this.userDetails$ = this.store.pipe(select(fromActions.getUserDetails));
+    this.setAppHeaderProperties(this.defaultTheme);
+    const applicationThemes$ = this.featureToggleService.getValue<Theme[]>('mc-application-themes', this.getDefaultApplicationThemes());
+    combineLatest([this.userDetails$, applicationThemes$]).subscribe(([userDetails, applicationThemes]) => {
+        this.setHeaderContent(userDetails, applicationThemes);
       });
 
     // Set up the active link whenever we detect that navigation has completed.
     this.router.events.subscribe(event => {
-      if (event instanceof NavigationEnd) {
-        this.setupActiveNavLink(this.navItems);
-      }
+      this.setNavigationEnd(event);
     });
   }
 
-  public getApplicationThemeForUser(applicationThemes: Theme[]): Theme {
-
-    const serialisedUserRoles: string = this.getSerialisedUserRolesFromCookie();
-    const defaultTheme = this.getDefaultTheme();
-
-    if (serialisedUserRoles) {
-      try {
-          const userRoles: string[] = this.deserialiseUserRoles(serialisedUserRoles);
-          return this.getUsersTheme(userRoles, applicationThemes, defaultTheme);
-      } catch (error) {
-        this.loggerService.error(error);
-      }
+  public setHeaderContent(userDetails, applicationThemes) {
+    if (userDetails.userInfo) {
+      const applicationTheme: Theme = this.getApplicationThemeForUser(applicationThemes, userDetails.userInfo.roles);
+      this.hideNavigationListener(this.store);
+      this.setAppHeaderProperties(applicationTheme);
     }
-    return defaultTheme;
+  }
+
+  public setNavigationEnd(event) {
+    if (event instanceof NavigationEnd) {
+      this.setupActiveNavLink(this.navItems);
+    }
+  }
+
+  public getApplicationThemeForUser(applicationThemes: Theme[], userRoles: string[]): Theme {
+    try {
+        return this.getUsersTheme(userRoles, applicationThemes, this.defaultTheme);
+    } catch (error) {
+      return this.logErrorAndReturnDefaultTheme(error);
+    }
+  }
+
+  public logErrorAndReturnDefaultTheme(error): Theme {
+    this.loggerService.error(error);
+    return this.defaultTheme;
   }
 
   /**

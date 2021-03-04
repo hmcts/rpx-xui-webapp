@@ -70,7 +70,7 @@ class CreateCaseStartPage {
   async amOnPage(){
     BrowserWaits.waitForElementClickable($('#cc-jurisdiction'));
     let header = await this.getPageHeader();
-    return header === 'Create Case'
+    return header === 'Create Case';
   }
 
 }

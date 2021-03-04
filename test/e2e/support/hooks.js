@@ -94,10 +94,10 @@ const CucumberReportLog = require("./reportLogger");
 
 
 defineSupportCode(({ Before,After }) => {
-    Before(function (scenario, done) {
+    Before(function (scenario) {
+        global.scenarioData = {};
         const world = this;
         CucumberReportLog.setScenarioWorld(this);
-        done();
     });
 
     After(async function(scenario) {
@@ -113,6 +113,10 @@ defineSupportCode(({ Before,After }) => {
                 }
             }
             CucumberReportLog.AddJson(browserErrorLogs);
+        } else {
+            await browser.manage().logs().get('browser');
+            await CucumberReportLog.AddMessage("Cleared browser logs after successful scenario.");
+            await CucumberReportLog.AddScreenshot(global.screenShotUtils);
         }
     });
 });

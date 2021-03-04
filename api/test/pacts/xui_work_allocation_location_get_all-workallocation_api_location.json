@@ -1,0 +1,67 @@
+{
+  "consumer": {
+    "name": "xui_work_allocation_location_get_all"
+  },
+  "provider": {
+    "name": "WorkAllocation_api_location"
+  },
+  "interactions": [
+    {
+      "description": "a request for locations",
+      "providerState": "locations are returned",
+      "request": {
+        "method": "GET",
+        "path": "/location"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": [
+          {
+            "id": "d",
+            "locationName": "Bleak House",
+            "services": [
+              "c"
+            ]
+          },
+          {
+            "id": "c",
+            "locationName": "Dodgy Location",
+            "services": [
+              "c"
+            ]
+          },
+          {
+            "id": "e",
+            "locationName": "Orphanage",
+            "services": [
+              "c"
+            ]
+          },
+          {
+            "id": "a",
+            "locationName": "Taylor House",
+            "services": [
+              "a"
+            ]
+          },
+          {
+            "id": "b",
+            "locationName": "Taylor Swift",
+            "services": [
+              "a",
+              "b"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  }
+}

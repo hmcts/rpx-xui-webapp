@@ -7,7 +7,6 @@ Feature: FR create case workflow
     When I click on create case button
     Then Create case page should be displayed
 
-  @fullfunctional
   Scenario Outline:  Start FR Case creation
     When I start case with jurisdiction "<Jurisdiction>" case type "<CaseType>" and event "<Event>"
     Then I am on case form page
@@ -16,7 +15,6 @@ Feature: FR create case workflow
       | Family Divorce | Financial Remedy Consented | Consent Order Application |
       | Family Divorce | Contested Financial Remedy | Form A Application        |
 
-  @fullfunctional
   Scenario Outline:  Cancel FR Case creation
     When I start case with jurisdiction "<Jurisdiction>" case type "<CaseType>" and event "<Event>"
     When I click cancel link

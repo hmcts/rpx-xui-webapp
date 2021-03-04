@@ -24,7 +24,7 @@ class MockApp{
             put: { ...requestMapping.put },
             delete: { ...requestMapping.delete }
         };
-        this.configurations = Object.assign({}, configurations);
+        // this.configurations = Object.assign({}, configurations);
         console.log("Mock Config Initialized");
         return "done";
     }
@@ -69,11 +69,11 @@ class MockApp{
         if (this.server){
             await this.server.close();
             this.server = null;
+            console.log("Mock server stopped");
+
         }else{
             console.log("Mock server is null or undefined");
         }
-        this.conf = {  };
-        this.configurations = { };
     }
 
    
@@ -107,6 +107,7 @@ module.exports = mockInstance;
 const args = minimist(process.argv)
 if (args.standalone){
     mockInstance.init();
+
     setUpcaseConfig();
     // getDLCaseConfig();
     // collectionDynamicListeventConfig()
@@ -114,35 +115,26 @@ if (args.standalone){
     mockInstance.startServer()
 }
 
+function setUpcaseConfig() {
+    const { getTestJurisdiction }  = require('../ngIntegration/mockData/ccdCaseMock');
+    mockInstance.onGet('/data/internal/case-types/:jurisdiction/event-triggers/:caseType', (req, res) => {
+        const caseEventConfig = getTestJurisdiction();
 
+        let multiSelectListField = caseEventConfig.getCaseFieldConfig("MultiSelectListField");
+        // const page1 = caseEventConfig.getWizardPageConfig("testPage1");
+        // page1.label = "For demo 123456"
 
+        const textField0 = caseEventConfig.getCaseFieldConfig("TextField0");
+        textField0.display_context = "MANDATORY";
 
-function setUpcaseConfig(caseConfig) {
-    mockInstance.onGet('/data/internal/cases/:caseid/event-triggers/:eventId', (req, res) => {
-        res.send(getDLCaseConfig().getCase());
-    });
+        // textField0.show_summary_change_option = false;
+        // textField0.show_summary_content_option = true;
+        multiSelectListField.show_condition = "Gender=\"notGiven\"";
 
-    mockInstance.onPost('/data/case-types/:caseType/validate', (req, res) => {
-        caseValidationRequestBody = req.body;
-        let pageId = req.query.pageId;
-        if (pageId === "testPage1"){
-            caseValidationRequestBody.data.dl2 = { value: { code: "Testitem_1234", label: "Test item 1234" }, list_items: [{ code: "Testitem_1234", label: "Test item 1234" }, { code: "Testitem_12345", label: "Test item 12345" }]}
-        }
-        const responseBody = {
-            data: caseValidationRequestBody.data,
-            "_links": { "self": { "href": "http://ccd-data-store-api-aat.service.core-compute-demo.internal" + req.path + "?pageId=" + req.query.pageId } }
-        }
-        res.send(responseBody);
-    });
+        // const page2 = caseEventConfig.getWizardPageConfig("testPage2");
+        // page2.show_condition = "TextField0=\"SHOW\"";
 
-    mockInstance.onPost('/data/cases/:caseid/events', (req, res) => {
-        caseEventSubmitRequestBody = req.body;
-        const responseBody = {
-            id: Date.now(),
-            data: req.body.data,
-            "_links": { "self": { "href": "http://ccd-data-store-api-demo.service.core-compute-demo.internal" + req.path + "?ignore-warning=false" } }
-        }
-        res.send(responseBody)
+        res.send(caseEventConfig.getCase());
     });
 
 }

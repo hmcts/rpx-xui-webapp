@@ -28,7 +28,8 @@ import {
   preparePostTaskUrlAction,
   prepareRoleApiRequest,
   prepareRoleApiUrl,
-  prepareSearchTaskUrl
+  prepareSearchTaskUrl,
+  prepareTaskSearchForCompletable
 } from './util';
 
 export const baseWorkAllocationTaskUrl = getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH);
@@ -176,6 +177,26 @@ export async function searchCaseWorker(req: EnhancedRequest, res: Response, next
     res.status(status);
     res.send(data);
   } catch (error) {
+    next(error);
+  }
+}
+
+export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Response, next: NextFunction) {
+  try {
+    const postTaskPath: string = prepareTaskSearchForCompletable(baseWorkAllocationTaskUrl);
+    console.log('req.body.searchRequest', req.body.searchRequest)
+    const reqBody = {
+      "case-id": req.body.searchRequest.ccdId,
+      "case-jurisdiction": req.body.searchRequest.jurisdiction,
+      "case-type": req.body.searchRequest.caseTypeId,
+      "event-id": req.body.searchRequest.eventId
+    }
+    console.log('reqBody', reqBody)
+    const { status, data } = await handlePostSearch(postTaskPath, reqBody, req);
+    res.status(status);
+    res.send(data);
+  } catch (error) {
+    console.log(error)
     next(error);
   }
 }

@@ -1,6 +1,8 @@
 import {Injectable} from '@angular/core';
 import {AbstractAppConfig, CaseEditorConfig} from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import {AppConfigService} from '../config/configuration.services';
+import { AppConstants } from '../../app.constants';
 
 
 /**
@@ -13,10 +15,15 @@ import {AppConfigService} from '../config/configuration.services';
 export class AppConfig extends AbstractAppConfig {
 
   protected config: CaseEditorConfig;
+  private workallocationUrl: string;
 
-  constructor(private appConfigService: AppConfigService) {
+  constructor(
+    private appConfigService: AppConfigService, 
+    private readonly featureToggleService: FeatureToggleService
+    ) {
     super();
     this.config = this.appConfigService.getEditorConfiguration() || {};
+    this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.workAllocation).subscribe(isFeatureEnabled => this.workallocationUrl = isFeatureEnabled ? 'workallocation' : null);
   }
 
   public load(): Promise<void> {
@@ -125,6 +132,6 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getWorkAllocationApiUrl(): string {
-    return 'workallocation';
+    return this.workallocationUrl;
   }
 }

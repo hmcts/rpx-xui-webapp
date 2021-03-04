@@ -24,7 +24,7 @@ describe('HttpZapInterceptor', () => {
         injector = getTestBed();
         // httpMock = injector.get(HttpTestingController);
     }
-  
+
     // beforeEach(() => TestBed.configureTestingModule({
     //         imports: [HttpClientTestingModule],
     //         providers: [
@@ -40,8 +40,8 @@ describe('HttpZapInterceptor', () => {
             (http: HttpClient, mock: HttpTestingController) => {
                 http.get('/api').subscribe();
                 const httpRequest = mock.expectOne('/api');
-                expect(httpRequest.request.headers.has("X-XSS-Protection")).toBeTruthy();
-                expect(httpRequest.request.headers.has("X-XSS-Protection")).toEqual(true);
+                expect(httpRequest.request.headers.has('X-XSS-Protection')).toBeTruthy();
+                expect(httpRequest.request.headers.has('X-XSS-Protection')).toEqual(true);
                 mock.verify();
             })
         );

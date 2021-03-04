@@ -4,7 +4,7 @@
   <!-- Column Headers and Cells -->
   <ng-container *ngFor="let field of fields" [cdkColumnDef]="field.name">
     <th class="govuk-table__header" [attr.aria-sort]="getColumnSortedSetting(field.sortName)" cdk-header-cell *cdkHeaderCellDef>
-      <button class="column_sort" *ngIf="field.columnLabel" type="button" [id]="'sort_by_' + field.sortName" data-index="0"
+      <button class="column-sort" *ngIf="field.columnLabel" type="button" [id]="'sort_by_' + field.sortName" data-index="0"
               (click)="onSortHandler(field.sortName)" >{{field.columnLabel}}</button>
     </th>
     <td class="govuk-table__cell border-none" cdk-cell *cdkCellDef="let rowData">

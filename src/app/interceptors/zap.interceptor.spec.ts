@@ -4,6 +4,7 @@ import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { HttpZapInterceptor } from './zap.interceptor';
 import { Provider } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
+import { tick } from '@angular/core/src/render3';
 
 describe('HttpZapInterceptor', () => {
 
@@ -45,6 +46,15 @@ describe('HttpZapInterceptor', () => {
                 mock.verify();
             })
         );
+        it('should NOT have X-XSRF-TOKEN header', inject([HttpClient, HttpTestingController],
+            (http: HttpClient, mock: HttpTestingController) => {
+                http.get('/api').subscribe();
+                const httpRequest = mock.expectOne('/api');
+                expect(httpRequest.request.headers.has('X-XSRF-TOKEN')).toBeFalsy();
+                expect(httpRequest.request.headers.has('X-XSRF-TOKEN')).toEqual(false);
+                mock.verify();
+            })
+        );
         it('should add X-XSS-Protection to Headers', inject([HttpClient, HttpTestingController],
             (http: HttpClient, mock: HttpTestingController) => {
                 http.get('/api').subscribe(response => expect(response).toBeTruthy());
@@ -62,7 +72,7 @@ describe('HttpZapInterceptor', () => {
         it('should not have X-Powered-By in Headers', inject([HttpClient, HttpTestingController],
             (http: HttpClient, mock: HttpTestingController) => {
                 http.get('/api').subscribe(response => expect(response).toBeTruthy());
-                mock.expectOne(req => (!req.headers.has('X-Powered-By')));
+                mock.expectOne(req => (!req.headers.has('X-Powered-By') && !req.headers.has('x-powered-by')));
                 mock.verify();
             })
         );

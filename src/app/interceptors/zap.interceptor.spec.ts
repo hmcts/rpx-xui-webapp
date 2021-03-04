@@ -1,27 +1,52 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { TestBed, inject, getTestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { HttpZapInterceptor } from './zap.interceptor';
+import { Provider } from '@angular/core';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('HttpZapInterceptor', () => {
-    beforeEach(() => TestBed.configureTestingModule({
-            imports: [HttpClientTestingModule],
+
+    let httpMock: HttpTestingController;
+    let injector: TestBed;
+
+    function createTestModule(providers: Provider[] = []) {
+        TestBed.configureTestingModule({
+            imports: [HttpClientTestingModule, RouterTestingModule],
             providers: [
-                { provide: HTTP_INTERCEPTORS, useClass: HttpZapInterceptor, multi: true },
+            {
+                provide: HTTP_INTERCEPTORS,
+                useClass: HttpZapInterceptor,
+                multi: true
+            },
             ]
-    }));
+        });
+        injector = getTestBed();
+        httpMock = injector.get(HttpTestingController);
+    }
+  
+    // beforeEach(() => TestBed.configureTestingModule({
+    //         imports: [HttpClientTestingModule],
+    //         providers: [
+    //             { provide: HTTP_INTERCEPTORS, useClass: HttpZapInterceptor, multi: true },
+    //         ]
+    // }));
 
     describe('intercept HTTP requests', () => {
-        it('should add X-XSS-Protection to Headers', inject([HttpClient, HttpTestingController],
-            (http: HttpClient, mock: HttpTestingController) => {
+        beforeEach(() => {
+          createTestModule();
+        });
+        it('should have X-XSS-Protection header', inject([HttpClient], (http: HttpClient) => {
+          http.get('/api').subscribe();
+          const httpRequest = httpMock.expectOne('/api');
+          expect(httpRequest.request.headers.has("X-XSS-Protection")).toBeTruthy();
+        }));
+        it('should add X-XSS-Protection to Headers', inject([HttpClient],
+            (http: HttpClient) => {
                 http.get('/api').subscribe(response => expect(response).toBeTruthy());
-                mock.expectOne(req => (req.headers.has('X-XSS-Protection') && req.headers.get('X-XSS-Protection') === '1; mode=block'));
-                mock.verify();
+                httpMock.expectOne(req => (req.headers.has('X-XSS-Protection')));
             })
         );
-    });
-
-    describe('intercept HTTP requests', () => {
         it('should add X-Content-Type-Options to Headers', inject([HttpClient, HttpTestingController],
             (http: HttpClient, mock: HttpTestingController) => {
                 http.get('/api').subscribe(response => expect(response).toBeTruthy());
@@ -29,9 +54,6 @@ describe('HttpZapInterceptor', () => {
                 mock.verify();
             })
         );
-    });
-
-    describe('intercept HTTP requests', () => {
         it('should not have X-Powered-By in Headers', inject([HttpClient, HttpTestingController],
             (http: HttpClient, mock: HttpTestingController) => {
                 http.get('/api').subscribe(response => expect(response).toBeTruthy());
@@ -41,7 +63,11 @@ describe('HttpZapInterceptor', () => {
         );
     });
 
-    afterEach(inject([HttpTestingController], (mock: HttpTestingController) => {
-            mock.verify();
-    }));
+    afterEach(() => {
+        httpMock.verify();
+    });
+
+    // afterEach(inject([HttpTestingController], (mock: HttpTestingController) => {
+    //         mock.verify();
+    // }));
 });

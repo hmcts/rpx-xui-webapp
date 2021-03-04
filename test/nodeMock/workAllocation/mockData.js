@@ -1,38 +1,38 @@
-class WorkAllocationMockData{
+class WorkAllocationMockData {
 
-    getMyTasks(count){
-        const taskActions = [ 
-            { "id": "reassign", "title": "Reassign task" }, 
-            { "id": "unclaim", "title": "Unassign task" }, 
+    getMyTasks(count) {
+        const taskActions = [
+            { "id": "reassign", "title": "Reassign task" },
+            { "id": "unclaim", "title": "Unassign task" },
             { "id": "go", "title": "Go to case" }
-        ]; 
-        return this.getTaskList(count, taskActions); 
+        ];
+        return this.getTaskList(count, taskActions);
     }
 
-    getAvailableTasks(count){
+    getAvailableTasks(count) {
         const taskActions = [
             { "id": "claim", "title": "Assign to me" },
             { "id": "claim-and-go", "title": "Assign to me and go to case" }
         ];
-        let tasks =  this.getTaskList(count, taskActions); 
+        let tasks = this.getTaskList(count, taskActions);
         tasks.tasks.forEach(task => task.assignee = null);
         return tasks;
     }
 
-    getTaskManagerTasks(count){
+    getTaskManagerTasks(count) {
         const taskActions = [
-            { "id": "reassign", "title": "Reassign task" }, 
-            { "id": "unclaim", "title": "Unassign task" }, 
-            { "id": "complete", "title": "Mark as done" }, 
+            { "id": "reassign", "title": "Reassign task" },
+            { "id": "unclaim", "title": "Unassign task" },
+            { "id": "complete", "title": "Mark as done" },
             { "id": "cancel", "title": "Cancel task" }
         ];
-        return this.getTaskList(count, taskActions); 
+        return this.getTaskList(count, taskActions);
     }
 
-    getTaskList(count,actions){
+    getTaskList(count, actions) {
         const taskActions = actions ? actions : [
             { "id": "reassign", "title": "Reassign task" },
-            {"id": "unclaim","title": "Release this task"}
+            { "id": "unclaim", "title": "Release this task" }
         ];
         const tasks = [];
         for (let i = 0; i < count; i++) {
@@ -70,7 +70,7 @@ class WorkAllocationMockData{
         return { tasks: tasks };
     }
 
-    getCaseworkersList(count){
+    getCaseworkersList(count) {
         const caseWorkers = [];
         for (let ctr = 0; ctr < count; ctr++) {
             caseWorkers.push({
@@ -87,10 +87,10 @@ class WorkAllocationMockData{
                 }
             });
         }
-        return caseWorkers; 
+        return caseWorkers;
     }
 
-    getTaskDetails(){
+    getTaskDetails() {
         return {
             "task": {
                 "assignee": "test assignee",
@@ -118,19 +118,19 @@ class WorkAllocationMockData{
     }
 
 
-    getLocation(locationId){
-        locationId = locationId ? locationId : 10001 
+    getLocation(locationId) {
+        locationId = locationId ? locationId : 10001
         return {
-            id: locationId ,
+            id: locationId,
             locationName: "testloc " + locationId,
             services: ['Test service 1', 'Test service 2']
         }
     }
 
-    getLocationList(count){
+    getLocationList(count) {
         const locations = [];
-        for(let i = 0; i < count - 1 ; i++){
-            locations.push(this.getLocation(9000+i));
+        for (let i = 0; i < count - 1; i++) {
+            locations.push(this.getLocation(9000 + i));
         }
         locations.push({
             id: 'a', locationName: 'Taylor House', services: ['a']

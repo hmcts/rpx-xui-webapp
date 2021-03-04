@@ -11,6 +11,7 @@ defineSupportCode(({ Before, After }) => {
     Before(function (scenario) {
         MockApp.init();
         const world = this;
+        global.scenarioData = {};
         CucumberReportLog.setScenarioWorld(this);
         // done();
     });

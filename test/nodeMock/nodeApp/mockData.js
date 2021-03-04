@@ -1,16 +1,16 @@
-class NodeAppMockData{
+class NodeAppMockData {
 
     getConfigurationValue(configurationKey) {
         return configurations[configurationKey];
     }
 
-    getUserDetailsWithRoles(roles){
+    getUserDetailsWithRoles(roles) {
         const userDetails = this.getUserDetailsTemplate();
         userDetails.userInfo.roles = roles;
         return userDetails;
     }
 
-    getUIConfiguration(){
+    getUIConfiguration() {
         return {
             "googleAnalyticsKey": "UA-124734893-4",
             "idamWeb": "https://idam-web-public.aat.platform.hmcts.net",
@@ -21,7 +21,7 @@ class NodeAppMockData{
         };
     }
 
-    getUserDetailsTemplate(){
+    getUserDetailsTemplate() {
         return {
             "canShareCases": true,
             "sessionTimeout": {
@@ -57,7 +57,7 @@ class NodeAppMockData{
                     "pui-user-manager"
                 ]
             }
-        }; 
+        };
     }
 }
 

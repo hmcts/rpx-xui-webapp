@@ -1,6 +1,7 @@
-const BrowserWaits = require('../../e2e/support/customWaits');
+const BrowserWaits = require('../../../e2e/support/customWaits');
+const reportLogger = require('../../../e2e/support/reportLogger');
 
-
+const SoftAssert = require('../../util/softAssert');
 class CaseEdit {
 
     checkYourAnswersPageElement = $(".check-your-answers");
@@ -17,12 +18,34 @@ class CaseEdit {
 
     checkYourAnswersSummaryRows = $$('.check-your-answers .form-table tr');
 
+    errorSummaryContainer = $('.error-summary');
 
     async waitForPage() {
         await BrowserWaits.waitForElement($('ccd-case-edit-page'));
     }
 
-    async getPageTitle() {
+    async amOnPage(){
+        try{
+            await this.waitForPage();
+            return true; 
+        }catch(error){
+            reportLogger.AddMessage("Error waiting for case edit page :" +error);
+            return false;
+        }
+    }
+
+    async isErrorSummaryDisplayed(){
+        try {
+            await BrowserWaits.waitForElement(this.errorSummaryContainer);
+            return true;
+        } catch (error) {
+            reportLogger.AddMessage("Error waiting for case edit page :" + error);
+            return false;
+        }
+    }
+
+
+    async getPageTitle(){
         return await $('ccd-case-edit-page h1').getText();
     }
 
@@ -36,6 +59,10 @@ class CaseEdit {
             fieldId = fieldConfig.id + "_" + fieldConfig.id
         } else {
             fieldId = fieldConfig.id
+        }
+        const fieldIsPresent = await $('#' + fieldId).isPresent();
+        if (!fieldIsPresent) {
+            return fieldIsPresent;
         }
         return await $('#' + fieldId).isDisplayed();
     }
@@ -73,6 +100,17 @@ class CaseEdit {
         return domId;
     }
 
+    getComplexFieldId(fieldId, parentId) {
+        let domId = null;
+        if (parentId) {
+            domId = parentId + "_" + fieldId + "_" + fieldId;
+        }
+        else {
+            domId = fieldId + "_" + fieldId;
+        }
+        return domId;
+    }
+
     async inputTextField(fieldConfig, inputtext, parentId) {
         let inputValue = null;
         if (inputtext) {
@@ -86,25 +124,35 @@ class CaseEdit {
         return inputValue;
     }
 
-    async inputPostCode(fieldConfig, value) {
-        await ccdField.$('.form-control').sendKeys("SW1");
-        await ccdField.$('button').click();
-        var addressSelectionField = ccdField.$('select.form-control')
-        await BrowserWaits.waitForElement(addressSelectionField);
-        var addressToSelect = addressSelectionField.$("option:nth-of-type(2)");
-        await BrowserWaits.waitForElement(addressToSelect);
-        await addressToSelect.click()
+    async inputPostCode(fieldConfig, value, parentId) {
+        // await ccdField.$('.form-control').sendKeys("SW1");
+        // await ccdField.$('button').click();
+        // var addressSelectionField = ccdField.$('select.form-control')
+        // await BrowserWaits.waitForElement(addressSelectionField);
+        // var addressToSelect = addressSelectionField.$("option:nth-of-type(2)");
+        // await BrowserWaits.waitForElement(addressToSelect);
+        // await addressToSelect.click()
+        let inputValue = null;
+        if (value) {
+            inputValue = value;
+        } else {
+            inputValue = "SW20 9DJ";
+        }
+
+        await $(`#${this.getFieldId(fieldConfig.id, parentId)}`).clear();
+        await $(`#${this.getFieldId(fieldConfig.id, parentId)}`).sendKeys(inputValue);
+        return inputValue;
     }
 
     async inputNumberField(fieldConfig, inputNumber, parentId) {
         let inputValue = null;
-        if (inputtext) {
+        if (inputNumber) {
             inputValue = inputNumber;
         } else {
             inputValue = 12345;
         }
         await $(`#${this.getFieldId(fieldConfig.id, parentId)}`).sendKeys(inputValue);
-        return inputValue;
+        return inputValue.toString();
     }
 
     async inputYesOrNoField(fieldConfig, inputOption, parentId) {
@@ -115,8 +163,12 @@ class CaseEdit {
         } else {
             inputoptionId = fieldConfig.id + "-Yes";
         }
+
+        if(parentId) inputoptionId = parentId +"_"+ inputoptionId;
+
         await $(`#${this.getFieldId(fieldConfig.id, parentId)} #${inputoptionId}`).click();
-        return inputoptionId.includes("Yes");
+        // return inputoptionId.includes("Yes");
+        return "Yes";
     }
 
     async inputFixedRadioListField(fieldConfig, inputOption, parentId) {
@@ -126,11 +178,12 @@ class CaseEdit {
         if (inputOption) {
             inputoptionId = inputOption;
         } else {
-            selectedVal = fieldConfig.field_type.fixed_list_items[0].code;
+            selectedVal = fieldConfig.field_type.fixed_list_items[0];
             inputoptionId = selectedVal;
         }
-        await $(`#${this.getFieldId(fieldConfig.id, parentId)}-${inputoptionId}`).click();
-        return selectedVal;
+        await $(`#${this.getFieldId(fieldConfig.id, parentId)}-${inputoptionId.code}`).click();
+
+        return inputoptionId;
     }
 
     async inputFixedListField(fieldConfig, inputOption, parentId) {
@@ -140,15 +193,14 @@ class CaseEdit {
         if (inputOption) {
             selectedVal = inputOption;
         } else {
-            selectedVal = fieldConfig.field_type.fixed_list_items[0].code;
+            selectedVal = fieldConfig.field_type.fixed_list_items[0];
         }
-        await $(`#${this.getFieldId(fieldConfig.id, parentId)} option[ng-reflect-ng-value="${selectedVal}"]`).click();
+        await $(`#${this.getFieldId(fieldConfig.id, parentId)} option[ng-reflect-ng-value="${selectedVal.code}"]`).click();
         return selectedVal;
     }
 
 
     async inputMultiSelectListField(fieldConfig, inputOptions, parentId) {
-
         let inputoptionId = [];
         let selectedVal = [];
         if (inputOptions) {
@@ -157,7 +209,8 @@ class CaseEdit {
             selectedVal = fieldConfig.field_type.fixed_list_items;
         }
         for (const option of selectedVal) {
-            await $(`#${this.getFieldId(fieldConfig.id, parentId)} #${option.code}`).click();
+
+            await $(`#${this.getFieldId(fieldConfig.id, parentId)} #${this.getFieldId(fieldConfig.id, parentId)}-${option.code}`).click();
 
         }
         return selectedVal;
@@ -175,6 +228,15 @@ class CaseEdit {
     }
 
     async inputComplexField(fieldConfig, value, parentid) {
+        let fieldValue = {}
+
+        if (fieldConfig.field_type.id === "AddressGlobalUK" || fieldConfig.field_type.id === "AddressUK") {
+            return await this.inputaddressGlobalUK(fieldConfig, value, parentid);
+        }
+
+        if (fieldConfig.field_type.id === "AddressGlobalUK") {
+            return await inputOrganisationField(fieldConfig, value, parentid);
+        }
 
         let thisFieldId = null;
         if (parentid) {
@@ -182,12 +244,58 @@ class CaseEdit {
         }
         else {
             thisFieldId = fieldConfig.id;
-        }
-        let fieldValue = {};
+        };
         for (const complexFiedlConfig of fieldConfig.field_type.complex_fields) {
             fieldValue[complexFiedlConfig.id] = await this.inputCaseField(complexFiedlConfig, value ? value[complexFiedlConfig.id] : null, thisFieldId);
         }
+        return fieldValue;
+    }
 
+    async inputaddressGlobalUK(fieldConfig, value, parentid) {
+        // await BrowserWaits.waitForSeconds(600);
+        // let thisFieldId = this.getFieldId(`${fieldConfig.id}_${fieldConfig.id}`, parentid);
+
+        let fieldValue = {};
+        let complexId ='';
+        if(parentid == undefined) complexId = `${fieldConfig.id}_${fieldConfig.id}`;
+        if(parentid) complexId = `${parentid}_${fieldConfig.id}_${fieldConfig.id}`;
+        let postCodeInput=$(`#${complexId} #postcodeLookup input`);
+
+        const postCodeFindAddressBtn = $(`#${complexId} #postcodeLookup button`);
+        const postCodeAddressSelect = $(`#${complexId} #selectAddress select`);
+        const postCodeAddressSelectOption = $(`#${complexId} #selectAddress select option:nth-of-type(2)`);
+
+        await postCodeInput.sendKeys('sw1');
+        await postCodeFindAddressBtn.click();
+        await BrowserWaits.waitForElement(postCodeAddressSelect);
+        await BrowserWaits.waitForElement(postCodeAddressSelectOption);
+        await postCodeAddressSelectOption.click();
+
+        await BrowserWaits.waitForSeconds(2);
+
+        for (const complexFiedlConfig of fieldConfig.field_type.complex_fields) {
+            let p_id = parentid ? parentid+"_"+fieldConfig.id : fieldConfig.id;
+            let value = await $(`#${this.getFieldId(complexFiedlConfig.id, p_id)}`).getAttribute("value");
+            fieldValue[complexFiedlConfig.id] = value;
+        }
+
+        return fieldValue;
+    }
+
+    async inputOrganisationField(fieldConfig, value, parentid) {
+        const searchOrgInputText = $(`#${fieldConfig.id}_${fieldConfig.id} #search-org-text`);
+        const orgResults = $$(`#${fieldConfig.id}_${fieldConfig.id} .scroll-container .td-select`);
+
+        const organisationId = $(`#${fieldConfig.id}_${fieldConfig.id} ccd-write-organisation-complex-field input[@name = 'organisationID']`);
+        const organisationName = $(`#${fieldConfig.id}_${fieldConfig.id} ccd-write-organisation-complex-field input[@name = 'organisationName']`);
+
+        await searchOrgInputText.sendKeys("test");
+        await BrowserWaits.waitForElement(orgResults);
+        await orgResults.get(1).click();
+
+        let fieldValue = {};
+        fieldValue['organisationID'] = await organisationId.getAttribute("value");
+        fieldValue['organisationName'] = await organisationName.getAttribute("value");
         return fieldValue;
     }
 
@@ -205,7 +313,7 @@ class CaseEdit {
     }
 
     async clickCancelLinkInEditPage() {
-        await this.waitForPage();
+        expect(await this.amOnPage(),"Not in case edit page").to.be.true;
         return await this.cancelLinkInEditPage.click();
     }
 
@@ -259,8 +367,18 @@ class CaseEdit {
     }
 
     async clickContinue() {
-        await BrowserWaits.waitForElement(this.continueBtn);
-        await this.continueBtn.click();
+        // await BrowserWaits.waitForElement(this.continueBtn);
+        // await this.continueBtn.click();
+        var continieElement = element(by.xpath('//button[@type= "submit"]'));
+            await browser.executeScript('arguments[0].scrollIntoView()',
+                continieElement.getWebElement())
+
+            await BrowserWaits.waitForElement(continieElement);
+            await BrowserWaits.waitForElementClickable(continieElement);
+
+            var thisPageUrl = await browser.getCurrentUrl();
+            console.log("Submitting : " + thisPageUrl )
+            await continieElement.click();
     }
 
     async waitForChecYourAnswersPage() {
@@ -273,6 +391,8 @@ class CaseEdit {
     }
 
     async inputCaseField(fieldConfig, value, parentId) {
+        // await BrowserWaits.waitForSeconds(1);
+        // console.log(`******** input : parentId ${parentId} , value ${value}, fieldId ${fieldConfig.id}`);
         let fieldValue = null;
         switch (fieldConfig.field_type.type) {
             case "Text":
@@ -287,6 +407,7 @@ class CaseEdit {
                 break;
             case "YesOrNo":
                 fieldValue = await this.inputYesOrNoField(fieldConfig, value, parentId);
+                break;
             case "Email":
                 fieldValue = await this.inputEmailField(fieldConfig, value, parentId);
                 break;
@@ -295,18 +416,57 @@ class CaseEdit {
                 break;
             case "FixedRadioList":
                 fieldValue = await this.inputFixedRadioListField(fieldConfig, value, parentId);
+                fieldValue = fieldValue.code
                 break;
             case "FixedList":
                 fieldValue = await this.inputFixedListField(fieldConfig, value, parentId);
+                fieldValue = fieldValue.code
                 break;
             case "MultiSelectList":
-                fieldValue = await this.inputMultiSelectListField(fieldConfig, value, parentId);
+                const multiSelectVal = await this.inputMultiSelectListField(fieldConfig, value, parentId);
+                const fieldValues = [];
+                for (const val of multiSelectVal){
+                    fieldValues.push(val.code);
+                }
+                fieldValue = fieldValues; 
                 break;
 
+
         }
+        reportLogger.AddMessage("Field set value for " + fieldConfig.field_type.type)
+        reportLogger.AddJson(JSON.stringify(fieldValue))
+
         return fieldValue;
+    }
+
+    async validateCheckYourAnswersPage(eventConfig){
+        const softAssert = new SoftAssert();
+        softAssert.setScenario("Check yours answers page content");
+        await softAssert.assert(async () => expect(await this.isCheckYourAnswersPagePresent(), "Not on check your answers page").to.be.true );
+        
+        const isHeadingPresent = await this.checkYourAnswersHeading.isPresent();
+        const isHeadingDescPresent = await this.checkYourAnswersHeadingDescription.isPresent();
+        const summaryRowsCount = await this.checkYourAnswersSummaryRows.count()
+        if (eventConfig.show_summary) {
+            await softAssert.assert(async() => expect(isHeadingPresent, "Check your answers header text not displayed").to.be.true);
+            await softAssert.assert(async() => expect(isHeadingDescPresent, "Check your answers header description text not displayed").to.be.true);
+            await softAssert.assert(async() => expect(summaryRowsCount, "Check your answers summary rows count is 0").to.be.above(0));
+        } else {
+            await softAssert.assert(async() => expect(isHeadingPresent, "Check your answers header text displayed").to.be.false);
+            await softAssert.assert(async() => expect(isHeadingDescPresent, "Check your answers header description text displayed").to.be.false);
+            await softAssert.assert(async() => expect(summaryRowsCount, "Check your answers summary rows count is not 0").to.equal(0));
+        }
+
+        for (const caseField of eventConfig.case_fields){
+            softAssert.setScenario(`"${caseField.label}" Field display for condition show_summary_change_option value "${caseField.show_summary_change_option}" validation`);
+            const fieldHeader = element(by.xpath(`//ccd-case-edit-submit//*[contains(@class, "form-table")]//tr//th//span[text() = "${caseField.label}"]`))
+            const isFieldExpectedToDisplay = caseField.show_summary_change_option ? true : false;
+            const onFailMessage = `case field ${caseField.label} with show_summary_change_option value ${caseField.show_summary_change_option} failed. is ${isFieldExpectedToDisplay ? "not displayed" : "displayed"} `;
+            await softAssert.assert(async () => expect(await fieldHeader.isPresent(), onFailMessage ).to.equal(isFieldExpectedToDisplay));
+        }
+        softAssert.finally();
     }
 
 }
 
-module.exports = new CaseEdit(); 
+module.exports = new CaseEdit();

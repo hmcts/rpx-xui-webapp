@@ -18,7 +18,7 @@ export class AppConfig extends AbstractAppConfig {
   private workallocationUrl: string;
 
   constructor(
-    private appConfigService: AppConfigService, 
+    private appConfigService: AppConfigService,
     private readonly featureToggleService: FeatureToggleService
     ) {
     super();

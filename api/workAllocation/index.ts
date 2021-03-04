@@ -189,7 +189,7 @@ export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Re
       "case-id": req.body.searchRequest.ccdId,
       "case-jurisdiction": req.body.searchRequest.jurisdiction,
       "case-type": req.body.searchRequest.caseTypeId,
-      "event-id": req.body.searchRequest.eventId
+      "event-id": req.body.searchRequest.eventId,
     }
     console.log('reqBody', reqBody)
     const { status, data } = await handlePostSearch(postTaskPath, reqBody, req);

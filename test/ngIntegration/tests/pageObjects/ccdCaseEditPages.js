@@ -469,4 +469,4 @@ class CaseEdit {
 
 }
 
-module.exports = new CaseEdit();
+module.exports = new CaseEdit(); 

@@ -145,4 +145,8 @@ export class AppUtils {
     }
     return child ? child.data : null;
   }
+
+  public static getFeatureToggledUrl(isFeatureEnabled: boolean, workallocationUrl: string): string {
+    return isFeatureEnabled ? workallocationUrl : null;
+  }
 }

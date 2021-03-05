@@ -78,12 +78,12 @@ export class TaskAssignmentContainerComponent implements OnInit {
     this.successMessage = this.route.snapshot.data.successMessage as InfoMessage;
     if (task.assignee) {
       const names: string[] = task.assignee.split(' ');
-      const firstName = names.shift();
-      const lastName = names.join(' ');
-      this.excludedCaseworkers = [ { firstName, lastName } as Caseworker ];
+      const first_name = names.shift();
+      const last_name = names.join(' ');
+      this.excludedCaseworkers = [ { first_name, last_name } as Caseworker ];
     }
     if (task.location) {
-      this.location = { locationName: task.location } as Location;
+      this.location = { location: task.location } as Location;
     }
   }
 
@@ -93,7 +93,7 @@ export class TaskAssignmentContainerComponent implements OnInit {
       return;
     }
     this.error = null;
-    this.taskService.assignTask(this.tasks[0].id, {userId: this.caseworker.idamId}).subscribe(() => {
+    this.taskService.assignTask(this.tasks[0].id, {userId: this.caseworker.id}).subscribe(() => {
       this.reportSuccessAndReturn();
     }, error => {
       const handledStatus = handleFatalErrors(error.status, this.router);

@@ -9,8 +9,8 @@ import { Caseworker } from '../models/dtos';
 export class CaseworkerDisplayName implements PipeTransform {
   public transform(caseworker: Caseworker, includeEmail = true): string {
     if (caseworker) {
-      const email = includeEmail && caseworker.email ? ` - ${caseworker.email}` : '';
-      return `${caseworker.firstName} ${caseworker.lastName}${email}`;
+      const email = includeEmail && caseworker.email_id ? ` - ${caseworker.email_id}` : '';
+      return `${caseworker.first_name} ${caseworker.last_name}${email}`;
     }
     return undefined;
   }

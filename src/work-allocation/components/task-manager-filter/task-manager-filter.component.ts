@@ -81,26 +81,26 @@ export class TaskManagerFilterComponent implements OnChanges {
 
   private saveFilterToSession(): void {
     const toStore = JSON.stringify({
-      caseworkerId: this.caseworker.idamId,
-      locationId: this.location.id
+      caseworkerId: this.caseworker.id,
+      locationId: this.location.location_id
     });
     this.sessionStorageService.setItem(FilterConstants.Session.TaskManager, toStore);
   }
 
   public getLocationById(id: string): Location {
-    if (id === this.ALL_LOCATIONS.id) {
+    if (id === this.ALL_LOCATIONS.location_id) {
       return this.ALL_LOCATIONS;
     }
-    return this.locations.find(loc => loc.id === id) || this.ALL_LOCATIONS;
+    return this.locations.find(loc => loc.location_id === id) || this.ALL_LOCATIONS;
   }
 
   public getCaseworkerByIdamId(id: string): Caseworker {
-    if (id === this.ALL_CASEWORKERS.idamId) {
+    if (id === this.ALL_CASEWORKERS.id) {
       return this.ALL_CASEWORKERS;
-    } else if (id === this.NO_CASEWORKER_ASSIGNED.idamId) {
+    } else if (id === this.NO_CASEWORKER_ASSIGNED.id) {
       return this.NO_CASEWORKER_ASSIGNED;
     }
-    return this.caseworkers.find(cw => cw.idamId === id) || this.ALL_CASEWORKERS;
+    return this.caseworkers.find(cw => cw.id === id) || this.ALL_CASEWORKERS;
   }
 
   private emitChangedEvent(): void {

@@ -5,7 +5,7 @@ import c = require('config');
 import { Caseworker, Location } from '../../models/dtos';
 import { CaseworkerDisplayName } from '../../pipes';
 import { CaseworkerDataService, LocationDataService } from '../../services';
-import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
+import { getPrimaryLocation, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 import { FilterConstants } from '../constants';
 import { SessionStorageService } from '../../../app/services';
 import { UserInfo } from '../../../app/models/user-details.model';
@@ -149,8 +149,8 @@ export class TaskAssignmentComponent implements OnInit {
    */
   private setupCaseworkerLocation(): void {
     this.caseworkerService.getAll().subscribe(caseworkers => {
-      const assignedCaseworker = caseworkers.find(cw => this.isLoggedInUser(cw.idamId));
-      this.pCaseworkerLocation = assignedCaseworker.location ? assignedCaseworker.location : null;
+      const assignedCaseworker = caseworkers.find(cw => this.isLoggedInUser(cw.id));
+      this.pCaseworkerLocation = assignedCaseworker ? getPrimaryLocation(assignedCaseworker) : null;
     }, error => {
       handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
     });
@@ -194,7 +194,7 @@ export class TaskAssignmentComponent implements OnInit {
       }, error => {
         handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
       });
-    } else if (this.location && this.location.id) {
+    } else if (this.location && this.location.location_id) {
       // Otherwise, get the caseworkers at the specifed location.
       this.caseworkerService.getAll().subscribe(caseworkers => {
         const locationCaseWorkers = caseworkers.filter(cw => this.locationMatchesSelectedLocation(cw));
@@ -210,7 +210,8 @@ export class TaskAssignmentComponent implements OnInit {
    * @param cw The caseworker to consider.
    */
   private locationMatchesSelectedLocation(cw: Caseworker): boolean {
-    return cw.location ? cw.location.id.toString() === this.location.id : false;
+    const primaryLocation = getPrimaryLocation(cw);
+    return cw.base_location ? primaryLocation.location_id.toString() === this.location.location_id : false;
   }
 
   /**
@@ -226,7 +227,7 @@ export class TaskAssignmentComponent implements OnInit {
 
   public vetLocation(toVet: Location): Location {
     if (toVet && this.locations) {
-      const vetted = this.locations.find(loc => loc.locationName === toVet.locationName);
+      const vetted = this.locations.find(loc => loc.location === toVet.location);
       return vetted || this.ALL_LOCATIONS;
     }
     return toVet;
@@ -237,7 +238,7 @@ export class TaskAssignmentComponent implements OnInit {
    */
   private setupSelectedLocation(): void {
     if (this.caseworkerLocation) {
-      this.location = this.locations.find(loc => loc.id === this.caseworkerLocation.id);
+      this.location = this.locations.find(loc => loc.location_id === this.caseworkerLocation.location_id);
     }
   }
 

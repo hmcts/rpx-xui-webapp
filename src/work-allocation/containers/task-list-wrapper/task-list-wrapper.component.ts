@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { Observable } from 'rxjs';
 
+import { AppConstants } from '../../../app/app.constants';
 import { SessionStorageService } from '../../../app/services';
 import { ListConstants } from '../../components/constants';
 import { InfoMessage, InfoMessageType, TaskActionIds, TaskService, TaskSort } from '../../enums';
@@ -181,15 +182,28 @@ export class TaskListWrapperComponent implements OnInit {
    * action.
    */
   public onActionHandler(taskAction: InvokedTaskAction): void {
-    if (this.returnUrl.includes('manager')  && taskAction.action.id === TaskActionIds.RELEASE) {
-      this.specificPage = 'manager';
-    }
+    this.setupSpecificTaskAction(taskAction);
     const state = {
       returnUrl: this.returnUrl,
       showAssigneeColumn: taskAction.action.id !== TaskActionIds.ASSIGN
     };
     const actionUrl = `/tasks/${taskAction.task.id}/${taskAction.action.id}/${this.specificPage}`;
     this.router.navigate([actionUrl], { state });
+  }
+
+  /**
+   * Setup or do task action which is specific only to certain actions/pages
+   */
+  private setupSpecificTaskAction(taskAction: InvokedTaskAction): void {
+    if (taskAction.action.id === TaskActionIds.GO) {
+      // Added this to ensure redirecting to cases was happening
+      const caseRedirectUrl = `${AppConstants.CASE_DETAILS_URL}${taskAction.task.case_id}`;
+      this.router.navigate([caseRedirectUrl]);
+    }
+    // This ensures that the correct comments are shown based on unassigning via Task List and Task Manager
+    if (this.returnUrl.includes('manager')  && taskAction.action.id === TaskActionIds.RELEASE) {
+      this.specificPage = 'manager';
+    }
   }
 
   // Do the actual load. This is separate as it's called from two methods.

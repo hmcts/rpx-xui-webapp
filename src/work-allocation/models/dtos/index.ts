@@ -11,20 +11,21 @@ export interface CaseData {
 }
 
 export interface Caseworker {
-  idamId: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  location: Location;
+  id: string;
+  first_name: string;
+  last_name: string;
+  email_id: string;
+  base_location: Location[];
 }
 
 export interface LocationSummary {
-  id: string;
-  locationName: string;
+  location_id: string;
+  location: string;
 }
 
 export interface Location extends LocationSummary {
   services: string[];
+  is_primary?: boolean;
 }
 
 export interface SearchTaskParameter {

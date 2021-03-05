@@ -55,12 +55,6 @@ export interface LocationSummary {
 }
 
 export interface Location {
-    id: string
-    locationName: string
-    services: string[]
-}
-
-export interface LocationApi {
     location_id: string
     location: string
     is_primary: boolean
@@ -68,17 +62,9 @@ export interface LocationApi {
 }
 
 export interface Caseworker {
-    firstName: string
-    lastName: string
-    idamId: string
-    email: string
-    location: Location
-}
-
-export interface CaseworkerApi {
     first_name: string
     last_name: string
     id: string
     email_id: string
-    base_location: LocationApi[]
+    base_location: Location[]
 }

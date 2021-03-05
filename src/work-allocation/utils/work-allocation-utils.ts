@@ -1,4 +1,5 @@
 import { NavigationExtras } from '@angular/router';
+import { Caseworker, Location } from '../models/dtos';
 
 interface Navigator {
   navigate(commands: any[], extras?: NavigationExtras): Promise<boolean>;
@@ -58,3 +59,21 @@ export const handleFatalErrors = (status: number, navigator: Navigator, fatals?:
       return treatAsFatal(status, navigator, fatals);
   }
 };
+
+export function getPrimaryLocation(cw: Caseworker): Location {
+  let primaryLocation: Location;
+  if (cw.base_location && cw.base_location.length !== 0) {
+    cw.base_location.forEach((location: Location) => {
+      if (location.is_primary) {
+        primaryLocation = {
+          location_id: location.location_id,
+          location: location.location,
+          services: location.services,
+        }
+      }
+    })
+    // set the primary location to the first location if there is no primary location
+    return primaryLocation !== null ? primaryLocation : cw.base_location[0];
+  }
+  return null;
+}

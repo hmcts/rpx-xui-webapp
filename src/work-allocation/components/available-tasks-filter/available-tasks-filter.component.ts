@@ -84,7 +84,7 @@ export class AvailableTasksFilterComponent implements OnInit {
    * @param location The Location to render a label for.
    */
   public locationLabelFunction(location: Location): string {
-    return location ? location.locationName : '';
+    return location ? location.location : '';
   }
 
   /**

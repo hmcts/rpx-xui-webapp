@@ -1,24 +1,25 @@
 const ALL_LOCATIONS =  {
-  id: '**ALL_LOCATIONS**',
-  locationName: 'All locations',
+  location_id: '**ALL_LOCATIONS**',
+  location: 'All locations',
+  is_primary: true,
   services: []
 };
 
 const OPTIONS = {
   Caseworkers: {
     ALL: {
-      idamId: '**ALL_CASEWORKERS**',
-      firstName: 'All',
-      lastName: 'caseworkers',
-      email: undefined,
-      location: ALL_LOCATIONS
+      id: '**ALL_CASEWORKERS**',
+      first_name: 'All',
+      last_name: 'caseworkers',
+      email_id: undefined,
+      base_location: [ALL_LOCATIONS]
     },
     UNASSIGNED: {
-      idamId: '**NO_CASEWORKER_ASSIGNED**',
-      firstName: 'None',
-      lastName: '(unassigned tasks)',
-      email: undefined,
-      location: ALL_LOCATIONS
+      id: '**NO_CASEWORKER_ASSIGNED**',
+      first_name: 'None',
+      last_name: '(unassigned tasks)',
+      email_id: undefined,
+      base_location: [ALL_LOCATIONS]
     }
   },
   Locations: {
@@ -28,14 +29,14 @@ const OPTIONS = {
 
 // TODO: Remove these after integrating with API.
 const TAYLOR_HOUSE = {
-  id: 'a', locationName: 'Taylor House', services: [ 'a' ]
+  location_id: 'a', location: 'Taylor House', services: [ 'a' ]
 };
 const JOHN_SMITH = {
-  firstName: 'John',
-  lastName: 'Smith',
-  idamId: '1',
-  email: 'john.smith@caseworkers.gov.uk',
-  location: TAYLOR_HOUSE
+  first_name: 'John',
+  last_name: 'Smith',
+  id: '1',
+  email_id: 'john.smith@caseworkers.gov.uk',
+  base_location: [TAYLOR_HOUSE]
 };
 
 const SESSION = {

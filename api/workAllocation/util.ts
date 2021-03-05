@@ -1,5 +1,5 @@
 import { ActionViews, TASK_ACTIONS } from './constants/actions';
-import { Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/task';
+import { Caseworker } from './interfaces/task';
 
 export function prepareGetTaskUrl(baseUrl: string, taskId: string): string {
   return `${baseUrl}/task/${taskId}`
@@ -81,44 +81,11 @@ export function assignActionsToTasks(tasks: any[], view: any, caseworkers: Casew
 }
 
 function getAssigneeName(task: any, caseworkers: Caseworker[]): string {
-  if (task.assignee && caseworkers.some(cw => cw.idamId === task.assignee)) {
-    const assignedCW = caseworkers.filter(cw => cw.idamId === task.assignee)[0];
-    return `${assignedCW.firstName} ${assignedCW.lastName}`;
+  if (task.assignee && caseworkers.some(cw => cw.id === task.assignee)) {
+    const assignedCW = caseworkers.filter(cw => cw.id === task.assignee)[0];
+    return `${assignedCW.first_name} ${assignedCW.last_name}`;
   }
   return null
-}
-
-export function mapCaseworkerData(caseWorkerData: CaseworkerApi[]): Caseworker[] {
-  const caseworkers: Caseworker[] = []
-  if (caseWorkerData) {
-    caseWorkerData.forEach((caseWorkerApi: CaseworkerApi) => {
-      const thisCaseWorker: Caseworker = {
-        email: caseWorkerApi.email_id,
-        firstName: caseWorkerApi.first_name,
-        idamId: caseWorkerApi.id,
-        lastName: caseWorkerApi.last_name,
-        location: mapCaseworkerPrimaryLocation(caseWorkerApi.base_location),
-      }
-      caseworkers.push(thisCaseWorker)
-    })
-  }
-  return caseworkers
-}
-
-export function mapCaseworkerPrimaryLocation(baseLocation: LocationApi[]): Location {
-  let primaryLocation: Location = null
-  if (baseLocation) {
-    baseLocation.forEach((location: LocationApi) => {
-      if (location.is_primary) {
-        primaryLocation = {
-          id: location.location_id,
-          locationName: location.location,
-          services: location.services,
-        }
-      }
-    })
-  }
-  return primaryLocation
 }
 
 export function prepareRoleApiRequest(locationId?: number): any {

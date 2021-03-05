@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AppConstants } from 'src/app/app.constants';
 
 import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
 import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
@@ -52,7 +53,7 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
   private getLocationParameter() {
     let values = [];
     if (this.selectedLocations) {
-      values = this.selectedLocations.map(loc => loc.id).sort();
+      values = this.selectedLocations.map(loc => loc.location_id).sort();
     }
     return { key: 'location', operator: 'IN', values };
   }
@@ -80,9 +81,9 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
   public claimTaskAndGo(task: Task): void {
     this.taskService.claimTask(task.id).subscribe(() => {
       // constant below removes spaces from caseReference to get caseId
-      const caseId = task.caseReference.replace(/\s/g, '');
+      const caseRedirectUrl = `${AppConstants.CASE_DETAILS_URL}${task.case_id}`;
       // navigates to case details page for specific case id
-      this.router.navigate([`/cases/case-details/${caseId}`], {
+      this.router.navigate([caseRedirectUrl], {
         state: {
           showMessage: true,
           messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS}

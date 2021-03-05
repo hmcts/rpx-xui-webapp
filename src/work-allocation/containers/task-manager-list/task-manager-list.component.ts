@@ -106,9 +106,9 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
   private getLocationParameter() {
     let values: string[];
     if (this.selectedLocation && this.selectedLocation !== FilterConstants.Options.Locations.ALL) {
-      values = [ this.selectedLocation.id ];
+      values = [ this.selectedLocation.location_id ];
     } else {
-      values = this.locations.map(loc => loc.id);
+      values = this.locations.map(loc => loc.location_id);
     }
     return { key: 'location', operator: 'IN', values };
   }
@@ -119,7 +119,7 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
       if (this.selectedCaseworker === FilterConstants.Options.Caseworkers.UNASSIGNED) {
         values = [];
       } else {
-        values = [this.selectedCaseworker.idamId]
+        values = [this.selectedCaseworker.id]
       }
     } else {
       values = []

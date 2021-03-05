@@ -74,7 +74,7 @@ async function pa11ytest(test, actions, startUrl,roles) {
     const testBrowser = await getBrowser();
     const page = await testBrowser.newPage();;
     await page.setCookie(...cookies);
-    // await page.goto("http://localhost:4200/");
+    await page.goto("http://localhost:4200/");
 
 
     let result;
@@ -85,11 +85,11 @@ async function pa11ytest(test, actions, startUrl,roles) {
             page: page,
             timeout: 60000,
             screenCapture: screenshotPath,
-            // log: {
-            //     debug: console.log,
-            //     error: console.error,
-            //     info: console.info
-            // },
+            log: {
+                debug: console.log,
+                error: console.error,
+                info: console.info
+            },
             actions: actions
         })
     } catch (err) {

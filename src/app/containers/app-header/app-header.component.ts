@@ -55,7 +55,6 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   public serviceMessageCookie: string;
   public userRoles: string[];
 
-
   private subscription: Subscription;
   public userDetails$: Observable<UserDetails>;
   public defaultTheme: Theme = AppConstants.DEFAULT_USER_THEME;

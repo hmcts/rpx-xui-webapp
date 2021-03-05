@@ -74,7 +74,7 @@ stryker-tmp/
 # stryker temp files
 .stryker-tmp
 stryker.log
-
+/test/.local-test.env
 # yalc
 .yalc/
 yalc.lock

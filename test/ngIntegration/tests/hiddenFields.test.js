@@ -3,11 +3,10 @@ const MockApp = require('../../nodeMock/app');
 const { browser } = require('protractor');
 const BrowserUtil = require('../util/browserUtil');
 const BrowserWaits = require('../../e2e/support/customWaits');
-const addContext = require('mochawesome/addContext');
 
 const headerPage = require('../../e2e/features/pageObjects/headerPage');
 
-const CCDCaseEditPage = require('../util/ccdCaseEditPages');
+const CCDCaseEditPage = require('./pageObjects/ccdCaseEditPages');
 const CCDCaseConfig = require('../../nodeMock/ccd/ccdCaseConfig/caseCreateConfigGenerator');
 
 describe('CCD casefields, retain_hidden_field setting', function () {
@@ -29,7 +28,7 @@ describe('CCD casefields, retain_hidden_field setting', function () {
         if (this.test.ctx.currentTest.state === 'failed'){
             addContext(this, { title: 'Case Event create/edit config', value: caseEventConfigOfTest });
             addContext(this, { title: 'Case Event submit request body', value: caseEventSubmitRequestBody });
-
+            // await BrowserUtil.addScreenshot(this, browser); 
         }
         done();
     });

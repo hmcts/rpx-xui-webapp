@@ -56,4 +56,9 @@ describe('AlertComponent', () => {
     expect(component.routeSubscription.unsubscribe).toHaveBeenCalled();
   });
 
+  it('should hyphenate every 4th digit of alert', () => {
+    component.message = '1234567890123456';
+    expect(component.hyphenate('1234567890123456')).toBe('1234-5678-9012-3456');
+  });
+
 });

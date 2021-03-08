@@ -74,7 +74,7 @@
     "@hmcts/nodejs-healthcheck": "^1.7.0",
     "@hmcts/properties-volume": "^0.0.9",
     "@hmcts/rpx-xui-common-lib": "0.2.5",
-    "@hmcts/rpx-xui-node-lib": "^2.24.3",
+    "@hmcts/rpx-xui-node-lib": "2.25.0",
     "@ng-idle/core": "^8.0.0-beta.4",
     "@ng-idle/keepalive": "^8.0.0-beta.4",
     "@ngrx/effects": "^7.4.0",
@@ -93,6 +93,7 @@
     "cookie-parser": "^1.4.4",
     "core-js": "^2.5.4",
     "crypto-js": "^3.1.9-1",
+    "csurf": "^1.11.0",
     "dotenv-extended": "^2.7.1",
     "ejs": "^2.6.1",
     "eligrey-classlist.js": "^1.2.20180112",
@@ -109,7 +110,7 @@
     "http-proxy-middleware": "^1.0.5",
     "isomorphic-fetch": "^3.0.0",
     "launchdarkly-js-client-sdk": "^2.16.3",
-    "mochawesome": "^6.1.1",
+    "mochawesome": "^6.2.1",
     "mochawesome-merge": "^4.1.0",
     "mochawesome-report-generator": "^5.1.0",
     "moment-timezone": "^0.5.28",
@@ -211,6 +212,7 @@
     "**/**/marked": "^0.7.0",
     "**/**/serialize-javascript": "^3.1.0",
     "**/**/ini": "^1.3.6",
-    "**/**/chromedriver": "^87.0.5"
+    "**/**/chromedriver": "^87.0.5",
+    "**/**/prismjs": "^1.23.0"
   }
 }

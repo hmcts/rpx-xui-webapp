@@ -34,7 +34,7 @@ const requestMapping = {
            res.send(organisationUsers());
        },
         '/data/internal/profile' : (req,res) => {
-            res.send(idamProfile);
+            res.send();
         },
         '/data/internal/cases/:caseid': (req,res) => {
             res.send(dummyCaseDetails);

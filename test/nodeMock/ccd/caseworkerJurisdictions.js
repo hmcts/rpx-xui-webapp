@@ -114827,7 +114827,236 @@ module.exports = [
         ]
       }
     ]
-  }
+  },
+  {
+    "id": "exui",
+    "name": "EXUI Jurisdiction",
+    "description": "exui test jurisdiction",
+    "caseTypes": [
+      {
+        "id": "casetype_1",
+        "description": "Case type test 1",
+        "version": null,
+        "name": "caseType_1",
+        "events": [
+          {
+            "id": "submitDraft",
+            "name": "Submit Case Draft",
+            "description": "Case draft submission event",
+            "order": null,
+            "case_fields": [],
+            "pre_states": [
+            ],
+            "post_state": null,
+            "callback_url_about_to_start_event": null,
+            "retries_timeout_about_to_start_event": null,
+            "callback_url_about_to_submit_event": null,
+            "retries_timeout_url_about_to_submit_event": null,
+            "callback_url_submitted_event": null,
+            "retries_timeout_url_submitted_event": null,
+            "security_classification": null,
+            "show_summary": null,
+            "show_event_notes": null,
+            "end_button_label": null,
+            "can_save_draft": null,
+            "acls": [
+              {
+                "role": "caseworker-ia-legalrep-solicitor",
+                "create": true,
+                "read": true,
+                "update": true,
+                "delete": true
+              }
+            ]
+          },
+          {
+            "id": "editDraft",
+            "name": "Edit draft",
+            "description": "Edit drft case",
+            "order": null,
+            "case_fields": [],
+            "pre_states": [
+              "caseDrafted"
+            ],
+            "post_state": null,
+            "callback_url_about_to_start_event": null,
+            "retries_timeout_about_to_start_event": null,
+            "callback_url_about_to_submit_event": null,
+            "retries_timeout_url_about_to_submit_event": null,
+            "callback_url_submitted_event": null,
+            "retries_timeout_url_submitted_event": null,
+            "security_classification": null,
+            "show_summary": null,
+            "show_event_notes": null,
+            "end_button_label": null,
+            "can_save_draft": null,
+            "acls": [
+              {
+                "role": "caseworker-ia-legalrep-solicitor",
+                "create": true,
+                "read": true,
+                "update": true,
+                "delete": true
+              }
+            ]
+          }
+        ],
+        "states": [
+          {
+            "id": "caseDrafted",
+            "name": "Case Draft",
+            "description": "EXUI Case drafted",
+            "order": 1,
+            "title_display": "# ${appealReferenceNumber}",
+            "acls": [
+              {
+                "role": "citizen",
+                "create": true,
+                "read": true,
+                "update": true,
+                "delete": false
+              },
+              {
+                "role": "caseworker-ia-legalrep-solicitor",
+                "create": true,
+                "read": true,
+                "update": true,
+                "delete": false
+              }
+            ]
+          },
+          {
+            "id": "caseSubmitted",
+            "name": "Case Submitted",
+            "description": "Case submitted",
+            "order": 2,
+            "title_display": "# ${appealReferenceNumber}",
+            "acls": [
+              {
+                "role": "citizen",
+                "create": false,
+                "read": true,
+                "update": false,
+                "delete": false
+              },
+              {
+                "role": "caseworker-ia-legalrep-solicitor",
+                "create": true,
+                "read": true,
+                "update": true,
+                "delete": false
+              },
+              {
+                "role": "caseworker-ia-caseofficer",
+                "create": true,
+                "read": true,
+                "update": true,
+                "delete": false
+              },
+              {
+                "role": "caseworker-ia-system",
+                "create": false,
+                "read": true,
+                "update": false,
+                "delete": false
+              },
+              {
+                "role": "caseworker-ia-admofficer",
+                "create": true,
+                "read": true,
+                "update": true,
+                "delete": false
+              },
+              {
+                "role": "caseworker-ia-iacjudge",
+                "create": true,
+                "read": true,
+                "update": true,
+                "delete": false
+              }
+            ]
+          }
+        ],
+        "searchAliasFields": [],
+        "jurisdiction": null,
+        "security_classification": null,
+        "case_fields": [],
+        "printable_document_url": null,
+        "acls": [
+          {
+            "role": "citizen",
+            "create": true,
+            "read": true,
+            "update": true,
+            "delete": false
+          },
+          {
+            "role": "caseworker-ia-legalrep-solicitor",
+            "create": true,
+            "read": true,
+            "update": true,
+            "delete": false
+          },
+          {
+            "role": "caseworker-ia-caseofficer",
+            "create": true,
+            "read": true,
+            "update": true,
+            "delete": false
+          },
+          {
+            "role": "caseworker-ia-system",
+            "create": true,
+            "read": true,
+            "update": true,
+            "delete": false
+          },
+          {
+            "role": "caseworker-ia-admofficer",
+            "create": true,
+            "read": true,
+            "update": true,
+            "delete": false
+          },
+          {
+            "role": "caseworker-ia-homeofficeapc",
+            "create": true,
+            "read": true,
+            "update": true,
+            "delete": false
+          },
+          {
+            "role": "caseworker-ia-homeofficelart",
+            "create": true,
+            "read": true,
+            "update": true,
+            "delete": false
+          },
+          {
+            "role": "caseworker-ia-homeofficepou",
+            "create": true,
+            "read": true,
+            "update": true,
+            "delete": false
+          },
+          {
+            "role": "caseworker-ia-respondentofficer",
+            "create": true,
+            "read": true,
+            "update": true,
+            "delete": false
+          },
+          {
+            "role": "caseworker-ia-iacjudge",
+            "create": true,
+            "read": true,
+            "update": true,
+            "delete": false
+          }
+        ]
+      }
+    ]
+  } 
 
 
 ]

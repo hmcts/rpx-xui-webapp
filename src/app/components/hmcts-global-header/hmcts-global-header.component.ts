@@ -1,6 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Store } from '@ngrx/store';
-import * as fromRoot from '../../store';
+import * as fromNocStore from '../../../noc/store';
+import { NavItemsModel } from '../../models/nav-item.model';
+import { UserNavModel } from '../../models/user-nav.model';
+
 
 @Component({
     selector: 'exui-hmcts-global-header',
@@ -8,20 +11,32 @@ import * as fromRoot from '../../store';
 })
 export class HmctsGlobalHeaderComponent {
 
-  // @Input() set userLoggedIn(value) {
-  //     this.userValue = value;
-  // }
+  @Input() public set showNavItems(value: boolean) {
+    this.showItems = value;
+  }
+  @Input() public items: NavItemsModel[];
+  @Input() public logoIsUsed: boolean;
+  @Input() public showFindCase: boolean;
   @Input() public headerTitle: {name: string; url: string};
-  @Input() public navigation;
-  @Input() public isBrandedHeader: boolean;
+  @Input() public navigation: UserNavModel;
+  @Input() public logoType: string;
+  @Input() public currentUrl: string;
   @Output() public navigate = new EventEmitter<string>();
 
+  public showItems: boolean;
   public userValue = true;
-  constructor(public readonly store: Store<fromRoot.State>) { }
+  public tab;
 
-  public onEmmitEvent(index) {
+  constructor(
+    public nocStore: Store<fromNocStore.State>) { }
+
+  public onEmitEvent(index: number): void {
     this.navigate.emit(this.navigation.items[index].emit);
   }
 
-
+  public onEmitSubMenu(menuItem: any) {
+    if (menuItem.href === '/noc') {
+      this.nocStore.dispatch(new fromNocStore.Reset());
+    }
+  }
 }

@@ -1,7 +1,10 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import { GoogleAnalyticsService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Title } from '@angular/platform-browser';
+import { Router, RoutesRecognized } from '@angular/router';
+import { GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
-import {propsExist} from '../../../../api/lib/objectUtilities';
+
+import { propsExist } from '../../../../api/lib/objectUtilities';
 import { environment as config } from '../../../environments/environment';
 import * as fromRoot from '../../store';
 
@@ -17,15 +20,30 @@ export class AppComponent implements OnInit {
   public timeoutModalConfig = {
     countdown: '0 seconds',
     isVisible: false,
-  }
+  };
 
   constructor(
     private readonly store: Store<fromRoot.State>,
-    private googleAnalyticsService: GoogleAnalyticsService,
-    private readonly timeoutNotificationsService: TimeoutNotificationsService
+    private readonly googleTagManagerService: GoogleTagManagerService,
+    private readonly timeoutNotificationsService: TimeoutNotificationsService,
+    private readonly router: Router,
+    private readonly titleService: Title
   ) {
 
-    this.googleAnalyticsService.init(config.googleAnalyticsKey);
+    this.googleTagManagerService.init(config.googleTagManagerKey);
+
+    this.router.events.subscribe((data) => {
+      if (data instanceof RoutesRecognized) {
+        let child = data.state.root;
+        do {
+          child = child.firstChild;
+        } while (child.firstChild);
+        const d = child.data;
+        if (d.title) {
+          this.titleService.setTitle(`${d.title} - HM Courts & Tribunals Service - GOV.UK`);
+        }
+      }
+    });
   }
 
   public ngOnInit() {
@@ -34,6 +52,12 @@ export class AppComponent implements OnInit {
         this.loadAndListenForUserDetails();
       }
     });
+
+    // Moved here from CaseHomeComponent as this needs to be app-wide, and
+    // not just happening for the Case view. Moreover, it has an impact on
+    // the rendering of the menu as it triggers an action that gets hold of
+    // the user's profile.
+    this.store.dispatch(new fromRoot.StartIdleSessionTimeout());
   }
 
   /**
@@ -41,7 +65,7 @@ export class AppComponent implements OnInit {
    */
   public loadAndListenForUserDetails() {
 
-    this.store.pipe(select(fromRoot.getUserDetails)).subscribe(userDetails => this.userDetailsHandler(userDetails))
+    this.store.pipe(select(fromRoot.getUserDetails)).subscribe(userDetails => this.userDetailsHandler(userDetails));
 
     this.store.dispatch(new fromRoot.LoadUserDetails());
   }
@@ -63,8 +87,6 @@ export class AppComponent implements OnInit {
   public userDetailsHandler(userDetails) {
 
     if (propsExist(userDetails, ['sessionTimeout'] ) && userDetails.sessionTimeout.totalIdleTime > 0) {
-
-      console.log(userDetails.sessionTimeout);
       const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
 
       this.addTimeoutNotificationServiceListener();

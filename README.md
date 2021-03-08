@@ -33,7 +33,14 @@ Run `yarn lint` to execute all linting across both Angular and Node layers. Note
 is run on the build pipelines.
 Run `yarn lint:node` to execute note linting.
 
+## PACT
+
+Run `yarn test-pact` to run the PACT tests.
+
+Run `yarn pact-stub` to run the PACT stub server.
+
 # Branches, Environment and Deployment methods used
+# Branches, Environment and Deployment methods used 
 
 ```javascript
  |---------------------------------------|
@@ -168,6 +175,12 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 
+## Running Consumer Driven Contract tests (pact)
+
+Run `yarn test-pact` to execute the Pact tests 
+For publishing the pacts to broker execute `yarn publish-pact`
+
+
 ## Integration Documentation
 
 https://tools.hmcts.net/confluence/display/EUI/EXUI+Low+Level+Design
@@ -183,4 +196,4 @@ Extended version of script below:
 (https://robferguson.org/blog/2017/09/09/a-simple-logging-service-for-angular-4/)
 
 END
-Trigger
+Trigger2

@@ -1,4 +1,5 @@
 import {createProxyMiddleware as proxy, Options} from 'http-proxy-middleware'
+import * as modifyResponse from 'node-http-proxy-json'
 import {getConfigValue} from '../../configuration'
 import {LOGGING} from '../../configuration/references'
 import * as log4jui from '../log4jui'
@@ -31,15 +32,41 @@ export const applyProxy = (app, config) => {
         target: config.target,
     }
 
+    if (config.onReq) {
+        options.onProxyReq = config.onReq
+    }
+
+    if (config.onRes) {
+        options.onProxyRes = (proxyRes, req, res) => {
+            modifyResponse(res, proxyRes, body => {
+                if (body) {
+                    // modify some information
+                    body = config.onRes(proxyRes, req, res, body)
+                }
+                return body // return value can be a promise
+            })
+        }
+    }
+
+    if (config.ws) {
+        options.ws = config.ws
+    }
+
     if (false !== config.rewrite) {
         options.pathRewrite = {
             [`^${config.source}`]: config.rewriteUrl || '',
         }
     }
 
+    let middlewares = [authInterceptor]
+
+    if (config.middlewares) {
+        middlewares = [...middlewares, ...config.middlewares]
+    }
+
     if (config.filter) {
-        app.use(config.source, authInterceptor, proxy(config.filter, options))
+        app.use(config.source, middlewares, proxy(config.filter, options))
     } else {
-        app.use(config.source, authInterceptor, proxy(options))
+        app.use(config.source, middlewares, proxy(options))
     }
 }

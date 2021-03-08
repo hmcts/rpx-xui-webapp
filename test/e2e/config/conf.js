@@ -2,8 +2,10 @@ const chai            = require('chai');
 const chaiAsPromised  = require('chai-as-promised');
 const minimist        = require('minimist');
 
+const dotenv = require('dotenv');
 var screenShotUtils = require("protractor-screenshot-utils").ProtractorScreenShotUtils;
 
+dotenv.config({ path: __dirname +'/../../.local-test.env' });
 
 chai.use(chaiAsPromised);
 
@@ -52,7 +54,13 @@ const config = {
     fr_judge_username: process.env.FR_EMAIL,
     fr_judge_password: process.env.FR_PASSWORD,
     sscs_username: process.env.SSCS_EMAIL,
-    sscs_password: process.env.SSCS_PASSWORD
+    sscs_password: process.env.SSCS_PASSWORD,
+
+    caseworker_iac_adm_username: process.env.CASEWORKER_IAC_ADM_USERNAME ? process.env.CASEWORKER_IAC_ADM_USERNAME :'udaytest12@mailinator.com' ,
+    caseworker_iac_adm_password: process.env.CASEWORKER_IAC_ADM_PASSWORD ? process.env.CASEWORKER_IAC_ADM_PASSWORD : 'Welcome01',
+
+    caseworker_iac_off_username: process.env.CASEWORKER_IAC_OFF_USERNAME ? process.env.CASEWORKER_IAC_OFF_USERNAME :'udaytest12@mailinator.com' ,
+    caseworker_iac_off_password: process.env.CASEWORKER_IAC_OFF_PASSWORD ? process.env.CASEWORKER_IAC_OFF_PASSWORD :'Welcome01' 
 
   },
   directConnect: true,
@@ -76,12 +84,12 @@ const config = {
     strict: true,
     // format: ['node_modules/cucumber-pretty'],
     format: ['node_modules/cucumber-pretty', 'json:reports/tests/json/results.json'],
-    tags: ['@all'],
+    tags: ['@smoke or @test','not @ignore'],
     require: [
       '../support/timeout.js',
       '../support/hooks.js',
       '../support/world.js',
-      // '../support/*.js',
+      '../support/*.js',
       '../features/step_definitions/*.steps.js'
     ]
   },

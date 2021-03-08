@@ -12,21 +12,20 @@ import { RouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router
 import { MetaReducer, Store, StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { storeFreeze } from 'ngrx-store-freeze';
-import { CookieModule } from 'ngx-cookie';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { environment } from '../environments/environment';
 import { EnvironmentConfig, ENVIRONMENT_CONFIG } from '../models/environmentConfig.model';
 import { initApplication } from './app-initilizer';
 // app routes
-import { ROUTES } from './app.routes';
+import { ROUTES, routingConfiguration } from './app.routes';
 import { AppComponent } from './containers/app/app.component';
 // common provider
 import { ProvidersModule } from './providers/providers.module';
 import { AcceptTermsService } from './services/acceptTerms/acceptTerms.service';
+import { CaseShareService } from './services/case/share-case.service';
 import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler';
 import { AbstractAppInsights, AppInsightsWrapper } from './services/logger/appInsightsWrapper';
 import { CryptoWrapper } from './services/logger/cryptoWrapper';
-import { JwtDecodeWrapper } from './services/logger/jwtDecodeWrapper';
 import { LoggerService } from './services/logger/logger.service';
 import { MonitoringService } from './services/logger/monitoring.service';
 import { SharedModule } from './shared/shared.module';
@@ -53,10 +52,9 @@ const routerOptions: ExtraOptions = {
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    CookieModule.forRoot(),
     HttpClientModule,
     ProvidersModule.forRoot(),
-    RouterModule.forRoot(ROUTES, routerOptions),
+    RouterModule.forRoot(ROUTES, routingConfiguration),
     StoreModule.forRoot(reducers, { metaReducers }),
     EffectsModule.forRoot(effects),
     StoreRouterConnectingModule,
@@ -83,7 +81,6 @@ const routerOptions: ExtraOptions = {
       deps: [Store],
       multi: true
     },
-    JwtDecodeWrapper,
     CryptoWrapper,
     MonitoringService,
     LoggerService,
@@ -96,6 +93,7 @@ const routerOptions: ExtraOptions = {
       useClass: DefaultErrorHandler
     },
     AcceptTermsService,
+    CaseShareService,
     { provide: LAUNCHDARKLYKEY, useFactory: launchDarklyClientIdFactory, deps: [ENVIRONMENT_CONFIG] },
   ],
   bootstrap: [AppComponent],

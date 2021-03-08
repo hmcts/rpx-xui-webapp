@@ -22,7 +22,17 @@ async function getBrowser(){
     }
     return browser;
 }
-async function pa11ytest(test, actions, startUrl, customValidations) {
+
+async function getPage(){
+    if(page === null){
+        const testBrowser = await getBrowser();
+        page = await testBrowser.newPage();
+    }
+     
+    return page;
+}
+
+async function pa11ytest(test, actions, startUrl,roles) {
     console.log("pally test with actions : " + test.test.title);
     console.log(actions);
 
@@ -40,10 +50,20 @@ async function pa11ytest(test, actions, startUrl, customValidations) {
         data: 'foobar'
     }, 'secret', { expiresIn: 60 * 60 });
 
+    const encodedRoles = encodeURIComponent('j:["pui-case-manager"]')
     const cookies = [
         {
             name: '__auth__',
             value: token,
+            domain: 'localhost:4200',
+            path: '/',
+            httpOnly: false,
+            secure: false,
+            session: true,
+        },
+        {
+            name: 'roles',
+            value: encodedRoles,
             domain: 'localhost:4200',
             path: '/',
             httpOnly: false,

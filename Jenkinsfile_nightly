@@ -24,7 +24,7 @@ withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
 
     enableFullFunctionalTest(30)
-    enableSecurityScan()
+    // enableSecurityScan()
     enableMutationTest()
     enableCrossBrowserTest()
 

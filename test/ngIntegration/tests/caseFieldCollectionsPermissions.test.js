@@ -20,6 +20,8 @@ describe('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
     });
     afterEach(async function (done) {
         await MockApp.stopServer();
+        // await BrowserUtil.addScreenshot(this, browser); 
+
         done();
     });
 

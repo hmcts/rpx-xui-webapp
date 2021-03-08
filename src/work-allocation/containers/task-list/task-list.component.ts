@@ -144,7 +144,7 @@ export class TaskListComponent implements OnChanges {
    *
    * TODO: Think about moving 'none' to task sort model.
    *
-   * @param fieldName - 'caseReference'
+   * @param fieldName - 'caseName'
    * @return 'none' / 'asc' / 'desc'
    */
   public getColumnSortedSetting(fieldName: string): string {

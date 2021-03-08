@@ -192,6 +192,7 @@ defineSupportCode(function ({ Given, When, Then }) {
   Then('I should be redirected to EUI dashboard page', async function () {
 
     const world = this;
+    await BrowserUtil.waitForLD();
     await BrowserWaits.retryForPageLoad($("exui-header"), function(message){
       world.attach("Redirected to EUI dashboard , attempt reload : "+message);
     });

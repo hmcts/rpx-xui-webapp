@@ -319,7 +319,7 @@ describe('AvailableTasksComponent', () => {
         },
         task: {
           id: TASK_ID,
-          caseReference: '2345 6789 0123 4567',
+          case_id: '2345678901234567',
           caseName: 'Mankai Lit',
           caseCategory: 'Revocation',
           location: 'Taylor House',

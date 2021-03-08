@@ -35,12 +35,16 @@ class SearchPage {
     this.firstResultCaseLink = $("ccd-search-result>table>tbody>tr:nth-of-type(1)>td:nth-of-type(1)>a"); 
   }
 
-
-  async _waitForSearchComponent(){
-    await BrowserWaits.waitForElement(this.searchResultComponent);
+  async _waitForSearchComponent() {
     await BrowserWaits.waitForElement(this.searchFilterContainer);
-}
+    await this.waitForSpinnerToDissappear();
+  }
 
+  async waitForSpinnerToDissappear() {
+    await BrowserWaits.waitForCondition(async () => {
+      return !(await $(".loading-spinner-in-action").isPresent());
+    });
+  }
   async selectJurisdiction(option){
     await this._waitForSearchComponent();
 
@@ -53,6 +57,7 @@ class SearchPage {
   }
 
   async selectCaseType(option){
+    await this._waitForSearchComponent();
     await BrowserWaits.waitForElement(this.caseType);
 
     var optionElement = this.caseType.element(by.xpath("//*[text() = '" + option + "']"));
@@ -62,6 +67,7 @@ class SearchPage {
   }
 
   async clickApplyButton() {
+    await this._waitForSearchComponent();
     await BrowserWaits.waitForElement(this.applyButton);
     await BrowserWaits.waitForElementClickable(this.applyButton);
 
@@ -71,6 +77,7 @@ class SearchPage {
   }
 
   async clickResetButton() {
+    await this._waitForSearchComponent();
     await BrowserWaits.waitForElement(this.resetButton);
     await browser.executeScript('arguments[0].scrollIntoView()',
       this.resetButton); 
@@ -78,6 +85,7 @@ class SearchPage {
   }
 
   async openFirstCaseInResults(){
+    await this._waitForSearchComponent();
     await this.searchResultsTopPagination.isPresent();
     await BrowserWaits.waitForElement(this.firstResultCaseLink);
     var thisPageUrl = await browser.getCurrentUrl();
@@ -105,10 +113,12 @@ class SearchPage {
   }
 
   async waitForAtleastOneSearchResult(){
+    await this._waitForSearchComponent();
     await BrowserWaits.waitForElement(this.searchResultsTopPagination);
   }
 
   async waitForSearchWithNoResults(){
+    await this._waitForSearchComponent();
     await BrowserWaits.waitForElement(this.noResultsNotification); 
   }
 }

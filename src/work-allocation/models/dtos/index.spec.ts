@@ -9,7 +9,7 @@ describe('WorkAllocation', () => {
         assignee: { userId: 'id1', userName: 'userName' },
         caseData: {
           category: 'category',
-          location: { id: 'locationId', locationName: 'locationName' },
+          location: { location_id: 'location_id', location: 'location' },
           name: 'caseDataName',
           reference: 'referenceName',
         },
@@ -23,8 +23,8 @@ describe('WorkAllocation', () => {
       expect(TASK.assignee.userId).toEqual('id1');
       expect(TASK.assignee.userName).toEqual('userName');
       expect(TASK.caseData.category).toEqual('category');
-      expect(TASK.caseData.location.id).toEqual('locationId');
-      expect(TASK.caseData.location.locationName).toEqual('locationName');
+      expect(TASK.caseData.location.location_id).toEqual('location_id');
+      expect(TASK.caseData.location.location).toEqual('location');
       expect(TASK.caseData.name).toEqual('caseDataName');
       expect(TASK.caseData.reference).toEqual('referenceName');
       expect(TASK.state).toBeUndefined();

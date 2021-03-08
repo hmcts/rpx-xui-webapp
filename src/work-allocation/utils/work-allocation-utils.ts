@@ -68,6 +68,7 @@ export function getPrimaryLocation(cw: Caseworker): Location {
         primaryLocation = {
           location_id: location.location_id,
           location: location.location,
+          is_primary: true,
           services: location.services,
         }
       }

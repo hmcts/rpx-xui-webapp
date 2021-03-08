@@ -66,7 +66,7 @@ describe('AvailableTasksFilterComponent', () => {
     expect(sessionStorage.getItem).toHaveBeenCalledWith(FilterConstants.Session.AvailableTasks);
     expect(component.preselection).toBeDefined();
     expect(component.preselection.length).toEqual(1);
-    expect(component.preselection[0].locationName).toEqual(mockLocations[0].locationName);
+    expect(component.preselection[0].location).toEqual(mockLocations[0].location);
   });
 
   it('should have loaded the mock locations', () => {
@@ -79,7 +79,7 @@ describe('AvailableTasksFilterComponent', () => {
     const length = wrapper.changedEvents.length;
     expect(length).toBeGreaterThan(0);
     expect(wrapper.changedEvents[length - 1].length).toEqual(1);
-    expect(wrapper.changedEvents[length - 1][0].locationName).toEqual(mockLocations[0].locationName);
+    expect(wrapper.changedEvents[length - 1][0].location).toEqual(mockLocations[0].location);
   });
 
   it('should NOT dispatch a change event when a checkbox is clicked', () => {
@@ -124,7 +124,7 @@ describe('AvailableTasksFilterComponent', () => {
     // And it should now be changed back to what it was before.
     const selectionAfterCancel = [ ...component.locationFilter.selection ];
     expect(selectionAfterCancel.length).toEqual(startingSelection.length);
-    expect(selectionAfterCancel[0].locationName).toEqual(startingSelection[0].locationName);
+    expect(selectionAfterCancel[0].location).toEqual(startingSelection[0].location);
   });
 
   it('should ONLY dispatch a change event when apply button is clicked', () => {

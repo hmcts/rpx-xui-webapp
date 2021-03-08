@@ -5,8 +5,9 @@ import { TaskService, TaskSort } from '../enums';
 import { Caseworker, Location } from '../models/dtos';
 import { Task, TaskFieldConfig, TaskServiceConfig } from '../models/tasks';
 
-const LOCATION_A: Location = { id: 'a', locationName: 'Taylor House', services: [ 'a' ] };
-const LOCATION_B: Location = { id: 'b', locationName: 'Taylor Swift', services: [ 'a', 'b' ] };
+const LOCATION_A: Location = { location_id: 'a', location: 'Taylor House', is_primary: true, services: [ 'a' ] };
+const LOCATION_B: Location = { location_id: 'b', location: 'Taylor Swift', services: [ 'a', 'b' ] };
+const LOCATION_C: Location = { location_id: 'c', location: 'Taylor Swift', is_primary: false, services: [ 'a', 'b' ] };
 export function getMockLocations(): Location[] {
   return [ LOCATION_A, LOCATION_B ];
 }
@@ -14,18 +15,18 @@ export function getMockLocations(): Location[] {
 export function getMockCaseworkers(): Caseworker[] {
   return [
     {
-      firstName: 'John',
-      lastName: 'Smith',
-      idamId: '1',
-      email: 'j.s@caseworkers.gov.uk',
-      location: LOCATION_A
+      first_name: 'John',
+      last_name: 'Smith',
+      id: '1',
+      email_id: 'j.s@caseworkers.gov.uk',
+      base_location: [LOCATION_A, LOCATION_C]
     },
     {
-      firstName: 'Jane',
-      lastName: 'Doe',
-      idamId: '2',
-      email: 'j.doe@caseworkers.gov.uk',
-      location: LOCATION_B
+      first_name: 'Jane',
+      last_name: 'Doe',
+      id: '2',
+      email_id: 'j.doe@caseworkers.gov.uk',
+      base_location: [LOCATION_B]
     }
   ];
 }

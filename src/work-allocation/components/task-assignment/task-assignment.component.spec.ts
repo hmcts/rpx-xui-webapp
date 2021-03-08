@@ -10,22 +10,24 @@ import { SessionStorageService } from '../../../app/services';
 import { TaskAssignmentComponent } from './task-assignment.component';
 
 // Locations.
-const LOCATION_A: Location = { id: 'a', locationName: 'Location A', services: ['a'] };
-const LOCATION_B: Location = { id: 'b', locationName: 'Location B', services: ['a', 'b'] };
-const LOCATION_C: Location = { id: 'c', locationName: 'Location C', services: ['c'] };
+const LOCATION_A: Location = { location_id: 'a', location: 'Location A', is_primary: true, services: ['a'] };
+const LOCATION_B: Location = { location_id: 'b', location: 'Location B', is_primary: true, services: ['a', 'b'] };
+const LOCATION_B_NONP: Location = { location_id: 'b', location: 'Location B', is_primary: false, services: ['a', 'b'] };
+const LOCATION_C: Location = { location_id: 'c', location: 'Location C', is_primary: true, services: ['c'] };
 
 // Caseworkers.
-const JS = { firstName: 'John',   lastName: 'Smith',  idamId: '1', email: 'j.s@cw.gov.uk', location: LOCATION_A };
-const JD = { firstName: 'Jane',   lastName: 'Doe',    idamId: '2', email: 'j.d@cw.gov.uk', location: LOCATION_A };
-const JB = { firstName: 'Joseph', lastName: 'Bloggs', idamId: '3', email: 'j.b@cw.gov.uk', location: LOCATION_B };
-const NB = { firstName: 'Noah',   lastName: 'Body',   idamId: '4', email: 'n.b@cw.gov.uk', location: LOCATION_B };
+const JS = { first_name: 'John',   last_name: 'Smith',  id: '1', email_id: 'j.s@cw.gov.uk', base_location: [LOCATION_A] };
+// Note: Two primary locations (for Jane Doe) should not happen in real cases but need to ensure this does not break anything
+const JD = { first_name: 'Jane',   last_name: 'Doe',    id: '2', email_id: 'j.d@cw.gov.uk', base_location: [LOCATION_C, LOCATION_A] };
+const JB = { first_name: 'Joseph', last_name: 'Bloggs', id: '3', email_id: 'j.b@cw.gov.uk', base_location: [LOCATION_B, LOCATION_B_NONP] };
+const NB = { first_name: 'Noah',   last_name: 'Body',   id: '4', email_id: 'n.b@cw.gov.uk', base_location: [LOCATION_B] };
 
 class MockLocationDataService {
   public getLocation(locationId: string): Observable<Location> {
     switch (locationId) {
-      case LOCATION_A.id:
+      case LOCATION_A.location_id:
         return Observable.of(LOCATION_A);
-      case LOCATION_B.id:
+      case LOCATION_B.location_id:
         return Observable.of(LOCATION_B);
       default:
         return Observable.of(LOCATION_C);
@@ -102,10 +104,10 @@ describe('WorkAllocation', () => {
       expect(select).toBeDefined();
       expect(select.options).toBeDefined();
       expect(select.options.length).toEqual(4);
-      expect(select.options[0].label).toEqual(component.ALL_LOCATIONS.locationName);
-      expect(select.options[1].textContent).toEqual(LOCATION_A.locationName);
-      expect(select.options[2].textContent).toEqual(LOCATION_B.locationName);
-      expect(select.options[3].textContent).toEqual(LOCATION_C.locationName);
+      expect(select.options[0].label).toEqual(component.ALL_LOCATIONS.location);
+      expect(select.options[1].textContent).toEqual(LOCATION_A.location);
+      expect(select.options[2].textContent).toEqual(LOCATION_B.location);
+      expect(select.options[3].textContent).toEqual(LOCATION_C.location);
     });
 
     it('should have appropriate default options shown in the caseworker select', () => {
@@ -217,12 +219,12 @@ describe('WorkAllocation', () => {
     });
 
     it('should set the caseworkers location', () => {
-      expect(component.caseworkerLocation).toEqual(JD.location);
+      expect(component.caseworkerLocation).toEqual(JD.base_location[1]);
     });
 
     it('should set the selected location', () => {
       // initial setting is with assigned caseworker JD, location a
-      expect(component.location.id).toEqual('a');
+      expect(component.location.location_id).toEqual('a');
     });
   });
 

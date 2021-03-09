@@ -36,7 +36,7 @@ describe('TaskManagerListComponent', () => {
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const mockLocations: dtos.Location[] = getMockLocations();
   const mockCaseworkers: dtos.Caseworker[] = getMockCaseworkers();
-  const caseworkerDiplayName: CaseworkerDisplayName = new CaseworkerDisplayName();
+  const caseworkerDisplayName: CaseworkerDisplayName = new CaseworkerDisplayName();
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -106,7 +106,8 @@ describe('TaskManagerListComponent', () => {
 
     const searchRequest = component.getSearchTaskRequest();
     // Make sure the search request looks right.
-    expect(searchRequest.search_parameters.length).toEqual(mockLocations.length);
+    console.log(searchRequest.search_parameters, mockLocations);
+    expect(searchRequest.search_parameters.length).toEqual(2);
     expect(searchRequest.search_parameters[0].key).toEqual('location');
     expect(searchRequest.search_parameters[0].values).toContain('a');
     expect(searchRequest.search_parameters[1].key).toEqual('user');
@@ -168,7 +169,7 @@ describe('TaskManagerListComponent', () => {
     expect(searchRequest.search_parameters.length).toEqual(2);
     expect(searchRequest.search_parameters[1].key).toEqual('user');
     expect(searchRequest.search_parameters[1].values.length).toEqual(1);
-    const caseworkerName = caseworkerDiplayName.transform(mockCaseworkers[0], false);
+    const caseworkerName = caseworkerDisplayName.transform(mockCaseworkers[0], false);
     expect(searchRequest.search_parameters[1].values).toContain('1');
 
     // Let's also make sure that the tasks were re-requested with the new sorting.

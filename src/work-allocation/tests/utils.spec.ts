@@ -8,8 +8,9 @@ import { Task, TaskFieldConfig, TaskServiceConfig } from '../models/tasks';
 const LOCATION_A: Location = { location_id: 'a', location: 'Taylor House', is_primary: true, services: [ 'a' ] };
 const LOCATION_B: Location = { location_id: 'b', location: 'Taylor Swift', services: [ 'a', 'b' ] };
 const LOCATION_C: Location = { location_id: 'c', location: 'Taylor Swift', is_primary: false, services: [ 'a', 'b' ] };
+const LOCATION_D: Location = { location_id: 'd', location: 'Taylor Manor', is_primary: true, services: [ 'c' ] };
 export function getMockLocations(): Location[] {
-  return [ LOCATION_A, LOCATION_B ];
+  return [ LOCATION_A, LOCATION_B, LOCATION_C, LOCATION_D ];
 }
 
 export function getMockCaseworkers(): Caseworker[] {
@@ -27,6 +28,20 @@ export function getMockCaseworkers(): Caseworker[] {
       id: '2',
       email_id: 'j.doe@caseworkers.gov.uk',
       base_location: [LOCATION_B]
+    },
+    {
+      first_name: 'Joe',
+      last_name: 'Bloggs',
+      id: '3',
+      email_id: 'j.bloggs@caseworkers.gov.uk',
+      base_location: [LOCATION_B, LOCATION_D]
+    },
+    {
+      first_name: 'James',
+      last_name: 'Denver',
+      id: '4',
+      email_id: 'j.denver@caseworkers.gov.uk',
+      base_location: [LOCATION_C, LOCATION_D]
     }
   ];
 }

@@ -136,5 +136,13 @@ describe('TaskAssignmentContainerComponent', () => {
     };
     expect(mockWorkAllocationService.assignTask).toHaveBeenCalledWith(mockTasks[0].id, assignee);
   });
-  // TODO: Need to write tests regarding template
+
+  it('should show the correct information in the header', () => {
+
+    const headerElement: HTMLElement = fixture.debugElement.nativeElement.querySelector('h1');
+    const paragraphElement: HTMLElement = fixture.debugElement.nativeElement.querySelector('p');
+    // test page is shown as Reassign
+    expect(headerElement.innerText).toEqual('Reassign a task');
+    expect(paragraphElement.innerText).toEqual('Reassign a task to a colleague.');
+  });
 });

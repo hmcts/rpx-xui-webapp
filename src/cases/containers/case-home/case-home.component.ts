@@ -1,7 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
-  AlertService, ErrorNotifierService, HttpError, NavigationNotifierService,
-  NavigationOrigin, LoadingService as CCDLoadingService
+  AlertService,
+  ErrorNotifierService,
+  HttpError,
+  NavigationNotifierService,
+  NavigationOrigin,
+  LoadingService as CCDLoadingService
 } from '@hmcts/ccd-case-ui-toolkit';
 import { LoadingService as CommonLibLoadingService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
@@ -31,8 +35,8 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
     private readonly errorNotifierService: ErrorNotifierService,
     private readonly navigationNotifier: NavigationNotifierService,
     private readonly store: Store<fromFeature.State>,
-    private commonLibLoadingService: CommonLibLoadingService,
-    private ccdLibLoadingService: CCDLoadingService,
+    private readonly commonLibLoadingService: CommonLibLoadingService,
+    private readonly ccdLibLoadingService: CCDLoadingService,
   ) { }
 
   /**

@@ -49,8 +49,6 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
       }
     }) as any;
 
-    this.store.dispatch(new fromRoot.StartIdleSessionTimeout());
-
     this.showSpinner$ = combineLatest([
       this.ccdLibLoadingService.isLoading,
       this.commonLibLoadingService.isLoading

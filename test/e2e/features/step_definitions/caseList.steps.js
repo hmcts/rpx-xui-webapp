@@ -28,7 +28,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     When('I click search Reset in case list page', async function () {
         await caseListPage.clickSearchResetBtn();
-        await caseListPage.waitForNoCaseResultsToDisplay();
+        await caseListPage.waitForSpinnerToDissappear();
     });
 
     Then('I wait to see case results displayed', {timeout : 120*1000} ,async function(){

@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { tap } from 'rxjs/operators';
-import { AppConstants } from 'src/app/app.constants';
+
+import { AppConstants } from '../../app/app.constants';
 
 @Injectable()
 export class WorkAllocationFeatureToggleGuard implements CanActivate {

@@ -4,7 +4,7 @@ const minimist = require('minimist');
 
 var screenShotUtils = require("protractor-screenshot-utils").ProtractorScreenShotUtils;
 
-
+const BrowserUtil = require('.././../ngIntegration/util/browserUtil');
 chai.use(chaiAsPromised);
 
 const argv = minimist(process.argv.slice(2));
@@ -70,6 +70,7 @@ const config = {
         global.screenShotUtils = new screenShotUtils({
             browserInstance: browser
         });
+        browser.get(config.baseUrl);
     },
 
     cucumberOpts: {

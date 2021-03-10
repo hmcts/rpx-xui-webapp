@@ -1,4 +1,5 @@
 import { ActionViews, TASK_ACTIONS } from './constants/actions';
+import { Caseworker } from './interfaces/task';
 
 export function prepareGetTaskUrl(baseUrl: string, taskId: string): string {
   return `${baseUrl}/task/${taskId}`
@@ -20,8 +21,8 @@ export function prepareGetLocationsUrl(baseUrl: string): string {
   return `${baseUrl}/location`
 }
 
-export function prepareCaseWorkerUrl(baseUrl: string) {
-  return `${baseUrl}/caseworker`
+export function prepareRoleApiUrl(baseUrl: string) {
+  return `${baseUrl}/am/role-assignments/query`
 }
 
 export function prepareCaseWorkerSearchUrl(baseUrl: string) {
@@ -47,7 +48,7 @@ export function prepareCaseWorkerForLocationAndService(baseUrl: string, location
  * @param tasks The tasks to set up the actions for.
  * @param view This dictates which set of actions we should use.
  */
-export function assignActionsToTasks(tasks: any[], view: any): void {
+export function assignActionsToTasks(tasks: any[], view: any, caseworkers: Caseworker[]): void {
   if (tasks) {
     for (const task of tasks) {
       switch (view) {
@@ -70,6 +71,47 @@ export function assignActionsToTasks(tasks: any[], view: any): void {
           task.actions = task.actions || [];
           break;
       }
+      task.dueDate = task.due_date
+      task.taskName = task.name
+      task.caseName = task.case_name
+      task.caseCategory = task.case_category
+      task.assigneeName = getAssigneeName(task, caseworkers);
     }
   }
+}
+
+function getAssigneeName(task: any, caseworkers: Caseworker[]): string {
+  if (task.assignee && caseworkers.some(cw => cw.idamId === task.assignee)) {
+    const assignedCW = caseworkers.filter(cw => cw.idamId === task.assignee)[0];
+    return `${assignedCW.firstName} ${assignedCW.lastName}`;
+  }
+  return null
+}
+
+export function mapCaseworkerData(caseWorkerData: any[]): any[] {
+  if (caseWorkerData) {
+    caseWorkerData.forEach((caseWorker: any) => {
+      caseWorker.idamId = caseWorker.id
+      caseWorker.firstName = caseWorker.first_name
+      caseWorker.lastName = caseWorker.last_name
+      caseWorker.email = caseWorker.email_id
+    })
+  }
+  return caseWorkerData
+}
+
+export function prepareRoleApiRequest(locationId?: number): any {
+  const attributes: any = {
+    jurisdiction: ['IA'],
+  };
+
+  const payload =  {
+    attributes,
+    roleName: ['tribunal-caseworker', 'senior-tribunal-caseworker'],
+    validAt: Date.UTC,
+  }
+  if (locationId) {
+    payload.attributes.primaryLocation = [locationId]
+  }
+  return payload
 }

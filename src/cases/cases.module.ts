@@ -25,6 +25,7 @@ import {
     SearchFiltersModule,
     SearchResultModule,
     WorkbasketFiltersModule,
+    LoadingModule
 } from '@hmcts/ccd-case-ui-toolkit';
 
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
@@ -60,7 +61,8 @@ import { effects, reducers } from './store';
     MatDialogModule,
     CaseListFiltersModule,
     WorkbasketFiltersModule,
-    ExuiCommonLibModule
+    ExuiCommonLibModule,
+    LoadingModule
   ],
   declarations: [...fromComponents.components, ...fromContainers.containers],
   providers: [

@@ -23,7 +23,10 @@
     "documentsApi": "HEALTH_DOCUMENTS_API",
     "em_anno_api": "HEALTH_EM_ANNO_API",
     "s2s": "HEALTH_S2S_SERVICE",
-    "termsAndConditions": "HEALTH_TERMS_AND_CONDITIONS_API"
+    "termsAndConditions": "HEALTH_TERMS_AND_CONDITIONS_API",
+    "taskApi": "HEALTH_WORK_ALLOCATION_TASK_API",
+    "roleApi": "HEALTH_ROLE_ASSIGNMENT_API",
+    "caseworkerApi": "HEALTH_CASE_CASEWORKER_API"
   },
   "services": {
     "ccd": {
@@ -49,6 +52,15 @@
       "oauthCallbackUrl": "SERVICES_IDAM_OAUTH_CALLBACK_URL",
       "iss": "SERVICES_IDAM_ISS_URL"
     },
+    "work_allocation": {
+      "taskApi": "SERVICES_WORK_ALLOCATION_TASK_API"
+    },
+    "role_assignment": {
+      "roleApi": "SERVICES_ROLE_ASSIGNMENT_API"
+    },
+    "case": {
+      "caseworkerApi": "SERVICES_CASE_CASEWORKER_API"
+    },
     "markup_api": "SERVICES_MARKUP_API",
     "icp_api": "SERVICES_ICP_API",
     "payments": "SERVICES_PAYMENTS_URL",
@@ -65,7 +77,9 @@
       "mc-s2s-client-secret": "S2S_SECRET",
       "mc-idam-client-secret": "IDAM_SECRET",
       "webapp-redis-connection-string": "REDISCLOUD_URL",
-      "launch-darkly-client-id": "LAUNCH_DARKLY_CLIENT_ID"
+      "launch-darkly-client-id": "LAUNCH_DARKLY_CLIENT_ID",
+      "system-user-name": "SYSTEM_USER_NAME",
+      "system-user-password": "SYSTEM_USER_PASSWORD"
     }
   },
   "jurisdictions": "JURISDICTIONS",
@@ -101,6 +115,10 @@
     "oidcEnabled": {
       "__name": "FEATURE_OIDC_ENABLED",
       "__format":"json"
+    },
+    "workAllocationEnabled": {
+      "__name": "FEATURE_WORKALLOCATION_ENABLED",
+      "__format":"json"
     }
   },
   "helmet": {
@@ -117,6 +135,7 @@
   },
   "pact": {
     "brokerUrl": "PACT_BROKER_URL",
+    "branchName": "PACT_BRANCH_NAME",
     "consumerVersion": "PACT_CONSUMER_VERSION",
     "brokerUsername": "PACT_BROKER_USERNAME",
     "brokerPassword": "PACT_BROKER_PASSWORD"

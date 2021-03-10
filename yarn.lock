@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@2.71.3-conditional-show-perf":
-  version "2.71.3-conditional-show-perf"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.71.3-conditional-show-perf.tgz#5c71d69507787aa9a276ae22ed3a8e51d10db9de"
-  integrity sha512-QAcK762hE1c8ab/9uNSPQM00MJaMpGnn2zK2pHAgZ4PjfozBLfuwLA1ThsH6oq6TJSBXnYQgIDtLNeV20jucKg==
+"@hmcts/ccd-case-ui-toolkit@2.73.0":
+  version "2.73.0"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.73.0.tgz#81585befb9b0e7c277bf59394793a714e0613d47"
+  integrity sha512-hq75qVpr+AAY3yIvPr4yPPCM8QTOnNg4PLCsU9k7+G3oEz3nQ4jzi/vBRVCACDQgSxbHwh1tAml8So88Gt1X9Q==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
@@ -478,17 +478,17 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@0.1.53":
-  version "0.1.53"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-0.1.53.tgz#a6bf38cc70c36682724486dc370848e848e0e3d7"
-  integrity sha512-nVYev8j7FhvMA0MQTvKpF9PNWjaM2IKJoGaoljfaaPKDlRiZZ9z4Gi/npb/WijCG+JJQfBV+bGLgFtHkljG32A==
+"@hmcts/rpx-xui-common-lib@0.2.5":
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-0.2.5.tgz#0009e6a1274238f3d723bc86832465e6cc72a162"
+  integrity sha512-mMEYsTJ6c+923xGDTkPVy+6+4fEZEfermxVRpaT+PBAvUeyONlWAdXPygfqQjubYXXyFNonQccgzMis8SFOiBA==
   dependencies:
     tslib "^1.9.0"
 
-"@hmcts/rpx-xui-node-lib@^2.24.3":
-  version "2.24.3"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-node-lib/-/rpx-xui-node-lib-2.24.3.tgz#63292f848fb10a475d7aa65abeefa0b030a5ed9f"
-  integrity sha512-5pmLQIdJ3CdpxzMa+6IGFQ4+MB24yZ9Ocim7DlLvTe2jHQYZwE/TlbNGkhRjXmqPQy4bt/9zuk4X8IhyDgxtdA==
+"@hmcts/rpx-xui-node-lib@2.25.0":
+  version "2.25.0"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-node-lib/-/rpx-xui-node-lib-2.25.0.tgz#e7f6bf0d671194c0bd043b1521ccd28b9440f9d9"
+  integrity sha512-F02GhzttNuuaHbbpc0X9X35o1gPK0v4PSMAGHQL2n6FeXI0o3Juy2Kh1ZmohrbBhC5PfM2p7B0NpSmJRGJSxzg==
   dependencies:
     "@hapi/joi" "^17.1.1"
     axios "^0.21.1"
@@ -8596,10 +8596,10 @@ mochawesome-report-generator@^5.1.0:
     validator "^10.11.0"
     yargs "^13.2.2"
 
-mochawesome@^6.1.1:
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/mochawesome/-/mochawesome-6.1.1.tgz#9155ac13edb42c9eb17a7adbbcbbb5c6ecefb972"
-  integrity sha512-fRGZkSJI+u4ODRQCFg3JqI4pqZGzOpfZqlEjvUoZ78l2JnBWwepPu7dMTAcyAEUsZbTSx7S4eVnsi+/Zh1Qq6A==
+mochawesome@^6.2.1:
+  version "6.2.1"
+  resolved "https://registry.yarnpkg.com/mochawesome/-/mochawesome-6.2.1.tgz#38ed75cf1b2ff86e7c894d6f33499183a49dd0b7"
+  integrity sha512-zew/N1Gb4JYCTl3scu9i8OW0ay7b0ZOGczCrSW/P+XdBrLntqI5/JlJiYV1/Nn/SY4qahddsIE+qWL8ACNerPA==
   dependencies:
     chalk "^4.0.0"
     diff "^4.0.1"
@@ -8825,13 +8825,6 @@ ngx-chips@1.9.8:
   integrity sha512-gU8hXByb0QcNLbDi5KuLsEgfuIoaKDDMHWdUPwtnY4gjGGEsg5afUo++raeKPHHc1igp/kYTghmI0xzOpMkqQg==
   dependencies:
     ng2-material-dropdown "0.10.1"
-    tslib "^1.9.0"
-
-ngx-cookie@^4.1.2:
-  version "4.1.2"
-  resolved "https://registry.yarnpkg.com/ngx-cookie/-/ngx-cookie-4.1.2.tgz#ab2fafc6ee7f23b7ad92f8427dc714894e60aa31"
-  integrity sha512-BU3q+116mSQZvf8WsnKDxyWFy10LtxSvZz1YIjD7pmaSFpiKdWmHTHn0qLgm3OoIL9TfInQ7Ij46rKJWPD+4Kw==
-  dependencies:
     tslib "^1.9.0"
 
 ngx-logger@^4.0.4:
@@ -10131,10 +10124,10 @@ printj@~1.1.0, printj@~1.1.2:
   resolved "https://registry.yarnpkg.com/printj/-/printj-1.1.2.tgz#d90deb2975a8b9f600fb3a1c94e3f4c53c78a222"
   integrity sha512-zA2SmoLaxZyArQTOPj5LXecR+RagfPSU5Kw1qP+jkWeNlrq+eJZyY2oS68SU1Z/7/myXM4lo9716laOFAVStCQ==
 
-prismjs@^1.15.0:
-  version "1.19.0"
-  resolved "https://registry.yarnpkg.com/prismjs/-/prismjs-1.19.0.tgz#713afbd45c3baca4b321569f2df39e17e729d4dc"
-  integrity sha512-IVFtbW9mCWm9eOIaEkNyo2Vl4NnEifis2GQ7/MLRG5TQe6t+4Sj9J5QWI9i3v+SS43uZBlCAOn+zYTVYQcPXJw==
+prismjs@^1.15.0, prismjs@^1.23.0:
+  version "1.23.0"
+  resolved "https://registry.yarnpkg.com/prismjs/-/prismjs-1.23.0.tgz#d3b3967f7d72440690497652a9d40ff046067f33"
+  integrity sha512-c29LVsqOaLbBHuIbsTxaKENh1N2EQBOHaWv7gkHN4dgRbxSREqDnDbtFJYdpPauS4YCplMSNCABQ6Eeor69bAA==
   optionalDependencies:
     clipboard "^2.0.0"
 

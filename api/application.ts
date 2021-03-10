@@ -1,5 +1,6 @@
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
+import * as csrf from 'csurf'
 import * as express from 'express'
 import * as helmet from 'helmet'
 import { getXuiNodeMiddleware } from './auth'
@@ -48,6 +49,7 @@ app.use('/external', openRoutes)
 app.use('/workallocation', taskRouter)
 app.use('/external', openRoutes)
 app.use('/api', routes)
+app.use(csrf({ cookie: true, ignoreMethods: ["GET"] }));
 
 // @ts-ignore
 const logger: JUILogger = log4jui.getLogger('Application')

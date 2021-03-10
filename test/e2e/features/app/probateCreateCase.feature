@@ -1,5 +1,4 @@
 
-@probate @fullfunctional
 Feature: Probate create case workflow
 
   Background:

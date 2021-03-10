@@ -1,4 +1,4 @@
-@divorce @fullfunctional
+
 Feature: Divorce create case workflow
 
     Background:

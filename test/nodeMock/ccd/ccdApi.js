@@ -426,6 +426,21 @@ class CCDApi{
     }
 
 
+    getCaseActivity(cases){
+        let caseIds = cases.split(',');
+        let caseActivities = [];
+        for (const caseid in caseIds){
+            caseActivities.push({
+                "caseId": caseid,
+                "viewers": [],
+                "unknownViewers": 0,
+                "editors": [],
+                "unknownEditors": 0
+            });
+        }
+    }
+
+
 }
 
 module.exports = new CCDApi();

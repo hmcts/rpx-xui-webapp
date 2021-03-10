@@ -1,0 +1,302 @@
+I, [2021-02-17T16:17:27.538683 #90890]  INFO -- : Registered expected interaction POST /task/123456/complete
+D, [2021-02-17T16:17:27.538938 #90890] DEBUG -- : {
+  "description": "a request for completion",
+  "providerState": "task is completed",
+  "request": {
+    "method": "POST",
+    "path": "/task/123456/complete",
+    "body": {
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  },
+  "metadata": null
+}
+I, [2021-02-17T16:17:27.544394 #90890]  INFO -- : Received request POST /task/123456/complete
+D, [2021-02-17T16:17:27.544508 #90890] DEBUG -- : {
+  "path": "/task/123456/complete",
+  "query": "",
+  "method": "post",
+  "body": {
+  },
+  "headers": {
+    "Content-Length": "2",
+    "Content-Type": "application/json;charset=utf-8",
+    "Accept": "application/json, text/plain, */*",
+    "User-Agent": "axios/0.21.1",
+    "Host": "127.0.0.1:64709",
+    "Request-Context": "appId=cid-v1:",
+    "Connection": "close",
+    "Version": "HTTP/1.1"
+  }
+}
+I, [2021-02-17T16:17:27.545024 #90890]  INFO -- : Found matching response for POST /task/123456/complete
+D, [2021-02-17T16:17:27.545101 #90890] DEBUG -- : {
+  "status": 200,
+  "headers": {
+    "Content-Type": "application/json"
+  }
+}
+I, [2021-02-17T16:17:27.550299 #90890]  INFO -- : Registered expected interaction POST /task/123456/complete
+D, [2021-02-17T16:17:27.550445 #90890] DEBUG -- : {
+  "description": "a request for completion when already complete",
+  "providerState": "task was already complete",
+  "request": {
+    "method": "POST",
+    "path": "/task/123456/complete",
+    "body": {
+      "behaviour": "already-done"
+    }
+  },
+  "response": {
+    "status": 204,
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  },
+  "metadata": null
+}
+I, [2021-02-17T16:17:27.557359 #90890]  INFO -- : Received request POST /task/123456/complete
+D, [2021-02-17T16:17:27.557473 #90890] DEBUG -- : {
+  "path": "/task/123456/complete",
+  "query": "",
+  "method": "post",
+  "body": {
+    "behaviour": "already-done"
+  },
+  "headers": {
+    "Content-Length": "28",
+    "Content-Type": "application/json;charset=utf-8",
+    "Accept": "application/json, text/plain, */*",
+    "User-Agent": "axios/0.21.1",
+    "Host": "127.0.0.1:64709",
+    "Request-Context": "appId=cid-v1:",
+    "Connection": "close",
+    "Version": "HTTP/1.1"
+  }
+}
+I, [2021-02-17T16:17:27.557845 #90890]  INFO -- : Found matching response for POST /task/123456/complete
+D, [2021-02-17T16:17:27.557973 #90890] DEBUG -- : {
+  "status": 204,
+  "headers": {
+    "Content-Type": "application/json"
+  }
+}
+I, [2021-02-17T16:17:27.563772 #90890]  INFO -- : Registered expected interaction POST /task/123456/complete
+D, [2021-02-17T16:17:27.563885 #90890] DEBUG -- : {
+  "description": "a bad request for completion",
+  "providerState": "a bad request was made",
+  "request": {
+    "method": "POST",
+    "path": "/task/123456/complete",
+    "body": {
+      "behaviour": "bad-request"
+    }
+  },
+  "response": {
+    "status": 400,
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  },
+  "metadata": null
+}
+I, [2021-02-17T16:17:27.572057 #90890]  INFO -- : Received request POST /task/123456/complete
+D, [2021-02-17T16:17:27.572234 #90890] DEBUG -- : {
+  "path": "/task/123456/complete",
+  "query": "",
+  "method": "post",
+  "body": {
+    "behaviour": "bad-request"
+  },
+  "headers": {
+    "Content-Length": "27",
+    "Content-Type": "application/json;charset=utf-8",
+    "Accept": "application/json, text/plain, */*",
+    "User-Agent": "axios/0.21.1",
+    "Host": "127.0.0.1:64709",
+    "Request-Context": "appId=cid-v1:",
+    "Connection": "close",
+    "Version": "HTTP/1.1"
+  }
+}
+I, [2021-02-17T16:17:27.572790 #90890]  INFO -- : Found matching response for POST /task/123456/complete
+D, [2021-02-17T16:17:27.572898 #90890] DEBUG -- : {
+  "status": 400,
+  "headers": {
+    "Content-Type": "application/json"
+  }
+}
+I, [2021-02-17T16:17:27.579792 #90890]  INFO -- : Registered expected interaction POST /task/123456/complete
+D, [2021-02-17T16:17:27.579937 #90890] DEBUG -- : {
+  "description": "a request for completion of a forbidden task",
+  "providerState": "completion of this task is was forbidden",
+  "request": {
+    "method": "POST",
+    "path": "/task/123456/complete",
+    "body": {
+      "behaviour": "forbidden"
+    }
+  },
+  "response": {
+    "status": 403,
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  },
+  "metadata": null
+}
+W, [2021-02-17T16:17:27.580003 #90890]  WARN -- : You currently have 4 interactions mocked at the same time. This suggests the scope of your consumer tests is larger than recommended, and you may find them hard to debug and maintain. See https://pact.io/too-many-interactions for more information.
+I, [2021-02-17T16:17:27.589458 #90890]  INFO -- : Received request POST /task/123456/complete
+D, [2021-02-17T16:17:27.589584 #90890] DEBUG -- : {
+  "path": "/task/123456/complete",
+  "query": "",
+  "method": "post",
+  "body": {
+    "behaviour": "forbidden"
+  },
+  "headers": {
+    "Content-Length": "25",
+    "Content-Type": "application/json;charset=utf-8",
+    "Accept": "application/json, text/plain, */*",
+    "User-Agent": "axios/0.21.1",
+    "Host": "127.0.0.1:64709",
+    "Request-Context": "appId=cid-v1:",
+    "Connection": "close",
+    "Version": "HTTP/1.1"
+  }
+}
+I, [2021-02-17T16:17:27.590152 #90890]  INFO -- : Found matching response for POST /task/123456/complete
+D, [2021-02-17T16:17:27.590213 #90890] DEBUG -- : {
+  "status": 403,
+  "headers": {
+    "Content-Type": "application/json"
+  }
+}
+I, [2021-02-17T16:17:27.596901 #90890]  INFO -- : Registered expected interaction POST /task/123456/complete
+D, [2021-02-17T16:17:27.597101 #90890] DEBUG -- : {
+  "description": "a request for completion but it is unsupported",
+  "providerState": "this action is unsupported",
+  "request": {
+    "method": "POST",
+    "path": "/task/123456/complete",
+    "body": {
+      "behaviour": "unsupported"
+    }
+  },
+  "response": {
+    "status": 415,
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  },
+  "metadata": null
+}
+W, [2021-02-17T16:17:27.597145 #90890]  WARN -- : You currently have 5 interactions mocked at the same time. This suggests the scope of your consumer tests is larger than recommended, and you may find them hard to debug and maintain. See https://pact.io/too-many-interactions for more information.
+I, [2021-02-17T16:17:27.605235 #90890]  INFO -- : Received request POST /task/123456/complete
+D, [2021-02-17T16:17:27.605459 #90890] DEBUG -- : {
+  "path": "/task/123456/complete",
+  "query": "",
+  "method": "post",
+  "body": {
+    "behaviour": "unsupported"
+  },
+  "headers": {
+    "Content-Length": "27",
+    "Content-Type": "application/json;charset=utf-8",
+    "Accept": "application/json, text/plain, */*",
+    "User-Agent": "axios/0.21.1",
+    "Host": "127.0.0.1:64709",
+    "Request-Context": "appId=cid-v1:",
+    "Connection": "close",
+    "Version": "HTTP/1.1"
+  }
+}
+I, [2021-02-17T16:17:27.606282 #90890]  INFO -- : Found matching response for POST /task/123456/complete
+D, [2021-02-17T16:17:27.606350 #90890] DEBUG -- : {
+  "status": 415,
+  "headers": {
+    "Content-Type": "application/json"
+  }
+}
+I, [2021-02-17T16:17:27.615387 #90890]  INFO -- : Registered expected interaction POST /task/123456/complete
+D, [2021-02-17T16:17:27.615548 #90890] DEBUG -- : {
+  "description": "a request for completion and the server falls over",
+  "providerState": "the server had an internal error",
+  "request": {
+    "method": "POST",
+    "path": "/task/123456/complete",
+    "body": {
+      "behaviour": "unsupported"
+    }
+  },
+  "response": {
+    "status": 500,
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  },
+  "metadata": null
+}
+W, [2021-02-17T16:17:27.615583 #90890]  WARN -- : You currently have 6 interactions mocked at the same time. This suggests the scope of your consumer tests is larger than recommended, and you may find them hard to debug and maintain. See https://pact.io/too-many-interactions for more information.
+I, [2021-02-17T16:17:27.626097 #90890]  INFO -- : Received request POST /task/123456/complete
+D, [2021-02-17T16:17:27.626262 #90890] DEBUG -- : {
+  "path": "/task/123456/complete",
+  "query": "",
+  "method": "post",
+  "body": {
+    "behaviour": "unsupported"
+  },
+  "headers": {
+    "Content-Length": "27",
+    "Content-Type": "application/json;charset=utf-8",
+    "Accept": "application/json, text/plain, */*",
+    "User-Agent": "axios/0.21.1",
+    "Host": "127.0.0.1:64709",
+    "Request-Context": "appId=cid-v1:",
+    "Connection": "close",
+    "Version": "HTTP/1.1"
+  }
+}
+E, [2021-02-17T16:17:27.627146 #90890] ERROR -- : Multiple interactions found for POST /task/123456/complete:
+D, [2021-02-17T16:17:27.627366 #90890] DEBUG -- : {
+  "description": "a request for completion but it is unsupported",
+  "providerState": "this action is unsupported",
+  "request": {
+    "method": "POST",
+    "path": "/task/123456/complete",
+    "body": {
+      "behaviour": "unsupported"
+    }
+  },
+  "response": {
+    "status": 415,
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  },
+  "metadata": null
+}
+D, [2021-02-17T16:17:27.627503 #90890] DEBUG -- : {
+  "description": "a request for completion and the server falls over",
+  "providerState": "the server had an internal error",
+  "request": {
+    "method": "POST",
+    "path": "/task/123456/complete",
+    "body": {
+      "behaviour": "unsupported"
+    }
+  },
+  "response": {
+    "status": 500,
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  },
+  "metadata": null
+}
+I, [2021-02-17T16:17:27.635999 #90890]  INFO -- : Writing pact for WorkAllocation_api_complete to /Users/rubanmahendran/IdeaProjects/rpx-xui-webapp/api/test/pact/pacts/xui_work_allocation_task_complete-workallocation_api_complete.json

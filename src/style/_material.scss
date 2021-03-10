@@ -1,0 +1,53 @@
+$outlineColor: #bfc1c3;
+
+.mat-tab-header {
+    border-bottom: 0;
+}
+
+.mat-tab-body-wrapper {
+    border-top: 1px solid $outlineColor;
+    margin-top: -1px;
+}
+
+.mat-tab-label, .mat-tab-link {
+    font-family: "GDS Transport", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-size: 16px;
+}
+
+.mat-tab-label {
+    min-width: 80px !important;
+    height: 42px !important;
+    margin: 0 4px 7px 4px;
+    border-top: 3px solid #fff;
+    background-color: #dee0e2;
+    color: #1d70b8;
+    opacity: 1 !important;
+
+    &.cdk-focused {
+        border-top: 3px solid #ffdd00;
+        border-bottom: 4px solid #000;
+    }
+
+    &.mat-tab-label-active {    
+        height: 48px !important;   
+        border-top: 1px solid $outlineColor;  
+        border-bottom: 0; 
+        border-left: 1px solid $outlineColor;   
+        border-right: 1px solid $outlineColor;   
+        background: #fff;
+        margin: 1px 4px 0 4px;
+        &.cdk-focused {
+            border-top: 3px solid #ffdd00;
+            border-bottom: 4px solid #000;
+        }
+
+        .mat-tab-label-content {
+            opacity: 1;
+        }
+    }
+}
+
+.mat-tab-group.mat-primary .mat-ink-bar, .mat-tab-nav-bar.mat-primary .mat-ink-bar{
+    height: 0px;
+} 

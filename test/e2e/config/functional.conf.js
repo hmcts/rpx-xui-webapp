@@ -4,7 +4,7 @@ const minimist = require('minimist');
 
 var screenShotUtils = require("protractor-screenshot-utils").ProtractorScreenShotUtils;
 
-
+const BrowserUtil = require('.././../ngIntegration/util/browserUtil');
 chai.use(chaiAsPromised);
 
 const argv = minimist(process.argv.slice(2));
@@ -24,7 +24,7 @@ const localConfig = [
 
         browserName: 'chrome',
         acceptInsecureCerts: true,
-        chromeOptions: { args: ['--headless', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote '] },
+        chromeOptions: { args: ['--headless1', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote '] },
         proxy: {
             proxyType: 'manual',
             httpProxy: 'proxyout.reform.hmcts.net:8080',
@@ -70,6 +70,7 @@ const config = {
         global.screenShotUtils = new screenShotUtils({
             browserInstance: browser
         });
+        browser.get(config.baseUrl);
     },
 
     cucumberOpts: {
@@ -81,10 +82,9 @@ const config = {
             '../support/timeout.js',
             '../support/hooks.js',
             '../support/world.js',
-            // '../support/*.js',
+            '../support/*.js',
             '../features/step_definitions/*.steps.js'
-        ]
-    },
+        ]    },
 
     plugins: [
         {

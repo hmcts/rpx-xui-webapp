@@ -1,12 +1,11 @@
 import * as express from 'express'
-import {getConfigValue} from '../configuration'
-import {
-  HEALTH,
-} from '../configuration/references'
+import { healthEndpoints } from '../configuration/health'
 import { http } from '../lib/http'
+import * as log4jui from '../lib/log4jui'
 export const router = express.Router({ mergeParams: true })
 
 router.get('/', healthCheckRoute)
+const logger = log4jui.getLogger('outgoing')
 
 /*
     Any feature that requires a health check
@@ -22,6 +21,7 @@ const healthCheckEndpointDictionary = {
     '/cases/case-details': ['ccdComponentApi'],
     '/cases/case-filter': ['ccdComponentApi'],
     '/cases/case-search': ['ccdComponentApi'],
+    '/cases/case-share': ['ccdComponentApi'],
 }
 
 /*
@@ -34,10 +34,8 @@ const healthCheckEndpointDictionary = {
     in health check, because the url for a healthcheck
     endpoint may be different from a regular endpoint
 */
-
 export function getPromises(path): any[] {
     const Promises = []
-
     /* Checking whether path can be simplified, ie route has parameters*/
     const dictionaryKeys = Object.keys(healthCheckEndpointDictionary).reverse()
     for (const key of dictionaryKeys)  {
@@ -46,26 +44,25 @@ export function getPromises(path): any[] {
             break
         }
     }
-
-    const health = getConfigValue(HEALTH)
-
     if (healthCheckEndpointDictionary[path]) {
         healthCheckEndpointDictionary[path].forEach(endpoint => {
-            Promises.push(http.get(health[endpoint]))
+            // TODO: Have health config for this.
+            logger.info('healthEndpoints', endpoint)
+            logger.info(healthEndpoints()[endpoint])
+            Promises.push(http.get(healthEndpoints()[endpoint]))
         })
     }
     return Promises
 }
 
 export async function healthCheckRoute(req, res) {
-    res.send({ healthState: true })
-    /*try {
+    try {
         const path = req.query.path
         let PromiseArr = []
         let response = { healthState: true }
 
         if (path !== '') {
-            PromiseArr = that.getPromises(path)
+            PromiseArr = getPromises(path)
         }
 
         // comment out following block to bypass actual check
@@ -76,9 +73,8 @@ export async function healthCheckRoute(req, res) {
         logger.info('response::', response)
         res.send(response)
     } catch (error) {
-        console.log(error)
         logger.info('error', { healthState: false })
         res.status(error.status).send({ healthState: false })
-    }*/
+    }
 }
 export default router

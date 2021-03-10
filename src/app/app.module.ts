@@ -27,20 +27,19 @@ import { initApplication } from './app-initilizer';
 // common provider
 import { ProvidersModule } from './providers/providers.module';
 // app routes
-import { ROUTES } from './app.routes';
-import { CookieModule } from 'ngx-cookie';
-import {SharedModule} from './shared/shared.module';
+import { ROUTES, routingConfiguration } from './app.routes';
+import { SharedModule } from './shared/shared.module';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MonitoringService } from './services/logger/monitoring.service';
 import { CryptoWrapper } from './services/logger/cryptoWrapper';
-import { JwtDecodeWrapper } from './services/logger/jwtDecodeWrapper';
 import { AbstractAppInsights, AppInsightsWrapper } from './services/logger/appInsightsWrapper';
 import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler';
 import { AcceptTermsService } from './services/acceptTerms/acceptTerms.service';
 import { ExuiCommonLibModule, LAUNCHDARKLYKEY } from '@hmcts/rpx-xui-common-lib';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { ENVIRONMENT_CONFIG, EnvironmentConfig } from '../models/environmentConfig.model';
+import { CaseShareService } from './services/case/share-case.service';
 
 export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): string {
   return envConfig.launchDarklyClientId || '';
@@ -51,10 +50,9 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    CookieModule.forRoot(),
     HttpClientModule,
     ProvidersModule.forRoot(),
-    RouterModule.forRoot(ROUTES),
+    RouterModule.forRoot(ROUTES, routingConfiguration),
     StoreModule.forRoot(reducers, { metaReducers }),
     EffectsModule.forRoot(effects),
     StoreRouterConnectingModule,
@@ -81,7 +79,6 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
       deps: [Store],
       multi: true
     },
-    JwtDecodeWrapper,
     CryptoWrapper,
     MonitoringService,
     LoggerService,
@@ -94,6 +91,7 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
       useClass: DefaultErrorHandler
     },
     AcceptTermsService,
+    CaseShareService,
     { provide: LAUNCHDARKLYKEY, useFactory: launchDarklyClientIdFactory, deps: [ENVIRONMENT_CONFIG] },
   ],
   bootstrap: [AppComponent],

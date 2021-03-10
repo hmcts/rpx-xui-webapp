@@ -38,21 +38,23 @@ describe('App Config Reducer', () => {
     it('LoadUserDetailsSuccess', () => {
         const action = new fromActions.LoadUserDetailsSuccess({
                                                                 sessionTimeout: {
-                                                                                idleModalDisplayTime: 100,
-                                                                                totalIdleTime: 100,
-                                                                            }
-                                                                        });
+                                                                    idleModalDisplayTime: 100,
+                                                                    totalIdleTime: 100,
+                                                                },
+                                                                canShareCases: false,
+                                                                userInfo: null
+                                                            });
         const state = appConfigReducer.reducer(appConfigReducer.initialState, action);
         const expectedState = {
-            ...appConfigReducer.initialState,
-            userDetails: {
-                sessionTimeout: {
-                    idleModalDisplayTime: 100,
-                    totalIdleTime: 100,
-                }
-            }
+            ...appConfigReducer.initialState.userDetails,
+            sessionTimeout: {
+                idleModalDisplayTime: 100,
+                totalIdleTime: 100
+            },
+            userInfo: null
         };
-        expect(state).toEqual(expectedState);
+        expect(state.userDetails.userInfo).toEqual(expectedState.userInfo);
+        expect(state.userDetails.sessionTimeout).toEqual(expectedState.sessionTimeout);
     });
 
     it('StartIdleSessionTimeout', () => {

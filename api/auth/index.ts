@@ -2,7 +2,6 @@ import {AUTH, AuthOptions, xuiNode} from '@hmcts/rpx-xui-node-lib'
 import {NextFunction, Request, Response} from 'express'
 import {getConfigValue, showFeature} from '../configuration'
 import {
-    COOKIE_ROLES,
     COOKIES_TOKEN,
     COOKIES_USER_ID,
     FEATURE_OIDC_ENABLED,
@@ -21,7 +20,9 @@ import {
     SERVICES_IDAM_ISS_URL,
     SERVICES_IDAM_LOGIN_URL,
     SERVICES_IDAM_OAUTH_CALLBACK_URL,
-    SESSION_SECRET
+    SESSION_SECRET,
+    SYSTEM_USER_NAME,
+    SYSTEM_USER_PASSWORD
 } from '../configuration/references'
 import * as log4jui from '../lib/log4jui'
 
@@ -29,17 +30,15 @@ const logger = log4jui.getLogger('auth')
 
 export const successCallback = (req: Request, res: Response, next: NextFunction) => {
     const {user} = req.session.passport
-    const {roles} = user.userinfo
     const {userinfo} = user
     const {accessToken} = user.tokenset
     const cookieToken = getConfigValue(COOKIES_TOKEN)
     const cookieUserId = getConfigValue(COOKIES_USER_ID)
-    const cookieRoles = getConfigValue(COOKIE_ROLES)
 
     logger.info('Setting session and cookies')
+
     res.cookie(cookieUserId, userinfo.uid)
     res.cookie(cookieToken, accessToken)
-    res.cookie(cookieRoles, roles)
 
     if (!req.isRefresh) {
         return res.redirect('/')
@@ -59,6 +58,15 @@ export const getXuiNodeMiddleware = () => {
     const idamApiPath = getConfigValue(SERVICES_IDAM_API_URL)
     const s2sSecret = getConfigValue(S2S_SECRET)
     const tokenUrl = `${getConfigValue(SERVICES_IDAM_API_URL)}/oauth2/token`
+    const userName = getConfigValue(SYSTEM_USER_NAME)
+    const password = getConfigValue(SYSTEM_USER_PASSWORD)
+
+    const routeCredential = {
+        password,
+        routes: ['/workallocation/caseworker'],
+        scope: 'openid profile roles manage-user create-user',
+        userName,
+    }
 
     //TODO: we can move these out into proper config at some point to tidy up even further
     const options: AuthOptions = {
@@ -67,10 +75,11 @@ export const getXuiNodeMiddleware = () => {
         callbackURL: getConfigValue(SERVICES_IDAM_OAUTH_CALLBACK_URL),
         clientID: idamClient,
         clientSecret: secret,
-        discoveryEndpoint: `${idamWebUrl}/o`,
+        discoveryEndpoint: `${idamWebUrl}/o/.well-known/openid-configuration`,
         issuerURL: issuerUrl,
         logoutURL: idamApiPath,
         responseTypes: ['code'],
+        routeCredential,
         scope: 'profile openid roles manage-user create-user',
         sessionKey: 'xui-webapp',
         tokenEndpointAuthMethod: 'client_secret_post',

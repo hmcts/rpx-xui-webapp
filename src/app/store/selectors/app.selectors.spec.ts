@@ -22,7 +22,9 @@ describe('App Selectors', () => {
       sessionTimeout: {
         idleModalDisplayTime: 0,
         totalIdleTime: 0,
-      }
+      },
+      canShareCases: false,
+      userInfo: null
     }
   };
 
@@ -67,7 +69,9 @@ describe('App Selectors', () => {
       sessionTimeout: {
         idleModalDisplayTime: 0,
         totalIdleTime: 0,
-      }
+      },
+      canShareCases: false,
+      userInfo: null
     }
 };
 

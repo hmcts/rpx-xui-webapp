@@ -1,16 +1,20 @@
 <header>
-  <exui-hmcts-global-header
-  [headerTitle]="title"
-  [navigation]="userNav"
-  [isBrandedHeader]="isCaseManager"
-  (navigate)="onNavigate($event)"
-  ></exui-hmcts-global-header>
-  <exui-hmcts-primary-navigation
-  [label]=""
-  [items]="navItems"
-  [isBrandedHeader]="isCaseManager"
-  [showNavItems]="showNavItems | async"
-  ></exui-hmcts-primary-navigation>
+  <!-- The background color is dynamic so that we can change the background color of the navigation,
+   dependent on the User. -->
+  <div [ngStyle]="{'background-color': backgroundColor}">
+
+    <exui-hmcts-global-header
+    [headerTitle]="title"
+    [navigation]="userNav"
+    [logoType]="logoType"
+    (navigate)="onNavigate($event)"
+    [items]="navItems"
+    [logoIsUsed]="logoIsUsed"
+    [currentUrl]="currentUrl"
+    [showNavItems]="showNavItems | async">
+    </exui-hmcts-global-header>
+
+  </div>
   <exui-phase-banner type="beta"></exui-phase-banner>
 </header>
 

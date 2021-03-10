@@ -4,25 +4,39 @@ import 'mocha'
 import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
 import { mockReq, mockRes } from 'sinon-express-mock'
-import { getConfigValue } from '../configuration'
-import { SERVICES_CCD_COMPONENT_API_PATH } from '../configuration/references'
-import { http } from '../lib/http'
 import * as amendedJurisdictions from './index'
 
 chai.use(sinonChai)
 
 describe('Amended Jurisdiction', () => {
 
-  let next
   let sandbox
-  let req
-  let res
   let result0
   let result1
-  let spy: any
+  let res
+  let req
+  let proxyRes
 
   beforeEach(() => {
     sandbox = sinon.createSandbox()
+
+    proxyRes = {}
+    res = mockRes()
+    req = mockReq({
+      baseUrl: '/api/documents/',
+      cookies: [],
+      headers: {
+          'accept': '*/*',
+          'content-type': 'text/test',
+          'experimental': 'experiment/test',
+      },
+      session: {
+          save: fun => {
+              fun()
+          },
+      },
+      url: 'fdafu4543543/binary',
+  })
 
     result0 = {
         data: [
@@ -41,74 +55,52 @@ describe('Amended Jurisdiction', () => {
         ],
     }
 
-    next = sandbox.spy()
-    res = mockRes()
-    req = mockReq({
-      baseUrl: '/api/documents/',
-      cookies: [],
-      headers: {
-        'accept': '*/*',
-        'content-type': 'text/test',
-        'experimental': 'experiment/test',
-      },
-      session: {
-        save: fun => {
-          fun()
-        },
-      },
-      url: 'fdafu4543543/binary',
-    })
-
   })
 
   afterEach(() => {
     sandbox.restore()
   })
 
-  it('should jurisdictions proxy a get request and send PROBATE array', async () => {
-    const url = `${getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)}${req.baseUrl}${req.url}`
-    const expected = [
-        {
-            id: 'PROBATE',
-        },
+  it('should filter jurisdictions for the jurisdictions endpoint',  () => {
+    const data = [
+      {
+        id: 'PROBATE',
+      },
+      {
+        id: 'RANDOM',
+      },
     ]
-
-    spy = sandbox.stub(http, 'get').resolves(result0)
-    await amendedJurisdictions.getJurisdictions(req, res, next)
-    expect(spy).to.have.been.calledWith(url)
-    expect(res.send).to.have.been.calledWith(expected)
+    req.url = 'aggregated/caseworkers/:uid/jurisdictions?access=read'
+    const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, data)
+    // Unknown jurisdiction should be filtered
+    const expected = [
+      {
+        id: 'PROBATE',
+      },
+    ]
+    expect(response).to.eql(expected)
   })
 
-  it('should jurisdictions proxy a get request and send PROBATE array when env is prod', async () => {
-    const url = `${getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)}${req.baseUrl}${req.url}`
-
+  it('should not filter jurisdictions for non-jurisdictions endpoint',  () => {
     const expected = [
-        {
-            id: 'PROBATE',
-        },
+      {
+        id: 'PROBATE',
+      },
+      {
+        id: 'RANDOM',
+      },
     ]
+    req.url = '/aggregated/some/other/url'
 
-    spy = sandbox.stub(http, 'get').resolves(result0)
-    await amendedJurisdictions.getJurisdictions(req, res, next)
-    expect(spy).to.have.been.calledWith(url)
-    expect(res.send).to.have.been.calledWith(expected)
+    const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, expected)
+    expect(response).to.eql(expected)
   })
 
-  it('should jurisdictions proxy a get request and send empty array', async () => {
-    const url = `${getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)}${req.baseUrl}${req.url}`
+  it('should send empty array', () => {
     const expected = []
 
-    spy = sandbox.stub(http, 'get').resolves(result1)
-    await amendedJurisdictions.getJurisdictions(req, res, next)
-    expect(spy).to.have.been.calledWith(url)
-    expect(res.send).to.have.been.calledWith(expected)
-  })
-
-  it('should catch any errors upon jurisdictions proxy get request', async () => {
-    spy.restore()
-    spy = sandbox.stub(http, 'get').throws({ response: { data: 'error occurred'}})
-    await amendedJurisdictions.getJurisdictions(req, res, next)
-    expect(next).to.have.been.called
+    const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, expected)
+    expect(response).to.eql(expected)
   })
 
 })

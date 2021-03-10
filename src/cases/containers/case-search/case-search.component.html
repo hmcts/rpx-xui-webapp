@@ -13,7 +13,8 @@
           [store]="store"
           [fromFeatureStore]="fromCasesFeature">
           <ccd-search-filters-wrapper #ccdComponent
-            [autoApply]="false">
+            (onApply)="applyFilter($event)"  
+          >
           </ccd-search-filters-wrapper>
         </exui-ccd-connector>
       </div>
@@ -21,15 +22,18 @@
       <div class="hmcts-filter-layout__content">
          <ccd-search-result
           *ngIf="resultView"
+          id="search-result"
           [jurisdiction]="jurisdiction"
           [caseType]="caseType"
-          [caseState]=""
+          [caseState]="caseState"
           [caseFilterFG]="fg"
           [resultView]="resultView"
           [paginationMetadata]="paginationMetadata"
           [metadataFields]="metadataFields"
           (changePage)="applyChangePage($event)"
           caseLinkUrlTemplate="../case-details/case_id"
+          [consumerSortingEnabled]="elasticSearchFlag"
+          (sortHandler)="sort($event)"
         >
         </ccd-search-result>
       </div>

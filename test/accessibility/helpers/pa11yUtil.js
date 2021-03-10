@@ -6,7 +6,7 @@ const { conf } = require('../config/config');
 
 const jwt = require('jsonwebtoken');
 const puppeteer = require('puppeteer');
-
+const customValidations = require('./customeA11yValidations');
 
 const fs = require('fs');
 
@@ -72,7 +72,7 @@ async function pa11ytest(test, actions, startUrl,roles) {
         }
     ];
     const testBrowser = await getBrowser();
-    const page = await testBrowser.newPage();;
+    page = await testBrowser.newPage();;
     await page.setCookie(...cookies);
     // await page.goto("http://localhost:4200/");
 
@@ -123,4 +123,4 @@ async function pa11ytest(test, actions, startUrl,roles) {
 
 
 
-module.exports = { pa11ytest }
+module.exports = { pa11ytest, browser, page }

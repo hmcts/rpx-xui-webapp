@@ -30,7 +30,7 @@ export function prepareCaseWorkerSearchUrl(baseUrl: string) {
 }
 
 export function prepareTaskSearchForCompletable(baseUrl: string) {
-  return `${baseUrl}/task/searchForCompletable`
+  return `${baseUrl}/task/search-for-completable`
 }
 
 export function prepareCaseWorkerForLocation(baseUrl: string, locationId: string) {

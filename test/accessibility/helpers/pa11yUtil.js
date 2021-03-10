@@ -6,7 +6,7 @@ const { conf } = require('../config/config');
 
 const jwt = require('jsonwebtoken');
 const puppeteer = require('puppeteer');
-
+const customValidations = require('./customeA11yValidations');
 
 const fs = require('fs');
 
@@ -105,10 +105,6 @@ async function pa11ytest(test, actions, startUrl,roles) {
         // await browser.close();
         throw err;
 
-    }
-
-    if (customValidations){
-        await customValidations(page,result.issues);
     }
 
     await page.close();

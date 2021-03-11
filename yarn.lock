@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@v2.73.2-alpha-collection-date-field":
-  version "2.73.2-alpha-collection-date-field"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.73.2-alpha-collection-date-field.tgz#bdc347033d7571379ecdc558f2eb4214d7ea77c1"
-  integrity sha512-B9JFteBQgIax37jsPiYM0o0XFzSzLXyEHcwjNynhBPraHS/Gwa9CnwA5wTQ9cm4nG+6o2UhTDa8tP29YJzRTkg==
+"@hmcts/ccd-case-ui-toolkit@2.73.2-collection-date-field":
+  version "2.73.2-collection-date-field"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.73.2-collection-date-field.tgz#6ba82b2ff61c873bb65428d875349f94c0a93029"
+  integrity sha512-oKOuhavrZYd1H9vt7h9ZiUoIWr9zOxw9aXKYtYbBogquLBhYvmGYd0S9ctAgkZrBjtVdzW+n3OkdkUfe7hrZPw==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"

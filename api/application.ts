@@ -91,7 +91,7 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
       ],
       styleSrc: [
         '\'self\'',
-        '\'unsafe-eval\'',
+        '\'unsafe-inline\'',
         'https://fonts.googleapis.com',
         'https://fonts.gstatic.com',
         'http://tagmanager.google.com/',

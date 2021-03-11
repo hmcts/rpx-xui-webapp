@@ -1,18 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-
-import { Caseworker } from './../../models/dtos/task';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'exui-task-manager',
-  templateUrl: './task-manager.component.html',
-  styleUrls: ['task-manager.component.scss']
+  templateUrl: './task-manager.component.html'
 })
-export class TaskManagerComponent implements OnInit {
-  public ngOnInit(): void {
-    console.log('TaskManagerComponent');
-  }
-
-  public onCaseworkerChanged(caseworker: Caseworker): void {
-    console.log('onCaseworkerChanged', caseworker);
-  }
+export class TaskManagerComponent {
 }

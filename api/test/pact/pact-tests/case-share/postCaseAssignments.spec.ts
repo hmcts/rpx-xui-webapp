@@ -1,37 +1,14 @@
-import { Pact } from '@pact-foundation/pact';
-import {expect} from 'chai';
-import * as getPort from 'get-port';
-import * as path from 'path';
-import {AssignAccessWithinOrganisationDto, CaseAssignmentResponseDto} from "../../pactFixtures";
-import {postAssignCasesToUsers} from "../../pactUtil";
+import { expect } from 'chai';
+import { AssignAccessWithinOrganisationDto } from "../../pactFixtures";
+import { postAssignCasesToUsers } from "../../pactUtil";
+import { PactTestSetup } from '../settings/provider.mock';
+
 const {Matchers} = require('@pact-foundation/pact');
 const {somethingLike} = Matchers;
+const pactSetUp = new PactTestSetup({ provider: 'acc_manageCaseAssignment', port: 8000 });
+
 
 describe('Post Cases from CaseAssignment Api', () => {
-
-  let mockServerPort: number;
-  let provider: Pact;
-
-  before(async () => {
-    mockServerPort = await getPort()
-    provider = new Pact({
-      consumer: 'xui_webApp',
-      log: path.resolve(process.cwd(), "api/test/pact/logs", "mockserver-integration.log"),
-      dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
-      logLevel: 'info',
-      port: mockServerPort,
-      provider: 'acc_manageCaseAssignment',
-      spec: 2,
-      pactfileWriteMode: "merge"
-    })
-    return provider.setup()
-  })
-
-  // Write Pact when all tests done
-  after(() => provider.finalize())
-
-  // verify with Pact, and reset expectations
-  afterEach(() => provider.verify())
 
   let mockRequest = {
     "case_type_id": "PROBATE" ,
@@ -44,7 +21,8 @@ describe('Post Cases from CaseAssignment Api', () => {
   }
 
   describe('When Cases are assigned to Users', () => {
-    before(done =>{
+    before(async () =>{
+      await pactSetUp.provider.setup()
       const interaction = {
         state: 'Assign a user to a case',
         uponReceiving: 'A request for that case to be assigned',
@@ -67,14 +45,12 @@ describe('Post Cases from CaseAssignment Api', () => {
         }
       }
       // @ts-ignore
-      provider.addInteraction(interaction).then(() => {
-        done()
-      })
+      pactSetUp.provider.addInteraction(interaction)
     })
 
     it('Returns CaseAssingments Response', async () => {
 
-      const taskUrl:string  = `${provider.mockService.baseUrl}/case-assignments`;
+      const taskUrl:string  = `${pactSetUp.provider.mockService.baseUrl}/case-assignments`;
       const resp =  postAssignCasesToUsers(taskUrl,mockRequest as any)
 
         resp.then((axResponse) => {
@@ -85,6 +61,9 @@ describe('Post Cases from CaseAssignment Api', () => {
             }catch(e){
               e.toString(`~~~~~ Error when trying to assert the response from the call to the ${taskUrl}` +e);
             }
+        }).then(() => {
+          pactSetUp.provider.verify()
+          pactSetUp.provider.finalize()
         })
     })
   })

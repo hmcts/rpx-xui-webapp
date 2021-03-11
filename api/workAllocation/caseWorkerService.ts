@@ -5,6 +5,7 @@ import { EnhancedRequest, JUILogger } from '../lib/models'
 import { setHeaders } from '../lib/proxy'
 
 const logger: JUILogger = log4jui.getLogger('caseworker-service')
+const MAX_RECORDS: number = 100
 
 export async function handleCaseWorkerGetAll(path: string, req: EnhancedRequest): Promise<any> {
     logger.info('getting all caseworkers for', path)
@@ -46,4 +47,34 @@ export async function handlePostSearch(path: string, payload: string | any, req:
     const headers = setHeaders(req)
     const response: AxiosResponse = await http.post(path, payload, { headers })
     return response
+}
+
+export async function handlePostRoleAssingnments(path: string, payload: any, req: EnhancedRequest): Promise<any> {
+    const headers = setHeaders(req)
+    // For MVP we are expecting maximum 80 caseworkers
+    headers.pageNumber = 0
+    headers.size = MAX_RECORDS
+    // sort
+    // direction
+    const response: AxiosResponse = await http.post(path, payload, { headers })
+    return response
+}
+
+export async function handlePostCaseWorkersRefData(path: string, userIds: any, req: EnhancedRequest): Promise<any> {
+    const payload = {
+        userIds,
+    }
+    const headers = setHeaders(req)
+    const response: AxiosResponse = await http.post(path, payload, { headers })
+    return response
+}
+
+export function getUserIdsFromRoleApiResponse(response: any): string [] {
+    let userIds = new Array<string>()
+    if (response && response.roleAssignmentResponse) {
+        response.roleAssignmentResponse.forEach(roleAssignment => {
+           userIds = [...userIds, roleAssignment.actorId]
+       });
+    }
+    return userIds
 }

@@ -1,5 +1,7 @@
-const { browser } = require("protractor");
 const jwt = require('jsonwebtoken');
+const reportLogger = require('../../e2e/support/reportLogger');
+// const addContext = require('mochawesome/addContext');
+const MockApp = require('../../nodeMock/app');
 
 class BrowserUtil{
 
@@ -39,23 +41,58 @@ class BrowserUtil{
             this.addCookie('roles', encodedRoles);
         }
 
-        await this.gotoHomePage();
+        // await this.gotoHomePage();
     }
 
+    setUserDetailsWithRoles(rolesArray) {
+        MockApp.onGet('/api/user/details', (req, res) => {
+            res.send({
+                "canShareCases": true, "sessionTimeout": {
+                    "idleModalDisplayTime": 10, "pattern": "-solicitor", "totalIdleTime": 50
+                },
+                "userInfo": {
+                    "id": "41a90c39-d756-4eba-8e85-5b5bf56b31f5",
+                    "forename": "Luke",
+                    "surname": "Wilson",
+                    "email": "lukesuperuserxui@mailnesia.com",
+                    "active": true,
+                    "roles": rolesArray
+                }
+            });
+        });
+}
+
+
     async waitForLD(){
+        return await this.waitForNetworkResponse('app.launchdarkly.com/sdk/evalx');
+    }
+
+
+    async waitForNetworkResponse(url){
         let startTime = new Date();
         let elapsedTime = 0;
         let ldDone = false;
         while (!ldDone && elapsedTime < 15) {
             let perf = await browser.executeScript("return window.performance.getEntriesByType('resource')");
-            perf.forEach(async ( perfitem) => {
-                if (perfitem.name.includes('app.launchdarkly.com/sdk/evalx')) {
+            perf.forEach((perfitem) => {
+                if (perfitem.name.includes(url)) {
                     ldDone = true;
                     // await browser.sleep(2000);
-                } 
-            }); 
-            elapsedTime = (new Date() - startTime)/1000;
+                    return true;
+                }
+            });
+            elapsedTime = (new Date() - startTime) / 1000;
         }
+        return false;
+    }
+
+    async addScreenshot(thisTest, onBrowser){
+        // addContext(thisTest, {
+        //     title: "screenshot",
+        //     // value: await reportLogger.getScreenshot(global.screenShotUtils),
+        //     value: "test"
+
+        // });
     }
 
 }

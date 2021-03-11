@@ -9,10 +9,13 @@
     </select>
   </div>
 
-  <div class="govuk-form-group">
+  <div class="govuk-form-group" [ngClass]="{ 'govuk-form-group--error': showProblem }">
     <label for="task_assignment_caseworker" class="govuk-label">Name</label>
-    <select id="task_assignment_caseworker" name="task_assignment_caseworker" class="govuk-select task-assignment__caseworker"
-            [(ngModel)]="caseworker">
+    <span *ngIf="showProblem" id="name-error" class="govuk-error-message">
+      <span class="govuk-visually-hidden">Error:</span> You must select a name
+    </span>
+    <select id="task_assignment_caseworker" name="task_assignment_caseworker" [(ngModel)]="caseworker"
+            class="govuk-select task-assignment__caseworker" [ngClass]="{ 'govuk-select--error': showProblem }">
       <option [selected]="caseworker === null" [ngValue]="null">Select name</option>
       <option *ngFor="let cw of caseworkers" [ngValue]="cw">{{cw | caseworkerDisplayName}}</option>
     </select>

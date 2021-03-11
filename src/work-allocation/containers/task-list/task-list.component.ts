@@ -1,19 +1,17 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { Task, TaskFieldConfig, TaskSortField } from '../../models/tasks';
-import InvokedTaskAction from '../../models/tasks/invoked-task-action.model';
-import TaskAction from '../../models/tasks/task-action.model';
-import TaskServiceConfig from '../../models/tasks/task-service-config.model';
-import { TaskSort } from './../../enums/task-sort';
+import { ListConstants } from '../../components/constants';
+import { TaskSort } from '../../enums';
+import { InvokedTaskAction, Task, TaskAction, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
 
 @Component({
   selector: 'exui-task-list',
   templateUrl: './task-list.component.html',
   styleUrls: ['task-list.component.scss']
 })
-
-export class TaskListComponent implements OnChanges, OnInit {
+export class TaskListComponent implements OnChanges {
 
   /**
    * These are the tasks & fields as returned from the WA Api.
@@ -22,6 +20,11 @@ export class TaskListComponent implements OnChanges, OnInit {
   @Input() public taskServiceConfig: TaskServiceConfig;
   @Input() public sortedBy: TaskSortField;
   @Input() public showManage: boolean = true;
+
+  /**
+   * The message to display when there are no tasks to display in the list.
+   */
+  @Input() public emptyMessage: string = ListConstants.EmptyMessage.Default;
 
   // TODO: Need to re-read the LLD, but I believe it says pass in the taskServiceConfig into this TaskListComponent.
   // Therefore we will not need this.
@@ -37,17 +40,25 @@ export class TaskListComponent implements OnChanges, OnInit {
 
   public displayedColumns: string[];
 
-  private selectedRow: Task;
+  private selectedTask: Task;
 
-  constructor() {}
+  constructor(private readonly router: Router) {}
 
-  public ngOnInit(): void {
-
+  public selectTaskFromUrlHash(url: string): Task | null {
+    if (url) {
+      const hashValue = url.substring(url.indexOf('#') + 1);
+      if (hashValue && hashValue.indexOf('manage_') === 0) {
+        const selectedTaskId = hashValue.replace('manage_', '');
+        return this.tasks.find(task => task.id === selectedTaskId) || null;
+      }
+    }
+    return null;
   }
 
   public ngOnChanges() {
     if (this.tasks) {
       this.dataSource$ = new BehaviorSubject(this.tasks);
+      this.setSelectedTask(this.selectTaskFromUrlHash(this.router.url));
     }
     if (this.fields) {
       this.displayedColumns = this.getDisplayedColumn(this.fields);
@@ -59,7 +70,6 @@ export class TaskListComponent implements OnChanges, OnInit {
    *
    */
   public getDisplayedColumn(taskFieldConfig: TaskFieldConfig[]): string[] {
-
     const fields = taskFieldConfig.map(field => field.name);
     return this.showManage ? this.addManageColumn(fields) : fields;
   }
@@ -70,7 +80,6 @@ export class TaskListComponent implements OnChanges, OnInit {
    * Therefore we need to add the 'manage' column field within this component, as discussed in the LLD.
    */
   public addManageColumn(fields: string[]): string[] {
-
     return [...fields, 'manage'];
   }
 
@@ -104,23 +113,23 @@ export class TaskListComponent implements OnChanges, OnInit {
    *
    * Open and close the selected row.
    */
-  public setSelectedRow(row: Task): void {
-
-    if (row === this.getSelectedRow()) {
-      this.selectedRow = null;
+  public setSelectedTask(row: Task): void {
+    if (row === this.selectedTask) {
+      this.selectedTask = null;
     } else {
-      this.selectedRow = row;
+      this.selectedTask = row;
     }
+
+    // Now change the URL to update the hash.
+    this.setupHash();
   }
 
-  public getSelectedRow(): Task {
-
-    return this.selectedRow;
+  public getSelectedTask(): Task {
+    return this.selectedTask;
   }
 
-  public isRowSelected(row: Task): boolean {
-
-    return row === this.getSelectedRow();
+  public isTaskSelected(task: Task): boolean {
+    return task === this.selectedTask;
   }
 
   /**
@@ -131,26 +140,39 @@ export class TaskListComponent implements OnChanges, OnInit {
    *
    * We then set the sort table header to reflect this.
    *
+   * 'ascending'/'descending' needed to set sorting instead of 'asc'/'desc' which does not sort correctly
+   *
    * TODO: Think about moving 'none' to task sort model.
    *
    * @param fieldName - 'caseReference'
    * @return 'none' / 'ascending' / 'descending'
    */
-  public isColumnSorted(fieldName: string): TaskSort {
+  public getColumnSortedSetting(fieldName: string): string {
     // If we don't have an actual sortedBy value, default it now.
     if (!this.sortedBy) {
       const { defaultSortFieldName, defaultSortDirection } = this.taskServiceConfig;
       this.sortedBy = { fieldName: defaultSortFieldName, order: defaultSortDirection };
     }
 
-
     // If this is the field we're sorted by, return the appropriate order.
     if (this.sortedBy.fieldName === fieldName) {
-      return this.sortedBy.order;
+      return this.sortedBy.order === TaskSort.ASC ? 'ascending' : 'descending'
     }
 
     // This field is not sorted, return NONE.
     return TaskSort.NONE;
+  }
+
+  private setupHash(): void {
+    if (this.showManage) {
+      const currentPath = this.router.url || '';
+      const basePath = currentPath.split('#')[0];
+      if (this.selectedTask) {
+        this.router.navigate([ basePath ], { fragment: `manage_${this.selectedTask.id}` });
+      } else {
+        this.router.navigate([ basePath ]);
+      }
+    }
   }
 
 }

@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@2.72.1-do-not-send-empty-documents":
-  version "2.72.1-do-not-send-empty-documents"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.72.1-do-not-send-empty-documents.tgz#e8a885fe0e2c0dc40a0a28c856c19b64114d9a83"
-  integrity sha512-mJTJY+BuFiTsv2jWYxLMe64k11CMi+/dysKDd3SfUt/1DJvPDx6rDsxX6csg9Sl9/0BtZbWKZlRjwiJxFykbww==
+"@hmcts/ccd-case-ui-toolkit@2.73.0":
+  version "2.73.0"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.73.0.tgz#81585befb9b0e7c277bf59394793a714e0613d47"
+  integrity sha512-hq75qVpr+AAY3yIvPr4yPPCM8QTOnNg4PLCsU9k7+G3oEz3nQ4jzi/vBRVCACDQgSxbHwh1tAml8So88Gt1X9Q==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
@@ -478,10 +478,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@0.1.53":
-  version "0.1.53"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-0.1.53.tgz#a6bf38cc70c36682724486dc370848e848e0e3d7"
-  integrity sha512-nVYev8j7FhvMA0MQTvKpF9PNWjaM2IKJoGaoljfaaPKDlRiZZ9z4Gi/npb/WijCG+JJQfBV+bGLgFtHkljG32A==
+"@hmcts/rpx-xui-common-lib@0.2.5":
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-0.2.5.tgz#0009e6a1274238f3d723bc86832465e6cc72a162"
+  integrity sha512-mMEYsTJ6c+923xGDTkPVy+6+4fEZEfermxVRpaT+PBAvUeyONlWAdXPygfqQjubYXXyFNonQccgzMis8SFOiBA==
   dependencies:
     tslib "^1.9.0"
 
@@ -8596,10 +8596,10 @@ mochawesome-report-generator@^5.1.0:
     validator "^10.11.0"
     yargs "^13.2.2"
 
-mochawesome@^6.1.1:
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/mochawesome/-/mochawesome-6.1.1.tgz#9155ac13edb42c9eb17a7adbbcbbb5c6ecefb972"
-  integrity sha512-fRGZkSJI+u4ODRQCFg3JqI4pqZGzOpfZqlEjvUoZ78l2JnBWwepPu7dMTAcyAEUsZbTSx7S4eVnsi+/Zh1Qq6A==
+mochawesome@^6.2.1:
+  version "6.2.1"
+  resolved "https://registry.yarnpkg.com/mochawesome/-/mochawesome-6.2.1.tgz#38ed75cf1b2ff86e7c894d6f33499183a49dd0b7"
+  integrity sha512-zew/N1Gb4JYCTl3scu9i8OW0ay7b0ZOGczCrSW/P+XdBrLntqI5/JlJiYV1/Nn/SY4qahddsIE+qWL8ACNerPA==
   dependencies:
     chalk "^4.0.0"
     diff "^4.0.1"

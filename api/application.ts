@@ -26,8 +26,8 @@ export const app = express()
 if (showFeature(FEATURE_HELMET_ENABLED)) {
   app.use(helmet(getConfigValue(HELMET)))
   app.use(helmet.noSniff())
-  app.use(helmet.frameguard({ action: 'deny' }))
-  app.use(helmet.referrerPolicy({ policy: ['origin'] }))
+  // app.use(helmet.frameguard({ action: 'deny' }))
+  // app.use(helmet.referrerPolicy({ policy: ['origin'] }))
   app.use(helmet.hidePoweredBy())
   app.use(helmet.hsts({ maxAge: 28800000 }))
   app.use(helmet.xssFilter())
@@ -55,49 +55,49 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
     },
     secret: getConfigValue(SESSION_SECRET),
   }))
-  // app.use(helmet.contentSecurityPolicy({
-  //   directives: {
-  //     connectSrc: [
-  //       '\'self\'',
-  //       '*.gov.uk',
-  //       'dc.services.visualstudio.com',
-  //       '*.launchdarkly.com',
-  //       'www.google-analytics.com',
-  //     ],
-  //     defaultSrc: [`'self'`],
-  //     fontSrc: ['\'self\'', 'https://fonts.gstatic.com', 'data:'],
-  //     formAction: [`'none'`],
-  //     frameAncestors: [`'self'`],
-  //     frameSrc: [`'self'`],
-  //     imgSrc: [
-  //       '\'self\'',
-  //       'data:',
-  //       'https://www.google-analytics.com',
-  //       'https://www.googletagmanager.com',
-  //       'https://raw.githubusercontent.com/hmcts/',
-  //       'http://stats.g.doubleclick.net/',
-  //       'http://ssl.gstatic.com/',
-  //       'http://www.gstatic.com/',
-  //       'https://fonts.gstatic.com',
-  //     ],
-  //     mediaSrc: ['\'self\''],
-  //     scriptSrc: [
-  //       '\'self\'',
-  //       '\'unsafe-inline\'',
-  //       '\'unsafe-eval\'',
-  //       'www.google-analytics.com',
-  //       'www.googletagmanager.com',
-  //       'az416426.vo.msecnd.net',
-  //     ],
-  //     styleSrc: [
-  //       '\'self\'',
-  //       '\'unsafe-inline\'',
-  //       'https://fonts.googleapis.com',
-  //       'https://fonts.gstatic.com',
-  //       'http://tagmanager.google.com/',
-  //     ],
-  //   },
-  // }))
+  app.use(helmet.contentSecurityPolicy({
+    directives: {
+      connectSrc: [
+        '\'self\'',
+        '*.gov.uk',
+        'dc.services.visualstudio.com',
+        '*.launchdarkly.com',
+        'www.google-analytics.com',
+      ],
+      defaultSrc: [`'self'`],
+      fontSrc: ['\'self\'', 'https://fonts.gstatic.com', 'data:'],
+      formAction: [`'none'`],
+      frameAncestors: [`'self'`],
+      frameSrc: [`'self'`],
+      imgSrc: [
+        '\'self\'',
+        'data:',
+        'https://www.google-analytics.com',
+        'https://www.googletagmanager.com',
+        'https://raw.githubusercontent.com/hmcts/',
+        'http://stats.g.doubleclick.net/',
+        'http://ssl.gstatic.com/',
+        'http://www.gstatic.com/',
+        'https://fonts.gstatic.com',
+      ],
+      mediaSrc: ['\'self\''],
+      scriptSrc: [
+        '\'self\'',
+        '\'unsafe-inline\'',
+        '\'unsafe-eval\'',
+        'www.google-analytics.com',
+        'www.googletagmanager.com',
+        'az416426.vo.msecnd.net',
+      ],
+      styleSrc: [
+        '\'self\'',
+        '\'unsafe-inline\'',
+        'https://fonts.googleapis.com',
+        'https://fonts.gstatic.com',
+        'http://tagmanager.google.com/',
+      ],
+    },
+  }))
 }
 
 app.use(cookieParser(getConfigValue(SESSION_SECRET)))

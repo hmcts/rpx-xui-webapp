@@ -86,7 +86,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I Validate total cases count {string}', async function(workbasketConfigRef){
         const workbasketConfig = global.scenarioData[workbasketConfigRef].getConfig();
-        let reqData = { size: 250 }
+        let reqData = { size: 25 }
 
         const workbasketInputValues = {}
         for (const dynamicfield of workbasketConfig.workbasketInputs) {

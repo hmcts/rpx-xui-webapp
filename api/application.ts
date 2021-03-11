@@ -72,6 +72,7 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
       imgSrc: [
         '\'self\'',
         'data:',
+        '\'unsafe-inline\'',
         'https://www.google-analytics.com',
         'https://www.googletagmanager.com',
         'https://raw.githubusercontent.com/hmcts/',
@@ -83,6 +84,8 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
       mediaSrc: ['\'self\''],
       scriptSrc: [
         '\'self\'',
+        '\'unsafe-inline\'',
+        '\'unsafe-eval\'',
         'www.google-analytics.com',
         'www.googletagmanager.com',
         'az416426.vo.msecnd.net',

@@ -85,7 +85,6 @@ class SearchPage {
   }
 
   async openFirstCaseInResults(){
-    await this._waitForSearchComponent();
     await this.searchResultsTopPagination.isPresent();
     await BrowserWaits.waitForElement(this.firstResultCaseLink);
     var thisPageUrl = await browser.getCurrentUrl();
@@ -113,12 +112,10 @@ class SearchPage {
   }
 
   async waitForAtleastOneSearchResult(){
-    await this._waitForSearchComponent();
     await BrowserWaits.waitForElement(this.searchResultsTopPagination);
   }
 
   async waitForSearchWithNoResults(){
-    await this._waitForSearchComponent();
     await BrowserWaits.waitForElement(this.noResultsNotification); 
   }
 }

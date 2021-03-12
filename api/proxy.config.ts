@@ -1,5 +1,6 @@
 import * as bodyParser from 'body-parser'
 import {Express} from 'express'
+import * as activityTracker from './activityTracker'
 import * as amendedJurisdictions from './amendedJurisdictions'
 import {getConfigValue} from './configuration'
 import {
@@ -13,6 +14,8 @@ import * as searchCases from './searchCases'
 
 export const initProxy = (app: Express) => {
     applyProxy(app, {
+        onReq: activityTracker.activityTrackerProxyRequest,
+        onRes: activityTracker.activityTrackerProxyResponse,
         source: [
             '/activity',
         ],

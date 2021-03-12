@@ -63,8 +63,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     res.status(status);
     // Assign actions to the tasks on the data from the API.
     if (data) {
-      const caseworkers: Caseworker[] = await retrieveAllCaseWorkers(req, res);
-      assignActionsToTasks(data.tasks, req.body.view, caseworkers);
+      assignActionsToTasks(data.tasks, req.body.view, req.session.caseworkers);
     }
 
     // Send the (possibly modified) data back in the Response.

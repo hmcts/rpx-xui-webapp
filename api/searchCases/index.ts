@@ -1,9 +1,9 @@
-import { UserInfo } from '../auth/interfaces/UserInfo'
-import { getConfigValue } from '../configuration'
-import { caseMetaDataFiledsMapping } from '../configuration/mappings'
-import { WILDCARD_SEARCH_FIELDS, WILDCARD_SEARCH_ROLES } from '../configuration/references'
-import { fieldNameMapper } from '../lib/util'
-import { ElasticSearchQuery } from './interfaces/ElasticSearchQuery'
+import {UserInfo} from '../auth/interfaces/UserInfo'
+import {getConfigValue} from '../configuration'
+import {caseMetaDataFiledsMapping} from '../configuration/mappings'
+import {WILDCARD_SEARCH_FIELDS, WILDCARD_SEARCH_ROLES} from '../configuration/references'
+import {fieldNameMapper} from '../lib/util'
+import {ElasticSearchQuery} from './interfaces/ElasticSearchQuery'
 
 /**
  * Manually creating Elastic search query
@@ -43,7 +43,7 @@ export function prepareElasticQuery(queryParams: { page? }, body: any, user: Use
   const sort = body.sort ? prepareSort(body.sort) : []
   const page = (queryParams.page || 1) - 1
   const from = page * size
-  const canApplyWildCardSearch: boolean = userCanPerformWildCardSearch(user)
+  const canPerformWildCardSearch: boolean = userCanPerformWildCardSearch(user)
   const caseType: string = metaCriteria.ctid
   const fieldsToApplyWildCardSearchesTo = getConfigValue(WILDCARD_SEARCH_FIELDS) as { [key: string]: string[] }
 
@@ -91,14 +91,19 @@ export function prepareElasticQuery(queryParams: { page? }, body: any, user: Use
       if (searchTerm) {
         let match
         // if criterion is in the list of configured fields to apply wild card search use should query
-        if (
-          canApplyWildCardSearch &&
-          fieldsToApplyWildCardSearchesTo.hasOwnProperty(caseType) &&
-          fieldsToApplyWildCardSearchesTo[caseType].indexOf(criterion) >= 0) {
-          match = {
-            wildcard: {
-              [field]: `*${searchTerm.toLowerCase()}*`,
-            },
+        if (canPerformWildCardSearch && canApplyWildCardSearch(fieldsToApplyWildCardSearchesTo, caseType, criterion)) {
+          if (phraseHasSpecialCharacters(searchTerm)) {
+            match = {
+              match_phrase: {
+                [field]: searchTerm,
+              },
+            }
+          } else {
+            match = {
+              wildcard: {
+                [field]: `*${searchTerm.toLowerCase()}*`,
+              },
+            }
           }
         } else {
           match = {
@@ -180,4 +185,13 @@ export function handleElasticSearchResponse(proxyRes, req, res, json): {} {
     }
   }
   return {}
+}
+
+function canApplyWildCardSearch(wildcardSearchFields: { [key: string]: string[] }, caseType: string, criterion: string): boolean {
+  return wildcardSearchFields.hasOwnProperty(caseType) && wildcardSearchFields[caseType].indexOf(criterion) >= 0
+}
+
+function phraseHasSpecialCharacters(phrase: string): boolean {
+  const specialCharacters: string[] = [' ', '-', '_']
+  return specialCharacters.filter((specialCharacter: string) => phrase.indexOf(specialCharacter) >= 0).length > 0
 }

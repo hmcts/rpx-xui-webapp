@@ -53,6 +53,9 @@
     "Benefit": [
       "generatedSurname",
       "appeal.appellant.name.lastName"
+    ],
+    "xuiTestCaseType": [
+      "TextField"
     ]
   },
   "wildcardSearchRoles": [

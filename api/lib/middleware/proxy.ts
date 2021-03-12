@@ -10,7 +10,7 @@ const logger = log4jui.getLogger('proxy')
 export const onProxyError = (err, req, res) => {
     logger.error(err)
 
-    if(req.baseUrl && req.baseUrl === '/activity') {
+    if(req.baseUrl && req.baseUrl === '/activity' && req.user && req.user.userinfo) {
       logger.info('ActivityTrackerResponseFailed => ',
         `id: ${req.user.userinfo.id} forename:${req.user.userinfo.forename} surname:${req.user.userinfo.surname}`
       );

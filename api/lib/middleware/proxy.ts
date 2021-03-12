@@ -9,6 +9,13 @@ const logger = log4jui.getLogger('proxy')
 
 export const onProxyError = (err, req, res) => {
     logger.error(err)
+
+    if(req.baseUrl && req.baseUrl === '/activity') {
+      logger.info('ActivityTrackerResponseFailed => ',
+        `id: ${req.user.userinfo.id} forename:${req.user.userinfo.forename} surname:${req.user.userinfo.surname}`
+      );
+    }
+
     res.status(500).send({
         error: 'Error when connecting to remote server',
         status: 504,

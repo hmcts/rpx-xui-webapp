@@ -478,17 +478,17 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@0.1.53":
-  version "0.1.53"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-0.1.53.tgz#a6bf38cc70c36682724486dc370848e848e0e3d7"
-  integrity sha512-nVYev8j7FhvMA0MQTvKpF9PNWjaM2IKJoGaoljfaaPKDlRiZZ9z4Gi/npb/WijCG+JJQfBV+bGLgFtHkljG32A==
+"@hmcts/rpx-xui-common-lib@0.2.5":
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-0.2.5.tgz#0009e6a1274238f3d723bc86832465e6cc72a162"
+  integrity sha512-mMEYsTJ6c+923xGDTkPVy+6+4fEZEfermxVRpaT+PBAvUeyONlWAdXPygfqQjubYXXyFNonQccgzMis8SFOiBA==
   dependencies:
     tslib "^1.9.0"
 
-"@hmcts/rpx-xui-node-lib@2.25.0":
-  version "2.25.0"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-node-lib/-/rpx-xui-node-lib-2.25.0.tgz#e7f6bf0d671194c0bd043b1521ccd28b9440f9d9"
-  integrity sha512-F02GhzttNuuaHbbpc0X9X35o1gPK0v4PSMAGHQL2n6FeXI0o3Juy2Kh1ZmohrbBhC5PfM2p7B0NpSmJRGJSxzg==
+"@hmcts/rpx-xui-node-lib@2.25.2":
+  version "2.25.2"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-node-lib/-/rpx-xui-node-lib-2.25.2.tgz#1e0dde29c9cca66df852a0d690bd95259fda9617"
+  integrity sha512-6mVHcrfIrx/4T8WXt7Nd0JI6+2DmsJPvLCMgKJsqF+KwbHQujuiOvA9O/lqeuUKIMx39dYIG4EWs/JeKva9VLA==
   dependencies:
     "@hapi/joi" "^17.1.1"
     axios "^0.21.1"

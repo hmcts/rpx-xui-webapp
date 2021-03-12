@@ -25,6 +25,7 @@ import {
     CaseListFiltersModule,
     AlertService,
     WorkbasketFiltersModule,
+    LoadingModule
 } from '@hmcts/ccd-case-ui-toolkit';
 
 import { casesRouting } from './case-feature.routes';
@@ -58,7 +59,8 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
     MatDialogModule,
     CaseListFiltersModule,
     WorkbasketFiltersModule,
-    ExuiCommonLibModule
+    ExuiCommonLibModule,
+    LoadingModule
   ],
   declarations: [...fromComponents.components, ...fromContainers.containers],
   providers: [

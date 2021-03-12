@@ -53,7 +53,7 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
       }
     }) as any;
 
-     const libServices$ = combineLatest([
+    const libServices$ = combineLatest([
       this.ccdLibLoadingService.isLoading,
       this.commonLibLoadingService.isLoading
     ]);

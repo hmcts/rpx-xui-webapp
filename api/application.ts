@@ -26,8 +26,8 @@ export const app = express()
 if (showFeature(FEATURE_HELMET_ENABLED)) {
   app.use(helmet(getConfigValue(HELMET)))
   app.use(helmet.noSniff())
-  // app.use(helmet.frameguard({ action: 'deny' }))
-  // app.use(helmet.referrerPolicy({ policy: ['origin'] }))
+  app.use(helmet.frameguard({ action: 'deny' }))
+  app.use(helmet.referrerPolicy({ policy: ['origin'] }))
   app.use(helmet.hidePoweredBy())
   app.use(helmet.hsts({ maxAge: 28800000 }))
   app.use(helmet.xssFilter())
@@ -102,7 +102,7 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
 
 app.use(cookieParser(getConfigValue(SESSION_SECRET)))
 
-app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: true, secure: true, sameSite: 'strict' } }))
+// app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: true, secure: true, sameSite: 'strict' } }))
 
 // TODO: remove tunnel and configurations
 tunnel.init()

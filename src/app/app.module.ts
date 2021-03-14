@@ -51,10 +51,10 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    HttpClientXsrfModule.withOptions({
-      cookieName: 'XSRF-TOKEN',
-      headerName: 'X-XSRF-TOKEN'
-    }),
+    // HttpClientXsrfModule.withOptions({
+    //   cookieName: 'XSRF-TOKEN',
+    //   headerName: 'X-XSRF-TOKEN'
+    // }),
     ProvidersModule.forRoot(),
     RouterModule.forRoot(ROUTES, routingConfiguration),
     StoreModule.forRoot(reducers, { metaReducers }),

@@ -124,7 +124,7 @@ app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }))
 app.use('/workallocation', taskRouter)
 app.use('/external', openRoutes)
 app.use('/api', routes)
-app.use(csrf({ cookie: true, ignoreMethods: ["GET"] }));
+// app.use(csrf({ cookie: true, ignoreMethods: ["GET"] }));
 
 // @ts-ignore
 const logger: JUILogger = log4jui.getLogger('Application')

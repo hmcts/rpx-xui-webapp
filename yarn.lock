@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@v2.73.1-alpha-grey-bars":
-  version "2.73.1-alpha-grey-bars"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.73.1-alpha-grey-bars.tgz#b42c23737f289c6d05fca27e12cce4aa5446b741"
-  integrity sha512-K3NokjcK4/vozDYO+UgqWyBG6WgjcqGJ/ve08KDKDtbsE3Vqin2CdNYssKh4AIA7TcXIi02HZpASou/e/n42Rw==
+"@hmcts/ccd-case-ui-toolkit@2.73.0":
+  version "2.73.0"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.73.0.tgz#81585befb9b0e7c277bf59394793a714e0613d47"
+  integrity sha512-hq75qVpr+AAY3yIvPr4yPPCM8QTOnNg4PLCsU9k7+G3oEz3nQ4jzi/vBRVCACDQgSxbHwh1tAml8So88Gt1X9Q==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
@@ -478,17 +478,17 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@0.1.59":
-  version "0.1.59"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-0.1.59.tgz#761eda6e5e7969fd91de53650c3229e6eb0779bb"
-  integrity sha512-juJl02NeF/egdwHCNBB+FgawyJF1MgVYqhhEwVsLUYfrz9C3pLBuN/nmwBDSD6NB3iFE70IjJ06CdBeKg951sA==
+"@hmcts/rpx-xui-common-lib@0.2.5":
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-0.2.5.tgz#0009e6a1274238f3d723bc86832465e6cc72a162"
+  integrity sha512-mMEYsTJ6c+923xGDTkPVy+6+4fEZEfermxVRpaT+PBAvUeyONlWAdXPygfqQjubYXXyFNonQccgzMis8SFOiBA==
   dependencies:
     tslib "^1.9.0"
 
-"@hmcts/rpx-xui-node-lib@2.25.0":
-  version "2.25.0"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-node-lib/-/rpx-xui-node-lib-2.25.0.tgz#e7f6bf0d671194c0bd043b1521ccd28b9440f9d9"
-  integrity sha512-F02GhzttNuuaHbbpc0X9X35o1gPK0v4PSMAGHQL2n6FeXI0o3Juy2Kh1ZmohrbBhC5PfM2p7B0NpSmJRGJSxzg==
+"@hmcts/rpx-xui-node-lib@2.25.2":
+  version "2.25.2"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-node-lib/-/rpx-xui-node-lib-2.25.2.tgz#1e0dde29c9cca66df852a0d690bd95259fda9617"
+  integrity sha512-6mVHcrfIrx/4T8WXt7Nd0JI6+2DmsJPvLCMgKJsqF+KwbHQujuiOvA9O/lqeuUKIMx39dYIG4EWs/JeKva9VLA==
   dependencies:
     "@hapi/joi" "^17.1.1"
     axios "^0.21.1"

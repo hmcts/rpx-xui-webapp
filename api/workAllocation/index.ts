@@ -186,10 +186,10 @@ export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Re
     const postTaskPath: string = prepareTaskSearchForCompletable(baseWorkAllocationTaskUrl);
     console.log('postTaskPath', postTaskPath)
     const reqBody = {
-      "case-id": req.body.searchRequest.ccdId,
-      "case-jurisdiction": req.body.searchRequest.jurisdiction,
-      "case-type": req.body.searchRequest.caseTypeId,
-      "event-id": req.body.searchRequest.eventId,
+      "case_id": req.body.searchRequest.ccdId,
+      "case_jurisdiction": req.body.searchRequest.jurisdiction,
+      "case_type": req.body.searchRequest.caseTypeId,
+      "event_id": req.body.searchRequest.eventId,
     }
     const { status, data } = await handlePostSearch(postTaskPath, reqBody, req);
     res.status(status);

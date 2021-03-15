@@ -8,8 +8,6 @@ export async function activityTrackerProxyRequest(proxyReq, req): Promise<void> 
       `id:${req.user.userinfo.id} forename:${req.user.userinfo.forename} surname:${req.user.userinfo.surname}`
     );
   }
-
-  proxyReq.end();
 }
 
 export async function activityTrackerProxyResponse(proxyReq, req, res, json): Promise<any> {

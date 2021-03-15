@@ -57,13 +57,14 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
   // }))
   app.use(helmet.contentSecurityPolicy({
     directives: {
-      // connectSrc: [
-      //   '\'self\'',
-      //   '*.gov.uk',
-      //   'dc.services.visualstudio.com',
-      //   '*.launchdarkly.com',
-      //   'www.google-analytics.com',
-      // ],
+      connectSrc: [
+        '\'self\'',
+        '*.gov.uk',
+        'dc.services.visualstudio.com',
+        '*.launchdarkly.com',
+        'www.google-analytics.com',
+        'idam-web-public.aat.platform.hmcts.net',
+      ],
       defaultSrc: [`'self'`],
       fontSrc: ['\'self\'', 'https://fonts.gstatic.com', 'data:'],
       formAction: [`'none'`],

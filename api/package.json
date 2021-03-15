@@ -15,8 +15,6 @@
     "private": true,
     "dependencies": {},
     "devDependencies": {
-        "csurf": "^1.11.0",
-        "helmet": "^3.21.3",
         "@types/cookie-parser": "^1.4.2",
         "@types/csurf": "^1.11.0",
         "@types/helmet": "^4.0.0"

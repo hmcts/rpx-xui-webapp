@@ -2,7 +2,7 @@ import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 // import * as csrf from 'csurf'
 import * as express from 'express'
-// import * as session from 'express-session'
+import * as session from 'express-session'
 import * as helmet from 'helmet'
 import { getXuiNodeMiddleware } from './auth'
 import { getConfigValue, showFeature } from './configuration'
@@ -46,15 +46,15 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
   })
   app.disable('x-powered-by')
   app.disable('X-Powered-By')
-  // app.use(session({
-  //   cookie: {
-  //     httpOnly: true,
-  //     maxAge: 28800000,
-  //     sameSite: 'strict',
-  //     secure: true,
-  //   },
-  //   secret: getConfigValue(SESSION_SECRET),
-  // }))
+  app.use(session({
+    cookie: {
+      httpOnly: true,
+      maxAge: 28800000,
+      sameSite: 'strict',
+      secure: true,
+    },
+    secret: getConfigValue(SESSION_SECRET),
+  }))
   app.use(helmet.contentSecurityPolicy({
     directives: {
       connectSrc: [
@@ -63,7 +63,7 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
         'dc.services.visualstudio.com',
         '*.launchdarkly.com',
         'www.google-analytics.com',
-        'idam-web-public.aat.platform.hmcts.net',
+        '*.hmcts.net',
       ],
       defaultSrc: [`'self'`],
       fontSrc: ['\'self\'', 'https://fonts.gstatic.com', 'data:'],

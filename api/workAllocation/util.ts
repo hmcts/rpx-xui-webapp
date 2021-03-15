@@ -75,7 +75,9 @@ export function assignActionsToTasks(tasks: any[], view: any, caseworkers: Casew
       task.taskName = task.name
       task.caseName = task.case_name
       task.caseCategory = task.case_category
-      task.assigneeName = getAssigneeName(task, caseworkers);
+      if (caseworkers) {
+        task.assigneeName = getAssigneeName(task, caseworkers);
+      }
     }
   }
 }

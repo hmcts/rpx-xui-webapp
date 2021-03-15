@@ -1,6 +1,5 @@
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
-// import * as csrf from 'csurf'
 import * as express from 'express'
 import * as session from 'express-session'
 import * as helmet from 'helmet'
@@ -103,8 +102,6 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
 
 app.use(cookieParser(getConfigValue(SESSION_SECRET)))
 
-// app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: true, secure: true, sameSite: 'strict' } }))
-
 // TODO: remove tunnel and configurations
 tunnel.init()
 /**
@@ -125,7 +122,6 @@ app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }))
 app.use('/workallocation', taskRouter)
 app.use('/external', openRoutes)
 app.use('/api', routes)
-// app.use(csrf({ cookie: true, ignoreMethods: ["GET"] }));
 
 // @ts-ignore
 const logger: JUILogger = log4jui.getLogger('Application')

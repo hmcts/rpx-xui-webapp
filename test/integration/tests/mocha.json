@@ -12,6 +12,6 @@
   "slow": 75,
   "timeout": 120000,
   "ui": "bdd",
-  "spec" : ["./test/integration/tests/evidenceManager.spec.ts"],
+  "spec" : ["./test/integration/tests/*.spec.ts"],
   "file": ["./test/integration/tests/utils/helper.ts"]
 }

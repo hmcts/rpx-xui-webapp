@@ -4,6 +4,7 @@ import { v4 as uuid } from 'uuid';
 import { config } from './config/config';
 import { getUserId, getXSRFToken } from './utils/authUtil';
 import Request from './utils/request';
+import { setTestContext } from './utils/helper';
 
 
 
@@ -17,7 +18,8 @@ describe('Work allocations ', () => {
     const caseOfficer = 'xui_caseofficer@justice.gov.uk';
     const caseofficerPass = 'Welcome01';
 
-    beforeEach(() => {
+    beforeEach(function ()  {
+        setTestContext(this);
         Request.clearSession();
     });
 

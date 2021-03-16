@@ -85,7 +85,7 @@ class Request {
         const retryErrorLogs = [];
         let error = null;
         let isExpectedResponseReceived = false
-        while (retryAttemptCounter <= 3 && !isExpectedResponseReceived){
+        while (retryAttemptCounter < 3 && !isExpectedResponseReceived){
             isExpectedResponseReceived = false;
             retVal = null;
             error = null;
@@ -94,7 +94,7 @@ class Request {
             } catch (err) {
                 // retryErrorLogs.push(err.response ? err.response : err);
                 error = err;
-                console.log(err);
+                reporterMsg(err.response);
                 retVal = err.response ? err.response : null; 
                 
             }
@@ -115,13 +115,15 @@ class Request {
                 let errorMessage = retVal ? `STATUS CODE : ${status} =>RESPONSE BODY :  ${responseBody}` : `unknown request error occured  ` 
                 retryErrorLogs.push(`\n Retry ${retryAttemptCounter -1 } : ${errorMessage}`);
 
-                console.log(` Unexpected response : ${errorMessage}`);
-                console.log(` Retrying atempt ${retryAttemptCounter}`);
+                reporterMsg(` Unexpected response : ${errorMessage}`);
+                reporterMsg(` Retrying atempt ${retryAttemptCounter}`);
+                // console.log(` Unexpected response : ${errorMessage}`);
+                // console.log(` Retrying atempt ${retryAttemptCounter}`);
 
                 let sleepInSec = retryAttemptCounter *2; 
                 await new Promise((resolve,reject) => {
                     setTimeout(() => {
-                        console.log(`Sleep for ${sleepInSec} sec before retry`);
+                        reporterMsg(`Sleep for ${sleepInSec} sec before retry`);
                         resolve(true);
                     }, sleepInSec*1000);
                 });

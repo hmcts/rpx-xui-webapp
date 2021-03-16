@@ -54,22 +54,26 @@ class Request {
     }
 
     public async get(reqpath: string, headers: any, expectedStatus:any){
+        reporterMsg(`GET : ${reqpath}`);
         return await this.retryRequest(() => http.get(reqpath, this.getRequestConfig(headers)), expectedStatus);
 
     }
 
     public async post(reqpath: string, data, headers: any, expectedStatus: number) {
+        reporterMsg(`POST : ${reqpath}`);
         return await this.retryRequest(() => http.post(reqpath, data, this.getRequestConfig(headers)), expectedStatus);
 
     }
 
     public async put(reqpath: string, data, headers: any, expectedStatus: number){
+        reporterMsg(`PUT : ${reqpath}`);
         return await this.retryRequest(() => http.put(reqpath, data, this.getRequestConfig(headers)), expectedStatus);
 
     }
 
 
     public async delete(reqpath: string, payload, moreHeaders: any, expectedStatus:any) {
+        reporterMsg(`DELETE : ${reqpath}`);
         const requestConfig = this.getRequestConfig(moreHeaders);
         if (payload) {
             requestConfig['data'] = payload;
@@ -111,9 +115,9 @@ class Request {
                 console.log(error);
                 retryAttemptCounter++;
                 const status = retVal  ? retVal.status : "unknown";
-                const responseBody = retVal  ? retVal.body : "unknown"; 
+                const responseBody = retVal  ? retVal.data : "unknown"; 
                 let errorMessage = retVal ? `STATUS CODE : ${status} =>RESPONSE BODY :  ${responseBody}` : `unknown request error occured  ` 
-                retryErrorLogs.push(`\n Retry ${retryAttemptCounter -1 } : ${errorMessage}`);
+                retryErrorLogs.push(`\n Retry ${retryAttemptCounter  } : ${errorMessage}`);
 
                 reporterMsg(` Unexpected response : ${errorMessage}`);
                 reporterMsg(` Retrying atempt ${retryAttemptCounter}`);

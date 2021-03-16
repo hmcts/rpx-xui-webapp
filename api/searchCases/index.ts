@@ -5,6 +5,8 @@ import {WILDCARD_SEARCH_FIELDS, WILDCARD_SEARCH_ROLES} from '../configuration/re
 import {fieldNameMapper} from '../lib/util'
 import {ElasticSearchQuery} from './interfaces/ElasticSearchQuery'
 
+const specialCharacters: string[] = [' ', '-', '_']
+
 /**
  * Manually creating Elastic search query
  */
@@ -192,6 +194,5 @@ function canApplyWildCardSearch(wildcardSearchFields: { [key: string]: string[] 
 }
 
 function phraseHasSpecialCharacters(phrase: string): boolean {
-  const specialCharacters: string[] = [' ', '-', '_']
   return specialCharacters.filter((specialCharacter: string) => phrase.indexOf(specialCharacter) >= 0).length > 0
 }

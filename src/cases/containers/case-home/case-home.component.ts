@@ -5,9 +5,12 @@ import {
   HttpError,
   NavigationNotifierService,
   NavigationOrigin,
+  LoadingService as CCDLoadingService
 } from '@hmcts/ccd-case-ui-toolkit';
+import { LoadingService as CommonLibLoadingService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
+import { combineLatest, Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { GoActionParams } from 'src/cases/models/go-action-params.model';
 
 import * as fromRoot from '../../../app/store';
@@ -25,11 +28,15 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
 
   public navigationSubscription: Subscription;
 
+  public showSpinner$: Observable<boolean>;
+
   constructor(
     private readonly alertService: AlertService,
     private readonly errorNotifierService: ErrorNotifierService,
     private readonly navigationNotifier: NavigationNotifierService,
     private readonly store: Store<fromFeature.State>,
+    private readonly commonLibLoadingService: CommonLibLoadingService,
+    private readonly ccdLibLoadingService: CCDLoadingService,
   ) { }
 
   /**
@@ -45,6 +52,11 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
         this.actionDispatcher(this.paramHandler(navigation));
       }
     }) as any;
+
+    this.showSpinner$ = combineLatest([
+      this.ccdLibLoadingService.isLoading,
+      this.commonLibLoadingService.isLoading
+    ]).pipe(map(states => states.reduce((c, s) => c || s, false)));
   }
 
   public ngOnDestroy(): void {

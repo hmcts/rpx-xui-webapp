@@ -51,6 +51,10 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   public logoIsUsed: boolean = false;
   public showNavItems: Observable<boolean>;
 
+  public featureToggleKey: string;
+  public serviceMessageCookie: string;
+  public userRoles: string[];
+
   private subscription: Subscription;
   public userDetails$: Observable<UserDetails>;
   public defaultTheme: Theme = AppConstants.DEFAULT_USER_THEME;
@@ -136,6 +140,8 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
    * We then setup the Application Header accordingly.
    */
   public ngOnInit(): void {
+    this.featureToggleKey = AppConstants.SERVICE_MESSAGES_FEATURE_TOGGLE_KEY;
+    this.serviceMessageCookie = AppConstants.SERVICE_MESSAGE_COOKIE;
     this.userDetails$ = this.store.pipe(select(fromActions.getUserDetails));
     this.setAppHeaderProperties(this.defaultTheme);
     const applicationThemes$ = this.featureToggleService.getValue<Theme[]>('mc-application-themes', this.getDefaultApplicationThemes());
@@ -151,6 +157,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
 
   public setHeaderContent(userDetails, applicationThemes) {
     if (userDetails.userInfo) {
+      this.userRoles = userDetails.userInfo.roles;
       const applicationTheme: Theme = this.getApplicationThemeForUser(applicationThemes, userDetails.userInfo.roles);
       this.hideNavigationListener(this.store);
       this.setAppHeaderProperties(applicationTheme);

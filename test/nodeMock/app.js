@@ -134,7 +134,7 @@ function setUpcaseConfig() {
         // const page2 = caseEventConfig.getWizardPageConfig("testPage2");
         // page2.show_condition = "TextField0=\"SHOW\"";
 
-        res.send(caseEventConfig.getCase());
+        res.send(getDLCaseConfig().getCase());
     });
 
 }

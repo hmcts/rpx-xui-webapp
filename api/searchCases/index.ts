@@ -1,11 +1,12 @@
 import {UserInfo} from '../auth/interfaces/UserInfo'
 import {getConfigValue} from '../configuration'
 import {caseMetaDataFiledsMapping} from '../configuration/mappings'
-import {WILDCARD_SEARCH_FIELDS, WILDCARD_SEARCH_ROLES} from '../configuration/references'
+import {WILDCARD_SEARCH_FIELDS, WILDCARD_SEARCH_ROLES, WILDCARD_SEARCH_SPECIAL_CHARACTERS} from '../configuration/references'
 import {fieldNameMapper} from '../lib/util'
 import {ElasticSearchQuery} from './interfaces/ElasticSearchQuery'
 
-const SPECIAL_CHARACTERS: string[] = [' ', '-', '_']
+const WILDCARD_SEARCH_ALLOWED_SPECIAL_CHARACTERS: string[] = getConfigValue(WILDCARD_SEARCH_SPECIAL_CHARACTERS) as string[]
+const WILDCARD_SEARCH_ALLOWED_ROLES: string[] = getConfigValue(WILDCARD_SEARCH_ROLES) as string[]
 
 /**
  * Manually creating Elastic search query
@@ -30,8 +31,7 @@ export function modifyRequest(proxyReq, req) {
 }
 
 export function userCanPerformWildCardSearch(userInfo: UserInfo): boolean {
-  const allowedRoles = getConfigValue(WILDCARD_SEARCH_ROLES) as string[]
-  return userInfo && userInfo.roles && userInfo.roles.filter((role: string) => allowedRoles
+  return userInfo && userInfo.roles && userInfo.roles.filter((role: string) => WILDCARD_SEARCH_ALLOWED_ROLES
     .map((allowedRole: string) => allowedRole.toLowerCase())
     .indexOf(role.toLowerCase()) >= 0).length > 0
 }
@@ -92,7 +92,7 @@ export function prepareElasticQuery(queryParams: { page? }, body: any, user: Use
       const searchTerm: string = caseCriteria[criterion] as string
       if (searchTerm) {
         let match
-        // if criterion is in the list of configured fields to apply wild card search use should query
+        // if criterion is in the list of configured fields to apply wild card search use wildcard query
         if (canPerformWildCardSearch && canApplyWildCardSearch(fieldsToApplyWildCardSearchesTo, caseType, criterion)) {
           if (phraseHasSpecialCharacters(searchTerm)) {
             match = {
@@ -194,5 +194,5 @@ function canApplyWildCardSearch(wildcardSearchFields: { [key: string]: string[] 
 }
 
 function phraseHasSpecialCharacters(phrase: string): boolean {
-  return SPECIAL_CHARACTERS.filter((specialCharacter: string) => phrase.indexOf(specialCharacter) >= 0).length > 0
+  return WILDCARD_SEARCH_ALLOWED_SPECIAL_CHARACTERS.filter((specialCharacter: string) => phrase.indexOf(specialCharacter) >= 0).length > 0
 }

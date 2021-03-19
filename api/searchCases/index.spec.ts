@@ -21,11 +21,11 @@ describe('Search Cases Elastic Search', () => {
       data: {
         cases: [{
           fields: [],
-          fields_formatted: []
+          fields_formatted: [],
         }],
         headers: [{ fields: [] }],
-        total: 0
-      }
+        total: 0,
+      },
     }
   })
 
@@ -38,15 +38,15 @@ describe('Search Cases Elastic Search', () => {
       const queryParams = {
         'case.param2': 'dummy2',
         page: 2,
-        param: 'dummy'
+        param: 'dummy',
       }
       const body = {
         size: 25,
         sort: {
           column: 'dummy',
           order: 0,
-          type: 'Text'
-        }
+          type: 'Text',
+        },
       }
 
       const expected = {
@@ -59,35 +59,35 @@ describe('Search Cases Elastic Search', () => {
                   match: {
                     param: {
                       operator: 'and',
-                      query: 'dummy'
-                    }
-                  }
+                      query: 'dummy',
+                    },
+                  },
                 },
                 {
                   match: {
                     'data.param2': {
                       operator: 'and',
-                      query: 'dummy2'
-                    }
-                  }
-                }
-              ]
-            }
+                      query: 'dummy2',
+                    },
+                  },
+                },
+              ],
+            },
           },
           size: 25,
           sort: [
             {
-              'data.dummy.keyword': 'ASC'
-            }
-          ]
+              'data.dummy.keyword': 'ASC',
+            },
+          ],
         },
-        supplementary_data: ['*']
+        supplementary_data: ['*'],
       }
 
       const userInfo: UserInfo = {
         forename: 'Thomas',
         roles: ['case'],
-        surname: 'Jones'
+        surname: 'Jones',
       }
 
       expect(searchCases.prepareElasticQuery(queryParams, body, userInfo)).to.deep.equal(expected)
@@ -97,15 +97,15 @@ describe('Search Cases Elastic Search', () => {
       const queryParams = {
         'case.param2': 'dummy2',
         page: 2,
-        param: 'dummy'
+        param: 'dummy',
       }
       const body = {
         size: 25,
         sort: {
           column: '[CASE_REFERENCE]',
           order: 1,
-          type: 'Text'
-        }
+          type: 'Text',
+        },
       }
 
       const expected = {
@@ -118,35 +118,35 @@ describe('Search Cases Elastic Search', () => {
                   match: {
                     param: {
                       operator: 'and',
-                      query: 'dummy'
-                    }
-                  }
+                      query: 'dummy',
+                    },
+                  },
                 },
                 {
                   match: {
                     'data.param2': {
                       operator: 'and',
-                      query: 'dummy2'
-                    }
-                  }
-                }
-              ]
-            }
+                      query: 'dummy2',
+                    },
+                  },
+                },
+              ],
+            },
           },
           size: 25,
           sort: [
             {
-              'reference.keyword': 'DESC'
-            }
-          ]
+              'reference.keyword': 'DESC',
+            },
+          ],
         },
-        supplementary_data: ['*']
+        supplementary_data: ['*'],
       }
 
       const userInfo: UserInfo = {
         forename: 'Thomas',
         roles: ['case'],
-        surname: 'Jones'
+        surname: 'Jones',
       }
 
       expect(searchCases.prepareElasticQuery(queryParams, body, userInfo)).to.deep.equal(expected)
@@ -161,21 +161,21 @@ describe('Search Cases Elastic Search', () => {
         page: 1,
         param: 'dummy',
         'use_case': 'WORKBASKET',
-        view: 'WORKBASKET'
+        view: 'WORKBASKET',
       }
       const body = {
         size: 25,
         sort: {
           column: '[CASE_REFERENCE]',
           order: 1,
-          type: 'Text'
-        }
+          type: 'Text',
+        },
       }
 
       const userInfo: UserInfo = {
         forename: 'Thomas',
         roles: ['caseworker'],
-        surname: 'Jones'
+        surname: 'Jones',
       }
 
       const result: ElasticSearchQuery = searchCases.prepareElasticQuery(queryParams, body, userInfo)
@@ -192,21 +192,21 @@ describe('Search Cases Elastic Search', () => {
         page: 1,
         param: 'dummy',
         'use_case': 'WORKBASKET',
-        view: 'WORKBASKET'
+        view: 'WORKBASKET',
       }
       const body = {
         size: 25,
         sort: {
           column: '[CASE_REFERENCE]',
           order: 1,
-          type: 'Text'
-        }
+          type: 'Text',
+        },
       }
 
       const userInfo: UserInfo = {
         forename: 'Thomas',
         roles: ['case'],
-        surname: 'Jones'
+        surname: 'Jones',
       }
       const result: ElasticSearchQuery = searchCases.prepareElasticQuery(queryParams, body, userInfo)
       const wildCardSearchQuery = result.native_es_query.query.bool.must[2].match['data.generatedSurname']

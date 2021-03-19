@@ -61,6 +61,7 @@
   "wildcardSearchRoles": [
     "caseworker"
   ],
+  "wildcardSearchSpecialCharacters": [" ", "-", "_", "£"],
   "loginRoleMatcher": "caseworker",
   "log4JConfig": {
     "appenders": {

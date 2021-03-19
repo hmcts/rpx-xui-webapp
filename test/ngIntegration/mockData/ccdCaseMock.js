@@ -108,26 +108,46 @@ function getDLCaseConfig(scenario) {
     customCase
         .setEventProps(scenario ? scenario : {})
         .addWizardPage("testPage1", "Test Page 1")
-        .addCaseField({ id: "dl", type: "DynamicList", label: "Root DL", value: { value: listItems[1], list_items: listItems }})
+        .addCaseField({ id: "a", type: "DynamicList", label: "A Root DL", value: { value: listItems[1], list_items: listItems }})
       
-     
-
+        .addCaseField({ id: "b", type: "Complex", label: "B Complex field",
+            complex_fields: [{ id: "a", type: "DynamicList", label: "B_A Dynamic list" }],
+            value: {a: {  value: listItems[0], list_items: listItems} }
+         })
+        .addCaseField({
+            id: "c", type: "Complex", label: "C complex in complex",
+            complex_fields: [{ id: "a", type: "Complex", label: "C_A Complex field", complex_fields: [{ id: "a", type: "DynamicList", label: "C_A_A Dynamic list"}]  }],
+            value: { a: { a: { value: listItems[2], list_items: listItems }} }
+        })
 
         .addCaseField({
-            id: "coll", type: "Collection", label: "collection complex in complex with DL", collection_field_type:
+            id: "d", type: "Collection", label: "D Collection field",
+            collection_field_type:
             {
-                id: "complexDl", type: "Complex", label: "Complex collection", complex_fields: [
-                    { id: "complexl1", type: "Complex", label: "Complex level 1", complex_fields: [{ id: "dl", type: "DynamicList", label: "DL1" }] },
+                id: "a", type: "DynamicList", label: "D_A Dynamic list"
+            },
+            value: [{ id: "876876", value: { value: listItems[0], list_items: listItems  }}]
+        })
+        .setFieldProps({ display_context_parameter: "#COLLECTION(allowInsert,allowDelete)" })
 
-                    { id: "complexl2", type: "Complex", label: "Complex level 2", complex_fields: [{ id: "dl", type: "DynamicList", label: "DL2" }] },
+
+
+       
+        .addCaseField({
+            id: "e", type: "Collection", label: "E Collection", collection_field_type:
+            {
+                id: "a", type: "Complex", label: "E_A Complex ", complex_fields: [
+                    { id: "a", type: "Complex", label: "E_A_A Complex ", complex_fields: [{ id: "a", type: "DynamicList", label: "E_A_A_A DL" }] },
+
                 ]
             },
             value: [
                 {
-                    complexDl: {
-                        complexl1: { dl: { value: listItems[1], list_items: listItems }, dl1: { value: listItems[2], list_items: listItems } },
-                        complexl2: { dl: { value: listItems[1], list_items: listItems }, dl2: { value: listItems[2], list_items: listItems } }
-                    }
+                    value : {
+                        a: {
+                             a: {  a: { value: listItems[2], list_items: listItems } }
+                        }
+                     }
                 }
             ]
         })

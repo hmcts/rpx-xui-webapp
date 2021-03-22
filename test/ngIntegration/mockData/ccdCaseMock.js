@@ -111,22 +111,31 @@ function getDLCaseConfig(scenario) {
         .addCaseField({ id: "a", type: "DynamicList", label: "A Root DL", value: { value: listItems[1], list_items: listItems }})
       
         .addCaseField({ id: "b", type: "Complex", label: "B Complex field",
-            complex_fields: [{ id: "a", type: "DynamicList", label: "B_A Dynamic list" }],
-            value: {a: {  value: listItems[0], list_items: listItems} }
+            complex_fields: [{ id: "ba", type: "DynamicList", label: "B_A Dynamic list" }],
+            value: {ba: {  value: listItems[0], list_items: listItems} }
          })
         .addCaseField({
             id: "c", type: "Complex", label: "C complex in complex",
-            complex_fields: [{ id: "a", type: "Complex", label: "C_A Complex field", complex_fields: [{ id: "a", type: "DynamicList", label: "C_A_A Dynamic list"}]  }],
-            value: { a: { a: { value: listItems[2], list_items: listItems }} }
+            complex_fields: [{ id: "ca", type: "Complex", label: "C_A Complex field", complex_fields: [{ id: "caa", type: "DynamicList", label: "C_A_A Dynamic list"}]  }],
+            value: { ca: { caa: { value: listItems[2], list_items: listItems }} }
         })
 
         .addCaseField({
             id: "d", type: "Collection", label: "D Collection field",
             collection_field_type:
             {
-                id: "a", type: "DynamicList", label: "D_A Dynamic list"
+                id: "da", type: "Complex", label: "D Complex field",
+                complex_fields: [{ id: "daa", type: "DynamicList", label: "D_A Dynamic list" }]
             },
-            value: [{ id: "876876", value: { value: listItems[0], list_items: listItems  }}]
+            value: [
+                {
+                    value: {
+                        da: {
+                            daa: {   value: listItems[2], list_items: listItems }
+                        }
+                    }
+                }
+            ]
         })
         .setFieldProps({ display_context_parameter: "#COLLECTION(allowInsert,allowDelete)" })
 
@@ -136,16 +145,16 @@ function getDLCaseConfig(scenario) {
         .addCaseField({
             id: "e", type: "Collection", label: "E Collection", collection_field_type:
             {
-                id: "a", type: "Complex", label: "E_A Complex ", complex_fields: [
-                    { id: "a", type: "Complex", label: "E_A_A Complex ", complex_fields: [{ id: "a", type: "DynamicList", label: "E_A_A_A DL" }] },
+                id: "ea", type: "Complex", label: "E_A Complex ", complex_fields: [
+                    { id: "eaa", type: "Complex", label: "E_A_A Complex ", complex_fields: [{ id: "eaaa", type: "DynamicList", label: "E_A_A_A DL" }] },
 
                 ]
             },
             value: [
                 {
                     value : {
-                        a: {
-                             a: {  a: { value: listItems[2], list_items: listItems } }
+                        ea: {
+                             eaa: {  eaaa: { value: listItems[2], list_items: listItems } }
                         }
                      }
                 }

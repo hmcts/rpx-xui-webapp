@@ -5,7 +5,7 @@ export interface UserInfo {
     email: string,
     active: boolean,
     roles: string [],
-    uid: string
+    uid?: string
   }
 
 export interface UserDetails {

@@ -67,7 +67,7 @@
     "@angular/platform-browser": "^7.2.13",
     "@angular/platform-browser-dynamic": "^7.2.13",
     "@angular/router": "^7.2.13",
-    "@hmcts/ccd-case-ui-toolkit": "2.73.4-alpha-task-event-completion-integration",
+    "@hmcts/ccd-case-ui-toolkit": "v2.75.1-alpha-task-event-completion-integration",
     "@hmcts/ccpay-web-component": "3.0.3",
     "@hmcts/frontend": "0.0.39-alpha",
     "@hmcts/media-viewer": "2.6.4",

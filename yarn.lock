@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@2.73.4-alpha-task-event-completion-integration":
-  version "2.73.4-alpha-task-event-completion-integration"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.73.4-alpha-task-event-completion-integration.tgz#773483de11f628555da3280a82d90f40888d554b"
-  integrity sha512-GZKLmQNb/uqWfQ63oATvkxGjoR4tR1K7FGjm/XdqKoQ35TPvmC9tppuiENco1zB95SuDBWGxJ9XyaANmwswwEg==
+"@hmcts/ccd-case-ui-toolkit@v2.75.1-alpha-task-event-completion-integration":
+  version "2.75.1-alpha-task-event-completion-integration"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.75.1-alpha-task-event-completion-integration.tgz#c3a6c290cb45add0ec9acd80baa6b823a3c18aaf"
+  integrity sha512-+hjw7EHE7BlQYnj+hKpcg5L/kXb3tP63/VOw5+p43hUYporuBsexwWTBCsLtMkj7rLkklNsZzhrehp3umuZdlg==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"

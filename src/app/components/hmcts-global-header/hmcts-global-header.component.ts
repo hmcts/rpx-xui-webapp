@@ -70,8 +70,6 @@ export class HmctsGlobalHeaderComponent implements OnInit {
   }
 
   public onEmitSubMenu(menuItem: any) {
-    // remove the setting of selected item via url
-    this.tab = menuItem.text;
     if (menuItem.href === '/noc') {
       this.nocStore.dispatch(new fromNocStore.Reset());
     }

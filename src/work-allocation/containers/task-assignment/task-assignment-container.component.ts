@@ -5,7 +5,7 @@ import { ErrorMessage } from '../../../app/models';
 import { ConfigConstants } from '../../components/constants';
 import { InfoMessage, InfoMessageType, TaskActionType, TaskService, TaskSort } from '../../enums';
 import { InformationMessage } from '../../models/comms';
-import { Assignee, Caseworker, Location } from '../../models/dtos';
+import { Caseworker, Location } from '../../models/dtos';
 import { TaskFieldConfig, TaskServiceConfig } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { handleFatalErrors } from '../../utils';

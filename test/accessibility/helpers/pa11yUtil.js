@@ -74,7 +74,7 @@ async function pa11ytest(test, actions, startUrl,roles) {
     const testBrowser = await getBrowser();
     const page = await testBrowser.newPage();;
     await page.setCookie(...cookies);
-    await page.goto("http://localhost:4200/");
+    // await page.goto("http://localhost:4200/");
 
 
     let result;

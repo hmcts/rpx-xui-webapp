@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@2.74.4-profile-call-before-event-trigger":
-  version "2.74.4-profile-call-before-event-trigger"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.74.4-profile-call-before-event-trigger.tgz#5597da6549e29e66bc5be6ee6bf970749f268f3f"
-  integrity sha512-cV5+YZyxjVwXUH1Rg590GWRdo/Q6y8lQuPlBC4yDtnUAe6uuEPYfYZ78SZoxGWzNsUEPS6bOY08fFY8ZJYPFow==
+"@hmcts/ccd-case-ui-toolkit@2.77.1-profile-call-before-event-trigger":
+  version "2.77.1-profile-call-before-event-trigger"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.77.1-profile-call-before-event-trigger.tgz#f45010ff09e971e19d87217655bf201975e27078"
+  integrity sha512-mdVyf7s2QpTxxpYoz5i2gRKVxR39i0WnoZ24awj+lIDhtJLA5IW3Zv7QkPoMxChfchKR1+Hj5YIoL6xsgX4qOw==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"

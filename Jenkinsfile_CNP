@@ -61,9 +61,6 @@ withPipeline(type, product, component) {
         ])
     }
 
-    after('checkout') {
-        yarnBuilder.yarn('cache clean')
-    }
 
     if (deployToAatOnly) {
       println("Only Deploy up to AAT!")

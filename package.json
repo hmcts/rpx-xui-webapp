@@ -156,7 +156,6 @@
     "@types/express-session": "^1.17.0",
     "@types/faker": "^5.1.2",
     "@types/global-agent": "^2.1.0",
-    "@types/helmet": "^4.0.0",
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",
     "@types/mocha": "^8.0.3",

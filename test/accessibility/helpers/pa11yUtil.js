@@ -33,6 +33,7 @@ async function getPage(){
 }
 
 async function pa11ytest(test, actions, startUrl,roles) {
+    browser = null;
     console.log("pally test with actions : " + test.test.title);
     console.log(actions);
 
@@ -101,13 +102,13 @@ async function pa11ytest(test, actions, startUrl,roles) {
         console.log("Test Execution time : " + elapsedTime);
         console.log(err);
         await page.close();
-        // await browser.close();
+        await browser.close();
         throw err;
 
     }
 
     await page.close();
-    // await browser.close();
+    await browser.close();
     const elapsedTime = Date.now() - startTime;
     result.executionTime = elapsedTime;
     result.screenshot = screenshotReportRef;

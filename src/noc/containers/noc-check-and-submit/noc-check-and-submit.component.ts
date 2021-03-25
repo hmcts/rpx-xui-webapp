@@ -102,6 +102,7 @@ export class NocCheckAndSubmitComponent implements OnInit, OnDestroy {
   }
 
   public verifyAndSubmitNoC(): void {
+    let affirmationError;
     if (this.affirmationAgreed && this.notifyEveryParty) {
       const nocEvent: NocEvent = {
         case_id: this.caseRefernce,
@@ -109,16 +110,16 @@ export class NocCheckAndSubmitComponent implements OnInit, OnDestroy {
       };
       this.store.dispatch(new fromFeature.SubmitNoc(nocEvent));
     } else if (this.affirmationAgreed && !this.notifyEveryParty) {
-      const affirmationError = { AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR };
-      this.store.dispatch(new fromFeature.SetAffirmationError(affirmationError));
+      affirmationError = { AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR };
     } else if (!this.affirmationAgreed && this.notifyEveryParty) {
-      const affirmationError = { AFFIRMATION_DEFAULT_DISAGREE_ERROR };
-      this.store.dispatch(new fromFeature.SetAffirmationError(affirmationError));
+      affirmationError = { AFFIRMATION_DEFAULT_DISAGREE_ERROR };
     } else {
-      const affirmationError = {
+      affirmationError = {
         AFFIRMATION_DEFAULT_DISAGREE_ERROR,
         AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR
       };
+    }
+    if (affirmationError) {
       this.store.dispatch(new fromFeature.SetAffirmationError(affirmationError));
     }
   }

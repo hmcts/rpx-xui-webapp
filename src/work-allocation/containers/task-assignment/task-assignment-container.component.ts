@@ -8,7 +8,7 @@ import { InformationMessage } from '../../models/comms';
 import { Caseworker, Location } from '../../models/dtos';
 import { TaskFieldConfig, TaskServiceConfig } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
-import { handleFatalErrors } from '../../utils';
+import { getAssigneeName, handleFatalErrors } from '../../utils';
 
 export const NAME_ERROR: ErrorMessage = {
   title: 'There is a problem',
@@ -72,7 +72,9 @@ export class TaskAssignmentContainerComponent implements OnInit {
     };
 
     // Get the task from the route, which will have been put there by the resolver.
-    const { task } = this.route.snapshot.data.task;
+    const task = this.route.snapshot.data.taskAndCaseworkers[0].task;
+    const caseworkers = this.route.snapshot.data.taskAndCaseworkers[1];
+    task.assigneeName = getAssigneeName(caseworkers, task.assignee);
     this.tasks = [ task ];
     this.verb = this.route.snapshot.data.verb as TaskActionType;
     this.successMessage = this.route.snapshot.data.successMessage as InfoMessage;

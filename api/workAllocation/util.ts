@@ -48,7 +48,7 @@ export function prepareCaseWorkerForLocationAndService(baseUrl: string, location
  * @param tasks The tasks to set up the actions for.
  * @param view This dictates which set of actions we should use.
  */
-export function assignActionsToTasks(tasks: any[], view: any, caseworkers: Caseworker[]): void {
+export function assignActionsToTasks(tasks: any[], view: any): void {
   if (tasks) {
     for (const task of tasks) {
       switch (view) {
@@ -75,9 +75,6 @@ export function assignActionsToTasks(tasks: any[], view: any, caseworkers: Casew
       task.taskName = task.name
       task.caseName = task.case_name
       task.caseCategory = task.case_category
-      if (caseworkers) {
-        task.assigneeName = getAssigneeName(task, caseworkers);
-      }
     }
   }
 }

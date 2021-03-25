@@ -8,9 +8,10 @@ describe('Task Resolver', () => {
 
     it('resolves on success', () => {
         const mockService = jasmine.createSpyObj('WorkAllocationTaskService', ['getTask']);
+        const mockCaseWorkerService = jasmine.createSpyObj('mockCaseWorkerService', ['getAll'])
         mockService.getTask.and.returnValue(of({} as Task));
         const mockRouter = jasmine.createSpyObj('Router', [ 'navigate' ]);
-        const taskResolver = new TaskResolver(mockService, mockRouter);
+        const taskResolver = new TaskResolver(mockService, mockRouter, mockCaseWorkerService);
         const route = jasmine.createSpyObj('Route', ['']);
         route.paramMap = {
             get: () => {

@@ -22,6 +22,8 @@ import * as converters from '../../converters/case-converter';
 import { ActionBindingModel } from '../../models/create-case-actions.model';
 import * as fromCasesFeature from '../../store';
 import * as fromCaseList from '../../store/reducers';
+import * as fromStore from 'src/organisation/store';
+import { OrganisationDetails } from 'src/organisation/organisation.model';
 
 /**
  * Entry component wrapper for Case List
@@ -90,9 +92,11 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public sortParameters;
 
   public userDetails: Observable<any>;
+  public organisationDetails: Partial<OrganisationDetails>;
 
   constructor(
     public store: Store<fromCaseList.State>,
+    private orgStore: Store<fromStore.OrganisationState>,
     private readonly appConfig: AppConfig,
     private readonly definitionsService: DefinitionsService,
     private readonly windowService: WindowService,
@@ -157,6 +161,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
     });
     this.shareCases$ = this.store.pipe(select(fromCasesFeature.getShareCaseListState));
     this.shareCases$.subscribe(shareCases => this.selectedCases = converters.toSearchResultViewItemConverter(shareCases));
+    this.getOrganisationDetailsFromStore();
   }
 
   public listenToPaginationMetadata = () => {
@@ -442,5 +447,12 @@ export class CaseListComponent implements OnInit, OnDestroy {
     if (this.elasticSearchFlagSubsription) {
       this.elasticSearchFlagSubsription.unsubscribe();
     }
+  }
+
+  public getOrganisationDetailsFromStore(): void {
+    this.store.pipe(select(fromStore.getOrganisationSel)).subscribe(organisationDetails => {
+      console.log(organisationDetails);
+      this.organisationDetails = organisationDetails;
+    });
   }
 }

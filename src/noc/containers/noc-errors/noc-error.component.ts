@@ -1,8 +1,8 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { NocHttpError, NocNavigation } from 'src/noc/models';
 import { NoCErrorMap } from '../../constants/nocErrorMap.enum';
+import { NocHttpError, NocNavigation } from '../../models';
 import * as fromFeature from '../../store';
 
 @Component({

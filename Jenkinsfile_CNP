@@ -20,7 +20,6 @@ def product   = "xui"
 def component = "webapp"
 def vault = "rpx"
 def channel   = '#xui-pipeline'
-def deployToAatOnly = false  // set to true if only deploy upto AAT, set to false will deploy all the way to production
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
@@ -60,17 +59,6 @@ withPipeline(type, product, component) {
                 AppPipelineDsl.PactRoles.CONSUMER
         ])
     }
-
-
-    if (deployToAatOnly) {
-      println("Only Deploy up to AAT!")
-      before('buildinfra:prod') {
-        currentBuild.result = 'SUCCESS'
-        currentBuild.description = "SUCCESS TILL AAT"
-        error 'XUI  projects are not authorised to be in production environments yet.'
-      }
-    }
-
 
     after('build') {
         yarnBuilder.yarn('build')

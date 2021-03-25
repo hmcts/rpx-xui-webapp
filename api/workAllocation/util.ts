@@ -79,14 +79,6 @@ export function assignActionsToTasks(tasks: any[], view: any): void {
   }
 }
 
-function getAssigneeName(task: any, caseworkers: Caseworker[]): string {
-  if (task.assignee && caseworkers.some(cw => cw.idamId === task.assignee)) {
-    const assignedCW = caseworkers.filter(cw => cw.idamId === task.assignee)[0];
-    return `${assignedCW.firstName} ${assignedCW.lastName}`;
-  }
-  return null
-}
-
 export function mapCaseworkerData(caseWorkerData: CaseworkerApi[]): Caseworker[] {
   const caseworkers: Caseworker[] = []
   if (caseWorkerData) {

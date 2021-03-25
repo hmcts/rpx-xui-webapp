@@ -181,6 +181,12 @@ export class TaskListWrapperComponent implements OnInit {
    * action.
    */
   public onActionHandler(taskAction: InvokedTaskAction): void {
+    if (taskAction.action.id === TaskActionIds.GO) {
+      const goToCaseUrl = `/cases/case-details/${taskAction.task.case_id}`;
+      this.router.navigate([goToCaseUrl]);
+      return;
+    }
+
     if (this.returnUrl.includes('manager')  && taskAction.action.id === TaskActionIds.RELEASE) {
       this.specificPage = 'manager';
     }

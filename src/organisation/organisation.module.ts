@@ -25,6 +25,4 @@ import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
   ]
 })
 
-export class OrganisationModule {
-
-}
+export class OrganisationModule { }

@@ -34,7 +34,6 @@ export async function handleOrganisationRoute(req: EnhancedRequest, res: Respons
     }
 }
 
-
 function getOrganisationUri(): string {
     return `${getConfigValue(SERVICES_PRD_API_URL)}/refdata/external/v1/organisations/status/ACTIVE?address=true`
 }

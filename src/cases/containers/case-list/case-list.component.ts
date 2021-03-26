@@ -23,7 +23,7 @@ import { ActionBindingModel } from '../../models/create-case-actions.model';
 import * as fromCasesFeature from '../../store';
 import * as fromCaseList from '../../store/reducers';
 import * as fromStore from 'src/organisation/store';
-import { OrganisationDetails } from 'src/organisation/organisation.model';
+import { OrganisationDetails } from 'src/organisation/models/organisation.interface';
 
 /**
  * Entry component wrapper for Case List

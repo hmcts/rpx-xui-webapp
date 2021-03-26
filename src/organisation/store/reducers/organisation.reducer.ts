@@ -1,5 +1,5 @@
 import * as fromOrganisation from '../actions/organisation.actions';
-import { Organisation } from 'src/organisation/organisation.model';
+import { Organisation } from 'src/organisation/models/organisation.interface';
 
 
 export interface OrganisationState {

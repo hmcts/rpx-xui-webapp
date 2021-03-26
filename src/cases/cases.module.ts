@@ -42,6 +42,7 @@ import * as fromContainers from './containers';
 import * as fromServices from './services';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { OrganisationModule } from 'src/organisation/organisation.module';
 
 @NgModule({
   imports: [
@@ -54,6 +55,7 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
     EffectsModule.forFeature(effects),
     casesRouting,
     SharedModule,
+    OrganisationModule,
     SearchFiltersModule,
     HttpModule,
     MatDialogModule,

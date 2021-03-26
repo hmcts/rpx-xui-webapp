@@ -2,7 +2,7 @@
 import { LoadOrganisation, LOAD_ORGANISATION } from './organisation.actions';
 import { LoadOrganisationSuccess, LOAD_ORGANISATION_SUCCESS } from './organisation.actions';
 import { LoadOrganisationFail, LOAD_ORGANISATION_FAIL } from './organisation.actions';
-import { Organisation } from 'src/organisation/organisation.model';
+import { Organisation } from 'src/organisation/models/organisation.interface';
 
 
 describe('Load Organisation', () => {

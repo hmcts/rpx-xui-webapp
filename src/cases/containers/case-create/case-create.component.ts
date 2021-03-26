@@ -5,6 +5,8 @@ import * as fromCases from '../../../cases/store';
 import * as fromRoot from '../../../app/store';
 import {ActionBindingModel} from '../../models/create-case-actions.model';
 import {Subscription} from 'rxjs';
+import { OrganisationDetails } from 'src/organisation/models/organisation.interface';
+import * as fromStore from 'src/organisation/store';
 /**
  * Entry component wrapper for CddCreateCaseFilter
  * Smart Component consuming <ccd-case-create>
@@ -21,8 +23,9 @@ export class CasesCreateComponent implements OnInit, OnDestroy {
   caseCreateEventsBindings: ActionBindingModel[];
   fromCasesFeature: any;
   $inputSubscription: Subscription;
+  public organisationDetails: Partial<OrganisationDetails>;
 
-  constructor(private store: Store<fromCaseCreate.State>) {
+  constructor(private store: Store<fromCaseCreate.State>, private orgStore: Store<fromStore.OrganisationState>) {
   }
 
   ngOnInit(): void {
@@ -46,11 +49,19 @@ export class CasesCreateComponent implements OnInit, OnDestroy {
       {type: 'cancelled', action: 'CreateCaseReset'},
       {type: 'submitted', action: 'ApplyChange'}
     ];
+    this.getOrganisationDetailsFromStore();
 
   }
 
   ngOnDestroy(): void {
     this.$inputSubscription.unsubscribe();
+  }
+
+  public getOrganisationDetailsFromStore(): void {
+    this.orgStore.pipe(select(fromStore.getOrganisationSel)).subscribe(organisationDetails => {
+      console.log('org: ' + organisationDetails);
+      this.organisationDetails = organisationDetails;
+    });
   }
 
 }

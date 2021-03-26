@@ -9,6 +9,7 @@ import { CaseFilterComponent } from './containers/case-filter/case-filter.compon
 import { CaseHomeComponent } from './containers/case-home/case-home.component';
 import { CaseListComponent } from './containers/case-list/case-list.component';
 import { CaseSearchComponent } from './containers/case-search/case-search.component';
+import { ActivityResolver } from './resolvers/activity.resolver';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
 
 

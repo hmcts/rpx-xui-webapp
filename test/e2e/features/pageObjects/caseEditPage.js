@@ -292,7 +292,7 @@ class caseEditPage {
         await continieElement.click();
         await BrowserWaits.waitForPageNavigation(thisPageUrl);
         let page3 = await element(by.css("ccd-case-edit-page h1"));
-        expect(await page3.getText()).to.eql("Page 3");
+        expect(await page3.getText()).to.contains("Page 3 ");
     }
 
     async _getKeyVal(field) {

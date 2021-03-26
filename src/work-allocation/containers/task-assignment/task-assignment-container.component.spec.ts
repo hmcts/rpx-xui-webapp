@@ -67,7 +67,7 @@ describe('TaskAssignmentContainerComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                taskAndCaseworkers: [{ task: mockTasks[0] }, []],
+                taskAndCaseworkers: { task: { task: mockTasks[0] }, caseworkers: [] },
                 ...TaskActionConstants.Reassign
               }
             },

@@ -72,8 +72,8 @@ export class TaskAssignmentContainerComponent implements OnInit {
     };
 
     // Get the task from the route, which will have been put there by the resolver.
-    const task = this.route.snapshot.data.taskAndCaseworkers[0].task;
-    const caseworkers = this.route.snapshot.data.taskAndCaseworkers[1];
+    const task = this.route.snapshot.data.taskAndCaseworkers.task.task;
+    const caseworkers = this.route.snapshot.data.taskAndCaseworkers.caseworkers;
     task.assigneeName = getAssigneeName(caseworkers, task.assignee);
     this.tasks = [ task ];
     this.verb = this.route.snapshot.data.verb as TaskActionType;

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
-import { combineLatest, EMPTY, Observable } from 'rxjs';
+import { EMPTY, forkJoin, Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Caseworker } from '../models/dtos';
 
@@ -16,7 +16,7 @@ export class TaskResolver implements Resolve<any> {
     private readonly caseworkerService: CaseworkerDataService
   ) {}
 
-  public resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
+  public resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable< { task: Task; caseworkers: Caseworker[]; } > {
     const task$ =  this.service.getTask(route.paramMap.get('taskId')).pipe(
       catchError(error => {
         handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
@@ -25,6 +25,6 @@ export class TaskResolver implements Resolve<any> {
     );
     const caseworker$ = this.caseworkerService.getAll();
 
-    return combineLatest([task$, caseworker$]);
+    return forkJoin({task: task$, caseworkers: caseworker$});
   }
 }

@@ -3,6 +3,7 @@ import { expect } from 'chai'
 import 'mocha'
 import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
+import { mockReq, mockRes } from 'sinon-express-mock'
 import * as amendedJurisdictions from './index'
 
 chai.use(sinonChai)

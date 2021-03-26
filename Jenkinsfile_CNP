@@ -62,21 +62,6 @@ withPipeline(type, product, component) {
     after('build') {
         yarnBuilder.yarn('build')
 
-        publishHTML target: [
-            allowMissing         : true,
-            reportFiles          : "index.html",
-            reportName           : "node lint Report"
-        ]
-
-
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "reports/lint/ng/",
-            reportFiles          : 'index.html',
-            reportName           : 'ng lint Report'
-        ])
     }
 
     after('test') {

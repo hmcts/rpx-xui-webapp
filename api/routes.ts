@@ -5,7 +5,7 @@ import { APP_INSIGHTS_KEY } from './configuration/references'
 import healthCheck from './healthCheck'
 import authInterceptor from './lib/middleware/auth'
 import { router as nocRouter } from './noc/routes'
-import organisationRouter from './organisations'
+import { router as organisationRouter } from './organisations'
 import userRouter from './user/routes'
 
 // import {router as termsAndCRoutes} from './termsAndConditions/routes'

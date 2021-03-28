@@ -450,8 +450,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
   }
 
   public getOrganisationDetailsFromStore(): void {
+    this.store.dispatch(new fromStore.LoadOrganisation());
     this.orgStore.pipe(select(fromStore.getOrganisationSel)).subscribe(organisationDetails => {
-      console.log('org: ' + organisationDetails);
       this.organisationDetails = organisationDetails;
     });
   }

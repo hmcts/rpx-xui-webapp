@@ -47,6 +47,7 @@ export const SERVICES_TERMS_AND_CONDITIONS_URL = 'services.termsAndConditions'
 export const SERVICES_PAYMENTS_URL = 'services.payments'
 
 export const SERVICES_PRD_API_URL = 'services.prd.api'
+export const SERVICES_RD_PROFESSIONAL_API_PATH = 'services.rdProfessionalApi'
 
 export const PROTOCOL = 'protocol'
 export const MICROSERVICE = 'microservice'

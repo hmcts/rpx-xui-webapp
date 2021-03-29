@@ -57,7 +57,7 @@ export interface LocationSummary {
 export interface Location {
     location_id: string
     location: string
-    is_primary: boolean
+    is_primary?: boolean
     services: string[]
 }
 

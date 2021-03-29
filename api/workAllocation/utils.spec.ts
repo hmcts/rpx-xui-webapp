@@ -70,7 +70,7 @@ describe('workAllocation.utils', () => {
       const tasks = [ { ...TASKS.TASK_1 }, { ...TASKS.TASK_2 } ];
       expect(tasks[0].actions).to.be.undefined;
       expect(tasks[1].actions).to.be.undefined;
-      assignActionsToTasks(tasks, ActionViews.MY, [])
+      assignActionsToTasks(tasks, ActionViews.MY)
       expect(tasks[0].actions).to.deep.equal(TASK_ACTIONS.MY);
       expect(tasks[1].actions).to.deep.equal(TASK_ACTIONS.MY);
     });
@@ -79,7 +79,7 @@ describe('workAllocation.utils', () => {
       const tasks = [ { ...TASKS.TASK_1 }, { ...TASKS.TASK_2 } ];
       expect(tasks[0].actions).to.be.undefined;
       expect(tasks[1].actions).to.be.undefined;
-      assignActionsToTasks(tasks, ActionViews.AVAILABLE, [])
+      assignActionsToTasks(tasks, ActionViews.AVAILABLE)
       expect(tasks[0].actions).to.deep.equal(TASK_ACTIONS.AVAILABLE);
       expect(tasks[1].actions).to.deep.equal(TASK_ACTIONS.AVAILABLE);
     });
@@ -88,7 +88,7 @@ describe('workAllocation.utils', () => {
       const tasks = [ { ...TASKS.TASK_1 }, { ...TASKS.TASK_2 } ];
       expect(tasks[0].actions).to.be.undefined;
       expect(tasks[1].actions).to.be.undefined;
-      assignActionsToTasks(tasks, ActionViews.MANAGER, [])
+      assignActionsToTasks(tasks, ActionViews.MANAGER)
       expect(tasks[0].actions).to.deep.equal(TASK_ACTIONS.MANAGER.ASSIGNED); // Has an assignee
       expect(tasks[1].actions).to.deep.equal(TASK_ACTIONS.MANAGER.UNASSIGNED); // Is unassigned
     });
@@ -97,7 +97,7 @@ describe('workAllocation.utils', () => {
       const tasks = [ { ...TASKS.TASK_1 }, { ...TASKS.TASK_2 } ];
       expect(tasks[0].actions).to.be.undefined;
       expect(tasks[1].actions).to.be.undefined;
-      assignActionsToTasks(tasks, 'Bob', [])
+      assignActionsToTasks(tasks, 'Bob')
       expect(tasks[0].actions).to.be.an('array').that.is.empty;
       expect(tasks[1].actions).to.be.an('array').that.is.empty;
     });

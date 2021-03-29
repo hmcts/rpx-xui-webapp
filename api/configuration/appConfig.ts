@@ -67,6 +67,7 @@ export const applicationConfiguration = () => {
     servicesCcdDataStorePath: getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH),
     servicesDocumentApiPath: getConfigValue(SERVICES_DOCUMENTS_API_PATH),
     servicesPrdApiPath: getConfigValue(SERVICES_PRD_API_URL),
+    servicesRdProfessionalApiPath: getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH),
     servicesS2sPath: getConfigValue(SERVICE_S2S_PATH),
     servicesTermsAndConditionsPath: getConfigValue(SERVICES_TERMS_AND_CONDITIONS_URL),
     workAllocationTaskPath: getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH),

@@ -1,5 +1,4 @@
 import { ActionViews, TASK_ACTIONS } from './constants/actions';
-import { Caseworker } from './interfaces/task';
 
 export function prepareGetTaskUrl(baseUrl: string, taskId: string): string {
   return `${baseUrl}/task/${taskId}`
@@ -48,7 +47,7 @@ export function prepareCaseWorkerForLocationAndService(baseUrl: string, location
  * @param tasks The tasks to set up the actions for.
  * @param view This dictates which set of actions we should use.
  */
-export function assignActionsToTasks(tasks: any[], view: any, caseworkers: Caseworker[]): void {
+export function assignActionsToTasks(tasks: any[], view: any): void {
   if (tasks) {
     for (const task of tasks) {
       switch (view) {
@@ -75,17 +74,8 @@ export function assignActionsToTasks(tasks: any[], view: any, caseworkers: Casew
       task.taskName = task.name
       task.caseName = task.case_name
       task.caseCategory = task.case_category
-      task.assigneeName = getAssigneeName(task, caseworkers);
     }
   }
-}
-
-function getAssigneeName(task: any, caseworkers: Caseworker[]): string {
-  if (task.assignee && caseworkers.some(cw => cw.id === task.assignee)) {
-    const assignedCW = caseworkers.filter(cw => cw.id === task.assignee)[0];
-    return `${assignedCW.first_name} ${assignedCW.last_name}`;
-  }
-  return null
 }
 
 export function prepareRoleApiRequest(locationId?: number): any {

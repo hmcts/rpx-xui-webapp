@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
+import { Caseworker } from 'api/workAllocation/interfaces/task';
 import { Observable } from 'rxjs';
 
 import { AppConstants } from '../../../app/app.constants';
@@ -9,8 +10,8 @@ import { ListConstants } from '../../components/constants';
 import { InfoMessage, InfoMessageType, TaskActionIds, TaskService, TaskSort } from '../../enums';
 import { SearchTaskRequest, SortParameter } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
-import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
-import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
+import { CaseworkerDataService, InfoMessageCommService, WorkAllocationTaskService } from '../../services';
+import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html'
@@ -38,10 +39,12 @@ export class TaskListWrapperComponent implements OnInit {
     protected router: Router,
     protected infoMessageCommService: InfoMessageCommService,
     protected sessionStorageService: SessionStorageService,
-    protected alertService: AlertService
+    protected alertService: AlertService,
+    protected caseworkerService: CaseworkerDataService
   ) {}
 
   public specificPage: string = '';
+  public caseworkers: Caseworker[];
 
   private pTasks: Task[];
   public get tasks(): Task[] {
@@ -94,6 +97,11 @@ export class TaskListWrapperComponent implements OnInit {
   }
 
   public ngOnInit(): void {
+    this.caseworkerService.getAll().subscribe(caseworkers => {
+      this.caseworkers = [ ...caseworkers ];
+    }, error => {
+      handleFatalErrors(error.status, this.router);
+    });
     // Try to get the sort order out of the session.
     const stored = this.sessionStorageService.getItem(this.sortSessionKey);
     if (stored) {
@@ -182,7 +190,16 @@ export class TaskListWrapperComponent implements OnInit {
    * action.
    */
   public onActionHandler(taskAction: InvokedTaskAction): void {
-    this.setupSpecificTaskAction(taskAction);
+    if (taskAction.action.id === TaskActionIds.GO) {
+      // Added this to ensure redirecting to cases was happening
+      const caseRedirectUrl = `${AppConstants.CASE_DETAILS_URL}${taskAction.task.case_id}`;
+      this.router.navigate([caseRedirectUrl]);
+      return;
+    }
+     // This ensures that the correct comments are shown based on unassigning via Task List and Task Manager
+     if (this.returnUrl.includes('manager')  && taskAction.action.id === TaskActionIds.RELEASE) {
+      this.specificPage = 'manager';
+    }
     const state = {
       returnUrl: this.returnUrl,
       showAssigneeColumn: taskAction.action.id !== TaskActionIds.ASSIGN
@@ -191,26 +208,12 @@ export class TaskListWrapperComponent implements OnInit {
     this.router.navigate([actionUrl], { state });
   }
 
-  /**
-   * Setup or do task action which is specific only to certain actions/pages
-   */
-  private setupSpecificTaskAction(taskAction: InvokedTaskAction): void {
-    if (taskAction.action.id === TaskActionIds.GO) {
-      // Added this to ensure redirecting to cases was happening
-      const caseRedirectUrl = `${AppConstants.CASE_DETAILS_URL}${taskAction.task.case_id}`;
-      this.router.navigate([caseRedirectUrl]);
-    }
-    // This ensures that the correct comments are shown based on unassigning via Task List and Task Manager
-    if (this.returnUrl.includes('manager')  && taskAction.action.id === TaskActionIds.RELEASE) {
-      this.specificPage = 'manager';
-    }
-  }
-
   // Do the actual load. This is separate as it's called from two methods.
   private doLoad(): void {
     // Should this clear out the existing set first?
     this.performSearch().subscribe(result => {
       this.tasks = result.tasks;
+      this.tasks.forEach(task => task.assigneeName = getAssigneeName(this.caseworkers, task.assignee));
       this.ref.detectChanges();
     }, error => {
       handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);

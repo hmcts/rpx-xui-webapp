@@ -78,3 +78,11 @@ export function getPrimaryLocation(cw: Caseworker): Location {
   }
   return null;
 }
+
+export const getAssigneeName = (caseworkers: any [], assignee: string): string => {
+  if (assignee && caseworkers.some(cw => cw.idamId === assignee)) {
+    const assignedCW = caseworkers.filter(cw => cw.idamId === assignee)[0];
+    return `${assignedCW.firstName} ${assignedCW.lastName}`;
+  }
+  return null
+};

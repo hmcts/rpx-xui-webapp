@@ -21,7 +21,6 @@ import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper
   templateUrl: 'task-manager-list.component.html'
 })
 export class TaskManagerListComponent extends TaskListWrapperComponent implements OnInit {
-  public caseworkers: Caseworker[];
   public locations: Location[];
   private selectedCaseworker: Caseworker;
   private selectedLocation: Location;
@@ -36,11 +35,11 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
     protected router: Router,
     protected infoMessageCommService: InfoMessageCommService,
     protected sessionStorageService: SessionStorageService,
-    private readonly caseworkerService: CaseworkerDataService,
+    protected readonly caseworkerService: CaseworkerDataService,
     private readonly locationService: LocationDataService,
     protected alertService: AlertService
   ) {
-    super(ref, taskService, router, infoMessageCommService, sessionStorageService, alertService);
+    super(ref, taskService, router, infoMessageCommService, sessionStorageService, alertService, caseworkerService);
   }
 
   public get fields(): TaskFieldConfig[] {
@@ -66,11 +65,6 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
   public ngOnInit(): void {
     super.ngOnInit();
     // Get the caseworkers and locations for this component.
-    this.caseworkerService.getAll().subscribe(caseworkers => {
-      this.caseworkers = [ ...caseworkers ];
-    }, error => {
-      handleFatalErrors(error.status, this.router);
-    });
     this.locationService.getLocations().subscribe(locations => {
       this.locations = [ ...locations ];
     }, error => {

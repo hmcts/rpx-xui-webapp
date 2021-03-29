@@ -369,7 +369,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             const locations = await taskAssignmentPage.getLocationOptions();
             const caseworkers = await taskAssignmentPage.getCaseworkerOptions();
 
-            await taskAssignmentPage.selectLocation(locations[1]);
+            // await taskAssignmentPage.selectLocation(locations[1]);
             await taskAssignmentPage.selectCaseworker(caseworkers[1]);
 
             await MockUtil.setMockResponse("POST", '/workallocation/task/:taskId/assign', (req, res) => {

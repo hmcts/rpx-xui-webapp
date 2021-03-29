@@ -454,7 +454,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.orgStore.pipe(select(fromStore.getOrganisationSel)).subscribe(response => {
       this.organisationDetails = response;
       if (this.organisationDetails) {
-        this.windowService.setLocalStorage('organisation-preselected-value', JSON.stringify(this.organisationDetails));
+        localStorage.setItem('organisation-preselected-value', JSON.stringify(this.organisationDetails));
       }
     });
   }

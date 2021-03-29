@@ -21,7 +21,6 @@ import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper
   templateUrl: 'task-manager-list.component.html'
 })
 export class TaskManagerListComponent extends TaskListWrapperComponent implements OnInit {
-  public caseworkers: Caseworker[];
   public locations: Location[];
   private selectedCaseworker: Caseworker;
   private selectedLocation: Location;

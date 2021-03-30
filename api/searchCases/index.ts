@@ -70,7 +70,7 @@ export function prepareElasticQuery(queryParams: { page? }, body: any, user: Use
           criterion.replace('[', '').replace(']', '').toLowerCase(),
           caseMetaDataFiledsMapping
         );
-        const match = {
+        const match: any = {
           match: {
             [keyName]: {
               operator: 'and',
@@ -89,7 +89,7 @@ export function prepareElasticQuery(queryParams: { page? }, body: any, user: Use
       const field: string = `data.${criterion}`;
       const searchTerm: string = caseCriteria[criterion] as string;
       if (searchTerm) {
-        let match;
+        let match: any;
         // if criterion is in the list of configured fields to apply wild card search use should query
         if (canPerformWildCardSearch && canApplyWildCardSearch(fieldsToApplyWildCardSearchesTo, caseType, criterion)) {
           if (phraseHasSpecialCharacters(searchTerm)) {

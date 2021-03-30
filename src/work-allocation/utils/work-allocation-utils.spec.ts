@@ -1,5 +1,5 @@
 import { getPrimaryLocation, handleFatalErrors, REDIRECTS, treatAsFatal, WILDCARD_SERVICE_DOWN } from './work-allocation-utils';
-import { Caseworker, Location } from '../models/dtos/index'
+import { Caseworker, Location } from '../models/dtos/index';
 
 describe('WorkAllocationUtils', () => {
   let mockRouter: any;
@@ -124,19 +124,19 @@ describe('WorkAllocationUtils', () => {
       location: 'Test One',
       services: ['a', 'b'],
       is_primary: true
-    }
+    };
     const LOCATION_2: Location = {
       location_id: '2',
       location: 'Test Two',
       services: ['a', 'c'],
       is_primary: false
-    }
+    };
     const LOCATION_3: Location = {
       location_id: '3',
       location: 'Test Three',
       services: ['b', 'c'],
       is_primary: true
-    }
+    };
 
     const CASEWORKER_1: Caseworker = {
       id: '1',
@@ -144,34 +144,34 @@ describe('WorkAllocationUtils', () => {
       last_name: 'Test',
       email_id: 'nametest@test.com',
       base_location: [LOCATION_1, LOCATION_2]
-    }
+    };
     const CASEWORKER_2: Caseworker = {
       id: '2',
       first_name: 'First',
       last_name: 'Last',
       email_id: 'firstlast@test.com',
       base_location: [LOCATION_2, LOCATION_3]
-    }
+    };
     const CASEWORKER_3: Caseworker = {
       id: '3',
       first_name: 'One',
       last_name: 'Two',
       email_id: 'onetwo@test.com',
       base_location: [LOCATION_1, LOCATION_3]
-    }
+    };
     const CASEWORKER_4: Caseworker = {
       id: '4',
       first_name: 'Fourth',
       last_name: 'Test',
       email_id: 'fourthtest@test.com',
       base_location: []
-    }
+    };
 
     // check function deals correctly with example locations
     expect(getPrimaryLocation(CASEWORKER_1)).toEqual(LOCATION_1);
     expect(getPrimaryLocation(CASEWORKER_2)).toEqual(LOCATION_3);
 
-    // for two primary locations, should return last one
+    // for two primary locations, return last one
     expect(getPrimaryLocation(CASEWORKER_3)).toEqual(LOCATION_3);
 
     // if no primary location, return null

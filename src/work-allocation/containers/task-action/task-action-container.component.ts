@@ -58,9 +58,8 @@ export class TaskActionContainerComponent implements OnInit {
       fieldName: this.taskServiceConfig.defaultSortFieldName,
       order: this.taskServiceConfig.defaultSortDirection
     };
-
     // Get the task from the route, which will have been put there by the resolver.
-    const { task } = this.route.snapshot.data.task;
+    const task = this.route.snapshot.data.taskAndCaseworkers.task.task;
     this.tasks = [ task ];
     this.routeData = this.route.snapshot.data as RouteData;
     if (!this.routeData.actionTitle) {

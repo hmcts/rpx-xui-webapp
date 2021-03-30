@@ -197,7 +197,7 @@ export class TaskListWrapperComponent implements OnInit {
       return;
     }
      // This ensures that the correct comments are shown based on unassigning via Task List and Task Manager
-     if (this.returnUrl.includes('manager')  && taskAction.action.id === TaskActionIds.RELEASE) {
+    if (this.returnUrl.includes('manager')  && taskAction.action.id === TaskActionIds.RELEASE) {
       this.specificPage = 'manager';
     }
     const state = {

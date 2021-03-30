@@ -70,9 +70,9 @@ export function getPrimaryLocation(cw: Caseworker): Location {
           location: location.location,
           is_primary: true,
           services: location.services,
-        }
+        };
       }
-    })
+    });
     // set the primary location to the first location if there is no primary location
     return primaryLocation !== null ? primaryLocation : cw.base_location[0];
   }
@@ -84,5 +84,5 @@ export const getAssigneeName = (caseworkers: any [], assignee: string): string =
     const assignedCW = caseworkers.filter(cw => cw.idamId === assignee)[0];
     return `${assignedCW.firstName} ${assignedCW.lastName}`;
   }
-  return null
+  return null;
 };

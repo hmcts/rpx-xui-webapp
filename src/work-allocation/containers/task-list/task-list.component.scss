@@ -87,6 +87,9 @@
         text-decoration: underline;
         margin-right: 40px;
         cursor: pointer;
+        &:focus-within {
+          text-decoration: none;
+        }
         &:last-child {
           margin-right: 20px;
         }

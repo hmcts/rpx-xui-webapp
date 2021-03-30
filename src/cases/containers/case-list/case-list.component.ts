@@ -24,6 +24,7 @@ import * as fromCasesFeature from '../../store';
 import * as fromCaseList from '../../store/reducers';
 import * as fromStore from 'src/organisation/store';
 import { OrganisationDetails } from 'src/organisation/models/organisation.interface';
+import session = require('express-session');
 
 /**
  * Entry component wrapper for Case List
@@ -453,8 +454,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.store.dispatch(new fromStore.LoadOrganisation());
     this.orgStore.pipe(select(fromStore.getOrganisationSel)).subscribe(response => {
       this.organisationDetails = response;
-      if (this.organisationDetails) {
-        localStorage.setItem('organisation-preselected-value', JSON.stringify(this.organisationDetails));
+      if (this.organisationDetails && this.organisationDetails.name) {
+        sessionStorage.setItem('organisation-details', JSON.stringify(this.organisationDetails));
       }
     });
   }

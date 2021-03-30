@@ -1,7 +1,7 @@
-import { NextFunction, Response, Router } from 'express'
+import { NextFunction, Request, Response, Router } from 'express'
 import { handleGet } from '../common/crudService'
 import { getConfigValue } from '../configuration'
-import { SERVICES_PRD_API_URL, SERVICES_RD_PROFESSIONAL_API_PATH } from '../configuration/references'
+import { SERVICES_PRD_API_URL } from '../configuration/references'
 import { EnhancedRequest } from '../lib/models'
 
 export async function handleGetOrganisationsRoute(req: EnhancedRequest, res: Response, next: NextFunction) {
@@ -21,7 +21,7 @@ export async function handleGetOrganisationsRoute(req: EnhancedRequest, res: Res
 
 export async function handleOrganisationRoute(req: EnhancedRequest, res: Response, next: NextFunction) {
     try {
-        const path = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/external/v1/organisations`
+        const path = `${getConfigValue(SERVICES_PRD_API_URL)}/refdata/external/v1/organisations`
         const response = await handleGet(path, req, next)
         res.send(response.data)
     } catch (error) {

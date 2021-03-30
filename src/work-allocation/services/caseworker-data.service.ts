@@ -6,7 +6,7 @@ import { SessionStorageService } from 'src/app/services';
 
 import { Caseworker } from '../models/dtos';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class CaseworkerDataService {
   public static caseWorkerUrl: string = '/workallocation/caseworker';
   public static caseworkersKey: string = 'caseworkers';

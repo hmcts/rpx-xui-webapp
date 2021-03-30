@@ -1,7 +1,16 @@
 import { Router } from 'express'
 
-import { getAllCaseWorkers, getAllCaseWorkersForLocation, getCaseWorkersForLocationAndService,
-        getCaseWorkersForService, getTask, postTaskAction, postTaskSearchForCompletable, searchCaseWorker, searchTask } from '.'
+import {
+    getAllCaseWorkers,
+    getAllCaseWorkersForLocation,
+    getCaseWorkersForLocationAndService,
+    getCaseWorkersForService,
+    getTask,
+    postTaskAction,
+    postTaskSearchForCompletable,
+    searchCaseWorker,
+    searchTask,
+} from '.'
 import authInterceptor from '../lib/middleware/auth'
 import { getLocationById, getLocations } from './locationController'
 

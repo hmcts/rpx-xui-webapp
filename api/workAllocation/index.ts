@@ -183,7 +183,6 @@ export async function searchCaseWorker(req: EnhancedRequest, res: Response, next
 export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
     const postTaskPath: string = prepareTaskSearchForCompletable(baseWorkAllocationTaskUrl);
-    console.log('postTaskPath', postTaskPath)
     const reqBody = {
       "case_id": req.body.searchRequest.ccdId,
       "case_jurisdiction": req.body.searchRequest.jurisdiction,

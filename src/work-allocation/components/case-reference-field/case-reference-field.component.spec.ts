@@ -17,8 +17,7 @@ describe('WorkAllocation', () => {
 
   describe('CaseReferenceFieldComponent', () => {
     const CASE_DETAILS_URL: string = AppConstants.CASE_DETAILS_URL;
-    const CASE_REFERENCE: string = 'Case reference';
-    const CASE_REFERENCE_IN_URL: string = 'Casereference';
+    const CASE_REFERENCE: string = 'Casereference';
 
     let component: CaseReferenceFieldComponent;
     let wrapper: WrapperComponent;
@@ -49,10 +48,11 @@ describe('WorkAllocation', () => {
       const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(CASE_REFERENCE);
-      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_REFERENCE_IN_URL}`); // No spaces
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_REFERENCE}`); // No spaces
     });
 
-    it('should allow the case reference to be changed', () => {
+    // Test no longer necessary but if formatting to case reference requires removal of spaces in future this may be useful again
+    /* it('should allow the case reference to be changed', () => {
       const NEW_CASE_REFERENCE: string = 'n3w C@53    REFERENCE';
 
       // No anchor shown yet.
@@ -64,7 +64,7 @@ describe('WorkAllocation', () => {
       let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(CASE_REFERENCE);
-      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_REFERENCE_IN_URL}`); // No spaces
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_REFERENCE}`); // No spaces
 
       // Change the value of caseReference.
       wrapper.caseReference = NEW_CASE_REFERENCE;
@@ -73,7 +73,7 @@ describe('WorkAllocation', () => {
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe(NEW_CASE_REFERENCE);
       expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}n3wC@53REFERENCE`); // No spaces
-    });
+    }); */
 
     it('should remove the link if case reference is changed to undefined', () => {
       // No anchor shown yet.
@@ -85,7 +85,7 @@ describe('WorkAllocation', () => {
       const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(CASE_REFERENCE);
-      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_REFERENCE_IN_URL}`); // No spaces
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_REFERENCE}`); // No spaces
 
       // Clear out the value of caseReference and we should no longer have the anchor.
       wrapper.caseReference = undefined;
@@ -103,7 +103,7 @@ describe('WorkAllocation', () => {
       const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(CASE_REFERENCE);
-      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_REFERENCE_IN_URL}`); // No spaces
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_REFERENCE}`); // No spaces
 
       // Make caseReference undefined and we should no longer have the anchor.
       wrapper.caseReference = null;
@@ -121,12 +121,7 @@ describe('WorkAllocation', () => {
       const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(CASE_REFERENCE);
-      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_REFERENCE_IN_URL}`); // No spaces
-
-      // Make the caseReference a bunch of spaces and we should no longer have the anchor.
-      wrapper.caseReference = '       ';
-      fixture.detectChanges();
-      expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_REFERENCE}`); // No spaces
     });
 
   });

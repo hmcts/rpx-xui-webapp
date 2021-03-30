@@ -4,7 +4,8 @@ export interface UserInfo {
     surname: string,
     email: string,
     active: boolean,
-    roles: string []
+    roles: string [],
+    uid?: string
   }
 
 export interface UserDetails {

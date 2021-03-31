@@ -150,7 +150,7 @@ export class TaskAssignmentComponent implements OnInit {
   private setupCaseworkerLocation(): void {
     this.caseworkerService.getAll().subscribe(caseworkers => {
       const assignedCaseworker = caseworkers.find(cw => this.isLoggedInUser(cw.idamId));
-      this.pCaseworkerLocation = assignedCaseworker.location ? assignedCaseworker.location : null;
+      this.pCaseworkerLocation = (assignedCaseworker && assignedCaseworker.location) ? assignedCaseworker.location : null;
     }, error => {
       handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
     });

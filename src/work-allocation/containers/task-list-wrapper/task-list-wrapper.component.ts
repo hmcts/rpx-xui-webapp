@@ -199,8 +199,7 @@ export class TaskListWrapperComponent implements OnInit {
       this.specificPage = 'manager';
     }
     const state = {
-      returnUrl: this.returnUrl,
-      showAssigneeColumn: taskAction.action.id !== TaskActionIds.ASSIGN
+      returnUrl: this.returnUrl
     };
     const actionUrl = `/tasks/${taskAction.task.id}/${taskAction.action.id}/${this.specificPage}`;
     this.router.navigate([actionUrl], { state });

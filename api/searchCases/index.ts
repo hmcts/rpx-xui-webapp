@@ -187,7 +187,11 @@ export function handleElasticSearchResponse(proxyRes, req, res, json): {} {
   return {};
 }
 
-function canApplyWildCardSearch(wildcardSearchFields: { [key: string]: string[] }, caseType: string, criterion: string): boolean {
+function canApplyWildCardSearch(
+  wildcardSearchFields: { [key: string]: string[] },
+  caseType: string,
+  criterion: string
+): boolean {
   return wildcardSearchFields
     && wildcardSearchFields.hasOwnProperty(caseType)
     && Array.isArray(wildcardSearchFields[caseType])

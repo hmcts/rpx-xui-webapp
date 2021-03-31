@@ -1,4 +1,3 @@
-import { of } from 'rxjs';
 import { WorkAllocationFeatureService } from './work-allocation-feature.service';
 
 describe('WorkAllocation', () => {

@@ -15,8 +15,8 @@ import { FilterConstants } from '../constants';
 })
 export class AvailableTasksFilterComponent implements OnInit {
 
-  @ViewChild(CheckboxListComponent)
-  public readonly locationFilter: CheckboxListComponent<Location>;
+  // Getting CheckboxListComponent from DOM ensures it will be defined
+  @ViewChild('locationFilter') public locationFilter: CheckboxListComponent<Location>;
   @ViewChild('filterDetails')
   public readonly filterDetails: ElementRef<HTMLDetailsElement>;
 
@@ -92,7 +92,9 @@ export class AvailableTasksFilterComponent implements OnInit {
    * Also save the applied filter to the session storage.
    */
   public applyFilter(): void {
-    this.selection = [ ...this.locationFilter.selection ];
+    if (this.locationFilter) {
+      this.selection = [ ...this.locationFilter.selection ];
+    }
     const toStore: string = JSON.stringify(this.selection);
     this.sessionStorageService.setItem(FilterConstants.Session.AvailableTasks, toStore);
     this.selectionChanged.emit(this.selection);

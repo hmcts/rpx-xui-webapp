@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import {http} from './utils';
 
 import Request from './utils/request';
+import { setTestContext } from './utils/helper';
 
 describe('nodeApp endpoint', () => {
   const userName = 'lukesuperuserxui@mailnesia.com';
@@ -10,13 +11,14 @@ describe('nodeApp endpoint', () => {
   // const userName = 'peterxuisuperuser@mailnesia.com';
   // const password = 'Monday01';
 
-  beforeEach(() => {
+  beforeEach(function ()  {
+    setTestContext(this);
     Request.clearSession();
   });
 
 
   it('external/configuration-ui', async () => {
-    const response = await Request.get('external/configuration-ui', null,200);
+    const response = await Request.get('external/configuration-ui', null, 200);
     expect(response.status).to.equal(200);
     expect(response.data).to.have.all.keys('clientId', 'idamWeb', 'launchDarklyClientId', 'oAuthCallback', 'oidcEnabled', 'protocol');
     expect(response.data.launchDarklyClientId).to.equal('5de6610b23ce5408280f2268');
@@ -41,7 +43,10 @@ describe('nodeApp endpoint', () => {
     await Request.withSession(userName, password);
     const response = await Request.get('api/user/details', null, 200);
     expect(response.status).to.equal(200);
-    expect(response.data).to.have.all.keys('canShareCases', 'sessionTimeout');
+    expect(response.data).to.have.all.keys('canShareCases', 'sessionTimeout','userInfo');
+    expect(response.data.userInfo).to.have.all.keys('id', 'forename', 'surname','email','active','roles');
+    expect(response.data.userInfo.roles).to.be.an('array');
+
   });
 
   it('api/user/details without session', async () => {

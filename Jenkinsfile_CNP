@@ -13,8 +13,6 @@ properties([
 
 @Library("Infrastructure")
 
-// Disable pact testing on pipeline
-//
 import uk.gov.hmcts.contino.AppPipelineDsl
 
 def type      = "nodejs"
@@ -33,7 +31,9 @@ def secrets = [
     secret('webapp-redis-connection-string', 'REDISCLOUD_URL'),
     secret('test-email', 'TEST_EMAIL'),
     secret('test-password', 'TEST_PASSWORD'),
-    secret('appinsights-instrumentationkey-mc', 'APPINSIGHTS_INSTRUMENTATIONKEY')
+    secret('appinsights-instrumentationkey-mc', 'APPINSIGHTS_INSTRUMENTATIONKEY'),
+    secret('system-user-name', 'SYSTEM_USER_NAME'),
+    secret('system-user-password', 'SYSTEM_USER_PASSWORD')
   ],
   ]
 
@@ -54,9 +54,12 @@ withPipeline(type, product, component) {
     enableAksStagingDeployment()
     disableLegacyDeployment()
 
-    enablePactAs([
-      AppPipelineDsl.PactRoles.CONSUMER
-    ])
+    onMaster() {
+        env.PACT_BRANCH_NAME = 'master'
+        enablePactAs([
+                AppPipelineDsl.PactRoles.CONSUMER
+        ])
+    }
 
     after('checkout') {
         yarnBuilder.yarn('cache clean')

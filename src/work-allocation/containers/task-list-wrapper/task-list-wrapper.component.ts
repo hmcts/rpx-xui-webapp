@@ -1,15 +1,16 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
+import { Caseworker } from 'api/workAllocation/interfaces/task';
 import { Observable } from 'rxjs';
 
 import { SessionStorageService } from '../../../app/services';
 import { ListConstants } from '../../components/constants';
 import { InfoMessage, InfoMessageType, TaskActionIds, TaskService, TaskSort } from '../../enums';
-import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
+import { SearchTaskRequest, SortParameter } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
-import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
-import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
+import { CaseworkerDataService, InfoMessageCommService, WorkAllocationTaskService } from '../../services';
+import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html'
@@ -37,10 +38,12 @@ export class TaskListWrapperComponent implements OnInit {
     protected router: Router,
     protected infoMessageCommService: InfoMessageCommService,
     protected sessionStorageService: SessionStorageService,
-    protected alertService: AlertService
+    protected alertService: AlertService,
+    protected caseworkerService: CaseworkerDataService
   ) {}
 
   public specificPage: string = '';
+  public caseworkers: Caseworker[];
 
   private pTasks: Task[];
   public get tasks(): Task[] {
@@ -93,6 +96,11 @@ export class TaskListWrapperComponent implements OnInit {
   }
 
   public ngOnInit(): void {
+    this.caseworkerService.getAll().subscribe(caseworkers => {
+      this.caseworkers = [ ...caseworkers ];
+    }, error => {
+      handleFatalErrors(error.status, this.router);
+    });
     // Try to get the sort order out of the session.
     const stored = this.sessionStorageService.getItem(this.sortSessionKey);
     if (stored) {
@@ -144,17 +152,15 @@ export class TaskListWrapperComponent implements OnInit {
    */
   public getSearchTaskRequest(): SearchTaskRequest {
     return {
-      search_parameters: [
-        this.getSortParameter()
-      ]
+      search_parameters: [],
+      sorting_parameters: [this.getSortParameter()]
     };
   }
 
-  public getSortParameter(): SearchTaskParameter {
+  public getSortParameter(): SortParameter {
     return {
-      key: this.sortedBy.fieldName,
-      operator: 'sort',
-      values: [ this.sortedBy.order ]
+      sort_by: this.sortedBy.fieldName,
+      sort_order: this.sortedBy.order
     };
   }
 
@@ -183,14 +189,21 @@ export class TaskListWrapperComponent implements OnInit {
    * action.
    */
   public onActionHandler(taskAction: InvokedTaskAction): void {
-    if (this.returnUrl.includes('manager')) {
+    if (taskAction.action.id === TaskActionIds.GO) {
+      const goToCaseUrl = `/cases/case-details/${taskAction.task.case_id}`;
+      this.router.navigate([goToCaseUrl]);
+      return;
+    }
+
+    if (this.returnUrl.includes('manager')  && taskAction.action.id === TaskActionIds.RELEASE) {
       this.specificPage = 'manager';
     }
     const state = {
       returnUrl: this.returnUrl,
       showAssigneeColumn: taskAction.action.id !== TaskActionIds.ASSIGN
     };
-    this.router.navigate([`/tasks/${taskAction.task.id}/${taskAction.action.id}/${this.specificPage}`], { state });
+    const actionUrl = `/tasks/${taskAction.task.id}/${taskAction.action.id}/${this.specificPage}`;
+    this.router.navigate([actionUrl], { state });
   }
 
   // Do the actual load. This is separate as it's called from two methods.
@@ -198,6 +211,7 @@ export class TaskListWrapperComponent implements OnInit {
     // Should this clear out the existing set first?
     this.performSearch().subscribe(result => {
       this.tasks = result.tasks;
+      this.tasks.forEach(task => task.assigneeName = getAssigneeName(this.caseworkers, task.assignee));
       this.ref.detectChanges();
     }, error => {
       handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);

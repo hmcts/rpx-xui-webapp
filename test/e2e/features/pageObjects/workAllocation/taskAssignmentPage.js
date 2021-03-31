@@ -1,6 +1,6 @@
 const TaskList = require('./taskListTable');
 const BrowserWaits = require('../../../support/customWaits');
-
+const cucumberReporter = require('../../../support/reportLogger');
 class TaskAssignmentPage extends TaskList {
 
     constructor() {
@@ -12,7 +12,12 @@ class TaskAssignmentPage extends TaskList {
         this.locationSelect = $('exui-task-assignment select#task_assignment_location');
 
         this.reassignBtn = element(by.xpath('//exui-task-container-assignment//button[contains(text(),"Reassign")]'));
+        this.unassignBtn = element(by.xpath('//exui-task-container-assignment//button[contains(text(),"Unassign")]'));
+
         this.cancelBtn = element(by.xpath('//exui-task-container-assignment//button[contains(text(),"Cancel")]'));
+
+        this.bannerMessageContainer = $('exui-info-message ')
+        this.infoMessages = $$('exui-info-message .hmcts-banner__message');
 
     }
 
@@ -71,12 +76,52 @@ class TaskAssignmentPage extends TaskList {
         await this.reassignBtn.click();
     }
 
+    async clickUnassignBtn() {
+        expect(await this.amOnPage(), "Not on task assignment page").to.be.true;
+        await this.unassignBtn.click();
+    }
+
     async clickCancelBtn(){
         expect(await this.amOnPage(), "Not on task assignment page").to.be.true;
         await this.cancelBtn.click();
     }
 
 
+
+    async isBannerMessageDisplayed() {
+        try {
+            await BrowserWaits.waitForElement(this.bannerMessageContainer);
+            return true;
+        } catch (err) {
+            cucumberReporter.AddMessage("message banner not displayed: " + err);
+
+            return false;
+        }
+    }
+
+    async getBannerMessagesDisplayed() {
+        expect(await this.isBannerMessageDisplayed(), "Message banner not displayed").to.be.true;
+        const messagescount = await this.infoMessages.count();
+        const messages = [];
+        for (let i = 0; i < messagescount; i++) {
+            const message = await this.infoMessages.get(i).getText();
+
+            const submessagestrings = message.split("\n");
+            messages.push(...submessagestrings);
+        }
+        return messages;
+    }
+
+    async isBannermessageWithTextDisplayed(messageText) {
+        const messages = await this.getBannerMessagesDisplayed();
+
+        for (const message of messages) {
+            if (message.includes(messageText)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
 
 module.exports = new TaskAssignmentPage();

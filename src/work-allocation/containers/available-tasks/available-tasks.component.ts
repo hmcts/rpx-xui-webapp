@@ -32,10 +32,10 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
   public getSearchTaskRequest(): SearchTaskRequest {
     return {
       search_parameters: [
-        this.getSortParameter(),
         this.getLocationParameter(),
-        { key: 'assignee', operator: 'IN', values: [] } // Unassigned.
-      ]
+        { key: 'state', operator: 'IN', values: ['unassigned'] }
+      ],
+      sorting_parameters: [this.getSortParameter()]
     };
   }
 
@@ -49,16 +49,10 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
     this.loadTasks();
   }
 
-  public loadTasks(): void {
-    if (this.selectedLocations) {
-      super.loadTasks();
-    }
-  }
-
   private getLocationParameter() {
     let values = [];
     if (this.selectedLocations) {
-      values = this.selectedLocations.map(loc => loc.locationName).sort();
+      values = this.selectedLocations.map(loc => loc.id).sort();
     }
     return { key: 'location', operator: 'IN', values };
   }
@@ -85,10 +79,9 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
    */
   public claimTaskAndGo(task: Task): void {
     this.taskService.claimTask(task.id).subscribe(() => {
-      // constant below removes spaces from caseReference to get caseId
-      const caseId = task.caseReference.replace(/\s/g, '');
+      const goToCaseUrl = `/cases/case-details/${task.case_id}`
       // navigates to case details page for specific case id
-      this.router.navigate([`/cases/case-details/${caseId}`], {
+      this.router.navigate([goToCaseUrl], {
         state: {
           showMessage: true,
           messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS}

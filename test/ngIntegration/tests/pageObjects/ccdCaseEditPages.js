@@ -2,6 +2,8 @@ const BrowserWaits = require('../../../e2e/support/customWaits');
 const reportLogger = require('../../../e2e/support/reportLogger');
 
 const SoftAssert = require('../../util/softAssert');
+
+const date = require('moment');
 class CaseEdit {
 
     checkYourAnswersPageElement = $(".check-your-answers");
@@ -298,6 +300,64 @@ class CaseEdit {
         fieldValue['organisationName'] = await organisationName.getAttribute("value");
         return fieldValue;
     }
+    async inputPhoneUKField(fieldConfig, inputPhone, parentId) {
+        let inputPhoneNumber = null;
+        if (inputPhone) {
+            inputPhoneNumber = inputPhone;
+        } else {
+            inputPhoneNumber = "07123456789";
+        }
+        await $(`#${this.getFieldId(fieldConfig.id, parentId)}`).sendKeys(inputPhoneNumber);
+        return inputPhoneNumber.toString();
+    }
+
+    async inputMoneyGBP(fieldConfig, moneyVal, parentId) {
+        let moneyGBPVal = null;
+        if (moneyVal) {
+            moneyGBPVal = moneyVal;
+        } else {
+            moneyGBPVal = 10000;
+        }
+        await $(`#${this.getFieldId(fieldConfig.id, parentId)}`).sendKeys(moneyGBPVal);
+        return moneyGBPVal*100+"";
+    }
+
+    async inputDate(fieldConfig, dateVal, parentId) {
+        let inputDate = null;
+        if (dateVal) {
+            inputDate = dateVal;
+        } else {
+            inputDate = date().format('YYYY-MM-DD');
+        }
+
+        let datesValues = inputDate.split('-');
+        await $(`#${this.getFieldId(fieldConfig.id, parentId)}-day`).sendKeys(datesValues[2]);
+        await $(`#${this.getFieldId(fieldConfig.id, parentId)}-month`).sendKeys(datesValues[1]);
+        await $(`#${this.getFieldId(fieldConfig.id, parentId)}-year`).sendKeys(datesValues[0]);
+        return inputDate;
+    }
+
+    async inputDateTime(fieldConfig, dateVal, parentId) {
+        let inputDate = null;
+        if (dateVal) {
+            inputDate = dateVal;
+        } else {
+            inputDate = date().format('YYYY-MM-DD');
+        }
+
+        let datesValues = inputDate.split('-');
+        await $(`#${this.getFieldId(fieldConfig.id, parentId)}-day`).sendKeys(datesValues[2]);
+        await $(`#${this.getFieldId(fieldConfig.id, parentId)}-month`).sendKeys(datesValues[1]);
+        await $(`#${this.getFieldId(fieldConfig.id, parentId)}-year`).sendKeys(datesValues[0]);
+
+        await $(`#${this.getFieldId(fieldConfig.id, parentId)}-hour`).sendKeys("02");
+        await $(`#${this.getFieldId(fieldConfig.id, parentId)}-minute`).sendKeys("30");
+        await $(`#${this.getFieldId(fieldConfig.id, parentId)}-second`).sendKeys("45");
+
+        inputDate = `${inputDate}T02:30:45.000`;
+        return inputDate;
+    }
+
 
     async getSummaryPageDisplayElements() {
         await this.waitForChecYourAnswersPage();
@@ -309,6 +369,8 @@ class CaseEdit {
 
     async isCancelLinkInEditpageDisplayed() {
         await this.waitForPage();
+        await browser.executeScript('arguments[0].scrollIntoView()',
+            this.cancelLinkInEditPage);
         return await this.cancelLinkInEditPage.isDisplayed();
     }
 
@@ -430,8 +492,18 @@ class CaseEdit {
                 }
                 fieldValue = fieldValues; 
                 break;
-
-
+            case "PhoneUK":
+                fieldValue = await this.inputPhoneUKField(fieldConfig, value, parentId);
+                break;
+            case "MoneyGBP":
+                fieldValue = await this.inputMoneyGBP(fieldConfig, value, parentId);
+                break;
+            case "Date":
+                fieldValue = await this.inputDate(fieldConfig, value, parentId);
+                break;
+            case "DateTime":
+                fieldValue = await this.inputDateTime(fieldConfig, value, parentId);
+                break;
         }
         reportLogger.AddMessage("Field set value for " + fieldConfig.field_type.type)
         reportLogger.AddJson(JSON.stringify(fieldValue))

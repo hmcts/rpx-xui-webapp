@@ -60,7 +60,7 @@ export class TaskActionContainerComponent implements OnInit {
     };
 
     // Get the task from the route, which will have been put there by the resolver.
-    const { task } = this.route.snapshot.data.task;
+    const { task } = this.route.snapshot.data.taskAndCaseworkers.task;
     this.tasks = [ task ];
     this.routeData = this.route.snapshot.data as RouteData;
     if (!this.routeData.actionTitle) {

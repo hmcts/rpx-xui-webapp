@@ -8,7 +8,7 @@ export class WorkAllocationFeatureService {
     constructor(private readonly featureToggleService: FeatureToggleService) {
     }
 
-    public getFeatureName(): Observable<string> {
+    public getActiveWAFeature(): Observable<string> {
         return this.featureToggleService.getValue<string>(AppConstants.FEATURE_NAMES.currentWAFeature, 'WorkAllocationRelease1');
     }
 }

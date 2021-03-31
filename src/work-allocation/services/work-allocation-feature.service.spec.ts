@@ -20,7 +20,7 @@ describe('WorkAllocation', () => {
           mockFeatureToggleService
         );
         mockFeatureToggleService.getValue.and.returnValue(of('WAFeature1'));
-        service.getFeatureName().subscribe(activeWAFeature => expect(activeWAFeature).toEqual('WAFeature1'));
+        service.getActiveWAFeature().subscribe(activeWAFeature => expect(activeWAFeature).toEqual('WAFeature1'));
       });
   });
 });

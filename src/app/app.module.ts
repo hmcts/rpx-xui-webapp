@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { APP_INITIALIZER, NgModule, CUSTOM_ELEMENTS_SCHEMA, ErrorHandler } from '@angular/core';
 import { AppComponent } from './containers/app/app.component';
 import { environment } from '../environments/environment';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
 // ngrx modules - START
@@ -51,6 +51,10 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
+    HttpClientXsrfModule.withOptions({
+      cookieName: 'XSRF-TOKEN',
+      headerName: 'X-XSRF-TOKEN'
+    }),
     ProvidersModule.forRoot(),
     RouterModule.forRoot(ROUTES, routingConfiguration),
     StoreModule.forRoot(reducers, { metaReducers }),

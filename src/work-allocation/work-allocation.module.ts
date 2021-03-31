@@ -11,6 +11,7 @@ import { WorkAllocationComponentsModule } from './components/work-allocation.com
 import * as fromContainers from './containers';
 import { WorkAllocationFeatureToggleGuard } from './guards';
 import { CaseworkerDataService, WorkAllocationTaskService } from './services';
+import { WorkAllocationFeatureService } from './services/work-allocation-feature.service';
 import { workAllocationRouting } from './work-allocation-feature.routes';
 
 // from containers
@@ -24,14 +25,16 @@ import { workAllocationRouting } from './work-allocation-feature.routes';
     WorkAllocationComponentsModule,
     workAllocationRouting,
     CdkTableModule,
-    ExuiCommonLibModule
+    ExuiCommonLibModule,
   ],
-  declarations: [
-    ...fromContainers.containers
+  declarations: [...fromContainers.containers],
+  providers: [
+    WorkAllocationTaskService,
+    WorkAllocationFeatureToggleGuard,
+    AlertService,
+    CaseworkerDataService,
+    WorkAllocationFeatureService,
   ],
-  providers: [WorkAllocationTaskService, WorkAllocationFeatureToggleGuard, AlertService, CaseworkerDataService],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class WorkAllocationModule {
-
-}
+export class WorkAllocationModule {}

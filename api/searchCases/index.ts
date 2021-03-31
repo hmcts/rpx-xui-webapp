@@ -188,7 +188,9 @@ export function handleElasticSearchResponse(proxyRes, req, res, json): {} {
 }
 
 function canApplyWildCardSearch(wildcardSearchFields: { [key: string]: string[] }, caseType: string, criterion: string): boolean {
-  return wildcardSearchFields.hasOwnProperty(caseType) && wildcardSearchFields[caseType] && wildcardSearchFields[caseType].indexOf(criterion) >= 0;
+  return wildcardSearchFields.hasOwnProperty(caseType)
+    && wildcardSearchFields[caseType]
+    && wildcardSearchFields[caseType].indexOf(criterion) >= 0;
 }
 
 function phraseHasSpecialCharacters(phrase: string): boolean {

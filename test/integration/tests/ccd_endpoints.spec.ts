@@ -3,7 +3,7 @@ import {expect} from 'chai';
 import { config } from './config/config';
 import { getXSRFToken } from './utils/authUtil'
 import Request from './utils/request';
-
+import { setTestContext} from './utils/helper';
 
 describe('CCD Endpoints',  () => {
     const userName = 'lukesuperuserxui@mailnesia.com';
@@ -11,7 +11,8 @@ describe('CCD Endpoints',  () => {
 
     // const userName = 'peterxuisuperuser@mailnesia.com';
     // const password = 'Monday01';
-    beforeEach( () =>  {
+    beforeEach(function ()  {
+        setTestContext(this);
         Request.clearSession();
     });
 

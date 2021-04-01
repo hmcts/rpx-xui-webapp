@@ -129,9 +129,9 @@ async function  authenticateAndGetcookies(username, password)  {
 
 function getPuppeteerLaunchOptions(){
     const puppeteerOption = { ignoreHTTPSErrors: true, headless: true, args: [] };
-    if (!config.baseUrl.includes('manage-case.')) {
-        puppeteerOption.args.push('--proxy-server=http://proxyout.reform.hmcts.net:8080');
-    }
+    // if (!config.baseUrl.includes('manage-case.')) {
+    //     puppeteerOption.args.push('--proxy-server=http://proxyout.reform.hmcts.net:8080');
+    // }
 
     return puppeteerOption;
 }

@@ -33,7 +33,7 @@ function getTestJurisdiction(scenario) {
     ];
     const ComplexType_2 =[
         { id: "AddressUKField", type: "AddressUK", label: "Uk Address"},
-        { id: "DateTimeField", type: "DateTime", label: "Date Time" },
+        { id: "DateField", type: "Date", label: "Date only" },
         
         { id: "DateTimeField", type: "DateTime", label: "Date Time" },
         { id: "optionsMultiVal", type: "FixedList", label: "Select all that match",

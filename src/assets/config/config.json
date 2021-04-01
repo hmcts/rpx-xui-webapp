@@ -20,7 +20,6 @@
     "activity_url": "",
     "activity_max_request_per_batch": 25,
     "print_service_url": "/print",
-    "remote_print_service_url": "https://return-case-doc-ccd.nonprod.platform.hmcts.net",
     "pagination_page_size": 25,
     "annotation_api_url": "/em-anno"
   },

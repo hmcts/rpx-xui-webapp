@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@2.75.2-gamma-EUI-3587-print-service-url-rewrite":
-  version "2.75.2-gamma-EUI-3587-print-service-url-rewrite"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.75.2-gamma-EUI-3587-print-service-url-rewrite.tgz#22e36b56d534350dd278ebb0a89cbbffb82bec5c"
-  integrity sha512-L/0VSxKeMAGl1cxK5vtfIWVyZjdlCItaAhuDXWH7uhZ24djPdDPffTrcr+cUUTGZUf9lk7+eDPiV6PUt1mPX3w==
+"@hmcts/ccd-case-ui-toolkit@2.79.2":
+  version "2.79.2"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.79.2.tgz#b6b6ee01a443a601862c51ab3c578fe54b46a926"
+  integrity sha512-vruedYBJGp6fEvXzr377jH0em0r5JRVf4UjoVKEiznDgNpFZk5P5GT9/nQuxHBpnjdqp9n2Aig1r0Rn1XfXemg==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"

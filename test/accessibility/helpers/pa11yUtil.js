@@ -10,7 +10,6 @@ const puppeteer = require('puppeteer');
 
 const fs = require('fs');
 
-let testBrowser = null;
 let page = null;
 
 async function getBrowser(){
@@ -21,7 +20,7 @@ async function getBrowser(){
 }
 
 async function pa11ytest(test, actions, startUrl,roles) {
-    testBrowser = null;
+    let testBrowser = null;
     console.log("pally test with actions : " + test.test.title);
     console.log(actions);
 
@@ -40,7 +39,7 @@ async function pa11ytest(test, actions, startUrl,roles) {
     }, 'secret', { expiresIn: 60 * 60 });
 
    
-    const testBrowser = await getBrowser();
+    testBrowser = await getBrowser();
     const page = await testBrowser.newPage();
     await page.goto("http://localhost:4200/");
 

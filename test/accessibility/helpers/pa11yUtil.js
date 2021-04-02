@@ -19,6 +19,8 @@ async function getBrowser(){
          });
 }
 
+
+
 async function pa11ytest(test, actions, startUrl,roles) {
     let testBrowser = null;
     console.log("pally test with actions : " + test.test.title);
@@ -39,12 +41,11 @@ async function pa11ytest(test, actions, startUrl,roles) {
     }, 'secret', { expiresIn: 60 * 60 });
 
    
+    
+    let result;
     testBrowser = await getBrowser();
     const page = await testBrowser.newPage();
-    await page.goto("http://localhost:4200/");
-
-
-    let result;
+    // await page.goto("http://localhost:4200/");
     try {
         result = await pa11y(startUrl, {
             browser: testBrowser,

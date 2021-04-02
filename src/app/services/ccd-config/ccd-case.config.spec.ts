@@ -87,6 +87,10 @@ describe('AppConfiguration', () => {
     expect(service.getActivityUrl()).toBeUndefined();
   }));
 
+  it('should have getRemotePrintServiceUrl', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getRemotePrintServiceUrl()).toBeUndefined();
+  }));
+
   it('should have getCreateOrUpdateDraftsUrl', inject([AppConfig], (service: AppConfig) => {
     expect(service.getCreateOrUpdateDraftsUrl('')).toBe('undefined/internal/case-types//drafts/');
   }));

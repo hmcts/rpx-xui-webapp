@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@2.73.0-hotfix-error-message-display":
-  version "2.73.0-hotfix-error-message-display"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.73.0-hotfix-error-message-display.tgz#d22d2f5f37a7aac10f55562d73d7179333fdaa3a"
-  integrity sha512-Xsf2WQ6ox0/d8UaBbAZiwpDc/iv5REO0BQr3yVcUd35J4IH+GRrh2aEpq8wcafCslxnNdVd0s/6ZTVPKLIDxPg==
+"@hmcts/ccd-case-ui-toolkit@2.79.0":
+  version "2.79.0"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.79.0.tgz#65f0487c5e596d88b99fbf2ee000e0b4f84221d9"
+  integrity sha512-jqF9S5tNv8RflpsBCfAWe6l90XpCausk1PnOwc9uF5EHavFSikony/R7Zn/2w5nsSP6OP2t8pWQfLU807/Zleg==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"

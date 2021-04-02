@@ -45,6 +45,9 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
     const getTaskPath: string = prepareGetTaskUrl(baseWorkAllocationTaskUrl, req.params.taskId);
 
     const jsonResponse = await handleTaskGet(getTaskPath, req);
+    if (jsonResponse && jsonResponse.task && jsonResponse.task.due_date) {
+      jsonResponse.task.dueDate = jsonResponse.task.due_date;
+    }
     res.status(200);
     res.send(jsonResponse);
   } catch (error) {

@@ -5,9 +5,9 @@ import { ConfigConstants } from '../../components/constants';
 import { InfoMessage, InfoMessageType, TaskActionType, TaskService, TaskSort } from '../../enums';
 import { InformationMessage } from '../../models/comms';
 import { TaskFieldConfig, TaskServiceConfig } from '../../models/tasks';
-import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
+import { InfoMessageCommService, WorkAllocationTaskService, CaseworkerDataService } from '../../services';
 import { ACTION } from '../../services/work-allocation-task.service';
-import { handleFatalErrors } from '../../utils';
+import { getAssigneeName, handleFatalErrors } from '../../utils';
 
 interface RouteData {
   verb: TaskActionType;
@@ -31,7 +31,8 @@ export class TaskActionContainerComponent implements OnInit {
     private readonly taskService: WorkAllocationTaskService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly messageService: InfoMessageCommService
+    private readonly messageService: InfoMessageCommService,
+    private readonly caseWorkerService: CaseworkerDataService
   ) {}
 
   public get fields(): TaskFieldConfig[] {
@@ -65,6 +66,9 @@ export class TaskActionContainerComponent implements OnInit {
     this.routeData = this.route.snapshot.data as RouteData;
     if (!this.routeData.actionTitle) {
       this.routeData.actionTitle = `${this.routeData.verb} task`;
+    }
+    if (task.assignee) {
+      this.caseWorkerService.getAll().subscribe(caseworkers => task.assigneeName = getAssigneeName(caseworkers, task.assignee));
     }
   }
 

@@ -10,19 +10,41 @@ const puppeteer = require('puppeteer');
 
 const fs = require('fs');
 
+let testBrowser = null;
 let page = null;
 
-async function getBrowser(){
-    return await puppeteer.launch({
-            ignoreHTTPSErrors: false,
-            headless: conf.headless
-         });
+async function initBrowser(){
+    testBrowser = await puppeteer.launch({
+        ignoreHTTPSErrors: false,
+        headless: conf.headless,
+        args: [
+            '--no-sandbox',
+            '--disable-dev-shm-usage', 
+        ],
+    });
+
+    page = await testBrowser.newPage();
+    await page.goto("http://localhost:4200/");
 }
 
+async function pa11ytest(test, actions, startUrl, roles){
+    let isTestSuccess = false;
+    let retryCounter = 0;
 
+    while (!isTestSuccess && retryCounter < 3){
+        
+        try{
+            await pa11ytestRunner(test, actions, startUrl, roles);
+            isTestSuccess = true;
+        }catch(err){
+            retryCounter++;
+            console.log("Error running pallt test "+err);
+            console.log("Retrying test again for " + retryCounter );
+        }
+    }
+}
 
-async function pa11ytest(test, actions, startUrl,roles) {
-    let testBrowser = null;
+async function pa11ytestRunner(test, actions, startUrl,roles) {
     console.log("pally test with actions : " + test.test.title);
     console.log(actions);
 
@@ -39,13 +61,10 @@ async function pa11ytest(test, actions, startUrl,roles) {
     let token = jwt.sign({
         data: 'foobar'
     }, 'secret', { expiresIn: 60 * 60 });
-
-   
-    
+ 
     let result;
-    testBrowser = await getBrowser();
-    const page = await testBrowser.newPage();
-    // await page.goto("http://localhost:4200/");
+
+    await initBrowser();
     try {
         result = await pa11y(startUrl, {
             browser: testBrowser,

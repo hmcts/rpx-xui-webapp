@@ -10,6 +10,7 @@ import {
   CaseworkerDataService,
   InfoMessageCommService,
   LocationDataService,
+  WorkAllocationFeatureService,
   WorkAllocationTaskService,
 } from '../../services';
 import { handleFatalErrors } from '../../utils';
@@ -37,9 +38,10 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
     protected sessionStorageService: SessionStorageService,
     protected readonly caseworkerService: CaseworkerDataService,
     private readonly locationService: LocationDataService,
-    protected alertService: AlertService
+    protected alertService: AlertService,
+    protected featureService: WorkAllocationFeatureService
   ) {
-    super(ref, taskService, router, infoMessageCommService, sessionStorageService, alertService, caseworkerService);
+    super(ref, taskService, router, infoMessageCommService, sessionStorageService, alertService, caseworkerService, featureService);
   }
 
   public get fields(): TaskFieldConfig[] {

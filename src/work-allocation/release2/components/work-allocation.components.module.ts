@@ -20,13 +20,13 @@ import { CaseworkerDataService, InfoMessageCommService, LocationDataService } fr
   ],
   declarations: [
     ...fromComponents.components,
-    ...fromPipes.pipes
+    // ...fromPipes.pipes
   ],
   providers: [CaseworkerDataService, LocationDataService, InfoMessageCommService],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   exports: [
     ...fromComponents.components,
-    ...fromPipes.pipes
+    // ...fromPipes.pipes
   ]
 })
 export class WorkAllocationRelease2ComponentsModule {

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Observable } from 'rxjs';
 
 import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
 import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';

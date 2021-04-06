@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { Caseworker } from 'api/workAllocation/interfaces/task';
 import { Observable } from 'rxjs';
+import { map, share } from 'rxjs/operators';
 
 import { SessionStorageService } from '../../../app/services';
 import { ListConstants } from '../../components/constants';
@@ -46,7 +47,7 @@ export class TaskListWrapperComponent implements OnInit {
 
   public specificPage: string = '';
   public caseworkers: Caseworker[];
-
+  public featureVersion$: Observable<string>;
   private pTasks: Task[];
   public get tasks(): Task[] {
     return this.pTasks;
@@ -118,6 +119,7 @@ export class TaskListWrapperComponent implements OnInit {
         order: this.taskServiceConfig.defaultSortDirection
       };
     }
+    this.featureVersion$ = this.featureService.getActiveWAFeature().pipe(share());
     this.loadTasks();
   }
 
@@ -125,7 +127,7 @@ export class TaskListWrapperComponent implements OnInit {
    * Load the tasks to display in the component.
    */
   public loadTasks(): void {
-    this.featureService.getActiveWAFeature().subscribe(feature => {
+    this.featureVersion$.subscribe(feature => {
       if (feature === 'WorkAllocationRelease2'){
         this.loadTasksVersion2();
       } else {

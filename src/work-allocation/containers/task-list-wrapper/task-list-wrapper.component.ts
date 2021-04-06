@@ -9,7 +9,8 @@ import { ListConstants } from '../../components/constants';
 import { InfoMessage, InfoMessageType, TaskActionIds, TaskService, TaskSort } from '../../enums';
 import { SearchTaskRequest, SortParameter } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
-import { CaseworkerDataService, InfoMessageCommService, WorkAllocationTaskService } from '../../services';
+import { CaseworkerDataService, InfoMessageCommService, WorkAllocationTaskService, WorkAllocationFeatureService } from '../../services';
+
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 
 @Component({
@@ -39,7 +40,8 @@ export class TaskListWrapperComponent implements OnInit {
     protected infoMessageCommService: InfoMessageCommService,
     protected sessionStorageService: SessionStorageService,
     protected alertService: AlertService,
-    protected caseworkerService: CaseworkerDataService
+    protected caseworkerService: CaseworkerDataService,
+    protected featureService: WorkAllocationFeatureService
   ) {}
 
   public specificPage: string = '';
@@ -123,11 +125,15 @@ export class TaskListWrapperComponent implements OnInit {
    * Load the tasks to display in the component.
    */
   public loadTasks(): void {
-    if (this.wasBadRequest) {
-      this.refreshTasks();
-    } else {
-      this.doLoad();
-    }
+    this.featureService.getActiveWAFeature().subscribe(feature => {
+      if (feature === 'WorkAllocationRelease2'){
+        this.loadTasksVersion2();
+      } else {
+        this.loadTasksVersion1();
+      }
+    }, error => {
+      handleFatalErrors(error.status, this.router);
+    });
   }
 
   /**
@@ -217,4 +223,21 @@ export class TaskListWrapperComponent implements OnInit {
       handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
     });
   }
+
+  private loadTasksVersion1(): void {
+    if (this.wasBadRequest) {
+      this.refreshTasks();
+    } else {
+      this.doLoad();
+    }
+  }
+
+  private loadTasksVersion2(): void {
+    if (this.wasBadRequest) {
+      this.refreshTasks();
+    } else {
+      this.doLoad();
+    }
+  }
+
 }

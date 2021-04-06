@@ -15,8 +15,8 @@ import { FilterConstants } from '../constants';
 })
 export class AvailableTasksFilterComponent implements OnInit {
 
-  @ViewChild(CheckboxListComponent)
-  public readonly locationFilter: CheckboxListComponent<Location>;
+  // Getting CheckboxListComponent from DOM ensures it will be defined
+  @ViewChild('locationFilter') public locationFilter: CheckboxListComponent<Location>;
   @ViewChild('filterDetails')
   public readonly filterDetails: ElementRef<HTMLDetailsElement>;
 

@@ -63,7 +63,7 @@ export const ROUTES: Routes = [
       },
       {
         path: ':taskId',
-        resolve: { task: TaskResolver },
+        resolve: { taskAndCaseworkers: TaskResolver },
         canActivate: [ WorkAllocationFeatureToggleGuard ],
         children: [
           {

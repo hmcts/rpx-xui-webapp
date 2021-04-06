@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { Caseworker } from 'api/workAllocation/interfaces/task';
 import { Observable } from 'rxjs';
+import { WorkAllocationFeatureService } from 'src/work-allocation/services/work-allocation-feature.service';
 
 import { SessionStorageService } from '../../../app/services';
 import { ListConstants } from '../../components/constants';
@@ -16,6 +17,7 @@ import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../..
   templateUrl: 'task-list-wrapper.component.html'
 })
 export class TaskListWrapperComponent implements OnInit {
+  public currentFeature: string;
 
   /**
    * Flag to indicate whether or not we've arrived here following a bad
@@ -39,7 +41,8 @@ export class TaskListWrapperComponent implements OnInit {
     protected infoMessageCommService: InfoMessageCommService,
     protected sessionStorageService: SessionStorageService,
     protected alertService: AlertService,
-    protected caseworkerService: CaseworkerDataService
+    protected caseworkerService: CaseworkerDataService,
+    protected workAllocationFeatureService: WorkAllocationFeatureService
   ) {}
 
   public specificPage: string = '';

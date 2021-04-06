@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnChanges, OnInit } from '@angular/core';
 import { UserInfo } from 'src/app/models/user-details.model';
+import { WorkAllocationFeatureService } from 'src/work-allocation/services/work-allocation-feature.service';
 
 import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
 import { SearchTaskRequest } from '../../models/dtos';
@@ -8,9 +9,9 @@ import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper
 
 @Component({
   selector: 'exui-my-tasks',
-  templateUrl: '../task-list-wrapper/task-list-wrapper.component.html'
+  templateUrl: 'my-tasks.component.html'
 })
-export class MyTasksComponent extends TaskListWrapperComponent {
+export class MyTasksComponent extends TaskListWrapperComponent implements OnInit {
 
   public get emptyMessage(): string {
     return ListConstants.EmptyMessage.MyTasks;
@@ -26,6 +27,13 @@ export class MyTasksComponent extends TaskListWrapperComponent {
 
   public get fields(): TaskFieldConfig[] {
     return ConfigConstants.MyTasks;
+  }
+
+  public ngOnInit(): void {
+    this.workAllocationFeatureService.getActiveWAFeature().subscribe(feature =>
+      {this.currentFeature = feature});
+    super.ngOnInit();
+    console.log(this.currentFeature);
   }
 
   public getSearchTaskRequest(): SearchTaskRequest {

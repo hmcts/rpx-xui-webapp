@@ -1,7 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRouteSnapshot, NavigationEnd, Router, RoutesRecognized } from '@angular/router';
 import { SubNavigation } from '@hmcts/rpx-xui-common-lib';
 import { Subscription } from 'rxjs';
+import { WorkAllocationFeatureService } from 'src/work-allocation/services/work-allocation-feature.service';
 
 import { AppUtils } from '../../../app/app-utils';
 import { TaskSortField } from '../../models/tasks';
@@ -28,8 +29,9 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
   public sortedBy: TaskSortField;
   public pageTitle: string;
   private routeSubscription: Subscription;
+  public currentFeature: string;
 
-  constructor(private readonly router: Router) {}
+  constructor(private readonly router: Router, private workAllocationFeatureService: WorkAllocationFeatureService) {}
 
   public ngOnInit(): void {
     this.routeSubscription = this.router.events.subscribe(event => {

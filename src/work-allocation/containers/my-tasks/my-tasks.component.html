@@ -1,0 +1,11 @@
+{{currentFeature}}
+<ng-container *ngIf="currentFeature==='WorkAllocationRelease2'">
+  Hello
+</ng-container>
+<ng-container *ngIf="currentFeature!==WorkAllocationRelease1">
+  <exui-task-list
+    [taskServiceConfig]="taskServiceConfig" [tasks]="tasks" [fields]="fields"
+    [sortedBy]="sortedBy" [emptyMessage]="emptyMessage"
+    (sortEvent)="onSortHandler($event)" (actionEvent)="onActionHandler($event)">
+  </exui-task-list>
+</ng-container>

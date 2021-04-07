@@ -12,7 +12,7 @@ import {WorkAllocationComponentsModule} from '../../../components/work-allocatio
 import {Task} from '../../../models/tasks';
 import {CaseworkerDataService, WorkAllocationTaskService} from '../../../services';
 import {getMockTasks} from '../../../tests/utils.spec';
-import {WorkListComponent} from '../work-list/work-list.component';
+import {TaskListRelease2Component} from '../task-list/task-list.component';
 import {MyWorkTasksComponent} from './my-work-tasks.component';
 
 @Component({
@@ -42,7 +42,7 @@ describe('MyTasksComponent', () => {
         RouterTestingModule,
         WorkAllocationComponentsModule
       ],
-      declarations: [MyWorkTasksComponent, WrapperComponent, WorkListComponent],
+      declarations: [MyWorkTasksComponent, WrapperComponent, TaskListRelease2Component],
       providers: [
         {provide: WorkAllocationTaskService, useValue: mockTaskService},
         {provide: AlertService, useValue: mockAlertService},

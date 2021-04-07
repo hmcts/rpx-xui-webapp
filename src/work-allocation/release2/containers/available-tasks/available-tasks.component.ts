@@ -1,18 +1,17 @@
 import { Component } from '@angular/core';
-import { Observable } from 'rxjs';
 
-import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
-import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
-import { Location, SearchTaskRequest } from '../../models/dtos';
-import { InvokedTaskAction, Task, TaskFieldConfig } from '../../models/tasks';
-import { handleFatalErrors, REDIRECTS } from '../../utils';
-import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
+import { ConfigConstants, ListConstants, SortConstants } from 'src/work-allocation/components/constants';
+import { InfoMessage, InfoMessageType, TaskActionIds } from 'src/work-allocation/enums';
+import { Location, SearchTaskRequest } from 'src/work-allocation/models/dtos';
+import { InvokedTaskAction, Task, TaskFieldConfig } from 'src/work-allocation/models/tasks';
+import { handleFatalErrors, REDIRECTS } from 'src/work-allocation/utils';
+import { TaskListWrapperComponent } from 'src/work-allocation/containers/task-list-wrapper/task-list-wrapper.component';
 
 @Component({
-  selector: 'exui-available-tasks',
+  selector: 'exui-available-tasks-v2',
   templateUrl: 'available-tasks.component.html'
 })
-export class AvailableTasksComponent extends TaskListWrapperComponent {
+export class AvailableTasksRelease2Component extends TaskListWrapperComponent {
   private selectedLocations: Location[];
 
   public get fields(): TaskFieldConfig[] {

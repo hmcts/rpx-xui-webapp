@@ -12,7 +12,8 @@ export const SET_ANSWER_INCOMPLETE = '[NOC] Set Answers Incomplete';
 export const CHECK_ANSWERS = '[NOC] Check Answers';
 export const SET_ANSWER_SUBMISSION_FAILURE = '[NOC] Set Answer Submission Failure';
 export const SET_AFFIRMATION_AGREED = '[NOC] Set Affirmation Agreed';
-export const SET_AFFIRMATION_DISAGREE_ERROR = '[NOC] Set Affirmation Disagree Error';
+export const SET_NOTIFY_EVERY_PARTY = '[NOC] Set Notify Every Party';
+export const SET_AFFIRMATION_ERROR = '[NOC] Set Affirmation Error';
 export const SUBMIT_NOC = '[NOC] Submit NoC';
 export const SET_SUBMISSION_SUCCESS_APPROVED = '[NOC] Submission NoC Success Approved';
 export const SET_SUBMISSION_SUCCESS_PENDING = '[NOC] Submission NoC Success Pending';
@@ -70,8 +71,14 @@ export class SetAffirmationAgreed implements Action {
     constructor(public payload: boolean) {}
 }
 
-export class SetAffirmationDisagreeError implements Action {
-    public readonly type = SET_AFFIRMATION_DISAGREE_ERROR;
+export class SetNotifyEveryParty implements Action {
+  public readonly type = SET_NOTIFY_EVERY_PARTY;
+  constructor(public payload: boolean) {}
+}
+
+export class SetAffirmationError implements Action {
+  public readonly type = SET_AFFIRMATION_ERROR;
+  constructor(public payload: {}) {}
 }
 
 export class SubmitNoc implements Action {
@@ -104,7 +111,8 @@ export type NocAction =
   | CheckAnswers
   | SetAnswerSubmissionFailure
   | SetAffirmationAgreed
-  | SetAffirmationDisagreeError
+  | SetNotifyEveryParty
+  | SetAffirmationError
   | SubmitNoc
   | SetSubmissionSuccessApproved
   | SetSubmissionSuccessPending

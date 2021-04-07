@@ -10,12 +10,12 @@ import {
   CaseworkerDataService,
   InfoMessageCommService,
   LocationDataService,
+  WorkAllocationFeatureService,
   WorkAllocationTaskService,
 } from '../../services';
 import { handleFatalErrors } from '../../utils';
 import { SessionStorageService } from '../../../app/services';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
-import { WorkAllocationFeatureService } from 'src/work-allocation/services/work-allocation-feature.service';
 
 @Component({
   selector: 'exui-task-manager-list',
@@ -39,9 +39,9 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
     protected readonly caseworkerService: CaseworkerDataService,
     private readonly locationService: LocationDataService,
     protected alertService: AlertService,
-    protected workAllocationFeatureService: WorkAllocationFeatureService
+    protected featureService: WorkAllocationFeatureService
   ) {
-    super(ref, taskService, router, infoMessageCommService, sessionStorageService, alertService, caseworkerService, workAllocationFeatureService);
+    super(ref, taskService, router, infoMessageCommService, sessionStorageService, alertService, caseworkerService, featureService);
   }
 
   public get fields(): TaskFieldConfig[] {

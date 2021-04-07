@@ -36,15 +36,15 @@ export class NocValidators {
   public static dateValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (control.value === null || control.value === '') { return; }
-      const dateValues = control.value.toString().split('/');
+      const dateValues = control.value.toString().split('-');
       if (dateValues) {
         if (dateValues[0]) {
           const number = Number(dateValues[0]);
-          if (number === 0 || number > 31) {
-            return { date: true, day: true, valid: false };
+          if (number === 0 || dateValues[0].length < 4) {
+            return { date: true, year: true, valid: false };
           }
         } else {
-          return { date: true, day: true };
+          return { date: true, year: true };
         }
         if (dateValues[1]) {
           const number = Number(dateValues[1]);
@@ -56,14 +56,14 @@ export class NocValidators {
         }
         if (dateValues[2]) {
           const number = Number(dateValues[2]);
-          if (number === 0 || dateValues[2].length < 4) {
-            return { date: true, year: true, valid: false };
+          if (number === 0 || number > 31) {
+            return { date: true, day: true, valid: false };
           }
         } else {
-          return { date: true, year: true };
+          return { date: true, day: true };
         }
       }
-      if (!moment(control.value.toString(), 'DD/MM/YYYY', true).isValid()) {
+      if (!moment(control.value.toString(), 'YYYY-MM-DD', true).isValid()) {
         return { date: true };
       }
       return;
@@ -73,16 +73,16 @@ export class NocValidators {
   public static dateTimeValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (control.value === null || control.value === '') { return; }
-      const [datePart, timePart] = control.value.toString().split(' ');
-      const dateValues = datePart.split('/');
+      const [datePart, timePart] = control.value.toString().split('T');
+      const dateValues = datePart.split('-');
       if (dateValues) {
         if (dateValues[0]) {
           const number = Number(dateValues[0]);
-          if (number === 0 || number > 31) {
-            return { datetime: true, day: true, valid: false };
+          if (number === 0 || dateValues[0].length < 4) {
+            return { datetime: true, year: true, valid: false };
           }
         } else {
-          return { datetime: true, day: true };
+          return { datetime: true, year: true };
         }
         if (dateValues[1]) {
           const number = Number(dateValues[1]);
@@ -94,11 +94,11 @@ export class NocValidators {
         }
         if (dateValues[2]) {
           const number = Number(dateValues[2]);
-          if (number === 0 || dateValues[2].length < 4) {
-            return { datetime: true, year: true, valid: false };
+          if (number === 0 || number > 31) {
+            return { datetime: true, day: true, valid: false };
           }
         } else {
-          return { datetime: true, year: true };
+          return { datetime: true, day: true };
         }
         if (timePart) {
           const timeValues = timePart.split(':');
@@ -128,7 +128,8 @@ export class NocValidators {
           }
         }
       }
-      if (!moment(control.value.toString(), 'DD/MM/YYYY HH:mm:ss', true).isValid()) {
+      const momentValue = control.value.toString().replace('T', ' ').replace('.000', '');
+      if (!moment(momentValue, 'YYYY-MM-DD HH:mm:ss', true).isValid()) {
         return { datetime: true };
       }
       return;

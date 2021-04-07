@@ -1,16 +1,16 @@
-import { Component, OnChanges, OnInit } from '@angular/core';
-import { UserInfo } from 'src/app/models/user-details.model';
+import { Component} from '@angular/core';
+import { UserInfo } from '../../../../app/models/user-details.model';
 
-import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
-import { SearchTaskRequest } from '../../models/dtos';
-import { TaskFieldConfig } from '../../models/tasks';
-import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
+import { ConfigConstants, ListConstants, SortConstants } from '../../../components/constants';
+import { SearchTaskRequest } from '../../../models/dtos';
+import { TaskFieldConfig } from '../../../models/tasks';
+import { TaskListWrapperComponent } from '../../../containers/task-list-wrapper/task-list-wrapper.component';
 
 @Component({
-  selector: 'exui-my-tasks',
-  templateUrl: 'my-tasks.component.html'
+  selector: 'exui-my-work-tasks',
+  templateUrl: 'my-work-tasks.component.html'
 })
-export class MyTasksComponent extends TaskListWrapperComponent implements OnInit {
+export class MyWorkTasksComponent extends TaskListWrapperComponent {
 
   public get emptyMessage(): string {
     return ListConstants.EmptyMessage.MyTasks;
@@ -26,13 +26,6 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnInit
 
   public get fields(): TaskFieldConfig[] {
     return ConfigConstants.MyTasks;
-  }
-
-  public ngOnInit(): void {
-    this.workAllocationFeatureService.getActiveWAFeature().subscribe(feature =>
-      {this.currentFeature = feature});
-    super.ngOnInit();
-    console.log(this.currentFeature);
   }
 
   public getSearchTaskRequest(): SearchTaskRequest {

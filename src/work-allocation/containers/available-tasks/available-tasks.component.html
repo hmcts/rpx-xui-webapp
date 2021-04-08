@@ -1,17 +1,18 @@
-<div *ngIf="(featureVersion$ | async) === 'WorkAllocationRelease2';then version2 else version1"></div>    
-<ng-template #version1>
-  <exui-available-tasks-filter (selectionChanged)="onLocationsChanged($event)"></exui-available-tasks-filter>
-  <exui-task-list
-    [taskServiceConfig]="taskServiceConfig" [tasks]="tasks" [fields]="fields"
-    [sortedBy]="sortedBy" [emptyMessage]="emptyMessage"
-    (sortEvent)="onSortHandler($event)" (actionEvent)="onActionHandler($event)">
-  </exui-task-list>
-</ng-template>
-<ng-template #version2>
-  <exui-available-tasks-filter-v2 (selectionChanged)="onLocationsChanged($event)"></exui-available-tasks-filter-v2>
-  <exui-task-list-v2
-    [taskServiceConfig]="taskServiceConfig" [tasks]="tasks" [fields]="fields"
-    [sortedBy]="sortedBy" [emptyMessage]="emptyMessage"
-    (sortEvent)="onSortHandler($event)" (actionEvent)="onActionHandler($event)">
-  </exui-task-list-v2>
-</ng-template>
+<div [ngSwitch]="(featureVersion$ | async)">
+  <div *ngSwitchCase="'WorkAllocationRelease2'">
+    <exui-available-tasks-filter-v2 (selectionChanged)="onLocationsChanged($event)"></exui-available-tasks-filter-v2>
+    <exui-task-list-v2
+      [taskServiceConfig]="taskServiceConfig" [tasks]="tasks" [fields]="fields"
+      [sortedBy]="sortedBy" [emptyMessage]="emptyMessage"
+      (sortEvent)="onSortHandler($event)" (actionEvent)="onActionHandler($event)">
+    </exui-task-list-v2>
+  </div>
+  <div *ngSwitchDefault>
+    <exui-available-tasks-filter (selectionChanged)="onLocationsChanged($event)"></exui-available-tasks-filter>
+    <exui-task-list
+      [taskServiceConfig]="taskServiceConfig" [tasks]="tasks" [fields]="fields"
+      [sortedBy]="sortedBy" [emptyMessage]="emptyMessage"
+      (sortEvent)="onSortHandler($event)" (actionEvent)="onActionHandler($event)">
+    </exui-task-list>
+  </div>
+</div>

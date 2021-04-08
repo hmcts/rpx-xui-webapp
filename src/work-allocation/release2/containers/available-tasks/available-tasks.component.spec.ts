@@ -12,7 +12,7 @@ import { InfoMessage, InfoMessageType, TaskActionIds } from 'src/work-allocation
 import { InformationMessage } from 'src/work-allocation/models/comms';
 import * as dtos from 'src/work-allocation/models/dtos';
 import { InvokedTaskAction, Task } from 'src/work-allocation/models/tasks';
-import { InfoMessageCommService, LocationDataService, WorkAllocationTaskService } from 'src/work-allocation/services';
+import { InfoMessageCommService, LocationDataService, WorkAllocationFeatureService, WorkAllocationTaskService } from 'src/work-allocation/services';
 import { getMockLocations, getMockTasks } from 'src/work-allocation/tests/utils.spec';
 import { TaskListRelease2Component } from '../task-list/task-list.component';
 import { AvailableTasksRelease2Component } from './available-tasks.component';
@@ -36,6 +36,7 @@ describe('AvailableTasksRelease2Component', () => {
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
+  const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -51,7 +52,8 @@ describe('AvailableTasksRelease2Component', () => {
         { provide: LocationDataService, useValue: mockLocationService },
         { provide: Router, useValue: mockRouter },
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
-        { provide: AlertService, useValue: mockAlertService }
+        { provide: AlertService, useValue: mockAlertService },
+        { provide: WorkAllocationFeatureService, useValue: mockFeatureService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
@@ -60,6 +62,7 @@ describe('AvailableTasksRelease2Component', () => {
     mockLocationService.getLocations.and.returnValue(of(mockLocations));
     const tasks: Task[] = getMockTasks();
     mockTaskService.searchTask.and.returnValue(of({ tasks }));
+    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease1'));
     fixture.detectChanges();
   });
 

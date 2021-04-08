@@ -29,6 +29,11 @@ export const ROUTES: Routes = [
     loadChildren: '../cases/cases.module#CasesModule'
   },
   {
+    path: 'mywork',
+    canActivate: [AuthGuard, AcceptTermsGuard],
+    loadChildren: '../work-allocation/work-allocation.module#WorkAllocationModule'
+  },
+  {
     path: 'tasks',
     canActivate: [AuthGuard, AcceptTermsGuard],
     loadChildren: '../work-allocation/work-allocation.module#WorkAllocationModule'

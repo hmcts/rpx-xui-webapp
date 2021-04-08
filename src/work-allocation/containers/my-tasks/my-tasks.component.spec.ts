@@ -15,6 +15,7 @@ import {CaseworkerDataService, WorkAllocationFeatureService, WorkAllocationTaskS
 import {getMockTasks} from '../../tests/utils.spec';
 import {TaskListComponent} from '../task-list/task-list.component';
 import {MyTasksComponent} from './my-tasks.component';
+import {TaskListRelease2Component} from '../../../work-allocation/release2/containers';
 
 @Component({
   template: `
@@ -24,7 +25,7 @@ class WrapperComponent {
   @ViewChild(MyTasksComponent) public appComponentRef: MyTasksComponent;
 }
 
-fdescribe('MyTasksComponent', () => {
+describe('MyTasksComponent', () => {
   let component: MyTasksComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -45,7 +46,7 @@ fdescribe('MyTasksComponent', () => {
         WorkAllocationComponentsModule,
         WorkAllocationRelease2ComponentsModule
       ],
-      declarations: [MyTasksComponent, WrapperComponent, TaskListComponent],
+      declarations: [MyTasksComponent, WrapperComponent, TaskListComponent, TaskListRelease2Component],
       providers: [
         {provide: WorkAllocationTaskService, useValue: mockTaskService},
         {provide: AlertService, useValue: mockAlertService},

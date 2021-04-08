@@ -17,6 +17,7 @@ import { InfoMessageCommService, LocationDataService, WorkAllocationFeatureServi
 import { getMockLocations, getMockTasks } from '../../tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { AvailableTasksComponent } from './available-tasks.component';
+import { TaskListRelease2Component } from '../../../work-allocation/release2/containers';
 
 @Component({
   template: `<exui-available-tasks></exui-available-tasks>`
@@ -25,7 +26,7 @@ class WrapperComponent {
   @ViewChild(AvailableTasksComponent) public appComponentRef: AvailableTasksComponent;
 }
 
-fdescribe('AvailableTasksComponent', () => {
+describe('AvailableTasksComponent', () => {
   let component: AvailableTasksComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -48,7 +49,7 @@ fdescribe('AvailableTasksComponent', () => {
         WorkAllocationComponentsModule,
         WorkAllocationRelease2ComponentsModule
       ],
-      declarations: [ AvailableTasksComponent, WrapperComponent, TaskListComponent ],
+      declarations: [ AvailableTasksComponent, WrapperComponent, TaskListComponent, TaskListRelease2Component ],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
         { provide: LocationDataService, useValue: mockLocationService },

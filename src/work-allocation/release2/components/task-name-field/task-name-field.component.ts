@@ -8,9 +8,9 @@ import { AppConstants } from '../../../../app/app.constants';
   styleUrls: ['task-name-field.component.scss']
 })
 /**
-   * Note: This class currently identical to case-name-field component however
-   * desired future functionality as of links to EUI-3566 require link to Tasks tab of Case details page
-   */
+ * Note: This class currently identical to case-name-field component however
+ * desired future functionality as of links to EUI-3566 require link to Tasks tab of Case details page
+ */
 export class TaskNameFieldComponent implements OnChanges {
   /**
    * The caseName to use for display purposes.

@@ -1,4 +1,4 @@
-<ng-container [ngSwitch]="featureVersion$ | async">
+<ng-container [ngSwitch]="(featureVersion$ | async)">
   <ng-container *ngSwitchCase="'WorkAllocationRelease2'">
     <exui-task-list-v2
     [taskServiceConfig]="taskServiceConfig" [tasks]="tasks" [fields]="fields"
@@ -6,16 +6,11 @@
     (sortEvent)="onSortHandler($event)" (actionEvent)="onActionHandler($event)">
   </exui-task-list-v2>
   </ng-container>
-  <ng-container *ngSwitchCase="'WorkAllocationRelease1'" >
+  <ng-container *ngSwitchDefault>
     <exui-task-list
       [taskServiceConfig]="taskServiceConfig" [tasks]="tasks" [fields]="fields"
       [sortedBy]="sortedBy" [emptyMessage]="emptyMessage"
       (sortEvent)="onSortHandler($event)" (actionEvent)="onActionHandler($event)">
     </exui-task-list>
-  </ng-container>
-  <ng-container *ngSwitchDefault cdkColumnDef="footer">
-    <td cdk-footer-cell class="cell-footer">
-      You are not authorised to view your list of tasks. Please refresh your page if you think this statement is incorrect.
-    </td>
   </ng-container>
 </ng-container>

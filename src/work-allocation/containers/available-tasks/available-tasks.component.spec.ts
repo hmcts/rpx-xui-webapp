@@ -8,11 +8,12 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
 
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
+import { WorkAllocationRelease2ComponentsModule } from '../../../work-allocation/release2/components/work-allocation.components.module';
 import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
 import { InformationMessage } from '../../models/comms';
 import * as dtos from '../../models/dtos';
 import { InvokedTaskAction, Task } from '../../models/tasks';
-import { InfoMessageCommService, LocationDataService, WorkAllocationTaskService } from '../../services';
+import { InfoMessageCommService, LocationDataService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
 import { getMockLocations, getMockTasks } from '../../tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { AvailableTasksComponent } from './available-tasks.component';
@@ -24,7 +25,7 @@ class WrapperComponent {
   @ViewChild(AvailableTasksComponent) public appComponentRef: AvailableTasksComponent;
 }
 
-describe('AvailableTasksComponent', () => {
+fdescribe('AvailableTasksComponent', () => {
   let component: AvailableTasksComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -36,6 +37,7 @@ describe('AvailableTasksComponent', () => {
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
+  const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -43,7 +45,8 @@ describe('AvailableTasksComponent', () => {
         CdkTableModule,
         ExuiCommonLibModule,
         RouterTestingModule,
-        WorkAllocationComponentsModule
+        WorkAllocationComponentsModule,
+        WorkAllocationRelease2ComponentsModule
       ],
       declarations: [ AvailableTasksComponent, WrapperComponent, TaskListComponent ],
       providers: [
@@ -51,7 +54,8 @@ describe('AvailableTasksComponent', () => {
         { provide: LocationDataService, useValue: mockLocationService },
         { provide: Router, useValue: mockRouter },
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
-        { provide: AlertService, useValue: mockAlertService }
+        { provide: AlertService, useValue: mockAlertService },
+        { provide: WorkAllocationFeatureService, useValue: mockFeatureService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
@@ -60,6 +64,7 @@ describe('AvailableTasksComponent', () => {
     mockLocationService.getLocations.and.returnValue(of(mockLocations));
     const tasks: Task[] = getMockTasks();
     mockTaskService.searchTask.and.returnValue(of({ tasks }));
+    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease1'));
     fixture.detectChanges();
   });
 

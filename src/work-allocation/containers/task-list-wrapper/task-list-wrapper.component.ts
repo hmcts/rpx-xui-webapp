@@ -130,7 +130,7 @@ export class TaskListWrapperComponent implements OnInit {
   public loadTasks(): void {
     this.featureVersion$.subscribe(feature => {
       this.currentFeature = feature;
-      if (feature === 'WorkAllocationRelease2'){
+      if (feature === 'WorkAllocationRelease2') {
         this.loadTasksVersion2();
       } else {
         this.loadTasksVersion1();

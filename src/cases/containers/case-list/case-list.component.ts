@@ -18,13 +18,12 @@ import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import * as fromRoot from '../../../app/store';
+import { OrganisationDetails } from '../../../organisation/models';
+import * as fromStore from '../../../organisation/store';
 import * as converters from '../../converters/case-converter';
 import { ActionBindingModel } from '../../models/create-case-actions.model';
 import * as fromCasesFeature from '../../store';
 import * as fromCaseList from '../../store/reducers';
-import * as fromStore from 'src/organisation/store';
-import { OrganisationDetails } from 'src/organisation/models/organisation.interface';
-import session = require('express-session');
 
 /**
  * Entry component wrapper for Case List

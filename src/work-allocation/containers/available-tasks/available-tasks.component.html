@@ -1,18 +1,18 @@
-<div [ngSwitch]="(featureVersion$ | async)">
-  <div *ngSwitchCase="'WorkAllocationRelease2'">
+<ng-container [ngSwitch]="(featureVersion$ | async)">
+  <ng-container *ngSwitchCase="'WorkAllocationRelease2'">
     <exui-available-tasks-filter-v2 (selectionChanged)="onLocationsChanged($event)"></exui-available-tasks-filter-v2>
     <exui-task-list-v2
       [taskServiceConfig]="taskServiceConfig" [tasks]="tasks" [fields]="fields"
       [sortedBy]="sortedBy" [emptyMessage]="emptyMessage"
       (sortEvent)="onSortHandler($event)" (actionEvent)="onActionHandler($event)">
     </exui-task-list-v2>
-  </div>
-  <div *ngSwitchDefault>
+  </ng-container>
+  <ng-container *ngSwitchDefault>
     <exui-available-tasks-filter (selectionChanged)="onLocationsChanged($event)"></exui-available-tasks-filter>
     <exui-task-list
       [taskServiceConfig]="taskServiceConfig" [tasks]="tasks" [fields]="fields"
       [sortedBy]="sortedBy" [emptyMessage]="emptyMessage"
       (sortEvent)="onSortHandler($event)" (actionEvent)="onActionHandler($event)">
     </exui-task-list>
-  </div>
-</div>
+  </ng-container>
+</ng-container>

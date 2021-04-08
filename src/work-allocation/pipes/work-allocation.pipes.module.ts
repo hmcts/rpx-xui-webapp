@@ -4,11 +4,10 @@ import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { CaseworkerDisplayName, DaysFromTodayPipe, YesNoPipe } from '.';
+import { IntegerPipe } from './integer.pipe';
+import { TwoDPPipe } from './two-dp.pipe';
 
-import * as fromComponents from '.';
-import * as fromPipes from '../pipes';
-import { CaseworkerDataService, InfoMessageCommService, LocationDataService } from '../services';
-import { WorkAllocationPipesModule } from '../pipes/work-allocation.pipes.module';
 
 // from containers
 @NgModule({
@@ -17,18 +16,24 @@ import { WorkAllocationPipesModule } from '../pipes/work-allocation.pipes.module
     HttpClientModule,
     ExuiCommonLibModule,
     FormsModule, // TODO: Remove this as it's only needed for testing.
-    PipesModule,
-    WorkAllocationPipesModule
+    PipesModule
   ],
   declarations: [
-    ...fromComponents.components,
+    CaseworkerDisplayName,
+    DaysFromTodayPipe,
+    IntegerPipe,
+    TwoDPPipe,
+    YesNoPipe
   ],
-  providers: [CaseworkerDataService, LocationDataService, InfoMessageCommService],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   exports: [
-    ...fromComponents.components,
+    CaseworkerDisplayName,
+    DaysFromTodayPipe,
+    IntegerPipe,
+    TwoDPPipe,
+    YesNoPipe
   ]
 })
-export class WorkAllocationComponentsModule {
+export class WorkAllocationPipesModule {
 
 }

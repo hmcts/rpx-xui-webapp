@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { MatDialogModule } from '@angular/material';
-import { AlertService, CaseUIToolkitModule } from '@hmcts/ccd-case-ui-toolkit';
+import { AlertService, CaseUIToolkitModule, PipesModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 
 import { SharedModule } from '../app/shared/shared.module';
@@ -26,6 +26,7 @@ import { workAllocationRouting } from './work-allocation-feature.routes';
     MatDialogModule,
     WorkAllocationComponentsModule,
     WorkAllocationRelease2ComponentsModule,
+    PipesModule,
     workAllocationRouting,
     CdkTableModule,
     ExuiCommonLibModule,
@@ -38,6 +39,6 @@ import { workAllocationRouting } from './work-allocation-feature.routes';
     CaseworkerDataService,
     WorkAllocationFeatureService,
   ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class WorkAllocationModule {}

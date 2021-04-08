@@ -14,7 +14,7 @@ import { TaskListRelease2Component } from './task-list.component';
 
 @Component({
   template: `
-    <exui-task-list [fields]='fields' [tasks]='tasks' [taskServiceConfig]="taskServiceConfig" [sortedBy]="TaskSortField" ></exui-task-list>`
+    <exui-task-list-v2 [fields]='fields' [tasks]='tasks' [taskServiceConfig]="taskServiceConfig" [sortedBy]="TaskSortField" ></exui-task-list-v2>`
 })
 class WrapperComponent {
   @ViewChild(TaskListRelease2Component) public appComponentRef: TaskListRelease2Component;

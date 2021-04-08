@@ -1,8 +1,9 @@
 import { Component, OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRouteSnapshot, NavigationEnd, Router, RoutesRecognized } from '@angular/router';
 import { SubNavigation } from '@hmcts/rpx-xui-common-lib';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { WorkAllocationFeatureService } from 'src/work-allocation/services/work-allocation-feature.service';
+import { share } from 'rxjs/operators';
 
 import { AppUtils } from '../../../app/app-utils';
 import { TaskSortField } from '../../models/tasks';
@@ -29,11 +30,12 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
   public sortedBy: TaskSortField;
   public pageTitle: string;
   private routeSubscription: Subscription;
-  public currentFeature: string;
+  public featureVersion$: Observable<string>;
 
-  constructor(private readonly router: Router, private workAllocationFeatureService: WorkAllocationFeatureService) {}
+  constructor(private readonly router: Router, private featureService: WorkAllocationFeatureService) {}
 
   public ngOnInit(): void {
+    this.featureVersion$ = this.featureService.getActiveWAFeature().pipe(share());
     this.routeSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         // Set up the active navigation item.

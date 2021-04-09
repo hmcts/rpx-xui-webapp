@@ -16,6 +16,7 @@ import {getMockTasks} from '../../tests/utils.spec';
 import {TaskListComponent} from '../task-list/task-list.component';
 import {MyTasksComponent} from './my-tasks.component';
 import {TaskListRelease2Component} from '../../../work-allocation/release2/containers';
+import { TaskFieldType } from 'src/work-allocation/enums';
 
 @Component({
   template: `
@@ -178,5 +179,16 @@ describe('MyTasksComponent', () => {
     fixture.detectChanges();
     // Ensure the correct attempt has been made to navigate.
     expect(navigateSpy).toHaveBeenCalledWith([`/tasks/${task.id}/${actionId}/`], jasmine.any(Object));
+  });
+
+  fit('should allow setting the release 2 details', () => {
+    // verifying fields best way to check as the elements (apart from column names) on page will not change
+    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
+    component.ngOnInit();
+    fixture.detectChanges();
+    expect(component.fields[0].name).toBe('case_name');
+    expect(component.fields[0].type).toBe(TaskFieldType.CASE_NAME);
+    expect(component.fields[4].name).toBe('task_title');
+    expect(component.fields[4].type).toBe(TaskFieldType.TASK_NAME);
   });
 });

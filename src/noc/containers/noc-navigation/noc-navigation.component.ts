@@ -1,8 +1,8 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { backButtonVisibilityStates, checkAnswersButtonVisibilityStates, continueButtonVisibilityStates, setAnswersButtonVisibilityStates, submitButtonVisibilityStates } from '../../constants';
 import { NocNavigationEvent, NocState } from '../../models';
-import { backButtonVisibilityStates, continueButtonVisibilityStates, submitButtonVisibilityStates, setAnswersButtonVisibilityStates, checkAnswersButtonVisibilityStates } from '../../constants';
 import * as fromFeature from '../../store';
 
 @Component({
@@ -12,7 +12,7 @@ import * as fromFeature from '../../store';
 })
 export class NocNavigationComponent implements OnInit {
 
-  @Output() eventTrigger = new EventEmitter();
+  @Output() public eventTrigger = new EventEmitter();
 
   public nocNavigationCurrentState$: Observable<fromFeature.State>;
 
@@ -28,7 +28,7 @@ export class NocNavigationComponent implements OnInit {
     private store: Store<fromFeature.State>,
   ) { }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.nocNavigationCurrentState$ = this.store.pipe(select(fromFeature.currentNavigation));
   }
 

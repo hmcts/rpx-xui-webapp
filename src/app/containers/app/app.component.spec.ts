@@ -16,7 +16,7 @@ describe('AppComponent', () => {
         store = jasmine.createSpyObj('store', ['pipe', 'dispatch']);
         googleTagManagerService = jasmine.createSpyObj('GoogleTagManagerService', ['init']);
         timeoutNotificationService = jasmine.createSpyObj('TimeoutNotificationsService', ['notificationOnChange', 'initialise']);
-        featureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
+        featureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue', 'initialize']);
         testRoute = new RoutesRecognized(1, 'test', 'test', {
             url: 'test',
             root: {
@@ -123,5 +123,26 @@ describe('AppComponent', () => {
         appComponent.addTimeoutNotificationServiceListener();
         expect(timeoutNotificationService.notificationOnChange).toHaveBeenCalled();
         expect(spy).toHaveBeenCalledWith({});
+    });
+
+    it('userDetailsHandler', () => {
+        const userInfo = {
+                id: '1234',
+                forename: 'foreName',
+                surname: 'surName',
+                email: 'test@email.com',
+                active: true,
+                roles: ['role1', 'role2'],
+                uid: '1234'
+            };
+        appComponent.initializeFeature(userInfo);
+        const featureUser =  {
+            key: '1234',
+            custom: {
+            roles: ['role1', 'role2'],
+            orgId: '-1'
+            }
+        };
+        expect(featureToggleService.initialize).toHaveBeenCalledWith(featureUser);
     });
 });

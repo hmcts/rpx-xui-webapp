@@ -10,7 +10,7 @@ import { UserNavModel } from '../../models/user-nav.model';
     selector: 'exui-hmcts-global-header',
     templateUrl: './hmcts-global-header.component.html'
 })
-export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
+export class HmctsGlobalHeaderComponent implements OnChanges {
 
   @Input() public set showNavItems(value: boolean) {
     this.showItems = value;
@@ -33,11 +33,12 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   constructor(
     public nocStore: Store<fromNocStore.State>) { }
   ngOnChanges(changes: SimpleChanges): void {
+    this.splitNavItems();
+  }
+
+  public splitNavItems() {
     this.rightItems = this.items.filter(item => item.align && item.align === 'right');
     this.leftItems = this.items.filter(item => !item.align || item.align !== 'right');
-  }
-  ngOnInit(): void {
-
   }
 
   public onEmitEvent(index: number): void {

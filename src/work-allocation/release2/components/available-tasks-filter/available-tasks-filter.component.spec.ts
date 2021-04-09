@@ -5,10 +5,10 @@ import { Router } from '@angular/router';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 
-import * as dtos from 'src/work-allocation/models/dtos';
-import { LocationDataService } from 'src/work-allocation/services';
-import { getMockLocations } from 'src/work-allocation/tests/utils.spec';
-import { FilterConstants } from 'src/work-allocation/components/constants';
+import * as dtos from './../../work-allocation/models/dtos';
+import { LocationDataService } from './../../work-allocation/services';
+import { getMockLocations } from './../../work-allocation/tests/utils.spec';
+import { FilterConstants } from './../../work-allocation/components/constants';
 import { AvailableTasksFilterRelease2Component } from './available-tasks-filter.component';
 
 @Component({

@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
-import { Observable } from 'rxjs';
 
 import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
-import { ConfigConstants as ConfigConstantsRelease2 } from 'src/work-allocation/release2/components/constants';
+import { ConfigConstants as ConfigConstantsRelease2 } from '../../release2/components/constants';
 import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
 import { Location, SearchTaskRequest } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskFieldConfig } from '../../models/tasks';

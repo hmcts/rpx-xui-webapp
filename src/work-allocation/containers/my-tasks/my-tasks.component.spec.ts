@@ -9,11 +9,13 @@ import {of} from 'rxjs';
 import {SessionStorageService} from 'src/app/services';
 
 import {WorkAllocationComponentsModule} from '../../components/work-allocation.components.module';
+import {WorkAllocationRelease2ComponentsModule} from '../../../work-allocation/release2/components/work-allocation.components.module';
 import {Task} from '../../models/tasks';
-import {CaseworkerDataService, WorkAllocationTaskService} from '../../services';
+import {CaseworkerDataService, WorkAllocationFeatureService, WorkAllocationTaskService} from '../../services';
 import {getMockTasks} from '../../tests/utils.spec';
 import {TaskListComponent} from '../task-list/task-list.component';
 import {MyTasksComponent} from './my-tasks.component';
+import {TaskListRelease2Component} from '../../../work-allocation/release2/containers';
 
 @Component({
   template: `
@@ -33,6 +35,7 @@ describe('MyTasksComponent', () => {
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
+  const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -40,14 +43,16 @@ describe('MyTasksComponent', () => {
         CdkTableModule,
         ExuiCommonLibModule,
         RouterTestingModule,
-        WorkAllocationComponentsModule
+        WorkAllocationComponentsModule,
+        WorkAllocationRelease2ComponentsModule
       ],
-      declarations: [MyTasksComponent, WrapperComponent, TaskListComponent],
+      declarations: [MyTasksComponent, WrapperComponent, TaskListComponent, TaskListRelease2Component],
       providers: [
         {provide: WorkAllocationTaskService, useValue: mockTaskService},
         {provide: AlertService, useValue: mockAlertService},
         {provide: SessionStorageService, useValue: mockSessionStorageService},
-        {provide: CaseworkerDataService, useValue: mockCaseworkerService}
+        {provide: CaseworkerDataService, useValue: mockCaseworkerService},
+        {provide: WorkAllocationFeatureService, useValue: mockFeatureService}
       ]
     }).compileComponents();
   }));
@@ -60,6 +65,7 @@ describe('MyTasksComponent', () => {
     const tasks: Task[] = getMockTasks();
     mockTaskService.searchTask.and.returnValue(of({tasks}));
     mockCaseworkerService.getAll.and.returnValue(of([]));
+    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease1'));
     fixture.detectChanges();
   });
 

@@ -9,7 +9,7 @@ import { of } from 'rxjs';
 import { SessionStorageService } from 'src/app/services';
 import { WorkAllocationComponentsModule } from 'src/work-allocation/components/work-allocation.components.module';
 import { Task } from 'src/work-allocation/models/tasks';
-import { InfoMessageCommService, WorkAllocationTaskService } from 'src/work-allocation/services';
+import { InfoMessageCommService, WorkAllocationFeatureService, WorkAllocationTaskService } from 'src/work-allocation/services';
 import { getMockTasks, MockRouter } from 'src/work-allocation/tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { TaskListWrapperComponent } from './task-list-wrapper.component';
@@ -23,6 +23,7 @@ describe('TaskListWrapperComponent', () => {
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['']);
+  const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
   beforeEach((() => {
     TestBed.configureTestingModule({
       imports: [
@@ -38,13 +39,15 @@ describe('TaskListWrapperComponent', () => {
         { provide: Router, useValue: mockRouter },
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
-        { provide: AlertService, useValue: mockAlertService }
+        { provide: AlertService, useValue: mockAlertService },
+        { provide: WorkAllocationFeatureService, useValue: mockFeatureService}
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(TaskListWrapperComponent);
     component = fixture.componentInstance;
     const tasks: Task[] = getMockTasks();
     mockWorkAllocationService.searchTask.and.returnValue(of({ tasks }));
+    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease1'));
     fixture.detectChanges();
   }));
 

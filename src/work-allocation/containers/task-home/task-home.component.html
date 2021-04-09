@@ -13,7 +13,7 @@
         </div>
       </div>
     </ng-container>
-    <ng-container *ngSwitchCase="'WorkAllocationRelease1'" >
+    <ng-container *ngSwitchDefault cdkColumnDef="footer">
       <h3 class="govuk-heading-xl">{{pageTitle}}</h3>
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
@@ -21,11 +21,6 @@
           <xuilib-hmcts-sub-navigation [items]="subNavigationItems" label="Sub navigation"></xuilib-hmcts-sub-navigation>
         </div>
       </div>
-    </ng-container>
-    <ng-container *ngSwitchDefault cdkColumnDef="footer">
-      <td cdk-footer-cell class="cell-footer">
-        You are not authorised to view task lists. Please refresh your page if you think this statement is incorrect.
-      </td>
     </ng-container>
   </ng-container>
   <router-outlet></router-outlet>

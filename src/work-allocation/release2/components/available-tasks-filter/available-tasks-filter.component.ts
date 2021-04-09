@@ -2,11 +2,11 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild }
 import { Router } from '@angular/router';
 import { CheckboxListComponent } from '@hmcts/rpx-xui-common-lib';
 
-import { SessionStorageService } from 'src/app/services';
-import { Location } from 'src/work-allocation/models/dtos';
-import { LocationDataService } from 'src/work-allocation/services';
-import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from 'src/work-allocation/utils';
-import { FilterConstants } from 'src/work-allocation/components/constants';
+import { SessionStorageService } from './../../app/services';
+import { Location } from './../../work-allocation/models/dtos';
+import { LocationDataService } from './../../work-allocation/services';
+import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from './../../work-allocation/utils';
+import { FilterConstants } from './../../work-allocation/components/constants';
 
 @Component({
   selector: 'exui-available-tasks-filter-v2',

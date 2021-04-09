@@ -8,12 +8,12 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
 
 import { WorkAllocationRelease2ComponentsModule } from '../../components/work-allocation.components.module';
-import { InfoMessage, InfoMessageType, TaskActionIds } from 'src/work-allocation/enums';
-import { InformationMessage } from 'src/work-allocation/models/comms';
-import * as dtos from 'src/work-allocation/models/dtos';
-import { InvokedTaskAction, Task } from 'src/work-allocation/models/tasks';
-import { InfoMessageCommService, LocationDataService, WorkAllocationFeatureService, WorkAllocationTaskService } from 'src/work-allocation/services';
-import { getMockLocations, getMockTasks } from 'src/work-allocation/tests/utils.spec';
+import { InfoMessage, InfoMessageType, TaskActionIds } from './../../work-allocation/enums';
+import { InformationMessage } from './../../work-allocation/models/comms';
+import * as dtos from './../../work-allocation/models/dtos';
+import { InvokedTaskAction, Task } from './../../work-allocation/models/tasks';
+import { InfoMessageCommService, LocationDataService, WorkAllocationFeatureService, WorkAllocationTaskService } from './../../work-allocation/services';
+import { getMockLocations, getMockTasks } from './../../work-allocation/tests/utils.spec';
 import { TaskListRelease2Component } from '../task-list/task-list.component';
 import { AvailableTasksRelease2Component } from './available-tasks.component';
 

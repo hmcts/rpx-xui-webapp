@@ -7,6 +7,7 @@ import { select, Store } from '@ngrx/store';
 import { propsExist } from '../../../../api/lib/objectUtilities';
 import { environment as config } from '../../../environments/environment';
 import * as fromRoot from '../../store';
+import { UserDetails, UserInfo } from '../../models/user-details.model';
 
 @Component({
   selector: 'exui-root',
@@ -85,7 +86,7 @@ export class AppComponent implements OnInit {
    *  }
    * }
    */
-  public userDetailsHandler(userDetails) {
+  public userDetailsHandler(userDetails: UserDetails) {
 
     if (propsExist(userDetails, ['sessionTimeout'] ) && userDetails.sessionTimeout.totalIdleTime > 0) {
       const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
@@ -93,12 +94,16 @@ export class AppComponent implements OnInit {
       this.addTimeoutNotificationServiceListener();
       this.initTimeoutNotificationService(idleModalDisplayTime, totalIdleTime);
     }
-    if (userDetails.userInfo) {
+    this.initializeFeature(userDetails.userInfo);
+  }
+
+  public initializeFeature(userInfo: UserInfo) {
+    if (userInfo) {
       const featureUser: FeatureUser = {
-        key: userDetails.userInfo.id,
+        key: userInfo.id,
         custom: {
-          roles: userDetails.userInfo.roles,
-          orgId: '-9999'
+          roles: userInfo.roles,
+          orgId: '-1'
         }
       };
       this.featureService.initialize(featureUser);

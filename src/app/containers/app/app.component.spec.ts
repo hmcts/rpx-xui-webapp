@@ -10,11 +10,13 @@ describe('AppComponent', () => {
     let router: any;
     let title: any;
     let testRoute: RoutesRecognized;
+    let featureToggleService;
 
     beforeEach(() => {
         store = jasmine.createSpyObj('store', ['pipe', 'dispatch']);
         googleTagManagerService = jasmine.createSpyObj('GoogleTagManagerService', ['init']);
         timeoutNotificationService = jasmine.createSpyObj('TimeoutNotificationsService', ['notificationOnChange', 'initialise']);
+        featureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
         testRoute = new RoutesRecognized(1, 'test', 'test', {
             url: 'test',
             root: {
@@ -53,7 +55,7 @@ describe('AppComponent', () => {
         });
         router = { events: of(testRoute) };
         title = jasmine.createSpyObj('Title', ['setTitle']);
-        appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService, router, title);
+        appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService, router, title, featureToggleService);
     });
 
     it('Truthy', () => {

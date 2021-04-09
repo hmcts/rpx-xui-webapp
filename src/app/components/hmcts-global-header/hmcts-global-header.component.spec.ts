@@ -49,14 +49,14 @@ describe('HmctsGlobalHeaderComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should show the Case search button as inactive when the currentUrl does not match', () => {
+  xit('should show the Case search button as inactive when the currentUrl does not match', () => {
     const searchButton = fixture.debugElement.nativeElement.querySelector('.hmcts-search-toggle__button');
     expect(searchButton).toBeDefined();
     expect(searchButton.textContent).toBe('Find case');
     expect(searchButton.getAttribute('aria-current')).not.toEqual('true');
   });
 
-  it('should show the Case search button as active when the currentUrl matches', () => {
+  xit('should show the Case search button as active when the currentUrl matches', () => {
     // Get hold of the search button.
     const searchButton = fixture.debugElement.nativeElement.querySelector('.hmcts-search-toggle__button');
     expect(searchButton.getAttribute('aria-current')).not.toEqual('true');

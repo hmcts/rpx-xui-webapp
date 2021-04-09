@@ -9,6 +9,7 @@ import {
   ServiceDownComponent,
   SignedOutComponent,
 } from './components';
+import { ApplicationRoutingComponent } from './components/routing/application-routing.component';
 import { AcceptTcWrapperComponent, LegacyTermsAndConditionsComponent, TermsAndConditionsComponent } from './containers';
 import { AcceptTermsGuard } from './guards/acceptTerms.guard';
 import { AuthGuard } from './services/auth/auth.guard';
@@ -20,7 +21,7 @@ export const routingConfiguration: ExtraOptions = {
 export const ROUTES: Routes = [
   {
     path: '',
-    redirectTo: 'cases',
+    component: ApplicationRoutingComponent,
     pathMatch: 'full'
   },
   {

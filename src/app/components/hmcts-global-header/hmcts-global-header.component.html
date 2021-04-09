@@ -66,8 +66,8 @@
       <!-- TODO: Should turn on and off -->
       <div class="hmcts-primary-navigation__item">
         <ul class="hmcts-primary-navigation__list">
-          <li class="hmcts-primary-navigation__item" *ngFor="let item of rightItems" >
-            <a class="hmcts-primary-navigation__link" (click)="onEmitSubMenu(item)" [attr.aria-current]="item.active ? true: null" [routerLink]="item.href">{{item.text}}</a>
+          <li class="hmcts-primary-navigation__item" *ngFor="let item of rightItems">
+            <a class="hmcts-primary-navigation__link" [ngClass]="{'hmcts-search-toggle__button transparent-background': item.search}" (click)="onEmitSubMenu(item)" [attr.aria-current]="item.active ? true: null" [routerLink]="item.href">{{item.text}}</a>
           </li>
         </ul>
         <!-- <a class="hmcts-search-toggle__button hmcts-primary-navigation__link transparent-background"

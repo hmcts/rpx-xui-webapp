@@ -77,4 +77,45 @@ describe('HmctsGlobalHeaderComponent', () => {
     component.onEmitSubMenu(menuItem);
     expect(nocStoreSpy).toHaveBeenCalled();
   });
+
+  it('splitNavItems', () => {
+    component.items = [{
+      align: 'right',
+      text: '1',
+      href: '',
+      active: false
+    },
+    {
+      align: null,
+      text: '2',
+      href: '',
+      active: false
+    },
+    {
+      align: 'right',
+      text: '3',
+      href: '',
+      active: false
+    }];
+    component.splitNavItems();
+    expect(component.leftItems).toEqual([{
+      align: null,
+      text: '2',
+      href: '',
+      active: false
+    }]);
+
+    expect(component.rightItems).toEqual([{
+      align: 'right',
+      text: '1',
+      href: '',
+      active: false
+    },
+    {
+      align: 'right',
+      text: '3',
+      href: '',
+      active: false
+    }]);
+  });
 });

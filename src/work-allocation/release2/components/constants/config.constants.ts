@@ -1,0 +1,62 @@
+import { TaskFieldType, TaskView } from 'src/work-allocation/enums';
+import { TaskFieldConfig } from 'src/work-allocation/models/tasks';
+import { DERIVED_ICON_CONSTANTS} from 'src/work-allocation/components/constants/derived-icon.constants';
+
+/**
+ * The individual fields.
+ */
+const CASE_NAME_AS_TEXT: TaskFieldConfig = {
+  name: 'case_name',
+  type: TaskFieldType.STRING,
+  columnLabel: 'Case name',
+  sortName: 'caseName',
+  views: TaskView.ALL_VIEWS
+};
+const CASE_CATEGORY: TaskFieldConfig = {
+  name: 'case_category',
+  type: TaskFieldType.STRING,
+  columnLabel: 'Case category',
+  sortName: 'caseCategory',
+  views: TaskView.ALL_VIEWS
+};
+const LOCATION: TaskFieldConfig = {
+  name: 'location_name',
+  type: TaskFieldType.STRING,
+  columnLabel: 'Location',
+  sortName: 'locationName',
+  views: TaskView.ALL_VIEWS
+};
+const DERIVED_ICON: TaskFieldConfig = {
+  name: 'derivedIcon',
+  type: TaskFieldType.DERIVED_ICON,
+  columnLabel: null,
+  views: TaskView.ALL_VIEWS,
+  // sourcColumn and matchValue values currently defined in DI constants file
+  sourceColumn: DERIVED_ICON_CONSTANTS.SOURCE_COLUMN,
+  matchValue: DERIVED_ICON_CONSTANTS.MATCH_VALUE
+};
+const TASK_NAME_AS_TEXT: TaskFieldConfig = {
+  name: 'task_title',
+  type: TaskFieldType.STRING,
+  columnLabel: 'Task',
+  sortName: 'taskTitle',
+  views: TaskView.ALL_VIEWS
+};
+const AGE_OF_TASK: TaskFieldConfig = {
+  name: 'dueDate',
+  type: TaskFieldType.DATE_DUE,
+  columnLabel: 'Age of task',
+  sortName: 'dueDate',
+  views: TaskView.ALL_VIEWS
+};
+
+/**
+ * The views.
+ */
+const AVAILABLE_TASKS: TaskFieldConfig[] = [
+  CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_TEXT, AGE_OF_TASK
+];
+
+export const CONFIG_CONSTANTS = {
+  AvailableTasks: AVAILABLE_TASKS,
+};

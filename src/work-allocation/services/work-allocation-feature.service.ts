@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { AppConstants } from 'src/app/app.constants';
 
 @Injectable({ providedIn: 'root' })

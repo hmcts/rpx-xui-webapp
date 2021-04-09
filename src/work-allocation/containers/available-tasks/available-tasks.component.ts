@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
+import { ConfigConstants as ConfigConstantsRelease2 } from 'src/work-allocation/release2/components/constants';
 import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
 import { Location, SearchTaskRequest } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskFieldConfig } from '../../models/tasks';
@@ -16,6 +17,9 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
   private selectedLocations: Location[];
 
   public get fields(): TaskFieldConfig[] {
+    if (this.currentFeature === 'WorkAllocationRelease2') {
+      return ConfigConstantsRelease2.AvailableTasks;
+    }
     return ConfigConstants.AvailableTasks;
   }
 

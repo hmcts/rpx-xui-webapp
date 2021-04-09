@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 
-import { ConfigConstants, ListConstants, SortConstants } from 'src/work-allocation/components/constants';
+import { ListConstants, SortConstants } from 'src/work-allocation/components/constants';
+import { ConfigConstants } from 'src/work-allocation/release2/components/constants';
 import { InfoMessage, InfoMessageType, TaskActionIds } from 'src/work-allocation/enums';
 import { Location, SearchTaskRequest } from 'src/work-allocation/models/dtos';
 import { InvokedTaskAction, Task, TaskFieldConfig } from 'src/work-allocation/models/tasks';

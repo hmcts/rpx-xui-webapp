@@ -24,7 +24,7 @@ describe('TaskHomeComponent', () => {
   let fixture: ComponentFixture<WrapperComponent>;
   let router: Router;
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
-  let mockFeatureService = jasmine.createSpyObj('mockTaskService', ['getActiveWAFeature']);
+  const mockFeatureService = jasmine.createSpyObj('mockTaskService', ['getActiveWAFeature']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({

@@ -162,7 +162,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
       const applicationTheme: Theme = this.getApplicationThemeForUser(applicationThemes, userDetails.userInfo.roles);
       this.hideNavigationListener(this.store);
       this.setAppHeaderProperties(applicationTheme);
-      if(applicationTheme.navigationItems.some(x => x.active)) {
+      if (applicationTheme.navigationItems.some(x => x.active)) {
         const currentNav = applicationTheme.navigationItems.find(x => x.active);
         // this.router.navigate([currentNav.href]);
       }

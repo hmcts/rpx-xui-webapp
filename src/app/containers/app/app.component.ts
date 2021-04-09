@@ -93,7 +93,7 @@ export class AppComponent implements OnInit {
       this.addTimeoutNotificationServiceListener();
       this.initTimeoutNotificationService(idleModalDisplayTime, totalIdleTime);
     }
-    if(userDetails.userInfo) {
+    if (userDetails.userInfo) {
       const featureUser: FeatureUser = {
         key: userDetails.userInfo.id,
         custom: {

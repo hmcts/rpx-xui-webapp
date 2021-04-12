@@ -166,7 +166,6 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
         const currentNav = applicationTheme.navigationItems.find(x => x.active);
         // this.router.navigate([currentNav.href]);
       }
-      console.log(applicationThemes);
     }
   }
 

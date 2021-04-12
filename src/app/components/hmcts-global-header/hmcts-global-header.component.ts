@@ -30,10 +30,12 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
   public leftItems: NavItemsModel[];
   public rightItems: NavItemsModel[];
 
-  constructor(
-    public nocStore: Store<fromNocStore.State>) { }
+  constructor(public nocStore: Store<fromNocStore.State>) { }
+
   ngOnChanges(changes: SimpleChanges): void {
-    this.splitNavItems();
+    if (changes.items.currentValue !== changes.items.previousValue) {
+      this.splitNavItems();
+    }
   }
 
   public splitNavItems() {

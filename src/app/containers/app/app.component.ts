@@ -1,8 +1,9 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router, RoutesRecognized } from '@angular/router';
-import { GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
+import { GoogleTagManagerService, RoleService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
+import { UserDetails } from 'src/app/models/user-details.model';
 
 import { propsExist } from '../../../../api/lib/objectUtilities';
 import { environment as config } from '../../../environments/environment';
@@ -27,7 +28,8 @@ export class AppComponent implements OnInit {
     private readonly googleTagManagerService: GoogleTagManagerService,
     private readonly timeoutNotificationsService: TimeoutNotificationsService,
     private readonly router: Router,
-    private readonly titleService: Title
+    private readonly titleService: Title,
+    private readonly roleService: RoleService
   ) {
 
     this.googleTagManagerService.init(config.googleTagManagerKey);
@@ -64,7 +66,7 @@ export class AppComponent implements OnInit {
    * Load and Listen for User Details
    */
   public loadAndListenForUserDetails() {
-
+  
     this.store.pipe(select(fromRoot.getUserDetails)).subscribe(userDetails => this.userDetailsHandler(userDetails));
 
     this.store.dispatch(new fromRoot.LoadUserDetails());
@@ -84,8 +86,8 @@ export class AppComponent implements OnInit {
    *  }
    * }
    */
-  public userDetailsHandler(userDetails) {
-
+  public userDetailsHandler(userDetails: UserDetails) {
+    this.roleService.roles = userDetails.userInfo.roles;
     if (propsExist(userDetails, ['sessionTimeout'] ) && userDetails.sessionTimeout.totalIdleTime > 0) {
       const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
 

@@ -1,5 +1,6 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { RoleGuard } from '@hmcts/rpx-xui-common-lib';
 
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
 import { TaskActionConstants } from './components/constants';
@@ -50,9 +51,10 @@ export const ROUTES: Routes = [
       {
         path: 'task-manager',
         component: TaskManagerComponent,
-        canActivate: [ HealthCheckGuard, WorkAllocationFeatureToggleGuard ],
+        canActivate: [ HealthCheckGuard, WorkAllocationFeatureToggleGuard, RoleGuard ],
         data: {
-          title: 'HMCTS Manage cases | Task manager'
+          title: 'HMCTS Manage cases | Task manager',
+          needsRole: []
         },
         children: [
           {

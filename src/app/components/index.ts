@@ -10,6 +10,7 @@ import { MediaViewerWrapperComponent } from './media-viewer-wrapper/media-viewer
 import { NotAuthorisedComponent } from './not-authorised/not-authorised.component';
 import { PhaseBannerComponent } from './phase-banner/phase-banner.component';
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
+import { ApplicationRoutingComponent } from './routing/application-routing.component';
 import { ServiceDownComponent } from './service-down/service-down.component';
 import { SignedOutComponent } from './signed-out/signed-out.component';
 
@@ -27,7 +28,8 @@ export const components: any[] = [
   ErrorMessageComponent,
   MediaViewerWrapperComponent,
   GetHelpComponent,
-  SignedOutComponent
+  SignedOutComponent,
+  ApplicationRoutingComponent
 ];
 
 export * from './hmcts-global-footer/hmcts-global-footer.component';
@@ -44,3 +46,4 @@ export * from './media-viewer-wrapper/media-viewer-wrapper.component';
 export * from './get-help/get-help.component';
 export * from './signed-out/signed-out.component';
 export * from './not-authorised/not-authorised.component';
+export * from './routing/application-routing.component';

@@ -117,7 +117,7 @@ if (args.standalone){
 
 function setUpcaseConfig() {
     const { getTestJurisdiction }  = require('../ngIntegration/mockData/ccdCaseMock');
-    mockInstance.onGet('/data/internal/case-types/:jurisdiction/event-triggers/:caseType', (req, res) => {
+    mockInstance.onGet('/data/internal/cases/:caseid/event-triggers/:eventId', (req, res) => {
         const caseEventConfig = getTestJurisdiction();
 
         let multiSelectListField = caseEventConfig.getCaseFieldConfig("MultiSelectListField");
@@ -134,9 +134,41 @@ function setUpcaseConfig() {
         // const page2 = caseEventConfig.getWizardPageConfig("testPage2");
         // page2.show_condition = "TextField0=\"SHOW\"";
 
-        res.send(caseEventConfig.getCase());
+        res.send(labelstestConfig().getCase());
     });
 
+}
+
+function labelstestConfig(){
+
+    const labelsEventConfig = new CCDCaseConfig("testCaseType", "Test jurisdiction", "test description");
+    labelsEventConfig.addWizardPage("testPage1", "Applicant details")
+    labelsEventConfig.addCaseField({ id:"applicantName", type:"Text", label:"Applicant name"})
+    labelsEventConfig.addWizardPage("testPage2", "More details of applicant ")
+    labelsEventConfig.addCaseField({ id: "printApplicantName", type: "Label", label: "Below are more details for  ->${applicantName}<-" })
+    labelsEventConfig.addCaseField({ id: "familyDetails", type: "Complex", label: "provide more details for applicant: ->${applicantName}<-",
+        complex_fields:[
+            { id: "applicantFamilyDetailsMsgid", type: "Label", label:"Provide ->${applicantName}<- family history"},
+             { id: "familyHistoryText", type: "Text", Label: "History ref" },
+            { id: "historyRefPrint", type: "Label", label: "Provided ->${familyHistoryText}<- is here" }
+        ],
+        value: { familyHistoryText : "Pre set value"}
+    })
+    labelsEventConfig.addWizardPage("testPage3", "Applicant addressess ")
+    labelsEventConfig.addCaseField({
+        id: "addressDetauls", type: "Collection", label: "provide address for applicant: ->${applicantName}<-",
+        collection_field_type: {
+            id: "addressess", type:"Complex", label: "Address", complex_fields: [
+                { id: "pastAddressid", type: "Label", label: "->${applicantName}-< past address" },
+                { id: "pastAddressText", type: "Text", label: "Address text" },
+                { id: "pastAddressidPrint", type: "Label", label: "->${pastAddressText}-< past address is here" }
+            ]
+        }
+    })
+        .setFieldProps({ display_context_parameter: "#COLLECTION(allowInsert,allowDelete)"})
+
+
+    return labelsEventConfig;
 }
 
 

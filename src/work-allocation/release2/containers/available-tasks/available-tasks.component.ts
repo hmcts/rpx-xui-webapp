@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 
-import { ListConstants, SortConstants } from './../../work-allocation/components/constants';
-import { ConfigConstants } from './../../work-allocation/release2/components/constants';
-import { InfoMessage, InfoMessageType, TaskActionIds } from './../../work-allocation/enums';
-import { Location, SearchTaskRequest } from './../../work-allocation/models/dtos';
-import { InvokedTaskAction, Task, TaskFieldConfig } from './../../work-allocation/models/tasks';
-import { handleFatalErrors, REDIRECTS } from './../../work-allocation/utils';
-import { TaskListWrapperComponent } from './../../work-allocation/containers/task-list-wrapper/task-list-wrapper.component';
+import { ListConstants, SortConstants } from '../../../../work-allocation/components/constants';
+import { ConfigConstants } from '../../../../work-allocation/release2/components/constants';
+import { InfoMessage, InfoMessageType, TaskActionIds } from '../../../../work-allocation/enums';
+import { Location, SearchTaskRequest } from '../../../../work-allocation/models/dtos';
+import { InvokedTaskAction, Task, TaskFieldConfig } from '../../../../work-allocation/models/tasks';
+import { handleFatalErrors, REDIRECTS } from '../../../../work-allocation/utils';
+import { TaskListWrapperComponent } from '../../../../work-allocation/containers/task-list-wrapper/task-list-wrapper.component';
 
 @Component({
   selector: 'exui-available-tasks-v2',

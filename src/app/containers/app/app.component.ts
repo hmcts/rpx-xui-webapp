@@ -87,7 +87,10 @@ export class AppComponent implements OnInit {
    * }
    */
   public userDetailsHandler(userDetails: UserDetails) {
-    this.roleService.roles = userDetails.userInfo.roles;
+    if(userDetails.userInfo && userDetails.userInfo.roles) {
+      this.roleService.roles = userDetails.userInfo.roles;
+    }
+
     if (propsExist(userDetails, ['sessionTimeout'] ) && userDetails.sessionTimeout.totalIdleTime > 0) {
       const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
 

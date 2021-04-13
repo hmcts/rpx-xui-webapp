@@ -1,3 +1,4 @@
+import { RoleService } from '@hmcts/rpx-xui-common-lib';
 import {select, Store} from '@ngrx/store';
 import {takeWhile} from 'rxjs/operators';
 import * as fromApp from './store';

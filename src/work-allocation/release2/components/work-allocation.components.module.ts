@@ -6,9 +6,9 @@ import { FormsModule } from '@angular/forms';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 
 import * as fromComponents from '.';
-import { CaseworkerDataService, InfoMessageCommService, LocationDataService } from './../../work-allocation/services';
-import { WorkAllocationPipesModule } from './../../work-allocation/pipes/work-allocation.pipes.module';
-import { WorkAllocationComponentsModule } from './../../work-allocation/components/work-allocation.components.module';
+import { CaseworkerDataService, InfoMessageCommService, LocationDataService } from '../../../work-allocation/services';
+import { WorkAllocationPipesModule } from '../../../work-allocation/pipes/work-allocation.pipes.module';
+import { WorkAllocationComponentsModule } from '../../../work-allocation/components/work-allocation.components.module';
 
 // from containers
 @NgModule({

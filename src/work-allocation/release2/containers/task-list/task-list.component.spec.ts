@@ -4,12 +4,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
 
-import { ConfigConstants } from './../../work-allocation/components/constants';
+import { ConfigConstants } from '../../../../work-allocation/components/constants';
 import { WorkAllocationRelease2ComponentsModule } from '../../components/work-allocation.components.module';
-import { TaskService, TaskSort } from './../../work-allocation/enums';
-import { Task, TaskAction, TaskFieldConfig, TaskServiceConfig, TaskSortField } from './../../work-allocation/models/tasks';
-import { WorkAllocationTaskService } from './../../work-allocation/services';
-import { getMockTasks, MockRouter } from './../../work-allocation/tests/utils.spec';
+import { TaskService, TaskSort } from '../../../../work-allocation/enums';
+import { Task, TaskAction, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../../../work-allocation/models/tasks';
+import { WorkAllocationTaskService } from '../../../../work-allocation/services';
+import { getMockTasks, MockRouter } from '../../../../work-allocation/tests/utils.spec';
 import { TaskListRelease2Component } from './task-list.component';
 
 @Component({

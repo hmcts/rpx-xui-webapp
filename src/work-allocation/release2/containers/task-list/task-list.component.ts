@@ -2,9 +2,9 @@ import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { ListConstants } from './../../work-allocation/components/constants';
-import { TaskSort } from './../../work-allocation/enums';
-import { InvokedTaskAction, Task, TaskAction, TaskFieldConfig, TaskServiceConfig, TaskSortField } from './../../work-allocation/models/tasks';
+import { ListConstants } from '../../../../work-allocation/components/constants';
+import { TaskSort } from '../../../../work-allocation/enums';
+import { InvokedTaskAction, Task, TaskAction, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../../../work-allocation/models/tasks';
 
 @Component({
   selector: 'exui-task-list-v2',

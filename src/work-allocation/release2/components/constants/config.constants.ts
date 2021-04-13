@@ -1,6 +1,6 @@
-import { TaskFieldType, TaskView } from './../../work-allocation/enums';
-import { TaskFieldConfig } from './../../work-allocation/models/tasks';
-import { DERIVED_ICON_CONSTANTS} from './../../work-allocation/components/constants/derived-icon.constants';
+import { TaskFieldType, TaskView } from '../../../../work-allocation/enums';
+import { TaskFieldConfig } from '../../../../work-allocation/models/tasks';
+import { DERIVED_ICON_CONSTANTS} from '../../../../work-allocation/components/constants/derived-icon.constants';
 
 /**
  * The individual fields.

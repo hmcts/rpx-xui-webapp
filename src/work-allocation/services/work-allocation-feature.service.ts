@@ -9,7 +9,6 @@ export class WorkAllocationFeatureService {
     }
 
     public getActiveWAFeature(): Observable<string> {
-        // return this.featureToggleService.getValue<string>(AppConstants.FEATURE_NAMES.currentWAFeature, 'WorkAllocationRelease1');
-        return Observable.of<string>('WorkAllocationRelease2');
+        return this.featureToggleService.getValue<string>(AppConstants.FEATURE_NAMES.currentWAFeature, 'WorkAllocationRelease1');
     }
 }

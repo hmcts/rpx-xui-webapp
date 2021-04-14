@@ -10,6 +10,7 @@ var { defineSupportCode } = require('cucumber');
 const reportLogger = require('../../support/reportLogger');
 const Browserutil = require('../../../ngIntegration/util/browserUtil');
 const BrowserWaits = require('../../support/customWaits');
+const SoftAssert = require('../../../ngIntegration/util/softAssert');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
@@ -159,6 +160,27 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 reportLogger.AddMessage("Action to Unclaim (Unassign task)  not success : " + JSON.stringify(messages));
             }
 
+        }
+    });
+
+    Then('I see task page for action type {string}', async function(actionType){
+        if (actionType.toUpperCase() === "ASSIGNMENT"){
+            expect(await taskAssignmentPage.amOnPage(), "Task assignment page not displayed").to.be.true;
+        } else if (actionType.toUpperCase() === "ACTION"){
+            expect(await taskActionPage.amOnPage(), "Task action page not displayed").to.be.true;
+        }else{
+            throw new Error("TEST error: unrecognised task action type supplied " + actionType);
+        }
+    });
+
+    Then('I validate action type {string} for task action {string} page content', async function (actionType, action){
+        const softAssert = new SoftAssert(this);
+        if (actionType.toUpperCase() === "ASSIGNMENT") {
+            await taskAssignmentPage.validatePageContentForAction(action,softAssert);
+        } else if (actionType.toUpperCase() === "ACTION") {
+            await taskActionPage.validatePageContentForAction(action,softAssert);
+        } else {
+            throw new Error("TEST error: unrecognised task action type supplied " + actionType);
         }
     });
 });

@@ -8,7 +8,7 @@ class TaskActionPage extends TaskList {
         super();
         this.taskAssignmentContainer = $('exui-task-action-container');
         this.pageHeaderTitle = $('exui-task-action-container #main-content h1');
-
+        this.actionDescription = $('#main-content>div>div>p');
   
         this.unassignBtn = element(by.xpath('//exui-task-action-container//button[contains(text(),"Unassign")]'));
 
@@ -17,6 +17,8 @@ class TaskActionPage extends TaskList {
         this.bannerMessageContainer = $('exui-info-message ')
         this.infoMessages = $$('exui-info-message .hmcts-banner__message');
 
+        this.taskDetailsRow = $('exui-task-action-container exui-task-list table tbody tr');
+        this.taskColumnHeader = $('exui-task-action-container exui-task-list table thead th button');
     }
 
     async amOnPage() {
@@ -84,6 +86,45 @@ class TaskActionPage extends TaskList {
             }
         }
         return false;
+    }
+
+
+
+    async isTaskDisplayed() {
+        try {
+            await BrowserWaits.waitForElement(this.taskDetailsRow);
+            return true;
+        }
+        catch (err) {
+            console.log("Task assignment page not displayed: " + err);
+            return false;
+        }
+    }
+
+    async isColumnWithHeaderDisplayed() {
+        expect(await this.isTaskDisplayed(), "Task details row not displayed").to.be.true;
+        return this.taskColumnHeader.isDisplayed();
+    }
+
+    async validatePageContentForAction(action, softAssert) {
+        const submitBtn = element(by.xpath(`//exui-task-action-container//button[contains(text(),"${action}")]`));
+        if (softAssert){
+            await softAssert.assert(async () => expect(await this.pageHeaderTitle.getText()).to.include(`${action} task`));
+            await softAssert.assert(async () => expect(await this.actionDescription.getText()).to.include(`${action} this task`));
+
+
+            await softAssert.assert(async () => expect(submitBtn.isDisplayed(), `Submit button with text ${action} not displayed`).to.be.true);
+            await softAssert.assert(async () => expect(this.cancelBtn.isDisplayed(), `Cancel button with not displayed`).to.be.true);
+        }else{
+
+            expect(await this.pageHeaderTitle.getText()).to.include(`${action} task`);
+            expect(await this.actionDescription.getText()).to.include(`${action} this task`);
+
+
+            expect(submitBtn.isDisplayed(), `Submit button with text ${action} not displayed`).to.be.true;
+            expect(this.cancelBtn.isDisplayed(), `Cancel button with not displayed`).to.be.true;
+        }
+       
     }
 }
 

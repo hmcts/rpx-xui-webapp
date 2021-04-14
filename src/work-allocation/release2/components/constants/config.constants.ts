@@ -45,7 +45,7 @@ const TASK_NAME_AS_TEXT: TaskFieldConfig = {
 const AGE_OF_TASK: TaskFieldConfig = {
   name: 'dueDate',
   type: TaskFieldType.DATE_DUE,
-  columnLabel: 'Age of task',
+  columnLabel: 'Date',
   sortName: 'dueDate',
   views: TaskView.ALL_VIEWS
 };

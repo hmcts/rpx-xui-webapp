@@ -1,10 +1,10 @@
 <ng-container [ngSwitch]="(featureVersion$ | async)">
   <ng-container *ngSwitchCase="'WorkAllocationRelease2'">
-    <exui-task-list-v2
+    <exui-task-list-r2
       [taskServiceConfig]="taskServiceConfig" [tasks]="tasks" [fields]="fields"
       [sortedBy]="sortedBy" [emptyMessage]="emptyMessage"
       (sortEvent)="onSortHandler($event)" (actionEvent)="onActionHandler($event)">
-    </exui-task-list-v2>
+    </exui-task-list-r2>
   </ng-container>
   <ng-container *ngSwitchDefault>
     <exui-available-tasks-filter (selectionChanged)="onLocationsChanged($event)"></exui-available-tasks-filter>

@@ -1,5 +1,5 @@
 const CCDCaseField = require('./CCDCaseField');
-
+const CCDCaseConfig = require('./caseCreateConfigGenerator');
 const caseDetailsConfig = {
   "case_id": "1606297307593887",
   "_links": {
@@ -63,7 +63,9 @@ class CCDCaseDetails extends CCDCaseField{
     }
 
     addHistoryTab(tabLabel){
-        const historyTab = this.addTab(tabLabel ? tabLabel : "Mock tab History");
+        this.addTab(tabLabel ? tabLabel : "Mock tab History");
+        const historyTab = this.currentTab;
+
         const historyViewer = this.caseConfig.getCCDFieldTemplateCopy({id: "CaseHistoryViewer", type: "caseHistory", label: "Mock History View"});
         historyViewer.value = this.caseDetailsTemplate.events;
         historyTab.fields.push(historyViewer);
@@ -81,7 +83,7 @@ class CCDCaseDetails extends CCDCaseField{
         }
         let ccdCaseField = this.getCCDFieldTemplateCopy(fieldConfig);
         
-        this.currentTab.fields.push(caseField);
+        this.currentTab.fields.push(ccdCaseField);
         return this;
     }
 
@@ -132,6 +134,10 @@ class CCDCaseDetails extends CCDCaseField{
         ccdField.metadata = true;
         this.caseDetailsTemplate.metadataFields.push(ccdField);
         return this;
+    }
+
+    getCase(){
+        return this.caseDetailsTemplate;
     }
 
 }

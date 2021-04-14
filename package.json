@@ -125,6 +125,7 @@
     "rxjs-compat": "^6.4.0",
     "shortid": "^2.2.14",
     "smoothscroll-polyfill": "^0.4.3",
+    "ssri": "8.0.1",
     "striptags": "^3.1.1",
     "terser-webpack-plugin": "^2.3.5",
     "tslib": "^1.9.0",

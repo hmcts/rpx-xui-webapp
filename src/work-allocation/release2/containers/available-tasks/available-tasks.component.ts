@@ -9,7 +9,7 @@ import { handleFatalErrors, REDIRECTS } from '../../../../work-allocation/utils'
 import { TaskListWrapperComponent } from '../../../../work-allocation/containers/task-list-wrapper/task-list-wrapper.component';
 
 @Component({
-  selector: 'exui-available-tasks-v2',
+  selector: 'exui-available-tasks-r2',
   templateUrl: 'available-tasks.component.html'
 })
 export class AvailableTasksRelease2Component extends TaskListWrapperComponent {

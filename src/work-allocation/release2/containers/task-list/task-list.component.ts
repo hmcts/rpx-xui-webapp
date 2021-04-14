@@ -7,7 +7,7 @@ import { TaskSort } from '../../../../work-allocation/enums';
 import { InvokedTaskAction, Task, TaskAction, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../../../work-allocation/models/tasks';
 
 @Component({
-  selector: 'exui-task-list-v2',
+  selector: 'exui-task-list-r2',
   templateUrl: './task-list.component.html',
   styleUrls: ['task-list.component.scss']
 })

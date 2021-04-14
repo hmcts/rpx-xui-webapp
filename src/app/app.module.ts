@@ -41,9 +41,6 @@ import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { ENVIRONMENT_CONFIG, EnvironmentConfig } from '../models/environmentConfig.model';
 import { CaseShareService } from './services/case/share-case.service';
 
-export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): string {
-  return envConfig.launchDarklyClientId || '';
-}
 
 @NgModule({
   declarations: [AppComponent],
@@ -68,7 +65,7 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
       level: NgxLoggerLevel.TRACE,
       disableConsoleLogging: false
     }),
-    ExuiCommonLibModule.forRoot(),
+    ExuiCommonLibModule.forChild(),
     NgIdleKeepaliveModule.forRoot(),
     PaymentLibModule,
   ],
@@ -95,8 +92,7 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
       useClass: DefaultErrorHandler
     },
     AcceptTermsService,
-    CaseShareService,
-    { provide: LAUNCHDARKLYKEY, useFactory: launchDarklyClientIdFactory, deps: [ENVIRONMENT_CONFIG] },
+    CaseShareService
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

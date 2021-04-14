@@ -37,7 +37,7 @@ import { effects, reducers } from './store';
       FormsModule,
       ReactiveFormsModule,
       UtilsModule,
-      ExuiCommonLibModule
+      ExuiCommonLibModule.forChild()
   ],
   declarations: [...fromContainers.containers],
   entryComponents: [

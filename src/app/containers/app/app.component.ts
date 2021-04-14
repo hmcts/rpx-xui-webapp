@@ -106,6 +106,7 @@ export class AppComponent implements OnInit {
           orgId: '-1'
         }
       };
+      console.log(this.featureService);
       this.featureService.initialize(featureUser);
     }
   }

@@ -59,7 +59,7 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
     MatDialogModule,
     CaseListFiltersModule,
     WorkbasketFiltersModule,
-    ExuiCommonLibModule,
+    ExuiCommonLibModule.forChild(),
     LoadingModule
   ],
   declarations: [...fromComponents.components, ...fromContainers.containers],

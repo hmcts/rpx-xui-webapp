@@ -115,10 +115,10 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
       if (this.selectedCaseworker === FilterConstants.Options.Caseworkers.UNASSIGNED) {
         values = [];
       } else {
-        values = [this.selectedCaseworker.idamId]
+        values = [this.selectedCaseworker.idamId];
       }
     } else {
-      values = []
+      values = [];
     }
     return { key: 'user', operator: 'IN', values };
   }

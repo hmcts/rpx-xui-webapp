@@ -1,6 +1,5 @@
-import { Component, OnChanges, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { UserInfo } from '../../../app/models/user-details.model';
-import { handleFatalErrors } from '../../../work-allocation/utils';
 
 import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
 import { SearchTaskRequest } from '../../models/dtos';

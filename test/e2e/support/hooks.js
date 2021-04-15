@@ -117,7 +117,6 @@ defineSupportCode(({ Before,After }) => {
             } else {
                 browser.manage().logs().get('browser');
                 await CucumberReportLog.AddMessage("Cleared browser logs after successful scenario.");
-                // await CucumberReportLog.AddScreenshot(global.screenShotUtils);
             }
         }catch(err) {
             CucumberReportLog.AddMessage("Error in hooks with browserlogs or screenshots. See error details : " + err);

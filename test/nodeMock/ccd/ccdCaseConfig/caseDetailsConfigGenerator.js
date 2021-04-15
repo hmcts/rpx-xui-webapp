@@ -81,7 +81,7 @@ class CCDCaseDetails extends CCDCaseField{
         if (!this.currentTab){
             throw new Error("No tab added. Add a tab before adding a Case field");
         }
-        let ccdCaseField = this.getCCDFieldTemplateCopy(fieldConfig);
+        const ccdCaseField = this.getCCDFieldTemplateCopy(fieldConfig);
         
         this.currentTab.fields.push(ccdCaseField);
         return this;

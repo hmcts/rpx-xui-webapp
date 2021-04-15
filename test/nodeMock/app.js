@@ -125,7 +125,7 @@ function setUpcaseConfig() {
 }
 
 function caseDetailsLabelShowCondition(){
-    const caseDetail = new CCDCaseDetails("Mock Label show cosndition case type"); 
+    const caseDetail = new CCDCaseDetails("Mock Label show condition case type"); 
     caseDetail.addHistoryTab()
     .addTab("Simple Conditional show of labels")
         .addFieldWithConfigToTab({ id: "item", type: "Text", label: "Item text", value: "yes" })
@@ -136,7 +136,7 @@ function caseDetailsLabelShowCondition(){
         complex_fields:[
             { id: "item", type: "Text", label: "Item text", value:"1" },
             { id: "text1", type: "Text", label: "Item 1 text input", value: "sample",props: { show_condition: `item="yes"` } },
-           { id: "label1ForItem1", type: "Label", label: "Show label if item= 1", props: { show_condition: `item="yesno"`}},
+            { id: "label1ForItem1", type: "Label", label: "Show label if item= 1", props: { show_condition: `item="yesno"`}},
             { id: "label2ForItem1", type: "Label", label: "Show label if item= 2", props: { show_condition: `item="2"` } },
             { id: "label3ForItem1", type: "Label", label: "Show label if item= 3", props: { show_condition: `item="3"` } },
             { id: "label4ForItem1", type: "Label", label: "Show label if item= 1", props: { show_condition: `item="1"` } },
@@ -158,12 +158,12 @@ function labelstestConfig(){
     labelsEventConfig.addCaseField({ id: "familyDetails", type: "Complex", label: "provide more details for applicant: ->${applicantName}<-",
         complex_fields:[
             { id: "applicantFamilyDetailsMsgid", type: "Label", label:"Provide ->${applicantName}<- family history"},
-             { id: "familyHistoryText", type: "Text", Label: "History ref" },
+            { id: "familyHistoryText", type: "Text", Label: "History ref" },
             { id: "historyRefPrint", type: "Label", label: "Provided ->${familyHistoryText}<- is here" }
         ],
         value: { familyHistoryText : "Pre set value"}
     })
-    labelsEventConfig.addWizardPage("testPage3", "Applicant addressess ")
+    labelsEventConfig.addWizardPage("testPage3", "Applicant addresses ")
     labelsEventConfig.addCaseField({
         id: "addressDetauls", type: "Collection", label: "provide address for applicant: ->${applicantName}<-",
         collection_field_type: {

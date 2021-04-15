@@ -42,7 +42,7 @@ const TASK_NAME_AS_TEXT: TaskFieldConfig = {
   sortName: 'taskTitle',
   views: TaskView.ALL_VIEWS
 };
-const AGE_OF_TASK: TaskFieldConfig = {
+const DUE_DATE: TaskFieldConfig = {
   name: 'dueDate',
   type: TaskFieldType.DATE_DUE,
   columnLabel: 'Date',
@@ -54,7 +54,7 @@ const AGE_OF_TASK: TaskFieldConfig = {
  * The views.
  */
 const AVAILABLE_TASKS: TaskFieldConfig[] = [
-  CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_TEXT, AGE_OF_TASK
+  CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_TEXT, DUE_DATE
 ];
 
 export const CONFIG_CONSTANTS = {

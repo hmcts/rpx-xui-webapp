@@ -1,17 +1,16 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
-import { Caseworker } from 'api/workAllocation/interfaces/task';
 import { Observable } from 'rxjs';
-import { map, share } from 'rxjs/operators';
+import { share } from 'rxjs/operators';
 
+import { Caseworker } from 'api/workAllocation/interfaces/task';
 import { SessionStorageService } from '../../../app/services';
 import { ListConstants } from '../../components/constants';
-import { InfoMessage, InfoMessageType, TaskActionIds, TaskService, TaskSort } from '../../enums';
 import { SearchTaskRequest, SortParameter } from '../../models/dtos';
+import { InfoMessage, InfoMessageType, TaskActionIds, TaskService, TaskSort } from '../../enums';
+import { CaseworkerDataService, InfoMessageCommService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
 import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
-import { CaseworkerDataService, InfoMessageCommService, WorkAllocationTaskService, WorkAllocationFeatureService } from '../../services';
-
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 
 @Component({

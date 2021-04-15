@@ -77,13 +77,6 @@ const DUE_DATE: TaskFieldConfig = {
   sortName: 'dueDate',
   views: TaskView.ALL_VIEWS
 };
-const AGE_OF_TASK: TaskFieldConfig = {
-  name: 'dueDate',
-  type: TaskFieldType.DATE_DUE,
-  columnLabel: 'Age of task',
-  sortName: 'dueDate',
-  views: TaskView.ALL_VIEWS
-};
 const ASSIGNEE: TaskFieldConfig = {
   name: 'assigneeName',
   type: TaskFieldType.STRING,
@@ -103,7 +96,7 @@ const MY_TASKS: TaskFieldConfig[] = [
   CASE_REFERENCE_AS_LINK, CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_TEXT, DUE_DATE
 ];
 const MY_WORK_TASKS: TaskFieldConfig[] = [
-  CASE_NAME_AS_LINK, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_LINK, AGE_OF_TASK
+  CASE_NAME_AS_LINK, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_LINK, DUE_DATE
 ]
 const TASK_MANAGER: TaskFieldConfig[] = [
   CASE_REFERENCE_AS_LINK, CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, TASK_NAME_AS_TEXT, DUE_DATE, ASSIGNEE

@@ -1,12 +1,12 @@
-import { Component, OnChanges, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRouteSnapshot, NavigationEnd, Router, RoutesRecognized } from '@angular/router';
 import { SubNavigation } from '@hmcts/rpx-xui-common-lib';
 import { Observable, Subscription } from 'rxjs';
-import { WorkAllocationFeatureService } from '../../../work-allocation/services/work-allocation-feature.service';
 import { share } from 'rxjs/operators';
 
 import { AppUtils } from '../../../app/app-utils';
 import { TaskSortField } from '../../models/tasks';
+import { WorkAllocationFeatureService } from '../../../work-allocation/services/work-allocation-feature.service';
 
 @Component({
   selector: 'exui-task-home',
@@ -32,7 +32,7 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
   private routeSubscription: Subscription;
   public featureVersion$: Observable<string>;
 
-  constructor(private readonly router: Router, private featureService: WorkAllocationFeatureService) {}
+  constructor(private readonly router: Router, private readonly featureService: WorkAllocationFeatureService) {}
 
   public ngOnInit(): void {
     this.featureVersion$ = this.featureService.getActiveWAFeature().pipe(share());

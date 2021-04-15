@@ -10,18 +10,15 @@
               *ngIf="isComponentVisible(nocNavigationCurrentState, caseRefVisibilityStates)"
               [navEvent]="navEvent">
             </exui-noc-case-ref>
-            <exui-noc-error
-              *ngIf="isComponentVisible(nocNavigationCurrentState, caseRefErrorStates)"
-              [navEvent]="navEvent">
-            </exui-noc-error>
             <exui-noc-q-and-a
               #nocQandA
               *ngIf="isComponentVisible(nocNavigationCurrentState, qAndAVisibilityStates)"
               [navEvent]="navEvent">
             </exui-noc-q-and-a>
-            <exui-noc-answer-error
-              *ngIf="isComponentVisible(nocNavigationCurrentState, answerErrorVisibilityStates)">
-            </exui-noc-answer-error>
+            <exui-noc-error
+              *ngIf="isComponentVisible(nocNavigationCurrentState, nocErrorVisibilityStates)"
+              [navEvent]="navEvent">
+            </exui-noc-error>
             <exui-noc-check-and-submit
               #nocCheckAndSubmit
               *ngIf="isComponentVisible(nocNavigationCurrentState, checkAnswerVisibilityStates)"

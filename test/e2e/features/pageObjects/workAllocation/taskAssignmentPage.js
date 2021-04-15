@@ -1,6 +1,6 @@
 const TaskList = require('./taskListTable');
 const BrowserWaits = require('../../../support/customWaits');
-
+const cucumberReporter = require('../../../support/reportLogger');
 class TaskAssignmentPage extends TaskList {
 
     constructor() {

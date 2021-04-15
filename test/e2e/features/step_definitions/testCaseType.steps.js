@@ -60,7 +60,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Then('Validate Case event next step trigger actions', async function () {
         let apiRes = await caseEditPage.nextStepTriggerApiRes();
         let expectedList = await caseEditPage.nextStepTriggerActions();
-        expect(apiRes).to.eql(expectedList);
+        expect(expectedList).to.deep.include.members(apiRes);
     });
 
     Then('Validate Case event update populating form page', async function () {

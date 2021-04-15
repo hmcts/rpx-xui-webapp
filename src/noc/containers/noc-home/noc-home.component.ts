@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { answerErrorVisibilityStates, caseRefVisibilityStates, checkAnswerVisibilityStates, nocSubmitSuccessStates, qAndAVisibilityStates } from '../../constants';
+import { caseRefVisibilityStates, checkAnswerVisibilityStates, nocErrorVisibilityStates, nocSubmitSuccessStates, qAndAVisibilityStates } from '../../constants';
 import { NocNavigation, NocNavigationEvent, NocState } from '../../models';
 import * as fromFeature from '../../store';
 import { NocCaseRefComponent } from '../noc-case-ref/noc-case-ref.component';
@@ -30,10 +30,9 @@ export class NocHomeComponent implements OnInit, OnDestroy {
   public navEvent: NocNavigation;
 
   public caseRefVisibilityStates = caseRefVisibilityStates;
-  public caseRefErrorStates = [NocState.CASE_REF_SUBMISSION_FAILURE];
 
   public qAndAVisibilityStates = qAndAVisibilityStates;
-  public answerErrorVisibilityStates = answerErrorVisibilityStates;
+  public nocErrorVisibilityStates = nocErrorVisibilityStates;
 
   public checkAnswerVisibilityStates = checkAnswerVisibilityStates;
   public nocSubmitSuccessStates = nocSubmitSuccessStates;
@@ -64,22 +63,22 @@ export class NocHomeComponent implements OnInit, OnDestroy {
       case NocNavigationEvent.BACK: {
         switch (this.nocNavigationCurrentState) {
           case NocState.START:
+          case NocState.CASE_REF_VALIDATION_FAILURE:
             this.router.navigateByUrl('').then(r => {
               return;
             });
             break;
           case NocState.QUESTION:
+          case NocState.CASE_REF_SUBMISSION_FAILURE:
           case NocState.ANSWER_INCOMPLETE:
           case NocState.ANSWER_SUBMISSION_FAILURE:
-            this.store.dispatch(new fromFeature.Reset());
-            break;
-          case NocState.CHECK_ANSWERS:
-            this.store.dispatch(new fromFeature.ChangeNavigation(NocState.QUESTION));
-            break;
           case NocState.SUBMISSION_SUCCESS_PENDING:
           case NocState.SUBMISSION_SUCCESS_APPROVED:
           case NocState.SUBMISSION_FAILURE:
             this.store.dispatch(new fromFeature.Reset());
+            break;
+          case NocState.CHECK_ANSWERS:
+            this.store.dispatch(new fromFeature.ChangeNavigation(NocState.QUESTION));
             break;
           default:
             throw new Error('Invalid NoC state');

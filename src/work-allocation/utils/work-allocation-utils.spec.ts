@@ -1,22 +1,32 @@
 import { handleFatalErrors, REDIRECTS, treatAsFatal, WILDCARD_SERVICE_DOWN } from './work-allocation-utils';
 
 describe('WorkAllocationUtils', () => {
-  const mockRouter = {
-    navigate: jasmine.createSpy('navigate')
-  };
+  let mockRouter: any;
 
-  it('should send back the status if it is not 500, 401 or 403', () => {
+  it('should send back the status if it is 400', () => {
+    mockRouter = {
+      navigate: jasmine.createSpy('navigate')
+    };
     // test can handle fatal errors for 400 and 402 errors
     const firstStatus = handleFatalErrors(400, mockRouter);
-    const secondStatus = handleFatalErrors(402, mockRouter);
-
-    // ensure that the statuses are sent back and mockRouter.navigate has not been called
     expect(firstStatus).toEqual(400);
+    expect(mockRouter.navigate).toHaveBeenCalled();
+  });
+
+  it('should send back the status if it is not 500, 401 or 403', () => {
+    mockRouter = {
+      navigate: jasmine.createSpy('navigate')
+    };
+    // ensure that the statuses are sent back and mockRouter.navigate has not been called
+    const secondStatus = handleFatalErrors(402, mockRouter);
     expect(secondStatus).toEqual(402);
     expect(mockRouter.navigate).not.toHaveBeenCalled();
   });
 
   it('should return the status if there are no fatal changes', () => {
+    mockRouter = {
+      navigate: jasmine.createSpy('navigate')
+    };
     // ensure that the status of a 404 error is returned and navigate has not been called
     const firstStatus = treatAsFatal(404, mockRouter, []);
     expect(firstStatus).toEqual(404);
@@ -24,6 +34,9 @@ describe('WorkAllocationUtils', () => {
   });
 
   it('should attempt to navigate to the correct error pages', () => {
+    mockRouter = {
+      navigate: jasmine.createSpy('navigate')
+    };
     // should get correct redirect for 500
     const serviceDown = handleFatalErrors(500, mockRouter);
     expect(serviceDown).toEqual(0);
@@ -41,6 +54,9 @@ describe('WorkAllocationUtils', () => {
   });
 
   it('should allow setting a fatal redirect', () => {
+    mockRouter = {
+      navigate: jasmine.createSpy('navigate')
+    };
     // set fatal redirect for 404 and 415 as example
     const REDIRECT_TEST = [{ status: 404, redirectTo: REDIRECTS.ServiceDown }, { status: 415, redirectTo: REDIRECTS.NotAuthorised }];
     const firstStatus = treatAsFatal(404, mockRouter, REDIRECT_TEST);
@@ -63,6 +79,9 @@ describe('WorkAllocationUtils', () => {
   });
 
   it('should allow setting wildcard to ensure all errors sent to service down', () => {
+    mockRouter = {
+      navigate: jasmine.createSpy('navigate')
+    };
     // test wildcard with 402 error
     const firstStatus = treatAsFatal(402, mockRouter, WILDCARD_SERVICE_DOWN);
 
@@ -79,6 +98,9 @@ describe('WorkAllocationUtils', () => {
   });
 
   it('should ensure correctly setting redirects for handling of all errors', () => {
+    mockRouter = {
+      navigate: jasmine.createSpy('navigate')
+    };
     // set fatal redirect for 404 and 415 as example
     const REDIRECT_TEST = [{ status: 404, redirectTo: REDIRECTS.ServiceDown }, { status: 415, redirectTo: REDIRECTS.NotAuthorised }];
     const firstStatus = handleFatalErrors(404, mockRouter, REDIRECT_TEST);

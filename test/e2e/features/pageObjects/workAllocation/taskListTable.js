@@ -131,6 +131,8 @@ class TaskListTable{
 
     async clickTaskAction(action){
         const actionLink = await this.displayedtaskActionRow.element(by.xpath(`//div[@class = "task-action"]//a[contains(text(),"${action}" )]`))
+        await browser.executeScript('arguments[0].scrollIntoView()',
+            actionLink.getWebElement());
         await actionLink.click();
     }
 

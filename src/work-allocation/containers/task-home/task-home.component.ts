@@ -2,7 +2,7 @@ import { Component, OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRouteSnapshot, NavigationEnd, Router, RoutesRecognized } from '@angular/router';
 import { SubNavigation } from '@hmcts/rpx-xui-common-lib';
 import { Observable, Subscription } from 'rxjs';
-import { WorkAllocationFeatureService } from 'src/work-allocation/services/work-allocation-feature.service';
+import { WorkAllocationFeatureService } from '../../../work-allocation/services/work-allocation-feature.service';
 import { share } from 'rxjs/operators';
 
 import { AppUtils } from '../../../app/app-utils';

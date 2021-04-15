@@ -6,11 +6,11 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
-import { SessionStorageService } from 'src/app/services';
-import { WorkAllocationComponentsModule } from 'src/work-allocation/components/work-allocation.components.module';
-import { Task } from 'src/work-allocation/models/tasks';
-import { InfoMessageCommService, WorkAllocationFeatureService, WorkAllocationTaskService } from 'src/work-allocation/services';
-import { getMockTasks, MockRouter } from 'src/work-allocation/tests/utils.spec';
+import { SessionStorageService } from '../../../app/services';
+import { WorkAllocationComponentsModule } from '../../../work-allocation/components/work-allocation.components.module';
+import { Task } from '../../../work-allocation/models/tasks';
+import { InfoMessageCommService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../../work-allocation/services';
+import { getMockTasks, MockRouter } from '../../../work-allocation/tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { TaskListWrapperComponent } from './task-list-wrapper.component';
 

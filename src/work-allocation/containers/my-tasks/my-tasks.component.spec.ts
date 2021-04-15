@@ -16,7 +16,7 @@ import {getMockTasks} from '../../tests/utils.spec';
 import {TaskListComponent} from '../task-list/task-list.component';
 import {MyTasksComponent} from './my-tasks.component';
 import {TaskListRelease2Component} from '../../../work-allocation/release2/containers';
-import { TaskFieldType } from 'src/work-allocation/enums';
+import { TaskFieldType } from '../../../work-allocation/enums';
 
 @Component({
   template: `
@@ -181,7 +181,7 @@ describe('MyTasksComponent', () => {
     expect(navigateSpy).toHaveBeenCalledWith([`/tasks/${task.id}/${actionId}/`], jasmine.any(Object));
   });
 
-  fit('should allow setting the release 2 details', () => {
+  it('should allow setting the release 2 details', () => {
     // verifying fields best way to check as the elements (apart from column names) on page will not change
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     component.ngOnInit();

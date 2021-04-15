@@ -9,7 +9,7 @@ import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../../../work-alloc
 import { FilterConstants } from '../../../../work-allocation/components/constants';
 
 @Component({
-  selector: 'exui-available-tasks-filter-v2',
+  selector: 'exui-available-tasks-filter-r2',
   templateUrl: './available-tasks-filter.component.html',
   styleUrls: ['available-tasks-filter.component.scss']
 })

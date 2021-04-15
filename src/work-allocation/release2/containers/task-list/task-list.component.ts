@@ -156,7 +156,7 @@ export class TaskListRelease2Component implements OnChanges {
 
     // If this is the field we're sorted by, return the appropriate order.
     if (this.sortedBy.fieldName === fieldName) {
-      return this.sortedBy.order === TaskSort.ASC ? 'ascending' : 'descending'
+      return this.sortedBy.order === TaskSort.ASC ? 'ascending' : 'descending';
     }
 
     // This field is not sorted, return NONE.

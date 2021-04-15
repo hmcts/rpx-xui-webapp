@@ -80,7 +80,7 @@ export class AvailableTasksRelease2Component extends TaskListWrapperComponent {
    */
   public claimTaskAndGo(task: Task): void {
     this.taskService.claimTask(task.id).subscribe(() => {
-      const goToCaseUrl = `/cases/case-details/${task.case_id}`
+      const goToCaseUrl = `/cases/case-details/${task.case_id}`;
       // navigates to case details page for specific case id
       this.router.navigate([goToCaseUrl], {
         state: {

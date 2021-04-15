@@ -11,6 +11,7 @@ const reportLogger = require('../../support/reportLogger');
 const Browserutil = require('../../../ngIntegration/util/browserUtil');
 const BrowserWaits = require('../../support/customWaits');
 const SoftAssert = require('../../../ngIntegration/util/softAssert');
+const taskManagerPage = require('../pageObjects/workAllocation/taskManagerPage');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
@@ -181,6 +182,62 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             await taskActionPage.validatePageContentForAction(action,softAssert);
         } else {
             throw new Error("TEST error: unrecognised task action type supplied " + actionType);
+        }
+    });
+
+
+    When('I perform task {string} submit for {string}', async function (actionType, action){
+        
+        if (actionType.toUpperCase() === "ASSIGNMENT") {
+            await taskAssignmentPage.selectLocationAtpos(1);
+            await taskAssignmentPage.selectcaseworkerAtpos(2);
+            await taskAssignmentPage.clickSubmitBtn(action);
+        } else if (actionType.toUpperCase() === "ACTION") {
+            await taskActionPage.clickSubmitBtn(action);
+        } else {
+            throw new Error("TEST error: unrecognised task action type supplied " + actionType);
+        }
+    });
+
+    When('I perform task {string} cancel for {string}', async function (actionType, action) {
+
+        if (actionType.toUpperCase() === "ASSIGNMENT") {
+         
+            await taskAssignmentPage.clickCancelBtn();
+        } else if (actionType.toUpperCase() === "ACTION") {
+            await taskAction.clickCancelBtn();
+        } else {
+            throw new Error("TEST error: unrecognised task action type supplied " + actionType);
+        }
+    });
+
+    Then('I validate My tasks message banner displays {string}', async function(bannermessage){
+       const displayedMessages = await taskListPage.getBannerMessagesDisplayed();
+        const messagesMathcing = displayedMessages.filter(msg => msg.includes(bannermessage));
+        expect(messagesMathcing.length > 0, `${bannermessage} is not in displayed message ${displayedMessages}`).to.be.true;
+    });
+
+    Then('I validate Task manager message banner displays {string}', async function (bannermessage) {
+        const displayedMessages = await taskManagerPage.getBannerMessagesDisplayed();
+        const messagesMathcing = displayedMessages.filter(msg => msg.includes(bannermessage));
+        expect(messagesMathcing.length > 0, `${bannermessage} is not in displayed message ${displayedMessages}`).to.be.true;
+    });
+
+    Then('I validate My tasks message banner not displayed', async function(){
+        const displayedMessages = await taskListPage.isBannerMessageDisplayed();
+        expect(await taskListPage.isBannerMessageDisplayed(), `Message displayed is displayed message `).to.be.false;
+    });
+
+    Then('I validate Task manager message banner not displayed', async function () {
+        const displayedMessages = await taskManagerPage.isBannerMessageDisplayed();
+        expect(await taskListPage.isBannerMessageDisplayed(), `Message displayed is displayed message `).to.be.false;
+    });
+
+    Then('I validate task one click action landing on {string} page and message displayed {string}', async function(landingPage, messageDisplayed){
+        await BrowserWaits.waitForSeconds(2);
+        landingPage = landingPage.toUpperCase();
+        if (landingPage.toUpperCase() == " "){
+
         }
     });
 });

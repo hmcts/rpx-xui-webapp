@@ -51,6 +51,12 @@ class TaskActionPage extends TaskList {
         await this.cancelBtn.click();
     }
 
+    async clickSubmitBtn(action) {
+        let verb = this.getSubmitBtnText(action);
+        expect(await this.amOnPage(), "Not on task action page").to.be.true;
+        this.unassignBtn = element(by.xpath(`//exui-task-action-container//button[contains(text(),"${verb}")]`));
+        await this.unassignBtn.click();
+    }
 
 
     async isBannerMessageDisplayed() {
@@ -107,24 +113,44 @@ class TaskActionPage extends TaskList {
     }
 
     async validatePageContentForAction(action, softAssert) {
-        const submitBtn = element(by.xpath(`//exui-task-action-container//button[contains(text(),"${action}")]`));
+        let verb = this.getSubmitBtnText(action);
+        const submitBtn = element(by.xpath(`//exui-task-action-container//button[contains(text(),"${verb}")]`));
         if (softAssert){
-            await softAssert.assert(async () => expect(await this.pageHeaderTitle.getText()).to.include(`${action} task`));
-            await softAssert.assert(async () => expect(await this.actionDescription.getText()).to.include(`${action} this task`));
+            await softAssert.assert(async () => expect(await this.pageHeaderTitle.getText()).to.include(`${verb} task`));
+            await softAssert.assert(async () => expect(await this.actionDescription.getText()).to.include(`${verb} this task`));
 
 
-            await softAssert.assert(async () => expect(submitBtn.isDisplayed(), `Submit button with text ${action} not displayed`).to.be.true);
+            await softAssert.assert(async () => expect(submitBtn.isDisplayed(), `Submit button with text ${verb} not displayed`).to.be.true);
             await softAssert.assert(async () => expect(this.cancelBtn.isDisplayed(), `Cancel button with not displayed`).to.be.true);
         }else{
 
-            expect(await this.pageHeaderTitle.getText()).to.include(`${action} task`);
-            expect(await this.actionDescription.getText()).to.include(`${action} this task`);
+            expect(await this.pageHeaderTitle.getText()).to.include(`${verb} task`);
+            expect(await this.actionDescription.getText()).to.include(`${verb} this task`);
 
 
-            expect(submitBtn.isDisplayed(), `Submit button with text ${action} not displayed`).to.be.true;
+            expect(submitBtn.isDisplayed(), `Submit button with text ${verb} not displayed`).to.be.true;
             expect(this.cancelBtn.isDisplayed(), `Cancel button with not displayed`).to.be.true;
         }
        
+    }
+
+    getSubmitBtnText(action){
+        let btnTxt = "";
+        switch (action){
+            case "Reassign task":
+                btnTxt = "Reassign";
+                break; 
+            case "Unassign task":
+                btnTxt = "Unassign";
+                break;
+            case "Mark as done":
+                btnTxt = action;
+                break;
+            case "Cancel task":
+                btnTxt = action;
+                break;
+        }
+        return btnTxt;
     }
 }
 

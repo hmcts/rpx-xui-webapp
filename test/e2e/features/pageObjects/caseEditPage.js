@@ -241,7 +241,7 @@ class caseEditPage {
                     let keyVal = String(date.getDate()).padStart(2, '0') + "-" + String(date.getMonth() + 1).padStart(2, '0') + "-" + date.getFullYear();
                     this.checkURanswerPageData[i][Object.keys(this.checkURanswerPageData[i]).toString()] = keyVal;
                 }
-                if (Object.values(this.checkURanswerPageData[i]).toString() && Object.keys(this.checkURanswerPageData[i]).toString() != "Compliance") {
+                if (Object.values(this.checkURanswerPageData[i]).toString() && Object.keys(this.checkURanswerPageData[i]).toString() !== "Compliance" && Object.keys(this.checkURanswerPageData[i]).toString() !== "") {
                     expect(createCaseFormData).to.deep.include(this.checkURanswerPageData[i]);
                 }
             }

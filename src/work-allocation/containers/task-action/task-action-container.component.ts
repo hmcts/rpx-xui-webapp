@@ -5,7 +5,7 @@ import { ConfigConstants } from '../../components/constants';
 import { InfoMessage, InfoMessageType, TaskActionType, TaskService, TaskSort } from '../../enums';
 import { InformationMessage } from '../../models/comms';
 import { TaskFieldConfig, TaskServiceConfig } from '../../models/tasks';
-import { InfoMessageCommService, WorkAllocationTaskService, CaseworkerDataService } from '../../services';
+import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { ACTION } from '../../services/work-allocation-task.service';
 import { getAssigneeName, handleFatalErrors } from '../../utils';
 
@@ -31,8 +31,7 @@ export class TaskActionContainerComponent implements OnInit {
     private readonly taskService: WorkAllocationTaskService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly messageService: InfoMessageCommService,
-    private readonly caseWorkerService: CaseworkerDataService
+    private readonly messageService: InfoMessageCommService
   ) {}
 
   public get fields(): TaskFieldConfig[] {
@@ -68,7 +67,7 @@ export class TaskActionContainerComponent implements OnInit {
       this.routeData.actionTitle = `${this.routeData.verb} task`;
     }
     if (task.assignee) {
-      this.caseWorkerService.getAll().subscribe(caseworkers => task.assigneeName = getAssigneeName(caseworkers, task.assignee));
+      task.assigneeName = getAssigneeName(this.route.snapshot.data.taskAndCaseworkers.caseworkers, task.assignee);
     }
   }
 

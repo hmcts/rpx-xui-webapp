@@ -1,8 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  AbstractAppConfig,
-  CaseEditorConfig,
-} from '@hmcts/ccd-case-ui-toolkit';
+import { AbstractAppConfig, CaseEditorConfig } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { AppConfigService } from '../config/configuration.services';
 import { AppConstants } from '../../app.constants';
@@ -34,10 +31,10 @@ export class AppConfig extends AbstractAppConfig {
       .isEnabled(AppConstants.FEATURE_NAMES.workAllocation)
       .subscribe(
         (isFeatureEnabled) =>
-          (this.workallocationUrl = AppUtils.getFeatureToggledUrl(
+          this.workallocationUrl = AppUtils.getFeatureToggledUrl(
             isFeatureEnabled,
             WorkAllocationTaskService.WorkAllocationUrl
-          ))
+          )
       );
   }
 

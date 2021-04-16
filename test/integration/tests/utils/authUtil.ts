@@ -28,9 +28,7 @@ export function updateSessionCookieString(username, name, value) {
             isNewCookie = false;
         }
     }
-    if (isNewCookie){
-        authCookiesForUsers[username].push({ name: value});
-    }
+ 
     let cookieString = '';
     for (const cookie of authCookiesForUsers[username]) {
         cookieString = `${cookieString}${cookie.name}=${cookie.value};`;

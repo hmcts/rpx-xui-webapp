@@ -62,6 +62,20 @@ export const ROUTES: Routes = [
         ]
       },
       {
+        path: 'all-work',
+        component: TaskManagerComponent,
+        canActivate: [ HealthCheckGuard, WorkAllocationFeatureToggleGuard ],
+        data: {
+          title: 'HMCTS Manage cases | Task manager'
+        },
+        children: [
+          {
+            path: '',
+            component: TaskManagerListComponent
+          }
+        ]
+      },
+      {
         path: ':taskId',
         resolve: { taskAndCaseworkers: TaskResolver },
         canActivate: [ WorkAllocationFeatureToggleGuard ],

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 
@@ -10,7 +10,7 @@ import { UserNavModel } from '../../models/user-nav.model';
     selector: 'exui-hmcts-global-header',
     templateUrl: './hmcts-global-header.component.html'
 })
-export class HmctsGlobalHeaderComponent {
+export class HmctsGlobalHeaderComponent implements OnChanges {
 
   @Input() public set showNavItems(value: boolean) {
     this.showItems = value;
@@ -27,9 +27,21 @@ export class HmctsGlobalHeaderComponent {
   public showItems: boolean;
   public userValue = true;
   public tab;
+  public leftItems: NavItemsModel[];
+  public rightItems: NavItemsModel[];
 
-  constructor(
-    public nocStore: Store<fromNocStore.State>) { }
+  constructor(public nocStore: Store<fromNocStore.State>) { }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.items.currentValue !== changes.items.previousValue) {
+      this.splitNavItems();
+    }
+  }
+
+  public splitNavItems() {
+    this.rightItems = this.items.filter(item => item.align && item.align === 'right');
+    this.leftItems = this.items.filter(item => !item.align || item.align !== 'right');
+  }
 
   public onEmitEvent(index: number): void {
     this.navigate.emit(this.navigation.items[index].emit);

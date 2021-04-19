@@ -96,6 +96,17 @@ function HeaderPage() {
   this.getTabElementWithText = function (tabText) {
     return this.primaryNavBar.element(by.xpath('//a[contains(text(),"' + tabText + '")]'));
   };
+
+  this.getPrimaryTabsDisplayed = function async () {
+    const tabsText = [];
+    const tablinks = this.primaryNavBar.$$('a');
+    tabsCount = await tablinks.count();
+    for(let i = 0; i< tabsCount; i++){
+      let tabLink = await tablinks.get(i);
+      tabsText.pusg(await tabLink.getText(););
+    }
+    return tabsText;
+  }
 }
 
 module.exports = new HeaderPage;

@@ -10,6 +10,13 @@ class NodeAppMockData {
         return userDetails;
     }
 
+    getUserDetailsWithRolesAndIdamId(roles,idamId) {
+        const userDetails = this.getUserDetailsTemplate();
+        userDetails.userInfo.roles = roles;
+        userDetails.userInfo.id = idamId;
+        return userDetails;
+    }
+
     getUIConfiguration() {
         return {
             "googleAnalyticsKey": "UA-124734893-4",

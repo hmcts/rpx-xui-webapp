@@ -103,7 +103,7 @@ export class AppComponent implements OnInit {
         key: userInfo.id,
         custom: {
           roles: userInfo.roles,
-          orgId: '-1'
+          orgId: '-9999'
         }
       };
       console.log(this.featureService);

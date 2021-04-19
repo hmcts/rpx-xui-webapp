@@ -9,19 +9,15 @@ import { HealthCheckService } from './services/health-check.service';
 import { MediaViewerModule } from '@hmcts/media-viewer';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, GOV_UI_COMPONENTS, LAUNCHDARKLYKEY } from '@hmcts/rpx-xui-common-lib';
-import { EnvironmentConfig, ENVIRONMENT_CONFIG } from '../../models/environmentConfig.model';
 
 /**
  * Shared Module
  * Used to share common modules and components/containers across the app
  * FormsModule, CommonModule, ReactiveForms etc..
  */
- export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): string {
-  return envConfig.launchDarklyClientId || '';
-}
 
 @NgModule( {
-  imports: [RouterModule, CommonModule, MediaViewerModule, ExuiCommonLibModule.forRoot()],
+  imports: [RouterModule, CommonModule, MediaViewerModule, ExuiCommonLibModule.forChild()],
   declarations: [
     ...fromAppComponents.components,
     ...fromAppContainers.containers,
@@ -36,8 +32,7 @@ import { EnvironmentConfig, ENVIRONMENT_CONFIG } from '../../models/environmentC
   providers: [
     HealthCheckGuard,
     HealthCheckService,
-    WindowService,
-    { provide: LAUNCHDARKLYKEY, useFactory: launchDarklyClientIdFactory, deps: [ENVIRONMENT_CONFIG] },
+    WindowService
   ],
 })
 export class SharedModule {}

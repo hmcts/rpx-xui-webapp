@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@v2.79.5-hotfix-missing-payments-tab-alpha":
-  version "2.79.5-hotfix-missing-payments-tab-alpha"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.79.5-hotfix-missing-payments-tab-alpha.tgz#6120c4b27788889e5090f392032f03ecf340882a"
-  integrity sha512-6r48729lb4kebXW3uBfWX/PBZVnC7qlUdGZETk9EPZfLPwr6guHRIDVIO1ziNJjb/pTotFCK8lMxrDtQZkMeEA==
+"@hmcts/ccd-case-ui-toolkit@2.79.5":
+  version "2.79.5"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.79.5.tgz#6e9f56f3ecfc11ad27b9bdbaf6206efc860d55ad"
+  integrity sha512-uPASZjjoJ5W0nBcdvJhtrFiqMhML/GwMcXAJQdwGBnFGXDbHcxOn8xTb8p3mLJr0RtgQM4Cs7cV+ynRVmgShRw==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"

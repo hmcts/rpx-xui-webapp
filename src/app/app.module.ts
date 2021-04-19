@@ -36,7 +36,7 @@ import { CryptoWrapper } from './services/logger/cryptoWrapper';
 import { AbstractAppInsights, AppInsightsWrapper } from './services/logger/appInsightsWrapper';
 import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler';
 import { AcceptTermsService } from './services/acceptTerms/acceptTerms.service';
-import { ExuiCommonLibModule, LAUNCHDARKLYKEY } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule, FeatureToggleService, LAUNCHDARKLYKEY, LaunchDarklyService } from '@hmcts/rpx-xui-common-lib';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { ENVIRONMENT_CONFIG, EnvironmentConfig } from '../models/environmentConfig.model';
 import { CaseShareService } from './services/case/share-case.service';
@@ -68,7 +68,7 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
       level: NgxLoggerLevel.TRACE,
       disableConsoleLogging: false
     }),
-    ExuiCommonLibModule.forRoot(),
+    ExuiCommonLibModule.forChild(),
     NgIdleKeepaliveModule.forRoot(),
     PaymentLibModule,
   ],
@@ -97,6 +97,7 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
     AcceptTermsService,
     CaseShareService,
     { provide: LAUNCHDARKLYKEY, useFactory: launchDarklyClientIdFactory, deps: [ENVIRONMENT_CONFIG] },
+    { provide: FeatureToggleService, useClass: LaunchDarklyService },
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

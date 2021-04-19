@@ -1,12 +1,13 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router, RoutesRecognized } from '@angular/router';
-import { GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
+import { FeatureToggleService, FeatureUser, GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 
 import { propsExist } from '../../../../api/lib/objectUtilities';
 import { environment as config } from '../../../environments/environment';
 import * as fromRoot from '../../store';
+import { UserDetails, UserInfo } from '../../models/user-details.model';
 
 @Component({
   selector: 'exui-root',
@@ -27,7 +28,8 @@ export class AppComponent implements OnInit {
     private readonly googleTagManagerService: GoogleTagManagerService,
     private readonly timeoutNotificationsService: TimeoutNotificationsService,
     private readonly router: Router,
-    private readonly titleService: Title
+    private readonly titleService: Title,
+    private readonly featureService: FeatureToggleService
   ) {
 
     this.googleTagManagerService.init(config.googleTagManagerKey);
@@ -84,13 +86,27 @@ export class AppComponent implements OnInit {
    *  }
    * }
    */
-  public userDetailsHandler(userDetails) {
+  public userDetailsHandler(userDetails: UserDetails) {
 
     if (propsExist(userDetails, ['sessionTimeout'] ) && userDetails.sessionTimeout.totalIdleTime > 0) {
       const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
 
       this.addTimeoutNotificationServiceListener();
       this.initTimeoutNotificationService(idleModalDisplayTime, totalIdleTime);
+    }
+    this.initializeFeature(userDetails.userInfo);
+  }
+
+  public initializeFeature(userInfo: UserInfo) {
+    if (userInfo) {
+      const featureUser: FeatureUser = {
+        key: userInfo.id,
+        custom: {
+          roles: userInfo.roles,
+          orgId: '-1'
+        }
+      };
+      this.featureService.initialize(featureUser);
     }
   }
 

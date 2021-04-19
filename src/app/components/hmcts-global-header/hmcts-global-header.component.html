@@ -56,7 +56,7 @@
     <div class="hmcts-primary-navigation__nav">
       <nav class="hmcts-primary-navigation transparent-background" aria-label="Primary navigation">
         <ul class="hmcts-primary-navigation__list">
-          <li class="hmcts-primary-navigation__item" *ngFor="let item of items" >
+          <li class="hmcts-primary-navigation__item" *ngFor="let item of leftItems" >
             <a class="hmcts-primary-navigation__link" (click)="onEmitSubMenu(item)" [attr.aria-current]="item.active ? true: null" [routerLink]="item.href">{{item.text}}</a>
           </li>
         </ul>
@@ -65,8 +65,13 @@
     <div class="hmcts-primary-navigation__search">
       <!-- TODO: Should turn on and off -->
       <div class="hmcts-primary-navigation__item">
-        <a class="hmcts-search-toggle__button hmcts-primary-navigation__link transparent-background"
-          [attr.aria-current]="currentUrl === '/cases/case-search' ? true : null" [routerLink]="'/cases/case-search'">Find case</a>
+        <ul class="hmcts-primary-navigation__list">
+          <li class="hmcts-primary-navigation__item" *ngFor="let item of rightItems">
+            <a class="hmcts-primary-navigation__link" [ngClass]="{'hmcts-search-toggle__button transparent-background': item.search}" (click)="onEmitSubMenu(item)" [attr.aria-current]="item.active ? true: null" [routerLink]="item.href">{{item.text}}</a>
+          </li>
+        </ul>
+        <!-- <a class="hmcts-search-toggle__button hmcts-primary-navigation__link transparent-background"
+          [attr.aria-current]="currentUrl === '/cases/case-search' ? true : null" [routerLink]="'/cases/case-search'">Find case</a> -->
       </div>
     </div>
   </div>

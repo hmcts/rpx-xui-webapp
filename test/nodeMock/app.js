@@ -11,7 +11,7 @@ const CCDCaseConfig = require('./ccd/ccdCaseConfig/caseCreateConfigGenerator');
 const CCDCaseDetails = require('./ccd/ccdCaseConfig/caseDetailsConfigGenerator');
 
 const { getDLCaseConfig} = require('../ngIntegration/mockData/ccdCaseMock');
-
+const nodeAppMock = require('./nodeApp/mockData');
 const port = 3001;
 
 
@@ -135,6 +135,16 @@ function setUpcaseConfig() {
         // page2.show_condition = "TextField0=\"SHOW\"";
 
         res.send(caseEventConfig.getCase());
+    });
+
+
+
+
+    mockInstance.onGet('/api/user/details', (req, res) => {
+        // const roles = ["caseworker-ia-iacjudge", "caseworker"]
+        const roles =  ["caseworker-ia-caseofficer", "caseworker-ia-admofficer", "caseworker"]
+        const userdetails = nodeAppMock.getUserDetailsWithRolesAndIdamId(roles,"86876786866867867")
+        res.send(userdetails);
     });
 
 }

@@ -1,6 +1,7 @@
 const TaskList = require('./taskListTable');
 const BrowserWaits = require('../../../support/customWaits');
 var cucumberReporter = require('../../../support/reportLogger');
+const { $ } = require('protractor');
 
 class TaskListPage extends TaskList {
 
@@ -15,6 +16,46 @@ class TaskListPage extends TaskList {
 
         this.bannerMessageContainer = $('exui-info-message ') 
         this.infoMessages = $$('exui-info-message .hmcts-banner__message');
+
+        
+    }
+
+    async validateViewForRelease(release){
+        if(release === "wa_release_1"){
+
+        }
+    }
+
+    getFilterContainerForRelease(release){ 
+       let filterContainer = null;
+       if (release === "wa_release_1") {
+           filterContainer = $('exui-available-tasks-filter');
+       } else if (release === "wa_release_2") {
+           filterContainer = $('');
+       } else {
+           throw new Error("Test input error. Unrecognized WA release provided." + release);
+       }
+    return filterContainer;
+   } 
+
+    async isTasksFilterDisplayedFromRelease(release){ 
+        return await this.getFilterContainerForRelease(release).isDisplayed();
+    }
+
+    async isAVailableTaskFilterOpenFromRelease(release){
+        return await this.getFilterContainerForRelease(release).$('xuilib-checkbox-list').isDisplayed();
+    }
+
+    async toggleAvailableTaskFilterFromRelease(release) {
+        return await this.getFilterContainerForRelease(release).$('exui-available-tasks-filter summary').click();
+    }
+    
+    async filterLocationClickSelectAllFromRelease(release){
+        return await this.getFilterContainerForRelease(release).$('select-all input').click();
+    }
+
+    async filterLocationClickLocationAtIndexFromRelease(index, release) {
+        return await this.getFilterContainerForRelease(release).$(`input[id=select_${index}]`).click();
     }
 
     async amOnPage() {

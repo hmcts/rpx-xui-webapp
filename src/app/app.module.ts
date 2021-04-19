@@ -68,7 +68,7 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
       level: NgxLoggerLevel.TRACE,
       disableConsoleLogging: false
     }),
-    ExuiCommonLibModule.forChild(),
+    ExuiCommonLibModule,
     NgIdleKeepaliveModule.forRoot(),
     PaymentLibModule,
   ],

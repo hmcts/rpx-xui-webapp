@@ -37,7 +37,7 @@ export function getMockTasks(): Task[] {
   return [
     {
       id: '1549476532065586',
-      caseReference: '1549 4765 3206 5586',
+      case_id: '1549476532065586',
       caseName: 'Kili Muso',
       caseCategory: 'Protection',
       location: 'Taylor House',
@@ -56,7 +56,7 @@ export function getMockTasks(): Task[] {
     },
     {
       id: '1549476532065587',
-      caseReference: '1549 4765 3206 5587',
+      case_id: '1549476532065587',
       caseName: 'Mankai Lit',
       caseCategory: 'Revocation',
       location: 'Taylor House',

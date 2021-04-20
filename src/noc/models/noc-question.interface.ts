@@ -1,8 +1,8 @@
 export class NocQuestion {
-  case_type_id: string;
-  order: string;
-  question_text: string;
-  answer_field_type: {
+  public case_type_id: string;
+  public order: string;
+  public question_text: string;
+  public answer_field_type: {
     id: string;
     type: string;
     min: null | number;
@@ -12,8 +12,8 @@ export class NocQuestion {
     complex_fields: [];
     collection_field_type: null | any;
   };
-  display_context_parameter: string;
-  challenge_question_id: string;
-  answer_field: string;
-  question_id: string;
+  public display_context_parameter: string;
+  public challenge_question_id: string;
+  public answer_field: string;
+  public question_id: string;
 }

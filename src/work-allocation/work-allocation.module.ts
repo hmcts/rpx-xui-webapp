@@ -10,7 +10,7 @@ import { SharedModule } from '../app/shared/shared.module';
 import { WorkAllocationComponentsModule } from './components/work-allocation.components.module';
 import * as fromContainers from './containers';
 import { WorkAllocationFeatureToggleGuard } from './guards';
-import { WorkAllocationTaskService } from './services';
+import { CaseworkerDataService, WorkAllocationTaskService } from './services';
 import { workAllocationRouting } from './work-allocation-feature.routes';
 
 // from containers
@@ -29,7 +29,7 @@ import { workAllocationRouting } from './work-allocation-feature.routes';
   declarations: [
     ...fromContainers.containers
   ],
-  providers: [WorkAllocationTaskService, WorkAllocationFeatureToggleGuard, AlertService],
+  providers: [WorkAllocationTaskService, WorkAllocationFeatureToggleGuard, AlertService, CaseworkerDataService],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class WorkAllocationModule {

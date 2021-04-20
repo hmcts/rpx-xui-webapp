@@ -111,7 +111,7 @@ describe('TaskListComponent', () => {
     button.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
-    // check the emitter had been called and that it gets called with the first field which is caseReference
+    // check the emitter had been called and that it gets called with the first field which is caseReference (caseId)
     expect(component.sortEvent.emit).toHaveBeenCalled();
     expect(component.sortEvent.emit).toHaveBeenCalledWith('caseId');
   });

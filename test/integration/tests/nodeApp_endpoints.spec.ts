@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import {http} from './utils';
 
 import Request from './utils/request';
+import { setTestContext } from './utils/helper';
 
 describe('nodeApp endpoint', () => {
   const userName = 'lukesuperuserxui@mailnesia.com';
@@ -10,7 +11,8 @@ describe('nodeApp endpoint', () => {
   // const userName = 'peterxuisuperuser@mailnesia.com';
   // const password = 'Monday01';
 
-  beforeEach(() => {
+  beforeEach(function ()  {
+    setTestContext(this);
     Request.clearSession();
   });
 

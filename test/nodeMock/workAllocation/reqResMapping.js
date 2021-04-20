@@ -37,6 +37,16 @@ module.exports = {
         },
         '/workallocation/task/:taskId/claim' : (req,res) => {
             res.send();
+        },
+        '/workallocation/task/:taskId/unclaim': (req, res) => {
+            res.send();
+        },
+
+        '/workallocation/task/:taskId/complete': (req, res) => {
+            res.send();
+        },
+        '/workallocation/task/:taskId/cancel': (req, res) => {
+            res.send();
         }
     }
 }

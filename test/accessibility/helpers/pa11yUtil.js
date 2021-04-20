@@ -10,29 +10,41 @@ const customValidations = require('./customeA11yValidations');
 
 const fs = require('fs');
 
-let browser = null;
+let testBrowser = null;
 let page = null;
-async function getBrowser(){
 
-    if (browser === null){
-        browser = await puppeteer.launch({
-            ignoreHTTPSErrors: false,
-            headless: conf.headless
-        });
-    }
-    return browser;
+async function initBrowser(){
+    testBrowser = await puppeteer.launch({
+        ignoreHTTPSErrors: false,
+        headless: conf.headless,
+        args: [
+            '--no-sandbox',
+            '--disable-dev-shm-usage', 
+        ],
+    });
+
+    page = await testBrowser.newPage();
+    await page.goto("http://localhost:4200/");
 }
 
-async function getPage(){
-    if(page === null){
-        const testBrowser = await getBrowser();
-        page = await testBrowser.newPage();
+async function pa11ytest(test, actions, startUrl, roles){
+    let isTestSuccess = false;
+    let retryCounter = 0;
+
+    while (!isTestSuccess && retryCounter < 3){
+        
+        try{
+            await pa11ytestRunner(test, actions, startUrl, roles);
+            isTestSuccess = true;
+        }catch(err){
+            retryCounter++;
+            console.log("Error running pallt test "+err);
+            console.log("Retrying test again for " + retryCounter );
+        }
     }
-     
-    return page;
 }
 
-async function pa11ytest(test, actions, startUrl,roles) {
+async function pa11ytestRunner(test, actions, startUrl,roles) {
     console.log("pally test with actions : " + test.test.title);
     console.log(actions);
 
@@ -78,20 +90,20 @@ async function pa11ytest(test, actions, startUrl,roles) {
     await page.setCookie(...cookies);
     // await page.goto("http://localhost:4200/");
 
-
     let result;
-    try {
 
+    await initBrowser();
+    try {
         result = await pa11y(startUrl, {
             browser: testBrowser,
             page: page,
             timeout: 60000,
             screenCapture: screenshotPath,
-            // log: {
-            //     debug: console.log,
-            //     error: console.error,
-            //     info: console.info
-            // },
+            log: {
+                debug: console.log,
+                error: console.error,
+                info: console.info
+            },
             actions: actions
         })
     } catch (err) {
@@ -104,13 +116,13 @@ async function pa11ytest(test, actions, startUrl,roles) {
         console.log("Test Execution time : " + elapsedTime);
         console.log(err);
         await page.close();
-        // await browser.close();
+        await testBrowser.close();
         throw err;
 
     }
 
     await page.close();
-    // await browser.close();
+    await testBrowser.close();
     const elapsedTime = Date.now() - startTime;
     result.executionTime = elapsedTime;
     result.screenshot = screenshotReportRef;

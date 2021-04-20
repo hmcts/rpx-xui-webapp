@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@2.79.4":
-  version "2.79.4"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.79.4.tgz#7d07685c0c25cc62eb9b570835b018c3eddeade2"
-  integrity sha512-kQfU8eNGo3BHlFc/LYmHqiKzDT29oOH6up98zrVTR6MRwEUpJ5VGqguPvpRNB3eA59yZ+YDYZt/d17Vi3D1T3Q==
+"@hmcts/ccd-case-ui-toolkit@2.79.5":
+  version "2.79.5"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.79.5.tgz#6e9f56f3ecfc11ad27b9bdbaf6206efc860d55ad"
+  integrity sha512-uPASZjjoJ5W0nBcdvJhtrFiqMhML/GwMcXAJQdwGBnFGXDbHcxOn8xTb8p3mLJr0RtgQM4Cs7cV+ynRVmgShRw==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
@@ -7221,10 +7221,10 @@ jju@^1.1.0:
   resolved "https://registry.yarnpkg.com/jju/-/jju-1.4.0.tgz#a3abe2718af241a2b2904f84a625970f389ae32a"
   integrity sha1-o6vicYryQaKykE+EpiWXDzia4yo=
 
-jose@^1.27.1:
-  version "1.28.0"
-  resolved "https://registry.yarnpkg.com/jose/-/jose-1.28.0.tgz#0803f8c71f43cd293a9d931c555c30531f5ca5dc"
-  integrity sha512-JmfDRzt/HSj8ipd9TsDtEHoLUnLYavG+7e8F6s1mx2jfVSfXOTaFQsJUydbjJpTnTDHP1+yKL9Ke7ktS/a0Eiw==
+jose@1.28.1, jose@^1.27.1:
+  version "1.28.1"
+  resolved "https://registry.yarnpkg.com/jose/-/jose-1.28.1.tgz#34a0f851a534be59ffab82a6e8845f6874e8c128"
+  integrity sha512-6JK28rFu5ENp/yxMwM+iN7YeaInnY9B9Bggjkz5fuwLiJhbVrl2O4SJr65bdNBPl9y27fdC3Mymh+FVCvozLIg==
   dependencies:
     "@panva/asn1.js" "^1.0.0"
 

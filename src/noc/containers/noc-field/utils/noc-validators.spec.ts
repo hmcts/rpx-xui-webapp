@@ -45,31 +45,31 @@ describe('NocValidators', () => {
   });
 
   it('dateValidator valid case', () => {
-    control.setValue('24/12/2019');
+    control.setValue('2019-12-24');
     const validator = NocValidators.dateValidator();
     expect(validator(control)).toBeUndefined();
   });
 
   it('dateValidator invalid case', () => {
-    control.setValue('24/13/2019');
+    control.setValue('2019-13-24');
     const validator = NocValidators.dateValidator();
     expect(validator(control)).toEqual({date: true, month: true, valid: false});
   });
 
   it('dateTimeValidator valid 12 hour case', () => {
-    control.setValue('24/12/2019 09:15:00');
+    control.setValue('2019-12-24T09:15:00.000');
     const validator = NocValidators.dateTimeValidator();
     expect(validator(control)).toBeUndefined();
   });
 
   it('dateTimeValidator valid 24 hour case', () => {
-    control.setValue('24/12/2019 22:00:00');
+    control.setValue('2019-12-24T22:00:00.000');
     const validator = NocValidators.dateTimeValidator();
     expect(validator(control)).toBeUndefined();
   });
 
   it('dateTimeValidator invalid case', () => {
-    control.setValue('24/13/2019 30:15:00');
+    control.setValue('2019-13-24T30:15:00.000');
     const validator = NocValidators.dateTimeValidator();
     expect(validator(control)).toEqual({datetime: true, month: true, valid: false});
   });

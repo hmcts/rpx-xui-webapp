@@ -27,7 +27,7 @@ Run `yarn start:ng` to start up the UI.
 Run `yarn test` to execute the unit tests on both the Angular and Node layers. Note that 
 `yarn test` is run on the build pipelines.
 
-## Linting
+## Linting 
 
 Run `yarn lint` to execute all linting across both Angular and Node layers. Note that this
 is run on the build pipelines.

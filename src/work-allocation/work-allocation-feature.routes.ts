@@ -14,6 +14,8 @@ import {
   WorkAllocationHomeComponent,
 } from './containers';
 import { WorkAllocationFeatureToggleGuard } from './guards';
+import { SeniorTribunalCaseworkerGuard } from './guards/senior-tribunal-caseworker-guard';
+import { TribunalCaseworkerGuard } from './guards/tribunal-caseworker-guard';
 import { TaskResolver } from './resolvers';
 
 export const ROUTES: Routes = [
@@ -36,21 +38,23 @@ export const ROUTES: Routes = [
             component: MyTasksComponent,
             data: {
               title: 'HMCTS Manage cases | My tasks', subTitle: 'My tasks'
-            }
+            },
+            canActivate: [ TribunalCaseworkerGuard ],
           },
           {
             path: 'available',
             component: AvailableTasksComponent,
             data: {
               title: 'HMCTS Manage cases | Available tasks', subTitle: 'Available tasks'
-            }
+            },
+            canActivate: [ TribunalCaseworkerGuard ],
           }
         ]
       },
       {
         path: 'task-manager',
         component: TaskManagerComponent,
-        canActivate: [ HealthCheckGuard, WorkAllocationFeatureToggleGuard ],
+        canActivate: [ HealthCheckGuard, WorkAllocationFeatureToggleGuard, SeniorTribunalCaseworkerGuard ],
         data: {
           title: 'HMCTS Manage cases | Task manager'
         },
@@ -64,7 +68,7 @@ export const ROUTES: Routes = [
       {
         path: ':taskId',
         resolve: { taskAndCaseworkers: TaskResolver },
-        canActivate: [ WorkAllocationFeatureToggleGuard ],
+        canActivate: [ WorkAllocationFeatureToggleGuard, TribunalCaseworkerGuard ],
         children: [
           {
             path: 'assign',

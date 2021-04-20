@@ -36,10 +36,11 @@ import { CryptoWrapper } from './services/logger/cryptoWrapper';
 import { AbstractAppInsights, AppInsightsWrapper } from './services/logger/appInsightsWrapper';
 import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler';
 import { AcceptTermsService } from './services/acceptTerms/acceptTerms.service';
-import { ExuiCommonLibModule, FeatureToggleService, LAUNCHDARKLYKEY, LaunchDarklyService } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { ENVIRONMENT_CONFIG, EnvironmentConfig } from '../models/environmentConfig.model';
 import { CaseShareService } from './services/case/share-case.service';
+import { MCLAUNCHDARKLYKEY, McLaunchDarklyService } from './shared/services/mc-launch-darkly-service';
 
 export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): string {
   return envConfig.launchDarklyClientId || '';
@@ -96,8 +97,8 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
     },
     AcceptTermsService,
     CaseShareService,
-    { provide: LAUNCHDARKLYKEY, useFactory: launchDarklyClientIdFactory, deps: [ENVIRONMENT_CONFIG] },
-    { provide: FeatureToggleService, useClass: LaunchDarklyService },
+    { provide: MCLAUNCHDARKLYKEY, useFactory: launchDarklyClientIdFactory, deps: [ENVIRONMENT_CONFIG] },
+    { provide: FeatureToggleService, useClass: McLaunchDarklyService },
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

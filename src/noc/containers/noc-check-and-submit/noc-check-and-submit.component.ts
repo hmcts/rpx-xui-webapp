@@ -3,7 +3,8 @@ import { FormGroup } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { NocAnswer, NocEvent, NocHttpError, NocNavigation, NocNavigationEvent, NocQuestion } from '../../models';
+import { AFFIRMATION_DEFAULT_DISAGREE_ERROR, AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR } from '../../constants/nocErrorMap.enum';
+import { NocAnswer, NocEvent, NocNavigation, NocNavigationEvent, NocQuestion } from '../../models';
 import * as fromFeature from '../../store';
 
 @Component({
@@ -27,7 +28,12 @@ export class NocCheckAndSubmitComponent implements OnInit, OnDestroy {
   public affirmationAgreedSub: Subscription;
   public affirmationAgreed: boolean = false;
 
-  public validationErrors$: Observable<NocHttpError>;
+  public notifyEveryPartySub: Subscription;
+  public notifyEveryParty: boolean = false;
+
+  public validationErrors$: Observable<any>;
+  public hasDisagreeError$: Observable<boolean>;
+  public hasNotifyEveryPartyError$: Observable<boolean>;
 
   public caseReferenceSub: Subscription;
   public caseRefernce: string;
@@ -56,6 +62,11 @@ export class NocCheckAndSubmitComponent implements OnInit, OnDestroy {
                 return questions.find(ques => ques.question_id === answer.question_id).question_text;
               }
             )),
+            question_type: this.questions$.pipe(map(
+              questions => {
+                return questions.find(ques => ques.question_id === answer.question_id).answer_field_type.type;
+              }
+            )),
             value: answer.value
           };
           answersWithQuestionText.push(nocAnswerWithQuestionText);
@@ -64,7 +75,15 @@ export class NocCheckAndSubmitComponent implements OnInit, OnDestroy {
       }));
     this.affirmationAgreedSub = this.store.pipe(select(fromFeature.affirmationAgreed)).subscribe(
       affirmationAgree => this.affirmationAgreed = affirmationAgree);
+    this.notifyEveryPartySub = this.store.pipe(select(fromFeature.notifyEveryParty)).subscribe(
+      notifyEveryParty => this.notifyEveryParty = notifyEveryParty);
     this.validationErrors$ = this.store.pipe(select(fromFeature.validationErrors));
+    this.hasDisagreeError$ = this.validationErrors$.pipe(map(errors => {
+      return errors ? errors.hasOwnProperty(AFFIRMATION_DEFAULT_DISAGREE_ERROR.code) : false;
+    }));
+    this.hasNotifyEveryPartyError$ = this.validationErrors$.pipe(map(errors => {
+      return errors ? errors.hasOwnProperty(AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR.code) : false;
+    }));
     this.caseReferenceSub = this.store.pipe(select(fromFeature.caseReference)).subscribe(
       caseReference => this.caseRefernce = caseReference);
     this.nocAnswersSub = this.store.pipe(select(fromFeature.answers)).subscribe(
@@ -83,19 +102,31 @@ export class NocCheckAndSubmitComponent implements OnInit, OnDestroy {
   }
 
   public verifyAndSubmitNoC(): void {
-    if (this.affirmationAgreed) {
+    let affirmationError;
+    if (this.affirmationAgreed && this.notifyEveryParty) {
       const nocEvent: NocEvent = {
-        caseReference: this.caseRefernce,
-        nocAnswers: this.nocAnswers
+        case_id: this.caseRefernce,
+        answers: this.nocAnswers
       };
       this.store.dispatch(new fromFeature.SubmitNoc(nocEvent));
+    } else if (this.affirmationAgreed && !this.notifyEveryParty) {
+      affirmationError = { AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR };
+    } else if (!this.affirmationAgreed && this.notifyEveryParty) {
+      affirmationError = { AFFIRMATION_DEFAULT_DISAGREE_ERROR };
     } else {
-      this.store.dispatch(new fromFeature.SetAffirmationDisagreeError());
+      affirmationError = {
+        AFFIRMATION_DEFAULT_DISAGREE_ERROR,
+        AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR
+      };
+    }
+    if (affirmationError) {
+      this.store.dispatch(new fromFeature.SetAffirmationError(affirmationError));
     }
   }
 
   public ngOnDestroy(): void {
     this.affirmationAgreedSub.unsubscribe();
+    this.notifyEveryPartySub.unsubscribe();
     this.caseReferenceSub.unsubscribe();
     this.nocAnswersSub.unsubscribe();
   }

@@ -2,6 +2,9 @@
   <ng-container *ngSwitchCase="fieldType.STRING">
     {{ task[config.name] }}
   </ng-container>
+  <ng-container *ngSwitchCase="fieldType.CASE_REFERENCE_STRING">
+    {{ task[config.name] | ccdCaseReference }}
+  </ng-container>
   <ng-container *ngSwitchCase="fieldType.DATE_DUE">
     <xuilib-due-date [dueDate]="toDate(task[config.name])"></xuilib-due-date>
   </ng-container>

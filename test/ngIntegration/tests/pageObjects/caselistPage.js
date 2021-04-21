@@ -23,7 +23,8 @@ class CaseListPage{
     }
 
     async isWorkbasketFilterDisplayed(fieldConfig){
-        // await this.amOnPage(); 
+        // await this.amOnPage();
+        await BrowserWaits.waitForElement(this.dynamicFiltersContainer);
         return await this.dynamicFiltersContainer.$(`#dynamicFilters .form-group #${fieldConfig.field.id}`).isDisplayed(); 
     }
 

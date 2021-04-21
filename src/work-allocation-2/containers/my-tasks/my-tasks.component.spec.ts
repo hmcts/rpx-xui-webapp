@@ -8,7 +8,7 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 import { SessionStorageService } from 'src/app/services';
 
-import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
+
 import { Task } from '../../models/tasks';
 import { CaseworkerDataService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
 import { getMockTasks } from '../../tests/utils.spec';
@@ -44,10 +44,8 @@ describe('MyTasksComponent', () => {
         CdkTableModule,
         ExuiCommonLibModule,
         RouterTestingModule,
-        WorkAllocationComponentsModule,
         WorkAllocationModule2
       ],
-      declarations: [MyTasksComponent, WrapperComponent, TaskListComponent, TaskListRelease2Component],
       providers: [
         {provide: WorkAllocationTaskService, useValue: mockTaskService},
         {provide: AlertService, useValue: mockAlertService},

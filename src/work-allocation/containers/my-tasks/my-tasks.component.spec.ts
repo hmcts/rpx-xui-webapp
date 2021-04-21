@@ -16,7 +16,7 @@ import { TaskListComponent } from '../task-list/task-list.component';
 import { MyTasksComponent } from './my-tasks.component';
 import { TaskFieldType } from '../../../work-allocation/enums';
 import { WorkAllocationModule2 } from '../../../work-allocation-2/work-allocation2.module';
-import { TaskListRelease2Component } from '../../../work-allocation-2/release2/containers';
+import { TaskListComponent } from '../../../work-allocation-2/containers';
 
 @Component({
   template: `

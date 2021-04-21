@@ -1,10 +1,10 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
 
 import { TaskFieldType } from './../../enums';
-import { Task, TaskFieldConfig } from './../../models/tasks';
+import { Task, TaskFieldConfig } from '.././../models/tasks';
 
 @Component({
-  selector: 'exui-task-field',
+  selector: 'exui-task-field-v2',
   templateUrl: './task-field.component.html',
   styleUrls: ['task-field.component.scss'],
   encapsulation: ViewEncapsulation.None

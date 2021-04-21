@@ -35,6 +35,12 @@
   <ng-container *ngSwitchCase="fieldType.CASE_REFERENCE">
     <exui-case-reference-field [caseReference]="task[config.name]"></exui-case-reference-field>
   </ng-container>
+  <ng-container *ngSwitchCase="fieldType.CASE_NAME">
+    <exui-case-name-field [caseName]="task[config.name]" [caseId]="task.case_id"></exui-case-name-field>
+  </ng-container>
+  <ng-container *ngSwitchCase="fieldType.TASK_NAME">
+    <exui-task-name-field [taskName]="task[config.name]" [caseId]="task.case_id"></exui-task-name-field>
+  </ng-container>
   <ng-container *ngSwitchCase="fieldType.DERIVED_ICON">
     <exui-derived-icon-field [task]="task" [sourceColumn]="config.sourceColumn" [matchValue]="config.matchValue"></exui-derived-icon-field>
   </ng-container>

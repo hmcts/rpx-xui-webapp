@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges } from '@angular/core';
 
-import { AppConstants } from '../../../../app/app.constants';
+import { AppConstants } from '../../../app/app.constants';
 
 @Component({
   selector: 'exui-task-name-field',

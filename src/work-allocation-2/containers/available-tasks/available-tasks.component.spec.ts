@@ -6,27 +6,25 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
-import { TaskListRelease2Component } from '../../../work-allocation-2/release2/containers';
-import { WorkAllocationModule2 } from '../../..//work-allocation-2/work-allocation2.module';
 
-import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
-import { InformationMessage } from '../../models/comms';
-import * as dtos from '../../models/dtos';
-import { InvokedTaskAction, Task } from '../../models/tasks';
-import { InfoMessageCommService, LocationDataService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
-import { getMockLocations, getMockTasks } from '../../tests/utils.spec';
+import { WorkAllocationRelease2ComponentsModule } from '../../components/work-allocation.components.module';
+import { InfoMessage, InfoMessageType, TaskActionIds } from '../../../../work-allocation/enums';
+import { InformationMessage } from '../../../../work-allocation/models/comms';
+import * as dtos from '../../../../work-allocation/models/dtos';
+import { InvokedTaskAction, Task } from '../../../../work-allocation/models/tasks';
+import { InfoMessageCommService, LocationDataService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../../../work-allocation/services';
+import { getMockLocations, getMockTasks } from '../../../../work-allocation/tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { AvailableTasksComponent } from './available-tasks.component';
 
 @Component({
-  template: `<exui-available-tasks></exui-available-tasks>`
+  template: `<exui-available-tasks-v2></exui-available-tasks-v2>`
 })
 class WrapperComponent {
   @ViewChild(AvailableTasksComponent) public appComponentRef: AvailableTasksComponent;
 }
 
-describe('AvailableTasksComponent', () => {
+describe('AvailableTasksRelease2Component', () => {
   let component: AvailableTasksComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -46,10 +44,9 @@ describe('AvailableTasksComponent', () => {
         CdkTableModule,
         ExuiCommonLibModule,
         RouterTestingModule,
-        WorkAllocationComponentsModule,
-        WorkAllocationModule2
+        WorkAllocationRelease2ComponentsModule
       ],
-      declarations: [ AvailableTasksComponent, WrapperComponent, TaskListComponent, TaskListRelease2Component ],
+      declarations: [ AvailableTasksComponent, WrapperComponent, TaskListComponent ],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
         { provide: LocationDataService, useValue: mockLocationService },
@@ -96,44 +93,6 @@ describe('AvailableTasksComponent', () => {
     expect(headerCells[headerCells.length - 1].textContent.trim()).toEqual('');
   });
 
-  it('should handle a click to sort on the caseReference heading', async () => {
-    const element = fixture.debugElement.nativeElement;
-    const button = element.querySelector('#sort_by_caseId');
-    button.dispatchEvent(new Event('click'));
-    fixture.detectChanges();
-
-    const searchRequest = component.getSearchTaskRequest();
-    // Make sure the search request looks right.
-    expect(searchRequest.search_parameters.length).toEqual(2);
-    expect(searchRequest.search_parameters[0].key).toEqual('location');
-    expect(searchRequest.search_parameters[0].values).toContain('a');
-    expect(searchRequest.search_parameters[1].key).toEqual('state');
-
-    expect(searchRequest.sorting_parameters[0].sort_order).toBe('asc');
-    expect(searchRequest.sorting_parameters[0].sort_by).toBe('caseId');
-
-    // Let's also make sure that the tasks were re-requested with the new sorting.
-    const payload = { searchRequest, view: component.view };
-    expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
-
-    // Do it all over again to make sure it reverses the order.
-    button.dispatchEvent(new Event('click'));
-    fixture.detectChanges();
-
-    const newSearchRequest = component.getSearchTaskRequest();
-    // Make sure the search request looks right.
-    expect(newSearchRequest.search_parameters.length).toEqual(2);
-    expect(newSearchRequest.search_parameters[0].key).toEqual('location');
-    expect(newSearchRequest.search_parameters[1].key).toEqual('state');
-
-    expect(newSearchRequest.sorting_parameters[0].sort_order).toBe('desc'); // Important!
-    expect(newSearchRequest.sorting_parameters[0].sort_by).toBe('caseId'); // Important!
-
-    // Let's also make sure that the tasks were re-requested with the new sorting.
-    const newPayload = { searchRequest: newSearchRequest, view: component.view };
-    expect(mockTaskService.searchTask).toHaveBeenCalledWith(newPayload);
-  });
-
   it('should not show the footer when there are tasks', () => {
     const element = fixture.debugElement.nativeElement;
     const footerRow = element.querySelector('.footer-row');
@@ -155,35 +114,6 @@ describe('AvailableTasksComponent', () => {
     const footerCell = element.querySelector('.cell-footer');
     expect(footerCell).toBeDefined();
     expect(footerCell.textContent.trim()).toEqual(component.emptyMessage);
-  });
-
-  it('should load tasks when the a new location selection is applied', () => {
-    const element = fixture.debugElement.nativeElement;
-
-    // Click on the summary.
-    const summary = element.querySelector('#toggleFilter');
-    summary.dispatchEvent(new Event('click'));
-
-    // Now click on the "Select all" option.
-    const selectAll = element.querySelector('#select_all');
-    selectAll.dispatchEvent(new Event('change'));
-
-    // And NOW click on "Apply".
-    const apply = element.querySelector('#applyFilter');
-    apply.dispatchEvent(new Event('click'));
-
-    const searchRequest = component.getSearchTaskRequest();
-    // Make sure the search request looks right.
-    expect(searchRequest.search_parameters.length).toEqual(2);
-    expect(searchRequest.search_parameters[0].operator).toEqual('IN');
-    expect(searchRequest.search_parameters[1].key).toEqual('state');
-    for (const loc of mockLocations) {
-      expect(searchRequest.search_parameters[1].values).toContain('unassigned');
-    }
-
-    // Let's also make sure that the tasks were re-requested with the new sorting.
-    const payload = { searchRequest, view: component.view };
-    expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
   });
 
   describe('claimTask()', () => {

@@ -1,24 +1,22 @@
 import { Component } from '@angular/core';
+import { InfoMessage, InfoMessageType, TaskActionIds } from '../../../work-allocation-2/enums';
+import { Location, SearchTaskRequest } from '../../../work-allocation-2/models/dtos';
+import { InvokedTaskAction, Task } from '../../..//work-allocation-2/models/tasks';
+import { handleFatalErrors, REDIRECTS } from '../../../work-allocation-2/utils';
+import { TaskFieldConfig } from '../../../work-allocation/models/tasks';
+
 
 import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
-import { ConfigConstants as ConfigConstantsRelease2 } from '../../release2/components/constants';
-import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
-import { Location, SearchTaskRequest } from '../../models/dtos';
-import { InvokedTaskAction, Task, TaskFieldConfig } from '../../models/tasks';
-import { handleFatalErrors, REDIRECTS } from '../../utils';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
 @Component({
-  selector: 'exui-available-tasks',
+  selector: 'exui-available-tasks-r2',
   templateUrl: 'available-tasks.component.html'
 })
 export class AvailableTasksComponent extends TaskListWrapperComponent {
   private selectedLocations: Location[];
 
   public get fields(): TaskFieldConfig[] {
-    if (this.currentFeature === 'WorkAllocationRelease2') {
-      return ConfigConstantsRelease2.AvailableTasks;
-    }
     return ConfigConstants.AvailableTasks;
   }
 

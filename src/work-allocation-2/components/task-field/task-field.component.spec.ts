@@ -1,24 +1,24 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TaskFieldType, TaskView } from './../../enums';
-import { Task, TaskFieldConfig } from './../../models/tasks';
-import { WorkAllocationComponentsModule } from './../work-allocation.components.module';
-import { TaskFieldComponent } from './task-field.component';
+import { TaskFieldType, TaskView } from './../../../enums';
+import { Task, TaskFieldConfig } from './../../../models/tasks';
+import { WorkAllocationRelease2ComponentsModule } from '../work-allocation.components.module';
+import { TaskFieldRelease2Component } from './task-field.component';
 
 @Component({
-  template: `<exui-task-field [config]="config" [task]="task"></exui-task-field>`
+  template: `<exui-task-field-v2 [config]="config" [task]="task"></exui-task-field-v2>`
 })
 class WrapperComponent {
-  @ViewChild(TaskFieldComponent) public appComponentRef: TaskFieldComponent;
+  @ViewChild(TaskFieldRelease2Component) public appComponentRef: TaskFieldRelease2Component;
   @Input() public config: TaskFieldConfig;
   @Input() public task: Task;
 }
 
 describe('WorkAllocation', () => {
 
-  describe('TaskFieldComponent', () => {
-    let component: TaskFieldComponent;
+  describe('TaskFieldRelease2Component', () => {
+    let component: TaskFieldRelease2Component;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
 
@@ -34,7 +34,7 @@ describe('WorkAllocation', () => {
     beforeEach(async(() => {
       TestBed.configureTestingModule({
         declarations: [ WrapperComponent ],
-        imports: [ WorkAllocationComponentsModule ]
+        imports: [ WorkAllocationRelease2ComponentsModule ]
       })
       .compileComponents();
     }));
@@ -662,6 +662,113 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe('The case reference');
+      expect(element.getAttribute('href')).toBe(`/cases/case-details/The case reference`);
+
+      // Make task.link null.
+      task.case_id = null;
+      fixture.detectChanges();
+      expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
+    });
+
+    it('should handle a CASE_NAME type', () => {
+      // No anchor shown yet.
+      expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
+
+      // Set up the config and the task.
+      const config: TaskFieldConfig = getConfig('caseName', TaskFieldType.CASE_NAME);
+      const task: Task = {
+        id: 'The task ID',
+        case_id: '1',
+        caseName: 'The case name',
+        caseCategory: 'The case category',
+        location: 'The location',
+        taskName: 'The task name',
+        dueDate: new Date(),
+        actions: []
+      };
+
+      // Add the task and it should work (showing the link).
+      component.config = config;
+      component.task = task;
+      fixture.detectChanges();
+      let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
+      expect(element).not.toBeNull();
+      expect(element.textContent.trim()).toBe(task.caseName);
+      expect(element.getAttribute('href')).toBe(`/cases/case-details/1`);
+
+      // Change the value of task.case_id.
+      task.case_id = 'NEW CASE REFERENCE';
+      fixture.detectChanges();
+      expect(element).not.toBeNull();
+      element = fixture.debugElement.nativeElement.querySelector('a');
+      expect(element.textContent.trim()).toBe(task.caseName);
+      expect(element.getAttribute('href')).toBe(`/cases/case-details/NEW CASE REFERENCE`);
+
+      // Clear out the value of task.link and we should no longer have the anchor.
+      task.case_id = undefined;
+      fixture.detectChanges();
+      expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
+
+      // Add it back for a moment...
+      task.case_id = 'The case reference';
+      fixture.detectChanges();
+      expect(element).not.toBeNull();
+      element = fixture.debugElement.nativeElement.querySelector('a');
+      expect(element.textContent.trim()).toBe(task.caseName);
+      expect(element.getAttribute('href')).toBe(`/cases/case-details/The case reference`);
+
+      // Make task.link null.
+      task.case_id = null;
+      fixture.detectChanges();
+      expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
+    });
+
+    // Note: test will need to be changed when additional functionality required for the Task tab
+    it('should handle a TASK_NAME type', () => {
+      // No anchor shown yet.
+      expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
+
+      // Set up the config and the task.
+      const config: TaskFieldConfig = getConfig('taskName', TaskFieldType.TASK_NAME);
+      const task: Task = {
+        id: 'The task ID',
+        case_id: '1',
+        caseName: 'The case name',
+        caseCategory: 'The case category',
+        location: 'The location',
+        taskName: 'The task name',
+        dueDate: new Date(),
+        actions: []
+      };
+
+      // Add the task and it should work (showing the link).
+      component.config = config;
+      component.task = task;
+      fixture.detectChanges();
+      let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
+      expect(element).not.toBeNull();
+      expect(element.textContent.trim()).toBe(task.taskName);
+      expect(element.getAttribute('href')).toBe(`/cases/case-details/1`);
+
+      // Change the value of task.case_id.
+      task.case_id = 'NEW CASE REFERENCE';
+      fixture.detectChanges();
+      expect(element).not.toBeNull();
+      element = fixture.debugElement.nativeElement.querySelector('a');
+      expect(element.textContent.trim()).toBe(task.taskName);
+      expect(element.getAttribute('href')).toBe(`/cases/case-details/NEW CASE REFERENCE`);
+
+      // Clear out the value of task.link and we should no longer have the anchor.
+      task.case_id = undefined;
+      fixture.detectChanges();
+      expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
+
+      // Add it back for a moment...
+      task.case_id = 'The case reference';
+      fixture.detectChanges();
+      expect(element).not.toBeNull();
+      element = fixture.debugElement.nativeElement.querySelector('a');
+      expect(element.textContent.trim()).toBe(task.taskName);
       expect(element.getAttribute('href')).toBe(`/cases/case-details/The case reference`);
 
       // Make task.link null.

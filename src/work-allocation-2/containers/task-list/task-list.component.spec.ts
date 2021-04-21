@@ -4,17 +4,17 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
 
-import { ConfigConstants } from '../../components/constants';
-import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { TaskService, TaskSort } from '../../enums';
-import { Task, TaskAction, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
-import { WorkAllocationTaskService } from '../../services';
-import { getMockTasks, MockRouter } from '../../tests/utils.spec';
+import { ConfigConstants } from '../../../../work-allocation/components/constants';
+import { WorkAllocationRelease2ComponentsModule } from '../../components/work-allocation.components.module';
+import { TaskService, TaskSort } from '../../../../work-allocation/enums';
+import { Task, TaskAction, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../../../work-allocation/models/tasks';
+import { WorkAllocationTaskService } from '../../../../work-allocation/services';
+import { getMockTasks, MockRouter } from '../../../../work-allocation/tests/utils.spec';
 import { TaskListComponent } from './task-list.component';
 
 @Component({
   template: `
-    <exui-task-list [fields]='fields' [tasks]='tasks' [taskServiceConfig]="taskServiceConfig" [sortedBy]="TaskSortField" ></exui-task-list>`
+    <exui-task-list-v2 [fields]='fields' [tasks]='tasks' [taskServiceConfig]="taskServiceConfig" [sortedBy]="TaskSortField" ></exui-task-list-v2>`
 })
 class WrapperComponent {
   @ViewChild(TaskListComponent) public appComponentRef: TaskListComponent;
@@ -50,7 +50,7 @@ function getTaskService(): TaskServiceConfig {
   };
 }
 
-describe('TaskListComponent', () => {
+describe('TaskListRelease2Component', () => {
   let component: TaskListComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -61,7 +61,7 @@ describe('TaskListComponent', () => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     TestBed.configureTestingModule({
       imports: [
-        WorkAllocationComponentsModule,
+        WorkAllocationRelease2ComponentsModule,
         CdkTableModule
       ],
       declarations: [TaskListComponent, WrapperComponent],

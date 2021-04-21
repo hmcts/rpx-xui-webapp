@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@2.79.6":
-  version "2.79.6"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.79.6.tgz#c1772351264c21da0f3f95168e3ca56f84bd93d0"
-  integrity sha512-8dKDgu3cLRjMLusxltraDfQljwDvg64p551nWb81eUTgffsOzoElBSsi7nebZXyrhlGsCmvQI3TlBKQE1/GYIw==
+"@hmcts/ccd-case-ui-toolkit@v2.79.6-missing-ftpa-tab-alpha":
+  version "2.79.6-missing-ftpa-tab-alpha"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.79.6-missing-ftpa-tab-alpha.tgz#ce6db8806a4df4517a4b1f255728018c6615b5a6"
+  integrity sha512-Bky1NtFzB6T2xmZ+lhrLk9i/kXEFzQAmtJYfZO5wfJHsbreZmfXKSq1BvtSthUbIPJQ+9TXY80753zXMSdAkCw==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"

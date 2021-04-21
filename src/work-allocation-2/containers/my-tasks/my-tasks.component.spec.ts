@@ -9,14 +9,14 @@ import { of } from 'rxjs';
 import { SessionStorageService } from 'src/app/services';
 
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { WorkAllocationRelease2ComponentsModule } from '../../../work-allocation/release2/components/work-allocation.components.module';
 import { Task } from '../../models/tasks';
 import { CaseworkerDataService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
 import { getMockTasks } from '../../tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { MyTasksComponent } from './my-tasks.component';
-import { TaskListRelease2Component } from '../../../work-allocation/release2/containers';
 import { TaskFieldType } from '../../../work-allocation/enums';
+import { TaskListRelease2Component } from '../../../work-allocation-2/release2/containers';
+import { WorkAllocationModule2 } from 'src/work-allocation-2/work-allocation2.module';
 
 @Component({
   template: `
@@ -45,7 +45,7 @@ describe('MyTasksComponent', () => {
         ExuiCommonLibModule,
         RouterTestingModule,
         WorkAllocationComponentsModule,
-        WorkAllocationRelease2ComponentsModule
+        WorkAllocationModule2
       ],
       declarations: [MyTasksComponent, WrapperComponent, TaskListComponent, TaskListRelease2Component],
       providers: [

@@ -6,9 +6,10 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
+import { TaskListRelease2Component } from '../../../work-allocation-2/release2/containers';
+import { WorkAllocationModule2 } from '../../../work-allocation-2/work-allocation2.module';
 
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { WorkAllocationRelease2ComponentsModule } from '../../../work-allocation/release2/components/work-allocation.components.module';
 import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
 import { InformationMessage } from '../../models/comms';
 import * as dtos from '../../models/dtos';
@@ -17,7 +18,6 @@ import { InfoMessageCommService, LocationDataService, WorkAllocationFeatureServi
 import { getMockLocations, getMockTasks } from '../../tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { AvailableTasksComponent } from './available-tasks.component';
-import { TaskListRelease2Component } from '../../../work-allocation/release2/containers';
 
 @Component({
   template: `<exui-available-tasks></exui-available-tasks>`
@@ -47,7 +47,7 @@ describe('AvailableTasksComponent', () => {
         ExuiCommonLibModule,
         RouterTestingModule,
         WorkAllocationComponentsModule,
-        WorkAllocationRelease2ComponentsModule
+        WorkAllocationModule2
       ],
       declarations: [ AvailableTasksComponent, WrapperComponent, TaskListComponent, TaskListRelease2Component ],
       providers: [

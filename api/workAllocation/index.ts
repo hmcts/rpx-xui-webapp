@@ -28,7 +28,8 @@ import {
   preparePostTaskUrlAction,
   prepareRoleApiRequest,
   prepareRoleApiUrl,
-  prepareSearchTaskUrl
+  prepareSearchTaskUrl,
+  prepareTaskSearchForCompletable
 } from './util';
 
 export const baseWorkAllocationTaskUrl = getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH);
@@ -45,6 +46,9 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
     const getTaskPath: string = prepareGetTaskUrl(baseWorkAllocationTaskUrl, req.params.taskId);
 
     const jsonResponse = await handleTaskGet(getTaskPath, req);
+    if (jsonResponse && jsonResponse.task && jsonResponse.task.due_date) {
+      jsonResponse.task.dueDate = jsonResponse.task.due_date;
+    }
     res.status(200);
     res.send(jsonResponse);
   } catch (error) {
@@ -63,8 +67,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     res.status(status);
     // Assign actions to the tasks on the data from the API.
     if (data) {
-      const caseworkers: Caseworker[] = await retrieveAllCaseWorkers(req, res);
-      assignActionsToTasks(data.tasks, req.body.view, caseworkers);
+      assignActionsToTasks(data.tasks, req.body.view);
     }
 
     // Send the (possibly modified) data back in the Response.
@@ -176,6 +179,24 @@ export async function searchCaseWorker(req: EnhancedRequest, res: Response, next
     res.status(status);
     res.send(data);
   } catch (error) {
+    next(error);
+  }
+}
+
+export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Response, next: NextFunction) {
+  try {
+    const postTaskPath: string = prepareTaskSearchForCompletable(baseWorkAllocationTaskUrl);
+    const reqBody = {
+      "case_id": req.body.searchRequest.ccdId,
+      "case_jurisdiction": req.body.searchRequest.jurisdiction,
+      "case_type": req.body.searchRequest.caseTypeId,
+      "event_id": req.body.searchRequest.eventId,
+    }
+    const { status, data } = await handlePostSearch(postTaskPath, reqBody, req);
+    res.status(status);
+    res.send(data);
+  } catch (error) {
+    console.log(error)
     next(error);
   }
 }

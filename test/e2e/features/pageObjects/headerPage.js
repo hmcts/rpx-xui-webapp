@@ -84,7 +84,6 @@ function HeaderPage() {
   };
 
   this.isTabPresent = async function (tabDisplatText) {
-
     return await this.getTabElementWithText(tabDisplatText).isPresent();
   };
 
@@ -95,6 +94,10 @@ function HeaderPage() {
 
   this.getTabElementWithText = function (tabText) {
     return this.primaryNavBar.element(by.xpath('//a[contains(text(),"' + tabText + '")]'));
+  };
+
+  this.getPrimaryNavigations = async function(){
+    return await this.primaryNavBar.getText();
   };
 }
 

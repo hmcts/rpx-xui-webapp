@@ -180,4 +180,3 @@ function labelstestConfig(){
     return labelsEventConfig;
 }
 
-

@@ -21,12 +21,31 @@ module.exports = {
     },
     post: {
         '/workallocation/task/': (req, res) => {
-            res.send(workAllocationMockData.getAvailableTasks(10));
+
+            if (req.body.view === "MyTasks"){
+                res.send(workAllocationMockData.getMyTasks(10));
+            } else if (req.body.view === "AvailableTasks") {
+                res.send(workAllocationMockData.getAvailableTasks(10));
+            } else if (req.body.view === "TaskManager") {
+                res.send(workAllocationMockData.getTaskManagerTasks(10));
+            }else{
+                throw new Error("Unrecognised task list view : "+req.body.view);
+            }
         },
         '/workallocation/task/:taskId/assign': (req, res) => {
             res.send();
         },
         '/workallocation/task/:taskId/claim' : (req,res) => {
+            res.send();
+        },
+        '/workallocation/task/:taskId/unclaim': (req, res) => {
+            res.send();
+        },
+
+        '/workallocation/task/:taskId/complete': (req, res) => {
+            res.send();
+        },
+        '/workallocation/task/:taskId/cancel': (req, res) => {
             res.send();
         }
     }

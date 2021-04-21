@@ -14,7 +14,7 @@ const CASE_REFERENCE_AS_LINK: TaskFieldConfig = {
 };
 const CASE_REFERENCE_AS_TEXT: TaskFieldConfig = {
   name: 'case_id',
-  type: TaskFieldType.STRING,
+  type: TaskFieldType.CASE_REFERENCE_STRING,
   columnLabel: 'Case reference',
   sortName: 'caseId',
   views: TaskView.ALL_VIEWS

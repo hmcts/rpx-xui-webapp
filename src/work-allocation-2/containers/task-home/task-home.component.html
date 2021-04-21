@@ -1,0 +1,28 @@
+<main class="govuk-main-wrapper" id="main-content" role="main">
+
+  <exui-info-message-container></exui-info-message-container>
+
+  <ng-container [ngSwitch]="featureVersion$ | async">
+    <ng-container *ngSwitchCase="'WorkAllocationRelease2'">
+      <h3 class="govuk-heading-xl">My work</h3>
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+          <p>Access tasks and cases.</p>
+          <button class="govuk-button hmcts-button--secondary" type="button"> Filter my work </button>
+          <xuilib-hmcts-sub-navigation [items]="subNavigationItems" label="Sub navigation"></xuilib-hmcts-sub-navigation>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngSwitchDefault cdkColumnDef="footer">
+      <h3 class="govuk-heading-xl">{{pageTitle}}</h3>
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+          <p>See your tasks and view tasks available for you to pick up.</p>
+          <xuilib-hmcts-sub-navigation [items]="subNavigationItems" label="Sub navigation"></xuilib-hmcts-sub-navigation>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+  <router-outlet></router-outlet>
+</main>
+

@@ -13,6 +13,6 @@
   "timeout": 120000,
   "ui": "bdd",
   "spec" : ["./test/integration/tests/*.spec.ts"],
-  "exclude": ["./test/integration/tests/workAllocation1.spec.ts"],
+  "exclude": ["./test/integration/tests/workAllocation.spec.ts"],
   "file": ["./test/integration/tests/utils/helper.ts"]
 }

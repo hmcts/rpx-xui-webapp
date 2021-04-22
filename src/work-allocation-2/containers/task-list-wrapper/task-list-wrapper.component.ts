@@ -14,7 +14,8 @@ import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortFi
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 
 @Component({
-  templateUrl: 'task-list-wrapper.component.html'
+  templateUrl: 'task-list-wrapper.component.html',
+  providers: [InfoMessageCommService]
 })
 export class TaskListWrapperComponent implements OnInit {
   public currentFeature: string;
@@ -127,16 +128,11 @@ export class TaskListWrapperComponent implements OnInit {
    * Load the tasks to display in the component.
    */
   public loadTasks(): void {
-    this.featureVersion$.subscribe(feature => {
-      this.currentFeature = feature;
-      if (feature === 'WorkAllocationRelease2') {
-        this.loadTasksVersion2();
-      } else {
-        this.loadTasksVersion1();
-      }
-    }, error => {
-      handleFatalErrors(error.status, this.router);
-    });
+    if (this.wasBadRequest) {
+      this.refreshTasks();
+    } else {
+      this.doLoad();
+    }
   }
 
   /**
@@ -225,22 +221,6 @@ export class TaskListWrapperComponent implements OnInit {
     }, error => {
       handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
     });
-  }
-
-  private loadTasksVersion1(): void {
-    if (this.wasBadRequest) {
-      this.refreshTasks();
-    } else {
-      this.doLoad();
-    }
-  }
-
-  private loadTasksVersion2(): void {
-    if (this.wasBadRequest) {
-      this.refreshTasks();
-    } else {
-      this.doLoad();
-    }
   }
 
 }

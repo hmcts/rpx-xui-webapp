@@ -6,7 +6,7 @@ import { share } from 'rxjs/operators';
 
 import { AppUtils } from '../../../app/app-utils';
 import { TaskSortField } from '../../models/tasks';
-import { WorkAllocationFeatureService } from '../../../work-allocation/services/work-allocation-feature.service';
+import { WorkAllocationFeatureService } from '../../services/work-allocation-feature.service';
 
 @Component({
   selector: 'exui-task-home',

@@ -8,12 +8,12 @@ import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common
 import { of, throwError } from 'rxjs';
 
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { InfoMessage, InfoMessageType, TaskActionIds } from '../../../work-allocation/enums';
-import { InformationMessage } from '../../../work-allocation/models/comms';
-import * as dtos from '../../../work-allocation/models/dtos';
-import { InvokedTaskAction, Task } from '../../../work-allocation/models/tasks';
-import { InfoMessageCommService, LocationDataService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../../work-allocation/services';
-import { getMockLocations, getMockTasks } from '../../../work-allocation/tests/utils.spec';
+import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
+import { InformationMessage } from '../../models/comms';
+import * as dtos from '../../models/dtos';
+import { InvokedTaskAction, Task } from '../../models/tasks';
+import { InfoMessageCommService, LocationDataService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
+import { getMockLocations, getMockTasks } from '../../tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { AvailableTasksComponent } from './available-tasks.component';
 
@@ -64,6 +64,7 @@ describe('AvailableTasksComponent', () => {
     mockLocationService.getLocations.and.returnValue(of(mockLocations));
     const tasks: Task[] = getMockTasks();
     mockTaskService.searchTask.and.returnValue(of({ tasks }));
+    mockFeatureToggleService.isEnabled.and.returnValue(of(true));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease1'));
     fixture.detectChanges();
   });

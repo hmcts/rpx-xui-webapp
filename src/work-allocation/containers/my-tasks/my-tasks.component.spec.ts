@@ -15,8 +15,6 @@ import { getMockTasks } from '../../tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { MyTasksComponent } from './my-tasks.component';
 import { TaskFieldType } from '../../../work-allocation/enums';
-import { WorkAllocationModule2 } from '../../../work-allocation-2/work-allocation2.module';
-import { TaskListComponent as TaskListRelease2Component } from '../../../work-allocation-2/containers';
 
 @Component({
   template: `
@@ -44,10 +42,9 @@ describe('MyTasksComponent', () => {
         CdkTableModule,
         ExuiCommonLibModule,
         RouterTestingModule,
-        WorkAllocationComponentsModule,
-        WorkAllocationModule2
+        WorkAllocationComponentsModule
       ],
-      declarations: [MyTasksComponent, WrapperComponent, TaskListComponent, TaskListRelease2Component],
+      declarations: [MyTasksComponent, WrapperComponent, TaskListComponent],
       providers: [
         {provide: WorkAllocationTaskService, useValue: mockTaskService},
         {provide: AlertService, useValue: mockAlertService},

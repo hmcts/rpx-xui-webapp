@@ -12,9 +12,10 @@ import { SessionStorageService } from 'src/app/services';
 import { Task } from '../../models/tasks';
 import { CaseworkerDataService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
 import { getMockTasks } from '../../tests/utils.spec';
+import { TaskListComponent } from '../task-list/task-list.component';
 import { MyTasksComponent } from './my-tasks.component';
-import { TaskFieldType } from '../../../work-allocation/enums';
-import { WorkAllocationModule2 } from 'src/work-allocation-2/work-allocation2.module';
+import { TaskFieldType } from '../../enums';
+import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 
 @Component({
   template: `
@@ -42,8 +43,9 @@ describe('MyTasksComponent', () => {
         CdkTableModule,
         ExuiCommonLibModule,
         RouterTestingModule,
-        WorkAllocationModule2
+        WorkAllocationComponentsModule
       ],
+      declarations: [MyTasksComponent, WrapperComponent, TaskListComponent],
       providers: [
         {provide: WorkAllocationTaskService, useValue: mockTaskService},
         {provide: AlertService, useValue: mockAlertService},
@@ -62,7 +64,7 @@ describe('MyTasksComponent', () => {
     const tasks: Task[] = getMockTasks();
     mockTaskService.searchTask.and.returnValue(of({tasks}));
     mockCaseworkerService.getAll.and.returnValue(of([]));
-    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease1'));
+    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     fixture.detectChanges();
   });
 
@@ -182,9 +184,8 @@ describe('MyTasksComponent', () => {
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     component.ngOnInit();
     fixture.detectChanges();
-    expect(component.fields[0].name).toBe('case_name');
-    expect(component.fields[0].type).toBe(TaskFieldType.CASE_NAME);
-    expect(component.fields[4].name).toBe('task_title');
-    expect(component.fields[4].type).toBe(TaskFieldType.TASK_NAME);
+    expect(component.fields[0].name).toBe('case_id');
+    expect(component.fields[0].type).toBe(TaskFieldType.CASE_REFERENCE);
+    expect(component.fields[4].type).toBe(TaskFieldType.DERIVED_ICON);
   });
 });

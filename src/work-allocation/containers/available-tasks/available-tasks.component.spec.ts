@@ -6,8 +6,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
-import { TaskListComponent as TaskListRelease2Component } from '../../../work-allocation-2/containers';
-import { WorkAllocationModule2 } from '../../../work-allocation-2/work-allocation2.module';
 
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
@@ -46,10 +44,9 @@ describe('AvailableTasksComponent', () => {
         CdkTableModule,
         ExuiCommonLibModule,
         RouterTestingModule,
-        WorkAllocationComponentsModule,
-        WorkAllocationModule2
+        WorkAllocationComponentsModule
       ],
-      declarations: [ AvailableTasksComponent, WrapperComponent, TaskListComponent, TaskListRelease2Component ],
+      declarations: [ AvailableTasksComponent, WrapperComponent, TaskListComponent ],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
         { provide: LocationDataService, useValue: mockLocationService },

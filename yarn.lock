@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@2.79.5":
-  version "2.79.5"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.79.5.tgz#6e9f56f3ecfc11ad27b9bdbaf6206efc860d55ad"
-  integrity sha512-uPASZjjoJ5W0nBcdvJhtrFiqMhML/GwMcXAJQdwGBnFGXDbHcxOn8xTb8p3mLJr0RtgQM4Cs7cV+ynRVmgShRw==
+"@hmcts/ccd-case-ui-toolkit@v2.79.8-Callback-Error-still-not-showing":
+  version "2.79.8-Callback-Error-still-not-showing"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.79.8-Callback-Error-still-not-showing.tgz#e77ce62b0fca33e024085410e657d2f20d3b3f49"
+  integrity sha512-IbFQbJsbFD4WNA4Y0K2BvoRraX99lMVGWm0RaJxqlM/B+oHgns7JQsv7CMP8GO0ow1/g6lbfDy6Et+n592uqxA==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"

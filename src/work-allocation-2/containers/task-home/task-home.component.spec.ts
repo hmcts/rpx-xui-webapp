@@ -3,7 +3,7 @@ import { Component, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
@@ -25,6 +25,7 @@ describe('TaskHomeComponent', () => {
   let router: Router;
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
   const mockFeatureService = jasmine.createSpyObj('mockTaskService', ['getActiveWAFeature']);
+  const mockFeatureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -37,7 +38,8 @@ describe('TaskHomeComponent', () => {
       declarations: [TaskHomeComponent, WrapperComponent, InfoMessageContainerComponent],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
-        { provide: WorkAllocationFeatureService, useValue: mockFeatureService }
+        { provide: WorkAllocationFeatureService, useValue: mockFeatureService },
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);

@@ -74,7 +74,7 @@ export async function getTaskById(taskUrl: string) {
 
   const axiosConfig = {
     headers: {
-      'Authorization': 'Bearer some-access-token', 
+      'Authorization': 'Bearer some-access-token',
       'Content-Type': 'application/json',
       'ServiceAuthorization': 'some service authorisation',
     },

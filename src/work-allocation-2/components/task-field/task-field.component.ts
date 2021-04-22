@@ -4,7 +4,7 @@ import { TaskFieldType } from './../../enums';
 import { Task, TaskFieldConfig } from '.././../models/tasks';
 
 @Component({
-  selector: 'exui-task-field-v2',
+  selector: 'exui-task-field',
   templateUrl: './task-field.component.html',
   styleUrls: ['task-field.component.scss'],
   encapsulation: ViewEncapsulation.None

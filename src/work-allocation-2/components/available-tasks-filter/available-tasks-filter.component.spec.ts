@@ -12,7 +12,7 @@ import { FilterConstants } from '../../components/constants';
 import { AvailableTasksFilterComponent } from './available-tasks-filter.component';
 
 @Component({
-  template: `<exui-available-tasks-filter-r2 (selectionChanged)="onSelectionChanged($event)"></exui-available-tasks-filter-r2>`
+  template: `<exui-available-tasks-filter (selectionChanged)="onSelectionChanged($event)"></exui-available-tasks-filter>`
 })
 class WrapperComponent {
   @ViewChild(AvailableTasksFilterComponent) public appComponentRef: AvailableTasksFilterComponent;

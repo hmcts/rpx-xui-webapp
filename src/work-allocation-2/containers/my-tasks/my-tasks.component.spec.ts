@@ -12,10 +12,8 @@ import { SessionStorageService } from 'src/app/services';
 import { Task } from '../../models/tasks';
 import { CaseworkerDataService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
 import { getMockTasks } from '../../tests/utils.spec';
-import { TaskListComponent } from '../task-list/task-list.component';
 import { MyTasksComponent } from './my-tasks.component';
 import { TaskFieldType } from '../../../work-allocation/enums';
-import { TaskListRelease2Component } from '../../../work-allocation-2/release2/containers';
 import { WorkAllocationModule2 } from 'src/work-allocation-2/work-allocation2.module';
 
 @Component({

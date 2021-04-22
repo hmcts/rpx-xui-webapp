@@ -9,7 +9,7 @@
               (click)="onSortHandler(field.sortName)" >{{field.columnLabel}}</button>
     </th>
     <td class="govuk-table__cell border-none" cdk-cell *cdkCellDef="let rowData">
-      <exui-task-field-v2 [task]="rowData" [config]="field"></exui-task-field-v2>
+      <exui-task-field [task]="rowData" [config]="field"></exui-task-field>
     </td>
   </ng-container>
 

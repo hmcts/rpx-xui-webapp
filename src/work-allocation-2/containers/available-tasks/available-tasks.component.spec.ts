@@ -7,18 +7,18 @@ import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
 
-import { WorkAllocationRelease2ComponentsModule } from '../../components/work-allocation.components.module';
-import { InfoMessage, InfoMessageType, TaskActionIds } from '../../../../work-allocation/enums';
-import { InformationMessage } from '../../../../work-allocation/models/comms';
-import * as dtos from '../../../../work-allocation/models/dtos';
-import { InvokedTaskAction, Task } from '../../../../work-allocation/models/tasks';
-import { InfoMessageCommService, LocationDataService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../../../work-allocation/services';
-import { getMockLocations, getMockTasks } from '../../../../work-allocation/tests/utils.spec';
+import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
+import { InfoMessage, InfoMessageType, TaskActionIds } from '../../../work-allocation/enums';
+import { InformationMessage } from '../../../work-allocation/models/comms';
+import * as dtos from '../../../work-allocation/models/dtos';
+import { InvokedTaskAction, Task } from '../../../work-allocation/models/tasks';
+import { InfoMessageCommService, LocationDataService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../../work-allocation/services';
+import { getMockLocations, getMockTasks } from '../../../work-allocation/tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { AvailableTasksComponent } from './available-tasks.component';
 
 @Component({
-  template: `<exui-available-tasks-v2></exui-available-tasks-v2>`
+  template: `<exui-available-tasks></exui-available-tasks>`
 })
 class WrapperComponent {
   @ViewChild(AvailableTasksComponent) public appComponentRef: AvailableTasksComponent;
@@ -44,7 +44,7 @@ describe('AvailableTasksRelease2Component', () => {
         CdkTableModule,
         ExuiCommonLibModule,
         RouterTestingModule,
-        WorkAllocationRelease2ComponentsModule
+        WorkAllocationComponentsModule
       ],
       declarations: [ AvailableTasksComponent, WrapperComponent, TaskListComponent ],
       providers: [

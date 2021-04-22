@@ -1,24 +1,24 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TaskFieldType, TaskView } from './../../../enums';
-import { Task, TaskFieldConfig } from './../../../models/tasks';
-import { WorkAllocationRelease2ComponentsModule } from '../work-allocation.components.module';
-import { TaskFieldRelease2Component } from './task-field.component';
+import { TaskFieldType, TaskView } from './../../enums';
+import { Task, TaskFieldConfig } from './../../models/tasks';
+import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
+import { TaskFieldComponent } from './task-field.component';
 
 @Component({
-  template: `<exui-task-field-v2 [config]="config" [task]="task"></exui-task-field-v2>`
+  template: `<exui-task-field [config]="config" [task]="task"></exui-task-field>`
 })
 class WrapperComponent {
-  @ViewChild(TaskFieldRelease2Component) public appComponentRef: TaskFieldRelease2Component;
+  @ViewChild(TaskFieldComponent) public appComponentRef: TaskFieldComponent;
   @Input() public config: TaskFieldConfig;
   @Input() public task: Task;
 }
 
 describe('WorkAllocation', () => {
 
-  describe('TaskFieldRelease2Component', () => {
-    let component: TaskFieldRelease2Component;
+  describe('TaskFieldComponent', () => {
+    let component: TaskFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
 
@@ -34,7 +34,7 @@ describe('WorkAllocation', () => {
     beforeEach(async(() => {
       TestBed.configureTestingModule({
         declarations: [ WrapperComponent ],
-        imports: [ WorkAllocationRelease2ComponentsModule ]
+        imports: [ WorkAllocationComponentsModule ]
       })
       .compileComponents();
     }));

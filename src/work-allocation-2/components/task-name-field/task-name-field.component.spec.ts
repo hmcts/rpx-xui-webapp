@@ -1,8 +1,8 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AppConstants } from '../../../../app/app.constants';
-import { WorkAllocationRelease2ComponentsModule } from '../work-allocation.components.module';
+import { AppConstants } from '../../../app/app.constants';
+import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
 import { TaskNameFieldComponent } from './task-name-field.component';
 
 @Component({
@@ -28,7 +28,7 @@ describe('WorkAllocation', () => {
     beforeEach(async(() => {
       TestBed.configureTestingModule({
         declarations: [ WrapperComponent ],
-        imports: [ WorkAllocationRelease2ComponentsModule ]
+        imports: [ WorkAllocationComponentsModule ]
       })
       .compileComponents();
     }));

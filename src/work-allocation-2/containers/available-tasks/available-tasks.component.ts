@@ -10,7 +10,7 @@ import { ConfigConstants, ListConstants, SortConstants } from '../../components/
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
 @Component({
-  selector: 'exui-available-tasks-r2',
+  selector: 'exui-available-tasks',
   templateUrl: 'available-tasks.component.html'
 })
 export class AvailableTasksComponent extends TaskListWrapperComponent {

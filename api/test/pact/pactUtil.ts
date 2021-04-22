@@ -83,29 +83,23 @@ export async function getTaskById(taskUrl: string) {
   let response: AxiosResponse
   response = await axios.get(taskUrl, axiosConfig)
   return response
-
 }
 
-
-export async function searchTasks(taskUrl: string, payload:any) {
-
+export async function searchTasks(taskUrl: string, payload: any) {
   const axiosConfig = {
     headers: {
       'Authorization': 'Bearer some-access-token',
+      'Content-Type': 'application/json',
       'ServiceAuthorization': 'some service authorisation',
-      'Content-Type': 'application/json'
     },
   }
 
   let response: AxiosResponse
   response = await axios.post(taskUrl, payload, axiosConfig)  
   return response
-
 }
 
-
-
-export async function markTaskAs(taskUrl: string, taskActionState:string) {
+export async function markTaskAs(taskUrl: string, taskActionState: string) {
 
   const axiosConfig = {
     headers: {
@@ -121,9 +115,7 @@ export async function markTaskAs(taskUrl: string, taskActionState:string) {
 
 }
 
-
 export async function assignTaskToUser(taskUrl: string, payLoad: any) {
-
   const axiosConfig = {
     headers: {
       'Authorization': 'Bearer some-access-token',
@@ -135,6 +127,4 @@ export async function assignTaskToUser(taskUrl: string, payLoad: any) {
   let response: AxiosResponse
   response = await axios.post(taskUrl, payLoad, axiosConfig)
   return response
-
 }
-

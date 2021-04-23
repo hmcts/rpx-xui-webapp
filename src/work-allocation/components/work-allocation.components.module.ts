@@ -15,7 +15,7 @@ import { WorkAllocationPipesModule } from '../pipes/work-allocation.pipes.module
   imports: [
     CommonModule,
     HttpClientModule,
-    ExuiCommonLibModule,
+    ExuiCommonLibModule.forChild(),
     FormsModule, // TODO: Remove this as it's only needed for testing.
     PipesModule,
     WorkAllocationPipesModule

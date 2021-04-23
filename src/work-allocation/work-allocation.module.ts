@@ -28,7 +28,7 @@ import { workAllocationRouting } from './work-allocation-feature.routes';
     PipesModule,
     workAllocationRouting,
     CdkTableModule,
-    ExuiCommonLibModule,
+    ExuiCommonLibModule.forChild(),
   ],
   declarations: [...fromContainers.containers],
   providers: [

@@ -11,6 +11,7 @@ import { SearchTaskRequest, SortParameter } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
 import { CaseworkerDataService, InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html'
@@ -39,11 +40,13 @@ export class TaskListWrapperComponent implements OnInit {
     protected infoMessageCommService: InfoMessageCommService,
     protected sessionStorageService: SessionStorageService,
     protected alertService: AlertService,
-    protected caseworkerService: CaseworkerDataService
+    protected caseworkerService: CaseworkerDataService,
+    protected loadingService: LoadingService
   ) {}
 
   public specificPage: string = '';
   public caseworkers: Caseworker[];
+  public showSpinner$: Observable<boolean>;
 
   private pTasks: Task[];
   public get tasks(): Task[] {
@@ -208,12 +211,16 @@ export class TaskListWrapperComponent implements OnInit {
 
   // Do the actual load. This is separate as it's called from two methods.
   private doLoad(): void {
+    this.showSpinner$ = this.loadingService.isLoading;
+    const loadingToken = this.loadingService.register();
     // Should this clear out the existing set first?
     this.performSearch().subscribe(result => {
+      this.loadingService.unregister(loadingToken)
       this.tasks = result.tasks;
       this.tasks.forEach(task => task.assigneeName = getAssigneeName(this.caseworkers, task.assignee));
       this.ref.detectChanges();
     }, error => {
+      this.loadingService.unregister(loadingToken)
       handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
     });
   }

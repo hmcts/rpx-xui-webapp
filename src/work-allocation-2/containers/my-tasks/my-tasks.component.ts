@@ -25,11 +25,7 @@ export class MyTasksComponent extends TaskListWrapperComponent {
   }
 
   public get fields(): TaskFieldConfig[] {
-    if (this.currentFeature === 'WorkAllocationRelease2') {
-      return ConfigConstants.MyWorkTasks;
-    } else {
-      return ConfigConstants.MyTasks;
-    }
+    return ConfigConstants.MyWorkTasks;
   }
 
   public getSearchTaskRequest(): SearchTaskRequest {

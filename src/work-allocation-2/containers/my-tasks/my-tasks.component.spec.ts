@@ -95,48 +95,6 @@ describe('MyTasksComponent', () => {
     expect(headerCells[headerCells.length - 1].textContent.trim()).toEqual('');
   });
 
-  it('should handle a click to sort on the caseReference heading', async () => {
-
-    // spyOn(mockSessionStorageService, 'getItem').and.returnValue(JSON.stringify({id: '1'}));
-    mockSessionStorageService.getItem.and.returnValue(JSON.stringify({id: '1'}));
-
-    const element = fixture.debugElement.nativeElement;
-    const button = element.querySelector('#sort_by_caseId');
-    button.dispatchEvent(new Event('click'));
-    fixture.detectChanges();
-
-    const searchRequest = component.getSearchTaskRequest();
-    // Make sure the search request looks right.
-    expect(searchRequest.search_parameters.length).toEqual(1);
-    expect(searchRequest.search_parameters[0].key).toEqual('user');
-    expect(searchRequest.search_parameters[0].values).toContain('1');
-
-    expect(searchRequest.sorting_parameters[0].sort_order).toBe('asc');
-    expect(searchRequest.sorting_parameters[0].sort_by).toBe('caseId');
-
-    // Let's also make sure that the tasks were re-requested with the new sorting.
-    const payload = {searchRequest, view: component.view};
-    expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
-
-    // Do it all over again to make sure it reverses the order.
-    button.dispatchEvent(new Event('click'));
-    fixture.detectChanges();
-
-    const newSearchRequest = component.getSearchTaskRequest();
-    // Make sure the search request looks right.
-    expect(newSearchRequest.search_parameters.length).toEqual(1);
-    expect(newSearchRequest.search_parameters[0].key).toEqual('user');
-    expect(newSearchRequest.search_parameters[0].values).toContain('1'); // Important!
-
-    /*TODO: should be descending*/
-    expect(searchRequest.sorting_parameters[0].sort_order).toBe('asc');
-    expect(searchRequest.sorting_parameters[0].sort_by).toBe('caseId');
-
-    // Let's also make sure that the tasks were re-requested with the new sorting.
-    const newPayload = {searchRequest: newSearchRequest, view: component.view};
-    expect(mockTaskService.searchTask).toHaveBeenCalledWith(newPayload);
-  });
-
   it('should not show the footer when there are tasks', () => {
     const element = fixture.debugElement.nativeElement;
     const footerRow = element.querySelector('.footer-row');
@@ -184,8 +142,8 @@ describe('MyTasksComponent', () => {
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     component.ngOnInit();
     fixture.detectChanges();
-    expect(component.fields[0].name).toBe('case_id');
-    expect(component.fields[0].type).toBe(TaskFieldType.CASE_REFERENCE);
-    expect(component.fields[4].type).toBe(TaskFieldType.DERIVED_ICON);
+    expect(component.fields[0].name).toBe('case_name');
+    expect(component.fields[0].type).toBe(TaskFieldType.CASE_NAME);
+    expect(component.fields[4].type).toBe(TaskFieldType.TASK_NAME);
   });
 });

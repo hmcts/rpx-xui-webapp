@@ -2,7 +2,8 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { Observable } from 'rxjs';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { SessionStorageService } from 'src/app/services';
+import { SessionStorageService } from '../../services/session-storage/session-storage.service'
+
 
 const MEDIA_VIEWER = 'media-viewer-info';
 

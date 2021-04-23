@@ -9,7 +9,7 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { RouterTestingModule } from '@angular/router/testing';
-import { SessionStorageService } from 'src/app/services';
+import { SessionStorageService } from '../../services/session-storage/session-storage.service'
 
 const GATEWAY_DOCUMENT_URL = 'http://localhost:1234/documents';
 const REMOTE_DOCUMENT_URL = 'https://www.example.com/binary';

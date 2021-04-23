@@ -26,9 +26,9 @@ export class MediaViewerWrapperComponent implements OnInit {
     icpEnabled$: Observable<boolean>
 
     public constructor(
-        private windowService: WindowService,
-        private featureToggleService: FeatureToggleService,
-        private sessionStorageService: SessionStorageService
+        private readonly windowService: WindowService,
+        private readonly featureToggleService: FeatureToggleService,
+        private readonly sessionStorageService: SessionStorageService
     ) {
     }
 

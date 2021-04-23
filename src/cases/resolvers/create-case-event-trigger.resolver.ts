@@ -1,9 +1,8 @@
-import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
 import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
+import { CaseEventTrigger, CasesService, Draft, DRAFT_QUERY_PARAM } from '@hmcts/ccd-case-ui-toolkit';
 import { Observable } from 'rxjs';
-import { CaseEventTrigger, Draft, DRAFT_QUERY_PARAM, CasesService } from '@hmcts/ccd-case-ui-toolkit';
 import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/catch';
 
 @Injectable()
 export class CreateCaseEventTriggerResolver implements Resolve<CaseEventTrigger> {
@@ -14,19 +13,19 @@ export class CreateCaseEventTriggerResolver implements Resolve<CaseEventTrigger>
   public static readonly QUERY_PARAM_IGNORE_WARNING = 'ignoreWarning';
   private static readonly IGNORE_WARNING_VALUES = [ 'true', 'false' ];
 
-  cachedEventTrigger: CaseEventTrigger;
+  public cachedEventTrigger: CaseEventTrigger;
 
   constructor(
     private casesService: CasesService,
   ) {}
 
-  resolve(route: ActivatedRouteSnapshot): Observable<CaseEventTrigger> {
+  public resolve(route: ActivatedRouteSnapshot): Observable<CaseEventTrigger> {
     return this.isRootCreateRoute(route) ? this.getAndCacheEventTrigger(route)
     : this.cachedEventTrigger ? Observable.of(this.cachedEventTrigger)
     : this.getAndCacheEventTrigger(route);
   }
 
-  getAndCacheEventTrigger(route: ActivatedRouteSnapshot): Observable<CaseEventTrigger> {
+  public getAndCacheEventTrigger(route: ActivatedRouteSnapshot): Observable<CaseEventTrigger> {
     const caseTypeId = route.paramMap.get(CreateCaseEventTriggerResolver.PARAM_CASE_TYPE_ID);
     const eventTriggerId = route.paramMap.get(CreateCaseEventTriggerResolver.PARAM_EVENT_ID);
     let ignoreWarning = route.queryParamMap.get(CreateCaseEventTriggerResolver.QUERY_PARAM_IGNORE_WARNING);
@@ -40,11 +39,13 @@ export class CreateCaseEventTriggerResolver implements Resolve<CaseEventTrigger>
       caseId = draftId;
     }
     return this.casesService
-      .getEventTrigger(caseTypeId, eventTriggerId, caseId, ignoreWarning) as any;
+      .getEventTrigger(caseTypeId, eventTriggerId, caseId, ignoreWarning)
+      .do(eventTrigger => this.cachedEventTrigger = eventTrigger);
   }
 
   private isRootCreateRoute(route: ActivatedRouteSnapshot) {
     // if route is ':jid/:ctid/:eid'
     return !route.firstChild || !route.firstChild.url.length;
   }
+
 }

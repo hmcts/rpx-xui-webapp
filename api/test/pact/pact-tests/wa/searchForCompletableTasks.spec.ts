@@ -47,7 +47,6 @@ describe("Task management api, Search for completebale tasks on case event", () 
     describe("post /task/search-for-completable", () => {
 
         const jwt = 'some-access-token';
-
         before(async () => {
             await pactSetUp.provider.setup()
             const interaction = {

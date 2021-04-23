@@ -38,7 +38,6 @@ describe("Task management api, get task by id", () => {
     describe("get /task/{taskId}", () => {
 
         const jwt = 'some-access-token';
-
         before(async () => {
             await pactSetUp.provider.setup()
             const interaction = {

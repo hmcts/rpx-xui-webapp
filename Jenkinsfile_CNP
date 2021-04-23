@@ -52,12 +52,16 @@ withPipeline(type, product, component) {
     enableAksStagingDeployment()
     disableLegacyDeployment()
 
-    onMaster() {
-        env.PACT_BRANCH_NAME = 'master'
-        enablePactAs([
-                AppPipelineDsl.PactRoles.CONSUMER
-        ])
-    }
+    // onMaster() {
+    //     env.PACT_BRANCH_NAME = 'master'
+    //     enablePactAs([
+    //             AppPipelineDsl.PactRoles.CONSUMER
+    //     ])
+    // }
+
+     enablePactAs([
+        AppPipelineDsl.PactRoles.CONSUMER
+    ])
 
     after('build') {
         yarnBuilder.yarn('build')

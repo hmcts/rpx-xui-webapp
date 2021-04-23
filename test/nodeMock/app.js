@@ -117,36 +117,66 @@ if (args.standalone){
 
 function setUpcaseConfig() {
     const { getTestJurisdiction }  = require('../ngIntegration/mockData/ccdCaseMock');
-    mockInstance.onGet('/data/internal/case-types/:jurisdiction/event-triggers/:caseType', (req, res) => {
-        const caseEventConfig = getTestJurisdiction();
-
-        let multiSelectListField = caseEventConfig.getCaseFieldConfig("MultiSelectListField");
-        // const page1 = caseEventConfig.getWizardPageConfig("testPage1");
-        // page1.label = "For demo 123456"
-
-        const textField0 = caseEventConfig.getCaseFieldConfig("TextField0");
-        textField0.display_context = "MANDATORY";
-
-        // textField0.show_summary_change_option = false;
-        // textField0.show_summary_content_option = true;
-        multiSelectListField.show_condition = "Gender=\"notGiven\"";
-
-        // const page2 = caseEventConfig.getWizardPageConfig("testPage2");
-        // page2.show_condition = "TextField0=\"SHOW\"";
-
-        res.send(caseEventConfig.getCase());
-    });
-
-
-
-
-    mockInstance.onGet('/api/user/details', (req, res) => {
-        // const roles = ["caseworker-ia-iacjudge", "caseworker"]
-        const roles =  ["caseworker-ia-caseofficer", "caseworker-ia-admofficer", "caseworker"]
-        const userdetails = nodeAppMock.getUserDetailsWithRolesAndIdamId(roles,"86876786866867867")
-        res.send(userdetails);
+    mockInstance.onGet('/data/internal/cases/:caseid', (req, res) => {
+        
+        res.send(caseDetailsLabelShowCondition().getCase());
     });
 
 }
 
+function caseDetailsLabelShowCondition(){
+    const caseDetail = new CCDCaseDetails("Mock Label show condition case type"); 
+    caseDetail.addHistoryTab()
+    .addTab("Simple Conditional show of labels")
+        .addFieldWithConfigToTab({ id: "item", type: "Text", label: "Item text", value: "yes" })
+        .addFieldWithConfigToTab({id: "label1ForItem1", type: "Label", label: "Item 1 text", props: { show_condition: `item="yes"` }})
+    .addTab("Complex Conditional show of labels")
+    .addFieldWithConfigToTab({
+        id:"complexFieldWithLabels", type:"Complex", label:"Conditional show labels complex type",
+        complex_fields:[
+            { id: "item", type: "Text", label: "Item text", value:"1" },
+            { id: "text1", type: "Text", label: "Item 1 text input", value: "sample",props: { show_condition: `item="yes"` } },
+            { id: "label1ForItem1", type: "Label", label: "Show label if item= 1", props: { show_condition: `item="yesno"`}},
+            { id: "label2ForItem1", type: "Label", label: "Show label if item= 2", props: { show_condition: `item="2"` } },
+            { id: "label3ForItem1", type: "Label", label: "Show label if item= 3", props: { show_condition: `item="3"` } },
+            { id: "label4ForItem1", type: "Label", label: "Show label if item= 1", props: { show_condition: `item="1"` } },
+            { id: "label5ForItem1", type: "Label", label: "Show label if item= 2", props: { show_condition: `item="2"` } },
+            { id: "label5ForItem1", type: "Label", label: "Show condition is null", props: { show_condition: null } }
+        ]
+    })
+    return caseDetail;
+}
+
+
+function labelstestConfig(){
+
+    const labelsEventConfig = new CCDCaseConfig("testCaseType", "Test jurisdiction", "test description");
+    labelsEventConfig.addWizardPage("testPage1", "Applicant details")
+    labelsEventConfig.addCaseField({ id:"applicantName", type:"Text", label:"Applicant name"})
+    labelsEventConfig.addWizardPage("testPage2", "More details of applicant ")
+    labelsEventConfig.addCaseField({ id: "printApplicantName", type: "Label", label: "Below are more details for  ->${applicantName}<-" })
+    labelsEventConfig.addCaseField({ id: "familyDetails", type: "Complex", label: "provide more details for applicant: ->${applicantName}<-",
+        complex_fields:[
+            { id: "applicantFamilyDetailsMsgid", type: "Label", label:"Provide ->${applicantName}<- family history"},
+            { id: "familyHistoryText", type: "Text", Label: "History ref" },
+            { id: "historyRefPrint", type: "Label", label: "Provided ->${familyHistoryText}<- is here" }
+        ],
+        value: { familyHistoryText : "Pre set value"}
+    })
+    labelsEventConfig.addWizardPage("testPage3", "Applicant addresses ")
+    labelsEventConfig.addCaseField({
+        id: "addressDetauls", type: "Collection", label: "provide address for applicant: ->${applicantName}<-",
+        collection_field_type: {
+            id: "addressess", type:"Complex", label: "Address", complex_fields: [
+                { id: "pastAddressid", type: "Label", label: "->${applicantName}-< past address" },
+                { id: "pastAddressText", type: "Text", label: "Address text" },
+                { id: "pastAddressidPrint", type: "Label", label: "->${pastAddressText}-< past address is here" }
+            ]
+        }
+    })
+        .setFieldProps({ display_context_parameter: "#COLLECTION(allowInsert,allowDelete)"})
+
+
+    return labelsEventConfig;
+}
 

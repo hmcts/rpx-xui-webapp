@@ -19,6 +19,7 @@ import {
   RequestOptionsBuilder,
   SearchService,
 } from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import {combineReducers, StoreModule} from '@ngrx/store';
 import { of } from 'rxjs';
@@ -74,8 +75,10 @@ describe('CaseCreateSubmitComponent', () => {
   let casesService: CasesService;
   let draftService: DraftService;
   const mockAlertService = jasmine.createSpyObj('alertService', ['error']);
+  const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled'])
 
   beforeEach(async(() => {
+    mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
@@ -134,6 +137,8 @@ describe('CaseCreateSubmitComponent', () => {
           provide: AlertService,
           useValue: mockAlertService
         },
+        FeatureToggleService,
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
       ]
     })
       .compileComponents();

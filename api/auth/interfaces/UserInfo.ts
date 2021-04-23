@@ -1,0 +1,8 @@
+export interface UserInfo {
+  forename?: string
+  surname?: string
+  email?: string
+  active?: boolean
+  id?: string
+  roles?: string[]
+}

@@ -78,11 +78,14 @@ class BrowserUtil{
                 if (perfitem.name.includes(url)) {
                     ldDone = true;
                     // await browser.sleep(2000);
+                    reportLogger.AddMessage("LD response received");
                     return true;
                 }
             });
             elapsedTime = (new Date() - startTime) / 1000;
         }
+        reportLogger.AddMessage("LD response not received in 15sec");
+
         return false;
     }
 

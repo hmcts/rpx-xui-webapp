@@ -44,7 +44,7 @@ export class MediaViewerWrapperComponent implements OnInit {
             this.sessionStorageService.setItem(MEDIA_VIEWER, sessionStorageMedia);
             this.windowService.removeLocalStorage(MEDIA_VIEWER);
         }
-        
+
         if (sessionStorageMedia) {
             const media: {
                 document_binary_url: string

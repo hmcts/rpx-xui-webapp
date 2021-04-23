@@ -14,7 +14,7 @@ import { CaseworkerDataService, InfoMessageCommService, LocationDataService } fr
   imports: [
     CommonModule,
     HttpClientModule,
-    ExuiCommonLibModule,
+    ExuiCommonLibModule.forChild(),
     FormsModule, // TODO: Remove this as it's only needed for testing.
     PipesModule
   ],

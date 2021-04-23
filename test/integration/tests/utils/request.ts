@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 import { config } from '../config/config';
-import { getSessionCookieString } from './authUtil';
+import { getSessionCookieString ,updateSessionCookieString} from './authUtil';
 import {reporterMsg, reporterJson} from './helper'
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
@@ -12,18 +12,44 @@ axios.defaults.baseURL = config.baseUrl;
 const http: AxiosInstance = axios.create(axiosOptions);
 
 
+
 const requestInterceptor = (request) => {
     console.log(`${request.method.toUpperCase()} to ${request.url}`);
     return request;
 };
+
+const responseInterceptor = (response) => {
+    if (response.status === 200) {
+        if (Object.keys(response.headers).includes('set-cookie')) {
+            const setCookies = response.headers['set-cookie'].toString().split(',');
+            for (let i = 0; i < setCookies.length; i++) {
+                const cookiesNameValue = setCookies.toString().split(';')[0].toString().split('=');
+                request.sessionUpdateSetCookie(cookiesNameValue[0], cookiesNameValue[1]);
+            }
+
+        }
+    }
+    return response;
+};
+
+
 http.interceptors.request.use(requestInterceptor);
+http.interceptors.response.use(responseInterceptor)
+
 
 
 class Request {
     private testContext;
     private cookieString: string = '';
+    private sessionUser = '';
+
     public async withSession(username: string, password: string) {
         this.cookieString = await getSessionCookieString(username, password);
+        this.sessionUser = username;
+    }
+
+    public sessionUpdateSetCookie(name,value){
+        this.cookieString = updateSessionCookieString(this.sessionUser,name,value);
     }
 
     public clearSession() {
@@ -142,5 +168,6 @@ class Request {
         }
     }
 }
+const request = new Request();
+export default request;
 
-export default new Request();

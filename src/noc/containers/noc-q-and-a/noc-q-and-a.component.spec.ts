@@ -58,8 +58,8 @@ describe('NocQAndAComponent', () => {
     it('should handle the SET_ANSWERS NoC navigation event and set the question answers on the store', () => {
       component.navigationHandler(NocNavigationEvent.SET_ANSWERS);
       expect(store.dispatch).toHaveBeenCalledWith(new fromNocStore.SetAnswers({
-        caseReference,
-        nocAnswers: [
+        case_id: '1111222233334444',
+        answers: [
           {
             question_id: 'question1',
             value: 'An answer'
@@ -77,8 +77,8 @@ describe('NocQAndAComponent', () => {
         status: 400,
         message: 'Bad request',
         error: {
-          code: 'answersIncomplete',
-          status_message: 'Answers are incorrect and do not match system record'
+          code: 'answers-not-matched-any-litigant',
+          message: 'The answers did not match those for any litigant'
         }
       });
       component.setPossibleIncorrectAnswerError();

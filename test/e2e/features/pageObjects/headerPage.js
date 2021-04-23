@@ -84,7 +84,6 @@ function HeaderPage() {
   };
 
   this.isTabPresent = async function (tabDisplatText) {
-
     return await this.getTabElementWithText(tabDisplatText).isPresent();
   };
 
@@ -97,16 +96,9 @@ function HeaderPage() {
     return this.primaryNavBar.element(by.xpath('//a[contains(text(),"' + tabText + '")]'));
   };
 
-  this.getPrimaryTabsDisplayed = function async () {
-    const tabsText = [];
-    const tablinks = this.primaryNavBar.$$('a');
-    tabsCount = await tablinks.count();
-    for(let i = 0; i< tabsCount; i++){
-      let tabLink = await tablinks.get(i);
-      tabsText.pusg(await tabLink.getText(););
-    }
-    return tabsText;
-  }
+  this.getPrimaryNavigations = async function(){
+    return await this.primaryNavBar.getText();
+  };
 }
 
 module.exports = new HeaderPage;

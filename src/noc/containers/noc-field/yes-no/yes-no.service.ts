@@ -14,7 +14,7 @@ export class YesNoService {
   private static readonly NO = 'No';
   private static readonly EMPTY = null;
 
-  format(value: any): string {
+  public format(value: any): string {
 
     if (this.isYes(value)) {
       return YesNoService.YES;

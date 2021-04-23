@@ -47,12 +47,10 @@ const publish = async (): Promise<void> => {
       console.log('')
       console.log(`Head over to ${pactBroker}`)
       console.log('to see your published contracts.')
-    }
-    else {
+    } else {
       console.log('Pact branchName is', pactTag)
       console.log('publish is disabled for non "master" branchName')
     }
-    
   } catch (e) {
     console.log('Pact contract publishing failed: ', e)
   }

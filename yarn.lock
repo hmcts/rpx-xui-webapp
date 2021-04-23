@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@v2.79.7-error-on-previous-pages":
-  version "2.79.7-error-on-previous-pages"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.79.7-error-on-previous-pages.tgz#6ceca6aca03f51774420827f5400f68efa3fb922"
-  integrity sha512-WXMnX+ftQJNf8eMKNxf27VP5efruj1e+WB3xnJfjFc8bEH1GxGFNgmbTl/e0whm3EltL+IQVJMFi2boMxapslQ==
+"@hmcts/ccd-case-ui-toolkit@2.79.10-error-on-previous-pages":
+  version "2.79.10-error-on-previous-pages"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.79.10-error-on-previous-pages.tgz#8dc7e9d44b7ec1b05bb2bf2e67790141cc4a61e2"
+  integrity sha512-NFpzVgJDmdrkBojrZCSvh8V3JFUQanK6jwrJlPxJ4k6PapyHcf9XFPC8s0C1lA7SHGz+FT10+QuXpb0p4n6Gag==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"

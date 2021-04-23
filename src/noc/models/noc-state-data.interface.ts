@@ -12,6 +12,7 @@ export interface NocStateData {
     answers: NocAnswer[];
     reason?: string;
     affirmationAgreed: boolean;
+    notifyEveryParty: boolean;
     options: NocOptions;
     validationErrors?: {};
 }

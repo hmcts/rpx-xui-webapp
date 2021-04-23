@@ -42,8 +42,8 @@ describe("Task management api, get task by id", () => {
         before(async () => {
             await pactSetUp.provider.setup()
             const interaction = {
-                state: "a valid task exists",
-                uponReceiving: "a request for that task",
+                state: "get task using taskId",
+                uponReceiving: "tasId to get task",
                 withRequest: {
                     method: "GET",
                     path: `/task/${taskId}`,

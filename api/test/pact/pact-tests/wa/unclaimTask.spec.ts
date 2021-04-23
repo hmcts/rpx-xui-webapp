@@ -20,8 +20,8 @@ describe("Task management api, Unclaim a task", () => {
         before(async () => {
             await pactSetUp.provider.setup()
             const interaction = {
-                state: "some tasks exists on event for case",
-                uponReceiving: "a request to search task for case with event",
+                state: "unclaim a task using taskId",
+                uponReceiving: "taskId to unclaim a task",
                 withRequest: {
                     method: "POST",
                     path: `/task/${taskId}/unclaim`,

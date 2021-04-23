@@ -6,16 +6,14 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
-import { SessionStorageService } from 'src/app/services';
+import { SessionStorageService } from '../../../app/services';
 
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { WorkAllocationRelease2ComponentsModule } from '../../../work-allocation/release2/components/work-allocation.components.module';
 import { Task } from '../../models/tasks';
 import { CaseworkerDataService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
 import { getMockTasks } from '../../tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { MyTasksComponent } from './my-tasks.component';
-import { TaskListRelease2Component } from '../../../work-allocation/release2/containers';
 import { TaskFieldType } from '../../../work-allocation/enums';
 
 @Component({
@@ -44,10 +42,9 @@ describe('MyTasksComponent', () => {
         CdkTableModule,
         ExuiCommonLibModule,
         RouterTestingModule,
-        WorkAllocationComponentsModule,
-        WorkAllocationRelease2ComponentsModule
+        WorkAllocationComponentsModule
       ],
-      declarations: [MyTasksComponent, WrapperComponent, TaskListComponent, TaskListRelease2Component],
+      declarations: [MyTasksComponent, WrapperComponent, TaskListComponent],
       providers: [
         {provide: WorkAllocationTaskService, useValue: mockTaskService},
         {provide: AlertService, useValue: mockAlertService},

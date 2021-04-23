@@ -8,7 +8,6 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
 
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { WorkAllocationRelease2ComponentsModule } from '../../../work-allocation/release2/components/work-allocation.components.module';
 import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
 import { InformationMessage } from '../../models/comms';
 import * as dtos from '../../models/dtos';
@@ -17,7 +16,6 @@ import { InfoMessageCommService, LocationDataService, WorkAllocationFeatureServi
 import { getMockLocations, getMockTasks } from '../../tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { AvailableTasksComponent } from './available-tasks.component';
-import { TaskListRelease2Component } from '../../../work-allocation/release2/containers';
 
 @Component({
   template: `<exui-available-tasks></exui-available-tasks>`
@@ -46,10 +44,9 @@ describe('AvailableTasksComponent', () => {
         CdkTableModule,
         ExuiCommonLibModule,
         RouterTestingModule,
-        WorkAllocationComponentsModule,
-        WorkAllocationRelease2ComponentsModule
+        WorkAllocationComponentsModule
       ],
-      declarations: [ AvailableTasksComponent, WrapperComponent, TaskListComponent, TaskListRelease2Component ],
+      declarations: [ AvailableTasksComponent, WrapperComponent, TaskListComponent ],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
         { provide: LocationDataService, useValue: mockLocationService },

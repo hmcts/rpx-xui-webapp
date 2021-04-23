@@ -9,12 +9,14 @@ import { HealthCheckService } from './services/health-check.service';
 import { MediaViewerModule } from '@hmcts/media-viewer';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, GOV_UI_COMPONENTS } from '@hmcts/rpx-xui-common-lib';
+import { McLaunchDarklyService } from './services/mc-launch-darkly-service';
 
 /**
  * Shared Module
  * Used to share common modules and components/containers across the app
  * FormsModule, CommonModule, ReactiveForms etc..
  */
+
 @NgModule( {
   imports: [RouterModule, CommonModule, MediaViewerModule, ExuiCommonLibModule.forChild()],
   declarations: [
@@ -31,7 +33,8 @@ import { ExuiCommonLibModule, GOV_UI_COMPONENTS } from '@hmcts/rpx-xui-common-li
   providers: [
     HealthCheckGuard,
     HealthCheckService,
-    WindowService
+    WindowService,
+    McLaunchDarklyService
   ],
 })
 export class SharedModule {}

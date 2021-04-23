@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { CaseReferencePipe } from './case-reference.pipe';
+import { DateTimePipe } from './date-time.pipe';
 import { NocErrorPipe } from './noc-error.pipe';
 
 @NgModule({
@@ -9,10 +10,12 @@ import { NocErrorPipe } from './noc-error.pipe';
   ],
   declarations: [
     CaseReferencePipe,
-    NocErrorPipe
+    DateTimePipe,
+    NocErrorPipe,
   ],
   exports: [
     CaseReferencePipe,
+    DateTimePipe,
     NocErrorPipe
   ]
 })

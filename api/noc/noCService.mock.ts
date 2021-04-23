@@ -273,37 +273,37 @@ export const init = () => {
   // EUI-2397: scenario 1
   // answers are incomplete/incorrect
 /*  .onPost(validateNoCQuestionsUrl).reply(400, {
-    code: 'answersIncomplete',
+    code: 'answers-not-matched-any-litigant',
     status_message: 'Answers are incorrect and do not match system record',
   })*/
   // EUI-2397: scenario 2
   // matched more than one party
 /*  .onPost(validateNoCQuestionsUrl).reply(400, {
-    code: 'moreThanOneParty',
+    code: 'answers-not-identify-litigant',
     status_message: 'Answers match more than one party on the case',
   })*/
   // EUI-2397: scenario 3
   // invalid case reference
 /*  .onPost(validateNoCQuestionsUrl).reply(400, {
-    code: 'invalidCaseRef',
+    code: 'case-id-invalid',
     status_message: 'invalid case reference',
   })*/
   // EUI-2397: scenario 4
   // organisation already has access to this case
 /*  .onPost(validateNoCQuestionsUrl).reply(400, {
-    code: 'organisationHasAccess',
+    code: 'has-represented',
     status_message: 'Your organisation already has access to this case',
   })*/
   // EUI-2397: scenario 5
   // noc in progress
 /*  .onPost(validateNoCQuestionsUrl).reply(400, {
-      code: 'nocInProgress',
+      code: 'noc-in-progress',
       status_message: 'The case has an ongoing NoC Request',
   })*/
   // EUI-2401
   // any other server errors
 /*  .onPost(validateNoCQuestionsUrl).reply(500, {
-      code: 'nocInProgress',
+      code: 'generic-error',
       status_message: 'internal error',
   })*/
   // EUI-2322
@@ -325,8 +325,8 @@ export const init = () => {
   // EUI-2323
   // Scenario 1
 /*  .onPost(postNoCEventsUrl).reply(500, {
-    code: 'nocInProgress',
-    status_message: 'internal error',
+    code: 'noc-in-progress',
+    message: 'internal error',
   }) */
   // EUI-2323
   // Scenario 2
@@ -334,37 +334,37 @@ export const init = () => {
   // EUI-2385
   // Scenario 1
   /* .onPost(postNoCEventsUrl).reply(400, {
-    code: 'invalidCaseRef',
-    status_message: 'Invalid answer',
+    code: 'case-id-invalid',
+    message: 'Invalid answer',
   }) */
   // EUI-2385
   // Scenario 2
 /*  .onPost(postNoCEventsUrl).reply(400, {
-    code: 'cantFileOnline',
-    status_message: 'Answers match more than one party on the case',
+    code: 'answers-not-identify-litigant',
+    message: 'Answers match more than one party on the case',
   })*/
   // EUI-2385
   // Scenario 3
   /* .onPost(postNoCEventsUrl).reply(400, {
-    code: 'invalidCaseRef',
-    status_message: 'Invalid case reference number',
+    code: 'case-id-invalid',
+    message: 'Invalid case reference number',
   }) */
   // EUI-2385
   // Scenario 4
   /* .onPost(postNoCEventsUrl).reply(400, {
-    code: 'organisationHasAccess',
-    status_message: 'You already have access to the case',
+    code: 'more-than-one-litigant',
+    message: 'You already have access to the case',
   }) */
   // EUI-2385
   // Scenario 5
   /* .onPost(postNoCEventsUrl).reply(400, {
-    code: 'nocInProgress',
-    status_message: 'NOC in progress',
+    code: 'noc-in-progress',
+    message: 'NOC in progress',
   }) */
   // EUI-2385
   // Scenario 6
   /* .onPost(postNoCEventsUrl).reply(400, {
-    code: 'invalidCaseRef',
-    status_message: 'Another NOC request has been actioned',
+    code: 'noc-in-progress',
+    message: 'Another NOC request has been actioned',
   }) */
 }

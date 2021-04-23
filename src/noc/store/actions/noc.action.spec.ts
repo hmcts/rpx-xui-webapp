@@ -1,3 +1,4 @@
+import { AFFIRMATION_DEFAULT_DISAGREE_ERROR, AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR } from '../../constants/nocErrorMap.enum';
 import * as fromNocAction from './noc.action';
 
 describe('Noc Actions', () => {
@@ -79,10 +80,14 @@ describe('Noc Actions', () => {
     });
   });
 
-  describe('GetAffirmationAgreed', () => {
+  describe('SetAffirmationError', () => {
     it('should create an action', () => {
-      const action = new fromNocAction.SetAffirmationDisagreeError();
-      expect(action.type).toBe(fromNocAction.SET_AFFIRMATION_DISAGREE_ERROR);
+      const affirmationError = {
+        AFFIRMATION_DEFAULT_DISAGREE_ERROR,
+        AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR
+      };
+      const action = new fromNocAction.SetAffirmationError(affirmationError);
+      expect(action.type).toBe(fromNocAction.SET_AFFIRMATION_ERROR);
     });
   });
 

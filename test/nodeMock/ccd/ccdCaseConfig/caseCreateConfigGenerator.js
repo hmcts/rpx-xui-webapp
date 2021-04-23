@@ -175,4 +175,3 @@ class CCDCaseConfig extends CCDCaseField{
 
 module.exports = CCDCaseConfig;
 
-

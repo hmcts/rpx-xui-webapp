@@ -36,10 +36,9 @@ import { workAllocationRouting } from './work-allocation-feature.routes';
     AlertService,
     CaseworkerDataService,
     WorkAllocationFeatureService,
+    SeniorTribunalCaseworkerGuard, 
+    TribunalCaseworkerGuard
   ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  providers: [WorkAllocationTaskService, WorkAllocationFeatureToggleGuard,
-              AlertService, CaseworkerDataService,
-              SeniorTribunalCaseworkerGuard, TribunalCaseworkerGuard]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class WorkAllocationModule {}

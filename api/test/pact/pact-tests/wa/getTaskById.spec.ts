@@ -42,7 +42,7 @@ describe("Task management api, get task by id", () => {
         before(async () => {
             await pactSetUp.provider.setup()
             const interaction = {
-                state: "get task using taskId",
+                state: "appropriate task is returned",
                 uponReceiving: "tasId to get task",
                 withRequest: {
                     method: "GET",

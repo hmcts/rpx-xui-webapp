@@ -62,7 +62,7 @@ describe("Task management api, Search task", () => {
         before(async () => {
             await pactSetUp.provider.setup()
             const interaction = {
-                state: "search tasks with filters",
+                state: "appropriate tasks are returned by criteria",
                 uponReceiving: "filters to search tasks",
                 withRequest: {
                     method: "POST",

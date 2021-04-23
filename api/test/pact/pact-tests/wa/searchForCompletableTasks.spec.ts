@@ -51,7 +51,7 @@ describe("Task management api, Search for completebale tasks on case event", () 
         before(async () => {
             await pactSetUp.provider.setup()
             const interaction = {
-                state: "search for task completable using taskId",
+                state: "appropriate tasks are returned by search for completable",
                 uponReceiving: "taskId to search for tasks completable",
                 withRequest: {
                     method: "POST",

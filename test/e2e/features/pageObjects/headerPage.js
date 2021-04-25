@@ -3,10 +3,14 @@
 const { SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants');
 
 var BrowserWaits = require('../../support/customWaits');
+var BrowserUtil = require('.././../../ngIntegration/util/browserUtil');
 
 function HeaderPage() {
 
-    this.primaryNavBar = element(by.css("nav.hmcts-primary-navigation ul"));
+    this.primaryNavBar = element(by.css(".hmcts-primary-navigation__container"));
+    this.primaryNavBar_NavItems = element(by.css(".hmcts-primary-navigation__nav ul"));
+    this.primaryNavBar_rightSideItems = element(by.css(".hmcts-primary-navigation__search ul"));
+
     this.manageCases = element(by.css(".hmcts-header .hmcts-header__link"));
 
     this.headerAppLogoLink = $('.hmcts-header__logo a');
@@ -96,9 +100,51 @@ function HeaderPage() {
     return this.primaryNavBar.element(by.xpath('//a[contains(text(),"' + tabText + '")]'));
   };
 
-  this.getPrimaryNavigations = async function(){
-    return await this.primaryNavBar.getText();
+  this.clickTabWithText = async function (tabText) {
+    await this.getTabElementWithText(tabText).click();
   };
+
+  this.getPrimaryTabsDisplayed = async function  () {
+    return await BrowserUtil.stepWithRetry(async () => {
+      const tabsText = [];
+      const tablinks = this.primaryNavBar.$$('a');
+      const tabsCount = await tablinks.count();
+      for (let i = 0; i < tabsCount; i++) {
+        let tabLink = await tablinks.get(i);
+        tabsText.push(await tabLink.getText());
+      }
+      return tabsText;
+    });
+    
+  }
+
+  this.getPrimaryMainNavItems = async function () {
+    return await BrowserUtil.stepWithRetry(async () => {
+      const tabsText = [];
+      const tablinks = this.primaryNavBar_NavItems$$('a');
+      const tabsCount = await tablinks.count();
+      for (let i = 0; i < tabsCount; i++) {
+        let tabLink = await tablinks.get(i);
+        tabsText.push(await tabLink.getText());
+      }
+      return tabsText;
+    });
+  }
+
+  this.getPrimaryRightSideItems = async function () {
+    return await BrowserUtil.stepWithRetry(async () => {
+      const tabsText = [];
+      const tablinks = this.primaryNavBar_rightSideItems$$('a');
+      const tabsCount = await tablinks.count();
+      for (let i = 0; i < tabsCount; i++) {
+        let tabLink = await tablinks.get(i);
+        tabsText.push(await tabLink.getText());
+      }
+      return tabsText;
+    });
+    
+  }
+
 }
 
 module.exports = new HeaderPage;

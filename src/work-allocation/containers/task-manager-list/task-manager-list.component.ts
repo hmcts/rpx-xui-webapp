@@ -58,7 +58,7 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
   private pUserId: string;
   // pCaseworkerLocation is the caseworker that sets the location of the location dropdown
   // Note: Setter for caseworkerLocation may come in useful if the selected location needs to be set via the caseworker assigned to the task
-  private pCaseworkerLocation: Location;
+  public pCaseworkerLocation: Location;
 
   public get fields(): TaskFieldConfig[] {
     return ConfigConstants.TaskManager;

@@ -6,7 +6,7 @@ const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'wa_task_management_api_get_task_by_id', port: 8000 });
 
-const taskId = "123456789"
+const taskId = "f782bde3-8d51-11eb-a9a4-06d032acc76d"
 describe("Task management api, get task by id", () => {
     
     const RESPONSE_BODY = {

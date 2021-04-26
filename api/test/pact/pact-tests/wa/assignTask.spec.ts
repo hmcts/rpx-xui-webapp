@@ -12,7 +12,7 @@ describe("Task management api, assign a task to user", () => {
     const mockRequest = {
         user_id: "004b7164-0943-41b5-95fc-39794af4a9fe"
     }
-    const taskId = "12345678";
+    const taskId = "f782bde3-8d51-11eb-a9a4-06d032acc76d";
     describe("post /task/taskId/assign", () => {
 
         const jwt = 'some-access-token';

@@ -6,6 +6,7 @@ const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'wa_task_management_api_search', port: 8000 });
 
+const taskId = "f782bde3-8d51-11eb-a9a4-06d032acc76d"
 
 describe("Task management api, Search task", () => {
 
@@ -21,7 +22,7 @@ describe("Task management api, Search task", () => {
                 "created_date": somethingLike("2020-09-05T14:47:01.250542+01:00"),
                 "due_date": somethingLike("2020-09-25T14:47:01.250542+01:00"),
                 "execution_type": somethingLike("Case Management Task"),
-                "id": somethingLike("f782bde3-8d51-11eb-a9a4-06d032acc76d"),
+                "id": somethingLike(taskId),
                 "jurisdiction": somethingLike("IA"),
                 "location": somethingLike("765324"),
                 "location_name": somethingLike("Taylor House"),
@@ -114,7 +115,7 @@ function assertResponses(dto: any) {
     expect(dto.tasks[0].due_date).to.be.equal("2020-09-25T14:47:01.250542+01:00");
     expect(dto.tasks[0].execution_type).to.be.equal("Case Management Task");
 
-    expect(dto.tasks[0].id).to.be.equal("f782bde3-8d51-11eb-a9a4-06d032acc76d");
+    expect(dto.tasks[0].id).to.be.equal(taskId);
     expect(dto.tasks[0].jurisdiction).to.be.equal("IA");
     expect(dto.tasks[0].location).to.be.equal("765324");
     expect(dto.tasks[0].location_name).to.be.equal("Taylor House");

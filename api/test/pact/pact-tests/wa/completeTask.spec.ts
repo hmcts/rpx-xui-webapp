@@ -12,7 +12,7 @@ describe("Task management api, Complete a task", () => {
     const RESPONSE_BODY = {
        
     }
-    const taskId = "1212343412123434"
+    const taskId = "f782bde3-8d51-11eb-a9a4-06d032acc76d"
     describe("post /task/taskId/complete/", () => {
 
         const jwt = 'some-access-token';

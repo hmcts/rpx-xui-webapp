@@ -12,7 +12,7 @@ describe("Task management api, cancel a task", () => {
     const RESPONSE_BODY = {
 
     }
-    const taskId = "12341234"
+    const taskId = "f782bde3-8d51-11eb-a9a4-06d032acc76d"
     describe("post /task/taskId/cancel", () => {
 
         const jwt = 'some-access-token';

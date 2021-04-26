@@ -105,8 +105,8 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
   }
 
   /**
-  * Sets up the logged in userId
-  */
+   * Sets up the logged in userId
+   */
   private setupUserId(): void {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {

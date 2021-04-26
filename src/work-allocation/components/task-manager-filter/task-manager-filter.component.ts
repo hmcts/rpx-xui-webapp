@@ -91,11 +91,12 @@ export class TaskManagerFilterComponent implements OnChanges {
     this.sessionStorageService.setItem(FilterConstants.Session.TaskManager, toStore);
   }
 
-  public getLocationById(id: string): Location {
+  public getLocationById(id: any): Location {
     if (id === this.ALL_LOCATIONS.id) {
       return this.ALL_LOCATIONS;
     }
-    return this.locations.find(loc => loc.id === id) || this.ALL_LOCATIONS;
+    const currentLoc = this.locations.find(loc => id && loc.id === id.toString());
+    return currentLoc ? currentLoc : this.ALL_LOCATIONS;
   }
 
   public getCaseworkerByIdamId(id: string): Caseworker {

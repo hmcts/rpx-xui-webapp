@@ -96,6 +96,11 @@ export class TaskListWrapperComponent implements OnInit {
   }
 
   public ngOnInit(): void {
+    this.setupTaskList();
+    this.loadTasks();
+  }
+
+  public setupTaskList() {
     this.caseworkerService.getAll().subscribe(caseworkers => {
       this.caseworkers = [ ...caseworkers ];
     }, error => {
@@ -116,7 +121,6 @@ export class TaskListWrapperComponent implements OnInit {
         order: this.taskServiceConfig.defaultSortDirection
       };
     }
-    this.loadTasks();
   }
 
   /**

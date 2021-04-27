@@ -1,6 +1,6 @@
 import { NocAnswer } from './noc-answer.interface';
 
 export interface NocEvent {
-    caseReference: string;
-    nocAnswers: NocAnswer[];
+    case_id: string;
+    answers: NocAnswer[];
 }

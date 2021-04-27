@@ -2,6 +2,7 @@ import { expect } from 'chai';
 // import mocha from 'mocha';
 import { getXSRFToken } from './utils/authUtil'
 import Request from './utils/request';
+import { setTestContext } from './utils/helper';
 
 
 describe('CCD Endpoints', () => {
@@ -10,7 +11,8 @@ describe('CCD Endpoints', () => {
 
     // const userName = 'peterxuisuperuser@mailnesia.com';
     // const password = 'Monday01';
-    beforeEach(() => {
+    beforeEach(function ()  {
+        setTestContext(this);
         Request.clearSession();
     });
 
@@ -22,7 +24,7 @@ describe('CCD Endpoints', () => {
             experimental: true,
             'X-XSRF-TOKEN': xsrfToken
         };
-        const response = await Request.get('api/addresses?postcode=E1', headers);
+        const response = await Request.get('api/addresses?postcode=E1', headers, 200);
         expect(response.status).to.equal(200);
         expect(response.data).to.have.property('results');
         expect(response.data).to.have.property('header');

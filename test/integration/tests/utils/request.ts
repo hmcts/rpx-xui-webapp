@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 import { config } from '../config/config';
-import { getSessionCookieString } from './authUtil';
+import { getSessionCookieString ,updateSessionCookieString} from './authUtil';
+import {reporterMsg, reporterJson} from './helper'
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
@@ -11,18 +12,44 @@ axios.defaults.baseURL = config.baseUrl;
 const http: AxiosInstance = axios.create(axiosOptions);
 
 
+
 const requestInterceptor = (request) => {
     console.log(`${request.method.toUpperCase()} to ${request.url}`);
     return request;
 };
+
+const responseInterceptor = (response) => {
+    if (response.status === 200) {
+        if (Object.keys(response.headers).includes('set-cookie')) {
+            const setCookies = response.headers['set-cookie'].toString().split(',');
+            for (let i = 0; i < setCookies.length; i++) {
+                const cookiesNameValue = setCookies.toString().split(';')[0].toString().split('=');
+                request.sessionUpdateSetCookie(cookiesNameValue[0], cookiesNameValue[1]);
+            }
+
+        }
+    }
+    return response;
+};
+
+
 http.interceptors.request.use(requestInterceptor);
+http.interceptors.response.use(responseInterceptor)
+
 
 
 class Request {
-
+    private testContext;
     private cookieString: string = '';
+    private sessionUser = '';
+
     public async withSession(username: string, password: string) {
         this.cookieString = await getSessionCookieString(username, password);
+        this.sessionUser = username;
+    }
+
+    public sessionUpdateSetCookie(name,value){
+        this.cookieString = updateSessionCookieString(this.sessionUser,name,value);
     }
 
     public clearSession() {
@@ -52,74 +79,95 @@ class Request {
         }
     }
 
-    public async get(reqpath: string, headers: any){
-        try {
-            return await this.retryRequest(() =>  http.get(reqpath, this.getRequestConfig(headers)));
-        } catch (error) {
-            return this.getResponseFromError(error);
-        }
+    public async get(reqpath: string, headers: any, expectedStatus:any){
+        reporterMsg(`GET : ${reqpath}`);
+        return await this.retryRequest(() => http.get(reqpath, this.getRequestConfig(headers)), expectedStatus);
+
     }
 
-    public async post(reqpath: string, data, headers: any) {
-        try {
-            return await this.retryRequest(() =>http.post(reqpath, data, this.getRequestConfig(headers)));
-        } catch (error) {
-            return this.getResponseFromError(error);
+    public async post(reqpath: string, data, headers: any, expectedStatus: number) {
+        reporterMsg(`POST : ${reqpath}`);
+        return await this.retryRequest(() => http.post(reqpath, data, this.getRequestConfig(headers)), expectedStatus);
 
-        }
     }
 
-    public async put(reqpath: string, data, headers: any){
-        try {
-            return await this.retryRequest(() =>http.put(reqpath, data, this.getRequestConfig(headers)));
-        } catch (error) {
-            return this.getResponseFromError(error);
+    public async put(reqpath: string, data, headers: any, expectedStatus: number){
+        reporterMsg(`PUT : ${reqpath}`);
+        return await this.retryRequest(() => http.put(reqpath, data, this.getRequestConfig(headers)), expectedStatus);
 
-        }
     }
 
 
-    public async delete(reqpath: string, payload, moreHeaders: any) {
-        try {
-            const requestConfig = this.getRequestConfig(moreHeaders);
-            if (payload){
-                requestConfig['data'] = payload;
-            }
-            return await this.retryRequest(() =>http.delete(reqpath, requestConfig ));
-        } catch (error) {
-            return this.getResponseFromError(error);
-
+    public async delete(reqpath: string, payload, moreHeaders: any, expectedStatus:any) {
+        reporterMsg(`DELETE : ${reqpath}`);
+        const requestConfig = this.getRequestConfig(moreHeaders);
+        if (payload) {
+            requestConfig['data'] = payload;
         }
+        return await this.retryRequest(() => http.delete(reqpath, requestConfig), expectedStatus);
     }
 
-    async retryRequest(callback){
+    async retryRequest(callback,expectedResponsecode){
         let retryAttemptCounter = 0;
         let isCallbackSuccess = false;
         let retVal = null;
 
         const retryErrorLogs = [];
-        while (retryAttemptCounter < 3 && !retVal){
+        let error = null;
+        let isExpectedResponseReceived = false
+        while (retryAttemptCounter < 3 && !isExpectedResponseReceived){
+            isExpectedResponseReceived = false;
+            retVal = null;
+            error = null;
             try {
-                console.log("in retry function : retry attempt " + retryAttemptCounter);
-
                 retVal = await callback();
-                isCallbackSuccess = true;
             } catch (err) {
-                retryErrorLogs.push(err);
-                retryAttemptCounter++;
-                console.log(`API request error: "${err.code}" syscall : ${err.syscall} => Retrying atempt ${retryAttemptCounter}`);
-                if (err.response) {
-                    retVal = err.response;
-                }
+                // retryErrorLogs.push(err.response ? err.response : err);
+                error = err;
+                reporterMsg(err.response);
+                retVal = err.response ? err.response : null; 
+                
             }
+
+
+            if (retVal && expectedResponsecode instanceof Array){
+                isExpectedResponseReceived = expectedResponsecode.includes(retVal.status); 
+            } else if (retVal){
+                isExpectedResponseReceived = expectedResponsecode === retVal.status 
+            }
+
+            if (!isExpectedResponseReceived){
+                console.log(retVal);
+                console.log(error);
+                retryAttemptCounter++;
+                const status = retVal  ? retVal.status : "unknown";
+                const responseBody = retVal  ? retVal.data : "unknown"; 
+                let errorMessage = retVal ? `STATUS CODE : ${status} =>RESPONSE BODY :  ${responseBody}` : `unknown request error occured  ` 
+                retryErrorLogs.push(`\n Retry ${retryAttemptCounter  } : ${errorMessage}`);
+
+                reporterMsg(` Unexpected response : ${errorMessage}`);
+                reporterMsg(` Retrying atempt ${retryAttemptCounter}`);
+                // console.log(` Unexpected response : ${errorMessage}`);
+                // console.log(` Retrying atempt ${retryAttemptCounter}`);
+
+                let sleepInSec = retryAttemptCounter *2; 
+                await new Promise((resolve,reject) => {
+                    setTimeout(() => {
+                        reporterMsg(`Sleep for ${sleepInSec} sec before retry`);
+                        resolve(true);
+                    }, sleepInSec*1000);
+                });
+            } 
+            
         }
 
-        if(retVal){
+        if (isExpectedResponseReceived){
             return retVal;
         }else{
-            throw new Error("Errors occured in retry attempts "+JSON.stringify(retryErrorLogs));
+            throw new Error("Following errors occured in retry attempts "+(retryErrorLogs));
         }
     }
 }
+const request = new Request();
+export default request;
 
-export default new Request();

@@ -35,8 +35,7 @@ describe('Work Allocation: ', function () {
         await MockApp.startServer();
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator('exui-task-container-assignment h1'))
-        await pa11ytest(this, actions, conf.baseUrl + 'tasks/task-list/reassign/123456');
-
+        await pa11ytest(this, actions, conf.baseUrl + 'tasks/123456/reassign');
     });
 
 

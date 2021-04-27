@@ -1,3 +1,4 @@
+import { PipesModule } from '@hmcts/ccd-case-ui-toolkit';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
@@ -6,8 +7,7 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 
 import * as fromComponents from '.';
 import * as fromPipes from '../pipes';
-import { CaseworkerDataService } from './../services/case-worker-data.service';
-import { LocationDataService } from './../services/location-data.service';
+import { CaseworkerDataService, InfoMessageCommService, LocationDataService } from '../services';
 
 // from containers
 @NgModule({
@@ -15,13 +15,14 @@ import { LocationDataService } from './../services/location-data.service';
     CommonModule,
     HttpClientModule,
     ExuiCommonLibModule,
-    FormsModule // TODO: Remove this as it's only needed for testing.
+    FormsModule, // TODO: Remove this as it's only needed for testing.
+    PipesModule
   ],
   declarations: [
     ...fromComponents.components,
     ...fromPipes.pipes
   ],
-  providers: [CaseworkerDataService, LocationDataService],
+  providers: [CaseworkerDataService, LocationDataService, InfoMessageCommService],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   exports: [
     ...fromComponents.components,

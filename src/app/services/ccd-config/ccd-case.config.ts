@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import {
-  AbstractAppConfig,
-  CaseEditorConfig
-} from '@hmcts/ccd-case-ui-toolkit';
-import {AppConfigService} from '../config/configuration.services';
-
+import { AbstractAppConfig, CaseEditorConfig } from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { AppConfigService } from '../config/configuration.services';
+import { AppConstants } from '../../app.constants';
+import { AppUtils } from '../../app-utils';
+import { WorkAllocationTaskService } from '../../../work-allocation/services';
 
 /**
  * see more:
@@ -14,11 +14,28 @@ import {AppConfigService} from '../config/configuration.services';
 
 @Injectable()
 export class AppConfig extends AbstractAppConfig {
-
   protected config: CaseEditorConfig;
-  constructor(private appConfigService: AppConfigService) {
+  public workallocationUrl: string;
+
+  constructor(
+    private readonly appConfigService: AppConfigService,
+    private readonly featureToggleService: FeatureToggleService
+  ) {
     super();
-    this.config =  this.appConfigService.getEditorConfiguration() || {};
+    this.config = this.appConfigService.getEditorConfiguration() || {};
+    this.featureToggleWorkAllocation();
+  }
+
+  private featureToggleWorkAllocation(): void {
+    this.featureToggleService
+      .isEnabled(AppConstants.FEATURE_NAMES.workAllocation)
+      .subscribe(
+        (isFeatureEnabled) =>
+          this.workallocationUrl = AppUtils.getFeatureToggledUrl(
+            isFeatureEnabled,
+            WorkAllocationTaskService.WorkAllocationUrl
+          )
+      );
   }
 
   public load(): Promise<void> {
@@ -67,7 +84,7 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getCreateOrUpdateDraftsUrl(ctid: string) {
-      return this.getCaseDataUrl() + `/internal/case-types/${ctid}/drafts/`;
+    return this.getCaseDataUrl() + `/internal/case-types/${ctid}/drafts/`;
   }
 
   public getViewOrDeleteDraftsUrl(did: string) {
@@ -127,7 +144,6 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getWorkAllocationApiUrl(): string {
-    // pass explicitly null to feature toggle workAllocation api
-    return null;
+    return this.workallocationUrl;
   }
 }

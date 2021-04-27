@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
-import * as fromFeature from '../../store';
+import { Observable } from 'rxjs';
 import { NocState } from '../../models';
+import * as fromFeature from '../../store';
 
 @Component({
   selector: 'exui-noc-submit-success',
@@ -17,7 +17,7 @@ export class NocSubmitSuccessComponent implements OnInit {
 
   constructor(private store: Store<fromFeature.State>) { }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.caseReference$ = this.store.pipe(select(fromFeature.caseReference));
     this.currentNavigation$ = this.store.pipe(select(fromFeature.currentNavigation));
   }

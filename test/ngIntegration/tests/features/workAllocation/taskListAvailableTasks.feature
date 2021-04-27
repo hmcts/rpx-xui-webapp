@@ -1,4 +1,4 @@
-@ng @test
+@ng
 Feature: Available Tasks Task list
 
     Background: Mock and browser setup

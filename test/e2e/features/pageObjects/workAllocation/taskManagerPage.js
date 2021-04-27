@@ -1,5 +1,6 @@
 const TaskList = require('./taskListTable');
 const BrowserWaits = require('../../../support/customWaits');
+var TaskMessageBanner = require('./taskMessageBanner');
 
 class TaskManagerPage extends TaskList{
   
@@ -11,6 +12,8 @@ class TaskManagerPage extends TaskList{
         this.locationFilter = $('exui-task-manager-filter select#task_assignment_location');
 
         this.tasksCountInDisplayLabel = $('exui-task-manager-list p span');
+
+        this.taskInfoMessageBanner = new TaskMessageBanner();
     }
 
     async amOnPage(){
@@ -57,6 +60,18 @@ class TaskManagerPage extends TaskList{
     async selectLocationFilter(optionDisplayText) {
         expect(await this.amOnPage(), "Not on Task manager page ").to.be.true;
         await this.locationFilter.element(by.xpath(`//option[text() = '${optionDisplayText}']`)).click();
+    }
+
+    async isBannerMessageDisplayed() {
+        expect(await this.amOnPage(), "Not on Task manager page ").to.be.true;
+
+        return this.taskInfoMessageBanner.isBannerMessageDisplayed();
+    }
+
+    async getBannerMessagesDisplayed() {
+        expect(await this.amOnPage(), "Not on Task manager page ").to.be.true;
+
+        return this.taskInfoMessageBanner.getBannerMessagesDisplayed();
     }
   
 }

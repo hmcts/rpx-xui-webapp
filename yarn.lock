@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@2.79.6":
-  version "2.79.6"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.79.6.tgz#c1772351264c21da0f3f95168e3ca56f84bd93d0"
-  integrity sha512-8dKDgu3cLRjMLusxltraDfQljwDvg64p551nWb81eUTgffsOzoElBSsi7nebZXyrhlGsCmvQI3TlBKQE1/GYIw==
+"@hmcts/ccd-case-ui-toolkit@v2.79.8-labels-not-displaying-in-case-heading":
+  version "2.79.8-labels-not-displaying-in-case-heading"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.79.8-labels-not-displaying-in-case-heading.tgz#555e8bc120ae275355958e14c6f693c476c3b0e1"
+  integrity sha512-nkAjgXptFUvAXdQn0SNo+je0mRCxNivaMAuiPzoIXHWAADObi2o5p5K1YSgxJM30tm69iU8BCQOAc7nSfe4Pjg==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"

@@ -186,8 +186,8 @@
     }
   ],
   "pact": {
-    "branchName": "Dev",
-    "brokerUrl": "http://localhost:80",
+    "branchName": "master",
+    "brokerUrl": "https://pact-broker.platform.hmcts.net",
     "consumerVersion": "",
     "brokerUsername": "",
     "brokerPassword": ""

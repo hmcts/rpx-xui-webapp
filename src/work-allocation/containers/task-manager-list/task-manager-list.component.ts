@@ -15,6 +15,8 @@ import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 import { SessionStorageService } from '../../../app/services';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 import { UserInfo } from 'src/app/models/user-details.model';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { CaseworkerDisplayName } from '../../pipes';
 
 @Component({
   selector: 'exui-task-manager-list',
@@ -25,6 +27,7 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
   private selectedCaseworker: Caseworker;
   private selectedLocation: Location;
 
+  private readonly caseworkerDisplayName: CaseworkerDisplayName = new CaseworkerDisplayName();
   /**
    * Take in the Router so we can navigate when actions are clicked.
    */
@@ -36,9 +39,10 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
     protected sessionStorageService: SessionStorageService,
     protected readonly caseworkerService: CaseworkerDataService,
     private readonly locationService: LocationDataService,
-    protected alertService: AlertService
+    protected alertService: AlertService,
+    protected loadingService: LoadingService
   ) {
-    super(ref, taskService, router, infoMessageCommService, sessionStorageService, alertService, caseworkerService);
+    super(ref, taskService, router, infoMessageCommService, sessionStorageService, alertService, caseworkerService, loadingService);
   }
 
   /**

@@ -127,9 +127,6 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
     this.caseworkerService.getAll().subscribe(caseworkers => {
       const assignedCaseworker = caseworkers.find(cw => this.isLoggedInUser(cw.idamId));
       this.pCaseworkerLocation = assignedCaseworker.location ? assignedCaseworker.location : null;
-      // reset location to test - TODO - Remove comments once tested
-      // this.pCaseworkerLocation.id = '231596';
-      // this.pCaseworkerLocation.id = '198444';
     }, error => {
       handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
     });

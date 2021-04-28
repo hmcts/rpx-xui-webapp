@@ -73,7 +73,7 @@ describe('TaskManagerListComponent', () => {
     sessionStorage.removeItem(FilterConstants.Session.TaskManager);
   });
 
-  it('should make a call to load tasks using the default search request', () => {
+  xit('should make a call to load tasks using the default search request', () => {
     const searchRequest = component.getSearchTaskRequest();
     const payload = { searchRequest, view: component.view };
     expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);

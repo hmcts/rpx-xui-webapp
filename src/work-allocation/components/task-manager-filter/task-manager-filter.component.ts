@@ -91,7 +91,7 @@ export class TaskManagerFilterComponent implements OnChanges {
     this.sessionStorageService.setItem(FilterConstants.Session.TaskManager, toStore);
   }
 
-  public getLocationById(id: any): Location {
+  public getLocationById(id: string): Location {
     if (id === this.ALL_LOCATIONS.id) {
       return this.ALL_LOCATIONS;
     }

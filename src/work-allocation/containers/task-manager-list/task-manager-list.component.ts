@@ -56,13 +56,13 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
    * Gets the caseworker's location
    */
   public get caseworkerLocation(): Location {
-    return this.pCaseworkerLocation;
+    return this.cwLocation;
   }
 
   private pUserId: string;
   // pCaseworkerLocation is the caseworker that sets the location of the location dropdown
   // Note: Setter for caseworkerLocation may come in useful if the selected location needs to be set via the caseworker assigned to the task
-  public pCaseworkerLocation: Location;
+  public cwLocation: Location;
 
   public get fields(): TaskFieldConfig[] {
     return ConfigConstants.TaskManager;
@@ -126,7 +126,7 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
   private setupCaseworkerLocation(): void {
     this.caseworkerService.getAll().subscribe(caseworkers => {
       const assignedCaseworker = caseworkers.find(cw => this.isLoggedInUser(cw.idamId));
-      this.pCaseworkerLocation = assignedCaseworker.location ? assignedCaseworker.location : null;
+      this.cwLocation = assignedCaseworker.location ? assignedCaseworker.location : null;
     }, error => {
       handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
     });

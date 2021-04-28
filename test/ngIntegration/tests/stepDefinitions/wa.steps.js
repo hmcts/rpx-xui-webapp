@@ -9,6 +9,7 @@ const taskListPage = require('../../../e2e/features/pageObjects/workAllocation/t
 const taskManagerPage = require('../../../e2e/features/pageObjects/workAllocation/taskManagerPage');
 const taskAssignmentPage = require('../../../e2e/features/pageObjects/workAllocation/taskAssignmentPage');
 
+const caseDetailsPage = require('../pageObjects/caseDetailsPage');
 
 const headerPage = require('../../../e2e/features/pageObjects/headerPage');
 const CaseListPage = require('../../../e2e/features/pageObjects/CaseListPage');
@@ -25,6 +26,7 @@ const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
 const CucumberReporter = require('../../../e2e/support/reportLogger');
 
 const headerpage = require('../../../e2e/features/pageObjects/headerPage');
+const taskActionPage = require('../../../e2e/features/pageObjects/workAllocation/taskActionPage');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
@@ -282,7 +284,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }
         }
 
-        for (const responseCode of [500, 401, 403]) {
+        for (const responseCode of testErrorResponseCodes) {
             await headerPage.clickManageCases();
             await MockUtil.resetMock();
             await MockUtil.setMockResponse("GET", "/workallocation/location", (req, res) => {
@@ -369,7 +371,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             const locations = await taskAssignmentPage.getLocationOptions();
             const caseworkers = await taskAssignmentPage.getCaseworkerOptions();
 
-            await taskAssignmentPage.selectLocation(locations[1]);
+            // await taskAssignmentPage.selectLocation(locations[1]);
             await taskAssignmentPage.selectCaseworker(caseworkers[1]);
 
             await MockUtil.setMockResponse("POST", '/workallocation/task/:taskId/assign', (req, res) => {
@@ -426,16 +428,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 const isErrorPageDisplayed = await errorPage.isErrorPageDisplayed();
 
                 softAssertion.setScenario(`Scenario validation: on action ${action} GET /workallocation/task/:taskId/claim error response ${responseCode} `); 
-                if(responseCode === 400){
-                    expect(await taskAssignmentPage.isBannerMessageDisplayed(),"Error message banner not displayed on 400").to.be.true
-                    expect(await taskAssignmentPage.isBannermessageWithTextDisplayed("The task is no longer available"), "Error message banner not displayed on 400").to.be.true;
-
-                }else{
-                    await softAssertion.assert(async () => expect(isErrorPageDisplayed, `For action ${action} on task details ${responseCode} status response, error page not displayed`).to.be.true);
-                    if (isErrorPageDisplayed) {
-                        const errorMessageDisplayed = await errorPage.getErrorMessage();
-                        await softAssertion.assert(async () => expect(errorMessageDisplayed, `For action ${action} on task details ${responseCode} status response, error message does not match`).to.contains(errorMessageForResponseCode(responseCode)));
-                    }
+                await softAssertion.assert(async () => expect(isErrorPageDisplayed, `For action ${action} on task details ${responseCode} status response, error page not displayed`).to.be.true);
+                if (isErrorPageDisplayed) {
+                    const errorMessageDisplayed = await errorPage.getErrorMessage();
+                    await softAssertion.assert(async () => expect(errorMessageDisplayed, `For action ${action} on task details ${responseCode} status response, error message does not match`).to.contains(errorMessageForResponseCode(responseCode)));
                 }
             } 
         }
@@ -446,9 +442,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
 
     Then('I validate Task manager task action page errors', async function(){
+        
+
         const softAssertion = new SoftAssert(this);
 
-       
         // expect(await taskListPage.amOnPage()).to.be.true;
         for (const action of taskManager_action) {
             for (const responseCode of testErrorResponseCodes) {
@@ -481,9 +478,83 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                     await softAssertion.assert(async () => expect(errorMessageDisplayed, `For action ${action} on task details ${responseCode} status response, error message does not match`).to.contains(errorMessageForResponseCode(responseCode)));
                 }
             }
+            softAssertion.finally();
         }
 
-        softAssertion.finally();
+        
+    });
+
+    Then('I validate Task actions from page {string}', async function(fromPage, datatable){
+        const scenarios = datatable.hashes();
+
+        let validateOnPage = null;
+        for (let i = 0; i < scenarios.length; i++){
+            const scr = scenarios[i];
+            const softAssert = new SoftAssert(this);
+            const scenarioDesc = `${scr.ManageAction} ${scr.ActionType} ${scr.SubmitCancel} ${scr.SuccessMessage}`;
+            CucumberReporter.AddMessage("")
+            CucumberReporter.AddMessage("**********************************************************************************************")
+            CucumberReporter.AddMessage(scenarioDesc);
+            CucumberReporter.AddMessage("********************************************************************************************** ");
+            softAssert.setScenario(scenarioDesc);
+
+            
+            await headerPage.clickManageCases();
+            if (fromPage.toUpperCase().includes('MY')){
+                await headerPage.clickTaskList();
+                await taskListPage.amOnPage();
+                validateOnPage = async () => expect(await taskListPage.isMyTasksDisplayed()).to.be.true
+
+            } else if (fromPage.toUpperCase().includes('AVAILA')){
+                await headerPage.clickTaskList();
+                await taskListPage.amOnPage();
+                await taskListPage.clickAvailableTasks();
+                validateOnPage = async () => expect(await taskListPage.isAvailableTasksDisplayed()).to.be.true
+
+
+            } else if (fromPage.toUpperCase().includes('MANAGER')) {
+                await headerPage.clickTaskManager();
+                validateOnPage = async () => expect(await taskManagerPage.amOnPage()).to.be.true
+            }
+            validateOnPage();
+
+            await taskListPage.clickManageLinkForTaskAt(1);
+            await taskListPage.clickTaskAction(scr.ManageAction);
+
+            if(scr.ActionType.toUpperCase() == "ASSIGNMENT"){
+                await taskAssignmentPage.validatePageContentForAction(scr.ManageAction, softAssert);
+                if(scr.SubmitCancel.toUpperCase() === "SUBMIT"){
+                    await taskAssignmentPage.selectcaseworkerAtpos(2);
+                    await taskAssignmentPage.clickSubmitBtn(scr.ManageAction);
+                }else{
+                    await taskAssignmentPage.clickCancelBtn();
+                }
+                
+            } else if (scr.ActionType.toUpperCase() == "ACTION"){
+                await taskActionPage.validatePageContentForAction(scr.ManageAction, softAssert);
+                if (scr.SubmitCancel.toUpperCase === "SUBMIT") {
+                    await taskActionPage.clickSubmitBtn(scr.ManageAction);
+                } else {
+                    await taskActionPage.clickCancelBtn();
+                }
+            } else if(scr.ActionType.toUpperCase() == "ONCECLICK"){
+
+            }
+
+            if (scr.ManageAction.includes('to case')){
+                await softAssert.assert(async () => expect(caseDetailsPage.amOnPage(), "Not on case details page").to.be.true);
+                
+            }else{
+                validateOnPage();
+                if (scr.SuccessMessage && !scr.ManageAction.includes('to case')){
+                    // const displayedMessages = await taskListPage.getBannerMessagesDisplayed();
+                    // const messagesMathcing = displayedMessages.filter(msg => msg.includes(scr.SuccessMessage));
+                    // expect(messagesMathcing.length > 0, `${scr.SuccessMessage} is not in displayed message ${displayedMessages}`).to.be.true;
+                } 
+            }
+            
+       }
+       
     });
 
 });

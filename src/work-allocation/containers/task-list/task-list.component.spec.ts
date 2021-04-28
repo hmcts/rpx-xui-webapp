@@ -2,6 +2,7 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { of } from 'rxjs';
 
 import { ConfigConstants } from '../../components/constants';
@@ -57,6 +58,7 @@ describe('TaskListComponent', () => {
   let routerSpy: jasmine.SpyObj<any>;
   const mockRouter: MockRouter = new MockRouter();
   const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['getTask']);
+  const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   beforeEach((() => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     TestBed.configureTestingModule({
@@ -67,7 +69,8 @@ describe('TaskListComponent', () => {
       declarations: [TaskListComponent, WrapperComponent],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
-        { provide: Router, useValue: mockRouter }
+        { provide: Router, useValue: mockRouter },
+        { provide: LoadingService, useValue: mockLoadingService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
@@ -78,6 +81,7 @@ describe('TaskListComponent', () => {
     wrapper.fields = getFields();
     wrapper.taskServiceConfig = getTaskService();
     mockWorkAllocationService.getTask.and.returnValue(of({}));
+    mockLoadingService.isLoading = of(false);
     fixture.detectChanges();
   }));
 
@@ -111,7 +115,7 @@ describe('TaskListComponent', () => {
     button.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
-    // check the emitter had been called and that it gets called with the first field which is caseReference
+    // check the emitter had been called and that it gets called with the first field which is caseReference (caseId)
     expect(component.sortEvent.emit).toHaveBeenCalled();
     expect(component.sortEvent.emit).toHaveBeenCalledWith('caseId');
   });

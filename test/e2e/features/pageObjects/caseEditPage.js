@@ -241,7 +241,7 @@ class caseEditPage {
                     let keyVal = String(date.getDate()).padStart(2, '0') + "-" + String(date.getMonth() + 1).padStart(2, '0') + "-" + date.getFullYear();
                     this.checkURanswerPageData[i][Object.keys(this.checkURanswerPageData[i]).toString()] = keyVal;
                 }
-                if (Object.values(this.checkURanswerPageData[i]).toString() && Object.keys(this.checkURanswerPageData[i]).toString() != "Compliance") {
+                if (Object.values(this.checkURanswerPageData[i]).toString() && Object.keys(this.checkURanswerPageData[i]).toString() !== "Compliance" && Object.keys(this.checkURanswerPageData[i]).toString() !== "") {
                     expect(createCaseFormData).to.deep.include(this.checkURanswerPageData[i]);
                 }
             }
@@ -292,7 +292,7 @@ class caseEditPage {
         await continieElement.click();
         await BrowserWaits.waitForPageNavigation(thisPageUrl);
         let page3 = await element(by.css("ccd-case-edit-page h1"));
-        expect(await page3.getText()).to.eql("Page 3 - Create a case");
+        expect(await page3.getText()).to.contains("Page 3");
     }
 
     async _getKeyVal(field) {

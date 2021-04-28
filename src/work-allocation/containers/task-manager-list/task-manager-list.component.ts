@@ -15,18 +15,17 @@ import {
 import { handleFatalErrors } from '../../utils';
 import { SessionStorageService } from '../../../app/services';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({
   selector: 'exui-task-manager-list',
   templateUrl: 'task-manager-list.component.html'
 })
 export class TaskManagerListComponent extends TaskListWrapperComponent implements OnInit {
-  public caseworkers: Caseworker[];
   public locations: Location[];
   private selectedCaseworker: Caseworker;
   private selectedLocation: Location;
   private readonly caseworkerDisplayName: CaseworkerDisplayName = new CaseworkerDisplayName();
-
   /**
    * Take in the Router so we can navigate when actions are clicked.
    */
@@ -36,11 +35,12 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
     protected router: Router,
     protected infoMessageCommService: InfoMessageCommService,
     protected sessionStorageService: SessionStorageService,
-    private readonly caseworkerService: CaseworkerDataService,
+    protected readonly caseworkerService: CaseworkerDataService,
     private readonly locationService: LocationDataService,
-    protected alertService: AlertService
+    protected alertService: AlertService,
+    protected loadingService: LoadingService
   ) {
-    super(ref, taskService, router, infoMessageCommService, sessionStorageService, alertService);
+    super(ref, taskService, router, infoMessageCommService, sessionStorageService, alertService, caseworkerService, loadingService);
   }
 
   public get fields(): TaskFieldConfig[] {
@@ -66,11 +66,6 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
   public ngOnInit(): void {
     super.ngOnInit();
     // Get the caseworkers and locations for this component.
-    this.caseworkerService.getAll().subscribe(caseworkers => {
-      this.caseworkers = [ ...caseworkers ];
-    }, error => {
-      handleFatalErrors(error.status, this.router);
-    });
     this.locationService.getLocations().subscribe(locations => {
       this.locations = [ ...locations ];
     }, error => {

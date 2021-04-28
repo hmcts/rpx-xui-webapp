@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'exui-cookie-policy',
@@ -31,11 +31,11 @@ export class CookiePolicyComponent {
       {name: 'XSRF-TOKEN', cat: this.SECURITY, purpose: 'Used to protect your session against cross site scripting attacks', expires: 'When you close your browser'}
     ];
 
-  public countCookies(category: string) {
+  public countCookies(category: string): number {
     return this.cookiesByCat(category).length;
   }
 
-  public cookiesByCat(category: string) {
+  public cookiesByCat(category: string): {name: string, cat: string, purpose: string, expires: string}[] {
     return this.cookieDetails.filter(c => c.cat === category);
   }
 }

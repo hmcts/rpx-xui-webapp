@@ -7,6 +7,7 @@ class SearchPage {
   constructor(){
     this.header = '#content h1';
     this.jurisdiction = $('#s-jurisdiction');
+    this.searchFilterContainer= $("ccd-search-filters form");
     this.caseType = $('#s-case-type');
     this.applyButton = $('ccd-search-filters button:not(.button-secondary)');
     this.resetButton = $('#reset');
@@ -29,11 +30,24 @@ class SearchPage {
 
     this.searchResultsTopPagination = $("ccd-search-result .pagination-top");
     this.noResultsNotification = $("ccd-search-result .notification");
+    this.searchResultComponent = $('.search-block');
 
     this.firstResultCaseLink = $("ccd-search-result>table>tbody>tr:nth-of-type(1)>td:nth-of-type(1)>a"); 
   }
 
+  async _waitForSearchComponent() {
+    await BrowserWaits.waitForElement(this.searchFilterContainer);
+    await this.waitForSpinnerToDissappear();
+  }
+
+  async waitForSpinnerToDissappear() {
+    await BrowserWaits.waitForCondition(async () => {
+      return !(await $(".loading-spinner-in-action").isPresent());
+    });
+  }
   async selectJurisdiction(option){
+    await this._waitForSearchComponent();
+
     await BrowserWaits.waitForElement(this.jurisdiction);
 
     var optionElement = this.jurisdiction.element(by.xpath("//*[text() ='" + option + "']"));
@@ -43,6 +57,7 @@ class SearchPage {
   }
 
   async selectCaseType(option){
+    await this._waitForSearchComponent();
     await BrowserWaits.waitForElement(this.caseType);
 
     var optionElement = this.caseType.element(by.xpath("//*[text() = '" + option + "']"));
@@ -52,6 +67,7 @@ class SearchPage {
   }
 
   async clickApplyButton() {
+    await this._waitForSearchComponent();
     await BrowserWaits.waitForElement(this.applyButton);
     await BrowserWaits.waitForElementClickable(this.applyButton);
 
@@ -61,6 +77,7 @@ class SearchPage {
   }
 
   async clickResetButton() {
+    await this._waitForSearchComponent();
     await BrowserWaits.waitForElement(this.resetButton);
     await browser.executeScript('arguments[0].scrollIntoView()',
       this.resetButton); 
@@ -84,6 +101,7 @@ class SearchPage {
   }
 
   async amOnPage(){
+    await this._waitForSearchComponent();
     let header = await this.getPageHeader();
     console.log("Header test : "+header);
     return header === 'Search'

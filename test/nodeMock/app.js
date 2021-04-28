@@ -2,31 +2,47 @@
 
 const express = require('express');
 var bodyParser = require('body-parser');
+const minimist = require('minimist');
+
 
 let { requestMapping,configurations} = require('./reqResMapping');
 const { browser } = require('protractor');
-const CCDCaseConfig = require('./ccd/ccdCaseConfig/caseCreateConfigGenerator')
+const CCDCaseConfig = require('./ccd/ccdCaseConfig/caseCreateConfigGenerator');
+const CCDCaseDetails = require('./ccd/ccdCaseConfig/caseDetailsConfigGenerator');
+
+const { getDLCaseConfig} = require('../ngIntegration/mockData/ccdCaseMock');
+
 const port = 3001;
 
 
 class MockApp{
     init(){
+        this.intercepts =[];
         this.conf = {
             get: { ...requestMapping.get },
             post: { ...requestMapping.post },
             put: { ...requestMapping.put },
             delete: { ...requestMapping.delete }
         };
-        this.configurations = Object.assign({}, configurations);
+        // this.configurations = Object.assign({}, configurations);
         console.log("Mock Config Initialized");
         return "done";
+    }
+
+    addIntercept(url,callback){
+        this.intercepts.push({url: url, callback: callback})
     }
 
     async startServer(){
         const app = express();
         app.use(bodyParser.urlencoded({ extended: false }));
         app.use(bodyParser.json());
-        app.use(express.json()) 
+        app.use(express.json()); 
+
+        this.intercepts.forEach(intercept =>{
+            app.use(intercept.url, intercept.callback);
+        }); 
+
         for (const [key, value] of Object.entries(this.conf.get)) {
             app.get(key, value);
         }
@@ -53,11 +69,11 @@ class MockApp{
         if (this.server){
             await this.server.close();
             this.server = null;
+            console.log("Mock server stopped");
+
         }else{
             console.log("Mock server is null or undefined");
         }
-        this.conf = {  };
-        this.configurations = { };
     }
 
    
@@ -84,63 +100,83 @@ class MockApp{
 
 }
 
+
 const mockInstance = new MockApp();
 module.exports = mockInstance;
 
+const args = minimist(process.argv)
+if (args.standalone){
+    mockInstance.init();
 
-// mockInstance.init();
-// createCustomCCDCaseConfig();
-// mockInstance.startServer();
+    setUpcaseConfig();
+    // getDLCaseConfig();
+    // collectionDynamicListeventConfig()
+    // createCustomCaseDetails();
+    mockInstance.startServer()
+}
 
+function setUpcaseConfig() {
+    const { getTestJurisdiction }  = require('../ngIntegration/mockData/ccdCaseMock');
+    mockInstance.onGet('/data/internal/cases/:caseid', (req, res) => {
+        
+        res.send(caseDetailsLabelShowCondition().getCase());
+    });
 
+}
 
-function createCustomCCDCaseConfig(){
-    // const scenario = { fieldType: "Collection", showField: false, retainHiddenField: false };
-
-    const scenario = { fieldType: "Document", showField: false, retainHiddenField: true };
-
-    const caseConfig = new CCDCaseConfig('TEST_CaseType', 'Test case type hidden field retain value', 'test description');
-    const page1 = caseConfig.addWizardPage('HiddenFieldPage_1', 'Hidden field retain value test page');
-
-    let testFieldShowYesNo = caseConfig.addCCDFieldToPage(page1, "YesOrNo", "showTestField", "Show Test Field?");
-    testFieldShowYesNo.value = true;
-
-    let complexField = caseConfig.addCCDFieldToPage(page1, scenario.fieldType, "complexField", "Complex field");
-    complexField.value = {
-            "document_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/a612199d-9972-4b99-b653-5ec7c310e21a",
-            "document_binary_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/a612199d-9972-4b99-b653-5ec7c310e21a/binary",
-            "document_filename": "Redacted-dm-store135044941749889827327305460282199740737.pdf"
-    }; 
-    complexField.retain_hidden_value = scenario.retainHiddenField;
-    complexField.show_condition = `${testFieldShowYesNo.id}=\"Yes\"`;
-
-    setUpcaseConfig(caseConfig.caseConfigTemplate);
+function caseDetailsLabelShowCondition(){
+    const caseDetail = new CCDCaseDetails("Mock Label show condition case type"); 
+    caseDetail.addHistoryTab()
+    .addTab("Simple Conditional show of labels")
+        .addFieldWithConfigToTab({ id: "item", type: "Text", label: "Item text", value: "yes" })
+        .addFieldWithConfigToTab({id: "label1ForItem1", type: "Label", label: "Item 1 text", props: { show_condition: `item="yes"` }})
+    .addTab("Complex Conditional show of labels")
+    .addFieldWithConfigToTab({
+        id:"complexFieldWithLabels", type:"Complex", label:"Conditional show labels complex type",
+        complex_fields:[
+            { id: "item", type: "Text", label: "Item text", value:"1" },
+            { id: "text1", type: "Text", label: "Item 1 text input", value: "sample",props: { show_condition: `item="yes"` } },
+            { id: "label1ForItem1", type: "Label", label: "Show label if item= 1", props: { show_condition: `item="yesno"`}},
+            { id: "label2ForItem1", type: "Label", label: "Show label if item= 2", props: { show_condition: `item="2"` } },
+            { id: "label3ForItem1", type: "Label", label: "Show label if item= 3", props: { show_condition: `item="3"` } },
+            { id: "label4ForItem1", type: "Label", label: "Show label if item= 1", props: { show_condition: `item="1"` } },
+            { id: "label5ForItem1", type: "Label", label: "Show label if item= 2", props: { show_condition: `item="2"` } },
+            { id: "label5ForItem1", type: "Label", label: "Show condition is null", props: { show_condition: null } }
+        ]
+    })
+    return caseDetail;
 }
 
 
-function setUpcaseConfig(caseConfig) {
-    mockInstance.onGet('/data/internal/cases/:caseid/event-triggers/:eventId', (req, res) => {
-        res.send(caseConfig);
-    });
+function labelstestConfig(){
 
-    mockInstance.onPost('/data/case-types/:caseType/validate', (req, res) => {
-        caseValidationRequestBody = req.body;
-        const responseBody = {
-            data: req.body.data,
-            "_links": { "self": { "href": "http://ccd-data-store-api-aat.service.core-compute-demo.internal" + req.path + "?pageId=" + req.query.pageId } }
+    const labelsEventConfig = new CCDCaseConfig("testCaseType", "Test jurisdiction", "test description");
+    labelsEventConfig.addWizardPage("testPage1", "Applicant details")
+    labelsEventConfig.addCaseField({ id:"applicantName", type:"Text", label:"Applicant name"})
+    labelsEventConfig.addWizardPage("testPage2", "More details of applicant ")
+    labelsEventConfig.addCaseField({ id: "printApplicantName", type: "Label", label: "Below are more details for  ->${applicantName}<-" })
+    labelsEventConfig.addCaseField({ id: "familyDetails", type: "Complex", label: "provide more details for applicant: ->${applicantName}<-",
+        complex_fields:[
+            { id: "applicantFamilyDetailsMsgid", type: "Label", label:"Provide ->${applicantName}<- family history"},
+            { id: "familyHistoryText", type: "Text", Label: "History ref" },
+            { id: "historyRefPrint", type: "Label", label: "Provided ->${familyHistoryText}<- is here" }
+        ],
+        value: { familyHistoryText : "Pre set value"}
+    })
+    labelsEventConfig.addWizardPage("testPage3", "Applicant addresses ")
+    labelsEventConfig.addCaseField({
+        id: "addressDetauls", type: "Collection", label: "provide address for applicant: ->${applicantName}<-",
+        collection_field_type: {
+            id: "addressess", type:"Complex", label: "Address", complex_fields: [
+                { id: "pastAddressid", type: "Label", label: "->${applicantName}-< past address" },
+                { id: "pastAddressText", type: "Text", label: "Address text" },
+                { id: "pastAddressidPrint", type: "Label", label: "->${pastAddressText}-< past address is here" }
+            ]
         }
-        res.send(responseBody);
-    });
+    })
+        .setFieldProps({ display_context_parameter: "#COLLECTION(allowInsert,allowDelete)"})
 
-    mockInstance.onPost('/data/cases/:caseid/events', (req, res) => {
-        caseEventSubmitRequestBody = req.body;
-        const responseBody = {
-            id: Date.now(),
-            data: req.body.data,
-            "_links": { "self": { "href": "http://ccd-data-store-api-demo.service.core-compute-demo.internal" + req.path + "?ignore-warning=false" } }
-        }
-        res.send(responseBody)
-    });
 
+    return labelsEventConfig;
 }
 

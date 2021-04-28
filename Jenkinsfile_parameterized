@@ -26,7 +26,9 @@ List<LinkedHashMap<String, Object>> secrets = [
   secret('mc-s2s-client-secret',                 'S2S_SECRET'),
   secret('mc-idam-client-secret',              'IDAM_SECRET'),
   secret('appinsights-instrumentationkey-mc', 'APPINSIGHTS_INSTRUMENTATIONKEY'),
-  secret('launch-darkly-client-id', 'LAUNCH_DARKLY_CLIENT_ID')
+  secret('launch-darkly-client-id', 'LAUNCH_DARKLY_CLIENT_ID'),
+  secret('system-user-name', 'SYSTEM_USER_NAME'),
+  secret('system-user-password', 'SYSTEM_USER_PASSWORD')
 ]
 
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {

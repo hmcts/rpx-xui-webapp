@@ -6,6 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
   AbstractAppConfig,
+  AlertService,
   AuthService as CCDAuthService,
   CaseEventData,
   CaseEventTrigger,
@@ -18,6 +19,7 @@ import {
   RequestOptionsBuilder,
   SearchService,
 } from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import {combineReducers, StoreModule} from '@ngrx/store';
 import { of } from 'rxjs';
@@ -72,8 +74,11 @@ describe('CaseCreateSubmitComponent', () => {
   let fixture: ComponentFixture<CaseCreateSubmitComponent>;
   let casesService: CasesService;
   let draftService: DraftService;
+  const mockAlertService = jasmine.createSpyObj('alertService', ['error']);
+  const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled'])
 
   beforeEach(async(() => {
+    mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
@@ -110,6 +115,7 @@ describe('CaseCreateSubmitComponent', () => {
         CasesService,
         CCDAuthService,
         DraftService,
+        AlertService,
         HttpErrorService,
         AppConfigService,
         AppConfig,
@@ -126,7 +132,13 @@ describe('CaseCreateSubmitComponent', () => {
         {
           provide: AppConfigService,
           useClass: MockSortService
-        }
+        },
+        {
+          provide: AlertService,
+          useValue: mockAlertService
+        },
+        FeatureToggleService,
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
       ]
     })
       .compileComponents();

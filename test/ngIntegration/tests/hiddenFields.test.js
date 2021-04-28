@@ -3,16 +3,14 @@ const MockApp = require('../../nodeMock/app');
 const { browser } = require('protractor');
 const BrowserUtil = require('../util/browserUtil');
 const BrowserWaits = require('../../e2e/support/customWaits');
-const addContext = require('mochawesome/addContext');
 
 const headerPage = require('../../e2e/features/pageObjects/headerPage');
 
-const CCDCaseEditPage = require('../util/ccdCaseEditPages');
+const CCDCaseEditPage = require('./pageObjects/ccdCaseEditPages');
 const CCDCaseConfig = require('../../nodeMock/ccd/ccdCaseConfig/caseCreateConfigGenerator');
 
 describe('CCD casefields, retain_hidden_field setting', function () {
     before(async function(){
-        await BrowserUtil.browserInitWithAuth(roles);
         await headerPage.isTabPresent('Case list');
     });
 
@@ -30,12 +28,11 @@ describe('CCD casefields, retain_hidden_field setting', function () {
         if (this.test.ctx.currentTest.state === 'failed'){
             addContext(this, { title: 'Case Event create/edit config', value: caseEventConfigOfTest });
             addContext(this, { title: 'Case Event submit request body', value: caseEventSubmitRequestBody });
-
+            // await BrowserUtil.addScreenshot(this, browser); 
         }
         done();
     });
 
-    const roles = ["caseworker-divorce-financialremedy-solicitor"];
     let caseEventConfigOfTest = null;
     let caseValidationRequestBody = null;
     let caseEventSubmitRequestBody = null;
@@ -63,6 +60,7 @@ describe('CCD casefields, retain_hidden_field setting', function () {
             // CCD case config setup end 
 
             await MockApp.startServer();
+            await BrowserUtil.gotoHomePage();
             await browser.get(`cases/case-details/1604309496714935/trigger/casetype_1/HiddenFieldPage_1`);
 
             const showFieldYesNoElement = $(`#${testFieldShowYesNo.id}`);
@@ -188,6 +186,7 @@ describe('CCD casefields, retain_hidden_field setting', function () {
             // CCD case config setup end 
 
             await MockApp.startServer();
+            await BrowserUtil.gotoHomePage();
             await browser.get(`cases/case-details/1604309496714935/trigger/casetype_1/HiddenFieldPage_1`);
 
             const showFieldYesNoElement = $(`#${testFieldShowYesNo.id}`);
@@ -307,6 +306,7 @@ describe('CCD casefields, retain_hidden_field setting', function () {
             // CCD case config setup end 
 
             await MockApp.startServer();
+            await BrowserUtil.gotoHomePage();
             await browser.get(`cases/case-details/1604309496714935/trigger/casetype_1/HiddenFieldPage_1`);
 
             const showFieldYesNoElement = $(`#${testFieldShowYesNo.id}`);
@@ -468,6 +468,7 @@ describe('CCD casefields, retain_hidden_field setting', function () {
             setUpcaseConfig(caseConfig.caseConfigTemplate);
 
             await MockApp.startServer();;
+            await BrowserUtil.gotoHomePage();
             await browser.get(`cases/case-details/1604309496714935/trigger/casetype_1/HiddenFieldPage_1`);
 
             const parentComplexShowYesNoEle = $(`#${parentComplexShowYesNo.id}`);

@@ -26,9 +26,11 @@ export const HEALTH = 'health'
 export const SERVICES_CCD_COMPONENT_API_PATH = 'services.ccd.componentApi'
 export const SERVICES_CCD_DATA_STORE_API_PATH = 'services.ccd.dataApi'
 export const SERVICES_CCD_CASE_ASSIGNMENT_API_PATH = 'services.ccd.caseAssignmentApi'
+export const SERVICES_WORK_ALLOCATION_TASK_API_PATH = 'services.work_allocation.taskApi'
+export const SERVICES_ROLE_ASSIGNMENT_API_PATH = 'services.role_assignment.roleApi'
+export const SERVICES_CASE_CASEWORKER_REF_PATH = "services.case.caseworkerApi"
 
 export const SERVICES_DOCUMENTS_API_PATH = 'services.documents.api'
-
 export const SERVICES_EM_ANNO_API_URL = 'services.em_anno_api'
 export const SERVICES_MARKUP_API_URL = 'services.markup_api'
 export const SERVICES_ICP_API_URL = 'services.icp_api'
@@ -56,7 +58,15 @@ export const ENVIRONMENT = 'environment'
 
 export const JURISDICTIONS = 'jurisdictions'
 
+export const WILDCARD_SEARCH_FIELDS = 'wildcardSearchFields'
+
+export const WILDCARD_SEARCH_ROLES = 'wildcardSearchRoles'
+
 export const IDAM_SECRET = 'secrets.rpx.mc-idam-client-secret'
+
+export const SYSTEM_USER_NAME = 'secrets.rpx.system-user-name'
+
+export const SYSTEM_USER_PASSWORD = 'secrets.rpx.system-user-password'
 
 export const LOGIN_ROLE_MATCHER = 'loginRoleMatcher'
 
@@ -69,6 +79,8 @@ export const FEATURE_TERMS_AND_CONDITIONS_ENABLED = 'termsAndConditionsEnabled'
 export const FEATURE_HELMET_ENABLED = 'helmetEnabled'
 export const FEATURE_REDIS_ENABLED = 'redisEnabled'
 export const FEATURE_OIDC_ENABLED = 'oidcEnabled'
+
+export const FEATURE_WORKALLOCATION_ENABLED = 'workAllocationEnabled'
 
 export const HELMET = 'helmet'
 
@@ -83,6 +95,7 @@ export const SESSION_TIMEOUTS = 'sessionTimeouts'
 
 // PACT
 export const PACT_BROKER_URL = 'pact.brokerUrl'
+export const PACT_BRANCH_NAME = 'pact.branchName'
 export const PACT_CONSUMER_VERSION = 'pact.consumerVersion'
 export const PACT_BROKER_USERNAME = 'pact.brokerUsername'
 export const PACT_BROKER_PASSWORD = 'pact.brokerPassword'

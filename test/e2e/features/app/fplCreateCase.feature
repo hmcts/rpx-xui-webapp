@@ -1,4 +1,4 @@
-@divorce @fullfunctional
+
 Feature: FPL create case workflow
 
     Background:

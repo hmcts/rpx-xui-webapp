@@ -1,10 +1,10 @@
-import { NextFunction, Response } from 'express'
+import { NextFunction, Response } from 'express';
 
-import { EnhancedRequest } from '../lib/models'
-import { handleLocationGet } from './locationService'
-import { prepareGetLocationByIdUrl, prepareGetLocationsUrl } from './util'
+import { EnhancedRequest } from '../lib/models';
+import { handleLocationGet } from './locationService';
+import { prepareGetLocationByIdUrl, prepareGetLocationsUrl } from './util';
 
-export const baseUrl: string = 'http://localhost:8080'
+export const baseUrl: string = 'http://localhost:8080';
 
 /**
  * getLocation
@@ -15,13 +15,14 @@ export async function getLocationById(req: EnhancedRequest, res: Response, next:
 
   try {
 
-    const path: string = prepareGetLocationByIdUrl(baseUrl, req.params.locationId)
-    const locationById = await handleLocationGet(path, req)
+    const path: string = prepareGetLocationByIdUrl(baseUrl, req.params.locationId);
+    /*TODO: Implement get location*/
+    const locationById = await handleLocationGet(path, req);
 
-    res.status(200)
-    res.send(locationById.data)
+    res.status(200);
+    res.send(locationById.data);
   } catch (error) {
-    next(error)
+    next(error);
   }
 }
 
@@ -33,12 +34,13 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
 
   try {
 
-    const path: string = prepareGetLocationsUrl(baseUrl)
-    const locations = await handleLocationGet(path, req)
+    const path: string = prepareGetLocationsUrl(baseUrl);
+    /*TODO: Implement get location*/
+    const locations = await handleLocationGet(path, req);
 
-    res.status(200)
-    res.send(locations.data)
+    res.status(200);
+    res.send(locations.data);
   } catch (error) {
-    next(error)
+    next(error);
   }
 }

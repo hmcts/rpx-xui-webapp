@@ -6,7 +6,7 @@ import { SessionStorageService } from '../../app/services';
 @Injectable()
 export class SeniorTribunalCaseworkerGuard implements CanActivate {
     public static defaultUrl: string = '/cases';
-    public static seniorCaseWorkerRole: string = 'caseworker-ia-caseofficer';
+    public static seniorCaseWorkerRole: string = 'caseworker-ia-srcaseofficer';
 
     constructor(private readonly router: Router, private readonly sessionStorageService: SessionStorageService) {}
 

@@ -123,10 +123,10 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
    * Using set user id, gets caseworker details for the caseworker which will set the selected location
    * (caseworker for the purpose of selecting location in dropdown currently the logged in user)
    */
-  private setupCaseworkerLocation(): void {
+   private setupCaseworkerLocation(): void {
     this.caseworkerService.getAll().subscribe(caseworkers => {
       const assignedCaseworker = caseworkers.find(cw => this.isLoggedInUser(cw.idamId));
-      this.cwLocation = assignedCaseworker.location ? assignedCaseworker.location : null;
+      this.cwLocation = assignedCaseworker.location ? assignedCaseworker.location : FilterConstants.Options.Locations.ALL;
     }, error => {
       handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
     });

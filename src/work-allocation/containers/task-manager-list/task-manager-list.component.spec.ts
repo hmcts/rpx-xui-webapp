@@ -73,14 +73,6 @@ describe('TaskManagerListComponent', () => {
     sessionStorage.removeItem(FilterConstants.Session.TaskManager);
   });
 
-  xit('should make a call to load tasks using the default search request', () => {
-    const searchRequest = component.getSearchTaskRequest();
-    const payload = { searchRequest, view: component.view };
-    expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
-    expect(component.tasks).toBeDefined();
-    expect(component.tasks.length).toEqual(2);
-  });
-
   it('should have all columns, including "Manage +"', () => {
     const element = fixture.debugElement.nativeElement;
     const headerCells = element.querySelectorAll('.govuk-table__header');

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 
 import { SessionStorageService } from '../../../app/services';
 import { Caseworker, Location } from '../../models/dtos';
@@ -23,6 +23,8 @@ export class TaskManagerFilterComponent implements OnChanges {
    * The locations that are available to be selected from.
    */
   @Input() public locations: Location[];
+
+  @Input() public userLocation: Location;
 
   @Input()
   public get location(): Location {
@@ -74,6 +76,8 @@ export class TaskManagerFilterComponent implements OnChanges {
         const { caseworkerId, locationId } = JSON.parse(stored);
         this.pCaseworker = this.getCaseworkerByIdamId(caseworkerId);
         this.pLocation = this.getLocationById(locationId);
+      } else if (this.userLocation) {
+        this.location = this.getLocationById(this.userLocation.id);
       }
       this.emitChangedEvent();
     }
@@ -91,7 +95,8 @@ export class TaskManagerFilterComponent implements OnChanges {
     if (id === this.ALL_LOCATIONS.id) {
       return this.ALL_LOCATIONS;
     }
-    return this.locations.find(loc => loc.id === id) || this.ALL_LOCATIONS;
+    const currentLoc = this.locations.find(loc => id && loc.id === id.toString());
+    return currentLoc ? currentLoc : this.ALL_LOCATIONS;
   }
 
   public getCaseworkerByIdamId(id: string): Caseworker {

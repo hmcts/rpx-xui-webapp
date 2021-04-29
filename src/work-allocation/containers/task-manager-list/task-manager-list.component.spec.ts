@@ -2,7 +2,7 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { Component, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
+import { AlertService, LoadingService, LoadingModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 
@@ -37,6 +37,7 @@ describe('TaskManagerListComponent', () => {
   const mockLocations: dtos.Location[] = getMockLocations();
   const mockCaseworkers: dtos.Caseworker[] = getMockCaseworkers();
   const caseworkerDiplayName: CaseworkerDisplayName = new CaseworkerDisplayName();
+  const mockLoadingService: LoadingService = jasmine.createSpyObj<LoadingService>('mockLoadingService', ['register', 'unregister']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -44,7 +45,8 @@ describe('TaskManagerListComponent', () => {
         CdkTableModule,
         ExuiCommonLibModule,
         RouterTestingModule,
-        WorkAllocationComponentsModule
+        WorkAllocationComponentsModule,
+        LoadingModule
       ],
       declarations: [ TaskManagerListComponent, WrapperComponent, TaskListComponent ],
       providers: [
@@ -52,7 +54,8 @@ describe('TaskManagerListComponent', () => {
         { provide: SessionStorageService, useValue: mockSessionStorageService },
         { provide: CaseworkerDataService, useValue: mockCaseworkerService },
         { provide: LocationDataService, useValue: mockLocationService },
-        { provide: AlertService, useValue: mockAlertService }
+        { provide: AlertService, useValue: mockAlertService },
+        { provide: LoadingService, useValue: mockLoadingService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
@@ -167,7 +170,6 @@ describe('TaskManagerListComponent', () => {
     expect(searchRequest.search_parameters.length).toEqual(2);
     expect(searchRequest.search_parameters[1].key).toEqual('user');
     expect(searchRequest.search_parameters[1].values.length).toEqual(1);
-    const caseworkerName = caseworkerDiplayName.transform(mockCaseworkers[0], false);
     expect(searchRequest.search_parameters[1].values).toContain('1');
 
     // Let's also make sure that the tasks were re-requested with the new sorting.

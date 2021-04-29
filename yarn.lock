@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@v2.79.6-breathing-data-not-being-persisted":
-  version "2.79.6-breathing-data-not-being-persisted"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.79.6-breathing-data-not-being-persisted.tgz#4e5235c88b1d7d73310aae44bdac65880eeb48ef"
-  integrity sha512-NJ5N6Z0N1E3BoKLaZWIKwKZ8f5FGPKlTnjoqdkzOw3tm18qzejCB5A+BSRmD90vUUGeOLJTkUSsVBVVWjeHPUw==
+"@hmcts/ccd-case-ui-toolkit@2.79.8-breathing-space-data-not-being-persisted":
+  version "2.79.8-breathing-space-data-not-being-persisted"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.79.8-breathing-space-data-not-being-persisted.tgz#3c17c7f7d0b8056737575dda5956b24780cae17a"
+  integrity sha512-EjbDQ+WHz4t0Up+RjTcxehZuhjOcrpjaZs5FyQV+16lZ4x7+X84e7EP1tLIawNDsj7PLpmQbK7RjOek58oChSQ==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"

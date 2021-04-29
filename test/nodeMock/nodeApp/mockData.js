@@ -37,6 +37,7 @@ class NodeAppMockData {
                 "active": true,
                 "roles": [
                     "caseworker-ia-caseofficer",
+                    "caseworker-ia-srcaseofficer",
                     "caseworker",
                     "caseworker-divorce",
                     "caseworker-divorce-financialremedy",

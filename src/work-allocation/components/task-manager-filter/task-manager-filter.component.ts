@@ -69,7 +69,7 @@ export class TaskManagerFilterComponent implements OnChanges {
   }
 
   public ngOnChanges(): void {
-    if (this.caseworkers && this.locations) {
+    if (this.caseworkers && this.locations && this.userLocation) {
       // See if we have anything stored in the session for the filter.
       const stored: string = this.sessionStorageService.getItem(FilterConstants.Session.TaskManager);
       if (stored) {

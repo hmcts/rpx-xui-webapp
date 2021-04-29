@@ -119,9 +119,9 @@ describe('Task list page', function () {
             await taskListPage.clickColumnHeader(columnHeaders[1]);
             expect(await taskListPage.getColumnSortState(columnHeaders[1])).to.equal("ascending");
 
-            await headerPage.getTabElementWithText('Case list').click();
+            await headerPage.clickTabElementWithText('Case list');
             expect(await caseListPage.amOnPage()).to.be.true;
-            await headerPage.getTabElementWithText('Task list').click();
+            await headerPage.clickTabElementWithText('Task list');
             await taskListPage.amOnPage();
             expect(await taskListPage.getColumnSortState(columnHeaders[1])).to.equal("ascending");
 

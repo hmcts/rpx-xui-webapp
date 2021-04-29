@@ -8,8 +8,8 @@ Feature: My Tasks Task list
     Scenario: My Tasks task counts
         Given I set MOCK with user roles
             | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
+            | caseworker-ia-srcaseofficer |
+            | caseworker-ia-caseofficer  |
         Given I set MOCK My tasks count 5
         Given I start MockApp
         Given I navigate to home page
@@ -21,8 +21,8 @@ Feature: My Tasks Task list
     Scenario: My Tasks sort columns
         Given I set MOCK with user roles
             | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
+            | caseworker-ia-srcaseofficer |
+            | caseworker-ia-caseofficer  |
         Given I set MOCK My tasks count 5
         Given I start MockApp
         Given I navigate to home page
@@ -34,8 +34,8 @@ Feature: My Tasks Task list
     Scenario: My Tasks sort column persist in session
         Given I set MOCK with user roles
             | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
+            | caseworker-ia-srcaseofficer |
+            | caseworker-ia-caseofficer  |
         Given I set MOCK My tasks count 5
         Given I start MockApp
         Given I navigate to home page
@@ -49,8 +49,8 @@ Feature: My Tasks Task list
     Scenario: My Tasks error responses
         Given I set MOCK with user roles
             | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
+            | caseworker-ia-srcaseofficer |
+            | caseworker-ia-caseofficer  |
         Given I set MOCK My tasks count 5
         Given I start MockApp
         Given I navigate to home page

@@ -115,9 +115,9 @@ describe('Task Manager page', function () {
             await taskManagerPage.clickColumnHeader(columnHeaders[1]);
             expect(await taskManagerPage.getColumnSortState(columnHeaders[1])).to.equal("ascending");
 
-            await headerPage.getTabElementWithText('Case list').click();
+            await headerPage.clickTabElementWithText('Case list');
             expect(await caseListPage.amOnPage()).to.be.true;
-            await headerPage.getTabElementWithText('Task manager').click();
+            await headerPage.clickTabElementWithText('Task manager');
             await taskManagerPage.amOnPage();
             expect(await taskManagerPage.getColumnSortState(columnHeaders[1])).to.equal("ascending");
 

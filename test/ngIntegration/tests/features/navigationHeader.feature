@@ -4,6 +4,7 @@ Feature: Navigation header tabs
     Scenario: Header Tabs Present with ia ad and case officer roles
         Given I set MOCK with user roles
             | role |
+            | caseworker-ia-srcaseofficer |
             | caseworker-ia-caseofficer |
         Given I start MockApp
         Given I navigate to home page
@@ -26,7 +27,7 @@ Feature: Navigation header tabs
     Scenario: Header Tabs Present with IA Caseofficer role
         Given I set MOCK with user roles
             | role                      |
-            | caseworker-ia-caseofficer |
+            | caseworker-ia-srcaseofficer |
         Given I start MockApp
         Given I navigate to home page
         Then I see primary navigation tab "Case list" in header
@@ -37,10 +38,10 @@ Feature: Navigation header tabs
     Scenario: Header Tabs Present with IA ADM role
         Given I set MOCK with user roles
             | role                      |
-            | caseworker-ia-admofficer  |
+            | caseworker-ia-caseofficer  |
         Given I start MockApp
         Given I navigate to home page
         Then I see primary navigation tab "Case list" in header
         Then I see primary navigation tab "Create case" in header
-        Then I do not see primary navigation tab "Task list" in header
+        Then I see primary navigation tab "Task list" in header
         Then I do not see primary navigation tab "Task manager" in header

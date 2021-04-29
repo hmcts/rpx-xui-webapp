@@ -8,16 +8,16 @@ Feature: Case edit pages
     Scenario: Case edipt page navigation
         Given I set MOCK with user roles
             | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
+            | caseworker-ia-srcaseofficer |
+            | caseworker-ia-caseofficer  |
         Given I navigate page route "cases/case-create/Test_Jurisdiction/Test_case/testEvent/testPage"
         Then I see case edit page displayed
 
     Scenario: Cancel in page
         Given I set MOCK with user roles
             | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
+            | caseworker-ia-srcaseofficer |
+            | caseworker-ia-caseofficer  |
         Given I navigate page route "cases/case-create/Test_Jurisdiction/Test_case/testEvent/testPage"
         Then I see case edit page displayed
         When I click cancel in case edit page
@@ -28,8 +28,8 @@ Feature: Case edit pages
             | show_summary | <show_summary> |
         Given I set MOCK with user roles
             | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
+            | caseworker-ia-srcaseofficer |
+            | caseworker-ia-caseofficer  |
         Given I navigate page route "cases/case-create/Test_Jurisdiction/Test_case/testEvent/testPage"
         Then I see case edit page displayed
 
@@ -47,8 +47,8 @@ Feature: Case edit pages
             | show_summary_change_option | YES |
         Given I set MOCK with user roles
             | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
+            | caseworker-ia-srcaseofficer |
+            | caseworker-ia-caseofficer  |
         Given I restart MockApp
         Given I navigate page route "cases/case-create/Test_Jurisdiction/Test_case/testEvent/testPage"
         Then I see case edit page displayed
@@ -62,8 +62,8 @@ Feature: Case edit pages
             | show_condition | Gender="notGiven" |
         Given I set MOCK with user roles
             | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
+            | caseworker-ia-srcaseofficer |
+            | caseworker-ia-caseofficer  |
         Given I restart MockApp
         Given I navigate page route "cases/case-create/Test_Jurisdiction/Test_case/testEvent/testPage"
         Then I see case edit page displayed
@@ -93,8 +93,8 @@ Feature: Case edit pages
             | show_summary_change_option | YES |
         Given I set MOCK with user roles
             | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
+            | caseworker-ia-srcaseofficer |
+            | caseworker-ia-caseofficer  |
         Given I restart MockApp
         Given I navigate page route "cases/case-create/Test_Jurisdiction/Test_case/testEvent/testPage"
         Then I see case edit page displayed

@@ -7,8 +7,8 @@ Feature: Search case page
     Scenario: Search case page navigation
         Given I set MOCK with user roles
             | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
+            | caseworker-ia-srcaseofficer |
+            | caseworker-ia-caseofficer  |
         Given I navigate page route "cases/case-search"
         Then I see search case page displayed
         When I select jurisdiction "Family Divorce" case type "Divorce case - v115.00"
@@ -17,8 +17,8 @@ Feature: Search case page
     Scenario: Validate search fiters to contain search case params
         Given I set MOCK with user roles
             | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
+            | caseworker-ia-srcaseofficer |
+            | caseworker-ia-caseofficer  |
         Given I navigate page route "cases/case-search"
         Then I see search case page displayed
         When I select jurisdiction "Family Divorce" case type "Divorce case - v115.00"
@@ -27,8 +27,8 @@ Feature: Search case page
     Scenario: Validate search case fixed list items
         Given I set MOCK with user roles
             | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
+            | caseworker-ia-srcaseofficer |
+            | caseworker-ia-caseofficer  |
         Given I navigate page route "cases/case-search"
         Then I see search case page displayed
         When I select jurisdiction "Family Divorce" case type "Divorce case - v115.00"
@@ -37,8 +37,8 @@ Feature: Search case page
     Scenario: Validate search case fields and values displayed
         Given I set MOCK with user roles
             | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
+            | caseworker-ia-srcaseofficer |
+            | caseworker-ia-caseofficer  |
         Given I navigate page route "cases/case-search"
         Then I see search case page displayed
         When I select jurisdiction "Family Divorce" case type "Divorce case - v115.00"
@@ -47,8 +47,8 @@ Feature: Search case page
      Scenario: Validate Search case table pagination properties/values and actions
         Given I set MOCK with user roles
             | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
+            | caseworker-ia-srcaseofficer |
+            | caseworker-ia-caseofficer  |
         Given I navigate page route "cases/case-search"
         Then I see search case page displayed
         When I select jurisdiction "Family Divorce" case type "Divorce case - v115.00"
@@ -61,8 +61,8 @@ Feature: Search case page
      Scenario: Validate Case event/next step triggers listed
         Given I set MOCK with user roles
             | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
+            | caseworker-ia-srcaseofficer |
+            | caseworker-ia-caseofficer  |
         Given I navigate page route "cases/case-search"
         Then I see search case page displayed
         When I select jurisdiction "Family Divorce" case type "Divorce case - v115.00"

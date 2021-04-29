@@ -8,8 +8,8 @@ Feature: Task manager
     Scenario: Task manager task counts
         Given I set MOCK with user roles
             | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
+            | caseworker-ia-srcaseofficer |
+            | caseworker-ia-caseofficer  |
         Given I set MOCK Task manager tasks count 20
         Given I start MockApp
         Given I navigate to home page
@@ -21,8 +21,8 @@ Feature: Task manager
     Scenario: Task manager sort columns
         Given I set MOCK with user roles
             | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
+            | caseworker-ia-srcaseofficer |
+            | caseworker-ia-caseofficer  |
         Given I set MOCK Task manager tasks count 20
         Given I start MockApp
         Given I navigate to home page
@@ -34,8 +34,8 @@ Feature: Task manager
     Scenario: Task manager sort column persist in session
         Given I set MOCK with user roles
             | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
+            | caseworker-ia-srcaseofficer |
+            | caseworker-ia-caseofficer  |
         Given I set MOCK Task manager tasks count 20
         Given I start MockApp
         Given I navigate to home page
@@ -47,8 +47,8 @@ Feature: Task manager
     Scenario: Task manager error responses
         Given I set MOCK with user roles
             | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
+            | caseworker-ia-srcaseofficer |
+            | caseworker-ia-caseofficer  |
         Given I set MOCK Task manager tasks count 20
         Given I start MockApp
         Given I navigate to home page

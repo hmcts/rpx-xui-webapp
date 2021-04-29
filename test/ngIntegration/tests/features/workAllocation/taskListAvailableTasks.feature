@@ -8,8 +8,8 @@ Feature: Available Tasks Task list
     Scenario: Avaiable Tasks task counts
         Given I set MOCK with user roles
             | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
+            | caseworker-ia-srcaseofficer |
+            | caseworker-ia-caseofficer  |
         Given I set MOCK My tasks count 5
         Given I start MockApp
         Given I navigate to home page
@@ -23,8 +23,8 @@ Feature: Available Tasks Task list
     Scenario: Avaiable Tasks sort columns
         Given I set MOCK with user roles
             | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
+            | caseworker-ia-srcaseofficer |
+            | caseworker-ia-caseofficer  |
         Given I set MOCK My tasks count 5
         Given I start MockApp
         Given I navigate to home page
@@ -35,11 +35,12 @@ Feature: Available Tasks Task list
         Then I see Available tasks page displayed
         Then I validate tasks column sorting
 
+
     Scenario: Avaiable Tasks sort column persist in session
         Given I set MOCK with user roles
             | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
+            | caseworker-ia-srcaseofficer |
+            | caseworker-ia-caseofficer  |
         Given I set MOCK My tasks count 5
         Given I start MockApp
         Given I navigate to home page
@@ -51,12 +52,12 @@ Feature: Available Tasks Task list
         Then I validate Available tasks sort column persist in session
 
 
-
+@test
     Scenario: Avaiable Tasks error responses
         Given I set MOCK with user roles
             | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
+            | caseworker-ia-srcaseofficer |
+            | caseworker-ia-caseofficer  |
         Given I set MOCK My tasks count 5
         Given I start MockApp
         Given I navigate to home page

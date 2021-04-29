@@ -11,8 +11,8 @@ Feature: Collection field displat_context_parameter permissions
 
         Given I set MOCK with user roles
             | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
+            | caseworker-ia-srcaseofficer |
+            | caseworker-ia-caseofficer  |
         Given I navigate page route "cases/case-create/Test_Jurisdiction/Test_case/testEvent/testPage"
         Then I see case edit page displayed
         Then I see collection field "collectionField" "Add" button is "<Addbuttonstate>"

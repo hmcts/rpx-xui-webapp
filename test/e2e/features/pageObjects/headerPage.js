@@ -40,9 +40,11 @@ function HeaderPage() {
     this.contentHeader = $("#content h1");
 
   this.clickManageCases = async function () {
-    await BrowserWaits.waitForElement(this.manageCases);  
-    await this.manageCases.click();
-    await BrowserWaits.waitForElement($('exui-case-list'));  
+    await BrowserWaits.retryWithActionCallback(async () => {
+      await BrowserWaits.waitForElement(this.manageCases);
+      await this.manageCases.click();
+      await BrowserWaits.waitForElement($('exui-case-list'));
+    }); 
   };
 
   this.clickCaseList = async function () {
@@ -93,7 +95,13 @@ function HeaderPage() {
 
 
   this.getTabElementWithText = function (tabText) {
-    return this.primaryNavBar.element(by.xpath('//a[contains(text(),"' + tabText + '")]'));
+    return this.primaryNavBar.element(by.xpath('//a[contains(text(),"' + tabText + '")]'));;
+  };
+
+  this.clickTabElementWithText = async function (tabText) {
+    const element = this.getTabElementWithText(tabText);
+    await BrowserWaits.waitForElement(element);
+    await element.click();
   };
 
   this.getPrimaryNavigations = async function(){

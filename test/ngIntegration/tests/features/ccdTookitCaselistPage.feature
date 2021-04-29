@@ -7,8 +7,8 @@ Feature: Case list page
     Scenario: Case edipt page navigation
         Given I set MOCK with user roles
             | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
+            | caseworker-ia-srcaseofficer |
+            | caseworker-ia-caseofficer  |
         Given I navigate page route "cases"
         Then I see case list page displayed
         Then I validate workbasket "workbasketConfig" fields displayed
@@ -16,8 +16,8 @@ Feature: Case list page
     Scenario: Validate search fiters to contain workbasket params
         Given I set MOCK with user roles
             | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
+            | caseworker-ia-srcaseofficer |
+            | caseworker-ia-caseofficer  |
         Given I navigate page route "cases"
         Then I see case list page displayed
         Then I Validate case search request to contain filters from workbasket "workbasketConfig"
@@ -25,8 +25,8 @@ Feature: Case list page
     Scenario: Validate workbasket fixed list items
         Given I set MOCK with user roles
             | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
+            | caseworker-ia-srcaseofficer |
+            | caseworker-ia-caseofficer  |
         Given I navigate page route "cases"
         Then I see case list page displayed
         Then I validate workbasket fixed list items for workbasket "workbasketConfig"
@@ -34,8 +34,8 @@ Feature: Case list page
     Scenario: Validate Case fields displayed and values
         Given I set MOCK with user roles
             | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
+            | caseworker-ia-srcaseofficer |
+            | caseworker-ia-caseofficer  |
         Given I navigate page route "cases"
         Then I see case list page displayed
         Then I Validate case fields displayed and values "workbasketConfig"
@@ -43,8 +43,8 @@ Feature: Case list page
     Scenario: Validate Case list table pagination properties/values and actions
         Given I set MOCK with user roles
             | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
+            | caseworker-ia-srcaseofficer |
+            | caseworker-ia-caseofficer  |
         Given I navigate page route "cases"
         Then I see case list page displayed
         Then I Validate total cases count "workbasketConfig"

@@ -3,14 +3,14 @@ import {Component, ViewChild} from '@angular/core';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
-import {AlertService} from '@hmcts/ccd-case-ui-toolkit';
+import {AlertService, LoadingService} from '@hmcts/ccd-case-ui-toolkit';
 import {ExuiCommonLibModule} from '@hmcts/rpx-xui-common-lib';
 import {of} from 'rxjs';
 import {SessionStorageService} from 'src/app/services';
 
 import {WorkAllocationComponentsModule} from '../../components/work-allocation.components.module';
 import {Task} from '../../models/tasks';
-import {WorkAllocationTaskService} from '../../services';
+import {CaseworkerDataService, WorkAllocationTaskService} from '../../services';
 import {getMockTasks} from '../../tests/utils.spec';
 import {TaskListComponent} from '../task-list/task-list.component';
 import {MyTasksComponent} from './my-tasks.component';
@@ -32,6 +32,8 @@ describe('MyTasksComponent', () => {
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
+  const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
+  const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -45,7 +47,9 @@ describe('MyTasksComponent', () => {
       providers: [
         {provide: WorkAllocationTaskService, useValue: mockTaskService},
         {provide: AlertService, useValue: mockAlertService},
-        {provide: SessionStorageService, useValue: mockSessionStorageService}
+        {provide: SessionStorageService, useValue: mockSessionStorageService},
+        {provide: CaseworkerDataService, useValue: mockCaseworkerService},
+        { provide: LoadingService, useValue: mockLoadingService }
       ]
     }).compileComponents();
   }));
@@ -57,6 +61,7 @@ describe('MyTasksComponent', () => {
     router = TestBed.get(Router);
     const tasks: Task[] = getMockTasks();
     mockTaskService.searchTask.and.returnValue(of({tasks}));
+    mockCaseworkerService.getAll.and.returnValue(of([]));
     fixture.detectChanges();
   });
 

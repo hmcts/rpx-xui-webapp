@@ -61,6 +61,18 @@
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",
   "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT",
+  "wildcardSearchFields": {
+    "Benefit": [
+      "generatedSurname",
+      "appeal.appellant.name.lastName"
+    ],
+    "xuiTestCaseType": [
+      "TextField"
+    ]
+  },
+  "wildcardSearchRoles": [
+    "caseworker"
+  ],
   "loginRoleMatcher": "caseworker",
   "log4JConfig": {
     "appenders": {
@@ -174,8 +186,8 @@
     }
   ],
   "pact": {
-    "branchName": "Dev",
-    "brokerUrl": "http://localhost:80",
+    "branchName": "master",
+    "brokerUrl": "https://pact-broker.platform.hmcts.net",
     "consumerVersion": "",
     "brokerUsername": "",
     "brokerPassword": ""

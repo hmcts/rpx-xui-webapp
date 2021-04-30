@@ -5,7 +5,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Observable } from 'rxjs';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { Observable, of } from 'rxjs';
 
 import { TaskListComponent } from '..';
 import { ErrorMessageComponent } from '../../../app/components';
@@ -36,6 +37,7 @@ describe('WorkAllocation', () => {
     let component: TaskActionContainerComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
+    const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
 
     const mockTasks = getMockTasks();
     const mockWorkAllocationService = {
@@ -65,14 +67,15 @@ describe('WorkAllocation', () => {
             useValue: {
               snapshot: {
                 data: {
-                  task: { task: mockTasks[0] },
+                  taskAndCaseworkers: { task: { task: mockTasks[0] }},
                   ...TaskActionConstants.Unassign
                 }
               },
               params: Observable.of({ task: mockTasks[0] })
             }
           },
-          { provide: InfoMessageCommService, useValue: mockInfoMessageCommService }
+          { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
+          { provide: LoadingService, useValue: mockLoadingService }
         ]
       }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);
@@ -81,6 +84,7 @@ describe('WorkAllocation', () => {
 
       wrapper.tasks = null;
       window.history.pushState({ returnUrl: 'tasks/list' }, '', 'tasks/list');
+      mockLoadingService.isLoading = of(false);
       fixture.detectChanges();
     });
 

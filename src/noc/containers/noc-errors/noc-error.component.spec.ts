@@ -11,26 +11,11 @@ describe('NocErrorComponent', () => {
         component = new NocErrorComponent(store);
     });
 
-    it('ngOnChanges should trigger navigationHandler', () => {
+    it('ngOnChanges should retrieve error from store', () => {
         const simpleChanges = {} as SimpleChanges;
         simpleChanges.navEvent = {} as SimpleChange;
         component.navEvent.event = NocNavigationEvent.CONTINUE;
         component.ngOnChanges(simpleChanges);
-        component.navigationHandler = jasmine.createSpy('navigationHandler');
         expect(store.pipe).toHaveBeenCalled();
-    });
-
-    it('navigationHandler should trigger BACK event', () => {
-        component.navigationHandler(NocNavigationEvent.BACK);
-        expect(store.dispatch).toHaveBeenCalled();
-    });
-
-    it('navigationHandler should trigger Continue event', () => {
-        component.navigationHandler(NocNavigationEvent.CONTINUE);
-        expect(store.dispatch).not.toHaveBeenCalled();
-    });
-
-    it('navigationHandler should throw an error when trying to SUBMIT with invalid option', () => {
-        expect(() => component.navigationHandler(NocNavigationEvent.SUBMIT)).toThrowError('Invalid option');
     });
 });

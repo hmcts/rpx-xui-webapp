@@ -49,6 +49,16 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
     this.loadTasks();
   }
 
+  /**
+   * Override the super's loadTasks() method to first check
+   * for locations.
+   */
+  public loadTasks(): void {
+    if (this.selectedLocations) {
+      super.loadTasks();
+    }
+  }
+
   private getLocationParameter() {
     let values = [];
     if (this.selectedLocations) {
@@ -79,10 +89,9 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
    */
   public claimTaskAndGo(task: Task): void {
     this.taskService.claimTask(task.id).subscribe(() => {
-      // constant below removes spaces from caseReference to get caseId
-      const caseId = task.caseReference.replace(/\s/g, '');
+      const goToCaseUrl = `/cases/case-details/${task.case_id}`
       // navigates to case details page for specific case id
-      this.router.navigate([`/cases/case-details/${caseId}`], {
+      this.router.navigate([goToCaseUrl], {
         state: {
           showMessage: true,
           messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS}

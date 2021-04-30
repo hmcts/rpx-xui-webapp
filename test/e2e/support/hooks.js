@@ -103,20 +103,23 @@ defineSupportCode(({ Before,After }) => {
     After(async function(scenario) {
         CucumberReportLog.AddMessage("scenario completed with status : " + scenario.result.status);
         const world = this;
-        await CucumberReportLog.AddScreenshot(global.screenShotUtils);
-        if (scenario.result.status === 'failed') {
-            let browserLog = await browser.manage().logs().get('browser');
-            let browserErrorLogs = []
-            for (let browserLogCounter = 0; browserLogCounter < browserLog.length; browserLogCounter++) {
-                if (browserLog[browserLogCounter].level.value > 900 ) {
-                    browserErrorLogs.push(browserLog[browserLogCounter]);
-                }
-            }
-            CucumberReportLog.AddJson(browserErrorLogs);
-        } else {
-            await browser.manage().logs().get('browser');
-            await CucumberReportLog.AddMessage("Cleared browser logs after successful scenario.");
+        try{
             await CucumberReportLog.AddScreenshot(global.screenShotUtils);
-        }
+            if (scenario.result.status === 'failed') {
+                let browserLog = await browser.manage().logs().get('browser');
+                let browserErrorLogs = []
+                for (let browserLogCounter = 0; browserLogCounter < browserLog.length; browserLogCounter++) {
+                    if (browserLog[browserLogCounter].level.value > 900) {
+                        browserErrorLogs.push(browserLog[browserLogCounter]);
+                    }
+                }
+                CucumberReportLog.AddJson(browserErrorLogs);
+            } else {
+                browser.manage().logs().get('browser');
+                await CucumberReportLog.AddMessage("Cleared browser logs after successful scenario.");
+            }
+        }catch(err) {
+            CucumberReportLog.AddMessage("Error in hooks with browserlogs or screenshots. See error details : " + err);
+        }        
     });
 });

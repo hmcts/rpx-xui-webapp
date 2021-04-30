@@ -20,7 +20,6 @@ def product   = "xui"
 def component = "webapp"
 def vault = "rpx"
 def channel   = '#xui-pipeline'
-def deployToAatOnly = false  // set to true if only deploy upto AAT, set to false will deploy all the way to production
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
@@ -49,52 +48,16 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 withPipeline(type, product, component) {
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
-    enableSecurityScan()
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net'
     enableAksStagingDeployment()
     disableLegacyDeployment()
 
-    onMaster() {
-        env.PACT_BRANCH_NAME = 'master'
-        enablePactAs([
-                AppPipelineDsl.PactRoles.CONSUMER
-        ])
-    }
-
-    after('checkout') {
-        yarnBuilder.yarn('cache clean')
-    }
-
-    if (deployToAatOnly) {
-      println("Only Deploy up to AAT!")
-      before('buildinfra:prod') {
-        currentBuild.result = 'SUCCESS'
-        currentBuild.description = "SUCCESS TILL AAT"
-        error 'XUI  projects are not authorised to be in production environments yet.'
-      }
-    }
-
+    enablePactAs([
+        AppPipelineDsl.PactRoles.CONSUMER
+    ])
 
     after('build') {
         yarnBuilder.yarn('build')
-
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "reports/lint/node/",
-            reportFiles          : 'index.html',
-            reportName           : 'node lint Report'
-        ])
-
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "reports/lint/ng/",
-            reportFiles          : 'index.html',
-            reportName           : 'ng lint Report'
-        ])
     }
 
     after('test') {

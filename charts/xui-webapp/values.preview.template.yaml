@@ -26,6 +26,8 @@ nodejs:
         - mc-idam-client-secret
         - system-user-name
         - system-user-password
+  autoscaling:
+    enabled: false
 redis:
   enabled: true
 idam-pr:

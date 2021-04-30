@@ -3,7 +3,7 @@ import { ChangeDetectorRef} from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
+import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
@@ -24,6 +24,8 @@ describe('TaskListWrapperComponent', () => {
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['']);
   const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
+  const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
+
   beforeEach((() => {
     TestBed.configureTestingModule({
       imports: [
@@ -40,7 +42,8 @@ describe('TaskListWrapperComponent', () => {
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
         { provide: AlertService, useValue: mockAlertService },
-        { provide: WorkAllocationFeatureService, useValue: mockFeatureService}
+        { provide: WorkAllocationFeatureService, useValue: mockFeatureService},
+        { provide: LoadingService, useValue: mockLoadingService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(TaskListWrapperComponent);

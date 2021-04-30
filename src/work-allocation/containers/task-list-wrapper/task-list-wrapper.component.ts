@@ -12,6 +12,7 @@ import { InfoMessage, InfoMessageType, TaskActionIds, TaskService, TaskSort } fr
 import { CaseworkerDataService, InfoMessageCommService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
 import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html'
@@ -42,12 +43,15 @@ export class TaskListWrapperComponent implements OnInit {
     protected sessionStorageService: SessionStorageService,
     protected alertService: AlertService,
     protected caseworkerService: CaseworkerDataService,
-    protected featureService: WorkAllocationFeatureService
+    protected featureService: WorkAllocationFeatureService,
+    protected loadingService: LoadingService
   ) {}
 
   public specificPage: string = '';
   public caseworkers: Caseworker[];
   public featureVersion$: Observable<string>;
+  public showSpinner$: Observable<boolean>;
+
   private pTasks: Task[];
   public get tasks(): Task[] {
     return this.pTasks;
@@ -99,6 +103,11 @@ export class TaskListWrapperComponent implements OnInit {
   }
 
   public ngOnInit(): void {
+    this.setupTaskList();
+    this.loadTasks();
+  }
+
+  public setupTaskList() {
     this.caseworkerService.getAll().subscribe(caseworkers => {
       this.caseworkers = [ ...caseworkers ];
     }, error => {
@@ -217,12 +226,16 @@ export class TaskListWrapperComponent implements OnInit {
 
   // Do the actual load. This is separate as it's called from two methods.
   private doLoad(): void {
+    this.showSpinner$ = this.loadingService.isLoading;
+    const loadingToken = this.loadingService.register();
     // Should this clear out the existing set first?
     this.performSearch().subscribe(result => {
+      this.loadingService.unregister(loadingToken)
       this.tasks = result.tasks;
       this.tasks.forEach(task => task.assigneeName = getAssigneeName(this.caseworkers, task.assignee));
       this.ref.detectChanges();
     }, error => {
+      this.loadingService.unregister(loadingToken)
       handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
     });
   }

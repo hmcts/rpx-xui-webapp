@@ -64,7 +64,6 @@ describe('AvailableTasksComponent', () => {
     const tasks: Task[] = getMockTasks();
     mockTaskService.searchTask.and.returnValue(of({ tasks }));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease1'));
-    fixture.detectChanges();
   });
 
   afterEach(() => {

@@ -49,6 +49,16 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
     this.loadTasks();
   }
 
+  /**
+   * Override the super's loadTasks() method to first check
+   * for locations.
+   */
+  public loadTasks(): void {
+    if (this.selectedLocations) {
+      super.loadTasks();
+    }
+  }
+
   private getLocationParameter() {
     let values = [];
     if (this.selectedLocations) {

@@ -73,14 +73,6 @@ describe('TaskManagerListComponent', () => {
     sessionStorage.removeItem(FilterConstants.Session.TaskManager);
   });
 
-  it('should make a call to load tasks using the default search request', () => {
-    const searchRequest = component.getSearchTaskRequest();
-    const payload = { searchRequest, view: component.view };
-    expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
-    expect(component.tasks).toBeDefined();
-    expect(component.tasks.length).toEqual(2);
-  });
-
   it('should have all columns, including "Manage +"', () => {
     const element = fixture.debugElement.nativeElement;
     const headerCells = element.querySelectorAll('.govuk-table__header');
@@ -170,7 +162,6 @@ describe('TaskManagerListComponent', () => {
     expect(searchRequest.search_parameters.length).toEqual(2);
     expect(searchRequest.search_parameters[1].key).toEqual('user');
     expect(searchRequest.search_parameters[1].values.length).toEqual(1);
-    const caseworkerName = caseworkerDiplayName.transform(mockCaseworkers[0], false);
     expect(searchRequest.search_parameters[1].values).toContain('1');
 
     // Let's also make sure that the tasks were re-requested with the new sorting.

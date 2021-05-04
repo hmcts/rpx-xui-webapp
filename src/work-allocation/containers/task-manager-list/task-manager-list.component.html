@@ -1,5 +1,5 @@
 <xuilib-loading-spinner *ngIf="showSpinner$ | async"></xuilib-loading-spinner>
-<exui-task-manager-filter [locations]="locations" [caseworkers]="caseworkers"
+<exui-task-manager-filter [locations]="locations" [userLocation]="cwLocation" [caseworkers]="caseworkers"
   (selectionChanged)="onSelectionChanged($event)">
 </exui-task-manager-filter>
 <p>

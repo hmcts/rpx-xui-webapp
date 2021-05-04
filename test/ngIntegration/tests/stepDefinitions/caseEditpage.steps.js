@@ -135,6 +135,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I validate fields display in case edit page from event {string}', async function (eventConfigRef, datatable){
+        await BrowserWaits.waitForSeconds(1);
         const caseConfigInstance = global.scenarioData[eventConfigRef];
         const caseConfig = caseConfigInstance.getCase();
         const fieldValues = datatable.hashes();

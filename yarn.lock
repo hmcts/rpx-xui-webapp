@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@2.79.6":
-  version "2.79.6"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.79.6.tgz#c1772351264c21da0f3f95168e3ca56f84bd93d0"
-  integrity sha512-8dKDgu3cLRjMLusxltraDfQljwDvg64p551nWb81eUTgffsOzoElBSsi7nebZXyrhlGsCmvQI3TlBKQE1/GYIw==
+"@hmcts/ccd-case-ui-toolkit@v2.79.15-grey-bars-depending-on-fields-on-other-pages-gamma":
+  version "2.79.15-grey-bars-depending-on-fields-on-other-pages-gamma"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.79.15-grey-bars-depending-on-fields-on-other-pages-gamma.tgz#34bf6f1b8267b20aec144c14d44f1cb120881e3c"
+  integrity sha512-KsfW4p9R61V4psOaUxEx3++8S1x+aAsYJFq+ovo+QBBCbyzKJk6K+YWOxZwIVuSaW7AR2uWhKOzQ2n91K4AG3w==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"

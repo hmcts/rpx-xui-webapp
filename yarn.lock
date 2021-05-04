@@ -401,10 +401,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@v2.79.6-nested-multi-select-labels-gamma":
-  version "2.79.6-nested-multi-select-labels-gamma"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.79.6-nested-multi-select-labels-gamma.tgz#743ffafefbc719bfc1d8fd03006639ba79c78ad9"
-  integrity sha512-7or7QaYDxNsiS3dR6KIpRkk79sGg++0a4AE3XkPTsXDqg8tYkP8lYMMxSXWS+qLO8aNygmxBfNEMYCyvpCbeyg==
+"@hmcts/ccd-case-ui-toolkit@v2.79.15-nested-multi-select-labels-epsilon":
+  version "2.79.15-nested-multi-select-labels-epsilon"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.79.15-nested-multi-select-labels-epsilon.tgz#76bb01da353a6fc6efe9300ec637618b4e74ec22"
+  integrity sha512-3cRg9IbMsmx0oYUyU6Ze9GTmZrzGcWF+gDDH5FivuAwZGDwxUSuQUr0qlYyEu7ZckbMSYEdM7H1k+dSldhsrIQ==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"

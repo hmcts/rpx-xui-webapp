@@ -3,7 +3,7 @@ import { InfoMessage, InfoMessageType, TaskActionIds } from '../../../work-alloc
 import { Location, SearchTaskRequest } from '../../../work-allocation-2/models/dtos';
 import { InvokedTaskAction, Task } from '../../..//work-allocation-2/models/tasks';
 import { handleFatalErrors, REDIRECTS } from '../../../work-allocation-2/utils';
-import { TaskFieldConfig } from '../../../work-allocation/models/tasks';
+import { TaskFieldConfig } from '../../../work-allocation-2/models/tasks';
 
 
 import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';

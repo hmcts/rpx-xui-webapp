@@ -19,14 +19,7 @@ const CASE_REFERENCE_AS_TEXT: TaskFieldConfig = {
   sortName: 'caseId',
   views: TaskView.ALL_VIEWS
 };
-const CASE_NAME_AS_LINK: TaskFieldConfig = {
-  name: 'case_name',
-  type: TaskFieldType.CASE_NAME,
-  columnLabel: 'Case name',
-  sortName: 'caseName',
-  views: TaskView.ALL_VIEWS
-};
-const CASE_NAME_AS_TEXT: TaskFieldConfig = {
+const CASE_NAME: TaskFieldConfig = {
   name: 'case_name',
   type: TaskFieldType.STRING,
   columnLabel: 'Case name',
@@ -56,14 +49,7 @@ const DERIVED_ICON: TaskFieldConfig = {
   sourceColumn: DERIVED_ICON_CONSTANTS.SOURCE_COLUMN,
   matchValue: DERIVED_ICON_CONSTANTS.MATCH_VALUE
 };
-const TASK_NAME_AS_LINK: TaskFieldConfig = {
-  name: 'task_title',
-  type: TaskFieldType.TASK_NAME,
-  columnLabel: 'Task',
-  sortName: 'taskTitle',
-  views: TaskView.ALL_VIEWS
-};
-const TASK_NAME_AS_TEXT: TaskFieldConfig = {
+const TASK_NAME: TaskFieldConfig = {
   name: 'task_title',
   type: TaskFieldType.STRING,
   columnLabel: 'Task',
@@ -90,16 +76,13 @@ const ASSIGNEE: TaskFieldConfig = {
  * The views.
  */
 const AVAILABLE_TASKS: TaskFieldConfig[] = [
-  CASE_REFERENCE_AS_TEXT, CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_TEXT, DUE_DATE
+  CASE_REFERENCE_AS_TEXT, CASE_NAME, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME, DUE_DATE
 ];
 const MY_TASKS: TaskFieldConfig[] = [
-  CASE_REFERENCE_AS_LINK, CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_TEXT, DUE_DATE
-];
-const MY_WORK_TASKS: TaskFieldConfig[] = [
-  CASE_NAME_AS_LINK, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_LINK, DUE_DATE
+  CASE_REFERENCE_AS_LINK, CASE_NAME, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME, DUE_DATE
 ];
 const TASK_MANAGER: TaskFieldConfig[] = [
-  CASE_REFERENCE_AS_LINK, CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, TASK_NAME_AS_TEXT, DUE_DATE, ASSIGNEE
+  CASE_REFERENCE_AS_LINK, CASE_NAME, CASE_CATEGORY, LOCATION, TASK_NAME, DUE_DATE, ASSIGNEE
 ];
 const TASK_ACTIONS: TaskFieldConfig[] = [
   ...MY_TASKS
@@ -111,7 +94,6 @@ const TASK_ACTIONS_WITH_ASSIGNEE: TaskFieldConfig[] = [
 export const CONFIG_CONSTANTS = {
   AvailableTasks: AVAILABLE_TASKS,
   MyTasks: MY_TASKS,
-  MyWorkTasks: MY_WORK_TASKS,
   TaskActions: TASK_ACTIONS,
   TaskActionsWithAssignee: TASK_ACTIONS_WITH_ASSIGNEE,
   TaskManager: TASK_MANAGER

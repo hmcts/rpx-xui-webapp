@@ -9,8 +9,7 @@ import {
   CaseworkerDataService,
   InfoMessageCommService,
   LocationDataService,
-  WorkAllocationFeatureService,
-  WorkAllocationTaskService
+  WorkAllocationTaskService,
 } from '../../services';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 import { SessionStorageService } from '../../../app/services';
@@ -41,10 +40,9 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
     protected readonly caseworkerService: CaseworkerDataService,
     private readonly locationService: LocationDataService,
     protected alertService: AlertService,
-    protected loadingService: LoadingService,
-    protected featureService: WorkAllocationFeatureService
+    protected loadingService: LoadingService
   ) {
-    super(ref, taskService, router, infoMessageCommService, sessionStorageService, alertService, caseworkerService, featureService, loadingService);
+    super(ref, taskService, router, infoMessageCommService, sessionStorageService, alertService, caseworkerService, loadingService);
   }
 
   /**
@@ -128,7 +126,7 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
    private setupCaseworkerLocation(): void {
     this.caseworkerService.getAll().subscribe(caseworkers => {
       const assignedCaseworker = caseworkers.find(cw => this.isLoggedInUser(cw.idamId));
-      this.cwLocation = assignedCaseworker.location ? assignedCaseworker.location : FilterConstants.Options.Locations.ALL;
+      this.cwLocation = assignedCaseworker && assignedCaseworker.location ? assignedCaseworker.location : FilterConstants.Options.Locations.ALL;
     }, error => {
       handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
     });

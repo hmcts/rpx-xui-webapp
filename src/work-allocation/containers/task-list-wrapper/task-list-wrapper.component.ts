@@ -1,16 +1,15 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
-import { Observable } from 'rxjs';
-import { share } from 'rxjs/operators';
-
 import { Caseworker } from 'api/workAllocation/interfaces/task';
+import { Observable } from 'rxjs';
+
 import { SessionStorageService } from '../../../app/services';
 import { ListConstants } from '../../components/constants';
-import { SearchTaskRequest, SortParameter } from '../../models/dtos';
 import { InfoMessage, InfoMessageType, TaskActionIds, TaskService, TaskSort } from '../../enums';
-import { CaseworkerDataService, InfoMessageCommService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
+import { SearchTaskRequest, SortParameter } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
+import { CaseworkerDataService, InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 
@@ -18,7 +17,6 @@ import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
   templateUrl: 'task-list-wrapper.component.html'
 })
 export class TaskListWrapperComponent implements OnInit {
-  public currentFeature: string;
 
   /**
    * Flag to indicate whether or not we've arrived here following a bad
@@ -43,13 +41,11 @@ export class TaskListWrapperComponent implements OnInit {
     protected sessionStorageService: SessionStorageService,
     protected alertService: AlertService,
     protected caseworkerService: CaseworkerDataService,
-    protected featureService: WorkAllocationFeatureService,
     protected loadingService: LoadingService
   ) {}
 
   public specificPage: string = '';
   public caseworkers: Caseworker[];
-  public featureVersion$: Observable<string>;
   public showSpinner$: Observable<boolean>;
 
   private pTasks: Task[];
@@ -128,24 +124,17 @@ export class TaskListWrapperComponent implements OnInit {
         order: this.taskServiceConfig.defaultSortDirection
       };
     }
-    this.featureVersion$ = this.featureService.getActiveWAFeature().pipe(share());
-    this.loadTasks();
   }
 
   /**
    * Load the tasks to display in the component.
    */
   public loadTasks(): void {
-    this.featureVersion$.subscribe(feature => {
-      this.currentFeature = feature;
-      if (feature === 'WorkAllocationRelease2') {
-        this.loadTasksVersion2();
-      } else {
-        this.loadTasksVersion1();
-      }
-    }, error => {
-      handleFatalErrors(error.status, this.router);
-    });
+    if (this.wasBadRequest) {
+      this.refreshTasks();
+    } else {
+      this.doLoad();
+    }
   }
 
   /**
@@ -239,21 +228,4 @@ export class TaskListWrapperComponent implements OnInit {
       handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
     });
   }
-
-  private loadTasksVersion1(): void {
-    if (this.wasBadRequest) {
-      this.refreshTasks();
-    } else {
-      this.doLoad();
-    }
-  }
-
-  private loadTasksVersion2(): void {
-    if (this.wasBadRequest) {
-      this.refreshTasks();
-    } else {
-      this.doLoad();
-    }
-  }
-
 }

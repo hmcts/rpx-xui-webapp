@@ -6,11 +6,11 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
-import { SessionStorageService } from '../../../app/services';
-import { WorkAllocationComponentsModule } from '../../../work-allocation/components/work-allocation.components.module';
-import { Task } from '../../../work-allocation/models/tasks';
-import { InfoMessageCommService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../../work-allocation/services';
-import { getMockTasks, MockRouter } from '../../../work-allocation/tests/utils.spec';
+import { SessionStorageService } from 'src/app/services';
+import { WorkAllocationComponentsModule } from 'src/work-allocation/components/work-allocation.components.module';
+import { Task } from 'src/work-allocation/models/tasks';
+import { InfoMessageCommService, WorkAllocationTaskService } from 'src/work-allocation/services';
+import { getMockTasks, MockRouter } from 'src/work-allocation/tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { TaskListWrapperComponent } from './task-list-wrapper.component';
 
@@ -23,7 +23,6 @@ describe('TaskListWrapperComponent', () => {
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['']);
-  const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
 
   beforeEach((() => {
@@ -42,7 +41,6 @@ describe('TaskListWrapperComponent', () => {
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
         { provide: AlertService, useValue: mockAlertService },
-        { provide: WorkAllocationFeatureService, useValue: mockFeatureService},
         { provide: LoadingService, useValue: mockLoadingService }
       ]
     }).compileComponents();
@@ -50,7 +48,6 @@ describe('TaskListWrapperComponent', () => {
     component = fixture.componentInstance;
     const tasks: Task[] = getMockTasks();
     mockWorkAllocationService.searchTask.and.returnValue(of({ tasks }));
-    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease1'));
     fixture.detectChanges();
   }));
 

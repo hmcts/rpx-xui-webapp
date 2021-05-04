@@ -4,11 +4,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
-import { of } from 'rxjs';
 
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { InfoMessageContainerComponent } from '../../containers/info-message-container/info-message-container.component';
-import { WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
+import { WorkAllocationTaskService } from '../../services';
 import { TaskHomeComponent } from './task-home.component';
 
 @Component({
@@ -24,7 +23,6 @@ describe('TaskHomeComponent', () => {
   let fixture: ComponentFixture<WrapperComponent>;
   let router: Router;
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
-  const mockFeatureService = jasmine.createSpyObj('mockTaskService', ['getActiveWAFeature']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -36,15 +34,13 @@ describe('TaskHomeComponent', () => {
       ],
       declarations: [TaskHomeComponent, WrapperComponent, InfoMessageContainerComponent],
       providers: [
-        { provide: WorkAllocationTaskService, useValue: mockTaskService },
-        { provide: WorkAllocationFeatureService, useValue: mockFeatureService }
+        { provide: WorkAllocationTaskService, useValue: mockTaskService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
     router = TestBed.get(Router);
-    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease1'));
     fixture.detectChanges();
   });
 

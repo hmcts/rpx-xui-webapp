@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { UserInfo } from '../../../app/models/user-details.model';
+import { UserInfo } from 'src/app/models/user-details.model';
 
 import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
 import { SearchTaskRequest } from '../../models/dtos';
@@ -8,7 +8,7 @@ import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper
 
 @Component({
   selector: 'exui-my-tasks',
-  templateUrl: 'my-tasks.component.html'
+  templateUrl: '../task-list-wrapper/task-list-wrapper.component.html'
 })
 export class MyTasksComponent extends TaskListWrapperComponent {
 
@@ -25,11 +25,7 @@ export class MyTasksComponent extends TaskListWrapperComponent {
   }
 
   public get fields(): TaskFieldConfig[] {
-    if (this.currentFeature === 'WorkAllocationRelease2') {
-      return ConfigConstants.MyWorkTasks;
-    } else {
-      return ConfigConstants.MyTasks;
-    }
+    return ConfigConstants.MyTasks;
   }
 
   public getSearchTaskRequest(): SearchTaskRequest {

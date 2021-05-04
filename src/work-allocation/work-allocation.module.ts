@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { MatDialogModule } from '@angular/material';
-import { AlertService, CaseUIToolkitModule, PipesModule } from '@hmcts/ccd-case-ui-toolkit';
+import { AlertService, CaseUIToolkitModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 
 import { SharedModule } from '../app/shared/shared.module';
@@ -13,7 +13,6 @@ import { WorkAllocationFeatureToggleGuard } from './guards';
 import { SeniorTribunalCaseworkerGuard } from './guards/senior-tribunal-caseworker-guard';
 import { TribunalCaseworkerGuard } from './guards/tribunal-caseworker-guard';
 import { CaseworkerDataService, WorkAllocationTaskService } from './services';
-import { WorkAllocationFeatureService } from './services/work-allocation-feature.service';
 import { workAllocationRouting } from './work-allocation-feature.routes';
 
 // from containers
@@ -25,21 +24,18 @@ import { workAllocationRouting } from './work-allocation-feature.routes';
     SharedModule,
     MatDialogModule,
     WorkAllocationComponentsModule,
-    PipesModule,
     workAllocationRouting,
     CdkTableModule,
-    ExuiCommonLibModule.forChild(),
+    ExuiCommonLibModule
   ],
-  declarations: [...fromContainers.containers],
-  providers: [
-    WorkAllocationTaskService,
-    WorkAllocationFeatureToggleGuard,
-    AlertService,
-    CaseworkerDataService,
-    WorkAllocationFeatureService,
-    SeniorTribunalCaseworkerGuard,
-    TribunalCaseworkerGuard
+  declarations: [
+    ...fromContainers.containers
   ],
+  providers: [WorkAllocationTaskService, WorkAllocationFeatureToggleGuard,
+              AlertService, CaseworkerDataService,
+              SeniorTribunalCaseworkerGuard, TribunalCaseworkerGuard],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class WorkAllocationModule {}
+export class WorkAllocationModule {
+
+}

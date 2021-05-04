@@ -12,7 +12,7 @@ import { WorkAllocationComponentsModule } from '../../components/work-allocation
 import * as dtos from '../../models/dtos';
 import { Task } from '../../models/tasks';
 import { CaseworkerDisplayName } from '../../pipes';
-import { CaseworkerDataService, LocationDataService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
+import { CaseworkerDataService, LocationDataService, WorkAllocationTaskService } from '../../services';
 import { getMockCaseworkers, getMockLocations, getMockTasks } from '../../tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { TaskManagerListComponent } from './task-manager-list.component';
@@ -34,7 +34,6 @@ describe('TaskManagerListComponent', () => {
   const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
-  const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
   const mockLocations: dtos.Location[] = getMockLocations();
   const mockCaseworkers: dtos.Caseworker[] = getMockCaseworkers();
   const caseworkerDiplayName: CaseworkerDisplayName = new CaseworkerDisplayName();
@@ -56,7 +55,6 @@ describe('TaskManagerListComponent', () => {
         { provide: CaseworkerDataService, useValue: mockCaseworkerService },
         { provide: LocationDataService, useValue: mockLocationService },
         { provide: AlertService, useValue: mockAlertService },
-        { provide: WorkAllocationFeatureService, useValue: mockFeatureService },
         { provide: LoadingService, useValue: mockLoadingService }
       ]
     }).compileComponents();
@@ -67,7 +65,6 @@ describe('TaskManagerListComponent', () => {
     mockTaskService.searchTask.and.returnValue(of({ tasks }));
     mockLocationService.getLocations.and.returnValue(of(mockLocations));
     mockCaseworkerService.getAll.and.returnValue(of(mockCaseworkers));
-    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease1'));
     fixture.detectChanges();
   });
 

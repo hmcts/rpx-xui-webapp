@@ -1,11 +1,4 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { Task } from '../../models/tasks';
-import { CaseworkerDataService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
-import { getMockTasks } from '../../tests/utils.spec';
-import { TaskListComponent } from '../task-list/task-list.component';
-import { MyTasksComponent } from './my-tasks.component';
-import { TaskFieldType } from '../../../work-allocation/enums';
 import {Component, ViewChild} from '@angular/core';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {Router} from '@angular/router';
@@ -14,6 +7,13 @@ import {AlertService, LoadingService} from '@hmcts/ccd-case-ui-toolkit';
 import {ExuiCommonLibModule} from '@hmcts/rpx-xui-common-lib';
 import {of} from 'rxjs';
 import {SessionStorageService} from 'src/app/services';
+
+import {WorkAllocationComponentsModule} from '../../components/work-allocation.components.module';
+import {Task} from '../../models/tasks';
+import {CaseworkerDataService, WorkAllocationTaskService} from '../../services';
+import {getMockTasks} from '../../tests/utils.spec';
+import {TaskListComponent} from '../task-list/task-list.component';
+import {MyTasksComponent} from './my-tasks.component';
 
 @Component({
   template: `
@@ -33,7 +33,6 @@ describe('MyTasksComponent', () => {
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
-  const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
 
   beforeEach(async(() => {
@@ -50,7 +49,6 @@ describe('MyTasksComponent', () => {
         {provide: AlertService, useValue: mockAlertService},
         {provide: SessionStorageService, useValue: mockSessionStorageService},
         {provide: CaseworkerDataService, useValue: mockCaseworkerService},
-        {provide: WorkAllocationFeatureService, useValue: mockFeatureService},
         { provide: LoadingService, useValue: mockLoadingService }
       ]
     }).compileComponents();
@@ -64,7 +62,6 @@ describe('MyTasksComponent', () => {
     const tasks: Task[] = getMockTasks();
     mockTaskService.searchTask.and.returnValue(of({tasks}));
     mockCaseworkerService.getAll.and.returnValue(of([]));
-    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease1'));
     fixture.detectChanges();
   });
 
@@ -177,16 +174,5 @@ describe('MyTasksComponent', () => {
     fixture.detectChanges();
     // Ensure the correct attempt has been made to navigate.
     expect(navigateSpy).toHaveBeenCalledWith([`/tasks/${task.id}/${actionId}/`], jasmine.any(Object));
-  });
-
-  it('should allow setting the release 2 details', () => {
-    // verifying fields best way to check as the elements (apart from column names) on page will not change
-    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
-    component.ngOnInit();
-    fixture.detectChanges();
-    expect(component.fields[0].name).toBe('case_name');
-    expect(component.fields[0].type).toBe(TaskFieldType.CASE_NAME);
-    expect(component.fields[4].name).toBe('task_title');
-    expect(component.fields[4].type).toBe(TaskFieldType.TASK_NAME);
   });
 });

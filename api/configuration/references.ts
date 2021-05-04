@@ -32,6 +32,7 @@ export const SERVICES_ROLE_ASSIGNMENT_API_PATH = 'services.role_assignment.roleA
 export const SERVICES_CASE_CASEWORKER_REF_PATH = "services.case.caseworkerApi"
 
 export const SERVICES_DOCUMENTS_API_PATH = 'services.documents.api'
+export const SERVICES_EM_HRS_API_PATH = 'services.em_hrs_api'
 export const SERVICES_EM_ANNO_API_URL = 'services.em_anno_api'
 export const SERVICES_MARKUP_API_URL = 'services.markup_api'
 export const SERVICES_ICP_API_URL = 'services.icp_api'

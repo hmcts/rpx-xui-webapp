@@ -6,7 +6,6 @@ import { Task, TaskFieldConfig } from '.././../models/tasks';
 @Component({
   selector: 'exui-task-field',
   templateUrl: './task-field.component.html',
-  styleUrls: ['task-field.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class TaskFieldComponent {

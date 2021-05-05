@@ -10,7 +10,7 @@ import { SessionStorageService } from 'src/app/services';
 
 
 import { Task } from '../../models/tasks';
-import { CaseworkerDataService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
+import { CaseworkerDataService, WorkAllocationTaskService } from '../../services';
 import { getMockTasks } from '../../tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { MyTasksComponent } from './my-tasks.component';
@@ -35,7 +35,6 @@ describe('MyTasksComponent', () => {
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
-  const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -51,7 +50,6 @@ describe('MyTasksComponent', () => {
         {provide: AlertService, useValue: mockAlertService},
         {provide: SessionStorageService, useValue: mockSessionStorageService},
         {provide: CaseworkerDataService, useValue: mockCaseworkerService},
-        {provide: WorkAllocationFeatureService, useValue: mockFeatureService}
       ]
     }).compileComponents();
   }));
@@ -64,7 +62,6 @@ describe('MyTasksComponent', () => {
     const tasks: Task[] = getMockTasks();
     mockTaskService.searchTask.and.returnValue(of({tasks}));
     mockCaseworkerService.getAll.and.returnValue(of([]));
-    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     fixture.detectChanges();
   });
 
@@ -139,7 +136,6 @@ describe('MyTasksComponent', () => {
 
   it('should allow setting the release 2 details', () => {
     // verifying fields best way to check as the elements (apart from column names) on page will not change
-    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     component.ngOnInit();
     fixture.detectChanges();
     expect(component.fields[0].name).toBe('case_name');

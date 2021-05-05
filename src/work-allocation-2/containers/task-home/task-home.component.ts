@@ -6,7 +6,6 @@ import { share } from 'rxjs/operators';
 
 import { AppUtils } from '../../../app/app-utils';
 import { TaskSortField } from '../../models/tasks';
-import { WorkAllocationFeatureService } from '../../services/work-allocation-feature.service';
 
 @Component({
   selector: 'exui-task-home',
@@ -30,12 +29,10 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
   public sortedBy: TaskSortField;
   public pageTitle: string;
   private routeSubscription: Subscription;
-  public featureVersion$: Observable<string>;
 
-  constructor(private readonly router: Router, private readonly featureService: WorkAllocationFeatureService) {}
+  constructor(private readonly router: Router) {}
 
   public ngOnInit(): void {
-    this.featureVersion$ = this.featureService.getActiveWAFeature().pipe(share());
     this.routeSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         // Set up the active navigation item.

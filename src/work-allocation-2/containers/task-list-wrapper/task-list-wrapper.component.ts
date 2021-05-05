@@ -9,7 +9,7 @@ import { SessionStorageService } from '../../../app/services';
 import { ListConstants } from '../../components/constants';
 import { SearchTaskRequest, SortParameter } from '../../models/dtos';
 import { InfoMessage, InfoMessageType, TaskActionIds, TaskService, TaskSort } from '../../enums';
-import { CaseworkerDataService, InfoMessageCommService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
+import { CaseworkerDataService, InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 
@@ -42,8 +42,7 @@ export class TaskListWrapperComponent implements OnInit {
     protected infoMessageCommService: InfoMessageCommService,
     protected sessionStorageService: SessionStorageService,
     protected alertService: AlertService,
-    protected caseworkerService: CaseworkerDataService,
-    protected featureService: WorkAllocationFeatureService
+    protected caseworkerService: CaseworkerDataService
   ) {}
 
   public specificPage: string = '';
@@ -120,7 +119,6 @@ export class TaskListWrapperComponent implements OnInit {
         order: this.taskServiceConfig.defaultSortDirection
       };
     }
-    this.featureVersion$ = this.featureService.getActiveWAFeature().pipe(share());
     this.loadTasks();
   }
 

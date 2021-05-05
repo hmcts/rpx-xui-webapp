@@ -9,7 +9,7 @@ import { of } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Task } from '../../models/tasks';
-import { InfoMessageCommService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
+import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { getMockTasks, MockRouter } from '../../tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { TaskListWrapperComponent } from './task-list-wrapper.component';
@@ -23,7 +23,6 @@ describe('TaskListWrapperComponent', () => {
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['']);
-  const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
   beforeEach((() => {
     TestBed.configureTestingModule({
       imports: [
@@ -39,15 +38,13 @@ describe('TaskListWrapperComponent', () => {
         { provide: Router, useValue: mockRouter },
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
-        { provide: AlertService, useValue: mockAlertService },
-        { provide: WorkAllocationFeatureService, useValue: mockFeatureService}
+        { provide: AlertService, useValue: mockAlertService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(TaskListWrapperComponent);
     component = fixture.componentInstance;
     const tasks: Task[] = getMockTasks();
     mockWorkAllocationService.searchTask.and.returnValue(of({ tasks }));
-    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     fixture.detectChanges();
   }));
 

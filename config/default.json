@@ -33,6 +33,7 @@
     "prd": {
       "api": "http://rd-professional-api-prod.service.core-compute-prod.internal"
     },
+    "em_hrs_api": "http://em-hrs-api-prod.service.core-compute-prod.internal",
     "em_anno_api": "http://em-anno-prod.service.core-compute-prod.internal",
     "idam": {
       "idamApiUrl": "https://idam-api.platform.hmcts.net",
@@ -60,7 +61,7 @@
   "protocol": "https",
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",
-  "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT",
+  "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS",
   "wildcardSearchFields": {
     "Benefit": [
       "generatedSurname",
@@ -186,8 +187,8 @@
     }
   ],
   "pact": {
-    "branchName": "Dev",
-    "brokerUrl": "http://localhost:80",
+    "branchName": "master",
+    "brokerUrl": "https://pact-broker.platform.hmcts.net",
     "consumerVersion": "",
     "brokerUsername": "",
     "brokerPassword": ""

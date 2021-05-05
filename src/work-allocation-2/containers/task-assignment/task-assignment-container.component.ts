@@ -39,10 +39,6 @@ export class TaskAssignmentContainerComponent implements OnInit {
     private readonly messageService: InfoMessageCommService
   ) {}
 
-  public get fields(): TaskFieldConfig[] {
-    return this.showAssigneeColumn ? ConfigConstants.TaskActionsWithAssignee : ConfigConstants.TaskActions;
-  }
-
   private get returnUrl(): string {
     let url;
     if (window && window.history && window.history.state) {
@@ -51,26 +47,8 @@ export class TaskAssignmentContainerComponent implements OnInit {
     return url || '/tasks/list';
   }
 
-  private get showAssigneeColumn(): boolean {
-    if (window && window.history && window.history.state) {
-      return !!window.history.state.showAssigneeColumn;
-    }
-    return false;
-  }
 
-  public taskServiceConfig: TaskServiceConfig = {
-    service: TaskService.IAC,
-    defaultSortDirection: TaskSort.ASC,
-    defaultSortFieldName: 'dueDate',
-    fields: this.fields,
-  };
   public ngOnInit(): void {
-    // Set up the default sorting.
-    this.sortedBy = {
-      fieldName: this.taskServiceConfig.defaultSortFieldName,
-      order: this.taskServiceConfig.defaultSortDirection
-    };
-
     // Get the task from the route, which will have been put there by the resolver.
     const task = this.route.snapshot.data.taskAndCaseworkers.task.task;
     const caseworkers = this.route.snapshot.data.taskAndCaseworkers.caseworkers;
@@ -107,10 +85,6 @@ export class TaskAssignmentContainerComponent implements OnInit {
 
   public cancel(): void {
     this.returnWithMessage(null, {});
-  }
-
-  public onCaseworkerChanged(caseworker: Caseworker): void {
-    this.caseworker = caseworker;
   }
 
   private reportSuccessAndReturn(): void {

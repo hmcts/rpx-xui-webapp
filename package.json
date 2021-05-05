@@ -169,7 +169,6 @@
     "cucumber-html-report": "0.6.5",
     "cucumber-html-reporter": "^4.0.5",
     "cucumber-pretty": "1.5.0",
-    "cucumberjs-allure-reporter": "1.0.3",
     "jasmine-core": "~2.99.1",
     "jasmine-marbles": "^0.5.0",
     "jasmine-spec-reporter": "~4.2.1",
@@ -226,7 +225,6 @@
     "**/**/elliptic": "^6.5.4",
     "**/**/redis": "^3.1.1",
     "**/**/socket.io": "^2.4.0",
-    "**/**/xmlhttprequest-ssl": "^1.6.2",
-    "**/**/mime": "^1.4.4"
+    "**/**/xmlhttprequest-ssl": "^1.6.2"
   }
 }

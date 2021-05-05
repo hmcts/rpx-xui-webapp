@@ -2,12 +2,10 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { Observable } from 'rxjs';
-import { share } from 'rxjs/operators';
 
-import { Caseworker } from 'api/workAllocation/interfaces/task';
 import { SessionStorageService } from '../../../app/services';
 import { ListConstants } from '../../components/constants';
-import { SearchTaskRequest, SortParameter } from '../../models/dtos';
+import { Caseworker, SearchTaskRequest, SortParameter } from '../../models/dtos';
 import { InfoMessage, InfoMessageType, TaskActionIds, TaskService, TaskSort } from '../../enums';
 import { CaseworkerDataService, InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';

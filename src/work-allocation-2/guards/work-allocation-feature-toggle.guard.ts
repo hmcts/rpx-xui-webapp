@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { Observable } from 'rxjs/Observable';
 import { tap } from 'rxjs/operators';
 
 import { AppConstants } from '../../app/app.constants';
@@ -12,13 +13,13 @@ export class WorkAllocationFeatureToggleGuard implements CanActivate {
               private readonly router: Router) {
   }
 
-  public static navigateUrl(isfeatureEnabled: boolean, router: Router, url: string) {
+  public static navigateUrl(isfeatureEnabled: boolean, router: Router, url: string): void {
     if (!isfeatureEnabled) {
       router.navigate([url]);
     }
   }
 
-  public canActivate() {
+  public canActivate(): Observable<boolean> {
     return this.featureToggleService.getValueOnce<boolean>(AppConstants.FEATURE_NAMES.workAllocation, false).pipe(tap(isfeatureEnabled => {
       WorkAllocationFeatureToggleGuard.navigateUrl(isfeatureEnabled, this.router, WorkAllocationFeatureToggleGuard.defaultUrl);
     }));

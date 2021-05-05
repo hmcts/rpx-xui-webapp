@@ -43,11 +43,13 @@ export class TaskAssignmentContainerComponent implements OnInit {
   }
 
   private get returnUrl(): string {
-    let url;
+    let url: string = '/mywork/list';
+  
     if (window && window.history && window.history.state) {
       url = window.history.state.returnUrl;
     }
-    return url || '/tasks/list';
+  
+    return url;
   }
 
   private get showAssigneeColumn(): boolean {

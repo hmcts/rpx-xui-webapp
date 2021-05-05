@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { Observable, of } from 'rxjs';
-import { AppConstants } from 'src/app/app.constants';
+import { Observable } from 'rxjs';
+import { AppConstants } from '../../app/app.constants';
 
 @Injectable({ providedIn: 'root' })
 export class WorkAllocationFeatureService {

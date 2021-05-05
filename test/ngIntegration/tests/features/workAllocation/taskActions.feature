@@ -4,7 +4,7 @@ Feature: Task actions
     Background: Mock and browser setup
         Given I init MockApp
 
-    @test
+    
     Scenario:  My Tasks actions submit
         Given I set MOCK with user roles
             | role                      |
@@ -21,7 +21,7 @@ Feature: Task actions
             | Go to case    | ONCECLICK  |              |                                                       |
 
 
-    @test
+    
     Scenario:  Available Tasks actions submit
         Given I set MOCK with user roles
             | role                      |
@@ -34,7 +34,7 @@ Feature: Task actions
             | Assign to me                | ONCECLICK  |              | You've unassigned a task. It's now in Available tasks |
             | Assign to me and go to case | ONCECLICK  |              |                                                       |
 
-    @test
+    
     Scenario:   Task manager actions submit
         Given I set MOCK with user roles
             | role                      |

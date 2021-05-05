@@ -45,5 +45,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         expect(await headerPage.isTabPresent(headerlabel), headerlabel + " tab is not expected to present " + await headerPage.getPrimaryNavigations() ).to.be.false;
     })
 
+    When('I click on primary navigation header tab {string}', async function(headerTab){
+    // step definition code here
+        await headerPage.clickTabWithText(headerTab);
+    });
+
 
 });

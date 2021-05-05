@@ -13,7 +13,6 @@ import { WorkAllocationFeatureToggleGuard } from './guards';
 import { SeniorTribunalCaseworkerGuard } from './guards/senior-tribunal-caseworker-guard';
 import { TribunalCaseworkerGuard } from './guards/tribunal-caseworker-guard';
 import { CaseworkerDataService, WorkAllocationTaskService } from './services';
-import { WorkAllocationFeatureService } from './services/work-allocation-feature.service';
 import { workAllocationRouting } from './work-allocation-feature.routes';
 
 // from containers
@@ -27,18 +26,16 @@ import { workAllocationRouting } from './work-allocation-feature.routes';
     WorkAllocationComponentsModule,
     workAllocationRouting,
     CdkTableModule,
-    ExuiCommonLibModule.forChild(),
+    ExuiCommonLibModule
   ],
-  declarations: [...fromContainers.containers],
-  providers: [
-    WorkAllocationTaskService,
-    WorkAllocationFeatureToggleGuard,
-    AlertService,
-    CaseworkerDataService,
-    WorkAllocationFeatureService,
-    SeniorTribunalCaseworkerGuard,
-    TribunalCaseworkerGuard
+  declarations: [
+    ...fromContainers.containers
   ],
+  providers: [WorkAllocationTaskService, WorkAllocationFeatureToggleGuard,
+              AlertService, CaseworkerDataService,
+              SeniorTribunalCaseworkerGuard, TribunalCaseworkerGuard],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class WorkAllocationModule {}
+export class WorkAllocationModule {
+
+}

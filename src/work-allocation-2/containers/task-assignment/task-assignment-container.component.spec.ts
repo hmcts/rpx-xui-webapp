@@ -31,7 +31,7 @@ class WrapperComponent {
 @Component({
   template: `<div>Nothing</div>`
 })
-class NothingComponent {}
+class NothingComponent { }
 
 describe('TaskAssignmentContainerComponent', () => {
   let component: TaskAssignmentContainerComponent;

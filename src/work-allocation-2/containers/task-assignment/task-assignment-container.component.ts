@@ -21,7 +21,7 @@ export const NAME_ERROR: ErrorMessage = {
 })
 export class TaskAssignmentContainerComponent implements OnInit {
   public error: ErrorMessage = null;
-  public tasks: any [];
+  public tasks: any[];
   public sortedBy: any;
   public showManage: boolean = false;
   public caseworker: Caseworker;
@@ -36,7 +36,7 @@ export class TaskAssignmentContainerComponent implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly messageService: InfoMessageCommService
-  ) {}
+  ) { }
 
   public get fields(): TaskFieldConfig[] {
     return this.showAssigneeColumn ? ConfigConstants.TaskActionsWithAssignee : ConfigConstants.TaskActions;
@@ -44,11 +44,11 @@ export class TaskAssignmentContainerComponent implements OnInit {
 
   private get returnUrl(): string {
     let url: string = '/mywork/list';
-  
+
     if (window && window.history && window.history.state) {
       url = window.history.state.returnUrl;
     }
-  
+
     return url;
   }
 
@@ -76,14 +76,14 @@ export class TaskAssignmentContainerComponent implements OnInit {
     const task = this.route.snapshot.data.taskAndCaseworkers.task.task;
     const caseworkers = this.route.snapshot.data.taskAndCaseworkers.caseworkers;
     task.assigneeName = getAssigneeName(caseworkers, task.assignee);
-    this.tasks = [ task ];
+    this.tasks = [task];
     this.verb = this.route.snapshot.data.verb as TaskActionType;
     this.successMessage = this.route.snapshot.data.successMessage as InfoMessage;
     if (task.assignee) {
       const names: string[] = task.assignee.split(' ');
       const firstName = names.shift();
       const lastName = names.join(' ');
-      this.excludedCaseworkers = [ { firstName, lastName } as Caseworker ];
+      this.excludedCaseworkers = [{ firstName, lastName } as Caseworker];
     }
     if (task.location) {
       this.location = { locationName: task.location } as Location;
@@ -96,7 +96,7 @@ export class TaskAssignmentContainerComponent implements OnInit {
       return;
     }
     this.error = null;
-    this.taskService.assignTask(this.tasks[0].id, {userId: this.caseworker.idamId}).subscribe(() => {
+    this.taskService.assignTask(this.tasks[0].id, { userId: this.caseworker.idamId }).subscribe(() => {
       this.reportSuccessAndReturn();
     }, error => {
       const handledStatus = handleFatalErrors(error.status, this.router);

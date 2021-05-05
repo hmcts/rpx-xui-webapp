@@ -94,21 +94,6 @@ describe('TaskAssignmentContainerComponent', () => {
     expect(component).toBeDefined();
   });
 
-  it('should allow changing the caseworker', () => {
-    expect(component.caseworker).toBe(undefined);
-    component.onCaseworkerChanged(mockCaseworkers[0]);
-    fixture.detectChanges();
-    expect(component.caseworker).toBe(mockCaseworkers[0]);
-
-    component.onCaseworkerChanged(mockCaseworkers[1]);
-    fixture.detectChanges();
-    expect(component.caseworker).toBe(mockCaseworkers[1]);
-
-    component.onCaseworkerChanged(null);
-    fixture.detectChanges();
-    expect(component.caseworker).toBe(null);
-  });
-
   it('should send an error message when a caseworker is not selected and there is an attempt to assign', () => {
     expect(component.caseworker).toBeUndefined();
     expect(component.error).toBeNull();

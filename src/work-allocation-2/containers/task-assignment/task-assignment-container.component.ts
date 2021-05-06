@@ -34,7 +34,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
 
   public formGroup: FormGroup;
 
-  private assignTask$: Subscription;
+  private assignTask: Subscription;
 
   constructor(
     private readonly taskService: WorkAllocationTaskService,
@@ -92,7 +92,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this.assignTask$.unsubscribe();
+    this.assignTask.unsubscribe();
   }
 
   public initForm(): void {
@@ -108,7 +108,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     }
     this.error = null;
 
-    this.assignTask$ = this.taskService.assignTask(this.tasks[0].id, { userId: this.caseworker.idamId }).subscribe({
+    this.assignTask = this.taskService.assignTask(this.tasks[0].id, { userId: this.caseworker.idamId }).subscribe({
       next: () => this.reportSuccessAndReturn(),
       error: (error: any) => {
         const handledStatus = handleFatalErrors(error.status, this.router);

@@ -92,7 +92,9 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this.assignTask.unsubscribe();
+    if (this.assignTask) {
+      this.assignTask.unsubscribe();
+    }
   }
 
   public initForm(): void {

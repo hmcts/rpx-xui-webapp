@@ -67,7 +67,7 @@ export class TaskAssignmentContainerComponent implements OnInit {
     defaultSortFieldName: 'dueDate',
     fields: this.fields,
   };
-  
+
   public ngOnInit(): void {
     this.initForm();
     // Get the task from the route, which will have been put there by the resolver.

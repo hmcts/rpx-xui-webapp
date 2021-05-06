@@ -12,6 +12,7 @@ import {
 import { ApplicationRoutingComponent } from './components/routing/application-routing.component';
 import { AcceptTcWrapperComponent, LegacyTermsAndConditionsComponent, TermsAndConditionsComponent } from './containers';
 import { AcceptTermsGuard } from './guards/acceptTerms.guard';
+import { WorkAllocationGuard } from './guards/work-allocation-guard';
 import { AuthGuard } from './services/auth/auth.guard';
 
 export const routingConfiguration: ExtraOptions = {
@@ -31,7 +32,7 @@ export const ROUTES: Routes = [
   },
   {
     path: 'mywork',
-    canActivate: [AuthGuard, AcceptTermsGuard],
+    canActivate: [AuthGuard, AcceptTermsGuard, WorkAllocationGuard],
     loadChildren: '../work-allocation-2/work-allocation2.module#WorkAllocationModule2'
   },
   {

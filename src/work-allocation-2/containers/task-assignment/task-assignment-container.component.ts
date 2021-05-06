@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 import { ErrorMessage } from '../../../app/models';
 import { ConfigConstants } from '../../components/constants';
@@ -20,7 +21,7 @@ export const NAME_ERROR: ErrorMessage = {
   selector: 'exui-task-container-assignment',
   templateUrl: 'task-assignment-container.component.html'
 })
-export class TaskAssignmentContainerComponent implements OnInit {
+export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   public error: ErrorMessage = null;
   public tasks: any[];
   public showManage: boolean = false;
@@ -32,6 +33,8 @@ export class TaskAssignmentContainerComponent implements OnInit {
   public location: Location;
 
   public formGroup: FormGroup;
+
+  private assignTask$: Subscription;
 
   constructor(
     private readonly taskService: WorkAllocationTaskService,
@@ -88,6 +91,10 @@ export class TaskAssignmentContainerComponent implements OnInit {
     }
   }
 
+  public ngOnDestroy(): void {
+    this.assignTask$.unsubscribe();
+  }
+
   public initForm(): void {
     this.formGroup = new FormGroup({
       caseWorkerName: new FormControl()
@@ -100,12 +107,15 @@ export class TaskAssignmentContainerComponent implements OnInit {
       return;
     }
     this.error = null;
-    this.taskService.assignTask(this.tasks[0].id, { userId: this.caseworker.idamId }).subscribe(() => {
-      this.reportSuccessAndReturn();
-    }, error => {
-      const handledStatus = handleFatalErrors(error.status, this.router);
-      if (handledStatus > 0) {
-        this.reportUnavailableErrorAndReturn();
+
+    this.assignTask$ = this.taskService.assignTask(this.tasks[0].id, { userId: this.caseworker.idamId }).subscribe({
+      next: () => this.reportSuccessAndReturn(),
+      error: (error: any) => {
+        const handledStatus = handleFatalErrors(error.status, this.router);
+
+        if (handledStatus > 0) {
+          this.reportUnavailableErrorAndReturn();
+        }
       }
     });
   }

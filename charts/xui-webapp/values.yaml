@@ -116,5 +116,5 @@ nodejs:
   redis:
   enabled: true
 idam-pr:
-  enabled: false
+  enabled:false
 

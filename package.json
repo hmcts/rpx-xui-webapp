@@ -169,7 +169,6 @@
     "cucumber-html-report": "0.6.5",
     "cucumber-html-reporter": "^4.0.5",
     "cucumber-pretty": "1.5.0",
-    "cucumberjs-allure-reporter": "1.0.3",
     "jasmine-core": "~2.99.1",
     "jasmine-marbles": "^0.5.0",
     "jasmine-spec-reporter": "~4.2.1",
@@ -219,8 +218,12 @@
     "**/**/y18n": "^3.2.2",
     "**/**/ssri": "8.0.1",
     "**/**/jose": "1.28.1",
+    "**/**/node-sass":"^4.13.1",
+    "**/**/tree-kill":"^1.2.2",
+    "**/**/node-forge": "^0.10.0",
+    "**/**/acorn":"7.1.1",
+    "**/**/elliptic": "^6.5.4",
     "**/**/redis": "^3.1.1",
-    "**/**/mime": "^2.0.3",
     "**/**/socket.io": "^2.4.0",
     "**/**/xmlhttprequest-ssl": "^1.6.2"
   }

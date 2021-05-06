@@ -159,6 +159,7 @@
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",
     "@types/mocha": "^8.0.3",
+    "@types/node": "12.12.2",
     "@types/shortid": "0.0.29",
     "@types/sinon": "^7.0.13",
     "base-64": "^0.1.0",

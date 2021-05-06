@@ -5,7 +5,7 @@ nodejs:
      NODE_TLS_REJECT_UNAUTHORIZED: 0
      SERVICES_IDAM_API_URL: https://idam-api.aat.platform.hmcts.net
      SERVICES_IDAM_LOGIN_URL: https://idam-web-public.aat.platform.hmcts.net
-     REDISCLOUD_URL: redis://ignore:fake-password@${SERVICE_NAME}-redis-master:6379
+     REDISCLOUD_URL: redis://${SERVICE_NAME}-redis-master:6379
      LAUNCH_DARKLY_CLIENT_ID: 5de6610b23ce5408280f2268
      HEALTH_CCD_COMPONENT_API: https://gateway-ccd.aat.platform.hmcts.net/health
      HEALTH_CCD_DATA_API: http://ccd-data-store-api-aat.service.core-compute-aat.internal/health
@@ -26,6 +26,8 @@ nodejs:
         - mc-idam-client-secret
         - system-user-name
         - system-user-password
+  autoscaling:
+    enabled: false
 redis:
   enabled: true
 idam-pr:

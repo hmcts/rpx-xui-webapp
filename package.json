@@ -147,8 +147,8 @@
     "@stryker-mutator/mocha-runner": "^3.0.1",
     "@stryker-mutator/typescript": "^3.0.1",
     "@types/applicationinsights-js": "^1.0.9",
-    "@types/cookie-parser": "^1.4.2",
     "@types/config": "^0.0.36",
+    "@types/cookie-parser": "^1.4.2",
     "@types/crypto-js": "^3.1.43",
     "@types/csurf": "^1.11.0",
     "@types/ejs": "^2.6.3",
@@ -169,7 +169,6 @@
     "cucumber-html-report": "0.6.5",
     "cucumber-html-reporter": "^4.0.5",
     "cucumber-pretty": "1.5.0",
-    "cucumberjs-allure-reporter": "1.0.3",
     "jasmine-core": "~2.99.1",
     "jasmine-marbles": "^0.5.0",
     "jasmine-spec-reporter": "~4.2.1",
@@ -218,6 +217,14 @@
     "**/**/prismjs": "^1.23.0",
     "**/**/y18n": "^3.2.2",
     "**/**/ssri": "8.0.1",
-    "**/**/jose": "1.28.1"
+    "**/**/jose": "1.28.1",
+    "**/**/node-sass": "^4.13.1",
+    "**/**/tree-kill": "^1.2.2",
+    "**/**/node-forge": "^0.10.0",
+    "**/**/acorn": "7.1.1",
+    "**/**/elliptic": "^6.5.4",
+    "**/**/redis": "^3.1.1",
+    "**/**/socket.io": "^2.4.0",
+    "**/**/xmlhttprequest-ssl": "^1.6.2"
   }
 }

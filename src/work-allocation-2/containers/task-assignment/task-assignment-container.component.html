@@ -3,10 +3,16 @@
 <main class="govuk-main-wrapper" id="main-content" role="main">
   <h1 class="govuk-heading-xl">{{verb}} task</h1>
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
+    <div class="govuk-grid-column-one-third">
 
-      <h2 class="govuk-heading-m">Find the person</h2>
-      <p>Type the name of the person and select them</p>
+      <xuilib-gov-uk-input [group]="formGroup" [config]="
+          {
+            label: 'Find the person',
+            hint: 'Type the name of the person and select them',
+            name: 'caseWorkerName',
+            id: 'case-worker-search__Input',
+            type: 'text'
+          }"></xuilib-gov-uk-input>
 
       <button class="govuk-button govuk-!-margin-right-1" type="submit" (click)="assign()">Continue</button>
       <p><a (click)="cancel()" href="javascript:void(0)">Cancel</a></p>

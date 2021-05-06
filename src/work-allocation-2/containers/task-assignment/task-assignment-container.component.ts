@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ErrorMessage } from '../../../app/models';
@@ -22,7 +23,6 @@ export const NAME_ERROR: ErrorMessage = {
 export class TaskAssignmentContainerComponent implements OnInit {
   public error: ErrorMessage = null;
   public tasks: any[];
-  public sortedBy: any;
   public showManage: boolean = false;
   public caseworker: Caseworker;
   public verb: TaskActionType;
@@ -30,6 +30,8 @@ export class TaskAssignmentContainerComponent implements OnInit {
   public successMessage: InfoMessage;
   public excludedCaseworkers: Caseworker[];
   public location: Location;
+
+  public formGroup: FormGroup;
 
   constructor(
     private readonly taskService: WorkAllocationTaskService,
@@ -65,13 +67,9 @@ export class TaskAssignmentContainerComponent implements OnInit {
     defaultSortFieldName: 'dueDate',
     fields: this.fields,
   };
+  
   public ngOnInit(): void {
-    // Set up the default sorting.
-    this.sortedBy = {
-      fieldName: this.taskServiceConfig.defaultSortFieldName,
-      order: this.taskServiceConfig.defaultSortDirection
-    };
-
+    this.initForm();
     // Get the task from the route, which will have been put there by the resolver.
     const task = this.route.snapshot.data.taskAndCaseworkers.task.task;
     const caseworkers = this.route.snapshot.data.taskAndCaseworkers.caseworkers;
@@ -88,6 +86,12 @@ export class TaskAssignmentContainerComponent implements OnInit {
     if (task.location) {
       this.location = { locationName: task.location } as Location;
     }
+  }
+
+  public initForm(): void {
+    this.formGroup = new FormGroup({
+      caseWorkerName: new FormControl()
+    });
   }
 
   public assign(): void {

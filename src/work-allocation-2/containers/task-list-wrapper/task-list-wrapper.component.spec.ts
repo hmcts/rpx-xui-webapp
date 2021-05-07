@@ -72,7 +72,7 @@ describe('TaskListWrapperComponent', () => {
 
       // need to verify correct properties were called
       const lastNavigateCall = mockRouter.navigateCalls.pop();
-      expect(lastNavigateCall.commands).toEqual([`/tasks/${exampleTask.id}/${firstAction.id}/`]);
+      expect(lastNavigateCall.commands).toEqual([`/mywork/${exampleTask.id}/${firstAction.id}/`]);
       const exampleNavigateCall = { state: { returnUrl: '/tasks/list', showAssigneeColumn: true } };
       expect(lastNavigateCall.extras).toEqual(exampleNavigateCall);
     });
@@ -88,7 +88,7 @@ describe('TaskListWrapperComponent', () => {
 
       // need to verify correct properties were called
       const lastNavigateCall = mockRouter.navigateCalls.pop();
-      expect(lastNavigateCall.commands).toEqual([`/tasks/${exampleTask.id}/${secondAction.id}/`]);
+      expect(lastNavigateCall.commands).toEqual([`/mywork/${exampleTask.id}/${secondAction.id}/`]);
       const exampleNavigateCall = { state: { returnUrl: '/tasks/manager', showAssigneeColumn: true } };
       expect(lastNavigateCall.extras).toEqual(exampleNavigateCall);
     });

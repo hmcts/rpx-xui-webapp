@@ -5,7 +5,7 @@ import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
 import { Task } from './interfaces/task';
-import { workAllocation2Tasks } from './mocks/tasks';
+import { WORK_ALLOCATION_2_TASKS } from './mocks/tasks';
 import { getNodeIdFromPath, getTask } from './util';
 
 const logger: JUILogger = log4jui.getLogger('task-service');
@@ -16,7 +16,7 @@ export async function handleTaskGet(path: string, req: EnhancedRequest): Promise
   // const headers = setHeaders(req);
   // const response: AxiosResponse = await http.get(path, {headers});
   // return response.data.task as unknown as Task;
-  return getTask(nodeId, workAllocation2Tasks.tasks);
+  return getTask(nodeId, WORK_ALLOCATION_2_TASKS.tasks);
 }
 
 export async function handleTaskSearch(
@@ -30,7 +30,7 @@ export async function handleTaskSearch(
   // return response;
   return {
     config: null,
-    data: workAllocation2Tasks,
+    data: WORK_ALLOCATION_2_TASKS,
     headers: null,
     status: 200,
     statusText: 'success',

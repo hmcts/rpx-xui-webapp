@@ -10,8 +10,7 @@
       </exui-task-list>
 
       <button id="submit-button" class="govuk-button govuk-!-margin-right-1" type="submit" (click)="performAction()">{{routeData.verb}}</button>
-      <button id="cancel-button" class="govuk-button govuk-button--secondary" type="submit" (click)="cancel()">Cancel and go back</button>
-
+      <p><a (click)="cancel()" class="govuk-!-margin-top-3" id="cancel" href="javascript:void(0)">Cancel</a></p>
     </div>
   </div>
 </main>

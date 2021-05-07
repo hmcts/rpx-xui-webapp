@@ -13,3 +13,29 @@
     Sign out
   </button>
 </xuilib-session-dialog>
+
+<div class="govuk-cookie-banner " role="region" aria-label="Cookies on Manage Cases" *ngIf="!isCookieSelectionMade">
+  <div class="govuk-cookie-banner__message govuk-width-container">
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <h2 class="govuk-cookie-banner__heading govuk-heading-m">Cookies on Manage Cases</h2>
+
+        <div class="govuk-cookie-banner__content">
+          <p>We use some essential cookies to make this service work.</p>
+          <p>We’d also like to use analytics cookies so we can understand how you use the service and make improvements.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="govuk-button-group">
+      <button value="accept" type="button" name="cookies" class="govuk-button" data-module="govuk-button" (click)="acceptCookie()">
+        Accept analytics cookies
+      </button>
+      <button value="reject" type="button" name="cookies" class="govuk-button" data-module="govuk-button" (click)="rejectCookie()">
+        Reject analytics cookies
+      </button>
+      <a class="govuk-link" routerLink="/cookies">View cookies</a>
+    </div>
+  </div>
+</div>

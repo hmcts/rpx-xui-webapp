@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router, RoutesRecognized } from '@angular/router';
-import { GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
+import { CookieService, GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 
 import { propsExist } from '../../../../api/lib/objectUtilities';
@@ -22,12 +22,16 @@ export class AppComponent implements OnInit {
     isVisible: false,
   };
 
+  private userId: string = '';
+  public isCookieSelectionMade: boolean = false;
+
   constructor(
     private readonly store: Store<fromRoot.State>,
     private readonly googleTagManagerService: GoogleTagManagerService,
     private readonly timeoutNotificationsService: TimeoutNotificationsService,
     private readonly router: Router,
-    private readonly titleService: Title
+    private readonly titleService: Title,
+    private readonly cookieService: CookieService,
   ) {
 
     this.googleTagManagerService.init(config.googleTagManagerKey);
@@ -88,7 +92,7 @@ export class AppComponent implements OnInit {
 
     if (propsExist(userDetails, ['sessionTimeout'] ) && userDetails.sessionTimeout.totalIdleTime > 0) {
       const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
-
+      this.userId = userDetails.userInfo.uid;
       this.addTimeoutNotificationServiceListener();
       this.initTimeoutNotificationService(idleModalDisplayTime, totalIdleTime);
     }
@@ -218,4 +222,20 @@ export class AppComponent implements OnInit {
 
     this.timeoutNotificationsService.initialise(timeoutNotificationConfig);
   }
+
+
+  public acceptCookie() {
+    this.cookieService.setCookie(`hmcts-exui-cookies-${this.userId}-mc-accepted`, 'true');
+    this.checkCookie();
+  }
+
+  public rejectCookie() {
+    this.cookieService.setCookie(`hmcts-exui-cookies-${this.userId}-mc-accepted`, 'false');
+    this.checkCookie();
+  }
+
+  public checkCookie() {
+    this.isCookieSelectionMade = this.cookieService.checkCookie(`hmcts-exui-cookies-${this.userId}-mc-accepted`);
+  }
+
 }

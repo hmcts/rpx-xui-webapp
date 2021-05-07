@@ -29,13 +29,13 @@ describe('ApplicationRoutingComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith(['/mywork']);
   });
 
-  it('should navigateBasedOnUserRole judge role', () => {
+  it('should navigateBasedOnUserRole caseworker-ia-iacjudge', () => {
     mockStore.pipe.and.returnValue(of({userInfo: {roles: ['caseworker-ia-iacjudge']}}));
     component.navigateBasedOnUserRole();
     expect(router.navigate).toHaveBeenCalledWith(['/mywork']);
   });
 
-  it('should navigateBasedOnUserRole judge role', () => {
+  it('should navigateBasedOnUserRole caseworker-ia-caseofficer', () => {
     mockStore.pipe.and.returnValue(of({userInfo: {roles: ['caseworker-ia-caseofficer']}}));
     component.navigateBasedOnUserRole();
     expect(router.navigate).toHaveBeenCalledWith(['/mywork']);

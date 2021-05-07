@@ -6,7 +6,6 @@ import { FormsModule } from '@angular/forms';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 
 import * as fromComponents from '.';
-import * as fromPipes from '../pipes';
 import { CaseworkerDataService, InfoMessageCommService, LocationDataService } from '../services';
 import { WorkAllocationPipesModule } from '../pipes/work-allocation.pipes.module';
 

@@ -1,7 +1,7 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { Task, TaskFieldConfig } from '.././../models/tasks';
 
 import { TaskFieldType } from './../../enums';
-import { Task, TaskFieldConfig } from '.././../models/tasks';
 
 @Component({
   selector: 'exui-task-field',
@@ -36,6 +36,5 @@ export class TaskFieldComponent {
     }
     return null;
   }
-
 
 }

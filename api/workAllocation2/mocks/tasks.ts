@@ -1,6 +1,7 @@
+// @ts-ignore
 import { Task } from 'workAllocation2/interfaces/task';
 
-export const workAllocation2Tasks: { [key: string]: Array<Partial<Task>> } = {
+export const WORK_ALLOCATION_2_TASKS: { [key: string]: Array<Partial<Task>> } = {
   'tasks': [
     {
       'actions': [

@@ -88,6 +88,7 @@
     "switch-default": { "severity": "warning" },
     "triple-equals": { "severity": "warning" },
     "prefer-readonly": { "severity": "warning" },
+    "whitespace": [true, "check-module"],
     "arrow-return-shorthand": { "severity": "warning" },
     "class-name": { "severity": "warning" },
     "prefer-method-signature": { "severity": "warning" },

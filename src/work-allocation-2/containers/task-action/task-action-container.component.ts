@@ -43,7 +43,7 @@ export class TaskActionContainerComponent implements OnInit {
     if (window && window.history && window.history.state) {
       url = window.history.state.returnUrl;
     }
-    return url || '/tasks/list';
+    return url || '/mywork/list';
   }
 
   public taskServiceConfig: TaskServiceConfig = {
@@ -60,7 +60,7 @@ export class TaskActionContainerComponent implements OnInit {
     };
 
     // Get the task from the route, which will have been put there by the resolver.
-    const { task } = this.route.snapshot.data.task;
+    const task = this.route.snapshot.data.taskAndCaseworkers;
     this.tasks = [ task ];
     this.routeData = this.route.snapshot.data as RouteData;
     if (!this.routeData.actionTitle) {

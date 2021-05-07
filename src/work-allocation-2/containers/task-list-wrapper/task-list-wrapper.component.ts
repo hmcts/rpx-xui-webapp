@@ -96,7 +96,7 @@ export class TaskListWrapperComponent implements OnInit {
   }
 
   public get returnUrl(): string {
-    return this.router ? this.router.url : '/tasks';
+    return this.router ? this.router.url : '/mywork';
   }
 
   public ngOnInit(): void {
@@ -207,7 +207,7 @@ export class TaskListWrapperComponent implements OnInit {
       returnUrl: this.returnUrl,
       showAssigneeColumn: taskAction.action.id !== TaskActionIds.ASSIGN
     };
-    const actionUrl = `/tasks/${taskAction.task.id}/${taskAction.action.id}/${this.specificPage}`;
+    const actionUrl = `/mywork/${taskAction.task.id}/${taskAction.action.id}/${this.specificPage}`;
     this.router.navigate([actionUrl], { state });
   }
 

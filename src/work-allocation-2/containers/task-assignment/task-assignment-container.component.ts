@@ -17,8 +17,7 @@ export const NAME_ERROR: ErrorMessage = {
 };
 @Component({
   selector: 'exui-task-container-assignment',
-  templateUrl: 'task-assignment-container.component.html',
-  styleUrls: ['task-assignment-container.component.scss']
+  templateUrl: 'task-assignment-container.component.html'
 })
 export class TaskAssignmentContainerComponent implements OnInit {
   public error: ErrorMessage = null;

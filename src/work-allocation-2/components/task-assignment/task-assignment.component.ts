@@ -118,7 +118,6 @@ export class TaskAssignmentComponent implements OnInit {
     this.setupUserId();
     this.setupCaseworkerLocation();
 
-
     // Get the locations for this component.
     this.locationService.getLocations().subscribe(locations => {
       this.pLocations = [...locations];

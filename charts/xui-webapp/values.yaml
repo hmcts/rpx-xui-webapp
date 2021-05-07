@@ -3,7 +3,7 @@ redis:
   cluster:
     enabled: false
     slaveCount: 0
-  password: fake-password
+  usePassword: false
   master:
     persistence:
       enabled: false
@@ -16,7 +16,7 @@ nodejs:
   memoryRequests: 512Mi
   memoryLimits: 2048Mi
   autoscaling:        # Default is false
-    enabled: false 
+    enabled: false
     maxReplicas: 16    # Required setting
     targetCPUUtilizationPercentage: 80 # Default is 80% target CPU utilization
   environment:
@@ -58,6 +58,8 @@ nodejs:
     SERVICES_CASE_CASEWORKER_API: http://rd-caseworker-ref-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services Documents Endpoints
     SERVICES_DOCUMENTS_API: http://dm-store-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services Documents Endpoints
+    SERVICES_EM_HRS_API: http://em-hrs-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services PRD
     SERVICES_PRD_API: http://rd-professional-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services Em Anno

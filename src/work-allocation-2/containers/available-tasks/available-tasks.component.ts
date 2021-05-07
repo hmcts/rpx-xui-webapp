@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
 import { InfoMessage, InfoMessageType, TaskActionIds } from '../../../work-allocation-2/enums';
-import { Location, SearchTaskRequest } from '../../../work-allocation-2/models/dtos';
+import { SearchTaskRequest } from '../../../work-allocation-2/models/dtos';
 import { InvokedTaskAction, Task } from '../../..//work-allocation-2/models/tasks';
 import { handleFatalErrors, REDIRECTS } from '../../../work-allocation-2/utils';
 import { TaskFieldConfig } from '../../../work-allocation-2/models/tasks';
-
 
 import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
@@ -14,7 +13,6 @@ import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper
   templateUrl: 'available-tasks.component.html'
 })
 export class AvailableTasksComponent extends TaskListWrapperComponent {
-  private selectedLocations: Location[];
 
   public get fields(): TaskFieldConfig[] {
     return ConfigConstants.AvailableTasks;
@@ -29,34 +27,17 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
   }
 
   /**
+   * TODO: When implementing filtering this may need to be changed to get location(s) from filter
    * Override the default.
    */
   public getSearchTaskRequest(): SearchTaskRequest {
     return {
       search_parameters: [
-        this.getLocationParameter(),
+        { key: 'location', operator: 'IN', values: [] },
         { key: 'state', operator: 'IN', values: ['unassigned'] }
       ],
       sorting_parameters: [this.getSortParameter()]
     };
-  }
-
-  /**
-   * When the filter changes, we need to reload the list of tasks.
-   * @param locations The currently selected locations.
-   */
-  public onLocationsChanged(locations: Location[]): void {
-    this.infoMessageCommService.removeAllMessages();
-    this.selectedLocations = [ ...locations ];
-    this.loadTasks();
-  }
-
-  private getLocationParameter() {
-    let values = [];
-    if (this.selectedLocations) {
-      values = this.selectedLocations.map(loc => loc.id).sort();
-    }
-    return { key: 'location', operator: 'IN', values };
   }
 
   /**

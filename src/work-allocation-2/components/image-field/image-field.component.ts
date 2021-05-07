@@ -3,6 +3,7 @@ import { Component, Input, ViewEncapsulation } from '@angular/core';
 @Component({
   selector: 'exui-image-field',
   templateUrl: './image-field.component.html',
+  styleUrls: ['./image-field.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class ImageFieldComponent {

@@ -10,7 +10,6 @@ import {
   CaseworkerDataService,
   InfoMessageCommService,
   LocationDataService,
-  WorkAllocationFeatureService,
   WorkAllocationTaskService,
 } from '../../services';
 import { handleFatalErrors } from '../../utils';
@@ -25,7 +24,6 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
   public locations: Location[];
   private selectedCaseworker: Caseworker;
   private selectedLocation: Location;
-  private readonly caseworkerDisplayName: CaseworkerDisplayName = new CaseworkerDisplayName();
 
   /**
    * Take in the Router so we can navigate when actions are clicked.
@@ -38,10 +36,9 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
     protected sessionStorageService: SessionStorageService,
     protected readonly caseworkerService: CaseworkerDataService,
     private readonly locationService: LocationDataService,
-    protected alertService: AlertService,
-    protected featureService: WorkAllocationFeatureService
+    protected alertService: AlertService
   ) {
-    super(ref, taskService, router, infoMessageCommService, sessionStorageService, alertService, caseworkerService, featureService);
+    super(ref, taskService, router, infoMessageCommService, sessionStorageService, alertService, caseworkerService);
   }
 
   public get fields(): TaskFieldConfig[] {

@@ -92,9 +92,10 @@ export class AppComponent implements OnInit {
 
     if (propsExist(userDetails, ['sessionTimeout'] ) && userDetails.sessionTimeout.totalIdleTime > 0) {
       const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
-      this.userId = userDetails.userInfo.uid;
       this.addTimeoutNotificationServiceListener();
       this.initTimeoutNotificationService(idleModalDisplayTime, totalIdleTime);
+      this.userId = userDetails.userInfo.uid;
+      this.checkCookie(); // check if cookie selection has been made *after* user id is available
     }
   }
 
@@ -224,18 +225,26 @@ export class AppComponent implements OnInit {
   }
 
 
-  public acceptCookie() {
-    this.cookieService.setCookie(`hmcts-exui-cookies-${this.userId}-mc-accepted`, 'true');
+  public acceptCookie(): void {
+    this.cookieService.setCookie(`hmcts-exui-cookies-${this.userId}-mc-accepted`, 'true', this.getExpiryDate());
     this.checkCookie();
   }
 
-  public rejectCookie() {
-    this.cookieService.setCookie(`hmcts-exui-cookies-${this.userId}-mc-accepted`, 'false');
+  public rejectCookie(): void {
+    this.cookieService.setCookie(`hmcts-exui-cookies-${this.userId}-mc-accepted`, 'false', this.getExpiryDate());
     this.checkCookie();
   }
 
-  public checkCookie() {
+  public checkCookie(): void {
     this.isCookieSelectionMade = this.cookieService.checkCookie(`hmcts-exui-cookies-${this.userId}-mc-accepted`);
+  }
+
+  private getExpiryDate(): string {
+    const now = new Date();
+    const time = now.getTime();
+    const expireTime = time + 3600 * 1000 * 24 * 365; // in 365 days
+    now.setTime(expireTime);
+    return now.toUTCString();
   }
 
 }

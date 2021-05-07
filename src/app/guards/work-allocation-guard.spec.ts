@@ -20,7 +20,7 @@ describe('WorkAllocationGuard', () => {
         result.subscribe(isActive => expect(isActive).toBeTruthy());
     });
 
-    it('canActivate true', () => {
+    it('canActivate false', () => {
         featureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease1'))
         const result = guard.canActivate();
         result.subscribe(isActive => expect(isActive).toBeFalsy());

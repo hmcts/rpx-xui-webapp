@@ -22,8 +22,7 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
   public subNavigationItems: SubNavigation[] = [
     this.MY_TASKS,
     { text: 'Available tasks', href: '/mywork/available', active: false },
-    { text: 'My cases', href: '/mycases', active: false },
-    { text: 'My access', href: '/myaccess', active: false }
+    { text: 'My cases', href: '/mycases', active: false }
   ];
 
   public sortedBy: TaskSortField;

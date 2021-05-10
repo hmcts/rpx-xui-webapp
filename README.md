@@ -16,7 +16,7 @@ Explanation:
 NODE_CONFIG_DIR tells the machine where the configuration for the Node application is located.
 NODE_CONFIG_ENV=development sets the machine so that the config that is used is local-development.json
 
-@see https://github.com/lorenwest/node-config/wiki/Configuration-Files
+@see https://github.com/lorenwest/node-config/wiki/Configuration-Files 
 
 ## Startup the Angular service locally
 

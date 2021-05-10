@@ -70,7 +70,7 @@
     "@hmcts/ccd-case-ui-toolkit": "2.79.6",
     "@hmcts/ccpay-web-component": "3.0.3",
     "@hmcts/frontend": "0.0.39-alpha",
-    "@hmcts/media-viewer": "2.6.4",
+    "@hmcts/media-viewer": "2.7.0",
     "@hmcts/nodejs-healthcheck": "^1.7.0",
     "@hmcts/properties-volume": "^0.0.9",
     "@hmcts/rpx-xui-common-lib": "0.2.5",

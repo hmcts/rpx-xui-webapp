@@ -32,7 +32,7 @@ export const ROUTES: Routes = [
   {
     path: 'mywork',
     canActivate: [AuthGuard, AcceptTermsGuard],
-    loadChildren: '../work-allocation/work-allocation.module#WorkAllocationModule'
+    loadChildren: '../work-allocation-2/work-allocation2.module#WorkAllocationModule2'
   },
   {
     path: 'tasks',

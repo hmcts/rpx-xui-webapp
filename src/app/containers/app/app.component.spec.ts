@@ -147,7 +147,7 @@ describe('AppComponent', () => {
                 expect(cookieService.checkCookie).toHaveBeenCalled();
             });
         });
-    
+
     });
 
 });

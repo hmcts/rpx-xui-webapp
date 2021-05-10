@@ -5,6 +5,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { Observable } from 'rxjs';
 
 import { ErrorMessageComponent } from '../../../app/components';
@@ -31,7 +32,7 @@ class WrapperComponent {
 @Component({
   template: `<div>Nothing</div>`
 })
-class NothingComponent {}
+class NothingComponent { }
 
 describe('TaskAssignmentContainerComponent', () => {
   let component: TaskAssignmentContainerComponent;
@@ -53,7 +54,7 @@ describe('TaskAssignmentContainerComponent', () => {
         ErrorMessageComponent, NothingComponent
       ],
       imports: [
-        WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientModule,
+        WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientModule, ExuiCommonLibModule,
         RouterTestingModule.withRoutes(
           [
             { path: 'tasks/list', component: NothingComponent }
@@ -92,21 +93,6 @@ describe('TaskAssignmentContainerComponent', () => {
 
   it('should create', () => {
     expect(component).toBeDefined();
-  });
-
-  it('should allow changing the caseworker', () => {
-    expect(component.caseworker).toBe(undefined);
-    component.onCaseworkerChanged(mockCaseworkers[0]);
-    fixture.detectChanges();
-    expect(component.caseworker).toBe(mockCaseworkers[0]);
-
-    component.onCaseworkerChanged(mockCaseworkers[1]);
-    fixture.detectChanges();
-    expect(component.caseworker).toBe(mockCaseworkers[1]);
-
-    component.onCaseworkerChanged(null);
-    fixture.detectChanges();
-    expect(component.caseworker).toBe(null);
   });
 
   it('should send an error message when a caseworker is not selected and there is an attempt to assign', () => {

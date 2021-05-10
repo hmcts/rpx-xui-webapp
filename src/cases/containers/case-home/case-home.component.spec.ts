@@ -8,13 +8,17 @@ import {
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { reducers } from 'src/app/store';
 import { CaseHomeComponent } from '..';
-import * as fromFeature from '../../store';
+import * as fromFeature from '../../store'; 
+import { LoadingService as CCDLoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { LoadingService as CommonLibLoadingService } from '@hmcts/rpx-xui-common-lib';
 
 describe('CaseHomeComponent', () => {
   let component: CaseHomeComponent;
   let fixture: ComponentFixture<CaseHomeComponent>;
   const mockAlertService = jasmine.createSpyObj('alertService', ['success', 'setPreserveAlerts', 'error']);
   const mockErrorNotifierService = jasmine.createSpyObj('ErrorNotifierService', ['announceError']);
+  const mockCommonLibLoadingService = jasmine.createSpyObj('CommonLibLoadingService', ['']);
+  const mockCCDLoadingService = jasmine.createSpyObj('CCDLoadingService', ['']);
   let store: Store<fromFeature.State>;
   let storeDispatchMock: any;
 
@@ -29,7 +33,9 @@ describe('CaseHomeComponent', () => {
       declarations: [CaseHomeComponent],
       providers: [
         { provide: AlertService, useValue: mockAlertService },
-        { provide: ErrorNotifierService, useValue: mockErrorNotifierService }
+        { provide: ErrorNotifierService, useValue: mockErrorNotifierService },
+        { provide: CommonLibLoadingService, useValue: mockCommonLibLoadingService },
+        { provide: CCDLoadingService, useValue: mockCCDLoadingService }
       ]
     })
       .compileComponents();

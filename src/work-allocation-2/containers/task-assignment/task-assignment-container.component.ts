@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ErrorMessagesModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
 import { Subscription } from 'rxjs';
 
 import { ErrorMessage } from '../../../app/models';
@@ -15,14 +16,15 @@ import { getAssigneeName, handleFatalErrors } from '../../utils';
 export const NAME_ERROR: ErrorMessage = {
   title: 'There is a problem',
   description: 'You must select a name',
-  fieldId: 'task_assignment_caseworker'
+  fieldId: 'case-worker-search__input'
 };
+
 @Component({
   selector: 'exui-task-container-assignment',
   templateUrl: 'task-assignment-container.component.html'
 })
 export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
-  public error: ErrorMessage = null;
+
   public tasks: any[];
   public showManage: boolean = false;
   public caseworker: Caseworker;
@@ -33,6 +35,8 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   public location: Location;
 
   public formGroup: FormGroup;
+  public caseWorkerErrorMessage: ErrorMessagesModel = null;
+  public error: ErrorMessage = null;
 
   private assignTask: Subscription;
 
@@ -40,7 +44,8 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     private readonly taskService: WorkAllocationTaskService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly messageService: InfoMessageCommService
+    private readonly messageService: InfoMessageCommService,
+    private fb: FormBuilder
   ) { }
 
   public get fields(): TaskFieldConfig[] {
@@ -48,13 +53,13 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   }
 
   private get returnUrl(): string {
-    let url: string = '/mywork/list';
+    let url: string;
 
     if (window && window.history && window.history.state) {
       url = window.history.state.returnUrl;
     }
 
-    return url;
+    return url || '/mywork/list';
   }
 
   private get showAssigneeColumn(): boolean {
@@ -98,17 +103,24 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   }
 
   public initForm(): void {
-    this.formGroup = new FormGroup({
-      caseWorkerName: new FormControl()
+    this.formGroup = this.fb.group({
+      caseWorkerName: ['', Validators.required]
     });
   }
 
   public assign(): void {
-    if (!this.caseworker) {
+    if (!this.formGroup.valid) {
+      this.caseWorkerErrorMessage = {
+        isInvalid: true,
+        messages: [
+          NAME_ERROR.description
+        ]
+      }
       this.error = NAME_ERROR;
       return;
     }
-    this.error = null;
+
+    this.clearErrors();
 
     this.assignTask = this.taskService.assignTask(this.tasks[0].id, { userId: this.caseworker.idamId }).subscribe({
       next: () => this.reportSuccessAndReturn(),
@@ -120,6 +132,11 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
         }
       }
     });
+  }
+
+  private clearErrors() {
+    this.error = null;
+    this.caseWorkerErrorMessage = null;
   }
 
   public cancel(): void {

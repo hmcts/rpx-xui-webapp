@@ -5,12 +5,15 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-third">
 
-      <xuilib-gov-uk-input [group]="formGroup" [config]="
+      <xuilib-gov-uk-input
+        [errorMessage]="caseWorkerErrorMessage"
+        [group]="formGroup"
+        [config]="
           {
             label: 'Find the person',
             hint: 'Type the name of the person and select them',
             name: 'caseWorkerName',
-            id: 'case-worker-search__Input',
+            id: 'task_assignment_caseworker',
             type: 'text'
           }"></xuilib-gov-uk-input>
 

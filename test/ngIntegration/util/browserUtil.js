@@ -98,6 +98,20 @@ class BrowserUtil{
         // });
     }
 
+    async stepWithRetry(action, retryCount){
+        retryCount = retryCount ? retryCount : 5;
+        let retryCounter = 0;
+        while (retryCounter <= retryCount){
+            try{
+                return action();
+            }catch(e){
+                retryCounter++;
+                reportLogger.AddMessage("Error occured "+e);
+                reportLogger.AddMessage("Retring attempt  " + retryCounter);
+            }
+        }
+    }
+
 }
 
 module.exports = new BrowserUtil();

@@ -106,6 +106,12 @@ class TaskListTable{
         return columnValue;
     }
 
+    async getColumnValueElementForTaskAt(columnName, taskAtPos) {
+        const taskRow = await this.getTableRowAt(taskAtPos);
+        const columnPos = await this.getHeaderPositionWithName(columnName);
+        return taskRow.$(`td:nth-of-type(${columnPos})`);
+    }
+
     async getTaskRowWithColumnValue(columnName, columnValue){
         const tasksCount = await this.tableRows.count();
         for(let i = 0; i < tasksCount; i++){

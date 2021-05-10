@@ -1,9 +1,7 @@
 import { AxiosResponse } from 'axios';
 
-import { http } from '../lib/http';
 import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
-import { setHeaders } from '../lib/proxy';
 import { Task } from './interfaces/task';
 import { WORK_ALLOCATION_2_TASKS } from './mocks/tasks';
 import { getNodeIdFromPath, getTask } from './util';
@@ -39,7 +37,7 @@ export async function handleTaskSearch(
 
 export async function handleTaskPost(path: string, payload: any, req: EnhancedRequest): Promise<any> {
   logger.info('posting tasks for', path);
-  const headers = setHeaders(req);
+  // const headers = setHeaders(req);
   // const response: AxiosResponse = await http.post(path, payload, {headers});
   // Return the whole response, not just the data, so we can
   // see what the status of the response is.

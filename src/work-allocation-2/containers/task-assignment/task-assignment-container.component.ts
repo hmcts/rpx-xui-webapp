@@ -27,7 +27,6 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
 
   public tasks: any[];
   public showManage: boolean = false;
-  public caseworker: Caseworker;
   public verb: TaskActionType;
 
   public successMessage: InfoMessage;
@@ -122,7 +121,9 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
 
     this.clearErrors();
 
-    this.assignTask = this.taskService.assignTask(this.tasks[0].id, { userId: this.caseworker.idamId }).subscribe({
+    const caseWorkerIdamId = this.formGroup.get('caseWorkerName').value;
+
+    this.assignTask = this.taskService.assignTask(this.tasks[0].id, { userId: caseWorkerIdamId }).subscribe({
       next: () => this.reportSuccessAndReturn(),
       error: (error: any) => {
         const handledStatus = handleFatalErrors(error.status, this.router);
@@ -141,10 +142,6 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
 
   public cancel(): void {
     this.returnWithMessage(null, {});
-  }
-
-  public onCaseworkerChanged(caseworker: Caseworker): void {
-    this.caseworker = caseworker;
   }
 
   private reportSuccessAndReturn(): void {

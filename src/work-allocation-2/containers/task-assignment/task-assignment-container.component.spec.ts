@@ -96,7 +96,6 @@ describe('TaskAssignmentContainerComponent', () => {
   });
 
   it('should send an error message when a caseworker is not selected and there is an attempt to assign', () => {
-    expect(component.caseworker).toBeUndefined();
     expect(component.error).toBeNull();
 
 
@@ -108,19 +107,4 @@ describe('TaskAssignmentContainerComponent', () => {
     expect(component.error.fieldId).toEqual(NAME_ERROR.fieldId);
 
   });
-
-  it('should assign succesfully', () => {
-    const caseworker = mockCaseworkers[0];
-    component.caseworker = caseworker;
-    fixture.detectChanges();
-
-    component.assign();
-
-    fixture.detectChanges();
-    const assignee: Assignee = {
-      userId: caseworker.idamId
-    };
-    expect(mockWorkAllocationService.assignTask).toHaveBeenCalledWith(mockTasks[0].id, assignee);
-  });
-  // TODO: Need to write tests regarding template
 });

@@ -102,7 +102,7 @@ describe('WorkAllocation', () => {
     it('should cancel the action succesfully', () => {
       spyOn(component, 'returnWithMessage');
 
-      const cancel: HTMLButtonElement = fixture.debugElement.nativeElement.querySelector('#cancel-button');
+      const cancel: HTMLButtonElement = fixture.debugElement.nativeElement.querySelector('#cancel');
       cancel.click();
       expect(component.returnWithMessage).toHaveBeenCalledWith(null, {});
     });
@@ -123,8 +123,8 @@ describe('WorkAllocation', () => {
     });
 
     it('should have appropriate cancel button', () => {
-      const cancel: HTMLButtonElement = fixture.debugElement.nativeElement.querySelector('#cancel-button');
-      expect(cancel.textContent).toEqual('Cancel and go back');
+      const cancel: HTMLButtonElement = fixture.debugElement.nativeElement.querySelector('#cancel');
+      expect(cancel.textContent).toEqual('Cancel');
     });
   });
 

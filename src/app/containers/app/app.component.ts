@@ -23,7 +23,7 @@ export class AppComponent implements OnInit {
   };
 
   private userId: string = '';
-  public isCookieSelectionMade: boolean = false;
+  public isCookieBannerVisible: boolean = false;
 
   constructor(
     private readonly store: Store<fromRoot.State>,
@@ -94,8 +94,8 @@ export class AppComponent implements OnInit {
       const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
       this.addTimeoutNotificationServiceListener();
       this.initTimeoutNotificationService(idleModalDisplayTime, totalIdleTime);
-      this.userId = userDetails.userInfo.uid;
-      this.checkCookie(); // check if cookie selection has been made *after* user id is available
+      this.userId = userDetails.userInfo.id;
+      this.userId ? this.setCookieBannerVisibility(): null; // check if cookie selection has been made *after* user id is available
     }
   }
 
@@ -227,16 +227,16 @@ export class AppComponent implements OnInit {
 
   public acceptCookie(): void {
     this.cookieService.setCookie(`hmcts-exui-cookies-${this.userId}-mc-accepted`, 'true', this.getExpiryDate());
-    this.checkCookie();
+    this.setCookieBannerVisibility();
   }
 
   public rejectCookie(): void {
     this.cookieService.setCookie(`hmcts-exui-cookies-${this.userId}-mc-accepted`, 'false', this.getExpiryDate());
-    this.checkCookie();
+    this.setCookieBannerVisibility();
   }
 
-  public checkCookie(): void {
-    this.isCookieSelectionMade = this.cookieService.checkCookie(`hmcts-exui-cookies-${this.userId}-mc-accepted`);
+  public setCookieBannerVisibility(): void {
+    this.isCookieBannerVisible = !this.cookieService.checkCookie(`hmcts-exui-cookies-${this.userId}-mc-accepted`);
   }
 
   private getExpiryDate(): string {

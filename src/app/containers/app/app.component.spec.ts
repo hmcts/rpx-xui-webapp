@@ -7,6 +7,7 @@ describe('AppComponent', () => {
     let store: any;
     let googleTagManagerService: any;
     let timeoutNotificationService: any;
+    let cookieService: any;
     let router: any;
     let title: any;
     let testRoute: RoutesRecognized;
@@ -15,6 +16,7 @@ describe('AppComponent', () => {
         store = jasmine.createSpyObj('store', ['pipe', 'dispatch']);
         googleTagManagerService = jasmine.createSpyObj('GoogleTagManagerService', ['init']);
         timeoutNotificationService = jasmine.createSpyObj('TimeoutNotificationsService', ['notificationOnChange', 'initialise']);
+        cookieService = jasmine.createSpyObj('CookieService', ['setCookie', 'checkCookie']);
         testRoute = new RoutesRecognized(1, 'test', 'test', {
             url: 'test',
             root: {
@@ -53,7 +55,7 @@ describe('AppComponent', () => {
         });
         router = { events: of(testRoute) };
         title = jasmine.createSpyObj('Title', ['setTitle']);
-        appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService, router, title);
+        appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService, router, title, cookieService);
     });
 
     it('Truthy', () => {
@@ -122,4 +124,30 @@ describe('AppComponent', () => {
         expect(timeoutNotificationService.notificationOnChange).toHaveBeenCalled();
         expect(spy).toHaveBeenCalledWith({});
     });
+
+    describe('cookie actions', () => {
+
+        describe('acceptCookie()', () => {
+            it('should make a setCookie call', () => {
+                appComponent.acceptCookie();
+                expect(cookieService.setCookie).toHaveBeenCalled();
+            });
+        });
+
+        describe('rejectCookie()', () => {
+            it('should make a setCookie call', () => {
+                appComponent.rejectCookie();
+                expect(cookieService.setCookie).toHaveBeenCalled();
+            });
+        });
+
+        describe('setCookieBannerVisibility()', () => {
+            it('should make a checkCookie call', () => {
+                appComponent.setCookieBannerVisibility();
+                expect(cookieService.checkCookie).toHaveBeenCalled();
+            });
+        });
+    
+    });
+
 });

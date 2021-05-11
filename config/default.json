@@ -67,6 +67,9 @@
       "generatedSurname",
       "appeal.appellant.name.lastName"
     ],
+    "HearingRecordings": [
+      "recordingReference"
+    ],
     "xuiTestCaseType": [
       "TextField"
     ]

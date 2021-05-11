@@ -169,10 +169,4 @@ describe('AppComponent', () => {
     expect(featureToggleService.initialize).toHaveBeenCalled();
     expect(timeoutNotificationService.initialise).toHaveBeenCalled();
   });
-
-/*  afterEach(() => {
-    appComponent = null;
-    store = null;
-    timeoutNotificationService = null;
-  });*/
 });

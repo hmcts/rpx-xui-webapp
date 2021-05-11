@@ -1,28 +1,30 @@
-const ASSIGN = {
+import { Action } from "workAllocation2/interfaces/task";
+
+const ASSIGN: Action = {
   id: 'assign',
   title: 'Assign task',
 };
-const CANCEL = {
+const CANCEL: Action = {
   id: 'cancel',
   title: 'Cancel task',
 };
-const CLAIM = {
+const CLAIM: Action = {
   id: 'claim',
   title: 'Assign to me',
 };
-const COMPLETE = {
+const COMPLETE: Action = {
   id: 'complete',
   title: 'Mark as done',
 };
-const RELEASE = {
+const RELEASE: Action = {
   id: 'unclaim',
   title: 'Unassign task',
 };
-const CLAIM_AND_GO = {
+const CLAIM_AND_GO: Action = {
   id: 'claim-and-go',
   title: 'Assign to me and go to case',
 };
-const GO = {
+const GO: Action = {
   id: 'go',
   title: 'Go to case',
 };
@@ -30,29 +32,35 @@ const GO = {
 /**
  * This should become "assign" as there's no actual "reassign" API call.
  */
-const REASSIGN = {
+const REASSIGN: Action = {
   id: 'reassign',
   title: 'Reassign task',
 };
 
-export const ACTIONS = {
+export const ACTIONS: Action[] = [
   ASSIGN,
   CANCEL,
   CLAIM,
   COMPLETE,
   REASSIGN,
   RELEASE,
-};
+];
 
 export const TASK_ACTIONS = {
   AVAILABLE: [CLAIM, CLAIM_AND_GO],
+  // TODO: Remove MANAGER once ALL_WORK used for UI actions
   MANAGER: {
     ASSIGNED: [REASSIGN, RELEASE, COMPLETE, CANCEL],
     UNASSIGNED: [ASSIGN, COMPLETE, CANCEL],
   },
-  ACTIVE: [],
-  ALL_WORK: [],
+  ACTIVE: [REASSIGN, RELEASE, GO],
+  ALL_WORK: {
+    ASSIGNED: [REASSIGN, RELEASE, GO],
+    UNASSIGNED: [ASSIGN, GO],
+  },
   MY: [REASSIGN, RELEASE, GO],
+  EXECUTE: [COMPLETE],
+  CANCEL: [CANCEL],
 };
 
 export enum ActionViews {

@@ -82,3 +82,8 @@ export interface CaseworkerApi {
     email_id: string
     base_location: LocationApi[]
 }
+
+export interface Action {
+    id: string
+    title: string
+}

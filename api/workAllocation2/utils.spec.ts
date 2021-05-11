@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 
-import { ActionViews, TASK_ACTIONS } from './constants/actions';
+import { ActionViews, TaskPermission, TASK_ACTIONS } from './constants/actions';
 import { CaseworkerApi, LocationApi, Location, Caseworker } from './interfaces/task';
-import { assignActionsToTasks, mapCaseworkerData, mapCaseworkerPrimaryLocation, prepareGetTaskUrl, preparePostTaskUrlAction, prepareSearchTaskUrl } from './util';
+import { assignActionsToTasks, getWATaskActions, getWATaskActionsForCancel, getWATaskActionsForExecute, getWATaskActionsForManage, mapCaseworkerData, mapCaseworkerPrimaryLocation, prepareGetTaskUrl, preparePostTaskUrlAction, prepareSearchTaskUrl } from './util';
 
 describe('workAllocation.utils', () => {
 
@@ -102,6 +102,60 @@ describe('workAllocation.utils', () => {
       expect(tasks[1].actions).to.be.an('array').that.is.empty;
     });
 
+    it('should get cancel action for the correct view', () => {
+      // should get no actions for certain views
+      expect(getWATaskActionsForCancel(ActionViews.MY)).to.deep.equal([]);
+      expect(getWATaskActionsForCancel(ActionViews.AVAILABLE)).to.deep.equal([]);
+
+      // should get cancel action for All Work view
+      expect(getWATaskActionsForCancel(ActionViews.ALL_WORK)).to.deep.equal(TASK_ACTIONS.CANCEL);
+    });
+
+    it('should get complete action for the correct view', () => {
+      // should get no actions for certain views
+      expect(getWATaskActionsForExecute(ActionViews.MY)).to.deep.equal([]);
+      expect(getWATaskActionsForExecute(ActionViews.AVAILABLE)).to.deep.equal([]);
+
+      // should get complete action for All Work view
+      expect(getWATaskActionsForExecute(ActionViews.ALL_WORK)).to.deep.equal(TASK_ACTIONS.EXECUTE);
+    });
+
+    it('should get the correct manage actions for the correct view', () => {
+      // should get the correct actions for my tasks
+      expect(getWATaskActionsForManage(ActionViews.MY, false)).to.deep.equal(TASK_ACTIONS.MY);
+      expect(getWATaskActionsForManage(ActionViews.MY, true)).to.deep.equal(TASK_ACTIONS.MY);
+      expect(getWATaskActionsForManage(ActionViews.AVAILABLE, false)).to.deep.equal(TASK_ACTIONS.AVAILABLE);
+      expect(getWATaskActionsForManage(ActionViews.ACTIVE, false)).to.deep.equal(TASK_ACTIONS.ACTIVE);
+
+      // should get manage actions for All Work view based on whether it is assigned
+      expect(getWATaskActionsForManage(ActionViews.ALL_WORK, false)).to.deep.equal(TASK_ACTIONS.ALL_WORK.UNASSIGNED);
+      expect(getWATaskActionsForManage(ActionViews.ALL_WORK, true)).to.deep.equal(TASK_ACTIONS.ALL_WORK.ASSIGNED);
+    });
+
+    it('should get the correct actions for all relevant permissions', () => {
+      // should allow passing with empty permission list
+      expect(getWATaskActions([], ActionViews.MY, true)).to.deep.equal([]);
+
+      // should get manage actions for my tasks depending on permission
+      expect(getWATaskActions([TaskPermission.MANAGE], ActionViews.MY, false)).to.deep.equal(TASK_ACTIONS.MY);
+      expect(getWATaskActions([TaskPermission.CANCEL], ActionViews.MY, true)).to.deep.equal([]);
+
+      // should get manage actions for available tasks depending on permission
+      expect(getWATaskActions([TaskPermission.MANAGE], ActionViews.AVAILABLE, false)).to.deep.equal(TASK_ACTIONS.AVAILABLE);
+      expect(getWATaskActions([TaskPermission.OWN, TaskPermission.READ, TaskPermission.REFER], ActionViews.AVAILABLE, false)).to.deep.equal([]);
+
+      // should get manage actions for active tasks depending on permission
+      // Note - temporary test for this as separate logic will be needed for other scenarios
+      expect(getWATaskActions([TaskPermission.MANAGE], ActionViews.ACTIVE, false)).to.deep.equal(TASK_ACTIONS.ACTIVE);
+      expect(getWATaskActions([TaskPermission.EXECUTE], ActionViews.ACTIVE, false)).to.deep.equal([]);
+
+      // should get manage actions for All Work tasks depending on permission
+      const allWorkPermissions = [TaskPermission.MANAGE, TaskPermission.EXECUTE, TaskPermission.CANCEL];
+      const allWorkPermissionsReversed = [TaskPermission.CANCEL, TaskPermission.EXECUTE, TaskPermission.MANAGE];
+      expect(getWATaskActions(allWorkPermissions, ActionViews.ALL_WORK, false)).to.deep.equal(TASK_ACTIONS.ALL_WORK.UNASSIGNED.push(TASK_ACTIONS.EXECUTE, TASK_ACTIONS.CANCEL));
+      expect(getWATaskActions([TaskPermission.MANAGE], ActionViews.ALL_WORK, true)).to.deep.equal([]);
+
+    });
   });
 
   describe('mapCaseworkerData', () => {

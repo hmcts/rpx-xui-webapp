@@ -3,7 +3,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { Observable } from 'rxjs';
@@ -16,10 +16,9 @@ import {
   NAME_ERROR,
   TaskAssignmentContainerComponent,
 } from '../../containers/task-assignment/task-assignment-container.component';
-import { Assignee } from '../../models/dtos';
 import { Task } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
-import { getMockCaseworkers, getMockTasks } from '../../tests/utils.spec';
+import { getMockTasks } from '../../tests/utils.spec';
 
 @Component({
   template: `<exui-task-container-assignment></exui-task-container-assignment>`
@@ -40,10 +39,14 @@ describe('TaskAssignmentContainerComponent', () => {
   let fixture: ComponentFixture<WrapperComponent>;
 
   const mockTasks = getMockTasks();
-  const mockCaseworkers = getMockCaseworkers();
   const mockWorkAllocationService = {
     assignTask: jasmine.createSpy('assignTask').and.returnValue(Observable.of({}))
   };
+
+  const mockRouter = {
+    navigateByUrl: jasmine.createSpy('navigateByUrl').and.returnValue(Observable.of(true))
+  };
+
   const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
 
@@ -75,7 +78,8 @@ describe('TaskAssignmentContainerComponent', () => {
             params: Observable.of({ task: mockTasks[0] })
           }
         },
-        { provide: InfoMessageCommService, useValue: mockInfoMessageCommService }
+        { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
+        { provide: Router, useValue: mockRouter }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
@@ -98,13 +102,35 @@ describe('TaskAssignmentContainerComponent', () => {
   it('should send an error message when a caseworker is not selected and there is an attempt to assign', () => {
     expect(component.error).toBeNull();
 
-
     component.assign();
     fixture.detectChanges();
     expect(component.error).not.toBeNull();
     expect(component.error.title).toEqual(NAME_ERROR.title);
     expect(component.error.description).toEqual(NAME_ERROR.description);
     expect(component.error.fieldId).toEqual(NAME_ERROR.fieldId);
+  });
 
+  it('should navigate to the work list page when cancel is clicked', () => {
+    const cancelLink = fixture.debugElement.nativeElement.querySelector('#cancel__link');
+    cancelLink.click();
+
+    fixture.whenStable().then(() => {
+      expect(component.cancel).toHaveBeenCalled();
+      expect(mockRouter.navigateByUrl).toHaveBeenCalled();
+    });
+  });
+
+  it('should show banner error when continue clicked and form is invalid', () => {
+    component.formGroup.get('caseWorkerName').setValue('');
+    component.formGroup.get('caseWorkerName').updateValueAndValidity();
+
+    const continuteBtn = fixture.debugElement.nativeElement.querySelector('#continue__button');
+    continuteBtn.click();
+
+    fixture.whenStable().then(() => {
+      const errorSummary: HTMLElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-summary').nativeElement;
+
+      expect(errorSummary).toBeTruthy();
+    });
   });
 });

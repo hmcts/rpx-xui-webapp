@@ -34,7 +34,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   public location: Location;
 
   public formGroup: FormGroup;
-  public caseWorkerErrorMessage: ErrorMessagesModel = null;
+  public caseworkerErrorMessage: ErrorMessagesModel = null;
   public error: ErrorMessage = null;
 
   private assignTask: Subscription;
@@ -44,7 +44,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly messageService: InfoMessageCommService,
-    private fb: FormBuilder
+    private readonly fb: FormBuilder
   ) { }
 
   public get fields(): TaskFieldConfig[] {
@@ -103,13 +103,13 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
 
   public initForm(): void {
     this.formGroup = this.fb.group({
-      caseWorkerName: ['', Validators.required]
+      caseworkerName: ['', Validators.required]
     });
   }
 
   public assign(): void {
     if (!this.formGroup.valid) {
-      this.caseWorkerErrorMessage = {
+      this.caseworkerErrorMessage = {
         isInvalid: true,
         messages: [
           NAME_ERROR.description
@@ -121,9 +121,9 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
 
     this.clearErrors();
 
-    const caseWorkerIdamId = this.formGroup.get('caseWorkerName').value;
+    const caseworkerIdamId = this.formGroup.get('caseworkerName').value;
 
-    this.assignTask = this.taskService.assignTask(this.tasks[0].id, { userId: caseWorkerIdamId }).subscribe({
+    this.assignTask = this.taskService.assignTask(this.tasks[0].id, { userId: caseworkerIdamId }).subscribe({
       next: () => this.reportSuccessAndReturn(),
       error: (error: any) => {
         const handledStatus = handleFatalErrors(error.status, this.router);
@@ -137,7 +137,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
 
   private clearErrors() {
     this.error = null;
-    this.caseWorkerErrorMessage = null;
+    this.caseworkerErrorMessage = null;
   }
 
   public cancel(): void {

@@ -110,8 +110,8 @@ describe('TaskAssignmentContainerComponent', () => {
   });
 
   it('should show banner error when continue clicked and form is invalid', () => {
-    component.formGroup.get('caseWorkerName').setValue('');
-    component.formGroup.get('caseWorkerName').updateValueAndValidity();
+    component.formGroup.get('caseworkerName').setValue('');
+    component.formGroup.get('caseworkerName').updateValueAndValidity();
 
     const continuteBtn = fixture.debugElement.nativeElement.querySelector('#continue__button');
     continuteBtn.click();

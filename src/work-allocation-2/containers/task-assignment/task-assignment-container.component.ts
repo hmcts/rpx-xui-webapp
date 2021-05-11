@@ -16,7 +16,7 @@ import { getAssigneeName, handleFatalErrors } from '../../utils';
 export const NAME_ERROR: ErrorMessage = {
   title: 'There is a problem',
   description: 'You must select a name',
-  fieldId: 'case-worker-search__input'
+  fieldId: 'task_assignment_caseworker'
 };
 
 @Component({

@@ -113,8 +113,8 @@ describe('TaskAssignmentContainerComponent', () => {
     component.formGroup.get('caseworkerName').setValue('');
     component.formGroup.get('caseworkerName').updateValueAndValidity();
 
-    const continuteBtn = fixture.debugElement.nativeElement.querySelector('#continue__button');
-    continuteBtn.click();
+    const continuteButton = fixture.debugElement.nativeElement.querySelector('#continue__button');
+    continuteButton.click();
 
     fixture.whenStable().then(() => {
       const errorSummary: HTMLElement = fixture.debugElement.nativeElement.querySelector('.govuk-error-summary').nativeElement;

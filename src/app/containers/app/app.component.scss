@@ -23,7 +23,6 @@ a.hmcts-search-toggle__button {
 }
 
 .hmcts-search-toggle__button {
-  float: right;
   @include govuk-font($size: 19, $weight: bold);
   background-color: govuk-colour("black");
   border: none;

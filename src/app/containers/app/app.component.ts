@@ -66,10 +66,10 @@ export class AppComponent implements OnInit {
    * Load and Listen for User Details
    */
   public loadAndListenForUserDetails() {
-
-    this.store.pipe(select(fromRoot.getUserDetails)).subscribe(userDetails => this.userDetailsHandler(userDetails));
-
     this.store.dispatch(new fromRoot.LoadUserDetails());
+
+    this.store.pipe(select(fromRoot.getUserDetails))
+      .subscribe(userDetails => this.userDetailsHandler(userDetails));
   }
 
   /**
@@ -87,14 +87,14 @@ export class AppComponent implements OnInit {
    * }
    */
   public userDetailsHandler(userDetails: UserDetails) {
-
-    if (propsExist(userDetails, ['sessionTimeout'] ) && userDetails.sessionTimeout.totalIdleTime > 0) {
-      const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
-
-      this.addTimeoutNotificationServiceListener();
-      this.initTimeoutNotificationService(idleModalDisplayTime, totalIdleTime);
+    if (userDetails) {
+      this.initializeFeature(userDetails.userInfo);
+      if (propsExist(userDetails, ['sessionTimeout'] ) && userDetails.sessionTimeout.totalIdleTime > 0) {
+        const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
+        this.addTimeoutNotificationServiceListener();
+        this.initTimeoutNotificationService(idleModalDisplayTime, totalIdleTime);
+      }
     }
-    this.initializeFeature(userDetails.userInfo);
   }
 
   public initializeFeature(userInfo: UserInfo) {

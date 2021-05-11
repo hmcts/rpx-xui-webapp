@@ -148,6 +148,16 @@ describe('AppComponent', () => {
             });
         });
 
+        describe('setUserAndCheckCookie()', () => {
+    
+            it('should call setCookieBannerVisibility', () => {
+                const spy = spyOn(appComponent, 'setCookieBannerVisibility');
+                appComponent.setUserAndCheckCookie('dummy');
+                expect(spy).toHaveBeenCalled();
+            });
+    
+        });
+
     });
 
 });

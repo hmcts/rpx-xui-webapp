@@ -94,10 +94,14 @@ export class AppComponent implements OnInit {
       const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
       this.addTimeoutNotificationServiceListener();
       this.initTimeoutNotificationService(idleModalDisplayTime, totalIdleTime);
-      this.userId = userDetails.userInfo.id;
-      if (this.userId) { // check if cookie selection has been made *after* user id is available
-        this.setCookieBannerVisibility();
-      }
+      this.setUserAndCheckCookie(userDetails.userInfo.id);
+    }
+  }
+
+  public setUserAndCheckCookie(userId) {
+    this.userId = userId;
+    if (this.userId) { // check if cookie selection has been made *after* user id is available
+      this.setCookieBannerVisibility();
     }
   }
 

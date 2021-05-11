@@ -415,10 +415,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@3.0.2":
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-3.0.2.tgz#986948a5f526b74a99e826564c34f19c6a186614"
-  integrity sha512-GrGghvLk8Vb6HwQajwiS+De3edZWbNJyQkDij4bT53agvBQv9F2XnUsg7qYYXGYCN8lfMUHb19ae2HXC/cwA7Q==
+"@hmcts/ccd-case-ui-toolkit@v3.0.3-datetime-picker-integration":
+  version "3.0.3-datetime-picker-integration"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-3.0.3-datetime-picker-integration.tgz#70200da72c58cc208033b45d78fe45ff8f784d42"
+  integrity sha512-fJ1to5Aw615+R37F9nhfN/RQg9BwnfH6PNwlnY6CPlrlq3PS95lFBT7SfT6ZdfOKps9khW3Dbn+/nD8p0PhX+g==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
@@ -441,7 +441,6 @@
     rx-polling "1.1.0"
     typescript "3.1.1"
     underscore "^1.9.1"
-    xlsx "^0.15.4"
     yargs-parser "18.1.2"
 
 "@hmcts/ccpay-web-component@3.0.3":

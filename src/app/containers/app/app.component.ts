@@ -3,11 +3,10 @@ import { Title } from '@angular/platform-browser';
 import { Router, RoutesRecognized } from '@angular/router';
 import { FeatureToggleService, FeatureUser, GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
-
 import { propsExist } from '../../../../api/lib/objectUtilities';
 import { environment as config } from '../../../environments/environment';
-import * as fromRoot from '../../store';
 import { UserDetails, UserInfo } from '../../models/user-details.model';
+import * as fromRoot from '../../store';
 
 @Component({
   selector: 'exui-root',

@@ -3,7 +3,7 @@ redis:
   cluster:
     enabled: false
     slaveCount: 0
-  usePassword: false
+  password: fake-password
   master:
     persistence:
       enabled: false

@@ -415,10 +415,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@v2.79.13-alpha-date-timepicker":
-  version "2.79.13-alpha-date-timepicker"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-2.79.13-alpha-date-timepicker.tgz#6af95d71f173c2efb9f01d3829448fc629a20421"
-  integrity sha512-As4fdyZZUf7oTHhvDWBYF76rCK+qS6EWmpkjQNHvR4LqBG6SgXWZ/jafHGnF/WY2ILL9JxJCY/If+vto40V2oQ==
+"@hmcts/ccd-case-ui-toolkit@3.0.2":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-3.0.2.tgz#986948a5f526b74a99e826564c34f19c6a186614"
+  integrity sha512-GrGghvLk8Vb6HwQajwiS+De3edZWbNJyQkDij4bT53agvBQv9F2XnUsg7qYYXGYCN8lfMUHb19ae2HXC/cwA7Q==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

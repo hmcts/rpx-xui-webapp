@@ -99,17 +99,6 @@ describe('TaskAssignmentContainerComponent', () => {
     expect(component).toBeDefined();
   });
 
-  it('should send an error message when a caseworker is not selected and there is an attempt to assign', () => {
-    expect(component.error).toBeNull();
-
-    component.assign();
-    fixture.detectChanges();
-    expect(component.error).not.toBeNull();
-    expect(component.error.title).toEqual(NAME_ERROR.title);
-    expect(component.error.description).toEqual(NAME_ERROR.description);
-    expect(component.error.fieldId).toEqual(NAME_ERROR.fieldId);
-  });
-
   it('should navigate to the work list page when cancel is clicked', () => {
     const cancelLink = fixture.debugElement.nativeElement.querySelector('#cancel__link');
     cancelLink.click();

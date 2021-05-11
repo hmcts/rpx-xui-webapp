@@ -67,8 +67,7 @@ export class AppComponent implements OnInit {
   public loadAndListenForUserDetails() {
     this.store.dispatch(new fromRoot.LoadUserDetails());
 
-    this.store.pipe(select(fromRoot.getUserDetails))
-      .subscribe(userDetails => this.userDetailsHandler(userDetails));
+    this.store.pipe(select(fromRoot.getUserDetails)).subscribe(userDetails => this.userDetailsHandler(userDetails));
   }
 
   /**
@@ -152,7 +151,6 @@ export class AppComponent implements OnInit {
       case 'sign-out': {
         this.updateTimeoutModal('0 seconds', false);
 
-        console.log('sign-out');
         this.store.dispatch(new fromRoot.StopIdleSessionTimeout());
         this.store.dispatch(new fromRoot.IdleUserLogOut());
         return;

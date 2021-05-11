@@ -8,7 +8,7 @@ import {
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { reducers } from 'src/app/store';
 import { CaseHomeComponent } from '..';
-import * as fromFeature from '../../store'; 
+import * as fromFeature from '../../store';
 import { LoadingService as CCDLoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { LoadingService as CommonLibLoadingService } from '@hmcts/rpx-xui-common-lib';
 

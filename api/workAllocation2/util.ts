@@ -1,4 +1,4 @@
-import { ActionViews, TaskPermission, TASK_ACTIONS } from './constants/actions';
+import { ActionViews, TASK_ACTIONS, TaskPermission } from './constants/actions';
 import { Action, Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/task';
 
 export function prepareGetTaskUrl(baseUrl: string, taskId: string): string {
@@ -142,9 +142,9 @@ export function prepareRoleApiRequest(locationId?: number): any {
  * @param isTaskAssigned Dummy parameter to test change based on whether task is assigned
  */
 export function getWATaskActions(permissions: TaskPermission[], view: ActionViews, isTaskAssigned: boolean): Action[] {
-  let actionList:Action[] = [];
+  let actionList: Action[] = [];
   permissions.forEach(permission => {
-    switch(permission) {
+    switch (permission) {
       case TaskPermission.MANAGE:
         actionList = actionList.concat(getWATaskActionsForManage(view, isTaskAssigned));
         break;

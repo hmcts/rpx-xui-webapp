@@ -151,10 +151,11 @@ describe('workAllocation.utils', () => {
 
       // should get manage actions for All Work tasks depending on permission
       const allWorkPermissions = [TaskPermission.MANAGE, TaskPermission.EXECUTE, TaskPermission.CANCEL];
-      const allWorkPermissionsReversed = [TaskPermission.CANCEL, TaskPermission.EXECUTE, TaskPermission.MANAGE];
-      expect(getWATaskActions(allWorkPermissions, ActionViews.ALL_WORK, false)).to.deep.equal(TASK_ACTIONS.ALL_WORK.UNASSIGNED.push(TASK_ACTIONS.EXECUTE, TASK_ACTIONS.CANCEL));
-      expect(getWATaskActions([TaskPermission.MANAGE], ActionViews.ALL_WORK, true)).to.deep.equal([]);
-
+      // verify that the correct full list returned for all work
+      expect(getWATaskActions(allWorkPermissions, ActionViews.ALL_WORK, false)).to.deep.equal([
+        TASK_ACTIONS.ALL_WORK.UNASSIGNED[0], TASK_ACTIONS.ALL_WORK.UNASSIGNED[1], TASK_ACTIONS.EXECUTE[0], TASK_ACTIONS.CANCEL[0]]);
+      // verify that correct list returned for when task is assigned
+      expect(getWATaskActions([TaskPermission.MANAGE], ActionViews.ALL_WORK, true)).to.deep.equal(TASK_ACTIONS.ALL_WORK.ASSIGNED);
     });
   });
 

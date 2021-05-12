@@ -6,6 +6,7 @@ import { RouterReducerState } from '@ngrx/router-store';
 import { select, Store } from '@ngrx/store';
 import { initAll } from 'govuk-frontend';
 import { Observable } from 'rxjs';
+import { LD_FLAG_REMOVE_USER_FROM_CASE_MC } from '../../../app/app.constants';
 import { getRouterState, RouterStateUrl } from '../../../app/store/reducers';
 import * as fromCasesFeature from '../../store';
 import { LoadShareCase, LoadUserFromOrgForCase } from '../../store/actions';
@@ -25,8 +26,8 @@ export class CaseShareComponent implements OnInit {
   public orgUsers$: Observable<UserDetails[]>;
   public removeUserFromCaseToggleOn$: Observable<boolean>;
 
-  constructor(public store: Store<fromCaseList.State>,
-              public featureToggleService: FeatureToggleService) {
+  constructor(private readonly store: Store<fromCaseList.State>,
+              private readonly featureToggleService: FeatureToggleService) {
   }
 
   public ngOnInit() {
@@ -43,7 +44,7 @@ export class CaseShareComponent implements OnInit {
       // call api to retrieve users in the same organisation
       this.store.dispatch(new LoadUserFromOrgForCase());
     }
-    this.removeUserFromCaseToggleOn$ = this.featureToggleService.getValue('remove-user-from-case-mc', false);
+    this.removeUserFromCaseToggleOn$ = this.featureToggleService.getValue(LD_FLAG_REMOVE_USER_FROM_CASE_MC, false);
 
     // initialize javascript for accordion component to enable open/close button
     setTimeout(() => initAll(), 1000);

@@ -2,7 +2,7 @@ import { expect } from 'chai';
 
 import { ActionViews, TaskPermission, TASK_ACTIONS } from './constants/actions';
 import { CaseworkerApi, LocationApi, Location, Caseworker } from './interfaces/task';
-import { assignActionsToTasks, getWATaskActions, getWATaskActionsForCancel, getWATaskActionsForExecute, getWATaskActionsForManage, mapCaseworkerData, mapCaseworkerPrimaryLocation, prepareGetTaskUrl, preparePostTaskUrlAction, prepareSearchTaskUrl } from './util';
+import { assignActionsToTasks, assignActionsToTasksWithPermissions, getWATaskActions, getWATaskActionsForCancel, getWATaskActionsForExecute, getWATaskActionsForManage, mapCaseworkerData, mapCaseworkerPrimaryLocation, prepareGetTaskUrl, preparePostTaskUrlAction, prepareSearchTaskUrl } from './util';
 
 describe('workAllocation.utils', () => {
 
@@ -100,6 +100,43 @@ describe('workAllocation.utils', () => {
       assignActionsToTasks(tasks, 'Bob')
       expect(tasks[0].actions).to.be.an('array').that.is.empty;
       expect(tasks[1].actions).to.be.an('array').that.is.empty;
+    });
+
+    it('should set up actions appropriately for My tasks view with permissions', () => {
+      const tasks = [ { ...TASKS.TASK_1 }, { ...TASKS.TASK_2 } ];
+      expect(tasks[0].actions).to.be.undefined;
+      expect(tasks[1].actions).to.be.undefined;
+      assignActionsToTasksWithPermissions(tasks, [TaskPermission.MANAGE], ActionViews.MY)
+      expect(tasks[0].actions).to.deep.equal(TASK_ACTIONS.MY);
+      expect(tasks[1].actions).to.deep.equal(TASK_ACTIONS.MY);
+    });
+
+    it('should set up actions appropriately for Available task view with permissions', () => {
+      const tasks = [ { ...TASKS.TASK_1 }, { ...TASKS.TASK_2 } ];
+      expect(tasks[0].actions).to.be.undefined;
+      expect(tasks[1].actions).to.be.undefined;
+      assignActionsToTasksWithPermissions(tasks, [TaskPermission.MANAGE], ActionViews.AVAILABLE)
+      expect(tasks[0].actions).to.deep.equal(TASK_ACTIONS.AVAILABLE);
+      expect(tasks[1].actions).to.deep.equal(TASK_ACTIONS.AVAILABLE);
+    });
+
+    // Note: Test will be need to be changed when additional logic done for this
+    it('should set up actions appropriately for Active tasks view with permissions', () => {
+      const tasks = [ { ...TASKS.TASK_1 }, { ...TASKS.TASK_2 } ];
+      expect(tasks[0].actions).to.be.undefined;
+      expect(tasks[1].actions).to.be.undefined;
+      assignActionsToTasksWithPermissions(tasks, [TaskPermission.MANAGE], ActionViews.ACTIVE)
+      expect(tasks[0].actions).to.deep.equal(TASK_ACTIONS.ACTIVE);
+      expect(tasks[1].actions).to.deep.equal(TASK_ACTIONS.ACTIVE);
+    });
+
+    it('should set up actions appropriately for All Work tasks view with permissions and unassigned', () => {
+      const tasks = [ { ...TASKS.TASK_1 }, { ...TASKS.TASK_2 } ];
+      expect(tasks[0].actions).to.be.undefined;
+      expect(tasks[1].actions).to.be.undefined;
+      assignActionsToTasksWithPermissions(tasks, [TaskPermission.MANAGE], ActionViews.ALL_WORK)
+      expect(tasks[0].actions).to.deep.equal(TASK_ACTIONS.ALL_WORK.ASSIGNED); // Has an assignee
+      expect(tasks[1].actions).to.deep.equal(TASK_ACTIONS.ALL_WORK.UNASSIGNED); // Is unassigned
     });
 
     it('should get cancel action for the correct view', () => {

@@ -1,10 +1,8 @@
 import * as bodyParser from 'body-parser'
 import {Express} from 'express'
-import * as activityTracker from './activityTracker'
 import * as amendedJurisdictions from './amendedJurisdictions'
 import {getConfigValue} from './configuration'
 import {
-    SERVICES_CCD_ACTIVITY_API_PATH,
     SERVICES_CCD_COMPONENT_API_PATH,
     SERVICES_DOCUMENTS_API_PATH, SERVICES_EM_ANNO_API_URL, SERVICES_EM_HRS_API_PATH,
     SERVICES_ICP_API_URL, SERVICES_MARKUP_API_URL, SERVICES_PAYMENTS_URL

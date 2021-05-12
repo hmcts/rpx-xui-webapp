@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
-import { WorkAllocationFeatureService } from '../../../work-allocation-2/services/work-allocation-feature.service';
+import { WorkAllocationFeatureService } from '../../../work-allocation-2/services';
 import * as fromActions from '../../store';
 
 @Component({ templateUrl: './application-routing.component.html'})
@@ -27,7 +27,11 @@ export class ApplicationRoutingComponent implements OnInit {
   public navigateBasedOnUserRole() {
     const userDetails$ = this.store.pipe(select(fromActions.getUserDetails));
     userDetails$.subscribe(userDetails => {
-      userDetails && userDetails.userInfo && userDetails.userInfo.roles && userDetails.userInfo.roles.includes('caseworker-ia-iacjudge') ? this.router.navigate(['/mywork']) : this.router.navigate(['/cases']);
-    })
+      userDetails && userDetails.userInfo && userDetails.userInfo.roles &&
+      (userDetails.userInfo.roles.includes('caseworker-ia-iacjudge')
+      || userDetails.userInfo.roles.includes('caseworker-ia-caseofficer'))
+      ? this.router.navigate(['/mywork']) : this.router.navigate(['/cases']);
+    });
   }
+
 }

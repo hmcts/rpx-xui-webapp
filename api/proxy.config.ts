@@ -14,12 +14,12 @@ import * as searchCases from './searchCases'
 
 export const initProxy = (app: Express) => {
     applyProxy(app, {
-        onReq: activityTracker.activityTrackerProxyRequest,
-        onRes: activityTracker.activityTrackerProxyResponse,
+        rewrite: true,
+        rewriteUrl: '/activity',
         source: [
             '/activity',
         ],
-        target: getConfigValue(SERVICES_CCD_ACTIVITY_API_PATH),
+        target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH),
     })
 
     applyProxy(app, {

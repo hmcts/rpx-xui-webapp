@@ -15,10 +15,12 @@ import {
   handlePostRoleAssingnments,
   handlePostSearch
 } from './caseWorkerService';
+import { TaskPermission } from './constants/actions';
 import { Caseworker } from './interfaces/task';
 import { handleTaskGet, handleTaskPost, handleTaskSearch } from './taskService';
 import {
   assignActionsToTasks,
+  assignActionsToTasksWithPermissions,
   mapCaseworkerData,
   prepareCaseWorkerForLocation,
   prepareCaseWorkerForLocationAndService,
@@ -59,7 +61,7 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
 /**
  * Post to search for a Task.
  */
-export async function searchTask(req: EnhancedRequest, res: Response, next: NextFunction) {
+ export async function searchTask(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
     const postTaskPath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
     const searchRequest = req.body.searchRequest;
@@ -67,7 +69,32 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     res.status(status);
     // Assign actions to the tasks on the data from the API.
     if (data) {
+      // Note: TaskPermission placed in here is an example of what we could be getting (i.e. Manage permission)
+      // These should be mocked as if we were getting them from the user themselves
       assignActionsToTasks(data.tasks, req.body.view);
+    }
+
+    // Send the (possibly modified) data back in the Response.
+    res.send(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * Post to search for a Task with user permissions.
+ */
+export async function searchTaskWithPermissions(req: EnhancedRequest, res: Response, next: NextFunction) {
+  try {
+    const postTaskPath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
+    const searchRequest = req.body.searchRequest;
+    const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
+    res.status(status);
+    // Assign actions to the tasks on the data from the API.
+    if (data) {
+      // Note: TaskPermission placed in here is an example of what we could be getting (i.e. Manage permission)
+      // These should be mocked as if we were getting them from the user themselves
+      assignActionsToTasksWithPermissions(data.tasks, [TaskPermission.MANAGE], req.body.view);
     }
 
     // Send the (possibly modified) data back in the Response.

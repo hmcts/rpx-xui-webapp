@@ -1,5 +1,5 @@
 export interface UserDetails {
-  caseRoles?: [];
+  caseRoles?: string[];
   email: string;
   firstName: string;
   idamId: string;

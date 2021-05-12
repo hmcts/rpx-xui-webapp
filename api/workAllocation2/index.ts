@@ -61,7 +61,7 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
 /**
  * Post to search for a Task.
  */
- export async function searchTask(req: EnhancedRequest, res: Response, next: NextFunction) {
+export async function searchTask(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
     const postTaskPath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
     const searchRequest = req.body.searchRequest;

@@ -1,5 +1,5 @@
 import { ActionViews, TASK_ACTIONS, TaskPermission } from './constants/actions';
-import { Action, Caseworker, CaseworkerApi, Location, LocationApi, Task } from './interfaces/task';
+import { Action, Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/task';
 
 export function prepareGetTaskUrl(baseUrl: string, taskId: string): string {
   return `${baseUrl}/task/${taskId}`
@@ -51,7 +51,7 @@ export function prepareCaseWorkerForLocationAndService(baseUrl: string, location
  * @param tasks The tasks to set up the actions for.
  * @param view This dictates which set of actions we should use.
  */
- export function assignActionsToTasks(tasks: any[], view: any): void {
+export function assignActionsToTasks(tasks: any[], view: any): void {
   if (tasks) {
     for (const task of tasks) {
       switch (view) {

@@ -437,10 +437,10 @@
   resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.39-alpha.tgz#782d4a4698dae040dd72b26711f04a8d8299d25c"
   integrity sha512-M1364rFLuvktYz5+jVjJ5ZmNUx0/SgoAvH3RsIaT2wFqFf92emuiRyXqax5oSEC5kM9Jpw0rcxEcRbBJWMoglg==
 
-"@hmcts/media-viewer@2.6.9":
-  version "2.6.9"
-  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-2.6.9.tgz#532f69b30724f1bc9df66238fd91f8d7e6a7d0bd"
-  integrity sha512-muCg1V25BnLOldbCPlnGZZ7Q0KMM7CyeVzirYXm62nJnklf5s/B4ljRIPDwNwoRiuyXfHby87f03desh3LmIjg==
+"@hmcts/media-viewer@2.7.0":
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/@hmcts/media-viewer/-/media-viewer-2.7.0.tgz#a8e9a2c000ea0cb18db6f5267a098f81a09fc5cd"
+  integrity sha512-fC/F65CSW6da2iMOZdBDmLnsBwNldErDX/Tv19Vn2mHB7R1Ar1lwjDLYyEtIdKFAnbp2G5pwbQz0PszRUTmd2w==
   dependencies:
     "@swimlane/ngx-datatable" "^16.0.2"
     angular-tree-component "^8.5.6"
@@ -13422,15 +13422,10 @@ xtend@^4.0.0, xtend@~4.0.1:
   resolved "https://registry.yarnpkg.com/xtend/-/xtend-4.0.2.tgz#bb72779f5fa465186b1f438f674fa347fdb5db54"
   integrity sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==
 
-y18n@^3.2.1, "y18n@^3.2.1 || ^4.0.0", y18n@^3.2.2, y18n@^4.0.0:
+y18n@^3.2.1, "y18n@^3.2.1 || ^4.0.0", y18n@^3.2.2, y18n@^4.0.0, y18n@^5.0.5:
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/y18n/-/y18n-3.2.2.tgz#85c901bd6470ce71fc4bb723ad209b70f7f28696"
   integrity sha512-uGZHXkHnhF0XeeAPgnKfPv1bgKAYyVvmNL1xlKsPYZPaIHxGti2hHqvOCQv71XMsLxu1QjergkqogUnms5D3YQ==
-
-y18n@^5.0.5:
-  version "5.0.5"
-  resolved "https://registry.yarnpkg.com/y18n/-/y18n-5.0.5.tgz#8769ec08d03b1ea2df2500acef561743bbb9ab18"
-  integrity sha512-hsRUr4FFrvhhRH12wOdfs38Gy7k2FFzB9qgN9v3aLykRq0dRcdcpz5C9FxdS2NuhOrI/628b/KSTJ3rwHysYSg==
 
 yallist@^2.1.2:
   version "2.1.2"

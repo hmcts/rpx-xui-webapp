@@ -65,14 +65,20 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
 /**
  * Post to search for a Task.
  */
- export async function searchTask(req: EnhancedRequest, res: Response, next: NextFunction) {
+export async function searchTask(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    const postTaskPath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
+    let postTaskPath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
     const searchRequest = req.body.searchRequest;
+    const view = req.body.view;
     let promise;
     if (searchRequest.search_by === 'judge') {
       // TODO below call mock api will be replaced when real api is ready
-      promise = await handlePost(postTaskPath, searchRequest, req);
+      if (view === 'MyTasks') {
+        promise = await handlePost(postTaskPath, searchRequest, req);
+      } else if (view === 'AvailableTasks') {
+        postTaskPath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'availableTasks');
+        promise = await handlePost(postTaskPath, searchRequest, req);
+      }
     } else {
       promise = await handleTaskSearch(postTaskPath, searchRequest, req);
     }
@@ -99,7 +105,7 @@ export async function searchTaskWithPermissions(req: EnhancedRequest, res: Respo
   try {
     const postTaskPath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
     const searchRequest = req.body.searchRequest;
-    const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
+    const {status, data} = await handleTaskSearch(postTaskPath, searchRequest, req);
     res.status(status);
     // Assign actions to the tasks on the data from the API.
     if (data) {
@@ -122,7 +128,7 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
 
   try {
     const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.params.taskId, req.params.action);
-    const { status, data } = await handleTaskPost(getTaskPath, req.body, req);
+    const {status, data} = await handleTaskPost(getTaskPath, req.body, req);
     res.status(status);
     res.send(data);
   } catch (error) {
@@ -149,7 +155,7 @@ export async function retrieveAllCaseWorkers(req: EnhancedRequest, res: Response
   }
   const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
   const payload = prepareRoleApiRequest();
-  const { data } = await handlePostRoleAssingnments(roleApiPath, payload, req);
+  const {data} = await handlePostRoleAssingnments(roleApiPath, payload, req);
   const userIds = getUserIdsFromRoleApiResponse(data);
   const userUrl = `${baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
   const userResponse = await handlePostCaseWorkersRefData(userUrl, userIds, req);
@@ -213,7 +219,7 @@ export async function searchCaseWorker(req: EnhancedRequest, res: Response, next
   try {
     const postTaskPath: string = prepareCaseWorkerSearchUrl(baseUrl);
 
-    const { status, data } = await handlePostSearch(postTaskPath, req.body, req);
+    const {status, data} = await handlePostSearch(postTaskPath, req.body, req);
     res.status(status);
     res.send(data);
   } catch (error) {
@@ -225,12 +231,12 @@ export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Re
   try {
     const postTaskPath: string = prepareTaskSearchForCompletable(baseWorkAllocationTaskUrl);
     const reqBody = {
-      "case_id": req.body.searchRequest.ccdId,
-      "case_jurisdiction": req.body.searchRequest.jurisdiction,
-      "case_type": req.body.searchRequest.caseTypeId,
-      "event_id": req.body.searchRequest.eventId,
+      'case_id': req.body.searchRequest.ccdId,
+      'case_jurisdiction': req.body.searchRequest.jurisdiction,
+      'case_type': req.body.searchRequest.caseTypeId,
+      'event_id': req.body.searchRequest.eventId,
     };
-    const { status, data } = await handlePostSearch(postTaskPath, reqBody, req);
+    const {status, data} = await handlePostSearch(postTaskPath, reqBody, req);
     res.status(status);
     res.send(data);
   } catch (error) {

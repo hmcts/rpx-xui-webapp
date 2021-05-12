@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import * as faker from 'faker/locale/en_GB';
 import { httpMock } from '../common/httpMock';
-import { TASKS } from './constants/mock.data';
+import { AVAILABLE_TASKS, MY_TASKS } from './constants/mock.data';
 
 // random generator
 export const generator = (schema, min = 1, max) => {
@@ -33,17 +33,24 @@ export const generator = (schema, min = 1, max) => {
 export const init = () => {
   const mock = new MockAdapter(httpMock);
 
-  const tasks = TASKS;
-
-  const postTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task/;
+  const postMyTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task/;
+  const postAvailableTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/availableTasks/;
 
   // simulate some error if needed
   // mock.onGet(url).networkErrorOnce()
-  mock.onPost(postTaskUrl).reply(() => {
+  mock.onPost(postMyTaskUrl).reply(() => {
     // return an array in the form of [status, data, headers]
     return [
       200,
-      tasks,
+      MY_TASKS,
+    ];
+  });
+
+  mock.onPost(postAvailableTaskUrl).reply(() => {
+    // return an array in the form of [status, data, headers]
+    return [
+      200,
+      AVAILABLE_TASKS,
     ];
   });
 };

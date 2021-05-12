@@ -1,9 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRouteSnapshot, NavigationEnd, Router, RoutesRecognized } from '@angular/router';
 import { SubNavigation } from '@hmcts/rpx-xui-common-lib';
-import { Observable, Subscription } from 'rxjs';
-import { share } from 'rxjs/operators';
-
+import { Subscription } from 'rxjs';
 import { AppUtils } from '../../../app/app-utils';
 import { TaskSortField } from '../../models/tasks';
 
@@ -23,7 +21,8 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
    */
   public subNavigationItems: SubNavigation[] = [
     this.MY_TASKS,
-    { text: 'Available tasks', href: '/mywork/available', active: false }
+    { text: 'Available tasks', href: '/mywork/available', active: false },
+    { text: 'My cases', href: '/mycases', active: false }
   ];
 
   public sortedBy: TaskSortField;

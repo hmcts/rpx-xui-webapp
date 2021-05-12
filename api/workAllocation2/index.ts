@@ -1,4 +1,5 @@
 import { NextFunction, Response } from 'express';
+import { handlePost } from '../common/mockService';
 import { getConfigValue } from '../configuration';
 import {
   SERVICES_CASE_CASEWORKER_REF_PATH,
@@ -17,6 +18,7 @@ import {
 } from './caseWorkerService';
 import { Caseworker } from './interfaces/task';
 import { handleTaskGet, handleTaskPost, handleTaskSearch } from './taskService';
+import * as mock from './taskService.mock';
 import {
   assignActionsToTasks,
   mapCaseworkerData,
@@ -31,6 +33,8 @@ import {
   prepareSearchTaskUrl,
   prepareTaskSearchForCompletable
 } from './util';
+
+mock.init();
 
 export const baseWorkAllocationTaskUrl = getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH);
 export const baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);
@@ -63,7 +67,14 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
   try {
     const postTaskPath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
     const searchRequest = req.body.searchRequest;
-    const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
+    let promise;
+    if (searchRequest.search_by === 'judge') {
+      // TODO below call mock api will be replaced when real api is ready
+      promise = await handlePost(postTaskPath, searchRequest, req);
+    } else {
+      promise = await handleTaskSearch(postTaskPath, searchRequest, req);
+    }
+    const {status, data} = promise;
     res.status(status);
     // Assign actions to the tasks on the data from the API.
     if (data) {
@@ -191,12 +202,12 @@ export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Re
       "case_jurisdiction": req.body.searchRequest.jurisdiction,
       "case_type": req.body.searchRequest.caseTypeId,
       "event_id": req.body.searchRequest.eventId,
-    }
+    };
     const { status, data } = await handlePostSearch(postTaskPath, reqBody, req);
     res.status(status);
     res.send(data);
   } catch (error) {
-    console.log(error)
+    console.error(error);
     next(error);
   }
 }

@@ -1,4 +1,4 @@
-import { Action } from "workAllocation2/interfaces/task";
+import { Action } from '../interfaces/task';
 
 const ASSIGN: Action = {
   id: 'assign',
@@ -47,20 +47,20 @@ export const ACTIONS: Action[] = [
 ];
 
 export const TASK_ACTIONS = {
-  AVAILABLE: [CLAIM, CLAIM_AND_GO],
-  // TODO: Remove MANAGER once ALL_WORK used for UI actions
-  MANAGER: {
-    ASSIGNED: [REASSIGN, RELEASE, COMPLETE, CANCEL],
-    UNASSIGNED: [ASSIGN, COMPLETE, CANCEL],
-  },
   ACTIVE: [REASSIGN, RELEASE, GO],
   ALL_WORK: {
     ASSIGNED: [REASSIGN, RELEASE, GO],
     UNASSIGNED: [ASSIGN, GO],
   },
-  MY: [REASSIGN, RELEASE, GO],
-  EXECUTE: [COMPLETE],
+  AVAILABLE: [CLAIM, CLAIM_AND_GO],
   CANCEL: [CANCEL],
+  EXECUTE: [COMPLETE],
+  // TODO: Remove MANAGER once ALL_WORK used for UI actions
+  MANAGER: {
+    ASSIGNED: [REASSIGN, RELEASE, COMPLETE, CANCEL],
+    UNASSIGNED: [ASSIGN, COMPLETE, CANCEL],
+  },
+  MY: [REASSIGN, RELEASE, GO],
 };
 
 export enum ActionViews {
@@ -68,7 +68,7 @@ export enum ActionViews {
   AVAILABLE = 'AvailableTasks',
   MANAGER = 'TaskManager',
   ACTIVE = 'ActiveTasks',
-  ALL_WORK = 'AllWork'
+  ALL_WORK = 'AllWork',
 }
 
 export enum TaskPermission {

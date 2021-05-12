@@ -35,14 +35,14 @@ export const ROUTES: Routes = [
             path: 'list',
             component: MyTasksComponent,
             data: {
-              title: 'HMCTS Manage cases | My tasks', subTitle: 'My tasks'
+              title: 'HMCTS Manage cases | My work | My tasks', subTitle: 'My tasks'
             }
           },
           {
             path: 'available',
             component: AvailableTasksComponent,
             data: {
-              title: 'HMCTS Manage cases | Available tasks', subTitle: 'Available tasks'
+              title: 'HMCTS Manage cases | My work | Available tasks', subTitle: 'Available tasks'
             }
           }
         ]

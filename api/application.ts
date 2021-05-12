@@ -19,6 +19,7 @@ import openRoutes from './openRoutes'
 import { initProxy } from './proxy.config'
 import routes from './routes'
 import taskRouter from './workAllocation/routes'
+import workAllocation2Router from './workAllocation2/routes'
 
 export const app = express()
 
@@ -111,6 +112,7 @@ app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }))
 // TODO: No dash?
 // TODO: taskRouter should be called workAllocationRouter
 app.use('/workallocation', taskRouter)
+app.use('/workallocation2', workAllocation2Router)
 app.use('/external', openRoutes)
 app.use('/api', routes)
 app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true }, ignoreMethods: ["GET"] }));

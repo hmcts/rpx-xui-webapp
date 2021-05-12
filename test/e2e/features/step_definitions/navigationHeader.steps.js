@@ -50,5 +50,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await headerPage.clickTabWithText(headerTab);
     });
 
+    When('I click on primary navigation header tab for release {string}', async function (release,datatable) {
+        const releaseTabMaping = datatable.hashes()[0];
+        await headerPage.clickTabWithText(releaseTabMaping[release]);
+    });
 
 });

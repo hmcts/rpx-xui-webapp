@@ -43,7 +43,6 @@ describe('Organisation Effects', () => {
 
   describe('loadOrganisation$', () => {
     it('should return a collection from loadOrganisation$ - LoadOrganisationSuccess', () => {
-      // const payload = [{payload: 'something'}];
       const payload = {
         account_number: 'someNumber',
         account_name: 'someName',

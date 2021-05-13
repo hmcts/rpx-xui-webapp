@@ -21,7 +21,6 @@ describe('OrganisationReducer', () => {
       expect(state.loading).toEqual(true);
       // untouched props, good to add regardless
       expect(state.loaded).toEqual(false);
-      // expect(state.organisation).toEqual([]);
     });
   });
 

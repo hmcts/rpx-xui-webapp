@@ -78,7 +78,6 @@ export async function handlePut<T>(path: string, body: T, req: EnhancedRequest):
 export async function handleDelete<T>(path: string, body: T, req: EnhancedRequest): Promise<AxiosResponse> {
   try {
     logger.info('handle delete method', path);
-    const headers = setHeaders(req);
     return await httpMock.delete(path, {
       data: body,
     });

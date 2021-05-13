@@ -11,7 +11,7 @@
           <h3 class="govuk-heading-m">What happens next</h3>
           <p class="govuk-body">If you've shared one or more cases, your colleagues will now be able to access them from their case list.</p>
           <p class="govuk-body">
-            <span text><a [routerLink]="['/cases']">Go back to the case list.</a></span>
+            <span><a [routerLink]="['/cases']">Go back to the case list.</a></span>
           </p>
         </div>
       </div>
@@ -21,7 +21,8 @@
 <div *ngIf="completeScreenMode === 'PENDING'">
   <br>
   <h1 class="govuk-heading-xl">Sorry, there is a problem</h1><br/>
-  <p class="govuk-body">The following case were not shared: </p>
+  <p id="add-and-remove-user-error" class="govuk-body" *ngIf="removeUserFromCaseToggleOn$ | async">We couldn’t share or remove access to the following cases:</p>
+  <p id="add-user-error" class="govuk-body" *ngIf="!(removeUserFromCaseToggleOn$ | async)">We couldn’t share access to the following cases:</p>
   <div *ngFor="let acase of newShareCases;">
     <div *ngIf="showUserAccessBlock(acase)">
       <h2 class="govuk-heading-m case-share-confirm__title">{{ acase.caseTitle }}</h2>
@@ -33,9 +34,9 @@
       <table class="govuk-table">
         <thead class="govuk-table__head">
         <tr class="govuk-table__row">
-          <th class="govuk-table__header" scope="col">Name</th>
-          <th class="govuk-table__header" scope="col">Email address</th>
-          <th class="govuk-table__header" scope="col">Actions</th>
+          <th class="govuk-table__header govuk-table-column-header" scope="col">Name</th>
+          <th class="govuk-table__header govuk-table-column-header" scope="col">Email address</th>
+          <th class="govuk-table__header govuk-table-column-actions" scope="col">Actions</th>
         </tr>
         </thead>
         <tbody class="govuk-table__body">
@@ -46,13 +47,18 @@
             <span class="hmcts-badge">To be added</span>
           </td>
         </tr>
+        <tr class="govuk-table__row" *ngFor="let user of acase.pendingUnshares;">
+          <td class="govuk-table__cell">{{ user.firstName + ' ' + user.lastName }}</td>
+          <td class="govuk-table__cell">{{ user.email }}</td>
+          <td class="govuk-table__cell">
+            <span class="hmcts-badge hmcts-badge--red">To be removed</span>
+          </td>
+        </tr>
         </tbody>
       </table>
     </div>
   </div>
-  <p class="govuk-body">All your other selected cases were successfully shared.</p>
-  <p class="govuk-body">Try again or <a href="get-help">get help</a> if you are still having problems </p>
+  <p id="add-and-remove-user-info" class="govuk-body" *ngIf="removeUserFromCaseToggleOn$ | async">Access to all your other selected cases was shared or removed.</p>
+  <p id="add-user-info" class="govuk-body" *ngIf="!(removeUserFromCaseToggleOn$ | async)">Access to all your other selected cases was shared.</p>
+  <p class="govuk-body">Try again or <a href="get-help">get help</a> if you’re still having problems.</p>
 </div>
-
-
-

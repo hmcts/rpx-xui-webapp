@@ -29,6 +29,10 @@ export function prepareCaseWorkerSearchUrl(baseUrl: string) {
   return `${baseUrl}/caseworker/search`
 }
 
+export function prepareTaskSearchForCompletable(baseUrl: string) {
+  return `${baseUrl}/task/search-for-completable`
+}
+
 export function prepareCaseWorkerForLocation(baseUrl: string, locationId: string) {
   return `${baseUrl}/caseworker/location/${locationId}`
 }

@@ -113,6 +113,8 @@ class caseEditPage {
     async caseDetailsCheck() {
         let caseDetailsRes = await CcdApi.getCaseResultsResponse();
         this.caseDetailsTabs = $$("mat-tab-body table tbody>div>tbody");
+        await element(by.xpath("//mat-tab-header//div[contains(text(),'Tab 2')]")).click();
+        await BrowserWaits.waitForSeconds(1);
         let fieldCount = await this.caseDetailsTabs.count();
         let tabName = "Tab 2";
         let tab = await caseDetailsRes.tabs.find(tab => tab.label == tabName);
@@ -241,7 +243,7 @@ class caseEditPage {
                     let keyVal = String(date.getDate()).padStart(2, '0') + "-" + String(date.getMonth() + 1).padStart(2, '0') + "-" + date.getFullYear();
                     this.checkURanswerPageData[i][Object.keys(this.checkURanswerPageData[i]).toString()] = keyVal;
                 }
-                if (Object.values(this.checkURanswerPageData[i]).toString() && Object.keys(this.checkURanswerPageData[i]).toString() != "Compliance") {
+                if (Object.values(this.checkURanswerPageData[i]).toString() && Object.keys(this.checkURanswerPageData[i]).toString() !== "Compliance" && Object.keys(this.checkURanswerPageData[i]).toString() !== "") {
                     expect(createCaseFormData).to.deep.include(this.checkURanswerPageData[i]);
                 }
             }
@@ -292,7 +294,7 @@ class caseEditPage {
         await continieElement.click();
         await BrowserWaits.waitForPageNavigation(thisPageUrl);
         let page3 = await element(by.css("ccd-case-edit-page h1"));
-        expect(await page3.getText()).to.contains("Page 3 ");
+        expect(await page3.getText()).to.contains("Page 3");
     }
 
     async _getKeyVal(field) {

@@ -1,4 +1,4 @@
-import { Action } from "workAllocation2/interfaces/task";
+import { Action } from "../interfaces/task";
 
 const ASSIGN: Action = {
   id: 'assign',

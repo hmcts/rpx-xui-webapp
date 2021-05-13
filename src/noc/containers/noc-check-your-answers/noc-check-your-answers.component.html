@@ -1,6 +1,6 @@
 <div class="govuk-summary-list govuk-!-margin-bottom-9">
   <div class="govuk-summary-list__row">
-    <div class="govuk-summary-list__key">Change request</div>
+    <div class="govuk-summary-list__key">Request</div>
     <div class="govuk-summary-list__value">Notice of change</div>
     <div class="govuk-summary-list__actions"></div>
   </div>
@@ -16,11 +16,9 @@
   <ng-container *ngFor="let qAndA of qAndA$ | async">
     <div class="govuk-summary-list__row">
         <div class="govuk-summary-list__key">{{ qAndA.question_text | async }}</div>
-        <div class="govuk-summary-list__value">{{ qAndA.value }}</div>
+        <div class="govuk-summary-list__value">{{ (qAndA.question_type| async) === 'DateTime'? (qAndA.value | formatDateTime): qAndA.value}}</div>
         <div class="govuk-summary-list__actions">
-          <a class="govuk-link" href="javascript:void(0)" (click)="navToQAndA(qAndA)">
-            Change
-          </a>
+          &nbsp;
         </div>
     </div>
   </ng-container>

@@ -3,7 +3,7 @@ import {expect} from 'chai';
 import { config } from './config/config';
 import { getXSRFToken } from './utils/authUtil'
 import Request from './utils/request';
-
+import { setTestContext} from './utils/helper';
 
 describe('CCD Endpoints',  () => {
     const userName = 'lukesuperuserxui@mailnesia.com';
@@ -11,7 +11,8 @@ describe('CCD Endpoints',  () => {
 
     // const userName = 'peterxuisuperuser@mailnesia.com';
     // const password = 'Monday01';
-    beforeEach( () =>  {
+    beforeEach(function ()  {
+        setTestContext(this);
         Request.clearSession();
     });
 
@@ -29,7 +30,7 @@ describe('CCD Endpoints',  () => {
         for (const caseType of jurisdiction.caseTypeIds) {
             it(`work-basket-input for casetype  ${caseType}`, async () => {
                 await Request.withSession(userName, password);
-                const response = await Request.get(`data/internal/case-types/${caseType}/work-basket-inputs`, { experimental: true },200);
+                const response = await Request.get(`data/internal/case-types/${caseType}/work-basket-inputs`, { experimental: true }, 200);
                 expect(response.status).to.equal(200, `request with ${caseType} failed`);
                 expect(response.data).to.be.an('object');
                 expect(response.data.workbasketInputs).to.be.an('array');
@@ -42,7 +43,7 @@ describe('CCD Endpoints',  () => {
         for (const caseType of jurisdiction.caseTypeIds) {
             it(`Cases pagination metadata for casetype  ${caseType}`, async () => {
                 await Request.withSession(userName, password);
-                const response = await Request.get(`data/caseworkers/:uid/jurisdictions/${jurisdiction.id}/case-types/${caseType}/cases/pagination_metadata`, null,200);
+                const response = await Request.get(`data/caseworkers/:uid/jurisdictions/${jurisdiction.id}/case-types/${caseType}/cases/pagination_metadata`, null, 200);
                 expect(response.status).to.equal(200, `request with ${caseType} failed`);
                 expect(response.data).to.be.an('object');
             });
@@ -95,7 +96,7 @@ describe('CCD Endpoints',  () => {
             experimental: true,
             'X-XSRF-TOKEN': xsrfToken
         };
-        const response = await Request.get('data/internal/profile', headers,200);
+        const response = await Request.get('data/internal/profile', headers, 200);
         expect(response.status).to.equal(200);
     });
 
@@ -130,7 +131,7 @@ describe('CCD Endpoints',  () => {
         const headers = {
             'X-XSRF-TOKEN': xsrfToken
         };
-        const casesResponse = await Request.get(`data/internal/searchCases?ctid=${casetype}&use_case=WORKBASKET&view=WORKBASKET&state=Any`, headers,200);
+        const casesResponse = await Request.get(`data/internal/searchCases?ctid=${casetype}&use_case=WORKBASKET&view=WORKBASKET&state=Any`, headers, 200);
         return casesResponse;
     }
 

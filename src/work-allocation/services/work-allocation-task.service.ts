@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { Assignee, SearchTaskRequest, TaskSearchParameters } from '../models/dtos';
+import { SearchTaskRequest, TaskSearchParameters } from '../models/dtos';
 import { Task } from '../models/tasks';
 
 const BASE_URL: string = '/workallocation/task';
@@ -16,6 +16,7 @@ export enum ACTION {
 
 @Injectable({ providedIn: 'root' })
 export class WorkAllocationTaskService {
+  public static WorkAllocationUrl = 'workallocation';
 
   constructor(private readonly http: HttpClient) {}
 
@@ -36,9 +37,9 @@ export class WorkAllocationTaskService {
    * @param taskId specifies which task should be assigned.
    * @param assignee specifies who this task should be assigned to.
    */
-  public assignTask(taskId: string, assignee: Assignee): Observable<any> {
+  public assignTask(taskId: string, user: any): Observable<any> {
     // Make a POST with the specified assignee in the payload.
-    return this.http.post<any>(this.getActionUrl(taskId, ACTION.ASSIGN), { assignee });
+    return this.http.post<any>(this.getActionUrl(taskId, ACTION.ASSIGN),  user );
   }
 
   public postTask(task: TaskSearchParameters): Observable<any> {

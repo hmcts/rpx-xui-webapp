@@ -45,7 +45,7 @@ export class NocQAndAComponent implements OnInit, OnDestroy {
   public setPossibleIncorrectAnswerError(): void {
     this.lastError$.subscribe( lastError => {
       this.lastError = lastError;
-      if (this.lastError && this.lastError.error && this.lastError.error.code === 'answersIncomplete') {
+      if (this.lastError && this.lastError.error && this.lastError.error.code === 'answers-not-matched-any-litigant') {
         Object.keys(this.formGroup.controls).forEach(key => {
           if (this.formGroup.controls[key].value) {
             this.formGroup.controls[key].setErrors({
@@ -87,13 +87,13 @@ export class NocQAndAComponent implements OnInit, OnDestroy {
 
   public navigationHandler(navEvent: NocNavigationEvent) {
     if (navEvent === NocNavigationEvent.SET_ANSWERS && this.formGroup) {
-      const nocAnswers: NocAnswer[] = [];
+      const answers: NocAnswer[] = [];
       Object.keys(this.formGroup.value).forEach(key => {
-        nocAnswers.push({question_id: key, value: this.formGroup.value[key]});
+        answers.push({question_id: key, value: this.formGroup.value[key]});
       });
       const nocEvent: NocEvent = {
-        caseReference: this.nocCaseReference,
-        nocAnswers
+        case_id: this.nocCaseReference,
+        answers
       };
       if (this.validForm()) {
         this.store.dispatch(new fromFeature.SetAnswers(nocEvent));

@@ -1,5 +1,8 @@
 const TaskList = require('./taskListTable');
 const BrowserWaits = require('../../../support/customWaits');
+var cucumberReporter = require('../../../support/reportLogger');
+
+var TaskMessageBanner = require('./taskMessageBanner');
 
 class TaskListPage extends TaskList {
 
@@ -11,6 +14,11 @@ class TaskListPage extends TaskList {
 
         this.myTasksContaine = $('exui-my-tasks');
         this.availableTasksContainer = $('exui-available-tasks');
+
+        this.bannerMessageContainer = $('exui-info-message ') 
+        this.infoMessages = $$('exui-info-message .hmcts-banner__message');
+
+        this.taskInfoMessageBanner = new TaskMessageBanner();
     }
 
     async amOnPage() {
@@ -19,7 +27,7 @@ class TaskListPage extends TaskList {
             return true;
         }
         catch(err){
-            console.log("Task list page not displayed: "+err);
+            cucumberReporter.AddMessage("Task list page not displayed: " + err);
             return false;
         }
     }
@@ -34,7 +42,9 @@ class TaskListPage extends TaskList {
         await this.availableTasksTab.click();
     }
 
-
+    async amOnMyTasksTab(){
+        return await this.myTasksContaine.isDisplayed();
+    }
 
     async isMyTasksDisplayed(){
         expect(await this.amOnPage(), "Not on Task list page ").to.be.true;
@@ -42,25 +52,42 @@ class TaskListPage extends TaskList {
             await BrowserWaits.waitForElement(this.myTasksContaine);
             return true;
         } catch (err) {
-            console.log("My Tasks page not displayed: " + err);
+            cucumberReporter.AddMessage("My Tasks list page not displayed: " + err);
             return false;
         }
     }
 
     async isAvailableTasksDisplayed(){
-        expect(await this.amOnPage(), "Not on Task lict page ").to.be.true;
+        expect(await this.amOnPage(), "Not on Task list page ").to.be.true;
         try{
             await BrowserWaits.waitForElement(this.availableTasksContainer); 
             return true;
         }catch(err){
-            console.log("Available tasks page not displayed: " + err);
+            cucumberReporter.AddMessage("Available Tasks list page not displayed: " + err);
             return false;
         }
     }
 
-    // async getTaskCountInDisplayLabel() {
-    //     return await this.tasksCountInDisplayLabel.getText();
-    // }
+    async isBannerMessageDisplayed(){
+        expect(await this.amOnPage(), "Not on Task list page ").to.be.true;
+      return this.taskInfoMessageBanner.isBannerMessageDisplayed();
+    }
+
+    async getBannerMessagesDisplayed(){
+        expect(await this.amOnPage(), "Not on Task list page ").to.be.true;
+        return this.taskInfoMessageBanner.getBannerMessagesDisplayed();
+    }
+
+    async isBannermessageWithTextDisplayed(messageText) {
+        const messages = await this.getBannerMessagesDisplayed();
+
+        for(const message of messages){
+            if (message.includes(messageText)){
+                return true;
+            }
+        }
+        return false;
+    }
 
 }
 

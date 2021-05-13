@@ -56,11 +56,8 @@ const config = {
     sscs_username: process.env.SSCS_EMAIL,
     sscs_password: process.env.SSCS_PASSWORD,
 
-    caseworker_iac_adm_username: process.env.CASEWORKER_IAC_ADM_USERNAME,
-    caseworker_iac_adm_password: process.env.CASEWORKER_IAC_ADM_PASSWORD,
-
-    caseworker_iac_off_username: process.env.CASEWORKER_IAC_OFF_USERNAME,
-    caseworker_iac_off_password: process.env.CASEWORKER_IAC_OFF_PASSWORD
+    caseworker_iac_off_username: process.env.CASEWORKER_IAC_OFF_USERNAME ? process.env.CASEWORKER_IAC_OFF_USERNAME :'xui_auto_co_r1@justice.gov.uk' ,
+    caseworker_iac_off_password: process.env.CASEWORKER_IAC_OFF_PASSWORD ? process.env.CASEWORKER_IAC_OFF_PASSWORD :'Welcome01' 
 
   },
   directConnect: true,

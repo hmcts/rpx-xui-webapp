@@ -2,6 +2,7 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { of } from 'rxjs';
 
 import { ConfigConstants } from '../../components/constants';
@@ -57,6 +58,7 @@ describe('TaskListComponent', () => {
   let routerSpy: jasmine.SpyObj<any>;
   const mockRouter: MockRouter = new MockRouter();
   const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['getTask']);
+  const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   beforeEach((() => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     TestBed.configureTestingModule({
@@ -67,7 +69,8 @@ describe('TaskListComponent', () => {
       declarations: [TaskListComponent, WrapperComponent],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
-        { provide: Router, useValue: mockRouter }
+        { provide: Router, useValue: mockRouter },
+        { provide: LoadingService, useValue: mockLoadingService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
@@ -78,6 +81,7 @@ describe('TaskListComponent', () => {
     wrapper.fields = getFields();
     wrapper.taskServiceConfig = getTaskService();
     mockWorkAllocationService.getTask.and.returnValue(of({}));
+    mockLoadingService.isLoading = of(false);
     fixture.detectChanges();
   }));
 
@@ -107,13 +111,13 @@ describe('TaskListComponent', () => {
     // mock the emitter and dispatch the connected event
     spyOn(component.sortEvent, 'emit');
     const element = fixture.debugElement.nativeElement;
-    const button = element.querySelector('#sort_by_caseReference');
+    const button = element.querySelector('#sort_by_caseId');
     button.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
-    // check the emitter had been called and that it gets called with the first field which is caseReference
+    // check the emitter had been called and that it gets called with the first field which is caseReference (caseId)
     expect(component.sortEvent.emit).toHaveBeenCalled();
-    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseReference');
+    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseId');
   });
 
   it('should allow sorting for different columns.', async () => {
@@ -131,13 +135,13 @@ describe('TaskListComponent', () => {
 
     // mock the emitter and dispatch the connected event to a column to the right
     element = fixture.debugElement.nativeElement;
-    button = element.querySelector('#sort_by_taskName');
+    button = element.querySelector('#sort_by_taskTitle');
     button.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
     // check the emitter had been called and that it gets called with the new field defined which is taskName
     expect(component.sortEvent.emit).toHaveBeenCalled();
-    expect(component.sortEvent.emit).toHaveBeenCalledWith('taskName');
+    expect(component.sortEvent.emit).toHaveBeenCalledWith('taskTitle');
 
     // mock the emitter and dispatch the connected event to a column to the left
     element = fixture.debugElement.nativeElement;
@@ -342,7 +346,7 @@ describe('TaskListComponent', () => {
     // mock the emitter and dispatch the connected event (with example case field buttons selected)
     spyOn(component.sortEvent, 'emit');
     const element = fixture.debugElement.nativeElement;
-    const referenceButton = element.querySelector('#sort_by_caseReference');
+    const referenceButton = element.querySelector('#sort_by_caseId');
     const categoryButton = element.querySelector('#sort_by_caseCategory');
     const dueDateButton = element.querySelector('#sort_by_dueDate');
     referenceButton.dispatchEvent(new Event('click'));
@@ -350,13 +354,13 @@ describe('TaskListComponent', () => {
 
     // check the case reference is being sorted via ascending
     expect(component.sortEvent.emit).toHaveBeenCalled();
-    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseReference');
+    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseId');
 
     // check that the case reference is being sorted via descending
     referenceButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     expect(component.sortEvent.emit).toHaveBeenCalled();
-    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseReference');
+    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseId');
 
     // click the second example button and verify that sorting is for case category
     categoryButton.dispatchEvent(new Event('click'));

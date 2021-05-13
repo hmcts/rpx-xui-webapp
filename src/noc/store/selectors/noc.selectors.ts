@@ -32,6 +32,11 @@ export const affirmationAgreed = createSelector(
     fromFeature.getAffirmationAgreed
 );
 
+export const notifyEveryParty = createSelector(
+  getNocState,
+  fromFeature.getNotifyEveryParty
+);
+
 export const validationErrors = createSelector(
     getNocState,
     fromFeature.getValidationErrors

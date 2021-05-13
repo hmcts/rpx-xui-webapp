@@ -3,7 +3,7 @@ import { ChangeDetectorRef} from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
+import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 import { SessionStorageService } from 'src/app/services';
@@ -23,6 +23,8 @@ describe('TaskListWrapperComponent', () => {
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['']);
+  const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
+
   beforeEach((() => {
     TestBed.configureTestingModule({
       imports: [
@@ -38,7 +40,8 @@ describe('TaskListWrapperComponent', () => {
         { provide: Router, useValue: mockRouter },
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
-        { provide: AlertService, useValue: mockAlertService }
+        { provide: AlertService, useValue: mockAlertService },
+        { provide: LoadingService, useValue: mockLoadingService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(TaskListWrapperComponent);
@@ -85,7 +88,7 @@ describe('TaskListWrapperComponent', () => {
 
       // need to verify correct properties were called
       const lastNavigateCall = mockRouter.navigateCalls.pop();
-      expect(lastNavigateCall.commands).toEqual([`/tasks/${exampleTask.id}/${secondAction.id}/manager`]);
+      expect(lastNavigateCall.commands).toEqual([`/tasks/${exampleTask.id}/${secondAction.id}/`]);
       const exampleNavigateCall = { state: { returnUrl: '/tasks/manager', showAssigneeColumn: true } };
       expect(lastNavigateCall.extras).toEqual(exampleNavigateCall);
     });

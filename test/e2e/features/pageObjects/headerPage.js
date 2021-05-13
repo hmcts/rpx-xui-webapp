@@ -8,6 +8,17 @@ function HeaderPage() {
 
     this.primaryNavBar = element(by.css("nav.hmcts-primary-navigation ul"));
     this.manageCases = element(by.css(".hmcts-header .hmcts-header__link"));
+
+    this.headerAppLogoLink = $('.hmcts-header__logo a');
+
+    this.amOnApp = async function(){
+      return await this.headerAppLogoLink.isPresent();
+    }
+
+    this.clickAppLogoLink = async function(){
+       await this.headerAppLogoLink.click(); 
+    }
+
     this.caseList = function(){
       return element(by.xpath("//a[contains(text(),'Case list')]"))
     };
@@ -19,7 +30,7 @@ function HeaderPage() {
       return element(by.xpath("//li/a[contains(text(),'Task list')]"))
     };
     this.taskManager = function() {
-      element(by.xpath("//li/a[contains(text(),'Task manager')]"))
+      return element(by.xpath("//li/a[contains(text(),'Task manager')]"))
     };
 
 
@@ -30,7 +41,7 @@ function HeaderPage() {
 
   this.clickManageCases = async function () {
     await BrowserWaits.waitForElement(this.manageCases);  
-    this.manageCases.click();
+    await this.manageCases.click();
     await BrowserWaits.waitForElement($('exui-case-list'));  
   };
 
@@ -73,7 +84,6 @@ function HeaderPage() {
   };
 
   this.isTabPresent = async function (tabDisplatText) {
-
     return await this.getTabElementWithText(tabDisplatText).isPresent();
   };
 
@@ -84,6 +94,10 @@ function HeaderPage() {
 
   this.getTabElementWithText = function (tabText) {
     return this.primaryNavBar.element(by.xpath('//a[contains(text(),"' + tabText + '")]'));
+  };
+
+  this.getPrimaryNavigations = async function(){
+    return await this.primaryNavBar.getText();
   };
 }
 

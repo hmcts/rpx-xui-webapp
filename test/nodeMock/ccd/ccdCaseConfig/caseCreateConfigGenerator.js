@@ -29,9 +29,6 @@ const wizardPageTemplate = {
     "retries_timeout_mid_event": []
 };
 
-
-
-
 class CCDCaseConfig extends CCDCaseField{
 
     caseConfigTemplate = JSON.parse(JSON.stringify(configTemplate));
@@ -113,16 +110,37 @@ class CCDCaseConfig extends CCDCaseField{
         return this;
     }
 
+    updateEventProps(fieldprops) {
+        this.setObjectProps(this.caseConfigTemplate, fieldprops);
+        return this;
+    }
+
     setFieldProps(fieldprops){
         this.checkPageAndFiedlSet();
         this.setObjectProps(this.currentCaseField,fieldprops);
         return this; 
     }
 
+    updateFieldProps(fieldId, fieldprops) {
+        const fieldConfig = this.getCaseFieldConfig(fieldId);
+
+        this.setObjectProps(fieldConfig, fieldprops);
+        return this;
+    }
+
+    
+
     setFieldTypeProps(fieldTypeprops){
         this.checkPageAndFiedlSet();
         this.setObjectProps(this.currentCaseField.field_type, fieldTypeprops);
         return this; 
+    }
+
+    updateFieldTypeProps(fieldId, fieldTypeprops) {
+        const fieldConfig = this.getCaseFieldConfig(fieldId);
+
+        this.setObjectProps(fieldConfig.field_type, fieldTypeprops);
+        return this;
     }
 
     checkPageAndFiedlSet(){
@@ -137,11 +155,23 @@ class CCDCaseConfig extends CCDCaseField{
     getCase(){
         return this.caseConfigTemplate; 
     }
-  
 
+    getWizardPageConfig(pageId){
+        return this.caseConfigTemplate.wizard_pages.filter(wizardpage => wizardpage.id === pageId )[0];
+    }
+
+    getCaseFieldConfig(caseFieldId){
+        const fields = this.caseConfigTemplate.case_fields.filter(caseField => caseField.id === caseFieldId);
+        if (fields.length === 0){
+            const fieldsIds = this.caseConfigTemplate.case_fields.map(caseField => caseField.id);
+            throw new Error(`Fields with id ${caseFieldId} not found in case event config fields: ${JSON.stringify(fieldsIds)}`);
+        } 
+        return fields[0];
+
+    }
+ 
     
 }
 
 module.exports = CCDCaseConfig;
-
 

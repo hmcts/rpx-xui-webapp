@@ -27,7 +27,7 @@ Run `yarn start:ng` to start up the UI.
 Run `yarn test` to execute the unit tests on both the Angular and Node layers. Note that 
 `yarn test` is run on the build pipelines.
 
-## Linting
+## Linting 
 
 Run `yarn lint` to execute all linting across both Angular and Node layers. Note that this
 is run on the build pipelines.
@@ -174,6 +174,12 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 ## Running end-to-end tests
 
 Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+
+## Running Consumer Driven Contract tests (pact)
+
+Run `yarn test-pact` to execute the Pact tests 
+For publishing the pacts to broker execute `yarn publish-pact`
+
 
 ## Integration Documentation
 

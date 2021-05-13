@@ -16,7 +16,10 @@
     "documentsApi": "http://dm-store-prod.service.core-compute-prod.internal/health",
     "em_anno_api": "http://em-anno-prod.service.core-compute-prod.internal/health",
     "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal/health",
-    "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal/health"
+    "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal/health",
+    "taskApi": "http://wa-task-management-api-prod.service.core-compute-prod.internal/health",
+    "roleApi": "http://am-role-assignment-service-prod.service.core-compute-prod.internal/health",
+    "caseworkerApi": "http://rd-caseworker-ref-api-prod.service.core-compute-prod.internal/health"
   },
   "services": {
     "ccd": {
@@ -30,6 +33,7 @@
     "prd": {
       "api": "http://rd-professional-api-prod.service.core-compute-prod.internal"
     },
+    "em_hrs_api": "http://em-hrs-api-prod.service.core-compute-prod.internal",
     "em_anno_api": "http://em-anno-prod.service.core-compute-prod.internal",
     "idam": {
       "idamApiUrl": "https://idam-api.platform.hmcts.net",
@@ -42,6 +46,12 @@
     "work_allocation": {
       "taskApi": "http://wa-task-management-api-prod.service.core-compute-prod.internal"
     },
+    "role_assignment": {
+      "roleApi": "http://am-role-assignment-service-prod.service.core-compute-prod.internal"
+    },
+    "case": {
+      "caseworkerApi": "http://rd-caseworker-ref-api-prod.service.core-compute-prod.internal"
+    },
     "payments": "http://payment-api-prod.service.core-compute-prod.internal",
     "markup_api": "http://em-npa-prod.service.core-compute-prod.internal",
     "icp_api": "http://em-icp-prod.service.core-compute-prod.internal",
@@ -51,7 +61,19 @@
   "protocol": "https",
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",
-  "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT",
+  "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS",
+  "wildcardSearchFields": {
+    "Benefit": [
+      "generatedSurname",
+      "appeal.appellant.name.lastName"
+    ],
+    "xuiTestCaseType": [
+      "TextField"
+    ]
+  },
+  "wildcardSearchRoles": [
+    "caseworker"
+  ],
   "loginRoleMatcher": "caseworker",
   "log4JConfig": {
     "appenders": {
@@ -74,7 +96,10 @@
     "helmetEnabled": false,
     "termsAndConditionsEnabled": false,
     "redisEnabled": false,
-    "oidcEnabled": false
+    "oidcEnabled": false,
+    "workAllocationEnabled": false,
+    "roleEnabled": false,
+    "caseworkerRefEnabled": false
   },
   "helmet": {
     "contentSecurityPolicy": {
@@ -162,6 +187,7 @@
     }
   ],
   "pact": {
+    "branchName": "master",
     "brokerUrl": "https://pact-broker.platform.hmcts.net",
     "consumerVersion": "",
     "brokerUsername": "",

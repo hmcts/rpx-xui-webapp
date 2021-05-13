@@ -208,6 +208,9 @@ const caseDetailsUrl: string = '/cases/case-details/';
 // Create Case button text
 const startButtonText: string = 'Start now';
 
+const serviceMessagesFeatureToggleKey: string = 'mc-service-messages';
+const serviceMessageCookie: string = 'service_messages';
+
 export class AppConstants {
   static FOOTER_DATA = null;
   static FOOTER_DATA_NAVIGATION = FooterDataNavigation;
@@ -221,4 +224,8 @@ export class AppConstants {
   static FEATURE_NAMES = FeatureNames;
   static CASE_DETAILS_URL = caseDetailsUrl;
   static CREATE_CASE_BUTTON_TEXT = startButtonText;
+  static SERVICE_MESSAGES_FEATURE_TOGGLE_KEY = serviceMessagesFeatureToggleKey;
+  static SERVICE_MESSAGE_COOKIE = serviceMessageCookie;
 }
+
+export const LD_FLAG_REMOVE_USER_FROM_CASE_MC: string = 'remove-user-from-case-mc';

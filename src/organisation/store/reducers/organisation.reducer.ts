@@ -1,6 +1,5 @@
+import { Organisation } from '../../models';
 import * as fromOrganisation from '../actions/organisation.actions';
-import { Organisation } from 'src/organisation/models/organisation.interface';
-
 
 export interface OrganisationState {
   organisationDetails: Organisation;
@@ -19,7 +18,6 @@ export function reducer(
   action: fromOrganisation.organisationActions
 ): OrganisationState {
   switch (action.type) {
-
     case fromOrganisation.LOAD_ORGANISATION: {
       return {
         ...state,
@@ -34,15 +32,11 @@ export function reducer(
         organisationDetails,
         loaded: true
       };
-
     }
-
+    default:
+      return state;
   }
-
-  return state;
 }
 
 export const getOrganisation = (state: OrganisationState) => state.organisationDetails;
-export const getOrganisationLoading = (state: OrganisationState) => state.loading;
 export const getOrganisationLoaded = (state: OrganisationState) => state.loaded;
-

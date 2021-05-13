@@ -1,7 +1,6 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-
-import { Observable, of, throwError } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { Observable, throwError } from 'rxjs';
 
 export const ENVIRONMENT = {
   orgUri: '/api/organisation'
@@ -11,11 +10,11 @@ export const ENVIRONMENT = {
 export class OrganisationService {
   constructor(private http: HttpClient) { }
 
-  fetchOrganisation(): Observable<any> {
+  public fetchOrganisation(): Observable<any> {
    return this.http.get<any>(`${ENVIRONMENT.orgUri}`);
   }
 
-  private handleError(error: HttpErrorResponse) {
+  public handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
       console.error('An error occurred:', error.error.message);

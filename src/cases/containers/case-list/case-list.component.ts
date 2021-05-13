@@ -96,7 +96,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
   constructor(
     public store: Store<fromCaseList.State>,
-    private orgStore: Store<fromStore.OrganisationState>,
+    private readonly orgStore: Store<fromStore.OrganisationState>,
     private readonly appConfig: AppConfig,
     private readonly definitionsService: DefinitionsService,
     private readonly windowService: WindowService,

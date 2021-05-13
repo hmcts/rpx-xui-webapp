@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
-import { LoggerService } from 'src/app/services/logger/logger.service';
+import { LoggerService } from '../app/services/logger/logger.service';
 import * as fromServices from './services';
 import { effects, reducers } from './store';
 

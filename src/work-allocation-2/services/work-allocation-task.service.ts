@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { SearchTaskRequest, TaskSearchParameters } from '../models/dtos';
 import { Task } from '../models/tasks';
 
-const BASE_URL: string = '/workallocation/task';
+const BASE_URL: string = '/workallocation2/task';
 export enum ACTION {
   ASSIGN = 'assign',
   CANCEL = 'cancel',
@@ -34,7 +34,7 @@ export class WorkAllocationTaskService {
   /**
    * Call the API to assign a task to a user.
    * @param taskId specifies which task should be assigned.
-   * @param assignee specifies who this task should be assigned to.
+   * @param user specifies who this task should be assigned to.
    */
   public assignTask(taskId: string, user: any): Observable<any> {
     // Make a POST with the specified assignee in the payload.

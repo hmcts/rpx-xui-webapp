@@ -1,8 +1,9 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router, RoutesRecognized } from '@angular/router';
-import { CookieService, GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
+import { CookieService, FeatureToggleService, GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
 
 import { propsExist } from '../../../../api/lib/objectUtilities';
 import { environment as config } from '../../../environments/environment';
@@ -15,7 +16,7 @@ import * as fromRoot from '../../store';
   encapsulation: ViewEncapsulation.None
 })
 
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
 
   public timeoutModalConfig = {
     countdown: '0 seconds',
@@ -24,6 +25,8 @@ export class AppComponent implements OnInit {
 
   private userId: string = '';
   public isCookieBannerVisible: boolean = false;
+  private cookieBannerEnabledSubscription: Subscription
+  private cookieBannerEnabled: boolean = false;
 
   constructor(
     private readonly store: Store<fromRoot.State>,
@@ -32,6 +35,7 @@ export class AppComponent implements OnInit {
     private readonly router: Router,
     private readonly titleService: Title,
     private readonly cookieService: CookieService,
+    private readonly featureToggleService: FeatureToggleService,
   ) {
 
     this.googleTagManagerService.init(config.googleTagManagerKey);
@@ -62,6 +66,20 @@ export class AppComponent implements OnInit {
     // the rendering of the menu as it triggers an action that gets hold of
     // the user's profile.
     this.store.dispatch(new fromRoot.StartIdleSessionTimeout());
+
+    this.cookieBannerEnabledSubscription = this.featureToggleService.isEnabled('mc-cookie-baner-enabled')
+                                            .subscribe(value => this.handleCookieBannerFeatureToggle(value));
+  }
+
+  public ngOnDestroy() {
+    if (this.cookieBannerEnabledSubscription) {
+      this.cookieBannerEnabledSubscription.unsubscribe();
+    }
+  }
+
+  public handleCookieBannerFeatureToggle(flag: boolean): void {
+    this.cookieBannerEnabled = flag;
+    this.setCookieBannerVisibility();
   }
 
   /**
@@ -242,7 +260,7 @@ export class AppComponent implements OnInit {
   }
 
   public setCookieBannerVisibility(): void {
-    this.isCookieBannerVisible = !this.cookieService.checkCookie(`hmcts-exui-cookies-${this.userId}-mc-accepted`);
+    this.isCookieBannerVisible = !this.cookieService.checkCookie(`hmcts-exui-cookies-${this.userId}-mc-accepted`) && this.cookieBannerEnabled;
   }
 
   private getExpiryDate(): string {

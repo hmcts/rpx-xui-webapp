@@ -8,6 +8,7 @@ describe('AppComponent', () => {
     let googleTagManagerService: any;
     let timeoutNotificationService: any;
     let cookieService: any;
+    let featureToggleService: any;
     let router: any;
     let title: any;
     let testRoute: RoutesRecognized;
@@ -17,6 +18,7 @@ describe('AppComponent', () => {
         googleTagManagerService = jasmine.createSpyObj('GoogleTagManagerService', ['init']);
         timeoutNotificationService = jasmine.createSpyObj('TimeoutNotificationsService', ['notificationOnChange', 'initialise']);
         cookieService = jasmine.createSpyObj('CookieService', ['setCookie', 'checkCookie']);
+        featureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled']);
         testRoute = new RoutesRecognized(1, 'test', 'test', {
             url: 'test',
             root: {
@@ -55,7 +57,7 @@ describe('AppComponent', () => {
         });
         router = { events: of(testRoute) };
         title = jasmine.createSpyObj('Title', ['setTitle']);
-        appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService, router, title, cookieService);
+        appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService, router, title, cookieService, featureToggleService);
     });
 
     it('Truthy', () => {
@@ -153,6 +155,16 @@ describe('AppComponent', () => {
             it('should call setCookieBannerVisibility', () => {
                 const spy = spyOn(appComponent, 'setCookieBannerVisibility');
                 appComponent.setUserAndCheckCookie('dummy');
+                expect(spy).toHaveBeenCalled();
+            });
+
+        });
+
+        describe('handleCookieBannerFeatureToggle()', () => {
+
+            it('should make a call to setCookieBannerVisibility', () => {
+                const spy = spyOn(appComponent, 'setCookieBannerVisibility');
+                appComponent.handleCookieBannerFeatureToggle(true);
                 expect(spy).toHaveBeenCalled();
             });
 

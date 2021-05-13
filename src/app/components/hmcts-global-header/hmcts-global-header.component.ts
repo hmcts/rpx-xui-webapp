@@ -1,5 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
-import { Router } from '@angular/router';
+import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 import { Store } from '@ngrx/store';
 
 import * as fromNocStore from '../../../noc/store';
@@ -8,7 +7,8 @@ import { UserNavModel } from '../../models/user-nav.model';
 
 @Component({
     selector: 'exui-hmcts-global-header',
-    templateUrl: './hmcts-global-header.component.html'
+    templateUrl: './hmcts-global-header.component.html',
+    styleUrls: ['./hmcts-global-header.component.scss']
 })
 export class HmctsGlobalHeaderComponent implements OnChanges {
 
@@ -32,7 +32,7 @@ export class HmctsGlobalHeaderComponent implements OnChanges {
 
   constructor(public nocStore: Store<fromNocStore.State>) { }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  public ngOnChanges(changes: SimpleChanges): void {
     if (changes.items.currentValue !== changes.items.previousValue) {
       this.splitNavItems();
     }

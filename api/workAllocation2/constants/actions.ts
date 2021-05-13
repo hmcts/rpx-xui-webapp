@@ -26,7 +26,7 @@ const CLAIM_AND_GO: Action = {
 };
 const GO: Action = {
   id: 'go',
-  title: 'Go to case',
+  title: 'Go to task',
 };
 
 /**

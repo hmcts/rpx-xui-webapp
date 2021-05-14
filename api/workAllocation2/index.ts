@@ -67,20 +67,26 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
  */
 export async function searchTask(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    let postTaskPath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
     const searchRequest = req.body.searchRequest;
     const view = req.body.view;
     let promise;
     if (searchRequest.search_by === 'judge') {
       // TODO below call mock api will be replaced when real api is ready
       if (view === 'MyTasks') {
+        const postTaskPath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'myTasks?view=judicial');
         promise = await handlePost(postTaskPath, searchRequest, req);
       } else if (view === 'AvailableTasks') {
-        postTaskPath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'availableTasks');
+        const postTaskPath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'availableTasks?view=judicial');
         promise = await handlePost(postTaskPath, searchRequest, req);
       }
     } else {
-      promise = await handleTaskSearch(postTaskPath, searchRequest, req);
+      if (view === 'MyTasks') {
+        const postTaskPath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'myTasks?view=caseworker');
+        promise = await handlePost(postTaskPath, searchRequest, req);
+      } else if (view === 'AvailableTasks') {
+        const postTaskPath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'availableTasks?view=caseworker');
+        promise = await handlePost(postTaskPath, searchRequest, req);
+      }
     }
     const {status, data} = promise;
     res.status(status);

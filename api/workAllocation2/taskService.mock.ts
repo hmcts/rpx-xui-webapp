@@ -1,7 +1,10 @@
 import MockAdapter from 'axios-mock-adapter';
 import * as faker from 'faker/locale/en_GB';
 import { httpMock } from '../common/httpMock';
-import { AVAILABLE_TASKS, MY_TASKS } from './constants/mock.data';
+import { CASEWORKER_AVAILABLE_TASKS,
+  CASEWORKER_MY_TASKS,
+  JUDICIAL_AVAILABLE_TASKS,
+  JUDICIAL_MY_TASKS } from './constants/mock.data';
 
 // random generator
 export const generator = (schema, min = 1, max) => {
@@ -33,24 +36,44 @@ export const generator = (schema, min = 1, max) => {
 export const init = () => {
   const mock = new MockAdapter(httpMock);
 
-  const postMyTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task/;
-  const postAvailableTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/availableTasks/;
+  const judicialMyTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/myTasks\?view=judicial/;
+  const judicialAvailableTaskUrl =
+    /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/availableTasks\?view=judicial/;
+  const caseworkerMyTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/myTasks\?view=caseworker/;
+  const caseworkerAvailableTaskUrl =
+    /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/availableTasks\?view=caseworker/;
 
   // simulate some error if needed
   // mock.onGet(url).networkErrorOnce()
-  mock.onPost(postMyTaskUrl).reply(() => {
+  mock.onPost(judicialMyTaskUrl).reply(() => {
     // return an array in the form of [status, data, headers]
     return [
       200,
-      MY_TASKS,
+      JUDICIAL_MY_TASKS,
     ];
   });
 
-  mock.onPost(postAvailableTaskUrl).reply(() => {
+  mock.onPost(judicialAvailableTaskUrl).reply(() => {
     // return an array in the form of [status, data, headers]
     return [
       200,
-      AVAILABLE_TASKS,
+      JUDICIAL_AVAILABLE_TASKS,
+    ];
+  });
+
+  mock.onPost(caseworkerMyTaskUrl).reply(() => {
+    // return an array in the form of [status, data, headers]
+    return [
+      200,
+      CASEWORKER_MY_TASKS,
+    ];
+  });
+
+  mock.onPost(caseworkerAvailableTaskUrl).reply(() => {
+    // return an array in the form of [status, data, headers]
+    return [
+      200,
+      CASEWORKER_AVAILABLE_TASKS,
     ];
   });
 };

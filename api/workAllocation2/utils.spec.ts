@@ -1,8 +1,11 @@
 import { expect } from 'chai';
 
-import { ActionViews, TaskPermission, TASK_ACTIONS } from './constants/actions';
-import { CaseworkerApi, LocationApi, Location, Caseworker } from './interfaces/task';
-import { assignActionsToTasks, assignActionsToTasksWithPermissions, getWATaskActions, getWATaskActionsForCancel, getWATaskActionsForExecute, getWATaskActionsForManage, mapCaseworkerData, mapCaseworkerPrimaryLocation, prepareGetTaskUrl, preparePostTaskUrlAction, prepareSearchTaskUrl } from './util';
+import { ActionViews, TASK_ACTIONS, TaskPermission } from './constants/actions';
+import { Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/task';
+import { assignActionsToTasks, assignActionsToTasksWithPermissions, getWATaskActions,
+  getWATaskActionsForCancel, getWATaskActionsForExecute,
+  getWATaskActionsForManage, mapCaseworkerData, mapCaseworkerPrimaryLocation, prepareGetTaskUrl,
+  preparePostTaskUrlAction, prepareSearchTaskUrl } from './util';
 
 describe('workAllocation.utils', () => {
 
@@ -39,7 +42,6 @@ describe('workAllocation.utils', () => {
 
   });
 
-
   describe('assignActionsToTasks', () => {
 
     const TASKS = {
@@ -52,7 +54,7 @@ describe('workAllocation.utils', () => {
         taskName: 'Apply for probate',
         dueDate: new Date(1604938789000),
         assignee: 'Bob',
-        actions: undefined
+        actions: undefined,
       },
       TASK_2: {
         id: '2',
@@ -62,15 +64,15 @@ describe('workAllocation.utils', () => {
         location: 'Taylor House',
         taskName: 'Apply for probate',
         dueDate: new Date(1604938789000),
-        actions: undefined
-      }
+        actions: undefined,
+      },
     };
 
     it('should set up actions appropriately for My tasks view', () => {
       const tasks = [ { ...TASKS.TASK_1 }, { ...TASKS.TASK_2 } ];
       expect(tasks[0].actions).to.be.undefined;
       expect(tasks[1].actions).to.be.undefined;
-      assignActionsToTasks(tasks, ActionViews.MY)
+      assignActionsToTasks(tasks, ActionViews.MY);
       expect(tasks[0].actions).to.deep.equal(TASK_ACTIONS.MY);
       expect(tasks[1].actions).to.deep.equal(TASK_ACTIONS.MY);
     });
@@ -79,7 +81,7 @@ describe('workAllocation.utils', () => {
       const tasks = [ { ...TASKS.TASK_1 }, { ...TASKS.TASK_2 } ];
       expect(tasks[0].actions).to.be.undefined;
       expect(tasks[1].actions).to.be.undefined;
-      assignActionsToTasks(tasks, ActionViews.AVAILABLE)
+      assignActionsToTasks(tasks, ActionViews.AVAILABLE);
       expect(tasks[0].actions).to.deep.equal(TASK_ACTIONS.AVAILABLE);
       expect(tasks[1].actions).to.deep.equal(TASK_ACTIONS.AVAILABLE);
     });
@@ -88,7 +90,7 @@ describe('workAllocation.utils', () => {
       const tasks = [ { ...TASKS.TASK_1 }, { ...TASKS.TASK_2 } ];
       expect(tasks[0].actions).to.be.undefined;
       expect(tasks[1].actions).to.be.undefined;
-      assignActionsToTasks(tasks, ActionViews.MANAGER)
+      assignActionsToTasks(tasks, ActionViews.MANAGER);
       expect(tasks[0].actions).to.deep.equal(TASK_ACTIONS.MANAGER.ASSIGNED); // Has an assignee
       expect(tasks[1].actions).to.deep.equal(TASK_ACTIONS.MANAGER.UNASSIGNED); // Is unassigned
     });
@@ -97,7 +99,7 @@ describe('workAllocation.utils', () => {
       const tasks = [ { ...TASKS.TASK_1 }, { ...TASKS.TASK_2 } ];
       expect(tasks[0].actions).to.be.undefined;
       expect(tasks[1].actions).to.be.undefined;
-      assignActionsToTasks(tasks, 'Bob')
+      assignActionsToTasks(tasks, 'Bob');
       expect(tasks[0].actions).to.be.an('array').that.is.empty;
       expect(tasks[1].actions).to.be.an('array').that.is.empty;
     });
@@ -106,7 +108,7 @@ describe('workAllocation.utils', () => {
       const tasks = [ { ...TASKS.TASK_1 }, { ...TASKS.TASK_2 } ];
       expect(tasks[0].actions).to.be.undefined;
       expect(tasks[1].actions).to.be.undefined;
-      assignActionsToTasksWithPermissions(tasks, [TaskPermission.MANAGE], ActionViews.MY)
+      assignActionsToTasksWithPermissions(tasks, [TaskPermission.MANAGE], ActionViews.MY);
       expect(tasks[0].actions).to.deep.equal(TASK_ACTIONS.MY);
       expect(tasks[1].actions).to.deep.equal(TASK_ACTIONS.MY);
     });
@@ -115,7 +117,7 @@ describe('workAllocation.utils', () => {
       const tasks = [ { ...TASKS.TASK_1 }, { ...TASKS.TASK_2 } ];
       expect(tasks[0].actions).to.be.undefined;
       expect(tasks[1].actions).to.be.undefined;
-      assignActionsToTasksWithPermissions(tasks, [TaskPermission.MANAGE], ActionViews.AVAILABLE)
+      assignActionsToTasksWithPermissions(tasks, [TaskPermission.MANAGE], ActionViews.AVAILABLE);
       expect(tasks[0].actions).to.deep.equal(TASK_ACTIONS.AVAILABLE);
       expect(tasks[1].actions).to.deep.equal(TASK_ACTIONS.AVAILABLE);
     });
@@ -125,7 +127,7 @@ describe('workAllocation.utils', () => {
       const tasks = [ { ...TASKS.TASK_1 }, { ...TASKS.TASK_2 } ];
       expect(tasks[0].actions).to.be.undefined;
       expect(tasks[1].actions).to.be.undefined;
-      assignActionsToTasksWithPermissions(tasks, [TaskPermission.MANAGE], ActionViews.ACTIVE)
+      assignActionsToTasksWithPermissions(tasks, [TaskPermission.MANAGE], ActionViews.ACTIVE);
       expect(tasks[0].actions).to.deep.equal(TASK_ACTIONS.ACTIVE);
       expect(tasks[1].actions).to.deep.equal(TASK_ACTIONS.ACTIVE);
     });
@@ -134,7 +136,7 @@ describe('workAllocation.utils', () => {
       const tasks = [ { ...TASKS.TASK_1 }, { ...TASKS.TASK_2 } ];
       expect(tasks[0].actions).to.be.undefined;
       expect(tasks[1].actions).to.be.undefined;
-      assignActionsToTasksWithPermissions(tasks, [TaskPermission.MANAGE], ActionViews.ALL_WORK)
+      assignActionsToTasksWithPermissions(tasks, [TaskPermission.MANAGE], ActionViews.ALL_WORK);
       expect(tasks[0].actions).to.deep.equal(TASK_ACTIONS.ALL_WORK.ASSIGNED); // Has an assignee
       expect(tasks[1].actions).to.deep.equal(TASK_ACTIONS.ALL_WORK.UNASSIGNED); // Is unassigned
     });
@@ -179,7 +181,8 @@ describe('workAllocation.utils', () => {
 
       // should get manage actions for available tasks depending on permission
       expect(getWATaskActions([TaskPermission.MANAGE], ActionViews.AVAILABLE, false)).to.deep.equal(TASK_ACTIONS.AVAILABLE);
-      expect(getWATaskActions([TaskPermission.OWN, TaskPermission.READ, TaskPermission.REFER], ActionViews.AVAILABLE, false)).to.deep.equal([]);
+      expect(getWATaskActions([TaskPermission.OWN, TaskPermission.READ, TaskPermission.REFER],
+        ActionViews.AVAILABLE, false)).to.deep.equal([]);
 
       // should get manage actions for active tasks depending on permission
       // Note - temporary test for this as separate logic will be needed for other scenarios
@@ -189,8 +192,9 @@ describe('workAllocation.utils', () => {
       // should get manage actions for All Work tasks depending on permission
       const allWorkPermissions = [TaskPermission.MANAGE, TaskPermission.EXECUTE, TaskPermission.CANCEL];
       // verify that the correct full list returned for all work
-      expect(getWATaskActions(allWorkPermissions, ActionViews.ALL_WORK, false)).to.deep.equal([
-        TASK_ACTIONS.ALL_WORK.UNASSIGNED[0], TASK_ACTIONS.ALL_WORK.UNASSIGNED[1], TASK_ACTIONS.EXECUTE[0], TASK_ACTIONS.CANCEL[0]]);
+      expect(getWATaskActions(allWorkPermissions, ActionViews.ALL_WORK, false))
+        .to.deep.equal([TASK_ACTIONS.ALL_WORK.UNASSIGNED[0], TASK_ACTIONS.ALL_WORK.UNASSIGNED[1],
+        TASK_ACTIONS.EXECUTE[0], TASK_ACTIONS.CANCEL[0]]);
       // verify that correct list returned for when task is assigned
       expect(getWATaskActions([TaskPermission.MANAGE], ActionViews.ALL_WORK, true)).to.deep.equal(TASK_ACTIONS.ALL_WORK.ASSIGNED);
     });
@@ -201,91 +205,91 @@ describe('workAllocation.utils', () => {
     const LOCATIONAPI_1: LocationApi = {
       location_id: '1',
       location: 'Test One',
-      services: ['a','b'],
-      is_primary: true
-    }
+      services: ['a', 'b'],
+      is_primary: true,
+    };
     const LOCATIONAPI_2: LocationApi = {
       location_id: '2',
       location: 'Test Two',
-      services: ['a','c'],
-      is_primary: false
-    }
+      services: ['a', 'c'],
+      is_primary: false,
+    };
     const LOCATIONAPI_3: LocationApi = {
       location_id: '3',
       location: 'Test Three',
-      services: ['b','c'],
-      is_primary: true
-    }
+      services: ['b', 'c'],
+      is_primary: true,
+    };
 
     const LOCATION_1: Location = {
       id: '1',
       locationName: 'Test One',
-      services: ['a','b']
-    }
+      services: ['a', 'b'],
+    };
     const LOCATION_2: Location = {
       id: '3',
       locationName: 'Test Three',
-      services: ['b','c']
-    }
+      services: ['b', 'c'],
+    };
 
     const CASEWORKERAPI_1: CaseworkerApi = {
       id: '1',
       first_name: 'Name',
       last_name: 'Test',
       email_id: 'nametest@test.com',
-      base_location: [LOCATIONAPI_1, LOCATIONAPI_2]
-    }
+      base_location: [LOCATIONAPI_1, LOCATIONAPI_2],
+    };
     const CASEWORKERAPI_2: CaseworkerApi = {
       id: '2',
       first_name: 'First',
       last_name: 'Last',
       email_id: 'firstlast@test.com',
-      base_location: [LOCATIONAPI_2, LOCATIONAPI_3]
-    }
+      base_location: [LOCATIONAPI_2, LOCATIONAPI_3],
+    };
     const CASEWORKERAPI_3: CaseworkerApi = {
       id: '3',
       first_name: 'One',
       last_name: 'Two',
       email_id: 'onetwo@test.com',
-      base_location: [LOCATIONAPI_1, LOCATIONAPI_3]
-    }
+      base_location: [LOCATIONAPI_1, LOCATIONAPI_3],
+    };
     const CASEWORKERAPI_4: CaseworkerApi = {
       id: '4',
       first_name: 'Fourth',
       last_name: 'Test',
       email_id: 'fourthtest@test.com',
-      base_location: []
-    }
+      base_location: [],
+    };
 
     const CASEWORKER_1: Caseworker = {
       idamId: '1',
       firstName: 'Name',
       lastName: 'Test',
       email: 'nametest@test.com',
-      location: LOCATION_1
-    }
+      location: LOCATION_1,
+    };
     const CASEWORKER_2: Caseworker = {
       idamId: '2',
       firstName: 'First',
       lastName: 'Last',
       email: 'firstlast@test.com',
-      location: LOCATION_2
-    }
+      location: LOCATION_2,
+    };
     const CASEWORKER_3: Caseworker = {
       idamId: '3',
       firstName: 'One',
       lastName: 'Two',
       email: 'onetwo@test.com',
-      location: LOCATION_2
-    }
+      location: LOCATION_2,
+    };
     const CASEWORKER_4: Caseworker = {
       idamId: '4',
       firstName: 'Fourth',
       lastName: 'Test',
       email: 'fourthtest@test.com',
-      location: null
-    }
-    
+      location: null,
+    };
+
     it('should map the primary location correctly', () => {
       // check function seals with no locations
       expect(mapCaseworkerPrimaryLocation(undefined)).to.equal(null);
@@ -308,8 +312,9 @@ describe('workAllocation.utils', () => {
       expect(mapCaseworkerData(null)).to.deep.equal([]);
 
       // this will ensure that the mapping of caseworker data is correct
-      expect(mapCaseworkerData([CASEWORKERAPI_1, CASEWORKERAPI_2, CASEWORKERAPI_3, CASEWORKERAPI_4])).to.deep.equal([CASEWORKER_1, CASEWORKER_2, CASEWORKER_3, CASEWORKER_4])
-    })
+      expect(mapCaseworkerData([CASEWORKERAPI_1, CASEWORKERAPI_2, CASEWORKERAPI_3, CASEWORKERAPI_4]))
+        .to.deep.equal([CASEWORKER_1, CASEWORKER_2, CASEWORKER_3, CASEWORKER_4]);
+    });
   });
 
 });

@@ -2,7 +2,7 @@
 export const JUDICIAL_MY_TASKS = {
   tasks: [
     {
-      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7b4e',
+      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba1',
       name: 'Follow-up non-standard direction',
       assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       type: 'followUpNonStandardDirection',
@@ -43,7 +43,7 @@ export const JUDICIAL_MY_TASKS = {
       caseCategory: 'refusalOfHumanRights',
     },
     {
-      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7b4e',
+      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba2',
       name: 'Follow-up non-standard direction',
       assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       type: 'followUpNonStandardDirection',
@@ -84,7 +84,7 @@ export const JUDICIAL_MY_TASKS = {
       caseCategory: 'refusalOfHumanRights',
     },
     {
-      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7b4e',
+      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba3',
       name: 'Follow-up non-standard direction',
       assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       type: 'followUpNonStandardDirection',
@@ -125,7 +125,7 @@ export const JUDICIAL_MY_TASKS = {
       caseCategory: 'refusalOfHumanRights',
     },
     {
-      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7b4e',
+      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba4',
       name: 'Follow-up non-standard direction',
       assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       type: 'followUpNonStandardDirection',
@@ -171,7 +171,7 @@ export const JUDICIAL_MY_TASKS = {
 export const CASEWORKER_MY_TASKS = {
   tasks: [
     {
-      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7b4e',
+      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb1',
       name: 'Follow-up non-standard direction',
       assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       type: 'followUpNonStandardDirection',
@@ -212,7 +212,7 @@ export const CASEWORKER_MY_TASKS = {
       caseCategory: 'refusalOfHumanRights',
     },
     {
-      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7b4e',
+      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb2',
       name: 'Follow-up non-standard direction',
       assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       type: 'followUpNonStandardDirection',
@@ -253,7 +253,7 @@ export const CASEWORKER_MY_TASKS = {
       caseCategory: 'refusalOfHumanRights',
     },
     {
-      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7b4e',
+      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb3',
       name: 'Follow-up non-standard direction',
       assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       type: 'followUpNonStandardDirection',
@@ -294,7 +294,7 @@ export const CASEWORKER_MY_TASKS = {
       caseCategory: 'refusalOfHumanRights',
     },
     {
-      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7b4e',
+      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb4',
       name: 'Follow-up non-standard direction',
       assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       type: 'followUpNonStandardDirection',
@@ -340,7 +340,7 @@ export const CASEWORKER_MY_TASKS = {
 export const JUDICIAL_AVAILABLE_TASKS = {
   tasks: [
     {
-      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7b4e',
+      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc1',
       name: 'Follow-up non-standard direction',
       assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       type: 'followUpNonStandardDirection',
@@ -381,7 +381,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       caseCategory: 'refusalOfHumanRights',
     },
     {
-      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7b4e',
+      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc2',
       name: 'Follow-up non-standard direction',
       assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       type: 'followUpNonStandardDirection',
@@ -422,7 +422,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       caseCategory: 'refusalOfHumanRights',
     },
     {
-      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7b4e',
+      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc3',
       name: 'Follow-up non-standard direction',
       assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       type: 'followUpNonStandardDirection',
@@ -463,7 +463,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       caseCategory: 'refusalOfHumanRights',
     },
     {
-      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7b4e',
+      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc4',
       name: 'Follow-up non-standard direction',
       assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       type: 'followUpNonStandardDirection',
@@ -504,7 +504,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       caseCategory: 'refusalOfHumanRights',
     },
     {
-      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7b4e',
+      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc5',
       name: 'Follow-up non-standard direction',
       assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       type: 'followUpNonStandardDirection',
@@ -545,7 +545,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       caseCategory: 'refusalOfHumanRights',
     },
     {
-      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7b4e',
+      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc6',
       name: 'Follow-up non-standard direction',
       assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       type: 'followUpNonStandardDirection',
@@ -586,7 +586,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       caseCategory: 'refusalOfHumanRights',
     },
     {
-      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7b4e',
+      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc7',
       name: 'Follow-up non-standard direction',
       assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       type: 'followUpNonStandardDirection',
@@ -627,7 +627,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       caseCategory: 'refusalOfHumanRights',
     },
     {
-      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7b4e',
+      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc8',
       name: 'Follow-up non-standard direction',
       assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       type: 'followUpNonStandardDirection',
@@ -673,7 +673,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
 export const CASEWORKER_AVAILABLE_TASKS = {
   tasks: [
     {
-      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7b4e',
+      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd1',
       name: 'Follow-up non-standard direction',
       assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       type: 'followUpNonStandardDirection',
@@ -714,7 +714,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       caseCategory: 'refusalOfHumanRights',
     },
     {
-      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7b4e',
+      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd2',
       name: 'Follow-up non-standard direction',
       assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       type: 'followUpNonStandardDirection',
@@ -755,7 +755,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       caseCategory: 'refusalOfHumanRights',
     },
     {
-      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7b4e',
+      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd3',
       name: 'Follow-up non-standard direction',
       assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       type: 'followUpNonStandardDirection',
@@ -796,7 +796,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       caseCategory: 'refusalOfHumanRights',
     },
     {
-      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7b4e',
+      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd4',
       name: 'Follow-up non-standard direction',
       assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       type: 'followUpNonStandardDirection',
@@ -837,7 +837,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       caseCategory: 'refusalOfHumanRights',
     },
     {
-      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7b4e',
+      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd5',
       name: 'Follow-up non-standard direction',
       assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       type: 'followUpNonStandardDirection',
@@ -878,7 +878,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       caseCategory: 'refusalOfHumanRights',
     },
     {
-      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7b4e',
+      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd6',
       name: 'Follow-up non-standard direction',
       assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       type: 'followUpNonStandardDirection',
@@ -919,7 +919,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       caseCategory: 'refusalOfHumanRights',
     },
     {
-      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7b4e',
+      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd7',
       name: 'Follow-up non-standard direction',
       assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       type: 'followUpNonStandardDirection',
@@ -960,7 +960,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       caseCategory: 'refusalOfHumanRights',
     },
     {
-      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7b4e',
+      id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd8',
       name: 'Follow-up non-standard direction',
       assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       type: 'followUpNonStandardDirection',
@@ -1001,4 +1001,11 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       caseCategory: 'refusalOfHumanRights',
     },
   ],
+};
+
+export const ALL_TASKS = {
+  tasks: [...CASEWORKER_AVAILABLE_TASKS.tasks,
+    ...CASEWORKER_MY_TASKS.tasks,
+    ...JUDICIAL_AVAILABLE_TASKS.tasks,
+    ...JUDICIAL_MY_TASKS.tasks]
 };

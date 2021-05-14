@@ -1,10 +1,13 @@
 import MockAdapter from 'axios-mock-adapter';
 import * as faker from 'faker/locale/en_GB';
 import { httpMock } from '../common/httpMock';
-import { CASEWORKER_AVAILABLE_TASKS,
+import {
+  ALL_TASKS,
+  CASEWORKER_AVAILABLE_TASKS,
   CASEWORKER_MY_TASKS,
   JUDICIAL_AVAILABLE_TASKS,
-  JUDICIAL_MY_TASKS } from './constants/mock.data';
+  JUDICIAL_MY_TASKS
+} from './constants/mock.data';
 
 // random generator
 export const generator = (schema, min = 1, max) => {
@@ -37,11 +40,13 @@ export const init = () => {
   const mock = new MockAdapter(httpMock);
 
   const judicialMyTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/myTasks\?view=judicial/;
-  const judicialAvailableTaskUrl =
-    /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/availableTasks\?view=judicial/;
+  // tslint:disable-next-line:max-line-length
+  const judicialAvailableTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/availableTasks\?view=judicial/;
   const caseworkerMyTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/myTasks\?view=caseworker/;
-  const caseworkerAvailableTaskUrl =
-    /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/availableTasks\?view=caseworker/;
+  // tslint:disable-next-line:max-line-length
+  const caseworkerAvailableTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/availableTasks\?view=caseworker/;
+  // tslint:disable-next-line:max-line-length
+  const getTaskFromIDUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/tasks\/[\s\S]*/;
 
   // simulate some error if needed
   // mock.onGet(url).networkErrorOnce()
@@ -74,6 +79,16 @@ export const init = () => {
     return [
       200,
       CASEWORKER_AVAILABLE_TASKS,
+    ];
+  });
+
+  mock.onGet(getTaskFromIDUrl).reply(config => {
+    // return an array in the form of [status, data, headers]
+    const taskIDs = config.url.match(/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/);
+    const foundTask = ALL_TASKS.tasks.find(task => task.id === taskIDs[0]);
+    return [
+      200,
+      foundTask,
     ];
   });
 };

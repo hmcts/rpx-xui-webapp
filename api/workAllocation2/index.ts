@@ -1,5 +1,5 @@
 import { NextFunction, Response } from 'express';
-import { handlePost } from '../common/mockService';
+import { handleGet, handlePost } from '../common/mockService';
 import { getConfigValue } from '../configuration';
 import {
   SERVICES_CASE_CASEWORKER_REF_PATH,
@@ -18,7 +18,7 @@ import {
 } from './caseWorkerService';
 import { TaskPermission } from './constants/actions';
 import { Caseworker } from './interfaces/task';
-import { handleTaskGet, handleTaskPost, handleTaskSearch } from './taskService';
+import { handleTaskPost, handleTaskSearch } from './taskService';
 import * as mock from './taskService.mock';
 import {
   assignActionsToTasks,
@@ -51,10 +51,8 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
   try {
     const getTaskPath: string = prepareGetTaskUrl(baseWorkAllocationTaskUrl, req.params.taskId);
 
-    const jsonResponse = await handleTaskGet(getTaskPath, req);
-    if (jsonResponse && jsonResponse.task && jsonResponse.task.due_date) {
-      jsonResponse.task.dueDate = jsonResponse.task.due_date;
-    }
+    const jsonResponse = await handleGet(getTaskPath, req);
+
     res.status(200);
     res.send(jsonResponse);
   } catch (error) {

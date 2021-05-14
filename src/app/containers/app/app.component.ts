@@ -260,7 +260,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   public setCookieBannerVisibility(): void {
-    this.isCookieBannerVisible = !this.cookieService.checkCookie(`hmcts-exui-cookies-${this.userId}-mc-accepted`) && this.cookieBannerEnabled;
+    this.isCookieBannerVisible = !this.cookieService.checkCookie(`hmcts-exui-cookies-${this.userId}-mc-accepted`) && this.cookieBannerEnabled && !!this.userId;
   }
 
   private getExpiryDate(): string {

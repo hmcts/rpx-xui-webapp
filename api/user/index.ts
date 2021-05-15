@@ -16,7 +16,7 @@ export async function getUserDetails(req, res: Response, next: NextFunction) {
     res.send({
       canShareCases,
       sessionTimeout,
-      userInfo
+      userInfo,
     })
   } catch (error) {
     next(error)

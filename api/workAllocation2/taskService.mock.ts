@@ -46,7 +46,9 @@ export const init = () => {
   // tslint:disable-next-line:max-line-length
   const caseworkerAvailableTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/availableTasks\?view=caseworker/;
   // tslint:disable-next-line:max-line-length
-  const getTaskFromIDUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/tasks\/[\s\S]*/;
+  const getTaskFromIDUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/;
+  // tslint:disable-next-line:max-line-length
+  const claimTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/claim/;
 
   // simulate some error if needed
   // mock.onGet(url).networkErrorOnce()
@@ -89,6 +91,14 @@ export const init = () => {
     return [
       200,
       foundTask,
+    ];
+  });
+
+  mock.onPost(claimTaskUrl).reply(() => {
+    // return an array in the form of [status, data, headers]
+    return [
+      204,
+      'success',
     ];
   });
 };

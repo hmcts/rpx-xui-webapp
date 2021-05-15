@@ -20,7 +20,7 @@ export const JUDICIAL_MY_TASKS = {
       location_name: 'Glasgow',
       case_id: '1620409659381330',
       case_category: 'Protection',
-      case_name: 'Kimi Ryan',
+      case_name: 'Ella Ryan',
       permissions: ['Read', 'Manage'],
     },
     {
@@ -31,7 +31,7 @@ export const JUDICIAL_MY_TASKS = {
       location_name: 'Manchester',
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
-      case_name: 'Patti Jo',
+      case_name: 'Jo Jackson',
       permissions: ['Read', 'Manage'],
     },
     {
@@ -58,7 +58,7 @@ export const CASEWORKER_MY_TASKS = {
       location_name: 'Birmingham',
       case_id: '1620409659381330',
       case_category: 'EEA',
-      case_name: 'Elisabet Boris',
+      case_name: 'Tanya Boris',
       permissions: ['Read', 'Manage'],
     },
     {
@@ -69,7 +69,7 @@ export const CASEWORKER_MY_TASKS = {
       location_name: 'Glasgow',
       case_id: '1620409659381330',
       case_category: 'Protection',
-      case_name: 'Elisabet Borgen',
+      case_name: 'Victoria King',
       permissions: ['Read', 'Manage'],
     },
     {
@@ -80,7 +80,7 @@ export const CASEWORKER_MY_TASKS = {
       location_name: 'Manchester',
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
-      case_name: 'Talha Awan',
+      case_name: 'Ryan Lee',
       permissions: ['Read', 'Manage'],
     },
     {
@@ -91,7 +91,7 @@ export const CASEWORKER_MY_TASKS = {
       location_name: 'Newcastle',
       case_id: '1620409659381330',
       case_category: 'asylum',
-      case_name: 'Elisabet Boris',
+      case_name: 'Kim Lee',
       permissions: ['Read'],
     },
   ],
@@ -107,7 +107,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       location_name: 'Birmingham',
       case_id: '1620409659381330',
       case_category: 'EEA',
-      case_name: 'Kimberly Priest',
+      case_name: 'William Priest',
       permissions: ['Read', 'Manage'],
     },
     {
@@ -129,7 +129,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       location_name: 'Manchester',
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
-      case_name: 'Patti Jo',
+      case_name: 'Francis Gigs',
       permissions: ['Read', 'Manage'],
     },
     {
@@ -140,7 +140,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       location_name: 'Newcastle',
       case_id: '1620409659381330',
       case_category: 'asylum',
-      case_name: 'Elisabet Boris',
+      case_name: 'Alan Jonson',
       permissions: ['Read', 'Manage'],
     },
     {
@@ -151,7 +151,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       location_name: 'Birmingham',
       case_id: '1620409659381330',
       case_category: 'EEA',
-      case_name: 'James Priest',
+      case_name: 'Michael Jackson',
       permissions: ['Read', 'Manage'],
     },
     {
@@ -173,7 +173,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       location_name: 'Manchester',
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
-      case_name: 'Nick Well',
+      case_name: 'Taylor Swift',
       permissions: ['Read', 'Manage'],
     },
     {
@@ -200,7 +200,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       location_name: 'Birmingham',
       case_id: '1620409659381330',
       case_category: 'EEA',
-      case_name: 'Kimberly Priest',
+      case_name: 'Kimberly Julian',
       permissions: ['Read', 'Manage'],
     },
     {
@@ -211,7 +211,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       location_name: 'Glasgow',
       case_id: '1620409659381330',
       case_category: 'Protection',
-      case_name: 'Jo Fly',
+      case_name: 'James Carter',
       permissions: ['Read', 'Manage'],
     },
     {
@@ -222,7 +222,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       location_name: 'Manchester',
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
-      case_name: 'Patti Jo',
+      case_name: 'Bruce Willis',
       permissions: ['Read', 'Manage'],
     },
     {
@@ -233,7 +233,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       location_name: 'Newcastle',
       case_id: '1620409659381330',
       case_category: 'asylum',
-      case_name: 'Elisabet Boris',
+      case_name: 'Martin Wyatt',
       permissions: ['Read', 'Manage'],
     },
     {
@@ -244,7 +244,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       location_name: 'Birmingham',
       case_id: '1620409659381330',
       case_category: 'EEA',
-      case_name: 'James Priest',
+      case_name: 'Evelyn Madison',
       permissions: ['Read', 'Manage'],
     },
     {
@@ -255,7 +255,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       location_name: 'Glasgow',
       case_id: '1620409659381330',
       case_category: 'Protection',
-      case_name: 'George Bush',
+      case_name: 'Harper Eleanor',
       permissions: ['Read', 'Manage'],
     },
     {
@@ -266,7 +266,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       location_name: 'Manchester',
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
-      case_name: 'Nick Well',
+      case_name: 'Jamie Jack',
       permissions: ['Read', 'Manage'],
     },
     {
@@ -277,7 +277,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       location_name: 'Newcastle',
       case_id: '1620409659381330',
       case_category: 'asylum',
-      case_name: 'Kenny Young',
+      case_name: 'Mason Scarlett',
       permissions: ['Read'],
     },
   ],

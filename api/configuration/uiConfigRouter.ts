@@ -4,6 +4,7 @@ import {
   FEATURE_OIDC_ENABLED,
   LAUNCH_DARKLY_CLIENT_ID,
   PROTOCOL,
+  SERVICES_CCD_COMPONENT_API_PATH,
   SERVICES_IDAM_CLIENT_ID,
   SERVICES_IDAM_LOGIN_URL,
   SERVICES_IDAM_OAUTH_CALLBACK_URL,
@@ -29,6 +30,7 @@ async function uiConfigurationRouter(req, res) {
     oAuthCallback: getConfigValue(SERVICES_IDAM_OAUTH_CALLBACK_URL),
     oidcEnabled: showFeature(FEATURE_OIDC_ENABLED),
     protocol: getConfigValue(PROTOCOL),
+    ccdGatewayUrl: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)
   })
 }
 

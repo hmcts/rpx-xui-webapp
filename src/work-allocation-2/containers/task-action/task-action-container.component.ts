@@ -23,7 +23,7 @@ interface RouteData {
 export class TaskActionContainerComponent implements OnInit {
   public tasks: any [];
   public sortedBy: any;
-  public showManage: boolean = false;
+  public addActionsColumn: boolean = false;
 
   public routeData: RouteData;
 

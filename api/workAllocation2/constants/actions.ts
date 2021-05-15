@@ -1,75 +1,63 @@
 import { Action } from '../interfaces/task';
 
-const ASSIGN: Action = {
+export const ASSIGN: Action = {
   id: 'assign',
   title: 'Assign task',
 };
-const CANCEL: Action = {
+export const CANCEL: Action = {
   id: 'cancel',
   title: 'Cancel task',
 };
-const CLAIM: Action = {
+export const CLAIM: Action = {
   id: 'claim',
   title: 'Assign to me',
 };
-const COMPLETE: Action = {
+export const COMPLETE: Action = {
   id: 'complete',
   title: 'Mark as done',
 };
-const RELEASE: Action = {
+export const RELEASE: Action = {
   id: 'unclaim',
   title: 'Unassign task',
 };
-const CLAIM_AND_GO: Action = {
+export const CLAIM_AND_GO: Action = {
   id: 'claim-and-go',
   title: 'Assign to me and go to case',
 };
-const GO: Action = {
+export const GO: Action = {
   id: 'go',
   title: 'Go to task',
 };
-
-/**
- * This should become "assign" as there's no actual "reassign" API call.
- */
-const REASSIGN: Action = {
+export const REASSIGN: Action = {
   id: 'reassign',
   title: 'Reassign task',
 };
 
-export const ACTIONS: Action[] = [
-  ASSIGN,
-  CANCEL,
-  CLAIM,
-  COMPLETE,
-  REASSIGN,
-  RELEASE,
-];
-
-export const TASK_ACTIONS = {
-  ACTIVE: [REASSIGN, RELEASE, GO],
-  ALL_WORK: {
-    ASSIGNED: [REASSIGN, RELEASE, GO],
-    UNASSIGNED: [ASSIGN, GO],
+export const VIEW_PERMISSIONS_ACTIONS_MATRIX = {
+  // This matrix is for configuring permissions and actions defined in the work allocation permission table
+  // level 1 - select a view, like 'MyTasks'
+  // level 2 - select a permission, like 'Manage'
+  // level 3 - return the actions array, like [REASSIGN, RELEASE, GO]
+  ActiveTasks: {
+    Manage: [REASSIGN, RELEASE, CLAIM],
   },
-  AVAILABLE: [CLAIM, CLAIM_AND_GO],
-  CANCEL: [CANCEL],
-  EXECUTE: [COMPLETE],
-  // TODO: Remove MANAGER once ALL_WORK used for UI actions
-  MANAGER: {
-    ASSIGNED: [REASSIGN, RELEASE, COMPLETE, CANCEL],
-    UNASSIGNED: [ASSIGN, COMPLETE, CANCEL],
+  AllWorkAssigned: {
+    Cancel: [CANCEL],
+    Execute: [COMPLETE],
+    Manage: [REASSIGN, RELEASE, GO],
   },
-  MY: [REASSIGN, RELEASE, GO],
+  AllWorkUnassigned: {
+    Cancel: [CANCEL],
+    Execute: [COMPLETE],
+    Manage: [ASSIGN, GO],
+  },
+  AvailableTasks: {
+    Manage: [CLAIM, CLAIM_AND_GO],
+  },
+  MyTasks: {
+    Manage: [REASSIGN, RELEASE, GO],
+  },
 };
-
-export enum ActionViews {
-  MY = 'MyTasks',
-  AVAILABLE = 'AvailableTasks',
-  MANAGER = 'TaskManager',
-  ACTIVE = 'ActiveTasks',
-  ALL_WORK = 'AllWork',
-}
 
 export enum TaskPermission {
   READ = 'Read',

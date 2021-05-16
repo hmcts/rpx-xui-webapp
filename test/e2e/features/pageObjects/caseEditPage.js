@@ -82,7 +82,10 @@ class caseEditPage {
             for (let i = index; i < count; i++) {
                 let thText = thLable.get(i).$$(".search-result-column-label");
                 let text = await thText.getText();
-                caseResultsThTitle.push(`${text}`);
+                if (text.length !== 0){
+                    caseResultsThTitle.push(`${text}`);
+                }
+                
             }
             return await caseResultsThTitle;
         }
@@ -113,6 +116,8 @@ class caseEditPage {
     async caseDetailsCheck() {
         let caseDetailsRes = await CcdApi.getCaseResultsResponse();
         this.caseDetailsTabs = $$("mat-tab-body table tbody>div>tbody");
+        await element(by.xpath("//mat-tab-header//div[contains(text(),'Tab 2')]")).click();
+        await BrowserWaits.waitForSeconds(1);
         let fieldCount = await this.caseDetailsTabs.count();
         let tabName = "Tab 2";
         let tab = await caseDetailsRes.tabs.find(tab => tab.label == tabName);

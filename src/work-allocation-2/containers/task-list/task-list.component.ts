@@ -19,7 +19,8 @@ export class TaskListComponent implements OnChanges {
   @Input() public tasks: Task[];
   @Input() public taskServiceConfig: TaskServiceConfig;
   @Input() public sortedBy: TaskSortField;
-  @Input() public showManage: boolean = true;
+  @Input() public addActionsColumn: boolean = true;
+  @Input() public showManage = {};
 
   /**
    * The message to display when there are no tasks to display in the list.
@@ -55,10 +56,15 @@ export class TaskListComponent implements OnChanges {
     return null;
   }
 
-  public ngOnChanges() {
+  public ngOnChanges(): void {
     if (this.tasks) {
       this.dataSource$ = new BehaviorSubject(this.tasks);
       this.setSelectedTask(this.selectTaskFromUrlHash(this.router.url));
+      for (const task of this.tasks) {
+        if (task.actions && task.actions.length) {
+          this.showManage[task.id] = task.actions.length > 0;
+        }
+      }
     }
     if (this.fields) {
       this.displayedColumns = this.getDisplayedColumn(this.fields);
@@ -71,7 +77,7 @@ export class TaskListComponent implements OnChanges {
    */
   public getDisplayedColumn(taskFieldConfig: TaskFieldConfig[]): string[] {
     const fields = taskFieldConfig.map(field => field.name);
-    return this.showManage ? this.addManageColumn(fields) : fields;
+    return this.addActionsColumn ? this.addManageColumn(fields) : fields;
   }
 
   /**
@@ -164,7 +170,7 @@ export class TaskListComponent implements OnChanges {
   }
 
   private setupHash(): void {
-    if (this.showManage) {
+    if (this.addActionsColumn) {
       const currentPath = this.router.url || '';
       const basePath = currentPath.split('#')[0];
       if (this.selectedTask) {

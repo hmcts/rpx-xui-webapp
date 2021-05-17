@@ -1,4 +1,4 @@
-<p *ngIf="tasks.length > 1">Displaying <span class="govuk-!-font-weight-bold">{{tasks.length}}</span> of <span class="govuk-!-font-weight-bold">{{tasks.length}}</span> tasks</p>
+<p *ngIf="tasks && tasks.length > 1">Displaying <span class="govuk-!-font-weight-bold">{{tasks.length}}</span> of <span class="govuk-!-font-weight-bold">{{tasks.length}}</span> tasks</p>
 <!-- Using the Angular Component Development Kit Table Module, and not Angular Material -->
 <table cdk-table [dataSource]="dataSource$" class="govuk-table" [multiTemplateDataRows]="true">
 

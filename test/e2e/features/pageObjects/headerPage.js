@@ -101,7 +101,15 @@ function HeaderPage() {
   };
 
   this.clickTabWithText = async function (tabText) {
-    await this.getTabElementWithText(tabText).click();
+    await BrowserWaits.retryWithActionCallback(async () => {
+      const primaryTabs = this.getPrimaryTabsDisplayed();
+      const tabEle = this.getTabElementWithText(tabText).click();
+      if (tabEle) {
+        await tabEle.click();
+      } else {
+        throw new Error(`Tab ${tabText} is not present in navigation tabs headers ${primaryTabs} `);
+      }
+    }); 
   };
 
   this.getPrimaryTabsDisplayed = async function  () {

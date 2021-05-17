@@ -251,7 +251,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 softAssert.setScenario("Validate if column value is link");
                 const firstRowColumnValElement = await taskListPage.getColumnValueElementForTaskAt(columnName,1);
                 const isLink = await firstRowColumnValElement.$("a").isPresent();
-                await softAssert.assert(async () => expect(isLink, `${columnName} is not a link`).to.be.true);
+                await softAssert.assert(async () => expect(isLink, `${columnName} with text ${await firstRowColumnValElement.getText()} is not a link`).to.be.true);
 
                 if (isLink){
                     softAssert.setScenario("Validate if column value link refers to case details");

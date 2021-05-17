@@ -51,8 +51,9 @@ describe('TaskAssignmentConfirmComponent', () => {
 
   it('should display the correct verb', () => {
     component.verb = TaskActionType.Reassign;
-    const titleElement = document.querySelector('.govuk-heading-xl');
+    fixture.detectChanges();
 
-    expect(titleElement.textContent).toContain('Reassign');
+    const titleElement = document.querySelector('.govuk-heading-xl');
+    expect(titleElement.textContent).toContain(TaskActionType.Reassign);
   });
 });

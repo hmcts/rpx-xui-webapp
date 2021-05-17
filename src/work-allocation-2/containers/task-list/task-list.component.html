@@ -1,4 +1,4 @@
-<p *ngIf="tasks">Displaying <span class="govuk-!-font-weight-bold">{{tasks.length}}</span> of <span class="govuk-!-font-weight-bold">{{tasks.length}}</span> tasks</p>
+<p *ngIf="tasks && tasks.length > 1">Displaying <span class="govuk-!-font-weight-bold">{{tasks.length}}</span> of <span class="govuk-!-font-weight-bold">{{tasks.length}}</span> tasks</p>
 <!-- Using the Angular Component Development Kit Table Module, and not Angular Material -->
 <table cdk-table [dataSource]="dataSource$" class="govuk-table" [multiTemplateDataRows]="true">
 
@@ -14,10 +14,10 @@
   </ng-container>
 
   <!-- Manage column -->
-  <ng-container *ngIf="showManage" cdkColumnDef="manage">
+  <ng-container cdkColumnDef="manage">
     <th class="govuk-table__header" cdk-header-cell *cdkHeaderCellDef>&nbsp;</th>
     <td cdk-cell *cdkCellDef="let rowData" class="govuk-table__cell border-none govuk-accordion__section-header">
-      <div class="govuk-accordion__section-heading">
+      <div *ngIf="showManage[rowData.id]" class="govuk-accordion__section-heading">
         <button type="button" [id]="'manage_' + rowData.id" (click)="setSelectedTask(rowData)"
                 class="govuk-accordion__section-button xui-reset"
                 [attr.aria-expanded]="isTaskSelected(rowData)">

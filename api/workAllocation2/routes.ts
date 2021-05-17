@@ -1,20 +1,20 @@
-import {Router} from 'express';
+import { Router } from 'express';
 
 import {
-  getAllCaseWorkers,
-  getAllCaseWorkersForLocation,
-  getCaseWorkersForLocationAndService,
-  getCaseWorkersForService,
-  getTask,
-  postTaskAction,
-  postTaskSearchForCompletable,
-  searchCaseWorker,
-  searchTask,
+    getAllCaseWorkers,
+    getAllCaseWorkersForLocation,
+    getCaseWorkersForLocationAndService,
+    getCaseWorkersForService,
+    getTask,
+    postTaskAction,
+    postTaskSearchForCompletable,
+    searchCaseWorker,
+    searchTask,
 } from '.';
 import authInterceptor from '../lib/middleware/auth';
-import {getLocationById, getLocations} from './locationController';
+import { getLocationById, getLocations } from './locationController';
 
-const router = Router({mergeParams: true});
+const router = Router({ mergeParams: true });
 
 router.use(authInterceptor);
 

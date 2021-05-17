@@ -23,23 +23,16 @@ interface RouteData {
 export class TaskActionContainerComponent implements OnInit {
   public tasks: any [];
   public sortedBy: any;
-  public showManage: boolean = false;
+  public addActionsColumn: boolean = false;
 
   public routeData: RouteData;
-  public taskServiceConfig: TaskServiceConfig = {
-    service: TaskService.IAC,
-    defaultSortDirection: TaskSort.ASC,
-    defaultSortFieldName: 'dueDate',
-    fields: this.fields,
-  };
 
   constructor(
     private readonly taskService: WorkAllocationTaskService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly messageService: InfoMessageCommService
-  ) {
-  }
+  ) {}
 
   public get fields(): TaskFieldConfig[] {
     return ConfigConstants.TaskActionsWithAssignee;
@@ -53,6 +46,12 @@ export class TaskActionContainerComponent implements OnInit {
     return url || '/mywork/list';
   }
 
+  public taskServiceConfig: TaskServiceConfig = {
+    service: TaskService.IAC,
+    defaultSortDirection: TaskSort.ASC,
+    defaultSortFieldName: 'dueDate',
+    fields: this.fields,
+  };
   public ngOnInit(): void {
     // Set up the default sorting.
     this.sortedBy = {
@@ -61,8 +60,7 @@ export class TaskActionContainerComponent implements OnInit {
     };
 
     // Get the task from the route, which will have been put there by the resolver.
-    const task = this.route.snapshot.data.taskAndCaseworkers;
-    this.tasks = [task];
+    this.tasks = [ this.route.snapshot.data.taskAndCaseworkers.data ];
     this.routeData = this.route.snapshot.data as RouteData;
     if (!this.routeData.actionTitle) {
       this.routeData.actionTitle = `${this.routeData.verb} task`;
@@ -103,25 +101,25 @@ export class TaskActionContainerComponent implements OnInit {
     this.returnWithMessage(null, {});
   }
 
-  public returnWithMessage(message: InformationMessage, state: any): void {
-    if (message) {
-      this.messageService.nextMessage(message);
-    }
-    this.router.navigateByUrl(this.returnUrl, {state: {...state, retainMessages: true}});
-  }
-
   private reportSuccessAndReturn(): void {
     const message = this.routeData.successMessage;
     this.returnWithMessage(
-      {type: InfoMessageType.SUCCESS, message},
-      {badRequest: false}
+      { type: InfoMessageType.SUCCESS, message },
+      { badRequest: false }
     );
   }
 
   private reportUnavailableErrorAndReturn(): void {
     this.returnWithMessage(
-      {type: InfoMessageType.WARNING, message: InfoMessage.TASK_NO_LONGER_AVAILABLE},
-      {badRequest: true}
+      { type: InfoMessageType.WARNING, message: InfoMessage.TASK_NO_LONGER_AVAILABLE },
+      { badRequest: true }
     );
+  }
+
+  public returnWithMessage(message: InformationMessage, state: any): void {
+    if (message) {
+      this.messageService.nextMessage(message);
+    }
+    this.router.navigateByUrl(this.returnUrl, { state: { ...state, retainMessages: true } });
   }
 }

@@ -11,5 +11,6 @@ export const LIST_CONSTANTS = {
     AvailableTasks: 'AvailableTasks',
     MyTasks: 'MyTasks',
     TaskManager: 'TaskManager'
-  }
+  },
+  JUDGE_ROLES: ['caseworker-ia-iacjudge']
 };

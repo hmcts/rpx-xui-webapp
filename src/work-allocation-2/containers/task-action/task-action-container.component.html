@@ -6,11 +6,11 @@
       <p id="action-description">{{routeData.description}}</p>
       <exui-task-list
         [taskServiceConfig]="taskServiceConfig" [tasks]="tasks" [fields]="fields"
-        [sortedBy]="sortedBy" [showManage]="showManage">
+        [sortedBy]="sortedBy" [addActionsColumn]="addActionsColumn">
       </exui-task-list>
 
       <button id="submit-button" class="govuk-button govuk-!-margin-right-1" type="submit" (click)="performAction()">{{routeData.verb}}</button>
-      <p><a (click)="cancel()" class="govuk-!-margin-top-3" id="cancel" href="javascript:void(0)">Cancel</a></p>
+      <p><a (click)="cancel()" class="govuk-!-margin-top-3" id="cancel-link" href="javascript:void(0)">Cancel</a></p>
     </div>
   </div>
 </main>

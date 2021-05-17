@@ -1,5 +1,5 @@
-import { ActionViews, TASK_ACTIONS } from './constants/actions';
-import { Caseworker, CaseworkerApi, Location, LocationApi, Task } from './interfaces/task';
+import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX } from './constants/actions';
+import { Action, Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/task';
 
 export function prepareGetTaskUrl(baseUrl: string, taskId: string): string {
   return `${baseUrl}/task/${taskId}`;
@@ -9,7 +9,10 @@ export function preparePostTaskUrlAction(baseUrl: string, taskId: string, action
   return `${baseUrl}/task/${taskId}/${action}`;
 }
 
-export function prepareSearchTaskUrl(baseUrl: string) {
+export function prepareSearchTaskUrl(baseUrl: string, subPath?: string) {
+  if (subPath) {
+    return `${baseUrl}/${subPath}`;
+  }
   return `${baseUrl}/task`;
 }
 
@@ -46,41 +49,24 @@ export function prepareCaseWorkerForLocationAndService(baseUrl: string, location
 }
 
 /**
- * TODO: "Make this more cleverer" (AndyW)
  * The below sets up actions on the tasks, though it's expected this will change
  * in the future - it should do fine for the MVP, though.
  * @param tasks The tasks to set up the actions for.
  * @param view This dictates which set of actions we should use.
  */
-export function assignActionsToTasks(tasks: any[], view: any): void {
+export function assignActionsToTasks(tasks: any[], view: any): any[] {
+  const tasksWithActions: any[] = [];
   if (tasks) {
     for (const task of tasks) {
-      switch (view) {
-        case ActionViews.MY:
-          task.actions = [...TASK_ACTIONS.MY];
-          break;
-        case ActionViews.AVAILABLE:
-          task.actions = [...TASK_ACTIONS.AVAILABLE];
-          break;
-        case ActionViews.MANAGER:
-          // Unassigned tasks have different actions to assigned ones.
-          if (task.assignee) {
-            task.actions = [...TASK_ACTIONS.MANAGER.ASSIGNED];
-          } else {
-            task.actions = [...TASK_ACTIONS.MANAGER.UNASSIGNED];
-          }
-          break;
-        default:
-          // If we don't recognise the view, just make sure we at least have an array.
-          task.actions = task.actions || [];
-          break;
-      }
-      task.dueDate = task.due_date;
-      task.taskName = task.name;
-      task.caseName = task.case_name;
-      task.caseCategory = task.case_category;
+      // Note: There is no current logic to determine whether assigned or unassigned
+      // This was debated for EUI-3619
+      // As actions can change based on whether assigned or not, there might need to be a check here
+      const actions: Action[] = getActionsByPermissions(view, task.permissions);
+      const taskWithAction = {...task, actions};
+      tasksWithActions.push(taskWithAction);
     }
   }
+  return tasksWithActions;
 }
 
 export function mapCaseworkerData(caseWorkerData: CaseworkerApi[]): Caseworker[] {
@@ -132,11 +118,28 @@ export function prepareRoleApiRequest(locationId?: number): any {
   return payload;
 }
 
-export function getNodeIdFromPath(path: string): string {
-  const paths = path.split('/');
-  return paths.filter((segment: string) => segment.includes('-'))[1];
-}
-
-export function getTask(id: string, tasks: Array<Partial<Task>>): Partial<Task> {
-  return tasks.find((task: Task) => task.id === id);
+/**
+ * Aggregate permissions from the View Permissions Actions Matrix defined by business.
+ * @param view This dictates which set of actions we should use.
+ * @param permissions The list of permissions the user holds.
+ * @return actionList:Action[] the list of total actions user holds.
+ */
+export function getActionsByPermissions(view, permissions: []): Action[] {
+  let actionList: Action[] = [];
+  permissions.forEach(permission => {
+    switch (permission) {
+      case TaskPermission.MANAGE:
+        actionList = actionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX[view][TaskPermission.MANAGE]);
+        break;
+      case TaskPermission.EXECUTE:
+        actionList = actionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX[view][TaskPermission.EXECUTE]);
+        break;
+      case TaskPermission.CANCEL:
+        actionList = actionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX[view][TaskPermission.CANCEL]);
+        break;
+      default:
+        break;
+    }
+  });
+  return actionList;
 }

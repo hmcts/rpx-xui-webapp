@@ -30,14 +30,14 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
    * Take in the Router so we can navigate when actions are clicked and
    * to identify which sub-navigation item to highlight.
    */
-  private readonly MY_TASKS: SubNavigation = {text: 'My tasks', href: '/mywork/list', active: true};
+  private readonly MY_TASKS: SubNavigation = { text: 'My tasks', href: '/mywork/list', active: true };
   /**
    * The sub-navigation items.
    */
   public subNavigationItems: SubNavigation[] = [
     this.MY_TASKS,
-    {text: 'Available tasks', href: '/mywork/available', active: false},
-    {text: 'My cases', href: '/mycases', active: false}
+    { text: 'Available tasks', href: '/mywork/available', active: false },
+    { text: 'My cases', href: '/mycases', active: false }
   ];
   private routeSubscription: Subscription;
   private locationSubscription: Subscription;
@@ -76,7 +76,6 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
         filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
       )
       .subscribe((f: FilterSetting) => {
-        console.log('filter', f);
         this.selectedLocations = f.fields.find((field) => field.name === 'locations').value;
       });
   }

@@ -37,7 +37,7 @@ describe('TaskHomeComponent', () => {
       ],
       declarations: [TaskHomeComponent, WrapperComponent, InfoMessageContainerComponent],
       providers: [
-        {provide: WorkAllocationTaskService, useValue: mockTaskService}
+        { provide: WorkAllocationTaskService, useValue: mockTaskService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
@@ -60,10 +60,10 @@ describe('TaskHomeComponent', () => {
     const button: DebugElement = fixture.debugElement.query(By.css('.govuk-button.hmcts-button--secondary'));
     button.nativeElement.click();
 
-    const radioButton: DebugElement = fixture.debugElement.query(By.css('.govuk-checkboxes'));
+    const checkBoxes: DebugElement = fixture.debugElement.query(By.css('.govuk-checkboxes'));
 
-    const firstLocation = radioButton.nativeElement.children[0];
-    const secondLocation = radioButton.nativeElement.children[1];
+    const firstLocation = checkBoxes.nativeElement.children[0];
+    const secondLocation = checkBoxes.nativeElement.children[1];
 
     firstLocation.click();
     secondLocation.click();

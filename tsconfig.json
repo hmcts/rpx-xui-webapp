@@ -4,7 +4,6 @@
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
-    "skipLibCheck": true,
     "declaration": false,
     "module": "commonjs",
     "moduleResolution": "node",

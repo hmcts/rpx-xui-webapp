@@ -43,8 +43,7 @@ export class TaskListWrapperComponent implements OnInit {
     protected sessionStorageService: SessionStorageService,
     protected alertService: AlertService,
     protected caseworkerService: CaseworkerDataService
-  ) {
-  }
+  ) {}
 
   public get tasks(): Task[] {
     return this.pTasks;
@@ -98,14 +97,14 @@ export class TaskListWrapperComponent implements OnInit {
 
   public ngOnInit(): void {
     this.caseworkerService.getAll().subscribe(caseworkers => {
-      this.caseworkers = [...caseworkers];
+      this.caseworkers = [ ...caseworkers ];
     }, error => {
       handleFatalErrors(error.status, this.router);
     });
     // Try to get the sort order out of the session.
     const stored = this.sessionStorageService.getItem(this.sortSessionKey);
     if (stored) {
-      const {fieldName, order} = JSON.parse(stored);
+      const { fieldName, order } = JSON.parse(stored);
       this.sortedBy = {
         fieldName,
         order: order as TaskSort
@@ -144,7 +143,7 @@ export class TaskListWrapperComponent implements OnInit {
 
   public performSearch(): Observable<any> {
     const searchRequest = this.getSearchTaskRequest();
-    return this.taskService.searchTask({searchRequest, view: this.view});
+    return this.taskService.searchTask({ searchRequest, view: this.view });
   }
 
   /**
@@ -179,7 +178,7 @@ export class TaskListWrapperComponent implements OnInit {
     if (this.sortedBy.fieldName === fieldName && this.sortedBy.order === TaskSort.ASC) {
       order = TaskSort.DSC;
     }
-    this.sortedBy = {fieldName, order};
+    this.sortedBy = { fieldName, order };
     this.sessionStorageService.setItem(this.sortSessionKey, JSON.stringify(this.sortedBy));
 
     this.loadTasks();
@@ -204,7 +203,7 @@ export class TaskListWrapperComponent implements OnInit {
       showAssigneeColumn: taskAction.action.id !== TaskActionIds.ASSIGN
     };
     const actionUrl = `/mywork/${taskAction.task.id}/${taskAction.action.id}/${this.specificPage}`;
-    this.router.navigate([actionUrl], {state});
+    this.router.navigate([actionUrl], { state });
   }
 
   // Do the actual load. This is separate as it's called from two methods.

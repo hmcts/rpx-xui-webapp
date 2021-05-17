@@ -1,5 +1,5 @@
 import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX } from './constants/actions';
-import { Action, Caseworker, CaseworkerApi, Location, LocationApi, Task } from './interfaces/task';
+import { Action, Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/task';
 
 export function prepareGetTaskUrl(baseUrl: string, taskId: string): string {
   return `${baseUrl}/task/${taskId}`;
@@ -142,13 +142,4 @@ export function getActionsByPermissions(view, permissions: []): Action[] {
     }
   });
   return actionList;
-}
-
-export function getNodeIdFromPath(path: string): string {
-  const paths = path.split('/');
-  return paths.filter((segment: string) => segment.includes('-'))[1];
-}
-
-export function getTask(id: string, tasks: Array<Partial<Task>>): Partial<Task> {
-  return tasks.find((task: Task) => task.id === id);
 }

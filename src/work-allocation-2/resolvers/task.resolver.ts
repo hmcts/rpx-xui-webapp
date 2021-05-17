@@ -7,16 +7,15 @@ import { Task } from '../models/tasks';
 import { WorkAllocationTaskService } from '../services';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../utils';
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class TaskResolver implements Resolve<Task> {
   constructor(
-    private readonly workAllocationTaskService: WorkAllocationTaskService,
+    private readonly service: WorkAllocationTaskService,
     private readonly router: Router,
-  ) {
-  }
+  ) {}
 
   public resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Task> {
-    return this.workAllocationTaskService.getTask(route.paramMap.get('taskId')).pipe(
+    return this.service.getTask(route.paramMap.get('taskId')).pipe(
       catchError(error => {
         handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
         return EMPTY;

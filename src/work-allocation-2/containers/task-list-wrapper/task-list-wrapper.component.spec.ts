@@ -6,12 +6,12 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
+import { TaskListComponent } from '..';
 import { SessionStorageService } from '../../../app/services';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Task } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
 import { getMockTasks, MockRouter } from '../../tests/utils.spec';
-import { TaskListComponent } from '../task-list/task-list.component';
 import { TaskListWrapperComponent } from './task-list-wrapper.component';
 
 describe('TaskListWrapperComponent', () => {
@@ -40,7 +40,7 @@ describe('TaskListWrapperComponent', () => {
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
         { provide: AlertService, useValue: mockAlertService },
-        { provide: WorkAllocationFeatureService, useValue: mockFeatureService}
+        { provide: WorkAllocationFeatureService, useValue: mockFeatureService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(TaskListWrapperComponent);
@@ -63,7 +63,7 @@ describe('TaskListWrapperComponent', () => {
     const secondTaskAction = { task: exampleTask, action: secondAction };
     it('should handle an action', () => {
       // need to spy on the router and set up the task action
-      spyOnProperty(mockRouter, 'url', 'get').and.returnValue(`/tasks/list`);
+      spyOnProperty(mockRouter, 'url', 'get').and.returnValue(`/mywork/list`);
       const navigateCallsBefore = mockRouter.navigateCalls.length;
 
       // need to check that navigate has been called
@@ -73,13 +73,13 @@ describe('TaskListWrapperComponent', () => {
       // need to verify correct properties were called
       const lastNavigateCall = mockRouter.navigateCalls.pop();
       expect(lastNavigateCall.commands).toEqual([`/mywork/${exampleTask.id}/${firstAction.id}/`]);
-      const exampleNavigateCall = { state: { returnUrl: '/tasks/list', showAssigneeColumn: true } };
+      const exampleNavigateCall = { state: { returnUrl: '/mywork/list', showAssigneeColumn: true } };
       expect(lastNavigateCall.extras).toEqual(exampleNavigateCall);
     });
 
     it('should handle an action returned via the task manager page', () => {
       // need to spy on the router and set up the task action
-      spyOnProperty(mockRouter, 'url', 'get').and.returnValue(`/tasks/manager`);
+      spyOnProperty(mockRouter, 'url', 'get').and.returnValue(`/mywork/manager`);
       const navigateCallsBefore = mockRouter.navigateCalls.length;
 
       // need to check that navigate has been called
@@ -89,7 +89,7 @@ describe('TaskListWrapperComponent', () => {
       // need to verify correct properties were called
       const lastNavigateCall = mockRouter.navigateCalls.pop();
       expect(lastNavigateCall.commands).toEqual([`/mywork/${exampleTask.id}/${secondAction.id}/`]);
-      const exampleNavigateCall = { state: { returnUrl: '/tasks/manager', showAssigneeColumn: true } };
+      const exampleNavigateCall = { state: { returnUrl: '/mywork/manager', showAssigneeColumn: true } };
       expect(lastNavigateCall.extras).toEqual(exampleNavigateCall);
     });
   });

@@ -4,8 +4,8 @@ import 'mocha';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
-
 import { baseWorkAllocationTaskUrl, getTask, postTaskAction, searchTask } from '.';
+import { httpMock } from '../common/httpMock';
 import { http } from '../lib/http';
 import { mockTasks } from './taskTestData.spec';
 
@@ -33,7 +33,7 @@ describe('workAllocation', () => {
 
     it('should make a get request and respond appropriately', async () => {
 
-      // spy = sandbox.stub(http, 'get').resolves(res);
+      spy = sandbox.stub(httpMock, 'get').resolves(res);
       const req = mockReq({
         params: {
           taskId: '123456',
@@ -43,11 +43,11 @@ describe('workAllocation', () => {
       await getTask(req, response, next);
 
       // Should have the correct URL.
-      // const args = spy.getCall(0).args;
-      // expect(args[0]).to.equal(`${baseWorkAllocationTaskUrl}/task/123456`);
+      const args = spy.getCall(0).args;
+      expect(args[0]).to.equal(`${baseWorkAllocationTaskUrl}/task/123456`);
 
       // Should have received the HTTP response. The get simply returns the data.
-      expect(response.status).to.have.been.calledWith(SUCCESS_RESPONSE.status);
+      expect(response.send).to.have.been.calledWith(sinon.match(SUCCESS_RESPONSE));
     });
 
     it('should handle an exception being thrown', async () => {
@@ -72,11 +72,11 @@ describe('workAllocation', () => {
   describe('searchTask', () => {
 
     it('should make a post request and respond appropriately', async () => {
-      spy = sandbox.stub(http, 'post').resolves(res);
+      spy = sandbox.stub(httpMock, 'post').resolves(res);
       const req = mockReq({
         body: {
           searchRequest: { search_parameters: [] },
-          view: 'view',
+          view: 'MyTasks',
         },
         session: {
           caseworkers: null,
@@ -87,9 +87,9 @@ describe('workAllocation', () => {
       });
       await searchTask(req, response, next);
       // Should have the correct URL and the appropriate payload.
-      // const args = spy.getCall(0).args;
-      // expect(args[0]).to.equal(`${baseWorkAllocationTaskUrl}/task`);
-      // expect(args[1]).to.deep.equal({search_parameters: []});
+      const args = spy.getCall(0).args;
+      expect(args[0]).to.equal(`${baseWorkAllocationTaskUrl}/myTasks?view=caseworker`);
+      expect(args[1]).to.deep.equal({search_parameters: []});
 
       // Should have received the HTTP response. The search simply returns the data.
       expect(response.data.length).to.equal(3);
@@ -118,7 +118,7 @@ describe('workAllocation', () => {
   describe('postTaskAction', () => {
 
     it('should make a post request and respond appropriately', async () => {
-      // spy = sandbox.stub(http, 'post').resolves(res);
+      spy = sandbox.stub(httpMock, 'post').resolves(res);
       const body = {assignee: {name: 'bob', id: 'bob01'}};
       const req = mockReq({
         body,
@@ -131,12 +131,12 @@ describe('workAllocation', () => {
       await postTaskAction(req, response, next);
 
       // Should have the correct URL and the appropriate payload.
-      // const args = spy.getCall(0).args;
-      // expect(args[0]).to.equal(`${baseWorkAllocationTaskUrl}/task/123456/assign`);
-      // expect(args[1]).to.deep.equal(body);
+      const args = spy.getCall(0).args;
+      expect(args[0]).to.equal(`${baseWorkAllocationTaskUrl}/task/123456/assign`);
+      expect(args[1]).to.deep.equal(body);
 
       // Should have received the HTTP response. The search simply returns the data.
-      expect(response.status).to.have.been.calledWith(204);
+      expect(response.send).to.have.been.calledWith(sinon.match(SUCCESS_RESPONSE.data));
     });
 
     it('should handle an exception being thrown', async () => {

@@ -1,12 +1,12 @@
-import { CdkTableModule } from "@angular/cdk/table";
-import { Component, ViewChild } from "@angular/core";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
-import { ExuiCommonLibModule } from "@hmcts/rpx-xui-common-lib";
-import { Router } from "express";
-import { WorkAllocationComponentsModule } from "src/work-allocation-2/components/work-allocation.components.module";
-import { WorkAllocationTaskService } from "src/work-allocation-2/services";
-import { TaskAssignmentConfirmComponent } from "./task-assignment-confirm.component";
+import { CdkTableModule } from '@angular/cdk/table';
+import { Component, ViewChild } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { WorkAllocationComponentsModule } from 'src/work-allocation-2/components/work-allocation.components.module';
+import { WorkAllocationTaskService } from 'src/work-allocation-2/services';
+import { TaskAssignmentConfirmComponent } from './task-assignment-confirm.component';
 
 @Component({
   template: `<exui-task-assignment-confirm></exui-task-assignment-confirm>`

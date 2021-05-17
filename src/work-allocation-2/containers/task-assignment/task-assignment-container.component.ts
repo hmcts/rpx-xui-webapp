@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 import { ErrorMessage } from '../../../app/models';
 import { ConfigConstants } from '../../components/constants';
@@ -8,7 +10,7 @@ import { InformationMessage } from '../../models/comms';
 import { Caseworker, Location } from '../../models/dtos';
 import { TaskFieldConfig, TaskServiceConfig } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
-import { getAssigneeName, handleFatalErrors } from '../../utils';
+import { handleFatalErrors } from '../../utils';
 
 export const NAME_ERROR: ErrorMessage = {
   title: 'There is a problem',
@@ -19,10 +21,9 @@ export const NAME_ERROR: ErrorMessage = {
   selector: 'exui-task-container-assignment',
   templateUrl: 'task-assignment-container.component.html'
 })
-export class TaskAssignmentContainerComponent implements OnInit {
+export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   public error: ErrorMessage = null;
-  public tasks: any [];
-  public sortedBy: any;
+  public tasks: any[];
   public showManage: boolean = false;
   public caseworker: Caseworker;
   public verb: TaskActionType;
@@ -31,23 +32,29 @@ export class TaskAssignmentContainerComponent implements OnInit {
   public excludedCaseworkers: Caseworker[];
   public location: Location;
 
+  public formGroup: FormGroup;
+
+  private assignTask: Subscription;
+
   constructor(
     private readonly taskService: WorkAllocationTaskService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly messageService: InfoMessageCommService
-  ) {}
+  ) { }
 
   public get fields(): TaskFieldConfig[] {
     return this.showAssigneeColumn ? ConfigConstants.TaskActionsWithAssignee : ConfigConstants.TaskActions;
   }
 
   private get returnUrl(): string {
-    let url;
+    let url: string = '/mywork/list';
+
     if (window && window.history && window.history.state) {
       url = window.history.state.returnUrl;
     }
-    return url || '/tasks/list';
+
+    return url;
   }
 
   private get showAssigneeColumn(): boolean {
@@ -63,29 +70,35 @@ export class TaskAssignmentContainerComponent implements OnInit {
     defaultSortFieldName: 'dueDate',
     fields: this.fields,
   };
-  public ngOnInit(): void {
-    // Set up the default sorting.
-    this.sortedBy = {
-      fieldName: this.taskServiceConfig.defaultSortFieldName,
-      order: this.taskServiceConfig.defaultSortDirection
-    };
 
+  public ngOnInit(): void {
+    this.initForm();
     // Get the task from the route, which will have been put there by the resolver.
-    const task = this.route.snapshot.data.taskAndCaseworkers.task.task;
-    const caseworkers = this.route.snapshot.data.taskAndCaseworkers.caseworkers;
-    task.assigneeName = getAssigneeName(caseworkers, task.assignee);
-    this.tasks = [ task ];
+    const task = this.route.snapshot.data.taskAndCaseworkers.data;
+    this.tasks = [task];
     this.verb = this.route.snapshot.data.verb as TaskActionType;
     this.successMessage = this.route.snapshot.data.successMessage as InfoMessage;
     if (task.assignee) {
       const names: string[] = task.assignee.split(' ');
       const firstName = names.shift();
       const lastName = names.join(' ');
-      this.excludedCaseworkers = [ { firstName, lastName } as Caseworker ];
+      this.excludedCaseworkers = [{ firstName, lastName } as Caseworker];
     }
     if (task.location) {
       this.location = { locationName: task.location } as Location;
     }
+  }
+
+  public ngOnDestroy(): void {
+    if (this.assignTask) {
+      this.assignTask.unsubscribe();
+    }
+  }
+
+  public initForm(): void {
+    this.formGroup = new FormGroup({
+      caseWorkerName: new FormControl()
+    });
   }
 
   public assign(): void {
@@ -94,12 +107,15 @@ export class TaskAssignmentContainerComponent implements OnInit {
       return;
     }
     this.error = null;
-    this.taskService.assignTask(this.tasks[0].id, {userId: this.caseworker.idamId}).subscribe(() => {
-      this.reportSuccessAndReturn();
-    }, error => {
-      const handledStatus = handleFatalErrors(error.status, this.router);
-      if (handledStatus > 0) {
-        this.reportUnavailableErrorAndReturn();
+
+    this.assignTask = this.taskService.assignTask(this.tasks[0].id, { userId: this.caseworker.idamId }).subscribe({
+      next: () => this.reportSuccessAndReturn(),
+      error: (error: any) => {
+        const handledStatus = handleFatalErrors(error.status, this.router);
+
+        if (handledStatus > 0) {
+          this.reportUnavailableErrorAndReturn();
+        }
       }
     });
   }

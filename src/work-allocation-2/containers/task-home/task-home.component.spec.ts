@@ -31,7 +31,8 @@ describe('TaskHomeComponent', () => {
         CdkTableModule,
         ExuiCommonLibModule,
         RouterTestingModule,
-        WorkAllocationComponentsModule
+        WorkAllocationComponentsModule,
+        ExuiCommonLibModule
       ],
       declarations: [TaskHomeComponent, WrapperComponent, InfoMessageContainerComponent],
       providers: [

@@ -6,7 +6,6 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable } from 'rxjs';
-
 import { TaskListComponent } from '..';
 import { ErrorMessageComponent } from '../../../app/components';
 import { TaskActionConstants } from '../../components/constants';
@@ -15,7 +14,7 @@ import { Task } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { ACTION } from '../../services/work-allocation-task.service';
 import { getMockTasks } from '../../tests/utils.spec';
-import { TaskActionContainerComponent } from '../task-action/task-action-container.component';
+import { TaskActionContainerComponent } from './task-action-container.component';
 
 @Component({
   template: `<exui-task-action-container></exui-task-action-container>`
@@ -54,7 +53,7 @@ describe('WorkAllocation', () => {
           WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientModule,
           RouterTestingModule.withRoutes(
             [
-              { path: 'tasks/list', component: NothingComponent }
+              { path: 'mywork/list', component: NothingComponent }
             ]
           )
         ],
@@ -65,7 +64,7 @@ describe('WorkAllocation', () => {
             useValue: {
               snapshot: {
                 data: {
-                  taskAndCaseworkers: mockTasks[0],
+                  taskAndCaseworkers: { data: mockTasks[0] },
                   ...TaskActionConstants.Unassign
                 }
               },
@@ -80,7 +79,7 @@ describe('WorkAllocation', () => {
       component = wrapper.appComponentRef;
 
       wrapper.tasks = null;
-      window.history.pushState({ returnUrl: 'tasks/list' }, '', 'tasks/list');
+      window.history.pushState({ returnUrl: 'mywork/list' }, '', 'mywork/list');
       fixture.detectChanges();
     });
 
@@ -92,17 +91,17 @@ describe('WorkAllocation', () => {
       expect(component).toBeDefined();
     });
 
-    it('should perform the action succesfully', () => {
+    it('should perform the action successfully', () => {
       const submit: HTMLButtonElement = fixture.debugElement.nativeElement.querySelector('#submit-button');
       submit.click();
       expect(mockWorkAllocationService.performActionOnTask).toHaveBeenCalledWith(mockTasks[0].id, ACTION.UNCLAIM);
     });
 
 
-    it('should cancel the action succesfully', () => {
+    it('should cancel the action successfully', () => {
       spyOn(component, 'returnWithMessage');
 
-      const cancel: HTMLButtonElement = fixture.debugElement.nativeElement.querySelector('#cancel');
+      const cancel: HTMLButtonElement = fixture.debugElement.nativeElement.querySelector('#cancel-link');
       cancel.click();
       expect(component.returnWithMessage).toHaveBeenCalledWith(null, {});
     });
@@ -123,7 +122,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should have appropriate cancel button', () => {
-      const cancel: HTMLButtonElement = fixture.debugElement.nativeElement.querySelector('#cancel');
+      const cancel: HTMLButtonElement = fixture.debugElement.nativeElement.querySelector('#cancel-link');
       expect(cancel.textContent).toEqual('Cancel');
     });
   });

@@ -1,5 +1,5 @@
 import { NextFunction, Response } from 'express';
-import { handlePost } from '../common/mockService';
+import { handleGet, handlePost } from '../common/mockService';
 import { getConfigValue } from '../configuration';
 import {
   SERVICES_CASE_CASEWORKER_REF_PATH,
@@ -16,13 +16,10 @@ import {
   handlePostRoleAssingnments,
   handlePostSearch
 } from './caseWorkerService';
-import { TaskPermission } from './constants/actions';
 import { Caseworker } from './interfaces/task';
-import { handleTaskGet, handleTaskPost, handleTaskSearch } from './taskService';
 import * as mock from './taskService.mock';
 import {
   assignActionsToTasks,
-  assignActionsToTasksWithPermissions,
   mapCaseworkerData,
   prepareCaseWorkerForLocation,
   prepareCaseWorkerForLocationAndService,
@@ -51,10 +48,8 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
   try {
     const getTaskPath: string = prepareGetTaskUrl(baseWorkAllocationTaskUrl, req.params.taskId);
 
-    const jsonResponse = await handleTaskGet(getTaskPath, req);
-    if (jsonResponse && jsonResponse.task && jsonResponse.task.due_date) {
-      jsonResponse.task.dueDate = jsonResponse.task.due_date;
-    }
+    const jsonResponse = await handleGet(getTaskPath, req);
+
     res.status(200);
     res.send(jsonResponse);
   } catch (error) {
@@ -67,55 +62,39 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
  */
 export async function searchTask(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    let postTaskPath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
     const searchRequest = req.body.searchRequest;
     const view = req.body.view;
     let promise;
     if (searchRequest.search_by === 'judge') {
       // TODO below call mock api will be replaced when real api is ready
       if (view === 'MyTasks') {
+        const postTaskPath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'myTasks?view=judicial');
         promise = await handlePost(postTaskPath, searchRequest, req);
       } else if (view === 'AvailableTasks') {
-        postTaskPath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'availableTasks');
+        const postTaskPath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'availableTasks?view=judicial');
         promise = await handlePost(postTaskPath, searchRequest, req);
       }
     } else {
-      promise = await handleTaskSearch(postTaskPath, searchRequest, req);
+      if (view === 'MyTasks') {
+        const postTaskPath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'myTasks?view=caseworker');
+        promise = await handlePost(postTaskPath, searchRequest, req);
+      } else if (view === 'AvailableTasks') {
+        const postTaskPath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'availableTasks?view=caseworker');
+        promise = await handlePost(postTaskPath, searchRequest, req);
+      }
     }
     const {status, data} = promise;
     res.status(status);
     // Assign actions to the tasks on the data from the API.
+    let returnData;
     if (data) {
       // Note: TaskPermission placed in here is an example of what we could be getting (i.e. Manage permission)
       // These should be mocked as if we were getting them from the user themselves
-      assignActionsToTasks(data.tasks, req.body.view);
+      returnData = {tasks: assignActionsToTasks(data.tasks, req.body.view)};
     }
 
     // Send the (possibly modified) data back in the Response.
-    res.send(data);
-  } catch (error) {
-    next(error);
-  }
-}
-
-/**
- * Post to search for a Task with user permissions.
- */
-export async function searchTaskWithPermissions(req: EnhancedRequest, res: Response, next: NextFunction) {
-  try {
-    const postTaskPath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
-    const searchRequest = req.body.searchRequest;
-    const {status, data} = await handleTaskSearch(postTaskPath, searchRequest, req);
-    res.status(status);
-    // Assign actions to the tasks on the data from the API.
-    if (data) {
-      // Note: TaskPermission placed in here is an example of what we could be getting (i.e. Manage permission)
-      // These should be mocked as if we were getting them from the user themselves
-      assignActionsToTasksWithPermissions(data.tasks, [TaskPermission.MANAGE], req.body.view);
-    }
-
-    // Send the (possibly modified) data back in the Response.
-    res.send(data);
+    res.send(returnData);
   } catch (error) {
     next(error);
   }
@@ -128,7 +107,7 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
 
   try {
     const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.params.taskId, req.params.action);
-    const {status, data} = await handleTaskPost(getTaskPath, req.body, req);
+    const {status, data} = await handlePost(getTaskPath, req.body, req);
     res.status(status);
     res.send(data);
   } catch (error) {

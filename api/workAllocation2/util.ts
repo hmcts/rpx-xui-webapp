@@ -1,4 +1,4 @@
-import { ActionViews, TASK_ACTIONS, TaskPermission } from './constants/actions';
+import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX } from './constants/actions';
 import { Action, Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/task';
 
 export function prepareGetTaskUrl(baseUrl: string, taskId: string): string {
@@ -54,55 +54,19 @@ export function prepareCaseWorkerForLocationAndService(baseUrl: string, location
  * @param tasks The tasks to set up the actions for.
  * @param view This dictates which set of actions we should use.
  */
-export function assignActionsToTasks(tasks: any[], view: any): void {
+export function assignActionsToTasks(tasks: any[], view: any): any[] {
+  const tasksWithActions: any[] = [];
   if (tasks) {
     for (const task of tasks) {
-      switch (view) {
-        case ActionViews.MY:
-          task.actions = [...TASK_ACTIONS.MY];
-          break;
-        case ActionViews.AVAILABLE:
-          task.actions = [...TASK_ACTIONS.AVAILABLE];
-          break;
-        case ActionViews.MANAGER:
-          // Unassigned tasks have different actions to assigned ones.
-          if (task.assignee) {
-            task.actions = [...TASK_ACTIONS.MANAGER.ASSIGNED];
-          } else {
-            task.actions = [...TASK_ACTIONS.MANAGER.UNASSIGNED];
-          }
-          break;
-        default:
-          // If we don't recognise the view, just make sure we at least have an array.
-          task.actions = task.actions || [];
-          break;
-      }
-      task.dueDate = task.due_date;
-      task.taskName = task.name;
-      task.caseName = task.case_name;
-      task.caseCategory = task.case_category;
+      // Note: There is no current logic to determine whether assigned or unassigned
+      // This was debated for EUI-3619
+      // As actions can change based on whether assigned or not, there might need to be a check here
+      const actions: Action[] = getActionsByPermissions(view, task.permissions);
+      const taskWithAction = {...task, actions};
+      tasksWithActions.push(taskWithAction);
     }
   }
-}
-
-/**
- * The below sets up actions on the tasks via the permissions the user has and the currrent view
- * @param tasks The tasks to set up the actions for
- * @param permissions The permissions the user has
- * @param view This dictates which set of actions we should use.
- */
-export function assignActionsToTasksWithPermissions(tasks: any[], permissions: TaskPermission[], view: ActionViews): void {
-  if (tasks) {
-    for (const task of tasks) {
-      let taskAssigned: boolean;
-      taskAssigned = task.assignee ? true : false;
-      task.actions = getWATaskActions(permissions, view, taskAssigned);
-      task.dueDate = task.due_date;
-      task.taskName = task.name;
-      task.caseName = task.case_name;
-      task.caseCategory = task.case_category;
-    }
-  }
+  return tasksWithActions;
 }
 
 export function mapCaseworkerData(caseWorkerData: CaseworkerApi[]): Caseworker[] {
@@ -155,64 +119,27 @@ export function prepareRoleApiRequest(locationId?: number): any {
 }
 
 /**
- * The below sets up actions on the tasks by directing them to respective methods
- * for each permission and concatenating any resulting lists
- * Note - Read, Refer and Owan are also permissions but currently have no respective method
- * Note - Concatenating suitable currently (might require changing if actions in few permissions)
- * @param permissions The list of permissions the user holds
+ * Aggregate permissions from the View Permissions Actions Matrix defined by business.
  * @param view This dictates which set of actions we should use.
- * @param isTaskAssigned Dummy parameter to test change based on whether task is assigned
+ * @param permissions The list of permissions the user holds.
+ * @return actionList:Action[] the list of total actions user holds.
  */
-export function getWATaskActions(permissions: TaskPermission[], view: ActionViews, isTaskAssigned: boolean): Action[] {
+export function getActionsByPermissions(view, permissions: []): Action[] {
   let actionList: Action[] = [];
   permissions.forEach(permission => {
     switch (permission) {
       case TaskPermission.MANAGE:
-        actionList = actionList.concat(getWATaskActionsForManage(view, isTaskAssigned));
+        actionList = actionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX[view][TaskPermission.MANAGE]);
         break;
       case TaskPermission.EXECUTE:
-        actionList = actionList.concat(getWATaskActionsForExecute(view));
+        actionList = actionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX[view][TaskPermission.EXECUTE]);
         break;
       case TaskPermission.CANCEL:
-        actionList = actionList.concat(getWATaskActionsForCancel(view));
+        actionList = actionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX[view][TaskPermission.CANCEL]);
+        break;
+      default:
         break;
     }
   });
   return actionList;
-}
-
-export function getWATaskActionsForManage(view: ActionViews, isTaskAssigned: boolean): Action[] {
-  switch (view) {
-    case ActionViews.MY:
-      return TASK_ACTIONS.MY;
-    case ActionViews.AVAILABLE:
-      return TASK_ACTIONS.AVAILABLE;
-    case ActionViews.ACTIVE:
-      // TODO - More logic required for Active tasks for tasks tab in case details page
-      // Works in reverse i.e. if view, then check has permission (and also check if task assigned)
-      return TASK_ACTIONS.ACTIVE;
-    case ActionViews.ALL_WORK:
-      return isTaskAssigned ? TASK_ACTIONS.ALL_WORK.ASSIGNED : TASK_ACTIONS.ALL_WORK.UNASSIGNED;
-    default:
-      // If we don't recognise the view, just make sure we at least have an array.
-      return [];
-  }
-}
-
-export function getWATaskActionsForExecute(view: ActionViews): Action[] {
-  switch (view) {
-    case ActionViews.ALL_WORK:
-      return TASK_ACTIONS.EXECUTE;
-    default:
-      return [];
-  }
-}
-
-export function getWATaskActionsForCancel(view: ActionViews): Action[] {
-  switch (view) {
-    case ActionViews.ALL_WORK:
-      return TASK_ACTIONS.CANCEL;
-    default:
-      return [];
-  }
 }

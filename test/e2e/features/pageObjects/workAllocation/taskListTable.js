@@ -44,7 +44,7 @@ class TaskListTable{
     }
 
     async getHeaderPositionWithName(headerName) {
-        const headers = element.all(by.xpath(`//exui-task-list//table//thead//th//button`));
+        const headers = element.all(by.xpath(`//exui-task-list//table//thead//th`));
         const colCount = await headers.count();
         for (let i = 0; i < colCount; i++) {
             const name = await headers.get(i).getText();

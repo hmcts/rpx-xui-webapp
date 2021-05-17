@@ -65,7 +65,7 @@ Feature: Mutiple users, feature variation across releases
         Then I see Available tasks page displayed
         Then I validate available task list column displayed for user "judge" in release "wa_release_2"
 
-    @test
+   
     Scenario Outline:  caseworker user Task list fields displayed in release <release>
         Given I set MOCK with "<release>" release user and roles
             | ROLE                      |

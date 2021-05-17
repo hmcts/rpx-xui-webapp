@@ -103,7 +103,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         });
     });
 
-    Then('I validate available task list column displayed for user {string} in release {string}', async function (user, release) {
+    Then('I validate available task list column displayed for user {string} in release {string}', async function (userType, release) {
         await BrowserUtil.stepWithRetry(async () => {
             const softAssert = new SoftAssert(this);
             const taskListColumnsExpected = testData.appFeatures.taskListColumns.availableTasks[release];
@@ -112,10 +112,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             for (let i = 0; i < taskListColumnsExpected.length; i++) {
                 let columnExpected = taskListColumnsExpected[i];
                 softAssert.setScenario("Is column displayed " + columnExpected);
-                await softAssert.assert(async () => expect(taskListColumnsActual.includes(columnExpected)), `${columnExpected} is not displayed for ${userType} in release ${release} : Actual ${taskListColumnsActual}`).to.be.true
+                await softAssert.assert(async () => expect(taskListColumnsActual.includes(columnExpected), `${columnExpected} is not displayed for ${userType} in release ${release} : Actual ${taskListColumnsActual}`).to.be.true);
             }
 
-            await softAssert.assert(async () => expect(taskListColumnsActual.length), `Expected and actuals column dsplayed does not match:\n expected${columnExpected}\n actual ${taskListColumnsActual} `).to.equal(columnExpected.length)
+            await softAssert.assert(async () => expect(taskListColumnsActual.length, `Expected and actuals column dsplayed does not match:\n expected${taskListColumnsExpected}\n actual ${taskListColumnsActual} `).to.equal(taskListColumnsExpected.length))
             softAssert.finally();
         });
     });

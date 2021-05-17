@@ -1,5 +1,5 @@
 import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX } from './constants/actions';
-import { Action, Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/task';
+import { Action, Caseworker, CaseworkerApi, Location, LocationApi, Task } from './interfaces/task';
 
 export function prepareGetTaskUrl(baseUrl: string, taskId: string): string {
   return `${baseUrl}/task/${taskId}`;

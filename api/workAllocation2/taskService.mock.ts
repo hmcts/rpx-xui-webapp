@@ -50,6 +50,8 @@ export const init = () => {
   // tslint:disable-next-line:max-line-length
   const claimTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/claim/;
 
+  const unclaimTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/unclaim/;
+
   // simulate some error if needed
   // mock.onGet(url).networkErrorOnce()
   mock.onPost(judicialMyTaskUrl).reply(() => {
@@ -95,6 +97,14 @@ export const init = () => {
   });
 
   mock.onPost(claimTaskUrl).reply(() => {
+    // return an array in the form of [status, data, headers]
+    return [
+      204,
+      'success',
+    ];
+  });
+
+  mock.onPost(unclaimTaskUrl).reply(() => {
     // return an array in the form of [status, data, headers]
     return [
       204,

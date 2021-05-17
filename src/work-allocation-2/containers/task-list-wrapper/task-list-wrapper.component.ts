@@ -1,14 +1,15 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
-import { Observable } from 'rxjs';
 
+import { Caseworker } from 'api/workAllocation/interfaces/task';
+import { Observable } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
 import { ListConstants } from '../../components/constants';
-import { Caseworker, SearchTaskRequest, SortParameter } from '../../models/dtos';
 import { InfoMessage, InfoMessageType, TaskActionIds, TaskService, TaskSort } from '../../enums';
-import { CaseworkerDataService, InfoMessageCommService, WorkAllocationTaskService } from '../../services';
+import { SearchTaskRequest, SortParameter } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
+import { CaseworkerDataService, InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 
 @Component({
@@ -16,19 +17,20 @@ import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../..
   providers: [InfoMessageCommService]
 })
 export class TaskListWrapperComponent implements OnInit {
-  public currentFeature: string;
 
+  public specificPage: string = '';
+  public caseworkers: Caseworker[];
+  public sortedBy: TaskSortField;
+  private pTasks: Task[];
   /**
-   * Flag to indicate whether or not we've arrived here following a bad
-   * request with a flag having been set on another route. The flag is
-   * passed through the router and so is held in window.history.state.
+   * Mock TaskServiceConfig.
    */
-  private get wasBadRequest(): boolean {
-    if (window && window.history && window.history.state) {
-      return !!window.history.state.badRequest;
-    }
-    return false;
-  }
+  private readonly defaultTaskServiceConfig: TaskServiceConfig = {
+    service: TaskService.IAC,
+    defaultSortDirection: TaskSort.ASC,
+    defaultSortFieldName: 'dueDate',
+    fields: this.fields,
+  };
 
   /**
    * Take in the Router so we can navigate when actions are clicked.
@@ -43,13 +45,10 @@ export class TaskListWrapperComponent implements OnInit {
     protected caseworkerService: CaseworkerDataService
   ) {}
 
-  public specificPage: string = '';
-  public caseworkers: Caseworker[];
-  public featureVersion$: Observable<string>;
-  private pTasks: Task[];
   public get tasks(): Task[] {
     return this.pTasks;
   }
+
   public set tasks(value: Task[]) {
     this.pTasks = value;
   }
@@ -67,18 +66,6 @@ export class TaskListWrapperComponent implements OnInit {
   }
 
   /**
-   * Mock TaskServiceConfig.
-   */
-  private readonly defaultTaskServiceConfig: TaskServiceConfig = {
-    service: TaskService.IAC,
-    defaultSortDirection: TaskSort.ASC,
-    defaultSortFieldName: 'dueDate',
-    fields: this.fields,
-  };
-
-  public sortedBy: TaskSortField;
-
-  /**
    * To be overridden.
    */
   public get sortSessionKey(): string {
@@ -93,7 +80,19 @@ export class TaskListWrapperComponent implements OnInit {
   }
 
   public get returnUrl(): string {
-    return this.router ? this.router.url : '/tasks';
+    return this.router ? this.router.url : '/mywork';
+  }
+
+  /**
+   * Flag to indicate whether or not we've arrived here following a bad
+   * request with a flag having been set on another route. The flag is
+   * passed through the router and so is held in window.history.state.
+   */
+  private get wasBadRequest(): boolean {
+    if (window && window.history && window.history.state) {
+      return !!window.history.state.badRequest;
+    }
+    return false;
   }
 
   public ngOnInit(): void {
@@ -196,7 +195,7 @@ export class TaskListWrapperComponent implements OnInit {
       return;
     }
 
-    if (this.returnUrl.includes('manager')  && taskAction.action.id === TaskActionIds.RELEASE) {
+    if (this.returnUrl.includes('manager') && taskAction.action.id === TaskActionIds.RELEASE) {
       this.specificPage = 'manager';
     }
     const state = {

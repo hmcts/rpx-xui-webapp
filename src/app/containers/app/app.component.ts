@@ -23,7 +23,7 @@ export class AppComponent implements OnInit, OnDestroy {
     isVisible: false,
   };
 
-  private userId: string = '';
+  private userId: string = null;
   public isCookieBannerVisible: boolean = false;
   private cookieBannerEnabledSubscription: Subscription
   private cookieBannerEnabled: boolean = false;

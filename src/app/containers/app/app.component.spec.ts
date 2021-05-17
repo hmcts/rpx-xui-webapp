@@ -148,6 +148,19 @@ describe('AppComponent', () => {
                 appComponent.setCookieBannerVisibility();
                 expect(cookieService.checkCookie).toHaveBeenCalled();
             });
+
+            it('should set isCookieBannerVisible true when there is no cookie and there is a user and cookie banner is feature toggled on', () => {
+                cookieService.checkCookie.and.returnValue(false);
+                appComponent.handleCookieBannerFeatureToggle(true);
+                appComponent.setUserAndCheckCookie('dummy');
+                expect(appComponent.isCookieBannerVisible).toBeTruthy();
+            });
+
+            it('should set isCookieBannerVisible false when there is no cookie and there is no user and cookie banner is feature toggled on', () => {
+                cookieService.checkCookie.and.returnValue(false);
+                appComponent.handleCookieBannerFeatureToggle(true);
+                expect(appComponent.isCookieBannerVisible).toBeFalsy();
+            });
         });
 
         describe('setUserAndCheckCookie()', () => {

@@ -1,13 +1,13 @@
 import * as chai from 'chai';
-import {expect} from 'chai';
+import { expect } from 'chai';
 import 'mocha';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
-import {mockReq, mockRes} from 'sinon-express-mock';
+import { mockReq, mockRes } from 'sinon-express-mock';
 
-import {http} from '../lib/http';
-import {ALL_LOCATIONS} from './constants/locations';
-import {baseUrl, getLocationById, getLocations} from './locationController';
+import { http } from '../lib/http';
+import { ALL_LOCATIONS } from './constants/locations';
+import { getLocationById, getLocations } from './locationController';
 
 chai.use(sinonChai);
 describe('workAllocation', () => {

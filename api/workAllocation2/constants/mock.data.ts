@@ -97,6 +97,7 @@ export const CASEWORKER_MY_TASKS = {
   ],
 };
 
+// TODO: Assignee should be removed from all available tasks (otherwise they are unavailable)
 export const JUDICIAL_AVAILABLE_TASKS = {
   tasks: [
     {

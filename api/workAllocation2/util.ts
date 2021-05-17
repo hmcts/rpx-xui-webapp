@@ -58,6 +58,9 @@ export function assignActionsToTasks(tasks: any[], view: any): any[] {
   const tasksWithActions: any[] = [];
   if (tasks) {
     for (const task of tasks) {
+      // Note: There is no current logic to determine whether assigned or unassigned
+      // This was debated for EUI-3619
+      // As actions can change based on whether assigned or not, there might need to be a check here
       const actions: Action[] = getActionsByPermissions(view, task.permissions);
       const taskWithAction = {...task, actions};
       tasksWithActions.push(taskWithAction);

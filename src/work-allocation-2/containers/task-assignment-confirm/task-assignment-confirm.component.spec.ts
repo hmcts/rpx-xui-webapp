@@ -16,7 +16,7 @@ class WrapperComponent {
   @ViewChild(TaskAssignmentConfirmComponent) public appComponentRef: TaskAssignmentConfirmComponent;
 }
 
-fdescribe('TaskAssignmentConfirmComponent', () => {
+describe('TaskAssignmentConfirmComponent', () => {
   let component: TaskAssignmentConfirmComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -47,5 +47,12 @@ fdescribe('TaskAssignmentConfirmComponent', () => {
 
   it('should create', () => {
     expect(component).toBeDefined();
+  });
+
+  it('should display the correct verb', () => {
+    component.verb = TaskActionType.Reassign;
+    const titleElement = document.querySelector('.govuk-heading-xl');
+
+    expect(titleElement.textContent).toContain('Reassign');
   });
 });

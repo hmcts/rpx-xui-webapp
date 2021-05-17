@@ -4,7 +4,24 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
       <p>Access tasks and cases.</p>
-      <button class="govuk-button hmcts-button--secondary" type="button"> Show work filter </button>
+      <button class="govuk-button hmcts-button--secondary" type="button" (click)="toggleFilter = !toggleFilter">
+        <ng-container *ngIf="!toggleFilter">
+          Show filter
+        </ng-container>
+        <ng-container *ngIf="toggleFilter">
+          Hide filter
+        </ng-container>
+      </button>
+      <div class="govuk-!-padding-3 filter govuk-!-margin-bottom-3" *ngIf="toggleFilter"
+           style="background-color: #f2f2f1; width: 75%">
+        <h3 class="govuk-heading-m">Immigration & Asylum</h3>
+        <xuilib-generic-filter
+          [config]="fieldsConfig"
+        ></xuilib-generic-filter>
+      </div>
+      <div class="govuk-!-padding-3 filter govuk-!-margin-bottom-3" *ngIf="selectedLocations.length">
+          Selected locations {{selectedLocations.length}}
+      </div>
       <xuilib-hmcts-sub-navigation [items]="subNavigationItems" label="Sub navigation"></xuilib-hmcts-sub-navigation>
     </div>
   </div>

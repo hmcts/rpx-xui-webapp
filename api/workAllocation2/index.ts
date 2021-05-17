@@ -1,4 +1,5 @@
 import { NextFunction, Response } from 'express';
+import { handleGet, handlePost } from '../common/mockService';
 import { getConfigValue } from '../configuration';
 import {
   SERVICES_CASE_CASEWORKER_REF_PATH,
@@ -15,8 +16,8 @@ import {
   handlePostRoleAssingnments,
   handlePostSearch
 } from './caseWorkerService';
-import { Caseworker, Task } from './interfaces/task';
-import { handleTaskGet, handleTaskPost, handleTaskSearch } from './taskService';
+import { Caseworker } from './interfaces/task';
+import * as mock from './taskService.mock';
 import {
   assignActionsToTasks,
   mapCaseworkerData,
@@ -32,6 +33,8 @@ import {
   prepareTaskSearchForCompletable
 } from './util';
 
+mock.init();
+
 export const baseWorkAllocationTaskUrl = getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH);
 export const baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);
 export const baseRoleAssignmentUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
@@ -45,10 +48,8 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
   try {
     const getTaskPath: string = prepareGetTaskUrl(baseWorkAllocationTaskUrl, req.params.taskId);
 
-    const jsonResponse: Partial<Task> = await handleTaskGet(getTaskPath, req);
-    if (jsonResponse && jsonResponse && jsonResponse.due_date) {
-      jsonResponse.dueDate = jsonResponse.due_date;
-    }
+    const jsonResponse = await handleGet(getTaskPath, req);
+
     res.status(200);
     res.send(jsonResponse);
   } catch (error) {
@@ -61,17 +62,39 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
  */
 export async function searchTask(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    const postTaskPath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
     const searchRequest = req.body.searchRequest;
-    const {status, data} = await handleTaskSearch(postTaskPath, searchRequest, req);
+    const view = req.body.view;
+    let promise;
+    if (searchRequest.search_by === 'judge') {
+      // TODO below call mock api will be replaced when real api is ready
+      if (view === 'MyTasks') {
+        const postTaskPath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'myTasks?view=judicial');
+        promise = await handlePost(postTaskPath, searchRequest, req);
+      } else if (view === 'AvailableTasks') {
+        const postTaskPath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'availableTasks?view=judicial');
+        promise = await handlePost(postTaskPath, searchRequest, req);
+      }
+    } else {
+      if (view === 'MyTasks') {
+        const postTaskPath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'myTasks?view=caseworker');
+        promise = await handlePost(postTaskPath, searchRequest, req);
+      } else if (view === 'AvailableTasks') {
+        const postTaskPath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'availableTasks?view=caseworker');
+        promise = await handlePost(postTaskPath, searchRequest, req);
+      }
+    }
+    const {status, data} = promise;
     res.status(status);
     // Assign actions to the tasks on the data from the API.
+    let returnData;
     if (data) {
-      assignActionsToTasks(data.tasks, req.body.view);
+      // Note: TaskPermission placed in here is an example of what we could be getting (i.e. Manage permission)
+      // These should be mocked as if we were getting them from the user themselves
+      returnData = {tasks: assignActionsToTasks(data.tasks, req.body.view)};
     }
 
     // Send the (possibly modified) data back in the Response.
-    res.send(data);
+    res.send(returnData);
   } catch (error) {
     next(error);
   }
@@ -84,7 +107,7 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
 
   try {
     const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.params.taskId, req.params.action);
-    const {status, data} = await handleTaskPost(getTaskPath, req.body, req);
+    const {status, data} = await handlePost(getTaskPath, req.body, req);
     res.status(status);
     res.send(data);
   } catch (error) {
@@ -196,7 +219,7 @@ export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Re
     res.status(status);
     res.send(data);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     next(error);
   }
 }

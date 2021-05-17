@@ -7,15 +7,13 @@ import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 import { SessionStorageService } from 'src/app/services';
-
-
+import { TaskListComponent } from '..';
+import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
+import { TaskFieldType } from '../../enums';
 import { Task } from '../../models/tasks';
 import { CaseworkerDataService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
 import { getMockTasks } from '../../tests/utils.spec';
-import { TaskListComponent } from '../task-list/task-list.component';
 import { MyTasksComponent } from './my-tasks.component';
-import { TaskFieldType } from '../../enums';
-import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 
 @Component({
   template: `

@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { UserInfo } from '../../../app/models/user-details.model';
-
 import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
 import { SearchTaskRequest } from '../../models/dtos';
 import { TaskFieldConfig } from '../../models/tasks';
@@ -33,11 +32,13 @@ export class MyTasksComponent extends TaskListWrapperComponent {
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       const id = userInfo.id ? userInfo.id : userInfo.uid;
+      const isJudge = userInfo.roles.some(role => ListConstants.JUDGE_ROLES.includes(role));
       return {
         search_parameters: [
           { key: 'user', operator: 'IN', values: [ id ] },
         ],
-        sorting_parameters: [this.getSortParameter()]
+        sorting_parameters: [this.getSortParameter()],
+        search_by: isJudge ? 'judge' : 'caseworker'
       };
     }
   }

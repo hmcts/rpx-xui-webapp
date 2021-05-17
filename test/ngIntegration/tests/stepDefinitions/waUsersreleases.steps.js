@@ -10,6 +10,7 @@ const CucumberReporter = require('../../../e2e/support/reportLogger');
 const taskListPage = require('../../../e2e/features/pageObjects/workAllocation/taskListPage');
 const TaskListTable = require('../../../e2e/features/pageObjects/workAllocation/taskListTable');
 const BrowserUtil = require('../../util/browserUtil');
+const BrowserWaits = require('../../../e2e/support/customWaits');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
     const taskListTable = new TaskListTable();
@@ -26,7 +27,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const datatablehashes = datatableroles.hashes();
         const roles = datatablehashes.map(roleHash => roleHash.ROLE);
         MockApp.onGet("/api/user/details", (req, res) => { 
-            res.send(nodeAppMock.getUserDetailsWithRolesAndIdamId(roles, userIdamID));
+            const userDetails = nodeAppMock.getUserDetailsWithRolesAndIdamId(roles, userIdamID);
+             CucumberReporter.AddJson(userDetails);
+            res.send(userDetails);
         });
 
     });
@@ -80,6 +83,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I validate task list column displayed for user {string} in release {string}', async function(user, release){
+        await BrowserWaits.waitForSeconds(20);
         await BrowserUtil.stepWithRetry(async () => {
             const softAssert = new SoftAssert(this);
             const taskListColumnsExpected = testData.appFeatures.taskListColumns.myTasks[release];
@@ -89,9 +93,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 let columnExpected = taskListColumnsExpected[i];
                 softAssert.setScenario("Is column displayed " + columnExpected);
                 await softAssert.assert(async () => expect(taskListColumnsActual.includes(columnExpected), `${columnExpected} is not displayed for ${user} in release ${release} : Actual ${taskListColumnsActual}`).to.be.true);
-            }
 
-            await softAssert.assert(async () => expect(taskListColumnsActual.length, `Expected and actuals column dsplayed does not match:\n expected${columnExpected}\n actual ${taskListColumnsActual} `).to.equal(columnExpected.length));
+            }
+            softAssert.setScenario("Columns displayed ");
+            await softAssert.assert(async () => expect(taskListColumnsActual.length, `for ${user} in release ${release} \n Expected and actuals column dsplayed does not match:\n expected${taskListColumnsExpected}\n actual ${taskListColumnsActual} `).to.equal(taskListColumnsExpected.length));
+
             softAssert.finally();
             await CucumberReporter.AddScreenshot();
         });

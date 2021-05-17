@@ -40,6 +40,7 @@ export interface SortParameter {
 export interface SearchTaskRequest {
   search_parameters: SearchTaskParameter[];
   sorting_parameters: SortParameter[];
+  search_by?: string;
 }
 
 export interface Task {

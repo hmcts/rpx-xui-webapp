@@ -1,8 +1,10 @@
 import { expect } from 'chai';
 
-import { ActionViews, TASK_ACTIONS } from './constants/actions';
+import { GO, REASSIGN, RELEASE } from './constants/actions';
+import { JUDICIAL_MY_TASKS } from './constants/mock.data';
 import { Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/task';
-import { assignActionsToTasks, mapCaseworkerData, mapCaseworkerPrimaryLocation, prepareGetTaskUrl, preparePostTaskUrlAction, prepareSearchTaskUrl } from './util';
+import { assignActionsToTasks, mapCaseworkerData, mapCaseworkerPrimaryLocation, prepareGetTaskUrl,
+  preparePostTaskUrlAction, prepareSearchTaskUrl } from './util';
 
 describe('workAllocation.utils', () => {
 
@@ -43,85 +45,55 @@ describe('workAllocation.utils', () => {
 
     const TASKS = {
       TASK_1: {
-        id: '1',
-        caseReference: '1',
-        caseName: 'Task One',
+        actions: undefined,
+        assignee: 'Bob',
         caseCategory: 'Grant of representation',
+        caseName: 'Task One',
+        caseReference: '1',
+        dueDate: new Date(1604938789000),
+        id: '1',
         location: 'Taylor House',
         taskName: 'Apply for probate',
-        dueDate: new Date(1604938789000),
-        assignee: 'Bob',
-        actions: undefined,
       },
       TASK_2: {
-        id: '2',
-        caseReference: '2',
-        caseName: 'Task Two',
+        actions: undefined,
         caseCategory: 'Grant of representation',
+        caseName: 'Task Two',
+        caseReference: '2',
+        dueDate: new Date(1604938789000),
+        id: '2',
         location: 'Taylor House',
         taskName: 'Apply for probate',
-        dueDate: new Date(1604938789000),
-        actions: undefined,
       },
     };
 
-    it('should set up actions appropriately for My tasks view', () => {
-      const tasks = [ { ...TASKS.TASK_1 }, { ...TASKS.TASK_2 } ];
-      expect(tasks[0].actions).to.be.undefined;
-      expect(tasks[1].actions).to.be.undefined;
-      assignActionsToTasks(tasks, ActionViews.MY);
-      expect(tasks[0].actions).to.deep.equal(TASK_ACTIONS.MY);
-      expect(tasks[1].actions).to.deep.equal(TASK_ACTIONS.MY);
+    it('should assign actions to task', () => {
+      const tasksWithActions = assignActionsToTasks(JUDICIAL_MY_TASKS.tasks, 'MyTasks');
+      expect(tasksWithActions[0].actions[0]).to.be.equal(REASSIGN);
+      expect(tasksWithActions[0].actions[1]).to.be.equal(RELEASE);
+      expect(tasksWithActions[0].actions[2]).to.be.equal(GO);
     });
-
-    it('should set up actions appropriately for Available task view', () => {
-      const tasks = [ { ...TASKS.TASK_1 }, { ...TASKS.TASK_2 } ];
-      expect(tasks[0].actions).to.be.undefined;
-      expect(tasks[1].actions).to.be.undefined;
-      assignActionsToTasks(tasks, ActionViews.AVAILABLE);
-      expect(tasks[0].actions).to.deep.equal(TASK_ACTIONS.AVAILABLE);
-      expect(tasks[1].actions).to.deep.equal(TASK_ACTIONS.AVAILABLE);
-    });
-
-    it('should set up actions appropriately for Task manager view', () => {
-      const tasks = [ { ...TASKS.TASK_1 }, { ...TASKS.TASK_2 } ];
-      expect(tasks[0].actions).to.be.undefined;
-      expect(tasks[1].actions).to.be.undefined;
-      assignActionsToTasks(tasks, ActionViews.MANAGER);
-      expect(tasks[0].actions).to.deep.equal(TASK_ACTIONS.MANAGER.ASSIGNED); // Has an assignee
-      expect(tasks[1].actions).to.deep.equal(TASK_ACTIONS.MANAGER.UNASSIGNED); // Is unassigned
-    });
-
-    it('should set up actions appropriately for unknown view', () => {
-      const tasks = [ { ...TASKS.TASK_1 }, { ...TASKS.TASK_2 } ];
-      expect(tasks[0].actions).to.be.undefined;
-      expect(tasks[1].actions).to.be.undefined;
-      assignActionsToTasks(tasks, 'Bob');
-      expect(tasks[0].actions).to.be.an('array').that.is.empty;
-      expect(tasks[1].actions).to.be.an('array').that.is.empty;
-    });
-
   });
 
   describe('mapCaseworkerData', () => {
 
     const LOCATIONAPI_1: LocationApi = {
-      location_id: '1',
-      location: 'Test One',
-      services: ['a', 'b'],
       is_primary: true,
+      location: 'Test One',
+      location_id: '1',
+      services: ['a', 'b'],
     };
     const LOCATIONAPI_2: LocationApi = {
-      location_id: '2',
-      location: 'Test Two',
-      services: ['a', 'c'],
       is_primary: false,
+      location: 'Test Two',
+      location_id: '2',
+      services: ['a', 'c'],
     };
     const LOCATIONAPI_3: LocationApi = {
-      location_id: '3',
-      location: 'Test Three',
-      services: ['b', 'c'],
       is_primary: true,
+      location: 'Test Three',
+      location_id: '3',
+      services: ['b', 'c'],
     };
 
     const LOCATION_1: Location = {
@@ -134,62 +106,60 @@ describe('workAllocation.utils', () => {
       locationName: 'Test Three',
       services: ['b', 'c'],
     };
-
     const CASEWORKERAPI_1: CaseworkerApi = {
-      id: '1',
-      first_name: 'Name',
-      last_name: 'Test',
-      email_id: 'nametest@test.com',
       base_location: [LOCATIONAPI_1, LOCATIONAPI_2],
+      email_id: 'nametest@test.com',
+      first_name: 'Name',
+      id: '1',
+      last_name: 'Test',
     };
     const CASEWORKERAPI_2: CaseworkerApi = {
-      id: '2',
-      first_name: 'First',
-      last_name: 'Last',
-      email_id: 'firstlast@test.com',
       base_location: [LOCATIONAPI_2, LOCATIONAPI_3],
+      email_id: 'firstlast@test.com',
+      first_name: 'First',
+      id: '2',
+      last_name: 'Last',
     };
     const CASEWORKERAPI_3: CaseworkerApi = {
-      id: '3',
-      first_name: 'One',
-      last_name: 'Two',
-      email_id: 'onetwo@test.com',
       base_location: [LOCATIONAPI_1, LOCATIONAPI_3],
+      email_id: 'onetwo@test.com',
+      first_name: 'One',
+      id: '3',
+      last_name: 'Two',
     };
     const CASEWORKERAPI_4: CaseworkerApi = {
-      id: '4',
-      first_name: 'Fourth',
-      last_name: 'Test',
-      email_id: 'fourthtest@test.com',
       base_location: [],
+      email_id: 'fourthtest@test.com',
+      first_name: 'Fourth',
+      id: '4',
+      last_name: 'Test',
     };
-
     const CASEWORKER_1: Caseworker = {
-      idamId: '1',
-      firstName: 'Name',
-      lastName: 'Test',
       email: 'nametest@test.com',
+      firstName: 'Name',
+      idamId: '1',
+      lastName: 'Test',
       location: LOCATION_1,
     };
     const CASEWORKER_2: Caseworker = {
-      idamId: '2',
-      firstName: 'First',
-      lastName: 'Last',
       email: 'firstlast@test.com',
+      firstName: 'First',
+      idamId: '2',
+      lastName: 'Last',
       location: LOCATION_2,
     };
     const CASEWORKER_3: Caseworker = {
-      idamId: '3',
-      firstName: 'One',
-      lastName: 'Two',
       email: 'onetwo@test.com',
+      firstName: 'One',
+      idamId: '3',
+      lastName: 'Two',
       location: LOCATION_2,
     };
     const CASEWORKER_4: Caseworker = {
-      idamId: '4',
-      firstName: 'Fourth',
-      lastName: 'Test',
       email: 'fourthtest@test.com',
+      firstName: 'Fourth',
+      idamId: '4',
+      lastName: 'Test',
       location: null,
     };
 
@@ -215,7 +185,8 @@ describe('workAllocation.utils', () => {
       expect(mapCaseworkerData(null)).to.deep.equal([]);
 
       // this will ensure that the mapping of caseworker data is correct
-      expect(mapCaseworkerData([CASEWORKERAPI_1, CASEWORKERAPI_2, CASEWORKERAPI_3, CASEWORKERAPI_4])).to.deep.equal([CASEWORKER_1, CASEWORKER_2, CASEWORKER_3, CASEWORKER_4]);
+      expect(mapCaseworkerData([CASEWORKERAPI_1, CASEWORKERAPI_2, CASEWORKERAPI_3, CASEWORKERAPI_4]))
+        .to.deep.equal([CASEWORKER_1, CASEWORKER_2, CASEWORKER_3, CASEWORKER_4]);
     });
   });
 

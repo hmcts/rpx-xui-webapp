@@ -5,20 +5,20 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { Observable } from 'rxjs';
-
+import { TaskListComponent } from '..';
 import { ErrorMessageComponent } from '../../../app/components';
 import { TaskActionConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { TaskListComponent } from '../../containers';
-import {
-  NAME_ERROR,
-  TaskAssignmentContainerComponent,
-} from '../../containers/task-assignment/task-assignment-container.component';
 import { Assignee } from '../../models/dtos';
 import { Task } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { getMockCaseworkers, getMockTasks } from '../../tests/utils.spec';
+import {
+  NAME_ERROR,
+  TaskAssignmentContainerComponent,
+} from './task-assignment-container.component';
 
 @Component({
   template: `<exui-task-container-assignment></exui-task-container-assignment>`
@@ -31,7 +31,7 @@ class WrapperComponent {
 @Component({
   template: `<div>Nothing</div>`
 })
-class NothingComponent {}
+class NothingComponent { }
 
 describe('TaskAssignmentContainerComponent', () => {
   let component: TaskAssignmentContainerComponent;
@@ -53,10 +53,10 @@ describe('TaskAssignmentContainerComponent', () => {
         ErrorMessageComponent, NothingComponent
       ],
       imports: [
-        WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientModule,
+        WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientModule, ExuiCommonLibModule,
         RouterTestingModule.withRoutes(
           [
-            { path: 'tasks/list', component: NothingComponent }
+            { path: 'mywork/list', component: NothingComponent }
           ]
         )
       ],
@@ -67,7 +67,7 @@ describe('TaskAssignmentContainerComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                taskAndCaseworkers: { task: { task: mockTasks[0] }, caseworkers: [] },
+                taskAndCaseworkers: { data: mockTasks[0], caseworkers: [] },
                 ...TaskActionConstants.Reassign
               }
             },
@@ -82,7 +82,7 @@ describe('TaskAssignmentContainerComponent', () => {
     component = wrapper.appComponentRef;
 
     wrapper.tasks = null;
-    window.history.pushState({ returnUrl: 'tasks/list', showAssigneeColumn: false }, '', 'tasks/list');
+    window.history.pushState({ returnUrl: 'mywork/list', showAssigneeColumn: false }, '', 'mywork/list');
     fixture.detectChanges();
   });
 
@@ -94,25 +94,9 @@ describe('TaskAssignmentContainerComponent', () => {
     expect(component).toBeDefined();
   });
 
-  it('should allow changing the caseworker', () => {
-    expect(component.caseworker).toBe(undefined);
-    component.onCaseworkerChanged(mockCaseworkers[0]);
-    fixture.detectChanges();
-    expect(component.caseworker).toBe(mockCaseworkers[0]);
-
-    component.onCaseworkerChanged(mockCaseworkers[1]);
-    fixture.detectChanges();
-    expect(component.caseworker).toBe(mockCaseworkers[1]);
-
-    component.onCaseworkerChanged(null);
-    fixture.detectChanges();
-    expect(component.caseworker).toBe(null);
-  });
-
   it('should send an error message when a caseworker is not selected and there is an attempt to assign', () => {
     expect(component.caseworker).toBeUndefined();
     expect(component.error).toBeNull();
-
 
     component.assign();
     fixture.detectChanges();

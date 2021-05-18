@@ -65,7 +65,7 @@ export const applyProxy = (app, config) => {
         }
     }
 
-    let middlewares = [authInterceptor]
+    let middlewares = config.skipAuth ? [] : [authInterceptor];
 
     if (config.middlewares) {
         middlewares = [...middlewares, ...config.middlewares]

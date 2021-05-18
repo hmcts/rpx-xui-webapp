@@ -26,6 +26,7 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
     applyButtonText: 'Apply'
   };
   public selectedLocations: string[] = [];
+  public jurisdiction: string = 'Immigration & Asylum';
   /**
    * Take in the Router so we can navigate when actions are clicked and
    * to identify which sub-navigation item to highlight.

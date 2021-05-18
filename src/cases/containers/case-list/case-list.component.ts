@@ -18,6 +18,8 @@ import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import * as fromRoot from '../../../app/store';
+import { OrganisationDetails } from '../../../organisation/models';
+import * as fromStore from '../../../organisation/store';
 import * as converters from '../../converters/case-converter';
 import { ActionBindingModel } from '../../models/create-case-actions.model';
 import * as fromCasesFeature from '../../store';
@@ -90,9 +92,11 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public sortParameters;
 
   public userDetails: Observable<any>;
+  public organisationDetails: Partial<OrganisationDetails>;
 
   constructor(
     public store: Store<fromCaseList.State>,
+    private readonly orgStore: Store<fromStore.OrganisationState>,
     private readonly appConfig: AppConfig,
     private readonly definitionsService: DefinitionsService,
     private readonly windowService: WindowService,
@@ -157,6 +161,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
     });
     this.shareCases$ = this.store.pipe(select(fromCasesFeature.getShareCaseListState));
     this.shareCases$.subscribe(shareCases => this.selectedCases = converters.toSearchResultViewItemConverter(shareCases));
+    this.getOrganisationDetailsFromStore();
   }
 
   public listenToPaginationMetadata = () => {
@@ -442,5 +447,15 @@ export class CaseListComponent implements OnInit, OnDestroy {
     if (this.elasticSearchFlagSubsription) {
       this.elasticSearchFlagSubsription.unsubscribe();
     }
+  }
+
+  public getOrganisationDetailsFromStore(): void {
+    this.store.dispatch(new fromStore.LoadOrganisation());
+    this.orgStore.pipe(select(fromStore.getOrganisationSel)).subscribe(response => {
+      this.organisationDetails = response;
+      if (this.organisationDetails && this.organisationDetails.organisationIdentifier) {
+        sessionStorage.setItem('organisationDetails', JSON.stringify(this.organisationDetails));
+      }
+    });
   }
 }

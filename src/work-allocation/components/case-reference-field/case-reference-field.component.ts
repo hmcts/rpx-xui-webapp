@@ -4,7 +4,8 @@ import { AppConstants } from '../../../app/app.constants';
 
 @Component({
   selector: 'exui-case-reference-field',
-  templateUrl: './case-reference-field.component.html'
+  templateUrl: './case-reference-field.component.html',
+  styleUrls: ['case-reference-field.component.scss']
 })
 export class CaseReferenceFieldComponent implements OnChanges {
   /**
@@ -17,7 +18,7 @@ export class CaseReferenceFieldComponent implements OnChanges {
     let href: string;
     if (this.caseReference) {
       // Get rid of the spaces in the caseReference.
-      const caseId = this.caseReference.replace(/\s/g, '');
+      const caseId = this.caseReference;
       if (caseId) {
         href = `${AppConstants.CASE_DETAILS_URL}${caseId}`;
       }

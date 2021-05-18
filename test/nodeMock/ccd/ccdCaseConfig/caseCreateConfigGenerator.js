@@ -1,4 +1,5 @@
 
+const CCDCaseField = require('./CCDCaseField');
 const configTemplate = {
     "id": "FR_solicitorCreate",
     "name": "EXUI Test CaseType",
@@ -28,52 +29,20 @@ const wizardPageTemplate = {
     "retries_timeout_mid_event": []
 };
 
-
-const ccdFieldTemplate = {
-    "id": "testTextField",
-    "label": "Organisation ID",
-    "hidden": null,
-    "order": null,
-    "metadata": false,
-    "case_type_id": null,
-    "hint_text": null,
-    "field_type": {
-        "id": "Text",
-        "type": "Text",
-        "min": null,
-        "max": null,
-        "regular_expression": null,
-        "fixed_list_items": [],
-        "complex_fields": [],
-        "collection_field_type": null
-    },
-    "security_classification": "PUBLIC",
-    "live_from": null,
-    "live_until": null,
-    "show_condition": null,
-    "acls": [
-
-    ],
-    "complexACLs": [],
-    "display_context": "OPTIONAL",
-    "display_context_parameter": null,
-    "formatted_value": null,
-    "default_value": null,
-    "retain_hidden_value": null,
-    "show_summary_change_option": true,
-    "show_summary_content_option": null,
-    "retain_hidden_value": null
-};
-
-
-
-class CCDCaseConfig {
+class CCDCaseConfig extends CCDCaseField{
 
     caseConfigTemplate = JSON.parse(JSON.stringify(configTemplate));
     constructor(id, name, description){
+        super();
         this.caseConfigTemplate.id = id;
         this.caseConfigTemplate.name = name;
         this.caseConfigTemplate.description = description;
+
+        this.currentWizardPage = null;
+        this.currentCaseField = null;
+
+        this.currentComplexField = null;
+        this.currentCollectionField = null;
 
     }
     
@@ -83,17 +52,18 @@ class CCDCaseConfig {
         wizardPage.label = label;
         wizardPage.order = this.caseConfigTemplate.wizard_pages.length;
         this.caseConfigTemplate.wizard_pages.push(wizardPage);
-        return wizardPage; 
+        this.currentWizardPage = wizardPage; 
+        this.currentCaseField = null;
+        return this; 
     }
 
    
 
-    addCCDFieldToPage(wizardPage,fieldType, id, label){
-        const ccdField = this.getCCDFieldTemplateCopy(fieldType, id, label);
-
+    addCCDFieldToPage(wizardPage,fieldConfig){
+        
         this.caseConfigTemplate.case_fields.push(ccdField);
         wizardPage.wizard_page_fields.push({
-            "case_field_id": id,
+            "case_field_id": fieldConfig.id,
             "order": wizardPage.wizard_page_fields.length,
             "page_column_no": 1,
             "complex_field_overrides": []
@@ -101,78 +71,107 @@ class CCDCaseConfig {
         return ccdField;
     };
 
-    getCCDFieldTemplateCopy(fieldType, id, label) {
-        const template =  JSON.parse(JSON.stringify(ccdFieldTemplate));
-       
-        switch (fieldType){
-            case "AddressGlobalUK":
-            case "AddressUK":
-                template.field_type.id = fieldType;
-                template.field_type.type = "Complex";
-                const add1 = this.getCCDFieldTemplateCopy("Text", "AddressLine1", "Building and Street"); 
-                const add2 = this.getCCDFieldTemplateCopy("Text", "AddressLine2", "Address Line 2");
-                const add3 = this.getCCDFieldTemplateCopy("Text", "AddressLine3", "Address Line 3"); 
-                const postTown = this.getCCDFieldTemplateCopy("Text", "PostTown", "Town or City");
-                const county = this.getCCDFieldTemplateCopy("Text", "County", "County");
-                const postCode = this.getCCDFieldTemplateCopy("Text", "PostCode", "Postcode/Zipcode");
-                const country = this.getCCDFieldTemplateCopy("Text", "Country", "Country");
 
-                template.field_type.complex_fields = [add1, add2, add3, postTown, county, postCode, country]; 
-                break;
-            case "AddressLine1":
-                template.field_type.id = "TextMax150";
-                template.field_type.type = "Text" 
-                template.field_type.max = 150;
-                break;
-            case "AddressLine2":
-            case "AddressLine3":
-            case "PostTown":
-            case "county":
-            case "Country":
-                template.field_type.id = "TextMax50";
-                template.field_type.type = "Text"
-                template.field_type.max = 50;
-                break;
-            case "PostCode":
-                template.field_type.id = "TextMax14";
-                template.field_type.type = "Text"
-                template.field_type.max = 14;
-                break
-            case "OrderSummary":
-            case "CaseLink":
-            case "Organisation":
-                template.field_type.id = fieldType;
-                template.field_type.type = "Complex";
-                break; 
-            case "Organisation":
-                template.field_type.id = "OrganisationPolicy";
-                template.field_type.type = "Complex"; 
+    addCaseField(fieldConfig){
+        if (!this.currentWizardPage){
+            throw new Error("No wizard page added. Add a wizard page before adding case field");
+        }
+        const ccdField = this.getCCDFieldTemplateCopy(fieldConfig);
 
-                const OrgPolicyCaseAssignedRole = this.getCCDFieldTemplateCopy("Text", "OrgPolicyCaseAssignedRole", "Case Assigned Role"); 
-
-                const organisation = this.getCCDFieldTemplateCopy("Complex", "Organisation", "Organisation");
-                organisation.field_type.id = "Organisation;";
-                const orgId = this.getCCDFieldTemplateCopy("Text", "OrganisationID", "Organisation ID"); 
-                const orgNaMe = this.getCCDFieldTemplateCopy("Text", "OrganisationName", "Name");   
-                organisation.field_type.omplex_fields = [orgId, orgNaMe];
-
-                template.field_type.complex_fields = [OrgPolicyCaseAssignedRole, organisation]; 
-                
-            default:
-                template.field_type.id = fieldType;
-                template.field_type.type = fieldType;
+        if (ccdField.field_type.type === "Complex") {
+            this.currentComplexField = ccdField;
+            this.currentCollectionField = null;
+        } else if (ccdField.field_type.type === "Collection") {
+            this.currentComplexField = null;
+            this.currentCollectionField = ccdField;
+        } else {
+            this.currentComplexField = null;
+            this.currentCollectionField = null;
         }
 
-     
-        template.id = id;
-        template.label = label;
-        return template;
+        this.caseConfigTemplate.case_fields.push(ccdField);
+        this.currentWizardPage.wizard_page_fields.push({
+            "case_field_id": ccdField.id,
+            "order": this.currentWizardPage.wizard_page_fields.length,
+            "page_column_no": 1,
+            "complex_field_overrides": []
+        }); 
+        this.currentCaseField = ccdField; 
+        return this; 
     }
 
-  
+    setComplexField(fieldConfig){
+        this.currentComplexField.field_type.complex_fields.push(his.getCCDFieldTemplateCopy(fieldConfig));
+        return this;
+    }
 
+    setEventProps(fieldprops) {
+        this.setObjectProps(this.caseConfigTemplate, fieldprops);
+        return this;
+    }
+
+    updateEventProps(fieldprops) {
+        this.setObjectProps(this.caseConfigTemplate, fieldprops);
+        return this;
+    }
+
+    setFieldProps(fieldprops){
+        this.checkPageAndFiedlSet();
+        this.setObjectProps(this.currentCaseField,fieldprops);
+        return this; 
+    }
+
+    updateFieldProps(fieldId, fieldprops) {
+        const fieldConfig = this.getCaseFieldConfig(fieldId);
+
+        this.setObjectProps(fieldConfig, fieldprops);
+        return this;
+    }
+
+    
+
+    setFieldTypeProps(fieldTypeprops){
+        this.checkPageAndFiedlSet();
+        this.setObjectProps(this.currentCaseField.field_type, fieldTypeprops);
+        return this; 
+    }
+
+    updateFieldTypeProps(fieldId, fieldTypeprops) {
+        const fieldConfig = this.getCaseFieldConfig(fieldId);
+
+        this.setObjectProps(fieldConfig.field_type, fieldTypeprops);
+        return this;
+    }
+
+    checkPageAndFiedlSet(){
+        if (!this.currentWizardPage) {
+            throw new Error("No wizard page added.");
+        }
+        if (!this.currentCaseField) {
+            throw new Error("No case field added.");
+        }  
+    }
+
+    getCase(){
+        return this.caseConfigTemplate; 
+    }
+
+    getWizardPageConfig(pageId){
+        return this.caseConfigTemplate.wizard_pages.filter(wizardpage => wizardpage.id === pageId )[0];
+    }
+
+    getCaseFieldConfig(caseFieldId){
+        const fields = this.caseConfigTemplate.case_fields.filter(caseField => caseField.id === caseFieldId);
+        if (fields.length === 0){
+            const fieldsIds = this.caseConfigTemplate.case_fields.map(caseField => caseField.id);
+            throw new Error(`Fields with id ${caseFieldId} not found in case event config fields: ${JSON.stringify(fieldsIds)}`);
+        } 
+        return fields[0];
+
+    }
+ 
+    
 }
 
 module.exports = CCDCaseConfig;
-
 

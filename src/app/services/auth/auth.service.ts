@@ -1,13 +1,13 @@
-
 import { Injectable } from '@angular/core';
-
-import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { SessionStorageService } from '../session-storage/session-storage.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly httpService: HttpClient
+    private readonly httpService: HttpClient,
+    private readonly sessionStorageService: SessionStorageService
   ) {
   }
 
@@ -21,11 +21,15 @@ export class AuthService {
   }
 
   public signOut() {
+    // Clear out the SessionStorage.
+    this.clearSessionStorage();
     const href = '/auth/logout';
     this.setWindowLocationHref(href);
   }
 
   public logOut(): Observable<any> {
+    // Clear out the SessionStorage.
+    this.clearSessionStorage();
     return this.httpService.get('/auth/logout?noredirect=true');
   }
 
@@ -37,5 +41,9 @@ export class AuthService {
 
   public setWindowLocationHref(href: string) {
     window.location.href = href;
+  }
+
+  private clearSessionStorage() {
+    this.sessionStorageService.clear();
   }
 }

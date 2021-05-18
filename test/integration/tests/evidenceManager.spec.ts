@@ -4,6 +4,7 @@ import { v4 as  uuid } from 'uuid';
 import { config } from './config/config';
 import { getUserId, getXSRFToken } from './utils/authUtil';
 import Request from './utils/request';
+import { setTestContext } from './utils/helper';
 
 
 
@@ -13,7 +14,8 @@ describe('Evidence Manager Endpoints', () => {
 
     // const userName = 'peterxuisuperuser@mailnesia.com';
     // const password = 'Monday01';
-    beforeEach(() => {
+    beforeEach(function() {
+        setTestContext(this);
         Request.clearSession();
     });
 
@@ -26,7 +28,7 @@ describe('Evidence Manager Endpoints', () => {
             experimental: true,
             'X-XSRF-TOKEN': xsrfToken
         };
-        const response = await Request.get(`documents/${config.em.docId}/binary`, headers);
+        const response = await Request.get(`documents/${config.em.docId}/binary`, headers, 200);
         expect(response.status).to.equal(200);
     });
 
@@ -37,7 +39,7 @@ describe('Evidence Manager Endpoints', () => {
             experimental: true,
             'X-XSRF-TOKEN': xsrfToken
         };
-        const response = await Request.get(`em-anno/metadata/${config.em.docId}`, headers);
+        const response = await Request.get(`em-anno/metadata/${config.em.docId}`, headers, [200,204]);
         expect(response.status).to.equal(204);
     });
 
@@ -48,7 +50,7 @@ describe('Evidence Manager Endpoints', () => {
             experimental: true,
             'X-XSRF-TOKEN': xsrfToken
         };
-        const response = await Request.get(`em-anno/annotation-sets/filter?documentId=${config.em.docId}`, null);
+        const response = await Request.get(`em-anno/annotation-sets/filter?documentId=${config.em.docId}`, null, 200);
         expect(response.status).to.equal(200);
         expect(response.data).to.have.all.keys('createdBy', 'createdByDetails', 'lastModifiedByDetails', 'createdDate', 'lastModifiedBy', 'annotations', 'documentId', 'id','lastModifiedDate');
     });
@@ -59,7 +61,7 @@ describe('Evidence Manager Endpoints', () => {
         const headers = {
             'X-XSRF-TOKEN': xsrfToken
         };
-        const response = await Request.put(`em-anno/annotations`, await getAnnotationObject() , headers);
+        const response = await Request.put(`em-anno/annotations`, await getAnnotationObject(), headers, 200);
         expect(response.status).to.equal(200);
     });
 
@@ -69,17 +71,17 @@ describe('Evidence Manager Endpoints', () => {
         const headers = {
             'X-XSRF-TOKEN': xsrfToken
         };
-        const annotationsRes = await Request.get(`em-anno/annotation-sets/filter?documentId=${config.em.docId}`, null);
+        const annotationsRes = await Request.get(`em-anno/annotation-sets/filter?documentId=${config.em.docId}`, null, 200);
         let annoIdToDelete = '';
         if (annotationsRes.data.annotations.length <= 1) {
-            const newannoRes = await Request.put(`em-anno/annotations`, await getAnnotationObject(), headers);
+            const newannoRes = await Request.put(`em-anno/annotations`, await getAnnotationObject(), headers, 200);
             expect(newannoRes.status).to.equal(200);
 
             annoIdToDelete = newannoRes.data.annotations[0].id;
         } else {
             annoIdToDelete = annotationsRes.data.annotations[0].id;
         }
-        const response = await Request.delete(`em-anno/annotations/${annoIdToDelete}`, await getAnnotationObject(), headers);
+        const response = await Request.delete(`em-anno/annotations/${annoIdToDelete}`, await getAnnotationObject(), headers, 200);
         expect(response.status).to.equal(200);
     });
 
@@ -91,7 +93,7 @@ describe('Evidence Manager Endpoints', () => {
             experimental: true,
             'X-XSRF-TOKEN': xsrfToken
         };
-        const response = await Request.get(`em-anno/${config.em.docId}/bookmarks`, null);
+        const response = await Request.get(`em-anno/${config.em.docId}/bookmarks`, null, 200);
         expect(response.status).to.equal(200);
         expect(response.data).to.be.an('array');
 
@@ -107,9 +109,9 @@ describe('Evidence Manager Endpoints', () => {
             'X-XSRF-TOKEN': xsrfToken
         };
 
-        const bookmarksCountBefore = await Request.get(`em-anno/${config.em.docId}/bookmarks`, null);
+        const bookmarksCountBefore = await Request.get(`em-anno/${config.em.docId}/bookmarks`, null, 200);
 
-        const response = await Request.put(`em-anno/bookmarks`, await getNewBookmarkIdObject('test123', config.em.docId, 0, null), headers);
+        const response = await Request.put(`em-anno/bookmarks`, await getNewBookmarkIdObject('test123', config.em.docId, 0, null), headers, 200);
         expect(response.status).to.equal(200);
         expect(response.data).to.be.an('object');
         expect(response.data).to.have.all.keys('id', 'name', 'documentId', 'createdBy', 'pageNumber', 'xCoordinate', 'yCoordinate', 'parent', 'previous');
@@ -123,16 +125,16 @@ describe('Evidence Manager Endpoints', () => {
         const headers = {
             'X-XSRF-TOKEN': xsrfToken
         };
-        const bookmarksgetResponse = await Request.get(`em-anno/${config.em.docId}/bookmarks`, null);
+        const bookmarksgetResponse = await Request.get(`em-anno/${config.em.docId}/bookmarks`, null, 200);
         let bookMarkIdToDelete = '';
         if (bookmarksgetResponse.data.length <= 1 ) {
-            const createBookmarkResponse = await Request.put(`em-anno/bookmarks`, await getNewBookmarkIdObject('test123', config.em.docId, 0, null), headers);
+            const createBookmarkResponse = await Request.put(`em-anno/bookmarks`, await getNewBookmarkIdObject('test123', config.em.docId, 0, null), headers, 200);
             bookMarkIdToDelete = createBookmarkResponse.data.id;
         } else {
             bookMarkIdToDelete = bookmarksgetResponse.data[0].id;
         }
 
-        const bookMarkDeleteResponse = await Request.delete(`em-anno/bookmarks_multiple`, { deleted :  [ bookMarkIdToDelete ]}, headers);
+        const bookMarkDeleteResponse = await Request.delete(`em-anno/bookmarks_multiple`, { deleted: [bookMarkIdToDelete] }, headers, 200);
         expect(bookMarkDeleteResponse.status).to.equal(200);
     });
 
@@ -157,7 +159,7 @@ describe('Evidence Manager Endpoints', () => {
         const annoId = uuid();
         const rectangleId = uuid();
 
-        const response = await Request.get(`em-anno/annotation-sets/filter?documentId=${config.em.docId}`, null);
+        const response = await Request.get(`em-anno/annotation-sets/filter?documentId=${config.em.docId}`, null, 200);
 
         let annoSetid = '';
         if (response.status === 200) {

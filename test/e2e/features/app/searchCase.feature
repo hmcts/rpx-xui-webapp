@@ -1,4 +1,4 @@
-@search @fullfunctional
+@search @fullfunctional 
 Feature: search criteria workflow
 
   Background:
@@ -19,28 +19,18 @@ Feature: search criteria workflow
 
     Examples:
     | Jurisdiction | CaseType |
-    | Family Divorce | Financial Remedy Consented |
-    | Family Divorce | Contested Financial Remedy |
+      | Manage probate application | Grant of representation |
 
-  Scenario Outline:  search criteria apply workflow from Case list Page
-    When I click on Case list
-    Then I am on case list page
+  Scenario Outline:  search criteria apply workflow from Search Case Page
+
     When I select search criteria jurisdiction "<Jurisdiction>" case type "<CaseType>" state "Any" in case list page
     When I click search Reset in case list page
     When I select search criteria jurisdiction "<Jurisdiction>" case type "<CaseType>" state "Any" in case list page
     When I click search Apply in case list page
-    Then I wait to see case results displayed
+    Then I see results returned
     When I open first case in case list page
     Then I see case details page
 
     Examples:
-      | Jurisdiction   | CaseType                   |
-      | Family Divorce | Financial Remedy Consented |
-      | Family Divorce | Contested Financial Remedy |
-
-  Scenario: search criteria reset workflow in case list page
-    When I click on Case list
-    Then I am on case list page
-    When I select search criteria jurisdiction "Family Divorce" case type "Financial Remedy Consented" state "Any" in case list page
-    When I click search Apply in case list page
-    Then I wait to see case results displayed
+    | Jurisdiction | CaseType |
+      | Manage probate application | Grant of representation | 

@@ -1,17 +1,21 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, Input, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { of } from 'rxjs';
-import { WorkAllocationComponentsModule } from 'src/work-allocation/components/work-allocation.components.module';
-import { WorkAllocationTaskService } from 'src/work-allocation/services/work-allocation-task.service';
 
-import { TaskFieldType, TaskService, TaskSort, TaskView } from '../../enums';
-import { Task, TaskAction, TaskFieldConfig, TaskServiceConfig, TaskSortField } from './../../models/tasks';
+import { ConfigConstants } from '../../components/constants';
+import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
+import { TaskService, TaskSort } from '../../enums';
+import { Task, TaskAction, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
+import { WorkAllocationTaskService } from '../../services';
+import { getMockTasks, MockRouter } from '../../tests/utils.spec';
 import { TaskListComponent } from './task-list.component';
 
 @Component({
   template: `
-    <exui-task-list [fields]='fields' [tasks]='tasks' [taskServiceConfig]="taskServiceConfig" [sortedBy]="TaskSortField"></exui-task-list>`
+    <exui-task-list [fields]='fields' [tasks]='tasks' [taskServiceConfig]="taskServiceConfig" [sortedBy]="TaskSortField" ></exui-task-list>`
 })
 class WrapperComponent {
   @ViewChild(TaskListComponent) public appComponentRef: TaskListComponent;
@@ -25,88 +29,14 @@ class WrapperComponent {
  * Mock tasks
  */
 function getTasks(): Task[] {
-
-  return [
-    {
-      id: '1549476532065586',
-      caseReference: '1549 4765 3206 5586',
-      caseName: 'Kili Muso',
-      caseCategory: 'Protection',
-      location: 'Taylor House',
-      taskName: 'Review respondent evidence',
-      dueDate: new Date(628021800000),
-      actions: [
-        {
-          id: 'actionId1',
-          title: 'Reassign task',
-        },
-        {
-          id: 'actionId2',
-          title: 'Release this task',
-        }
-      ]
-    },
-    {
-      id: '1549476532065587',
-      caseReference: '1549 4765 3206 5587',
-      caseName: 'Mankai Lit',
-      caseCategory: 'Revocation',
-      location: 'Taylor House',
-      taskName: 'Review appellant case',
-      dueDate: new Date(628021800000),
-      actions: [
-        {
-          id: 'actionId2',
-          title: 'Release this task',
-        }
-      ]
-    },
-  ];
+  return getMockTasks();
 }
 
 /**
  * Mock fields
  */
 function getFields(): TaskFieldConfig[] {
-
-  return [
-    {
-      name: 'caseReference',
-      type: TaskFieldType.STRING,
-      columnLabel: 'Case reference',
-      views: TaskView.TASK_LIST,
-    },
-    {
-      name: 'caseName',
-      type: TaskFieldType.STRING,
-      columnLabel: 'Case name',
-      views: TaskView.TASK_LIST,
-    },
-    {
-      name: 'caseCategory',
-      type: TaskFieldType.STRING,
-      columnLabel: 'Case category',
-      views: TaskView.TASK_LIST,
-    },
-    {
-      name: 'location',
-      type: TaskFieldType.STRING,
-      columnLabel: 'Location',
-      views: TaskView.TASK_LIST,
-    },
-    {
-      name: 'taskName',
-      type: TaskFieldType.STRING,
-      columnLabel: 'Task',
-      views: TaskView.TASK_LIST,
-    },
-    {
-      name: 'dueDate',
-      type: TaskFieldType.STRING,
-      columnLabel: 'Due Dated',
-      views: TaskView.TASK_LIST,
-    },
-  ];
+  return ConfigConstants.AvailableTasks;
 }
 
 /**
@@ -125,20 +55,24 @@ describe('TaskListComponent', () => {
   let component: TaskListComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
+  let routerSpy: jasmine.SpyObj<any>;
+  const mockRouter: MockRouter = new MockRouter();
   const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['getTask']);
-  beforeEach(async(() => {
+  const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
+  beforeEach((() => {
+    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     TestBed.configureTestingModule({
       imports: [
         WorkAllocationComponentsModule,
         CdkTableModule
       ],
       declarations: [TaskListComponent, WrapperComponent],
-      providers: [{ provide: WorkAllocationTaskService, useValue: mockWorkAllocationService }]
-    })
-      .compileComponents();
-  }));
-
-  beforeEach(() => {
+      providers: [
+        { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
+        { provide: Router, useValue: mockRouter },
+        { provide: LoadingService, useValue: mockLoadingService }
+      ]
+    }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
@@ -147,8 +81,9 @@ describe('TaskListComponent', () => {
     wrapper.fields = getFields();
     wrapper.taskServiceConfig = getTaskService();
     mockWorkAllocationService.getTask.and.returnValue(of({}));
+    mockLoadingService.isLoading = of(false);
     fixture.detectChanges();
-  });
+  }));
 
   it('should return the fields as an array with a \'manage\' entry, so that we can' +
     'display the manage column in the table.', async () => {
@@ -176,13 +111,13 @@ describe('TaskListComponent', () => {
     // mock the emitter and dispatch the connected event
     spyOn(component.sortEvent, 'emit');
     const element = fixture.debugElement.nativeElement;
-    const button = element.querySelector('#sort_by_caseReference');
+    const button = element.querySelector('#sort_by_caseId');
     button.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
-    // check the emitter had been called and that it gets called with the first field which is caseReference
+    // check the emitter had been called and that it gets called with the first field which is caseReference (caseId)
     expect(component.sortEvent.emit).toHaveBeenCalled();
-    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseReference');
+    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseId');
   });
 
   it('should allow sorting for different columns.', async () => {
@@ -200,13 +135,13 @@ describe('TaskListComponent', () => {
 
     // mock the emitter and dispatch the connected event to a column to the right
     element = fixture.debugElement.nativeElement;
-    button = element.querySelector('#sort_by_taskName');
+    button = element.querySelector('#sort_by_taskTitle');
     button.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
     // check the emitter had been called and that it gets called with the new field defined which is taskName
     expect(component.sortEvent.emit).toHaveBeenCalled();
-    expect(component.sortEvent.emit).toHaveBeenCalledWith('taskName');
+    expect(component.sortEvent.emit).toHaveBeenCalledWith('taskTitle');
 
     // mock the emitter and dispatch the connected event to a column to the left
     element = fixture.debugElement.nativeElement;
@@ -230,21 +165,21 @@ describe('TaskListComponent', () => {
     fixture.detectChanges();
 
     // get the selected row and confirm it is not null
-    const firstRow = component.getSelectedRow();
-    expect(component.getSelectedRow()).not.toBe(null);
+    const firstRow = component.getSelectedTask();
+    expect(component.getSelectedTask()).not.toBe(null);
 
     // click the 'manage' button again and confirm that it is null
     element = fixture.debugElement.nativeElement;
     button.dispatchEvent(new Event('click'));
     fixture.detectChanges();
-    expect(component.getSelectedRow()).toBe(null);
+    expect(component.getSelectedTask()).toBe(null);
 
     // click the button one last time and confirm selected and equal to earlier given row
     element = fixture.debugElement.nativeElement;
     button.dispatchEvent(new Event('click'));
     fixture.detectChanges();
-    expect(component.getSelectedRow()).not.toBe(null);
-    expect(component.getSelectedRow()).toEqual(firstRow);
+    expect(component.getSelectedTask()).not.toBe(null);
+    expect(component.getSelectedTask()).toEqual(firstRow);
     expect(firstRow.id).toEqual(firstTaskId);
 
     // click the button for the second task
@@ -254,8 +189,8 @@ describe('TaskListComponent', () => {
     fixture.detectChanges();
 
     // get the selected row and confirm it is not null and is the secondTaskId
-    const secondRow = component.getSelectedRow();
-    expect(component.getSelectedRow()).not.toBe(null);
+    const secondRow = component.getSelectedTask();
+    expect(component.getSelectedTask()).not.toBe(null);
     expect(secondRow.id).toEqual(secondTaskId);
   });
 
@@ -271,47 +206,47 @@ describe('TaskListComponent', () => {
     fixture.detectChanges();
 
     // get the selected row and confirm it is not null
-    const firstRow = component.getSelectedRow();
-    expect(component.getSelectedRow()).not.toBe(null);
+    const firstRow = component.getSelectedTask();
+    expect(component.getSelectedTask()).not.toBe(null);
 
     // click the 'manage' button again and confirm that it is null
     element = fixture.debugElement.nativeElement;
     firstButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
-    expect(component.getSelectedRow()).toBe(null);
+    expect(component.getSelectedTask()).toBe(null);
 
     // set the selected row as the earlier defined row
-    component.setSelectedRow(firstRow);
+    component.setSelectedTask(firstRow);
     fixture.detectChanges();
-    expect(component.getSelectedRow()).not.toBe(null);
-    expect(component.getSelectedRow()).toEqual(firstRow);
+    expect(component.getSelectedTask()).not.toBe(null);
+    expect(component.getSelectedTask()).toEqual(firstRow);
     expect(firstRow.id).toEqual(firstTaskId);
 
     // click the 'manage' button again and confirm that it is selected
     element = fixture.debugElement.nativeElement;
     secondButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
-    const secondRow = component.getSelectedRow();
-    expect(component.getSelectedRow()).not.toBe(null);
+    const secondRow = component.getSelectedTask();
+    expect(component.getSelectedTask()).not.toBe(null);
 
     // set the selected row as the earlier defined row
-    component.setSelectedRow(firstRow);
+    component.setSelectedTask(firstRow);
     fixture.detectChanges();
-    expect(component.getSelectedRow()).not.toBe(null);
-    expect(component.getSelectedRow()).toEqual(firstRow);
+    expect(component.getSelectedTask()).not.toBe(null);
+    expect(component.getSelectedTask()).toEqual(firstRow);
     expect(firstRow.id).toEqual(firstTaskId);
 
     // set the selected row as the later defined row
-    component.setSelectedRow(secondRow);
+    component.setSelectedTask(secondRow);
     fixture.detectChanges();
-    expect(component.getSelectedRow()).not.toBe(null);
-    expect(component.getSelectedRow()).toEqual(secondRow);
+    expect(component.getSelectedTask()).not.toBe(null);
+    expect(component.getSelectedTask()).toEqual(secondRow);
     expect(secondRow.id).toEqual(secondTaskId);
 
     // click selected row again and confirm null
-    component.setSelectedRow(secondRow);
+    component.setSelectedTask(secondRow);
     fixture.detectChanges();
-    expect(component.getSelectedRow()).toBe(null);
+    expect(component.getSelectedTask()).toBe(null);
   });
 
   it('should allow checking the selected row.', async () => {
@@ -326,33 +261,33 @@ describe('TaskListComponent', () => {
     fixture.detectChanges();
 
     // get the selected row and confirm it is not null
-    const firstRow = component.getSelectedRow();
-    expect(component.getSelectedRow()).not.toBe(null);
+    const firstRow = component.getSelectedTask();
+    expect(component.getSelectedTask()).not.toBe(null);
 
     // expect the row to be selected
-    expect(component.isRowSelected(firstRow)).toBeTruthy();
+    expect(component.isTaskSelected(firstRow)).toBeTruthy();
 
     // click the 'manage' button for the second row and confirm that initial row is not selected
     element = fixture.debugElement.nativeElement;
     secondButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
-    const secondRow = component.getSelectedRow();
-    expect(component.isRowSelected(firstRow)).toBeFalsy();
-    expect(component.isRowSelected(secondRow)).toBeTruthy();
+    const secondRow = component.getSelectedTask();
+    expect(component.isTaskSelected(firstRow)).toBeFalsy();
+    expect(component.isTaskSelected(secondRow)).toBeTruthy();
 
     // click the 'manage' button for the initial row and confirm that second row is not selected
     element = fixture.debugElement.nativeElement;
     firstButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
-    expect(component.isRowSelected(firstRow)).toBeTruthy();
-    expect(component.isRowSelected(secondRow)).toBeFalsy();
+    expect(component.isTaskSelected(firstRow)).toBeTruthy();
+    expect(component.isTaskSelected(secondRow)).toBeFalsy();
 
     // click the 'manage' button for the initial row and confirm that neither are selected
     element = fixture.debugElement.nativeElement;
     firstButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
-    expect(component.isRowSelected(firstRow)).toBeFalsy();
-    expect(component.isRowSelected(secondRow)).toBeFalsy();
+    expect(component.isTaskSelected(firstRow)).toBeFalsy();
+    expect(component.isTaskSelected(secondRow)).toBeFalsy();
   });
 
   it('should trigger an event to the parent when the User clicks on an action.', async () => {
@@ -411,7 +346,7 @@ describe('TaskListComponent', () => {
     // mock the emitter and dispatch the connected event (with example case field buttons selected)
     spyOn(component.sortEvent, 'emit');
     const element = fixture.debugElement.nativeElement;
-    const referenceButton = element.querySelector('#sort_by_caseReference');
+    const referenceButton = element.querySelector('#sort_by_caseId');
     const categoryButton = element.querySelector('#sort_by_caseCategory');
     const dueDateButton = element.querySelector('#sort_by_dueDate');
     referenceButton.dispatchEvent(new Event('click'));
@@ -419,13 +354,13 @@ describe('TaskListComponent', () => {
 
     // check the case reference is being sorted via ascending
     expect(component.sortEvent.emit).toHaveBeenCalled();
-    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseReference');
+    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseId');
 
     // check that the case reference is being sorted via descending
     referenceButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     expect(component.sortEvent.emit).toHaveBeenCalled();
-    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseReference');
+    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseId');
 
     // click the second example button and verify that sorting is for case category
     categoryButton.dispatchEvent(new Event('click'));
@@ -438,6 +373,38 @@ describe('TaskListComponent', () => {
     fixture.detectChanges();
     expect(component.sortEvent.emit).toHaveBeenCalled();
     expect(component.sortEvent.emit).toHaveBeenCalledWith('dueDate');
+  });
+
+  describe('act upon deep linking', () => {
+    const id = '12345678';
+
+    it('should select appropriate task from location hash', () => {
+      spyOnProperty(mockRouter, 'url', 'get').and.returnValue(`taskList#manage_${id}`);
+      const navigateCallsBefore = mockRouter.navigateCalls.length;
+      const task = { id } as Task;
+      wrapper.tasks = [ task ];
+      fixture.detectChanges();
+      expect(component.getSelectedTask()).toEqual(task);
+      expect(mockRouter.navigateCalls.length).toBeGreaterThan(navigateCallsBefore);
+      const lastNavigateCall = mockRouter.navigateCalls.pop();
+      expect(lastNavigateCall).toBeDefined();
+      expect(lastNavigateCall.commands).toEqual([ 'taskList' ]);
+      expect(lastNavigateCall.extras).toEqual({ fragment: `manage_${id}` });
+    });
+
+    it('should handle a location hash for a task that does not exist', () => {
+      spyOnProperty(mockRouter, 'url', 'get').and.returnValue(`taskList#manage_${id}`);
+      const navigateCallsBefore = mockRouter.navigateCalls.length;
+      const task = { id: '99999999' } as Task;
+      wrapper.tasks = [ task ];
+      fixture.detectChanges();
+      expect(component.getSelectedTask()).toBeNull();
+      expect(mockRouter.navigateCalls.length).toBeGreaterThan(navigateCallsBefore);
+      const lastNavigateCall = mockRouter.navigateCalls.pop();
+      expect(lastNavigateCall).toBeDefined();
+      expect(lastNavigateCall.commands).toEqual([ 'taskList' ]);
+      expect(lastNavigateCall.extras).toBeUndefined();
+    });
   });
 
 });

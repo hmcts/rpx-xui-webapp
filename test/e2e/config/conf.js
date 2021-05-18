@@ -2,8 +2,10 @@ const chai            = require('chai');
 const chaiAsPromised  = require('chai-as-promised');
 const minimist        = require('minimist');
 
+const dotenv = require('dotenv');
 var screenShotUtils = require("protractor-screenshot-utils").ProtractorScreenShotUtils;
 
+dotenv.config({ path: __dirname +'/../../.local-test.env' });
 
 chai.use(chaiAsPromised);
 
@@ -52,7 +54,10 @@ const config = {
     fr_judge_username: process.env.FR_EMAIL,
     fr_judge_password: process.env.FR_PASSWORD,
     sscs_username: process.env.SSCS_EMAIL,
-    sscs_password: process.env.SSCS_PASSWORD
+    sscs_password: process.env.SSCS_PASSWORD,
+
+    caseworker_iac_off_username: process.env.CASEWORKER_IAC_OFF_USERNAME ? process.env.CASEWORKER_IAC_OFF_USERNAME :'xui_auto_co_r1@justice.gov.uk' ,
+    caseworker_iac_off_password: process.env.CASEWORKER_IAC_OFF_PASSWORD ? process.env.CASEWORKER_IAC_OFF_PASSWORD :'Welcome01' 
 
   },
   directConnect: true,

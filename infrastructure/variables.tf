@@ -15,7 +15,7 @@ variable "shared_product_name" {
 variable "subscription" {}
 
 variable "common_tags" {
-  type = "map"
+  type = map(string)
 }
 
 variable "enable_ase" {

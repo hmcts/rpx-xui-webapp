@@ -61,12 +61,36 @@ describe('Amended Jurisdiction', () => {
     sandbox.restore()
   })
 
-  it('should send PROBATE array',  () => {
-    const expected = [
-        {
-            id: 'PROBATE',
-        },
+  it('should filter jurisdictions for the jurisdictions endpoint',  () => {
+    const data = [
+      {
+        id: 'PROBATE',
+      },
+      {
+        id: 'RANDOM',
+      },
     ]
+    req.url = 'aggregated/caseworkers/:uid/jurisdictions?access=read'
+    const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, data)
+    // Unknown jurisdiction should be filtered
+    const expected = [
+      {
+        id: 'PROBATE',
+      },
+    ]
+    expect(response).to.eql(expected)
+  })
+
+  it('should not filter jurisdictions for non-jurisdictions endpoint',  () => {
+    const expected = [
+      {
+        id: 'PROBATE',
+      },
+      {
+        id: 'RANDOM',
+      },
+    ]
+    req.url = '/aggregated/some/other/url'
 
     const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, expected)
     expect(response).to.eql(expected)

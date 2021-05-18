@@ -7,7 +7,6 @@ Feature: FR create case workflow - Case Worker
         When I click on create case button
         Then Create case page should be displayed
 
-    @all @fullfunctional
    Scenario Outline: Start FR Case Creation
         When I start case with jurisdiction "<Jurisdiction>" case type "<CaseType>" and event "<Event>"
         Then I am on case form page

@@ -7,6 +7,7 @@ import {
   AvailableTasksComponent,
   MyTasksComponent,
   TaskActionContainerComponent,
+  TaskAssignmentConfirmComponent,
   TaskAssignmentContainerComponent,
   TaskHomeComponent,
   TaskManagerComponent,
@@ -87,8 +88,18 @@ export const ROUTES: Routes = [
           },
           {
             path: 'reassign',
-            component: TaskAssignmentContainerComponent,
-            data: TaskActionConstants.Reassign
+            children: [
+              {
+                path: 'confirm',
+                component: TaskAssignmentConfirmComponent,
+                data: TaskActionConstants.Reassign
+              },
+              {
+                path: '',
+                component: TaskAssignmentContainerComponent,
+                data: TaskActionConstants.Reassign
+              }
+            ]
           },
           {
             path: 'cancel',

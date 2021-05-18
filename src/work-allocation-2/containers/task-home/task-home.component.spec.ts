@@ -79,10 +79,8 @@ describe('TaskHomeComponent', () => {
     secondLocation.click();
 
     fixture.detectChanges();
-    tick(500);
     const applyButton: DebugElement = fixture.debugElement.query(By.css('#applyFilter'));
     applyButton.nativeElement.click();
-    tick(500);
     expect(component.selectedLocations.length).toEqual(2);
 
   }));

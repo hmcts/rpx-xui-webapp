@@ -111,6 +111,13 @@ const defaultUserTheme: Theme = {
       text: 'Create case',
       href: '/cases/case-filter',
       active: false
+    },
+    {
+      active: false,
+      align: 'right',
+      href: '/cases/case-search',
+      ngClass: 'hmcts-search-toggle__button',
+      text: 'Find case'
     }
   ],
   accountNavigationItems: {

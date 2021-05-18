@@ -93,8 +93,8 @@ export class AppConfig extends AbstractAppConfig {
     return this.getCaseDataUrl() + `/drafts/${did}`;
   }
 
-  public getActivityUrl() {
-    return `${this.environmentService.get('ccdGatewayUrl')}/activity`;
+  public getActivityUrl(): string {
+    return this.config.activity_url;
   }
 
   public getActivityNexPollRequestMs() {

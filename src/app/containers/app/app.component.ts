@@ -67,7 +67,7 @@ export class AppComponent implements OnInit, OnDestroy {
     // the user's profile.
     this.store.dispatch(new fromRoot.StartIdleSessionTimeout());
 
-    this.cookieBannerEnabledSubscription = this.featureToggleService.isEnabled('mc-cookie-baner-enabled')
+    this.cookieBannerEnabledSubscription = this.featureToggleService.isEnabled('mc-cookie-banner-enabled')
                                             .subscribe(value => this.handleCookieBannerFeatureToggle(value));
   }
 

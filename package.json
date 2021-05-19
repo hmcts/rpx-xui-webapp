@@ -73,7 +73,7 @@
     "@hmcts/media-viewer": "2.6.4",
     "@hmcts/nodejs-healthcheck": "^1.7.0",
     "@hmcts/properties-volume": "^0.0.9",
-    "@hmcts/rpx-xui-common-lib": "0.2.5",
+    "@hmcts/rpx-xui-common-lib": "2.0.0-rc.10",
     "@hmcts/rpx-xui-node-lib": "2.25.2",
     "@ng-idle/core": "^8.0.0-beta.4",
     "@ng-idle/keepalive": "^8.0.0-beta.4",

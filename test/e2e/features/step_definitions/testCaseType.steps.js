@@ -27,7 +27,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             let e = element(by.xpath(`//*[@id = 'content']//table//h2[contains(text(),'Case List')]`));
             await BrowserWaits.waitForElement(e);
             await BrowserWaits.waitForElementTime($('ccd-search-result .pagination-top'), 120000);
-            let actualList = await caseEditPage.workBasketHeaders(1);
+            let actualList = await caseEditPage.workBasketHeaders(0);
             expect(actualList).to.eql(expectedList);
         }
     });

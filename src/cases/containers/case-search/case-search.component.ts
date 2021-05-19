@@ -58,6 +58,8 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
 
   public sortParameters;
 
+  public resultViewIsReady: boolean = false;
+
   constructor(
     public store: Store<fromCasesFeature.State>,
     private appConfig: AppConfig,
@@ -139,7 +141,6 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   }
 
   public onResultsViewHandler = resultView => {
-
     if (this.elasticSearchFlag) {
       const paginationDataFromResult: PaginationMetadata = {
         total_results_count: resultView.total,
@@ -147,6 +148,8 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
       }
       this.onPaginationSubscribeHandler(paginationDataFromResult);
     }
+
+    if (typeof resultView.results !== 'undefined') this.resultViewIsReady = true;
 
     this.resultsArr = resultView.results;
     this.resultView = {

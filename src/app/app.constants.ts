@@ -144,35 +144,35 @@ const signedOutTheme: Theme = {
 const helpContactDetails: ContactDetailsDataModel[] = [
   {
     title: 'Probate',
-    badgeColour: BadgeColour.BADGE_BLUE,
+    badgeColour: BadgeColour.BLUE,
     email: 'contactprobate@justice.gov.uk',
     phone: '0300 303 0648',
     openingTimes: 'Monday to Friday, 9:30am to 5pm (excluding public holidays)'
   },
   {
     title: 'Divorce',
-    badgeColour: BadgeColour.BADGE_BLUE,
+    badgeColour: BadgeColour.BLUE,
     email: 'divorcecase@justice.gov.uk',
     phone: '0300 303 0642',
     openingTimes: 'Monday to Friday, 9:30am to 5pm (excluding public holidays)'
   },
   {
     title: 'Financial Remedy',
-    badgeColour: BadgeColour.BADGE_RED,
+    badgeColour: BadgeColour.RED,
     email: 'contactfinancialremedy@justice.gov.uk',
     phone: '0300 303 0642',
     openingTimes: 'Monday to Friday, 9:30am to 5pm (excluding public holidays)'
   },
   {
     title: 'Immigration and Asylum',
-    badgeColour: BadgeColour.BADGE_RED,
+    badgeColour: BadgeColour.RED,
     email: 'customer.service@justice.gov.uk',
     phone: '0300 123 1711',
     openingTimes: 'Monday to Friday, 9am to 5pm (excluding public holidays)'
   },
   {
     title: 'Family Public Law and Adoption',
-    badgeColour: BadgeColour.BADGE_RED,
+    badgeColour: BadgeColour.RED,
     email: 'contactfpl@justice.gov.uk',
     phone: '0330 808 4424',
     openingTimes: 'Monday to Friday, 9am to 5pm (excluding public holidays)'

@@ -1,4 +1,5 @@
-import { BadgeColour, ContactDetailsDataModel } from '@hmcts/rpx-xui-common-lib';
+import { ContactDetailsDataModel } from '@hmcts/rpx-xui-common-lib';
+import { BadgeColour } from '@hmcts/rpx-xui-common-lib/lib/models/contact-details.model';
 import {Theme} from './containers/app-header/app-header.component';
 
 const FeatureNames = {
@@ -144,35 +145,35 @@ const signedOutTheme: Theme = {
 const helpContactDetails: ContactDetailsDataModel[] = [
   {
     title: 'Probate',
-    badgeColour: BadgeColour.BLUE,
+    badgeColour: BadgeColour.BADGE_BLUE,
     email: 'contactprobate@justice.gov.uk',
     phone: '0300 303 0648',
     openingTimes: 'Monday to Friday, 9:30am to 5pm (excluding public holidays)'
   },
   {
     title: 'Divorce',
-    badgeColour: BadgeColour.BLUE,
+    badgeColour: BadgeColour.BADGE_BLUE,
     email: 'divorcecase@justice.gov.uk',
     phone: '0300 303 0642',
     openingTimes: 'Monday to Friday, 9:30am to 5pm (excluding public holidays)'
   },
   {
     title: 'Financial Remedy',
-    badgeColour: BadgeColour.RED,
+    badgeColour: BadgeColour.BADGE_RED,
     email: 'contactfinancialremedy@justice.gov.uk',
     phone: '0300 303 0642',
     openingTimes: 'Monday to Friday, 9:30am to 5pm (excluding public holidays)'
   },
   {
     title: 'Immigration and Asylum',
-    badgeColour: BadgeColour.RED,
+    badgeColour: BadgeColour.BADGE_RED,
     email: 'customer.service@justice.gov.uk',
     phone: '0300 123 1711',
     openingTimes: 'Monday to Friday, 9am to 5pm (excluding public holidays)'
   },
   {
     title: 'Family Public Law and Adoption',
-    badgeColour: BadgeColour.RED,
+    badgeColour: BadgeColour.BADGE_RED,
     email: 'contactfpl@justice.gov.uk',
     phone: '0330 808 4424',
     openingTimes: 'Monday to Friday, 9am to 5pm (excluding public holidays)'

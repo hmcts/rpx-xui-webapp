@@ -204,7 +204,7 @@
   },
   "resolutions": {
     "**/**/dot-prop": "^5.1.1",
-    "**/**/lodash": "^4.17.19",
+    "**/**/lodash": "^4.17.21",
     "**/**/http-proxy": "^1.18.1",
     "**/**/npm-registry-fetch": "^8.1.1",
     "**/**/yargs-parser": "^18.1.2",

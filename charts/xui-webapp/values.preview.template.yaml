@@ -19,7 +19,6 @@ nodejs:
      STUB: false
      DEBUG: xuiNode:*
      FEATURE_WORKALLOCATION_ENABLED: true
-     FEATURE_OIDC_ENABLED: true
   keyVaults:
     rpx:
       secrets:

@@ -4,14 +4,20 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
       <p>Access tasks and cases.</p>
-      <button class="govuk-button hmcts-button--secondary" type="button" (click)="toggleFilter = !toggleFilter">
-        <ng-container *ngIf="!toggleFilter">
-          Show filter
+      <div class="button-heading">
+        <button class="govuk-button hmcts-button--secondary" type="button" (click)="toggleFilter = !toggleFilter">
+          <ng-container *ngIf="!toggleFilter">
+            Show work filter
+          </ng-container>
+          <ng-container *ngIf="toggleFilter">
+            Hide work filter
+          </ng-container>
+        </button>
+        <ng-container *ngIf="selectedLocations.length">
+          <span class="hmcts-badge hmcts-badge--black govuk-!-padding-left-3">Filtered view</span>
+          <span class="govuk-hint">All of your work may not be visible.</span>
         </ng-container>
-        <ng-container *ngIf="toggleFilter">
-          Hide filter
-        </ng-container>
-      </button>
+      </div>
       <div class="govuk-!-padding-3 filter govuk-!-margin-bottom-3" *ngIf="toggleFilter">
         <h3 class="govuk-heading-m">{{jurisdiction}}</h3>
         <xuilib-generic-filter

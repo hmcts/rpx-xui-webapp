@@ -2,9 +2,13 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRouteSnapshot, NavigationEnd, Router, RoutesRecognized } from '@angular/router';
 import { FilterService, FilterSetting, SubNavigation } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
-import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { select, Store } from '@ngrx/store';
+import { combineLatest, Subscription } from 'rxjs';
+import { filter, tap } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
+import { UserDetails } from '../../../app/models/user-details.model';
+import * as fromRoot from '../../../app/store';
+import * as fromCaseList from '../../../app/store/reducers';
 import { Location } from '../../models/dtos';
 import { TaskSortField } from '../../models/tasks';
 import { LocationDataService } from '../../services';
@@ -31,14 +35,14 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
    * Take in the Router so we can navigate when actions are clicked and
    * to identify which sub-navigation item to highlight.
    */
-  private readonly MY_TASKS: SubNavigation = { text: 'My tasks', href: '/mywork/list', active: true };
+  private readonly MY_TASKS: SubNavigation = {text: 'My tasks', href: '/mywork/list', active: true};
   /**
    * The sub-navigation items.
    */
   public subNavigationItems: SubNavigation[] = [
     this.MY_TASKS,
-    { text: 'Available tasks', href: '/mywork/available', active: false },
-    { text: 'My cases', href: '/mycases', active: false }
+    {text: 'Available tasks', href: '/mywork/available', active: false},
+    {text: 'My cases', href: '/mycases', active: false}
   ];
   private routeSubscription: Subscription;
   private locationSubscription: Subscription;
@@ -46,6 +50,7 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly router: Router,
+    private readonly store: Store<fromCaseList.State>,
     private readonly filterService: FilterService,
     private readonly locationService: LocationDataService
   ) {
@@ -67,14 +72,17 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
 
     // Set up the page data.
     this.setupPageData(this.router.routerState.root.snapshot);
+    console.log(this.router.routerState.root.snapshot);
 
-    this.locationSubscription = this.locationService.getLocations().subscribe((locations: Location[]) => {
-      this.setUpLocationFilter(locations);
-    });
+    this.locationSubscription = combineLatest([this.locationService.getLocations(), this.store.pipe(select(fromRoot.getUserDetails))])
+      .subscribe(([locations, userDetails]: [Location[], UserDetails]) => {
+        this.setUpLocationFilter(locations);
+      });
 
     this.selectedLocationsSubscription = this.filterService.getStream('locations')
       .pipe(
-        filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
+        filter((f: FilterSetting) => f && f.hasOwnProperty('fields')),
+        tap(() => this.toggleFilter = false)
       )
       .subscribe((f: FilterSetting) => {
         this.selectedLocations = f.fields.find((field) => field.name === 'locations').value;
@@ -132,7 +140,7 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
       minSelected: 1,
       maxSelected: 10,
       title: 'Locations',
-      subTitle: 'Shows tasks and cases for selected locations:',
+      subTitle: 'Shows tasks and cases for the selected locations:',
       type: 'checkbox'
     };
     this.fieldsConfig.fields.push(field);

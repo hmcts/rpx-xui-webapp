@@ -56,6 +56,8 @@ nodejs:
     SERVICES_ROLE_ASSIGNMENT_API: http://am-role-assignment-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services case endpoints
     SERVICES_CASE_CASEWORKER_API: http://rd-caseworker-ref-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services judicial endpoints
+    SERVICES_CASE_JUDICALWORKER_API: http://rd-judicial-ref-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services Documents Endpoints
     SERVICES_DOCUMENTS_API: http://dm-store-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services Documents Endpoints

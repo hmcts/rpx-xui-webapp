@@ -97,6 +97,19 @@ export const CASEWORKER_MY_TASKS = {
   ],
 };
 
+export const JUDICIAL_WORKERS = [
+  {
+    "email": "cwr-func-test-user2-#s@justice.gov.uk",
+    "firstName": "IAC",
+    "idamId": "004b7164-0943-41b5-95fc-39794af4a9fe",
+    "lastName": "CW2",
+    "location": {
+      "id": 227101,
+      "locationName": "Newport (South Wales) Immigration and Asylum Tribunal"
+    }
+  }
+]
+
 // TODO: Assignee should be removed from all available tasks (otherwise they are unavailable)
 export const JUDICIAL_AVAILABLE_TASKS = {
   tasks: [

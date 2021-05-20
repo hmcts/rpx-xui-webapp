@@ -69,7 +69,7 @@
     "@angular/router": "^7.2.13",
     "@hmcts/ccd-case-ui-toolkit": "3.0.2",
     "@hmcts/ccpay-web-component": "3.0.3",
-    "@hmcts/frontend": "0.0.39-alpha",
+    "@hmcts/frontend": "0.0.50-alpha",
     "@hmcts/media-viewer": "2.6.4",
     "@hmcts/nodejs-healthcheck": "^1.7.0",
     "@hmcts/properties-volume": "^0.0.9",

@@ -50,7 +50,8 @@
       "roleApi": "http://am-role-assignment-service-prod.service.core-compute-prod.internal"
     },
     "case": {
-      "caseworkerApi": "http://rd-caseworker-ref-api-prod.service.core-compute-prod.internal"
+      "caseworkerApi": "http://rd-caseworker-ref-api-prod.service.core-compute-prod.internal",
+      "judicialworkerApi": "http://rd-judicialworker-ref-api-prod.service.core-compute-prod.internal"
     },
     "payments": "http://payment-api-prod.service.core-compute-prod.internal",
     "markup_api": "http://em-npa-prod.service.core-compute-prod.internal",

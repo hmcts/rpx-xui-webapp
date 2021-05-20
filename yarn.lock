@@ -432,10 +432,10 @@
   dependencies:
     tslib "^1.9.0"
 
-"@hmcts/frontend@0.0.39-alpha":
-  version "0.0.39-alpha"
-  resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.39-alpha.tgz#782d4a4698dae040dd72b26711f04a8d8299d25c"
-  integrity sha512-M1364rFLuvktYz5+jVjJ5ZmNUx0/SgoAvH3RsIaT2wFqFf92emuiRyXqax5oSEC5kM9Jpw0rcxEcRbBJWMoglg==
+"@hmcts/frontend@0.0.50-alpha":
+  version "0.0.50-alpha"
+  resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.50-alpha.tgz#4c1f1bc87312a2929ac60e54cdd3fc28782b98f9"
+  integrity sha512-can9fxgQxw0ihRvjvz/+O7xbG0OiQbTcs3CCMQct41a2BPC6iIja3vgwNIy5TD2Vt52kYUq+fg2HGGybyjprTg==
 
 "@hmcts/media-viewer@2.6.4":
   version "2.6.4"

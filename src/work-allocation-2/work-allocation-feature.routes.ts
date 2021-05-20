@@ -15,6 +15,7 @@ import {
 } from './containers';
 import { WorkAllocationFeatureToggleGuard } from './guards';
 import { TaskResolver } from './resolvers';
+import { LocationResolver } from './resolvers/location-resolver.service';
 
 export const ROUTES: Routes = [
   {
@@ -25,6 +26,9 @@ export const ROUTES: Routes = [
       {
         path: '',
         component: TaskHomeComponent,
+        resolve: {
+          location: LocationResolver
+        },
         canActivate: [ HealthCheckGuard ],
         children: [
           {

@@ -66,10 +66,10 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
  */
 export async function searchTask(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    const postTaskPath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
-    const path = preparePaginationUrl(req, postTaskPath);
+    const basePath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
+    const postTaskPath = preparePaginationUrl(req, basePath);
     // TODO: Mock API will be removed once pagination is ready
-    const { status, data } = await mockService.handlePost(path, req.body, req);
+    const { status, data } = await mockService.handlePost(postTaskPath, req.body, req);
     // TODO: below code will be reverted once pagination is ready
     // const searchRequest = req.body.searchRequest;
     // const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);

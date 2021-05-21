@@ -35,9 +35,11 @@ export class MyTasksComponent extends TaskListWrapperComponent {
       const id = userInfo.id ? userInfo.id : userInfo.uid;
       return {
         search_parameters: [
-          { key: 'user', operator: 'IN', values: [ id ] },
+          {key: 'user', operator: 'IN', values: [id]},
         ],
-        sorting_parameters: [this.getSortParameter()]
+        sorting_parameters: [this.getSortParameter()],
+        // TODO - hard coded now, need to pass the actual page number and size here
+        pagination_parameters: {page_number: 1, page_size: 10}
       };
     }
   }

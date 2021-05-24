@@ -223,3 +223,5 @@ export class AppConstants {
   static SERVICE_MESSAGES_FEATURE_TOGGLE_KEY = serviceMessagesFeatureToggleKey;
   static SERVICE_MESSAGE_COOKIE = serviceMessageCookie;
 }
+
+export const LD_FLAG_REMOVE_USER_FROM_CASE_MC: string = 'remove-user-from-case-mc';

@@ -1,9 +1,9 @@
 import { expect } from 'chai';
 
-import { GO, REASSIGN, RELEASE } from './constants/actions';
+import { CLAIM, CLAIM_AND_GO, GO, REASSIGN, RELEASE, TaskPermission } from './constants/actions';
 import { JUDICIAL_MY_TASKS } from './constants/mock.data';
 import { Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/task';
-import { assignActionsToTasks, mapCaseworkerData, mapCaseworkerPrimaryLocation, prepareGetTaskUrl,
+import { assignActionsToTasks, getActionsByPermissions, mapCaseworkerData, mapCaseworkerPrimaryLocation, prepareGetTaskUrl,
   preparePostTaskUrlAction, prepareSearchTaskUrl } from './util';
 
 describe('workAllocation.utils', () => {
@@ -188,6 +188,22 @@ describe('workAllocation.utils', () => {
       expect(mapCaseworkerData([CASEWORKERAPI_1, CASEWORKERAPI_2, CASEWORKERAPI_3, CASEWORKERAPI_4]))
         .to.deep.equal([CASEWORKER_1, CASEWORKER_2, CASEWORKER_3, CASEWORKER_4]);
     });
+  });
+
+  describe('getActionsByPermissions', () => {
+
+    it('should get correct actions for my tasks for certain permissions', () => {
+      expect(getActionsByPermissions('MyTasks', [TaskPermission.CANCEL, TaskPermission.MANAGE])).to.deep.equal([REASSIGN, RELEASE, GO]);
+      expect(getActionsByPermissions('MyTasks', [TaskPermission.EXECUTE])).to.deep.equal([]);
+      expect(getActionsByPermissions('MyTasks', [TaskPermission.MANAGE, TaskPermission.CANCEL])).to.deep.equal([REASSIGN, RELEASE, GO]);
+    });
+
+    it('should get correct actions for available tasks for certain permissions', () => {
+      expect(getActionsByPermissions('AvailableTasks', [TaskPermission.CANCEL, TaskPermission.MANAGE])).to.deep.equal([CLAIM, CLAIM_AND_GO]);
+      expect(getActionsByPermissions('AvailableTasks', [TaskPermission.EXECUTE])).to.deep.equal([]);
+      expect(getActionsByPermissions('AvailableTasks', [TaskPermission.MANAGE, TaskPermission.CANCEL])).to.deep.equal([CLAIM, CLAIM_AND_GO]);
+    });
+
   });
 
 });

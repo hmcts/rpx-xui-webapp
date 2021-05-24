@@ -329,10 +329,12 @@ class CaseEdit {
             inputDate = date().format('YYYY-MM-DD');
         }
 
+        const parent = parentId ? `#${parentId}_${parentId}` : "";
         let datesValues = inputDate.split('-');
-        await $(`#${this.getFieldId(fieldConfig.id, parentId)}-day`).sendKeys(datesValues[2]);
-        await $(`#${this.getFieldId(fieldConfig.id, parentId)}-month`).sendKeys(datesValues[1]);
-        await $(`#${this.getFieldId(fieldConfig.id, parentId)}-year`).sendKeys(datesValues[0]);
+        reportLogger.AddMessage("Date field locator " + `${parent} #${fieldConfig.id}-day`);
+        await $(`${parent} #${fieldConfig.id}-day`).sendKeys(datesValues[2]);
+        await $(`${parent} #${fieldConfig.id}-month`).sendKeys(datesValues[1]);
+        await $(`${parent} #${fieldConfig.id}-year`).sendKeys(datesValues[0]);
         return inputDate;
     }
 
@@ -345,13 +347,14 @@ class CaseEdit {
         }
 
         let datesValues = inputDate.split('-');
-        await $(`#${this.getFieldId(fieldConfig.id, parentId)}-day`).sendKeys(datesValues[2]);
-        await $(`#${this.getFieldId(fieldConfig.id, parentId)}-month`).sendKeys(datesValues[1]);
-        await $(`#${this.getFieldId(fieldConfig.id, parentId)}-year`).sendKeys(datesValues[0]);
+        const parent = parentId ? `#${parentId}_${parentId}` : "";
+        await $(`${parent} #${fieldConfig.id}-day`).sendKeys(datesValues[2]);
+        await $(`${parent} #${fieldConfig.id}-month`).sendKeys(datesValues[1]);
+        await $(`${parent} #${fieldConfig.id}-year`).sendKeys(datesValues[0]);
 
-        await $(`#${this.getFieldId(fieldConfig.id, parentId)}-hour`).sendKeys("02");
-        await $(`#${this.getFieldId(fieldConfig.id, parentId)}-minute`).sendKeys("30");
-        await $(`#${this.getFieldId(fieldConfig.id, parentId)}-second`).sendKeys("45");
+        await $(`${parent} #${fieldConfig.id}-hour`).sendKeys("02");
+        await $(`${parent} #${fieldConfig.id}-minute`).sendKeys("30");
+        await $(`${parent} #${fieldConfig.id}-second`).sendKeys("45");
 
         inputDate = `${inputDate}T02:30:45.000`;
         return inputDate;

@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router, RoutesRecognized } from '@angular/router';
-import { CookieService, FeatureToggleService, GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
+import { FeatureToggleService, GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 
@@ -24,6 +24,7 @@ export class AppComponent implements OnInit, OnDestroy {
   };
 
   private userId: string = null;
+  public cookieName;
   public isCookieBannerVisible: boolean = false;
   private cookieBannerEnabledSubscription: Subscription
   private cookieBannerEnabled: boolean = false;
@@ -34,7 +35,6 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly timeoutNotificationsService: TimeoutNotificationsService,
     private readonly router: Router,
     private readonly titleService: Title,
-    private readonly cookieService: CookieService,
     private readonly featureToggleService: FeatureToggleService,
   ) {
 
@@ -119,6 +119,7 @@ export class AppComponent implements OnInit, OnDestroy {
   public setUserAndCheckCookie(userId) {
     this.userId = userId;
     if (this.userId) { // check if cookie selection has been made *after* user id is available
+      this.cookieName = `hmcts-exui-cookies-${this.userId}-mc-accepted`;
       this.setCookieBannerVisibility();
     }
   }
@@ -248,27 +249,8 @@ export class AppComponent implements OnInit, OnDestroy {
     this.timeoutNotificationsService.initialise(timeoutNotificationConfig);
   }
 
-
-  public acceptCookie(): void {
-    this.cookieService.setCookie(`hmcts-exui-cookies-${this.userId}-mc-accepted`, 'true', this.getExpiryDate());
-    this.setCookieBannerVisibility();
-  }
-
-  public rejectCookie(): void {
-    this.cookieService.setCookie(`hmcts-exui-cookies-${this.userId}-mc-accepted`, 'false', this.getExpiryDate());
-    this.setCookieBannerVisibility();
-  }
-
   public setCookieBannerVisibility(): void {
-    this.isCookieBannerVisible = !this.cookieService.checkCookie(`hmcts-exui-cookies-${this.userId}-mc-accepted`) && this.cookieBannerEnabled && !!this.userId;
-  }
-
-  private getExpiryDate(): string {
-    const now = new Date();
-    const time = now.getTime();
-    const expireTime = time + 3600 * 1000 * 24 * 365; // in 365 days
-    now.setTime(expireTime);
-    return now.toUTCString();
+    this.isCookieBannerVisible = this.cookieBannerEnabled && !!this.userId;
   }
 
 }

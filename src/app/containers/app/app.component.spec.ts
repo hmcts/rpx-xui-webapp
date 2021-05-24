@@ -7,7 +7,6 @@ describe('AppComponent', () => {
     let store: any;
     let googleTagManagerService: any;
     let timeoutNotificationService: any;
-    let cookieService: any;
     let featureToggleService: any;
     let router: any;
     let title: any;
@@ -17,7 +16,6 @@ describe('AppComponent', () => {
         store = jasmine.createSpyObj('store', ['pipe', 'dispatch']);
         googleTagManagerService = jasmine.createSpyObj('GoogleTagManagerService', ['init']);
         timeoutNotificationService = jasmine.createSpyObj('TimeoutNotificationsService', ['notificationOnChange', 'initialise']);
-        cookieService = jasmine.createSpyObj('CookieService', ['setCookie', 'checkCookie']);
         featureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled']);
         testRoute = new RoutesRecognized(1, 'test', 'test', {
             url: 'test',
@@ -57,7 +55,7 @@ describe('AppComponent', () => {
         });
         router = { events: of(testRoute) };
         title = jasmine.createSpyObj('Title', ['setTitle']);
-        appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService, router, title, cookieService, featureToggleService);
+        appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService, router, title, featureToggleService);
     });
 
     it('Truthy', () => {
@@ -129,35 +127,14 @@ describe('AppComponent', () => {
 
     describe('cookie actions', () => {
 
-        describe('acceptCookie()', () => {
-            it('should make a setCookie call', () => {
-                appComponent.acceptCookie();
-                expect(cookieService.setCookie).toHaveBeenCalled();
-            });
-        });
-
-        describe('rejectCookie()', () => {
-            it('should make a setCookie call', () => {
-                appComponent.rejectCookie();
-                expect(cookieService.setCookie).toHaveBeenCalled();
-            });
-        });
-
         describe('setCookieBannerVisibility()', () => {
-            it('should make a checkCookie call', () => {
-                appComponent.setCookieBannerVisibility();
-                expect(cookieService.checkCookie).toHaveBeenCalled();
-            });
-
             it('should set isCookieBannerVisible true when there is no cookie and there is a user and cookie banner is feature toggled on', () => {
-                cookieService.checkCookie.and.returnValue(false);
                 appComponent.handleCookieBannerFeatureToggle(true);
                 appComponent.setUserAndCheckCookie('dummy');
                 expect(appComponent.isCookieBannerVisible).toBeTruthy();
             });
 
             it('should set isCookieBannerVisible false when there is no cookie and there is no user and cookie banner is feature toggled on', () => {
-                cookieService.checkCookie.and.returnValue(false);
                 appComponent.handleCookieBannerFeatureToggle(true);
                 expect(appComponent.isCookieBannerVisible).toBeFalsy();
             });

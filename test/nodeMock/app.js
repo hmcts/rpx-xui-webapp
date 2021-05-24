@@ -11,7 +11,7 @@ const CCDCaseConfig = require('./ccd/ccdCaseConfig/caseCreateConfigGenerator');
 const CCDCaseDetails = require('./ccd/ccdCaseConfig/caseDetailsConfigGenerator');
 
 const { getDLCaseConfig} = require('../ngIntegration/mockData/ccdCaseMock');
-
+const nodeAppMock = require('./nodeApp/mockData');
 const port = 3001;
 
 
@@ -120,6 +120,20 @@ function setUpcaseConfig() {
     mockInstance.onGet('/data/internal/cases/:caseid', (req, res) => {
         
         res.send(caseDetailsLabelShowCondition().getCase());
+    });
+
+    mockInstance.onGet('/api/user/details', (req, res) => {
+        const userdetails = nodeAppMock.getUserDetailsTemplate();
+        userdetails.userInfo.roles = ["caseworker-ia-caseofficer","caseworker","caseworker-ia-admofficer","caseworker-ia"]; //caseworker
+        // userdetails.userInfo.roles = ["caseworker-ia-iacjudge",  "caseworker-ia"]; //judge
+
+        // userdetails.userInfo.id = "12b6a360-7f19-4985-b065-94320a891eaa"; //co r1
+        userdetails.userInfo.id = "3db21928-cbbc-4364-bd91-137c7031fe17"; //co r2
+        // userdetails.userInfo.id = "4fd5803c-a1ae-4790-b735-dc262e8322b8"; //judge r1
+        // userdetails.userInfo.id = "38eb0c5e-29c7-453e-b92d-f2029aaed6c3"; //judge r2
+
+
+        res.send(userdetails);
     });
 
 }

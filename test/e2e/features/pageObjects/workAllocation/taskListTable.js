@@ -44,7 +44,7 @@ class TaskListTable{
     }
 
     async getHeaderPositionWithName(headerName) {
-        const headers = element.all(by.xpath(`//exui-task-list//table//thead//th//button`));
+        const headers = element.all(by.xpath(`//exui-task-list//table//thead//th`));
         const colCount = await headers.count();
         for (let i = 0; i < colCount; i++) {
             const name = await headers.get(i).getText();
@@ -104,6 +104,12 @@ class TaskListTable{
         const columnPos = await this.getHeaderPositionWithName(columnName);
         const columnValue = await taskRow.$(`td:nth-of-type(${columnPos})`).getText();
         return columnValue;
+    }
+
+    async getColumnValueElementForTaskAt(columnName, taskAtPos) {
+        const taskRow = await this.getTableRowAt(taskAtPos);
+        const columnPos = await this.getHeaderPositionWithName(columnName);
+        return taskRow.$(`td:nth-of-type(${columnPos})`);
     }
 
     async getTaskRowWithColumnValue(columnName, columnValue){

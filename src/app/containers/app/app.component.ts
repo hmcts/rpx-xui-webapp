@@ -1,11 +1,11 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router, RoutesRecognized } from '@angular/router';
-import { GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
+import { FeatureToggleService, FeatureUser, GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
-
 import { propsExist } from '../../../../api/lib/objectUtilities';
 import { environment as config } from '../../../environments/environment';
+import { UserDetails, UserInfo } from '../../models/user-details.model';
 import * as fromRoot from '../../store';
 
 @Component({
@@ -27,7 +27,8 @@ export class AppComponent implements OnInit {
     private readonly googleTagManagerService: GoogleTagManagerService,
     private readonly timeoutNotificationsService: TimeoutNotificationsService,
     private readonly router: Router,
-    private readonly titleService: Title
+    private readonly titleService: Title,
+    private readonly featureService: FeatureToggleService
   ) {
 
     this.googleTagManagerService.init(config.googleTagManagerKey);
@@ -64,10 +65,9 @@ export class AppComponent implements OnInit {
    * Load and Listen for User Details
    */
   public loadAndListenForUserDetails() {
+    this.store.dispatch(new fromRoot.LoadUserDetails());
 
     this.store.pipe(select(fromRoot.getUserDetails)).subscribe(userDetails => this.userDetailsHandler(userDetails));
-
-    this.store.dispatch(new fromRoot.LoadUserDetails());
   }
 
   /**
@@ -84,13 +84,27 @@ export class AppComponent implements OnInit {
    *  }
    * }
    */
-  public userDetailsHandler(userDetails) {
+  public userDetailsHandler(userDetails: UserDetails) {
+    if (userDetails) {
+      this.initializeFeature(userDetails.userInfo);
+      if (propsExist(userDetails, ['sessionTimeout'] ) && userDetails.sessionTimeout.totalIdleTime > 0) {
+        const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
+        this.addTimeoutNotificationServiceListener();
+        this.initTimeoutNotificationService(idleModalDisplayTime, totalIdleTime);
+      }
+    }
+  }
 
-    if (propsExist(userDetails, ['sessionTimeout'] ) && userDetails.sessionTimeout.totalIdleTime > 0) {
-      const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
-
-      this.addTimeoutNotificationServiceListener();
-      this.initTimeoutNotificationService(idleModalDisplayTime, totalIdleTime);
+  public initializeFeature(userInfo: UserInfo) {
+    if (userInfo) {
+      const featureUser: FeatureUser = {
+        key: userInfo.id,
+        custom: {
+          roles: userInfo.roles,
+          orgId: '-1'
+        }
+      };
+      this.featureService.initialize(featureUser);
     }
   }
 
@@ -137,7 +151,6 @@ export class AppComponent implements OnInit {
       case 'sign-out': {
         this.updateTimeoutModal('0 seconds', false);
 
-        console.log('sign-out');
         this.store.dispatch(new fromRoot.StopIdleSessionTimeout());
         this.store.dispatch(new fromRoot.IdleUserLogOut());
         return;

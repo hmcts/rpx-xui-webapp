@@ -478,10 +478,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.0.1-cookie-banner-service-component":
-  version "1.0.1-cookie-banner-service-component"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.0.1-cookie-banner-service-component.tgz#6e1805aa625d9451fbf2d68deb8bdd2517c485f2"
-  integrity sha512-bu6Ajua64QFZjsV7rXwaGm40NnzUK0WaCSlkW6qYKd5ppeGtaXYYi8+C5l6md1HweM9tfefxVRsswTmkP/O+lA==
+"@hmcts/rpx-xui-common-lib@1.0.1-cookie-banner-service-component-2":
+  version "1.0.1-cookie-banner-service-component-2"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.0.1-cookie-banner-service-component-2.tgz#7b098959eea46383422305c4f15055cd4f6b34db"
+  integrity sha512-uYYuIGszibsCcpITvqiQC9oKPQ6F1BJxFBa8mHXot4cZ42YmJm2TqMoYu8ZxuURmnLTpWfWGFRAy2KpQDB2BQg==
   dependencies:
     tslib "^1.9.0"
 

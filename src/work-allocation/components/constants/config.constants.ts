@@ -68,6 +68,7 @@ const ASSIGNEE: TaskFieldConfig = {
   type: TaskFieldType.STRING,
   columnLabel: 'Assignee',
   sortName: 'assignee',
+  isSortable: false,
   views: TaskView.ALL_VIEWS
 };
 

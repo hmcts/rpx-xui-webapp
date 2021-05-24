@@ -23,7 +23,7 @@
   &:after{
     right: 0.5px;
   }
-  
+
   &:before{
     right: 0.5px;
   }
@@ -37,6 +37,11 @@
     border: 1px solid red;
     padding: 0 0 0 10px;
   }
+}
+
+.assignee {
+  font-weight: bold;
+  color: #115da0;
 }
 
 /**

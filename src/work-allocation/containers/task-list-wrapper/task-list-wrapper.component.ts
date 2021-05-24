@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
 import { ListConstants } from '../../components/constants';
 import { InfoMessage, InfoMessageType, TaskActionIds, TaskService, TaskSort } from '../../enums';
-import { SearchTaskRequest, SortParameter } from '../../models/dtos';
+import { PaginationParameter, SearchTaskRequest, SortParameter } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
 import { CaseworkerDataService, InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
@@ -56,6 +56,14 @@ export class TaskListWrapperComponent implements OnInit {
     this.pTasks = value;
   }
 
+  private pTasksTotal: number;
+  public get tasksTotal(): number {
+    return this.pTasksTotal;
+  }
+  public set tasksTotal(value: number) {
+    this.pTasksTotal = value;
+  }
+
   public get fields(): TaskFieldConfig[] {
     return [];
   }
@@ -79,6 +87,7 @@ export class TaskListWrapperComponent implements OnInit {
   };
 
   public sortedBy: TaskSortField;
+  public pagination: PaginationParameter;
 
   /**
    * To be overridden.
@@ -124,6 +133,11 @@ export class TaskListWrapperComponent implements OnInit {
         order: this.taskServiceConfig.defaultSortDirection
       };
     }
+
+    this.pagination = {
+      page_number: 1,
+      page_size: 10
+    }
   }
 
   /**
@@ -160,7 +174,8 @@ export class TaskListWrapperComponent implements OnInit {
   public getSearchTaskRequest(): SearchTaskRequest {
     return {
       search_parameters: [],
-      sorting_parameters: [this.getSortParameter()]
+      sorting_parameters: [this.getSortParameter()],
+      pagination_parameters: this.getPaginationParameter()
     };
   }
 
@@ -169,6 +184,13 @@ export class TaskListWrapperComponent implements OnInit {
       sort_by: this.sortedBy.fieldName,
       sort_order: this.sortedBy.order
     };
+  }
+
+  public getPaginationParameter(): PaginationParameter {
+    return {
+      page_size: this.pagination.page_size,
+      page_number: this.pagination.page_number
+    }
   }
 
   /**
@@ -221,11 +243,17 @@ export class TaskListWrapperComponent implements OnInit {
     this.performSearch().subscribe(result => {
       this.loadingService.unregister(loadingToken)
       this.tasks = result.tasks;
+      this.tasksTotal = result.total_records;
       this.tasks.forEach(task => task.assigneeName = getAssigneeName(this.caseworkers, task.assignee));
       this.ref.detectChanges();
     }, error => {
       this.loadingService.unregister(loadingToken)
       handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
     });
+  }
+
+  public onPaginationHandler(pageNumber: number): void {
+    this.pagination.page_number = pageNumber;
+    this.doLoad();
   }
 }

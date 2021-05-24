@@ -2,7 +2,7 @@
 <table cdk-table [dataSource]="dataSource$" class="govuk-table" [multiTemplateDataRows]="true">
 
   <!-- Column Headers and Cells -->
-  <ng-container *ngFor="let field of fields" [cdkColumnDef]="field.name">
+  <ng-container *ngFor="let field of fields | paginate: { itemsPerPage: pagination.page_size, currentPage: pagination.page_number, totalItems: tasksTotal }" [cdkColumnDef]="field.name">
     <th class="govuk-table__header" [attr.aria-sort]="getColumnSortedSetting(field.sortName)" cdk-header-cell *cdkHeaderCellDef>
       <button class="column-sort" *ngIf="field.columnLabel" type="button" [id]="'sort_by_' + field.sortName" data-index="0"
               (click)="onSortHandler(field.sortName)" >{{field.columnLabel}}</button>
@@ -62,3 +62,5 @@
       [attr.aria-hidden]="tasks?.length !== 0" cdk-footer-row *cdkFooterRowDef="['footer']"></tr>
 
 </table>
+
+<ccd-pagination (pageChange)="onPaginationHandler($event)"></ccd-pagination>

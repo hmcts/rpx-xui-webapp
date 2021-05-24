@@ -1,3 +1,8 @@
+<div class="pagination-top"
+      attr.aria-label="{{ tasksTotal }} results have been found" role="status">
+  <span class="text-16" id="search-result-summary__text">Displaying <span class="strong">{{ tasks?.length || 0 }}</span> of <span class="strong">{{ tasksTotal }} </span> tasks</span>
+</div>
+
 <!-- Using the Angular Component Development Kit Table Module, and not Angular Material -->
 <table cdk-table [dataSource]="dataSource$" class="govuk-table" [multiTemplateDataRows]="true">
 

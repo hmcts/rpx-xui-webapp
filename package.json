@@ -134,6 +134,8 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.13.0",
+    "@angular-material-components/datetime-picker": "^2.0.4",
+    "@angular-material-components/moment-adapter": "^5.0.0",
     "@angular/cli": "^6.0.8",
     "@angular/compiler-cli": "^7.2.13",
     "@angular/language-service": "~7.2.0",

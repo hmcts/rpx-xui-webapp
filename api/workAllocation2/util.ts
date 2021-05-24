@@ -124,18 +124,21 @@ export function prepareRoleApiRequest(locationId?: number): any {
  * @param permissions The list of permissions the user holds.
  * @return actionList:Action[] the list of total actions user holds.
  */
-export function getActionsByPermissions(view, permissions: []): Action[] {
+export function getActionsByPermissions(view, permissions: TaskPermission[]): Action[] {
   let actionList: Action[] = [];
   permissions.forEach(permission => {
     switch (permission) {
       case TaskPermission.MANAGE:
-        actionList = actionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX[view][TaskPermission.MANAGE]);
+        let manageActionList = actionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX[view][TaskPermission.MANAGE])
+        actionList = !manageActionList.includes(undefined) ? manageActionList : actionList;
         break;
       case TaskPermission.EXECUTE:
-        actionList = actionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX[view][TaskPermission.EXECUTE]);
+        let executeActionList = actionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX[view][TaskPermission.EXECUTE]);
+        actionList = !executeActionList.includes(undefined) ? executeActionList : actionList;
         break;
       case TaskPermission.CANCEL:
-        actionList = actionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX[view][TaskPermission.CANCEL]);
+        let cancelActionList = actionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX[view][TaskPermission.CANCEL]);
+        actionList = !cancelActionList.includes(undefined) ? cancelActionList : actionList;
         break;
       default:
         break;

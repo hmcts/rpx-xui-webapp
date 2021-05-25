@@ -4,6 +4,7 @@ import {
   FEATURE_OIDC_ENABLED,
   LAUNCH_DARKLY_CLIENT_ID,
   PROTOCOL,
+  SERVICES_CCD_COMPONENT_API_PATH,
   SERVICES_IDAM_CLIENT_ID,
   SERVICES_IDAM_LOGIN_URL,
   SERVICES_IDAM_OAUTH_CALLBACK_URL,
@@ -23,6 +24,7 @@ router.get('/', uiConfigurationRouter)
  */
 async function uiConfigurationRouter(req, res) {
   res.status(200).send({
+    ccdGatewayUrl: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH),
     clientId: getConfigValue(SERVICES_IDAM_CLIENT_ID),
     idamWeb: getConfigValue(SERVICES_IDAM_LOGIN_URL),
     launchDarklyClientId: getConfigValue(LAUNCH_DARKLY_CLIENT_ID),

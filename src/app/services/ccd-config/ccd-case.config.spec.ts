@@ -6,6 +6,7 @@ import {StoreModule} from '@ngrx/store';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
+import { EnvironmentService } from 'src/app/shared/services/environment.service';
 
 class MockConfigService {
   config;
@@ -18,7 +19,8 @@ class MockConfigService {
   }
 }
 
-const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled'])
+const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled']);
+const mockEnvironmentService = jasmine.createSpyObj('mockEnvironmentService', ['get']);
 
 describe('AppConfiguration', () => {
   mockFeatureToggleService.isEnabled.and.returnValue(of(false));
@@ -34,8 +36,10 @@ describe('AppConfiguration', () => {
         { provide: AppConfigService, useClass: MockConfigService },
         FeatureToggleService,
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
+        { provide: EnvironmentService, useValue: mockEnvironmentService}
       ]
     });
+    mockEnvironmentService.get.and.returnValue('someUrl');
   });
 
   it('should be created', inject([AppConfig], (service: AppConfig) => {
@@ -90,10 +94,6 @@ describe('AppConfiguration', () => {
 
   it('should have getActivityUrl', inject([AppConfig], (service: AppConfig) => {
     expect(service.getActivityUrl).toBeDefined();
-  }));
-
-  it('should have getActivityUrl', inject([AppConfig], (service: AppConfig) => {
-    expect(service.getActivityUrl()).toBeUndefined();
   }));
 
   it('should have getRemotePrintServiceUrl', inject([AppConfig], (service: AppConfig) => {

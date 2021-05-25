@@ -5,8 +5,8 @@ import {
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
   SERVICES_WORK_ALLOCATION_TASK_API_PATH
 } from '../configuration/references';
+import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
-import * as log4jui from '../lib/log4jui'
 import {
   getUserIdsFromRoleApiResponse,
   handleCaseWorkerForLocation,
@@ -103,12 +103,12 @@ export async function getAllCaseWorkers(req: EnhancedRequest, res: Response, nex
     res.status(200);
     res.send(caseworkers);
   } catch (error) {
-    if(error.status !== 401) {
+    if (error.status !== 401) {
       next(error);
     } else {
       logger.error(error)
       res.status(500);
-      const maskedError = {status: 500, message: 'mask 401 Error with 500', orignalError: error} 
+      const maskedError = {status: 500, message: 'mask 401 Error with 500', orignalError: error}
       next(maskedError)
     }
   }

@@ -13,8 +13,8 @@
             Hide work filter
           </ng-container>
         </button>
-        <ng-container *ngIf="selectedLocations.length">
-          <span class="hmcts-badge hmcts-badge--black govuk-!-padding-left-3">Filtered view</span>
+        <ng-container *ngIf="selectedLocations.length && showFilteredText">
+          <span class="hmcts-badge hmcts-badge--black">Filtered view</span>
           <span class="govuk-hint">All of your work may not be visible.</span>
         </ng-container>
       </div>
@@ -22,6 +22,7 @@
         <h3 class="govuk-heading-m">{{jurisdiction}}</h3>
         <xuilib-generic-filter
           [config]="fieldsConfig"
+          [settings]="fieldsSettings"
         ></xuilib-generic-filter>
       </div>
       <div class="govuk-!-padding-3 govuk-!-margin-bottom-3" *ngIf="selectedLocations.length">

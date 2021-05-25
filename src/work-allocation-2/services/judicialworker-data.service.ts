@@ -9,7 +9,7 @@ import { JudicialWorker } from '../models/dtos';
   providedIn: 'root'
 })
 export class JudicialWorkerDataService {
-  public static JUDICIAL_WORKER_URL: string = '/workallocation/judicialworker';
+  public static JUDICIAL_WORKER_URL: string = '/workallocation2/judicialworker';
   public static JUDICIAL_WORKERS_KEY: string = 'judicialworkers';
   public constructor(private readonly http: HttpClient, private readonly sessionStorageService: SessionStorageService) {}
 

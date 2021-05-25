@@ -6,7 +6,7 @@ import { Location } from '../models/dtos';
 
 @Injectable()
 export class LocationDataService {
-  public static locationUrl: string = '/workallocation/location';
+  public static locationUrl: string = '/workallocation2/location';
   public constructor(private readonly http: HttpClient) {}
 
   public getLocation(locationId: string): Observable<Location> {

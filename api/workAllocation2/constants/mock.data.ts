@@ -99,13 +99,13 @@ export const CASEWORKER_MY_TASKS = {
 
 export const JUDICIAL_WORKERS = [
   {
-    "email": "cwr-func-test-user2-#s@justice.gov.uk",
+    "email": "CWR-func-test-user1-#s@justice.gov.uk",
     "firstName": "IAC",
-    "idamId": "004b7164-0943-41b5-95fc-39794af4a9fe",
+    "idamId": "998db99b-08aa-43d4-bc6b-0aabbb0e3c6f",
     "lastName": "CW2",
     "location": {
-      "id": 227101,
-      "locationName": "Newport (South Wales) Immigration and Asylum Tribunal"
+      "id": 231596,
+      "locationName": "Birmingham"
     }
   }
 ]

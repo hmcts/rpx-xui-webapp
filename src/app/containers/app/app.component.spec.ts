@@ -162,4 +162,25 @@ describe('AppComponent', () => {
 
     });
 
+    describe('userDetailsHandler', () => {
+
+        it('should call setUserAndCheckCookie', () => {
+            const spy = spyOn(appComponent, 'setUserAndCheckCookie');
+            timeoutNotificationService.notificationOnChange.and.returnValue(of({
+                eventType: 'keep-alive'
+            }));
+            appComponent.userDetailsHandler({
+                sessionTimeout: {
+                    totalIdleTime: 10,
+                    idleModalDisplayTime: 100
+                },
+                userInfo: {
+                    id: 'dummy'
+                }
+            });
+            expect(spy).toHaveBeenCalledWith('dummy');
+        });
+
+    });
+
 });

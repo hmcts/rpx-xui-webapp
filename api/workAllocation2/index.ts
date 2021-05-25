@@ -14,7 +14,6 @@ import {
   handleCaseWorkerForLocationAndService,
   handleCaseWorkerForService,
   handlePostCaseWorkersRefData,
-  handlePostJudicialWorkersRefData,
   handlePostRoleAssingnments,
   handlePostSearch
 } from './caseWorkerService';
@@ -36,7 +35,6 @@ import {
 } from './util';
 
 mock.init();
-// judicialMock.init();
 
 export const baseWorkAllocationTaskUrl = getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH);
 export const baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);

@@ -118,6 +118,20 @@
     "@angular-devkit/core" "0.8.9"
     rxjs "6.2.2"
 
+"@angular-material-components/datetime-picker@^2.0.4":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@angular-material-components/datetime-picker/-/datetime-picker-2.0.4.tgz#3a298eb29fc4a8adbbb70fe09bab0ae916d0c186"
+  integrity sha512-3nXGFz7GXbFYeBI2/72rcmPFTWtcC1ERlgdkaY+65dFHXPIc8hKGv6o+JbtCoYPg7xmVCCy4xhmOgfd/CFGyOw==
+  dependencies:
+    tslib "^1.9.0"
+
+"@angular-material-components/moment-adapter@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@angular-material-components/moment-adapter/-/moment-adapter-5.0.0.tgz#e277b82a4a3554260cd274a1862edf64cc186cac"
+  integrity sha512-/9+8b4hpe8GwlgbuXAckDg5ZKms6yDWRKQcyXYuNKC+8Ya6M0M5NHYz3d4YXjJ73xOGURr73NlqZzYsknjYkUQ==
+  dependencies:
+    tslib "^2.0.0"
+
 "@angular/animations@^7.2.13":
   version "7.2.16"
   resolved "https://registry.yarnpkg.com/@angular/animations/-/animations-7.2.16.tgz#6e3f43df292bc53c3a526dabfd8025b3cd03b070"
@@ -5900,20 +5914,20 @@ govuk-elements-sass@^3.1.2:
   dependencies:
     govuk_frontend_toolkit "^7.1.0"
 
-govuk-frontend@^3.1.0:
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/govuk-frontend/-/govuk-frontend-3.5.0.tgz#040e6fd0227f65d3e5820f8a05a9932ffdfb2a9e"
-  integrity sha512-4tNKgcChO1bMNsrTz2UsK4fDMmU9R87UDxy/KhKIMbnhsuJLVuArDveYLkZuUsZ6B3eaCbl5gmI8i/Q/Mi680A==
+govuk-frontend@^3.12.0:
+  version "3.12.0"
+  resolved "https://registry.yarnpkg.com/govuk-frontend/-/govuk-frontend-3.12.0.tgz#55d7057ed8f480a3f83ffeae54b68e0fc81607a3"
+  integrity sha512-+mM8BqEUqsBVSV/ud0dEhE8OmMdhkK53eEUp5YyPN+y3mwcdRnwwP2A2B5qFdFi6E6j/2AYuCG8l5kXD+JXNxA==
 
 govuk_frontend_toolkit@^7.1.0:
   version "7.6.0"
   resolved "https://registry.yarnpkg.com/govuk_frontend_toolkit/-/govuk_frontend_toolkit-7.6.0.tgz#b09a60631afbba4bfac76a8b7c02e72419c29cf5"
   integrity sha1-sJpgYxr7ukv6x2qLfALnJBnCnPU=
 
-govuk_frontend_toolkit@^8.2.0:
-  version "8.2.0"
-  resolved "https://registry.yarnpkg.com/govuk_frontend_toolkit/-/govuk_frontend_toolkit-8.2.0.tgz#6f23bd9bbce02b22c82f4ebba6cd4b07a2141fd7"
-  integrity sha512-USdHnptTl7HPHb9XZbyEK63lL66bzPl/pQLNMURFIXhhZCbW2gJglwMzTMHxdkgkWfKERiDocjsiukClHZ+opw==
+govuk_frontend_toolkit@^9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/govuk_frontend_toolkit/-/govuk_frontend_toolkit-9.0.0.tgz#3634b4323c5f0dbf7580b6e32dc5c36b2b614eda"
+  integrity sha512-ZhG3TumoxOURR/YRxy7rtre45BCbwF7a+dEDddaJYwf0T5qtN/s6xU/RnDvSbm4Ljpy8OL+5WrIWA3cUOM/uAA==
 
 graceful-fs@4.1.15:
   version "4.1.15"
@@ -12575,6 +12589,11 @@ tslib@^1.7.1, tslib@^1.8.0, tslib@^1.8.1, tslib@^1.9.0:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.10.0.tgz#c3c19f95973fb0a62973fb09d90d961ee43e5c8a"
   integrity sha512-qOebF53frne81cf0S9B41ByenJ3/IuH8yJKngAX35CmiZySA0khhkovshKK+jGCaMnVomla7gVlIcc3EvKPbTQ==
+
+tslib@^2.0.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.2.0.tgz#fb2c475977e35e241311ede2693cee1ec6698f5c"
+  integrity sha512-gS9GVHRU+RGn5KQM2rllAlR3dU6m7AcpJKdtH8gFvQiC4Otgk98XnmMU+nZenHt/+VhnBPWwgrJsyrdcw6i23w==
 
 tslib@~1.11.1:
   version "1.11.1"

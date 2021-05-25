@@ -3,7 +3,7 @@ import { ChangeDetectorRef} from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 import { SessionStorageService } from 'src/app/services';
@@ -31,7 +31,8 @@ describe('TaskListWrapperComponent', () => {
         WorkAllocationComponentsModule,
         ExuiCommonLibModule,
         RouterTestingModule,
-        CdkTableModule
+        CdkTableModule,
+        PaginationModule
       ],
       declarations: [TaskListComponent, TaskListWrapperComponent],
       providers: [

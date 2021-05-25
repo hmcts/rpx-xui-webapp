@@ -2,7 +2,7 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { Component, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { AlertService, LoadingService, LoadingModule } from '@hmcts/ccd-case-ui-toolkit';
+import { AlertService, LoadingService, LoadingModule, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 
@@ -46,7 +46,8 @@ describe('TaskManagerListComponent', () => {
         ExuiCommonLibModule,
         RouterTestingModule,
         WorkAllocationComponentsModule,
-        LoadingModule
+        LoadingModule,
+        PaginationModule
       ],
       declarations: [ TaskManagerListComponent, WrapperComponent, TaskListComponent ],
       providers: [

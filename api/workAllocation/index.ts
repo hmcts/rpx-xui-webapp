@@ -5,7 +5,8 @@ import {
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
   SERVICES_WORK_ALLOCATION_TASK_API_PATH
 } from '../configuration/references';
-import { EnhancedRequest } from '../lib/models';
+import { EnhancedRequest, JUILogger } from '../lib/models';
+import * as log4jui from '../lib/log4jui'
 import {
   getUserIdsFromRoleApiResponse,
   handleCaseWorkerForLocation,
@@ -36,6 +37,7 @@ export const baseWorkAllocationTaskUrl = getConfigValue(SERVICES_WORK_ALLOCATION
 export const baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);
 export const baseRoleAssignmentUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
 export const baseUrl: string = 'http://localhost:8080';
+const logger: JUILogger = log4jui.getLogger('workAllocation')
 
 /**
  * getTask
@@ -101,7 +103,14 @@ export async function getAllCaseWorkers(req: EnhancedRequest, res: Response, nex
     res.status(200);
     res.send(caseworkers);
   } catch (error) {
-    next(error);
+    if(error.status !== 401) {
+      next(error);
+    } else {
+      logger.error(error)
+      res.status(500);
+      const maskedError = {status: 500, message: 'mask 401 Error with 500', orignalError: error} 
+      next(maskedError)
+    }
   }
 }
 

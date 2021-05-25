@@ -423,4 +423,15 @@ describe('TaskListComponent', () => {
     });
   });
 
+  describe('generate pagination summary', () => {
+    let paginationSummary: HTMLElement;
+
+    beforeEach(() => {
+      paginationSummary = fixture.debugElement.nativeElement.querySelector('#search-result-summary__text');
+    });
+
+    it('should correctly set the summary text', () => {
+      expect(paginationSummary.textContent).toContain('Displaying 2 of 100 tasks');
+    });
+  });
 });

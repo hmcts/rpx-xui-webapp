@@ -129,13 +129,15 @@ describe('AppComponent', () => {
 
         describe('setCookieBannerVisibility()', () => {
             it('should set isCookieBannerVisible true when there is no cookie and there is a user and cookie banner is feature toggled on', () => {
-                appComponent.handleCookieBannerFeatureToggle(true);
+                featureToggleService.isEnabled.and.returnValue(of(true));
+                appComponent.handleCookieBannerFeatureToggle();
                 appComponent.setUserAndCheckCookie('dummy');
                 expect(appComponent.isCookieBannerVisible).toBeTruthy();
             });
 
             it('should set isCookieBannerVisible false when there is no cookie and there is no user and cookie banner is feature toggled on', () => {
-                appComponent.handleCookieBannerFeatureToggle(true);
+                featureToggleService.isEnabled.and.returnValue(of(true));
+                appComponent.handleCookieBannerFeatureToggle();
                 expect(appComponent.isCookieBannerVisible).toBeFalsy();
             });
         });
@@ -154,7 +156,8 @@ describe('AppComponent', () => {
 
             it('should make a call to setCookieBannerVisibility', () => {
                 const spy = spyOn(appComponent, 'setCookieBannerVisibility');
-                appComponent.handleCookieBannerFeatureToggle(true);
+                featureToggleService.isEnabled.and.returnValue(of(true));
+                appComponent.handleCookieBannerFeatureToggle();
                 expect(spy).toHaveBeenCalled();
             });
 

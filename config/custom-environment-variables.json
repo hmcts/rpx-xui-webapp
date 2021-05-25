@@ -19,6 +19,7 @@
   "health": {
     "ccdComponentApi": "HEALTH_CCD_COMPONENT_API",
     "ccdDataApi": "HEALTH_CCD_DATA_API",
+    "ccdActivityApi": "HEALTH_CCD_ACTIVITY_API",
     "documentsApi": "HEALTH_DOCUMENTS_API",
     "em_hrs_api": "HEALTH_EM_HRS_API",
     "em_anno_api": "HEALTH_EM_ANNO_API",
@@ -31,6 +32,7 @@
   "services": {
     "ccd": {
       "componentApi": "SERVICES_CCD_COMPONENT_API",
+      "activityApi": "SERVICES_CCD_ACTIVITY_API",
       "dataApi": "SERVICES_CCD_DATA_STORE_API",
       "caseAssignmentApi": "SERVICES_CCD_CASE_ASSIGNMENT_API"
     },

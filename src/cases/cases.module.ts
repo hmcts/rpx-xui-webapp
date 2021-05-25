@@ -37,6 +37,7 @@ import { casesRouting } from './case-feature.routes';
 import * as fromComponents from './components';
 // from containers
 import * as fromContainers from './containers';
+import { ActivityResolver } from './resolvers/activity.resolver';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
 // from services
 import * as fromServices from './services';
@@ -81,7 +82,8 @@ import { effects, reducers } from './store';
     },
     ScrollToService,
     ...fromServices.services,
-    CreateCaseEventTriggerResolver
+    CreateCaseEventTriggerResolver,
+    ActivityResolver
   ]
 })
 /**
@@ -92,7 +94,7 @@ export class CasesModule {
     CasesModule.forRoot();
   }
 
-  static forRoot(): ModuleWithProviders {
+  public static forRoot(): ModuleWithProviders {
     return {
       ngModule: CasesModule,
       providers: [

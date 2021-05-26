@@ -148,7 +148,8 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
         this.getLocationParameter(),
         this.getCaseworkerParameter()
       ],
-      sorting_parameters: [this.getSortParameter()]
+      sorting_parameters: [this.getSortParameter()],
+      pagination_parameters: this.getPaginationParameter()
     };
   }
 

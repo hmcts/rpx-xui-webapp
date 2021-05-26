@@ -35,7 +35,8 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
         this.getLocationParameter(),
         { key: 'state', operator: 'IN', values: ['unassigned'] }
       ],
-      sorting_parameters: [this.getSortParameter()]
+      sorting_parameters: [this.getSortParameter()],
+      pagination_parameters: this.getPaginationParameter()
     };
   }
 
@@ -89,7 +90,7 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
    */
   public claimTaskAndGo(task: Task): void {
     this.taskService.claimTask(task.id).subscribe(() => {
-      const goToCaseUrl = `/cases/case-details/${task.case_id}`
+      const goToCaseUrl = `/cases/case-details/${task.case_id}`;
       // navigates to case details page for specific case id
       this.router.navigate([goToCaseUrl], {
         state: {

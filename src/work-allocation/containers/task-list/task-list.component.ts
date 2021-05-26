@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { PaginationParameter } from 'src/work-allocation/models/dtos';
 
 import { ListConstants } from '../../components/constants';
 import { TaskSort } from '../../enums';
@@ -17,8 +18,10 @@ export class TaskListComponent implements OnChanges {
    * These are the tasks & fields as returned from the WA Api.
    */
   @Input() public tasks: Task[];
+  @Input() public tasksTotal: number;
   @Input() public taskServiceConfig: TaskServiceConfig;
   @Input() public sortedBy: TaskSortField;
+  @Input() public pagination: PaginationParameter;
   @Input() public showManage: boolean = true;
 
   /**
@@ -31,6 +34,7 @@ export class TaskListComponent implements OnChanges {
   @Input() public fields: TaskFieldConfig[];
 
   @Output() public sortEvent = new EventEmitter<string>();
+  @Output() public paginationEvent = new EventEmitter<number>();
   @Output() public actionEvent = new EventEmitter<InvokedTaskAction>();
 
   /**
@@ -175,4 +179,7 @@ export class TaskListComponent implements OnChanges {
     }
   }
 
+  public onPaginationHandler(page: number): void {
+    this.paginationEvent.emit(page);
+  }
 }

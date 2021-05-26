@@ -35,9 +35,10 @@ export class MyTasksComponent extends TaskListWrapperComponent {
       const id = userInfo.id ? userInfo.id : userInfo.uid;
       return {
         search_parameters: [
-          { key: 'user', operator: 'IN', values: [ id ] },
+          {key: 'user', operator: 'IN', values: [id]},
         ],
-        sorting_parameters: [this.getSortParameter()]
+        sorting_parameters: [this.getSortParameter()],
+        pagination_parameters: this.getPaginationParameter()
       };
     }
   }

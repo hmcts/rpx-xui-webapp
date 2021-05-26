@@ -5,6 +5,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { Observable } from 'rxjs';
 
 import { ErrorMessageComponent } from '../../../app/components';
@@ -53,7 +54,7 @@ describe('TaskAssignmentContainerComponent', () => {
         ErrorMessageComponent, NothingComponent
       ],
       imports: [
-        WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientModule,
+        WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientModule, PaginationModule,
         RouterTestingModule.withRoutes(
           [
             { path: 'tasks/list', component: NothingComponent }

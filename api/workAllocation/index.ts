@@ -1,4 +1,5 @@
 import { NextFunction, Response } from 'express';
+import * as mockService from '../common/mockService';
 import { getConfigValue } from '../configuration';
 import {
   SERVICES_CASE_CASEWORKER_REF_PATH,
@@ -16,7 +17,8 @@ import {
   handlePostSearch
 } from './caseWorkerService';
 import { Caseworker } from './interfaces/task';
-import { handleTaskGet, handleTaskPost, handleTaskSearch } from './taskService';
+import { handleTaskGet, handleTaskPost } from './taskService';
+import * as taskServicemock from './taskService.mock';
 import {
   assignActionsToTasks,
   mapCaseworkerData,
@@ -25,12 +27,15 @@ import {
   prepareCaseWorkerForService,
   prepareCaseWorkerSearchUrl,
   prepareGetTaskUrl,
+  preparePaginationUrl,
   preparePostTaskUrlAction,
   prepareRoleApiRequest,
   prepareRoleApiUrl,
   prepareSearchTaskUrl,
   prepareTaskSearchForCompletable
 } from './util';
+
+taskServicemock.init();
 
 export const baseWorkAllocationTaskUrl = getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH);
 export const baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);
@@ -61,9 +66,13 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
  */
 export async function searchTask(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    const postTaskPath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
-    const searchRequest = req.body.searchRequest;
-    const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
+    const basePath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
+    const postTaskPath = preparePaginationUrl(req, basePath);
+    // TODO: Mock API will be removed once pagination is ready
+    const { status, data } = await mockService.handlePost(postTaskPath, req.body, req);
+    // TODO: below code will be reverted once pagination is ready
+    // const searchRequest = req.body.searchRequest;
+    // const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
     res.status(status);
     // Assign actions to the tasks on the data from the API.
     if (data) {
@@ -191,12 +200,12 @@ export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Re
       "case_jurisdiction": req.body.searchRequest.jurisdiction,
       "case_type": req.body.searchRequest.caseTypeId,
       "event_id": req.body.searchRequest.eventId,
-    }
+    };
     const { status, data } = await handlePostSearch(postTaskPath, reqBody, req);
     res.status(status);
     res.send(data);
   } catch (error) {
-    console.log(error)
+    console.log(error);
     next(error);
   }
 }

@@ -2,11 +2,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, NavigationEnd, Router, RoutesRecognized } from '@angular/router';
 import { FilterService, FilterSetting, SubNavigation } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
-import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
-import * as fromCaseList from '../../../app/store/reducers';
 import { Location } from '../../models/dtos';
 import { TaskSortField } from '../../models/tasks';
 import { LocationDataService } from '../../services';
@@ -56,7 +54,6 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
   constructor(
     private readonly router: Router,
     private readonly route: ActivatedRoute,
-    private readonly store: Store<fromCaseList.State>,
     private readonly filterService: FilterService,
     private readonly locationService: LocationDataService
   ) {

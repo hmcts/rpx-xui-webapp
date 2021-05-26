@@ -63,7 +63,7 @@ describe('TaskHomeComponent', () => {
 
   it('should show the toggle filter button', () => {
     const button: DebugElement = fixture.debugElement.query(By.css('.govuk-button.hmcts-button--secondary'));
-    expect(button.nativeElement.innerText).toContain('Show filter');
+    expect(button.nativeElement.innerText).toContain('Show work filter');
   });
 
   it('should select two locations', fakeAsync(() => {

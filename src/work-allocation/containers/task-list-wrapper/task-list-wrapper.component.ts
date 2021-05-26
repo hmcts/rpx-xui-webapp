@@ -137,7 +137,7 @@ export class TaskListWrapperComponent implements OnInit {
     this.pagination = {
       page_number: 1,
       page_size: 10
-    }
+    };
   }
 
   /**
@@ -187,10 +187,7 @@ export class TaskListWrapperComponent implements OnInit {
   }
 
   public getPaginationParameter(): PaginationParameter {
-    return {
-      page_size: this.pagination.page_size,
-      page_number: this.pagination.page_number
-    }
+    return { ...this.pagination };
   }
 
   /**

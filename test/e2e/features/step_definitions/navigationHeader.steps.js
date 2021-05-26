@@ -11,6 +11,14 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Then('I see header tab Task manager', async function () {
         expect(await headerPage.isTabPresent("Task manager"), "Task manager tab is not present").to.be.true;
     });
+
+    When('I click on primary navigation header {string}', async function (headerTabLabel) {
+        await browserWaits.retryWithActionCallback(async () => {
+            await headerPage.clickTabWithText(headerTabLabel);
+        }, 'Click header tab with text ' + headerTabLabel);
+       
+    });
+
     When('I click on header tab Task list', async function () {
         await headerPage.clickTaskList();
 

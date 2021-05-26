@@ -36,8 +36,7 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
         { key: 'state', operator: 'IN', values: ['unassigned'] }
       ],
       sorting_parameters: [this.getSortParameter()],
-      // TODO - hard coded now, need to pass the actual page number and size here
-      pagination_parameters: {page_number: 1, page_size: 10}
+      pagination_parameters: this.getPaginationParameter()
     };
   }
 

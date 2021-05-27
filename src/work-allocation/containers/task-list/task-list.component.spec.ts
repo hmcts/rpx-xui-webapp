@@ -423,7 +423,7 @@ describe('TaskListComponent', () => {
     });
   });
 
-  fdescribe('generate pagination summary', () => {
+  describe('generate pagination summary', () => {
     let paginationSummary: HTMLElement;
 
     beforeEach(() => {

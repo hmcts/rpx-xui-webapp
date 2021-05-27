@@ -45,7 +45,9 @@ export class TaskListWrapperComponent implements OnInit {
     protected caseworkerService: CaseworkerDataService,
     protected loadingService: LoadingService,
     protected featureToggleService: FeatureToggleService
-  ) {}
+  ) {
+    this.isPaginationEnabled$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.waMvpPaginationFeature);
+  }
 
   public specificPage: string = '';
   public caseworkers: Caseworker[];
@@ -112,7 +114,6 @@ export class TaskListWrapperComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.isPaginationEnabled$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.waMvpPaginationFeature);
     this.setupTaskList();
     this.loadTasks();
   }

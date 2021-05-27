@@ -1,4 +1,5 @@
 const c = require('config');
+const browserUtil = require('../../../../ngIntegration/util/browserUtil');
 const BrowserWaits = require('../../../support/customWaits');
 var cucumberReporter = require('../../../support/reportLogger');
 
@@ -123,11 +124,23 @@ class TaskListTable{
         return -1;
     }
 
+    async isManageLinkPresent(position){
+        return await browserUtil.stepWithRetry(async () => {
+            const taskrow = await this.getTableRowAt(position);
+            return await taskrow.$('button[id^="manage_"]').isPresent();
+        });
+    }
+
     async clickManageLinkForTaskAt(position){
-        await BrowserWaits.retryWithActionCallback(async () => {
+        await browserUtil.stepWithRetry(async () => {
             const taskrow = await this.getTableRowAt(position);
             await taskrow.$('button[id^="manage_"]').click();
         });
+    }
+
+    async getTaskActions(){
+        const taskActions = this.displayedtaskActionRow.$$('.task-action a');
+        return await taskActions.getText();
     }
 
     async isTaskActionPresent(taskAction){

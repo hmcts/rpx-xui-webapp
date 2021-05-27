@@ -79,10 +79,13 @@ class caseEditPage {
         let count = await thLable.count();
         let caseResultsThTitle = [];
         if (count) {
-            for (let i = index; i < count; i++) {
+            for (let i = index? index : 0; i < count; i++) {
                 let thText = thLable.get(i).$$(".search-result-column-label");
                 let text = await thText.getText();
-                caseResultsThTitle.push(`${text}`);
+                if (text.length !== 0){
+                    caseResultsThTitle.push(`${text}`);
+                }
+                
             }
             return await caseResultsThTitle;
         }

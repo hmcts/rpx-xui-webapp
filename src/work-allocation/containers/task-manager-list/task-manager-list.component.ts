@@ -115,7 +115,7 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      this.pUserId = userInfo.id;
+      this.pUserId = userInfo.id ? userInfo.id : userInfo.uid;
     }
   }
 

@@ -1,5 +1,7 @@
+import { CommonLibraryModuleConfig } from '@hmcts/rpx-xui-common-lib/lib/module.config';
 import {select, Store} from '@ngrx/store';
 import {takeWhile} from 'rxjs/operators';
+import { EnvironmentConfig } from '../models/environmentConfig.model';
 import * as fromApp from './store';
 
 /**
@@ -7,8 +9,9 @@ import * as fromApp from './store';
  *  Responsible for storing and dispatching initial features data / event
  *  When it does resolves into true and starts application
  */
-export function initApplication(store: Store<fromApp.State>): VoidFunction {
+export function initApplication(store: Store<fromApp.State>, environmentConfig: EnvironmentConfig, moduleConfig: CommonLibraryModuleConfig): VoidFunction {
   return () => new Promise(resolve => {
+    moduleConfig.launchDarklyClientId = environmentConfig.launchDarklyClientId;
     store.dispatch(new fromApp.StartAppInitilizer());
     store.dispatch(new fromApp.LoadConfig());
     store.dispatch(new fromApp.LoadFeatureToggleConfig());

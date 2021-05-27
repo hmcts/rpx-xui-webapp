@@ -97,8 +97,9 @@ export class AppComponent implements OnInit {
 
   public initializeFeature(userInfo: UserInfo) {
     if (userInfo) {
+
       const featureUser: FeatureUser = {
-        key: userInfo.id,
+        key: userInfo.id || userInfo.uid,
         custom: {
           roles: userInfo.roles,
           orgId: '-1'

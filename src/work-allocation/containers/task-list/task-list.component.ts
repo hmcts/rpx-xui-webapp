@@ -182,4 +182,17 @@ export class TaskListComponent implements OnChanges {
   public onPaginationHandler(page: number): void {
     this.paginationEvent.emit(page);
   }
+
+  private getCurrentPageIndex(): number {
+    return (this.pagination ? this.pagination.page_number : 1) - 1;
+  }
+
+  public getFirstResult(): number {
+    return ((this.getCurrentPageIndex() * this.pagination.page_size) + 1);
+  }
+
+  public getLastResult(): number {
+    const taskCount = this.tasks ? this.tasks.length : 0;
+    return ((this.getCurrentPageIndex() * this.pagination.page_size) + taskCount);
+  }
 }

@@ -90,7 +90,7 @@ describe('TaskListComponent', () => {
     wrapper.tasks = getTasks();
     wrapper.fields = getFields();
     wrapper.taskServiceConfig = getTaskService();
-    wrapper.tasksTotal = 100;
+    wrapper.tasksTotal = 2;
     wrapper.pagination = {
       page_number: 1,
       page_size: 10
@@ -423,7 +423,7 @@ describe('TaskListComponent', () => {
     });
   });
 
-  describe('generate pagination summary', () => {
+  fdescribe('generate pagination summary', () => {
     let paginationSummary: HTMLElement;
 
     beforeEach(() => {
@@ -431,7 +431,7 @@ describe('TaskListComponent', () => {
     });
 
     it('should correctly set the summary text', () => {
-      expect(paginationSummary.textContent).toContain('Displaying 1 - 2 out of 100 tasks');
+      expect(paginationSummary.textContent).toContain('Displaying 1 - 2 out of 2 tasks');
     });
   });
 });

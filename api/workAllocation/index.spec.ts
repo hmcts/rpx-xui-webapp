@@ -6,7 +6,6 @@ import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 
 import { baseWorkAllocationTaskUrl, getTask, postTaskAction, searchTask } from '.';
-import { httpMock } from '../common/httpMock';
 import { http } from '../lib/http';
 import { mockTasks } from './taskTestData.spec';
 
@@ -73,7 +72,7 @@ describe('workAllocation', () => {
   describe('searchTask', () => {
 
     it('should make a post request and respond appropriately', async () => {
-      spy = sandbox.stub(httpMock, 'post').resolves(res);
+      spy = sandbox.stub(http, 'post').resolves(res);
       const req = mockReq({
         body: {
           searchRequest: { search_parameters: [] },
@@ -90,13 +89,7 @@ describe('workAllocation', () => {
       // Should have the correct URL and the appropriate payload.
       const args = spy.getCall(0).args;
       expect(args[0]).to.equal(`${baseWorkAllocationTaskUrl}/task`);
-      expect(args[1]).to.deep.equal({
-          searchRequest: {
-            search_parameters: [],
-          },
-          view: 'view',
-        }
-      );
+      expect(args[1]).to.deep.equal({search_parameters: []});
 
       // Should have received the HTTP response. The search simply returns the data.
       expect(response.data.length).to.equal(3);

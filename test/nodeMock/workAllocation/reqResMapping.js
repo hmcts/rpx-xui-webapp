@@ -33,16 +33,31 @@ module.exports = {
             }
         },
         '/workallocation2/task/': (req, res) => {
-
+            const tasks = [];
+            const permissions = [['Read'], ['Read', 'Manage'], ['Read', 'Manage', 'Execute'], ['Read', 'Manage', 'Execute', 'Cancel']]
             if (req.body.view === "MyTasks") {
-                res.send(workAllocationMockData.getMyTasks(10));
+                for (let i = 0; i < permissions.length; i++){
+                    tasks.push(workAllocationMockData.getRelease2TaskWithPermissions(permissions[i],'MyTasks',null));
+                }
+                
             } else if (req.body.view === "AvailableTasks") {
-                res.send(workAllocationMockData.getAvailableTasks(10));
+                for (let i = 0; i < permissions.length; i++) {
+                    tasks.push(workAllocationMockData.getRelease2TaskWithPermissions(permissions[i], 'AvailableTasks', null));
+                }
+                
             } else if (req.body.view === "TaskManager") {
-                res.send(workAllocationMockData.getTaskManagerTasks(10));
+                for (let i = 0; i < permissions.length; i++) {
+                    tasks.push(workAllocationMockData.getRelease2TaskWithPermissions(permissions[i], 'AvailableTasks', 'Unassigned'));
+                }
+
+                for (let i = 0; i < permissions.length; i++) {
+                    tasks.push(workAllocationMockData.getRelease2TaskWithPermissions(permissions[i], 'AvailableTasks', 'assigned'));
+                }
+                
             } else {
                 throw new Error("Unrecognised task list view : " + req.body.view);
             }
+            res.send({ tasks: tasks});
         },
         '/workallocation/task/:taskId/assign': (req, res) => {
             res.send();

@@ -95,7 +95,7 @@ class BrowserUtil{
 
                     // await browser.sleep(2000);
                     reportLogger.AddMessage("LD response received");
-                    reportLogger.AddJson(global.scenarioData['featureToggles']);
+                    //reportLogger.AddJson(global.scenarioData['featureToggles']);
                     return true;
                 }
             };

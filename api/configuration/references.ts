@@ -24,6 +24,7 @@ export const MAX_LOG_LINE = 'maxLogLine'
 export const HEALTH = 'health'
 
 export const SERVICES_CCD_COMPONENT_API_PATH = 'services.ccd.componentApi'
+export const SERVICES_CCD_ACTIVITY_API_PATH = 'services.ccd.activityApi'
 export const SERVICES_CCD_DATA_STORE_API_PATH = 'services.ccd.dataApi'
 export const SERVICES_CCD_CASE_ASSIGNMENT_API_PATH = 'services.ccd.caseAssignmentApi'
 export const SERVICES_WORK_ALLOCATION_TASK_API_PATH = 'services.work_allocation.taskApi'

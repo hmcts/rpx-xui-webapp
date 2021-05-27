@@ -4,7 +4,7 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {AlertService, LoadingService, PaginationModule} from '@hmcts/ccd-case-ui-toolkit';
-import {ExuiCommonLibModule} from '@hmcts/rpx-xui-common-lib';
+import {ExuiCommonLibModule, FeatureToggleService} from '@hmcts/rpx-xui-common-lib';
 import {of} from 'rxjs';
 import {SessionStorageService} from 'src/app/services';
 
@@ -34,6 +34,7 @@ describe('MyTasksComponent', () => {
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
+  const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -50,7 +51,8 @@ describe('MyTasksComponent', () => {
         {provide: AlertService, useValue: mockAlertService},
         {provide: SessionStorageService, useValue: mockSessionStorageService},
         {provide: CaseworkerDataService, useValue: mockCaseworkerService},
-        { provide: LoadingService, useValue: mockLoadingService }
+        { provide: LoadingService, useValue: mockLoadingService },
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService }
       ]
     }).compileComponents();
   }));
@@ -63,6 +65,7 @@ describe('MyTasksComponent', () => {
     const tasks: Task[] = getMockTasks();
     mockTaskService.searchTask.and.returnValue(of({tasks}));
     mockCaseworkerService.getAll.and.returnValue(of([]));
+    mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     fixture.detectChanges();
   });
 

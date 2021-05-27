@@ -431,15 +431,6 @@ describe('TaskListComponent', () => {
     });
 
     it('should correctly set the summary text', () => {
-      wrapper.pagination = {
-        page_number: 1,
-        page_size: 10
-      };
-
-      wrapper.tasks = getTasks();
-
-      fixture.detectChanges();
-
       expect(paginationSummary.textContent).toContain('Displaying 1 - 2 out of 100 tasks');
     });
   });

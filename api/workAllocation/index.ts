@@ -1,5 +1,4 @@
 import { NextFunction, Response } from 'express';
-import * as mockService from '../common/mockService';
 import { getConfigValue } from '../configuration';
 import {
   SERVICES_CASE_CASEWORKER_REF_PATH,
@@ -17,8 +16,7 @@ import {
   handlePostSearch
 } from './caseWorkerService';
 import { Caseworker } from './interfaces/task';
-import { handleTaskGet, handleTaskPost } from './taskService';
-import * as taskServicemock from './taskService.mock';
+import { handleTaskGet, handleTaskPost, handleTaskSearch } from './taskService';
 import {
   assignActionsToTasks,
   mapCaseworkerData,
@@ -34,8 +32,6 @@ import {
   prepareSearchTaskUrl,
   prepareTaskSearchForCompletable
 } from './util';
-
-taskServicemock.init();
 
 export const baseWorkAllocationTaskUrl = getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH);
 export const baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);
@@ -68,11 +64,8 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
   try {
     const basePath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
     const postTaskPath = preparePaginationUrl(req, basePath);
-    // TODO: Mock API will be removed once pagination is ready
-    const { status, data } = await mockService.handlePost(postTaskPath, req.body, req);
-    // TODO: below code will be reverted once pagination is ready
-    // const searchRequest = req.body.searchRequest;
-    // const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
+    const searchRequest = req.body.searchRequest;
+    const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
     res.status(status);
     // Assign actions to the tasks on the data from the API.
     if (data) {

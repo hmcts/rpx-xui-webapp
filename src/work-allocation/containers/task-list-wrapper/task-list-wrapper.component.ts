@@ -139,10 +139,17 @@ export class TaskListWrapperComponent implements OnInit {
       };
     }
 
-    this.pagination = {
-      page_number: 1,
-      page_size: 10
-    };
+    this.isPaginationEnabled$.subscribe({
+      next: (result: boolean) => {
+        if (!result) this.pagination = null;
+        else {
+          this.pagination = {
+            page_number: 1,
+            page_size: 10
+          };
+        }
+      }
+    });
   }
 
   /**

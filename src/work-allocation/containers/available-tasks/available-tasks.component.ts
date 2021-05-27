@@ -29,7 +29,7 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
   /**
    * Override the default.
    */
-  public getSearchTaskRequest(): SearchTaskRequest {
+  public getSearchTaskRequestPagination(): SearchTaskRequest {
     return {
       search_parameters: [
         this.getLocationParameter(),

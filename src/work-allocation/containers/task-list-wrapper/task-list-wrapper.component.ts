@@ -12,6 +12,8 @@ import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortFi
 import { CaseworkerDataService, InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { AppConstants } from '../../../app/app.constants';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html'
@@ -41,7 +43,8 @@ export class TaskListWrapperComponent implements OnInit {
     protected sessionStorageService: SessionStorageService,
     protected alertService: AlertService,
     protected caseworkerService: CaseworkerDataService,
-    protected loadingService: LoadingService
+    protected loadingService: LoadingService,
+    protected featureToggleService: FeatureToggleService
   ) {}
 
   public specificPage: string = '';
@@ -88,6 +91,7 @@ export class TaskListWrapperComponent implements OnInit {
 
   public sortedBy: TaskSortField;
   public pagination: PaginationParameter;
+  public isPaginationEnabled$: Observable<boolean>;
 
   /**
    * To be overridden.
@@ -108,6 +112,7 @@ export class TaskListWrapperComponent implements OnInit {
   }
 
   public ngOnInit(): void {
+    this.isPaginationEnabled$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.waMvpPaginationFeature);
     this.setupTaskList();
     this.loadTasks();
   }
@@ -163,15 +168,27 @@ export class TaskListWrapperComponent implements OnInit {
   }
 
   public performSearch(): Observable<any> {
-    const searchRequest = this.getSearchTaskRequest();
+    const searchRequest = this.getSearchTaskRequestPagination();
     return this.taskService.searchTask({ searchRequest, view: this.view });
+  }
+
+  public performSearchPagination(): Observable<any> {
+    const searchRequest = this.getSearchTaskRequestPagination();
+    return this.taskService.searchTaskWithPagination({ searchRequest, view: this.view });
+  }
+
+  public getSearchTaskRequest(): SearchTaskRequest {
+    return {
+      search_parameters: [],
+      sorting_parameters: [this.getSortParameter()]
+    };
   }
 
   /**
    * Get a search task request appropriate to the current view,
    * sort order, etc.
    */
-  public getSearchTaskRequest(): SearchTaskRequest {
+  public getSearchTaskRequestPagination(): SearchTaskRequest {
     return {
       search_parameters: [],
       sorting_parameters: [this.getSortParameter()],
@@ -236,17 +253,32 @@ export class TaskListWrapperComponent implements OnInit {
   private doLoad(): void {
     this.showSpinner$ = this.loadingService.isLoading;
     const loadingToken = this.loadingService.register();
+    this.isPaginationEnabled$.subscribe(enabled => {
+      if(enabled) {
+        this.performSearchPagination().subscribe(result => {
+          this.loadingService.unregister(loadingToken)
+          this.tasks = result.tasks;
+          this.tasksTotal = result.total_records;
+          this.tasks.forEach(task => task.assigneeName = getAssigneeName(this.caseworkers, task.assignee));
+          this.ref.detectChanges();
+        }, error => {
+          this.loadingService.unregister(loadingToken)
+          handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
+        });
+      } else {
+        this.performSearch().subscribe(result => {
+          this.loadingService.unregister(loadingToken)
+          this.tasks = result.tasks;
+          this.tasksTotal = result.total_records;
+          this.tasks.forEach(task => task.assigneeName = getAssigneeName(this.caseworkers, task.assignee));
+          this.ref.detectChanges();
+        }, error => {
+          this.loadingService.unregister(loadingToken)
+          handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
+        });
+      }
+    })
     // Should this clear out the existing set first?
-    this.performSearch().subscribe(result => {
-      this.loadingService.unregister(loadingToken)
-      this.tasks = result.tasks;
-      this.tasksTotal = result.total_records;
-      this.tasks.forEach(task => task.assigneeName = getAssigneeName(this.caseworkers, task.assignee));
-      this.ref.detectChanges();
-    }, error => {
-      this.loadingService.unregister(loadingToken)
-      handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
-    });
   }
 
   public onPaginationHandler(pageNumber: number): void {

@@ -50,6 +50,10 @@ export class WorkAllocationTaskService {
     return this.http.post<any>(`${BASE_URL}`, body);
   }
 
+  public searchTaskWithPagination(body: { searchRequest: SearchTaskRequest, view: string }): Observable<any> {
+    return this.http.post<any>('/workallocation/taskWithPagination', body);
+  }
+
   public claimTask(taskId: string): Observable<any> {
     return this.performActionOnTask(taskId, ACTION.CLAIM);
   }

@@ -28,7 +28,7 @@ export class MyTasksComponent extends TaskListWrapperComponent {
     return ConfigConstants.MyTasks;
   }
 
-  public getSearchTaskRequest(): SearchTaskRequest {
+  public getSearchTaskRequestPagination(): SearchTaskRequest {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);

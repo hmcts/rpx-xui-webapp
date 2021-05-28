@@ -123,8 +123,8 @@ const defaultUserTheme: Theme = {
   },
   showFindCase: true,
   backgroundColor: '#202020',
-  logoIsUsed: false,
-  logoType: 'default',
+  logoIsUsed: true,
+  logoType: 'myhmcts',
 };
 
 const signedOutTheme: Theme = {

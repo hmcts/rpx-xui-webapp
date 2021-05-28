@@ -86,9 +86,9 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
         filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
       )
       .subscribe((f: FilterSetting) => {
+        this.showFilteredText = this.hasBeenFiltered(f, this.defaultLocations);
         this.toggleFilter = false;
         this.selectedLocations = f.fields.find((field) => field.name === TaskHomeComponent.FILTER_NAME).value;
-        this.showFilteredText = this.hasBeenFiltered(f, this.defaultLocations);
       });
   }
 
@@ -158,8 +158,9 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
       this.defaultLocations = [`${location.id}`];
       this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
         name: TaskHomeComponent.FILTER_NAME,
-        value: this.defaultLocations
+        value: [`${location.id}`]
       }];
+      this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
     }
     this.fieldsConfig.fields.push(field);
   }

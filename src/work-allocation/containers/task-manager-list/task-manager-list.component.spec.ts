@@ -69,6 +69,7 @@ describe('TaskManagerListComponent', () => {
     mockLocationService.getLocations.and.returnValue(of(mockLocations));
     mockCaseworkerService.getAll.and.returnValue(of(mockCaseworkers));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
+    component.isPaginationEnabled$ = of(false);
     fixture.detectChanges();
   });
 

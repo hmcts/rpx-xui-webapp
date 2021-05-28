@@ -103,7 +103,7 @@ describe('TaskManagerListComponent', () => {
     button.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
-    const searchRequest = component.getSearchTaskRequest();
+    const searchRequest = component.getSearchTaskRequestPagination();
     // Make sure the search request looks right.
     expect(searchRequest.search_parameters.length).toEqual(mockLocations.length);
     expect(searchRequest.search_parameters[0].key).toEqual('location');
@@ -119,7 +119,7 @@ describe('TaskManagerListComponent', () => {
     button.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
-    const newSearchRequest = component.getSearchTaskRequest();
+    const newSearchRequest = component.getSearchTaskRequestPagination();
     // Make sure the search request looks right.
     expect(newSearchRequest.search_parameters.length).toEqual(2);
     expect(newSearchRequest.search_parameters[1].key).toEqual('user');
@@ -141,7 +141,7 @@ describe('TaskManagerListComponent', () => {
     select.dispatchEvent(new Event('change'));
     fixture.detectChanges();
 
-    const searchRequest = component.getSearchTaskRequest();
+    const searchRequest = component.getSearchTaskRequestPagination();
     // Make sure the search request looks right.
     expect(searchRequest.search_parameters.length).toEqual(2);
     expect(searchRequest.search_parameters[0].key).toEqual('location');
@@ -162,7 +162,7 @@ describe('TaskManagerListComponent', () => {
     select.dispatchEvent(new Event('change'));
     fixture.detectChanges();
 
-    const searchRequest = component.getSearchTaskRequest();
+    const searchRequest = component.getSearchTaskRequestPagination();
     // Make sure the search request looks right.
     expect(searchRequest.search_parameters.length).toEqual(2);
     expect(searchRequest.search_parameters[1].key).toEqual('user');
@@ -182,7 +182,7 @@ describe('TaskManagerListComponent', () => {
     select.dispatchEvent(new Event('change'));
     fixture.detectChanges();
 
-    const searchRequest = component.getSearchTaskRequest();
+    const searchRequest = component.getSearchTaskRequestPagination();
     // Make sure the search request looks right.
     expect(searchRequest.search_parameters.length).toEqual(2);
     expect(searchRequest.search_parameters[0].key).toEqual('location');

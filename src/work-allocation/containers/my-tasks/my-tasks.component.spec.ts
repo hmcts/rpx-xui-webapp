@@ -72,7 +72,7 @@ describe('MyTasksComponent', () => {
 
 
   it('should make a call to load tasks using the default search request', () => {
-    const searchRequest = component.getSearchTaskRequest();
+    const searchRequest = component.getSearchTaskRequestPagination();
     const payload = {searchRequest, view: component.view};
     expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
     expect(component.tasks).toBeDefined();
@@ -107,7 +107,7 @@ describe('MyTasksComponent', () => {
     button.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
-    const searchRequest = component.getSearchTaskRequest();
+    const searchRequest = component.getSearchTaskRequestPagination();
     // Make sure the search request looks right.
     expect(searchRequest.search_parameters.length).toEqual(1);
     expect(searchRequest.search_parameters[0].key).toEqual('user');
@@ -124,7 +124,7 @@ describe('MyTasksComponent', () => {
     button.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
-    const newSearchRequest = component.getSearchTaskRequest();
+    const newSearchRequest = component.getSearchTaskRequestPagination();
     // Make sure the search request looks right.
     expect(newSearchRequest.search_parameters.length).toEqual(1);
     expect(newSearchRequest.search_parameters[0].key).toEqual('user');

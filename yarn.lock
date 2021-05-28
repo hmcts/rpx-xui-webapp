@@ -415,10 +415,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@3.1.2-pcm-role-non-completion":
-  version "3.1.2-pcm-role-non-completion"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-3.1.2-pcm-role-non-completion.tgz#edd925a4810037bc92665ea142acbb7b5b4a4a7e"
-  integrity sha512-MR96MsPIKnzxQd6U/fFlNd/jYmGaIaFAyZ3MlZZbZ1X2pAabJkt0vok95ugmgiMRhX10R2QuO+TNUIxPxL0HMw==
+"@hmcts/ccd-case-ui-toolkit@3.1.5-pcm-role-non-completion-2":
+  version "3.1.5-pcm-role-non-completion-2"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-3.1.5-pcm-role-non-completion-2.tgz#97c716d68c5903382dda540995bee3d97f6eb673"
+  integrity sha512-qoP6weKBda6AqgZMXnVguZtxWjN1d9IKb0CNrlL3upTEGdITqqi5eZyoQFhrYUDlh3Ify/AZrbiTaFF50BH0ZA==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

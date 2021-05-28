@@ -44,7 +44,7 @@
     "test:crossbrowser": "webdriver-manager update && protractor ./test/e2e/config/crossbrowser.conf.js",
     "test:fullfunctional": "yarn test:api && webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/fullfunctional.conf.js",
     "test:fullfunctional:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/fullfunctional.conf.js --local",
-    "test:mutation": "NODE_CONFIG_DIR=./config stryker run stryker.node.conf.js ",
+    "test:mutation": "NODE_CONFIG_DIR=./config stryker run stryker.node.conf.js  ",
     "test:apiGateway": "echo 'not implemented'",
     "sonar-scan": "node_modules/sonar-scanner/bin/sonar-scanner",
     "test-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error mocha --timeout 10000 -r ts-node/register -r dotenv-extended/config api/test/pact/**/*.spec.ts dotenv_config_defaults=./api/.env.defaults",

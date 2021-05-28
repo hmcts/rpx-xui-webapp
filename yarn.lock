@@ -492,10 +492,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.0.7-generic-filter":
-  version "1.0.7-generic-filter"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.0.7-generic-filter.tgz#b0b01fb0f18ed827b6cf34a3aa3b9f24158e1b5c"
-  integrity sha512-X+5G6gE3qTIavGHi8xvfW6OkhQLrL2i9UfGlfD+dR0x+izbBtFVugOaoRBvGZO+P14frA5WAKwyQRaO/O7HBnw==
+"@hmcts/rpx-xui-common-lib@1.0.8-generic-filter":
+  version "1.0.8-generic-filter"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.0.8-generic-filter.tgz#d5a275bc21914f380873f2598884db2a6da0de5d"
+  integrity sha512-PUGUhmWvAauw3ZezshRrMSe7MaBWDUP8APFrAW1sAVsfViY9RFDHEFrgBPoNu/tFSH/bHkLr4XJkUUI71/juUw==
   dependencies:
     tslib "^1.9.0"
 
@@ -1060,11 +1060,6 @@
   version "13.1.8"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-13.1.8.tgz#1d590429fe8187a02707720ecf38a6fe46ce294b"
   integrity sha512-6XzyyNM9EKQW4HKuzbo/CkOIjn/evtCmsU+MUM1xDfJ+3/rNjBttM1NgN7AOQvN6tP1Sl1D1PIKMreTArnxM9A==
-
-"@types/node@12.12.2":
-  version "12.12.2"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.2.tgz#e84a8a664633a7615645b1b2dc0cfddb2e564b02"
-  integrity sha512-Dt624lmxSFhjor3/QoBAJyqKbPgPnJETqG+eUSxOYwwq5HeHh9hel1c4YAcFmCsClMESmMqcTBbfkjWK+ytCsg==
 
 "@types/node@>=10.0.0":
   version "15.6.1"

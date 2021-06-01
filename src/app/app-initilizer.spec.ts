@@ -1,5 +1,3 @@
-import { CommonLibraryModuleConfig } from '@hmcts/rpx-xui-common-lib/lib/module.config';
-import { EnvironmentConfig } from '../models/environmentConfig.model';
 import {Store} from '@ngrx/store';
 import * as fromApp from './store';
 
@@ -11,6 +9,6 @@ describe('initApplication', () => {
 
   it('should return a function', () => {
 
-    expect(initApplication(storeSpy, {} as EnvironmentConfig, {} as CommonLibraryModuleConfig)).toEqual(jasmine.any(Function));
+    expect(initApplication(storeSpy)).toEqual(jasmine.any(Function));
   });
 });

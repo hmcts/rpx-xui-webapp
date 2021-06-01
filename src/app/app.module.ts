@@ -40,7 +40,6 @@ import { ExuiCommonLibModule, FeatureToggleService, LaunchDarklyService, Timeout
 import { PaymentLibModule } from '@hmcts/ccpay-web-component';
 import { ENVIRONMENT_CONFIG, EnvironmentConfig } from '../models/environmentConfig.model';
 import { CaseShareService } from './services/case/share-case.service';
-import { CommonLibraryModuleConfig } from '@hmcts/rpx-xui-common-lib';
 
 export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): string {
   return envConfig.launchDarklyClientId || '';
@@ -81,7 +80,7 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
     {
       provide: APP_INITIALIZER,
       useFactory: initApplication,
-      deps: [Store, ENVIRONMENT_CONFIG, CommonLibraryModuleConfig],
+      deps: [Store, ENVIRONMENT_CONFIG],
       multi: true
     },
     CryptoWrapper,

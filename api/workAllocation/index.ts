@@ -59,7 +59,7 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
 /**
  * Post to search for a Task.
  */
- export async function searchTask(req: EnhancedRequest, res: Response, next: NextFunction) {
+export async function searchTask(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
     const postTaskPath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
     const searchRequest = req.body.searchRequest;
@@ -69,7 +69,6 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
     if (data) {
       assignActionsToTasks(data.tasks, req.body.view);
     }
-
     // Send the (possibly modified) data back in the Response.
     res.send(data);
   } catch (error) {

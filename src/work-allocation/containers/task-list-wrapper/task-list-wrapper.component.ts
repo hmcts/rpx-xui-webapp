@@ -14,6 +14,7 @@ import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../..
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { AppConstants } from '../../../app/app.constants';
+import { mergeMap } from 'rxjs/operators';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html'
@@ -188,7 +189,7 @@ export class TaskListWrapperComponent implements OnInit {
   public getSearchTaskRequest(): SearchTaskRequest {
     return {
       search_parameters: [],
-      sorting_parameters: [this.getSortParameter()]
+      sorting_parameters: [this.getSortParameter()],
     };
   }
 
@@ -261,31 +262,16 @@ export class TaskListWrapperComponent implements OnInit {
   private doLoad(): void {
     this.showSpinner$ = this.loadingService.isLoading;
     const loadingToken = this.loadingService.register();
-    this.isPaginationEnabled$.subscribe(enabled => {
-      if(enabled) {
-        this.performSearchPagination().subscribe(result => {
-          this.loadingService.unregister(loadingToken)
-          this.tasks = result.tasks;
-          this.tasksTotal = result.total_records;
-          this.tasks.forEach(task => task.assigneeName = getAssigneeName(this.caseworkers, task.assignee));
-          this.ref.detectChanges();
-        }, error => {
-          this.loadingService.unregister(loadingToken)
-          handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
-        });
-      } else {
-        this.performSearch().subscribe(result => {
-          this.loadingService.unregister(loadingToken)
-          this.tasks = result.tasks;
-          this.tasksTotal = result.total_records;
-          this.tasks.forEach(task => task.assigneeName = getAssigneeName(this.caseworkers, task.assignee));
-          this.ref.detectChanges();
-        }, error => {
-          this.loadingService.unregister(loadingToken)
-          handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
-        });
-      }
-    })
+    this.isPaginationEnabled$.pipe(mergeMap(enabled => enabled ? this.performSearchPagination() : this.performSearch())).subscribe(result => {
+        this.loadingService.unregister(loadingToken);
+        this.tasks = result.tasks;
+        this.tasksTotal = result.total_records;
+        this.tasks.forEach(task => task.assigneeName = getAssigneeName(this.caseworkers, task.assignee));
+        this.ref.detectChanges();
+      }, error => {
+        this.loadingService.unregister(loadingToken);
+        handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
+    });
     // Should this clear out the existing set first?
   }
 

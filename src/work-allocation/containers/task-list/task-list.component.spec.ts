@@ -95,7 +95,6 @@ describe('TaskListComponent', () => {
       page_number: 1,
       page_size: 10
     };
-
     mockWorkAllocationService.getTask.and.returnValue(of({}));
     mockLoadingService.isLoading = of(false);
     fixture.detectChanges();

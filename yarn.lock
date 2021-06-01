@@ -446,10 +446,10 @@
   dependencies:
     tslib "^1.9.0"
 
-"@hmcts/frontend@0.0.39-alpha":
-  version "0.0.39-alpha"
-  resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.39-alpha.tgz#782d4a4698dae040dd72b26711f04a8d8299d25c"
-  integrity sha512-M1364rFLuvktYz5+jVjJ5ZmNUx0/SgoAvH3RsIaT2wFqFf92emuiRyXqax5oSEC5kM9Jpw0rcxEcRbBJWMoglg==
+"@hmcts/frontend@0.0.50-alpha":
+  version "0.0.50-alpha"
+  resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.50-alpha.tgz#4c1f1bc87312a2929ac60e54cdd3fc28782b98f9"
+  integrity sha512-can9fxgQxw0ihRvjvz/+O7xbG0OiQbTcs3CCMQct41a2BPC6iIja3vgwNIy5TD2Vt52kYUq+fg2HGGybyjprTg==
 
 "@hmcts/media-viewer@2.7.0":
   version "2.7.0"
@@ -492,10 +492,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@0.2.6":
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-0.2.6.tgz#538397a664ac179a78578459778ec38c043941be"
-  integrity sha512-bDkM9QtyW04q+RJ0TLLzj3GkY63TDpb8N8XzaV262nARszKv80rB+Dnh/oDL2kdHadDpQkftIoH7dt2dGNHPDQ==
+"@hmcts/rpx-xui-common-lib@1.0.8-generic-filter":
+  version "1.0.8-generic-filter"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.0.8-generic-filter.tgz#d5a275bc21914f380873f2598884db2a6da0de5d"
+  integrity sha512-PUGUhmWvAauw3ZezshRrMSe7MaBWDUP8APFrAW1sAVsfViY9RFDHEFrgBPoNu/tFSH/bHkLr4XJkUUI71/juUw==
   dependencies:
     tslib "^1.9.0"
 
@@ -1060,11 +1060,6 @@
   version "13.1.8"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-13.1.8.tgz#1d590429fe8187a02707720ecf38a6fe46ce294b"
   integrity sha512-6XzyyNM9EKQW4HKuzbo/CkOIjn/evtCmsU+MUM1xDfJ+3/rNjBttM1NgN7AOQvN6tP1Sl1D1PIKMreTArnxM9A==
-
-"@types/node@12.12.2":
-  version "12.12.2"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.2.tgz#e84a8a664633a7615645b1b2dc0cfddb2e564b02"
-  integrity sha512-Dt624lmxSFhjor3/QoBAJyqKbPgPnJETqG+eUSxOYwwq5HeHh9hel1c4YAcFmCsClMESmMqcTBbfkjWK+ytCsg==
 
 "@types/node@>=10.0.0":
   version "15.6.1"

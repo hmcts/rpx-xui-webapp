@@ -74,6 +74,14 @@ export interface Caseworker {
   location: Location;
 }
 
+export interface Judicialworker {
+  firstName: string;
+  lastName: string;
+  idamId: string;
+  email: string;
+  location: Location;
+}
+
 export interface CaseworkerApi {
   first_name: string;
   last_name: string;

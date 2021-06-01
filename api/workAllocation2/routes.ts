@@ -1,15 +1,16 @@
 import { Router } from 'express';
 
 import {
-    getAllCaseWorkers,
-    getAllCaseWorkersForLocation,
-    getCaseWorkersForLocationAndService,
-    getCaseWorkersForService,
-    getTask,
-    postTaskAction,
-    postTaskSearchForCompletable,
-    searchCaseWorker,
-    searchTask,
+  getAllCaseWorkers,
+  getAllCaseWorkersForLocation,
+  getAllJudicialWorkers,
+  getCaseWorkersForLocationAndService,
+  getCaseWorkersForService,
+  getTask,
+  postTaskAction,
+  postTaskSearchForCompletable,
+  searchCaseWorker,
+  searchTask,
 } from '.';
 import authInterceptor from '../lib/middleware/auth';
 import { getLocationById, getLocations } from './locationController';
@@ -30,6 +31,8 @@ router.use('/caseworker/location/:locationId', getAllCaseWorkersForLocation);
 router.use('/caseworker/service/:serviceId', getCaseWorkersForService);
 router.use('/caseworker/search', searchCaseWorker);
 router.use('/caseworker', getAllCaseWorkers);
+
+router.use('/judicialworker', getAllJudicialWorkers);
 
 router.use('/searchForCompletable', postTaskSearchForCompletable);
 

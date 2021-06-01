@@ -3,6 +3,7 @@ import { handleGet, handlePost } from '../common/mockService';
 import { getConfigValue } from '../configuration';
 import {
   SERVICES_CASE_CASEWORKER_REF_PATH,
+  SERVICES_CASE_JUDICIALWORKER_REF_PATH,
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
   SERVICES_WORK_ALLOCATION_TASK_API_PATH
 } from '../configuration/references';
@@ -16,7 +17,7 @@ import {
   handlePostRoleAssingnments,
   handlePostSearch
 } from './caseWorkerService';
-import { Caseworker } from './interfaces/task';
+import { Caseworker, Judicialworker } from './interfaces/task';
 import * as mock from './taskService.mock';
 import {
   assignActionsToTasks,
@@ -37,6 +38,7 @@ mock.init();
 
 export const baseWorkAllocationTaskUrl = getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH);
 export const baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);
+export const baseJudicialWorkerRefUrl = getConfigValue(SERVICES_CASE_JUDICIALWORKER_REF_PATH);
 export const baseRoleAssignmentUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
 export const baseUrl: string = 'http://localhost:8080';
 
@@ -141,6 +143,34 @@ export async function retrieveAllCaseWorkers(req: EnhancedRequest, res: Response
   const caseWorkerReferenceData = mapCaseworkerData(userResponse.data);
   req.session.caseworkers = caseWorkerReferenceData;
   return caseWorkerReferenceData;
+}
+
+/**
+ * Get All JudicialWorkers
+ */
+export async function getAllJudicialWorkers(req: EnhancedRequest, res: Response, next: NextFunction) {
+  try {
+    const judicialworkers: Judicialworker[] = await retrieveAllJudicialWorkers(req, res);
+    res.status(200);
+    res.send(judicialworkers);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function retrieveAllJudicialWorkers(req: EnhancedRequest, res: Response): Promise<Judicialworker[]> {
+  if (req.session && req.session.judicialWorkers) {
+    return req.session.judicialWorkers;
+  }
+  const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
+  const payload = prepareRoleApiRequest();
+  const {data} = await handlePostRoleAssingnments(roleApiPath, payload, req);
+  const userIds = getUserIdsFromRoleApiResponse(data);
+  const userUrl = `${baseJudicialWorkerRefUrl}/judicialworkers/`;
+  // const userResponse = await handlePostJudicialWorkersRefData(userUrl, userIds, req);
+  const userResponse = await handlePost(userUrl, userIds, req);
+  req.session.judicialWorkers = userResponse.data;
+  return userResponse.data;
 }
 
 /**

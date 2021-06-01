@@ -77,6 +77,22 @@ export class MonitoringService implements IMonitoringService {
     });
   }
 
+  disableCookies() {
+    this.http.get('/api/monitoring-tools').subscribe(it => {
+      this.config = {
+        // tslint:disable-next-line: no-string-literal
+        instrumentationKey: it['key'],
+        isCookieUseDisabled: true,
+        isStorageUseDisabled: true,
+        enableSessionStorageBuffer: true
+      };
+      if (!this.appInsights.config) {
+        this.appInsights.clearAuthenticatedUserContext();
+        this.appInsights.downloadAndSetup(this.config);
+      }
+    });
+  }
+
   private send(func: () => any): void {
     if (this.config && this.config.instrumentationKey) {
       func();

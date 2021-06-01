@@ -80,4 +80,7 @@ export class LoggerService implements ILoggerService {
         }
         return `Message - ${message}, Timestamp - ${Date.now()}`;
     }
+    public disableCookies(): void {
+        this.monitoringService.disableCookies();
+    }
 }

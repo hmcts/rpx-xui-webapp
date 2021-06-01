@@ -97,6 +97,20 @@ export const CASEWORKER_MY_TASKS = {
   ],
 };
 
+export const JUDICIAL_WORKERS = [
+  {
+    "email": "CWR-func-test-user1-#s@justice.gov.uk",
+    "firstName": "IAC",
+    "idamId": "998db99b-08aa-43d4-bc6b-0aabbb0e3c6f",
+    "lastName": "CW2",
+    "location": {
+      "id": 231596,
+      "locationName": "Birmingham"
+    }
+  }
+]
+
+// TODO: Assignee should be removed from all available tasks (otherwise they are unavailable)
 export const JUDICIAL_AVAILABLE_TASKS = {
   tasks: [
     {

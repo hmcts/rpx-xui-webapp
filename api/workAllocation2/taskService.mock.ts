@@ -6,7 +6,7 @@ import {
   CASEWORKER_AVAILABLE_TASKS,
   CASEWORKER_MY_TASKS,
   JUDICIAL_AVAILABLE_TASKS,
-  JUDICIAL_MY_TASKS
+  JUDICIAL_MY_TASKS, JUDICIAL_WORKERS
 } from './constants/mock.data';
 
 // random generator
@@ -51,6 +51,16 @@ export const init = () => {
   const claimTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/claim/;
   // tslint:disable-next-line:max-line-length
   const unclaimTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/unclaim/;
+
+  const judicialWorkersUrl = /http:\/\/rd-judicialworker-ref-api-aat.service.core-compute-aat.internal\/judicialworkers/;
+
+  mock.onPost(judicialWorkersUrl).reply(() => {
+    // return an array in the form of [status, data, headers]
+    return [
+      200,
+      JUDICIAL_WORKERS,
+    ];
+  });
 
   // simulate some error if needed
   // mock.onGet(url).networkErrorOnce()

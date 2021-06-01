@@ -69,7 +69,7 @@
     "@angular/router": "^7.2.13",
     "@hmcts/ccd-case-ui-toolkit": "3.1.4-activity-tracker",
     "@hmcts/ccpay-web-component": "3.0.3",
-    "@hmcts/frontend": "0.0.39-alpha",
+    "@hmcts/frontend": "0.0.50-alpha",
     "@hmcts/media-viewer": "2.7.0",
     "@hmcts/nodejs-healthcheck": "^1.7.0",
     "@hmcts/properties-volume": "^0.0.9",
@@ -130,7 +130,7 @@
     "tslib": "^1.9.0",
     "web-animations-js": "^2.3.2",
     "xlsx": "^0.15.4",
-    "zone.js": "~0.11.3"
+    "zone.js": "~0.8.26"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.13.0",
@@ -161,7 +161,6 @@
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",
     "@types/mocha": "^8.0.3",
-    "@types/node": "12.12.2",
     "@types/shortid": "0.0.29",
     "@types/sinon": "^7.0.13",
     "base-64": "^0.1.0",
@@ -177,7 +176,7 @@
     "jasmine-marbles": "^0.5.0",
     "jasmine-spec-reporter": "~4.2.1",
     "jsonwebtoken": "^8.5.1",
-    "karma": "~6.0.0",
+    "karma": "~4.0.0",
     "karma-chrome-launcher": "~2.2.0",
     "karma-coverage-istanbul-reporter": "~2.0.1",
     "karma-jasmine": "~1.1.2",

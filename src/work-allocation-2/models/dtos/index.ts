@@ -18,6 +18,14 @@ export interface Caseworker {
   location: Location;
 }
 
+export interface JudicialWorker {
+  idamId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  location: Location;
+}
+
 export interface LocationSummary {
   id: string;
   locationName: string;

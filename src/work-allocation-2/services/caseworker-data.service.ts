@@ -8,7 +8,7 @@ import { Caseworker } from '../models/dtos';
 
 @Injectable({ providedIn: 'root' })
 export class CaseworkerDataService {
-  public static caseWorkerUrl: string = '/workallocation/caseworker';
+  public static caseWorkerUrl: string = '/workallocation2/caseworker';
   public static caseworkersKey: string = 'caseworkers';
   public constructor(private readonly http: HttpClient, private readonly sessionStorageService: SessionStorageService) {}
 

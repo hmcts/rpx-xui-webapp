@@ -171,4 +171,27 @@ describe('AppComponent', () => {
     expect(featureToggleService.initialize).toHaveBeenCalled();
     expect(timeoutNotificationService.initialise).toHaveBeenCalled();
   });
+
+  it('loadAndListenForUserDetails', () => {
+    appComponent.loadAndListenForUserDetails();
+    environmentService.config$.and.returnValue(of({launchDarklyClientId: '4452'}));
+    const userDetails = {
+      sessionTimeout: {
+        idleModalDisplayTime: 23434,
+        totalIdleTime: 23,
+      },
+      canShareCases: false,
+      userInfo: {
+        id: '1232',
+        forename: 'foreName',
+        surname: 'surname',
+        email: 'email@name.com',
+        active: true,
+        roles: ['role1', 'rol3'],
+        uid: '23435'
+      }
+    };
+    store.pipe.and.returnValue(of(userDetails));
+    expect(store.pipe).toHaveBeenCalled();
+  });
 });

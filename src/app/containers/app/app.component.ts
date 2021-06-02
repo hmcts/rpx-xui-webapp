@@ -70,10 +70,9 @@ export class AppComponent implements OnInit {
   public loadAndListenForUserDetails() {
     this.store.dispatch(new fromRoot.LoadUserDetails());
     const userDetails$ = this.store.pipe(select(fromRoot.getUserDetails));
-    const both$ = combineLatest(this.environmentService.config$, userDetails$);
-    both$.subscribe(both => {
-      console.log(both[0]);
-      this.userDetailsHandler(both[0].launchDarklyClientId, both[1]);
+    const envConfigAndUserDetails$ = combineLatest([this.environmentService.config$, userDetails$]);
+    envConfigAndUserDetails$.subscribe(envConfigAndUserDetails => {
+      this.userDetailsHandler(envConfigAndUserDetails[0].launchDarklyClientId, envConfigAndUserDetails[1]);
     });
   }
 

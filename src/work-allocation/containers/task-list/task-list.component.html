@@ -1,12 +1,17 @@
-<div *ngIf="pagination" class="pagination-top" attr.aria-label="{{ tasksTotal }} results have been found" role="status">
+<div *ngIf="pagination; else tableSummary" class="pagination-top" attr.aria-label="{{ tasksTotal }} results have been found" role="status">
   <span class="text-16" id="search-result-summary__text">Displaying
       <span class="govuk-!-font-weight-bold">{{ getFirstResult() }}</span>
       -
       <span class="govuk-!-font-weight-bold">{{ getLastResult() }}</span>
       out of
-      <span class="govuk-!-font-weight-bold">{{ tasksTotal }}</span>
-      tasks</span>
+      <span class="govuk-!-font-weight-bold">{{ tasksTotal || 0 }}</span>
+      tasks.</span>
 </div>
+
+<ng-template #tableSummary>
+  <div class="pagination-top" attr.aria-label="{{ tasksTotal }} results have been found" role="status">
+    <span class="text-16" id="search-result-summary__text">Displaying <span class="govuk-!-font-weight-bold">{{ tasksTotal || 0 }} </span>tasks.</span></div>
+</ng-template>
 
 <!-- Using the Angular Component Development Kit Table Module, and not Angular Material -->
 <table cdk-table [dataSource]="dataSource$" class="govuk-table" [multiTemplateDataRows]="true">

@@ -187,12 +187,15 @@ export class TaskListComponent implements OnChanges {
     return (this.pagination ? this.pagination.page_number : 1) - 1;
   }
 
+  private getCurrentTaskCount(): number {
+    return this.tasks ? this.tasks.length : 0;
+  }
+
   public getFirstResult(): number {
-    return ((this.getCurrentPageIndex() * this.pagination.page_size) + 1);
+    return ((this.getCurrentPageIndex() * this.pagination.page_size) + (this.tasks ? 1 : 0));
   }
 
   public getLastResult(): number {
-    const taskCount = this.tasks ? this.tasks.length : 0;
-    return ((this.getCurrentPageIndex() * this.pagination.page_size) + taskCount);
+    return ((this.getCurrentPageIndex() * this.pagination.page_size) + this.getCurrentTaskCount());
   }
 }

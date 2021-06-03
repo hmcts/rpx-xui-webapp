@@ -4,7 +4,7 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {AlertService, LoadingService, PaginationModule} from '@hmcts/ccd-case-ui-toolkit';
-import {ExuiCommonLibModule} from '@hmcts/rpx-xui-common-lib';
+import {ExuiCommonLibModule, FeatureToggleService} from '@hmcts/rpx-xui-common-lib';
 import {of} from 'rxjs';
 import {SessionStorageService} from 'src/app/services';
 
@@ -34,6 +34,7 @@ describe('MyTasksComponent', () => {
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
+  const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -50,7 +51,8 @@ describe('MyTasksComponent', () => {
         {provide: AlertService, useValue: mockAlertService},
         {provide: SessionStorageService, useValue: mockSessionStorageService},
         {provide: CaseworkerDataService, useValue: mockCaseworkerService},
-        { provide: LoadingService, useValue: mockLoadingService }
+        { provide: LoadingService, useValue: mockLoadingService },
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService }
       ]
     }).compileComponents();
   }));
@@ -59,16 +61,18 @@ describe('MyTasksComponent', () => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
+    component.isPaginationEnabled$ = of(false);
     router = TestBed.get(Router);
     const tasks: Task[] = getMockTasks();
     mockTaskService.searchTask.and.returnValue(of({tasks}));
     mockCaseworkerService.getAll.and.returnValue(of([]));
+    mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     fixture.detectChanges();
   });
 
 
   it('should make a call to load tasks using the default search request', () => {
-    const searchRequest = component.getSearchTaskRequest();
+    const searchRequest = component.getSearchTaskRequestPagination();
     const payload = {searchRequest, view: component.view};
     expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
     expect(component.tasks).toBeDefined();
@@ -103,7 +107,7 @@ describe('MyTasksComponent', () => {
     button.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
-    const searchRequest = component.getSearchTaskRequest();
+    const searchRequest = component.getSearchTaskRequestPagination();
     // Make sure the search request looks right.
     expect(searchRequest.search_parameters.length).toEqual(1);
     expect(searchRequest.search_parameters[0].key).toEqual('user');
@@ -120,7 +124,7 @@ describe('MyTasksComponent', () => {
     button.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
-    const newSearchRequest = component.getSearchTaskRequest();
+    const newSearchRequest = component.getSearchTaskRequestPagination();
     // Make sure the search request looks right.
     expect(newSearchRequest.search_parameters.length).toEqual(1);
     expect(newSearchRequest.search_parameters[0].key).toEqual('user');

@@ -56,11 +56,30 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
     next(error);
   }
 }
-
 /**
  * Post to search for a Task.
  */
 export async function searchTask(req: EnhancedRequest, res: Response, next: NextFunction) {
+  try {
+    const postTaskPath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
+    const searchRequest = req.body.searchRequest;
+    const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
+    res.status(status);
+    // Assign actions to the tasks on the data from the API.
+    if (data) {
+      assignActionsToTasks(data.tasks, req.body.view);
+    }
+    // Send the (possibly modified) data back in the Response.
+    res.send(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * Post to search for a Task.
+ */
+export async function searchTaskWithPagination(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
     const basePath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
     const postTaskPath = preparePaginationUrl(req, basePath);

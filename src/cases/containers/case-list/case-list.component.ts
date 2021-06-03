@@ -14,7 +14,7 @@ import { DefinitionsService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/servi
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
 import { select, Store } from '@ngrx/store';
-import { BehaviorSubject, combineLatest, forkJoin, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import * as fromRoot from '../../../app/store';
@@ -155,7 +155,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
     this.elasticSearchFlagSubsription = this.featureToggleService.isEnabled('elastic-search').subscribe(value => this.elasticSearchFlag = value);
     this.userDetails = this.store.pipe(select(fromRoot.getUserDetails));
-    this.pIsCaseShareVisible$ = forkJoin([
+    this.pIsCaseShareVisible$ = combineLatest([
       this.userDetails, this.shareableJurisdictions$, this.jurisdiction$
     ]).mergeMap(project => {
       this.cd.detectChanges();

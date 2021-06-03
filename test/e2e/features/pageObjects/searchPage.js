@@ -36,8 +36,11 @@ class SearchPage {
   }
 
   async _waitForSearchComponent() {
-    await BrowserWaits.waitForElement(this.searchFilterContainer);
-    await this.waitForSpinnerToDissappear();
+    await BrowserWaits.retryWithActionCallback(async () => {
+      await BrowserWaits.waitForElement(this.searchFilterContainer);
+      await this.waitForSpinnerToDissappear();
+    }, "Wait for search page, search input form to display");
+    
   }
 
   async waitForSpinnerToDissappear() {

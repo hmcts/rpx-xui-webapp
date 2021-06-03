@@ -415,10 +415,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@3.1.5-datetime-picker-validation-2":
-  version "3.1.5-datetime-picker-validation-2"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-3.1.5-datetime-picker-validation-2.tgz#434349c0afa331b0821d9851203d57ad27161254"
-  integrity sha512-OzE6DOZ1XmOK5EQ2m6KfF7G8zxg+lq96jUxGOmMLvy3P1BKvivQiDXzLeDMTab90EivuHBa+5Q0/WrpcvIv2/g==
+"@hmcts/ccd-case-ui-toolkit@3.1.5-datetime-picker-validation-3":
+  version "3.1.5-datetime-picker-validation-3"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-3.1.5-datetime-picker-validation-3.tgz#4b38a15636f236e341227d5c0c91c835052d27e9"
+  integrity sha512-nqxJEJoJKVLrnIS8Yt/RHMOhmAiLH6yw3jljQErZA/lLmQFrwGHIj1gwH66XJnyzxZdPxBimhxN2jzrjnVMhcA==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

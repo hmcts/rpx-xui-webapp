@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router, RoutesRecognized } from '@angular/router';
-import { CookieService, FeatureToggleService, GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
+import { FeatureToggleService, GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { LoggerService } from '../../services/logger/logger.service';
@@ -37,7 +37,6 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly router: Router,
     private readonly titleService: Title,
     private readonly featureToggleService: FeatureToggleService,
-    private readonly cookieService: CookieService,
     private readonly loggerService: LoggerService,
   ) {
 
@@ -125,16 +124,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.userId = userId;
     if (this.userId) { // check if cookie selection has been made *after* user id is available
       this.cookieName = `hmcts-exui-cookies-${this.userId}-mc-accepted`;
-      this.cookieState(this.cookieName);  
       this.setCookieBannerVisibility();
-    }
-  }
-
-  public cookieState(cookie: string): void {
-    const cookieValue = this.cookieService.getCookie(cookie) === 'true' ? true : false;
-
-    if (!cookieValue) {
-      this.notifyThirdParties();
     }
   }
 

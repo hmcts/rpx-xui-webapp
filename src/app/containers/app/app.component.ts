@@ -132,6 +132,8 @@ export class AppComponent implements OnInit, OnDestroy {
     // AppInsights
     this.loggerService.disableCookies();
     // Google Analytics
+    window[`ga-disable-${config.googleTagManagerKey}`] = true;
+    window[`ga-disable-UA${config.googleAnalyticsKey}`] = true;
     // DynaTrace
   }
 

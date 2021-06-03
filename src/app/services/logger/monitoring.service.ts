@@ -86,10 +86,8 @@ export class MonitoringService implements IMonitoringService {
         isStorageUseDisabled: true,
         enableSessionStorageBuffer: true
       };
-      if (!this.appInsights.config) {
-        this.appInsights.clearAuthenticatedUserContext();
-        this.appInsights.downloadAndSetup(this.config);
-      }
+      this.appInsights.clearAuthenticatedUserContext();
+      this.appInsights.downloadAndSetup(this.config);
     });
   }
 

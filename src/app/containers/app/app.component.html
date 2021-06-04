@@ -1,4 +1,10 @@
-<xuilib-cookie-banner [identifier]="cookieName" [appName]="'MyHMCTS'" *ngIf="isCookieBannerVisible" (notifier)="notifyThirdParties()"></xuilib-cookie-banner>
+<xuilib-cookie-banner 
+  [identifier]="cookieName"
+  [appName]="'MyHMCTS'"
+  *ngIf="isCookieBannerVisible"
+  (acceptanceNotifier)="notifyAcceptance()"
+  (rejectionNotifier)="notifyRejection()"
+></xuilib-cookie-banner>
 
 <router-outlet></router-outlet>
 

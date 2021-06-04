@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router, RoutesRecognized } from '@angular/router';
-import { FeatureToggleService, GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
+import { CookieService, FeatureToggleService, GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { LoggerService } from '../../services/logger/logger.service';
@@ -38,9 +38,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly titleService: Title,
     private readonly featureToggleService: FeatureToggleService,
     private readonly loggerService: LoggerService,
+    private readonly cookieService: CookieService,
   ) {
-
-    this.googleTagManagerService.init(config.googleTagManagerKey);
 
     this.router.events.subscribe((data) => {
       if (data instanceof RoutesRecognized) {
@@ -128,13 +127,23 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  public notifyThirdParties() {
+  public notifyAcceptance() {
+    console.log('accept');
+    this.googleTagManagerService.init(config.googleTagManagerKey);
+  }
+
+  public notifyRejection() {
+    console.log('reject');
     // AppInsights
     this.loggerService.disableCookies();
+    this.cookieService.deleteCookieByPartialMatch('ai_');
     // Google Analytics
+    this.cookieService.deleteCookieByPartialMatch('_ga_');
+    this.cookieService.deleteCookieByPartialMatch('_gid');
     window[`ga-disable-${config.googleTagManagerKey}`] = true;
-    window[`ga-disable-UA${config.googleAnalyticsKey}`] = true;
+    window[`ga-disable-UA-${config.googleAnalyticsKey}`] = true;
     // DynaTrace
+    this.cookieService.deleteCookieByPartialMatch('rxVisitor');
   }
 
   /**

@@ -1,5 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import * as faker from 'faker/locale/en_GB';
+import { postAssignCasesToUsers } from 'test/pact/pactUtil';
 import { httpMock } from '../common/httpMock';
 import {
   ALL_TASKS,
@@ -64,35 +65,55 @@ export const init = () => {
 
   // simulate some error if needed
   // mock.onGet(url).networkErrorOnce()
-  mock.onPost(judicialMyTaskUrl).reply(() => {
+  mock.onPost(judicialMyTaskUrl).reply(config => {
     // return an array in the form of [status, data, headers]
+    const body = JSON.parse(config.data);
+    const paginationConfig = body.pagination_parameters;
     return [
       200,
-      JUDICIAL_MY_TASKS,
+      {
+        tasks: paginate(JUDICIAL_MY_TASKS.tasks, paginationConfig.page_number, paginationConfig.page_size),
+        total_records: JUDICIAL_MY_TASKS.tasks.length,
+      },
     ];
   });
 
-  mock.onPost(judicialAvailableTaskUrl).reply(() => {
+  mock.onPost(judicialAvailableTaskUrl).reply(config => {
     // return an array in the form of [status, data, headers]
+    const body = JSON.parse(config.data);
+    const paginationConfig = body.pagination_parameters;
     return [
       200,
-      JUDICIAL_AVAILABLE_TASKS,
+      {
+        tasks: paginate(JUDICIAL_AVAILABLE_TASKS.tasks, paginationConfig.page_number, paginationConfig.page_size),
+        total_records: JUDICIAL_AVAILABLE_TASKS.tasks.length,
+      },
     ];
   });
 
-  mock.onPost(caseworkerMyTaskUrl).reply(() => {
+  mock.onPost(caseworkerMyTaskUrl).reply(config => {
     // return an array in the form of [status, data, headers]
+    const body = JSON.parse(config.data);
+    const paginationConfig = body.pagination_parameters;
     return [
       200,
-      CASEWORKER_MY_TASKS,
+      {
+        tasks: paginate(CASEWORKER_MY_TASKS.tasks, paginationConfig.page_number, paginationConfig.page_size),
+        total_records: CASEWORKER_MY_TASKS.tasks.length,
+      },
     ];
   });
 
-  mock.onPost(caseworkerAvailableTaskUrl).reply(() => {
+  mock.onPost(caseworkerAvailableTaskUrl).reply(config => {
     // return an array in the form of [status, data, headers]
+    const body = JSON.parse(config.data);
+    const paginationConfig = body.pagination_parameters;
     return [
       200,
-      CASEWORKER_AVAILABLE_TASKS,
+      {
+        tasks: paginate(CASEWORKER_AVAILABLE_TASKS.tasks, paginationConfig.page_number, paginationConfig.page_size),
+        total_records: CASEWORKER_AVAILABLE_TASKS.tasks.length,
+      },
     ];
   });
 
@@ -121,4 +142,8 @@ export const init = () => {
       'success',
     ];
   });
+};
+
+export const paginate = (array: any[], pageNumber: number, pageSize: number): any[] => {
+  return array.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
 };

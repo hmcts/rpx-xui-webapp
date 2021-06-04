@@ -110,7 +110,6 @@ export const JUDICIAL_WORKERS = [
   }
 ]
 
-// TODO: Assignee should be removed from all available tasks (otherwise they are unavailable)
 export const JUDICIAL_AVAILABLE_TASKS = {
   tasks: [
     {

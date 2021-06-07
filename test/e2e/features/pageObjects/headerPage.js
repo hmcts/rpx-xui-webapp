@@ -104,6 +104,7 @@ function HeaderPage() {
     await BrowserWaits.retryWithActionCallback(async () => {
       const primaryTabs = this.getPrimaryTabsDisplayed();
       const tabEle = this.getTabElementWithText(tabText).click();
+      await BrowserUtil.waitForLD();
       if (tabEle) {
         await tabEle.click();
       } else {

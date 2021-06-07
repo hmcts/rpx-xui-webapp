@@ -83,7 +83,8 @@ const config = {
             '../support/hooks.js',
             '../support/world.js',
             '../support/*.js',
-            '../features/step_definitions/*.steps.js'
+            '../features/step_definitions/*.steps.js',
+            '../features/step_definitions/**/*.steps.js'
         ]    },
 
     plugins: [

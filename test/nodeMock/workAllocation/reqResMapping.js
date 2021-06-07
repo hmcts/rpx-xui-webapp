@@ -6,6 +6,9 @@ module.exports = {
         '/workallocation/location': (req, res) => {
             res.send(workAllocationMockData.getLocationList(20));
         },
+        '/workallocation2/location': (req, res) => {
+            res.send(workAllocationMockData.getLocationList(20));
+        },
         '/workallocation/location/:locationId': (req, res) => {
             res.send(workAllocationMockData.getLocation(req.params.locationId));
         },
@@ -13,6 +16,9 @@ module.exports = {
             res.status(200).send(workAllocationMockData.getTaskDetails());
         },
         '/workallocation/caseworker': (req, res) => {
+            res.send(workAllocationMockData.getCaseworkersList(20));
+        },
+        '/workallocation2/caseworker': (req, res) => {
             res.send(workAllocationMockData.getCaseworkersList(20));
         },
         '/workallocation/caseworker/location/:locId': (req, res) => {

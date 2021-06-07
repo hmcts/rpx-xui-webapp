@@ -1,7 +1,7 @@
 var { defineSupportCode } = require('cucumber');
 
 const MockApp = require('../../../nodeMock/app');
-
+const BrowserWaits = require('../../../e2e/support/customWaits');
 const browserUtil = require('../../util/browserUtil');
 const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
 const CucumberReporter = require('../../../e2e/support/reportLogger');
@@ -52,5 +52,23 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             res.send(userDetails);
         });
      });
+
+    Given('I set MOCK request {string} intercept with reference {string}', async function(url,reference){
+        MockApp.addIntercept(url,(req,res,next) => {
+            global.scenarioData[reference] = req.body;
+            next();
+        })
+     });
+
+     Given('I reset reference {string} value to null', async function(reference){
+         global.scenarioData[reference] = null;
+     });
+
+     When('I wait for reference {string} value not null', async function(reference){
+         await BrowserWaits.waitForConditionAsync(async () => {
+             return global.scenarioData[reference] !== null
+         },10000);
+     });
+
 
 });

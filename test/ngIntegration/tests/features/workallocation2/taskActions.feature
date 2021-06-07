@@ -1,4 +1,4 @@
-@ng @test
+
 Feature: Release 2 Task actions
 
     Background: Mock and browser setup

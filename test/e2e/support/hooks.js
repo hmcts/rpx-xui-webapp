@@ -123,6 +123,11 @@ defineSupportCode(({ Before,After }) => {
             }
         }catch(err) {
             CucumberReportLog.AddMessage("Error in hooks with browserlogs or screenshots. See error details : " + err);
-        }        
+        }     
+        
+        await browser.executeScript('window.sessionStorage.clear();');
+        await browser.executeScript('window.localStorage.clear();');
+        await browser.manage().deleteAllCookies();
+
     });
 });

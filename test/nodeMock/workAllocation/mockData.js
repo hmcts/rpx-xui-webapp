@@ -72,13 +72,13 @@ class WorkAllocationMockData {
         return { tasks: tasks };
     }
 
-    getCaseworkersList(count) {
-        const caseWorkers = [];
+    getPersonList(count){
+        const persons = [];
         for (let ctr = 0; ctr < count; ctr++) {
-            caseWorkers.push({
+            persons.push({
                 "firstName": "Jane " + ctr,
                 "lastName": "Doe",
-                "idamId": "41a90c39-d756-4eba-8e85-5b5bf56b31f"+ctr,
+                "idamId": "41a90c39-d756-4eba-8e85-5b5bf56b31f" + ctr,
                 "email": "testemail" + ctr + "@testdomain.com",
                 "location": {
                     "id": "a",
@@ -89,7 +89,11 @@ class WorkAllocationMockData {
                 }
             });
         }
-        return caseWorkers;
+        return persons;
+    }
+
+    getCaseworkersList(count) { 
+        return this.getPersonList(count);
     }
 
     getTaskDetails() {

@@ -1,17 +1,17 @@
 
-const taskListPage = require('../pageObjects/workAllocation/taskListPage');
-const taskAssignmentPage = require('../pageObjects/workAllocation/taskAssignmentPage');
-const taskActionPage = require('../pageObjects/workAllocation/taskActionPage');
+const taskListPage = require('../../pageObjects/workAllocation/taskListPage');
+const taskAssignmentPage = require('../../pageObjects/workAllocation/taskAssignmentPage');
+const taskActionPage = require('../../pageObjects/workAllocation/taskActionPage');
 
 
-const taskmanagerPage = require('../pageObjects/workAllocation/taskManagerPage');
+const taskmanagerPage = require('../../pageObjects/workAllocation/taskManagerPage');
 var { defineSupportCode } = require('cucumber');
 
-const reportLogger = require('../../support/reportLogger');
-const Browserutil = require('../../../ngIntegration/util/browserUtil');
-const BrowserWaits = require('../../support/customWaits');
-const SoftAssert = require('../../../ngIntegration/util/softAssert');
-const taskManagerPage = require('../pageObjects/workAllocation/taskManagerPage');
+const reportLogger = require('../../../support/reportLogger');
+const Browserutil = require('../../../../ngIntegration/util/browserUtil');
+const BrowserWaits = require('../../../support/customWaits');
+const SoftAssert = require('../../../../ngIntegration/util/softAssert');
+const taskManagerPage = require('../../pageObjects/workAllocation/taskManagerPage');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 

@@ -128,20 +128,16 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   public notifyAcceptance() {
-    console.log('accept');
     this.googleTagManagerService.init(config.googleTagManagerKey);
   }
 
   public notifyRejection() {
-    console.log('reject');
     // AppInsights
     this.loggerService.disableCookies();
     this.cookieService.deleteCookieByPartialMatch('ai_');
     // Google Analytics
-    this.cookieService.deleteCookieByPartialMatch('_ga_');
+    this.cookieService.deleteCookieByPartialMatch('_ga');
     this.cookieService.deleteCookieByPartialMatch('_gid');
-    window[`ga-disable-${config.googleTagManagerKey}`] = true;
-    window[`ga-disable-UA-${config.googleAnalyticsKey}`] = true;
     // DynaTrace
     this.cookieService.deleteCookieByPartialMatch('rxVisitor');
   }

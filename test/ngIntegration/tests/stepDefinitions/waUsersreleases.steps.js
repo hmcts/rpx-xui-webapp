@@ -53,6 +53,25 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
 
+    Given('I set MOCK with user {string} and roles {string}', async function (useridentifier, roles) {
+        const testUserIdamId = testData.users.filter(testUser => testUser.userIdentifier === useridentifier)[0];
+        if (!testUserIdamId) {
+            throw new Error("Provided user identifer is not configured in test data. " + releaseUer);
+        }
+
+        const userIdamID = testUserIdamId.idamId;
+        await CucumberReporter.AddMessage(`${useridentifier} id ${testUserIdamId.idamId}`);
+
+        roles = roles.split(",");
+        MockApp.onGet("/api/user/details", (req, res) => {
+            const userDetails = nodeAppMock.getUserDetailsWithRolesAndIdamId(roles, userIdamID);
+            CucumberReporter.AddJson(userDetails);
+            res.send(userDetails);
+        });
+
+    });
+
+
     Then('I validate primary navigation tabs for user {string} in release {string}', async function(userType, release){
         await BrowserUtil.stepWithRetry(async () => {
             const softAssert = new SoftAssert(this);

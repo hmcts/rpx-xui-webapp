@@ -47,7 +47,7 @@ class BrowserWaits{
         await browser.wait( condition, this.waitTime);
     }
 
-    async waitForConditionAsync(condition,waitInMillisec){
+    async waitForConditionAsync(condition,waitInMillisec,waitMessage){
         const waitForMillisec = waitInMillisec ? waitInMillisec : this.waitTime; 
         await new Promise((resolve,reject) => {
             const conditionCheckInterval = setInterval(async () => {
@@ -65,7 +65,7 @@ class BrowserWaits{
 
             setTimeout(() => {
                 clearInterval(conditionCheckInterval);
-                reject(new Error(`wait condition not satisfied after total wait time ${waitForMillisec}`));
+                reject(new Error(`wait condition not satisfied after total wait time ${waitForMillisec} : ${waitMessage ? waitMessage : ''}`));
             }, waitForMillisec)
         });
   

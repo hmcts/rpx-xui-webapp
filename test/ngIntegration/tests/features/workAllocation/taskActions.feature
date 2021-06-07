@@ -3,13 +3,10 @@ Feature: Task actions
 
     Background: Mock and browser setup
         Given I init MockApp
+        Given I set MOCK with "wa_release_1" release user and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer"
 
     
     Scenario:  My Tasks actions submit
-        Given I set MOCK with user roles
-            | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
         Given I start MockApp
         Given I navigate to home page
         Then I validate Task actions from page "My Tasks"
@@ -23,24 +20,16 @@ Feature: Task actions
 
     
     Scenario:  Available Tasks actions submit
-        Given I set MOCK with user roles
-            | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
-        Given I start MockApp
+         Given I start MockApp
         Given I navigate to home page
         Then I validate Task actions from page "Available tasks"
             | ManageAction                | ActionType | SubmitCancel | SuccessMessage                                        |
             | Assign to me                | ONCECLICK  |              | You've unassigned a task. It's now in Available tasks |
             | Assign to me and go to case | ONCECLICK  |              |                                                       |
 
-    
+@test
     Scenario:   Task manager actions submit
-        Given I set MOCK with user roles
-            | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
-        Given I start MockApp
+          Given I start MockApp
         Given I navigate to home page
         Then I validate Task actions from page "Task manager"
             | ManageAction                | ActionType | SubmitCancel | SuccessMessage                                        |
@@ -56,11 +45,7 @@ Feature: Task actions
 
 
     Scenario: My Tasks reassign page errors
-        Given I set MOCK with user roles
-            | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
-        Given I set MOCK My tasks count 5
+         Given I set MOCK My tasks count 5
         Given I start MockApp
         Given I navigate to home page
         When I click on header tab Task list
@@ -70,10 +55,6 @@ Feature: Task actions
 
 
     Scenario: My Tasks reassign submit errors
-        Given I set MOCK with user roles
-            | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
         Given I set MOCK My tasks count 5
         Given I start MockApp
         Given I navigate to home page
@@ -85,11 +66,7 @@ Feature: Task actions
 
 
     Scenario: Available task action page errors
-        Given I set MOCK with user roles
-            | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
-        Given I set MOCK My tasks count 5
+          Given I set MOCK My tasks count 5
         Given I start MockApp
         Given I navigate to home page
         When I click on header tab Task list
@@ -103,11 +80,7 @@ Feature: Task actions
 
 
     Scenario: Task manager task action page errors
-        Given I set MOCK with user roles
-            | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
-        Given I start MockApp
+         Given I start MockApp
         Given I navigate to home page
         When I click on header tab Task manager
 

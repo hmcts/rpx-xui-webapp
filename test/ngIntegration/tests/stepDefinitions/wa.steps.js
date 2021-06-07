@@ -518,7 +518,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }
             validateOnPage();
 
-            await taskListPage.clickManageLinkForTaskAt(1);
+            await taskListPage.openManageLinkForTaskAtPos(1);
             await taskListPage.clickTaskAction(scr.ManageAction);
 
             if(scr.ActionType.toUpperCase() == "ASSIGNMENT"){

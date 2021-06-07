@@ -8,6 +8,8 @@ describe('AppComponent', () => {
     let googleTagManagerService: any;
     let timeoutNotificationService: any;
     let featureToggleService: any;
+    let loggerService: any;
+    let cookieService: any;
     let router: any;
     let title: any;
     let testRoute: RoutesRecognized;
@@ -17,6 +19,8 @@ describe('AppComponent', () => {
         googleTagManagerService = jasmine.createSpyObj('GoogleTagManagerService', ['init']);
         timeoutNotificationService = jasmine.createSpyObj('TimeoutNotificationsService', ['notificationOnChange', 'initialise']);
         featureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled']);
+        cookieService = jasmine.createSpyObj('CookieService', ['deleteCookieByPartialMatch']);
+        loggerService = jasmine.createSpyObj('LoggerService', ['disableCookies']);
         testRoute = new RoutesRecognized(1, 'test', 'test', {
             url: 'test',
             root: {
@@ -55,7 +59,7 @@ describe('AppComponent', () => {
         });
         router = { events: of(testRoute) };
         title = jasmine.createSpyObj('Title', ['setTitle']);
-        appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService, router, title, featureToggleService);
+        appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService, router, title, featureToggleService, loggerService, cookieService);
     });
 
     it('Truthy', () => {
@@ -159,6 +163,29 @@ describe('AppComponent', () => {
                 featureToggleService.isEnabled.and.returnValue(of(true));
                 appComponent.handleCookieBannerFeatureToggle();
                 expect(spy).toHaveBeenCalled();
+            });
+
+        });
+
+        describe('notifyAcceptance()', () => {
+
+            it('should make a call to googleTagManagerService', () => {
+                appComponent.notifyAcceptance();
+                expect(googleTagManagerService.init).toHaveBeenCalled();
+            });
+
+        });
+
+        describe('notifyRejection()', () => {
+
+            it('should make a call to loggerService', () => {
+                appComponent.notifyRejection();
+                expect(loggerService.disableCookies).toHaveBeenCalled();
+            });
+
+            it('should make a call to cookieService', () => {
+                appComponent.notifyRejection();
+                expect(cookieService.deleteCookieByPartialMatch).toHaveBeenCalled();
             });
 
         });

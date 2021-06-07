@@ -1,5 +1,5 @@
 @ng
-Feature: My Tasks Task list
+Feature: WA Release 1: My Tasks Task list
 
     Background: Mock and browser setup
         Given I init MockApp
@@ -35,7 +35,7 @@ Feature: My Tasks Task list
 
 
 
-    Scenario: My Tasks error responses
+    Scenario:  My Tasks error responses
            Given I set MOCK My tasks count 5
         Given I start MockApp
         Given I navigate to home page

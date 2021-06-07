@@ -1,5 +1,5 @@
 @ng
-Feature: Task manager
+Feature: WA Release 1: Task manager
 
     Background: Mock and browser setup
         Given I init MockApp

@@ -1,5 +1,5 @@
 @ng 
-Feature: Available Tasks Task list
+Feature: WA Release 1: Available Tasks Task list
 
     Background: Mock and browser setup
         Given I init MockApp

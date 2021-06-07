@@ -1,5 +1,5 @@
 @ng
-Feature: Release 2 Task actions
+Feature: WA Release 2: Task actions
 
     Background: Mock and browser setup
         Given I init MockApp

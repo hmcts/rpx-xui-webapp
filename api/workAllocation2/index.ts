@@ -67,10 +67,6 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
   try {
     console.log('firstRequest', req.body.searchRequest);
     const searchRequest = req.body.searchRequest;
-    // note: as Angular not connected yet, creating own pagination parameters
-    // TODO - remove once angular in place
-    req.body.searchRequest.pagination_parameters = {page_size: 10, page_number: 1};
-    console.log('searchRequest after pagination ', searchRequest);
     const view = req.body.view;
     let promise;
     if (searchRequest.search_by === 'judge') {

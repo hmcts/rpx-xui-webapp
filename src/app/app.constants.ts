@@ -4,7 +4,8 @@ import {Theme} from './containers/app-header/app-header.component';
 const FeatureNames = {
   workAllocation: 'MC_Work_Allocation',
   noticeOfChange: 'MC_Notice_of_Change',
-  currentWAFeature: 'mc-work-allocation-active-feature'
+  currentWAFeature: 'mc-work-allocation-active-feature',
+  waMvpPaginationFeature: 'mc-mvp-wa-pagination'
 };
 
 const FooterData =  {

@@ -1,4 +1,18 @@
-<p *ngIf="tasks && tasks.length > 1">Displaying <span class="govuk-!-font-weight-bold">{{tasks.length}}</span> of <span class="govuk-!-font-weight-bold">{{tasks.length}}</span> tasks</p>
+<div *ngIf="pagination; else tableSummary" class="pagination-top" attr.aria-label="{{ tasksTotal }} results have been found" role="status">
+  <span class="text-16" id="search-result-summary__text">Displaying
+      <span class="govuk-!-font-weight-bold">{{ getFirstResult() }}</span>
+      -
+      <span class="govuk-!-font-weight-bold">{{ getLastResult() }}</span>
+      out of
+      <span class="govuk-!-font-weight-bold">{{ tasksTotal || 0 }}</span>
+      tasks.</span>
+</div>
+
+<ng-template #tableSummary>
+  <div class="pagination-top" attr.aria-label="{{ tasksTotal }} results have been found" role="status">
+    <span class="text-16" id="search-result-summary__text">Displaying <span class="govuk-!-font-weight-bold">{{ tasksTotal || 0 }} </span>tasks.</span></div>
+</ng-template>
+
 <!-- Using the Angular Component Development Kit Table Module, and not Angular Material -->
 <table cdk-table [dataSource]="dataSource$" class="govuk-table" [multiTemplateDataRows]="true">
 
@@ -63,3 +77,5 @@
       [attr.aria-hidden]="tasks?.length !== 0" cdk-footer-row *cdkFooterRowDef="['footer']"></tr>
 
 </table>
+
+<ccd-pagination *ngIf="pagination" [id]='pager' (pageChange)="paginationEvent.emit($event)"></ccd-pagination>

@@ -11,12 +11,14 @@ describe('AppComponent', () => {
   let title: any;
   let testRoute: RoutesRecognized;
   let featureToggleService;
+  let environmentService;
 
   beforeEach(() => {
     store = jasmine.createSpyObj('store', ['pipe', 'dispatch']);
     googleTagManagerService = jasmine.createSpyObj('GoogleTagManagerService', ['init']);
     timeoutNotificationService = jasmine.createSpyObj('TimeoutNotificationsService', ['notificationOnChange', 'initialise']);
     featureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue', 'initialize']);
+    environmentService = jasmine.createSpyObj('environmentService', ['config$'])
     testRoute = new RoutesRecognized(1, 'test', 'test', {
       url: 'test',
       root: {
@@ -55,7 +57,7 @@ describe('AppComponent', () => {
     });
     router = {events: of(testRoute)};
     title = jasmine.createSpyObj('Title', ['setTitle']);
-    appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService, router, title, featureToggleService);
+    appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService, router, title, featureToggleService, environmentService);
   });
 
   it('Truthy', () => {
@@ -135,7 +137,7 @@ describe('AppComponent', () => {
       roles: ['role1', 'role2'],
       uid: '1234'
     };
-    appComponent.initializeFeature(userInfo);
+    appComponent.initializeFeature(userInfo, 'clientId');
     const featureUser = {
       key: '1234',
       custom: {
@@ -143,7 +145,7 @@ describe('AppComponent', () => {
         orgId: '-1'
       }
     };
-    expect(featureToggleService.initialize).toHaveBeenCalledWith(featureUser);
+    expect(featureToggleService.initialize).toHaveBeenCalledWith(featureUser, 'clientId');
   });
 
   it('should call userDetailsHandler', () => {
@@ -164,9 +166,32 @@ describe('AppComponent', () => {
       }
     };
     timeoutNotificationService.notificationOnChange.and.returnValue(of({eventType: 'keep-alive'}));
-    appComponent.userDetailsHandler(user);
+    appComponent.userDetailsHandler('clientId', user);
 
     expect(featureToggleService.initialize).toHaveBeenCalled();
     expect(timeoutNotificationService.initialise).toHaveBeenCalled();
+  });
+
+  it('loadAndListenForUserDetails', () => {
+    appComponent.loadAndListenForUserDetails();
+    environmentService.config$.and.returnValue(of({launchDarklyClientId: '4452'}));
+    const userDetails = {
+      sessionTimeout: {
+        idleModalDisplayTime: 23434,
+        totalIdleTime: 23,
+      },
+      canShareCases: false,
+      userInfo: {
+        id: '1232',
+        forename: 'foreName',
+        surname: 'surname',
+        email: 'email@name.com',
+        active: true,
+        roles: ['role1', 'rol3'],
+        uid: '23435'
+      }
+    };
+    store.pipe.and.returnValue(of(userDetails));
+    expect(store.pipe).toHaveBeenCalled();
   });
 });

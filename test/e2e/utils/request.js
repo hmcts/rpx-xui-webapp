@@ -50,7 +50,7 @@ class Request {
             reqheaders = { ...headers };
         }
         if (this.cookieString !== '') {
-            reqheaders['cookie'] = this.getCookieString();
+            reqheaders['cookie'] = this.cookieString;
         }
 
         return { headers: reqheaders};

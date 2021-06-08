@@ -128,12 +128,12 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   public notifyAcceptance() {
+    this.loggerService.enableCookies();
     this.googleTagManagerService.init(config.googleTagManagerKey);
   }
 
   public notifyRejection() {
     // AppInsights
-    this.loggerService.disableCookies();
     this.cookieService.deleteCookieByPartialMatch('ai_');
     // Google Analytics
     this.cookieService.deleteCookieByPartialMatch('_ga');

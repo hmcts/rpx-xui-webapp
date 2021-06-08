@@ -51,6 +51,8 @@ export class MonitorConfig implements Microsoft.ApplicationInsights.IConfig {
 @Injectable()
 export class MonitoringService implements IMonitoringService {
 
+  public areCookiesEnabled: boolean = false;
+
   constructor(private http: HttpClient, @Optional() private config?: MonitorConfig,
               @Optional() private appInsights?: AbstractAppInsights) {
                 if (!appInsights) {
@@ -77,18 +79,8 @@ export class MonitoringService implements IMonitoringService {
     });
   }
 
-  disableCookies() {
-    this.http.get('/api/monitoring-tools').subscribe(it => {
-      this.config = {
-        // tslint:disable-next-line: no-string-literal
-        instrumentationKey: it['key'],
-        isCookieUseDisabled: true,
-        isStorageUseDisabled: true,
-        enableSessionStorageBuffer: true
-      };
-      this.appInsights.clearAuthenticatedUserContext();
-      this.appInsights.downloadAndSetup(this.config);
-    });
+  enableCookies() {
+    this.areCookiesEnabled = true;
   }
 
   private send(func: () => any): void {
@@ -100,6 +92,14 @@ export class MonitoringService implements IMonitoringService {
           // tslint:disable-next-line: no-string-literal
           instrumentationKey: it['key']
         };
+        if (!this.areCookiesEnabled) {
+          this.config = {
+            ...this.config,
+            isCookieUseDisabled: true,
+            isStorageUseDisabled: true,
+            enableSessionStorageBuffer: true
+          }
+        }
         if (!this.appInsights.config) {
           this.appInsights.downloadAndSetup(this.config);
         }

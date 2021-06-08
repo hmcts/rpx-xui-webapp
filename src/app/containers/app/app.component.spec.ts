@@ -20,7 +20,7 @@ describe('AppComponent', () => {
         timeoutNotificationService = jasmine.createSpyObj('TimeoutNotificationsService', ['notificationOnChange', 'initialise']);
         featureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled']);
         cookieService = jasmine.createSpyObj('CookieService', ['deleteCookieByPartialMatch']);
-        loggerService = jasmine.createSpyObj('LoggerService', ['disableCookies']);
+        loggerService = jasmine.createSpyObj('LoggerService', ['enableCookies']);
         testRoute = new RoutesRecognized(1, 'test', 'test', {
             url: 'test',
             root: {
@@ -174,14 +174,14 @@ describe('AppComponent', () => {
                 expect(googleTagManagerService.init).toHaveBeenCalled();
             });
 
+            it('should make a call to loggerService', () => {
+                appComponent.notifyAcceptance();
+                expect(loggerService.enableCookies).toHaveBeenCalled();
+            });
+
         });
 
         describe('notifyRejection()', () => {
-
-            it('should make a call to loggerService', () => {
-                appComponent.notifyRejection();
-                expect(loggerService.disableCookies).toHaveBeenCalled();
-            });
 
             it('should make a call to cookieService', () => {
                 appComponent.notifyRejection();

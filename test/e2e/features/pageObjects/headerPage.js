@@ -104,6 +104,7 @@ function HeaderPage() {
     await BrowserWaits.retryWithActionCallback(async () => {
       const primaryTabs = this.getPrimaryTabsDisplayed();
       const tabEle = this.getTabElementWithText(tabText).click();
+      await BrowserUtil.waitForLD();
       if (tabEle) {
         await tabEle.click();
       } else {
@@ -126,18 +127,6 @@ function HeaderPage() {
     
   }
 
-  this.getPrimaryMainNavItems = async function () {
-    return await BrowserUtil.stepWithRetry(async () => {
-      const tabsText = [];
-      const tablinks = this.primaryNavBar_NavItems$$('a');
-      const tabsCount = await tablinks.count();
-      for (let i = 0; i < tabsCount; i++) {
-        let tabLink = await tablinks.get(i);
-        tabsText.push(await tabLink.getText());
-      }
-      return tabsText;
-    });
-  }
 
   this.getPrimaryRightSideItems = async function () {
     return await BrowserUtil.stepWithRetry(async () => {

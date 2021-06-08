@@ -73,7 +73,9 @@ const config = {
             '../../e2e/support/world.js',
             '../../e2e/support/*.js',
             '../tests/stepDefinitions/*.steps.js',
-            '../../e2e/features/step_definitions/*.steps.js'
+            '../tests/stepDefinitions/**/*.steps.js',
+            '../../e2e/features/step_definitions/*.steps.js',
+            '../../e2e/features/step_definitions/**/*.steps.js'
 
         ]
     },

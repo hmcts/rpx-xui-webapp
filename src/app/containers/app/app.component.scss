@@ -2,10 +2,10 @@ $govuk-global-styles: true;
 $hmcts-images-path: "/assets/images/";
 
 // Width of main container
-$hmcts-page-width: 1220px;
+$hmcts-page-width: 1920px;
 
 // TODO temporary solution to extend the width of the page until is addressed through govuk-frontend"
-body .govuk-width-container, #content, .hmcts-header__container, header.govuk-header{
+body .govuk-width-container, #content {
   max-width: 1920px;
   min-width: 1020px;
   overflow-x:hidden;

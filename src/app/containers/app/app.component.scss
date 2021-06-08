@@ -5,12 +5,16 @@ $hmcts-images-path: "/assets/images/";
 $hmcts-page-width: 1220px;
 
 // TODO temporary solution to extend the width of the page until is addressed through govuk-frontend"
-body .govuk-width-container, #content {
-  max-width: 1220px;
+body .govuk-width-container, #content, .hmcts-header__container, header.govuk-header{
+  max-width: 1920px;
+  min-width: 1020px;
+  overflow-x:hidden;
+
 }
 
-#content {
-  padding-left: 20px;
+#content , footer.govuk-footer{
+  padding-left: 30px;
+  padding-right: 30px;
 }
 
 @import "~govuk-frontend/govuk/all";

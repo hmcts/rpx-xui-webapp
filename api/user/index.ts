@@ -39,7 +39,8 @@ export async function getUserRoleAssignments(userInfo: UserInfo, req): Promise<a
 export async function getRoleAssignmentForUser(userInfo: UserInfo, req: any): Promise<any []> {
   let locationInfo = []
   const baseUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH)
-  const path = `${baseUrl}/am/role-assignments/actors/${userInfo.uid}`
+  const id = userInfo.id ? userInfo.id : userInfo.uid
+  const path = `${baseUrl}/am/role-assignments/actors/${id}`
   const headers = setHeaders(req)
   try {
     const response: AxiosResponse = await http.get(path, { headers })

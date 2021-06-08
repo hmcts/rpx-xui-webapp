@@ -38,7 +38,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         }
        
-        expect(await headerPage.isTabPresent(headerlabel), headerlabel + " tab is not present in " + await headerPage.getPrimaryNavigations()).to.be.true;
+        expect(await headerPage.isTabPresent(headerlabel), headerlabel + " tab is not present in " + await headerPage.getPrimaryTabsDisplayed()).to.be.true;
     })
 
     Then('I do not see primary navigation tab {string} in header', async function (headerlabel) {
@@ -50,7 +50,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         }
         
-        expect(await headerPage.isTabPresent(headerlabel), headerlabel + " tab is not expected to present " + await headerPage.getPrimaryNavigations() ).to.be.false;
+        expect(await headerPage.isTabPresent(headerlabel), headerlabel + " tab is not expected to present " + await headerPage.getPrimaryTabsDisplayed() ).to.be.false;
     })
 
     When('I click on primary navigation header tab {string}', async function(headerTab){

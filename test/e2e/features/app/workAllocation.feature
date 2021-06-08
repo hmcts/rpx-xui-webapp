@@ -1,4 +1,4 @@
-@fullfunctional1
+@fullfunctional
 Feature: Work allocations task list, Available list and Task manager
 
     Scenario: View tasks, E2E journey of Caseworker-ia-officer user

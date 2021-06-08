@@ -18,7 +18,7 @@ import { McLaunchDarklyService } from './services/mc-launch-darkly-service';
  */
 
 @NgModule( {
-  imports: [RouterModule, CommonModule, MediaViewerModule, ExuiCommonLibModule.forChild()],
+  imports: [RouterModule, CommonModule, MediaViewerModule, ExuiCommonLibModule],
   declarations: [
     ...fromAppComponents.components,
     ...fromAppContainers.containers,

@@ -3,10 +3,12 @@ import { Title } from '@angular/platform-browser';
 import { Router, RoutesRecognized } from '@angular/router';
 import { FeatureToggleService, FeatureUser, GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
+import { combineLatest } from 'rxjs';
 import { propsExist } from '../../../../api/lib/objectUtilities';
 import { environment as config } from '../../../environments/environment';
 import { UserDetails, UserInfo } from '../../models/user-details.model';
 import * as fromRoot from '../../store';
+import { EnvironmentService } from '../../shared/services/environment.service';
 
 @Component({
   selector: 'exui-root',
@@ -28,9 +30,10 @@ export class AppComponent implements OnInit {
     private readonly timeoutNotificationsService: TimeoutNotificationsService,
     private readonly router: Router,
     private readonly titleService: Title,
-    private readonly featureService: FeatureToggleService
+    private readonly featureService: FeatureToggleService,
+    private readonly environmentService: EnvironmentService
   ) {
-
+    // this.appConfigService.get
     this.googleTagManagerService.init(config.googleTagManagerKey);
 
     this.router.events.subscribe((data) => {
@@ -66,8 +69,11 @@ export class AppComponent implements OnInit {
    */
   public loadAndListenForUserDetails() {
     this.store.dispatch(new fromRoot.LoadUserDetails());
-
-    this.store.pipe(select(fromRoot.getUserDetails)).subscribe(userDetails => this.userDetailsHandler(userDetails));
+    const userDetails$ = this.store.pipe(select(fromRoot.getUserDetails));
+    const envConfigAndUserDetails$ = combineLatest([this.environmentService.config$, userDetails$]);
+    envConfigAndUserDetails$.subscribe(envConfigAndUserDetails => {
+      this.userDetailsHandler(envConfigAndUserDetails[0].launchDarklyClientId, envConfigAndUserDetails[1]);
+    });
   }
 
   /**
@@ -84,9 +90,9 @@ export class AppComponent implements OnInit {
    *  }
    * }
    */
-  public userDetailsHandler(userDetails: UserDetails) {
+  public userDetailsHandler(ldClientId: string, userDetails: UserDetails) {
     if (userDetails) {
-      this.initializeFeature(userDetails.userInfo);
+      this.initializeFeature(userDetails.userInfo, ldClientId);
       if (propsExist(userDetails, ['sessionTimeout'] ) && userDetails.sessionTimeout.totalIdleTime > 0) {
         const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
         this.addTimeoutNotificationServiceListener();
@@ -95,16 +101,17 @@ export class AppComponent implements OnInit {
     }
   }
 
-  public initializeFeature(userInfo: UserInfo) {
+  public initializeFeature(userInfo: UserInfo, ldClientId: string) {
     if (userInfo) {
+
       const featureUser: FeatureUser = {
-        key: userInfo.id,
+        key: userInfo.id || userInfo.uid,
         custom: {
           roles: userInfo.roles,
           orgId: '-1'
         }
       };
-      this.featureService.initialize(featureUser);
+      this.featureService.initialize(featureUser, ldClientId);
     }
   }
 

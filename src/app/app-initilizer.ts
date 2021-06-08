@@ -1,5 +1,6 @@
 import {select, Store} from '@ngrx/store';
 import {takeWhile} from 'rxjs/operators';
+import { EnvironmentConfig } from '../models/environmentConfig.model';
 import * as fromApp from './store';
 
 /**

@@ -65,7 +65,6 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
  */
 export async function searchTask(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    console.log('firstRequest', req.body.searchRequest);
     const searchRequest = req.body.searchRequest;
     const view = req.body.view;
     let promise;
@@ -74,27 +73,20 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
       if (view === 'MyTasks') {
         const basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'myTasks?view=judicial');
         const postTaskPath = preparePaginationUrl(req, basePath);
-        const searchRequest = req.body.searchRequest;
-        console.log('base path', basePath);
-        console.log('serch request', searchRequest);
-        console.log('post task', postTaskPath);
         promise = await handlePost(postTaskPath, searchRequest, req);
       } else if (view === 'AvailableTasks') {
         const basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'availableTasks?view=judicial');
         const postTaskPath = preparePaginationUrl(req, basePath);
-        const searchRequest = req.body.searchRequest;
         promise = await handlePost(postTaskPath, searchRequest, req);
       }
     } else {
       if (view === 'MyTasks') {
         const basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'myTasks?view=caseworker');
         const postTaskPath = preparePaginationUrl(req, basePath);
-        const searchRequest = req.body.searchRequest;
         promise = await handlePost(postTaskPath, searchRequest, req);
       } else if (view === 'AvailableTasks') {
         const basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'availableTasks?view=caseworker');
         const postTaskPath = preparePaginationUrl(req, basePath);
-        const searchRequest = req.body.searchRequest;
         promise = await handlePost(postTaskPath, searchRequest, req);
       }
     }

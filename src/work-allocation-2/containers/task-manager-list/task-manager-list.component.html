@@ -6,6 +6,6 @@
 </p>
 <exui-task-list
   [taskServiceConfig]="taskServiceConfig" [tasks]="tasks" [fields]="fields"
-  [sortedBy]="sortedBy" [emptyMessage]="emptyMessage"
-  (sortEvent)="onSortHandler($event)" (actionEvent)="onActionHandler($event)">
+  [sortedBy]="sortedBy" [emptyMessage]="emptyMessage" [tasksTotal]="tasksTotal" [fields]="fields" [pagination]="pagination"
+  (sortEvent)="onSortHandler($event)" (actionEvent)="onActionHandler($event)" (paginationEvent)="onPaginationHandler($event)">
 </exui-task-list>

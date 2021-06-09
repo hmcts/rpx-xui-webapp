@@ -1,6 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
 import * as faker from 'faker/locale/en_GB';
-import { postAssignCasesToUsers } from 'test/pact/pactUtil';
 import { httpMock } from '../common/httpMock';
 import {
   ALL_TASKS,

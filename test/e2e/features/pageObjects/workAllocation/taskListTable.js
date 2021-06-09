@@ -1,4 +1,6 @@
 const c = require('config');
+const { constants } = require('karma');
+const browserUtil = require('../../../../ngIntegration/util/browserUtil');
 const BrowserWaits = require('../../../support/customWaits');
 var cucumberReporter = require('../../../support/reportLogger');
 
@@ -123,11 +125,49 @@ class TaskListTable{
         return -1;
     }
 
-    async clickManageLinkForTaskAt(position){
-        await BrowserWaits.retryWithActionCallback(async () => {
+    async isManageLinkPresent(position){
+        return await browserUtil.stepWithRetry(async () => {
             const taskrow = await this.getTableRowAt(position);
+            return await taskrow.$('button[id^="manage_"]').isPresent();
+        });
+    }
+
+    async clickManageLinkForTaskAt(position){
+        await browserUtil.stepWithRetry(async () => {
+            const taskrow = await this.getTableRowAt(position);
+
+            await BrowserWaits.waitForElementClickable(taskrow);
             await taskrow.$('button[id^="manage_"]').click();
         });
+    }
+
+    async openManageLinkForTaskAtPos(position){
+        let isTaskActionOpen = await this.isTaskActionRowForTaskDisplayed(position);
+        if (!isTaskActionOpen){
+
+            await BrowserWaits.retryWithActionCallback(async () => {
+                await this.clickManageLinkForTaskAt(position);
+                await BrowserWaits.waitForConditionAsync(async () => await this.isTaskActionRowForTaskDisplayed(position),1000,'Wait manage link open');
+            });
+            
+        }
+    }
+
+    async closeManageLinkForTaskAtPos(position) {
+        let isTaskActionOpen = await this.isTaskActionRowForTaskDisplayed(position);
+        if (isTaskActionOpen) {
+            await BrowserWaits.retryWithActionCallback(async () => {
+                await this.clickManageLinkForTaskAt(position);
+                await BrowserWaits.waitForConditionAsync(async () => !(await this.isTaskActionRowForTaskDisplayed(position)),1000,'wait for manage link close');
+            });
+            await this.clickManageLinkForTaskAt(position);
+            
+        }
+    }
+
+    async getTaskActions(){
+        const taskActions = this.displayedtaskActionRow.$$('.task-action a');
+        return await taskActions.getText();
     }
 
     async isTaskActionPresent(taskAction){
@@ -143,9 +183,7 @@ class TaskListTable{
     }
 
     async isTaskActionRowForTaskDisplayed(position){
-        const taskrow = this.getTableRowAt(position);
-        const taskActionRow = await this.taskActionsRows.get(position - 1);
-        return await taskActionRow.isDisplayed(); 
+        return await this.displayedtaskActionRow.isPresent();
 
     }
 

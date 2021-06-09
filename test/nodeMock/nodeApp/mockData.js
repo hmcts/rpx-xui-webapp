@@ -37,7 +37,7 @@ class NodeAppMockData {
                 "totalIdleTime": 50
             },
             "userInfo": {
-                "id": "3db21928-cbbc-4364-bd91-137c7031fe17",
+                "id": "02d1f898-4109-4a28-a978-2ba14f42de22",
                 "forename": "Luke",
                 "surname": "Wilson",
                 "email": "lukesuperuserxui@mailnesia.com",

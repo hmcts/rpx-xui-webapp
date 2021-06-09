@@ -12,6 +12,7 @@
   "stub": false,
   "health": {
     "ccdComponentApi": "https://ccd-api-gateway-web-prod.service.core-compute-prod.internal/health",
+    "ccdActivityApi": "http://ccd-case-activity-api-prod.service.core-compute-prod.internal/health",
     "ccdDataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal/health",
     "documentsApi": "http://dm-store-prod.service.core-compute-prod.internal/health",
     "em_anno_api": "http://em-anno-prod.service.core-compute-prod.internal/health",
@@ -24,6 +25,7 @@
   "services": {
     "ccd": {
       "componentApi": "https://ccd-api-gateway-web-prod.service.core-compute-prod.internal",
+      "activityApi": "http://ccd-case-activity-api-prod.service.core-compute-prod.internal",
       "dataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal",
       "caseAssignmentApi": "http://aac-manage-case-assignment-prod.service.core-compute-prod.internal"
     },
@@ -50,7 +52,8 @@
       "roleApi": "http://am-role-assignment-service-prod.service.core-compute-prod.internal"
     },
     "case": {
-      "caseworkerApi": "http://rd-caseworker-ref-api-prod.service.core-compute-prod.internal"
+      "caseworkerApi": "http://rd-caseworker-ref-api-prod.service.core-compute-prod.internal",
+      "judicialworkerApi": "http://rd-judicialworker-ref-api-prod.service.core-compute-prod.internal"
     },
     "payments": "http://payment-api-prod.service.core-compute-prod.internal",
     "markup_api": "http://em-npa-prod.service.core-compute-prod.internal",
@@ -66,6 +69,9 @@
     "Benefit": [
       "generatedSurname",
       "appeal.appellant.name.lastName"
+    ],
+    "HearingRecordings": [
+      "recordingReference"
     ],
     "xuiTestCaseType": [
       "TextField"

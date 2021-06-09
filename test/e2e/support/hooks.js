@@ -114,12 +114,20 @@ defineSupportCode(({ Before,After }) => {
                     }
                 }
                 CucumberReportLog.AddJson(browserErrorLogs);
+                if (global.scenarioData['featureToggles']){
+                    CucumberReportLog.AddJson(global.scenarioData['featureToggles'])
+                }
             } else {
                 browser.manage().logs().get('browser');
                 await CucumberReportLog.AddMessage("Cleared browser logs after successful scenario.");
             }
         }catch(err) {
             CucumberReportLog.AddMessage("Error in hooks with browserlogs or screenshots. See error details : " + err);
-        }        
+        }     
+        
+        await browser.executeScript('window.sessionStorage.clear();');
+        await browser.executeScript('window.localStorage.clear();');
+        await browser.manage().deleteAllCookies();
+
     });
 });

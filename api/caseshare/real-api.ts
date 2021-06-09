@@ -82,7 +82,7 @@ export async function assignCases(req: EnhancedRequest, res: Response, next: Nex
 }
 
 function doShareCase(req: EnhancedRequest, shareCases: SharedCase[]): any[] {
-  const path = `${ccdUrl}/case-assignments`;
+  const path = `${ccdUrl}/case-assignments?use_user_token=true`;
   const promises = [];
   // @ts-ignore
   shareCases.flatMap(sharedCase => {

@@ -97,12 +97,24 @@ export const CASEWORKER_MY_TASKS = {
   ],
 };
 
+export const JUDICIAL_WORKERS = [
+  {
+    "email": "CWR-func-test-user1-#s@justice.gov.uk",
+    "firstName": "IAC",
+    "idamId": "998db99b-08aa-43d4-bc6b-0aabbb0e3c6f",
+    "lastName": "CW2",
+    "location": {
+      "id": 231596,
+      "locationName": "Birmingham"
+    }
+  }
+]
+
 // TODO: Assignee should be removed from all available tasks (otherwise they are unavailable)
 export const JUDICIAL_AVAILABLE_TASKS = {
   tasks: [
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc1',
-      assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       task_title: 'Review FTPA application',
       dueDate: '2021-05-05T16:00:00.000+0000',
       location_name: 'Birmingham',
@@ -113,7 +125,6 @@ export const JUDICIAL_AVAILABLE_TASKS = {
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc2',
-      assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       task_title: 'Review application decision',
       dueDate: '2021-05-12T16:00:00.000+0000',
       location_name: 'Glasgow',
@@ -124,18 +135,16 @@ export const JUDICIAL_AVAILABLE_TASKS = {
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc3',
-      assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       task_title: 'Generate decision and reason',
       dueDate: '2021-05-18T16:00:00.000+0000',
       location_name: 'Manchester',
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Francis Gigs',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Execute'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc4',
-      assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       task_title: 'Follow-up non-standard direction',
       dueDate: '2021-05-20T16:00:00.000+0000',
       location_name: 'Newcastle',
@@ -146,29 +155,26 @@ export const JUDICIAL_AVAILABLE_TASKS = {
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc5',
-      assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       task_title: 'Review FTPA application',
       dueDate: '2021-05-05T16:00:00.000+0000',
       location_name: 'Birmingham',
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'Michael Jackson',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Cancel', 'Manage'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc6',
-      assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       task_title: 'Review application decision',
       dueDate: '2021-05-12T16:00:00.000+0000',
       location_name: 'Glasgow',
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'George Bush',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Manage', 'Cancel'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc7',
-      assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       task_title: 'Generate decision and reason',
       dueDate: '2021-05-18T16:00:00.000+0000',
       location_name: 'Manchester',
@@ -179,7 +185,6 @@ export const JUDICIAL_AVAILABLE_TASKS = {
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc8',
-      assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       task_title: 'Follow-up non-standard direction',
       dueDate: '2021-05-20T16:00:00.000+0000',
       location_name: 'Newcastle',
@@ -195,7 +200,6 @@ export const CASEWORKER_AVAILABLE_TASKS = {
   tasks: [
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd1',
-      assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       task_title: 'Review FTPA application',
       dueDate: '2021-05-05T16:00:00.000+0000',
       location_name: 'Birmingham',
@@ -206,18 +210,16 @@ export const CASEWORKER_AVAILABLE_TASKS = {
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd2',
-      assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       task_title: 'Review application decision',
       dueDate: '2021-05-12T16:00:00.000+0000',
       location_name: 'Glasgow',
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'James Carter',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Execute'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd3',
-      assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       task_title: 'Generate decision and reason',
       dueDate: '2021-05-18T16:00:00.000+0000',
       location_name: 'Manchester',
@@ -228,18 +230,16 @@ export const CASEWORKER_AVAILABLE_TASKS = {
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd4',
-      assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       task_title: 'Follow-up non-standard direction',
       dueDate: '2021-05-20T16:00:00.000+0000',
       location_name: 'Newcastle',
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'Martin Wyatt',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Cancel', 'Manage'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd5',
-      assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       task_title: 'Review FTPA application',
       dueDate: '2021-05-05T16:00:00.000+0000',
       location_name: 'Birmingham',
@@ -250,18 +250,16 @@ export const CASEWORKER_AVAILABLE_TASKS = {
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd6',
-      assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       task_title: 'Review application decision',
       dueDate: '2021-05-12T16:00:00.000+0000',
       location_name: 'Glasgow',
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'Harper Eleanor',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Manage', 'Cancel'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd7',
-      assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       task_title: 'Generate decision and reason',
       dueDate: '2021-05-18T16:00:00.000+0000',
       location_name: 'Manchester',
@@ -272,7 +270,6 @@ export const CASEWORKER_AVAILABLE_TASKS = {
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd8',
-      assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
       task_title: 'Follow-up non-standard direction',
       dueDate: '2021-05-20T16:00:00.000+0000',
       location_name: 'Newcastle',

@@ -1,17 +1,17 @@
 
-const taskListPage = require('../pageObjects/workAllocation/taskListPage');
-const taskAssignmentPage = require('../pageObjects/workAllocation/taskAssignmentPage');
-const taskActionPage = require('../pageObjects/workAllocation/taskActionPage');
+const taskListPage = require('../../pageObjects/workAllocation/taskListPage');
+const taskAssignmentPage = require('../../pageObjects/workAllocation/taskAssignmentPage');
+const taskActionPage = require('../../pageObjects/workAllocation/taskActionPage');
 
 
-const taskmanagerPage = require('../pageObjects/workAllocation/taskManagerPage');
+const taskmanagerPage = require('../../pageObjects/workAllocation/taskManagerPage');
 var { defineSupportCode } = require('cucumber');
 
-const reportLogger = require('../../support/reportLogger');
-const Browserutil = require('../../../ngIntegration/util/browserUtil');
-const BrowserWaits = require('../../support/customWaits');
-const SoftAssert = require('../../../ngIntegration/util/softAssert');
-const taskManagerPage = require('../pageObjects/workAllocation/taskManagerPage');
+const reportLogger = require('../../../support/reportLogger');
+const Browserutil = require('../../../../ngIntegration/util/browserUtil');
+const BrowserWaits = require('../../../support/customWaits');
+const SoftAssert = require('../../../../ngIntegration/util/softAssert');
+const taskManagerPage = require('../../pageObjects/workAllocation/taskManagerPage');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
@@ -80,6 +80,23 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             const action = actionRow.action;
             expect(await taskListPage.isTaskActionPresent(action), `Task action "${action} ${JSON.stringify(actionRow,2)}" is not displayed`).to.be.true;
         } 
+    });
+
+    Then('I validate task actions in manage link for task at row {int}', async function (taskRow, actionsTable){
+        const taskRowsWithActions = actionsTable.hashes();
+        if (taskRowsWithActions.length === 0){
+            expect(await taskListPage.isManageLinkPresent(taskRow)).to.be.false
+
+        }else{
+            await taskListPage.clickManageLinkForTaskAt(taskRow);
+            for (let i = 0; i < taskRowsWithActions.length; i++) {
+                const taskActions = await taskListPage.getTaskActions();
+                const isactionPresent = await taskListPage.isTaskActionPresent(taskRowsWithActions[i]["Action"]);
+                expect(isactionPresent, taskActions+" => action not present " + taskRowsWithActions[i]["Action"]).to.be.true;
+
+            }
+        }
+        
     });
   
 

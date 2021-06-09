@@ -31,7 +31,12 @@ module.exports = {
 
         '/api/user/details': (req, res) => {
             res.send(nodeAppMockData.getUserDetailsTemplate());
+        },
+        '/auth/logout': (req,res) => {
+            res.header('location','/auth/login');
+            res.status(302).send();
         }
+
     },
     post: {
     }

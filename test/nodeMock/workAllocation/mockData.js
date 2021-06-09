@@ -1,3 +1,5 @@
+const { v4 } = require ('uuid');
+
 class WorkAllocationMockData {
 
     getMyTasks(count) {
@@ -70,13 +72,13 @@ class WorkAllocationMockData {
         return { tasks: tasks };
     }
 
-    getCaseworkersList(count) {
-        const caseWorkers = [];
+    getPersonList(count){
+        const persons = [];
         for (let ctr = 0; ctr < count; ctr++) {
-            caseWorkers.push({
+            persons.push({
                 "firstName": "Jane " + ctr,
                 "lastName": "Doe",
-                "idamId": "41a90c39-d756-4eba-8e85-5b5bf56b31f"+ctr,
+                "idamId": "41a90c39-d756-4eba-8e85-5b5bf56b31f" + ctr,
                 "email": "testemail" + ctr + "@testdomain.com",
                 "location": {
                     "id": "a",
@@ -87,7 +89,11 @@ class WorkAllocationMockData {
                 }
             });
         }
-        return caseWorkers;
+        return persons;
+    }
+
+    getCaseworkersList(count) { 
+        return this.getPersonList(count);
     }
 
     getTaskDetails() {
@@ -138,6 +144,87 @@ class WorkAllocationMockData {
         return locations;
     }
 
+
+    getRelease2TaskWithPermissions(permissions,view,assignState){
+        view = view.replace(" ","");
+        const task = {
+            "id": v4(),
+            "task_title": "Review application decision",
+            "dueDate": "2021-05-12T16:00:00.000+0000",
+            "location_name": "Glasgow",
+            "case_id": "1620409659381330",
+            "case_category": "Protection",
+            "case_name": "Jo Fly",
+            "permissions": [],
+            "actions": []
+        }
+        task.permissions = permissions;
+
+        view = view.toLowerCase();
+        assignState = assignState ? assignState.toLowerCase() : '';
+        let actionsView = {};
+        if(view.includes('my')){
+            actionsView = taskActionsMatrix['myTasks'];
+        } else if (view.includes('available')) {
+            actionsView = taskActionsMatrix['availableTasks'];
+        } if (view.includes('all')) {
+            actionsView = taskActionsMatrix['allWork'];
+            actionsView = assignState.includes('un') ? taskActionsMatrix['allWork']['unassigned'] : taskActionsMatrix['allWork']['assigned'];
+        }
+
+        for (let i = 0; i < permissions.length; i++ ){
+            task.actions = task.actions.concat(actionsView[permissions[i]]);
+        } 
+        return task;
+    }
+
+
 }
+
+const ACTIONS = {
+    Reassign: { id:'reassign', title:'Reassign task'},
+    Unassign: { id:'unclaim', title:'Unassign task'},
+    GoToTasks: { id: 'go', title: 'Go to task' },
+    AssignToMe: { id: 'claim', title: 'Assign to me' },
+    AssignToMeAndGoToTasks: { id:'claim-and-go', title:'Assign to me and go to case'},
+    Assign: { id: 'assign', title: 'Assign task'},
+    MarkAsDone: { id: 'mark-as-done', title: 'Mark as done' },
+    Cancel: { id: 'cancel', title: 'Cancel task' },
+}
+const taskActionsMatrix = {
+    myTasks: {
+        Read: [],
+        Refer: [],
+        Manage: [ACTIONS.Reassign, ACTIONS.Unassign, ACTIONS.GoToTasks],
+        Execute: [],
+        Cancel: []
+
+    },
+    availableTasks: {
+        Read: [],
+        Refer: [],
+        Manage: [ACTIONS.AssignToMe, ACTIONS.AssignToMeAndGoToTasks],
+        Execute: [],
+        Cancel: []
+    },
+    allWork: {
+        unassigned: {
+            Read: [],
+            Refer: [],
+            Manage: [ACTIONS.Assign, ACTIONS.GoToTasks],
+            Execute: [ACTIONS.MarkAsDone],
+            Cancel: [ACTIONS.Cancel]
+        },
+        assigned: {
+            Read: [],
+            Refer: [],
+            Manage: [ACTIONS.Reassign, ACTIONS.Unassign, ACTIONS.GoToTasks],
+            Execute: [ACTIONS.MarkAsDone],
+            Cancel: [ACTIONS.Cancel]
+        }
+    }
+}
+
+
 
 module.exports = new WorkAllocationMockData();

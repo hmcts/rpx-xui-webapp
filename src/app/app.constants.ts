@@ -82,6 +82,13 @@ const applicationUserThemes: Theme[] =  [
         text: 'Create case',
         href: '/cases/case-filter',
         active: false
+      },
+      {
+        active: false,
+        align: 'right',
+        href: '/cases/case-search',
+        ngClass: 'hmcts-search-toggle__button',
+        text: 'Find case'
       }
     ],
     accountNavigationItems: {
@@ -111,6 +118,13 @@ const defaultUserTheme: Theme = {
       text: 'Create case',
       href: '/cases/case-filter',
       active: false
+    },
+    {
+      active: false,
+      align: 'right',
+      href: '/cases/case-search',
+      ngClass: 'hmcts-search-toggle__button',
+      text: 'Find case'
     }
   ],
   accountNavigationItems: {
@@ -124,8 +138,8 @@ const defaultUserTheme: Theme = {
   },
   showFindCase: true,
   backgroundColor: '#202020',
-  logoIsUsed: false,
-  logoType: 'default',
+  logoIsUsed: true,
+  logoType: 'myhmcts',
 };
 
 const signedOutTheme: Theme = {

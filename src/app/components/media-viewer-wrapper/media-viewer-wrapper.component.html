@@ -1,13 +1,14 @@
 <div class="js-enabled">
     <mv-media-viewer [annotationApiUrl]="mediaAnnotationApiUrl"
-                    [url]="mediaURL"
-                    [downloadFileName]="mediaFilename"
-                    [showToolbar]="true"
-                    [contentType]="mediaContentType"
-                    [enableAnnotations]="true"
-                    [enableRedactions]="true"
-                    [enableICP]="isIcpEnabled((icpEnabled$ | async), (icpJurisdictions$ | async))"
-                    [caseId]="caseId"
-                    [toolbarButtonOverrides]="toolbarButtons">
+                     [url]="mediaURL"
+                     [downloadFileName]="mediaFilename"
+                     [showToolbar]="true"
+                     [contentType]="mediaContentType"
+                     [enableAnnotations]="true"
+                     [enableRedactions]="true"
+                     [enableICP]="isIcpEnabled((icpEnabled$ | async), (icpJurisdictions$ | async))"
+                     [multimediaPlayerEnabled]="true"
+                     [caseId]="caseId"
+                     [toolbarButtonOverrides]="toolbarButtons">
     </mv-media-viewer>
 </div>

@@ -50,6 +50,7 @@ describe('TaskListWrapperComponent', () => {
     }).compileComponents();
     fixture = TestBed.createComponent(TaskListWrapperComponent);
     component = fixture.componentInstance;
+    component.isPaginationEnabled$ = of(false);
     const tasks: Task[] = getMockTasks();
     mockWorkAllocationService.searchTask.and.returnValue(of({ tasks }));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));

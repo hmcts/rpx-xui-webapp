@@ -3,6 +3,7 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 import { PaginationParameter } from 'src/work-allocation-2/models/dtos';
 
@@ -67,6 +68,7 @@ describe('TaskListComponent', () => {
   let routerSpy: jasmine.SpyObj<any>;
   const mockRouter: MockRouter = new MockRouter();
   const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['getTask']);
+  const mockFeatureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   beforeEach((() => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
@@ -80,7 +82,8 @@ describe('TaskListComponent', () => {
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
         { provide: Router, useValue: mockRouter },
-        { provide: LoadingService, useValue: mockLoadingService }
+        { provide: LoadingService, useValue: mockLoadingService },
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
@@ -96,6 +99,7 @@ describe('TaskListComponent', () => {
       page_size: 10
     };
     mockWorkAllocationService.getTask.and.returnValue(of({}));
+    mockFeatureToggleService.isEnabled.and.returnValue(of(true));
     fixture.detectChanges();
   }));
 

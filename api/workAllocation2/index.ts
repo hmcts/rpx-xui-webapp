@@ -97,7 +97,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     if (data) {
       // Note: TaskPermission placed in here is an example of what we could be getting (i.e. Manage permission)
       // These should be mocked as if we were getting them from the user themselves
-      returnData = {tasks: assignActionsToTasks(data.tasks, req.body.view), total_records: 100};
+      returnData = {tasks: assignActionsToTasks(data.tasks, req.body.view), total_records: data.total_records};
     }
 
     // Send the (possibly modified) data back in the Response.

@@ -329,12 +329,12 @@ class CaseEdit {
             inputDate = date().format('YYYY-MM-DD');
         }
 
-        const parent = parentId ? `#${parentId}_${parentId}` : "";
+        const parent = parentId ? `${parentId}_` : "";
         let datesValues = inputDate.split('-');
         reportLogger.AddMessage("Date field locator " + `${parent} #${fieldConfig.id}-day`);
-        await $(`${parent} #${fieldConfig.id}-day`).sendKeys(datesValues[2]);
-        await $(`${parent} #${fieldConfig.id}-month`).sendKeys(datesValues[1]);
-        await $(`${parent} #${fieldConfig.id}-year`).sendKeys(datesValues[0]);
+        await $(`#${parent}${fieldConfig.id}-day`).sendKeys(datesValues[2]);
+        await $(`#${parent}${fieldConfig.id}-month`).sendKeys(datesValues[1]);
+        await $(`#${parent}${fieldConfig.id}-year`).sendKeys(datesValues[0]);
         return inputDate;
     }
 
@@ -347,14 +347,14 @@ class CaseEdit {
         }
 
         let datesValues = inputDate.split('-');
-        const parent = parentId ? `#${parentId}_${parentId}` : "";
-        await $(`${parent} #${fieldConfig.id}-day`).sendKeys(datesValues[2]);
-        await $(`${parent} #${fieldConfig.id}-month`).sendKeys(datesValues[1]);
-        await $(`${parent} #${fieldConfig.id}-year`).sendKeys(datesValues[0]);
+        const parent = parentId ? `${parentId}_` : "";
+        await $(`#${parent}${fieldConfig.id}-day`).sendKeys(datesValues[2]);
+        await $(`#${parent}${fieldConfig.id}-month`).sendKeys(datesValues[1]);
+        await $(`#${parent}${fieldConfig.id}-year`).sendKeys(datesValues[0]);
 
-        await $(`${parent} #${fieldConfig.id}-hour`).sendKeys("02");
-        await $(`${parent} #${fieldConfig.id}-minute`).sendKeys("30");
-        await $(`${parent} #${fieldConfig.id}-second`).sendKeys("45");
+        await $(`#${parent}${fieldConfig.id}-hour`).sendKeys("02");
+        await $(`#${parent}${fieldConfig.id}-minute`).sendKeys("30");
+        await $(`#${parent}${fieldConfig.id}-second`).sendKeys("45");
 
         inputDate = `${inputDate}T02:30:45.000`;
         return inputDate;

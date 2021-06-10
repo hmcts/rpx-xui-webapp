@@ -27,7 +27,7 @@ Feature: WA Release 1: Task actions
             | Assign to me                | ONCECLICK  |              | You've unassigned a task. It's now in Available tasks |
             | Assign to me and go to case | ONCECLICK  |              |                                                       |
 
-@test
+
     Scenario:   Task manager actions submit
           Given I start MockApp
         Given I navigate to home page

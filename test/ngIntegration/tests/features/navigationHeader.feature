@@ -1,46 +1,19 @@
-@ng
+@ng @test
 Feature: Navigation header tabs
 
-    Scenario: Header Tabs Present with ia ad and case officer roles
-        Given I set MOCK with user roles
-            | role |
-            | caseworker-ia-caseofficer |
-        Given I start MockApp
-        Given I navigate to home page
-        Then I see primary navigation tab "Case list" in header
-        Then I see primary navigation tab "Create case" in header
-        Then I see primary navigation tab "Task list" in header
-        Then I see primary navigation tab "Task manager" in header
+    Scenario Outline: Primanry nav headers for user "<useridentifier>" and roles "<roles>"
+        Given I set MOCK with user "<useridentifier>" and roles "<roles>"
 
-    Scenario: Header Tabs Present with out ia-adm and ia-caseofficer roles
-        Given I set MOCK with user roles
-            | role                      |
-            | caseworker-divorce-solicitor |
-        Given I start MockApp
-        Given I navigate to home page
-        Then I see primary navigation tab "Case list" in header
-        Then I see primary navigation tab "Create case" in header
-        Then I do not see primary navigation tab "Task list" in header
-        Then I do not see primary navigation tab "Task manager" in header
 
-    Scenario: Header Tabs Present with IA Caseofficer role
-        Given I set MOCK with user roles
-            | role                      |
-            | caseworker-ia-caseofficer |
         Given I start MockApp
         Given I navigate to home page
-        Then I see primary navigation tab "Case list" in header
-        Then I see primary navigation tab "Create case" in header
-        Then I see primary navigation tab "Task list" in header
-        Then I see primary navigation tab "Task manager" in header
+        Then I see primary navigation tabs "<mainHeaders>" in main header
+        Then I see primary navigation tabs "<rightColumnHeaders>" in right side header column
 
-    Scenario: Header Tabs Present with IA ADM role
-        Given I set MOCK with user roles
-            | role                      |
-            | caseworker-ia-admofficer  |
-        Given I start MockApp
-        Given I navigate to home page
-        Then I see primary navigation tab "Case list" in header
-        Then I see primary navigation tab "Create case" in header
-        Then I do not see primary navigation tab "Task list" in header
-        Then I do not see primary navigation tab "Task manager" in header
+        Examples:
+            | useridentifier     | roles                                                            | mainHeaders                                    | rightColumnHeaders  |
+            | IAC_CaseOfficer_R1 | caseworker-ia-caseofficer,caseworker-ia-admofficer               | Task list, Task manager,Case list, Create case | Find case           |
+            | IAC_CaseOfficer_R2 | caseworker-ia-caseofficer,caseworker-ia-admofficer               | My work, All work ,Case list, Create case      | Find case           |
+            | IAC_Judge_WA_R1    | caseworker-ia-iacjudge,caseworker-ia,caseworker                  | Case list                                      | Find case           |
+            | IAC_Judge_WA_R2    | caseworker-ia-iacjudge,caseworker-ia,caseworker                  | My work, All work                              | Case list,Find case |
+            | SOLICITOR          | caseworker-divorce-solicitor,caseworker-divorce,pui-case-manager | Case list, Create case                         | Find case           |

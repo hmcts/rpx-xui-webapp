@@ -1,5 +1,10 @@
 const data = {
     users: [
+        {
+            idamId: "12b6a360-7f19-4985-b065-94320a891eaa",
+            email: "lukesuperuserxui@mailnesia.com",
+            release: "general", userIdentifier: "SOLICITOR"
+        },
         { 
             idamId: "12b6a360-7f19-4985-b065-94320a891eaa", 
             email: "xui_auto_co_r1@justice.gov.uk", 

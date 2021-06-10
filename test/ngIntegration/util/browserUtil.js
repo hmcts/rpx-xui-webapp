@@ -91,8 +91,8 @@ class BrowserUtil{
             for (let i = 0; i < perf.length; i++) {
                 if (perf[i].name.includes(url)) {
                     ldDone = true;
-                    global.scenarioData['featureToggles'] = (await http.get(perf[i].name,{})).data;
-
+                    await this.stepWithRetry(async () => global.scenarioData['featureToggles'] = (await http.get(perf[i].name, {})).data, 3, 'Get LD feature toggles request')
+                    
                     // await browser.sleep(2000);
                     reportLogger.AddMessage("LD response received");
                     //reportLogger.AddJson(global.scenarioData['featureToggles']);
@@ -115,7 +115,7 @@ class BrowserUtil{
         // });
     }
 
-    async stepWithRetry(action, retryCount){
+    async stepWithRetry(action, retryCount,stepDesc){
         retryCount = retryCount ? retryCount : 5;
         let retryCounter = 0;
         while (retryCounter <= retryCount){
@@ -123,7 +123,7 @@ class BrowserUtil{
                 return action();
             }catch(e){
                 retryCounter++;
-                reportLogger.AddMessage("Error occured "+e);
+                reportLogger.AddMessage(stepDesc ? stepDesc : ''+" : Error occured "+e);
                 reportLogger.AddMessage("Retring attempt  " + retryCounter);
             }
         }

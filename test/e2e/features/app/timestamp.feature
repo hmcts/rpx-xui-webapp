@@ -16,7 +16,7 @@ Feature: Verify new entry timestamp
         When I open first case in search results
         Then I see case details page
         When I Add Comment to the case
-        Then I see the event with the correct timestamp
+        Then I see the event with the current timestamp
 
 
       Examples:

@@ -8,11 +8,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     When('I Add Comment to the case', async function () {
       await caseManager.startNextStep('Add Comment');
-      await caseManager.submitComment();
+      await caseManager.clickSubmit();
     });
 
 
-    Then('I see the event with the correct timestamp', async function () {
+    Then('I see the event with the current timestamp', async function () {
       let currentDate = new Date();
       expect(await caseManager.getTimestampDisplayed()).to.be.contain(currentDate.toLocaleTimeString());
     });

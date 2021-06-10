@@ -53,7 +53,7 @@ class CaseManager {
         await BrowserWaits.waitForPageNavigation(thisPageUrl);
     }
 
-    async submitComment(){
+    async clickSubmit(){
       await this.submitBtn.click();
     }
 

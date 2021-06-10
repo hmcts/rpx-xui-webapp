@@ -274,8 +274,7 @@ class caseEditPage {
         await e.sendKeys(protractor.Key.TAB);
         let errormsg = await $("ccd-write-text-field .error-message").getText();
         expect(errormsg).to.eql("Text Field is required");
-        let buttonEnable = await this.continueButton.isEnabled();
-        expect(buttonEnable).to.eql(false);
+        
     }
 
     async eventPageDisplayShowCondition() {

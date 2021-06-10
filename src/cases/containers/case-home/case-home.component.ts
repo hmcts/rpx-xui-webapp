@@ -10,7 +10,7 @@ import {
 import { LoadingService as CommonLibLoadingService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { combineLatest, Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { delay, map } from 'rxjs/operators';
 import { GoActionParams } from 'src/cases/models/go-action-params.model';
 
 import * as fromRoot from '../../../app/store';
@@ -53,10 +53,12 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
       }
     }) as any;
 
-    this.showSpinner$ = combineLatest([
+    const libServices$ = combineLatest([
       this.ccdLibLoadingService.isLoading,
       this.commonLibLoadingService.isLoading
-    ]).pipe(map(states => states.reduce((c, s) => c || s, false)));
+    ]);
+
+    this.showSpinner$ = libServices$.pipe(delay(0), map(states => states.reduce((c, s) => c || s, false)));
   }
 
   public ngOnDestroy(): void {

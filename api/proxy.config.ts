@@ -12,6 +12,15 @@ import * as searchCases from './searchCases'
 
 export const initProxy = (app: Express) => {
     applyProxy(app, {
+        rewrite: true,
+        rewriteUrl: '/activity',
+        source: [
+            '/activity',
+        ],
+        target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH),
+    })
+
+    applyProxy(app, {
         rewrite: false,
         source: '/documents',
         target: getConfigValue(SERVICES_DOCUMENTS_API_PATH),

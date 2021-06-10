@@ -87,5 +87,26 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await myWorkPage.clickSubNavigationTab(subNavTabLabel);
     });
 
+    Then('I validate task list page results text displayed as {string}', async function(pagnationResultText){
+        expect(await myWorkPage.getPaginationResultText()).to.include(pagnationResultText);
+    });
+
+    When('I click task list pagination link {string}', async function(paginationLinktext){
+        if (paginationLinktext.toLowerCase() === "next"){
+            await myWorkPage.pageNextLink.click();
+        } else if (paginationLinktext.lowerCase() === "previous") {
+            await myWorkPage.pagePreviousLink.click();
+        }else{
+            await myWorkPage.clickPaginationPageNum(paginationLinktext);
+        }
+    });
+
+    Then('I validate task search request with reference {string} has pagination parameters', async function(requestReference,datatable){
+        const reqBody = global.scenariodata[requestReference];
+        const datatableHash = datatable.hashes()[0];
+        expect(reqBody.searchRequest.pagination_parameters.page_number).to.equual(datatableHash.PageNumber);
+        expect(reqBody.searchRequest.pagination_parameters.page_size).to.equual(datatableHash.PageSize);
+    });
+
 
 });

@@ -54,6 +54,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
      });
 
     Given('I set MOCK request {string} intercept with reference {string}', async function(url,reference){
+        global.scenarioData[reference] = null;
         MockApp.addIntercept(url,(req,res,next) => {
             global.scenarioData[reference] = req.body;
             next();

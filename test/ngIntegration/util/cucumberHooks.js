@@ -3,6 +3,9 @@ const Cucumber = require('cucumber');
 const { defineSupportCode } = require('cucumber');
 const { Given, When, Then } = require('cucumber');
 
+const minimist = require('minimist');
+const argv = minimist(process.argv.slice(2));
+
 const BrowserWaits = require('../../e2e/support/customWaits');
 
 const CucumberReportLog = require("../../e2e/support/reportLogger");
@@ -19,7 +22,10 @@ defineSupportCode(({ Before, After }) => {
     });
 
     After(async function (scenario) {
-        //await BrowserWaits.waitForSeconds(600);
+        if(argv.debug){
+            await BrowserWaits.waitForSeconds(600);
+        }
+        
         await MockApp.stopServer();
 
         CucumberReportLog.AddMessage("NG Integration test status : " + scenario.result.status);

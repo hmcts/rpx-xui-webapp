@@ -3,9 +3,12 @@ const Cucumber = require('cucumber');
 const { defineSupportCode } = require('cucumber');
 const { Given, When, Then } = require('cucumber');
 
-const CucumberReportLog = require("../../e2e/support/reportLogger");
+const minimist = require('minimist');
+const argv = minimist(process.argv.slice(2));
 
+const CucumberReportLog = require("../../e2e/support/reportLogger");
 const MockApp = require('../../nodeMock/app');
+const BrowserWaits = require('../../e2e/support/customWaits');
 
 defineSupportCode(({ Before, After }) => {
     Before(function (scenario) {
@@ -17,6 +20,10 @@ defineSupportCode(({ Before, After }) => {
     });
 
     After(async function (scenario) {
+        if(argv.debug){
+            await BrowserWaits.waitForSeconds(600);
+        }
+        
         await MockApp.stopServer();
 
         CucumberReportLog.AddMessage("NG Integration test status : " + scenario.result.status);

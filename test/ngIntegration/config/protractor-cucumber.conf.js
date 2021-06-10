@@ -1,11 +1,11 @@
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
-const minimist = require('minimist');
+
 
 var screenShotUtils = require("protractor-screenshot-utils").ProtractorScreenShotUtils;
 
 chai.use(chaiAsPromised);
-
+const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));
 
 const jenkinsConfig = [

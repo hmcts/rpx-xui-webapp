@@ -20,6 +20,9 @@ class TaskListPage extends TaskList {
         this.infoMessages = $$('exui-info-message .hmcts-banner__message');
 
         this.taskInfoMessageBanner = new TaskMessageBanner();
+
+        this.pagePreviousLink = $('exui-task-list pagination-template .pagination-previous a');
+        this.pageNextLink = $('exui-task-list pagination-template .pagination-next a');
     }
 
     async amOnPage() {
@@ -89,6 +92,9 @@ class TaskListPage extends TaskList {
         }
         return false;
     }
+
+
+  
 
 }
 

@@ -52,6 +52,7 @@
     "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact",
     "test:api": "mocha -r ts-node/register --config ./test/integration/tests/mocha.json --reporter mochawesome --reporter-options reportDir=reports/tests/api_functional,reportFilename=mochawesome",
     "test:ngIntegration": "webdriver-manager update --versions.chrome 2.40 && ng e2e --webdriver-update=false --protractorConfig=./test/ngIntegration/config/protractor-cucumber.conf.js",
+    "test:ngIntegrationDebug": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/ngIntegration/config/protractor-cucumber.conf.js --debug",
     "test:nodeMock": "nodemon test/nodeMock/app --standalone"
   },
   "private": true,

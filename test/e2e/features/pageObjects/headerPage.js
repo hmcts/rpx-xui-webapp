@@ -91,6 +91,15 @@ function HeaderPage() {
     return await this.getTabElementWithText(tabDisplatText).isPresent();
   };
 
+  this.isTabPresentInMainNav = async function (tabText) {
+    return await this.primaryNavBar_NavItems.element(by.xpath('//a[contains(text(),"' + tabText + '")]')).isPresent();
+  };
+
+  this.isTabPresentInRightNav = async function (tabText) {
+    return await this.primaryNavBar_rightSideItems.element(by.xpath('//a[contains(text(),"' + tabText + '")]')).isPresent();
+  };
+
+
   this.waitForPrimaryNavDisplay = async function () {
     await BrowserWaits.waitForElement(this.primaryNavBar);
   };

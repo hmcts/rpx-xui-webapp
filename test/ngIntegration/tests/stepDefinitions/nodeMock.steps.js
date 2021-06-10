@@ -67,7 +67,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
      When('I wait for reference {string} value not null', async function(reference){
          await BrowserWaits.waitForConditionAsync(async () => {
              return global.scenarioData[reference] !== null
-         },10000);
+         },5000);
      });
 
 

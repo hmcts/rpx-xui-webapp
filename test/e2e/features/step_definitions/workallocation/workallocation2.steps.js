@@ -28,20 +28,20 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I validate location filter is not displayed', async function () {
         await BrowserWaits.retryWithActionCallback(async () => {
-            expect(await myWorkPage.genericFilterContainer.isPresent()).to.be.false;;
+            expect(await myWorkPage.genericFilterContainer.isPresent(),'location filter is still displayed').to.be.false;;
         });
         
     });
 
     Then('I validate My work filter locations displayed', async function () {
         await myWorkPage.waitForWorkFilterToDisplay();
-        expect(await myWorkPage.getWorkFilterLocationsCount() > 0).to.be.true;;
+        expect(await myWorkPage.getWorkFilterLocationsCount() > 0,'No location inputs displayed').to.be.true;;
     });
 
     Then('I validate work locations selected count is {int}', async function (selectedLocationsCount) {
         await myWorkPage.waitForWorkFilterToDisplay();
         const selectedLocs = await myWorkPage.getListOfSelectedLocations();
-        expect(selectedLocs.length).to.equal(selectedLocationsCount);
+        expect(selectedLocs.length,'selected locations count not matching').to.equal(selectedLocationsCount);
 
     });
 
@@ -57,7 +57,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         for (let i = 0; i < locationNameHashes.length; i++){
             locationNamesArr.push(locationNameHashes[i].locationName);
         }
-        expect(selectedLocations).to.include.members(locationNamesArr);
+        expect(selectedLocations, 'actual missing expected locations').to.have.same.members(locationNamesArr);
+        //expect(locationNamesArr,'actual has more locations selected').to.include.all.members(selectedLocations);
+        
 
     });
 

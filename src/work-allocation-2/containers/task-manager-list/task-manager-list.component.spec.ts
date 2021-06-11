@@ -2,8 +2,8 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { Component, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
+import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 
 import { SessionStorageService } from '../../../app/services';
@@ -34,6 +34,8 @@ describe('TaskManagerListComponent', () => {
   const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
+  const mockLoadingService: LoadingService = jasmine.createSpyObj<LoadingService>('mockLoadingService', ['register', 'unregister']);
+  const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
   const mockLocations: dtos.Location[] = getMockLocations();
   const mockCaseworkers: dtos.Caseworker[] = getMockCaseworkers();
   const caseworkerDiplayName: CaseworkerDisplayName = new CaseworkerDisplayName();
@@ -44,7 +46,8 @@ describe('TaskManagerListComponent', () => {
         CdkTableModule,
         ExuiCommonLibModule,
         RouterTestingModule,
-        WorkAllocationComponentsModule
+        WorkAllocationComponentsModule,
+        PaginationModule
       ],
       declarations: [ TaskManagerListComponent, WrapperComponent, TaskListComponent ],
       providers: [
@@ -53,15 +56,19 @@ describe('TaskManagerListComponent', () => {
         { provide: CaseworkerDataService, useValue: mockCaseworkerService },
         { provide: LocationDataService, useValue: mockLocationService },
         { provide: AlertService, useValue: mockAlertService },
+        { provide: LoadingService, useValue: mockLoadingService },
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
+    component.isPaginationEnabled$ = of(false);
     const tasks: Task[] = getMockTasks();
     mockTaskService.searchTask.and.returnValue(of({ tasks }));
     mockLocationService.getLocations.and.returnValue(of(mockLocations));
     mockCaseworkerService.getAll.and.returnValue(of(mockCaseworkers));
+    mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     fixture.detectChanges();
   });
 
@@ -72,7 +79,7 @@ describe('TaskManagerListComponent', () => {
 
 
   it('should make a call to load tasks using the default search request', () => {
-    const searchRequest = component.getSearchTaskRequest();
+    const searchRequest = component.getSearchTaskRequestPagination();
     const payload = { searchRequest, view: component.view };
     expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
     expect(component.tasks).toBeDefined();
@@ -106,7 +113,7 @@ describe('TaskManagerListComponent', () => {
     select.dispatchEvent(new Event('change'));
     fixture.detectChanges();
 
-    const searchRequest = component.getSearchTaskRequest();
+    const searchRequest = component.getSearchTaskRequestPagination();
     // Make sure the search request looks right.
     expect(searchRequest.search_parameters.length).toEqual(2);
     expect(searchRequest.search_parameters[0].key).toEqual('location');
@@ -127,7 +134,7 @@ describe('TaskManagerListComponent', () => {
     select.dispatchEvent(new Event('change'));
     fixture.detectChanges();
 
-    const searchRequest = component.getSearchTaskRequest();
+    const searchRequest = component.getSearchTaskRequestPagination();
     // Make sure the search request looks right.
     expect(searchRequest.search_parameters.length).toEqual(2);
     expect(searchRequest.search_parameters[1].key).toEqual('user');
@@ -148,7 +155,7 @@ describe('TaskManagerListComponent', () => {
     select.dispatchEvent(new Event('change'));
     fixture.detectChanges();
 
-    const searchRequest = component.getSearchTaskRequest();
+    const searchRequest = component.getSearchTaskRequestPagination();
     // Make sure the search request looks right.
     expect(searchRequest.search_parameters.length).toEqual(2);
     expect(searchRequest.search_parameters[0].key).toEqual('location');

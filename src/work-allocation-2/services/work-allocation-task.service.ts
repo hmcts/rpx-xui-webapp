@@ -23,11 +23,11 @@ export class WorkAllocationTaskService {
    * Call the API to complete a task.
    * @param taskId specifies which task should be completed.
    */
-  public completeTask(taskId: string): Observable<any> {
+  public completeTask(taskId: string): Observable<Response> {
     return this.performActionOnTask(taskId, ACTION.COMPLETE);
   }
 
-  public cancelTask(taskId: string): Observable<any> {
+  public cancelTask(taskId: string): Observable<Response> {
     return this.performActionOnTask(taskId, ACTION.CANCEL);
   }
 
@@ -36,24 +36,28 @@ export class WorkAllocationTaskService {
    * @param taskId specifies which task should be assigned.
    * @param user specifies who this task should be assigned to.
    */
-  public assignTask(taskId: string, user: any): Observable<any> {
+  public assignTask(taskId: string, user: any): Observable<Response> {
     // Make a POST with the specified assignee in the payload.
     return this.http.post<any>(this.getActionUrl(taskId, ACTION.ASSIGN),  user );
   }
 
-  public postTask(task: TaskSearchParameters): Observable<any> {
+  public postTask(task: TaskSearchParameters): Observable<Response> {
     return this.http.post<any>(`${BASE_URL}`, task);
   }
 
-  public searchTask(body: { searchRequest: SearchTaskRequest, view: string }): Observable<any> {
+  public searchTask(body: { searchRequest: SearchTaskRequest, view: string }): Observable<Task[]> {
     return this.http.post<any>(`${BASE_URL}`, body);
   }
 
-  public claimTask(taskId: string): Observable<any> {
+  public searchTaskWithPagination(body: { searchRequest: SearchTaskRequest, view: string }): Observable<Task[]> {
+    return this.http.post<any>(`/workallocation2/taskWithPagination`, body);
+  }
+
+  public claimTask(taskId: string): Observable<Response> {
     return this.performActionOnTask(taskId, ACTION.CLAIM);
   }
 
-  public unclaimTask(taskId: string): Observable<any> {
+  public unclaimTask(taskId: string): Observable<Response> {
     return this.performActionOnTask(taskId, ACTION.UNCLAIM);
   }
 
@@ -62,7 +66,7 @@ export class WorkAllocationTaskService {
     return this.http.get<Task>(url);
   }
 
-  public performActionOnTask(taskId: string, action: ACTION): Observable<any> {
+  public performActionOnTask(taskId: string, action: ACTION): Observable<Response> {
     // Make a POST with an empty payload.
     return this.http.post<any>(this.getActionUrl(taskId, action), {});
   }

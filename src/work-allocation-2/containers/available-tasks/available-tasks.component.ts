@@ -31,7 +31,7 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
    * TODO: When implementing filtering this may need to be changed to get location(s) from filter
    * Override the default.
    */
-  public getSearchTaskRequest(): SearchTaskRequest {
+  public getSearchTaskRequestPagination(): SearchTaskRequest {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
@@ -43,7 +43,8 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
           {key: 'state', operator: 'IN', values: ['unassigned']}
         ],
         sorting_parameters: [this.getSortParameter()],
-        search_by: isJudge ? 'judge' : 'caseworker'
+        search_by: isJudge ? 'judge' : 'caseworker',
+        pagination_parameters: this.getPaginationParameter()
       };
     }
   }
@@ -114,5 +115,12 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
       default:
         return super.onActionHandler(taskAction);
     }
+  }
+
+  /**
+   * Handle the paging event
+   */
+  public onPaginationEvent(pageNumber: number): void {
+    this.onPaginationHandler(pageNumber);
   }
 }

@@ -4,7 +4,9 @@ import { CLAIM, CLAIM_AND_GO, GO, REASSIGN, RELEASE, TaskPermission } from './co
 import { JUDICIAL_MY_TASKS } from './constants/mock.data';
 import { Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/task';
 import { assignActionsToTasks, getActionsByPermissions, mapCaseworkerData, mapCaseworkerPrimaryLocation, prepareGetTaskUrl,
+  preparePaginationUrl,
   preparePostTaskUrlAction, prepareSearchTaskUrl } from './util';
+  import { mockReq } from 'sinon-express-mock';
 
 describe('workAllocation.utils', () => {
 
@@ -37,6 +39,71 @@ describe('workAllocation.utils', () => {
       const BASE_URL: string = 'base';
       const url = prepareSearchTaskUrl(BASE_URL);
       expect(url).to.equal('base/task');
+    });
+
+  });
+
+  describe('preparePaginationUrl', () => {
+
+    it('should correctly format without a request body, searchRequest or pagination parameters', () => {
+      const BASE_URL: string = 'base';
+      const url = prepareSearchTaskUrl(BASE_URL);
+      let req = mockReq({
+        body: null
+      });
+      expect(preparePaginationUrl(req, url)).to.equal(url);
+      req = req = mockReq({
+        body: {
+          searchRequest: null,
+          view: 'view',
+        },
+        session: {
+          caseworkers: null
+        }
+      });
+      expect(preparePaginationUrl(req, url)).to.equal(url);
+      req = req = mockReq({
+        body: {
+          searchRequest: { pagination_parameters: null},
+          view: 'view',
+        },
+        session: {
+          caseworkers: null
+        }
+      });
+      expect(preparePaginationUrl(req, url)).to.equal(url);
+      req = req = mockReq({
+        body: {
+          searchRequest: {
+            pagination_parameters: {
+              page_number: 3,
+              page_size: 25,
+            }
+          },
+          view: 'view',
+        },
+        session: {
+          caseworkers: null
+        }
+      });
+      let expectedReturnedUrl = url.concat('?first_result=50&max_results=25');
+      expect(preparePaginationUrl(req, url)).to.equal(expectedReturnedUrl);
+      req = req = mockReq({
+        body: {
+          searchRequest: {
+            pagination_parameters: {
+              page_number: 11,
+              page_size: 3,
+            }
+          },
+          view: 'view',
+        },
+        session: {
+          caseworkers: null
+        }
+      });
+      expectedReturnedUrl = url.concat('?first_result=30&max_results=3');
+      expect(preparePaginationUrl(req, url)).to.equal(expectedReturnedUrl);
     });
 
   });

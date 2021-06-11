@@ -1,32 +1,32 @@
 
 var { defineSupportCode } = require('cucumber');
 
-const MockApp = require('../../../nodeMock/app');
-const workAllocationMockData = require('../../../nodeMock/workAllocation/mockData');
+const MockApp = require('../../../../nodeMock/app');
+const workAllocationMockData = require('../../../../nodeMock/workAllocation/mockData');
 
-const BrowserWaits = require('../../../e2e/support/customWaits');
-const taskListPage = require('../../../e2e/features/pageObjects/workAllocation/taskListPage');
-const taskManagerPage = require('../../../e2e/features/pageObjects/workAllocation/taskManagerPage');
-const taskAssignmentPage = require('../../../e2e/features/pageObjects/workAllocation/taskAssignmentPage');
+const BrowserWaits = require('../../../../e2e/support/customWaits');
+const taskListPage = require('../../../../e2e/features/pageObjects/workAllocation/taskListPage');
+const taskManagerPage = require('../../../../e2e/features/pageObjects/workAllocation/taskManagerPage');
+const taskAssignmentPage = require('../../../../e2e/features/pageObjects/workAllocation/taskAssignmentPage');
 
-const caseDetailsPage = require('../pageObjects/caseDetailsPage');
+const caseDetailsPage = require('../../pageObjects/caseDetailsPage');
 
-const headerPage = require('../../../e2e/features/pageObjects/headerPage');
-const CaseListPage = require('../../../e2e/features/pageObjects/CaseListPage');
-const errorPage = require('../../../e2e/features/pageObjects/errorPage'); 
+const headerPage = require('../../../../e2e/features/pageObjects/headerPage');
+const CaseListPage = require('../../../../e2e/features/pageObjects/CaseListPage');
+const errorPage = require('../../../../e2e/features/pageObjects/errorPage'); 
 
-const SoftAssert = require('../../util/softAssert');
-const browserUtil = require('../../util/browserUtil');
-const errorMessageForResponseCode = require('../../util/errorResonseMessage');
+const SoftAssert = require('../../../util/softAssert');
+const browserUtil = require('../../../util/browserUtil');
+const errorMessageForResponseCode = require('../../../util/errorResonseMessage');
 
 
-const MockUtil = require('../../util/mockUtil');
-const WAUtil = require('../workAllocation/utils');
-const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
-const CucumberReporter = require('../../../e2e/support/reportLogger');
+const MockUtil = require('../../../util/mockUtil');
+const WAUtil = require('../../workAllocation/utils');
+const nodeAppMockData = require('../../../../nodeMock/nodeApp/mockData');
+const CucumberReporter = require('../../../../e2e/support/reportLogger');
 
-const headerpage = require('../../../e2e/features/pageObjects/headerPage');
-const taskActionPage = require('../../../e2e/features/pageObjects/workAllocation/taskActionPage');
+const headerpage = require('../../../../e2e/features/pageObjects/headerPage');
+const taskActionPage = require('../../../../e2e/features/pageObjects/workAllocation/taskActionPage');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
@@ -61,8 +61,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Then('I validate tasks count in page {int}', async function (tasksCount){
    
         expect(parseInt(await taskListPage.getTaskListCountInTable()), 'Task count does not match expected ').to.equal(tasksCount);
-        // expect(parseInt(await taskListPage.getTaskCountInDisplayLabel()), 'Task count does not match expected ').to.equal(tasksCount);
-        if (tasksCount === 0) {
+         if (tasksCount === 0) {
             expect(await taskListPage.isTableFooterDisplayed(), "task list table footer is not displayed").to.be.true;
             expect(await taskListPage.getTableFooterMessage(), "task list table footer message when 0 tasks are displayed").to.equal("You have no assigned tasks.");
         } else {
@@ -73,12 +72,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
      Then('I validate tasks column sorting', async function(){
          let tasksRequested = false; 
          let sortColumnInRequestParam = "";
-         await MockUtil.setMockResponse("POST", "/workallocation/task/", (req, res) => {
+         await MockUtil.setMockResponse("POST", "/workallocation/taskWithPagination/", (req, res) => {
              CucumberReporter.AddMessage("get tasks with sort request body:");
              CucumberReporter.AddJson(req.body);
              sortColumnInRequestParam = WAUtil.getTaskListReqSearchParam(req.body);
              tasksRequested = true;
-             res.send(workAllocationMockData.getMyTasks(10));
+             res.send(workAllocationMockData.getMyTasks(25));
          });
 
          const columnHeaders = await taskListPage.getColumnHeaderNames();
@@ -108,6 +107,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
          }
  
      });
+
 
     Then('I validate My tasks sort column persist in session', async function () {
 
@@ -170,16 +170,16 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Then('I validate error responses on My tasks page', async function(){
         const softAssertion = new SoftAssert(this);
 
-        await MockUtil.setMockResponse("POST", "/workallocation/task/", (req, res) => {
+        await MockUtil.setMockResponse("POST", "/workallocation/taskWithPagination/", (req, res) => {
             res.send(workAllocationMockData.getMyTasks(10));
         });
 
         // expect(await taskListPage.amOnPage()).to.be.true;
         for (const responseCode of testErrorResponseCodes) {
-            CucumberReporter.AddMessage(`Validation on ${responseCode} error POST /workallocation/task/ `);
+            CucumberReporter.AddMessage(`Validation on ${responseCode} error POST /workallocation/taskWithPagination/ `);
  
             await headerPage.clickManageCases();
-            await MockUtil.setMockResponse("POST", "/workallocation/task/", (req, res) => {
+            await MockUtil.setMockResponse("POST", "/workallocation/taskWithPagination/", (req, res) => {
                 res.status(responseCode).send(workAllocationMockData.getMyTasks(10));
             })
             await headerPage.clickTaskList();
@@ -198,7 +198,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Then('I validate error responses on available tasks page', async function(){
         const softAssertion = new SoftAssert(this);
  
-        await MockUtil.setMockResponse("POST", "/workallocation/task/", (req, res) => {
+        await MockUtil.setMockResponse("POST", "/workallocation/taskWithPagination/", (req, res) => {
             res.send(workAllocationMockData.getMyTasks(10));
         });
 
@@ -209,10 +209,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             await headerPage.clickManageCases();
             await headerPage.clickTaskList();
             await taskListPage.amOnPage();
-            await MockUtil.setMockResponse("POST", "/workallocation/task/", (req, res) => {
+            await MockUtil.setMockResponse("POST", "/workallocation/taskWithPagination/", (req, res) => {
                 res.status(responseCode).send(workAllocationMockData.getAvailableTasks(10));
             });
-            CucumberReporter.AddMessage(`Validation on ${responseCode} error POST /workallocation/task/ `);
+            CucumberReporter.AddMessage(`Validation on ${responseCode} error POST /workallocation/taskWithPagination`);
 
             await taskListPage.clickAvailableTasks();
 
@@ -252,7 +252,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Then('I validate Task manager page tasks count {int}', async function (tasksCount){
        
         expect(parseInt(await taskManagerPage.getTaskListCountInTable()), 'Task count does not match expected ').to.equal(tasksCount);
-        expect(parseInt(await taskManagerPage.getTaskCountInDisplayLabel()), 'Task count does not match expected ').to.equal(tasksCount);
+        
         if (tasksCount === 0) {
             expect(await taskManagerPage.isTableFooterDisplayed(), "task list table footer is not displayed").to.be.true;
             expect(await taskManagerPage.getTableFooterMessage(), "task list table footer message when 0 tasks are displayed").to.equal("There are no tasks that match your selection.");
@@ -269,12 +269,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         for (const responseCode of testErrorResponseCodes) {
 
             await headerPage.clickManageCases();
-            await MockUtil.setMockResponse("POST", "/workallocation/task/", (req, res) => {
+            await MockUtil.setMockResponse("POST", "/workallocation/taskWithPagination/", (req, res) => {
                 res.status(responseCode).send(workAllocationMockData.getTaskManagerTasks(10));
             })
-            CucumberReporter.AddMessage(`Validation on ${responseCode} error POST /workallocation/task/ `);
+            CucumberReporter.AddMessage(`Validation on ${responseCode} error POST /workallocation/taskWithPagination/ `);
 
-            await headerPage.clickTaskList();
+            await headerPage.clickTaskManager();
 
             const isErrorPageDisplayed = await errorPage.isErrorPageDisplayed();
             await softAssertion.assert(async () => expect(isErrorPageDisplayed, "Error page not displayed on error " + responseCode).to.be.true);
@@ -319,7 +319,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             for (const responseCode of testErrorResponseCodes) {
                 await headerPage.clickManageCases();
                await MockUtil.resetMock(); 
-                await MockUtil.setMockResponse("POST", '/workallocation/task/', (req, res) => {
+                await MockUtil.setMockResponse("POST", '/workallocation/taskWithPagination/', (req, res) => {
                     res.send(workAllocationMockData.getMyTasks(10));
                 });
 
@@ -354,7 +354,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
        
         for (const responseCode of testErrorResponseCodes) {
             await MockUtil.resetMock();
-            await MockUtil.setMockResponse("POST", '/workallocation/task/', (req, res) => {
+            await MockUtil.setMockResponse("POST", '/workallocation/taskWithPagination/', (req, res) => {
                 res.send(workAllocationMockData.getMyTasks(10));
             }); 
             await headerPage.clickManageCases();
@@ -408,7 +408,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 
                 await headerPage.clickManageCases();
                 await MockUtil.resetMock(); 
-                await MockUtil.setMockResponse("POST", '/workallocation/task/', (req, res) => {
+                await MockUtil.setMockResponse("POST", '/workallocation/taskWithPagination/', (req, res) => {
                     res.send(workAllocationMockData.getAvailableTasks(10));
                 });
                 await MockUtil.setMockResponse("POST", '/workallocation/task/:taskId/claim', (req, res) => {
@@ -452,7 +452,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                
                 await headerPage.clickManageCases();
                 await MockUtil.resetMock();
-                await MockUtil.setMockResponse("POST", '/workallocation/task/', (req, res) => {
+                await MockUtil.setMockResponse("POST", '/workallocation/taskWithPagination/', (req, res) => {
                     res.send(workAllocationMockData.getTaskManagerTasks(10));
                 });
                 await MockUtil.setMockResponse("GET", '/workallocation/task/:taskId', (req, res) => {

@@ -2,11 +2,11 @@ const jwt = require('jsonwebtoken');
 const reportLogger = require('../../e2e/support/reportLogger');
 // const addContext = require('mochawesome/addContext');
 const MockApp = require('../../nodeMock/app');
-
+const config = require('../config/protractor-cucumber.conf');
 class BrowserUtil{
 
     async gotoHomePage(){
-        await browser.get("http://localhost:4200/"); 
+        await browser.get(config.config.baseUrl);
     }
 
     setAuthCookie(){

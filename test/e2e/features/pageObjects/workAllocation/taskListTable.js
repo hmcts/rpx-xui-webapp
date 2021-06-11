@@ -1,4 +1,6 @@
 const c = require('config');
+const { constants } = require('karma');
+const browserUtil = require('../../../../ngIntegration/util/browserUtil');
 const BrowserWaits = require('../../../support/customWaits');
 var cucumberReporter = require('../../../support/reportLogger');
 
@@ -13,6 +15,11 @@ class TaskListTable{
         this.taskActionsRows = $$('exui-task-list table tbody>tr.actions-row');
         this.selectedTaskActioRow = $('exui-task-list table tbody>tr.actions-row[selected]') 
         this.displayedtaskActionRow = $('tr.actions-row[aria-hidden=false]');
+
+        this.paginationResultText = $('exui-task-list .pagination-top span');
+        this.pagePreviousLink = $('exui-task-list pagination-template .pagination-previous a');
+        this.pageNextLink = $('exui-task-list pagination-template .pagination-next a');
+
     }
 
     async waitForTable(){
@@ -175,6 +182,28 @@ class TaskListTable{
         await BrowserWaits.waitForSeconds(1);
         return await taskRow.isDisplayed();
     }
+
+    async getPaginationResultText() {
+        return await this.paginationResultText.getText();
+    }
+
+
+    async isPaginationPageNumEnabled(pageNum) {
+        const pageNumWithoutLink = element(by.xpath(`//exui-task-list//pagination-template//li//span[contains(text(),'${pageNum}')]`));
+        const pageNumWithLink = element(by.xpath(`//exui-task-list//pagination-template//li//a//span[contains(text(),'${pageNum}')]`));
+
+        return (await pageNumWithLink.isPresent()) && !(await pageNumWithoutLink.isPresent());
+    }
+
+    async clickPaginationPageNum(pageNum) {
+        if (!(await this.isPaginationPageNumEnabled(pageNum))) {
+            throw new Error("Page num is not present or not enabled: " + pageNum);
+        }
+        const pageNumWithLink = element(by.xpath(`//exui-task-list//pagination-template//li//a//span[contains(text(),'${pageNum}')]`));
+        await pageNumWithLink.click();
+
+    }
+
 }
 
 module.exports = TaskListTable; 

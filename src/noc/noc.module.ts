@@ -6,8 +6,8 @@ import { AbstractAppConfig, CaseUIToolkitModule } from '@hmcts/ccd-case-ui-toolk
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { SharedModule } from '../app/shared/shared.module';
 import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
+import { SharedModule } from '../app/shared/shared.module';
 import * as fromContainers from './containers';
 import { NocDateFieldComponent } from './containers/noc-field/date';
 import { NocDateTimeFieldComponent } from './containers/noc-field/datetime';
@@ -21,6 +21,7 @@ import { NocTextFieldComponent } from './containers/noc-field/text';
 import { NocTimeFieldComponent } from './containers/noc-field/time';
 import { UtilsModule } from './containers/noc-field/utils/utils.module';
 import { NocYesNoFieldComponent, YesNoService } from './containers/noc-field/yes-no';
+import { NocGuard } from './guards/noc-guard';
 import { nocRouting } from './noc.routes';
 import { NocService } from './services';
 import { effects, reducers } from './store';
@@ -58,7 +59,8 @@ import { effects, reducers } from './store';
     NocService,
     PaletteService,
     FormValidatorsService,
-    YesNoService
+    YesNoService,
+    NocGuard
   ]
 })
 /**

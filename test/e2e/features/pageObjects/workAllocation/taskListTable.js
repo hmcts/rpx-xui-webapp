@@ -16,6 +16,7 @@ class TaskListTable{
         this.selectedTaskActioRow = $('exui-task-list table tbody>tr.actions-row[selected]') 
         this.displayedtaskActionRow = $('tr.actions-row[aria-hidden=false]');
 
+        this.paginationContainer = $('ccd-pagination');
         this.paginationResultText = $('exui-task-list .pagination-top span');
         this.pagePreviousLink = $('exui-task-list pagination-template .pagination-previous a');
         this.pageNextLink = $('exui-task-list pagination-template .pagination-next a');

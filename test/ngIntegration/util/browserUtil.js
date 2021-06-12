@@ -3,6 +3,20 @@ const reportLogger = require('../../e2e/support/reportLogger');
 // const addContext = require('mochawesome/addContext');
 const MockApp = require('../../nodeMock/app');
 const config = require('../config/protractor-cucumber.conf');
+
+
+const axios = require('axios');
+
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
+axios.defaults.headers.common['Content-Type'] = 'application/json';
+const axiosOptions = {
+
+};
+axios.defaults.withCredentials = true;
+
+const http = axios.create(axiosOptions);
+
 class BrowserUtil{
 
     async gotoHomePage(){
@@ -67,21 +81,23 @@ class BrowserUtil{
         return await this.waitForNetworkResponse('app.launchdarkly.com/sdk/evalx');
     }
 
-
     async waitForNetworkResponse(url){
         let startTime = new Date();
         let elapsedTime = 0;
         let ldDone = false;
         while (!ldDone && elapsedTime < 15) {
             let perf = await browser.executeScript("return window.performance.getEntriesByType('resource')");
-            perf.forEach((perfitem) => {
-                if (perfitem.name.includes(url)) {
+            for (let i = 0; i < perf.length; i++) {
+                if (perf[i].name.includes(url)) {
                     ldDone = true;
+                    await this.stepWithRetry(async () => global.scenarioData['featureToggles'] = (await http.get(perf[i].name, {})).data, 3, 'Get LD feature toggles request')
+
                     // await browser.sleep(2000);
                     reportLogger.AddMessage("LD response received");
+                    //reportLogger.AddJson(global.scenarioData['featureToggles']);
                     return true;
                 }
-            });
+            };
             elapsedTime = (new Date() - startTime) / 1000;
         }
         reportLogger.AddMessage("LD response not received in 15sec");
@@ -98,6 +114,20 @@ class BrowserUtil{
         // });
     }
 
+
+    async stepWithRetry(action, retryCount, stepDesc) {
+        retryCount = retryCount ? retryCount : 5;
+        let retryCounter = 0;
+        while (retryCounter <= retryCount) {
+            try {
+                return action();
+            } catch (e) {
+                retryCounter++;
+                reportLogger.AddMessage(stepDesc ? stepDesc : '' + " : Error occured " + e);
+                reportLogger.AddMessage("Retring attempt  " + retryCounter);
+            }
+        }
+    }
 }
 
 module.exports = new BrowserUtil();

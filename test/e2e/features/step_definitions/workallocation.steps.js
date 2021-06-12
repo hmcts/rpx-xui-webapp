@@ -12,8 +12,11 @@ const Browserutil = require('../../../ngIntegration/util/browserUtil');
 const BrowserWaits = require('../../support/customWaits');
 const SoftAssert = require('../../../ngIntegration/util/softAssert');
 const taskManagerPage = require('../pageObjects/workAllocation/taskManagerPage');
+const browserUtil = require('../../../ngIntegration/util/browserUtil');
+const featureToggleUtil = require('../../../ngIntegration/util/featureToggleUtil');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
+
 
     Then('I see Task list sub navigation tabs', async function () {
         expect(await taskListPage.amOnPage(), "Task list sub navigation tabs not present").to.be.true;
@@ -261,6 +264,13 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const datatableHash = datatable.hashes()[0];
         expect(reqBody.searchRequest.pagination_parameters.page_number).to.equual(datatableHash.PageNumber);
         expect(reqBody.searchRequest.pagination_parameters.page_size).to.equual(datatableHash.PageSize);
+    });
+
+    Then('I validate tasks pagination is displayed if feature toggle {string} is on', async function(featureToggleName){
+        
+        const toggleVal = featureToggleUtil.getFeatureToggleValue(featureToggleName);
+        expect(await taskListPage.paginationContainer.isDisplayed(), 'Pagination display is expected to be ' + toggleVal).to.equal(toggleVal);
+
     });
 
 });

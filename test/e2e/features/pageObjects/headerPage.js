@@ -1,8 +1,11 @@
 'use strict';
 
+const browserUtil = require('../../../ngIntegration/util/browserUtil');
 const { SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants');
 
 var BrowserWaits = require('../../support/customWaits');
+var caseListPage = require('./CaseListPage');
+var createCaseStartPage = require('./createCaseStartPage');
 
 function HeaderPage() {
 
@@ -42,30 +45,37 @@ function HeaderPage() {
   this.clickManageCases = async function () {
     await BrowserWaits.waitForElement(this.manageCases);  
     await this.manageCases.click();
-    await BrowserWaits.waitForElement($('exui-case-list'));  
+    await browserUtil.waitForLD();
+    //await BrowserWaits.waitForElement($('exui-case-list'));  
   };
 
   this.clickCaseList = async function () {
     await BrowserWaits.waitForElement(this.caseList());  
     await this.caseList().click();
-    var searchPageHeader = element(by.xpath("//*[@id = 'content']//h1[contains(text(),'Case List')]"));
-    await BrowserWaits.waitForElement(searchPageHeader);
+    await browserUtil.waitForLD();
+    expect(await caseListPage.amOnPage()).to.be.true 
   };
 
   this.clickCreateCase = async function () {
     await BrowserWaits.waitForElement(this.createCase()); 
     await this.createCase().click();
-    await BrowserWaits.waitForElement($('#cc-jurisdiction'));
+    await browserUtil.waitForLD();
+    expect(await createCaseStartPage.amOnPage()).to.be.true
   };
 
   this.clickTaskList = async function () {
-    await BrowserWaits.waitForElement(this.taskList());
-    await this.taskList().click();
+    await BrowserWaits.retryWithActionCallback(async () => {
+      await BrowserWaits.waitForElement(this.taskList());
+      await this.taskList().click();
+      await browserUtil.waitForLD();
+    });
+    
   };
 
   this.clickTaskManager = async function () {
     await BrowserWaits.waitForElement(this.taskManager());
     await this.taskManager().click();
+    await browserUtil.waitForLD();
   };
 
 

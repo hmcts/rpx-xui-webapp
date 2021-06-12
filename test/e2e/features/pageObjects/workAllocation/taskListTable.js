@@ -131,6 +131,11 @@ class TaskListTable{
         });
     }
 
+    async isManageLinkOpenForTaskAtPos(position){
+        const task = element(by.xpath(`//tr[contains(@class,'cdk-row') and not(contains(@class,'actions-row'))][${position}]/following-sibling::tr[contains(@class,'actions-row')]`));
+        return await task.isDisplayed();
+    }
+
     async isTaskActionPresent(taskAction){
         const actionLink = await this.displayedtaskActionRow.element(by.xpath(`//div[@class = "task-action"]//a[contains(text(),"${taskAction}" )]`))
         return actionLink.isPresent();

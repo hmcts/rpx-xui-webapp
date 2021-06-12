@@ -23,20 +23,20 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Given('I init MockApp', async function () {
-        MockApp.init();
+        //MockApp.init();
     });
 
     Given('I start MockApp', async function () {
-       await MockApp.startServer();
+       //await MockApp.startServer();
     });
 
     Given('I stop MockApp', async function () {
-        await MockApp.stopServer();
+       // await MockApp.stopServer();
     });
 
     Given('I restart MockApp', async function () {
-        await MockApp.stopServer();
-        await MockApp.startServer();
+        //await MockApp.stopServer();
+        //await MockApp.startServer();
     });
 
     When('I set MOCK with user roles', async function(rolesTable){

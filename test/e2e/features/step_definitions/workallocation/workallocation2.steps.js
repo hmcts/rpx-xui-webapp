@@ -102,10 +102,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I validate task search request with reference {string} has pagination parameters', async function(requestReference,datatable){
-        const reqBody = global.scenariodata[requestReference];
+        const reqBody = global.scenarioData[requestReference];
         const datatableHash = datatable.hashes()[0];
-        expect(reqBody.searchRequest.pagination_parameters.page_number).to.equual(datatableHash.PageNumber);
-        expect(reqBody.searchRequest.pagination_parameters.page_size).to.equual(datatableHash.PageSize);
+        expect(reqBody.searchRequest.pagination_parameters.page_number).to.equal(parseInt(datatableHash.PageNumber));
+        expect(reqBody.searchRequest.pagination_parameters.page_size).to.equal(parseInt(datatableHash.PageSize));
     });
 
 

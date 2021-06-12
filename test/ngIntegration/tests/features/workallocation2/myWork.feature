@@ -17,28 +17,28 @@ Feature: WA Release 2: My Tasks, Available tasks
         Given I navigate to home page
 
         Then I validate tasks count in page 25
-        Then I validate task list page results text displayed as "Displaying 1 - 10 out of 140 tasks"
+        Then I validate task list page results text displayed as "Displaying 1 - 25 out of 140 tasks"
         Given I reset reference "taskSearchRequest" value to null
         When I click task list pagination link "Next"
         When I wait for reference "taskSearchRequest" value not null
         Then I validate task search request with reference "taskSearchRequest" has pagination parameters
             | PageNumber | PageSize |
             | 2          | 10       |
-        Then I validate task list page results text displayed as "Displaying 11 - 20 out of 140 tasks"
+        Then I validate task list page results text displayed as "Displaying 26 - 50 out of 140 tasks"
         Given I reset reference "taskSearchRequest" value to null
         When I click task list pagination link "Previous"
         When I wait for reference "taskSearchRequest" value not null
         Then I validate task search request with reference "taskSearchRequest" has pagination parameters
             | PageNumber | PageSize |
             | 1          | 10       |
-        Then I validate task list page results text displayed as "Displaying 1 - 10 out of 140 tasks"
+        Then I validate task list page results text displayed as "Displaying 1 - 25 out of 140 tasks"
         Given I reset reference "taskSearchRequest" value to null
         When I click task list pagination link "3"
         When I wait for reference "taskSearchRequest" value not null
         Then I validate task search request with reference "taskSearchRequest" has pagination parameters
             | PageNumber | PageSize |
             | 3          | 10       |
-        Then I validate task list page results text displayed as "Displaying 31 - 40 out of 140 tasks"
+        Then I validate task list page results text displayed as "Displaying 51 - 75 out of 140 tasks"
 
         Then I validate "My work" tasks columns sorting with taskRequest url "/workallocation2/taskWithPagination/"
             | header        | FieldId      |

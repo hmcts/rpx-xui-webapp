@@ -3,7 +3,7 @@ const MockApp = require('../../nodeMock/app');
 class MockUtil{
 
     async setMockResponse(method, endpoint, callback) {
-        await MockApp.stopServer();
+        //await MockApp.stopServer();
         if (method === 'GET') {
             MockApp.onGet(endpoint, callback);
         }
@@ -14,7 +14,7 @@ class MockUtil{
         if (method === 'PUT') {
             MockApp.onPut(endpoint, callback);
         }
-        await MockApp.startServer();
+        //await MockApp.startServer();
 
     }
 

@@ -1,16 +1,19 @@
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
-const minimist = require('minimist');
 
 var screenShotUtils = require("protractor-screenshot-utils").ProtractorScreenShotUtils;
 
 chai.use(chaiAsPromised);
-
+const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));
+
+const MockApp = require('../../nodeMock/app');
 
 const jenkinsConfig = [
 
     {
+        shardTestFiles: true,
+        maxInstances: 4,
         browserName: 'chrome',
         acceptInsecureCerts: true,
         nogui: true,
@@ -40,7 +43,7 @@ const config = {
     framework: 'custom',
     frameworkPath: require.resolve('protractor-cucumber-framework'),
     specs: ['../tests/features/**/*.feature'],
-    baseUrl: argv.debug ? 'http://localhost:3000/' :  'http://localhost:4200/',
+    baseUrl: argv.debug ? 'http://localhost:3000/': 'http://localhost:4200/',
     params: {
 
     },
@@ -49,6 +52,14 @@ const config = {
     getPageTimeout: 120000,
     allScriptsTimeout: 500000,
     multiCapabilities: cap,
+
+    beforeLaunch(){
+        MockApp.init(3001);
+        MockApp.startServer();
+
+    },
+
+    
 
     onPrepare() {
         browser.waitForAngularEnabled(false);
@@ -59,8 +70,13 @@ const config = {
         global.screenShotUtils = new screenShotUtils({
             browserInstance: browser
         });
-    },
 
+        MockApp.getNextAvailableClientPort().then( res => {
+            MockApp.init(res.data.port);
+            MockApp.startServer();
+        });
+        
+    },
     cucumberOpts: {
         strict: true,
         // format: ['node_modules/cucumber-pretty'],

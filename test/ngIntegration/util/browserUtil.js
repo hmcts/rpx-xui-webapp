@@ -2,9 +2,6 @@ const jwt = require('jsonwebtoken');
 const reportLogger = require('../../e2e/support/reportLogger');
 // const addContext = require('mochawesome/addContext');
 const MockApp = require('../../nodeMock/app');
-const config = require('../config/protractor-cucumber.conf');
-
-
 const axios = require('axios');
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
@@ -16,6 +13,7 @@ const axiosOptions = {
 axios.defaults.withCredentials = true;
 
 const http = axios.create(axiosOptions);
+const config = require('../config/protractor-cucumber.conf'); 
 
 class BrowserUtil{
 
@@ -127,6 +125,12 @@ class BrowserUtil{
                 reportLogger.AddMessage("Retring attempt  " + retryCounter);
             }
         }
+    }
+
+
+    async getScenarioIdCookieValue(){
+        const scenarioId = await browser.manage().getCookie('scenarioId')
+        return scenarioId ? scenarioId.value : null;
     }
 
 }

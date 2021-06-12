@@ -42,7 +42,7 @@ describe('Work Allocation: ', function () {
     it('Tasks manager Page', async function () {
         await MockApp.startServer();
         const actions = [];
-        actions.push(...PallyActions.waitForPageWithCssLocator('exui-task-home exui-task-manager'))
+        actions.push(...PallyActions.waitForPageWithCssLocator('exui-work-allocation-home exui-task-manager'))
         await pa11ytest(this, actions, conf.baseUrl + 'tasks/task-manager');
 
     });
@@ -58,7 +58,7 @@ describe('Work Allocation: ', function () {
         await MockApp.startServer();
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator('exui-task-action-container h1'))
-        await pa11ytest(this, actions, conf.baseUrl + 'ttasks/123456/complete');
+        await pa11ytest(this, actions, conf.baseUrl + 'tasks/123456/complete');
     });
 
 

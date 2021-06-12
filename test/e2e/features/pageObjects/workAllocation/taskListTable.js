@@ -136,13 +136,17 @@ class TaskListTable{
         return await task.isDisplayed();
     }
 
-    async isTaskActionPresent(taskAction){
-        const actionLink = await this.displayedtaskActionRow.element(by.xpath(`//div[@class = "task-action"]//a[contains(text(),"${taskAction}" )]`))
+    async isTaskActionPresent(taskAction){ 
+        await BrowserWaits.waitForElement(this.displayedtaskActionRow);
+        const actionLink = this.displayedtaskActionRow.element(by.xpath(`//div[@class = "task-action"]//a[contains(text(),"${taskAction}" )]`))
         return actionLink.isPresent();
     }
 
     async clickTaskAction(action){
-        const actionLink = await this.displayedtaskActionRow.element(by.xpath(`//div[@class = "task-action"]//a[contains(text(),"${action}" )]`))
+        
+        await BrowserWaits.waitForConditionAsync(async () => await this.isTaskActionPresent(action),5000);
+
+        const actionLink = this.displayedtaskActionRow.element(by.xpath(`//div[@class = "task-action"]//a[contains(text(),"${action}" )]`))
         await browser.executeScript('arguments[0].scrollIntoView()',
             actionLink.getWebElement());
         await actionLink.click();

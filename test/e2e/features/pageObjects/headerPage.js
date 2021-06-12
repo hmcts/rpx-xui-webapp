@@ -4,8 +4,11 @@ const browserUtil = require('../../../ngIntegration/util/browserUtil');
 const { SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants');
 
 var BrowserWaits = require('../../support/customWaits');
-var caseListPage = require('./CaseListPage');
-var createCaseStartPage = require('./createCaseStartPage');
+var CaseListPage = require('./CaseListPage');
+var CreateCaseStartPage = require('./createCaseStartPage');
+
+const createCaseStartPage = new CreateCaseStartPage();
+const caseListPage = new CaseListPage();
 
 function HeaderPage() {
 
@@ -14,7 +17,7 @@ function HeaderPage() {
 
     this.headerAppLogoLink = $('.hmcts-header__logo a');
 
-    this.amOnApp = async function(){
+    this.amOnPage = async function(){
       return await this.headerAppLogoLink.isPresent();
     }
 

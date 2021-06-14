@@ -138,6 +138,14 @@ export class AppComponent implements OnInit, OnDestroy {
     // Google Analytics
     this.cookieService.deleteCookieByPartialMatch('_ga');
     this.cookieService.deleteCookieByPartialMatch('_gid');
+    const domainElements = window.location.hostname.split('.');
+    for (let i = 0; i < domainElements.length; i++) {
+      const domainName = domainElements.splice(i).join('.');
+      this.cookieService.deleteCookieByPartialMatch('_ga', '/', domainName);
+      this.cookieService.deleteCookieByPartialMatch('_gid', '/', domainName);
+      this.cookieService.deleteCookieByPartialMatch('_ga', '/', `.${domainName}`);
+      this.cookieService.deleteCookieByPartialMatch('_gid', '/', `.${domainName}`);
+    }
     // DynaTrace
     this.cookieService.deleteCookieByPartialMatch('rxVisitor');
   }

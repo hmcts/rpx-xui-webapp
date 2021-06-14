@@ -140,7 +140,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.cookieService.deleteCookieByPartialMatch('_gid');
     const domainElements = window.location.hostname.split('.');
     for (let i = 0; i < domainElements.length; i++) {
-      const domainName = domainElements.splice(i).join('.');
+      const domainName = domainElements.slice(i).join('.');
       this.cookieService.deleteCookieByPartialMatch('_ga', '/', domainName);
       this.cookieService.deleteCookieByPartialMatch('_gid', '/', domainName);
       this.cookieService.deleteCookieByPartialMatch('_ga', '/', `.${domainName}`);

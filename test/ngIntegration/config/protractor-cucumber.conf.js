@@ -40,7 +40,7 @@ const config = {
     framework: 'custom',
     frameworkPath: require.resolve('protractor-cucumber-framework'),
     specs: ['../tests/features/**/*.feature'],
-    baseUrl: 'http://localhost:4200/',
+    baseUrl: argv.debug ? 'http://localhost:3000/' : 'http://localhost:4200/',
     params: {
 
     },

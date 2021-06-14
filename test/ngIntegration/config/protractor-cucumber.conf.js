@@ -40,7 +40,7 @@ const config = {
     framework: 'custom',
     frameworkPath: require.resolve('protractor-cucumber-framework'),
     specs: ['../tests/features/**/*.feature'],
-    baseUrl: 'http://localhost:4200/',
+    baseUrl: argv.debug ? 'http://localhost:3000/' : 'http://localhost:4200/',
     params: {
 
     },
@@ -73,7 +73,9 @@ const config = {
             '../../e2e/support/world.js',
             '../../e2e/support/*.js',
             '../tests/stepDefinitions/*.steps.js',
-            '../../e2e/features/step_definitions/*.steps.js'
+            '../tests/stepDefinitions/**/*.steps.js',
+            '../../e2e/features/step_definitions/*.steps.js',
+            '../../e2e/features/step_definitions/**/*.steps.js'
 
         ]
     },

@@ -2,9 +2,9 @@ import { BadgeColour, ContactDetailsDataModel } from '@hmcts/rpx-xui-common-lib'
 import {Theme} from './containers/app-header/app-header.component';
 
 const FeatureNames = {
+  currentWAFeature: 'mc-work-allocation-active-feature',
   workAllocation: 'MC_Work_Allocation',
   noticeOfChange: 'MC_Notice_of_Change',
-  currentWAFeature: 'mc-work-allocation-active-feature',
   waMvpPaginationFeature: 'mc-mvp-wa-pagination'
 };
 

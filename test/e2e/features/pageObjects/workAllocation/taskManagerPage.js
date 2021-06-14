@@ -11,8 +11,6 @@ class TaskManagerPage extends TaskList{
         this.caseWorkerFilter = $('exui-task-manager-filter select#task_assignment_caseworker');
         this.locationFilter = $('exui-task-manager-filter select#task_assignment_location');
 
-        this.tasksCountInDisplayLabel = $('exui-task-manager-list p span');
-
         this.taskInfoMessageBanner = new TaskMessageBanner();
     }
 
@@ -26,11 +24,6 @@ class TaskManagerPage extends TaskList{
         }
     }
 
-    async getTaskCountInDisplayLabel(){
-        expect(await this.amOnPage(), "Not on Task manager page ").to.be.true;
-
-        return await this.tasksCountInDisplayLabel.getText(); 
-    }
 
     async getCaseworkerFilterOptions(){
         expect(await this.amOnPage(), "Not on Task manager page ").to.be.true;

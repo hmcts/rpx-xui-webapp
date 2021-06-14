@@ -8,7 +8,13 @@ import { AppUtils } from '../../../app/app-utils';
 import { Location } from '../../models/dtos';
 import { TaskSortField } from '../../models/tasks';
 import { LocationDataService } from '../../services';
+import { ErrorMessage } from '../../../app/models';
 
+export const LOCATION_ERROR: ErrorMessage = {
+  title: 'There is a problem',
+  description: 'At least one location is required',
+  fieldId: 'task_assignment_caseworker'
+};
 @Component({
   selector: 'exui-task-home',
   templateUrl: 'task-home.component.html',
@@ -20,14 +26,17 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
   public showFilteredText = false;
   public sortedBy: TaskSortField;
   public pageTitle: string;
+  public error: ErrorMessage;
   public fieldsConfig: FilterConfig = {
-    persistence: 'session',
+    persistence: 'local',
     id: TaskHomeComponent.FILTER_NAME,
     fields: [],
     cancelButtonText: 'Reset to default',
-    applyButtonText: 'Apply'
+    applyButtonText: 'Apply',
+    cancelSetting: null
   };
   public defaultLocations: string[] = [];
+  public locationFields: FilterSetting;
   public fieldsSettings: FilterSetting = {
     fields: [],
     id: TaskHomeComponent.FILTER_NAME,
@@ -47,9 +56,29 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
     {text: 'Available tasks', href: '/mywork/available', active: false},
     {text: 'My cases', href: '/mycases', active: false}
   ];
+
+  /**
+   * Gets the private logged in user id
+   */
+   public get userId(): string {
+    return this.pUserId;
+  }
+
+  /**
+   * Gets the caseworker's location
+   */
+  public get caseworkerLocation(): Location {
+    return this.pUserLocation;
+  }
+
   private routeSubscription: Subscription;
   private locationSubscription: Subscription;
   private selectedLocationsSubscription: Subscription;
+  public errorSubscription: Subscription;
+  private pUserId: string;
+  // pCaseworkerLocation is the caseworker that sets the location of the location dropdown
+  // Note: Setter for caseworkerLocation may come in useful if the selected location needs to be set via the caseworker assigned to the task
+  private pUserLocation: Location;
 
   constructor(
     private readonly router: Router,
@@ -75,19 +104,34 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
 
     // Set up the page data.
     this.setupPageData(this.router.routerState.root.snapshot);
-
     this.locationSubscription = this.locationService.getLocations()
       .subscribe((locations: Location[]) => {
         this.setUpLocationFilter(locations);
       });
+    this.errorSubscription = this.filterService.givenErrors.subscribe(value => 
+      {if (value) {
+        this.error = LOCATION_ERROR;
+        this.error.description = value;
+      } else {
+        this.error = null;
+      }})
+    this.subscribeToSelectedLocations();
+    this.toggleFilter = false;
+  }
 
+  public resetFilter(): void {
+    this.toggleFilter = !this.toggleFilter;
+    // resetting selected locations because the length not always updating
+    this.selectedLocations = this.filterService.get('locations').fields[0].value;
+  }
+
+  public subscribeToSelectedLocations(): void {
     this.selectedLocationsSubscription = this.filterService.getStream(TaskHomeComponent.FILTER_NAME)
       .pipe(
         filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
       )
       .subscribe((f: FilterSetting) => {
         this.showFilteredText = this.hasBeenFiltered(f, this.defaultLocations);
-        this.toggleFilter = false;
         this.selectedLocations = f.fields.find((field) => field.name === TaskHomeComponent.FILTER_NAME).value;
       });
   }
@@ -102,6 +146,10 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
 
     if (this.selectedLocationsSubscription) {
       this.selectedLocationsSubscription.unsubscribe();
+    }
+
+    if (this.errorSubscription) {
+      this.errorSubscription.unsubscribe();
     }
   }
 
@@ -152,16 +200,18 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
       subTitle: 'Shows tasks and cases for the selected locations:',
       type: 'checkbox'
     };
-
     if (this.route.snapshot.data && this.route.snapshot.data.location) {
       const location: Location = this.route.snapshot.data.location;
       this.defaultLocations = [`${location.id}`];
-      this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
-        name: TaskHomeComponent.FILTER_NAME,
-        value: [`${location.id}`]
-      }];
-      // this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
+    } else {
+      // as some judicial workers do not have a set location set their default to be Taylor House
+      this.defaultLocations = ['765324']
     }
+    this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
+      name: TaskHomeComponent.FILTER_NAME,
+      value: this.defaultLocations
+    }];
+    this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
     this.fieldsConfig.fields.push(field);
   }
 }

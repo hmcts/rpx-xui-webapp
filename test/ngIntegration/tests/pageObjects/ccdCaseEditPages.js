@@ -160,14 +160,14 @@ class CaseEdit {
 
         let inputoptionId = null;
         if (inputOption) {
-            inputoptionId = fieldConfig.id + "-" + inputOption;
+            inputoptionId = fieldConfig.id + "_" + inputOption;
         } else {
-            inputoptionId = fieldConfig.id + "-Yes";
+            inputoptionId = fieldConfig.id + "_Yes";
         }
 
         if(parentId) inputoptionId = parentId +"_"+ inputoptionId;
 
-        await $(`#${this.getFieldId(fieldConfig.id, parentId)} #${inputoptionId}`).click();
+        await $(`#${inputoptionId}`).click();
         // return inputoptionId.includes("Yes");
         return "Yes";
     }
@@ -260,11 +260,11 @@ class CaseEdit {
         let complexId ='';
         if(parentid == undefined) complexId = `${fieldConfig.id}_${fieldConfig.id}`;
         if(parentid) complexId = `${parentid}_${fieldConfig.id}_${fieldConfig.id}`;
-        let postCodeInput=$(`#${complexId} #postcodeLookup input`);
+        let postCodeInput=$(`#${complexId}_postcodeLookup input`);
 
-        const postCodeFindAddressBtn = $(`#${complexId} #postcodeLookup button`);
-        const postCodeAddressSelect = $(`#${complexId} #selectAddress select`);
-        const postCodeAddressSelectOption = $(`#${complexId} #selectAddress select option:nth-of-type(2)`);
+        const postCodeFindAddressBtn = $(`#${complexId}_postcodeLookup button`);
+        const postCodeAddressSelect = $(`#${complexId}_addressList`);
+        const postCodeAddressSelectOption = $(`#${complexId}_addressList option:nth-of-type(2)`);
 
         await postCodeInput.sendKeys('sw1');
         await postCodeFindAddressBtn.click();
@@ -275,8 +275,8 @@ class CaseEdit {
         await BrowserWaits.waitForSeconds(2);
 
         for (const complexFiedlConfig of fieldConfig.field_type.complex_fields) {
-            let p_id = parentid ? parentid+"_"+fieldConfig.id : fieldConfig.id;
-            let value = await $(`#${this.getFieldId(complexFiedlConfig.id, p_id)}`).getAttribute("value");
+            let prefix = parentid ? parentid+'_'+fieldConfig.id+'__detail' : fieldConfig.id+'__detail';
+            let value = await $(`#${prefix}${complexFiedlConfig.id}`).getAttribute("value");
             fieldValue[complexFiedlConfig.id] = value;
         }
 
@@ -329,12 +329,13 @@ class CaseEdit {
             inputDate = date().format('YYYY-MM-DD');
         }
 
-        const parent = parentId ? `${parentId}_` : "";
+        const parent = parentId ? `#${parentId}_${parentId}` : "";
         let datesValues = inputDate.split('-');
         reportLogger.AddMessage("Date field locator " + `${parent} #${fieldConfig.id}-day`);
-        await $(`#${parent}${fieldConfig.id}-day`).sendKeys(datesValues[2]);
-        await $(`#${parent}${fieldConfig.id}-month`).sendKeys(datesValues[1]);
-        await $(`#${parent}${fieldConfig.id}-year`).sendKeys(datesValues[0]);
+
+        await $(`${parent} #${fieldConfig.id}-day`).sendKeys(datesValues[2]);
+        await $(`${parent} #${fieldConfig.id}-month`).sendKeys(datesValues[1]);
+        await $(`${parent} #${fieldConfig.id}-year`).sendKeys(datesValues[0]);
         return inputDate;
     }
 
@@ -347,14 +348,14 @@ class CaseEdit {
         }
 
         let datesValues = inputDate.split('-');
-        const parent = parentId ? `${parentId}_` : "";
-        await $(`#${parent}${fieldConfig.id}-day`).sendKeys(datesValues[2]);
-        await $(`#${parent}${fieldConfig.id}-month`).sendKeys(datesValues[1]);
-        await $(`#${parent}${fieldConfig.id}-year`).sendKeys(datesValues[0]);
+        const parent = parentId ? `#${parentId}_${parentId}` : "";
+        await $(`${parent} #${fieldConfig.id}-day`).sendKeys(datesValues[2]);
+        await $(`${parent} #${fieldConfig.id}-month`).sendKeys(datesValues[1]);
+        await $(`${parent} #${fieldConfig.id}-year`).sendKeys(datesValues[0]);
 
-        await $(`#${parent}${fieldConfig.id}-hour`).sendKeys("02");
-        await $(`#${parent}${fieldConfig.id}-minute`).sendKeys("30");
-        await $(`#${parent}${fieldConfig.id}-second`).sendKeys("45");
+        await $(`${parent} #${fieldConfig.id}-hour`).sendKeys("02");
+        await $(`${parent} #${fieldConfig.id}-minute`).sendKeys("30");
+        await $(`${parent} #${fieldConfig.id}-second`).sendKeys("45");
 
         inputDate = `${inputDate}T02:30:45.000`;
         return inputDate;

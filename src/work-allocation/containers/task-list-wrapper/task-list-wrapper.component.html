@@ -1,6 +1,9 @@
 <xuilib-loading-spinner *ngIf="showSpinner$ | async"></xuilib-loading-spinner>
+
 <exui-task-list
-  [taskServiceConfig]="taskServiceConfig" [tasks]="tasks" [fields]="fields"
-  [sortedBy]="sortedBy" [emptyMessage]="emptyMessage"
-  (sortEvent)="onSortHandler($event)" (actionEvent)="onActionHandler($event)">
+  [taskServiceConfig]="taskServiceConfig" [tasks]="tasks" [fields]="fields" [tasksTotal]="tasksTotal"
+  [sortedBy]="sortedBy" [emptyMessage]="emptyMessage" [pagination]="pagination"
+  (paginationEvent)="onPaginationHandler($event)"
+  (sortEvent)="onSortHandler($event)"
+  (actionEvent)="onActionHandler($event)">
 </exui-task-list>

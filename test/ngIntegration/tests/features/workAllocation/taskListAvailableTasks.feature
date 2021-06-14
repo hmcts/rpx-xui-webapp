@@ -1,5 +1,5 @@
-@ng 
-Feature: WA Release 1: Available Tasks Task list
+@ng @wa1
+Feature: Available Tasks Task list
 
     Background: Mock and browser setup
         Given I init MockApp
@@ -15,8 +15,9 @@ Feature: WA Release 1: Available Tasks Task list
         When I click sub navigation tab Available tasks
 
         Then I see Available tasks page displayed
-        Then I validate tasks count in page 5
+        Then I validate tasks count in page 25
 
+@test
     Scenario: Avaiable Tasks sort columns
          Given I set MOCK My tasks count 5
         Given I start MockApp

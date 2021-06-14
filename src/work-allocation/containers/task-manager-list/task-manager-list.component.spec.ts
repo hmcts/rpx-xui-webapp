@@ -182,8 +182,8 @@ describe('TaskManagerListComponent', () => {
     expect(searchRequest.search_parameters.length).toEqual(2);
     expect(searchRequest.search_parameters[0].key).toEqual('location');
     expect(searchRequest.search_parameters[0].values.length).toEqual(mockLocations.length);
-    expect(searchRequest.search_parameters[1].key).toEqual('user');
-    expect(searchRequest.search_parameters[1].values.length).toEqual(0);
+    expect(searchRequest.search_parameters[1].key).toEqual('state');
+    expect(searchRequest.search_parameters[1].values).toEqual(['unassigned']);
 
     // Let's also make sure that the tasks were re-requested with the new sorting.
     const payload = { searchRequest, view: component.view };

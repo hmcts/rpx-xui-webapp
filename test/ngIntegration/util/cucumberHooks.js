@@ -21,7 +21,7 @@ defineSupportCode(({ Before, After }) => {
 
     After(async function (scenario) {
         if(argv.debug){
-            await BrowserWaits.waitForSeconds(600);
+           // await BrowserWaits.waitForSeconds(600);
         }
         
         await MockApp.stopServer();

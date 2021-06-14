@@ -415,10 +415,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@3.1.2-alpha-pagination-1":
-  version "3.1.2-alpha-pagination-1"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-3.1.2-alpha-pagination-1.tgz#bdc082f8d6de1fe8833398a840e51e79bdcf5697"
-  integrity sha512-qIPg2u/oY3TyTIRz9kQHIhJ1bEcqKUO3yBPNnHA0VnFpKI7vDlnoFPQqvIMwRZ8nfrkZp7z/D4a9KCbREITMHA==
+"@hmcts/ccd-case-ui-toolkit@3.1.2":
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-3.1.2.tgz#95cd8ea23de580908ceb386de8a2fa4d16ed40ac"
+  integrity sha512-RzXwV2doPvnpmsFMN9BYpUxQBnoVoT552NG8ZySKd+L91x//cpIy1V/FMLgzXQ4wSl/5mCV31rS0FXJjHgn+Lg==
   dependencies:
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"

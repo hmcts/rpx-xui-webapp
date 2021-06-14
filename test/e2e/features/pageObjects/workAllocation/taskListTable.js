@@ -1,4 +1,6 @@
 const c = require('config');
+const { constants } = require('karma');
+const browserUtil = require('../../../../ngIntegration/util/browserUtil');
 const BrowserWaits = require('../../../support/customWaits');
 var cucumberReporter = require('../../../support/reportLogger');
 
@@ -13,6 +15,12 @@ class TaskListTable{
         this.taskActionsRows = $$('exui-task-list table tbody>tr.actions-row');
         this.selectedTaskActioRow = $('exui-task-list table tbody>tr.actions-row[selected]') 
         this.displayedtaskActionRow = $('tr.actions-row[aria-hidden=false]');
+
+        this.paginationContainer = $('ccd-pagination');
+        this.paginationResultText = $('exui-task-list .pagination-top span');
+        this.pagePreviousLink = $('exui-task-list pagination-template .pagination-previous a');
+        this.pageNextLink = $('exui-task-list pagination-template .pagination-next a');
+
     }
 
     async waitForTable(){
@@ -124,13 +132,22 @@ class TaskListTable{
         });
     }
 
-    async isTaskActionPresent(taskAction){
-        const actionLink = await this.displayedtaskActionRow.element(by.xpath(`//div[@class = "task-action"]//a[contains(text(),"${taskAction}" )]`))
+    async isManageLinkOpenForTaskAtPos(position){
+        const task = element(by.xpath(`//tr[contains(@class,'cdk-row') and not(contains(@class,'actions-row'))][${position}]/following-sibling::tr[contains(@class,'actions-row')]`));
+        return await task.isDisplayed();
+    }
+
+    async isTaskActionPresent(taskAction){ 
+        await BrowserWaits.waitForElement(this.displayedtaskActionRow);
+        const actionLink = this.displayedtaskActionRow.element(by.xpath(`//div[@class = "task-action"]//a[contains(text(),"${taskAction}" )]`))
         return actionLink.isPresent();
     }
 
     async clickTaskAction(action){
-        const actionLink = await this.displayedtaskActionRow.element(by.xpath(`//div[@class = "task-action"]//a[contains(text(),"${action}" )]`))
+        
+        await BrowserWaits.waitForConditionAsync(async () => await this.isTaskActionPresent(action),5000);
+
+        const actionLink = this.displayedtaskActionRow.element(by.xpath(`//div[@class = "task-action"]//a[contains(text(),"${action}" )]`))
         await browser.executeScript('arguments[0].scrollIntoView()',
             actionLink.getWebElement());
         await actionLink.click();
@@ -175,6 +192,28 @@ class TaskListTable{
         await BrowserWaits.waitForSeconds(1);
         return await taskRow.isDisplayed();
     }
+
+    async getPaginationResultText() {
+        return await this.paginationResultText.getText();
+    }
+
+
+    async isPaginationPageNumEnabled(pageNum) {
+        const pageNumWithoutLink = element(by.xpath(`//exui-task-list//pagination-template//li//span[contains(text(),'${pageNum}')]`));
+        const pageNumWithLink = element(by.xpath(`//exui-task-list//pagination-template//li//a//span[contains(text(),'${pageNum}')]`));
+
+        return (await pageNumWithLink.isPresent()) && !(await pageNumWithoutLink.isPresent());
+    }
+
+    async clickPaginationPageNum(pageNum) {
+        if (!(await this.isPaginationPageNumEnabled(pageNum))) {
+            throw new Error("Page num is not present or not enabled: " + pageNum);
+        }
+        const pageNumWithLink = element(by.xpath(`//exui-task-list//pagination-template//li//a//span[contains(text(),'${pageNum}')]`));
+        await pageNumWithLink.click();
+
+    }
+
 }
 
 module.exports = TaskListTable; 

@@ -4,10 +4,11 @@ import { FilterService, FilterSetting, SubNavigation } from '@hmcts/rpx-xui-comm
 import { FilterConfig, FilterFieldConfig } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { AppUtils } from '../../../app/app-utils';
+
 import { Location } from '../../models/dtos';
 import { TaskSortField } from '../../models/tasks';
 import { LocationDataService } from '../../services';
+import { AppUtils } from '../../../app/app-utils';
 import { ErrorMessage } from '../../../app/models';
 
 export const LOCATION_ERROR: ErrorMessage = {
@@ -21,7 +22,7 @@ export const LOCATION_ERROR: ErrorMessage = {
   styleUrls: ['task-home.component.scss']
 })
 export class TaskHomeComponent implements OnInit, OnDestroy {
-  private static FILTER_NAME = 'locations';
+  private static readonly FILTER_NAME = 'locations';
   public toggleFilter = false;
   public showFilteredText = false;
   public sortedBy: TaskSortField;
@@ -57,28 +58,10 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
     {text: 'My cases', href: '/mycases', active: false}
   ];
 
-  /**
-   * Gets the private logged in user id
-   */
-   public get userId(): string {
-    return this.pUserId;
-  }
-
-  /**
-   * Gets the caseworker's location
-   */
-  public get caseworkerLocation(): Location {
-    return this.pUserLocation;
-  }
-
   private routeSubscription: Subscription;
   private locationSubscription: Subscription;
   private selectedLocationsSubscription: Subscription;
   public errorSubscription: Subscription;
-  private pUserId: string;
-  // pCaseworkerLocation is the caseworker that sets the location of the location dropdown
-  // Note: Setter for caseworkerLocation may come in useful if the selected location needs to be set via the caseworker assigned to the task
-  private pUserLocation: Location;
 
   constructor(
     private readonly router: Router,
@@ -108,13 +91,13 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
       .subscribe((locations: Location[]) => {
         this.setUpLocationFilter(locations);
       });
-    this.errorSubscription = this.filterService.givenErrors.subscribe(value => 
-      {if (value) {
+    this.errorSubscription = this.filterService.givenErrors.subscribe(value => {
+      if (value) {
         this.error = LOCATION_ERROR;
         this.error.description = value;
       } else {
         this.error = null;
-      }})
+      }});
     this.subscribeToSelectedLocations();
     this.toggleFilter = false;
   }
@@ -205,7 +188,7 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
       this.defaultLocations = [`${location.id}`];
     } else {
       // as some judicial workers do not have a set location set their default to be Taylor House
-      this.defaultLocations = ['765324']
+      this.defaultLocations = ['765324'];
     }
     this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
       name: TaskHomeComponent.FILTER_NAME,

@@ -1,18 +1,18 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, DebugElement, ViewChild } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs/internal/observable/of';
-import { ALL_LOCATIONS } from '../../../../api/workAllocation2/constants/locations';
 
-import { ErrorMessageComponent } from '../../../app/components';
-import { InfoMessageContainerComponent } from '../info-message-container/info-message-container.component';
-import { LocationDataService, WorkAllocationTaskService } from '../../services';
 import { TaskHomeComponent } from './task-home.component';
+import { InfoMessageContainerComponent } from '../info-message-container/info-message-container.component';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
+import { LocationDataService, WorkAllocationTaskService } from '../../services';
+import { ErrorMessageComponent } from '../../../app/components';
+import { ALL_LOCATIONS } from '../../../../api/workAllocation2/constants/locations';
 
 @Component({
   template: `
@@ -38,7 +38,7 @@ describe('TaskHomeComponent', () => {
       next: () => null,
       unsubscribe: () => null
     }
-  }
+  };
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [

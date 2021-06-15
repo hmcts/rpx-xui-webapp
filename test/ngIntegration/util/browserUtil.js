@@ -18,9 +18,6 @@ axios.defaults.withCredentials = true;
 const http = axios.create(axiosOptions);
 
 
-
-const axios = require('axios');
-
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 axios.defaults.headers.common['Content-Type'] = 'application/json';

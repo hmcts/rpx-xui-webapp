@@ -16,20 +16,13 @@ const { getTestJurisdiction} = require('../../ngIntegration/mockData/ccdCaseMock
 
 describe('Pa11y Accessibility tests', function () {
     let fieldstested = []; 
+    beforeEach(async function () {
+        await initBrowser(this);
 
-    before(async function (done) {
-        MockApp.init()
-        await MockApp.startServer();
-        done();
     });
-    after(async function (done) {
-        await MockApp.stopServer();
-        done();
-    });
-
   
     it('Create Case Page', async function () {
-        // await MockApp.startServer();
+        // //await MockApp.startServer();
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator('exui-ccd-connector'))
         await pa11ytest(this, actions, conf.baseUrl + 'cases/case-filter');
@@ -41,7 +34,7 @@ describe('Pa11y Accessibility tests', function () {
     mockCaseType.wizard_pages.forEach(page => {
         if (!page.show_condition){
             it('Mock case type Case Page ' + page.id, async function () {
-                // await MockApp.startServer();
+                // //await MockApp.startServer();
                 const actions = [];
                 actions.push(...PallyActions.waitForPageWithCssLocator('ccd-case-edit-page h1'))
                 await pa11ytest(this, actions, conf.baseUrl + 'cases/case-create/test/casetype_1/solicitorCreate/' + page.id);

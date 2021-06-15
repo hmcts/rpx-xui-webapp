@@ -41,7 +41,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         let reqPath = `data/internal/searchCases?ctid=xuiTestCaseType&use_case=SEARCH&view=SEARCH&page=1`
         let expectedList = await caseEditPage.caseResultsThTitleApiRes(reqPath);
         if (expectedList) {
-            let e = $('.case-list-component ccd-search-result h2');
+            let e = $('exui-search-case ccd-search-result h2');
             await BrowserWaits.waitForElement(e);
             await BrowserWaits.waitForElementTime($('ccd-search-result .pagination-top'), 120000);
             let actualList = await caseEditPage.workBasketHeaders(0);

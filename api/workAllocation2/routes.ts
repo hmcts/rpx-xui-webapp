@@ -14,6 +14,7 @@ import {
 } from '.';
 import authInterceptor from '../lib/middleware/auth';
 import { getLocationById, getLocations } from './locationController';
+import { postFindPersonSearch } from './personService';
 
 const router = Router({ mergeParams: true });
 
@@ -36,5 +37,7 @@ router.use('/caseworker', getAllCaseWorkers);
 router.use('/judicialworker', getAllJudicialWorkers);
 
 router.use('/searchForCompletable', postTaskSearchForCompletable);
+
+router.use('/findPerson', postFindPersonSearch);
 
 export default router;

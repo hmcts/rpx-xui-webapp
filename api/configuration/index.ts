@@ -1,10 +1,12 @@
-import * as propertiesVolume from '@hmcts/properties-volume'
-import * as config from 'config'
+import * as propertiesVolume from '@hmcts/properties-volume';
+import * as config from 'config';
+
+import { proxiedReferences } from './references';
 
 /**
  * Allows us to integrate the Azure key-vault flex volume, so that we are able to access Node configuration values.
  */
-propertiesVolume.addTo(config)
+propertiesVolume.addTo(config);
 
 /**
  * Get Configuration Value
@@ -17,7 +19,7 @@ propertiesVolume.addTo(config)
  * @see references.ts
  * @param reference - ie. 'services.ccdDefApi'
  */
-export const getConfigValue = <T = string>(reference: string): T => config.get<T>(reference)
+export const getConfigValue = <T = string>(reference: string): T => config.get<T>(reference);
 
 /**
  * Show Feature
@@ -27,4 +29,6 @@ export const getConfigValue = <T = string>(reference: string): T => config.get<T
  * @param feature
  * @return boolean
  */
-export const showFeature = (feature: string): boolean => config.get<boolean>(`feature.${feature}`)
+export const showFeature = (feature: string): boolean => config.get<boolean>(`feature.${feature}`);
+
+export { proxiedReferences };

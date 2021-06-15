@@ -8,12 +8,13 @@ const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));
 
 const MockApp = require('../../nodeMock/app');
+const browserUtil = require('../util/browserUtil');
+
+const isParallelExecution = false;
 
 const jenkinsConfig = [
 
     {
-        shardTestFiles: true,
-        maxInstances: 2,
         browserName: 'chrome',
         acceptInsecureCerts: true,
         nogui: true,
@@ -36,6 +37,11 @@ const localConfig = [
     }
 ];
 
+if(isParallelExecution){
+    jenkinsConfig[0].shardTestFiles = true;
+    jenkinsConfig[0].maxInstances = 2;
+}
+
 const cap = (argv.local) ? localConfig : jenkinsConfig;
 
 const config = {
@@ -54,12 +60,11 @@ const config = {
     multiCapabilities: cap,
 
     beforeLaunch(){
-        MockApp.init(3001);
-        MockApp.startServer();
-
+        if (isParallelExecution) {
+            MockApp.init(3001);
+            MockApp.startServer();
+        }    
     },
-
-    
 
     onPrepare() {
         browser.waitForAngularEnabled(false);
@@ -71,11 +76,17 @@ const config = {
             browserInstance: browser
         });
 
-        MockApp.getNextAvailableClientPort().then( res => {
-            MockApp.init(res.data.port);
+        if (isParallelExecution){
+            MockApp.getNextAvailableClientPort().then(res => {
+                MockApp.init(res.data.port);
+                MockApp.startServer();
+                MockApp.setBrowserScenarioCookieCallback(browserUtil.getScenarioIdCookieValue);
+            });
+        }else{
+            MockApp.init(3001);
             MockApp.startServer();
-        });
-        
+            MockApp.setBrowserScenarioCookieCallback(browserUtil.getScenarioIdCookieValue);
+        }     
     },
     cucumberOpts: {
         strict: true,

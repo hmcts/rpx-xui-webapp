@@ -4,7 +4,7 @@ const AppActions = require('../helpers/applicationActions');
 const PallyActions = require('../helpers/pallyActions');
 
 const assert = require('assert');
-const { pa11ytest, getResults } = require('../helpers/pa11yUtil');
+const { pa11ytest, getResults, initBrowser} = require('../helpers/pa11yUtil');
 const { conf } = require('../config/config');;
 
 const divorceCaseActions = require('../caseCreationActions/divorce');
@@ -14,17 +14,14 @@ const ccdApi = require('../../nodeMock/ccd/ccdApi');
 
 describe('Pa11y Accessibility tests', function () {
 
-    beforeEach(async function (done) {
-        MockApp.init()
-        done();
+    beforeEach(async function () {
+        await initBrowser(this);
+       
     });
-    afterEach(async function (done) {
-        await MockApp.stopServer();
-        done();
-    });
+    
 
     it('Case List Page', async function () {
-        await MockApp.startServer();
+        // //await MockApp.startServer();
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator('ccd-workbasket-filters .heading-h2'))
         actions.push(...PallyActions.clickElement('ccd-workbasket-filters button'));
@@ -35,7 +32,7 @@ describe('Pa11y Accessibility tests', function () {
     });
 
     it('Case Search Page', async function () {
-        await MockApp.startServer();
+        // //await MockApp.startServer();
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator('.search-block'))
         await pa11ytest(this, actions, conf.baseUrl + 'cases/case-search');
@@ -44,7 +41,7 @@ describe('Pa11y Accessibility tests', function () {
 
 
     it('Share Case page', async function () {
-        await MockApp.startServer();
+        //await MockApp.startServer();
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator('exui-case-share #title-selected-cases'));
         actions.push(...PallyActions.waitForPageWithCssLocator('#accordion-with-summary-sections .govuk-accordion__open-all span'));
@@ -58,7 +55,7 @@ describe('Pa11y Accessibility tests', function () {
     });
 
     it('Confirm Share a case page', async function () {
-        await MockApp.startServer();
+        //await MockApp.startServer();
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator('exui-case-share #title-selected-cases'));
         actions.push(...PallyActions.waitForPageWithCssLocator('#accordion-with-summary-sections .govuk-accordion__open-all span'));
@@ -72,7 +69,7 @@ describe('Pa11y Accessibility tests', function () {
     });
 
     it('Share Case Submission success', async function () {
-        await MockApp.startServer();
+        //await MockApp.startServer();
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator('exui-case-share #title-selected-cases'));
         actions.push(...PallyActions.waitForPageWithCssLocator('#accordion-with-summary-sections .govuk-accordion__open-all span'));
@@ -91,7 +88,7 @@ describe('Pa11y Accessibility tests', function () {
         MockApp.onPost('/api/caseshare/case-assignments', (req, res) => {
             res.send(req.body.sharedCases);
         });
-        await MockApp.startServer();
+        //await MockApp.startServer();
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator('exui-case-share #title-selected-cases'));
         actions.push(...PallyActions.waitForPageWithCssLocator('#accordion-with-summary-sections .govuk-accordion__open-all span'));
@@ -111,7 +108,7 @@ describe('Pa11y Accessibility tests', function () {
         MockApp.onPost('/api/caseshare/case-assignments', (req, res) => {
             res.status(500).send();
         });
-        await MockApp.startServer();
+        //await MockApp.startServer();
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator('exui-case-share #title-selected-cases'));
         actions.push(...PallyActions.waitForPageWithCssLocator('#accordion-with-summary-sections .govuk-accordion__open-all span'));

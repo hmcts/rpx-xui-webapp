@@ -13,7 +13,7 @@ const fs = require('fs');
 let testBrowser = null;
 let page = null;
 
-async function initBrowser(){
+async function initBrowser(test){
     testBrowser = await puppeteer.launch({
         ignoreHTTPSErrors: false,
         headless: conf.headless,
@@ -25,6 +25,28 @@ async function initBrowser(){
 
     page = await testBrowser.newPage();
     await page.goto("http://localhost:4200/");
+    await setScenarioCookie(test);
+}
+
+async function setScenarioCookie(test){
+    let scenarioId = test.test.title.split(" ").join("_");
+    scenarioId = scenarioId.split("\"").join("").split(":").join("");
+   
+    await page.evaluate((scenarioId) => {
+        document.cookie = "scenarioId=" + scenarioId;
+    }, scenarioId);
+}
+
+async function getScenarioCookie(){
+    const cookies = await page.cookies();
+    let scenarioId = null;
+    for(let i = 0; i < cookies.length; i++){
+        if (cookies[i].name === 'scenarioId'){
+            scenarioId = cookies[i].value;
+            break;
+       }
+    }
+    return scenarioId;
 }
 
 async function pa11ytest(test, actions, startUrl, roles){
@@ -64,7 +86,8 @@ async function pa11ytestRunner(test, actions, startUrl,roles) {
  
     let result;
 
-    await initBrowser();
+    // await initBrowser();
+    // await setScenarioCookie(test);
     try {
         result = await pa11y(startUrl, {
             browser: testBrowser,
@@ -82,6 +105,7 @@ async function pa11ytestRunner(test, actions, startUrl,roles) {
         await page.screenshot({ path: screenshotPath });
         const elapsedTime = Date.now() - startTime;
         result = {};
+        result.issues = [];
         result.executionTime = elapsedTime;
         result.screenshot = screenshotReportRef;
         test.a11yResult = result;
@@ -109,4 +133,4 @@ async function pa11ytestRunner(test, actions, startUrl,roles) {
 
 
 
-module.exports = { pa11ytest }
+module.exports = { pa11ytest, getScenarioCookie, initBrowser }

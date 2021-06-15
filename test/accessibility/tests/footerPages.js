@@ -14,16 +14,10 @@ const ccdApi = require('../../nodeMock/ccd/ccdApi');
 
 describe('Pa11y Accessibility tests', function () {
 
-  before(async function (done) {
-        MockApp.init()
-        await MockApp.startServer();
-        done();
-    });
-    after(async function (done) {
-        await MockApp.stopServer();
-        done();
-    });
+    beforeEach(async function () {
+        await initBrowser(this);
 
+    });
 
     it('Accessibility Page', async function () {
         const actions = [];

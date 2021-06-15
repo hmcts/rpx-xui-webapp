@@ -28,6 +28,8 @@ class MockApp{
         this.clientPortCounter = 3002;
         this.serverPort = port;
         this.scenarios = {};
+
+        this.browserScenarioCookieCallback = null;
         
         this.scenarioRequestCallbacks = { proxyReqCount : 0};
         
@@ -42,6 +44,10 @@ class MockApp{
         
         console.log("Mock Config Initialized");
         return "done";
+    }
+
+    setBrowserScenarioCookieCallback(callback){
+        this.browserScenarioCookieCallback = callback;
     }
 
     getRequestMappings(requestMap,method){
@@ -140,7 +146,8 @@ class MockApp{
 
     async setScenarioCallBack(scenarioId, method, path,callback) {
         if (!scenarioId) {
-            scenarioId = await browserUtil.getScenarioIdCookieValue();
+            scenarioId = await this.browserScenarioCookieCallback();
+
         }
 
         if (this.scenarioRequestCallbacks[scenarioId] === undefined){
@@ -151,7 +158,7 @@ class MockApp{
     }
 
     async setScenarioIntercept(url,callback){
-        const scenarioId = await browserUtil.getScenarioIdCookieValue();
+        const scenarioId = await this.browserScenarioCookieCallback();
         const scenarioIntercepts = this.scenarioRequestCallbacks[scenarioId]['intercepts'];
         if (!scenarioIntercepts[url]){   
             scenarioIntercepts[url] = [];
@@ -302,7 +309,7 @@ class MockApp{
         if(this.serverPort === 3001){
             return;
         }
-        scenarioId = scenarioId ? scenarioId : await browserUtil.getScenarioIdCookieValue();
+        scenarioId = scenarioId ? scenarioId : await this.browserScenarioCookieCallback();
         const response  = await http.post('http://localhost:3001/proxy/request', {
             scenarioId: scenarioId,
             method: method,

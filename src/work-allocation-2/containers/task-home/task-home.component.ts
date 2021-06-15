@@ -102,7 +102,7 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
     this.toggleFilter = false;
   }
 
-  public resetFilter(): void {
+  public resetToggle(): void {
     this.toggleFilter = !this.toggleFilter;
     // resetting selected locations because the length not always updating
     this.selectedLocations = this.filterService.get('locations').fields[0].value;

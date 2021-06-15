@@ -6,23 +6,31 @@ $hmcts-page-width: 1920px;
 
 // TODO temporary solution to extend the width of the page until is addressed through govuk-frontend"
 header, footer.govuk-footer{
-  max-width: 1920px;
   min-width: 1020px;
 }
 
-.hmcts-primary-navigation, .govuk-footer__meta{
+ .govuk-footer__meta{
   max-width: 1860px;
   min-width: 960px;
+  padding-right: 15px;
+  padding-left: 15px;
 }
 
   body .govuk-width-container{
-    margin-right: 30px;
-    margin-left:  30px;
+    padding-right: 30px;
+    padding-left:  20px;
     max-width: 1860px;
-    min-width: 960px;
+    min-width: 900px;
+    margin: auto;
   }
+
   #content{
     margin-right: 30px;
+    max-width: 1860px;
+    min-width: 900px;
+  }
+
+  .govuk-phase-banner {
     max-width: 1860px;
     min-width: 900px;
   }

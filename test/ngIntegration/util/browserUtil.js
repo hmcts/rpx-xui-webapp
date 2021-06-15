@@ -17,18 +17,6 @@ axios.defaults.withCredentials = true;
 
 const http = axios.create(axiosOptions);
 
-
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-
-axios.defaults.headers.common['Content-Type'] = 'application/json';
-const axiosOptions = {
-   
-};
-axios.defaults.withCredentials = true;
-
-const http = axios.create(axiosOptions);
-const config = require('../config/protractor-cucumber.conf'); 
-
 class BrowserUtil{
 
     async gotoHomePage(){

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Person } from '../../models/dtos';
 
 @Component({
     selector: 'exui-find-person-container',
@@ -6,5 +7,7 @@ import { Component } from '@angular/core';
   })
 
 export class FindPersonContainerComponent {
-
+  public selectedPerson(person?: Person) {
+    console.log(person);
+  }
 }

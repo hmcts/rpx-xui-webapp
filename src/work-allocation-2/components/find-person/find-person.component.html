@@ -9,7 +9,7 @@
     </div>
     <input type="text" aria-label="Number" matInput [formControl]="myControl" [matAutocomplete]="auto" class="govuk-input govuk-!-width-one-third">
     <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-      <mat-option *ngFor="let option of filteredOptions | async" [value]="option.name" (onSelectionChange)="selectionChange($event)">
+      <mat-option *ngFor="let option of filteredOptions | async" [value]="option.name" (onSelectionChange)="onSelectionChange(option)">
         {{option.name}}
       </mat-option>
     </mat-autocomplete>

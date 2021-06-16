@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { switchMap, startWith, debounceTime } from 'rxjs/operators';
@@ -13,10 +13,11 @@ import { of } from 'rxjs';
 })
 
 export class FindPersonComponent implements OnInit {
+  @Output() onPersonSelected = new EventEmitter<Person>();
   @Input() public title: string;
   constructor(private readonly findPersonService: FindAPersonService) {}
   myControl = new FormControl();
-  filteredOptions: Observable<Person>;
+  filteredOptions: Observable<Person[]>;
   ngOnInit() {
       this.filteredOptions = this.myControl.valueChanges
       .pipe(
@@ -35,7 +36,7 @@ export class FindPersonComponent implements OnInit {
     return of();
   }
 
-  public onSelectionChange(selectedItem) {
-    console.log(selectedItem);
+  public onSelectionChange(selectedPerson?: Person) {
+    this.onPersonSelected.emit(selectedPerson);
   }
 }

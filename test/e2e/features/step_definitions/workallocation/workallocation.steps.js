@@ -7,13 +7,12 @@ const taskActionPage = require('../../pageObjects/workAllocation/taskActionPage'
 const taskmanagerPage = require('../../pageObjects/workAllocation/taskManagerPage');
 var { defineSupportCode } = require('cucumber');
 
-const reportLogger = require('../../support/reportLogger');
-const Browserutil = require('../../../ngIntegration/util/browserUtil');
-const BrowserWaits = require('../../support/customWaits');
-const SoftAssert = require('../../../ngIntegration/util/softAssert');
-const taskManagerPage = require('../pageObjects/workAllocation/taskManagerPage');
-const browserUtil = require('../../../ngIntegration/util/browserUtil');
-const featureToggleUtil = require('../../../ngIntegration/util/featureToggleUtil');
+const reportLogger = require('../../../support/reportLogger');
+const BrowserWaits = require('../../../support/customWaits');
+const SoftAssert = require('../../../../ngIntegration/util/softAssert');
+const taskManagerPage = require('../../pageObjects/workAllocation/taskManagerPage');
+const featureToggleUtil = require('../../../../ngIntegration/util/featureToggleUtil');
+
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 

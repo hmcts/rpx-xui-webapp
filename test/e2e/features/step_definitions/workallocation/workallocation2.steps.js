@@ -1,7 +1,7 @@
 
 var { defineSupportCode } = require('cucumber');
 
-const myWorkPage = require('../..//pageObjects/workAllocation/myWorkPage');
+const myWorkPage = require('../../pageObjects/workAllocation/myWorkPage');
 const BrowserWaits = require('../../../support/customWaits');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {

@@ -104,8 +104,16 @@ async function pa11ytestRunner(test, actions, startUrl,roles) {
     } catch (err) {
         await page.screenshot({ path: screenshotPath });
         const elapsedTime = Date.now() - startTime;
-        result = {};
-        result.issues = [];
+        result = {
+            documentTitle: "test name " + test.test.title,
+            pageUrl:"",
+            issues:[{
+                code:"test execution error",
+                message:""+err.message,
+                selector:""
+            }]
+        };
+       
         result.executionTime = elapsedTime;
         result.screenshot = screenshotReportRef;
         test.a11yResult = result;

@@ -5,31 +5,31 @@ export const PERSON = [
       id: 'id123',
       name: 'John Smith',
       email: 'john.smith@email.com',
-      jurisdiction: 'caseworker'
+      domain: 'caseworker'
   },
   {
     id: 'id124',
     name: 'Andy Wilkins',
     email: 'andy.wilkins@email.com',
-    jurisdiction: 'judicial'
+    domain: 'judicial'
   },
   {
     id: 'id125',
     name: 'Kevin Harper',
     email: 'kevin.harper@email.com',
-    jurisdiction: 'judicial'
+    domain: 'judicial'
   },
   {
     id: 'id126',
     name: 'Mohammed Lala',
     email: 'mo.lala@email.com',
-    jurisdiction: 'caseworker'
+    domain: 'caseworker'
   },
   {
     id: 'id127',
     name: 'Paul Howes',
     email: 'paul.howes@email.com',
-    jurisdiction: 'caseworker'
+    domain: 'caseworker'
   },
   {
     id: 'id128',
@@ -41,13 +41,13 @@ export const PERSON = [
     id: 'id129',
     name: 'Aleena Agarwal',
     email: 'aleena.agarwal@email.com',
-    jurisdiction: 'caseworker'
+    domain: 'caseworker'
   },
   {
     id: 'id130',
     name: 'Connor McElroy',
     email: 'connor.mcelroy@email.com',
-    jurisdiction: 'caseworker'
+    domain: 'caseworker'
   }
 ]
 

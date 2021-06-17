@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FindPersonComponent } from './find-person.component';
 import { FindAPersonService } from '../../services/find-person.service';
 import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
+import { of } from 'rxjs';
 
 describe('FindPersonComponent', () => {
     let component: FindPersonComponent;
@@ -26,6 +27,7 @@ describe('FindPersonComponent', () => {
         expect(component).toBeTruthy();
     });
     it('input element changes triggers search', () => {
+        mockFindAPersonService.find.and.returnValue(of([]));
         component.findPersonControl.setValue('test');
         fixture.detectChanges();
         expect(mockFindAPersonService.find).toHaveBeenCalled();

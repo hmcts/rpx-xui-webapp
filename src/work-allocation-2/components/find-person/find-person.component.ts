@@ -16,13 +16,13 @@ export class FindPersonComponent implements OnInit {
   @Output() personSelected = new EventEmitter<Person>();
   @Input() public title: string;
   @Input() public domainString: string = 'BOTH';
-  private domain: PersonDomain;
+  public domain: PersonDomain;
   constructor(private readonly findPersonService: FindAPersonService) {}
-  myControl = new FormControl();
+  public findPersonControl = new FormControl();
   filteredOptions: Observable<Person[]>;
   ngOnInit() {
     this.domain = PersonDomain[this.domainString];
-    this.filteredOptions = this.myControl.valueChanges.pipe(
+    this.filteredOptions = this.findPersonControl.valueChanges.pipe(
       startWith(''),
       switchMap(searchTerm => {
         return this.filter(searchTerm || '')

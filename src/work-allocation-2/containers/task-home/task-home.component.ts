@@ -114,8 +114,12 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
         filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
       )
       .subscribe((f: FilterSetting) => {
-        this.showFilteredText = this.hasBeenFiltered(f, this.defaultLocations);
+        const isFiltered = this.hasBeenFiltered(f, this.defaultLocations);
+        this.showFilteredText = isFiltered;
         this.selectedLocations = f.fields.find((field) => field.name === TaskHomeComponent.FILTER_NAME).value;
+        if (this.selectedLocations.length === 1 && !isFiltered) {
+          this.toggleFilter = false;
+        }
       });
   }
 

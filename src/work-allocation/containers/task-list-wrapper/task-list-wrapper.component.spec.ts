@@ -3,8 +3,8 @@ import { ChangeDetectorRef} from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
+import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 import { SessionStorageService } from 'src/app/services';
 import { WorkAllocationComponentsModule } from 'src/work-allocation/components/work-allocation.components.module';
@@ -23,13 +23,17 @@ describe('TaskListWrapperComponent', () => {
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['']);
+  const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
+  const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
+
   beforeEach((() => {
     TestBed.configureTestingModule({
       imports: [
         WorkAllocationComponentsModule,
         ExuiCommonLibModule,
         RouterTestingModule,
-        CdkTableModule
+        CdkTableModule,
+        PaginationModule
       ],
       declarations: [TaskListComponent, TaskListWrapperComponent],
       providers: [
@@ -38,13 +42,17 @@ describe('TaskListWrapperComponent', () => {
         { provide: Router, useValue: mockRouter },
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
-        { provide: AlertService, useValue: mockAlertService }
+        { provide: AlertService, useValue: mockAlertService },
+        { provide: LoadingService, useValue: mockLoadingService },
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(TaskListWrapperComponent);
     component = fixture.componentInstance;
+    component.isPaginationEnabled$ = of(false);
     const tasks: Task[] = getMockTasks();
     mockWorkAllocationService.searchTask.and.returnValue(of({ tasks }));
+    mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     fixture.detectChanges();
   }));
 
@@ -70,7 +78,7 @@ describe('TaskListWrapperComponent', () => {
       // need to verify correct properties were called
       const lastNavigateCall = mockRouter.navigateCalls.pop();
       expect(lastNavigateCall.commands).toEqual([`/tasks/${exampleTask.id}/${firstAction.id}/`]);
-      const exampleNavigateCall = { state: { returnUrl: '/tasks/list', showAssigneeColumn: true } };
+      const exampleNavigateCall = { state: { returnUrl: '/tasks/list' } };
       expect(lastNavigateCall.extras).toEqual(exampleNavigateCall);
     });
 
@@ -86,7 +94,7 @@ describe('TaskListWrapperComponent', () => {
       // need to verify correct properties were called
       const lastNavigateCall = mockRouter.navigateCalls.pop();
       expect(lastNavigateCall.commands).toEqual([`/tasks/${exampleTask.id}/${secondAction.id}/`]);
-      const exampleNavigateCall = { state: { returnUrl: '/tasks/manager', showAssigneeColumn: true } };
+      const exampleNavigateCall = { state: { returnUrl: '/tasks/manager' } };
       expect(lastNavigateCall.extras).toEqual(exampleNavigateCall);
     });
   });

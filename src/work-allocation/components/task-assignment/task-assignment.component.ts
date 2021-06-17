@@ -139,7 +139,7 @@ export class TaskAssignmentComponent implements OnInit {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      this.pUserId = userInfo.id;
+      this.pUserId = userInfo.id ? userInfo.id : userInfo.uid;
     }
   }
 
@@ -150,7 +150,7 @@ export class TaskAssignmentComponent implements OnInit {
   private setupCaseworkerLocation(): void {
     this.caseworkerService.getAll().subscribe(caseworkers => {
       const assignedCaseworker = caseworkers.find(cw => this.isLoggedInUser(cw.idamId));
-      this.pCaseworkerLocation = assignedCaseworker.location ? assignedCaseworker.location : null;
+      this.pCaseworkerLocation = (assignedCaseworker && assignedCaseworker.location) ? assignedCaseworker.location : null;
     }, error => {
       handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
     });

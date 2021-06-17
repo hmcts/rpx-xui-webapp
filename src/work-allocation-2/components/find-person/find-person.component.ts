@@ -13,7 +13,7 @@ import { of } from 'rxjs';
 })
 
 export class FindPersonComponent implements OnInit {
-  @Output() onPersonSelected = new EventEmitter<Person>();
+  @Output() personSelected = new EventEmitter<Person>();
   @Input() public title: string;
   constructor(private readonly findPersonService: FindAPersonService) {}
   myControl = new FormControl();
@@ -37,6 +37,6 @@ export class FindPersonComponent implements OnInit {
   }
 
   public onSelectionChange(selectedPerson?: Person) {
-    this.onPersonSelected.emit(selectedPerson);
+    this.personSelected.emit(selectedPerson);
   }
 }

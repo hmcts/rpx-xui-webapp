@@ -10,12 +10,12 @@ export async function postFindPersonSearch(req: EnhancedRequest, res: Response, 
     }
     const searchTerm = req.body.searchOptions.searchTerm;
     let searchResult = PERSON.filter(person => person.name.includes(searchTerm));
-    if(searchResult && searchResult.length === 0) {
+    if (searchResult && searchResult.length === 0) {
         const noResultsPerson = {
+            domain: '',
+            email: '',
             id: '',
             name: 'No results found',
-            email: '',
-            domain: ''
         };
         searchResult = [noResultsPerson];
     }

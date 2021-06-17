@@ -20,6 +20,7 @@ export class FindPersonComponent implements OnInit {
   constructor(private readonly findPersonService: FindAPersonService) {}
   public findPersonControl = new FormControl();
   filteredOptions: Observable<Person[]>;
+  private readonly minSearchCharacters = 2;
   ngOnInit() {
     this.domain = PersonDomain[this.domainString];
     this.filteredOptions = this.findPersonControl.valueChanges.pipe(
@@ -31,7 +32,7 @@ export class FindPersonComponent implements OnInit {
   }
 
   public filter(searchTerm: string): Observable<Person[]> {
-    if (searchTerm && searchTerm.length > 2) {
+    if (searchTerm && searchTerm.length > this.minSearchCharacters) {
       return this.findPersonService.find({searchTerm, jurisdiction: this.domain});
     }
     return of();

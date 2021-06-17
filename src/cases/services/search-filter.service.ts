@@ -77,7 +77,7 @@ export class SearchFilterService {
         attributeName = sanitiseMetadataFieldName(filterType, attributeName);
         target[filterType][prefix + attributeName] = value;
       } else if (value) {
-        if (value[0]) { // is array and has index zero populated
+        if (Array.isArray(value) && value.length > 0) { // is array and has index zero populated
           value = value[0]; // search filters cannot be arrays, therefore assign first index
         }
         this.buildFormDetails(prefix + attributeName, target, value);

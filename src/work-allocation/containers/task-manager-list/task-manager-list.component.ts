@@ -17,6 +17,7 @@ import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper
 import { UserInfo } from 'src/app/models/user-details.model';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { CaseworkerDisplayName } from '../../pipes';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 
 @Component({
   selector: 'exui-task-manager-list',
@@ -40,9 +41,10 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
     protected readonly caseworkerService: CaseworkerDataService,
     private readonly locationService: LocationDataService,
     protected alertService: AlertService,
-    protected loadingService: LoadingService
+    protected loadingService: LoadingService,
+    protected featureToggleService: FeatureToggleService
   ) {
-    super(ref, taskService, router, infoMessageCommService, sessionStorageService, alertService, caseworkerService, loadingService);
+    super(ref, taskService, router, infoMessageCommService, sessionStorageService, alertService, caseworkerService, loadingService, featureToggleService);
   }
 
   /**
@@ -115,7 +117,7 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      this.pUserId = userInfo.id;
+      this.pUserId = userInfo.id ? userInfo.id : userInfo.uid;
     }
   }
 
@@ -142,13 +144,14 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
   /**
    * Override the default.
    */
-  public getSearchTaskRequest(): SearchTaskRequest {
+  public getSearchTaskRequestPagination(): SearchTaskRequest {
     return {
       search_parameters: [
         this.getLocationParameter(),
         this.getCaseworkerParameter()
       ],
-      sorting_parameters: [this.getSortParameter()]
+      sorting_parameters: [this.getSortParameter()],
+      pagination_parameters: this.getPaginationParameter()
     };
   }
 

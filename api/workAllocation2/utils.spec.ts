@@ -3,10 +3,11 @@ import { expect } from 'chai';
 import { CLAIM, CLAIM_AND_GO, GO, REASSIGN, RELEASE, TaskPermission } from './constants/actions';
 import { JUDICIAL_MY_TASKS } from './constants/mock.data';
 import { Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/task';
-import { assignActionsToTasks, getActionsByPermissions, mapCaseworkerData, mapCaseworkerPrimaryLocation, prepareGetTaskUrl,
+import { applySearchFilter, assignActionsToTasks, getActionsByPermissions, mapCaseworkerData, mapCaseworkerPrimaryLocation, prepareGetTaskUrl,
   preparePaginationUrl,
   preparePostTaskUrlAction, prepareSearchTaskUrl } from './util';
   import { mockReq } from 'sinon-express-mock';
+import { PersonDomain } from './interfaces/person';
 
 describe('workAllocation.utils', () => {
 
@@ -271,6 +272,34 @@ describe('workAllocation.utils', () => {
       expect(getActionsByPermissions('AvailableTasks', [TaskPermission.MANAGE, TaskPermission.CANCEL])).to.deep.equal([CLAIM, CLAIM_AND_GO]);
     });
 
+  });
+
+  describe('applySearchFilter', () => {
+    it('PersonDomain BOTH', () => {
+      const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonDomain.CASEWORKER };
+      const result = applySearchFilter(person, PersonDomain.BOTH, 'name');
+      expect(result).to.equal(true);
+    });
+    it('PersonDomain CASEWORKER', () => {
+      const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonDomain.CASEWORKER };
+      const result = applySearchFilter(person, PersonDomain.CASEWORKER, 'name');
+      expect(result).to.equal(true);
+    });
+    it('PersonDomain JUDICIAL', () => {
+      const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonDomain.JUDICIAL };
+      const result = applySearchFilter(person, PersonDomain.JUDICIAL, 'name');
+      expect(result).to.equal(true);
+    });
+    it('PersonDomain CASEWORKER no match', () => {
+      const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonDomain.JUDICIAL };
+      const result = applySearchFilter(person, PersonDomain.CASEWORKER, 'name');
+      expect(result).to.equal(false);
+    });
+    it('PersonDomain JUDICIAL no match', () => {
+      const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonDomain.CASEWORKER };
+      const result = applySearchFilter(person, PersonDomain.JUDICIAL, 'name');
+      expect(result).to.equal(false);
+    });
   });
 
 });

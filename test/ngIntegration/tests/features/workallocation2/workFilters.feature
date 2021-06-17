@@ -1,4 +1,4 @@
-@test
+
 Feature: WA Release 2: Work filters
 
     Background: Mock and browser setup
@@ -59,7 +59,7 @@ Feature: WA Release 2: Work filters
         Then I validate following work location selected
             | locationName  |
             | Aldgate Tower |
-            | Bradford      |
+            | Glasgow |
             | Newcastle     |
 
         When I click work location filter with label "Bradford"
@@ -72,10 +72,10 @@ Feature: WA Release 2: Work filters
         Then I validate following work location selected
             | locationName  |
             | Aldgate Tower |
-            | Bradford      |
+            | Glasgow |
             | Newcastle     |
         Examples:
-            | UserType       | Roles                                              |
+            | UserType       | Roles                                          |
             | Caseworker IAC | caseworker-ia-caseofficer,caseworker-ia-admofficer |
             | Judge          | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
@@ -166,9 +166,6 @@ Feature: WA Release 2: Work filters
             | Judge          | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
 
-
-
-
     Scenario Outline:  Work filters applied selection persistence within and across session "<UserType>"
         Given I set MOCK with "wa_release_2" release user and roles "<Roles>"
         Given I start MockApp
@@ -227,16 +224,10 @@ Feature: WA Release 2: Work filters
             | Bradford      |
             | Newcastle     |
 
-
-
         Examples:
             | UserType       | Roles                                              |
             | Caseworker IAC | caseworker-ia-caseofficer,caseworker-ia-admofficer |
             | Judge          | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
-
-
-
-
 
 
     Scenario Outline:  Work filters applied to all sub navigation tabs "<UserType>"

@@ -160,7 +160,7 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
         name: TaskHomeComponent.FILTER_NAME,
         value: [`${location.id}`]
       }];
-      this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
+      // this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
     }
     this.fieldsConfig.fields.push(field);
   }

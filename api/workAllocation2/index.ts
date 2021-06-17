@@ -27,6 +27,7 @@ import {
   prepareCaseWorkerForService,
   prepareCaseWorkerSearchUrl,
   prepareGetTaskUrl,
+  preparePaginationUrl,
   preparePostTaskUrlAction,
   prepareRoleApiRequest,
   prepareRoleApiUrl,
@@ -70,18 +71,22 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     if (searchRequest.search_by === 'judge') {
       // TODO below call mock api will be replaced when real api is ready
       if (view === 'MyTasks') {
-        const postTaskPath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'myTasks?view=judicial');
+        const basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'myTasks?view=judicial');
+        const postTaskPath = preparePaginationUrl(req, basePath);
         promise = await handlePost(postTaskPath, searchRequest, req);
       } else if (view === 'AvailableTasks') {
-        const postTaskPath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'availableTasks?view=judicial');
+        const basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'availableTasks?view=judicial');
+        const postTaskPath = preparePaginationUrl(req, basePath);
         promise = await handlePost(postTaskPath, searchRequest, req);
       }
     } else {
       if (view === 'MyTasks') {
-        const postTaskPath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'myTasks?view=caseworker');
+        const basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'myTasks?view=caseworker');
+        const postTaskPath = preparePaginationUrl(req, basePath);
         promise = await handlePost(postTaskPath, searchRequest, req);
       } else if (view === 'AvailableTasks') {
-        const postTaskPath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'availableTasks?view=caseworker');
+        const basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'availableTasks?view=caseworker');
+        const postTaskPath = preparePaginationUrl(req, basePath);
         promise = await handlePost(postTaskPath, searchRequest, req);
       }
     }
@@ -92,7 +97,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     if (data) {
       // Note: TaskPermission placed in here is an example of what we could be getting (i.e. Manage permission)
       // These should be mocked as if we were getting them from the user themselves
-      returnData = {tasks: assignActionsToTasks(data.tasks, req.body.view)};
+      returnData = {tasks: assignActionsToTasks(data.tasks, req.body.view), total_records: data.total_records};
     }
 
     // Send the (possibly modified) data back in the Response.

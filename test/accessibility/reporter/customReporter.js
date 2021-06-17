@@ -117,6 +117,11 @@ function consoleReport(reportjson) {
         if (test.status === "failed") {
             let a11yResult = test.a11yResult;
             console.log("\t \t Test Case : " + test.name);
+            if (a11yResult === undefined){
+                console.log("\t Test execution failed and no a11y test result returned" );
+                continue;
+            }
+            
 
             console.log("\t \t Page title : " + a11yResult.documentTitle);
             console.log("\t \t Page url : " + a11yResult.pageUrl);

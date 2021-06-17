@@ -12,5 +12,3 @@ describe('initApplication', () => {
     expect(initApplication(storeSpy)).toEqual(jasmine.any(Function));
   });
 });
-
-

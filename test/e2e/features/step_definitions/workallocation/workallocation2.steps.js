@@ -1,7 +1,7 @@
 
 var { defineSupportCode } = require('cucumber');
 
-const myWorkPage = require('../..//pageObjects/workAllocation/myWorkPage');
+const myWorkPage = require('../../pageObjects/workAllocation/myWorkPage');
 const BrowserWaits = require('../../../support/customWaits');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
@@ -28,20 +28,20 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I validate location filter is not displayed', async function () {
         await BrowserWaits.retryWithActionCallback(async () => {
-            expect(await myWorkPage.genericFilterContainer.isPresent()).to.be.false;;
+            expect(await myWorkPage.genericFilterContainer.isPresent(),'location filter is still displayed').to.be.false;;
         });
         
     });
 
     Then('I validate My work filter locations displayed', async function () {
         await myWorkPage.waitForWorkFilterToDisplay();
-        expect(await myWorkPage.getWorkFilterLocationsCount() > 0).to.be.true;;
+        expect(await myWorkPage.getWorkFilterLocationsCount() > 0,'No location inputs displayed').to.be.true;;
     });
 
     Then('I validate work locations selected count is {int}', async function (selectedLocationsCount) {
         await myWorkPage.waitForWorkFilterToDisplay();
         const selectedLocs = await myWorkPage.getListOfSelectedLocations();
-        expect(selectedLocs.length).to.equal(selectedLocationsCount);
+        expect(selectedLocs.length,'selected locations count not matching').to.equal(selectedLocationsCount);
 
     });
 
@@ -57,7 +57,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         for (let i = 0; i < locationNameHashes.length; i++){
             locationNamesArr.push(locationNameHashes[i].locationName);
         }
-        expect(selectedLocations).to.include.members(locationNamesArr);
+        expect(selectedLocations, 'actual missing expected locations').to.have.same.members(locationNamesArr);
+        //expect(locationNamesArr,'actual has more locations selected').to.include.all.members(selectedLocations);
+        
 
     });
 
@@ -83,6 +85,27 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     When('I click My work sub navigation tab {string}', async function(subNavTabLabel){
         await myWorkPage.clickSubNavigationTab(subNavTabLabel);
+    });
+
+    Then('I validate task list page results text displayed as {string}', async function(pagnationResultText){
+        expect(await myWorkPage.getPaginationResultText()).to.include(pagnationResultText);
+    });
+
+    When('I click task list pagination link {string}', async function(paginationLinktext){
+        if (paginationLinktext.toLowerCase() === "next"){
+            await myWorkPage.pageNextLink.click();
+        } else if (paginationLinktext.lowerCase() === "previous") {
+            await myWorkPage.pagePreviousLink.click();
+        }else{
+            await myWorkPage.clickPaginationPageNum(paginationLinktext);
+        }
+    });
+
+    Then('I validate task search request with reference {string} has pagination parameters', async function(requestReference,datatable){
+        const reqBody = global.scenarioData[requestReference];
+        const datatableHash = datatable.hashes()[0];
+        expect(reqBody.searchRequest.pagination_parameters.page_number).to.equal(parseInt(datatableHash.PageNumber));
+        expect(reqBody.searchRequest.pagination_parameters.page_size).to.equal(parseInt(datatableHash.PageSize));
     });
 
 

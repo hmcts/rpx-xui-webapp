@@ -6,6 +6,8 @@ import { ConfigConstants, FilterConstants, ListConstants, SortConstants } from '
 import { Caseworker, Location, SearchTaskRequest } from '../../models/dtos';
 import { TaskFieldConfig } from '../../models/tasks';
 import { CaseworkerDisplayName } from '../../pipes';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import {
   CaseworkerDataService,
   InfoMessageCommService,
@@ -36,9 +38,11 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
     protected sessionStorageService: SessionStorageService,
     protected readonly caseworkerService: CaseworkerDataService,
     private readonly locationService: LocationDataService,
-    protected alertService: AlertService
+    protected alertService: AlertService,
+    protected loadingService: LoadingService,
+    protected featureToggleService: FeatureToggleService
   ) {
-    super(ref, taskService, router, infoMessageCommService, sessionStorageService, alertService, caseworkerService);
+    super(ref, taskService, router, infoMessageCommService, sessionStorageService, alertService, caseworkerService, loadingService, featureToggleService);
   }
 
   public get fields(): TaskFieldConfig[] {
@@ -86,13 +90,14 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
   /**
    * Override the default.
    */
-  public getSearchTaskRequest(): SearchTaskRequest {
+  public getSearchTaskRequestPagination(): SearchTaskRequest {
     return {
       search_parameters: [
         this.getLocationParameter(),
         this.getCaseworkerParameter()
       ],
-      sorting_parameters: [this.getSortParameter()]
+      sorting_parameters: [this.getSortParameter()],
+      pagination_parameters: this.getPaginationParameter()
     };
   }
 

@@ -22,17 +22,15 @@ export class FindPersonComponent implements OnInit {
   filteredOptions: Observable<Person[]>;
   ngOnInit() {
     this.domain = PersonDomain[this.domainString];
-    this.filteredOptions = this.myControl.valueChanges
-    .pipe(
+    this.filteredOptions = this.myControl.valueChanges.pipe(
       startWith(''),
-      // debounceTime(400),
       switchMap(searchTerm => {
         return this.filter(searchTerm || '')
       })
     );
   }
 
-  private filter(searchTerm: string): Observable<Person[]> {
+  public filter(searchTerm: string): Observable<Person[]> {
     if (searchTerm && searchTerm.length > 2) {
       return this.findPersonService.find({searchTerm, jurisdiction: this.domain});
     }

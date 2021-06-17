@@ -14,14 +14,17 @@ export async function postFindPersonSearch(req: EnhancedRequest, res: Response, 
     const domain = req.body.searchOptions.jurisdiction as PersonDomain;
     let searchResult = PERSON.filter(person => applySearchFilter(person, domain, searchTerm));
     if (searchResult && searchResult.length === 0) {
-        const noResultsPerson = {
-            domain: PersonDomain.BOTH,
-            email: '',
-            id: '',
-            name: 'No results found',
-        };
-        searchResult = [noResultsPerson];
+        searchResult = getDefaultResult();
     }
     res.status(200);
     res.send(searchResult);
+}
+
+export function getDefaultResult() {
+    return [{
+        domain: PersonDomain.BOTH,
+        email: '',
+        id: '',
+        name: 'No results found',
+    }];
 }

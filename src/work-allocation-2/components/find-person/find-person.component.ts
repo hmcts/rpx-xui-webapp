@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { switchMap, startWith, debounceTime } from 'rxjs/operators';
+import { switchMap, startWith } from 'rxjs/operators';
 import { FindAPersonService } from '../../services/find-person.service';
 import { Person, PersonDomain } from '../../models/dtos';
 import { of } from 'rxjs';
@@ -15,23 +15,26 @@ import { of } from 'rxjs';
 export class FindPersonComponent implements OnInit {
   @Output() personSelected = new EventEmitter<Person>();
   @Input() public title: string;
+  @Input() public domainString: string = 'BOTH';
+  private domain: PersonDomain;
   constructor(private readonly findPersonService: FindAPersonService) {}
   myControl = new FormControl();
   filteredOptions: Observable<Person[]>;
   ngOnInit() {
-      this.filteredOptions = this.myControl.valueChanges
-      .pipe(
-        startWith(''),
-        // debounceTime(400),
-        switchMap(searchTerm => {
-          return this.filter(searchTerm || '')
-        })
-      );
+    this.domain = PersonDomain[this.domainString];
+    this.filteredOptions = this.myControl.valueChanges
+    .pipe(
+      startWith(''),
+      // debounceTime(400),
+      switchMap(searchTerm => {
+        return this.filter(searchTerm || '')
+      })
+    );
   }
 
   private filter(searchTerm: string): Observable<Person[]> {
     if (searchTerm && searchTerm.length > 2) {
-      return this.findPersonService.find({searchTerm, jurisdiction: PersonDomain.BOTH});
+      return this.findPersonService.find({searchTerm, jurisdiction: this.domain});
     }
     return of();
   }

@@ -41,4 +41,8 @@ export class FindPersonComponent implements OnInit {
   public onSelectionChange(selectedPerson?: Person) {
     this.personSelected.emit(selectedPerson);
   }
+
+  public getDisplayName(selectedPerson: Person) {
+    return selectedPerson.email ? `${selectedPerson.name}(${selectedPerson.email})` : selectedPerson.name;
+  }
 }

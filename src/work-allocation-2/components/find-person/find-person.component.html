@@ -10,7 +10,7 @@
     <input type="text" aria-label="Number" matInput [formControl]="findPersonControl" [matAutocomplete]="auto" class="govuk-input govuk-!-width-one-third">
     <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
       <mat-option *ngFor="let option of filteredOptions | async" [value]="option.email" (onSelectionChange)="onSelectionChange(option)">
-        {{option.name}}
+        {{getDisplayName(option)}}
       </mat-option>
     </mat-autocomplete>
   </fieldset>

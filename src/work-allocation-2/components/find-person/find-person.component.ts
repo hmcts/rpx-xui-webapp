@@ -17,6 +17,7 @@ export class FindPersonComponent implements OnInit {
   @Input() public title: string;
   @Input() public domainString: string = 'BOTH';
   public domain: PersonDomain;
+  public showAutocomplete: boolean = false;
   constructor(private readonly findPersonService: FindAPersonService) {}
   public findPersonControl = new FormControl();
   filteredOptions: Observable<Person[]>;
@@ -44,5 +45,13 @@ export class FindPersonComponent implements OnInit {
 
   public getDisplayName(selectedPerson: Person) {
     return selectedPerson.email ? `${selectedPerson.name}(${selectedPerson.email})` : selectedPerson.name;
+  }
+
+  public updatedVal(currentValue) {
+    if (currentValue && currentValue.length > this.minSearchCharacters) {
+      this.showAutocomplete = true;
+    } else {
+      this.showAutocomplete = false;
+    }
   }
 }

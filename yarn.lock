@@ -415,10 +415,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@3.1.5-case-field-labels-showing-on-summary-screen-when-complex-type-is-hidden":
-  version "3.1.5-case-field-labels-showing-on-summary-screen-when-complex-type-is-hidden"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-3.1.5-case-field-labels-showing-on-summary-screen-when-complex-type-is-hidden.tgz#28e4601e3b80c5b403322f5bff4a1f55cac56949"
-  integrity sha512-VgZ9zsc8b/9FWOGPhVGcQBL2zgjwqt3CHDbdiS0WOzKZmqybi+7P6S5emk9kdKl78km71szFoB0fIm6+i7p7KA==
+"@hmcts/ccd-case-ui-toolkit@3.1.6-case-field-labels-showing-on-summary-screen-when-complex-type-is-hidden":
+  version "3.1.6-case-field-labels-showing-on-summary-screen-when-complex-type-is-hidden"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-3.1.6-case-field-labels-showing-on-summary-screen-when-complex-type-is-hidden.tgz#23e2b2110b1ab7976b6de34d1dfc25c1787bb74c"
+  integrity sha512-6lTBdAqpQ31wJ95fLn1iJ8Y9xP9d0yCUWB7lWI/PxJuobpa+OAu22rm86ARIzPIJIa7ru4oN9yH9Q1AN2jRc+w==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

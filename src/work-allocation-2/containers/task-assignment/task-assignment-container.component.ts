@@ -102,7 +102,9 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   }
 
   public assign(): void {
-    if (!this.caseworker) {
+    // @ts-ignore
+    this.router.navigate([this.route.snapshot._urlSegment.segments[0].path, this.route.snapshot.params['taskId'], 'reassign', 'confirm']);
+/*    if (!this.caseworker) {
       this.error = NAME_ERROR;
       return;
     }
@@ -117,7 +119,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
           this.reportUnavailableErrorAndReturn();
         }
       }
-    });
+    });*/
   }
 
   public cancel(): void {

@@ -11,6 +11,7 @@ import { WorkAllocationComponentsModule } from './components/work-allocation.com
 import * as fromContainers from './containers';
 import { WorkAllocationFeatureToggleGuard } from './guards';
 import { CaseworkerDataService, WorkAllocationTaskService } from './services';
+import { FindAPersonService } from './services/find-person.service';
 import { WorkAllocationFeatureService } from './services/work-allocation-feature.service';
 import { workAllocationRouting } from './work-allocation-feature.routes';
 
@@ -35,6 +36,7 @@ import { workAllocationRouting } from './work-allocation-feature.routes';
     AlertService,
     CaseworkerDataService,
     WorkAllocationFeatureService,
+    FindAPersonService
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

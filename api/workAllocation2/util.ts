@@ -1,5 +1,6 @@
 import { EnhancedRequest } from 'lib/models';
 import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX } from './constants/actions';
+import { Person, PersonDomain } from './interfaces/person';
 import { Action, Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/task';
 
 export function prepareGetTaskUrl(baseUrl: string, taskId: string): string {
@@ -157,4 +158,11 @@ export function getActionsByPermissions(view, permissions: TaskPermission[]): Ac
     }
   });
   return actionList;
+}
+
+export function applySearchFilter(person: Person, domain: PersonDomain, searchTerm: any): boolean {
+  if (domain === PersonDomain.BOTH) {
+      return person && person.name.toLowerCase().includes(searchTerm.toLowerCase());
+  }
+  return person.domain === domain && person.name.toLowerCase().includes(searchTerm.toLowerCase());
 }

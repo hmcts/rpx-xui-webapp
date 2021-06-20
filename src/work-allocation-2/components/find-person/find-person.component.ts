@@ -5,6 +5,7 @@ import { switchMap, startWith } from 'rxjs/operators';
 import { FindAPersonService } from '../../services/find-person.service';
 import { Person, PersonDomain } from '../../models/dtos';
 import { of } from 'rxjs';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'exui-find-person',
@@ -16,13 +17,16 @@ export class FindPersonComponent implements OnInit {
   @Output() personSelected = new EventEmitter<Person>();
   @Input() public title: string;
   @Input() public domainString: string = 'BOTH';
+  @Input() public findPersonGroup: FormGroup;
   public domain: PersonDomain;
   public showAutocomplete: boolean = false;
   constructor(private readonly findPersonService: FindAPersonService) {}
   public findPersonControl = new FormControl();
   filteredOptions: Observable<Person[]>;
   private readonly minSearchCharacters = 2;
+
   ngOnInit() {
+    this.findPersonGroup.addControl('findPersonControl', this.findPersonControl);
     this.domain = PersonDomain[this.domainString];
     this.filteredOptions = this.findPersonControl.valueChanges.pipe(
       startWith(''),

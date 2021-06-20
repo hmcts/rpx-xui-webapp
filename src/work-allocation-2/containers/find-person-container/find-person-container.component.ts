@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { Person } from '../../models/dtos';
 
 @Component({
@@ -7,7 +8,15 @@ import { Person } from '../../models/dtos';
   })
 
 export class FindPersonContainerComponent {
+  public readonly findPersonGroup: FormGroup;
+  constructor() {
+    this.findPersonGroup = new FormGroup({})
+  }
   public selectedPerson(person?: Person) {
     console.log(person);
+    console.log(this.findPersonGroup.value);
+  }
+  public onSubmit(): void {
+    console.log(this.findPersonGroup.value);
   }
 }

@@ -1,1 +1,2 @@
-<exui-find-person title="Allocate a hearing judge" (personSelected)="selectedPerson($event)" domainString="BOTH"></exui-find-person>
+<exui-find-person title="Allocate a hearing judge" (personSelected)="selectedPerson($event)" domainString="BOTH" [findPersonGroup]="findPersonGroup"></exui-find-person>
+<button type="submit" (click)="onSubmit()">Submit</button>

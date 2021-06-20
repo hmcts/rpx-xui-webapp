@@ -17,7 +17,7 @@ export class FindPersonComponent implements OnInit {
   @Output() personSelected = new EventEmitter<Person>();
   @Input() public title: string;
   @Input() public domainString: string = 'BOTH';
-  @Input() public findPersonGroup: FormGroup;
+  @Input() public findPersonGroup: FormGroup = new FormGroup({});
   public domain: PersonDomain;
   public showAutocomplete: boolean = false;
   constructor(private readonly findPersonService: FindAPersonService) {}

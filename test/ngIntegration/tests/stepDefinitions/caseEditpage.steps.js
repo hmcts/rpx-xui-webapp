@@ -42,8 +42,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
              console.log("/data/case-types/:caseType/cases req received : " + submissionReq); 
              next();
          });
-         await MockApp.stopServer();
-         await MockApp.startServer();
+         //await MockApp.stopServer();
+         //await MockApp.startServer();
 
 
          let eventData = {};
@@ -153,8 +153,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             validateReq = req.body;
             res.status(statusCode).send("Data validation error!");
         });
-        await MockApp.stopServer();
-        await MockApp.startServer();
+        //await MockApp.stopServer();
+        //await MockApp.startServer();
 
         await caseEditPage.clickContinue();
         expect(await caseEditPage.isErrorSummaryDisplayed(),' Error summary banner is not displayed').to.be.true;

@@ -27,7 +27,7 @@ export class MyTasksComponent extends TaskListWrapperComponent {
     return ConfigConstants.MyWorkTasks;
   }
 
-  public getSearchTaskRequest(): SearchTaskRequest {
+  public getSearchTaskRequestPagination(): SearchTaskRequest {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
@@ -38,8 +38,16 @@ export class MyTasksComponent extends TaskListWrapperComponent {
           { key: 'user', operator: 'IN', values: [ id ] },
         ],
         sorting_parameters: [this.getSortParameter()],
-        search_by: isJudge ? 'judge' : 'caseworker'
+        search_by: isJudge ? 'judge' : 'caseworker',
+        pagination_parameters: this.getPaginationParameter()
       };
     }
+  }
+
+  /**
+   * Handle the paging event
+   */
+   public onPaginationEvent(pageNumber: number): void {
+    this.onPaginationHandler(pageNumber);
   }
 }

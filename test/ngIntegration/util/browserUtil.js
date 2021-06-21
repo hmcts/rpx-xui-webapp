@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const reportLogger = require('../../e2e/support/reportLogger');
 // const addContext = require('mochawesome/addContext');
 const MockApp = require('../../nodeMock/app');
-
+const config = require('../config/protractor-cucumber.conf');
 
 
 const axios = require('axios');
@@ -11,7 +11,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 const axiosOptions = {
-   
+
 };
 axios.defaults.withCredentials = true;
 
@@ -20,7 +20,7 @@ const http = axios.create(axiosOptions);
 class BrowserUtil{
 
     async gotoHomePage(){
-        await browser.get("http://localhost:4200/"); 
+        await browser.get(config.config.baseUrl);
     }
 
     setAuthCookie(){
@@ -87,12 +87,10 @@ class BrowserUtil{
         let ldDone = false;
         while (!ldDone && elapsedTime < 15) {
             let perf = await browser.executeScript("return window.performance.getEntriesByType('resource')");
-
             for (let i = 0; i < perf.length; i++) {
                 if (perf[i].name.includes(url)) {
                     ldDone = true;
-                    global.scenarioData['featureToggles'] = (await http.get(perf[i].name,{})).data;
-
+                    await this.stepWithRetry(async () => global.scenarioData['featureToggles'] = (await http.get(perf[i].name, {})).data, 3, 'Get LD feature toggles request')
                     // await browser.sleep(2000);
                     reportLogger.AddMessage("LD response received");
                     //reportLogger.AddJson(global.scenarioData['featureToggles']);
@@ -115,18 +113,25 @@ class BrowserUtil{
         // });
     }
 
-    async stepWithRetry(action, retryCount){
+
+    async stepWithRetry(action, retryCount, stepDesc) {
         retryCount = retryCount ? retryCount : 5;
         let retryCounter = 0;
-        while (retryCounter <= retryCount){
-            try{
+        while (retryCounter <= retryCount) {
+            try {
                 return action();
-            }catch(e){
+            } catch (e) {
                 retryCounter++;
-                reportLogger.AddMessage("Error occured "+e);
+                reportLogger.AddMessage(stepDesc ? stepDesc : '' + " : Error occured " + e);
                 reportLogger.AddMessage("Retring attempt  " + retryCounter);
             }
         }
+    }
+
+
+    async getScenarioIdCookieValue(){
+        const scenarioId = await browser.manage().getCookie('scenarioId')
+        return scenarioId ? scenarioId.value : null;
     }
 
 }

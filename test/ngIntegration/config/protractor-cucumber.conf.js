@@ -9,8 +9,9 @@ const argv = minimist(process.argv.slice(2));
 
 const MockApp = require('../../nodeMock/app');
 const browserUtil = require('../util/browserUtil');
+const customReporter = require('../../e2e/support/reportLogger');
 
-const isParallelExecution = false;
+const isParallelExecution = true;
 
 const jenkinsConfig = [
 
@@ -39,7 +40,7 @@ const localConfig = [
 
 if(isParallelExecution){
     jenkinsConfig[0].shardTestFiles = true;
-    jenkinsConfig[0].maxInstances = 2;
+    jenkinsConfig[0].maxInstances = 3;
 }
 
 const cap = (argv.local) ? localConfig : jenkinsConfig;
@@ -61,7 +62,8 @@ const config = {
 
     beforeLaunch(){
         if (isParallelExecution) {
-            MockApp.init(3001);
+            MockApp.setServerPort(3001);
+            MockApp.init();
             MockApp.startServer();
         }    
     },
@@ -78,21 +80,23 @@ const config = {
 
         if (isParallelExecution){
             MockApp.getNextAvailableClientPort().then(res => {
-                MockApp.init(res.data.port);
-                MockApp.startServer();
-                MockApp.setBrowserScenarioCookieCallback(browserUtil.getScenarioIdCookieValue);
+                MockApp.setServerPort(res.data.port);
+                MockApp.init();
+                //MockApp.startServer();
+                
             });
         }else{
-            MockApp.init(3001);
-            MockApp.startServer();
-            MockApp.setBrowserScenarioCookieCallback(browserUtil.getScenarioIdCookieValue);
-        }     
+            MockApp.setServerPort(3001);
+            //await MockApp.startServer();
+            MockApp.setLogMessageCallback(customReporter.AddMessage);
+        }    
+        MockApp.setLogMessageCallback(customReporter.AddJson);
     },
     cucumberOpts: {
         strict: true,
         // format: ['node_modules/cucumber-pretty'],
         format: ['node_modules/cucumber-pretty', 'json:reports/ngIntegrationtests/json/results.json'],
-        tags: getBDDTags(),
+        tags: getBDDTags() ,
         require: [
             '../../e2e/support/timeout.js',
             '../util/cucumberHooks.js',
@@ -125,11 +129,14 @@ const config = {
 };
 
 function getBDDTags() {
-    const tags = [];
+    let tags = [];
     if (!process.env.TEST_URL ||
         process.env.TEST_URL.includes("pr-") ||
         process.env.TEST_URL.includes("localhost")) {
         tags.push("@ng");
+        if (argv.tags){
+            tags = argv.tags.split(',');
+        }
     }else{
         tags.push("@none"); 
     }

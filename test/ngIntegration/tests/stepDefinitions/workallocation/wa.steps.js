@@ -41,6 +41,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         MockApp.onPost("/workallocation/task/", (req, res) => {
             res.send(workAllocationMockData.getMyTasks(taskCount));
         });
+        MockApp.onPost("/workallocation/taskWithPagination/", (req, res) => {
+            res.send(workAllocationMockData.getMyTasks(taskCount));
+        });
 
     });
 
@@ -49,10 +52,18 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             res.send(workAllocationMockData.getAvailableTasks(taskCount));
         });
 
+        MockApp.onPost("/workallocation/taskWithPagination/", (req, res) => {
+            res.send(workAllocationMockData.getAvailableTasks(taskCount));
+        });
+
     });
 
     Given('I set MOCK Task manager tasks count {int}', async function (taskCount) {
         MockApp.onPost("/workallocation/task/", (req, res) => {
+            res.send(workAllocationMockData.getTaskManagerTasks(taskCount));
+        });
+
+        MockApp.onPost("/workallocation/taskWithPagination/", (req, res) => {
             res.send(workAllocationMockData.getTaskManagerTasks(taskCount));
         });
 
@@ -241,10 +252,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             await MockUtil.resetMock();
 
 
-            await BrowserWaits.waitForConditionAsync(async () => {
+            await BrowserWaits.retryWithActionCallback(async () => {
                 await headerPage.clickManageCases();
-                
-                return await caseListPage.amOnPage();
+                if (!(await caseListPage.amOnPage())) {
+                    throw new Error('Not on case list page');
+                }
             });
             await headerPage.clickTaskList();
             await taskListPage.amOnPage();
@@ -287,10 +299,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         for (const responseCode of testErrorResponseCodes) {
 
 
-            await BrowserWaits.waitForConditionAsync(async () => {
-                await headerPage.clickManageCases();
-                return await caseListPage.amOnPage();
-            });
+            await headerPage.clickManageCases();
+            await caseListPage.amOnPage();
             await MockUtil.setMockResponse("POST", "/workallocation/taskWithPagination/", (req, res) => {
                 res.status(responseCode).send(workAllocationMockData.getTaskManagerTasks(10));
             })
@@ -308,10 +318,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         for (const responseCode of testErrorResponseCodes) {
 
-            await BrowserWaits.waitForConditionAsync(async () => {
-                await headerPage.clickManageCases();
-                return await caseListPage.amOnPage();
-            });
+            await headerPage.clickManageCases();
+            await caseListPage.amOnPage();
             await MockUtil.resetMock();
             await MockUtil.setMockResponse("GET", "/workallocation/location", (req, res) => {
                 res.status(responseCode).send({ error: "Mock error" });
@@ -343,11 +351,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     
         for (const endPoint of reassignEndpoints) {
             for (const responseCode of testErrorResponseCodes) {
-
-                await BrowserWaits.waitForConditionAsync(async () => {
-                    await headerPage.clickManageCases();
-                    return await caseListPage.amOnPage();
-                });
+                await headerPage.clickManageCases();
+                await caseListPage.amOnPage();
                await MockUtil.resetMock(); 
                 await MockUtil.setMockResponse("POST", '/workallocation/taskWithPagination/', (req, res) => {
                     res.send(workAllocationMockData.getMyTasks(10));
@@ -392,10 +397,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 res.send(workAllocationMockData.getMyTasks(10));
             });
             
-            await BrowserWaits.waitForConditionAsync(async () => {
-                await headerPage.clickManageCases();
-                return await caseListPage.amOnPage();
-            });
+            await headerPage.clickManageCases();
+            await caseListPage.amOnPage();
             
             await headerPage.clickTaskList();
             await taskListPage.amOnPage();
@@ -450,10 +453,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             for (const responseCode of testErrorResponseCodes) {
                 
 
-                await BrowserWaits.waitForConditionAsync(async () => {
-                    await headerPage.clickManageCases();
-                    return await caseListPage.amOnPage();
-                });
+                await headerPage.clickManageCases();
+                await caseListPage.amOnPage();
                 await MockUtil.resetMock(); 
                 await MockUtil.setMockResponse("POST", '/workallocation/taskWithPagination/', (req, res) => {
                     res.send(workAllocationMockData.getAvailableTasks(10));
@@ -501,12 +502,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         // expect(await taskListPage.amOnPage()).to.be.true;
         for (const action of taskManager_action) {
             for (const responseCode of testErrorResponseCodes) {
-               
-
-                await BrowserWaits.waitForConditionAsync(async () => {
-                    await headerPage.clickManageCases();
-                    return await caseListPage.amOnPage();
-                });
+                await headerPage.clickManageCases();
+                await caseListPage.amOnPage();
                 await MockUtil.resetMock();
                 await MockUtil.setMockResponse("POST", '/workallocation/taskWithPagination/', (req, res) => {
                     res.send(workAllocationMockData.getTaskManagerTasks(10));
@@ -548,9 +545,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const scenarios = datatable.hashes();
 
         let validateOnPage = null;
+        const softAssert = new SoftAssert(this);
         for (let i = 0; i < scenarios.length; i++){
             const scr = scenarios[i];
-            const softAssert = new SoftAssert(this);
+            
             const scenarioDesc = `${scr.ManageAction} ${scr.ActionType} ${scr.SubmitCancel} ${scr.SuccessMessage}`;
             CucumberReporter.AddMessage("")
             CucumberReporter.AddMessage("**********************************************************************************************")
@@ -608,7 +606,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }
 
             if (scr.ManageAction.includes('to case')){
-                await softAssert.assert(async () => expect(caseDetailsPage.amOnPage(), "Not on case details page").to.be.true);
+                await softAssert.assert(async () => expect(await caseDetailsPage.amOnPage(), "Not on case details page").to.be.true);
                 
             }else{
                 await validateOnPage();
@@ -620,6 +618,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }
             
        }
+        softAssert.finally();
        
     });
 

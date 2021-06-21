@@ -1,5 +1,5 @@
-@ng @wa1
-Feature: Available Tasks Task list
+@ng @wa1 
+Feature: WA Release 1: Available Tasks Task list
 
     Background: Mock and browser setup
         Given I init MockApp
@@ -7,7 +7,7 @@ Feature: Available Tasks Task list
 
 
     Scenario: Avaiable Tasks task counts
-            Given I set MOCK My tasks count 5
+        Given I set MOCK My tasks count 150
         Given I start MockApp
         Given I navigate to home page
         When I click on header tab Task list
@@ -17,9 +17,9 @@ Feature: Available Tasks Task list
         Then I see Available tasks page displayed
         Then I validate tasks count in page 25
 
-@test
+
     Scenario: Avaiable Tasks sort columns
-         Given I set MOCK My tasks count 5
+         Given I set MOCK My tasks count 150
         Given I start MockApp
         Given I navigate to home page
         When I click on header tab Task list
@@ -30,7 +30,7 @@ Feature: Available Tasks Task list
         Then I validate tasks column sorting
 
     Scenario: Avaiable Tasks sort column persist in session
-             Given I set MOCK My tasks count 5
+             Given I set MOCK My tasks count 150
         Given I start MockApp
         Given I navigate to home page
         When I click on header tab Task list
@@ -40,10 +40,8 @@ Feature: Available Tasks Task list
         Then I see Available tasks page displayed
         Then I validate Available tasks sort column persist in session
 
-
-
     Scenario: Avaiable Tasks error responses
-           Given I set MOCK My tasks count 5
+           Given I set MOCK My tasks count 150
         Given I start MockApp
         Given I navigate to home page
         When I click on header tab Task list

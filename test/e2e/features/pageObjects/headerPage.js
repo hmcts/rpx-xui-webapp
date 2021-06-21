@@ -26,7 +26,14 @@ function HeaderPage() {
     }
 
     this.clickPrimaryNavigationWithLabel = async function(label){
-      await element(by.xpath(`//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'${label}')]`)).click()
+      const ele = element(by.xpath(`//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'${label}')]`));
+      await BrowserWaits.retryWithActionCallback(async () => {
+        await BrowserWaits.waitForElement(ele);
+        await BrowserWaits.waitForElementClickable(ele);
+        await ele.click();
+        await browserUtil.waitForLD();
+      });
+      
     }
 
     this.clickAppLogoLink = async function(){
@@ -64,6 +71,7 @@ function HeaderPage() {
 
   this.clickCaseList = async function () {
     await BrowserWaits.waitForElement(this.caseList());  
+    await BrowserWaits.waitForElementClickable(this.caseList());
     await this.caseList().click();
     await browserUtil.waitForLD();
     expect(await caseListPage.amOnPage()).to.be.true 
@@ -72,6 +80,7 @@ function HeaderPage() {
   this.clickCreateCase = async function () {
     await BrowserWaits.retryWithActionCallback(async () => {
       await BrowserWaits.waitForElement(this.createCase()); 
+      await BrowserWaits.waitForElementClickable(this.createCase());
       await this.createCase().click();
       await browserUtil.waitForLD();
       expect(await createCaseStartPage.amOnPage()).to.be.true
@@ -81,6 +90,7 @@ function HeaderPage() {
   this.clickTaskList = async function () {
     await BrowserWaits.retryWithActionCallback(async () => {
       await BrowserWaits.waitForElement(this.taskList());
+      await BrowserWaits.waitForElementClickable(this.taskList());
       await this.taskList().click();
       await browserUtil.waitForLD();
     });
@@ -90,6 +100,7 @@ function HeaderPage() {
   this.clickTaskManager = async function () {
     await BrowserWaits.retryWithActionCallback(async () => {
       await BrowserWaits.waitForElement(this.taskManager());
+      await BrowserWaits.waitForElementClickable(this.taskManager());
       await this.taskManager().click();
       await browserUtil.waitForLD();
     });

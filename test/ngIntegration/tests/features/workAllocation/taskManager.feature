@@ -11,7 +11,7 @@ Feature: WA Release 1: Task manager
             | role                      |
             | caseworker-ia-caseofficer |
             | caseworker-ia-admofficer  |
-        Given I set MOCK Task manager tasks count 25
+        Given I set MOCK Task manager tasks count 250
         Given I start MockApp
         Given I navigate to home page
         When I click on header tab Task manager
@@ -24,7 +24,7 @@ Feature: WA Release 1: Task manager
             | role                      |
             | caseworker-ia-caseofficer |
             | caseworker-ia-admofficer  |
-        Given I set MOCK Task manager tasks count 25
+        Given I set MOCK Task manager tasks count 250
         Given I start MockApp
         Given I navigate to home page
         When I click on header tab Task manager
@@ -37,7 +37,7 @@ Feature: WA Release 1: Task manager
             | role                      |
             | caseworker-ia-caseofficer |
             | caseworker-ia-admofficer  |
-        Given I set MOCK Task manager tasks count 25
+        Given I set MOCK Task manager tasks count 250
         Given I start MockApp
         Given I navigate to home page
         When I click on header tab Task manager
@@ -50,7 +50,7 @@ Feature: WA Release 1: Task manager
             | role                      |
             | caseworker-ia-caseofficer |
             | caseworker-ia-admofficer  |
-        Given I set MOCK Task manager tasks count 25
+        Given I set MOCK Task manager tasks count 250
         Given I start MockApp
         Given I navigate to home page
         When I click on header tab Task manager

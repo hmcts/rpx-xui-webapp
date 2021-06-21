@@ -14,13 +14,17 @@ const ccdApi = require('../../nodeMock/ccd/ccdApi');
 
 describe('Work Allocation: ', function () {
 
-    beforeEach(async function () {
-        await initBrowser(this);
-
+    before(async function (done) {
+        MockApp.init()
+        done();
+    });
+    after(async function (done) {
+        await MockApp.stopServer();
+        done();
     });
 
     it('My tasks Page', async function () {
-        //await MockApp.startServer();
+        await MockApp.startServer();
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator('exui-task-home exui-task-list'))
         await pa11ytest(this, actions, conf.baseUrl + 'tasks/list');
@@ -28,7 +32,7 @@ describe('Work Allocation: ', function () {
     });
 
     it('Available tasks Page', async function () {
-        //await MockApp.startServer();
+        await MockApp.startServer();
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator('exui-task-home exui-available-tasks-filter'))
         await pa11ytest(this, actions, conf.baseUrl + 'tasks/available');
@@ -36,7 +40,7 @@ describe('Work Allocation: ', function () {
     });
 
     it('Tasks manager Page', async function () {
-        //await MockApp.startServer();
+        await MockApp.startServer();
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator('exui-work-allocation-home exui-task-manager'))
         await pa11ytest(this, actions, conf.baseUrl + 'tasks/task-manager');
@@ -44,14 +48,14 @@ describe('Work Allocation: ', function () {
     });
 
     it('Reassign task page', async function () {
-        //await MockApp.startServer();
+        await MockApp.startServer();
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator('exui-task-container-assignment h1'))
         await pa11ytest(this, actions, conf.baseUrl + 'tasks/123456/reassign');
     });
 
     it('Complete task page', async function () {
-        //await MockApp.startServer();
+        await MockApp.startServer();
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator('exui-task-action-container h1'))
         await pa11ytest(this, actions, conf.baseUrl + 'tasks/123456/complete');

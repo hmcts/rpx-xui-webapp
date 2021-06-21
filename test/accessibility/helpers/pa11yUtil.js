@@ -13,7 +13,7 @@ const fs = require('fs');
 let testBrowser = null;
 let page = null;
 
-async function initBrowser(test){
+async function initBrowser(){
     testBrowser = await puppeteer.launch({
         ignoreHTTPSErrors: false,
         headless: conf.headless,
@@ -25,34 +25,13 @@ async function initBrowser(test){
 
     page = await testBrowser.newPage();
     await page.goto("http://localhost:4200/");
-    await setScenarioCookie(test);
-}
-
-async function setScenarioCookie(test){
-    let scenarioId = test.test.title.split(" ").join("_");
-    scenarioId = scenarioId.split("\"").join("").split(":").join("");
-   
-    await page.evaluate((scenarioId) => {
-        document.cookie = "scenarioId=" + scenarioId;
-    }, scenarioId);
-}
-
-async function getScenarioCookie(){
-    const cookies = await page.cookies();
-    let scenarioId = null;
-    for(let i = 0; i < cookies.length; i++){
-        if (cookies[i].name === 'scenarioId'){
-            scenarioId = cookies[i].value;
-            break;
-       }
-    }
-    return scenarioId;
+    
 }
 
 async function pa11ytest(test, actions, startUrl, roles){
     let isTestSuccess = false;
     let retryCounter = 0;
-
+    await initBrowser();
     while (!isTestSuccess && retryCounter < 3){
         
         try{
@@ -141,4 +120,4 @@ async function pa11ytestRunner(test, actions, startUrl,roles) {
 
 
 
-module.exports = { pa11ytest, getScenarioCookie, initBrowser }
+module.exports = { pa11ytest, initBrowser }

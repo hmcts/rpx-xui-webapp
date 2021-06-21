@@ -11,7 +11,7 @@ function report(runner) {
     let passCounter = 0;
     let failCounter = 0;
     runner.on('pass', function (test) {
-        if (test.ctx.a11yResult.issues.length === 0) {
+        if (test.ctx.a11yResult && test.ctx.a11yResult.issues.length === 0) {
             onPass(test);
         } else {
             test.state = "failed";

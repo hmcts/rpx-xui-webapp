@@ -16,9 +16,14 @@ const { getTestJurisdiction} = require('../../ngIntegration/mockData/ccdCaseMock
 
 describe('Pa11y Accessibility tests', function () {
     let fieldstested = []; 
-    beforeEach(async function () {
-        await initBrowser(this);
-
+    before(async function (done) {
+        MockApp.init()
+        await MockApp.startServer();
+        done();
+    });
+    after(async function (done) {
+        await MockApp.stopServer();
+        done();
     });
   
     it('Create Case Page', async function () {

@@ -91,8 +91,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         }else{
             await taskListPage.clickManageLinkForTaskAt(taskRow);
+            const taskActions = await taskListPage.getTaskActions();
             for (let i = 0; i < taskRowsWithActions.length; i++) {
-                const taskActions = await taskListPage.getTaskActions();
+
                 const isactionPresent = await taskListPage.isTaskActionPresent(taskRowsWithActions[i]["Action"]);
                 expect(isactionPresent, taskActions+" => action not present " + taskRowsWithActions[i]["Action"]).to.be.true;
 
@@ -282,26 +283,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         softAssert.finally();
     });
 
-    Then('I validate task list page results text displayed as {string}', async function (pagnationResultText) {
-        expect(await myWorkPage.getPaginationResultText()).to.include(pagnationResultText);
-    });
-
-    When('I click task list pagination link {string}', async function (paginationLinktext) {
-        if (paginationLinktext.toLowerCase() === "next") {
-            await myWorkPage.pageNextLink.click();
-        } else if (paginationLinktext.lowerCase() === "previous") {
-            await myWorkPage.pagePreviousLink.click();
-        } else {
-            await myWorkPage.clickPaginationPageNum(paginationLinktext);
-        }
-    });
-
-    Then('I validate task search request with reference {string} has pagination parameters', async function (requestReference, datatable) {
-        const reqBody = global.scenariodata[requestReference];
-        const datatableHash = datatable.hashes()[0];
-        expect(reqBody.searchRequest.pagination_parameters.page_number).to.equual(datatableHash.PageNumber);
-        expect(reqBody.searchRequest.pagination_parameters.page_size).to.equual(datatableHash.PageSize);
-    });
+   
 
     Then('I validate tasks pagination is displayed if feature toggle {string} is on', async function(featureToggleName){
         

@@ -35,19 +35,20 @@ class MyWorkPage extends TaskList {
     }
 
     getSubNavigationTabElement(tabLabel){
-        return element(by.xpath(`//exui-task-home//a[contains(text(),${tabLabel})]`));
+        return element(by.xpath(`//exui-task-home//a[contains(text(),'${tabLabel}')]`));
     }
 
     async isSubNavigationTabPresent(){
-        return await getSubNavigationTabElement(tabLabel).isPresent();
+        return await this.getSubNavigationTabElement(tabLabel).isPresent();
     }
 
     async clickSubNavigationTab(tabLabel){
-        await getSubNavigationTabElement(tabLabel).click();
+        await BrowserWaits.waitForElement(this.subNavListContainer);
+        await this.getSubNavigationTabElement(tabLabel).click();
     }
 
     async isSubNavigationTabSelected(tabLabel){
-        return getSubNavigationTabElement(tabLabel).getAttribute('aria-current') !== null;
+        return this.getSubNavigationTabElement(tabLabel).getAttribute('aria-current') !== null;
     }
 
     async getWorkFilterLocationsCount(){
@@ -81,7 +82,7 @@ class MyWorkPage extends TaskList {
 
     async amOnPage() {
         try {
-            await BrowserWaits.waitForElement(this.myTasksTab);
+            await BrowserWaits.waitForElement(this.genericFilterContainer);
             return true;
         }
         catch (err) {

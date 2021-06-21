@@ -116,20 +116,14 @@ class TaskActionPage extends TaskList {
         let verb = this.getSubmitBtnText(action);
         const submitBtn = element(by.xpath(`//exui-task-action-container//button[contains(text(),"${verb}")]`));
         if (softAssert){
-            await softAssert.assert(async () => expect(await this.pageHeaderTitle.getText()).to.include(`${verb} task`));
-            await softAssert.assert(async () => expect(await this.actionDescription.getText()).to.include(`${verb} this task`));
-
-
-            await softAssert.assert(async () => expect(submitBtn.isDisplayed(), `Submit button with text ${verb} not displayed`).to.be.true);
-            await softAssert.assert(async () => expect(this.cancelBtn.isDisplayed(), `Cancel button with not displayed`).to.be.true);
+            await BrowserWaits.waitForElement(this.pageHeaderTitle);
+           
+            await softAssert.assert(async () => expect(await submitBtn.isDisplayed(), `Submit button with text ${verb} not displayed`).to.be.true);
+            await softAssert.assert(async () => expect(await this.cancelBtn.isDisplayed(), `Cancel button with not displayed`).to.be.true);
         }else{
 
-            expect(await this.pageHeaderTitle.getText()).to.include(`${verb} task`);
-            expect(await this.actionDescription.getText()).to.include(`${verb} this task`);
-
-
-            expect(submitBtn.isDisplayed(), `Submit button with text ${verb} not displayed`).to.be.true;
-            expect(this.cancelBtn.isDisplayed(), `Cancel button with not displayed`).to.be.true;
+            expect(await submitBtn.isDisplayed(), `Submit button with text ${verb} not displayed`).to.be.true;
+            expect(await this.cancelBtn.isDisplayed(), `Cancel button with not displayed`).to.be.true;
         }
        
     }

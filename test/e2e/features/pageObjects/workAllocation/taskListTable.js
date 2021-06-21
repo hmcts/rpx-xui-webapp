@@ -1,5 +1,6 @@
 const c = require('config');
 const { constants } = require('karma');
+const { browser } = require('protractor');
 const browserUtil = require('../../../../ngIntegration/util/browserUtil');
 const BrowserWaits = require('../../../support/customWaits');
 var cucumberReporter = require('../../../support/reportLogger');
@@ -13,7 +14,7 @@ class TaskListTable{
         this.tableHeaderColumns = $$('exui-task-list table thead th');
         this.tableFooter = $('exui-task-list table tfoot td');
         this.taskActionsRows = $$('exui-task-list table tbody>tr.actions-row');
-        this.selectedTaskActioRow = $('exui-task-list table tbody>tr.actions-row[selected]') 
+        this.selectedTaskActioRow = $('exui-task-list table tbody>tr.actions-row.selected') 
         this.displayedtaskActionRow = $('tr.actions-row[aria-hidden=false]');
 
         this.paginationContainer = $('ccd-pagination');
@@ -211,11 +212,12 @@ class TaskListTable{
     }
 
 
+
     async isPaginationPageNumEnabled(pageNum) {
         const pageNumWithoutLink = element(by.xpath(`//exui-task-list//pagination-template//li//span[contains(text(),'${pageNum}')]`));
         const pageNumWithLink = element(by.xpath(`//exui-task-list//pagination-template//li//a//span[contains(text(),'${pageNum}')]`));
 
-        return (await pageNumWithLink.isPresent()) && !(await pageNumWithoutLink.isPresent());
+        return (await pageNumWithLink.isPresent()) && (await pageNumWithoutLink.isPresent());
     }
 
     async clickPaginationPageNum(pageNum) {
@@ -224,6 +226,27 @@ class TaskListTable{
         }
         const pageNumWithLink = element(by.xpath(`//exui-task-list//pagination-template//li//a//span[contains(text(),'${pageNum}')]`));
         await pageNumWithLink.click();
+
+    }
+
+    async getTaskActions(){
+        return await this.selectedTaskActioRow.getText();
+    }
+
+    async clickPaginationLink(linkText){
+        let linkElement = null;
+        if (linkText.toLowerCase() === 'next'){
+            linkElement = this.pageNextLink;
+        } else if (linkText.toLowerCase() === 'previous'){
+            linkElement = this.pagePreviousLink;
+        }else{
+            linkElement = element(by.xpath(`//exui-task-list//pagination-template//li//a//span[contains(text(),'${linkText}')]`));
+        }
+
+        await BrowserWaits.waitForElement(linkElement);
+        await browserUtil.scrollToElement(linkElement);
+        await BrowserWaits.waitForElementClickable(linkElement);
+        await linkElement.click();
 
     }
 }

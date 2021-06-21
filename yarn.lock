@@ -415,10 +415,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@3.3.0-rc.1":
-  version "3.3.0-rc.1"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-3.3.0-rc.1.tgz#17446a47fc743b7246ad5d0350228da1497dd990"
-  integrity sha512-xX4SbFQ9W2DDJzjR4Pqgb+U+V7nLBBCdeYCvbq2lvYegvI1E3+D5XqAEKJU600TxPakDFq2Fvha40fgVZfehQg==
+"@hmcts/ccd-case-ui-toolkit@4.1.0-rc.2":
+  version "4.1.0-rc.2"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.1.0-rc.2.tgz#6f7def79f9e4cd58758cd342af32974a59819d12"
+  integrity sha512-mW16aogZIrQ7AdMpnrz2KiiIjcIPLQm2L4UA5omuRoNPy6Udx8iM0lzwwvkXytlu/C44rT9rJITc7Y5OIUHKsw==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
@@ -13665,9 +13665,7 @@ yn@^2.0.0:
   resolved "https://registry.yarnpkg.com/yn/-/yn-2.0.0.tgz#e5adabc8acf408f6385fc76495684c88e6af689a"
   integrity sha1-5a2ryKz0CPY4X8dklWhMiOavaJo=
 
-zone.js@~0.11.3:
-  version "0.11.4"
-  resolved "https://registry.yarnpkg.com/zone.js/-/zone.js-0.11.4.tgz#0f70dcf6aba80f698af5735cbb257969396e8025"
-  integrity sha512-DDh2Ab+A/B+9mJyajPjHFPWfYU1H+pdun4wnnk0OcQTNjem1XQSZ2CDW+rfZEUDjv5M19SBqAkjZi0x5wuB5Qw==
-  dependencies:
-    tslib "^2.0.0"
+zone.js@~0.8.26:
+  version "0.8.29"
+  resolved "https://registry.yarnpkg.com/zone.js/-/zone.js-0.8.29.tgz#8dce92aa0dd553b50bc5bfbb90af9986ad845a12"
+  integrity sha512-mla2acNCMkWXBD+c+yeUrBUrzOxYMNFdQ6FGfigGGtEVBPJx07BQeJekjt9DmH1FtZek4E9rE1eRR9qQpxACOQ==

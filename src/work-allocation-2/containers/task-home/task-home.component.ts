@@ -36,6 +36,7 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
     applyButtonText: 'Apply',
     cancelSetting: null
   };
+  public allLocations: string[] = [];
   public defaultLocations: string[] = [];
   public locationFields: FilterSetting;
   public fieldsSettings: FilterSetting = {
@@ -89,6 +90,7 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
     this.setupPageData(this.router.routerState.root.snapshot);
     this.locationSubscription = this.locationService.getLocations()
       .subscribe((locations: Location[]) => {
+        locations.forEach((location) => this.allLocations.push(location.id.toString()));
         this.setUpLocationFilter(locations);
       });
     this.errorSubscription = this.filterService.givenErrors.subscribe(value => {
@@ -117,7 +119,8 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
         const isFiltered = this.hasBeenFiltered(f, this.defaultLocations);
         this.showFilteredText = isFiltered;
         this.selectedLocations = f.fields.find((field) => field.name === TaskHomeComponent.FILTER_NAME).value;
-        if (this.selectedLocations.length === 1 && !isFiltered) {
+        // only hide filter when resetting
+        if (!isFiltered) {
           this.toggleFilter = false;
         }
       });
@@ -170,7 +173,11 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
 
   private hasBeenFiltered(f: FilterSetting, defaultLocations: string[]): boolean {
     const selectedFields = f.fields.find(field => field.name === TaskHomeComponent.FILTER_NAME);
-    return selectedFields.value.filter((v: string) => defaultLocations.indexOf(v) === -1).length > 0;
+    // check if selected fields are the same as cancelled filter settings
+    const containsNonDefaultFields = selectedFields.value.filter((v: string) => defaultLocations.indexOf(v) === -1).length > 0;
+    // check if the amount of fields selected is the same as the amount in the cancel settings
+    const notSameSize = !(defaultLocations.length === selectedFields.value.length)
+    return containsNonDefaultFields || notSameSize;
   }
 
   private setUpLocationFilter(locations: Location[]): void {
@@ -191,8 +198,8 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
       const location: Location = this.route.snapshot.data.location;
       this.defaultLocations = [`${location.id}`];
     } else {
-      // as some judicial workers do not have a set location set their default to be Taylor House
-      this.defaultLocations = ['765324'];
+      // as some judicial workers do not have a set location set their default to be all locations
+      this.defaultLocations = this.allLocations;
     }
     this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
       name: TaskHomeComponent.FILTER_NAME,

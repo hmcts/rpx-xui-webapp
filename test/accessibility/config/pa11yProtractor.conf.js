@@ -26,9 +26,7 @@ exports.config = {
         timeout: 120000
     },
     onPrepare() {
-        MockApp.init(3001);
-        MockApp.startServer();
-        MockApp.setBrowserScenarioCookieCallback(getScenarioCookie);
+       MockApp.setServerPort(3001); 
     },
     onComplete() {
     }

@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { PaginationParameter } from 'src/work-allocation-2/models/dtos';
 
 import { ListConstants } from '../../components/constants';
 import { TaskSort } from '../../enums';
@@ -17,9 +18,11 @@ export class TaskListComponent implements OnChanges {
    * These are the tasks & fields as returned from the WA Api.
    */
   @Input() public tasks: Task[];
+  @Input() public tasksTotal: number;
   @Input() public taskServiceConfig: TaskServiceConfig;
   @Input() public sortedBy: TaskSortField;
   @Input() public addActionsColumn: boolean = true;
+  @Input() public pagination: PaginationParameter;
   @Input() public showManage = {};
 
   /**
@@ -32,6 +35,7 @@ export class TaskListComponent implements OnChanges {
   @Input() public fields: TaskFieldConfig[];
 
   @Output() public sortEvent = new EventEmitter<string>();
+  @Output() public paginationEvent = new EventEmitter<number>();
   @Output() public actionEvent = new EventEmitter<InvokedTaskAction>();
 
   /**
@@ -179,6 +183,22 @@ export class TaskListComponent implements OnChanges {
         this.router.navigate([ basePath ]);
       }
     }
+  }
+
+  private getCurrentPageIndex(): number {
+    return (this.pagination ? this.pagination.page_number : 1) - 1;
+  }
+
+  private getCurrentTaskCount(): number {
+    return this.tasks ? this.tasks.length : 0;
+  }
+
+  public getFirstResult(): number {
+    return ((this.getCurrentPageIndex() * this.pagination.page_size) + (this.tasks ? 1 : 0));
+  }
+
+  public getLastResult(): number {
+    return ((this.getCurrentPageIndex() * this.pagination.page_size) + this.getCurrentTaskCount());
   }
 
 }

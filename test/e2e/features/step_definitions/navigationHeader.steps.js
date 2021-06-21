@@ -1,6 +1,8 @@
 const headerPage = require('../pageObjects/headerPage');
 const browserWaits = require('../../support/customWaits');
 var { defineSupportCode } = require('cucumber');
+const SoftAssert = require('../../../ngIntegration/util/softAssert');
+const constants = require('../../support/constants');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
@@ -29,6 +31,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     });
 
+    When('I click on primary navigation header tab {string}', async function (headerTabLabel) {
+        await headerPage.clickPrimaryNavigationWithLabel(headerTabLabel);
+
+    });
+
+
     Then('I see primary navigation tab {string} in header', async function (headerlabel) {
         try{
             await browserWaits.waitForConditionAsync(async () => {
@@ -39,6 +47,46 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         }
        
         expect(await headerPage.isTabPresent(headerlabel), headerlabel + " tab is not present in " + await headerPage.getPrimaryTabsDisplayed()).to.be.true;
+    })
+
+    Then('I see primary navigation tabs {string} in main header', async function (navigationTabs) {
+        const softAssert = new SoftAssert();
+        const navigationTabsArr = navigationTabs.split(',');
+
+        for (let i = 0; i < navigationTabsArr.length; i++){
+            const headerlabel = navigationTabsArr[i].trim();
+            try {
+                await browserWaits.waitForConditionAsync(async () => {
+                    return await headerPage.isTabPresentInMainNav(headerlabel);
+                });
+            } catch (err) {
+
+            }
+            softAssert.setScenario('Nav header in main tab ' + headerlabel);
+            await softAssert.assert(async () => expect(await headerPage.isTabPresentInMainNav(headerlabel), headerlabel + " tab is not present main nav in " + await headerPage.getPrimaryTabsDisplayed()).to.be.true);
+            
+        }
+        softAssert.finally();
+    })
+
+    Then('I see primary navigation tabs {string} in right side header column', async function (navigationTabs) {
+        const softAssert = new SoftAssert();
+        const navigationTabsArr = navigationTabs.split(',');
+
+        for (let i = 0; i < navigationTabsArr.length; i++) {
+            const headerlabel = navigationTabsArr[i].trim();
+            try {
+                await browserWaits.waitForConditionAsync(async () => {
+                    return await headerPage.isTabPresentInMainNav(headerlabel);
+                });
+            } catch (err) {
+
+            }
+            softAssert.setScenario('Nav header in main tab ' + headerlabel);
+            await softAssert.assert(async () => expect(await headerPage.isTabPresentInRightNav(headerlabel), headerlabel + " tab is not present main nav in " + await headerPage.getPrimaryTabsDisplayed()).to.be.true);
+
+        }
+        softAssert.finally();
     })
 
     Then('I do not see primary navigation tab {string} in header', async function (headerlabel) {

@@ -2,7 +2,14 @@
 
 const express = require('express');
 var bodyParser = require('body-parser');
+const cookieParser = require("cookie-parser");
 const minimist = require('minimist');
+
+const axios = require('axios');
+const http = axios.create({})
+axios.defaults.headers.common['Content-Type'] = 'application/json'
+
+
 
 
 let { requestMapping,configurations} = require('./reqResMapping');
@@ -12,32 +19,204 @@ const CCDCaseDetails = require('./ccd/ccdCaseConfig/caseDetailsConfigGenerator')
 
 const { getDLCaseConfig} = require('../ngIntegration/mockData/ccdCaseMock');
 const nodeAppMock = require('./nodeApp/mockData');
+const browserUtil = require('../ngIntegration/util/browserUtil');
 const port = 3001;
 
 
 class MockApp{
-    init(){
+    init(port){
+        this.clientPortCounter = 3002;
+        this.serverPort = port;
+        this.scenarios = {};
+        
+        this.scenarioRequestCallbacks = { proxyReqCount : 0};
+        
         this.intercepts =[];
         this.conf = {
-            get: { ...requestMapping.get },
-            post: { ...requestMapping.post },
-            put: { ...requestMapping.put },
-            delete: { ...requestMapping.delete }
+            get: { ...this.getRequestMappings(requestMapping.get,'get') },
+            post: { ...this.getRequestMappings(requestMapping.post, 'post') },
+            put: { ...this.getRequestMappings(requestMapping.put, 'put') },
+            delete: { ...this.getRequestMappings(requestMapping.delete, 'delete')}
         };
-        // this.configurations = Object.assign({}, configurations);
+        // this.configurations = Object.assign({}, configurations)
+        
         console.log("Mock Config Initialized");
         return "done";
     }
 
-    addIntercept(url,callback){
-        this.intercepts.push({url: url, callback: callback})
+    getRequestMappings(requestMap,method){
+        const mappingWithMiddleware = {};
+
+        const endPoints =  Object.keys(requestMap);
+        for (let i = 0; i < endPoints.length;i++){
+            const endPoint = endPoints[i];
+            mappingWithMiddleware[endPoint] = (req,res) => {
+                const scenarioId = this.getScenarioIdFromRequest(req);
+                const proxyReq = this.getReqProxy(scenarioId,method,endPoint);
+                if (proxyReq){
+                    this.proxyRequest(req, res, proxyReq.onPort);
+                }else{
+                    this.runCallback(requestMap,scenarioId,method,endPoint,req,res);
+                }
+                
+
+            }
+        }
+        return mappingWithMiddleware;
+    }
+
+    runCallback(requestMap,scenarioId, method,path,req,res){
+        
+        const scenarioCallback = this.getScenarioCallBack(scenarioId, method, path);
+        this.runScenarioIntercepts(scenarioId, path, req, res, () => { });
+        if (scenarioCallback) {
+            scenarioCallback(req, res);
+        } else {
+            requestMap[path](req, res);
+        }
+    }
+
+    async proxyRequest(req,res,port){
+        const headers = req.headers;
+        const urlPath = req.originalUrl;
+        let response = null;
+        switch (req.method.toLowerCase()){
+            case 'get':
+                response = await http.get(`http://localhost:${port}${urlPath}`, {headers});
+                res.status(response.status).send(response.data)
+                break;
+            case 'post':
+                response = await http.post(`http://localhost:${port}${urlPath}`,req.body ,{ headers });
+                res.status(response.status).send(response.data)
+                break;
+            case 'put':
+                response = await http.put(`http://localhost:${port}${urlPath}`, req.body,{ headers });
+                res.status(response.status).send(response.data)
+                break;
+            case 'delete':
+                response = await http.delete(`http://localhost:${port}${urlPath}`, { headers });
+                res.status(response.status).send(response.data)
+                break;
+            default:
+                res.status(500).send({error: 'mock proxy error'});
+
+        }
+
+        
+    }
+
+
+    getScenarioIdFromRequest(req){
+
+        var cookies = req.cookies;
+        const scenarioIdCookie = req.cookies['scenarioId']; 
+        this.scenarios[scenarioIdCookie] = this.scenarios[scenarioIdCookie] ? this.scenarios[scenarioIdCookie]  + 1: 1
+        return scenarioIdCookie;
+    }
+
+    initScenarioSession(scenarioId){
+        this.scenarioRequestCallbacks[scenarioId] = { 
+            callbacks : { get:{},post:{},put:{},delete:{}},
+            intercepts : {},
+            proxy: { get: {}, post: {}, put: {}, delete: {}, any:{}}
+        };
+       
+    }
+    deleteScenarioSession(scenarioId){
+        if (scenarioId){
+            delete this.scenarioRequestCallbacks[scenarioId];
+        }
+        
+    }
+
+    getScenarioCallBack(scenarioId, method, path){
+        const sessionRequestMapping = this.scenarioRequestCallbacks[scenarioId] ? this.scenarioRequestCallbacks[scenarioId].callbacks : null;
+        if (sessionRequestMapping && sessionRequestMapping[method] && sessionRequestMapping[method][path] ){
+            return sessionRequestMapping[method][path];
+        }else{
+            return null;
+        }
+    }
+
+    async setScenarioCallBack(scenarioId, method, path,callback) {
+        if (!scenarioId) {
+            scenarioId = await browserUtil.getScenarioIdCookieValue();
+        }
+
+        if (this.scenarioRequestCallbacks[scenarioId] === undefined){
+            this.initScenarioSession(scenarioId);
+        }
+        //const sessionRequestMapping = this.scenarioRequestCallbacks[scenarioId];
+        this.scenarioRequestCallbacks[scenarioId]['callbacks'][method][path]= callback;
+    }
+
+    async setScenarioIntercept(url,callback){
+        const scenarioId = await browserUtil.getScenarioIdCookieValue();
+        const scenarioIntercepts = this.scenarioRequestCallbacks[scenarioId]['intercepts'];
+        if (!scenarioIntercepts[url]){   
+            scenarioIntercepts[url] = [];
+        }
+        scenarioIntercepts[url].push(callback);
+    }
+
+    runScenarioIntercepts(scenarioId, path,req,res,next){
+        if (scenarioId 
+            && this.scenarioRequestCallbacks[scenarioId] 
+            && this.scenarioRequestCallbacks[scenarioId]['intercepts']
+            && this.scenarioRequestCallbacks[scenarioId]['intercepts'][path]){
+            const interceptsArr = this.scenarioRequestCallbacks[scenarioId]['intercepts'][path];
+            if (interceptsArr) {
+                interceptsArr.forEach((intercept) => intercept(req, res, next));
+            }
+        }
+        
+    } 
+
+    async setReqProxy(scenarioId,method,path, onPort){
+        
+        if (this.scenarioRequestCallbacks[scenarioId] === undefined  ){
+            this.initScenarioSession(scenarioId);
+            
+        }
+        this.scenarioRequestCallbacks[scenarioId]['proxy'][method][path] = { onPort: onPort  };    
+    }
+
+    getReqProxy(scenarioId, method, path){
+        if (this.scenarioRequestCallbacks[scenarioId] && this.scenarioRequestCallbacks[scenarioId]['proxy'][method][path] ){
+            return this.scenarioRequestCallbacks[scenarioId]['proxy'][method][path];
+        } else if (this.scenarioRequestCallbacks[scenarioId] && this.scenarioRequestCallbacks[scenarioId]['proxy']['any'][path]){
+            return this.scenarioRequestCallbacks[scenarioId]['proxy']['any'][path];
+        }
+        return null;
+    }
+
+    
+    getNextAvailableClientPort(){
+        return http.get('http://localhost:3001/proxy/port',{});
     }
 
     async startServer(){
         const app = express();
         app.use(bodyParser.urlencoded({ extended: false }));
         app.use(bodyParser.json());
+        app.use(cookieParser());
         app.use(express.json()); 
+
+        app.get('/scenarios',(req,res) =>{
+            res.set('content-type', 'application/json');
+            res.send(this.scenarioRequestCallbacks);
+        } );
+
+        app.get('/proxy/port', (req,res) => {
+            this.clientPortCounter++;
+            res.send({ port: this.clientPortCounter});
+        });
+
+        app.post('/proxy/request', async (req, res) => {
+            this.scenarioRequestCallbacks.proxyReqCount = req.body;
+            await this.setReqProxy(req.body.scenarioId,req.body.method, req.body.path,req.body.onPort);
+            res.send({ status: true });
+        });
 
         this.intercepts.forEach(intercept =>{
             app.use(intercept.url, intercept.callback);
@@ -59,7 +238,7 @@ class MockApp{
             app.delete(key, value);
         }
 
-        this.server = await app.listen(port)
+        this.server = await app.listen(this.serverPort)
         console.log("mock api started");
         // return "Mock started successfully"
 
@@ -76,33 +255,75 @@ class MockApp{
         }
     }
 
+    async addIntercept(url, callback, scenarioId) {
+        let interceptMethod = 'any';
+        if(this.conf.get[url] !== undefined){
+            interceptMethod = 'get';
+        } else if (this.conf.post[url] !== undefined) {
+            interceptMethod = 'post';
+        } else if (this.conf.put[url] !== undefined) {
+            interceptMethod = 'put';
+        } if (this.conf.delete[url] !== undefined) {
+            interceptMethod = 'delete';
+        }
+
+        await this.sendProxyRequest(interceptMethod, path, scenarioId);
+        this.setScenarioIntercept(url, callback)
+        //this.intercepts.push({url: url, callback: callback})
+    }
+
    
-    onGet(path, callback){
-        this.conf.get[path] = callback; 
+    async onGet(path, callback,scenarioId){
+        await this.sendProxyRequest('get', path, scenarioId);
+        await this.setScenarioCallBack(scenarioId,'get',path,callback);
+        //this.conf.get[path] = callback; 
     }
 
 
-    onPost(path, callback){
-        this.conf.post[path] = callback; 
+    async onPost(path, callback, scenarioId){
+        await this.sendProxyRequest('post', path, scenarioId);
+        await this.setScenarioCallBack(scenarioId, 'post', path, callback);
+        //this.conf.post[path] = callback; 
     }
 
-    onPut(path, callback){
-        this.conf.put[path] = callback; 
+    async onPut(path, callback, scenarioId){
+        await this.sendProxyRequest('put', path, scenarioId);
+        await this.setScenarioCallBack(scenarioId, 'put', path, callback);
+        //this.conf.put[path] = callback; 
     }
 
-    onDelete(path, callback){
-        this.conf.delete[path] = callback; 
+    async onDelete(path, callback, scenarioId){
+        await this.sendProxyRequest('delete',path,scenarioId);
+        await this.setScenarioCallBack(scenarioId, 'delete', path, callback);
+        //this.conf.delete[path] = callback; 
     }
 
-    setConfig(configKey,value){
-       this.configurations[configKey] = value; 
+    async sendProxyRequest(method,path,scenarioId){
+        if(this.serverPort === 3001){
+            return;
+        }
+        scenarioId = scenarioId ? scenarioId : await browserUtil.getScenarioIdCookieValue();
+        const response  = await http.post('http://localhost:3001/proxy/request', {
+            scenarioId: scenarioId,
+            method: method,
+            path: path,
+            onPort: this.serverPort
+        }, {});;
+        console.log(response);
     }
+
+    async setConfig(configKey,value){
+       //this.configurations[configKey] = value; 
+    }
+
+   
 
 }
 
 
 const mockInstance = new MockApp();
 module.exports = mockInstance;
+
 
 const args = minimist(process.argv)
 if (args.standalone){

@@ -1,4 +1,6 @@
+import { EnhancedRequest } from 'lib/models';
 import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX } from './constants/actions';
+import { Person, PersonDomain } from './interfaces/person';
 import { Action, Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/task';
 
 export function prepareGetTaskUrl(baseUrl: string, taskId: string): string {
@@ -46,6 +48,17 @@ export function prepareCaseWorkerForService(baseUrl: string, serviceId: string) 
 
 export function prepareCaseWorkerForLocationAndService(baseUrl: string, locationId: string, serviceId: string) {
   return `${baseUrl}/caseworker/location/${locationId}/service/${serviceId}`;
+}
+
+export function preparePaginationUrl(req: EnhancedRequest, postTaskPath: string): string {
+  if (req.body && req.body.searchRequest && req.body.searchRequest.pagination_parameters) {
+    const paginationConfig = req.body.searchRequest.pagination_parameters;
+    const pageNumber = paginationConfig.page_number;
+    const pageSize = paginationConfig.page_size;
+    const firstResult = (pageNumber - 1) * pageSize;
+    return `${postTaskPath}?first_result=${firstResult}&max_results=${pageSize}`;
+  }
+  return postTaskPath;
 }
 
 /**
@@ -145,4 +158,11 @@ export function getActionsByPermissions(view, permissions: TaskPermission[]): Ac
     }
   });
   return actionList;
+}
+
+export function applySearchFilter(person: Person, domain: PersonDomain, searchTerm: any): boolean {
+  if (domain === PersonDomain.BOTH) {
+      return person && person.name.toLowerCase().includes(searchTerm.toLowerCase());
+  }
+  return person.domain === domain && person.name.toLowerCase().includes(searchTerm.toLowerCase());
 }

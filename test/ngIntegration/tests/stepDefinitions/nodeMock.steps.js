@@ -23,20 +23,20 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Given('I init MockApp', async function () {
-        MockApp.init();
+        //MockApp.init();
     });
 
     Given('I start MockApp', async function () {
-       await MockApp.startServer();
+       //await MockApp.startServer();
     });
 
     Given('I stop MockApp', async function () {
-        await MockApp.stopServer();
+       // await MockApp.stopServer();
     });
 
     Given('I restart MockApp', async function () {
-        await MockApp.stopServer();
-        await MockApp.startServer();
+        //await MockApp.stopServer();
+        //await MockApp.startServer();
     });
 
     When('I set MOCK with user roles', async function(rolesTable){
@@ -54,6 +54,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
      });
 
     Given('I set MOCK request {string} intercept with reference {string}', async function(url,reference){
+        global.scenarioData[reference] = null;
         MockApp.addIntercept(url,(req,res,next) => {
             global.scenarioData[reference] = req.body;
             next();
@@ -67,7 +68,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
      When('I wait for reference {string} value not null', async function(reference){
          await BrowserWaits.waitForConditionAsync(async () => {
              return global.scenarioData[reference] !== null
-         },10000);
+         },5000);
      });
 
 

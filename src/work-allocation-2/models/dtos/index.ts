@@ -40,15 +40,22 @@ export interface SearchTaskParameter {
   operator: string;
   values: string[];
 }
+
 export interface SortParameter {
   sort_by: string;
   sort_order: string;
+}
+
+export interface PaginationParameter {
+  page_number: number;
+  page_size: number;
 }
 
 export interface SearchTaskRequest {
   search_parameters: SearchTaskParameter[];
   sorting_parameters: SortParameter[];
   search_by?: string;
+  pagination_parameters?: PaginationParameter;
 }
 
 export interface Task {
@@ -76,4 +83,22 @@ export interface TaskSearchParameter {
 
 export interface TaskSearchParameters {
   parameters: TaskSearchParameter[];
+}
+
+export interface Person {
+  id: string;
+  name: string;
+  email: string;
+  domain: string;
+}
+
+export interface SearchOptions {
+  searchTerm: string;
+  jurisdiction: PersonDomain;
+}
+
+export enum PersonDomain {
+  JUDICIAL = 1,
+  CASEWORKER = 2,
+  BOTH = 3
 }

@@ -10,10 +10,11 @@ import {
   postTaskAction,
   postTaskSearchForCompletable,
   searchCaseWorker,
-  searchTask,
+  searchTask
 } from '.';
 import authInterceptor from '../lib/middleware/auth';
 import { getLocationById, getLocations } from './locationController';
+import { postFindPersonSearch } from './personService';
 
 const router = Router({ mergeParams: true });
 
@@ -22,6 +23,7 @@ router.use(authInterceptor);
 router.use('/task/:taskId/:action', postTaskAction);
 router.use('/task/:taskId', getTask);
 router.use('/task', searchTask);
+router.use('/taskWithPagination', searchTask);
 
 router.use('/location/:locationId', getLocationById);
 router.use('/location', getLocations);
@@ -35,5 +37,7 @@ router.use('/caseworker', getAllCaseWorkers);
 router.use('/judicialworker', getAllJudicialWorkers);
 
 router.use('/searchForCompletable', postTaskSearchForCompletable);
+
+router.use('/findPerson', postFindPersonSearch);
 
 export default router;

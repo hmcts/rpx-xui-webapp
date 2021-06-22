@@ -30,7 +30,7 @@ export const ROUTES: Routes = [
     loadChildren: '../cases/cases.module#CasesModule'
   },
   {
-    path: 'mywork',
+    path: 'work',
     canActivate: [AuthGuard, AcceptTermsGuard],
     loadChildren: '../work-allocation-2/work-allocation2.module#WorkAllocationModule2'
   },

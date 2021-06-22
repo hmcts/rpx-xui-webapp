@@ -1,3 +1,5 @@
+import { AllWorkHomeComponent } from './all-work-home/all-work-home.component';
+import { AllWorkTaskComponent } from './all-work-task/all-work-task.component';
 import { AvailableTasksComponent } from './available-tasks/available-tasks.component';
 import { InfoMessageContainerComponent } from './info-message-container/info-message-container.component';
 import { MyTasksComponent } from './my-tasks/my-tasks.component';
@@ -15,7 +17,7 @@ export const containers: any[] = [
   AvailableTasksComponent, InfoMessageContainerComponent, MyTasksComponent,
   TaskActionContainerComponent, TaskAssignmentContainerComponent, TaskHomeComponent, TaskListComponent,
   TaskListWrapperComponent, TaskManagerComponent, TaskManagerListComponent, WorkAllocationHomeComponent,
-  TaskAssignmentConfirmComponent
+  TaskAssignmentConfirmComponent, AllWorkHomeComponent, AllWorkTaskComponent
 ];
 
 export * from './available-tasks/available-tasks.component';
@@ -30,3 +32,5 @@ export * from './task-manager/task-manager.component';
 export * from './task-manager-list/task-manager-list.component';
 export * from './work-allocation-home/work-allocation-home.component';
 export * from './task-assignment-confirm/task-assignment-confirm.component';
+export * from './all-work-home/all-work-home.component';
+export * from './all-work-task/all-work-task.component';

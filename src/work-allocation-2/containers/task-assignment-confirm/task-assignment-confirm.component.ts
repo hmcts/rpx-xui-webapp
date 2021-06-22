@@ -5,6 +5,8 @@ import { handleFatalErrors } from '../../utils';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { InformationMessage } from '../../models/comms';
 import { TaskAssigneeModel } from '../../models/tasks/task-assignee.model';
+import { map } from 'rxjs/operators';
+import { Person } from '../../models/dtos';
 
 @Component({
   selector: 'exui-task-assignment-confirm',
@@ -18,7 +20,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
   public taskAndCaseworker: TaskAssigneeModel;
   public successMessage: InfoMessage;
   public assignTask: any;
-  public selectedPerson: any;
+  public selectedPerson: Person;
 
   constructor(
     private readonly taskService: WorkAllocationTaskService,
@@ -29,10 +31,14 @@ export class TaskAssignmentConfirmComponent implements OnInit {
   public ngOnInit(): void {
     this.verb = this.route.snapshot.data.verb as TaskActionType;
     this.taskId = this.route.snapshot.params['taskId'];
-    console.log('task=' + this.taskId);
     // @ts-ignore
     this.rootPath = this.route.snapshot._urlSegment.segments[0].path;
     this.taskAndCaseworker = this.route.snapshot.data.taskAndCaseworkers.data;
+    console.log('this.taskAndCaseworker=' + this.taskAndCaseworker);
+    this.route.paramMap
+      .pipe(map(() => window.history.state)).subscribe(person => {
+        this.selectedPerson = person;
+      });
   }
 
   public onChange(): void {
@@ -43,8 +49,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
   }
 
   public onSubmit(): void {
-    console.log('this.taskAndCaseworker=' + JSON.stringify(this.taskAndCaseworker));
-    this.assignTask = this.taskService.assignTask(this.taskId, { userId: this.taskAndCaseworker.assignee }).subscribe({
+    this.assignTask = this.taskService.assignTask(this.taskId, { userId: this.selectedPerson.id }).subscribe({
       next: () => this.reportSuccessAndReturn(),
       error: (error: any) => {
         const handledStatus = handleFatalErrors(error.status, this.router);

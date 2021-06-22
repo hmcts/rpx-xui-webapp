@@ -7,7 +7,7 @@ import { ErrorMessage } from '../../../app/models';
 import { ConfigConstants } from '../../components/constants';
 import { InfoMessage, InfoMessageType, TaskActionType, TaskService, TaskSort } from '../../enums';
 import { InformationMessage } from '../../models/comms';
-import { Caseworker, Location } from '../../models/dtos';
+import { Caseworker, Location, Person } from '../../models/dtos';
 import { TaskFieldConfig, TaskServiceConfig } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { handleFatalErrors } from '../../utils';
@@ -33,8 +33,10 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   public location: Location;
 
   public formGroup: FormGroup;
-
+  public person: Person;
   private assignTask: Subscription;
+  public taskId: string;
+  public rootPath: string;
 
   constructor(
     private readonly taskService: WorkAllocationTaskService,
@@ -87,6 +89,10 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     if (task.location) {
       this.location = { locationName: task.location } as Location;
     }
+    this.taskId = this.route.snapshot.params['taskId'];
+    console.log('task=' + this.taskId);
+    // @ts-ignore
+    this.rootPath = this.route.snapshot._urlSegment.segments[0].path;
   }
 
   public ngOnDestroy(): void {
@@ -101,9 +107,14 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     });
   }
 
+  public selectedPerson(person?: Person) {
+    console.log(person);
+    this.person = person;
+  }
+
   public assign(): void {
     // @ts-ignore
-    this.router.navigate([this.route.snapshot._urlSegment.segments[0].path, this.route.snapshot.params['taskId'], 'reassign', 'confirm']);
+    this.router.navigateByUrl(`${this.rootPath}/${this.taskId}/reassign/confirm`, {state: this.person});
 /*    if (!this.caseworker) {
       this.error = NAME_ERROR;
       return;

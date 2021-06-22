@@ -1,10 +1,14 @@
 <exui-error-message *ngIf="error" [error]="error"></exui-error-message>
 
 <main class="govuk-main-wrapper" id="main-content" role="main">
-  <h1 class="govuk-heading-xl">{{verb}} task</h1>
+
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-third">
-
+      <exui-find-person title="{{verb}} task"
+                        (personSelected)="selectedPerson($event)"
+                        domainString="BOTH">
+      </exui-find-person>
+<!--
       <xuilib-gov-uk-input [group]="formGroup" [config]="
           {
             label: 'Find the person',
@@ -13,7 +17,7 @@
             id: 'case-worker-search__Input',
             type: 'text'
           }"></xuilib-gov-uk-input>
-
+-->
       <button class="govuk-button govuk-!-margin-right-1" type="submit" (click)="assign()">Continue</button>
       <p><a (click)="cancel()" href="javascript:void(0)">Cancel</a></p>
     </div>

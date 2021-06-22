@@ -1,4 +1,4 @@
-@ng
+
 Feature: WA Release 2: My work - My Tasks
 
     Background: Mock and browser setup

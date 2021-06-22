@@ -138,6 +138,27 @@ describe('TaskListComponent', () => {
     expect(component.sortEvent.emit).toHaveBeenCalledWith('caseId');
   });
 
+  it('reset sort button is hidden by default', async () => {
+    expect(component.showResetSortButton).toBeFalsy();
+  });
+
+  it('show reset sort button after clicking column header', async () => {
+
+    /// mock the emitter and dispatch the connected event
+    spyOn(component.sortEvent, 'emit');
+    let element = fixture.debugElement.nativeElement;
+    let button = element.querySelector('#sort_by_caseName');
+    button.dispatchEvent(new Event('click'));
+    component.sortedBy = { fieldName: 'caseName', order: TaskSort.DSC };
+    fixture.detectChanges();
+
+    // check the emitter had been called and that it gets called with the new field defined which is taskName
+    expect(component.sortEvent.emit).toHaveBeenCalled();
+    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseName');
+
+    expect(component.showResetSortButton).toBeTruthy();
+  });
+
   it('should allow sorting for different columns.', async () => {
 
     // mock the emitter and dispatch the connected event

@@ -106,8 +106,18 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
 
   public resetToggle(): void {
     this.toggleFilter = !this.toggleFilter;
-    // resetting selected locations because the length not always updating
-    this.selectedLocations = this.filterService.get('locations').fields[0].value;
+  }
+
+  // if there is no local storage available, default locations need to be reset
+  public getDefaultLocations(): string[] {
+    if (this.fieldsConfig && this.fieldsConfig.cancelSetting) {
+      this.fieldsConfig.cancelSetting.fields.forEach(field => {
+        if (field.name === 'locations') {
+          this.defaultLocations = field.value;
+        }
+      })
+    }
+    return this.defaultLocations;
   }
 
   public subscribeToSelectedLocations(): void {
@@ -116,13 +126,10 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
         filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
       )
       .subscribe((f: FilterSetting) => {
-        const isFiltered = this.hasBeenFiltered(f, this.defaultLocations);
-        this.showFilteredText = isFiltered;
         this.selectedLocations = f.fields.find((field) => field.name === TaskHomeComponent.FILTER_NAME).value;
-        // only hide filter when resetting
-        if (!isFiltered) {
-          this.toggleFilter = false;
-        }
+        const isFiltered = this.hasBeenFiltered(f, this.getDefaultLocations());
+        this.showFilteredText = isFiltered;
+        this.toggleFilter = false;
       });
   }
 
@@ -176,8 +183,8 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
     // check if selected fields are the same as cancelled filter settings
     const containsNonDefaultFields = selectedFields.value.filter((v: string) => defaultLocations.indexOf(v) === -1).length > 0;
     // check if the amount of fields selected is the same as the amount in the cancel settings
-    const notSameSize = !(defaultLocations.length === selectedFields.value.length)
-    return containsNonDefaultFields || notSameSize;
+    const notSameSize = !(defaultLocations.length === selectedFields.value.length);
+    return (containsNonDefaultFields || notSameSize) && (defaultLocations.length !== 0);
   }
 
   private setUpLocationFilter(locations: Location[]): void {

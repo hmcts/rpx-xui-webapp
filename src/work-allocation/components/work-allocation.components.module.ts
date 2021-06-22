@@ -2,7 +2,7 @@ import { PipesModule } from '@hmcts/ccd-case-ui-toolkit';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 
 import * as fromComponents from '.';
@@ -16,7 +16,8 @@ import { CaseworkerDataService, InfoMessageCommService, LocationDataService } fr
     HttpClientModule,
     ExuiCommonLibModule,
     FormsModule, // TODO: Remove this as it's only needed for testing.
-    PipesModule
+    PipesModule,
+    ReactiveFormsModule
   ],
   declarations: [
     ...fromComponents.components,

@@ -10,7 +10,7 @@ Feature: WA Release 1: Available Tasks Task list
         Given I set MOCK My tasks count 150
         Given I start MockApp
         Given I navigate to home page
-        When I click on header tab Task list
+        When I click on primary navigation header tab "Task list"
         Then I see Task list sub navigation tabs
         When I click sub navigation tab Available tasks
 
@@ -22,7 +22,7 @@ Feature: WA Release 1: Available Tasks Task list
          Given I set MOCK My tasks count 150
         Given I start MockApp
         Given I navigate to home page
-        When I click on header tab Task list
+        When I click on primary navigation header tab "Task list"
         Then I see Task list sub navigation tabs
         When I click sub navigation tab Available tasks
 
@@ -33,7 +33,7 @@ Feature: WA Release 1: Available Tasks Task list
              Given I set MOCK My tasks count 150
         Given I start MockApp
         Given I navigate to home page
-        When I click on header tab Task list
+        When I click on primary navigation header tab "Task list"
         Then I see Task list sub navigation tabs
         When I click sub navigation tab Available tasks
 
@@ -44,7 +44,7 @@ Feature: WA Release 1: Available Tasks Task list
            Given I set MOCK My tasks count 150
         Given I start MockApp
         Given I navigate to home page
-        When I click on header tab Task list
+        When I click on primary navigation header tab "Task list"
         Then I see Task list sub navigation tabs
         When I click sub navigation tab Available tasks
 

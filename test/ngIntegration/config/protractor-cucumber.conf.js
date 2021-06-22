@@ -142,7 +142,7 @@ function getBDDTags() {
     }
 
     console.log(`BDD tags ${JSON.stringify(tags)}`);
-    return tags;
+    return argv.tags ? argv.tags.split(','): tags;
 }
 
 exports.config = config;

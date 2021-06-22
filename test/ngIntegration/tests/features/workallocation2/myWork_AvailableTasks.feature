@@ -1,11 +1,33 @@
 @ng
-Feature: WA Release 2: My work - My Tasks, Available tasks
+Feature: WA Release 2: My work -  Available tasks
 
     Background: Mock and browser setup
         Given I init MockApp
 
+    Scenario Outline:  Available Tasks, columns and column links for "<UserType>"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
+        Given I start MockApp
+        Given I navigate to home page
+        When I navigate to My work sub navigation tab "Available tasks"
+        Then I validate task list table columns displayed
+            | ColumnHeader  |
+            | Case name     |
+            | Case category | 
+            | Location      |
+            | Task |
+            | Date          |
 
-    Scenario Outline: My Tasks pagnation and sorting for user type "<UserType>" with roles "<Roles>"
+        Then I validate task list columns are links
+            | ColumnHeader |
+           
+        Examples:
+            | UserIdentifier     | UserType   | Roles                                              |
+            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
+            | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
+
+
+
+    Scenario Outline: Available Tasks pagnation and sorting for user type "<UserType>" with roles "<Roles>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
         Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
             | Permissions | Count |
@@ -15,7 +37,7 @@ Feature: WA Release 2: My work - My Tasks, Available tasks
         Given I start MockApp
 
         Given I navigate to home page
-
+        When I navigate to My work sub navigation tab "Available tasks"
         Then I validate tasks count in page 25
         Then I validate task list page results text displayed as "Displaying 1 - 25 out of 140 tasks"
         Given I reset reference "taskSearchRequest" value to null
@@ -49,7 +71,7 @@ Feature: WA Release 2: My work - My Tasks, Available tasks
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
             | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
-    Scenario Outline: My Tasks sort column persist in session with Caseworker user "<SubNavigationTab>"
+    Scenario: Available Tasks sort column persist in session with Caseworker user 
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer "
         Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
             | Permissions | Count |
@@ -59,7 +81,7 @@ Feature: WA Release 2: My work - My Tasks, Available tasks
         Given I start MockApp
 
         Given I navigate to home page
-        When I navigate to My work sub navigation tab "<SubNavigationTab>"
+        When I navigate to My work sub navigation tab "Available tasks"
         Then I validate tasks count in page 25
         Then I validate task list page results text displayed as "Displaying 1 - 25 out of 140 tasks"
 
@@ -67,39 +89,21 @@ Feature: WA Release 2: My work - My Tasks, Available tasks
         Then I validate task list table sorted with column "Case name" in order "asc"
         When I click on primary navigation header tab "Case list"
         Then I see case list page displayed
-        When I navigate to My work sub navigation tab "<SubNavigationTab>"
+        When I click on primary navigation header tab "My work"
+        When I navigate to My work sub navigation tab "Available tasks"
         Then I validate tasks count in page 25
         Then I validate task list page results text displayed as "Displaying 1 - 25 out of 140 tasks"
         Then I validate task list table sorted with column "Case name" in order "asc"
-        Examples:
-            | SubNavigationTab |
-            | My tasks         |
-            | Available tasks  |
+        
 
-@test
-    Scenario Outline:  My Tasks error with response code <ResponseCode>
-        Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer"
-        Given I set MOCK api method "post" endpoint "/workallocation2/taskWithPagination/" with error response code <ResponseCode>
-        Given I start MockApp
-        Given I navigate to home page
-
-        Then I see error message of type "<ErrorMessageType>" with message "<ErrorMessage>"
-        Examples:
-            | ResponseCode | ErrorMessageType | ErrorMessage |
-            | 500 | Page | Sorry, there is a problem with the service |
-            | 400 | Page | Sorry, there is a problem with the service |
-            | 401 | Page | Sorry, you're not authorised to perform this action |
-            | 403 | Page | Sorry, you're not authorised to perform this action |
-
-@test
     Scenario Outline:  Available Tasks error with response code <ResponseCode>
         Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker"
         Given I start MockApp
         Given I navigate to home page
 
-
         Given I set MOCK api method "post" endpoint "/workallocation2/taskWithPagination/" with error response code <ResponseCode>
         Given I start MockApp
+        When I click on primary navigation header tab "My work"
         When I navigate to My work sub navigation tab "Available tasks"
         Then I see error message of type "<ErrorMessageType>" with message "<ErrorMessage>"
         Examples:
@@ -108,15 +112,4 @@ Feature: WA Release 2: My work - My Tasks, Available tasks
             | 400          | Page             | Sorry, there is a problem with the service          |
             | 401          | Page             | Sorry, you're not authorised to perform this action |
             | 403          | Page             | Sorry, you're not authorised to perform this action |
-
-
-
-
-
-
-
-
-
-
-
 

@@ -146,8 +146,8 @@ describe('TaskListComponent', () => {
 
     /// mock the emitter and dispatch the connected event
     spyOn(component.sortEvent, 'emit');
-    let element = fixture.debugElement.nativeElement;
-    let button = element.querySelector('#sort_by_caseName');
+    const element = fixture.debugElement.nativeElement;
+    const button = element.querySelector('#sort_by_caseName');
     button.dispatchEvent(new Event('click'));
     component.sortedBy = { fieldName: 'caseName', order: TaskSort.DSC };
     fixture.detectChanges();

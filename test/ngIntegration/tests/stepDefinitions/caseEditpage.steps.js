@@ -26,6 +26,21 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await caseEditPage.clickCancelLinkInEditPage(); 
      });
 
+    When('I click continue in case edit page', async function () {
+        await caseEditPage.clickContinue();
+    });
+
+    Then('I see validation error for field with id {string}', async function(fieldId){
+        expect(await caseEditPage.isFieldLevelValidationErrorDisplayed(fieldId),"field level error validation not displayed or not as expected").to.be.true;
+    });
+
+    Then('I see case event error summary messages', async function(datatable){
+        const messageHashes = datatable.hashes();
+        for(let i = 0; i< messageHashes.length;i++){
+            expect(await caseEditPage.isErrorMessageDisplayedInSummary(messageHashes[i].message),'Field error validation message not displayed in error summary').to.be
+        }
+    });
+
      Then('I validate config {string} case edit wizard pages and fields in pages', async function(configReference){
          const caseConfigInstance = global.scenarioData[configReference];
          const caseConfig = caseConfigInstance.getCase();

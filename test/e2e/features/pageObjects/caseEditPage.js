@@ -269,6 +269,11 @@ class caseEditPage {
     async validateMandatoryFields() {
         var currentPageElement = $('ccd-case-edit-page');
         await BrowserWaits.waitForElement(currentPageElement);
+
+        let buttonEnable = await this.continueButton.isEnabled();
+        expect(buttonEnable).to.eql(true);
+
+        await this.continueButton.click();
         let e = $("#TextField");
         await e.sendKeys(protractor.Key.ENTER);
         await e.sendKeys(protractor.Key.TAB);

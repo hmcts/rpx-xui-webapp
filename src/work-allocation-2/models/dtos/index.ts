@@ -84,3 +84,21 @@ export interface TaskSearchParameter {
 export interface TaskSearchParameters {
   parameters: TaskSearchParameter[];
 }
+
+export interface Person {
+  id: string;
+  name: string;
+  email: string;
+  domain: string;
+}
+
+export interface SearchOptions {
+  searchTerm: string;
+  jurisdiction: PersonDomain;
+}
+
+export enum PersonDomain {
+  JUDICIAL = 1,
+  CASEWORKER = 2,
+  BOTH = 3
+}

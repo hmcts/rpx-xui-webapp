@@ -415,10 +415,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.0.0-EUI-2022-ComplexField-Validation-Fix":
-  version "4.0.0-EUI-2022-ComplexField-Validation-Fix"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.0.0-EUI-2022-ComplexField-Validation-Fix.tgz#1370dfeb8a8be9a5fbc20438fedfdcb74ca6749f"
-  integrity sha512-6FgoeVwd/ZzvXgkWuh0JsFm2l/voyTL/GWMjbxJseRDsMYI4KR8W0uswrcNYkn27OzExDGjDzfUNz35ieAw+JQ==
+"@hmcts/ccd-case-ui-toolkit@4.0.0-EUI-2022-ComplexField-Validation-Fix-1":
+  version "4.0.0-EUI-2022-ComplexField-Validation-Fix-1"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.0.0-EUI-2022-ComplexField-Validation-Fix-1.tgz#7596fdd221bd6ba036bd92bd32e28073b71b9c50"
+  integrity sha512-CJh4VvRonUI3+Sbv3Uh0iiV5rJKCgzq984Zz7+bC593GZZz4ErVJCv91QKdltSiI52Tjta3cNRARvzzDMX5SFg==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

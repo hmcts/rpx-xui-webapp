@@ -3,6 +3,8 @@ const { constants } = require('karma');
 const { browser } = require('protractor');
 const browserUtil = require('../../../../ngIntegration/util/browserUtil');
 const BrowserWaits = require('../../../support/customWaits');
+const ArrayUtil = require('../../../utils/ArrayUtil');
+
 var cucumberReporter = require('../../../support/reportLogger');
 
 
@@ -66,14 +68,16 @@ class TaskListTable{
 
     async getColumnHeaderNames(){
         const headers = element.all(by.xpath(`//exui-task-list//table//thead//th//button`));
-        const names = [];
-        const colCount = await headers.count();
-        for (let i = 0; i < colCount; i++) {
-            const name = await headers.get(i).getText();
-            if (name !== ''){
-                names.push(name);
-            } 
+        const headerElementsCount = await headers.count();
+        const headerElements = [];
+        for (let i =  0; i < headerElementsCount; i++){
+            headerElements.push(await headers.get(i));
         }
+        const names = await ArrayUtil.map(headerElements , async (headerElement) => {
+            const headerName = await headerElement.getText();
+            return headerName.trim();
+        });
+
         return names; 
     }    
 
@@ -113,6 +117,20 @@ class TaskListTable{
         const columnPos = await this.getHeaderPositionWithName(columnName);
         const columnValue = await taskRow.$(`td:nth-of-type(${columnPos})`).getText();
         return columnValue;
+    }
+
+    async isColValForTaskALink(columnName, taskAtPos) {
+        const taskRow = await this.getTableRowAt(taskAtPos);
+        const columnPos = await this.getHeaderPositionWithName(columnName);
+        const isLink = await taskRow.$(`td:nth-of-type(${columnPos}) exui-url-field`).isPresent();
+        return isLink;
+    }
+
+    async clickTaskColLink(columnName, taskAtPos){
+        const taskRow = await this.getTableRowAt(taskAtPos);
+        const columnPos = await this.getHeaderPositionWithName(columnName);
+        await taskRow.$(`td:nth-of-type(${columnPos}) exui-url-field a`).click();
+        
     }
 
     async getColumnValueElementForTaskAt(columnName, taskAtPos) {

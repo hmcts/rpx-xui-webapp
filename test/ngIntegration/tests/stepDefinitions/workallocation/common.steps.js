@@ -29,9 +29,9 @@ const taskActionPage = require('../../../../e2e/features/pageObjects/workAllocat
 const TaskListTable = require('../../../../e2e/features/pageObjects/workAllocation/taskListTable');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
-    
+    const taskListTable = new TaskListTable();
     When('I click task list pagination link {string} and wait for req reference {string} not null', async function (paginationLinktext, reference) {
-        const taskListTable = new TaskListTable();
+        
         await BrowserWaits.retryWithActionCallback(async () => {
             await browserUtil.addTextToElementWithCssSelector('tbody tr:nth-of-type(1) .cdk-column-case_category exui-task-field', 'Sort test', true);
             
@@ -46,5 +46,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         });
        
     });
+
+    
 
 });

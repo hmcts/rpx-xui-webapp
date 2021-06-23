@@ -11,7 +11,7 @@ import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortFi
 })
 export class AllWorkTaskComponent {
 
-  public sortedBy :TaskSortField = {
+  public sortedBy: TaskSortField = {
     fieldName: '',
     order: TaskSort.NONE
   };

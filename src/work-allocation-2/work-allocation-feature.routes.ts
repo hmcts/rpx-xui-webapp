@@ -25,7 +25,7 @@ export const ROUTES: Routes = [
     canActivate: [ HealthCheckGuard, WorkAllocationFeatureToggleGuard ],
     children: [
       {
-        path: 'my',
+        path: 'my-work',
         component: TaskHomeComponent,
         canActivate: [ HealthCheckGuard ],
         resolve: {

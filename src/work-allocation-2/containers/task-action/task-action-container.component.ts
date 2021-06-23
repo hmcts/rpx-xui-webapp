@@ -43,7 +43,7 @@ export class TaskActionContainerComponent implements OnInit {
     if (window && window.history && window.history.state) {
       url = window.history.state.returnUrl;
     }
-    return url || '/work/my/list';
+    return url || '/work/my-work/list';
   }
 
   public taskServiceConfig: TaskServiceConfig = {

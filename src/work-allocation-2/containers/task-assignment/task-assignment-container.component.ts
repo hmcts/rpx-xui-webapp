@@ -48,7 +48,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   }
 
   private get returnUrl(): string {
-    let url: string = '/work/my/list';
+    let url: string = '/work/my-work/list';
 
     if (window && window.history && window.history.state) {
       url = window.history.state.returnUrl;

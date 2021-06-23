@@ -38,14 +38,14 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
    * Take in the Router so we can navigate when actions are clicked and
    * to identify which sub-navigation item to highlight.
    */
-  private readonly MY_TASKS: SubNavigation = {text: 'My tasks', href: '/work/my/list', active: true};
+  private readonly MY_TASKS: SubNavigation = {text: 'My tasks', href: '/work/my-work/list', active: true};
   /**
    * The sub-navigation items.
    */
   public subNavigationItems: SubNavigation[] = [
     this.MY_TASKS,
-    {text: 'Available tasks', href: '/work/my/available', active: false},
-    {text: 'My cases', href: '/mycases', active: false}
+    {text: 'Available tasks', href: '/work/my-work/available', active: false},
+    {text: 'My cases', href: '/work/my-work/mycases', active: false}
   ];
   private routeSubscription: Subscription;
   private locationSubscription: Subscription;

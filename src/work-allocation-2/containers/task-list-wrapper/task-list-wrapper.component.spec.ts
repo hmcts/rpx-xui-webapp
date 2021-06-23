@@ -21,7 +21,7 @@ describe('TaskListWrapperComponent', () => {
   const mockRouter: MockRouter = new MockRouter();
   const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['searchTask', 'getTask']);
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['']);
-  const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem']);
+  const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['']);
   const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
@@ -98,6 +98,17 @@ describe('TaskListWrapperComponent', () => {
       expect(lastNavigateCall.commands).toEqual([`/mywork/${exampleTask.id}/${secondAction.id}/`]);
       const exampleNavigateCall = { state: { returnUrl: '/mywork/manager', showAssigneeColumn: true } };
       expect(lastNavigateCall.extras).toEqual(exampleNavigateCall);
+    });
+  });
+
+  describe('onPaginationHandler()', () => {
+    it('should handle pagination', () => {
+      component.pagination = {page_number: 1, page_size: 25};
+      fixture.detectChanges();
+      // need to check that pagination has been performed
+      component.onPaginationHandler(2);
+      expect(component.pagination.page_number).toBe(2);
+      expect(mockSessionStorageService.getItem).toHaveBeenCalledWith('pageSessionKey');
     });
   });
 });

@@ -93,6 +93,13 @@ export class TaskListWrapperComponent implements OnInit {
   /**
    * To be overridden.
    */
+   public get pageSessionKey(): string {
+    return 'pageSessionKey';
+  }
+
+  /**
+   * To be overridden.
+   */
   public get view(): string {
     return 'default';
   }
@@ -125,9 +132,9 @@ export class TaskListWrapperComponent implements OnInit {
       handleFatalErrors(error.status, this.router);
     });
     // Try to get the sort order out of the session.
-    const stored = this.sessionStorageService.getItem(this.sortSessionKey);
-    if (stored) {
-      const { fieldName, order } = JSON.parse(stored);
+    const sortStored = this.sessionStorageService.getItem(this.sortSessionKey);
+    if (sortStored) {
+      const { fieldName, order } = JSON.parse(sortStored);
       this.sortedBy = {
         fieldName,
         order: order as TaskSort
@@ -139,13 +146,13 @@ export class TaskListWrapperComponent implements OnInit {
         order: this.taskServiceConfig.defaultSortDirection
       };
     }
-
+    const pageSorted = +this.sessionStorageService.getItem(this.pageSessionKey);
     this.isPaginationEnabled$.subscribe({
       next: (result: boolean) => {
         if (!result) this.pagination = null;
         else {
           this.pagination = {
-            page_number: 1,
+            page_number: pageSorted ? pageSorted : 1,
             page_size: 25
           };
         }
@@ -224,7 +231,6 @@ export class TaskListWrapperComponent implements OnInit {
     }
     this.sortedBy = { fieldName, order };
     this.sessionStorageService.setItem(this.sortSessionKey, JSON.stringify(this.sortedBy));
-
     this.loadTasks();
   }
 
@@ -262,12 +268,14 @@ export class TaskListWrapperComponent implements OnInit {
         this.ref.detectChanges();
       }, error => {
         this.loadingService.unregister(loadingToken);
+        console.log(error);
         handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
     });
   }
 
   public onPaginationHandler(pageNumber: number): void {
     this.pagination.page_number = pageNumber;
+    this.sessionStorageService.setItem(this.pageSessionKey, pageNumber.toString());
     this.doLoad();
   }
 

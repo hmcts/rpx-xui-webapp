@@ -156,7 +156,6 @@ export const init = () => {
 };
 
 export const getSortName = (sortName: string): string => {
-  console.log('attempting to sort ', sortName);
   switch (sortName) {
     case 'caseName':
       return 'case_name';

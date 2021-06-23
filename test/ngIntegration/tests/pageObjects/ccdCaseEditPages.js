@@ -72,7 +72,7 @@ class CaseEdit {
     }
 
     async isFieldLevelValidationErrorDisplayed(fieldId){
-        const fieldElementVaidationError = element(by.xpath(`//*[contains(@id,'${fieldId}')]/ancestor::*[contains(@class,"form-group-error")]`));
+        const fieldElementVaidationError = element(by.xpath(`//*[contains(@id,'${fieldId}')]/ancestor::*[contains(@class,"form-group-error")] | //*[contains(@id,'${fieldId}')]//span[contains(@class,'error-message')] `));
         return await fieldElementVaidationError.isPresent();
     }
 

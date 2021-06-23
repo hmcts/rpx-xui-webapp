@@ -67,6 +67,7 @@ class TaskListTable{
     }
 
     async getColumnHeaderNames(){
+        await this.waitForTable();
         const headers = element.all(by.xpath(`//exui-task-list//table//thead//th//button`));
         const headerElementsCount = await headers.count();
         const headerElements = [];

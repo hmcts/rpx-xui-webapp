@@ -12,7 +12,7 @@ Feature: WA Release 1: My Tasks Task list
         Given I set MOCK request "/workallocation/taskWithPagination/" intercept with reference "taskSearchRequest"
         Given I start MockApp
         Given I navigate to home page
-        When I click on primary navigation header tab "Task list"
+        When I click on primary navigation header tab "Task list", I see selected tab page displayed
         Then I see Task list sub navigation tabs
         Then I see My tasks page displayed
         Then I validate tasks count in page 25
@@ -40,7 +40,7 @@ Feature: WA Release 1: My Tasks Task list
         Given I set MOCK My tasks count 150
         Given I start MockApp
         Given I navigate to home page
-        When I click on primary navigation header tab "Task list"
+        When I click on primary navigation header tab "Task list", I see selected tab page displayed
         Then I see Task list sub navigation tabs
         Then I see My tasks page displayed
         Then I validate tasks count in page 25 
@@ -49,7 +49,7 @@ Feature: WA Release 1: My Tasks Task list
           Given I set MOCK My tasks count 150
         Given I start MockApp
         Given I navigate to home page
-        When I click on primary navigation header tab "Task list"
+        When I click on primary navigation header tab "Task list", I see selected tab page displayed
         Then I see Task list sub navigation tabs
         Then I see My tasks page displayed
         Then I validate tasks column sorting
@@ -58,7 +58,7 @@ Feature: WA Release 1: My Tasks Task list
             Given I set MOCK My tasks count 150
         Given I start MockApp
         Given I navigate to home page
-        When I click on primary navigation header tab "Task list"
+        When I click on primary navigation header tab "Task list", I see selected tab page displayed
         Then I see Task list sub navigation tabs
         Then I see My tasks page displayed
         Then I validate My tasks sort column persist in session
@@ -69,7 +69,7 @@ Feature: WA Release 1: My Tasks Task list
            Given I set MOCK My tasks count 150
         Given I start MockApp
         Given I navigate to home page
-        When I click on primary navigation header tab "Task list"
+        When I click on primary navigation header tab "Task list", I see selected tab page displayed
         Then I see Task list sub navigation tabs
         Then I see My tasks page displayed
         Then I validate error responses on My tasks page

@@ -36,6 +36,14 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     });
 
+    When('I click on primary navigation header tab {string}, I see selected tab page displayed', async function (headerTabLabel) {
+        await browserWaits.retryWithActionCallback(async () => {
+            await headerPage.clickPrimaryNavigationWithLabel(headerTabLabel);
+            expect(await headerPage.isPrimaryTabPageDisplayed(headerTabLabel)).to.be.true
+        });
+    });
+
+
 
     Then('I see primary navigation tab {string} in header', async function (headerlabel) {
         try{
@@ -100,10 +108,5 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         
         expect(await headerPage.isTabPresent(headerlabel), headerlabel + " tab is not expected to present " + await headerPage.getPrimaryTabsDisplayed() ).to.be.false;
     })
-
-    When('I click on primary navigation header tab for release {string}', async function (release,datatable) {
-        const releaseTabMaping = datatable.hashes()[0];
-        await headerPage.clickTabWithText(releaseTabMaping[release]);
-    });
 
 });

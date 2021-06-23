@@ -11,10 +11,16 @@ import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortFi
 })
 export class AllWorkTaskComponent {
 
-  private pagination: PaginationParameter = {
+  public sortedBy :TaskSortField = {
+    fieldName: '',
+    order: TaskSort.NONE
+  };
+
+  public pagination: PaginationParameter = {
     page_number: 1,
     page_size: 25
   };
+  public emptyMessage: string = 'No tasks to display';
 
   private readonly defaultTaskServiceConfig: TaskServiceConfig = {
     service: TaskService.IAC,
@@ -22,7 +28,8 @@ export class AllWorkTaskComponent {
     defaultSortFieldName: 'dueDate',
     fields: this.fields,
   };
-  private tasks: Task[];
+  public tasks: Task[];
+  public tasksTotal: number = 0;
 
   public get fields(): TaskFieldConfig[] {
     return CONFIG_CONSTANTS.AllWorkTasks;
@@ -31,5 +38,10 @@ export class AllWorkTaskComponent {
   public get taskServiceConfig(): TaskServiceConfig {
     return this.defaultTaskServiceConfig;
   }
-
+  public onPaginationEvent(pageNumber: number): void {
+  }
+  public onSortHandler(fieldName: string): void {
+  }
+  public onActionHandler(taskAction: InvokedTaskAction): void {
+  }
 }

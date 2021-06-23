@@ -140,7 +140,7 @@ class BrowserWaits{
             catch (err) {
                 error = err
                 retryCounter += 1;
-                CucumberReporter.AddMessage(`Actions success Condition ${actionMessage ? actionMessage : ''} failed ${err.stack}. `); 
+                CucumberReporter.AddMessage(`Actions success Condition ${actionMessage ? actionMessage : ''} failed ${err.message} ${err.stack}. `);
                 CucumberReporter.AddMessage(`Retrying attempt ${retryCounter}. `); 
             }
         }

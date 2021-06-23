@@ -24,7 +24,7 @@ Feature: WA Release 2: My work - My Tasks
         When I click task column link "Case name" at row 1
         Then I see case details page
 
-        When I click on primary navigation header tab "My work"
+        When I click on primary navigation header tab "My work", I see selected tab page displayed
         When I click task column link "Task" at row 1
         Then I see case details page
         Examples:
@@ -93,9 +93,9 @@ Feature: WA Release 2: My work - My Tasks
 
         When I click task list table header column "Case name"
         Then I validate task list table sorted with column "Case name" in order "asc"
-        When I click on primary navigation header tab "Case list"
+        When I click on primary navigation header tab "Case list", I see selected tab page displayed
         Then I see case list page displayed
-        When I click on primary navigation header tab "My work"
+        When I click on primary navigation header tab "My work", I see selected tab page displayed
         When I navigate to My work sub navigation tab "<SubNavigationTab>"
         Then I validate tasks count in page 25
         Then I validate task list page results text displayed as "Displaying 1 - 25 out of 140 tasks"

@@ -145,7 +145,7 @@ class BrowserWaits{
             }
         }
         if (!isSuccess){
-            throw new Error("Action failed to meet success condition after 3 retry attempts.",error);
+            throw new Error("Action failed to meet success condition after 3 retry attempts.",error.stack);
         }
     }
 }

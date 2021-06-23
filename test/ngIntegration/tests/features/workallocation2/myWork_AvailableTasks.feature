@@ -87,9 +87,9 @@ Feature: WA Release 2: My work -  Available tasks
 
         When I click task list table header column "Case name"
         Then I validate task list table sorted with column "Case name" in order "asc"
-        When I click on primary navigation header tab "Case list"
+        When I click on primary navigation header tab "Case list", I see selected tab page displayed
         Then I see case list page displayed
-        When I click on primary navigation header tab "My work"
+        When I click on primary navigation header tab "My work", I see selected tab page displayed
         When I navigate to My work sub navigation tab "Available tasks"
         Then I validate tasks count in page 25
         Then I validate task list page results text displayed as "Displaying 1 - 25 out of 140 tasks"
@@ -101,9 +101,10 @@ Feature: WA Release 2: My work -  Available tasks
         Given I start MockApp
         Given I navigate to home page
 
+        
+        When I click on primary navigation header tab "My work", I see selected tab page displayed
         Given I set MOCK api method "post" endpoint "/workallocation2/taskWithPagination/" with error response code <ResponseCode>
         Given I start MockApp
-        When I click on primary navigation header tab "My work"
         When I navigate to My work sub navigation tab "Available tasks"
         Then I see error message of type "<ErrorMessageType>" with message "<ErrorMessage>"
         Examples:

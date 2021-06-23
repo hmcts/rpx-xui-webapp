@@ -10,7 +10,7 @@ Feature: WA Release 1: : Work allocations task list, Available list and Task man
         Then I see primary navigation tabs "<rightColumnHeaders>" in right side header column
 
 
-        When I click on primary navigation header tab "Task list"
+        When I click on primary navigation header tab "Task list", I see selected tab page displayed
         Then I see Task list sub navigation tabs
         Then I see My tasks page displayed
         Then I see Task list table
@@ -24,7 +24,7 @@ Feature: WA Release 1: : Work allocations task list, Available list and Task man
         Then I validate tasks pagination is displayed if feature toggle "mc-mvp-wa-pagination" is on
 
         Then I see header tab Task manager
-        When I click on primary navigation header tab "Task manager"
+        When I click on primary navigation header tab "Task manager", I see selected tab page displayed
        
         Then I see Task manager page displayed
         Then I see Task list table

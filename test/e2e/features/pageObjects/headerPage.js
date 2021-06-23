@@ -7,9 +7,16 @@ var BrowserWaits = require('../../support/customWaits');
 var BrowserUtil = require('.././../../ngIntegration/util/browserUtil');
 var CaseListPage = require('./CaseListPage');
 var CreateCaseStartPage = require('./createCaseStartPage');
+const SearchCasePage = require('../pageObjects/searchPage');
+const taskListPage = require('../pageObjects/workAllocation/taskListPage');
+const taskManagerPage = require('../pageObjects/workAllocation/taskManagerPage');
+const myWorkPage = require('../pageObjects/workAllocation/myWorkPage');
+
+
 
 const createCaseStartPage = new CreateCaseStartPage();
 const caseListPage = new CaseListPage();
+const searchCasePage = new SearchCasePage();
 
 function HeaderPage() {
 
@@ -185,6 +192,38 @@ function HeaderPage() {
       return tabsText;
     });
     
+  }
+
+  this.isPrimaryTabPageDisplayed = async function(primaryTab){
+    let retValue = null;
+    switch (primaryTab){
+      case 'Case list':
+        retValue = await caseListPage.amOnPage();
+        break;
+      case 'Create case':
+        retValue = await createCaseStartPage.amOnPage();
+        break;
+      case 'Find case':
+        retValue = await searchCasePage.amOnPage();
+        break;
+      case 'Task list':
+        retValue = await taskListPage.amOnPage();
+        break;
+      case 'Task manager':
+        retValue = await taskManagerPage.amOnPage();
+        break;
+      case 'My work':
+        retValue = await myWorkPage.amOnPage();
+        break;
+      case 'All work':
+        throw new Error('All work Test pageObject not implemented/applied to tests');
+        break;
+      default:
+        throw new Error(`Tab "${primaryTab}" is not recognised or not implemeted in test to handle.`);
+
+    }
+    return retValue;
+
   }
 
 }

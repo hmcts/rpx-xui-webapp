@@ -415,10 +415,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@v3.1.5-nested-multi-select-labels-eta ":
-  version "3.1.5-nested-multi-select-labels-eta"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-3.1.5-nested-multi-select-labels-eta.tgz#6977c9ee1761173fd660ba50d03dc7a96c95a65f"
-  integrity sha512-LL99rl/HgH7eTADi+t0qFObuawdF39+EIKEgrb23PD1rZwssVW+nAYXwv95H+1bnevC3NO9O9S10Xg169PQBSA==
+"@hmcts/ccd-case-ui-toolkit@v3.1.5-nested-multi-select-labels-theta":
+  version "3.1.5-nested-multi-select-labels-theta"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-3.1.5-nested-multi-select-labels-theta.tgz#0cfd39f442618b54b0aaa74ecc53077caac19e23"
+  integrity sha512-LWrM/C1v6yhp/aOIXK0P0hO0GNnp7AiqxSauvEMLD1RypuVRECGxtR9Jz6f1dH/3D7IHRlTg/zX2gywrOj0TmA==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

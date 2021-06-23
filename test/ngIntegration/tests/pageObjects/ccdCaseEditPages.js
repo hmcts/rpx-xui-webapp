@@ -19,7 +19,10 @@ class CaseEdit {
 
     checkYourAnswersSummaryRows = $$('.check-your-answers .form-table tr');
 
-    errorSummaryContainer = $('.govuk-error-summary');
+    validationAlertSummaryContainer = $('.govuk-error-summary[role="alert"]');
+    callbackErrorSummaryContainer = $('.error-summary[role="status"]');
+
+
 
     async waitForPage() {
         await BrowserWaits.waitForElement($('ccd-case-edit-page'));
@@ -35,19 +38,36 @@ class CaseEdit {
         }
     }
 
-    async isErrorSummaryDisplayed(){
+    async isValidationAlertSummaryDisplayed(){
         try {
-            await BrowserWaits.waitForElement(this.errorSummaryContainer);
+            await BrowserWaits.waitForElement(this.validationAlertSummaryContainer);
             return true;
         } catch (error) {
-            reportLogger.AddMessage("Error waiting for case edit page :" + error);
+            reportLogger.AddMessage("Validation error not displayed" + error);
             return false;
         }
     }
 
-    async isErrorMessageDisplayedInSummary(errorMessage){
-        expect(await this.isErrorSummaryDisplayed(),"Error summary not displayed").to.be.true;
-        const errorSummaryText = await this.errorSummaryContainer.getText();
+    async isValidationAlertMessageDisplayed(errorMessage){
+        expect(await this.isValidationAlertSummaryDisplayed(),"Error summary not displayed").to.be.true;
+        const errorSummaryText = await this.validationAlertSummaryContainer.getText();
+        return errorSummaryText.includes(errorMessage);
+    }
+
+
+    async isCallbackErrorSummaryDisplayed() {
+        try {
+            await BrowserWaits.waitForElement(this.callbackErrorSummaryContainer);
+            return true;
+        } catch (error) {
+            reportLogger.AddMessage("Callback error not displayed" + error);
+            return false;
+        }
+    }
+
+    async isCallbackErrorMessageDisplayed(errorMessage) {
+        expect(await this.isValidationAlertSummaryDisplayed(), "Callback Error summary not displayed").to.be.true;
+        const errorSummaryText = await this.callbackErrorSummaryContainer.getText();
         return errorSummaryText.includes(errorMessage);
     }
 

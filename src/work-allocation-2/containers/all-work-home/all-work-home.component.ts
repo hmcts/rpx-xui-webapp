@@ -1,5 +1,5 @@
-import { Component, OnInit } from "@angular/core";
-import { SubNavigation } from "@hmcts/rpx-xui-common-lib";
+import { Component } from '@angular/core';
+import { SubNavigation } from '@hmcts/rpx-xui-common-lib';
 
 @Component({
 selector: 'exui-all-tasks',

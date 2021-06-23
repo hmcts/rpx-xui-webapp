@@ -72,6 +72,14 @@ describe('AppConfiguration', () => {
     expect(service.getRemoteDocumentManagementUrl).toBeDefined();
   }));
 
+  it('should have getHrsUrl', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getHrsUrl).toBeDefined();
+  }));
+
+  it('should have getRemoteHrsUrl', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getRemoteHrsUrl).toBeDefined();
+  }));
+
   it('should have getPostcodeLookupUrl', inject([AppConfig], (service: AppConfig) => {
     expect(service.getPostcodeLookupUrl).toBeDefined();
   }));

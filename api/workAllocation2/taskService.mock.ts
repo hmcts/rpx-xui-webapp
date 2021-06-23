@@ -144,12 +144,21 @@ export const init = () => {
     ];
   });
 
-  mock.onPost(assignTaskUrl).reply(() => {
-    // return an array in the form of [status, data, headers]
-    return [
-      204,
-      'success',
-    ];
+  mock.onPost(assignTaskUrl).reply(config => {
+    const data = JSON.parse(config.data);
+    const id = data.userId.toString().replace(/[^0-9.]/g, '');
+    const mod = parseInt(id, 10) % 2;
+    if (mod === 0) {
+      return [
+        204,
+        'success',
+      ];
+    } else {
+      return [
+        400,
+        'failed',
+      ];
+    }
   });
 };
 

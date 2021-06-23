@@ -3,7 +3,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
@@ -12,12 +12,11 @@ import { TaskListComponent } from '..';
 import { ErrorMessageComponent } from '../../../app/components';
 import { TaskActionConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { Assignee } from '../../models/dtos';
 import { Task } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
+import { FindAPersonService } from '../../services/find-person.service';
 import { getMockCaseworkers, getMockTasks } from '../../tests/utils.spec';
 import {
-  NAME_ERROR,
   TaskAssignmentContainerComponent,
 } from './task-assignment-container.component';
 
@@ -44,6 +43,9 @@ describe('TaskAssignmentContainerComponent', () => {
   const mockWorkAllocationService = {
     assignTask: jasmine.createSpy('assignTask').and.returnValue(Observable.of({}))
   };
+  const mockFindPersonService = {
+    findPersonService: jasmine.createSpy('find').and.returnValue(Observable.of({}))
+  };
   const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
 
@@ -63,6 +65,7 @@ describe('TaskAssignmentContainerComponent', () => {
       ],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
+        { provide: FindAPersonService, useValue: mockFindPersonService },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -70,12 +73,16 @@ describe('TaskAssignmentContainerComponent', () => {
               data: {
                 taskAndCaseworkers: { data: mockTasks[0], caseworkers: [] },
                 ...TaskActionConstants.Reassign
+              },
+              params: {
+                taskId: 'task1111111'
               }
             },
-            params: Observable.of({ task: mockTasks[0] })
+            params: Observable.of({ task: mockTasks[0] }),
           }
         },
-        { provide: InfoMessageCommService, useValue: mockInfoMessageCommService }
+        { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
+        { provide: Router, useValue: { url: 'localhost/test' } }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
@@ -95,31 +102,12 @@ describe('TaskAssignmentContainerComponent', () => {
     expect(component).toBeDefined();
   });
 
-  it('should send an error message when a caseworker is not selected and there is an attempt to assign', () => {
-    expect(component.caseworker).toBeUndefined();
-    expect(component.error).toBeNull();
+  it('should re-direct to assign task confirmation page', () => {
+    const mockRouter = jasmine.createSpyObj('router', ['navigateByUrl']);
+    const compo = new TaskAssignmentContainerComponent(null, null, mockRouter, null);
 
-    component.assign();
-    fixture.detectChanges();
-    expect(component.error).not.toBeNull();
-    expect(component.error.title).toEqual(NAME_ERROR.title);
-    expect(component.error.description).toEqual(NAME_ERROR.description);
-    expect(component.error.fieldId).toEqual(NAME_ERROR.fieldId);
-
+    compo.assign();
+    expect(mockRouter.navigateByUrl).toHaveBeenCalled();
   });
 
-  it('should assign succesfully', () => {
-    const caseworker = mockCaseworkers[0];
-    component.caseworker = caseworker;
-    fixture.detectChanges();
-
-    component.assign();
-
-    fixture.detectChanges();
-    const assignee: Assignee = {
-      userId: caseworker.idamId
-    };
-    expect(mockWorkAllocationService.assignTask).toHaveBeenCalledWith(mockTasks[0].id, assignee);
-  });
-  // TODO: Need to write tests regarding template
 });

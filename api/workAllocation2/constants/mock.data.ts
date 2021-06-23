@@ -3,11 +3,11 @@
 import { PersonDomain } from "../interfaces/person";
 
 export const PERSON = [
-    {
-      id: 'id123',
-      name: 'John Smith',
-      email: 'john.smith@email.com',
-      domain: PersonDomain.CASEWORKER
+  {
+    id: 'id123',
+    name: 'John Smith',
+    email: 'john.smith@email.com',
+    domain: PersonDomain.CASEWORKER
   },
   {
     id: 'id124',

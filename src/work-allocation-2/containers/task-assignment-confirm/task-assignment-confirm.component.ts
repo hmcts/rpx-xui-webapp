@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { InfoMessage, InfoMessageType, TaskActionType } from 'src/work-allocation-2/enums';
-import { handleFatalErrors } from '../../utils';
-import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
-import { InformationMessage } from '../../models/comms';
-import { TaskAssigneeModel } from '../../models/tasks/task-assignee.model';
 import { map } from 'rxjs/operators';
+import { InfoMessage, InfoMessageType, TaskActionType } from 'src/work-allocation-2/enums';
+import { InformationMessage } from '../../models/comms';
 import { Person } from '../../models/dtos';
+import { TaskAssigneeModel } from '../../models/tasks/task-assignee.model';
+import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
+import { handleFatalErrors } from '../../utils';
 
 @Component({
   selector: 'exui-task-assignment-confirm',
@@ -31,10 +31,8 @@ export class TaskAssignmentConfirmComponent implements OnInit {
   public ngOnInit(): void {
     this.verb = this.route.snapshot.data.verb as TaskActionType;
     this.taskId = this.route.snapshot.params['taskId'];
-    // @ts-ignore
-    this.rootPath = this.route.snapshot._urlSegment.segments[0].path;
+    this.rootPath = this.router.url.split('/')[1];
     this.taskAndCaseworker = this.route.snapshot.data.taskAndCaseworkers.data;
-    console.log('this.taskAndCaseworker=' + this.taskAndCaseworker);
     this.route.paramMap
       .pipe(map(() => window.history.state)).subscribe(person => {
         this.selectedPerson = person;
@@ -42,9 +40,6 @@ export class TaskAssignmentConfirmComponent implements OnInit {
   }
 
   public onChange(): void {
-    // console.log('route=' + JSON.stringify(this.route.url));
-    // this.router.navigate('/reassign');
-    // console.log('this.route.snapshot._urlSegment.segment[0].path=' + this.route.snapshot._urlSegment.segments[0].path);
     this.router.navigate([this.rootPath, this.taskId, 'reassign']);
   }
 

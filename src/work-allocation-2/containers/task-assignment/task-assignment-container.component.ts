@@ -5,18 +5,12 @@ import { Subscription } from 'rxjs';
 
 import { ErrorMessage } from '../../../app/models';
 import { ConfigConstants } from '../../components/constants';
-import { InfoMessage, InfoMessageType, TaskActionType, TaskService, TaskSort } from '../../enums';
+import { TaskActionType, TaskService, TaskSort } from '../../enums';
 import { InformationMessage } from '../../models/comms';
 import { Caseworker, Location, Person } from '../../models/dtos';
 import { TaskFieldConfig, TaskServiceConfig } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
-import { handleFatalErrors } from '../../utils';
 
-export const NAME_ERROR: ErrorMessage = {
-  title: 'There is a problem',
-  description: 'You must select a name',
-  fieldId: 'task_assignment_caseworker'
-};
 @Component({
   selector: 'exui-task-container-assignment',
   templateUrl: 'task-assignment-container.component.html'
@@ -28,8 +22,6 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   public caseworker: Caseworker;
   public verb: TaskActionType;
 
-  public successMessage: InfoMessage;
-  public excludedCaseworkers: Caseworker[];
   public location: Location;
 
   public formGroup: FormGroup;
@@ -79,20 +71,9 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     const task = this.route.snapshot.data.taskAndCaseworkers.data;
     this.tasks = [task];
     this.verb = this.route.snapshot.data.verb as TaskActionType;
-    this.successMessage = this.route.snapshot.data.successMessage as InfoMessage;
-    if (task.assignee) {
-      const names: string[] = task.assignee.split(' ');
-      const firstName = names.shift();
-      const lastName = names.join(' ');
-      this.excludedCaseworkers = [{ firstName, lastName } as Caseworker];
-    }
-    if (task.location) {
-      this.location = { locationName: task.location } as Location;
-    }
+
     this.taskId = this.route.snapshot.params['taskId'];
-    console.log('task=' + this.taskId);
-    // @ts-ignore
-    this.rootPath = this.route.snapshot._urlSegment.segments[0].path;
+    this.rootPath = this.router.url.split('/')[1];
   }
 
   public ngOnDestroy(): void {
@@ -108,29 +89,11 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   }
 
   public selectedPerson(person?: Person) {
-    console.log(person);
     this.person = person;
   }
 
   public assign(): void {
-    // @ts-ignore
     this.router.navigateByUrl(`${this.rootPath}/${this.taskId}/reassign/confirm`, {state: this.person});
-/*    if (!this.caseworker) {
-      this.error = NAME_ERROR;
-      return;
-    }
-    this.error = null;
-
-    this.assignTask = this.taskService.assignTask(this.tasks[0].id, { userId: this.caseworker.idamId }).subscribe({
-      next: () => this.reportSuccessAndReturn(),
-      error: (error: any) => {
-        const handledStatus = handleFatalErrors(error.status, this.router);
-
-        if (handledStatus > 0) {
-          this.reportUnavailableErrorAndReturn();
-        }
-      }
-    });*/
   }
 
   public cancel(): void {
@@ -139,21 +102,6 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
 
   public onCaseworkerChanged(caseworker: Caseworker): void {
     this.caseworker = caseworker;
-  }
-
-  private reportSuccessAndReturn(): void {
-    const message = this.successMessage;
-    this.returnWithMessage(
-      { type: InfoMessageType.SUCCESS, message },
-      { badRequest: false }
-    );
-  }
-
-  private reportUnavailableErrorAndReturn(): void {
-    this.returnWithMessage({
-      type: InfoMessageType.WARNING,
-      message: InfoMessage.TASK_NO_LONGER_AVAILABLE,
-    }, { badRequest: true });
   }
 
   private returnWithMessage(message: InformationMessage, state: any): void {

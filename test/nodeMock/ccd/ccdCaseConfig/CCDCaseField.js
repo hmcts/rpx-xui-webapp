@@ -82,23 +82,29 @@ class CCDcaseField {
                 break
             case "OrderSummary":
             case "CaseLink":
-            case "Organisation":
-                template.field_type.id = fieldConfig.type;
-                template.field_type.type = "Complex";
+                template.field_type.id = "TextCaseReference";
+                template.field_type.type = "Text";
+                template.field_type.regular_expression = "(?:^[0-9]{16}$|^\\d{4}-\\d{4}-\\d{4}-\\d{4}$)";
+                
                 break;
             case "Organisation":
                 template.field_type.id = "OrganisationPolicy";
                 template.field_type.type = "Complex";
                 template.display_context = "COMPLEX";
                 const OrgPolicyCaseAssignedRole = this.getCCDFieldTemplateCopy({ type: "Text", id: "OrgPolicyCaseAssignedRole", label: "Case Assigned Role" });
+                const OrgReference = this.getCCDFieldTemplateCopy({ type: "Text", id: "OrgPolicyReference", label: "Reference" });
 
                 const organisation = this.getCCDFieldTemplateCopy({ type: "Complex", id: "Organisation", label: "Organisation" });
-                organisation.field_type.id = "Organisation;";
+                organisation.field_type.id = "Organisation";
                 const orgId = this.getCCDFieldTemplateCopy({ type: "Text", id: "OrganisationID", label: "Organisation ID" });
                 const orgNaMe = this.getCCDFieldTemplateCopy({ type: "Text", id: "OrganisationName", label: "Name" });
-                organisation.field_type.omplex_fields = [orgId, orgNaMe];
+                organisation.field_type.complex_fields = [orgId, orgNaMe];
 
-                template.field_type.complex_fields = [OrgPolicyCaseAssignedRole, organisation];
+                const PrepopulateOrgVal = this.getCCDFieldTemplateCopy({ type: "YesOrNo", id: "PrepopulateToUsersOrganisation", label: "Prepopulate User Organisation" });
+
+
+                template.field_type.complex_fields = [OrgPolicyCaseAssignedRole, organisation, OrgReference, PrepopulateOrgVal];
+                break;
 
             default:
                 template.field_type.id = fieldConfig.type;

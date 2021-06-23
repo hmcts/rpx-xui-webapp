@@ -1,4 +1,4 @@
-@ng 
+@ng @test
 Feature: Case fields
 
     Background: Mock event setup
@@ -66,29 +66,29 @@ Feature: Case fields
         When I click continue in case edit page
         Then I see validation error for field with id "<fieldId>"
         Then I see case event validation alert error summary messages
-            | message                  |
-            | <fieldLabel> is required |
+            | message                          |
+            | <fieldLabel> <validationMessage> |
 
         Examples:
-            | fieldId             | fieldLabel         |
-            | text                | Text               |
-            | postcode            | Postcode           |
-            | testArea            | TextArea           |
-            | number              | Number             |
-            | radioYesNo          | YesOrNo            |
-            | email               | Email              |
-            | phoneUK             | PhoneUK            |
-            | date                | Date               |
-            | dateTime            | DateTime           |
-            | moneyGBP            | MoneyGBP           |
-            | document            | Document           |
-            # | dynamicList     |  DynamicList     |
-            | fixedList           | FixedList          |
-            | fixedRadioList      | FixedRadioList     |
-            | multiselectList     | MultiSelectList    |
-            | collectionTestField | Test complex field |
+            | fieldId             | fieldLabel             | validationMessage |
+            | text                | Text                   | is required       |
+            | postcode            | Postcode               | is required       |
+            | testArea            | TextArea               | is required       |
+            | number              | Number                 | is required       |
+            | radioYesNo          | YesOrNo                | is required       |
+            | email               | Email                  | is required       |
+            | phoneUK             | PhoneUK                | is required       |
+            | date                | Date                   | is required       |
+            | dateTime            | DateTime               | is required       |
+            | moneyGBP            | MoneyGBP               | is required       |
+            | document            | Document               | is required       |
+            | caseLink            | caseLink.CaseReference | is required       |
+            # | dynamicList     |  DynamicList     | is required|
+            | fixedList           | FixedList              | is required       |
+            | fixedRadioList      | FixedRadioList         | is required       |
+            | multiselectList     | MultiSelectList        | is required       |
+            | collectionTestField | Test complex field     | is required       |
 
-@test
     Scenario Outline: Mandatory case field validation complex fields  "<fieldId>""
         Given I set field properties for field with id "<fieldId>" in event "CaseFieldsProperties"
             | key             | value     |
@@ -105,14 +105,13 @@ Feature: Case fields
         When I click continue in case edit page
         Then I see validation error for field with id "<fieldId>"
         Then I see case event validation alert error summary messages
-            | message                  |
-            | <fieldLabel> is required |
+            | message                          |
+            | <fieldLabel> <validationMessage> |
 
         Examples:
-            | fieldId          | fieldLabel           | complexElementId            |
-            | addressGlobalUK  | AddressGlobalUK      | addressGlobalUK.PostCode    |
-            | addressUK        | AddressUK            | addressUK.PostCode          |
-            | caseLink         | CaseLink             | caseLink.CaseReference      |
-            | organisation     | Organisation         | organisation.OrganisationID |
-            | complexTestField | Textfield in complex | complexTestField.text       |
+            | fieldId          | fieldLabel           | complexElementId                       | validationMessage |
+            | addressGlobalUK  | AddressGlobalUK      | addressGlobalUK.PostCode               | is required       |
+            | addressUK        | AddressUK            | addressUK.PostCode                     | is required       |
+            | organisation     | Organisation         | organisation.OrgPolicyCaseAssignedRole | is required       |
+            | complexTestField | Textfield in complex | complexTestField.text                  | is required       |
 

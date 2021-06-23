@@ -94,10 +94,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Given('I set case event {string} in mock', function(eventRef){
         const mockCaseEvent = global.scenarioData[eventRef];
         // console.log(mockCaseEvent.getCase());
-        CucumberReportLogger.AddJson(mockCaseEvent.getCase());
+        CucumberReportLogger.AddJsonToReportOnly(mockCaseEvent.getCase());
         MockApp.onGet('/data/internal/case-types/:jurisdiction/event-triggers/:caseType', (req,res) => {
             CucumberReportLogger.AddMessage(`event /data/internal/case-types/:jurisdiction/event-triggers/:caseType `);
-            CucumberReportLogger.AddJson(mockCaseEvent.getCase());
             res.send(mockCaseEvent.getCase());
 
         });

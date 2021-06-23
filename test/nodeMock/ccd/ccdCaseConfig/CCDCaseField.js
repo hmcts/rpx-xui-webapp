@@ -58,6 +58,7 @@ class CCDcaseField {
                 const postCode = this.getCCDFieldTemplateCopy({ type: "Text", id: "PostCode", label: "Postcode/Zipcode" });
                 const country = this.getCCDFieldTemplateCopy({ type: "Text", id: "Country", label: "Country" });
 
+                template.display_context = "COMPLEX";
                 template.field_type.complex_fields = [add1, add2, add3, postTown, county, postCode, country];
                 break;
             case "AddressLine1":
@@ -88,7 +89,7 @@ class CCDcaseField {
             case "Organisation":
                 template.field_type.id = "OrganisationPolicy";
                 template.field_type.type = "Complex";
-
+                template.display_context = "COMPLEX";
                 const OrgPolicyCaseAssignedRole = this.getCCDFieldTemplateCopy({ type: "Text", id: "OrgPolicyCaseAssignedRole", label: "Case Assigned Role" });
 
                 const organisation = this.getCCDFieldTemplateCopy({ type: "Complex", id: "Organisation", label: "Organisation" });

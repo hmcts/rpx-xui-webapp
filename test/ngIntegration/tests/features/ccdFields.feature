@@ -34,6 +34,8 @@ Feature: Case fields
             | collectionTestField.text | Text            | Textfield in collection |
 
 
+
+
         Given I set fixed list ietms to field "fixedList" in event "CaseFieldsProperties"
             | code  | label  |
             | item1 | Item 1 |
@@ -51,11 +53,11 @@ Feature: Case fields
             | item3 | Item 3 |
 
 
-    Scenario Outline: Mandatory case field validation "<fieldId>""
-
+    Scenario Outline: Mandatory case field validation non complex fields  "<fieldId>""
         Given I set field properties for field with id "<fieldId>" in event "CaseFieldsProperties"
             | key             | value     |
             | display_context | MANDATORY |
+
         Given I set case event "CaseFieldsProperties" in mock
 
         Given I start MockApp
@@ -79,15 +81,38 @@ Feature: Case fields
             | date                | Date               |
             | dateTime            | DateTime           |
             | moneyGBP            | MoneyGBP           |
+            | document            | Document           |
             # | dynamicList     |  DynamicList     |
             | fixedList           | FixedList          |
             | fixedRadioList      | FixedRadioList     |
-            | addressGlobalUK     | AddressGlobalUK    |
-            | addressUK           | AddressUK          |
-            | caseLink            | CaseLink           |
-            | organisation        | Organisation       |
             | multiselectList     | MultiSelectList    |
-            | document            | Document           |
-            | complexTestField    | Test complex field |
             | collectionTestField | Test complex field |
+
+@test
+    Scenario Outline: Mandatory case field validation complex fields  "<fieldId>""
+        Given I set field properties for field with id "<fieldId>" in event "CaseFieldsProperties"
+            | key             | value     |
+            | display_context | MANDATORY |
+        Given I set complex field overrides for case field "<fieldId>" in event "CaseFieldsProperties"
+            | complex_field_element_id | display_context |
+            | <complexElementId>       | MANDATORY       |
+
+        Given I set case event "CaseFieldsProperties" in mock
+
+        Given I start MockApp
+        Given I navigate page route "cases/case-create/Test_Jurisdiction/Test_case/testEvent/testPage"
+        Then I see case edit page displayed
+        When I click continue in case edit page
+        Then I see validation error for field with id "<fieldId>"
+        Then I see case event validation alert error summary messages
+            | message                  |
+            | <fieldLabel> is required |
+
+        Examples:
+            | fieldId          | fieldLabel           | complexElementId            |
+            | addressGlobalUK  | AddressGlobalUK      | addressGlobalUK.PostCode    |
+            | addressUK        | AddressUK            | addressUK.PostCode          |
+            | caseLink         | CaseLink             | caseLink.CaseReference      |
+            | organisation     | Organisation         | organisation.OrganisationID |
+            | complexTestField | Textfield in complex | complexTestField.text       |
 

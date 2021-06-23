@@ -5,7 +5,6 @@ import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
 import { TaskActionConstants } from './components/constants';
 import {
   AvailableTasksComponent,
-  FindPersonContainerComponent,
   MyTasksComponent,
   TaskActionContainerComponent,
   TaskAssignmentConfirmComponent,
@@ -50,10 +49,6 @@ export const ROUTES: Routes = [
             data: {
               title: 'HMCTS Manage cases | My work | Available tasks', subTitle: 'Available tasks'
             }
-          },
-          {
-            path: 'find-person',
-            component: FindPersonContainerComponent
           }
         ]
       },

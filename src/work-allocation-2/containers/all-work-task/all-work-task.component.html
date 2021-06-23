@@ -1,1 +1,34 @@
-<h1>All work Task</h1>
+<div class="hmcts-filter-layout__filter all-work-filter">
+  <div class="govuk-form-group">
+      <label for="task_assignment_location" class="govuk-label">Task location</label>
+      <select id="task_assignment_location" name="task_assignment_location" class="govuk-select task-assignment__location form-control">
+        <option value="324339">All locations</option>
+        <option value="324339">Arnhem House</option>
+        <option value="231596">Birmingham</option>
+        <option value="698118">Bradford</option>
+        <option value="366559">Glasgow</option>
+        <option value="386417">Hatton Cross</option>
+        <option value="512401">Manchester</option>
+        <option value="366796">Newcastle</option>
+        <option value="227101">Newport</option>
+        <option value="765324">Taylor House</option>
+      </select>
+  </div>
+  <div class="govuk-form-group">
+      <label for="task_assignment_caseworker" class="govuk-label">Assignee</label>
+      <select id="task_assignment_caseworker" name="task_assignment_caseworker" class="govuk-select task-assignment__caseworker form-control">
+        <option value="user1">All caseworkers</option>
+        <option value="user1">First1 Last1</option>
+        <option value="user2">First2 Last2</option>
+        <option value="user3">First3 Last3</option>
+      </select>
+  </div>
+</div>
+<div class="hmcts-filter-layout__content exui-task-list">
+  <exui-task-list
+  [taskServiceConfig]="taskServiceConfig" [tasks]="tasks" [fields]="fields" [tasksTotal]="tasksTotal" [pagination]="pagination"
+  [sortedBy]="sortedBy" [emptyMessage]="emptyMessage"
+  (paginationEvent)="onPaginationEvent($event)"
+  (sortEvent)="onSortHandler($event)" (actionEvent)="onActionHandler($event)">
+  </exui-task-list>
+</div>

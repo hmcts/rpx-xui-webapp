@@ -26,7 +26,6 @@ export class TaskListWrapperComponent implements OnInit {
   public showSpinner$: Observable<boolean>;
   public sortedBy: TaskSortField;
   public pagination: PaginationParameter;
-  public isPaginationEnabled$: Observable<boolean>;
   private pTasks: Task[];
   /**
    * Mock TaskServiceConfig.
@@ -52,7 +51,6 @@ export class TaskListWrapperComponent implements OnInit {
     protected loadingService: LoadingService,
     protected featureToggleService: FeatureToggleService
   ) {
-    this.isPaginationEnabled$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.waMvpPaginationFeature);
   }
 
   public get tasks(): Task[] {
@@ -147,17 +145,10 @@ export class TaskListWrapperComponent implements OnInit {
       };
     }
     const pageSorted = +this.sessionStorageService.getItem(this.pageSessionKey);
-    this.isPaginationEnabled$.subscribe({
-      next: (result: boolean) => {
-        if (!result) this.pagination = null;
-        else {
-          this.pagination = {
-            page_number: pageSorted ? pageSorted : 1,
-            page_size: 25
-          };
-        }
-      }
-    });
+    this.pagination = {
+      page_number: pageSorted ? pageSorted : 1,
+      page_size: 25
+    };
   }
 
   /**
@@ -260,7 +251,7 @@ export class TaskListWrapperComponent implements OnInit {
   private doLoad(): void {
     this.showSpinner$ = this.loadingService.isLoading;
     const loadingToken = this.loadingService.register();
-    this.isPaginationEnabled$.pipe(mergeMap(enabled => enabled ? this.performSearchPagination() : this.performSearch())).subscribe(result => {
+    this.performSearchPagination().subscribe(result => {
         this.loadingService.unregister(loadingToken);
         this.tasks = result.tasks;
         this.tasksTotal = result.total_records;

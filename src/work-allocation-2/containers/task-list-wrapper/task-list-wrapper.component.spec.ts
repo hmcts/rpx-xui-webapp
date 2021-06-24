@@ -19,7 +19,7 @@ describe('TaskListWrapperComponent', () => {
   let fixture: ComponentFixture<TaskListWrapperComponent>;
   const mockRef = jasmine.createSpyObj('mockRef', ['']);
   const mockRouter: MockRouter = new MockRouter();
-  const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['searchTask', 'getTask']);
+  const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['searchTaskWithPagination', 'getTask']);
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['']);
@@ -50,9 +50,8 @@ describe('TaskListWrapperComponent', () => {
     }).compileComponents();
     fixture = TestBed.createComponent(TaskListWrapperComponent);
     component = fixture.componentInstance;
-    component.isPaginationEnabled$ = of(false);
     const tasks: Task[] = getMockTasks();
-    mockWorkAllocationService.searchTask.and.returnValue(of({ tasks }));
+    mockWorkAllocationService.searchTaskWithPagination.and.returnValue(of({ tasks }));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     fixture.detectChanges();

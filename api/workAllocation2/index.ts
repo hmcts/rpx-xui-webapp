@@ -78,6 +78,10 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
         const basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'availableTasks?view=judicial');
         const postTaskPath = preparePaginationUrl(req, basePath);
         promise = await handlePost(postTaskPath, searchRequest, req);
+      } else {
+        const basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'allTasks?view=judicial');
+        const postTaskPath = preparePaginationUrl(req, basePath);
+        promise = await handlePost(postTaskPath, searchRequest, req);
       }
     } else {
       if (view === 'MyTasks') {
@@ -86,6 +90,10 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
         promise = await handlePost(postTaskPath, searchRequest, req);
       } else if (view === 'AvailableTasks') {
         const basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'availableTasks?view=caseworker');
+        const postTaskPath = preparePaginationUrl(req, basePath);
+        promise = await handlePost(postTaskPath, searchRequest, req);
+      } else {
+        const basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'allTasks?view=caseworker');
         const postTaskPath = preparePaginationUrl(req, basePath);
         promise = await handlePost(postTaskPath, searchRequest, req);
       }

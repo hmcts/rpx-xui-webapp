@@ -53,6 +53,10 @@ export const init = () => {
   const unclaimTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/unclaim/;
 
   const judicialWorkersUrl = /http:\/\/rd-judicialworker-ref-api-aat.service.core-compute-aat.internal\/judicialworkers/;
+  // tslint:disable-next-line:max-line-length
+  const judicialAllTasksUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/allTasks\?view=judicial/;
+  // tslint:disable-next-line:max-line-length
+  const caseworkerAllTasksUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/allTasks\?view=caseworker/;
 
   mock.onPost(judicialWorkersUrl).reply(() => {
     // return an array in the form of [status, data, headers]
@@ -65,6 +69,21 @@ export const init = () => {
   // simulate some error if needed
   // mock.onGet(url).networkErrorOnce()
   mock.onPost(judicialMyTaskUrl).reply(config => {
+    // return an array in the form of [status, data, headers]
+    const body = JSON.parse(config.data);
+    const paginationConfig = body.pagination_parameters;
+    return [
+      200,
+      {
+        tasks: paginate(JUDICIAL_MY_TASKS.tasks, paginationConfig.page_number, paginationConfig.page_size),
+        total_records: JUDICIAL_MY_TASKS.tasks.length,
+      },
+    ];
+  });
+
+    // simulate some error if needed
+  // mock.onGet(url).networkErrorOnce()
+  mock.onPost(judicialAllTasksUrl).reply(config => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
     const paginationConfig = body.pagination_parameters;
@@ -91,6 +110,19 @@ export const init = () => {
   });
 
   mock.onPost(caseworkerMyTaskUrl).reply(config => {
+    // return an array in the form of [status, data, headers]
+    const body = JSON.parse(config.data);
+    const paginationConfig = body.pagination_parameters;
+    return [
+      200,
+      {
+        tasks: paginate(CASEWORKER_MY_TASKS.tasks, paginationConfig.page_number, paginationConfig.page_size),
+        total_records: CASEWORKER_MY_TASKS.tasks.length,
+      },
+    ];
+  });
+
+  mock.onPost(caseworkerAllTasksUrl).reply(config => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
     const paginationConfig = body.pagination_parameters;

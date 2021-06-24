@@ -39,7 +39,6 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      const id = userInfo.id ? userInfo.id : userInfo.uid;
       const isJudge = userInfo.roles.some(role => ListConstants.JUDGE_ROLES.includes(role));
       return {
         search_parameters: [

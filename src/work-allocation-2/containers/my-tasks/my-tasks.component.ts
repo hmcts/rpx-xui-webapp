@@ -19,7 +19,7 @@ export class MyTasksComponent extends TaskListWrapperComponent {
     return SortConstants.Session.MyTasks;
   }
 
-  public get pageSessionKey():  string {
+  public get pageSessionKey(): string {
     return PageConstants.Session.MyTasks;
   }
 

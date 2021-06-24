@@ -268,7 +268,6 @@ export class TaskListWrapperComponent implements OnInit {
         this.ref.detectChanges();
       }, error => {
         this.loadingService.unregister(loadingToken);
-        console.log(error);
         handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
     });
   }

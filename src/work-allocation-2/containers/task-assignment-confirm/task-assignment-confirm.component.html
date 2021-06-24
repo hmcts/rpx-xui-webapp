@@ -12,32 +12,34 @@
 
       <table class="govuk-table">
         <thead class="govuk-table__head">
-          <tr>
-            <th class="govuk-table__header">Case name</th>
-            <th class="govuk-table__header">Case category</th>
-            <th class="govuk-table__header">Location</th>
-            <th class="govuk-table__header">Task</th>
-            <th class="govuk-table__header">Date</th>
-            <th class="govuk-table__header">Person</th>
-            <th class="govuk-table__header"></th>
-          </tr>
+        <tr>
+          <th class="govuk-table__header">Case name</th>
+          <th class="govuk-table__header">Case category</th>
+          <th class="govuk-table__header">Location</th>
+          <th class="govuk-table__header">Task</th>
+          <th class="govuk-table__header">Date</th>
+          <th class="govuk-table__header">Person</th>
+          <th class="govuk-table__header"></th>
+        </tr>
         </thead>
 
         <tbody class="govuk-table__body">
-          <tr class="govuk-table__row">
-            <td class="govuk-table__cell">{{ taskAndCaseworker.case_name }}</td>
-            <td class="govuk-table__cell">{{ taskAndCaseworker.case_category }}</td>
-            <td class="govuk-table__cell">{{ taskAndCaseworker.location_name }}</td>
-            <td class="govuk-table__cell">{{ taskAndCaseworker.task_title }}</td>
-            <td class="govuk-table__cell">
-              <strong class="govuk-tag govuk-tag--red">
-                {{ taskAndCaseworker.dueDate }}
-              </strong>
-            </td>
-            <td class="govuk-table__cell">{{ selectedPerson.name }}</td>
-            <td class="govuk-table__cell"><a class="govuk-link fright" href="javascript:void(0)"
-                id="change__link" aria-label="Change task assigment" (click)="onChange()">Change</a></td>
-          </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">{{ taskAndCaseworker.case_name }}</td>
+          <td class="govuk-table__cell">{{ taskAndCaseworker.case_category }}</td>
+          <td class="govuk-table__cell">{{ taskAndCaseworker.location_name }}</td>
+          <td class="govuk-table__cell">{{ taskAndCaseworker.task_title }}</td>
+          <td class="govuk-table__cell">
+            <strong class="govuk-tag govuk-tag--red">
+              {{ taskAndCaseworker.dueDate }}
+            </strong>
+          </td>
+          <td class="govuk-table__cell">{{ selectedPerson.name }}</td>
+          <td class="govuk-table__cell"><a class="govuk-link fright" href="javascript:void(0)"
+                                           id="change__link" aria-label="Change task assigment"
+                                           (click)="onChange()">Change</a>
+          </td>
+        </tr>
         </tbody>
       </table>
 

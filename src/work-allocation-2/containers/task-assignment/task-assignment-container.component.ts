@@ -76,10 +76,10 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     this.rootPath = this.router.url.split('/')[1];
     this.route.paramMap
       .pipe(map(() => window.history.state)).subscribe(person => {
-        if (person.name) {
-          this.defaultPerson = `${person.name}(${person.email})`;
-          this.person = person;
-        }
+      if (person.name) {
+        this.defaultPerson = `${person.name}(${person.email})`;
+        this.person = person;
+      }
     });
   }
 
@@ -109,6 +109,6 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     if (message) {
       this.messageService.nextMessage(message);
     }
-    this.router.navigateByUrl(this.returnUrl, { state: { ...state, retainMessages: true } });
+    this.router.navigateByUrl(this.returnUrl, {state: {...state, retainMessages: true}});
   }
 }

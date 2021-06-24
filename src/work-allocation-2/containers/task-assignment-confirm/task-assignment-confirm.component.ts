@@ -26,7 +26,8 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     private readonly taskService: WorkAllocationTaskService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly messageService: InfoMessageCommService) { }
+    private readonly messageService: InfoMessageCommService) {
+  }
 
   public ngOnInit(): void {
     this.verb = this.route.snapshot.data.verb as TaskActionType;
@@ -35,8 +36,8 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     this.taskAndCaseworker = this.route.snapshot.data.taskAndCaseworkers.data;
     this.route.paramMap
       .pipe(map(() => window.history.state)).subscribe(person => {
-        this.selectedPerson = person;
-      });
+      this.selectedPerson = person;
+    });
   }
 
   public onChange(): void {
@@ -44,7 +45,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
   }
 
   public onSubmit(): void {
-    this.assignTask = this.taskService.assignTask(this.taskId, { userId: this.selectedPerson.id }).subscribe({
+    this.assignTask = this.taskService.assignTask(this.taskId, {userId: this.selectedPerson.id}).subscribe({
       next: () => this.reportSuccessAndReturn(),
       error: (error: any) => {
         const handledStatus = handleFatalErrors(error.status, this.router);
@@ -64,8 +65,8 @@ export class TaskAssignmentConfirmComponent implements OnInit {
   private reportSuccessAndReturn(): void {
     const message = InfoMessage.REASSIGNED_TASK;
     this.returnWithMessage(
-      { type: InfoMessageType.SUCCESS, message },
-      { badRequest: false }
+      {type: InfoMessageType.SUCCESS, message},
+      {badRequest: false}
     );
   }
 
@@ -73,13 +74,13 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     this.returnWithMessage({
       type: InfoMessageType.WARNING,
       message: InfoMessage.TASK_NO_LONGER_AVAILABLE,
-    }, { badRequest: true });
+    }, {badRequest: true});
   }
 
   private returnWithMessage(message: InformationMessage, state: any): void {
     if (message) {
       this.messageService.nextMessage(message);
     }
-    this.router.navigate([this.rootPath, 'list'], { state: { ...state, retainMessages: true } });
+    this.router.navigate([this.rootPath, 'list'], {state: {...state, retainMessages: true}});
   }
 }

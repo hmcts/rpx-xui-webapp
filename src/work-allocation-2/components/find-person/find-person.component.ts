@@ -19,7 +19,10 @@ export class FindPersonComponent implements OnInit {
   @Input() public selectedPerson: string;
   public domain: PersonDomain;
   public showAutocomplete: boolean = false;
-  constructor(private readonly findPersonService: FindAPersonService) {}
+
+  constructor(private readonly findPersonService: FindAPersonService) {
+  }
+
   public findPersonControl = new FormControl();
   public filteredOptions: Observable<Person[]>;
   private readonly minSearchCharacters = 2;

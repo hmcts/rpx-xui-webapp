@@ -110,11 +110,11 @@ describe('TaskAssignmentContainerComponent', () => {
   });
 
   it('should re-direct to assign task confirmation page', () => {
-    const mockRouter = jasmine.createSpyObj('router', ['navigateByUrl']);
+    const mockRouter = jasmine.createSpyObj('router', ['navigate']);
     const compo = new TaskAssignmentContainerComponent(null, null, mockRouter, null);
 
     compo.assign();
-    expect(mockRouter.navigateByUrl).toHaveBeenCalled();
+    expect(mockRouter.navigate).toHaveBeenCalled();
   });
 
 });

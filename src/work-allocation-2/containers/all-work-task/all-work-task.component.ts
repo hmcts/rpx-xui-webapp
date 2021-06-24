@@ -20,7 +20,7 @@ export class AllWorkTaskComponent {
     page_number: 1,
     page_size: 25
   };
-  public emptyMessage: string = 'No tasks to display';
+  public emptyMessage: string = 'Change your selection to view tasks.';
 
   private readonly defaultTaskServiceConfig: TaskServiceConfig = {
     service: TaskService.IAC,
@@ -28,7 +28,7 @@ export class AllWorkTaskComponent {
     defaultSortFieldName: 'dueDate',
     fields: this.fields,
   };
-  public tasks: Task[];
+  public tasks: Task[] = new Array<Task>();
   public tasksTotal: number = 0;
 
   public get fields(): TaskFieldConfig[] {

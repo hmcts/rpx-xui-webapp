@@ -4,11 +4,12 @@ const { browser } = require('protractor');
 const browserUtil = require('../../../../ngIntegration/util/browserUtil');
 const BrowserWaits = require('../../../support/customWaits');
 const ArrayUtil = require('../../../utils/ArrayUtil');
+const Application = require('../../pageObjects/common/application');
 
 var cucumberReporter = require('../../../support/reportLogger');
 
 
-class TaskListTable{
+class TaskListTable extends Application{
 
     constructor(){
         this.table = $('exui-task-list');

@@ -420,14 +420,10 @@
   resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-3.1.2.tgz#95cd8ea23de580908ceb386de8a2fa4d16ed40ac"
   integrity sha512-RzXwV2doPvnpmsFMN9BYpUxQBnoVoT552NG8ZySKd+L91x//cpIy1V/FMLgzXQ4wSl/5mCV31rS0FXJjHgn+Lg==
   dependencies:
-    "@angular-material-components/datetime-picker" "^2.0.4"
-    "@angular-material-components/moment-adapter" "^5.0.0"
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
-    "@hmcts/ccpay-web-component" "3.0.3"
     braces "^2.3.1"
     enhanced-resolve "3.3.0"
-    file-saver "^2.0.2"
     govuk-elements-sass "^3.1.2"
     json-server "^0.15.1"
     karma-jasmine-html-reporter "^1.2.0"
@@ -435,7 +431,7 @@
     mem "^6.0.0"
     minimist "1.2.3"
     mocha "^5.0.5"
-    moment "^2.29.1"
+    moment "^2.26.0"
     moment-timezone "^0.5.31"
     npm-registry-fetch "^4.0.5"
     rx-polling "1.1.0"
@@ -496,10 +492,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.0.1-module-fixes.5":
-  version "1.0.1-module-fixes.5"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.0.1-module-fixes.5.tgz#1912ddbe98836805e0ba119312a7934baade8055"
-  integrity sha512-zXIPIWvMd2qLrHtAY+lIY/00BowaGzJAntXrU/tKn2FQPBKP2gVGCyDN+MREy/+4fSZ5Sal6MtywjggKRG0yAg==
+"@hmcts/rpx-xui-common-lib@1.0.9-EUI-3999-and-3740-4":
+  version "1.0.9-EUI-3999-and-3740-4"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.0.9-EUI-3999-and-3740-4.tgz#9053d160dd29dd36b865d7534e357c2ffb5dd302"
+  integrity sha512-aNpKvMnyqIrdZqj/k1zqor6CI5i3hL301wFfteOZ7ozvIazx6jkkTneTbLI3VbigpK51QWQ4We0pu8S10apvYg==
   dependencies:
     tslib "^1.9.0"
 
@@ -8666,7 +8662,7 @@ moment@^2.10.6, moment@^2.19.0, moment@^2.19.3, moment@^2.24.0:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
   integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
 
-moment@^2.29.1:
+moment@^2.26.0:
   version "2.29.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.1.tgz#b2be769fa31940be9eeea6469c075e35006fa3d3"
   integrity sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==

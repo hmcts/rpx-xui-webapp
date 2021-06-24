@@ -12,6 +12,7 @@ var cucumberReporter = require('../../../support/reportLogger');
 class TaskListTable extends Application{
 
     constructor(){
+        super();
         this.table = $('exui-task-list');
         this.tableRows = $$('exui-task-list table tbody>tr:not(.actions-row)');
         this.tableHeaderColumns = $$('exui-task-list table thead th');

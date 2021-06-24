@@ -28,6 +28,7 @@
     </td>
   </ng-container>
 </ng-container>
+<!-- Below container sets up initial task list headers when not yet populated as session storage of page number causing issues with above container -->
 <ng-container *ngIf="!tasksTotal">
   <ng-container *ngFor="let field of fields" [cdkColumnDef]="field.name">
     <th class="govuk-table__header" [attr.aria-sort]="getColumnSortedSetting(field.sortName)" cdk-header-cell *cdkHeaderCellDef>

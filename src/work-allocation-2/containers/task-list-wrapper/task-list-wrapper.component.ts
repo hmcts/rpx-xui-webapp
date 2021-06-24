@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 
 import { Caseworker } from 'api/workAllocation/interfaces/task';
 import { Observable } from 'rxjs';
@@ -11,9 +12,6 @@ import { PaginationParameter, SearchTaskRequest, SortParameter } from '../../mod
 import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
 import { CaseworkerDataService, InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { AppConstants } from '../../../app/app.constants';
-import { mergeMap } from 'rxjs/operators';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html',

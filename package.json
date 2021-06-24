@@ -205,15 +205,7 @@
     "webpack-node-externals": "^1.7.2",
     "webpack-source-map-support": "^2.0.1"
   },
-  "resolutions": {
-    "glob-parent": "^6.0.0",
-    "hosted-git-info":"^4.0.2",
-    "lodash": "^4.17.21",
-    "normalize-url": "^6.1.0",
-    "redis": "3.1.2",
-    "underscore": "^1.13.1",
-    "ws": "^7.5.0",
-    "xmlhttprequest-ssl": "^2.0.0",
+  "resolutions": {    
     "**/**/dot-prop": "^5.1.1",
     "**/**/lodash": "^4.17.19",
     "**/**/http-proxy": "^1.18.1",

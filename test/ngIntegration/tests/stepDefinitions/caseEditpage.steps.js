@@ -46,7 +46,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Then('I see case event validation alert error summary messages', async function(datatable){
         const messageHashes = datatable.hashes();
         for(let i = 0; i< messageHashes.length;i++){
-            expect(await caseEditPage.isValidationAlertMessageDisplayed(messageHashes[i].message),'Field error validation message not displayed in error summary').to.be
+            expect(await caseEditPage.getValidationAlertMessageDisplayed(), 'Expected field error validation message not displayed in error summary').to.include(messageHashes[i].message);
         }
     });
 

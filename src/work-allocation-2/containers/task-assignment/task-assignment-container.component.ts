@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-
+import { map } from 'rxjs/operators';
 import { ErrorMessage } from '../../../app/models';
 import { ConfigConstants } from '../../components/constants';
 import { TaskActionType, TaskService, TaskSort } from '../../enums';
@@ -21,7 +21,6 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   public showManage: boolean = false;
   public caseworker: Caseworker;
   public verb: TaskActionType;
-
   public location: Location;
 
   public formGroup: FormGroup;
@@ -29,6 +28,8 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   private assignTask: Subscription;
   public taskId: string;
   public rootPath: string;
+
+  public defaultPerson: string;
 
   constructor(
     private readonly taskService: WorkAllocationTaskService,
@@ -66,7 +67,6 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   };
 
   public ngOnInit(): void {
-    this.initForm();
     // Get the task from the route, which will have been put there by the resolver.
     const task = this.route.snapshot.data.taskAndCaseworkers.data;
     this.tasks = [task];
@@ -74,6 +74,13 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
 
     this.taskId = this.route.snapshot.params['taskId'];
     this.rootPath = this.router.url.split('/')[1];
+    this.route.paramMap
+      .pipe(map(() => window.history.state)).subscribe(person => {
+        if (person.name) {
+          this.defaultPerson = `${person.name}(${person.email})`;
+          this.person = person;
+        }
+    });
   }
 
   public ngOnDestroy(): void {
@@ -82,18 +89,12 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     }
   }
 
-  public initForm(): void {
-    this.formGroup = new FormGroup({
-      caseWorkerName: new FormControl()
-    });
-  }
-
   public selectedPerson(person?: Person) {
     this.person = person;
   }
 
   public assign(): void {
-    this.router.navigateByUrl(`${this.rootPath}/${this.taskId}/reassign/confirm`, {state: this.person});
+    this.router.navigate([this.rootPath, this.taskId, 'reassign', 'confirm'], {state: this.person});
   }
 
   public cancel(): void {

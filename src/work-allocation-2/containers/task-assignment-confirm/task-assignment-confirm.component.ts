@@ -40,7 +40,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
   }
 
   public onChange(): void {
-    this.router.navigate([this.rootPath, this.taskId, 'reassign']);
+    this.router.navigate([this.rootPath, this.taskId, 'reassign'], {state: this.selectedPerson});
   }
 
   public onSubmit(): void {

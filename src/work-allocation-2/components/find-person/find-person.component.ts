@@ -1,11 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { switchMap, startWith } from 'rxjs/operators';
-import { FindAPersonService } from '../../services/find-person.service';
+import { FormControl, FormGroup } from '@angular/forms';
+import { Observable, of } from 'rxjs';
+import { startWith, switchMap } from 'rxjs/operators';
 import { Person, PersonDomain } from '../../models/dtos';
-import { of } from 'rxjs';
-import { FormGroup } from '@angular/forms';
+import { FindAPersonService } from '../../services/find-person.service';
 
 @Component({
   selector: 'exui-find-person',
@@ -14,26 +12,28 @@ import { FormGroup } from '@angular/forms';
 })
 
 export class FindPersonComponent implements OnInit {
-  @Output() personSelected = new EventEmitter<Person>();
+  @Output() public personSelected = new EventEmitter<Person>();
   @Input() public title: string;
   @Input() public domainString: string = 'BOTH';
   @Input() public findPersonGroup: FormGroup = new FormGroup({});
+  @Input() public selectedPerson: string;
   public domain: PersonDomain;
   public showAutocomplete: boolean = false;
   constructor(private readonly findPersonService: FindAPersonService) {}
   public findPersonControl = new FormControl();
-  filteredOptions: Observable<Person[]>;
+  public filteredOptions: Observable<Person[]>;
   private readonly minSearchCharacters = 2;
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.findPersonGroup.addControl('findPersonControl', this.findPersonControl);
     this.domain = PersonDomain[this.domainString];
     this.filteredOptions = this.findPersonControl.valueChanges.pipe(
       startWith(''),
       switchMap(searchTerm => {
-        return this.filter(searchTerm || '')
+        return this.filter(searchTerm || '');
       })
     );
+    this.findPersonControl.setValue(this.selectedPerson);
   }
 
   public filter(searchTerm: string): Observable<Person[]> {

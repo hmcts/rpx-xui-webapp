@@ -9,6 +9,7 @@ import { PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { Observable } from 'rxjs';
 import { TaskListComponent } from '..';
+import { PersonDomain } from '../../../../api/workAllocation2/interfaces/person';
 import { ErrorMessageComponent } from '../../../app/components';
 import { TaskActionConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
@@ -37,7 +38,12 @@ describe('TaskAssignmentContainerComponent', () => {
   let component: TaskAssignmentContainerComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
-
+  const SELECTED_PERSON = {
+    id: 'id123',
+    name: 'John Smith',
+    email: 'john.smith@email.com',
+    domain: PersonDomain.CASEWORKER
+  };
   const mockTasks = getMockTasks();
   const mockCaseworkers = getMockCaseworkers();
   const mockWorkAllocationService = {
@@ -79,6 +85,7 @@ describe('TaskAssignmentContainerComponent', () => {
               }
             },
             params: Observable.of({ task: mockTasks[0] }),
+            paramMap: Observable.of({ selectedPerson: SELECTED_PERSON})
           }
         },
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },

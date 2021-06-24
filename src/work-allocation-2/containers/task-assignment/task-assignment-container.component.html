@@ -6,6 +6,7 @@
     <div class="govuk-grid-column-one-third">
       <exui-find-person title="{{verb}} task"
                         (personSelected)="selectedPerson($event)"
+                        [selectedPerson]="defaultPerson"
                         domainString="BOTH">
       </exui-find-person>
 

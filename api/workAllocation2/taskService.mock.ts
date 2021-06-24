@@ -129,8 +129,8 @@ export const init = () => {
     return [
       200,
       {
-        tasks: paginate(CASEWORKER_MY_TASKS.tasks, paginationConfig.page_number, paginationConfig.page_size),
-        total_records: CASEWORKER_MY_TASKS.tasks.length,
+        tasks: paginate([], 0, 1),
+        total_records: 0,
       },
     ];
   });

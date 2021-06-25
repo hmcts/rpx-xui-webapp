@@ -122,10 +122,7 @@ export const init = () => {
     ];
   });
 
-  mock.onPost(caseworkerAllTasksUrl).reply(config => {
-    // return an array in the form of [status, data, headers]
-    const body = JSON.parse(config.data);
-    const paginationConfig = body.pagination_parameters;
+  mock.onPost(caseworkerAllTasksUrl).reply(() => {
     return [
       200,
       {

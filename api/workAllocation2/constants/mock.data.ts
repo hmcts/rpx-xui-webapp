@@ -50,7 +50,13 @@ export const PERSON = [
     name: 'Connor McElroy',
     email: 'connor.mcelroy@email.com',
     domain: PersonDomain.CASEWORKER
-  }
+  },
+  {
+    id: 'id131',
+    name: 'Andy Kings',
+    email: 'andy.kings@email.com',
+    domain: PersonDomain.JUDICIAL
+  },
 ]
 
 export const JUDICIAL_MY_TASKS = {

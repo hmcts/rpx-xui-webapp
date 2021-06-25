@@ -415,10 +415,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@3.1.5-disabled-continue-button-with-complex-types-v2":
-  version "3.1.5-disabled-continue-button-with-complex-types-v2"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-3.1.5-disabled-continue-button-with-complex-types-v2.tgz#c82dd4a3572e43e6a7f9dfdc3237fd415664312d"
-  integrity sha512-l8f6N+aHFBqxVbFu+OV8wHzCwn8vJegVAgTT5pDeSOK0n25DdswENztY6aAI8UCxRAiVjQa4yfaiIoaydTrFAg==
+"@hmcts/ccd-case-ui-toolkit@3.1.5-disabled-continue-button-with-complex-types-v4":
+  version "3.1.5-disabled-continue-button-with-complex-types-v4"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-3.1.5-disabled-continue-button-with-complex-types-v4.tgz#f114be9992f1795bb5551babfac7ac9693c09a1f"
+  integrity sha512-4TMKvLZOg8AWuk9JJOWfIuC5iS7/UosxCVAc+axExiuYRfTKsXeo+Sd+NQRy+NBm5Cj8TAnW9ty2YyDq2DSEqw==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

@@ -20,8 +20,7 @@ Feature: Case edit pages
             | caseworker-ia-admofficer  |
         Given I navigate page route "cases/case-create/Test_Jurisdiction/Test_case/testEvent/testPage"
         Then I see case edit page displayed
-        When I click cancel in case edit page
-        Then I see case list page displayed
+        When I click cancel in case edit page, I see case list page displayed
 
     Scenario Outline:  Validate config pages and fields
         Given I set MOCK event "caseConfig" props
@@ -86,7 +85,7 @@ Feature: Case edit pages
             | fieldId              | isDisplayed |
             | MultiSelectListField | true        |
 
-    Scenario Outline:  Validate validation error message display on validate request error
+    Scenario Outline:  Validate validation error message display on validate request error with status <ErrorStatusCode>
         Given I set MOCK event "caseConfig" props
             | show_summary | YES |
         Given I set MOCK event config "caseConfig" field "TextField0" properties
@@ -102,6 +101,6 @@ Feature: Case edit pages
         Then I validate event page continue on validate request error status code <ErrorStatusCode>
 
   Examples:
-      | ErrorStatusCode | 
+      | ErrorStatusCode |
       | 400 |
       | 500 | 

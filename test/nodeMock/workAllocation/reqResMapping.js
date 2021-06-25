@@ -65,6 +65,18 @@ module.exports = {
             }
             res.send({ tasks: tasks});
         },
+        '/workallocation/taskWithPagination/': (req, res) => {
+            const pageSize = req.body.searchRequest.pagination_parameters.page_size;
+            if (req.body.view === "MyTasks") {
+                res.send(workAllocationMockData.getMyTasks(pageSize));
+            } else if (req.body.view === "AvailableTasks") {
+                res.send(workAllocationMockData.getAvailableTasks(pageSize));
+            } else if (req.body.view === "TaskManager") {
+                res.send(workAllocationMockData.getTaskManagerTasks(pageSize));
+            } else {
+                throw new Error("Unrecognised task list view : " + req.body.view);
+            }
+        },
         '/workallocation2/taskWithPagination/': (req, res) => {
             const pageSize = req.body.searchRequest.pagination_parameters.page_size;
             if (req.body.view === "MyTasks") {

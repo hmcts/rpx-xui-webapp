@@ -37,8 +37,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             next();
         })
 
-        //await MockApp.stopServer();
-        //await MockApp.startServer();
+        await MockApp.stopServer();
+        await MockApp.startServer();
 
         const workbasketInputValues = {}
         for (const dynamicfield of workbasketConfig.workbasketInputs) {

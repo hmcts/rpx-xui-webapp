@@ -4,7 +4,7 @@ const AppActions = require('../helpers/applicationActions');
 const PallyActions = require('../helpers/pallyActions');
 
 const assert = require('assert');
-const { pa11ytest, getResults } = require('../helpers/pa11yUtil');
+const { pa11ytest, getResults, initBrowser } = require('../helpers/pa11yUtil');
 const { conf } = require('../config/config');;
 
 const divorceCaseActions = require('../caseCreationActions/divorce');
@@ -14,11 +14,11 @@ const ccdApi = require('../../nodeMock/ccd/ccdApi');
 
 describe('Work Allocation: ', function () {
 
-    beforeEach(async function (done) {
+    before(async function (done) {
         MockApp.init()
         done();
     });
-    afterEach(async function (done) {
+    after(async function (done) {
         await MockApp.stopServer();
         done();
     });

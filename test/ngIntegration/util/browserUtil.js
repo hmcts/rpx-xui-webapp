@@ -6,7 +6,6 @@ const config = require('../config/protractor-cucumber.conf');
 
 
 const axios = require('axios');
-
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 axios.defaults.headers.common['Content-Type'] = 'application/json';
@@ -132,6 +131,23 @@ class BrowserUtil{
     async getScenarioIdCookieValue(){
         const scenarioId = await browser.manage().getCookie('scenarioId')
         return scenarioId ? scenarioId.value : null;
+    }
+
+    async addTextToElementWithCssSelector(cssSelector, text,append){
+        await browser.executeScript(() => {
+            let div = document.querySelector(arguments[0]);
+            if (arguments[2]){
+                div.innerHTML += arguments[1];
+            }else{
+                div.innerHTML = arguments[1];
+            }
+            
+        }, cssSelector, text, append);
+    }
+
+    async scrollToElement(element){
+        await browser.executeScript('arguments[0].scrollIntoView()',
+            element);
     }
 
 }

@@ -9,6 +9,9 @@ chai.use(chaiAsPromised);
 
 const argv = minimist(process.argv.slice(2));
 
+
+const isParallelExecution = false;
+
 const jenkinsConfig = [
 
     {
@@ -33,6 +36,12 @@ const localConfig = [
         }
     }
 ];
+
+
+if (isParallelExecution) {
+    jenkinsConfig[0].shardTestFiles = true;
+    jenkinsConfig[0].maxInstances = 3;
+}
 
 const cap = (argv.local) ? localConfig : jenkinsConfig;
 

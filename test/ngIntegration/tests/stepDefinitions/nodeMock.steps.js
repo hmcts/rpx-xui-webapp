@@ -23,20 +23,20 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Given('I init MockApp', async function () {
-        //MockApp.init();
+        MockApp.init();
     });
 
     Given('I start MockApp', async function () {
-       //await MockApp.startServer();
+       await MockApp.startServer();
     });
 
     Given('I stop MockApp', async function () {
-       // await MockApp.stopServer();
+       await MockApp.stopServer();
     });
 
     Given('I restart MockApp', async function () {
-        //await MockApp.stopServer();
-        //await MockApp.startServer();
+        await MockApp.stopServer();
+        await MockApp.startServer();
     });
 
     When('I set MOCK with user roles', async function(rolesTable){
@@ -68,7 +68,38 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
      When('I wait for reference {string} value not null', async function(reference){
          await BrowserWaits.waitForConditionAsync(async () => {
              return global.scenarioData[reference] !== null
-         },5000);
+         });
+     });
+
+     Given('I set MOCK api method {string} endpoint {string} with error response code {int}', async function(apiMethod, apiEndpoint, responseCode){
+        
+         switch (apiMethod.toLowerCase()){
+            case 'get':
+                 MockApp.onGet(apiEndpoint, (req, res) => {
+                     res.status(responseCode).send({ error: "Test error from mock" });
+                 });
+                 break;
+             case 'post':
+                 MockApp.onPost(apiEndpoint, (req, res) => {
+                     res.status(responseCode).send({ error: "Test error from mock" });
+                 });
+                 break;
+             case 'put':
+                 MockApp.onPut(apiEndpoint, (req, res) => {
+                     res.status(responseCode).send({ error: "Test error from mock" });
+                 });
+                 break;
+             case 'delete':
+                 MockApp.onDelete(apiEndpoint, (req, res) => {
+                     res.status(responseCode).send({ error: "Test error from mock" });
+                 });
+                 break;
+
+                 default:
+                 throw new Error("api method provided not recognised " + apiMethod);
+       }
+        
+        
      });
 
 

@@ -3,18 +3,18 @@ const MockApp = require('../../nodeMock/app');
 class MockUtil{
 
     async setMockResponse(method, endpoint, callback) {
-        //await MockApp.stopServer();
+        await MockApp.stopServer();
         if (method === 'GET') {
-            MockApp.onGet(endpoint, callback);
+            await MockApp.onGet(endpoint, callback);
         }
 
         if (method === 'POST') {
-            MockApp.onPost(endpoint, callback);
+            await MockApp.onPost(endpoint, callback);
         }
         if (method === 'PUT') {
-            MockApp.onPut(endpoint, callback);
+            await MockApp.onPut(endpoint, callback);
         }
-        //await MockApp.startServer();
+        await MockApp.startServer();
 
     }
 
@@ -23,6 +23,8 @@ class MockUtil{
     }
 
     async resetMock() {
+        //const scenarioId = await MockApp.browserScenarioCookieCallback();
+        //MockApp.initScenarioSession(scenarioId);
         await MockApp.stopServer();
         MockApp.init();
         await MockApp.startServer();

@@ -43,6 +43,7 @@ class TaskAssignmentPage extends TaskList {
     }
 
     async getPageHeader(){
+        await BrowserWaits.waitForElement(this.pageHeaderTitle);
         return await this.pageHeaderTitle.getText(); 
     }
 
@@ -163,26 +164,20 @@ class TaskAssignmentPage extends TaskList {
         let verb = this.getSubmitBtnText(action);
 
         const submitBtn = element(by.xpath(`//exui-task-container-assignment//button[contains(text(),"${verb}")]`));
+        await BrowserWaits.waitForElement(this.caseWorkerSelect);
         if (softAssert){
             
-            await softAssert.assert(async () => expect(await this.pageHeaderTitle.getText()).to.include(`${verb} a task`) );
-
-            await softAssert.assert(async () => expect(await this.actionDescription.getText()).to.include(`${verb} a task to a colleague`));
             await softAssert.assert(async () => expect(await this.chooseColleageHeader.isDisplayed(), "h2 header with text choose a colleague is not displayed").to.be.true);
-
-
             await softAssert.assert(async () => expect(await this.caseWorkerSelect.isDisplayed(), "Caseworker select is not displayed").to.be.true);
             await softAssert.assert(async () => expect(await this.locationSelect.isDisplayed(), "Location select is not displayed").to.be.true);
 
             await softAssert.assert(async () => expect(await this.caseWorkerSelect.isDisplayed(), "Caseworker select is not displayed").to.be.true);
 
 
-            await softAssert.assert(async () => expect(submitBtn.isDisplayed(), `Submit button with text ${verb} not displayed`).to.be.true);
-            await softAssert.assert(async () => expect(this.cancelBtn.isDisplayed(), `Cancel button with not displayed`).to.be.true);
+            await softAssert.assert(async () => expect(await submitBtn.isDisplayed(), `Submit button with text ${verb} not displayed`).to.be.true);
+            await softAssert.assert(async () => expect(await this.cancelBtn.isDisplayed(), `Cancel button with not displayed`).to.be.true);
         }else{
-            expect(await this.pageHeaderTitle.getText()).to.include(`${verb} a task`);
-            expect(await this.actionDescription.getText()).to.include(`${verb} a task to a colleague`);
-            expect(await this.chooseColleageHeader.isDisplayed(), "h2 header with text choose a colleague is not displayed").to.be.true;
+           expect(await this.chooseColleageHeader.isDisplayed(), "h2 header with text choose a colleague is not displayed").to.be.true;
 
 
             expect(await this.caseWorkerSelect.isDisplayed(), "Caseworker select is not displayed").to.be.true;
@@ -191,8 +186,8 @@ class TaskAssignmentPage extends TaskList {
             expect(await this.caseWorkerSelect.isDisplayed(), "Caseworker select is not displayed").to.be.true;
 
             
-            expect(submitBtn.isDisplayed(), `Submit button with text ${verb} not displayed`).to.be.true;
-            expect(this.cancelBtn.isDisplayed(), `Cancel button with not displayed`).to.be.true;
+            expect(await submitBtn.isDisplayed(), `Submit button with text ${verb} not displayed`).to.be.true;
+            expect(await this.cancelBtn.isDisplayed(), `Cancel button with not displayed`).to.be.true;
         }
         
     }

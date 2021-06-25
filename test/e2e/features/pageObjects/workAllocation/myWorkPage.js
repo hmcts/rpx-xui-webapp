@@ -8,7 +8,7 @@ class MyWorkPage extends TaskList {
 
     constructor() {
         super();
-
+        this.pageHeader = $('exui-work-allocation-home exui-task-home h3.govuk-heading-xl');
         this.showHideWorkFilterBtn = element(by.xpath("//button[contains(text(),'work filter')]"));
         this.showHideFilterBadge = element(by.xpath("//button[contains(text(),'work filter')]/following-sibling::span[contains(text(),'Filtered view')]"));
         this.showHideFilterHint = element(by.xpath("//button[contains(text(),'work filter')]/following-sibling::span[contains(text(),'All of your work may not be visible.')]"));
@@ -35,19 +35,20 @@ class MyWorkPage extends TaskList {
     }
 
     getSubNavigationTabElement(tabLabel){
-        return element(by.xpath(`//exui-task-home//a[contains(text(),${tabLabel})]`));
+        return element(by.xpath(`//exui-task-home//a[contains(text(),'${tabLabel}')]`));
     }
 
-    async isSubNavigationTabPresent(){
-        return await getSubNavigationTabElement(tabLabel).isPresent();
+    async isSubNavigationTabPresent(tabLabel){
+        return await this.getSubNavigationTabElement(tabLabel).isPresent();
     }
 
     async clickSubNavigationTab(tabLabel){
-        await getSubNavigationTabElement(tabLabel).click();
+        await BrowserWaits.waitForElement(this.subNavListContainer);
+        await this.getSubNavigationTabElement(tabLabel).click();
     }
 
     async isSubNavigationTabSelected(tabLabel){
-        return getSubNavigationTabElement(tabLabel).getAttribute('aria-current') !== null;
+        return this.getSubNavigationTabElement(tabLabel).getAttribute('aria-current') !== null;
     }
 
     async getWorkFilterLocationsCount(){
@@ -80,14 +81,17 @@ class MyWorkPage extends TaskList {
     }
 
     async amOnPage() {
-        try {
-            await BrowserWaits.waitForElement(this.myTasksTab);
+        try{
+            await BrowserWaits.waitForConditionAsync(async () => {
+                const pageHeaderTitle = await this.pageHeader.getText();
+                return pageHeaderTitle.includes('My work');
+            });
             return true;
-        }
-        catch (err) {
-            cucumberReporter.AddMessage("Task list page not displayed: " + err);
+        }catch(err){
+            cucumberReporter.AddMessage("My work page not displayed "+err.stack);
             return false;
         }
+        
     }
 
     async clickMyTasks() {

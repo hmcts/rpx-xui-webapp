@@ -24,104 +24,100 @@ const port = 3001;
 
 
 class MockApp{
-    init(port){
+    init(){
+        this.requestLogs = [];
         this.clientPortCounter = 3002;
-        this.serverPort = port;
         this.scenarios = {};
+
+        this.browserScenarioCookieCallback = null;
         
         this.scenarioRequestCallbacks = { proxyReqCount : 0};
         
         this.intercepts =[];
         this.conf = {
-            get: { ...this.getRequestMappings(requestMapping.get,'get') },
-            post: { ...this.getRequestMappings(requestMapping.post, 'post') },
-            put: { ...this.getRequestMappings(requestMapping.put, 'put') },
-            delete: { ...this.getRequestMappings(requestMapping.delete, 'delete')}
+            get: { ...requestMapping.get },
+            post: { ...requestMapping.post },
+            put: { ...requestMapping.put },
+            delete: { ...requestMapping.delete}
         };
         // this.configurations = Object.assign({}, configurations)
-        
+       
+        this.logMessageCallback = null;
         console.log("Mock Config Initialized");
         return "done";
     }
 
-    getRequestMappings(requestMap,method){
-        const mappingWithMiddleware = {};
-
-        const endPoints =  Object.keys(requestMap);
-        for (let i = 0; i < endPoints.length;i++){
-            const endPoint = endPoints[i];
-            mappingWithMiddleware[endPoint] = (req,res) => {
-                const scenarioId = this.getScenarioIdFromRequest(req);
-                const proxyReq = this.getReqProxy(scenarioId,method,endPoint);
-                if (proxyReq){
-                    this.proxyRequest(req, res, proxyReq.onPort);
-                }else{
-                    this.runCallback(requestMap,scenarioId,method,endPoint,req,res);
-                }
-                
-
-            }
-        }
-        return mappingWithMiddleware;
+    setServerPort(port){
+        this.serverPort = port;
     }
 
-    runCallback(requestMap,scenarioId, method,path,req,res){
-        
-        const scenarioCallback = this.getScenarioCallBack(scenarioId, method, path);
-        this.runScenarioIntercepts(scenarioId, path, req, res, () => { });
-        if (scenarioCallback) {
-            scenarioCallback(req, res);
+    setLogMessageCallback(callback){
+        this.logMessageCallback = callback;
+    }
+
+    logMessage(message){
+        const msg = this.serverPort+" ******* Mock app : " + message;
+        this.requestLogs.push(msg);
+        if (this.logMessageCallback){
+            this.logMessageCallback(msg);
+        }else{
+            console.log(msg);
+        }
+    }
+
+    onRequest(endPoint, method,req,res,callback){
+        const scenarioId = this.getCookieFromRequest(req,"scenarioId");
+        const scenarioMockPort = this.getCookieFromRequest(req,'scenarioMockPort');
+        if (scenarioMockPort && this.serverPort !== parseInt(scenarioMockPort)) {
+
+            this.proxyRequest(req, res, parseInt(scenarioMockPort));
         } else {
-            requestMap[path](req, res);
+            // this.logMessage(`on mock ${this.serverPort} : req ${req.method} ${req.originalUrl}`);
+            callback(req,res);
         }
     }
 
     async proxyRequest(req,res,port){
         const headers = req.headers;
         const urlPath = req.originalUrl;
-        let response = null;
+       
+        let reqCallback = null;
+        //this.logMessage(`${this.serverPort} proxying request to ${port} ${req.method.toUpperCase()}  ${urlPath} `);
         switch (req.method.toLowerCase()){
             case 'get':
-                response = await http.get(`http://localhost:${port}${urlPath}`, {headers});
-                res.status(response.status).send(response.data)
+                reqCallback = () => http.get(`http://localhost:${port}${urlPath}`, {headers}); 
                 break;
             case 'post':
-                response = await http.post(`http://localhost:${port}${urlPath}`,req.body ,{ headers });
-                res.status(response.status).send(response.data)
+                reqCallback = () =>  http.post(`http://localhost:${port}${urlPath}`,req.body ,{ headers }); 
                 break;
             case 'put':
-                response = await http.put(`http://localhost:${port}${urlPath}`, req.body,{ headers });
-                res.status(response.status).send(response.data)
+                reqCallback = () =>  http.put(`http://localhost:${port}${urlPath}`, req.body,{ headers }); 
                 break;
             case 'delete':
-                response = await http.delete(`http://localhost:${port}${urlPath}`, { headers });
-                res.status(response.status).send(response.data)
+                reqCallback = () =>  http.delete(`http://localhost:${port}${urlPath}`, { headers }); 
                 break;
             default:
                 res.status(500).send({error: 'mock proxy error'});
 
         }
 
-        
+        try{
+            let response = await reqCallback();
+            res.status(response.status).send(response.data)
+        }
+        catch(err){
+            res.status(err.response.status).send(err.response.data);
+        }
+         
+    }
+
+    getCookieFromRequest(req, cookieName){
+        const cookie = req.cookies[cookieName];
+        this.scenarios[cookie] = this.scenarios[cookie] ? this.scenarios[cookie] : "";
+        return cookie;
     }
 
 
-    getScenarioIdFromRequest(req){
-
-        var cookies = req.cookies;
-        const scenarioIdCookie = req.cookies['scenarioId']; 
-        this.scenarios[scenarioIdCookie] = this.scenarios[scenarioIdCookie] ? this.scenarios[scenarioIdCookie]  + 1: 1
-        return scenarioIdCookie;
-    }
-
-    initScenarioSession(scenarioId){
-        this.scenarioRequestCallbacks[scenarioId] = { 
-            callbacks : { get:{},post:{},put:{},delete:{}},
-            intercepts : {},
-            proxy: { get: {}, post: {}, put: {}, delete: {}, any:{}}
-        };
-       
-    }
     deleteScenarioSession(scenarioId){
         if (scenarioId){
             delete this.scenarioRequestCallbacks[scenarioId];
@@ -134,62 +130,16 @@ class MockApp{
         if (sessionRequestMapping && sessionRequestMapping[method] && sessionRequestMapping[method][path] ){
             return sessionRequestMapping[method][path];
         }else{
+
+            if (this.serverPort !== 3001) {
+                this.logMessage(Object.keys(this.scenarioRequestCallbacks));
+                if (this.scenarioRequestCallbacks[scenarioId]){
+                    this.logMessage(Object.keys(this.scenarioRequestCallbacks[scenarioId]['callbacks'][method]));
+                }
+            }
             return null;
         }
     }
-
-    async setScenarioCallBack(scenarioId, method, path,callback) {
-        if (!scenarioId) {
-            scenarioId = await browserUtil.getScenarioIdCookieValue();
-        }
-
-        if (this.scenarioRequestCallbacks[scenarioId] === undefined){
-            this.initScenarioSession(scenarioId);
-        }
-        //const sessionRequestMapping = this.scenarioRequestCallbacks[scenarioId];
-        this.scenarioRequestCallbacks[scenarioId]['callbacks'][method][path]= callback;
-    }
-
-    async setScenarioIntercept(url,callback){
-        const scenarioId = await browserUtil.getScenarioIdCookieValue();
-        const scenarioIntercepts = this.scenarioRequestCallbacks[scenarioId]['intercepts'];
-        if (!scenarioIntercepts[url]){   
-            scenarioIntercepts[url] = [];
-        }
-        scenarioIntercepts[url].push(callback);
-    }
-
-    runScenarioIntercepts(scenarioId, path,req,res,next){
-        if (scenarioId 
-            && this.scenarioRequestCallbacks[scenarioId] 
-            && this.scenarioRequestCallbacks[scenarioId]['intercepts']
-            && this.scenarioRequestCallbacks[scenarioId]['intercepts'][path]){
-            const interceptsArr = this.scenarioRequestCallbacks[scenarioId]['intercepts'][path];
-            if (interceptsArr) {
-                interceptsArr.forEach((intercept) => intercept(req, res, next));
-            }
-        }
-        
-    } 
-
-    async setReqProxy(scenarioId,method,path, onPort){
-        
-        if (this.scenarioRequestCallbacks[scenarioId] === undefined  ){
-            this.initScenarioSession(scenarioId);
-            
-        }
-        this.scenarioRequestCallbacks[scenarioId]['proxy'][method][path] = { onPort: onPort  };    
-    }
-
-    getReqProxy(scenarioId, method, path){
-        if (this.scenarioRequestCallbacks[scenarioId] && this.scenarioRequestCallbacks[scenarioId]['proxy'][method][path] ){
-            return this.scenarioRequestCallbacks[scenarioId]['proxy'][method][path];
-        } else if (this.scenarioRequestCallbacks[scenarioId] && this.scenarioRequestCallbacks[scenarioId]['proxy']['any'][path]){
-            return this.scenarioRequestCallbacks[scenarioId]['proxy']['any'][path];
-        }
-        return null;
-    }
-
     
     getNextAvailableClientPort(){
         return http.get('http://localhost:3001/proxy/port',{});
@@ -197,14 +147,15 @@ class MockApp{
 
     async startServer(){
         const app = express();
+        app.disable('etag');
         app.use(bodyParser.urlencoded({ extended: false }));
         app.use(bodyParser.json());
         app.use(cookieParser());
         app.use(express.json()); 
 
-        app.get('/scenarios',(req,res) =>{
+        app.get('/requestLogs',(req,res) =>{
             res.set('content-type', 'application/json');
-            res.send(this.scenarioRequestCallbacks);
+            res.send(this.requestLogs);
         } );
 
         app.get('/proxy/port', (req,res) => {
@@ -212,33 +163,32 @@ class MockApp{
             res.send({ port: this.clientPortCounter});
         });
 
-        app.post('/proxy/request', async (req, res) => {
-            this.scenarioRequestCallbacks.proxyReqCount = req.body;
-            await this.setReqProxy(req.body.scenarioId,req.body.method, req.body.path,req.body.onPort);
-            res.send({ status: true });
-        });
-
         this.intercepts.forEach(intercept =>{
             app.use(intercept.url, intercept.callback);
         }); 
 
         for (const [key, value] of Object.entries(this.conf.get)) {
-            app.get(key, value);
+            
+            app.get(key, (req, res) => this.onRequest(key, 'get', req, res,value));
         }
 
         for (const [key, value] of Object.entries(this.conf.post)) {
-            app.post(key, value);
+            app.post(key, (req, res) => this.onRequest(key, 'post', req, res, value));
         }
 
         for (const [key, value] of Object.entries(this.conf.put)) {
-            app.put(key, value);
+            app.put(key, (req, res) => this.onRequest(key, 'put', req, res, value));
         }
 
         for (const [key, value] of Object.entries(this.conf.delete)) {
-            app.delete(key, value);
+            app.delete(key, (req, res) => this.onRequest(key, 'delete', req, res, value));
         }
 
-        this.server = await app.listen(this.serverPort)
+        await this.stopServer();
+        this.server = await app.listen(this.serverPort);
+
+      
+        
         console.log("mock api started");
         // return "Mock started successfully"
 
@@ -255,61 +205,25 @@ class MockApp{
         }
     }
 
-    async addIntercept(url, callback, scenarioId) {
-        let interceptMethod = 'any';
-        if(this.conf.get[url] !== undefined){
-            interceptMethod = 'get';
-        } else if (this.conf.post[url] !== undefined) {
-            interceptMethod = 'post';
-        } else if (this.conf.put[url] !== undefined) {
-            interceptMethod = 'put';
-        } if (this.conf.delete[url] !== undefined) {
-            interceptMethod = 'delete';
-        }
-
-        await this.sendProxyRequest(interceptMethod, path, scenarioId);
-        this.setScenarioIntercept(url, callback)
-        //this.intercepts.push({url: url, callback: callback})
+    addIntercept(url, callback) {
+        this.intercepts.push({ url: url, callback: callback })
     }
 
-   
-    async onGet(path, callback,scenarioId){
-        await this.sendProxyRequest('get', path, scenarioId);
-        await this.setScenarioCallBack(scenarioId,'get',path,callback);
-        //this.conf.get[path] = callback; 
+    async onGet(path, callback){ 
+        this.conf.get[path] = callback; 
     }
 
 
-    async onPost(path, callback, scenarioId){
-        await this.sendProxyRequest('post', path, scenarioId);
-        await this.setScenarioCallBack(scenarioId, 'post', path, callback);
-        //this.conf.post[path] = callback; 
+    async onPost(path, callback){
+        this.conf.post[path] = callback; 
     }
 
-    async onPut(path, callback, scenarioId){
-        await this.sendProxyRequest('put', path, scenarioId);
-        await this.setScenarioCallBack(scenarioId, 'put', path, callback);
-        //this.conf.put[path] = callback; 
+    async onPut(path, callback){
+        this.conf.put[path] = callback; 
     }
 
-    async onDelete(path, callback, scenarioId){
-        await this.sendProxyRequest('delete',path,scenarioId);
-        await this.setScenarioCallBack(scenarioId, 'delete', path, callback);
-        //this.conf.delete[path] = callback; 
-    }
-
-    async sendProxyRequest(method,path,scenarioId){
-        if(this.serverPort === 3001){
-            return;
-        }
-        scenarioId = scenarioId ? scenarioId : await browserUtil.getScenarioIdCookieValue();
-        const response  = await http.post('http://localhost:3001/proxy/request', {
-            scenarioId: scenarioId,
-            method: method,
-            path: path,
-            onPort: this.serverPort
-        }, {});;
-        console.log(response);
+    async onDelete(path, callback){ 
+        this.conf.delete[path] = callback; 
     }
 
     async setConfig(configKey,value){
@@ -327,6 +241,7 @@ module.exports = mockInstance;
 
 const args = minimist(process.argv)
 if (args.standalone){
+    mockInstance.setServerPort(3001);
     mockInstance.init();
 
     setUpcaseConfig();

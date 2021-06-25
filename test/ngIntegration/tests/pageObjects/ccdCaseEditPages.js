@@ -40,7 +40,7 @@ class CaseEdit {
             await BrowserWaits.waitForElement(this.errorSummaryContainer);
             return true;
         } catch (error) {
-            reportLogger.AddMessage("Error waiting for case edit page :" + error);
+            reportLogger.AddMessage("Error waiting for error summary banner :" + error);
             return false;
         }
     }

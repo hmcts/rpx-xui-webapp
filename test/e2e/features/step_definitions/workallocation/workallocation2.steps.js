@@ -1,12 +1,33 @@
 
 var { defineSupportCode } = require('cucumber');
 
-const myWorkPage = require('../..//pageObjects/workAllocation/myWorkPage');
+const headerPage = require('../../pageObjects/headerPage');
+const myWorkPage = require('../../pageObjects/workAllocation/myWorkPage');
 const BrowserWaits = require('../../../support/customWaits');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
-  
+
+    When('I navigate to My work sub navigation tab {string}', async function (secondaryNavTab) {
+        await headerPage.clickPrimaryNavigationWithLabel('My work');
+        await myWorkPage.clickSubNavigationTab(secondaryNavTab);
+       
+    });
+
+    Then('I validate My work sub navigations displayed', async function(datatable){
+        const tabshashes = datatable.hashes();
+        for(let i = 0; i < tabshashes.length;i++){
+            expect(await myWorkPage.isSubNavigationTabPresent(tabshashes[i]['Tab'])).to.be.true
+        }
+    });
+
+    When('I click My work sub navigation tab {string}', async function(subNavTab){
+        await myWorkPage.clickSubNavigationTab(subNavTab);
+    });
+
+    Then('I validate I am on My work page', async function(){
+        expect(await myWorkPage.amOnPage()).to.be.true
+    });
 
     Then('I see work filter button displayed', async function () {
         expect(await myWorkPage.showHideWorkFilterBtn.isDisplayed()).to.be.true
@@ -87,26 +108,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await myWorkPage.clickSubNavigationTab(subNavTabLabel);
     });
 
-    Then('I validate task list page results text displayed as {string}', async function(pagnationResultText){
-        expect(await myWorkPage.getPaginationResultText()).to.include(pagnationResultText);
-    });
-
-    When('I click task list pagination link {string}', async function(paginationLinktext){
-        if (paginationLinktext.toLowerCase() === "next"){
-            await myWorkPage.pageNextLink.click();
-        } else if (paginationLinktext.lowerCase() === "previous") {
-            await myWorkPage.pagePreviousLink.click();
-        }else{
-            await myWorkPage.clickPaginationPageNum(paginationLinktext);
-        }
-    });
-
-    Then('I validate task search request with reference {string} has pagination parameters', async function(requestReference,datatable){
-        const reqBody = global.scenarioData[requestReference];
-        const datatableHash = datatable.hashes()[0];
-        expect(reqBody.searchRequest.pagination_parameters.page_number).to.equal(parseInt(datatableHash.PageNumber));
-        expect(reqBody.searchRequest.pagination_parameters.page_size).to.equal(parseInt(datatableHash.PageSize));
-    });
 
 
 });

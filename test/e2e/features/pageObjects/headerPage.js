@@ -7,9 +7,16 @@ var BrowserWaits = require('../../support/customWaits');
 var BrowserUtil = require('.././../../ngIntegration/util/browserUtil');
 var CaseListPage = require('./CaseListPage');
 var CreateCaseStartPage = require('./createCaseStartPage');
+const SearchCasePage = require('../pageObjects/searchPage');
+const taskListPage = require('../pageObjects/workAllocation/taskListPage');
+const taskManagerPage = require('../pageObjects/workAllocation/taskManagerPage');
+const myWorkPage = require('../pageObjects/workAllocation/myWorkPage');
+
+
 
 const createCaseStartPage = new CreateCaseStartPage();
 const caseListPage = new CaseListPage();
+const searchCasePage = new SearchCasePage();
 
 function HeaderPage() {
 
@@ -26,7 +33,14 @@ function HeaderPage() {
     }
 
     this.clickPrimaryNavigationWithLabel = async function(label){
-      await element(by.xpath(`//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'${label}')]`)).click()
+      const ele = element(by.xpath(`//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'${label}')]`));
+      await BrowserWaits.retryWithActionCallback(async () => {
+        await BrowserWaits.waitForElement(ele);
+        await BrowserWaits.waitForElementClickable(ele);
+        await ele.click();
+        await browserUtil.waitForLD();
+      });
+      
     }
 
     this.clickAppLogoLink = async function(){
@@ -64,6 +78,7 @@ function HeaderPage() {
 
   this.clickCaseList = async function () {
     await BrowserWaits.waitForElement(this.caseList());  
+    await BrowserWaits.waitForElementClickable(this.caseList());
     await this.caseList().click();
     await browserUtil.waitForLD();
     expect(await caseListPage.amOnPage()).to.be.true 
@@ -72,6 +87,7 @@ function HeaderPage() {
   this.clickCreateCase = async function () {
     await BrowserWaits.retryWithActionCallback(async () => {
       await BrowserWaits.waitForElement(this.createCase()); 
+      await BrowserWaits.waitForElementClickable(this.createCase());
       await this.createCase().click();
       await browserUtil.waitForLD();
       expect(await createCaseStartPage.amOnPage()).to.be.true
@@ -81,6 +97,7 @@ function HeaderPage() {
   this.clickTaskList = async function () {
     await BrowserWaits.retryWithActionCallback(async () => {
       await BrowserWaits.waitForElement(this.taskList());
+      await BrowserWaits.waitForElementClickable(this.taskList());
       await this.taskList().click();
       await browserUtil.waitForLD();
     });
@@ -90,6 +107,7 @@ function HeaderPage() {
   this.clickTaskManager = async function () {
     await BrowserWaits.retryWithActionCallback(async () => {
       await BrowserWaits.waitForElement(this.taskManager());
+      await BrowserWaits.waitForElementClickable(this.taskManager());
       await this.taskManager().click();
       await browserUtil.waitForLD();
     });
@@ -174,6 +192,38 @@ function HeaderPage() {
       return tabsText;
     });
     
+  }
+
+  this.isPrimaryTabPageDisplayed = async function(primaryTab){
+    let retValue = null;
+    switch (primaryTab){
+      case 'Case list':
+        retValue = await caseListPage.amOnPage();
+        break;
+      case 'Create case':
+        retValue = await createCaseStartPage.amOnPage();
+        break;
+      case 'Find case':
+        retValue = await searchCasePage.amOnPage();
+        break;
+      case 'Task list':
+        retValue = await taskListPage.amOnPage();
+        break;
+      case 'Task manager':
+        retValue = await taskManagerPage.amOnPage();
+        break;
+      case 'My work':
+        retValue = await myWorkPage.amOnPage();
+        break;
+      case 'All work':
+        throw new Error('All work Test pageObject not implemented/applied to tests');
+        break;
+      default:
+        throw new Error(`Tab "${primaryTab}" is not recognised or not implemeted in test to handle.`);
+
+    }
+    return retValue;
+
   }
 
 }

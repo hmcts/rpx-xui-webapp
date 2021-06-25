@@ -75,17 +75,19 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
 
-    Then('I validate {string} tasks columns sorting with taskRequest url {string}', async function (waPage,taskRequesturl, datatable) {
+    Then('I validate {string} tasks columns sorting with taskRequest url {string} on page {int}', async function (waPage,taskRequesturl,onPage ,datatable) {
         const softAssert = new SoftAssert();
         const datatableHashes = datatable.hashes();
         const pageUndertest = waPage.toLowerCase() === "my work" ? myWorkPage : null;
 
         let sortColumnInRequestParam = null;
         MockApp.addIntercept(taskRequesturl, (req, res, next) => {
-            sortColumnInRequestParam = req.body;   
+            CucumberReporter.AddJson(req.body);
+            sortColumnInRequestParam = req.body;  
+            next(); 
         })
-        //await MockApp.stopServer();
-       // await MockApp.startServer();
+        await MockApp.stopServer();
+        await MockApp.startServer();
 
         for (let i = 0; i < datatableHashes.length; i++) {
             
@@ -99,24 +101,44 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             softAssert.setScenario("sorting: " + headerName);
             await softAssert.assert(async () => expect(await pageUndertest.getColumnSortState(headerName)).to.equal("none"));
            
+            await browserUtil.addTextToElementWithCssSelector('tbody tr:nth-of-type(1) .cdk-column-case_category exui-task-field','Sort test',true);
+            await pageUndertest.clickColumnHeader(headerName); 
+            await BrowserWaits.waitForConditionAsync(async () => { 
+                return sortColumnInRequestParam !== null
+                 });
+            await BrowserWaits.waitForConditionAsync(async () => {
+                const caseCatColVal = await pageUndertest.getColumnValueForTaskAt('Case category',1);
+                return !caseCatColVal.includes('Sort test');
+             });
 
-            await pageUndertest.clickColumnHeader(headerName);
-            await BrowserWaits.waitForCondition(async () => { return sortColumnInRequestParam !== null });
-            const sortingParamsInReq = sortColumnInRequestParam.searchRequest.sorting_parameters;
-            await softAssert.assert(async () => expect(sortingParamsInReq.length > 0,'Sorting param not present in request').to.be.true);
-            await softAssert.assert(async () => expect(sortingParamsInReq[0].sort_by, 'Sorting param name in request').to.equal(sortColumnId));
-            await softAssert.assert(async () => expect(sortingParamsInReq[0].sort_order, 'Sorting param value in request').to.equal('asc'));
-            await softAssert.assert(async () => expect(await pageUndertest.getColumnSortState(headerName),'Sort column state mismatch').to.equal("ascending"));
 
+            const asc_sortingParamsInReq = sortColumnInRequestParam.searchRequest.sorting_parameters;
+            await softAssert.assert(async () => expect(asc_sortingParamsInReq.length > 0).to.be.true, 'Sorting param present in request');
+            await softAssert.assert(async () => expect(sortColumnInRequestParam.searchRequest.pagination_parameters.page_number).to.equal(onPage), 'Sorting req on page');
+            await softAssert.assert(async () => expect(asc_sortingParamsInReq[0].sort_by).to.equal(sortColumnId), 'Sorting param name in request ' + sortColumnId);
+            await softAssert.assert(async () => expect(asc_sortingParamsInReq[0].sort_order).to.equal('asc'), 'Sorting param value in request asc');
+            await softAssert.assert(async () => expect(await pageUndertest.getColumnSortState(headerName)).to.equal("ascending"), 'Sort column state ascending');
 
+            
             sortColumnInRequestParam = null;
+            await browserUtil.addTextToElementWithCssSelector('tbody tr:nth-of-type(1) .cdk-column-case_category exui-task-field', 'Sort test', true);
             await pageUndertest.clickColumnHeader(headerName);
-            await BrowserWaits.waitForCondition(async () => { return sortColumnInRequestParam !== null });
+           
+            await BrowserWaits.waitForConditionAsync(async () => {
+                return sortColumnInRequestParam !== null
+            });
+            await BrowserWaits.waitForConditionAsync(async () => {
+                const caseCatColVal = await pageUndertest.getColumnValueForTaskAt('Case category', 1);
+                return !caseCatColVal.includes('Sort test');
+            });
+
             //  expect(headerColId).to.contains(sortColumnInRequestParam);
-            await softAssert.assert(async () => expect(sortingParamsInReq.length > 0, 'Sorting param not present in request').to.be.true);
-            await softAssert.assert(async () => expect(sortingParamsInReq[0].sort_by, 'Sorting param name in request').to.equal(sortColumnId));
-            await softAssert.assert(async () => expect(sortingParamsInReq[0].sort_order, 'Sorting param value in request').to.equal('desc'));
-            await softAssert.assert(async () => expect(await pageUndertest.getColumnSortState(headerName), 'Sort column state mismatch').to.equal("descending"));
+            const descSortingParamsInReq = sortColumnInRequestParam.searchRequest.sorting_parameters;
+            await softAssert.assert(async () => expect(descSortingParamsInReq.length > 0).to.be.true, 'Sorting param present in request');
+            await softAssert.assert(async () => expect(sortColumnInRequestParam.searchRequest.pagination_parameters.page_number).to.equal(onPage), 'Sorting req on page');
+            await softAssert.assert(async () => expect(descSortingParamsInReq[0].sort_by).to.equal(sortColumnId), 'Sorting param name in request ' + sortColumnId);
+            await softAssert.assert(async () => expect(descSortingParamsInReq[0].sort_order).to.equal('desc'), 'Sorting param value in request desc');
+            await softAssert.assert(async () => expect(await pageUndertest.getColumnSortState(headerName)).to.equal("descending"), 'Sort column state descending');
 
 
         }

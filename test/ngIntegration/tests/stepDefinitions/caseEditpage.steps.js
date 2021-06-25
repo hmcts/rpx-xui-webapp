@@ -12,8 +12,9 @@ const CucumberReporter = require('../../../e2e/support/reportLogger');
 const BrowserWaits = require('../../../e2e/support/customWaits');
 
 const headerpage = require('../../../e2e/features/pageObjects/headerPage');
-
+const caseListPage = require('../pageObjects/caselistPage');
 const { getTestJurisdiction } = require('../../mockData/ccdCaseMock');
+const { Browser } = require('selenium-webdriver');
 
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
@@ -25,6 +26,15 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     When('I click cancel in case edit page', async function(){
         await caseEditPage.clickCancelLinkInEditPage(); 
      });
+
+    When('I click cancel in case edit page, I see case list page displayed', async function () {
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await caseEditPage.clickCancelLinkInEditPage();
+            expect(await caseListPage.amOnPage(), "Case list page is not displayed").to.be.true;
+        });
+        
+    });
+
 
      Then('I validate config {string} case edit wizard pages and fields in pages', async function(configReference){
          const caseConfigInstance = global.scenarioData[configReference];
@@ -42,8 +52,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
              console.log("/data/case-types/:caseType/cases req received : " + submissionReq); 
              next();
          });
-         //await MockApp.stopServer();
-         //await MockApp.startServer();
+         await MockApp.stopServer();
+         await MockApp.startServer();
 
 
          let eventData = {};
@@ -150,13 +160,15 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Then('I validate event page continue on validate request error status code {int}', async function(statusCode){
         let validateReq = null;
         MockApp.onPost('/data/case-types/:caseType/validate', (req, res, next) => {
-            validateReq = req.body;
+            validateReq = req;
             res.status(statusCode).send("Data validation error!");
         });
-        //await MockApp.stopServer();
-        //await MockApp.startServer();
+        await MockApp.stopServer();
+        await MockApp.startServer();
 
         await caseEditPage.clickContinue();
+        await BrowserWaits.waitForConditionAsync(async () => validateReq!== null);
+        
         expect(await caseEditPage.isErrorSummaryDisplayed(),' Error summary banner is not displayed').to.be.true;
        
     });

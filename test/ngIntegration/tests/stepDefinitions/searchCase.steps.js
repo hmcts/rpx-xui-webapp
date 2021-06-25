@@ -43,8 +43,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             next();
         })
 
-        //await MockApp.stopServer();
-        //await MockApp.startServer();
+        await MockApp.stopServer();
+        await MockApp.startServer();
 
         const searchCaseInputValues = {}
         for (const dynamicfield of searchCaseConfig.searchInputs) {
@@ -119,8 +119,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             next();
         })
 
-       // await MockApp.stopServer();
-        //await MockApp.startServer();
+        await MockApp.stopServer();
+        await MockApp.startServer();
 
         const searchCaseInputValues = {}
         for (const dynamicfield of searchCaseConfig.searchInputs) {

@@ -11,7 +11,7 @@ function report(runner) {
     let passCounter = 0;
     let failCounter = 0;
     runner.on('pass', function (test) {
-        if (test.ctx.a11yResult.issues.length === 0) {
+        if (test.ctx.a11yResult && test.ctx.a11yResult.issues.length === 0) {
             onPass(test);
         } else {
             test.state = "failed";
@@ -117,6 +117,11 @@ function consoleReport(reportjson) {
         if (test.status === "failed") {
             let a11yResult = test.a11yResult;
             console.log("\t \t Test Case : " + test.name);
+            if (a11yResult === undefined){
+                console.log("\t Test execution failed and no a11y test result returned" );
+                continue;
+            }
+            
 
             console.log("\t \t Page title : " + a11yResult.documentTitle);
             console.log("\t \t Page url : " + a11yResult.pageUrl);

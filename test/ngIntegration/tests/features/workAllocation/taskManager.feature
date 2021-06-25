@@ -11,10 +11,10 @@ Feature: WA Release 1: Task manager
             | role                      |
             | caseworker-ia-caseofficer |
             | caseworker-ia-admofficer  |
-        Given I set MOCK Task manager tasks count 25
+        Given I set MOCK Task manager tasks count 250
         Given I start MockApp
         Given I navigate to home page
-        When I click on header tab Task manager
+        When I click on primary navigation header "Task manager"
 
         Then I see Task manager page displayed
         Then I validate Task manager page tasks count 25
@@ -24,10 +24,10 @@ Feature: WA Release 1: Task manager
             | role                      |
             | caseworker-ia-caseofficer |
             | caseworker-ia-admofficer  |
-        Given I set MOCK Task manager tasks count 25
+        Given I set MOCK Task manager tasks count 250
         Given I start MockApp
         Given I navigate to home page
-        When I click on header tab Task manager
+        When I click on primary navigation header "Task manager"
 
         Then I see Task manager page displayed
         Then I validate tasks column sorting
@@ -37,10 +37,10 @@ Feature: WA Release 1: Task manager
             | role                      |
             | caseworker-ia-caseofficer |
             | caseworker-ia-admofficer  |
-        Given I set MOCK Task manager tasks count 25
+        Given I set MOCK Task manager tasks count 250
         Given I start MockApp
         Given I navigate to home page
-        When I click on header tab Task manager
+        When I click on primary navigation header "Task manager"
 
         Then I see Task manager page displayed
         Then I validate Task manager tasks sort column persist in session
@@ -50,10 +50,10 @@ Feature: WA Release 1: Task manager
             | role                      |
             | caseworker-ia-caseofficer |
             | caseworker-ia-admofficer  |
-        Given I set MOCK Task manager tasks count 25
+        Given I set MOCK Task manager tasks count 250
         Given I start MockApp
         Given I navigate to home page
-        When I click on header tab Task manager
+        When I click on primary navigation header "Task manager"
 
         Then I see Task manager page displayed
         Then I validate error responses on Task manager page

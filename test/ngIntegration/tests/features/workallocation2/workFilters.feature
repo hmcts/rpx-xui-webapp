@@ -1,5 +1,5 @@
 
-Feature: WA Release 2: Work filters
+Feature: WA Release 2: My work - Work filters
 
     Background: Mock and browser setup
         Given I init MockApp

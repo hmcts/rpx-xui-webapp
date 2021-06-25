@@ -1,14 +1,14 @@
-import {createProxyMiddleware as proxy, Options} from 'http-proxy-middleware'
-import * as modifyResponse from 'node-http-proxy-json'
-import {getConfigValue} from '../../configuration'
-import {LOGGING} from '../../configuration/references'
-import * as log4jui from '../log4jui'
-import authInterceptor from './auth'
+import {createProxyMiddleware as proxy, Options} from 'http-proxy-middleware';
+import * as modifyResponse from 'node-http-proxy-json';
+import {getConfigValue} from '../../configuration';
+import {LOGGING} from '../../configuration/references';
+import * as log4jui from '../log4jui';
+import authInterceptor from './auth';
 
-const logger = log4jui.getLogger('proxy')
+const logger = log4jui.getLogger('proxy');
 
 export const onProxyError = (err, req, res) => {
-    logger.error(err)
+    logger.error(err);
 
     if (req.baseUrl && req.baseUrl === '/activity' && req.user && req.user.userinfo) {
       logger.info('ActivityTrackerResponseFailed => ',
@@ -19,8 +19,8 @@ export const onProxyError = (err, req, res) => {
     res.status(500).send({
         error: 'Error when connecting to remote server',
         status: 504,
-    })
-}
+    });
+};
 
 export const applyProxy = (app, config) => {
     const options: Options = {
@@ -33,14 +33,14 @@ export const applyProxy = (app, config) => {
                 info: msg => logger.info(msg),
                 log: msg => logger.info(msg),
                 warn: msg => logger.warn(msg),
-            }
+            };
         },
         onError: onProxyError,
         target: config.target,
-    }
+    };
 
     if (config.onReq) {
-        options.onProxyReq = config.onReq
+        options.onProxyReq = config.onReq;
     }
 
     if (config.onRes) {
@@ -48,32 +48,32 @@ export const applyProxy = (app, config) => {
             modifyResponse(res, proxyRes, body => {
                 if (body) {
                     // modify some information
-                    body = config.onRes(proxyRes, req, res, body)
+                    body = config.onRes(proxyRes, req, res, body);
                 }
-                return body // return value can be a promise
-            })
-        }
+                return body; // return value can be a promise
+            });
+        };
     }
 
     if (config.ws) {
-        options.ws = config.ws
+        options.ws = config.ws;
     }
 
     if (false !== config.rewrite) {
         options.pathRewrite = {
             [`^${config.source}`]: config.rewriteUrl || '',
-        }
+        };
     }
 
-    let middlewares = [authInterceptor]
+    let middlewares = [authInterceptor];
 
     if (config.middlewares) {
-        middlewares = [...middlewares, ...config.middlewares]
+        middlewares = [...middlewares, ...config.middlewares];
     }
 
     if (config.filter) {
-        app.use(config.source, middlewares, proxy(config.filter, options))
+        app.use(config.source, middlewares, proxy(config.filter, options));
     } else {
-        app.use(config.source, middlewares, proxy(options))
+        app.use(config.source, middlewares, proxy(options));
     }
-}
+};

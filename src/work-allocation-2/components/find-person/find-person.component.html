@@ -2,16 +2,28 @@
   <span class="govuk-caption-l">{{title}}</span>
   Find the person
 </h1>
-<div class="govuk-form-group" [formGroup]="findPersonGroup">
-    <fieldset class="govuk-fieldset" aria-describedby="">
-      <div id="waste-hint" class="govuk-hint">
-        Type the name of the person and select them.
-      </div>
-      <input type="text" aria-label="Number" matInput formControlName="findPersonControl" [matAutocomplete]="auto" class="govuk-input govuk-!-width-one-third" (ngModelChange)="updatedVal($event)">
-      <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-        <mat-option *ngFor="let option of filteredOptions | async" [value]="getDisplayName(option)" (onSelectionChange)="onSelectionChange(option)" [ngClass]="{'hide-autocomplete': !showAutocomplete}">
-          {{getDisplayName(option)}}
-        </mat-option>
-      </mat-autocomplete>
-    </fieldset>
+<div class="govuk-form-group" [formGroup]="findPersonGroup"
+     [ngClass]="{'form-group-error': !findPersonGroup.valid}">
+  <fieldset class="govuk-fieldset" aria-describedby="">
+    <div id="waste-hint" class="govuk-hint">
+      Type the name of the person and select them.
+    </div>
+    <span id="validation-error" class="govuk-error-message" *ngIf="findPersonGroup.errors">
+        <span class="govuk-visually-hidden">Error:</span>You must select a name
+    </span>
+    <input id="inputSelectPerson" type="text" aria-label="select a person" matInput
+           formControlName="findPersonControl"
+           [matAutocomplete]="auto"
+           class="govuk-input"
+           (ngModelChange)="updatedVal($event)"
+           [value]="selectedPerson">
+    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+      <mat-option *ngFor="let option of filteredOptions | async"
+                  [value]="getDisplayName(option)"
+                  (onSelectionChange)="onSelectionChange(option)"
+                  [ngClass]="{'hide-autocomplete': !showAutocomplete}">
+        {{getDisplayName(option)}}
+      </mat-option>
+    </mat-autocomplete>
+  </fieldset>
 </div>

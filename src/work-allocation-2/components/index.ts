@@ -10,6 +10,7 @@ import { TaskManagerFilterComponent } from './task-manager-filter/task-manager-f
 import { TaskNameFieldComponent } from './task-name-field/task-name-field.component';
 import { UrlFieldComponent } from './url-field/url-field.component';
 import { FindPersonComponent } from './find-person/find-person.component';
+import { TaskListFilterComponent } from './task-list-filter/task-list-filter.component';
 
 export const components: any[] = [
   AvailableTasksFilterComponent,
@@ -20,6 +21,7 @@ export const components: any[] = [
   InfoMessageComponent,
   TaskAssignmentComponent,
   TaskFieldComponent,
+  TaskListFilterComponent,
   TaskManagerFilterComponent,
   TaskNameFieldComponent,
   UrlFieldComponent,
@@ -34,6 +36,7 @@ export * from './image-field/image-field.component';
 export * from './info-message/info-message.component';
 export * from './task-assignment/task-assignment.component';
 export * from './task-field/task-field.component';
+export * from './task-list-filter/task-list-filter.component';
 export * from './task-manager-filter/task-manager-filter.component';
 export * from './task-name-field/task-name-field.component';
 export * from './url-field/url-field.component';

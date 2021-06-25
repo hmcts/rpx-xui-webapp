@@ -415,10 +415,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.0.0-EUI-4227-missing-elements":
-  version "4.0.0-EUI-4227-missing-elements"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.0.0-EUI-4227-missing-elements.tgz#47d62960f199a2ad64c72f67f692ef9da5564bc1"
-  integrity sha512-QpkraOZ1zWiyfhalj/+YtNBk26D2Ak/uKtP9Sni3ckAA0m5DcuTX7DNo/dbfRicjX2aF4/MOAYqdhMtFIlU3jg==
+"@hmcts/ccd-case-ui-toolkit@4.0.0-EUI-2022-ComplexField-Validation-Fix-2":
+  version "4.0.0-EUI-2022-ComplexField-Validation-Fix-2"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.0.0-EUI-2022-ComplexField-Validation-Fix-2.tgz#454604b2db8f94aca646a8c690da692361dece91"
+  integrity sha512-Tpx6o0pIcpOhwTZak3PDO1y/MkRjFlHBHDtxnSbvaSmAYM8tRduK8KBwNEAx7ZbY3MsBS+sX5j5xjYueOKxRAw==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

@@ -4,14 +4,14 @@ import { RouterModule, Routes } from '@angular/router';
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
 import { TaskActionConstants } from './components/constants';
 import {
+  AllWorkHomeComponent,
+  AllWorkTaskComponent,
   AvailableTasksComponent,
   MyTasksComponent,
   TaskActionContainerComponent,
   TaskAssignmentConfirmComponent,
   TaskAssignmentContainerComponent,
   TaskHomeComponent,
-  TaskManagerComponent,
-  TaskManagerListComponent,
   WorkAllocationHomeComponent,
 } from './containers';
 import { WorkAllocationFeatureToggleGuard } from './guards';
@@ -25,7 +25,7 @@ export const ROUTES: Routes = [
     canActivate: [ HealthCheckGuard, WorkAllocationFeatureToggleGuard ],
     children: [
       {
-        path: '',
+        path: 'my-work',
         component: TaskHomeComponent,
         canActivate: [ HealthCheckGuard ],
         resolve: {
@@ -53,22 +53,8 @@ export const ROUTES: Routes = [
         ]
       },
       {
-        path: 'task-manager',
-        component: TaskManagerComponent,
-        canActivate: [ HealthCheckGuard, WorkAllocationFeatureToggleGuard ],
-        data: {
-          title: 'HMCTS Manage cases | Task manager'
-        },
-        children: [
-          {
-            path: '',
-            component: TaskManagerListComponent
-          }
-        ]
-      },
-      {
         path: 'all-work',
-        component: TaskManagerComponent,
+        component: AllWorkHomeComponent,
         canActivate: [ HealthCheckGuard, WorkAllocationFeatureToggleGuard ],
         data: {
           title: 'HMCTS Manage cases | Task manager'
@@ -76,8 +62,15 @@ export const ROUTES: Routes = [
         children: [
           {
             path: '',
-            component: TaskManagerListComponent
-          }
+            redirectTo: 'tasks'
+          },
+          {
+            path: 'tasks',
+            component: AllWorkTaskComponent,
+            data: {
+              title: 'HMCTS Manage cases | My work | My tasks', subTitle: 'My tasks'
+            }
+          },
         ]
       },
       {

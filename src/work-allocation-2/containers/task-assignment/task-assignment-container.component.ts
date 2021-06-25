@@ -16,6 +16,7 @@ import { InfoMessageCommService, WorkAllocationTaskService } from '../../service
   templateUrl: 'task-assignment-container.component.html'
 })
 export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
+
   public error: ErrorMessage = null;
   public tasks: any[];
   public showManage: boolean = false;
@@ -23,7 +24,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   public verb: TaskActionType;
   public location: Location;
 
-  public formGroup: FormGroup;
+  public formGroup: FormGroup = new FormGroup({});
   public person: Person;
   private assignTask: Subscription;
   public taskId: string;
@@ -94,7 +95,13 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   }
 
   public assign(): void {
-    this.router.navigate([this.rootPath, this.taskId, 'reassign', 'confirm'], {state: this.person});
+    if (this.formGroup && this.formGroup.value && this.formGroup.value.findPersonControl) {
+      this.router.navigate([this.rootPath, this.taskId, 'reassign', 'confirm'], {state: this.person});
+    } else {
+      this.formGroup.setErrors({
+        invalid: true
+      });
+    }
   }
 
   public cancel(): void {
@@ -109,6 +116,10 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     if (message) {
       this.messageService.nextMessage(message);
     }
-    this.router.navigateByUrl(this.returnUrl, {state: {...state, retainMessages: true}});
+    this.router.navigate([this.returnUrl], {state: {...state, retainMessages: true}});
+  }
+
+  public setFocusOn(eId: string): void {
+    document.getElementById(eId).focus();
   }
 }

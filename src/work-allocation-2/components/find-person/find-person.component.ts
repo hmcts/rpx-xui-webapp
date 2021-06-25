@@ -15,7 +15,7 @@ export class FindPersonComponent implements OnInit {
   @Output() public personSelected = new EventEmitter<Person>();
   @Input() public title: string;
   @Input() public domainString: string = 'BOTH';
-  @Input() public findPersonGroup: FormGroup = new FormGroup({});
+  @Input() public findPersonGroup;
   @Input() public selectedPerson: string;
   public domain: PersonDomain;
   public showAutocomplete: boolean = false;
@@ -28,7 +28,11 @@ export class FindPersonComponent implements OnInit {
   private readonly minSearchCharacters = 2;
 
   public ngOnInit(): void {
-    this.findPersonGroup.addControl('findPersonControl', this.findPersonControl);
+    if (!this.findPersonGroup) {
+      this.findPersonGroup = new FormGroup({});
+    } else {
+      this.findPersonGroup.addControl('findPersonControl', this.findPersonControl);
+    }
     this.domain = PersonDomain[this.domainString];
     this.filteredOptions = this.findPersonControl.valueChanges.pipe(
       startWith(''),

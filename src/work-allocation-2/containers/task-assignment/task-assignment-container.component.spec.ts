@@ -2,7 +2,7 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { HttpClientModule } from '@angular/common/http';
 import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
@@ -112,9 +112,19 @@ describe('TaskAssignmentContainerComponent', () => {
   it('should re-direct to assign task confirmation page', () => {
     const mockRouter = jasmine.createSpyObj('router', ['navigate']);
     const compo = new TaskAssignmentContainerComponent(null, null, mockRouter, null);
-
+    const findPersonControl = new FormControl('test');
+    compo.formGroup.addControl('findPersonControl', findPersonControl);
     compo.assign();
     expect(mockRouter.navigate).toHaveBeenCalled();
   });
 
+  it('should not re-direct to assign task confirmation page and throw form group error', () => {
+    const mockRouter = jasmine.createSpyObj('router', ['navigate']);
+    const compo = new TaskAssignmentContainerComponent(null, null, mockRouter, null);
+    const findPersonControl = new FormControl('');
+    compo.formGroup.addControl('findPersonControl', findPersonControl);
+    compo.assign();
+    expect(mockRouter.navigate).not.toHaveBeenCalled();
+    expect(compo.formGroup.valid).toBeFalsy();
+  });
 });

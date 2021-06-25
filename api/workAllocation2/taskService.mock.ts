@@ -51,6 +51,8 @@ export const init = () => {
   const claimTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/claim/;
   // tslint:disable-next-line:max-line-length
   const unclaimTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/unclaim/;
+  // tslint:disable-next-line:max-line-length
+  const assignTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/assign/;
 
   const judicialWorkersUrl = /http:\/\/rd-judicialworker-ref-api-aat.service.core-compute-aat.internal\/judicialworkers/;
   // tslint:disable-next-line:max-line-length
@@ -169,6 +171,23 @@ export const init = () => {
       204,
       'success',
     ];
+  });
+
+  mock.onPost(assignTaskUrl).reply(config => {
+    const data = JSON.parse(config.data);
+    const id = data.userId.toString().replace(/[^0-9.]/g, '');
+    const mod = parseInt(id, 10) % 2;
+    if (mod === 0) {
+      return [
+        204,
+        'success',
+      ];
+    } else {
+      return [
+        400,
+        'failed',
+      ];
+    }
   });
 };
 

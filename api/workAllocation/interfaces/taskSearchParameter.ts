@@ -1,16 +1,16 @@
 export interface TaskSearchParameters {
-    parameters: TaskSearchParameter[];
+  parameters: TaskSearchParameter[];
 }
 
 export interface TaskSearchParameter {
-    ccdId?: string;
-    eventId?: string;
-    jurisdiction?: string[];
-    location?: string[];
-    postEventState?: string;
-    preEventState?: string;
-    state?: string[];
-    user?: string[];
+  ccdId?: string;
+  eventId?: string;
+  jurisdiction?: string[];
+  location?: string[];
+  postEventState?: string;
+  preEventState?: string;
+  state?: string[];
+  user?: string[];
 }
 
 export interface SearchTaskParameter {

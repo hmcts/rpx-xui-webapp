@@ -1,8 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FindPersonComponent } from './find-person.component';
+import { FormControl, FormGroup } from '@angular/forms';
+import { of } from 'rxjs';
 import { FindAPersonService } from '../../services/find-person.service';
 import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
-import { of } from 'rxjs';
+import { FindPersonComponent } from './find-person.component';
 
 describe('FindPersonComponent', () => {
     let component: FindPersonComponent;
@@ -20,8 +21,11 @@ describe('FindPersonComponent', () => {
             ]
         }).compileComponents();
         fixture = TestBed.createComponent(FindPersonComponent);
-        fixture.detectChanges();
+
         component = fixture.componentInstance;
+        component.findPersonGroup = new FormGroup({});
+        component.findPersonGroup.addControl('findPersonControl', new FormControl());
+        fixture.detectChanges();
     });
     it('is Truthy', () => {
         expect(component).toBeTruthy();

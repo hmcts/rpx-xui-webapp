@@ -11,7 +11,8 @@ export class ApplicationRoutingComponent implements OnInit {
     private readonly workAllocationFeatureService: WorkAllocationFeatureService,
     private readonly store: Store<fromActions.State>
   ) {}
-
+  public static defaultWAPage = '/work/my-work/list';
+  public static defaultPage = '/cases';
   public ngOnInit(): void {
     this.workAllocationFeatureService.getActiveWAFeature().subscribe((currentWAFeatureName) =>
         this.navigateUrlBasedOnFeatureToggle(currentWAFeatureName)
@@ -21,7 +22,7 @@ export class ApplicationRoutingComponent implements OnInit {
   public navigateUrlBasedOnFeatureToggle(currentWAFeatureName: string): void {
     currentWAFeatureName === 'WorkAllocationRelease2'
       ? this.navigateBasedOnUserRole()
-      : this.router.navigate(['/cases']);
+      : this.router.navigate([ApplicationRoutingComponent.defaultPage]);
   }
 
   public navigateBasedOnUserRole() {
@@ -30,7 +31,7 @@ export class ApplicationRoutingComponent implements OnInit {
       userDetails && userDetails.userInfo && userDetails.userInfo.roles &&
       (userDetails.userInfo.roles.includes('caseworker-ia-iacjudge')
       || userDetails.userInfo.roles.includes('caseworker-ia-caseofficer'))
-      ? this.router.navigate(['/mywork']) : this.router.navigate(['/cases']);
+      ? this.router.navigate([ApplicationRoutingComponent.defaultWAPage]) : this.router.navigate([ApplicationRoutingComponent.defaultPage]);
     });
   }
 

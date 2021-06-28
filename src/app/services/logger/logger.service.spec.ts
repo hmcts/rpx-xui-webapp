@@ -1,7 +1,7 @@
 import { LoggerService } from './logger.service';
 
 describe('Logger service', () => {
-    const mockedMonitoringService = jasmine.createSpyObj('mockedMonitoringService', ['logEvent', 'logException']);
+    const mockedMonitoringService = jasmine.createSpyObj('mockedMonitoringService', ['logEvent', 'logException', 'enableCookies']);
     const mockedNgxLogger = jasmine.createSpyObj('mockedNgxLogger', ['trace', 'debug', 'info',
     'log', 'warn', 'error', 'fatal']);
     const mockedSessionStorageService = jasmine.createSpyObj('mockedCookieService', ['getItem']);
@@ -77,5 +77,15 @@ describe('Logger service', () => {
         expect(mockedMonitoringService.logEvent).toHaveBeenCalled();
         expect(returnedMessage).not.toBeNull();
         expect(returnedMessage.slice(0, -2)).toBe(expectedMessage);
+    });
+
+    describe('enableCookies()', () => {
+
+        it('should make a call to monitoringService', () => {
+            const service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedSessionStorageService,
+            mockedCryptoWrapper);
+            service.enableCookies();
+            expect(mockedMonitoringService.enableCookies).toHaveBeenCalled();
+        });
     });
 });

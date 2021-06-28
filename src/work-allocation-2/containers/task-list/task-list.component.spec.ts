@@ -393,33 +393,6 @@ describe('TaskListComponent', () => {
     expect(component.sortEvent.emit).toHaveBeenCalledWith('dueDate');
   });
 
-  it('should show pagination when page size is greater than 1', async () => {
-    component.tasksTotal = 26;
-    component.pagination = {
-      page_number: 1,
-      page_size: 25
-    };
-    expect(component.showPagination()).toBeTruthy();
-  });
-
-  it('should not show pagination when page size is just 1', async () => {
-    component.tasksTotal = 25;
-    component.pagination = {
-      page_number: 1,
-      page_size: 25
-    };
-    expect(component.showPagination()).toBeFalsy();
-  });
-
-  it('should not show pagination when page size is less than 1', async () => {
-    component.tasksTotal = 24;
-    component.pagination = {
-      page_number: 1,
-      page_size: 25
-    };
-    expect(component.showPagination()).toBeFalsy();
-  });
-
   describe('act upon deep linking', () => {
     const id = '12345678';
 

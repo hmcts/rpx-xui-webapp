@@ -201,10 +201,4 @@ export class TaskListComponent implements OnChanges {
     return ((this.getCurrentPageIndex() * this.pagination.page_size) + this.getCurrentTaskCount());
   }
 
-  public showPagination(): boolean {
-    if (this.tasksTotal && this.pagination) {
-      return this.tasksTotal / this.pagination.page_size > 1;
-    }
-    return false;
-  }
 }

@@ -78,4 +78,4 @@
 
 </table>
 
-<ccd-pagination (pageChange)="paginationEvent.emit($event)"></ccd-pagination>
+<ccd-pagination *ngIf="showPagination()" (pageChange)="paginationEvent.emit($event)"></ccd-pagination>

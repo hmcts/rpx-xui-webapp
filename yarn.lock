@@ -492,10 +492,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.0.1-module-fixes.5":
-  version "1.0.1-module-fixes.5"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.0.1-module-fixes.5.tgz#1912ddbe98836805e0ba119312a7934baade8055"
-  integrity sha512-zXIPIWvMd2qLrHtAY+lIY/00BowaGzJAntXrU/tKn2FQPBKP2gVGCyDN+MREy/+4fSZ5Sal6MtywjggKRG0yAg==
+"@hmcts/rpx-xui-common-lib@1.0.1-module-fixes.8":
+  version "1.0.1-module-fixes.8"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.0.1-module-fixes.8.tgz#365a45359fc659c20bcb09de52d0d3ef4181548f"
+  integrity sha512-JqHGUScHiK9AIPqtezfrI/TVjTGw46Tb3Z1tSAVDqdML9f8CNbLJJcK2m6pjTAMDTx81lJYSGlyQX89lZMRFYw==
   dependencies:
     tslib "^1.9.0"
 
@@ -8662,7 +8662,7 @@ moment@^2.10.6, moment@^2.19.0, moment@^2.19.3, moment@^2.24.0:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
   integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
 
-moment@^2.29.1:
+moment@^2.26.0:
   version "2.29.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.1.tgz#b2be769fa31940be9eeea6469c075e35006fa3d3"
   integrity sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==

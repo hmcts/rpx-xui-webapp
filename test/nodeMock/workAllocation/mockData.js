@@ -67,7 +67,7 @@ class WorkAllocationMockData {
                 "assigneeName": null
             });
         }
-        return { tasks: tasks };
+        return { tasks: tasks, total_records:150 };
     }
 
     getCaseworkersList(count) {

@@ -2,8 +2,9 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { of } from 'rxjs';
+import { PaginationParameter } from 'src/work-allocation/models/dtos';
 
 import { ConfigConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
@@ -15,13 +16,21 @@ import { TaskListComponent } from './task-list.component';
 
 @Component({
   template: `
-    <exui-task-list [fields]='fields' [tasks]='tasks' [taskServiceConfig]="taskServiceConfig" [sortedBy]="TaskSortField" ></exui-task-list>`
+    <exui-task-list
+      [fields]='fields'
+      [tasks]='tasks'
+      [tasksTotal]="tasksTotal"
+      [taskServiceConfig]="taskServiceConfig"
+      [sortedBy]="TaskSortField"
+      [pagination]="pagination"></exui-task-list>`
 })
 class WrapperComponent {
   @ViewChild(TaskListComponent) public appComponentRef: TaskListComponent;
   @Input() public fields: TaskFieldConfig[];
   @Input() public tasks: Task[];
+  @Input() public tasksTotal: number;
   @Input() public taskServiceConfig: TaskServiceConfig;
+  @Input() public pagination: PaginationParameter;
   @Input() public sortedBy: TaskSortField;
 }
 
@@ -64,7 +73,8 @@ describe('TaskListComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         WorkAllocationComponentsModule,
-        CdkTableModule
+        CdkTableModule,
+        PaginationModule
       ],
       declarations: [TaskListComponent, WrapperComponent],
       providers: [
@@ -80,6 +90,11 @@ describe('TaskListComponent', () => {
     wrapper.tasks = getTasks();
     wrapper.fields = getFields();
     wrapper.taskServiceConfig = getTaskService();
+    wrapper.tasksTotal = 2;
+    wrapper.pagination = {
+      page_number: 1,
+      page_size: 10
+    };
     mockWorkAllocationService.getTask.and.returnValue(of({}));
     mockLoadingService.isLoading = of(false);
     fixture.detectChanges();
@@ -407,4 +422,15 @@ describe('TaskListComponent', () => {
     });
   });
 
+  describe('generate pagination summary', () => {
+    let paginationSummary: HTMLElement;
+
+    beforeEach(() => {
+      paginationSummary = fixture.debugElement.nativeElement.querySelector('#search-result-summary__text');
+    });
+
+    it('should correctly set the summary text', () => {
+      expect(paginationSummary.textContent).toContain('Displaying 1 - 2 out of 2 tasks');
+    });
+  });
 });

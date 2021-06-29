@@ -246,7 +246,7 @@ export class TaskListWrapperComponent implements OnInit {
       returnUrl: this.returnUrl,
       showAssigneeColumn: taskAction.action.id !== TaskActionIds.ASSIGN
     };
-    const actionUrl = `/mywork/${taskAction.task.id}/${taskAction.action.id}/${this.specificPage}`;
+    const actionUrl = `/work/${taskAction.task.id}/${taskAction.action.id}/${this.specificPage}`;
     this.router.navigate([actionUrl], { state });
   }
 

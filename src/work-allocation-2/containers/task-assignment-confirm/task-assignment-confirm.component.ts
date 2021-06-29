@@ -55,11 +55,11 @@ export class TaskAssignmentConfirmComponent implements OnInit {
         }
       }
     });
-    this.router.navigate([this.rootPath, 'list']);
+    this.router.navigate([this.rootPath, 'my-work', 'list']);
   }
 
   public onCancel(): void {
-    this.router.navigate([this.rootPath, 'list']);
+    this.router.navigate([this.rootPath, 'my-work', 'list']);
   }
 
   private reportSuccessAndReturn(): void {

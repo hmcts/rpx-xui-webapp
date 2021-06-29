@@ -1,6 +1,6 @@
 import { AUTH, AuthOptions, xuiNode } from '@hmcts/rpx-xui-node-lib';
 import { NextFunction, Response } from 'express';
-import { EnhancedRequest } from 'lib/models';
+import { EnhancedRequest } from '../lib/models';
 
 import { getConfigValue, showFeature } from '../configuration';
 import {

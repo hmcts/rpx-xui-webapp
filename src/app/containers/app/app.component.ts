@@ -122,7 +122,8 @@ export class AppComponent implements OnInit, OnDestroy {
         const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
         this.addTimeoutNotificationServiceListener();
         this.initTimeoutNotificationService(idleModalDisplayTime, totalIdleTime);
-        this.setUserAndCheckCookie(userDetails.userInfo.id);
+        const uid = userDetails.userInfo.id ? userDetails.userInfo.id : userDetails.userInfo.uid;
+        this.setUserAndCheckCookie(uid);
       }
     }
   }

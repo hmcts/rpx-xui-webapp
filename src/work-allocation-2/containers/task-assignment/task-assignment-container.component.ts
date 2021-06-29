@@ -116,7 +116,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     if (message) {
       this.messageService.nextMessage(message);
     }
-    this.router.navigate([this.rootPath, 'list'], {state: {...state, retainMessages: true}});
+    this.router.navigate([this.rootPath, 'my-work', 'list'], {state: {...state, retainMessages: true}});
   }
 
   public setFocusOn(eId: string): void {

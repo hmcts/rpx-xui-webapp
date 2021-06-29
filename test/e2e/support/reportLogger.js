@@ -10,7 +10,12 @@ class CucumberReportLog{
         if (!this.scenarioWorld){
             return;
         }
-        this.scenarioWorld.attach(new Date().toTimeString() + " : " + message);
+        try{
+            this.scenarioWorld.attach(new Date().toTimeString() + " : " + message);
+        }
+        catch(err){
+            console.log("Error occured adding message to report. "+err.stack);
+        }
         console.log(new Date().toTimeString() + " : " + message)
     }
 
@@ -25,7 +30,12 @@ class CucumberReportLog{
         if (!this.scenarioWorld) {
             return;
         }
-        this.scenarioWorld.attach(JSON.stringify(json, null, 2));
+        try {
+            this.scenarioWorld.attach(JSON.stringify(json, null, 2));
+        }
+        catch(err) {
+             console.log("Error occured adding message to report. " + err.stack);
+        }
         console.log(JSON.stringify(json, null, 2));
     }
 

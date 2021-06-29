@@ -51,4 +51,13 @@ describe('Monitoring service', () => {
         service.logPageView('name', null, [], [], 1);
         expect(mockedHttpClient.get).toHaveBeenCalled();
     });
+
+    describe('enableCookies()', () => {
+
+        it('should set areCookiesEnabled to true', () => {
+            const service = new MonitoringService(mockedHttpClient, mockedConfig, mockedAppInsights);
+            service.enableCookies();
+            expect(service.areCookiesEnabled).toBeTruthy();
+        });
+    });
 });

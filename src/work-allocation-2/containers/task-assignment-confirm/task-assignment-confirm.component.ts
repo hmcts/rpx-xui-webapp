@@ -55,7 +55,6 @@ export class TaskAssignmentConfirmComponent implements OnInit {
         }
       }
     });
-    this.router.navigate([this.rootPath, 'my-work', 'list']);
   }
 
   public onCancel(): void {
@@ -81,6 +80,6 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     if (message) {
       this.messageService.nextMessage(message);
     }
-    this.router.navigate([this.rootPath, 'list'], {state: {...state, retainMessages: true}});
+    this.router.navigate([this.rootPath, 'my-work', 'list'], {state: {...state, retainMessages: true}});
   }
 }

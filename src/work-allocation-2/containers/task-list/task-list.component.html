@@ -1,4 +1,4 @@
-<div *ngIf="pagination; else tableSummary" class="pagination-top" attr.aria-label="{{ tasksTotal }} results have been found" role="status">
+<div *ngIf="pagination && enablePagination; else tableSummary" class="pagination-top" attr.aria-label="{{ tasksTotal }} results have been found" role="status">
   <span class="text-16">Displaying
       <span class="govuk-!-font-weight-bold">{{ getFirstResult() }}</span>
       -

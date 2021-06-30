@@ -26,8 +26,8 @@ describe("Task management api, claim a task", () => {
                     method: "POST",
                     path: `/task/${taskId}/claim`,
                     headers: {
-                        'Authorization': 'Bearer some-access-token',
-                        'ServiceAuthorization': 'some service authorisation',
+                        'Authorization': 'Bearer someAuthorizationToken',
+                        'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
                         'Content-Type': 'application/json',
                     }
 
@@ -35,7 +35,6 @@ describe("Task management api, claim a task", () => {
                 willRespondWith: {
                     status: 204,
                     headers: {
-                        "Content-Type": "application/json",
                     }
                 },
             }

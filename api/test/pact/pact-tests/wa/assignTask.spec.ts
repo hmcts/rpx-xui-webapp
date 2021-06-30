@@ -26,9 +26,8 @@ describe("Task management api, assign a task to user", () => {
                     method: "POST",
                     path: `/task/${taskId}/assign`,
                     headers: {
-                        Authorization: "Bearer some-access-token",
-                        ServiceAuthorization: "some service authorisation",
-                        'Content-Type': 'application/json'
+                        Authorization: "Bearer someAuthorizationToken",
+                        ServiceAuthorization: "Bearer someServiceAuthorizationToken",
                     },
                     body: mockRequest
 

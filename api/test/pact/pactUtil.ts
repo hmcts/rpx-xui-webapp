@@ -74,9 +74,9 @@ export async function getTaskById(taskUrl: string) {
 
   const axiosConfig = {
     headers: {
-      'Authorization': 'Bearer some-access-token',
-      'Content-Type': 'application/json',
-      'ServiceAuthorization': 'some service authorisation',
+      Authorization: "Bearer someAuthorizationToken",
+      ServiceAuthorization: "Bearer someServiceAuthorizationToken",
+      "Content-Type": "application/json",
     },
   }
 
@@ -88,9 +88,10 @@ export async function getTaskById(taskUrl: string) {
 export async function searchTasks(taskUrl: string, payload: any) {
   const axiosConfig = {
     headers: {
-      'Authorization': 'Bearer some-access-token',
+      Authorization: "Bearer someAuthorizationToken",
+      ServiceAuthorization: "Bearer someServiceAuthorizationToken",
       'Content-Type': 'application/json',
-      'ServiceAuthorization': 'some service authorisation',
+
     },
   }
 
@@ -103,9 +104,9 @@ export async function markTaskAs(taskUrl: string, taskActionState: string) {
 
   const axiosConfig = {
     headers: {
-      'Authorization': 'Bearer some-access-token',
+      Authorization: "Bearer someAuthorizationToken",
+      ServiceAuthorization: "Bearer someServiceAuthorizationToken",
       'Content-Type': 'application/json',
-      'ServiceAuthorization': 'some service authorisation',
     },
   }
 
@@ -118,9 +119,8 @@ export async function markTaskAs(taskUrl: string, taskActionState: string) {
 export async function assignTaskToUser(taskUrl: string, payLoad: any) {
   const axiosConfig = {
     headers: {
-      'Authorization': 'Bearer some-access-token',
-      'Content-Type': 'application/json',
-      'ServiceAuthorization': 'some service authorisation',
+      Authorization: "Bearer someAuthorizationToken",
+      ServiceAuthorization: "Bearer someServiceAuthorizationToken",
     },
   }
 

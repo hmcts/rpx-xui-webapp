@@ -26,16 +26,15 @@ describe("Task management api, cancel a task", () => {
                     method: "POST",
                     path: `/task/${taskId}/cancel`,
                     headers: {
-                        'Authorization': 'Bearer some-access-token',
-                        'ServiceAuthorization': 'some service authorisation',
-                        'Content-Type': 'application/json'
+                        'Authorization': 'Bearer someAuthorizationToken',
+                        'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+                        'Content-Type': 'application/json',
                     }
 
                 },
                 willRespondWith: {
                     status: 204,
                     headers: {
-                        "Content-Type": "application/json",
                     }
                 },
             }

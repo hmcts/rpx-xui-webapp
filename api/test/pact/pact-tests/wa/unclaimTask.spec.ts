@@ -26,14 +26,15 @@ describe("Task management api, Unclaim a task", () => {
                     method: "POST",
                     path: `/task/${taskId}/unclaim`,
                     headers: {
-                        Authorization: "Bearer some-access-token"
+                        Authorization: "Bearer someAuthorizationToken",
+                        ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+                        'Content-Type': 'application/json',
                     }
 
                 },
                 willRespondWith: {
                     status: 204,
                     headers: {
-                        "Content-Type": "application/json",
                     }
                 },
             }

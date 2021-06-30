@@ -57,16 +57,16 @@ describe("Task management api, Search for completebale tasks on case event", () 
                     method: "POST",
                     path: "/task/search-for-completable",
                     headers: {
-                        'Authorization': 'Bearer some-access-token',
-                        'ServiceAuthorization': 'some service authorisation',
-                        'Content-Type': 'application/json'
+                        'Authorization': 'Bearer someAuthorizationToken',
+                        'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+                        'Content-Type': 'application/json',
+
                     },
                     body: mockRequest
                 },
                 willRespondWith: {
                     status: 200,
                     headers: {
-                        "Content-Type": "application/json",
                     },
                     body: RESPONSE_BODY,
                 },

@@ -8,8 +8,8 @@
       tasks.</span>
 </div>
 
-<ng-template #tableSummary *ngIf="enablePagination">
-  <div class="pagination-top" attr.aria-label="{{ tasksTotal }} results have been found" role="status">
+<ng-template #tableSummary>
+  <div class="pagination-top" attr.aria-label="{{ tasksTotal }} results have been found" role="status" *ngIf="enablePagination">
     <span class="text-16">Displaying <span class="govuk-!-font-weight-bold">{{ tasksTotal || 0 }} </span>tasks.</span></div>
 </ng-template>
 

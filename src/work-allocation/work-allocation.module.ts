@@ -6,7 +6,7 @@ import { MatDialogModule } from '@angular/material';
 import { AlertService, CaseUIToolkitModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 
-import { SharedModule } from '../app/shared/shared.module';
+import { SharedModule } from '@shared/shared.module';
 import { WorkAllocationComponentsModule } from './components/work-allocation.components.module';
 import * as fromContainers from './containers';
 import { WorkAllocationFeatureToggleGuard } from './guards';

@@ -11,6 +11,9 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "target": "es5",
+    "paths": {
+      "@shared/*": ["src/app/shared/*"]
+    },
     "typeRoots": [
       "node_modules/@types"
     ],

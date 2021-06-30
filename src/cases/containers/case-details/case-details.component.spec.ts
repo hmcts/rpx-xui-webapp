@@ -24,7 +24,7 @@ import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { AppConfigService } from '../../../app/services/config/configuration.services';
-import { SharedModule } from '../../../app/shared/shared.module';
+import { SharedModule } from '@shared/shared.module';
 import { reducers } from '../../../app/store';
 import * as fromCases from '../../store/reducers';
 import { CaseDetailsComponent } from './case-details.component';

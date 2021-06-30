@@ -33,6 +33,7 @@ import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
 import { SharedModule } from '../app/shared/shared.module';
 import { OrganisationModule } from '../organisation/organisation.module';
 import { casesRouting } from './case-feature.routes';
+
 // from components
 import * as fromComponents from './components';
 // from containers

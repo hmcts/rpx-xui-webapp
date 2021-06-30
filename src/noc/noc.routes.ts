@@ -2,7 +2,7 @@ import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { FeatureToggleGuard } from '@hmcts/rpx-xui-common-lib';
 import { AppConstants } from 'src/app/app.constants';
-import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
+import { HealthCheckGuard } from '@shared/guards/health-check.guard';
 import { NocHomeComponent } from './containers/noc-home/noc-home.component';
 
 export const ROUTES: Routes = [

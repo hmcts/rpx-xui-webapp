@@ -1,7 +1,7 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
+import { HealthCheckGuard } from '@shared/guards/health-check.guard';
 import { TaskActionConstants } from './components/constants';
 import {
   AvailableTasksComponent,

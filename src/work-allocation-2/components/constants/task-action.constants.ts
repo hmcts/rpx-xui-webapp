@@ -10,7 +10,7 @@ export const TASK_ACTION_CONSTANTS = {
   MarkAsDone: {
     actionTitle: 'Mark the task as done',
     verb: TaskActionType.MarkAsDone, successMessage: InfoMessage.MARKED_TASK_AS_DONE,
-    description: 'Mark a task as done if something has gone wrong and it has already been completed.'
+    description: 'Mark a task done if it has already been completed. This will remove it from the task list'
   },
   Reassign: { verb: TaskActionType.Reassign, successMessage: InfoMessage.REASSIGNED_TASK },
   Unassign: {

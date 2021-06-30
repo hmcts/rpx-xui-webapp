@@ -1,5 +1,5 @@
 <div *ngIf="pagination; else tableSummary" class="pagination-top" attr.aria-label="{{ tasksTotal }} results have been found" role="status">
-  <span class="text-16" id="search-result-summary__text">Displaying
+  <span class="text-16">Displaying
       <span class="govuk-!-font-weight-bold">{{ getFirstResult() }}</span>
       -
       <span class="govuk-!-font-weight-bold">{{ getLastResult() }}</span>
@@ -8,9 +8,9 @@
       tasks.</span>
 </div>
 
-<ng-template #tableSummary>
+<ng-template #tableSummary *ngIf="enablePagination">
   <div class="pagination-top" attr.aria-label="{{ tasksTotal }} results have been found" role="status">
-    <span class="text-16" id="search-result-summary__text">Displaying <span class="govuk-!-font-weight-bold">{{ tasksTotal || 0 }} </span>tasks.</span></div>
+    <span class="text-16">Displaying <span class="govuk-!-font-weight-bold">{{ tasksTotal || 0 }} </span>tasks.</span></div>
 </ng-template>
 
 <!-- Using the Angular Component Development Kit Table Module, and not Angular Material -->
@@ -78,4 +78,4 @@
 
 </table>
 
-<ccd-pagination [autoHide]="true" (pageChange)="paginationEvent.emit($event)"></ccd-pagination>
+<ccd-pagination [autoHide]="true" (pageChange)="paginationEvent.emit($event)" *ngIf="enablePagination"></ccd-pagination>

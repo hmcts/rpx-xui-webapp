@@ -19,9 +19,9 @@ describe('TaskListWrapperComponent', () => {
   let fixture: ComponentFixture<TaskListWrapperComponent>;
   const mockRef = jasmine.createSpyObj('mockRef', ['']);
   const mockRouter: MockRouter = new MockRouter();
-  const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['searchTask', 'getTask']);
+  const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['searchTaskWithPagination', 'getTask']);
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['']);
-  const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem']);
+  const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['']);
   const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
@@ -50,9 +50,8 @@ describe('TaskListWrapperComponent', () => {
     }).compileComponents();
     fixture = TestBed.createComponent(TaskListWrapperComponent);
     component = fixture.componentInstance;
-    component.isPaginationEnabled$ = of(false);
     const tasks: Task[] = getMockTasks();
-    mockWorkAllocationService.searchTask.and.returnValue(of({ tasks }));
+    mockWorkAllocationService.searchTaskWithPagination.and.returnValue(of({ tasks }));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     fixture.detectChanges();
@@ -98,6 +97,17 @@ describe('TaskListWrapperComponent', () => {
       expect(lastNavigateCall.commands).toEqual([`/work/${exampleTask.id}/${secondAction.id}/`]);
       const exampleNavigateCall = { state: { returnUrl: '/mywork/manager', showAssigneeColumn: true } };
       expect(lastNavigateCall.extras).toEqual(exampleNavigateCall);
+    });
+  });
+
+  describe('onPaginationHandler()', () => {
+    it('should handle pagination', () => {
+      component.pagination = {page_number: 1, page_size: 25};
+      fixture.detectChanges();
+      // need to check that pagination has been performed
+      component.onPaginationHandler(2);
+      expect(component.pagination.page_number).toBe(2);
+      expect(mockSessionStorageService.getItem).toHaveBeenCalledWith('pageSessionKey');
     });
   });
 });

@@ -1,13 +1,12 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
+import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 
+import { SessionStorageService } from '../../../app/services';
 import { ConfigConstants, FilterConstants, ListConstants, SortConstants } from '../../components/constants';
 import { Caseworker, Location, SearchTaskRequest } from '../../models/dtos';
 import { TaskFieldConfig } from '../../models/tasks';
-import { CaseworkerDisplayName } from '../../pipes';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import {
   CaseworkerDataService,
   InfoMessageCommService,
@@ -15,7 +14,6 @@ import {
   WorkAllocationTaskService,
 } from '../../services';
 import { handleFatalErrors } from '../../utils';
-import { SessionStorageService } from '../../../app/services';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
 @Component({

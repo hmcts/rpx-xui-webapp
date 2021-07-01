@@ -53,6 +53,9 @@ export const init = () => {
   const unclaimTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/unclaim/;
   // tslint:disable-next-line:max-line-length
   const completeTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/complete/;
+
+  // tslint:disable-next-line:max-line-length
+  const cancelTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/cancel/;
   // tslint:disable-next-line:max-line-length
   const assignTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/assign/;
 
@@ -160,6 +163,14 @@ export const init = () => {
   });
 
   mock.onPost(claimTaskUrl).reply(() => {
+    // return an array in the form of [status, data, headers]
+    return [
+      204,
+      'success',
+    ];
+  });
+
+  mock.onPost(cancelTaskUrl).reply(() => {
     // return an array in the form of [status, data, headers]
     return [
       204,

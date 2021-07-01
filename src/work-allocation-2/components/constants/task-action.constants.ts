@@ -5,7 +5,7 @@ export const TASK_ACTION_CONSTANTS = {
   Cancel: {
     actionTitle: 'Cancel a task',
     verb: TaskActionType.Cancel, successMessage: InfoMessage.CANCELLED_TASK,
-    description: 'Cancel a task if it\'s no longer required.'
+    description: 'Cancel as task that has not been completed, but is no longer needed. This will remove it from the task list.'
   },
   MarkAsDone: {
     actionTitle: 'Mark the task as done',

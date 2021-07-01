@@ -22,7 +22,10 @@
         "max-classes-per-file": false,
         "max-line-length": [
             true,
-            130
+          {
+            "limit": 130,
+            "check-strings": false
+          }
         ],
         "member-access": false,
         "no-console": false,

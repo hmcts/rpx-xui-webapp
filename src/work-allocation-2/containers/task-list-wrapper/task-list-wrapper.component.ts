@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 
 import { Caseworker } from 'api/workAllocation/interfaces/task';
 import { Observable } from 'rxjs';
@@ -11,9 +12,6 @@ import { PaginationParameter, SearchTaskRequest, SortParameter } from '../../mod
 import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
 import { CaseworkerDataService, InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { AppConstants } from '../../../app/app.constants';
-import { mergeMap } from 'rxjs/operators';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html',
@@ -26,7 +24,6 @@ export class TaskListWrapperComponent implements OnInit {
   public showSpinner$: Observable<boolean>;
   public sortedBy: TaskSortField;
   public pagination: PaginationParameter;
-  public isPaginationEnabled$: Observable<boolean>;
   private pTasks: Task[];
   /**
    * Mock TaskServiceConfig.
@@ -52,7 +49,6 @@ export class TaskListWrapperComponent implements OnInit {
     protected loadingService: LoadingService,
     protected featureToggleService: FeatureToggleService
   ) {
-    this.isPaginationEnabled$ = this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.waMvpPaginationFeature);
   }
 
   public get tasks(): Task[] {
@@ -93,6 +89,13 @@ export class TaskListWrapperComponent implements OnInit {
   /**
    * To be overridden.
    */
+   public get pageSessionKey(): string {
+    return 'pageSessionKey';
+  }
+
+  /**
+   * To be overridden.
+   */
   public get view(): string {
     return 'default';
   }
@@ -125,9 +128,9 @@ export class TaskListWrapperComponent implements OnInit {
       handleFatalErrors(error.status, this.router);
     });
     // Try to get the sort order out of the session.
-    const stored = this.sessionStorageService.getItem(this.sortSessionKey);
-    if (stored) {
-      const { fieldName, order } = JSON.parse(stored);
+    const sortStored = this.sessionStorageService.getItem(this.sortSessionKey);
+    if (sortStored) {
+      const { fieldName, order } = JSON.parse(sortStored);
       this.sortedBy = {
         fieldName,
         order: order as TaskSort
@@ -139,18 +142,11 @@ export class TaskListWrapperComponent implements OnInit {
         order: this.taskServiceConfig.defaultSortDirection
       };
     }
-
-    this.isPaginationEnabled$.subscribe({
-      next: (result: boolean) => {
-        if (!result) this.pagination = null;
-        else {
-          this.pagination = {
-            page_number: 1,
-            page_size: 25
-          };
-        }
-      }
-    });
+    const pageSorted = +this.sessionStorageService.getItem(this.pageSessionKey);
+    this.pagination = {
+      page_number: pageSorted ? pageSorted : 1,
+      page_size: 25
+    };
   }
 
   /**
@@ -224,7 +220,6 @@ export class TaskListWrapperComponent implements OnInit {
     }
     this.sortedBy = { fieldName, order };
     this.sessionStorageService.setItem(this.sortSessionKey, JSON.stringify(this.sortedBy));
-
     this.loadTasks();
   }
 
@@ -254,7 +249,7 @@ export class TaskListWrapperComponent implements OnInit {
   private doLoad(): void {
     this.showSpinner$ = this.loadingService.isLoading;
     const loadingToken = this.loadingService.register();
-    this.isPaginationEnabled$.pipe(mergeMap(enabled => enabled ? this.performSearchPagination() : this.performSearch())).subscribe(result => {
+    this.performSearchPagination().subscribe(result => {
         this.loadingService.unregister(loadingToken);
         this.tasks = result.tasks;
         this.tasksTotal = result.total_records;
@@ -268,6 +263,7 @@ export class TaskListWrapperComponent implements OnInit {
 
   public onPaginationHandler(pageNumber: number): void {
     this.pagination.page_number = pageNumber;
+    this.sessionStorageService.setItem(this.pageSessionKey, pageNumber.toString());
     this.doLoad();
   }
 

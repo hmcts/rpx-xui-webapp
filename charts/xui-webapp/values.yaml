@@ -69,7 +69,7 @@ nodejs:
     # Services Em Anno
     SERVICES_EM_ANNO_API: http://em-anno-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services Em docassembly
-    SERVICES_EM_DOCASSEMBLY_API: http://dg-docassembly-aat-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    SERVICES_EM_DOCASSEMBLY_API: http://dg-docassembly-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services Markup
     SERVICES_MARKUP_API: http://em-npa-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services ICP

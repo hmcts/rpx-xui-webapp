@@ -6,7 +6,7 @@ import { TaskFieldConfig } from '../../../work-allocation-2/models/tasks';
 import { handleFatalErrors, REDIRECTS } from '../../../work-allocation-2/utils';
 
 import { UserInfo } from '../../../app/models/user-details.model';
-import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
+import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
 @Component({
@@ -23,6 +23,10 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
     return SortConstants.Session.AvailableTasks;
   }
 
+  public get pageSessionKey(): string {
+    return PageConstants.Session.AvailableTasks;
+  }
+
   public get view(): string {
     return ListConstants.View.AvailableTasks;
   }
@@ -35,7 +39,6 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      const id = userInfo.id ? userInfo.id : userInfo.uid;
       const isJudge = userInfo.roles.some(role => ListConstants.JUDGE_ROLES.includes(role));
       return {
         search_parameters: [

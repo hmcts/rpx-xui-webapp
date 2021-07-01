@@ -1,7 +1,7 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { PaginationParameter } from 'src/work-allocation-2/models/dtos';
+import { PaginationParameter } from '../..//models/dtos';
 
 import { ListConstants } from '../../components/constants';
 import { TaskSort } from '../../enums';
@@ -112,6 +112,8 @@ export class TaskListComponent implements OnChanges {
    * @param fieldName - ie. 'caseName'
    */
   public onSortHandler(fieldName: string): void {
+    const header = document.getElementById(`header_${this.sortedBy.fieldName}`);
+    header.setAttribute('aria-sort', 'none');
     // emit the task sort field to get relevant information
     this.sortEvent.emit(fieldName);
   }
@@ -184,8 +186,14 @@ export class TaskListComponent implements OnChanges {
   }
 
   public onResetSorting(): void {
+    let header = document.getElementById(`header_${this.sortedBy.fieldName}`);
+    header.setAttribute('aria-sort', 'none');
+    this.pagination.page_number = 1;
     this.setDefaultSort();
     this.sortEvent.emit(this.sortedBy.fieldName);
+    this.paginationEvent.emit(this.pagination.page_number);
+    header = document.getElementById(`header_${this.sortedBy.fieldName}`);
+    header.setAttribute('aria-sort', 'ascending');
   }
 
   private setDefaultSort(): void {

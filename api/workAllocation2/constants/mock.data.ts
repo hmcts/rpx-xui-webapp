@@ -71,6 +71,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'EEA',
       case_name: 'James Priest',
       permissions: ['Read', 'Manage'],
+      warnings: true,
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba2',
@@ -82,6 +83,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'Protection',
       case_name: 'Ella Ryan',
       permissions: ['Read', 'Manage'],
+      warnings: true,
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba3',
@@ -104,6 +106,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'asylum',
       case_name: 'Boris Bush',
       permissions: ['Read'],
+      warnings: true,
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba5',
@@ -126,6 +129,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'Protection',
       case_name: 'Ella Frank',
       permissions: ['Read', 'Manage'],
+      warnings: true,
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba7',
@@ -148,6 +152,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'asylum',
       case_name: 'Boris Shrub',
       permissions: ['Read'],
+      warnings: true,
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba9',
@@ -170,6 +175,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'Protection',
       case_name: 'Ella Roderick',
       permissions: ['Read', 'Manage'],
+      warnings: true,
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb1',
@@ -192,6 +198,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'asylum',
       case_name: 'Boris Badger',
       permissions: ['Read'],
+      warnings: true,
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb3',
@@ -214,6 +221,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'Protection',
       case_name: 'Ella Farthing',
       permissions: ['Read', 'Manage'],
+      warnings: true,
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb5',
@@ -236,6 +244,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'asylum',
       case_name: 'Boris Shrew',
       permissions: ['Read'],
+      warnings: true,
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb7',
@@ -258,6 +267,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'Protection',
       case_name: 'Ella Ran',
       permissions: ['Read', 'Manage'],
+      warnings: true,
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb9',
@@ -280,6 +290,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'asylum',
       case_name: 'Boris Bawler',
       permissions: ['Read'],
+      warnings: true,
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc1',
@@ -302,6 +313,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'Protection',
       case_name: 'Ella Forthorn',
       permissions: ['Read', 'Manage'],
+      warnings: true,
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc3',
@@ -324,6 +336,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'asylum',
       case_name: 'Boris Slither',
       permissions: ['Read'],
+      warnings: true,
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc5',
@@ -346,6 +359,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'Protection',
       case_name: 'Ella Redan',
       permissions: ['Read', 'Manage'],
+      warnings: true,
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc7',
@@ -368,6 +382,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'asylum',
       case_name: 'Boris Bear',
       permissions: ['Read'],
+      warnings: true,
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc9',
@@ -390,6 +405,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'Protection',
       case_name: 'Ella Ferry',
       permissions: ['Read', 'Manage'],
+      warnings: true,
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd1',
@@ -412,6 +428,7 @@ export const JUDICIAL_MY_TASKS = {
       case_category: 'asylum',
       case_name: 'Boris Starling',
       permissions: ['Read'],
+      warnings: true,
     },
   ],
 };
@@ -450,6 +467,7 @@ export const CASEWORKER_MY_TASKS = {
       case_category: 'refusalOfHumanRights',
       case_name: 'Ryan Lee',
       permissions: ['Read', 'Manage'],
+      warnings: true,
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bb4',
@@ -483,6 +501,7 @@ export const CASEWORKER_MY_TASKS = {
       case_category: 'Protection',
       case_name: 'Victoria Kingship',
       permissions: ['Read', 'Manage'],
+      warnings: true,
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bb7',
@@ -516,6 +535,7 @@ export const CASEWORKER_MY_TASKS = {
       case_category: 'EEA',
       case_name: 'Tanya Bore',
       permissions: ['Read', 'Manage'],
+      warnings: true,
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bc0',
@@ -549,6 +569,7 @@ export const CASEWORKER_MY_TASKS = {
       case_category: 'asylum',
       case_name: 'Kim Lovelier',
       permissions: ['Read'],
+      warnings: true,
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bc3',
@@ -582,6 +603,7 @@ export const CASEWORKER_MY_TASKS = {
       case_category: 'refusalOfHumanRights',
       case_name: 'Ryan Laughing',
       permissions: ['Read', 'Manage'],
+      warnings: true,
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bc6',
@@ -615,6 +637,7 @@ export const CASEWORKER_MY_TASKS = {
       case_category: 'Protection',
       case_name: 'Victoria Knightingale',
       permissions: ['Read', 'Manage'],
+      warnings: true,
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bc9',
@@ -648,6 +671,7 @@ export const CASEWORKER_MY_TASKS = {
       case_category: 'EEA',
       case_name: 'Tanya Bills',
       permissions: ['Read', 'Manage'],
+      warnings: true,
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bd2',
@@ -681,6 +705,7 @@ export const CASEWORKER_MY_TASKS = {
       case_category: 'asylum',
       case_name: 'Kim Lavellan',
       permissions: ['Read'],
+      warnings: true,
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bd5',
@@ -714,6 +739,7 @@ export const CASEWORKER_MY_TASKS = {
       case_category: 'refusalOfHumanRights',
       case_name: 'Ryan Lost',
       permissions: ['Read', 'Manage'],
+      warnings: true,
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bd8',
@@ -747,6 +773,7 @@ export const CASEWORKER_MY_TASKS = {
       case_category: 'Protection',
       case_name: 'Victoria Keep',
       permissions: ['Read', 'Manage'],
+      warnings: true,
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7be1',
@@ -827,6 +854,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_category: 'asylum',
       case_name: 'Alan Jonson',
       permissions: ['Read', 'Manage'],
+      warnings: true,
     },
     {
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc5',
@@ -867,6 +895,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_category: 'asylum',
       case_name: 'Kenny Young',
       permissions: ['Read'],
+      warnings: true,
     },
     {
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc9',
@@ -907,6 +936,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_category: 'asylum',
       case_name: 'Alan Jordan',
       permissions: ['Read', 'Manage'],
+      warnings: true,
     },
     {
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bd3',
@@ -947,6 +977,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_category: 'asylum',
       case_name: 'Kenny Younger',
       permissions: ['Read'],
+      warnings: true,
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc17',
@@ -987,6 +1018,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_category: 'asylum',
       case_name: 'Alan Jonson',
       permissions: ['Read', 'Manage'],
+      warnings: true,
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc21',
@@ -1027,6 +1059,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_category: 'asylum',
       case_name: 'Kenny Young',
       permissions: ['Read'],
+      warnings: true,
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc25',
@@ -1067,6 +1100,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_category: 'asylum',
       case_name: 'Alan Jordan',
       permissions: ['Read', 'Manage'],
+      warnings: true,
     },
   ],
 };
@@ -1122,6 +1156,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_category: 'EEA',
       case_name: 'Evelyn Madison',
       permissions: ['Read', 'Manage'],
+      warnings: true,
     },
     {
       id: '0d22d839-b25a-11eb-a18c-f2d58a9b7bd6',
@@ -1172,6 +1207,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_category: 'Protection',
       case_name: 'James Cartoff',
       permissions: ['Execute'],
+      warnings: true,
     },
     {
       id: '0d22d839-b25a-11eb-a18c-f2d58a9b7be1',
@@ -1222,6 +1258,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_category: 'refusalOfHumanRights',
       case_name: 'Jamie Jackdaw',
       permissions: ['Read', 'Manage'],
+      warnings: true,
     },
     {
       id: '0d22d839-b25a-11eb-a18c-f2d58a9b7be6',
@@ -1272,6 +1309,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_category: 'asylum',
       case_name: 'Martin Wyatt',
       permissions: ['Cancel', 'Manage'],
+      warnings: true,
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd21',
@@ -1322,6 +1360,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_category: 'EEA',
       case_name: 'Kimberly July',
       permissions: ['Read', 'Manage'],
+      warnings: true,
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd26',
@@ -1372,6 +1411,7 @@ export const CASEWORKER_AVAILABLE_TASKS = {
       case_category: 'Protection',
       case_name: 'Harper Eliza',
       permissions: ['Manage', 'Cancel'],
+      warnings: true,
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd31',

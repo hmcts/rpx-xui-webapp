@@ -1,4 +1,5 @@
-<div *ngIf="pagination && enablePagination; else tableSummary" class="pagination-top" attr.aria-label="{{ tasksTotal }} results have been found" role="status">
+<div *ngIf="paginationEnabled()" class="pagination-top"
+     attr.aria-label="{{ tasksTotal }} results have been found" role="status">
   <span class="text-16">Displaying
       <span class="govuk-!-font-weight-bold">{{ getFirstResult() }}</span>
       -
@@ -8,10 +9,10 @@
       tasks.</span>
 </div>
 
-<ng-template #tableSummary>
-  <div class="pagination-top" attr.aria-label="{{ tasksTotal }} results have been found" role="status" *ngIf="enablePagination">
-    <span class="text-16">Displaying <span class="govuk-!-font-weight-bold">{{ tasksTotal || 0 }} </span>tasks.</span></div>
-</ng-template>
+<div class="pagination-top" attr.aria-label="{{ tasksTotal }} results have been found" role="status"
+     *ngIf="!paginationEnabled()">
+  <span class="text-16">Displaying <span class="govuk-!-font-weight-bold">{{ tasksTotal || 0 }} </span>tasks.</span>
+</div>
 
 <!-- Reset Sorting Button -->
 <div *ngIf="showResetSortButton" class="reset-sort-button"><button type="button" class="govuk-button hmcts-button--secondary" (click)="onResetSorting()">Reset sorting</button></div>
@@ -64,7 +65,8 @@
     <td cdk-cell *cdkCellDef="let rowData" [attr.colspan]="displayedColumns.length" class="cell-actions">
       <ng-container *ngIf="isTaskSelected(rowData)">
         <div *ngFor="let action of rowData.actions" class="task-action">
-          <a tabindex="0" (click)="onActionHandler(rowData, action)" class="action" [id]="'action_' + action.id">{{action.title}}</a>
+          <a tabindex="0" (click)="onActionHandler(rowData, action)" class="action"
+             [id]="'action_' + action.id">{{action.title}}</a>
         </div>
       </ng-container>
     </td>
@@ -95,4 +97,4 @@
 
 </table>
 
-<ccd-pagination [autoHide]="true" (pageChange)="paginationEvent.emit($event)" *ngIf="enablePagination"></ccd-pagination>
+<ccd-pagination [autoHide]="true" (pageChange)="paginationEvent.emit($event)" *ngIf="paginationEnabled()"></ccd-pagination>

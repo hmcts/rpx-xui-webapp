@@ -6,7 +6,8 @@ import {
   CASEWORKER_AVAILABLE_TASKS,
   CASEWORKER_MY_TASKS,
   JUDICIAL_AVAILABLE_TASKS,
-  JUDICIAL_MY_TASKS, JUDICIAL_WORKERS
+  JUDICIAL_MY_TASKS,
+  JUDICIAL_WORKERS
 } from './constants/mock.data';
 
 // random generator
@@ -40,7 +41,6 @@ export const init = () => {
   const mock = new MockAdapter(httpMock);
 
   const judicialMyTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/myTasks\?view=judicial/;
-  // tslint:disable-next-line:max-line-length
   const judicialAvailableTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/availableTasks\?view=judicial/;
   const caseworkerMyTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/myTasks\?view=caseworker/;
   // tslint:disable-next-line:max-line-length
@@ -81,7 +81,7 @@ export const init = () => {
     const paginationConfig = body.pagination_parameters;
     const sortingConfig = body.sorting_parameters;
     const taskList = sort(JUDICIAL_MY_TASKS.tasks,
-       getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
+      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {
@@ -91,7 +91,7 @@ export const init = () => {
     ];
   });
 
-    // simulate some error if needed
+  // simulate some error if needed
   // mock.onGet(url).networkErrorOnce()
   mock.onPost(judicialAllTasksUrl).reply(config => {
     // return an array in the form of [status, data, headers]
@@ -112,7 +112,7 @@ export const init = () => {
     const paginationConfig = body.pagination_parameters;
     const sortingConfig = body.sorting_parameters;
     const taskList = sort(JUDICIAL_AVAILABLE_TASKS.tasks,
-       getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
+      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {
@@ -128,7 +128,7 @@ export const init = () => {
     const paginationConfig = body.pagination_parameters;
     const sortingConfig = body.sorting_parameters;
     const taskList = sort(CASEWORKER_MY_TASKS.tasks,
-       getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
+      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {
@@ -154,7 +154,7 @@ export const init = () => {
     const paginationConfig = body.pagination_parameters;
     const sortingConfig = body.sorting_parameters;
     const taskList = sort(CASEWORKER_AVAILABLE_TASKS.tasks,
-       getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
+      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {

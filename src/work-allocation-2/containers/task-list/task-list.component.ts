@@ -18,7 +18,7 @@ export class TaskListComponent implements OnChanges {
    * These are the tasks & fields as returned from the WA Api.
    */
   @Input() public tasks: Task[];
-  @Input() public enablePagination: boolean = true
+  @Input() public enablePagination: boolean = true;
   @Input() public tasksTotal: number;
   @Input() public taskServiceConfig: TaskServiceConfig;
   @Input() public sortedBy: TaskSortField;
@@ -148,6 +148,10 @@ export class TaskListComponent implements OnChanges {
 
   public getSelectedTask(): Task {
     return this.selectedTask;
+  }
+
+  public paginationEnabled(): boolean {
+    return this.pagination && this.enablePagination;
   }
 
   public isTaskSelected(task: Task): boolean {

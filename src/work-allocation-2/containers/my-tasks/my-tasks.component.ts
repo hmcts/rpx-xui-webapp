@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { UserInfo } from '../../../app/models/user-details.model';
-import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
+import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
 import { SearchTaskRequest } from '../../models/dtos';
 import { TaskFieldConfig } from '../../models/tasks';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
@@ -17,6 +17,10 @@ export class MyTasksComponent extends TaskListWrapperComponent {
 
   public get sortSessionKey(): string {
     return SortConstants.Session.MyTasks;
+  }
+
+  public get pageSessionKey(): string {
+    return PageConstants.Session.MyTasks;
   }
 
   public get view(): string {

@@ -1,4 +1,4 @@
-@ng @test
+@ng 
 Feature: Task actions
 
     Background: Mock and browser setup

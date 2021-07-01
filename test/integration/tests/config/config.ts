@@ -4,7 +4,6 @@ export  const config =  {
         {
             id: 'DIVORCE',
             caseTypeIds : [
-                'MyAddressBook',
                 'DIVORCE',
                 'FinancialRemedyMVP2',
                 'FinancialRemedyContested'

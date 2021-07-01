@@ -20,7 +20,6 @@ Feature: Available Tasks Task list
         Then I see Available tasks page displayed
         Then I validate tasks count in page 25
 
-@test
     Scenario: Avaiable Tasks sort columns
         Given I set MOCK with user roles
             | role                      |

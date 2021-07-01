@@ -100,7 +100,7 @@ class CaseListPage{
                     break;
                 case "YesOrNo":
                     let inputYesNo = input ? input : "Yes";
-                    inputYesNo = fieldConfig.field.id + "-" + inputYesNo; 
+                    inputYesNo = fieldConfig.field.id + "_" + inputYesNo; 
                     await this.dynamicFiltersContainer.$(`.form-group #${fieldConfig.field.id} input#${inputYesNo}`).click();
                     inputValue = inputYesNo.includes("Yes") ? "Yes": "No";
                     break;

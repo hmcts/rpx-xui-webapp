@@ -212,12 +212,10 @@ class CaseManager {
         var thisPageUrl = await browser.getCurrentUrl();
         cucumberReporter.AddMessage("Submitting page: " + thisPageUrl);
         console.log("Submitting : " + thisPageUrl )
-        await continieElement.click();
-        browser.waitForAngular();
-        await BrowserWaits.waitForPageNavigation(thisPageUrl);
 
         await BrowserWaits.retryWithActionCallback(async () => {
             await continieElement.click();
+            browser.waitForAngular();
             await BrowserWaits.waitForPageNavigation(thisPageUrl);
         });
 
@@ -338,6 +336,7 @@ class CaseManager {
                 this._appendFormPageValues(fieldName1, selectionOptionValue);
                 break;
             case "ccd-write-date-field":
+            case "ccd-write-date-container-field":
                 var dateValue = this._fieldValue(fieldName);
                 if(dateValue.includes(fieldName) || dateValue === ""){
                     dateValue = date().format('DD-MM-YYYY');
@@ -416,7 +415,9 @@ class CaseManager {
                 break;
             default:
                 console.log("Unknown field type : " + ccdFileTagName);
-                cucumberReporter.AddMessage(fieldName + " : unknown field " + ccdFileTagName);
+
+                cucumberReporter.AddMessage(fieldName + " : unknown ccd field container " + ccdFileTagName+". Please check if container is missing in test config or changed");  
+
         }
     }
 

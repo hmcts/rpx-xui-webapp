@@ -122,22 +122,23 @@ export class AppComponent implements OnInit, OnDestroy {
         const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
         this.addTimeoutNotificationServiceListener();
         this.initTimeoutNotificationService(idleModalDisplayTime, totalIdleTime);
-        this.setUserAndCheckCookie(userDetails.userInfo.id);
+        const uid = userDetails.userInfo.id ? userDetails.userInfo.id : userDetails.userInfo.uid;
+        this.setUserAndCheckCookie(uid);
       }
     }
   }
 
   public initializeFeature(userInfo: UserInfo, ldClientId: string) {
-    if (userInfo) {
+      if (userInfo) {
 
-      const featureUser: FeatureUser = {
-        key: userInfo.id || userInfo.uid,
-        custom: {
-          roles: userInfo.roles,
-          orgId: '-1'
-        }
-      };
-      this.featureService.initialize(featureUser, ldClientId);
+        const featureUser: FeatureUser = {
+          key: userInfo.id || userInfo.uid,
+          custom: {
+            roles: userInfo.roles,
+            orgId: '-1'
+          }
+        };
+        this.featureService.initialize(featureUser, ldClientId);
     }
   }
 

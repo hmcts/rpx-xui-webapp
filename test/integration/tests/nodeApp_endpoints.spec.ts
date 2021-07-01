@@ -41,12 +41,19 @@ describe('nodeApp endpoint', () => {
 
   it('api/user/details', async () => {
     await Request.withSession(userName, password);
+    const configRes = await Request.get('external/configuration-ui', null, 200);
+
     const response = await Request.get('api/user/details', null, 200);
     expect(response.status).to.equal(200);
     expect(response.data).to.have.all.keys('canShareCases', 'sessionTimeout', 'userInfo','locationInfo');
     expect(response.data.userInfo).to.have.all.keys('id', 'forename', 'surname', 'email', 'active', 'roles','token');
     expect(response.data.userInfo.roles).to.be.an('array');
-
+    if (configRes.data.oidcEnabled){ 
+      expect(response.data.userInfo).to.have.all.keys('uid', 'family_name', 'given_name','name', 'sub', 'roles', 'token');
+    }else{
+      expect(response.data.userInfo).to.have.all.keys('id', 'forename', 'surname', 'email', 'active', 'roles', 'token');
+    }
+    
   });
 
   it('api/user/details without session', async () => {

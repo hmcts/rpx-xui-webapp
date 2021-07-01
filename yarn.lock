@@ -415,10 +415,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@3.1.5-pagination-changes":
-  version "3.1.5-pagination-changes"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-3.1.5-pagination-changes.tgz#04823e3385c3f792279939174628da2663256983"
-  integrity sha512-e04xgtpMBCcmrW2vY/DKpEiFj+hOTHo2f3S4iCIiSnRryo7bl8PhtUdwD5NAvA5+om3FvHzQ0WHh38mgaleB9g==
+"@hmcts/ccd-case-ui-toolkit@3.1.5-pagination-changes-with-new-arrows":
+  version "3.1.5-pagination-changes-with-new-arrows"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-3.1.5-pagination-changes-with-new-arrows.tgz#4c6de88afccb1cf32de10f51bc33d065694ed051"
+  integrity sha512-Myy/O1tz8gX9GipLAULpSQRz1TyRjcyuXG+/WnVb2W6yC027RKCSbbO8eug8DsbPsc6Mu0N+HMh3LwfycPOQSA==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

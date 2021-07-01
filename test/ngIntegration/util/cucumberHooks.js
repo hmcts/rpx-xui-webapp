@@ -6,7 +6,6 @@ const { Given, When, Then } = require('cucumber');
 const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));
 
-const BrowserWaits = require('../../e2e/support/customWaits');
 const BrowserUtil = require('./browserUtil');
 const config = require('../config/protractor-cucumber.conf');
 
@@ -14,7 +13,7 @@ const headerPage = require('../../e2e/features/pageObjects/headerPage');
 const CucumberReportLog = require("../../e2e/support/reportLogger");
 
 const MockApp = require('../../nodeMock/app');
-const { browser } = require('protractor');
+const BrowserWaits = require('../../e2e/support/customWaits');
 
 defineSupportCode(({ Before, After }) => {
     Before(async function (scenario) {
@@ -35,8 +34,11 @@ defineSupportCode(({ Before, After }) => {
         // done();
     });
 
-    After(async function (scenario)     {
-        //await BrowserWaits.waitForSeconds(600);
+    After(async function (scenario) {
+        if(argv.debug){
+           // await BrowserWaits.waitForSeconds(600);
+        }
+        
         await MockApp.stopServer();
         const scenarioId = await BrowserUtil.getScenarioIdCookieValue();
         MockApp.deleteScenarioSession(scenarioId);

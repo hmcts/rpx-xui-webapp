@@ -74,10 +74,13 @@ export const init = () => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
     const paginationConfig = body.pagination_parameters;
+    const sortingConfig = body.sorting_parameters;
+    const taskList = sort(JUDICIAL_MY_TASKS.tasks,
+       getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {
-        tasks: paginate(JUDICIAL_MY_TASKS.tasks, paginationConfig.page_number, paginationConfig.page_size),
+        tasks: paginate(taskList, paginationConfig.page_number, paginationConfig.page_size),
         total_records: JUDICIAL_MY_TASKS.tasks.length,
       },
     ];
@@ -102,10 +105,13 @@ export const init = () => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
     const paginationConfig = body.pagination_parameters;
+    const sortingConfig = body.sorting_parameters;
+    const taskList = sort(JUDICIAL_AVAILABLE_TASKS.tasks,
+       getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {
-        tasks: paginate(JUDICIAL_AVAILABLE_TASKS.tasks, paginationConfig.page_number, paginationConfig.page_size),
+        tasks: paginate(taskList, paginationConfig.page_number, paginationConfig.page_size),
         total_records: JUDICIAL_AVAILABLE_TASKS.tasks.length,
       },
     ];
@@ -115,10 +121,13 @@ export const init = () => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
     const paginationConfig = body.pagination_parameters;
+    const sortingConfig = body.sorting_parameters;
+    const taskList = sort(CASEWORKER_MY_TASKS.tasks,
+       getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {
-        tasks: paginate(CASEWORKER_MY_TASKS.tasks, paginationConfig.page_number, paginationConfig.page_size),
+        tasks: paginate(taskList, paginationConfig.page_number, paginationConfig.page_size),
         total_records: CASEWORKER_MY_TASKS.tasks.length,
       },
     ];
@@ -138,10 +147,13 @@ export const init = () => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
     const paginationConfig = body.pagination_parameters;
+    const sortingConfig = body.sorting_parameters;
+    const taskList = sort(CASEWORKER_AVAILABLE_TASKS.tasks,
+       getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {
-        tasks: paginate(CASEWORKER_AVAILABLE_TASKS.tasks, paginationConfig.page_number, paginationConfig.page_size),
+        tasks: paginate(taskList, paginationConfig.page_number, paginationConfig.page_size),
         total_records: CASEWORKER_AVAILABLE_TASKS.tasks.length,
       },
     ];
@@ -189,6 +201,26 @@ export const init = () => {
       ];
     }
   });
+};
+
+export const getSortName = (sortName: string): string => {
+  switch (sortName) {
+    case 'caseName':
+      return 'case_name';
+    case 'caseCategory':
+      return 'case_category';
+    case 'locationName':
+      return 'location_name';
+    case 'taskTitle':
+      return 'task_title';
+    default:
+      return sortName;
+  }
+};
+
+export const sort = (array: any[], sortName: string, isAsc: boolean): any[] => {
+  array = array.sort((a, b) => a[sortName].localeCompare(b[sortName]));
+  return isAsc ? array : array.reverse();
 };
 
 export const paginate = (array: any[], pageNumber: number, pageSize: number): any[] => {

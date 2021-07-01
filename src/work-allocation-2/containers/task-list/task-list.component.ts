@@ -49,6 +49,17 @@ export class TaskListComponent implements OnChanges {
 
   constructor(private readonly router: Router) {}
 
+  public get showResetSortButton(): boolean {
+    if (!this.sortedBy) {
+      return false;
+    }
+    const { defaultSortFieldName, defaultSortDirection } = this.taskServiceConfig;
+    if (this.sortedBy.fieldName === defaultSortFieldName && this.sortedBy.order === defaultSortDirection) {
+      return false;
+    }
+    return true;
+  }
+
   public selectTaskFromUrlHash(url: string): Task | null {
     if (url) {
       const hashValue = url.substring(url.indexOf('#') + 1);
@@ -160,8 +171,7 @@ export class TaskListComponent implements OnChanges {
   public getColumnSortedSetting(fieldName: string): string {
     // If we don't have an actual sortedBy value, default it now.
     if (!this.sortedBy) {
-      const { defaultSortFieldName, defaultSortDirection } = this.taskServiceConfig;
-      this.sortedBy = { fieldName: defaultSortFieldName, order: defaultSortDirection };
+      this.setDefaultSort();
     }
 
     // If this is the field we're sorted by, return the appropriate order.
@@ -171,6 +181,16 @@ export class TaskListComponent implements OnChanges {
 
     // This field is not sorted, return NONE.
     return TaskSort.NONE;
+  }
+
+  public onResetSorting(): void {
+    this.setDefaultSort();
+    this.sortEvent.emit(this.sortedBy.fieldName);
+  }
+
+  private setDefaultSort(): void {
+    const { defaultSortFieldName, defaultSortDirection } = this.taskServiceConfig;
+    this.sortedBy = { fieldName: defaultSortFieldName, order: defaultSortDirection };
   }
 
   private setupHash(): void {

@@ -13,6 +13,9 @@
     <span class="text-16" id="search-result-summary__text">Displaying <span class="govuk-!-font-weight-bold">{{ tasksTotal || 0 }} </span>tasks.</span></div>
 </ng-template>
 
+<!-- Reset Sorting Button -->
+<div *ngIf="showResetSortButton" class="reset-sort-button"><button type="button" class="govuk-button hmcts-button--secondary" (click)="onResetSorting()">Reset sorting</button></div>
+
 <!-- Using the Angular Component Development Kit Table Module, and not Angular Material -->
 <table cdk-table [dataSource]="dataSource$" class="govuk-table" [multiTemplateDataRows]="true">
 

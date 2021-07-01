@@ -163,9 +163,13 @@ class TaskListTable extends Application{
     async clickManageLinkForTaskAt(position){
         await browserUtil.stepWithRetry(async () => {
             const taskrow = await this.getTableRowAt(position);
-
-            await BrowserWaits.waitForElementClickable(taskrow);
-            await taskrow.$('button[id^="manage_"]').click();
+            let taskManageLink = taskrow.$('button[id^="manage_"]');
+            await browser.executeScript('arguments[0].scrollIntoView()',
+                taskManageLink.getWebElement())
+            await taskManageLink.click();
+            if (!(await this.isManageLinkOpenForTaskAtPos(position))){
+                throw new Error('Manage link not open. retying action');
+            }
         });
     }
 

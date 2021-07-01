@@ -1,4 +1,4 @@
-@ng
+@ng 
 Feature: Case edit pages
     Background: Start mock app
         Given I set mock case create config "caseConfig"

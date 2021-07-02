@@ -12,7 +12,8 @@ import { getSearchTaskOverrides} from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 
 const { Matchers } = require('@pact-foundation/pact');
-const { somethingLike } = Matchers;
+import { DateTimeMatcher } from '../utils/matchers';
+const { somethingLike, iso8601DateTime, term } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'wa_task_management_api_search', port: 8000 });
 
 
@@ -31,8 +32,8 @@ describe("Task management api, Search task", () => {
                 "task_system": somethingLike("SELF"),
                 "security_classification": somethingLike("PUBLIC"),
                 "task_title": somethingLike("Review the appeal"),
-                "created_date": somethingLike("2021-06-30T12:32:46Z"),
-                "due_date": somethingLike("2021-06-30T12:32:46Z"),
+                "created_date": term(DateTimeMatcher("2021-06-30T16:53:10+0100")),
+                "due_date": term(DateTimeMatcher("2021-06-30T16:53:10+0100")),
                 "assignee": somethingLike("10bac6bf-80a7-4c81-b2db-516aba826be6"),
                 "auto_assigned": somethingLike(false),
                 "execution_type": somethingLike("Case Management Task"),
@@ -54,9 +55,8 @@ describe("Task management api, Search task", () => {
                 "task_system": somethingLike("SELF"),
                 "security_classification": somethingLike("PUBLIC"),
                 "task_title": somethingLike("Review the appeal"),
-                "created_date": somethingLike("2021-06-30T12:32:46Z"),
-                "due_date": somethingLike("2021-06-30T12:32:46Z"),
-                "assignee": null,
+                "created_date": term(DateTimeMatcher("2021-06-30T16:53:10+0100")),
+                "due_date": term(DateTimeMatcher("2021-06-30T16:53:10+0100")),
                 "auto_assigned": somethingLike(true),
                 "execution_type": somethingLike("Case Management Task"),
                 "jurisdiction": somethingLike("IA"),
@@ -179,7 +179,7 @@ function assertResponses(dto: any) {
     expect(dto.tasks[0].case_id).to.be.equal("1617708245335311");
     expect(dto.tasks[0].location_name).to.be.equal("Taylor House");
     expect(dto.tasks[0].task_title).to.be.equal("Review the appeal");
-    expect(dto.tasks[0].dueDate).to.be.equal("2021-06-30T12:32:46Z");
+    expect(dto.tasks[0].dueDate).to.be.equal("2021-06-30T16:53:10+0100");
 
     expect(dto.tasks[0].assignee).to.be.equal("10bac6bf-80a7-4c81-b2db-516aba826be6");
 

@@ -11,7 +11,8 @@ import { getSearchTaskOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 
 const { Matchers } = require('@pact-foundation/pact');
-const { somethingLike } = Matchers;
+import {DateTimeMatcher} from '../utils/matchers';
+const { somethingLike, iso8601DateTime,term } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'wa_task_management_api_get_task_by_id', port: 8000 });
 
 const taskId = "f782bde3-8d51-11eb-a9a4-06d032acc76d"
@@ -27,8 +28,8 @@ describe("Task management api, get task by id", () => {
             "task_system": somethingLike("SELF"),
             "security_classification": somethingLike("PUBLIC"),
             "task_title": somethingLike("Review the appeal"),
-            "created_date": somethingLike("2021-06-30T12:32:46Z"),
-            "due_date": somethingLike("2021-06-30T12:32:46Z"),
+            "created_date": term(DateTimeMatcher("2021-06-30T16:53:10+0100")),
+            "due_date": term(DateTimeMatcher("2021-06-30T16:53:10+0100")),
             "assignee": somethingLike("10bac6bf-80a7-4c81-b2db-516aba826be6"),
             "auto_assigned": somethingLike(false),
             "execution_type": somethingLike("Case Management Task"),
@@ -132,7 +133,7 @@ function assertResponses(dto: any) {
     expect(dto.task.case_id).to.be.equal("1617708245335311");
     expect(dto.task.location_name).to.be.equal("Taylor House");
     expect(dto.task.task_title).to.be.equal("Review the appeal");
-    expect(dto.task.dueDate).to.be.equal("2021-06-30T12:32:46Z");
+    expect(dto.task.dueDate).to.be.equal("2021-06-30T16:53:10+0100");
     expect(dto.task.assignee).to.be.equal("10bac6bf-80a7-4c81-b2db-516aba826be6"); 
 }
 

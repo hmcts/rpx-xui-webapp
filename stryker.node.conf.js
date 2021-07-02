@@ -11,9 +11,7 @@ const modulesArr = [
     "termsAndConditions",
     "user","userTermsAndConditions",
     "workAllocation"
-
 ];
-
 
 const modulesString = modulesArr.join(",");
 

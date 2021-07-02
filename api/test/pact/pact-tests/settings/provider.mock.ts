@@ -15,7 +15,7 @@ export class PactTestSetup {
     this.provider = new Pact({
       consumer: "xui_webApp",
       dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
-      log: path.resolve(process.cwd(), "api/test/pact/logs", config.provider+".log"),
+      log: path.resolve(process.cwd(), "api/test/pact/logs", `${config.provider}.log`),
       logLevel: 'info',
       pactfileWriteMode: "merge",
       port: this.port,

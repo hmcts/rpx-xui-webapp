@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { UserInfo } from 'src/app/models/user-details.model';
-import { ConfigConstants, ListConstants, SortConstants } from 'src/work-allocation-2/components/constants';
+import { ConfigConstants, ListConstants, PageConstants, SortConstants } from 'src/work-allocation-2/components/constants';
 import { SearchTaskRequest } from 'src/work-allocation-2/models/dtos';
 import { TaskFieldConfig } from '../../models/tasks';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
@@ -20,12 +20,16 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     return SortConstants.Session.AllWork;
   }
 
+  public get pageSessionKey(): string {
+    return PageConstants.Session.AllWork;
+  }
+
   public get view(): string {
     return ListConstants.View.AllWork;
   }
 
   public get fields(): TaskFieldConfig[] {
-    return ConfigConstants.MyWorkTasks;
+    return ConfigConstants.AllWorkTasks;
   }
 
   public getSearchTaskRequestPagination(): SearchTaskRequest {

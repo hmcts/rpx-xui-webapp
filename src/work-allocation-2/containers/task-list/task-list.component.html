@@ -95,4 +95,4 @@
 
 </table>
 
-<ccd-pagination [autoHide]="true" (pageChange)="paginationEvent.emit($event)"></ccd-pagination>
+<ccd-pagination *ngIf="tasksTotal" [autoHide]="true" (pageChange)="paginationEvent.emit($event)"></ccd-pagination>

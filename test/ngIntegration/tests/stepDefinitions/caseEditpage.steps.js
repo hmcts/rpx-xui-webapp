@@ -14,7 +14,6 @@ const CucumberReporter = require('../../../e2e/support/reportLogger');
 const BrowserWaits = require('../../../e2e/support/customWaits');
 
 const headerpage = require('../../../e2e/features/pageObjects/headerPage');
-const caseListPage = require('../pageObjects/caselistPage');
 const { getTestJurisdiction } = require('../../mockData/ccdCaseMock');
 const { Browser } = require('selenium-webdriver');
 

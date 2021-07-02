@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-
 import { AppTitleModel } from '../../models/app-title.model';
 import { UserNavModel } from '../../models/user-nav.model';
 import * as fromRoot from '../../store';
 import { NavItemsModel } from './../../models/nav-item.model';
+
 
 @Component({
   selector: 'exui-header',

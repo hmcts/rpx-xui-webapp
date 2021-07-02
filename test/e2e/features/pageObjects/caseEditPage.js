@@ -269,13 +269,17 @@ class caseEditPage {
     async validateMandatoryFields() {
         var currentPageElement = $('ccd-case-edit-page');
         await BrowserWaits.waitForElement(currentPageElement);
+
+        let buttonEnable = await this.continueButton.isEnabled();
+        expect(buttonEnable).to.eql(true);
+
+        await this.continueButton.click();
         let e = $("#TextField");
         await e.sendKeys(protractor.Key.ENTER);
         await e.sendKeys(protractor.Key.TAB);
         let errormsg = await $("ccd-write-text-field .error-message").getText();
-        expect(errormsg).to.eql("This field is required");
-        let buttonEnable = await this.continueButton.isEnabled();
-        expect(buttonEnable).to.eql(false);
+        expect(errormsg).to.eql("Text Field is required");
+        
     }
 
     async eventPageDisplayShowCondition() {

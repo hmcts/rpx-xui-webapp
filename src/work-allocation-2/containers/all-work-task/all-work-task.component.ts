@@ -63,7 +63,7 @@ export class AllWorkTaskComponent implements OnInit {
   }
 
   public get view(): string {
-    return 'AllWorkAssigned';
+    return 'AllWork';
   }
 
   private doLoad(): void {

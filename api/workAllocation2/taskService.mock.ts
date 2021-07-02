@@ -92,10 +92,13 @@ export const init = () => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
     const paginationConfig = body.pagination_parameters;
+    // for purposes of testing assigned and unassigned tasks
+    let allTasks = [...JUDICIAL_AVAILABLE_TASKS.tasks, ...JUDICIAL_MY_TASKS.tasks];
+    allTasks = allTasks.sort((a, b) => a[`dueDate`].localeCompare(b[`dueDate`]));
     return [
       200,
       {
-        tasks: paginate(JUDICIAL_MY_TASKS.tasks, paginationConfig.page_number, paginationConfig.page_size),
+        tasks: paginate(allTasks, paginationConfig.page_number, paginationConfig.page_size),
         total_records: JUDICIAL_MY_TASKS.tasks.length,
       },
     ];

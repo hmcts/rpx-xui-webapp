@@ -24,7 +24,8 @@
             true,
           {
             "limit": 130,
-            "check-strings": false
+            "check-regex": false,
+            "ignore-pattern": "\/"
           }
         ],
         "member-access": false,

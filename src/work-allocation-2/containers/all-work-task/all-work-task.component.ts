@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { UserInfo } from 'src/app/models/user-details.model';
-import { ConfigConstants, ListConstants, PageConstants, SortConstants } from 'src/work-allocation-2/components/constants';
-import { SearchTaskRequest } from 'src/work-allocation-2/models/dtos';
+import { UserInfo } from '../../../app/models/user-details.model';
+import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../../work-allocation-2/components/constants';
+import { SearchTaskRequest } from '../../../work-allocation-2/models/dtos';
 import { TaskFieldConfig } from '../../models/tasks';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 

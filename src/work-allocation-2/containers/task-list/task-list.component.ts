@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { PaginationParameter } from 'src/work-allocation-2/models/dtos';
+import { PaginationParameter } from '../../../work-allocation-2/models/dtos';
 
 import { ListConstants } from '../../components/constants';
 import { TaskSort } from '../../enums';

@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
-import { PaginationParameter } from 'src/work-allocation-2/models/dtos';
+import { PaginationParameter } from '../../../work-allocation-2/models/dtos';
 
 import { ConfigConstants } from '../../../work-allocation/components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';

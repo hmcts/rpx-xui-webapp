@@ -450,7 +450,7 @@ describe('TaskListComponent', () => {
     let paginationSummary: HTMLElement;
 
     beforeEach(() => {
-      paginationSummary = fixture.debugElement.nativeElement.querySelector('span.text-16');
+      paginationSummary = fixture.debugElement.nativeElement.querySelector('span[data-test="search-result-summary__text"]');
     });
 
     it('should correctly set the summary text', () => {

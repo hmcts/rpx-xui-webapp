@@ -1046,7 +1046,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'Jo Flying',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage', 'Execute'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc27',

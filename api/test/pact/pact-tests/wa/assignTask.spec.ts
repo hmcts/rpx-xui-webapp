@@ -47,7 +47,6 @@ describe("Task management api, assign a task to user", () => {
                 willRespondWith: {
                     status: 204,
                     headers: {
-                        "Content-Type": "application/json",
                     }
                 },
             }

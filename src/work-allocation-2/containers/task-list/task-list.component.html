@@ -1,6 +1,6 @@
 <div *ngIf="paginationEnabled()" class="pagination-top"
      attr.aria-label="{{ tasksTotal }} results have been found" role="status">
-  <span class="text-16">Displaying
+  <span class="text-16" data-test="search-result-summary__text">Displaying
       <span class="govuk-!-font-weight-bold">{{ getFirstResult() }}</span>
       -
       <span class="govuk-!-font-weight-bold">{{ getLastResult() }}</span>
@@ -11,7 +11,7 @@
 
 <div class="pagination-top" attr.aria-label="{{ tasksTotal }} results have been found" role="status"
      *ngIf="!paginationEnabled()">
-  <span class="text-16">Displaying <span class="govuk-!-font-weight-bold">{{ tasksTotal || 0 }} </span>tasks.</span>
+  <span class="text-16" data-test="search-result-summary__text">Displaying <span class="govuk-!-font-weight-bold">{{ tasksTotal || 0 }} </span>tasks.</span>
 </div>
 
 <!-- Reset Sorting Button -->

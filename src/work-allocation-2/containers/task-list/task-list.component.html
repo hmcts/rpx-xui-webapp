@@ -10,7 +10,7 @@
 </div>
 
 <div class="pagination-top" attr.aria-label="{{ tasksTotal }} results have been found" role="status"
-     *ngIf="!paginationEnabled">
+     *ngIf="!pagination && enablePagination">
   <span class="text-16" data-test="search-result-summary__text">Displaying <span class="govuk-!-font-weight-bold">{{ tasksTotal || 0 }} </span>tasks.</span>
 </div>
 

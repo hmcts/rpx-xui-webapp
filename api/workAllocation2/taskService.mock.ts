@@ -94,7 +94,8 @@ export const init = () => {
     const paginationConfig = body.pagination_parameters;
     const sortingConfig = body.sorting_parameters;
     let allTasks = [...JUDICIAL_AVAILABLE_TASKS.tasks, ...JUDICIAL_MY_TASKS.tasks];
-    allTasks = allTasks.sort((a, b) => a[`dueDate`].localeCompare(b[`dueDate`]));
+    allTasks = sort(allTasks,
+      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {
@@ -215,6 +216,8 @@ export const getSortName = (sortName: string): string => {
     case 'locationName':
       return 'location_name';
     case 'taskTitle':
+      return 'task_title';
+    case 'assignee':
       return 'task_title';
     default:
       return sortName;

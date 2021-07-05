@@ -78,6 +78,7 @@ const DUE_DATE: TaskFieldConfig = {
   views: TaskView.ALL_VIEWS
 };
 const ASSIGNEE: TaskFieldConfig = {
+  disableSort: true,
   name: 'assigneeName',
   type: TaskFieldType.STRING,
   columnLabel: 'Person',

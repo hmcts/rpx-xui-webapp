@@ -36,8 +36,9 @@
   <ng-container *ngIf="!tasksTotal">
     <ng-container *ngFor="let field of fields" [cdkColumnDef]="field.name">
       <th class="govuk-table__header" [attr.aria-sort]="getColumnSortedSetting(field.sortName)" cdk-header-cell *cdkHeaderCellDef>
-        <button class="column-sort" *ngIf="field.columnLabel" type="button" [id]="'sort_by_' + field.sortName" data-index="0"
+        <button class="column-sort" *ngIf="field.columnLabel && !field.disableSort" type="button" [id]="'sort_by_' + field.sortName" data-index="0"
                 (click)="onSortHandler(field.sortName)" >{{field.columnLabel}}</button>
+        <h1 class="column-label" *ngIf="field.disableSort">{{field.columnLabel}}</h1>
       </th>
       <td class="govuk-table__cell border-none" cdk-cell *cdkCellDef="let rowData">
         <exui-task-field [task]="rowData" [config]="field"></exui-task-field>

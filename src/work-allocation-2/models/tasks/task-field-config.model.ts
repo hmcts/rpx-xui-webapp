@@ -1,6 +1,7 @@
 import { TaskFieldType } from './../../enums';
 
 export default interface TaskFieldConfig {
+  disableSort?: boolean; // optional, disable sorting only when set as true
   name: string;          // as returned by task api
   type: TaskFieldType;
   columnLabel: string;   // can be null for no column header

@@ -39,6 +39,7 @@ Feature: WA Release 2: My work -  Available tasks
         Given I navigate to home page
         When I navigate to My work sub navigation tab "Available tasks"
         Then I validate tasks count in page 25
+        Then I validate task table pagination controls, is displayed state is "true"
         Then I validate task list page results text displayed as "Displaying 1 - 25 out of 140 tasks"
         Given I reset reference "taskSearchRequest" value to null
         When I click task list pagination link "Next" and wait for req reference "taskSearchRequest" not null
@@ -83,6 +84,7 @@ Feature: WA Release 2: My work -  Available tasks
         Given I navigate to home page
         When I navigate to My work sub navigation tab "Available tasks"
         Then I validate tasks count in page 25
+        Then I validate task table pagination controls, is displayed state is "true"
         Then I validate task list page results text displayed as "Displaying 1 - 25 out of 140 tasks"
 
         When I click task list table header column "Case name"

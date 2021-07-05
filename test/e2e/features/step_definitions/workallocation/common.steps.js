@@ -15,6 +15,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         expect(await taskListTable.getPaginationResultText()).to.include(pagnationResultText);
     });
 
+    Then('I validate task table pagination controls, is displayed state is {string}', async function (isDisplauyed) {
+        expect(await taskListTable.isPaginationControlDisplayed()).to.equal(isDisplauyed.toLowerCase() == "true");
+    });
+
     When('I click task list pagination link {string}', async function (paginationLinktext) {
         await BrowserWaits.waitForSeconds(1);
         

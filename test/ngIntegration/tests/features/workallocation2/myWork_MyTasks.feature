@@ -1,4 +1,4 @@
-@ng
+@ng 
 Feature: WA Release 2: My work - My Tasks
 
     Background: Mock and browser setup
@@ -31,6 +31,23 @@ Feature: WA Release 2: My work - My Tasks
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
             | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
+    Scenario Outline: My Tasks pagnation control display with only 1 page of items
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
+        Given I set MOCK tasks with permissions for view "My Tasks" and assigned state ""
+            | Permissions | Count |
+            | Manage      | 10   |
+            | Read        | 10    |
+        Given I set MOCK request "/workallocation2/taskWithPagination/" intercept with reference "taskSearchRequest"
+        Given I start MockApp
+
+        Given I navigate to home page
+        Then I validate tasks count in page 20
+        Then I validate task table pagination controls, is displayed state is "false"
+       
+        Examples:
+            | UserIdentifier     | UserType   | Roles                                              |
+            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
+            | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
     Scenario Outline: My Tasks pagnation and sorting for user type "<UserType>" with roles "<Roles>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
@@ -44,6 +61,7 @@ Feature: WA Release 2: My work - My Tasks
         Given I navigate to home page
 
         Then I validate tasks count in page 25
+        Then I validate task table pagination controls, is displayed state is "true"
         Then I validate task list page results text displayed as "Displaying 1 - 25 out of 140 tasks"
         Given I reset reference "taskSearchRequest" value to null
         When I click task list pagination link "Next" and wait for req reference "taskSearchRequest" not null
@@ -78,7 +96,7 @@ Feature: WA Release 2: My work - My Tasks
 
     Scenario Outline: My Tasks sort column persist in session with Caseworker user "<SubNavigationTab>"
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer "
-        Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
+        Given I set MOCK tasks with permissions for view "My Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 100   |
             | Read        | 40    |
@@ -88,6 +106,7 @@ Feature: WA Release 2: My work - My Tasks
         Given I navigate to home page
         When I navigate to My work sub navigation tab "<SubNavigationTab>"
         Then I validate tasks count in page 25
+        Then I validate task table pagination controls, is displayed state is "true"
         Then I validate task list page results text displayed as "Displaying 1 - 25 out of 140 tasks"
 
         When I click task list table header column "Case name"

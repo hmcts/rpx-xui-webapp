@@ -33,7 +33,7 @@ Feature: WA Release 2: My work - My Tasks
 
     Scenario Outline: My Tasks pagnation control display with only 1 page of items
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
-        Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
+        Given I set MOCK tasks with permissions for view "My Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 10   |
             | Read        | 10    |
@@ -96,7 +96,7 @@ Feature: WA Release 2: My work - My Tasks
 
     Scenario Outline: My Tasks sort column persist in session with Caseworker user "<SubNavigationTab>"
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer "
-        Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
+        Given I set MOCK tasks with permissions for view "My Tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 100   |
             | Read        | 40    |

@@ -1,3 +1,4 @@
+// @ts-ignore
 import { EnhancedRequest } from 'lib/models';
 import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX } from './constants/actions';
 import { Person, PersonDomain } from './interfaces/person';

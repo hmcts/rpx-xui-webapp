@@ -79,6 +79,7 @@ class CCDCaseConfig extends CCDCaseField {
         const ccdField = this.getCCDFieldTemplateCopy(fieldConfig);
 
         if (ccdField.field_type.type === "Complex") {
+            ccdField.display_context = "COMPLEX";
             this.currentComplexField = ccdField;
             this.currentCollectionField = null;
         } else if (ccdField.field_type.type === "Collection") {

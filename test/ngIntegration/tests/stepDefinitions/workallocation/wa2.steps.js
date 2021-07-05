@@ -59,7 +59,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
                 const startIndexForPage = (pageNum-1) * pageSize;
                 const endIndexForPage = (startIndexForPage + pageSize) < tasks.length ? startIndexForPage + pageSize : tasks.length - 1;
-                for (let i = startIndexForPage; i < endIndexForPage; i++) {
+                for (let i = startIndexForPage; i <= endIndexForPage; i++) {
                     thisPageTasks.push(tasks[i]);
                 }
                 res.send({ tasks: thisPageTasks, total_records: tasks.length });

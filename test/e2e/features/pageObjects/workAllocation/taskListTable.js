@@ -274,6 +274,10 @@ class TaskListTable extends Application{
         await linkElement.click();
 
     }
+
+    async isPaginationControlDisplayed(){
+        return this.paginationContainer.isPresent() && this.paginationContainer.isDisplayed();
+    }
 }
 
 module.exports = TaskListTable; 

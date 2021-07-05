@@ -10,6 +10,7 @@ export const LIST_CONSTANTS = {
   View: {
     AvailableTasks: 'AvailableTasks',
     MyTasks: 'MyTasks',
+    MyCases: 'MyCases',
     TaskManager: 'TaskManager'
   },
   JUDGE_ROLES: ['caseworker-ia-iacjudge']

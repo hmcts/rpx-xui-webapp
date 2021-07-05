@@ -40,7 +40,7 @@ const localConfig = [
 
 if(isParallelExecution){
     jenkinsConfig[0].shardTestFiles = true;
-    jenkinsConfig[0].maxInstances = 3;
+    jenkinsConfig[0].maxInstances = 4;
 }
 
 const cap = (argv.local) ? localConfig : jenkinsConfig;

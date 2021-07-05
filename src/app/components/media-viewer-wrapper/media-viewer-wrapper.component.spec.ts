@@ -12,6 +12,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 const GATEWAY_DOCUMENT_URL = 'http://localhost:1234/documents';
 const REMOTE_DOCUMENT_URL = 'https://www.example.com/binary';
+const GATEWAY_HRS_URL = 'http://localhost:1234/hearing-recordings';
+const REMOTE_HRS_URL = 'https://www.example.com/hearing-recordings';
 const MEDIA_VIEWER_DATA = {
     document_binary_url: GATEWAY_DOCUMENT_URL,
     document_filename: 'sample.pdf',
@@ -27,9 +29,13 @@ describe('MediaViewerWrapperComponent', () => {
     let featureToggleService;
 
     beforeEach(async(() => {
-        mockAppConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getDocumentManagementUrl', 'getRemoteDocumentManagementUrl']);
+        mockAppConfig = createSpyObj<AbstractAppConfig>('AppConfig',
+          ['getHrsUrl', 'getRemoteHrsUrl', 'getDocumentManagementUrl', 'getRemoteDocumentManagementUrl']
+        );
         mockAppConfig.getDocumentManagementUrl.and.returnValue(GATEWAY_DOCUMENT_URL);
         mockAppConfig.getRemoteDocumentManagementUrl.and.returnValue(REMOTE_DOCUMENT_URL);
+        mockAppConfig.getHrsUrl.and.returnValue(GATEWAY_HRS_URL);
+        mockAppConfig.getRemoteHrsUrl.and.returnValue(REMOTE_HRS_URL);
         windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage', 'removeLocalStorage']);
         featureToggleService = createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
         TestBed.configureTestingModule({

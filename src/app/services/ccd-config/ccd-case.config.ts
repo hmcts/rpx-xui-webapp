@@ -64,6 +64,14 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.remote_document_management_url;
   }
 
+  public getHrsUrl() {
+    return this.config.hrs_url;
+  }
+
+  public getRemoteHrsUrl() {
+    return this.config.remote_hrs_url;
+  }
+
   public getPostcodeLookupUrl() {
     return this.config.postcode_lookup_url;
   }

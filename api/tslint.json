@@ -25,7 +25,7 @@
           {
             "limit": 130,
             "check-regex": false,
-            "ignore-pattern": "\/"
+            "ignore-pattern": "\/http"
           }
         ],
         "member-access": false,

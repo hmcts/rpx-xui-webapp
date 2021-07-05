@@ -94,12 +94,12 @@ module.exports = {
                 const thisPageTasks = [];
               
 
-                const startIndexForPage = ((pageNum * pageSize)  -  pageSize);
-                const endIndexForPage = (startIndexForPage + pageSize) < tasks.length ? startIndexForPage + pageSize : tasks.length - 1;
-                for (let i = startIndexForPage; i < endIndexForPage; i++) {
-                    thisPageTasks.push(tasks[i]);
+                const startIndexForPage = pageNum === 1 ? 0 : ((pageNum - 1) * pageSize) - 1;
+                const endIndexForPage = (startIndexForPage + pageSize) < tasks.total_records ? startIndexForPage + pageSize - 1 : tasks.total_records - 1;
+                for (let i = startIndexForPage; i <= endIndexForPage; i++) {
+                    thisPageTasks.push(tasks.tasks[i]);
                 }
-                res.send({ tasks: thisPageTasks, total_records: tasks.length });
+                res.send({ tasks: thisPageTasks, total_records: tasks.total_records });
             } catch (e) {
                 res.status(500).send({ error: 'mock error occured',stack:e.stack });
             }

@@ -2,16 +2,38 @@ $govuk-global-styles: true;
 $hmcts-images-path: "/assets/images/";
 
 // Width of main container
-$hmcts-page-width: 1220px;
+$hmcts-page-width: 1920px;
 
 // TODO temporary solution to extend the width of the page until is addressed through govuk-frontend"
-body .govuk-width-container, #content {
-  max-width: 1220px;
+header, footer.govuk-footer{
+  min-width: 1020px;
 }
 
-#content {
-  padding-left: 20px;
+ .govuk-footer__meta{
+  max-width: 1860px;
+  min-width: 960px;
+  padding-right: 15px;
+  padding-left: 15px;
 }
+
+  body .govuk-width-container{
+    padding-right: 30px;
+    padding-left:  20px;
+    max-width: 1860px;
+    min-width: 900px;
+    margin: auto;
+  }
+
+  #content{
+    margin-right: 30px;
+    max-width: 1860px;
+    min-width: 900px;
+  }
+
+  .govuk-phase-banner {
+    max-width: 1860px;
+    min-width: 900px;
+  }
 
 @import "~govuk-frontend/govuk/all";
 @import "~@hmcts/frontend/all";

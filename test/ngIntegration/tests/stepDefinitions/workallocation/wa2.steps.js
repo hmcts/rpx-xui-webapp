@@ -50,7 +50,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }
             
         }
-        global.scenarioData[`workallocation2.${view.split(" ").join("")}`] = tasks ;
+        global.scenarioData[`workallocation2.${view.split(" ").join("")}`] = {tasks : tasks, total_records:tasks.length} ;
         
     });
 

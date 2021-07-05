@@ -69,19 +69,23 @@ class TaskListTable extends Application{
     }
 
     async getColumnHeaderNames(){
-        await this.waitForTable();
-        const headers = element.all(by.xpath(`//exui-task-list//table//thead//th//button`));
-        const headerElementsCount = await headers.count();
-        const headerElements = [];
-        for (let i =  0; i < headerElementsCount; i++){
-            headerElements.push(await headers.get(i));
-        }
-        const names = await ArrayUtil.map(headerElements , async (headerElement) => {
-            const headerName = await headerElement.getText();
-            return headerName.trim();
-        });
+        return await BrowserWaits.retryWithActionCallback(async () => {
+            await this.waitForTable();
+            const headers = element.all(by.xpath(`//exui-task-list//table//thead//th//button`));
+            const headerElementsCount = await headers.count();
+            const headerElements = [];
 
-        return names; 
+
+            for (let i = 0; i < headerElementsCount; i++) {
+                headerElements.push(await headers.get(i));
+            }
+            const names = await ArrayUtil.map(headerElements, async (headerElement) => {
+                const headerName = await headerElement.getText();
+                return headerName.trim();
+            });
+            return names;
+        });
+       
     }    
 
     async clickColumnHeader(headerName){

@@ -1,4 +1,4 @@
-<div *ngIf="paginationEnabled()" class="pagination-top"
+<div *ngIf="paginationEnabled" class="pagination-top"
      attr.aria-label="{{ tasksTotal }} results have been found" role="status">
   <span class="text-16" data-test="search-result-summary__text">Displaying
       <span class="govuk-!-font-weight-bold">{{ getFirstResult() }}</span>
@@ -10,7 +10,7 @@
 </div>
 
 <div class="pagination-top" attr.aria-label="{{ tasksTotal }} results have been found" role="status"
-     *ngIf="!paginationEnabled()">
+     *ngIf="!paginationEnabled">
   <span class="text-16" data-test="search-result-summary__text">Displaying <span class="govuk-!-font-weight-bold">{{ tasksTotal || 0 }} </span>tasks.</span>
 </div>
 
@@ -97,4 +97,4 @@
 
 </table>
 
-<ccd-pagination [autoHide]="true" (pageChange)="paginationEvent.emit($event)" *ngIf="paginationEnabled()"></ccd-pagination>
+<ccd-pagination [autoHide]="true" (pageChange)="paginationEvent.emit($event)" *ngIf="paginationEnabled"></ccd-pagination>

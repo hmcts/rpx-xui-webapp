@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { PaginationParameter } from 'src/work-allocation-2/models/dtos';
@@ -12,7 +12,8 @@ import { InvokedTaskAction, Task, TaskAction, TaskFieldConfig, TaskServiceConfig
   templateUrl: './task-list.component.html',
   styleUrls: ['task-list.component.scss']
 })
-export class TaskListComponent implements OnChanges {
+export class TaskListComponent implements OnChanges, OnInit {
+    public paginationEnabled: boolean = true;
 
   /**
    * These are the tasks & fields as returned from the WA Api.
@@ -48,13 +49,18 @@ export class TaskListComponent implements OnChanges {
 
   private selectedTask: Task;
 
-  constructor(private readonly router: Router) {}
+  constructor(private readonly router: Router) {
+  }
+
+  public ngOnInit(): void {
+    this.paginationEnabled = this.pagination && this.enablePagination;
+  }
 
   public get showResetSortButton(): boolean {
     if (!this.sortedBy) {
       return false;
     }
-    const { defaultSortFieldName, defaultSortDirection } = this.taskServiceConfig;
+    const {defaultSortFieldName, defaultSortDirection} = this.taskServiceConfig;
     if (this.sortedBy.fieldName === defaultSortFieldName && this.sortedBy.order === defaultSortDirection) {
       return false;
     }
@@ -150,10 +156,6 @@ export class TaskListComponent implements OnChanges {
     return this.selectedTask;
   }
 
-  public paginationEnabled(): boolean {
-    return this.pagination && this.enablePagination;
-  }
-
   public isTaskSelected(task: Task): boolean {
     return task === this.selectedTask;
   }
@@ -193,9 +195,17 @@ export class TaskListComponent implements OnChanges {
     this.sortEvent.emit(this.sortedBy.fieldName);
   }
 
+  public getFirstResult(): number {
+    return ((this.getCurrentPageIndex() * this.pagination.page_size) + (this.tasks ? 1 : 0));
+  }
+
+  public getLastResult(): number {
+    return ((this.getCurrentPageIndex() * this.pagination.page_size) + this.getCurrentTaskCount());
+  }
+
   private setDefaultSort(): void {
-    const { defaultSortFieldName, defaultSortDirection } = this.taskServiceConfig;
-    this.sortedBy = { fieldName: defaultSortFieldName, order: defaultSortDirection };
+    const {defaultSortFieldName, defaultSortDirection} = this.taskServiceConfig;
+    this.sortedBy = {fieldName: defaultSortFieldName, order: defaultSortDirection};
   }
 
   private setupHash(): void {
@@ -203,9 +213,9 @@ export class TaskListComponent implements OnChanges {
       const currentPath = this.router.url || '';
       const basePath = currentPath.split('#')[0];
       if (this.selectedTask) {
-        this.router.navigate([ basePath ], { fragment: `manage_${this.selectedTask.id}` });
+        this.router.navigate([basePath], {fragment: `manage_${this.selectedTask.id}`});
       } else {
-        this.router.navigate([ basePath ]);
+        this.router.navigate([basePath]);
       }
     }
   }
@@ -216,14 +226,6 @@ export class TaskListComponent implements OnChanges {
 
   private getCurrentTaskCount(): number {
     return this.tasks ? this.tasks.length : 0;
-  }
-
-  public getFirstResult(): number {
-    return ((this.getCurrentPageIndex() * this.pagination.page_size) + (this.tasks ? 1 : 0));
-  }
-
-  public getLastResult(): number {
-    return ((this.getCurrentPageIndex() * this.pagination.page_size) + this.getCurrentTaskCount());
   }
 
 }

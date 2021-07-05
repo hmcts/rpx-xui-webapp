@@ -5,7 +5,7 @@ Feature: Case edit pages
         Given I start MockApp
 
 
-    Scenario: Case edipt page navigation
+    Scenario: Case edit page navigation
         Given I set MOCK with user roles
             | role                      |
             | caseworker-ia-caseofficer |
@@ -20,7 +20,7 @@ Feature: Case edit pages
             | caseworker-ia-admofficer  |
         Given I navigate page route "cases/case-create/Test_Jurisdiction/Test_case/testEvent/testPage"
         Then I see case edit page displayed
-        When I click cancel in case edit page, I see case list page displayed
+        When I click cancel in case edit page then I see page case list page
 
     Scenario Outline:  Validate config pages and fields
         Given I set MOCK event "caseConfig" props

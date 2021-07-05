@@ -68,13 +68,16 @@ export function preparePaginationUrl(req: EnhancedRequest, postTaskPath: string)
  * @param view This dictates which set of actions we should use.
  */
 export function assignActionsToTasks(tasks: any[], view: any): any[] {
+  const allWorkView = 'AllWork';
   const tasksWithActions: any[] = [];
   if (tasks) {
     for (const task of tasks) {
-      // Note: There is no current logic to determine whether assigned or unassigned
-      // This was debated for EUI-3619
-      // As actions can change based on whether assigned or not, there might need to be a check here
-      const actions: Action[] = getActionsByPermissions(view, task.permissions);
+      let thisView = view;
+      if (view === allWorkView) {
+        thisView = task.assignee ? 'AllWorkAssigned' : 'AllWorkUnassigned';
+      }
+      const actions: Action[] = getActionsByPermissions(thisView, task.permissions);
+      view = allWorkView;
       const taskWithAction = {...task, actions};
       tasksWithActions.push(taskWithAction);
     }

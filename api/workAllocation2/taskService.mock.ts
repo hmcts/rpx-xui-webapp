@@ -93,13 +93,13 @@ export const init = () => {
     const body = JSON.parse(config.data);
     const paginationConfig = body.pagination_parameters;
     const sortingConfig = body.sorting_parameters;
-    const taskList = sort(JUDICIAL_MY_TASKS.tasks,
-      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
+    let allTasks = [...JUDICIAL_AVAILABLE_TASKS.tasks, ...JUDICIAL_MY_TASKS.tasks];
+    allTasks = allTasks.sort((a, b) => a[`dueDate`].localeCompare(b[`dueDate`]));
     return [
       200,
       {
-        tasks: paginate(taskList, paginationConfig.page_number, paginationConfig.page_size),
-        total_records: taskList.length,
+        tasks: paginate(allTasks, paginationConfig.page_number, paginationConfig.page_size),
+        total_records: allTasks.length,
       },
     ];
   });

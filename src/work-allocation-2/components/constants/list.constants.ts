@@ -12,7 +12,7 @@ export const LIST_CONSTANTS = {
     AvailableTasks: 'AvailableTasks',
     MyTasks: 'MyTasks',
     TaskManager: 'TaskManager',
-    AllWork: 'AllWorkAssigned'
+    AllWork: 'AllWork'
   },
   JUDGE_ROLES: ['caseworker-ia-iacjudge']
 };

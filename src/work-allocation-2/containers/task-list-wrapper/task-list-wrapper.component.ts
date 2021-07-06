@@ -2,15 +2,14 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-
-import { Caseworker } from 'api/workAllocation/interfaces/task';
+import { Caseworker, Location } from 'api/workAllocation2/interfaces/task';
 import { Observable } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
 import { ListConstants } from '../../components/constants';
 import { InfoMessage, InfoMessageType, TaskActionIds, TaskService, TaskSort } from '../../enums';
 import { PaginationParameter, SearchTaskRequest, SortParameter } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
-import { CaseworkerDataService, InfoMessageCommService, WorkAllocationTaskService } from '../../services';
+import { CaseworkerDataService, InfoMessageCommService, LocationDataService, WorkAllocationTaskService } from '../../services';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 
 @Component({
@@ -21,6 +20,7 @@ export class TaskListWrapperComponent implements OnInit {
 
   public specificPage: string = '';
   public caseworkers: Caseworker[];
+  public locations: Location[];
   public showSpinner$: Observable<boolean>;
   public sortedBy: TaskSortField;
   public pagination: PaginationParameter;
@@ -47,7 +47,8 @@ export class TaskListWrapperComponent implements OnInit {
     protected alertService: AlertService,
     protected caseworkerService: CaseworkerDataService,
     protected loadingService: LoadingService,
-    protected featureToggleService: FeatureToggleService
+    protected featureToggleService: FeatureToggleService,
+    protected locationService: LocationDataService
   ) {
   }
 
@@ -117,8 +118,17 @@ export class TaskListWrapperComponent implements OnInit {
   }
 
   public ngOnInit(): void {
+    this.loadCaseWorkersAndLocations();
     this.setupTaskList();
     this.loadTasks();
+  }
+
+  public loadCaseWorkersAndLocations() {
+    this.locationService.getLocations().subscribe(locations => {
+      this.locations = [...locations];
+    }, error => {
+      handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
+    });
   }
 
   public setupTaskList() {

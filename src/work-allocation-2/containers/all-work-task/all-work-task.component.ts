@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
+import { Location } from 'api/workAllocation2/interfaces/task';
+import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from 'src/work-allocation-2/utils';
 import { UserInfo } from '../../../app/models/user-details.model';
-import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../../work-allocation-2/components/constants';
-import { SearchTaskRequest } from '../../../work-allocation-2/models/dtos';
+import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from '../../../work-allocation-2/components/constants';
+import { Caseworker, SearchTaskRequest } from '../../../work-allocation-2/models/dtos';
 import { TaskFieldConfig } from '../../models/tasks';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
@@ -11,6 +13,8 @@ import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper
     styleUrls: ['all-work-task.component.scss']
 })
 export class AllWorkTaskComponent extends TaskListWrapperComponent {
+  private selectedCaseworker: Caseworker;
+  private selectedLocation: Location;
 
   public get emptyMessage(): string {
     return ListConstants.EmptyMessage.AllWork;
@@ -36,11 +40,11 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      const id = userInfo.id ? userInfo.id : userInfo.uid;
       const isJudge = userInfo.roles.some(role => ListConstants.JUDGE_ROLES.includes(role));
       return {
         search_parameters: [
-          { key: 'user', operator: 'IN', values: [ id ] },
+        this.getLocationParameter(),
+        this.getCaseworkerParameter()
         ],
         sorting_parameters: [this.getSortParameter()],
         search_by: isJudge ? 'judge' : 'caseworker',
@@ -49,10 +53,40 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     }
   }
 
+  private getLocationParameter() {
+    let values: string[];
+    if (this.selectedLocation && this.selectedLocation.id !== FilterConstants.Options.Locations.ALL.id) {
+      values = [ this.selectedLocation.id ];
+    } else {
+      values = this.locations.map(loc => loc.id);
+    }
+    return { key: 'location', operator: 'IN', values };
+  }
+
+  private getCaseworkerParameter() {
+    let values: string[];
+    if (this.selectedCaseworker && this.selectedCaseworker !== FilterConstants.Options.Caseworkers.ALL) {
+      if (this.selectedCaseworker === FilterConstants.Options.Caseworkers.UNASSIGNED) {
+        values = [];
+      } else {
+        values = [this.selectedCaseworker.idamId];
+      }
+    } else {
+      values = [];
+    }
+    return { key: 'user', operator: 'IN', values };
+  }
+
   /**
    * Handle the paging event
    */
    public onPaginationEvent(pageNumber: number): void {
     this.onPaginationHandler(pageNumber);
+  }
+
+  public onSelectionChanged(selection: { location: Location, caseworker: Caseworker }): void {
+    this.selectedLocation = selection.location;
+    this.selectedCaseworker = selection.caseworker;
+    this.loadTasks();
   }
 }

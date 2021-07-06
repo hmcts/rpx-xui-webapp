@@ -25,24 +25,6 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
   private selectedCaseworker: Caseworker;
   private selectedLocation: Location;
 
-  /**
-   * Take in the Router so we can navigate when actions are clicked.
-   */
-  constructor(
-    protected ref: ChangeDetectorRef,
-    protected taskService: WorkAllocationTaskService,
-    protected router: Router,
-    protected infoMessageCommService: InfoMessageCommService,
-    protected sessionStorageService: SessionStorageService,
-    protected readonly caseworkerService: CaseworkerDataService,
-    private readonly locationService: LocationDataService,
-    protected alertService: AlertService,
-    protected loadingService: LoadingService,
-    protected featureToggleService: FeatureToggleService
-  ) {
-    super(ref, taskService, router, infoMessageCommService, sessionStorageService, alertService, caseworkerService, loadingService, featureToggleService);
-  }
-
   public get fields(): TaskFieldConfig[] {
     return ConfigConstants.TaskManager;
   }

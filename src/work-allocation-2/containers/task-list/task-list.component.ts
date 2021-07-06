@@ -184,8 +184,8 @@ export class TaskListComponent implements OnChanges {
   }
 
   public onResetSorting(): void {
-    this.setDefaultSort();
-    this.sortEvent.emit(this.sortedBy.fieldName);
+    const element = document.getElementById(`sort_by_${this.taskServiceConfig.defaultSortFieldName}`) as HTMLElement;
+    element.click();
   }
 
   private setDefaultSort(): void {

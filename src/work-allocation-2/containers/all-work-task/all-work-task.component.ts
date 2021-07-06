@@ -36,6 +36,14 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     return ConfigConstants.AllWorkTasks;
   }
 
+  public loadCaseWorkersAndLocations() {
+    this.locationService.getLocations().subscribe(locations => {
+      this.locations = [...locations];
+    }, error => {
+      handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
+    });
+  }
+
   public getSearchTaskRequestPagination(): SearchTaskRequest {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {

@@ -20,7 +20,7 @@ export class TaskListWrapperComponent implements OnInit {
 
   public specificPage: string = '';
   public caseworkers: Caseworker[];
-  public locations: Location[];
+  public locations: Location[] = new Array<Location>();
   public showSpinner$: Observable<boolean>;
   public sortedBy: TaskSortField;
   public pagination: PaginationParameter;
@@ -124,11 +124,6 @@ export class TaskListWrapperComponent implements OnInit {
   }
 
   public loadCaseWorkersAndLocations() {
-    this.locationService.getLocations().subscribe(locations => {
-      this.locations = [...locations];
-    }, error => {
-      handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
-    });
   }
 
   public setupTaskList() {
@@ -179,11 +174,6 @@ export class TaskListWrapperComponent implements OnInit {
       message: InfoMessage.LIST_OF_TASKS_REFRESHED,
     });
     this.doLoad();
-  }
-
-  public performSearch(): Observable<any> {
-    const searchRequest = this.getSearchTaskRequestPagination();
-    return this.taskService.searchTask({ searchRequest, view: this.view });
   }
 
   public performSearchPagination(): Observable<any> {

@@ -26,7 +26,7 @@ const ccdFieldTemplate = {
 
     ],
     "complexACLs": [],
-    "display_context": "OPTIONAL",
+    "display_context": null,
     "display_context_parameter": null,
     "formatted_value": null,
     "default_value": null,
@@ -51,13 +51,20 @@ class CCDcaseField {
                 template.field_type.id = fieldConfig.type;
                 template.field_type.type = "Complex";
                 const add1 = this.getCCDFieldTemplateCopy({ type: "Text", id: "AddressLine1", label: "Building and Street" });
+                add1.field_type.id = "TextMax150";
                 const add2 = this.getCCDFieldTemplateCopy({ type: "Text", id: "AddressLine2", label: "Address Line 2" });
+                add2.field_type.id = "TextMax50";
                 const add3 = this.getCCDFieldTemplateCopy({ type: "Text", id: "AddressLine3", label: "Address Line 3" });
+                add3.field_type.id = "TextMax50";
                 const postTown = this.getCCDFieldTemplateCopy({ type: "Text", id: "PostTown", label: "Town or City" });
+                postTown.field_type.id = "TextMax50";
                 const county = this.getCCDFieldTemplateCopy({ type: "Text", id: "County", label: "County" });
+                county.field_type.id = "TextMax50";
                 const postCode = this.getCCDFieldTemplateCopy({ type: "Text", id: "PostCode", label: "Postcode/Zipcode" });
+                postCode.field_type.id = "TextMax14";
                 const country = this.getCCDFieldTemplateCopy({ type: "Text", id: "Country", label: "Country" });
-
+                country.field_type.id = "TextMax50";
+                template.display_context = "COMPLEX";
                 template.field_type.complex_fields = [add1, add2, add3, postTown, county, postCode, country];
                 break;
             case "AddressLine1":
@@ -81,23 +88,29 @@ class CCDcaseField {
                 break
             case "OrderSummary":
             case "CaseLink":
-            case "Organisation":
-                template.field_type.id = fieldConfig.type;
-                template.field_type.type = "Complex";
+                template.field_type.id = "TextCaseReference";
+                template.field_type.type = "Text";
+                template.field_type.regular_expression = "(?:^[0-9]{16}$|^\\d{4}-\\d{4}-\\d{4}-\\d{4}$)";
+                
                 break;
             case "Organisation":
                 template.field_type.id = "OrganisationPolicy";
                 template.field_type.type = "Complex";
-
+                template.display_context = "COMPLEX";
                 const OrgPolicyCaseAssignedRole = this.getCCDFieldTemplateCopy({ type: "Text", id: "OrgPolicyCaseAssignedRole", label: "Case Assigned Role" });
+                const OrgReference = this.getCCDFieldTemplateCopy({ type: "Text", id: "OrgPolicyReference", label: "Reference" });
 
                 const organisation = this.getCCDFieldTemplateCopy({ type: "Complex", id: "Organisation", label: "Organisation" });
-                organisation.field_type.id = "Organisation;";
+                organisation.field_type.id = "Organisation";
                 const orgId = this.getCCDFieldTemplateCopy({ type: "Text", id: "OrganisationID", label: "Organisation ID" });
                 const orgNaMe = this.getCCDFieldTemplateCopy({ type: "Text", id: "OrganisationName", label: "Name" });
-                organisation.field_type.omplex_fields = [orgId, orgNaMe];
+                organisation.field_type.complex_fields = [orgId, orgNaMe];
 
-                template.field_type.complex_fields = [OrgPolicyCaseAssignedRole, organisation];
+                const PrepopulateOrgVal = this.getCCDFieldTemplateCopy({ type: "YesOrNo", id: "PrepopulateToUsersOrganisation", label: "Prepopulate User Organisation" });
+
+
+                template.field_type.complex_fields = [OrgPolicyCaseAssignedRole, organisation, OrgReference, PrepopulateOrgVal];
+                break;
 
             default:
                 template.field_type.id = fieldConfig.type;

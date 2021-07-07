@@ -19,11 +19,6 @@
     "secure": false,
     "logLevel": "debug"
   },
-  "/documentsv2/*": {
-    "target": "http://localhost:3001",
-    "secure": false,
-    "logLevel": "debug"
-  },
   "/hearing-recordings/*": {
     "target": "http://localhost:3001",
     "secure": false,

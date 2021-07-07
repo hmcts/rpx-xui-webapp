@@ -5,8 +5,8 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 
 import { SessionStorageService } from '../../../app/services';
 import { ConfigConstants, FilterConstants, ListConstants, SortConstants } from '../../components/constants';
+import { FieldConfig } from '../../models/common';
 import { Caseworker, Location, SearchTaskRequest } from '../../models/dtos';
-import { TaskFieldConfig } from '../../models/tasks';
 import {
   CaseworkerDataService,
   InfoMessageCommService,
@@ -43,7 +43,7 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
     super(ref, taskService, router, infoMessageCommService, sessionStorageService, alertService, caseworkerService, loadingService, featureToggleService);
   }
 
-  public get fields(): TaskFieldConfig[] {
+  public get fields(): FieldConfig[] {
     return ConfigConstants.TaskManager;
   }
 

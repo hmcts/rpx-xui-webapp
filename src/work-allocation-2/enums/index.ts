@@ -1,19 +1,19 @@
 import { InfoMessage } from './info-message';
 import { InfoMessageType } from './info-message-type';
+import { SortOrder } from './sort-order';
 import { TaskActionIds } from './task-action-ids';
 import { TaskActionType } from './task-action-type';
-import { TaskFieldType } from './task-field-type';
+import { FieldType } from './field-type';
 import { TaskService } from './task-service';
-import { TaskSort } from './task-sort';
 import { TaskView } from './task-view';
 
 export {
+  FieldType,
   InfoMessage,
   InfoMessageType,
+  SortOrder,
   TaskActionIds,
   TaskActionType,
-  TaskFieldType,
   TaskService,
-  TaskSort,
   TaskView
 };

@@ -5,12 +5,14 @@ export const LIST_CONSTANTS = {
     Default: DEFAULT_EMPTY_MESSAGE,
     AvailableTasks: DEFAULT_EMPTY_MESSAGE,
     MyTasks: 'You have no assigned tasks.',
-    TaskManager: DEFAULT_EMPTY_MESSAGE
+    TaskManager: DEFAULT_EMPTY_MESSAGE,
+    AllWork: 'Change your selection to view tasks.'
   },
   View: {
     AvailableTasks: 'AvailableTasks',
     MyTasks: 'MyTasks',
-    TaskManager: 'TaskManager'
+    TaskManager: 'TaskManager',
+    AllWork: 'AllWork'
   },
   JUDGE_ROLES: ['caseworker-ia-iacjudge']
 };

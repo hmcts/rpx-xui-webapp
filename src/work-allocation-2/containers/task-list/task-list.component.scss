@@ -1,3 +1,6 @@
+.task-list-container {
+  padding-top: 10px;
+}
 .actions {
   display: flex;
   justify-content: flex-end;
@@ -116,4 +119,9 @@
       }
     }
   }
+}
+
+.column-label {
+  font-weight: bold;
+  color: #115da0;
 }

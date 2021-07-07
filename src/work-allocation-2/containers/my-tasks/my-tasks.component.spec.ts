@@ -9,7 +9,7 @@ import { of } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
 import { TaskListComponent } from '..';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { TaskFieldType } from '../../enums';
+import { FieldType } from '../../enums';
 import { Task } from '../../models/tasks';
 import { CaseworkerDataService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
 import { getMockTasks } from '../../tests/utils.spec';
@@ -147,7 +147,7 @@ describe('MyTasksComponent', () => {
     component.ngOnInit();
     fixture.detectChanges();
     expect(component.fields[0].name).toBe('case_name');
-    expect(component.fields[0].type).toBe(TaskFieldType.CASE_NAME);
-    expect(component.fields[4].type).toBe(TaskFieldType.TASK_NAME);
+    expect(component.fields[0].type).toBe(FieldType.CASE_NAME);
+    expect(component.fields[4].type).toBe(FieldType.TASK_NAME);
   });
 });

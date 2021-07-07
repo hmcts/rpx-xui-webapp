@@ -1,9 +1,10 @@
 import { NavigationExtras } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { ConfigConstants } from '../components/constants';
-import { TaskService, TaskSort } from '../enums';
+import { SortOrder, TaskService } from '../enums';
+import { FieldConfig } from '../models/common';
 import { Caseworker, Location } from '../models/dtos';
-import { Task, TaskFieldConfig, TaskServiceConfig } from '../models/tasks';
+import { Task, TaskServiceConfig } from '../models/tasks';
 
 const LOCATION_A: Location = { id: 'a', locationName: 'Taylor House', services: [ 'a' ] };
 const LOCATION_B: Location = { id: 'b', locationName: 'Taylor Swift', services: [ 'a', 'b' ] };
@@ -77,7 +78,7 @@ export function getMockTasks(): Task[] {
 /**
  * Mock fields
  */
-export function getMockTaskFieldConfig(): TaskFieldConfig[] {
+export function getMockTaskFieldConfig(): FieldConfig[] {
   return ConfigConstants.AvailableTasks;
 }
 
@@ -87,7 +88,7 @@ export function getMockTaskFieldConfig(): TaskFieldConfig[] {
 export function getMockTaskServiceConfig(): TaskServiceConfig {
   return {
     service: TaskService.IAC,
-    defaultSortDirection: TaskSort.ASC,
+    defaultSortDirection: SortOrder.ASC,
     defaultSortFieldName: 'dueDate',
     fields: getMockTaskFieldConfig()
   };

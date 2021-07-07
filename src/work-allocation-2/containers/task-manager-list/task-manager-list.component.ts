@@ -1,18 +1,8 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { Component, OnInit } from '@angular/core';
 
-import { SessionStorageService } from '../../../app/services';
 import { ConfigConstants, FilterConstants, ListConstants, SortConstants } from '../../components/constants';
+import { FieldConfig } from '../../models/common';
 import { Caseworker, Location, SearchTaskRequest } from '../../models/dtos';
-import { TaskFieldConfig } from '../../models/tasks';
-import {
-  CaseworkerDataService,
-  InfoMessageCommService,
-  LocationDataService,
-  WorkAllocationTaskService,
-} from '../../services';
 import { handleFatalErrors } from '../../utils';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
@@ -24,8 +14,7 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
   public locations: Location[];
   private selectedCaseworker: Caseworker;
   private selectedLocation: Location;
-
-  public get fields(): TaskFieldConfig[] {
+  public get fields(): FieldConfig[] {
     return ConfigConstants.TaskManager;
   }
 

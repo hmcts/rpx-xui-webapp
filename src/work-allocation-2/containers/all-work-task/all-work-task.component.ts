@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import { Location } from 'api/workAllocation2/interfaces/task';
+import { Caseworker } from 'api/workAllocation2/interfaces/task';
+import { UserInfo } from 'src/app/models/user-details.model';
+import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from 'src/work-allocation-2/components/constants';
+import { SortOrder } from 'src/work-allocation-2/enums';
+import { PaginationParameter, SearchTaskRequest } from 'src/work-allocation-2/models/dtos';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from 'src/work-allocation-2/utils';
-import { UserInfo } from '../../../app/models/user-details.model';
-import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from '../../../work-allocation-2/components/constants';
-import { Caseworker, SearchTaskRequest } from '../../../work-allocation-2/models/dtos';
-import { TaskFieldConfig } from '../../models/tasks';
+import { FieldConfig, SortField } from '../../models/common';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
 @Component({
@@ -16,6 +18,15 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   private selectedCaseworker: Caseworker;
   private selectedLocation: Location;
 
+  public sortedBy: SortField = {
+    fieldName: '',
+    order: SortOrder.NONE
+  };
+
+  public pagination: PaginationParameter = {
+    page_number: 1,
+    page_size: 25
+  };
   public get emptyMessage(): string {
     return ListConstants.EmptyMessage.AllWork;
   }
@@ -32,7 +43,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     return ListConstants.View.AllWork;
   }
 
-  public get fields(): TaskFieldConfig[] {
+  public get fields(): FieldConfig[] {
     return ConfigConstants.AllWorkTasks;
   }
 

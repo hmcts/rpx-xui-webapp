@@ -34,7 +34,6 @@ describe('AppConfiguration', () => {
         AppConfig,
         AppConfigService,
         { provide: AppConfigService, useClass: MockConfigService },
-        FeatureToggleService,
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: EnvironmentService, useValue: mockEnvironmentService}
       ]

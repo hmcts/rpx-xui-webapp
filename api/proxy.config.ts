@@ -30,6 +30,13 @@ export const initProxy = (app: Express) => {
     })
 
     applyProxy(app, {
+        rewrite: true,
+        rewriteUrl: '/cases/documents',
+        source: '/documentsv2',
+        target: getConfigValue(SERVICES_DOCUMENTS_API_PATH_V2),
+    })
+  
+    applyProxy(app, {
         rewrite: false,
         source: '/hearing-recordings',
         target: getConfigValue(SERVICES_EM_HRS_API_PATH),

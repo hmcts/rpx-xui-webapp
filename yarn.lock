@@ -419,6 +419,7 @@
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.0.0.tgz#456ba7a49ad2cf74f9a3ef80428aa51e3b47ff7a"
   integrity sha512-sUTUx7s8Vc9xJq6Oo5We4VVnmydjRWykX/LgZ89g/LqzQJm+wlBsKYZx8H2D6DpGJbyHXcbKUor8vYY3ZEK9RQ==
+
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

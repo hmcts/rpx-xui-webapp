@@ -69,7 +69,6 @@ const SANITISED_EDIT_FORM: CaseEventData = {
   ignore_warning: false
 };
 
-
 describe('CaseCreateSubmitComponent', () => {
   let component: CaseCreateSubmitComponent;
   let fixture: ComponentFixture<CaseCreateSubmitComponent>;

@@ -48,7 +48,7 @@ class BrowserWaits{
     }
 
     async waitForConditionAsync(condition,waitInMillisec,waitMessage){
-        const waitForMillisec = waitInMillisec ? waitInMillisec : this.waitTime; 
+        const waitForMillisec = waitInMillisec ? waitInMillisec : this.waitTime;
         await new Promise((resolve,reject) => {
             const conditionCheckInterval = setInterval(async () => {
                 let isConditionMet = false; 
@@ -133,9 +133,9 @@ class BrowserWaits{
         let error = null;
         while (retryCounter < 3) {
             try {
-                await callback();
+                const retVal = await callback();
                 isSuccess = true;
-                break;
+                return retVal;
             }
             catch (err) {
                 error = err

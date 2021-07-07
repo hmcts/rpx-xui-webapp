@@ -112,6 +112,9 @@ export class TaskListComponent implements OnChanges {
    * @param fieldName - ie. 'caseName'
    */
   public onSortHandler(fieldName: string): void {
+    // ensure that the current header's sorting arrow display is reset
+    const header = document.getElementById(`header_${this.sortedBy.fieldName}`);
+    header.setAttribute('aria-sort', 'none');
     // emit the task sort field to get relevant information
     this.sortEvent.emit(fieldName);
   }

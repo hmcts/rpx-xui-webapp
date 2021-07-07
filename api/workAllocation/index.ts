@@ -5,7 +5,8 @@ import {
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
   SERVICES_WORK_ALLOCATION_TASK_API_PATH
 } from '../configuration/references';
-import { EnhancedRequest } from '../lib/models';
+import * as log4jui from '../lib/log4jui';
+import { EnhancedRequest, JUILogger } from '../lib/models';
 import {
   getUserIdsFromRoleApiResponse,
   handleCaseWorkerForLocation,
@@ -25,16 +26,19 @@ import {
   prepareCaseWorkerForService,
   prepareCaseWorkerSearchUrl,
   prepareGetTaskUrl,
+  preparePaginationUrl,
   preparePostTaskUrlAction,
   prepareRoleApiRequest,
   prepareRoleApiUrl,
-  prepareSearchTaskUrl
+  prepareSearchTaskUrl,
+  prepareTaskSearchForCompletable
 } from './util';
 
 export const baseWorkAllocationTaskUrl = getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH);
 export const baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);
 export const baseRoleAssignmentUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
 export const baseUrl: string = 'http://localhost:8080';
+const logger: JUILogger = log4jui.getLogger('workAllocation')
 
 /**
  * getTask
@@ -45,13 +49,15 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
     const getTaskPath: string = prepareGetTaskUrl(baseWorkAllocationTaskUrl, req.params.taskId);
 
     const jsonResponse = await handleTaskGet(getTaskPath, req);
+    if (jsonResponse && jsonResponse.task && jsonResponse.task.due_date) {
+      jsonResponse.task.dueDate = jsonResponse.task.due_date;
+    }
     res.status(200);
     res.send(jsonResponse);
   } catch (error) {
     next(error);
   }
 }
-
 /**
  * Post to search for a Task.
  */
@@ -63,8 +69,28 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     res.status(status);
     // Assign actions to the tasks on the data from the API.
     if (data) {
-      const caseworkers: Caseworker[] = await retrieveAllCaseWorkers(req, res);
-      assignActionsToTasks(data.tasks, req.body.view, caseworkers);
+      assignActionsToTasks(data.tasks, req.body.view);
+    }
+    // Send the (possibly modified) data back in the Response.
+    res.send(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * Post to search for a Task.
+ */
+export async function searchTaskWithPagination(req: EnhancedRequest, res: Response, next: NextFunction) {
+  try {
+    const basePath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
+    const postTaskPath = preparePaginationUrl(req, basePath);
+    const searchRequest = req.body.searchRequest;
+    const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
+    res.status(status);
+    // Assign actions to the tasks on the data from the API.
+    if (data) {
+      assignActionsToTasks(data.tasks, req.body.view);
     }
 
     // Send the (possibly modified) data back in the Response.
@@ -98,7 +124,14 @@ export async function getAllCaseWorkers(req: EnhancedRequest, res: Response, nex
     res.status(200);
     res.send(caseworkers);
   } catch (error) {
-    next(error);
+    if (error.status !== 401) {
+      next(error);
+    } else {
+      logger.error(error)
+      res.status(500);
+      const maskedError = {status: 500, message: 'mask 401 Error with 500', orignalError: error}
+      next(maskedError)
+    }
   }
 }
 
@@ -176,6 +209,24 @@ export async function searchCaseWorker(req: EnhancedRequest, res: Response, next
     res.status(status);
     res.send(data);
   } catch (error) {
+    next(error);
+  }
+}
+
+export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Response, next: NextFunction) {
+  try {
+    const postTaskPath: string = prepareTaskSearchForCompletable(baseWorkAllocationTaskUrl);
+    const reqBody = {
+      "case_id": req.body.searchRequest.ccdId,
+      "case_jurisdiction": req.body.searchRequest.jurisdiction,
+      "case_type": req.body.searchRequest.caseTypeId,
+      "event_id": req.body.searchRequest.eventId,
+    };
+    const { status, data } = await handlePostSearch(postTaskPath, reqBody, req);
+    res.status(status);
+    res.send(data);
+  } catch (error) {
+    console.log(error);
     next(error);
   }
 }

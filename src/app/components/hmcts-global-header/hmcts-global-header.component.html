@@ -1,4 +1,5 @@
 <div class="hmcts-header transparent-background">
+  <a [routerLink]="'.'" fragment="content" class="govuk-skip-link">Skip to main content</a>
     <div class="hmcts-header__container">
 
         <ng-container [ngSwitch]="logoType">
@@ -57,7 +58,7 @@
       <nav class="hmcts-primary-navigation transparent-background" aria-label="Primary navigation">
         <ul class="hmcts-primary-navigation__list">
           <li class="hmcts-primary-navigation__item" *ngFor="let item of items" >
-            <a class="hmcts-primary-navigation__link" (click)="onEmitSubMenu(item)" [attr.aria-current]="item.active ? true: null" [routerLink]="item.href">{{item.text}}</a>
+            <a class="hmcts-primary-navigation__link" (click)="onEmitSubMenu(item)" [attr.aria-current]="item.active ? true: null" [href]="item.href">{{item.text}}</a>
           </li>
         </ul>
       </nav>

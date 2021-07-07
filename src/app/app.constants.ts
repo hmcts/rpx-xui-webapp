@@ -3,7 +3,8 @@ import {Theme} from './containers/app-header/app-header.component';
 
 const FeatureNames = {
   workAllocation: 'MC_Work_Allocation',
-  noticeOfChange: 'MC_Notice_of_Change'
+  noticeOfChange: 'MC_Notice_of_Change',
+  waMvpPaginationFeature: 'mc-mvp-wa-pagination'
 };
 
 const FooterData =  {
@@ -205,6 +206,8 @@ const appHeaderTitle = {name: 'Manage cases', url: '/'};
 // Making the base URL for case details a constant.
 const caseDetailsUrl: string = '/cases/case-details/';
 
+const serviceMessagesFeatureToggleKey: string = 'mc-service-messages';
+const serviceMessageCookie: string = 'service_messages';
 
 export class AppConstants {
   static FOOTER_DATA = null;
@@ -218,4 +221,8 @@ export class AppConstants {
   static SIGNED_OUT_THEME = signedOutTheme;
   static FEATURE_NAMES = FeatureNames;
   static CASE_DETAILS_URL = caseDetailsUrl;
+  static SERVICE_MESSAGES_FEATURE_TOGGLE_KEY = serviceMessagesFeatureToggleKey;
+  static SERVICE_MESSAGE_COOKIE = serviceMessageCookie;
 }
+
+export const LD_FLAG_REMOVE_USER_FROM_CASE_MC: string = 'remove-user-from-case-mc';

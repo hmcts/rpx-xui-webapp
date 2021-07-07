@@ -4,6 +4,7 @@ import { v4 as uuid } from 'uuid';
 import { config } from './config/config';
 import { getUserId, getXSRFToken } from './utils/authUtil';
 import Request from './utils/request';
+import { setTestContext } from './utils/helper';
 
 
 
@@ -13,7 +14,8 @@ describe('Case share ', () => {
 
     // const userName = 'peterxuisuperuser@mailnesia.com';
     // const password = 'Monday01';
-    beforeEach(() => {
+    beforeEach(function () {
+        setTestContext(this);
         Request.clearSession();
     });
 
@@ -65,8 +67,5 @@ describe('Case share ', () => {
         const response = await Request.get(`caseshare/case-assignments`, headers, 200);
         expect(response.status).to.equal(200);
     });
-
-
-
 
 });

@@ -1,32 +1,37 @@
-import {AUTH, AuthOptions, xuiNode} from '@hmcts/rpx-xui-node-lib'
-import {NextFunction, Request, Response} from 'express'
-import {getConfigValue, showFeature} from '../configuration'
+import { AUTH, AuthOptions, xuiNode } from '@hmcts/rpx-xui-node-lib';
+import { NextFunction, Response } from 'express';
+import { EnhancedRequest } from '../lib/models';
+
+import { getConfigValue, showFeature } from '../configuration';
 import {
-    COOKIES_TOKEN,
-    COOKIES_USER_ID,
-    FEATURE_OIDC_ENABLED,
-    FEATURE_REDIS_ENABLED,
-    FEATURE_SECURE_COOKIE_ENABLED,
-    IDAM_SECRET, LOGIN_ROLE_MATCHER,
-    MICROSERVICE,
-    NOW,
-    REDIS_CLOUD_URL,
-    REDIS_KEY_PREFIX,
-    REDIS_TTL,
-    S2S_SECRET,
-    SERVICE_S2S_PATH,
-    SERVICES_IDAM_API_URL,
-    SERVICES_IDAM_CLIENT_ID,
-    SERVICES_IDAM_ISS_URL,
-    SERVICES_IDAM_LOGIN_URL,
-    SERVICES_IDAM_OAUTH_CALLBACK_URL,
-    SESSION_SECRET
-} from '../configuration/references'
-import * as log4jui from '../lib/log4jui'
+  COOKIES_TOKEN,
+  COOKIES_USER_ID,
+  FEATURE_OIDC_ENABLED,
+  FEATURE_REDIS_ENABLED,
+  FEATURE_SECURE_COOKIE_ENABLED,
+  IDAM_SECRET,
+  LOGIN_ROLE_MATCHER,
+  MICROSERVICE,
+  NOW,
+  REDIS_CLOUD_URL,
+  REDIS_KEY_PREFIX,
+  REDIS_TTL,
+  S2S_SECRET,
+  SERVICE_S2S_PATH,
+  SERVICES_IDAM_API_URL,
+  SERVICES_IDAM_CLIENT_ID,
+  SERVICES_IDAM_ISS_URL,
+  SERVICES_IDAM_LOGIN_URL,
+  SERVICES_IDAM_OAUTH_CALLBACK_URL,
+  SESSION_SECRET,
+  SYSTEM_USER_NAME,
+  SYSTEM_USER_PASSWORD,
+} from '../configuration/references';
+import * as log4jui from '../lib/log4jui';
 
 const logger = log4jui.getLogger('auth')
 
-export const successCallback = (req: Request, res: Response, next: NextFunction) => {
+export const successCallback = (req: EnhancedRequest, res: Response, next: NextFunction) => {
     const {user} = req.session.passport
     const {userinfo} = user
     const {accessToken} = user.tokenset
@@ -56,6 +61,15 @@ export const getXuiNodeMiddleware = () => {
     const idamApiPath = getConfigValue(SERVICES_IDAM_API_URL)
     const s2sSecret = getConfigValue(S2S_SECRET)
     const tokenUrl = `${getConfigValue(SERVICES_IDAM_API_URL)}/oauth2/token`
+    const userName = getConfigValue(SYSTEM_USER_NAME)
+    const password = getConfigValue(SYSTEM_USER_PASSWORD)
+
+    const routeCredential = {
+        password,
+        routes: ['/workallocation/caseworker'],
+        scope: 'openid profile roles manage-user create-user',
+        userName,
+    }
 
     //TODO: we can move these out into proper config at some point to tidy up even further
     const options: AuthOptions = {
@@ -68,6 +82,7 @@ export const getXuiNodeMiddleware = () => {
         issuerURL: issuerUrl,
         logoutURL: idamApiPath,
         responseTypes: ['code'],
+        routeCredential,
         scope: 'profile openid roles manage-user create-user',
         sessionKey: 'xui-webapp',
         tokenEndpointAuthMethod: 'client_secret_post',

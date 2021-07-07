@@ -19,7 +19,10 @@ class BrowserWaits{
         await browser.sleep(waitInSec*1000);
     }
    
+    async waitForElementTime(element,waitTime) {
+        await browser.wait(EC.presenceOf(element), waitTime ? waitTime :  10000, "Error : " + element.locator().toString());
 
+    }
 
     async waitForElement(element,message){
         const startTime = Date.now();
@@ -135,7 +138,7 @@ class BrowserWaits{
             }
             catch (err) {
                 retryCounter += 1;
-                CucumberReporter.AddMessage(`Actions success Condition ${actionMessage ? actionMessage : ''} failed ${err}. `); 
+                CucumberReporter.AddMessage(`Actions success Condition ${actionMessage ? actionMessage : ''} failed ${err.stack}. `); 
                 CucumberReporter.AddMessage(`Retrying attempt ${retryCounter}. `); 
             }
         }

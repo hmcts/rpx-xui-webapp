@@ -6,6 +6,7 @@ import {StoreModule} from '@ngrx/store';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
+import { EnvironmentService } from 'src/app/shared/services/environment.service';
 
 class MockConfigService {
   config;
@@ -18,13 +19,11 @@ class MockConfigService {
   }
 }
 
-class MockFeatureToggleService {
-  getValue() {
-    return of()
-  }
-};
+const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled']);
+const mockEnvironmentService = jasmine.createSpyObj('mockEnvironmentService', ['get']);
 
 describe('AppConfiguration', () => {
+  mockFeatureToggleService.isEnabled.and.returnValue(of(false));
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -35,13 +34,17 @@ describe('AppConfiguration', () => {
         AppConfig,
         AppConfigService,
         { provide: AppConfigService, useClass: MockConfigService },
-        { provide: FeatureToggleService, useClass: MockFeatureToggleService },
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
+        { provide: EnvironmentService, useValue: mockEnvironmentService}
       ]
     });
+    mockEnvironmentService.get.and.returnValue('someUrl');
   });
 
   it('should be created', inject([AppConfig], (service: AppConfig) => {
     expect(service).toBeTruthy();
+    expect(mockFeatureToggleService.isEnabled).toHaveBeenCalled();
+    expect(service.workallocationUrl).toBeNull();
   }));
 
   it('should have load', inject([AppConfig], (service: AppConfig) => {
@@ -90,10 +93,6 @@ describe('AppConfiguration', () => {
 
   it('should have getActivityUrl', inject([AppConfig], (service: AppConfig) => {
     expect(service.getActivityUrl).toBeDefined();
-  }));
-
-  it('should have getActivityUrl', inject([AppConfig], (service: AppConfig) => {
-    expect(service.getActivityUrl()).toBeUndefined();
   }));
 
   it('should have getRemotePrintServiceUrl', inject([AppConfig], (service: AppConfig) => {

@@ -10,8 +10,13 @@ var { defineSupportCode } = require('cucumber');
 const reportLogger = require('../../support/reportLogger');
 const Browserutil = require('../../../ngIntegration/util/browserUtil');
 const BrowserWaits = require('../../support/customWaits');
+const SoftAssert = require('../../../ngIntegration/util/softAssert');
+const taskManagerPage = require('../pageObjects/workAllocation/taskManagerPage');
+const browserUtil = require('../../../ngIntegration/util/browserUtil');
+const featureToggleUtil = require('../../../ngIntegration/util/featureToggleUtil');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
+
 
     Then('I see Task list sub navigation tabs', async function () {
         expect(await taskListPage.amOnPage(), "Task list sub navigation tabs not present").to.be.true;
@@ -161,5 +166,112 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         }
     });
+
+    Then('I see task page for action type {string}', async function(actionType){
+        if (actionType.toUpperCase() === "ASSIGNMENT"){
+            expect(await taskAssignmentPage.amOnPage(), "Task assignment page not displayed").to.be.true;
+        } else if (actionType.toUpperCase() === "ACTION"){
+            expect(await taskActionPage.amOnPage(), "Task action page not displayed").to.be.true;
+        }else{
+            throw new Error("TEST error: unrecognised task action type supplied " + actionType);
+        }
+    });
+
+    Then('I validate action type {string} for task action {string} page content', async function (actionType, action){
+        const softAssert = new SoftAssert(this);
+        if (actionType.toUpperCase() === "ASSIGNMENT") {
+            await taskAssignmentPage.validatePageContentForAction(action,softAssert);
+        } else if (actionType.toUpperCase() === "ACTION") {
+            await taskActionPage.validatePageContentForAction(action,softAssert);
+        } else {
+            throw new Error("TEST error: unrecognised task action type supplied " + actionType);
+        }
+    });
+
+
+    When('I perform task {string} submit for {string}', async function (actionType, action){
+        
+        if (actionType.toUpperCase() === "ASSIGNMENT") {
+            await taskAssignmentPage.selectLocationAtpos(1);
+            await taskAssignmentPage.selectcaseworkerAtpos(2);
+            await taskAssignmentPage.clickSubmitBtn(action);
+        } else if (actionType.toUpperCase() === "ACTION") {
+            await taskActionPage.clickSubmitBtn(action);
+        } else {
+            throw new Error("TEST error: unrecognised task action type supplied " + actionType);
+        }
+    });
+
+    When('I perform task {string} cancel for {string}', async function (actionType, action) {
+
+        if (actionType.toUpperCase() === "ASSIGNMENT") {
+         
+            await taskAssignmentPage.clickCancelBtn();
+        } else if (actionType.toUpperCase() === "ACTION") {
+            await taskAction.clickCancelBtn();
+        } else {
+            throw new Error("TEST error: unrecognised task action type supplied " + actionType);
+        }
+    });
+
+    Then('I validate My tasks message banner displays {string}', async function(bannermessage){
+       const displayedMessages = await taskListPage.getBannerMessagesDisplayed();
+        const messagesMathcing = displayedMessages.filter(msg => msg.includes(bannermessage));
+        expect(messagesMathcing.length > 0, `${bannermessage} is not in displayed message ${displayedMessages}`).to.be.true;
+    });
+
+    Then('I validate Task manager message banner displays {string}', async function (bannermessage) {
+        const displayedMessages = await taskManagerPage.getBannerMessagesDisplayed();
+        const messagesMathcing = displayedMessages.filter(msg => msg.includes(bannermessage));
+        expect(messagesMathcing.length > 0, `${bannermessage} is not in displayed message ${displayedMessages}`).to.be.true;
+    });
+
+    Then('I validate My tasks message banner not displayed', async function(){
+        const displayedMessages = await taskListPage.isBannerMessageDisplayed();
+        expect(await taskListPage.isBannerMessageDisplayed(), `Message displayed is displayed message `).to.be.false;
+    });
+
+    Then('I validate Task manager message banner not displayed', async function () {
+        const displayedMessages = await taskManagerPage.isBannerMessageDisplayed();
+        expect(await taskListPage.isBannerMessageDisplayed(), `Message displayed is displayed message `).to.be.false;
+    });
+
+    Then('I validate task one click action landing on {string} page and message displayed {string}', async function(landingPage, messageDisplayed){
+        await BrowserWaits.waitForSeconds(2);
+        landingPage = landingPage.toUpperCase();
+        if (landingPage.toUpperCase() == " "){
+
+        }
+    });
+
+
+    Then('I validate task list page results text displayed as {string}', async function (pagnationResultText) {
+        expect(await myWorkPage.getPaginationResultText()).to.include(pagnationResultText);
+    });
+
+    When('I click task list pagination link {string}', async function (paginationLinktext) {
+        if (paginationLinktext.toLowerCase() === "next") {
+            await myWorkPage.pageNextLink.click();
+        } else if (paginationLinktext.lowerCase() === "previous") {
+            await myWorkPage.pagePreviousLink.click();
+        } else {
+            await myWorkPage.clickPaginationPageNum(paginationLinktext);
+        }
+    });
+
+    Then('I validate task search request with reference {string} has pagination parameters', async function (requestReference, datatable) {
+        const reqBody = global.scenariodata[requestReference];
+        const datatableHash = datatable.hashes()[0];
+        expect(reqBody.searchRequest.pagination_parameters.page_number).to.equual(datatableHash.PageNumber);
+        expect(reqBody.searchRequest.pagination_parameters.page_size).to.equual(datatableHash.PageSize);
+    });
+
+    Then('I validate tasks pagination is displayed if feature toggle {string} is on', async function(featureToggleName){
+        
+        const toggleVal = featureToggleUtil.getFeatureToggleValue(featureToggleName);
+        expect(await taskListPage.paginationContainer.isDisplayed(), 'Pagination display is expected to be ' + toggleVal).to.equal(toggleVal);
+
+    });
+
 });
 

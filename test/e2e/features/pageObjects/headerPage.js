@@ -1,8 +1,14 @@
 'use strict';
 
+const browserUtil = require('../../../ngIntegration/util/browserUtil');
 const { SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants');
 
 var BrowserWaits = require('../../support/customWaits');
+var CaseListPage = require('./CaseListPage');
+var CreateCaseStartPage = require('./createCaseStartPage');
+
+const createCaseStartPage = new CreateCaseStartPage();
+const caseListPage = new CaseListPage();
 
 function HeaderPage() {
 
@@ -11,8 +17,12 @@ function HeaderPage() {
 
     this.headerAppLogoLink = $('.hmcts-header__logo a');
 
-    this.amOnApp = async function(){
+    this.amOnPage = async function(){
       return await this.headerAppLogoLink.isPresent();
+    }
+
+    this.clickPrimaryNavigationWithLabel = async function(label){
+      await element(by.xpath(`//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'${label}')]`)).click()
     }
 
     this.clickAppLogoLink = async function(){
@@ -40,41 +50,56 @@ function HeaderPage() {
     this.contentHeader = $("#content h1");
 
   this.clickManageCases = async function () {
-    await BrowserWaits.waitForElement(this.manageCases);  
-    await this.manageCases.click();
-    await BrowserWaits.waitForElement($('exui-case-list'));  
+    await BrowserWaits.retryWithActionCallback(async () => {
+      await BrowserWaits.waitForElement(this.manageCases);  
+      await this.manageCases.click();
+      await browserUtil.waitForLD();
+    });
+    //await BrowserWaits.waitForElement($('exui-case-list'));  
   };
 
   this.clickCaseList = async function () {
     await BrowserWaits.waitForElement(this.caseList());  
     await this.caseList().click();
-    var searchPageHeader = element(by.xpath("//*[@id = 'content']//h1[contains(text(),'Case List')]"));
-    await BrowserWaits.waitForElement(searchPageHeader);
+    await browserUtil.waitForLD();
+    expect(await caseListPage.amOnPage()).to.be.true 
   };
 
   this.clickCreateCase = async function () {
-    await BrowserWaits.waitForElement(this.createCase()); 
-    await this.createCase().click();
-    await BrowserWaits.waitForElement($('#cc-jurisdiction'));
+    await BrowserWaits.retryWithActionCallback(async () => {
+      await BrowserWaits.waitForElement(this.createCase()); 
+      await this.createCase().click();
+      await browserUtil.waitForLD();
+      expect(await createCaseStartPage.amOnPage()).to.be.true
+    });
   };
 
   this.clickTaskList = async function () {
-    await BrowserWaits.waitForElement(this.taskList());
-    await this.taskList().click();
+    await BrowserWaits.retryWithActionCallback(async () => {
+      await BrowserWaits.waitForElement(this.taskList());
+      await this.taskList().click();
+      await browserUtil.waitForLD();
+    });
+    
   };
 
   this.clickTaskManager = async function () {
-    await BrowserWaits.waitForElement(this.taskManager());
-    await this.taskManager().click();
+    await BrowserWaits.retryWithActionCallback(async () => {
+      await BrowserWaits.waitForElement(this.taskManager());
+      await this.taskManager().click();
+      await browserUtil.waitForLD();
+    });
   };
 
 
   this.clickFindCase = async function () {
-    await BrowserWaits.waitForElement(this.findCase);  
-    await this.findCase.click();
+    await BrowserWaits.retryWithActionCallback(async () => {
+      await BrowserWaits.waitForElement(this.findCase);  
+      await this.findCase.click();
 
-    var searchPageHeader = element(by.xpath("//*[@id = 'content']//h1[contains(text() , 'Search')]"));
-    await BrowserWaits.waitForElement(searchPageHeader); 
+      var searchPageHeader = element(by.xpath("//*[@id = 'content']//h1[contains(text() , 'Search')]"));
+      await BrowserWaits.waitForElement(searchPageHeader); 
+    });
   };
 
   this.clickSignOut = async function () {
@@ -84,7 +109,6 @@ function HeaderPage() {
   };
 
   this.isTabPresent = async function (tabDisplatText) {
-
     return await this.getTabElementWithText(tabDisplatText).isPresent();
   };
 
@@ -95,6 +119,10 @@ function HeaderPage() {
 
   this.getTabElementWithText = function (tabText) {
     return this.primaryNavBar.element(by.xpath('//a[contains(text(),"' + tabText + '")]'));
+  };
+
+  this.getPrimaryNavigations = async function(){
+    return await this.primaryNavBar.getText();
   };
 }
 

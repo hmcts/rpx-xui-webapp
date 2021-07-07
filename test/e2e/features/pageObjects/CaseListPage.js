@@ -39,6 +39,8 @@ class CaseListPage{
 
         //ccd-case-viewer
         this.ccdCaseViewer = $("ccd-case-viewer");
+
+        this.loadingSpinner = $(".loading-spinner-in-action");
     }
 
     async amOnPage(){
@@ -49,8 +51,14 @@ class CaseListPage{
 
     async _waitForSearchComponent(){
         await BrowserWaits.waitForElement(this.searchFilterContainer);
+        await this.waitForSpinnerToDissappear();
     }
 
+    async waitForSpinnerToDissappear(){
+        await BrowserWaits.waitForCondition(async () => {
+            return !(await $(".loading-spinner-in-action").isPresent());
+        });
+    }
     _getOptionSelectorWithText(optionText){
         return by.xpath("//option[text() = '"+optionText+"']");
     }
@@ -74,6 +82,7 @@ class CaseListPage{
         await this._waitForSearchComponent();
         await browser.executeScript('arguments[0].scrollIntoView()',
             this.searchApplyBtn);
+        await BrowserWaits.waitForElementClickable(this.searchApplyBtn);
         await this.searchApplyBtn.click();
     }
 

@@ -21,7 +21,7 @@
 
       <div class="hmcts-filter-layout__content">
          <ccd-search-result
-          *ngIf="resultView"
+          *ngIf="resultViewIsReady"
           id="search-result"
           [jurisdiction]="jurisdiction"
           [caseType]="caseType"

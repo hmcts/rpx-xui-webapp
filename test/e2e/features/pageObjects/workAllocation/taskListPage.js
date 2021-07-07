@@ -2,6 +2,8 @@ const TaskList = require('./taskListTable');
 const BrowserWaits = require('../../../support/customWaits');
 var cucumberReporter = require('../../../support/reportLogger');
 
+var TaskMessageBanner = require('./taskMessageBanner');
+
 class TaskListPage extends TaskList {
 
     constructor() {
@@ -15,6 +17,8 @@ class TaskListPage extends TaskList {
 
         this.bannerMessageContainer = $('exui-info-message ') 
         this.infoMessages = $$('exui-info-message .hmcts-banner__message');
+
+        this.taskInfoMessageBanner = new TaskMessageBanner();
     }
 
     async amOnPage() {
@@ -34,8 +38,12 @@ class TaskListPage extends TaskList {
     }
 
     async clickAvailableTasks(){
-        expect(await this.amOnPage(), "Not on Task list page ").to.be.true;
-        await this.availableTasksTab.click();
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await this.amOnPage(), "Not on Task list page ").to.be.true;
+            await this.availableTasksTab.click();
+           
+        });
+        
     }
 
     async amOnMyTasksTab(){
@@ -65,27 +73,13 @@ class TaskListPage extends TaskList {
     }
 
     async isBannerMessageDisplayed(){
-        try{
-            await BrowserWaits.waitForElement(this.bannerMessageContainer);
-            return true;
-        }catch(err){
-            cucumberReporter.AddMessage("message banner not displayed: " + err);
-
-            return false;
-        }
+        expect(await this.amOnPage(), "Not on Task list page ").to.be.true;
+      return this.taskInfoMessageBanner.isBannerMessageDisplayed();
     }
 
     async getBannerMessagesDisplayed(){
-        expect(await this.isBannerMessageDisplayed(),"Message banner not displayed").to.be.true; 
-        const messagescount = await this.infoMessages.count();
-        const messages = [];
-        for (let i = 0; i < messagescount; i++){
-            const message = await this.infoMessages.get(i).getText();
-
-            const submessagestrings = message.split("\n");
-            messages.push(...submessagestrings); 
-        } 
-        return messages;
+        expect(await this.amOnPage(), "Not on Task list page ").to.be.true;
+        return this.taskInfoMessageBanner.getBannerMessagesDisplayed();
     }
 
     async isBannermessageWithTextDisplayed(messageText) {

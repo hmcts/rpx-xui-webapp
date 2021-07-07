@@ -3,8 +3,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { Observable } from 'rxjs';
 
 import { ErrorMessageComponent } from '../../../app/components';
@@ -18,7 +19,7 @@ import {
 import { Assignee } from '../../models/dtos';
 import { Task } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
-import { getMockCaseworkers, getMockTasks } from '../../tests/utils.spec';
+import { getMockCaseworkers, getMockTasks, MockRouter } from '../../tests/utils.spec';
 
 @Component({
   template: `<exui-task-container-assignment></exui-task-container-assignment>`
@@ -53,7 +54,7 @@ describe('TaskAssignmentContainerComponent', () => {
         ErrorMessageComponent, NothingComponent
       ],
       imports: [
-        WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientModule,
+        WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientModule, PaginationModule,
         RouterTestingModule.withRoutes(
           [
             { path: 'tasks/list', component: NothingComponent }
@@ -67,7 +68,7 @@ describe('TaskAssignmentContainerComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                task: { task: mockTasks[0] },
+                taskAndCaseworkers: { task: { task: mockTasks[0] }, caseworkers: [] },
                 ...TaskActionConstants.Reassign
               }
             },
@@ -82,7 +83,7 @@ describe('TaskAssignmentContainerComponent', () => {
     component = wrapper.appComponentRef;
 
     wrapper.tasks = null;
-    window.history.pushState({ returnUrl: 'tasks/list', showAssigneeColumn: false }, '', 'tasks/list');
+    window.history.pushState({ returnUrl: 'tasks/list' }, '', 'tasks/list');
     fixture.detectChanges();
   });
 
@@ -136,5 +137,11 @@ describe('TaskAssignmentContainerComponent', () => {
     };
     expect(mockWorkAllocationService.assignTask).toHaveBeenCalledWith(mockTasks[0].id, assignee);
   });
-  // TODO: Need to write tests regarding template
+
+  it('should show assignee column when relevant', () => {
+    const router = TestBed.get(Router);
+    spyOnProperty(router, 'url', 'get').and.returnValues(`/example-url/assign`, `/example-url/reassign`);
+    expect(component.fields.pop().name).not.toBe('assigneeName');
+    expect(component.fields.pop().name).toBe('assigneeName');
+  });
 });

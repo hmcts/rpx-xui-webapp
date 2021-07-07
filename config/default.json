@@ -12,6 +12,7 @@
   "stub": false,
   "health": {
     "ccdComponentApi": "https://ccd-api-gateway-web-prod.service.core-compute-prod.internal/health",
+    "ccdActivityApi": "http://ccd-case-activity-api-prod.service.core-compute-prod.internal/health",
     "ccdDataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal/health",
     "documentsApi": "http://dm-store-prod.service.core-compute-prod.internal/health",
     "documentsApiV2": "http://ccd-case-document-am-api-prod.service.core-compute-prod.internal/v2/health",
@@ -25,6 +26,7 @@
   "services": {
     "ccd": {
       "componentApi": "https://ccd-api-gateway-web-prod.service.core-compute-prod.internal",
+      "activityApi": "http://ccd-case-activity-api-prod.service.core-compute-prod.internal",
       "dataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal",
       "caseAssignmentApi": "http://aac-manage-case-assignment-prod.service.core-compute-prod.internal"
     },
@@ -37,6 +39,7 @@
     "prd": {
       "api": "http://rd-professional-api-prod.service.core-compute-prod.internal"
     },
+    "em_hrs_api": "http://em-hrs-api-prod.service.core-compute-prod.internal",
     "em_anno_api": "http://em-anno-prod.service.core-compute-prod.internal",
     "idam": {
       "idamApiUrl": "https://idam-api.platform.hmcts.net",
@@ -64,7 +67,22 @@
   "protocol": "https",
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",
-  "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT",
+  "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS",
+  "wildcardSearchFields": {
+    "Benefit": [
+      "generatedSurname",
+      "appeal.appellant.name.lastName"
+    ],
+    "HearingRecordings": [
+      "recordingReference"
+    ],
+    "xuiTestCaseType": [
+      "TextField"
+    ]
+  },
+  "wildcardSearchRoles": [
+    "caseworker"
+  ],
   "loginRoleMatcher": "caseworker",
   "log4JConfig": {
     "appenders": {
@@ -178,8 +196,8 @@
     }
   ],
   "pact": {
-    "branchName": "Dev",
-    "brokerUrl": "http://localhost:80",
+    "branchName": "master",
+    "brokerUrl": "https://pact-broker.platform.hmcts.net",
     "consumerVersion": "",
     "brokerUsername": "",
     "brokerPassword": ""

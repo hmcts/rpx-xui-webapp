@@ -13,6 +13,23 @@
   border: 0px;
 }
 
+.column-sort {
+  padding-right: 20px;
+  white-space: nowrap;
+
+  &:hover{
+    padding-right: 20px;
+  }
+
+  &:after{
+    right: 0.5px;
+  }
+
+  &:before{
+    right: 0.5px;
+  }
+}
+
 .header-cell {
 
   display: flex;
@@ -21,6 +38,11 @@
     border: 1px solid red;
     padding: 0 0 0 10px;
   }
+}
+
+.column-label {
+  font-weight: bold;
+  color: #115da0;
 }
 
 /**
@@ -33,6 +55,9 @@
     margin-right: 20px;
     text-decoration: underline;
     font-weight: 400;
+    &:focus {
+      text-decoration: none;
+    }
     .govuk-accordion__icon {
       height: 14px;
       width: 14px;

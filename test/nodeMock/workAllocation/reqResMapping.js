@@ -20,14 +20,46 @@ module.exports = {
         }
     },
     post: {
-        '/workallocation/task/' : (req,res) => {
-            res.send(workAllocationMockData.getAvailableTasks(10));
+        '/workallocation/task/': (req, res) => {
+
+            if (req.body.view === "MyTasks"){
+                res.send(workAllocationMockData.getMyTasks(10));
+            } else if (req.body.view === "AvailableTasks") {
+                res.send(workAllocationMockData.getAvailableTasks(10));
+            } else if (req.body.view === "TaskManager") {
+                res.send(workAllocationMockData.getTaskManagerTasks(10));
+            }else{
+                throw new Error("Unrecognised task list view : "+req.body.view);
+            }
         },
-        '/workallocation/task/:taskId/assign':  (req,res) => {
+        '/workallocation/taskWithPagination/': (req, res) => {
+            const pageSize = req.body.searchRequest.pagination_parameters.page_size;
+            if (req.body.view === "MyTasks") {
+                res.send(workAllocationMockData.getMyTasks(pageSize));
+            } else if (req.body.view === "AvailableTasks") {
+                res.send(workAllocationMockData.getAvailableTasks(pageSize));
+            } else if (req.body.view === "TaskManager") {
+                res.send(workAllocationMockData.getTaskManagerTasks(pageSize));
+            } else {
+                throw new Error("Unrecognised task list view : " + req.body.view);
+            }
+        },
+        '/workallocation/task/:taskId/assign': (req, res) => {
             res.send();
         },
         '/workallocation/task/:taskId/claim' : (req,res) => {
             res.send();
+        },
+        '/workallocation/task/:taskId/unclaim': (req, res) => {
+            res.send();
+        },
+
+        '/workallocation/task/:taskId/complete': (req, res) => {
+            res.send();
+        },
+        '/workallocation/task/:taskId/cancel': (req, res) => {
+            res.send();
         }
-    } 
+    }
 }
+

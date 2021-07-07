@@ -81,8 +81,10 @@ describe('CaseCreateSubmitComponent', () => {
   let casesService: CasesService;
   let draftService: DraftService;
   const mockAlertService = jasmine.createSpyObj('alertService', ['error']);
+  const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled'])
 
   beforeEach(async(() => {
+    mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
@@ -141,10 +143,8 @@ describe('CaseCreateSubmitComponent', () => {
           provide: AlertService,
           useValue: mockAlertService
         },
-        {
-          provide: FeatureToggleService,
-          useClass: MockFeatureToggleService
-        }
+        FeatureToggleService,
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
       ]
     })
       .compileComponents();

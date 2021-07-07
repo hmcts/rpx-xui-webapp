@@ -4,6 +4,7 @@ export const ENVIRONMENT_CONFIG = new InjectionToken<EnvironmentConfig>('environ
 
 export interface EnvironmentConfig {
   idamWeb: string;
+  ccdGatewayUrl?: string;
   clientId: string;
   oAuthCallback: string;
   protocol: string;

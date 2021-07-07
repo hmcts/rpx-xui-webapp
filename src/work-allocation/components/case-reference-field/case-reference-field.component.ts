@@ -18,7 +18,7 @@ export class CaseReferenceFieldComponent implements OnChanges {
     let href: string;
     if (this.caseReference) {
       // Get rid of the spaces in the caseReference.
-      const caseId = this.caseReference.replace(/\s/g, '');
+      const caseId = this.caseReference;
       if (caseId) {
         href = `${AppConstants.CASE_DETAILS_URL}${caseId}`;
       }

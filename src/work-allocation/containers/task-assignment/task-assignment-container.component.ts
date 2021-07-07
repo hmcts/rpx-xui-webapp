@@ -8,7 +8,7 @@ import { InformationMessage } from '../../models/comms';
 import { Caseworker, Location } from '../../models/dtos';
 import { TaskFieldConfig, TaskServiceConfig } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
-import { handleFatalErrors } from '../../utils';
+import { getAssigneeName, handleFatalErrors } from '../../utils';
 
 export const NAME_ERROR: ErrorMessage = {
   title: 'There is a problem',
@@ -52,10 +52,9 @@ export class TaskAssignmentContainerComponent implements OnInit {
   }
 
   private get showAssigneeColumn(): boolean {
-    if (window && window.history && window.history.state) {
-      return !!window.history.state.showAssigneeColumn;
-    }
-    return false;
+    const url = this.router.url;
+    // unless action is assign, show the current assignee
+    return (url.includes('reassign') || url.includes('unassign'));
   }
 
   public taskServiceConfig: TaskServiceConfig = {
@@ -72,7 +71,9 @@ export class TaskAssignmentContainerComponent implements OnInit {
     };
 
     // Get the task from the route, which will have been put there by the resolver.
-    const { task } = this.route.snapshot.data.task;
+    const task = this.route.snapshot.data.taskAndCaseworkers.task.task;
+    const caseworkers = this.route.snapshot.data.taskAndCaseworkers.caseworkers;
+    task.assigneeName = getAssigneeName(caseworkers, task.assignee);
     this.tasks = [ task ];
     this.verb = this.route.snapshot.data.verb as TaskActionType;
     this.successMessage = this.route.snapshot.data.successMessage as InfoMessage;

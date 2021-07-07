@@ -63,14 +63,14 @@ class CreateCaseStartPage {
   }
 
   async getPageHeader(){
-
+    await BrowserWaits.waitForElement($(this.header));
     return await $(this.header).getText();
   }
 
   async amOnPage(){
     BrowserWaits.waitForElementClickable($('#cc-jurisdiction'));
     let header = await this.getPageHeader();
-    return header === 'Create Case'
+    return header === 'Create Case';
   }
 
 }

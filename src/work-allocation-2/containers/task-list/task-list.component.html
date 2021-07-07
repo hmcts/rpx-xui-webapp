@@ -22,7 +22,7 @@
   <!-- Column Headers and Cells -->
 <ng-container *ngIf="tasksTotal">
   <ng-container *ngFor="let field of fields | paginate: { itemsPerPage: pagination?.page_size, currentPage: pagination?.page_number, totalItems: tasksTotal }" [cdkColumnDef]="field.name">
-    <th class="govuk-table__header" [attr.aria-sort]="getColumnSortedSetting(field.sortName)" cdk-header-cell *cdkHeaderCellDef>
+    <th class="govuk-table__header" [id]="'header_' + field.sortName" [attr.aria-sort]="getColumnSortedSetting(field.sortName)" cdk-header-cell *cdkHeaderCellDef>
       <button class="column-sort" *ngIf="field.columnLabel" type="button" [id]="'sort_by_' + field.sortName" data-index="0"
               (click)="onSortHandler(field.sortName)" >{{field.columnLabel}}</button>
     </th>
@@ -34,7 +34,7 @@
 <!-- Below container sets up initial task list headers when not yet populated as session storage of page number causing issues with above container -->
 <ng-container *ngIf="!tasksTotal">
   <ng-container *ngFor="let field of fields" [cdkColumnDef]="field.name">
-    <th class="govuk-table__header" [attr.aria-sort]="getColumnSortedSetting(field.sortName)" cdk-header-cell *cdkHeaderCellDef>
+    <th class="govuk-table__header" [id]="'header_' + field.sortName" [attr.aria-sort]="getColumnSortedSetting(field.sortName)" cdk-header-cell *cdkHeaderCellDef>
       <button class="column-sort" *ngIf="field.columnLabel" type="button" [id]="'sort_by_' + field.sortName" data-index="0"
               (click)="onSortHandler(field.sortName)" >{{field.columnLabel}}</button>
     </th>

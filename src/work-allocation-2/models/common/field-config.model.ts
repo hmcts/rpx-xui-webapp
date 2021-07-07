@@ -1,6 +1,7 @@
 import { FieldType } from './../../enums';
 
 export default interface FieldConfig {
+  disableSort?: boolean; // optional, disable sorting only when set as true
   name: string;          // as returned by task api
   type: FieldType;
   columnLabel: string;   // can be null for no column header

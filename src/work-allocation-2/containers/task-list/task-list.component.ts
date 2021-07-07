@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { PaginationParameter } from '../..//models/dtos';
+import { PaginationParameter } from '../../../work-allocation-2/models/dtos';
 
 import { ListConstants } from '../../components/constants';
 import { SortOrder } from '../../enums';
@@ -113,9 +113,6 @@ export class TaskListComponent implements OnChanges {
    * @param fieldName - ie. 'caseName'
    */
   public onSortHandler(fieldName: string): void {
-    // ensure that the current header's sorting arrow display is reset
-    const header = document.getElementById(`header_${this.sortedBy.fieldName}`);
-    header.setAttribute('aria-sort', 'none');
     // emit the task sort field to get relevant information
     this.sortEvent.emit(fieldName);
   }
@@ -188,18 +185,10 @@ export class TaskListComponent implements OnChanges {
   }
 
   public onResetSorting(): void {
-    // set current sorted header to reset sorting arrow display
-    let header = document.getElementById(`header_${this.sortedBy.fieldName}`);
-    header.setAttribute('aria-sort', 'none');
-    // reset page and sort settings
     this.pagination.page_number = 1;
-    this.setDefaultSort();
-    // emit events to ensure table and session updated
-    this.sortEvent.emit(this.sortedBy.fieldName);
     this.paginationEvent.emit(this.pagination.page_number);
-    // ensure the default column header is correctly updated to indicate sorting
-    header = document.getElementById(`header_${this.sortedBy.fieldName}`);
-    header.setAttribute('aria-sort', 'ascending');
+    const element = document.getElementById(`sort_by_${this.taskServiceConfig.defaultSortFieldName}`) as HTMLElement;
+    element.click();
   }
 
   private setDefaultSort(): void {

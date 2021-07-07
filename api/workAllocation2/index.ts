@@ -1,9 +1,12 @@
 import { NextFunction, Response } from 'express';
+import { sendPost } from '../common/crudService';
 import { handleGet, handlePost } from '../common/mockService';
 import { getConfigValue } from '../configuration';
 import {
   SERVICES_CASE_CASEWORKER_REF_PATH,
   SERVICES_CASE_JUDICIALWORKER_REF_PATH,
+  SERVICES_CCD_CASE_ASSIGNMENT_API_PATH,
+  SERVICES_CCD_DATA_STORE_API_PATH,
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
   SERVICES_WORK_ALLOCATION_TASK_API_PATH
 } from '../configuration/references';
@@ -41,6 +44,7 @@ export const baseWorkAllocationTaskUrl = getConfigValue(SERVICES_WORK_ALLOCATION
 export const baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);
 export const baseJudicialWorkerRefUrl = getConfigValue(SERVICES_CASE_JUDICIALWORKER_REF_PATH);
 export const baseRoleAssignmentUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
+export const baseElasticSearchUrl = getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH);
 export const baseUrl: string = 'http://localhost:8080';
 
 /**
@@ -67,8 +71,38 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
   try {
     const searchRequest = req.body.searchRequest;
     const view = req.body.view;
+    const searchBy = searchRequest.search_by === 'judge' ? 'judicial' : 'caseworker';
+    let basePath;
+    let postTaskPath;
     let promise;
-    if (searchRequest.search_by === 'judge') {
+    switch (view) {
+      case 'MyTasks':
+        basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, `myTasks?view=${searchBy}`);
+        postTaskPath = preparePaginationUrl(req, basePath);
+        promise = await handlePost(postTaskPath, searchRequest, req);
+        break;
+      case 'AvailableTasks':
+        basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, `availableTasks?view=${searchBy}`);
+        postTaskPath = preparePaginationUrl(req, basePath);
+        promise = await handlePost(postTaskPath, searchRequest, req);
+        break;
+      case 'AllWorkAssigned':
+        basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'allTasks?view=caseworker');
+        postTaskPath = preparePaginationUrl(req, basePath);
+        promise = await handlePost(postTaskPath, searchRequest, req);
+        break;
+      case 'MyCases':
+        const roleAssignments: any[] = req.session.roleAssignmentResponse;
+        console.log('roleAssignment=' + JSON.stringify(roleAssignments));
+        const caseIds = roleAssignments.map(assignments => assignments.attributes.caseId);
+        console.log('caseIds=' + caseIds);
+        const caseTypeId = 'Asylum';
+        const path = getApiPath(baseElasticSearchUrl, caseTypeId);
+        const payload = getRequestBody(caseIds);
+        promise = await sendPost(path, payload, req);
+        break;
+    }
+/*    if (searchRequest.search_by === 'judge') {
       // TODO below call mock api will be replaced when real api is ready
       if (view === 'MyTasks') {
         const basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'myTasks?view=judicial');
@@ -79,9 +113,16 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
         const postTaskPath = preparePaginationUrl(req, basePath);
         promise = await handlePost(postTaskPath, searchRequest, req);
       } else if (view === 'MyCases') {
-        const basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'availableTasks?view=judicial');
-        const postTaskPath = preparePaginationUrl(req, basePath);
-        promise = await handlePost(postTaskPath, searchRequest, req);
+        // const basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'availableTasks?view=judicial');
+        // const postTaskPath = preparePaginationUrl(req, basePath);
+        const roleAssignments: any[] = req.session.roleAssignmentResponse;
+        console.log('roleAssignment=' + JSON.stringify(roleAssignments));
+        const caseIds = roleAssignments.map(assignments => assignments.attributes.caseId);
+        console.log('caseIds=' + caseIds);
+        const caseTypeId = 'Asylum';
+        const path = getApiPath(baseElasticSearchUrl, caseTypeId);
+        const payload = getRequestBody(caseIds);
+        promise = await sendPost(path, payload, req);
       } else {
         const basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, 'allTasks?view=judicial');
         const postTaskPath = preparePaginationUrl(req, basePath);
@@ -101,7 +142,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
         const postTaskPath = preparePaginationUrl(req, basePath);
         promise = await handlePost(postTaskPath, searchRequest, req);
       }
-    }
+    }*/
     const {status, data} = promise;
     res.status(status);
     // Assign actions to the tasks on the data from the API.
@@ -117,6 +158,29 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
   } catch (error) {
     next(error);
   }
+}
+
+export function getApiPath(ccdPath: string, caseTypeId: string) {
+  return `${ccdPath}/internal/searchCases?ctid=${caseTypeId}`;
+}
+
+export function getRequestBody(caseIds: string[]) {
+  return {
+    from: 0,
+    query: {
+      bool: {
+        filter: {
+          terms: {
+            reference: caseIds,
+          },
+        },
+      },
+    },
+    size: 100,
+    sort: {
+      "created_date": {order: 'desc'},
+    },
+  };
 }
 
 /**

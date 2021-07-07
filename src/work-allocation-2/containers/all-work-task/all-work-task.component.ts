@@ -5,11 +5,12 @@ import { UserInfo } from 'src/app/models/user-details.model';
 import { SessionStorageService } from 'src/app/services';
 import { CONFIG_CONSTANTS } from 'src/work-allocation-2/components/constants/config.constants';
 import { LIST_CONSTANTS } from 'src/work-allocation-2/components/constants/list.constants';
-import { TaskService, TaskSort } from 'src/work-allocation-2/enums';
+import { SortOrder, TaskService } from 'src/work-allocation-2/enums';
 import { PaginationParameter, SearchTaskRequest, SortParameter } from 'src/work-allocation-2/models/dtos';
 import { WorkAllocationTaskService } from 'src/work-allocation-2/services';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from 'src/work-allocation-2/utils';
-import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
+import { FieldConfig, SortField } from '../../models/common';
+import { InvokedTaskAction, Task, TaskServiceConfig } from '../../models/tasks';
 
 @Component({
     selector: 'exui-all-work-tasks',
@@ -21,9 +22,9 @@ export class AllWorkTaskComponent implements OnInit {
                      private sessionStorageService: SessionStorageService,
                      private readonly router: Router) {}
 
-  public sortedBy: TaskSortField = {
+  public sortedBy: SortField = {
     fieldName: '',
-    order: TaskSort.NONE
+    order: SortOrder.NONE
   };
 
   public pagination: PaginationParameter = {
@@ -34,14 +35,14 @@ export class AllWorkTaskComponent implements OnInit {
 
   private readonly defaultTaskServiceConfig: TaskServiceConfig = {
     service: TaskService.IAC,
-    defaultSortDirection: TaskSort.NONE,
+    defaultSortDirection: SortOrder.NONE,
     defaultSortFieldName: 'dueDate',
     fields: this.fields,
   };
   public tasks: Task[] = new Array<Task>();
   public tasksTotal: number = 0;
 
-  public get fields(): TaskFieldConfig[] {
+  public get fields(): FieldConfig[] {
     return CONFIG_CONSTANTS.AllWorkTasks;
   }
 

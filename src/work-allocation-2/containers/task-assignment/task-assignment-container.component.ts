@@ -5,10 +5,11 @@ import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ErrorMessage } from '../../../app/models';
 import { ConfigConstants } from '../../components/constants';
-import { TaskActionType, TaskService, TaskSort } from '../../enums';
+import { SortOrder, TaskActionType, TaskService } from '../../enums';
+import { FieldConfig } from '../../models/common';
 import { InformationMessage } from '../../models/comms';
 import { Caseworker, Location, Person } from '../../models/dtos';
-import { TaskFieldConfig, TaskServiceConfig } from '../../models/tasks';
+import { TaskServiceConfig } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 
 @Component({
@@ -39,7 +40,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     private readonly messageService: InfoMessageCommService
   ) { }
 
-  public get fields(): TaskFieldConfig[] {
+  public get fields(): FieldConfig[] {
     return this.showAssigneeColumn ? ConfigConstants.TaskActionsWithAssignee : ConfigConstants.TaskActions;
   }
 
@@ -62,7 +63,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
 
   public taskServiceConfig: TaskServiceConfig = {
     service: TaskService.IAC,
-    defaultSortDirection: TaskSort.ASC,
+    defaultSortDirection: SortOrder.ASC,
     defaultSortFieldName: 'dueDate',
     fields: this.fields,
   };

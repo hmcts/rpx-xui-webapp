@@ -7,9 +7,10 @@ import { Caseworker } from 'api/workAllocation/interfaces/task';
 import { Observable } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
 import { ListConstants } from '../../components/constants';
-import { InfoMessage, InfoMessageType, TaskActionIds, TaskService, TaskSort } from '../../enums';
+import { InfoMessage, InfoMessageType, SortOrder, TaskActionIds, TaskService } from '../../enums';
+import { FieldConfig, SortField } from '../../models/common';
 import { PaginationParameter, SearchTaskRequest, SortParameter } from '../../models/dtos';
-import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
+import { InvokedTaskAction, Task, TaskServiceConfig } from '../../models/tasks';
 import { CaseworkerDataService, InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 
@@ -22,7 +23,7 @@ export class TaskListWrapperComponent implements OnInit {
   public specificPage: string = '';
   public caseworkers: Caseworker[];
   public showSpinner$: Observable<boolean>;
-  public sortedBy: TaskSortField;
+  public sortedBy: SortField;
   public pagination: PaginationParameter;
   private pTasks: Task[];
   /**
@@ -30,7 +31,7 @@ export class TaskListWrapperComponent implements OnInit {
    */
   private readonly defaultTaskServiceConfig: TaskServiceConfig = {
     service: TaskService.IAC,
-    defaultSortDirection: TaskSort.ASC,
+    defaultSortDirection: SortOrder.ASC,
     defaultSortFieldName: 'dueDate',
     fields: this.fields,
   };
@@ -67,7 +68,7 @@ export class TaskListWrapperComponent implements OnInit {
     this.pTasksTotal = value;
   }
 
-  public get fields(): TaskFieldConfig[] {
+  public get fields(): FieldConfig[] {
     return [];
   }
 
@@ -133,7 +134,7 @@ export class TaskListWrapperComponent implements OnInit {
       const { fieldName, order } = JSON.parse(sortStored);
       this.sortedBy = {
         fieldName,
-        order: order as TaskSort
+        order: order as SortOrder
       };
     } else {
       // Otherwise, set up the default sorting.
@@ -214,9 +215,9 @@ export class TaskListWrapperComponent implements OnInit {
    * @param fieldName - ie. 'caseName'
    */
   public onSortHandler(fieldName: string): void {
-    let order: TaskSort = TaskSort.ASC;
-    if (this.sortedBy.fieldName === fieldName && this.sortedBy.order === TaskSort.ASC) {
-      order = TaskSort.DSC;
+    let order: SortOrder = SortOrder.ASC;
+    if (this.sortedBy.fieldName === fieldName && this.sortedBy.order === SortOrder.ASC) {
+      order = SortOrder.DESC;
     }
     this.sortedBy = { fieldName, order };
     this.sessionStorageService.setItem(this.sortSessionKey, JSON.stringify(this.sortedBy));

@@ -1,8 +1,9 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TaskFieldType, TaskView } from './../../enums';
-import { Task, TaskFieldConfig } from './../../models/tasks';
+import { FieldConfig } from '../../models/common';
+import { FieldType, TaskView } from './../../enums';
+import { Task } from './../../models/tasks';
 import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
 import { TaskFieldComponent } from './task-field.component';
 
@@ -11,7 +12,7 @@ import { TaskFieldComponent } from './task-field.component';
 })
 class WrapperComponent {
   @ViewChild(TaskFieldComponent) public appComponentRef: TaskFieldComponent;
-  @Input() public config: TaskFieldConfig;
+  @Input() public config: FieldConfig;
   @Input() public task: Task;
 }
 
@@ -22,7 +23,7 @@ describe('WorkAllocation', () => {
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
 
-    function getConfig(name: string, type: TaskFieldType): TaskFieldConfig {
+    function getConfig(name: string, type: FieldType): FieldConfig {
       return {
         name,
         type,
@@ -51,7 +52,7 @@ describe('WorkAllocation', () => {
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
 
       // Set up the config and the task.
-      const config: TaskFieldConfig = getConfig('caseName', TaskFieldType.STRING);
+      const config: FieldConfig = getConfig('caseName', FieldType.STRING);
       const task: Task = {
         id: 'The task ID',
         case_id: 'The case reference',
@@ -81,7 +82,7 @@ describe('WorkAllocation', () => {
 
     it('should handle a STRING type', () => {
       // Set up the config and the task.
-      const config: TaskFieldConfig = getConfig('case_id', TaskFieldType.STRING);
+      const config: FieldConfig = getConfig('case_id', FieldType.STRING);
       const task: Task = {
         id: 'The task ID',
         case_id: 'The case reference',
@@ -115,7 +116,7 @@ describe('WorkAllocation', () => {
       expect(fixture.debugElement.nativeElement.querySelector('.due-date')).toBeNull();
 
       // Set up the config and the task.
-      const config: TaskFieldConfig = getConfig('dueDate', TaskFieldType.DATE_DUE);
+      const config: FieldConfig = getConfig('dueDate', FieldType.DATE_DUE);
       const task: Task = {
         id: 'The task ID',
         case_id: 'The case reference',
@@ -165,7 +166,7 @@ describe('WorkAllocation', () => {
 
     it('should handle a DATE_AGE_DAYS type', () => {
       // Set up the config and the task.
-      const config: TaskFieldConfig = getConfig('dueDate', TaskFieldType.DATE_AGE_DAYS);
+      const config: FieldConfig = getConfig('dueDate', FieldType.DATE_AGE_DAYS);
       const task: Task = {
         id: 'The task ID',
         case_id: 'The case reference',
@@ -211,7 +212,7 @@ describe('WorkAllocation', () => {
 
     it('should handle a DATE type', () => {
       // Set up the config and the task.
-      const config: TaskFieldConfig = getConfig('dueDate', TaskFieldType.DATE);
+      const config: FieldConfig = getConfig('dueDate', FieldType.DATE);
       const task: Task = {
         id: 'The task ID',
         case_id: 'The case reference',
@@ -242,7 +243,7 @@ describe('WorkAllocation', () => {
 
     it('should handle a DATETIME type', () => {
       // Set up the config and the task.
-      const config: TaskFieldConfig = getConfig('dueDate', TaskFieldType.DATETIME);
+      const config: FieldConfig = getConfig('dueDate', FieldType.DATETIME);
       const task: Task = {
         id: 'The task ID',
         case_id: 'The case reference',
@@ -273,7 +274,7 @@ describe('WorkAllocation', () => {
 
     it('should handle a BOOLEAN type', () => {
       // Set up the config and the task.
-      const config: TaskFieldConfig = getConfig('happy', TaskFieldType.BOOLEAN);
+      const config: FieldConfig = getConfig('happy', FieldType.BOOLEAN);
       const task: Task = {
         id: 'The task ID',
         case_id: 'The case reference',
@@ -347,7 +348,7 @@ describe('WorkAllocation', () => {
 
     it('should handle an INTEGER type', () => {
       // Set up the config and the task.
-      const config: TaskFieldConfig = getConfig('pi', TaskFieldType.INTEGER);
+      const config: FieldConfig = getConfig('pi', FieldType.INTEGER);
       const task: Task = {
         id: 'The task ID',
         case_id: 'The case reference',
@@ -411,7 +412,7 @@ describe('WorkAllocation', () => {
 
     it('should handle an DECIMAL_2 type', () => {
       // Set up the config and the task.
-      const config: TaskFieldConfig = getConfig('pi', TaskFieldType.DECIMAL_2);
+      const config: FieldConfig = getConfig('pi', FieldType.DECIMAL_2);
       const task: Task = {
         id: 'The task ID',
         case_id: 'The case reference',
@@ -481,7 +482,7 @@ describe('WorkAllocation', () => {
       expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
 
       // Set up the config and the task.
-      const config: TaskFieldConfig = getConfig('link', TaskFieldType.URL);
+      const config: FieldConfig = getConfig('link', FieldType.URL);
       const task: Task = {
         id: 'The task ID',
         case_id: 'The case reference',
@@ -553,7 +554,7 @@ describe('WorkAllocation', () => {
       expect(fixture.debugElement.nativeElement.querySelector('img')).toBeNull();
 
       // Set up the config and the task.
-      const config: TaskFieldConfig = getConfig('image', TaskFieldType.IMAGE);
+      const config: FieldConfig = getConfig('image', FieldType.IMAGE);
       const task: Task = {
         id: 'The task ID',
         case_id: 'The case reference',
@@ -622,7 +623,7 @@ describe('WorkAllocation', () => {
       expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
 
       // Set up the config and the task.
-      const config: TaskFieldConfig = getConfig('case_id', TaskFieldType.CASE_REFERENCE);
+      const config: FieldConfig = getConfig('case_id', FieldType.CASE_REFERENCE);
       const task: Task = {
         id: 'The task ID',
         case_id: 'The case reference',
@@ -675,7 +676,7 @@ describe('WorkAllocation', () => {
       expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
 
       // Set up the config and the task.
-      const config: TaskFieldConfig = getConfig('caseName', TaskFieldType.CASE_NAME);
+      const config: FieldConfig = getConfig('caseName', FieldType.CASE_NAME);
       const task: Task = {
         id: 'The task ID',
         case_id: '1',
@@ -729,7 +730,7 @@ describe('WorkAllocation', () => {
       expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
 
       // Set up the config and the task.
-      const config: TaskFieldConfig = getConfig('taskName', TaskFieldType.TASK_NAME);
+      const config: FieldConfig = getConfig('taskName', FieldType.TASK_NAME);
       const task: Task = {
         id: 'The task ID',
         case_id: '1',
@@ -780,7 +781,7 @@ describe('WorkAllocation', () => {
     it('should handle a CASE_REFERENCE_AS_STRING type', () => {
 
       // Set up the config and the task.
-      const config: TaskFieldConfig = getConfig('case_id', TaskFieldType.CASE_REFERENCE_STRING);
+      const config: FieldConfig = getConfig('case_id', FieldType.CASE_REFERENCE_STRING);
       const task: Task = {
         id: 'The task ID',
         case_id: '1234567890987654',

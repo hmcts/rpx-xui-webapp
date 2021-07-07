@@ -1,4 +1,4 @@
-export enum TaskFieldType {
+export enum FieldType {
   STRING,
   DATE_DUE,              // Display as fancy colour coded date
   DATE_AGE_DAYS,         // Display as number of days since date

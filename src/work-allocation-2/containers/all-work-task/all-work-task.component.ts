@@ -1,109 +1,111 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Component } from '@angular/core';
+import { Location } from 'api/workAllocation2/interfaces/task';
+import { Caseworker } from 'api/workAllocation2/interfaces/task';
 import { UserInfo } from 'src/app/models/user-details.model';
-import { SessionStorageService } from 'src/app/services';
-import { CONFIG_CONSTANTS } from 'src/work-allocation-2/components/constants/config.constants';
-import { LIST_CONSTANTS } from 'src/work-allocation-2/components/constants/list.constants';
-import { TaskService, TaskSort } from 'src/work-allocation-2/enums';
-import { PaginationParameter, SearchTaskRequest, SortParameter } from 'src/work-allocation-2/models/dtos';
-import { WorkAllocationTaskService } from 'src/work-allocation-2/services';
+import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from 'src/work-allocation-2/components/constants';
+import { SortOrder } from 'src/work-allocation-2/enums';
+import { PaginationParameter, SearchTaskRequest } from 'src/work-allocation-2/models/dtos';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from 'src/work-allocation-2/utils';
-import { InvokedTaskAction, Task, TaskFieldConfig, TaskServiceConfig, TaskSortField } from '../../models/tasks';
+import { FieldConfig, SortField } from '../../models/common';
+import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
 @Component({
     selector: 'exui-all-work-tasks',
     templateUrl: 'all-work-task.component.html',
     styleUrls: ['all-work-task.component.scss']
 })
-export class AllWorkTaskComponent implements OnInit {
-  public constructor(private readonly taskService: WorkAllocationTaskService,
-                     private sessionStorageService: SessionStorageService,
-                     private readonly router: Router) {}
+export class AllWorkTaskComponent extends TaskListWrapperComponent {
+  private selectedCaseworker: Caseworker;
+  private selectedLocation: Location;
 
-  public sortedBy: TaskSortField = {
+  public sortedBy: SortField = {
     fieldName: '',
-    order: TaskSort.NONE
+    order: SortOrder.NONE
   };
 
   public pagination: PaginationParameter = {
     page_number: 1,
     page_size: 25
   };
-  public emptyMessage: string = 'Change your selection to view tasks.';
-
-  private readonly defaultTaskServiceConfig: TaskServiceConfig = {
-    service: TaskService.IAC,
-    defaultSortDirection: TaskSort.NONE,
-    defaultSortFieldName: 'dueDate',
-    fields: this.fields,
-  };
-  public tasks: Task[] = new Array<Task>();
-  public tasksTotal: number = 0;
-
-  public get fields(): TaskFieldConfig[] {
-    return CONFIG_CONSTANTS.AllWorkTasks;
+  public get emptyMessage(): string {
+    return ListConstants.EmptyMessage.AllWork;
   }
 
-  public ngOnInit() {
-    this.doLoad();
+  public get sortSessionKey(): string {
+    return SortConstants.Session.AllWork;
   }
 
-  public get taskServiceConfig(): TaskServiceConfig {
-    return this.defaultTaskServiceConfig;
-  }
-
-  public onPaginationEvent(pageNumber: number): void {
-  }
-
-  public onSortHandler(fieldName: string): void {
-  }
-
-  public onActionHandler(taskAction: InvokedTaskAction): void {
+  public get pageSessionKey(): string {
+    return PageConstants.Session.AllWork;
   }
 
   public get view(): string {
-    return 'AllWorkAssigned';
+    return ListConstants.View.AllWork;
   }
 
-  private doLoad(): void {
-    this.performSearchPagination().subscribe(result => {
-        this.tasks = result.tasks;
-        this.tasksTotal = result.total_records;
-      }, error => {
-        handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
+  public get fields(): FieldConfig[] {
+    return ConfigConstants.AllWorkTasks;
+  }
+
+  public loadCaseWorkersAndLocations() {
+    this.locationService.getLocations().subscribe(locations => {
+      this.locations = [...locations];
+    }, error => {
+      handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
     });
-  }
-
-  public performSearchPagination(): Observable<any> {
-    const searchRequest = this.getSearchTaskRequestPagination();
-    return this.taskService.searchTaskWithPagination({ searchRequest, view: this.view });
   }
 
   public getSearchTaskRequestPagination(): SearchTaskRequest {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
-    let isJudge = false;
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      const id = userInfo.id ? userInfo.id : userInfo.uid;
-      isJudge = userInfo.roles.some(role => LIST_CONSTANTS.JUDGE_ROLES.includes(role));
+      const isJudge = userInfo.roles.some(role => ListConstants.JUDGE_ROLES.includes(role));
+      return {
+        search_parameters: [
+        this.getLocationParameter(),
+        this.getCaseworkerParameter()
+        ],
+        sorting_parameters: [this.getSortParameter()],
+        search_by: isJudge ? 'judge' : 'caseworker',
+        pagination_parameters: this.getPaginationParameter()
+      };
     }
-    return {
-      search_parameters: [],
-      sorting_parameters: [this.getSortParameter()],
-      pagination_parameters: this.getPaginationParameter(),
-      search_by: isJudge ? 'judge' : 'caseworker',
-    };
   }
 
-  public getSortParameter(): SortParameter {
-    return {
-      sort_by: this.sortedBy.fieldName,
-      sort_order: this.sortedBy.order
-    };
+  private getLocationParameter() {
+    let values: string[];
+    if (this.selectedLocation && this.selectedLocation.id !== FilterConstants.Options.Locations.ALL.id) {
+      values = [ this.selectedLocation.id ];
+    } else {
+      values = this.locations.map(loc => loc.id);
+    }
+    return { key: 'location', operator: 'IN', values };
   }
 
-  public getPaginationParameter(): PaginationParameter {
-    return { ...this.pagination };
+  private getCaseworkerParameter() {
+    let values: string[];
+    if (this.selectedCaseworker && this.selectedCaseworker !== FilterConstants.Options.Caseworkers.ALL) {
+      if (this.selectedCaseworker === FilterConstants.Options.Caseworkers.UNASSIGNED) {
+        values = [];
+      } else {
+        values = [this.selectedCaseworker.idamId];
+      }
+    } else {
+      values = [];
+    }
+    return { key: 'user', operator: 'IN', values };
+  }
+
+  /**
+   * Handle the paging event
+   */
+   public onPaginationEvent(pageNumber: number): void {
+    this.onPaginationHandler(pageNumber);
+  }
+
+  public onSelectionChanged(selection: { location: Location, caseworker: Caseworker }): void {
+    this.selectedLocation = selection.location;
+    this.selectedCaseworker = selection.caseworker;
+    this.loadTasks();
   }
 }

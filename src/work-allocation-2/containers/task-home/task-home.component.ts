@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 
 import { AppUtils } from '../../../app/app-utils';
 import { ErrorMessage } from '../../../app/models';
-import { TaskSortField } from '../../models/tasks';
+import { SortField } from '../../models/common';
 
 @Component({
   selector: 'exui-task-home',
@@ -13,7 +13,7 @@ import { TaskSortField } from '../../models/tasks';
   styleUrls: ['task-home.component.scss']
 })
 export class TaskHomeComponent implements OnInit, OnDestroy {
-  public sortedBy: TaskSortField;
+  public sortedBy: SortField;
   public pageTitle: string;
   public error: ErrorMessage = null;
   public jurisdiction: string = 'Immigration & Asylum';

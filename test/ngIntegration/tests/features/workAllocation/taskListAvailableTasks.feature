@@ -17,7 +17,6 @@ Feature: WA Release 1: Available Tasks Task list
         Then I see Available tasks page displayed
         Then I validate tasks count in page 25
 
-
     Scenario: Avaiable Tasks sort columns
          Given I set MOCK My tasks count 150
         Given I start MockApp

@@ -69,19 +69,23 @@ class TaskListTable extends Application{
     }
 
     async getColumnHeaderNames(){
-        await this.waitForTable();
-        const headers = element.all(by.xpath(`//exui-task-list//table//thead//th//button`));
-        const headerElementsCount = await headers.count();
-        const headerElements = [];
-        for (let i =  0; i < headerElementsCount; i++){
-            headerElements.push(await headers.get(i));
-        }
-        const names = await ArrayUtil.map(headerElements , async (headerElement) => {
-            const headerName = await headerElement.getText();
-            return headerName.trim();
-        });
+        return await BrowserWaits.retryWithActionCallback(async () => {
+            await this.waitForTable();
+            const headers = element.all(by.xpath(`//exui-task-list//table//thead//th//button`));
+            const headerElementsCount = await headers.count();
+            const headerElements = [];
 
-        return names; 
+
+            for (let i = 0; i < headerElementsCount; i++) {
+                headerElements.push(await headers.get(i));
+            }
+            const names = await ArrayUtil.map(headerElements, async (headerElement) => {
+                const headerName = await headerElement.getText();
+                return headerName.trim();
+            });
+            return names;
+        });
+       
     }    
 
     async clickColumnHeader(headerName){
@@ -163,9 +167,13 @@ class TaskListTable extends Application{
     async clickManageLinkForTaskAt(position){
         await browserUtil.stepWithRetry(async () => {
             const taskrow = await this.getTableRowAt(position);
-
-            await BrowserWaits.waitForElementClickable(taskrow);
-            await taskrow.$('button[id^="manage_"]').click();
+            let taskManageLink = taskrow.$('button[id^="manage_"]');
+            await browser.executeScript('arguments[0].scrollIntoView()',
+                taskManageLink.getWebElement())
+            await taskManageLink.click();
+            if (!(await this.isManageLinkOpenForTaskAtPos(position))){
+                throw new Error('Manage link not open. retying action');
+            }
         });
     }
 
@@ -269,6 +277,10 @@ class TaskListTable extends Application{
         await BrowserWaits.waitForElementClickable(linkElement);
         await linkElement.click();
 
+    }
+
+    async isPaginationControlDisplayed(){
+        return this.paginationContainer.isPresent() && this.paginationContainer.isDisplayed();
     }
 }
 

@@ -78,16 +78,32 @@ module.exports = {
             }
         },
         '/workallocation2/taskWithPagination/': (req, res) => {
+            const pageNum = req.body.searchRequest.pagination_parameters.page_number;
             const pageSize = req.body.searchRequest.pagination_parameters.page_size;
+            let tasks = [];
             if (req.body.view === "MyTasks") {
-                res.send(workAllocationMockData.getMyTasks(pageSize));
+                tasks = global.scenarioData['workallocation2.MyTasks'] ? global.scenarioData['workallocation2.MyTasks'] : workAllocationMockData.getMyTasks(pageSize*5);
             } else if (req.body.view === "AvailableTasks") {
-                res.send(workAllocationMockData.getAvailableTasks(pageSize));
+                tasks = global.scenarioData['workallocation2.AvailableTasks'] ? global.scenarioData['workallocation2.AvailableTasks'] : workAllocationMockData.getAvailableTasks(pageSize*5);
             } else if (req.body.view === "TaskManager") {
-                res.send(workAllocationMockData.getTaskManagerTasks(pageSize));
+                tasks = global.scenarioData['workallocation2.AllWork'] ? global.scenarioData['workallocation2.AllWork'] : workAllocationMockData.getTaskManagerTasks(pageSize*5);
             } else {
                 throw new Error("Unrecognised task list view : " + req.body.view);
             }
+            try {
+                const thisPageTasks = [];
+              
+
+                const startIndexForPage = pageNum === 1 ? 0 : ((pageNum - 1) * pageSize) - 1;
+                const endIndexForPage = (startIndexForPage + pageSize) < tasks.total_records ? startIndexForPage + pageSize - 1 : tasks.total_records - 1;
+                for (let i = startIndexForPage; i <= endIndexForPage; i++) {
+                    thisPageTasks.push(tasks.tasks[i]);
+                }
+                res.send({ tasks: thisPageTasks, total_records: tasks.total_records });
+            } catch (e) {
+                res.status(500).send({ error: 'mock error occured',stack:e.stack });
+            }
+ 
         },
         '/workallocation/task/:taskId/assign': (req, res) => {
             res.send();

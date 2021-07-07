@@ -31,7 +31,7 @@ describe('AvailableTasksComponent', () => {
 
   const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
   const mockLocations: dtos.Location[] = getMockLocations();
-  const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask', 'claimTask']);
+  const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask', 'claimTask', 'searchTaskWithPagination']);
   const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
@@ -62,10 +62,9 @@ describe('AvailableTasksComponent', () => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
-    component.isPaginationEnabled$ = of(false);
     mockLocationService.getLocations.and.returnValue(of(mockLocations));
     const tasks: Task[] = getMockTasks();
-    mockTaskService.searchTask.and.returnValue(of({ tasks }));
+    mockTaskService.searchTaskWithPagination.and.returnValue(of({ tasks }));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     fixture.detectChanges();
   });

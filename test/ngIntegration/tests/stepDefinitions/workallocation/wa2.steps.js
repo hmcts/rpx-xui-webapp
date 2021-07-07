@@ -50,28 +50,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }
             
         }
+        global.scenarioData[`workallocation2.${view.split(" ").join("")}`] = {tasks : tasks, total_records:tasks.length} ;
         
-        MockApp.onPost("/workallocation2/taskWithPagination/", (req, res) => {
-            try{
-                const thisPageTasks = [];
-                const pageNum = req.body.searchRequest.pagination_parameters.page_number;
-                const pageSize = req.body.searchRequest.pagination_parameters.page_size;
-
-                const startIndexForPage = (pageNum-1) * pageSize;
-                const endIndexForPage = (startIndexForPage + pageSize) < tasks.length ? startIndexForPage + pageSize : tasks.length - 1;
-                for (let i = startIndexForPage; i < endIndexForPage; i++) {
-                    thisPageTasks.push(tasks[i]);
-                }
-                res.send({ tasks: thisPageTasks, total_records: tasks.length });
-            }catch(e){
-                CucumberReporter.AddMessage("Mock error on request /workallocation2/taskWithPagination/ "+e);
-                res.status(500).send({error:'mock error occured'});
-            }
-            
-
-            
-        });
-
     });
 
 

@@ -2,12 +2,12 @@ import { Component } from '@angular/core';
 import { InvokedTaskAction, Task } from '../../..//work-allocation-2/models/tasks';
 import { InfoMessage, InfoMessageType, TaskActionIds } from '../../../work-allocation-2/enums';
 import { SearchTaskRequest } from '../../../work-allocation-2/models/dtos';
-import { TaskFieldConfig } from '../../../work-allocation-2/models/tasks';
 import { handleFatalErrors, REDIRECTS } from '../../../work-allocation-2/utils';
 
 import { UserInfo } from '../../../app/models/user-details.model';
 import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
+import { FieldConfig } from '../../models/common';
 
 @Component({
   selector: 'exui-available-tasks',
@@ -15,7 +15,7 @@ import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper
 })
 export class AvailableTasksComponent extends TaskListWrapperComponent {
 
-  public get fields(): TaskFieldConfig[] {
+  public get fields(): FieldConfig[] {
     return ConfigConstants.AvailableTasks;
   }
 

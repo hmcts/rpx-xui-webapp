@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { UserInfo } from '../../../app/models/user-details.model';
 import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
+import { FieldConfig } from '../../models/common';
 import { SearchTaskRequest } from '../../models/dtos';
-import { TaskFieldConfig } from '../../models/tasks';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
 @Component({
@@ -27,7 +27,7 @@ export class MyTasksComponent extends TaskListWrapperComponent {
     return ListConstants.View.MyTasks;
   }
 
-  public get fields(): TaskFieldConfig[] {
+  public get fields(): FieldConfig[] {
     return ConfigConstants.MyWorkTasks;
   }
 

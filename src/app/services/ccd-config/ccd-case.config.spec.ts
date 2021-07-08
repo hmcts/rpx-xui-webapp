@@ -10,12 +10,16 @@ import { AppConfig } from './ccd-case.config';
 class MockConfigService {
   private readonly config;
   private readonly caseEditorConfig = {};
-  private getEditorConfiguration() {}
   constructor() {
     this.config = {
-      login_url: 'test'
+      login_url: 'test',
+      document_management_url_v2: 'dummy',
+      document_management_secure_enabled: true,
+      hrs_url: 'dummy',
+      remote_hrs_url: 'dummy',
     };
   }
+  public getEditorConfiguration = () => this.config;
 }
 
 const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled', 'getValue']);
@@ -38,7 +42,7 @@ describe('AppConfiguration', () => {
       ]
     });
     mockEnvironmentService.get.and.returnValue('someUrl');
-    mockFeatureToggleService.getValue.and.returnValue(of({}));
+    mockFeatureToggleService.getValue.and.returnValue(of(true));
   });
 
   it('should be created', inject([AppConfig], (service: AppConfig) => {
@@ -77,6 +81,14 @@ describe('AppConfiguration', () => {
 
   it('should have getRemoteHrsUrl', inject([AppConfig], (service: AppConfig) => {
     expect(service.getRemoteHrsUrl).toBeDefined();
+  }));
+
+  it('should have getHrsUrl return value', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getHrsUrl()).toBe('dummy');
+  }));
+
+  it('should have getRemoteHrsUrl return value', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getRemoteHrsUrl()).toBe('dummy');
   }));
 
   it('should have getPostcodeLookupUrl', inject([AppConfig], (service: AppConfig) => {
@@ -121,6 +133,14 @@ describe('AppConfiguration', () => {
 
   it('should have getDocumentSecureMode', inject([AppConfig], (service: AppConfig) => {
     expect(service.getDocumentSecureMode).toBeDefined();
+  }));
+
+  it('should have getDocumentManagementUrlV2 return value', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getDocumentManagementUrlV2()).toBe('dummy');
+  }));
+
+  it('should have getDocumentSecureMode return value', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getDocumentSecureMode()).toBe(true);
   }));
 
 });

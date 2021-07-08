@@ -213,7 +213,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Given('I set MOCK find persons database with persons', async function(datatable){
-        const findPersonsData = workAllocationMockData.getFindPersonsDataFrom(datatable.hashes());
+        const findPersonsData = await workAllocationMockData.getFindPersonsDataFrom(datatable.hashes());
 
         MockApp.onPost("/workallocation2/findPerson",(req,res) =>{
             workAllocationMockData.findPersonResponse(req.body.searchOptions.searchTerm, findPersonsData).then((response) => {
@@ -221,4 +221,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             });
         });
     });
+
+
 }) ;

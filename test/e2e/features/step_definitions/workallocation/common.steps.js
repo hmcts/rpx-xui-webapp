@@ -54,6 +54,17 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         expect(columnSortVal).to.include(sortOrder.toLowerCase());
     });
 
+    When('I click task list table header column {string}, I validate task list table sorted with column {string} in order {string}', async function (columnHeaderLabel, columnheaderlabel, sortOrder) {
+       await BrowserWaits.retryWithActionCallback(async () => {
+           await taskListTable.clickColumnHeader(columnHeaderLabel);
+           const columnSortVal = await taskListTable.getColumnSortState(columnheaderlabel);
+           await BrowserWaits.waitForConditionAsync(async () => {
+               return columnSortVal.includes(sortOrder.toLowerCase())
+           }, 3000, "Sort column state to be " + sortOrder.toLowerCase());
+       }); 
+       
+    });
+
     Then('I validate task list table columns displayed', async function (datatable) {
         const columnHeadersHash = datatable.hashes();
         const expectdColHeaders = await ArrayUtil.map(columnHeadersHash, (headerhash) => headerhash.ColumnHeader );  
@@ -82,5 +93,32 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await taskListTable.clickTaskColLink(colName,rowPos);
     });
 
+    Then('I validate manage link actions for tasks', async function (tasksDatatable) {
+        const softAssert = new SoftAssert();
+        const taskHashes = tasksDatatable.hashes();
+
+        for (let i = 0; i < taskHashes.length; i++) {
+          
+            const taskActions = taskHashes[i]["actions"].split(",");
+            let taskIndex = parseInt(taskHashes[i].index);
+            if (taskHashes[i]["actions"] === ""){
+                softAssert.setScenario(`Manage link not present for task  ${JSON.stringify(taskHashes[i])} `);
+                await softAssert.assert(async () => expect(await taskListTable.isManageLinkPresent(taskIndex+1)).to.be.false);
+                continue;
+            }
+            if (!(await taskListTable.isManageLinkOpenForTaskAtPos(taskIndex+1))){
+                await taskListTable.clickManageLinkForTaskAt(taskIndex+1);
+            }
+
+            for (let j = 0; j < taskActions.length;j++){
+                let action = taskActions[j];
+                softAssert.setScenario(`Action ${action} present for task  ${JSON.stringify(taskHashes[i])} isPresent`);
+                await softAssert.assert(async () => expect(await taskListTable.isTaskActionPresent(action)).to.be.true);
+            }
+            
+        }
+        softAssert.finally();
+
+    });
 
 });

@@ -153,9 +153,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         CucumberReporter.AddMessage(columnHeaders);
         expect(await taskListPage.getColumnSortState(columnHeaders[1])).to.equal("none");
 
-        await taskListPage.clickColumnHeader(columnHeaders[1]);
-        expect(await taskListPage.getColumnSortState(columnHeaders[1])).to.equal("ascending");
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await taskListPage.clickColumnHeader(columnHeaders[1]);
+            expect(await taskListPage.getColumnSortState(columnHeaders[1])).to.equal("ascending");
 
+        });
+       
         await headerPage.getTabElementWithText('Case list').click();
         await browserUtil.waitForLD();
         expect(await caseListPage.amOnPage()).to.be.true;

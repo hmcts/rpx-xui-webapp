@@ -11,7 +11,7 @@ const SearchCasePage = require('../pageObjects/searchPage');
 const taskListPage = require('../pageObjects/workAllocation/taskListPage');
 const taskManagerPage = require('../pageObjects/workAllocation/taskManagerPage');
 const myWorkPage = require('../pageObjects/workAllocation/myWorkPage');
-
+const allWorkPage = require("../../features/pageObjects/workAllocation/allWorkPage");
 
 
 const createCaseStartPage = new CreateCaseStartPage();
@@ -216,7 +216,7 @@ function HeaderPage() {
         retValue = await myWorkPage.amOnPage();
         break;
       case 'All work':
-        throw new Error('All work Test pageObject not implemented/applied to tests');
+        retValue = await allWorkPage.amOnPage();
         break;
       default:
         throw new Error(`Tab "${primaryTab}" is not recognised or not implemeted in test to handle.`);

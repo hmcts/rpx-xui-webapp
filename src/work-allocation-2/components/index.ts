@@ -10,7 +10,9 @@ import { TaskManagerFilterComponent } from './task-manager-filter/task-manager-f
 import { TaskNameFieldComponent } from './task-name-field/task-name-field.component';
 import { UrlFieldComponent } from './url-field/url-field.component';
 import { FindPersonComponent } from './find-person/find-person.component';
+import { MyCasesFilterComponent } from './my-cases-filter/my-cases-filter.component';
 import { TaskListFilterComponent } from './task-list-filter/task-list-filter.component';
+import { WorkFieldComponent } from './work-field/world-field.component';
 
 export const components: any[] = [
   AvailableTasksFilterComponent,
@@ -19,13 +21,15 @@ export const components: any[] = [
   DerivedIconFieldComponent,
   ImageFieldComponent,
   InfoMessageComponent,
+  MyCasesFilterComponent,
   TaskAssignmentComponent,
   TaskFieldComponent,
   TaskListFilterComponent,
   TaskManagerFilterComponent,
   TaskNameFieldComponent,
   UrlFieldComponent,
-  FindPersonComponent
+  FindPersonComponent,
+  WorkFieldComponent
 ];
 
 export * from './available-tasks-filter/available-tasks-filter.component';

@@ -32,6 +32,50 @@ export function getMockCaseworkers(): Caseworker[] {
 }
 
 /**
+ * Mock cases
+ */
+ export function getMockCases(): Task[] {
+  return [
+    {
+      id: '1549476532065586',
+      case_id: '1549476532065586',
+      taskId: '1549476532065586',
+      caseName: 'Kili Muso',
+      caseCategory: 'Protection',
+      location: 'Taylor House',
+      taskName: 'Review respondent evidence',
+      dueDate: new Date(628021800000),
+      actions: [
+        {
+          id: 'actionId1',
+          title: 'Reassign task',
+        },
+        {
+          id: 'actionId2',
+          title: 'Release this task',
+        }
+      ]
+    },
+    {
+      id: '1549476532065587',
+      case_id: '1549476532065587',
+      taskId: '1549476532065587',
+      caseName: 'Mankai Lit',
+      caseCategory: 'Revocation',
+      location: 'Taylor House',
+      taskName: 'Review appellant case',
+      dueDate: new Date(628021800000),
+      actions: [
+        {
+          id: 'actionId2',
+          title: 'Release this task',
+        }
+      ]
+    }
+  ];
+}
+
+/**
  * Mock tasks
  */
 export function getMockTasks(): Task[] {

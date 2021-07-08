@@ -57,6 +57,9 @@ export const VIEW_PERMISSIONS_ACTIONS_MATRIX = {
   MyTasks: {
     Manage: [REASSIGN, RELEASE, GO],
   },
+  MyCases: {
+    Manage: [REASSIGN, RELEASE, GO],
+  },
 };
 
 export enum TaskPermission {

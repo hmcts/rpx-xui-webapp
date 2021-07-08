@@ -11,6 +11,13 @@ export function preparePostTaskUrlAction(baseUrl: string, taskId: string, action
   return `${baseUrl}/task/${taskId}/${action}`;
 }
 
+export function prepareSearchCaseUrl(baseUrl: string, subPath?: string) {
+  if (subPath) {
+    return `${baseUrl}/${subPath}`;
+  }
+  return `${baseUrl}/case`;
+}
+
 export function prepareSearchTaskUrl(baseUrl: string, subPath?: string) {
   if (subPath) {
     return `${baseUrl}/${subPath}`;
@@ -50,15 +57,15 @@ export function prepareCaseWorkerForLocationAndService(baseUrl: string, location
   return `${baseUrl}/caseworker/location/${locationId}/service/${serviceId}`;
 }
 
-export function preparePaginationUrl(req: EnhancedRequest, postTaskPath: string): string {
+export function preparePaginationUrl(req: EnhancedRequest, postPath: string): string {
   if (req.body && req.body.searchRequest && req.body.searchRequest.pagination_parameters) {
     const paginationConfig = req.body.searchRequest.pagination_parameters;
     const pageNumber = paginationConfig.page_number;
     const pageSize = paginationConfig.page_size;
     const firstResult = (pageNumber - 1) * pageSize;
-    return `${postTaskPath}?first_result=${firstResult}&max_results=${pageSize}`;
+    return `${postPath}?first_result=${firstResult}&max_results=${pageSize}`;
   }
-  return postTaskPath;
+  return postPath;
 }
 
 /**
@@ -80,6 +87,28 @@ export function assignActionsToTasks(tasks: any[], view: any): any[] {
     }
   }
   return tasksWithActions;
+}
+
+/**
+ * NOTE: These comments are copied from the assignActionsToTasks method
+ * The below sets up actions on the cases, though it's expected this will change
+ * in the future - it should do fine for the MVP, though.
+ * @param tasks The tasks to set up the actions for.
+ * @param view This dictates which set of actions we should use.
+ */
+ export function assignActionsToCases(cases: any[], view: any): any[] {
+  const casesWithActions: any[] = [];
+  if (cases) {
+    for (const item of cases) {
+      // Note: There is no current logic to determine whether assigned or unassigned
+      // This was debated for EUI-3619
+      // As actions can change based on whether assigned or not, there might need to be a check here
+      const actions: Action[] = getActionsByPermissions(view, item.permissions);
+      const caseWithAction = {...item, actions};
+      casesWithActions.push(caseWithAction);
+    }
+  }
+  return casesWithActions;
 }
 
 export function mapCaseworkerData(caseWorkerData: CaseworkerApi[]): Caseworker[] {

@@ -34,6 +34,42 @@ const myWorkPage = require('../../../../e2e/features/pageObjects/workAllocation/
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     const caseListPage = new CaseListPage();
+
+    Given('I set MOCK locations for WA release 2', async function(locationsDatatable){
+        const locationsHashes = locationsDatatable.hashes();
+        const locationsResponseBody = [];
+        for (let i = 0; i < locationsHashes.length;i++){
+            let location = workAllocationDataModel.getLocation();
+            locationsResponseBody.push(location);
+            let locationHashKeys = Object.keys(locationsHashes[i]);
+            locationHashKeys.forEach(key => {
+                location[key] = locationsHashes[i][key];
+            })
+            
+        }
+        MockApp.onGet("/workallocation2/location", (req,res) => {
+            res.send(locationsResponseBody);
+        })
+    });
+
+    Given('I set MOCK persons end point {string} for WA release 2', async function (endpoint, personsDatatable) {
+        const personshashes = personsDatatable.hashes();
+        const personsResponseBody = [];
+        for (let i = 0; i < personshashes.length; i++) {
+            let person = workAllocationDataModel.getCaseWorkerOrperson();
+            personsResponseBody.push(person);
+            let personHashKeys = Object.keys(personshashes[i]);
+            personHashKeys.forEach(key => {
+                person[key] = personshashes[i][key];
+            })
+
+        }
+        MockApp.onGet(endpoint, (req, res) => {
+            res.send(personsResponseBody);
+        })
+    });
+
+
     Given('I set MOCK tasks with permissions for view {string} and assigned state {string}', async function (view,assignedState ,taskPermissionsTable) {
         const taskPermissionHashes = taskPermissionsTable.hashes(); 
         const tasks = [];
@@ -176,5 +212,13 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     });
 
+    Given('I set MOCK find persons database with persons', async function(datatable){
+        const findPersonsData = workAllocationMockData.getFindPersonsDataFrom(datatable.hashes());
 
+        MockApp.onPost("/workallocation2/findPerson",(req,res) =>{
+            workAllocationMockData.findPersonResponse(req.body.searchOptions.searchTerm, findPersonsData).then((response) => {
+                res.send(response);
+            });
+        });
+    });
 }) ;

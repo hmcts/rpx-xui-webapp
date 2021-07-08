@@ -12,9 +12,6 @@ class AllWork extends TaskList {
 
         this.subNavListContainer = $('xuilib-hmcts-sub-navigation .hmcts-sub-navigation__list');
 
-       
-        
-
         this.bannerMessageContainer = $('exui-info-message ')
         this.infoMessages = $$('exui-info-message .hmcts-banner__message');
 
@@ -22,6 +19,8 @@ class AllWork extends TaskList {
 
         //tasks container elements
         this.tasksContainer = $('exui-all-work-tasks');
+        this.locationsFilterSelect = $('.all-work-filter  #task_assignment_location');
+        this.personsFilterSelect = $('.all-work-filter  #task_assignment_caseworker');
 
 
         //Cases container elements
@@ -65,6 +64,18 @@ class AllWork extends TaskList {
     // Task container methods
     async isTasksContainerDisplayed() {
         return await this.tasksContainer.isPresent() && await this.tasksContainer.isDisplayed();
+    }
+
+    async selectLocationFilter(value){
+        const elementToSelect = this.locationsFilterSelect.element(by.xpath(`option[contains(text(),'${value}')]`));
+        await BrowserWaits.waitForElement(elementToSelect);
+        await elementToSelect.click();
+    }
+
+    async selectPersonFilter(value) {
+        const elementToSelect = this.personsFilterSelect.element(by.xpath(`option[contains(text(),'${value}')]`));
+        await BrowserWaits.waitForElement(elementToSelect);
+        await elementToSelect.click();
     }
 
 

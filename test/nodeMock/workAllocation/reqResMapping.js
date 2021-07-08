@@ -15,6 +15,10 @@ module.exports = {
         '/workallocation/task/:taskId': (req, res) => {
             res.status(200).send(workAllocationMockData.getTaskDetails());
         },
+        '/workallocation2/task/:taskId': (req, res) => {
+            const body = { data: workAllocationMockData.getRelease2TaskDetails() }
+            res.status(200).send(body);
+        },
         '/workallocation/caseworker': (req, res) => {
             res.send(workAllocationMockData.getCaseworkersList(20));
         },
@@ -84,11 +88,11 @@ module.exports = {
             const requestedView = req.body.view;
             let tasks = [];
             if (requestedView === "MyTasks") {
-                tasks = global.scenarioData['workallocation2.mytasks'] ? global.scenarioData['workallocation2.mytasks'] : workAllocationMockData.getMyWorkMyTasks(pageSize*5);
+                tasks = global.scenarioData && global.scenarioData['workallocation2.mytasks'] ? global.scenarioData['workallocation2.mytasks'] : workAllocationMockData.getMyWorkMyTasks(pageSize*5);
             } else if (requestedView === "AvailableTasks") {
-                tasks = global.scenarioData['workallocation2.availabletasks'] ? global.scenarioData['workallocation2.availabletasks'] : workAllocationMockData.getMyWorkAvailableTasks(pageSize*5);
+                tasks = global.scenarioData && global.scenarioData['workallocation2.availabletasks'] ? global.scenarioData['workallocation2.availabletasks'] : workAllocationMockData.getMyWorkAvailableTasks(pageSize*5);
             } else if (requestedView === "TaskManager" || requestedView.includes("AllWork")) {
-                tasks = global.scenarioData['workallocation2.allwork'] ? global.scenarioData['workallocation2.allwork'] : workAllocationMockData.getAllWorkTasks(pageSize*5);
+                tasks = global.scenarioData && global.scenarioData['workallocation2.allwork'] ? global.scenarioData['workallocation2.allwork'] : workAllocationMockData.getAllWorkTasks(pageSize*5);
             } else {
                 throw new Error("Unrecognised task list view : " + requestedView);
             }
@@ -110,18 +114,38 @@ module.exports = {
         '/workallocation/task/:taskId/assign': (req, res) => {
             res.send();
         },
+        '/workallocation2/task/:taskId/assign': (req, res) => {
+            res.send();
+        },
         '/workallocation/task/:taskId/claim' : (req,res) => {
+            res.send();
+        },
+        '/workallocation2/task/:taskId/claim': (req, res) => {
             res.send();
         },
         '/workallocation/task/:taskId/unclaim': (req, res) => {
             res.send();
         },
-
+        '/workallocation2/task/:taskId/unclaim': (req, res) => {
+            res.send();
+        },
         '/workallocation/task/:taskId/complete': (req, res) => {
+            res.send();
+        },
+        '/workallocation2/task/:taskId/complete': (req, res) => {
             res.send();
         },
         '/workallocation/task/:taskId/cancel': (req, res) => {
             res.send();
+        },
+        '/workallocation2/task/:taskId/cancel': (req, res) => {
+            res.send();
+        },
+        '/workallocation2/findPerson': (req, res) => {
+            workAllocationMockData.findPersonResponse(req.body.searchOptions.searchTerm, null).then((response) =>{
+                res.send(response);
+            });
+            
         }
     }
 }

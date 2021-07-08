@@ -1,4 +1,6 @@
 const { v4 } = require ('uuid');
+const ArrayUtil = require("../../e2e/utils/ArrayUtil");
+const WorkAllocationDataModels = require("../../dataModels/workAllocation");
 
 class WorkAllocationMockData {
 
@@ -8,7 +10,7 @@ class WorkAllocationMockData {
             { "id": "unclaim", "title": "Unassign task" },
             { "id": "go", "title": "Go to case" }
         ];
-        return this.getTaskList(25, taskActions);
+        return this.getRelease1TaskList(25, taskActions);
     }
 
     getAvailableTasks(count) {
@@ -16,7 +18,7 @@ class WorkAllocationMockData {
             { "id": "claim", "title": "Assign to me" },
             { "id": "claim-and-go", "title": "Assign to me and go to case" }
         ];
-        let tasks = this.getTaskList(25, taskActions);
+        let tasks = this.getRelease1TaskList(25, taskActions);
         tasks.tasks.forEach(task => task.assignee = null);
         return tasks;
     }
@@ -28,10 +30,34 @@ class WorkAllocationMockData {
             { "id": "complete", "title": "Mark as done" },
             { "id": "cancel", "title": "Cancel task" }
         ];
-        return this.getTaskList(25, taskActions);
+        return this.getRelease1TaskList(25, taskActions);
     }
 
-    getTaskList(count, actions) {
+    getMyWorkMyTasks(count){
+        let tasks = { tasks : [], total_records : count};
+        for(let i = 0; i < count;i++){
+            tasks.tasks.push(this.getRelease2TaskWithPermissions(["Manage", "Read"],"MyTasks","assigned"));
+        }
+        return tasks;
+    }
+
+    getMyWorkAvailableTasks(count) {
+        let tasks = { tasks: [], total_records: count };
+        for (let i = 0; i < count; i++) {
+            tasks.tasks.push(this.getRelease2TaskWithPermissions(["Manage", "Read"],"AvailableTasks",  null));
+        }
+        return tasks;
+    }
+
+    getAllWorkTasks(count) {
+        let tasks = { tasks: [], total_records: count };
+        for (let i = 0; i < count; i++) {
+            tasks.tasks.push(this.getRelease2TaskWithPermissions(["Manage", "Read"],"AllWork",  null));
+        }
+        return tasks;
+    }
+
+    getRelease1TaskList(count, actions) {
         const taskActions = actions ? actions : [
             { "id": "reassign", "title": "Reassign task" },
             { "id": "unclaim", "title": "Release this task" }
@@ -39,35 +65,18 @@ class WorkAllocationMockData {
         const tasks = [];
         for (let i = 0; i < count; i++) {
             const taskDueDate = `"2021-02-16T18:58:48.987+0000"`;
-            tasks.push({
-                "id": "00b8bef2-7089-11eb-b34d-4e1650b0295"+i,
-                "name": "task name "+i,
-                "assignee": "b8c3049c-af32-4230-bf6c-33b29df6847"+i,
-                "type": "wa-task-configuration-api-task",
-                "task_state": "assigned",
-                "task_system": "SELF",
-                "security_classification": "PUBLIC",
-                "task_title": "task name"+i,
-                "created_date": "2021-02-16T18:58:48.987+0000",
-                "due_date": "2021-02-16T18:58:48.987+0000",
-                "location_name": "Taylor House "+i,
-                "location": "76532"+i,
-                "execution_type": "Case Management Task",
-                "jurisdiction": "IA",
-                "region": "1",
-                "case_type_id": "Asylum",
-                "case_id": "161350192272981"+i,
-                "case_category": "protection",
-                "case_name": "Bob Smith",
-                "auto_assigned": false,
-                "warnings": false,
-                "actions": taskActions,
-                "dueDate": "2021-02-16T18:58:48.987+0000",
-                "taskName": "task name "+i,
-                "caseName": "Bob Smith"+i,
-                "caseCategory": "protection",
-                "assigneeName": null
-            });
+            let task = WorkAllocationDataModels.getRelease1Task();;
+            task.id = v4();
+            task.assignee = v4();
+            task.name = task.name+" "+i
+            task.task_title = task.task_title + " " + i
+            task.location = task.location + i
+            task.case_id = task.case_id+1;
+            task.taskName = task.taskName + 1;
+            task.caseName = task.caseName + 1;
+            task.actions = taskActions;
+
+            tasks.push(task);
         }
         return { tasks: tasks, total_records:150 };
     }
@@ -98,28 +107,7 @@ class WorkAllocationMockData {
 
     getTaskDetails() {
         return {
-            "task": {
-                "assignee": "test assignee",
-                "auto_assigned": true,
-                "case_category": "testcat",
-                "case_id": "1122-2233-3344-4455",
-                "case_name": "test accesibility case",
-                "case_type_id": "Test_IAC",
-                "created_date": "2020-09-05T14:47:01.250542+01:00",
-                "due_date": "2020-09-05T14:47:01.250542+01:00",
-                "execution_type": "strtestExecutionTypeing",
-                "id": "1122-1122-1122-1122",
-                "jurisdiction": "TestJurisdiction",
-                "location": "TestLocation",
-                "location_name": "locationName",
-                "name": "name",
-                "region": "regon",
-                "security_classification": "PUBLIC",
-                "task_state": "tasktate",
-                "task_system": "taskSystem",
-                "task_title": "task title",
-                "type": "testType"
-            }
+            "task": WorkAllocationDataModels.getRelease1Task()
         }
     }
 
@@ -147,82 +135,14 @@ class WorkAllocationMockData {
 
     getRelease2TaskWithPermissions(permissions,view,assignState){
         view = view.replace(" ","");
-        const task = {
-            "id": v4(),
-            "task_title": "Review application decision",
-            "dueDate": "2021-05-12T16:00:00.000+0000",
-            "location_name": "Glasgow",
-            "case_id": "1620409659381330",
-            "case_category": "Protection",
-            "case_name": "Jo Fly",
-            "permissions": [],
-            "actions": []
-        }
+        const task = WorkAllocationDataModels.getRelease2Task();;
         task.permissions = permissions;
-
-        view = view.toLowerCase();
-        assignState = assignState ? assignState.toLowerCase() : '';
-        let actionsView = {};
-        if(view.includes('my')){
-            actionsView = taskActionsMatrix['myTasks'];
-        } else if (view.includes('available')) {
-            actionsView = taskActionsMatrix['availableTasks'];
-        } if (view.includes('all')) {
-            actionsView = taskActionsMatrix['allWork'];
-            actionsView = assignState.includes('un') ? taskActionsMatrix['allWork']['unassigned'] : taskActionsMatrix['allWork']['assigned'];
-        }
-
-        for (let i = 0; i < permissions.length; i++ ){
-            task.actions = task.actions.concat(actionsView[permissions[i]]);
-        } 
+        task.actions = WorkAllocationDataModels.getRelease2TaskActions(permissions, view, assignState);
+       
         return task;
     }
 
 
-}
-
-const ACTIONS = {
-    Reassign: { id:'reassign', title:'Reassign task'},
-    Unassign: { id:'unclaim', title:'Unassign task'},
-    GoToTasks: { id: 'go', title: 'Go to task' },
-    AssignToMe: { id: 'claim', title: 'Assign to me' },
-    AssignToMeAndGoToTasks: { id:'claim-and-go', title:'Assign to me and go to case'},
-    Assign: { id: 'assign', title: 'Assign task'},
-    MarkAsDone: { id: 'mark-as-done', title: 'Mark as done' },
-    Cancel: { id: 'cancel', title: 'Cancel task' },
-}
-const taskActionsMatrix = {
-    myTasks: {
-        Read: [],
-        Refer: [],
-        Manage: [ACTIONS.Reassign, ACTIONS.Unassign, ACTIONS.GoToTasks],
-        Execute: [],
-        Cancel: []
-
-    },
-    availableTasks: {
-        Read: [],
-        Refer: [],
-        Manage: [ACTIONS.AssignToMe, ACTIONS.AssignToMeAndGoToTasks],
-        Execute: [],
-        Cancel: []
-    },
-    allWork: {
-        unassigned: {
-            Read: [],
-            Refer: [],
-            Manage: [ACTIONS.Assign, ACTIONS.GoToTasks],
-            Execute: [ACTIONS.MarkAsDone],
-            Cancel: [ACTIONS.Cancel]
-        },
-        assigned: {
-            Read: [],
-            Refer: [],
-            Manage: [ACTIONS.Reassign, ACTIONS.Unassign, ACTIONS.GoToTasks],
-            Execute: [ACTIONS.MarkAsDone],
-            Cancel: [ACTIONS.Cancel]
-        }
-    }
 }
 
 

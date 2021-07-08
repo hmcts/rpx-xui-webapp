@@ -3,6 +3,7 @@ var { defineSupportCode } = require('cucumber');
 
 const MockApp = require('../../../../nodeMock/app');
 const workAllocationMockData = require('../../../../nodeMock/workAllocation/mockData');
+const workAllocationDataModel = require("../../../../dataModels/workAllocation");
 
 const BrowserWaits = require('../../../../e2e/support/customWaits');
 const taskListPage = require('../../../../e2e/features/pageObjects/workAllocation/taskListPage');
@@ -18,7 +19,7 @@ const errorPage = require('../../../../e2e/features/pageObjects/errorPage');
 const SoftAssert = require('../../../util/softAssert');
 const browserUtil = require('../../../util/browserUtil');
 const errorMessageForResponseCode = require('../../../util/errorResonseMessage');
-
+const ArrayUtil = require("../../../../e2e/utils/ArrayUtil");
 
 const MockUtil = require('../../../util/mockUtil');
 const WAUtil = require('../../workAllocation/utils');
@@ -36,7 +37,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Given('I set MOCK tasks with permissions for view {string} and assigned state {string}', async function (view,assignedState ,taskPermissionsTable) {
         const taskPermissionHashes = taskPermissionsTable.hashes(); 
         const tasks = [];
-
+        view = view.split(" ").join("");
+        view = view.toLowerCase();
         for (let i = 0; i < taskPermissionHashes.length; i++){
             let taskCount = 0;
             if (taskPermissionHashes[i].hasOwnProperty('Count')){
@@ -50,8 +52,56 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }
             
         }
-        global.scenarioData[`workallocation2.${view.split(" ").join("")}`] = {tasks : tasks, total_records:tasks.length} ;
+        global.scenarioData[`workallocation2.${view}`] = {tasks : tasks, total_records:tasks.length} ;
         
+    });
+
+
+    Given('I set MOCK tasks with attributes for view {string}', async function (forView, attributesDatatable) {
+        const tasksHashes = attributesDatatable.hashes();
+        let tasksObj = {};
+        let view = forView.toLowerCase();
+        view = view.split(" ").join("");
+        if(!global.scenarioData[`workallocation2.${view}`] ){
+            let tasks = [];
+            if(view.includes("mytasks")){
+                tasks = workAllocationMockData.getMyWorkMyTasks(150);
+            } else if (view.includes("available")) {
+                tasks = workAllocationMockData.getMyWorkAvailableTasks(200);
+            } if (view.includes("allwork")) {
+                tasks = workAllocationMockData.getAllWorkTasks(400);
+            }else{
+                throw new Error("Unrecognised task view " + forView);
+            }
+            global.scenarioData[`workallocation2.${view}`] = tasks;
+        }
+        tasksObj = global.scenarioData[`workallocation2.${view}`];
+        await ArrayUtil.forEach(tasksHashes, async  (taskHash) => {
+            let task = tasksObj.tasks[taskHash.index];
+
+            let taskHashKeys = Object.keys(taskHash);
+            await ArrayUtil.forEach(taskHashKeys, key => {
+                if(key.toLowerCase() === "index"){
+                    //ignore index;
+                } else if (key.toLowerCase() === "permissions"){
+                    task.permissions = taskHash[key].split(",");
+                    task.actions = workAllocationDataModel.getRelease2TaskActions(task.permissions, view, taskHash.assignee ? "assigned": "unassigned")
+                } else if (key.toLowerCase() === "assignee") {
+                    if (taskHash[key] === ""){
+                        delete task[key];
+                    }else{
+                        task[key] = taskHash[key];
+                    }
+                    
+                }else{
+                    task[key] = taskHash[key];
+                }
+
+            });
+            CucumberReporter.AddMessage(`Mock Task at index  ${taskHash.index}  `);
+            CucumberReporter.AddJson(task);
+        })
+       
     });
 
 

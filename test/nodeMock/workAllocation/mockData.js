@@ -4,6 +4,22 @@ const WorkAllocationDataModels = require("../../dataModels/workAllocation");
 
 class WorkAllocationMockData {
 
+    constructor(){
+        this.findPersonsAllAdata = [];
+    }
+
+   async getFindPersonsDataFrom(database){
+        return await ArrayUtil.map(database, async (personDetails) => {
+            let personModel = WorkAllocationDataModels.getFindPersonObj();
+            let personDetailsKeys = Object.keys(personDetails);
+
+            await ArrayUtil.map(personDetailsKeys,async (key) => {
+                personModel[key] = personDetails[key];
+            });
+            return personModel;
+        });
+    }
+
     getMyTasks(count) {
         const taskActions = [
             { "id": "reassign", "title": "Reassign task" },
@@ -111,6 +127,10 @@ class WorkAllocationMockData {
         }
     }
 
+    getRelease2TaskDetails(){
+        return WorkAllocationDataModels.getRelease2Task()
+    }
+
 
     getLocation(locationId) {
         locationId = locationId ? locationId : 10001
@@ -142,9 +162,46 @@ class WorkAllocationMockData {
         return task;
     }
 
+    async findPersonResponse(searchTerm, personsData){
+        
+        if (this.findPersonsAllAdata.length === 0){
+            this.findPersonsAllAdata = await this.getFindPersonsDataFrom(findPersonsDetails);
+        }
+        searchTerm = searchTerm.toLowerCase();
+        const referenceData = personsData ? personsData: this.findPersonsAllAdata;
+        const filteredUsers = await ArrayUtil.filter(referenceData,async (person) => {
+            return person.email.toLowerCase().includes(searchTerm) || person.name.toLowerCase().includes(searchTerm);
+        });
+        return filteredUsers;
+    }
+
 
 }
 
 
 
 module.exports = new WorkAllocationMockData();
+
+const findPersonsDetails = [
+    { domain: 1, email: "Aleena.Agarwal@justice.gov.uk", id: "", name:"Aleena Agarwal"},
+    { domain: 1, email: "Tommy.Wong@justice.gov.uk", id: "", name: "Tommy Wong" },
+    { domain: 1, email: "Adnan.Akgun@justice.gov.uk", id: "", name: "Adnan Akgun" },
+    { domain: 1, email: "Andy.Wilkins@justice.gov.uk", id: "", name: "Andy Wilkins" },
+    { domain: 1, email: "Connor.McElroy@justice.gov.uk", id: "", name: "Connor McElroy" },
+    { domain: 1, email: "Daniel.Lam@justice.gov.uk", id: "", name: "Daniel Lam " },
+    { domain: 1, email: "Ernest.Man@justice.gov.uk", id: "", name: "Ernest Man" },
+    { domain: 1, email: "Ishita.Oswal@justice.gov.uk", id: "", name: "Ishita Oswal" },
+    { domain: 1, email: "jamie.Mistry@justice.gov.uk", id: "", name: "jamie Mistry" },
+    { domain: 1, email: "Kuda.Nyamainashe@justice.gov.uk", id: "", name: "Kuda Nyamainashe" },
+    { domain: 1, email: " Lefkos.HadjiPavlou@justice.gov.uk", id: "", name: " Lefkos HadjiPavlou" },
+    { domain: 1, email: "Mariana.Pereira@justice.gov.uk", id: "", name: "Mariana Pereira" },
+    { domain: 1, email: "Mohammed.Lala@justice.gov.uk", id: "", name: "Mohammed Lala" },
+    { domain: 1, email: "Paul.Graham@justice.gov.uk", id: "", name: "Paul Graham" },
+    { domain: 1, email: "Paul.Howes@justice.gov.uk", id: "", name: "Paul Howes" },
+    { domain: 1, email: "Ray.Liang @justice.gov.uk", id: "", name: "Ray Liang " },
+    { domain: 1, email: "ritesh.dsouza@justice.gov.uk", id: "", name: "ritesh dsouza" },
+    { domain: 1, email: "Ronald.Mansveld@justice.gov.uk", id: "", name: "Ronald Mansveld" },
+    { domain: 1, email: "Sreekanth.Puligadda@justice.gov.uk", id: "", name: "Sreekanth Puligadda" },
+    { domain: 1, email: "Uday.Denduluri @justice.gov.uk", id: "", name: "Uday Denduluri " },
+    { domain: 1, email: "Vamshi.Muniganti @justice.gov.uk", id: "", name: "Vamshi Muniganti " },
+];

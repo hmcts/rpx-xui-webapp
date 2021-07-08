@@ -37,13 +37,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         }
     });
 
-    Then('I validate task search request with reference {string} has pagination parameters', async function (requestReference, datatable) {
-        const reqBody = global.scenarioData[requestReference];
-        const datatableHash = datatable.hashes()[0];
-        expect(reqBody.searchRequest.pagination_parameters.page_number).to.equal(parseInt(datatableHash.PageNumber));
-        expect(reqBody.searchRequest.pagination_parameters.page_size).to.equal(parseInt(datatableHash.PageSize));
-    });
-
 
     When('I click task list table header column {string}', async function(columnHeaderLabel){
         await taskListTable.clickColumnHeader(columnHeaderLabel);

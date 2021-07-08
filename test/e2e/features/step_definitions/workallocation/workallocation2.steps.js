@@ -4,6 +4,7 @@ var { defineSupportCode } = require('cucumber');
 const headerPage = require('../../pageObjects/headerPage');
 const myWorkPage = require('../../pageObjects/workAllocation/myWorkPage');
 const BrowserWaits = require('../../../support/customWaits');
+const allWorkPage = require("../../pageObjects/workAllocation/allWorkPage");
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
@@ -108,6 +109,19 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await myWorkPage.clickSubNavigationTab(subNavTabLabel);
     });
 
+
+    When('I select all work tasks filter {string} with value {string}', async function (filterType, filterValue) {
+        let filterTypeLowerCase = filterType.toLowerCase();
+        if (filterTypeLowerCase.includes("location")){
+            allWorkPage.selectLocationFilter(filterValue);
+
+        } else if (filterTypeLowerCase.includes("person")){
+            allWorkPage.selectPersonFilter(filterValue);
+        }else{
+            throw new Error(`Test implementation error.filterType ${filterType} is not yet implemented in test `);
+        }
+       
+    });
 
 
 });

@@ -48,6 +48,31 @@ class WorkAllocationModels{
         };
     }
 
+    getLocation(){
+        return {
+            id:"12345",
+            locationName:"test location"
+        }
+    }
+
+    getCaseWorkerOrperson(){
+        return {
+            email:"test_person@test.gov.uk",
+            firstName:"testfn",
+            lastName:"testln",
+            idamId:"004b7164-0943-41b5-95fc-39794af4a9fe",
+            location: this.getLocation()
+        }
+    }
+
+    getFindPersonObj(){
+        return {
+            domain: 1,
+            email: "andy.kings@email.com",
+            id: "id131",
+            name: "Andy Kings"
+        }
+    }
 
     getRelease2TaskActions(permissions, view, assignState) {
         const actions = [];

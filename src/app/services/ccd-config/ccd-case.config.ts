@@ -24,7 +24,7 @@ export class AppConfig extends AbstractAppConfig {
     private readonly environmentService: EnvironmentService
   ) {
     super();
-    this.config = {...this.appConfigService.getEditorConfiguration()} || {};
+    this.config = this.appConfigService.getEditorConfiguration() || {};
     this.featureToggleWorkAllocation();
 
     this.featureToggleService.getValue('mc-document-secure-mode-enabled', false).subscribe({

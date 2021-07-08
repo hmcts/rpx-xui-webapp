@@ -201,6 +201,7 @@ export const init = () => {
       ];
     }
   });
+  return mock;
 };
 
 export const getSortName = (sortName: string): string => {

@@ -1,3 +1,4 @@
+import { WorkCaseListWrapperComponent } from '../../work-allocation-2/containers/work-case-list-wrapper/work-case-list-wrapper.component';
 import { AvailableTasksComponent } from './available-tasks/available-tasks.component';
 import { InfoMessageContainerComponent } from './info-message-container/info-message-container.component';
 import { MyTasksComponent } from './my-tasks/my-tasks.component';
@@ -13,7 +14,8 @@ import { WorkAllocationHomeComponent } from './work-allocation-home/work-allocat
 export const containers: any[] = [
   AvailableTasksComponent, InfoMessageContainerComponent, MyTasksComponent,
   TaskActionContainerComponent, TaskAssignmentContainerComponent, TaskHomeComponent, TaskListComponent,
-  TaskListWrapperComponent, TaskManagerComponent, TaskManagerListComponent, WorkAllocationHomeComponent
+  TaskListWrapperComponent, TaskManagerComponent, TaskManagerListComponent, WorkAllocationHomeComponent,
+  WorkCaseListWrapperComponent
 ];
 
 export * from './available-tasks/available-tasks.component';

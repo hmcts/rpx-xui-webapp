@@ -18,8 +18,11 @@ import {
   handlePostSearch
 } from './caseWorkerService';
 import { Caseworker, Judicialworker } from './interfaces/task';
-import * as mock from './taskService.mock';
+import * as taskServiceMock from './taskService.mock';
+import * as caseServiceMock from './caseService.mock';
+
 import {
+  assignActionsToCases,
   assignActionsToTasks,
   mapCaseworkerData,
   prepareCaseWorkerForLocation,
@@ -31,11 +34,13 @@ import {
   preparePostTaskUrlAction,
   prepareRoleApiRequest,
   prepareRoleApiUrl,
+  prepareSearchCaseUrl,
   prepareSearchTaskUrl,
   prepareTaskSearchForCompletable
 } from './util';
 
-mock.init();
+const mock = taskServiceMock.init();
+caseServiceMock.init(mock);
 
 export const baseWorkAllocationTaskUrl = getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH);
 export const baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);
@@ -55,6 +60,36 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
 
     res.status(200);
     res.send(jsonResponse);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * Post to search for a Case.
+ */
+ export async function searchCase(req: EnhancedRequest, res: Response, next: NextFunction) {
+  try {
+    const searchRequest = req.body.searchRequest;
+    const view = searchRequest.search_by === 'judge' ? 'judicial' : 'caseworker';
+    const basePath = prepareSearchCaseUrl(baseWorkAllocationTaskUrl, `myCases?view=${view}`);
+    const postCasePath = preparePaginationUrl(req, basePath);
+    let promise;
+    // TODO below call mock api will be replaced when real api is ready
+    promise = await handlePost(postCasePath, searchRequest, req);
+
+    const { status, data } = promise;
+    res.status(status);
+    // Assign actions to the cases on the data from the API.
+    let returnData;
+    if (data) {
+      // Note: CasePermission placed in here is an example of what we could be getting (i.e. Manage permission)
+      // These should be mocked as if we were getting them from the user themselves
+      returnData = { cases: assignActionsToCases(data.cases, req.body.view), total_records: data.total_records };
+    }
+
+    // Send the (possibly modified) data back in the Response.
+    res.send(returnData);
   } catch (error) {
     next(error);
   }

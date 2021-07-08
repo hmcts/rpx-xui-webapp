@@ -71,6 +71,14 @@ describe('AppConfiguration', () => {
     expect(service.getRemoteDocumentManagementUrl).toBeDefined();
   }));
 
+  it('should have getHrsUrl', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getHrsUrl).toBeDefined();
+  }));
+
+  it('should have getRemoteHrsUrl', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getRemoteHrsUrl).toBeDefined();
+  }));
+
   it('should have getPostcodeLookupUrl', inject([AppConfig], (service: AppConfig) => {
     expect(service.getPostcodeLookupUrl).toBeDefined();
   }));
@@ -105,6 +113,14 @@ describe('AppConfiguration', () => {
 
   it('should have getAnnotationApiUrl', inject([AppConfig], (service: AppConfig) => {
     expect(service.getAnnotationApiUrl()).toBeUndefined();
+  }));
+
+  it('should have getDocumentManagementUrlV2', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getDocumentManagementUrlV2).toBeDefined();
+  }));
+
+  it('should have getDocumentSecureMode', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getDocumentSecureMode).toBeDefined();
   }));
 
 });

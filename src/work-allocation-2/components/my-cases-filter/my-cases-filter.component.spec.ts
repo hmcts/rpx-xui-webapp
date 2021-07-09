@@ -1,19 +1,17 @@
+import { ALL_LOCATIONS } from '../../constants/locations';
+import { By } from '@angular/platform-browser';
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, DebugElement, ViewChild } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
+import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
+import { LocationDataService } from '../../services';
+import { MyCasesFilterComponent } from './my-cases-filter.component';
+import { of } from 'rxjs/internal/observable/of';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
-import { of } from 'rxjs/internal/observable/of';
-
-import { ALL_LOCATIONS } from '../../../../api/workAllocation2/constants/locations';
-import { LocationDataService, WorkAllocationTaskService } from '../../services';
-import { MyCasesFilterComponent } from './my-cases-filter.component';
 
 @Component({
-  template: `
-    <exui-my-cases-filter></exui-my-cases-filter>`
+  template: `<exui-my-cases-filter></exui-my-cases-filter>`
 })
 class WrapperComponent {
   @ViewChild(MyCasesFilterComponent) public appComponentRef: MyCasesFilterComponent;
@@ -46,7 +44,6 @@ describe('MyCasesFilterComponent', () => {
       ],
       declarations: [MyCasesFilterComponent, WrapperComponent ],
       providers: [
-        { provide: WorkAllocationTaskService, useValue: mockTaskService },
         { provide: LocationDataService, useValue: { getLocations: () => of(ALL_LOCATIONS) } },
         {
           provide: FilterService, useValue: mockFilterService
@@ -66,16 +63,16 @@ describe('MyCasesFilterComponent', () => {
   });
 
   it('should show the toggle filter button', () => {
-    const button: DebugElement = fixture.debugElement.query(By.css('.govuk-button.hmcts-button--secondary'));
+    const button = fixture.debugElement.query(By.css('.govuk-button.hmcts-button--secondary'));
     expect(button.nativeElement.innerText).toContain('Show work filter');
   });
 
   it('should select two locations', fakeAsync(() => {
-    const button: DebugElement = fixture.debugElement.query(By.css('.govuk-button.hmcts-button--secondary'));
+    const button = fixture.debugElement.query(By.css('.govuk-button.hmcts-button--secondary'));
     button.nativeElement.click();
 
     fixture.detectChanges();
-    const checkBoxes: DebugElement = fixture.debugElement.query(By.css('.govuk-checkboxes'));
+    const checkBoxes = fixture.debugElement.query(By.css('.govuk-checkboxes'));
     const firstLocation = checkBoxes.nativeElement.children[0];
     const secondLocation = checkBoxes.nativeElement.children[1];
 
@@ -83,7 +80,7 @@ describe('MyCasesFilterComponent', () => {
     secondLocation.click();
 
     fixture.detectChanges();
-    const applyButton: DebugElement = fixture.debugElement.query(By.css('#applyFilter'));
+    const applyButton = fixture.debugElement.query(By.css('#applyFilter'));
     applyButton.nativeElement.click();
     expect(component.selectedLocations.length).toEqual(2);
 

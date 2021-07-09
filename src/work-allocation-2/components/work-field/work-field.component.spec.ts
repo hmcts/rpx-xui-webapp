@@ -6,7 +6,7 @@ import { Task } from './../../models/tasks';
 import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
 
 import { FieldConfig } from '../../models/common';
-import { WorkFieldComponent } from './world-field.component';
+import { WorkFieldComponent } from './work-field.component';
 
 @Component({
   template: `<exui-work-field [config]="config" [workField]="task"></exui-work-field>`

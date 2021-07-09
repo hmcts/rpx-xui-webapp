@@ -81,7 +81,7 @@ export const JUDICIAL_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'Ella Ryan',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba3',
@@ -92,7 +92,7 @@ export const JUDICIAL_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Jo Jackson',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba4',
@@ -114,7 +114,7 @@ export const JUDICIAL_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'James Patrick',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba6',
@@ -125,7 +125,7 @@ export const JUDICIAL_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'Ella Frank',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba7',
@@ -136,7 +136,7 @@ export const JUDICIAL_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Jo Johnson',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba8',
@@ -158,7 +158,7 @@ export const JUDICIAL_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'James Pequequer',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb0',
@@ -169,7 +169,7 @@ export const JUDICIAL_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'Ella Roderick',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb1',
@@ -180,7 +180,7 @@ export const JUDICIAL_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Jo Jehovan',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb2',
@@ -202,7 +202,7 @@ export const JUDICIAL_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'James Patronus',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb4',
@@ -213,7 +213,7 @@ export const JUDICIAL_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'Ella Farthing',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb5',
@@ -224,7 +224,7 @@ export const JUDICIAL_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Jo Jumping',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb6',
@@ -246,7 +246,7 @@ export const JUDICIAL_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'James Parrot',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb8',
@@ -257,7 +257,7 @@ export const JUDICIAL_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'Ella Ran',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb9',
@@ -268,7 +268,7 @@ export const JUDICIAL_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Jo Jeffries',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc0',
@@ -290,7 +290,7 @@ export const JUDICIAL_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'James Patricia',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc2',
@@ -301,7 +301,7 @@ export const JUDICIAL_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'Ella Forthorn',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc3',
@@ -312,7 +312,7 @@ export const JUDICIAL_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Jo Jail',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc4',
@@ -334,7 +334,7 @@ export const JUDICIAL_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'James Shiraz',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc6',
@@ -345,7 +345,7 @@ export const JUDICIAL_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'Ella Redan',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc7',
@@ -356,7 +356,7 @@ export const JUDICIAL_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Jo Joret',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc8',
@@ -378,7 +378,7 @@ export const JUDICIAL_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'James Porkie',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd0',
@@ -389,7 +389,7 @@ export const JUDICIAL_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'Ella Ferry',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd1',
@@ -400,7 +400,7 @@ export const JUDICIAL_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Jo Jackdaw',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd2',
@@ -430,7 +430,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'EEA',
       case_role: 'Lead Judge',
       case_name: 'James Priest 2',
-      permissions: ['Read', 'Manage']
+      permissions: ['Read']
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba2',
@@ -444,7 +444,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'Protection',
       case_role: 'Lead Judge',
       case_name: 'Ella Ryan',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba3',
@@ -458,7 +458,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'refusalOfHumanRights',
       case_role: 'Lead Judge',
       case_name: 'Jo Jackson',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba4',
@@ -472,7 +472,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'asylum',
       case_role: 'Lead Judge',
       case_name: 'Boris Bush',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba5',
@@ -486,7 +486,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'EEA',
       case_role: 'Hearing Judge',
       case_name: 'James Patrick',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba6',
@@ -500,7 +500,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'Protection',
       case_role: 'Hearing Judge',
       case_name: 'Ella Frank',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba7',
@@ -514,7 +514,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'refusalOfHumanRights',
       case_role: 'Hearing Judge',
       case_name: 'Jo Johnson',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba8',
@@ -542,7 +542,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'EEA',
       case_role: 'Lead Judge',
       case_name: 'James Pequequer',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb0',
@@ -556,7 +556,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'Protection',
       case_role: 'Lead Judge',
       case_name: 'Ella Roderick',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb1',
@@ -570,7 +570,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'refusalOfHumanRights',
       case_role: 'Lead Judge',
       case_name: 'Jo Jehovan',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb2',
@@ -598,7 +598,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'EEA',
       case_role: 'Hearing Judge',
       case_name: 'James Patronus',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb4',
@@ -612,7 +612,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'Protection',
       case_role: 'Hearing Judge',
       case_name: 'Ella Farthing',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb5',
@@ -626,7 +626,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'refusalOfHumanRights',
       case_role: 'Hearing Judge',
       case_name: 'Jo Jumping',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb6',
@@ -654,7 +654,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'EEA',
       case_role: 'Lead Judge',
       case_name: 'James Parrot',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb8',
@@ -668,7 +668,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'Protection',
       case_role: 'Lead Judge',
       case_name: 'Ella Ran',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bb9',
@@ -682,7 +682,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'refusalOfHumanRights',
       case_role: 'Lead Judge',
       case_name: 'Jo Jeffries',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc0',
@@ -710,7 +710,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'EEA',
       case_role: 'Hearing Judge',
       case_name: 'James Patricia',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc2',
@@ -724,7 +724,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'Protection',
       case_role: 'Hearing Judge',
       case_name: 'Ella Forthorn',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc3',
@@ -738,7 +738,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'refusalOfHumanRights',
       case_role: 'Hearing Judge',
       case_name: 'Jo Jail',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc4',
@@ -766,7 +766,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'EEA',
       case_role: 'Lead Judge',
       case_name: 'James Shiraz',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc6',
@@ -780,7 +780,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'Protection',
       case_role: 'Lead Judge',
       case_name: 'Ella Redan',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc7',
@@ -794,7 +794,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'refusalOfHumanRights',
       case_role: 'Lead Judge',
       case_name: 'Jo Joret',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc8',
@@ -822,7 +822,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'EEA',
       case_role: 'Hearing Judge',
       case_name: 'James Porkie',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd0',
@@ -836,7 +836,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'Protection',
       case_role: 'Hearing Judge',
       case_name: 'Ella Ferry',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd1',
@@ -850,7 +850,7 @@ export const JUDICIAL_MY_CASES = {
       case_category: 'refusalOfHumanRights',
       case_role: 'Hearing Judge',
       case_name: 'Jo Jackdaw',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bd2',
@@ -883,7 +883,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Lead Judge',
       case_name: 'Tanya Boris',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bb2',
@@ -897,7 +897,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Lead Judge',
       case_name: 'Victoria King',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bb3',
@@ -911,7 +911,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Lead Judge',
       case_name: 'Ryan Lee',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bb4',
@@ -939,7 +939,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Hearing Judge',
       case_name: 'Tanya Baker',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bb6',
@@ -953,7 +953,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Hearing Judge',
       case_name: 'Victoria Kingship',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bb7',
@@ -967,7 +967,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Hearing Judge',
       case_name: 'Ryan Lesley',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bb8',
@@ -995,7 +995,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Lead Judge',
       case_name: 'Tanya Bore',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bc0',
@@ -1009,7 +1009,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Lead Judge',
       case_name: 'Victoria Knight',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bc1',
@@ -1023,7 +1023,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Lead Judge',
       case_name: 'Ryan Lovely',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bc2',
@@ -1051,7 +1051,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Hearing Judge',
       case_name: 'Tanya Baker',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bc4',
@@ -1065,7 +1065,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Hearing Judge',
       case_name: 'Victoria Kingsley',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bc5',
@@ -1079,7 +1079,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Hearing Judge',
       case_name: 'Ryan Laughing',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bc6',
@@ -1107,7 +1107,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Lead Judge',
       case_name: 'Tanya Bye',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bc8',
@@ -1121,7 +1121,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Lead Judge',
       case_name: 'Victoria Knightingale',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bc9',
@@ -1135,7 +1135,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Lead Judge',
       case_name: 'Ryan Leech',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bd0',
@@ -1163,7 +1163,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Hearing Judge',
       case_name: 'Tanya Bills',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bd2',
@@ -1177,7 +1177,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Hearing Judge',
       case_name: 'Victoria Kristal',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bd3',
@@ -1191,7 +1191,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Hearing Judge',
       case_name: 'Ryan Lrella',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bd4',
@@ -1219,7 +1219,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Lead Judge',
       case_name: 'Tanya Breakage',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bd6',
@@ -1233,7 +1233,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Lead Judge',
       case_name: 'Victoria Knarle',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bd7',
@@ -1247,7 +1247,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Lead Judge',
       case_name: 'Ryan Lost',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7bd8',
@@ -1275,7 +1275,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Hearing Judge',
       case_name: 'Tanya Bringin',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7be0',
@@ -1289,7 +1289,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Hearing Judge',
       case_name: 'Victoria Keep',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7be1',
@@ -1303,7 +1303,7 @@ export const CASEWORKER_MY_CASES = {
       case_role: 'Hearing Judge',
       case_name: 'Ryan Leeching',
       jurisdiction: 'Immigration and Asylum',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read'],
     },
     {
       id: '0d22d837-b25a-11eb-a18c-f2d58a9b7be2',

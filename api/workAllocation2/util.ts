@@ -82,7 +82,7 @@ export function assignActionsToTasks(tasks: any[], view: any): any[] {
       // This was debated for EUI-3619
       // As actions can change based on whether assigned or not, there might need to be a check here
       const actions: Action[] = getActionsByPermissions(view, task.permissions);
-      const taskWithAction = {...task, actions};
+      const taskWithAction = { ...task, actions };
       tasksWithActions.push(taskWithAction);
     }
   }
@@ -96,7 +96,7 @@ export function assignActionsToTasks(tasks: any[], view: any): any[] {
  * @param tasks The tasks to set up the actions for.
  * @param view This dictates which set of actions we should use.
  */
- export function assignActionsToCases(cases: any[], view: any): any[] {
+export function assignActionsToCases(cases: any[], view: any): any[] {
   const casesWithActions: any[] = [];
   if (cases) {
     for (const item of cases) {
@@ -104,7 +104,7 @@ export function assignActionsToTasks(tasks: any[], view: any): any[] {
       // This was debated for EUI-3619
       // As actions can change based on whether assigned or not, there might need to be a check here
       const actions: Action[] = getActionsByPermissions(view, item.permissions);
-      const caseWithAction = {...item, actions};
+      const caseWithAction = { ...item, actions };
       casesWithActions.push(caseWithAction);
     }
   }
@@ -191,7 +191,7 @@ export function getActionsByPermissions(view, permissions: TaskPermission[]): Ac
 
 export function applySearchFilter(person: Person, domain: PersonDomain, searchTerm: any): boolean {
   if (domain === PersonDomain.BOTH) {
-      return person && person.name.toLowerCase().includes(searchTerm.toLowerCase());
+    return person && person.name.toLowerCase().includes(searchTerm.toLowerCase());
   }
   return person.domain === domain && person.name.toLowerCase().includes(searchTerm.toLowerCase());
 }

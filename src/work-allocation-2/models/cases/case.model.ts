@@ -1,4 +1,4 @@
-import CaseAction from "./case-action.model";
+import CaseAction from './case-action.model';
 
 export default interface Case {
   [key: string]: any;

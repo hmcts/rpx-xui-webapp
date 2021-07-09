@@ -1,4 +1,7 @@
+import { AxiosResponse } from 'axios';
 import { EnhancedRequest } from 'lib/models';
+import { http } from '../lib/http';
+import { setHeaders } from '../lib/proxy';
 import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX } from './constants/actions';
 import { Person, PersonDomain } from './interfaces/person';
 import { Action, Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/task';
@@ -96,7 +99,7 @@ export function assignActionsToTasks(tasks: any[], view: any): any[] {
  * NOTE: These comments are copied from the assignActionsToTasks method
  * The below sets up actions on the cases, though it's expected this will change
  * in the future - it should do fine for the MVP, though.
- * @param tasks The tasks to set up the actions for.
+ * @param cases The cases to set up the actions for.
  * @param view This dictates which set of actions we should use.
  */
 export function assignActionsToCases(cases: any[], view: any): any[] {
@@ -196,5 +199,13 @@ export function applySearchFilter(person: Person, domain: PersonDomain, searchTe
   if (domain === PersonDomain.BOTH) {
     return person && person.name.toLowerCase().includes(searchTerm.toLowerCase());
   }
-  return person.domain === domain && person.name.toLowerCase().includes(searchTerm.toLowerCase());
+  return person && person.domain === domain && person.name.toLowerCase().includes(searchTerm.toLowerCase());
+}
+
+export async function handlePost(path: string, payload: any, req: EnhancedRequest): Promise<any> {
+  const headers = setHeaders(req);
+  const response: AxiosResponse = await http.post(path, payload, { headers });
+  // Return the whole response, not just the data, so we can
+  // see what the status of the response is.
+  return response;
 }

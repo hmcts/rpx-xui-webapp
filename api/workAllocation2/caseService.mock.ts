@@ -1,8 +1,5 @@
 import * as faker from 'faker/locale/en_GB';
-import {
-  CASEWORKER_MY_CASES,
-  JUDICIAL_MY_CASES
-} from './constants/mock.data';
+import { CASEWORKER_MY_CASES, JUDICIAL_MY_CASES } from './constants/mock.data';
 
 // random generator
 export const generator = (schema, min = 1, max) => {

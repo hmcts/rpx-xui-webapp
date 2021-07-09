@@ -73,14 +73,9 @@ class WorkAllocationMockData {
         return tasks;
     }
 
-    getCaseList(count, actions) {
-        const caseActions = actions ? actions : [
-            { "id": "reassign", "title": "Reassign task" },
-            { "id": "unclaim", "title": "Release this task" }
-        ];
+    getCaseList(count, actions) {       
         const cases = [];
         for (let i = 0; i < count; i++) {
-            const taskDueDate = `"2021-02-16T18:58:48.987+0000"`;
             cases.push({
                 "id": "00b8bef2-7089-11eb-b34d-4e1650b0295"+i,
                 "name": "task name "+i,

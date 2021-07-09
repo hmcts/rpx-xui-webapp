@@ -1,9 +1,9 @@
+import Case from '../models/cases/case.model';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import Case from '../models/cases/case.model';
-
 import { SearchCaseRequest } from '../models/dtos';
+
 const BASE_URL: string = '/workallocation2/task';
 @Injectable({ providedIn: 'root' })
 export class WorkAllocationCaseService {

@@ -187,6 +187,7 @@ export class TaskListWrapperComponent implements OnInit {
   }
 
   public getSearchTaskRequest(): SearchTaskRequest {
+
     return {
       search_parameters: [],
       sorting_parameters: [this.getSortParameter()],

@@ -1,6 +1,4 @@
-import MockAdapter from 'axios-mock-adapter';
 import * as faker from 'faker/locale/en_GB';
-import { httpMock } from '../common/httpMock';
 import {
   CASEWORKER_MY_CASES,
   JUDICIAL_MY_CASES
@@ -33,7 +31,7 @@ export const generator = (schema, min = 1, max) => {
   });
 };
 
-export const init = (mock) => {
+export const init = mock => {
   //const mock = new MockAdapter(httpMock);
 
   const judicialMyCaseUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/myCases\?view=judicial/;
@@ -53,12 +51,11 @@ export const init = (mock) => {
       200,
       {
         cases: paginate(caseList, paginationConfig.page_number, paginationConfig.page_size),
-        total_records: JUDICIAL_MY_CASES.cases.length
+        total_records: JUDICIAL_MY_CASES.cases.length,
       },
     ];
   });
 
-   
   mock.onPost(caseworkerMyCaseUrl).reply(config => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);

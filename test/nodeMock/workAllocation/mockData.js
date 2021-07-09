@@ -72,7 +72,7 @@ class WorkAllocationMockData {
         return { cases: cases, total_records:150 };
     }
 
-    getMyCases(count) {
+    getMyCases() {
         const caseActions = [
             { "id": "reassign", "title": "Reassign task" },
             { "id": "unclaim", "title": "Unassign task" },
@@ -81,7 +81,7 @@ class WorkAllocationMockData {
         return this.getCaseList(25, caseActions);
     }
 
-    getTaskList(count, actions) {
+    getRelease1TaskList(count, actions) {
         const taskActions = actions ? actions : [
             { "id": "reassign", "title": "Reassign task" },
             { "id": "unclaim", "title": "Release this task" }

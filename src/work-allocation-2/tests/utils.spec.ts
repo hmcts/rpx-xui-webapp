@@ -6,10 +6,10 @@ import { FieldConfig } from '../models/common';
 import { Caseworker, Location } from '../models/dtos';
 import { Task, TaskServiceConfig } from '../models/tasks';
 
-const LOCATION_A: Location = { id: 'a', locationName: 'Taylor House', services: [ 'a' ] };
-const LOCATION_B: Location = { id: 'b', locationName: 'Taylor Swift', services: [ 'a', 'b' ] };
+const LOCATION_A: Location = { id: 'a', locationName: 'Taylor House', services: ['a'] };
+const LOCATION_B: Location = { id: 'b', locationName: 'Taylor Swift', services: ['a', 'b'] };
 export function getMockLocations(): Location[] {
-  return [ LOCATION_A, LOCATION_B ];
+  return [LOCATION_A, LOCATION_B];
 }
 
 export function getMockCaseworkers(): Caseworker[] {
@@ -34,7 +34,7 @@ export function getMockCaseworkers(): Caseworker[] {
 /**
  * Mock cases
  */
- export function getMockCases(): Task[] {
+export function getMockCases(): Task[] {
   return [
     {
       id: '1549476532065586',

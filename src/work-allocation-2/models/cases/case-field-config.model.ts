@@ -1,4 +1,4 @@
-import { FieldType } from "../../enums";
+import { FieldType } from '../../enums';
 
 export default interface CaseFieldConfig {
   name: string;          // as returned by task api

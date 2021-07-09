@@ -8,6 +8,7 @@ export const LIST_CONSTANTS = {
     TaskManager: DEFAULT_EMPTY_MESSAGE
   },
   View: {
+    AllWork: 'AllWork',
     AvailableTasks: 'AvailableTasks',
     MyTasks: 'MyTasks',
     MyCases: 'MyCases',

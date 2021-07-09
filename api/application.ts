@@ -11,6 +11,7 @@ import {
   PROTOCOL,
   SESSION_SECRET,
 } from './configuration/references';
+import userExclusionRouter from './exclusions/routes';
 import * as health from './health';
 import * as log4jui from './lib/log4jui';
 import { JUILogger } from './lib/models';
@@ -113,6 +114,7 @@ app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
 // TODO: taskRouter should be called workAllocationRouter
 app.use('/workallocation', taskRouter);
 app.use('/workallocation2', workAllocation2Router);
+app.use('/user', userExclusionRouter);
 app.use('/external', openRoutes);
 app.use('/api', routes);
 app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true }, ignoreMethods: ["GET"] }));

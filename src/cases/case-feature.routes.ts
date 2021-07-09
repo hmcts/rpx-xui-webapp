@@ -3,7 +3,8 @@ import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CaseResolver, editorRouting, viewerRouting as caseViewRouting } from '@hmcts/ccd-case-ui-toolkit';
 import { HealthCheckGuard } from 'src/app/shared/guards/health-check.guard';
-import { CaseCreateSubmitComponent, CasesCreateComponent, CaseShareCompleteComponent, CaseShareComponent, CaseShareConfirmComponent } from './containers';
+import { AllocationConstants } from './components/constants';
+import { AllocateRoleContainerComponent, CaseCreateSubmitComponent, CasesCreateComponent, CaseShareCompleteComponent, CaseShareComponent, CaseShareConfirmComponent } from './containers';
 import { CaseDetailsHomeComponent } from './containers/case-details-home/case-details-home.component';
 import { CaseFilterComponent } from './containers/case-filter/case-filter.component';
 import { CaseHomeComponent } from './containers/case-home/case-home.component';
@@ -28,6 +29,35 @@ export const ROUTES: Routes = [
           data: {
             title: 'Case list'
           }
+        },
+        {
+          path: 'allocate-role',
+          canActivate: [HealthCheckGuard],
+          data: {
+            title: 'Allocate role'
+          },
+          children: [
+            {
+              path: 'exclusion',
+              component: AllocateRoleContainerComponent,
+              data: AllocationConstants.Exclusion
+            },
+            {
+              path: 'exclusion-self',
+              component: AllocateRoleContainerComponent,
+              data: AllocationConstants.ExclusionSelf
+            },
+            {
+              path: 'judiciary',
+              component: AllocateRoleContainerComponent,
+              data: AllocationConstants.Judiciary
+            },
+            {
+              path: 'legal-ops',
+              component: AllocateRoleContainerComponent,
+              data: AllocationConstants.LegalOps
+            }
+          ]
         },
         {
           path: 'case-share',

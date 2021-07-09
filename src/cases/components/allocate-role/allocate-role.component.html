@@ -1,0 +1,38 @@
+<div class="govuk-width-container">
+  <a *ngIf="allocation!=='Exclusion'" class="govuk-back-link">
+    Back
+  </a>
+  <main class="govuk-main-wrapper" id="main-content">
+  <div class="govuk-form-group">
+    <fieldset class="govuk-fieldset">
+      <h1 class="govuk-fieldset__heading" >
+          <span class="govuk-caption-1">{{caption}}</span>
+          <br/>
+          {{title}}
+        </h1>
+    </fieldset>
+  </div>
+  <div class="govuk-form-group">
+    <fieldset class="govuk-fieldset">
+      <div class="govuk-radios">
+        <div class="govuk-radios__item">
+          <input class="govuk-radios__input" id="self_allocation" name="allocation" type="radio" value="self">
+          <label class="govuk-label govuk-radios__label" for="self_allocation">
+            {{selfText}}
+          </label>
+        </div>
+        <div *ngIf="includeOther || allocation!='Exclusion'" class="govuk-radios__item">
+          <input class="govuk-radios__input" id="other_allocation" name="allocation" type="radio" value="other">
+          <label class="govuk-label govuk-radios__label" for="other_allocation">
+            {{otherText}}
+          </label>
+        </div>
+      </div>
+    </fieldset>
+  </div>
+  <div class="govuk-form-group">
+    <button class="govuk-button govuk-!-margin-right-1" type="submit" (click)="assign()">Continue</button>
+      <p><a (click)="cancel()" href="javascript:void(0)">Cancel</a></p>
+  </div>
+</main>
+</div>

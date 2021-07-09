@@ -106,6 +106,7 @@ const END_DATE: FieldConfig = {
   views: TaskView.ALL_VIEWS
 };
 const ASSIGNEE: FieldConfig = {
+  disableSort: true,
   name: 'assigneeName',
   type: FieldType.STRING,
   columnLabel: 'Person',

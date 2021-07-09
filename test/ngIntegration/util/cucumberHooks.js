@@ -33,10 +33,10 @@ defineSupportCode(({ Before, After }) => {
         
         // done();
     });
-
+// 
     After(async function (scenario) {
-        if(argv.debug){
-           // await BrowserWaits.waitForSeconds(600);
+        if(argv.debug || true){
+        //    await BrowserWaits.waitForSeconds(600);
         }
         
         await MockApp.stopServer();

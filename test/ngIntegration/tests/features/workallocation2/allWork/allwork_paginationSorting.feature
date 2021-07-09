@@ -1,13 +1,12 @@
-@ng 
-Feature: WA Release 2: My work -  Available tasks - pagination sorting
+@ng
+Feature: WA Release 2: All work - pagination sorting
 
     Background: Mock and browser setup
         Given I init MockApp
 
-
-    Scenario Outline: Available Tasks pagnation and sorting for user type "<UserType>" with roles "<Roles>"
+    Scenario Outline: My Tasks pagnation and sorting for user type "<UserType>" with roles "<Roles>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
-        Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
+        Given I set MOCK tasks with permissions for view "All work" and assigned state "assigned"
             | Permissions | Count |
             | Manage      | 100   |
             | Read        | 40    |
@@ -15,7 +14,8 @@ Feature: WA Release 2: My work -  Available tasks - pagination sorting
         Given I start MockApp
 
         Given I navigate to home page
-        When I navigate to My work sub navigation tab "Available tasks"
+        When I click on primary navigation header tab "All work", I see selected tab page displayed
+
         Then I validate tasks count in page 25
         Then I validate task table pagination controls, is displayed state is "true"
         Then I validate task list page results text displayed as "Displaying 1 - 25 out of 140 tasks"
@@ -50,4 +50,3 @@ Feature: WA Release 2: My work -  Available tasks - pagination sorting
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
             | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
-  

@@ -5,6 +5,10 @@ const BrowserWaits = require('../../../support/customWaits');
 const SoftAssert = require('../../../../ngIntegration/util/softAssert');
 const TaskListTable = require('../../pageObjects/workAllocation/taskListTable');
 
+const myWorkPage = require("../../pageObjects/workAllocation/myWorkPage");
+const allWorkPage = require("../../pageObjects/workAllocation/allWorkPage");
+
+
 const ArrayUtil = require('../../../utils/ArrayUtil');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
@@ -37,13 +41,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         }
     });
 
-    Then('I validate task search request with reference {string} has pagination parameters', async function (requestReference, datatable) {
-        const reqBody = global.scenarioData[requestReference];
-        const datatableHash = datatable.hashes()[0];
-        expect(reqBody.searchRequest.pagination_parameters.page_number).to.equal(parseInt(datatableHash.PageNumber));
-        expect(reqBody.searchRequest.pagination_parameters.page_size).to.equal(parseInt(datatableHash.PageSize));
-    });
-
 
     When('I click task list table header column {string}', async function(columnHeaderLabel){
         await taskListTable.clickColumnHeader(columnHeaderLabel);
@@ -52,6 +49,17 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Then('I validate task list table sorted with column {string} in order {string}', async function(columnheaderlabel, sortOrder){
         const columnSortVal = await taskListTable.getColumnSortState(columnheaderlabel);
         expect(columnSortVal).to.include(sortOrder.toLowerCase());
+    });
+
+    When('I click task list table header column {string}, I validate task list table sorted with column {string} in order {string}', async function (columnHeaderLabel, columnheaderlabel, sortOrder) {
+       await BrowserWaits.retryWithActionCallback(async () => {
+           await taskListTable.clickColumnHeader(columnHeaderLabel);
+           const columnSortVal = await taskListTable.getColumnSortState(columnheaderlabel);
+           await BrowserWaits.waitForConditionAsync(async () => {
+               return columnSortVal.includes(sortOrder.toLowerCase())
+           }, 3000, "Sort column state to be " + sortOrder.toLowerCase());
+       }); 
+       
     });
 
     Then('I validate task list table columns displayed', async function (datatable) {
@@ -82,5 +90,81 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await taskListTable.clickTaskColLink(colName,rowPos);
     });
 
+    Then('I validate manage link actions for tasks', async function (tasksDatatable) {
+        const softAssert = new SoftAssert();
+        const taskHashes = tasksDatatable.hashes();
+
+        for (let i = 0; i < taskHashes.length; i++) {
+          
+            const taskActions = taskHashes[i]["actions"].split(",");
+            let taskIndex = parseInt(taskHashes[i].index);
+            if (taskHashes[i]["actions"] === ""){
+                softAssert.setScenario(`Manage link not present for task  ${JSON.stringify(taskHashes[i])} `);
+                await softAssert.assert(async () => expect(await taskListTable.isManageLinkPresent(taskIndex+1)).to.be.false);
+                continue;
+            }
+            if (!(await taskListTable.isManageLinkOpenForTaskAtPos(taskIndex+1))){
+                await taskListTable.clickManageLinkForTaskAt(taskIndex+1);
+            }
+
+            for (let j = 0; j < taskActions.length;j++){
+                let action = taskActions[j];
+                softAssert.setScenario(`Action ${action} present for task  ${JSON.stringify(taskHashes[i])} isPresent`);
+                await softAssert.assert(async () => expect(await taskListTable.isTaskActionPresent(action)).to.be.true);
+            }
+            
+        }
+        softAssert.finally();
+
+    });
+
+
+    When('I open Manage link for task at row {int}', async function (taskAtRow) {
+        const isManageLinkOpen = await taskListTable.isManageLinkOpenForTaskAtPos(taskAtRow);
+        if (!isManageLinkOpen) {
+            await BrowserWaits.retryWithActionCallback(async () => {
+                await taskListTable.clickManageLinkForTaskAt(taskAtRow);
+                await BrowserWaits.waitForConditionAsync(async () => await taskListTable.isManageLinkOpenForTaskAtPos(taskAtRow), 2000);
+            });
+        }
+    });
+
+    Then('I see action link {string} is present for task with Manage link open', async function(manageLinkAction){
+        expect(await taskListTable.isTaskActionPresent(manageLinkAction), `Task action ${manageLinkAction} is not present`).to.be.true;
+    });
+
+    When('I click action link {string} on task with Manage link open', async function (manageLinkAction){
+        await taskListTable.clickTaskAction(manageLinkAction);
+    });
+
+    Then('I validate notification message banner is displayed in {string} page', async function(page){
+        page = page.toLowerCase();
+       if(page.includes("my work")){
+            expect(myWorkPage.taskInfoMessageBanner.isBannerMessageDisplayed()).to.be.true
+       } else if (page.includes("all work")){
+           expect(allWorkPage.taskInfoMessageBanner.isBannerMessageDisplayed()).to.be.true
+       }else{
+           throw new Error(`message banner validation step not implemented for page ${page}`);
+       }
+    });
+
+    Then('I validate notification banner messages displayed in {string} page', async function (page,messagesDatatable) {
+        const messages = messagesDatatable.hashes();
+        let actualmessages = [];
+        page = page.toLowerCase();
+        if (page.includes("my work")) {
+            actualmessages = myWorkPage.taskInfoMessageBanner.getBannerMessagesDisplayed()
+        } else if (page.includes("all work")) {
+            actualmessages = allWorkPage.taskInfoMessageBanner.getBannerMessagesDisplayed();
+        } else {
+            throw new Error(`message banner validation step not implemented for page ${page}`);
+        }
+
+        for(let i = 0; i < messages.length;i++){
+            let matchingMsgs = await ArrayUtil.filter(actualmessages, async (msg) => msg.includes(messages[i].message));
+            expect(matchingMsgs > 0, `expected "${messages[i].message}" to be included in ${JSON.stringify(actualmessages)}`).to.be.true
+        }   
+
+    });
 
 });

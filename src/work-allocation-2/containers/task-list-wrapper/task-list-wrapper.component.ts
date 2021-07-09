@@ -2,16 +2,15 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-
-import { Caseworker } from 'api/workAllocation/interfaces/task';
+import { Caseworker, Location } from 'api/workAllocation2/interfaces/task';
 import { Observable } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
 import { ListConstants } from '../../components/constants';
 import { InfoMessage, InfoMessageType, SortOrder, TaskActionIds, TaskService } from '../../enums';
 import { FieldConfig, SortField } from '../../models/common';
 import { PaginationParameter, SearchTaskRequest, SortParameter } from '../../models/dtos';
+import { CaseworkerDataService, InfoMessageCommService, LocationDataService, WorkAllocationTaskService } from '../../services';
 import { InvokedTaskAction, Task, TaskServiceConfig } from '../../models/tasks';
-import { CaseworkerDataService, InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 
 @Component({
@@ -22,6 +21,7 @@ export class TaskListWrapperComponent implements OnInit {
 
   public specificPage: string = '';
   public caseworkers: Caseworker[];
+  public locations: Location[] = new Array<Location>();
   public showSpinner$: Observable<boolean>;
   public sortedBy: SortField;
   public pagination: PaginationParameter;
@@ -48,7 +48,8 @@ export class TaskListWrapperComponent implements OnInit {
     protected alertService: AlertService,
     protected caseworkerService: CaseworkerDataService,
     protected loadingService: LoadingService,
-    protected featureToggleService: FeatureToggleService
+    protected featureToggleService: FeatureToggleService,
+    protected locationService: LocationDataService
   ) {
   }
 
@@ -118,8 +119,12 @@ export class TaskListWrapperComponent implements OnInit {
   }
 
   public ngOnInit(): void {
+    this.loadCaseWorkersAndLocations();
     this.setupTaskList();
     this.loadTasks();
+  }
+
+  public loadCaseWorkersAndLocations() {
   }
 
   public setupTaskList() {
@@ -170,11 +175,6 @@ export class TaskListWrapperComponent implements OnInit {
       message: InfoMessage.LIST_OF_TASKS_REFRESHED,
     });
     this.doLoad();
-  }
-
-  public performSearch(): Observable<any> {
-    const searchRequest = this.getSearchTaskRequestPagination();
-    return this.taskService.searchTask({ searchRequest, view: this.view });
   }
 
   public performSearchPagination(): Observable<any> {

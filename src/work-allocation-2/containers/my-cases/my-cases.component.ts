@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { InvokedTaskAction, Task } from '../../..//work-allocation-2/models/tasks';
+import { UserInfo } from '../../../app/models/user-details.model';
 import { InfoMessage, InfoMessageType, TaskActionIds } from '../../../work-allocation-2/enums';
 import { SearchTaskRequest } from '../../../work-allocation-2/models/dtos';
-import { TaskFieldConfig } from '../../../work-allocation-2/models/tasks';
 import { handleFatalErrors, REDIRECTS } from '../../../work-allocation-2/utils';
-import { UserInfo } from '../../../app/models/user-details.model';
 import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
+import { FieldConfig } from '../../models/common';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
 @Component({
@@ -14,12 +14,12 @@ import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper
 })
 export class MyCasesComponent extends TaskListWrapperComponent {
 
-  public get fields(): TaskFieldConfig[] {
-    return ConfigConstants.AvailableTasks;
+  public get fields(): FieldConfig[] {
+    return ConfigConstants.MyCases;
   }
 
   public get sortSessionKey(): string {
-    return SortConstants.Session.AvailableTasks;
+    return SortConstants.Session.MyCases;
   }
 
   public get view(): string {

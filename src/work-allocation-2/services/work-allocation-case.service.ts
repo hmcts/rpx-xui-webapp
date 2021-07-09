@@ -11,10 +11,10 @@ export class WorkAllocationCaseService {
   constructor(private readonly http: HttpClient) {}
 
   public searchCase(body: { searchRequest: SearchCaseRequest, view: string }): Observable<Case[]> {
-    return this.http.post<any>(`${BASE_URL}`, body);
+    return this.http.post<Case[]>(`${BASE_URL}`, body);
   }
 
   public searchCaseWithPagination(body: { searchRequest: SearchCaseRequest, view: string }): Observable<Case[]> {
-    return this.http.post<any>(`/workallocation2/caseWithPagination`, body);
+    return this.http.post<Case[]>(`/workallocation2/caseWithPagination`, body);
   }
 }

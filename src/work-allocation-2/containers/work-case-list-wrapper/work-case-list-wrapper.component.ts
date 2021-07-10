@@ -234,7 +234,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
    */
   public onActionHandler(caseAction: InvokedCaseAction): void {
     if (caseAction.action.id === CaseActionIds.GO) {
-      const goToCaseUrl = `/cases/case-details/${caseAction.case.case_id}`;
+      const goToCaseUrl = `/cases/case-details/${caseAction.invokedCase.case_id}`;
       this.router.navigate([goToCaseUrl]);
       return;
     }
@@ -246,7 +246,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
       returnUrl: this.returnUrl,
       showAssigneeColumn: caseAction.action.id !== CaseActionIds.ASSIGN
     };
-    const actionUrl = `/work/${caseAction.case.id}/${caseAction.action.id}/${this.specificPage}`;
+    const actionUrl = `/work/${caseAction.invokedCase.id}/${caseAction.action.id}/${this.specificPage}`;
     this.router.navigate([actionUrl], { state });
   }
 

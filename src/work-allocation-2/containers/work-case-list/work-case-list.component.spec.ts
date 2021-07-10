@@ -347,7 +347,7 @@ describe('CaseListComponent', () => {
     fixture.detectChanges();
     expect(component.actionEvent.emit).toHaveBeenCalled();
     let action = firstAction;
-    expect(component.actionEvent.emit).toHaveBeenCalledWith({case: firstCase, action});
+    expect(component.actionEvent.emit).toHaveBeenCalledWith({invokedCase: firstCase, action});
 
     // check the emitter had been called and that it gets called with the second invoked case action
     const secondAnchor = element.querySelector(`#action_${secondActionId}`);
@@ -355,7 +355,7 @@ describe('CaseListComponent', () => {
     fixture.detectChanges();
     expect(component.actionEvent.emit).toHaveBeenCalled();
     action = secondAction;
-    expect(component.actionEvent.emit).toHaveBeenCalledWith({case: firstCase, action});
+    expect(component.actionEvent.emit).toHaveBeenCalledWith({invokedCase: firstCase, action});
 
     // click the second button in order to show the last action anchor
     secondButton.dispatchEvent(new Event('click'));
@@ -367,7 +367,7 @@ describe('CaseListComponent', () => {
     fixture.detectChanges();
     expect(component.actionEvent.emit).toHaveBeenCalled();
     action = secondAction;
-    expect(component.actionEvent.emit).toHaveBeenCalledWith({case: secondCase, action});
+    expect(component.actionEvent.emit).toHaveBeenCalledWith({invokedCase: secondCase, action});
   });
 
   it('should allow a check to verify whether column sorted.', async () => {

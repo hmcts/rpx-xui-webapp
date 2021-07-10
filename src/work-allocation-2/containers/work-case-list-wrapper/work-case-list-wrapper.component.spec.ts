@@ -67,8 +67,8 @@ describe('WorkCaseListWrapperComponent', () => {
     const exampleCase = getMockCases()[0];
     const firstAction = exampleCase.actions[0];
     const secondAction = exampleCase.actions[1];
-    const firstCaseAction = { case: exampleCase, action: firstAction };
-    const secondCaseAction = { case: exampleCase, action: secondAction };
+    const firstCaseAction = { invokedCase: exampleCase, action: firstAction };
+    const secondCaseAction = { invokedCase: exampleCase, action: secondAction };
     it('should handle an action', () => {
       // need to spy on the router and set up the case action
       spyOnProperty(mockRouter, 'url', 'get').and.returnValue(`/mywork/list`);

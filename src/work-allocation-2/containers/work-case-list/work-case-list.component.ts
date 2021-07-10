@@ -124,7 +124,7 @@ export class WorkCaseListComponent implements OnChanges {
   public onActionHandler(caseItem: Case, action: CaseAction): void {
 
     const invokedCaseAction: InvokedCaseAction = {
-      case: caseItem,
+      invokedCase: caseItem,
       action
     };
 

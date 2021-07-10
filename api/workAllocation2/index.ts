@@ -17,7 +17,7 @@ import {
   handlePostRoleAssingnments,
   handlePostSearch
 } from './caseWorkerService';
-import { Caseworker, Judicialworker } from './interfaces/task';
+import { Caseworker, Judicialworker } from './interfaces/common';
 
 import * as caseServiceMock from './caseService.mock';
 import * as taskServiceMock from './taskService.mock';

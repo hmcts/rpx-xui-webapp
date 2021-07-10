@@ -7,8 +7,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs/internal/observable/of';
 
-import { ALL_LOCATIONS } from '../../../../api/workAllocation2/constants/locations';
 import { LocationDataService, WorkAllocationTaskService } from '../../services';
+import { ALL_LOCATIONS } from '../constants/locations';
 import { TaskListFilterComponent } from './task-list-filter.component';
 
 @Component({

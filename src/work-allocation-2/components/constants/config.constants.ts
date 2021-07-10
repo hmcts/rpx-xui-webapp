@@ -92,17 +92,17 @@ const DUE_DATE: FieldConfig = {
   views: TaskView.ALL_VIEWS
 };
 const START_DATE: FieldConfig = {
-  name: 'startDate',
+  name: 'start_date',
   type: FieldType.DATE,
   columnLabel: 'Start',
-  sortName: 'startDate',
+  sortName: 'start_date',
   views: TaskView.ALL_VIEWS
 };
 const END_DATE: FieldConfig = {
-  name: 'endDate',
+  name: 'end_date',
   type: FieldType.DATE,
   columnLabel: 'End',
-  sortName: 'endDate',
+  sortName: 'end_date',
   views: TaskView.ALL_VIEWS
 };
 const ASSIGNEE: FieldConfig = {

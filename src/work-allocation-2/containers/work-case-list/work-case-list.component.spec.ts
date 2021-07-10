@@ -2,8 +2,7 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { of } from 'rxjs';
 
 import { WorkCaseListComponent } from './work-case-list.component';
@@ -12,7 +11,6 @@ import { CaseService, SortOrder } from '../../enums';
 import { Case, CaseAction, CaseServiceConfig } from '../../models/cases';
 import { PaginationParameter } from '../../models/dtos';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { WorkAllocationCaseService } from '../../services';
 import { getMockCases, MockRouter } from '../../tests/utils.spec';
 import { ConfigConstants } from '../../components/constants';
 
@@ -81,10 +79,7 @@ describe('CaseListComponent', () => {
       ],
       declarations: [WorkCaseListComponent, WrapperComponent],
       providers: [
-        { provide: WorkAllocationCaseService, useValue: mockWorkAllocationService },
-        { provide: Router, useValue: mockRouter },
-        { provide: LoadingService, useValue: mockLoadingService },
-        { provide: FeatureToggleService, useValue: mockFeatureToggleService }
+        { provide: Router, useValue: mockRouter }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
@@ -104,7 +99,7 @@ describe('CaseListComponent', () => {
     fixture.detectChanges();
   }));
 
-  it('should return the fields as an array with a \'manage\' entry, so that we can' +
+  it(`should return the fields as an array with a 'manage' entry, so that we can` +
     'display the manage column in the table.', async () => {
 
     const fields = ['caseReference', 'caseName', 'caseCategory', 'location', 'case', 'dueDate'];
@@ -134,7 +129,7 @@ describe('CaseListComponent', () => {
     button.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
-    // check the emitter had been called and that it gets called with the first field which is caseReference (caseId)
+    // check the emitter had been called and that it gets called with the first field which is caseName
     expect(component.sortEvent.emit).toHaveBeenCalled();
     expect(component.sortEvent.emit).toHaveBeenCalledWith('caseName');
   });
@@ -152,10 +147,6 @@ describe('CaseListComponent', () => {
     button.dispatchEvent(new Event('click'));
     component.sortedBy = { fieldName: 'caseName', order: SortOrder.DESC };
     fixture.detectChanges();
-
-    // check the emitter had been called and that it gets called with the new field defined which is caseName
-    expect(component.sortEvent.emit).toHaveBeenCalled();
-    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseName');
 
     expect(component.showResetSortButton).toBeTruthy();
   });
@@ -356,7 +347,7 @@ describe('CaseListComponent', () => {
     fixture.detectChanges();
     expect(component.actionEvent.emit).toHaveBeenCalled();
     let action = firstAction;
-    expect(component.actionEvent.emit).toHaveBeenCalledWith({case: firstCase, action});
+    expect(component.actionEvent.emit).toHaveBeenCalledWith({invokedCase: firstCase, action});
 
     // check the emitter had been called and that it gets called with the second invoked case action
     const secondAnchor = element.querySelector(`#action_${secondActionId}`);
@@ -364,7 +355,7 @@ describe('CaseListComponent', () => {
     fixture.detectChanges();
     expect(component.actionEvent.emit).toHaveBeenCalled();
     action = secondAction;
-    expect(component.actionEvent.emit).toHaveBeenCalledWith({case: firstCase, action});
+    expect(component.actionEvent.emit).toHaveBeenCalledWith({invokedCase: firstCase, action});
 
     // click the second button in order to show the last action anchor
     secondButton.dispatchEvent(new Event('click'));
@@ -376,7 +367,7 @@ describe('CaseListComponent', () => {
     fixture.detectChanges();
     expect(component.actionEvent.emit).toHaveBeenCalled();
     action = secondAction;
-    expect(component.actionEvent.emit).toHaveBeenCalledWith({case: secondCase, action});
+    expect(component.actionEvent.emit).toHaveBeenCalledWith({invokedCase: secondCase, action});
   });
 
   it('should allow a check to verify whether column sorted.', async () => {
@@ -409,7 +400,7 @@ describe('CaseListComponent', () => {
     startDateButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     expect(component.sortEvent.emit).toHaveBeenCalled();
-    expect(component.sortEvent.emit).toHaveBeenCalledWith('startDate');
+    expect(component.sortEvent.emit).toHaveBeenCalledWith('start_date');
   });
 
   describe('act upon deep linking', () => {

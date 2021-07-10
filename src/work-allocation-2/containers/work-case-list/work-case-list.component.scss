@@ -22,21 +22,17 @@
 .column-sort {
   padding-right: 20px;
 
-  &:hover{
+  &:hover {
     padding-right: 20px;
   }
 
-  &:after{
-    right: 0.5px;
-  }
-  
-  &:before{
+  &:after,
+  &:before {
     right: 0.5px;
   }
 }
 
 .header-cell {
-
   display: flex;
 
   .arrow {
@@ -65,7 +61,7 @@
       top: 16px;
       margin-top: 0;
     }
-    &[aria-expanded=true] {
+    &[aria-expanded="true"] {
       .govuk-accordion__icon::after {
         display: none;
       }

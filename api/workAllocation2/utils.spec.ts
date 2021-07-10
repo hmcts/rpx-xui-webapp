@@ -2,7 +2,7 @@ import { expect } from 'chai';
 
 import { ASSIGN, CLAIM, CLAIM_AND_GO, COMPLETE, GO, REASSIGN, RELEASE, TaskPermission } from './constants/actions';
 import { JUDICIAL_AVAILABLE_TASKS, JUDICIAL_MY_TASKS } from './constants/mock.data';
-import { Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/task';
+import { Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/common';
 import { applySearchFilter, assignActionsToTasks, getActionsByPermissions, mapCaseworkerData, mapCaseworkerPrimaryLocation, prepareGetTaskUrl,
   preparePaginationUrl,
   preparePostTaskUrlAction, prepareSearchTaskUrl } from './util';

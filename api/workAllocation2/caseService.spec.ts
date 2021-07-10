@@ -7,10 +7,10 @@ import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 
 import { http } from '../lib/http';
-import { handleTaskGet, handleTaskPost, handleTaskSearch } from './taskService';
+import { handleCaseGet, handleCasePost, handleCaseSearch } from './caseService';
 
 chai.use(sinonChai);
-describe('workAllocation.taskService', () => {
+describe('workAllocation.caseService', () => {
 
   let sandbox: sinon.SinonSandbox;
   let spy: any;
@@ -24,13 +24,13 @@ describe('workAllocation.taskService', () => {
     sandbox.restore();
   });
 
-  describe('handleTaskGet', () => {
+  describe('handleCaseGet', () => {
 
     it('should make a get request', async () => {
       spy = sandbox.stub(http, 'get').resolves(res);
-      const path = '/task/123456';
+      const path = '/case/123456';
       const req = mockReq();
-      const response = await handleTaskGet(path, req);
+      const response = await handleCaseGet(path, req);
       expect(response).to.equal('ok'); // Returns just the data.
       const args = spy.getCall(0).args;
       expect(args[0]).to.equal(path);    // Correct url.
@@ -38,14 +38,14 @@ describe('workAllocation.taskService', () => {
 
   });
 
-  describe('handleTaskSearch', () => {
+  describe('handleCaseSearch', () => {
 
     it('should make a post request', async () => {
       spy = sandbox.stub(http, 'post').resolves(res);
-      const path = '/task';
+      const path = '/case';
       const payload = { search: 'criteria' };
       const req = mockReq();
-      const response = await handleTaskSearch(path, payload, req);
+      const response = await handleCaseSearch(path, payload, req);
       expect(response).to.be.an('object'); // Returns the entire response.
       expect(response.data).to.equal('ok');
       const args = spy.getCall(0).args;
@@ -55,14 +55,14 @@ describe('workAllocation.taskService', () => {
 
   });
 
-  describe('handleTaskPost', () => {
+  describe('handleCasePost', () => {
 
     it('should make a post request', async () => {
       spy = sandbox.stub(http, 'post').resolves(res);
-      const path = '/task/123456/assign';
+      const path = '/case/123456/assign';
       const payload = { assignee: { name: 'bob', id: 2 } };
       const req = mockReq();
-      const response = await handleTaskPost(path, payload, req);
+      const response = await handleCasePost(path, payload, req);
       expect(response).to.be.an('object'); // Returns the entire response.
       expect(response.data).to.equal('ok');
       const args = spy.getCall(0).args;

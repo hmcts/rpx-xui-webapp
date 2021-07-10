@@ -1,13 +1,12 @@
+import { Caseworker, Location } from '../../interfaces/common';
 import { Component } from '@angular/core';
-import { Location } from 'api/workAllocation2/interfaces/common';
-import { Caseworker } from 'api/workAllocation2/interfaces/common';
-import { UserInfo } from 'src/app/models/user-details.model';
 import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from 'src/work-allocation-2/components/constants';
-import { SortOrder } from 'src/work-allocation-2/enums';
-import { PaginationParameter, SearchTaskRequest } from 'src/work-allocation-2/models/dtos';
-import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from 'src/work-allocation-2/utils';
 import { FieldConfig, SortField } from '../../models/common';
+import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from 'src/work-allocation-2/utils';
+import { PaginationParameter, SearchTaskRequest } from 'src/work-allocation-2/models/dtos';
+import { SortOrder } from 'src/work-allocation-2/enums';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
+import { UserInfo } from 'src/app/models/user-details.model';
 
 @Component({
     selector: 'exui-all-work-tasks',

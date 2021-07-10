@@ -54,6 +54,9 @@ export const VIEW_PERMISSIONS_ACTIONS_MATRIX = {
   AvailableTasks: {
     Manage: [CLAIM, CLAIM_AND_GO],
   },
+  MyCases: {
+    Manage: [REASSIGN, RELEASE, GO],
+  },
   MyTasks: {
     Manage: [REASSIGN, RELEASE, GO],
   },

@@ -19,11 +19,15 @@ import {
   handlePostRoleAssingnments,
   handlePostSearch
 } from './caseWorkerService';
-import { View } from './constants/constant-key';
+import { CASE_TYPE_ID, View } from './constants/constant-key';
 import { ccdCaseToMyCase } from './dtos/case-dto';
 import { Caseworker, Judicialworker } from './interfaces/task';
-import * as mock from './taskService.mock';
+
+import * as caseServiceMock from './caseService.mock';
+import * as taskServiceMock from './taskService.mock';
+
 import {
+  assignActionsToCases,
   assignActionsToTasks,
   mapCaseworkerData,
   prepareCaseWorkerForLocation,
@@ -35,11 +39,13 @@ import {
   preparePostTaskUrlAction,
   prepareRoleApiRequest,
   prepareRoleApiUrl,
+  prepareSearchCaseUrl,
   prepareSearchTaskUrl,
   prepareTaskSearchForCompletable
 } from './util';
 
-mock.init();
+const mock = taskServiceMock.init();
+caseServiceMock.init(mock);
 
 export const baseWorkAllocationTaskUrl = getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH);
 export const baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);
@@ -47,7 +53,7 @@ export const baseJudicialWorkerRefUrl = getConfigValue(SERVICES_CASE_JUDICIALWOR
 export const baseRoleAssignmentUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
 export const baseElasticSearchUrl = getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH);
 export const baseUrl: string = 'http://localhost:8080';
-export const caseTypeId = 'Asylum';
+
 /**
  * getTask
  */
@@ -60,6 +66,43 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
 
     res.status(200);
     res.send(jsonResponse);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * Post to search for a Case.
+ */
+export async function searchCase(req: EnhancedRequest, res: Response, next: NextFunction) {
+  try {
+    const searchRequest = req.body.searchRequest;
+    const view = req.body.view;
+    const searchBy = searchRequest.search_by === 'judge' ? 'judicial' : 'caseworker';
+    const roleAssignments: any[] = req.session.roleAssignmentResponse;
+    const basePath = prepareSearchCaseUrl(baseWorkAllocationTaskUrl, `myCases?view=${searchBy}`);
+    const postCasePath = preparePaginationUrl(req, basePath);
+    let promise;
+    switch (view) {
+      case View.MY_CASES:
+        const caseIds = roleAssignments.map(assignments => assignments.attributes.caseId);
+        const path = `${baseElasticSearchUrl}/internal/searchCases?ctid=${CASE_TYPE_ID}`;
+        const payload = getRequestBody(caseIds);
+        promise = await sendPost(path, payload, req);
+        break;
+    }
+    const { status, data } = promise;
+    res.status(status);
+    // Assign actions to the cases on the data from the API.
+    let returnData;
+    if (data) {
+      if (view === View.MY_CASES) {
+        const myCases = data.cases.map(aCase => ccdCaseToMyCase(roleAssignments, aCase, CASE_TYPE_ID));
+        returnData = {tasks: myCases, total_records: myCases.length};
+      }
+    }
+    // Send the (possibly modified) data back in the Response.
+    res.send(returnData);
   } catch (error) {
     next(error);
   }
@@ -93,26 +136,26 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
         postTaskPath = preparePaginationUrl(req, basePath);
         promise = await handlePost(postTaskPath, searchRequest, req);
         break;
-      case View.MY_CASES:
+/*      case View.MY_CASES:
         const caseIds = roleAssignments.map(assignments => assignments.attributes.caseId);
-        const path = `${baseElasticSearchUrl}/internal/searchCases?ctid=${caseTypeId}`;
+        const path = `${baseElasticSearchUrl}/internal/searchCases?ctid=${CASE_TYPE_ID}`;
         const payload = getRequestBody(caseIds);
         promise = await sendPost(path, payload, req);
-        break;
+        break;*/
     }
-    const {status, data} = promise;
+    const { status, data } = promise;
     res.status(status);
     // Assign actions to the tasks on the data from the API.
     let returnData;
     if (data) {
-      if (view === View.MY_CASES) {
-        const myCases = data.cases.map(aCase => ccdCaseToMyCase(roleAssignments, aCase, caseTypeId));
+/*      if (view === View.MY_CASES) {
+        const myCases = data.cases.map(aCase => ccdCaseToMyCase(roleAssignments, aCase, CASE_TYPE_ID));
         returnData = {tasks: myCases, total_records: myCases.length};
-      } else {
+      } else {*/
         // Note: TaskPermission placed in here is an example of what we could be getting (i.e. Manage permission)
         // These should be mocked as if we were getting them from the user themselves
-        returnData = {tasks: assignActionsToTasks(data.tasks, req.body.view), total_records: data.total_records};
-      }
+      returnData = {tasks: assignActionsToTasks(data.tasks, req.body.view), total_records: data.total_records};
+      // }
     }
 
     // Send the (possibly modified) data back in the Response.
@@ -144,7 +187,7 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
 
   try {
     const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.params.taskId, req.params.action);
-    const {status, data} = await handlePost(getTaskPath, req.body, req);
+    const { status, data } = await handlePost(getTaskPath, req.body, req);
     res.status(status);
     res.send(data);
   } catch (error) {
@@ -171,7 +214,7 @@ export async function retrieveAllCaseWorkers(req: EnhancedRequest, res: Response
   }
   const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
   const payload = prepareRoleApiRequest();
-  const {data} = await handlePostRoleAssingnments(roleApiPath, payload, req);
+  const { data } = await handlePostRoleAssingnments(roleApiPath, payload, req);
   const userIds = getUserIdsFromRoleApiResponse(data);
   const userUrl = `${baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
   const userResponse = await handlePostCaseWorkersRefData(userUrl, userIds, req);
@@ -199,7 +242,7 @@ export async function retrieveAllJudicialWorkers(req: EnhancedRequest, res: Resp
   }
   const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
   const payload = prepareRoleApiRequest();
-  const {data} = await handlePostRoleAssingnments(roleApiPath, payload, req);
+  const { data } = await handlePostRoleAssingnments(roleApiPath, payload, req);
   const userIds = getUserIdsFromRoleApiResponse(data);
   const userUrl = `${baseJudicialWorkerRefUrl}/judicialworkers/`;
   // const userResponse = await handlePostJudicialWorkersRefData(userUrl, userIds, req);
@@ -263,7 +306,7 @@ export async function searchCaseWorker(req: EnhancedRequest, res: Response, next
   try {
     const postTaskPath: string = prepareCaseWorkerSearchUrl(baseUrl);
 
-    const {status, data} = await handlePostSearch(postTaskPath, req.body, req);
+    const { status, data } = await handlePostSearch(postTaskPath, req.body, req);
     res.status(status);
     res.send(data);
   } catch (error) {
@@ -280,7 +323,7 @@ export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Re
       'case_type': req.body.searchRequest.caseTypeId,
       'event_id': req.body.searchRequest.eventId,
     };
-    const {status, data} = await handlePostSearch(postTaskPath, reqBody, req);
+    const { status, data } = await handlePostSearch(postTaskPath, reqBody, req);
     res.status(status);
     res.send(data);
   } catch (error) {

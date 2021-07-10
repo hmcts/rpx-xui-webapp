@@ -14,10 +14,10 @@ import {
   TaskHomeComponent,
   WorkAllocationHomeComponent,
 } from './containers';
+import { MyCasesComponent } from './containers/my-cases/my-cases.component';
 import { WorkAllocationFeatureToggleGuard } from './guards';
 import { TaskResolver } from './resolvers';
 import { LocationResolver } from './resolvers/location-resolver.service';
-import { MyCasesComponent } from './containers/my-cases/my-cases.component';
 
 export const ROUTES: Routes = [
   {
@@ -55,7 +55,7 @@ export const ROUTES: Routes = [
             path: 'my-cases',
             component: MyCasesComponent,
             data: {
-              title: 'HMCTS Manage cases | My work | Available tasks', subTitle: 'Available tasks'
+              title: 'HMCTS Manage cases | My work | My cases', subTitle: 'My cases'
             }
           }
         ]

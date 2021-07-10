@@ -9,11 +9,11 @@ export const LIST_CONSTANTS = {
     AllWork: 'Change your selection to view tasks.'
   },
   View: {
+    AllWork: 'AllWork',
     AvailableTasks: 'AvailableTasks',
     MyTasks: 'MyTasks',
-    TaskManager: 'TaskManager',
-    AllWork: 'AllWork',
     MyCases: 'MyCases',
+    TaskManager: 'TaskManager'
   },
   JUDGE_ROLES: ['caseworker-ia-iacjudge']
 };

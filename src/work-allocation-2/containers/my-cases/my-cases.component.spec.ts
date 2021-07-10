@@ -1,7 +1,7 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router} from '@angular/router';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
@@ -15,10 +15,8 @@ import { getMockCases } from '../../tests/utils.spec';
 import { WorkCaseListComponent } from '../work-case-list/work-case-list.component';
 import { MyCasesComponent } from './my-cases.component';
 
-@Component({
-  template: `
-    <exui-my-cases></exui-my-cases>`
-})
+@Component({ template: `<exui-my-cases></exui-my-cases>` })
+
 class WrapperComponent {
   @ViewChild(MyCasesComponent) public appComponentRef: MyCasesComponent;
 }
@@ -46,7 +44,7 @@ describe('MyCasesComponent', () => {
         WorkAllocationComponentsModule,
         PaginationModule
       ],
-      declarations: [MyCasesComponent, WrapperComponent, WorkCaseListComponent, ],
+      declarations: [MyCasesComponent, WrapperComponent, WorkCaseListComponent],
       providers: [
         { provide: WorkAllocationCaseService, useValue: mockCaseService },
         { provide: AlertService, useValue: mockAlertService },
@@ -66,7 +64,7 @@ describe('MyCasesComponent', () => {
     component.isPaginationEnabled$ = of(false);
     router = TestBed.get(Router);
     const cases: Case[] = getMockCases();
-    mockCaseService.searchCase.and.returnValue(of({cases}));
+    mockCaseService.searchCase.and.returnValue(of({ cases }));
     mockCaseworkerService.getAll.and.returnValue(of([]));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
@@ -76,7 +74,7 @@ describe('MyCasesComponent', () => {
 
   it('should make a call to load cases using the default search request', () => {
     const searchRequest = component.getSearchCaseRequestPagination();
-    const payload = {searchRequest, view: component.view};
+    const payload = { searchRequest, view: component.view };
     expect(mockCaseService.searchCase).toHaveBeenCalledWith(payload);
     expect(component.cases).toBeDefined();
     expect(component.cases.length).toEqual(2);
@@ -109,7 +107,7 @@ describe('MyCasesComponent', () => {
     expect(footerRowClass).not.toContain('shown');
   });
 
-  it('should show the footer when there no cases', () => {
+  it('should show the footer when there are no cases', () => {
     spyOnProperty(component, 'cases').and.returnValue([]);
     fixture.detectChanges();
     const element = fixture.debugElement.nativeElement;
@@ -140,15 +138,5 @@ describe('MyCasesComponent', () => {
     fixture.detectChanges();
     // Ensure the correct attempt has been made to navigate.
     expect(navigateSpy).toHaveBeenCalledWith([`/work/${caseItem.id}/${actionId}/`], jasmine.any(Object));
-  });
-
-  it('should allow setting the release 2 details', () => {
-    // verifying fields best way to check as the elements (apart from column names) on page will not change
-    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
-    component.ngOnInit();
-    fixture.detectChanges();
-    expect(component.fields[0].name).toBe('case_name');
-    expect(component.fields[0].type).toBe(FieldType.CASE_NAME);
-    expect(component.fields[4].type).toBe(FieldType.DATE);
   });
 });

@@ -75,7 +75,7 @@ export async function searchCase(req: EnhancedRequest, res: Response, next: Next
     const view = searchRequest.search_by === 'judge' ? 'judicial' : 'caseworker';
     const basePath = prepareSearchCaseUrl(baseWorkAllocationTaskUrl, `myCases?view=${view}`);
     const postCasePath = preparePaginationUrl(req, basePath);
-    
+
     // TODO below call mock api will be replaced when real api is ready
     const promise = await handlePost(postCasePath, searchRequest, req);
 

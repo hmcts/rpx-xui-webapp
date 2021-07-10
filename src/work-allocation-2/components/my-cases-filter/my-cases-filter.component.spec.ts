@@ -1,4 +1,4 @@
-import { ALL_LOCATIONS } from '../../constants/locations';
+import { ALL_LOCATIONS } from '../constants/locations';
 import { By } from '@angular/platform-browser';
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, DebugElement, ViewChild } from '@angular/core';

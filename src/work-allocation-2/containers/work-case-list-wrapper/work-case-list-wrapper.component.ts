@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 
-import { Caseworker } from 'api/workAllocation2/interfaces/case';
+import { Caseworker } from 'api/workAllocation2/interfaces/common';
 import { Observable } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
 import { ListConstants } from '../../components/constants';

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { Location } from 'api/workAllocation2/interfaces/task';
-import { Caseworker } from 'api/workAllocation2/interfaces/task';
+import { Location } from 'api/workAllocation2/interfaces/common';
+import { Caseworker } from 'api/workAllocation2/interfaces/common';
 import { UserInfo } from 'src/app/models/user-details.model';
 import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from 'src/work-allocation-2/components/constants';
 import { SortOrder } from 'src/work-allocation-2/enums';

@@ -2,6 +2,7 @@ import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { AppConstants } from '../../../app/app.constants';
 import { Case, CaseFieldConfig, CaseServiceConfig, InvokedCaseAction } from '../../models/cases';
 import { CaseActionIds, CaseService, InfoMessage, InfoMessageType, SortOrder } from '../../enums';
+import { Caseworker } from '../../interfaces/common';
 import { CaseworkerDataService, InfoMessageCommService, WorkAllocationCaseService } from '../../services';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
@@ -13,7 +14,6 @@ import { PaginationParameter, SearchCaseRequest, SortParameter } from '../../mod
 import { Router } from '@angular/router';
 import { SessionStorageService } from '../../../app/services';
 import { SortField } from '../../models/common';
-import { Caseworker } from '../../interfaces/common';
 
 @Component({
   templateUrl: 'work-case-list-wrapper.component.html',
@@ -114,11 +114,11 @@ export class WorkCaseListWrapperComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.setupCaseList();
+    this.setupCaseWorkers();
     this.loadCases();
   }
 
-  public setupCaseList() {
+  public setupCaseWorkers(): void {
     this.caseworkerService.getAll().subscribe(caseworkers => {
       this.caseworkers = [ ...caseworkers ];
     }, error => {

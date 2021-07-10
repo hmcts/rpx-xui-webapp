@@ -1,25 +1,26 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FieldConfig } from '../../models/common';
 import { FieldType, TaskView } from './../../enums';
 import { Task } from './../../models/tasks';
 import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
-import { TaskFieldComponent } from './task-field.component';
+
+import { FieldConfig } from '../../models/common';
+import { WorkFieldComponent } from './work-field.component';
 
 @Component({
-  template: `<exui-task-field [config]="config" [task]="task"></exui-task-field>`
+  template: `<exui-work-field [config]="config" [workField]="task"></exui-work-field>`
 })
 class WrapperComponent {
-  @ViewChild(TaskFieldComponent) public appComponentRef: TaskFieldComponent;
+  @ViewChild(WorkFieldComponent) public appComponentRef: WorkFieldComponent;
   @Input() public config: FieldConfig;
   @Input() public task: Task;
 }
 
 describe('WorkAllocation', () => {
 
-  describe('TaskFieldComponent', () => {
-    let component: TaskFieldComponent;
+  describe('WorkFieldComponent', () => {
+    let component: WorkFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
 
@@ -70,7 +71,7 @@ describe('WorkAllocation', () => {
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
 
       // Add the task and it should work (showing the case name).
-      component.task = task;
+      component.workField = task;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe(task.caseName);
 
@@ -96,7 +97,7 @@ describe('WorkAllocation', () => {
 
       // Add the task and it should work (showing the case reference).
       component.config = config;
-      component.task = task;
+      component.workField = task;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe(task.case_id);
 
@@ -130,7 +131,7 @@ describe('WorkAllocation', () => {
 
       // Add the task and it should work (showing the due date component).
       component.config = config;
-      component.task = task;
+      component.workField = task;
       fixture.detectChanges();
       let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('.due-date');
       expect(element).not.toBeNull();
@@ -180,7 +181,7 @@ describe('WorkAllocation', () => {
 
       // Add the task and it should work (showing the days from today).
       component.config = config;
-      component.task = task;
+      component.workField = task;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('0 days');
 
@@ -226,7 +227,7 @@ describe('WorkAllocation', () => {
 
       // Add the task and it should work (showing the due date).
       component.config = config;
-      component.task = task;
+      component.workField = task;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('06/11/2020');
 
@@ -257,7 +258,7 @@ describe('WorkAllocation', () => {
 
       // Add the task and it should work (showing the due date and time).
       component.config = config;
-      component.task = task;
+      component.workField = task;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('06/11/2020 01:02');
 
@@ -289,7 +290,7 @@ describe('WorkAllocation', () => {
 
       // Add the task and it should work (showing the result for "happy").
       component.config = config;
-      component.task = task;
+      component.workField = task;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('Yes');
 
@@ -363,7 +364,7 @@ describe('WorkAllocation', () => {
 
       // Add the task and it should work (showing the integer value of "pi").
       component.config = config;
-      component.task = task;
+      component.workField = task;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('3'); // 3.14159... => 3
 
@@ -427,7 +428,7 @@ describe('WorkAllocation', () => {
 
       // Add the task and it should work (showing "pi" rounded to 2 decimal places).
       component.config = config;
-      component.task = task;
+      component.workField = task;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('3.14'); // 3.14159... => 3.14
 
@@ -497,7 +498,7 @@ describe('WorkAllocation', () => {
 
       // Add the task and it should work (showing the due date component).
       component.config = config;
-      component.task = task;
+      component.workField = task;
       fixture.detectChanges();
       let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
@@ -569,7 +570,7 @@ describe('WorkAllocation', () => {
 
       // Add the task and it should work (showing the image component).
       component.config = config;
-      component.task = task;
+      component.workField = task;
       fixture.detectChanges();
       let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('img');
       expect(element).not.toBeNull();
@@ -637,7 +638,7 @@ describe('WorkAllocation', () => {
 
       // Add the task and it should work (showing the link).
       component.config = config;
-      component.task = task;
+      component.workField = task;
       fixture.detectChanges();
       let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
@@ -690,7 +691,7 @@ describe('WorkAllocation', () => {
 
       // Add the task and it should work (showing the link).
       component.config = config;
-      component.task = task;
+      component.workField = task;
       fixture.detectChanges();
       let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
@@ -744,7 +745,7 @@ describe('WorkAllocation', () => {
 
       // Add the task and it should work (showing the link).
       component.config = config;
-      component.task = task;
+      component.workField = task;
       fixture.detectChanges();
       let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
@@ -795,7 +796,7 @@ describe('WorkAllocation', () => {
 
       // Add the task and it should work (showing the case reference).
       component.config = config;
-      component.task = task;
+      component.workField = task;
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('1234-5678-9098-7654');
 

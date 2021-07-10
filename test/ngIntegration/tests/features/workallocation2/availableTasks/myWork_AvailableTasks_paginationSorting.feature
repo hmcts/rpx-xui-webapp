@@ -1,11 +1,10 @@
-@ng @test
+@ng 
 Feature: WA Release 2: My work -  Available tasks - pagination sorting
 
     Background: Mock and browser setup
         Given I init MockApp
 
 
-    @test
     Scenario Outline: Available Tasks pagnation and sorting for user type "<UserType>" with roles "<Roles>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
         Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""

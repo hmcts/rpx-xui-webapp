@@ -1,4 +1,4 @@
-@ng @test
+@ng 
 Feature: WA Release 2: My work -  Available tasks
 
     Background: Mock and browser setup
@@ -41,8 +41,8 @@ Feature: WA Release 2: My work -  Available tasks
         Then I validate task table pagination controls, is displayed state is "true"
         Then I validate task list page results text displayed as "Displaying 1 - 25 out of 140 tasks"
 
-        When I click task list table header column "Case name"
-        Then I validate task list table sorted with column "Case name" in order "asc"
+        When I click task list table header column "Case name", I validate task list table sorted with column "Case name" in order "asc"
+         
         When I click on primary navigation header tab "Case list", I see selected tab page displayed
         Then I see case list page displayed
         When I click on primary navigation header tab "My work", I see selected tab page displayed

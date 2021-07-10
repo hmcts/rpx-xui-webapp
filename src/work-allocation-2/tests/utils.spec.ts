@@ -135,7 +135,7 @@ export function getMockTaskFieldConfig(): FieldConfig[] {
 /**
  * Mock CaseServiceConfig.
  */
- export function getMockCaseServiceConfig(): CaseServiceConfig {
+export function getMockCaseServiceConfig(): CaseServiceConfig {
   return {
     service: CaseService.IAC,
     defaultSortDirection: SortOrder.ASC,

@@ -21,7 +21,7 @@ import {
 } from './caseWorkerService';
 import { CASE_TYPE_ID, View } from './constants/constant-key';
 import { ccdCaseToMyCase } from './dtos/case-dto';
-import { Caseworker, Judicialworker } from './interfaces/task';
+import { Caseworker, Judicialworker } from './interfaces/common';
 
 import * as caseServiceMock from './caseService.mock';
 import * as taskServiceMock from './taskService.mock';
@@ -98,7 +98,7 @@ export async function searchCase(req: EnhancedRequest, res: Response, next: Next
     if (data) {
       if (view === View.MY_CASES) {
         const myCases = data.cases.map(aCase => ccdCaseToMyCase(roleAssignments, aCase, CASE_TYPE_ID));
-        returnData = {tasks: myCases, total_records: myCases.length};
+        returnData = {cases: myCases, total_records: myCases.length};
       }
     }
     // Send the (possibly modified) data back in the Response.

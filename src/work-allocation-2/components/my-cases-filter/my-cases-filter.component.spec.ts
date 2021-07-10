@@ -1,7 +1,7 @@
-import { ALL_LOCATIONS } from '../../constants/locations';
+import { ALL_LOCATIONS } from '../constants/locations';
 import { By } from '@angular/platform-browser';
 import { CdkTableModule } from '@angular/cdk/table';
-import { Component, DebugElement, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { LocationDataService } from '../../services';

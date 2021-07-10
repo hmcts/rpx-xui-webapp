@@ -1,6 +1,6 @@
 import { Case, CaseAction } from '.';
 
 export default interface InvokedCaseAction {
-  case: Case;
+  invokedCase: Case;
   action: CaseAction;
 }

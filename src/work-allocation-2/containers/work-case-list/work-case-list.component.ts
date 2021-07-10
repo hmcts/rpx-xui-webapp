@@ -1,12 +1,13 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
-import { Router } from '@angular/router';
+import CaseServiceConfig from '../../models/cases/case-service-config.model';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { PaginationParameter } from 'src/work-allocation-2/models/dtos';
-
-import { ListConstants } from '../../components/constants';
-import { SortOrder } from '../../enums';
-import { Case, CaseAction, CaseServiceConfig, InvokedCaseAction } from '../../models/cases';
+import { Case, CaseAction, InvokedCaseAction } from '../../models/cases';
+import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { FieldConfig, SortField } from '../../models/common';
+import { ListConstants } from '../../components/constants';
+import { PaginationParameter } from '../../models/dtos';
+import { Router } from '@angular/router';
+import { SortOrder } from '../../enums';
+
 
 @Component({
   selector: 'exui-work-case-list',
@@ -62,7 +63,7 @@ export class WorkCaseListComponent implements OnChanges {
   }
 
   public selectCaseFromUrlHash(url: string): Case | null {
-    if (url) {
+    if (url && this.cases) {
       const hashValue = url.substring(url.indexOf('#') + 1);
       if (hashValue && hashValue.indexOf('manage_') === 0) {
         const selectedCaseId = hashValue.replace('manage_', '');
@@ -92,7 +93,7 @@ export class WorkCaseListComponent implements OnChanges {
    *
    */
   public getDisplayedColumn(caseFieldConfig: FieldConfig[]): string[] {
-    const fields = caseFieldConfig.map(field => field.name);
+    const fields: string[] = caseFieldConfig.map(field => field.name);
     return this.addActionsColumn ? this.addManageColumn(fields) : fields;
   }
 

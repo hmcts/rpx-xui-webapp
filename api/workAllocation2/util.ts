@@ -1,10 +1,12 @@
+import { AxiosResponse } from 'axios';
+
+import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
+
 import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX } from './constants/actions';
-import { Person, PersonDomain } from './interfaces/person';
-import { http } from '../lib/http';
 import { Action, Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/common';
-import { AxiosResponse } from 'axios';
+import { Person, PersonDomain } from './interfaces/person';
 
 export function prepareGetTaskUrl(baseUrl: string, taskId: string): string {
   return `${baseUrl}/task/${taskId}`;

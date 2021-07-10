@@ -1,20 +1,19 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
-
-import { Caseworker } from 'api/workAllocation2/interfaces/common';
-import { Observable } from 'rxjs';
-import { SessionStorageService } from '../../../app/services';
-import { ListConstants } from '../../components/constants';
-import { InfoMessage, InfoMessageType, CaseActionIds, CaseService, SortOrder } from '../../enums';
-import { PaginationParameter, SearchCaseRequest, SortParameter } from '../../models/dtos';
-import { InvokedCaseAction, Case, CaseFieldConfig, CaseServiceConfig } from '../../models/cases';
-import { CaseworkerDataService, InfoMessageCommService, WorkAllocationCaseService } from '../../services';
-import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { AppConstants } from '../../../app/app.constants';
+import { Case, CaseFieldConfig, CaseServiceConfig, InvokedCaseAction } from '../../models/cases';
+import { CaseActionIds, CaseService, InfoMessage, InfoMessageType, SortOrder } from '../../enums';
+import { CaseworkerDataService, InfoMessageCommService, WorkAllocationCaseService } from '../../services';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
+import { ListConstants } from '../../components/constants';
 import { mergeMap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { PaginationParameter, SearchCaseRequest, SortParameter } from '../../models/dtos';
+import { Router } from '@angular/router';
+import { SessionStorageService } from '../../../app/services';
 import { SortField } from '../../models/common';
+import { Caseworker } from '../../interfaces/common';
 
 @Component({
   templateUrl: 'work-case-list-wrapper.component.html',

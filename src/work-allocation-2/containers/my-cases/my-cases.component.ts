@@ -12,11 +12,11 @@ import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-cas
 export class MyCasesComponent extends WorkCaseListWrapperComponent {
 
   public get emptyMessage(): string {
-    return ListConstants.EmptyMessage.MyTasks;
+    return ListConstants.EmptyMessage.MyCases;
   }
 
   public get sortSessionKey(): string {
-    return SortConstants.Session.MyTasks;
+    return SortConstants.Session.MyCases;
   }
 
   public get view(): string {
@@ -35,7 +35,7 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent {
       const isJudge = userInfo.roles.some(role => ListConstants.JUDGE_ROLES.includes(role));
       return {
         search_parameters: [
-          { key: 'user', operator: 'IN', values: [ id ] },
+          { key: 'user', operator: 'IN', values: [id] },
         ],
         sorting_parameters: [this.getSortParameter()],
         search_by: isJudge ? 'judge' : 'caseworker',
@@ -47,7 +47,7 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent {
   /**
    * Handle the paging event
    */
-   public onPaginationEvent(pageNumber: number): void {
+  public onPaginationEvent(pageNumber: number): void {
     this.onPaginationHandler(pageNumber);
   }
 }

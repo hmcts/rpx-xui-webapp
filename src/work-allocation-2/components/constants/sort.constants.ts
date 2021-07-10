@@ -1,5 +1,6 @@
 const SESSION = {
   AvailableTasks: 'availableTasksSort',
+  MyCases: 'myCasesSort',
   MyTasks: 'myTasksSort',
   AllWork: 'allWorkSort',
   TaskManager: 'taskManagerSort'

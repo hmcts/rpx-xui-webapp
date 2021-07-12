@@ -376,7 +376,7 @@ describe('CaseListComponent', () => {
     const element = fixture.debugElement.nativeElement;
     const caseName = element.querySelector('#sort_by_caseName');
     const categoryButton = element.querySelector('#sort_by_caseCategory');
-    const startDateButton = element.querySelector('#sort_by_startDate');
+    const startDateButton = element.querySelector('#sort_by_start_date');
     caseName.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 

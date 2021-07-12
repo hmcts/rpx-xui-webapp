@@ -1,4 +1,4 @@
-import { Action } from "../interfaces/common";
+import { Action } from '../interfaces/common';
 
 export const ASSIGN: Action = {
   id: 'assign',

@@ -27,7 +27,6 @@ import * as caseServiceMock from './caseService.mock';
 import * as taskServiceMock from './taskService.mock';
 
 import {
-  assignActionsToCases,
   assignActionsToTasks,
   mapCaseworkerData,
   prepareCaseWorkerForLocation,
@@ -81,7 +80,6 @@ export async function searchCase(req: EnhancedRequest, res: Response, next: Next
     const searchBy = searchRequest.search_by === 'judge' ? 'judicial' : 'caseworker';
     const roleAssignments: any[] = req.session.roleAssignmentResponse;
     const basePath = prepareSearchCaseUrl(baseWorkAllocationTaskUrl, `myCases?view=${searchBy}`);
-    const postCasePath = preparePaginationUrl(req, basePath);
     let promise;
     switch (view) {
       case View.MY_CASES:
@@ -116,7 +114,6 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     const searchRequest = req.body.searchRequest;
     const view = req.body.view;
     const searchBy = searchRequest.search_by === 'judge' ? 'judicial' : 'caseworker';
-    const roleAssignments: any[] = req.session.roleAssignmentResponse;
     let basePath;
     let postTaskPath;
     let promise;
@@ -136,24 +133,14 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
         postTaskPath = preparePaginationUrl(req, basePath);
         promise = await handlePost(postTaskPath, searchRequest, req);
         break;
-/*      case View.MY_CASES:
-        const caseIds = roleAssignments.map(assignments => assignments.attributes.caseId);
-        const path = `${baseElasticSearchUrl}/internal/searchCases?ctid=${CASE_TYPE_ID}`;
-        const payload = getRequestBody(caseIds);
-        promise = await sendPost(path, payload, req);
-        break;*/
     }
     const { status, data } = promise;
     res.status(status);
     // Assign actions to the tasks on the data from the API.
     let returnData;
     if (data) {
-/*      if (view === View.MY_CASES) {
-        const myCases = data.cases.map(aCase => ccdCaseToMyCase(roleAssignments, aCase, CASE_TYPE_ID));
-        returnData = {tasks: myCases, total_records: myCases.length};
-      } else {*/
-        // Note: TaskPermission placed in here is an example of what we could be getting (i.e. Manage permission)
-        // These should be mocked as if we were getting them from the user themselves
+      // Note: TaskPermission placed in here is an example of what we could be getting (i.e. Manage permission)
+      // These should be mocked as if we were getting them from the user themselves
       returnData = {tasks: assignActionsToTasks(data.tasks, req.body.view), total_records: data.total_records};
       // }
     }

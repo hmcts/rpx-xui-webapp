@@ -62,15 +62,21 @@ describe('MyCasesFilterComponent', () => {
     expect(component).toBeDefined();
   });
 
-  it('should show the toggle filter button', () => {
+  it('should show the show filter button', () => {
     const button = fixture.debugElement.query(By.css('.govuk-button.hmcts-button--secondary'));
     expect(button.nativeElement.innerText).toContain('Show work filter');
+  });
+
+  it('should show the hide filter button', () => {
+    const button = fixture.debugElement.query(By.css('.govuk-button.hmcts-button--secondary'));
+    button.nativeElement.click();
+    fixture.detectChanges();
+    expect(button.nativeElement.innerText).toContain('Hide work filter');
   });
 
   it('should select two locations', fakeAsync(() => {
     const button = fixture.debugElement.query(By.css('.govuk-button.hmcts-button--secondary'));
     button.nativeElement.click();
-
     fixture.detectChanges();
     const checkBoxes = fixture.debugElement.query(By.css('.govuk-checkboxes'));
     const firstLocation = checkBoxes.nativeElement.children[0];

@@ -121,8 +121,7 @@ export class MyCasesFilterComponent implements OnInit, OnDestroy {
       )
       .subscribe((f: FilterSetting) => {
         this.selectedLocations = f.fields.find((field) => field.name === MyCasesFilterComponent.FILTER_NAME).value;
-        const isFiltered = this.hasBeenFiltered(f, this.getDefaultLocations());
-        this.showFilteredText = isFiltered;
+        this.showFilteredText = this.hasBeenFiltered(f, this.getDefaultLocations());
         this.toggleFilter = false;
       });
   }

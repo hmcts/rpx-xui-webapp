@@ -62,7 +62,7 @@ export class WorkCaseListComponent implements OnChanges {
     return true;
   }
 
-  public selectCaseFromUrlHash(url: string): Case | null {
+  public selectCaseFromUrlHash(url: string): Case {
     if (url && this.cases) {
       const hashValue = url.substring(url.indexOf('#') + 1);
       if (hashValue && hashValue.indexOf('manage_') === 0) {

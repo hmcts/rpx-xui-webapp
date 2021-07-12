@@ -1,9 +1,16 @@
 import { expect } from 'chai';
 import { PactTestSetup } from '../settings/provider.mock';
 import { searchTasks } from "../../pactUtil";
+import * as sinon from 'sinon'
 
+import * as config from 'config'
+import { mockReq, mockRes } from 'sinon-express-mock';
+
+import { getSearchTaskOverrides } from '../utils/configOverride';
+import { requireReloaded } from '../utils/moduleUtil';
 const { Matchers } = require('@pact-foundation/pact');
-const { somethingLike } = Matchers;
+import { DateTimeMatcher } from '../utils/matchers';
+const { somethingLike, iso8601DateTime, term } = Matchers
 const pactSetUp = new PactTestSetup({ provider: 'wa_task_management_api_search_completable', port: 8000 });
 
 const taskId = "f782bde3-8d51-11eb-a9a4-06d032acc76d"
@@ -18,20 +25,20 @@ describe("Task management api, Search for completebale tasks on case event", () 
                 "case_category": somethingLike("protection"),
                 "case_id": somethingLike("1616666869740714"),
                 "case_name": somethingLike("Bob Smith"),
-                "case_type_id": somethingLike("Asylum"),
-                "created_date": somethingLike("2020-09-05T14:47:01.250542+01:00"),
-                "due_date": somethingLike("2020-09-25T14:47:01.250542+01:00"),
+                "created_date": term(DateTimeMatcher("2021-06-30T16:53:10+0100")),
+                "due_date": term(DateTimeMatcher("2021-06-30T16:53:10+0100")),
                 "execution_type": somethingLike("Case Management Task"),
                 "id": somethingLike(taskId),
                 "jurisdiction": somethingLike("IA"),
                 "location": somethingLike("765324"),
                 "location_name": somethingLike("Taylor House"),
+                "case_type_id": somethingLike("Asylum"),
                 "name": somethingLike("task name"),
                 "region": somethingLike("1"),
                 "security_classification": somethingLike("PUBLIC"),
                 "task_state": somethingLike("assigned"),
                 "task_system": somethingLike("SELF"),
-                "task_title": somethingLike("task name"),
+                "task_title": somethingLike("Review the appeal"),
                 "type": somethingLike("wa-task-configuration-api-task"),
                 "warnings": somethingLike(false)
             }
@@ -46,8 +53,12 @@ describe("Task management api, Search for completebale tasks on case event", () 
     }
 
     describe("post /task/search-for-completable", () => {
+        let sandbox: sinon.SinonSandbox = sinon.createSandbox();
+        let next;
+        beforeEach(() => {
+            next = sandbox.spy();
+        });
 
-        const jwt = 'some-access-token';
         before(async () => {
             await pactSetUp.provider.setup()
             const interaction = {
@@ -57,16 +68,16 @@ describe("Task management api, Search for completebale tasks on case event", () 
                     method: "POST",
                     path: "/task/search-for-completable",
                     headers: {
-                        'Authorization': 'Bearer some-access-token',
-                        'ServiceAuthorization': 'some service authorisation',
-                        'Content-Type': 'application/json'
+                        'Authorization': 'Bearer someAuthorizationToken',
+                        'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+                        'content-type': 'application/json',
+
                     },
                     body: mockRequest
                 },
                 willRespondWith: {
                     status: 200,
                     headers: {
-                        "Content-Type": "application/json",
                     },
                     body: RESPONSE_BODY,
                 },
@@ -74,19 +85,51 @@ describe("Task management api, Search for completebale tasks on case event", () 
             // @ts-ignore
             pactSetUp.provider.addInteraction(interaction)
         })
+
+        afterEach(() => {
+            sandbox.restore();
+            sinon.reset();
+        });
+
         it("returns the correct response", async () => {
-            const taskUrl = `${pactSetUp.provider.mockService.baseUrl}/task/search-for-completable`;
+            const configValues = getSearchTaskOverrides(pactSetUp.provider.mockService.baseUrl)
+            sandbox.stub(config, 'get').callsFake((prop) => {
+                return configValues[prop];
+            });
 
-            const response: Promise<any> = searchTasks(taskUrl, mockRequest);
+            const { postTaskSearchForCompletable } = requireReloaded('../../../../workAllocation/index');
 
-            response.then((axiosResponse) => {
-                console.log("task/search-for-completable");
-                const dto: any = axiosResponse;
-                assertResponses(dto.data);
-            }).then(() => {
+            const req = mockReq({
+                headers: {
+                    'Authorization': 'Bearer someAuthorizationToken',
+                    'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+                    'content-type': 'application/json',
+                },
+                body: { searchRequest: {
+                    ccdId:mockRequest.case_id,
+                    jurisdiction:mockRequest.case_jurisdiction,
+                    caseTypeId:mockRequest.case_type,
+                    eventId:mockRequest.event_id
+                } },
+            });
+            let returnedResponse = null;
+            const response = mockRes();
+            response.send = (ret) => {
+                returnedResponse = ret
+            };
+
+            try {
+                await postTaskSearchForCompletable(req, response, next);
+
+                assertResponses(returnedResponse);
                 pactSetUp.provider.verify()
                 pactSetUp.provider.finalize()
-            })
+            } catch (err) {
+                console.log(err.stack);
+                pactSetUp.provider.verify()
+                pactSetUp.provider.finalize()
+                throw new Error(err);
+            }
         })
     })
 })
@@ -99,8 +142,8 @@ function assertResponses(dto: any) {
     expect(dto.tasks[0].case_id).to.be.equal("1616666869740714");
     expect(dto.tasks[0].case_name).to.be.equal("Bob Smith");
     expect(dto.tasks[0].case_type_id).to.be.equal("Asylum");
-    expect(dto.tasks[0].created_date).to.be.equal("2020-09-05T14:47:01.250542+01:00");
-    expect(dto.tasks[0].due_date).to.be.equal("2020-09-25T14:47:01.250542+01:00");
+    expect(dto.tasks[0].created_date).to.be.equal("2021-06-30T16:53:10+0100");
+    expect(dto.tasks[0].due_date).to.be.equal("2021-06-30T16:53:10+0100");
     expect(dto.tasks[0].execution_type).to.be.equal("Case Management Task");
 
     expect(dto.tasks[0].id).to.be.equal(taskId);
@@ -112,7 +155,7 @@ function assertResponses(dto: any) {
     expect(dto.tasks[0].security_classification).to.be.equal("PUBLIC");
     expect(dto.tasks[0].task_state).to.be.equal("assigned");
     expect(dto.tasks[0].task_system).to.be.equal("SELF");
-    expect(dto.tasks[0].task_title).to.be.equal("task name");
+    expect(dto.tasks[0].task_title).to.be.equal("Review the appeal");
     expect(dto.tasks[0].type).to.be.equal("wa-task-configuration-api-task");
     expect(dto.tasks[0].warnings).to.be.equal(false);
 }

@@ -5,6 +5,7 @@ import 'mocha'
 import * as sinon from 'sinon'
 import * as sinonChai from 'sinon-chai'
 import { mockReq, mockRes } from 'sinon-express-mock'
+import { CASE_ALLOCATOR_ROLE } from './constants'
 import { getUserDetails, getUserRoleAssignments } from './index'
 
 chai.use(sinonChai)
@@ -109,10 +110,11 @@ describe('getUserRoleAssignments', async () => {
     }
     const req = {
       session: {
-        roleAssignmentResponse: [{attributes: {primaryLocation: {location: '123'} } }]
+        roleAssignmentResponse: [{attributes: {primaryLocation: {location: '123'} } , authorisations: [CASE_ALLOCATOR_ROLE]}]
       }
     }
     const locationInfo = await getUserRoleAssignments(userInfo, req)
     expect(locationInfo[0].primaryLocation.location).to.equal('123')
+    expect(locationInfo[0].isCaseAllocator).to.equal(true);
   });
 });

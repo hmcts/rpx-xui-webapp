@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AllocationCaptionText, AllocationRadioText, AllocationTitleText, AllocationType } from 'src/cases/enums';
+import { AllocationCaptionText, AllocationRadioText, AllocationTitleText, AllocationType } from '../../../cases/enums';
 
 @Component({
   selector: 'exui-allocate-role',

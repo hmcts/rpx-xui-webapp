@@ -43,11 +43,6 @@ export const ROUTES: Routes = [
               data: AllocationConstants.Exclusion
             },
             {
-              path: 'exclusion-self',
-              component: AllocateRoleContainerComponent,
-              data: AllocationConstants.ExclusionSelf
-            },
-            {
               path: 'judiciary',
               component: AllocateRoleContainerComponent,
               data: AllocationConstants.Judiciary

@@ -6,6 +6,7 @@ import { getConfigValue } from '../configuration'
 import { CASE_SHARE_PERMISSIONS, SERVICES_ROLE_ASSIGNMENT_API_PATH, SESSION_TIMEOUTS } from '../configuration/references'
 import { http } from '../lib/http'
 import { setHeaders } from '../lib/proxy'
+import { CASE_ALLOCATOR_ROLE } from './constants'
 
 export async function getUserDetails(req, res: Response, next: NextFunction) {
 
@@ -53,10 +54,13 @@ export async function getRoleAssignmentForUser(userInfo: UserInfo, req: any): Pr
 }
 
 export function getLocationInfo(roleAssignmentResponse: any): any [] {
-  const locationInfo = []
+  const locationInfo = [];
   roleAssignmentResponse.forEach(roleAssignment => {
     if (roleAssignment.attributes.primaryLocation) {
-      locationInfo.push(roleAssignment.attributes)
+      const isCaseAllocator = roleAssignment.authorisations ? roleAssignment.authorisations.includes(CASE_ALLOCATOR_ROLE) : false;
+      const attributes = {...roleAssignment.attributes}
+      attributes.isCaseAllocator = isCaseAllocator
+      locationInfo.push(attributes)
     }
   });
   return locationInfo

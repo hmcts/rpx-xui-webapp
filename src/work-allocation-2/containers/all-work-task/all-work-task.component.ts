@@ -83,16 +83,18 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
 
   private getCaseworkerParameter() {
     let values: string[];
+    let key = 'user';
     if (this.selectedCaseworker && this.selectedCaseworker !== FilterConstants.Options.Caseworkers.ALL) {
       if (this.selectedCaseworker === FilterConstants.Options.Caseworkers.UNASSIGNED) {
-        values = [];
+        key = 'state';
+        values = ['unassigned'];
       } else {
         values = [this.selectedCaseworker.idamId];
       }
     } else {
       values = [];
     }
-    return { key: 'user', operator: 'IN', values };
+    return { key, operator: 'IN', values };
   }
 
   /**

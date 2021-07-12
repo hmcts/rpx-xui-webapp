@@ -1,4 +1,4 @@
-@ng @test
+
 Feature: WA Release 2: All work - filters
 
     Background: Mock and browser setup

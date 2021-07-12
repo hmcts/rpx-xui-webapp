@@ -1,4 +1,4 @@
-@ng
+
 Feature: WA Release 2: All work -  negative scenarios
 
     Background: Mock and browser setup

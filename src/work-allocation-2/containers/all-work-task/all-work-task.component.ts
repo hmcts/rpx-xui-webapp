@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { Location } from 'api/workAllocation2/interfaces/task';
 import { Caseworker } from 'api/workAllocation2/interfaces/task';
-import { UserInfo } from 'src/app/models/user-details.model';
-import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from 'src/work-allocation-2/components/constants';
+import { UserInfo } from '../../../app/models/user-details.model';
+import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from '../../../work-allocation-2/components/constants';
 import { SortOrder } from 'src/work-allocation-2/enums';
-import { PaginationParameter, SearchTaskRequest } from 'src/work-allocation-2/models/dtos';
-import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from 'src/work-allocation-2/utils';
+import { PaginationParameter, SearchTaskRequest } from '../../../work-allocation-2/models/dtos';
+import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../../work-allocation-2/utils';
 import { FieldConfig, SortField } from '../../models/common';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
@@ -84,16 +84,18 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
 
   private getCaseworkerParameter() {
     let values: string[];
+    let key = 'user';
     if (this.selectedCaseworker && this.selectedCaseworker !== FilterConstants.Options.Caseworkers.ALL) {
       if (this.selectedCaseworker === FilterConstants.Options.Caseworkers.UNASSIGNED) {
-        values = [];
+        key = 'state';
+        values = ['unassigned'];
       } else {
         values = [this.selectedCaseworker.idamId];
       }
     } else {
       values = [];
     }
-    return { key: 'user', operator: 'IN', values };
+    return { key, operator: 'IN', values };
   }
 
   /**

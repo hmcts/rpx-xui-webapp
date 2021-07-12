@@ -30,6 +30,14 @@ module.exports = {
         }
     },
     post: {
+        '/workallocation2/caseWithPagination/': (req, res) => {
+            const pageSize = req.body.searchRequest.pagination_parameters.page_size;
+            if (req.body.view === "MyCases") {
+                res.send(workAllocationMockData.getMyCases());
+            } else {
+                throw new Error("Unrecognised task list view : " + req.body.view);
+            }
+        },
         '/workallocation/task/': (req, res) => {
 
             if (req.body.view === "MyTasks"){

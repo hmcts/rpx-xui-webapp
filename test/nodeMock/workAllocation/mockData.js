@@ -73,6 +73,51 @@ class WorkAllocationMockData {
         return tasks;
     }
 
+    getCaseList(count, actions) {       
+        const cases = [];
+        for (let i = 0; i < count; i++) {
+            cases.push({
+                "id": "00b8bef2-7089-11eb-b34d-4e1650b0295"+i,
+                "name": "task name "+i,
+                "assignee": "b8c3049c-af32-4230-bf6c-33b29df6847"+i,
+                "type": "wa-task-configuration-api-task",
+                "task_state": "assigned",
+                "task_system": "SELF",
+                "security_classification": "PUBLIC",
+                "task_title": "task name"+i,
+                "created_date": "2021-02-16T18:58:48.987+0000",
+                "due_date": "2021-02-16T18:58:48.987+0000",
+                "location_name": "Taylor House "+i,
+                "location": "76532"+i,
+                "execution_type": "Case Management Task",
+                "jurisdiction": "IA",
+                "region": "1",
+                "case_type_id": "Asylum",
+                "case_id": "161350192272981"+i,
+                "case_category": "protection",
+                "case_name": "Bob Smith",
+                "auto_assigned": false,
+                "warnings": false,
+                "actions": taskActions,
+                "dueDate": "2021-02-16T18:58:48.987+0000",
+                "taskName": "task name "+i,
+                "caseName": "Bob Smith"+i,
+                "caseCategory": "protection",
+                "assigneeName": null
+            });
+        }
+        return { cases: cases, total_records:150 };
+    }
+
+    getMyCases() {
+        const caseActions = [
+            { "id": "reassign", "title": "Reassign task" },
+            { "id": "unclaim", "title": "Unassign task" },
+            { "id": "go", "title": "Go to case" }
+        ];
+        return this.getCaseList(25, caseActions);
+    }
+
     getRelease1TaskList(count, actions) {
         const taskActions = actions ? actions : [
             { "id": "reassign", "title": "Reassign task" },

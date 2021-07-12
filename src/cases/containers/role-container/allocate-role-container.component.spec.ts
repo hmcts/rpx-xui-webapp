@@ -2,7 +2,7 @@ import { DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { DescribeExclusionComponent } from '../../components/describe-exclusion/describe-exclusion.component';
+import { DescribeExclusionComponent } from '../../components';
 
 import { AllocateRoleContainerComponent } from './allocate-role-container.component';
 
@@ -39,5 +39,11 @@ describe('AllocateRoleContainerComponent', () => {
     const button: HTMLButtonElement = container.nativeElement as HTMLButtonElement;
     button.click();
     expect(component.continue).toHaveBeenCalledWith({text: ''}, false);
+  });
+
+  it('should mark the form as touched when the user submits the form', () => {
+    spyOn(component.allocationForm.get('text'), 'markAsTouched');
+    component.continue({text: 'some text'}, true);
+    expect(component.allocationForm.get('text').markAsTouched).toHaveBeenCalled();
   });
 });

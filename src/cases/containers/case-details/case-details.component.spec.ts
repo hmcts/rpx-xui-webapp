@@ -21,6 +21,7 @@ import {
 } from '@hmcts/ccd-case-ui-toolkit';
 import { combineReducers, StoreModule } from '@ngrx/store';
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
+import { of } from 'rxjs/internal/observable/of';
 
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { AppConfigService } from '../../../app/services/config/configuration.services';
@@ -98,5 +99,10 @@ xdescribe('CaseDetailsComponent', () => {
 
   it('should have ngOnInit', () => {
     expect(component.ngOnInit).toBeTruthy();
+  });
+
+  it('should set the case id of the component', () => {
+    component.ngOnInit();
+    expect(component.caseId$).toBeObservable(of(''));
   });
 });

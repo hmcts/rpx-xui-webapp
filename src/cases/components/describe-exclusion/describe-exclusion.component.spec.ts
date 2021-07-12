@@ -24,10 +24,9 @@ describe('DescribeExclusionComponent', () => {
     component.title = 'Add an exclusion';
     component.description = 'Choose who the exclusion is for'
     component.controlName = 'text';
-    const formGroup = new FormGroup({
+    component.formGroup = new FormGroup({
       text: new FormControl('somevalue')
     });
-    component.formGroup = formGroup;
     fixture.detectChanges();
   });
 

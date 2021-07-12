@@ -74,7 +74,6 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
  */
 export async function searchCase(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    const searchRequest = req.body.searchRequest;
     const view = req.body.view;
     const roleAssignments: any[] = req.session.roleAssignmentResponse;
     let promise;

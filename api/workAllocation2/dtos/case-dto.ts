@@ -1,3 +1,4 @@
+import { Permission } from '../constants/actions';
 import { CASE_ALLOCATOR_ROLE, CASE_ID, JURISDICTION, JURISDICTION_KEY } from '../constants/constant-key';
 import { MyCaseModel } from '../models/myCaseModel';
 
@@ -18,9 +19,9 @@ export function getIAMapping(assignment: any, rawCase: any, jurisdiction: string
   const startDate: string = assignment.beginTime ? assignment.beginTime : '';
   const endDate: string = assignment.endTime ? assignment.endTime : '';
   const isCaseAllocator: boolean = assignment.authorisations.some(auth => auth.toString().includes(CASE_ALLOCATOR_ROLE));
-  const permissions: string[] = ['Read'];
+  const permissions: string[] = [Permission.READ];
   if (isCaseAllocator) {
-    permissions.push('Manage');
+    permissions.push(Permission.MANAGE);
   }
   return {
     case_category: caseType,
@@ -28,6 +29,7 @@ export function getIAMapping(assignment: any, rawCase: any, jurisdiction: string
     case_name: `${rawCase.fields.appellantGivenNames} ${rawCase.fields.appellantFamilyName}`,
     case_role: roleName,
     end_date: endDate,
+    id: rawCase.case_id,
     jurisdiction,
     permissions,
     start_date: startDate,

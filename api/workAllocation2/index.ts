@@ -27,6 +27,7 @@ import * as caseServiceMock from './caseService.mock';
 import * as taskServiceMock from './taskService.mock';
 
 import {
+  assignActionsToCases,
   assignActionsToTasks,
   mapCaseworkerData,
   prepareCaseWorkerForLocation,
@@ -94,7 +95,7 @@ export async function searchCase(req: EnhancedRequest, res: Response, next: Next
     if (data) {
       if (view === View.MY_CASES) {
         const myCases = data.cases.map(aCase => ccdCaseToMyCase(roleAssignments, aCase, CASE_TYPE_ID));
-        returnData = {cases: myCases, total_records: myCases.length};
+        returnData = {cases: assignActionsToCases(myCases, view), total_records: myCases.length};
       }
     }
     // Send the (possibly modified) data back in the Response.
@@ -137,7 +138,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     // Assign actions to the tasks on the data from the API.
     let returnData;
     if (data) {
-      // Note: TaskPermission placed in here is an example of what we could be getting (i.e. Manage permission)
+      // Note: Permission placed in here is an example of what we could be getting (i.e. Manage permission)
       // These should be mocked as if we were getting them from the user themselves
       returnData = {tasks: assignActionsToTasks(data.tasks, req.body.view), total_records: data.total_records};
       // }
@@ -213,9 +214,9 @@ export async function retrieveAllCaseWorkers(req: EnhancedRequest, res: Response
  */
 export async function getAllJudicialWorkers(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    const judicialworkers: Judicialworker[] = await retrieveAllJudicialWorkers(req, res);
+    const judicialWorkers: Judicialworker[] = await retrieveAllJudicialWorkers(req, res);
     res.status(200);
-    res.send(judicialworkers);
+    res.send(judicialWorkers);
   } catch (error) {
     next(error);
   }
@@ -230,7 +231,6 @@ export async function retrieveAllJudicialWorkers(req: EnhancedRequest, res: Resp
   const { data } = await handlePostRoleAssingnments(roleApiPath, payload, req);
   const userIds = getUserIdsFromRoleApiResponse(data);
   const userUrl = `${baseJudicialWorkerRefUrl}/judicialworkers/`;
-  // const userResponse = await handlePostJudicialWorkersRefData(userUrl, userIds, req);
   const userResponse = await handlePost(userUrl, userIds, req);
   req.session.judicialWorkers = userResponse.data;
   return userResponse.data;

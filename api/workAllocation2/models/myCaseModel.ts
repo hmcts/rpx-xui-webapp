@@ -1,4 +1,5 @@
 export interface MyCaseModel {
+  id: string;
   case_id: string;
   case_name: string;
   jurisdiction: string;

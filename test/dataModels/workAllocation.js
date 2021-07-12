@@ -120,8 +120,8 @@ const taskActionsMatrix = {
         Read: [],
         Refer: [],
         Manage: [ACTIONS.Reassign, ACTIONS.Unassign, ACTIONS.GoToTasks],
-        Execute: [],
-        Cancel: []
+        Execute: [ACTIONS.MarkAsDone],
+        Cancel: [ACTIONS.Cancel]
 
     },
     availabletasks: {

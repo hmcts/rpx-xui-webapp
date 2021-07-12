@@ -1,19 +1,19 @@
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { Observable } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 import { AppConstants } from '../../../app/app.constants';
-import { Case, CaseFieldConfig, CaseServiceConfig, InvokedCaseAction } from '../../models/cases';
+import { SessionStorageService } from '../../../app/services';
+import { ListConstants } from '../../components/constants';
 import { CaseActionIds, CaseService, InfoMessage, InfoMessageType, SortOrder } from '../../enums';
 import { Caseworker } from '../../interfaces/common';
-import { CaseworkerDataService, InfoMessageCommService, WorkAllocationCaseService } from '../../services';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
-import { ListConstants } from '../../components/constants';
-import { mergeMap } from 'rxjs/operators';
-import { Observable } from 'rxjs';
-import { PaginationParameter, SearchCaseRequest, SortParameter } from '../../models/dtos';
-import { Router } from '@angular/router';
-import { SessionStorageService } from '../../../app/services';
+import { Case, CaseFieldConfig, CaseServiceConfig, InvokedCaseAction } from '../../models/cases';
 import { SortField } from '../../models/common';
+import { PaginationParameter, SearchCaseRequest, SortParameter } from '../../models/dtos';
+import { CaseworkerDataService, InfoMessageCommService, WorkAllocationCaseService } from '../../services';
+import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 
 @Component({
   templateUrl: 'work-case-list-wrapper.component.html',
@@ -98,7 +98,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
   }
 
   public get returnUrl(): string {
-    return this.router ? this.router.url : '/mywork';
+    return this.router ? this.router.url : '/my-work';
   }
 
   /**
@@ -142,8 +142,9 @@ export class WorkCaseListWrapperComponent implements OnInit {
 
     this.isPaginationEnabled$.subscribe({
       next: (result: boolean) => {
-        if (!result) this.pagination = null;
-        else {
+        if (!result) {
+          this.pagination = null;
+        } else {
           this.pagination = {
             page_number: 1,
             page_size: 25

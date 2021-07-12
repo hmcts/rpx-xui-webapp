@@ -1,6 +1,6 @@
 import { FieldType, TaskView } from '../../enums';
 import { FieldConfig } from '../../models/common';
-import { DERIVED_ICON_CONSTANTS} from './derived-icon.constants';
+import { DERIVED_ICON_CONSTANTS } from './derived-icon.constants';
 
 /**
  * The individual fields.
@@ -33,11 +33,25 @@ const CASE_NAME_AS_TEXT: FieldConfig = {
   sortName: 'caseName',
   views: TaskView.ALL_VIEWS
 };
+const CASE_ROLE: FieldConfig = {
+  name: 'case_role',
+  type: FieldType.STRING,
+  columnLabel: 'Case role',
+  sortName: 'caseRole',
+  views: TaskView.ALL_VIEWS
+};
 const CASE_CATEGORY: FieldConfig = {
   name: 'case_category',
   type: FieldType.STRING,
   columnLabel: 'Case category',
   sortName: 'caseCategory',
+  views: TaskView.ALL_VIEWS
+};
+const JURISDICTION: FieldConfig = {
+  name: 'jurisdiction',
+  type: FieldType.STRING,
+  columnLabel: 'Jurisdiction',
+  sortName: 'jurisdiction',
   views: TaskView.ALL_VIEWS
 };
 const LOCATION: FieldConfig = {
@@ -52,7 +66,6 @@ const DERIVED_ICON: FieldConfig = {
   type: FieldType.DERIVED_ICON,
   columnLabel: null,
   views: TaskView.ALL_VIEWS,
-  sortName: 'derivedIcon',
   // sourcColumn and matchValue values currently defined in DI constants file
   sourceColumn: DERIVED_ICON_CONSTANTS.SOURCE_COLUMN,
   matchValue: DERIVED_ICON_CONSTANTS.MATCH_VALUE
@@ -78,6 +91,20 @@ const DUE_DATE: FieldConfig = {
   sortName: 'dueDate',
   views: TaskView.ALL_VIEWS
 };
+const START_DATE: FieldConfig = {
+  name: 'startDate',
+  type: FieldType.DATE,
+  columnLabel: 'Start',
+  sortName: 'startDate',
+  views: TaskView.ALL_VIEWS
+};
+const END_DATE: FieldConfig = {
+  name: 'endDate',
+  type: FieldType.DATE,
+  columnLabel: 'End',
+  sortName: 'endDate',
+  views: TaskView.ALL_VIEWS
+};
 const ASSIGNEE: FieldConfig = {
   disableSort: true,
   name: 'assigneeName',
@@ -93,6 +120,10 @@ const ASSIGNEE: FieldConfig = {
  */
 const AVAILABLE_TASKS: FieldConfig[] = [
   CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_TEXT, DUE_DATE
+];
+
+const MY_CASES: FieldConfig[] = [
+  CASE_NAME_AS_LINK, JURISDICTION, CASE_CATEGORY, CASE_ROLE, START_DATE, END_DATE
 ];
 const MY_TASKS: FieldConfig[] = [
   CASE_REFERENCE_AS_LINK, CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_TEXT, DUE_DATE
@@ -116,6 +147,7 @@ const ALL_WORK_TASKS: FieldConfig[] = [
 
 export const CONFIG_CONSTANTS = {
   AvailableTasks: AVAILABLE_TASKS,
+  MyCases: MY_CASES,
   MyTasks: MY_TASKS,
   MyWorkTasks: MY_WORK_TASKS,
   TaskActions: TASK_ACTIONS,

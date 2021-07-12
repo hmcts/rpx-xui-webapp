@@ -28,7 +28,7 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
   public subNavigationItems: SubNavigation[] = [
     this.MY_TASKS,
     {text: 'Available tasks', href: '/work/my-work/available', active: false},
-    {text: 'My cases', href: '/work/my-work/mycases', active: false}
+    {text: 'My cases', href: '/work/my-work/my-cases', active: false}
   ];
 
   private routeSubscription: Subscription;

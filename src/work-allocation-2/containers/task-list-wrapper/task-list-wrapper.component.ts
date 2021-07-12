@@ -1,17 +1,17 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { Caseworker, Location } from 'api/workAllocation2/interfaces/task';
-import { Observable } from 'rxjs';
-import { SessionStorageService } from '../../../app/services';
-import { ListConstants } from '../../components/constants';
-import { InfoMessage, InfoMessageType, SortOrder, TaskActionIds, TaskService } from '../../enums';
-import { FieldConfig, SortField } from '../../models/common';
-import { PaginationParameter, SearchTaskRequest, SortParameter } from '../../models/dtos';
+import { Caseworker, Location } from '../../interfaces/common';
 import { CaseworkerDataService, InfoMessageCommService, LocationDataService, WorkAllocationTaskService } from '../../services';
-import { InvokedTaskAction, Task, TaskServiceConfig } from '../../models/tasks';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { FieldConfig, SortField } from '../../models/common';
 import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
+import { InfoMessage, InfoMessageType, SortOrder, TaskActionIds, TaskService } from '../../enums';
+import { InvokedTaskAction, Task, TaskServiceConfig } from '../../models/tasks';
+import { ListConstants } from '../../components/constants';
+import { Observable } from 'rxjs';
+import { PaginationParameter, SearchTaskRequest, SortParameter } from '../../models/dtos';
+import { Router } from '@angular/router';
+import { SessionStorageService } from '../../../app/services';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html',

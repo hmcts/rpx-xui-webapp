@@ -38,7 +38,6 @@ import {
   preparePostTaskUrlAction,
   prepareRoleApiRequest,
   prepareRoleApiUrl,
-  prepareSearchCaseUrl,
   prepareSearchTaskUrl,
   prepareTaskSearchForCompletable
 } from './util';
@@ -77,7 +76,6 @@ export async function searchCase(req: EnhancedRequest, res: Response, next: Next
   try {
     const searchRequest = req.body.searchRequest;
     const view = req.body.view;
-    const searchBy = searchRequest.search_by === 'judge' ? 'judicial' : 'caseworker';
     const roleAssignments: any[] = req.session.roleAssignmentResponse;
     let promise;
     switch (view) {

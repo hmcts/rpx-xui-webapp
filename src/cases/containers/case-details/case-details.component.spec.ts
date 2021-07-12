@@ -99,10 +99,4 @@ xdescribe('CaseDetailsComponent', () => {
   it('should have ngOnInit', () => {
     expect(component.ngOnInit).toBeTruthy();
   });
-
-  it('should have ngOnDestroy ', () => {
-    expect(component.ngOnDestroy).toBeTruthy();
-  });
-
-
 });

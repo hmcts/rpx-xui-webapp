@@ -1,0 +1,18 @@
+<div [formGroup]="formGroup" *ngIf="formGroup">
+  <h1 class="govuk-heading-l">
+    <span class="govuk-caption-l">{{title}}</span>
+    {{description}}
+  </h1>
+  <div class="govuk-form-group" [ngClass]="{'form-group-error': !formGroup.get(controlName).valid && formGroup.get(controlName).touched}" >
+    <fieldset class="govuk-fieldset">
+    <textarea class="govuk-textarea govuk-!-width-one-half"
+              id="exclusion-description"
+              formControlName="text"
+              name="exclusion-description"
+              rows="5"
+              aria-describedby="exclusion description"
+    ></textarea>
+    </fieldset>
+  </div>
+
+</div>

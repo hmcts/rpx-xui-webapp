@@ -57,6 +57,9 @@ class TaskCheckYourChangesPage{
     
     async getColumnElement(header) {
         const pos = await this.getHeaderColumnPos(header);
+        if(pos === -1){
+            throw new Error(`Table header "${header}" not found`);
+        }
         const col = await this.tableColumnValues.get(pos);
         return col;
     }

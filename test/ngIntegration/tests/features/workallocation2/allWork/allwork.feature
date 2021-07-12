@@ -54,7 +54,6 @@ Feature: WA Release 2: All work
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
             | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
-@test
     Scenario:  Tasks sort column persist in session with Caseworker user 
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer "
         Given I set MOCK tasks with permissions for view "All work" and assigned state ""

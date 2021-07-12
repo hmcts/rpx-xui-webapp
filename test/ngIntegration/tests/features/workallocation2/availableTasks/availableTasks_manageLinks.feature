@@ -1,4 +1,4 @@
-@ng 
+@ng
 Feature: WA Release 2: My work - Available tasks - Manage links
 
     Background: Mock and browser setup
@@ -40,4 +40,31 @@ Feature: WA Release 2: My work - Available tasks - Manage links
             | UserIdentifier     | UserType   | Roles                                              |
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
             | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
+
+    
+    Scenario Outline:  Task Manage links for "<UserType>"  action "<actionLink>"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
+
+        Given I start MockApp
+        Given I navigate to home page
+
+        When I navigate to My work sub navigation tab "Available tasks"
+        Then I validate tasks count in page 25
+
+        When I open Manage link for task at row <taskAtRow>
+        Then I see action link "<actionLink>" is present for task with Manage link open
+        When I click action link "<actionLink>" on task with Manage link open
+
+
+        Then I validate notification message banner is displayed in "<landingPage>" page
+        Then I validate notification banner messages displayed in "<landingPage>" page
+            | message         |
+            | <bannermessage1> |
+            | <bannermessage2> |
+
+        Examples:
+            | UserIdentifier     | UserType   | Roles                                              | taskAtRow | actionLink                  | landingPage  | bannermessage1                                               | bannermessage2               |
+            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer | 4         | Assign to me                | My work      | You've assigned yourself a task. It's available in My tasks. | The list has been refreshed. |
+            | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    | 1         | Assign to me and go to case | Case details | You've assigned yourself a task. It's available in My tasks. |                              |
+
 

@@ -66,6 +66,7 @@ const DERIVED_ICON: FieldConfig = {
   type: FieldType.DERIVED_ICON,
   columnLabel: null,
   views: TaskView.ALL_VIEWS,
+  sortName: 'derivedIcon',
   // sourcColumn and matchValue values currently defined in DI constants file
   sourceColumn: DERIVED_ICON_CONSTANTS.SOURCE_COLUMN,
   matchValue: DERIVED_ICON_CONSTANTS.MATCH_VALUE
@@ -141,8 +142,8 @@ const TASK_ACTIONS_WITH_ASSIGNEE: FieldConfig[] = [
 ];
 
 const ALL_WORK_TASKS: FieldConfig[] = [
-  CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_TEXT, DUE_DATE, ASSIGNEE
-];
+  CASE_NAME_AS_LINK, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_LINK, DUE_DATE, ASSIGNEE
+]
 
 export const CONFIG_CONSTANTS = {
   AvailableTasks: AVAILABLE_TASKS,

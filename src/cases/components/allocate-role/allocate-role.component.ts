@@ -3,8 +3,7 @@ import { AllocationCaptionText, AllocationRadioText, AllocationTitleText, Alloca
 
 @Component({
   selector: 'exui-allocate-role',
-  templateUrl: './allocate-role.component.html',
-  styleUrls: ['./allocate-role.component.scss']
+  templateUrl: './allocate-role.component.html'
 })
 
 export class AllocateRoleComponent implements OnInit {

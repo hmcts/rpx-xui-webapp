@@ -1,17 +1,11 @@
-<div class="govuk-width-container">
+
   <a *ngIf="allocation!=='Exclusion'" class="govuk-back-link">
     Back
   </a>
-  <main class="govuk-main-wrapper" id="main-content">
-  <div class="govuk-form-group">
-    <fieldset class="govuk-fieldset">
-      <h1 class="govuk-fieldset__heading" >
-          <span class="govuk-caption-1">{{caption}}</span>
-          <br/>
-          {{title}}
-        </h1>
-    </fieldset>
-  </div>
+  <h1 class="govuk-heading-l" >
+    <span class="govuk-caption-l">{{caption}}</span>
+    {{title}}
+  </h1>
   <div class="govuk-form-group">
     <fieldset class="govuk-fieldset">
       <div class="govuk-radios">
@@ -34,5 +28,3 @@
     <button class="govuk-button govuk-!-margin-right-1" type="submit">Continue</button>
       <p><a href="javascript:void(0)">Cancel</a></p>
   </div>
-</main>
-</div>

@@ -258,7 +258,6 @@ export class WorkCaseListWrapperComponent implements OnInit {
         this.loadingService.unregister(loadingToken);
         this.cases = result.cases;
         this.casesTotal = result.total_records;
-        // this.cases.forEach(item => item.assigneeName = getAssigneeName(this.caseworkers, item.assignee));
         this.ref.detectChanges();
       }, error => {
         this.loadingService.unregister(loadingToken);

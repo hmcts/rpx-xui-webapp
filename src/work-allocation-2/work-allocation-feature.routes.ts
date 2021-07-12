@@ -68,9 +68,9 @@ export const ROUTES: Routes = [
             path: 'tasks',
             component: AllWorkTaskComponent,
             data: {
-              title: 'HMCTS Manage cases | My work | My tasks', subTitle: 'My tasks'
+              title: 'HMCTS Manage cases | All work | Tasks', subTitle: 'Tasks'
             }
-          },
+          }
         ]
       },
       {
@@ -80,8 +80,18 @@ export const ROUTES: Routes = [
         children: [
           {
             path: 'assign',
-            component: TaskAssignmentContainerComponent,
-            data: TaskActionConstants.Assign
+            children: [
+              {
+                path: 'confirm',
+                component: TaskAssignmentConfirmComponent,
+                data: TaskActionConstants.Assign
+              },
+              {
+                path: '',
+                component: TaskAssignmentContainerComponent,
+                data: TaskActionConstants.Assign
+              }
+            ]
           },
           {
             path: 'reassign',

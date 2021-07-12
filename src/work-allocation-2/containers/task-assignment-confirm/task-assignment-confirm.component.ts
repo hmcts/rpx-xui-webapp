@@ -29,6 +29,17 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     private readonly messageService: InfoMessageCommService) {
   }
 
+  private get returnUrl(): string {
+    let url: string = '/work/my-work/list';
+
+    // The returnUrl is undefined if the user has used browser navigation buttons, so check for its presence
+    if (window && window.history && window.history.state && window.history.state.returnUrl) {
+      url = window.history.state.returnUrl;
+    }
+
+    return url;
+  }
+
   public ngOnInit(): void {
     this.verb = this.route.snapshot.data.verb as TaskActionType;
     this.taskId = this.route.snapshot.params['taskId'];
@@ -41,7 +52,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
   }
 
   public onChange(): void {
-    this.router.navigate([this.rootPath, this.taskId, 'reassign'], {state: this.selectedPerson});
+    this.router.navigate([this.rootPath, this.taskId, this.verb.toLowerCase()], {state: this.selectedPerson});
   }
 
   public onSubmit(): void {
@@ -58,11 +69,12 @@ export class TaskAssignmentConfirmComponent implements OnInit {
   }
 
   public onCancel(): void {
-    this.router.navigate([this.rootPath, 'my-work', 'list']);
+    // Use returnUrl to return the user to the "All work" or "My work" screen, depending on which one they started from
+    this.router.navigate([this.returnUrl]);
   }
 
   private reportSuccessAndReturn(): void {
-    const message = InfoMessage.REASSIGNED_TASK;
+    const message = this.verb === 'Assign' ? InfoMessage.ASSIGNED_TASK : InfoMessage.REASSIGNED_TASK;
     this.returnWithMessage(
       {type: InfoMessageType.SUCCESS, message},
       {badRequest: false}
@@ -80,6 +92,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     if (message) {
       this.messageService.nextMessage(message);
     }
-    this.router.navigate([this.rootPath, 'my-work', 'list'], {state: {...state, retainMessages: true}});
+    // Use returnUrl to return the user to the "All work" or "My work" screen, depending on which one they started from
+    this.router.navigate([this.returnUrl], {state: {...state, retainMessages: true}});
   }
 }

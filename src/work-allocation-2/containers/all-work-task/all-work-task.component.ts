@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { Location } from 'api/workAllocation2/interfaces/task';
 import { Caseworker } from 'api/workAllocation2/interfaces/task';
-import { UserInfo } from 'src/app/models/user-details.model';
-import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from 'src/work-allocation-2/components/constants';
+import { UserInfo } from '../../../app/models/user-details.model';
+import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from '../../../work-allocation-2/components/constants';
 import { SortOrder } from 'src/work-allocation-2/enums';
-import { PaginationParameter, SearchTaskRequest } from 'src/work-allocation-2/models/dtos';
-import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from 'src/work-allocation-2/utils';
+import { PaginationParameter, SearchTaskRequest } from '../../../work-allocation-2/models/dtos';
+import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../../work-allocation-2/utils';
 import { FieldConfig, SortField } from '../../models/common';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 

@@ -13,7 +13,7 @@ import { AllocationType } from '../../../cases/enums/allocation-type';
 export class AllocateRoleContainerComponent implements OnInit {
 
   public allocationType: AllocationType;
-  public includeOther: boolean = true;
+  public includeOther: boolean = false;
   public locationInfo$: Observable<any>;
 
   constructor(
@@ -27,7 +27,8 @@ export class AllocateRoleContainerComponent implements OnInit {
     // currently the case allocator role information is stored in location info
     this.locationInfo$ = this.store.pipe(select(fromRoot.getLocationInfo));
     this.locationInfo$.subscribe(li => {
-      this.includeOther = li[0].isCaseAllocator;
+      const firstLocationInfo = li[0];
+      this.includeOther = firstLocationInfo && firstLocationInfo.isCaseAllocator ? firstLocationInfo.isCaseAllocator : false;
     });
   }
 

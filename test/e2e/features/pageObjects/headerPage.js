@@ -9,7 +9,7 @@ var CaseListPage = require('./CaseListPage');
 var CreateCaseStartPage = require('./createCaseStartPage');
 const SearchCasePage = require('../pageObjects/searchPage');
 const taskListPage = require('../pageObjects/workAllocation/taskListPage');
-const taskManagerPage = require('../pageObjects/workAllocation/taskManagerPage');
+const taskManagerPage = require('./workAllocation/taskManagerPage');
 const myWorkPage = require('../pageObjects/workAllocation/myWorkPage');
 const allWorkPage = require("../../features/pageObjects/workAllocation/allWorkPage");
 

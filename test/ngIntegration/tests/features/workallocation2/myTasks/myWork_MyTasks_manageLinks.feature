@@ -3,22 +3,25 @@ Feature: WA Release 2: My work - My tasks - Manage links
 
     Background: Mock and browser setup
         Given I init MockApp
-
-    Scenario Outline:  My Tasks, colums and column links for "<UserType>"
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
         Given I set MOCK tasks with permissions for view "My tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 100   |
             | Read        | 40    |
-        Given I set MOCK tasks with attributes for view "MyTasks"
-            | index | permissions | assignee            | case_name |
-            | 0     | Manage,Read |                     | case 1    |
-            | 1     | Manage      |                     | case 2    |
-            | 2     | Read        |                     | case 3    |
-            | 3     | Manage,Read | 1234-1234-1234-1234 | case 4    |
-            | 4     | Manage      | 1234-1234-1234-1234 | case 5    |
-            | 5     | Read        | 1234-1234-1234-1234 | case 6    |
+        Given I set MOCK tasks with attributes for view "My tasks"
+            | index | permissions                | assignee            | case_name |
+            | 0     | Manage,Read,Execute,Cancel |                     | case 1    |
+            | 1     | Manage                     |                     | case 2    |
+            | 2     | Read                       |                     | case 3    |
+            | 3     | Manage,Read                | 1234-1234-1234-1234 | case 4    |
+            | 4     | Manage                     | 1234-1234-1234-1234 | case 5    |
+            | 5     | Read                       | 1234-1234-1234-1234 | case 6    |
+        Given I set MOCK task details for WA release2
+            | case_name        | case_category      | location_name |
+            | Allwork test scr | auto test category | London QA lab |
 
+    Scenario Outline:  My Tasks, colums and column links for "<UserType>"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
+       
 
         Given I start MockApp
         Given I navigate to home page
@@ -28,8 +31,8 @@ Feature: WA Release 2: My work - My tasks - Manage links
 
         Then I validate manage link actions for tasks
             | index | actions                                |
-            | 0 | Reassign task,Unassign task,Go to task |
-            | 1 | Reassign task,Unassign task,Go to task |
+            | 0     | Reassign task,Unassign task,Go to task |
+            | 1     | Reassign task,Unassign task,Go to task |
             | 2     |                                        |
             | 3     | Reassign task,Unassign task,Go to task |
             | 4     | Reassign task,Unassign task,Go to task |

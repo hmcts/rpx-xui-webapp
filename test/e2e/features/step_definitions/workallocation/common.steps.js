@@ -4,12 +4,17 @@ const reportLogger = require('../../../support/reportLogger');
 const BrowserWaits = require('../../../support/customWaits');
 const SoftAssert = require('../../../../ngIntegration/util/softAssert');
 const TaskListTable = require('../../pageObjects/workAllocation/taskListTable');
+const caseDetailsPage = require("../../pageObjects/caseDetailsPage");
+const caseListPage = require("../../pageObjects/CaseListPage");
 
 const myWorkPage = require("../../pageObjects/workAllocation/myWorkPage");
 const allWorkPage = require("../../pageObjects/workAllocation/allWorkPage");
 
+const taskActionPage = require(".././../pageObjects/workAllocation/taskActionPage");
 
 const ArrayUtil = require('../../../utils/ArrayUtil');
+const findPersonPage = require('../../pageObjects/workAllocation/findPersonPage');
+const taskCheckYourChangesPage = require('../../pageObjects/workAllocation/taskCheckYourChangesPage');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
     const taskListTable = new TaskListTable();
@@ -139,13 +144,20 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I validate notification message banner is displayed in {string} page', async function(page){
         page = page.toLowerCase();
+        let pageObject = null;
        if(page.includes("my work")){
-            expect(myWorkPage.taskInfoMessageBanner.isBannerMessageDisplayed()).to.be.true
+           pageObject = myWorkPage;
        } else if (page.includes("all work")){
-           expect(allWorkPage.taskInfoMessageBanner.isBannerMessageDisplayed()).to.be.true
-       }else{
-           throw new Error(`message banner validation step not implemented for page ${page}`);
-       }
+           pageObject = allWorkPage;
+        } else if (page.includes("case details")) {
+           pageObject = caseDetailsPage;
+       } else if (page.includes("case list")) {
+           pageObject = caseListPage;
+       } else{
+            throw new Error(`message banner validation step not implemented for page ${page}`);
+        }
+
+        expect(await pageObject.taskInfoMessageBanner.isBannerMessageDisplayed(),`Not on page  ${page} or message banner not displayed`).to.be.true
     });
 
     Then('I validate notification banner messages displayed in {string} page', async function (page,messagesDatatable) {
@@ -153,18 +165,65 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         let actualmessages = [];
         page = page.toLowerCase();
         if (page.includes("my work")) {
-            actualmessages = myWorkPage.taskInfoMessageBanner.getBannerMessagesDisplayed()
+            actualmessages = await myWorkPage.taskInfoMessageBanner.getBannerMessagesDisplayed()
         } else if (page.includes("all work")) {
-            actualmessages = allWorkPage.taskInfoMessageBanner.getBannerMessagesDisplayed();
-        } else {
+            actualmessages = await allWorkPage.taskInfoMessageBanner.getBannerMessagesDisplayed();
+        } else if (page.includes("case details")) {
+            actualmessages = await caseDetailsPage.taskInfoMessageBanner.getBannerMessagesDisplayed();
+        } else if (page.includes("case list")) {
+            actualmessages = await caseListPage.taskInfoMessageBanner.getBannerMessagesDisplayed();
+        }  else {
             throw new Error(`message banner validation step not implemented for page ${page}`);
         }
 
         for(let i = 0; i < messages.length;i++){
             let matchingMsgs = await ArrayUtil.filter(actualmessages, async (msg) => msg.includes(messages[i].message));
-            expect(matchingMsgs > 0, `expected "${messages[i].message}" to be included in ${JSON.stringify(actualmessages)}`).to.be.true
+            if (messages[i].message !== ""){
+                expect(matchingMsgs.length > 0, `expected "${messages[i].message}" to be included in ${JSON.stringify(actualmessages)}`).to.be.true
+            }   
         }   
 
+    });
+
+    Then('I validate task details displayed in task action page', async function (taskDetailsDatatable) {
+        const taskDetails = taskDetailsDatatable.hashes()[0];
+        const softAssert = new SoftAssert();
+
+        const taskColumns = Object.keys(taskDetails);
+        for (let i = 0; i < taskColumns.length; i++) {
+            let columnName = taskColumns[i];
+            let expectColValue = taskDetails[columnName]
+            softAssert.setScenario(`Validate column ${columnName} value is ${expectColValue}`);
+            const columnActalValue = await taskActionPage.getColumnValue(columnName);
+            await softAssert.assert(async () => expect(columnActalValue).to.contains(expectColValue));
+        }
+        softAssert.finally();
+
+    });
+
+    Then('I see {string} task action page', async function(actionHeader){
+        expect(await taskActionPage.getPageHeader()).to.contain(actionHeader);
+    });
+
+    Then('I validate task action page has description {string}', async function (actionDescription) {
+        expect(await taskActionPage.getActionDescription()).to.contain(actionDescription);
+    });
+
+    When('I click {string} submit button in task action page', async function(actionSubmitBtnLabel){
+        expect(await taskActionPage.getSubmitBtnActionLabel()).to.contain(actionSubmitBtnLabel);
+        await taskActionPage.clickSubmit();
+    });
+
+    When('I click Cancel link in task action page', async function(){
+        await taskActionPage.clickCancelLink();
+    });
+
+    When('I click cancel link in find person page', async function(){
+        await findPersonPage.clickCancelLink();
+    });
+
+    When(' I click cancel in check your changes of work allocation', async function(){
+       await taskCheckYourChangesPage.clickCancelLink(); 
     });
 
 });

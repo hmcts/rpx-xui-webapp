@@ -222,5 +222,33 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         });
     });
 
+    Given('I set MOCK task details for WA release2', async function(taskDetailsDatatable){
+        const relese2TaskDetails = workAllocationDataModel.getRelease2Task();
+        const taskDetails = taskDetailsDatatable.hashes()[0];
+        const taskKeys = Object.keys(taskDetails);
+
+        await ArrayUtil.forEach(taskKeys,async(key) => {
+            if(key.toLowerCase().includes("date")){
+                relese2TaskDetails[key] = getDateValueForDays(taskDetails[key]);
+            }else{
+                relese2TaskDetails[key] = taskDetails[key];
+            }
+            
+        })
+
+        MockApp.onGet('/workallocation2/task/:taskId', (req,res) => {
+            res.send({data:relese2TaskDetails});
+        })
+
+    });
+
+    function getDateValueForDays(days){
+        const daysNum = parseInt(days);
+        let date = new Date();
+        date.setDate(date.getDate()+daysNum);
+        return date.toISOString().replace("Z","+0100")
+        
+        
+    }
 
 }) ;

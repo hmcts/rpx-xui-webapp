@@ -138,7 +138,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I see following options available in find person results', async function(findPersonResultsDatatable){
 
-        await BrowserWaits.waitForConditionAsync(async () => await findPersonPage.isSearchResultSelectionContainerDisplayed());
+        await findPersonPage.isSearchResultSelectionContainerDisplayed()
 
         const resultHashes = findPersonResultsDatatable.hashes();
         const softAssert = new SoftAssert();
@@ -166,6 +166,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await findPersonPage.clickCancelLink();
     });
 
+    When('I click cancel in check your changes of work allocation', async function () {
+        await findPersonPage.clickCancelLink();
+    });
+
     Then('I see task, check your changes page for action {string} displayed', async function(action){
         expect(await taskCheckYourChangesPage.amOnPage()).to.be.true;
         expect(await taskCheckYourChangesPage.getHeaderCaption()).to.include(action);
@@ -185,6 +189,22 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     When('I click submit button {string} in task check your changes page', async function(buttonLabel){
         expect(await taskCheckYourChangesPage.submitButton.getText()).to.contains(buttonLabel);
         await taskCheckYourChangesPage.submitButton.click();
+    });
+
+    Then('I validate task details displayed in check your changes page', async function(taskDetailsDatatable){
+        const taskDetails = taskDetailsDatatable.hashes()[0];
+        const softAssert = new SoftAssert();
+
+        const taskColumns = Object.keys(taskDetails);
+        for (let i = 0; i < taskColumns.length; i++){
+            let columnName = taskColumns[i];
+            let expectColValue = taskDetails[columnName]
+            softAssert.setScenario(`Validate column ${columnName} value is ${expectColValue}`);
+            const columnActalValue = await taskCheckYourChangesPage.getColumnValue(columnName);
+            await softAssert.assert(async () => expect(columnActalValue).to.contains(expectColValue));
+        }
+        softAssert.finally();
+        
     });
 
 });

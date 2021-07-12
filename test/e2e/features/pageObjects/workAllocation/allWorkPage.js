@@ -2,7 +2,7 @@ const TaskList = require('./taskListTable');
 const BrowserWaits = require('../../../support/customWaits');
 var cucumberReporter = require('../../../support/reportLogger');
 
-var TaskMessageBanner = require('./taskMessageBanner');
+var TaskMessageBanner = require('../messageBanner');
 
 class AllWork extends TaskList {
 
@@ -15,7 +15,7 @@ class AllWork extends TaskList {
         this.bannerMessageContainer = $('exui-info-message ')
         this.infoMessages = $$('exui-info-message .hmcts-banner__message');
 
-        this.taskInfoMessageBanner = new TaskMessageBanner();
+        this.taskInfoMessageBanner = new TaskMessageBanner("exui-work-allocation-home exui-all-tasks");
 
         //tasks container elements
         this.tasksContainer = $('exui-all-work-tasks');

@@ -31,7 +31,7 @@ describe('DescribeExclusionComponent', () => {
     fixture.detectChanges();
   });
 
-  fit('should have a text area input box populated with a value', () => {
+  it('should have a text area input box populated with a value', () => {
     const container: DebugElement = fixture.debugElement.query(By.css('#exclusion-description'));
     const textArea: HTMLInputElement = container.nativeElement as HTMLInputElement;
     expect(textArea.nodeName).toEqual('TEXTAREA');

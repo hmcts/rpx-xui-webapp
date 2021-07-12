@@ -18,14 +18,18 @@ export function getIAMapping(assignment: any, rawCase: any, jurisdiction: string
   const startDate: string = assignment.beginTime ? assignment.beginTime : '';
   const endDate: string = assignment.endTime ? assignment.endTime : '';
   const isCaseAllocator: boolean = assignment.authorisations.some(auth => auth.toString().includes(CASE_ALLOCATOR_ROLE));
+  const permissions: string[] = ['Read'];
+  if (isCaseAllocator) {
+    permissions.push('Manage');
+  }
   return {
     case_category: caseType,
     case_id: rawCase.case_id,
     case_name: `${rawCase.fields.appellantGivenNames} ${rawCase.fields.appellantFamilyName}`,
     case_role: roleName,
     end_date: endDate,
-    is_case_allocator: isCaseAllocator,
     jurisdiction,
+    permissions,
     start_date: startDate,
   };
 }

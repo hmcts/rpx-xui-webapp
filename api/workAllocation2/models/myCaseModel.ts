@@ -6,5 +6,5 @@ export interface MyCaseModel {
   case_role: string;
   start_date: string;
   end_date: string;
-  is_case_allocator: boolean;
+  permissions: string[];
 }

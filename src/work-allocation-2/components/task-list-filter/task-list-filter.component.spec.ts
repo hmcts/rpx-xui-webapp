@@ -70,6 +70,13 @@ describe('TaskListFilterComponent', () => {
     expect(button.nativeElement.innerText).toContain('Show work filter');
   });
 
+  it('should hide the toggle filter button', () => {
+    const button: DebugElement = fixture.debugElement.query(By.css('.govuk-button.hmcts-button--secondary'));
+    button.nativeElement.click();
+    fixture.detectChanges();
+    expect(button.nativeElement.innerText).toContain('Hide work filter');
+  });
+
   it('should select two locations', fakeAsync(() => {
     const button: DebugElement = fixture.debugElement.query(By.css('.govuk-button.hmcts-button--secondary'));
     button.nativeElement.click();

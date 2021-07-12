@@ -79,7 +79,6 @@ export async function searchCase(req: EnhancedRequest, res: Response, next: Next
     const view = req.body.view;
     const searchBy = searchRequest.search_by === 'judge' ? 'judicial' : 'caseworker';
     const roleAssignments: any[] = req.session.roleAssignmentResponse;
-    const basePath = prepareSearchCaseUrl(baseWorkAllocationTaskUrl, `myCases?view=${searchBy}`);
     let promise;
     switch (view) {
       case View.MY_CASES:
@@ -88,6 +87,8 @@ export async function searchCase(req: EnhancedRequest, res: Response, next: Next
         const payload = getRequestBody(caseIds);
         promise = await sendPost(path, payload, req);
         break;
+      default:
+        return;
     }
     const { status, data } = promise;
     res.status(status);

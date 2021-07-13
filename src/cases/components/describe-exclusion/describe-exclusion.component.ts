@@ -1,10 +1,9 @@
-import { FormGroup } from '@angular/forms';
 import { Component, Input } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'exui-describe-exclusion',
-  templateUrl: './describe-exclusion.component.html',
-  styleUrls: ['./describe-exclusion.component.scss']
+  templateUrl: './describe-exclusion.component.html'
 })
 export class DescribeExclusionComponent {
   @Input() public title: string;

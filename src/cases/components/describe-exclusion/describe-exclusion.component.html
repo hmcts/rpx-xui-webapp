@@ -1,17 +1,23 @@
-<div [formGroup]="formGroup" *ngIf="formGroup">
+<div [formGroup]="formGroup"
+     class="govuk-form-group"
+     [ngClass]="{'form-group-error': !formGroup.get(controlName).valid && formGroup.get(controlName).touched && submitted}">
   <h1 class="govuk-heading-l">
     <span class="govuk-caption-l">{{title}}</span>
     {{description}}
   </h1>
-  <div class="govuk-form-group" [ngClass]="{'form-group-error': !formGroup.get(controlName).valid && formGroup.get(controlName).touched}" >
-    <fieldset class="govuk-fieldset">
-    <textarea class="govuk-textarea govuk-!-width-one-half"
-              id="exclusion-description"
-              formControlName="text"
-              name="exclusion-description"
-              rows="5"
-              aria-describedby="exclusion-description"
+  <span id="more-detail-error" class="govuk-error-message"
+        *ngIf="!formGroup.get(controlName).valid && formGroup.get(controlName).touched && submitted">
+    <span class="govuk-visually-hidden">Error:</span> Enter exclusion
+  </span>
+  <fieldset class="govuk-fieldset">
+    <textarea
+      [ngClass]="{'govuk-textarea--error': !formGroup.get(controlName).valid && formGroup.get(controlName).touched && submitted}"
+      class="govuk-textarea govuk-!-width-one-half govuk-!-margin-bottom-0"
+      id="exclusion-description"
+      formControlName="text"
+      name="exclusion-description"
+      rows="5"
+      aria-describedby="exclusion-description"
     ></textarea>
-    </fieldset>
-  </div>
+  </fieldset>
 </div>

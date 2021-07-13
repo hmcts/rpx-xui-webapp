@@ -7,7 +7,7 @@ import { mergeMap } from 'rxjs/operators';
 import { AppConstants } from '../../../app/app.constants';
 import { SessionStorageService } from '../../../app/services';
 import { ListConstants } from '../../components/constants';
-import { CaseActionIds, CaseService, InfoMessage, InfoMessageType, SortOrder } from '../../enums';
+import { CaseService, InfoMessage, InfoMessageType, SortOrder } from '../../enums';
 import { Caseworker } from '../../interfaces/common';
 import { Case, CaseFieldConfig, CaseServiceConfig, InvokedCaseAction } from '../../models/cases';
 import { SortField } from '../../models/common';
@@ -234,21 +234,9 @@ export class WorkCaseListWrapperComponent implements OnInit {
    * action.
    */
   public onActionHandler(caseAction: InvokedCaseAction): void {
-    if (caseAction.action.id === CaseActionIds.GO) {
-      const goToCaseUrl = `/cases/case-details/${caseAction.invokedCase.case_id}`;
-      this.router.navigate([goToCaseUrl]);
-      return;
-    }
-
-    if (this.returnUrl.includes('manager') && caseAction.action.id === CaseActionIds.RELEASE) {
-      this.specificPage = 'manager';
-    }
-    const state = {
-      returnUrl: this.returnUrl,
-      showAssigneeColumn: caseAction.action.id !== CaseActionIds.ASSIGN
-    };
-    const actionUrl = `/work/${caseAction.invokedCase.id}/${caseAction.action.id}/${this.specificPage}`;
-    this.router.navigate([actionUrl], { state });
+    const rootPath = this.router.url.split('/')[1];
+    const actionUrl = `/${rootPath}/${caseAction.action.id}`;
+    this.router.navigate([actionUrl]);
   }
 
   // Do the actual load. This is separate as it's called from two methods.

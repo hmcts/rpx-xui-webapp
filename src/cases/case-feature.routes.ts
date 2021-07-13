@@ -56,10 +56,6 @@ export const ROUTES: Routes = [
               component: AllocateRoleContainerComponent,
             },
             {
-              path: 'describe-exclusion',
-              component: AllocateRoleContainerComponent,
-            },
-            {
               path: 'judiciary',
               component: AllocateRoleContainerComponent,
             },

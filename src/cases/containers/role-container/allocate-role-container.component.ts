@@ -3,8 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'exui-allocate-role-container',
-  templateUrl: './allocate-role-container.component.html',
-  styleUrls: ['./allocate-role-container.component.scss']
+  templateUrl: './allocate-role-container.component.html'
 })
 export class AllocateRoleContainerComponent implements OnInit {
   public DESCRIBE_EXCLUSION_CONTROL_NAME = 'text';

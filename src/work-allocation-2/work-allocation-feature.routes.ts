@@ -82,12 +82,17 @@ export const ROUTES: Routes = [
         ]
       },
       {
-        path: 'reallocate',
-        component: ReallocateComponent,
-      },
-      {
-        path: 'remove-allocation',
-        component: RemoveAllocationComponent,
+        path: 'case',
+        children: [
+          {
+          path: 'reallocate',
+          component: ReallocateComponent,
+          },
+          {
+            path: 'remove-allocation',
+            component: RemoveAllocationComponent,
+          }
+        ]
       },
       {
         path: ':taskId',

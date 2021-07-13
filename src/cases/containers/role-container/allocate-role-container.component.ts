@@ -38,7 +38,7 @@ export class AllocateRoleContainerComponent implements OnInit, OnDestroy {
       this.error = {
         title: 'There is a problem',
         description: 'Enter exclusion',
-        fieldId: 'text'
+        fieldId: 'exclusion-description'
       };
     }
   }

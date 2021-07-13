@@ -40,7 +40,7 @@ describe('AllocateRoleContainerComponent', () => {
     component.error = {
       title: 'There is a problem',
       description: 'Enter exclusion',
-      fieldId: 'text'
+      fieldId: 'exclusion-description'
     };
     fixture.detectChanges();
     const buttonDebugElement: DebugElement = fixture.debugElement.query(By.css('#submit-button'));

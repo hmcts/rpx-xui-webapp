@@ -415,10 +415,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.0.0.tgz#456ba7a49ad2cf74f9a3ef80428aa51e3b47ff7a"
-  integrity sha512-sUTUx7s8Vc9xJq6Oo5We4VVnmydjRWykX/LgZ89g/LqzQJm+wlBsKYZx8H2D6DpGJbyHXcbKUor8vYY3ZEK9RQ==
+"@hmcts/ccd-case-ui-toolkit@4.0.0-secure-docstore-2":
+  version "4.0.0-secure-docstore-2"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.0.0-secure-docstore-2.tgz#5fb326c969d23de7803413bce1418737bb2ac9b6"
+  integrity sha512-natisbSWYfFTx1if8XsW20fGnCaUdydkOZqJw/IR6FUh6/Ed8s3pKSdLSSZUrMt22lG1pKMavlsqQmgmU/i7OQ==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

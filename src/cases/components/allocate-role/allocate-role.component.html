@@ -1,5 +1,5 @@
 
-  <a *ngIf="allocation!=='Exclusion'" class="govuk-back-link">
+  <a *ngIf="roleAllocation!=='Exclusion'" class="govuk-back-link">
     Back
   </a>
   <h1 class="govuk-heading-l" >
@@ -10,13 +10,13 @@
     <fieldset class="govuk-fieldset">
       <div class="govuk-radios">
         <div class="govuk-radios__item">
-          <input class="govuk-radios__input" id="self_allocation" name="allocation" type="radio" value="self">
+          <input class="govuk-radios__input" id="self_allocation" name="roleAllocation" type="radio" value="self">
           <label class="govuk-label govuk-radios__label" for="self_allocation">
             {{selfText}}
           </label>
         </div>
-        <div *ngIf="includeOther || allocation!='Exclusion'" class="govuk-radios__item">
-          <input class="govuk-radios__input" id="other_allocation" name="allocation" type="radio" value="other">
+        <div *ngIf="includeOther || roleAllocation!='Exclusion'" class="govuk-radios__item">
+          <input class="govuk-radios__input" id="other_allocation" name="roleAllocation" type="radio" value="other">
           <label class="govuk-label govuk-radios__label" for="other_allocation">
             {{otherText}}
           </label>

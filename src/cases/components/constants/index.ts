@@ -1,5 +1,5 @@
-import { ALLOCATION_CONSTANTS as AllocationConstants } from './allocation.constants';
+import { ROLE_ALLOCATION_CONSTANTS as RoleAllocationConstants } from './allocation.constants';
 
 export {
-  AllocationConstants
+  RoleAllocationConstants
 };

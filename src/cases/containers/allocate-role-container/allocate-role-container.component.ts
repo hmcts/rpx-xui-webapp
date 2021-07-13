@@ -4,7 +4,7 @@ import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 
 import * as fromRoot from '../../../app/store';
-import { AllocationType } from '../../../cases/enums/allocation-type';
+import {RoleAllocationType } from '../../../cases/enums/allocation-type';
 
 @Component({
   selector: 'exui-allocate-role-container',
@@ -12,7 +12,7 @@ import { AllocationType } from '../../../cases/enums/allocation-type';
 })
 export class AllocateRoleContainerComponent implements OnInit {
 
-  public allocationType: AllocationType;
+  public roleAllocationType: RoleAllocationType;
   public includeOther: boolean = false;
   public locationInfo$: Observable<any>;
 
@@ -23,7 +23,7 @@ export class AllocateRoleContainerComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.allocationType = this.activatedRoute.snapshot.data.allocation as AllocationType;
+    this.roleAllocationType = this.activatedRoute.snapshot.data.allocation as RoleAllocationType;
     // currently the case allocator role information is stored in location info
     this.locationInfo$ = this.store.pipe(select(fromRoot.getLocationInfo));
     this.locationInfo$.subscribe(li => {

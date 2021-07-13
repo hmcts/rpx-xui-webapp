@@ -7,8 +7,8 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
 
 import { State } from '../../../app/store';
-import { AllocationType } from '../../../cases/enums';
-import { AllocationConstants } from '../../components/constants';
+import { RoleAllocationType } from '../../../cases/enums';
+import { RoleAllocationConstants } from '../../components/constants';
 
 import { AllocateRoleContainerComponent } from '..';
 
@@ -31,7 +31,7 @@ describe('AllocateRoleContainerComponent', () => {
           useValue:
           {
             snapshot: {
-              data: AllocationConstants.Exclusion,
+              data: RoleAllocationConstants.Exclusion,
             },
           }
         }],
@@ -65,7 +65,7 @@ describe('AllocateRoleContainerComponent', () => {
     });
 
     it('should correctly set the allocation', () => {
-      expect(component.allocationType).toBe(AllocationType.Exclusion);
+      expect(component.roleAllocationType).toBe(RoleAllocationType.Exclusion);
     });
 
   });

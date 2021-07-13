@@ -15,7 +15,7 @@ describe('App Selectors', () => {
     termsAndCondition: { isLoaded: false, hasUserAcceptedTC: false },
     loaded: false,
     loading: false,
-    locationInfo: null,
+    locationInfo: [],
     termsAndConditions: null,
     isTermsAndConditionsFeatureEnabled: false,
     useIdleSessionTimeout: false,

@@ -1,14 +1,14 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { AllocationCaptionText, AllocationRadioText, AllocationTitleText, AllocationType } from 'src/cases/enums';
+import { RoleAllocationCaptionText, RoleAllocationRadioText, RoleAllocationTitleText, RoleAllocationType } from '../../../cases/enums';
 import { AllocateRoleComponent } from '..';
 
 @Component({
-  template: `<exui-allocate-role [allocation]="allocation"></exui-allocate-role>`
+  template: `<exui-allocate-role [roleAllocation]="roleAllocation"></exui-allocate-role>`
 })
 class WrapperComponent {
   @ViewChild(AllocateRoleComponent) public ref: AllocateRoleComponent;
-  @Input() public allocation: AllocationType;
+  @Input() public roleAllocation: RoleAllocationType;
 }
 
 describe('AllocateRoleComponent', () => {
@@ -31,32 +31,32 @@ describe('AllocateRoleComponent', () => {
   });
 
   it('should correctly set the exclusion text', () => {
-    component.allocation = AllocationType.Exclusion;
+    component.roleAllocation = RoleAllocationType.Exclusion;
     component.ngOnInit();
     fixture.detectChanges();
-    expect(component.title).toBe(AllocationTitleText.Exclusion);
-    expect(component.caption).toBe(AllocationCaptionText.Exclusion);
-    expect(component.selfText).toBe(AllocationRadioText.ExclusionSelf);
-    expect(component.otherText).toBe(AllocationRadioText.ExclusionOther);
+    expect(component.title).toBe(RoleAllocationTitleText.Exclusion);
+    expect(component.caption).toBe(RoleAllocationCaptionText.Exclusion);
+    expect(component.selfText).toBe(RoleAllocationRadioText.ExclusionSelf);
+    expect(component.otherText).toBe(RoleAllocationRadioText.ExclusionOther);
   });
 
   it('should correctly set the judiciary text', () => {
-    component.allocation = AllocationType.Judiciary;
+    component.roleAllocation = RoleAllocationType.Judiciary;
     component.ngOnInit();
     fixture.detectChanges();
-    expect(component.title).toBe(AllocationTitleText.Judiciary);
-    expect(component.caption).toBe(AllocationCaptionText.Judiciary);
-    expect(component.selfText).toBe(AllocationRadioText.NonExclusionSelf);
-    expect(component.otherText).toBe(AllocationRadioText.NonExclusionOther);
+    expect(component.title).toBe(RoleAllocationTitleText.Judiciary);
+    expect(component.caption).toBe(RoleAllocationCaptionText.Judiciary);
+    expect(component.selfText).toBe(RoleAllocationRadioText.NonExclusionSelf);
+    expect(component.otherText).toBe(RoleAllocationRadioText.NonExclusionOther);
   });
 
   it('should correctly set the legalops text', () => {
-    component.allocation = AllocationType.LegalOps;
+    component.roleAllocation = RoleAllocationType.LegalOps;
     component.ngOnInit();
     fixture.detectChanges();
-    expect(component.title).toBe(AllocationTitleText.LegalOps);
-    expect(component.caption).toBe(AllocationCaptionText.LegalOps);
-    expect(component.selfText).toBe(AllocationRadioText.NonExclusionSelf);
-    expect(component.otherText).toBe(AllocationRadioText.NonExclusionOther);
+    expect(component.title).toBe(RoleAllocationTitleText.LegalOps);
+    expect(component.caption).toBe(RoleAllocationCaptionText.LegalOps);
+    expect(component.selfText).toBe(RoleAllocationRadioText.NonExclusionSelf);
+    expect(component.otherText).toBe(RoleAllocationRadioText.NonExclusionOther);
   });
 });

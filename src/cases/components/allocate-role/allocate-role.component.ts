@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AllocationCaptionText, AllocationRadioText, AllocationTitleText, AllocationType } from '../../../cases/enums';
+
+import { RoleAllocationCaptionText, RoleAllocationRadioText, RoleAllocationTitleText, RoleAllocationType } from '../../../cases/enums';
 
 @Component({
   selector: 'exui-allocate-role',
@@ -8,13 +9,13 @@ import { AllocationCaptionText, AllocationRadioText, AllocationTitleText, Alloca
 
 export class AllocateRoleComponent implements OnInit {
 
-  @Input() public allocation: AllocationType;
+  @Input() public roleAllocation: RoleAllocationType;
   @Input() public includeOther: boolean;
 
-  public title: AllocationTitleText;
-  public caption: AllocationCaptionText;
-  public selfText = AllocationRadioText.NonExclusionSelf;
-  public otherText = AllocationRadioText.NonExclusionOther;
+  public title: RoleAllocationTitleText;
+  public caption: RoleAllocationCaptionText;
+  public selfText = RoleAllocationRadioText.NonExclusionSelf;
+  public otherText = RoleAllocationRadioText.NonExclusionOther;
 
   constructor() {}
 
@@ -23,22 +24,22 @@ export class AllocateRoleComponent implements OnInit {
   }
 
   private setAllocationPage(): void {
-    switch (this.allocation) {
-      case AllocationType.Exclusion: {
-        this.title = AllocationTitleText.Exclusion;
-        this.caption = AllocationCaptionText.Exclusion;
-        this.selfText = AllocationRadioText.ExclusionSelf;
-        this.otherText = AllocationRadioText.ExclusionOther;
+    switch (this.roleAllocation) {
+      case RoleAllocationType.Exclusion: {
+        this.title = RoleAllocationTitleText.Exclusion;
+        this.caption = RoleAllocationCaptionText.Exclusion;
+        this.selfText = RoleAllocationRadioText.ExclusionSelf;
+        this.otherText = RoleAllocationRadioText.ExclusionOther;
         break;
       }
-      case AllocationType.Judiciary: {
-        this.title = AllocationTitleText.Judiciary;
-        this.caption = AllocationCaptionText.Judiciary;
+      case RoleAllocationType.Judiciary: {
+        this.title = RoleAllocationTitleText.Judiciary;
+        this.caption = RoleAllocationCaptionText.Judiciary;
         break;
       }
-      case AllocationType.LegalOps: {
-        this.title = AllocationTitleText.LegalOps;
-        this.caption = AllocationCaptionText.LegalOps;
+      case RoleAllocationType.LegalOps: {
+        this.title = RoleAllocationTitleText.LegalOps;
+        this.caption = RoleAllocationCaptionText.LegalOps;
         break;
       }
       default: {

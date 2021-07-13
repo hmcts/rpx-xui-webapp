@@ -1,9 +1,9 @@
-import { AllocationCaptionText, AllocationRadioText, AllocationTitleText } from './allocation-text';
-import { AllocationType } from './allocation-type';
+import { RoleAllocationCaptionText, RoleAllocationRadioText, RoleAllocationTitleText } from './allocation-text';
+import { RoleAllocationType } from './allocation-type';
 
 export {
-  AllocationCaptionText,
-  AllocationRadioText,
-  AllocationTitleText,
-  AllocationType
+  RoleAllocationCaptionText,
+  RoleAllocationRadioText,
+  RoleAllocationTitleText,
+  RoleAllocationType
 };

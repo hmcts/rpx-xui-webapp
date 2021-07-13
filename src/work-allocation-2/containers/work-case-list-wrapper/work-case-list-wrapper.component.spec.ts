@@ -69,7 +69,7 @@ describe('WorkCaseListWrapperComponent', () => {
     const secondAction = exampleCase.actions[1];
     const firstCaseAction = { invokedCase: exampleCase, action: firstAction };
     const secondCaseAction = { invokedCase: exampleCase, action: secondAction };
-    xit('should handle an action', () => {
+    it('should handle an action', () => {
       // need to spy on the router and set up the case action
       spyOnProperty(mockRouter, 'url', 'get').and.returnValue(`/mywork/list`);
       const navigateCallsBefore = mockRouter.navigateCalls.length;
@@ -80,12 +80,10 @@ describe('WorkCaseListWrapperComponent', () => {
 
       // need to verify correct properties were called
       const lastNavigateCall = mockRouter.navigateCalls.pop();
-      expect(lastNavigateCall.commands).toEqual([`/work/${exampleCase.id}/${firstAction.id}/`]);
-      const exampleNavigateCall = { state: { returnUrl: '/mywork/list', showAssigneeColumn: true } };
-      expect(lastNavigateCall.extras).toEqual(exampleNavigateCall);
+      expect(lastNavigateCall.commands).toEqual([`/work/case/${firstAction.id}`]);
     });
 
-    xit('should handle an action returned via the task manager page', () => {
+    it('should handle an action returned via the task manager page', () => {
       // need to spy on the router and set up the task action
       spyOnProperty(mockRouter, 'url', 'get').and.returnValue(`/mywork/manager`);
       const navigateCallsBefore = mockRouter.navigateCalls.length;
@@ -96,9 +94,7 @@ describe('WorkCaseListWrapperComponent', () => {
 
       // need to verify correct properties were called
       const lastNavigateCall = mockRouter.navigateCalls.pop();
-      expect(lastNavigateCall.commands).toEqual([`/work/${exampleCase.id}/${secondAction.id}/`]);
-      const exampleNavigateCall = { state: { returnUrl: '/mywork/manager', showAssigneeColumn: true } };
-      expect(lastNavigateCall.extras).toEqual(exampleNavigateCall);
+      expect(lastNavigateCall.commands).toEqual([`/work/case/${secondAction.id}`]);
     });
   });
 });

@@ -48,12 +48,12 @@ export function getMockCases(): Case[] {
       dueDate: new Date(628021800000),
       actions: [
         {
-          id: 'actionId1',
-          title: 'Reassign task',
+          id: 'reallocate',
+          title: 'Reallocate',
         },
         {
-          id: 'actionId2',
-          title: 'Release this task',
+          id: 'remove-allocation',
+          title: 'Remove allocation',
         }
       ]
     },
@@ -68,8 +68,12 @@ export function getMockCases(): Case[] {
       dueDate: new Date(628021800000),
       actions: [
         {
-          id: 'actionId2',
-          title: 'Release this task',
+          id: 'reallocate',
+          title: 'Reallocate',
+        },
+        {
+          id: 'remove-allocation',
+          title: 'Remove allocation',
         }
       ]
     }

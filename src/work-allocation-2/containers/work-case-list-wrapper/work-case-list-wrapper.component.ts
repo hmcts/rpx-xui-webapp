@@ -234,8 +234,7 @@ export class WorkCaseListWrapperComponent implements OnInit {
    * action.
    */
   public onActionHandler(caseAction: InvokedCaseAction): void {
-    const rootPath = this.router.url.split('/')[1];
-    const actionUrl = `/${rootPath}/${caseAction.action.id}`;
+    const actionUrl = `/work/case/${caseAction.action.id}`;
     this.router.navigate([actionUrl]);
   }
 

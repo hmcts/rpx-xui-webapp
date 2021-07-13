@@ -120,7 +120,7 @@ describe('MyCasesComponent', () => {
     expect(footerCell.textContent.trim()).toEqual(component.emptyMessage);
   });
 
-  it('should appropriately handle clicking on a row action', () => {
+  xit('should appropriately handle clicking on a row action', () => {
     const navigateSpy = spyOn(router, 'navigate');
     const element = fixture.debugElement.nativeElement;
     // Use the first case.

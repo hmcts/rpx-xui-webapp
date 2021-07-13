@@ -14,7 +14,7 @@ import {
   TaskHomeComponent,
   WorkAllocationHomeComponent,
 } from './containers';
-import { MyCasesComponent } from './containers/my-cases/my-cases.component';
+import { MyCasesComponent, ReallocateComponent, RemoveAllocationComponent } from './containers';
 import { WorkAllocationFeatureToggleGuard } from './guards';
 import { TaskResolver } from './resolvers';
 import { LocationResolver } from './resolvers/location-resolver.service';
@@ -80,6 +80,14 @@ export const ROUTES: Routes = [
             }
           },
         ]
+      },
+      {
+        path: 'reallocate',
+        component: ReallocateComponent,
+      },
+      {
+        path: 'remove-allocation',
+        component: RemoveAllocationComponent,
       },
       {
         path: ':taskId',

@@ -98,7 +98,6 @@ export async function searchCase(req: EnhancedRequest, res: Response, next: Next
         returnData = {cases: assignActionsToCases(myCases, view), total_records: myCases.length};
       }
     }
-    // Send the (possibly modified) data back in the Response.
     res.send(returnData);
   } catch (error) {
     next(error);
@@ -141,7 +140,6 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
       // Note: Permission placed in here is an example of what we could be getting (i.e. Manage permission)
       // These should be mocked as if we were getting them from the user themselves
       returnData = {tasks: assignActionsToTasks(data.tasks, req.body.view), total_records: data.total_records};
-      // }
     }
 
     // Send the (possibly modified) data back in the Response.

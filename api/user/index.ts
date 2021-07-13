@@ -44,7 +44,6 @@ export async function getRoleAssignmentForUser(userInfo: UserInfo, req: any): Pr
   const headers = setHeaders(req);
   try {
     const response: AxiosResponse = await http.get(path, { headers });
-    console.log('roleAssignment=' + JSON.stringify(response.data));
     locationInfo = getLocationInfo(response.data.roleAssignmentResponse);
     req.session.roleAssignmentResponse = response.data.roleAssignmentResponse;
   } catch (error) {

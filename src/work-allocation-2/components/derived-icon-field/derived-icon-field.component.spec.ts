@@ -120,7 +120,7 @@ describe('WorkAllocation', () => {
 
         // Set up the column names
         const firstExampleColumn: string = 'location';
-        const hoverWarning: string = 'This case has more than one task. Review needed.';
+        const hoverWarning: string = 'There is an application task which might impact other active tasks.';
 
         // Set the task, column and value to match with
         component.task = getTasks()[0];

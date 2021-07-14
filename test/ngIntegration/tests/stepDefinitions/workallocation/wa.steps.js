@@ -102,15 +102,20 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
              const headerColId = await headerElement.getAttribute("id");
              expect(await taskListPage.getColumnSortState(headerName)).to.equal("none");
 
-             await taskListPage.clickColumnHeader(headerName);
-             await BrowserWaits.waitForCondition(async () => { return tasksRequested });
+             tasksRequested = false;
+             await BrowserWaits.retryWithActionCallback(async () => {
+                 await taskListPage.clickColumnHeader(headerName);
+                 await BrowserWaits.waitForConditionAsync(async () => { return tasksRequested }, 5000, `sort column header ${headerName} asc, waiting for request trigger`);
+             });
             //  expect(headerColId).to.contains(sortColumnInRequestParam);
              tasksRequested = false;
              sortColumnInRequestParam = "";
              expect(await taskListPage.getColumnSortState(headerName)).to.equal("ascending");
 
-             await taskListPage.clickColumnHeader(headerName);
-             await BrowserWaits.waitForCondition(async () => { return tasksRequested });
+             await BrowserWaits.retryWithActionCallback(async () => {
+                 await taskListPage.clickColumnHeader(headerName);
+                 await BrowserWaits.waitForConditionAsync(async () => { return tasksRequested }, 5000, `sort column header ${headerName} desc, waiting for request trigger`);
+             });
             //  expect(headerColId).to.contains(sortColumnInRequestParam);
              sortColumnInRequestParam = "";
              tasksRequested = false;
@@ -126,8 +131,11 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         CucumberReporter.AddMessage(columnHeaders);
         expect(await taskListPage.getColumnSortState(columnHeaders[1])).to.equal("none");
 
-        await taskListPage.clickColumnHeader(columnHeaders[1]);
-        expect(await taskListPage.getColumnSortState(columnHeaders[1])).to.equal("ascending");
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await taskListPage.clickColumnHeader(columnHeaders[1]);
+            expect(await taskListPage.getColumnSortState(columnHeaders[1])).to.equal("ascending");
+        });
+       
 
         await headerPage.getTabElementWithText('Case list').click();
         await browserUtil.waitForLD();
@@ -145,9 +153,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         CucumberReporter.AddMessage(columnHeaders);
         expect(await taskListPage.getColumnSortState(columnHeaders[1])).to.equal("none");
 
-        await taskListPage.clickColumnHeader(columnHeaders[1]);
-        expect(await taskListPage.getColumnSortState(columnHeaders[1])).to.equal("ascending");
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await taskListPage.clickColumnHeader(columnHeaders[1]);
+            expect(await taskListPage.getColumnSortState(columnHeaders[1])).to.equal("ascending");
 
+        });
+       
         await headerPage.getTabElementWithText('Case list').click();
         await browserUtil.waitForLD();
         expect(await caseListPage.amOnPage()).to.be.true;

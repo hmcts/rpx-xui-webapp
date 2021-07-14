@@ -86,11 +86,19 @@ export const init = () => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
     const paginationConfig = body.pagination_parameters;
+    const sortingConfig = body.sorting_parameters;
+    let allTasks = [...JUDICIAL_AVAILABLE_TASKS.tasks, ...JUDICIAL_MY_TASKS.tasks];
+    allTasks = sort(allTasks,
+      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
+    if (body.search_parameters && body.search_parameters.find(param => param.key === 'location')) {
+      const locations = body.search_parameters.find(param => param.key === 'location').values;
+      allTasks = allTasks.filter(task => locations.some(loc => task.location_id === loc));
+    }
     return [
       200,
       {
-        tasks: paginate(JUDICIAL_MY_TASKS.tasks, paginationConfig.page_number, paginationConfig.page_size),
-        total_records: JUDICIAL_MY_TASKS.tasks.length,
+        tasks: paginate(allTasks, paginationConfig.page_number, paginationConfig.page_size),
+        total_records: allTasks.length,
       },
     ];
   });
@@ -211,6 +219,7 @@ export const init = () => {
       ];
     }
   });
+  return mock;
 };
 
 export const getSortName = (sortName: string): string => {
@@ -222,6 +231,8 @@ export const getSortName = (sortName: string): string => {
     case 'locationName':
       return 'location_name';
     case 'taskTitle':
+      return 'task_title';
+    case 'assignee':
       return 'task_title';
     default:
       return sortName;

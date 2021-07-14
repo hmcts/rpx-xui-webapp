@@ -69,24 +69,29 @@ class TaskListTable extends Application{
     }
 
     async getColumnHeaderNames(){
-        await this.waitForTable();
-        const headers = element.all(by.xpath(`//exui-task-list//table//thead//th//button`));
-        const headerElementsCount = await headers.count();
-        const headerElements = [];
-        for (let i =  0; i < headerElementsCount; i++){
-            headerElements.push(await headers.get(i));
-        }
-        const names = await ArrayUtil.map(headerElements , async (headerElement) => {
-            const headerName = await headerElement.getText();
-            return headerName.trim();
-        });
+        return await BrowserWaits.retryWithActionCallback(async () => {
+            await this.waitForTable();
+            const headers = element.all(by.xpath(`//exui-task-list//table//thead//th//button`));
+            const headerElementsCount = await headers.count();
+            const headerElements = [];
 
-        return names; 
+
+            for (let i = 0; i < headerElementsCount; i++) {
+                headerElements.push(await headers.get(i));
+            }
+            const names = await ArrayUtil.map(headerElements, async (headerElement) => {
+                const headerName = await headerElement.getText();
+                return headerName.trim();
+            });
+            return names;
+        });
+       
     }    
 
     async clickColumnHeader(headerName){
         const headerElement = await this.getHeaderElementWithName(headerName);
         expect(await headerElement.isPresent(), `Column with header name ${headerName} not present`).to.be.true;
+        await browserUtil.scrollToElement(headerElement);
         await headerElement.click();
     }
 
@@ -161,7 +166,7 @@ class TaskListTable extends Application{
     }
 
     async clickManageLinkForTaskAt(position){
-        await browserUtil.stepWithRetry(async () => {
+        await BrowserWaits.retryWithActionCallback(async () => {
             const taskrow = await this.getTableRowAt(position);
             let taskManageLink = taskrow.$('button[id^="manage_"]');
             await browser.executeScript('arguments[0].scrollIntoView()',
@@ -174,8 +179,18 @@ class TaskListTable extends Application{
     }
 
     async isManageLinkOpenForTaskAtPos(position){
-        const task = element(by.xpath(`//tr[contains(@class,'cdk-row') and not(contains(@class,'actions-row'))][${position}]/following-sibling::tr[contains(@class,'actions-row')]`));
-        return await task.isDisplayed();
+        const tasks = element.all(by.xpath(`//tr[(contains(@class,'actions-row'))]`));
+        const task = await tasks.get(position - 1);
+        try{
+            await BrowserWaits.waitForConditionAsync(async () => {
+                return await task.isDisplayed();
+            },2000);
+            return true;
+        }catch(err){
+            return false;
+        }
+        
+        
     }
 
     async isTaskActionPresent(taskAction){ 
@@ -273,6 +288,10 @@ class TaskListTable extends Application{
         await BrowserWaits.waitForElementClickable(linkElement);
         await linkElement.click();
 
+    }
+
+    async isPaginationControlDisplayed(){
+        return this.paginationContainer.isPresent() && this.paginationContainer.isDisplayed();
     }
 }
 

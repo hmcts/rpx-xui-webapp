@@ -1,9 +1,25 @@
 require('dotenv-extended').load({ path: 'api/.env.defaults' });
+
+const modulesArr = [
+    "activityTracker","amendedJurisdictions","auth",
+    "caseshare",
+    "health","healthCheck",
+    "lib",
+    "noc",
+    "organisations",
+    "searchCases","services",
+    "termsAndConditions",
+    "user","userTermsAndConditions",
+    "workAllocation"
+];
+
+const modulesString = modulesArr.join(",");
+
 module.exports = function (config) {
     config.set({
         // fileLogLevel: 'trace',
         // logLevel: 'trace',
-        mutate: ["api/**/*.ts", "!api/**/*.spec.ts", "!api/test/**/*.ts"],
+        mutate: [`api/{${modulesString}}/*.ts`, "!api/**/*.spec.ts", "!api/test/**/*.ts"],
         mutator: 'typescript',
         transpilers: [
             'typescript'

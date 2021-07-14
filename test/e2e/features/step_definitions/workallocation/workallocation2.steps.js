@@ -4,6 +4,11 @@ var { defineSupportCode } = require('cucumber');
 const headerPage = require('../../pageObjects/headerPage');
 const myWorkPage = require('../../pageObjects/workAllocation/myWorkPage');
 const BrowserWaits = require('../../../support/customWaits');
+const allWorkPage = require("../../pageObjects/workAllocation/allWorkPage");
+
+const findPersonPage = require("../../pageObjects/workAllocation/findPersonPage");
+const SoftAssert = require('../../../../ngIntegration/util/softAssert');
+const taskCheckYourChangesPage = require('../../pageObjects/workAllocation/taskCheckYourChangesPage');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
@@ -34,7 +39,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I validate work filter button text is {string}', async function (btntext) {
-        expect(await myWorkPage.showHideWorkFilterBtn.getText()).to.include(btntext);
+        expect(await myWorkPage.showHideWorkFilterBtn.getText()).to.contains(btntext);
     });
 
     When('I click work filter button', async function () {
@@ -109,5 +114,97 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
 
+    When('I select all work tasks filter {string} with value {string}', async function (filterType, filterValue) {
+        let filterTypeLowerCase = filterType.toLowerCase();
+        if (filterTypeLowerCase.includes("location")){
+            allWorkPage.selectLocationFilter(filterValue);
+
+        } else if (filterTypeLowerCase.includes("person")){
+            allWorkPage.selectPersonFilter(filterValue);
+        }else{
+            throw new Error(`Test implementation error.filterType ${filterType} is not yet implemented in test `);
+        }
+       
+    });
+
+    Then('I see find person page displayed with caption {string}', async function(findPersonCaption){ 
+        expect(await findPersonPage.amOnPage()).to.be.true;
+        expect(await findPersonPage.getHeaderCaption()).to.contains(findPersonCaption);
+    });
+
+    When('I enter search term {string} in find person input text', async function(searchterm){
+        await findPersonPage.inputSearchTerm(searchterm);
+    });
+
+    Then('I see following options available in find person results', async function(findPersonResultsDatatable){
+
+        await findPersonPage.isSearchResultSelectionContainerDisplayed()
+
+        const resultHashes = findPersonResultsDatatable.hashes();
+        const softAssert = new SoftAssert();
+        for (let i = 0; i < resultHashes.length;i++){
+            softAssert.setScenario(`Is result "${resultHashes[i].value}" displayed`);
+            await softAssert.assert(async () => expect(await findPersonPage.isPersonDisplayed(resultHashes[i].value)).to.be.true);     
+        }
+        softAssert.finally();
+
+    });
+
+    When('I select find person result {string}', async function(person){
+        await findPersonPage.selectPerson(person);
+    });
+    
+    Then('I see find person is selected with {string}', async function(person){
+       expect(await findPersonPage.isPersonSelected(person),`${person} is not selected`).to.be.true;
+    });
+
+    When('I click continue in find person page', async function(){
+        await findPersonPage.clickContinueButton();
+    });
+
+    When('I click cancel in find person page', async function () {
+        await findPersonPage.clickCancelLink();
+    });
+
+    When('I click cancel in check your changes of work allocation', async function () {
+        await findPersonPage.clickCancelLink();
+    });
+
+    Then('I see task, check your changes page for action {string} displayed', async function(action){
+        expect(await taskCheckYourChangesPage.amOnPage()).to.be.true;
+        expect(await taskCheckYourChangesPage.getHeaderCaption()).to.include(action);
+    });
+
+    Then('I see task check your changes page for action {string} displayed', async function(taskAction){
+        await taskCheckYourChangesPage.validatePage();
+        expect(await taskCheckYourChangesPage.getHeaderCaption()).to.contains(taskAction);
+
+    });
+
+    Then('I validate column {string} value is set to {string} in task check your changes page', async function(headerName, val){
+        let actualVal = await taskCheckYourChangesPage.getColumnValue(headerName);
+        expect(actualVal).to.contains(val)
+    });
+
+    When('I click submit button {string} in task check your changes page', async function(buttonLabel){
+        expect(await taskCheckYourChangesPage.submitButton.getText()).to.contains(buttonLabel);
+        await taskCheckYourChangesPage.submitButton.click();
+    });
+
+    Then('I validate task details displayed in check your changes page', async function(taskDetailsDatatable){
+        const taskDetails = taskDetailsDatatable.hashes()[0];
+        const softAssert = new SoftAssert();
+
+        const taskColumns = Object.keys(taskDetails);
+        for (let i = 0; i < taskColumns.length; i++){
+            let columnName = taskColumns[i];
+            let expectColValue = taskDetails[columnName]
+            softAssert.setScenario(`Validate column ${columnName} value is ${expectColValue}`);
+            const columnActalValue = await taskCheckYourChangesPage.getColumnValue(columnName);
+            await softAssert.assert(async () => expect(columnActalValue).to.contains(expectColValue));
+        }
+        softAssert.finally();
+        
+    });
 
 });

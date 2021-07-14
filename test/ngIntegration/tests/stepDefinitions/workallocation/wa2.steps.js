@@ -167,7 +167,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             softAssert.setScenario("sorting: " + headerName);
             await softAssert.assert(async () => expect(await pageUndertest.getColumnSortState(headerName)).to.equal("none"));
            
-            await browserUtil.addTextToElementWithCssSelector('tbody tr:nth-of-type(1) .cdk-column-case_category exui-task-field','Sort test',true);
+            await browserUtil.addTextToElementWithCssSelector('tbody tr:nth-of-type(1) .cdk-column-case_category exui-work-field','Sort test',true);
             await pageUndertest.clickColumnHeader(headerName); 
             await BrowserWaits.waitForConditionAsync(async () => { 
                 return sortColumnInRequestParam !== null
@@ -187,7 +187,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
             
             sortColumnInRequestParam = null;
-            await browserUtil.addTextToElementWithCssSelector('tbody tr:nth-of-type(1) .cdk-column-case_category exui-task-field', 'Sort test', true);
+            await browserUtil.addTextToElementWithCssSelector('tbody tr:nth-of-type(1) .cdk-column-case_category exui-work-field', 'Sort test', true);
             await pageUndertest.clickColumnHeader(headerName);
            
             await BrowserWaits.waitForConditionAsync(async () => {

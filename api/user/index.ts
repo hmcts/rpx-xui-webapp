@@ -5,7 +5,7 @@ import { CASE_SHARE_PERMISSIONS, SESSION_TIMEOUTS } from '../configuration/refer
 
 export async function getUserDetails(req, res: Response, next: NextFunction) {
   if (!req.session || !req.session.passport || !req.session.passport.user) {
-    res.send({});
+    return res.send({}).status(200);
   }
 
   try {

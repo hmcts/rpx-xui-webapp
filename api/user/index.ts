@@ -4,6 +4,9 @@ import { getConfigValue } from '../configuration'
 import { CASE_SHARE_PERMISSIONS, SESSION_TIMEOUTS } from '../configuration/references'
 
 export async function getUserDetails(req, res: Response, next: NextFunction) {
+  if(!req.session || !req.session.passport || !req.session.passport.user) {
+    res.send({});
+  }
 
   try {
     const { roles } = req.session.passport.user.userinfo

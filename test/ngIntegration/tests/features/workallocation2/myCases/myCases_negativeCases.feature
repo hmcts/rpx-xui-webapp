@@ -1,5 +1,5 @@
-@ng
-Feature: WA Release 2: My work - My Tasks - negative scenarios
+@ng @wa2 @wa @ignore
+Feature: WA Release 2: My cases - negative scenarios
 
     Background: Mock and browser setup
         Given I init MockApp

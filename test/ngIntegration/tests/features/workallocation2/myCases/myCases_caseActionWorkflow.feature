@@ -1,5 +1,5 @@
-@ng @wa2 @wa
-Feature: WA Release 2: My work - My tasks - Task actions
+@ng @wa2 @wa @ignore
+Feature: WA Release 2: My cases  - Manage links
 
     Background: Mock and browser setup
         Given I init MockApp
@@ -20,7 +20,7 @@ Feature: WA Release 2: My work - My tasks - Task actions
             | Allwork test scr | auto test category | London QA lab |
 
   
-    Scenario Outline:  Task Manage links for "<UserType>"  action "<actionLink>"
+    Scenario Outline:  Task Manage links for "<UserType>"  action "<action>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
 
         Given I start MockApp
@@ -51,9 +51,9 @@ Feature: WA Release 2: My work - My tasks - Task actions
             | UserIdentifier     | UserType   | Roles                                              | taskAtRow | actionLink    | actionHeader          | submitBtnLabel | actionDescription                                                                             | bannermessage |
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer | 4         | Unassign task | Unassign task         | Unassign       | Unassign this task. This will send it back to the available task list for someone to pick up. |               |
             | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    | 1         | Cancel task   | Cancel a task         | Cancel task    | Cancel a task if it's no longer required.                                                     |               |
-            # | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    | 1         | Mark as done  | Mark the task as done | Mark as done   | Mark a task as done if something has gone wrong and it has already been completed.            |               |
+            | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    | 1         | Mark as done  | Mark the task as done | Mark as done   | Mark a task as done if something has gone wrong and it has already been completed.            |               |
 
-    Scenario Outline:  Task Manage links for "<UserType>"  action "<actionLink>" cancel workflow
+    Scenario Outline:  Task Manage links for "<UserType>"  action "<action>" cancel workflow
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
 
         Given I start MockApp
@@ -81,7 +81,7 @@ Feature: WA Release 2: My work - My tasks - Task actions
             | UserIdentifier     | UserType   | Roles                                              | taskAtRow | actionLink    | actionHeader          | submitBtnLabel | actionDescription                                                                             | bannermessage |
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer | 4         | Unassign task | Unassign task         | Unassign       | Unassign this task. This will send it back to the available task list for someone to pick up. |               |
             | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    | 1         | Cancel task   | Cancel a task         | Cancel task    | Cancel a task if it's no longer required.                                                     |               |
-            # | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    | 1         | Mark as done  | Mark the task as done | Mark as done   | Mark a task as done if something has gone wrong and it has already been completed.            |               |
+            | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    | 1         | Mark as done  | Mark the task as done | Mark as done   | Mark a task as done if something has gone wrong and it has already been completed.            |               |
 
 
 

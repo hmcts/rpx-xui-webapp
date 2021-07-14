@@ -1,4 +1,4 @@
-import { LocationApi } from "workAllocation2/interfaces/task";
+import { LocationApi } from "../../workAllocation2/interfaces/task";
 
 export interface RoleAssignment {
   id: string;
@@ -16,7 +16,7 @@ export interface RoleAssignment {
 }
 
 export interface LocationInfo {
-  primaryLocation?: LocationApi;
+  primaryLocation?: Location;
   caseId?: string;
   jurisdiction?: string;
   region?: string;

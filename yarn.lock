@@ -160,13 +160,6 @@
   dependencies:
     tslib "^2.0.0"
 
-"@angular-material-components/moment-adapter@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@angular-material-components/moment-adapter/-/moment-adapter-5.0.0.tgz#e277b82a4a3554260cd274a1862edf64cc186cac"
-  integrity sha512-/9+8b4hpe8GwlgbuXAckDg5ZKms6yDWRKQcyXYuNKC+8Ya6M0M5NHYz3d4YXjJ73xOGURr73NlqZzYsknjYkUQ==
-  dependencies:
-    tslib "^2.0.0"
-
 "@angular/animations@^7.2.13":
   version "7.2.16"
   resolved "https://registry.yarnpkg.com/@angular/animations/-/animations-7.2.16.tgz#6e3f43df292bc53c3a526dabfd8025b3cd03b070"

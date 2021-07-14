@@ -1,5 +1,3 @@
-import { LocationApi } from "../../workAllocation2/interfaces/task";
-
 export interface RoleAssignment {
   id: string;
   actorIdType?: string;
@@ -16,9 +14,16 @@ export interface RoleAssignment {
 }
 
 export interface LocationInfo {
-  primaryLocation?: Location;
+  primaryLocation?: LocationApi;
   caseId?: string;
   jurisdiction?: string;
   region?: string;
   isCaseAllocator?: boolean;
+}
+
+export interface LocationApi {
+  location_id: string;
+  location: string;
+  is_primary: boolean;
+  services: string[];
 }

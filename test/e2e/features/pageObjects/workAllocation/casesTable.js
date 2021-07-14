@@ -81,4 +81,4 @@ class WACaseListTable extends WATable {
 
 }
 
-module.exports = TaskListTable;
+module.exports = WACaseListTable;

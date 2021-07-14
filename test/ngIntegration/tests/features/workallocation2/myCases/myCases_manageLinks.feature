@@ -3,7 +3,7 @@ Feature: WA Release 2: My cases - Manage links
 
     Background: Mock and browser setup
         Given I init MockApp
-        Given I set MOCK tasks with permissions for view "My tasks" and assigned state ""
+        Given I set MOCK workallocation cases with permissions for view "My cases" and assigned state ""
             | Permissions | Count |
             | Manage      | 100   |
             | Read        | 40    |
@@ -19,7 +19,7 @@ Feature: WA Release 2: My cases - Manage links
             | case_name        | case_category      | location_name |
             | Allwork test scr | auto test category | London QA lab |
 
-    Scenario Outline:  My Tasks, colums and column links for "<UserType>"
+    Scenario Outline:  My cases, colums and column links for "<UserType>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
        
 
@@ -27,7 +27,9 @@ Feature: WA Release 2: My cases - Manage links
         Given I navigate to home page
 
         When I click on primary navigation header tab "My work", I see selected tab page displayed
-        Then I validate tasks count in page 25
+        When I navigate to My work sub navigation tab "My cases"
+
+        Then I validate work allocation cases count in page 25
 
         Then I validate manage link actions for tasks
             | index | actions                                |

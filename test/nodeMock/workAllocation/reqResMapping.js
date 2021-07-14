@@ -31,11 +31,28 @@ module.exports = {
     },
     post: {
         '/workallocation2/caseWithPagination/': (req, res) => {
+            const pageNum = req.body.searchRequest.pagination_parameters.page_number;
             const pageSize = req.body.searchRequest.pagination_parameters.page_size;
-            if (req.body.view === "MyCases") {
-                res.send(workAllocationMockData.getMyCases());
-            } else {
-                throw new Error("Unrecognised task list view : " + req.body.view);
+
+            const requestedView = req.body.view.toLowerCase();
+            let cases = [];
+            if (requestedView === "mycases") {
+                cases = global.scenarioData && global.scenarioData['workallocation2.mycases'] ? global.scenarioData['workallocation2.mycases'] : workAllocationMockData.getMyCases(pageSize * 5);
+            }  else {
+                throw new Error("Unrecognised cSe list view : " + requestedView);
+            }
+            try {
+                const thisPageCases = [];
+
+                const startIndexForPage = pageNum === 1 ? 0 : ((pageNum - 1) * pageSize) - 1;
+                const endIndexForPage = (startIndexForPage + pageSize) < cases.total_records ? startIndexForPage + pageSize - 1 : cases.total_records - 1;
+                for (let i = startIndexForPage; i <= endIndexForPage; i++) {
+                    thisPageCases.push(cases.cases[i]);
+                }
+                const responseData = { cases: thisPageCases, total_records: cases.total_records };
+                res.send(responseData);
+            } catch (e) {
+                res.status(500).send({ error: 'mock error occured', stack: e.stack });
             }
         },
         '/workallocation/task/': (req, res) => {
@@ -75,7 +92,7 @@ module.exports = {
             } else {
                 throw new Error("Unrecognised task list view : " + req.body.view);
             }
-            res.send({ tasks: tasks});
+            res.send({ tasks: tasks, total_records: tasks.length});
         },
         '/workallocation/taskWithPagination/': (req, res) => {
             const pageSize = req.body.searchRequest.pagination_parameters.page_size;

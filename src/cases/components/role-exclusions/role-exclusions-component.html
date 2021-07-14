@@ -19,7 +19,11 @@
                 <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{exclusion.userType}}e</td>
                 <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{exclusion.notes}}</td>
                 <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{exclusion.added | date: 'dd/MM/yyyy'}}</td>
-                <td><p> <a (click)="deleteExclusion(exclusion)" [routerLink]='deleteLink' class="govuk-link">Delete</a></p></td>
+                <td>
+                    <p>
+                        <a *ngIf="allowDelete" (click)="deleteExclusion(exclusion)" [routerLink]='deleteLink' class="govuk-link">Delete</a>
+                    </p>
+                </td>
             </tr>
         </ng-container>
     </tbody>

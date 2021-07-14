@@ -8,10 +8,12 @@ import { RoleExclusion } from '../../models/role-exclusions/role-exclusion.model
 
 export class RoleExclusionsComponent implements OnInit {
   @Input() 
-  public exclusions: RoleExclusion []
+  public exclusions: RoleExclusion [];
+
+  @Input()
+  public allowDelete: boolean = false;
 
   ngOnInit(): void {
-      
   }
   public deleteExclusion(exclusion: RoleExclusion) {
     console.log(exclusion);

@@ -10,6 +10,7 @@ import { CaseShareComponent } from './case-share/case-share.component';
 import { CaseShareConfirmComponent } from './case-share-confirm/case-share-confirm.component';
 import { CaseShareCompleteComponent } from './case-share-complete/case-share-complete.component';
 import { RoleAccessComponent } from './role-and-access/role-access.component';
+import { AllocateRoleContainerComponent } from './role-container/allocate-role-container.component';
 
 
 export const containers: any[] = [
@@ -24,7 +25,8 @@ export const containers: any[] = [
   CaseShareComponent,
   CaseShareConfirmComponent,
   CaseShareCompleteComponent,
-  RoleAccessComponent
+  RoleAccessComponent,
+  AllocateRoleContainerComponent,
 ];
 
 export * from './case-list/case-list.component';
@@ -38,3 +40,4 @@ export * from './case-share/case-share.component';
 export * from './case-share-confirm/case-share-confirm.component';
 export * from './case-share-complete/case-share-complete.component';
 export * from './role-and-access/role-access.component';
+export * from './role-container/allocate-role-container.component';

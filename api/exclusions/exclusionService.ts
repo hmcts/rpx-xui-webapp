@@ -4,7 +4,7 @@ import { EnhancedRequest } from '../lib/models';
 export async function getUserExclusions(req: EnhancedRequest, res: Response, next: NextFunction) {
     const isJudge = req.session.passport.user.userinfo.roles.includes('caseworker-ia-iacjudge');
     let exclusions;
-    if(isJudge) {
+    if (isJudge) {
         exclusions = [
             {
                 added: Date.UTC(2021, 7, 1),

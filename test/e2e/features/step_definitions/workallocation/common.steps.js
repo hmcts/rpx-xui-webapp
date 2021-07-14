@@ -31,7 +31,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     When('I click task list pagination link {string}', async function (paginationLinktext) {
         await BrowserWaits.waitForSeconds(1);
         
-
         await BrowserWaits.waitForConditionAsync(async () => {
             const colCount = await taskListTable.getColumnCount();
             const rowCount = await taskListTable.getTaskListCountInTable();

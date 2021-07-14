@@ -3,5 +3,5 @@ export interface RoleExclusion {
     name: string;
     userType: string;
     Notes: string;
-    added: Date; 
+    added: Date;
 }

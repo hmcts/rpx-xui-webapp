@@ -7,7 +7,7 @@ import { RoleExclusion } from '../../models/role-exclusions/role-exclusion.model
   })
 
 export class RoleExclusionsComponent implements OnInit {
-  @Input() 
+  @Input()
   public exclusions: RoleExclusion [];
 
   @Input()

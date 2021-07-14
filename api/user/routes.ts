@@ -1,5 +1,5 @@
-import { getUserExclusions } from '../exclusions/exclusionService'
 import * as express from 'express'
+import { getUserExclusions } from '../exclusions/exclusionService'
 import { getUserDetails } from './index'
 
 const router = express.Router({ mergeParams: true })

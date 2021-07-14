@@ -415,10 +415,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.0.0.tgz#456ba7a49ad2cf74f9a3ef80428aa51e3b47ff7a"
-  integrity sha512-sUTUx7s8Vc9xJq6Oo5We4VVnmydjRWykX/LgZ89g/LqzQJm+wlBsKYZx8H2D6DpGJbyHXcbKUor8vYY3ZEK9RQ==
+"@hmcts/ccd-case-ui-toolkit@4.0.0-cve-fix":
+  version "4.0.0-cve-fix"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.0.0-cve-fix.tgz#75c0d85dc022d4455b6a6067fd082f5466807c5b"
+  integrity sha512-jw98RcX4XUOSsVFmLDqd5RD3OxA2/MbL81bsBi+aXGQzXKurCnLsztFkbTPsZUy2gzp/HGGNBZGVWbW8D/0WPQ==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
@@ -440,7 +440,7 @@
     npm-registry-fetch "^4.0.5"
     rx-polling "1.1.0"
     typescript "3.1.1"
-    underscore "^1.9.1"
+    underscore "^1.12.1"
     yargs-parser "18.1.2"
 
 "@hmcts/ccpay-web-component@3.0.3":
@@ -12900,6 +12900,11 @@ underscore@1.8.3:
   version "1.8.3"
   resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.8.3.tgz#4f3fb53b106e6097fcf9cb4109f2a5e9bdfa5022"
   integrity sha1-Tz+1OxBuYJf8+ctBCfKl6b36UCI=
+
+underscore@^1.12.1:
+  version "1.13.1"
+  resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.13.1.tgz#0c1c6bd2df54b6b69f2314066d65b6cde6fcf9d1"
+  integrity sha512-hzSoAVtJF+3ZtiFX0VgfFPHEDRm7Y/QPjGyNo4TVdnDTdft3tr8hEkD25a1jC+TjTuE7tkHGKkhwCgs9dgBB2g==
 
 underscore@^1.9.1:
   version "1.9.2"

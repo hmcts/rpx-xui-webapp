@@ -3,7 +3,7 @@ import { RoleExclusion } from '../../models/role-exclusions/role-exclusion.model
 
 @Component({
     selector: 'exui-role-exclusions',
-    templateUrl: './role-exclusions-component.html'
+    templateUrl: './role-exclusions.component.html'
   })
 
 export class RoleExclusionsComponent implements OnInit {

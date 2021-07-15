@@ -3,7 +3,7 @@ import { NextFunction, Response } from 'express'
 import { getConfigValue } from '../configuration'
 import { CASE_SHARE_PERMISSIONS, SESSION_TIMEOUTS } from '../configuration/references'
 
-export async function getUserDetails(req, res: Response, next: NextFunction) {
+export async function getUserDetails(req, res: Response, next: NextFunction): Promise<Response> {
   if (!req.session || !req.session.passport || !req.session.passport.user) {
     return res.send({}).status(200);
   }

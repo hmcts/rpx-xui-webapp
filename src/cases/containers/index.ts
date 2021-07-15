@@ -24,7 +24,8 @@ export const containers: any[] = [
   CaseDetailsHomeComponent,
   CaseShareComponent,
   CaseShareConfirmComponent,
-  CaseShareCompleteComponent
+  CaseShareCompleteComponent,
+  AllocateRoleContainerComponent,
 ];
 
 export * from './allocate-role-container/allocate-role-container.component';

@@ -7,8 +7,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs/internal/observable/of';
 
-import { ALL_LOCATIONS } from '../../../../api/workAllocation2/constants/locations';
 import { LocationDataService, WorkAllocationTaskService } from '../../services';
+import { ALL_LOCATIONS } from '../constants/locations';
 import { TaskListFilterComponent } from './task-list-filter.component';
 
 @Component({
@@ -68,6 +68,13 @@ describe('TaskListFilterComponent', () => {
   it('should show the toggle filter button', () => {
     const button: DebugElement = fixture.debugElement.query(By.css('.govuk-button.hmcts-button--secondary'));
     expect(button.nativeElement.innerText).toContain('Show work filter');
+  });
+
+  it('should hide the toggle filter button', () => {
+    const button: DebugElement = fixture.debugElement.query(By.css('.govuk-button.hmcts-button--secondary'));
+    button.nativeElement.click();
+    fixture.detectChanges();
+    expect(button.nativeElement.innerText).toContain('Hide work filter');
   });
 
   it('should select two locations', fakeAsync(() => {

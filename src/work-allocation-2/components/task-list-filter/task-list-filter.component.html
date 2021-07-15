@@ -1,11 +1,6 @@
 <div class="button-heading">
   <button class="govuk-button hmcts-button--secondary" type="button" (click)="this.toggleFilter=!this.toggleFilter">
-    <ng-container *ngIf="!toggleFilter">
-      Show work filter
-    </ng-container>
-    <ng-container *ngIf="toggleFilter">
-      Hide work filter
-    </ng-container>
+    {{toggleFilter ? 'Hide': 'Show' }} work filter
   </button>
   <ng-container *ngIf="selectedLocations.length && showFilteredText">
     <span class="hmcts-badge hmcts-badge--black">Filtered view</span>

@@ -69,17 +69,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     });
 
-    Then('I validate tasks count in page {int}', async function (tasksCount){
-   
-        expect(parseInt(await taskListPage.getTaskListCountInTable()), 'Task count does not match expected ').to.equal(tasksCount);
-         if (tasksCount === 0) {
-            expect(await taskListPage.isTableFooterDisplayed(), "task list table footer is not displayed").to.be.true;
-            expect(await taskListPage.getTableFooterMessage(), "task list table footer message when 0 tasks are displayed").to.equal("You have no assigned tasks.");
-        } else {
-            expect(await taskListPage.isTableFooterDisplayed(), "task list table footer is displayed").to.be.false;
-        }   
-     });
-
      Then('I validate tasks column sorting', async function(){
          let tasksRequested = false; 
          let sortColumnInRequestParam = "";
@@ -153,9 +142,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         CucumberReporter.AddMessage(columnHeaders);
         expect(await taskListPage.getColumnSortState(columnHeaders[1])).to.equal("none");
 
-        await taskListPage.clickColumnHeader(columnHeaders[1]);
-        expect(await taskListPage.getColumnSortState(columnHeaders[1])).to.equal("ascending");
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await taskListPage.clickColumnHeader(columnHeaders[1]);
+            expect(await taskListPage.getColumnSortState(columnHeaders[1])).to.equal("ascending");
 
+        });
+       
         await headerPage.getTabElementWithText('Case list').click();
         await browserUtil.waitForLD();
         expect(await caseListPage.amOnPage()).to.be.true;

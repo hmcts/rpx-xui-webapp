@@ -1,48 +1,58 @@
-<div *ngIf="pagination; else tableSummary" class="pagination-top" attr.aria-label="{{ tasksTotal }} results have been found" role="status">
+<div *ngIf="pagination; else tableSummary" class="pagination-top"
+  attr.aria-label="{{ tasksTotal }} results have been found" role="status">
   <span class="text-16" id="search-result-summary__text">Displaying
-      <span class="govuk-!-font-weight-bold">{{ getFirstResult() }}</span>
-      -
-      <span class="govuk-!-font-weight-bold">{{ getLastResult() }}</span>
-      out of
-      <span class="govuk-!-font-weight-bold">{{ tasksTotal || 0 }}</span>
-      tasks.</span>
+    <span class="govuk-!-font-weight-bold">{{ getFirstResult() }}</span>
+    -
+    <span class="govuk-!-font-weight-bold">{{ getLastResult() }}</span>
+    out of
+    <span class="govuk-!-font-weight-bold">{{ tasksTotal || 0 }}</span>
+    tasks.</span>
 </div>
 
 <ng-template #tableSummary>
   <div class="pagination-top" attr.aria-label="{{ tasksTotal }} results have been found" role="status">
-    <span class="text-16" id="search-result-summary__text">Displaying <span class="govuk-!-font-weight-bold">{{ tasksTotal || 0 }} </span>tasks.</span></div>
+    <span class="text-16" id="search-result-summary__text">Displaying <span class="govuk-!-font-weight-bold">{{
+        tasksTotal || 0 }} </span>tasks.</span>
+  </div>
 </ng-template>
 
 <!-- Reset Sorting Button -->
-<div *ngIf="showResetSortButton" class="reset-sort-button"><button type="button" class="govuk-button hmcts-button--secondary" (click)="onResetSorting()">Reset sorting</button></div>
+<div *ngIf="showResetSortButton" class="reset-sort-button"><button type="button"
+    class="govuk-button hmcts-button--secondary" (click)="onResetSorting()">Reset sorting</button></div>
 
 <!-- Using the Angular Component Development Kit Table Module, and not Angular Material -->
 <table cdk-table [dataSource]="dataSource$" class="govuk-table" [multiTemplateDataRows]="true">
 
   <!-- Column Headers and Cells -->
-<ng-container *ngIf="tasksTotal">
-  <ng-container *ngFor="let field of fields | paginate: { itemsPerPage: pagination?.page_size, currentPage: pagination?.page_number, totalItems: tasksTotal }" [cdkColumnDef]="field.name">
-    <th class="govuk-table__header" [id]="'header_' + field.sortName" [attr.aria-sort]="getColumnSortedSetting(field.sortName)" cdk-header-cell *cdkHeaderCellDef>
-      <button class="column-sort" *ngIf="field.columnLabel" type="button" [id]="'sort_by_' + field.sortName" data-index="0"
-              (click)="onSortHandler(field.sortName)" >{{field.columnLabel}}</button>
-    </th>
-    <td class="govuk-table__cell border-none" cdk-cell *cdkCellDef="let rowData">
-      <exui-task-field [task]="rowData" [config]="field"></exui-task-field>
-    </td>
+  <ng-container *ngIf="tasksTotal">
+    <ng-container
+      *ngFor="let field of fields | paginate: { itemsPerPage: pagination?.page_size, currentPage: pagination?.page_number, totalItems: tasksTotal }"
+      [cdkColumnDef]="field.name">
+      <th class="govuk-table__header" [id]="'header_' + field.sortName"
+        [attr.aria-sort]="getColumnSortedSetting(field.sortName)" cdk-header-cell *cdkHeaderCellDef>
+        <button class="column-sort" *ngIf="field.columnLabel" type="button" [id]="'sort_by_' + field.sortName"
+          data-index="0" (click)="onSortHandler(field.sortName)">{{field.columnLabel}}</button>
+      </th>
+      <td class="govuk-table__cell border-none" cdk-cell *cdkCellDef="let rowData">
+        <exui-work-field [workField]="rowData" [config]="field"></exui-work-field>
+      </td>
+    </ng-container>
   </ng-container>
-</ng-container>
-<!-- Below container sets up initial task list headers when not yet populated as session storage of page number causing issues with above container -->
-<ng-container *ngIf="!tasksTotal">
-  <ng-container *ngFor="let field of fields" [cdkColumnDef]="field.name">
-    <th class="govuk-table__header" [id]="'header_' + field.sortName" [attr.aria-sort]="getColumnSortedSetting(field.sortName)" cdk-header-cell *cdkHeaderCellDef>
-      <button class="column-sort" *ngIf="field.columnLabel" type="button" [id]="'sort_by_' + field.sortName" data-index="0"
-              (click)="onSortHandler(field.sortName)" >{{field.columnLabel}}</button>
-    </th>
-    <td class="govuk-table__cell border-none" cdk-cell *cdkCellDef="let rowData">
-      <exui-task-field [task]="rowData" [config]="field"></exui-task-field>
-    </td>
+  <!-- Below container sets up initial task list headers when not yet populated as session storage of page number causing issues with above container -->
+  <ng-container *ngIf="!tasksTotal">
+    <ng-container
+      *ngFor="let field of fields | paginate: { itemsPerPage: pagination?.page_size, currentPage: pagination?.page_number, totalItems: tasksTotal }"
+      [cdkColumnDef]="field.name">
+      <th class="govuk-table__header" [id]="'header_' + field.sortName"
+        [attr.aria-sort]="getColumnSortedSetting(field.sortName)" cdk-header-cell *cdkHeaderCellDef>
+        <button class="column-sort" *ngIf="field.columnLabel" type="button" [id]="'sort_by_' + field.sortName"
+          data-index="0" (click)="onSortHandler(field.sortName)">{{field.columnLabel}}</button>
+      </th>
+      <td class="govuk-table__cell border-none" cdk-cell *cdkCellDef="let rowData">
+        <exui-work-field [workField]="rowData" [config]="field"></exui-work-field>
+      </td>
+    </ng-container>
   </ng-container>
-</ng-container>
 
   <!-- Manage column -->
   <ng-container cdkColumnDef="manage">
@@ -50,8 +60,7 @@
     <td cdk-cell *cdkCellDef="let rowData" class="govuk-table__cell border-none govuk-accordion__section-header">
       <div *ngIf="showManage[rowData.id]" class="govuk-accordion__section-heading">
         <button type="button" [id]="'manage_' + rowData.id" (click)="setSelectedTask(rowData)"
-                class="govuk-accordion__section-button xui-reset"
-                [attr.aria-expanded]="isTaskSelected(rowData)">
+          class="govuk-accordion__section-button xui-reset" [attr.aria-expanded]="isTaskSelected(rowData)">
           Manage
           <span class="govuk-accordion__icon" aria-hidden="true"></span>
         </button>
@@ -64,7 +73,8 @@
     <td cdk-cell *cdkCellDef="let rowData" [attr.colspan]="displayedColumns.length" class="cell-actions">
       <ng-container *ngIf="isTaskSelected(rowData)">
         <div *ngFor="let action of rowData.actions" class="task-action">
-          <a tabindex="0" (click)="onActionHandler(rowData, action)" class="action" [id]="'action_' + action.id">{{action.title}}</a>
+          <a tabindex="0" (click)="onActionHandler(rowData, action)" class="action"
+            [id]="'action_' + action.id">{{action.title}}</a>
         </div>
       </ng-container>
     </td>
@@ -81,17 +91,16 @@
   <tr class="govuk-table__row" cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
 
   <!-- Table Row -->
-  <tr class="govuk-table__row" [ngClass]="{ selected: isTaskSelected(row) }"
-      cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
+  <tr class="govuk-table__row" [ngClass]="{ selected: isTaskSelected(row) }" cdk-row
+    *cdkRowDef="let row; columns: displayedColumns"></tr>
 
   <!-- Table Actions Row-->
   <tr class="govuk-table__row actions-row" [ngClass]="{ selected: isTaskSelected(row) }"
-      [attr.aria-hidden]="!isTaskSelected(row)"
-      cdk-row *cdkRowDef="let row; columns: ['actions']"></tr>
+    [attr.aria-hidden]="!isTaskSelected(row)" cdk-row *cdkRowDef="let row; columns: ['actions']"></tr>
 
   <!-- Table Footer Row -->
   <tr class="govuk-table__row footer-row" [ngClass]="{ shown: tasks?.length === 0 }"
-      [attr.aria-hidden]="tasks?.length !== 0" cdk-footer-row *cdkFooterRowDef="['footer']"></tr>
+    [attr.aria-hidden]="tasks?.length !== 0" cdk-footer-row *cdkFooterRowDef="['footer']"></tr>
 
 </table>
 

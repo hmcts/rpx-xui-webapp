@@ -11,7 +11,7 @@ const MockApp = require('../../nodeMock/app');
 const browserUtil = require('../util/browserUtil');
 const customReporter = require('../../e2e/support/reportLogger');
 
-const isParallelExecution = true;
+const isParallelExecution = argv.parallel ? argv.parallel=== "true" : true;
 
 const jenkinsConfig = [
 
@@ -132,10 +132,11 @@ function getBDDTags() {
     let tags = [];
     if (!process.env.TEST_URL ||
         process.env.TEST_URL.includes("pr-") ||
-        process.env.TEST_URL.includes("localhost")) {
-        tags.push("@ng");
+        process.env.TEST_URL.includes("localhost")) { 
         if (argv.tags){
             tags = argv.tags.split(',');
+        }else{
+            tags = ["@ng", "~@ignore"];
         }
     }else{
         tags.push("@none"); 

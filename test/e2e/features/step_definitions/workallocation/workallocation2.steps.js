@@ -169,7 +169,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     When('I click cancel in check your changes of work allocation', async function () {
-        await findPersonPage.clickCancelLink();
+        await taskCheckYourChangesPage.clickCancelLink();
     });
 
     Then('I see task, check your changes page for action {string} displayed', async function(action){

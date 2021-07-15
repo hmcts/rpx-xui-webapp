@@ -221,11 +221,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await findPersonPage.clickCancelLink();
     });
 
-    When(' I click cancel in check your changes of work allocation', async function(){
-       await taskCheckYourChangesPage.clickCancelLink(); 
-    });
-
-
     Then('I validate tasks count in page {int}', async function (tasksCount) {
 
         expect(parseInt(await taskListTable.getTaskListCountInTable()), 'Task count does not match expected ').to.equal(tasksCount);

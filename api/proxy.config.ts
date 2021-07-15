@@ -8,11 +8,11 @@ import { handleElasticSearchResponse, modifyRequest } from './searchCases';
 
 export const initProxy = (app: Express) => {
   applyProxy(app, {
-    ws: true,
     rewrite: true,
     rewriteUrl: '/socket.io',
     source: '/socket.io',
-    target: getConfigValue(proxiedReferences.SERVICES_CCD_ACTIVITY_API_PATH)
+    target: getConfigValue(proxiedReferences.SERVICES_CCD_ACTIVITY_API_PATH),
+    ws: true
   });
 
   applyProxy(app, {

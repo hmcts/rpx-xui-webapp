@@ -26,6 +26,7 @@ import { Caseworker, Judicialworker } from './interfaces/common';
 import * as caseServiceMock from './caseService.mock';
 import * as taskServiceMock from './taskService.mock';
 
+import { AxiosResponse } from 'axios';
 import {
   assignActionsToCases,
   assignActionsToTasks,
@@ -77,18 +78,18 @@ export async function searchCase(req: EnhancedRequest, res: Response, next: Next
   try {
     const view = req.body.view;
     const roleAssignments: any[] = req.session.roleAssignmentResponse;
-    let promise;
+    let response: AxiosResponse;
     switch (view) {
       case View.MY_CASES:
         const caseIds = roleAssignments.map(assignments => assignments.attributes.caseId);
         const path = `${baseElasticSearchUrl}/internal/searchCases?ctid=${CASE_TYPE_ID}`;
         const payload = getRequestBody(caseIds);
-        promise = await sendPost(path, payload, req);
+        response = await sendPost(path, payload, req);
         break;
       default:
         return;
     }
-    const { status, data } = promise;
+    const { status, data } = response;
     res.status(status);
     // Assign actions to the cases on the data from the API.
     let returnData;
@@ -114,25 +115,25 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     const searchBy = searchRequest.search_by === 'judge' ? 'judicial' : 'caseworker';
     let basePath;
     let postTaskPath;
-    let promise;
+    let response: AxiosResponse;
     switch (view) {
       case View.MY_TASKS:
         basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, `myTasks?view=${searchBy}`);
         postTaskPath = preparePaginationUrl(req, basePath);
-        promise = await handlePost(postTaskPath, searchRequest, req);
+        response = await handlePost(postTaskPath, searchRequest, req);
         break;
       case View.AVAILABLE_TASKS:
         basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, `availableTasks?view=${searchBy}`);
         postTaskPath = preparePaginationUrl(req, basePath);
-        promise = await handlePost(postTaskPath, searchRequest, req);
+        response = await handlePost(postTaskPath, searchRequest, req);
         break;
       case View.ALL_WORK:
         basePath = prepareSearchTaskUrl(baseWorkAllocationTaskUrl, `allTasks?view=${searchBy}`);
         postTaskPath = preparePaginationUrl(req, basePath);
-        promise = await handlePost(postTaskPath, searchRequest, req);
+        response = await handlePost(postTaskPath, searchRequest, req);
         break;
     }
-    const { status, data } = promise;
+    const { status, data } = response;
     res.status(status);
     // Assign actions to the tasks on the data from the API.
     let returnData;

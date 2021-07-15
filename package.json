@@ -69,10 +69,10 @@
     "@angular/platform-browser": "^7.2.13",
     "@angular/platform-browser-dynamic": "^7.2.13",
     "@angular/router": "^7.2.13",
-    "@hmcts/ccd-case-ui-toolkit": "4.0.0",
+    "@hmcts/ccd-case-ui-toolkit": "4.1.0-rc.13",
     "@hmcts/ccpay-web-component": "3.0.3",
     "@hmcts/frontend": "0.0.39-alpha",
-    "@hmcts/media-viewer": "2.6.4",
+    "@hmcts/media-viewer": "2.7.4",
     "@hmcts/nodejs-healthcheck": "^1.7.0",
     "@hmcts/properties-volume": "^0.0.9",
     "@hmcts/rpx-xui-common-lib": "1.2.0",
@@ -135,9 +135,10 @@
     "zone.js": "~0.8.26"
   },
   "devDependencies": {
-    "@angular-material-components/datetime-picker": "^2.0.4",
-    "@angular-material-components/moment-adapter": "^5.0.0",
     "@angular-devkit/build-angular": "~0.13.0",
+    "@angular-devkit/build-webpack": "^0.1201.1",
+    "@angular-material-components/datetime-picker": "^2.0.4",
+    "@angular-material-components/moment-adapter": "^4.0.1",
     "@angular/cli": "^6.0.8",
     "@angular/compiler-cli": "^7.2.13",
     "@angular/language-service": "~7.2.0",
@@ -178,8 +179,9 @@
     "jasmine-core": "~2.99.1",
     "jasmine-marbles": "^0.5.0",
     "jasmine-spec-reporter": "~4.2.1",
+    "jsonpath": "^1.1.1",
     "jsonwebtoken": "^8.5.1",
-    "karma": "~4.0.0",
+    "karma": "~6.0.0",
     "karma-chrome-launcher": "~2.2.0",
     "karma-coverage-istanbul-reporter": "~2.0.1",
     "karma-jasmine": "~1.1.2",
@@ -207,8 +209,7 @@
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10",
     "webpack-node-externals": "^1.7.2",
-    "webpack-source-map-support": "^2.0.1",
-    "jsonpath": "^1.1.1"
+    "webpack-source-map-support": "^2.0.1"
   },
   "resolutions": {
     "**/**/dot-prop": "^5.1.1",

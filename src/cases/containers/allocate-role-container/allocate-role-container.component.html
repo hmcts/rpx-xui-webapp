@@ -1,1 +1,16 @@
-<exui-allocate-role [roleAllocation]="roleAllocationType" [includeOther]="includeOther"></exui-allocate-role>
+<form [formGroup]="allocationForm" (ngSubmit)="continue(allocationForm.value, allocationForm.valid)">
+  <a href="../" class="govuk-back-link">Back</a>
+  <main class="govuk-main-wrapper">
+    <exui-error-message *ngIf="error" [error]="error"></exui-error-message>
+    <exui-allocate-role *ngIf="!describingExclusion" [roleAllocation]="roleAllocationType" [includeOther]="includeOther"></exui-allocate-role>
+    <exui-describe-exclusion *ngIf="describingExclusion"
+      [submitted]="submitted"
+      [formGroup]="allocationForm"
+      [title]="'Add an exclusion'"
+      [description]="'Describe the exclusion'"
+      [controlName]="DESCRIBE_EXCLUSION_CONTROL_NAME"
+    ></exui-describe-exclusion>
+    <button id="submit-button" class="govuk-button govuk-!-margin-right-1" type="submit">Continue</button>
+    <p><a class="govuk-!-margin-top-3" id="cancel-link" href="javascript:void(0)">Cancel</a></p>
+  </main>
+</form>

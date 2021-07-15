@@ -12,7 +12,7 @@ export class AllocateRoleComponent implements OnInit {
   @Input() public roleAllocation: RoleAllocationType;
   @Input() public includeOther: boolean;
 
-  public title: RoleAllocationTitleText;
+  public title = RoleAllocationTitleText.NonExclusion;
   public caption: RoleAllocationCaptionText;
   public selfText = RoleAllocationRadioText.NonExclusionSelf;
   public otherText = RoleAllocationRadioText.NonExclusionOther;
@@ -33,12 +33,10 @@ export class AllocateRoleComponent implements OnInit {
         break;
       }
       case RoleAllocationType.Judiciary: {
-        this.title = RoleAllocationTitleText.Judiciary;
         this.caption = RoleAllocationCaptionText.Judiciary;
         break;
       }
       case RoleAllocationType.LegalOps: {
-        this.title = RoleAllocationTitleText.LegalOps;
         this.caption = RoleAllocationCaptionText.LegalOps;
         break;
       }

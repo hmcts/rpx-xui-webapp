@@ -44,7 +44,7 @@ describe('AllocateRoleComponent', () => {
     component.roleAllocation = RoleAllocationType.Judiciary;
     component.ngOnInit();
     fixture.detectChanges();
-    expect(component.title).toBe(RoleAllocationTitleText.Judiciary);
+    expect(component.title).toBe(RoleAllocationTitleText.NonExclusion);
     expect(component.caption).toBe(RoleAllocationCaptionText.Judiciary);
     expect(component.selfText).toBe(RoleAllocationRadioText.NonExclusionSelf);
     expect(component.otherText).toBe(RoleAllocationRadioText.NonExclusionOther);
@@ -54,7 +54,7 @@ describe('AllocateRoleComponent', () => {
     component.roleAllocation = RoleAllocationType.LegalOps;
     component.ngOnInit();
     fixture.detectChanges();
-    expect(component.title).toBe(RoleAllocationTitleText.LegalOps);
+    expect(component.title).toBe(RoleAllocationTitleText.NonExclusion);
     expect(component.caption).toBe(RoleAllocationCaptionText.LegalOps);
     expect(component.selfText).toBe(RoleAllocationRadioText.NonExclusionSelf);
     expect(component.otherText).toBe(RoleAllocationRadioText.NonExclusionOther);

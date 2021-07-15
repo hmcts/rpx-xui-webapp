@@ -140,20 +140,20 @@ describe('TaskAssignmentContainerComponent', () => {
     window.history.pushState({ returnUrl: 'all-work/tasks#manage_0d22d838', showAssigneeColumn: false }, '',
       'all-work/tasks#manage_0d22d838');
     const mockRouter = jasmine.createSpyObj('router', ['navigate']);
-    const component = new TaskAssignmentContainerComponent(null, null, mockRouter, null);
+    const tacComponent = new TaskAssignmentContainerComponent(null, null, mockRouter, null);
     const findPersonControl = new FormControl('test');
-    component.formGroup.addControl('findPersonControl', findPersonControl);
-    component.cancel();
+    tacComponent.formGroup.addControl('findPersonControl', findPersonControl);
+    tacComponent.cancel();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['all-work/tasks']);
   });
 
   it('should redirect to the fallback URL on cancelling task assignment, if the return URL is not in the history', () => {
     window.history.pushState({}, '');
     const mockRouter = jasmine.createSpyObj('router', ['navigate']);
-    const component = new TaskAssignmentContainerComponent(null, null, mockRouter, null);
+    const tacComponent = new TaskAssignmentContainerComponent(null, null, mockRouter, null);
     const findPersonControl = new FormControl('test');
-    component.formGroup.addControl('findPersonControl', findPersonControl);
-    component.cancel();
+    tacComponent.formGroup.addControl('findPersonControl', findPersonControl);
+    tacComponent.cancel();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/work/my-work/list']);
   });
 
@@ -165,9 +165,9 @@ describe('TaskAssignmentContainerComponent', () => {
     };
     fixture.detectChanges();
     const mockRouter = jasmine.createSpyObj('router', ['navigate']);
-    const component = new TaskAssignmentContainerComponent(null, null, mockRouter, null);
+    const tacComponent = new TaskAssignmentContainerComponent(null, null, mockRouter, null);
     const findPersonControl = new FormControl('test');
-    component.formGroup.addControl('findPersonControl', findPersonControl);
+    tacComponent.formGroup.addControl('findPersonControl', findPersonControl);
     const titleElement = fixture.debugElement.nativeElement.querySelector('.govuk-caption-l');
     expect(titleElement.textContent).toContain(TaskActionType.Assign);
   });

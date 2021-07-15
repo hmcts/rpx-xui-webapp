@@ -87,7 +87,7 @@ describe('workAllocation.utils', () => {
           caseworkers: null
         }
       });
-      let expectedReturnedUrl = url.concat('?first_result=50&max_results=25');
+      let expectedReturnedUrl = url.concat('&first_result=50&max_results=25');
       expect(preparePaginationUrl(req, url)).to.equal(expectedReturnedUrl);
       req = req = mockReq({
         body: {
@@ -103,7 +103,7 @@ describe('workAllocation.utils', () => {
           caseworkers: null
         }
       });
-      expectedReturnedUrl = url.concat('?first_result=30&max_results=3');
+      expectedReturnedUrl = url.concat('&first_result=30&max_results=3');
       expect(preparePaginationUrl(req, url)).to.equal(expectedReturnedUrl);
     });
 

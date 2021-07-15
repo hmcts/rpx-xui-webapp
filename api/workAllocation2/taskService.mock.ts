@@ -73,14 +73,14 @@ export const init = () => {
   mock.onPost(judicialMyTaskUrl).reply(config => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
-    const paginationConfig = body.pagination_parameters;
+    const [pageSize, pageNumber] = getPageParameters(config.url);
     const sortingConfig = body.sorting_parameters;
     const taskList = sort(JUDICIAL_MY_TASKS.tasks,
        getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {
-        tasks: paginate(taskList, paginationConfig.page_number, paginationConfig.page_size),
+        tasks: paginate(taskList, pageNumber, pageSize),
         total_records: JUDICIAL_MY_TASKS.tasks.length,
       },
     ];
@@ -91,7 +91,7 @@ export const init = () => {
   mock.onPost(judicialAllTasksUrl).reply(config => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
-    const paginationConfig = body.pagination_parameters;
+    const [pageSize, pageNumber] = getPageParameters(config.url);
     const sortingConfig = body.sorting_parameters;
     let allTasks = [...JUDICIAL_AVAILABLE_TASKS.tasks, ...JUDICIAL_MY_TASKS.tasks];
     allTasks = sort(allTasks,
@@ -103,7 +103,7 @@ export const init = () => {
     return [
       200,
       {
-        tasks: paginate(allTasks, paginationConfig.page_number, paginationConfig.page_size),
+        tasks: paginate(allTasks, pageNumber, pageSize),
         total_records: allTasks.length,
       },
     ];
@@ -112,14 +112,14 @@ export const init = () => {
   mock.onPost(judicialAvailableTaskUrl).reply(config => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
-    const paginationConfig = body.pagination_parameters;
+    const [pageSize, pageNumber] = getPageParameters(config.url);
     const sortingConfig = body.sorting_parameters;
     const taskList = sort(JUDICIAL_AVAILABLE_TASKS.tasks,
        getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {
-        tasks: paginate(taskList, paginationConfig.page_number, paginationConfig.page_size),
+        tasks: paginate(taskList, pageNumber, pageSize),
         total_records: JUDICIAL_AVAILABLE_TASKS.tasks.length,
       },
     ];
@@ -128,14 +128,14 @@ export const init = () => {
   mock.onPost(caseworkerMyTaskUrl).reply(config => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
-    const paginationConfig = body.pagination_parameters;
+    const [pageSize, pageNumber] = getPageParameters(config.url);
     const sortingConfig = body.sorting_parameters;
     const taskList = sort(CASEWORKER_MY_TASKS.tasks,
        getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {
-        tasks: paginate(taskList, paginationConfig.page_number, paginationConfig.page_size),
+        tasks: paginate(taskList, pageNumber, pageSize),
         total_records: CASEWORKER_MY_TASKS.tasks.length,
       },
     ];
@@ -154,14 +154,14 @@ export const init = () => {
   mock.onPost(caseworkerAvailableTaskUrl).reply(config => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
-    const paginationConfig = body.pagination_parameters;
+    const [pageSize, pageNumber] = getPageParameters(config.url);
     const sortingConfig = body.sorting_parameters;
     const taskList = sort(CASEWORKER_AVAILABLE_TASKS.tasks,
        getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {
-        tasks: paginate(taskList, paginationConfig.page_number, paginationConfig.page_size),
+        tasks: paginate(taskList, pageNumber, pageSize),
         total_records: CASEWORKER_AVAILABLE_TASKS.tasks.length,
       },
     ];
@@ -237,3 +237,11 @@ export const sort = (array: any[], sortName: string, isAsc: boolean): any[] => {
 export const paginate = (array: any[], pageNumber: number, pageSize: number): any[] => {
   return array.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
 };
+
+export const getPageParameters = (url: string): [number, number] => {
+  const params = new URL(url).searchParams;
+  const firstResult = +params.get('first_result');
+  const pageSize = +params.get('max_results');
+  const pageNumber = Math.floor(firstResult / pageSize) + 1;
+  return [pageSize, pageNumber];
+}

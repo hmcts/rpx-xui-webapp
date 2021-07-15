@@ -68,7 +68,7 @@ export function preparePaginationUrl(req: EnhancedRequest, postPath: string): st
     const pageNumber = paginationConfig.page_number;
     const pageSize = paginationConfig.page_size;
     const firstResult = (pageNumber - 1) * pageSize;
-    return `${postPath}?first_result=${firstResult}&max_results=${pageSize}`;
+    return `${postPath}&first_result=${firstResult}&max_results=${pageSize}`;
   }
   return postPath;
 }

@@ -415,10 +415,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.0.0.tgz#456ba7a49ad2cf74f9a3ef80428aa51e3b47ff7a"
-  integrity sha512-sUTUx7s8Vc9xJq6Oo5We4VVnmydjRWykX/LgZ89g/LqzQJm+wlBsKYZx8H2D6DpGJbyHXcbKUor8vYY3ZEK9RQ==
+"@hmcts/ccd-case-ui-toolkit@v4.0.0-strategic-activity-tracker-beta":
+  version "4.0.0-strategic-activity-tracker-beta"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.0.0-strategic-activity-tracker-beta.tgz#251b08a0394f340e6d917c2df2fb28a8443e3e38"
+  integrity sha512-WoLPQ1vTZ9VSSTCFJWvLG8JHF4HF760yx0nDO8Xy7xusp+hNNtsWu+ke7oXoAsiiVPH5Qjc8pddV4qBMxJRJKQ==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"
@@ -439,7 +439,7 @@
     moment-timezone "^0.5.31"
     npm-registry-fetch "^4.0.5"
     rx-polling "1.1.0"
-    typescript "3.1.1"
+    socket.io-client "^2.4.0"
     underscore "^1.9.1"
     yargs-parser "18.1.2"
 
@@ -12873,11 +12873,6 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
-
-typescript@3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.1.1.tgz#3362ba9dd1e482ebb2355b02dfe8bcd19a2c7c96"
-  integrity sha512-Veu0w4dTc/9wlWNf2jeRInNodKlcdLgemvPsrNpfu5Pq39sgfFjvIIgTsvUHCoLBnMhPoUA+tFxsXjU6VexVRQ==
 
 typescript@3.2.4, typescript@~3.2.2:
   version "3.2.4"

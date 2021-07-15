@@ -33,10 +33,14 @@ const ArrayUtil = require("../../../../e2e/utils/ArrayUtil");
 defineSupportCode(function ({ And, But, Given, Then, When }) {
     const taskListTable = new TaskListTable();
     When('I click task list pagination link {string} and wait for req reference {string} not null', async function (paginationLinktext, reference) {
-        
+        await taskListTable.waitForTable();
         await BrowserWaits.retryWithActionCallback(async () => {
-            await browserUtil.addTextToElementWithCssSelector('tbody tr:nth-of-type(1) .cdk-column-case_category exui-work-field', 'Sort test', true);
             
+            const val = await browserUtil.addTextToElementWithCssSelector('tbody tr .cdk-column-case_category exui-task-field,tbody tr .cdk-column-case_category exui-work-field', 'Sort test', true);
+            if (val !== "success"){
+                throw new Error(JSON.stringify(val));
+
+           } 
             await taskListTable.clickPaginationLink(paginationLinktext);
             await BrowserWaits.waitForConditionAsync(async () => {
                 const caseCatColVal = await taskListTable.getColumnValueForTaskAt('Case category', 1);

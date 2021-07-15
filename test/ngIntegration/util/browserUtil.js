@@ -134,13 +134,17 @@ class BrowserUtil{
     }
 
     async addTextToElementWithCssSelector(cssSelector, text,append){
-        await browser.executeScript(() => {
+        return await browser.executeScript( () => {
             let div = document.querySelector(arguments[0]);
+            if(div === undefined || div == null){
+                return `no element found with query selector ${arguments[0]}`
+            }
             if (arguments[2]){
                 div.innerHTML += arguments[1];
             }else{
                 div.innerHTML = arguments[1];
             }
+            return "success";
             
         }, cssSelector, text, append);
     }

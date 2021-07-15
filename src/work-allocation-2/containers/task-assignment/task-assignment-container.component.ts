@@ -6,7 +6,6 @@ import { map } from 'rxjs/operators';
 import { ErrorMessage } from '../../../app/models';
 import { ConfigConstants } from '../../components/constants';
 import { TaskActionType, TaskService, TaskSort } from '../../enums';
-import { InformationMessage } from '../../models/comms';
 import { Caseworker, Location, Person } from '../../models/dtos';
 import { TaskFieldConfig, TaskServiceConfig } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';

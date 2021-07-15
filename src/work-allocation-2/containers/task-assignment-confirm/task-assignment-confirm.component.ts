@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs/operators';
-import { InfoMessage, InfoMessageType, TaskActionType } from 'src/work-allocation-2/enums';
+import { InfoMessage, InfoMessageType, TaskActionType } from '../../enums';
 import { InformationMessage } from '../../models/comms';
 import { Person } from '../../models/dtos';
 import { TaskAssigneeModel } from '../../models/tasks/task-assignee.model';

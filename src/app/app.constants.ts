@@ -199,8 +199,6 @@ const redirectUrl = {
   localhost: 'https://idam-web-public.aat.platform.hmcts.net'
 };
 
-
-
 const appHeaderTitle = {name: 'Manage cases', url: '/'};
 
 // Making the base URL for case details a constant.
@@ -208,6 +206,8 @@ const caseDetailsUrl: string = '/cases/case-details/';
 
 const serviceMessagesFeatureToggleKey: string = 'mc-service-messages';
 const serviceMessageCookie: string = 'service_messages';
+
+const activityTrackerMode: string = 'mc-activity-tracker-mode';
 
 export class AppConstants {
   static FOOTER_DATA = null;
@@ -223,6 +223,7 @@ export class AppConstants {
   static CASE_DETAILS_URL = caseDetailsUrl;
   static SERVICE_MESSAGES_FEATURE_TOGGLE_KEY = serviceMessagesFeatureToggleKey;
   static SERVICE_MESSAGE_COOKIE = serviceMessageCookie;
+  static ACTIVITY_TRACKER_MODE = activityTrackerMode;
 }
 
 export const LD_FLAG_REMOVE_USER_FROM_CASE_MC: string = 'remove-user-from-case-mc';

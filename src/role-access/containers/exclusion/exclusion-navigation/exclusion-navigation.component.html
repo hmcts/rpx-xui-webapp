@@ -1,0 +1,26 @@
+<a class="govuk-back-link" href="javascript:void(0)"
+   *ngIf="isVisible((navigationCurrentState$ | async), backVisibilityStates)"
+   (click)="onEventTrigger(exclusionNavigationEvent.BACK)">Back</a>
+<div>
+  <ng-content></ng-content>
+</div>
+<div class="govuk-button-group">
+  <button class="govuk-button govuk-!-margin-right-3"
+          type="button"
+          *ngIf="isVisible((navigationCurrentState$ | async), continueVisibilityStates)"
+          (click)="onEventTrigger(exclusionNavigationEvent.CONTINUE)">Continue
+  </button>
+  <button class="govuk-button govuk-!-margin-right-3"
+          type="button"
+          *ngIf="isVisible((navigationCurrentState$ | async), confirmExclusionButtonVisibilityStates)"
+          (click)="onEventTrigger(exclusionNavigationEvent.CONFIRM_EXCLUSION)">Confirm exclusion
+  </button>
+  <div class="govuk-grid-column-full">
+    <p>
+      <a class='govuk-body'
+         *ngIf="isVisible((navigationCurrentState$ | async), cancelButtonVisibilityStates)"
+         (click)="onEventTrigger(exclusionNavigationEvent.CANCEL)"
+         href="javascript:void(0)">Cancel</a>
+    </p>
+  </div>
+</div>

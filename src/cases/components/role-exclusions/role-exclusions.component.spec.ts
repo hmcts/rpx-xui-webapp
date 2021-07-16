@@ -29,7 +29,7 @@ describe('RoleExclusionsComponent', () => {
         fixture.detectChanges();
     }));
 
-    it('Add link display', () => {
+    it('Should always show the Add link display', () => {
         const element = fixture.debugElement.nativeElement;
         const rowElement = element.querySelector('.govuk-link');
         expect(rowElement.getAttribute('routerlink')).toEqual('/cases/addExclusion');

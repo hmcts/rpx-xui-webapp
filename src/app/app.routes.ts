@@ -39,6 +39,11 @@ export const ROUTES: Routes = [
     canActivate: [AuthGuard, AcceptTermsGuard],
     loadChildren: '../work-allocation/work-allocation.module#WorkAllocationModule'
   },
+  {
+    path: 'role-access',
+    canActivate: [AuthGuard, AcceptTermsGuard],
+    loadChildren: '../role-access/role-access.module#RoleAccessModule'
+  },
   // TODO: remove redundant redirections
   { path: 'case/:jurisdiction/:case-type/:cid', redirectTo: 'cases/case-details/:cid', pathMatch: 'full' },
   { path: 'case/:cid', redirectTo: 'cases/case-details/:cid', pathMatch: 'full' },

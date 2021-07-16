@@ -201,7 +201,7 @@ defineSupportCode(function ({ Given, When, Then }) {
     await expect(loginPage.dashboard_header.getText())
       .to
       .eventually
-      .contains('Case List');
+      .contains('Case list');
 
     await BrowserUtil.waitForLD();
 

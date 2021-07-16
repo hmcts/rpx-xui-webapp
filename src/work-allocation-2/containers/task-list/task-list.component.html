@@ -102,6 +102,6 @@
   <tr class="govuk-table__row footer-row" [ngClass]="{ shown: tasks?.length === 0 }"
     [attr.aria-hidden]="tasks?.length !== 0" cdk-footer-row *cdkFooterRowDef="['footer']"></tr>
 
-  </table>
+</table>
 
 <ccd-pagination [autoHide]="true" (pageChange)="paginationEvent.emit($event)"></ccd-pagination>

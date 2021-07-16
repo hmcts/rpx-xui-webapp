@@ -35,6 +35,34 @@ export interface Location extends LocationSummary {
   services: string[];
 }
 
+export interface CaseSearchParameter {
+  ccdId?: string;
+  eventId?: string;
+  jurisdiction?: string[];
+  location?: string[];
+  postEventState?: string;
+  preEventState?: string;
+  state?: string[];
+  user?: string[];
+}
+
+export interface CaseSearchParameters {
+  parameters: CaseSearchParameter[];
+}
+
+export interface SearchCaseParameter {
+  key: string;
+  operator: string;
+  values: string[];
+}
+
+export interface SearchCaseRequest {
+  search_parameters: SearchCaseParameter[];
+  sorting_parameters: SortParameter[];
+  search_by?: string;
+  pagination_parameters?: PaginationParameter;
+}
+
 export interface SearchTaskParameter {
   key: string;
   operator: string;

@@ -1,13 +1,14 @@
 import { expect } from 'chai';
-
+import { mockReq } from 'sinon-express-mock';
 import { ASSIGN, CLAIM, CLAIM_AND_GO, COMPLETE, GO, REASSIGN, RELEASE, TaskPermission } from './constants/actions';
 import { JUDICIAL_AVAILABLE_TASKS, JUDICIAL_MY_TASKS } from './constants/mock.data';
-import { Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/task';
-import { applySearchFilter, assignActionsToTasks, getActionsByPermissions, mapCaseworkerData, mapCaseworkerPrimaryLocation, prepareGetTaskUrl,
-  preparePaginationUrl,
-  preparePostTaskUrlAction, prepareSearchTaskUrl } from './util';
-  import { mockReq } from 'sinon-express-mock';
+import { Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/common';
 import { PersonDomain } from './interfaces/person';
+import {
+  applySearchFilter, assignActionsToTasks, getActionsByPermissions, mapCaseworkerData, mapCaseworkerPrimaryLocation, prepareGetTaskUrl,
+  preparePaginationUrl,
+  preparePostTaskUrlAction, prepareSearchTaskUrl
+} from './util';
 
 describe('workAllocation.utils', () => {
 

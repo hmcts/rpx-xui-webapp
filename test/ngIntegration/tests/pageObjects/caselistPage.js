@@ -22,6 +22,16 @@ class CaseListPage{
         }
     }
 
+    async isDynamicFilterDisplayed(){
+        try{
+            await BrowserWaits.waitForElement(this.dynamicFiltersContainer);
+            return true;
+        }catch(err){
+            return false;
+        }
+        
+    }
+
     async isWorkbasketFilterDisplayed(fieldConfig){
         // await this.amOnPage();
         await BrowserWaits.waitForElement(this.dynamicFiltersContainer);

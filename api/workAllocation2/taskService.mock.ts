@@ -96,6 +96,10 @@ export const init = () => {
     let allTasks = [...JUDICIAL_AVAILABLE_TASKS.tasks, ...JUDICIAL_MY_TASKS.tasks];
     allTasks = sort(allTasks,
       getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
+    if (body.search_parameters && body.search_parameters.find(param => param.key === 'location')) {
+      const locations = body.search_parameters.find(param => param.key === 'location').values;
+      allTasks = allTasks.filter(task => locations.some(loc => task.location_id === loc));
+    }
     return [
       200,
       {
@@ -205,6 +209,7 @@ export const init = () => {
       ];
     }
   });
+  return mock;
 };
 
 export const getSortName = (sortName: string): string => {

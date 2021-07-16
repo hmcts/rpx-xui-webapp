@@ -2,19 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ConfigConstants } from '../../components/constants';
-import { InfoMessage, InfoMessageType, TaskActionType, TaskService, TaskSort } from '../../enums';
+import { InfoMessage, InfoMessageType, SortOrder, TaskActionType, TaskService } from '../../enums';
+import { FieldConfig } from '../../models/common';
+import { RouteData } from '../../models/common/route-data';
 import { InformationMessage } from '../../models/comms';
-import { TaskFieldConfig, TaskServiceConfig } from '../../models/tasks';
+import { TaskServiceConfig } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { ACTION } from '../../services/work-allocation-task.service';
 import { handleFatalErrors } from '../../utils';
 
-interface RouteData {
-  verb: TaskActionType;
-  successMessage: InfoMessage;
-  description?: string;
-  actionTitle?: string;
-}
 
 @Component({
   selector: 'exui-task-action-container',
@@ -34,7 +30,7 @@ export class TaskActionContainerComponent implements OnInit {
     private readonly messageService: InfoMessageCommService
   ) {}
 
-  public get fields(): TaskFieldConfig[] {
+  public get fields(): FieldConfig[] {
     return ConfigConstants.TaskActionsWithAssignee;
   }
 
@@ -48,7 +44,7 @@ export class TaskActionContainerComponent implements OnInit {
 
   public taskServiceConfig: TaskServiceConfig = {
     service: TaskService.IAC,
-    defaultSortDirection: TaskSort.ASC,
+    defaultSortDirection: SortOrder.ASC,
     defaultSortFieldName: 'dueDate',
     fields: this.fields,
   };

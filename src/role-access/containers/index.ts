@@ -20,6 +20,6 @@ export * from './exclusion/check-answers/check-answers.component';
 export * from './exclusion/choose-exclusion/choose-exclusion.component';
 export * from './exclusion/choose-person-role/choose-person-role.component';
 export * from './exclusion/describe-exclusion/describe-exclusion.component';
-export * from'./exclusion/exclusion-home/exclusion-home.component';
+export * from './exclusion/exclusion-home/exclusion-home.component';
 export * from './exclusion/exclusion-navigation/exclusion-navigation.component';
 export * from './exclusion/find-person/find-person.component';

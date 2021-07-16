@@ -2,7 +2,7 @@ import { FormGroup } from '@angular/forms';
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'exui-describe-exclusion',
+  selector: 'exui-describe-exclusion2',
   templateUrl: './describe-exclusion.component.html',
   styleUrls: ['./describe-exclusion.component.scss']
 })

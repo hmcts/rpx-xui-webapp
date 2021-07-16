@@ -9,6 +9,7 @@ import { StoreModule } from '@ngrx/store';
 import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
 import { SharedModule } from '../app/shared/shared.module';
 import * as fromContainers from './containers';
+import * as fromComponents from './components';
 import { roleAccessRouting } from './role-access.routes';
 import { effects, reducers } from './store';
 
@@ -24,7 +25,7 @@ import { effects, reducers } from './store';
     ReactiveFormsModule,
     ExuiCommonLibModule
   ],
-  declarations: [...fromContainers.containers],
+  declarations: [...fromContainers.containers, ...fromComponents.components],
   entryComponents: [],
   providers: [{
     provide: AbstractAppConfig,

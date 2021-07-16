@@ -6,7 +6,7 @@ import { Observable, Subscription } from 'rxjs';
 
 import { ErrorMessage } from '../../../app/models';
 import * as fromRoot from '../../../app/store';
-import {RoleAllocationType } from '../../../cases/enums/allocation-type';
+import {RoleAllocationType } from '../../models/enums/allocation-type';
 
 @Component({
   selector: 'exui-allocate-role-container',

@@ -15,7 +15,7 @@ export class FindPersonComponent implements OnInit {
   constructor(private readonly store: Store<fromFeature.State>) {
   }
 
-  ngOnInit() {
+  public ngOnInit(): void {
   }
 
   public navigationHandler(navEvent: ExclusionNavigationEvent) {

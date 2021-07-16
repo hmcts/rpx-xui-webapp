@@ -5,14 +5,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { Observable, of, throwError } from 'rxjs';
+import { PersonDomain } from '../../../../api/workAllocation2/interfaces/person';
 import { TaskActionConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { InfoMessage, InfoMessageType, TaskActionType } from '../../enums';
 import { InformationMessage } from '../../models/comms';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
-import { REDIRECTS } from '../../utils';
-import { PersonDomain } from '../../../../api/workAllocation2/interfaces/person';
 import { getMockTasks } from '../../tests/utils.spec';
+import { REDIRECTS } from '../../utils';
 import { TaskAssignmentConfirmComponent } from './task-assignment-confirm.component';
 
 @Component({

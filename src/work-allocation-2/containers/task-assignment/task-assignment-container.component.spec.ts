@@ -113,7 +113,7 @@ describe('TaskAssignmentContainerComponent', () => {
 
   it('should re-direct to assign task confirmation page', () => {
     const mockRouter = jasmine.createSpyObj('router', ['navigate']);
-    const compo = new TaskAssignmentContainerComponent(null, null, mockRouter, null);
+    const compo = new TaskAssignmentContainerComponent(null, mockRouter);
     const findPersonControl = new FormControl('test');
     compo.formGroup.addControl('findPersonControl', findPersonControl);
     compo.verb = TaskActionType.Reassign;
@@ -127,7 +127,7 @@ describe('TaskAssignmentContainerComponent', () => {
 
   it('should not re-direct to assign task confirmation page and throw form group error', () => {
     const mockRouter = jasmine.createSpyObj('router', ['navigate']);
-    const compo = new TaskAssignmentContainerComponent(null, null, mockRouter, null);
+    const compo = new TaskAssignmentContainerComponent(null, mockRouter);
     const findPersonControl = new FormControl('');
     compo.formGroup.addControl('findPersonControl', findPersonControl);
     compo.verb = TaskActionType.Reassign;
@@ -140,7 +140,7 @@ describe('TaskAssignmentContainerComponent', () => {
     window.history.pushState({ returnUrl: 'all-work/tasks#manage_0d22d838', showAssigneeColumn: false }, '',
       'all-work/tasks#manage_0d22d838');
     const mockRouter = jasmine.createSpyObj('router', ['navigate']);
-    const tacComponent = new TaskAssignmentContainerComponent(null, null, mockRouter, null);
+    const tacComponent = new TaskAssignmentContainerComponent(null, mockRouter);
     const findPersonControl = new FormControl('test');
     tacComponent.formGroup.addControl('findPersonControl', findPersonControl);
     tacComponent.cancel();
@@ -150,7 +150,7 @@ describe('TaskAssignmentContainerComponent', () => {
   it('should redirect to the fallback URL on cancelling task assignment, if the return URL is not in the history', () => {
     window.history.pushState({}, '');
     const mockRouter = jasmine.createSpyObj('router', ['navigate']);
-    const tacComponent = new TaskAssignmentContainerComponent(null, null, mockRouter, null);
+    const tacComponent = new TaskAssignmentContainerComponent(null, mockRouter);
     const findPersonControl = new FormControl('test');
     tacComponent.formGroup.addControl('findPersonControl', findPersonControl);
     tacComponent.cancel();
@@ -165,7 +165,7 @@ describe('TaskAssignmentContainerComponent', () => {
     };
     fixture.detectChanges();
     const mockRouter = jasmine.createSpyObj('router', ['navigate']);
-    const tacComponent = new TaskAssignmentContainerComponent(null, null, mockRouter, null);
+    const tacComponent = new TaskAssignmentContainerComponent(null, mockRouter);
     const findPersonControl = new FormControl('test');
     tacComponent.formGroup.addControl('findPersonControl', findPersonControl);
     const titleElement = fixture.debugElement.nativeElement.querySelector('.govuk-caption-l');

@@ -25,17 +25,15 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
 
   public formGroup: FormGroup = new FormGroup({});
   public person: Person;
-  private assignTask: Subscription;
+  private readonly assignTask: Subscription;
   public taskId: string;
   public rootPath: string;
 
   public defaultPerson: string;
 
   constructor(
-    private readonly taskService: WorkAllocationTaskService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly messageService: InfoMessageCommService
   ) { }
 
   public get fields(): TaskFieldConfig[] {

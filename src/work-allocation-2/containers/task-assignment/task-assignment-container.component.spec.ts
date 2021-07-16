@@ -65,7 +65,7 @@ describe('TaskAssignmentContainerComponent', () => {
         WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientModule, ExuiCommonLibModule, PaginationModule,
         RouterTestingModule.withRoutes(
           [
-            { path: 'mywork/list', component: NothingComponent }
+            { path: 'my-work/list', component: NothingComponent }
           ]
         )
       ],
@@ -97,10 +97,10 @@ describe('TaskAssignmentContainerComponent', () => {
     component = wrapper.appComponentRef;
 
     wrapper.tasks = null;
-    window.history.pushState({ returnUrl: 'mywork/list', showAssigneeColumn: false }, '', 'mywork/list');
+    window.history.pushState({ returnUrl: 'my-work/list', showAssigneeColumn: false }, '', 'my-work/list');
+
     // Deliberately defer fixture.detectChanges() call to each test, to allow overriding the ActivatedRoute snapshot
     // data with a different verb ("Assign")
-    // fixture.detectChanges();
   });
 
   afterEach(() => {

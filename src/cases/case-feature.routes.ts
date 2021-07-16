@@ -3,6 +3,7 @@ import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CaseResolver, editorRouting, viewerRouting as caseViewRouting } from '@hmcts/ccd-case-ui-toolkit';
 import { HealthCheckGuard } from 'src/app/shared/guards/health-check.guard';
+import { RoleAllocationConstants } from './components/constants';
 import {
   CaseCreateSubmitComponent,
   CasesCreateComponent,
@@ -37,14 +38,6 @@ export const ROUTES: Routes = [
           }
         },
         {
-          path: 'case-share',
-          component: CaseShareComponent,
-          canActivate: [ HealthCheckGuard ],
-          data: {
-            title: 'HMCTS Share Cases | Case Share'
-          }
-        },
-        {
           path: 'allocate-role',
           canActivate: [HealthCheckGuard],
           data: {
@@ -54,16 +47,27 @@ export const ROUTES: Routes = [
             {
               path: 'exclusion',
               component: AllocateRoleContainerComponent,
+              data: RoleAllocationConstants.Exclusion
             },
             {
               path: 'judiciary',
               component: AllocateRoleContainerComponent,
+              data: RoleAllocationConstants.Judiciary
             },
             {
               path: 'legal-ops',
               component: AllocateRoleContainerComponent,
+              data: RoleAllocationConstants.LegalOps
             }
           ]
+        },
+        {
+          path: 'case-share',
+          component: CaseShareComponent,
+          canActivate: [ HealthCheckGuard ],
+          data: {
+            title: 'HMCTS Share Cases | Case Share'
+          }
         },
         {
           path: 'case-share-confirm',

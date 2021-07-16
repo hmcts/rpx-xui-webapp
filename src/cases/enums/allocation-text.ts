@@ -1,12 +1,16 @@
 export enum RoleAllocationTitleText {
-  Exclusion = 'Choose who the exclusion is for',
-  NonExclusion = 'Choose how to allocate the role'
+  ExclusionAllocate = 'Choose who the exclusion is for',
+  ExclusionChoose = "Choose the person's role",
+  NonExclusionAllocate = 'Choose how to allocate the role',
+  NonExclusionChoose = "Choose a role"
 }
 
 export enum RoleAllocationCaptionText {
   Exclusion = 'Add an exclusion',
-  Judiciary = 'Allocate a hearing judge',
-  LegalOps = 'Allocate a legal ops case manager'
+  JudiciaryAllocate = 'Allocate a hearing judge',
+  JudiciaryChoose = 'Allocate a judicial role',
+  LegalOpsAllocate = 'Allocate a legal ops case manager',
+  LegalOpsChoose = 'Allocate a legal ops role'
 }
 
 export enum RoleAllocationRadioText {

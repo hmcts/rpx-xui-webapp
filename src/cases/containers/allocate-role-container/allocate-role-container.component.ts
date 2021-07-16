@@ -28,8 +28,8 @@ export class AllocateRoleContainerComponent implements OnDestroy, OnInit {
   // relating to describe exclusion
   public DESCRIBE_EXCLUSION_CONTROL_NAME = 'text';
 
-  // temporary boolean to switch between pages
-  public describingExclusion: boolean = false;
+  // this will be replaced by ngrx functionality in future
+  public describingExclusion: string = 'choose';
 
   constructor(
     private readonly store: Store<fromRoot.State>,

@@ -51,7 +51,7 @@ describe('AllocateRoleContainerComponent', () => {
     fixture = TestBed.createComponent(AllocateRoleContainerComponent);
     component = fixture.componentInstance;
     spyOnPipeToStore.and.returnValue(of([{isCaseAllocator: true}, {}]));
-    component.describingExclusion = false;
+    component.describingExclusion = 'allocate';
     fixture.detectChanges();
 
   });

@@ -3,41 +3,38 @@ import { Component, Input, OnInit } from '@angular/core';
 import { RoleAllocationCaptionText, RoleAllocationRadioText, RoleAllocationTitleText, RoleAllocationType } from '../../../cases/enums';
 
 @Component({
-  selector: 'exui-allocate-role',
-  templateUrl: './allocate-role.component.html'
+  selector: 'exui-choose-role',
+  templateUrl: './choose-role.component.html'
 })
 
-export class AllocateRoleComponent implements OnInit {
+export class ChooseRoleComponent implements OnInit {
 
   @Input() public roleAllocation: RoleAllocationType;
   @Input() public includeOther: boolean;
+  @Input() public roles: string[] = ['Lead judge', 'Hearing judge'];
 
-  public title = RoleAllocationTitleText.NonExclusionAllocate;
+  public title = RoleAllocationTitleText.NonExclusionChoose;
   public caption: RoleAllocationCaptionText;
-  public selfText = RoleAllocationRadioText.NonExclusionSelf;
-  public otherText = RoleAllocationRadioText.NonExclusionOther;
 
   constructor() {}
 
   public ngOnInit(): void {
-    this.setAllocationPage();
+    this.setChoosePage();
   }
 
-  private setAllocationPage(): void {
+  private setChoosePage(): void {
     switch (this.roleAllocation) {
       case RoleAllocationType.Exclusion: {
-        this.title = RoleAllocationTitleText.ExclusionAllocate;
+        this.title = RoleAllocationTitleText.ExclusionChoose;
         this.caption = RoleAllocationCaptionText.Exclusion;
-        this.selfText = RoleAllocationRadioText.ExclusionSelf;
-        this.otherText = RoleAllocationRadioText.ExclusionOther;
         break;
       }
       case RoleAllocationType.Judiciary: {
-        this.caption = RoleAllocationCaptionText.JudiciaryAllocate;
+        this.caption = RoleAllocationCaptionText.JudiciaryChoose;
         break;
       }
       case RoleAllocationType.LegalOps: {
-        this.caption = RoleAllocationCaptionText.LegalOpsAllocate;
+        this.caption = RoleAllocationCaptionText.LegalOpsChoose;
         break;
       }
       default: {

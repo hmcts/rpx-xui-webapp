@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 import { RoleExclusion } from '../../../cases/models/role-exclusions/role-exclusion.model';
 import { RoleExclusionsService } from '../../../cases/services';
 
@@ -9,9 +10,9 @@ import { RoleExclusionsService } from '../../../cases/services';
 
 export class RoleAccessComponent implements OnInit {
   constructor(private readonly roleExclusionsService: RoleExclusionsService) { }
-  public exclusions: RoleExclusion[];
+  public exclusions$: Observable<RoleExclusion[]>;
 
   public ngOnInit(): void {
-    this.roleExclusionsService.getCurrentUserRoleExclusions().subscribe(exclusions => this.exclusions = exclusions);
+    this.exclusions$ = this.roleExclusionsService.getCurrentUserRoleExclusions();
   }
 }

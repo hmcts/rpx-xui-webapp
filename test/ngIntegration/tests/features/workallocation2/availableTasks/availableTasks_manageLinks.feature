@@ -38,7 +38,7 @@ Feature: WA Release 2: My work - Available tasks - Manage links
 
         Examples:
             | UserIdentifier     | UserType   | Roles                                              |
-            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
+            # | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
             | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
     
@@ -64,7 +64,7 @@ Feature: WA Release 2: My work - Available tasks - Manage links
 
         Examples:
             | UserIdentifier     | UserType   | Roles                                              | taskAtRow | actionLink                  | landingPage  | bannermessage1                                               | bannermessage2               |
-            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer | 4         | Assign to me                | My work      | You've assigned yourself a task. It's available in My tasks. | The list has been refreshed. |
-            | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    | 1         | Assign to me and go to case | Case details | You've assigned yourself a task. It's available in My tasks. |                              |
+            # | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer | 4         | Assign to me                | My work      | You've assigned yourself a task. It's available in My tasks. | The list has been refreshed. |
+            # | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    | 1         | Assign to me and go to case | Case details | You've assigned yourself a task. It's available in My tasks. |                              |
 
 

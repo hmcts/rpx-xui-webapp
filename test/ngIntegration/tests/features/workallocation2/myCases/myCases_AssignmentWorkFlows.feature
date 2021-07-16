@@ -3,7 +3,7 @@ Feature: WA Release 2: My cases - Manage links
 
     Background: Mock and browser setup
         Given I init MockApp
-        Given I set MOCK tasks with permissions for view "My tasks" and assigned state ""
+        Given I set MOCK workallocation cases with permissions for view "My tasks" and assigned state ""
             | Permissions | Count |
             | Manage      | 100   |
             | Read        | 40    |
@@ -31,7 +31,9 @@ Feature: WA Release 2: My cases - Manage links
         Given I navigate to home page
 
         When I click on primary navigation header tab "My work", I see selected tab page displayed
-        Then I validate tasks count in page 25
+        When I navigate to My work sub navigation tab "My cases"
+
+        Then I validate work allocation cases count in page 25
 
         When I open Manage link for task at row <taskAtRow>
         Then I see action link "<action>" is present for task with Manage link open
@@ -79,7 +81,9 @@ Feature: WA Release 2: My cases - Manage links
         Given I navigate to home page
 
         When I click on primary navigation header tab "My work", I see selected tab page displayed
-        Then I validate tasks count in page 25
+        When I navigate to My work sub navigation tab "My cases"
+
+        Then I validate work allocation cases count in page 25
 
         When I open Manage link for task at row <taskAtRow>
         Then I see action link "<action>" is present for task with Manage link open
@@ -125,7 +129,9 @@ Feature: WA Release 2: My cases - Manage links
         Given I navigate to home page
 
         When I click on primary navigation header tab "My work", I see selected tab page displayed
-        Then I validate tasks count in page 25
+        When I navigate to My work sub navigation tab "My cases"
+
+        Then I validate work allocation cases count in page 25
 
         When I open Manage link for task at row <taskAtRow>
         Then I see action link "<action>" is present for task with Manage link open

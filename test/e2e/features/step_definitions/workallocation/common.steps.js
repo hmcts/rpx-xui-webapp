@@ -221,8 +221,16 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await findPersonPage.clickCancelLink();
     });
 
-    When(' I click cancel in check your changes of work allocation', async function(){
-       await taskCheckYourChangesPage.clickCancelLink(); 
+    Then('I validate tasks count in page {int}', async function (tasksCount) {
+
+        expect(parseInt(await taskListTable.getTaskListCountInTable()), 'Task count does not match expected ').to.equal(tasksCount);
+        if (tasksCount === 0) {
+            expect(await taskListTable.isTableFooterDisplayed(), "task list table footer is not displayed").to.be.true;
+            expect(await taskListTable.getTableFooterMessage(), "task list table footer message when 0 tasks are displayed").to.equal("You have no assigned tasks.");
+        } else {
+            expect(await taskListTable.isTableFooterDisplayed(), "task list table footer is displayed").to.be.false;
+        }
     });
+
 
 });

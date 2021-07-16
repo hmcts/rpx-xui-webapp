@@ -29,10 +29,6 @@ describe('RoleExclusionsComponent', () => {
         fixture.detectChanges();
     }));
 
-    it('Is Truthy', () => {
-        expect(component).toBeTruthy();
-    });
-
     it('Add link display', () => {
         const element = fixture.debugElement.nativeElement;
         const rowElement = element.querySelector('.govuk-link');

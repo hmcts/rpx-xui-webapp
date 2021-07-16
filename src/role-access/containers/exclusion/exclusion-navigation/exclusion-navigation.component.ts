@@ -12,8 +12,7 @@ import * as fromFeature from '../../../store';
 
 @Component({
   selector: 'exui-exclusion-navigation',
-  templateUrl: 'exclusion-navigation.component.html',
-  styleUrls: ['exclusion-navigation.component.scss']
+  templateUrl: 'exclusion-navigation.component.html'
 })
 export class ExclusionNavigationComponent implements OnInit {
 

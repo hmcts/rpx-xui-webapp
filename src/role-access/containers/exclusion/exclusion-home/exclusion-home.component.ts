@@ -60,7 +60,7 @@ export class ExclusionHomeComponent implements OnInit, OnDestroy {
     );
   }
 
-  public onNavEvent(event: ExclusionNavigationEvent) {
+  public onNavEvent(event: ExclusionNavigationEvent): void {
     this.navEvent = {
       event,
       timestamp: Date.now()
@@ -72,7 +72,7 @@ export class ExclusionHomeComponent implements OnInit, OnDestroy {
     return requiredNavigationState.includes(currentNavigationState);
   }
 
-  public navigationHandler(navEvent: ExclusionNavigationEvent) {
+  public navigationHandler(navEvent: ExclusionNavigationEvent): void {
     switch (navEvent) {
       case ExclusionNavigationEvent.BACK: {
         switch (this.navigationCurrentState) {
@@ -136,7 +136,7 @@ export class ExclusionHomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  public ngOnDestroy() {
+  public ngOnDestroy(): void {
     if (this.navigationCurrentStateSub) {
       this.navigationCurrentStateSub.unsubscribe();
     }

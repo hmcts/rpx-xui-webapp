@@ -1,9 +1,7 @@
 <a class="govuk-back-link" href="javascript:void(0)"
    *ngIf="isVisible((navigationCurrentState$ | async), backVisibilityStates)"
    (click)="onEventTrigger(exclusionNavigationEvent.BACK)">Back</a>
-<div>
-  <ng-content></ng-content>
-</div>
+<ng-content></ng-content>
 <div class="govuk-button-group">
   <button class="govuk-button govuk-!-margin-right-3"
           type="button"

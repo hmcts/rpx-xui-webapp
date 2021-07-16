@@ -11,7 +11,7 @@ export class RoleAccessComponent implements OnInit {
   constructor(private readonly roleExclusionsService: RoleExclusionsService) { }
   public exclusions: RoleExclusion[];
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     this.roleExclusionsService.getCurrentUserRoleExclusions().subscribe(exclusions => this.exclusions = exclusions);
   }
 }

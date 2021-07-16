@@ -39,7 +39,7 @@ describe('RoleExclusionsComponent', () => {
         expect(rowElement.getAttribute('routerlink')).toEqual('/cases/addExclusion');
     });
 
-    it('no exclusions message', () => {
+    it('should show the no exclusions message', () => {
         const element = fixture.debugElement.nativeElement;
         const rowElement = element.querySelector('.govuk-summary-list__value');
         expect(rowElement).not.toBeNull();

@@ -35,7 +35,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I see work filter button displayed', async function () {
-        expect(await myWorkPage.showHideWorkFilterBtn.isDisplayed()).to.be.true
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await myWorkPage.showHideWorkFilterBtn.isDisplayed()).to.be.true
+        }); 
     });
 
     Then('I validate work filter button text is {string}', async function (btntext) {
@@ -43,7 +45,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     When('I click work filter button', async function () {
-        await myWorkPage.showHideWorkFilterBtn.click();
+        await BrowserWaits.retryWithActionCallback(async () => await myWorkPage.showHideWorkFilterBtn.click() );
     });
 
     Then('I validate location filter is displayed', async function () {
@@ -167,7 +169,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     When('I click cancel in check your changes of work allocation', async function () {
-        await findPersonPage.clickCancelLink();
+        await taskCheckYourChangesPage.clickCancelLink();
     });
 
     Then('I see task, check your changes page for action {string} displayed', async function(action){

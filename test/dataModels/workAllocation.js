@@ -48,6 +48,25 @@ class WorkAllocationModels{
         };
     }
 
+    getRelease2Case() {
+        return {
+            "id": v4(),
+            "task_title":"Review FTPA application",
+            "startDate": "2021-05-12T16:00:00.000+0000",
+            "endDate": "2021-05-12T16:00:00.000+0000",
+            "location_name": "Glasgow",
+            "location": "765320",
+            "case_id": "1620409659381330",
+            "case_category": "Protection",
+            "case_name": "Jo Fly " + Math.floor((Math.random() * 100) + 1),
+            "case_role":"Lead Judge",
+            "jurisdiction":"Immigration and Asylum",
+            "permissions": [],
+            "actions": [],
+            "assignee": v4()
+        };
+    }
+
     getLocation(){
         return {
             id:"12345",
@@ -79,6 +98,9 @@ class WorkAllocationModels{
         let actionsView = {};
         view = view.toLowerCase();
         assignState = assignState ? assignState.toLowerCase() : '';
+        if (taskActionsMatrix[view] === undefined) {
+            throw new Error(`View ${view} is not modeled in Mock data model. test requires update`);
+        }
         if (view.includes('my')) {
             actionsView = taskActionsMatrix['mytasks'];
         } else if (view.includes('available')) {
@@ -90,6 +112,36 @@ class WorkAllocationModels{
 
         let allowedActions = {};
         for (let i = 0; i < permissions.length; i++) {
+            if (actionsView[permissions[i]] === undefined) {
+                throw new Error(`Permission ${permissions[i]} is not modeled in Mock data model. test requires update`);
+            }
+            let permissionActions = actionsView[permissions[i]];
+
+            for (let i = 0; i < permissionActions.length; i++) {
+                allowedActions[permissionActions[i].id] = permissionActions[i];
+            }
+        }
+
+        return Object.values(allowedActions);
+    }
+
+    getRelease2CaseActions(permissions, view, assignState) {
+        const actions = [];
+        let actionsView = {};
+        view = view.toLowerCase();
+        assignState = assignState ? assignState.toLowerCase() : '';
+        if (caseActionsMatrix[view] === undefined) {
+            throw new Error(`View ${view} is not modeled in Mock data model. test requires update`);
+        }
+        if (view.includes('mycases')) { 
+            actionsView = caseActionsMatrix['mycases'];
+        } 
+
+        let allowedActions = {};
+        for (let i = 0; i < permissions.length; i++) {
+            if (actionsView[permissions[i]]=== undefined) {
+                throw new Error(`Permission ${permissions[i]} is not modeled in Mock data model. test requires update`);
+            }
             let permissionActions = actionsView[permissions[i]];
 
             for (let i = 0; i < permissionActions.length; i++) {
@@ -100,7 +152,6 @@ class WorkAllocationModels{
         return Object.values(allowedActions);
     }
 }
-
 
 
 
@@ -146,6 +197,16 @@ const taskActionsMatrix = {
             Execute: [ACTIONS.MarkAsDone],
             Cancel: [ACTIONS.Cancel]
         }
+    }
+}
+
+const caseActionsMatrix = {
+    mycases: {
+        Read: [],
+        Refer: [],
+        Manage: [],
+        Execute: [],
+        Cancel: []
     }
 }
 

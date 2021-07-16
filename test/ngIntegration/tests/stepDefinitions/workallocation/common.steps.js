@@ -33,10 +33,14 @@ const ArrayUtil = require("../../../../e2e/utils/ArrayUtil");
 defineSupportCode(function ({ And, But, Given, Then, When }) {
     const taskListTable = new TaskListTable();
     When('I click task list pagination link {string} and wait for req reference {string} not null', async function (paginationLinktext, reference) {
-        
+        await taskListTable.waitForTable();
         await BrowserWaits.retryWithActionCallback(async () => {
-            await browserUtil.addTextToElementWithCssSelector('tbody tr:nth-of-type(1) .cdk-column-case_category exui-task-field', 'Sort test', true);
             
+            const val = await browserUtil.addTextToElementWithCssSelector('tbody tr .cdk-column-case_category exui-task-field,tbody tr .cdk-column-case_category exui-work-field', 'Sort test', true);
+            if (val !== "success"){
+                throw new Error(JSON.stringify(val));
+
+           } 
             await taskListTable.clickPaginationLink(paginationLinktext);
             await BrowserWaits.waitForConditionAsync(async () => {
                 const caseCatColVal = await taskListTable.getColumnValueForTaskAt('Case category', 1);
@@ -65,18 +69,32 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         CucumberReporter.AddMessage("Req body received:");
         CucumberReporter.AddJson(reqBody);
         const reqSearchParams = reqBody.searchRequest.search_parameters;
-        for (let i = 0; i < datatableHash.length; i++){
+        for (let i = 0; i < datatableHash.length; i++) {
             searchHash = datatableHash[i];
             const searchParamObj = await ArrayUtil.filter(reqSearchParams, async (searchObj) => searchObj.key === searchHash.key);
+           
             softAssert.setScenario(`Search param with key ${searchHash.key} is present`);
-            await softAssert.assert(async () => expect(searchParamObj.length > 0).to.be.true);
-            if (searchParamObj.length > 0){
-                softAssert.setScenario(`Search param with key ${searchHash.key} and values ${searchHash.value} is present`);
-                await softAssert.assert(async () => expect(searchParamObj[0].values).to.includes(searchHash.value));
-            } 
+            if (searchHash.keyIsPresent){
+                await softAssert.assert(async () => expect(searchParamObj.length > 0).to.equal(searchHash.keyIsPresent.toLowerCase() ==="true"));
+            }else{  
+                await softAssert.assert(async () => expect(searchParamObj.length > 0).to.be.true);
+            }
+             
+            if (searchParamObj.length > 0) {
+                if (searchHash.value && searchHash.value !== ""){
+                    softAssert.setScenario(`Search param with key ${searchHash.key} and values ${searchHash.value} is present`);
+                    await softAssert.assert(async () => expect(searchParamObj[0].values).to.includes(searchHash.value));
+                }
+
+                if (searchHash.size) {
+                    softAssert.setScenario(`Search param with key ${searchHash.key} and has value count ${searchHash.size}`);
+                    await softAssert.assert(async () => expect(searchParamObj[0].values.length).to.equal(parseInt(searchHash.size)));
+                }
+                
+            }
         }
         softAssert.finally();
-        
+
     });
 
     Then('I validate task search request with reference {string} does not have search parameters', async function (requestReference, datatable) {

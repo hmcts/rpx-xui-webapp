@@ -104,16 +104,21 @@ defineSupportCode(({ Before,After }) => {
         CucumberReportLog.AddMessage("scenario completed with status : " + scenario.result.status);
         const world = this;
         try{
-            await CucumberReportLog.AddScreenshot(global.screenShotUtils);
-            let browserLog = await browser.manage().logs().get('browser');
             let browserErrorLogs = []
-            for (let browserLogCounter = 0; browserLogCounter < browserLog.length; browserLogCounter++) {
-                if (browserLog[browserLogCounter].level.value > 900) {
-                    browserErrorLogs.push(browserLog[browserLogCounter]);
+            if (scenario.result.status === 'failed'){
+                await CucumberReportLog.AddScreenshot(global.screenShotUtils);
+                let browserLog = await browser.manage().logs().get('browser');
+                
+                for (let browserLogCounter = 0; browserLogCounter < browserLog.length; browserLogCounter++) {
+                    if (browserLog[browserLogCounter].level.value > 900) {
+                        browserErrorLogs.push(browserLog[browserLogCounter]);
+                    }
                 }
+            }else{
+                CucumberReportLog.AddJson(browserErrorLogs);
+                browser.manage().logs().get('browser');
             }
-            CucumberReportLog.AddJson(browserErrorLogs);
-            browser.manage().logs().get('browser');
+            
             await CucumberReportLog.AddMessage("Cleared browser logs after successful scenario.");
             if (global.scenarioData['featureToggles']) {
                 //CucumberReportLog.AddJson(global.scenarioData['featureToggles'])

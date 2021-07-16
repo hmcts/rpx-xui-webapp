@@ -25,10 +25,13 @@ defineSupportCode(({ Before, After }) => {
         const scenarioId = scenario.pickle.name.split(' ').join('_').split('"').join('').split('/').join('');
         const scenarioServerPort = MockApp.serverPort;
         MockApp.init();
-        await MockApp.startServer(); 
-        await browser.driver.get(config.config.baseUrl);
-        await headerPage.waitForPrimaryNavDisplay();
-
+        await MockApp.startServer();
+        
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await browser.driver.get(config.config.baseUrl);
+            await headerPage.waitForPrimaryNavDisplay();
+        });
+        
         await browser.manage().addCookie({ name: 'scenarioMockPort', value: scenarioServerPort+"", domain: 'localhost:3000' });
         
         // done();

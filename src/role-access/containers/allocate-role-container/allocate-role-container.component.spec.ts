@@ -10,7 +10,7 @@ import { of } from 'rxjs/internal/observable/of';
 import { State } from '../../../app/store';
 import { RoleAllocationType } from '../../models/enums';
 
-import { AllocateRoleContainerComponent } from '../../../cases/containers';
+import { AllocateRoleContainerComponent } from './allocate-role-container.component';
 import { DescribeExclusionComponent } from 'src/role-access/components/exclusion/describe-exclusion/describe-exclusion.component';
 import { ErrorMessageComponent } from 'src/app/components/error-message/error-message.component';
 import { ReactiveFormsModule } from '@angular/forms';

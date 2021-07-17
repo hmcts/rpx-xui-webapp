@@ -2,7 +2,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { RoleExclusion } from 'src/cases/models/role-exclusions/role-exclusion.model';
+import { RoleExclusion } from 'src/role-access/models/role-exclusion.model';
 import { RoleExclusionsComponent } from './role-exclusions.component';
 
 @Component({ template: `<exui-role-exclusions [allowDelete]="allowDelete" [exclusions]="exclusions"></exui-role-exclusions>` })

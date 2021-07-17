@@ -15,7 +15,7 @@ import * as fromFeature from '../../../store';
 import { CheckAnswersComponent } from '../check-answers/check-answers.component';
 import { ChooseExclusionComponent } from '../choose-exclusion/choose-exclusion.component';
 import { ChoosePersonRoleComponent } from '../choose-person-role/choose-person-role.component';
-import { DescribeExclusionComponent } from '../describe-exclusion/describe-exclusion.component';
+import { DescribeExclusionContainerComponent } from '../describe-exclusion/describe-exclusion.component';
 import { FindPersonComponent } from '../find-person/find-person.component';
 
 @Component({
@@ -33,8 +33,8 @@ export class ExclusionHomeComponent implements OnInit, OnDestroy {
   @ViewChild('findPerson', {read: FindPersonComponent})
   public findPersonComponent: FindPersonComponent;
 
-  @ViewChild('describeExclusion', {read: DescribeExclusionComponent})
-  public describeExclusionComponent: DescribeExclusionComponent;
+  @ViewChild('describeExclusion', {read: DescribeExclusionContainerComponent})
+  public describeExclusionComponent: DescribeExclusionContainerComponent;
 
   @ViewChild('checkAnswers', {read: CheckAnswersComponent})
   public checkAnswersComponent: CheckAnswersComponent;

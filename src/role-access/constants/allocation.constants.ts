@@ -1,6 +1,6 @@
-import { RoleAllocationType } from '../../enums';
+import { RoleAllocationType } from '../models/enums';
 
-export const ROLE_ALLOCATION_CONSTANTS = {
+export const RoleAllocationConstants = {
   Exclusion: { allocation: RoleAllocationType.Exclusion },
   Judiciary: { allocation: RoleAllocationType.Judiciary },
   LegalOps: { allocation: RoleAllocationType.LegalOps }

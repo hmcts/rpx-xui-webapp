@@ -1,4 +1,4 @@
-
+@fullfunctional
 Feature: IA create case workflow
 
     Background:

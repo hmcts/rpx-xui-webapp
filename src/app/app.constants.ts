@@ -210,20 +210,20 @@ const serviceMessageCookie: string = 'service_messages';
 const activityTrackerMode: string = 'mc-activity-tracker-mode';
 
 export class AppConstants {
-  static FOOTER_DATA = null;
-  static FOOTER_DATA_NAVIGATION = FooterDataNavigation;
-  static APP_HEADER_TITLE = appHeaderTitle;
-  static ENVIRONMENT_NAMES = environmentNames;
-  static REDIRECT_URL = redirectUrl;
-  static HELP_CONTACT_DETAILS = helpContactDetails;
-  static DEFAULT_USER_THEME = defaultUserTheme;
-  static APPLICATION_USER_THEMES = applicationUserThemes;
-  static SIGNED_OUT_THEME = signedOutTheme;
-  static FEATURE_NAMES = FeatureNames;
-  static CASE_DETAILS_URL = caseDetailsUrl;
-  static SERVICE_MESSAGES_FEATURE_TOGGLE_KEY = serviceMessagesFeatureToggleKey;
-  static SERVICE_MESSAGE_COOKIE = serviceMessageCookie;
-  static ACTIVITY_TRACKER_MODE = activityTrackerMode;
+  public static FOOTER_DATA = null;
+  public static FOOTER_DATA_NAVIGATION = FooterDataNavigation;
+  public static APP_HEADER_TITLE = appHeaderTitle;
+  public static ENVIRONMENT_NAMES = environmentNames;
+  public static REDIRECT_URL = redirectUrl;
+  public static HELP_CONTACT_DETAILS = helpContactDetails;
+  public static DEFAULT_USER_THEME = defaultUserTheme;
+  public static APPLICATION_USER_THEMES = applicationUserThemes;
+  public static SIGNED_OUT_THEME = signedOutTheme;
+  public static FEATURE_NAMES = FeatureNames;
+  public static CASE_DETAILS_URL = caseDetailsUrl;
+  public static SERVICE_MESSAGES_FEATURE_TOGGLE_KEY = serviceMessagesFeatureToggleKey;
+  public static SERVICE_MESSAGE_COOKIE = serviceMessageCookie;
+  public static ACTIVITY_TRACKER_MODE = activityTrackerMode;
 }
 
 export const LD_FLAG_REMOVE_USER_FROM_CASE_MC: string = 'remove-user-from-case-mc';

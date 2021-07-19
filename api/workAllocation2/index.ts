@@ -303,7 +303,7 @@ export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Re
   }
 }
 
-export async function getPersonRoles(req: EnhancedRequest, res: Response, next: NextFunction) {
+export async function getRolesCategory(req: EnhancedRequest, res: Response, next: NextFunction) {
   const personRoles = [
     {roleId: 'judicial', roleName: 'Judicial'},
     {roleId: 'legalOps', roleName: 'Legal Ops'},

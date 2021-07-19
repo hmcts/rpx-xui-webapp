@@ -1,0 +1,39 @@
+<exui-app-header></exui-app-header>
+<div class="govuk-width-container">
+  <div class="page">
+    <main id="content" role="main">
+      <div class="govuk-grid-row">
+        <exui-exclusion-navigation (eventTrigger)="onNavEvent($event)">
+          <div class="govuk-main-wrapper">
+            <exui-choose-exclusion
+              #chooseExclusion
+              *ngIf="isComponentVisible(navigationCurrentState, chooseExclusionStates)"
+              [navEvent]="navEvent">
+            </exui-choose-exclusion>
+            <exui-choose-person-role
+              #choosePersonRole
+              *ngIf="isComponentVisible(navigationCurrentState, choosePersonRoleStates)"
+              [navEvent]="navEvent">
+            </exui-choose-person-role>
+            <exui-find-person
+              #findPerson
+              *ngIf="isComponentVisible(navigationCurrentState, findPersonVisibilityStates)"
+              [navEvent]="navEvent">
+            </exui-find-person>
+            <exui-describe-exclusion
+              #describeExclusion
+              *ngIf="isComponentVisible(navigationCurrentState, describeExclusionVisibilityStates)"
+              [navEvent]="navEvent">
+            </exui-describe-exclusion>
+            <exui-check-answers
+              #checkAnswers
+              *ngIf="isComponentVisible(navigationCurrentState, checkAnswersVisibilityStates)"
+              [navEvent]="navEvent">
+            </exui-check-answers>
+          </div>
+        </exui-exclusion-navigation>
+      </div>
+    </main>
+  </div>
+</div>
+<exui-app-footer></exui-app-footer>

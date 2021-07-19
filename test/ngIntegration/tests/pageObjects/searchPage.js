@@ -28,7 +28,13 @@ class SearchCasePage {
     }
     async isWorkbasketFilterDisplayed(fieldConfig) {
         await this.amOnPage();
-        return await this.dynamicFiltersContainer.$(`#dynamicFilters .form-group #${fieldConfig.field.id}`).isDisplayed();
+        let retryCounter = 0;
+        return await BrowserWaits.retryWithActionCallback(async () =>{
+            await BrowserWaits.waitForSeconds(1000 * retryCounter);
+            retryCounter++;
+            return await this.dynamicFiltersContainer.$(`#dynamicFilters .form-group #${fieldConfig.field.id}`).isDisplayed();
+        });
+        
     }
 
     async selectJurisdiction(option) {

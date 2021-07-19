@@ -1,5 +1,5 @@
-@ng
-Feature: WA Release 2: My work - My tasks - Manage links
+@ng @wa2 @wa
+Feature: WA Release 2: My work - My tasks - Task assignment
 
     Background: Mock and browser setup
         Given I init MockApp

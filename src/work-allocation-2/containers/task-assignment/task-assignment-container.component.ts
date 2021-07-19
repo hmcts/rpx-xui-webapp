@@ -41,7 +41,9 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   }
 
   private get returnUrl(): string {
-    let url: string = '/work/my-work/list';
+    // Default URL is '' because this is the only sensible return navigation if the user has used browser navigation
+    // buttons, which clear the `window.history.state` object
+    let url: string = '';
 
     // The returnUrl is undefined if the user has used browser navigation buttons, so check for its presence
     if (window && window.history && window.history.state && window.history.state.returnUrl) {

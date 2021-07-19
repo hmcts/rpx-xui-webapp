@@ -147,14 +147,14 @@ describe('TaskAssignmentContainerComponent', () => {
     expect(mockRouter.navigate).toHaveBeenCalledWith(['all-work/tasks']);
   });
 
-  it('should redirect to the fallback URL on cancelling task assignment, if the return URL is not in the history', () => {
+  it('should redirect to the fallback URL (\'\') on cancelling task assignment, if the return URL is not in the history', () => {
     window.history.pushState({}, '');
     const mockRouter = jasmine.createSpyObj('router', ['navigate']);
     const tacComponent = new TaskAssignmentContainerComponent(null, mockRouter);
     const findPersonControl = new FormControl('test');
     tacComponent.formGroup.addControl('findPersonControl', findPersonControl);
     tacComponent.cancel();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/work/my-work/list']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['']);
   });
 
   it('should display the correct verb on screen', () => {

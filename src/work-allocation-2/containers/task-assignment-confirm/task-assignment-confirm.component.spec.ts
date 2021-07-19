@@ -144,11 +144,11 @@ describe('TaskAssignmentConfirmComponent', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['all-work/tasks']);
   });
 
-  it('should redirect to the fallback URL on cancelling task assignment, if the return URL is not in the history', () => {
+  it('should redirect to the fallback URL (\'\') on cancelling task assignment, if the return URL is not in the history', () => {
     window.history.pushState({}, '');
     const navigateSpy = spyOn(router, 'navigate');
     component.onCancel();
-    expect(navigateSpy).toHaveBeenCalledWith(['/work/my-work/list']);
+    expect(navigateSpy).toHaveBeenCalledWith(['']);
   });
 
   it('should return to the "All work" page on successful task assignment', () => {
@@ -230,7 +230,7 @@ describe('TaskAssignmentConfirmComponent', () => {
     const navigateSpy = spyOn(router, 'navigate');
     component.onSubmit();
     expect(mockInfoMessageCommService.nextMessage).toHaveBeenCalledWith(message);
-    expect(navigateSpy).toHaveBeenCalledWith(['/work/my-work/list'], {
+    expect(navigateSpy).toHaveBeenCalledWith([''], {
       state: {
         badRequest: true,
         retainMessages: true

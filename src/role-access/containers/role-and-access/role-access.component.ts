@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { RoleExclusion } from '../../models/role-exclusion.model';
-import { RoleExclusionsService } from '../../service/role-exclusions.service';
+import { RoleExclusionsService } from '../../services/role-exclusions.service';
 
 @Component({
     selector: 'exui-role-access',

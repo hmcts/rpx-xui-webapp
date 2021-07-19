@@ -11,8 +11,8 @@ import { State } from '../../../app/store';
 import { RoleAllocationType } from '../../models/enums';
 
 import { AllocateRoleContainerComponent } from './allocate-role-container.component';
-import { DescribeExclusionComponent } from 'src/role-access/components/exclusion/describe-exclusion/describe-exclusion.component';
-import { ErrorMessageComponent } from 'src/app/components/error-message/error-message.component';
+import { DescribeExclusionComponent } from '../../../role-access/components';
+import { ErrorMessageComponent } from '../../../app/components/error-message/error-message.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RoleAllocationConstants } from '../../../role-access/constants';
 

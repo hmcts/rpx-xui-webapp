@@ -5,7 +5,7 @@ import { ExclusionNavigation } from '../../../models/exclusion-navigation.interf
 import * as fromFeature from '../../../store';
 
 @Component({
-  selector: 'exui-describe-exclusion-cc',
+  selector: 'exui-describe-exclusion-container',
   templateUrl: './describe-exclusion.component.html',
   styleUrls: ['./describe-exclusion.component.scss']
 })

@@ -5,7 +5,7 @@ import {
   getAllCaseWorkersForLocation,
   getAllJudicialWorkers,
   getCaseWorkersForLocationAndService,
-  getCaseWorkersForService,
+  getCaseWorkersForService, getPersonRoles,
   getTask,
   postTaskAction,
   postTaskSearchForCompletable,
@@ -42,5 +42,7 @@ router.use('/task/:taskId/:action', postTaskAction);
 router.use('/task/:taskId', getTask);
 router.use('/task', searchTask);
 router.use('/taskWithPagination', searchTask);
+
+router.use('/exclusion/personRoles', getPersonRoles);
 
 export default router;

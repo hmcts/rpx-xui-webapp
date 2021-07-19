@@ -4,6 +4,7 @@ import { ActivityService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
+
 import { AppConstants } from '../../app/app.constants';
 
 @Injectable()
@@ -12,17 +13,17 @@ export class ActivityResolver implements Resolve<boolean> {
     private readonly activityService: ActivityService,
     private readonly featureToggleService: FeatureToggleService
   ) {
-    this.featureToggleService.getValue<string>(AppConstants.ACTIVITY_TRACKER_MODE, ActivityService.MODES.off)
+    this.featureToggleService.getValue<string>(AppConstants.ACTIVITY_TRACKER_MODE, undefined)
       .pipe(filter(mode => !!mode))
       .subscribe(mode => {
         this.activityService.mode = mode;
+        if (mode !== ActivityService.MODES.off) {
+          this.activityService.verifyUserIsAuthorized();
+        }
       });
   }
 
   public resolve(): Observable<boolean> {
-    if (this.activityService.mode !== ActivityService.MODES.off) {
-      this.activityService.verifyUserIsAuthorized();
-    }
     return Observable.of(this.activityService.mode !== ActivityService.MODES.off);
   }
 }

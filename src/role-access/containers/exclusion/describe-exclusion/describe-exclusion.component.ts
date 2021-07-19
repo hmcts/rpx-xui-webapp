@@ -5,11 +5,11 @@ import { ExclusionNavigation } from '../../../models/exclusion-navigation.interf
 import * as fromFeature from '../../../store';
 
 @Component({
-  selector: 'exui-describe-exclusion',
+  selector: 'exui-describe-exclusion-cc',
   templateUrl: './describe-exclusion.component.html',
   styleUrls: ['./describe-exclusion.component.scss']
 })
-export class DescribeExclusionComponent implements OnInit {
+export class DescribeExclusionContainerComponent implements OnInit {
 
   @Input() public navEvent: ExclusionNavigation;
 

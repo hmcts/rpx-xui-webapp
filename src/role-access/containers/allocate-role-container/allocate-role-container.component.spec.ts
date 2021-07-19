@@ -8,13 +8,13 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
 
 import { State } from '../../../app/store';
-import { RoleAllocationType } from '../../../cases/enums';
-import { RoleAllocationConstants } from '../../components/constants';
+import { RoleAllocationType } from '../../models/enums';
 
-import { AllocateRoleContainerComponent } from '..';
-import { DescribeExclusionComponent } from 'src/cases/components/describe-exclusion/describe-exclusion.component';
+import { AllocateRoleContainerComponent } from './allocate-role-container.component';
+import { DescribeExclusionComponent } from 'src/role-access/components/exclusion/describe-exclusion/describe-exclusion.component';
 import { ErrorMessageComponent } from 'src/app/components/error-message/error-message.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { RoleAllocationConstants } from '../../../role-access/constants';
 
 describe('AllocateRoleContainerComponent', () => {
   let component: AllocateRoleContainerComponent;

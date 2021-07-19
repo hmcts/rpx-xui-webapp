@@ -1,4 +1,3 @@
-import { AllocateRoleContainerComponent } from './allocate-role-container/allocate-role-container.component';
 import { CaseCreateSubmitComponent } from './case-create-submit/case-create-submit.component';
 import { CasesCreateComponent } from './case-create/case-create.component';
 import { CaseDetailsHomeComponent } from './case-details-home/case-details-home.component';
@@ -13,7 +12,6 @@ import { CaseShareComponent } from './case-share/case-share.component';
 
 
 export const containers: any[] = [
-  AllocateRoleContainerComponent,
   CaseListComponent,
   CasesCreateComponent,
   CaseFilterComponent,
@@ -24,11 +22,9 @@ export const containers: any[] = [
   CaseDetailsHomeComponent,
   CaseShareComponent,
   CaseShareConfirmComponent,
-  CaseShareCompleteComponent,
-  AllocateRoleContainerComponent,
+  CaseShareCompleteComponent
 ];
 
-export * from './allocate-role-container/allocate-role-container.component';
 export * from './case-list/case-list.component';
 export * from './case-create/case-create.component';
 export * from './case-filter/case-filter.component';

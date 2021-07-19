@@ -1,15 +1,14 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { provideMockStore } from '@ngrx/store/testing';
-import { DescribeExclusionComponent } from './describe-exclusion.component';
+import { DescribeExclusionContainerComponent } from './describe-exclusion.component';
 
 describe('DescribeExclusionComponent', () => {
-  let component: DescribeExclusionComponent;
-  let fixture: ComponentFixture<DescribeExclusionComponent>;
+  let component: DescribeExclusionContainerComponent;
+  let fixture: ComponentFixture<DescribeExclusionContainerComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [DescribeExclusionComponent],
+      declarations: [DescribeExclusionContainerComponent],
       providers: [
         provideMockStore()
       ]
@@ -18,7 +17,7 @@ describe('DescribeExclusionComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DescribeExclusionComponent);
+    fixture = TestBed.createComponent(DescribeExclusionContainerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

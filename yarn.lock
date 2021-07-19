@@ -160,6 +160,13 @@
   dependencies:
     tslib "^2.0.0"
 
+"@angular-material-components/moment-adapter@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@angular-material-components/moment-adapter/-/moment-adapter-5.0.0.tgz#e277b82a4a3554260cd274a1862edf64cc186cac"
+  integrity sha512-/9+8b4hpe8GwlgbuXAckDg5ZKms6yDWRKQcyXYuNKC+8Ya6M0M5NHYz3d4YXjJ73xOGURr73NlqZzYsknjYkUQ==
+  dependencies:
+    tslib "^2.0.0"
+
 "@angular/animations@^7.2.13":
   version "7.2.16"
   resolved "https://registry.yarnpkg.com/@angular/animations/-/animations-7.2.16.tgz#6e3f43df292bc53c3a526dabfd8025b3cd03b070"
@@ -443,10 +450,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@v4.0.0-strategic-activity-tracker-beta":
-  version "4.0.0-strategic-activity-tracker-beta"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.0.0-strategic-activity-tracker-beta.tgz#251b08a0394f340e6d917c2df2fb28a8443e3e38"
-  integrity sha512-WoLPQ1vTZ9VSSTCFJWvLG8JHF4HF760yx0nDO8Xy7xusp+hNNtsWu+ke7oXoAsiiVPH5Qjc8pddV4qBMxJRJKQ==
+"@hmcts/ccd-case-ui-toolkit@v4.0.0-strategic-activity-tracker-gamma":
+  version "4.0.0-strategic-activity-tracker-gamma"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.0.0-strategic-activity-tracker-gamma.tgz#81565c41129e75030d36b449465ced4e7037b005"
+  integrity sha512-m8ks2tJVVShqca19Vmf8ty6WcSqZ6YUpEhpRBxvFGfag8jN+Qcrt4MpnKgSTOjoXbe9PC/3yWRT1z35xVbLpFw==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

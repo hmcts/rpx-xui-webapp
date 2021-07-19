@@ -31,6 +31,7 @@ export class AllocateRoleContainerComponent implements OnDestroy, OnInit {
   // this will be replaced by ngrx functionality in future
   public describingExclusion: string = 'choose';
 
+
   constructor(
     private readonly store: Store<fromRoot.State>,
     private readonly activatedRoute: ActivatedRoute,

@@ -9,12 +9,20 @@ import { CaseSearchComponent } from './case-search/case-search.component';
 import { CaseShareCompleteComponent } from './case-share-complete/case-share-complete.component';
 import { CaseShareConfirmComponent } from './case-share-confirm/case-share-confirm.component';
 import { CaseShareComponent } from './case-share/case-share.component';
+import { CaseShareConfirmComponent } from './case-share-confirm/case-share-confirm.component';
+import { CaseShareCompleteComponent } from './case-share-complete/case-share-complete.component';
+import { CaseViewerContainerComponent } from './case-viewer-container/case-viewer-container.component';
+import { RolesAndAccessContainerComponent } from './roles-and-access-container/roles-and-access-container.component';
+import { TasksContainerComponent } from './tasks-container/tasks-container.component';
 
 
 export const containers: any[] = [
   CaseListComponent,
   CasesCreateComponent,
   CaseFilterComponent,
+  CaseViewerContainerComponent,
+  TasksContainerComponent,
+  RolesAndAccessContainerComponent,
   CaseSearchComponent,
   CaseDetailsComponent,
   CaseHomeComponent,

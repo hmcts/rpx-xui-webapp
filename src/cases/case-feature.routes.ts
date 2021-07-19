@@ -3,6 +3,7 @@ import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CaseResolver, editorRouting, viewerRouting as caseViewRouting } from '@hmcts/ccd-case-ui-toolkit';
 import { HealthCheckGuard } from 'src/app/shared/guards/health-check.guard';
+import { RoleAllocationConstants } from './components/constants';
 import {
   CaseCreateSubmitComponent,
   CasesCreateComponent,
@@ -16,6 +17,7 @@ import { CaseFilterComponent } from './containers/case-filter/case-filter.compon
 import { CaseHomeComponent } from './containers/case-home/case-home.component';
 import { CaseListComponent } from './containers/case-list/case-list.component';
 import { CaseSearchComponent } from './containers/case-search/case-search.component';
+import { RoleAccessComponent } from './containers/role-and-access/role-access.component';
 import { ActivityResolver } from './resolvers/activity.resolver';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
 
@@ -37,14 +39,6 @@ export const ROUTES: Routes = [
           }
         },
         {
-          path: 'case-share',
-          component: CaseShareComponent,
-          canActivate: [ HealthCheckGuard ],
-          data: {
-            title: 'HMCTS Share Cases | Case Share'
-          }
-        },
-        {
           path: 'allocate-role',
           canActivate: [HealthCheckGuard],
           data: {
@@ -54,16 +48,27 @@ export const ROUTES: Routes = [
             {
               path: 'exclusion',
               component: AllocateRoleContainerComponent,
+              data: RoleAllocationConstants.Exclusion
             },
             {
               path: 'judiciary',
               component: AllocateRoleContainerComponent,
+              data: RoleAllocationConstants.Judiciary
             },
             {
               path: 'legal-ops',
               component: AllocateRoleContainerComponent,
+              data: RoleAllocationConstants.LegalOps
             }
           ]
+        },
+        {
+          path: 'case-share',
+          component: CaseShareComponent,
+          canActivate: [ HealthCheckGuard ],
+          data: {
+            title: 'HMCTS Share Cases | Case Share'
+          }
         },
         {
           path: 'case-share-confirm',
@@ -129,6 +134,10 @@ export const ROUTES: Routes = [
           data: {
             title: 'Case Details'
           }
+        },
+        {
+          path: 'role-access',
+          component: RoleAccessComponent
         }
       ]
     },

@@ -224,6 +224,8 @@ const caseDetailsUrl: string = '/cases/case-details/';
 const serviceMessagesFeatureToggleKey: string = 'mc-service-messages';
 const serviceMessageCookie: string = 'service_messages';
 
+const caseAllocatorRole: string = 'case-allocator-role';
+
 export class AppConstants {
   static FOOTER_DATA = null;
   static FOOTER_DATA_NAVIGATION = FooterDataNavigation;
@@ -238,6 +240,7 @@ export class AppConstants {
   static CASE_DETAILS_URL = caseDetailsUrl;
   static SERVICE_MESSAGES_FEATURE_TOGGLE_KEY = serviceMessagesFeatureToggleKey;
   static SERVICE_MESSAGE_COOKIE = serviceMessageCookie;
+  static CASE_ALLOCATOR_ROLE = caseAllocatorRole;
 }
 
 export const LD_FLAG_REMOVE_USER_FROM_CASE_MC: string = 'remove-user-from-case-mc';

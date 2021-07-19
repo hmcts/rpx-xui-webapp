@@ -9,6 +9,6 @@ export class RoleExclusionsService {
     constructor(private http: HttpClient) { }
 
     public getCurrentUserRoleExclusions(): Observable<RoleExclusion[]> {
-        return this.http.get<any>(RoleExclusionsService.exclusionsUrl);
+        return this.http.get<RoleExclusion[]>(RoleExclusionsService.exclusionsUrl);
     }
 }

@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { provideMockStore } from '@ngrx/store/testing';
-import { ChooseExclusionComponent } from './choose-exclusion.component';
+import { ChooseExclusionComponent } from './choose-exclusion-container.component';
 
 describe('ChooseExclusionComponent', () => {
   let component: ChooseExclusionComponent;

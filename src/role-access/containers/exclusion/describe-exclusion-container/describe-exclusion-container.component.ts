@@ -5,9 +5,9 @@ import { ExclusionNavigation } from '../../../models/exclusion-navigation.interf
 import * as fromFeature from '../../../store';
 
 @Component({
-  selector: 'exui-describe-exclusion-cc',
-  templateUrl: './describe-exclusion.component.html',
-  styleUrls: ['./describe-exclusion.component.scss']
+  selector: 'exui-describe-exclusion-container',
+  templateUrl: './describe-exclusion-container.component.html',
+  styleUrls: ['./describe-exclusion-container.component.scss']
 })
 export class DescribeExclusionContainerComponent implements OnInit {
 

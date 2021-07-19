@@ -11,8 +11,11 @@ import { RoleExclusionsService } from '../../service/role-exclusions.service';
 export class RoleAccessComponent implements OnInit {
   constructor(private readonly roleExclusionsService: RoleExclusionsService) { }
   public exclusions$: Observable<RoleExclusion[]>;
+  public exclusions: RoleExclusion [];
+  public allowDelete: boolean = false;
 
   public ngOnInit(): void {
     this.exclusions$ = this.roleExclusionsService.getCurrentUserRoleExclusions();
+    this.exclusions = [];
   }
 }

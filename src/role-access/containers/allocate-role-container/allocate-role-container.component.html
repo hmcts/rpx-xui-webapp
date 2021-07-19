@@ -4,13 +4,6 @@
     <exui-error-message *ngIf="error" [error]="error"></exui-error-message>
     <exui-allocate-role *ngIf="describingExclusion==='allocate'" [roleAllocation]="roleAllocationType" [includeOther]="includeOther"></exui-allocate-role>
     <exui-choose-role *ngIf="describingExclusion==='choose'" [roleAllocation]="roleAllocationType"></exui-choose-role>
-    <exui-describe-exclusion *ngIf="describingExclusion==='describe'"
-      [submitted]="submitted"
-      [formGroup]="allocationForm"
-      [title]="'Add an exclusion'"
-      [description]="'Describe the exclusion'"
-      [controlName]="DESCRIBE_EXCLUSION_CONTROL_NAME"
-    ></exui-describe-exclusion>
     <button id="submit-button" class="govuk-button govuk-!-margin-right-1" type="submit">Continue</button>
     <p><a class="govuk-!-margin-top-3" id="cancel-link" href="javascript:void(0)">Cancel</a></p>
   </main>

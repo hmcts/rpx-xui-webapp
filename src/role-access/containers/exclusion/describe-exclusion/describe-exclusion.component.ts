@@ -9,7 +9,7 @@ import * as fromFeature from '../../../store';
   templateUrl: './describe-exclusion.component.html',
   styleUrls: ['./describe-exclusion.component.scss']
 })
-export class DescribeExclusionContainerComponent implements OnInit {
+export class DescribeExclusionComponent implements OnInit {
 
   @Input() public navEvent: ExclusionNavigation;
 

@@ -160,6 +160,13 @@
   dependencies:
     tslib "^2.0.0"
 
+"@angular-material-components/moment-adapter@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@angular-material-components/moment-adapter/-/moment-adapter-5.0.0.tgz#e277b82a4a3554260cd274a1862edf64cc186cac"
+  integrity sha512-/9+8b4hpe8GwlgbuXAckDg5ZKms6yDWRKQcyXYuNKC+8Ya6M0M5NHYz3d4YXjJ73xOGURr73NlqZzYsknjYkUQ==
+  dependencies:
+    tslib "^2.0.0"
+
 "@angular/animations@^7.2.13":
   version "7.2.16"
   resolved "https://registry.yarnpkg.com/@angular/animations/-/animations-7.2.16.tgz#6e3f43df292bc53c3a526dabfd8025b3cd03b070"
@@ -443,12 +450,13 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.1.0-rc.13":
-  version "4.1.0-rc.13"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.1.0-rc.13.tgz#baff222ca20d595288d056e59062a4b0c512b261"
-  integrity sha512-1P0a1cFx49qaX7svHQk+7KM6usJmv/9HX6mCG4VYFSJGz+3YlJ2DHF0bh1qNhA6O5IHl9AHR2xFVz714n5mTRQ==
+"@hmcts/ccd-case-ui-toolkit@4.0.0-case-bundles-table-scss":
+  version "4.0.0-case-bundles-table-scss"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.0.0-case-bundles-table-scss.tgz#b274597872fc3442682a33c4ed66491650d50a9a"
+  integrity sha512-79vrANOJMjyEWXPLKp8tAa76nlbCeSG1SwqkK4Nv56QFEZGZdCOwLhT1BmgkuWsEt2gDNiLIdUjThgdfLS2dlw==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
+    "@angular-material-components/moment-adapter" "^5.0.0"
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
     "@hmcts/ccpay-web-component" "3.0.3"

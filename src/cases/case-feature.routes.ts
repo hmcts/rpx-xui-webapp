@@ -3,21 +3,18 @@ import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CaseResolver, editorRouting, viewerRouting as caseViewRouting } from '@hmcts/ccd-case-ui-toolkit';
 import { HealthCheckGuard } from 'src/app/shared/guards/health-check.guard';
-import { RoleAllocationConstants } from './components/constants';
 import {
   CaseCreateSubmitComponent,
   CasesCreateComponent,
   CaseShareCompleteComponent,
   CaseShareComponent,
-  CaseShareConfirmComponent,
-  AllocateRoleContainerComponent
+  CaseShareConfirmComponent
 } from './containers';
 import { CaseDetailsHomeComponent } from './containers/case-details-home/case-details-home.component';
 import { CaseFilterComponent } from './containers/case-filter/case-filter.component';
 import { CaseHomeComponent } from './containers/case-home/case-home.component';
 import { CaseListComponent } from './containers/case-list/case-list.component';
 import { CaseSearchComponent } from './containers/case-search/case-search.component';
-import { RoleAccessComponent } from './containers/role-and-access/role-access.component';
 import { ActivityResolver } from './resolvers/activity.resolver';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
 
@@ -37,30 +34,6 @@ export const ROUTES: Routes = [
           data: {
             title: 'Case list'
           }
-        },
-        {
-          path: 'allocate-role',
-          canActivate: [HealthCheckGuard],
-          data: {
-            title: 'Allocate role'
-          },
-          children: [
-            {
-              path: 'exclusion',
-              component: AllocateRoleContainerComponent,
-              data: RoleAllocationConstants.Exclusion
-            },
-            {
-              path: 'judiciary',
-              component: AllocateRoleContainerComponent,
-              data: RoleAllocationConstants.Judiciary
-            },
-            {
-              path: 'legal-ops',
-              component: AllocateRoleContainerComponent,
-              data: RoleAllocationConstants.LegalOps
-            }
-          ]
         },
         {
           path: 'case-share',
@@ -134,10 +107,6 @@ export const ROUTES: Routes = [
           data: {
             title: 'Case Details'
           }
-        },
-        {
-          path: 'role-access',
-          component: RoleAccessComponent
         }
       ]
     },

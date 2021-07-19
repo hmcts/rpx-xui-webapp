@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import { RoleExclusion } from '../../models/role-exclusions/role-exclusion.model';
+import { RoleExclusion } from '../../../models/role-exclusion.model';
 
 @Component({
     selector: 'exui-role-exclusions',

@@ -1,7 +1,7 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RoleAllocationCaptionText, RoleAllocationRadioText, RoleAllocationTitleText, RoleAllocationType } from '../../../cases/enums';
-import { AllocateRoleComponent } from '..';
+import { RoleAllocationCaptionText, RoleAllocationRadioText, RoleAllocationTitleText, RoleAllocationType } from '../../../models/enums';
+import { AllocateRoleComponent } from './allocate-role.component';
 
 @Component({
   template: `<exui-allocate-role [roleAllocation]="roleAllocation"></exui-allocate-role>`

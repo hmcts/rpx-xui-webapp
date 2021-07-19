@@ -4,18 +4,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ConfigConstants } from '../../components/constants';
 import { InfoMessage, InfoMessageType, SortOrder, TaskActionType, TaskService } from '../../enums';
 import { FieldConfig } from '../../models/common';
+import { RouteData } from '../../models/common/route-data';
 import { InformationMessage } from '../../models/comms';
 import { TaskServiceConfig } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { ACTION } from '../../services/work-allocation-task.service';
 import { handleFatalErrors } from '../../utils';
 
-interface RouteData {
-  verb: TaskActionType;
-  successMessage: InfoMessage;
-  description?: string;
-  actionTitle?: string;
-}
 
 @Component({
   selector: 'exui-task-action-container',

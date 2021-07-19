@@ -92,6 +92,28 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         
     });
 
+    Given('I set MOCK workallocation cases with permissions for view {string} and assigned state {string}', async function (view, assignedState, casePermissionsTable) {
+        const casePermissionHashes = casePermissionsTable.hashes();
+        const cases = [];
+        view = view.split(" ").join("");
+        view = view.toLowerCase();
+        for (let i = 0; i < casePermissionHashes.length; i++) {
+            let taskCount = 0;
+            if (casePermissionHashes[i].hasOwnProperty('Count')) {
+                taskCount = parseInt(casePermissionHashes[i]['Count']);
+            } else {
+                taskCount = 1;
+            }
+
+            for (let j = 0; j < taskCount; j++) {
+                cases.push(workAllocationMockData.getRelease2CaseWithPermission(casePermissionHashes[i]['Permissions'].split(","), view, assignedState));
+            }
+
+        }
+        global.scenarioData[`workallocation2.${view}`] = { cases: cases, total_records: cases.length };
+
+    });
+
 
     Given('I set MOCK tasks with attributes for view {string}', async function (forView, attributesDatatable) {
         const tasksHashes = attributesDatatable.hashes();
@@ -167,7 +189,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             softAssert.setScenario("sorting: " + headerName);
             await softAssert.assert(async () => expect(await pageUndertest.getColumnSortState(headerName)).to.equal("none"));
            
-            await browserUtil.addTextToElementWithCssSelector('tbody tr:nth-of-type(1) .cdk-column-case_category exui-task-field','Sort test',true);
+            await browserUtil.addTextToElementWithCssSelector('tbody tr:nth-of-type(1) .cdk-column-case_category exui-work-field','Sort test',true);
             await pageUndertest.clickColumnHeader(headerName); 
             await BrowserWaits.waitForConditionAsync(async () => { 
                 return sortColumnInRequestParam !== null
@@ -187,7 +209,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
             
             sortColumnInRequestParam = null;
-            await browserUtil.addTextToElementWithCssSelector('tbody tr:nth-of-type(1) .cdk-column-case_category exui-task-field', 'Sort test', true);
+            await browserUtil.addTextToElementWithCssSelector('tbody tr:nth-of-type(1) .cdk-column-case_category exui-work-field', 'Sort test', true);
             await pageUndertest.clickColumnHeader(headerName);
            
             await BrowserWaits.waitForConditionAsync(async () => {

@@ -1,3 +1,24 @@
-<p>
-  describe-exclusion works!
-</p>
+<exui-error-message *ngIf="error" [error]="error"></exui-error-message>
+<div [formGroup]="formGroup"
+     class="govuk-form-group"
+     [ngClass]="{'form-group-error': !formGroup.get(controlName).valid && formGroup.get(controlName).touched && submitted}">
+  <h1 class="govuk-heading-l">
+    <span class="govuk-caption-l">{{title}}</span>
+    {{description}}
+  </h1>
+  <span id="more-detail-error" class="govuk-error-message"
+        *ngIf="!formGroup.get(controlName).valid && formGroup.get(controlName).touched && submitted">
+    <span class="govuk-visually-hidden">Error:</span> Enter exclusion
+  </span>
+  <fieldset class="govuk-fieldset">
+    <textarea
+      [ngClass]="{'govuk-textarea--error': !formGroup.get(controlName).valid && formGroup.get(controlName).touched && submitted}"
+      class="govuk-textarea govuk-!-width-one-half govuk-!-margin-bottom-0"
+      id="exclusion-description"
+      formControlName="text"
+      name="exclusion-description"
+      rows="5"
+      aria-describedby="exclusion-description"
+    ></textarea>
+  </fieldset>
+</div>

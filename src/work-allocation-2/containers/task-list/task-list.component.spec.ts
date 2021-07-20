@@ -8,6 +8,7 @@ import { of } from 'rxjs';
 import { PaginationParameter } from '../../../work-allocation-2/models/dtos';
 
 import { Task, TaskAction, TaskServiceConfig } from '../../../work-allocation-2/models/tasks';
+import { TaskFieldConfig } from '../../../work-allocation/models/tasks';
 import { TaskListComponent } from './task-list.component';
 import { SortOrder, TaskService } from '../../enums';
 import { FieldConfig, SortField } from '../../models/common';
@@ -34,6 +35,15 @@ class WrapperComponent {
   @Input() public taskServiceConfig: TaskServiceConfig;
   @Input() public pagination: PaginationParameter;
   @Input() public sortedBy: SortField;
+}
+
+@Component({
+  selector: 'exui-task-field',
+  template: '<div class="xui-task-field">{{task.taskName}}</div>'
+})
+class TaskFieldComponent {
+  @Input() public config: TaskFieldConfig;
+  @Input() public task: Task;
 }
 
 /**
@@ -79,7 +89,7 @@ describe('TaskListComponent', () => {
         CdkTableModule,
         PaginationModule
       ],
-      declarations: [TaskListComponent, WrapperComponent],
+      declarations: [TaskListComponent, WrapperComponent, TaskFieldComponent],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
         { provide: Router, useValue: mockRouter },

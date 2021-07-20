@@ -18,7 +18,7 @@ class TaskCheckYourChangesPage{
         this.tableColumnValues = $$('exui-task-assignment-confirm table tr td');
 
         this.changeLink = $("exui-task-assignment-confirm table tr td #change__link");
- 
+
     }
 
 
@@ -34,7 +34,7 @@ class TaskCheckYourChangesPage{
 
     async validatePage() {
         const heaerText = await this.header.getText();
-        expect(heaerText.includes("Check your changes")).to.be.true;
+        expect(heaerText.includes("Check your answers")).to.be.true;
         expect(await this.taskDetailsTable.isDisplayed()).to.be.true;
         expect(await this.changeLink.isDisplayed()).to.be.true;
 
@@ -48,13 +48,13 @@ class TaskCheckYourChangesPage{
             const headerText = await headerColElement.getText();
             if (headerText === header){
                colIndex = i;
-               break; 
+               break;
             }
         }
         return colIndex;
     }
 
-    
+
     async getColumnElement(header) {
         const pos = await this.getHeaderColumnPos(header);
         if(pos === -1){

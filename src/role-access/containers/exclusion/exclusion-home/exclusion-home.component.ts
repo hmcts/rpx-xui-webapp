@@ -15,7 +15,7 @@ import * as fromFeature from '../../../store';
 import { CheckAnswersComponent } from '../check-answers/check-answers.component';
 import { ChooseExclusionComponent } from '../choose-exclusion/choose-exclusion.component';
 import { ChoosePersonRoleComponent } from '../choose-person-role/choose-person-role.component';
-import { DescribeExclusionContainerComponent } from '../describe-exclusion-container/describe-exclusion-container.component';
+import { DescribeExclusionContainerComponent } from '../describe-exclusion/describe-exclusion.component';
 import { FindPersonComponent } from '../find-person/find-person.component';
 
 @Component({

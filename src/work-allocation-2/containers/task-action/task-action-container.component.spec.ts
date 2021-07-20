@@ -9,6 +9,7 @@ import { PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { Observable } from 'rxjs';
 import { TaskListComponent } from '..';
 import { ErrorMessageComponent } from '../../../app/components';
+import { TaskFieldConfig } from '../../../work-allocation/models/tasks';
 import { TaskActionConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Task } from '../../models/tasks';
@@ -30,6 +31,15 @@ class WrapperComponent {
 })
 class NothingComponent {}
 
+@Component({
+  selector: 'exui-task-field',
+  template: '<div class="xui-task-field">{{task.taskName}}</div>'
+})
+class TaskFieldComponent {
+  @Input() public config: TaskFieldConfig;
+  @Input() public task: Task;
+}
+
 describe('WorkAllocation', () => {
 
   describe('TaskActionContainerComponent', () => {
@@ -48,7 +58,7 @@ describe('WorkAllocation', () => {
       TestBed.configureTestingModule({
         declarations: [
           TaskActionContainerComponent, WrapperComponent, TaskListComponent,
-          ErrorMessageComponent, NothingComponent
+          ErrorMessageComponent, NothingComponent, TaskFieldComponent
         ],
         imports: [
           WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientModule, PaginationModule,

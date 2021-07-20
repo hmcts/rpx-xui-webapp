@@ -6,7 +6,8 @@ import {
   CASEWORKER_AVAILABLE_TASKS,
   CASEWORKER_MY_TASKS,
   JUDICIAL_AVAILABLE_TASKS,
-  JUDICIAL_MY_TASKS, JUDICIAL_WORKERS
+  JUDICIAL_MY_TASKS,
+  JUDICIAL_WORKERS
 } from './constants/mock.data';
 
 // random generator
@@ -40,24 +41,17 @@ export const init = () => {
   const mock = new MockAdapter(httpMock);
 
   const judicialMyTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/myTasks\?view=judicial/;
-  // tslint:disable-next-line:max-line-length
   const judicialAvailableTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/availableTasks\?view=judicial/;
   const caseworkerMyTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/myTasks\?view=caseworker/;
-  // tslint:disable-next-line:max-line-length
   const caseworkerAvailableTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/availableTasks\?view=caseworker/;
-  // tslint:disable-next-line:max-line-length
   const getTaskFromIDUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/;
-  // tslint:disable-next-line:max-line-length
   const claimTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/claim/;
-  // tslint:disable-next-line:max-line-length
   const unclaimTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/unclaim/;
-  // tslint:disable-next-line:max-line-length
+  const completeTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/complete/;
+  const cancelTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/cancel/;
   const assignTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/assign/;
-
   const judicialWorkersUrl = /http:\/\/rd-judicialworker-ref-api-aat.service.core-compute-aat.internal\/judicialworkers/;
-  // tslint:disable-next-line:max-line-length
   const judicialAllTasksUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/allTasks\?view=judicial/;
-  // tslint:disable-next-line:max-line-length
   const caseworkerAllTasksUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/allTasks\?view=caseworker/;
 
   mock.onPost(judicialWorkersUrl).reply(() => {
@@ -76,7 +70,7 @@ export const init = () => {
     const paginationConfig = body.pagination_parameters;
     const sortingConfig = body.sorting_parameters;
     const taskList = sort(JUDICIAL_MY_TASKS.tasks,
-       getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
+      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {
@@ -86,7 +80,7 @@ export const init = () => {
     ];
   });
 
-    // simulate some error if needed
+  // simulate some error if needed
   // mock.onGet(url).networkErrorOnce()
   mock.onPost(judicialAllTasksUrl).reply(config => {
     // return an array in the form of [status, data, headers]
@@ -115,7 +109,7 @@ export const init = () => {
     const paginationConfig = body.pagination_parameters;
     const sortingConfig = body.sorting_parameters;
     const taskList = sort(JUDICIAL_AVAILABLE_TASKS.tasks,
-       getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
+      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {
@@ -131,7 +125,7 @@ export const init = () => {
     const paginationConfig = body.pagination_parameters;
     const sortingConfig = body.sorting_parameters;
     const taskList = sort(CASEWORKER_MY_TASKS.tasks,
-       getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
+      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {
@@ -157,7 +151,7 @@ export const init = () => {
     const paginationConfig = body.pagination_parameters;
     const sortingConfig = body.sorting_parameters;
     const taskList = sort(CASEWORKER_AVAILABLE_TASKS.tasks,
-       getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
+      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {
@@ -185,7 +179,23 @@ export const init = () => {
     ];
   });
 
+  mock.onPost(cancelTaskUrl).reply(() => {
+    // return an array in the form of [status, data, headers]
+    return [
+      204,
+      'success',
+    ];
+  });
+
   mock.onPost(unclaimTaskUrl).reply(() => {
+    // return an array in the form of [status, data, headers]
+    return [
+      204,
+      'success',
+    ];
+  });
+
+  mock.onPost(completeTaskUrl).reply(() => {
     // return an array in the form of [status, data, headers]
     return [
       204,

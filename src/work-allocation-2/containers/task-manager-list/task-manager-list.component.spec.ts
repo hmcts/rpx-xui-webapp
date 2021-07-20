@@ -1,5 +1,5 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { Component, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
@@ -7,6 +7,7 @@ import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common
 import { of } from 'rxjs';
 
 import { SessionStorageService } from '../../../app/services';
+import { TaskFieldConfig } from '../../../work-allocation/models/tasks';
 import { FilterConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import * as dtos from '../../models/dtos';
@@ -22,6 +23,15 @@ import { TaskManagerListComponent } from './task-manager-list.component';
 })
 class WrapperComponent {
   @ViewChild(TaskManagerListComponent) public appComponentRef: TaskManagerListComponent;
+}
+
+@Component({
+  selector: 'exui-task-field',
+  template: '<div class="xui-task-field">{{task.taskName}}</div>'
+})
+class TaskFieldComponent {
+  @Input() public config: TaskFieldConfig;
+  @Input() public task: Task;
 }
 
 describe('TaskManagerListComponent', () => {
@@ -49,7 +59,7 @@ describe('TaskManagerListComponent', () => {
         WorkAllocationComponentsModule,
         PaginationModule
       ],
-      declarations: [ TaskManagerListComponent, WrapperComponent, TaskListComponent ],
+      declarations: [ TaskManagerListComponent, WrapperComponent, TaskListComponent, TaskFieldComponent ],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
         { provide: SessionStorageService, useValue: mockSessionStorageService },

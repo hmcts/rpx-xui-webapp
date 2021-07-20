@@ -21,7 +21,7 @@ describe('CCD Endpoints', () => {
 
         const xsrfToken = await getXSRFToken(userName, password);
         const headers = {
-            experimental: true,
+            // experimental: true,
             'X-XSRF-TOKEN': xsrfToken
         };
         const response = await Request.get('api/addresses?postcode=E1', headers, 200);

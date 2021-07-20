@@ -14,8 +14,8 @@ const CucumberReporter = require('../../../e2e/support/reportLogger');
 const BrowserWaits = require('../../../e2e/support/customWaits');
 
 const headerpage = require('../../../e2e/features/pageObjects/headerPage');
-
 const { getTestJurisdiction } = require('../../mockData/ccdCaseMock');
+const { Browser } = require('selenium-webdriver');
 
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
@@ -174,7 +174,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Then('I validate event page continue on validate request error status code {int}', async function(statusCode){
         let validateReq = null;
         MockApp.onPost('/data/case-types/:caseType/validate', (req, res, next) => {
-            validateReq = req.body;
+            validateReq = req;
             res.status(statusCode).send("Data validation error!");
         });
         await MockApp.stopServer();

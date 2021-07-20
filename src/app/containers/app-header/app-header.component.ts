@@ -145,6 +145,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     this.userDetails$ = this.store.pipe(select(fromActions.getUserDetails));
     this.setAppHeaderProperties(this.defaultTheme);
     const applicationThemes$ = this.featureToggleService.getValue<Theme[]>('mc-application-themes', this.getDefaultApplicationThemes());
+
     combineLatest([this.userDetails$, applicationThemes$]).subscribe(([userDetails, applicationThemes]) => {
         this.setHeaderContent(userDetails, applicationThemes);
       });
@@ -161,6 +162,10 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
       const applicationTheme: Theme = this.getApplicationThemeForUser(applicationThemes, userDetails.userInfo.roles);
       this.hideNavigationListener(this.store);
       this.setAppHeaderProperties(applicationTheme);
+      if (applicationTheme.navigationItems.some(x => x.active)) {
+        const currentNav = applicationTheme.navigationItems.find(x => x.active);
+        // this.router.navigate([currentNav.href]);
+      }
     }
   }
 

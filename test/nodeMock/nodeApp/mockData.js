@@ -10,6 +10,13 @@ class NodeAppMockData {
         return userDetails;
     }
 
+    getUserDetailsWithRolesAndIdamId(roles,idamId) {
+        const userDetails = this.getUserDetailsTemplate();
+        userDetails.userInfo.roles = roles;
+        userDetails.userInfo.id = idamId;
+        return userDetails;
+    }
+
     getUIConfiguration() {
         return {
             "googleAnalyticsKey": "UA-124734893-4",
@@ -30,7 +37,7 @@ class NodeAppMockData {
                 "totalIdleTime": 50
             },
             "userInfo": {
-                "id": "41a90c39-d756-4eba-8e85-5b5bf56b31f5",
+                "id": "02d1f898-4109-4a28-a978-2ba14f42de22",
                 "forename": "Luke",
                 "surname": "Wilson",
                 "email": "lukesuperuserxui@mailnesia.com",

@@ -1,6 +1,8 @@
 const headerPage = require('../pageObjects/headerPage');
 const browserWaits = require('../../support/customWaits');
 var { defineSupportCode } = require('cucumber');
+const SoftAssert = require('../../../ngIntegration/util/softAssert');
+const constants = require('../../support/constants');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
@@ -11,6 +13,14 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Then('I see header tab Task manager', async function () {
         expect(await headerPage.isTabPresent("Task manager"), "Task manager tab is not present").to.be.true;
     });
+
+    When('I click on primary navigation header {string}', async function (headerTabLabel) {
+        await browserWaits.retryWithActionCallback(async () => {
+            await headerPage.clickTabWithText(headerTabLabel);
+        }, 'Click header tab with text ' + headerTabLabel);
+       
+    });
+
     When('I click on header tab Task list', async function () {
         await headerPage.clickTaskList();
 
@@ -26,6 +36,14 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     });
 
+    When('I click on primary navigation header tab {string}, I see selected tab page displayed', async function (headerTabLabel) {
+        await browserWaits.retryWithActionCallback(async () => {
+            await headerPage.clickPrimaryNavigationWithLabel(headerTabLabel);
+            expect(await headerPage.isPrimaryTabPageDisplayed(headerTabLabel)).to.be.true
+        });
+    });
+
+
 
     Then('I see primary navigation tab {string} in header', async function (headerlabel) {
         try{
@@ -36,7 +54,47 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         }
        
-        expect(await headerPage.isTabPresent(headerlabel), headerlabel + " tab is not present in " + await headerPage.getPrimaryNavigations()).to.be.true;
+        expect(await headerPage.isTabPresent(headerlabel), headerlabel + " tab is not present in " + await headerPage.getPrimaryTabsDisplayed()).to.be.true;
+    })
+
+    Then('I see primary navigation tabs {string} in main header', async function (navigationTabs) {
+        const softAssert = new SoftAssert();
+        const navigationTabsArr = navigationTabs.split(',');
+
+        for (let i = 0; i < navigationTabsArr.length; i++){
+            const headerlabel = navigationTabsArr[i].trim();
+            try {
+                await browserWaits.waitForConditionAsync(async () => {
+                    return await headerPage.isTabPresentInMainNav(headerlabel);
+                });
+            } catch (err) {
+
+            }
+            softAssert.setScenario('Nav header in main tab ' + headerlabel);
+            await softAssert.assert(async () => expect(await headerPage.isTabPresentInMainNav(headerlabel), headerlabel + " tab is not present main nav in " + await headerPage.getPrimaryTabsDisplayed()).to.be.true);
+            
+        }
+        softAssert.finally();
+    })
+
+    Then('I see primary navigation tabs {string} in right side header column', async function (navigationTabs) {
+        const softAssert = new SoftAssert();
+        const navigationTabsArr = navigationTabs.split(',');
+
+        for (let i = 0; i < navigationTabsArr.length; i++) {
+            const headerlabel = navigationTabsArr[i].trim();
+            try {
+                await browserWaits.waitForConditionAsync(async () => {
+                    return await headerPage.isTabPresentInMainNav(headerlabel);
+                });
+            } catch (err) {
+
+            }
+            softAssert.setScenario('Nav header in main tab ' + headerlabel);
+            await softAssert.assert(async () => expect(await headerPage.isTabPresentInRightNav(headerlabel), headerlabel + " tab is not present main nav in " + await headerPage.getPrimaryTabsDisplayed()).to.be.true);
+
+        }
+        softAssert.finally();
     })
 
     Then('I do not see primary navigation tab {string} in header', async function (headerlabel) {
@@ -48,8 +106,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
         }
         
-        expect(await headerPage.isTabPresent(headerlabel), headerlabel + " tab is not expected to present " + await headerPage.getPrimaryNavigations() ).to.be.false;
+        expect(await headerPage.isTabPresent(headerlabel), headerlabel + " tab is not expected to present " + await headerPage.getPrimaryTabsDisplayed() ).to.be.false;
     })
-
 
 });

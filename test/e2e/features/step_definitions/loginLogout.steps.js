@@ -11,6 +11,7 @@ const BrowserWaits = require("../../support/customWaits");
 const CucumberReportLogger = require('../../support/reportLogger');
 
 const BrowserUtil = require('../../../ngIntegration/util/browserUtil');
+const testConfig = require('../../config/appTestConfig');
 
 async function waitForElement(el) {
   await browser.wait(result => {
@@ -288,6 +289,28 @@ defineSupportCode(function ({ Given, When, Then }) {
     });
 
   });
+
+  Given('I am logged into Expert UI with test user identified as {string}', async function (testUserIdentifier) {
+
+    const matchingUsers = testConfig.users.filter(user => user.userIdentifier === testUserIdentifier);
+    if (matchingUsers.length === 0 ){
+      throw new Error(`Test user with identifier ${testUserIdentifier} is not found, check app test config anf fix test issue`);
+    }
+   
+    const userEmail = matchingUsers[0].email;
+    const key = 'Welcome01';
+
+    await loginPage.givenIAmLoggedIn(userEmail, key);
+
+    loginAttempts++;
+    await loginattemptCheckAndRelogin(userEmail, key, this);
+
+    await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
+      world.attach("Login success page load load attempt : " + message)
+    });
+
+  });
+
 
 
 

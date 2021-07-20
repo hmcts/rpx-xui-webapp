@@ -2,10 +2,12 @@ Dropdown = require('./webdriver-components/dropdown.js')
 Button = require('./webdriver-components/button.js')
 
 var BrowserWaits = require('../../support/customWaits');
+const CucumberRepprter = require('../../support/reportLogger');
 
 class CreateCaseStartPage {
 
   constructor(){
+    this.caseCaseFilterContainer = $('exui-filter-case ccd-create-case-filters');
     this.header = '#content h1';
     this._jurisdiction = new Dropdown('#cc-jurisdiction');
     this._caseType = new Dropdown('#cc-case-type');
@@ -68,9 +70,14 @@ class CreateCaseStartPage {
   }
 
   async amOnPage(){
-    BrowserWaits.waitForElementClickable($('#cc-jurisdiction'));
-    let header = await this.getPageHeader();
-    return header === 'Create Case';
+    try{
+      await BrowserWaits.waitForElement(this.caseCaseFilterContainer);
+      return true;
+    }catch(err){
+      CucumberRepprter.AddMessage("Create case page not displayed "+err.message+" : "+err.stack);
+      return false;
+    }
+    
   }
 
 }

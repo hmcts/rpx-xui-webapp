@@ -21,47 +21,42 @@ class SoftAssert {
         this.scenario = scr;
     }
 
-    async assert(expectCallBack) {
+    async assert(expectCallBack, verificationMsg) {
         this.scrAssertionsCounter++;
         this.assertCount++;
         try {
             await expectCallBack();
-            this.scenarios.push(`${this.scenarioCounter}.${this.scrAssertionsCounter}  PASSED:  ${this.scenario}`);
-            reportLogger.AddMessage(`************* ${this.scenarioCounter}.${this.scrAssertionsCounter}  PASSED:  ${this.scenario}`);
+            this.scenarios.push(`${this.scenarioCounter}.${this.scrAssertionsCounter}  PASSED:  ${this.scenario} : ${verificationMsg ? verificationMsg : ''}`);
+            reportLogger.AddMessage(`************* ${this.scenarioCounter}.${this.scrAssertionsCounter}  PASSED:  ${this.scenario}: ${verificationMsg ? verificationMsg : ''}`);
 
         } catch (assertError) {
-            this.scenarios.push(`${this.scenarioCounter}.${this.scrAssertionsCounter}  FAILED **:   ${this.scenario}`);
+            this.scenarios.push(`${this.scenarioCounter}.${this.scrAssertionsCounter}  FAILED **:   ${this.scenario}: ${verificationMsg ? verificationMsg : ''}`);
             // addContext(this.testContext, { title: "Screenshot path" , value: "../../"});
             this.isPassed = false;
             this.assertions.push(`${this.scenarioCounter}.${this.scrAssertionsCounter} : ${assertError.message}`);
-            reportLogger.AddMessage(`************* ${this.scenarioCounter}.${this.scrAssertionsCounter}  FAILED **:   ${this.scenario}`);
+            reportLogger.AddMessage(`************* ${this.scenarioCounter}.${this.scrAssertionsCounter}  FAILED **:   ${this.scenario}: ${verificationMsg ? verificationMsg : ''} => ${assertError.message}`);
             await reportLogger.AddScreenshot();
 
         }
     }
 
     finally() {
-        let scrs = " \n \n All Scenarios: \n";
+       
+        
+        let errors = "\n";
+        let errCounter = 0;
+        for (const error of this.assertions) {
+            errCounter++;
+            errors = `${errors} \n  ${error}`;
+        }
+
+        let scrs = errors + " \n \n All Scenarios: \n";
         for (const scr of this.scenarios) {
             scrs = `${scrs} \n ${scr}`;
         }
+        scrs = scrs + "\n\n";
+        expect(this.assertions.length, `${this.assertions.length} of ${this.assertCount} assertions failed => Error(s) :` + scrs).to.equal(0);
 
-        if (!this.isPassed) {
-            let errors = "\n";
-            let errCounter = 0;
-            for (const error of this.assertions) {
-                errCounter++;
-                errors = `${errors} \n  ${error}`;
-            }
-
-            let scrs = errors +" \n \n All Scenarios: \n"; 
-            for (const scr of this.scenarios) {
-                scrs = `${scrs} \n ${scr}`;
-            } 
-            errors = errors +"\n\n";
-            expect(false, `${this.assertions.length} of ${this.assertCount} assertions failed => Error(s) :` + scrs).to.be.true
-
-       } 
     }
 
 

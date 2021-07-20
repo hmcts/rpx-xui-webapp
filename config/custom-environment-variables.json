@@ -61,7 +61,8 @@
       "roleApi": "SERVICES_ROLE_ASSIGNMENT_API"
     },
     "case": {
-      "caseworkerApi": "SERVICES_CASE_CASEWORKER_API"
+      "caseworkerApi": "SERVICES_CASE_CASEWORKER_API",
+      "judicialworkerApi": "SERVICES_CASE_JUDICIALWORKER_API"
     },
     "markup_api": "SERVICES_MARKUP_API",
     "icp_api": "SERVICES_ICP_API",

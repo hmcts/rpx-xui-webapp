@@ -8,8 +8,7 @@ import {
   CasesCreateComponent,
   CaseShareCompleteComponent,
   CaseShareComponent,
-  CaseShareConfirmComponent,
-  AllocateRoleContainerComponent
+  CaseShareConfirmComponent
 } from './containers';
 import { CaseDetailsHomeComponent } from './containers/case-details-home/case-details-home.component';
 import { CaseFilterComponent } from './containers/case-filter/case-filter.component';
@@ -43,27 +42,6 @@ export const ROUTES: Routes = [
           data: {
             title: 'HMCTS Share Cases | Case Share'
           }
-        },
-        {
-          path: 'allocate-role',
-          canActivate: [HealthCheckGuard],
-          data: {
-            title: 'Allocate role'
-          },
-          children: [
-            {
-              path: 'exclusion',
-              component: AllocateRoleContainerComponent,
-            },
-            {
-              path: 'judiciary',
-              component: AllocateRoleContainerComponent,
-            },
-            {
-              path: 'legal-ops',
-              component: AllocateRoleContainerComponent,
-            }
-          ]
         },
         {
           path: 'case-share-confirm',

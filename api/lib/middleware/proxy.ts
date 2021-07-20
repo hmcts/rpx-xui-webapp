@@ -8,18 +8,20 @@ import authInterceptor from './auth'
 const logger = log4jui.getLogger('proxy')
 
 export const onProxyError = (err, req, res) => {
-    logger.error(err)
+  logger.error(err)
 
-    if (req.baseUrl && req.baseUrl === '/activity' && req.user && req.user.userinfo) {
-      logger.info('ActivityTrackerResponseFailed => ',
-        `id: ${req.user.userinfo.id} forename:${req.user.userinfo.forename} surname:${req.user.userinfo.surname}`
-      );
-    }
+  if (req.baseUrl && req.baseUrl === '/activity' && req.user && req.user.userinfo) {
+    logger.info('ActivityTrackerResponseFailed => ',
+      `id: ${req.user.userinfo.id} forename:${req.user.userinfo.forename} surname:${req.user.userinfo.surname}`
+    );
+  }
 
+  if (res && typeof(res.status) === 'function') {
     res.status(500).send({
-        error: 'Error when connecting to remote server',
-        status: 504,
-    })
+      error: 'Error when connecting to remote server',
+      status: 504,
+    });
+  }
 }
 
 export const applyProxy = (app, config) => {

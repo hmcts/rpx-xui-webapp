@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { AbstractAppConfig, CaseEditorConfig } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { AppConfigService } from '../config/configuration.services';
-import { AppConstants } from '../../app.constants';
-import { AppUtils } from '../../app-utils';
-import { WorkAllocationTaskService } from '../../../work-allocation/services';
 import { EnvironmentService } from '../../../app/shared/services/environment.service';
+import { WorkAllocationTaskService } from '../../../work-allocation/services';
+import { AppUtils } from '../../app-utils';
+import { AppConstants } from '../../app.constants';
+import { AppConfigService } from '../config/configuration.services';
 
 /**
  * see more:
@@ -48,84 +48,79 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.login_url;
   }
 
-  public getApiUrl() {
+  public getApiUrl(): string {
     return this.config.api_url;
   }
 
-  public getCaseDataUrl() {
+  public getCaseDataUrl(): string {
     return this.config.case_data_url;
   }
 
-  public getDocumentManagementUrl() {
+  public getDocumentManagementUrl(): string {
     return this.config.document_management_url;
   }
 
-  public getRemoteDocumentManagementUrl() {
+  public getRemoteDocumentManagementUrl(): string {
     return this.config.remote_document_management_url;
   }
 
-  public getHrsUrl() {
+  public getHrsUrl(): string {
     return this.config.hrs_url;
   }
 
-  public getRemoteHrsUrl() {
+  public getRemoteHrsUrl(): string {
     return this.config.remote_hrs_url;
   }
 
-  public getPostcodeLookupUrl() {
+  public getPostcodeLookupUrl(): string {
     return this.config.postcode_lookup_url;
   }
 
-  public getOAuth2ClientId() {
+  public getOAuth2ClientId(): string {
     return this.config.oauth2_client_id;
   }
 
-  public getPaymentsUrl() {
+  public getPaymentsUrl(): string {
     return this.config.payments_url;
   }
 
-  public getCaseHistoryUrl(caseId: string, eventId: string) {
-    return (
-      this.getCaseDataUrl() +
-      `/internal` +
-      `/cases/${caseId}` +
-      `/events/${eventId}`
-    );
+  public getCaseHistoryUrl(caseId: string, eventId: string): string {
+    return `${this.getCaseDataUrl()}/internal/cases/${caseId}/events/${eventId}`;
   }
 
-  public getCreateOrUpdateDraftsUrl(ctid: string) {
-    return this.getCaseDataUrl() + `/internal/case-types/${ctid}/drafts/`;
+  public getCreateOrUpdateDraftsUrl(ctid: string): string {
+    return `${this.getCaseDataUrl()}/internal/case-types/${ctid}/drafts/`;
   }
 
-  public getViewOrDeleteDraftsUrl(did: string) {
-    return this.getCaseDataUrl() + `/drafts/${did}`;
+  public getViewOrDeleteDraftsUrl(did: string): string {
+    return `${this.getCaseDataUrl()}/drafts/${did}`;
   }
 
   public getActivityUrl(): string {
     return this.config.activity_url;
   }
 
-  public getActivityNexPollRequestMs() {
+  public getActivityNexPollRequestMs(): number {
     return this.config.activity_next_poll_request_ms;
   }
 
-  public getActivityRetry() {
+  public getActivityRetry(): number {
     return this.config.activity_retry;
   }
 
-  public getActivityBatchCollectionDelayMs() {
+  public getActivityBatchCollectionDelayMs(): number {
     return this.config.activity_batch_collection_delay_ms;
   }
 
-  public getActivityMaxRequestPerBatch() {
+  public getActivityMaxRequestPerBatch(): number {
     return this.config.activity_max_request_per_batch;
   }
 
-  public getPrintServiceUrl() {
+  public getPrintServiceUrl(): string {
     return this.config.print_service_url;
   }
 
-  public getRemotePrintServiceUrl() {
+  public getRemotePrintServiceUrl(): string {
     return this.config.remote_print_service_url;
   }
 

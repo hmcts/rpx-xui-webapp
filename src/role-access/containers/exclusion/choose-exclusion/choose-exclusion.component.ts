@@ -5,17 +5,19 @@ import { ExclusionNavigationEvent, ExclusionState } from '../../../models';
 import { ExclusionNavigation } from '../../../models/exclusion-navigation.interface';
 import * as fromFeature from '../../../store';
 import * as fromRoot from '../../../../app/store';
+import { RoleAllocationType } from 'src/role-access/models/enums';
 
 @Component({
   selector: 'exui-choose-exclusion',
-  templateUrl: './choose-exclusion-container.component.html',
-  styleUrls: ['./choose-exclusion-container.component.scss']
+  templateUrl: './choose-exclusion.component.html',
+  styleUrls: ['./choose-exclusion.component.scss']
 })
 export class ChooseExclusionComponent implements OnInit {
 
   @Input() public navEvent: ExclusionNavigation;
   public includeOther: boolean = false;
   public locationInfo$: Observable<any>;
+  public roleAllocation = RoleAllocationType.Exclusion;
 
   constructor(private readonly store: Store<fromFeature.State>) {
   }

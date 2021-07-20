@@ -13,7 +13,7 @@ import { ExclusionNavigationEvent, ExclusionState } from '../../../models';
 import { ExclusionNavigation } from '../../../models/exclusion-navigation.interface';
 import * as fromFeature from '../../../store';
 import { CheckAnswersComponent } from '../check-answers/check-answers.component';
-import { ChooseExclusionComponent } from '../choose-exclusion-container/choose-exclusion-container.component';
+import { ChooseExclusionComponent } from '../choose-exclusion/choose-exclusion.component';
 import { ChoosePersonRoleComponent } from '../choose-person-role/choose-person-role.component';
 import { DescribeExclusionContainerComponent } from '../describe-exclusion-container/describe-exclusion-container.component';
 import { FindPersonComponent } from '../find-person/find-person.component';

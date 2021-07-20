@@ -302,3 +302,11 @@ export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Re
     next(error);
   }
 }
+
+export async function getRolesCategory(req: EnhancedRequest, res: Response, next: NextFunction) {
+  const personRoles = [
+    {roleId: 'judicial', roleName: 'Judicial'},
+    {roleId: 'legalOps', roleName: 'Legal Ops'},
+    {roleId: 'admin', roleName: 'Admin'}];
+  return res.send(personRoles).status(200);
+}

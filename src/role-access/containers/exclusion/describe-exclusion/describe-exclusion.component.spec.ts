@@ -2,7 +2,7 @@ import { async } from '@angular/core/testing';
 import { DescribeExclusionComponent } from './describe-exclusion.component';
 import { Validators } from '@angular/forms';
 import { ExclusionNavigationEvent, ExclusionState } from '../../../models';
-import { UpdateDescribeExclusionText } from 'src/role-access/store';
+import { UpdateDescribeExclusionText } from '../../../store';
 
 describe('DescribeExclusionComponent', () => {
   let component: DescribeExclusionComponent;

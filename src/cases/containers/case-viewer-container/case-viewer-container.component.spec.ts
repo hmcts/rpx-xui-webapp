@@ -1,7 +1,18 @@
+import { Component, Input } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { CaseViewerComponent } from '@hmcts/ccd-case-ui-toolkit/dist/shared';
-
+import { RouterTestingModule } from '@angular/router/testing';
+import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { CaseViewerContainerComponent } from './case-viewer-container.component';
+
+
+@Component({
+  // tslint:disable-next-line
+  selector: 'ccd-case-viewer',
+  template: '<p>Tasks Container</p>'
+})
+class CaseViewerComponent {
+  @Input() public caseDetails: CaseView;
+}
 
 describe('CaseViewerContainerComponent', () => {
   let component: CaseViewerContainerComponent;
@@ -9,6 +20,7 @@ describe('CaseViewerContainerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
       declarations: [ CaseViewerContainerComponent, CaseViewerComponent ]
     })
     .compileComponents();

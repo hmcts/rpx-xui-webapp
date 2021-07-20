@@ -2,25 +2,24 @@ nodejs:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
   environment:
-     NODE_TLS_REJECT_UNAUTHORIZED: 0
-     SERVICES_IDAM_API_URL: https://idam-api.aat.platform.hmcts.net
-     SERVICES_IDAM_LOGIN_URL: https://idam-web-public.aat.platform.hmcts.net
-     REDISCLOUD_URL: redis://ignore:fake-password@${SERVICE_NAME}-redis-master:6379
-     LAUNCH_DARKLY_CLIENT_ID: 5de6610b23ce5408280f2268
-     HEALTH_CCD_COMPONENT_API: https://gateway-ccd.aat.platform.hmcts.net/health
-     HEALTH_CCD_DATA_API: http://ccd-data-store-api-aat.service.core-compute-aat.internal/health
-     HEALTH_DOCUMENTS_API: http://dm-store-aat.service.core-compute-aat.internal/health
-     HEALTH_EM_ANNO_API: http://em-anno-aat.service.core-compute-aat.internal/health
-     HEALTH_S2S_SERVICE: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal/health
-     HEALTH_TERMS_AND_CONDITIONS_API: http://xui-terms-and-conditions-aat.service.core-compute-aat.internal/health
-     HEALTH_WORK_ALLOCATION_TASK_API: http://wa-task-management-api-aat.service.core-compute-aat.internal/health
-     HEALTH_ROLE_ASSIGNMENT_API: http://am-role-assignment-service-aat.service.core-compute-aat.internal/health
-     HEALTH_CASE_CASEWORKER_API: http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal/health
-     SERVICES_CCD_ACTIVITY_API_PATH: http://ccd-case-activity-api-pr-276.service.core-compute-preview.internal
-     SERVICES_CCD_ACTIVITY_API: http://ccd-case-activity-api-pr-276.service.core-compute-preview.internal
-     STUB: false
-     DEBUG: xuiNode:*
-     FEATURE_WORKALLOCATION_ENABLED: true
+    NODE_TLS_REJECT_UNAUTHORIZED: 0
+    SERVICES_IDAM_API_URL: https://idam-api.aat.platform.hmcts.net
+    SERVICES_IDAM_LOGIN_URL: https://idam-web-public.aat.platform.hmcts.net
+    REDISCLOUD_URL: redis://ignore:fake-password@${SERVICE_NAME}-redis-master:6379
+    LAUNCH_DARKLY_CLIENT_ID: 5de6610b23ce5408280f2268
+    HEALTH_CCD_COMPONENT_API: https://gateway-ccd.aat.platform.hmcts.net/health
+    HEALTH_CCD_DATA_API: http://ccd-data-store-api-aat.service.core-compute-aat.internal/health
+    HEALTH_DOCUMENTS_API: http://dm-store-aat.service.core-compute-aat.internal/health
+    HEALTH_EM_ANNO_API: http://em-anno-aat.service.core-compute-aat.internal/health
+    HEALTH_S2S_SERVICE: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal/health
+    HEALTH_TERMS_AND_CONDITIONS_API: http://xui-terms-and-conditions-aat.service.core-compute-aat.internal/health
+    HEALTH_WORK_ALLOCATION_TASK_API: http://wa-task-management-api-aat.service.core-compute-aat.internal/health
+    HEALTH_ROLE_ASSIGNMENT_API: http://am-role-assignment-service-aat.service.core-compute-aat.internal/health
+    HEALTH_CASE_CASEWORKER_API: http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal/health
+    SERVICES_CCD_ACTIVITY_API: http://ccd-case-activity-api-pr-276.service.core-compute-preview.internal
+    STUB: false
+    DEBUG: xuiNode:*
+    FEATURE_WORKALLOCATION_ENABLED: true
   keyVaults:
     rpx:
       secrets:

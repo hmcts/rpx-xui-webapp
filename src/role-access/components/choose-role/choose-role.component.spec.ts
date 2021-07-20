@@ -1,6 +1,7 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { Role } from '../../models';
 import { RoleAllocationCaptionText, RoleAllocationRadioText, RoleAllocationTitleText, RoleAllocationType } from '../../models/enums';
 import { ChooseRoleComponent } from './choose-role.component';
 
@@ -11,6 +12,11 @@ class WrapperComponent {
   @ViewChild(ChooseRoleComponent) public ref: ChooseRoleComponent;
   @Input() public roleAllocation: RoleAllocationType;
 }
+
+const mockRoles: Role[] = [
+  { roleId: '1', roleName: 'Role 1' },
+  { roleId: '2', roleName: 'Role 2' },
+  { roleId: '3', roleName: 'Role 3' }]
 
 describe('AllocateRoleComponent', () => {
   let component: ChooseRoleComponent;
@@ -56,9 +62,10 @@ describe('AllocateRoleComponent', () => {
   });
 
   it('should correctly set the radio buttons based on the roles inputted', () => {
-    component.roles = ['Role 1', 'Role 2', 'Role 3'];
+    component.roles = mockRoles;
     fixture.detectChanges();
     const element = fixture.debugElement.query(By.css('.govuk-radios__input')).nativeElement;
-    expect(element.id).toBe('Role 1');
+    expect(element.id).toBe('1');
+    expect(element.value).toBe('Role 1');
   });
 });

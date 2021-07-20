@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 
-import { RoleAllocationCaptionText, RoleAllocationRadioText, RoleAllocationTitleText, RoleAllocationType } from '../../models/enums';
+import { Role } from '../../models';
+import { RoleAllocationCaptionText, RoleAllocationTitleText, RoleAllocationType } from '../../models/enums';
 
 @Component({
   selector: 'exui-choose-role',
@@ -11,8 +12,7 @@ export class ChooseRoleComponent implements OnInit {
 
   @Input() public roleAllocation: RoleAllocationType;
   @Input() public includeOther: boolean;
-  // TODO: Need to get this from the node layer
-  @Input() public roles: string[] = [];
+  @Input() public roles: Role[] = [];
 
   public title = RoleAllocationTitleText.NonExclusionChoose;
   public caption: RoleAllocationCaptionText;

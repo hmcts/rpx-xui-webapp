@@ -1,8 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
+
+import { ExclusionNavigationEvent, ExclusionState, Role } from '../../../models';
 import { RoleAllocationType } from '../../../models/enums';
-import { ExclusionNavigationEvent, ExclusionState } from '../../../models';
 import { ExclusionNavigation } from '../../../models/exclusion-navigation.interface';
+import { RoleExclusionsService } from '../../../services/role-exclusions.service';
 import * as fromFeature from '../../../store';
 
 @Component({
@@ -13,15 +16,17 @@ import * as fromFeature from '../../../store';
 export class ChoosePersonRoleComponent implements OnInit {
 
   @Input() public navEvent: ExclusionNavigation;
-  public roles: string[];
+  public roles: Role[];
   public roleAllocation = RoleAllocationType.Exclusion;
+  public roles$: Observable<Role[]>;
 
-  constructor(private readonly store: Store<fromFeature.State>) {
-  }
+  constructor(private readonly store: Store<fromFeature.State>, private readonly roleExclusionsService: RoleExclusionsService) { }
 
   public ngOnInit(): void {
-    // TODO: Will need to get these from node layer - Role Assignment service
-    this.roles = ['Judicial', 'Legal ops', 'Admin'];
+    this.roles$ = this.roleExclusionsService.getRolesCategory();
+    this.roles$.subscribe((roles) => {
+      this.roles = roles;
+    });
   }
 
   public navigationHandler(navEvent: ExclusionNavigationEvent) {

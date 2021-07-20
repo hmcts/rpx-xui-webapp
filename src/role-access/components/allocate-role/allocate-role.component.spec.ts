@@ -1,10 +1,6 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-<<<<<<< HEAD:src/role-access/components/allocate-role/allocate-role.component.spec.ts
 import { RoleAllocationCaptionText, RoleAllocationRadioText, RoleAllocationTitleText, RoleAllocationType } from '../../models/enums';
-=======
-import { RoleAllocationCaptionText, RoleAllocationRadioText, RoleAllocationTitleText, RoleAllocationType } from '../../../models/enums';
->>>>>>> feature/release2-wa2:src/role-access/components/exclusion/allocate-role/allocate-role.component.spec.ts
 import { AllocateRoleComponent } from './allocate-role.component';
 
 @Component({

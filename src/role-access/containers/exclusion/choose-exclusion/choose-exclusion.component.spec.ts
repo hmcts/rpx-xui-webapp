@@ -10,7 +10,7 @@ import { ExclusionNavigationEvent } from '../../../models';
 import { RoleAllocationType } from '../../../models/enums';
 import { ChooseExclusionComponent } from './choose-exclusion.component';
 
-fdescribe('ChooseExclusionComponent', () => {
+describe('ChooseExclusionComponent', () => {
   let component: ChooseExclusionComponent;
   let fixture: ComponentFixture<ChooseExclusionComponent>;
   let store: MockStore<State>;

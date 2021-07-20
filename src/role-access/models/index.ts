@@ -5,3 +5,4 @@ export * from './http-error.interface';
 export * from './exclusion.enum';
 export * from './person-model';
 export * from './role-exclusion.model';
+export * from './role.model';

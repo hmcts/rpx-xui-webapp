@@ -1,10 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 
-<<<<<<< HEAD:src/role-access/components/allocate-role/allocate-role.component.ts
 import { RoleAllocationCaptionText, RoleAllocationRadioText, RoleAllocationTitleText, RoleAllocationType } from '../../models/enums';
-=======
-import { RoleAllocationCaptionText, RoleAllocationRadioText, RoleAllocationTitleText, RoleAllocationType } from '../../../models/enums';
->>>>>>> feature/release2-wa2:src/role-access/components/exclusion/allocate-role/allocate-role.component.ts
 
 @Component({
   selector: 'exui-allocate-role',

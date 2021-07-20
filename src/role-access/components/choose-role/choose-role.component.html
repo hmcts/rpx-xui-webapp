@@ -6,9 +6,9 @@
   <fieldset class="govuk-fieldset">
     <div class="govuk-radios">
       <div *ngFor="let role of roles" class="govuk-radios__item">
-        <input class="govuk-radios__input" [id]="role" [name]="roleAllocation" type="radio" [value]="role">
-        <label class="govuk-label govuk-radios__label" [for]="role">
-          {{role}}
+        <input class="govuk-radios__input" [id]="role.roleId" [name]="roleAllocation" type="radio" [value]="role.roleName">
+        <label class="govuk-label govuk-radios__label" [for]="role.roleId">
+          {{role.roleName}}
         </label>
       </div>
     </div>

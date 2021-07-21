@@ -1,17 +1,17 @@
-import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
-import { Case } from '../../models/cases';
 import { CdkTableModule } from '@angular/cdk/table';
 import { ChangeDetectorRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { getMockCases, MockRouter } from '../../tests/utils.spec';
-import { InfoMessageCommService, WorkAllocationCaseService, WorkAllocationFeatureService } from '../../services';
-import { MyCasesComponent } from '../my-cases/my-cases.component';
-import { of } from 'rxjs';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
+import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { of } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
+import { Case } from '../../models/cases';
+import { InfoMessageCommService, WorkAllocationCaseService, WorkAllocationFeatureService } from '../../services';
+import { getMockCases, MockRouter } from '../../tests/utils.spec';
+import { MyCasesComponent } from '../my-cases/my-cases.component';
 import { WorkCaseListComponent } from '../work-case-list/work-case-list.component';
 import { WorkCaseListWrapperComponent } from './work-case-list-wrapper.component';
 
@@ -80,9 +80,7 @@ describe('WorkCaseListWrapperComponent', () => {
 
       // need to verify correct properties were called
       const lastNavigateCall = mockRouter.navigateCalls.pop();
-      expect(lastNavigateCall.commands).toEqual([`/work/${exampleCase.id}/${firstAction.id}/`]);
-      const exampleNavigateCall = { state: { returnUrl: '/mywork/list', showAssigneeColumn: true } };
-      expect(lastNavigateCall.extras).toEqual(exampleNavigateCall);
+      expect(lastNavigateCall.commands).toEqual([`/work/case/${firstAction.id}`]);
     });
 
     it('should handle an action returned via the task manager page', () => {
@@ -96,9 +94,7 @@ describe('WorkCaseListWrapperComponent', () => {
 
       // need to verify correct properties were called
       const lastNavigateCall = mockRouter.navigateCalls.pop();
-      expect(lastNavigateCall.commands).toEqual([`/work/${exampleCase.id}/${secondAction.id}/`]);
-      const exampleNavigateCall = { state: { returnUrl: '/mywork/manager', showAssigneeColumn: true } };
-      expect(lastNavigateCall.extras).toEqual(exampleNavigateCall);
+      expect(lastNavigateCall.commands).toEqual([`/work/case/${secondAction.id}`]);
     });
   });
 });

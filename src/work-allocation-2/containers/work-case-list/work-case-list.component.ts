@@ -1,13 +1,12 @@
-import CaseServiceConfig from '../../models/cases/case-service-config.model';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { Case, CaseAction, InvokedCaseAction } from '../../models/cases';
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
-import { FieldConfig, SortField } from '../../models/common';
-import { ListConstants } from '../../components/constants';
-import { PaginationParameter } from '../../models/dtos';
 import { Router } from '@angular/router';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { ListConstants } from '../../components/constants';
 import { SortOrder } from '../../enums';
-
+import { Case, CaseAction, InvokedCaseAction } from '../../models/cases';
+import CaseServiceConfig from '../../models/cases/case-service-config.model';
+import { FieldConfig, SortField } from '../../models/common';
+import { PaginationParameter } from '../../models/dtos';
 
 @Component({
   selector: 'exui-work-case-list',
@@ -41,7 +40,7 @@ export class WorkCaseListComponent implements OnChanges {
   @Output() public actionEvent = new EventEmitter<InvokedCaseAction>();
 
   /**
-   * The datasource is an Observable of data to be displayed, as per LLD.
+   * The dataSource is an Observable of data to be displayed, as per LLD.
    */
   public dataSource$: Observable<Case[]>;
 
@@ -107,7 +106,7 @@ export class WorkCaseListComponent implements OnChanges {
   }
 
   /**
-   * Takes in the fieldname, so it can be output to trigger a new Request to the API
+   * Takes in the fieldName, so it can be output to trigger a new Request to the API
    * to get a sorted result set.
    *
    *

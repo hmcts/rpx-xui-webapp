@@ -32,8 +32,16 @@ export const REASSIGN: Action = {
   id: 'reassign',
   title: 'Reassign task',
 };
+export const REALLOCATE: Action = {
+  id: 'reallocate',
+  title: 'Reallocate',
+};
+export const REMOVE_ALLOCATION: Action = {
+  id: 'remove-allocation',
+  title: 'Remove allocation',
+};
 
-export const VIEW_PERMISSIONS_ACTIONS_MATRIX = {
+export const TASK_VIEW_PERMISSIONS_ACTIONS_MATRIX = {
   // This matrix is for configuring permissions and actions defined in the work allocation permission table
   // level 1 - select a view, like 'MyTasks'
   // level 2 - select a permission, like 'Manage'
@@ -54,15 +62,18 @@ export const VIEW_PERMISSIONS_ACTIONS_MATRIX = {
   AvailableTasks: {
     Manage: [CLAIM, CLAIM_AND_GO],
   },
-  MyCases: {
-    Manage: [REASSIGN, RELEASE, GO],
-  },
   MyTasks: {
     Manage: [REASSIGN, RELEASE, GO],
   },
 };
 
-export enum TaskPermission {
+export const CASE_VIEW_PERMISSIONS_ACTIONS_MATRIX = {
+  MyCases: {
+    Manage: [REALLOCATE, REMOVE_ALLOCATION],
+  },
+};
+
+export enum Permission {
   READ = 'Read',
   REFER = 'Refer',
   MANAGE = 'Manage',

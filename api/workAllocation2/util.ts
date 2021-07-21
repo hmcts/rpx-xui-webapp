@@ -4,7 +4,7 @@ import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
 
-import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX } from './constants/actions';
+import { CASE_VIEW_PERMISSIONS_ACTIONS_MATRIX, Permission, TASK_VIEW_PERMISSIONS_ACTIONS_MATRIX } from './constants/actions';
 import { Action, Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/common';
 import { Person, PersonDomain } from './interfaces/person';
 
@@ -14,13 +14,6 @@ export function prepareGetTaskUrl(baseUrl: string, taskId: string): string {
 
 export function preparePostTaskUrlAction(baseUrl: string, taskId: string, action: string): string {
   return `${baseUrl}/task/${taskId}/${action}`;
-}
-
-export function prepareSearchCaseUrl(baseUrl: string, subPath?: string) {
-  if (subPath) {
-    return `${baseUrl}/${subPath}`;
-  }
-  return `${baseUrl}/case`;
 }
 
 export function prepareSearchTaskUrl(baseUrl: string, subPath?: string) {
@@ -88,7 +81,7 @@ export function assignActionsToTasks(tasks: any[], view: any): any[] {
       if (view === allWorkView) {
         thisView = task.assignee ? 'AllWorkAssigned' : 'AllWorkUnassigned';
       }
-      const actions: Action[] = getActionsByPermissions(thisView, task.permissions);
+      const actions: Action[] = getTaskActionsByPermissions(thisView, task.permissions);
       view = allWorkView;
       const taskWithAction = {...task, actions};
       tasksWithActions.push(taskWithAction);
@@ -108,10 +101,7 @@ export function assignActionsToCases(cases: any[], view: any): any[] {
   const casesWithActions: any[] = [];
   if (cases) {
     for (const item of cases) {
-      // Note: There is no current logic to determine whether assigned or unassigned
-      // This was debated for EUI-3619
-      // As actions can change based on whether assigned or not, there might need to be a check here
-      const actions: Action[] = getActionsByPermissions(view, item.permissions);
+      const actions: Action[] = getCaseActionsByPermissions(view, item.permissions);
       const caseWithAction = { ...item, actions };
       casesWithActions.push(caseWithAction);
     }
@@ -174,21 +164,36 @@ export function prepareRoleApiRequest(locationId?: number): any {
  * @param permissions The list of permissions the user holds.
  * @return actionList:Action[] the list of total actions user holds.
  */
-export function getActionsByPermissions(view, permissions: TaskPermission[]): Action[] {
+export function getTaskActionsByPermissions(view, permissions: Permission[]): Action[] {
   let actionList: Action[] = [];
   permissions.forEach(permission => {
     switch (permission) {
-      case TaskPermission.MANAGE:
-        const manageActionList = actionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX[view][TaskPermission.MANAGE]);
+      case Permission.MANAGE:
+        const manageActionList = actionList.concat(TASK_VIEW_PERMISSIONS_ACTIONS_MATRIX[view][Permission.MANAGE]);
         actionList = !manageActionList.includes(undefined) ? manageActionList : actionList;
         break;
-      case TaskPermission.EXECUTE:
-        const executeActionList = actionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX[view][TaskPermission.EXECUTE]);
+      case Permission.EXECUTE:
+        const executeActionList = actionList.concat(TASK_VIEW_PERMISSIONS_ACTIONS_MATRIX[view][Permission.EXECUTE]);
         actionList = !executeActionList.includes(undefined) ? executeActionList : actionList;
         break;
-      case TaskPermission.CANCEL:
-        const cancelActionList = actionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX[view][TaskPermission.CANCEL]);
+      case Permission.CANCEL:
+        const cancelActionList = actionList.concat(TASK_VIEW_PERMISSIONS_ACTIONS_MATRIX[view][Permission.CANCEL]);
         actionList = !cancelActionList.includes(undefined) ? cancelActionList : actionList;
+        break;
+      default:
+        break;
+    }
+  });
+  return actionList;
+}
+
+export function getCaseActionsByPermissions(view, permissions: Permission[]): Action[] {
+  let actionList: Action[] = [];
+  permissions.forEach(permission => {
+    switch (permission) {
+      case Permission.MANAGE:
+        const manageActionList = actionList.concat(CASE_VIEW_PERMISSIONS_ACTIONS_MATRIX[view][Permission.MANAGE]);
+        actionList = !manageActionList.includes(undefined) ? manageActionList : actionList;
         break;
       default:
         break;

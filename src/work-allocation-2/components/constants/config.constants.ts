@@ -66,6 +66,7 @@ const DERIVED_ICON: FieldConfig = {
   type: FieldType.DERIVED_ICON,
   columnLabel: null,
   views: TaskView.ALL_VIEWS,
+  sortName: 'derivedIcon',
   // sourcColumn and matchValue values currently defined in DI constants file
   sourceColumn: DERIVED_ICON_CONSTANTS.SOURCE_COLUMN,
   matchValue: DERIVED_ICON_CONSTANTS.MATCH_VALUE
@@ -92,17 +93,17 @@ const DUE_DATE: FieldConfig = {
   views: TaskView.ALL_VIEWS
 };
 const START_DATE: FieldConfig = {
-  name: 'startDate',
+  name: 'start_date',
   type: FieldType.DATE,
   columnLabel: 'Start',
-  sortName: 'startDate',
+  sortName: 'start_date',
   views: TaskView.ALL_VIEWS
 };
 const END_DATE: FieldConfig = {
-  name: 'endDate',
+  name: 'end_date',
   type: FieldType.DATE,
   columnLabel: 'End',
-  sortName: 'endDate',
+  sortName: 'end_date',
   views: TaskView.ALL_VIEWS
 };
 const ASSIGNEE: FieldConfig = {
@@ -121,7 +122,6 @@ const ASSIGNEE: FieldConfig = {
 const AVAILABLE_TASKS: FieldConfig[] = [
   CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_TEXT, DUE_DATE
 ];
-
 const MY_CASES: FieldConfig[] = [
   CASE_NAME_AS_LINK, JURISDICTION, CASE_CATEGORY, CASE_ROLE, START_DATE, END_DATE
 ];

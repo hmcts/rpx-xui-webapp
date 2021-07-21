@@ -1,6 +1,12 @@
 <exui-work-case-list
-  [caseServiceConfig]="caseServiceConfig" [cases]="cases" [fields]="fields" [casesTotal]="casesTotal" [pagination]="pagination"
-  [sortedBy]="sortedBy" [emptyMessage]="emptyMessage"
+  [caseServiceConfig]="caseServiceConfig"
+  [cases]="cases"
+  [fields]="fields"
+  [casesTotal]="casesTotal"
+  [pagination]="pagination"
+  [sortedBy]="sortedBy"
+  [emptyMessage]="emptyMessage"
   (paginationEvent)="onPaginationEvent($event)"
-  (sortEvent)="onSortHandler($event)" (actionEvent)="onActionHandler($event)">
+  (sortEvent)="onSortHandler($event)"
+  (actionEvent)="onActionHandler($event)">
 </exui-work-case-list>

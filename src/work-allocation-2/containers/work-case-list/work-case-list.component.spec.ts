@@ -376,7 +376,7 @@ describe('CaseListComponent', () => {
     const element = fixture.debugElement.nativeElement;
     const caseName = element.querySelector('#sort_by_caseName');
     const categoryButton = element.querySelector('#sort_by_caseCategory');
-    const startDateButton = element.querySelector('#sort_by_startDate');
+    const startDateButton = element.querySelector('#sort_by_start_date');
     caseName.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
@@ -400,7 +400,7 @@ describe('CaseListComponent', () => {
     startDateButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     expect(component.sortEvent.emit).toHaveBeenCalled();
-    expect(component.sortEvent.emit).toHaveBeenCalledWith('startDate');
+    expect(component.sortEvent.emit).toHaveBeenCalledWith('start_date');
   });
 
   describe('act upon deep linking', () => {

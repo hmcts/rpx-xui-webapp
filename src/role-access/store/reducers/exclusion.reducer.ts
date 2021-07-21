@@ -2,7 +2,7 @@ import { ExclusionState, ExclusionStateData } from '../../models';
 import * as fromActions from '../actions';
 
 export const initialState: ExclusionStateData = {
-  caseId: null,
+  caseId: '1546883526751282',
   state: ExclusionState.CHOOSE_EXCLUSION,
   exclusionOption: null,
   personRole: null,

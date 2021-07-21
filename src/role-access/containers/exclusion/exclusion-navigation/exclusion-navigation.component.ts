@@ -7,8 +7,9 @@ import {
   confirmExclusionButtonVisibilityStates,
   continueButtonVisibilityStates
 } from '../../../constants';
-import { ExclusionNavigationEvent, ExclusionState } from '../../../models';
+import { ExclusionNavigationEvent, ExclusionState, ExclusionStateData } from '../../../models';
 import * as fromFeature from '../../../store';
+import * as fromRoot from '../../../../app/store';
 
 @Component({
   selector: 'exui-exclusion-navigation',
@@ -29,6 +30,7 @@ export class ExclusionNavigationComponent implements OnInit {
 
   constructor(
     private store: Store<fromFeature.State>,
+    private appStore: Store<fromRoot.State>
   ) {
   }
 
@@ -41,7 +43,17 @@ export class ExclusionNavigationComponent implements OnInit {
   }
 
   public onEventTrigger(event: ExclusionNavigationEvent) {
+    if (event === ExclusionNavigationEvent.CANCEL) {
+      this.store.pipe(select(fromFeature.getRoleAccessState)).first().subscribe(exclusion => this.loadCaseDetailsPage(exclusion));
+      return;
+    }
     this.eventTrigger.emit(event);
   }
 
+  public loadCaseDetailsPage(exclusion: ExclusionStateData): void {
+    this.appStore.dispatch(new fromRoot.CreateCaseGo({
+      path: [`/cases/case-details/${exclusion.caseId}`],
+      caseId: exclusion.caseId
+    }));
+  }
 }

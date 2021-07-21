@@ -137,7 +137,7 @@ describe("Task management api, Search task", () => {
                 return configValues[prop];
             });
             
-            const { searchTask } = requireReloaded('../../../../workAllocation/index');
+            const { searchTaskWithPagination } = requireReloaded('../../../../workAllocation/index');
 
             const req = mockReq({
                 headers:{
@@ -145,7 +145,13 @@ describe("Task management api, Search task", () => {
                     'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
                     // 'content-Type': 'application/json',
                 },
-                body: { searchRequest: mockSearchRequestBody, view: 'task view' },
+                body: { searchRequest: {
+                    ...mockSearchRequestBody,
+                    pagination_parameters : {
+                        page_number : 1,
+                        page_size : 25
+                    }
+                }, view: 'task view' },
             });
             let returnedResponse = null;
             const response = mockRes();
@@ -154,7 +160,7 @@ describe("Task management api, Search task", () => {
             };
 
             try{
-                await searchTask(req, response, next);
+                await searchTaskWithPagination(req, response, next);
               
                 assertResponses(returnedResponse);
                 pactSetUp.provider.verify()

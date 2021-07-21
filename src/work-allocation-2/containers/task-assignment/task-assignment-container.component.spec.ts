@@ -14,10 +14,11 @@ import { ErrorMessageComponent } from '../../../app/components';
 import { TaskFieldConfig } from '../../../work-allocation/models/tasks';
 import { TaskActionConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
+import { TaskActionType } from '../../enums';
 import { Task } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { FindAPersonService } from '../../services/find-person.service';
-import { getMockCaseworkers, getMockTasks } from '../../tests/utils.spec';
+import { getMockTasks } from '../../tests/utils.spec';
 import {
   TaskAssignmentContainerComponent,
 } from './task-assignment-container.component';
@@ -55,7 +56,6 @@ describe('TaskAssignmentContainerComponent', () => {
     domain: PersonDomain.CASEWORKER
   };
   const mockTasks = getMockTasks();
-  const mockCaseworkers = getMockCaseworkers();
   const mockWorkAllocationService = {
     assignTask: jasmine.createSpy('assignTask').and.returnValue(Observable.of({}))
   };
@@ -75,7 +75,7 @@ describe('TaskAssignmentContainerComponent', () => {
         WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientModule, ExuiCommonLibModule, PaginationModule,
         RouterTestingModule.withRoutes(
           [
-            { path: 'mywork/list', component: NothingComponent }
+            { path: 'my-work/list', component: NothingComponent }
           ]
         )
       ],
@@ -95,7 +95,7 @@ describe('TaskAssignmentContainerComponent', () => {
               }
             },
             params: Observable.of({ task: mockTasks[0] }),
-            paramMap: Observable.of({ selectedPerson: SELECTED_PERSON})
+            paramMap: Observable.of({ selectedPerson: SELECTED_PERSON })
           }
         },
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
@@ -107,8 +107,10 @@ describe('TaskAssignmentContainerComponent', () => {
     component = wrapper.appComponentRef;
 
     wrapper.tasks = null;
-    window.history.pushState({ returnUrl: 'mywork/list', showAssigneeColumn: false }, '', 'mywork/list');
-    fixture.detectChanges();
+    window.history.pushState({ returnUrl: 'my-work/list', showAssigneeColumn: false }, '', 'my-work/list');
+
+    // Deliberately defer fixture.detectChanges() call to each test, to allow overriding the ActivatedRoute snapshot
+    // data with a different verb ("Assign")
   });
 
   afterEach(() => {
@@ -121,20 +123,62 @@ describe('TaskAssignmentContainerComponent', () => {
 
   it('should re-direct to assign task confirmation page', () => {
     const mockRouter = jasmine.createSpyObj('router', ['navigate']);
-    const compo = new TaskAssignmentContainerComponent(null, null, mockRouter, null);
+    const compo = new TaskAssignmentContainerComponent(null, mockRouter);
     const findPersonControl = new FormControl('test');
     compo.formGroup.addControl('findPersonControl', findPersonControl);
+    compo.verb = TaskActionType.Reassign;
     compo.assign();
     expect(mockRouter.navigate).toHaveBeenCalled();
+    // Check the third part of the URL passed to router.navigate() is "reassign"
+    expect(mockRouter.navigate.calls.argsFor(0)[0][2]).toEqual(TaskActionType.Reassign.toLowerCase());
+    // Check the fourth part of the URL passed to router.navigate() is "confirm"
+    expect(mockRouter.navigate.calls.argsFor(0)[0][3]).toEqual('confirm');
   });
 
   it('should not re-direct to assign task confirmation page and throw form group error', () => {
     const mockRouter = jasmine.createSpyObj('router', ['navigate']);
-    const compo = new TaskAssignmentContainerComponent(null, null, mockRouter, null);
+    const compo = new TaskAssignmentContainerComponent(null, mockRouter);
     const findPersonControl = new FormControl('');
     compo.formGroup.addControl('findPersonControl', findPersonControl);
+    compo.verb = TaskActionType.Reassign;
     compo.assign();
     expect(mockRouter.navigate).not.toHaveBeenCalled();
     expect(compo.formGroup.valid).toBeFalsy();
+  });
+
+  it('should redirect to the "All work" page on cancelling task assignment', () => {
+    window.history.pushState({ returnUrl: 'all-work/tasks#manage_0d22d838', showAssigneeColumn: false }, '',
+      'all-work/tasks#manage_0d22d838');
+    const mockRouter = jasmine.createSpyObj('router', ['navigate']);
+    const tacComponent = new TaskAssignmentContainerComponent(null, mockRouter);
+    const findPersonControl = new FormControl('test');
+    tacComponent.formGroup.addControl('findPersonControl', findPersonControl);
+    tacComponent.cancel();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['all-work/tasks']);
+  });
+
+  it('should redirect to the fallback URL (\'\') on cancelling task assignment, if the return URL is not in the history', () => {
+    window.history.pushState({}, '');
+    const mockRouter = jasmine.createSpyObj('router', ['navigate']);
+    const tacComponent = new TaskAssignmentContainerComponent(null, mockRouter);
+    const findPersonControl = new FormControl('test');
+    tacComponent.formGroup.addControl('findPersonControl', findPersonControl);
+    tacComponent.cancel();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['']);
+  });
+
+  it('should display the correct verb on screen', () => {
+    const activatedRoute: ActivatedRoute = fixture.debugElement.injector.get(ActivatedRoute);
+    activatedRoute.snapshot.data = {
+      taskAndCaseworkers: { data: mockTasks[0], caseworkers: [] },
+      ...TaskActionConstants.Assign
+    };
+    fixture.detectChanges();
+    const mockRouter = jasmine.createSpyObj('router', ['navigate']);
+    const tacComponent = new TaskAssignmentContainerComponent(null, mockRouter);
+    const findPersonControl = new FormControl('test');
+    tacComponent.formGroup.addControl('findPersonControl', findPersonControl);
+    const titleElement = fixture.debugElement.nativeElement.querySelector('.govuk-caption-l');
+    expect(titleElement.textContent).toContain(TaskActionType.Assign);
   });
 });

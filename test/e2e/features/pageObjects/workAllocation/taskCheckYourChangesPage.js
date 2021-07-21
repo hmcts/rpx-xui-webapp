@@ -14,7 +14,6 @@ class TaskCheckYourChangesPage{
         this.cancelLink = element(by.xpath("//exui-task-assignment-confirm//p/a[contains(text(),'Cancel')]"));
 
         this.taskDetailsTable = new ItemDetailsTable($('exui-task-assignment-confirm '));
- 
     }
 
 
@@ -30,7 +29,7 @@ class TaskCheckYourChangesPage{
 
     async validatePage() {
         const heaerText = await this.header.getText();
-        expect(heaerText.includes("Check your changes")).to.be.true;
+        expect(heaerText.includes("Check your answers")).to.be.true;
         expect(await this.taskDetailsTable.isDisplayed()).to.be.true;
         expect(await this.changeLink.isDisplayed()).to.be.true;
 

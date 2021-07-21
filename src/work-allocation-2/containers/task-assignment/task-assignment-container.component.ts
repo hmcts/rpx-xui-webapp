@@ -7,10 +7,8 @@ import { ErrorMessage } from '../../../app/models';
 import { ConfigConstants } from '../../components/constants';
 import { SortOrder, TaskActionType, TaskService } from '../../enums';
 import { FieldConfig } from '../../models/common';
-import { InformationMessage } from '../../models/comms';
 import { Caseworker, Location, Person } from '../../models/dtos';
 import { TaskServiceConfig } from '../../models/tasks';
-import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 
 @Component({
   selector: 'exui-task-container-assignment',
@@ -27,17 +25,15 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
 
   public formGroup: FormGroup = new FormGroup({});
   public person: Person;
-  private assignTask: Subscription;
+  private readonly assignTask: Subscription;
   public taskId: string;
   public rootPath: string;
 
   public defaultPerson: string;
 
   constructor(
-    private readonly taskService: WorkAllocationTaskService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly messageService: InfoMessageCommService
   ) { }
 
   public get fields(): FieldConfig[] {
@@ -45,10 +41,14 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   }
 
   private get returnUrl(): string {
-    let url: string = '/work/my-work/list';
+    // Default URL is '' because this is the only sensible return navigation if the user has used browser navigation
+    // buttons, which clear the `window.history.state` object
+    let url: string = '';
 
-    if (window && window.history && window.history.state) {
-      url = window.history.state.returnUrl;
+    // The returnUrl is undefined if the user has used browser navigation buttons, so check for its presence
+    if (window && window.history && window.history.state && window.history.state.returnUrl) {
+      // Truncate any portion of the URL beginning with '#', as is appended when clicking "Manage" on a task
+      url = window.history.state.returnUrl.split('#')[0];
     }
 
     return url;
@@ -97,7 +97,10 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
 
   public assign(): void {
     if (this.formGroup && this.formGroup.value && this.formGroup.value.findPersonControl) {
-      this.router.navigate([this.rootPath, this.taskId, 'reassign', 'confirm'], {state: this.person});
+      // Pass the returnUrl in the `state` parameter, so it can be used for navigation by the Task Assignment Confirm
+      // component
+      this.router.navigate([this.rootPath, this.taskId, this.verb.toLowerCase(), 'confirm'],
+        {state: {...this.person, returnUrl: this.returnUrl}});
     } else {
       this.formGroup.setErrors({
         invalid: true
@@ -106,18 +109,12 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   }
 
   public cancel(): void {
-    this.returnWithMessage(null, {});
+    // Use returnUrl to return the user to the "All work" or "My work" screen, depending on which one they started from
+    this.router.navigate([this.returnUrl]);
   }
 
   public onCaseworkerChanged(caseworker: Caseworker): void {
     this.caseworker = caseworker;
-  }
-
-  private returnWithMessage(message: InformationMessage, state: any): void {
-    if (message) {
-      this.messageService.nextMessage(message);
-    }
-    this.router.navigate([this.rootPath, 'my-work', 'list'], {state: {...state, retainMessages: true}});
   }
 
   public setFocusOn(eId: string): void {

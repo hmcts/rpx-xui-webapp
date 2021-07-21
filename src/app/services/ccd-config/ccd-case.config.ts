@@ -23,7 +23,7 @@ import { AppConfigService } from '../config/configuration.services';
 export class AppConfig extends AbstractAppConfig {
   public workallocationUrl: string;
   protected config: CaseEditorConfig;
-  private workAllocationRoles: string[] = ['caseworker-ia', 'caseworker-ia-iacjudge'];
+  private workAllocationRoles: string[] = ['caseworker-ia-iacjudge'];
   private tabs: CaseTab[] =  [
     {
       id: 'tasks',

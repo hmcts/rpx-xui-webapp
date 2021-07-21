@@ -450,10 +450,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@v4.0.0-strategic-activity-tracker-gamma":
-  version "4.0.0-strategic-activity-tracker-gamma"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.0.0-strategic-activity-tracker-gamma.tgz#81565c41129e75030d36b449465ced4e7037b005"
-  integrity sha512-m8ks2tJVVShqca19Vmf8ty6WcSqZ6YUpEhpRBxvFGfag8jN+Qcrt4MpnKgSTOjoXbe9PC/3yWRT1z35xVbLpFw==
+"@hmcts/ccd-case-ui-toolkit@4.0.0-strategic-activity-tracker-delta":
+  version "4.0.0-strategic-activity-tracker-delta"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.0.0-strategic-activity-tracker-delta.tgz#ca8233ec83df12520d6ac1cda8b168708d4dbc64"
+  integrity sha512-gIzx9V/KxO7nfxXTr9igVlwE1EXfd29eE2LYouTlxWqaFJ/4GGPanKUwacqYR1/IJ6afp75CmMoQXXUC2kcfag==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

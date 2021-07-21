@@ -76,6 +76,14 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.payments_url;
   }
 
+  public getHrsUrl() {
+    return this.config.hrs_url;
+  }
+
+  public getRemoteHrsUrl() {
+    return this.config.remote_hrs_url;
+  }
+
   public getCaseHistoryUrl(caseId: string, eventId: string) {
     return (
       this.getCaseDataUrl() +

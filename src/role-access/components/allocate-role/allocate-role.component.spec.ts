@@ -1,6 +1,6 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RoleAllocationCaptionText, RoleAllocationRadioText, RoleAllocationTitleText, RoleAllocationType } from '../../../models/enums';
+import { RoleAllocationCaptionText, RoleAllocationRadioText, RoleAllocationTitleText, RoleAllocationType } from '../../models/enums';
 import { AllocateRoleComponent } from './allocate-role.component';
 
 @Component({
@@ -34,7 +34,7 @@ describe('AllocateRoleComponent', () => {
     component.roleAllocation = RoleAllocationType.Exclusion;
     component.ngOnInit();
     fixture.detectChanges();
-    expect(component.title).toBe(RoleAllocationTitleText.Exclusion);
+    expect(component.title).toBe(RoleAllocationTitleText.ExclusionAllocate);
     expect(component.caption).toBe(RoleAllocationCaptionText.Exclusion);
     expect(component.selfText).toBe(RoleAllocationRadioText.ExclusionSelf);
     expect(component.otherText).toBe(RoleAllocationRadioText.ExclusionOther);
@@ -44,8 +44,8 @@ describe('AllocateRoleComponent', () => {
     component.roleAllocation = RoleAllocationType.Judiciary;
     component.ngOnInit();
     fixture.detectChanges();
-    expect(component.title).toBe(RoleAllocationTitleText.NonExclusion);
-    expect(component.caption).toBe(RoleAllocationCaptionText.Judiciary);
+    expect(component.title).toBe(RoleAllocationTitleText.NonExclusionAllocate);
+    expect(component.caption).toBe(RoleAllocationCaptionText.JudiciaryAllocate);
     expect(component.selfText).toBe(RoleAllocationRadioText.NonExclusionSelf);
     expect(component.otherText).toBe(RoleAllocationRadioText.NonExclusionOther);
   });
@@ -54,8 +54,8 @@ describe('AllocateRoleComponent', () => {
     component.roleAllocation = RoleAllocationType.LegalOps;
     component.ngOnInit();
     fixture.detectChanges();
-    expect(component.title).toBe(RoleAllocationTitleText.NonExclusion);
-    expect(component.caption).toBe(RoleAllocationCaptionText.LegalOps);
+    expect(component.title).toBe(RoleAllocationTitleText.NonExclusionAllocate);
+    expect(component.caption).toBe(RoleAllocationCaptionText.LegalOpsAllocate);
     expect(component.selfText).toBe(RoleAllocationRadioText.NonExclusionSelf);
     expect(component.otherText).toBe(RoleAllocationRadioText.NonExclusionOther);
   });

@@ -46,18 +46,7 @@
         ],
         "quotemark": false,
         "semicolon": { "severity": "warning" },
-        "trailing-comma": [
-            true,
-            {
-                "multiline": {
-                    "objects": "always",
-                    "arrays": "always",
-                    "functions": "never",
-                    "typeLiterals": "ignore"
-                },
-                "esSpecCompliant": true
-            }
-        ]
+        "trailing-comma": false
     },
     "rulesDirectory": [],
     "linterOptions": {

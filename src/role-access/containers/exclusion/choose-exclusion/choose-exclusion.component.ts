@@ -1,11 +1,15 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { ExclusionNavigationEvent, ExclusionState } from '../../../models';
-import { ExclusionNavigation } from '../../../models/exclusion-navigation.interface';
-import * as fromFeature from '../../../store';
+import { $enum as EnumUtil } from 'ts-enum-util';
 import * as fromRoot from '../../../../app/store';
-import { RoleAllocationType } from 'src/role-access/models/enums';
+import { EXCLUSION_OPTION } from '../../../constants';
+import { ExcludeOption, ExclusionNavigationEvent, ExclusionState } from '../../../models';
+import { RoleAllocationCaptionText, RoleAllocationTitleText } from '../../../models/enums';
+import { ExclusionNavigation } from '../../../models/exclusion-navigation.interface';
+import { OptionsModel } from '../../../models/options-model';
+import * as fromFeature from '../../../store';
 
 @Component({
   selector: 'exui-choose-exclusion',
@@ -15,14 +19,30 @@ import { RoleAllocationType } from 'src/role-access/models/enums';
 export class ChooseExclusionComponent implements OnInit {
 
   @Input() public navEvent: ExclusionNavigation;
+  public title = RoleAllocationTitleText.ExclusionAllocate;
+  public caption = RoleAllocationCaptionText.Exclusion;
   public includeOther: boolean = false;
   public locationInfo$: Observable<any>;
-  public roleAllocation = RoleAllocationType.Exclusion;
+
+  public formGroup: FormGroup;
+  public radioOptionControl: FormControl;
+  public radioControlName: string = EXCLUSION_OPTION;
+
+  public optionsList: OptionsModel[] = [{
+    optionId: EnumUtil(ExcludeOption).getKeyOrDefault(ExcludeOption.EXCLUDE_ME),
+    optionValue: ExcludeOption.EXCLUDE_ME
+  }, {
+    optionId: EnumUtil(ExcludeOption).getKeyOrDefault(ExcludeOption.EXCLUDE_ANOTHER_PERSON),
+    optionValue: ExcludeOption.EXCLUDE_ANOTHER_PERSON
+  }];
 
   constructor(private readonly store: Store<fromFeature.State>) {
   }
 
   public ngOnInit(): void {
+    this.radioOptionControl = new FormControl(false);
+    this.formGroup = new FormGroup({[this.radioControlName]: this.radioOptionControl}, [Validators.required]);
+
     // currently the case allocator role information is stored in location info
     this.locationInfo$ = this.store.pipe(select(fromRoot.getLocationInfo));
     this.locationInfo$.subscribe(li => {
@@ -34,10 +54,19 @@ export class ChooseExclusionComponent implements OnInit {
   public navigationHandler(navEvent: ExclusionNavigationEvent) {
     switch (navEvent) {
       case ExclusionNavigationEvent.CONTINUE:
-        // TODO if selected option is exclude me
-        // this.store.dispatch(new fromFeature.ChangeNavigation(ExclusionState.CHOOSE_EXCLUSION));
-        // TODO if selected option is exclude another person
-        this.store.dispatch(new fromFeature.ChangeNavigation(ExclusionState.CHOOSE_PERSON_ROLE));
+        const exclusionSelection = this.radioOptionControl.value;
+        switch (exclusionSelection) {
+          case ExcludeOption.EXCLUDE_ME:
+            this.store.dispatch(new fromFeature.SaveExclusionOptionAndGo({ exclusionOption: ExcludeOption.EXCLUDE_ME,
+              exclusionState: ExclusionState.DESCRIBE_EXCLUSION }));
+            break;
+          case ExcludeOption.EXCLUDE_ANOTHER_PERSON:
+            this.store.dispatch(new fromFeature.SaveExclusionOptionAndGo({ exclusionOption: ExcludeOption.EXCLUDE_ANOTHER_PERSON,
+              exclusionState: ExclusionState.CHOOSE_PERSON_ROLE }));
+            break;
+          default:
+            break;
+        }
         break;
       default:
         throw new Error('Invalid option');

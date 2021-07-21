@@ -24,6 +24,13 @@ export function exclusionReducer(currentState = initialState, action: fromAction
         ...initialState
       };
     }
+    case fromActions.SAVE_EXCLUSION_OPTION_AND_GO: {
+      return {
+        ...currentState,
+        exclusionOption: action.payload.exclusionOption,
+        state: action.payload.exclusionState
+      };
+    }
     default: {
       return {
         ...currentState

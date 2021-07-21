@@ -6,6 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
+import { SessionStorageService } from '../../../app/services';
 import { TaskListComponent } from '..';
 import { TaskFieldConfig } from '../../../work-allocation/models/tasks';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';

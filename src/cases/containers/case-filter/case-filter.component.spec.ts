@@ -29,6 +29,7 @@ import { reducers } from '../../store/reducers';
 import * as fromCases from '../../store/reducers/';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import * as fromCaseCreate from '../../store/reducers';
+import { AppConstants } from '../../../app/app.constants';
 
 class MockSortService {
   features = {};
@@ -91,7 +92,7 @@ describe('Case Filter Component', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CaseFilterComponent);
     component = fixture.componentInstance;
-    component.startButtonText = 'start';
+    component.startButtonText = AppConstants.CREATE_CASE_BUTTON_TEXT;
     component.caseCreatFilterBindings = [];
     component.fromCasesFeature = fromCaseCreate;
     fixture.detectChanges();

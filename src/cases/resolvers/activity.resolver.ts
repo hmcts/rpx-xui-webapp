@@ -16,8 +16,8 @@ export class ActivityResolver implements Resolve<boolean> {
     this.featureToggleService.getValue<string>(AppConstants.ACTIVITY_TRACKER_MODE, undefined)
       .pipe(filter(mode => !!mode))
       .subscribe(mode => {
-        this.activityService.mode = mode;
-        if (mode !== ActivityService.MODES.off) {
+        this.activityService.mode = ActivityService.MODES[mode] || ActivityService.MODES.off;
+        if (this.activityService.mode !== ActivityService.MODES.off) {
           this.activityService.verifyUserIsAuthorized();
         }
       });

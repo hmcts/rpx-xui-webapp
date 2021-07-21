@@ -10,7 +10,13 @@ describe('ActivityResolver', () => {
   let activityResolver: ActivityResolver;
 
   beforeEach(() => {
-    activityService = jasmine.createSpyObj<ActivityService>('activityService', ['verifyUserIsAuthorized']);
+    activityService = {
+      verifyUserIsAuthorizedCalls: 0,
+      mode: ActivityService.MODES.polling, // Current default from toolkit.
+      verifyUserIsAuthorized: (): void => {
+        activityService.verifyUserIsAuthorizedCalls++;
+      }
+    };
     featureToggleService = jasmine.createSpyObj<FeatureToggleService>('featureToggleService', ['getValue']);
   });
 
@@ -28,7 +34,23 @@ describe('ActivityResolver', () => {
     it('should not bother to verify the user and return false', () => {
       let result: boolean;
       activityResolver.resolve().subscribe(r => result = r);
-      expect(activityService.verifyUserIsAuthorized).not.toHaveBeenCalled();
+      expect(activityService.mode).toEqual(ActivityService.MODES.off);
+      expect(activityService.verifyUserIsAuthorizedCalls).toEqual(0);
+      expect(result).toBe(false);
+    });
+  });
+
+  describe('when activity tracking is set to an unrecognised value', () => {
+
+    beforeEach(() => {
+      instantiate('unrecognised');
+    });
+
+    it('should not bother to verify the user and return false', () => {
+      let result: boolean;
+      activityResolver.resolve().subscribe(r => result = r);
+      expect(activityService.mode).toEqual(ActivityService.MODES.off);
+      expect(activityService.verifyUserIsAuthorizedCalls).toEqual(0);
       expect(result).toBe(false);
     });
   });
@@ -41,16 +63,36 @@ describe('ActivityResolver', () => {
 
     it('should verify if the user is authorised and return true', () => {
       let result: boolean;
-      activityService.verifyUserIsAuthorized.and.returnValue(true);
       activityResolver.resolve().subscribe(r => result = r);
-      expect(activityService.verifyUserIsAuthorized).toHaveBeenCalled();
+      expect(activityService.verifyUserIsAuthorizedCalls).toEqual(1);
       expect(result).toBe(true);
     });
     it('should verify if the user is authorised and return true even when they are NOT authorised', () => {
       let result: boolean;
-      activityService.verifyUserIsAuthorized.and.returnValue(false);
       activityResolver.resolve().subscribe(r => result = r);
-      expect(activityService.verifyUserIsAuthorized).toHaveBeenCalled();
+      expect(activityService.mode).toEqual(ActivityService.MODES.polling);
+      expect(activityService.verifyUserIsAuthorizedCalls).toEqual(1);
+      expect(result).toBe(true);
+    });
+  });
+
+  describe('when activity tracking is set to "socket"', () => {
+
+    beforeEach(() => {
+      instantiate('socket');
+    });
+
+    it('should verify if the user is authorised and return true', () => {
+      let result: boolean;
+      activityResolver.resolve().subscribe(r => result = r);
+      expect(activityService.verifyUserIsAuthorizedCalls).toEqual(1);
+      expect(result).toBe(true);
+    });
+    it('should verify if the user is authorised and return true even when they are NOT authorised', () => {
+      let result: boolean;
+      activityResolver.resolve().subscribe(r => result = r);
+      expect(activityService.mode).toEqual(ActivityService.MODES.socket);
+      expect(activityService.verifyUserIsAuthorizedCalls).toEqual(1);
       expect(result).toBe(true);
     });
   });

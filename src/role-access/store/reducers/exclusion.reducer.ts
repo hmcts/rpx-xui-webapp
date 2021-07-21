@@ -25,6 +25,13 @@ export function exclusionReducer(currentState = initialState, action: fromAction
         ...initialState
       };
     }
+    case fromActions.UPDATE_DESCRIBE_EXCLUSION_TEXT: {
+      return {
+        ...currentState,
+        state: action.payload,
+        exclusionDescription: action.describeExclusionText
+      }
+    }
     default: {
       return {
         ...currentState

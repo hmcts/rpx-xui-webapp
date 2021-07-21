@@ -3,7 +3,7 @@ const BrowserWaits = require('../../../support/customWaits');
 var cucumberReporter = require('../../../support/reportLogger');
 const { $ } = require('protractor');
 
-var TaskMessageBanner = require('./taskMessageBanner');
+var TaskMessageBanner = require('../messageBanner');
 
 class TaskListPage extends TaskList {
 

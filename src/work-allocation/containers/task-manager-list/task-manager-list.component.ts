@@ -14,7 +14,7 @@ import {
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 import { SessionStorageService } from '../../../app/services';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
-import { UserInfo } from 'src/app/models/user-details.model';
+import { UserInfo } from '../../../app/models/user-details.model';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { CaseworkerDisplayName } from '../../pipes';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';

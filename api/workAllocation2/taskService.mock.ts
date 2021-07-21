@@ -6,7 +6,8 @@ import {
   CASEWORKER_AVAILABLE_TASKS,
   CASEWORKER_MY_TASKS,
   JUDICIAL_AVAILABLE_TASKS,
-  JUDICIAL_MY_TASKS, JUDICIAL_WORKERS
+  JUDICIAL_MY_TASKS,
+  JUDICIAL_WORKERS
 } from './constants/mock.data';
 
 // random generator
@@ -40,22 +41,17 @@ export const init = () => {
   const mock = new MockAdapter(httpMock);
 
   const judicialMyTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/myTasks\?view=judicial/;
-  // tslint:disable-next-line:max-line-length
   const judicialAvailableTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/availableTasks\?view=judicial/;
   const caseworkerMyTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/myTasks\?view=caseworker/;
-  // tslint:disable-next-line:max-line-length
   const caseworkerAvailableTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/availableTasks\?view=caseworker/;
-  // tslint:disable-next-line:max-line-length
   const getTaskFromIDUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/;
-  // tslint:disable-next-line:max-line-length
   const claimTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/claim/;
-  // tslint:disable-next-line:max-line-length
   const unclaimTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/unclaim/;
-
+  const completeTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/complete/;
+  const cancelTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/cancel/;
+  const assignTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/assign/;
   const judicialWorkersUrl = /http:\/\/rd-judicialworker-ref-api-aat.service.core-compute-aat.internal\/judicialworkers/;
-  // tslint:disable-next-line:max-line-length
   const judicialAllTasksUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/allTasks\?view=judicial/;
-  // tslint:disable-next-line:max-line-length
   const caseworkerAllTasksUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/allTasks\?view=caseworker/;
 
   mock.onPost(judicialWorkersUrl).reply(() => {
@@ -72,26 +68,37 @@ export const init = () => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
     const paginationConfig = body.pagination_parameters;
+    const sortingConfig = body.sorting_parameters;
+    const taskList = sort(JUDICIAL_MY_TASKS.tasks,
+      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {
-        tasks: paginate(JUDICIAL_MY_TASKS.tasks, paginationConfig.page_number, paginationConfig.page_size),
+        tasks: paginate(taskList, paginationConfig.page_number, paginationConfig.page_size),
         total_records: JUDICIAL_MY_TASKS.tasks.length,
       },
     ];
   });
 
-    // simulate some error if needed
+  // simulate some error if needed
   // mock.onGet(url).networkErrorOnce()
   mock.onPost(judicialAllTasksUrl).reply(config => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
     const paginationConfig = body.pagination_parameters;
+    const sortingConfig = body.sorting_parameters;
+    let allTasks = [...JUDICIAL_AVAILABLE_TASKS.tasks, ...JUDICIAL_MY_TASKS.tasks];
+    allTasks = sort(allTasks,
+      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
+    if (body.search_parameters && body.search_parameters.find(param => param.key === 'location')) {
+      const locations = body.search_parameters.find(param => param.key === 'location').values;
+      allTasks = allTasks.filter(task => locations.some(loc => task.location_id === loc));
+    }
     return [
       200,
       {
-        tasks: paginate(JUDICIAL_MY_TASKS.tasks, paginationConfig.page_number, paginationConfig.page_size),
-        total_records: JUDICIAL_MY_TASKS.tasks.length,
+        tasks: paginate(allTasks, paginationConfig.page_number, paginationConfig.page_size),
+        total_records: allTasks.length,
       },
     ];
   });
@@ -100,10 +107,13 @@ export const init = () => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
     const paginationConfig = body.pagination_parameters;
+    const sortingConfig = body.sorting_parameters;
+    const taskList = sort(JUDICIAL_AVAILABLE_TASKS.tasks,
+      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {
-        tasks: paginate(JUDICIAL_AVAILABLE_TASKS.tasks, paginationConfig.page_number, paginationConfig.page_size),
+        tasks: paginate(taskList, paginationConfig.page_number, paginationConfig.page_size),
         total_records: JUDICIAL_AVAILABLE_TASKS.tasks.length,
       },
     ];
@@ -113,10 +123,13 @@ export const init = () => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
     const paginationConfig = body.pagination_parameters;
+    const sortingConfig = body.sorting_parameters;
+    const taskList = sort(CASEWORKER_MY_TASKS.tasks,
+      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {
-        tasks: paginate(CASEWORKER_MY_TASKS.tasks, paginationConfig.page_number, paginationConfig.page_size),
+        tasks: paginate(taskList, paginationConfig.page_number, paginationConfig.page_size),
         total_records: CASEWORKER_MY_TASKS.tasks.length,
       },
     ];
@@ -136,10 +149,13 @@ export const init = () => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
     const paginationConfig = body.pagination_parameters;
+    const sortingConfig = body.sorting_parameters;
+    const taskList = sort(CASEWORKER_AVAILABLE_TASKS.tasks,
+      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {
-        tasks: paginate(CASEWORKER_AVAILABLE_TASKS.tasks, paginationConfig.page_number, paginationConfig.page_size),
+        tasks: paginate(taskList, paginationConfig.page_number, paginationConfig.page_size),
         total_records: CASEWORKER_AVAILABLE_TASKS.tasks.length,
       },
     ];
@@ -163,6 +179,14 @@ export const init = () => {
     ];
   });
 
+  mock.onPost(cancelTaskUrl).reply(() => {
+    // return an array in the form of [status, data, headers]
+    return [
+      204,
+      'success',
+    ];
+  });
+
   mock.onPost(unclaimTaskUrl).reply(() => {
     // return an array in the form of [status, data, headers]
     return [
@@ -170,6 +194,54 @@ export const init = () => {
       'success',
     ];
   });
+
+  mock.onPost(completeTaskUrl).reply(() => {
+    // return an array in the form of [status, data, headers]
+    return [
+      204,
+      'success',
+    ];
+  });
+
+  mock.onPost(assignTaskUrl).reply(config => {
+    const data = JSON.parse(config.data);
+    const id = data.userId.toString().replace(/[^0-9.]/g, '');
+    const mod = parseInt(id, 10) % 2;
+    if (mod === 0) {
+      return [
+        204,
+        'success',
+      ];
+    } else {
+      return [
+        400,
+        'failed',
+      ];
+    }
+  });
+  return mock;
+};
+
+export const getSortName = (sortName: string): string => {
+  switch (sortName) {
+    case 'caseName':
+      return 'case_name';
+    case 'caseCategory':
+      return 'case_category';
+    case 'locationName':
+      return 'location_name';
+    case 'taskTitle':
+      return 'task_title';
+    case 'assignee':
+      return 'task_title';
+    default:
+      return sortName;
+  }
+};
+
+export const sort = (array: any[], sortName: string, isAsc: boolean): any[] => {
+  array = array.sort((a, b) => a[sortName].localeCompare(b[sortName]));
+  return isAsc ? array : array.reverse();
 };
 
 export const paginate = (array: any[], pageNumber: number, pageSize: number): any[] => {

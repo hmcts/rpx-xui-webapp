@@ -1,21 +1,9 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
+import { Component, OnInit } from '@angular/core';
 
 import { ConfigConstants, FilterConstants, ListConstants, SortConstants } from '../../components/constants';
+import { FieldConfig } from '../../models/common';
 import { Caseworker, Location, SearchTaskRequest } from '../../models/dtos';
-import { TaskFieldConfig } from '../../models/tasks';
-import { CaseworkerDisplayName } from '../../pipes';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
-import {
-  CaseworkerDataService,
-  InfoMessageCommService,
-  LocationDataService,
-  WorkAllocationTaskService,
-} from '../../services';
 import { handleFatalErrors } from '../../utils';
-import { SessionStorageService } from '../../../app/services';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
 @Component({
@@ -26,26 +14,7 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
   public locations: Location[];
   private selectedCaseworker: Caseworker;
   private selectedLocation: Location;
-
-  /**
-   * Take in the Router so we can navigate when actions are clicked.
-   */
-  constructor(
-    protected ref: ChangeDetectorRef,
-    protected taskService: WorkAllocationTaskService,
-    protected router: Router,
-    protected infoMessageCommService: InfoMessageCommService,
-    protected sessionStorageService: SessionStorageService,
-    protected readonly caseworkerService: CaseworkerDataService,
-    private readonly locationService: LocationDataService,
-    protected alertService: AlertService,
-    protected loadingService: LoadingService,
-    protected featureToggleService: FeatureToggleService
-  ) {
-    super(ref, taskService, router, infoMessageCommService, sessionStorageService, alertService, caseworkerService, loadingService, featureToggleService);
-  }
-
-  public get fields(): TaskFieldConfig[] {
+  public get fields(): FieldConfig[] {
     return ConfigConstants.TaskManager;
   }
 

@@ -5,7 +5,7 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Action, Store, StoreModule } from '@ngrx/store';
 import { BehaviorSubject, combineLatest, Observable, of, Subscription } from 'rxjs';
 import { AppConstants } from 'src/app/app.constants';
-import { UserDetails, UserInfo } from 'src/app/models/user-details.model';
+import { UserDetails, UserInfo } from '../../../app/models/user-details.model';
 
 import { LoggerService } from '../../services/logger/logger.service';
 import * as fromActions from '../../store';

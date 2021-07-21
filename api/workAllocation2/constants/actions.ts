@@ -1,4 +1,4 @@
-import { Action } from '../interfaces/task';
+import { Action } from '../interfaces/common';
 
 export const ASSIGN: Action = {
   id: 'assign',
@@ -53,6 +53,9 @@ export const VIEW_PERMISSIONS_ACTIONS_MATRIX = {
   },
   AvailableTasks: {
     Manage: [CLAIM, CLAIM_AND_GO],
+  },
+  MyCases: {
+    Manage: [REASSIGN, RELEASE, GO],
   },
   MyTasks: {
     Manage: [REASSIGN, RELEASE, GO],

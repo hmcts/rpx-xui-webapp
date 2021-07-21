@@ -47,6 +47,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await MockApp.startServer();
 
         const searchCaseInputValues = {}
+        if (!(await caseListPage.isDynamicFilterDisplayed())){
+            throw new Error("Dynamic filters not displayed to proced with scenario.");
+        }
+       
         for (const dynamicfield of searchCaseConfig.searchInputs) {
             searchCaseInputValues[dynamicfield.field.id] = await caseListPage.inputWorkbasketFilter(dynamicfield);
         }

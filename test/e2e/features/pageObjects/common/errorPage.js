@@ -38,8 +38,11 @@ class ErrorPage{
     }
 
     async getErrorMessage(){
-        await BrowserWaits.waitForElement(this.errorMessage);
-        return this.errorMessage.getText();
+        return await BrowserWaits.retryWithActionCallback(async () => {
+            await BrowserWaits.waitForElement(this.errorMessage);
+            return this.errorMessage.getText();
+        });
+        
     }
 }
 

@@ -1,12 +1,13 @@
 import { expect } from 'chai';
 
-import { CLAIM, CLAIM_AND_GO, GO, REASSIGN, RELEASE, TaskPermission } from './constants/actions';
-import { JUDICIAL_MY_TASKS } from './constants/mock.data';
-import { Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/task';
-import { assignActionsToTasks, getActionsByPermissions, mapCaseworkerData, mapCaseworkerPrimaryLocation, prepareGetTaskUrl,
+import { ASSIGN, CLAIM, CLAIM_AND_GO, COMPLETE, GO, REASSIGN, RELEASE, TaskPermission } from './constants/actions';
+import { JUDICIAL_AVAILABLE_TASKS, JUDICIAL_MY_TASKS } from './constants/mock.data';
+import { Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/common';
+import { applySearchFilter, assignActionsToTasks, getActionsByPermissions, mapCaseworkerData, mapCaseworkerPrimaryLocation, prepareGetTaskUrl,
   preparePaginationUrl,
   preparePostTaskUrlAction, prepareSearchTaskUrl } from './util';
   import { mockReq } from 'sinon-express-mock';
+import { PersonDomain } from './interfaces/person';
 
 describe('workAllocation.utils', () => {
 
@@ -139,6 +140,15 @@ describe('workAllocation.utils', () => {
       expect(tasksWithActions[0].actions[0]).to.be.equal(REASSIGN);
       expect(tasksWithActions[0].actions[1]).to.be.equal(RELEASE);
       expect(tasksWithActions[0].actions[2]).to.be.equal(GO);
+
+      const tasksWithActionsAllWorkAssigned = assignActionsToTasks(JUDICIAL_MY_TASKS.tasks, 'AllWork');
+      expect(tasksWithActionsAllWorkAssigned[0].actions[0]).to.be.equal(REASSIGN);
+      expect(tasksWithActionsAllWorkAssigned[0].actions[1]).to.be.equal(RELEASE);
+      expect(tasksWithActionsAllWorkAssigned[0].actions[2]).to.be.equal(GO);
+
+      const tasksWithActionsAllWorkUnassigned = assignActionsToTasks(JUDICIAL_AVAILABLE_TASKS.tasks, 'AllWork');
+      expect(tasksWithActionsAllWorkUnassigned[0].actions[0]).to.be.equal(ASSIGN);
+      expect(tasksWithActionsAllWorkUnassigned[0].actions[1]).to.be.equal(GO);
     });
   });
 
@@ -271,6 +281,40 @@ describe('workAllocation.utils', () => {
       expect(getActionsByPermissions('AvailableTasks', [TaskPermission.MANAGE, TaskPermission.CANCEL])).to.deep.equal([CLAIM, CLAIM_AND_GO]);
     });
 
+    it('should get correct actions for all work tasks for certain permissions', () => {
+      expect(getActionsByPermissions('AllWorkAssigned', [TaskPermission.MANAGE])).to.deep.equal([REASSIGN, RELEASE, GO]);
+      expect(getActionsByPermissions('AllWorkAssigned', [TaskPermission.EXECUTE])).to.deep.equal([COMPLETE]);
+      expect(getActionsByPermissions('AllWorkUnassigned', [TaskPermission.MANAGE, TaskPermission.EXECUTE])).to.deep.equal([ASSIGN, GO, COMPLETE]);
+    });
+
+  });
+
+  describe('applySearchFilter', () => {
+    it('PersonDomain BOTH', () => {
+      const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonDomain.CASEWORKER };
+      const result = applySearchFilter(person, PersonDomain.BOTH, 'name');
+      expect(result).to.equal(true);
+    });
+    it('PersonDomain CASEWORKER', () => {
+      const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonDomain.CASEWORKER };
+      const result = applySearchFilter(person, PersonDomain.CASEWORKER, 'name');
+      expect(result).to.equal(true);
+    });
+    it('PersonDomain JUDICIAL', () => {
+      const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonDomain.JUDICIAL };
+      const result = applySearchFilter(person, PersonDomain.JUDICIAL, 'name');
+      expect(result).to.equal(true);
+    });
+    it('PersonDomain CASEWORKER no match', () => {
+      const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonDomain.JUDICIAL };
+      const result = applySearchFilter(person, PersonDomain.CASEWORKER, 'name');
+      expect(result).to.equal(false);
+    });
+    it('PersonDomain JUDICIAL no match', () => {
+      const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonDomain.CASEWORKER };
+      const result = applySearchFilter(person, PersonDomain.JUDICIAL, 'name');
+      expect(result).to.equal(false);
+    });
   });
 
 });

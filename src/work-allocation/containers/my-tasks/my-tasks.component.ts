@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { UserInfo } from 'src/app/models/user-details.model';
+import { UserInfo } from '../../../app/models/user-details.model';
 
 import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
 import { SearchTaskRequest } from '../../models/dtos';

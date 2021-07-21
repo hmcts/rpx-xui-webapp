@@ -126,13 +126,13 @@ describe('TaskListComponent', () => {
     // mock the emitter and dispatch the connected event
     spyOn(component.sortEvent, 'emit');
     const element = fixture.debugElement.nativeElement;
-    const button = element.querySelector('#sort_by_caseId');
+    const button = element.querySelector('#sort_by_caseName');
     button.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
-    // check the emitter had been called and that it gets called with the first field which is caseReference (caseId)
+    // check the emitter had been called and that it gets called with the first field which is caseName
     expect(component.sortEvent.emit).toHaveBeenCalled();
-    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseId');
+    expect(component.sortEvent.emit).toHaveBeenCalledWith('caseName');
   });
 
   it('should allow sorting for different columns.', async () => {

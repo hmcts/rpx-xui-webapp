@@ -1,33 +1,11 @@
 <main class="govuk-main-wrapper" id="main-content" role="main">
   <exui-info-message-container></exui-info-message-container>
+  <exui-error-message *ngIf="error" [error]="error"></exui-error-message>
   <h3 class="govuk-heading-xl">My work</h3>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
       <p>Access tasks and cases.</p>
-      <div class="button-heading">
-        <button class="govuk-button hmcts-button--secondary" type="button" (click)="toggleFilter = !toggleFilter">
-          <ng-container *ngIf="!toggleFilter">
-            Show work filter
-          </ng-container>
-          <ng-container *ngIf="toggleFilter">
-            Hide work filter
-          </ng-container>
-        </button>
-        <ng-container *ngIf="selectedLocations.length && showFilteredText">
-          <span class="hmcts-badge hmcts-badge--black">Filtered view</span>
-          <span class="govuk-hint">All of your work may not be visible.</span>
-        </ng-container>
-      </div>
-      <div class="govuk-!-padding-3 filter govuk-!-margin-bottom-3" *ngIf="toggleFilter">
-        <h3 class="govuk-heading-m">{{jurisdiction}}</h3>
-        <xuilib-generic-filter
-          [config]="fieldsConfig"
-          [settings]="fieldsSettings"
-        ></xuilib-generic-filter>
-      </div>
-      <div class="govuk-!-padding-3 govuk-!-margin-bottom-3" *ngIf="selectedLocations.length">
-          Selected locations {{selectedLocations.length}}
-      </div>
+      <exui-task-list-filter (errorChanged)="errorChangedHandler($event)"></exui-task-list-filter>
       <xuilib-hmcts-sub-navigation [items]="subNavigationItems" label="Sub navigation"></xuilib-hmcts-sub-navigation>
     </div>
   </div>

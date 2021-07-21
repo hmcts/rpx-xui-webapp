@@ -129,16 +129,16 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   public initializeFeature(userInfo: UserInfo, ldClientId: string) {
-      if (userInfo) {
+    if (userInfo) {
 
-        const featureUser: FeatureUser = {
-          key: userInfo.id || userInfo.uid,
-          custom: {
-            roles: userInfo.roles,
-            orgId: '-1'
-          }
-        };
-        this.featureService.initialize(featureUser, ldClientId);
+      const featureUser: FeatureUser = {
+        key: userInfo.id || userInfo.uid,
+        custom: {
+          roles: userInfo.roles,
+          orgId: '-1'
+        }
+      };
+      this.featureService.initialize(featureUser, ldClientId);
     }
   }
 

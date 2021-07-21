@@ -2,7 +2,7 @@ const TaskList = require('./taskListTable');
 const BrowserWaits = require('../../../support/customWaits');
 var cucumberReporter = require('../../../support/reportLogger');
 
-var TaskMessageBanner = require('./taskMessageBanner');
+var TaskMessageBanner = require('../messageBanner');
 
 class MyWorkPage extends TaskList {
 
@@ -27,7 +27,7 @@ class MyWorkPage extends TaskList {
         this.bannerMessageContainer = $('exui-info-message ')
         this.infoMessages = $$('exui-info-message .hmcts-banner__message');
 
-        this.taskInfoMessageBanner = new TaskMessageBanner();
+        this.taskInfoMessageBanner = new TaskMessageBanner("exui-work-allocation-home exui-task-home");
     }
 
     async waitForWorkFilterToDisplay(){

@@ -43,7 +43,9 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         });
     });
 
-
+    Then('I see navigation header tab page {string}', async function(headerTab){
+        expect(await headerPage.isPrimaryTabPageDisplayed(headerTab)).to.be.true
+    });
 
     Then('I see primary navigation tab {string} in header', async function (headerlabel) {
         try{

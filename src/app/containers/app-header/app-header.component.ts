@@ -3,7 +3,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { combineLatest, Observable, of, Subscription } from 'rxjs';
-import { UserDetails } from 'src/app/models/user-details.model';
+import { UserDetails } from '../../../app/models/user-details.model';
 
 import { AppUtils } from '../../app-utils';
 import { AppConstants } from '../../app.constants';

@@ -1,6 +1,6 @@
 
 const BrowserWaits = require('../../support/customWaits');
-const { browser } = require('protractor');
+const TaskMessageBanner = require("./messageBanner");
 
 const CucumberReportLogger = require('../../support/reportLogger');
 class CaseListPage{
@@ -41,6 +41,9 @@ class CaseListPage{
         this.ccdCaseViewer = $("ccd-case-viewer");
 
         this.loadingSpinner = $(".loading-spinner-in-action");
+
+        this.taskInfoMessageBanner = new TaskMessageBanner(".case-list-component");
+
     }
 
     async amOnPage(){

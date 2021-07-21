@@ -1,18 +1,30 @@
 <exui-error-message *ngIf="error" [error]="error"></exui-error-message>
 
 <main class="govuk-main-wrapper" id="main-content" role="main">
-  <h1 class="govuk-heading-xl">{{verb}} task</h1>
+
+  <div *ngIf="formGroup.errors" class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert"
+       tabindex="-1" data-module="govuk-error-summary">
+    <h2 class="govuk-error-summary__title" id="error-summary-title">
+      There is a problem
+    </h2>
+    <div class="govuk-error-summary__body">
+      <ul class="govuk-list govuk-error-summary__list">
+        <li>
+          <a href="javascript:void(0)" (click)="setFocusOn('inputSelectPerson')">You must select a name</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-third">
-
-      <xuilib-gov-uk-input [group]="formGroup" [config]="
-          {
-            label: 'Find the person',
-            hint: 'Type the name of the person and select them',
-            name: 'caseWorkerName',
-            id: 'case-worker-search__Input',
-            type: 'text'
-          }"></xuilib-gov-uk-input>
+      <exui-find-person
+        title="{{verb}} task"
+        [findPersonGroup]="formGroup"
+        (personSelected)="selectedPerson($event)"
+        [selectedPerson]="defaultPerson"
+        domainString="BOTH">
+      </exui-find-person>
 
       <button class="govuk-button govuk-!-margin-right-1" type="submit" (click)="assign()">Continue</button>
       <p><a (click)="cancel()" href="javascript:void(0)">Cancel</a></p>

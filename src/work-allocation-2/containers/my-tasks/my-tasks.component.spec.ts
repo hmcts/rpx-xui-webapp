@@ -1,15 +1,16 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { Component, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router} from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
-import { SessionStorageService } from 'src/app/services';
+import { SessionStorageService } from '../../../app/services';
 import { TaskListComponent } from '..';
+import { TaskFieldConfig } from '../../../work-allocation/models/tasks';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { TaskFieldType } from '../../enums';
+import { FieldType } from '../../enums';
 import { Task } from '../../models/tasks';
 import { CaseworkerDataService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
 import { getMockTasks } from '../../tests/utils.spec';
@@ -23,13 +24,22 @@ class WrapperComponent {
   @ViewChild(MyTasksComponent) public appComponentRef: MyTasksComponent;
 }
 
+@Component({
+  selector: 'exui-task-field',
+  template: '<div class="xui-task-field">{{task.taskName}}</div>'
+})
+class TaskFieldComponent {
+  @Input() public config: TaskFieldConfig;
+  @Input() public task: Task;
+}
+
 describe('MyTasksComponent', () => {
   let component: MyTasksComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
 
   let router: Router;
-  const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
+  const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTaskWithPagination']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
@@ -46,7 +56,7 @@ describe('MyTasksComponent', () => {
         WorkAllocationComponentsModule,
         PaginationModule
       ],
-      declarations: [MyTasksComponent, WrapperComponent, TaskListComponent],
+      declarations: [MyTasksComponent, WrapperComponent, TaskListComponent, TaskFieldComponent],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
         { provide: AlertService, useValue: mockAlertService },
@@ -63,10 +73,9 @@ describe('MyTasksComponent', () => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
-    component.isPaginationEnabled$ = of(false);
     router = TestBed.get(Router);
     const tasks: Task[] = getMockTasks();
-    mockTaskService.searchTask.and.returnValue(of({tasks}));
+    mockTaskService.searchTaskWithPagination.and.returnValue(of({tasks}));
     mockCaseworkerService.getAll.and.returnValue(of([]));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
@@ -77,7 +86,7 @@ describe('MyTasksComponent', () => {
   it('should make a call to load tasks using the default search request', () => {
     const searchRequest = component.getSearchTaskRequestPagination();
     const payload = {searchRequest, view: component.view};
-    expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
+    expect(mockTaskService.searchTaskWithPagination).toHaveBeenCalledWith(payload);
     expect(component.tasks).toBeDefined();
     expect(component.tasks.length).toEqual(2);
   });
@@ -139,7 +148,7 @@ describe('MyTasksComponent', () => {
     actionLink.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     // Ensure the correct attempt has been made to navigate.
-    expect(navigateSpy).toHaveBeenCalledWith([`/mywork/${task.id}/${actionId}/`], jasmine.any(Object));
+    expect(navigateSpy).toHaveBeenCalledWith([`/work/${task.id}/${actionId}/`], jasmine.any(Object));
   });
 
   it('should allow setting the release 2 details', () => {
@@ -148,7 +157,7 @@ describe('MyTasksComponent', () => {
     component.ngOnInit();
     fixture.detectChanges();
     expect(component.fields[0].name).toBe('case_name');
-    expect(component.fields[0].type).toBe(TaskFieldType.CASE_NAME);
-    expect(component.fields[4].type).toBe(TaskFieldType.TASK_NAME);
+    expect(component.fields[0].type).toBe(FieldType.CASE_NAME);
+    expect(component.fields[4].type).toBe(FieldType.TASK_NAME);
   });
 });

@@ -48,12 +48,11 @@ describe('nodeApp endpoint', () => {
     expect(response.data).to.have.all.keys('canShareCases', 'sessionTimeout', 'userInfo','locationInfo');
     expect(response.data.userInfo).to.have.all.keys('id', 'forename', 'surname', 'email', 'active', 'roles','token');
     expect(response.data.userInfo.roles).to.be.an('array');
-    if (configRes.data.oidcEnabled){ 
-      expect(response.data.userInfo).to.have.all.keys('uid', 'family_name', 'given_name','name', 'sub', 'roles', 'token');
-    }else{
+    if (configRes.data.oidcEnabled) {
+      expect(response.data.userInfo).to.have.all.keys('uid', 'family_name', 'given_name', 'name', 'sub', 'roles', 'token');
+    } else {
       expect(response.data.userInfo).to.have.all.keys('id', 'forename', 'surname', 'email', 'active', 'roles', 'token');
     }
-    
   });
 
   it('api/user/details without session', async () => {
@@ -70,5 +69,5 @@ describe('nodeApp endpoint', () => {
     expect(JSON.stringify(response.data)).to.have.lengthOf.below(6);
   });
 
-  
+
 });

@@ -1,4 +1,4 @@
-@ng @test
+@ng 
 Feature: Case fields
 
     Background: Mock event setup

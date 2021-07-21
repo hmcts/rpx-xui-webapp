@@ -1,5 +1,5 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { Component, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
@@ -7,6 +7,7 @@ import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common
 import { of } from 'rxjs';
 
 import { SessionStorageService } from '../../../app/services';
+import { TaskFieldConfig } from '../../../work-allocation/models/tasks';
 import { FilterConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import * as dtos from '../../models/dtos';
@@ -24,12 +25,21 @@ class WrapperComponent {
   @ViewChild(TaskManagerListComponent) public appComponentRef: TaskManagerListComponent;
 }
 
+@Component({
+  selector: 'exui-task-field',
+  template: '<div class="xui-task-field">{{task.taskName}}</div>'
+})
+class TaskFieldComponent {
+  @Input() public config: TaskFieldConfig;
+  @Input() public task: Task;
+}
+
 describe('TaskManagerListComponent', () => {
   let component: TaskManagerListComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
 
-  const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
+  const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTaskWithPagination']);
   const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
   const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
@@ -49,7 +59,7 @@ describe('TaskManagerListComponent', () => {
         WorkAllocationComponentsModule,
         PaginationModule
       ],
-      declarations: [ TaskManagerListComponent, WrapperComponent, TaskListComponent ],
+      declarations: [ TaskManagerListComponent, WrapperComponent, TaskListComponent, TaskFieldComponent ],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
@@ -63,9 +73,8 @@ describe('TaskManagerListComponent', () => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
-    component.isPaginationEnabled$ = of(false);
     const tasks: Task[] = getMockTasks();
-    mockTaskService.searchTask.and.returnValue(of({ tasks }));
+    mockTaskService.searchTaskWithPagination.and.returnValue(of({ tasks }));
     mockLocationService.getLocations.and.returnValue(of(mockLocations));
     mockCaseworkerService.getAll.and.returnValue(of(mockCaseworkers));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
@@ -81,7 +90,7 @@ describe('TaskManagerListComponent', () => {
   it('should make a call to load tasks using the default search request', () => {
     const searchRequest = component.getSearchTaskRequestPagination();
     const payload = { searchRequest, view: component.view };
-    expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
+    expect(mockTaskService.searchTaskWithPagination).toHaveBeenCalledWith(payload);
     expect(component.tasks).toBeDefined();
     expect(component.tasks.length).toEqual(2);
   });
@@ -123,7 +132,7 @@ describe('TaskManagerListComponent', () => {
 
     // Let's also make sure that the tasks were re-requested with the new sorting.
     const payload = { searchRequest, view: component.view };
-    expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
+    expect(mockTaskService.searchTaskWithPagination).toHaveBeenCalledWith(payload);
   });
 
   it('should handle selecting a caseworker on the filter', async () => {
@@ -139,12 +148,11 @@ describe('TaskManagerListComponent', () => {
     expect(searchRequest.search_parameters.length).toEqual(2);
     expect(searchRequest.search_parameters[1].key).toEqual('user');
     expect(searchRequest.search_parameters[1].values.length).toEqual(1);
-    const caseworkerName = caseworkerDiplayName.transform(mockCaseworkers[0], false);
     expect(searchRequest.search_parameters[1].values).toContain('1');
 
     // Let's also make sure that the tasks were re-requested with the new sorting.
     const payload = { searchRequest, view: component.view };
-    expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
+    expect(mockTaskService.searchTaskWithPagination).toHaveBeenCalledWith(payload);
   });
 
   it('should handle selecting unassigned on the caseworkers filter', async () => {
@@ -165,7 +173,7 @@ describe('TaskManagerListComponent', () => {
 
     // Let's also make sure that the tasks were re-requested with the new sorting.
     const payload = { searchRequest, view: component.view };
-    expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
+    expect(mockTaskService.searchTaskWithPagination).toHaveBeenCalledWith(payload);
   });
 
   it('should not show the footer when there are tasks', () => {

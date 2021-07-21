@@ -11,6 +11,7 @@ nodejs:
      HEALTH_CCD_DATA_API: http://ccd-data-store-api-aat.service.core-compute-aat.internal/health
      HEALTH_DOCUMENTS_API: http://dm-store-aat.service.core-compute-aat.internal/health
      HEALTH_EM_ANNO_API: http://em-anno-aat.service.core-compute-aat.internal/health
+     HEALTH_EM_DOCASSEMBLY_API: http://dg-docassembly-aat.service.core-compute-aat.internal/health
      HEALTH_S2S_SERVICE: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal/health
      HEALTH_TERMS_AND_CONDITIONS_API: http://xui-terms-and-conditions-aat.service.core-compute-aat.internal/health
      HEALTH_WORK_ALLOCATION_TASK_API: http://wa-task-management-api-aat.service.core-compute-aat.internal/health

@@ -33,7 +33,7 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
   app.use(helmet.contentSecurityPolicy({
     directives: {
       connectSrc: [
-        '\'self\'',
+        '\'self\'  blob: data:',
         '*.gov.uk',
         'dc.services.visualstudio.com',
         '*.launchdarkly.com',

@@ -73,5 +73,10 @@
     "target": "http://localhost:3001",
     "secure": false,
     "logLevel": "debug"
+  },
+  "/doc-assembly/*": {
+    "target": "http://localhost:3001",
+    "secure": false,
+    "logLevel": "debug"
   }
 }

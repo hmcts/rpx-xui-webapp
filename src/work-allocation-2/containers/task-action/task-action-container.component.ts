@@ -19,8 +19,6 @@ import { handleFatalErrors } from '../../utils';
 export class TaskActionContainerComponent implements OnInit {
   public tasks: any [];
   public sortedBy: any;
-  public addActionsColumn: boolean = false;
-
   public routeData: RouteData;
 
   constructor(

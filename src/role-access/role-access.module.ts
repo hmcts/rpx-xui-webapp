@@ -8,9 +8,10 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
 import { SharedModule } from '../app/shared/shared.module';
-import * as fromContainers from './containers';
 import * as fromComponents from './components';
+import * as fromContainers from './containers';
 import { roleAccessRouting } from './role-access.routes';
+import { RoleExclusionsService } from './services';
 import { effects, reducers } from './store';
 
 @NgModule({
@@ -31,6 +32,7 @@ import { effects, reducers } from './store';
     provide: AbstractAppConfig,
     useExisting: AppConfig,
   },
+    RoleExclusionsService
   ]
 })
 /**

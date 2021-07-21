@@ -1,5 +1,5 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { Component, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -7,7 +7,7 @@ import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 import { TaskListComponent } from '..';
-import { SessionStorageService } from '../../../app/services';
+import { TaskFieldConfig } from '../../../work-allocation/models/tasks';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Task } from '../../models/tasks';
 import { CaseworkerDataService, LocationDataService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
@@ -20,6 +20,15 @@ import { AllWorkTaskComponent } from './all-work-task.component';
 })
 class WrapperComponent {
   @ViewChild(AllWorkTaskComponent) public appComponentRef: AllWorkTaskComponent;
+}
+
+@Component({
+  selector: 'exui-task-field',
+  template: '<div class="xui-task-field">{{task.taskName}}</div>'
+})
+class TaskFieldComponent {
+  @Input() public config: TaskFieldConfig;
+  @Input() public task: Task;
 }
 
 describe('AllWorkTaskComponent', () => {
@@ -46,7 +55,7 @@ describe('AllWorkTaskComponent', () => {
         WorkAllocationComponentsModule,
         PaginationModule
       ],
-      declarations: [AllWorkTaskComponent, WrapperComponent, TaskListComponent],
+      declarations: [AllWorkTaskComponent, WrapperComponent, TaskListComponent, TaskFieldComponent],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
         { provide: AlertService, useValue: mockAlertService },

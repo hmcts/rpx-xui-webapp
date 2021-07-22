@@ -1,10 +1,11 @@
 import { Action } from '@ngrx/store';
-import { ExcludeOption, ExclusionState } from '../../models';
+import { ExcludeOption, ExclusionState, PersonRole } from '../../models';
 
 export const RESET = '[EXCLUSION] Reset';
 export const CHANGE_NAVIGATION = '[EXCLUSION] Change Navigation';
 export const UPDATE_DESCRIBE_EXCLUSION_TEXT = '[EXCLUSION] Update Describe Exclusion Text';
 export const SAVE_EXCLUSION_OPTION_AND_GO = '[EXCLUSION] Save Exclusion Option And Go';
+export const SAVE_PERSON_ROLE_AND_GO = '[EXCLUSION] Save Person Role And Go';
 
 export class Reset implements Action {
   public readonly type = RESET;
@@ -30,8 +31,16 @@ export class SaveExclusionOptionAndGo implements Action {
   }
 }
 
+export class SavePersonRoleAndGo implements Action {
+  public readonly type = SAVE_PERSON_ROLE_AND_GO;
+
+  constructor(public payload: { personRole: PersonRole, exclusionState: ExclusionState }) {
+  }
+}
+
 export type ExclusionAction =
   | UpdateDescribeExclusionText
   | Reset
   | ChangeNavigation
-  | SaveExclusionOptionAndGo;
+  | SaveExclusionOptionAndGo
+  | SavePersonRoleAndGo;

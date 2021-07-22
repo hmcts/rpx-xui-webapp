@@ -1,6 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 import { $enum as EnumUtil } from 'ts-enum-util';
 import * as fromRoot from '../../../../app/store';
@@ -16,7 +17,8 @@ import * as fromFeature from '../../../store';
   templateUrl: './choose-exclusion.component.html',
   styleUrls: ['./choose-exclusion.component.scss']
 })
-export class ChooseExclusionComponent implements OnInit {
+
+export class ChooseExclusionComponent implements OnInit, OnDestroy {
 
   @Input() public navEvent: ExclusionNavigation;
   public title = RoleAllocationTitleText.ExclusionAllocate;
@@ -27,6 +29,10 @@ export class ChooseExclusionComponent implements OnInit {
   public formGroup: FormGroup;
   public radioOptionControl: FormControl;
   public radioControlName: string = EXCLUSION_OPTION;
+
+  public exclusionStateDataSub: Subscription;
+
+  public exclusionOption: ExcludeOption;
 
   public optionsList: OptionsModel[] = [{
     optionId: EnumUtil(ExcludeOption).getKeyOrDefault(ExcludeOption.EXCLUDE_ME),
@@ -40,7 +46,12 @@ export class ChooseExclusionComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.radioOptionControl = new FormControl(false);
+    this.exclusionStateDataSub = this.store.pipe(select(fromFeature.getRoleAccessState)).subscribe(
+      exclusionStateData => {
+        this.exclusionOption = exclusionStateData.exclusionOption;
+      }
+    );
+    this.radioOptionControl = new FormControl(this.exclusionOption ? this.exclusionOption : '');
     this.formGroup = new FormGroup({[this.radioControlName]: this.radioOptionControl}, [Validators.required]);
 
     // currently the case allocator role information is stored in location info
@@ -70,6 +81,12 @@ export class ChooseExclusionComponent implements OnInit {
         break;
       default:
         throw new Error('Invalid option');
+    }
+  }
+
+  public ngOnDestroy(): void {
+    if (this.exclusionStateDataSub) {
+      this.exclusionStateDataSub.unsubscribe();
     }
   }
 }

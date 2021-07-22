@@ -4,7 +4,6 @@ import { of } from 'rxjs';
 
 import { ChooseRoleComponent } from '../../../components/choose-role/choose-role.component';
 import { ExclusionNavigationEvent } from '../../../models';
-import { RoleAllocationType } from '../../../models/enums';
 import { RoleExclusionsService } from '../../../services';
 import { ChoosePersonRoleComponent } from './choose-person-role.component';
 
@@ -40,18 +39,10 @@ describe('ChoosePersonRoleComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should correctly set the allocation', () => {
-    expect(component.roleAllocation).toBe(RoleAllocationType.Exclusion);
-  });
-
   it('should correctly navigate on click of continue', () => {
     const navEvent = ExclusionNavigationEvent.CONTINUE;
     component.navigationHandler(navEvent);
     expect(mockStore.dispatch).toHaveBeenCalled();
-  });
-
-  it('should have correctly defined the roles', () => {
-    expect(component.roles).toBe(mockRoles);
   });
 
   afterEach(() => {

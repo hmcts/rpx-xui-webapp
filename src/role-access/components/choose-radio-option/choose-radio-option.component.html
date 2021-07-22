@@ -1,0 +1,16 @@
+<h1 class="govuk-heading-l" >
+  <span class="govuk-caption-l">{{caption}}</span>
+  {{title}}
+</h1>
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset">
+    <div class="govuk-radios">
+      <div *ngFor="let radio of radios" class="govuk-radios__item">
+        <input class="govuk-radios__input" [id]="radio.radioId" name="roleAllocation" type="radio" [value]="radio.radioName">
+        <label class="govuk-label govuk-radios__label" [for]="radio.radioId">
+          {{radio.radioName}}
+        </label>
+      </div>
+    </div>
+  </fieldset>
+</div>

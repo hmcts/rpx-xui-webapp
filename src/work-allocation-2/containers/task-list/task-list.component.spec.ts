@@ -89,7 +89,7 @@ describe('TaskListComponent', () => {
         CdkTableModule,
         PaginationModule
       ],
-      declarations: [TaskListComponent, WrapperComponent, TaskFieldComponent],
+      declarations: [TaskListComponent, WrapperComponent],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
         { provide: Router, useValue: mockRouter },

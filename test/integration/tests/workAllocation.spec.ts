@@ -17,6 +17,8 @@ describe('Work allocations MVP', () => {
     const caseofficerPass = 'Welcome01';
 
     beforeEach(function ()  {
+        this.timeout(120000);
+
         setTestContext(this);
         Request.clearSession();
     });
@@ -27,7 +29,6 @@ describe('Work allocations MVP', () => {
 
 
     it('case officer,get locations', async function () {
-        this.timeout(60000);
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 
@@ -40,7 +41,6 @@ describe('Work allocations MVP', () => {
     });
 
     it('case officer,get caseworkers', async function () {
-        this.timeout(60000);
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 
@@ -53,7 +53,6 @@ describe('Work allocations MVP', () => {
     });
 
     it('case officer, My tasks', async function () {
-        this.timeout(60000);
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 
@@ -68,7 +67,6 @@ describe('Work allocations MVP', () => {
     });
 
     it('case officer, Available tasks', async function () {
-        this.timeout(60000);
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 
@@ -84,7 +82,6 @@ describe('Work allocations MVP', () => {
 
 
     it('case officer, `Task manager tasks`', async function () {
-        this.timeout(60000);
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 
@@ -100,7 +97,6 @@ describe('Work allocations MVP', () => {
 
 
     it('case officer,Assign to me task', async function () {
-        this.timeout(60000);
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
         const headers = {
@@ -142,7 +138,6 @@ describe('Work allocations MVP', () => {
 
 
     it('case officer reassign task', async function () {
-        this.timeout(60000);
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
         const headers = {
@@ -176,7 +171,6 @@ describe('Work allocations MVP', () => {
     });
 
     it('case officer Unassign task', async function () {
-        this.timeout(60000);
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
         const headers = {
@@ -209,7 +203,6 @@ describe('Work allocations MVP', () => {
 
 
     it('case officer Mark as done/complete task', async function () {
-        this.timeout(60000);
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
         const headers = {
@@ -248,7 +241,6 @@ describe('Work allocations MVP', () => {
 
 
     it('case officer Cancel task/cancel', async function () {
-        this.timeout(60000);
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
         const headers = {
@@ -277,7 +269,6 @@ describe('Work allocations MVP', () => {
     });
 
     it('case officer, `Task manager tasks pagination`', async function () {
-        this.timeout(60000);
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 

@@ -12,13 +12,14 @@ describe('CCD Endpoints',  () => {
     // const userName = 'peterxuisuperuser@mailnesia.com';
     // const password = 'Monday01';
     beforeEach(function ()  {
+        this.timeout(120000);
+
         setTestContext(this);
         Request.clearSession();
     });
 
     // tslint:disable-next-line: only-arrow-functions
     it('Jurisdictions for user role', async function() {
-        this.timeout(60000);
         await Request.withSession(userName, password);
         const response = await Request.get('aggregated/caseworkers/:uid/jurisdictions?access=read', null,200);
         expect(response.data).to.be.an('array');

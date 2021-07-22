@@ -2,15 +2,18 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 
-import { ChooseRoleComponent } from '../../../components/choose-role/choose-role.component';
+import { ChooseRadioOptionComponent } from '../../../components/choose-radio-option/choose-radio-option.component';
 import { ExclusionNavigationEvent } from '../../../models';
-import { RoleAllocationType } from '../../../models/enums';
 import { RoleExclusionsService } from '../../../services';
 import { ChoosePersonRoleComponent } from './choose-person-role.component';
 
 const mockRoles = [{ roleId: '1', roleName: 'Role 1' },
       { roleId: '2', roleName: 'Role 2' },
       { roleId: '3', roleName: 'Role 3' }];
+
+const mockRoleOptions = [{ radioId: '1', radioName: 'Role 1' },
+      { radioId: '2', radioName: 'Role 2' },
+      { radioId: '3', radioName: 'Role 3' }];
 
 describe('ChoosePersonRoleComponent', () => {
   let component: ChoosePersonRoleComponent;
@@ -20,7 +23,7 @@ describe('ChoosePersonRoleComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ChooseRoleComponent, ChoosePersonRoleComponent],
+      declarations: [ChooseRadioOptionComponent, ChoosePersonRoleComponent],
       providers: [
         { provide: Store, useValue: mockStore },
         { provide: RoleExclusionsService, useValue: mockRoleExclusionsService }
@@ -40,10 +43,6 @@ describe('ChoosePersonRoleComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should correctly set the allocation', () => {
-    expect(component.roleAllocation).toBe(RoleAllocationType.Exclusion);
-  });
-
   it('should correctly navigate on click of continue', () => {
     const navEvent = ExclusionNavigationEvent.CONTINUE;
     component.navigationHandler(navEvent);
@@ -51,7 +50,7 @@ describe('ChoosePersonRoleComponent', () => {
   });
 
   it('should have correctly defined the roles', () => {
-    expect(component.roles).toBe(mockRoles);
+    expect(component.roleOptions).toEqual(mockRoleOptions);
   });
 
   afterEach(() => {

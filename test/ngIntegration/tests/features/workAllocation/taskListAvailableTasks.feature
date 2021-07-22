@@ -6,7 +6,6 @@ Feature: WA Release 1: Available Tasks Task list
         Given I set MOCK with "wa_release_1" release user and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer"
 
 
-    @test
     Scenario: Available Tasks columns data validation
         Given I set MOCK available tasks count 25
 

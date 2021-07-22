@@ -6,6 +6,28 @@ Feature: WA Release 2: My work -  Available tasks
 
     Scenario Outline:  Available Tasks, columns and column links for "<UserType>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
+
+        Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
+            | Permissions | Count |
+            | Manage      | 10    |
+            | Read        | 10    |
+        Given I set MOCK case workers for release "1"
+            | email              | firstName | lastName | idamId              | location.id | location.locationName |
+            | test_cw_1@test.com | cw1       | test     | 1234-1234-1234-1231 | 10001       | Location 1            |
+            | test_cw_2@test.com | cw2       | test     | 1234-1234-1234-1232 | 10002       | Location 2            |
+            | test_cw_3@test.com | cw3       | test     | 1234-1234-1234-1233 | 10003       | Location 3            |
+            | test_cw_4@test.com | cw4       | test     | 1234-1234-1234-1234 | 10004       | Location 4            |
+            | test_cw_5@test.com | cw5       | test     | 1234-1234-1234-1235 | 10005       | Location 5            |
+        Given I set MOCK tasks with attributes for view "Available tasks"
+            | index | permissions                | assignee            | case_name | location_name   | task_title       | dueDate | case_category        |
+            | 0     | Manage,Read,Execute,Cancel | 1234-1234-1234-1231 | case 1    | test location 1 | test auto task 1 | 10      | auto test category 1 |
+            | 1     | Manage                     | 1234-1234-1234-1231 | case 2    | test location 2 | test auto task 2 | 20      | auto test category 2 |
+            | 2     | Read                       | 1234-1234-1234-1231 | case 3    | test location 3 | test auto task 3 | 30      | auto test category 3 |
+            | 3     | Manage,Read                | 1234-1234-1234-1231 | case 4    | test location 4 | test auto task 4 | -10     | auto test category 4 |
+            | 4     | Manage                     | 1234-1234-1234-1231 | case 5    | test location 5 | test auto task 5 | -20     | auto test category 5 |
+            | 5     | Read                       | 1234-1234-1234-1231 | case 6    | test location 6 | test auto task 6 | -30     | auto test category 6 |
+
+
         Given I start MockApp
         Given I navigate to home page
         When I navigate to My work sub navigation tab "Available tasks"
@@ -17,6 +39,10 @@ Feature: WA Release 2: My work -  Available tasks
             | Task |
             | Date          |
 
+        Then I validate task table values displayed
+            | row | Case name | Case category        | Location        | Task             | Date |
+            | 1   | case 1    | auto test category 1 | test location 1 | test auto task 1 | 10   |
+            | 2   | case 2    | auto test category 2 | test location 2 | test auto task 2 | 20   |
         Then I validate task list columns are links
             | ColumnHeader |
            

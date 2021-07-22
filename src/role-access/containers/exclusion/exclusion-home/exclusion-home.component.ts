@@ -89,10 +89,7 @@ export class ExclusionHomeComponent implements OnInit, OnDestroy {
             this.store.dispatch(new fromFeature.ChangeNavigation(ExclusionState.CHOOSE_PERSON_ROLE));
             break;
           case ExclusionState.DESCRIBE_EXCLUSION:
-            // TODO if from exclude me
-            // this.store.dispatch(new fromFeature.ChangeNavigation(ExclusionState.CHOOSE_EXCLUSION));
-            // TODO if from exclude another person
-            // this.store.dispatch(new fromFeature.ChangeNavigation(ExclusionState.FIND_PERSON));
+            this.store.dispatch(new fromFeature.ChangeNavigation(ExclusionState.FIND_PERSON));
             break;
           case ExclusionState.CHECK_ANSWERS:
             this.store.dispatch(new fromFeature.ChangeNavigation(ExclusionState.DESCRIBE_EXCLUSION));

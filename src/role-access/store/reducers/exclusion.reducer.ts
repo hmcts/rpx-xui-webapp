@@ -30,6 +30,13 @@ export function exclusionReducer(currentState = initialState, action: fromAction
         ...currentState,
         state: action.payload,
         exclusionDescription: action.describeExclusionText
+      };
+    }
+    case fromActions.UPDATE_PERSON_EXCLUSION: {
+      return {
+        ...currentState,
+        state: action.payload,
+        person: action.person
       }
     }
     default: {

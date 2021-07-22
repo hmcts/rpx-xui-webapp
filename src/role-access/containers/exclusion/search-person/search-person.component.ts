@@ -1,8 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+import { FindPersonComponent } from 'src/work-allocation-2/components/find-person/find-person.component';
 import { Person } from '../../../../work-allocation-2/models/dtos';
-import { ExclusionNavigationEvent, ExclusionState } from '../../../models';
+import { ExclusionNavigationEvent, ExclusionState, ExclusionStateData } from '../../../models';
 import { ExclusionNavigation } from '../../../models/exclusion-navigation.interface';
 import * as fromFeature from '../../../store';
 
@@ -12,18 +14,27 @@ import * as fromFeature from '../../../store';
   styleUrls: ['./search-person.component.scss']
 })
 export class SearchPersonComponent implements OnInit {
+  @ViewChild(FindPersonComponent) child: FindPersonComponent;
   @Input() public navEvent: ExclusionNavigation;
   public formGroup: FormGroup = new FormGroup({});
-  public person?: Person;
+  public personName: string;
+  public person: Person;
+  public subscription: Subscription;
   constructor(private readonly store: Store<fromFeature.State>) {
   }
 
   public ngOnInit(): void {
+    this.subscription = this.store.pipe(select(fromFeature.getRoleAccessState)).subscribe(exclusion => this.setPerson(exclusion));
+  }
+
+  public setPerson(exclusion: ExclusionStateData): void {
+    this.personName = exclusion && exclusion.person ? this.child.getDisplayName(exclusion.person) : null;
+    this.person = exclusion.person;
   }
 
   public navigationHandler(navEvent: ExclusionNavigationEvent) {
     if (this.formGroup && this.formGroup.value && this.formGroup.value.findPersonControl) {
-      console.log('navigationHandler ');
+
     } else {
       this.formGroup.setErrors({
         invalid: true
@@ -32,7 +43,7 @@ export class SearchPersonComponent implements OnInit {
     }
     switch (navEvent) {
       case ExclusionNavigationEvent.CONTINUE:
-        this.store.dispatch(new fromFeature.ChangeNavigation(ExclusionState.DESCRIBE_EXCLUSION));
+        this.store.dispatch(new fromFeature.UpdatePersonExclusion(ExclusionState.DESCRIBE_EXCLUSION, this.person));
         break;
       default:
         throw new Error('Invalid option');

@@ -1,34 +1,33 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { provideMockStore } from '@ngrx/store/testing';
 import { SearchPersonComponent } from './search-person.component';
+import { ExclusionNavigationEvent, ExclusionState } from '../../../models';
+import { FormControl } from '@angular/forms';
+import { UpdatePersonExclusion } from 'src/role-access/store';
 
-describe('FindPersonComponent', () => {
+describe('SearchPersonComponent', () => {
   let component: SearchPersonComponent;
-  let fixture: ComponentFixture<SearchPersonComponent>;
-
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [SearchPersonComponent],
-      providers: [
-        provideMockStore()
-      ]
-    })
-      .compileComponents();
+  let mockStore: any;
+  beforeEach((() => {
+    mockStore = jasmine.createSpyObj('mockStore', ['pipe', 'dispatch']);
+    component = new SearchPersonComponent(mockStore);
   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(SearchPersonComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
+  it('navigationHandler raises invalid Error when person not selected', () => {
     expect(component).toBeTruthy();
+    const continueEvent = ExclusionNavigationEvent.CONTINUE;
+    component.navigationHandler(continueEvent);
+    expect(component.formGroup.valid).toBeFalsy();
   });
 
-  afterEach(() => {
-    component = null;
-    fixture.destroy();
+  it('navigationHandler validates when person selected', () => {
+    const control = new FormControl();
+    const person = { id: 'id123', name: 'full Name', email: 'test@email.com', domain: 'Caseworker'};
+    component.person = person;
+    control.setValue(person);
+    component.formGroup.addControl('findPersonControl', control);
+    const continueEvent = ExclusionNavigationEvent.CONTINUE;
+    component.navigationHandler(continueEvent);
+    expect(component.formGroup.valid).toBeTruthy();
+    expect(mockStore.dispatch).toHaveBeenCalledWith(new UpdatePersonExclusion(ExclusionState.DESCRIBE_EXCLUSION, person));
   });
 });

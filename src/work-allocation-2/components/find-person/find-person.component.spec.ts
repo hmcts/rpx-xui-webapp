@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup } from '@angular/forms';
 import { of } from 'rxjs';
+import { FindPersonModule } from '../../../work-allocation-2/find-person.module';
 import { FindAPersonService } from '../../services/find-person.service';
 import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
 import { FindPersonComponent } from './find-person.component';
@@ -14,7 +15,8 @@ describe('FindPersonComponent', () => {
         mockFindAPersonService = jasmine.createSpyObj('FindAPersonService', ['find']);
         TestBed.configureTestingModule({
             imports: [
-                WorkAllocationComponentsModule
+                WorkAllocationComponentsModule,
+                FindPersonModule
             ],
             providers: [
                 { provide: FindAPersonService, useValue: mockFindAPersonService }

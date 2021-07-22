@@ -8,6 +8,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { Observable } from 'rxjs';
+import { FindPersonModule } from '../../../work-allocation-2/find-person.module';
 import { TaskListComponent } from '..';
 import { PersonDomain } from '../../../../api/workAllocation2/interfaces/person';
 import { ErrorMessageComponent } from '../../../app/components';
@@ -77,7 +78,8 @@ describe('TaskAssignmentContainerComponent', () => {
           [
             { path: 'mywork/list', component: NothingComponent }
           ]
-        )
+        ),
+        FindPersonModule
       ],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },

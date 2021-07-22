@@ -95,15 +95,25 @@ module.exports = {
             res.send({ tasks: tasks, total_records: tasks.length});
         },
         '/workallocation/taskWithPagination/': (req, res) => {
+            const pageNum = req.body.searchRequest.pagination_parameters.page_number;
             const pageSize = req.body.searchRequest.pagination_parameters.page_size;
-            if (req.body.view === "MyTasks") {
-                res.send(workAllocationMockData.getMyTasks(pageSize));
-            } else if (req.body.view === "AvailableTasks") {
-                res.send(workAllocationMockData.getAvailableTasks(pageSize));
-            } else if (req.body.view === "TaskManager") {
-                res.send(workAllocationMockData.getTaskManagerTasks(pageSize));
+
+            const requestedView = req.body.view;
+            let tasks = [];
+            if (requestedView === "MyTasks") {
+                tasks = global.scenarioData && global.scenarioData['workallocation1.mytasks'] ? global.scenarioData['workallocation1.mytasks'] : workAllocationMockData.getMyTasks(pageSize * 5);
+            } else if (requestedView === "AvailableTasks") {
+                tasks = global.scenarioData && global.scenarioData['workallocation1.availabletasks'] ? global.scenarioData['workallocation1.availabletasks'] : workAllocationMockData.getAvailableTasks(pageSize * 5);
+            } else if (requestedView === "TaskManager" ) {
+                tasks = global.scenarioData && global.scenarioData['workallocation1.taskmanager'] ? global.scenarioData['workallocation1.taskmanager'] : workAllocationMockData.getTaskManagerTasks(pageSize * 5);
             } else {
-                throw new Error("Unrecognised task list view : " + req.body.view);
+                throw new Error("Unrecognised task list view : " + requestedView);
+            }
+            try {
+                res.send(getTaskPageRecords(tasks, pageNum, pageSize));
+
+            } catch (e) {
+                res.status(500).send({ error: 'mock error occured', stack: e.stack });
             }
         },
         '/workallocation2/taskWithPagination/': (req, res) => {
@@ -113,28 +123,21 @@ module.exports = {
             const requestedView = req.body.view;
             let tasks = [];
             if (requestedView === "MyTasks") {
-                tasks = global.scenarioData && global.scenarioData['workallocation2.mytasks'] ? global.scenarioData['workallocation2.mytasks'] : workAllocationMockData.getMyWorkMyTasks(pageSize*5);
+                tasks = global.scenarioData && global.scenarioData['workallocation2.mytasks'] ? global.scenarioData['workallocation2.mytasks'] : workAllocationMockData.getMyWorkMyTasks(pageSize * 5);
             } else if (requestedView === "AvailableTasks") {
-                tasks = global.scenarioData && global.scenarioData['workallocation2.availabletasks'] ? global.scenarioData['workallocation2.availabletasks'] : workAllocationMockData.getMyWorkAvailableTasks(pageSize*5);
+                tasks = global.scenarioData && global.scenarioData['workallocation2.availabletasks'] ? global.scenarioData['workallocation2.availabletasks'] : workAllocationMockData.getMyWorkAvailableTasks(pageSize * 5);
             } else if (requestedView === "TaskManager" || requestedView.includes("AllWork")) {
-                tasks = global.scenarioData && global.scenarioData['workallocation2.allwork'] ? global.scenarioData['workallocation2.allwork'] : workAllocationMockData.getAllWorkTasks(pageSize*5);
+                tasks = global.scenarioData && global.scenarioData['workallocation2.allwork'] ? global.scenarioData['workallocation2.allwork'] : workAllocationMockData.getAllWorkTasks(pageSize * 5);
             } else {
                 throw new Error("Unrecognised task list view : " + requestedView);
             }
-            try {
-                const thisPageTasks = [];
-              
-                const startIndexForPage = pageNum === 1 ? 0 : ((pageNum - 1) * pageSize) - 1;
-                const endIndexForPage = (startIndexForPage + pageSize) < tasks.total_records ? startIndexForPage + pageSize - 1 : tasks.total_records - 1;
-                for (let i = startIndexForPage; i <= endIndexForPage; i++) {
-                    thisPageTasks.push(tasks.tasks[i]);
-                }
-                const responseData = { tasks: thisPageTasks, total_records: tasks.total_records };
-                res.send(responseData);
+            
+            try { 
+                res.send(getTaskPageRecords(tasks,pageNum,pageSize));
             } catch (e) {
-                res.status(500).send({ error: 'mock error occured',stack:e.stack });
+                res.status(500).send({ error: 'mock error occured', stack: e.stack });
             }
- 
+
         },
         '/workallocation/task/:taskId/assign': (req, res) => {
             res.send();
@@ -173,5 +176,20 @@ module.exports = {
             
         }
     }
+
+   
+}
+
+function getTaskPageRecords(totalRecords, pageNum, pageSize) {
+    let responseData = null;
+    const thisPageTasks = [];
+
+    const startIndexForPage = pageNum === 1 ? 0 : ((pageNum - 1) * pageSize) - 1;
+    const endIndexForPage = (startIndexForPage + pageSize) < totalRecords.total_records ? startIndexForPage + pageSize - 1 : totalRecords.total_records - 1;
+    for (let i = startIndexForPage; i <= endIndexForPage; i++) {
+        thisPageTasks.push(totalRecords.tasks[i]);
+    }
+    responseData = { tasks: thisPageTasks, total_records: totalRecords.total_records };
+    return responseData;
 }
 

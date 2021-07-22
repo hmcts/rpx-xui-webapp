@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { ExclusionNavigationEvent, ExclusionState } from '../../../models';
+import { ExclusionNavigationEvent, ExclusionState, RadioOption } from '../../../models';
+import { RoleAllocationCaptionText, RoleAllocationRadioText, RoleAllocationTitleText } from '../../../models/enums';
 import { ExclusionNavigation } from '../../../models/exclusion-navigation.interface';
 import * as fromFeature from '../../../store';
 import * as fromRoot from '../../../../app/store';
-import { RoleAllocationType } from 'src/role-access/models/enums';
 
 @Component({
   selector: 'exui-choose-exclusion',
@@ -15,9 +15,12 @@ import { RoleAllocationType } from 'src/role-access/models/enums';
 export class ChooseExclusionComponent implements OnInit {
 
   @Input() public navEvent: ExclusionNavigation;
-  public includeOther: boolean = false;
+  public options: RadioOption[];
   public locationInfo$: Observable<any>;
-  public roleAllocation = RoleAllocationType.Exclusion;
+  public excludeMe: RadioOption = { radioId: 'excludeMe', radioName: RoleAllocationRadioText.ExclusionSelf };
+  public excludeOther: RadioOption = { radioId: 'excludeOther', radioName: RoleAllocationRadioText.ExclusionOther };
+  public title = RoleAllocationTitleText.ExclusionAllocate;
+  public caption = RoleAllocationCaptionText.Exclusion;
 
   constructor(private readonly store: Store<fromFeature.State>) {
   }
@@ -27,7 +30,7 @@ export class ChooseExclusionComponent implements OnInit {
     this.locationInfo$ = this.store.pipe(select(fromRoot.getLocationInfo));
     this.locationInfo$.subscribe(li => {
       const firstLocationInfo = li[0];
-      this.includeOther = firstLocationInfo && firstLocationInfo.isCaseAllocator ? firstLocationInfo.isCaseAllocator : false;
+      this.options = (firstLocationInfo && firstLocationInfo.isCaseAllocator) ? [this.excludeMe, this.excludeOther] : [this.excludeMe];
     });
   }
 

@@ -5,9 +5,8 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
 
 import { State } from '../../../../app/store';
-import { AllocateRoleComponent } from '../../../components/allocate-role/allocate-role.component';
+import { ChooseRadioOptionComponent } from '../../../components/choose-radio-option/choose-radio-option.component';
 import { ExclusionNavigationEvent } from '../../../models';
-import { RoleAllocationType } from '../../../models/enums';
 import { ChooseExclusionComponent } from './choose-exclusion.component';
 
 describe('ChooseExclusionComponent', () => {
@@ -20,7 +19,7 @@ describe('ChooseExclusionComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [AllocateRoleComponent, ChooseExclusionComponent],
+      declarations: [ChooseRadioOptionComponent, ChooseExclusionComponent],
       providers: [
         provideMockStore()
       ]
@@ -43,15 +42,11 @@ describe('ChooseExclusionComponent', () => {
   });
 
   it('should check whether user is a case allocator', () => {
-    expect(component.includeOther).toBe(true);
+    expect(component.options.length).toBe(2);
     spyOnPipeToStore.and.returnValue(of([{isCaseAllocator: false}, {}]));
     component.ngOnInit();
     fixture.detectChanges();
-    expect(component.includeOther).toBe(false);
-  });
-
-  it('should correctly set the allocation', () => {
-    expect(component.roleAllocation).toBe(RoleAllocationType.Exclusion);
+    expect(component.options.length).toBe(1);
   });
 
   it('should correctly navigate on click of continue', () => {

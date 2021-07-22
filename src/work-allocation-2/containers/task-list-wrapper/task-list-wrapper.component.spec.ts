@@ -45,7 +45,7 @@ describe('TaskListWrapperComponent', () => {
         CdkTableModule,
         PaginationModule
       ],
-      declarations: [TaskListComponent, TaskListWrapperComponent, TaskFieldComponent],
+      declarations: [TaskListComponent, TaskListWrapperComponent],
       providers: [
         { provide: ChangeDetectorRef, useValue: mockRef },
         { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },

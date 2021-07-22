@@ -1,19 +1,20 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 
 import { SessionStorageService } from '../../../app/services';
-import { TaskFieldConfig } from '../../../work-allocation/models/tasks';
+import { TaskManagerFilterComponent } from '../../components'
 import { FilterConstants } from '../../components/constants';
-import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
+import { FieldConfig } from '../../models/common';
 import * as dtos from '../../models/dtos';
 import { Task } from '../../models/tasks';
-import { CaseworkerDisplayName } from '../../pipes';
-import { CaseworkerDataService, LocationDataService, WorkAllocationTaskService } from '../../services';
+import { WorkAllocationPipesModule } from '../../pipes/work-allocation.pipes.module';
+import { CaseworkerDataService, InfoMessageCommService, LocationDataService, WorkAllocationTaskService } from '../../services';
 import { getMockCaseworkers, getMockLocations, getMockTasks } from '../../tests/utils.spec';
 import { TaskListComponent } from '../task-list/task-list.component';
 import { TaskManagerListComponent } from './task-manager-list.component';
@@ -30,7 +31,7 @@ class WrapperComponent {
   template: '<div class="xui-task-field">{{task.taskName}}</div>'
 })
 class TaskFieldComponent {
-  @Input() public config: TaskFieldConfig;
+  @Input() public config: FieldConfig;
   @Input() public task: Task;
 }
 
@@ -41,6 +42,7 @@ describe('TaskManagerListComponent', () => {
 
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTaskWithPagination']);
   const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
+  const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['']);
   const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
@@ -48,18 +50,18 @@ describe('TaskManagerListComponent', () => {
   const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
   const mockLocations: dtos.Location[] = getMockLocations();
   const mockCaseworkers: dtos.Caseworker[] = getMockCaseworkers();
-  const caseworkerDiplayName: CaseworkerDisplayName = new CaseworkerDisplayName();
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         CdkTableModule,
         ExuiCommonLibModule,
+        FormsModule,
         RouterTestingModule,
-        WorkAllocationComponentsModule,
-        PaginationModule
+        PaginationModule,
+        WorkAllocationPipesModule
       ],
-      declarations: [ TaskManagerListComponent, WrapperComponent, TaskListComponent, TaskFieldComponent ],
+      declarations: [ TaskManagerListComponent, TaskManagerFilterComponent, WrapperComponent, TaskListComponent, TaskFieldComponent ],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
@@ -67,7 +69,8 @@ describe('TaskManagerListComponent', () => {
         { provide: LocationDataService, useValue: mockLocationService },
         { provide: AlertService, useValue: mockAlertService },
         { provide: LoadingService, useValue: mockLoadingService },
-        { provide: FeatureToggleService, useValue: mockFeatureToggleService }
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
+        { provide: InfoMessageCommService, useValue: mockInfoMessageCommService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);

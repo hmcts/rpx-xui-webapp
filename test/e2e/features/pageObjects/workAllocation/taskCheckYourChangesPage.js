@@ -1,7 +1,7 @@
 
 const BrowserWaits = require("../../../support/customWaits");
 const CucumberReporter = require("../../../support/reportLogger");
-const ItemDetailsTable = require("../common/caseRolesTable");
+const checkyourChangesTable = require("../common/checkYourChangesTable");
 class TaskCheckYourChangesPage{
     constructor(){
         this.pageContainer = $("exui-task-assignment-confirm");
@@ -13,7 +13,7 @@ class TaskCheckYourChangesPage{
         this.submitButton = $("exui-task-assignment-confirm button[type = 'submit']");
         this.cancelLink = element(by.xpath("//exui-task-assignment-confirm//p/a[contains(text(),'Cancel')]"));
 
-        this.taskDetailsTable = new ItemDetailsTable($('exui-task-assignment-confirm '));
+        this.taskDetailsTable = new ItemDetailsTable($('exui-task-assignment-confirm'));
  
     }
 
@@ -31,19 +31,19 @@ class TaskCheckYourChangesPage{
     async validatePage() {
         const heaerText = await this.header.getText();
         expect(heaerText.includes("Check your changes")).to.be.true;
-        expect(await this.taskDetailsTable.isDisplayed()).to.be.true;
+        expect(await checkyourChangesTable.isDisplayed()).to.be.true;
         expect(await this.changeLink.isDisplayed()).to.be.true;
 
     }
 
     async getColumnValue(header) {
-        const colElement = await this.taskDetailsTable(header);
+        const colElement = await checkyourChangesTable.getColumnValueAtRow(1,header);
         const coltext = await colElement.getText();
         return coltext;
     }
 
-    async  clickChnageLink(){
-        await this.taskDetailsTable.clickLinkWithText("change");
+    async  clickChangeLink(){
+        await checkyourChangesTable.clickLinkWithTextAtRow(1,"change");
     }
 
 

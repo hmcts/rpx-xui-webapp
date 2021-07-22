@@ -166,16 +166,18 @@ export class TaskManagerListComponent extends TaskListWrapperComponent implement
   }
 
   private getCaseworkerParameter() {
+    let key: string = 'user';
     let values: string[];
     if (this.selectedCaseworker && this.selectedCaseworker !== FilterConstants.Options.Caseworkers.ALL) {
       if (this.selectedCaseworker === FilterConstants.Options.Caseworkers.UNASSIGNED) {
-        values = [];
+        key = 'state';
+        values = ['unassigned'];
       } else {
         values = [this.selectedCaseworker.idamId];
       }
     } else {
       values = [];
     }
-    return { key: 'user', operator: 'IN', values };
+    return { key: `${key}`, operator: 'IN', values };
   }
 }

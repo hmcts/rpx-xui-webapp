@@ -13,6 +13,7 @@ export enum RoleAllocationCaptionText {
   LegalOpsChoose = 'Allocate a legal ops role'
 }
 
+// Leaving this in as reference to text required for judicial/legal ops stories
 export enum RoleAllocationRadioText {
   NonExclusionSelf = 'Reserve to me',
   NonExclusionOther = 'Allocate to another person',

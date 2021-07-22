@@ -12,13 +12,12 @@ import { FindPersonModule } from '../../../work-allocation-2/find-person.module'
 import { TaskListComponent } from '..';
 import { PersonDomain } from '../../../../api/workAllocation2/interfaces/person';
 import { ErrorMessageComponent } from '../../../app/components';
-import { TaskFieldConfig } from '../../../work-allocation/models/tasks';
 import { TaskActionConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Task } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { FindAPersonService } from '../../services/find-person.service';
-import { getMockCaseworkers, getMockTasks } from '../../tests/utils.spec';
+import { getMockTasks } from '../../tests/utils.spec';
 import {
   TaskAssignmentContainerComponent,
 } from './task-assignment-container.component';
@@ -36,15 +35,6 @@ class WrapperComponent {
 })
 class NothingComponent { }
 
-@Component({
-  selector: 'exui-task-field',
-  template: '<div class="xui-task-field">{{task.taskName}}</div>'
-})
-class TaskFieldComponent {
-  @Input() public config: TaskFieldConfig;
-  @Input() public task: Task;
-}
-
 describe('TaskAssignmentContainerComponent', () => {
   let component: TaskAssignmentContainerComponent;
   let wrapper: WrapperComponent;
@@ -56,7 +46,6 @@ describe('TaskAssignmentContainerComponent', () => {
     domain: PersonDomain.CASEWORKER
   };
   const mockTasks = getMockTasks();
-  const mockCaseworkers = getMockCaseworkers();
   const mockWorkAllocationService = {
     assignTask: jasmine.createSpy('assignTask').and.returnValue(Observable.of({}))
   };
@@ -70,7 +59,7 @@ describe('TaskAssignmentContainerComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         TaskAssignmentContainerComponent, WrapperComponent, TaskListComponent,
-        ErrorMessageComponent, NothingComponent, TaskFieldComponent
+        ErrorMessageComponent, NothingComponent
       ],
       imports: [
         WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientModule, ExuiCommonLibModule, PaginationModule,

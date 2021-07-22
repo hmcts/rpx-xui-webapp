@@ -126,7 +126,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 tasks = workAllocationMockData.getMyWorkMyTasks(150);
             } else if (view.includes("available")) {
                 tasks = workAllocationMockData.getMyWorkAvailableTasks(200);
-            } if (view.includes("allwork")) {
+            }else if (view.includes("allwork")) {
                 tasks = workAllocationMockData.getAllWorkTasks(400);
             }else{
                 throw new Error("Unrecognised task view " + forView);
@@ -147,10 +147,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 } else if (key.toLowerCase() === "assignee") {
                     if (taskHash[key] === ""){
                         delete task[key];
-                    }else{
+                    } else{
                         task[key] = taskHash[key];
                     }
                     
+                } else if (key.toLowerCase().includes("date")) {
+                    task[key] = getDateValueForDays(taskHash[key]);
                 }else{
                     task[key] = taskHash[key];
                 }

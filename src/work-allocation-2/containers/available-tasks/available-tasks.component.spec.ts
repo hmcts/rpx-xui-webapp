@@ -58,7 +58,7 @@ describe('AvailableTasksComponent', () => {
         WorkAllocationComponentsModule,
         PaginationModule
       ],
-      declarations: [ AvailableTasksComponent, WrapperComponent, TaskListComponent, TaskFieldComponent ],
+      declarations: [ AvailableTasksComponent, WrapperComponent, TaskListComponent ],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
         { provide: LocationDataService, useValue: mockLocationService },

@@ -4,5 +4,6 @@ export * from './exclusion-state-data.interface';
 export * from './http-error.interface';
 export * from './exclusion.enum';
 export * from './person-model';
+export * from './radio-option.model';
 export * from './role-exclusion.model';
 export * from './role.model';

@@ -33,20 +33,19 @@ export class SearchPersonComponent implements OnInit {
   }
 
   public navigationHandler(navEvent: ExclusionNavigationEvent) {
-    if (this.formGroup && this.formGroup.value && this.formGroup.value.findPersonControl) {
-
+    if (this.formGroup && this.formGroup.value && this.formGroup.value.findPersonControl && this.person) {
+      switch (navEvent) {
+        case ExclusionNavigationEvent.CONTINUE:
+          this.store.dispatch(new fromFeature.UpdatePersonExclusion(ExclusionState.DESCRIBE_EXCLUSION, this.person));
+          break;
+        default:
+          throw new Error('Invalid option');
+      }
     } else {
       this.formGroup.setErrors({
         invalid: true
       });
       return;
-    }
-    switch (navEvent) {
-      case ExclusionNavigationEvent.CONTINUE:
-        this.store.dispatch(new fromFeature.UpdatePersonExclusion(ExclusionState.DESCRIBE_EXCLUSION, this.person));
-        break;
-      default:
-        throw new Error('Invalid option');
     }
   }
 

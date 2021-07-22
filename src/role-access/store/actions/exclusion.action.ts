@@ -1,9 +1,9 @@
 import { Action } from '@ngrx/store';
 import { ExcludeOption, ExclusionState } from '../../models';
-import { RoleAllocationRadioText } from '../../models/enums';
 
 export const RESET = '[EXCLUSION] Reset';
 export const CHANGE_NAVIGATION = '[EXCLUSION] Change Navigation';
+export const UPDATE_DESCRIBE_EXCLUSION_TEXT = '[EXCLUSION] Update Describe Exclusion Text';
 export const SAVE_EXCLUSION_OPTION_AND_GO = '[EXCLUSION] Save Exclusion Option And Go';
 
 export class Reset implements Action {
@@ -17,6 +17,12 @@ export class ChangeNavigation implements Action {
   }
 }
 
+export class UpdateDescribeExclusionText implements Action {
+  public readonly type = UPDATE_DESCRIBE_EXCLUSION_TEXT;
+
+  constructor(public payload: ExclusionState, public describeExclusionText: string) {}
+}
+
 export class SaveExclusionOptionAndGo implements Action {
   public readonly type = SAVE_EXCLUSION_OPTION_AND_GO;
 
@@ -25,6 +31,7 @@ export class SaveExclusionOptionAndGo implements Action {
 }
 
 export type ExclusionAction =
+  | UpdateDescribeExclusionText
   | Reset
   | ChangeNavigation
   | SaveExclusionOptionAndGo;

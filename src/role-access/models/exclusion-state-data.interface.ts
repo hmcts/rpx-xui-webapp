@@ -4,6 +4,7 @@ import { ExcludeOption, PersonRole } from './exclusion.enum';
 import { Person } from './person-model';
 
 export interface ExclusionStateData {
+  caseId: string;
   state: ExclusionState;
   exclusionOption: ExcludeOption;
   personRole: PersonRole;

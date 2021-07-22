@@ -2,6 +2,7 @@ import { ExclusionState, ExclusionStateData } from '../../models';
 import * as fromActions from '../actions';
 
 export const initialState: ExclusionStateData = {
+  caseId: '1546883526751282',
   state: ExclusionState.CHOOSE_EXCLUSION,
   exclusionOption: null,
   personRole: null,
@@ -22,6 +23,13 @@ export function exclusionReducer(currentState = initialState, action: fromAction
       return {
         ...currentState,
         ...initialState
+      };
+    }
+    case fromActions.UPDATE_DESCRIBE_EXCLUSION_TEXT: {
+      return {
+        ...currentState,
+        state: action.payload,
+        exclusionDescription: action.describeExclusionText
       };
     }
     case fromActions.SAVE_EXCLUSION_OPTION_AND_GO: {

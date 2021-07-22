@@ -1,7 +1,7 @@
 const { v4 } = require('uuid');
 
-class WorkAllocationModels{
-    getRelease1Task(){
+class WorkAllocationModels {
+    getRelease1Task() {
         return {
             "id": v4(),
             "name": "task name ",
@@ -33,7 +33,7 @@ class WorkAllocationModels{
         }
     }
 
-    getRelease2Task(){
+    getRelease2Task() {
         return {
             "id": v4(),
             "task_title": "Review application decision",
@@ -51,7 +51,7 @@ class WorkAllocationModels{
     getRelease2Case() {
         return {
             "id": v4(),
-            "task_title":"Review FTPA application",
+            "task_title": "Review FTPA application",
             "startDate": "2021-05-12T16:00:00.000+0000",
             "endDate": "2021-05-12T16:00:00.000+0000",
             "location_name": "Glasgow",
@@ -59,32 +59,32 @@ class WorkAllocationModels{
             "case_id": "1620409659381330",
             "case_category": "Protection",
             "case_name": "Jo Fly " + Math.floor((Math.random() * 100) + 1),
-            "case_role":"Lead Judge",
-            "jurisdiction":"Immigration and Asylum",
+            "case_role": "Lead Judge",
+            "jurisdiction": "Immigration and Asylum",
             "permissions": [],
             "actions": [],
             "assignee": v4()
         };
     }
 
-    getLocation(){
+    getLocation() {
         return {
-            id:"12345",
-            locationName:"test location"
+            id: "12345",
+            locationName: "test location"
         }
     }
 
-    getCaseWorkerOrperson(){
+    getCaseWorkerOrperson() {
         return {
-            email:"test_person@test.gov.uk",
-            firstName:"testfn",
-            lastName:"testln",
-            idamId:"004b7164-0943-41b5-95fc-39794af4a9fe",
+            email: "test_person@test.gov.uk",
+            firstName: "testfn",
+            lastName: "testln",
+            idamId: "004b7164-0943-41b5-95fc-39794af4a9fe",
             location: this.getLocation()
         }
     }
 
-    getFindPersonObj(){
+    getFindPersonObj() {
         return {
             domain: 1,
             email: "andy.kings@email.com",
@@ -133,13 +133,13 @@ class WorkAllocationModels{
         if (caseActionsMatrix[view] === undefined) {
             throw new Error(`View ${view} is not modeled in Mock data model. test requires update`);
         }
-        if (view.includes('mycases')) { 
+        if (view.includes('mycases')) {
             actionsView = caseActionsMatrix['mycases'];
-        } 
+        }
 
         let allowedActions = {};
         for (let i = 0; i < permissions.length; i++) {
-            if (actionsView[permissions[i]]=== undefined) {
+            if (actionsView[permissions[i]] === undefined) {
                 throw new Error(`Permission ${permissions[i]} is not modeled in Mock data model. test requires update`);
             }
             let permissionActions = actionsView[permissions[i]];

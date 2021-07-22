@@ -6,7 +6,6 @@ Feature: WA Release 1: My Tasks Task list
         Given I set MOCK with "wa_release_1" release user and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer"
 
 
-    @test
     Scenario: My Tasks columns data validation
         Given I set MOCK My tasks count 25
 
@@ -30,7 +29,6 @@ Feature: WA Release 1: My Tasks Task list
         Given I set MOCK tasks attributes for "My Tasks" in release 1
             | index | case_id             | case_name      | case_category      | location_name  | task_title               |
             | 0     | 1234-1234-1234-1234 | test case name | auto test category | London QA labs | Autotest validation task |
-
 
         Given I set MOCK request "/workallocation/taskWithPagination/" intercept with reference "taskSearchRequest"
         Given I reset reference "taskSearchRequest" value to null

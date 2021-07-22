@@ -71,13 +71,16 @@ export class SearchFilterService {
       prefix = parentPrefix + '.';
     }
     for (let attributeName of Object.keys(formGroupValue)) {
-      const value = formGroupValue[attributeName];
+      let value = formGroupValue[attributeName];
       if (isStringOrNumber(value)) {
         const filterType = getFilterType(attributeName, this.metadataFields);
         attributeName = sanitiseMetadataFieldName(filterType, attributeName);
         target[filterType][prefix + attributeName] = value;
       } else if (value) {
-        this.buildFormDetails(attributeName, target, value);
+        if (Array.isArray(value) && value.length > 0) { // is array and has index zero populated
+          value = value[0]; // search filters cannot be arrays, therefore assign first index
+        }
+        this.buildFormDetails(prefix + attributeName, target, value);
       }
     }
   }

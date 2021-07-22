@@ -2,6 +2,8 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { Observable } from 'rxjs';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { SessionStorageService } from '../../services/session-storage/session-storage.service'
+
 
 const MEDIA_VIEWER = 'media-viewer-info';
 
@@ -25,8 +27,9 @@ export class MediaViewerWrapperComponent implements OnInit {
     icpEnabled$: Observable<boolean>
 
     public constructor(
-        private windowService: WindowService,
-        private featureToggleService: FeatureToggleService,
+        private readonly windowService: WindowService,
+        private readonly featureToggleService: FeatureToggleService,
+        private readonly sessionStorageService: SessionStorageService
     ) {
     }
 
@@ -34,7 +37,16 @@ export class MediaViewerWrapperComponent implements OnInit {
 
 
         const localStorageMedia = this.windowService.getLocalStorage(MEDIA_VIEWER);
-        if (localStorageMedia) {
+        let sessionStorageMedia = this.sessionStorageService.getItem(MEDIA_VIEWER);
+
+        if (!sessionStorageMedia && localStorageMedia) {
+            // move media viewer item from local to session storage to allow page refresh on multiple media viewer tabs
+            sessionStorageMedia = localStorageMedia;
+            this.sessionStorageService.setItem(MEDIA_VIEWER, sessionStorageMedia);
+            this.windowService.removeLocalStorage(MEDIA_VIEWER);
+        }
+
+        if (sessionStorageMedia) {
             const media: {
                 document_binary_url: string
                 document_filename: string
@@ -42,7 +54,7 @@ export class MediaViewerWrapperComponent implements OnInit {
                 annotation_api_url?: string
                 case_id?: string
                 case_jurisdiction?: string
-            } = JSON.parse(localStorageMedia);
+            } = JSON.parse(sessionStorageMedia);
             this.mediaURL = media.document_binary_url;
             this.mediaFilename = media.document_filename;
             this.mediaContentType = media.content_type;

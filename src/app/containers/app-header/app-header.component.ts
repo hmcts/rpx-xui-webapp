@@ -6,7 +6,7 @@ import { combineLatest, Observable, of, Subscription } from 'rxjs';
 import { UserDetails } from 'src/app/models/user-details.model';
 
 import { AppUtils } from '../../app-utils';
-import { AppConstants } from '../../app.constants';
+import { AppConstants, LD_FLAG_MC_APPLICATION_THEMES } from '../../app.constants';
 import { AppTitleModel } from '../../models/app-title.model';
 import { NavItemsModel } from '../../models/nav-item.model';
 import { UserNavModel } from '../../models/user-nav.model';
@@ -144,8 +144,8 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     this.serviceMessageCookie = AppConstants.SERVICE_MESSAGE_COOKIE;
     this.userDetails$ = this.store.pipe(select(fromActions.getUserDetails));
     this.setAppHeaderProperties(this.defaultTheme);
-    const applicationThemes$ = this.featureToggleService.getValue<Theme[]>('mc-application-themes', this.getDefaultApplicationThemes());
 
+    const applicationThemes$ = this.featureToggleService.getValue<Theme[]>(LD_FLAG_MC_APPLICATION_THEMES, this.getDefaultApplicationThemes());
     combineLatest([this.userDetails$, applicationThemes$]).subscribe(([userDetails, applicationThemes]) => {
         this.setHeaderContent(userDetails, applicationThemes);
       });

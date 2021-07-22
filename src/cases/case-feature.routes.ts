@@ -119,7 +119,7 @@ export const ROUTES: Routes = [
                   component: TasksContainerComponent
                 },
                 {
-                  path: 'roles and access',
+                  path: 'roles-and-access',
                   component: RolesAndAccessContainerComponent
                 }
               ]

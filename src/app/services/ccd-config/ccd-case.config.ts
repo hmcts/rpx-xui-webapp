@@ -21,10 +21,12 @@ import { AppConfigService } from '../config/configuration.services';
 
 @Injectable()
 export class AppConfig extends AbstractAppConfig {
+  private static WORKALLOCATIONRELEASE1 = 'WorkAllocationRelease1';
+  private static WORKALLOCATIONRELEASE2 = 'WorkAllocationRelease2';
   public workallocationUrl: string;
   protected config: CaseEditorConfig;
   private workAllocationRoles: string[] = ['caseworker-ia-iacjudge'];
-  private tabs: CaseTab[] =  [
+  private tabs: CaseTab[] = [
     {
       id: 'tasks',
       label: 'Tasks',
@@ -32,7 +34,7 @@ export class AppConfig extends AbstractAppConfig {
       show_condition: null
     },
     {
-      id: 'roles and access',
+      id: 'roles-and-access',
       label: 'Roles and access',
       fields: [],
       show_condition: null
@@ -169,7 +171,7 @@ export class AppConfig extends AbstractAppConfig {
 
   public prependedCaseViewTabs(): Observable<CaseTab[]> {
     return combineLatest([
-      this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.currentWAFeature, 'WorkAllocationRelease1'),
+      this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.currentWAFeature, AppConfig.WORKALLOCATIONRELEASE1),
       this.store.pipe(select(fromRoot.getUserDetails))
     ]).pipe(
       map(([feature, userDetails]: [string, UserDetails]) => this.enablePrependedTabs(feature, userDetails) ? this.tabs : [])
@@ -189,7 +191,7 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   private enablePrependedTabs(feature: string, userDetails: UserDetails): boolean {
-    return feature === 'WorkAllocationRelease2'
+    return feature === AppConfig.WORKALLOCATIONRELEASE2
       && userDetails.userInfo.roles.some((role: string) => this.workAllocationRoles.indexOf(role) >= 0);
   }
 }

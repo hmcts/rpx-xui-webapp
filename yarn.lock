@@ -443,10 +443,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.0.0-prepended-tabs-v1":
-  version "4.0.0-prepended-tabs-v1"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.0.0-prepended-tabs-v1.tgz#39d82c2c3bee384c024520af6574d7c50b5775ce"
-  integrity sha512-VqORbVlS3Xe9XbuwaBllaya735oNRp84RLpGLojq+9Z9VdABJPvbUFfsXLUQHSAlD7G6S/V5IO+uIoBfDzXiHg==
+"@hmcts/ccd-case-ui-toolkit@4.0.0-prepended-tabs-v2":
+  version "4.0.0-prepended-tabs-v2"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.0.0-prepended-tabs-v2.tgz#f21785f25adc4dcf76b450b8a194110e69867d76"
+  integrity sha512-kQcNXDp2PAxWPXyZwt0jcqnlWKvHyzpI5vvILQl9w08ytKw4WyTJ7LWuQjYxFHEMoiTQOLLMRq/5/C8YTNo08w==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular-material-components/moment-adapter" "^5.0.0"

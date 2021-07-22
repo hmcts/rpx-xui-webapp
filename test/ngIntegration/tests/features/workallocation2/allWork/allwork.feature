@@ -6,7 +6,7 @@ Feature: WA Release 2: All work
 
     Scenario Outline:  All work Tasks, colums and column links for "<UserType>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
-        Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""
+        Given I set MOCK tasks with permissions for view "All work" and assigned state ""
             | Permissions | Count |
             | Manage      | 10    |
             | Read        | 10    |
@@ -17,7 +17,7 @@ Feature: WA Release 2: All work
             | test_cw_3@test.com | cw3       | test     | 1234-1234-1234-1233 | 10003       | Location 3            |
             | test_cw_4@test.com | cw4       | test     | 1234-1234-1234-1234 | 10004       | Location 4            |
             | test_cw_5@test.com | cw5       | test     | 1234-1234-1234-1235 | 10005       | Location 5            |
-        Given I set MOCK tasks with attributes for view "Available tasks"
+        Given I set MOCK tasks with attributes for view "All work"
             | index | permissions                | assignee            | case_name | location_name   | task_title       | dueDate | case_category        |
             | 0     | Manage,Read,Execute,Cancel | 1234-1234-1234-1231 | case 1    | test location 1 | test auto task 1 | 10      | auto test category 1 |
             | 1     | Manage                     | 1234-1234-1234-1232 | case 2    | test location 2 | test auto task 2 | 20      | auto test category 2 |
@@ -57,7 +57,7 @@ Feature: WA Release 2: All work
         Examples:
             | UserIdentifier     | UserType   | Roles                                              |
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
+            # | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
     Scenario Outline: Tasks pagnation control display with only 1 page of items
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"

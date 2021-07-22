@@ -130,6 +130,7 @@ module.exports = {
                 tasks = global.scenarioData && global.scenarioData['workallocation2.allwork'] ? global.scenarioData['workallocation2.allwork'] : workAllocationMockData.getAllWorkTasks(pageSize * 5);
             } else {
                 throw new Error("Unrecognised task list view : " + requestedView);
+
             }
             
             try { 

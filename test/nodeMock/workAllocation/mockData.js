@@ -82,7 +82,6 @@ class WorkAllocationMockData {
     }
 
     getMyCases(count) {
-       
         let cases = { cases: [], total_records: count };
         for (let i = 0; i < count; i++) {
             cases.cases.push(this.getRelease2CaseWithPermission([], "MyCases", "assigned"));

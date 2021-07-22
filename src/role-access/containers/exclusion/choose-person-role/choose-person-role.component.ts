@@ -1,11 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-
+import { PERSON_ROLE } from '../../../constants';
 import { ExclusionNavigationEvent, ExclusionState, Role } from '../../../models';
-import { RoleAllocationType } from '../../../models/enums';
+import { RoleAllocationCaptionText, RoleAllocationTitleText } from '../../../models/enums';
 import { ExclusionNavigation } from '../../../models/exclusion-navigation.interface';
-import { RoleExclusionsService } from '../../../services/role-exclusions.service';
+import { OptionsModel } from '../../../models/options-model';
+import { RoleExclusionsService } from '../../../services';
 import * as fromFeature from '../../../store';
 
 @Component({
@@ -16,16 +18,32 @@ import * as fromFeature from '../../../store';
 export class ChoosePersonRoleComponent implements OnInit {
 
   @Input() public navEvent: ExclusionNavigation;
-  public roles: Role[];
-  public roleAllocation = RoleAllocationType.Exclusion;
-  public roles$: Observable<Role[]>;
 
-  constructor(private readonly store: Store<fromFeature.State>, private readonly roleExclusionsService: RoleExclusionsService) { }
+  public roles$: Observable<Role[]>;
+  public title = RoleAllocationTitleText.ExclusionChoose;
+  public caption = RoleAllocationCaptionText.Exclusion;
+  public optionsList: OptionsModel[];
+
+  public formGroup: FormGroup;
+  public radioOptionControl: FormControl;
+  public radioControlName: string = PERSON_ROLE;
+
+  constructor(private readonly store: Store<fromFeature.State>,
+              private readonly roleExclusionsService: RoleExclusionsService) {
+  }
 
   public ngOnInit(): void {
+    this.radioOptionControl = new FormControl(false);
+    this.formGroup = new FormGroup({[this.radioControlName]: this.radioOptionControl});
+
     this.roles$ = this.roleExclusionsService.getRolesCategory();
     this.roles$.subscribe((roles) => {
-      this.roles = roles;
+      this.optionsList = roles.map(role => {
+        const option: OptionsModel = {
+          optionId: role.roleId, optionValue: role.roleName
+        };
+        return option;
+      });
     });
   }
 

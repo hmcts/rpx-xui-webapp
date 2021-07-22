@@ -1,1 +1,11 @@
-<exui-choose-role [roleAllocation]="roleAllocation" [roles]="roles"></exui-choose-role>
+<div [formGroup]="formGroup"
+     class="govuk-form-group">
+  <exui-choose-radio-option
+    [formGroup]="formGroup"
+    [radioControlName]="radioControlName"
+    [title]="title"
+    [caption]="caption"
+    [optionsList]="optionsList"
+  >
+  </exui-choose-radio-option>
+</div>

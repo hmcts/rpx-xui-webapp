@@ -28,7 +28,9 @@ const headerpage = require('../../../../e2e/features/pageObjects/headerPage');
 const taskActionPage = require('../../../../e2e/features/pageObjects/workAllocation/taskActionPage');
 const TaskListTable = require('../../../../e2e/features/pageObjects/workAllocation/taskListTable');
 
+
 const ArrayUtil = require("../../../../e2e/utils/ArrayUtil");
+
 const workAllocationDataModel = require("../../../../dataModels/workAllocation");
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
@@ -53,7 +55,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         });
        
     });
-
 
     Then('I validate task search request with reference {string} has pagination parameters', async function (requestReference, datatable) {
         const reqBody = global.scenarioData[requestReference];
@@ -116,6 +117,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         softAssert.finally();
         
     });
+
 
     Given('I set MOCK case workers for release {string}', async function(forRelease,datatable){
         const persons = getPersonResponse(datatable);

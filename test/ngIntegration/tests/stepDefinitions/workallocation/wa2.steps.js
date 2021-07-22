@@ -147,12 +147,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 } else if (key.toLowerCase() === "assignee") {
                     if (taskHash[key] === ""){
                         delete task[key];
-                    } else if (key.toLowerCase().includes("date")) {
-                        task[key] = getDateValueForDays(taskHash[key]);
-                    }else{
+                    } else{
                         task[key] = taskHash[key];
                     }
                     
+                } else if (key.toLowerCase().includes("date")) {
+                    task[key] = getDateValueForDays(taskHash[key]);
                 }else{
                     task[key] = taskHash[key];
                 }

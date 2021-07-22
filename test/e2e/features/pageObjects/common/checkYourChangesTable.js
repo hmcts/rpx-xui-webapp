@@ -1,24 +1,24 @@
 
-const BrowserWaits = require("../../../support/customWaits"); 
+const BrowserWaits = require("../../../support/customWaits");
 
-class CaseRolesTable{
+class CheckYourChangesAnswersTable {
 
-    constructor(parentElement){
+    constructor(parentElement) {
 
         this.parent = parentElement;
-        this.taskDetailsTable = parentElement.$("table");
+        this.changesTable = parentElement.$("table");
         this.tableHeaders = parentElement.$$('table tr th');
         this.tableRows = parentElement.$$('table tr');
 
     }
 
-    async getRowsCount(){
+    async getRowsCount() {
         return await this.tableRows.count();
     }
 
-    async getTableRowAtIndex(index){
+    async getTableRowAtIndex(index) {
         const rowCount = this.getRowsCount();
-        if (index-1 >= rowCount){
+        if (index - 1 >= rowCount) {
             throw new Error(`Cannot get row at index ${index}, table has total rows ${rowCount}`);
         }
         return await this.tableRows.get(index - 1);
@@ -39,7 +39,7 @@ class CaseRolesTable{
     }
 
 
-    async getColumnElementAtRow(rowIndex , header) {
+    async getColumnElementAtRow(rowIndex, header) {
         const pos = await this.getHeaderColumnPos(header);
         const rowElement = await this.getTableRowAtIndex(rowIndex);
 
@@ -51,30 +51,30 @@ class CaseRolesTable{
         return col;
     }
 
-    async getColumnValueAtRow(rowIndex,header) {
-        const colElement = await this.getColumnElementAtRow(rowIndex,header);
+    async getColumnValueAtRow(rowIndex, header) {
+        const colElement = await this.getColumnElementAtRow(rowIndex, header);
         const coltext = await colElement.getText();
         return coltext;
     }
 
-    async getLinkElementWithTextAtRow(rowIndex,linkText){
+    async getLinkElementWithTextAtRow(rowIndex, linkText) {
         const rowElement = await this.getTableRowAtIndex(rowIndex);
         return rowElement.element(by.xpath(`//td//a[contains(text(),'${linkText}')]`));
     }
 
-    async isLinkWithTextPresentAtRow(rowIndex,linkText){
-        const linkElement = this.getLinkElementWithTextAtRow(rowIndex,linkText);
-        try{
+    async isLinkWithTextPresentAtRow(rowIndex, linkText) {
+        const linkElement = this.getLinkElementWithTextAtRow(rowIndex, linkText);
+        try {
             await BrowserWaits.waitForElement(linkElement);
             return true;
         }
-        catch(err){
+        catch (err) {
             return false;
         }
     }
 
-    async clickLinkWithTextAtRow(rowIndex,linkText) {
-        const linkElement = this.getLinkElementWithTextAtRow(rowIndex,linkText);
+    async clickLinkWithTextAtRow(rowIndex, linkText) {
+        const linkElement = this.getLinkElementWithTextAtRow(rowIndex, linkText);
         await BrowserWaits.waitForElement(linkElement);
         await linkElement.click();
     }
@@ -87,4 +87,4 @@ class CaseRolesTable{
 
 }
 
-module.exports = CaseRolesTable;
+module.exports = new CheckYourChangesAnswersTable();

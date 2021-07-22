@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import { RoleAllocationCaptionText, RoleAllocationTitleText } from 'src/role-access/models/enums';
 
-import { ExclusionNavigationEvent, ExclusionState, Role } from '../../../models';
-import { RoleAllocationType } from '../../../models/enums';
+import { ExclusionNavigationEvent, ExclusionState, RadioOption, Role } from '../../../models';
 import { ExclusionNavigation } from '../../../models/exclusion-navigation.interface';
 import { RoleExclusionsService } from '../../../services/role-exclusions.service';
 import * as fromFeature from '../../../store';
@@ -16,16 +16,21 @@ import * as fromFeature from '../../../store';
 export class ChoosePersonRoleComponent implements OnInit {
 
   @Input() public navEvent: ExclusionNavigation;
-  public roles: Role[];
-  public roleAllocation = RoleAllocationType.Exclusion;
+  public roleOptions: RadioOption[];
   public roles$: Observable<Role[]>;
+  public title = RoleAllocationTitleText.ExclusionChoose;
+  public caption = RoleAllocationCaptionText.Exclusion;
 
   constructor(private readonly store: Store<fromFeature.State>, private readonly roleExclusionsService: RoleExclusionsService) { }
 
   public ngOnInit(): void {
     this.roles$ = this.roleExclusionsService.getRolesCategory();
     this.roles$.subscribe((roles) => {
-      this.roles = roles;
+      this.roleOptions = [];
+      roles.forEach(role => {
+        const currentOption: RadioOption = { radioId: role.roleId, radioName: role.roleName };
+        this.roleOptions.push(currentOption);
+      });
     });
   }
 

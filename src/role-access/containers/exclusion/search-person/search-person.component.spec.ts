@@ -1,15 +1,15 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { provideMockStore } from '@ngrx/store/testing';
-import { FindPersonComponent } from './find-person.component';
+import { SearchPersonComponent } from './search-person.component';
 
 describe('FindPersonComponent', () => {
-  let component: FindPersonComponent;
-  let fixture: ComponentFixture<FindPersonComponent>;
+  let component: SearchPersonComponent;
+  let fixture: ComponentFixture<SearchPersonComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [FindPersonComponent],
+      declarations: [SearchPersonComponent],
       providers: [
         provideMockStore()
       ]
@@ -18,7 +18,7 @@ describe('FindPersonComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FindPersonComponent);
+    fixture = TestBed.createComponent(SearchPersonComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

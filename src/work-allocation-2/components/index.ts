@@ -2,7 +2,6 @@ import { AvailableTasksFilterComponent } from './available-tasks-filter/availabl
 import { CaseNameFieldComponent } from './case-name-field/case-name-field.component';
 import { CaseReferenceFieldComponent } from './case-reference-field/case-reference-field.component';
 import { DerivedIconFieldComponent } from './derived-icon-field/derived-icon-field.component';
-import { FindPersonComponent } from './find-person/find-person.component';
 import { ImageFieldComponent } from './image-field/image-field.component';
 import { InfoMessageComponent } from './info-message/info-message.component';
 import { MyCasesFilterComponent } from './my-cases-filter/my-cases-filter.component';
@@ -18,7 +17,6 @@ export const components: any[] = [
   CaseNameFieldComponent,
   CaseReferenceFieldComponent,
   DerivedIconFieldComponent,
-  FindPersonComponent,
   ImageFieldComponent,
   InfoMessageComponent,
   MyCasesFilterComponent,
@@ -34,7 +32,6 @@ export * from './available-tasks-filter/available-tasks-filter.component';
 export * from './case-name-field/case-name-field.component';
 export * from './case-reference-field/case-reference-field.component';
 export * from './derived-icon-field/derived-icon-field.component';
-export * from './find-person/find-person.component';
 export * from './image-field/image-field.component';
 export * from './info-message/info-message.component';
 export * from './task-assignment/task-assignment.component';

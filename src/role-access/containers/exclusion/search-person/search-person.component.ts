@@ -1,17 +1,20 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
+import { Person } from '../../../../work-allocation-2/models/dtos';
 import { ExclusionNavigationEvent, ExclusionState } from '../../../models';
 import { ExclusionNavigation } from '../../../models/exclusion-navigation.interface';
 import * as fromFeature from '../../../store';
 
 @Component({
-  selector: 'exui-find-person',
-  templateUrl: './find-person.component.html',
-  styleUrls: ['./find-person.component.scss']
+  selector: 'exui-search-person',
+  templateUrl: './search-person.component.html',
+  styleUrls: ['./search-person.component.scss']
 })
-export class FindPersonComponent implements OnInit {
+export class SearchPersonComponent implements OnInit {
   @Input() public navEvent: ExclusionNavigation;
-
+  public formGroup: FormGroup = new FormGroup({});
+  public person?: Person;
   constructor(private readonly store: Store<fromFeature.State>) {
   }
 
@@ -19,6 +22,14 @@ export class FindPersonComponent implements OnInit {
   }
 
   public navigationHandler(navEvent: ExclusionNavigationEvent) {
+    if (this.formGroup && this.formGroup.value && this.formGroup.value.findPersonControl) {
+      console.log('navigationHandler ');
+    } else {
+      this.formGroup.setErrors({
+        invalid: true
+      });
+      return;
+    }
     switch (navEvent) {
       case ExclusionNavigationEvent.CONTINUE:
         this.store.dispatch(new fromFeature.ChangeNavigation(ExclusionState.DESCRIBE_EXCLUSION));
@@ -26,5 +37,9 @@ export class FindPersonComponent implements OnInit {
       default:
         throw new Error('Invalid option');
     }
+  }
+
+  public selectedPerson(person?: Person) {
+    this.person = person;
   }
 }

@@ -16,7 +16,7 @@ import { CheckAnswersComponent } from '../check-answers/check-answers.component'
 import { ChooseExclusionComponent } from '../choose-exclusion/choose-exclusion.component';
 import { ChoosePersonRoleComponent } from '../choose-person-role/choose-person-role.component';
 import { DescribeExclusionComponent } from '../describe-exclusion/describe-exclusion.component';
-import { FindPersonComponent } from '../find-person/find-person.component';
+import { SearchPersonComponent } from '../search-person/search-person.component';
 
 @Component({
   selector: 'exui-exclusion-home',
@@ -30,8 +30,8 @@ export class ExclusionHomeComponent implements OnInit, OnDestroy {
   @ViewChild('choosePersonRole', {read: ChoosePersonRoleComponent})
   public choosePersonRoleComponent: ChoosePersonRoleComponent;
 
-  @ViewChild('findPerson', {read: FindPersonComponent})
-  public findPersonComponent: FindPersonComponent;
+  @ViewChild('findPerson', {read: SearchPersonComponent})
+  public findPersonComponent: SearchPersonComponent;
 
   @ViewChild('describeExclusion', {read: DescribeExclusionComponent})
   public describeExclusionComponent: DescribeExclusionComponent;

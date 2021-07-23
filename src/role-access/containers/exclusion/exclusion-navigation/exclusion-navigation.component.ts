@@ -7,7 +7,7 @@ import {
   confirmExclusionButtonVisibilityStates,
   continueButtonVisibilityStates
 } from '../../../constants';
-import { ExclusionNavigationEvent, ExclusionState, ExclusionStateData } from '../../../models';
+import { ExclusionNavigationEvent, ExclusionState } from '../../../models';
 import * as fromFeature from '../../../store';
 import * as fromRoot from '../../../../app/store';
 
@@ -19,7 +19,7 @@ export class ExclusionNavigationComponent implements OnInit {
 
   @Output() public eventTrigger = new EventEmitter();
 
-  public navigationCurrentState$: Observable<fromFeature.State>;
+  public navigationCurrentState$: Observable<ExclusionState>;
 
   public backVisibilityStates = backButtonVisibilityStates;
   public continueVisibilityStates = continueButtonVisibilityStates;
@@ -43,17 +43,6 @@ export class ExclusionNavigationComponent implements OnInit {
   }
 
   public onEventTrigger(event: ExclusionNavigationEvent) {
-    if (event === ExclusionNavigationEvent.CANCEL) {
-      this.store.pipe(select(fromFeature.getRoleAccessState)).first().subscribe(exclusion => this.loadCaseDetailsPage(exclusion));
-      return;
-    }
     this.eventTrigger.emit(event);
-  }
-
-  public loadCaseDetailsPage(exclusion: ExclusionStateData): void {
-    this.appStore.dispatch(new fromRoot.CreateCaseGo({
-      path: [`/cases/case-details/${exclusion.caseId}`],
-      caseId: exclusion.caseId
-    }));
   }
 }

@@ -14,7 +14,7 @@
     <input id="inputSelectPerson" type="text" aria-label="select a person" matInput
            formControlName="findPersonControl"
            [matAutocomplete]="auto"
-           class="govuk-input"
+           class="govuk-input govuk-!-width-one-third"
            (ngModelChange)="updatedVal($event)"
            [value]="selectedPerson">
     <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">

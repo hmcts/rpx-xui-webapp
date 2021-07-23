@@ -13,7 +13,6 @@ class TaskCheckYourChangesPage{
         this.submitButton = $("exui-task-assignment-confirm button[type = 'submit']");
         this.cancelLink = element(by.xpath("//exui-task-assignment-confirm//p/a[contains(text(),'Cancel')]"));
 
-        this.taskDetailsTable = new ItemDetailsTable($('exui-task-assignment-confirm'));
  
     }
 
@@ -49,7 +48,7 @@ class TaskCheckYourChangesPage{
 
 
     async isTaskTableHeaderDisplayed(headerCol){
-        const colheaderPos = await this.taskDetailsTable.isTableHeaderDisplayed(headerCol);
+        const colheaderPos = await checkyourChangesTable.isTableHeaderDisplayed(headerCol);
         return colheaderPos !== -1;
     }
 

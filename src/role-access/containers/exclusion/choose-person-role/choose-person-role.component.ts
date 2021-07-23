@@ -1,9 +1,9 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
-import { PERSON_ROLE } from '../../../constants';
+import { ERROR_MESSAGE, PERSON_ROLE } from '../../../constants';
 import { ExclusionNavigationEvent, ExclusionState, PersonRole, Role } from '../../../models';
 import { RoleAllocationCaptionText, RoleAllocationTitleText } from '../../../models/enums';
 import { ExclusionNavigation } from '../../../models/exclusion-navigation.interface';
@@ -17,13 +17,15 @@ import * as fromFeature from '../../../store';
   styleUrls: ['./choose-person-role.component.scss']
 })
 export class ChoosePersonRoleComponent implements OnInit, OnDestroy {
-
+  public ERROR_MESSAGE = ERROR_MESSAGE;
   @Input() public navEvent: ExclusionNavigation;
 
   public roles$: Observable<Role[]>;
   public title = RoleAllocationTitleText.ExclusionChoose;
   public caption = RoleAllocationCaptionText.Exclusion;
   public optionsList: OptionsModel[];
+
+  public submitted: boolean = false;
 
   public formGroup: FormGroup;
   public radioOptionControl: FormControl;
@@ -44,7 +46,7 @@ export class ChoosePersonRoleComponent implements OnInit, OnDestroy {
       }
     );
 
-    this.radioOptionControl = new FormControl(this.personRole ? this.personRole : '');
+    this.radioOptionControl = new FormControl(this.personRole ? this.personRole : '', [Validators.required]);
     this.formGroup = new FormGroup({[this.radioControlName]: this.radioOptionControl});
 
     this.roles$ = this.roleExclusionsService.getRolesCategory();
@@ -59,6 +61,17 @@ export class ChoosePersonRoleComponent implements OnInit, OnDestroy {
   }
 
   public navigationHandler(navEvent: ExclusionNavigationEvent) {
+    this.submitted = true;
+    if (this.radioOptionControl.invalid) {
+      this.radioOptionControl.setErrors({
+        invalid: true
+      });
+      return;
+    }
+    this.dispatchEvent(navEvent);
+  }
+
+  public dispatchEvent(navEvent: ExclusionNavigationEvent) {
     switch (navEvent) {
       case ExclusionNavigationEvent.CONTINUE:
         const personRole = this.radioOptionControl.value;

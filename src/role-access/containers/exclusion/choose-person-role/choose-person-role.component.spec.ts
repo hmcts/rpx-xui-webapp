@@ -1,8 +1,8 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
-
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ChooseRadioOptionComponent } from '../../../components';
 import { PERSON_ROLE } from '../../../constants';
 import { ExclusionNavigationEvent } from '../../../models';
@@ -18,8 +18,8 @@ const mockRoleOptions = [{ optionId: '1', optionValue: 'Role 1' },
       { optionId: '3', optionValue: 'Role 3' }];
 
 describe('ChoosePersonRoleComponent', () => {
-  const RADIO_OPTION_CONTROL: FormControl = new FormControl('');
-  const FORM_GROUP: FormGroup = new FormGroup({[PERSON_ROLE]: RADIO_OPTION_CONTROL});
+  const radioOptionControl: FormControl = new FormControl('');
+  const formGroup: FormGroup = new FormGroup({[PERSON_ROLE]: radioOptionControl});
 
   let component: ChoosePersonRoleComponent;
   let fixture: ComponentFixture<ChoosePersonRoleComponent>;
@@ -28,6 +28,7 @@ describe('ChoosePersonRoleComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [ChooseRadioOptionComponent, ChoosePersonRoleComponent],
       imports: [
         ReactiveFormsModule
@@ -43,7 +44,7 @@ describe('ChoosePersonRoleComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ChoosePersonRoleComponent);
     component = fixture.componentInstance;
-    component.formGroup = FORM_GROUP;
+    component.formGroup = formGroup;
     mockRoleExclusionsService.getRolesCategory.and.returnValue(of(mockRoles));
     mockStore.pipe.and.returnValue(of(mockRoleOptions[1].optionValue));
     component.roles$ = of(mockRoles);
@@ -56,7 +57,7 @@ describe('ChoosePersonRoleComponent', () => {
 
   it('should correctly navigate on click of continue', () => {
     const navEvent = ExclusionNavigationEvent.CONTINUE;
-    component.navigationHandler(navEvent);
+    component.dispatchEvent(navEvent);
     expect(mockStore.dispatch).toHaveBeenCalled();
   });
 

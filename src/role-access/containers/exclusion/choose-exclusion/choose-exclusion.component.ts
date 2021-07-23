@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 import { $enum as EnumUtil } from 'ts-enum-util';
 import * as fromRoot from '../../../../app/store';
-import { EXCLUSION_OPTION } from '../../../constants';
+import { ERROR_MESSAGE, EXCLUSION_OPTION } from '../../../constants';
 import { ExcludeOption, ExclusionNavigationEvent, ExclusionState } from '../../../models';
 import { RoleAllocationCaptionText, RoleAllocationTitleText } from '../../../models/enums';
 import { ExclusionNavigation } from '../../../models/exclusion-navigation.interface';
@@ -20,10 +20,13 @@ import * as fromFeature from '../../../store';
 
 export class ChooseExclusionComponent implements OnInit, OnDestroy {
 
+  public ERROR_MESSAGE = ERROR_MESSAGE;
   @Input() public navEvent: ExclusionNavigation;
   public title = RoleAllocationTitleText.ExclusionAllocate;
   public caption = RoleAllocationCaptionText.Exclusion;
   public locationInfo$: Observable<any>;
+
+  public submitted: boolean = false;
 
   public formGroup: FormGroup;
   public radioOptionControl: FormControl;
@@ -51,8 +54,8 @@ export class ChooseExclusionComponent implements OnInit, OnDestroy {
         this.exclusionOption = exclusionStateData.exclusionOption;
       }
     );
-    this.radioOptionControl = new FormControl(this.exclusionOption ? this.exclusionOption : '');
-    this.formGroup = new FormGroup({[this.radioControlName]: this.radioOptionControl}, [Validators.required]);
+    this.radioOptionControl = new FormControl(this.exclusionOption ? this.exclusionOption : '', [Validators.required]);
+    this.formGroup = new FormGroup({[this.radioControlName]: this.radioOptionControl});
 
     // currently the case allocator role information is stored in location info
     this.locationInfo$ = this.store.pipe(select(fromRoot.getLocationInfo));
@@ -63,6 +66,17 @@ export class ChooseExclusionComponent implements OnInit, OnDestroy {
   }
 
   public navigationHandler(navEvent: ExclusionNavigationEvent) {
+    this.submitted = true;
+    if (this.radioOptionControl.invalid) {
+      this.radioOptionControl.setErrors({
+        invalid: true
+      });
+      return;
+    }
+    this.dispatchEvent(navEvent);
+  }
+
+  public dispatchEvent(navEvent: ExclusionNavigationEvent) {
     switch (navEvent) {
       case ExclusionNavigationEvent.CONTINUE:
         const exclusionSelection = this.radioOptionControl.value;

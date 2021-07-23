@@ -1,9 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
-
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { State } from '../../../../app/store';
 import { ChooseRadioOptionComponent } from '../../../components';
@@ -12,8 +11,8 @@ import { ExcludeOption, ExclusionNavigationEvent } from '../../../models';
 import { ChooseExclusionComponent } from './choose-exclusion.component';
 
 describe('ChooseExclusionComponent', () => {
-  const RADIO_OPTION_CONTROL: FormControl = new FormControl('');
-  const FORM_GROUP: FormGroup = new FormGroup({[EXCLUSION_OPTION]: RADIO_OPTION_CONTROL});
+  const radioOptionControl: FormControl = new FormControl('');
+  const formGroup: FormGroup = new FormGroup({[EXCLUSION_OPTION]: radioOptionControl});
 
   let component: ChooseExclusionComponent;
   let fixture: ComponentFixture<ChooseExclusionComponent>;
@@ -24,6 +23,7 @@ describe('ChooseExclusionComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [ChooseRadioOptionComponent, ChooseExclusionComponent],
       imports: [
         ReactiveFormsModule
@@ -41,7 +41,7 @@ describe('ChooseExclusionComponent', () => {
     spyOnStoreDispatch = spyOn(store, 'dispatch');
     fixture = TestBed.createComponent(ChooseExclusionComponent);
     component = fixture.componentInstance;
-    component.formGroup = FORM_GROUP;
+    component.formGroup = formGroup;
     spyOnPipeToStore.and.returnValue(of([{isCaseAllocator: true}, {}]));
     fixture.detectChanges();
   });

@@ -15,6 +15,7 @@ export class ChooseRadioOptionComponent {
   @Input() public optionsList: OptionsModel[];
   @Input() public formGroup: FormGroup;
   @Input() public radioControlName: string;
+  @Input() public submitted: boolean = false;
 
   constructor() {}
 

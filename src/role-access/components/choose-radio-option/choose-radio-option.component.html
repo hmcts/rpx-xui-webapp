@@ -3,6 +3,10 @@
   {{title}}
 </h1>
 <div class="govuk-form-group" [formGroup]="formGroup">
+  <span id="error-message" class="govuk-error-message"
+        *ngIf="formGroup.get(radioControlName).errors && submitted">
+    Please select an option
+  </span>
   <fieldset class="govuk-fieldset">
     <div class="govuk-radios">
       <div *ngFor="let option of optionsList" class="govuk-radios__item">

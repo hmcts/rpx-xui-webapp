@@ -78,7 +78,7 @@ export class SearchFilterService {
         target[filterType][prefix + attributeName] = value;
       } else if (value) {
         if (Array.isArray(value) && value.length > 0) { // is array and has index zero populated
-          value = value[0]; // search filters cannot be arrays, therefore assign first index
+          value = isStringOrNumber(value[0]) ? value : value[0]; // determine if it is a collection or a plain array
         }
         this.buildFormDetails(prefix + attributeName, target, value);
       }

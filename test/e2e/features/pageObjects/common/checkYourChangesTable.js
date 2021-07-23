@@ -3,12 +3,11 @@ const BrowserWaits = require("../../../support/customWaits");
 
 class CheckYourChangesAnswersTable {
 
-    constructor(parentElement) {
+    constructor() {
 
-        this.parent = parentElement;
-        this.changesTable = parentElement.$("table");
-        this.tableHeaders = parentElement.$$('table tr th');
-        this.tableRows = parentElement.$$('table tr');
+        this.changesTable = $("table");
+        this.tableHeaders = $$('table tr th');
+        this.tableRows = $$('table tr');
 
     }
 

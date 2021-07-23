@@ -15,11 +15,11 @@
               *ngIf="isComponentVisible(navigationCurrentState, choosePersonRoleStates)"
               [navEvent]="navEvent">
             </exui-choose-person-role>
-            <exui-find-person
+            <exui-search-person
               #findPerson
               *ngIf="isComponentVisible(navigationCurrentState, findPersonVisibilityStates)"
               [navEvent]="navEvent">
-            </exui-find-person>
+            </exui-search-person>
             <exui-describe-exclusion
               #describeExclusion
               *ngIf="isComponentVisible(navigationCurrentState, describeExclusionVisibilityStates)"

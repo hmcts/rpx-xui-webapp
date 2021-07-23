@@ -15,8 +15,8 @@ import * as fromFeature from '../../../store';
 export class DescribeExclusionComponent implements OnInit, OnDestroy {
 
   @Input() public navEvent: ExclusionNavigation;
-  @Input() public title: string = 'Add an exclusion';
-  @Input() public description: string;
+  @Input() public title: string = 'Describe the exclusion';
+  @Input() public caption: string = 'Add an exclusion';
 
   public submitted: boolean = true;
   public controlName = 'text';

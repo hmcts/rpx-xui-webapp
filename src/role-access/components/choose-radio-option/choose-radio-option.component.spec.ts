@@ -1,37 +1,46 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { RadioOption } from '../../models';
 import { RoleAllocationCaptionText, RoleAllocationTitleText } from '../../models/enums';
+import { OptionsModel } from '../../models/options-model';
 import { ChooseRadioOptionComponent } from './choose-radio-option.component';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
-  template: `<exui-choose-radio-option [radios]="radios" [title]="title" [caption]="caption"></exui-choose-radio-option>`
+  template: `<exui-choose-radio-option [optionsList]="optionsList" [title]="title" [caption]="caption"></exui-choose-radio-option>`
 })
 class WrapperComponent {
   @ViewChild(ChooseRadioOptionComponent) public ref: ChooseRadioOptionComponent;
-  @Input() public radios: RadioOption[];
+  @Input() public optionsList: OptionsModel[];
   @Input() public title: RoleAllocationTitleText;
   @Input() public caption: RoleAllocationCaptionText;
 }
 
-const mockRoles: RadioOption[] = [
-  { radioId: '1', radioName: 'Role 1' },
-  { radioId: '2', radioName: 'Role 2' },
-  { radioId: '3', radioName: 'Role 3' }];
+const mockRoles: OptionsModel[] = [
+  { optionId: '1', optionValue: 'Role 1' },
+  { optionId: '2', optionValue: 'Role 2' },
+  { optionId: '3', optionValue: 'Role 3' }];
 
 describe('ChooseRadioOptionComponent', () => {
+  const RADIO_OPTION_CONTROL: FormControl = new FormControl('');
+  const FORM_GROUP: FormGroup = new FormGroup({['personRole']: RADIO_OPTION_CONTROL});
+
   let component: ChooseRadioOptionComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ ChooseRadioOptionComponent, WrapperComponent ]
+      declarations: [ ChooseRadioOptionComponent, WrapperComponent ],
+      imports: [
+        ReactiveFormsModule
+      ],
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.ref;
+    component.formGroup = FORM_GROUP;
+    component.radioControlName = 'personRole';
     fixture.detectChanges();
   });
 
@@ -49,10 +58,10 @@ describe('ChooseRadioOptionComponent', () => {
   });
 
   it('should correctly set the radio buttons based on the roles inputted', () => {
-    component.radios = mockRoles;
+    component.optionsList = mockRoles;
     fixture.detectChanges();
     const element = fixture.debugElement.query(By.css('.govuk-radios__input')).nativeElement;
     expect(element.id).toBe('1');
-    expect(element.value).toBe('Role 1');
+    expect(element.value).toBe('on');
   });
 });

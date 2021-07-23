@@ -3,8 +3,8 @@
      class="govuk-form-group"
      [ngClass]="{'form-group-error': !formGroup.get(controlName).valid && formGroup.get(controlName).touched && submitted}">
   <h1 class="govuk-heading-l">
-    <span class="govuk-caption-l">{{title}}</span>
-    {{description}}
+    <span class="govuk-caption-l">{{caption}}</span>
+    {{title}}
   </h1>
   <span id="more-detail-error" class="govuk-error-message"
         *ngIf="!formGroup.get(controlName).valid && formGroup.get(controlName).touched && submitted">

@@ -1,14 +1,19 @@
-<h1 class="govuk-heading-l" >
+<h1 class="govuk-heading-l">
   <span class="govuk-caption-l">{{caption}}</span>
   {{title}}
 </h1>
-<div class="govuk-form-group">
+<div class="govuk-form-group" [formGroup]="formGroup">
+  <span id="error-message" class="govuk-error-message"
+        *ngIf="formGroup.get(radioControlName).errors && submitted">
+    Please select an option
+  </span>
   <fieldset class="govuk-fieldset">
     <div class="govuk-radios">
-      <div *ngFor="let radio of radios" class="govuk-radios__item">
-        <input class="govuk-radios__input" [id]="radio.radioId" name="roleAllocation" type="radio" [value]="radio.radioName">
-        <label class="govuk-label govuk-radios__label" [for]="radio.radioId">
-          {{radio.radioName}}
+      <div *ngFor="let option of optionsList" class="govuk-radios__item">
+        <input class="govuk-radios__input" formControlName="{{radioControlName}}" [id]="option.optionId" type="radio"
+               [value]="option.optionValue">
+        <label class="govuk-label govuk-radios__label" [for]="option.optionId">
+          {{option.optionValue}}
         </label>
       </div>
     </div>

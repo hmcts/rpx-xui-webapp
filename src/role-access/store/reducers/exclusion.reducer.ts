@@ -30,7 +30,21 @@ export function exclusionReducer(currentState = initialState, action: fromAction
         ...currentState,
         state: action.payload,
         exclusionDescription: action.describeExclusionText
-      }
+      };
+    }
+    case fromActions.SAVE_EXCLUSION_OPTION_AND_GO: {
+      return {
+        ...currentState,
+        exclusionOption: action.payload.exclusionOption,
+        state: action.payload.exclusionState
+      };
+    }
+    case fromActions.SAVE_PERSON_ROLE_AND_GO: {
+      return {
+        ...currentState,
+        personRole: action.payload.personRole,
+        state: action.payload.exclusionState
+      };
     }
     default: {
       return {
@@ -40,5 +54,6 @@ export function exclusionReducer(currentState = initialState, action: fromAction
   }
 }
 
-export const getExclusionActiveState = (exclusionState) => exclusionState.state;
-export const getLastErrors = (exclusionState) => exclusionState.lastError;
+export const getExclusionActiveState = (exclusionState: ExclusionStateData) => exclusionState.state;
+export const getCaseId = (exclusionState: ExclusionStateData) => exclusionState.caseId;
+export const getLastErrors = (exclusionState: ExclusionStateData) => exclusionState.lastError;

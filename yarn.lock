@@ -153,20 +153,6 @@
   dependencies:
     tslib "^1.9.0"
 
-"@angular-material-components/moment-adapter@^4.0.1":
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/@angular-material-components/moment-adapter/-/moment-adapter-4.0.1.tgz#a2827110f4f8f028926ecb3905e1abc90eaf7b1d"
-  integrity sha512-wHLRZKHOTAaY7EzM8p7EBGIMKdHAuY4HU1UjmvAuwMZ4uy1eIGSkGPS4MP3MtSq68Mj3aUyeDCCMeJM8IoGtnw==
-  dependencies:
-    tslib "^2.0.0"
-
-"@angular-material-components/moment-adapter@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@angular-material-components/moment-adapter/-/moment-adapter-5.0.0.tgz#e277b82a4a3554260cd274a1862edf64cc186cac"
-  integrity sha512-/9+8b4hpe8GwlgbuXAckDg5ZKms6yDWRKQcyXYuNKC+8Ya6M0M5NHYz3d4YXjJ73xOGURr73NlqZzYsknjYkUQ==
-  dependencies:
-    tslib "^2.0.0"
-
 "@angular/animations@^7.2.13":
   version "7.2.16"
   resolved "https://registry.yarnpkg.com/@angular/animations/-/animations-7.2.16.tgz#6e3f43df292bc53c3a526dabfd8025b3cd03b070"
@@ -450,13 +436,12 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.0.0-strategic-activity-tracker-delta":
-  version "4.0.0-strategic-activity-tracker-delta"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.0.0-strategic-activity-tracker-delta.tgz#ca8233ec83df12520d6ac1cda8b168708d4dbc64"
-  integrity sha512-gIzx9V/KxO7nfxXTr9igVlwE1EXfd29eE2LYouTlxWqaFJ/4GGPanKUwacqYR1/IJ6afp75CmMoQXXUC2kcfag==
+"@hmcts/ccd-case-ui-toolkit@4.0.0-strategic-activity-tracker-zeta":
+  version "4.0.0-strategic-activity-tracker-zeta"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.0.0-strategic-activity-tracker-zeta.tgz#b72e209974800a1c130975ce4c342d24f8e8286a"
+  integrity sha512-Q91zj4moH9MGlI2H5JBS5dpufxy7x9WuEV4Apx9gaeOFNNpNw2k6zTEcXaukJnxutSUSKNxFPHNe0wfYWhbbjg==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
-    "@angular-material-components/moment-adapter" "^5.0.0"
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
     "@hmcts/ccpay-web-component" "3.0.3"
@@ -12785,11 +12770,6 @@ tslib@^1.7.1, tslib@^1.8.0, tslib@^1.8.1, tslib@^1.9.0:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.10.0.tgz#c3c19f95973fb0a62973fb09d90d961ee43e5c8a"
   integrity sha512-qOebF53frne81cf0S9B41ByenJ3/IuH8yJKngAX35CmiZySA0khhkovshKK+jGCaMnVomla7gVlIcc3EvKPbTQ==
-
-tslib@^2.0.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.2.0.tgz#fb2c475977e35e241311ede2693cee1ec6698f5c"
-  integrity sha512-gS9GVHRU+RGn5KQM2rllAlR3dU6m7AcpJKdtH8gFvQiC4Otgk98XnmMU+nZenHt/+VhnBPWwgrJsyrdcw6i23w==
 
 tslib@~1.11.1:
   version "1.11.1"

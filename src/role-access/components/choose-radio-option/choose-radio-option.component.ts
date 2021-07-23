@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
-
-import { RadioOption } from '../../models';
-import { RoleAllocationCaptionText, RoleAllocationTitleText } from '../../models/enums';
+import { FormGroup } from '@angular/forms';
+import { RoleAllocationCaptionText } from '../../models/enums';
+import { OptionsModel } from '../../models/options-model';
 
 @Component({
   selector: 'exui-choose-radio-option',
@@ -10,9 +10,12 @@ import { RoleAllocationCaptionText, RoleAllocationTitleText } from '../../models
 
 export class ChooseRadioOptionComponent {
 
-  @Input() public radios: RadioOption[] = [];
-  @Input() public title: RoleAllocationTitleText;
+  @Input() public title: string;
   @Input() public caption: RoleAllocationCaptionText;
+  @Input() public optionsList: OptionsModel[];
+  @Input() public formGroup: FormGroup;
+  @Input() public radioControlName: string;
+  @Input() public submitted: boolean = false;
 
   constructor() {}
 

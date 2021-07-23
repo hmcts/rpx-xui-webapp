@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { AbstractAppConfig } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
@@ -13,6 +13,7 @@ import * as fromContainers from './containers';
 import { roleAccessRouting } from './role-access.routes';
 import { RoleExclusionsService } from './services';
 import { effects, reducers } from './store';
+import { FindPersonModule } from 'src/work-allocation-2/find-person.module';
 
 @NgModule({
   imports: [
@@ -22,9 +23,9 @@ import { effects, reducers } from './store';
     EffectsModule.forFeature(effects),
     roleAccessRouting,
     SharedModule,
-    FormsModule,
     ReactiveFormsModule,
-    ExuiCommonLibModule
+    ExuiCommonLibModule,
+    FindPersonModule
   ],
   declarations: [...fromContainers.containers, ...fromComponents.components],
   entryComponents: [],

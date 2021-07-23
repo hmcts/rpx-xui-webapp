@@ -1,5 +1,7 @@
 const BrowserWaits = require("../../../support/customWaits"); 
 const CucumberReporter = require("../../../support/reportLogger");
+const exuiErrorMessage = require("../common/exuiErrorMessage");
+
 
 class FindPersonPage{
     constructor(){

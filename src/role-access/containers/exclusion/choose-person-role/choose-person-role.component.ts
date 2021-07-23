@@ -52,10 +52,9 @@ export class ChoosePersonRoleComponent implements OnInit, OnDestroy {
     this.roles$ = this.roleExclusionsService.getRolesCategory();
     this.roles$.subscribe((roles) => {
       this.optionsList = roles.map(role => {
-        const option: OptionsModel = {
+        return {
           optionId: role.roleId, optionValue: role.roleName
-        };
-        return option;
+        } as OptionsModel;
       });
     });
   }

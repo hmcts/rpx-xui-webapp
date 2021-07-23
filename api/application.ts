@@ -39,6 +39,8 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
         '*.launchdarkly.com',
         'www.google-analytics.com',
         '*.hmcts.net',
+        'ws:',
+        'wss:'
       ],
       defaultSrc: [`'self'`],
       fontSrc: ['\'self\'', 'https://fonts.gstatic.com', 'data:'],

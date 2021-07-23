@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup } from '@angular/forms';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
 import { FindPersonModule } from '../../../work-allocation-2/find-person.module';
 import { FindAPersonService } from '../../services/find-person.service';
@@ -16,6 +18,8 @@ describe('FindPersonComponent', () => {
         TestBed.configureTestingModule({
             imports: [
                 WorkAllocationComponentsModule,
+                StoreModule.forRoot({}),
+                EffectsModule.forRoot([]),
                 FindPersonModule
             ],
             providers: [

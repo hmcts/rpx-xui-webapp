@@ -4,12 +4,17 @@ import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
 
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { State } from '../../../../app/store';
 import { ChooseRadioOptionComponent } from '../../../components';
-import { ExclusionNavigationEvent } from '../../../models';
+import { EXCLUSION_OPTION } from '../../../constants';
+import { ExcludeOption, ExclusionNavigationEvent } from '../../../models';
 import { ChooseExclusionComponent } from './choose-exclusion.component';
 
 describe('ChooseExclusionComponent', () => {
+  const RADIO_OPTION_CONTROL: FormControl = new FormControl('');
+  const FORM_GROUP: FormGroup = new FormGroup({[EXCLUSION_OPTION]: RADIO_OPTION_CONTROL});
+
   let component: ChooseExclusionComponent;
   let fixture: ComponentFixture<ChooseExclusionComponent>;
   let store: MockStore<State>;
@@ -20,6 +25,9 @@ describe('ChooseExclusionComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ChooseRadioOptionComponent, ChooseExclusionComponent],
+      imports: [
+        ReactiveFormsModule
+      ],
       providers: [
         provideMockStore()
       ]
@@ -33,6 +41,7 @@ describe('ChooseExclusionComponent', () => {
     spyOnStoreDispatch = spyOn(store, 'dispatch');
     fixture = TestBed.createComponent(ChooseExclusionComponent);
     component = fixture.componentInstance;
+    component.formGroup = FORM_GROUP;
     spyOnPipeToStore.and.returnValue(of([{isCaseAllocator: true}, {}]));
     fixture.detectChanges();
   });
@@ -42,15 +51,16 @@ describe('ChooseExclusionComponent', () => {
   });
 
   it('should check whether user is a case allocator', () => {
-    expect(component.includeOther).toBe(true);
+    expect(component.optionsList.length).toBe(2);
     spyOnPipeToStore.and.returnValue(of([{isCaseAllocator: false}, {}]));
     component.ngOnInit();
     fixture.detectChanges();
-    expect(component.includeOther).toBe(false);
+    expect(component.optionsList.length).toBe(1);
   });
 
   it('should correctly navigate on click of continue', () => {
     const navEvent = ExclusionNavigationEvent.CONTINUE;
+    component.radioOptionControl.setValue(ExcludeOption.EXCLUDE_ME);
     component.navigationHandler(navEvent);
     expect(spyOnStoreDispatch).toHaveBeenCalled();
   });

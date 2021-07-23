@@ -28,7 +28,10 @@ const headerpage = require('../../../../e2e/features/pageObjects/headerPage');
 const taskActionPage = require('../../../../e2e/features/pageObjects/workAllocation/taskActionPage');
 const TaskListTable = require('../../../../e2e/features/pageObjects/workAllocation/taskListTable');
 
+
 const ArrayUtil = require("../../../../e2e/utils/ArrayUtil");
+
+const workAllocationDataModel = require("../../../../dataModels/workAllocation");
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
     const taskListTable = new TaskListTable();
@@ -52,7 +55,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         });
        
     });
-
 
     Then('I validate task search request with reference {string} has pagination parameters', async function (requestReference, datatable) {
         const reqBody = global.scenarioData[requestReference];
@@ -116,5 +118,94 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         
     });
 
+
+    Given('I set MOCK case workers for release {string}', async function(forRelease,datatable){
+        const persons = getPersonResponse(datatable);
+        let url = null;
+        if (forRelease === "1"){
+            MockApp.onGet('workallocation/caseworker', (req,res) => {
+                res.send(persons);
+            });
+        } else if (forRelease === "2"){
+            MockApp.onGet('workallocation2/caseworker', (req, res) => {
+                res.send(persons);
+            });
+        } else{
+            throw new Error(`Unexpected release identifier "${forRelease}"  passed to setup mock`);
+        }
+
+    });
+
+    Then('I validate task table values displayed', async function(datatable){
+        const tableRowHashes = datatable.hashes();
+        const softAssert= new SoftAssert();
+        for (let i = 0; i < tableRowHashes.length; i++){
+            const expectRowHash = tableRowHashes[i];
+            const rowNum = parseInt(expectRowHash["row"]);
+
+            const hashkeys = Object.keys(expectRowHash);
+
+            for (let j = 0; j < hashkeys.length; j++){
+                const columnName = hashkeys[j];
+                const expectedValue = expectRowHash[columnName];
+
+                let actualColumnValue = null;
+                if (columnName === "row"){
+                    continue;
+                }else{
+                    actualColumnValue = await taskListTable.getColumnValueForTaskAt(columnName, rowNum)
+                }
+
+                softAssert.setScenario(`At row ${rowNum} validation of column ${columnName}`);
+                await softAssert.assert(async () => expect(actualColumnValue).to.includes(expectedValue));
+
+            }
+
+            
+        }
+        softAssert.finally();
+    });
+
+    function getLocationsResponse(datatable){
+        const locationHashes = datatable.hashes();
+        const locations = [];
+        for (let i = 0; i < locationHashes.length; i++) {
+            const locationFromDatatable = locationHashes[i];
+            const location = workAllocationDataModel.getLocation();
+
+            const locationInputKeys = Object.keys(locationFromDatatable);
+            for (let j = 0; j < locationInputKeys.length; j++) {
+                const key = locationInputKeys[j];
+                location[key] = locationFromDatatable[key];
+            }
+            locations.push(location);
+           
+        }
+        return locations;
+    }
+    
+    function getPersonResponse(datatable){
+        const personHashes = datatable.hashes();
+        const personsData = [];
+        for (let i = 0; i < personHashes.length;i++){
+            const personFromDatatable = personHashes[i];
+            const person = workAllocationDataModel.getCaseWorkerOrperson();
+            
+            const personInputKeys = Object.keys(personFromDatatable);
+            for (let j = 0; j < personInputKeys.length;j++ ){
+                const key = personInputKeys[j];
+                if (key === "location.id"){
+                    person.location.id = personFromDatatable[key]
+                } else if (key === "location.locationName"){
+                    person.location.locationName = personFromDatatable[key]
+                }else{
+                    person[key] = personFromDatatable[key];
+                }
+                
+            }
+            personsData.push(person);
+        }
+        return personsData;
+    }
 
 });

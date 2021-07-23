@@ -1,15 +1,14 @@
-import { Component, Input, OnInit } from '@angular/core';
-
+import { Component, Input } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { RoleAllocationCaptionText } from '../../models/enums';
 import { OptionsModel } from '../../models/options-model';
-import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'exui-choose-radio-option',
   templateUrl: './choose-radio-option.component.html'
 })
 
-export class ChooseRadioOptionComponent implements OnInit {
+export class ChooseRadioOptionComponent {
 
   @Input() public title: string;
   @Input() public caption: RoleAllocationCaptionText;
@@ -18,8 +17,5 @@ export class ChooseRadioOptionComponent implements OnInit {
   @Input() public radioControlName: string;
 
   constructor() {}
-
-  public ngOnInit(): void {
-  }
 
 }

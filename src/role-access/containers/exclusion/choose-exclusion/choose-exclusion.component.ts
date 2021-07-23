@@ -23,7 +23,6 @@ export class ChooseExclusionComponent implements OnInit, OnDestroy {
   @Input() public navEvent: ExclusionNavigation;
   public title = RoleAllocationTitleText.ExclusionAllocate;
   public caption = RoleAllocationCaptionText.Exclusion;
-  public includeOther: boolean = false;
   public locationInfo$: Observable<any>;
 
   public formGroup: FormGroup;
@@ -31,16 +30,17 @@ export class ChooseExclusionComponent implements OnInit, OnDestroy {
   public radioControlName: string = EXCLUSION_OPTION;
 
   public exclusionStateDataSub: Subscription;
-
   public exclusionOption: ExcludeOption;
 
-  public optionsList: OptionsModel[] = [{
+  public excludeMe: OptionsModel = {
     optionId: EnumUtil(ExcludeOption).getKeyOrDefault(ExcludeOption.EXCLUDE_ME),
     optionValue: ExcludeOption.EXCLUDE_ME
-  }, {
+  };
+  public excludeOther: OptionsModel = {
     optionId: EnumUtil(ExcludeOption).getKeyOrDefault(ExcludeOption.EXCLUDE_ANOTHER_PERSON),
     optionValue: ExcludeOption.EXCLUDE_ANOTHER_PERSON
-  }];
+  };
+  public optionsList: OptionsModel[] = [this.excludeMe, this.excludeOther];
 
   constructor(private readonly store: Store<fromFeature.State>) {
   }
@@ -58,7 +58,7 @@ export class ChooseExclusionComponent implements OnInit, OnDestroy {
     this.locationInfo$ = this.store.pipe(select(fromRoot.getLocationInfo));
     this.locationInfo$.subscribe(li => {
       const firstLocationInfo = li[0];
-      this.includeOther = firstLocationInfo && firstLocationInfo.isCaseAllocator ? firstLocationInfo.isCaseAllocator : false;
+      this.optionsList = (firstLocationInfo && firstLocationInfo.isCaseAllocator) ? [this.excludeMe, this.excludeOther] : [this.excludeMe];
     });
   }
 
@@ -68,12 +68,16 @@ export class ChooseExclusionComponent implements OnInit, OnDestroy {
         const exclusionSelection = this.radioOptionControl.value;
         switch (exclusionSelection) {
           case ExcludeOption.EXCLUDE_ME:
-            this.store.dispatch(new fromFeature.SaveExclusionOptionAndGo({ exclusionOption: ExcludeOption.EXCLUDE_ME,
-              exclusionState: ExclusionState.DESCRIBE_EXCLUSION }));
+            this.store.dispatch(new fromFeature.SaveExclusionOptionAndGo({
+              exclusionOption: ExcludeOption.EXCLUDE_ME,
+              exclusionState: ExclusionState.DESCRIBE_EXCLUSION
+            }));
             break;
           case ExcludeOption.EXCLUDE_ANOTHER_PERSON:
-            this.store.dispatch(new fromFeature.SaveExclusionOptionAndGo({ exclusionOption: ExcludeOption.EXCLUDE_ANOTHER_PERSON,
-              exclusionState: ExclusionState.CHOOSE_PERSON_ROLE }));
+            this.store.dispatch(new fromFeature.SaveExclusionOptionAndGo({
+              exclusionOption: ExcludeOption.EXCLUDE_ANOTHER_PERSON,
+              exclusionState: ExclusionState.CHOOSE_PERSON_ROLE
+            }));
             break;
           default:
             break;

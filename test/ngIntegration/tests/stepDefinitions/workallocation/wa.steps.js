@@ -24,6 +24,7 @@ const MockUtil = require('../../../util/mockUtil');
 const WAUtil = require('../../workAllocation/utils');
 const nodeAppMockData = require('../../../../nodeMock/nodeApp/mockData');
 const CucumberReporter = require('../../../../e2e/support/reportLogger');
+const ArrayUtil = require("../../../../e2e/utils/ArrayUtil");
 
 const headerpage = require('../../../../e2e/features/pageObjects/headerPage');
 const taskActionPage = require('../../../../e2e/features/pageObjects/workAllocation/taskActionPage');
@@ -38,34 +39,21 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     const caseListPage = new CaseListPage();
     Given('I set MOCK My tasks count {int}', async function (taskCount) {
-        MockApp.onPost("/workallocation/task/", (req, res) => {
-            res.send(workAllocationMockData.getMyTasks(taskCount));
-        });
-        MockApp.onPost("/workallocation/taskWithPagination/", (req, res) => {
-            res.send(workAllocationMockData.getMyTasks(taskCount));
-        });
+        const alltasks = workAllocationMockData.getMyTasks(taskCount);
+        global.scenarioData["workallocation1.mytasks"] = alltasks
 
     });
 
     Given('I set MOCK available tasks count {int}', async function (taskCount) {
-        MockApp.onPost("/workallocation/task/", (req, res) => {
-            res.send(workAllocationMockData.getAvailableTasks(taskCount));
-        });
+        const alltasks = workAllocationMockData.getAvailableTasks(taskCount);
+        global.scenarioData["workallocation1.availabletasks"] = alltasks
 
-        MockApp.onPost("/workallocation/taskWithPagination/", (req, res) => {
-            res.send(workAllocationMockData.getAvailableTasks(taskCount));
-        });
 
     });
 
     Given('I set MOCK Task manager tasks count {int}', async function (taskCount) {
-        MockApp.onPost("/workallocation/task/", (req, res) => {
-            res.send(workAllocationMockData.getTaskManagerTasks(taskCount));
-        });
-
-        MockApp.onPost("/workallocation/taskWithPagination/", (req, res) => {
-            res.send(workAllocationMockData.getTaskManagerTasks(taskCount));
-        });
+        const alltasks = workAllocationMockData.getTaskManagerTasks(taskCount);
+        global.scenarioData["workallocation1.taskmanager"] = alltasks
 
     });
 
@@ -621,6 +609,50 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
        }
         softAssert.finally();
        
+    });
+
+
+    Given('I set MOCK tasks attributes for {string} in release 1', async function (forView,attributesDatatable){
+        const tasksHashes = attributesDatatable.hashes();
+        let tasksObj = {};
+        let view = forView.toLowerCase();
+        view = view.split(" ").join("");
+        if (!global.scenarioData[`workallocation1.${view}`]) {
+            let tasks = [];
+            if (view.includes("mytasks")) {
+                tasks = workAllocationMockData.getMyTasks(150);
+            } else if (view.includes("available")) {
+                tasks = workAllocationMockData.getAvailableTasks(200);
+            } if (view.includes("taskmanager")) {
+                tasks = workAllocationMockData.getTaskManagerTasks(400);
+            } else {
+                throw new Error("Unrecognised task view " + forView);
+            }
+            global.scenarioData[`workallocation1.${view}`] = tasks;
+        }
+        tasksObj = global.scenarioData[`workallocation1.${view}`];
+        await ArrayUtil.forEach(tasksHashes, async (taskHash) => {
+            let task = tasksObj.tasks[taskHash.index];
+
+            let taskHashKeys = Object.keys(taskHash);
+            await ArrayUtil.forEach(taskHashKeys, key => {
+                if (key.toLowerCase() === "index") {
+                    //ignore index;
+                }  else if (key.toLowerCase() === "assignee") {
+                    if (taskHash[key] === "") {
+                        delete task[key];
+                    } else {
+                        task[key] = taskHash[key];
+                    }
+
+                } else {
+                    task[key] = taskHash[key];
+                }
+
+            });
+            CucumberReporter.AddMessage(`Mock Task at index  ${taskHash.index}  `);
+            CucumberReporter.AddJson(task);
+        })
     });
 
 });

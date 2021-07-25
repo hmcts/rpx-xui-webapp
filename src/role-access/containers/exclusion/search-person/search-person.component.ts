@@ -13,7 +13,7 @@ import * as fromFeature from '../../../store';
   templateUrl: './search-person.component.html',
   styleUrls: ['./search-person.component.scss']
 })
-export class SearchPersonComponent implements OnInit {
+export class SearchPersonComponent implements OnInit {á
   @ViewChild(FindPersonComponent) public child: FindPersonComponent;
   @Input() public navEvent: ExclusionNavigation;
   public formGroup: FormGroup = new FormGroup({});

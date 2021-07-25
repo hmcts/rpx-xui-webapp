@@ -14,6 +14,7 @@
     "postcode_lookup_url": "/api/addresses?postcode=${postcode}",
     "remote_document_management_url": ".*(\/documents)",
     "payments_url": "/payments",
+    "pay_bulk_scan_url": "/pay-bulkscan",
     "activity_batch_collection_delay_ms": 1,
     "activity_next_poll_request_ms": 30000,
     "activity_retry": 30,

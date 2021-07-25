@@ -2,7 +2,7 @@ export interface Person {
     id: string;
     name: string;
     email: string;
-    domain: PersonDomain;
+    domain: string;
 }
 export interface SearchOptions {
     searchTerm: string;
@@ -10,7 +10,8 @@ export interface SearchOptions {
 }
 
 export enum PersonDomain {
-    JUDICIAL = 1,
-    CASEWORKER = 2,
-    BOTH = 3,
+    JUDICIAL = 'Judicial',
+    CASEWORKER = 'Legal Ops',
+    ADMIN = 'Admin',
+    ALL = 'All',
 }

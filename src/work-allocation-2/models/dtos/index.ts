@@ -122,7 +122,7 @@ export interface Person {
 
 export interface SearchOptions {
   searchTerm: string;
-  jurisdiction: PersonDomain;
+  jurisdiction: string;
 }
 
 export enum PersonDomain {

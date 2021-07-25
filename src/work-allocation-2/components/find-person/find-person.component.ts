@@ -2,7 +2,9 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { startWith, switchMap } from 'rxjs/operators';
-import { Person, PersonDomain } from '../../models/dtos';
+import { $enum as EnumUtil } from 'ts-enum-util';
+import { PersonRole } from '../../../role-access/models';
+import { Person } from '../../models/dtos';
 import { FindAPersonService } from '../../services/find-person.service';
 
 @Component({
@@ -17,7 +19,7 @@ export class FindPersonComponent implements OnInit {
   @Input() public domainString: string = 'BOTH';
   @Input() public findPersonGroup;
   @Input() public selectedPerson: string;
-  public domain: PersonDomain;
+  public domain: string;
   public showAutocomplete: boolean = false;
 
   constructor(private readonly findPersonService: FindAPersonService) {
@@ -33,7 +35,7 @@ export class FindPersonComponent implements OnInit {
     } else {
       this.findPersonGroup.addControl('findPersonControl', this.findPersonControl);
     }
-    this.domain = PersonDomain[this.domainString];
+    this.domain = EnumUtil(PersonRole).getKeyOrDefault(this.domainString);
     this.filteredOptions = this.findPersonControl.valueChanges.pipe(
       startWith(''),
       switchMap(searchTerm => {
@@ -44,7 +46,7 @@ export class FindPersonComponent implements OnInit {
   }
 
   public filter(searchTerm: string): Observable<Person[]> {
-    if (searchTerm && searchTerm.length > this.minSearchCharacters) {
+    if (searchTerm && searchTerm.length >= this.minSearchCharacters) {
       return this.findPersonService.find({searchTerm, jurisdiction: this.domain});
     }
     return of();
@@ -59,7 +61,7 @@ export class FindPersonComponent implements OnInit {
   }
 
   public updatedVal(currentValue) {
-    if (currentValue && currentValue.length > this.minSearchCharacters) {
+    if (currentValue && currentValue.length >= this.minSearchCharacters) {
       this.showAutocomplete = true;
     } else {
       this.showAutocomplete = false;

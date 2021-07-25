@@ -1,61 +1,70 @@
 /* tslint:disable */
-
-import { PersonDomain } from "../interfaces/person";
-
 export const PERSON = [
   {
-    id: 'id123',
-    name: 'John Smith',
-    email: 'john.smith@email.com',
-    domain: PersonDomain.CASEWORKER
+    id: 'id100',
+    name: 'Jacky Collins',
+    email: 'jacky.collins@judicail.com',
+    domain: 'JUDICIAL'
   },
   {
-    id: 'id124',
-    name: 'Andy Wilkins',
-    email: 'andy.wilkins@email.com',
-    domain: PersonDomain.JUDICIAL
+    id: 'id101',
+    name: 'Jasmine Chiswell',
+    email: 'jasmine.chiswell@judicail.com',
+    domain: 'JUDICIAL'
   },
   {
-    id: 'id125',
-    name: 'Kevin Harper',
-    email: 'kevin.harper@email.com',
-    domain: PersonDomain.JUDICIAL
+    id: 'id102',
+    name: 'Jamie Vardy',
+    email: 'jamie.vardy@judicail.com',
+    domain: 'JUDICIAL'
   },
   {
-    id: 'id126',
-    name: 'Mohammed Lala',
-    email: 'mo.lala@email.com',
-    domain: PersonDomain.JUDICIAL
+    id: 'id103',
+    name: 'James Priest',
+    email: 'james.priest@judicail.com',
+    domain: 'JUDICIAL'
   },
   {
-    id: 'id127',
-    name: 'Paul Howes',
-    email: 'paul.howes@email.com',
-    domain: PersonDomain.CASEWORKER
+    id: 'id104',
+    name: 'Jacky Collins',
+    email: 'jacky.collins@legalops.com',
+    domain: 'LEGAL_OPS'
   },
   {
-    id: 'id128',
-    name: 'Paul Graham',
-    email: 'paul.graham@email.com',
-    domain: PersonDomain.CASEWORKER
+    id: 'id105',
+    name: 'Jasmine Chiswell',
+    email: 'jasmine.chiswell@legalops.com',
+    domain: 'LEGAL_OPS'
   },
   {
-    id: 'id129',
-    name: 'Aleena Agarwal',
-    email: 'aleena.agarwal@email.com',
-    domain: PersonDomain.CASEWORKER
+    id: 'id106',
+    name: 'Jamie Vardy',
+    email: 'jamie.vardy@legalops.com',
+    domain: 'LEGAL_OPS'
   },
   {
-    id: 'id130',
-    name: 'Connor McElroy',
-    email: 'connor.mcelroy@email.com',
-    domain: PersonDomain.CASEWORKER
+    id: 'id107',
+    name: 'James Priest',
+    email: 'James Priest@legalops.com',
+    domain: 'LEGAL_OPS'
   },
   {
-    id: 'id131',
-    name: 'Andy Kings',
-    email: 'andy.kings@email.com',
-    domain: PersonDomain.JUDICIAL
+    id: 'id108',
+    name: 'Michael Jackson',
+    email: 'michael.jackson@legalops.com',
+    domain: 'LEGAL_OPS'
+  },
+  {
+    id: 'id109',
+    name: 'James Priest',
+    email: 'james.priest@admin.com',
+    domain: 'ADMIN'
+  },
+  {
+    id: 'id110',
+    name: 'Michael Jackson',
+    email: 'michael.jackson@admin.com',
+    domain: 'ADMIN'
   },
 ]
 

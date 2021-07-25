@@ -1,13 +1,19 @@
 import { expect } from 'chai';
 
+import { mockReq } from 'sinon-express-mock';
 import { ASSIGN, CLAIM, CLAIM_AND_GO, COMPLETE, GO, REASSIGN, RELEASE, TaskPermission } from './constants/actions';
 import { JUDICIAL_AVAILABLE_TASKS, JUDICIAL_MY_TASKS } from './constants/mock.data';
 import { Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/common';
-import { applySearchFilter, assignActionsToTasks, getActionsByPermissions, mapCaseworkerData, mapCaseworkerPrimaryLocation, prepareGetTaskUrl,
-  preparePaginationUrl,
-  preparePostTaskUrlAction, prepareSearchTaskUrl } from './util';
-  import { mockReq } from 'sinon-express-mock';
 import { PersonDomain } from './interfaces/person';
+import { applySearchFilter,
+  assignActionsToTasks,
+  getActionsByPermissions,
+  mapCaseworkerData,
+  mapCaseworkerPrimaryLocation,
+  prepareGetTaskUrl,
+  preparePaginationUrl,
+  preparePostTaskUrlAction,
+  prepareSearchTaskUrl } from './util';
 
 describe('workAllocation.utils', () => {
 
@@ -50,7 +56,7 @@ describe('workAllocation.utils', () => {
       const BASE_URL: string = 'base';
       const url = prepareSearchTaskUrl(BASE_URL);
       let req = mockReq({
-        body: null
+        body: null,
       });
       expect(preparePaginationUrl(req, url)).to.equal(url);
       req = req = mockReq({
@@ -59,8 +65,8 @@ describe('workAllocation.utils', () => {
           view: 'view',
         },
         session: {
-          caseworkers: null
-        }
+          caseworkers: null,
+        },
       });
       expect(preparePaginationUrl(req, url)).to.equal(url);
       req = req = mockReq({
@@ -69,8 +75,8 @@ describe('workAllocation.utils', () => {
           view: 'view',
         },
         session: {
-          caseworkers: null
-        }
+          caseworkers: null,
+        },
       });
       expect(preparePaginationUrl(req, url)).to.equal(url);
       req = req = mockReq({
@@ -79,13 +85,13 @@ describe('workAllocation.utils', () => {
             pagination_parameters: {
               page_number: 3,
               page_size: 25,
-            }
+            },
           },
           view: 'view',
         },
         session: {
-          caseworkers: null
-        }
+          caseworkers: null,
+        },
       });
       let expectedReturnedUrl = url.concat('?first_result=50&max_results=25');
       expect(preparePaginationUrl(req, url)).to.equal(expectedReturnedUrl);
@@ -95,13 +101,13 @@ describe('workAllocation.utils', () => {
             pagination_parameters: {
               page_number: 11,
               page_size: 3,
-            }
+            },
           },
           view: 'view',
         },
         session: {
-          caseworkers: null
-        }
+          caseworkers: null,
+        },
       });
       expectedReturnedUrl = url.concat('?first_result=30&max_results=3');
       expect(preparePaginationUrl(req, url)).to.equal(expectedReturnedUrl);
@@ -270,21 +276,26 @@ describe('workAllocation.utils', () => {
   describe('getActionsByPermissions', () => {
 
     it('should get correct actions for my tasks for certain permissions', () => {
-      expect(getActionsByPermissions('MyTasks', [TaskPermission.CANCEL, TaskPermission.MANAGE])).to.deep.equal([REASSIGN, RELEASE, GO]);
+      expect(getActionsByPermissions('MyTasks', [TaskPermission.CANCEL, TaskPermission.MANAGE]))
+        .to.deep.equal([REASSIGN, RELEASE, GO]);
       expect(getActionsByPermissions('MyTasks', [TaskPermission.EXECUTE])).to.deep.equal([]);
-      expect(getActionsByPermissions('MyTasks', [TaskPermission.MANAGE, TaskPermission.CANCEL])).to.deep.equal([REASSIGN, RELEASE, GO]);
+      expect(getActionsByPermissions('MyTasks', [TaskPermission.MANAGE, TaskPermission.CANCEL]))
+        .to.deep.equal([REASSIGN, RELEASE, GO]);
     });
 
     it('should get correct actions for available tasks for certain permissions', () => {
-      expect(getActionsByPermissions('AvailableTasks', [TaskPermission.CANCEL, TaskPermission.MANAGE])).to.deep.equal([CLAIM, CLAIM_AND_GO]);
+      expect(getActionsByPermissions('AvailableTasks', [TaskPermission.CANCEL, TaskPermission.MANAGE]))
+        .to.deep.equal([CLAIM, CLAIM_AND_GO]);
       expect(getActionsByPermissions('AvailableTasks', [TaskPermission.EXECUTE])).to.deep.equal([]);
-      expect(getActionsByPermissions('AvailableTasks', [TaskPermission.MANAGE, TaskPermission.CANCEL])).to.deep.equal([CLAIM, CLAIM_AND_GO]);
+      expect(getActionsByPermissions('AvailableTasks', [TaskPermission.MANAGE, TaskPermission.CANCEL]))
+        .to.deep.equal([CLAIM, CLAIM_AND_GO]);
     });
 
     it('should get correct actions for all work tasks for certain permissions', () => {
       expect(getActionsByPermissions('AllWorkAssigned', [TaskPermission.MANAGE])).to.deep.equal([REASSIGN, RELEASE, GO]);
       expect(getActionsByPermissions('AllWorkAssigned', [TaskPermission.EXECUTE])).to.deep.equal([COMPLETE]);
-      expect(getActionsByPermissions('AllWorkUnassigned', [TaskPermission.MANAGE, TaskPermission.EXECUTE])).to.deep.equal([ASSIGN, GO, COMPLETE]);
+      expect(getActionsByPermissions('AllWorkUnassigned', [TaskPermission.MANAGE, TaskPermission.EXECUTE]))
+        .to.deep.equal([ASSIGN, GO, COMPLETE]);
     });
 
   });
@@ -292,7 +303,7 @@ describe('workAllocation.utils', () => {
   describe('applySearchFilter', () => {
     it('PersonDomain BOTH', () => {
       const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonDomain.CASEWORKER };
-      const result = applySearchFilter(person, PersonDomain.BOTH, 'name');
+      const result = applySearchFilter(person, PersonDomain.ALL, 'name');
       expect(result).to.equal(true);
     });
     it('PersonDomain CASEWORKER', () => {

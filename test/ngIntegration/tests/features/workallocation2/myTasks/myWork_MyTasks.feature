@@ -4,7 +4,7 @@ Feature: WA Release 2: My work - My Tasks
     Background: Mock and browser setup
         Given I init MockApp
 
-@test
+@ignore
     Scenario Outline:  My Tasks, colums and column links for "<UserType>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
         Given I set MOCK tasks with permissions for view "My Tasks" and assigned state ""

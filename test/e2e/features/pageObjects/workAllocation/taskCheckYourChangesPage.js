@@ -28,7 +28,7 @@ class TaskCheckYourChangesPage{
     async validatePage() {
         const headerText = await this.header.getText();
         expect(headerText.includes("Check your answers")).to.be.true;
-        expect(await this.taskDetailsTable.isDisplayed()).to.be.true;
+        expect(await checkyourChangesTable.isDisplayed()).to.be.true;
         expect(await this.changeLink.isDisplayed()).to.be.true;
 
     }

@@ -2,6 +2,7 @@
 const TaskMessageBanner = require("./messageBanner");
 const BrowserWaits = require("../../support/customWaits");
 const CucumberReporter = require("../../support/reportLogger");
+const { element } = require("@angular/core/src/render3");
 class CaseDetailsPage{
 
     constructor(){

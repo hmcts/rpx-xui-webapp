@@ -1,5 +1,5 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import {Component, ViewChild} from '@angular/core';
+import {Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild} from '@angular/core';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
@@ -7,6 +7,7 @@ import {AlertService, LoadingService, PaginationModule} from '@hmcts/ccd-case-ui
 import {ExuiCommonLibModule, FeatureToggleService} from '@hmcts/rpx-xui-common-lib';
 import {of} from 'rxjs';
 import {SessionStorageService} from '../../../app/services';
+import { AlertComponent } from '../../../cases/components';
 
 import {WorkAllocationComponentsModule} from '../../components/work-allocation.components.module';
 import {Task} from '../../models/tasks';
@@ -38,6 +39,7 @@ describe('MyTasksComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
         CdkTableModule,
         ExuiCommonLibModule,
@@ -45,7 +47,7 @@ describe('MyTasksComponent', () => {
         WorkAllocationComponentsModule,
         PaginationModule
       ],
-      declarations: [MyTasksComponent, WrapperComponent, TaskListComponent],
+      declarations: [AlertComponent, MyTasksComponent, WrapperComponent, TaskListComponent],
       providers: [
         {provide: WorkAllocationTaskService, useValue: mockTaskService},
         {provide: AlertService, useValue: mockAlertService},

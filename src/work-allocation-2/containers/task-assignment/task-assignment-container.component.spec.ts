@@ -1,30 +1,32 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { HttpClientModule } from '@angular/common/http';
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl, FormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { TaskListComponent } from '..';
 import { PersonDomain } from '../../../../api/workAllocation2/interfaces/person';
 import { ErrorMessageComponent } from '../../../app/components';
-import { TaskFieldConfig } from '../../../work-allocation/models/tasks';
 import { TaskActionConstants } from '../../components/constants';
+import { FindPersonComponent } from '../../components/find-person/find-person.component';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { TaskActionType } from '../../enums';
 import { Task } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { FindAPersonService } from '../../services/find-person.service';
 import { getMockTasks } from '../../tests/utils.spec';
-import {
-  TaskAssignmentContainerComponent,
-} from './task-assignment-container.component';
+import { TaskAssignmentContainerComponent } from './task-assignment-container.component';
 
 @Component({
-  template: `<exui-task-container-assignment></exui-task-container-assignment>`
+  template: `
+    <exui-task-container-assignment></exui-task-container-assignment>`
 })
 class WrapperComponent {
   @ViewChild(TaskAssignmentContainerComponent) public appComponentRef: TaskAssignmentContainerComponent;
@@ -32,20 +34,13 @@ class WrapperComponent {
 }
 
 @Component({
-  template: `<div>Nothing</div>`
+  template: `
+    <div>Nothing</div>`
 })
-class NothingComponent { }
-
-@Component({
-  selector: 'exui-task-field',
-  template: '<div class="xui-task-field">{{task.taskName}}</div>'
-})
-class TaskFieldComponent {
-  @Input() public config: TaskFieldConfig;
-  @Input() public task: Task;
+class NothingComponent {
 }
 
-describe('TaskAssignmentContainerComponent', () => {
+describe('TaskAssignmentContainerComponent2', () => {
   let component: TaskAssignmentContainerComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -68,46 +63,59 @@ describe('TaskAssignmentContainerComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [
-        TaskAssignmentContainerComponent, WrapperComponent, TaskListComponent,
-        ErrorMessageComponent, NothingComponent, TaskFieldComponent
+        TaskAssignmentContainerComponent,
+        WrapperComponent,
+        TaskListComponent,
+        ErrorMessageComponent,
+        FindPersonComponent,
+        NothingComponent
       ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
-        WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientModule, ExuiCommonLibModule, PaginationModule,
+        WorkAllocationComponentsModule,
+        ReactiveFormsModule,
+        CdkTableModule,
+        FormsModule,
+        MatAutocompleteModule,
+        HttpClientModule,
+        EffectsModule.forRoot([]),
+        ExuiCommonLibModule,
+        PaginationModule,
+        StoreModule.forRoot({}),
         RouterTestingModule.withRoutes(
           [
-            { path: 'my-work/list', component: NothingComponent }
+            {path: 'my-work/list', component: NothingComponent}
           ]
-        )
+        ),
       ],
       providers: [
-        { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
-        { provide: FindAPersonService, useValue: mockFindPersonService },
+        {provide: WorkAllocationTaskService, useValue: mockWorkAllocationService},
+        {provide: FindAPersonService, useValue: mockFindPersonService},
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               data: {
-                taskAndCaseworkers: { data: mockTasks[0], caseworkers: [] },
+                taskAndCaseworkers: {data: mockTasks[0], caseworkers: []},
                 ...TaskActionConstants.Reassign
               },
               params: {
                 taskId: 'task1111111'
               }
             },
-            params: Observable.of({ task: mockTasks[0] }),
-            paramMap: Observable.of({ selectedPerson: SELECTED_PERSON })
+            params: Observable.of({task: mockTasks[0]}),
+            paramMap: Observable.of({selectedPerson: SELECTED_PERSON})
           }
         },
-        { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
-        { provide: Router, useValue: { url: 'localhost/test' } }
+        {provide: InfoMessageCommService, useValue: mockInfoMessageCommService},
+        {provide: Router, useValue: {url: 'localhost/test'}}
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
-
     wrapper.tasks = null;
-    window.history.pushState({ returnUrl: 'my-work/list', showAssigneeColumn: false }, '', 'my-work/list');
+    window.history.pushState({returnUrl: 'my-work/list', showAssigneeColumn: false}, '', 'my-work/list');
 
     // Deliberately defer fixture.detectChanges() call to each test, to allow overriding the ActivatedRoute snapshot
     // data with a different verb ("Assign")

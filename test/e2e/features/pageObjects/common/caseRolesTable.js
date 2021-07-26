@@ -52,7 +52,7 @@ class CaseRolesTable{
     }
 
     async getColumnValueAtRow(rowIndex,header) {
-        const colElement = await this.getColumnElement(rowIndex,header);
+        const colElement = await this.getColumnElementAtRow(rowIndex,header);
         const coltext = await colElement.getText();
         return coltext;
     }

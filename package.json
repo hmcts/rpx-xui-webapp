@@ -103,6 +103,7 @@
     "faker": "^5.1.0",
     "file-saver": "^2.0.2",
     "form-data": "^2.5.1",
+    "ts-enum-util": "4.0.2",
     "get-port": "^5.1.1",
     "git-rev-sync": "^2.0.0",
     "global-agent": "^2.1.7",

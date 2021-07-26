@@ -8,7 +8,6 @@ import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common
 import { of } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
 import { TaskListComponent } from '..';
-import { TaskFieldConfig } from '../../../work-allocation/models/tasks';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { FieldType } from '../../enums';
 import { Task } from '../../models/tasks';
@@ -22,15 +21,6 @@ import { MyTasksComponent } from './my-tasks.component';
 })
 class WrapperComponent {
   @ViewChild(MyTasksComponent) public appComponentRef: MyTasksComponent;
-}
-
-@Component({
-  selector: 'exui-task-field',
-  template: '<div class="xui-task-field">{{task.taskName}}</div>'
-})
-class TaskFieldComponent {
-  @Input() public config: TaskFieldConfig;
-  @Input() public task: Task;
 }
 
 describe('MyTasksComponent', () => {
@@ -56,7 +46,7 @@ describe('MyTasksComponent', () => {
         WorkAllocationComponentsModule,
         PaginationModule
       ],
-      declarations: [MyTasksComponent, WrapperComponent, TaskListComponent, TaskFieldComponent],
+      declarations: [MyTasksComponent, WrapperComponent, TaskListComponent],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
         { provide: AlertService, useValue: mockAlertService },

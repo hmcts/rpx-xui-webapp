@@ -17,17 +17,15 @@
   </div>
 
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-one-third">
-      <exui-find-person
-        title="{{verb}} task"
-        [findPersonGroup]="formGroup"
-        (personSelected)="selectedPerson($event)"
-        [selectedPerson]="defaultPerson"
-        domainString="BOTH">
-      </exui-find-person>
+    <exui-find-person
+      title="{{verb}} task"
+      [findPersonGroup]="formGroup"
+      (personSelected)="selectedPerson($event)"
+      [selectedPerson]="defaultPerson"
+      domainString="BOTH">
+    </exui-find-person>
 
-      <button class="govuk-button govuk-!-margin-right-1" type="submit" (click)="assign()">Continue</button>
-      <p><a (click)="cancel()" href="javascript:void(0)">Cancel</a></p>
-    </div>
+    <button class="govuk-button govuk-!-margin-right-1" type="submit" (click)="assign()">Continue</button>
+    <p><a (click)="cancel()" href="javascript:void(0)">Cancel</a></p>
   </div>
 </main>

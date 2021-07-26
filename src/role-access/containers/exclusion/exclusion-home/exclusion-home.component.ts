@@ -9,14 +9,14 @@ import {
   describeExclusionVisibilityStates,
   findPersonVisibilityStates
 } from '../../../constants';
-import { ExclusionNavigationEvent, ExclusionState } from '../../../models';
+import { ExcludeOption, ExclusionNavigationEvent, ExclusionState, ExclusionStateData } from '../../../models';
 import { ExclusionNavigation } from '../../../models/exclusion-navigation.interface';
 import * as fromFeature from '../../../store';
 import { CheckAnswersComponent } from '../check-answers/check-answers.component';
 import { ChooseExclusionComponent } from '../choose-exclusion/choose-exclusion.component';
 import { ChoosePersonRoleComponent } from '../choose-person-role/choose-person-role.component';
 import { DescribeExclusionComponent } from '../describe-exclusion/describe-exclusion.component';
-import { FindPersonComponent } from '../find-person/find-person.component';
+import { SearchPersonComponent } from '../search-person/search-person.component';
 
 @Component({
   selector: 'exui-exclusion-home',
@@ -30,8 +30,8 @@ export class ExclusionHomeComponent implements OnInit, OnDestroy {
   @ViewChild('choosePersonRole', {read: ChoosePersonRoleComponent})
   public choosePersonRoleComponent: ChoosePersonRoleComponent;
 
-  @ViewChild('findPerson', {read: FindPersonComponent})
-  public findPersonComponent: FindPersonComponent;
+  @ViewChild('findPerson', {read: SearchPersonComponent})
+  public findPersonComponent: SearchPersonComponent;
 
   @ViewChild('describeExclusion', {read: DescribeExclusionComponent})
   public describeExclusionComponent: DescribeExclusionComponent;
@@ -39,8 +39,12 @@ export class ExclusionHomeComponent implements OnInit, OnDestroy {
   @ViewChild('checkAnswers', {read: CheckAnswersComponent})
   public checkAnswersComponent: CheckAnswersComponent;
 
+  private exclusionStateDataSub: Subscription;
+
+  private exclusionStateData: ExclusionStateData;
   public navigationCurrentState: ExclusionState;
-  private navigationCurrentStateSub: Subscription;
+  public exclusionOption: ExcludeOption;
+  public caseId: string;
 
   public navEvent: ExclusionNavigation;
 
@@ -55,8 +59,12 @@ export class ExclusionHomeComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.navigationCurrentStateSub = this.store.pipe(select(fromFeature.currentNavigation)).subscribe(
-      state => this.navigationCurrentState = state
+    this.exclusionStateDataSub = this.store.pipe(select(fromFeature.getRoleAccessState)).subscribe(
+      exclusionStateData => {
+        this.navigationCurrentState = exclusionStateData.state;
+        this.exclusionOption = exclusionStateData.exclusionOption;
+        this.caseId = exclusionStateData.caseId;
+      }
     );
   }
 
@@ -76,12 +84,6 @@ export class ExclusionHomeComponent implements OnInit, OnDestroy {
     switch (navEvent) {
       case ExclusionNavigationEvent.BACK: {
         switch (this.navigationCurrentState) {
-          case ExclusionState.CHOOSE_EXCLUSION:
-            // TODO back to case detail tabs
-            // this.router.navigateByUrl(`cases/case-details/${caseId}`).then(r => {
-            //   return;
-            // });
-            break;
           case ExclusionState.CHOOSE_PERSON_ROLE:
             this.store.dispatch(new fromFeature.ChangeNavigation(ExclusionState.CHOOSE_EXCLUSION));
             break;
@@ -89,10 +91,16 @@ export class ExclusionHomeComponent implements OnInit, OnDestroy {
             this.store.dispatch(new fromFeature.ChangeNavigation(ExclusionState.CHOOSE_PERSON_ROLE));
             break;
           case ExclusionState.DESCRIBE_EXCLUSION:
-            // TODO if from exclude me
-            // this.store.dispatch(new fromFeature.ChangeNavigation(ExclusionState.CHOOSE_EXCLUSION));
-            // TODO if from exclude another person
-            // this.store.dispatch(new fromFeature.ChangeNavigation(ExclusionState.FIND_PERSON));
+            switch (this.exclusionOption) {
+              case ExcludeOption.EXCLUDE_ME:
+                this.store.dispatch(new fromFeature.ChangeNavigation(ExclusionState.CHOOSE_EXCLUSION));
+                break;
+              case ExcludeOption.EXCLUDE_ANOTHER_PERSON:
+                this.store.dispatch(new fromFeature.ChangeNavigation(ExclusionState.FIND_PERSON));
+                break;
+              default:
+                break;
+            }
             break;
           case ExclusionState.CHECK_ANSWERS:
             this.store.dispatch(new fromFeature.ChangeNavigation(ExclusionState.DESCRIBE_EXCLUSION));
@@ -131,14 +139,19 @@ export class ExclusionHomeComponent implements OnInit, OnDestroy {
         }
         break;
       }
+      case ExclusionNavigationEvent.CANCEL:
+        this.router.navigateByUrl(`cases/case-details/${this.caseId}`).then(r => {
+          return;
+        });
+        break;
       default:
         throw new Error('Invalid exclusion navigation event');
     }
   }
 
   public ngOnDestroy(): void {
-    if (this.navigationCurrentStateSub) {
-      this.navigationCurrentStateSub.unsubscribe();
+    if (this.exclusionStateDataSub) {
+      this.exclusionStateDataSub.unsubscribe();
     }
     this.store.dispatch(new fromFeature.Reset());
   }

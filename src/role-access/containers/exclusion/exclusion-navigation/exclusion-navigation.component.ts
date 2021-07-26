@@ -9,6 +9,7 @@ import {
 } from '../../../constants';
 import { ExclusionNavigationEvent, ExclusionState } from '../../../models';
 import * as fromFeature from '../../../store';
+import * as fromRoot from '../../../../app/store';
 
 @Component({
   selector: 'exui-exclusion-navigation',
@@ -18,7 +19,7 @@ export class ExclusionNavigationComponent implements OnInit {
 
   @Output() public eventTrigger = new EventEmitter();
 
-  public navigationCurrentState$: Observable<fromFeature.State>;
+  public navigationCurrentState$: Observable<ExclusionState>;
 
   public backVisibilityStates = backButtonVisibilityStates;
   public continueVisibilityStates = continueButtonVisibilityStates;
@@ -29,6 +30,7 @@ export class ExclusionNavigationComponent implements OnInit {
 
   constructor(
     private store: Store<fromFeature.State>,
+    private appStore: Store<fromRoot.State>
   ) {
   }
 
@@ -43,5 +45,4 @@ export class ExclusionNavigationComponent implements OnInit {
   public onEventTrigger(event: ExclusionNavigationEvent) {
     this.eventTrigger.emit(event);
   }
-
 }

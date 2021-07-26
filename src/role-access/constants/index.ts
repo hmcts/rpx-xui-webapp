@@ -1,3 +1,3 @@
 export * from './exclusion-navigation-visibility-states';
 export * from './exclusion-page-visibility-states';
-export * from './allocation.constants';
+export * from './role-access.constants';

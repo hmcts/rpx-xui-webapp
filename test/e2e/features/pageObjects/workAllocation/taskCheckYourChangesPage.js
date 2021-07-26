@@ -30,8 +30,8 @@ class TaskCheckYourChangesPage{
     async validatePage() {
         const heaerText = await this.header.getText();
         expect(heaerText.includes("Check your changes")).to.be.true;
-        expect(await checkyourChangesTable.isDisplayed()).to.be.true;
-        expect(await this.changeLink.isDisplayed()).to.be.true;
+        await BrowserWaits.waitForElement(this.pageContainer.$(checkyourChangesTable.changesTable));
+        expect(await checkyourChangesTable.isLinkWithTextPresentAtRow(1,'Change')).to.be.true;
 
     }
 

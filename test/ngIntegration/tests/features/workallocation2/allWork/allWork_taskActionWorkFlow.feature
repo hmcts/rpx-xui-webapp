@@ -82,5 +82,47 @@ Feature: WA Release 2: All work - Task action work flows
             | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    | 1         | Cancel task   | Cancel a task         | Cancel task    | Cancel a task if it's no longer required.                                                     |               |
             | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    | 1         | Mark as done  | Mark the task as done | Mark as done   | Mark a task as done if something has gone wrong and it has already been completed.            |               |
 
+@ignore
+    Scenario Outline:  Task Manage links for "<UserType>"  action "<actionLink>", negative scenario for response "<responseCode>"
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
+        Given I set MOCK api method "post" endpoint "<taskActionEndpoint>" with error response code <ResponseCode>
 
+        Given I start MockApp
+        Given I navigate to home page
+
+        When I click on primary navigation header tab "All work", I see selected tab page displayed
+        Then I validate tasks count in page 25
+
+        When I open Manage link for task at row <taskAtRow>
+        Then I see action link "<actionLink>" is present for task with Manage link open
+        When I click action link "<actionLink>" on task with Manage link open
+
+        Then I see "<actionHeader>" task action page
+        Then I validate task action page has description "<actionDescription>"
+
+        Then I validate task details displayed in task action page
+            | Case name        | Case category      | Location      |
+            | Allwork test scr | auto test category | London QA lab |
+
+        When I click "<submitBtnLabel>" submit button in task action page
+
+        Then I see error message of type "" displayed with message ""
+        Then I validate for error messge type "", if it is banner message I see page "" displayed
+
+        Examples:
+            | UserIdentifier     | UserType   | Roles                                              | taskAtRow | actionLink    | submitBtnLabel |endPoint|responseCode|errorType|errorMeessage| 
+            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer | 4 | Unassign task | Unassign | /workallocation2/task/:taskId/unclaim |400|banner|some banner message|
+            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer | 4 | Unassign task | Unassign | /workallocation2/task/:taskId/unclaim | 500 | page | some banner message |
+            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer | 4 | Unassign task | Unassign | /workallocation2/task/:taskId/unclaim | 401 | page | some banner message |
+            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer | 4 | Unassign task | Unassign | /workallocation2/task/:taskId/unclaim | 403 | page | some banner message |
+ 
+            | IAC_Judge_WA_R2 | Judge | caseworker-ia-iacjudge,caseworker-ia,caseworker | 1 | Cancel task | Cancel task | /workallocation2/task/:taskId/cancel | 400 | banner | some banner message |
+            | IAC_Judge_WA_R2 | Judge | caseworker-ia-iacjudge,caseworker-ia,caseworker | 1 | Cancel task | Cancel task | /workallocation2/task/:taskId/cancel | 500 | page | some banner message |
+            | IAC_Judge_WA_R2 | Judge | caseworker-ia-iacjudge,caseworker-ia,caseworker | 1 | Cancel task | Cancel task | /workallocation2/task/:taskId/cancel | 401 | page | some banner message |
+            | IAC_Judge_WA_R2 | Judge | caseworker-ia-iacjudge,caseworker-ia,caseworker | 1 | Cancel task | Cancel task | /workallocation2/task/:taskId/cancel | 403 | page | some banner message | 
+            
+            | IAC_Judge_WA_R2 | Judge | caseworker-ia-iacjudge,caseworker-ia,caseworker | 1 | Mark as done | Mark as done | /workallocation2/task/:taskId/completee | 400 | banner | some banner message |
+            | IAC_Judge_WA_R2 | Judge | caseworker-ia-iacjudge,caseworker-ia,caseworker | 1 | Mark as done | Mark as done | /workallocation2/task/:taskId/completee | 500 | page | some banner message |
+            | IAC_Judge_WA_R2 | Judge | caseworker-ia-iacjudge,caseworker-ia,caseworker | 1 | Mark as done | Mark as done | /workallocation2/task/:taskId/completee | 401 | page | some banner message |
+            | IAC_Judge_WA_R2 | Judge | caseworker-ia-iacjudge,caseworker-ia,caseworker | 1 | Mark as done | Mark as done | /workallocation2/task/:taskId/completee | 403 | page | some banner message |
 

@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { Answer, ExcludeOption, ExclusionNavigationEvent, ExclusionState, ExclusionStateData } from '../../../models';
 import { ExclusionNavigation } from '../../../models/exclusion-navigation.interface';
 import * as fromFeature from '../../../store';
-import { AnswerHeaderText, AnswerLabelText } from '../../../models/enums'
+import { AnswerHeaderText, AnswerLabelText } from '../../../models/enums';
 
 @Component({
   selector: 'exui-check-answers',
@@ -54,10 +54,10 @@ export class CheckAnswersComponent implements OnDestroy {
       this.answers.push({ label: AnswerLabelText.PersonRole, value: exclusion.personRole, action: ExclusionState.CHOOSE_PERSON_ROLE });
       let personDetails = exclusion.person.name;
       if (exclusion.person.email) {
-        personDetails += '\n' + exclusion.person.email;
+        personDetails += `\n${exclusion.person.email}`;
       }
       this.answers.push({ label: AnswerLabelText.Person, value: personDetails, action: ExclusionState.FIND_PERSON });
-    };
+    }
     this.answers.push({ label: AnswerLabelText.DescribeExclusion, value: exclusion.exclusionDescription, action: ExclusionState.DESCRIBE_EXCLUSION });
   }
 }

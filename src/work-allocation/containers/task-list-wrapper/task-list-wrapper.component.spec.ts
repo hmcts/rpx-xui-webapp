@@ -1,5 +1,5 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { ChangeDetectorRef} from '@angular/core';
+import { ChangeDetectorRef, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -28,6 +28,7 @@ describe('TaskListWrapperComponent', () => {
 
   beforeEach((() => {
     TestBed.configureTestingModule({
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
         WorkAllocationComponentsModule,
         ExuiCommonLibModule,

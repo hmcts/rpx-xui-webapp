@@ -18,7 +18,6 @@ export const containers: any[] = [
 
 export * from './available-tasks/available-tasks.component';
 export * from './info-message-container/info-message-container.component';
-export * from './info-message-container/info-message-container.component';
 export * from './my-tasks/my-tasks.component';
 export * from './task-action/task-action-container.component';
 export * from './task-assignment/task-assignment-container.component';

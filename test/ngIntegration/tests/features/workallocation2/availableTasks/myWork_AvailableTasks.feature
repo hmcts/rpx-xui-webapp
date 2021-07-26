@@ -4,6 +4,7 @@ Feature: WA Release 2: My work -  Available tasks
     Background: Mock and browser setup
         Given I init MockApp
 
+@ignore
     Scenario Outline:  Available Tasks, columns and column links for "<UserType>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
 

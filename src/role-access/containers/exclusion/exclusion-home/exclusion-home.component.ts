@@ -132,7 +132,7 @@ export class ExclusionHomeComponent implements OnInit, OnDestroy {
       case ExclusionNavigationEvent.CONFIRM_EXCLUSION: {
         switch (this.navigationCurrentState) {
           case ExclusionState.CHECK_ANSWERS:
-            // TODO
+            this.checkAnswersComponent.navigationHandler(navEvent);
             break;
           default:
             throw new Error('Invalid exclusion state');

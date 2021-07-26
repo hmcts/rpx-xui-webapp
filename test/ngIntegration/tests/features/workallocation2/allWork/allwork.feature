@@ -4,6 +4,7 @@ Feature: WA Release 2: All work
     Background: Mock and browser setup
         Given I init MockApp
 
+@ignore
     Scenario Outline:  All work Tasks, colums and column links for "<UserType>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
         Given I set MOCK tasks with permissions for view "All work" and assigned state ""

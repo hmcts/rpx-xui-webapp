@@ -1,10 +1,11 @@
 import * as express from 'express';
-import { getUserExclusions } from '../exclusions/exclusionService';
+import { confirmUserExclusion, getUserExclusions } from '../exclusions/exclusionService';
 import { getUserDetails } from './index';
 
 const router = express.Router({ mergeParams: true });
 
 router.use('/details', getUserDetails);
-router.use('/exclusions', getUserExclusions);
+router.get('/exclusions', getUserExclusions);
+router.post('/exclusions/confirm', confirmUserExclusion);
 
 export default router;

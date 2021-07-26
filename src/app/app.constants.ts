@@ -227,3 +227,4 @@ export class AppConstants {
 }
 
 export const LD_FLAG_REMOVE_USER_FROM_CASE_MC: string = 'remove-user-from-case-mc';
+export const LD_FLAG_MC_APPLICATION_THEMES: string = 'mc-application-themes';

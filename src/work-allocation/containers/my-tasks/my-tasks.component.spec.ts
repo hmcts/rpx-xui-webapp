@@ -1,20 +1,19 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { of } from 'rxjs';
-import { SessionStorageService } from '../../../app/services';
-import { AlertComponent } from '../../../cases/components';
+import {Component, ViewChild} from '@angular/core';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {Router} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
+import {AlertService, LoadingService, PaginationModule} from '@hmcts/ccd-case-ui-toolkit';
+import {ExuiCommonLibModule, FeatureToggleService} from '@hmcts/rpx-xui-common-lib';
+import {of} from 'rxjs';
+import {SessionStorageService} from '../../../app/services';
 
-import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { Task } from '../../models/tasks';
-import { CaseworkerDataService, WorkAllocationTaskService } from '../../services';
-import { getMockTasks } from '../../tests/utils.spec';
-import { TaskListComponent } from '../task-list/task-list.component';
-import { MyTasksComponent } from './my-tasks.component';
+import {WorkAllocationComponentsModule} from '../../components/work-allocation.components.module';
+import {Task} from '../../models/tasks';
+import {CaseworkerDataService, WorkAllocationTaskService} from '../../services';
+import {getMockTasks} from '../../tests/utils.spec';
+import {TaskListComponent} from '../task-list/task-list.component';
+import {MyTasksComponent} from './my-tasks.component';
 
 @Component({
   template: `
@@ -31,7 +30,7 @@ describe('MyTasksComponent', () => {
 
   let router: Router;
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
-  const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy', 'pipe', 'alerts']);
+  const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
@@ -39,7 +38,6 @@ describe('MyTasksComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
         CdkTableModule,
         ExuiCommonLibModule,
@@ -47,12 +45,12 @@ describe('MyTasksComponent', () => {
         WorkAllocationComponentsModule,
         PaginationModule
       ],
-      declarations: [AlertComponent, MyTasksComponent, WrapperComponent, TaskListComponent],
+      declarations: [MyTasksComponent, WrapperComponent, TaskListComponent],
       providers: [
-        { provide: WorkAllocationTaskService, useValue: mockTaskService },
-        { provide: AlertService, useValue: mockAlertService },
-        { provide: SessionStorageService, useValue: mockSessionStorageService },
-        { provide: CaseworkerDataService, useValue: mockCaseworkerService },
+        {provide: WorkAllocationTaskService, useValue: mockTaskService},
+        {provide: AlertService, useValue: mockAlertService},
+        {provide: SessionStorageService, useValue: mockSessionStorageService},
+        {provide: CaseworkerDataService, useValue: mockCaseworkerService},
         { provide: LoadingService, useValue: mockLoadingService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService }
       ]
@@ -66,8 +64,7 @@ describe('MyTasksComponent', () => {
     component.isPaginationEnabled$ = of(false);
     router = TestBed.get(Router);
     const tasks: Task[] = getMockTasks();
-    mockAlertService.alerts.and.returnValue(of([]));
-    mockTaskService.searchTask.and.returnValue(of({ tasks }));
+    mockTaskService.searchTask.and.returnValue(of({tasks}));
     mockCaseworkerService.getAll.and.returnValue(of([]));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     fixture.detectChanges();
@@ -76,7 +73,7 @@ describe('MyTasksComponent', () => {
 
   it('should make a call to load tasks using the default search request', () => {
     const searchRequest = component.getSearchTaskRequestPagination();
-    const payload = { searchRequest, view: component.view };
+    const payload = {searchRequest, view: component.view};
     expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
     expect(component.tasks).toBeDefined();
     expect(component.tasks.length).toEqual(2);
@@ -103,7 +100,7 @@ describe('MyTasksComponent', () => {
   it('should handle a click to sort on the caseReference heading', async () => {
 
     // spyOn(mockSessionStorageService, 'getItem').and.returnValue(JSON.stringify({id: '1'}));
-    mockSessionStorageService.getItem.and.returnValue(JSON.stringify({ id: '1' }));
+    mockSessionStorageService.getItem.and.returnValue(JSON.stringify({id: '1'}));
 
     const element = fixture.debugElement.nativeElement;
     const button = element.querySelector('#sort_by_caseId');
@@ -120,7 +117,7 @@ describe('MyTasksComponent', () => {
     expect(searchRequest.sorting_parameters[0].sort_by).toBe('caseId');
 
     // Let's also make sure that the tasks were re-requested with the new sorting.
-    const payload = { searchRequest, view: component.view };
+    const payload = {searchRequest, view: component.view};
     expect(mockTaskService.searchTask).toHaveBeenCalledWith(payload);
 
     // Do it all over again to make sure it reverses the order.
@@ -138,7 +135,7 @@ describe('MyTasksComponent', () => {
     expect(searchRequest.sorting_parameters[0].sort_by).toBe('caseId');
 
     // Let's also make sure that the tasks were re-requested with the new sorting.
-    const newPayload = { searchRequest: newSearchRequest, view: component.view };
+    const newPayload = {searchRequest: newSearchRequest, view: component.view};
     expect(mockTaskService.searchTask).toHaveBeenCalledWith(newPayload);
   });
 

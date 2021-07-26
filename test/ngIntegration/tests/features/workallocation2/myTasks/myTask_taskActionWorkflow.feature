@@ -50,7 +50,7 @@ Feature: WA Release 2: My work - My tasks - Task actions
         Examples:
             | UserIdentifier     | UserType   | Roles                                              | taskAtRow | actionLink    | actionHeader          | submitBtnLabel | actionDescription                                                                             | bannermessage |
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer | 4         | Unassign task | Unassign task         | Unassign       | Unassign this task. This will send it back to the available task list for someone to pick up. |               |
-            | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    | 1         | Cancel task   | Cancel a task         | Cancel task    | Cancel a task if it's no longer required.                                                     |               |
+            | IAC_Judge_WA_R2 | Judge | caseworker-ia-iacjudge,caseworker-ia,caseworker | 1 | Cancel task | Cancel a task | Cancel task | Cancel a task that has not been completed, but is no longer needed. This will remove it from the task list. |  |
             # | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    | 1         | Mark as done  | Mark the task as done | Mark as done   | Mark a task as done if something has gone wrong and it has already been completed.            |               |
 
     Scenario Outline:  Task Manage links for "<UserType>"  action "<actionLink>" cancel workflow

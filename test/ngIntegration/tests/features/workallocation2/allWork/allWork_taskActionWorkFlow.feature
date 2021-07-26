@@ -106,8 +106,8 @@ Feature: WA Release 2: All work - Task action work flows
 
         When I click "<submitBtnLabel>" submit button in task action page
 
-        Then I see error message of type "" displayed with message ""
-        Then I validate for error messge type "", if it is banner message I see page "" displayed
+        Then I see error message of type "<errorType>" displayed with message "<errorMeessage>"
+        Then I validate for error messge type "<errorType>", if it is banner message I see page "All work" displayed
 
         Examples:
             | UserIdentifier     | UserType   | Roles                                              | taskAtRow | actionLink    | submitBtnLabel |endPoint|responseCode|errorType|errorMeessage| 

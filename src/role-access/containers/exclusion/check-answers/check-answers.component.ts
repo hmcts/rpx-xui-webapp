@@ -26,7 +26,7 @@ export class CheckAnswersComponent implements OnDestroy {
     this.storeSubscription = this.store.pipe(select(fromFeature.getRoleAccessState)).subscribe(exclusion => this.setAnswersFromExclusionStore(exclusion));
   }
 
-  public ngOnDestroy() {
+  public ngOnDestroy(): void {
     if (this.storeSubscription) {
       this.storeSubscription.unsubscribe();
     }

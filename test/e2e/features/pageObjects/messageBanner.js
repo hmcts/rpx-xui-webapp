@@ -2,7 +2,7 @@
 const BrowserWaits = require('../../support/customWaits');
 var cucumberReporter = require('../../support/reportLogger');
 
-class TaskInfoMessageBanner{
+class MessageBanner{
 
 
     constructor(parentCssLocator) {
@@ -41,4 +41,4 @@ class TaskInfoMessageBanner{
 
 }
 
-module.exports = TaskInfoMessageBanner;
+module.exports = MessageBanner;

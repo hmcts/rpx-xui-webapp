@@ -21,7 +21,7 @@ export async function getUserExclusions(req: EnhancedRequest, res: Response, nex
   return res.send(exclusions).status(200);
 }
 
-export async function confirmUserExclusion(req: EnhancedRequest, res: Response, next: NextFunction) {  
+export async function confirmUserExclusion(req: EnhancedRequest, res: Response, next: NextFunction) {
   const exclusion = [
       {
         added: Date.UTC(2021, 7, 1),

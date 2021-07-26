@@ -1,4 +1,4 @@
 export interface TermsAndCondition {
-    isLoaded: boolean;
-    hasUserAcceptedTC: boolean;
+  isLoaded: boolean;
+  hasUserAcceptedTC: boolean;
 }

@@ -3,25 +3,25 @@ export const PERSON = [
   {
     id: 'id100',
     name: 'Jacky Collins',
-    email: 'jacky.collins@judicail.com',
+    email: 'jacky.collins@judicial.com',
     domain: 'JUDICIAL'
   },
   {
     id: 'id101',
     name: 'Jasmine Chiswell',
-    email: 'jasmine.chiswell@judicail.com',
+    email: 'jasmine.chiswell@judicial.com',
     domain: 'JUDICIAL'
   },
   {
     id: 'id102',
     name: 'Jamie Vardy',
-    email: 'jamie.vardy@judicail.com',
+    email: 'jamie.vardy@judicial.com',
     domain: 'JUDICIAL'
   },
   {
     id: 'id103',
     name: 'James Priest',
-    email: 'james.priest@judicail.com',
+    email: 'james.priest@judicial.com',
     domain: 'JUDICIAL'
   },
   {

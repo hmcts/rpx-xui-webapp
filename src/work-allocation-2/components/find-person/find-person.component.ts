@@ -14,7 +14,7 @@ import { FindAPersonService } from '../../services/find-person.service';
 export class FindPersonComponent implements OnInit {
   @Output() public personSelected = new EventEmitter<Person>();
   @Input() public title: string;
-  @Input() public domainString: string = 'BOTH';
+  @Input() public givenDomain = PersonDomain.BOTH;
   @Input() public findPersonGroup;
   @Input() public selectedPerson: string;
   public domain: PersonDomain;
@@ -33,7 +33,7 @@ export class FindPersonComponent implements OnInit {
     } else {
       this.findPersonGroup.addControl('findPersonControl', this.findPersonControl);
     }
-    this.domain = PersonDomain[this.domainString];
+    this.domain = this.givenDomain;
     this.filteredOptions = this.findPersonControl.valueChanges.pipe(
       startWith(''),
       switchMap(searchTerm => {

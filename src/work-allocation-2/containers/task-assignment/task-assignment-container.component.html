@@ -17,13 +17,13 @@
   </div>
 
   <div class="govuk-grid-row">
-    <exui-find-person
+    <xuilib-find-person
       title="{{verb}} task"
       [findPersonGroup]="formGroup"
       (personSelected)="selectedPerson($event)"
       [selectedPerson]="defaultPerson"
-      domainString="BOTH">
-    </exui-find-person>
+      [givenDomain]="domain">
+    </xuilib-find-person>
 
     <button class="govuk-button govuk-!-margin-right-1" type="submit" (click)="assign()">Continue</button>
     <p><a (click)="cancel()" href="javascript:void(0)">Cancel</a></p>

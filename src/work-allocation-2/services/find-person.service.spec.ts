@@ -1,4 +1,5 @@
-import { PersonDomain } from 'api/workAllocation2/interfaces/person';
+
+import { PersonDomain } from '../models/dtos';
 import { FindAPersonService } from './find-person.service';
 
 describe('FindAPersonService', () => {

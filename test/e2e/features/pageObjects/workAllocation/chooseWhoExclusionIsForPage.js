@@ -31,8 +31,8 @@ class ChooseWhoExclusionIsForPage{
         return await this.chooseRadioOptionsComponent.getHeaderCaption();
     }
 
-    async getHeaderText(){
-        return await this.chooseRadioOptionsComponent.getHeaderText();
+    async getHeader(){
+        return await this.chooseRadioOptionsComponent.getHeader();
     }
 
     async isRadioOptionDisplayed(radioLabel){

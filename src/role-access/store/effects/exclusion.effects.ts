@@ -10,6 +10,10 @@ import * as routeAction from '../../../app/store/index';
 import { ExclusionMessageText } from '../../models/enums/exclusion-text';
 import { InfoMessageType } from '../../../work-allocation-2/enums';
 
+export enum REDIRECTS {
+  NotAuthorised = '/not-authorised',
+  ServiceDown = '/service-down'
+}
 
 @Injectable()
 export class ExclusionEffects {
@@ -19,6 +23,7 @@ export class ExclusionEffects {
     private actions$: Actions,
     private roleExclusionsService: RoleExclusionsService
   ) {
+
   }
 
   @Effect() confirmExclusion$ = this.actions$
@@ -61,19 +66,22 @@ export class ExclusionEffects {
 
   public static handleError(error: RoleAccessHttpError, action: string): Observable<Action> {
     if (error && error.status) {
-      if (error.status >= 400 && error.status <= 404) {
-        switch (action) {
-          case ExclusionActionTypes.CONFIRM_EXCLUSION:
-            return of(new ConfirmExclusionFailureAction(error));
-          default:
-            return of(new routeAction.Go({
-              path: ['/service-down']
-            }));
-        }
-      } else {
-        return of(new routeAction.Go({
-          path: ['/service-down']
-        }));
+      switch (error.status) {
+        case 401:
+        case 403:
+          return of(new routeAction.Go({
+            path: [REDIRECTS.NotAuthorised]
+          }));
+        case 400:
+        case 500:
+        case 503:
+          return of(new routeAction.Go({
+            path: [REDIRECTS.ServiceDown]
+          }));
+        default:
+          return of(new routeAction.Go({
+            path: [REDIRECTS.ServiceDown]
+          }));
       }
     }
   }

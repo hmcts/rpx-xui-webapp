@@ -4,11 +4,11 @@ const ChooseRadioOptionComponent = require("../common/chooseRadioOptionComponent
 const exuiErrorMessage = require("../common/exuiErrorMessage");
 
 const BrowserWaits = require("../../../support/customWaits");
-class ChooseExclusionPage{
+class ChoosePersonRolePage {
 
-    constructor(){
+    constructor() {
 
-        this.container = $("exui-choose-exclusion");
+        this.container = $("eexui-choose-person-role");
         this.chooseRadioOptionsComponent = new ChooseRadioOptionComponent(this.container);
 
         this.continueButton = $("exui-exclusion-navigation button");
@@ -18,28 +18,30 @@ class ChooseExclusionPage{
 
     }
 
-    async isDisplayed(){
-        try{
+
+
+    async isDisplayed() {
+        try {
             await BrowserWaits.waitForElement(this.container);
             return true;
-        }catch(err){
+        } catch (err) {
             return false;
         }
     }
 
-    async getHeaderCaption(){
+    async getHeaderCaption() {
         return await this.chooseRadioOptionsComponent.getHeaderCaption();
     }
 
-    async getHeader(){
+    async getHeader() {
         return await this.chooseRadioOptionsComponent.getHeader();
     }
 
-    async isRadioOptionDisplayed(radioLabel){
+    async isRadioOptionDisplayed(radioLabel) {
         return await this.chooseRadioOptionsComponent.isRadioOptionPresent(radioLabel);
     }
 
-    async isRadioOptionSelected(radioLabel){
+    async isRadioOptionSelected(radioLabel) {
         return await this.chooseRadioOptionsComponent.isRadioOptionSelected(radioLabel);
 
     }
@@ -49,15 +51,15 @@ class ChooseExclusionPage{
 
     }
 
-    async clickContinueButton(){
+    async clickContinueButton() {
         await this.continueButton.click();
     }
 
-    async clickCancelLink(){
+    async clickCancelLink() {
         await this.cancelLink.click();
     }
 
 
 }
 
-module.exports = new ChooseExclusionPage();
+module.exports = new ChoosePersonRolePage();

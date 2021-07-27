@@ -7,4 +7,5 @@ export enum PersonRole {
   JUDICIAL = 'Judicial',
   LEGAL_OPS = 'Legal Ops',
   ADMIN = 'Admin',
+  ALL = 'All',
 }

@@ -16,7 +16,7 @@ import { FindAPersonService } from '../../services/find-person.service';
 export class FindPersonComponent implements OnInit {
   @Output() public personSelected = new EventEmitter<Person>();
   @Input() public title: string;
-  @Input() public domainString: string = 'BOTH';
+  @Input() public domainString: string = 'All';
   @Input() public findPersonGroup;
   @Input() public selectedPerson: string;
   public domain: string;

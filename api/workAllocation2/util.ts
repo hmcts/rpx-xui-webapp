@@ -198,7 +198,7 @@ export function getActionsByPermissions(view, permissions: TaskPermission[]): Ac
 }
 
 export function applySearchFilter(person: Person, domain: string, searchTerm: any): boolean {
-  if (domain === 'All') {
+  if (domain === 'ALL') {
     return person && person.name.toLowerCase().includes(searchTerm.toLowerCase());
   }
   return person && person.domain === domain && person.name.toLowerCase().includes(searchTerm.toLowerCase());

@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { Router } from '@angular/router';
 import { provideMockStore } from '@ngrx/store/testing';
-import { AddExclusionHomeComponent } from './exclusion-home.component';
+import { AddExclusionHomeComponent } from './add-exclusion-home.component';
 
 describe('ExclusionHomeComponent', () => {
   let component: AddExclusionHomeComponent;

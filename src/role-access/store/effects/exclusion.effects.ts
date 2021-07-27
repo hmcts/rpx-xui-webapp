@@ -5,7 +5,7 @@ import { Observable, of } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import { ExcludeOption, RoleAccessHttpError } from '../../models';
 import { RoleExclusionsService } from '../../services';
-import { ConfirmExclusionAction, ConfirmExclusionFailureAction, ExclusionActionTypes } from '../actions';
+import { ConfirmExclusionAction, ExclusionActionTypes } from '../actions';
 import * as routeAction from '../../../app/store/index';
 import { ExclusionMessageText } from '../../models/enums/exclusion-text';
 import { InfoMessageType } from '../../../work-allocation-2/enums';

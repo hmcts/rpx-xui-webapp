@@ -1,0 +1,21 @@
+<div>
+  <h1 class="govuk-heading-l">
+    <span class="govuk-caption-l">{{caption}}</span>
+    {{heading}}
+  </h1>
+  <span class="govuk-hint">{{hint}}</span>
+  <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+    <div class="govuk-summary-list__row" *ngFor="let answer of answers">
+      <dt class="govuk-summary-list__key">
+        {{answer.label}}
+      </dt>
+      <dd class="govuk-summary-list__value" [innerText]="answer.value">
+      </dd>
+      <dd class="govuk-summary-list__actions">
+        <a class="govuk-link" routerLink="." (click)="changeAction(answer.action)">
+          Change<span class="govuk-visually-hidden"> who the exclusion is for</span>
+        </a>
+      </dd>
+    </div>
+  </dl>
+</div>

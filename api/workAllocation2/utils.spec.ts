@@ -303,7 +303,7 @@ describe('workAllocation.utils', () => {
   describe('applySearchFilter', () => {
     it('PersonDomain BOTH', () => {
       const person = {id: '123', name: 'some name', email: 'name@email.com', domain: PersonDomain.CASEWORKER };
-      const result = applySearchFilter(person, PersonDomain.ALL, 'name');
+      const result = applySearchFilter(person, 'ALL', 'name');
       expect(result).to.equal(true);
     });
     it('PersonDomain CASEWORKER', () => {

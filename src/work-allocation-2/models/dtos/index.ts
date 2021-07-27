@@ -122,11 +122,12 @@ export interface Person {
 
 export interface SearchOptions {
   searchTerm: string;
-  jurisdiction: string;
+  jurisdiction: PersonRole;
 }
 
-export enum PersonDomain {
-  JUDICIAL = 1,
-  CASEWORKER = 2,
-  BOTH = 3
+export enum PersonRole {
+  JUDICIAL = 'Judicial',
+  CASEWORKER = 'Legal Ops',
+  ADMIN = 'Admin',
+  ALL = 'All',
 }

@@ -6,7 +6,7 @@ import { setHeaders } from '../lib/proxy';
 
 import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX } from './constants/actions';
 import { Action, Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/common';
-import { Person } from './interfaces/person';
+import { Person, PersonRole } from './interfaces/person';
 
 export function prepareGetTaskUrl(baseUrl: string, taskId: string): string {
   return `${baseUrl}/task/${taskId}`;
@@ -198,7 +198,7 @@ export function getActionsByPermissions(view, permissions: TaskPermission[]): Ac
 }
 
 export function applySearchFilter(person: Person, domain: string, searchTerm: any): boolean {
-  if (domain === 'ALL') {
+  if (domain === PersonRole.ALL) {
     return person && person.name.toLowerCase().includes(searchTerm.toLowerCase());
   }
   return person && person.domain === domain && person.name.toLowerCase().includes(searchTerm.toLowerCase());

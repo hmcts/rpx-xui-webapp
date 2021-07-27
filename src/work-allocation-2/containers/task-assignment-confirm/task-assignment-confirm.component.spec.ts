@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 import { WorkAllocationComponentsModule } from 'src/work-allocation-2/components/work-allocation.components.module';
 import { WorkAllocationTaskService } from 'src/work-allocation-2/services';
 import { TaskActionType } from 'src/work-allocation/enums';
-import { PersonDomain } from '../../../../api/workAllocation2/interfaces/person';
+import { PersonRole } from '../../../../api/workAllocation2/interfaces/person';
 import { TaskActionConstants } from '../../components/constants';
 import { getMockTasks } from '../../tests/utils.spec';
 import { TaskAssignmentConfirmComponent } from './task-assignment-confirm.component';
@@ -29,7 +29,7 @@ describe('TaskAssignmentConfirmComponent', () => {
     id: 'id123',
     name: 'John Smith',
     email: 'john.smith@email.com',
-    domain: PersonDomain.CASEWORKER
+    domain: PersonRole.CASEWORKER
   };
   const mockTasks = getMockTasks();
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);

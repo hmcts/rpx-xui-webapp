@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { startWith, switchMap } from 'rxjs/operators';
-import { $enum as EnumUtil } from 'ts-enum-util';
 import { PersonRole } from '../../../role-access/models';
 import { Person } from '../../models/dtos';
 import { FindAPersonService } from '../../services/find-person.service';
@@ -16,10 +15,9 @@ import { FindAPersonService } from '../../services/find-person.service';
 export class FindPersonComponent implements OnInit {
   @Output() public personSelected = new EventEmitter<Person>();
   @Input() public title: string;
-  @Input() public domainString: string = 'All';
+  @Input() public domain: PersonRole = PersonRole.ALL;
   @Input() public findPersonGroup;
   @Input() public selectedPerson: string;
-  public domain: string;
   public showAutocomplete: boolean = false;
 
   constructor(private readonly findPersonService: FindAPersonService) {
@@ -35,7 +33,6 @@ export class FindPersonComponent implements OnInit {
     } else {
       this.findPersonGroup.addControl('findPersonControl', this.findPersonControl);
     }
-    this.domain = EnumUtil(PersonRole).getKeyOrDefault(this.domainString);
     this.filteredOptions = this.findPersonControl.valueChanges.pipe(
       startWith(''),
       switchMap(searchTerm => {

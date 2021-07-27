@@ -1,70 +1,72 @@
 /* tslint:disable */
+import { PersonRole } from "../interfaces/person";
+
 export const PERSON = [
   {
     id: 'id100',
     name: 'Jacky Collins',
     email: 'jacky.collins@judicial.com',
-    domain: 'JUDICIAL'
+    domain: PersonRole.JUDICIAL
   },
   {
     id: 'id101',
     name: 'Jasmine Chiswell',
     email: 'jasmine.chiswell@judicial.com',
-    domain: 'JUDICIAL'
+    domain: PersonRole.JUDICIAL
   },
   {
     id: 'id102',
     name: 'Jamie Vardy',
     email: 'jamie.vardy@judicial.com',
-    domain: 'JUDICIAL'
+    domain: PersonRole.JUDICIAL
   },
   {
     id: 'id103',
     name: 'James Priest',
     email: 'james.priest@judicial.com',
-    domain: 'JUDICIAL'
+    domain: PersonRole.JUDICIAL
   },
   {
     id: 'id104',
     name: 'Jacky Collins',
     email: 'jacky.collins@legalops.com',
-    domain: 'LEGAL_OPS'
+    domain: PersonRole.CASEWORKER
   },
   {
     id: 'id105',
     name: 'Jasmine Chiswell',
     email: 'jasmine.chiswell@legalops.com',
-    domain: 'LEGAL_OPS'
+    domain: PersonRole.CASEWORKER
   },
   {
     id: 'id106',
     name: 'Jamie Vardy',
     email: 'jamie.vardy@legalops.com',
-    domain: 'LEGAL_OPS'
+    domain: PersonRole.CASEWORKER
   },
   {
     id: 'id107',
     name: 'James Priest',
     email: 'James Priest@legalops.com',
-    domain: 'LEGAL_OPS'
+    domain: PersonRole.CASEWORKER
   },
   {
     id: 'id108',
     name: 'Michael Jackson',
     email: 'michael.jackson@legalops.com',
-    domain: 'LEGAL_OPS'
+    domain: PersonRole.CASEWORKER
   },
   {
     id: 'id109',
     name: 'James Priest',
     email: 'james.priest@admin.com',
-    domain: 'ADMIN'
+    domain: PersonRole.ADMIN
   },
   {
     id: 'id110',
     name: 'Michael Jackson',
     email: 'michael.jackson@admin.com',
-    domain: 'ADMIN'
+    domain: PersonRole.ADMIN
   },
 ]
 

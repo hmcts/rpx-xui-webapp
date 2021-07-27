@@ -5,7 +5,7 @@ export enum ExcludeOption {
 
 export enum PersonRole {
   JUDICIAL = 'Judicial',
-  LEGAL_OPS = 'Legal Ops',
+  CASEWORKER = 'Legal Ops',
   ADMIN = 'Admin',
   ALL = 'All',
 }

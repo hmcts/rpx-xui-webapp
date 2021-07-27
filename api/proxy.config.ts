@@ -36,7 +36,8 @@ export const initProxy = (app: Express) => {
     })
 
     applyProxy(app, {
-        rewrite: false,
+        rewrite: true,
+        rewriteUrl: '/',
         source: '/documentsv2',
         target: getConfigValue(SERVICES_DOCUMENTS_API_PATH_V2),
     })

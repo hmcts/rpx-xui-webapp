@@ -33,11 +33,11 @@ export class TaskActionContainerComponent implements OnInit {
   }
 
   private get returnUrl(): string {
-    let url: string;
     if (window && window.history && window.history.state) {
-      url = window.history.state.returnUrl;
+      const url = window.history.state.returnUrl;
+      return url.split('/').splice(0, 3).join('/');
     }
-    return url || '/work/my-work/list';
+    return '/work/my-work/list';
   }
 
   public taskServiceConfig: TaskServiceConfig = {

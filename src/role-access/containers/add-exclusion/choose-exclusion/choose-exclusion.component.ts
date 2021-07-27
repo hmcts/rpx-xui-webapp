@@ -14,8 +14,7 @@ import * as fromFeature from '../../../store';
 
 @Component({
   selector: 'exui-choose-exclusion',
-  templateUrl: './choose-exclusion.component.html',
-  styleUrls: ['./choose-exclusion.component.scss']
+  templateUrl: './choose-exclusion.component.html'
 })
 
 export class ChooseExclusionComponent implements OnInit, OnDestroy {

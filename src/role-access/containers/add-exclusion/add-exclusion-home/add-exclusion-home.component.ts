@@ -19,11 +19,11 @@ import { DescribeExclusionComponent } from '../describe-exclusion/describe-exclu
 import { SearchPersonComponent } from '../search-person/search-person.component';
 
 @Component({
-  selector: 'exui-exclusion-home',
-  templateUrl: './exclusion-home.component.html',
-  styleUrls: ['./exclusion-home.component.scss']
+  selector: 'exui-add-exclusion-home',
+  templateUrl: './add-exclusion-home.component.html',
+  styleUrls: ['./add-exclusion-home.component.scss']
 })
-export class ExclusionHomeComponent implements OnInit, OnDestroy {
+export class AddExclusionHomeComponent implements OnInit, OnDestroy {
   @ViewChild('chooseExclusion', {read: ChooseExclusionComponent})
   public chooseExclusionComponent: ChooseExclusionComponent;
 

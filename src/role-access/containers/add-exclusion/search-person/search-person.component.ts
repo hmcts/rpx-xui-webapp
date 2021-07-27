@@ -10,10 +10,9 @@ import * as fromFeature from '../../../store';
 
 @Component({
   selector: 'exui-search-person',
-  templateUrl: './search-person.component.html',
-  styleUrls: ['./search-person.component.scss']
+  templateUrl: './search-person.component.html'
 })
-export class SearchPersonComponent implements OnInit {á
+export class SearchPersonComponent implements OnInit {
   @ViewChild(FindPersonComponent) public child: FindPersonComponent;
   @Input() public navEvent: ExclusionNavigation;
   public formGroup: FormGroup = new FormGroup({});

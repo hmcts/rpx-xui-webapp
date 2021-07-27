@@ -27,7 +27,7 @@ export class FindPersonComponent implements OnInit {
 
   public findPersonControl = new FormControl();
   public filteredOptions: Observable<Person[]>;
-  private readonly minSearchCharacters = 2;
+  private readonly minSearchCharacters = 3;
 
   public ngOnInit(): void {
     if (!this.findPersonGroup) {

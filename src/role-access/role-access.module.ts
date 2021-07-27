@@ -14,6 +14,7 @@ import { roleAccessRouting } from './role-access.routes';
 import { RoleExclusionsService } from './services';
 import { effects, reducers } from './store';
 import { FindPersonModule } from 'src/work-allocation-2/find-person.module';
+import { InfoMessageCommService } from '../work-allocation-2/services';
 
 @NgModule({
   imports: [
@@ -33,6 +34,7 @@ import { FindPersonModule } from 'src/work-allocation-2/find-person.module';
     provide: AbstractAppConfig,
     useExisting: AppConfig,
   },
+    InfoMessageCommService,
     RoleExclusionsService
   ]
 })

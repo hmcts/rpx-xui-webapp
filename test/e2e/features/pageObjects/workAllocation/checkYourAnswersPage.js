@@ -100,7 +100,7 @@ class CheckYourAnswersPage{
     }
 
     getRowElementWithQuestion(question){
-        return this.summaryListContainer.element(by.xpath(`//*[contains(@class,'govuk-summary-list__row')]//dt[contains(@class,'govuk-summary-list__key') and contains(text(),'${question}')]//ancestor::div[contains(@class,'govuk-summary-list__row')]`));
+        return this.summaryListContainer.element(by.xpath(`//*[contains(@class,'govuk-summary-list__row')]//dt[contains(@class,'govuk-summary-list__key') and contains(text(),"${question}")]//ancestor::div[contains(@class,'govuk-summary-list__row')]`));
     }
 
 }

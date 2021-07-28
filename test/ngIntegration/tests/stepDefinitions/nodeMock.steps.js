@@ -110,14 +110,15 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         const personsConfigHashes = datatable.hashes();
 
         MockApp.onPost('/workallocation2/findPerson', (req,res) => {
-            const inputJurisdiction = req.searchOptions.jurisdiction;
+            const inputJurisdiction = req.body.searchOptions.jurisdiction;
             const filterdUsersForJurisdiction = [];
             for (let i = 0; i < personsConfigHashes.length; i++){
                 const inputperson = personsConfigHashes[i];
-                if (inputperson.jurisdiction === inputJurisdiction){
+                // const inputJurisdiction = parseInt(inputperson.jurisdiction);
+                if (inputJurisdiction === parseInt(inputperson.jurisdiction)){
                     const person = workAllocationDataModel.getFindPersonObj();
 
-                    person['domain'] = inputperson['domain'];
+                    person['domain'] = parseInt(inputperson['jurisdiction']);
                     person['id'] = inputperson['id'];
                     person['email'] = inputperson['email'];
                     person['name'] = inputperson['name'];

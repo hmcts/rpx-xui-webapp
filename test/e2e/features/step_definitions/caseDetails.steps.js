@@ -52,4 +52,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         expect(await caseDetailsPage.isTabWithLabelPresent(tabLabel), `Tab with label "${tabLabel}" is not present or displayed`).to.be.true;
         expect(await caseDetailsPage.isTabWithLabelSelected(tabLabel), `Tab with label "${tabLabel}" is not selected`).to.be.true;
     });
+
+    Then('I see case details page with message banner {string}', async function(bannerMessage){
+        expect(await caseDetailsPage.messageBanner.isMessageTextDisplayed(bannerMessage)).to.be.true
+    });
 });

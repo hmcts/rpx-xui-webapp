@@ -31,7 +31,7 @@ export class DeleteExclusionComponent implements OnInit {
   }
 
   private populateAnswers(exclusions: any[]) {
-    for (let exclusion of exclusions) {
+    for (const exclusion of exclusions) {
       this.answers.push({label: AnswerLabelText.Person, value: exclusion.name});
       this.answers.push({label: AnswerLabelText.DescribeExclusion, value: exclusion.notes});
       this.answers.push({label: AnswerLabelText.DateAdded, value: new Date(exclusion.added).toLocaleDateString('en-GB')});

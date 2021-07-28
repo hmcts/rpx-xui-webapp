@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { Answer, ExclusionNavigationEvent } from '../../models';
+import { Answer, ExclusionNavigationEvent, RoleExclusion } from '../../models';
 import { AnswerHeaderText, AnswerLabelText } from '../../models/enums';
 
 @Component({
@@ -22,15 +22,15 @@ export class DeleteExclusionComponent implements OnInit {
 
   public ngOnInit(): void {
     // Get the role exclusions from the route, which will have been put there by the resolver.
-    const roleExclusions = this.route.snapshot.data.roleExclusions;
+    const roleExclusions = this.route.snapshot.data.roleExclusions as RoleExclusion[];
     this.populateAnswers(roleExclusions);
   }
 
-  public onEventTrigger(event: ExclusionNavigationEvent) {
+  public onEventTrigger(event: ExclusionNavigationEvent): void {
     this.eventTrigger.emit(event);
   }
 
-  private populateAnswers(exclusions: any[]) {
+  private populateAnswers(exclusions: RoleExclusion[]): void {
     for (const exclusion of exclusions) {
       this.answers.push({label: AnswerLabelText.Person, value: exclusion.name});
       this.answers.push({label: AnswerLabelText.DescribeExclusion, value: exclusion.notes});

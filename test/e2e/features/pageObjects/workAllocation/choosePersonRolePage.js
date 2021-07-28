@@ -8,7 +8,7 @@ class ChoosePersonRolePage {
 
     constructor() {
 
-        this.container = $("eexui-choose-person-role");
+        this.container = $("exui-choose-person-role");
         this.chooseRadioOptionsComponent = new ChooseRadioOptionComponent(this.container);
 
         this.continueButton = $("exui-exclusion-navigation button");
@@ -33,8 +33,8 @@ class ChoosePersonRolePage {
         return await this.chooseRadioOptionsComponent.getHeaderCaption();
     }
 
-    async getHeader() {
-        return await this.chooseRadioOptionsComponent.getHeader();
+    async getHeaderText() {
+        return await this.chooseRadioOptionsComponent.getHeaderText();
     }
 
     async isRadioOptionDisplayed(radioLabel) {

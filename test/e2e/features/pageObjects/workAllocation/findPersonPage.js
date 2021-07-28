@@ -29,6 +29,10 @@ class FindPersonPage{
         }
     }
 
+    async isDisplayed(){
+        return await this.amOnPage();
+    }
+
     async validatePage(){
         const heaerText = await this.header.getText();
         const inputHintText = await this.searchInputHintText.getText();
@@ -86,14 +90,14 @@ class FindPersonPage{
         return element(by.xpath(`//*[contains(@class,'cdk-overlay-container')]//*[contains(@class,'mat-autocomplete-visible')]//mat-option//*[contains(@class,'mat-option-text') and contains(text(),'${resulttext}')]`));
     }
 
-    async isPersonDisplayed(result){
+    async isPersonReturned(result){
         const resultElement = this.getResultElementWithText(result);
         return await resultElement.isPresent() && resultElement.isDisplayed()
 
     }
 
     async selectPerson(result){
-        expect(await this.isPersonDisplayed(result),'Result is not found').to.be.true;
+        expect(await this.isPersonReturned(result),'Result is not found').to.be.true;
         await this.getResultElementWithText(result).click();
     }
 

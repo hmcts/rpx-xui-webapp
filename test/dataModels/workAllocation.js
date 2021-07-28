@@ -151,6 +151,10 @@ class WorkAllocationModels {
 
         return Object.values(allowedActions);
     }
+
+    getRoleCategory(){
+        return { "roleId": "judicial", "roleName": "Judicial" }
+    }
 }
 
 

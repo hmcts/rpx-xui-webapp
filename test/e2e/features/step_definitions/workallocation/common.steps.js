@@ -16,6 +16,8 @@ const ArrayUtil = require('../../../utils/ArrayUtil');
 const findPersonPage = require('../../pageObjects/workAllocation/findPersonPage');
 const taskCheckYourChangesPage = require('../../pageObjects/workAllocation/taskCheckYourChangesPage');
 
+const checkYourAnswersPage = require("../../pageObjects/workAllocation/checkYourAnswersPage");
+
 defineSupportCode(function ({ And, But, Given, Then, When }) {
     const taskListTable = new TaskListTable();
 
@@ -232,5 +234,41 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         }
     });
 
+    When('I search with text {string} in Find the person page', async function(searchText){
+        await findPersonPage.inputSearchTerm(searchText);
+    });
+
+    Then('I see following options returned to Select in Find person search result', async function(resultsDatatable){
+        const dataTablehashes = resultsDatatable.hashes();
+        for (let i = 0; i < dataTablehashes.length;i++){
+            const expectedPerson = dataTablehashes[i]['Person'];
+            const personExpectedIsReturned = await findPersonPage.isPersonReturned(expectedPerson);
+            expect(personExpectedIsReturned, `${expectedPerson} is expected to retun in find person search is not retuned.`).to.be.true;
+        }
+    });
+
+    When('I select Person {string} from Find person search result', async function(selectPerson){
+        await findPersonPage.selectPerson(selectPerson);
+    });
+
+    Then('I see Check your answers page has total {int} questions', async function(expectedQuestionsCount){
+        expect(await checkYourAnswersPage.getTotalQuestionsCount()).to.equal(expectedQuestionsCount);
+    });
+
+    Then('I see Check your answers page has questions and answers with change link', async function(datatable){
+        const questionAnswersTable = datatable.hashes();
+        for (let i = 0; i < questionAnswersTable.length; i++){
+            const question = questionAnswersTable[i]['Question'];
+            const answer = questionAnswersTable[i]['answer'];
+            expect(await checkYourAnswersPage.isQuestionRowPresent(question),`${question} is not displayed`).to.be.true;
+            expect(await checkYourAnswersPage.getAnswerForQuestion(question), `expected answer for question ${question} does not match`).to.include(answer);
+            expect(await checkYourAnswersPage.isChangeLinkPresentForQuestion(question), `change link for ${question} is not present`).to.be.true;
+        }
+    });
+
+    When('I click button with label {string} in add exclusion work Check your answers page', async function(submitBtnLabel){
+        expect(await checkYourAnswersPage.isSubmitButtonWithLabelPresent(submitBtnLabel)).to.be.true;
+        await checkYourAnswersPage.clickSubmitButtonWithLabel(submitBtnLabel)
+    });
 
 });

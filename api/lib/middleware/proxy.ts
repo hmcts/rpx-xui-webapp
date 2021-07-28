@@ -1,9 +1,10 @@
-import {createProxyMiddleware as proxy, Options} from 'http-proxy-middleware'
-import * as modifyResponse from 'node-http-proxy-json'
-import {getConfigValue} from '../../configuration'
-import {LOGGING} from '../../configuration/references'
-import * as log4jui from '../log4jui'
-import authInterceptor from './auth'
+import { createProxyMiddleware as proxy, Options } from '@hmcts/http-proxy-middleware';
+import * as modifyResponse from 'node-http-proxy-json';
+
+import { getConfigValue } from '../../configuration';
+import { LOGGING } from '../../configuration/references';
+import * as log4jui from '../log4jui';
+import authInterceptor from './auth';
 
 const logger = log4jui.getLogger('proxy')
 

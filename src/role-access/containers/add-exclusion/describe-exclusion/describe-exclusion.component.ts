@@ -9,8 +9,7 @@ import * as fromFeature from '../../../store';
 
 @Component({
   selector: 'exui-describe-exclusion',
-  templateUrl: './describe-exclusion.component.html',
-  styleUrls: ['./describe-exclusion.component.scss']
+  templateUrl: './describe-exclusion.component.html'
 })
 export class DescribeExclusionComponent implements OnInit, OnDestroy {
 

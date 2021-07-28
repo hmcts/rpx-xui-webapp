@@ -5,9 +5,10 @@ import { Person, SearchOptions } from '../models/dtos';
 
 @Injectable()
 export class FindAPersonService {
-    constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {
+  }
 
-    public find(searchOptions: SearchOptions): Observable<Person[]> {
-        return this.http.post<Person[]>('/workallocation2/findPerson', { searchOptions });
-    }
+  public find(searchOptions: SearchOptions): Observable<Person[]> {
+    return this.http.post<Person[]>('/workallocation2/findPerson', {searchOptions});
+  }
 }

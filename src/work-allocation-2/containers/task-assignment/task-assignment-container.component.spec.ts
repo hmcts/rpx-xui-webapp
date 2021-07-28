@@ -12,7 +12,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { TaskListComponent } from '..';
-import { PersonDomain } from '../../../../api/workAllocation2/interfaces/person';
+import { PersonRole } from '../../../../api/workAllocation2/interfaces/person';
 import { ErrorMessageComponent } from '../../../app/components';
 import { TaskActionConstants } from '../../components/constants';
 import { FindPersonComponent } from '../../components/find-person/find-person.component';
@@ -47,7 +47,7 @@ describe('TaskAssignmentContainerComponent2', () => {
     id: 'id123',
     name: 'John Smith',
     email: 'john.smith@email.com',
-    domain: PersonDomain.CASEWORKER
+    domain: PersonRole.CASEWORKER
   };
   const mockTasks = getMockTasks();
   const mockWorkAllocationService = {

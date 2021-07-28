@@ -3,12 +3,12 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
+import * as routeAction from '../../../app/store/index';
+import { InfoMessageType } from '../../../work-allocation-2/enums';
 import { ExcludeOption, RoleAccessHttpError } from '../../models';
+import { ExclusionMessageText } from '../../models/enums/exclusion-text';
 import { RoleExclusionsService } from '../../services';
 import { ConfirmExclusionAction, ExclusionActionTypes } from '../actions';
-import * as routeAction from '../../../app/store/index';
-import { ExclusionMessageText } from '../../models/enums/exclusion-text';
-import { InfoMessageType } from '../../../work-allocation-2/enums';
 
 export enum REDIRECTS {
   NotAuthorised = '/not-authorised',
@@ -23,10 +23,9 @@ export class ExclusionEffects {
     private actions$: Actions,
     private roleExclusionsService: RoleExclusionsService
   ) {
-
   }
 
-  @Effect() confirmExclusion$ = this.actions$
+  @Effect() public confirmExclusion$ = this.actions$
     .pipe(
       ofType<ConfirmExclusionAction>(ExclusionActionTypes.CONFIRM_EXCLUSION),
       mergeMap(
@@ -46,7 +45,7 @@ export class ExclusionEffects {
               }
               // exclude another person
               return new routeAction.CreateCaseGo({
-                path: [`/cases/case-details/${data.payload.caseId}/tasks`],
+                path: [`/cases/case-details/${data.payload.caseId}/roles-and-access`],
                 caseId: data.payload.caseId,
                 extras: {
                   state: {
@@ -62,7 +61,7 @@ export class ExclusionEffects {
             )
           )
       )
-    )
+    );
 
   public static handleError(error: RoleAccessHttpError, action: string): Observable<Action> {
     if (error && error.status) {

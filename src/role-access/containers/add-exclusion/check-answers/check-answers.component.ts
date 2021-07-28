@@ -2,9 +2,9 @@ import { Component, Input, OnDestroy } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { Answer, ExcludeOption, ExclusionNavigationEvent, ExclusionState, ExclusionStateData } from '../../../models';
+import { AnswerHeaderText, AnswerLabelText } from '../../../models/enums';
 import { ExclusionNavigation } from '../../../models/exclusion-navigation.interface';
 import * as fromFeature from '../../../store';
-import { AnswerHeaderText, AnswerLabelText } from '../../../models/enums';
 
 @Component({
   selector: 'exui-check-answers',

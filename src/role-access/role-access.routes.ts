@@ -1,14 +1,15 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
+import { AddExclusionHomeComponent } from './containers/add-exclusion/add-exclusion-home/add-exclusion-home.component';
 import { DeleteExclusionComponent } from './containers/delete-exclusion/delete-exclusion.component';
 import { ExclusionHomeComponent } from './containers/exclusion/exclusion-home/exclusion-home.component';
 import { RoleExclusionsResolver } from './resolvers/role-exclusions.resolver';
 
 export const ROUTES: Routes = [
   {
-    path: 'exclusion',
-    component: ExclusionHomeComponent,
+    path: 'add-exclusion',
+    component: AddExclusionHomeComponent,
     children: [
       {
         path: '',

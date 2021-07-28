@@ -3,13 +3,17 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
-import { ExcludeOption, RoleAccessHttpError } from '../../models';
-import { RoleExclusionsService } from '../../services';
-import { ConfirmExclusionAction, ConfirmExclusionFailureAction, ExclusionActionTypes } from '../actions';
 import * as routeAction from '../../../app/store/index';
-import { ExclusionMessageText } from '../../models/enums/exclusion-text';
 import { InfoMessageType } from '../../../work-allocation-2/enums';
+import { ExcludeOption, RoleAccessHttpError } from '../../models';
+import { ExclusionMessageText } from '../../models/enums/exclusion-text';
+import { RoleExclusionsService } from '../../services';
+import { ConfirmExclusionAction, ExclusionActionTypes } from '../actions';
 
+export enum REDIRECTS {
+  NotAuthorised = '/not-authorised',
+  ServiceDown = '/service-down'
+}
 
 @Injectable()
 export class ExclusionEffects {
@@ -21,7 +25,7 @@ export class ExclusionEffects {
   ) {
   }
 
-  @Effect() confirmExclusion$ = this.actions$
+  @Effect() public confirmExclusion$ = this.actions$
     .pipe(
       ofType<ConfirmExclusionAction>(ExclusionActionTypes.CONFIRM_EXCLUSION),
       mergeMap(
@@ -41,7 +45,7 @@ export class ExclusionEffects {
               }
               // exclude another person
               return new routeAction.CreateCaseGo({
-                path: [`/cases/case-details/${data.payload.caseId}`],
+                path: [`/cases/case-details/${data.payload.caseId}/roles-and-access`],
                 caseId: data.payload.caseId,
                 extras: {
                   state: {
@@ -57,23 +61,26 @@ export class ExclusionEffects {
             )
           )
       )
-    )
+    );
 
   public static handleError(error: RoleAccessHttpError, action: string): Observable<Action> {
     if (error && error.status) {
-      if (error.status >= 400 && error.status <= 404) {
-        switch (action) {
-          case ExclusionActionTypes.CONFIRM_EXCLUSION:
-            return of(new ConfirmExclusionFailureAction(error));
-          default:
-            return of(new routeAction.Go({
-              path: ['/service-down']
-            }));
-        }
-      } else {
-        return of(new routeAction.Go({
-          path: ['/service-down']
-        }));
+      switch (error.status) {
+        case 401:
+        case 403:
+          return of(new routeAction.Go({
+            path: [REDIRECTS.NotAuthorised]
+          }));
+        case 400:
+        case 500:
+        case 503:
+          return of(new routeAction.Go({
+            path: [REDIRECTS.ServiceDown]
+          }));
+        default:
+          return of(new routeAction.Go({
+            path: [REDIRECTS.ServiceDown]
+          }));
       }
     }
   }

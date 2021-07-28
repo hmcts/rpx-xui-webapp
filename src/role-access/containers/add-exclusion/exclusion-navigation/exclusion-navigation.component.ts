@@ -1,6 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import * as fromRoot from '../../../../app/store';
 import {
   backButtonVisibilityStates,
   cancelButtonVisibilityStates,
@@ -9,7 +10,6 @@ import {
 } from '../../../constants';
 import { ExclusionNavigationEvent, ExclusionState } from '../../../models';
 import * as fromFeature from '../../../store';
-import * as fromRoot from '../../../../app/store';
 
 @Component({
   selector: 'exui-exclusion-navigation',

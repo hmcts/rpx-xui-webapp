@@ -1,15 +1,15 @@
+import { AddExclusionHomeComponent } from './add-exclusion/add-exclusion-home/add-exclusion-home.component';
+import { CheckAnswersComponent } from './add-exclusion/check-answers/check-answers.component';
+import { ChooseExclusionComponent } from './add-exclusion/choose-exclusion/choose-exclusion.component';
+import { ChoosePersonRoleComponent } from './add-exclusion/choose-person-role/choose-person-role.component';
+import { DescribeExclusionComponent } from './add-exclusion/describe-exclusion/describe-exclusion.component';
+import { ExclusionNavigationComponent } from './add-exclusion/exclusion-navigation/exclusion-navigation.component';
+import { SearchPersonComponent } from './add-exclusion/search-person/search-person.component';
 import { DeleteExclusionComponent } from './delete-exclusion/delete-exclusion.component';
-import { CheckAnswersComponent } from './exclusion/check-answers/check-answers.component';
-import { ChooseExclusionComponent } from './exclusion/choose-exclusion/choose-exclusion.component';
-import { ChoosePersonRoleComponent } from './exclusion/choose-person-role/choose-person-role.component';
-import { DescribeExclusionComponent } from './exclusion/describe-exclusion/describe-exclusion.component';
-import { ExclusionHomeComponent } from './exclusion/exclusion-home/exclusion-home.component';
-import { ExclusionNavigationComponent } from './exclusion/exclusion-navigation/exclusion-navigation.component';
-import { SearchPersonComponent } from './exclusion/search-person/search-person.component';
 import { RoleAccessComponent } from './role-and-access/role-access.component';
 
 export const containers: any[] = [
-  ExclusionHomeComponent,
+  AddExclusionHomeComponent,
   ExclusionNavigationComponent,
   ChooseExclusionComponent,
   ChoosePersonRoleComponent,
@@ -20,12 +20,12 @@ export const containers: any[] = [
   DeleteExclusionComponent
 ];
 
+export * from './add-exclusion/check-answers/check-answers.component';
+export * from './add-exclusion/choose-exclusion/choose-exclusion.component';
+export * from './add-exclusion/choose-person-role/choose-person-role.component';
+export * from './add-exclusion/describe-exclusion/describe-exclusion.component';
+export * from './add-exclusion/add-exclusion-home/add-exclusion-home.component';
+export * from './add-exclusion/exclusion-navigation/exclusion-navigation.component';
+export * from './add-exclusion/search-person/search-person.component';
 export * from './delete-exclusion/delete-exclusion.component';
-export * from './exclusion/check-answers/check-answers.component';
-export * from './exclusion/choose-exclusion/choose-exclusion.component';
-export * from './exclusion/choose-person-role/choose-person-role.component';
-export * from './exclusion/describe-exclusion/describe-exclusion.component';
-export * from './exclusion/exclusion-home/exclusion-home.component';
-export * from './exclusion/exclusion-navigation/exclusion-navigation.component';
-export * from './exclusion/search-person/search-person.component';
 export * from './role-and-access/role-access.component';

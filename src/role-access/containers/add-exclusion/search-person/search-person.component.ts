@@ -4,22 +4,23 @@ import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { FindPersonComponent } from 'src/work-allocation-2/components/find-person/find-person.component';
 import { Person } from '../../../../work-allocation-2/models/dtos';
-import { ExclusionNavigationEvent, ExclusionState, ExclusionStateData } from '../../../models';
+import { ExclusionNavigationEvent, ExclusionState, ExclusionStateData, PersonRole } from '../../../models';
 import { ExclusionNavigation } from '../../../models/exclusion-navigation.interface';
 import * as fromFeature from '../../../store';
 
 @Component({
   selector: 'exui-search-person',
-  templateUrl: './search-person.component.html',
-  styleUrls: ['./search-person.component.scss']
+  templateUrl: './search-person.component.html'
 })
 export class SearchPersonComponent implements OnInit {
-  @ViewChild(FindPersonComponent) child: FindPersonComponent;
+  @ViewChild(FindPersonComponent) public child: FindPersonComponent;
   @Input() public navEvent: ExclusionNavigation;
   public formGroup: FormGroup = new FormGroup({});
   public personName: string;
   public person: Person;
   public subscription: Subscription;
+  public personRole: PersonRole;
+
   constructor(private readonly store: Store<fromFeature.State>) {
   }
 
@@ -30,6 +31,7 @@ export class SearchPersonComponent implements OnInit {
   public setPerson(exclusion: ExclusionStateData): void {
     this.personName = exclusion && exclusion.person ? this.child.getDisplayName(exclusion.person) : null;
     this.person = exclusion.person;
+    this.personRole = exclusion.personRole;
   }
 
   public navigationHandler(navEvent: ExclusionNavigationEvent) {

@@ -1,8 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
+import { CaseView, CaseTab } from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { CaseViewerContainerComponent } from './case-viewer-container.component';
+import {StoreModule} from '@ngrx/store';
 
 
 @Component({
@@ -12,15 +14,20 @@ import { CaseViewerContainerComponent } from './case-viewer-container.component'
 })
 class CaseViewerComponent {
   @Input() public caseDetails: CaseView;
+  @Input() public prependedTabs: CaseTab[] = [];
 }
 
 describe('CaseViewerContainerComponent', () => {
   let component: CaseViewerContainerComponent;
   let fixture: ComponentFixture<CaseViewerContainerComponent>;
+  const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['getValue'])
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
+      imports: [RouterTestingModule, StoreModule.forRoot({})],
+      providers: [
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
+      ],
       declarations: [ CaseViewerContainerComponent, CaseViewerComponent ]
     })
     .compileComponents();

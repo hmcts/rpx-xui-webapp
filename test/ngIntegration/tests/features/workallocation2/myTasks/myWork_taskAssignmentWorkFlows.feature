@@ -19,6 +19,7 @@ Feature: WA Release 2: My work - My tasks - Task assignment
             | case_name        | case_category      | location_name |
             | Allwork test scr | auto test category | London QA lab |
 
+@test
     Scenario Outline:  Task Manage links for "<UserType>" action "<action>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
         Given I set MOCK find persons database with persons

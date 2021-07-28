@@ -160,13 +160,6 @@
   dependencies:
     tslib "^2.0.0"
 
-"@angular-material-components/moment-adapter@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@angular-material-components/moment-adapter/-/moment-adapter-5.0.0.tgz#e277b82a4a3554260cd274a1862edf64cc186cac"
-  integrity sha512-/9+8b4hpe8GwlgbuXAckDg5ZKms6yDWRKQcyXYuNKC+8Ya6M0M5NHYz3d4YXjJ73xOGURr73NlqZzYsknjYkUQ==
-  dependencies:
-    tslib "^2.0.0"
-
 "@angular/animations@^7.2.13":
   version "7.2.16"
   resolved "https://registry.yarnpkg.com/@angular/animations/-/animations-7.2.16.tgz#6e3f43df292bc53c3a526dabfd8025b3cd03b070"
@@ -450,13 +443,12 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.1.5-cve-fix":
-  version "4.1.5-cve-fix"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.1.5-cve-fix.tgz#804300260dc0314c40e34bb33ab7aaee01407f79"
-  integrity sha512-AUrUXNY4O8DCEbTFomyWn2shXcRAgizfR2Xqw981j+HC3WwMTFv8S9TeNsMNGAHIcaeEx5WhnlrDrzNdQFCk+Q==
+"@hmcts/ccd-case-ui-toolkit@4.1.5-cve-fix-v3":
+  version "4.1.5-cve-fix-v2"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.1.5-cve-fix-v2.tgz#6da8440e1a40da44d3bfc0e900de58cc8ad225ff"
+  integrity sha512-56P/dGpouQh856M5jIFKmWBekqnwr5GDn/7UlVUn6mX+4eSfnb7+Xckt3YTFXU2p1pRf1rfUWpTMThwtaOTnFw==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
-    "@angular-material-components/moment-adapter" "^5.0.0"
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
     "@hmcts/ccpay-web-component" "3.0.3"
@@ -475,7 +467,7 @@
     npm-registry-fetch "^4.0.5"
     rx-polling "1.1.0"
     typescript "3.1.1"
-    underscore "^1.12.1"
+    underscore "^1.9.1"
     yargs-parser "18.1.2"
 
 "@hmcts/ccpay-web-component@3.0.3":
@@ -13001,11 +12993,6 @@ underscore@1.8.3:
   version "1.8.3"
   resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.8.3.tgz#4f3fb53b106e6097fcf9cb4109f2a5e9bdfa5022"
   integrity sha1-Tz+1OxBuYJf8+ctBCfKl6b36UCI=
-
-underscore@^1.12.1:
-  version "1.13.1"
-  resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.13.1.tgz#0c1c6bd2df54b6b69f2314066d65b6cde6fcf9d1"
-  integrity sha512-hzSoAVtJF+3ZtiFX0VgfFPHEDRm7Y/QPjGyNo4TVdnDTdft3tr8hEkD25a1jC+TjTuE7tkHGKkhwCgs9dgBB2g==
 
 underscore@^1.9.1:
   version "1.9.2"

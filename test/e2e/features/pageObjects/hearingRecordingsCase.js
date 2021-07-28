@@ -11,8 +11,7 @@ class HearingRecordingsCase {
       this.submitBtn = element(by.xpath('//button[contains(text(),\'Submit\')]'));
       this.hearingFilesTabBtn = element(by.xpath('//div[contains(text(),\'Case Hearing Files\')]'));
       this.fileLink = element(by.xpath('//a[contains(text(),\'dummy.pdf\')]'));
-      //this.fileText = element(by.xpath('//button[@id=\'mvHighlightBtn\']'));
-      this.searchBtn = element(by.css('#mvSearchBtn'));
+      this.fileText = element(by.xpath('//span[contains(text(),\'Dumm\')]'));
     }
 
     async createCase() {
@@ -36,17 +35,9 @@ class HearingRecordingsCase {
       await this.fileLink.click();
     }
 
-    async changeTab(){
-      browser.getAllWindowHandles().then(function (handles) {
-        expect(handles.length).toEqual(1);
-        browser.switchTo().window(handles[1]);
-      });
-    }
-
     async checkFile() {
-      await BrowserWaits.waitForSeconds(5);
-      await this.searchBtn.click();
-      //browser.driver.findElement(by.id('mvSearchBtn')).click();
+      await BrowserWaits.waitForElement(this.fileText);
+      return await this.fileText.isPresent();
    }
 
 }

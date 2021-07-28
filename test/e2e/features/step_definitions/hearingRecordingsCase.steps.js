@@ -18,7 +18,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
 
   Then('I see the file displayed in Media Viewer', async function () {
-    await hearingRecordingsCase.changeTab();
     await hearingRecordingsCase.checkFile();
   });
 

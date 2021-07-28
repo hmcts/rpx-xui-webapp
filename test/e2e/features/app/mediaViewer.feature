@@ -1,4 +1,4 @@
-@fullfunctional5
+@fullfunctional
 Feature: Check media viewer
 
     Background:
@@ -8,7 +8,6 @@ Feature: Check media viewer
         When I click on create case button
         Then Create case page should be displayed
 
-@test
     Scenario: Start create case for Hearing Recordings and check document
         When I start case with jurisdiction "Hearing Recordings" case type "Recorded Hearings v.03" and event "Create a case"
         Then I am on case form page

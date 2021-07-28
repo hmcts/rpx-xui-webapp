@@ -1,3 +1,4 @@
+import { DeleteExclusionComponent } from './delete-exclusion/delete-exclusion.component';
 import { CheckAnswersComponent } from './exclusion/check-answers/check-answers.component';
 import { ChooseExclusionComponent } from './exclusion/choose-exclusion/choose-exclusion.component';
 import { ChoosePersonRoleComponent } from './exclusion/choose-person-role/choose-person-role.component';
@@ -15,9 +16,11 @@ export const containers: any[] = [
   SearchPersonComponent,
   DescribeExclusionComponent,
   CheckAnswersComponent,
-  RoleAccessComponent
+  RoleAccessComponent,
+  DeleteExclusionComponent
 ];
 
+export * from './delete-exclusion/delete-exclusion.component';
 export * from './exclusion/check-answers/check-answers.component';
 export * from './exclusion/choose-exclusion/choose-exclusion.component';
 export * from './exclusion/choose-person-role/choose-person-role.component';

@@ -33,7 +33,7 @@ export class SearchPersonComponent implements OnInit {
     this.personRole = exclusion.personRole;
   }
 
-  public navigationHandler(navEvent: ExclusionNavigationEvent) {
+  public navigationHandler(navEvent: ExclusionNavigationEvent): void {
     if (this.formGroup && this.formGroup.value && this.formGroup.value.findPersonControl && this.person) {
       switch (navEvent) {
         case ExclusionNavigationEvent.CONTINUE:
@@ -50,11 +50,11 @@ export class SearchPersonComponent implements OnInit {
     }
   }
 
-  public selectedPerson(person?: Person) {
+  public selectedPerson(person: Person): void {
     this.person = person;
   }
 
-  public getDisplayName(selectedPerson: Person) {
+  public getDisplayName(selectedPerson: Person): string {
     return selectedPerson.email ? `${selectedPerson.name}(${selectedPerson.email})` : selectedPerson.name;
   }
 }

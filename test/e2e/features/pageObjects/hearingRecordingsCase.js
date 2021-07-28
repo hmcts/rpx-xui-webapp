@@ -37,7 +37,6 @@ class HearingRecordingsCase {
 
     async checkFile() {
       await BrowserWaits.waitForSeconds(5);
-      await BrowserWaits.waitForElement(this.fileText);
       return await this.fileText.isPresent();
    }
 

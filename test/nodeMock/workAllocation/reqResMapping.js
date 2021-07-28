@@ -27,6 +27,9 @@ module.exports = {
         },
         '/workallocation/caseworker/location/:locId': (req, res) => {
             res.send(workAllocationMockData.getCaseworkersList(10));
+        },
+        '/workallocation2/exclusion/rolesCategory': (req, res)=>{
+            res.send(workAllocationMockData.getExclusionRoleCategories());
         }
     },
     post: {

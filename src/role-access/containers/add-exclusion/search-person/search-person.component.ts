@@ -54,7 +54,6 @@ export class SearchPersonComponent implements OnInit {
     this.person = person;
   }
 
-  // moved to container to stop unneccessary call to child component for the moment
   public getDisplayName(selectedPerson: Person) {
     return selectedPerson.email ? `${selectedPerson.name}(${selectedPerson.email})` : selectedPerson.name;
   }

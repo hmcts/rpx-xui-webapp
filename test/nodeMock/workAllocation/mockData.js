@@ -200,6 +200,27 @@ class WorkAllocationMockData {
         return filteredUsers;
     }
 
+    getExclusionRoleCategories(){
+        const roleCategories = [];
+        const judicial = WorkAllocationDataModels.getRoleCategory();
+        judicial.roleId = "judicial";
+        judicial.roleName = "Judicial"
+
+        const legalOps = WorkAllocationDataModels.getRoleCategory();
+        legalOps.roleId = "legalOps";
+        legalOps.roleName = "Legal Ops"
+
+        const admin = WorkAllocationDataModels.getRoleCategory();
+        admin.roleId = "admin";
+        admin.roleName = "Admin"
+
+        roleCategories.push(judicial);
+        roleCategories.push(legalOps);
+        roleCategories.push(admin);
+        return roleCategories;
+
+    }
+
 
 }
 

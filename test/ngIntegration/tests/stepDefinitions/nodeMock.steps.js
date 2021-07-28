@@ -7,6 +7,7 @@ const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
 const CucumberReporter = require('../../../e2e/support/reportLogger');
 
 const headerpage = require('../../../e2e/features/pageObjects/headerPage');
+const workAllocationDataModel = require("../../../dataModels/workAllocation");
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
@@ -102,6 +103,30 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
        }
         
         
+     });
+
+
+    Given('I set MOCK find person response for jurisdictions', async function(datatable){
+        const personsConfigHashes = datatable.hashes();
+
+        MockApp.onPost('/workallocation2/findPerson', (req,res) => {
+            const inputJurisdiction = req.searchOptions.jurisdiction;
+            const filterdUsersForJurisdiction = [];
+            for (let i = 0; i < personsConfigHashes.length; i++){
+                const inputperson = personsConfigHashes[i];
+                if (inputperson.jurisdiction === inputJurisdiction){
+                    const person = workAllocationDataModel.getFindPersonObj();
+
+                    person['domain'] = inputperson['domain'];
+                    person['id'] = inputperson['id'];
+                    person['email'] = inputperson['email'];
+                    person['name'] = inputperson['name'];
+                    filterdUsersForJurisdiction.push(person);
+                }
+            } 
+            res.send(filterdUsersForJurisdiction);
+        });
+
      });
 
 

@@ -35,22 +35,53 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I see Add an exclusion work flow page {string} is displayed', async function(workFlowPage){
-        let workFlowPageObject = null;
+        let workFlowPageObject = getWorkflowPageObject(workFlowPage);
 
-        if (workFlowPage === 'Choose who the exclusion is for'){
-            expect(await chooseWhoExclusionIsForPage.isDisplayed()).to.be.true;
-        } else if (workFlowPage === "Choose the person's role") {
-            expect(await choosePersonRolePage.isDisplayed()).to.be.true;
-        } else if (workFlowPage === "Find the person") {
-            expect(await findThePersonPage.isDisplayed()).to.be.true;
-        } else if (workFlowPage === "Describe the exclusion") {
-            expect(await describeExclusionPage.isDisplayed()).to.be.true;
-        } else if (workFlowPage === "Check your answers") {
-            expect(await checkYourAnswersPage.isDisplayed()).to.be.true;
-        }else{
-            throw new Error(`work flow page "${workFlowPage}" is not recognised or not implemented in test step definition.`);
-        }
+
+        expect(await workFlowPageObject.isDisplayed(), `${workFlowPage} work flow page not displayed`).to.be.true;
+        expect(await workFlowPageObject.getHeaderText(), `${workFlowPage} work flow page header not matching`).to.include(workFlowPage);
+        expect(await workFlowPageObject.getHeaderCaption(), `${workFlowPage} work flow page header caption not matching`).to.include("Add an exclusion");
         
     });
+
+
+    When('I select Choose who the exclusion is for option {string} in add exclusion work flow', async function(whoTheExclusionIsForOption){
+        await chooseWhoExclusionIsForPage.selectRadioOption(whoTheExclusionIsForOption);
+    });
+
+    When('I click continue in add exclusion work flow page {string}', async function (workFlowPage){
+        let workFlowPageObject = getWorkflowPageObject(workFlowPage);
+        await workFlowPageObject.clickContinueButton();
+    });
+
+    When('I select Choose the person\'s role option {string} in add exclusion work flow', async function(excludeRoleOption){
+        await choosePersonRolePage.selectRadioOption(excludeRoleOption);
+    });
+
+
+    When('I enter description {string} in add exclusion Describe the exclusion page', async function(exclusionDescription){
+        await describeExclusionPage.enterExclusionDescription(exclusionDescription);
+    });
+
+    function getWorkflowPageObject(workFlowPage){
+        let workFlowPageObject = null;
+
+        if (workFlowPage === 'Choose who the exclusion is for') {
+            workFlowPageObject = chooseWhoExclusionIsForPage;
+        } else if (workFlowPage === "Choose the person's role") {
+            workFlowPageObject = choosePersonRolePage;
+        } else if (workFlowPage === "Find the person") {
+            workFlowPageObject = findThePersonPage;
+        } else if (workFlowPage === "Describe the exclusion") {
+            workFlowPageObject = describeExclusionPage;
+        } else if (workFlowPage === "Check your answers") {
+            workFlowPageObject = checkYourAnswersPage;
+        } else {
+            throw new Error(`work flow page "${workFlowPage}" is not recognised or not implemented in test step definition.`);
+        }
+        return workFlowPageObject;
+    }
+
+
 
 });

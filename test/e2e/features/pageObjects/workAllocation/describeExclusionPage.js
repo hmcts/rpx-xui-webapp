@@ -31,11 +31,11 @@ class DescribeExclusionPage {
     }
 
     async getHeaderCaption() {
-        return await this.headerCaption.getHeaderCaption();
+        return await this.headerCaption.getText();
     }
 
-    async getHeader() {
-        return await this.header.getHeader();
+    async getHeaderText() {
+        return await this.header.getText();
     }
 
 

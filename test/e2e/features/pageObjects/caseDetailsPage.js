@@ -1,14 +1,15 @@
 
-const TaskMessageBanner = require("./messageBanner");
 const BrowserWaits = require("../../support/customWaits");
 const CucumberReporter = require("../../support/reportLogger");
+
+const MessageBanner = require("./messageBanner");
 class CaseDetailsPage{
 
     constructor(){
-        this.taskInfoMessageBanner = new TaskMessageBanner("exui-case-details-home");
-
         this.caseDetailsContainer = $("exui-case-details-home");
         this.tabsContainer = $("mat-tab-header .mat-tab-label-container");
+
+        this.messageBanner = new MessageBanner();
     }
 
     async amOnPage(){

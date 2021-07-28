@@ -189,9 +189,7 @@ class WorkAllocationMockData {
 
     async findPersonResponse(searchTerm, personsData) {
 
-        if (this.findPersonsAllAdata.length === 0) {
-            this.findPersonsAllAdata = await this.getFindPersonsDataFrom(findPersonsDetails);
-        }
+        this.findPersonsAllAdata = await this.getFindPersonsDataFrom(findPersonsDetails);
         searchTerm = searchTerm.toLowerCase();
         const referenceData = personsData ? personsData : this.findPersonsAllAdata;
         const filteredUsers = await ArrayUtil.filter(referenceData, async (person) => {

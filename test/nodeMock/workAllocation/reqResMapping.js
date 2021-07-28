@@ -177,6 +177,9 @@ module.exports = {
                 res.send(response);
             });
             
+        },
+        '/api/user/exclusions/confirm' : (req,res)=>{
+            res.send({});
         }
     }
 

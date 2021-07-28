@@ -1,6 +1,7 @@
 
 const BrowserWaits = require('../../support/customWaits');
 var cucumberReporter = require('../../support/reportLogger');
+const ArrayUtil = require('../../utils/ArrayUtil');
 
 class MessageBanner{
 
@@ -37,6 +38,15 @@ class MessageBanner{
             messages.push(...submessagestrings);
         }
         return messages;
+    }
+
+    async isMessageTextDisplayed(expectedMessage){
+        const allMessages = await this.getBannerMessagesDisplayed();
+        const matchingMessages = await ArrayUtil.filter(allMessages,async (message) => {
+            return message.includes(expectedMessage);
+        });
+
+        return matchingMessages.length > 0;
     }
 
 }

@@ -12,8 +12,9 @@ class FindPersonPage{
         this.searchInput = $("exui-find-person #inputSelectPerson");
         this.searchInputHintText = $("exui-find-person .govuk-hint");
 
-        this.continueButton = $("exui-work-allocation-home button[type = 'submit']");
-        this.cancelLink = element(by.xpath("//exui-work-allocation-home//p/a[contains(text(),'Cancel')]"));
+        this.continueButton = $("exui-exclusion-navigation button");
+
+        this.cancelLink = $("exui-exclusion-navigation div>p>a");
 
         this.searchResultsContainer = $(".cdk-overlay-container .mat-autocomplete-visible");
 

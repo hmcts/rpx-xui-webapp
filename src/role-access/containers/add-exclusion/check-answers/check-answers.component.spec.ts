@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { provideMockStore } from '@ngrx/store/testing';
+import { AnswersComponent } from '../../../components';
 import { CheckAnswersComponent } from './check-answers.component';
 
 describe('CheckAnswersComponent', () => {
@@ -9,7 +10,7 @@ describe('CheckAnswersComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [CheckAnswersComponent],
+      declarations: [AnswersComponent, CheckAnswersComponent],
       providers: [
         provideMockStore()
       ]

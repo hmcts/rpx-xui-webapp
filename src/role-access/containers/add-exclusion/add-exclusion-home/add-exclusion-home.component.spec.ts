@@ -3,11 +3,11 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { Router } from '@angular/router';
 import { provideMockStore } from '@ngrx/store/testing';
-import { ExclusionHomeComponent } from './exclusion-home.component';
+import { AddExclusionHomeComponent } from './add-exclusion-home.component';
 
 describe('ExclusionHomeComponent', () => {
-  let component: ExclusionHomeComponent;
-  let fixture: ComponentFixture<ExclusionHomeComponent>;
+  let component: AddExclusionHomeComponent;
+  let fixture: ComponentFixture<AddExclusionHomeComponent>;
   const routerMock = jasmine.createSpyObj('Router', [
     'navigateByUrl'
   ]);
@@ -17,7 +17,7 @@ describe('ExclusionHomeComponent', () => {
       schemas: [
         NO_ERRORS_SCHEMA
       ],
-      declarations: [ExclusionHomeComponent],
+      declarations: [AddExclusionHomeComponent],
       providers: [
         provideMockStore(),
         {
@@ -30,7 +30,7 @@ describe('ExclusionHomeComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ExclusionHomeComponent);
+    fixture = TestBed.createComponent(AddExclusionHomeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

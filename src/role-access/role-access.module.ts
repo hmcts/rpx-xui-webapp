@@ -13,6 +13,7 @@ import * as fromContainers from './containers';
 import { roleAccessRouting } from './role-access.routes';
 import { RoleExclusionsService } from './services';
 import { effects, reducers } from './store';
+import { InfoMessageCommService } from '../work-allocation-2/services';
 
 @NgModule({
   imports: [
@@ -31,6 +32,7 @@ import { effects, reducers } from './store';
     provide: AbstractAppConfig,
     useExisting: AppConfig,
   },
+    InfoMessageCommService,
     RoleExclusionsService
   ]
 })

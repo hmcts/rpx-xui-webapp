@@ -150,10 +150,10 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getHrsUrl(): string {
-    return '';
+    return this.config.hrs_url;
   }
 
   public getRemoteHrsUrl(): string {
-    return '';
+    return this.config.remote_hrs_url;
   }
 }

@@ -1,16 +1,10 @@
 import { Injectable } from '@angular/core';
-import { AbstractAppConfig, CaseEditorConfig, CaseTab } from '@hmcts/ccd-case-ui-toolkit';
+import { AbstractAppConfig, CaseEditorConfig } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { select, Store } from '@ngrx/store';
-import { combineLatest } from 'rxjs';
-import { Observable } from 'rxjs/Observable';
-import { map } from 'rxjs/operators';
 import { WorkAllocationTaskService } from '../../../work-allocation/services';
 import { AppUtils } from '../../app-utils';
 import { AppConstants } from '../../app.constants';
-import { UserDetails } from '../../models/user-details.model';
 import { EnvironmentService } from '../../shared/services/environment.service';
-import * as fromRoot from '../../store';
 import { AppConfigService } from '../config/configuration.services';
 
 /**
@@ -21,29 +15,11 @@ import { AppConfigService } from '../config/configuration.services';
 
 @Injectable()
 export class AppConfig extends AbstractAppConfig {
-  private static WORKALLOCATIONRELEASE1 = 'WorkAllocationRelease1';
-  private static WORKALLOCATIONRELEASE2 = 'WorkAllocationRelease2';
   public workallocationUrl: string;
   protected config: CaseEditorConfig;
-  private workAllocationRoles: string[] = ['caseworker-ia-iacjudge'];
-  private tabs: CaseTab[] = [
-    {
-      id: 'tasks',
-      label: 'Tasks',
-      fields: [],
-      show_condition: null
-    },
-    {
-      id: 'roles-and-access',
-      label: 'Roles and access',
-      fields: [],
-      show_condition: null
-    }
-  ];
 
   constructor(
     private readonly appConfigService: AppConfigService,
-    private readonly store: Store<fromRoot.State>,
     private readonly featureToggleService: FeatureToggleService,
     private readonly environmentService: EnvironmentService
   ) {
@@ -169,15 +145,6 @@ export class AppConfig extends AbstractAppConfig {
     return '';
   }
 
-  public prependedCaseViewTabs(): Observable<CaseTab[]> {
-    return combineLatest([
-      this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.currentWAFeature, AppConfig.WORKALLOCATIONRELEASE1),
-      this.store.pipe(select(fromRoot.getUserDetails))
-    ]).pipe(
-      map(([feature, userDetails]: [string, UserDetails]) => this.enablePrependedTabs(feature, userDetails) ? this.tabs : [])
-    );
-  }
-
   private featureToggleWorkAllocation(): void {
     this.featureToggleService
       .isEnabled(AppConstants.FEATURE_NAMES.workAllocation)
@@ -190,8 +157,4 @@ export class AppConfig extends AbstractAppConfig {
       );
   }
 
-  private enablePrependedTabs(feature: string, userDetails: UserDetails): boolean {
-    return feature === AppConfig.WORKALLOCATIONRELEASE2
-      && userDetails.userInfo.roles.some((role: string) => this.workAllocationRoles.indexOf(role) >= 0);
-  }
 }

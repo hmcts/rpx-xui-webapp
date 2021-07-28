@@ -248,7 +248,7 @@ export class TaskListWrapperComponent implements OnInit {
 
   // Do the actual load. This is separate as it's called from two methods.
   private doLoad(): void {
-    this.showSpinner$ = this.loadingService.isLoading;
+    // this.showSpinner$ = this.loadingService.isLoading;
     const loadingToken = this.loadingService.register();
     this.performSearchPagination().subscribe(result => {
         this.loadingService.unregister(loadingToken);

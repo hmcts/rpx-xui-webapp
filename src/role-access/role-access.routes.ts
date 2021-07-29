@@ -1,7 +1,7 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
-import { AddExclusionHomeComponent } from './containers';
+import { AddExclusionHomeComponent } from './containers/add-exclusion';
 
 export const ROUTES: Routes = [
   {

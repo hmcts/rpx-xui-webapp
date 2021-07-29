@@ -1,15 +1,14 @@
-
-import { SearchPersonComponent } from './search-person.component';
-import { ExclusionNavigationEvent, ExclusionState } from '../../../models';
 import { FormControl } from '@angular/forms';
-import { UpdatePersonExclusion } from 'src/role-access/store';
+import { ExclusionNavigationEvent, ExclusionState } from '../../../models';
+import { UpdatePersonExclusion } from '../../../store/actions';
+import { AddExclusionSearchPersonComponent } from './add-exclusion-search-person.component';
 
-describe('SearchPersonComponent', () => {
-  let component: SearchPersonComponent;
+describe('AddExclusionSearchPersonComponent', () => {
+  let component: AddExclusionSearchPersonComponent;
   let mockStore: any;
   beforeEach((() => {
     mockStore = jasmine.createSpyObj('mockStore', ['pipe', 'dispatch']);
-    component = new SearchPersonComponent(mockStore);
+    component = new AddExclusionSearchPersonComponent(mockStore);
   }));
 
   it('navigationHandler raises invalid Error when person not selected', () => {

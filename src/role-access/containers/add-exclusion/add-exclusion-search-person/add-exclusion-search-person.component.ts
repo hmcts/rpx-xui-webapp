@@ -9,10 +9,10 @@ import { ExclusionNavigation } from '../../../models/exclusion-navigation.interf
 import * as fromFeature from '../../../store';
 
 @Component({
-  selector: 'exui-search-person',
-  templateUrl: './search-person.component.html'
+  selector: 'exui-add-exclusion-search-person',
+  templateUrl: './add-exclusion-search-person.component.html'
 })
-export class SearchPersonComponent implements OnInit {
+export class AddExclusionSearchPersonComponent implements OnInit {
   @ViewChild(FindPersonComponent) public child: FindPersonComponent;
   @Input() public navEvent: ExclusionNavigation;
   public formGroup: FormGroup = new FormGroup({});

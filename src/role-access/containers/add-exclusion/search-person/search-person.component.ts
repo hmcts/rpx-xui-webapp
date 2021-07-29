@@ -2,7 +2,6 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { FindPersonComponent } from 'src/work-allocation-2/components/find-person/find-person.component';
 import { Person } from '../../../../work-allocation-2/models/dtos';
 import { ExclusionNavigationEvent, ExclusionState, ExclusionStateData, PersonRole } from '../../../models';
 import { ExclusionNavigation } from '../../../models/exclusion-navigation.interface';
@@ -13,8 +12,8 @@ import * as fromFeature from '../../../store';
   templateUrl: './search-person.component.html'
 })
 export class SearchPersonComponent implements OnInit {
-  @ViewChild(FindPersonComponent) public child: FindPersonComponent;
   @Input() public navEvent: ExclusionNavigation;
+  public domain = PersonRole.ALL;
   public formGroup: FormGroup = new FormGroup({});
   public personName: string;
   public person: Person;
@@ -29,12 +28,12 @@ export class SearchPersonComponent implements OnInit {
   }
 
   public setPerson(exclusion: ExclusionStateData): void {
-    this.personName = exclusion && exclusion.person ? this.child.getDisplayName(exclusion.person) : null;
+    this.personName = exclusion && exclusion.person ? this.getDisplayName(exclusion.person) : null;
     this.person = exclusion.person;
     this.personRole = exclusion.personRole;
   }
 
-  public navigationHandler(navEvent: ExclusionNavigationEvent) {
+  public navigationHandler(navEvent: ExclusionNavigationEvent): void {
     if (this.formGroup && this.formGroup.value && this.formGroup.value.findPersonControl && this.person) {
       switch (navEvent) {
         case ExclusionNavigationEvent.CONTINUE:
@@ -51,7 +50,11 @@ export class SearchPersonComponent implements OnInit {
     }
   }
 
-  public selectedPerson(person?: Person) {
+  public selectedPerson(person: Person): void {
     this.person = person;
+  }
+
+  public getDisplayName(selectedPerson: Person): string {
+    return selectedPerson.email ? `${selectedPerson.name}(${selectedPerson.email})` : selectedPerson.name;
   }
 }

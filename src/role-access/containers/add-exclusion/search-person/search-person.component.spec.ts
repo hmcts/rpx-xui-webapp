@@ -1,8 +1,8 @@
-
-import { SearchPersonComponent } from './search-person.component';
-import { ExclusionNavigationEvent, ExclusionState } from '../../../models';
 import { FormControl } from '@angular/forms';
-import { UpdatePersonExclusion } from 'src/role-access/store';
+
+import { ExclusionNavigationEvent, ExclusionState } from '../../../models';
+import { UpdatePersonExclusion } from '../../../store';
+import { SearchPersonComponent } from './search-person.component';
 
 describe('SearchPersonComponent', () => {
   let component: SearchPersonComponent;

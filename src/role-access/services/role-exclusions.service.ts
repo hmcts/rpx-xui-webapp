@@ -21,4 +21,8 @@ export class RoleExclusionsService {
   public confirmExclusion(exclusionStateData: ExclusionStateData) {
     return this.http.post(`${RoleExclusionsService.exclusionsUrl}/confirm`, exclusionStateData);
   }
+
+  public deleteExclusion(exclusionStateData: ExclusionStateData) {
+    return this.http.post(`${RoleExclusionsService.exclusionsUrl}/delete`, exclusionStateData);
+  }
 }

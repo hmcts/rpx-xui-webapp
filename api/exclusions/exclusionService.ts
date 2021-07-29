@@ -33,6 +33,14 @@ export async function confirmUserExclusion(req: EnhancedRequest, res: Response, 
   ];
   if (['400, 401, 402, 403, 500, 503'].indexOf(req.body.exclusionDescription)) {
     return res.status(req.body.exclusionDescription).send('error: {status: req.body.exclusionDescription}"');
-  }
+  };
   return res.send(exclusion).status(200);
+}
+
+// Note - as mock data is being used, can't currently delete
+export async function deleteUserExclusion(req: EnhancedRequest, res: Response, next: NextFunction) {
+  if (['400, 401, 402, 403, 500, 503'].indexOf(req.body.exclusionDescription)) {
+    return res.status(req.body.exclusionDescription).send('error: {status: req.body.exclusionDescription}"');
+  };
+  return res.status(200).send('Succesful deletion');
 }

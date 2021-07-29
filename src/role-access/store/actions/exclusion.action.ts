@@ -5,6 +5,8 @@ export enum ExclusionActionTypes {
   CHANGE_NAVIGATION = '[EXCLUSION] Change Navigation',
   CONFIRM_EXCLUSION = '[EXCLUSION] Confirm exclusion',
   CONFIRM_EXCLUSION_FAILURE = '[EXCLUSION] Confirm exclusion failure',
+  DELETE_EXCLUSION = '[EXCLUSION] Delete exclusion',
+  DELETE_EXCLUSION_FAILURE = '[EXCLUSION] Delete exclusion failure',
   RESET = '[EXCLUSION] Reset',
   SAVE_EXCLUSION_OPTION_AND_GO = '[EXCLUSION] Save Exclusion Option And Go',
   SAVE_PERSON_ROLE_AND_GO = '[EXCLUSION] Save Person Role And Go',
@@ -59,10 +61,23 @@ export class  ConfirmExclusionFailureAction implements Action {
   constructor(public payload: RoleAccessHttpError) { }
 }
 
+export class DeleteExclusionAction implements Action {
+  public readonly type = ExclusionActionTypes.DELETE_EXCLUSION;
+  constructor(public payload: ExclusionStateData) {}
+}
+
+export class  DeleteExclusionFailureAction implements Action {
+  readonly type = ExclusionActionTypes.DELETE_EXCLUSION_FAILURE
+
+  constructor(public payload: RoleAccessHttpError) { }
+}
+
 export type ExclusionAction =
   | ChangeNavigation
   | ConfirmExclusionAction
   | ConfirmExclusionFailureAction
+  | DeleteExclusionAction
+  | DeleteExclusionFailureAction
   | Reset
   | SaveExclusionOptionAndGo
   | SavePersonRoleAndGo

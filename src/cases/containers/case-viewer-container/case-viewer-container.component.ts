@@ -16,8 +16,8 @@ import * as fromRoot from '../../../app/store';
   styleUrls: ['./case-viewer-container.component.scss']
 })
 export class CaseViewerContainerComponent implements OnInit {
-  private static WORKALLOCATIONRELEASE1 = 'WorkAllocationRelease1';
-  private static WORKALLOCATIONRELEASE2 = 'WorkAllocationRelease2';
+  private static readonly FEATURE_WORK_ALLOCATION_RELEASE_1 = 'WorkAllocationRelease1';
+  private static readonly FEATURE_WORK_ALLOCATION_RELEASE_2 = 'WorkAllocationRelease2';
   private workAllocationRoles: string[] = ['caseworker-ia-iacjudge'];
   private tabs: CaseTab[] = [
     {
@@ -48,7 +48,7 @@ export class CaseViewerContainerComponent implements OnInit {
 
   private prependedCaseViewTabs(): Observable<CaseTab[]> {
     return combineLatest([
-      this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.currentWAFeature, CaseViewerContainerComponent.WORKALLOCATIONRELEASE1),
+      this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.currentWAFeature, CaseViewerContainerComponent.FEATURE_WORK_ALLOCATION_RELEASE_1),
       this.store.pipe(select(fromRoot.getUserDetails))
     ]).pipe(
       map(([feature, userDetails]: [string, UserDetails]) => this.enablePrependedTabs(feature, userDetails) ? this.tabs : [])
@@ -56,7 +56,7 @@ export class CaseViewerContainerComponent implements OnInit {
   }
 
   private enablePrependedTabs(feature: string, userDetails: UserDetails): boolean {
-    return feature === CaseViewerContainerComponent.WORKALLOCATIONRELEASE2
+    return feature === CaseViewerContainerComponent.FEATURE_WORK_ALLOCATION_RELEASE_2
       && userDetails.userInfo.roles.some((role: string) => this.workAllocationRoles.indexOf(role) >= 0);
   }
 

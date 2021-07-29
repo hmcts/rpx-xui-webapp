@@ -22,7 +22,9 @@
     "print_service_url": "/print",
     "remote_print_service_url": "https://return-case-doc-ccd.nonprod.platform.hmcts.net",
     "pagination_page_size": 25,
-    "annotation_api_url": "/em-anno"
+    "annotation_api_url": "/em-anno",
+    "hrs_url": "/hearing-recordings",
+    "remote_hrs_url": ".*(\/hearing-recordings)"
   },
   "urls": {
     "idam": {

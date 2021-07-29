@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Answer, ExclusionNavigationEvent } from '../../models';
+import { Answer, ExclusionNavigationEvent, RoleExclusion } from '../../models';
 import { AnswerHeaderText, AnswerLabelText } from '../../models/enums';
 
 @Component({
@@ -16,12 +16,15 @@ export class DeleteExclusionComponent implements OnInit {
   public heading = AnswerHeaderText.CheckAnswers;
   public hint = AnswerHeaderText.CheckInformation;
   public caseId: string;
+  public roleExclusion: RoleExclusion;
 
   constructor(private readonly route: ActivatedRoute, private readonly router: Router) {}
 
   public ngOnInit(): void {
     // Get the role exclusions from the route, which will have been put there by the resolver.
     const roleExclusions = this.route.snapshot.data.roleExclusions;
+    // as mock data returns list, get first one for now
+    this.roleExclusion = roleExclusions[0];
     this.populateAnswers(roleExclusions);
     this.route.paramMap.subscribe(params => {
       this.caseId = params.get("caseId");
@@ -29,7 +32,7 @@ export class DeleteExclusionComponent implements OnInit {
     console.log(this.caseId);
   }
 
-  private populateAnswers(exclusions: any[]) {
+  private populateAnswers(exclusions: RoleExclusion[]): void {
     for (const exclusion of exclusions) {
       this.answers.push({label: AnswerLabelText.Person, value: exclusion.name});
       this.answers.push({label: AnswerLabelText.DescribeExclusion, value: exclusion.notes});
@@ -48,7 +51,7 @@ export class DeleteExclusionComponent implements OnInit {
   public navigationHandler(navEvent: ExclusionNavigationEvent): void {
     switch (navEvent) {
       case ExclusionNavigationEvent.DELETE_EXCLUSION: {
-        this.store.dispatch(new fromFeature.DeleteExclusionAction(this.exclusionStateData));
+        this.ExclusionRoleService(this.exclusionStateData));
         break;
       }
       case ExclusionNavigationEvent.CANCEL:

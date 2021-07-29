@@ -5,6 +5,7 @@ import { ChoosePersonRoleComponent } from './add-exclusion/choose-person-role/ch
 import { DescribeExclusionComponent } from './add-exclusion/describe-exclusion/describe-exclusion.component';
 import { ExclusionNavigationComponent } from './add-exclusion/exclusion-navigation/exclusion-navigation.component';
 import { SearchPersonComponent } from './add-exclusion/search-person/search-person.component';
+import { DeleteExclusionComponent } from './delete-exclusion/delete-exclusion.component';
 import { RoleAccessComponent } from './role-and-access/role-access.component';
 
 export const containers: any[] = [
@@ -15,7 +16,8 @@ export const containers: any[] = [
   SearchPersonComponent,
   DescribeExclusionComponent,
   CheckAnswersComponent,
-  RoleAccessComponent
+  RoleAccessComponent,
+  DeleteExclusionComponent
 ];
 
 export * from './add-exclusion/check-answers/check-answers.component';
@@ -25,4 +27,5 @@ export * from './add-exclusion/describe-exclusion/describe-exclusion.component';
 export * from './add-exclusion/add-exclusion-home/add-exclusion-home.component';
 export * from './add-exclusion/exclusion-navigation/exclusion-navigation.component';
 export * from './add-exclusion/search-person/search-person.component';
+export * from './delete-exclusion/delete-exclusion.component';
 export * from './role-and-access/role-access.component';

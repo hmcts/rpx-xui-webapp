@@ -5,7 +5,7 @@ import { ExclusionStateData } from '../models';
 import { RoleExclusion } from '../models/role-exclusion.model';
 import { Role } from '../models/role.model';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class RoleExclusionsService {
   public static exclusionsUrl = '/api/user/exclusions';
   constructor(private readonly http: HttpClient) { }

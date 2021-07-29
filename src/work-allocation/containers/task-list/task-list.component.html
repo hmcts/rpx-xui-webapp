@@ -1,11 +1,12 @@
 <div *ngIf="pagination; else tableSummary" class="pagination-top" attr.aria-label="{{ tasksTotal }} results have been found" role="status">
-  <span class="text-16" id="search-result-summary__text">Displaying
-      <span class="govuk-!-font-weight-bold">{{ getFirstResult() }}</span>
-      -
-      <span class="govuk-!-font-weight-bold">{{ getLastResult() }}</span>
-      out of
-      <span class="govuk-!-font-weight-bold">{{ tasksTotal || 0 }}</span>
-      tasks.</span>
+  <span class="text-16" id="search-result-summary__text">Showing
+    <span class="govuk-!-font-weight-bold">{{ getFirstResult() }}</span>
+    to
+    <span class="govuk-!-font-weight-bold">{{ getLastResult() }}</span>
+    of
+    <span class="govuk-!-font-weight-bold">{{ tasksTotal || 0 }}</span>
+    results.
+  </span>
 </div>
 
 <ng-template #tableSummary>

@@ -3,6 +3,7 @@ import { HttpError } from './http-error.interface';
 import { ExcludeOption, PersonRole } from './exclusion.enum';
 import { Person } from '../../work-allocation-2/models/dtos';
 
+
 export interface ExclusionStateData {
   caseId: string;
   state: ExclusionState;

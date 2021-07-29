@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { Observable, of, throwError } from 'rxjs';
-import { PersonDomain } from '../../../../api/workAllocation2/interfaces/person';
+import { PersonRole } from '../../../../api/workAllocation2/interfaces/person';
 import { TaskActionConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { InfoMessage, InfoMessageType, TaskActionType } from '../../enums';
@@ -31,7 +31,7 @@ describe('TaskAssignmentConfirmComponent', () => {
     id: 'id123',
     name: 'John Smith',
     email: 'john.smith@email.com',
-    domain: PersonDomain.CASEWORKER
+    domain: PersonRole.CASEWORKER
   };
   const mockTasks = getMockTasks();
   // Provide a fake implementation of assignTask(), which returns different responses based on the task ID

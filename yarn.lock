@@ -449,6 +449,7 @@
   integrity sha512-oDdxTxOtrr/w8RlGdJcvnx0t0dhCyYpA1FjNjCMXYvocJfNgeL+a3pt+R+VBWSe+2ePOL2D0AKZRXBMIB/RPEA==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
+    "@angular-material-components/moment-adapter" "^5.0.0"
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
     "@hmcts/ccpay-web-component" "3.0.3"

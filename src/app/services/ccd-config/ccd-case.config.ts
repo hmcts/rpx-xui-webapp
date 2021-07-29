@@ -148,4 +148,12 @@ export class AppConfig extends AbstractAppConfig {
   public getWorkAllocationApiUrl(): string {
     return this.workallocationUrl;
   }
+
+  public getHrsUrl(): string {
+    return '';
+  }
+
+  public getRemoteHrsUrl(): string {
+    return '';
+  }
 }

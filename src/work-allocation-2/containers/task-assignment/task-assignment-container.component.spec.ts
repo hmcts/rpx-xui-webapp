@@ -15,12 +15,10 @@ import { TaskListComponent } from '..';
 import { PersonRole } from '../../../../api/workAllocation2/interfaces/person';
 import { ErrorMessageComponent } from '../../../app/components';
 import { TaskActionConstants } from '../../components/constants';
-import { FindPersonComponent } from '../../components/find-person/find-person.component';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { TaskActionType } from '../../enums';
 import { Task } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
-import { FindAPersonService } from '../../services/find-person.service';
 import { getMockTasks } from '../../tests/utils.spec';
 import { TaskAssignmentContainerComponent } from './task-assignment-container.component';
 
@@ -67,7 +65,6 @@ describe('TaskAssignmentContainerComponent2', () => {
         WrapperComponent,
         TaskListComponent,
         ErrorMessageComponent,
-        FindPersonComponent,
         NothingComponent
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -90,7 +87,6 @@ describe('TaskAssignmentContainerComponent2', () => {
       ],
       providers: [
         {provide: WorkAllocationTaskService, useValue: mockWorkAllocationService},
-        {provide: FindAPersonService, useValue: mockFindPersonService},
         {
           provide: ActivatedRoute,
           useValue: {

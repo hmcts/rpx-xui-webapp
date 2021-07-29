@@ -7,7 +7,8 @@ import { ErrorMessage } from '../../../app/models';
 import { ConfigConstants } from '../../components/constants';
 import { SortOrder, TaskActionType, TaskService } from '../../enums';
 import { FieldConfig } from '../../models/common';
-import { Caseworker, Location, Person } from '../../models/dtos';
+import { InformationMessage } from '../../models/comms';
+import { Caseworker, Location, Person, PersonRole } from '../../models/dtos';
 import { TaskServiceConfig } from '../../models/tasks';
 
 @Component({
@@ -23,6 +24,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   public verb: TaskActionType;
   public location: Location;
 
+  public domain = PersonRole.ALL;
   public formGroup: FormGroup = new FormGroup({});
   public person: Person;
   private readonly assignTask: Subscription;

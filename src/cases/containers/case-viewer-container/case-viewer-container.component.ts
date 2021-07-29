@@ -41,7 +41,7 @@ export class CaseViewerContainerComponent implements OnInit {
               private readonly featureToggleService: FeatureToggleService) {
   }
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     this.caseDetails = this.route.snapshot.data.case as CaseView;
     this.tabs$ = this.prependedCaseViewTabs();
   }

@@ -447,6 +447,12 @@
   version "4.1.5-ccd-cve-fix"
   resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.1.5-ccd-cve-fix.tgz#14925b7a720d8157db4aa2a803e120815cb071e9"
   integrity sha512-JeH3RmyY4n9A2hzjFrHizrBObNX+r1VI7jBHPTzvJBtwtQTKpPTz0nWY0HfPB/u6gFcD9CgqsCGxTfHFzWC6Gg==
+
+"@hmcts/ccd-case-ui-toolkit@4.2.0-rc.5":
+  version "4.2.0-rc.5"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.2.0-rc.5.tgz#f9975e0a405bf97a91604794b695806f8aeab2c9"
+  integrity sha512-kbAoIsyrSMa2VunX2s2vY59vzuOmEN3WRV/qCntWkGHEnRZp91nUBXNIw1/n+SNGIFNZ9TgvbpFo5w2A29BVhA==
+
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular/cli" "^6.0.8"
@@ -530,10 +536,10 @@
   dependencies:
     tslib "^1.9.0"
 
-"@hmcts/rpx-xui-node-lib@2.25.3":
-  version "2.25.3"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-node-lib/-/rpx-xui-node-lib-2.25.3.tgz#460f491ba0860e94c0ffa1761e5d5aa668fe5b6d"
-  integrity sha512-MmpXTzrFdvbfAI1Og1J/m4eZ8IEj19f5IfL0U7GgeUebxR0t8yAMCf/+ocaVsNVNwx35/+M+eSCvDzGIrr6GeA==
+"@hmcts/rpx-xui-node-lib@2.25.4":
+  version "2.25.4"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-node-lib/-/rpx-xui-node-lib-2.25.4.tgz#f4fc79741fbf6bbbe395a1149b90f4f27df998ea"
+  integrity sha512-QEMEPJOcLPdzVtmTDiQmaZH9plhBha8UPJrpoOV3BSIpC26LaBoSMfQLBKpVp26VWKngCb6F4Uv/hxRFeMUvJw==
   dependencies:
     "@hapi/joi" "^17.1.1"
     axios "^0.21.1"

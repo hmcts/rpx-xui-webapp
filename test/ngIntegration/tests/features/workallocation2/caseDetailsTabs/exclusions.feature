@@ -1,4 +1,4 @@
-@ng @ignore @test
+@ng @test
 Feature: WA Release 2: Exclusio workflow
 
     Scenario Outline: Exclusion with option "Exclude another person" -  "<Useridentifier>"

@@ -1,7 +1,9 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
-import { AddExclusionHomeComponent } from './containers';
+import { AddExclusionHomeComponent } from './containers/add-exclusion/add-exclusion-home/add-exclusion-home.component';
+import { DeleteExclusionComponent } from './containers/delete-exclusion/delete-exclusion.component';
+import { RoleExclusionsResolver } from './resolvers/role-exclusions.resolver';
 
 export const ROUTES: Routes = [
   {
@@ -18,6 +20,15 @@ export const ROUTES: Routes = [
       }
     ]
   },
+  {
+    path: 'delete-exclusion/:caseId',
+    resolve: { roleExclusions: RoleExclusionsResolver },
+    component: DeleteExclusionComponent,
+    canActivate: [HealthCheckGuard],
+    data: {
+      title: 'HMCTS Manage cases | Role and access | Delete exclusion',
+    }
+  }
 ];
 
 export const roleAccessRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);

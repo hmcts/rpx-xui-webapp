@@ -11,7 +11,7 @@
       </dt>
       <dd class="govuk-summary-list__value" [innerText]="answer.value">
       </dd>
-      <dd class="govuk-summary-list__actions">
+      <dd class="govuk-summary-list__actions" *ngIf="answer.action != null">
         <a class="govuk-link" routerLink="." (click)="changeAction(answer.action)">
           Change<span class="govuk-visually-hidden"> who the exclusion is for</span>
         </a>

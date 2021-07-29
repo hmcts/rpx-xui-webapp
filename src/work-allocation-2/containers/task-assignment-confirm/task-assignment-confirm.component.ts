@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs/operators';
-import { InfoMessage, InfoMessageType, TaskActionType } from '../../enums';
+import { AssignHintText, InfoMessage, InfoMessageType, TaskActionType } from '../../enums';
 import { InformationMessage } from '../../models/comms';
 import { Person } from '../../models/dtos';
 import { TaskAssigneeModel } from '../../models/tasks/task-assignee.model';
@@ -21,6 +21,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
   public successMessage: InfoMessage;
   public assignTask: any;
   public selectedPerson: Person;
+  public assignHintText: string;
 
   constructor(
     private readonly taskService: WorkAllocationTaskService,
@@ -51,6 +52,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
       .pipe(map(() => window.history.state)).subscribe(person => {
       this.selectedPerson = person;
     });
+    this.assignHintText = this.verb === 'Assign' ? AssignHintText.CHECK_ASSIGNING : AssignHintText.CHECK_REASSIGNING;
   }
 
   public onChange(): void {

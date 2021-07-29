@@ -8,7 +8,7 @@ import { ConfigConstants } from '../../components/constants';
 import { SortOrder, TaskActionType, TaskService } from '../../enums';
 import { FieldConfig } from '../../models/common';
 import { InformationMessage } from '../../models/comms';
-import { Caseworker, Location, Person } from '../../models/dtos';
+import { Caseworker, Location, Person, PersonRole } from '../../models/dtos';
 import { TaskServiceConfig } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 
@@ -25,6 +25,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   public verb: TaskActionType;
   public location: Location;
 
+  public domain = PersonRole.ALL;
   public formGroup: FormGroup = new FormGroup({});
   public person: Person;
   private assignTask: Subscription;

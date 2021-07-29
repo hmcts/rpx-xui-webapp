@@ -8,7 +8,7 @@ import { InfoMessageType } from '../../../work-allocation-2/enums';
 import { ExcludeOption, RoleAccessHttpError } from '../../models';
 import { ExclusionMessageText } from '../../models/enums/exclusion-text';
 import { RoleExclusionsService } from '../../services';
-import { ConfirmExclusionAction, DeleteExclusionAction, ExclusionActionTypes } from '../actions';
+import { ConfirmExclusionAction, ExclusionActionTypes } from '../actions';
 
 export enum REDIRECTS {
   NotAuthorised = '/not-authorised',
@@ -63,34 +63,7 @@ export class ExclusionEffects {
       )
     );
 
-    @Effect() public deleteExclusion$ = this.actions$
-    .pipe(
-      ofType<DeleteExclusionAction>(ExclusionActionTypes.DELETE_EXCLUSION),
-      mergeMap(
-        (data) => this.roleExclusionsService.deleteExclusion(data.payload)
-          .pipe(
-            map(() => {
-              // exclude another person
-              return new routeAction.CreateCaseGo({
-                path: [`/cases/case-details/${data.payload.caseId}/roles-and-access`],
-                caseId: data.payload.caseId,
-                extras: {
-                  state: {
-                    showMessage: true,
-                    messageText: ExclusionMessageText.Delete
-                  }
-                }
-              });
-            }),
-            catchError(error => {
-              return ExclusionEffects.handleError(error, ExclusionActionTypes.DELETE_EXCLUSION);
-            }
-            )
-          )
-      )
-    );
-
-  public static handleError(error: RoleAccessHttpError, action: string): Observable<Action> {
+  public static handleError(error: RoleAccessHttpError, action?: string): Observable<Action> {
     if (error && error.status) {
       switch (error.status) {
         case 401:

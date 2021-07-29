@@ -62,14 +62,6 @@ export function exclusionReducer(currentState = initialState, action: fromAction
       return {
         ...currentState
       }
-      case ExclusionActionTypes.DELETE_EXCLUSION:
-        return {
-          ...currentState
-        }
-      case ExclusionActionTypes.DELETE_EXCLUSION_FAILURE:
-        return {
-          ...currentState
-        }
     default: {
       return {
         ...currentState

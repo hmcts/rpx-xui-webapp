@@ -61,7 +61,7 @@ nodejs:
     # Services Documents Endpoints
     SERVICES_DOCUMENTS_API: http://dm-store-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services Secure Documents Endpoints
-    SERVICES_DOCUMENTS_API_V2: http://ccd-case-document-am-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/cases/documents
+    SERVICES_DOCUMENTS_API_V2: http://ccd-case-document-am-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services Documents Endpoints
     SERVICES_EM_HRS_API: http://em-hrs-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services PRD

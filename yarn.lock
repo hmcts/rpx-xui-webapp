@@ -436,10 +436,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.1.6-strategic-activity-tracker-iota":
-  version "4.1.6-strategic-activity-tracker-iota"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.1.6-strategic-activity-tracker-iota.tgz#6e3cce6bf7c0d59aac53f66bca33cd9c98a33f84"
-  integrity sha512-l+pQ/rrIOdiQyzEUcwHumW28OXcZlQ0Oo1bkzHaQeC3okPpPDB7D5mpdmpRNvs+SZkLml7gt1+FPZQYgCi3TNQ==
+"@hmcts/ccd-case-ui-toolkit@4.2.0-strategic-activity-tracker-kappa":
+  version "4.2.0-strategic-activity-tracker-kappa"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.2.0-strategic-activity-tracker-kappa.tgz#7d200888ffe02acd0f8ddfeb45ea630f0306e1b0"
+  integrity sha512-ZgFR6ocC/q//pbFKjEUgG60v0kjPNPYPAGd05M7UjzRO0kSPVVvbJB5zXqr74MZWPA5N6FK2iprfkHDml5sMLQ==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular/cli" "^6.0.8"

@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { provideMockStore } from '@ngrx/store/testing';
 import { ChooseDurationComponent } from './choose-duration.component';
 
 describe('ChooseDurationComponent', () => {
@@ -8,7 +9,10 @@ describe('ChooseDurationComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ChooseDurationComponent ]
+      declarations: [ ChooseDurationComponent ],
+      providers: [
+        provideMockStore()
+      ]
     })
     .compileComponents();
   }));

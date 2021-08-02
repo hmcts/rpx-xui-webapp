@@ -13,7 +13,6 @@ import * as fromFeature from '../../../store';
 @Component({
   selector: 'exui-choose-role',
   templateUrl: './choose-role.component.html',
-  styleUrls: ['./choose-role.component.scss']
 })
 export class ChooseRoleComponent implements OnInit, OnDestroy {
   public ERROR_MESSAGE = ERROR_MESSAGE;
@@ -40,8 +39,8 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    // userJourney: 1. judiciary/2. legalOps
-    // 1. judiciary: add judiciary role journey
+    // userJourney: 1. judicial/2. legalOps
+    // 1. judicial: add judicial role journey
     // 2. legalOps: add legal Ops role journey
     this.userJourney = this.route.snapshot.queryParams && this.route.snapshot.queryParams.userJourney ?
       this.route.snapshot.queryParams.userJourney : '';

@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { provideMockStore } from '@ngrx/store/testing';
 import { AllocateRoleCheckAnswersComponent } from './allocate-role-check-answers.component';
 
 describe('AllocateRoleCheckAnswersComponent', () => {
@@ -8,7 +9,10 @@ describe('AllocateRoleCheckAnswersComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AllocateRoleCheckAnswersComponent ]
+      declarations: [ AllocateRoleCheckAnswersComponent ],
+      providers: [
+        provideMockStore()
+      ]
     })
     .compileComponents();
   }));

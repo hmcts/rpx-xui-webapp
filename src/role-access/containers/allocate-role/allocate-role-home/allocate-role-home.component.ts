@@ -22,7 +22,6 @@ import { ChooseRoleComponent } from '../choose-role/choose-role.component';
 @Component({
   selector: 'exui-allocate-role-home',
   templateUrl: './allocate-role-home.component.html',
-  styleUrls: ['./allocate-role-home.component.scss']
 })
 export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
 

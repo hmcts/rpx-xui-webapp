@@ -31,7 +31,6 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
 
   public typeOfRole: TypeOfRole;
 
-  public userJourney: string = '';
   public userType: string = '';
 
   constructor(private readonly store: Store<fromFeature.State>,
@@ -39,13 +38,13 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    // userJourney: 1. judicial/2. legalOps
+    // userType: 1. judicial/2. legalOps
     // 1. judicial: add judicial role journey
     // 2. legalOps: add legal Ops role journey
-    this.userJourney = this.route.snapshot.queryParams && this.route.snapshot.queryParams.userJourney ?
-      this.route.snapshot.queryParams.userJourney : '';
-    this.userType = this.userJourney === PersonRole.JUDICIAL.toLowerCase() ? PersonRole.JUDICIAL.toLowerCase() : PersonRole.CASEWORKER.toLowerCase();
-    this.caption = `Allocate a ${this.userType} role`;
+    this.userType = this.route.snapshot.queryParams && this.route.snapshot.queryParams.userType ?
+      this.route.snapshot.queryParams.userType : '';
+    const userTypePlaceHolder = this.userType === PersonRole.JUDICIAL.toLowerCase() ? PersonRole.JUDICIAL.toLowerCase() : PersonRole.CASEWORKER.toLowerCase();
+    this.caption = `Allocate a ${userTypePlaceHolder} role`;
     this.allocateRoleStateDataSub = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(
       allocateRoleStateData => {
         this.typeOfRole = allocateRoleStateData.typeOfRole;
@@ -65,7 +64,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
       }
     ];
     const legalOpsOptions = [{optionId: EnumUtil(TypeOfRole).getKeyOrDefault(TypeOfRole.CASE_MANAGER), optionValue: TypeOfRole.CASE_MANAGER}];
-    this.optionsList = this.userJourney === PersonRole.JUDICIAL.toLowerCase() ? judicialOptions : legalOpsOptions;
+    this.optionsList = this.userType === PersonRole.JUDICIAL.toLowerCase() ? judicialOptions : legalOpsOptions;
   }
 
   public navigationHandler(navEvent: AllocateRoleNavigationEvent) {

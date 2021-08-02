@@ -16,6 +16,7 @@
     "ccdDataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal/health",
     "documentsApi": "http://dm-store-prod.service.core-compute-prod.internal/health",
     "em_anno_api": "http://em-anno-prod.service.core-compute-prod.internal/health",
+    "em_docassembly_api": "http://dg-docassembly-prod.service.core-compute-prod.internal/health",
     "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal/health",
     "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal/health",
     "taskApi": "http://wa-task-management-api-prod.service.core-compute-prod.internal/health",
@@ -37,6 +38,7 @@
     },
     "em_hrs_api": "http://em-hrs-api-prod.service.core-compute-prod.internal",
     "em_anno_api": "http://em-anno-prod.service.core-compute-prod.internal",
+    "em_docassembly_api": "http://dg-docassembly-prod.service.core-compute-prod.internal/",
     "idam": {
       "idamApiUrl": "https://idam-api.platform.hmcts.net",
       "idamClientID": "xuiwebapp",

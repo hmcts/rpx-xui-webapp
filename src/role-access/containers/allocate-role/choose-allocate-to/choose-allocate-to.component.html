@@ -1,3 +1,14 @@
-<p>
-  choose-allocate-to works!
-</p>
+<exui-error-message *ngIf="radioOptionControl.errors && submitted" [error]="ERROR_MESSAGE"></exui-error-message>
+<div [formGroup]="formGroup"
+     class="govuk-form-group"
+     [ngClass]="{'form-group-error': radioOptionControl.errors && submitted}">
+  <exui-choose-radio-option
+    [formGroup]="formGroup"
+    [radioControlName]="radioControlName"
+    [title]="title"
+    [caption]="caption"
+    [optionsList]="optionsList"
+    [submitted]="submitted"
+  >
+  </exui-choose-radio-option>
+</div>

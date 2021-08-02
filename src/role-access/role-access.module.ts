@@ -13,7 +13,6 @@ import * as fromContainers from './containers';
 import { roleAccessRouting } from './role-access.routes';
 import { RoleExclusionsService } from './services';
 import { effects, reducers } from './store';
-import { FindPersonModule } from 'src/work-allocation-2/find-person.module';
 import { InfoMessageCommService } from '../work-allocation-2/services';
 
 @NgModule({
@@ -25,8 +24,7 @@ import { InfoMessageCommService } from '../work-allocation-2/services';
     roleAccessRouting,
     SharedModule,
     ReactiveFormsModule,
-    ExuiCommonLibModule,
-    FindPersonModule
+    ExuiCommonLibModule
   ],
   declarations: [...fromContainers.containers, ...fromComponents.components],
   entryComponents: [],

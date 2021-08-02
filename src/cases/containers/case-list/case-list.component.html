@@ -1,8 +1,8 @@
-<exui-page-wrapper [title]="'Case List'">
+<exui-page-wrapper [title]="'Case list'">
   <div class="case-list-component">
     <div class="hmcts-action-bar">
       <div class="hmcts-action-bar__filter">
-        <button class="govuk-button hmcts-button--secondary" (click)="toggleFilter()" type="button"  aria-haspopup="true" aria-expanded="false">
+        <button class="govuk-button hmcts-button--secondary" (click)="toggleFilter()" type="button" aria-haspopup="true" [attr.aria-expanded]="showFilter ? 'true' : 'false'">
           {{toggleButtonName}}
         </button>
       </div>

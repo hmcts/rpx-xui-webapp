@@ -92,6 +92,7 @@ class SearchPage {
     await BrowserWaits.waitForElement(this.firstResultCaseLink);
     var thisPageUrl = await browser.getCurrentUrl();
 
+    await this.waitForSpinnerToDissappear();
     await browser.executeScript('arguments[0].scrollIntoView()',
       this.firstResultCaseLink);
     await this.firstResultCaseLink.click();

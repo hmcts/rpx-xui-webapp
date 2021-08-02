@@ -2,8 +2,8 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { Component, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { AlertService, LoadingService, LoadingModule } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { AlertService, LoadingService, LoadingModule, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
+import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 
 import { SessionStorageService } from '../../../app/services';
@@ -38,6 +38,7 @@ describe('TaskManagerListComponent', () => {
   const mockCaseworkers: dtos.Caseworker[] = getMockCaseworkers();
   const caseworkerDiplayName: CaseworkerDisplayName = new CaseworkerDisplayName();
   const mockLoadingService: LoadingService = jasmine.createSpyObj<LoadingService>('mockLoadingService', ['register', 'unregister']);
+  const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -46,7 +47,8 @@ describe('TaskManagerListComponent', () => {
         ExuiCommonLibModule,
         RouterTestingModule,
         WorkAllocationComponentsModule,
-        LoadingModule
+        LoadingModule,
+        PaginationModule
       ],
       declarations: [ TaskManagerListComponent, WrapperComponent, TaskListComponent ],
       providers: [
@@ -55,7 +57,8 @@ describe('TaskManagerListComponent', () => {
         { provide: CaseworkerDataService, useValue: mockCaseworkerService },
         { provide: LocationDataService, useValue: mockLocationService },
         { provide: AlertService, useValue: mockAlertService },
-        { provide: LoadingService, useValue: mockLoadingService }
+        { provide: LoadingService, useValue: mockLoadingService },
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
@@ -65,6 +68,8 @@ describe('TaskManagerListComponent', () => {
     mockTaskService.searchTask.and.returnValue(of({ tasks }));
     mockLocationService.getLocations.and.returnValue(of(mockLocations));
     mockCaseworkerService.getAll.and.returnValue(of(mockCaseworkers));
+    mockFeatureToggleService.isEnabled.and.returnValue(of(false));
+    component.isPaginationEnabled$ = of(false);
     fixture.detectChanges();
   });
 
@@ -98,7 +103,7 @@ describe('TaskManagerListComponent', () => {
     button.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
-    const searchRequest = component.getSearchTaskRequest();
+    const searchRequest = component.getSearchTaskRequestPagination();
     // Make sure the search request looks right.
     expect(searchRequest.search_parameters.length).toEqual(mockLocations.length);
     expect(searchRequest.search_parameters[0].key).toEqual('location');
@@ -114,7 +119,7 @@ describe('TaskManagerListComponent', () => {
     button.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
-    const newSearchRequest = component.getSearchTaskRequest();
+    const newSearchRequest = component.getSearchTaskRequestPagination();
     // Make sure the search request looks right.
     expect(newSearchRequest.search_parameters.length).toEqual(2);
     expect(newSearchRequest.search_parameters[1].key).toEqual('user');
@@ -136,7 +141,7 @@ describe('TaskManagerListComponent', () => {
     select.dispatchEvent(new Event('change'));
     fixture.detectChanges();
 
-    const searchRequest = component.getSearchTaskRequest();
+    const searchRequest = component.getSearchTaskRequestPagination();
     // Make sure the search request looks right.
     expect(searchRequest.search_parameters.length).toEqual(2);
     expect(searchRequest.search_parameters[0].key).toEqual('location');
@@ -157,7 +162,7 @@ describe('TaskManagerListComponent', () => {
     select.dispatchEvent(new Event('change'));
     fixture.detectChanges();
 
-    const searchRequest = component.getSearchTaskRequest();
+    const searchRequest = component.getSearchTaskRequestPagination();
     // Make sure the search request looks right.
     expect(searchRequest.search_parameters.length).toEqual(2);
     expect(searchRequest.search_parameters[1].key).toEqual('user');
@@ -177,13 +182,13 @@ describe('TaskManagerListComponent', () => {
     select.dispatchEvent(new Event('change'));
     fixture.detectChanges();
 
-    const searchRequest = component.getSearchTaskRequest();
+    const searchRequest = component.getSearchTaskRequestPagination();
     // Make sure the search request looks right.
     expect(searchRequest.search_parameters.length).toEqual(2);
     expect(searchRequest.search_parameters[0].key).toEqual('location');
     expect(searchRequest.search_parameters[0].values.length).toEqual(mockLocations.length);
-    expect(searchRequest.search_parameters[1].key).toEqual('user');
-    expect(searchRequest.search_parameters[1].values.length).toEqual(0);
+    expect(searchRequest.search_parameters[1].key).toEqual('state');
+    expect(searchRequest.search_parameters[1].values).toEqual(['unassigned']);
 
     // Let's also make sure that the tasks were re-requested with the new sorting.
     const payload = { searchRequest, view: component.view };

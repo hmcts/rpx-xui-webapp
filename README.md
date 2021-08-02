@@ -95,7 +95,7 @@ ie.
 We create the file postgresql-admin-pw (no extension).
 Within the file we have one line of characters which is the secret.
 
-####MAC OS - Post Catalina
+####MAC OS - Post Catalina 
 
 1. Create a Mount point on your local machine within the Volumes folder<br/>
 Create the folder: `/Volumes/mnt/secrets/rpx`

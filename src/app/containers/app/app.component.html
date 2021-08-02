@@ -1,3 +1,11 @@
+<xuilib-cookie-banner 
+  [identifier]="cookieName"
+  [appName]="'MyHMCTS'"
+  *ngIf="isCookieBannerVisible"
+  (acceptanceNotifier)="notifyAcceptance()"
+  (rejectionNotifier)="notifyRejection()"
+></xuilib-cookie-banner>
+
 <router-outlet></router-outlet>
 
 <xuilib-session-dialog positionTop="300px" *ngIf="timeoutModalConfig.isVisible" (close)="staySignedInHandler()">

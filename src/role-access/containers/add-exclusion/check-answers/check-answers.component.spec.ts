@@ -1,35 +1,102 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { provideMockStore } from '@ngrx/store/testing';
 import { AnswersComponent } from '../../../components';
+import { ExcludeOption, ExclusionNavigationEvent, ExclusionState, PersonRole } from '../../../models';
 import { CheckAnswersComponent } from './check-answers.component';
+import * as fromFeature from '../../../store';
+import { Store } from '@ngrx/store';
+import { ConfirmExclusionAction } from '../../../store';
+import { Observable, Subject } from 'rxjs';
+
 
 describe('CheckAnswersComponent', () => {
   let component: CheckAnswersComponent;
   let fixture: ComponentFixture<CheckAnswersComponent>;
+  let mockStore: any;
+  const pipeSubject: Subject<any> = new Subject<any>();
 
-  beforeEach(async(() => {
+  beforeEach(() => {
+    mockStore = jasmine.createSpyObj('store', ['dispatch', 'pipe']);
+
+
+    mockStore.pipe.and.returnValue(pipeSubject);
+
     TestBed.configureTestingModule({
       declarations: [AnswersComponent, CheckAnswersComponent],
       providers: [
-        provideMockStore()
+        {
+          provide: Store, useValue: mockStore
+        }
       ]
-    })
-      .compileComponents();
-  }));
+    }).compileComponents();
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(CheckAnswersComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
   });
 
   afterEach(() => {
     component = null;
     fixture.destroy();
   });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  describe('navigationHandler()', () => {
+    it('should dispatch the confirm exclusion action with an undefined payroll', () => {
+      component.navigationHandler(ExclusionNavigationEvent.CONFIRM_EXCLUSION);
+      expect(mockStore.dispatch).toHaveBeenCalledWith(new ConfirmExclusionAction(undefined));
+    });
+
+    it('should throw an error if there is an invalid navigation action', () => {
+      expect(() => { component.navigationHandler(ExclusionNavigationEvent.CONTINUE); }).toThrow(new Error('Invalid option'));
+    });
+  });
+
+  const setup = (exclusionOption: ExcludeOption): void => {
+    const exclusionStateData = {
+      personRole: PersonRole.JUDICIAL,
+      person: {
+        name: 'Judge Judy',
+        email: 'judge@judy.com',
+        exclusionDescription: 'the exclusion description'
+      },
+      exclusionOption
+    };
+    pipeSubject.next(exclusionStateData);
+  };
+
+  describe('onNavigate()', () => {
+    it('should dispatch a change navigation when called', () => {
+      setup(ExcludeOption.EXCLUDE_ANOTHER_PERSON);
+      component.onNavigate(ExclusionState.CONFIRM_EXCLUSION);
+      expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChangeNavigation(ExclusionState.CONFIRM_EXCLUSION));
+    });
+  });
+
+  describe('setAnswersFromExclusionStore()', () => {
+
+    it('should set all answers if excluding another person', () => {
+      setup(ExcludeOption.EXCLUDE_ANOTHER_PERSON);
+      expect(component.answers.length).toEqual(4);
+    });
+
+    it('should only add the person and description if excluding me', () => {
+      setup(ExcludeOption.EXCLUDE_ME);
+      expect(component.answers.length).toEqual(2);
+    });
+  });
+
+  describe('onDestroy()', () => {
+    it('should unsubscribe', () => {
+      component.storeSubscription = new Observable().subscribe();
+      spyOn(component.storeSubscription, 'unsubscribe').and.callThrough();
+      component.ngOnDestroy();
+      expect(component.storeSubscription.unsubscribe).toHaveBeenCalled();
+    });
+  });
+
 });

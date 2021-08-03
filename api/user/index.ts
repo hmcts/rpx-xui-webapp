@@ -7,7 +7,10 @@ import { CASE_SHARE_PERMISSIONS, SERVICES_ROLE_ASSIGNMENT_API_PATH, SESSION_TIME
 import { http } from '../lib/http'
 import { setHeaders } from '../lib/proxy'
 
-export async function getUserDetails(req, res: Response, next: NextFunction) {
+export async function getUserDetails(req, res: Response, next: NextFunction): Promise<Response> {
+  if (!req.session || !req.session.passport || !req.session.passport.user) {
+    return res.send({}).status(200);
+  }
 
   try {
     const { roles } = req.session.passport.user.userinfo

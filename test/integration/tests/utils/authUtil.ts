@@ -21,6 +21,9 @@ export async function getSessionCookieString( username, password) {
 
 export function updateSessionCookieString(username, name, value) {
     let isNewCookie = true;
+    if (!authCookiesForUsers[username]){
+        return;
+    }
     for (const cookie of authCookiesForUsers[username]) {
         // console.log(`${cookie.name} : ${cookie.value}`);
         if (cookie.name === name){

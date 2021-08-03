@@ -140,9 +140,7 @@ export class AddExclusionHomeComponent implements OnInit, OnDestroy {
         break;
       }
       case ExclusionNavigationEvent.CANCEL:
-        this.router.navigateByUrl(`cases/case-details/${this.caseId}/roles-and-access`).then(r => {
-          return;
-        });
+        this.router.navigateByUrl(`cases/case-details/${this.caseId}/roles-and-access`);
         break;
       default:
         throw new Error('Invalid exclusion navigation event');

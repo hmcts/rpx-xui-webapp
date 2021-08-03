@@ -67,7 +67,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
     this.optionsList = this.userType === PersonRole.JUDICIAL.toLowerCase() ? judicialOptions : legalOpsOptions;
   }
 
-  public navigationHandler(navEvent: AllocateRoleNavigationEvent) {
+  public navigationHandler(navEvent: AllocateRoleNavigationEvent): void {
     this.submitted = true;
     if (this.radioOptionControl.invalid) {
       this.radioOptionControl.setErrors({
@@ -78,7 +78,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
     this.dispatchEvent(navEvent);
   }
 
-  public dispatchEvent(navEvent: AllocateRoleNavigationEvent) {
+  public dispatchEvent(navEvent: AllocateRoleNavigationEvent): void {
     switch (navEvent) {
       case AllocateRoleNavigationEvent.CONTINUE:
         const typeOfRole = this.radioOptionControl.value;

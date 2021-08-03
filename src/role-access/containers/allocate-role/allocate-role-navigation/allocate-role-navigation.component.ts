@@ -40,7 +40,7 @@ export class AllocateRoleNavigationComponent implements OnInit {
     return visibleNavigationStates.includes(currentNavigationState);
   }
 
-  public onEventTrigger(event: AllocateRoleNavigationEvent) {
+  public onEventTrigger(event: AllocateRoleNavigationEvent): void {
     this.eventTrigger.emit(event);
   }
 }

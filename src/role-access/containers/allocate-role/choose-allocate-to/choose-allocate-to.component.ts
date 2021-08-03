@@ -61,7 +61,7 @@ export class ChooseAllocateToComponent implements OnInit {
     ];
   }
 
-  public navigationHandler(navEvent: AllocateRoleNavigationEvent) {
+  public navigationHandler(navEvent: AllocateRoleNavigationEvent): void {
     this.submitted = true;
     if (this.radioOptionControl.invalid) {
       this.radioOptionControl.setErrors({
@@ -72,7 +72,7 @@ export class ChooseAllocateToComponent implements OnInit {
     this.dispatchEvent(navEvent);
   }
 
-  public dispatchEvent(navEvent: AllocateRoleNavigationEvent) {
+  public dispatchEvent(navEvent: AllocateRoleNavigationEvent): void {
     switch (navEvent) {
       case AllocateRoleNavigationEvent.CONTINUE:
         const allocateTo = this.radioOptionControl.value;

@@ -16,7 +16,7 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
   public ngOnInit(): void {
   }
 
-  public navigationHandler(navEvent: AllocateRoleNavigationEvent) {
+  public navigationHandler(navEvent: AllocateRoleNavigationEvent): void {
     switch (navEvent) {
       case AllocateRoleNavigationEvent.CONTINUE:
         this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_DURATION));

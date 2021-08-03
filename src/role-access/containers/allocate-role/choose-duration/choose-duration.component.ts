@@ -1,14 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { AllocateRoleState } from '../../../models';
-import { AllocateRoleNavigationEvent } from '../../../models/allocate-role-navigation-event.enum';
-import { AllocateRoleNavigation } from '../../../models/allocate-role-navigation.interface';
+import { AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState } from '../../../models';
 import * as fromFeature from '../../../store';
 
 @Component({
   selector: 'exui-choose-duration',
   templateUrl: './choose-duration.component.html',
-  styleUrls: ['./choose-duration.component.scss']
 })
 export class ChooseDurationComponent implements OnInit {
 

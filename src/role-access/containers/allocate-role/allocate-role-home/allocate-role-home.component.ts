@@ -9,9 +9,7 @@ import {
   chooseRoleVisibilityStates,
   searchPersonVisibilityStates
 } from '../../../constants/allocate-role-page-visibility-states';
-import { AllocateRoleState } from '../../../models';
-import { AllocateRoleNavigationEvent } from '../../../models/allocate-role-navigation-event.enum';
-import { AllocateRoleNavigation } from '../../../models/allocate-role-navigation.interface';
+import { AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState } from '../../../models';
 import * as fromFeature from '../../../store';
 import { AllocateRoleCheckAnswersComponent } from '../allocate-role-check-answers/allocate-role-check-answers.component';
 import { AllocateRoleSearchPersonComponent } from '../allocate-role-search-person/allocate-role-search-person.component';

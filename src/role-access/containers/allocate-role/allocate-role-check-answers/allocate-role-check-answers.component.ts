@@ -1,8 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { AllocateRoleState } from '../../../models';
-import { AllocateRoleNavigationEvent } from '../../../models/allocate-role-navigation-event.enum';
-import { AllocateRoleNavigation } from '../../../models/allocate-role-navigation.interface';
+import { AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState } from '../../../models';
 import * as fromFeature from '../../../store';
 
 @Component({

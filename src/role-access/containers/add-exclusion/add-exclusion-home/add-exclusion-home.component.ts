@@ -12,11 +12,11 @@ import {
 import { ExcludeOption, ExclusionNavigationEvent, ExclusionState, ExclusionStateData } from '../../../models';
 import { ExclusionNavigation } from '../../../models/exclusion-navigation.interface';
 import * as fromFeature from '../../../store';
-import { CheckAnswersComponent } from '../check-answers/check-answers.component';
+import { AddExclusionCheckAnswersComponent } from '../add-exclusion-check-answers/add-exclusion-check-answers.component';
 import { ChooseExclusionComponent } from '../choose-exclusion/choose-exclusion.component';
 import { ChoosePersonRoleComponent } from '../choose-person-role/choose-person-role.component';
 import { DescribeExclusionComponent } from '../describe-exclusion/describe-exclusion.component';
-import { SearchPersonComponent } from '../search-person/search-person.component';
+import { AddExclusionSearchPersonComponent } from '../add-exclusion-search-person/add-exclusion-search-person.component';
 
 @Component({
   selector: 'exui-add-exclusion-home',
@@ -30,14 +30,14 @@ export class AddExclusionHomeComponent implements OnInit, OnDestroy {
   @ViewChild('choosePersonRole', {read: ChoosePersonRoleComponent})
   public choosePersonRoleComponent: ChoosePersonRoleComponent;
 
-  @ViewChild('findPerson', {read: SearchPersonComponent})
-  public findPersonComponent: SearchPersonComponent;
+  @ViewChild('findPerson', {read: AddExclusionSearchPersonComponent})
+  public findPersonComponent: AddExclusionSearchPersonComponent;
 
   @ViewChild('describeExclusion', {read: DescribeExclusionComponent})
   public describeExclusionComponent: DescribeExclusionComponent;
 
-  @ViewChild('checkAnswers', {read: CheckAnswersComponent})
-  public checkAnswersComponent: CheckAnswersComponent;
+  @ViewChild('checkAnswers', {read: AddExclusionCheckAnswersComponent})
+  public checkAnswersComponent: AddExclusionCheckAnswersComponent;
 
   private exclusionStateDataSub: Subscription;
 
@@ -140,9 +140,7 @@ export class AddExclusionHomeComponent implements OnInit, OnDestroy {
         break;
       }
       case ExclusionNavigationEvent.CANCEL:
-        this.router.navigateByUrl(`cases/case-details/${this.caseId}`).then(r => {
-          return;
-        });
+        this.router.navigateByUrl(`cases/case-details/${this.caseId}/roles-and-access`);
         break;
       default:
         throw new Error('Invalid exclusion navigation event');

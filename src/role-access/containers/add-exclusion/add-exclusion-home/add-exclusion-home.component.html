@@ -15,21 +15,21 @@
               *ngIf="isComponentVisible(navigationCurrentState, choosePersonRoleStates)"
               [navEvent]="navEvent">
             </exui-choose-person-role>
-            <exui-search-person
+            <exui-add-exclusion-search-person
               #findPerson
               *ngIf="isComponentVisible(navigationCurrentState, findPersonVisibilityStates)"
               [navEvent]="navEvent">
-            </exui-search-person>
+            </exui-add-exclusion-search-person>
             <exui-describe-exclusion
               #describeExclusion
               *ngIf="isComponentVisible(navigationCurrentState, describeExclusionVisibilityStates)"
               [navEvent]="navEvent">
             </exui-describe-exclusion>
-            <exui-check-answers
+            <exui-add-exclusion-check-answers
               #checkAnswers
               *ngIf="isComponentVisible(navigationCurrentState, checkAnswersVisibilityStates)"
               [navEvent]="navEvent">
-            </exui-check-answers>
+            </exui-add-exclusion-check-answers>
           </div>
         </exui-exclusion-navigation>
       </div>

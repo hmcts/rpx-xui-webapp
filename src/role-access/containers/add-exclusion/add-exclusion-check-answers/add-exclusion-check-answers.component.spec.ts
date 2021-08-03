@@ -1,39 +1,33 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { Store } from '@ngrx/store';
+import { Observable, Subject } from 'rxjs';
 import { AnswersComponent } from '../../../components';
 import { ExcludeOption, ExclusionNavigationEvent, ExclusionState, PersonRole } from '../../../models';
-import { CheckAnswersComponent } from './check-answers.component';
 import * as fromFeature from '../../../store';
-import { Store } from '@ngrx/store';
-import { ConfirmExclusionAction } from '../../../store';
-import { Observable, Subject } from 'rxjs';
+import { ConfirmExclusionAction } from '../../../store/actions';
+import { AddExclusionCheckAnswersComponent } from './add-exclusion-check-answers.component';
 
-
-describe('CheckAnswersComponent', () => {
-  let component: CheckAnswersComponent;
-  let fixture: ComponentFixture<CheckAnswersComponent>;
+describe('AddExclusionCheckAnswersComponent', () => {
+  let component: AddExclusionCheckAnswersComponent;
+  let fixture: ComponentFixture<AddExclusionCheckAnswersComponent>;
   let mockStore: any;
   const pipeSubject: Subject<any> = new Subject<any>();
 
   beforeEach(() => {
     mockStore = jasmine.createSpyObj('store', ['dispatch', 'pipe']);
-
-
     mockStore.pipe.and.returnValue(pipeSubject);
 
     TestBed.configureTestingModule({
-      declarations: [AnswersComponent, CheckAnswersComponent],
+      declarations: [AnswersComponent, AddExclusionCheckAnswersComponent],
       providers: [
         {
           provide: Store, useValue: mockStore
         }
       ]
     }).compileComponents();
-
-    fixture = TestBed.createComponent(CheckAnswersComponent);
+    fixture = TestBed.createComponent(AddExclusionCheckAnswersComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-
   });
 
   afterEach(() => {

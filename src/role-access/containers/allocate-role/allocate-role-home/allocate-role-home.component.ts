@@ -125,7 +125,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
         break;
       }
       case AllocateRoleNavigationEvent.CANCEL:
-        this.router.navigateByUrl(`cases/case-details/${this.caseId}`).then(r => {
+        this.router.navigateByUrl(`cases/case-details/${this.caseId}/roles-and-access`).then(r => {
           return;
         });
         break;

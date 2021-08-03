@@ -18,7 +18,7 @@ export async function getUserExclusions(req: EnhancedRequest, res: Response, nex
     exclusions = [];
   }
 
-  return res.send(exclusions).status(200);
+  return res.status(200).send(exclusions);
 }
 
 export async function confirmUserExclusion(req: EnhancedRequest, res: Response, next: NextFunction) {
@@ -34,14 +34,12 @@ export async function confirmUserExclusion(req: EnhancedRequest, res: Response, 
   if (['400, 401, 402, 403, 500, 503'].indexOf(req.body.exclusionDescription)) {
     return res.status(req.body.exclusionDescription).send('error: {status: req.body.exclusionDescription}"');
   };
-  return res.send(exclusion).status(200);
+  return res.status(200).send(exclusion);
 }
 
-// Note - as mock data is being used, can't currently delete
 export async function deleteUserExclusion(req: EnhancedRequest, res: Response, next: NextFunction) {
-  console.log('req.body is ', req.body);
   if (req.body.exclusionDescription && ['400, 401, 402, 403, 500, 503'].indexOf(req.body.exclusionDescription)) {
     return res.status(req.body.exclusionDescription).send('error: {status: req.body.exclusionDescription}"');
   };
-  return res.send(req.body.roleExclusion).status(200);
+  return res.status(200).send(req.body);
 }

@@ -22,8 +22,7 @@ export class RoleExclusionsService {
     return this.http.post(`${RoleExclusionsService.exclusionsUrl}/confirm`, exclusionStateData);
   }
 
-  // passing in caseId may not be neccessary
-  public deleteExclusion(roleExclusion: RoleExclusion, caseId: string) {
-    return this.http.post(`${RoleExclusionsService.exclusionsUrl}/delete`, {roleExclusion: roleExclusion, caseId: caseId});
+  public deleteExclusion(roleExclusion: RoleExclusion) {
+    return this.http.post(`${RoleExclusionsService.exclusionsUrl}/delete`, roleExclusion);
   }
 }

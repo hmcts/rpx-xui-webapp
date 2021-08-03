@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { InfoMessageType } from '../../../work-allocation-2/enums';
-import { REDIRECTS } from '../../../work-allocation-2/utils';
-import { Answer, ExclusionNavigationEvent, RoleAccessHttpError, RoleExclusion } from '../../models';
+import { Answer, ExclusionNavigationEvent, RoleExclusion } from '../../models';
 import { AnswerHeaderText, AnswerLabelText } from '../../models/enums';
 import { ExclusionMessageText } from '../../models/enums/exclusion-text';
 import { RoleExclusionsService } from '../../services';
+import { handleError } from '../../utils';
 
 @Component({
   selector: 'exui-delete-exclusion',
@@ -31,9 +30,8 @@ export class DeleteExclusionComponent implements OnInit {
     this.roleExclusion = roleExclusions[0];
     this.populateAnswers(roleExclusions);
     this.route.paramMap.subscribe(params => {
-      this.caseId = params.get("caseId");
+      this.caseId = params.get('caseId');
     });
-    console.log(this.caseId);
   }
 
   private populateAnswers(exclusions: RoleExclusion[]): void {
@@ -44,49 +42,12 @@ export class DeleteExclusionComponent implements OnInit {
     }
   }
 
-  public onNavEvent(event: ExclusionNavigationEvent): void {
-    const navEvent = {
-      event,
-      timestamp: Date.now()
-    };
-    this.navigationHandler(event);
-  }
-
-  public handleError(error: RoleAccessHttpError): void {
-    if (error && error.status) {
-      switch (error.status) {
-        case 401:
-        case 403:
-          {
-            this.router.navigate([REDIRECTS.NotAuthorised]);
-            return;
-          }
-        case 400:
-        case 500:
-        case 503:
-          {
-            this.router.navigate([REDIRECTS.ServiceDown]);
-            return;
-          }
-        default:
-          {
-            const goToCaseUrl = `cases/case-details/${this.caseId}/roles-and-access`;
-          // navigates to case details page for specific case id
-          this.router.navigate([goToCaseUrl], {
-            state: {
-              showMessage: true,
-              message: { type: InfoMessageType.SUCCESS, message: ExclusionMessageText.ExcludeMe }}
-            });
-          }
-      }
-    }
-  }
-
-  public navigationHandler(navEvent: ExclusionNavigationEvent): void {
+  public onNavEvent(navEvent: ExclusionNavigationEvent): void {
+    const goToCaseUrl = `cases/case-details/${this.caseId}/roles-and-access`;
     switch (navEvent) {
       case ExclusionNavigationEvent.DELETE_EXCLUSION: {
-        this.roleExclusionsService.deleteExclusion(this.roleExclusion, this.caseId).subscribe(() => {
-          const goToCaseUrl = `cases/case-details/${this.caseId}/roles-and-access`;
+        // might need to pass in the case id
+        this.roleExclusionsService.deleteExclusion(this.roleExclusion).subscribe(() => {
           // navigates to case details page for specific case id
           this.router.navigate([goToCaseUrl], {
             state: {
@@ -94,17 +55,17 @@ export class DeleteExclusionComponent implements OnInit {
               messageText: ExclusionMessageText.Delete}
             });
         }, error => {
-          return this.handleError(error);
+          return handleError(error, this.router, goToCaseUrl);
         });
         break;
       }
-      case ExclusionNavigationEvent.CANCEL:
-        this.router.navigateByUrl(`cases/case-details/${this.caseId}/roles-and-access`).then(r => {
-          return;
-        });
-        break;
-      default:
+      case ExclusionNavigationEvent.CANCEL: {
+        this.router.navigateByUrl(goToCaseUrl);
+        return;
+      }
+      default: {
         throw new Error('Invalid option');
+      }
     }
   }
 }

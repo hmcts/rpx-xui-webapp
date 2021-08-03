@@ -1,5 +1,7 @@
 export const EXCLUSION_OPTION = 'exclusionOption';
 export const PERSON_ROLE = 'personRole';
+export const CHOOSE_A_ROLE = 'chooseRole';
+export const CHOOSE_ALLOCATE_TO = 'chooseAllocateTo';
 
 export const ERROR_MESSAGE = {
   title: 'There is a problem',

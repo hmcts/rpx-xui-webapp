@@ -2,7 +2,7 @@ export enum RoleAllocationTitleText {
   ExclusionAllocate = 'Choose who the exclusion is for',
   ExclusionChoose = 'Choose the person\'s role',
   NonExclusionAllocate = 'Choose how to allocate the role',
-  NonExclusionChoose = 'Choose a role'
+  NonExclusionChoose = 'Choose a role',
 }
 
 export enum RoleAllocationCaptionText {

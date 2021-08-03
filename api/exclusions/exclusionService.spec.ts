@@ -7,7 +7,7 @@ import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 
 import { http } from '../lib/http';
-import { getUserExclusions } from './exclusionService';
+import { confirmUserExclusion, deleteUserExclusion, getUserExclusions } from './exclusionService';
 
 chai.use(sinonChai);
 describe('exclusions.exclusionService', () => {
@@ -17,6 +17,20 @@ describe('exclusions.exclusionService', () => {
   let res: any;
   let next: any;
   const SUCCESS_RESPONSE = { status: {}, data: 'ok' };
+  const exampleRoleExclusion = {
+    added: Date.UTC(2021, 7, 1),
+    name: 'Judge Birch',
+    notes: 'this case been remitted from Upper Tribunal and required different judge',
+    type: 'Other',
+    userType: 'Judicial',
+  };
+  const confirmRoleExclusion = {
+    added: Date.UTC(2021, 7, 1),
+    name: 'Judge ABCDE',
+    notes: 'this case been remitted from Upper Tribunal and required different judge',
+    type: 'Other',
+    userType: 'Judicial'
+  }
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -29,15 +43,6 @@ describe('exclusions.exclusionService', () => {
   });
 
   describe('getUserExclusions', () => {
-
-/*     it('should make a get request', async () => {
-      spy = sandbox.stub(http, 'get').resolves(res);
-      let req = mockReq();
-      req.session.passport = {user: {userinfo: {roles: ['caseworker-ia-judge']}}};
-      const response = await getUserExclusions(req, res, next);
-      expect(response.status).to.equal(200);
-      expect(response).to.equal(200);
-    }); */
 
     it('should make a get request and respond appropriately', async () => {
 
@@ -55,47 +60,83 @@ describe('exclusions.exclusionService', () => {
           }
         }
       });
-      const response = mockRes();
+      let response = mockRes();
       await getUserExclusions(req, response, next);
 
       // Should have received the HTTP response. The get simply returns the data.
-      // expect(response.send).to.have.been.calledWith(sinon.match(SUCCESS_RESPONSE.data));
+      expect(response.send).to.have.been.calledWith(sinon.match([exampleRoleExclusion]));
+
+      const nonJudgeReq = mockReq({
+        session: {
+          passport: {
+            user: {
+              userinfo: {
+                roles: [
+                  'caseworker'
+                ]
+              }
+            }
+          }
+        }
+      });
+      response = mockRes();
+      await getUserExclusions(nonJudgeReq, response, next);
+      // Should have received the HTTP response. The get simply returns the data.
+      expect(response.send).to.have.been.calledWith(sinon.match([]));
     });
 
   });
 
-  /* describe('handleTaskSearch', () => {
+  describe('confirmUserExclusion', () => {
 
-    it('should make a post request', async () => {
+    it('should confirm succesfully', async () => {
       spy = sandbox.stub(http, 'post').resolves(res);
-      const path = '/task';
-      const payload = { search: 'criteria' };
-      const req = mockReq();
-      const response = await handleTaskSearch(path, payload, req);
-      expect(response).to.be.an('object'); // Returns the entire response.
-      expect(response.data).to.equal('ok');
-      const args = spy.getCall(0).args;
-      expect(args[0]).to.equal(path);    // Correct url.
-      expect(args[1]).to.equal(payload); // Correct search criteria posted.
+      const req = mockReq({});
+      let response = mockRes();
+      await confirmUserExclusion(req, response, next);
+
+      // Should have received the HTTP response. The confirm simply sends the data
+      expect(response.send).to.have.been.calledWith(sinon.match([confirmRoleExclusion]));
+
+      const nonJudgeReq = mockReq({
+        body: {
+          roleExclusion: exampleRoleExclusion,
+          exclusionDescription: '400'
+        }
+      });
+      response = mockRes();
+      await confirmUserExclusion(nonJudgeReq, response, next);
+      // The confirm simply returns the error data.
+      expect(response.send).to.have.been.calledWith(sinon.match('error: {status: 400}'));
     });
 
-  }); */
+  });
 
-  /* describe('handleTaskPost', () => {
+  describe('deleteUserExclusion', () => {
 
-    it('should make a post request', async () => {
-      spy = sandbox.stub(http, 'post').resolves(res);
-      const path = '/task/123456/assign';
-      const payload = { assignee: { name: 'bob', id: 2 } };
-      const req = mockReq();
-      const response = await handleTaskPost(path, payload, req);
-      expect(response).to.be.an('object'); // Returns the entire response.
-      expect(response.data).to.equal('ok');
-      const args = spy.getCall(0).args;
-      expect(args[0]).to.equal(path);    // Correct url.
-      expect(args[1]).to.equal(payload); // Correct search criteria posted.
+    it('should delete succesfully', async () => {
+      spy = sandbox.stub(http, 'delete').resolves(res);
+      const req = mockReq({
+        body: {roleExclusion: exampleRoleExclusion}
+      });
+      let response = mockRes();
+      await deleteUserExclusion(req, response, next);
+
+      // Should have received the HTTP response. The delete simply sends the data
+      expect(response.send).to.have.been.calledWith(sinon.match(exampleRoleExclusion));
+
+      const nonJudgeReq = mockReq({
+        body: {
+          roleExclusion: exampleRoleExclusion,
+          exclusionDescription: '400'
+        }
+      });
+      response = mockRes();
+      await deleteUserExclusion(nonJudgeReq, response, next);
+      // The delete simply returns the error data.
+      expect(response.send).to.have.been.calledWith(sinon.match('error: {status: 400}'));
     });
 
-  }); */
+  });
 
 });

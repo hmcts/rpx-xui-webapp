@@ -22,7 +22,7 @@ export class RoleExclusionsService {
     return this.http.post(`${RoleExclusionsService.exclusionsUrl}/confirm`, exclusionStateData);
   }
 
-  public deleteExclusion(roleExclusion: RoleExclusion) {
-    return this.http.post(`${RoleExclusionsService.exclusionsUrl}/delete`, roleExclusion);
+  public deleteExclusion(deletedExclusion: RoleExclusion) {
+    return this.http.post(`${RoleExclusionsService.exclusionsUrl}/delete`, {roleExclusion: deletedExclusion});
   }
 }

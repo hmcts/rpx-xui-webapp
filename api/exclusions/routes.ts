@@ -7,6 +7,6 @@ router.use(authInterceptor);
 
 router.get('/exclusions', getUserExclusions);
 router.post('/exclusions/confirm', confirmUserExclusion);
-router.post('/exclusions/delete', deleteUserExclusion)
+router.post('/exclusions/delete', deleteUserExclusion);
 
 export default router;

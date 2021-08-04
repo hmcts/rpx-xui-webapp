@@ -12,7 +12,7 @@ export const allocateRoleInitialState: AllocateRoleStateData = {
   allocateTo: null,
   person: null,
   durationOfRole: null,
-  anotherPeriod: null,
+  period: null,
   lastError: null
 };
 

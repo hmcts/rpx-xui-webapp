@@ -15,7 +15,7 @@ export enum DurationOfRole {
   ANOTHER_PERIOD = 'Another period',
 }
 
-export interface AnotherPeriod {
+export interface Period {
   startDate;
   endDate;
 }

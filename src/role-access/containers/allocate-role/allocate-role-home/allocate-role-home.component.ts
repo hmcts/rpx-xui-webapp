@@ -9,7 +9,7 @@ import {
   chooseRoleVisibilityStates,
   searchPersonVisibilityStates
 } from '../../../constants/allocate-role-page-visibility-states';
-import { AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState } from '../../../models';
+import { AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState, AllocateTo } from '../../../models';
 import * as fromFeature from '../../../store';
 import { AllocateRoleCheckAnswersComponent } from '../allocate-role-check-answers/allocate-role-check-answers.component';
 import { AllocateRoleSearchPersonComponent } from '../allocate-role-search-person/allocate-role-search-person.component';
@@ -49,6 +49,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
   public allocateRoleStateDataSub: Subscription;
 
   public navigationCurrentState: AllocateRoleState;
+  public allocateTo: AllocateTo;
   public caseId: string;
 
   constructor(private readonly store: Store<fromFeature.State>,
@@ -58,6 +59,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
     this.allocateRoleStateDataSub = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(
       allocateRoleStateData => {
         this.navigationCurrentState = allocateRoleStateData.state;
+        this.allocateTo = allocateRoleStateData.allocateTo;
         this.caseId = allocateRoleStateData.caseId;
       }
     );
@@ -84,6 +86,18 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
             break;
           case AllocateRoleState.SEARCH_PERSON:
             this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
+            break;
+          case AllocateRoleState.CHOOSE_DURATION:
+            switch (this.allocateTo) {
+              case AllocateTo.RESERVE_TO_ME:
+                this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
+                break;
+              case AllocateTo.ALLOCATE_TO_ANOTHER_PERSON:
+                this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
+                break;
+              default:
+                throw new Error('Invalid allocate to');
+            }
             break;
           default:
             throw new Error('Invalid exclusion state');

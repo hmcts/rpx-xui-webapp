@@ -18,7 +18,7 @@ export async function getUserExclusions(req: EnhancedRequest, res: Response, nex
     exclusions = [];
   }
 
-  return res.send(exclusions).status(200);
+  return res.status(200).send(exclusions);
 }
 
 export async function confirmUserExclusion(req: EnhancedRequest, res: Response, next: NextFunction) {
@@ -36,5 +36,9 @@ export async function confirmUserExclusion(req: EnhancedRequest, res: Response, 
   if (errorCodes.indexOf(value) !== -1) {
     return res.status(parseInt(value, 10)).send(`{status: ${value}}`);
   }
-  return res.send(exclusion).status(200);
+  return res.status(200).send(exclusion);
+}
+
+export async function deleteUserExclusion(req: EnhancedRequest, res: Response, next: NextFunction) {
+  return res.status(200).send(req.body.roleExclusion);
 }

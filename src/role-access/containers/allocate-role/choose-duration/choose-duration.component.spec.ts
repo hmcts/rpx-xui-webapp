@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 
 import { provideMockStore } from '@ngrx/store/testing';
 import { ChooseDurationComponent } from './choose-duration.component';
@@ -9,6 +10,7 @@ describe('ChooseDurationComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [FormsModule],
       declarations: [ ChooseDurationComponent ],
       providers: [
         provideMockStore()

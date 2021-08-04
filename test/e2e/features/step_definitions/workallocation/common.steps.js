@@ -4,6 +4,9 @@ const reportLogger = require('../../../support/reportLogger');
 const BrowserWaits = require('../../../support/customWaits');
 const SoftAssert = require('../../../../ngIntegration/util/softAssert');
 const TaskListTable = require('../../pageObjects/workAllocation/taskListTable');
+const casesTable = require('../../pageObjects/workAllocation/casesTable');
+
+
 const caseDetailsPage = require("../../pageObjects/caseDetailsPage");
 const caseListPage = require("../../pageObjects/CaseListPage");
 
@@ -235,7 +238,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         expect(parseInt(await taskListTable.getTaskListCountInTable()), 'Task count does not match expected ').to.equal(tasksCount);
         if (tasksCount === 0) {
             expect(await taskListTable.isTableFooterDisplayed(), "task list table footer is not displayed").to.be.true;
-            expect(await taskListTable.getTableFooterMessage(), "task list table footer message when 0 tasks are displayed").to.equal("You have no assigned tasks.");
         } else {
             expect(await taskListTable.isTableFooterDisplayed(), "task list table footer is displayed").to.be.false;
         }
@@ -288,6 +290,25 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     When('I click change link for question {string} in check your answers page', async function(question){
         await checkYourAnswersPage.clickChangeForQuestion(question)
+    });
+
+    Then('I validate WA tasks table footer displayed status is {string}', async function(displayStateBool){
+        const expectedDisplayState = displayStateBool.toLowerCase().includes("true");
+        expect(await taskListTable.isTableFooterDisplayed()).to.equal(expectedDisplayState);
+    });
+
+    Then('I validate WA cases table footer displayed status is {string}', async function (displayStateBool) {
+        const expectedDisplayState = displayStateBool.toLowerCase().includes("true");
+        expect(await casesTable.isTableFooterDisplayed()).to.equal(expectedDisplayState);
+    });
+
+    Then('I validate WA tasks table footer message is {string}', async function (message) {
+        expect(await taskListTable.getTableFooterMessage()).to.include(message);
+    });
+
+    Then('I validate WA cases table footer message is {string}', async function (message) {
+        const expectedDisplayState = displayStateBool.toLowerCase().includes("true");
+        expect(await casesTable.getTableFooterMessage()).to.include(message);
     });
 
 });

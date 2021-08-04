@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Answer, ExclusionNavigationEvent, RoleExclusion } from '../../models';
-import { AnswerHeaderText, AnswerLabelText } from '../../models/enums';
-import { ExclusionMessageText } from '../../models/enums/exclusion-text';
+import { AnswerHeaderText, AnswerLabelText, ExclusionMessageText } from '../../models/enums';
 import { RoleExclusionsService } from '../../services';
 import { handleError } from '../../utils';
 

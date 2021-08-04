@@ -10,6 +10,8 @@ import * as fromFeature from '../../../store';
 export class ChooseDurationComponent implements OnInit {
 
   @Input() public navEvent: AllocateRoleNavigation;
+  public radioSelected:string;
+  public condition: boolean;
 
   constructor(private readonly store: Store<fromFeature.State>) { }
 
@@ -24,5 +26,10 @@ export class ChooseDurationComponent implements OnInit {
       default:
         throw new Error('Invalid option');
     }
+  }
+
+  public onItemChange(item){
+    console.log(item);
+    this.condition = item === 'value3';
   }
 }

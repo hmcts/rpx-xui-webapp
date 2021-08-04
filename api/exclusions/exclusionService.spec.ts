@@ -107,7 +107,7 @@ describe('exclusions.exclusionService', () => {
       response = mockRes();
       await confirmUserExclusion(nonJudgeReq, response, next);
       // The confirm simply returns the error data.
-      expect(response.send).to.have.been.calledWith(sinon.match('error: {status: 400}'));
+      expect(response.send).to.have.been.calledWith(sinon.match('{status: 400}'));
     });
 
   });
@@ -124,17 +124,6 @@ describe('exclusions.exclusionService', () => {
 
       // Should have received the HTTP response. The delete simply sends the data
       expect(response.send).to.have.been.calledWith(sinon.match(exampleRoleExclusion));
-
-      const nonJudgeReq = mockReq({
-        body: {
-          roleExclusion: exampleRoleExclusion,
-          exclusionDescription: '400'
-        }
-      });
-      response = mockRes();
-      await deleteUserExclusion(nonJudgeReq, response, next);
-      // The delete simply returns the error data.
-      expect(response.send).to.have.been.calledWith(sinon.match('error: {status: 400}'));
     });
 
   });

@@ -3,14 +3,12 @@ import { Component, NO_ERRORS_SCHEMA, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 
-import { ExclusionNavigationEvent, RoleExclusion } from '../../models';
-import { AnswerHeaderText, AnswerLabelText } from '../../models/enums';
 import { AnswersComponent } from '../../components/answers/answers.component';
+import { ExclusionNavigationEvent } from '../../models';
+import { AnswerHeaderText, AnswerLabelText, ExclusionMessageText } from '../../models/enums';
+import { RoleExclusionsService } from '../../services';
 import { DeleteExclusionComponent } from './delete-exclusion.component';
-import { Observable, of } from 'rxjs';
-import { RoleExclusionsService } from 'src/role-access/services';
-import { InfoMessageType } from 'src/role-access/models/enums/info-message-type';
-import { ExclusionMessageText } from 'src/role-access/models/enums/exclusion-text';
+import { of } from 'rxjs';
 
 @Component({
   template: `<exui-delete-exclusion></exui-delete-exclusion>`

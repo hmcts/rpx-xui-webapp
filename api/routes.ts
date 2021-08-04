@@ -2,12 +2,12 @@ import * as express from 'express';
 import { router as caseShareRoutes } from './caseshare/routes';
 import { getConfigValue, showFeature } from './configuration';
 import { APP_INSIGHTS_KEY } from './configuration/references';
+import exclusionRouter from './exclusions/routes';
 import healthCheck from './healthCheck';
 import authInterceptor from './lib/middleware/auth';
 import { router as nocRouter } from './noc/routes';
 import { router as organisationRouter } from './organisations';
 import userRouter from './user/routes';
-import exclusionRouter from './exclusions/routes';
 
 const router = express.Router({mergeParams: true});
 

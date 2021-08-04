@@ -46,7 +46,6 @@ export class DeleteExclusionComponent implements OnInit {
     const goToCaseUrl = `cases/case-details/${this.caseId}/roles-and-access`;
     switch (navEvent) {
       case ExclusionNavigationEvent.DELETE_EXCLUSION: {
-        // might need to pass in the case id
         this.roleExclusionsService.deleteExclusion(this.roleExclusion).subscribe(() => {
           // navigates to case details page for specific case id
           this.router.navigate([goToCaseUrl], {

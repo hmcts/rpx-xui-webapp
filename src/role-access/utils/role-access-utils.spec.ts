@@ -1,5 +1,5 @@
-import { InfoMessageType } from 'src/work-allocation-2/enums';
 import { RoleAccessHttpError } from '../models';
+import { InfoMessageType } from '../models/enums/info-message-type';
 import { handleError, REDIRECTS } from './role-access-utils';
 
 describe('WorkAllocationUtils', () => {

@@ -5,8 +5,8 @@ import { confirmUserExclusion, deleteUserExclusion, getUserExclusions } from './
 const router = Router({ mergeParams: true });
 router.use(authInterceptor);
 
-router.get('/exclusions', getUserExclusions);
-router.post('/exclusions/confirm', confirmUserExclusion);
-router.post('/exclusions/delete', deleteUserExclusion);
+router.get('/get', getUserExclusions);
+router.post('/confirm', confirmUserExclusion);
+router.post('/delete', deleteUserExclusion);
 
 export default router;

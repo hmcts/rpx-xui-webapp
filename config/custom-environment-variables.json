@@ -23,6 +23,7 @@
     "documentsApi": "HEALTH_DOCUMENTS_API",
     "em_hrs_api": "HEALTH_EM_HRS_API",
     "em_anno_api": "HEALTH_EM_ANNO_API",
+    "em_docassembly_api": "HEALTH_EM_DOCASSEMBLY_API",
     "s2s": "HEALTH_S2S_SERVICE",
     "termsAndConditions": "HEALTH_TERMS_AND_CONDITIONS_API",
     "taskApi": "HEALTH_WORK_ALLOCATION_TASK_API",
@@ -47,6 +48,7 @@
       "api": "SERVICES_CASE_SHARE_API"
     },
     "em_anno_api": "SERVICES_EM_ANNO_API",
+    "em_docassembly_api": "SERVICES_EM_DOCASSEMBLY_API",
     "idam": {
       "idamApiUrl": "SERVICES_IDAM_API_URL",
       "idamClientID": "SERVICES_IDAM_CLIENT_ID",

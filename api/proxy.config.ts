@@ -4,7 +4,7 @@ import * as amendedJurisdictions from './amendedJurisdictions'
 import {getConfigValue} from './configuration'
 import {
     SERVICES_CCD_COMPONENT_API_PATH,
-    SERVICES_DOCUMENTS_API_PATH, SERVICES_EM_ANNO_API_URL, SERVICES_EM_HRS_API_PATH,
+    SERVICES_DOCUMENTS_API_PATH, SERVICES_EM_ANNO_API_URL, SERVICES_EM_DOCASSEMBLY_API_URL, SERVICES_EM_HRS_API_PATH,
     SERVICES_ICP_API_URL, SERVICES_MARKUP_API_URL, SERVICES_PAYMENTS_URL
 } from './configuration/references'
 import {applyProxy} from './lib/middleware/proxy'
@@ -80,6 +80,13 @@ export const initProxy = (app: Express) => {
         rewriteUrl: '/api',
         source: '/em-anno',
         target: getConfigValue(SERVICES_EM_ANNO_API_URL),
+    })
+
+    applyProxy(app, {
+        rewrite: true,
+        rewriteUrl: '/api',
+        source: '/doc-assembly',
+        target: getConfigValue(SERVICES_EM_DOCASSEMBLY_API_URL),
     })
 
     applyProxy(app, {

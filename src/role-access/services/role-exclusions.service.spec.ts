@@ -10,6 +10,6 @@ describe('SearchFilterService', () => {
     });
     it('getCurrentUserRoleExclusions', () => {
         roleExclusionsService.getCurrentUserRoleExclusions();
-        expect(mockHttp.get).toHaveBeenCalledWith(RoleExclusionsService.exclusionsUrl);
+        expect(mockHttp.get).toHaveBeenCalledWith(`${RoleExclusionsService.exclusionsUrl}/get`);
     });
 });

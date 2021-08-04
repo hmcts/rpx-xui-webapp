@@ -31,15 +31,14 @@ export async function confirmUserExclusion(req: EnhancedRequest, res: Response, 
       userType: 'Judicial',
     },
   ];
-  if (req.body.exclusionDescription && ['400, 401, 402, 403, 500, 503'].indexOf(req.body.exclusionDescription)) {
-    return res.status(req.body.exclusionDescription).send(`error: {status: ${req.body.exclusionDescription}}`);
+  const errorCodes: string[] = ['400', '401', '402', '403', '500', '503'];
+  const value: string = req.body.exclusionDescription;
+  if (errorCodes.indexOf(value) !== -1) {
+    return res.status(parseInt(value, 10)).send(`{status: ${value}}`);
   }
   return res.status(200).send(exclusion);
 }
 
 export async function deleteUserExclusion(req: EnhancedRequest, res: Response, next: NextFunction) {
-  if (req.body.exclusionDescription && ['400, 401, 402, 403, 500, 503'].indexOf(req.body.exclusionDescription)) {
-    return res.status(req.body.exclusionDescription).send(`error: {status: ${req.body.exclusionDescription}}`);
-  }
   return res.status(200).send(req.body.roleExclusion);
 }

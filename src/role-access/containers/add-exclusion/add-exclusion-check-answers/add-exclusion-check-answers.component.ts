@@ -7,10 +7,10 @@ import { ExclusionNavigation } from '../../../models/exclusion-navigation.interf
 import * as fromFeature from '../../../store';
 
 @Component({
-  selector: 'exui-check-answers',
-  templateUrl: './check-answers.component.html'
+  selector: 'exui-add-exclusion-check-answers',
+  templateUrl: './add-exclusion-check-answers.component.html'
 })
-export class CheckAnswersComponent implements OnDestroy {
+export class AddExclusionCheckAnswersComponent implements OnDestroy {
 
   @Input() public navEvent: ExclusionNavigation;
 

@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { RoleAllocationCaptionText } from '../../models/enums';
 import { OptionsModel } from '../../models/options-model';
 
 @Component({
@@ -11,7 +10,7 @@ import { OptionsModel } from '../../models/options-model';
 export class ChooseRadioOptionComponent {
 
   @Input() public title: string;
-  @Input() public caption: RoleAllocationCaptionText;
+  @Input() public caption: string;
   @Input() public optionsList: OptionsModel[];
   @Input() public formGroup: FormGroup;
   @Input() public radioControlName: string;

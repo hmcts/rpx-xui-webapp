@@ -1,8 +1,9 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
-import { AddExclusionHomeComponent } from './containers/add-exclusion/add-exclusion-home/add-exclusion-home.component';
-import { DeleteExclusionComponent } from './containers/delete-exclusion/delete-exclusion.component';
+import { DeleteExclusionComponent } from './containers';
+import { AddExclusionHomeComponent } from './containers/add-exclusion';
+import { AllocateRoleHomeComponent } from './containers/allocate-role';
 import { RoleExclusionsResolver } from './resolvers/role-exclusions.resolver';
 
 export const ROUTES: Routes = [
@@ -15,7 +16,7 @@ export const ROUTES: Routes = [
         component: null,
         canActivate: [HealthCheckGuard],
         data: {
-          title: 'HMCTS Manage cases | Role and access | Exclusion',
+          title: 'HMCTS Manage cases | Role and access | Add Exclusion',
         }
       }
     ]
@@ -28,7 +29,21 @@ export const ROUTES: Routes = [
     data: {
       title: 'HMCTS Manage cases | Role and access | Delete exclusion',
     }
-  }
+  },
+  {
+    path: 'allocate-role',
+    component: AllocateRoleHomeComponent,
+    children: [
+      {
+        path: '',
+        component: null,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Manage cases | Role and access | Allocate a role',
+        }
+      }
+    ]
+  },
 ];
 
 export const roleAccessRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);

@@ -75,6 +75,22 @@ describe('AppConfiguration', () => {
     expect(service.getRemoteDocumentManagementUrl).toBeDefined();
   }));
 
+  it('should have getHrsUrl', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getHrsUrl).toBeDefined();
+  }));
+
+  it('should have getRemoteHrsUrl', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getRemoteHrsUrl).toBeDefined();
+  }));
+
+  it('should have getHrsUrl return value', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getHrsUrl()).toBe('dummy');
+  }));
+
+  it('should have getRemoteHrsUrl return value', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getRemoteHrsUrl()).toBe('dummy');
+  }));
+
   it('should have getPostcodeLookupUrl', inject([AppConfig], (service: AppConfig) => {
     expect(service.getPostcodeLookupUrl).toBeDefined();
   }));

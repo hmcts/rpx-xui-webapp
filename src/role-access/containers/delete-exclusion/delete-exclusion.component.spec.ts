@@ -1,9 +1,14 @@
+import { HttpClientModule } from '@angular/common/http';
 import { Component, NO_ERRORS_SCHEMA, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
-import { AnswerHeaderText, AnswerLabelText } from '../../models/enums';
+import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
+
 import { AnswersComponent } from '../../components/answers/answers.component';
+import { ExclusionNavigationEvent } from '../../models';
+import { AnswerHeaderText, AnswerLabelText, ExclusionMessageText } from '../../models/enums';
+import { RoleExclusionsService } from '../../services';
 import { DeleteExclusionComponent } from './delete-exclusion.component';
+import { of } from 'rxjs';
 
 @Component({
   template: `<exui-delete-exclusion></exui-delete-exclusion>`
@@ -16,12 +21,19 @@ describe('DeleteExclusionComponent', () => {
   let component: DeleteExclusionComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
+  const routerMock = jasmine.createSpyObj('Router', [
+    'navigateByUrl', 'navigate'
+  ]);
+  const mockRoleExclusionsService = jasmine.createSpyObj('roleExclusionsService', ['deleteExclusion']);
+  const exampleCaseId = '1234';
+  const goToCaseUrl = `cases/case-details/${exampleCaseId}/roles-and-access`;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       schemas: [
         NO_ERRORS_SCHEMA
       ],
+      imports: [ HttpClientModule ],
       declarations: [ AnswersComponent, DeleteExclusionComponent, WrapperComponent ],
       providers: [
         {
@@ -37,8 +49,17 @@ describe('DeleteExclusionComponent', () => {
                   }
                 ]
               }
-            }
+            },
+            paramMap: of(convertToParamMap({caseId: exampleCaseId}))
           }
+        },
+        {
+          provide: Router,
+          useValue: routerMock
+        },
+        {
+          provide: RoleExclusionsService,
+          useValue: mockRoleExclusionsService
         }
       ]
     })
@@ -76,4 +97,13 @@ describe('DeleteExclusionComponent', () => {
     const dateAddedValueElement = fixture.debugElement.nativeElement.querySelectorAll('.govuk-summary-list__value')[2];
     expect(dateAddedValueElement.textContent).toContain('01/07/2021');
   });
+
+  it('should navigate correctly on click', () => {
+    component.onNavEvent(ExclusionNavigationEvent.CANCEL);
+    expect(routerMock.navigateByUrl).toHaveBeenCalledWith(goToCaseUrl);
+    mockRoleExclusionsService.deleteExclusion.and.returnValue(of({}));
+    component.onNavEvent(ExclusionNavigationEvent.DELETE_EXCLUSION);
+    const additionalState = {state: {showMessage: true, messageText: ExclusionMessageText.Delete}};
+    expect(routerMock.navigate).toHaveBeenCalledWith([goToCaseUrl], additionalState);
+  })
 });

@@ -63,7 +63,7 @@ export class ExclusionEffects {
       )
     );
 
-  public static handleError(error: RoleAccessHttpError, action: string): Observable<Action> {
+  public static handleError(error: RoleAccessHttpError, action?: string): Observable<Action> {
     if (error && error.status) {
       switch (error.status) {
         case 401:

@@ -72,13 +72,13 @@ describe('ChooseDurationComponent', () => {
 
     const period = component.getPeriod(DurationOfRole.ANOTHER_PERIOD);
 
-    expect(period.startDate.getMonth()).toEqual(1);
+    expect(period.startDate.getMonth()).toEqual(0);
     expect(period.startDate.getFullYear()).toEqual(2021);
     expect(period.startDate.getDate()).toEqual(1);
 
     expect(period.endDate).not.toBeNull();
 
-    expect(period.endDate.getMonth()).toEqual(2);
+    expect(period.endDate.getMonth()).toEqual(1);
     expect(period.endDate.getFullYear()).toEqual(2022);
     expect(period.endDate.getDate()).toEqual(2);
   });

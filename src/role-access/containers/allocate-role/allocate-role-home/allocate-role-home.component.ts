@@ -2,6 +2,9 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
+import { AppUtils } from '../../../../app/app-utils';
+import { UserRole } from '../../../../app/models/user-details.model';
+import * as fromAppStore from '../../../../app/store';
 import {
   checkAnswersVisibilityStates,
   chooseAllocateToVisibilityStates,
@@ -51,11 +54,18 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
   public navigationCurrentState: AllocateRoleState;
   public allocateTo: AllocateTo;
   public caseId: string;
+  public isLegalOpsOrJudicialRole: UserRole;
 
-  constructor(private readonly store: Store<fromFeature.State>,
+  constructor(private readonly appStore: Store<fromAppStore.State>,
+              private readonly store: Store<fromFeature.State>,
               private readonly router: Router) { }
 
   public ngOnInit(): void {
+    this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
+      userDetails => {
+        this.isLegalOpsOrJudicialRole = AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles);
+      }
+    );
     this.allocateRoleStateDataSub = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(
       allocateRoleStateData => {
         this.navigationCurrentState = allocateRoleStateData.state;
@@ -85,19 +95,40 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
             this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ROLE));
             break;
           case AllocateRoleState.SEARCH_PERSON:
-            this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
-            break;
-          case AllocateRoleState.CHOOSE_DURATION:
-            switch (this.allocateTo) {
-              case AllocateTo.RESERVE_TO_ME:
+            switch (this.isLegalOpsOrJudicialRole) {
+              case UserRole.LegalOps:
+                this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ROLE));
+                break;
+              case UserRole.Judicial:
                 this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
                 break;
-              case AllocateTo.ALLOCATE_TO_ANOTHER_PERSON:
+              default:
+                throw new Error('Invalid user role');
+            }
+            break;
+          case AllocateRoleState.CHOOSE_DURATION:
+            switch (this.isLegalOpsOrJudicialRole) {
+              case UserRole.LegalOps:
                 this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
                 break;
+              case UserRole.Judicial:
+                switch (this.allocateTo) {
+                  case AllocateTo.RESERVE_TO_ME:
+                    this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
+                    break;
+                  case AllocateTo.ALLOCATE_TO_ANOTHER_PERSON:
+                    this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
+                    break;
+                  default:
+                    throw new Error('Invalid allocate to');
+                }
+                break;
               default:
-                throw new Error('Invalid allocate to');
+                throw new Error('Invalid user role');
             }
+            break;
+          case AllocateRoleState.CHECK_ANSWERS:
+            this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_DURATION));
             break;
           default:
             throw new Error('Invalid exclusion state');

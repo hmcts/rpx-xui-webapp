@@ -1,6 +1,7 @@
 import { ActivatedRouteSnapshot } from '@angular/router';
-import { AppConstants } from './app.constants';
+import { AppConstants, JUDICIAL_ROLE_LIST, LEGAL_OPS_ROLE_LIST } from './app.constants';
 import { NavItemsModel } from './models/nav-item.model';
+import { UserRole } from './models/user-details.model';
 
 export class AppUtils {
 
@@ -79,9 +80,8 @@ export class AppUtils {
 
   /**
    * Tab logic - Works out which tab needs to be selected via the current tab urls and the given url
-   *
    * @param items - the tab urls
-   * @param currrentUrl - the url being tested
+   * @param currentUrl - the url being tested
    * @return - a list including boolean stating whether the full url is given or the similar matching url
    */
   public static checkTabs(items: NavItemsModel[], currentUrl: string): any[] {
@@ -113,9 +113,8 @@ export class AppUtils {
 
   /**
    * Check if item's href is equivalent to the current url
-   *
    * @param href - one of the tab urls
-   * @param currrentUrl - the url being tested
+   * @param currentUrl - the url being tested
    * @return - boolean value
    */
   public static isFullUrl(href: string, currentUrl: string): boolean {
@@ -146,7 +145,16 @@ export class AppUtils {
     return child ? child.data : null;
   }
 
-  public static getFeatureToggledUrl(isFeatureEnabled: boolean, workallocationUrl: string): string {
-    return isFeatureEnabled ? workallocationUrl : null;
+  public static getFeatureToggledUrl(isFeatureEnabled: boolean, workAllocationUrl: string): string {
+    return isFeatureEnabled ? workAllocationUrl : null;
+  }
+
+  public static isLegalOpsOrJudicial(userRoles: string[]): UserRole {
+    if (userRoles.some(userRole => LEGAL_OPS_ROLE_LIST.some(role => role === userRole))) {
+      return UserRole.LegalOps;
+    } else if (userRoles.some(userRole => JUDICIAL_ROLE_LIST.some(role => role === userRole))) {
+      return UserRole.Judicial;
+    }
+    return null;
   }
 }

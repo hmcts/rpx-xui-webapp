@@ -4,6 +4,9 @@ import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { $enum as EnumUtil } from 'ts-enum-util';
+import { AppUtils } from '../../../../app/app-utils';
+import { UserRole } from '../../../../app/models/user-details.model';
+import * as fromAppStore from '../../../../app/store';
 import { CHOOSE_A_ROLE, ERROR_MESSAGE } from '../../../constants';
 import { AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState, PersonRole, TypeOfRole } from '../../../models';
 import { RoleAllocationTitleText } from '../../../models/enums';
@@ -33,11 +36,19 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
 
   public userType: string = '';
 
-  constructor(private readonly store: Store<fromFeature.State>,
+  public isLegalOpsOrJudicialRole: UserRole;
+
+  constructor(private readonly appStore: Store<fromAppStore.State>,
+              private readonly store: Store<fromFeature.State>,
               private readonly route: ActivatedRoute) {
   }
 
   public ngOnInit(): void {
+    this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
+      userDetails => {
+        this.isLegalOpsOrJudicialRole = AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles);
+      }
+    );
     // userType: 1. judicial/2. legalOps
     // 1. judicial: add judicial role journey
     // 2. legalOps: add legal Ops role journey
@@ -82,8 +93,18 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
     switch (navEvent) {
       case AllocateRoleNavigationEvent.CONTINUE:
         const typeOfRole = this.radioOptionControl.value;
-        this.store.dispatch(new fromFeature.ChooseRoleAndGo({
-          typeOfRole, allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO}));
+        switch (this.isLegalOpsOrJudicialRole) {
+          case UserRole.LegalOps:
+            this.store.dispatch(new fromFeature.ChooseRoleAndGo({
+              typeOfRole, allocateRoleState: AllocateRoleState.SEARCH_PERSON}));
+            break;
+          case UserRole.Judicial:
+            this.store.dispatch(new fromFeature.ChooseRoleAndGo({
+              typeOfRole, allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO}));
+            break;
+          default:
+            throw new Error('Invalid user role');
+        }
         break;
       default:
         throw new Error('Invalid option');

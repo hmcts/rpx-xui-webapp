@@ -1,0 +1,28 @@
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { CASEROLES } from '../../../../api/workAllocation2/constants/roles.mock.data';
+import { CaseRolesTableComponent } from '../../../role-access/components/case-roles-table/case-roles-table.component';
+import { RolesAndAccessComponent } from './roles-and-access.component';
+
+describe('RolesAndAccessComponent', () => {
+  let component: RolesAndAccessComponent;
+  let fixture: ComponentFixture<RolesAndAccessComponent>;
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [RolesAndAccessComponent, CaseRolesTableComponent]
+    })
+      .compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(RolesAndAccessComponent);
+    component = fixture.componentInstance;
+    component.roles = CASEROLES;
+    fixture.detectChanges();
+  });
+
+  it('should display case-roles-table', () => {
+    const container: HTMLElement = fixture.debugElement.nativeElement as HTMLElement;
+    expect(container.querySelector('exui-case-roles-table')).not.toBeNull();
+  });
+});

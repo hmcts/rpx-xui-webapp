@@ -1,0 +1,63 @@
+.govuk-accordion-wa__icon {
+  cursor: pointer;
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  margin-top: 5px;
+  margin-left: 4px;
+
+  &:before, &:after {
+    content: "";
+    box-sizing: border-box;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 25%;
+    height: 25%;
+    margin: auto;
+    border: 2px solid transparent;
+    background-color: #0b0c0c;
+
+  }
+
+
+}
+
+.plus {
+  &:after {
+    height: 100%;
+  }
+
+  &:before {
+    width: 100%;
+  }
+}
+
+.minus {
+  &:before {
+    width: 100%;
+  }
+}
+
+.hide-border-bottom {
+
+  .govuk-table__cell {
+    border-bottom: none !important;
+  }
+}
+
+.right {
+  text-align: right;
+
+  a {
+    margin-right: 40px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+
+
+}

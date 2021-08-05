@@ -24,7 +24,7 @@
     </tr>
     <tr *ngIf="item.open">
       <td colspan="6" class="right">
-        <a [href]="action.id"  [routerLink]="['role-access', 'delete-exclusion', caseDetails.case_id]" *ngFor="let action of item.actions">{{action.title}}</a>
+        <a [href]="action.id" *ngFor="let action of item.actions">{{action.title}}</a>
       </td>
     </tr>
   </ng-container>

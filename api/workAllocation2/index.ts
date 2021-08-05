@@ -10,7 +10,6 @@ import {
 import { EnhancedRequest } from '../lib/models';
 
 import * as caseServiceMock from './caseService.mock';
-import * as roleServiceMock from './roleService.mock';
 import {
   getUserIdsFromRoleApiResponse,
   handleCaseWorkerForLocation,
@@ -20,11 +19,12 @@ import {
   handlePostRoleAssingnments,
   handlePostSearch
 } from './caseWorkerService';
-import { Caseworker, Judicialworker } from './interfaces/common';
-import { handleGetRolesByCaseId } from './roleService';
-import * as taskServiceMock from './taskService.mock';
 
 import { CaseRole } from './interfaces/caseRole';
+import { Caseworker, Judicialworker } from './interfaces/common';
+import { handleGetRolesByCaseId } from './roleService';
+import * as roleServiceMock from './roleService.mock';
+import * as taskServiceMock from './taskService.mock';
 import {
   assignActionsToCases,
   assignActionsToTasks,

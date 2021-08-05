@@ -1,14 +1,14 @@
+import { DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
-import { CASEROLES } from '../../../../api/workAllocation2/constants/roles.mock.data';
-import { CaseRolesTableComponent } from '../../../role-access/components/case-roles-table/case-roles-table.component';
-import { RolesAndAccessComponent } from '../../components/roles-and-access/roles-and-access.component';
-import { RolesAndAccessContainerComponent } from './roles-and-access-container.component';
-import { CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 
-describe('RolesContainerComponent', () => {
-  let component: RolesAndAccessContainerComponent;
-  let fixture: ComponentFixture<RolesAndAccessContainerComponent>;
+import { By } from '@angular/platform-browser';
+import { CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
+import { CASEROLES } from '../../../../api/workAllocation2/constants/roles.mock.data';
+import { CaseRolesTableComponent } from './case-roles-table.component';
+
+describe('CaseRolesTableComponent', () => {
+  let component: CaseRolesTableComponent;
+  let fixture: ComponentFixture<CaseRolesTableComponent>;
   const CASE_VIEW: CaseView = {
     events: [],
     triggers: [],
@@ -103,35 +103,51 @@ describe('RolesContainerComponent', () => {
       },
     ]
   };
-
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              data: {
-                roles: CASEROLES,
-                case: CASE_VIEW
-              }
-            }
-          }
-        },
-      ],
-      declarations: [RolesAndAccessContainerComponent, RolesAndAccessComponent, CaseRolesTableComponent]
+      declarations: [CaseRolesTableComponent]
     })
       .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RolesAndAccessContainerComponent);
+    fixture = TestBed.createComponent(CaseRolesTableComponent);
     component = fixture.componentInstance;
+    component.caseDetails = CASE_VIEW;
     fixture.detectChanges();
   });
 
-  it('should get a list of case roles from the activated route snapshot', () => {
-    expect(component.roles.length).toBe(2);
-    expect(component.roles[0].name).toBe('Judge Beech');
+  it('should display a list of roles', () => {
+    component.roles = CASEROLES;
+    fixture.detectChanges();
+    const tableBody: DebugElement = fixture.debugElement.query(By.css('.govuk-table__body'));
+    const tableBodyHTMLElement: HTMLElement = tableBody.nativeElement as HTMLElement;
+    expect(tableBodyHTMLElement.children.length).toBe(2);
+    expect(tableBodyHTMLElement.children[0].children[0].textContent).toBe('Judge Beech');
+    expect(tableBodyHTMLElement.children[0].children[2].textContent).toBe('Taylor House');
+    expect(tableBodyHTMLElement.children[1].children[0].textContent).toBe('Kuda Nyamainashe');
+    expect(tableBodyHTMLElement.children[1].children[2].textContent).toBe('Milton Keynes');
+  });
+
+  it('should display no roles for this case', () => {
+    const summaryList: DebugElement = fixture.debugElement.query(By.css('.govuk-summary-list__value'));
+    const element: HTMLElement = summaryList.nativeElement as HTMLElement;
+    expect(element.textContent).toBe(' There are no legal ops roles for this case. ');
+  });
+
+  it('should show the reallocate and remove allocation link', () => {
+    component.roles = CASEROLES;
+    fixture.detectChanges();
+    const tableBody: DebugElement = fixture.debugElement.query(By.css('.govuk-table__body'));
+    const tableBodyHTMLElement: HTMLElement = tableBody.nativeElement as HTMLElement;
+    const firstRow = tableBodyHTMLElement.children[0] as HTMLElement;
+    const manageLinkCell = firstRow.children[5] as HTMLElement;
+    manageLinkCell.click();
+    fixture.detectChanges();
+    const secondRow = tableBodyHTMLElement.children[1] as HTMLElement;
+    const manageLinkRow = secondRow.querySelector('.right') as HTMLElement;
+    expect(manageLinkRow.children.length).toBe(2);
+    expect(manageLinkRow.children[0].textContent).toBe('Reallocate');
+    expect(manageLinkRow.children[1].textContent).toBe('Remove Allocation');
   });
 });

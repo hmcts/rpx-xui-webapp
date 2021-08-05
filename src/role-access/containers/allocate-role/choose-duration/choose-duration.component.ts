@@ -72,8 +72,8 @@ export class ChooseDurationComponent implements OnInit {
       }
       case DurationOfRole.ANOTHER_PERIOD: {
         return {
-          startDate: new Date(this.yearStartDate, this.monthStartDate, this.dayStartDate),
-          endDate: new Date(this.yearEndDate, this.monthEndDate, this.dayEndDate),
+          startDate: new Date(this.yearStartDate, this.monthStartDate - 1, this.dayStartDate),
+          endDate: new Date(this.yearEndDate, this.monthEndDate - 1, this.dayEndDate),
         }
       }
     }

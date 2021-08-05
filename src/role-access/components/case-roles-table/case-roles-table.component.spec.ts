@@ -2,6 +2,7 @@ import { DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { By } from '@angular/platform-browser';
+import { RouterTestingModule } from '@angular/router/testing';
 import { CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { CASEROLES } from '../../../../api/workAllocation2/constants/roles.mock.data';
 import { CaseRolesTableComponent } from './case-roles-table.component';
@@ -105,6 +106,7 @@ describe('CaseRolesTableComponent', () => {
   };
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [RouterTestingModule.withRoutes([])],
       declarations: [CaseRolesTableComponent]
     })
       .compileComponents();

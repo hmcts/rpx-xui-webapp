@@ -1,6 +1,7 @@
 import { AppUtils } from './app-utils';
 import { AppConstants } from './app.constants';
 import { NavItemsModel } from './models/nav-item.model';
+import { UserRole } from './models/user-details.model';
 
 describe('getEnvironment', () => {
 
@@ -182,5 +183,23 @@ describe('getFeatureToggledUrl', () => {
   it('url when feature is on', () => {
     const url = AppUtils.getFeatureToggledUrl(true, 'someUrl');
     expect(url).toEqual('someUrl');
+  });
+});
+
+describe('isLegalOpsOrJudicial', () => {
+
+  it('should return legal ops role if user has any legal ops role', () => {
+    const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['caseworker-ia-caseofficer']);
+    expect(isLegalOpsOrJudicial).toBe(UserRole.LegalOps);
+  });
+
+  it('should return judicial role if user has any judicial role', () => {
+    const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['caseworker-ia-iacjudge']);
+    expect(isLegalOpsOrJudicial).toBe(UserRole.Judicial);
+  });
+
+  it('should return null if user has no judicial or legal ops role', () => {
+    const isLegalOpsOrJudicial = AppUtils.isLegalOpsOrJudicial(['caseworker-ia']);
+    expect(isLegalOpsOrJudicial).toBeNull();
   });
 });

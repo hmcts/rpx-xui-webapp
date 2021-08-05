@@ -6,7 +6,7 @@
   <exui-case-roles-table [roles]="roles" [roleType]="'judicial'" [caseDetails]="caseDetails"></exui-case-roles-table>
 
   <p>
-    <a href="javascript:void(0)" [routerLink]="['role-access', 'allocate-role']" [queryParams]="{'userType': 'judicial'}"
+    <a href="javascript:void(0)" [routerLink]="['/', 'role-access', 'allocate-role']" [queryParams]="{'userType': 'judicial'}"
        class="govuk-link">Allocate a role</a>
   </p>
 
@@ -15,13 +15,13 @@
   <exui-case-roles-table [roles]="[]" [caseDetails]="caseDetails"></exui-case-roles-table>
 
   <p>
-    <a href="javascript:void(0)" [routerLink]="['role-access', 'allocate-role']"
+    <a href="javascript:void(0)" [routerLink]="['/', 'role-access', 'allocate-role']"
        [queryParams]="{'userType': 'legalOps'}" class="govuk-link">Allocate a role</a>
   </p>
 
   <h2 class="govuk-heading-m">Exclusions</h2>
 
   <p>
-    <a href="javascript:void(0)" [routerLink]="['role-access', 'add-exclusion']" class="govuk-link">Add</a>
+    <a href="javascript:void(0)" [routerLink]="['/', 'role-access', 'add-exclusion']" class="govuk-link">Add</a>
   </p>
 </div>

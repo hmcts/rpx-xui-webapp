@@ -5,8 +5,7 @@ import { CaseRole } from 'api/workAllocation2/interfaces/caseRole';
 
 @Component({
   selector: 'exui-roles-and-access-container',
-  templateUrl: './roles-and-access-container.component.html',
-  styleUrls: ['./roles-and-access-container.component.scss']
+  templateUrl: './roles-and-access-container.component.html'
 })
 export class RolesAndAccessContainerComponent implements OnInit {
   public roles: CaseRole[] = [];

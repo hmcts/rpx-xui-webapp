@@ -45,6 +45,14 @@ export function allocateRoleReducer(currentState = allocateRoleInitialState,
         state: action.payload.allocateRoleState
       };
     }
+    case AllocateRoleActionTypes.CHOOSE_DURATION_AND_GO: {
+      return {
+        ...currentState,
+        durationOfRole: action.payload.durationOfRole,
+        period: action.payload.period,
+        state: action.payload.allocateRoleState
+      };
+    }
     default: {
       return {
         ...currentState

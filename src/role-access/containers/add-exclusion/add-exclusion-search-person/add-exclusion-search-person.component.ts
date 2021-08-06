@@ -1,10 +1,10 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
+
 import { PERSON_ERROR_MESSAGE } from '../../../constants';
-import { Person } from '../../../../work-allocation-2/models/dtos';
-import { ExclusionNavigationEvent, ExclusionState, ExclusionStateData, PersonRole } from '../../../models';
+import { ExclusionNavigationEvent, ExclusionState, ExclusionStateData, Person, PersonRole } from '../../../models';
 import { ExclusionNavigation } from '../../../models/exclusion-navigation.interface';
 import * as fromFeature from '../../../store';
 

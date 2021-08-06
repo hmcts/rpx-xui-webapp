@@ -21,14 +21,14 @@ describe('AllocateRolePersonComponent', () => {
 
   it('navigationHandler validates when person selected', () => {
     const control = new FormControl();
-    const person = { id: 'id123', name: 'full Name', email: 'test@email.com', domain: 'Caseworker'};
-    component.person = person;
-    control.setValue(person);
+    const examplePerson = { id: 'id123', name: 'full Name', email: 'test@email.com', domain: 'Caseworker'};
+    component.person = examplePerson;
+    control.setValue(examplePerson);
     component.formGroup.addControl('findPersonControl', control);
     const continueEvent = AllocateRoleNavigationEvent.CONTINUE;
     component.navigationHandler(continueEvent);
     expect(component.formGroup.valid).toBeTruthy();
-    expect(mockStore.dispatch).toHaveBeenCalledWith(new ChoosePersonAndGo({person: person, allocateRoleState: AllocateRoleState.CHOOSE_DURATION}));
+    expect(mockStore.dispatch).toHaveBeenCalledWith(new ChoosePersonAndGo({person: examplePerson, allocateRoleState: AllocateRoleState.CHOOSE_DURATION}));
   });
 
   it('should set person correctly when given by child component', () => {

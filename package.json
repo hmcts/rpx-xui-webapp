@@ -72,7 +72,7 @@
     "@hmcts/ccd-case-ui-toolkit": "4.2.0-rc.5",
     "@hmcts/ccpay-web-component": "3.0.3",
     "@hmcts/frontend": "0.0.39-alpha",
-    "@hmcts/media-viewer": "2.6.4",
+    "@hmcts/media-viewer": "2.7.6",
     "@hmcts/nodejs-healthcheck": "^1.7.0",
     "@hmcts/properties-volume": "^0.0.9",
     "@hmcts/rpx-xui-common-lib": "1.2.0",
@@ -132,7 +132,7 @@
     "tslib": "^1.9.0",
     "web-animations-js": "^2.3.2",
     "xlsx": "^0.15.4",
-    "zone.js": "~0.8.26"
+    "zone.js": "~0.11.3"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.13.0",

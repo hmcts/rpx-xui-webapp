@@ -1,5 +1,5 @@
 
-const BrowserWaits = require("../../../support/customWaits");
+const BrowserWaits = require("../../../../support/customWaits");
 
 class CheckYourAnswersPage{
 

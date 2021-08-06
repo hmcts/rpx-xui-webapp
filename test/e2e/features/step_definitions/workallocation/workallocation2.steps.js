@@ -6,7 +6,6 @@ const myWorkPage = require('../../pageObjects/workAllocation/myWorkPage');
 const BrowserWaits = require('../../../support/customWaits');
 const allWorkPage = require("../../pageObjects/workAllocation/allWorkPage");
 
-const findPersonPage = require("../../pageObjects/workAllocation/findPersonPage");
 const SoftAssert = require('../../../../ngIntegration/util/softAssert');
 const taskCheckYourChangesPage = require('../../pageObjects/workAllocation/taskCheckYourChangesPage');
 

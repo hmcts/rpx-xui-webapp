@@ -1,21 +1,16 @@
-const BrowserWaits = require("../../../support/customWaits"); 
-const CucumberReporter = require("../../../support/reportLogger");
-const exuiErrorMessage = require("../common/exuiErrorMessage");
+const BrowserWaits = require("../../../../support/customWaits"); 
+const CucumberReporter = require("../../../../support/reportLogger");
+const exuiErrorMessage = require("../../common/exuiErrorMessage");
 
 
-class FindPersonPage{
-    constructor(){
-        this.findPersonContainer = $("exui-find-person");
-        this.header = $("exui-find-person h1");
-        this.headerCaption = $("exui-find-person h1 span");
+class FindPersonComponent{
+    constructor(parentlocator){
+        this.findPersonContainer = parentlocator.$("exui-find-person");
+        this.header = parentlocator.$("exui-find-person h1");
+        this.headerCaption = parentlocator.$("exui-find-person h1 span");
 
-        this.searchInput = $("exui-find-person #inputSelectPerson");
-        this.searchInputHintText = $("exui-find-person .govuk-hint");
-
-        this.continueButton = $("exui-exclusion-navigation button");
-
-        this.cancelLink = $("exui-exclusion-navigation div>p>a");
-
+        this.searchInput = parentlocator.$("exui-find-person #inputSelectPerson");
+        this.searchInputHintText = parentlocator.$("exui-find-person .govuk-hint");
         this.searchResultsContainer = $(".cdk-overlay-container .mat-autocomplete-visible");
 
     }
@@ -48,16 +43,6 @@ class FindPersonPage{
 
     async getHeaderCaption(){
         return await this.headerCaption.getText();
-    }
-
-    async clickContinueButton(){
-        expect(await this.amOnPage(),"Not on find person page").to.be.true;
-        await this.continueButton.click();
-    }
-
-    async clickCancelLink() {
-        expect(await this.amOnPage(), "Not on find person page").to.be.true;
-        await this.cancelLink.click();
     }
 
     async inputSearchTerm(searchTerm){
@@ -109,4 +94,4 @@ class FindPersonPage{
 
 }
 
-module.exports = new FindPersonPage();
+module.exports = FindPersonComponent;

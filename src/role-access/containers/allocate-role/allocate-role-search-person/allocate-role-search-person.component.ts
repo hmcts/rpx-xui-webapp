@@ -29,12 +29,10 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
 
   public ngOnInit(): void {
     this.findPersonControl = this.formGroup.value.findPersonControl;
-    console.log('form group is ', this.formGroup.errors);
-    this.subscription = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(allocation => {console.log(allocation); this.setPerson(allocation)});
+    this.subscription = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(allocation => this.setPerson(allocation));
   }
 
-  public setPerson(allocation: AllocateRoleStateData): void {
-    console.log('false error');
+  private setPerson(allocation: AllocateRoleStateData): void {
     if (allocation.typeOfRole === TypeOfRole.CASE_MANAGER) {
       this.domain = PersonRole.CASEWORKER;
       this.boldTitle = RoleAllocationCaptionText.LegalOpsChoose;
@@ -58,7 +56,6 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
       this.formGroup.setErrors({
         invalid: true
       });
-      console.log('form group is ', this.formGroup.errors);
       return;
     }
   }
@@ -67,7 +64,7 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
     this.person = person;
   }
 
-  public getDisplayName(selectedPerson: Person): string {
+  private getDisplayName(selectedPerson: Person): string {
     return selectedPerson.email ? `${selectedPerson.name}(${selectedPerson.email})` : selectedPerson.name;
   }
 }

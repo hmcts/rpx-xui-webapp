@@ -1,5 +1,5 @@
 import { FormControl } from '@angular/forms';
-import { ExclusionNavigationEvent, ExclusionState } from '../../../models';
+import { ExclusionNavigationEvent, ExclusionState, Person, PersonRole } from '../../../models';
 import { UpdatePersonExclusion } from '../../../store/actions';
 import { AddExclusionSearchPersonComponent } from './add-exclusion-search-person.component';
 
@@ -28,5 +28,24 @@ describe('AddExclusionSearchPersonComponent', () => {
     component.navigationHandler(continueEvent);
     expect(component.formGroup.valid).toBeTruthy();
     expect(mockStore.dispatch).toHaveBeenCalledWith(new UpdatePersonExclusion(ExclusionState.DESCRIBE_EXCLUSION, person));
+  });
+
+  it('should set person correctly when given by child component', () => {
+    const firstPerson: Person = {
+      id: '123',
+      name: 'Person 1',
+      email: 'P1@something.com',
+      domain: PersonRole.ADMIN
+    };
+    const secondPerson: Person = {
+      id: '456',
+      name: 'Person 2',
+      email: 'P2@something.com',
+      domain: PersonRole.JUDICIAL
+    };
+    component.selectedPerson(firstPerson);
+    expect(component.person).toBe(firstPerson);
+    component.selectedPerson(secondPerson);
+    expect(component.person).toBe(secondPerson);
   });
 });

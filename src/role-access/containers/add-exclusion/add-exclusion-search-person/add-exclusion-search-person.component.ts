@@ -14,7 +14,6 @@ import * as fromFeature from '../../../store';
 })
 export class AddExclusionSearchPersonComponent implements OnInit {
   public ERROR_MESSAGE = PERSON_ERROR_MESSAGE;
-  public hasRequiredError = false;
   @Input() public navEvent: ExclusionNavigation;
   public domain = PersonRole.ALL;
   public formGroup: FormGroup = new FormGroup({});
@@ -30,8 +29,7 @@ export class AddExclusionSearchPersonComponent implements OnInit {
     this.subscription = this.store.pipe(select(fromFeature.getRoleAccessState)).subscribe(exclusion => this.setPerson(exclusion));
   }
 
-  public setPerson(exclusion: ExclusionStateData): void {
-    this.hasRequiredError = false;
+  private setPerson(exclusion: ExclusionStateData): void {
     this.personName = exclusion && exclusion.person ? this.getDisplayName(exclusion.person) : null;
     this.person = exclusion.person;
     this.personRole = exclusion.personRole;
@@ -50,7 +48,6 @@ export class AddExclusionSearchPersonComponent implements OnInit {
       this.formGroup.setErrors({
         invalid: true
       });
-      this.hasRequiredError = true;
       return;
     }
   }
@@ -59,7 +56,7 @@ export class AddExclusionSearchPersonComponent implements OnInit {
     this.person = person;
   }
 
-  public getDisplayName(selectedPerson: Person): string {
+  private getDisplayName(selectedPerson: Person): string {
     return selectedPerson.email ? `${selectedPerson.name}(${selectedPerson.email})` : selectedPerson.name;
   }
 }

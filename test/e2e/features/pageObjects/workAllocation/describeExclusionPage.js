@@ -14,10 +14,6 @@ class DescribeExclusionPage {
 
         this.textArea = this.container.$("#exclusion-description");
 
-        this.continueButton = $("exui-exclusion-navigation button");
-
-        this.cancelLink = $("exui-exclusion-navigation div>p>a");
-        this.errorMessageSummary = exuiErrorMessage;
 
     }
 
@@ -43,14 +39,7 @@ class DescribeExclusionPage {
         await this.textArea.sendKeys(description);
     }
 
-    async clickContinueButton() {
-        await this.continueButton.click();
-    }
-
-    async clickCancelLink() {
-        await this.cancelLink.click();
-    }
-
+ 
 
 }
 

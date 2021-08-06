@@ -170,7 +170,7 @@ describe('setActiveLink', () => {
     expect(AppUtils.isFullUrl(mockItems[0].href, '/tasks/task-manager')).toBeFalsy();
     expect(AppUtils.isFullUrl(mockItems[0].href, '/cases/case-search')).toBeTruthy();
     expect(AppUtils.isFullUrl(mockItems[0].href, '/task')).toBeFalsy();
-  })
+  });
 });
 
 describe('getFeatureToggledUrl', () => {

@@ -2,6 +2,7 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
+import { PERSON_ERROR_MESSAGE } from '../../../constants';
 import { Person } from '../../../../work-allocation-2/models/dtos';
 import { ExclusionNavigationEvent, ExclusionState, ExclusionStateData, PersonRole } from '../../../models';
 import { ExclusionNavigation } from '../../../models/exclusion-navigation.interface';
@@ -12,6 +13,8 @@ import * as fromFeature from '../../../store';
   templateUrl: './add-exclusion-search-person.component.html'
 })
 export class AddExclusionSearchPersonComponent implements OnInit {
+  public ERROR_MESSAGE = PERSON_ERROR_MESSAGE;
+  public hasRequiredError = false;
   @Input() public navEvent: ExclusionNavigation;
   public domain = PersonRole.ALL;
   public formGroup: FormGroup = new FormGroup({});
@@ -28,6 +31,7 @@ export class AddExclusionSearchPersonComponent implements OnInit {
   }
 
   public setPerson(exclusion: ExclusionStateData): void {
+    this.hasRequiredError = false;
     this.personName = exclusion && exclusion.person ? this.getDisplayName(exclusion.person) : null;
     this.person = exclusion.person;
     this.personRole = exclusion.personRole;
@@ -46,6 +50,7 @@ export class AddExclusionSearchPersonComponent implements OnInit {
       this.formGroup.setErrors({
         invalid: true
       });
+      this.hasRequiredError = true;
       return;
     }
   }

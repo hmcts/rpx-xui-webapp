@@ -1,11 +1,12 @@
 import { Action } from '@ngrx/store';
-import { AllocateRoleState, AllocateTo, TypeOfRole } from '../../models';
+import { AllocateRoleState, AllocateTo, Person, TypeOfRole } from '../../models';
 
 export enum AllocateRoleActionTypes {
   CHANGE_NAVIGATION = '[ALLOCATE ROLE] Change Navigation',
   RESET = '[ALLOCATE ROLE] Reset',
   CHOOSE_ROLE_AND_GO = '[ALLOCATE ROLE] Choose A Role And Go',
   CHOOSE_ALLOCATE_TO_AND_GO = '[ALLOCATE ROLE] Choose Allocate To And Go',
+  CHOOSE_PERSON_AND_GO = '[ALLOCATE ROLE] Choose Person And Go'
 }
 
 export class AllocateRoleReset implements Action {
@@ -33,8 +34,17 @@ export class ChooseAllocateToAndGo implements Action {
   }
 }
 
+export class ChoosePersonAndGo implements Action {
+  public readonly type = AllocateRoleActionTypes.CHOOSE_PERSON_AND_GO;
+
+  constructor(public payload: { person: Person, allocateRoleState: AllocateRoleState }) {
+
+  }
+}
+
 export type AllocateRoleAction =
   | AllocateRoleChangeNavigation
   | AllocateRoleReset
   | ChooseRoleAndGo
-  | ChooseAllocateToAndGo;
+  | ChooseAllocateToAndGo
+  | ChoosePersonAndGo;

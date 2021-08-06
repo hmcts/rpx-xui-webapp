@@ -1,7 +1,7 @@
 export enum TypeOfRole {
-  LEAD_JUDGE = 'Lead Judge',
-  HEARING_JUDGE = 'Hearing Judge',
-  CASE_MANAGER = 'Case Manager',
+  LEAD_JUDGE = 'Lead judge',
+  HEARING_JUDGE = 'Hearing judge',
+  CASE_MANAGER = 'Case manager',
 }
 
 export enum AllocateTo {

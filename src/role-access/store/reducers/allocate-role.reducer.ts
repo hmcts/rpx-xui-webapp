@@ -45,6 +45,13 @@ export function allocateRoleReducer(currentState = allocateRoleInitialState,
         state: action.payload.allocateRoleState
       };
     }
+    case AllocateRoleActionTypes.CHOOSE_PERSON_AND_GO: {
+      return {
+        ...currentState,
+        person: action.payload.person,
+        state: action.payload.allocateRoleState
+      };
+    }
     default: {
       return {
         ...currentState

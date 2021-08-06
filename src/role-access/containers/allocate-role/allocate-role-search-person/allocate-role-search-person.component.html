@@ -1,3 +1,10 @@
-<p>
-  search-person works!
-</p>
+<exui-error-message *ngIf="formGroup.errors" [error]="ERROR_MESSAGE"></exui-error-message>
+<xuilib-find-person
+  [title]="roleType"
+  [boldTitle]="boldTitle"
+  [findPersonGroup]="formGroup"
+  (personSelected)="selectedPerson($event)"
+  [selectedPerson]="personName"
+  [domain]="domain"
+>
+</xuilib-find-person>

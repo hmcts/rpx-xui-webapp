@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { provideMockStore } from '@ngrx/store/testing';
 import { DurationOfRole } from 'src/role-access/models';
@@ -11,7 +11,7 @@ describe('ChooseDurationComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [FormsModule],
+      imports: [FormsModule, ReactiveFormsModule],
       declarations: [ ChooseDurationComponent ],
       providers: [
         provideMockStore()
@@ -60,26 +60,5 @@ describe('ChooseDurationComponent', () => {
     expect(period.startDate.getDate()).toEqual(new Date().getDate());
 
     expect(period.endDate).toBeNull();
-  });
-
-  it('getPeriod should return correct period for Another Period', () => {
-    component.monthStartDate = 1;
-    component.dayStartDate = 1;
-    component.yearStartDate = 2021;
-    component.monthEndDate = 2;
-    component.dayEndDate = 2;
-    component.yearEndDate = 2022;
-
-    const period = component.getPeriod(DurationOfRole.ANOTHER_PERIOD);
-
-    expect(period.startDate.getMonth()).toEqual(0);
-    expect(period.startDate.getFullYear()).toEqual(2021);
-    expect(period.startDate.getDate()).toEqual(1);
-
-    expect(period.endDate).not.toBeNull();
-
-    expect(period.endDate.getMonth()).toEqual(1);
-    expect(period.endDate.getFullYear()).toEqual(2022);
-    expect(period.endDate.getDate()).toEqual(2);
   });
 });

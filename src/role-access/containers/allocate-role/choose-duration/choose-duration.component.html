@@ -3,14 +3,14 @@
   <span class="govuk-caption-l">{{title}}</span>
   Duration of role
 </h1>
-<div class="govuk-form-group">
+<div class="govuk-form-group" [formGroup]="formGroup">
   <fieldset class="govuk-fieldset" aria-describedby="contact-hint">
     <span id="contact-hint" class="govuk-hint">
     </span>
     <div class="govuk-radios govuk-radios--conditional" data-module="radios">
       <div *ngFor="let durationWithDesc of allDurations" class="govuk-radios__item">
-        <input class="govuk-radios__input" id="contact-1" name="contact" type="radio" [value]="durationWithDesc.duration" aria-describedby="contact-1-item-hint" 
-        [(ngModel)]="radioSelected" (change)="onItemChange(durationWithDesc.duration)"/>
+        <input class="govuk-radios__input" id="contact-1" name="radioSelected" type="radio" [value]="durationWithDesc.duration" aria-describedby="contact-1-item-hint" 
+        formControlName="radioSelected" (change)="onItemChange(durationWithDesc.duration)" [checked]="durationWithDesc.checked"/>
         <label class="govuk-label govuk-radios__label" for="contact-1">
         {{durationWithDesc.duration}} 
         </label>
@@ -33,7 +33,7 @@
           <label class="govuk-label govuk-date-input__label" for="passport-issued-day">
           Day
           </label>
-          <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="passport-issued-day" name="passport-issued-day" type="number" pattern="[0-9]*" [(ngModel)]="dayStartDate" />
+          <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="passport-issued-day" name="passport-issued-day" type="number" pattern="[0-9]*" formControlName="dayStartDate" />
           </div>
           </div>
           <div class="govuk-date-input__item">
@@ -41,7 +41,7 @@
           <label class="govuk-label govuk-date-input__label" for="passport-issued-month">
           Month
           </label>
-          <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="passport-issued-month" name="passport-issued-month" type="number" pattern="[0-9]*" [(ngModel)]="monthStartDate" />
+          <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="passport-issued-month" name="passport-issued-month" type="number" pattern="[0-9]*" formControlName="monthStartDate" min="0" max="11"/>
           </div>
           </div>
           <div class="govuk-date-input__item">
@@ -49,7 +49,7 @@
           <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
           Year
           </label>
-          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="passport-issued-year" name="passport-issued-year" type="number" pattern="[0-9]*" [(ngModel)]="yearStartDate" />
+          <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="passport-issued-year" name="passport-issued-year" type="number" pattern="[0-9]*" formControlName="yearStartDate" />
           </div>
           </div>
           </div>
@@ -69,7 +69,7 @@
                   <label class="govuk-label govuk-date-input__label" for="passport-issued-day">
                   Day
                   </label>
-                  <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="passport-issued-day" name="passport-issued-day" type="number" pattern="[0-9]*" [(ngModel)]="dayEndDate" />
+                  <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="passport-issued-day" name="passport-issued-day" type="number" pattern="[0-9]*" formControlName="dayEndDate" />
                 </div>
               </div>
               <div class="govuk-date-input__item">
@@ -77,7 +77,7 @@
                   <label class="govuk-label govuk-date-input__label" for="passport-issued-month">
                   Month
                   </label>
-                  <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="passport-issued-month" name="passport-issued-month" type="number" pattern="[0-9]*" [(ngModel)]="monthEndDate" />
+                  <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="passport-issued-month" name="passport-issued-month" type="number" pattern="[0-9]*" formControlName="monthEndDate" min="0" max="11"/>
                 </div>
               </div>
               <div class="govuk-date-input__item">
@@ -85,7 +85,7 @@
                   <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
                   Year
                   </label>
-                  <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="passport-issued-year" name="passport-issued-year" type="number" pattern="[0-9]*"  [(ngModel)]="yearEndDate" />
+                  <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="passport-issued-year" name="passport-issued-year" type="number" pattern="[0-9]*"  formControlName="yearEndDate" />
                 </div>
               </div>
             </div>

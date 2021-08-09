@@ -7,6 +7,7 @@ import * as fromFeature from '../../../store';
 @Component({
   selector: 'exui-choose-duration',
   templateUrl: './choose-duration.component.html',
+  styleUrls: ['./choose-duration.component.scss']
 })
 
 export class ChooseDurationComponent implements OnInit {
@@ -28,6 +29,10 @@ export class ChooseDurationComponent implements OnInit {
   public monthEndDate: FormControl;
   public yearEndDate: FormControl;
   public formGroup: FormGroup;
+  public isEndDateError: boolean;
+  public isStartDateError: boolean;
+  public startDateErrorMessage: string;
+  public endDateErrorMessage: string;
 
   constructor(private readonly store: Store<fromFeature.State>,
               private readonly builder: FormBuilder) {
@@ -60,6 +65,7 @@ export class ChooseDurationComponent implements OnInit {
   }
 
   public navigationHandler(navEvent: AllocateRoleNavigationEvent): void {
+    this.resetPreviousErrors();
     const period = this.getPeriod(this.selectedDuration);
     if (period) {
       period.startDate.setHours(0, 0, 0, 0);
@@ -79,6 +85,12 @@ export class ChooseDurationComponent implements OnInit {
       }
     }
   }
+  resetPreviousErrors() {
+    this.isStartDateError = false;
+    this.isEndDateError = false;
+    this.startDateErrorMessage = '';
+    this.endDateErrorMessage = '';
+  }
 
   public getPeriod(duration: DurationOfRole): Period {
     switch (duration) {
@@ -96,7 +108,7 @@ export class ChooseDurationComponent implements OnInit {
         }
       }
       case DurationOfRole.ANOTHER_PERIOD: {
-        if (this.formGroup.valid && this.datesValid()) {
+        if (this.formGroup.valid && this.startDateNotInPast() && this.startDateLessThanEndDate()) {
           return {
             startDate: new Date(this.yearStartDate.value, this.monthStartDate.value - 1, this.dayStartDate.value),
             endDate: new Date(this.yearEndDate.value, this.monthEndDate.value - 1, this.dayEndDate.value),
@@ -106,10 +118,27 @@ export class ChooseDurationComponent implements OnInit {
     }
   }
 
-  public datesValid(): boolean {
+  public startDateLessThanEndDate(): boolean {
     const startDate = new Date(this.yearStartDate.value, this.monthStartDate.value - 1, this.dayStartDate.value);
     const endDate = new Date(this.yearEndDate.value, this.monthEndDate.value - 1, this.dayEndDate.value);
-    return startDate && endDate && startDate < endDate;
+    if (startDate > endDate) {
+      this.isEndDateError = true;
+      this.endDateErrorMessage = 'The role end date must be after the role start date';
+      return false;
+    }
+    return true;
+  }
+
+  public startDateNotInPast(): boolean {
+    const startDate = new Date(this.yearStartDate.value, this.monthStartDate.value - 1, this.dayStartDate.value);
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+    if (startDate < currentDate) {
+      this.isStartDateError = true;
+      this.startDateErrorMessage = 'The role start date must not be in the past';
+      return false;
+    }
+    return true;
   }
 
   public onItemChange(item: DurationOfRole) {

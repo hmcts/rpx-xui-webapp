@@ -18,7 +18,8 @@
         {{durationWithDesc.description}}
         </span>
       </div>
-      <div id="conditional-contact-3" [ngClass]="condition?'govuk-radios__conditional':'govuk-radios__conditional govuk-radios__conditional--hidden'">
+      <div id="conditional-contact-3" 
+      [ngClass]="anotherPeriod? (isStartDateError || isEndDateError? 'govuk-radios__conditional form-group-error' : 'govuk-radios__conditional'):'govuk-radios__conditional govuk-radios__conditional--hidden'">
         <div class="govuk-form-group">
           <fieldset class="govuk-fieldset" aria-describedby="passport-issued-hint" role="group">
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">

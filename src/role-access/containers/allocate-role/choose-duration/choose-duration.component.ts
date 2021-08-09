@@ -18,7 +18,7 @@ export class ChooseDurationComponent implements OnInit {
 
   @Input() public navEvent: AllocateRoleNavigation;
   public radioSelected: FormControl;
-  public condition: boolean;
+  public anotherPeriod: boolean;
   public title: string;
   public readonly allDurations: DurationDescription [];
   public selectedDuration: DurationOfRole;
@@ -108,7 +108,7 @@ export class ChooseDurationComponent implements OnInit {
         }
       }
       case DurationOfRole.ANOTHER_PERIOD: {
-        if (this.formGroup.valid && this.startDateNotInPast() && this.startDateLessThanEndDate()) {
+        if (this.datesMissing() && this.formGroup.valid && this.startDateNotInPast() && this.startDateLessThanEndDate()) {
           return {
             startDate: new Date(this.yearStartDate.value, this.monthStartDate.value - 1, this.dayStartDate.value),
             endDate: new Date(this.yearEndDate.value, this.monthEndDate.value - 1, this.dayEndDate.value),
@@ -116,6 +116,22 @@ export class ChooseDurationComponent implements OnInit {
         }
       }
     }
+  }
+
+  public datesMissing(): boolean {
+    let dateMissing = true;
+    if (!parseInt(this.dayStartDate.value, 10) || !parseInt(this.monthStartDate.value, 10) || !parseInt(this.yearStartDate.value, 10)) {
+      this.startDateErrorMessage = 'Please enter some value';
+      this.isStartDateError = true;
+      dateMissing = false;
+    }
+
+    if (!parseInt(this.dayEndDate.value, 10) || !parseInt(this.monthEndDate.value, 10) || !parseInt(this.yearEndDate.value, 10)) {
+      this.endDateErrorMessage = 'Please enter some value';
+      this.isEndDateError = true;
+      dateMissing = false;
+    }
+    return dateMissing;
   }
 
   public startDateLessThanEndDate(): boolean {
@@ -142,7 +158,7 @@ export class ChooseDurationComponent implements OnInit {
   }
 
   public onItemChange(item: DurationOfRole) {
-    this.condition = item === DurationOfRole.ANOTHER_PERIOD;
+    this.anotherPeriod = item === DurationOfRole.ANOTHER_PERIOD;
     this.selectedDuration = item;
   }
 }

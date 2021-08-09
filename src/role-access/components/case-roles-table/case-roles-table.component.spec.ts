@@ -4,7 +4,9 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { CASEROLES } from '../../../../api/workAllocation2/constants/roles.mock.data';
+import { initialMockState } from '../../testing/app-initial-state.mock';
 import { CaseRolesTableComponent } from './case-roles-table.component';
 
 describe('CaseRolesTableComponent', () => {
@@ -106,7 +108,7 @@ describe('CaseRolesTableComponent', () => {
   };
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule.withRoutes([])],
+      imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule],
       declarations: [CaseRolesTableComponent]
     })
       .compileComponents();
@@ -116,6 +118,7 @@ describe('CaseRolesTableComponent', () => {
     fixture = TestBed.createComponent(CaseRolesTableComponent);
     component = fixture.componentInstance;
     component.caseDetails = CASE_VIEW;
+    component.locationInfo = initialMockState.appConfig.locationInfo[0];
     fixture.detectChanges();
   });
 
@@ -143,7 +146,7 @@ describe('CaseRolesTableComponent', () => {
     const tableBody: DebugElement = fixture.debugElement.query(By.css('.govuk-table__body'));
     const tableBodyHTMLElement: HTMLElement = tableBody.nativeElement as HTMLElement;
     const firstRow = tableBodyHTMLElement.children[0] as HTMLElement;
-    const manageLinkCell = firstRow.children[5] as HTMLElement;
+    const manageLinkCell = firstRow.children[5].children[0] as HTMLElement;
     manageLinkCell.click();
     fixture.detectChanges();
     const secondRow = tableBodyHTMLElement.children[1] as HTMLElement;

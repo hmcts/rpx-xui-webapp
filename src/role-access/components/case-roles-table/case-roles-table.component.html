@@ -1,25 +1,28 @@
 <table class="govuk-table" *ngIf="roles &&  roles.length">
   <thead class="govuk-table__head">
   <tr class="govuk-table__row">
-    <th scope="col" class="govuk-table__header govuk-body govuk-!-font-size-19" style="width: 300px;">Name</th>
-    <th scope="col" class="govuk-table__header govuk-body govuk-!-font-size-19" style="width: auto;">Role</th>
-    <th scope="col" class="govuk-table__header govuk-body govuk-!-font-size-19" style="width: auto;">Location</th>
-    <th scope="col" class="govuk-table__header govuk-body govuk-!-font-size-19" style="width: auto;">Start</th>
-    <th scope="col" class="govuk-table__header govuk-body govuk-!-font-size-19" style="width: auto;">End</th>
-    <th scope="col" class="govuk-table__header govuk-body govuk-!-font-size-19" style="width: 100px;"></th>
+    <th scope="col" class="govuk-table__header govuk-body govuk-!-font-size-19">Name</th>
+    <th scope="col" class="govuk-table__header govuk-body govuk-!-font-size-19">Role</th>
+    <th scope="col" class="govuk-table__header govuk-body govuk-!-font-size-19">Location</th>
+    <th scope="col" class="govuk-table__header govuk-body govuk-!-font-size-19">Start</th>
+    <th scope="col" class="govuk-table__header govuk-body govuk-!-font-size-19">End</th>
+    <th scope="col" class="govuk-table__header govuk-body govuk-!-font-size-19"></th>
   </tr>
   </thead>
   <tbody class="govuk-table__body">
-  <ng-container *ngFor="let item of items; let i = index">
+  <ng-container *ngFor="let item of items">
     <tr class="govuk-table__row" [ngClass]="{'hide-border-bottom ': item.open}">
       <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{item.name}}</td>
       <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{item.role}}</td>
       <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{item.location}}</td>
       <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{item.start | date:'dd MMMM yyyy'}}</td>
       <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{item.end | date:'dd MMMM yyyy'}}</td>
-      <td class="govuk-table__cell" (click)="item.open = !item.open"><a href="javascript:void(0)"
-                                                                        class="right_m">Manage</a><span
-        class="govuk-accordion-wa__icon" [ngClass]="{'plus': !item.open, 'minus': item.open}"></span>
+      <td class="govuk-table__cell">
+        <span (click)="item.open = !item.open" xuilibManageLinkToggle [hidden]="!locationInfo.isCaseAllocator">
+          <a href="javascript:void(0)"
+             class="right_m">Manage</a><span
+          class="govuk-accordion-wa__icon" [ngClass]="{'plus': !item.open, 'minus': item.open}"></span>
+        </span>
       </td>
     </tr>
     <tr *ngIf="item.open">

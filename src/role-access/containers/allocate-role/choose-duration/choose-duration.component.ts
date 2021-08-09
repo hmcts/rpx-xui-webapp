@@ -68,10 +68,6 @@ export class ChooseDurationComponent implements OnInit {
     this.resetPreviousErrors();
     const period = this.getPeriod(this.selectedDuration);
     if (period) {
-      period.startDate.setHours(0, 0, 0, 0);
-      if (period.endDate) {
-        period.endDate.setHours(0, 0, 0, 0);
-      }
       switch (navEvent) {
         case AllocateRoleNavigationEvent.CONTINUE:
           this.store.dispatch(new fromFeature.ChooseDurationAndGo({
@@ -85,7 +81,7 @@ export class ChooseDurationComponent implements OnInit {
       }
     }
   }
-  resetPreviousErrors() {
+  public resetPreviousErrors(): void {
     this.isStartDateError = false;
     this.isEndDateError = false;
     this.startDateErrorMessage = '';
@@ -95,27 +91,49 @@ export class ChooseDurationComponent implements OnInit {
   public getPeriod(duration: DurationOfRole): Period {
     switch (duration) {
       case DurationOfRole.SEVEN_DAYS: {
-        const nextDate = new Date().setDate(new Date().getDate() + 7);
+        const nextDate = this.getTodayDate().setDate(new Date().getDate() + 7);
         return {
-          startDate: new Date(),
+          startDate: this.getTodayDate(),
           endDate: new Date(nextDate)
         }
       }
       case DurationOfRole.INDEFINITE: {
         return {
-          startDate: new Date(),
+          startDate: this.getTodayDate(),
           endDate: null
         }
       }
       case DurationOfRole.ANOTHER_PERIOD: {
         if (this.datesMissing() && this.formGroup.valid && this.startDateNotInPast() && this.startDateLessThanEndDate()) {
           return {
-            startDate: new Date(this.yearStartDate.value, this.monthStartDate.value - 1, this.dayStartDate.value),
-            endDate: new Date(this.yearEndDate.value, this.monthEndDate.value - 1, this.dayEndDate.value),
+            startDate: this.getStartDate(),
+            endDate: this.getEndDate(),
           }
         }
       }
     }
+  }
+
+  public startDateLessThanEndDate(): boolean {
+    const startDate = this.getStartDate();
+    const endDate = this.getEndDate();
+    if (startDate > endDate) {
+      this.isEndDateError = true;
+      this.endDateErrorMessage = 'The role end date must be after the role start date';
+      return false;
+    }
+    return true;
+  }
+
+  public startDateNotInPast(): boolean {
+    const startDate = this.getStartDate();
+    const currentDate = this.getTodayDate();
+    if (startDate < currentDate) {
+      this.isStartDateError = true;
+      this.startDateErrorMessage = 'The role start date must not be in the past';
+      return false;
+    }
+    return true;
   }
 
   public datesMissing(): boolean {
@@ -134,27 +152,18 @@ export class ChooseDurationComponent implements OnInit {
     return dateMissing;
   }
 
-  public startDateLessThanEndDate(): boolean {
-    const startDate = new Date(this.yearStartDate.value, this.monthStartDate.value - 1, this.dayStartDate.value);
-    const endDate = new Date(this.yearEndDate.value, this.monthEndDate.value - 1, this.dayEndDate.value);
-    if (startDate > endDate) {
-      this.isEndDateError = true;
-      this.endDateErrorMessage = 'The role end date must be after the role start date';
-      return false;
-    }
-    return true;
-  }
-
-  public startDateNotInPast(): boolean {
-    const startDate = new Date(this.yearStartDate.value, this.monthStartDate.value - 1, this.dayStartDate.value);
+  public getTodayDate() {
     const currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0);
-    if (startDate < currentDate) {
-      this.isStartDateError = true;
-      this.startDateErrorMessage = 'The role start date must not be in the past';
-      return false;
-    }
-    return true;
+    return currentDate;
+  }
+
+  public getStartDate() {
+    return new Date(this.yearStartDate.value, this.monthStartDate.value - 1, this.dayStartDate.value);
+  }
+
+  public getEndDate() {
+    return new Date(this.yearEndDate.value, this.monthEndDate.value - 1, this.dayEndDate.value);
   }
 
   public onItemChange(item: DurationOfRole) {

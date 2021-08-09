@@ -1,8 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { provideMockStore } from '@ngrx/store/testing';
 import { CASEROLES } from '../../../../api/workAllocation2/constants/roles.mock.data';
 import { CaseRolesTableComponent } from '../../../role-access/components/case-roles-table/case-roles-table.component';
+import { initialMockState } from '../../../role-access/testing/app-initial-state.mock';
 import { RolesAndAccessComponent } from '../../components/roles-and-access/roles-and-access.component';
 import { RolesAndAccessContainerComponent } from './roles-and-access-container.component';
 import { CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
@@ -107,8 +110,9 @@ describe('RolesContainerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule.withRoutes([])],
+      imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule],
       providers: [
+        provideMockStore({initialState: initialMockState}),
         {
           provide: ActivatedRoute,
           useValue: {

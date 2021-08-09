@@ -1,3 +1,17 @@
+tr {
+  > th {
+    width: auto;
+  }
+
+  &:first-child {
+    width: 300px;
+  }
+
+  &:last-child {
+    width: 100px;
+  }
+}
+
 .govuk-accordion-wa__icon {
   cursor: pointer;
   position: absolute;

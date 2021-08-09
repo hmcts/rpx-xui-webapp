@@ -1,8 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { PersonRole } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
 import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
 import { AnswersComponent } from '../../../components';
-import { ExcludeOption, ExclusionNavigationEvent, ExclusionState, PersonRole } from '../../../models';
+import { ExcludeOption, ExclusionNavigationEvent, ExclusionState } from '../../../models';
 import * as fromFeature from '../../../store';
 import { ConfirmExclusionAction } from '../../../store/actions';
 import { AddExclusionCheckAnswersComponent } from './add-exclusion-check-answers.component';

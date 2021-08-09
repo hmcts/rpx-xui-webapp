@@ -1,6 +1,7 @@
 import { FormControl } from '@angular/forms';
+import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
 
-import { AllocateRoleNavigationEvent, AllocateRoleState, Person, PersonRole } from '../../../models';
+import { AllocateRoleNavigationEvent, AllocateRoleState } from '../../../models';
 import { ChoosePersonAndGo } from '../../../store';
 import { AllocateRoleSearchPersonComponent } from './allocate-role-search-person.component';
 

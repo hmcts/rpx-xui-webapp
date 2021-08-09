@@ -1,10 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 
 import { PERSON_ERROR_MESSAGE } from '../../../constants';
-import { ExclusionNavigationEvent, ExclusionState, ExclusionStateData, Person, PersonRole } from '../../../models';
+import { ExclusionNavigationEvent, ExclusionState, ExclusionStateData } from '../../../models';
 import { ExclusionNavigation } from '../../../models/exclusion-navigation.interface';
 import * as fromFeature from '../../../store';
 

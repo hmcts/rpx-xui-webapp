@@ -1,10 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 
 import { PERSON_ERROR_MESSAGE } from '../../../constants';
-import { AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState, AllocateRoleStateData, Person, PersonRole, TypeOfRole } from '../../../models';
+import { AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState, AllocateRoleStateData, TypeOfRole } from '../../../models';
 import { RoleAllocationCaptionText } from '../../../models/enums';
 import * as fromFeature from '../../../store';
 

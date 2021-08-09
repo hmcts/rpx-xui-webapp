@@ -1,4 +1,4 @@
-import { Person } from '../../work-allocation-2/models/dtos';
+import { Person } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
 import { AllocateRoleState } from './allocate-role-state.enum';
 import { AllocateTo, AnotherPeriod, DurationOfRole, TypeOfRole } from './allocate-role.enum';
 import { HttpError } from './http-error.interface';

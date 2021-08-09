@@ -1,5 +1,6 @@
 import { FormControl } from '@angular/forms';
-import { ExclusionNavigationEvent, ExclusionState, Person, PersonRole } from '../../../models';
+import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
+import { ExclusionNavigationEvent, ExclusionState } from '../../../models';
 import { UpdatePersonExclusion } from '../../../store/actions';
 import { AddExclusionSearchPersonComponent } from './add-exclusion-search-person.component';
 

@@ -1,14 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
+
 import { ErrorMessage } from '../../../app/models';
 import { ConfigConstants } from '../../components/constants';
 import { SortOrder, TaskActionType, TaskService } from '../../enums';
-import { FieldConfig } from '../../models/common';
-import { InformationMessage } from '../../models/comms';
-import { Caseworker, Location, Person, PersonRole } from '../../models/dtos';
+import { FieldConfig } from '../../models/common'
+import { Caseworker, Location } from '../../models/dtos';
 import { TaskServiceConfig } from '../../models/tasks';
 
 @Component({

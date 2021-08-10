@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { PersonRole } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
+import { PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
 import { AnswersComponent } from '../../../components';

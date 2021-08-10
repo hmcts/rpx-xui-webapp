@@ -1,6 +1,7 @@
 import {
   AllocateRoleState,
   AllocateRoleStateData,
+  DurationOfRole,
 } from '../../models';
 import * as fromActions from '../actions';
 import { AllocateRoleActionTypes } from '../actions';
@@ -11,8 +12,8 @@ export const allocateRoleInitialState: AllocateRoleStateData = {
   typeOfRole: null,
   allocateTo: null,
   person: null,
-  durationOfRole: null,
-  anotherPeriod: null,
+  durationOfRole: DurationOfRole.INDEFINITE,
+  period: null,
   lastError: null
 };
 
@@ -42,6 +43,14 @@ export function allocateRoleReducer(currentState = allocateRoleInitialState,
       return {
         ...currentState,
         allocateTo: action.payload.allocateTo,
+        state: action.payload.allocateRoleState
+      };
+    }
+    case AllocateRoleActionTypes.CHOOSE_DURATION_AND_GO: {
+      return {
+        ...currentState,
+        durationOfRole: action.payload.durationOfRole,
+        period: action.payload.period,
         state: action.payload.allocateRoleState
       };
     }

@@ -1,0 +1,39 @@
+<exui-app-header></exui-app-header>
+<div class="govuk-width-container">
+  <div class="page">
+    <main id="content" role="main">
+      <div class="govuk-grid-row">
+        <exui-allocate-role-navigation (eventTrigger)="onNavEvent($event)">
+          <div class="govuk-main-wrapper">
+            <exui-choose-role
+              #chooseRole
+              *ngIf="isComponentVisible(navigationCurrentState, chooseRoleVisibilityStates)"
+              [navEvent]="navEvent">
+            </exui-choose-role>
+            <exui-choose-allocate-to
+              #chooseAllocateTo
+              *ngIf="isComponentVisible(navigationCurrentState, chooseAllocateToVisibilityStates)"
+              [navEvent]="navEvent">
+            </exui-choose-allocate-to>
+            <exui-allocate-role-search-person
+              #searchPerson
+              *ngIf="isComponentVisible(navigationCurrentState, searchPersonVisibilityStates)"
+              [navEvent]="navEvent">
+            </exui-allocate-role-search-person>
+            <exui-choose-duration
+              #chooseDuration
+              *ngIf="isComponentVisible(navigationCurrentState, chooseDurationVisibilityStates)"
+              [navEvent]="navEvent">
+            </exui-choose-duration>
+            <exui-allocate-role-check-answers
+              #checkAnswers
+              *ngIf="isComponentVisible(navigationCurrentState, checkAnswersVisibilityStates)"
+              [navEvent]="navEvent">
+            </exui-allocate-role-check-answers>
+          </div>
+        </exui-allocate-role-navigation>
+      </div>
+    </main>
+  </div>
+</div>
+<exui-app-footer></exui-app-footer>

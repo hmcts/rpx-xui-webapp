@@ -1,28 +1,14 @@
-import { CheckAnswersComponent } from './exclusion/check-answers/check-answers.component';
-import { ChooseExclusionComponent } from './exclusion/choose-exclusion/choose-exclusion.component';
-import { ChoosePersonRoleComponent } from './exclusion/choose-person-role/choose-person-role.component';
-import { DescribeExclusionComponent } from './exclusion/describe-exclusion/describe-exclusion.component';
-import { ExclusionHomeComponent } from './exclusion/exclusion-home/exclusion-home.component';
-import { ExclusionNavigationComponent } from './exclusion/exclusion-navigation/exclusion-navigation.component';
-import { SearchPersonComponent } from './exclusion/search-person/search-person.component';
+import * as addExclusionContainers from './add-exclusion';
+import * as allocateRoleContainers from './allocate-role';
+import { DeleteExclusionComponent } from './delete-exclusion/delete-exclusion.component';
 import { RoleAccessComponent } from './role-and-access/role-access.component';
 
 export const containers: any[] = [
-  ExclusionHomeComponent,
-  ExclusionNavigationComponent,
-  ChooseExclusionComponent,
-  ChoosePersonRoleComponent,
-  SearchPersonComponent,
-  DescribeExclusionComponent,
-  CheckAnswersComponent,
-  RoleAccessComponent
+  ...addExclusionContainers.containers,
+  ...allocateRoleContainers.containers,
+  RoleAccessComponent,
+  DeleteExclusionComponent
 ];
 
-export * from './exclusion/check-answers/check-answers.component';
-export * from './exclusion/choose-exclusion/choose-exclusion.component';
-export * from './exclusion/choose-person-role/choose-person-role.component';
-export * from './exclusion/describe-exclusion/describe-exclusion.component';
-export * from './exclusion/exclusion-home/exclusion-home.component';
-export * from './exclusion/exclusion-navigation/exclusion-navigation.component';
-export * from './exclusion/search-person/search-person.component';
 export * from './role-and-access/role-access.component';
+export * from './delete-exclusion/delete-exclusion.component';

@@ -12,8 +12,6 @@ class TaskCheckYourChangesPage{
 
         this.submitButton = $("exui-task-assignment-confirm button[type = 'submit']");
         this.cancelLink = element(by.xpath("//exui-task-assignment-confirm//p/a[contains(text(),'Cancel')]"));
-
- 
     }
 
 
@@ -28,8 +26,8 @@ class TaskCheckYourChangesPage{
     }
 
     async validatePage() {
-        const heaerText = await this.header.getText();
-        expect(heaerText.includes("Check your changes")).to.be.true;
+        const headerText = await this.header.getText();
+        expect(headerText.includes("Check your answers")).to.be.true;
         expect(await checkyourChangesTable.isDisplayed()).to.be.true;
         expect(await this.changeLink.isDisplayed()).to.be.true;
 
@@ -41,13 +39,13 @@ class TaskCheckYourChangesPage{
         return coltext;
     }
 
-    async  clickChangeLink(){
+    async clickChangeLink() {
         await checkyourChangesTable.clickLinkWithTextAtRow(1,"change");
     }
 
 
 
-    async isTaskTableHeaderDisplayed(headerCol){
+    async isTaskTableHeaderDisplayed(headerCol) {
         const colheaderPos = await checkyourChangesTable.isTableHeaderDisplayed(headerCol);
         return colheaderPos !== -1;
     }

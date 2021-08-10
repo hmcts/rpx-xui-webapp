@@ -2,15 +2,16 @@ export interface Person {
     id: string;
     name: string;
     email: string;
-    domain: PersonDomain;
+    domain: PersonRole;
 }
 export interface SearchOptions {
     searchTerm: string;
     jurisdiction: string;
 }
 
-export enum PersonDomain {
-    JUDICIAL = 1,
-    CASEWORKER = 2,
-    BOTH = 3,
+export enum PersonRole {
+    JUDICIAL = 'Judicial',
+    CASEWORKER = 'Legal Ops',
+    ADMIN = 'Admin',
+    ALL = 'All',
 }

@@ -53,4 +53,51 @@ describe('ChooseDurationComponent', () => {
 
     expect(period.endDate).toBeNull();
   });
+
+  it('startDateLessThanEndDate truthy', () => {
+    component.yearStartDate.setValue(2021);
+    component.monthStartDate.setValue(12);
+    component.dayStartDate.setValue(7);
+
+    component.yearEndDate.setValue(2021);
+    component.monthEndDate.setValue(12);
+    component.yearEndDate.setValue(2021);
+    const result = component.startDateLessThanEndDate();
+    expect(result).toBeTruthy();
+  });
+
+  it('startDateLessThanEndDate falsy', () => {
+    component.yearStartDate.setValue(2021);
+    component.monthStartDate.setValue(12);
+    component.dayStartDate.setValue(7);
+
+    component.yearEndDate.setValue(2021);
+    component.monthEndDate.setValue(12);
+    component.dayEndDate.setValue(6);
+    const result = component.startDateLessThanEndDate();
+    expect(result).toBeFalsy();
+  });
+
+  it('getStartDate', () => {
+    component.yearStartDate.setValue(2021);
+    component.monthStartDate.setValue(12);
+    component.dayStartDate.setValue(7);
+    const startDate = component.getStartDate();
+    expect(startDate).toEqual(new Date(2021, 11, 7, 0, 0, 0, 0));
+  });
+
+  it('getEndDate', () => {
+    component.yearEndDate.setValue(2021);
+    component.monthEndDate.setValue(12);
+    component.dayEndDate.setValue(6);
+    const endDate = component.getEndDate();
+    expect(endDate).toEqual(new Date(2021, 11, 6, 0, 0, 0, 0));
+  });
+
+  it('getTodayDate', () => {
+    const currentDate = component.getTodayDate();
+    expect(currentDate.getFullYear()).toEqual(new Date().getFullYear());
+    expect(currentDate.getDate()).toEqual(new Date().getDate());
+    expect(currentDate.getMonth()).toEqual(new Date().getMonth());
+  });
 });

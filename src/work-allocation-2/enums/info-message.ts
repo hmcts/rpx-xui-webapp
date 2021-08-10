@@ -1,7 +1,7 @@
 export enum InfoMessage {
   ASSIGNED_TASK = 'You\'ve assigned a task. It will be in the selected person\'s My tasks.',
   ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS = 'You\'ve assigned yourself a task. It\'s available in My tasks.',
-  CANCELLED_TASK = 'You\'ve cancelled a task.',
+  CANCELLED_TASK = 'You\'ve cancelled a task. It has been removed from the task list.',
   LIST_OF_CASES_REFRESHED = 'The list has been refreshed.',
   LIST_OF_TASKS_REFRESHED = 'The list has been refreshed.',
   MARKED_TASK_AS_DONE = 'You\'ve marked a task as done. It has been removed from the task list.',

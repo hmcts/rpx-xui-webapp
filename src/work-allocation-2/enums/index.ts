@@ -1,3 +1,4 @@
+import { AssignHintText } from './assign-hint-text';
 import { CaseService } from './case-service';
 import { CaseActionIds } from './case-action-ids';
 import { FieldType } from './field-type';
@@ -10,6 +11,7 @@ import { TaskService } from './task-service';
 import { TaskView } from './task-view';
 
 export {
+  AssignHintText,
   CaseService,
   CaseActionIds,
   FieldType,

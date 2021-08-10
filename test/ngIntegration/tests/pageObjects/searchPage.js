@@ -30,7 +30,7 @@ class SearchCasePage {
         await this.amOnPage();
         let retryCounter = 0;
         return await BrowserWaits.retryWithActionCallback(async () =>{
-            await BrowserWaits.waitForSeconds(1000 * retryCounter);
+            await BrowserWaits.waitForSeconds(retryCounter*3);
             retryCounter++;
             return await this.dynamicFiltersContainer.$(`#dynamicFilters .form-group #${fieldConfig.field.id}`).isDisplayed();
         });

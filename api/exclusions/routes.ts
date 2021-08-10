@@ -1,10 +1,12 @@
 import { Router } from 'express';
 import authInterceptor from '../lib/middleware/auth';
-import { getUserExclusions } from './exclusionService';
+import { confirmUserExclusion, deleteUserExclusion, getUserExclusions } from './exclusionService';
 
 const router = Router({ mergeParams: true });
 router.use(authInterceptor);
 
-router.use('/exclusions', getUserExclusions);
+router.get('/get', getUserExclusions);
+router.post('/confirm', confirmUserExclusion);
+router.post('/delete', deleteUserExclusion);
 
 export default router;

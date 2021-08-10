@@ -443,12 +443,13 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.1.0-rc.13":
-  version "4.1.0-rc.13"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.1.0-rc.13.tgz#baff222ca20d595288d056e59062a4b0c512b261"
-  integrity sha512-1P0a1cFx49qaX7svHQk+7KM6usJmv/9HX6mCG4VYFSJGz+3YlJ2DHF0bh1qNhA6O5IHl9AHR2xFVz714n5mTRQ==
+"@hmcts/ccd-case-ui-toolkit@4.0.0-prepended-tabs-v2":
+  version "4.0.0-prepended-tabs-v2"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.0.0-prepended-tabs-v2.tgz#f21785f25adc4dcf76b450b8a194110e69867d76"
+  integrity sha512-kQcNXDp2PAxWPXyZwt0jcqnlWKvHyzpI5vvILQl9w08ytKw4WyTJ7LWuQjYxFHEMoiTQOLLMRq/5/C8YTNo08w==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
+    "@angular-material-components/moment-adapter" "^5.0.0"
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
     "@hmcts/ccpay-web-component" "3.0.3"
@@ -523,10 +524,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.0.1-module-fixes.8":
-  version "1.0.1-module-fixes.8"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.0.1-module-fixes.8.tgz#365a45359fc659c20bcb09de52d0d3ef4181548f"
-  integrity sha512-JqHGUScHiK9AIPqtezfrI/TVjTGw46Tb3Z1tSAVDqdML9f8CNbLJJcK2m6pjTAMDTx81lJYSGlyQX89lZMRFYw==
+"@hmcts/rpx-xui-common-lib@1.0.1-find-person-relocate-2":
+  version "1.0.1-find-person-relocate-2"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.0.1-find-person-relocate-2.tgz#a1c06b2da4ddf05c70627972654bef1166966680"
+  integrity sha512-VNPT7NvbY+52Qp8Jkwf46YuXOVMvLgl/Mh0VvDN0FjbDbLYiQZWMgoeP36Loxvhvk7JSxX1Bhq7FLO+iVfx0qw==
   dependencies:
     tslib "^1.9.0"
 

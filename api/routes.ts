@@ -2,6 +2,7 @@ import * as express from 'express';
 import { router as caseShareRoutes } from './caseshare/routes';
 import { getConfigValue, showFeature } from './configuration';
 import { APP_INSIGHTS_KEY } from './configuration/references';
+import exclusionRouter from './exclusions/routes';
 import healthCheck from './healthCheck';
 import authInterceptor from './lib/middleware/auth';
 import { router as nocRouter } from './noc/routes';
@@ -23,6 +24,8 @@ router.get('/configuration', (req, res) => {
 router.use(authInterceptor);
 
 router.use('/user', userRouter);
+
+router.use('/exclusions', exclusionRouter);
 
 // TODO: potentially can be moved to proxy but with onRes callback
 router.use('/caseshare', caseShareRoutes);

@@ -3,4 +3,5 @@ export enum ExclusionNavigationEvent {
   CANCEL,
   CONTINUE,
   CONFIRM_EXCLUSION,
+  DELETE_EXCLUSION
 }

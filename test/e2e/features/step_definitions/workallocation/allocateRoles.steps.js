@@ -112,6 +112,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     }
 
 
+    Then('I see option {string} selected in page duration of role', async function(durationOption){
+        const durationOptionInput = allocateRoleWorkFlow.durationOfRolePage.getRadioOptionInputElement(durationOption);
+        expect(await durationOptionInput.isSelected()).to.be.true;
+    });
 
 });
 

@@ -1,6 +1,7 @@
 import {
   AllocateRoleState,
   AllocateRoleStateData,
+  DurationOfRole,
 } from '../../models';
 import * as fromActions from '../actions';
 import { AllocateRoleActionTypes } from '../actions';
@@ -11,7 +12,7 @@ export const allocateRoleInitialState: AllocateRoleStateData = {
   typeOfRole: null,
   allocateTo: null,
   person: null,
-  durationOfRole: null,
+  durationOfRole: DurationOfRole.INDEFINITE,
   period: null,
   lastError: null
 };

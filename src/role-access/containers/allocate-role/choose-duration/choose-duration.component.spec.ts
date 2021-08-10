@@ -1,29 +1,21 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { async, ComponentFixture } from '@angular/core/testing';
+import { FormBuilder } from '@angular/forms';
 
-import { provideMockStore } from '@ngrx/store/testing';
-import { DurationOfRole } from 'src/role-access/models';
+import { DurationOfRole } from '../../../../role-access/models';
 import { ChooseDurationComponent } from './choose-duration.component';
 
 describe('ChooseDurationComponent', () => {
   let component: ChooseDurationComponent;
-  let fixture: ComponentFixture<ChooseDurationComponent>;
+  let mockStore: any;
+  let formBuilder: FormBuilder;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [FormsModule, ReactiveFormsModule],
-      declarations: [ ChooseDurationComponent ],
-      providers: [
-        provideMockStore()
-      ]
-    })
-    .compileComponents();
+    mockStore = jasmine.createSpyObj('mockStore', ['pipe']);
+    formBuilder = new FormBuilder();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ChooseDurationComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    component = new ChooseDurationComponent(mockStore, formBuilder);
   });
 
   it('should create component and initialise durations', () => {

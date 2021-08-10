@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Store } from '@ngrx/store';
-import { AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState, DurationOfRole, Period } from '../../../models';
+import { select, Store } from '@ngrx/store';
+import { AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState, AllocateRoleStateData, DurationOfRole, Period } from '../../../models';
 import * as fromFeature from '../../../store';
 
 @Component({
@@ -38,7 +38,7 @@ export class ChooseDurationComponent implements OnInit {
               private readonly builder: FormBuilder) {
     this.allDurations = [
       { duration: DurationOfRole.SEVEN_DAYS, description: ChooseDurationComponent.sevenDaysDesc, checked: false },
-      { duration: DurationOfRole.INDEFINITE, description:  ChooseDurationComponent.indefiniteDesc, checked: true },
+      { duration: DurationOfRole.INDEFINITE, description:  ChooseDurationComponent.indefiniteDesc, checked: false },
       { duration: DurationOfRole.ANOTHER_PERIOD, description: ChooseDurationComponent.anotherPeriodDesc, checked: false }
     ];
     this.dayStartDate = new FormControl([Validators.required, Validators.min(1), Validators.max(31)]);
@@ -61,7 +61,27 @@ export class ChooseDurationComponent implements OnInit {
       yearEndDate: this.yearEndDate,
       radioSelected: this.radioSelected
     });
-    this.selectedDuration = DurationOfRole.INDEFINITE;
+    this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(roleAllocate => {
+      this.selectDurationRole(roleAllocate);
+    });
+  }
+
+  public selectDurationRole(roleAllocate: AllocateRoleStateData) {
+    this.selectedDuration = roleAllocate.durationOfRole;
+    this.allDurations.find(duration => duration.duration === this.selectedDuration).checked = true;
+    this.anotherPeriod = this.selectedDuration === DurationOfRole.ANOTHER_PERIOD;
+    if (this.anotherPeriod && roleAllocate.period) {
+      if (roleAllocate.period.startDate) {
+        this.dayStartDate.setValue(roleAllocate.period.startDate.getDate());
+        this.monthStartDate.setValue(roleAllocate.period.startDate.getMonth() + 1);
+        this.yearStartDate.setValue(roleAllocate.period.startDate.getFullYear());
+      }
+      if (roleAllocate.period.endDate) {
+        this.dayEndDate.setValue(roleAllocate.period.endDate.getDate());
+        this.monthEndDate.setValue(roleAllocate.period.endDate.getMonth() + 1);
+        this.yearEndDate.setValue(roleAllocate.period.endDate.getFullYear());
+      }
+    }
   }
 
   public navigationHandler(navEvent: AllocateRoleNavigationEvent): void {

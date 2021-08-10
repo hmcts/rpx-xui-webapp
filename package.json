@@ -237,7 +237,12 @@
     "**/**/browserslist": "^4.16.5",
     "**/**/dns-packet": "^5.2.2",
     "**/**/websocket-extensions": "^0.1.4",
-    "**/**/url-parse": "^1.5.0"
+    "**/**/url-parse": "^1.5.0",
+    "**/**/jszip": "^3.7.0",
+    "**/**/path-parse": "^1.0.7",
+    "**/**/underscore": "^1.12.1"
+
+
 
 
 

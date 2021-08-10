@@ -172,21 +172,21 @@ export class ChooseDurationComponent implements OnInit {
     return dateMissing;
   }
 
-  public getTodayDate() {
+  public getTodayDate(): Date {
     const currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0);
     return currentDate;
   }
 
-  public getStartDate() {
+  public getStartDate(): Date {
     return new Date(this.yearStartDate.value, this.monthStartDate.value - 1, this.dayStartDate.value);
   }
 
-  public getEndDate() {
+  public getEndDate(): Date {
     return new Date(this.yearEndDate.value, this.monthEndDate.value - 1, this.dayEndDate.value);
   }
 
-  public onItemChange(item: DurationOfRole) {
+  public onItemChange(item: DurationOfRole): void {
     this.anotherPeriod = item === DurationOfRole.ANOTHER_PERIOD;
     this.selectedDuration = item;
   }

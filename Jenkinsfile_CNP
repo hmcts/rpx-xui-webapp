@@ -23,6 +23,8 @@ def channel   = '#xui-pipeline'
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
+def branchesToSync = ['demo', 'perftest', 'ithc']
+
 def secrets = [
   'rpx-${env}': [
     secret('mc-s2s-client-secret', 'S2S_SECRET'),
@@ -51,6 +53,7 @@ withPipeline(type, product, component) {
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net'
     enableAksStagingDeployment()
     disableLegacyDeployment()
+    syncBranchesWithMaster(branchesToSync)
 
     enablePactAs([
         AppPipelineDsl.PactRoles.CONSUMER

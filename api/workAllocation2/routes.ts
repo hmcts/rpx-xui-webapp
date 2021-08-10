@@ -6,6 +6,7 @@ import {
   getAllJudicialWorkers,
   getCaseWorkersForLocationAndService,
   getCaseWorkersForService,
+  getRolesByCaseId,
   getRolesCategory,
   getTask,
   postTaskAction,
@@ -45,5 +46,7 @@ router.use('/task', searchTask);
 router.use('/taskWithPagination', searchTask);
 
 router.use('/exclusion/rolesCategory', getRolesCategory);
+
+router.use('/roles/:caseId', getRolesByCaseId);
 
 export default router;

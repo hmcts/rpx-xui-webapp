@@ -524,10 +524,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.0.1-find-person-relocate-2":
-  version "1.0.1-find-person-relocate-2"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.0.1-find-person-relocate-2.tgz#a1c06b2da4ddf05c70627972654bef1166966680"
-  integrity sha512-VNPT7NvbY+52Qp8Jkwf46YuXOVMvLgl/Mh0VvDN0FjbDbLYiQZWMgoeP36Loxvhvk7JSxX1Bhq7FLO+iVfx0qw==
+"@hmcts/rpx-xui-common-lib@1.3.0-manage-link-toggle":
+  version "1.3.0-manage-link-toggle"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.3.0-manage-link-toggle.tgz#b042e8c692bfcd2a7b37a4984895358cba60ab72"
+  integrity sha512-K0qWshREnYxybabqZdzj3h768ppn2VQLW3r3MSvEKOnEkSv4myuzFO++TLzrcIvSvlAcdEbizkkDckd1bFnMcQ==
   dependencies:
     tslib "^1.9.0"
 

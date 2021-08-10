@@ -8,6 +8,8 @@ import {
   SERVICES_WORK_ALLOCATION_TASK_API_PATH
 } from '../configuration/references';
 import { EnhancedRequest } from '../lib/models';
+
+import * as caseServiceMock from './caseService.mock';
 import {
   getUserIdsFromRoleApiResponse,
   handleCaseWorkerForLocation,
@@ -17,11 +19,12 @@ import {
   handlePostRoleAssingnments,
   handlePostSearch
 } from './caseWorkerService';
+
+import { CaseRole } from './interfaces/caseRole';
 import { Caseworker, Judicialworker } from './interfaces/common';
-
-import * as caseServiceMock from './caseService.mock';
+import { handleGetRolesByCaseId } from './roleService';
+import * as roleServiceMock from './roleService.mock';
 import * as taskServiceMock from './taskService.mock';
-
 import {
   assignActionsToCases,
   assignActionsToTasks,
@@ -42,6 +45,7 @@ import {
 
 const mock = taskServiceMock.init();
 caseServiceMock.init(mock);
+roleServiceMock.init(mock);
 
 export const baseWorkAllocationTaskUrl = getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH);
 export const baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);
@@ -79,14 +83,14 @@ export async function searchCase(req: EnhancedRequest, res: Response, next: Next
     // TODO below call mock api will be replaced when real api is ready
     const promise = await handlePost(postCasePath, searchRequest, req);
 
-    const { status, data } = promise;
+    const {status, data} = promise;
     res.status(status);
     // Assign actions to the cases on the data from the API.
     let returnData;
     if (data) {
       // Note: CasePermission placed in here is an example of what we could be getting (i.e. Manage permission)
       // These should be mocked as if we were getting them from the user themselves
-      returnData = { cases: assignActionsToCases(data.cases, req.body.view), total_records: data.total_records };
+      returnData = {cases: assignActionsToCases(data.cases, req.body.view), total_records: data.total_records};
     }
 
     // Send the (possibly modified) data back in the Response.
@@ -134,14 +138,14 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
         promise = await handlePost(postTaskPath, searchRequest, req);
       }
     }
-    const { status, data } = promise;
+    const {status, data} = promise;
     res.status(status);
     // Assign actions to the tasks on the data from the API.
     let returnData;
     if (data) {
       // Note: TaskPermission placed in here is an example of what we could be getting (i.e. Manage permission)
       // These should be mocked as if we were getting them from the user themselves
-      returnData = { tasks: assignActionsToTasks(data.tasks, req.body.view), total_records: data.total_records };
+      returnData = {tasks: assignActionsToTasks(data.tasks, req.body.view), total_records: data.total_records};
     }
 
     // Send the (possibly modified) data back in the Response.
@@ -158,7 +162,7 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
 
   try {
     const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.params.taskId, req.params.action);
-    const { status, data } = await handlePost(getTaskPath, req.body, req);
+    const {status, data} = await handlePost(getTaskPath, req.body, req);
     res.status(status);
     res.send(data);
   } catch (error) {
@@ -185,7 +189,7 @@ export async function retrieveAllCaseWorkers(req: EnhancedRequest, res: Response
   }
   const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
   const payload = prepareRoleApiRequest();
-  const { data } = await handlePostRoleAssingnments(roleApiPath, payload, req);
+  const {data} = await handlePostRoleAssingnments(roleApiPath, payload, req);
   const userIds = getUserIdsFromRoleApiResponse(data);
   const userUrl = `${baseCaseWorkerRefUrl}/refdata/case-worker/users/fetchUsersById`;
   const userResponse = await handlePostCaseWorkersRefData(userUrl, userIds, req);
@@ -213,7 +217,7 @@ export async function retrieveAllJudicialWorkers(req: EnhancedRequest, res: Resp
   }
   const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
   const payload = prepareRoleApiRequest();
-  const { data } = await handlePostRoleAssingnments(roleApiPath, payload, req);
+  const {data} = await handlePostRoleAssingnments(roleApiPath, payload, req);
   const userIds = getUserIdsFromRoleApiResponse(data);
   const userUrl = `${baseJudicialWorkerRefUrl}/judicialworkers/`;
   // const userResponse = await handlePostJudicialWorkersRefData(userUrl, userIds, req);
@@ -277,7 +281,7 @@ export async function searchCaseWorker(req: EnhancedRequest, res: Response, next
   try {
     const postTaskPath: string = prepareCaseWorkerSearchUrl(baseUrl);
 
-    const { status, data } = await handlePostSearch(postTaskPath, req.body, req);
+    const {status, data} = await handlePostSearch(postTaskPath, req.body, req);
     res.status(status);
     res.send(data);
   } catch (error) {
@@ -294,7 +298,7 @@ export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Re
       'case_type': req.body.searchRequest.caseTypeId,
       'event_id': req.body.searchRequest.eventId,
     };
-    const { status, data } = await handlePostSearch(postTaskPath, reqBody, req);
+    const {status, data} = await handlePostSearch(postTaskPath, reqBody, req);
     res.status(status);
     res.send(data);
   } catch (error) {
@@ -309,4 +313,15 @@ export async function getRolesCategory(req: EnhancedRequest, res: Response, next
     {roleId: 'legalOps', roleName: 'Legal Ops'},
     {roleId: 'admin', roleName: 'Admin'}];
   return res.send(personRoles).status(200);
+}
+
+export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
+  const caseId = req.params.caseId;
+  try {
+    const {status, data} = await handleGetRolesByCaseId(`${baseRoleAssignmentUrl}/cases/${caseId}`, req);
+    return res.send(data as CaseRole).status(status);
+  } catch (e) {
+    next(e);
+  }
+
 }

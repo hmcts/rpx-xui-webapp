@@ -10,9 +10,17 @@ export const allocateRoleInitialState: AllocateRoleStateData = {
   state: AllocateRoleState.CHOOSE_ROLE,
   typeOfRole: null,
   allocateTo: null,
-  person: null,
+  person: {
+    id: 'P111111',
+    name: 'Test name',
+    email: 'test@email.com',
+    domain: 'Judicial'
+  },
   durationOfRole: null,
-  period: null,
+  period: {
+    startDate: '2021-08-03T23:15:33.008Z',
+    endDate: '2021-08-09T23:15:33.008Z'
+  },
   lastError: null
 };
 

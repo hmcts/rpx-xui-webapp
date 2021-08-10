@@ -127,11 +127,11 @@
     "rxjs-compat": "^6.4.0",
     "shortid": "^2.2.14",
     "smoothscroll-polyfill": "^0.4.3",
-    "striptags": "^3.1.1",
+    "striptags": "^3.2.0",
     "terser-webpack-plugin": "^2.3.5",
     "tslib": "^1.9.0",
     "web-animations-js": "^2.3.2",
-    "xlsx": "^0.15.4",
+    "xlsx": "^0.17.0",
     "zone.js": "~0.11.3"
   },
   "devDependencies": {
@@ -239,8 +239,10 @@
     "**/**/websocket-extensions": "^0.1.4",
     "**/**/url-parse": "^1.5.0",
     "**/**/jszip": "^3.7.0",
-    "**/**/path-parse": "^1.0.7",
-    "**/**/underscore": "^1.12.1"
+    "**/**/path-parse": "1.0.7",
+    "**/**/underscore": "^1.12.1",
+    "**/**/tree-kill": "^1.2.2"
+
 
 
 

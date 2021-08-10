@@ -6,8 +6,11 @@ import {
   AllocateRoleNavigation,
   AllocateRoleNavigationEvent,
   AllocateRoleState,
-  AllocateRoleStateData, AllocateTo,
-  Answer, TypeOfRole
+  AllocateRoleStateData,
+  AllocateTo,
+  Answer,
+  DurationOfRole,
+  TypeOfRole
 } from '../../../models';
 import { AnswerHeaderText, AnswerLabelText, RoleAllocationCaptionText } from '../../../models/enums';
 import * as fromFeature from '../../../store';
@@ -63,11 +66,22 @@ export class AllocateRoleCheckAnswersComponent implements OnInit {
     if (allocateRoleStateData.person.email) {
       personDetails += `\n${allocateRoleStateData.person.email}`;
     }
-    this.answers.push({ label: AnswerLabelText.Person, value: personDetails, action: AllocateRoleState.SEARCH_PERSON });
+    if (allocateRoleStateData.allocateTo === AllocateTo.ALLOCATE_TO_ANOTHER_PERSON) {
+      this.answers.push({ label: AnswerLabelText.Person, value: personDetails, action: AllocateRoleState.SEARCH_PERSON });
+    }
+    let durationOfRole;
     const startDate = moment.parseZone(allocateRoleStateData.period.startDate).format('DD MMMM YYYY');
-    const endDate = moment.parseZone(allocateRoleStateData.period.endDate).format('DD MMMM YYYY');
-    const periodDetails = `${startDate} to ${endDate}`;
-    this.answers.push({ label: AnswerLabelText.DurationOfRole, value: periodDetails, action: AllocateRoleState.CHOOSE_DURATION });
+    let endDate;
+    if (allocateRoleStateData.durationOfRole === DurationOfRole.INDEFINITE) {
+      durationOfRole = DurationOfRole.INDEFINITE;
+    } else if (allocateRoleStateData.durationOfRole === DurationOfRole.SEVEN_DAYS) {
+      endDate = moment.parseZone(allocateRoleStateData.period.startDate).add(7, 'days').format('DD MMMM YYYY');
+      durationOfRole = `${startDate} to ${endDate}`;
+    } else {
+      endDate = moment.parseZone(allocateRoleStateData.period.endDate).format('DD MMMM YYYY');
+      durationOfRole = `${startDate} to ${endDate}`;
+    }
+    this.answers.push({ label: AnswerLabelText.DurationOfRole, value: durationOfRole, action: AllocateRoleState.CHOOSE_DURATION });
   }
 
   public onNavigate(action) {

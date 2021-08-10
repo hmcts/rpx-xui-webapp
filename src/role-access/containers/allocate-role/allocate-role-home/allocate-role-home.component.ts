@@ -49,6 +49,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
 
   public navEvent: AllocateRoleNavigation;
 
+  public appStoreSub: Subscription;
   public allocateRoleStateDataSub: Subscription;
 
   public navigationCurrentState: AllocateRoleState;
@@ -61,7 +62,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
               private readonly router: Router) { }
 
   public ngOnInit(): void {
-    this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
+    this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
       userDetails => {
         this.isLegalOpsOrJudicialRole = AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles);
       }
@@ -176,6 +177,9 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
+    if (this.appStoreSub) {
+      this.appStoreSub.unsubscribe();
+    }
     if (this.allocateRoleStateDataSub) {
       this.allocateRoleStateDataSub.unsubscribe();
     }

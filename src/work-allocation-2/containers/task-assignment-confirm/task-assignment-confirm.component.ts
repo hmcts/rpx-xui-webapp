@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Person } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
 import { map } from 'rxjs/operators';
 import { AssignHintText, InfoMessage, InfoMessageType, TaskActionType } from '../../enums';
 import { InformationMessage } from '../../models/comms';
-import { Person } from '../../models/dtos';
 import { TaskAssigneeModel } from '../../models/tasks/task-assignee.model';
 import { InfoMessageCommService, WorkAllocationTaskService } from '../../services';
 import { handleFatalErrors } from '../../utils';

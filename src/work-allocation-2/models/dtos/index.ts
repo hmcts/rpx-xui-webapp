@@ -112,22 +112,3 @@ export interface TaskSearchParameter {
 export interface TaskSearchParameters {
   parameters: TaskSearchParameter[];
 }
-
-export interface Person {
-  id: string;
-  name: string;
-  email: string;
-  domain: string;
-}
-
-export interface SearchOptions {
-  searchTerm: string;
-  jurisdiction: PersonRole;
-}
-
-export enum PersonRole {
-  JUDICIAL = 'Judicial',
-  CASEWORKER = 'Legal Ops',
-  ADMIN = 'Admin',
-  ALL = 'All',
-}

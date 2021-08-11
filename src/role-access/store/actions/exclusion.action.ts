@@ -1,5 +1,6 @@
+import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
 import { Action } from '@ngrx/store';
-import { ExcludeOption, ExclusionState, ExclusionStateData, Person, PersonRole, RoleAccessHttpError } from '../../models';
+import { ExcludeOption, ExclusionState, ExclusionStateData, RoleAccessHttpError } from '../../models';
 
 export enum ExclusionActionTypes {
   CHANGE_NAVIGATION = '[EXCLUSION] Change Navigation',

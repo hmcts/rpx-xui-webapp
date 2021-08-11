@@ -9,7 +9,6 @@ export * from './exclusion-navigation-event.enum';
 export * from './exclusion-state.enum';
 export * from './exclusion-state-data.interface';
 export * from './http-error.interface';
-export * from './person-model';
 export * from './radio-option.model';
 export * from './role.model';
 export * from './role-access-http-error.interface';

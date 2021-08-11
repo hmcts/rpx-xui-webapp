@@ -1,10 +1,11 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { PersonRole } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 import { ERROR_MESSAGE, PERSON_ROLE } from '../../../constants';
-import { ExclusionNavigationEvent, ExclusionState, PersonRole, Role } from '../../../models';
+import { ExclusionNavigationEvent, ExclusionState, Role } from '../../../models';
 import { RoleAllocationCaptionText, RoleAllocationTitleText } from '../../../models/enums';
 import { ExclusionNavigation } from '../../../models/exclusion-navigation.interface';
 import { OptionsModel } from '../../../models/options-model';

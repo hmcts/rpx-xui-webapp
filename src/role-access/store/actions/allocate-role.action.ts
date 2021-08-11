@@ -1,3 +1,4 @@
+import { Person } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
 import { Action } from '@ngrx/store';
 import { AllocateRoleState, AllocateTo, DurationOfRole, Period, TypeOfRole } from '../../models';
 
@@ -6,6 +7,7 @@ export enum AllocateRoleActionTypes {
   RESET = '[ALLOCATE ROLE] Reset',
   CHOOSE_ROLE_AND_GO = '[ALLOCATE ROLE] Choose A Role And Go',
   CHOOSE_ALLOCATE_TO_AND_GO = '[ALLOCATE ROLE] Choose Allocate To And Go',
+  CHOOSE_PERSON_AND_GO = '[ALLOCATE ROLE] Choose Person And Go',
   CHOOSE_DURATION_AND_GO = '[CHOOSE DURATION] Choose Duration Go',
 }
 
@@ -40,9 +42,18 @@ export class ChooseAllocateToAndGo implements Action {
   }
 }
 
+export class ChoosePersonAndGo implements Action {
+  public readonly type = AllocateRoleActionTypes.CHOOSE_PERSON_AND_GO;
+
+  constructor(public payload: { person: Person, allocateRoleState: AllocateRoleState }) {
+
+  }
+}
+
 export type AllocateRoleAction =
   | AllocateRoleChangeNavigation
   | AllocateRoleReset
   | ChooseRoleAndGo
   | ChooseAllocateToAndGo
+  | ChoosePersonAndGo
   | ChooseDurationAndGo;

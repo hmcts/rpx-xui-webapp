@@ -79,14 +79,20 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
     switch (navEvent) {
       case AllocateRoleNavigationEvent.BACK: {
         switch (this.navigationCurrentState) {
-          case AllocateRoleState.CHOOSE_ALLOCATE_TO:
+          case AllocateRoleState.CHOOSE_ALLOCATE_TO: {
             this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ROLE));
             break;
-          case AllocateRoleState.SEARCH_PERSON:
+          }
+          case AllocateRoleState.SEARCH_PERSON: {
             this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
             break;
+          }
+          case AllocateRoleState.CHOOSE_DURATION: {
+            this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
+            break;
+          }
           default:
-            throw new Error('Invalid exclusion state');
+          throw new Error('Invalid allocation state');
         }
         break;
       }
@@ -108,7 +114,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
             this.checkAnswersComponent.navigationHandler(navEvent);
             break;
           default:
-            throw new Error('Invalid exclusion state');
+            throw new Error('Invalid allocation state');
         }
         break;
       }
@@ -118,15 +124,16 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
             this.checkAnswersComponent.navigationHandler(navEvent);
             break;
           default:
-            throw new Error('Invalid exclusion state');
+            throw new Error('Invalid allocation state');
         }
         break;
       }
-      case AllocateRoleNavigationEvent.CANCEL:
+      case AllocateRoleNavigationEvent.CANCEL: {
         this.router.navigateByUrl(`cases/case-details/${this.caseId}/roles-and-access`);
         break;
+      }
       default:
-        throw new Error('Invalid exclusion navigation event');
+        throw new Error('Invalid allocation navigation event');
     }
   }
 

@@ -1,9 +1,11 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { Person } from '../../../../work-allocation-2/models/dtos';
-import { ExclusionNavigationEvent, ExclusionState, ExclusionStateData, PersonRole } from '../../../models';
+
+import { PERSON_ERROR_MESSAGE } from '../../../constants';
+import { ExclusionNavigationEvent, ExclusionState, ExclusionStateData } from '../../../models';
 import { ExclusionNavigation } from '../../../models/exclusion-navigation.interface';
 import * as fromFeature from '../../../store';
 
@@ -12,6 +14,7 @@ import * as fromFeature from '../../../store';
   templateUrl: './add-exclusion-search-person.component.html'
 })
 export class AddExclusionSearchPersonComponent implements OnInit {
+  public ERROR_MESSAGE = PERSON_ERROR_MESSAGE;
   @Input() public navEvent: ExclusionNavigation;
   public domain = PersonRole.ALL;
   public formGroup: FormGroup = new FormGroup({});
@@ -27,7 +30,7 @@ export class AddExclusionSearchPersonComponent implements OnInit {
     this.subscription = this.store.pipe(select(fromFeature.getRoleAccessState)).subscribe(exclusion => this.setPerson(exclusion));
   }
 
-  public setPerson(exclusion: ExclusionStateData): void {
+  private setPerson(exclusion: ExclusionStateData): void {
     this.personName = exclusion && exclusion.person ? this.getDisplayName(exclusion.person) : null;
     this.person = exclusion.person;
     this.personRole = exclusion.personRole;
@@ -54,7 +57,7 @@ export class AddExclusionSearchPersonComponent implements OnInit {
     this.person = person;
   }
 
-  public getDisplayName(selectedPerson: Person): string {
+  private getDisplayName(selectedPerson: Person): string {
     return selectedPerson.email ? `${selectedPerson.name}(${selectedPerson.email})` : selectedPerson.name;
   }
 }

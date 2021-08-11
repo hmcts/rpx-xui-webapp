@@ -8,3 +8,9 @@ export const ERROR_MESSAGE = {
   description: 'Please select an option',
   fieldId: 'choose-radio-option-error-message'
 };
+
+export const PERSON_ERROR_MESSAGE = {
+  title: 'There is a problem',
+  description: 'You must select a name',
+  fieldId: 'search-person-error-message'
+}

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AbstractAppConfig } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
@@ -23,6 +23,7 @@ import { InfoMessageCommService } from '../work-allocation-2/services';
     EffectsModule.forFeature(effects),
     roleAccessRouting,
     SharedModule,
+    FormsModule,
     ReactiveFormsModule,
     ExuiCommonLibModule
   ],

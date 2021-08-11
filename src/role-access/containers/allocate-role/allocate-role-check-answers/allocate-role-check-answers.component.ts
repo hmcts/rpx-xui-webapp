@@ -62,9 +62,9 @@ export class AllocateRoleCheckAnswersComponent implements OnInit {
     this.answers = [];
     this.answers.push({ label: AnswerLabelText.TypeOfRole, value: allocateRoleStateData.typeOfRole, action: AllocateRoleState.CHOOSE_ROLE });
     this.answers.push({ label: AnswerLabelText.WhoBeAllocatedTo, value: allocateRoleStateData.allocateTo, action: AllocateRoleState.CHOOSE_ALLOCATE_TO });
-    let personDetails = allocateRoleStateData.person.name;
-    if (allocateRoleStateData.person.email) {
-      personDetails += `\n${allocateRoleStateData.person.email}`;
+    let personDetails = '';
+    if (allocateRoleStateData.person && allocateRoleStateData.person.email) {
+      personDetails += `allocateRoleStateData.person.name\n${allocateRoleStateData.person.email}`;
     }
     if (allocateRoleStateData.allocateTo === AllocateTo.ALLOCATE_TO_ANOTHER_PERSON) {
       this.answers.push({ label: AnswerLabelText.Person, value: personDetails, action: AllocateRoleState.SEARCH_PERSON });

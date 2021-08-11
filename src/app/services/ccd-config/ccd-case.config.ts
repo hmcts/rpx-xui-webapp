@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { AbstractAppConfig, CaseEditorConfig } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { AppConfigService } from '../config/configuration.services';
-import { AppConstants } from '../../app.constants';
-import { AppUtils } from '../../app-utils';
-import { WorkAllocationTaskService } from '../../../work-allocation/services';
 import { EnvironmentService } from '../../../app/shared/services/environment.service';
+import { WorkAllocationTaskService } from '../../../work-allocation/services';
+import { AppUtils } from '../../app-utils';
+import { AppConstants } from '../../app.constants';
+import { AppConfigService } from '../config/configuration.services';
 
 /**
  * see more:
@@ -15,8 +15,8 @@ import { EnvironmentService } from '../../../app/shared/services/environment.ser
 
 @Injectable()
 export class AppConfig extends AbstractAppConfig {
-  protected config: CaseEditorConfig;
   public workallocationUrl: string;
+  protected config: CaseEditorConfig;
 
   constructor(
     private readonly appConfigService: AppConfigService,
@@ -28,16 +28,12 @@ export class AppConfig extends AbstractAppConfig {
     this.featureToggleWorkAllocation();
   }
 
-  private featureToggleWorkAllocation(): void {
-    this.featureToggleService
-      .isEnabled(AppConstants.FEATURE_NAMES.workAllocation)
-      .subscribe(
-        (isFeatureEnabled) =>
-          this.workallocationUrl = AppUtils.getFeatureToggledUrl(
-            isFeatureEnabled,
-            WorkAllocationTaskService.WorkAllocationUrl
-          )
-      );
+  getHrsUrl(): string {
+    throw new Error('Method not implemented.');
+  }
+
+  getRemoteHrsUrl(): string {
+    throw new Error('Method not implemented.');
   }
 
   public load(): Promise<void> {
@@ -147,5 +143,17 @@ export class AppConfig extends AbstractAppConfig {
 
   public getWorkAllocationApiUrl(): string {
     return this.workallocationUrl;
+  }
+
+  private featureToggleWorkAllocation(): void {
+    this.featureToggleService
+      .isEnabled(AppConstants.FEATURE_NAMES.workAllocation)
+      .subscribe(
+        (isFeatureEnabled) =>
+          this.workallocationUrl = AppUtils.getFeatureToggledUrl(
+            isFeatureEnabled,
+            WorkAllocationTaskService.WorkAllocationUrl
+          )
+      );
   }
 }

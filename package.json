@@ -127,11 +127,11 @@
     "rxjs-compat": "^6.4.0",
     "shortid": "^2.2.14",
     "smoothscroll-polyfill": "^0.4.3",
-    "striptags": "^3.2.0",
+    "striptags": "^3.1.1",
     "terser-webpack-plugin": "^2.3.5",
     "tslib": "^1.9.0",
     "web-animations-js": "^2.3.2",
-    "xlsx": "^0.17.0",
+    "xlsx": "^0.15.4",
     "zone.js": "~0.11.3"
   },
   "devDependencies": {
@@ -231,14 +231,22 @@
     "**/**/trim-newlines": "^4.0.0",
     "**/**/glob-parent": "^5.1.2",
     "**/**/hosted-git-info": "^3.0.8",
+    "**/**/striptags": "^3.2.0",
     "**/**/normalize-url": "^6.0.1",
     "**/**/ws": "^7.4.6",
     "**/**/browserslist": "^4.16.5",
     "**/**/dns-packet": "^5.2.2",
+    "**/**/websocket-extensions": "^0.1.4",
+    "**/**/url-parse": "^1.5.0",
     "**/**/underscore": "^1.12.1",
     "**/**/redis": "^3.1.1",
+    "**/**/node-forge": "^0.10.0",
+    "**/**/elliptic": "^6.5.4",
+    "**/**/acorn": "^7.1.1",
+    "**/**/xlsx": "^0.17.0",
+    "**/**/tree-kill": "^1.2.2",
+    "**/**/node-sass": "^4.13.1",
     "**/**/tar": "^6.1.2",
-    "**/**/jszip": "^3.7.0",
-    "**/**/path-parse": "1.0.7"
+    "**/**/jszip": "^3.7.0"
   }
 }

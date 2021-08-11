@@ -1,9 +1,11 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
+import * as fromStore from '../../../store';
 import { AllocateRoleHomeComponent } from './allocate-role-home.component';
 
 describe('AllocateRoleHomeComponent', () => {
@@ -12,19 +14,17 @@ describe('AllocateRoleHomeComponent', () => {
   const routerMock = jasmine.createSpyObj('Router', [
     'navigateByUrl'
   ]);
-  let mockAppStore: any;
-  let mockStore: any;
+  let store: Store<fromStore.State>;
+  let storePipeMock: any;
 
-  beforeEach(async(() => {
-    mockAppStore = jasmine.createSpyObj('appStore', ['dispatch', 'pipe']);
-    mockStore = jasmine.createSpyObj('store', ['dispatch', 'pipe']);
-    mockAppStore.pipe.and.returnValue(of());
-    mockStore.pipe.and.returnValue(of());
+  beforeEach(() => {
     TestBed.configureTestingModule({
       schemas: [
         NO_ERRORS_SCHEMA
       ],
-      declarations: [ AllocateRoleHomeComponent ],
+      declarations: [
+        AllocateRoleHomeComponent
+      ],
       providers: [
         provideMockStore(),
         {
@@ -32,13 +32,14 @@ describe('AllocateRoleHomeComponent', () => {
           useValue: routerMock
         }
       ]
-    })
-    .compileComponents();
-  }));
+    }).compileComponents();
 
-  beforeEach(() => {
+    store = TestBed.get(Store);
+
+    storePipeMock = spyOn(store, 'pipe');
     fixture = TestBed.createComponent(AllocateRoleHomeComponent);
     component = fixture.componentInstance;
+    storePipeMock.and.returnValue(of(0));
     fixture.detectChanges();
   });
 

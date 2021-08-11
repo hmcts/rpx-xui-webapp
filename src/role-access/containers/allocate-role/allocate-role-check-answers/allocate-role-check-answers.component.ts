@@ -75,8 +75,7 @@ export class AllocateRoleCheckAnswersComponent implements OnInit {
     if (allocateRoleStateData.durationOfRole === DurationOfRole.INDEFINITE) {
       durationOfRole = DurationOfRole.INDEFINITE;
     } else if (allocateRoleStateData.durationOfRole === DurationOfRole.SEVEN_DAYS) {
-      endDate = moment.parseZone(allocateRoleStateData.period.startDate).add(7, 'days').format('DD MMMM YYYY');
-      durationOfRole = `${startDate} to ${endDate}`;
+      durationOfRole = DurationOfRole.SEVEN_DAYS;
     } else {
       endDate = moment.parseZone(allocateRoleStateData.period.endDate).format('DD MMMM YYYY');
       durationOfRole = `${startDate} to ${endDate}`;

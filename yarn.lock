@@ -118,6 +118,13 @@
     "@angular-devkit/core" "0.8.9"
     rxjs "6.2.2"
 
+"@angular-material-components/datetime-picker@^2.0.4":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@angular-material-components/datetime-picker/-/datetime-picker-2.0.4.tgz#3a298eb29fc4a8adbbb70fe09bab0ae916d0c186"
+  integrity sha512-3nXGFz7GXbFYeBI2/72rcmPFTWtcC1ERlgdkaY+65dFHXPIc8hKGv6o+JbtCoYPg7xmVCCy4xhmOgfd/CFGyOw==
+  dependencies:
+    tslib "^1.9.0"
+
 "@angular/animations@^7.2.13":
   version "7.2.16"
   resolved "https://registry.yarnpkg.com/@angular/animations/-/animations-7.2.16.tgz#6e3f43df292bc53c3a526dabfd8025b3cd03b070"
@@ -401,15 +408,18 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@v4.0.0-unsaved-changes-alpha":
-  version "4.0.0-unsaved-changes-alpha"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.0.0-unsaved-changes-alpha.tgz#b7886c05634221f22f09a83c85825041a90b0126"
-  integrity sha512-2C3mxjKxnU8mEv8gms5tgmwAmgaN6vs15juat2s96JjMx7tMtO5zefCTVMcOEhQVQhikrRKKeetZubyZRo42/A==
+"@hmcts/ccd-case-ui-toolkit@5.0.0-unsaved-changes-beta-r2":
+  version "5.0.0-unsaved-changes-beta-r2"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.0-unsaved-changes-beta-r2.tgz#7a431561a065371e33fe2b239f607d3f7393dd09"
+  integrity sha512-hh0lDK3jxZW16+a9B66FmRQ3stiiIJISaS4VvyG8FXq4iEOUOaEm1ZMv8O5WuYMKIXVFY6nTEtzz+VlCH/eXZg==
   dependencies:
+    "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
+    "@hmcts/ccpay-web-component" "3.0.3"
     braces "^2.3.1"
     enhanced-resolve "3.3.0"
+    file-saver "^2.0.2"
     govuk-elements-sass "^3.1.2"
     json-server "^0.15.1"
     karma-jasmine-html-reporter "^1.2.0"
@@ -417,7 +427,7 @@
     mem "^6.0.0"
     minimist "1.2.3"
     mocha "^5.0.5"
-    moment "^2.26.0"
+    moment "^2.29.1"
     moment-timezone "^0.5.31"
     npm-registry-fetch "^4.0.5"
     rx-polling "1.1.0"
@@ -8633,7 +8643,7 @@ moment-timezone@^0.5.28, moment-timezone@^0.5.31:
   dependencies:
     moment ">= 2.9.0"
 
-"moment@>= 2.9.0", moment@^2.26.0:
+"moment@>= 2.9.0":
   version "2.27.0"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.27.0.tgz#8bff4e3e26a236220dfe3e36de756b6ebaa0105d"
   integrity sha512-al0MUK7cpIcglMv3YF13qSgdAIqxHTO7brRtaz3DlSULbqfazqkc5kEjNrLDOM7fsjshoFIihnU8snrP7zUvhQ==
@@ -8642,6 +8652,11 @@ moment@^2.10.6, moment@^2.19.0, moment@^2.19.3, moment@^2.24.0:
   version "2.24.0"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
   integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
+
+moment@^2.29.1:
+  version "2.29.1"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.1.tgz#b2be769fa31940be9eeea6469c075e35006fa3d3"
+  integrity sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==
 
 morgan@^1.9.1:
   version "1.9.1"

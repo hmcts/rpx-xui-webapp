@@ -7,9 +7,15 @@ export class SessionStorageService {
 
   /**
    * Get an item from the session storage.
+   * If remove is true, the item will be removed once read
+   * @param removeAfterRead removed the key once it has been read
    */
-  public getItem(key: string): string {
-    return sessionStorage.getItem(key);
+  public getItem(key: string, removeAfterRead: boolean = false): string {
+    const item = sessionStorage.getItem(key);
+
+    if (removeAfterRead) this.removeItem(key);
+
+    return item;
   }
 
   /**
@@ -17,6 +23,13 @@ export class SessionStorageService {
    */
   public setItem(key: string, value: string): void {
     sessionStorage.setItem(key, value);
+  }
+
+  /**
+   * Remove an item in the session storage.
+   */
+  public removeItem(key: string): void {
+    sessionStorage.removeItem(key);
   }
 
   /**

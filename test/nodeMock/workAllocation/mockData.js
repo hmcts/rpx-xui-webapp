@@ -67,7 +67,7 @@ class WorkAllocationMockData {
                 "assigneeName": null
             });
         }
-        return { tasks: tasks };
+        return { tasks: tasks, total_records:150 };
     }
 
     getCaseworkersList(count) {
@@ -76,7 +76,7 @@ class WorkAllocationMockData {
             caseWorkers.push({
                 "firstName": "Jane " + ctr,
                 "lastName": "Doe",
-                "idamId": "2",
+                "idamId": "41a90c39-d756-4eba-8e85-5b5bf56b31f"+ctr,
                 "email": "testemail" + ctr + "@testdomain.com",
                 "location": {
                     "id": "a",

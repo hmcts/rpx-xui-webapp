@@ -19,7 +19,6 @@ Feature: search criteria workflow
 
     Examples:
     | Jurisdiction | CaseType |
-      | Family Divorce             | Divorce case - v115.00  |
       | Manage probate application | Grant of representation |
 
   Scenario Outline:  search criteria apply workflow from Search Case Page
@@ -34,5 +33,4 @@ Feature: search criteria workflow
 
     Examples:
     | Jurisdiction | CaseType |
-      | Family Divorce             | Divorce case - v115.00  |
       | Manage probate application | Grant of representation | 

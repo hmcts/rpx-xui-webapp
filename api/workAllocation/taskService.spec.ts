@@ -1,9 +1,9 @@
 import 'mocha';
 
-import * as chai from 'chai'
+import * as chai from 'chai';
 import { expect } from 'chai';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai'
+import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 
 import { http } from '../lib/http';

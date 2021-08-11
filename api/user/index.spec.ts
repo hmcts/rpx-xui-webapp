@@ -30,6 +30,9 @@ describe('getUserDetails', () => {
         session: {
           passport: {
             user: {
+              tokenset: {
+                accessToken: '124'
+              },
               userinfo: {
                 roles: ['pui-case-manager'],
               },
@@ -50,6 +53,9 @@ describe('getUserDetails', () => {
         session: {
           passport: {
             user: {
+              tokenset: {
+                accessToken: '124'
+              },
               userinfo: {
                 roles: ['dummy'],
               },
@@ -70,6 +76,9 @@ describe('getUserDetails', () => {
         session: {
           passport: {
             user: {
+              tokenset: {
+                accessToken: '124'
+              },
               userinfo: {
                 roles: [],
               },

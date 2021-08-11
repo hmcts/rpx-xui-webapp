@@ -82,6 +82,7 @@ class CaseListPage{
         await this._waitForSearchComponent();
         await browser.executeScript('arguments[0].scrollIntoView()',
             this.searchApplyBtn);
+        await BrowserWaits.waitForElementClickable(this.searchApplyBtn);
         await this.searchApplyBtn.click();
     }
 

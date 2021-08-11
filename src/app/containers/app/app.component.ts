@@ -1,8 +1,10 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router, RoutesRecognized } from '@angular/router';
-import { GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
+import { CookieService, FeatureToggleService, GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+import { LoggerService } from '../../services/logger/logger.service';
 
 import { propsExist } from '../../../../api/lib/objectUtilities';
 import { environment as config } from '../../../environments/environment';
@@ -15,22 +17,29 @@ import * as fromRoot from '../../store';
   encapsulation: ViewEncapsulation.None
 })
 
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
 
   public timeoutModalConfig = {
     countdown: '0 seconds',
     isVisible: false,
   };
 
+  private userId: string = null;
+  public cookieName;
+  public isCookieBannerVisible: boolean = false;
+  private cookieBannerEnabledSubscription: Subscription
+  private cookieBannerEnabled: boolean = false;
+
   constructor(
     private readonly store: Store<fromRoot.State>,
     private readonly googleTagManagerService: GoogleTagManagerService,
     private readonly timeoutNotificationsService: TimeoutNotificationsService,
     private readonly router: Router,
-    private readonly titleService: Title
+    private readonly titleService: Title,
+    private readonly featureToggleService: FeatureToggleService,
+    private readonly loggerService: LoggerService,
+    private readonly cookieService: CookieService,
   ) {
-
-    this.googleTagManagerService.init(config.googleTagManagerKey);
 
     this.router.events.subscribe((data) => {
       if (data instanceof RoutesRecognized) {
@@ -58,6 +67,22 @@ export class AppComponent implements OnInit {
     // the rendering of the menu as it triggers an action that gets hold of
     // the user's profile.
     this.store.dispatch(new fromRoot.StartIdleSessionTimeout());
+
+    this.handleCookieBannerFeatureToggle();
+  }
+
+  public ngOnDestroy() {
+    if (this.cookieBannerEnabledSubscription) {
+      this.cookieBannerEnabledSubscription.unsubscribe();
+    }
+  }
+
+  public handleCookieBannerFeatureToggle(): void {
+    this.cookieBannerEnabledSubscription = this.featureToggleService.isEnabled('mc-cookie-banner-enabled')
+                                            .subscribe(flag => {
+                                              this.cookieBannerEnabled = flag;
+                                              this.setCookieBannerVisibility();
+                                            });
   }
 
   /**
@@ -88,10 +113,42 @@ export class AppComponent implements OnInit {
 
     if (propsExist(userDetails, ['sessionTimeout'] ) && userDetails.sessionTimeout.totalIdleTime > 0) {
       const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
-
       this.addTimeoutNotificationServiceListener();
       this.initTimeoutNotificationService(idleModalDisplayTime, totalIdleTime);
+      const uid = userDetails.userInfo.id ? userDetails.userInfo.id : userDetails.userInfo.uid;
+      this.setUserAndCheckCookie(uid);
     }
+  }
+
+  public setUserAndCheckCookie(userId) {
+    this.userId = userId;
+    if (this.userId) { // check if cookie selection has been made *after* user id is available
+      this.cookieName = `hmcts-exui-cookies-${this.userId}-mc-accepted`;
+      this.setCookieBannerVisibility();
+    }
+  }
+
+  public notifyAcceptance() {
+    this.loggerService.enableCookies();
+    this.googleTagManagerService.init(config.googleTagManagerKey);
+  }
+
+  public notifyRejection() {
+    // AppInsights
+    this.cookieService.deleteCookieByPartialMatch('ai_');
+    // Google Analytics
+    this.cookieService.deleteCookieByPartialMatch('_ga');
+    this.cookieService.deleteCookieByPartialMatch('_gid');
+    const domainElements = window.location.hostname.split('.');
+    for (let i = 0; i < domainElements.length; i++) {
+      const domainName = domainElements.slice(i).join('.');
+      this.cookieService.deleteCookieByPartialMatch('_ga', '/', domainName);
+      this.cookieService.deleteCookieByPartialMatch('_gid', '/', domainName);
+      this.cookieService.deleteCookieByPartialMatch('_ga', '/', `.${domainName}`);
+      this.cookieService.deleteCookieByPartialMatch('_gid', '/', `.${domainName}`);
+    }
+    // DynaTrace
+    this.cookieService.deleteCookieByPartialMatch('rxVisitor');
   }
 
   /**
@@ -218,4 +275,9 @@ export class AppComponent implements OnInit {
 
     this.timeoutNotificationsService.initialise(timeoutNotificationConfig);
   }
+
+  public setCookieBannerVisibility(): void {
+    this.isCookieBannerVisible = this.cookieBannerEnabled && !!this.userId;
+  }
+
 }

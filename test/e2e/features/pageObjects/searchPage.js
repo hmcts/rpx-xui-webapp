@@ -36,8 +36,11 @@ class SearchPage {
   }
 
   async _waitForSearchComponent() {
-    await BrowserWaits.waitForElement(this.searchFilterContainer);
-    await this.waitForSpinnerToDissappear();
+    await BrowserWaits.retryWithActionCallback(async () => {
+      await BrowserWaits.waitForElement(this.searchFilterContainer);
+      await this.waitForSpinnerToDissappear();
+    }, "Wait for search page, search input form to display");
+    
   }
 
   async waitForSpinnerToDissappear() {
@@ -89,6 +92,7 @@ class SearchPage {
     await BrowserWaits.waitForElement(this.firstResultCaseLink);
     var thisPageUrl = await browser.getCurrentUrl();
 
+    await this.waitForSpinnerToDissappear();
     await browser.executeScript('arguments[0].scrollIntoView()',
       this.firstResultCaseLink);
     await this.firstResultCaseLink.click();

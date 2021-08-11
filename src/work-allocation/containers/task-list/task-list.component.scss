@@ -15,6 +15,7 @@
 
 .column-sort {
   padding-right: 20px;
+  white-space: nowrap;
 
   &:hover{
     padding-right: 20px;
@@ -23,7 +24,7 @@
   &:after{
     right: 0.5px;
   }
-  
+
   &:before{
     right: 0.5px;
   }
@@ -37,6 +38,11 @@
     border: 1px solid red;
     padding: 0 0 0 10px;
   }
+}
+
+.column-label {
+  font-weight: bold;
+  color: #115da0;
 }
 
 /**

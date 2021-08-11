@@ -38,8 +38,12 @@ class TaskListPage extends TaskList {
     }
 
     async clickAvailableTasks(){
-        expect(await this.amOnPage(), "Not on Task list page ").to.be.true;
-        await this.availableTasksTab.click();
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(await this.amOnPage(), "Not on Task list page ").to.be.true;
+            await this.availableTasksTab.click();
+           
+        });
+        
     }
 
     async amOnMyTasksTab(){

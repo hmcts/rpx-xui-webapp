@@ -5,7 +5,6 @@ Feature: Navigation header tabs
         Given I set MOCK with user roles
             | role |
             | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer |
         Given I start MockApp
         Given I navigate to home page
         Then I see primary navigation tab "Case list" in header
@@ -43,5 +42,5 @@ Feature: Navigation header tabs
         Given I navigate to home page
         Then I see primary navigation tab "Case list" in header
         Then I see primary navigation tab "Create case" in header
-        Then I see primary navigation tab "Task list" in header
+        Then I do not see primary navigation tab "Task list" in header
         Then I do not see primary navigation tab "Task manager" in header

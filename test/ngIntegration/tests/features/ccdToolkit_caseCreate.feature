@@ -1,4 +1,4 @@
-@ng
+@ng 
 Feature: Case edit pages
     Background: Start mock app
         Given I set mock case create config "caseConfig"
@@ -20,8 +20,8 @@ Feature: Case edit pages
             | caseworker-ia-admofficer  |
         Given I navigate page route "cases/case-create/Test_Jurisdiction/Test_case/testEvent/testPage"
         Then I see case edit page displayed
-        When I click cancel in case edit page
-        Then I see case list page displayed
+        When I click cancel in case edit page then I see page case list page
+        
 
     Scenario Outline:  Validate config pages and fields
         Given I set MOCK event "caseConfig" props

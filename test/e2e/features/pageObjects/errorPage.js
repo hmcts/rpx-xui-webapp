@@ -5,7 +5,7 @@ const reportLogger = require('../../support/reportLogger');
 class ErrorPage{
 
     constructor(){
-        this.title = element(by.xpath("//main[@id='main-content']//h1[contains(text(),'Sorry')]"))
+        this.title = element(by.xpath("//main[@id='content']//h1[contains(text(),'Sorry')]"))
         this.tryAgainMessage = element(by.xpath("//p[contains(text(),'Try again later')]"))
     }
 

@@ -52,10 +52,9 @@ export class TaskAssignmentContainerComponent implements OnInit {
   }
 
   private get showAssigneeColumn(): boolean {
-    if (window && window.history && window.history.state) {
-      return !!window.history.state.showAssigneeColumn;
-    }
-    return false;
+    const url = this.router.url;
+    // unless action is assign, show the current assignee
+    return (url.includes('reassign') || url.includes('unassign'));
   }
 
   public taskServiceConfig: TaskServiceConfig = {

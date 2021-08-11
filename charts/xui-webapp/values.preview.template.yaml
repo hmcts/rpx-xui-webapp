@@ -16,7 +16,7 @@ nodejs:
      HEALTH_WORK_ALLOCATION_TASK_API: http://wa-task-management-api-aat.service.core-compute-aat.internal/health
      HEALTH_ROLE_ASSIGNMENT_API: http://am-role-assignment-service-aat.service.core-compute-aat.internal/health
      HEALTH_CASE_CASEWORKER_API: http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal/health
-     STUB: true
+     STUB: false
      DEBUG: xuiNode:*
      FEATURE_WORKALLOCATION_ENABLED: true
   keyVaults:

@@ -1,11 +1,11 @@
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
-const minimist = require('minimist');
+
 
 var screenShotUtils = require("protractor-screenshot-utils").ProtractorScreenShotUtils;
 
 chai.use(chaiAsPromised);
-
+const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));
 
 const jenkinsConfig = [
@@ -40,7 +40,7 @@ const config = {
     framework: 'custom',
     frameworkPath: require.resolve('protractor-cucumber-framework'),
     specs: ['../tests/features/**/*.feature'],
-    baseUrl: 'http://localhost:4200/',
+    baseUrl: argv.debug ? 'http://localhost:3000/' : 'http://localhost:4200/',
     params: {
 
     },
@@ -73,7 +73,9 @@ const config = {
             '../../e2e/support/world.js',
             '../../e2e/support/*.js',
             '../tests/stepDefinitions/*.steps.js',
-            '../../e2e/features/step_definitions/*.steps.js'
+            '../tests/stepDefinitions/**/*.steps.js',
+            '../../e2e/features/step_definitions/*.steps.js',
+            '../../e2e/features/step_definitions/**/*.steps.js'
 
         ]
     },
@@ -106,7 +108,7 @@ function getBDDTags() {
     }
 
     console.log(`BDD tags ${JSON.stringify(tags)}`);
-    return tags;
+    return argv.tags ? argv.tags.split(',') :  tags;
 }
 
 exports.config = config;

@@ -1,4 +1,4 @@
-@ng
+@ng @wa1
 Feature: My Tasks Task list
 
     Background: Mock and browser setup
@@ -16,7 +16,7 @@ Feature: My Tasks Task list
         When I click on header tab Task list
         Then I see Task list sub navigation tabs
         Then I see My tasks page displayed
-        Then I validate tasks count in page 5 
+        Then I validate tasks count in page 25 
 
     Scenario: My Tasks sort columns
         Given I set MOCK with user roles

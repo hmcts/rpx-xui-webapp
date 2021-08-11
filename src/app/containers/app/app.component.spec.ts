@@ -7,6 +7,9 @@ describe('AppComponent', () => {
     let store: any;
     let googleTagManagerService: any;
     let timeoutNotificationService: any;
+    let featureToggleService: any;
+    let loggerService: any;
+    let cookieService: any;
     let router: any;
     let title: any;
     let testRoute: RoutesRecognized;
@@ -15,6 +18,9 @@ describe('AppComponent', () => {
         store = jasmine.createSpyObj('store', ['pipe', 'dispatch']);
         googleTagManagerService = jasmine.createSpyObj('GoogleTagManagerService', ['init']);
         timeoutNotificationService = jasmine.createSpyObj('TimeoutNotificationsService', ['notificationOnChange', 'initialise']);
+        featureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled']);
+        cookieService = jasmine.createSpyObj('CookieService', ['deleteCookieByPartialMatch']);
+        loggerService = jasmine.createSpyObj('LoggerService', ['enableCookies']);
         testRoute = new RoutesRecognized(1, 'test', 'test', {
             url: 'test',
             root: {
@@ -53,7 +59,7 @@ describe('AppComponent', () => {
         });
         router = { events: of(testRoute) };
         title = jasmine.createSpyObj('Title', ['setTitle']);
-        appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService, router, title);
+        appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService, router, title, featureToggleService, loggerService, cookieService);
     });
 
     it('Truthy', () => {
@@ -122,4 +128,89 @@ describe('AppComponent', () => {
         expect(timeoutNotificationService.notificationOnChange).toHaveBeenCalled();
         expect(spy).toHaveBeenCalledWith({});
     });
+
+    describe('cookie actions', () => {
+
+        describe('setCookieBannerVisibility()', () => {
+            it('should set isCookieBannerVisible true when there is no cookie and there is a user and cookie banner is feature toggled on', () => {
+                featureToggleService.isEnabled.and.returnValue(of(true));
+                appComponent.handleCookieBannerFeatureToggle();
+                appComponent.setUserAndCheckCookie('dummy');
+                expect(appComponent.isCookieBannerVisible).toBeTruthy();
+            });
+
+            it('should set isCookieBannerVisible false when there is no cookie and there is no user and cookie banner is feature toggled on', () => {
+                featureToggleService.isEnabled.and.returnValue(of(true));
+                appComponent.handleCookieBannerFeatureToggle();
+                expect(appComponent.isCookieBannerVisible).toBeFalsy();
+            });
+        });
+
+        describe('setUserAndCheckCookie()', () => {
+
+            it('should call setCookieBannerVisibility', () => {
+                const spy = spyOn(appComponent, 'setCookieBannerVisibility');
+                appComponent.setUserAndCheckCookie('dummy');
+                expect(spy).toHaveBeenCalled();
+            });
+
+        });
+
+        describe('handleCookieBannerFeatureToggle()', () => {
+
+            it('should make a call to setCookieBannerVisibility', () => {
+                const spy = spyOn(appComponent, 'setCookieBannerVisibility');
+                featureToggleService.isEnabled.and.returnValue(of(true));
+                appComponent.handleCookieBannerFeatureToggle();
+                expect(spy).toHaveBeenCalled();
+            });
+
+        });
+
+        describe('notifyAcceptance()', () => {
+
+            it('should make a call to googleTagManagerService', () => {
+                appComponent.notifyAcceptance();
+                expect(googleTagManagerService.init).toHaveBeenCalled();
+            });
+
+            it('should make a call to loggerService', () => {
+                appComponent.notifyAcceptance();
+                expect(loggerService.enableCookies).toHaveBeenCalled();
+            });
+
+        });
+
+        describe('notifyRejection()', () => {
+
+            it('should make a call to cookieService', () => {
+                appComponent.notifyRejection();
+                expect(cookieService.deleteCookieByPartialMatch).toHaveBeenCalled();
+            });
+
+        });
+
+    });
+
+    describe('userDetailsHandler', () => {
+
+        it('should call setUserAndCheckCookie', () => {
+            const spy = spyOn(appComponent, 'setUserAndCheckCookie');
+            timeoutNotificationService.notificationOnChange.and.returnValue(of({
+                eventType: 'keep-alive'
+            }));
+            appComponent.userDetailsHandler({
+                sessionTimeout: {
+                    totalIdleTime: 10,
+                    idleModalDisplayTime: 100
+                },
+                userInfo: {
+                    id: 'dummy'
+                }
+            });
+            expect(spy).toHaveBeenCalledWith('dummy');
+        });
+
+    });
+
 });

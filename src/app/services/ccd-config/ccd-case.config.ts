@@ -5,6 +5,7 @@ import { AppConfigService } from '../config/configuration.services';
 import { AppConstants } from '../../app.constants';
 import { AppUtils } from '../../app-utils';
 import { WorkAllocationTaskService } from '../../../work-allocation/services';
+import { EnvironmentService } from '../../../app/shared/services/environment.service';
 
 /**
  * see more:
@@ -19,7 +20,8 @@ export class AppConfig extends AbstractAppConfig {
 
   constructor(
     private readonly appConfigService: AppConfigService,
-    private readonly featureToggleService: FeatureToggleService
+    private readonly featureToggleService: FeatureToggleService,
+    private readonly environmentService: EnvironmentService
   ) {
     super();
     this.config = this.appConfigService.getEditorConfiguration() || {};
@@ -92,7 +94,7 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getActivityUrl() {
-    return this.config.activity_url;
+    return `${this.environmentService.get('ccdGatewayUrl')}/activity`;
   }
 
   public getActivityNexPollRequestMs() {

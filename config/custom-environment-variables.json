@@ -40,6 +40,9 @@
     "documents": {
       "api": "SERVICES_DOCUMENTS_API"
     },
+    "documentsv2": {
+      "api": "SERVICES_DOCUMENTS_API_V2"
+    },
     "em_hrs_api": "SERVICES_EM_HRS_API",
     "prd": {
       "api": "SERVICES_PRD_API"

@@ -26,13 +26,6 @@ export class AppConfig extends AbstractAppConfig {
     super();
     this.config = this.appConfigService.getEditorConfiguration() || {};
     this.featureToggleWorkAllocation();
-
-    this.featureToggleService.getValue('mc-document-secure-mode-enabled', false).subscribe({
-      next: (val) => this.config = {
-        ...this.config,
-        document_management_secure_enabled: val
-      }
-    });
   }
 
   private featureToggleWorkAllocation(): void {

@@ -458,10 +458,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@5.0.0-unsaved-changes-beta-r2":
-  version "5.0.0-unsaved-changes-beta-r2"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.0-unsaved-changes-beta-r2.tgz#7a431561a065371e33fe2b239f607d3f7393dd09"
-  integrity sha512-hh0lDK3jxZW16+a9B66FmRQ3stiiIJISaS4VvyG8FXq4iEOUOaEm1ZMv8O5WuYMKIXVFY6nTEtzz+VlCH/eXZg==
+"@hmcts/ccd-case-ui-toolkit@5.0.0-unsaved-changes-beta-r3":
+  version "5.0.0-unsaved-changes-beta-r3"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-5.0.0-unsaved-changes-beta-r3.tgz#2c6d86499cdaaa23fa96f92133952fa8296aae6c"
+  integrity sha512-8H5GACbZW3+enXyGuSpUlPNci9xm5LgJfSYFLKmmAjPY93/+WyEirfqnA/+xCrQhMCtVXbaeDEybV/hglg8tew==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular/cli" "^6.0.8"

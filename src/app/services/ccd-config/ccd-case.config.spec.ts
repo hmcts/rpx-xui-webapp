@@ -1,25 +1,28 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { StoreModule } from '@ngrx/store';
+import { of } from 'rxjs';
+import { EnvironmentService } from '../../../app/shared/services/environment.service';
+import { AppConfigService } from '../config/configuration.services';
 import { AppConfig } from './ccd-case.config';
 
-import {AppConfigService} from '../config/configuration.services';
-import {StoreModule} from '@ngrx/store';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { of } from 'rxjs';
-import { EnvironmentService } from 'src/app/shared/services/environment.service';
-
 class MockConfigService {
-  config;
-  caseEditorConfig = {};
-  getEditorConfiguration() {}
+  private readonly config;
+  private readonly caseEditorConfig = {};
   constructor() {
     this.config = {
-      login_url: 'test'
+      login_url: 'test',
+      document_management_url_v2: 'dummy',
+      document_management_secure_enabled: true,
+      hrs_url: 'dummy',
+      remote_hrs_url: 'dummy',
     };
   }
+  public getEditorConfiguration = () => this.config;
 }
 
-const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled']);
+const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled', 'getValue']);
 const mockEnvironmentService = jasmine.createSpyObj('mockEnvironmentService', ['get']);
 
 describe('AppConfiguration', () => {
@@ -34,12 +37,12 @@ describe('AppConfiguration', () => {
         AppConfig,
         AppConfigService,
         { provide: AppConfigService, useClass: MockConfigService },
-        FeatureToggleService,
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: EnvironmentService, useValue: mockEnvironmentService}
       ]
     });
     mockEnvironmentService.get.and.returnValue('someUrl');
+    mockFeatureToggleService.getValue.and.returnValue(of(true));
   });
 
   it('should be created', inject([AppConfig], (service: AppConfig) => {
@@ -70,6 +73,22 @@ describe('AppConfiguration', () => {
 
   it('should have getRemoteDocumentManagementUrl', inject([AppConfig], (service: AppConfig) => {
     expect(service.getRemoteDocumentManagementUrl).toBeDefined();
+  }));
+
+  it('should have getHrsUrl', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getHrsUrl).toBeDefined();
+  }));
+
+  it('should have getRemoteHrsUrl', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getRemoteHrsUrl).toBeDefined();
+  }));
+
+  it('should have getHrsUrl return value', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getHrsUrl()).toBe('dummy');
+  }));
+
+  it('should have getRemoteHrsUrl return value', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getRemoteHrsUrl()).toBe('dummy');
   }));
 
   it('should have getPostcodeLookupUrl', inject([AppConfig], (service: AppConfig) => {
@@ -106,6 +125,22 @@ describe('AppConfiguration', () => {
 
   it('should have getAnnotationApiUrl', inject([AppConfig], (service: AppConfig) => {
     expect(service.getAnnotationApiUrl()).toBeUndefined();
+  }));
+
+  it('should have getDocumentManagementUrlV2', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getDocumentManagementUrlV2).toBeDefined();
+  }));
+
+  it('should have getDocumentSecureMode', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getDocumentSecureMode).toBeDefined();
+  }));
+
+  it('should have getDocumentManagementUrlV2 return value', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getDocumentManagementUrlV2()).toBe('dummy');
+  }));
+
+  it('should have getDocumentSecureMode return value', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getDocumentSecureMode()).toBe(true);
   }));
 
 });

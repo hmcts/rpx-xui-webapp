@@ -28,8 +28,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public sortedBy: SortField;
   public pagination: PaginationParameter;
   private pTasks: Task[];
-  public selectedLocations: string[] = null;
-  public filteredLocations: string[] = null;
+  public selectedLocations: string[] = [];
   private tasksLoaded: boolean = false;
 
   private selectedLocationsSubscription: Subscription;

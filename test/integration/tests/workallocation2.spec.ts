@@ -7,7 +7,7 @@ import Request from './utils/request';
 import { setTestContext } from './utils/helper';
 
 import TaskRequestBody from './utils/wa/taskRequestBody';
-
+const workAllocationDataModels = require( '../../dataModels/workAllocation');
 
 describe('Work allocations Release 2', () => {
     const userName = 'lukesuperuserxui@mailnesia.com';
@@ -24,8 +24,6 @@ describe('Work allocations Release 2', () => {
 
 
     // tslint:disable-next-line: only-arrow-functions
-
-
     it('case officer,get locations', async function () {
         this.timeout(60000);
         await Request.withSession(caseOfficer, caseofficerPass);
@@ -37,9 +35,14 @@ describe('Work allocations Release 2', () => {
 
         const response = await Request.get(`workallocation2/location`, headers, 200);
         expect(response.status).to.equal(200);
+        expect(response.data).to.be.an('array');
+
+        const actualLocationObjKeys = Object.keys(response.data[0]);
+        const expectedLocationObjKeys = Object.keys(workAllocationDataModels.getLocation());
+        expect(actualLocationObjKeys).to.include.members(expectedLocationObjKeys);
     });
 
-    it('case officer,get caseworkers', async function () {
+    it('case officer,get caseworkers', async function() {
         this.timeout(60000);
         await Request.withSession(caseOfficer, caseofficerPass);
         const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
@@ -50,6 +53,13 @@ describe('Work allocations Release 2', () => {
 
         const response = await Request.get(`workallocation2/caseworker`, headers, 200);
         expect(response.status).to.equal(200);
+        expect(response.data).to.be.an('array');
+
+        const actual = response.data[0];
+        const expected = workAllocationDataModels.getCaseWorkerOrperson();
+        expect(actual).to.have.all.keys(Object.keys(expected));
+        expect(actual.location).to.have.all.keys(Object.keys(expected.location));
+
     });
 
     it('case officer, My tasks', async function () {
@@ -65,6 +75,10 @@ describe('Work allocations Release 2', () => {
 
         const response = await Request.post(`workallocation2/taskWithPagination`, reqBody, headers, 200);
         expect(response.status).to.equal(200);
+        const actual = response.data;
+        const expected = workAllocationDataModels.getRelease2Tasks();
+        expect(actual).to.have.all.keys(Object.keys(expected));
+
     });
 
     it('case officer, Available tasks', async function () {

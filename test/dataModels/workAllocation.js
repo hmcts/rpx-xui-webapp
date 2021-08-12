@@ -67,6 +67,17 @@ class WorkAllocationModels {
         };
     }
 
+    getRelease2Tasks(){
+        const tasks = [];
+        for(let i =0 ;i <25; i++){
+            tasks.push(this.getRelease2Task());
+        } 
+        return {
+            tasks: tasks,
+            total_records:100
+        }
+    }
+
     getLocation() {
         return {
             id: "12345",

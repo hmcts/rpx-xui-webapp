@@ -7,6 +7,7 @@ import {
     SERVICES_DOCUMENTS_API_PATH,
     SERVICES_DOCUMENTS_API_PATH_V2,
     SERVICES_EM_ANNO_API_URL,
+    SERVICES_EM_DOCASSEMBLY_API_URL,
     SERVICES_EM_HRS_API_PATH,
     SERVICES_ICP_API_URL, SERVICES_MARKUP_API_URL, SERVICES_PAYMENTS_URL
 } from './configuration/references'
@@ -90,6 +91,13 @@ export const initProxy = (app: Express) => {
         rewriteUrl: '/api',
         source: '/em-anno',
         target: getConfigValue(SERVICES_EM_ANNO_API_URL),
+    })
+
+    applyProxy(app, {
+        rewrite: true,
+        rewriteUrl: '/api',
+        source: '/doc-assembly',
+        target: getConfigValue(SERVICES_EM_DOCASSEMBLY_API_URL),
     })
 
     applyProxy(app, {

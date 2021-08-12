@@ -6,7 +6,6 @@ Feature: WA Release 1: My Tasks Task list
         Given I set MOCK with "wa_release_1" release user and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer"
 
 
-    @test
     Scenario: My Tasks columns data validation
         Given I set MOCK My tasks count 25
 
@@ -46,7 +45,7 @@ Feature: WA Release 1: My Tasks Task list
             | row | Case reference      | Case name      | Case category      | Location       | Task                     |
             | 1     | 1234-1234-1234-1234 | test case name | auto test category | London QA labs | Autotest validation task |
 
-
+@test
     Scenario: My Tasks pagination
         Given I set MOCK My tasks count 25
         Given I set MOCK request "/workallocation/taskWithPagination/" intercept with reference "taskSearchRequest"
@@ -56,25 +55,25 @@ Feature: WA Release 1: My Tasks Task list
         Then I see Task list sub navigation tabs
         Then I see My tasks page displayed
         Then I validate tasks count in page 25
-        Then I validate task list page results text displayed as "Displaying 1 to 25 of 150 results"
+        Then I validate task list page results text displayed as "Showing 1 to 25 of 150 results"
         Given I reset reference "taskSearchRequest" value to null
         When I click task list pagination link "Next" and wait for req reference "taskSearchRequest" not null
         Then I validate task search request with reference "taskSearchRequest" has pagination parameters
             | PageNumber | PageSize |
             | 2          | 25       |
-        Then I validate task list page results text displayed as "Displaying 26 to 50 of 150 results"
+        Then I validate task list page results text displayed as "Showing 26 to 50 of 150 results"
         Given I reset reference "taskSearchRequest" value to null
         When I click task list pagination link "Previous" and wait for req reference "taskSearchRequest" not null
         Then I validate task search request with reference "taskSearchRequest" has pagination parameters
             | PageNumber | PageSize |
             | 1          | 25       |
-        Then I validate task list page results text displayed as "Displaying 1 to 25 of 150 results"
+        Then I validate task list page results text displayed as "Showing 1 to 25 of 150 results"
         Given I reset reference "taskSearchRequest" value to null
         When I click task list pagination link "3" and wait for req reference "taskSearchRequest" not null
         Then I validate task search request with reference "taskSearchRequest" has pagination parameters
             | PageNumber | PageSize |
             | 3          | 25       |
-        Then I validate task list page results text displayed as "Displaying 51 to 75 of 150 results"
+        Then I validate task list page results text displayed as "Showing 51 to 75 of 150 results"
 
     Scenario: My Tasks task counts
         Given I set MOCK My tasks count 150

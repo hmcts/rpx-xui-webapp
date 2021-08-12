@@ -1,4 +1,4 @@
-@ng @ignore @test
+@ng @ignore
 Feature: WA Release 2: Allocate Role judiciary
 
     Scenario Outline: Roles and access - Judge user allocates judicial role "<Useridentifier>" - Allocate role, reserve to me

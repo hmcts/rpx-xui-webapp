@@ -1,4 +1,4 @@
-@ng @ignore @test
+@ng @ignore
 Feature: WA Release 2: Exclusions
 
     Scenario Outline: Roles and access - "<Useridentifier>" - Exclusion work flow with option "Exclude another person"

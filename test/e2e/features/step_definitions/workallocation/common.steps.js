@@ -22,7 +22,7 @@ const taskCheckYourChangesPage = require('../../pageObjects/workAllocation/taskC
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
     const taskListTable = new TaskListTable();
-
+    const waCaseListTable = new casesTable();
 
     Then('I validate task list page results text displayed as {string}', async function (pagnationResultText) {
         expect(await taskListTable.getPaginationResultText()).to.include(pagnationResultText);
@@ -144,12 +144,30 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         }
     });
 
+    When('I open Manage link for wa cases at row {int}', async function (taskAtRow) {
+        const isManageLinkOpen = await waCaseListTable.isManageLinkOpenForCaseAtPos(taskAtRow);
+        if (!isManageLinkOpen) {
+            await BrowserWaits.retryWithActionCallback(async () => {
+                await waCaseListTable.clickManageLinkForCaseAt(taskAtRow);
+                await BrowserWaits.waitForConditionAsync(async () => await waCaseListTable.isManageLinkOpenForCaseAtPos(taskAtRow), 2000);
+            });
+        }
+    });
+
     Then('I see action link {string} is present for task with Manage link open', async function(manageLinkAction){
         expect(await taskListTable.isTaskActionPresent(manageLinkAction), `Task action ${manageLinkAction} is not present`).to.be.true;
     });
 
+    Then('I see action link {string} is present for case with Manage link open', async function (manageLinkAction) {
+        expect(await waCaseListTable.isCaseActionPresent(manageLinkAction), `Case action ${manageLinkAction} is not present`).to.be.true;
+    });
+
     When('I click action link {string} on task with Manage link open', async function (manageLinkAction){
         await taskListTable.clickTaskAction(manageLinkAction);
+    });
+
+    When('I click action link {string} on case with Manage link open', async function (manageLinkAction) {
+        await waCaseListTable.clickCaseAction(manageLinkAction);
     });
 
     Then('I validate notification message banner is displayed in {string} page', async function(page){

@@ -1,4 +1,4 @@
-@ng @ignore @test
+@ng @ignore
 Feature: WA Release 2: Allocate Role Case worker - Check your answers Change link
 
 

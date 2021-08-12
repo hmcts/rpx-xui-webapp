@@ -127,11 +127,11 @@
     "rxjs-compat": "^6.4.0",
     "shortid": "^2.2.14",
     "smoothscroll-polyfill": "^0.4.3",
-    "striptags": "^3.1.1",
+    "striptags": "^3.2.0",
     "terser-webpack-plugin": "^2.3.5",
     "tslib": "^1.9.0",
     "web-animations-js": "^2.3.2",
-    "xlsx": "^0.15.4",
+    "xlsx": "^0.17.0",
     "zone.js": "~0.11.3"
   },
   "devDependencies": {
@@ -204,7 +204,7 @@
     "ts-node": "~7.0.0",
     "tslint": "~5.11.0",
     "typescript": "~3.2.2",
-    "underscore": "^1.9.1",
+    "underscore": "^1.13.1",
     "uuid": "^8.3.1",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10",
@@ -233,12 +233,10 @@
     "**/**/hosted-git-info": "^4.0.2",
     "**/**/glob-parent": "^5.1.1",
     "**/**/normalize-url": "^6.0.1",
-    "**/**/tar": "^6.1.6",
     "**/**/path-parse": "^1.0.7",
-    "**/**/underscore": "^1.13.1"
-
-
-
+    "**/**/underscore": "^1.13.1",
+    "**/**/striptags": "^3.2.0",
+    "**/**/xlsx": "^0.17.0"
 
 
   }

@@ -1,4 +1,4 @@
-@ng @wa2 @wa @ignore
+@ng @wa2 @wa @test
 Feature: WA Release 2: My work - My tasks - Task assignment
 
     Background: Mock and browser setup

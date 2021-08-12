@@ -1,4 +1,4 @@
-@ng  @test
+@ng 
 Feature: WA Release 2: My work -  Available tasks - pagination sorting
 
     Background: Mock and browser setup

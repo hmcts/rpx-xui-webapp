@@ -125,11 +125,10 @@ class WorkAllocationModels {
         return Object.values(allowedActions);
     }
 
-    getRelease2CaseActions(permissions, view, assignState) {
+    getRelease2CaseActions(roles, view) {
         const actions = [];
         let actionsView = {};
         view = view.toLowerCase();
-        assignState = assignState ? assignState.toLowerCase() : '';
         if (caseActionsMatrix[view] === undefined) {
             throw new Error(`View ${view} is not modeled in Mock data model. test requires update`);
         }
@@ -138,14 +137,16 @@ class WorkAllocationModels {
         }
 
         let allowedActions = {};
-        for (let i = 0; i < permissions.length; i++) {
-            if (actionsView[permissions[i]] === undefined) {
-                throw new Error(`Permission ${permissions[i]} is not modeled in Mock data model. test requires update`);
+        for (let i = 0; i < roles.length; i++) {
+            if (roles[i] === ''){
+                continue;
+            } else if (actionsView[roles[i]] === undefined) {
+                throw new Error(`Role ${roles[i]} is not modeled in Mock data model. test requires update`);
             }
-            let permissionActions = actionsView[permissions[i]];
+            let roleActions = actionsView[roles[i]];
 
-            for (let i = 0; i < permissionActions.length; i++) {
-                allowedActions[permissionActions[i].id] = permissionActions[i];
+            for (let i = 0; i < roles.length; i++) {
+                allowedActions[roles[i].id] = roleActions[i];
             }
         }
 
@@ -169,6 +170,11 @@ const ACTIONS = {
     Assign: { id: 'assign', title: 'Assign task' },
     MarkAsDone: { id: 'mark-as-done', title: 'Mark as done' },
     Cancel: { id: 'cancel', title: 'Cancel task' },
+}
+
+const CASE_ACTIONS = {
+    ReAllocate: { id: 'allocate-role', title: 'Reallocate' },
+    RemoveAllocation: { id: 'remove', title: 'Remove allocatiomn' },
 }
 const taskActionsMatrix = {
     mytasks: {
@@ -206,11 +212,7 @@ const taskActionsMatrix = {
 
 const caseActionsMatrix = {
     mycases: {
-        Read: [],
-        Refer: [],
-        Manage: [],
-        Execute: [],
-        Cancel: []
+        "case-allocator": [CASE_ACTIONS.ReAllocate, CASE_ACTIONS.RemoveAllocation],
     }
 }
 

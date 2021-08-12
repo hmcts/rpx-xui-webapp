@@ -178,11 +178,11 @@ class WorkAllocationMockData {
         return task;
     }
 
-    getRelease2CaseWithPermission(permissions, view, assignState) {
+    getRelease2CaseWithPermission(roles, view) {
         view = view.replace(" ", "");
         const waCase = WorkAllocationDataModels.getRelease2Case();
-        waCase.permissions = permissions;
-        waCase.actions = WorkAllocationDataModels.getRelease2CaseActions(permissions, view, assignState);
+        waCase.permissions = roles;
+        waCase.actions = WorkAllocationDataModels.getRelease2CaseActions(roles, view);
 
         return waCase;
     }

@@ -8695,11 +8695,11 @@ ngx-chips@1.9.8:
     tslib "^1.9.0"
 
 ngx-logger@^4.0.4:
-  version "4.3.3"
-  resolved "https://registry.yarnpkg.com/ngx-logger/-/ngx-logger-4.3.3.tgz#29432fa27a8c935bfc8e21dcaf4488572b413f5b"
-  integrity sha512-LvHBt0OWIyjwVroecgxmZVDH+9lCYYd3gSiup9wNgtK0a3f+D+h2LCb8p9RI16wqCVFqYe/QChqJA8PGJzZTcw==
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/ngx-logger/-/ngx-logger-4.1.1.tgz#1bf0a32321d46c5b4fde92341864020bc502cd5b"
+  integrity sha512-zWAsH1MbqD8CNwMOJVM2IRH4mKRCrXVcsYfCMtsHYr1tp5m91a76HfEdkivx9/dYvlaL9CnSn9KLaTgWctCpTg==
   dependencies:
-    tslib "^2.0.0"
+    tslib "^1.9.0"
     vlq "^1.0.0"
 
 ngx-md@^7.0.0:

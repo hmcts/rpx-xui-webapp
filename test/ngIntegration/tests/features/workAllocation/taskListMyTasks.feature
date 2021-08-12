@@ -56,25 +56,25 @@ Feature: WA Release 1: My Tasks Task list
         Then I see Task list sub navigation tabs
         Then I see My tasks page displayed
         Then I validate tasks count in page 25
-        Then I validate task list page results text displayed as "Displaying 1 - 25 out of 150 tasks"
+        Then I validate task list page results text displayed as "Displaying 1 to 25 of 150 results"
         Given I reset reference "taskSearchRequest" value to null
         When I click task list pagination link "Next" and wait for req reference "taskSearchRequest" not null
         Then I validate task search request with reference "taskSearchRequest" has pagination parameters
             | PageNumber | PageSize |
             | 2          | 25       |
-        Then I validate task list page results text displayed as "Displaying 26 - 50 out of 150 tasks"
+        Then I validate task list page results text displayed as "Displaying 26 to 50 of 150 results"
         Given I reset reference "taskSearchRequest" value to null
         When I click task list pagination link "Previous" and wait for req reference "taskSearchRequest" not null
         Then I validate task search request with reference "taskSearchRequest" has pagination parameters
             | PageNumber | PageSize |
             | 1          | 25       |
-        Then I validate task list page results text displayed as "Displaying 1 - 25 out of 150 tasks"
+        Then I validate task list page results text displayed as "Displaying 1 to 25 of 150 results"
         Given I reset reference "taskSearchRequest" value to null
         When I click task list pagination link "3" and wait for req reference "taskSearchRequest" not null
         Then I validate task search request with reference "taskSearchRequest" has pagination parameters
             | PageNumber | PageSize |
             | 3          | 25       |
-        Then I validate task list page results text displayed as "Displaying 51 - 75 out of 150 tasks"
+        Then I validate task list page results text displayed as "Displaying 51 to 75 of 150 results"
 
     Scenario: My Tasks task counts
         Given I set MOCK My tasks count 150

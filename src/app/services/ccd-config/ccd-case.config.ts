@@ -79,14 +79,6 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.remote_document_management_url;
   }
 
-  public getHrsUrl() {
-    return this.config.hrs_url;
-  }
-
-  public getRemoteHrsUrl() {
-    return this.config.remote_hrs_url;
-  }
-
   public getPostcodeLookupUrl() {
     return this.config.postcode_lookup_url;
   }
@@ -170,5 +162,13 @@ export class AppConfig extends AbstractAppConfig {
 
   public getWorkAllocationApiUrl(): string {
     return this.workallocationUrl;
+  }
+
+  public getHrsUrl(): string {
+    return this.config.hrs_url;
+  }
+
+  public getRemoteHrsUrl(): string {
+    return this.config.remote_hrs_url;
   }
 }

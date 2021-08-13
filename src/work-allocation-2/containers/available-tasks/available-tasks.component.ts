@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
-import { InvokedTaskAction, Task } from '../../..//work-allocation-2/models/tasks';
-import { InfoMessage, InfoMessageType, TaskActionIds } from '../../../work-allocation-2/enums';
-import { SearchTaskRequest } from '../../../work-allocation-2/models/dtos';
-import { handleFatalErrors, REDIRECTS } from '../../../work-allocation-2/utils';
 
 import { UserInfo } from '../../../app/models/user-details.model';
 import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
-import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
+import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
 import { FieldConfig } from '../../models/common';
+import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
+import { InvokedTaskAction, Task } from '../../models/tasks';
+import { handleFatalErrors, REDIRECTS } from '../../utils';
+import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
 @Component({
   selector: 'exui-available-tasks',
@@ -42,7 +42,7 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
       const isJudge = userInfo.roles.some(role => ListConstants.JUDGE_ROLES.includes(role));
       return {
         search_parameters: [
-          {key: 'location', operator: 'IN', values: []},
+          this.getLocationParameter(),
           {key: 'state', operator: 'IN', values: ['unassigned']}
         ],
         sorting_parameters: [this.getSortParameter()],
@@ -50,6 +50,10 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
         pagination_parameters: this.getPaginationParameter()
       };
     }
+  }
+
+  private getLocationParameter(): SearchTaskParameter {
+    return { key: 'location', operator: 'IN', values: this.selectedLocations };
   }
 
   /**

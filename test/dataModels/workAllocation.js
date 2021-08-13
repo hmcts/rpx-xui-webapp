@@ -78,6 +78,17 @@ class WorkAllocationModels {
         }
     }
 
+    getRelease2Cases() {
+        const cases = [];
+        for (let i = 0; i < 25; i++) {
+            cases.push(this.getRelease2Task());
+        }
+        return {
+            cases: cases,
+            total_records: 100
+        }
+    }
+
     getLocation() {
         return {
             id: "12345",

@@ -25,10 +25,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         }
     });
 
-    When('I click My work sub navigation tab {string}', async function(subNavTab){
-        await myWorkPage.clickSubNavigationTab(subNavTab);
-    });
-
     Then('I validate I am on My work page', async function(){
         expect(await myWorkPage.amOnPage()).to.be.true
     });

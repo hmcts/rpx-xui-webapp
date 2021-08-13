@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
@@ -19,7 +19,7 @@ import * as fromFeature from '../../../store';
   selector: 'exui-allocate-role-check-answers',
   templateUrl: './allocate-role-check-answers.component.html'
 })
-export class AllocateRoleCheckAnswersComponent {
+export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
 
   @Input() public navEvent: AllocateRoleNavigation;
 
@@ -33,6 +33,9 @@ export class AllocateRoleCheckAnswersComponent {
   public allocateTo: AllocateTo;
 
   constructor(private readonly store: Store<fromFeature.State>) {
+  }
+
+  public ngOnInit(): void {
     this.storeSubscription = this.store.pipe(select(fromFeature.getAllocateRoleState))
       .subscribe(allocateRole => this.setAnswersFromAllocateRoleStateStore(allocateRole));
   }
@@ -54,7 +57,9 @@ export class AllocateRoleCheckAnswersComponent {
     if (this.typeOfRole === TypeOfRole.CASE_MANAGER) {
       this.caption = RoleAllocationCaptionText.LegalOpsAllocate;
     } else {
-      this.caption = `Allocate a ${this.typeOfRole.toLowerCase()}`;
+      if (this.typeOfRole) {
+        this.caption = `Allocate a ${this.typeOfRole.toLowerCase()}`;
+      }
     }
     this.answers = [];
     this.answers.push({ label: AnswerLabelText.TypeOfRole, value: allocateRoleStateData.typeOfRole, action: AllocateRoleState.CHOOSE_ROLE });
@@ -90,5 +95,11 @@ export class AllocateRoleCheckAnswersComponent {
 
   public onNavigate(action) {
     this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(action));
+  }
+
+  public ngOnDestroy(): void {
+    if (this.storeSubscription) {
+      this.storeSubscription.unsubscribe();
+    }
   }
 }

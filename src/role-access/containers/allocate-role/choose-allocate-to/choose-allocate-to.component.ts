@@ -42,7 +42,9 @@ export class ChooseAllocateToComponent implements OnInit {
         if (this.typeOfRole === TypeOfRole.CASE_MANAGER) {
           this.caption = RoleAllocationCaptionText.LegalOpsAllocate;
         } else {
-          this.caption = `Allocate a ${this.typeOfRole.toLowerCase()}`;
+          if (this.typeOfRole) {
+            this.caption = `Allocate a ${this.typeOfRole.toLowerCase()}`;
+          }
         }
       }
     );

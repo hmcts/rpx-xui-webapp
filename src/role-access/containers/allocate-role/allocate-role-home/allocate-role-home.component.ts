@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { AppUtils } from '../../../../app/app-utils';
@@ -59,7 +59,12 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
 
   constructor(private readonly appStore: Store<fromAppStore.State>,
               private readonly store: Store<fromFeature.State>,
-              private readonly router: Router) { }
+              private readonly route: ActivatedRoute,
+              private readonly router: Router) {
+    this.caseId = this.route.snapshot.queryParams && this.route.snapshot.queryParams.caseId ?
+      this.route.snapshot.queryParams.caseId : '';
+    this.store.dispatch(new fromFeature.AllocateRoleSetCaseId(this.caseId));
+  }
 
   public ngOnInit(): void {
     this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
@@ -71,7 +76,6 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
       allocateRoleStateData => {
         this.navigationCurrentState = allocateRoleStateData.state;
         this.allocateTo = allocateRoleStateData.allocateTo;
-        this.caseId = allocateRoleStateData.caseId;
       }
     );
   }

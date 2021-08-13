@@ -18,7 +18,7 @@ describe('Exclusion Reducer', () => {
     describe('Reset action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.initialState;
-        const action = new fromActions.Reset();
+        const action = new fromActions.ExclusionReset();
         const exclusionState = fromReducer.exclusionReducer(initialState, action);
         expect(exclusionState).toEqual(initialState);
       });

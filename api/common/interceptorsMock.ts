@@ -33,23 +33,20 @@ export function successInterceptor(response) {
 }
 
 export function errorInterceptor(error) {
-  error.config.metadata.endTime = new Date();
-  error.duration = error.config.metadata.endTime - error.config.metadata.startTime;
-
   const logger = log4jui.getLogger('MOCK: return');
 
   const url = shorten(error.config.url, getConfigValue(MAX_LOG_LINE));
 
-  let data = valueOrNull(error, 'response.data.details');
+  let data = valueOrNull(error, 'response.data');
   if (!data) {
     data = valueOrNull(error, 'response.status') ? JSON.stringify(error.response.data, null, 2) : null;
     if (!data) {
       data = error;
     }
-    logger.error(`Error on ${error.config.method.toUpperCase()} to ${url} in (${error.duration}) - ${error} \n
+    logger.error(`Error on ${error.config.method.toUpperCase()} to ${url} - ${error} \n
         ${exceptionFormatter(data, exceptionOptions)}`);
   } else {
-    logger.error(`Error on ${error.config.method.toUpperCase()} to ${url} in (${error.duration}) - ${error} \n
+    logger.error(`Error on ${error.config.method.toUpperCase()} to ${url} - ${error} \n
         ${JSON.stringify(data)}`);
   }
 

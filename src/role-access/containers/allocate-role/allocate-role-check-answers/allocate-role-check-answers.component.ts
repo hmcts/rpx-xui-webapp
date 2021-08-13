@@ -62,13 +62,21 @@ export class AllocateRoleCheckAnswersComponent implements OnInit {
     this.answers = [];
     this.answers.push({ label: AnswerLabelText.TypeOfRole, value: allocateRoleStateData.typeOfRole, action: AllocateRoleState.CHOOSE_ROLE });
     this.answers.push({ label: AnswerLabelText.WhoBeAllocatedTo, value: allocateRoleStateData.allocateTo, action: AllocateRoleState.CHOOSE_ALLOCATE_TO });
+    this.setPersonDetails(allocateRoleStateData);
+    this.setDurationOfRole(allocateRoleStateData);
+  }
+
+  private setPersonDetails(allocateRoleStateData: AllocateRoleStateData): void {
     let personDetails = '';
     if (allocateRoleStateData.person && allocateRoleStateData.person.email) {
       personDetails += `${allocateRoleStateData.person.name}\n${allocateRoleStateData.person.email}`;
     }
     if (allocateRoleStateData.allocateTo === AllocateTo.ALLOCATE_TO_ANOTHER_PERSON) {
-      this.answers.push({ label: AnswerLabelText.Person, value: personDetails, action: AllocateRoleState.SEARCH_PERSON });
+      this.answers.push({label: AnswerLabelText.Person, value: personDetails, action: AllocateRoleState.SEARCH_PERSON});
     }
+  }
+
+  private setDurationOfRole(allocateRoleStateData: AllocateRoleStateData): void {
     let durationOfRole;
     const startDate = moment.parseZone(allocateRoleStateData.period.startDate).format('DD MMMM YYYY');
     let endDate;
@@ -80,7 +88,7 @@ export class AllocateRoleCheckAnswersComponent implements OnInit {
       endDate = moment.parseZone(allocateRoleStateData.period.endDate).format('DD MMMM YYYY');
       durationOfRole = `${startDate} to ${endDate}`;
     }
-    this.answers.push({ label: AnswerLabelText.DurationOfRole, value: durationOfRole, action: AllocateRoleState.CHOOSE_DURATION });
+    this.answers.push({label: AnswerLabelText.DurationOfRole, value: durationOfRole, action: AllocateRoleState.CHOOSE_DURATION});
   }
 
   public onNavigate(action) {

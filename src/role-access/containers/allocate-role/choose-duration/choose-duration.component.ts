@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { select, Store } from '@ngrx/store';
 import { AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState, AllocateRoleStateData, DurationOfRole, Period } from '../../../models';
 import * as fromFeature from '../../../store';
+import * as moment from 'moment';
 
 @Component({
   selector: 'exui-choose-duration',
@@ -33,6 +34,7 @@ export class ChooseDurationComponent implements OnInit {
   public isStartDateError: boolean;
   public startDateErrorMessage: string;
   public endDateErrorMessage: string;
+  public dateFormat = 'YYYY-MM-DD';
 
   constructor(private readonly store: Store<fromFeature.State>,
               private readonly builder: FormBuilder) {
@@ -124,7 +126,7 @@ export class ChooseDurationComponent implements OnInit {
         }
       }
       case DurationOfRole.ANOTHER_PERIOD: {
-        if (this.datesMissing() && this.formGroup.valid && this.startDateNotInPast() && this.startDateLessThanEndDate()) {
+        if (this.isDateValid() && this.datesMissing() && this.formGroup.valid && this.startDateNotInPast() && this.startDateLessThanEndDate()) {
           return {
             startDate: this.getStartDate(),
             endDate: this.getEndDate(),
@@ -170,6 +172,27 @@ export class ChooseDurationComponent implements OnInit {
       dateMissing = false;
     }
     return dateMissing;
+  }
+
+  public isDateValid() {
+    const startDate = `${this.yearStartDate.value}-${this.formatString(this.monthStartDate.value)}-${this.formatString(this.dayStartDate.value)}`;
+    const isStartDateValid = moment(startDate, this.dateFormat, true).isValid();
+    if (!isStartDateValid) {
+      this.startDateErrorMessage = 'Invalid Start date';
+      this.isStartDateError = true;
+    }
+
+    const endDate = `${this.yearEndDate.value}-${this.formatString(this.monthEndDate.value)}-${this.formatString(this.dayEndDate.value)}`;
+    const isEndDateValid = moment(endDate, this.dateFormat, true).isValid();
+    if (!isEndDateValid) {
+      this.endDateErrorMessage = 'Invalid End date';
+      this.isEndDateError = true;
+    }
+    return isStartDateValid && isEndDateValid;
+  }
+
+  private formatString(month: number) {
+    return month > 10 ? month.toString() : `0${month}`;
   }
 
   public getTodayDate(): Date {

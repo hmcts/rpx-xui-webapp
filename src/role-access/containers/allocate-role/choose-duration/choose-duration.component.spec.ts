@@ -100,4 +100,129 @@ describe('ChooseDurationComponent', () => {
     expect(currentDate.getDate()).toEqual(new Date().getDate());
     expect(currentDate.getMonth()).toEqual(new Date().getMonth());
   });
+
+  it('invalid StartDate', () => {
+    component.yearStartDate.setValue(2021);
+    component.monthStartDate.setValue(2);
+    component.dayStartDate.setValue(30);
+
+    component.yearEndDate.setValue(2020);
+    component.monthEndDate.setValue(2);
+    component.dayEndDate.setValue(29);
+    const startDateValid = component.isDateValid();
+    expect(component.startDateErrorMessage).toEqual('Invalid Start date');
+    expect(startDateValid).toBeFalsy();
+  });
+
+  it('valid date', () => {
+    component.yearStartDate.setValue(2020);
+    component.monthStartDate.setValue(2);
+    component.dayStartDate.setValue(29);
+
+    component.yearEndDate.setValue(2020);
+    component.monthEndDate.setValue(2);
+    component.dayEndDate.setValue(29);
+    const startDateValid = component.isDateValid();
+    expect(startDateValid).toBeTruthy();
+  });
+  it('isStartDateValid to be falsy', () => {
+    component.yearStartDate.setValue(2020);
+    component.monthStartDate.setValue(12);
+    component.dayStartDate.setValue(32);
+
+    component.yearEndDate.setValue(2020);
+    component.monthEndDate.setValue(2);
+    component.dayEndDate.setValue(29);
+    const startDateValid = component.isDateValid();
+    expect(startDateValid).toBeFalsy();
+  });
+  it('isEndDateValid to be false', () => {
+    component.yearStartDate.setValue(2020);
+    component.monthStartDate.setValue(2);
+    component.dayStartDate.setValue(29);
+
+    component.yearEndDate.setValue(2020);
+    component.monthEndDate.setValue(2);
+    component.dayEndDate.setValue(30);
+    const startDateValid = component.isDateValid();
+    expect(startDateValid).toBeFalsy();
+  });
+  it('isEndDateValid to be false', () => {
+    component.yearStartDate.setValue(2020);
+    component.monthStartDate.setValue(2);
+    component.dayStartDate.setValue(29);
+
+    component.yearEndDate.setValue(2022);
+    component.monthEndDate.setValue(12);
+    component.dayEndDate.setValue(32);
+    const startDateValid = component.isDateValid();
+    expect(startDateValid).toBeFalsy();
+  });
+  it('isEndDateValid to be true', () => {
+    component.yearStartDate.setValue(2020);
+    component.monthStartDate.setValue(2);
+    component.dayStartDate.setValue(29);
+
+    component.yearEndDate.setValue(2020);
+    component.monthEndDate.setValue(2);
+    component.dayEndDate.setValue(29);
+    const startDateValid = component.isDateValid();
+    expect(startDateValid).toBeTruthy();
+  });
+  it('isStartDateValid to be falsy with invalid month', () => {
+    component.yearStartDate.setValue(2020);
+    component.monthStartDate.setValue(13);
+    component.dayStartDate.setValue(10);
+
+    component.yearEndDate.setValue(2020);
+    component.monthEndDate.setValue(2);
+    component.dayEndDate.setValue(29);
+    const startDateValid = component.isDateValid();
+    expect(startDateValid).toBeFalsy();
+  });
+  it('isEndDateValid to be falsy with invalid month', () => {
+    component.yearStartDate.setValue(2020);
+    component.monthStartDate.setValue(1);
+    component.dayStartDate.setValue(10);
+
+    component.yearEndDate.setValue(2020);
+    component.monthEndDate.setValue(13);
+    component.dayEndDate.setValue(29);
+    const startDateValid = component.isDateValid();
+    expect(startDateValid).toBeFalsy();
+  });
+  it('isStartDateValid to be falsy with invalid year', () => {
+    component.yearStartDate.setValue(20201);
+    component.monthStartDate.setValue(12);
+    component.dayStartDate.setValue(10);
+
+    component.yearEndDate.setValue(2020);
+    component.monthEndDate.setValue(2);
+    component.dayEndDate.setValue(10);
+    const startDateValid = component.isDateValid();
+    expect(startDateValid).toBeFalsy();
+  });
+  it('isEndDateValid to be falsy with invalid year', () => {
+    component.yearStartDate.setValue(2020);
+    component.monthStartDate.setValue(1);
+    component.dayStartDate.setValue(10);
+
+    component.yearEndDate.setValue(20201);
+    component.monthEndDate.setValue(12);
+    component.dayEndDate.setValue(10);
+    const startDateValid = component.isDateValid();
+    expect(startDateValid).toBeFalsy();
+  });
+  it('isDateValid to be falsy with invalid start and end date', () => {
+    component.yearStartDate.setValue(2020);
+    component.monthStartDate.setValue(13);
+    component.dayStartDate.setValue(10);
+
+    component.yearEndDate.setValue(20201);
+    component.monthEndDate.setValue(13);
+    component.dayEndDate.setValue(10);
+    const startDateValid = component.isDateValid();
+    expect(startDateValid).toBeFalsy();
+  });
+
 });

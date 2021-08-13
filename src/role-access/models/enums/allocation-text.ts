@@ -23,5 +23,5 @@ export enum RoleAllocationRadioText {
 
 export enum RoleAllocationMessageText {
   Delete = 'You\'ve deleted a role allocation',
-  Add = 'You\'ve added a role allocation',
+  Add = 'You\'ve allocated a role',
 }

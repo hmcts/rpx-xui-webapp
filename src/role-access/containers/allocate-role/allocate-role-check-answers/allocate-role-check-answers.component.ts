@@ -43,7 +43,7 @@ export class AllocateRoleCheckAnswersComponent implements OnInit {
   public navigationHandler(navEvent: AllocateRoleNavigationEvent) {
     switch (navEvent) {
       case AllocateRoleNavigationEvent.CONFIRM:
-        this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CONFIRM_ALLOCATION));
+        this.store.dispatch(new fromFeature.ConfirmAllocation(this.allocateRoleStateData));
         break;
       default:
         throw new Error('Invalid option');

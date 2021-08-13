@@ -52,16 +52,8 @@ export function exclusionReducer(currentState = initialState, action: fromAction
         ...currentState,
         state: action.payload,
         person: action.person
-      }
+      };
     }
-    case ExclusionActionTypes.CONFIRM_EXCLUSION:
-      return {
-        ...currentState
-      }
-    case ExclusionActionTypes.CONFIRM_EXCLUSION_FAILURE:
-      return {
-        ...currentState
-      }
     default: {
       return {
         ...currentState

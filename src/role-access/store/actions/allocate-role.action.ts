@@ -1,6 +1,6 @@
 import { Person } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
 import { Action } from '@ngrx/store';
-import { AllocateRoleState, AllocateTo, DurationOfRole, Period, TypeOfRole } from '../../models';
+import { AllocateRoleState, AllocateRoleStateData, AllocateTo, DurationOfRole, Period, TypeOfRole } from '../../models';
 
 export enum AllocateRoleActionTypes {
   CHANGE_NAVIGATION = '[ALLOCATE ROLE] Change Navigation',
@@ -8,12 +8,12 @@ export enum AllocateRoleActionTypes {
   CHOOSE_ROLE_AND_GO = '[ALLOCATE ROLE] Choose A Role And Go',
   CHOOSE_ALLOCATE_TO_AND_GO = '[ALLOCATE ROLE] Choose Allocate To And Go',
   CHOOSE_PERSON_AND_GO = '[ALLOCATE ROLE] Choose Person And Go',
-  CHOOSE_DURATION_AND_GO = '[CHOOSE DURATION] Choose Duration Go',
+  CHOOSE_DURATION_AND_GO = '[ALLOCATE ROLE] Choose Duration And Go',
+  CONFIRM_ALLOCATION = '[ALLOCATE ROLE] Confirm Allocation',
 }
 
 export class ChooseDurationAndGo implements Action {
   public readonly type = AllocateRoleActionTypes.CHOOSE_DURATION_AND_GO;
-
   constructor(public payload: {durationOfRole: DurationOfRole, period: Period, allocateRoleState: AllocateRoleState}) {}
 }
 
@@ -23,14 +23,12 @@ export class AllocateRoleReset implements Action {
 
 export class AllocateRoleChangeNavigation implements Action {
   public readonly type = AllocateRoleActionTypes.CHANGE_NAVIGATION;
-
   constructor(public payload: AllocateRoleState) {
   }
 }
 
 export class ChooseRoleAndGo implements Action {
   public readonly type = AllocateRoleActionTypes.CHOOSE_ROLE_AND_GO;
-
   constructor(public payload: { typeOfRole: TypeOfRole, allocateRoleState: AllocateRoleState }) {
   }
 }
@@ -46,7 +44,13 @@ export class ChoosePersonAndGo implements Action {
   public readonly type = AllocateRoleActionTypes.CHOOSE_PERSON_AND_GO;
 
   constructor(public payload: { person: Person, allocateRoleState: AllocateRoleState }) {
+  }
+}
 
+export class ConfirmAllocation implements Action {
+  public readonly type = AllocateRoleActionTypes.CONFIRM_ALLOCATION;
+
+  constructor(public payload: AllocateRoleStateData ) {
   }
 }
 

@@ -4,56 +4,43 @@ import { Action } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import * as routeAction from '../../../app/store/index';
-import { InfoMessageType } from '../../../work-allocation-2/enums';
-import { ExcludeOption, RoleAccessHttpError } from '../../models';
-import { ExclusionMessageText } from '../../models/enums';
+import { RoleAccessHttpError } from '../../models';
+import { RoleAllocationMessageText } from '../../models/enums/allocation-text';
 import { REDIRECTS } from '../../models/enums/redirect-urls';
-import { RoleExclusionsService } from '../../services';
-import { ConfirmExclusionAction, ExclusionActionTypes } from '../actions';
+import { AllocateRoleService } from '../../services/allocate-role.service';
+import { AllocateRoleActionTypes, ConfirmAllocation } from '../actions';
 
 @Injectable()
-export class ExclusionEffects {
+export class AllocateRoleEffects {
   private payload: any;
 
   constructor(
     private actions$: Actions,
-    private roleExclusionsService: RoleExclusionsService
+    private allocateRoleService: AllocateRoleService
   ) {
   }
 
-  @Effect() public confirmExclusion$ = this.actions$
+  @Effect() public confirmAllocation$ = this.actions$
     .pipe(
-      ofType<ConfirmExclusionAction>(ExclusionActionTypes.CONFIRM_EXCLUSION),
+      ofType<ConfirmAllocation>(AllocateRoleActionTypes.CONFIRM_ALLOCATION),
       mergeMap(
-        (data) => this.roleExclusionsService.confirmExclusion(data.payload)
+        (data) => this.allocateRoleService.confirmAllocation(data.payload)
           .pipe(
             map(() => {
-              if (data.payload.exclusionOption === ExcludeOption.EXCLUDE_ME) {
-                return new routeAction.Go({
-                  path: [`/work/my-work/list`],
-                  extras: {
-                    state: {
-                      showMessage: true,
-                      message: { type: InfoMessageType.SUCCESS, message: ExclusionMessageText.ExcludeMe }
-                    }
-                  }
-                });
-              }
-              // exclude another person
               return new routeAction.CreateCaseGo({
                 path: [`/cases/case-details/${data.payload.caseId}/roles-and-access`],
                 caseId: data.payload.caseId,
                 extras: {
                   state: {
                     showMessage: true,
-                    messageText: ExclusionMessageText.ExcludeAnother
+                    messageText: RoleAllocationMessageText.Add
                   }
                 }
               });
             }),
             catchError(error => {
-              return ExclusionEffects.handleError(error, ExclusionActionTypes.CONFIRM_EXCLUSION);
-            }
+                return AllocateRoleEffects.handleError(error, AllocateRoleActionTypes.CONFIRM_ALLOCATION);
+              }
             )
           )
       )

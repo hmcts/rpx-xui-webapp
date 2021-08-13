@@ -13,8 +13,7 @@ const exceptionOptions = {
 export function requestInterceptor(request) {
   const logger = log4jui.getLogger('MOCK: outgoing');
 
-  const url = shorten(request.url, getConfigValue(MAX_LOG_LINE));
-  logger.info(`${request.method.toUpperCase()} to ${url}`);
+  logger.info(`${request.config.method.toUpperCase()} to ${request.config.url}`);
   //add timings to requests
   request.metadata = {startTime: new Date()};
 

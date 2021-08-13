@@ -22,7 +22,7 @@ import {
 
 import { CaseRole } from './interfaces/caseRole';
 import { Caseworker, Judicialworker } from './interfaces/common';
-import { handleGetRolesByCaseId } from './roleService';
+import { handleGetRolesByCaseId, handleShowAllocatorLinkByCaseId } from './roleService';
 import * as roleServiceMock from './roleService.mock';
 import * as taskServiceMock from './taskService.mock';
 import {
@@ -323,5 +323,14 @@ export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next
   } catch (e) {
     next(e);
   }
+}
 
+export async function showAllocateRoleLink(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
+  const caseId = req.params.caseId;
+  try {
+    const result: boolean = handleShowAllocatorLinkByCaseId(caseId, req);
+    return res.send(result).status(200);
+  } catch (e) {
+    next(e);
+  }
 }

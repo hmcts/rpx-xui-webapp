@@ -16,6 +16,7 @@ import { LocationInfo } from '../../../app/store/reducers/app-config.reducer';
 export class RolesAndAccessContainerComponent implements OnInit {
   public roles: CaseRole[] = [];
   public caseDetails: CaseView;
+  public showAllocateRoleLink: boolean = false;
   public locationInfo$: Observable<LocationInfo>;
 
   constructor(private readonly route: ActivatedRoute, private readonly store: Store<fromCaseList.State>) {
@@ -24,6 +25,7 @@ export class RolesAndAccessContainerComponent implements OnInit {
   public ngOnInit(): void {
     this.caseDetails = this.route.snapshot.data.case as CaseView;
     this.roles = this.route.snapshot.data.roles as CaseRole[];
+    this.showAllocateRoleLink = this.route.snapshot.data.showAllocateRoleLink;
     this.locationInfo$ = this.store.pipe(
       select(fromRoot.getLocationInfo),
       map((locations: LocationInfo[]) => locations[0])

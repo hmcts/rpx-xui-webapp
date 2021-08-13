@@ -8,6 +8,7 @@ import { LocationInfo } from 'src/app/store/reducers/app-config.reducer';
   templateUrl: './roles-and-access.component.html'
 })
 export class RolesAndAccessComponent {
+  @Input() public showAllocateRoleLink: boolean = false;
   @Input() public caseDetails: CaseView;
   @Input() public locationInfo: LocationInfo;
   @Input() public roles: CaseRole[] = [];

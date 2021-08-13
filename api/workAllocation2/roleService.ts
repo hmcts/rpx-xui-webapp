@@ -3,6 +3,7 @@ import { httpMock } from '../common/httpMock';
 import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
+import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { CaseRole } from './interfaces/caseRole';
 
 const logger: JUILogger = log4jui.getLogger('role-service');
@@ -11,4 +12,16 @@ export async function handleGetRolesByCaseId(path: string, req: EnhancedRequest)
   logger.info('handle get method', path);
   const headers = setHeaders(req);
   return await httpMock.get<CaseRole>(path, {headers});
+}
+
+export function handleShowAllocatorLinkByCaseId(caseId: string, req: EnhancedRequest): boolean {
+  logger.info('handle show allocator link', caseId);
+  const roleAssignments = req.session.roleAssignmentResponse as RoleAssignment[];
+  if (roleAssignments && Array.isArray(roleAssignments)) {
+    const canShowAllocateRoleLink = roleAssignments.find(roleAssignment => {
+      return roleAssignment.attributes.caseId === caseId;
+    });
+    return !!canShowAllocateRoleLink;
+  }
+  return false;
 }

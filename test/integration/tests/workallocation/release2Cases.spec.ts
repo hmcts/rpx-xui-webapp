@@ -41,7 +41,10 @@ describe('Work allocation Release 2:  Cases', () => {
 
         const expectedCases = workAllocationDataModels.getRelease2Cases();
         expect(response.data).to.have.all.keys(Object.keys(expectedCases));
-        expect(response.data.cases[0]).to.have.all.keys(Object.keys(expectedCases.cases[0]));
+        if (response.data.cases.length > 0){
+            expect(response.data.cases[0]).to.have.all.keys(Object.keys(expectedCases.cases[0]));
+
+        }
 
     });
 

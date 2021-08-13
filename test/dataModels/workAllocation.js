@@ -52,18 +52,17 @@ class WorkAllocationModels {
         return {
             "id": v4(),
             "task_title": "Review FTPA application",
-            "startDate": "2021-05-12T16:00:00.000+0000",
-            "endDate": "2021-05-12T16:00:00.000+0000",
             "location_name": "Glasgow",
-            "location": "765320",
             "case_id": "1620409659381330",
             "case_category": "Protection",
             "case_name": "Jo Fly " + Math.floor((Math.random() * 100) + 1),
-            "case_role": "Lead Judge",
-            "jurisdiction": "Immigration and Asylum",
             "permissions": [],
             "actions": [],
-            "assignee": v4()
+            "assignee": v4(),
+            "startDate": "2021-02-16T18:58:48.987+0000",
+            "endDate": "2021-02-16T18:58:48.987+0000",
+            "jurisdiction":"Test jurisdiction",
+            "case_role":"Test case role"
         };
     }
 
@@ -81,7 +80,7 @@ class WorkAllocationModels {
     getRelease2Cases() {
         const cases = [];
         for (let i = 0; i < 25; i++) {
-            cases.push(this.getRelease2Task());
+            cases.push(this.getRelease2Case());
         }
         return {
             cases: cases,
@@ -177,6 +176,25 @@ class WorkAllocationModels {
 
     getRoleCategory(){
         return { "roleId": "judicial", "roleName": "Judicial" }
+    }
+
+    getCaseRole(){
+        return {
+            actions:[],
+            end: "2021-02-16T18:58:48.987+0000",
+            id: v4(),
+            location:"test location",
+            name:"caserole name",
+            role:"test-case-role",
+            start: "2021-02-16T18:58:48.987+0000"
+        }
+    }
+
+    getCompletableTasks(){
+        return {
+            task_required_for_event:true,
+            tasks : []
+        }
     }
 }
 

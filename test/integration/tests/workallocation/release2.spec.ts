@@ -61,30 +61,30 @@ describe('Work allocations Release 2', () => {
 
     });
 
-    it('case officer,get location /workallocation2/location/:locationId', async function () {
-        this.timeout(60000);
-        await Request.withSession(caseOfficer, caseofficerPass);
-        const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
+    // it('case officer,get location /workallocation2/location/:locationId', async function () {
+    //     this.timeout(60000);
+    //     await Request.withSession(caseOfficer, caseofficerPass);
+    //     const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 
-        const headers = {
-            'X-XSRF-TOKEN': xsrfToken,
-        };
+    //     const headers = {
+    //         'X-XSRF-TOKEN': xsrfToken,
+    //     };
 
-        const locationsRes = await Request.get(`workallocation2/location`, headers, 200);
-        expect(locationsRes.status).to.equal(200);
-        expect(locationsRes.data).to.be.an('array');
+    //     const locationsRes = await Request.get(`workallocation2/location`, headers, 200);
+    //     expect(locationsRes.status).to.equal(200);
+    //     expect(locationsRes.data).to.be.an('array');
 
-        const testLocId = locationsRes.data[0].id;
+    //     const testLocId = locationsRes.data[0].id;
 
 
-        const response = await Request.get(`workallocation2/location/${testLocId}`, headers, 200);
-        expect(response.status).to.equal(200);
+    //     const response = await Request.get(`workallocation2/location/${testLocId}`, headers, 200);
+    //     expect(response.status).to.equal(200);
 
-        const actual = response.data;
-        const expected = workAllocationDataModels.getLocation();
-        expect(actual).to.have.all.keys(Object.keys(expected));
+    //     const actual = response.data;
+    //     const expected = workAllocationDataModels.getLocation();
+    //     expect(actual).to.have.all.keys(Object.keys(expected));
 
-    });
+    // });
 
 
     // tslint:disable-next-line: only-arrow-functions
@@ -95,10 +95,10 @@ describe('Work allocations Release 2', () => {
 
         const reqBody = {
             searchRequest: {
-                ccdId: '',
-                jurisdiction: '',
-                caseTypeId: '',
-                eventId: '',
+                ccdId: '1547565484535828',
+                jurisdiction: 'IA',
+                caseTypeId: 'Asylum',
+                eventId: 'addCaseNote',
             }
         };
 
@@ -107,13 +107,14 @@ describe('Work allocations Release 2', () => {
             'content-length': JSON.stringify(reqBody).length
         };
 
-        const response = await Request.post(`workallocation2/searchForCompletable`, headers, {}, 200);
+        const response = await Request.post(`workallocation2/searchForCompletable`, reqBody, headers, 200);
         expect(response.status).to.equal(200);
-        expect(response.data).to.be.an('array');
 
-        const actualLocationObjKeys = Object.keys(response.data[0]);
-        const expectedLocationObjKeys = Object.keys(workAllocationDataModels.getLocation());
-        expect(actualLocationObjKeys).to.include.members(expectedLocationObjKeys);
+        const actual = response.data;
+        const expected = workAllocationDataModels.getCompletableTasks();
+        expect(actual).to.have.all.keys(Object.keys(expected));
+        expect(actual.tasks).to.be.an('array');
+
     });
 
     it('case officer,get exclusion roles categories /workallocation2/exclusion/rolesCategory', async function() {
@@ -129,7 +130,7 @@ describe('Work allocations Release 2', () => {
         const actual = response.data;
         const expected = workAllocationDataModels.getRoleCategory();
         expect(actual).to.be.an('array');
-        expect(actual[0]).to.include.members(Object.keys(expected));
+        expect(actual[0]).to.have.all.keys(Object.keys(expected));
     });
 
     it('case officer,get case roles workallocation2/roles/:caseId', async function () {
@@ -140,13 +141,13 @@ describe('Work allocations Release 2', () => {
             'X-XSRF-TOKEN': xsrfToken,
         };
 
-        const caseId = '';
+        const caseId = '1547565764480315';
         const response = await Request.get(`workallocation2/roles/${caseId}`, headers, 200);
         expect(response.status).to.equal(200);
         const actual = response.data;
-        const expected = workAllocationDataModels.getRoleCategory();
+        const expected = workAllocationDataModels.getCaseRole();
         expect(actual).to.be.an('array');
-        expect(actual[0]).to.include.members(Object.keys(expected));
+        expect(actual[0]).to.have.all.keys(Object.keys(expected));
     });
 
 });

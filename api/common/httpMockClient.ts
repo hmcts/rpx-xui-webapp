@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
-import { errorInterceptor, requestInterceptor } from './interceptorsMock';
+import { errorInterceptor, requestInterceptor, successInterceptor } from './interceptorsMock';
 
 export abstract class HttpMockClient {
   protected readonly instance: AxiosInstance;
@@ -9,6 +9,7 @@ export abstract class HttpMockClient {
       baseURL,
     });
     axios.defaults.headers.common['Content-Type'] = 'application/json';
+    this.initializeRequestInterceptor();
     this.initializeResponseInterceptor();
   }
 
@@ -18,7 +19,7 @@ export abstract class HttpMockClient {
 
   private initializeResponseInterceptor = () => {
     this.instance.interceptors.response.use(
-      requestInterceptor,
+      successInterceptor,
       errorInterceptor
     );
   }

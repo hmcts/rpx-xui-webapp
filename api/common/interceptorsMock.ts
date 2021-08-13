@@ -13,7 +13,7 @@ const exceptionOptions = {
 export function requestInterceptor(request) {
   const logger = log4jui.getLogger('MOCK: outgoing');
 
-  logger.info(`${request.config.method.toUpperCase()} to ${request.config.url}`);
+  logger.info(`${request.method.toUpperCase()} to ${request.url}`);
   //add timings to requests
   request.metadata = {startTime: new Date()};
 
@@ -28,11 +28,14 @@ export function successInterceptor(response) {
 
   const url = shorten(response.config.url, getConfigValue(MAX_LOG_LINE));
 
-  logger.info(`Success on ${response.config.method.toUpperCase()} to ${url} (${response.duration})`);
+  logger.info(`Success on ${response.config.method.toUpperCase()} to ${url} in (${response.duration})`);
   return response;
 }
 
 export function errorInterceptor(error) {
+  error.config.metadata.endTime = new Date();
+  error.duration = error.config.metadata.endTime - error.config.metadata.startTime;
+
   const logger = log4jui.getLogger('MOCK: return');
 
   const url = shorten(error.config.url, getConfigValue(MAX_LOG_LINE));
@@ -43,10 +46,10 @@ export function errorInterceptor(error) {
     if (!data) {
       data = error;
     }
-    logger.error(`Error on ${error.config.method.toUpperCase()} to ${url} - ${error} \n
+    logger.error(`Error on ${error.config.method.toUpperCase()} to ${url} in (${error.duration}) - ${error} \n
         ${exceptionFormatter(data, exceptionOptions)}`);
   } else {
-    logger.error(`Error on ${error.config.method.toUpperCase()} to ${url} - ${error} \n
+    logger.error(`Error on ${error.config.method.toUpperCase()} to ${url} in (${error.duration}) - ${error} \n
         ${JSON.stringify(data)}`);
   }
 

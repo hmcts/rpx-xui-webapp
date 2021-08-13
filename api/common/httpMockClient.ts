@@ -13,11 +13,11 @@ export abstract class HttpMockClient {
     this.initializeResponseInterceptor();
   }
 
-  private initializeRequestInterceptor = () => {
+  private initializeRequestInterceptor(): void {
     this.instance.interceptors.request.use(requestInterceptor);
   }
 
-  private initializeResponseInterceptor = () => {
+  private initializeResponseInterceptor(): void {
     this.instance.interceptors.response.use(
       successInterceptor,
       errorInterceptor

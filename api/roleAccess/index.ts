@@ -10,13 +10,13 @@ roleAccessMock.init();
 
 const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
 
-export async function confirmAllocateRole(req: EnhancedRequest, res: Response, next: NextFunction) {
+export async function confirmAllocateRole(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   try {
     const body = req.body;
     const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
     const response: AxiosResponse = await handlePost(basePath, body, req);
     const {status, data} = response;
-    res.status(status).send(data);
+    return res.status(status).send(data);
   } catch (error) {
     next(error);
   }

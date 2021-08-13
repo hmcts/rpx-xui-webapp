@@ -1,3 +1,4 @@
+import { AxiosInstance } from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { HttpMock } from './httpMock';
 
@@ -10,5 +11,5 @@ export class HttpMockAdapter {
   }
 
   private static adapterInstance?: MockAdapter;
-  private static mockInstance = HttpMock.getInstance();
+  private static mockInstance: AxiosInstance = HttpMock.getInstance();
 }

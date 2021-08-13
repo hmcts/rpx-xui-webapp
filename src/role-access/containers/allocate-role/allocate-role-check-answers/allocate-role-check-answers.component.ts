@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
@@ -19,7 +19,7 @@ import * as fromFeature from '../../../store';
   selector: 'exui-allocate-role-check-answers',
   templateUrl: './allocate-role-check-answers.component.html'
 })
-export class AllocateRoleCheckAnswersComponent implements OnInit {
+export class AllocateRoleCheckAnswersComponent {
 
   @Input() public navEvent: AllocateRoleNavigation;
 
@@ -35,9 +35,6 @@ export class AllocateRoleCheckAnswersComponent implements OnInit {
   constructor(private readonly store: Store<fromFeature.State>) {
     this.storeSubscription = this.store.pipe(select(fromFeature.getAllocateRoleState))
       .subscribe(allocateRole => this.setAnswersFromAllocateRoleStateStore(allocateRole));
-  }
-
-  public ngOnInit(): void {
   }
 
   public navigationHandler(navEvent: AllocateRoleNavigationEvent) {

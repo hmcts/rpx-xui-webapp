@@ -7,18 +7,17 @@ export const init = () => {
   const allocateRoleConfirmUrl = /http:\/\/am-role-assignment-service-aat.service.core-compute-aat.internal\/am\/role-assignments/;
 
   mock.onPost(allocateRoleConfirmUrl).reply(config => {
-    const requestPayload = JSON.parse(config.data);
-    const durationOfRole = requestPayload.durationOfRole;
+    const payload = JSON.parse(config.data);
+    const durationOfRole = payload.durationOfRole;
     if (durationOfRole === '7 days') {
       return [
         500,
-        [],
+        payload,
       ];
     }
     return [
       200,
-      [],
+      payload,
     ];
   });
-  return mock;
 };

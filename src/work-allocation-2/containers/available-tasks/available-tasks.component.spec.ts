@@ -6,10 +6,11 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
-import { TaskFieldConfig } from '../../../work-allocation/models/tasks';
+import { SessionStorageService } from '../../../app/services';
 
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
+import { FieldConfig } from '../../models/common';
 import { InformationMessage } from '../../models/comms';
 import * as dtos from '../../models/dtos';
 import { InvokedTaskAction, Task } from '../../models/tasks';
@@ -25,14 +26,14 @@ class WrapperComponent {
   @ViewChild(AvailableTasksComponent) public appComponentRef: AvailableTasksComponent;
 }
 
-@Component({
-  selector: 'exui-task-field',
-  template: '<div class="xui-task-field">{{task.taskName}}</div>'
-})
-class TaskFieldComponent {
-  @Input() public config: TaskFieldConfig;
-  @Input() public task: Task;
-}
+const userInfo =
+  `{"id":"exampleId",
+    "forename":"Joe",
+    "surname":"Bloggs",
+    "email":"JoeBloggs@example.com",
+    "active":true,
+    "roles":["caseworker","caseworker-ia","caseworker-ia-caseofficer"],
+    "token":"eXaMpLeToKeN"}`;
 
 describe('AvailableTasksComponent', () => {
   let component: AvailableTasksComponent;
@@ -46,6 +47,7 @@ describe('AvailableTasksComponent', () => {
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
+  const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const mockFeatureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
 
@@ -64,6 +66,7 @@ describe('AvailableTasksComponent', () => {
         { provide: LocationDataService, useValue: mockLocationService },
         { provide: Router, useValue: mockRouter },
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
+        { provide: SessionStorageService, useValue: mockSessionStorageService },
         { provide: AlertService, useValue: mockAlertService },
         { provide: LoadingService, useValue: mockLoadingService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService }
@@ -86,6 +89,15 @@ describe('AvailableTasksComponent', () => {
   it('should make a call to load tasks using the default search request', () => {
     expect(component.tasks).toBeDefined();
     expect(component.tasks.length).toEqual(2);
+  });
+
+  it('should allow searching via location', () => {
+    mockSessionStorageService.getItem.and.returnValue(userInfo);
+    const exampleLocations = ['location1', 'location2', 'location3'];
+    component.selectedLocations = exampleLocations;
+    const searchParameter = component.getSearchTaskRequestPagination().search_parameters[0];
+    expect(searchParameter.key).toBe('location');
+    expect(searchParameter.values).toBe(exampleLocations);
   });
 
   it('should have all column headers, including "Manage +"', () => {

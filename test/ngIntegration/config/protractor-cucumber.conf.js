@@ -10,10 +10,8 @@ const argv = minimist(process.argv.slice(2));
 const MockApp = require('../../nodeMock/app');
 const browserUtil = require('../util/browserUtil');
 const customReporter = require('../../e2e/support/reportLogger');
-const customWaits = require('../../e2e/support/customWaits');
 
 const isParallelExecution = argv.parallel ? argv.parallel=== "true" : true;
-customWaits.setDefaultWaitTime(10000);
 
 const chromeOptArgs = [ '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'];
 if (!argv.head ){
@@ -97,6 +95,11 @@ const config = {
             MockApp.setLogMessageCallback(customReporter.AddMessage);
         }    
         MockApp.setLogMessageCallback(customReporter.AddJson);
+
+        //Set default explict timeout default value to 10sec
+        const customWaits = require('../../e2e/support/customWaits');
+        customWaits.setDefaultWaitTime(10000);
+
     },
     cucumberOpts: {
         strict: true,

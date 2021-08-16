@@ -5,6 +5,7 @@ import { EnhancedRequest, JUILogger } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { CaseRole } from './interfaces/caseRole';
+import { hasCaseAllocatorRole } from './util';
 
 const logger: JUILogger = log4jui.getLogger('role-service');
 
@@ -19,7 +20,7 @@ export function handleShowAllocatorLinkByCaseId(caseId: string, req: EnhancedReq
   const roleAssignments = req.session.roleAssignmentResponse as RoleAssignment[];
   if (roleAssignments && Array.isArray(roleAssignments)) {
     const canShowAllocateRoleLink = roleAssignments.find(roleAssignment => {
-      return roleAssignment.attributes.caseId === caseId;
+      return roleAssignment.attributes.caseId === caseId && hasCaseAllocatorRole(roleAssignment.authorisations);
     });
     return !!canShowAllocateRoleLink;
   }

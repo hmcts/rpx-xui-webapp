@@ -112,7 +112,7 @@ export function assignActionsToCases(cases: any[], view: any): any[] {
       // This was debated for EUI-3619
       // As actions can change based on whether assigned or not, there might need to be a check here
       const actions: Action[] = getActionsByPermissions(view, item.permissions);
-      const caseWithAction = { ...item, actions };
+      const caseWithAction = {...item, actions};
       casesWithActions.push(caseWithAction);
     }
   }
@@ -206,8 +206,12 @@ export function applySearchFilter(person: Person, domain: string, searchTerm: an
 
 export async function handlePost(path: string, payload: any, req: EnhancedRequest): Promise<any> {
   const headers = setHeaders(req);
-  const response: AxiosResponse = await http.post(path, payload, { headers });
+  const response: AxiosResponse = await http.post(path, payload, {headers});
   // Return the whole response, not just the data, so we can
   // see what the status of the response is.
   return response;
+}
+
+export function hasCaseAllocatorRole(authorisations: string[]): boolean {
+  return authorisations.some(authorisation => authorisation === 'case-allocator-role');
 }

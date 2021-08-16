@@ -1,6 +1,8 @@
+import { TypeOfRole } from '../../../src/role-access/models';
+
 export interface CaseRole {
   name: string;
-  role: RoleType;
+  role: TypeOfRole;
   location: string;
   start: string;
   end: string;
@@ -11,11 +13,4 @@ export interface CaseRole {
 export interface Action {
   id: string;
   title: string;
-}
-
-export enum RoleType {
-  LEAD_JUDGE = 'Lead Judge',
-  HEARING_JUDGE = 'Hearing Judge',
-  LEGAL_OPS = 'Legal Ops',
-  CASE_MANAGER = 'Case Manager',
 }

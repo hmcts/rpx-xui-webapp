@@ -4,7 +4,7 @@
   <h2 class="govuk-heading-m">Judiciary</h2>
 
   <exui-case-roles-table [roles]="roles"
-                         [roleType]="'judicial'"
+                         [userType]="judicial"
                          [caseDetails]="caseDetails"
                          [locationInfo]="locationInfo"
   ></exui-case-roles-table>
@@ -13,11 +13,11 @@
     <a href="javascript:void(0)"
        class="govuk-link"
        [routerLink]="['/', 'role-access', 'allocate-role']"
-       [queryParams]="{'userType': 'judicial'}"
+       [queryParams]="{'userType': judicial}"
        exuiShowAllocateLink
        [showAllocateRoleLink]="showAllocateRoleLink"
        [roles]="roles"
-       [userType]="'judicial'"
+       [userType]="judicial"
     >Allocate a role</a>
   </p>
 
@@ -31,11 +31,11 @@
     <a href="javascript:void(0)"
        class="govuk-link"
        [routerLink]="['/', 'role-access', 'allocate-role']"
-       [queryParams]="{'userType': 'legalOps'}"
+       [queryParams]="{'userType': legalOps}"
        exuiShowAllocateLink
        [showAllocateRoleLink]="showAllocateRoleLink"
        [roles]="roles"
-       [userType]="'legalOps'"
+       [userType]="legalOps"
     >Allocate a role</a>
   </p>
 

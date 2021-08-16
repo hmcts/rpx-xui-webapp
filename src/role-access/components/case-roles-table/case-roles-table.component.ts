@@ -1,5 +1,6 @@
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
+import { UserType } from 'api/user/interfaces/user-type';
 import { CaseRole } from '../../../../api/workAllocation2/interfaces/caseRole';
 import { LocationInfo } from '../../../app/store/reducers/app-config.reducer';
 
@@ -16,7 +17,7 @@ export class CaseRolesTableComponent {
   public items: Item[] = [];
   @Input() public caseDetails: CaseView;
   @Input() public locationInfo: LocationInfo;
-  @Input() public roleType: string = 'legal ops';
+  @Input() public userType: UserType = UserType.LEGAL_OPS;
   @ViewChild('body') private tableBody: ElementRef;
 
   constructor() {

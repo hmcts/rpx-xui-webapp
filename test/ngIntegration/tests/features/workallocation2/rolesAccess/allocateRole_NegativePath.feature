@@ -74,7 +74,7 @@ Feature: WA Release 2: Allocate Role judiciary - Negative path
 
         When I click button with label "Confirm allocation" in Allocate role work flow  Check your answers page
         # Then I see case details page displayed with tab "Role and access" selected
-        Then I see error message of type "Page" with message "<>"
+        Then I see error message of type "Page" displayed with message "<>"
 
 
         Examples:

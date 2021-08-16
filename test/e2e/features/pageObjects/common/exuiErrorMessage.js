@@ -26,8 +26,9 @@ class EXUIErrorMessageComponent{
         return await this.summaryTitle.getText();
     }
 
-    async isMessageDisplayedInSummary(messagee){
-        return await this.summaryBody.getText().includes(messagee);
+    async isMessageDisplayedInSummary(message){
+        const messages = await await this.summaryBody.getText();
+        return messages.includes(message);
     }
 
     async getFieldLevelErrorMessage(fieldText){

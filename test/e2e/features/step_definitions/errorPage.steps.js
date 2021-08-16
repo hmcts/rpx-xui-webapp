@@ -7,11 +7,6 @@ const errorPage = require('../pageObjects/common/errorPage');
 const validationError = require('../pageObjects/common/exuiErrorMessage');
 
 defineSupportCode(function ({ Given, When, Then }) {
-    Then('I see error message of type {string} with message {string}', async function(errorMessageType,errorMessage){
-
-       const errorMessageDisplayed = await errorPage.getErrorMessage(); 
-        expect(errorMessageDisplayed).to.include(errorMessage);
-    });
 
     Then('I see error page with message {string}', async function (errorMessage) {
 

@@ -1,6 +1,6 @@
 import { Directive, ElementRef, Input, OnInit } from '@angular/core';
 import { CaseRole } from 'api/workAllocation2/interfaces/caseRole';
-import { TypeOfRole } from 'src/role-access/models';
+import { TypeOfRole } from '../../role-access/models';
 import { UserType } from '../../../api/user/interfaces/user-type';
 
 @Directive({

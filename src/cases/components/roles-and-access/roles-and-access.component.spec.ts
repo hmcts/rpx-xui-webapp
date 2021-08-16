@@ -22,6 +22,25 @@ describe('RolesAndAccessComponent', () => {
     fixture = TestBed.createComponent(RolesAndAccessComponent);
     component = fixture.componentInstance;
     component.roles = CASEROLES;
+    component.caseDetails = {
+      case_id: '1',
+      case_type: {
+        id: 'TestAddressBookCase',
+        name: 'Test Address Book Case',
+        jurisdiction: {
+          id: 'TEST',
+          name: 'Test',
+        }
+      },
+      channels: [],
+      state: {
+        id: 'CaseCreated',
+        name: 'Case created'
+      },
+      tabs: [],
+      triggers: [],
+      events: []
+    };
     component.locationInfo = initialMockState.appConfig.locationInfo[0];
     fixture.detectChanges();
   });

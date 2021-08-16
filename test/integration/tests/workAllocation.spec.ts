@@ -224,15 +224,24 @@ describe('Work allocations MVP', () => {
 
         const tasksRes = await Request.post(`workallocation/task`, reqBody, headersForGetTasks, 200);
 
-
         const assignTaskReqBody = {}
         const assignTasksHeader = {
             'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
             'content-length': JSON.stringify(assignTaskReqBody).length
         };
         if (tasksRes.data.tasks.length > 0) {
-            const assignTaskRes = await Request.post(`workallocation/task/${tasksRes.data.tasks[0].id}/complete`, assignTaskReqBody, assignTasksHeader, 204);
+            const taskIdToTest = tasksRes.data.tasks[0].id;
+            const testassignTaskReqBody = { userId: "dfd4c2d1-67b1-40f9-8680-c9551632f5d9" }
+            const testassignTasksHeader = {
+                'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
+                'content-length': JSON.stringify(testassignTaskReqBody).length
+            };
+
+            const assignTaskRes = await Request.post(`workallocation/task/${taskIdToTest}/assign`, testassignTaskReqBody, testassignTasksHeader, 204);
             expect(assignTaskRes.status).to.equal(204);
+
+            const completaskRes = await Request.post(`workallocation/task/${taskIdToTest}/complete`, assignTaskReqBody, assignTasksHeader, 204);
+            expect(completaskRes.status).to.equal(204);
         }
 
     });

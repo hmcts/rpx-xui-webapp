@@ -206,6 +206,11 @@ select::-ms-expand {
   @extend %headers;
   font-size: 16px;
 }
+.heading-span {
+  @extend %headers;
+  font-size: 24px;
+  display: block;
+}
 .form-group, .bottom-0 {
   margin-bottom: 0;
 }

@@ -1,23 +1,25 @@
-import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
-import { Caseworker, Location } from '../../interfaces/common';
-import { CaseworkerDataService, InfoMessageCommService, LocationDataService, WorkAllocationTaskService } from '../../services';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { FieldConfig, SortField } from '../../models/common';
-import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
-import { InfoMessage, InfoMessageType, SortOrder, TaskActionIds, TaskService } from '../../enums';
-import { InvokedTaskAction, Task, TaskServiceConfig } from '../../models/tasks';
-import { ListConstants } from '../../components/constants';
-import { Observable } from 'rxjs';
-import { PaginationParameter, SearchTaskRequest, SortParameter } from '../../models/dtos';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
+import { Observable, Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
+
 import { SessionStorageService } from '../../../app/services';
+import { ListConstants } from '../../components/constants';
+import { InfoMessage, InfoMessageType, SortOrder, TaskActionIds, TaskService } from '../../enums';
+import { Caseworker, Location } from '../../interfaces/common';
+import { FieldConfig, SortField } from '../../models/common';
+import { PaginationParameter, SearchTaskRequest, SortParameter } from '../../models/dtos';
+import { InvokedTaskAction, Task, TaskServiceConfig } from '../../models/tasks';
+import { CaseworkerDataService, InfoMessageCommService, LocationDataService, WorkAllocationTaskService } from '../../services';
+import { getAssigneeName, handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../utils';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html',
   providers: [InfoMessageCommService]
 })
-export class TaskListWrapperComponent implements OnInit {
+export class TaskListWrapperComponent implements OnDestroy, OnInit {
 
   public specificPage: string = '';
   public caseworkers: Caseworker[];
@@ -26,6 +28,10 @@ export class TaskListWrapperComponent implements OnInit {
   public sortedBy: SortField;
   public pagination: PaginationParameter;
   private pTasks: Task[];
+  public selectedLocations: string[] = [];
+  private tasksLoaded: boolean = false;
+
+  private selectedLocationsSubscription: Subscription;
   /**
    * Mock TaskServiceConfig.
    */
@@ -49,7 +55,8 @@ export class TaskListWrapperComponent implements OnInit {
     protected caseworkerService: CaseworkerDataService,
     protected loadingService: LoadingService,
     protected featureToggleService: FeatureToggleService,
-    protected locationService: LocationDataService
+    protected locationService: LocationDataService,
+    protected filterService: FilterService
   ) {
   }
 
@@ -124,7 +131,23 @@ export class TaskListWrapperComponent implements OnInit {
     this.loadTasks();
   }
 
+  public ngOnDestroy(): void {
+    if (this.selectedLocationsSubscription) {
+      this.selectedLocationsSubscription.unsubscribe();
+    }
+  }
+
   public loadCaseWorkersAndLocations() {
+    this.selectedLocationsSubscription = this.filterService.getStream('locations')
+      .pipe(
+        filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
+      )
+      .subscribe((f: FilterSetting) => {
+        this.selectedLocations = f.fields.find((field) => field.name === 'locations').value;
+        if (this.tasksLoaded) {
+          this.doLoad();
+        }
+    });
   }
 
   public setupTaskList() {
@@ -256,6 +279,7 @@ export class TaskListWrapperComponent implements OnInit {
         this.tasksTotal = result.total_records;
         this.tasks.forEach(task => task.assigneeName = getAssigneeName(this.caseworkers, task.assignee));
         this.ref.detectChanges();
+        this.tasksLoaded = true;
       }, error => {
         this.loadingService.unregister(loadingToken);
         handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);

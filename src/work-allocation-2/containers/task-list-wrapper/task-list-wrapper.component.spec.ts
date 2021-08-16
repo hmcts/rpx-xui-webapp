@@ -1,32 +1,24 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { ChangeDetectorRef, Component, Input } from '@angular/core';
+import { ChangeDetectorRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule, FeatureToggleService} from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule, FeatureToggleService, FilterService} from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
+
 import { TaskListComponent } from '..';
 import { SessionStorageService } from '../../../app/services';
-import { TaskFieldConfig } from '../../../work-allocation/models/tasks';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Task } from '../../models/tasks';
 import { InfoMessageCommService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
 import { getMockTasks, MockRouter } from '../../tests/utils.spec';
 import { TaskListWrapperComponent } from './task-list-wrapper.component';
 
-@Component({
-  selector: 'exui-task-field',
-  template: '<div class="xui-task-field">{{task.taskName}}</div>'
-})
-class TaskFieldComponent {
-  @Input() public config: TaskFieldConfig;
-  @Input() public task: Task;
-}
-
 describe('TaskListWrapperComponent', () => {
   let component: TaskListWrapperComponent;
   let fixture: ComponentFixture<TaskListWrapperComponent>;
+  const SELECTED_LOCATIONS = { id: 'locations', fields: [ { name: 'locations', value: ['231596', '698118'] }] };
   const mockRef = jasmine.createSpyObj('mockRef', ['']);
   const mockRouter: MockRouter = new MockRouter();
   const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['searchTaskWithPagination', 'getTask']);
@@ -36,6 +28,16 @@ describe('TaskListWrapperComponent', () => {
   const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
+  const mockFilterService: any = {
+    getStream: () => of(SELECTED_LOCATIONS),
+    get: () => SELECTED_LOCATIONS,
+    persist: (setting, persistence) => null,
+    givenErrors: {
+      subscribe: () => null,
+      next: () => null,
+      unsubscribe: () => null
+    }
+  };
   beforeEach((() => {
     TestBed.configureTestingModule({
       imports: [
@@ -55,7 +57,8 @@ describe('TaskListWrapperComponent', () => {
         { provide: AlertService, useValue: mockAlertService },
         { provide: WorkAllocationFeatureService, useValue: mockFeatureService },
         { provide: LoadingService, useValue: mockLoadingService },
-        { provide: FeatureToggleService, useValue: mockFeatureToggleService }
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
+        { provide: FilterService, useValue: mockFilterService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(TaskListWrapperComponent);
@@ -65,6 +68,10 @@ describe('TaskListWrapperComponent', () => {
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     fixture.detectChanges();
+  }));
+
+  afterEach((() => {
+    component.ngOnDestroy();
   }));
 
   it('should create', () => {

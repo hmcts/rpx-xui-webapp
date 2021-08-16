@@ -26,6 +26,8 @@ export const init = () => {
   const judicialAllTasksUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/allTasks\?view=judicial/;
   const caseworkerAllTasksUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/allTasks\?view=caseworker/;
 
+  const locationField = 'location_id';
+
   mock.onPost(judicialWorkersUrl).reply(() => {
     // return an array in the form of [status, data, headers]
     return [
@@ -39,15 +41,18 @@ export const init = () => {
   mock.onPost(judicialMyTaskUrl).reply(config => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
+    const searchConfig = body.search_parameters;
+    const locationConfig = getLocationConfig(searchConfig)[0];
     const paginationConfig = body.pagination_parameters;
     const sortingConfig = body.sorting_parameters;
-    const taskList = sort(JUDICIAL_MY_TASKS.tasks,
+    const filteredTaskList = filterByFieldName(JUDICIAL_MY_TASKS.tasks, locationField, locationConfig.values);
+    const taskList = sort(filteredTaskList,
       getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {
         tasks: paginate(taskList, paginationConfig.page_number, paginationConfig.page_size),
-        total_records: JUDICIAL_MY_TASKS.tasks.length,
+        total_records: filteredTaskList.length,
       },
     ];
   });
@@ -78,15 +83,18 @@ export const init = () => {
   mock.onPost(judicialAvailableTaskUrl).reply(config => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
+    const searchConfig = body.search_parameters;
+    const locationConfig = getLocationConfig(searchConfig)[0];
     const paginationConfig = body.pagination_parameters;
     const sortingConfig = body.sorting_parameters;
-    const taskList = sort(JUDICIAL_AVAILABLE_TASKS.tasks,
+    const filteredTaskList = filterByFieldName(JUDICIAL_AVAILABLE_TASKS.tasks, locationField, locationConfig.values);
+    const taskList = sort(filteredTaskList,
       getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {
         tasks: paginate(taskList, paginationConfig.page_number, paginationConfig.page_size),
-        total_records: JUDICIAL_AVAILABLE_TASKS.tasks.length,
+        total_records: filteredTaskList.length,
       },
     ];
   });
@@ -94,15 +102,18 @@ export const init = () => {
   mock.onPost(caseworkerMyTaskUrl).reply(config => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
+    const searchConfig = body.search_parameters;
+    const locationConfig = getLocationConfig(searchConfig)[0];
     const paginationConfig = body.pagination_parameters;
     const sortingConfig = body.sorting_parameters;
-    const taskList = sort(CASEWORKER_MY_TASKS.tasks,
+    const filteredTaskList = filterByFieldName(CASEWORKER_MY_TASKS.tasks, locationField, locationConfig.values);
+    const taskList = sort(filteredTaskList,
       getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {
         tasks: paginate(taskList, paginationConfig.page_number, paginationConfig.page_size),
-        total_records: CASEWORKER_MY_TASKS.tasks.length,
+        total_records: filteredTaskList.length,
       },
     ];
   });
@@ -120,15 +131,18 @@ export const init = () => {
   mock.onPost(caseworkerAvailableTaskUrl).reply(config => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
+    const searchConfig = body.search_parameters;
+    const locationConfig = getLocationConfig(searchConfig)[0];
     const paginationConfig = body.pagination_parameters;
     const sortingConfig = body.sorting_parameters;
-    const taskList = sort(CASEWORKER_AVAILABLE_TASKS.tasks,
+    const filteredTaskList = filterByFieldName(CASEWORKER_AVAILABLE_TASKS.tasks, locationField, locationConfig.values);
+    const taskList = sort(filteredTaskList,
       getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {
         tasks: paginate(taskList, paginationConfig.page_number, paginationConfig.page_size),
-        total_records: CASEWORKER_AVAILABLE_TASKS.tasks.length,
+        total_records: filteredTaskList.length,
       },
     ];
   });
@@ -210,6 +224,10 @@ export const getSortName = (sortName: string): string => {
   }
 };
 
+export const getLocationConfig = (searchConfig: any[]): any[] => {
+  return searchConfig.filter(config => config.key === 'location');
+};
+
 export const sort = (array: any[], sortName: string, isAsc: boolean): any[] => {
   array = array.sort((a, b) => a[sortName].localeCompare(b[sortName]));
   return isAsc ? array : array.reverse();
@@ -217,4 +235,8 @@ export const sort = (array: any[], sortName: string, isAsc: boolean): any[] => {
 
 export const paginate = (array: any[], pageNumber: number, pageSize: number): any[] => {
   return array.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+};
+
+export const filterByFieldName = (array: any[], fieldName: string, locations: any[]): any[] => {
+  return array.filter(item => locations.includes(item[fieldName]));
 };

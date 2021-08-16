@@ -7,13 +7,14 @@ const BrowserWaits = require("../../support/customWaits");
 const SoftAssert = require('../../../ngIntegration/util/softAssert');
 const errorPageObject = require("../pageObjects/common/errorPage");
 const MessageBanner = require("../pageObjects/messageBanner");
+const exuiErrorMessage = require('../pageObjects/common/exuiErrorMessage');
 const headerPage = require("../pageObjects/headerPage");
 
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
     const messageBanner = new MessageBanner($('exui-root'));
     Then('I see error message of type {string} displayed with message {string}', async function(errorType, errorMessage){
-        const errorTypePage = errorType.toLowercase();
+        const errorTypePage = errorType.toLowerCase();
         
         await BrowserWaits.retryWithActionCallback(async () => {
             if (errorTypePage.includes('page')) {
@@ -25,6 +26,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 const matchingMessages = await ArrayUtil.filter(bannerMessages, async (msg) => { return msg.includes(errorMessage); });
                 expect(matchingMessages.length > 1, `${errorMessage} is not displayed, Actual message(s) ${bannerMessages}`).to.be.true;
 
+            } else if (errorTypePage.includes('message')){
+                expect(await exuiErrorMessage.isDisplayed()).to.be.true;
+                expect(await exuiErrorMessage.isMessageDisplayedInSummary(errorMessage),'Message diaplayed does noyt include expected').to.be.true
+                
             } else {
                 throw new Error(`${errorType} is not recognised or not implemented in step definition of tests`);
             }

@@ -3,6 +3,7 @@ import { AxiosResponse } from 'axios';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
+import { CASE_ALLOCATOR_ROLE } from '../user/constants';
 
 import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX } from './constants/actions';
 import { Action, Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/common';
@@ -213,5 +214,5 @@ export async function handlePost(path: string, payload: any, req: EnhancedReques
 }
 
 export function hasCaseAllocatorRole(authorisations: string[]): boolean {
-  return authorisations.some(authorisation => authorisation === 'case-allocator-role');
+  return authorisations.some(authorisation => authorisation === CASE_ALLOCATOR_ROLE);
 }

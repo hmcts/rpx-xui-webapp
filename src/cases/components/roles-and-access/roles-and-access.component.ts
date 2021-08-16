@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
-import { LocationInfo } from 'src/app/store/reducers/app-config.reducer';
 import { CaseRole } from '../../../../api/workAllocation2/interfaces/caseRole';
+import { LocationInfo } from '../../../app/store/reducers/app-config.reducer';
 
 @Component({
   selector: 'exui-roles-and-access',

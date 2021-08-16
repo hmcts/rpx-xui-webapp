@@ -125,7 +125,8 @@ const config = {
                 reportName: 'XUI Manage Cases Functional Tests',
                 // openReportInBrowser: true,
                 jsonDir: 'reports/tests/ngIntegration',
-                reportPath: 'reports/tests/ngIntegration'
+                reportPath: 'reports/tests/ngIntegration',
+                displayDuration : true
             }
         }
     ]

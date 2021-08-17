@@ -4,6 +4,7 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { CASEROLES } from '../../../../api/workAllocation2/constants/roles.mock.data';
 import { CaseRolesTableComponent } from '../../../role-access/components/case-roles-table/case-roles-table.component';
 import { initialMockState } from '../../../role-access/testing/app-initial-state.mock';
+import { ShowAllocateLinkDirective } from '../../directives/show-allocate-link.directive';
 import { RolesAndAccessComponent } from './roles-and-access.component';
 
 describe('RolesAndAccessComponent', () => {
@@ -13,7 +14,7 @@ describe('RolesAndAccessComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule],
-      declarations: [RolesAndAccessComponent, CaseRolesTableComponent]
+      declarations: [RolesAndAccessComponent, CaseRolesTableComponent, ShowAllocateLinkDirective]
     })
       .compileComponents();
   }));

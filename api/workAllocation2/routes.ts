@@ -13,7 +13,7 @@ import {
   postTaskSearchForCompletable,
   searchCase,
   searchCaseWorker,
-  searchTask
+  searchTask, showAllocateRoleLink
 } from '.';
 import authInterceptor from '../lib/middleware/auth';
 import { getLocationById, getLocations } from './locationController';
@@ -47,6 +47,7 @@ router.use('/taskWithPagination', searchTask);
 
 router.use('/exclusion/rolesCategory', getRolesCategory);
 
+router.use('/roles/:caseId/show-allocate-role-link', showAllocateRoleLink);
 router.use('/roles/:caseId', getRolesByCaseId);
 
 export default router;

@@ -1,1 +1,1 @@
-<ccd-case-viewer [caseDetails]="caseDetails" *ngIf="caseDetails"></ccd-case-viewer>
+<ccd-case-viewer [caseDetails]="caseDetails" [prependedTabs]="tabs$ | async" *ngIf="caseDetails"></ccd-case-viewer>

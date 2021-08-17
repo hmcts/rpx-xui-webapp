@@ -19,9 +19,10 @@ describe('AppComponent', () => {
       store = jasmine.createSpyObj('store', ['pipe', 'dispatch']);
       googleTagManagerService = jasmine.createSpyObj('GoogleTagManagerService', ['init']);
       timeoutNotificationService = jasmine.createSpyObj('TimeoutNotificationsService', ['notificationOnChange', 'initialise']);
-      featureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled']);
+      featureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled', 'getValue', 'initialize']);
       cookieService = jasmine.createSpyObj('CookieService', ['deleteCookieByPartialMatch']);
       loggerService = jasmine.createSpyObj('LoggerService', ['enableCookies']);
+      environmentService = jasmine.createSpyObj('environmentService', ['config$'])
       testRoute = new RoutesRecognized(1, 'test', 'test', {
           url: 'test',
           root: {
@@ -61,53 +62,6 @@ describe('AppComponent', () => {
       router = { events: of(testRoute) };
       title = jasmine.createSpyObj('Title', ['setTitle']);
       appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService, router, title, featureToggleService, loggerService, cookieService, environmentService);
-  });
-
-  beforeEach(() => {
-    store = jasmine.createSpyObj('store', ['pipe', 'dispatch']);
-    googleTagManagerService = jasmine.createSpyObj('GoogleTagManagerService', ['init']);
-    timeoutNotificationService = jasmine.createSpyObj('TimeoutNotificationsService', ['notificationOnChange', 'initialise']);
-    featureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue', 'initialize']);
-    environmentService = jasmine.createSpyObj('environmentService', ['config$'])
-    testRoute = new RoutesRecognized(1, 'test', 'test', {
-      url: 'test',
-      root: {
-        firstChild: {
-          data: {title: 'Test'},
-          url: [],
-          params: {},
-          queryParams: {},
-          fragment: '',
-          outlet: '',
-          component: '',
-          routeConfig: {},
-          root: null,
-          parent: null,
-          firstChild: null,
-          children: [],
-          pathFromRoot: [],
-          paramMap: null,
-          queryParamMap: null
-        },
-        data: {title: 'Test'},
-        url: [],
-        params: {},
-        queryParams: {},
-        fragment: '',
-        outlet: '',
-        component: '',
-        routeConfig: {},
-        root: null,
-        parent: null,
-        children: [],
-        pathFromRoot: [],
-        paramMap: null,
-        queryParamMap: null
-      }
-    });
-    router = {events: of(testRoute)};
-    title = jasmine.createSpyObj('Title', ['setTitle']);
-    appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService, router, title, featureToggleService, loggerService, cookieService, environmentService);
   });
 
   it('Truthy', () => {

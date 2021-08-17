@@ -3,6 +3,7 @@ import { router as caseShareRoutes } from './caseshare/routes';
 import { getConfigValue, showFeature } from './configuration';
 import { APP_INSIGHTS_KEY } from './configuration/references';
 import exclusionRouter from './exclusions/routes';
+import roleAssignmentRouter from './roleAssignment/routes';
 import healthCheck from './healthCheck';
 import authInterceptor from './lib/middleware/auth';
 import { router as nocRouter } from './noc/routes';
@@ -26,6 +27,8 @@ router.use(authInterceptor);
 router.use('/user', userRouter);
 
 router.use('/exclusions', exclusionRouter);
+
+router.use('/role-assignment', roleAssignmentRouter)
 
 // TODO: potentially can be moved to proxy but with onRes callback
 router.use('/caseshare', caseShareRoutes);

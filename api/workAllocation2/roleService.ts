@@ -1,4 +1,5 @@
 import { AxiosResponse } from 'axios';
+import { NextFunction, Response } from 'express';
 import { httpMock } from '../common/httpMock';
 import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';

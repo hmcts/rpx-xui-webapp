@@ -12,6 +12,7 @@ import { environment as config } from '../../../environments/environment';
 import { UserDetails, UserInfo } from '../../models/user-details.model';
 import * as fromRoot from '../../store';
 import { EnvironmentService } from '../../shared/services/environment.service';
+import { RoleAssignmentService } from '../../../role-access/services/role-assignment.service';
 
 @Component({
   selector: 'exui-root',
@@ -42,7 +43,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly featureService: FeatureToggleService,
     private readonly loggerService: LoggerService,
     private readonly cookieService: CookieService,
-    private readonly environmentService: EnvironmentService
+    private readonly environmentService: EnvironmentService,
+    private readonly roleAssignmentService: RoleAssignmentService
   ) {
 
     this.router.events.subscribe((data) => {
@@ -73,6 +75,8 @@ export class AppComponent implements OnInit, OnDestroy {
     this.store.dispatch(new fromRoot.StartIdleSessionTimeout());
 
     this.handleCookieBannerFeatureToggle();
+
+    this.roleAssignmentService.setRoleAllocations();
   }
 
   public ngOnDestroy() {

@@ -11,6 +11,7 @@ describe('AppComponent', () => {
   let featureToggleService: any;
   let loggerService: any;
   let cookieService: any;
+  let roleAssignmentService: any;
   let router: any;
   let title: any;
   let testRoute: RoutesRecognized;
@@ -22,6 +23,7 @@ describe('AppComponent', () => {
       featureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled']);
       cookieService = jasmine.createSpyObj('CookieService', ['deleteCookieByPartialMatch']);
       loggerService = jasmine.createSpyObj('LoggerService', ['enableCookies']);
+      roleAssignmentService = jasmine.createSpyObj('RoleAssignmentService', ['setRoleAllocations']);
       testRoute = new RoutesRecognized(1, 'test', 'test', {
           url: 'test',
           root: {
@@ -60,7 +62,7 @@ describe('AppComponent', () => {
       });
       router = { events: of(testRoute) };
       title = jasmine.createSpyObj('Title', ['setTitle']);
-      appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService, router, title, featureToggleService, loggerService, cookieService, environmentService);
+      appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService, router, title, featureToggleService, loggerService, cookieService, environmentService, roleAssignmentService);
   });
 
   beforeEach(() => {
@@ -68,7 +70,8 @@ describe('AppComponent', () => {
     googleTagManagerService = jasmine.createSpyObj('GoogleTagManagerService', ['init']);
     timeoutNotificationService = jasmine.createSpyObj('TimeoutNotificationsService', ['notificationOnChange', 'initialise']);
     featureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue', 'initialize']);
-    environmentService = jasmine.createSpyObj('environmentService', ['config$'])
+    environmentService = jasmine.createSpyObj('environmentService', ['config$']);
+    roleAssignmentService = jasmine.createSpyObj('RoleAssignmentService', ['setRoleAllocations']);
     testRoute = new RoutesRecognized(1, 'test', 'test', {
       url: 'test',
       root: {
@@ -107,7 +110,7 @@ describe('AppComponent', () => {
     });
     router = {events: of(testRoute)};
     title = jasmine.createSpyObj('Title', ['setTitle']);
-    appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService, router, title, featureToggleService, loggerService, cookieService, environmentService);
+    appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService, router, title, featureToggleService, loggerService, cookieService, environmentService, roleAssignmentService);
   });
 
   it('Truthy', () => {

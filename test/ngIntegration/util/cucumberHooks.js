@@ -27,11 +27,11 @@ defineSupportCode(({ Before, After }) => {
         MockApp.init();
         await MockApp.startServer();
         
-        await BrowserWaits.retryWithActionCallback(async () => {
-            await browser.driver.get(config.config.baseUrl);
-            await headerPage.waitForPrimaryNavDisplay();
-        });
-        
+        // await BrowserWaits.retryWithActionCallback(async () => {
+            
+        //     await headerPage.waitForPrimaryNavDisplay();
+        // });
+        await browser.driver.get(config.config.baseUrl);
         await browser.manage().addCookie({ name: 'scenarioMockPort', value: scenarioServerPort+"", domain: 'localhost:3000' });
         
         // done();

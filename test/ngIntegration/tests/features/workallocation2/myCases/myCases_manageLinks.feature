@@ -1,4 +1,4 @@
-@ng @wa2 @wa
+@ng @wa2 @wa @test
 Feature: WA Release 2: My cases - Manage links
 
     Background: Mock and browser setup
@@ -21,9 +21,9 @@ Feature: WA Release 2: My cases - Manage links
 
         Then I validate work allocation cases count in page 25
 
-        Then I validate manage link actions for tasks
+        Then I validate manage link actions for cases
             | index | actions           |
-            | 0     | Reallocate,Remove |
+            | 1     | Reallocate,Remove |
             | 12    |                   |
 
         Examples:

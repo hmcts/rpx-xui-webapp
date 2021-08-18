@@ -124,7 +124,7 @@ class WAListTable {
     }
 
     async getTableRowAt(position) {
-        await BrowserWaits.waitForCondition(async () => {
+        await BrowserWaits.waitForConditionAsync(async () => {
             return await this.tableRows.count() > 0;
         });
         return await this.tableRows.get(position - 1);
@@ -194,7 +194,7 @@ class WAListTable {
         try {
             await BrowserWaits.waitForConditionAsync(async () => {
                 return await row.isDisplayed();
-            }, 2000);
+            }, 2000,'Wait for manage link row to display');
             return true;
         } catch (err) {
             return false;

@@ -1,7 +1,7 @@
 # Requirements
 # https://tools.hmcts.net/confluence/display/EUI/Work+Allocation-+Release+2#WorkAllocationRelease2-ManagelinklogicforTasksandCases
 
-@ng @wa2 @wa t
+@ng @wa2 @wa
 Feature: WA Release 2: My cases - Manage links - Action work flow
 
     Background: Mock and browser setup
@@ -30,18 +30,19 @@ Feature: WA Release 2: My cases - Manage links - Action work flow
         When I open Manage link for wa cases at row <taskAtRow>
         Then I see action link "<action>" is present for case with Manage link open
         When I click action link "<action>" on task with Manage link open
-        Then I see find person page displayed with caption "<action>"
-        When I enter search term "test" in find person input text
-        Then I see following options available in find person results
+        Then I am in workflow page "Reallocate"
+        Then In workflow, I see find person page displayed with caption "<action>"
+        When In workflow, I enter search term "test" in find person input text
+        Then In workflow, I see following options available in find person results
             | value             |
             | Test12@justice.uk |
             | Test23@justice.uk |
             | Test34@justice.uk |
             | Test45@justice.uk |
-        When I select find person result "Test23@justice.uk"
-        Then I see find person is selected with "Test23@justice.uk"
+        When In workflow, I select find person result "Test23@justice.uk"
+        Then In workflow, I see find person is selected with "Test23@justice.uk"
 
-        When I click continue in find person page
+        When In workflow, I click continue
 
         Then I see task check your changes page for action "<action>" displayed
 
@@ -80,18 +81,18 @@ Feature: WA Release 2: My cases - Manage links - Action work flow
         When I open Manage link for wa cases at row <taskAtRow>
         Then I see action link "<action>" is present for case with Manage link open
         When I click action link "<action>" on task with Manage link open
-        Then I see find person page displayed with caption "<action>"
-        When I enter search term "test" in find person input text
-        Then I see following options available in find person results
+        Then In workflow, I see find person page displayed with caption "<action>"
+        When In workflow, I enter search term "test" in find person input text
+        Then In workflow, I see following options available in find person results
             | value             |
             | Test12@justice.uk |
             | Test23@justice.uk |
             | Test34@justice.uk |
             | Test45@justice.uk |
-        When I select find person result "Test23@justice.uk"
-        Then I see find person is selected with "Test23@justice.uk"
+        When In workflow, I select find person result "Test23@justice.uk"
+        Then In workflow, I see find person is selected with "Test23@justice.uk"
 
-        When I click continue in find person page
+        When In workflow, I click continue
 
         Then I see task check your changes page for action "<action>" displayed
 

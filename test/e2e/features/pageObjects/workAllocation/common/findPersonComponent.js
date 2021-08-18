@@ -5,12 +5,13 @@ const exuiErrorMessage = require("../../common/exuiErrorMessage");
 
 class FindPersonComponent{
     constructor(parentlocator){
-        this.findPersonContainer = parentlocator.$("exui-find-person");
-        this.header = parentlocator.$("exui-find-person h1");
-        this.headerCaption = parentlocator.$("exui-find-person h1 span");
 
-        this.searchInput = parentlocator.$("exui-find-person #inputSelectPerson");
-        this.searchInputHintText = parentlocator.$("exui-find-person .govuk-hint");
+        this.findPersonContainer = parentlocator.$("xuilib-find-person");
+        this.header = parentlocator.$("xuilib-find-person h1");
+        this.headerCaption = parentlocator.$("xuilib-find-person h1 span");
+
+        this.searchInput = parentlocator.$("xuilib-find-person #inputSelectPerson");
+        this.searchInputHintText = parentlocator.$("xuilib-find-person .govuk-hint");
         this.searchResultsContainer = $(".cdk-overlay-container .mat-autocomplete-visible");
 
     }

@@ -5,7 +5,7 @@ const WorkFlowContainer = require('./common/workFlowContainer');
 const ChooseRadioOptionComponent = require("../common/chooseRadioOptionComponent");
 const FindPersonComponent = require("./common/findPersonComponent");
 const ChooseDuration = require('./common/chooseDurationPage');
-const checkYourAnswersPage = require("./common/checkYourAnswersPage");
+const CheckYourChangesTable = require("../common/checkYourChangesTable");
 
 class ReassignTaskWorkflow {
 
@@ -14,11 +14,9 @@ class ReassignTaskWorkflow {
         this.workFlowContainer = new WorkFlowContainer($('exui-task-container-assignment'));
 
         this.findPersonPage = new FindPersonComponent(this.workFlowContainer.container);
-        this.checkYourAnswers = checkYourAnswersPage;
+        this.checkYourchanges = new CheckYourChangesTable(this.workFlowContainer.container);
 
     }
-
-
 }
 
 module.exports = new ReassignTaskWorkflow();

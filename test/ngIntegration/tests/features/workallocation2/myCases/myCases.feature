@@ -35,7 +35,7 @@ Feature: WA Release 2: My cases
         Given I set MOCK workallocation cases with permissions for view "My cases"
             | Roles          | Count |
             | case-allocator | 10    |
-            |                | 90    |
+            |                | 10    |
 
         Given I set MOCK request "/workallocation2/caseWithPagination/" intercept with reference "taskSearchRequest"
         Given I start MockApp

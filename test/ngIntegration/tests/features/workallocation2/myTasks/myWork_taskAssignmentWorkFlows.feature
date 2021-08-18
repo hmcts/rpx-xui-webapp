@@ -36,18 +36,19 @@ Feature: WA Release 2: My work - My tasks - Task assignment
         When I open Manage link for task at row <taskAtRow>
         Then I see action link "<action>" is present for task with Manage link open
         When I click action link "<action>" on task with Manage link open
-        Then I see find person page displayed with caption "<action>"
-        When I enter search term "test" in find person input text
-        Then I see following options available in find person results
+        Then I am in workflow page "Reassign task" 
+        Then In workflow, I see find person page displayed with caption "<action>"
+        When In workflow, I enter search term "test" in find person input text
+        Then In workflow, I see following options available in find person results
             | value             |
             | Test12@justice.uk |
             | Test23@justice.uk |
             | Test34@justice.uk |
             | Test45@justice.uk |
-        When I select find person result "Test23@justice.uk"
-        Then I see find person is selected with "Test23@justice.uk"
+        When In workflow, I select find person result "Test23@justice.uk"
+        Then In workflow, I see find person is selected with "Test23@justice.uk"
 
-        When I click continue in find person page
+        When In workflow, I click continue
 
         Then I see task check your changes page for action "<action>" displayed
 
@@ -84,18 +85,20 @@ Feature: WA Release 2: My work - My tasks - Task assignment
         When I open Manage link for task at row <taskAtRow>
         Then I see action link "<action>" is present for task with Manage link open
         When I click action link "<action>" on task with Manage link open
-        Then I see find person page displayed with caption "<action>"
-        When I enter search term "test" in find person input text
-        Then I see following options available in find person results
+        Then I am in workflow page "Reassign task"
+
+        Then In workflow, I see find person page displayed with caption "<action>"
+        When In workflow, I enter search term "test" in find person input text
+        Then In workflow, I see following options available in find person results
             | value             |
             | Test12@justice.uk |
             | Test23@justice.uk |
             | Test34@justice.uk |
             | Test45@justice.uk |
-        When I select find person result "Test23@justice.uk"
-        Then I see find person is selected with "Test23@justice.uk"
+        When In workflow, I select find person result "Test23@justice.uk"
+        Then In workflow, I see find person is selected with "Test23@justice.uk"
 
-        When I click continue in find person page
+        When In workflow, I click continue
 
         Then I see task check your changes page for action "<action>" displayed
 
@@ -130,18 +133,20 @@ Feature: WA Release 2: My work - My tasks - Task assignment
         When I open Manage link for task at row <taskAtRow>
         Then I see action link "<action>" is present for task with Manage link open
         When I click action link "<action>" on task with Manage link open
-        Then I see find person page displayed with caption "<action>"
-        When I enter search term "test" in find person input text
-        Then I see following options available in find person results
+        Then I am in workflow page "Reassign task"
+
+        Then In workflow, I see find person page displayed with caption "<action>"
+        When In workflow, I enter search term "test" in find person input text
+        Then In workflow, I see following options available in find person results
             | value             |
             | Test12@justice.uk |
             | Test23@justice.uk |
             | Test34@justice.uk |
             | Test45@justice.uk |
-        When I select find person result "Test23@justice.uk"
-        Then I see find person is selected with "Test23@justice.uk"
+        When In workflow, I select find person result "Test23@justice.uk"
+        Then In workflow, I see find person is selected with "Test23@justice.uk"
 
-        When I click cancel link in find person page
+        When In workflow, I click cancel link
 
         Then I see navigation header tab page "My work"
 

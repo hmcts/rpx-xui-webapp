@@ -5,8 +5,8 @@ class WorkFlowContainer{
     constructor(workflowLocator) {
         this.container = workflowLocator;
         this.backLink = this.container.$('a.govuk-back-link');
-        this.continueButton = this.container.$('.govuk-button-group button');
-        this.cancelLink = this.container.$('.govuk-button-group p>a');
+        this.continueButton = this.container.$('.govuk-button-group button , button.govuk-button[type="submit"]');
+        this.cancelLink = this.container.$('.govuk-button-group p>a,#main-content p>a');
 
     }
 

@@ -98,7 +98,7 @@ const config = {
 
         //Set default explict timeout default value to 10sec
         const customWaits = require('../../e2e/support/customWaits');
-        customWaits.setDefaultWaitTime(30000);
+        customWaits.setDefaultWaitTime(20000);
 
     },
     cucumberOpts: {

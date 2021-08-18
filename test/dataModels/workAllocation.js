@@ -166,8 +166,8 @@ class WorkAllocationModels {
             }
             let roleActions = actionsView[roles[i]];
 
-            for (let i = 0; i < roles.length; i++) {
-                allowedActions[roles[i].id] = roleActions[i];
+            for (let i = 0; i < roleActions.length; i++) {
+                allowedActions[roleActions[i].id] = roleActions[i];
             }
         }
 
@@ -213,8 +213,8 @@ const ACTIONS = {
 }
 
 const CASE_ACTIONS = {
-    ReAllocate: { id: 'allocate-role', title: 'Reallocate' },
-    RemoveAllocation: { id: 'remove', title: 'Remove allocatiomn' },
+    ReAllocate: { id: 'reallocate', title: 'Reallocate' },
+    RemoveAllocation: { id: 'remove', title: 'Remove' },
 }
 const taskActionsMatrix = {
     mytasks: {

@@ -19,6 +19,7 @@ const ArrayUtil = require('../../../utils/ArrayUtil');
 const findPersonPage = require('../../pageObjects/workAllocation/common/findPersonComponent');
 const taskCheckYourChangesPage = require('../../pageObjects/workAllocation/taskCheckYourChangesPage');
 
+const workflowUtil = require('../../pageObjects/common/workflowUtil');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
     const taskListTable = new TaskListTable();
@@ -118,8 +119,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 await softAssert.assert(async () => expect(await taskListTable.isManageLinkPresent(taskIndex+1)).to.be.false);
                 continue;
             }
-            if (!(await taskListTable.isManageLinkOpenForTaskAtPos(taskIndex+1))){
-                await taskListTable.clickManageLinkForTaskAt(taskIndex+1);
+            if (!(await taskListTable.isManageLinkOpenForTaskAtPos(taskIndex))){
+                await taskListTable.clickManageLinkForTaskAt(taskIndex);
             }
 
             for (let j = 0; j < taskActions.length;j++){
@@ -128,6 +129,34 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 await softAssert.assert(async () => expect(await taskListTable.isTaskActionPresent(action)).to.be.true);
             }
             
+        }
+        softAssert.finally();
+
+    });
+
+    Then('I validate manage link actions for cases', async function (tasksDatatable) {
+        const softAssert = new SoftAssert();
+        const taskHashes = tasksDatatable.hashes();
+
+        for (let i = 0; i < taskHashes.length; i++) {
+
+            const taskActions = taskHashes[i]["actions"].split(",");
+            let taskIndex = parseInt(taskHashes[i].index);
+            if (taskHashes[i]["actions"] === "") {
+                softAssert.setScenario(`Manage link not present for task  ${JSON.stringify(taskHashes[i])} `);
+                await softAssert.assert(async () => expect(await waCaseListTable.isManageLinkPresent(taskIndex + 1)).to.be.false);
+                continue;
+            }
+            if (!(await waCaseListTable.isManageLinkOpenForCaseAtPos(taskIndex))) {
+                await waCaseListTable.clickManageLinkForCaseAt(taskIndex);
+            }
+
+            for (let j = 0; j < taskActions.length; j++) {
+                let action = taskActions[j];
+                softAssert.setScenario(`Action ${action} present for task  ${JSON.stringify(taskHashes[i])} isPresent`);
+                await softAssert.assert(async () => expect(await waCaseListTable.isCaseActionPresent(action)).to.be.true);
+            }
+
         }
         softAssert.finally();
 
@@ -246,8 +275,16 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await taskActionPage.clickCancelLink();
     });
 
-    When('I click cancel link in find person page', async function(){
-        await findPersonPage.clickCancelLink();
+    When('In workflow, I click cancel link', async function(){
+        const workFlowPage = workflowUtil.getWorlflowPageObject(global.scenarioData['workflow']);
+        expect(workFlowPage,'workFlowPage pagee is null. test issue, include step Then I am in workflow page "xxx" ').to.be.not.null;
+        await workFlowPage.workFlowContainer.clickCancelLink();
+    });
+
+    When('In workflow, I click continue', async function () {
+        const workFlowPage = workflowUtil.getWorlflowPageObject(global.scenarioData['workflow']);
+        expect(workFlowPage, 'workFlowPage pagee is null. test issue, include step Then I am in workflow page "xxx" ').to.be.not.null;
+        await workFlowPage.workFlowContainer.clickContinue();
     });
 
     Then('I validate tasks count in page {int}', async function (tasksCount) {

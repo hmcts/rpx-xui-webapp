@@ -44,7 +44,6 @@ Feature: WA Release 1: My Tasks Task list
             | row | Case reference      | Case name      | Case category      | Location       | Task                     |
             | 1     | 1234-1234-1234-1234 | test case name | auto test category | London QA labs | Autotest validation task |
 
-@test
     Scenario: My Tasks pagination
         Given I set MOCK My tasks count 25
         Given I set MOCK request "/workallocation/taskWithPagination/" intercept with reference "taskSearchRequest"

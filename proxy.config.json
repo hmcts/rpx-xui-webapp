@@ -24,11 +24,6 @@
     "secure": false,
     "logLevel": "debug"
   },
-  "/documentsv2/*": {
-    "target": "http://localhost:3001",
-    "secure": false,
-    "logLevel": "debug"
-  },
   "/workallocation/*": {
     "target": "http://localhost:3001",
     "secure": false,
@@ -75,11 +70,6 @@
     "logLevel": "debug"
   },
   "/oauth2/callback": {
-    "target": "http://localhost:3001",
-    "secure": false,
-    "logLevel": "debug"
-  },
-  "/doc-assembly/*": {
     "target": "http://localhost:3001",
     "secure": false,
     "logLevel": "debug"

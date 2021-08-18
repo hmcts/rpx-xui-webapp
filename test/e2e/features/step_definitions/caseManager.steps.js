@@ -3,8 +3,7 @@ var CaseListPage = require("../pageObjects/CaseListPage");
 var FRCase = require('../pageObjects/FRCase');
 var ProbateCase = require('../pageObjects/ProbateCase');
 var DivorceCase = require('../pageObjects/Divorcecase');
-var IACCase = require('../pageObjects/iacCase');
-var HearingRecordingsCase = require('../pageObjects/hearingRecordingsCase');
+var IACCase = require('../pageObjects/iacCase'); 
 
 
 var CaseManager = require('../pageObjects/common/CaseManager');
@@ -19,7 +18,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     let probateCase = new ProbateCase();
     let divorceCase = new DivorceCase();
     let iacCase = new IACCase();
-    let hearingRecordingsCase = new HearingRecordingsCase();
 
     let caseManager = new CaseManager();
 
@@ -44,13 +42,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await iacCase.createCase(false);
     })
 
-    When('I create Hearing Recordings case', { timeout: creatCaseStepTimeout }, async function () {
-        await hearingRecordingsCase.createCase();
-    })
-
     When('I start case next step', async function () {
         await caseManager.startNextStep(false);
     });
+
 
     When('I start case next step {string}', async function (stepName) {
         await caseManager.startNextStep(stepName);

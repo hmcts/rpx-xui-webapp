@@ -9,8 +9,6 @@
     "api_url": "/aggregated",
     "case_data_url": "/data",
     "document_management_url": "/documents",
-    "document_management_url_v2": "/documentsv2",
-    "document_management_secure_enabled": true,
     "login_url": "/login",
     "oauth2_client_id": "ccd_gateway",
     "postcode_lookup_url": "/api/addresses?postcode=${postcode}",
@@ -24,9 +22,7 @@
     "print_service_url": "/print",
     "remote_print_service_url": "https://return-case-doc-ccd.nonprod.platform.hmcts.net",
     "pagination_page_size": 25,
-    "annotation_api_url": "/em-anno",
-    "hrs_url": "/hearing-recordings",
-    "remote_hrs_url": ".*(\/hearing-recordings)"
+    "annotation_api_url": "/em-anno"
   },
   "urls": {
     "idam": {

@@ -26,13 +26,6 @@ export class AppConfig extends AbstractAppConfig {
     super();
     this.config = this.appConfigService.getEditorConfiguration() || {};
     this.featureToggleWorkAllocation();
-
-    this.featureToggleService.getValue('mc-document-secure-mode-enabled', false).subscribe({
-      next: (val) => this.config = {
-        ...this.config,
-        document_management_secure_enabled: val
-      }
-    });
   }
 
   public load(): Promise<void> {
@@ -53,14 +46,6 @@ export class AppConfig extends AbstractAppConfig {
 
   public getDocumentManagementUrl() {
     return this.config.document_management_url;
-  }
-
-  public getDocumentManagementUrlV2() {
-    return this.config.document_management_url_v2;
-  }
-
-  public getDocumentSecureMode() {
-    return this.config.document_management_secure_enabled;
   }
 
   public getRemoteDocumentManagementUrl() {
@@ -153,7 +138,11 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getHrsUrl(): string {
-    return this.config.hrs_url;
+    return '';
+  }
+
+  public getRemoteHrsUrl(): string {
+    return '';
   }
 
   private featureToggleWorkAllocation(): void {
@@ -168,7 +157,4 @@ export class AppConfig extends AbstractAppConfig {
       );
   }
 
-  public getRemoteHrsUrl(): string {
-    return this.config.remote_hrs_url;
-  }
 }

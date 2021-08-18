@@ -9,10 +9,7 @@ import { setHeaders } from '../lib/proxy';
 import { LocationInfo, RoleAssignment } from './interfaces/roleAssignment';
 import { isCurrentUserCaseAllocator } from './utils';
 
-export async function getUserDetails(req, res: Response, next: NextFunction): Promise<Response> {
-  if (!req.session || !req.session.passport || !req.session.passport.user) {
-    return res.send({}).status(200);
-  }
+export async function getUserDetails(req, res: Response, next: NextFunction) {
 
   try {
     const { roles } = req.session.passport.user.userinfo;

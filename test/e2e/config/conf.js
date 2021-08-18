@@ -57,9 +57,7 @@ const config = {
     sscs_password: process.env.SSCS_PASSWORD,
 
     caseworker_iac_off_username: process.env.CASEWORKER_IAC_OFF_USERNAME ? process.env.CASEWORKER_IAC_OFF_USERNAME :'xui_auto_co_r1@justice.gov.uk' ,
-    caseworker_iac_off_password: process.env.CASEWORKER_IAC_OFF_PASSWORD ? process.env.CASEWORKER_IAC_OFF_PASSWORD :'Welcome01',
-    hrsTesterUser: 'hrs.tester@hmcts.net',
-    hrsTesterPassword: 'passwOrd01hrs'
+    caseworker_iac_off_password: process.env.CASEWORKER_IAC_OFF_PASSWORD ? process.env.CASEWORKER_IAC_OFF_PASSWORD :'Welcome01' 
 
   },
   directConnect: true,

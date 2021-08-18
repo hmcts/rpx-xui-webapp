@@ -12,8 +12,6 @@ describe('nodeApp endpoint', () => {
   // const password = 'Monday01';
 
   beforeEach(function ()  {
-    this.timeout(120000);
-
     setTestContext(this);
     Request.clearSession();
   });
@@ -59,7 +57,7 @@ describe('nodeApp endpoint', () => {
 
   it('api/user/details without session', async () => {
     const response = await Request.get('api/user/details', null, 200);
-    expect(Object.keys(response.data).length).to.equal(0);
+    expect(response.data).to.have.lengthOf.above(5);
   });
 
 

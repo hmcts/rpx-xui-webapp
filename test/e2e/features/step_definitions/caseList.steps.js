@@ -23,10 +23,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     When('I click search Apply in case list page', async function(){
-        await BrowserWaits.retryWithActionCallback(async  () => {
-            await caseListPage.clickSearchApplyBtn();
-        });
-        
+        await caseListPage.clickSearchApplyBtn();
     });
 
     When('I click search Reset in case list page', async function () {

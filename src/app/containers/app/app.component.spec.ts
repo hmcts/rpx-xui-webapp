@@ -152,6 +152,27 @@ describe('AppComponent', () => {
     expect(featureToggleService.initialize).toHaveBeenCalledWith(featureUser, 'clientId');
   });
 
+  it('should call initializeFeature again', () => {
+    const userInfo = {
+      id: '4567',
+      forename: 'foreName',
+      surname: 'surName',
+      email: 'test@email.com',
+      active: true,
+      roles: ['role1', 'role2'],
+      uid: '4567'
+    };
+    appComponent.initializeFeature(userInfo, 'secondId');
+    const featureUser = {
+      key: '4567',
+      custom: {
+        roles: ['role1', 'role2'],
+        orgId: '-1'
+      }
+    };
+    expect(featureToggleService.initialize).toHaveBeenCalledWith(featureUser, 'secondId');
+  });
+
   it('should call userDetailsHandler', () => {
     const user = {
       sessionTimeout: {
@@ -177,7 +198,6 @@ describe('AppComponent', () => {
   });
 
   it('loadAndListenForUserDetails', () => {
-    appComponent.loadAndListenForUserDetails();
     environmentService.config$.and.returnValue(of({launchDarklyClientId: '4452'}));
     const userDetails = {
       sessionTimeout: {
@@ -196,6 +216,8 @@ describe('AppComponent', () => {
       }
     };
     store.pipe.and.returnValue(of(userDetails));
+    appComponent.loadAndListenForUserDetails();
+    expect(store.dispatch).toHaveBeenCalled();
     expect(store.pipe).toHaveBeenCalled();
   });
 

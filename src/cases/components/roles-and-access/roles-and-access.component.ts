@@ -21,11 +21,6 @@ export class RolesAndAccessComponent implements OnInit {
   @Input() public caseDetails: CaseView;
   @Input() public locationInfo: LocationInfo;
 
-  public ngOnInit(): void {
-    this.caseId = this.caseDetails.case_id;
-  }
-
-
   constructor() {
   }
 
@@ -43,5 +38,9 @@ export class RolesAndAccessComponent implements OnInit {
 
   public static isJudicialRole(role: CaseRole): boolean {
     return role.role === TypeOfRole.LEAD_JUDGE || role.role === TypeOfRole.HEARING_JUDGE;
+  }
+
+  public ngOnInit(): void {
+    this.caseId = this.caseDetails.case_id;
   }
 }

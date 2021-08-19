@@ -1,5 +1,5 @@
-import { AxiosResponse } from 'axios';
-import { httpMock } from '../common/httpMock';
+import { AxiosInstance, AxiosResponse } from 'axios';
+import { HttpMock } from '../common/httpMock';
 import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
@@ -8,6 +8,7 @@ import { CaseRole } from './interfaces/caseRole';
 import { hasCaseAllocatorRole } from './util';
 
 const logger: JUILogger = log4jui.getLogger('role-service');
+const httpMock: AxiosInstance = HttpMock.getInstance();
 
 export async function handleGetRolesByCaseId(path: string, req: EnhancedRequest): Promise<AxiosResponse<CaseRole>> {
   logger.info('handle get method', path);

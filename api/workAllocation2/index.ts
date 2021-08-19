@@ -43,9 +43,9 @@ import {
   prepareTaskSearchForCompletable
 } from './util';
 
-const mock = taskServiceMock.init();
-caseServiceMock.init(mock);
-roleServiceMock.init(mock);
+taskServiceMock.init();
+caseServiceMock.init();
+roleServiceMock.init();
 
 export const baseWorkAllocationTaskUrl = getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH);
 export const baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);

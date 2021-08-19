@@ -1,9 +1,19 @@
-import axios, { AxiosInstance } from 'axios';
-import { errorInterceptor, requestInterceptor, successInterceptor } from './interceptorsMock';
+import { AxiosInstance } from 'axios';
+import { HttpMockClient } from './httpMockClient';
 
-// TODO: once mocks are no longer needed this can be replaced by standard http
-export const httpMock: AxiosInstance = axios.create({});
+export class HttpMock extends HttpMockClient {
 
-axios.defaults.headers.common['Content-Type'] = 'application/json';
-httpMock.interceptors.request.use(requestInterceptor);
-httpMock.interceptors.response.use(successInterceptor, errorInterceptor);
+  public static getInstance(): AxiosInstance {
+    if (!this.axiosInstance) {
+      this.axiosInstance = new HttpMock();
+    }
+    return this.axiosInstance.instance;
+  }
+
+  private static axiosInstance?: HttpMock;
+
+  private constructor() {
+    super('');
+  }
+
+}

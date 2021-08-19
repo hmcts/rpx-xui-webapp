@@ -60,12 +60,10 @@ export async function getRoleAssignmentForUser(userInfo: UserInfo, req: any): Pr
 export function getLocationInfo(roleAssignmentResponse: RoleAssignment[]): LocationInfo[] {
   const locationInfo = [];
   roleAssignmentResponse.forEach(roleAssignment => {
-    if (roleAssignment.attributes.primaryLocation) {
       const isCaseAllocator = isCurrentUserCaseAllocator(roleAssignment);
       const attributes = {...roleAssignment.attributes};
       attributes.isCaseAllocator = isCaseAllocator;
       locationInfo.push(attributes);
-    }
   });
   return locationInfo;
 }

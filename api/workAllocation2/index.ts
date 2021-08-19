@@ -326,9 +326,10 @@ export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next
 }
 
 export async function showAllocateRoleLink(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
-  const caseId = req.params.caseId;
+  const jurisdiction = req.params.jurisdiction;
+  const caseLocationId = req.params.caseLocationId;
   try {
-    const result: boolean = handleShowAllocatorLinkByCaseId(caseId, req);
+    const result: boolean = handleShowAllocatorLinkByCaseId(jurisdiction, caseLocationId, req);
     return res.send(result).status(200);
   } catch (e) {
     next(e);

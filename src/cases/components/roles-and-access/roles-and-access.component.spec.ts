@@ -50,4 +50,8 @@ describe('RolesAndAccessComponent', () => {
     const container: HTMLElement = fixture.debugElement.nativeElement as HTMLElement;
     expect(container.querySelector('exui-case-roles-table')).not.toBeNull();
   });
+
+  it('should have return case Id', () => {
+    expect(component.caseId).toBe('1');
+  });
 });

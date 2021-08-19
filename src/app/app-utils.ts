@@ -1,6 +1,7 @@
 import { ActivatedRouteSnapshot } from '@angular/router';
-import { AppConstants } from './app.constants';
+import { AppConstants, JUDICIAL_ROLE_LIST, LEGAL_OPS_ROLE_LIST } from './app.constants';
 import { NavItemsModel } from './models/nav-item.model';
+import { UserRole } from './models/user-details.model';
 
 export class AppUtils {
 
@@ -148,5 +149,14 @@ export class AppUtils {
 
   public static getFeatureToggledUrl(isFeatureEnabled: boolean, workallocationUrl: string): string {
     return isFeatureEnabled ? workallocationUrl : null;
+  }
+
+  public static isLegalOpsOrJudicial(userRoles: string[]): UserRole {
+    if (userRoles.some(userRole => LEGAL_OPS_ROLE_LIST.some(role => role === userRole))) {
+      return UserRole.LegalOps;
+    } else if (userRoles.some(userRole => JUDICIAL_ROLE_LIST.some(role => role === userRole))) {
+      return UserRole.Judicial;
+    }
+    return null;
   }
 }

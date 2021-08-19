@@ -10,5 +10,5 @@ export {
   InfoMessageType,
   RoleAllocationCaptionText,
   RoleAllocationRadioText,
-  RoleAllocationTitleText
+  RoleAllocationTitleText,
 };

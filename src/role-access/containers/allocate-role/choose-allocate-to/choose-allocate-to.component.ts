@@ -42,7 +42,9 @@ export class ChooseAllocateToComponent implements OnInit {
         if (this.typeOfRole === TypeOfRole.CASE_MANAGER) {
           this.caption = RoleAllocationCaptionText.LegalOpsAllocate;
         } else {
-          this.caption = `Allocate a ${this.typeOfRole.toLowerCase()}`;
+          if (this.typeOfRole) {
+            this.caption = `Allocate a ${this.typeOfRole.toLowerCase()}`;
+          }
         }
       }
     );
@@ -75,10 +77,16 @@ export class ChooseAllocateToComponent implements OnInit {
   public dispatchEvent(navEvent: AllocateRoleNavigationEvent): void {
     switch (navEvent) {
       case AllocateRoleNavigationEvent.CONTINUE:
+        let allocateRoleState;
         const allocateTo = this.radioOptionControl.value;
+        if (allocateTo === AllocateTo.ALLOCATE_TO_ANOTHER_PERSON) {
+          allocateRoleState = AllocateRoleState.SEARCH_PERSON;
+        } else {
+          allocateRoleState = AllocateRoleState.CHOOSE_DURATION;
+        }
         this.store.dispatch(new fromFeature.ChooseAllocateToAndGo({
           allocateTo,
-          allocateRoleState: AllocateRoleState.SEARCH_PERSON
+          allocateRoleState
         }));
         break;
       default:

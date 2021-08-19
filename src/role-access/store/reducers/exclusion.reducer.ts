@@ -3,7 +3,7 @@ import * as fromActions from '../actions';
 import { ExclusionActionTypes } from '../actions';
 
 export const initialState: ExclusionStateData = {
-  caseId: '1546883526751282',
+  caseId: null,
   state: ExclusionState.CHOOSE_EXCLUSION,
   exclusionOption: null,
   personRole: null,
@@ -20,10 +20,15 @@ export function exclusionReducer(currentState = initialState, action: fromAction
         state: action.payload
       };
     }
-    case ExclusionActionTypes.RESET: {
+    case ExclusionActionTypes.EXCLUSION_RESET: {
+      return {
+        ...initialState
+      };
+    }
+    case ExclusionActionTypes.EXCLUSION_SET_CASE_ID: {
       return {
         ...currentState,
-        ...initialState
+        caseId: action.payload
       };
     }
     case ExclusionActionTypes.UPDATE_DESCRIBE_EXCLUSION_TEXT: {
@@ -52,16 +57,8 @@ export function exclusionReducer(currentState = initialState, action: fromAction
         ...currentState,
         state: action.payload,
         person: action.person
-      }
+      };
     }
-    case ExclusionActionTypes.CONFIRM_EXCLUSION:
-      return {
-        ...currentState
-      }
-    case ExclusionActionTypes.CONFIRM_EXCLUSION_FAILURE:
-      return {
-        ...currentState
-      }
     default: {
       return {
         ...currentState
@@ -71,5 +68,4 @@ export function exclusionReducer(currentState = initialState, action: fromAction
 }
 
 export const getExclusionActiveState = (exclusionState: ExclusionStateData) => exclusionState.state;
-export const getCaseId = (exclusionState: ExclusionStateData) => exclusionState.caseId;
 export const getLastErrors = (exclusionState: ExclusionStateData) => exclusionState.lastError;

@@ -20,3 +20,8 @@ export enum RoleAllocationRadioText {
   ExclusionSelf = 'Exclude me',
   ExclusionOther = 'Exclude another person'
 }
+
+export enum RoleAllocationMessageText {
+  Delete = 'You\'ve deleted a role allocation',
+  Add = 'You\'ve allocated a role',
+}

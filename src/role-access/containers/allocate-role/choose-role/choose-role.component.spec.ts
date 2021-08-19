@@ -4,25 +4,48 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { of } from 'rxjs';
 
-import { State } from '../../../../app/store/reducers';
 import { ChooseRadioOptionComponent } from '../../../components';
 import { CHOOSE_A_ROLE } from '../../../constants';
-import { AllocateRoleNavigationEvent } from '../../../models';
+import { AllocateRoleNavigationEvent, AllocateRoleStateData } from '../../../models';
+import { RoleAssignmentService } from '../../../services';
 import { ChooseRoleComponent } from './choose-role.component';
 
-fdescribe('ChooseRoleComponent', () => {
+const firstRoles = [{ roleId: '1', roleName: 'Role 1' },
+      { roleId: '2', roleName: 'Role 2' },
+      { roleId: '3', roleName: 'Role 3' }];
+
+const firstRoleOptions = [{ optionId: '1', optionValue: 'Role 1' },
+      { optionId: '2', optionValue: 'Role 2' },
+      { optionId: '3', optionValue: 'Role 3' }];
+
+const secondRoles = [{ roleId: '1', roleName: 'Role 1' },
+      { roleId: '2', roleName: 'Role 2' },
+      { roleId: '3', roleName: 'Role 3' }];
+
+const mockAllocateRoleStateData: AllocateRoleStateData = {
+  caseId: '1234',
+  state: null,
+  typeOfRole: null,
+  allocateTo: null,
+  person: null,
+  durationOfRole: null,
+  period: null
+};
+
+describe('ChooseRoleComponent', () => {
   const radioOptionControl: FormControl = new FormControl('');
   const formGroup: FormGroup = new FormGroup({[CHOOSE_A_ROLE]: radioOptionControl});
 
   let component: ChooseRoleComponent;
   let fixture: ComponentFixture<ChooseRoleComponent>;
-  let store: MockStore<State>;
+  const mockStore = jasmine.createSpyObj('store', ['dispatch', 'pipe']);
 
-  let spyOnPipeToStore = jasmine.createSpy();
-  let spyOnStoreDispatch = jasmine.createSpy();
-  let roleAssignmentService = jasmine.createSpyObj('RoleAssignmentService', ['setRoleAllocations']);
+  const roleAssignmentService = {
+    judicialRoles: firstRoles,
+    legalOpsRoles: secondRoles
+  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -33,29 +56,28 @@ fdescribe('ChooseRoleComponent', () => {
         ReactiveFormsModule
       ],
       providers: [
-        provideMockStore(),
+        { provide: Store, useValue: mockStore },
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               queryParams: {
-                userJourney: 'judicial'
+                userType: 'judicial'
               }
             },
           }
         },
+        { provide: RoleAssignmentService, useValue: roleAssignmentService }
       ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    store = TestBed.get(Store);
-    spyOnPipeToStore = spyOn(store, 'pipe').and.callThrough();
-    spyOnStoreDispatch = spyOn(store, 'dispatch');
     fixture = TestBed.createComponent(ChooseRoleComponent);
     component = fixture.componentInstance;
     component.formGroup = formGroup;
+    mockStore.pipe.and.returnValue(of(mockAllocateRoleStateData));
     fixture.detectChanges();
   });
 
@@ -70,9 +92,11 @@ fdescribe('ChooseRoleComponent', () => {
   });
 
   it('should have correctly defined the roles', () => {
-    expect(component.optionsList).toEqual(mockRoleOptions);
+    expect(component.caption).toBe('Allocate a judicial role');
+    expect(component.radioOptionControl).toBeDefined();
+    expect(component.formGroup).toBeDefined();
+    expect(component.optionsList).toEqual(firstRoleOptions);
   });
-
 
   afterEach(() => {
     component = null;

@@ -3,11 +3,11 @@ import { router as caseShareRoutes } from './caseshare/routes';
 import { getConfigValue, showFeature } from './configuration';
 import { APP_INSIGHTS_KEY } from './configuration/references';
 import exclusionRouter from './exclusions/routes';
-import roleAssignmentRouter from './roleAssignment/routes';
 import healthCheck from './healthCheck';
 import authInterceptor from './lib/middleware/auth';
 import { router as nocRouter } from './noc/routes';
 import { router as organisationRouter } from './organisations';
+import roleAssignmentRouter from './roleAssignment/routes';
 import userRouter from './user/routes';
 
 const router = express.Router({mergeParams: true});

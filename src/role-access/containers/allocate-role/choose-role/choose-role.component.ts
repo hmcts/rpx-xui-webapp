@@ -55,6 +55,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
     this.radioOptionControl = new FormControl(this.typeOfRole ? this.typeOfRole : '', [Validators.required]);
     this.formGroup = new FormGroup({[this.radioControlName]: this.radioOptionControl});
     const rolesList = this.userType === PersonRole.JUDICIAL.toLowerCase() ? this.roleAssignmentService.judicialRoles : this.roleAssignmentService.legalOpsRoles;
+    console.log('yabba ', rolesList);
     this.optionsList = this.getOptions(rolesList);
   }
 
@@ -87,7 +88,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
       const thisOption: OptionsModel = {
         optionId: jr.roleId,
         optionValue: jr.roleName
-      }
+      };
       options.push(thisOption);
     });
     return options;

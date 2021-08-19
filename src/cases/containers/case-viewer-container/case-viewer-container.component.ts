@@ -18,7 +18,7 @@ import * as fromRoot from '../../../app/store';
 export class CaseViewerContainerComponent implements OnInit {
   private static readonly FEATURE_WORK_ALLOCATION_RELEASE_1 = 'WorkAllocationRelease1';
   private static readonly FEATURE_WORK_ALLOCATION_RELEASE_2 = 'WorkAllocationRelease2';
-  private workAllocationRoles: string[] = ['caseworker-ia-iacjudge'];
+  private workAllocationRoles: string[] = ['caseworker-ia-iacjudge', 'caseworker-ia'];
   private tabs: CaseTab[] = [
     {
       id: 'tasks',

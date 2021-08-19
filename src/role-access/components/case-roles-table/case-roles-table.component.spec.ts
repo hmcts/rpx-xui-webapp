@@ -127,7 +127,7 @@ describe('CaseRolesTableComponent', () => {
     fixture.detectChanges();
     const tableBody: DebugElement = fixture.debugElement.query(By.css('.govuk-table__body'));
     const tableBodyHTMLElement: HTMLElement = tableBody.nativeElement as HTMLElement;
-    expect(tableBodyHTMLElement.children.length).toBe(2);
+    expect(tableBodyHTMLElement.children.length).toBe(3);
     expect(tableBodyHTMLElement.children[0].children[0].textContent).toBe('Judge Beech');
     expect(tableBodyHTMLElement.children[0].children[2].textContent).toBe('Taylor House');
     expect(tableBodyHTMLElement.children[1].children[0].textContent).toBe('Kuda Nyamainashe');

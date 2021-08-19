@@ -1,24 +1,15 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
-import { provideMockStore } from '@ngrx/store/testing';
-import { CASEROLES } from '../../../../api/workAllocation2/constants/roles.mock.data';
-import { CaseRolesTableComponent } from '../../../role-access/components/case-roles-table/case-roles-table.component';
-import { ExclusionsTableComponent } from '../../../role-access/components/exclusions-table/exclusions-table.component';
-import { RoleExclusion } from '../../../role-access/models';
-import { RoleExclusionsService } from '../../../role-access/services';
-import { RoleExclusionsMockService } from '../../../role-access/services/role-exclusions.mock.service';
-import { initialMockState } from '../../../role-access/testing/app-initial-state.mock';
-import { RolesAndAccessComponent } from '../../components/roles-and-access/roles-and-access.component';
-import { ShowAllocateLinkDirective } from '../../directives/show-allocate-link.directive';
-import { RolesAndAccessContainerComponent } from './roles-and-access-container.component';
 
-describe('RolesContainerComponent', () => {
-  let component: RolesAndAccessContainerComponent;
-  let fixture: ComponentFixture<RolesAndAccessContainerComponent>;
+import { ExclusionsTableComponent } from './exclusions-table.component';
+
+describe('ExclusionsTableComponent', () => {
+  let component: ExclusionsTableComponent;
+  let fixture: ComponentFixture<ExclusionsTableComponent>;
   const CASE_VIEW: CaseView = {
     events: [],
     triggers: [],
@@ -116,53 +107,42 @@ describe('RolesContainerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule, HttpClientTestingModule],
-      providers: [
-        {
-          provide: RoleExclusionsService,
-          useClass: RoleExclusionsMockService
-        },
-        provideMockStore({initialState: initialMockState}),
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              data: {
-                roles: CASEROLES,
-                showAllocateRoleLink: true,
-                case: CASE_VIEW
-              }
-            }
-          }
-        },
-      ],
-      declarations: [
-        RolesAndAccessContainerComponent,
-        RolesAndAccessComponent,
-        CaseRolesTableComponent,
-        ShowAllocateLinkDirective,
-        ExclusionsTableComponent
-      ]
+      imports: [RouterTestingModule.withRoutes([]), HttpClientTestingModule],
+      declarations: [ExclusionsTableComponent]
     })
       .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RolesAndAccessContainerComponent);
+    fixture = TestBed.createComponent(ExclusionsTableComponent);
     component = fixture.componentInstance;
+    component.caseDetails = CASE_VIEW;
     fixture.detectChanges();
   });
 
-  it('should get a list of case roles from the activated route snapshot', () => {
-    expect(component.roles.length).toBe(3);
-    expect(component.roles[0].name).toBe('Judge Beech');
+  it('should show the no exclusions message', () => {
+    const element = fixture.debugElement.nativeElement;
+    const rowElement = element.querySelector('.govuk-summary-list__value');
+    expect(rowElement).not.toBeNull();
+    expect(rowElement.innerHTML).toContain('There are no exclusions for this case.');
   });
 
-  it('should get exclusions from the api', () => {
-    component.exclusions$.subscribe((exclusions: RoleExclusion[]) => {
+  it('should display a list of roles', () => {
+    component.exclusions = [
+      {
+        added: new Date(2021, 7, 1),
+        name: 'Judge Birch',
+        notes: 'this case been remitted from Upper Tribunal and required different judge',
+        type: 'Other',
+        userType: 'Judicial',
+      }
+    ];
+    fixture.detectChanges();
+    const tableBody: DebugElement = fixture.debugElement.query(By.css('.govuk-table__body'));
+    const tableBodyHTMLElement: HTMLElement = tableBody.nativeElement as HTMLElement;
+    expect(tableBodyHTMLElement.children.length).toBe(1);
+    expect(tableBodyHTMLElement.children[0].children[0].textContent).toBe('Other');
+    expect(tableBodyHTMLElement.children[0].children[1].textContent).toBe('Judge Birch');
 
-      expect(exclusions.length).toBe(1);
-      expect(exclusions[0].name).toBe('Judge Birch');
-    });
   });
 });

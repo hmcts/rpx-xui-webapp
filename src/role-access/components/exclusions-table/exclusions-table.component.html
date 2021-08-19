@@ -1,5 +1,3 @@
-<h2 class="govuk-heading-m">Exclusions</h2>
-
 <table class="govuk-table" *ngIf="exclusions && exclusions.length > 0">
   <thead class="govuk-table__head">
   <tr class="govuk-table__row">
@@ -16,13 +14,12 @@
     <tr class="govuk-table__row">
       <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{exclusion.type}}</td>
       <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{exclusion.name}}</td>
-      <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{exclusion.userType}}e</td>
+      <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{exclusion.userType}}</td>
       <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{exclusion.notes}}</td>
       <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{exclusion.added | date: 'dd/MM/yyyy'}}</td>
       <td>
-        <p>
-          <a *ngIf="allowDelete" (click)="deleteExclusion(exclusion)" [routerLink]='deleteLink' class="govuk-link">Delete</a>
-        </p>
+        <a [routerLink]="['/','role-access', 'delete-exclusion' , caseDetails.case_id]"
+           href="javascript:void(0)">Delete</a>
       </td>
     </tr>
   </ng-container>
@@ -38,4 +35,3 @@
     </div>
   </dl>
 </ng-container>
-<p><a routerLink='/cases/addExclusion' class="govuk-link">Add</a></p>

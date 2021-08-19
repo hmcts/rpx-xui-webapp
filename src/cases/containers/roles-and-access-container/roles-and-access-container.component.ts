@@ -8,6 +8,8 @@ import { map } from 'rxjs/operators';
 import * as fromRoot from '../../../app/store';
 import * as fromCaseList from '../../../app/store/reducers';
 import { LocationInfo } from '../../../app/store/reducers/app-config.reducer';
+import { RoleExclusion } from '../../../role-access/models';
+import { RoleExclusionsService } from '../../../role-access/services';
 
 @Component({
   selector: 'exui-roles-and-access-container',
@@ -17,15 +19,20 @@ export class RolesAndAccessContainerComponent implements OnInit {
   public roles: CaseRole[] = [];
   public caseDetails: CaseView;
   public showAllocateRoleLink: boolean = false;
+  public exclusions$: Observable<RoleExclusion[]>;
   public locationInfo$: Observable<LocationInfo>;
 
-  constructor(private readonly route: ActivatedRoute, private readonly store: Store<fromCaseList.State>) {
+  constructor(
+    private readonly route: ActivatedRoute,
+    private readonly store: Store<fromCaseList.State>,
+    private readonly roleExclusionsService: RoleExclusionsService) {
   }
 
   public ngOnInit(): void {
     this.caseDetails = this.route.snapshot.data.case as CaseView;
     this.roles = this.route.snapshot.data.roles as CaseRole[];
     this.showAllocateRoleLink = this.route.snapshot.data.showAllocateRoleLink;
+    this.exclusions$ = this.roleExclusionsService.getCurrentUserRoleExclusions();
     this.locationInfo$ = this.store.pipe(
       select(fromRoot.getLocationInfo),
       map((locations: LocationInfo[]) => locations[0])

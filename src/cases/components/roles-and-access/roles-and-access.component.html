@@ -13,7 +13,7 @@
     <a href="javascript:void(0)"
        class="govuk-link"
        [routerLink]="['/', 'role-access', 'allocate-role']"
-       [queryParams]="{'userType': judicial}"
+       [queryParams]="{'caseId': caseId, 'userType': 'judicial'}"
        exuiShowAllocateLink
        [showAllocateRoleLink]="showAllocateRoleLink"
        [roles]="judicialRoles"
@@ -25,13 +25,14 @@
 
   <exui-case-roles-table [roles]="legalOpsRoles"
                          [caseDetails]="caseDetails"
-                         [locationInfo]="locationInfo"></exui-case-roles-table>
+                         [locationInfo]="locationInfo">
+  </exui-case-roles-table>
 
   <p>
     <a href="javascript:void(0)"
        class="govuk-link"
        [routerLink]="['/', 'role-access', 'allocate-role']"
-       [queryParams]="{'userType': legalOps}"
+       [queryParams]="{'caseId': caseId, 'userType': 'legalOps'}"
        exuiShowAllocateLink
        [showAllocateRoleLink]="showAllocateRoleLink"
        [roles]="legalOpsRoles"
@@ -44,6 +45,9 @@
   <exui-exclusions-table [exclusions]="exclusions" [caseDetails]="caseDetails"></exui-exclusions-table>
 
   <p>
-    <a href="javascript:void(0)" [routerLink]="['/', 'role-access', 'add-exclusion']" class="govuk-link">Add</a>
+    <a href="javascript:void(0)"
+       [routerLink]="['/', 'role-access', 'add-exclusion']"
+       [queryParams]="{'caseId': caseId}"
+       class="govuk-link">Add</a>
   </p>
 </div>

@@ -29,6 +29,25 @@ describe('RolesAndAccessComponent', () => {
     fixture = TestBed.createComponent(RolesAndAccessComponent);
     component = fixture.componentInstance;
     component.roles = CASEROLES;
+    component.caseDetails = {
+      case_id: '1',
+      case_type: {
+        id: 'TestAddressBookCase',
+        name: 'Test Address Book Case',
+        jurisdiction: {
+          id: 'TEST',
+          name: 'Test',
+        }
+      },
+      channels: [],
+      state: {
+        id: 'CaseCreated',
+        name: 'Case created'
+      },
+      tabs: [],
+      triggers: [],
+      events: []
+    };
     component.locationInfo = initialMockState.appConfig.locationInfo[0];
     fixture.detectChanges();
   });
@@ -36,5 +55,9 @@ describe('RolesAndAccessComponent', () => {
   it('should display case-roles-table', () => {
     const container: HTMLElement = fixture.debugElement.nativeElement as HTMLElement;
     expect(container.querySelector('exui-case-roles-table')).not.toBeNull();
+  });
+
+  it('should have return case Id', () => {
+    expect(component.caseId).toBe('1');
   });
 });

@@ -161,7 +161,7 @@ describe('RolesContainerComponent', () => {
         uid: '34345456'
       },
       locationInfo: [
-                     {  primaryLocation: '', jurisdiction: 'JUDICIAL', isCaseAllocator: true}, 
+                     {  primaryLocation: '', jurisdiction: 'JUDICIAL', isCaseAllocator: true},
                      {  primaryLocation: '', jurisdiction: 'DIVORCE', isCaseAllocator: false}
                     ]
     }

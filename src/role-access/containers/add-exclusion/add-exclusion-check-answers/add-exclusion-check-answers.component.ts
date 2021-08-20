@@ -23,7 +23,8 @@ export class AddExclusionCheckAnswersComponent implements OnDestroy {
   private exclusionStateData: ExclusionStateData;
 
   constructor(private readonly store: Store<fromFeature.State>) {
-    this.storeSubscription = this.store.pipe(select(fromFeature.getRoleAccessState)).subscribe(exclusion => this.setAnswersFromExclusionStore(exclusion));
+    this.storeSubscription = this.store.pipe(select(fromFeature.getRoleAccessState)).subscribe(
+      exclusion => this.setAnswersFromExclusionStore(exclusion));
   }
 
   public ngOnDestroy(): void {

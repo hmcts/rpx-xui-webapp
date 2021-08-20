@@ -25,7 +25,8 @@ describe('App Selectors', () => {
         totalIdleTime: 0,
       },
       canShareCases: false,
-      userInfo: null
+      userInfo: null,
+      locationInfo: []
     }
   };
 
@@ -73,7 +74,8 @@ describe('App Selectors', () => {
         totalIdleTime: 0,
       },
       canShareCases: false,
-      userInfo: null
+      userInfo: null,
+      locationInfo: []
     }
 };
 

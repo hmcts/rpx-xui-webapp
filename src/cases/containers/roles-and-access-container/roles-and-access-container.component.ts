@@ -5,9 +5,9 @@ import { select, Store } from '@ngrx/store';
 import { CaseRole } from 'api/workAllocation2/interfaces/caseRole';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { LocationInfo, UserDetails } from '../../../app/models/user-details.model';
 import * as fromRoot from '../../../app/store';
 import * as fromCaseList from '../../../app/store/reducers';
-import { LocationInfo } from '../../../app/store/reducers/app-config.reducer';
 
 @Component({
   selector: 'exui-roles-and-access-container',
@@ -19,17 +19,27 @@ export class RolesAndAccessContainerComponent implements OnInit {
   public showAllocateRoleLink: boolean = false;
   public locationInfo$: Observable<LocationInfo>;
 
-  constructor(private readonly route: ActivatedRoute, private readonly store: Store<fromCaseList.State>) {
+  constructor(private readonly route: ActivatedRoute,
+              private readonly store: Store<fromCaseList.State>,
+              private readonly appStore: Store<fromRoot.State>) {
   }
 
   public ngOnInit(): void {
     this.caseDetails = this.route.snapshot.data.case as CaseView;
+    const jurisdictionField = this.caseDetails.metadataFields.find(field => field.id === '[JURISDICTION]');
+    if (jurisdictionField) {
+      const caseJurisdiction = jurisdictionField.value;
+      this.appStore.select(fromRoot.getUserDetails).subscribe(user => this.setDisplayAllocateLink(user, caseJurisdiction));
+    }
     this.roles = this.route.snapshot.data.roles as CaseRole[];
-    this.showAllocateRoleLink = this.route.snapshot.data.showAllocateRoleLink;
     this.locationInfo$ = this.store.pipe(
       select(fromRoot.getLocationInfo),
       map((locations: LocationInfo[]) => locations[0])
     );
   }
 
+  public setDisplayAllocateLink(user: UserDetails, caseJurisdiction: any): void {
+    // need to check for the case Location once its available
+    this.showAllocateRoleLink = user.locationInfo.some(locationInfo => locationInfo.jurisdiction === caseJurisdiction);
+  }
 }

@@ -32,8 +32,9 @@ describe('NocGuard', () => {
         'pui-finance-manager',
         'pui-organisation-manager',
         'pui-user-manager'
-      ],
-    }
+      ]
+    },
+    locationInfo: []
   };
   const USER_2: UserDetails = {
     canShareCases: true,
@@ -55,7 +56,8 @@ describe('NocGuard', () => {
         'pui-organisation-manager',
         'pui-user-manager'
       ],
-    }
+    },
+    locationInfo: []
   };
   const APPLICATION_THEMES: Theme[] = [
     {

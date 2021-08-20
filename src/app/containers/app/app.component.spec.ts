@@ -213,7 +213,8 @@ describe('AppComponent', () => {
         active: true,
         roles: ['role1', 'role2'],
         uid: '1234'
-      }
+      },
+      locationInfo: []
     };
     timeoutNotificationService.notificationOnChange.and.returnValue(of({eventType: 'keep-alive'}));
     appComponent.userDetailsHandler('clientId', user);
@@ -332,7 +333,8 @@ describe('AppComponent', () => {
                 active: true,
                 roles: ['role1'],
                 uid: 'u234'
-            }
+            },
+            locationInfo: []
         });
         expect(spy).toHaveBeenCalledWith('dummy');
     });

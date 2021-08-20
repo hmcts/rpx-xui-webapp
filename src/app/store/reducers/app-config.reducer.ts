@@ -39,7 +39,8 @@ export const initialState: AppConfigState = {
       totalIdleTime: 0,
     },
     canShareCases: false,
-    userInfo: null
+    userInfo: null,
+    locationInfo: []
   }
 };
 

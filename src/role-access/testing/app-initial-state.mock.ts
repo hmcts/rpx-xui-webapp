@@ -33,7 +33,8 @@ export const initialMockState: State = {
         roles: ['caseworker-ia-iacjudge'],
         uid: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
         surname: 'judge'
-      }
+      },
+      locationInfo: []
     }
   }
 };

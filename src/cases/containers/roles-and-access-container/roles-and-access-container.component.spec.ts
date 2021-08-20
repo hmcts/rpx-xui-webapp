@@ -15,6 +15,7 @@ describe('RolesContainerComponent', () => {
   let component: RolesAndAccessContainerComponent;
   let fixture: ComponentFixture<RolesAndAccessContainerComponent>;
   const CASE_VIEW: CaseView = {
+    metadataFields: [],
     events: [],
     triggers: [],
     case_id: '1234567890123456',

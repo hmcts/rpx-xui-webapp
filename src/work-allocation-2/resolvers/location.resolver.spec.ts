@@ -37,7 +37,8 @@ describe('LocationResolver', () => {
         'caseworker-ia-caseofficer',
         'cwd-user'
       ]
-    }
+    },
+    locationInfo: []
   };
 
   const JUDICIAL_WORKER: UserDetails = {
@@ -55,7 +56,8 @@ describe('LocationResolver', () => {
       roles: [
         'judicialworker'
       ]
-    }
+    },
+    locationInfo: []
   };
 
   const JUDICIAL_WORKERS = [

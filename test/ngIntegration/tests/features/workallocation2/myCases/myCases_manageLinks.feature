@@ -1,4 +1,4 @@
-@ng @wa2 @wa @test
+@ng @wa2 @wa @ignore
 Feature: WA Release 2: My cases - Manage links
 
     Background: Mock and browser setup

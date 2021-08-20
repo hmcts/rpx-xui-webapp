@@ -116,7 +116,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             let taskIndex = parseInt(taskHashes[i].index);
             if (taskHashes[i]["actions"] === ""){
                 softAssert.setScenario(`Manage link not present for task  ${JSON.stringify(taskHashes[i])} `);
-                await softAssert.assert(async () => expect(await taskListTable.isManageLinkPresent(taskIndex+1)).to.be.false);
+                await softAssert.assert(async () => expect(await taskListTable.isManageLinkPresent(taskIndex)).to.be.false);
                 continue;
             }
             if (!(await taskListTable.isManageLinkOpenForTaskAtPos(taskIndex))){
@@ -125,6 +125,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
             for (let j = 0; j < taskActions.length;j++){
                 let action = taskActions[j];
+
                 softAssert.setScenario(`Action ${action} present for task  ${JSON.stringify(taskHashes[i])} isPresent`);
                 await softAssert.assert(async () => expect(await taskListTable.isTaskActionPresent(action)).to.be.true);
             }

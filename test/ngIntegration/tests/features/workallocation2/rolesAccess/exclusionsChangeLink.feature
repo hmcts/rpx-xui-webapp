@@ -1,5 +1,5 @@
-@ng
-Feature: WA Release 2: Exclusio workflow - Change links
+@ng @ignore
+Feature: WA Release 2: Exclusion workflow - Change links
 
    
     Scenario Outline: With user "<Useridentifier>" - Exclusion with option "Exclude another person" - Change link for question "<ChangeQuestion>"

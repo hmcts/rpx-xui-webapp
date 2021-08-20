@@ -1,4 +1,4 @@
-@ng
+@ng @ignore
 Feature: WA Release 2: Case details - "Tasks", "Roles and access" tabs visibility
 
     Scenario Outline: WA tab "<TabLabel>"" is displayed "<isDisplayed>"" in case details for user "<UserType>" "<UserIdentifier>"
@@ -9,10 +9,10 @@ Feature: WA Release 2: Case details - "Tasks", "Roles and access" tabs visibilit
         When I open first case in case list page
         Then I see case details page
         Then I see case details tab label "<TaskTabLabel>" is displayed is "<TaskTabLabelisDisplayed>"
-        Then I see case details tab label "<RolesAnsAccessTabLabel>" is displayed is "<isDisplayed>"
+        Then I see case details tab label "<RolesAndAccessTabLabel>" is displayed is "<RolesAndAccessTabLabelisDisplayed>"
 
         Examples:
-            | UserIdentifier     | UserType   | Roles                                              | TaskTabLabel | TaskTabLabelisDisplayed | RolesAnsAccessTabLabel | RolesAnsAccessTabLabelisDisplayed |
+            | UserIdentifier     | UserType   | Roles                                              | TaskTabLabel | TaskTabLabelisDisplayed | RolesAndAccessTabLabel | RolesAndAccessTabLabelisDisplayed |
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer | Tasks        | true                    | Roles and access       | true                              |
             | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    | Tasks        | true                    | Roles and access       | true                              |
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-test                                 | Tasks        | false                   | Roles and access       | false                             |

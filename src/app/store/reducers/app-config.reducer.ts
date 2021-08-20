@@ -9,7 +9,7 @@ export interface AppConfigState {
   termsAndCondition: TermsAndCondition;
   loaded: boolean;
   loading: boolean;
-  locationInfo: LocationInfo[];
+  locationInfo?: LocationInfo[];
   termsAndConditions: TCDocument;
   isTermsAndConditionsFeatureEnabled: boolean;
   useIdleSessionTimeout: boolean;
@@ -29,7 +29,6 @@ export const initialState: AppConfigState = {
   termsAndCondition: { isLoaded: false, hasUserAcceptedTC: false },
   loaded: false,
   loading: false,
-  locationInfo: [],
   termsAndConditions: null,
   isTermsAndConditionsFeatureEnabled: false,
   useIdleSessionTimeout: false,
@@ -39,8 +38,7 @@ export const initialState: AppConfigState = {
       totalIdleTime: 0,
     },
     canShareCases: false,
-    userInfo: null,
-    locationInfo: []
+    userInfo: null
   }
 };
 

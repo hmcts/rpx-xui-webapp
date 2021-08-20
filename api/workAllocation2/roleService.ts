@@ -11,17 +11,17 @@ const logger: JUILogger = log4jui.getLogger('role-service');
 const httpMock: AxiosInstance = HttpMock.getInstance();
 
 export async function handleGetRolesByCaseId(path: string, req: EnhancedRequest): Promise<AxiosResponse<CaseRole>> {
-    logger.info('handle get method', path)
-    const headers = setHeaders(req)
-    return await httpMock.get<CaseRole>(path, { headers })
+    logger.info('handle get method', path);
+    const headers = setHeaders(req);
+    return await httpMock.get<CaseRole>(path, { headers });
 }
 
 export function handleShowAllocatorLinkByCaseId(jurisdiction: string, caseLocationId: string, req: EnhancedRequest): boolean {
-    const roleAssignments = req.session.roleAssignmentResponse as RoleAssignment[]
-    let isCaseAllocator = false
-    if (roleAssignments && Array.isArray(roleAssignments)) {
-        const roleAssignment = roleAssignments.find(role => isCurrentUserCaseAllocator(role, jurisdiction, caseLocationId))
-        isCaseAllocator = !!roleAssignment
+    const roleAssignments = req.session.roleAssignmentResponse as RoleAssignment[];
+    let isCaseAllocator = false;
+    if (roleAssignments) {
+        const roleAssignment = roleAssignments.find(role => isCurrentUserCaseAllocator(role, jurisdiction, caseLocationId));
+        isCaseAllocator = !!roleAssignment;
     }
-    return isCaseAllocator
+    return isCaseAllocator;
 }

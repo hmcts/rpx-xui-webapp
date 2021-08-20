@@ -45,7 +45,7 @@ export async function getRoleAssignmentForUser(userInfo: UserInfo, req: any): Pr
   let locationInfo = [];
   // const baseUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
   // This is a temporary change to do Early integration
-  const baseUrl = 'http://am-role-assignment-service-pr-920.service.core-compute-preview.internal'
+  const baseUrl = 'http://am-role-assignment-service-pr-920.service.core-compute-preview.internal';
   const id = userInfo.id ? userInfo.id : userInfo.uid;
   const path = `${baseUrl}/am/role-assignments/actors/${id}`;
   const headers = setHeaders(req);

@@ -15,7 +15,6 @@ describe('App Selectors', () => {
     termsAndCondition: { isLoaded: false, hasUserAcceptedTC: false },
     loaded: false,
     loading: false,
-    locationInfo: [],
     termsAndConditions: null,
     isTermsAndConditionsFeatureEnabled: false,
     useIdleSessionTimeout: false,
@@ -25,8 +24,7 @@ describe('App Selectors', () => {
         totalIdleTime: 0,
       },
       canShareCases: false,
-      userInfo: null,
-      locationInfo: []
+      userInfo: null
     }
   };
 
@@ -64,7 +62,6 @@ describe('App Selectors', () => {
     termsAndCondition: { isLoaded: false, hasUserAcceptedTC: false },
     loaded: true,
     loading: false,
-    locationInfo: [],
     termsAndConditions: null,
     isTermsAndConditionsFeatureEnabled: false,
     useIdleSessionTimeout: false,
@@ -74,8 +71,7 @@ describe('App Selectors', () => {
         totalIdleTime: 0,
       },
       canShareCases: false,
-      userInfo: null,
-      locationInfo: []
+      userInfo: null
     }
 };
 

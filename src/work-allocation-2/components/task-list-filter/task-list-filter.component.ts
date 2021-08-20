@@ -36,8 +36,8 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   public defaultLocations: string[] = [];
   public locationFields: FilterSetting;
   public fieldsSettings: FilterSetting = {
-    fields: [],
     id: TaskListFilterComponent.FILTER_NAME,
+    fields: [],
   };
   public selectedLocations: string[] = [];
   public toggleFilter = false;
@@ -59,7 +59,21 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       .subscribe((locations: Location[]) => {
         locations.forEach((location) => this.allLocations.push(location.id.toString()));
         this.setUpLocationFilter(locations);
+        this.persistFirstSetting();
       });
+    this.setErrors();
+    this.subscribeToSelectedLocations();
+    this.toggleFilter = false;
+  }
+
+  // EUI-4408 - If stream not yet started, persist first session settings in filter service
+  private persistFirstSetting(): void {
+    if (!this.filterService.get(TaskListFilterComponent.FILTER_NAME)) {
+      this.filterService.persist(this.fieldsSettings, 'local');
+    }
+  }
+
+  private setErrors(): void {
     this.errorSubscription = this.filterService.givenErrors.subscribe(value => {
       if (value) {
         this.error = LOCATION_ERROR;
@@ -69,8 +83,6 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       }
       this.errorChanged.emit(this.error);
     });
-    this.subscribeToSelectedLocations();
-    this.toggleFilter = false;
   }
 
   private setUpLocationFilter(locations: Location[]): void {

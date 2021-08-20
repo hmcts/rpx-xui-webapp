@@ -18,6 +18,7 @@ export class RolesAndAccessContainerComponent implements OnInit {
   public caseDetails: CaseView;
   public showAllocateRoleLink: boolean = false;
   public locationInfo$: Observable<LocationInfo>;
+  public jurisdictionFieldId = '[JURISDICTION]';
 
   constructor(private readonly route: ActivatedRoute,
               private readonly store: Store<fromCaseList.State>,
@@ -26,7 +27,7 @@ export class RolesAndAccessContainerComponent implements OnInit {
 
   public ngOnInit(): void {
     this.caseDetails = this.route.snapshot.data.case as CaseView;
-    const jurisdictionField = this.caseDetails.metadataFields.find(field => field.id === '[JURISDICTION]');
+    const jurisdictionField = this.caseDetails.metadataFields.find(field => field.id === this.jurisdictionFieldId);
     if (jurisdictionField) {
       const caseJurisdiction = jurisdictionField.value;
       this.appStore.select(fromRoot.getUserDetails).subscribe(user => this.setDisplayAllocateLink(user, caseJurisdiction));

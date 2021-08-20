@@ -143,4 +143,29 @@ describe('RolesContainerComponent', () => {
     expect(component.roles.length).toBe(2);
     expect(component.roles[0].name).toBe('Judge Beech');
   });
+
+  it('setDisplayAllocateLink to set true for JUDICIAL', () => {
+    const user = {
+      sessionTimeout: {
+        idleModalDisplayTime: 123,
+        totalIdleTime: 100,
+      },
+      canShareCases: false,
+      userInfo: {
+        id: '134',
+        forename: '',
+        surname: '',
+        email: '',
+        active: true,
+        roles: ['role1'],
+        uid: '34345456'
+      },
+      locationInfo: [
+                     {  primaryLocation: '', jurisdiction: 'JUDICIAL', isCaseAllocator: true}, 
+                     {  primaryLocation: '', jurisdiction: 'DIVORCE', isCaseAllocator: false}
+                    ]
+    }
+    component.setDisplayAllocateLink(user, 'JUDICIAL');
+    expect(component.showAllocateRoleLink).toBeTruthy();
+  });
 });

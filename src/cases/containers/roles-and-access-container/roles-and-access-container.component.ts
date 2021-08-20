@@ -27,16 +27,20 @@ export class RolesAndAccessContainerComponent implements OnInit {
 
   public ngOnInit(): void {
     this.caseDetails = this.route.snapshot.data.case as CaseView;
-    const jurisdictionField = this.caseDetails.metadataFields.find(field => field.id === this.jurisdictionFieldId);
-    if (jurisdictionField) {
-      const caseJurisdiction = jurisdictionField.value;
-      this.appStore.select(fromRoot.getUserDetails).subscribe(user => this.setDisplayAllocateLink(user, caseJurisdiction));
-    }
+    this.applyJurisdiction(this.caseDetails);
     this.roles = this.route.snapshot.data.roles as CaseRole[];
     this.locationInfo$ = this.store.pipe(
       select(fromRoot.getLocationInfo),
       map((locations: LocationInfo[]) => locations[0])
     );
+  }
+
+  public applyJurisdiction(caseDetails: CaseView) {
+    const jurisdictionField = caseDetails.metadataFields.find(field => field.id === this.jurisdictionFieldId);
+    if (jurisdictionField) {
+      const caseJurisdiction = jurisdictionField.value;
+      this.appStore.select(fromRoot.getUserDetails).subscribe(user => this.setDisplayAllocateLink(user, caseJurisdiction));
+    }
   }
 
   public setDisplayAllocateLink(user: UserDetails, caseJurisdiction: any): void {

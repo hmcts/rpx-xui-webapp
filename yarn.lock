@@ -443,10 +443,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.3.0-hotfix-for-link-case-error":
-  version "4.3.0-hotfix-for-link-case-error"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.3.0-hotfix-for-link-case-error.tgz#b7357f1fb7a6fc43edce495d1728b1b55048647f"
-  integrity sha512-peyjSBVRxR+qGpTGy/BWte1Kg9m1GnSmzUZSQpJCbHtU+2b8wDDDJGJlNhhLlL8ORfW4+ymPlNQEtFHZcVvgjQ==
+"@hmcts/ccd-case-ui-toolkit@4.3.0-hotfix-for-link-case-error-2":
+  version "4.3.0-hotfix-for-link-case-error-2"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.3.0-hotfix-for-link-case-error-2.tgz#45db366c956cc60eada584bda1657daf94fe7e45"
+  integrity sha512-jw+mCL0kPYiWTUiTOL6PYDoDafp+ouFvkI6gT8X5UMFm/LaOzZZvLrExDDtYH1/elfArZqX66zzIL7LwKIZyKA==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular/cli" "^6.0.8"

@@ -44,7 +44,8 @@ export class RolesAndAccessContainerComponent implements OnInit {
   }
 
   public setDisplayAllocateLink(user: UserDetails, caseJurisdiction: any): void {
-    // need to check for the case Location once its available
-    this.showAllocateRoleLink = user.locationInfo.some(locationInfo => locationInfo.jurisdiction === caseJurisdiction);
+    if (user && user.locationInfo) {
+      this.showAllocateRoleLink = user.locationInfo.some(locationInfo => locationInfo.jurisdiction === caseJurisdiction);
+    }
   }
 }

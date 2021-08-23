@@ -2,6 +2,7 @@ Dropdown = require('./webdriver-components/dropdown.js')
 Button = require('./webdriver-components/button.js')
 var BrowserWaits = require("../../support/customWaits");
 
+const headerPage = require('./headerPage');
 class SearchPage {
 
   constructor(){
@@ -81,6 +82,7 @@ class SearchPage {
 
   async clickResetButton() {
     await this._waitForSearchComponent();
+    await headerPage.waitForSpinnerToDissappear();
     await BrowserWaits.waitForElement(this.resetButton);
     await browser.executeScript('arguments[0].scrollIntoView()',
       this.resetButton); 

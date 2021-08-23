@@ -33,4 +33,8 @@ export class CaseRolesTableComponent {
     this.items = value.map((role) => ({...role, open: false}));
     this._roles = value;
   }
+
+  public getActionHref(action: any, item: Item): string {
+    return `role-access/${action.id}/${this.caseDetails.case_id}/${item.id}`;
+  }
 }

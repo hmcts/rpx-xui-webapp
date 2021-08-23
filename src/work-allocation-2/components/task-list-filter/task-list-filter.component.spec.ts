@@ -2,7 +2,6 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { Component, DebugElement, ViewChild } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs/internal/observable/of';
@@ -23,15 +22,15 @@ describe('TaskListFilterComponent', () => {
   let component: TaskListFilterComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
-  let router: Router;
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
   const SELECTED_LOCATIONS = { id: 'locations', fields: [ { name: 'locations', value: ['231596', '698118'] }] };
+  const filterSettings = { id: 'locations', fields: [ { name: 'locations', value: [ '364992', '512401', '231596', '366796', '698118', '227101', '198444', '562808', '386417', '765324' ] } ] };
   const mockFilterService: any = {
     getStream: () => of(SELECTED_LOCATIONS),
-    get: () => SELECTED_LOCATIONS,
-    persist: (setting, persistence) => null,
+    get: jasmine.createSpy(),
+    persist: jasmine.createSpy(),
     givenErrors: {
-      subscribe: () => null,
+      subscribe: jasmine.createSpy(),
       next: () => null,
       unsubscribe: () => null
     }
@@ -56,8 +55,8 @@ describe('TaskListFilterComponent', () => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
-    router = TestBed.get(Router);
     spyOn(mockFilterService.givenErrors, 'unsubscribe');
+    mockFilterService.get.and.returnValue(null);
     fixture.detectChanges();
   });
 
@@ -95,5 +94,13 @@ describe('TaskListFilterComponent', () => {
     expect(component.selectedLocations.length).toEqual(2);
 
   }));
+
+  it('should set the filter without local storage', () => {
+    expect(mockFilterService.persist).toHaveBeenCalledWith(filterSettings, 'local');
+  });
+
+  afterAll(() => {
+    component.ngOnDestroy();
+  });
 
 });

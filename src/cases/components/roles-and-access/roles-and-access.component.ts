@@ -21,23 +21,20 @@ export class RolesAndAccessComponent implements OnInit {
   @Input() public caseDetails: CaseView;
   @Input() public locationInfo: LocationInfo;
 
-  constructor() {
+  private pRoles: CaseRole[] = [];
+
+  public get roles(): CaseRole[] {
+    return this.pRoles;
   }
 
-  private _roles: CaseRole[] = [];
-
-  get roles(): CaseRole[] {
-    return this._roles;
-  }
-
-  @Input() set roles(value: CaseRole[]) {
-    this._roles = value;
+  @Input() public set roles(value: CaseRole[]) {
+    this.pRoles = value;
     this.legalOpsRoles = this.roles.filter(role => role.role === TypeOfRole.CASE_MANAGER);
     this.judicialRoles = this.roles.filter(role => RolesAndAccessComponent.isJudicialRole(role));
   }
 
-  public static isJudicialRole(role: CaseRole): boolean {
-    return role.role === TypeOfRole.LEAD_JUDGE || role.role === TypeOfRole.HEARING_JUDGE;
+  public static isJudicialRole(caseRole: CaseRole): boolean {
+    return caseRole.role === TypeOfRole.LEAD_JUDGE || caseRole.role === TypeOfRole.HEARING_JUDGE;
   }
 
   public ngOnInit(): void {

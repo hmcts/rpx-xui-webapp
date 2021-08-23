@@ -33,7 +33,6 @@ export class RolesAndAccessContainerComponent implements OnInit {
     this.caseDetails = this.route.snapshot.data.case as CaseView;
     this.applyJurisdiction(this.caseDetails);
     this.roles = this.route.snapshot.data.roles as CaseRole[];
-    this.showAllocateRoleLink = this.route.snapshot.data.showAllocateRoleLink;
     this.exclusions$ = this.roleExclusionsService.getCurrentUserRoleExclusions();
     this.locationInfo$ = this.store.pipe(
       select(fromRoot.getLocationInfo),
@@ -41,7 +40,7 @@ export class RolesAndAccessContainerComponent implements OnInit {
     );
   }
 
-  public applyJurisdiction(caseDetails: CaseView) {
+  public applyJurisdiction(caseDetails: CaseView): void {
     const jurisdictionField = caseDetails.metadataFields.find(field => field.id === this.jurisdictionFieldId);
     if (jurisdictionField) {
       const caseJurisdiction = jurisdictionField.value;

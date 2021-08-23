@@ -79,15 +79,18 @@ class CaseListPage{
     }
 
     async clickSearchApplyBtn(){ 
-        await this._waitForSearchComponent();
-        await this.waitForSpinnerToDissappear();
-        await browser.executeScript('arguments[0].scrollIntoView()',
-            this.searchApplyBtn);
-        await BrowserWaits.waitForElementClickable(this.searchApplyBtn);
-        await this.searchApplyBtn.click();
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await this._waitForSearchComponent();
+            await this.waitForSpinnerToDissappear();
+            await browser.executeScript('arguments[0].scrollIntoView()',
+                this.searchApplyBtn);
+            await BrowserWaits.waitForElementClickable(this.searchApplyBtn);
+            await this.searchApplyBtn.click();
+        });
     }
 
     async clickSearchResetBtn() {
+        
         await this._waitForSearchComponent();
         await browser.executeScript('arguments[0].scrollIntoView()',
             this.searchReset);

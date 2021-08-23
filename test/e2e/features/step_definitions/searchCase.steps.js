@@ -15,6 +15,7 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
     });
 
     When('I click on Case list',async function(){
+      await headerPage.waitForSpinnerToDissappear(); 
       await headerPage.clickCaseList();
     });
 

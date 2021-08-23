@@ -17,6 +17,7 @@ class TaskManagerPage extends TaskList{
     async amOnPage(){
         try{
             await BrowserWaits.waitForElement(this.taskManagerlist); 
+            await this.waitForSpinnerToDissappear();
             return true;
         }catch(err){
             console.log("Task manager page not displayed : "+err);
@@ -47,11 +48,14 @@ class TaskManagerPage extends TaskList{
 
     async selectCaseworkerFilter(optionDisplayText){
         expect(await this.amOnPage(), "Not on Task manager page ").to.be.true;
+        await this.waitForSpinnerToDissappear();
         await this.caseWorkerFilter.element(by.xpath(`//option[text() = '${optionDisplayText}']`)).click(); 
     }
 
     async selectLocationFilter(optionDisplayText) {
         expect(await this.amOnPage(), "Not on Task manager page ").to.be.true;
+        await this.waitForSpinnerToDissappear();
+
         await this.locationFilter.element(by.xpath(`//option[text() = '${optionDisplayText}']`)).click();
     }
 

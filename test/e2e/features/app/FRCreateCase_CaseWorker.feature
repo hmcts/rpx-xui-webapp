@@ -4,7 +4,7 @@ Feature: FR create case workflow - Case Worker
         When I navigate to Expert UI Url
         Given I am logged into Expert UI with valid Case Worker user details
         Then I should be redirected to EUI dashboard page
-        When I click on create case button
+        When I click on primary navigation header tab "Create case", I see selected tab page displayed
         Then Create case page should be displayed
 
    Scenario Outline: Start FR Case Creation

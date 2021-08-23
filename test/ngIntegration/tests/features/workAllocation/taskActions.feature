@@ -1,15 +1,12 @@
-@ng 
-Feature: Task actions
+@ng
+Feature: WA Release 1: Task actions
 
     Background: Mock and browser setup
         Given I init MockApp
+        Given I set MOCK with "wa_release_1" release user and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer"
 
     
     Scenario:  My Tasks actions submit
-        Given I set MOCK with user roles
-            | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
         Given I start MockApp
         Given I navigate to home page
         Then I validate Task actions from page "My Tasks"
@@ -23,11 +20,7 @@ Feature: Task actions
 
     
     Scenario:  Available Tasks actions submit
-        Given I set MOCK with user roles
-            | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
-        Given I start MockApp
+         Given I start MockApp
         Given I navigate to home page
         Then I validate Task actions from page "Available tasks"
             | ManageAction                | ActionType | SubmitCancel | SuccessMessage                                        |
@@ -36,11 +29,7 @@ Feature: Task actions
 
    
     Scenario:   Task manager actions submit
-        Given I set MOCK with user roles
-            | role                      |
-            | caseworker-ia-caseofficer |
-            | caseworker-ia-admofficer  |
-        Given I start MockApp
+          Given I start MockApp
         Given I navigate to home page
         Then I validate Task actions from page "Task manager"
             | ManageAction                | ActionType | SubmitCancel | SuccessMessage                                        |

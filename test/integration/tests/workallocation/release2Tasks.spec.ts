@@ -8,7 +8,7 @@ import { setTestContext } from '../utils/helper';
 import Request from '../utils/request';
 
 import TaskRequestBody from '../utils/wa/taskRequestBody';
-const workAllocationDataModels = require( '../../dataModels/workAllocation');
+const workAllocationDataModels = require( '../../../dataModels/workAllocation');
 
 describe('Work allocations Release 2: Tasks', () => {
     const userName = 'lukesuperuserxui@mailnesia.com';

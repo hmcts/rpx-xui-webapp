@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
+import * as moment from 'moment';
 import { AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState, AllocateRoleStateData, DurationOfRole, Period } from '../../../models';
 import * as fromFeature from '../../../store';
-import * as moment from 'moment';
 
 @Component({
   selector: 'exui-choose-duration',
@@ -117,20 +117,20 @@ export class ChooseDurationComponent implements OnInit {
         return {
           startDate: this.getTodayDate(),
           endDate: new Date(nextDate)
-        }
+        };
       }
       case DurationOfRole.INDEFINITE: {
         return {
           startDate: this.getTodayDate(),
           endDate: null
-        }
+        };
       }
       case DurationOfRole.ANOTHER_PERIOD: {
         if (this.isDateValid() && this.datesMissing() && this.formGroup.valid && this.startDateNotInPast() && this.startDateLessThanEndDate()) {
           return {
             startDate: this.getStartDate(),
             endDate: this.getEndDate(),
-          }
+          };
         }
       }
     }
@@ -218,5 +218,5 @@ export class ChooseDurationComponent implements OnInit {
 export interface DurationDescription {
   duration: DurationOfRole;
   description: string;
-  checked: boolean
+  checked: boolean;
 }

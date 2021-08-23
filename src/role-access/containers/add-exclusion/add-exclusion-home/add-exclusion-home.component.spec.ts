@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { provideMockStore } from '@ngrx/store/testing';
 import { AddExclusionHomeComponent } from './add-exclusion-home.component';
 
@@ -23,7 +23,17 @@ describe('ExclusionHomeComponent', () => {
         {
           provide: Router,
           useValue: routerMock
-        }
+        },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              queryParams: {
+                caseId: '111111',
+              }
+            }
+          }
+        },
       ]
     })
       .compileComponents();

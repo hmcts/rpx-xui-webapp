@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import {
@@ -55,7 +55,11 @@ export class AddExclusionHomeComponent implements OnInit, OnDestroy {
   public checkAnswersVisibilityStates = checkAnswersVisibilityStates;
 
   constructor(private readonly store: Store<fromFeature.State>,
+              private readonly route: ActivatedRoute,
               private readonly router: Router) {
+    this.caseId = this.route.snapshot.queryParams && this.route.snapshot.queryParams.caseId ?
+      this.route.snapshot.queryParams.caseId : '';
+    this.store.dispatch(new fromFeature.ExclusionSetCaseId(this.caseId));
   }
 
   public ngOnInit(): void {
@@ -63,7 +67,6 @@ export class AddExclusionHomeComponent implements OnInit, OnDestroy {
       exclusionStateData => {
         this.navigationCurrentState = exclusionStateData.state;
         this.exclusionOption = exclusionStateData.exclusionOption;
-        this.caseId = exclusionStateData.caseId;
       }
     );
   }
@@ -151,6 +154,6 @@ export class AddExclusionHomeComponent implements OnInit, OnDestroy {
     if (this.exclusionStateDataSub) {
       this.exclusionStateDataSub.unsubscribe();
     }
-    this.store.dispatch(new fromFeature.Reset());
+    this.store.dispatch(new fromFeature.ExclusionReset());
   }
 }

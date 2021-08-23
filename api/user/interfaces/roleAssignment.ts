@@ -14,7 +14,7 @@ export interface RoleAssignment {
 }
 
 export interface LocationInfo {
-  primaryLocation?: LocationApi;
+  primaryLocation?: string;
   caseId?: string;
   jurisdiction?: string;
   region?: string;

@@ -3,178 +3,64 @@ import { expect } from 'chai';
 import 'mocha';
 import * as sinonChai from 'sinon-chai';
 import { mockReq } from 'sinon-express-mock';
+import { CASE_ALLOCATOR_ROLE, JUDICIAL_TYPE, LEGAL_OPS_TYPE, ORGANISATION_ROLE_TYPE } from '../user/constants';
 import { handleShowAllocatorLinkByCaseId } from './roleService';
 
 chai.use(sinonChai);
 describe('RoleService', () => {
   const roleAssignmentResponse = [
     {
-      actorId: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
+      id: '478c83f8-0ed0-4651-b8bf-cd2b1e206ac2',
       actorIdType: 'IDAM',
-      attributes: {
-        caseId: '1589185661976908',
-        jurisdiction: 'IA',
-        primaryLocation: '231596',
-        region: 'north-east',
-      },
-      authorisations: [
-        'case-allocator-role',
-      ],
-      classification: 'PUBLIC',
-      created: '2021-07-15T15:45:10.200296Z',
-      grantType: 'STANDARD',
-      id: '39c68f10-c436-460e-991f-26a5d609ff17',
-      readOnly: false,
-      roleCategory: 'JUDICIAL',
-      roleName: 'judge',
+      actorId: 'c5a983be-ca99-4b8a-97f7-23be33c3fd22',
       roleType: 'ORGANISATION',
+      roleName: CASE_ALLOCATOR_ROLE,
+      classification: 'PUBLIC',
+      grantType: 'STANDARD',
+      roleCategory: LEGAL_OPS_TYPE,
+      readOnly: false,
+      created: Date.UTC.toString(),
+      attributes: {
+        primaryLocation: '231596',
+        jurisdiction: 'IA'
+      }
     },
     {
-      actorId: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
+      id: '478c83f8-0ed0-4651-b8bf-cd2b1e206ac2',
       actorIdType: 'IDAM',
-      attributes: {
-        caseId: '1589185982594513',
-        jurisdiction: 'IA',
-        primaryLocation: '231596',
-        region: 'north-east',
-      },
-      authorisations: [
-        'case',
-      ],
-      classification: 'PUBLIC',
-      created: '2021-07-15T15:42:32.384849Z',
-      grantType: 'STANDARD',
-      id: '61a5f990-4cfb-4895-92f0-ffacff2b7351',
-      readOnly: false,
-      roleCategory: 'JUDICIAL',
-      roleName: 'judge',
+      actorId: 'c5a983be-ca99-4b8a-97f7-23be33c3fd22',
       roleType: 'ORGANISATION',
-    },
-    {
-      actorId: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
-      actorIdType: 'IDAM',
-      attributes: {
-        caseId: '1589185661976908',
-        jurisdiction: 'IA',
-        primaryLocation: '231596',
-        region: 'north-east',
-      },
-      authorisations: [
-        'case',
-      ],
+      roleName: CASE_ALLOCATOR_ROLE,
       classification: 'PUBLIC',
-      created: '2021-07-15T15:42:17.295769Z',
       grantType: 'STANDARD',
-      id: 'fc8085c4-029b-47a2-99f8-1c3de04d77d3',
+      roleCategory: JUDICIAL_TYPE,
       readOnly: false,
-      roleCategory: 'JUDICIAL',
-      roleName: 'judge',
-      roleType: 'ORGANISATION',
-    },
-    {
-      actorId: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
-      actorIdType: 'IDAM',
+      created: Date.UTC.toString(),
       attributes: {
-        caseId: '1589185060514243',
-        jurisdiction: 'IA',
-        primaryLocation: '231596',
-        region: 'north-east',
-      },
-      authorisations: [
-        'case-allocator-role',
-      ],
-      classification: 'PUBLIC',
-      created: '2021-07-15T15:41:55.934311Z',
-      grantType: 'STANDARD',
-      id: '31ea656a-b6c4-42c7-98e9-e4cdc90deb45',
-      readOnly: false,
-      roleCategory: 'JUDICIAL',
-      roleName: 'judge',
-      roleType: 'ORGANISATION',
-    },
-    {
-      actorId: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
-      actorIdType: 'IDAM',
-      attributes: {
-        caseId: '1589185982594513',
-        jurisdiction: 'IA',
-        primaryLocation: '231596',
-        region: 'north-east',
-      },
-      authorisations: [
-        'case-allocator-role',
-      ],
-      classification: 'PUBLIC',
-      created: '2021-07-15T15:41:18.643176Z',
-      grantType: 'STANDARD',
-      id: 'e335114f-ae7c-48e3-a361-435dc19fd2ae',
-      readOnly: false,
-      roleCategory: 'JUDICIAL',
-      roleName: 'judge',
-      roleType: 'ORGANISATION',
-    },
-    {
-      actorId: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
-      actorIdType: 'IDAM',
-      attributes: {
-        caseId: '1589185982594513',
-        jurisdiction: 'IA',
-        primaryLocation: '231596',
-        region: 'north-east',
-      },
-      authorisations: [
-        'case',
-      ],
-      classification: 'PUBLIC',
-      created: '2021-07-15T15:41:07.799807Z',
-      grantType: 'STANDARD',
-      id: '86236448-629e-45cd-b034-b280a8ba42f5',
-      readOnly: false,
-      roleCategory: 'JUDICIAL',
-      roleName: 'judge',
-      roleType: 'ORGANISATION',
-    },
-    {
-      actorId: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
-      actorIdType: 'IDAM',
-      attributes: {
-        caseId: '1589185982594513',
-        jurisdiction: 'IA',
-        primaryLocation: '231596',
-        region: 'north-east',
-      },
-      authorisations: [
-        'case',
-      ],
-      classification: 'PUBLIC',
-      created: '2021-07-15T15:39:45.620084Z',
-      grantType: 'STANDARD',
-      id: 'e4cce151-07ea-4562-93f2-97c7f68fedcb',
-      readOnly: false,
-      roleCategory: 'JUDICIAL',
-      roleName: 'judge',
-      roleType: 'ORGANISATION',
-    },
+        primaryLocation: '331234',
+        jurisdiction: 'IA'
+      }
+    }
   ];
-  describe('handleShowAllocatorLinkByCaseId', () => {
-    it('user should be able to see an allocator link', () => {
+  describe('handleShowAllocator jurisdiction locationId', () => {
+    it('Legal Ops user', () => {
       const req = mockReq({
         session: {
           roleAssignmentResponse,
         },
       });
-      const response = handleShowAllocatorLinkByCaseId('1589185661976908', req);
+      const response = handleShowAllocatorLinkByCaseId('IA', '231596', req);
       expect(response).to.be.equal(true);
     });
 
-    it('user should not be able to see an allocator link', () => {
+    it('Judicial user', () => {
       const req = mockReq({
         session: {
           roleAssignmentResponse,
         },
       });
-      const response = handleShowAllocatorLinkByCaseId('1546883526751282', req);
-      expect(response).to.be.equal(false);
+      const response = handleShowAllocatorLinkByCaseId('IA', '331234', req);
+      expect(response).to.be.equal(true);
     });
   });
 });

@@ -135,7 +135,9 @@ const config = {
         removeExistingJsonReportFile: true,
         reportName: 'XUI MC CrossBrowser Tests',
         jsonDir: 'reports/tests/crossbrowser',
-        reportPath: 'reports/tests/crossbrowser'
+        reportPath: 'reports/tests/crossbrowser',
+        displayDuration: true,
+        durationInMS: false
 
       }
     }

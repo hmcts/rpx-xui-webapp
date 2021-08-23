@@ -48,7 +48,7 @@ function HeaderPage() {
   this.waitForSpinnerToDissappear = async function(){
     await BrowserWaits.waitForConditionAsync(async () => {
       return !(await $(".loading-spinner-in-action").isPresent());
-    });
+    },40000);
   };
 
     this.clickAppLogoLink = async function(){

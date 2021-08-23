@@ -36,19 +36,20 @@ class SearchPage {
     this.firstResultCaseLink = $("ccd-search-result>table>tbody>tr:nth-of-type(1)>td:nth-of-type(1)>a"); 
   }
 
+  async waitForSpinnerToDissappear() {
+  await BrowserWaits.waitForConditionAsync(async () => {
+    return !(await $(".loading-spinner-in-action").isPresent());
+  }, 40000);
+};
+
   async _waitForSearchComponent() {
     await BrowserWaits.retryWithActionCallback(async () => {
       await BrowserWaits.waitForElement(this.searchFilterContainer);
-      await this.waitForSpinnerToDissappear();
     }, "Wait for search page, search input form to display");
-    
+    await this.waitForSpinnerToDissappear();
+
   }
 
-  async waitForSpinnerToDissappear() {
-    await BrowserWaits.waitForCondition(async () => {
-      return !(await $(".loading-spinner-in-action").isPresent());
-    });
-  }
   async selectJurisdiction(option){
     await this._waitForSearchComponent();
 
@@ -82,7 +83,7 @@ class SearchPage {
 
   async clickResetButton() {
     await this._waitForSearchComponent();
-    await headerPage.waitForSpinnerToDissappear();
+    await this.waitForSpinnerToDissappear();
     await BrowserWaits.waitForElement(this.resetButton);
     await browser.executeScript('arguments[0].scrollIntoView()',
       this.resetButton); 

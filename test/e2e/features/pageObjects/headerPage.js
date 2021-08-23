@@ -43,6 +43,13 @@ function HeaderPage() {
       
     }
 
+
+  this.waitForSpinnerToDissappear = async function(){
+    await BrowserWaits.waitForCondition(async () => {
+      return !(await $(".loading-spinner-in-action").isPresent());
+    });
+  };
+
     this.clickAppLogoLink = async function(){
        await this.headerAppLogoLink.click(); 
     }
@@ -86,6 +93,7 @@ function HeaderPage() {
 
   this.clickCreateCase = async function () {
     await BrowserWaits.retryWithActionCallback(async () => {
+      await caseListPage.waitForSpinnerToDissappear(); 
       await BrowserWaits.waitForElement(this.createCase()); 
       await BrowserWaits.waitForElementClickable(this.createCase());
       await this.createCase().click();

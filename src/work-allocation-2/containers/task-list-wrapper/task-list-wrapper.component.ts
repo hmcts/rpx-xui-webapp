@@ -144,7 +144,14 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       )
       .subscribe((f: FilterSetting) => {
         this.selectedLocations = f.fields.find((field) => field.name === 'locations').value;
-        this.doLoad();
+        // timeout ensures tasks are loaded on initial local setting
+        // waits for initial setting to be persisted via task-filter-component
+        setTimeout(() => {
+          if (this.tasksLoaded || this.filterService.isInitialSetting) {
+            this.doLoad();
+            this.filterService.isInitialSetting = false;
+          }
+        }, 1);
     });
   }
 
@@ -276,8 +283,8 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
         this.tasks = result.tasks;
         this.tasksTotal = result.total_records;
         this.tasks.forEach(task => task.assigneeName = getAssigneeName(this.caseworkers, task.assignee));
-        this.ref.detectChanges();
         this.tasksLoaded = true;
+        this.ref.detectChanges();
       }, error => {
         this.loadingService.unregister(loadingToken);
         handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);

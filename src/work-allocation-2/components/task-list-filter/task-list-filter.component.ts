@@ -70,6 +70,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   private persistFirstSetting(): void {
     if (!this.filterService.get(TaskListFilterComponent.FILTER_NAME)) {
       this.filterService.persist(this.fieldsSettings, 'local');
+      this.filterService.isInitialSetting = true;
     }
   }
 

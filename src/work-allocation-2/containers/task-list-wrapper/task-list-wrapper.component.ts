@@ -144,9 +144,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       )
       .subscribe((f: FilterSetting) => {
         this.selectedLocations = f.fields.find((field) => field.name === 'locations').value;
-        if (this.tasksLoaded) {
-          this.doLoad();
-        }
+        this.doLoad();
     });
   }
 

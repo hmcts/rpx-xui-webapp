@@ -8,6 +8,12 @@ export interface UserInfo {
   uid?: string;
 }
 
+export interface LocationInfo {
+  primaryLocation: string;
+  jurisdiction: string;
+  isCaseAllocator: boolean;
+}
+
 export interface UserDetails {
   sessionTimeout: {
     idleModalDisplayTime: number,
@@ -15,6 +21,7 @@ export interface UserDetails {
   };
   canShareCases: boolean;
   userInfo: UserInfo;
+  locationInfo?: LocationInfo []
 }
 
 export enum UserRole {

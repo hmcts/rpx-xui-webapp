@@ -45,7 +45,7 @@ function HeaderPage() {
 
 
   this.waitForSpinnerToDissappear = async function(){
-    await BrowserWaits.waitForCondition(async () => {
+    await BrowserWaits.waitForConditionAsync(async () => {
       return !(await $(".loading-spinner-in-action").isPresent());
     });
   };

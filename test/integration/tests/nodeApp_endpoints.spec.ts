@@ -5,6 +5,7 @@ import Request from './utils/request';
 import { setTestContext } from './utils/helper';
 
 const nodeAppDataModels = require('../../dataModels/nodeApp')
+const testUsers = require('../../e2e/config/appTestConfig');
 
 describe('nodeApp endpoint', () => {
   const userName = 'lukesuperuserxui@mailnesia.com';
@@ -49,12 +50,8 @@ describe('nodeApp endpoint', () => {
 
     const response = await Request.get('api/user/details', null, 200);
     expect(response.status).to.equal(200);
-
-
     const actualLocationObjKeys = response.data;
-
     const expectedUserDetailsObj_oidc = nodeAppDataModels.getUserDetails_oidc();
-
     expect(actualLocationObjKeys).to.include.members(Object.keys(expectedUserDetailsObj_oidc));
 
     if (actualLocationObjKeys.locationInfo.length > 0){
@@ -68,6 +65,25 @@ describe('nodeApp endpoint', () => {
     } else {
       expect(actualLocationObjKeys.userInfo).to.have.all.keys(Object.keys(nodeAppDataModels.getUserDetails_oauth().userInfo));
     }
+  });
+
+  it('api/user/details role-assignment case allocator', async () => {
+
+    const matchingUsers = testUsers.users.filter(user => user.userIdentifier === 'IAC_Judge_WA_R2_CaseAllocator');
+    if (matchingUsers.length === 0){
+      throw new Error(`Users details with identfier "IAC_Judge_WA_R2_CaseAllocator" not found in test user config`);
+    }
+
+    await Request.withSession(matchingUsers[0].email, 'Welcome01');
+   
+    const response = await Request.get('api/user/details', null, 200);
+    expect(response.status).to.equal(200);
+    const actualLocationObjKeys = response.data;
+    const expectedUserDetailsObj_oidc = nodeAppDataModels.getUserDetails_oidc();
+    expect(actualLocationObjKeys).to.include.members(Object.keys(expectedUserDetailsObj_oidc));
+
+    expect(actualLocationObjKeys.locationInfo[0].isCaseAllocator).to.be.true;
+
   });
 
   it('api/user/details without session', async () => {

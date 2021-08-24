@@ -4,7 +4,7 @@ import { CaseRole, RemoveAllocationNavigationEvent } from '../../../role-access/
 import { Answer } from '../../../role-access/models';
 import { handleFatalErrors } from '../../../work-allocation-2/utils';
 import { AllocateRoleService } from '../../../role-access/services/allocate-role.service';
-import { RemoveRoleText } from 'src/role-access/models/enums/answer-text';
+import { RemoveRoleText } from '../../../role-access/models/enums/answer-text';
 
 @Component({
   selector: 'exui-remove-role',

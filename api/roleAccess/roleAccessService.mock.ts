@@ -5,6 +5,7 @@ export const init = () => {
   const mock: MockAdapter = HttpMockAdapter.getInstance();
 
   const allocateRoleConfirmUrl = /http:\/\/am-role-assignment-service-aat.service.core-compute-aat.internal\/am\/role-assignments/;
+  const deleteRoleUrl = /http:\/\/am-role-assignment-service-aat.service.core-compute-aat.internal\/am\/role-assignments/;
 
   mock.onPost(allocateRoleConfirmUrl).reply(config => {
     const payload = JSON.parse(config.data);
@@ -15,6 +16,14 @@ export const init = () => {
         payload,
       ];
     }
+    return [
+      200,
+      payload,
+    ];
+  });
+
+  mock.onDelete(deleteRoleUrl).reply(config => {
+    const payload = JSON.parse(config.data);
     return [
       200,
       payload,

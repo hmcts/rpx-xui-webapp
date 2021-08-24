@@ -84,7 +84,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
       this.userIdToBeRemoved = this.route.snapshot.queryParams.userId ? this.route.snapshot.queryParams.userId : null;
       this.userNameToBeRemoved = this.route.snapshot.queryParams.userName ? this.route.snapshot.queryParams.userName : null;
       this.typeOfRole = this.route.snapshot.queryParams.typeOfRole ? this.route.snapshot.queryParams.typeOfRole : null;
-      this.action = this.route.snapshot.queryParams.action ? this.route.snapshot.queryParams.action : null;
+      this.action = this.route.snapshot.routeConfig.path ? this.route.snapshot.routeConfig.path : null;
     }
     if (this.action === Actions.Reallocate) {
       this.instantiateReallocateRoleData();

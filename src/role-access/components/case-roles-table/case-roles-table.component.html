@@ -29,14 +29,13 @@
       <td colspan="6" class="right">
         <a *ngFor="let action of item.actions"
            href="javascript:void(0)"
-           [routerLink]="['/', 'role-access', 'allocate-role']"
+           [routerLink]="['/', 'role-access', 'allocate-role', action.id]"
            [queryParams]="{
            'caseId': caseDetails.case_id,
            'userType': userType,
            'userId': item.id,
            'userName': item.name,
-           'typeOfRole': item.role,
-           'action': action.id}">{{action.title}}</a>
+           'typeOfRole': item.role}">{{action.title}}</a>
       </td>
     </tr>
   </ng-container>

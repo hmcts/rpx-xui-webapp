@@ -37,7 +37,10 @@ describe('AllocateRoleHomeComponent', () => {
             snapshot: {
               queryParams: {
                 caseId: '111111',
-              }
+              },
+              routeConfig: {
+                path: 'allocate',
+              },
             }
           }
         },

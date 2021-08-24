@@ -20,15 +20,8 @@ export enum RoleCaptionText {
   ALegalOpsRole = 'a legal ops role'
 }
 
-// Leaving this in as reference to text required for judicial/legal ops stories
-export enum RoleAllocationRadioText {
-  NonExclusionSelf = 'Reserve to me',
-  NonExclusionOther = 'Allocate to another person',
-  ExclusionSelf = 'Exclude me',
-  ExclusionOther = 'Exclude another person'
-}
-
 export enum RoleAllocationMessageText {
   Delete = 'You\'ve deleted a role allocation',
   Add = 'You\'ve allocated a role',
+  Reallocate = 'You\'ve reallocated a role',
 }

@@ -32,14 +32,30 @@ export const ROUTES: Routes = [
   },
   {
     path: 'allocate-role',
-    component: AllocateRoleHomeComponent,
+    component: null,
     children: [
       {
-        path: '',
-        component: null,
+        path: 'allocate',
+        component: AllocateRoleHomeComponent,
         canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Manage cases | Role and access | Allocate a role',
+        }
+      },
+      {
+        path: 'reallocate',
+        component: AllocateRoleHomeComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Manage cases | Role and access | Reallocate a role',
+        }
+      },
+      {
+        path: 'remove',
+        component: null,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Manage cases | Role and access | Remove a role',
         }
       }
     ]

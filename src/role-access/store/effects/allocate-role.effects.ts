@@ -4,7 +4,7 @@ import { Action } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import * as routeAction from '../../../app/store/index';
-import { RoleAccessHttpError } from '../../models';
+import { Actions as RoleActions, RoleAccessHttpError } from '../../models';
 import { RoleAllocationMessageText } from '../../models/enums/allocation-text';
 import { REDIRECTS } from '../../models/enums/redirect-urls';
 import { AllocateRoleService } from '../../services/allocate-role.service';
@@ -33,7 +33,7 @@ export class AllocateRoleEffects {
                 extras: {
                   state: {
                     showMessage: true,
-                    messageText: RoleAllocationMessageText.Add
+                    messageText: data.payload.action === RoleActions.Allocate ? RoleAllocationMessageText.Add : RoleAllocationMessageText.Reallocate,
                   }
                 }
               });

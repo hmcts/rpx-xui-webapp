@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AllocateRoleStateData } from '../models';
+import { Actions, AllocateRoleStateData } from '../models';
 
 @Injectable({ providedIn: 'root' })
 export class AllocateRoleService {
@@ -8,7 +8,13 @@ export class AllocateRoleService {
   constructor(private readonly http: HttpClient) { }
 
   public confirmAllocation(allocateRoleStateData: AllocateRoleStateData) {
-    return this.http.post(`${AllocateRoleService.allocateRoleBaseUrl}/confirm`, allocateRoleStateData);
+    const action: Actions = allocateRoleStateData.action;
+    if (action === Actions.Allocate) {
+      return this.http.post(`${AllocateRoleService.allocateRoleBaseUrl}/confirm`, allocateRoleStateData);
+    }
+    if (action === Actions.Reallocate) {
+      return this.http.post(`${AllocateRoleService.allocateRoleBaseUrl}/reallocate`, allocateRoleStateData);
+    }
   }
 
 }

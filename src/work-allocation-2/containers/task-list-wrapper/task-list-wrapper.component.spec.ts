@@ -29,7 +29,7 @@ describe('TaskListWrapperComponent', () => {
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
   const mockFilterService: any = {
-    getStream: () => of(SELECTED_LOCATIONS),
+    getStream: () => of(null),
     get: () => SELECTED_LOCATIONS,
     persist: (setting, persistence) => null,
     givenErrors: {

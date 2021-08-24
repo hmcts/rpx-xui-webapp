@@ -1,13 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ExclusionStateData } from '../models';
-import { RoleExclusion } from '../models/role-exclusion.model';
-import { Role } from '../models/role.model';
+import { ExclusionStateData, Role, RoleExclusion } from '../models';
 
 @Injectable({ providedIn: 'root' })
 export class RoleExclusionsService {
-  public static exclusionsUrl = '/api/exclusions';
+  public static exclusionsUrl = '/api/role-access/exclusions';
   constructor(private readonly http: HttpClient) { }
 
   public getCurrentUserRoleExclusions(): Observable<RoleExclusion[]> {

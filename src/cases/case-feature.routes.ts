@@ -19,6 +19,7 @@ import { CaseViewerContainerComponent } from './containers/case-viewer-container
 import { RolesAndAccessContainerComponent } from './containers/roles-and-access-container/roles-and-access-container.component';
 import { TasksContainerComponent } from './containers/tasks-container/tasks-container.component';
 import { ActivityResolver } from './resolvers/activity.resolver';
+import { CaseAllocateRoleLinkResolverService } from './resolvers/case-allocate-role-link-resolver.service';
 import { CaseRolesResolverService } from './resolvers/case-roles-resolver.service';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
 
@@ -121,7 +122,9 @@ export const ROUTES: Routes = [
               {
                 path: 'roles-and-access',
                 component: RolesAndAccessContainerComponent,
-                resolve: {roles: CaseRolesResolverService}
+                resolve: {
+                  roles: CaseRolesResolverService
+                }
               }
             ]
           },

@@ -29,8 +29,8 @@ describe('exclusions.exclusionService', () => {
     name: 'Judge ABCDE',
     notes: 'this case been remitted from Upper Tribunal and required different judge',
     type: 'Other',
-    userType: 'Judicial'
-  }
+    userType: 'Judicial',
+  };
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -53,12 +53,12 @@ describe('exclusions.exclusionService', () => {
             user: {
               userinfo: {
                 roles: [
-                  'caseworker-ia-iacjudge'
-                ]
-              }
-            }
-          }
-        }
+                  'caseworker-ia-iacjudge',
+                ],
+              },
+            },
+          },
+        },
       });
       let response = mockRes();
       await getUserExclusions(req, response, next);
@@ -72,12 +72,12 @@ describe('exclusions.exclusionService', () => {
             user: {
               userinfo: {
                 roles: [
-                  'caseworker'
-                ]
-              }
-            }
-          }
-        }
+                  'caseworker',
+                ],
+              },
+            },
+          },
+        },
       });
       response = mockRes();
       await getUserExclusions(nonJudgeReq, response, next);
@@ -89,7 +89,7 @@ describe('exclusions.exclusionService', () => {
 
   describe('confirmUserExclusion', () => {
 
-    it('should confirm succesfully', async () => {
+    it('should confirm successfully', async () => {
       spy = sandbox.stub(http, 'post').resolves(res);
       const req = mockReq({});
       let response = mockRes();
@@ -100,9 +100,9 @@ describe('exclusions.exclusionService', () => {
 
       const nonJudgeReq = mockReq({
         body: {
+          exclusionDescription: '400',
           roleExclusion: exampleRoleExclusion,
-          exclusionDescription: '400'
-        }
+        },
       });
       response = mockRes();
       await confirmUserExclusion(nonJudgeReq, response, next);
@@ -114,12 +114,12 @@ describe('exclusions.exclusionService', () => {
 
   describe('deleteUserExclusion', () => {
 
-    it('should delete succesfully', async () => {
+    it('should delete successfully', async () => {
       spy = sandbox.stub(http, 'delete').resolves(res);
       const req = mockReq({
-        body: {roleExclusion: exampleRoleExclusion}
+        body: {roleExclusion: exampleRoleExclusion},
       });
-      let response = mockRes();
+      const response = mockRes();
       await deleteUserExclusion(req, response, next);
 
       // Should have received the HTTP response. The delete simply sends the data

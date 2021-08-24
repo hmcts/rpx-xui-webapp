@@ -22,7 +22,7 @@ import {
 
 import { CaseRole } from './interfaces/caseRole';
 import { Caseworker, Judicialworker } from './interfaces/common';
-import { handleGetRolesByCaseId } from './roleService';
+import { handleGetRolesByCaseId, handleShowAllocatorLinkByCaseId } from './roleService';
 import * as roleServiceMock from './roleService.mock';
 import * as taskServiceMock from './taskService.mock';
 import {
@@ -43,9 +43,9 @@ import {
   prepareTaskSearchForCompletable
 } from './util';
 
-const mock = taskServiceMock.init();
-caseServiceMock.init(mock);
-roleServiceMock.init(mock);
+taskServiceMock.init();
+caseServiceMock.init();
+roleServiceMock.init();
 
 export const baseWorkAllocationTaskUrl = getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH);
 export const baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);
@@ -323,5 +323,15 @@ export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next
   } catch (e) {
     next(e);
   }
+}
 
+export async function showAllocateRoleLink(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
+  const jurisdiction = req.params.jurisdiction;
+  const caseLocationId = req.params.caseLocationId;
+  try {
+    const result: boolean = handleShowAllocatorLinkByCaseId(jurisdiction, caseLocationId, req);
+    return res.send(result).status(200);
+  } catch (e) {
+    next(e);
+  }
 }

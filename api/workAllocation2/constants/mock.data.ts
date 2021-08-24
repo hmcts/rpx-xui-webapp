@@ -6,25 +6,29 @@ export const PERSON = [
     id: 'id100',
     name: 'Jacky Collins',
     email: 'jacky.collins@judicial.com',
-    domain: PersonRole.JUDICIAL
+    domain: PersonRole.JUDICIAL,
+    knownAs: 'Hearing Judge'
   },
   {
     id: 'id101',
     name: 'Jasmine Chiswell',
     email: 'jasmine.chiswell@judicial.com',
-    domain: PersonRole.JUDICIAL
+    domain: PersonRole.JUDICIAL,
+    knownAs: 'Lead Judge'
   },
   {
     id: 'id102',
     name: 'Jamie Vardy',
     email: 'jamie.vardy@judicial.com',
-    domain: PersonRole.JUDICIAL
+    domain: PersonRole.JUDICIAL,
+    knownAs: 'Lead Judge'
   },
   {
     id: 'id103',
     name: 'James Priest',
     email: 'james.priest@judicial.com',
-    domain: PersonRole.JUDICIAL
+    domain: PersonRole.JUDICIAL,
+    knownAs: 'Hearing Judge'
   },
   {
     id: 'id104',

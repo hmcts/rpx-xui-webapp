@@ -6,14 +6,10 @@ import { catchError, map, mergeMap } from 'rxjs/operators';
 import * as routeAction from '../../../app/store/index';
 import { InfoMessageType } from '../../../work-allocation-2/enums';
 import { ExcludeOption, RoleAccessHttpError } from '../../models';
-import { ExclusionMessageText } from '../../models/enums/exclusion-text';
+import { ExclusionMessageText } from '../../models/enums';
+import { REDIRECTS } from '../../models/enums/redirect-urls';
 import { RoleExclusionsService } from '../../services';
 import { ConfirmExclusionAction, ExclusionActionTypes } from '../actions';
-
-export enum REDIRECTS {
-  NotAuthorised = '/not-authorised',
-  ServiceDown = '/service-down'
-}
 
 @Injectable()
 export class ExclusionEffects {

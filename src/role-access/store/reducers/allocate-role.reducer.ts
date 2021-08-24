@@ -7,7 +7,7 @@ import * as fromActions from '../actions';
 import { AllocateRoleActionTypes } from '../actions';
 
 export const allocateRoleInitialState: AllocateRoleStateData = {
-  caseId: '1546883526751282',
+  caseId: null,
   state: AllocateRoleState.CHOOSE_ROLE,
   typeOfRole: null,
   allocateTo: null,
@@ -28,8 +28,13 @@ export function allocateRoleReducer(currentState = allocateRoleInitialState,
     }
     case AllocateRoleActionTypes.RESET: {
       return {
-        ...currentState,
         ...allocateRoleInitialState
+      };
+    }
+    case AllocateRoleActionTypes.SET_CASE_ID: {
+      return {
+        ...currentState,
+        caseId: action.payload
       };
     }
     case AllocateRoleActionTypes.CHOOSE_ROLE_AND_GO: {
@@ -70,5 +75,4 @@ export function allocateRoleReducer(currentState = allocateRoleInitialState,
 }
 
 export const allocateRoleActiveState = (allocateRoleState: AllocateRoleStateData) => allocateRoleState.state;
-export const allocateRoleCaseId = (allocateRoleState: AllocateRoleStateData) => allocateRoleState.caseId;
 export const allocateRoleLastErrors = (allocateRoleState: AllocateRoleStateData) => allocateRoleState.lastError;

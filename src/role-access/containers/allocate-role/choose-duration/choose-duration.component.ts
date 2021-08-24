@@ -10,8 +10,10 @@ import {
   AllocateRoleState,
   AllocateRoleStateData,
   DurationOfRole,
-  Period
+  Period,
+  TypeOfRole
 } from '../../../models';
+import { RoleCaptionText } from '../../../models/enums/allocation-text';
 import * as fromFeature from '../../../store';
 
 @Component({
@@ -78,8 +80,14 @@ export class ChooseDurationComponent implements OnInit {
 
   public selectDurationRole(roleAllocate: AllocateRoleStateData) {
     const action = EnumUtil(Actions).getKeyOrDefault(roleAllocate.action);
-    const typeOfRole = roleAllocate.typeOfRole ? roleAllocate.typeOfRole.toLowerCase() : '';
-    this.title = `${action} a ${typeOfRole}`;
+    const typeOfRole = roleAllocate.typeOfRole;
+    if (typeOfRole === TypeOfRole.CASE_MANAGER) {
+      this.title = `${action} ${RoleCaptionText.ALegalOpsCaseManager}`;
+    } else {
+      if (typeOfRole) {
+        this.title = `${action} a ${typeOfRole.toLowerCase()}`;
+      }
+    }
     this.selectedDuration = roleAllocate.durationOfRole;
     this.allDurations.find(duration => duration.duration === this.selectedDuration).checked = true;
     this.anotherPeriod = this.selectedDuration === DurationOfRole.ANOTHER_PERIOD;

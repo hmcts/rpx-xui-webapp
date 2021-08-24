@@ -14,9 +14,9 @@ import {
   DurationOfRole,
   TypeOfRole
 } from '../../../models';
-import { AnswerHeaderText, AnswerLabelText, RoleAllocationCaptionText } from '../../../models/enums';
-import * as fromFeature from '../../../store';
+import { AnswerHeaderText, AnswerLabelText } from '../../../models/enums';
 import { RoleCaptionText } from '../../../models/enums/allocation-text';
+import * as fromFeature from '../../../store';
 
 @Component({
   selector: 'exui-allocate-role-check-answers',

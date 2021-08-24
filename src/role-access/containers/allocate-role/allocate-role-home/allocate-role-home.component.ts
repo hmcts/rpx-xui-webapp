@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Person } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { $enum as EnumUtil } from 'ts-enum-util';
@@ -29,7 +30,6 @@ import { AllocateRoleSearchPersonComponent } from '../allocate-role-search-perso
 import { ChooseAllocateToComponent } from '../choose-allocate-to/choose-allocate-to.component';
 import { ChooseDurationComponent } from '../choose-duration/choose-duration.component';
 import { ChooseRoleComponent } from '../choose-role/choose-role.component';
-import { Person } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
 
 @Component({
   selector: 'exui-allocate-role-home',

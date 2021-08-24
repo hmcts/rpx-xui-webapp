@@ -2,7 +2,9 @@
 // https://github.com/angular/protractor/blob/master/lib/config.ts
 
 const { SpecReporter } = require('jasmine-spec-reporter');
+const MockApp = require('../../nodeMock/app');
 
+const {getScenarioCookie} = require('../helpers/pa11yUtil');
 
 exports.config = {
     allScriptsTimeout: 11000,
@@ -24,7 +26,7 @@ exports.config = {
         timeout: 120000
     },
     onPrepare() {
-
+       MockApp.setServerPort(3001); 
     },
     onComplete() {
     }

@@ -15,13 +15,14 @@ describe('Evidence Manager Endpoints', () => {
     // const userName = 'peterxuisuperuser@mailnesia.com';
     // const password = 'Monday01';
     beforeEach(function() {
+        this.timeout(120000);
+
         setTestContext(this);
         Request.clearSession();
     });
 
     // tslint:disable-next-line: only-arrow-functions
     it('Get document binary', async function() {
-        this.timeout(60000);
         await Request.withSession(userName, password);
         const xsrfToken = await getXSRFToken(userName, password);
         const headers = {

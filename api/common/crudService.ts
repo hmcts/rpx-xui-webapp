@@ -15,13 +15,13 @@ const logger: JUILogger = log4jui.getLogger('crud-service');
  * @returns {Promise<AxiosResponse>}
  */
 export async function handleGet(path: string, req: EnhancedRequest, next: NextFunction): Promise<AxiosResponse> {
-    try {
-        logger.info('handle get:', path);
-        const headers = setHeaders(req);
-        return await http.get(path, { headers });
-    } catch (e) {
-        next(e);
-    }
+  try {
+    logger.info('handle get:', path);
+    const headers = setHeaders(req);
+    return await http.get(path, {headers});
+  } catch (e) {
+    next(e);
+  }
 }
 
 /**
@@ -33,20 +33,20 @@ export async function handleGet(path: string, req: EnhancedRequest, next: NextFu
  * @returns {Promise<AxiosResponse>}
  */
 export async function handlePost<T>(path: string, body: T, req: EnhancedRequest, next: NextFunction): Promise<AxiosResponse> {
-    try {
-        logger.info('handle post:', path);
-        const headers = setHeaders(req);
-        return await http.post(path, body, { headers });
-    } catch (e) {
-       next(e);
-    }
+  try {
+    logger.info('handle post:', path);
+    const headers = setHeaders(req);
+    return await http.post(path, body, {headers});
+  } catch (e) {
+    next(e);
+  }
 }
 
 export async function sendPost<T>(path: string, body: T, req: EnhancedRequest): Promise<AxiosResponse> {
   try {
     logger.info('send post request to:', path);
     const headers = setHeaders(req);
-    return await http.post(path, body, { headers });
+    return await http.post(path, body, {headers});
   } catch (e) {
     logger.error(e.status, e.statusText, JSON.stringify(e.data));
     throw e;
@@ -84,13 +84,13 @@ export async function handlePostBlob<T>(path: string, body: T, req: EnhancedRequ
  */
 export async function handlePut<T>(path: string, body: T, req: EnhancedRequest, next: NextFunction): Promise<AxiosResponse> {
 
-    try {
-        logger.info('handle put:', path);
-        const headers = setHeaders(req);
-        return await http.put(path, body, { headers });
-    } catch (e) {
-        next(e);
-    }
+  try {
+    logger.info('handle put:', path);
+    const headers = setHeaders(req);
+    return await http.put(path, body, {headers});
+  } catch (e) {
+    next(e);
+  }
 
 }
 
@@ -103,16 +103,16 @@ export async function handlePut<T>(path: string, body: T, req: EnhancedRequest, 
  * @returns {Promise<AxiosResponse>}
  */
 export async function handleDelete<T>(path: string, body: T, req: EnhancedRequest, next: NextFunction): Promise<AxiosResponse> {
-    try {
-        logger.info('handle delete:', path);
-        const headers = setHeaders(req);
-        return await http.delete(path, {
-            data: body,
-            headers,
-        });
-    } catch (e) {
-        next(e);
-    }
+  try {
+    logger.info('handle delete:', path);
+    const headers = setHeaders(req);
+    return await http.delete(path, {
+      data: body,
+      headers,
+    });
+  } catch (e) {
+    next(e);
+  }
 }
 
 export async function sendDelete<T>(path: string, body: T, req: EnhancedRequest): Promise<AxiosResponse> {

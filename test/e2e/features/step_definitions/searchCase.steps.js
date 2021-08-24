@@ -6,6 +6,8 @@ TextField = require('../pageObjects/webdriver-components/textField.js');
 CustomError = require('../../utils/errors/custom-error.js');
 const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants');
 
+const BrowserWaits = require('../../support/customWaits');
+
 var {defineSupportCode} = require('cucumber');
 defineSupportCode(function ({And, But, Given, Then, When}) {
   let searchPage= new SearchPage();
@@ -15,8 +17,11 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
     });
 
     When('I click on Case list',async function(){
-      await headerPage.waitForSpinnerToDissappear(); 
-      await headerPage.clickCaseList();
+      await BrowserWaits.retryWithActionCallback(async () => {
+        await headerPage.waitForSpinnerToDissappear();
+        await headerPage.clickCaseList();
+      });
+       
     });
 
   Then(/^Search page should be displayed$/, async function () {

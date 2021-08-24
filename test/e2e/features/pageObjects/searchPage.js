@@ -82,23 +82,30 @@ class SearchPage {
   }
 
   async clickResetButton() {
-    await this._waitForSearchComponent();
-    await this.waitForSpinnerToDissappear();
-    await BrowserWaits.waitForElement(this.resetButton);
-    await browser.executeScript('arguments[0].scrollIntoView()',
-      this.resetButton); 
-    await this.resetButton.click();
+    await BrowserWaits.retryWithActionCallback(async () => {
+      await this._waitForSearchComponent();
+      await this.waitForSpinnerToDissappear();
+      await BrowserWaits.waitForElement(this.resetButton);
+      await browser.executeScript('arguments[0].scrollIntoView()',
+        this.resetButton);
+      await this.resetButton.click();
+    });
+    
   }
 
   async openFirstCaseInResults(){
+    
     await this.searchResultsTopPagination.isPresent();
     await BrowserWaits.waitForElement(this.firstResultCaseLink);
     var thisPageUrl = await browser.getCurrentUrl();
 
-    await this.waitForSpinnerToDissappear();
-    await browser.executeScript('arguments[0].scrollIntoView()',
-      this.firstResultCaseLink);
-    await this.firstResultCaseLink.click();
+    await BrowserWaits.retryWithActionCallback(async () =>{
+      await this.waitForSpinnerToDissappear();
+      await browser.executeScript('arguments[0].scrollIntoView()',
+        this.firstResultCaseLink);
+      await this.firstResultCaseLink.click();
+    });
+   
 
     await BrowserWaits.waitForPageNavigation(thisPageUrl);
   }

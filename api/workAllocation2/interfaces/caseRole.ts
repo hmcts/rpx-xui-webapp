@@ -12,6 +12,7 @@ export interface CaseRole {
   end: string;
   id: string;
   actions: Action[];
+  email: string;
 }
 
 export interface Action {

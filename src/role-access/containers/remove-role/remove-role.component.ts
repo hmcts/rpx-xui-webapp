@@ -18,6 +18,7 @@ export class RemoveRoleComponent implements OnInit {
   public caption = null;
   public heading = 'Remove allocation';
   public hint = 'This will remove the role allocation. You may need to unassign or reassign associated tasks too.';
+  public infoMessage = 'You\'ve removed a role allocation. You may need to unassign or reassign associated tasks too.';
   public caseId: string;
   public roleId: string;
 
@@ -33,7 +34,7 @@ export class RemoveRoleComponent implements OnInit {
       this.roleId = params.get('roleId');
       const currentRole = roles.find(role => role.id === this.roleId);
       this.answers.push({label: 'Type of role', value: currentRole.role});
-      this.answers.push({label: 'Person', value: currentRole.name});
+      this.answers.push({label: 'Person', value: currentRole.name, secondValue: currentRole.email});
     });
   }
 
@@ -42,7 +43,12 @@ export class RemoveRoleComponent implements OnInit {
     switch (navEvent) {
       case RemoveAllocationNavigationEvent.REMOVE_ROLE_ALLOCATION: {
         this.allocateRoleService.removeAllocation(this.caseId, this.roleId).subscribe(() =>
-        this.router.navigateByUrl(goToCaseUrl),
+        this.router.navigate([goToCaseUrl], {
+          state: {
+              showMessage: true,
+              messageText: this.infoMessage
+            }
+          }),
         error => {
           console.log(error);
           handleFatalErrors(error.status, this.router);

@@ -1,6 +1,7 @@
 import { TypeOfRole } from 'api/workAllocation2/interfaces/caseRole';
 
 export interface CaseRole {
+  email: string;
   name: string;
   role: TypeOfRole;
   location: string;

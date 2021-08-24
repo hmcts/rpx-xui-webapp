@@ -1,6 +1,7 @@
 import { Router } from 'express';
 
 import {
+  deleteRoleByCaseAndRoleId,
   getAllCaseWorkers,
   getAllCaseWorkersForLocation,
   getAllJudicialWorkers,
@@ -22,6 +23,7 @@ import { postFindPersonSearch } from './personService';
 const router = Router({ mergeParams: true });
 
 router.use(authInterceptor);
+router.delete('/caserole/:caseId/role/:roleId', deleteRoleByCaseAndRoleId);
 
 router.use('/caseWithPagination', searchCase);
 
@@ -49,5 +51,4 @@ router.use('/exclusion/rolesCategory', getRolesCategory);
 
 router.use('/roles/:caseId/show-allocate-role-link', showAllocateRoleLink);
 router.use('/roles/:caseId', getRolesByCaseId);
-
 export default router;

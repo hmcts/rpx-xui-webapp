@@ -14,3 +14,15 @@ export const init = () => {
     ];
   });
 };
+
+export const mockDelete = () => {
+  const mock: MockAdapter = HttpMockAdapter.getInstance();
+
+  const getCaseRolesUrl = /http:\/\/am-role-assignment-service-aat.service.core-compute-aat.internal\/cases\/[a-fA-F0-9]{16}\/role/;
+
+  mock.onDelete(getCaseRolesUrl).reply(() => {
+    return [
+      204,
+    ];
+  });
+};

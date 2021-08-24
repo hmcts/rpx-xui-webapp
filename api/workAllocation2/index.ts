@@ -22,7 +22,7 @@ import {
 
 import { CaseRole } from './interfaces/caseRole';
 import { Caseworker, Judicialworker } from './interfaces/common';
-import { handleGetRolesByCaseId, handleShowAllocatorLinkByCaseId } from './roleService';
+import { handleDeleteRoleIdByCaseId, handleGetRolesByCaseId, handleShowAllocatorLinkByCaseId } from './roleService';
 import * as roleServiceMock from './roleService.mock';
 import * as taskServiceMock from './taskService.mock';
 import {
@@ -46,6 +46,7 @@ import {
 taskServiceMock.init();
 caseServiceMock.init();
 roleServiceMock.init();
+roleServiceMock.mockDelete();
 
 export const baseWorkAllocationTaskUrl = getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH);
 export const baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);
@@ -320,6 +321,20 @@ export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next
   try {
     const {status, data} = await handleGetRolesByCaseId(`${baseRoleAssignmentUrl}/cases/${caseId}`, req);
     return res.send(data as CaseRole).status(status);
+  } catch (e) {
+    next(e);
+  }
+}
+
+export async function deleteRoleByCaseAndRoleId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
+  const caseId = req.params.caseId;
+  const roleId = req.params.roleId;
+  try {
+    if (roleId === 'd90ah606-98e8-47f8-b53c-a7ab77fde22b') {
+      return res.send().status(500);
+    }
+    const {status} = await handleDeleteRoleIdByCaseId(`${baseRoleAssignmentUrl}/cases/${caseId}/role/${roleId}`, req);
+    return res.send().status(status);
   } catch (e) {
     next(e);
   }

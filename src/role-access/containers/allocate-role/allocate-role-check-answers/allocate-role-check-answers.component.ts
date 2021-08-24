@@ -16,6 +16,7 @@ import {
 } from '../../../models';
 import { AnswerHeaderText, AnswerLabelText, RoleAllocationCaptionText } from '../../../models/enums';
 import * as fromFeature from '../../../store';
+import { RoleCaptionText } from '../../../models/enums/allocation-text';
 
 @Component({
   selector: 'exui-allocate-role-check-answers',
@@ -31,7 +32,7 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
   public hint: AnswerHeaderText = AnswerHeaderText.CheckInformation;
   public storeSubscription: Subscription;
   private allocateRoleStateData: AllocateRoleStateData;
-  public typeOfRole: string;
+  public typeOfRole: TypeOfRole;
   public allocateTo: AllocateTo;
 
   constructor(private readonly store: Store<fromFeature.State>) {
@@ -58,7 +59,7 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
     this.allocateTo = allocateRoleStateData.allocateTo;
     const action = EnumUtil(Actions).getKeyOrDefault(allocateRoleStateData.action);
     if (this.typeOfRole === TypeOfRole.CASE_MANAGER) {
-      this.caption = RoleAllocationCaptionText.LegalOpsAllocate;
+      this.caption = `${action} ${RoleCaptionText.ALegalOpsCaseManager}`;
     } else {
       if (this.typeOfRole) {
         this.caption = `${action} a ${this.typeOfRole.toLowerCase()}`;

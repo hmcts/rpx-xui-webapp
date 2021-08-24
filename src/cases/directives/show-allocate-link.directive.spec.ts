@@ -35,6 +35,7 @@ describe('ShowAllocateLinkDirective', () => {
         name: 'Judge Beech',
         role: TypeOfRole.CASE_MANAGER,
         start: '2021-07-13T00:29:10.656Z',
+        email: 'test@mail.com'
       },
     ];
     directive.userType = UserType.LEGAL_OPS;

@@ -1,4 +1,4 @@
-import { TypeOfRole } from 'api/workAllocation2/interfaces/caseRole';
+import { TypeOfRole } from './allocate-role.enum';
 
 export interface CaseRole {
   email: string;

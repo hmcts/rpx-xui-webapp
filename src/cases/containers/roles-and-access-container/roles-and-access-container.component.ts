@@ -7,7 +7,6 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { LocationInfo, UserDetails } from '../../../app/models/user-details.model';
 import * as fromRoot from '../../../app/store';
-import * as fromCaseList from '../../../app/store/reducers';
 import { RoleExclusion } from '../../../role-access/models';
 import { RoleExclusionsService } from '../../../role-access/services';
 
@@ -24,8 +23,7 @@ export class RolesAndAccessContainerComponent implements OnInit {
   public jurisdictionFieldId = '[JURISDICTION]';
 
   constructor(private readonly route: ActivatedRoute,
-              private readonly store: Store<fromCaseList.State>,
-              private readonly appStore: Store<fromRoot.State>,
+              private readonly store: Store<fromRoot.State>,
               private readonly roleExclusionsService: RoleExclusionsService) {
   }
 
@@ -35,8 +33,8 @@ export class RolesAndAccessContainerComponent implements OnInit {
     this.roles = this.route.snapshot.data.roles as CaseRole[];
     this.exclusions$ = this.roleExclusionsService.getCurrentUserRoleExclusions();
     this.locationInfo$ = this.store.pipe(
-      select(fromRoot.getLocationInfo),
-      map((locations: LocationInfo[]) => locations[0])
+      select(fromRoot.getUserDetails),
+      map((userDetails) => userDetails.locationInfo[0])
     );
   }
 
@@ -44,7 +42,7 @@ export class RolesAndAccessContainerComponent implements OnInit {
     const jurisdictionField = caseDetails.metadataFields.find(field => field.id === this.jurisdictionFieldId);
     if (jurisdictionField) {
       const caseJurisdiction = jurisdictionField.value;
-      this.appStore.select(fromRoot.getUserDetails).subscribe(user => this.setDisplayAllocateLink(user, caseJurisdiction));
+      this.store.select(fromRoot.getUserDetails).subscribe(user => this.setDisplayAllocateLink(user, caseJurisdiction));
     }
   }
 

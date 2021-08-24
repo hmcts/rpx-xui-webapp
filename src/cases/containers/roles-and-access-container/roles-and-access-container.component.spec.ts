@@ -1,10 +1,10 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
-import { of } from 'rxjs';
 import { CASEROLES } from '../../../../api/workAllocation2/constants/roles.mock.data';
 import { CaseRolesTableComponent } from '../../../role-access/components/case-roles-table/case-roles-table.component';
 import { ExclusionsTableComponent } from '../../../role-access/components/exclusions-table/exclusions-table.component';
@@ -15,7 +15,6 @@ import { initialMockState } from '../../../role-access/testing/app-initial-state
 import { RolesAndAccessComponent } from '../../components/roles-and-access/roles-and-access.component';
 import { ShowAllocateLinkDirective } from '../../directives/show-allocate-link.directive';
 import { RolesAndAccessContainerComponent } from './roles-and-access-container.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 const metadataField = {} as CaseField;
 metadataField.id = '[JURISDICTION]';
@@ -116,50 +115,6 @@ const CASE_VIEW: CaseView = {
   ]
 };
 
-const user = {
-  sessionTimeout: {
-    idleModalDisplayTime: 123,
-    totalIdleTime: 100,
-  },
-  canShareCases: false,
-  userInfo: {
-    id: '134',
-    forename: '',
-    surname: '',
-    email: '',
-    active: true,
-    roles: ['role1'],
-    uid: '34345456'
-  },
-  locationInfo: [
-                 {  primaryLocation: '', jurisdiction: 'JUDICIAL', isCaseAllocator: true},
-                 {  primaryLocation: '', jurisdiction: 'DIVORCE', isCaseAllocator: false}
-                ]
-};
-
-describe('RolesContainerComponent', () => {
-  let component: RolesAndAccessContainerComponent;
-  const route = new ActivatedRoute();
-  route.snapshot = {} as ActivatedRouteSnapshot;
-  route.snapshot.data = {
-    roles: CASEROLES,
-    showAllocateRoleLink: true,
-    case: CASE_VIEW
-  };
-  const mockCaseStore = jasmine.createSpyObj('mockCaseStore', ['pipe', 'select']);
-  const mockAppStore = jasmine.createSpyObj('mockAppStore', ['pipe', 'select']);
-  beforeEach((() => {
-    component = new RolesAndAccessContainerComponent(route, mockCaseStore, mockAppStore);
-  }));
-
-  it('applyJurisdiction filter coorectly', () => {
-    mockAppStore.select.and.returnValue(of(user));
-    const spy = spyOn(component, 'setDisplayAllocateLink');
-    component.applyJurisdiction(CASE_VIEW);
-    expect(spy).toHaveBeenCalledWith(user, 'JUDICIAL');
-  });
-});
-
 describe('RolesContainerComponent', () => {
   let component: RolesAndAccessContainerComponent;
   let fixture: ComponentFixture<RolesAndAccessContainerComponent>;
@@ -209,7 +164,7 @@ describe('RolesContainerComponent', () => {
   });
 
   it('setDisplayAllocateLink to set true for JUDICIAL', () => {
-    component.setDisplayAllocateLink(user, 'JUDICIAL');
+    component.setDisplayAllocateLink(initialMockState.appConfig.userDetails, 'JUDICIAL');
     expect(component.showAllocateRoleLink).toBeTruthy();
   });
 

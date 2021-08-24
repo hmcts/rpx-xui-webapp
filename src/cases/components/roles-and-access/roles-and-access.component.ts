@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { UserType } from '../../../../api/user/interfaces/user-type';
 import { CaseRole } from '../../../../api/workAllocation2/interfaces/caseRole';
-import { LocationInfo } from '../../../app/store/reducers/app-config.reducer';
+import { LocationInfo } from '../../../app/models/user-details.model';
 import { RoleExclusion, TypeOfRole } from '../../../role-access/models';
 
 @Component({
@@ -27,7 +27,8 @@ export class RolesAndAccessComponent implements OnInit {
     return this.pRoles;
   }
 
-  @Input() public set roles(value: CaseRole[]) {
+  @Input()
+  public set roles(value: CaseRole[]) {
     this.pRoles = value;
     this.legalOpsRoles = this.roles.filter(role => role.role === TypeOfRole.CASE_MANAGER);
     this.judicialRoles = this.roles.filter(role => RolesAndAccessComponent.isJudicialRole(role));

@@ -3,6 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { CASEROLES } from '../../../../api/workAllocation2/constants/roles.mock.data';
 import { CaseRolesTableComponent } from '../../../role-access/components/case-roles-table/case-roles-table.component';
+import { ExclusionsTableComponent } from '../../../role-access/components/exclusions-table/exclusions-table.component';
 import { initialMockState } from '../../../role-access/testing/app-initial-state.mock';
 import { ShowAllocateLinkDirective } from '../../directives/show-allocate-link.directive';
 import { RolesAndAccessComponent } from './roles-and-access.component';
@@ -14,7 +15,12 @@ describe('RolesAndAccessComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule],
-      declarations: [RolesAndAccessComponent, CaseRolesTableComponent, ShowAllocateLinkDirective]
+      declarations: [
+        RolesAndAccessComponent,
+        CaseRolesTableComponent,
+        ShowAllocateLinkDirective,
+        ExclusionsTableComponent,
+      ]
     })
       .compileComponents();
   }));
@@ -42,7 +48,7 @@ describe('RolesAndAccessComponent', () => {
       triggers: [],
       events: []
     };
-    component.locationInfo = initialMockState.appConfig.locationInfo[0];
+    component.locationInfo = initialMockState.appConfig.userDetails.locationInfo[0];
     fixture.detectChanges();
   });
 

@@ -16,11 +16,11 @@ export class RoleExclusionsService {
     return this.http.get<Role[]>('workallocation2/exclusion/rolesCategory');
   }
 
-  public confirmExclusion(exclusionStateData: ExclusionStateData) {
-    return this.http.post(`${RoleExclusionsService.exclusionsUrl}/confirm`, exclusionStateData);
+  public confirmExclusion(exclusionStateData: ExclusionStateData): Observable<string> {
+    return this.http.post<string>(`${RoleExclusionsService.exclusionsUrl}/confirm`, exclusionStateData);
   }
 
-  public deleteExclusion(deletedExclusion: RoleExclusion) {
-    return this.http.post(`${RoleExclusionsService.exclusionsUrl}/delete`, {roleExclusion: deletedExclusion});
+  public deleteExclusion(deletedExclusion: RoleExclusion): Observable<RoleExclusion> {
+    return this.http.post<RoleExclusion>(`${RoleExclusionsService.exclusionsUrl}/delete`, {roleExclusion: deletedExclusion});
   }
 }

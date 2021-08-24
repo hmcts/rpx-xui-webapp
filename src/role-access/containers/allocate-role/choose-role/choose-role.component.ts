@@ -95,15 +95,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
   }
 
   private getOptions(roles: Role[]): OptionsModel[] {
-    const options = [];
-    roles.forEach((jr) => {
-      const thisOption: OptionsModel = {
-        optionId: jr.roleId,
-        optionValue: jr.roleName
-      };
-      options.push(thisOption);
-    });
-    return options;
+    return roles.map(jr => ({optionId: jr.roleId, optionValue: jr.roleName}));
   }
 
   public ngOnDestroy(): void {

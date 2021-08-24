@@ -6,6 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 
+import { UserRole } from '../../../../app/models';
 import { ChooseRadioOptionComponent } from '../../../components';
 import { CHOOSE_A_ROLE } from '../../../constants';
 import { AllocateRoleNavigationEvent, AllocateRoleStateData } from '../../../models';
@@ -81,13 +82,9 @@ describe('ChooseRoleComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
   it('should correctly navigate on click of continue', () => {
     const navEvent = AllocateRoleNavigationEvent.CONTINUE;
-    component.dispatchEvent(navEvent);
+    component.dispatchEvent(navEvent, UserRole.Judicial);
     expect(mockStore.dispatch).toHaveBeenCalled();
   });
 

@@ -6,8 +6,8 @@ import healthCheck from './healthCheck';
 import authInterceptor from './lib/middleware/auth';
 import { router as nocRouter } from './noc/routes';
 import { router as organisationRouter } from './organisations';
-import roleAssignmentRouter from './roleAssignment/routes';
 import roleAccessRouter from './roleAccess/routes';
+import roleAssignmentRouter from './roleAssignment/routes';
 import userRouter from './user/routes';
 
 const router = express.Router({mergeParams: true});
@@ -28,7 +28,7 @@ router.use('/user', userRouter);
 
 router.use('/role-access', roleAccessRouter);
 
-router.use('/role-assignment', roleAssignmentRouter)
+router.use('/role-assignment', roleAssignmentRouter);
 
 // TODO: potentially can be moved to proxy but with onRes callback
 router.use('/caseshare', caseShareRoutes);

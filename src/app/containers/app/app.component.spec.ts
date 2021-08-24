@@ -1,6 +1,11 @@
 import { RoutesRecognized } from '@angular/router';
 import { of } from 'rxjs';
+import { RoleAssignmentService } from 'src/role-access/services';
 import { AppComponent } from './app.component';
+
+const mockRoles = [{ roleId: '1', roleName: 'Role 1' },
+      { roleId: '2', roleName: 'Role 2' },
+      { roleId: '3', roleName: 'Role 3' }];
 
 describe('AppComponent', () => {
   let environmentService;
@@ -11,59 +16,11 @@ describe('AppComponent', () => {
   let featureToggleService: any;
   let loggerService: any;
   let cookieService: any;
+  let httpClient: any;
   let roleAssignmentService: any;
   let router: any;
   let title: any;
   let testRoute: RoutesRecognized;
-
-  beforeEach(() => {
-      store = jasmine.createSpyObj('store', ['pipe', 'dispatch']);
-      googleTagManagerService = jasmine.createSpyObj('GoogleTagManagerService', ['init']);
-      timeoutNotificationService = jasmine.createSpyObj('TimeoutNotificationsService', ['notificationOnChange', 'initialise']);
-      featureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled']);
-      cookieService = jasmine.createSpyObj('CookieService', ['deleteCookieByPartialMatch']);
-      loggerService = jasmine.createSpyObj('LoggerService', ['enableCookies']);
-      roleAssignmentService = jasmine.createSpyObj('RoleAssignmentService', ['setRoleAllocations']);
-      testRoute = new RoutesRecognized(1, 'test', 'test', {
-          url: 'test',
-          root: {
-              firstChild: {
-                  data: { title: 'Test' },
-                  url: [],
-                  params: {},
-                  queryParams: {},
-                  fragment: '',
-                  outlet: '',
-                  component: '',
-                  routeConfig: {},
-                  root: null,
-                  parent: null,
-                  firstChild: null,
-                  children: [],
-                  pathFromRoot: [],
-                  paramMap: null,
-                  queryParamMap: null
-              },
-              data: { title: 'Test' },
-              url: [],
-              params: {},
-              queryParams: {},
-              fragment: '',
-              outlet: '',
-              component: '',
-              routeConfig: {},
-              root: null,
-              parent: null,
-              children: [],
-              pathFromRoot: [],
-              paramMap: null,
-              queryParamMap: null
-          }
-      });
-      router = { events: of(testRoute) };
-      title = jasmine.createSpyObj('Title', ['setTitle']);
-      appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService, router, title, featureToggleService, loggerService, cookieService, environmentService, roleAssignmentService);
-  });
 
   beforeEach(() => {
     store = jasmine.createSpyObj('store', ['pipe', 'dispatch']);
@@ -71,6 +28,9 @@ describe('AppComponent', () => {
     timeoutNotificationService = jasmine.createSpyObj('TimeoutNotificationsService', ['notificationOnChange', 'initialise']);
     featureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue', 'initialize']);
     environmentService = jasmine.createSpyObj('environmentService', ['config$']);
+    cookieService = jasmine.createSpyObj('CookieService', ['deleteCookieByPartialMatch']);
+    loggerService = jasmine.createSpyObj('LoggerService', ['enableCookies']);
+    httpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
     roleAssignmentService = jasmine.createSpyObj('RoleAssignmentService', ['setRoleAllocations']);
     testRoute = new RoutesRecognized(1, 'test', 'test', {
       url: 'test',
@@ -110,7 +70,7 @@ describe('AppComponent', () => {
     });
     router = {events: of(testRoute)};
     title = jasmine.createSpyObj('Title', ['setTitle']);
-    appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService, router, title, featureToggleService, loggerService, cookieService, environmentService, roleAssignmentService);
+    appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService, router, title, featureToggleService, loggerService, cookieService, environmentService, httpClient, roleAssignmentService);
   });
 
   it('Truthy', () => {
@@ -150,6 +110,13 @@ describe('AppComponent', () => {
       totalIdleTime: (100 * 60) * 1000,
       idleServiceName: 'idleSession',
     });
+  });
+
+  it('setRoleAllocations', () => {
+    httpClient.get.and.returnValue(of(mockRoles));
+    appComponent.setRoleAllocations();
+    expect(httpClient.get).toHaveBeenCalledWith(`${RoleAssignmentService.allocationsUrl}/judiciary/get`);
+    expect(httpClient.get).toHaveBeenCalledWith(`${RoleAssignmentService.allocationsUrl}/legal-ops/get`);
   });
 
   it('staySignedInHandler', () => {

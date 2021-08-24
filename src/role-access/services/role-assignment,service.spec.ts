@@ -1,4 +1,3 @@
-import { of } from 'rxjs';
 import { RoleAssignmentService } from './role-assignment.service';
 
 const mockRoles = [{ roleId: '1', roleName: 'Role 1' },
@@ -10,12 +9,12 @@ describe('RoleAssignmentService', () => {
     let mockHttp: any;
     beforeEach(() => {
         mockHttp = jasmine.createSpyObj('HttpClient', ['get', 'post']);
-        roleAssignmentService = new RoleAssignmentService(mockHttp);
+        roleAssignmentService = new RoleAssignmentService();
     });
-    it('getCurrentUserRoleExclusions', () => {
-        mockHttp.get.and.returnValue(of(mockRoles))
-        roleAssignmentService.setRoleAllocations();
-        expect(mockHttp.get).toHaveBeenCalledWith(`${RoleAssignmentService.allocationsUrl}/judiciary/get`);
-        expect(mockHttp.get).toHaveBeenCalledWith(`${RoleAssignmentService.allocationsUrl}/legal-ops/get`);
+    it('should be able to set judicial and legal ops roles', () => {
+        expect(roleAssignmentService.legalOpsRoles).toBe(undefined);
+        roleAssignmentService.judicialRoles = mockRoles;
+        roleAssignmentService.legalOpsRoles = roleAssignmentService.judicialRoles;
+        expect(roleAssignmentService.legalOpsRoles).toBe(mockRoles);
     });
 });

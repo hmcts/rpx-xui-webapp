@@ -46,7 +46,6 @@ import {
 taskServiceMock.init();
 caseServiceMock.init();
 roleServiceMock.init();
-roleServiceMock.mockDelete();
 
 export const baseWorkAllocationTaskUrl = getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH);
 export const baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);

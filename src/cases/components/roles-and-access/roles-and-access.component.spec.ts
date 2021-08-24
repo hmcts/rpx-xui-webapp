@@ -48,7 +48,7 @@ describe('RolesAndAccessComponent', () => {
       triggers: [],
       events: []
     };
-    component.locationInfo = initialMockState.appConfig.userDetails.locationInfo;
+    component.locationInfo = initialMockState.appConfig.userDetails.locationInfo[0];
     fixture.detectChanges();
   });
 

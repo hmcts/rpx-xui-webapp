@@ -2,10 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CaseRole, RemoveAllocationNavigationEvent } from '../../../role-access/models/case-role.interface';
 import { Answer } from '../../../role-access/models';
-import { catchError } from 'rxjs/operators';
-import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../../work-allocation-2/utils';
-import { EMPTY } from 'rxjs';
+import { handleFatalErrors } from '../../../work-allocation-2/utils';
 import { AllocateRoleService } from '../../../role-access/services/allocate-role.service';
+import { RemoveRoleText } from 'src/role-access/models/enums/answer-text';
 
 @Component({
   selector: 'exui-remove-role',
@@ -16,12 +15,10 @@ export class RemoveRoleComponent implements OnInit {
   public removeAllocationNavigationEvent = RemoveAllocationNavigationEvent;
   public answers: Answer[] = [];
   public caption = null;
-  public heading = 'Remove allocation';
-  public hint = 'This will remove the role allocation. You may need to unassign or reassign associated tasks too.';
-  public infoMessage = 'You\'ve removed a role allocation. You may need to unassign or reassign associated tasks too.';
   public caseId: string;
   public roleId: string;
-
+  public heading = RemoveRoleText.heading;
+  public hint = RemoveRoleText.hint;
 
   constructor(private readonly route: ActivatedRoute,
               private readonly router: Router,
@@ -46,7 +43,7 @@ export class RemoveRoleComponent implements OnInit {
         this.router.navigate([goToCaseUrl], {
           state: {
               showMessage: true,
-              messageText: this.infoMessage
+              messageText: RemoveRoleText.infoMessage
             }
           }),
         error => {

@@ -13,7 +13,7 @@
     <a href="javascript:void(0)"
        class="govuk-link"
        [routerLink]="['/', 'role-access', 'allocate-role']"
-       [queryParams]="{'caseId': caseId, 'userType': 'judicial'}"
+       [queryParams]="{'caseId': caseId, 'userType': 'judicial', 'action': 'allocate'}"
        exuiShowAllocateLink
        [showAllocateRoleLink]="showAllocateRoleLink"
        [roles]="roles"
@@ -32,7 +32,7 @@
     <a href="javascript:void(0)"
        class="govuk-link"
        [routerLink]="['/', 'role-access', 'allocate-role']"
-       [queryParams]="{'caseId': caseId, 'userType': 'legalOps'}"
+       [queryParams]="{'caseId': caseId, 'userType': 'legalOps', 'action': 'allocate'}"
        exuiShowAllocateLink
        [showAllocateRoleLink]="showAllocateRoleLink"
        [roles]="roles"

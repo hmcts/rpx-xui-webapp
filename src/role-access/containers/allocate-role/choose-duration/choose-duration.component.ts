@@ -2,7 +2,16 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import * as moment from 'moment';
-import { AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState, AllocateRoleStateData, DurationOfRole, Period } from '../../../models';
+import { $enum as EnumUtil } from 'ts-enum-util';
+import {
+  Actions,
+  AllocateRoleNavigation,
+  AllocateRoleNavigationEvent,
+  AllocateRoleState,
+  AllocateRoleStateData,
+  DurationOfRole,
+  Period
+} from '../../../models';
 import * as fromFeature from '../../../store';
 
 @Component({
@@ -53,7 +62,6 @@ export class ChooseDurationComponent implements OnInit {
    }
 
   public ngOnInit(): void {
-    this.title = 'Allocate a hearing judge';
     this.formGroup = this.builder.group({
       dayStartDate: this.dayStartDate,
       monthStartDate: this.monthStartDate,
@@ -69,6 +77,9 @@ export class ChooseDurationComponent implements OnInit {
   }
 
   public selectDurationRole(roleAllocate: AllocateRoleStateData) {
+    const action = EnumUtil(Actions).getKeyOrDefault(roleAllocate.action);
+    const typeOfRole = roleAllocate.typeOfRole ? roleAllocate.typeOfRole.toLowerCase() : '';
+    this.title = `${action} a ${typeOfRole}`;
     this.selectedDuration = roleAllocate.durationOfRole;
     this.allDurations.find(duration => duration.duration === this.selectedDuration).checked = true;
     this.anotherPeriod = this.selectedDuration === DurationOfRole.ANOTHER_PERIOD;

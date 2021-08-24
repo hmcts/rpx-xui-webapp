@@ -1,4 +1,5 @@
 import {
+  Actions,
   AllocateRoleState,
   AllocateRoleStateData,
   DurationOfRole,
@@ -13,6 +14,7 @@ export const allocateRoleInitialState: AllocateRoleStateData = {
   allocateTo: null,
   person: null,
   durationOfRole: DurationOfRole.INDEFINITE,
+  action: Actions.Allocate,
   period: null,
   lastError: null
 };
@@ -35,6 +37,17 @@ export function allocateRoleReducer(currentState = allocateRoleInitialState,
       return {
         ...currentState,
         caseId: action.payload
+      };
+    }
+    case AllocateRoleActionTypes.ALLOCATE_ROLE_INSTANTIATE: {
+      return {
+        ...currentState,
+        caseId: action.payload.caseId,
+        state: action.payload.state,
+        typeOfRole: action.payload.typeOfRole,
+        allocateTo: action.payload.allocateTo,
+        durationOfRole: action.payload.durationOfRole,
+        action: action.payload.action
       };
     }
     case AllocateRoleActionTypes.CHOOSE_ROLE_AND_GO: {

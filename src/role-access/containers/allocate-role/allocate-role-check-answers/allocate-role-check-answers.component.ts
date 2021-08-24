@@ -2,7 +2,9 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
+import { $enum as EnumUtil } from 'ts-enum-util';
 import {
+  Actions,
   AllocateRoleNavigation,
   AllocateRoleNavigationEvent,
   AllocateRoleState,
@@ -54,16 +56,19 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
     this.allocateRoleStateData = allocateRoleStateData;
     this.typeOfRole = allocateRoleStateData.typeOfRole;
     this.allocateTo = allocateRoleStateData.allocateTo;
+    const action = EnumUtil(Actions).getKeyOrDefault(allocateRoleStateData.action);
     if (this.typeOfRole === TypeOfRole.CASE_MANAGER) {
       this.caption = RoleAllocationCaptionText.LegalOpsAllocate;
     } else {
       if (this.typeOfRole) {
-        this.caption = `Allocate a ${this.typeOfRole.toLowerCase()}`;
+        this.caption = `${action} a ${this.typeOfRole.toLowerCase()}`;
       }
     }
     this.answers = [];
-    this.answers.push({ label: AnswerLabelText.TypeOfRole, value: allocateRoleStateData.typeOfRole, action: AllocateRoleState.CHOOSE_ROLE });
-    this.answers.push({ label: AnswerLabelText.WhoBeAllocatedTo, value: allocateRoleStateData.allocateTo, action: AllocateRoleState.CHOOSE_ALLOCATE_TO });
+    if (allocateRoleStateData.action === Actions.Allocate) {
+      this.answers.push({ label: AnswerLabelText.TypeOfRole, value: allocateRoleStateData.typeOfRole, action: AllocateRoleState.CHOOSE_ROLE });
+      this.answers.push({ label: AnswerLabelText.WhoBeAllocatedTo, value: allocateRoleStateData.allocateTo, action: AllocateRoleState.CHOOSE_ALLOCATE_TO });
+    }
     this.setPersonDetails(allocateRoleStateData);
     this.setDurationOfRole(allocateRoleStateData);
   }
@@ -73,7 +78,8 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
     if (allocateRoleStateData.person && allocateRoleStateData.person.email) {
       personDetails += `${allocateRoleStateData.person.name}\n${allocateRoleStateData.person.email}`;
     }
-    if (allocateRoleStateData.allocateTo === AllocateTo.ALLOCATE_TO_ANOTHER_PERSON) {
+    if (allocateRoleStateData.allocateTo === AllocateTo.ALLOCATE_TO_ANOTHER_PERSON ||
+      allocateRoleStateData.action === Actions.Reallocate) {
       this.answers.push({label: AnswerLabelText.Person, value: personDetails, action: AllocateRoleState.SEARCH_PERSON});
     }
   }

@@ -8,6 +8,7 @@ export interface AllocateRoleStateData {
   state: AllocateRoleState;
   typeOfRole: TypeOfRole;
   allocateTo: AllocateTo;
+  personToBeRemoved?: Person;
   person: Person;
   durationOfRole: DurationOfRole;
   action: Actions;

@@ -29,6 +29,7 @@ import { AllocateRoleSearchPersonComponent } from '../allocate-role-search-perso
 import { ChooseAllocateToComponent } from '../choose-allocate-to/choose-allocate-to.component';
 import { ChooseDurationComponent } from '../choose-duration/choose-duration.component';
 import { ChooseRoleComponent } from '../choose-role/choose-role.component';
+import { Person } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
 
 @Component({
   selector: 'exui-allocate-role-home',
@@ -68,6 +69,8 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
   public isLegalOpsOrJudicialRole: UserRole;
 
   public userType: string;
+  public userIdToBeRemoved: string;
+  public userNameToBeRemoved: string;
   public typeOfRole: string;
   public action: string;
 
@@ -78,25 +81,33 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
     if (this.route.snapshot.queryParams) {
       this.caseId = this.route.snapshot.queryParams.caseId ? this.route.snapshot.queryParams.caseId : null;
       this.userType = this.route.snapshot.queryParams.userType ? this.route.snapshot.queryParams.userType : null;
+      this.userIdToBeRemoved = this.route.snapshot.queryParams.userId ? this.route.snapshot.queryParams.userId : null;
+      this.userNameToBeRemoved = this.route.snapshot.queryParams.userName ? this.route.snapshot.queryParams.userName : null;
       this.typeOfRole = this.route.snapshot.queryParams.typeOfRole ? this.route.snapshot.queryParams.typeOfRole : null;
       this.action = this.route.snapshot.queryParams.action ? this.route.snapshot.queryParams.action : null;
     }
     if (this.action === Actions.Reallocate) {
-      const allocateRoleState: AllocateRoleStateData = {
-        caseId: this.caseId,
-        state: AllocateRoleState.SEARCH_PERSON,
-        typeOfRole: TypeOfRole[EnumUtil(TypeOfRole).getKeyOrDefault(this.typeOfRole)],
-        allocateTo: AllocateTo.REALLOCATE_TO_ANOTHER_PERSON,
-        person: null,
-        durationOfRole: DurationOfRole.INDEFINITE,
-        action: Actions.Reallocate,
-        period: null,
-        lastError: null
-      };
-      this.store.dispatch(new fromFeature.AllocateRoleInstantiate(allocateRoleState));
+      this.instantiateReallocateRoleData();
     } else {
       this.store.dispatch(new fromFeature.AllocateRoleSetCaseId(this.caseId));
     }
+  }
+
+  private instantiateReallocateRoleData(): void {
+    const personToBeRemoved: Person = {id: this.userIdToBeRemoved, name: this.userNameToBeRemoved, domain: this.userType};
+    const allocateRoleState: AllocateRoleStateData = {
+      caseId: this.caseId,
+      state: AllocateRoleState.SEARCH_PERSON,
+      typeOfRole: TypeOfRole[EnumUtil(TypeOfRole).getKeyOrDefault(this.typeOfRole)],
+      allocateTo: AllocateTo.REALLOCATE_TO_ANOTHER_PERSON,
+      personToBeRemoved,
+      person: null,
+      durationOfRole: DurationOfRole.INDEFINITE,
+      action: Actions.Reallocate,
+      period: null,
+      lastError: null
+    };
+    this.store.dispatch(new fromFeature.AllocateRoleInstantiate(allocateRoleState));
   }
 
   public ngOnInit(): void {

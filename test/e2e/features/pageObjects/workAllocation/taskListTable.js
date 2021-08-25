@@ -5,6 +5,9 @@ const browserUtil = require('../../../../ngIntegration/util/browserUtil');
 const BrowserWaits = require('../../../support/customWaits');
 const ArrayUtil = require('../../../utils/ArrayUtil');
 const Spinner = require('../../pageObjects/common/spinner');
+const Application = require('../../pageObjects/common/application');
+
+var cucumberReporter = require('../../../support/reportLogger');
 
 var cucumberReporter = require('../../../support/reportLogger');
 const WATable = require("./waTable");
@@ -36,6 +39,26 @@ class TaskListTable extends WATable{
 
     async getColumnValueElementForTaskAt(columnName, taskAtPos) {
         return this.getColumnValueElementAt(columnName, taskAtPos);
+    }
+
+    async isColValForTaskALink(columnName, taskAtPos) {
+        const taskRow = await this.getTableRowAt(taskAtPos);
+        const columnPos = await this.getHeaderPositionWithName(columnName);
+        const isLink = await taskRow.$(`td:nth-of-type(${columnPos}) exui-url-field`).isPresent();
+        return isLink;
+    }
+
+    async clickTaskColLink(columnName, taskAtPos){
+        const taskRow = await this.getTableRowAt(taskAtPos);
+        const columnPos = await this.getHeaderPositionWithName(columnName);
+        await taskRow.$(`td:nth-of-type(${columnPos}) exui-url-field a`).click();
+        
+    }
+
+    async getColumnValueElementForTaskAt(columnName, taskAtPos) {
+        const taskRow = await this.getTableRowAt(taskAtPos);
+        const columnPos = await this.getHeaderPositionWithName(columnName);
+        return taskRow.$(`td:nth-of-type(${columnPos})`);
     }
 
     async getTaskRowWithColumnValue(columnName, columnValue){

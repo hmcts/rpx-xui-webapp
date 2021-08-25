@@ -17,7 +17,6 @@ import { TaskServiceConfig } from '../../models/tasks';
   templateUrl: 'task-assignment-container.component.html'
 })
 export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
-
   public error: ErrorMessage = null;
   public tasks: any[];
   public showManage: boolean = false;

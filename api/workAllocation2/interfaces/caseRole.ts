@@ -1,8 +1,6 @@
-import { TypeOfRole } from '../../../src/role-access/models';
-
 export interface CaseRole {
   name: string;
-  role: TypeOfRole;
+  role: string;
   location: string;
   start: string;
   end: string;

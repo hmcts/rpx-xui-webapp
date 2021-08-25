@@ -17,7 +17,6 @@ describe('AppComponent', () => {
   let loggerService: any;
   let cookieService: any;
   let httpClient: any;
-  let roleAssignmentService: any;
   let router: any;
   let title: any;
   let testRoute: RoutesRecognized;
@@ -31,7 +30,6 @@ describe('AppComponent', () => {
     cookieService = jasmine.createSpyObj('CookieService', ['deleteCookieByPartialMatch']);
     loggerService = jasmine.createSpyObj('LoggerService', ['enableCookies']);
     httpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
-    roleAssignmentService = jasmine.createSpyObj('RoleAssignmentService', ['setRoleAllocations']);
     testRoute = new RoutesRecognized(1, 'test', 'test', {
       url: 'test',
       root: {
@@ -70,7 +68,7 @@ describe('AppComponent', () => {
     });
     router = {events: of(testRoute)};
     title = jasmine.createSpyObj('Title', ['setTitle']);
-    appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService, router, title, featureToggleService, loggerService, cookieService, environmentService, httpClient, roleAssignmentService);
+    appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService, router, title, featureToggleService, loggerService, cookieService, environmentService, httpClient);
   });
 
   it('Truthy', () => {
@@ -110,13 +108,6 @@ describe('AppComponent', () => {
       totalIdleTime: (100 * 60) * 1000,
       idleServiceName: 'idleSession',
     });
-  });
-
-  it('setRoleAllocations', () => {
-    httpClient.get.and.returnValue(of(mockRoles));
-    appComponent.setRoleAllocations();
-    expect(httpClient.get).toHaveBeenCalledWith(`${RoleAssignmentService.allocationsUrl}/judiciary/get`);
-    expect(httpClient.get).toHaveBeenCalledWith(`${RoleAssignmentService.allocationsUrl}/legal-ops/get`);
   });
 
   it('staySignedInHandler', () => {

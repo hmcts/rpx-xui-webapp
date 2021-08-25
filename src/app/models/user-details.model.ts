@@ -25,6 +25,6 @@ export interface UserDetails {
 }
 
 export enum UserRole {
-  LegalOps = 'Legal Ops',
-  Judicial = 'Judicial'
+  LegalOps = 'legalops',
+  Judicial = 'judicial'
 }

@@ -4,9 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { $enum as EnumUtil } from 'ts-enum-util';
-import { UserRole } from '../../../../app/models/user-details.model';
-import * as fromAppStore from '../../../../app/store';
+import { UserRole } from '../../../../app/models';
 import { CHOOSE_A_ROLE, ERROR_MESSAGE } from '../../../constants';
 import { AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState, Role, TypeOfRole } from '../../../models';
 import { RoleAllocationTitleText } from '../../../models/enums';
@@ -33,7 +31,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
 
   public allocateRoleStateDataSub: Subscription;
 
-  public typeOfRole: TypeOfRole;
+  public typeOfRole: string;
 
   public userType: string = '';
 
@@ -57,7 +55,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
     );
     this.radioOptionControl = new FormControl(this.typeOfRole ? this.typeOfRole : '', [Validators.required]);
     this.formGroup = new FormGroup({[this.radioControlName]: this.radioOptionControl});
-    const rolesList = this.userType === PersonRole.JUDICIAL.toLowerCase() ? this.roleAssignmentService.judicialRoles : this.roleAssignmentService.legalOpsRoles;
+    const rolesList = this.roleAssignmentService.validRoles;
     this.optionsList = this.getOptions(rolesList);
   }
 
@@ -95,7 +93,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
   }
 
   private getOptions(roles: Role[]): OptionsModel[] {
-    return roles.map(jr => ({optionId: jr.roleId, optionValue: jr.roleName}));
+    return roles.map(role => ({optionId: role.roleId, optionValue: role.roleName}));
   }
 
   public ngOnDestroy(): void {

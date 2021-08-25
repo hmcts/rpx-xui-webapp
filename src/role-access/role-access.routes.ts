@@ -4,6 +4,7 @@ import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
 import { DeleteExclusionComponent } from './containers';
 import { AddExclusionHomeComponent } from './containers/add-exclusion';
 import { AllocateRoleHomeComponent } from './containers/allocate-role';
+import { RoleAllocationsResolver } from './resolvers/role-allocations.resolver';
 import { RoleExclusionsResolver } from './resolvers/role-exclusions.resolver';
 
 export const ROUTES: Routes = [
@@ -32,6 +33,7 @@ export const ROUTES: Routes = [
   },
   {
     path: 'allocate-role',
+    resolve: { validRoles: RoleAllocationsResolver },
     component: AllocateRoleHomeComponent,
     children: [
       {

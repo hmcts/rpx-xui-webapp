@@ -35,7 +35,7 @@ export class AllocateRoleChangeNavigation implements Action {
 
 export class ChooseRoleAndGo implements Action {
   public readonly type = AllocateRoleActionTypes.CHOOSE_ROLE_AND_GO;
-  constructor(public payload: { typeOfRole: TypeOfRole, allocateRoleState: AllocateRoleState }) {
+  constructor(public payload: { typeOfRole: string, allocateRoleState: AllocateRoleState }) {
   }
 }
 

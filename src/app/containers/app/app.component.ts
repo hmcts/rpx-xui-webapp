@@ -10,7 +10,6 @@ import { take } from 'rxjs/operators';
 import { propsExist } from '../../../../api/lib/objectUtilities';
 import { environment as config } from '../../../environments/environment';
 import { Role } from '../../../role-access/models';
-import { RoleAssignmentService } from '../../../role-access/services/role-assignment.service';
 import { UserDetails, UserInfo } from '../../models/user-details.model';
 import { LoggerService } from '../../services/logger/logger.service';
 import { EnvironmentService } from '../../shared/services/environment.service';
@@ -46,8 +45,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly loggerService: LoggerService,
     private readonly cookieService: CookieService,
     private readonly environmentService: EnvironmentService,
-    private readonly http: HttpClient,
-    private readonly roleAssignmentService: RoleAssignmentService
+    private readonly http: HttpClient
   ) {
 
     this.router.events.subscribe((data) => {
@@ -78,24 +76,12 @@ export class AppComponent implements OnInit, OnDestroy {
     this.store.dispatch(new fromRoot.StartIdleSessionTimeout());
 
     this.handleCookieBannerFeatureToggle();
-
-    this.setRoleAllocations();
   }
 
   public ngOnDestroy() {
     if (this.cookieBannerEnabledSubscription) {
       this.cookieBannerEnabledSubscription.unsubscribe();
     }
-  }
-
-  // EUI-4069 - Get roles to display on allocate role journey one time on login
-  public setRoleAllocations(): void {
-    forkJoin({ jRoles: this.http.get<Role[]>(`${RoleAssignmentService.allocationsUrl}/judiciary/get`).pipe(take(1)),
-    loRoles: this.http.get<Role[]>(`${RoleAssignmentService.allocationsUrl}/legal-ops/get`).pipe(take(1))}).subscribe(
-      ({jRoles, loRoles}) => {
-        this.roleAssignmentService.judicialRoles = jRoles;
-        this.roleAssignmentService.legalOpsRoles = loRoles;
-    });
   }
 
   public handleCookieBannerFeatureToggle(): void {

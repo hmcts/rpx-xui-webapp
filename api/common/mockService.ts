@@ -42,7 +42,6 @@ export async function handlePost<T>(path: string, body: T, req: EnhancedRequest)
     const headers = setHeaders(req);
     return await httpMock.post(path, body, {headers});
   } catch (e) {
-    console.log(e);
     exists(e, 'message') ? logger.error(e.message) : logger.error('Error in post response');
     throw e;
   }

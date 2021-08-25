@@ -74,7 +74,8 @@ Feature: WA Release 2: All work - pagination sorting
             | IAC_Judge_WA_R2 | Judge    | caseworker-ia-iacjudge,caseworker-ia,caseworker |
 
 
-
+# For EUI-4366
+@ignore 
     Scenario Outline:  All work tasks Tasks pagnation control display 0 items
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
         Given I set MOCK tasks with permissions for view "All work" and assigned state "assigned"

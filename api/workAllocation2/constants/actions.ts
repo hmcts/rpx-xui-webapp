@@ -38,8 +38,20 @@ export const VIEW_PERMISSIONS_ACTIONS_MATRIX = {
   // level 1 - select a view, like 'MyTasks'
   // level 2 - select a permission, like 'Manage'
   // level 3 - return the actions array, like [REASSIGN, RELEASE, GO]
-  ActiveTasks: {
-    Manage: [REASSIGN, RELEASE, CLAIM],
+  ActiveTasksAssignedCurrentUser: {
+    Own: [CLAIM, REASSIGN, RELEASE],
+    Execute: [CLAIM, REASSIGN, RELEASE],
+    Manage: undefined,
+  },
+  ActiveTasksAssignedOtherUser: {
+    Own: [CLAIM, REASSIGN, RELEASE],
+    Execute: [CLAIM, REASSIGN, RELEASE],
+    Manage: [REASSIGN, RELEASE],
+  },
+  ActiveTasksUnassigned: {
+    Own: [CLAIM],
+    Execute: [CLAIM],
+    Manage: undefined,
   },
   AllWorkAssigned: {
     Cancel: [CANCEL],

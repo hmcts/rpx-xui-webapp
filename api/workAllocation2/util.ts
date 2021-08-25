@@ -81,11 +81,15 @@ export function preparePaginationUrl(req: EnhancedRequest, postPath: string): st
  */
 export function assignActionsToTasks(tasks: any[], view: any): any[] {
   const allWorkView = 'AllWork';
+  const activeTasksView = 'ActiveTasks';
   const tasksWithActions: any[] = [];
   if (tasks) {
     for (const task of tasks) {
       let thisView = view;
       if (view === allWorkView) {
+        thisView = task.assignee ? 'AllWorkAssigned' : 'AllWorkUnassigned';
+      }
+      if (view === activeTasksView) {
         thisView = task.assignee ? 'AllWorkAssigned' : 'AllWorkUnassigned';
       }
       const actions: Action[] = getActionsByPermissions(thisView, task.permissions);

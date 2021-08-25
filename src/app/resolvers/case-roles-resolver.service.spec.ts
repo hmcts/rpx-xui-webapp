@@ -24,6 +24,7 @@ describe('CaseRolesResolverService', () => {
       name: 'Judge Beech',
       role: TypeOfRole.LEAD_JUDGE,
       start: '2021-07-13T00:29:10.656Z',
+      email: 'test@mail.com'
     },
     {
       actions: [
@@ -36,6 +37,7 @@ describe('CaseRolesResolverService', () => {
       name: 'Kuda Nyamainashe',
       role: TypeOfRole.LEAD_JUDGE,
       start: '2021-05-19T00:29:10.656Z',
+      email: 'test@mail.com'
     },
   ];
   beforeEach(() => {

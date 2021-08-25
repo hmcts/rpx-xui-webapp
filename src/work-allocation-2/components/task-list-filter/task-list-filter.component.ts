@@ -2,12 +2,12 @@ import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/cor
 import { ActivatedRoute } from '@angular/router';
 import { FilterService } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
-import { ErrorMessage } from '../../../app/models/error-message.model';
+import { ErrorMessage } from '../../../app/models';
 import { Location } from '../../models/dtos';
-import { LocationDataService } from '../../services/location-data.service';
+import { LocationDataService } from '../../services';
 
 export const LOCATION_ERROR: ErrorMessage = {
   title: 'There is a problem',

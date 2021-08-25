@@ -49,5 +49,4 @@ router.use('/exclusion/rolesCategory', getRolesCategory);
 
 router.use('/roles/:caseId/show-allocate-role-link', showAllocateRoleLink);
 router.use('/roles/:caseId', getRolesByCaseId);
-
 export default router;

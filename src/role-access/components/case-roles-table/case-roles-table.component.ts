@@ -1,6 +1,7 @@
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { UserType } from 'api/user/interfaces/user-type';
+import { Action } from '../../../role-access/models/case-role.interface';
 import { CaseRole } from '../../../../api/workAllocation2/interfaces/caseRole';
 import { LocationInfo } from '../../../app/store/reducers/app-config.reducer';
 
@@ -32,5 +33,9 @@ export class CaseRolesTableComponent {
   @Input() set roles(value: CaseRole[]) {
     this.items = value.map((role) => ({...role, open: false}));
     this._roles = value;
+  }
+
+  public getActionHref(action: Action, item: Item): string {
+    return `role-access/${action.id}/${this.caseDetails.case_id}/${item.id}`;
   }
 }

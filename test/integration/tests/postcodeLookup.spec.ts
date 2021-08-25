@@ -12,6 +12,8 @@ describe('CCD Endpoints', () => {
     // const userName = 'peterxuisuperuser@mailnesia.com';
     // const password = 'Monday01';
     beforeEach(function ()  {
+        this.timeout(120000);
+
         setTestContext(this);
         Request.clearSession();
     });

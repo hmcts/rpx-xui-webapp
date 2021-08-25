@@ -121,7 +121,9 @@ export const ROUTES: Routes = [
               {
                 path: 'roles-and-access',
                 component: RolesAndAccessContainerComponent,
-                resolve: {roles: CaseRolesResolverService}
+                resolve: {
+                  roles: CaseRolesResolverService
+                }
               }
             ]
           },

@@ -3,10 +3,17 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-
+import { $enum as EnumUtil } from 'ts-enum-util';
 import { PERSON_ERROR_MESSAGE } from '../../../constants';
-import { AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState, AllocateRoleStateData, TypeOfRole } from '../../../models';
-import { RoleAllocationCaptionText } from '../../../models/enums';
+import {
+  Actions,
+  AllocateRoleNavigation,
+  AllocateRoleNavigationEvent,
+  AllocateRoleState,
+  AllocateRoleStateData,
+  TypeOfRole
+} from '../../../models';
+import { RoleCaptionText } from '../../../models/enums/allocation-text';
 import * as fromFeature from '../../../store';
 
 @Component({
@@ -17,7 +24,7 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
   public ERROR_MESSAGE = PERSON_ERROR_MESSAGE;
   @Input() public navEvent: AllocateRoleNavigation;
   public domain = PersonRole.JUDICIAL;
-  public boldTitle = RoleAllocationCaptionText.JudiciaryChoose;
+  public boldTitle: string = '';
   public formGroup: FormGroup = new FormGroup({});
   public findPersonControl: FormControl;
   public personName: string;
@@ -30,17 +37,20 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
 
   public ngOnInit(): void {
     this.findPersonControl = this.formGroup.value.findPersonControl;
-    this.subscription = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(allocation => this.setPerson(allocation));
+    this.subscription = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(allocateRoleStateData => this.setData(allocateRoleStateData));
   }
 
-  private setPerson(allocation: AllocateRoleStateData): void {
-    if (allocation.typeOfRole === TypeOfRole.CASE_MANAGER) {
+  private setData(allocateRoleStateData: AllocateRoleStateData): void {
+    const action = EnumUtil(Actions).getKeyOrDefault(allocateRoleStateData.action);
+    if (allocateRoleStateData.typeOfRole === TypeOfRole.CASE_MANAGER) {
       this.domain = PersonRole.CASEWORKER;
-      this.boldTitle = RoleAllocationCaptionText.LegalOpsChoose;
+      this.boldTitle = `${action} ${RoleCaptionText.ALegalOpsRole}`;
+    } else {
+      this.boldTitle = `${action} ${RoleCaptionText.AJudicialRole}`;
     }
-    this.personName = allocation && allocation.person ? this.getDisplayName(allocation.person) : null;
-    this.person = allocation.person;
-    this.roleType = allocation.typeOfRole;
+    this.personName = allocateRoleStateData && allocateRoleStateData.person ? this.getDisplayName(allocateRoleStateData.person) : null;
+    this.person = allocateRoleStateData.person;
+    this.roleType = allocateRoleStateData.typeOfRole;
   }
 
   public navigationHandler(navEvent: AllocateRoleNavigationEvent): void {

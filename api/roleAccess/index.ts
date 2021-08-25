@@ -1,13 +1,13 @@
 import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
 import { sendPost } from '../common/crudService';
+import { handleDelete, handlePost } from '../common/mockService';
 import { getConfigValue } from '../configuration';
 import { SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
 import { EnhancedRequest } from '../lib/models';
-import { toRoleAssignmentBody } from './dtos/to-role-assignment-dto';
-// import * as roleAccessMock from './roleAccessService.mock';
+import * as roleAccessMock from './roleAccessService.mock';
 
-// roleAccessMock.init();
+roleAccessMock.init();
 
 const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
 
@@ -20,6 +20,23 @@ export async function confirmAllocateRole(req: EnhancedRequest, res: Response, n
     const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
     const {status, data} = response;
     return res.status(status).send(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function reallocateRole(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
+  try {
+    const body = req.body;
+    const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
+    const deleteResponse: AxiosResponse = await handleDelete(basePath, body, req);
+    const {status, data} = deleteResponse;
+    if (status === 200) {
+      const postResponse: AxiosResponse = await handlePost(basePath, body, req);
+      return res.status(postResponse.status).send(postResponse.data);
+    } else {
+      return res.status(status).send(data);
+    }
   } catch (error) {
     next(error);
   }

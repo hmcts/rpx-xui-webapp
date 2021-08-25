@@ -6,6 +6,7 @@ export enum AllocateRoleActionTypes {
   CHANGE_NAVIGATION = '[ALLOCATE ROLE] Change Navigation',
   RESET = '[ALLOCATE ROLE] Reset',
   SET_CASE_ID = '[ALLOCATE ROLE] Set Case ID',
+  ALLOCATE_ROLE_INSTANTIATE = '[ALLOCATE ROLE] Instantiate State',
   CHOOSE_ROLE_AND_GO = '[ALLOCATE ROLE] Choose A Role And Go',
   CHOOSE_ALLOCATE_TO_AND_GO = '[ALLOCATE ROLE] Choose Allocate To And Go',
   CHOOSE_PERSON_AND_GO = '[ALLOCATE ROLE] Choose Person And Go',
@@ -25,6 +26,11 @@ export class AllocateRoleReset implements Action {
 export class AllocateRoleSetCaseId implements Action {
   public readonly type = AllocateRoleActionTypes.SET_CASE_ID;
   constructor(public payload: string) {}
+}
+
+export class AllocateRoleInstantiate implements Action {
+  public readonly type = AllocateRoleActionTypes.ALLOCATE_ROLE_INSTANTIATE;
+  constructor(public payload: AllocateRoleStateData) {}
 }
 
 export class AllocateRoleChangeNavigation implements Action {
@@ -63,6 +69,7 @@ export class ConfirmAllocation implements Action {
 export type AllocateRoleAction =
   | AllocateRoleChangeNavigation
   | AllocateRoleSetCaseId
+  | AllocateRoleInstantiate
   | AllocateRoleReset
   | ChooseRoleAndGo
   | ChooseAllocateToAndGo

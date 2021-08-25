@@ -7,15 +7,6 @@ export const initialMockState: State = {
     termsAndCondition: null,
     loaded: true,
     loading: true,
-    locationInfo: [
-      {
-        primaryLocation: '231596',
-        caseId: '1589185661976908',
-        jurisdiction: 'IA',
-        region: 'north-east',
-        isCaseAllocator: true
-      }
-    ],
     termsAndConditions: null,
     isTermsAndConditionsFeatureEnabled: null,
     useIdleSessionTimeout: null,
@@ -33,7 +24,24 @@ export const initialMockState: State = {
         roles: ['caseworker-ia-iacjudge'],
         uid: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
         surname: 'judge'
-      }
+      },
+      locationInfo: [
+        {
+          primaryLocation: '231596',
+          jurisdiction: 'IA',
+          isCaseAllocator: true
+        },
+        {
+          primaryLocation: '',
+          jurisdiction: 'JUDICIAL',
+          isCaseAllocator: true,
+        },
+        {
+          primaryLocation: '',
+          jurisdiction: 'DIVORCE',
+          isCaseAllocator: false,
+        }
+      ],
     }
   }
 };

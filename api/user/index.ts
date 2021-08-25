@@ -3,13 +3,16 @@ import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
 import { UserInfo } from '../auth/interfaces/UserInfo';
 import { getConfigValue } from '../configuration';
-import { CASE_SHARE_PERMISSIONS, SERVICES_ROLE_ASSIGNMENT_API_PATH, SESSION_TIMEOUTS } from '../configuration/references';
+import { CASE_SHARE_PERMISSIONS, SESSION_TIMEOUTS } from '../configuration/references';
 import { http } from '../lib/http';
 import { setHeaders } from '../lib/proxy';
 import { LocationInfo, RoleAssignment } from './interfaces/roleAssignment';
 import { isCurrentUserCaseAllocator } from './utils';
 
-export async function getUserDetails(req, res: Response, next: NextFunction) {
+export async function getUserDetails(req, res: Response, next: NextFunction): Promise<Response> {
+  if (!req.session || !req.session.passport || !req.session.passport.user) {
+    return res.send({}).status(200);
+  }
 
   try {
     const { roles } = req.session.passport.user.userinfo;
@@ -40,7 +43,9 @@ export async function getUserRoleAssignments(userInfo: UserInfo, req): Promise<a
 
 export async function getRoleAssignmentForUser(userInfo: UserInfo, req: any): Promise<any []> {
   let locationInfo = [];
-  const baseUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
+  // const baseUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
+  // This is a temporary change to do Early integration
+  const baseUrl = 'http://am-role-assignment-service-pr-920.service.core-compute-preview.internal';
   const id = userInfo.id ? userInfo.id : userInfo.uid;
   const path = `${baseUrl}/am/role-assignments/actors/${id}`;
   const headers = setHeaders(req);
@@ -57,12 +62,10 @@ export async function getRoleAssignmentForUser(userInfo: UserInfo, req: any): Pr
 export function getLocationInfo(roleAssignmentResponse: RoleAssignment[]): LocationInfo[] {
   const locationInfo = [];
   roleAssignmentResponse.forEach(roleAssignment => {
-    if (roleAssignment.attributes.primaryLocation) {
       const isCaseAllocator = isCurrentUserCaseAllocator(roleAssignment);
       const attributes = {...roleAssignment.attributes};
       attributes.isCaseAllocator = isCaseAllocator;
       locationInfo.push(attributes);
-    }
   });
   return locationInfo;
 }

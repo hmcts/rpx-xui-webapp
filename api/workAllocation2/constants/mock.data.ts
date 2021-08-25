@@ -6,25 +6,29 @@ export const PERSON = [
     id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3',
     name: 'Jacky Collins',
     email: 'jacky.collins@judicial.com',
-    domain: PersonRole.JUDICIAL
+    domain: PersonRole.JUDICIAL,
+    knownAs: 'Hearing Judge'
   },
   {
     id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3',
     name: 'Jasmine Chiswell',
     email: 'jasmine.chiswell@judicial.com',
-    domain: PersonRole.JUDICIAL
+    domain: PersonRole.JUDICIAL,
+    knownAs: 'Lead Judge'
   },
   {
     id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3',
     name: 'Jamie Vardy',
     email: 'jamie.vardy@judicial.com',
-    domain: PersonRole.JUDICIAL
+    domain: PersonRole.JUDICIAL,
+    knownAs: 'Lead Judge'
   },
   {
     id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3',
     name: 'James Priest',
     email: 'james.priest@judicial.com',
-    domain: PersonRole.JUDICIAL
+    domain: PersonRole.JUDICIAL,
+    knownAs: 'Hearing Judge'
   },
   {
     id: '49db7670-09b3-49e3-b945-b98f4e5e9a99',

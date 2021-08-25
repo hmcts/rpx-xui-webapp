@@ -73,8 +73,8 @@ Feature: WA Release 2: My work -  Available tasks - pagination sorting
             # | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
             | IAC_Judge_WA_R2 | Judge    | caseworker-ia-iacjudge,caseworker-ia,caseworker |
 
-
-
+# For EUI-4366
+@ignore
     Scenario Outline: Available Tasks pagnation control display 0 items
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
         Given I set MOCK tasks with permissions for view "Available Tasks" and assigned state ""

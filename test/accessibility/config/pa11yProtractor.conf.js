@@ -9,7 +9,7 @@ const {getScenarioCookie} = require('../helpers/pa11yUtil');
 exports.config = {
     allScriptsTimeout: 11000,
     specs: [
-        '../tests/*.test.js'
+        '../tests/**/*.test.js'
     ],
     capabilities: {
         'browserName': 'chrome',

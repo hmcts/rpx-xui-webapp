@@ -6,10 +6,13 @@ module.exports = {
     cases: '',
 
     subNavihationLinks: {
-        tasks: GetSubnavigationLinkCss('list'),
-        cases: GetSubnavigationLinkCss('availablee'),
+        tasks: GetSubnavigationLinkCss('tasks'),
+        cases: GetSubnavigationLinkCss('cases'),
     },
 
 }
 
+function GetSubnavigationLinkCss(subNav) {
+    return `exui-all-tasks .hmcts-sub-navigation li a[href*="${subNav}"]']`
+}
 

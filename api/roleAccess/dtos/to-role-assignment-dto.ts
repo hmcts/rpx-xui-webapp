@@ -10,11 +10,10 @@ export function toRoleAssignmentBody(userInfo: UserInfo, allocateRoleData: Alloc
       replaceExisting: false,
     },
     requestedRoles: [{
-      roleType: 'ORGANISATION',
-      grantType: 'STANDARD',
+      roleType: 'CASE',
+      grantType: 'SPECIFIC',
       classification: 'PUBLIC',
       attributes: {
-        region: "north-east",
         caseId: allocateRoleData.caseId,
         jurisdiction: 'IA',
       },

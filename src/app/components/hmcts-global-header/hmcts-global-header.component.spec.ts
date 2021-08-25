@@ -78,6 +78,12 @@ describe('HmctsGlobalHeaderComponent', () => {
     expect(nocStoreSpy).toHaveBeenCalled();
   });
 
+  it('should onEmitEvent', () => {
+    spyOn(component.navigate, 'emit');
+    component.onEmitEvent(1);
+    expect(component.navigate.emit).toHaveBeenCalled();
+  });
+
   it('splitNavItems', () => {
     component.items = [{
       align: 'right',

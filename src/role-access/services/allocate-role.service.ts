@@ -14,7 +14,8 @@ export class AllocateRoleService {
   }
 
   public removeAllocation(caseId: string, roleId: string): Observable<any> {
-    return this.http.delete(`${AllocateRoleService.CASE_ROLES_URL}/${caseId}/role/${roleId}`);
+    const body = {caseId, roleId};
+    return this.http.post(`${AllocateRoleService.allocateRoleBaseUrl}/delete`, body);
   }
 
 }

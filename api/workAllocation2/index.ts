@@ -326,8 +326,8 @@ export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next
 }
 
 export async function deleteRoleByCaseAndRoleId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
-  const caseId = req.params.caseId;
-  const roleId = req.params.roleId;
+  const caseId = req.body.caseId;
+  const roleId = req.body.roleId;
   try {
     if (roleId === 'd90ah606-98e8-47f8-b53c-a7ab77fde22b') {
       return res.send().status(500);

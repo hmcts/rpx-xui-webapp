@@ -153,6 +153,13 @@
   dependencies:
     tslib "^1.9.0"
 
+"@angular-material-components/moment-adapter@^4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@angular-material-components/moment-adapter/-/moment-adapter-4.0.1.tgz#a2827110f4f8f028926ecb3905e1abc90eaf7b1d"
+  integrity sha512-wHLRZKHOTAaY7EzM8p7EBGIMKdHAuY4HU1UjmvAuwMZ4uy1eIGSkGPS4MP3MtSq68Mj3aUyeDCCMeJM8IoGtnw==
+  dependencies:
+    tslib "^2.0.0"
+
 "@angular-material-components/moment-adapter@^5.0.0":
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/@angular-material-components/moment-adapter/-/moment-adapter-5.0.0.tgz#e277b82a4a3554260cd274a1862edf64cc186cac"
@@ -443,12 +450,13 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.0.0-prepended-tabs-v5":
-  version "4.0.0-prepended-tabs-v5"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.0.0-prepended-tabs-v5.tgz#790e877782ce9e26dc0887ba88ed755a59f36346"
-  integrity sha512-6MbzMEugrqrGXjEGJr/59CEjDPBM4T8bTWeGYSBOagYSG6k9Um8vIKGDIaZzP8Ir/aTg4n0OcEUWf+4QvUgU7g==
+"@hmcts/ccd-case-ui-toolkit@4.3.2-EUI-4424-date-pickers-working-as-expected":
+  version "4.3.2-EUI-4424-date-pickers-working-as-expected"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.3.2-EUI-4424-date-pickers-working-as-expected.tgz#f15ba36f488e66b701962b1213720d47a035aa1c"
+  integrity sha512-b6fLMmBjSTCB2IgVtQY1Tu66vpjLkNlmKmAFFC41XLUElw9AJ1sMFsiTjEZD3jjxLnx3NCZLw+c1lDIPthEu/A==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
+    "@angular-material-components/moment-adapter" "^4.0.1"
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
     "@hmcts/ccpay-web-component" "3.0.3"

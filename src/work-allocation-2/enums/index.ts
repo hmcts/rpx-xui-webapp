@@ -9,6 +9,8 @@ import { TaskActionIds } from './task-action-ids';
 import { TaskActionType } from './task-action-type';
 import { TaskService } from './task-service';
 import { TaskView } from './task-view';
+import { TaskFieldType } from './task-field-type';
+import { TaskSort } from './task-sort'
 
 export {
   AssignHintText,
@@ -21,5 +23,7 @@ export {
   TaskActionIds,
   TaskActionType,
   TaskService,
-  TaskView
+  TaskView,
+  TaskFieldType,
+  TaskSort
 };

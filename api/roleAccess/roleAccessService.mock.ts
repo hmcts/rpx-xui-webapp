@@ -5,7 +5,8 @@ export const init = () => {
   const mock: MockAdapter = HttpMockAdapter.getInstance();
 
   const allocateRoleConfirmUrl = /http:\/\/am-role-assignment-service-aat.service.core-compute-aat.internal\/am\/role-assignments/;
-  const deleteRoleUrl = /http:\/\/am-role-assignment-service-aat.service.core-compute-aat.internal\/am\/role-assignments/;
+
+  const deleteRoleUrl = /http:\/\/am-role-assignment-service-aat.service.core-compute-aat.internal\/am\/role-assignments\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/;
 
   mock.onPost(allocateRoleConfirmUrl).reply(config => {
     const payload = JSON.parse(config.data);
@@ -29,4 +30,5 @@ export const init = () => {
       payload,
     ];
   });
+
 };

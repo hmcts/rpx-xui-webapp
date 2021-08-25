@@ -4,7 +4,7 @@ import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
-import { isCurrentUserCaseAllocator } from '../user/utils'
+import { isCurrentUserCaseAllocator } from '../user/utils';
 import { CaseRole } from './interfaces/caseRole';
 
 const logger: JUILogger = log4jui.getLogger('role-service');

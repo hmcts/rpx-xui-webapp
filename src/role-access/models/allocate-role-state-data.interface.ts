@@ -5,6 +5,7 @@ import { HttpError } from './http-error.interface';
 
 export interface AllocateRoleStateData {
   caseId: string;
+  assignmentId?: string;
   state: AllocateRoleState;
   typeOfRole: TypeOfRole;
   allocateTo: AllocateTo;

@@ -1,22 +1,24 @@
-export enum TypeOfRole {
-  LEAD_JUDGE = 'Lead judge',
-  HEARING_JUDGE = 'Hearing judge',
-  CASE_MANAGER = 'Case manager',
-}
+import { TypeOfRole } from './allocate-role.enum';
 
 export interface CaseRole {
+  email: string;
   name: string;
   role: TypeOfRole;
   location: string;
   start: string;
   end: string;
   id: string;
-  actorId: string;
   actions: Action[];
-  email: string;
 }
 
 export interface Action {
   id: string;
   title: string;
+}
+
+export enum RemoveAllocationNavigationEvent {
+  BACK,
+  CANCEL,
+  CONTINUE,
+  REMOVE_ROLE_ALLOCATION
 }

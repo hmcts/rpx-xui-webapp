@@ -33,4 +33,5 @@ export class CaseRolesTableComponent {
     this.items = value.map((role) => ({...role, open: false}));
     this._roles = value;
   }
+
 }

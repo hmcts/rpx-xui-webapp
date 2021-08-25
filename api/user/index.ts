@@ -1,5 +1,5 @@
 import { getUserSessionTimeout, RoleGroupSessionTimeout } from '@hmcts/rpx-xui-node-lib';
-import { UserInfo } from 'auth/interfaces/UserInfo';
+import { UserInfo } from '../auth/interfaces/UserInfo';
 import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
 import { getConfigValue } from '../configuration';

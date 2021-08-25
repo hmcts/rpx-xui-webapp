@@ -3,7 +3,7 @@ const PallyActions = require('../helpers/pallyActions');
 const baseUrl = 'http://localhost:4200/'; 
 
 const conf = {
-    headless: true,
+    headless: false,
     failTestOna11yIssues: false,
     reportPath: "reports/tests/a11y/",
     appName:"EXUI Manage Cases a11y Test Report",

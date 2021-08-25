@@ -10,12 +10,12 @@ class UserDetails{
 
 
     withIACJudicialUser(forUserIndetifier) {
-        mockUserDetailsWithIdentifierAndRoles(forUserIndetifier, ['caseworker', 'caseworker-ia','caseworker-ia-iacjudge']);
+        this.mockUserDetailsWithIdentifierAndRoles(forUserIndetifier, ['caseworker', 'caseworker-ia','caseworker-ia-iacjudge']);
 
     }
 
     withIACLegalOpsUser(forUserIndetifier) {
-        mockUserDetailsWithIdentifierAndRoles(forUserIndetifier, ['caseworker', 'caseworker-ia','caseworker-ia-caseofficer']);
+        this.mockUserDetailsWithIdentifierAndRoles(forUserIndetifier, ['caseworker', 'caseworker-ia','caseworker-ia-caseofficer']);
 
     }
 

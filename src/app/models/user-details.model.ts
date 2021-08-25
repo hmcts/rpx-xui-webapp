@@ -28,8 +28,3 @@ export enum UserRole {
   LegalOps = 'Legal Ops',
   Judicial = 'Judicial'
 }
-
-export enum UserRole {
-  LegalOps = 'Legal Ops',
-  Judicial = 'Judicial'
-}

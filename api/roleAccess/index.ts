@@ -5,6 +5,7 @@ import { handleDelete, handlePost } from '../common/mockService';
 import { getConfigValue } from '../configuration';
 import { SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
 import { EnhancedRequest } from '../lib/models';
+import { toRoleAssignmentBody } from './dtos/to-role-assignment-dto';
 import * as roleAccessMock from './roleAccessService.mock';
 
 roleAccessMock.init();

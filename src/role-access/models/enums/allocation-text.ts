@@ -25,8 +25,3 @@ export enum RoleAllocationMessageText {
   Add = 'You\'ve allocated a role',
   Reallocate = 'You\'ve reallocated a role',
 }
-
-export enum RoleAllocationMessageText {
-  Delete = 'You\'ve deleted a role allocation',
-  Add = 'You\'ve allocated a role',
-}

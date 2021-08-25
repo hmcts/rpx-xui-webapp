@@ -69,7 +69,7 @@
     "@angular/platform-browser": "^7.2.13",
     "@angular/platform-browser-dynamic": "^7.2.13",
     "@angular/router": "^7.2.13",
-    "@hmcts/ccd-case-ui-toolkit": "4.3.0",
+    "@hmcts/ccd-case-ui-toolkit": "4.3.2-EUI-4424-date-pickers-working-as-expected",
     "@hmcts/ccpay-web-component": "3.0.3",
     "@hmcts/frontend": "0.0.39-alpha",
     "@hmcts/media-viewer": "2.7.7",
@@ -137,7 +137,7 @@
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.13.0",
     "@angular-material-components/datetime-picker": "^2.0.4",
-    "@angular-material-components/moment-adapter": "^5.0.0",
+    "@angular-material-components/moment-adapter": "^4.0.1",
     "@angular-devkit/build-webpack": "^0.1201.1",
     "@angular/cli": "^6.0.8",
     "@angular/compiler-cli": "^7.2.13",

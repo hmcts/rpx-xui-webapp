@@ -1,5 +1,5 @@
 import { TypeOfRole } from '../../role-access/models';
-import { UserType } from '../../../api/user/interfaces/user-type';
+import { UserType } from '../models/user-type';
 import { ShowAllocateLinkDirective } from './show-allocate-link.directive';
 
 describe('ShowAllocateLinkDirective', () => {

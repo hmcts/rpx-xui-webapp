@@ -48,7 +48,7 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
       this.title = `${action} ${RoleCaptionText.ALegalOpsCaseManager}`;
     } else {
       if (allocateRoleStateData.typeOfRole) {
-        this.boldTitle = `${action} a ${allocateRoleStateData.typeOfRole.toLowerCase()}`;
+        this.title = `${action} a ${allocateRoleStateData.typeOfRole.toLowerCase()}`;
       }
     }
     this.personName = allocateRoleStateData && allocateRoleStateData.person ? this.getDisplayName(allocateRoleStateData.person) : null;

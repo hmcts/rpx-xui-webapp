@@ -4,6 +4,12 @@ export enum TypeOfRole {
   CASE_MANAGER = 'Case manager',
 }
 
+export enum RoleCategory {
+  JUDICIAL = 'JUDICIAL',
+  LEGAL_OPERATIONS = 'LEGAL_OPERATIONS',
+  ADMIN = 'ADMIN',
+}
+
 export enum AllocateTo {
   RESERVE_TO_ME = 'Reserve to me',
   ALLOCATE_TO_ANOTHER_PERSON = 'Allocate to another person',

@@ -18,12 +18,23 @@ export function toRoleAssignmentBody(userInfo: UserInfo, allocateRoleData: Alloc
         jurisdiction: 'IA',
       },
       roleName: 'judge',
-      roleCategory: 'JUDICIAL',
+      roleCategory: allocateRoleData.roleCategory,
       actorIdType: 'IDAM',
-      actorId: allocateRoleData.allocateTo === AllocateTo.RESERVE_TO_ME ? userInfo.id : allocateRoleData.person.id,
-      authorisations: ['caseworker-ia-iacjudge'],
+      actorId: getActorId(userInfo, allocateRoleData),
       beginTime: allocateRoleData.period.startDate,
       endTime: allocateRoleData.period.endDate,
     }],
   };
+}
+
+export function getActorId(userInfo: UserInfo, allocateRoleData: AllocateRoleData): string {
+  if (allocateRoleData.action === 'reallocate') {
+    return allocateRoleData.person.id;
+  } else {
+    if (allocateRoleData.allocateTo === AllocateTo.RESERVE_TO_ME) {
+      return userInfo.id;
+    } else {
+      return allocateRoleData.person.id;
+    }
+  }
 }

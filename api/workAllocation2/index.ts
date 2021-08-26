@@ -20,9 +20,10 @@ import {
   handlePostSearch
 } from './caseWorkerService';
 
-import { CaseRole } from './interfaces/caseRole';
+import { AxiosResponse } from 'axios';
+import { sendPost } from '../common/crudService';
 import { Caseworker, Judicialworker } from './interfaces/common';
-import { handleGetRolesByCaseId, handleShowAllocatorLinkByCaseId } from './roleService';
+import { handleShowAllocatorLinkByCaseId, refineRoleAssignments } from './roleService';
 import * as roleServiceMock from './roleService.mock';
 import * as taskServiceMock from './taskService.mock';
 import {
@@ -203,9 +204,9 @@ export async function retrieveAllCaseWorkers(req: EnhancedRequest, res: Response
  */
 export async function getAllJudicialWorkers(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    const judicialworkers: Judicialworker[] = await retrieveAllJudicialWorkers(req, res);
+    const judicialWorkers: Judicialworker[] = await retrieveAllJudicialWorkers(req, res);
     res.status(200);
-    res.send(judicialworkers);
+    res.send(judicialWorkers);
   } catch (error) {
     next(error);
   }
@@ -220,7 +221,6 @@ export async function retrieveAllJudicialWorkers(req: EnhancedRequest, res: Resp
   const {data} = await handlePostRoleAssingnments(roleApiPath, payload, req);
   const userIds = getUserIdsFromRoleApiResponse(data);
   const userUrl = `${baseJudicialWorkerRefUrl}/judicialworkers/`;
-  // const userResponse = await handlePostJudicialWorkersRefData(userUrl, userIds, req);
   const userResponse = await handlePost(userUrl, userIds, req);
   req.session.judicialWorkers = userResponse.data;
   return userResponse.data;
@@ -318,8 +318,17 @@ export async function getRolesCategory(req: EnhancedRequest, res: Response, next
 export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   const caseId = req.params.caseId;
   try {
-    const {status, data} = await handleGetRolesByCaseId(`${baseRoleAssignmentUrl}/cases/${caseId}`, req);
-    return res.send(data as CaseRole).status(status);
+    const body = req.body;
+    const basePath = `${baseRoleAssignmentUrl}/am/role-assignments/query`;
+    const roleAssignmentsBody = {
+      attributes: {
+        caseId: [caseId],
+      },
+    };
+    const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
+    const {status, data} = response;
+    const refinedData = refineRoleAssignments(data);
+    return res.status(status).send(refinedData);
   } catch (e) {
     next(e);
   }

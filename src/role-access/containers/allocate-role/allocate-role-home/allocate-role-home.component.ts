@@ -21,7 +21,7 @@ import {
   AllocateRoleState,
   AllocateRoleStateData,
   AllocateTo,
-  DurationOfRole,
+  DurationOfRole, RoleCategory,
   TypeOfRole
 } from '../../../models';
 import * as fromFeature from '../../../store';
@@ -30,7 +30,6 @@ import { AllocateRoleSearchPersonComponent } from '../allocate-role-search-perso
 import { ChooseAllocateToComponent } from '../choose-allocate-to/choose-allocate-to.component';
 import { ChooseDurationComponent } from '../choose-duration/choose-duration.component';
 import { ChooseRoleComponent } from '../choose-role/choose-role.component';
-import { UserType } from '../../../../cases/models/user-type';
 
 @Component({
   selector: 'exui-allocate-role-home',
@@ -70,7 +69,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
   public caseId: string;
   public isLegalOpsOrJudicialRole: UserRole;
 
-  public userType: string;
+  public roleCategory: RoleCategory;
   public userIdToBeRemoved: string;
   public userNameToBeRemoved: string;
   public typeOfRole: string;
@@ -83,7 +82,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
     if (this.route.snapshot.queryParams) {
       this.caseId = this.route.snapshot.queryParams.caseId ? this.route.snapshot.queryParams.caseId : null;
       this.assignmentId = this.route.snapshot.queryParams.assignmentId ? this.route.snapshot.queryParams.assignmentId : null;
-      this.userType = this.route.snapshot.queryParams.userType ? this.route.snapshot.queryParams.userType : null;
+      this.roleCategory = this.route.snapshot.queryParams.roleCategory ? this.route.snapshot.queryParams.roleCategory : null;
       this.userIdToBeRemoved = this.route.snapshot.queryParams.actorId ? this.route.snapshot.queryParams.actorId : null;
       this.userNameToBeRemoved = this.route.snapshot.queryParams.userName ? this.route.snapshot.queryParams.userName : null;
       this.typeOfRole = this.route.snapshot.queryParams.typeOfRole ? this.route.snapshot.queryParams.typeOfRole : null;
@@ -92,12 +91,12 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
     if (this.action === Actions.Reallocate) {
       this.instantiateReallocateRoleData();
     } else {
-      this.store.dispatch(new fromFeature.AllocateRoleSetCaseId(this.caseId));
+      this.store.dispatch(new fromFeature.AllocateRoleSetInitData({caseId: this.caseId, roleCategory: this.roleCategory}));
     }
   }
 
   private instantiateReallocateRoleData(): void {
-    const personToBeRemoved: Person = {id: this.userIdToBeRemoved, name: this.userNameToBeRemoved, domain: this.userType};
+    const personToBeRemoved: Person = {id: this.userIdToBeRemoved, name: this.userNameToBeRemoved, domain: this.roleCategory};
     const allocateRoleState: AllocateRoleStateData = {
       caseId: this.caseId,
       assignmentId: this.assignmentId,
@@ -107,10 +106,12 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
       personToBeRemoved,
       person: null,
       durationOfRole: DurationOfRole.INDEFINITE,
+      roleCategory: RoleCategory[EnumUtil(RoleCategory).getKeyOrDefault(this.roleCategory)],
       action: Actions.Reallocate,
       period: null,
       lastError: null
     };
+    console.log(allocateRoleState);
     this.store.dispatch(new fromFeature.AllocateRoleInstantiate(allocateRoleState));
   }
 
@@ -149,8 +150,8 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
             this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ROLE));
             break;
           case AllocateRoleState.SEARCH_PERSON:
-            switch (this.userType) {
-              case UserType.JUDICIAL:
+            switch (this.roleCategory) {
+              case RoleCategory.JUDICIAL:
                 switch (this.isLegalOpsOrJudicialRole) {
                   case UserRole.LegalOps:
                     this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ROLE));
@@ -162,7 +163,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
                     throw new Error('Invalid user role');
                 }
                 break;
-              case UserType.LEGAL_OPS:
+              case RoleCategory.LEGAL_OPERATIONS:
                 switch (this.isLegalOpsOrJudicialRole) {
                   case UserRole.LegalOps:
                     this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
@@ -184,8 +185,8 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
                 this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
                 break;
               case Actions.Allocate:
-                switch (this.userType) {
-                  case UserType.LEGAL_OPS:
+                switch (this.roleCategory) {
+                  case RoleCategory.LEGAL_OPERATIONS:
                     switch (this.isLegalOpsOrJudicialRole) {
                       case UserRole.LegalOps:
                         switch (this.allocateTo) {
@@ -206,7 +207,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
                         throw new Error('Invalid user role');
                     }
                     break;
-                  case UserType.JUDICIAL:
+                  case RoleCategory.JUDICIAL:
                     switch (this.allocateTo) {
                       case AllocateTo.RESERVE_TO_ME:
                         this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
@@ -237,7 +238,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
       case AllocateRoleNavigationEvent.CONTINUE: {
         switch (this.navigationCurrentState) {
           case AllocateRoleState.CHOOSE_ROLE:
-            this.chooseRoleComponent.navigationHandler(navEvent, this.userType, this.isLegalOpsOrJudicialRole);
+            this.chooseRoleComponent.navigationHandler(navEvent, this.roleCategory, this.isLegalOpsOrJudicialRole);
             break;
           case AllocateRoleState.CHOOSE_ALLOCATE_TO:
             this.chooseAllocateToComponent.navigationHandler(navEvent);

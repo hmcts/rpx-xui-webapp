@@ -7,9 +7,8 @@ import { Subscription } from 'rxjs';
 import { $enum as EnumUtil } from 'ts-enum-util';
 import { UserRole } from '../../../../app/models/user-details.model';
 import * as fromAppStore from '../../../../app/store';
-import { UserType } from '../../../../cases/models/user-type';
 import { CHOOSE_A_ROLE, ERROR_MESSAGE } from '../../../constants';
-import { AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState, TypeOfRole } from '../../../models';
+import { AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState, RoleCategory, TypeOfRole } from '../../../models';
 import { RoleAllocationTitleText } from '../../../models/enums';
 import { OptionsModel } from '../../../models/options-model';
 import * as fromFeature from '../../../store';
@@ -35,7 +34,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
 
   public typeOfRole: TypeOfRole;
 
-  public userType: string = '';
+  public roleCategory: string = '';
 
   constructor(private readonly appStore: Store<fromAppStore.State>,
               private readonly store: Store<fromFeature.State>,
@@ -43,12 +42,12 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    // userType: 1. judicial/2. legalOps
+    // roleCategory: 1. JUDICIAL/2. LEGAL_OPERATIONS which is exactly matched with back end
     // 1. judicial: add judicial role journey
     // 2. legalOps: add legal Ops role journey
-    this.userType = this.route.snapshot.queryParams && this.route.snapshot.queryParams.userType ?
-      this.route.snapshot.queryParams.userType : '';
-    const userTypePlaceHolder = this.userType === PersonRole.JUDICIAL.toLowerCase() ? PersonRole.JUDICIAL.toLowerCase() : PersonRole.CASEWORKER.toLowerCase();
+    this.roleCategory = this.route.snapshot.queryParams && this.route.snapshot.queryParams.roleCategory ?
+      this.route.snapshot.queryParams.roleCategory : '';
+    const userTypePlaceHolder = this.roleCategory === RoleCategory.JUDICIAL ? PersonRole.JUDICIAL.toLowerCase() : PersonRole.CASEWORKER.toLowerCase();
     this.caption = `Allocate a ${userTypePlaceHolder} role`;
     this.allocateRoleStateDataSub = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(
       allocateRoleStateData => {
@@ -69,10 +68,10 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
       }
     ];
     const legalOpsOptions = [{optionId: EnumUtil(TypeOfRole).getKeyOrDefault(TypeOfRole.CASE_MANAGER), optionValue: TypeOfRole.CASE_MANAGER}];
-    this.optionsList = this.userType === PersonRole.JUDICIAL.toLowerCase() ? judicialOptions : legalOpsOptions;
+    this.optionsList = this.roleCategory === RoleCategory.JUDICIAL ? judicialOptions : legalOpsOptions;
   }
 
-  public navigationHandler(navEvent: AllocateRoleNavigationEvent, userType: string, isLegalOpsOrJudicialRole: UserRole): void {
+  public navigationHandler(navEvent: AllocateRoleNavigationEvent, roleCategory: RoleCategory, isLegalOpsOrJudicialRole: UserRole): void {
     this.submitted = true;
     if (this.radioOptionControl.invalid) {
       this.radioOptionControl.setErrors({
@@ -80,15 +79,15 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
       });
       return;
     }
-    this.dispatchEvent(navEvent, userType, isLegalOpsOrJudicialRole);
+    this.dispatchEvent(navEvent, roleCategory, isLegalOpsOrJudicialRole);
   }
 
-  public dispatchEvent(navEvent: AllocateRoleNavigationEvent, userType: string, isLegalOpsOrJudicialRole: UserRole): void {
+  public dispatchEvent(navEvent: AllocateRoleNavigationEvent, roleCategory: RoleCategory, isLegalOpsOrJudicialRole: UserRole): void {
     switch (navEvent) {
       case AllocateRoleNavigationEvent.CONTINUE:
         const typeOfRole = this.radioOptionControl.value;
-        switch (userType) {
-          case UserType.JUDICIAL: {
+        switch (roleCategory) {
+          case RoleCategory.JUDICIAL: {
             switch (isLegalOpsOrJudicialRole) {
               case UserRole.LegalOps:
                 this.store.dispatch(new fromFeature.ChooseRoleAndGo({
@@ -105,7 +104,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
             }
             break;
           }
-          case UserType.LEGAL_OPS: {
+          case RoleCategory.LEGAL_OPERATIONS: {
             switch (isLegalOpsOrJudicialRole) {
               case UserRole.LegalOps:
                 this.store.dispatch(new fromFeature.ChooseRoleAndGo({

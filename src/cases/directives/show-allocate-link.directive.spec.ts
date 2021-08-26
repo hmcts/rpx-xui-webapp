@@ -1,5 +1,4 @@
-import { TypeOfRole } from '../../role-access/models';
-import { UserType } from '../models/user-type';
+import { RoleCategory, TypeOfRole } from '../../role-access/models';
 import { ShowAllocateLinkDirective } from './show-allocate-link.directive';
 
 describe('ShowAllocateLinkDirective', () => {
@@ -14,7 +13,7 @@ describe('ShowAllocateLinkDirective', () => {
     const directive = new ShowAllocateLinkDirective(element);
     directive.showAllocateRoleLink = true;
     directive.roles = [];
-    directive.userType = UserType.JUDICIAL;
+    directive.roleCategory = RoleCategory.JUDICIAL;
     directive.ngOnInit();
     expect(element.nativeElement.style.display).toBe('');
   });
@@ -34,12 +33,13 @@ describe('ShowAllocateLinkDirective', () => {
         id: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
         location: 'Taylor House',
         name: 'Judge Beech',
-        role: TypeOfRole.CASE_MANAGER,
+        roleCategory: RoleCategory.LEGAL_OPERATIONS,
+        roleName: TypeOfRole.CASE_MANAGER,
         start: '2021-07-13T00:29:10.656Z',
         email: 'test@mail.com'
       },
     ];
-    directive.userType = UserType.LEGAL_OPS;
+    directive.roleCategory = RoleCategory.LEGAL_OPERATIONS;
     directive.ngOnInit();
     expect(element.nativeElement.style.display).toBe('none');
   });

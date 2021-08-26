@@ -32,10 +32,11 @@ export function allocateRoleReducer(currentState = allocateRoleInitialState,
         ...allocateRoleInitialState
       };
     }
-    case AllocateRoleActionTypes.SET_CASE_ID: {
+    case AllocateRoleActionTypes.SET_INITIAL_DATA: {
       return {
         ...currentState,
-        caseId: action.payload
+        caseId: action.payload.caseId,
+        roleCategory: action.payload.roleCategory
       };
     }
     case AllocateRoleActionTypes.ALLOCATE_ROLE_INSTANTIATE: {
@@ -48,6 +49,7 @@ export function allocateRoleReducer(currentState = allocateRoleInitialState,
         typeOfRole: action.payload.typeOfRole,
         allocateTo: action.payload.allocateTo,
         durationOfRole: action.payload.durationOfRole,
+        roleCategory: action.payload.roleCategory,
         action: action.payload.action
       };
     }

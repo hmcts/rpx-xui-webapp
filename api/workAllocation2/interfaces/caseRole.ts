@@ -1,12 +1,9 @@
-export enum TypeOfRole {
-  LEAD_JUDGE = 'Lead judge',
-  HEARING_JUDGE = 'Hearing judge',
-  CASE_MANAGER = 'Case manager',
-}
+import { RoleCategory, TypeOfRole } from '../../roleAccess/models/allocate-role.enum';
 
 export interface CaseRole {
   name: string;
-  role: TypeOfRole;
+  roleName: TypeOfRole;
+  roleCategory: RoleCategory;
   location: string;
   start: string;
   end: string;

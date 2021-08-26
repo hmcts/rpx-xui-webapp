@@ -1,9 +1,4 @@
-import { AxiosInstance } from 'axios';
-import { HttpMock } from '../common/httpMock';
-import { getConfigValue } from '../configuration';
-import { SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
-import * as log4jui from '../lib/log4jui';
-import { EnhancedRequest, JUILogger } from '../lib/models';
+import { EnhancedRequest } from '../lib/models';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { isCurrentUserCaseAllocator } from '../user/utils';
 

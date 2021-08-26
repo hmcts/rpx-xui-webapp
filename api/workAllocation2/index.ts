@@ -318,7 +318,6 @@ export async function getRolesCategory(req: EnhancedRequest, res: Response, next
 export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   const caseId = req.params.caseId;
   try {
-    const body = req.body;
     const basePath = `${baseRoleAssignmentUrl}/am/role-assignments/query`;
     const roleAssignmentsBody = {
       attributes: {

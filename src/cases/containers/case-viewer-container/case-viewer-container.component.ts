@@ -6,6 +6,7 @@ import { select, Store } from '@ngrx/store';
 import { combineLatest } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 import { map } from 'rxjs/operators';
+import { AppUtils } from '../../../app/app-utils';
 import { AppConstants } from '../../../app/app.constants';
 import { UserDetails } from '../../../app/models/user-details.model';
 import * as fromRoot from '../../../app/store';
@@ -18,7 +19,8 @@ import * as fromRoot from '../../../app/store';
 export class CaseViewerContainerComponent implements OnInit {
   private static readonly FEATURE_WORK_ALLOCATION_RELEASE_1 = 'WorkAllocationRelease1';
   private static readonly FEATURE_WORK_ALLOCATION_RELEASE_2 = 'WorkAllocationRelease2';
-  private workAllocationRoles: string[] = ['caseworker-ia-iacjudge'];
+  public caseDetails: CaseView;
+  public tabs$: Observable<CaseTab[]>;
   private tabs: CaseTab[] = [
     {
       id: 'tasks',
@@ -33,12 +35,15 @@ export class CaseViewerContainerComponent implements OnInit {
       show_condition: null
     }
   ];
-  public caseDetails: CaseView;
-  public tabs$: Observable<CaseTab[]>;
 
   constructor(private readonly route: ActivatedRoute,
               private readonly store: Store<fromRoot.State>,
               private readonly featureToggleService: FeatureToggleService) {
+  }
+
+  private static enablePrependedTabs(feature: string, userDetails: UserDetails): boolean {
+    return feature === CaseViewerContainerComponent.FEATURE_WORK_ALLOCATION_RELEASE_2
+      && !!AppUtils.isLegalOpsOrJudicial(userDetails.userInfo.roles);
   }
 
   public ngOnInit(): void {
@@ -51,13 +56,8 @@ export class CaseViewerContainerComponent implements OnInit {
       this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.currentWAFeature, CaseViewerContainerComponent.FEATURE_WORK_ALLOCATION_RELEASE_1),
       this.store.pipe(select(fromRoot.getUserDetails))
     ]).pipe(
-      map(([feature, userDetails]: [string, UserDetails]) => this.enablePrependedTabs(feature, userDetails) ? this.tabs : [])
+      map(([feature, userDetails]: [string, UserDetails]) => CaseViewerContainerComponent.enablePrependedTabs(feature, userDetails) ? this.tabs : [])
     );
-  }
-
-  private enablePrependedTabs(feature: string, userDetails: UserDetails): boolean {
-    return feature === CaseViewerContainerComponent.FEATURE_WORK_ALLOCATION_RELEASE_2
-      && userDetails.userInfo.roles.some((role: string) => this.workAllocationRoles.indexOf(role) >= 0);
   }
 
 }

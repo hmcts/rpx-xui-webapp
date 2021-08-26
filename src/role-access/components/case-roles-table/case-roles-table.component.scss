@@ -1,14 +1,10 @@
 tr {
   > th {
-    width: auto;
-  }
+    width: 15%;
 
-  &:first-child {
-    width: 300px;
-  }
-
-  &:last-child {
-    width: 100px;
+    &:first-child {
+      width: 25%;
+    }
   }
 }
 

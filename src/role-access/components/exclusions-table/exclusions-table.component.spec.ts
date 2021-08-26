@@ -1,17 +1,15 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
-import { CASEROLES } from '../../../../api/workAllocation2/constants/roles.mock.data';
-import { initialMockState } from '../../testing/app-initial-state.mock';
-import { CaseRolesTableComponent } from './case-roles-table.component';
 
-describe('CaseRolesTableComponent', () => {
-  let component: CaseRolesTableComponent;
-  let fixture: ComponentFixture<CaseRolesTableComponent>;
+import { ExclusionsTableComponent } from './exclusions-table.component';
+
+describe('ExclusionsTableComponent', () => {
+  let component: ExclusionsTableComponent;
+  let fixture: ComponentFixture<ExclusionsTableComponent>;
   const CASE_VIEW: CaseView = {
     events: [],
     triggers: [],
@@ -106,53 +104,45 @@ describe('CaseRolesTableComponent', () => {
       },
     ]
   };
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule],
-      declarations: [CaseRolesTableComponent]
+      imports: [RouterTestingModule.withRoutes([]), HttpClientTestingModule],
+      declarations: [ExclusionsTableComponent]
     })
       .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CaseRolesTableComponent);
+    fixture = TestBed.createComponent(ExclusionsTableComponent);
     component = fixture.componentInstance;
     component.caseDetails = CASE_VIEW;
-    component.locationInfo = initialMockState.appConfig.userDetails.locationInfo[0];
     fixture.detectChanges();
+  });
+
+  it('should show the no exclusions message', () => {
+    const element = fixture.debugElement.nativeElement;
+    const rowElement = element.querySelector('.govuk-summary-list__value');
+    expect(rowElement).not.toBeNull();
+    expect(rowElement.innerHTML).toContain('There are no exclusions for this case.');
   });
 
   it('should display a list of roles', () => {
-    component.roles = CASEROLES;
+    component.exclusions = [
+      {
+        added: new Date(2021, 7, 1),
+        name: 'Judge Birch',
+        notes: 'this case been remitted from Upper Tribunal and required different judge',
+        type: 'Other',
+        userType: 'Judicial',
+      }
+    ];
     fixture.detectChanges();
     const tableBody: DebugElement = fixture.debugElement.query(By.css('.govuk-table__body'));
     const tableBodyHTMLElement: HTMLElement = tableBody.nativeElement as HTMLElement;
-    expect(tableBodyHTMLElement.children.length).toBe(3);
-    expect(tableBodyHTMLElement.children[0].children[0].textContent).toBe('Judge Beech');
-    expect(tableBodyHTMLElement.children[0].children[2].textContent).toBe('Taylor House');
-    expect(tableBodyHTMLElement.children[1].children[0].textContent).toBe('Kuda Nyamainashe');
-    expect(tableBodyHTMLElement.children[1].children[2].textContent).toBe('Milton Keynes');
-  });
+    expect(tableBodyHTMLElement.children.length).toBe(1);
+    expect(tableBodyHTMLElement.children[0].children[0].textContent).toBe('Other');
+    expect(tableBodyHTMLElement.children[0].children[1].textContent).toBe('Judge Birch');
 
-  it('should display no roles for this case', () => {
-    const summaryList: DebugElement = fixture.debugElement.query(By.css('.govuk-summary-list__value'));
-    const element: HTMLElement = summaryList.nativeElement as HTMLElement;
-    expect(element.textContent).toBe(' There are no legal ops roles for this case. ');
-  });
-
-  it('should show the reallocate and remove allocation link', () => {
-    component.roles = CASEROLES;
-    fixture.detectChanges();
-    const tableBody: DebugElement = fixture.debugElement.query(By.css('.govuk-table__body'));
-    const tableBodyHTMLElement: HTMLElement = tableBody.nativeElement as HTMLElement;
-    const firstRow = tableBodyHTMLElement.children[0] as HTMLElement;
-    const manageLinkCell = firstRow.children[5].children[0] as HTMLElement;
-    manageLinkCell.click();
-    fixture.detectChanges();
-    const secondRow = tableBodyHTMLElement.children[1] as HTMLElement;
-    const manageLinkRow = secondRow.querySelector('.right') as HTMLElement;
-    expect(manageLinkRow.children.length).toBe(2);
-    expect(manageLinkRow.children[0].textContent).toBe('Reallocate');
-    expect(manageLinkRow.children[1].textContent).toBe('Remove Allocation');
   });
 });

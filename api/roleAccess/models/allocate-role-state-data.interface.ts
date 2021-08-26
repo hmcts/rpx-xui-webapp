@@ -3,9 +3,12 @@ import { AllocateTo, DurationOfRole, Period, TypeOfRole } from './allocate-role.
 
 export interface AllocateRoleData {
   caseId: string;
+  assignmentId?: string;
   typeOfRole: TypeOfRole;
   allocateTo: AllocateTo;
+  personToBeRemoved?: Person;
   person: Person;
   durationOfRole: DurationOfRole;
+  roleCategory?: string;
   period: Period;
 }

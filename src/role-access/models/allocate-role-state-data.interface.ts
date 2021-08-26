@@ -14,5 +14,6 @@ export interface AllocateRoleStateData {
   durationOfRole: DurationOfRole;
   action: Actions;
   period: Period;
+  roleCategory?: string;
   lastError?: HttpError;
 }

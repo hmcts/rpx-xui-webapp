@@ -77,3 +77,15 @@ export enum TaskPermission {
   EXECUTE = 'Execute',
   CANCEL = 'Cancel',
 }
+
+export enum ViewType {
+  ACTIVE_TASKS = 'ActiveTasks',
+  ACTIVE_TASKS_ASSIGNED_CURRENT = 'ActiveTasksAssignedCurrentUser',
+  ACTIVE_TASKS_ASSIGNED_OTHER = 'ActiveTasksAssignedOtherUser',
+  ACTIVE_TASKS_UNASSIGNED = 'ActiveTasksUnassigned',
+  ALL_WORK = 'AllWork',
+  ALL_WORK_ASSIGNED = 'AllWorkAssigned',
+  ALL_WORK_UNASSIGNED = 'AllWorkUnassigned',
+  AVAILABLE_TASKS = 'AvailableTasks',
+  MY_TASKS = 'MyTasks',
+}

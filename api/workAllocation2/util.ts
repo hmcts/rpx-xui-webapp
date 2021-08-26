@@ -4,7 +4,7 @@ import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
 
-import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX } from './constants/actions';
+import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX, ViewType } from './constants/actions';
 import { Action, Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/common';
 import { Person, PersonRole } from './interfaces/person';
 
@@ -80,19 +80,20 @@ export function preparePaginationUrl(req: EnhancedRequest, postPath: string): st
  * @param view This dictates which set of actions we should use.
  */
 export function assignActionsToTasks(tasks: any[], view: any, currentUser: string): any[] {
-  const allWorkView = 'AllWork';
-  const activeTasksView = 'ActiveTasks';
+  const allWorkView = ViewType.ALL_WORK;
+  const activeTasksView = ViewType.ACTIVE_TASKS;
   const tasksWithActions: any[] = [];
   if (tasks) {
     for (const task of tasks) {
       let thisView = view;
       if (view === allWorkView) {
-        thisView = task.assignee ? 'AllWorkAssigned' : 'AllWorkUnassigned';
+        thisView = task.assignee ? ViewType.ALL_WORK_ASSIGNED : ViewType.ALL_WORK_UNASSIGNED;
       }
       if (view === activeTasksView) {
-        thisView = task.assignee ? 'ActiveTasksAssigned' : 'ActiveTasksUnassigned';
+        thisView = ViewType.ACTIVE_TASKS_UNASSIGNED;
         if (task.assignee) {
-          thisView = currentUser === task.assignee ? 'ActiveTasksAssignedCurrentUser' : 'ActiveTasksAssignedOtherUser';
+          thisView = currentUser === task.assignee ?
+           ViewType.ACTIVE_TASKS_ASSIGNED_CURRENT : ViewType.ACTIVE_TASKS_ASSIGNED_OTHER;
         }
       }
       const actions: Action[] = getActionsByPermissions(thisView, task.permissions);
@@ -189,7 +190,8 @@ export function getActionsByPermissions(view, permissions: TaskPermission[]): Ac
         actionList = !manageActionList.includes(undefined) ? manageActionList : actionList;
         break;
       case TaskPermission.EXECUTE:
-        if (view.includes('ActiveTasks') && !permissions.includes(TaskPermission.MANAGE)) {
+        // if on active tasks and there is no manage permission do not add execute actions
+        if (view.includes(ViewType.ACTIVE_TASKS) && !permissions.includes(TaskPermission.MANAGE)) {
           break;
         }
         const executeActionList = actionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX[view][TaskPermission.EXECUTE]);

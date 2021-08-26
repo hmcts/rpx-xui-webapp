@@ -1,6 +1,5 @@
 import { RoutesRecognized } from '@angular/router';
 import { of } from 'rxjs';
-import { RoleAssignmentService } from 'src/role-access/services';
 import { AppComponent } from './app.component';
 
 const mockRoles = [{ roleId: '1', roleName: 'Role 1' },

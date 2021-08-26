@@ -116,6 +116,10 @@ defineSupportCode(({ Before,After }) => {
                 }
             }else{
                 CucumberReportLog.AddJson(browserErrorLogs);
+                if (global.scenarioData['featureToggles']){
+                    //CucumberReportLog.AddJson(global.scenarioData['featureToggles'])
+                }
+            } else {
                 browser.manage().logs().get('browser');
             }
             

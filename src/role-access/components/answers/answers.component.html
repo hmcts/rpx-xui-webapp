@@ -9,7 +9,9 @@
       <dt class="govuk-summary-list__key">
         {{answer.label}}
       </dt>
-      <dd class="govuk-summary-list__value" [innerText]="answer.value">
+      <dd class="govuk-summary-list__value">
+        <p class="govuk-body">{{answer.value}}</p>
+        <p class="govuk-body">{{answer.secondValue}}</p>
       </dd>
       <dd class="govuk-summary-list__actions" *ngIf="answer.action != null">
         <a class="govuk-link" href="javascript:void(0)"  (click)="changeAction(answer.action)">

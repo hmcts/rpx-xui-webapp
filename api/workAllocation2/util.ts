@@ -205,7 +205,7 @@ export function getActionsByPermissions(view, permissions: TaskPermission[]): Ac
   });
   // Note sorting is implemented to order all possible action lists the same
   // Currently sorting by id but can be changed
-  return actionList.sort((a,b) => a.id.localeCompare(b.id));
+  return actionList.sort((a, b) => a.id.localeCompare(b.id));
 }
 
 export function applySearchFilter(person: Person, domain: string, searchTerm: any): boolean {

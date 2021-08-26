@@ -7,10 +7,6 @@ import { EnhancedRequest, JUILogger } from '../lib/models';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { isCurrentUserCaseAllocator } from '../user/utils';
 
-const logger: JUILogger = log4jui.getLogger('role-service');
-const httpMock: AxiosInstance = HttpMock.getInstance();
-const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
-
 export function refineRoleAssignments(rawPayload: any): any {
   const rawRoleAssignments: [] = rawPayload.roleAssignmentResponse;
   return rawRoleAssignments.map(rawAssignment => toRefinedRoleAssignments(rawAssignment));

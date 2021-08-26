@@ -139,8 +139,8 @@ const defaultUserTheme: Theme = {
   },
   showFindCase: true,
   backgroundColor: '#202020',
-  logoIsUsed: true,
-  logoType: 'myhmcts',
+  logoIsUsed: false,
+  logoType: '',
 };
 
 const signedOutTheme: Theme = {

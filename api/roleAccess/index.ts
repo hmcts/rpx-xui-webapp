@@ -49,7 +49,7 @@ export async function deleteRoleByCaseAndRoleId(req: EnhancedRequest, res: Respo
   const body = req.body;
   const assigmentId = req.body.assigmentId;
   try {
-    if (assigmentId === 'd90ah606-98e8-47f8-b53c-a7ab77fde22b') {
+    if (assigmentId === '910088b0-9268-491b-8ddd-addc03ff67e7') {
       return res.send().status(500);
     }
     const {status} = await handleDelete(`${basePath}/${assigmentId}`, body, req);

@@ -30,6 +30,7 @@ import { AllocateRoleSearchPersonComponent } from '../allocate-role-search-perso
 import { ChooseAllocateToComponent } from '../choose-allocate-to/choose-allocate-to.component';
 import { ChooseDurationComponent } from '../choose-duration/choose-duration.component';
 import { ChooseRoleComponent } from '../choose-role/choose-role.component';
+import { UserType } from '../../../../cases/models/user-type';
 
 @Component({
   selector: 'exui-allocate-role-home',
@@ -148,15 +149,33 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
             this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ROLE));
             break;
           case AllocateRoleState.SEARCH_PERSON:
-            switch (this.isLegalOpsOrJudicialRole) {
-              case UserRole.LegalOps:
-                this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ROLE));
+            switch (this.userType) {
+              case UserType.JUDICIAL:
+                switch (this.isLegalOpsOrJudicialRole) {
+                  case UserRole.LegalOps:
+                    this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ROLE));
+                    break;
+                  case UserRole.Judicial:
+                    this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
+                    break;
+                  default:
+                    throw new Error('Invalid user role');
+                }
                 break;
-              case UserRole.Judicial:
-                this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
+              case UserType.LEGAL_OPS:
+                switch (this.isLegalOpsOrJudicialRole) {
+                  case UserRole.LegalOps:
+                    this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
+                    break;
+                  case UserRole.Judicial:
+                    this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ROLE));
+                    break;
+                  default:
+                    throw new Error('Invalid user role');
+                }
                 break;
               default:
-                throw new Error('Invalid user role');
+                throw new Error('Invalid user type');
             }
             break;
           case AllocateRoleState.CHOOSE_DURATION:
@@ -165,11 +184,29 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
                 this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
                 break;
               case Actions.Allocate:
-                switch (this.isLegalOpsOrJudicialRole) {
-                  case UserRole.LegalOps:
-                    this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
+                switch (this.userType) {
+                  case UserType.LEGAL_OPS:
+                    switch (this.isLegalOpsOrJudicialRole) {
+                      case UserRole.LegalOps:
+                        switch (this.allocateTo) {
+                          case AllocateTo.RESERVE_TO_ME:
+                            this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
+                            break;
+                          case AllocateTo.ALLOCATE_TO_ANOTHER_PERSON:
+                            this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
+                            break;
+                          default:
+                            throw new Error('Invalid allocate to');
+                        }
+                        break;
+                      case UserRole.Judicial:
+                        this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
+                        break;
+                      default:
+                        throw new Error('Invalid user role');
+                    }
                     break;
-                  case UserRole.Judicial:
+                  case UserType.JUDICIAL:
                     switch (this.allocateTo) {
                       case AllocateTo.RESERVE_TO_ME:
                         this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
@@ -182,7 +219,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
                     }
                     break;
                   default:
-                    throw new Error('Invalid user role');
+                    throw new Error('Invalid user type');
                 }
                 break;
               default:
@@ -200,7 +237,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
       case AllocateRoleNavigationEvent.CONTINUE: {
         switch (this.navigationCurrentState) {
           case AllocateRoleState.CHOOSE_ROLE:
-            this.chooseRoleComponent.navigationHandler(navEvent, this.isLegalOpsOrJudicialRole);
+            this.chooseRoleComponent.navigationHandler(navEvent, this.userType, this.isLegalOpsOrJudicialRole);
             break;
           case AllocateRoleState.CHOOSE_ALLOCATE_TO:
             this.chooseAllocateToComponent.navigationHandler(navEvent);

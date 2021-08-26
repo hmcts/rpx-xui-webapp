@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 import { $enum as EnumUtil } from 'ts-enum-util';
 import { UserRole } from '../../../../app/models/user-details.model';
 import * as fromAppStore from '../../../../app/store';
+import { UserType } from '../../../../cases/models/user-type';
 import { CHOOSE_A_ROLE, ERROR_MESSAGE } from '../../../constants';
 import { AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState, TypeOfRole } from '../../../models';
 import { RoleAllocationTitleText } from '../../../models/enums';
@@ -71,7 +72,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
     this.optionsList = this.userType === PersonRole.JUDICIAL.toLowerCase() ? judicialOptions : legalOpsOptions;
   }
 
-  public navigationHandler(navEvent: AllocateRoleNavigationEvent, isLegalOpsOrJudicialRole: UserRole): void {
+  public navigationHandler(navEvent: AllocateRoleNavigationEvent, userType: string, isLegalOpsOrJudicialRole: UserRole): void {
     this.submitted = true;
     if (this.radioOptionControl.invalid) {
       this.radioOptionControl.setErrors({
@@ -79,24 +80,50 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
       });
       return;
     }
-    this.dispatchEvent(navEvent, isLegalOpsOrJudicialRole);
+    this.dispatchEvent(navEvent, userType, isLegalOpsOrJudicialRole);
   }
 
-  public dispatchEvent(navEvent: AllocateRoleNavigationEvent, isLegalOpsOrJudicialRole: UserRole): void {
+  public dispatchEvent(navEvent: AllocateRoleNavigationEvent, userType: string, isLegalOpsOrJudicialRole: UserRole): void {
     switch (navEvent) {
       case AllocateRoleNavigationEvent.CONTINUE:
         const typeOfRole = this.radioOptionControl.value;
-        switch (isLegalOpsOrJudicialRole) {
-          case UserRole.LegalOps:
-            this.store.dispatch(new fromFeature.ChooseRoleAndGo({
-              typeOfRole, allocateRoleState: AllocateRoleState.SEARCH_PERSON}));
+        switch (userType) {
+          case UserType.JUDICIAL: {
+            switch (isLegalOpsOrJudicialRole) {
+              case UserRole.LegalOps:
+                this.store.dispatch(new fromFeature.ChooseRoleAndGo({
+                  typeOfRole, allocateRoleState: AllocateRoleState.SEARCH_PERSON
+                }));
+                break;
+              case UserRole.Judicial:
+                this.store.dispatch(new fromFeature.ChooseRoleAndGo({
+                  typeOfRole, allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO
+                }));
+                break;
+              default:
+                throw new Error('Invalid user role');
+            }
             break;
-          case UserRole.Judicial:
-            this.store.dispatch(new fromFeature.ChooseRoleAndGo({
-              typeOfRole, allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO}));
+          }
+          case UserType.LEGAL_OPS: {
+            switch (isLegalOpsOrJudicialRole) {
+              case UserRole.LegalOps:
+                this.store.dispatch(new fromFeature.ChooseRoleAndGo({
+                  typeOfRole, allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO
+                }));
+                break;
+              case UserRole.Judicial:
+                this.store.dispatch(new fromFeature.ChooseRoleAndGo({
+                  typeOfRole, allocateRoleState: AllocateRoleState.SEARCH_PERSON
+                }));
+                break;
+              default:
+                throw new Error('Invalid user role');
+            }
             break;
+          }
           default:
-            throw new Error('Invalid user role');
+            throw new Error('Invalid userType');
         }
         break;
       default:

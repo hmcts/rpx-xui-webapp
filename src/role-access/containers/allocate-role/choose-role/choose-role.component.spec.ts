@@ -44,8 +44,7 @@ describe('ChooseRoleComponent', () => {
   const mockStore = jasmine.createSpyObj('store', ['dispatch', 'pipe']);
 
   const roleAssignmentService = {
-    judicialRoles: firstRoles,
-    legalOpsRoles: secondRoles
+    validRoles: firstRoles
   };
 
   beforeEach(async(() => {

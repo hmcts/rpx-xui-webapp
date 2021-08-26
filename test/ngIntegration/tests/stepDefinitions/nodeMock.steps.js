@@ -1,7 +1,7 @@
 var { defineSupportCode } = require('cucumber');
 
 const MockApp = require('../../../nodeMock/app');
-
+const BrowserWaits = require('../../../e2e/support/customWaits');
 const browserUtil = require('../../util/browserUtil');
 const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
 const CucumberReporter = require('../../../e2e/support/reportLogger');
@@ -31,7 +31,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Given('I stop MockApp', async function () {
-        await MockApp.stopServer();
+       await MockApp.stopServer();
     });
 
     Given('I restart MockApp', async function () {
@@ -52,5 +52,55 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             res.send(userDetails);
         });
      });
+
+    Given('I set MOCK request {string} intercept with reference {string}', async function(url,reference){
+        global.scenarioData[reference] = null;
+        MockApp.addIntercept(url,(req,res,next) => {
+            global.scenarioData[reference] = req.body;
+            next();
+        })
+     });
+
+     Given('I reset reference {string} value to null', async function(reference){
+         global.scenarioData[reference] = null;
+     });
+
+     When('I wait for reference {string} value not null', async function(reference){
+         await BrowserWaits.waitForConditionAsync(async () => {
+             return global.scenarioData[reference] !== null
+         });
+     });
+
+     Given('I set MOCK api method {string} endpoint {string} with error response code {int}', async function(apiMethod, apiEndpoint, responseCode){
+        
+         switch (apiMethod.toLowerCase()){
+            case 'get':
+                 MockApp.onGet(apiEndpoint, (req, res) => {
+                     res.status(responseCode).send({ error: "Test error from mock" });
+                 });
+                 break;
+             case 'post':
+                 MockApp.onPost(apiEndpoint, (req, res) => {
+                     res.status(responseCode).send({ error: "Test error from mock" });
+                 });
+                 break;
+             case 'put':
+                 MockApp.onPut(apiEndpoint, (req, res) => {
+                     res.status(responseCode).send({ error: "Test error from mock" });
+                 });
+                 break;
+             case 'delete':
+                 MockApp.onDelete(apiEndpoint, (req, res) => {
+                     res.status(responseCode).send({ error: "Test error from mock" });
+                 });
+                 break;
+
+                 default:
+                 throw new Error("api method provided not recognised " + apiMethod);
+       }
+        
+        
+     });
+
 
 });

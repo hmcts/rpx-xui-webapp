@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { Actions, AllocateRoleStateData } from '../models';
 
 @Injectable({ providedIn: 'root' })
@@ -15,6 +16,11 @@ export class AllocateRoleService {
     if (action === Actions.Reallocate) {
       return this.http.post(`${AllocateRoleService.allocateRoleBaseUrl}/reallocate`, allocateRoleStateData);
     }
+  }
+
+  public removeAllocation(assigmentId: string): Observable<any> {
+    const body = {assigmentId};
+    return this.http.post(`${AllocateRoleService.allocateRoleBaseUrl}/delete`, body);
   }
 
 }

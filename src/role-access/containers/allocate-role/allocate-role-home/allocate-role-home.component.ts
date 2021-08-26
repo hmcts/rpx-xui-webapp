@@ -65,6 +65,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
 
   public navigationCurrentState: AllocateRoleState;
   public allocateTo: AllocateTo;
+  public assignmentId: string;
   public caseId: string;
   public isLegalOpsOrJudicialRole: UserRole;
 
@@ -80,8 +81,9 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
               private readonly router: Router) {
     if (this.route.snapshot.queryParams) {
       this.caseId = this.route.snapshot.queryParams.caseId ? this.route.snapshot.queryParams.caseId : null;
+      this.assignmentId = this.route.snapshot.queryParams.assignmentId ? this.route.snapshot.queryParams.assignmentId : null;
       this.userType = this.route.snapshot.queryParams.userType ? this.route.snapshot.queryParams.userType : null;
-      this.userIdToBeRemoved = this.route.snapshot.queryParams.userId ? this.route.snapshot.queryParams.userId : null;
+      this.userIdToBeRemoved = this.route.snapshot.queryParams.actorId ? this.route.snapshot.queryParams.actorId : null;
       this.userNameToBeRemoved = this.route.snapshot.queryParams.userName ? this.route.snapshot.queryParams.userName : null;
       this.typeOfRole = this.route.snapshot.queryParams.typeOfRole ? this.route.snapshot.queryParams.typeOfRole : null;
       this.action = this.route.snapshot.routeConfig.path ? this.route.snapshot.routeConfig.path : null;
@@ -97,6 +99,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
     const personToBeRemoved: Person = {id: this.userIdToBeRemoved, name: this.userNameToBeRemoved, domain: this.userType};
     const allocateRoleState: AllocateRoleStateData = {
       caseId: this.caseId,
+      assignmentId: this.assignmentId,
       state: AllocateRoleState.SEARCH_PERSON,
       typeOfRole: TypeOfRole[EnumUtil(TypeOfRole).getKeyOrDefault(this.typeOfRole)],
       allocateTo: AllocateTo.REALLOCATE_TO_ANOTHER_PERSON,

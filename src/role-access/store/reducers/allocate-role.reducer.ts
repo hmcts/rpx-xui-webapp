@@ -4,8 +4,7 @@ import {
   AllocateRoleStateData,
   DurationOfRole,
 } from '../../models';
-import * as fromActions from '../actions';
-import { AllocateRoleActionTypes } from '../actions';
+import { AllocateRoleAction, AllocateRoleActionTypes } from '../actions';
 
 export const allocateRoleInitialState: AllocateRoleStateData = {
   caseId: null,
@@ -20,7 +19,7 @@ export const allocateRoleInitialState: AllocateRoleStateData = {
 };
 
 export function allocateRoleReducer(currentState = allocateRoleInitialState,
-                                    action: fromActions.AllocateRoleAction): AllocateRoleStateData {
+                                    action: AllocateRoleAction): AllocateRoleStateData {
   switch (action.type) {
     case AllocateRoleActionTypes.CHANGE_NAVIGATION: {
       return {
@@ -43,6 +42,7 @@ export function allocateRoleReducer(currentState = allocateRoleInitialState,
       return {
         ...currentState,
         caseId: action.payload.caseId,
+        assignmentId: action.payload.assignmentId,
         state: action.payload.state,
         personToBeRemoved: action.payload.personToBeRemoved,
         typeOfRole: action.payload.typeOfRole,

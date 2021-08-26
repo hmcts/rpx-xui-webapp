@@ -15,3 +15,9 @@ export enum AnswerLabelText {
   WhoBeAllocatedTo = 'Who the role will be allocated to',
   DurationOfRole = 'Duration of role',
 }
+
+export enum RemoveRoleText {
+  heading = 'Remove allocation',
+  hint = 'This will remove the role allocation. You may need to unassign or reassign associated tasks too.',
+  infoMessage = 'You\'ve removed a role allocation. You may need to unassign or reassign associated tasks too.'
+}

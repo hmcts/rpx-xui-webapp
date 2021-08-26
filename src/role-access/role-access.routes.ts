@@ -1,7 +1,8 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { CaseRolesResolverService } from '../app/resolvers/case-roles-resolver.service';
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
-import { DeleteExclusionComponent } from './containers';
+import { DeleteExclusionComponent, RemoveRoleComponent } from './containers';
 import { AddExclusionHomeComponent } from './containers/add-exclusion';
 import { AllocateRoleHomeComponent } from './containers/allocate-role';
 import { RoleExclusionsResolver } from './resolvers/role-exclusions.resolver';
@@ -44,6 +45,14 @@ export const ROUTES: Routes = [
       }
     ]
   },
+  {
+    path: 'remove/:cid/:roleId',
+    component: RemoveRoleComponent,
+    canActivate: [HealthCheckGuard],
+    resolve: {
+      roles: CaseRolesResolverService
+    }
+  }
 ];
 
 export const roleAccessRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);

@@ -44,8 +44,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly featureService: FeatureToggleService,
     private readonly loggerService: LoggerService,
     private readonly cookieService: CookieService,
-    private readonly environmentService: EnvironmentService,
-    private readonly http: HttpClient
+    private readonly environmentService: EnvironmentService
   ) {
 
     this.router.events.subscribe((data) => {

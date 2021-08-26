@@ -15,7 +15,6 @@ describe('AppComponent', () => {
   let featureToggleService: any;
   let loggerService: any;
   let cookieService: any;
-  let httpClient: any;
   let router: any;
   let title: any;
   let testRoute: RoutesRecognized;

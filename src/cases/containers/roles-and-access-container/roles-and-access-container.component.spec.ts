@@ -1,12 +1,16 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
-import { of } from 'rxjs';
 import { CASEROLES } from '../../../../api/workAllocation2/constants/roles.mock.data';
 import { CaseRolesTableComponent } from '../../../role-access/components/case-roles-table/case-roles-table.component';
+import { ExclusionsTableComponent } from '../../../role-access/components/exclusions-table/exclusions-table.component';
+import { RoleExclusion } from '../../../role-access/models';
+import { RoleExclusionsService } from '../../../role-access/services';
+import { RoleExclusionsMockService } from '../../../role-access/services/role-exclusions.mock.service';
 import { initialMockState } from '../../../role-access/testing/app-initial-state.mock';
 import { RolesAndAccessComponent } from '../../components/roles-and-access/roles-and-access.component';
 import { ShowAllocateLinkDirective } from '../../directives/show-allocate-link.directive';
@@ -111,58 +115,18 @@ const CASE_VIEW: CaseView = {
   ]
 };
 
-const user = {
-  sessionTimeout: {
-    idleModalDisplayTime: 123,
-    totalIdleTime: 100,
-  },
-  canShareCases: false,
-  userInfo: {
-    id: '134',
-    forename: '',
-    surname: '',
-    email: '',
-    active: true,
-    roles: ['role1'],
-    uid: '34345456'
-  },
-  locationInfo: [
-                 {  primaryLocation: '', jurisdiction: 'JUDICIAL', isCaseAllocator: true},
-                 {  primaryLocation: '', jurisdiction: 'DIVORCE', isCaseAllocator: false}
-                ]
-};
-
-describe('RolesContainerComponent', () => {
-  let component: RolesAndAccessContainerComponent;
-  const route = new ActivatedRoute();
-  route.snapshot = {} as ActivatedRouteSnapshot;
-  route.snapshot.data = {
-    roles: CASEROLES,
-    showAllocateRoleLink: true,
-    case: CASE_VIEW
-  };
-  const mockCaseStore = jasmine.createSpyObj('mockCaseStore', ['pipe', 'select']);
-  const mockAppStore = jasmine.createSpyObj('mockAppStore', ['pipe', 'select']);
-  beforeEach((() => {
-    component = new RolesAndAccessContainerComponent(route, mockCaseStore, mockAppStore);
-  }));
-
-  it('applyJurisdiction filter coorectly', () => {
-    mockAppStore.select.and.returnValue(of(user));
-    const spy = spyOn(component, 'setDisplayAllocateLink');
-    component.applyJurisdiction(CASE_VIEW);
-    expect(spy).toHaveBeenCalledWith(user, 'JUDICIAL');
-  });
-});
-
 describe('RolesContainerComponent', () => {
   let component: RolesAndAccessContainerComponent;
   let fixture: ComponentFixture<RolesAndAccessContainerComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule],
+      imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule, HttpClientTestingModule],
       providers: [
+        {
+          provide: RoleExclusionsService,
+          useClass: RoleExclusionsMockService
+        },
         provideMockStore({initialState: initialMockState}),
         {
           provide: ActivatedRoute,
@@ -177,7 +141,13 @@ describe('RolesContainerComponent', () => {
           }
         },
       ],
-      declarations: [RolesAndAccessContainerComponent, RolesAndAccessComponent, CaseRolesTableComponent, ShowAllocateLinkDirective]
+      declarations: [
+        RolesAndAccessContainerComponent,
+        RolesAndAccessComponent,
+        CaseRolesTableComponent,
+        ShowAllocateLinkDirective,
+        ExclusionsTableComponent
+      ]
     })
       .compileComponents();
   }));
@@ -189,12 +159,20 @@ describe('RolesContainerComponent', () => {
   });
 
   it('should get a list of case roles from the activated route snapshot', () => {
-    expect(component.roles.length).toBe(2);
+    expect(component.roles.length).toBe(3);
     expect(component.roles[0].name).toBe('Judge Beech');
   });
 
   it('setDisplayAllocateLink to set true for JUDICIAL', () => {
-    component.setDisplayAllocateLink(user, 'JUDICIAL');
+    component.setDisplayAllocateLink(initialMockState.appConfig.userDetails, 'JUDICIAL');
     expect(component.showAllocateRoleLink).toBeTruthy();
+  });
+
+  it('should get exclusions from the api', () => {
+    component.exclusions$.subscribe((exclusions: RoleExclusion[]) => {
+
+      expect(exclusions.length).toBe(1);
+      expect(exclusions[0].name).toBe('Judge Birch');
+    });
   });
 });

@@ -24,7 +24,8 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
   public ERROR_MESSAGE = PERSON_ERROR_MESSAGE;
   @Input() public navEvent: AllocateRoleNavigation;
   public domain = PersonRole.JUDICIAL;
-  public boldTitle: string = '';
+  public title: string;
+  public boldTitle: string = 'Find the person';
   public formGroup: FormGroup = new FormGroup({});
   public findPersonControl: FormControl;
   public personName: string;
@@ -44,9 +45,11 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
     const action = EnumUtil(Actions).getKeyOrDefault(allocateRoleStateData.action);
     if (allocateRoleStateData.typeOfRole === TypeOfRole.CASE_MANAGER) {
       this.domain = PersonRole.CASEWORKER;
-      this.boldTitle = `${action} ${RoleCaptionText.ALegalOpsRole}`;
+      this.title = `${action} ${RoleCaptionText.ALegalOpsCaseManager}`;
     } else {
-      this.boldTitle = `${action} ${RoleCaptionText.AJudicialRole}`;
+      if (allocateRoleStateData.typeOfRole) {
+        this.boldTitle = `${action} a ${allocateRoleStateData.typeOfRole.toLowerCase()}`;
+      }
     }
     this.personName = allocateRoleStateData && allocateRoleStateData.person ? this.getDisplayName(allocateRoleStateData.person) : null;
     this.person = allocateRoleStateData.person;

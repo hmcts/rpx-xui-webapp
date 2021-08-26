@@ -107,6 +107,10 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
   try {
     const searchRequest = req.body.searchRequest;
     const view = req.body.view;
+    let currentUser = '';
+    if (req.body.currentUser) {
+      currentUser = req.body.currentUser;
+    }
     let promise;
     if (searchRequest.search_by === 'judge') {
       // TODO below call mock api will be replaced when real api is ready
@@ -145,7 +149,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     if (data) {
       // Note: TaskPermission placed in here is an example of what we could be getting (i.e. Manage permission)
       // These should be mocked as if we were getting them from the user themselves
-      returnData = {tasks: assignActionsToTasks(data.tasks, req.body.view), total_records: data.total_records};
+      returnData = {tasks: assignActionsToTasks(data.tasks, req.body.view, currentUser), total_records: data.total_records};
     }
 
     // Send the (possibly modified) data back in the Response.

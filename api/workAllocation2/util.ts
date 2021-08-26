@@ -79,7 +79,7 @@ export function preparePaginationUrl(req: EnhancedRequest, postPath: string): st
  * @param tasks The tasks to set up the actions for.
  * @param view This dictates which set of actions we should use.
  */
-export function assignActionsToTasks(tasks: any[], view: any): any[] {
+export function assignActionsToTasks(tasks: any[], view: any, currentUser: string): any[] {
   const allWorkView = 'AllWork';
   const activeTasksView = 'ActiveTasks';
   const tasksWithActions: any[] = [];
@@ -90,10 +90,12 @@ export function assignActionsToTasks(tasks: any[], view: any): any[] {
         thisView = task.assignee ? 'AllWorkAssigned' : 'AllWorkUnassigned';
       }
       if (view === activeTasksView) {
-        thisView = task.assignee ? 'AllWorkAssigned' : 'AllWorkUnassigned';
+        thisView = task.assignee ? 'ActiveTasksAssigned' : 'ActiveTasksUnassigned';
+        if (task.assignee) {
+          thisView = currentUser === task.assignee ? 'ActiveTasksAssignedCurrentUser' : 'ActiveTasksAssignedOtherUser';
+        }
       }
       const actions: Action[] = getActionsByPermissions(thisView, task.permissions);
-      view = allWorkView;
       const taskWithAction = {...task, actions};
       tasksWithActions.push(taskWithAction);
     }
@@ -187,6 +189,9 @@ export function getActionsByPermissions(view, permissions: TaskPermission[]): Ac
         actionList = !manageActionList.includes(undefined) ? manageActionList : actionList;
         break;
       case TaskPermission.EXECUTE:
+        if (view.includes('ActiveTasks') && !permissions.includes(TaskPermission.MANAGE)) {
+          break;
+        }
         const executeActionList = actionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX[view][TaskPermission.EXECUTE]);
         actionList = !executeActionList.includes(undefined) ? executeActionList : actionList;
         break;
@@ -198,7 +203,9 @@ export function getActionsByPermissions(view, permissions: TaskPermission[]): Ac
         break;
     }
   });
-  return actionList;
+  // Note sorting is implemented to order all possible action lists the same
+  // Currently sorting by id but can be changed
+  return actionList.sort((a,b) => a.id.localeCompare(b.id));
 }
 
 export function applySearchFilter(person: Person, domain: string, searchTerm: any): boolean {

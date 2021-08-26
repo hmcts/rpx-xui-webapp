@@ -107,7 +107,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
   try {
     const searchRequest = req.body.searchRequest;
     const view = req.body.view;
-    let currentUser = '';
+    const currentUser = req.body.currentUser ? req.body.currentUser : '';
     if (req.body.currentUser) {
       currentUser = req.body.currentUser;
     }

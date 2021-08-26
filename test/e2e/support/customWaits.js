@@ -24,10 +24,10 @@ class BrowserWaits{
 
     }
 
-    async waitForElement(element,message){
+    async waitForElement(element, message, waitForSeconds){
         const startTime = Date.now();
         CucumberReporter.AddMessage("starting wait for element max in sec " + this.waitTime / 1000 + " : " + element.locator().toString());
-        await browser.wait(EC.visibilityOf(element), this.waitTime,"Error : "+element.locator().toString() + " => "+message);
+        await browser.wait(EC.visibilityOf(element), waitForSeconds ? waitForSeconds*1000 :  this.waitTime,"Error : "+element.locator().toString() + " => "+message);
         CucumberReporter.AddMessage("wait done in sec " + (Date.now() - startTime ) / 1000); 
 
     }

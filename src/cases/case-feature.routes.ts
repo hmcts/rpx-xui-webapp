@@ -2,6 +2,7 @@ import { ModuleWithProviders } from '@angular/core';
 // routes
 import { RouterModule, Routes } from '@angular/router';
 import { CaseResolver, editorRouting, viewerRouting as caseViewRouting } from '@hmcts/ccd-case-ui-toolkit';
+import { CaseRolesResolverService } from '../app/resolvers/case-roles-resolver.service';
 import { HealthCheckGuard } from 'src/app/shared/guards/health-check.guard';
 import {
   CaseCreateSubmitComponent,
@@ -19,8 +20,6 @@ import { CaseViewerContainerComponent } from './containers/case-viewer-container
 import { RolesAndAccessContainerComponent } from './containers/roles-and-access-container/roles-and-access-container.component';
 import { TasksContainerComponent } from './containers/tasks-container/tasks-container.component';
 import { ActivityResolver } from './resolvers/activity.resolver';
-import { CaseAllocateRoleLinkResolverService } from './resolvers/case-allocate-role-link-resolver.service';
-import { CaseRolesResolverService } from './resolvers/case-roles-resolver.service';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
 
 export const ROUTES: Routes = [

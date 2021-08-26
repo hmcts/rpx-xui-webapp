@@ -34,13 +34,6 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
   }
 }
 
-export async function getUserRoleAssignments(userInfo: UserInfo, req): Promise<any []> {
-  const locationInfo = req.session.roleAssignmentResponse ?
-                      getLocationInfo(req.session.roleAssignmentResponse) :
-                      await getRoleAssignmentForUser(userInfo, req);
-  return locationInfo;
-}
-
 export async function getRoleAssignmentForUser(userInfo: UserInfo, req: any): Promise<any []> {
   let locationInfo = [];
   // const baseUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
@@ -68,4 +61,11 @@ export function getLocationInfo(roleAssignmentResponse: RoleAssignment[]): Locat
       locationInfo.push(attributes);
   });
   return locationInfo;
+}
+
+export async function getUserRoleAssignments(userInfo: UserInfo, req): Promise<any []> {
+  const locationInfo = req.session.roleAssignmentResponse ?
+                      getLocationInfo(req.session.roleAssignmentResponse) :
+                      await getRoleAssignmentForUser(userInfo, req);
+  return locationInfo
 }

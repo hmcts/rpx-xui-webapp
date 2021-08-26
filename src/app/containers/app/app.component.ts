@@ -4,7 +4,7 @@ import { Title } from '@angular/platform-browser';
 import { Router, RoutesRecognized } from '@angular/router';
 import { CookieService, FeatureToggleService, FeatureUser, GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
-import { combineLatest, forkJoin, Subscription } from 'rxjs';
+import { combineLatest, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { propsExist } from '../../../../api/lib/objectUtilities';

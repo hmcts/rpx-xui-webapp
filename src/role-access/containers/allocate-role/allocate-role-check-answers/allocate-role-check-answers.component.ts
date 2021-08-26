@@ -68,7 +68,9 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
     this.answers = [];
     if (allocateRoleStateData.action === Actions.Allocate) {
       this.answers.push({ label: AnswerLabelText.TypeOfRole, value: allocateRoleStateData.typeOfRole, action: AllocateRoleState.CHOOSE_ROLE });
-      this.answers.push({ label: AnswerLabelText.WhoBeAllocatedTo, value: allocateRoleStateData.allocateTo, action: AllocateRoleState.CHOOSE_ALLOCATE_TO });
+      if (allocateRoleStateData.allocateTo) {
+        this.answers.push({ label: AnswerLabelText.WhoBeAllocatedTo, value: allocateRoleStateData.allocateTo, action: AllocateRoleState.CHOOSE_ALLOCATE_TO });
+      }
     }
     this.setPersonDetails(allocateRoleStateData);
     this.setDurationOfRole(allocateRoleStateData);
@@ -80,6 +82,7 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
       personDetails += `${allocateRoleStateData.person.name}\n${allocateRoleStateData.person.email}`;
     }
     if (allocateRoleStateData.allocateTo === AllocateTo.ALLOCATE_TO_ANOTHER_PERSON ||
+      (allocateRoleStateData.allocateTo === null && allocateRoleStateData.typeOfRole === TypeOfRole.CASE_MANAGER) ||
       allocateRoleStateData.action === Actions.Reallocate) {
       this.answers.push({label: AnswerLabelText.Person, value: personDetails, action: AllocateRoleState.SEARCH_PERSON});
     }

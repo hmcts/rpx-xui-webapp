@@ -119,7 +119,7 @@ export const ROUTES: Routes = [
                 path: 'tasks',
                 component: TasksContainerComponent,
                 resolve: {
-                  roles: CaseTasksResolverService
+                  tasks: CaseTasksResolverService
                 }
               },
               {

@@ -98,7 +98,7 @@ export const JUDICIAL_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'Ella Ryan',
-      permissions: ['Read'],
+      permissions: ['Execute', 'Manage'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba3',
@@ -1793,7 +1793,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'Jo Fly',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage', 'Execute'],
     },
     {
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc3',

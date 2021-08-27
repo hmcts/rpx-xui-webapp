@@ -38,7 +38,7 @@ export const CASEROLES: CaseRole[] = [
     id: 'd90ah606-98e8-47r8-b53c-a7ab77fde22b',
     location: 'Taylor House',
     name: 'Bisa Bulter',
-    role: TypeOfRole.CASE_MANAGER,
+    role: TypeOfRole.CaseManager,
     start: '2021-08-19T00:29:10.656Z',
   },
 ];

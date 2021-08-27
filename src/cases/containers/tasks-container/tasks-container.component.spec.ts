@@ -1,8 +1,8 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 
 import { TasksContainerComponent } from './tasks-container.component';
-import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('TasksContainerComponent', () => {
   const mockAlertService = jasmine.createSpyObj('alertService', ['success', 'setPreserveAlerts', 'error']);
@@ -14,7 +14,7 @@ describe('TasksContainerComponent', () => {
     TestBed.configureTestingModule({
       declarations: [TasksContainerComponent],
       providers: [
-        { provide: AlertService, useValue: mockAlertService }
+        {provide: AlertService, useValue: mockAlertService}
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })

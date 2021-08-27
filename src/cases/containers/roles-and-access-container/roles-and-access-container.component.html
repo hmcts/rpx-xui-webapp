@@ -1,5 +1,6 @@
 <exui-roles-and-access [roles]="roles"
                        [caseDetails]="caseDetails"
+                       [exclusions]="exclusions$ | async"
                        [locationInfo]="locationInfo$ | async"
                        [showAllocateRoleLink]="showAllocateRoleLink"
 >

@@ -3,7 +3,7 @@ import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { UserType } from 'api/user/interfaces/user-type';
 import { Action } from '../../../role-access/models/case-role.interface';
 import { CaseRole } from '../../../../api/workAllocation2/interfaces/caseRole';
-import { LocationInfo } from '../../../app/store/reducers/app-config.reducer';
+import { LocationInfo } from '../../../app/models/user-details.model';
 
 interface Item extends CaseRole {
   open: boolean;

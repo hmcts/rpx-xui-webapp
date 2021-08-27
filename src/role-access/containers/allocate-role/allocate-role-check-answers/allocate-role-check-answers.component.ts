@@ -54,7 +54,7 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
     this.allocateRoleStateData = allocateRoleStateData;
     this.typeOfRole = allocateRoleStateData.typeOfRole;
     this.allocateTo = allocateRoleStateData.allocateTo;
-    if (this.typeOfRole === TypeOfRole.CASE_MANAGER) {
+    if (this.typeOfRole === TypeOfRole.CaseManager) {
       this.caption = RoleAllocationCaptionText.LegalOpsAllocate;
     } else {
       if (this.typeOfRole) {

@@ -120,9 +120,8 @@ defineSupportCode(({ Before,After }) => {
                 if (global.scenarioData['featureToggles']){
                     //CucumberReportLog.AddJson(global.scenarioData['featureToggles'])
                 }
-            } else {
-                browser.manage().logs().get('browser');
-            }
+            } 
+            browser.manage().logs().get('browser');
             
             await CucumberReportLog.AddMessage("Cleared browser logs after successful scenario.");
             if (global.scenarioData['featureToggles']) {

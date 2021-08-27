@@ -21,6 +21,8 @@ const taskCheckYourChangesPage = require('../../pageObjects/workAllocation/taskC
 
 const workflowUtil = require('../../pageObjects/common/workflowUtil');
 
+const taskListPage = require('../../../../e2e/features/pageObjects/workAllocation/taskListPage');
+
 defineSupportCode(function ({ And, But, Given, Then, When }) {
     const taskListTable = new TaskListTable();
     const waCaseListTable = new casesTable();
@@ -49,14 +51,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             await taskListTable.clickPaginationPageNum(paginationLinktext);
         }
     });
-
-    Then('I validate task search request with reference {string} has pagination parameters', async function (requestReference, datatable) {
-        const reqBody = global.scenarioData[requestReference];
-        const datatableHash = datatable.hashes()[0];
-        expect(reqBody.searchRequest.pagination_parameters.page_number).to.equal(parseInt(datatableHash.PageNumber));
-        expect(reqBody.searchRequest.pagination_parameters.page_size).to.equal(parseInt(datatableHash.PageSize));
-    });
-
 
     When('I click task list table header column {string}', async function(columnHeaderLabel){
         await taskListTable.clickColumnHeader(columnHeaderLabel);
@@ -290,12 +284,16 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I validate tasks count in page {int}', async function (tasksCount) {
 
-        expect(parseInt(await taskListTable.getTaskListCountInTable()), 'Task count does not match expected ').to.equal(tasksCount);
-        if (tasksCount === 0) {
-            expect(await taskListTable.isTableFooterDisplayed(), "task list table footer is not displayed").to.be.true;
-        } else {
-            expect(await taskListTable.isTableFooterDisplayed(), "task list table footer is displayed").to.be.false;
-        }
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(parseInt(await taskListPage.getTaskListCountInTable()), 'Task count does not match expected ').to.equal(tasksCount);
+            if (tasksCount === 0) {
+                expect(await taskListPage.isTableFooterDisplayed(), "task list table footer is not displayed").to.be.true;
+                expect(await taskListPage.getTableFooterMessage(), "task list table footer message when 0 tasks are displayed").to.equal("You have no assigned tasks.");
+            } else {
+                expect(await taskListPage.isTableFooterDisplayed(), "task list table footer is displayed").to.be.false;
+            }
+        });
+
     });
 
     Then('I validate WA tasks table footer displayed status is {string}', async function(displayStateBool){

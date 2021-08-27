@@ -49,7 +49,8 @@ export class AlertComponent implements OnInit, OnDestroy {
     if (this.alertMessageSubscription) {
       this.alertMessageSubscription.unsubscribe();
     }
-    if (this.routeSubscription){
+
+    if (this.routeSubscription) {
       this.routeSubscription.unsubscribe();
     }
   }

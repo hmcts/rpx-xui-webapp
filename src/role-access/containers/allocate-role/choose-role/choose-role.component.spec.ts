@@ -10,7 +10,7 @@ import { UserRole } from '../../../../app/models';
 import { ChooseRadioOptionComponent } from '../../../components';
 import { CHOOSE_A_ROLE } from '../../../constants';
 import { AllocateRoleNavigationEvent, AllocateRoleStateData } from '../../../models';
-import { RoleAssignmentService } from '../../../services';
+import { AllocateRoleService } from '../../../services';
 import { ChooseRoleComponent } from './choose-role.component';
 
 const firstRoles = [{ roleId: '1', roleName: 'Role 1' },
@@ -43,7 +43,7 @@ describe('ChooseRoleComponent', () => {
   let fixture: ComponentFixture<ChooseRoleComponent>;
   const mockStore = jasmine.createSpyObj('store', ['dispatch', 'pipe']);
 
-  const roleAssignmentService = {
+  const allocateRoleService = {
     validRoles: firstRoles
   };
 
@@ -67,7 +67,7 @@ describe('ChooseRoleComponent', () => {
             },
           }
         },
-        { provide: RoleAssignmentService, useValue: roleAssignmentService }
+        { provide: AllocateRoleService, useValue: allocateRoleService }
       ]
     })
     .compileComponents();

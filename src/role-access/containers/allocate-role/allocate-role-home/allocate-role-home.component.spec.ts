@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
-import { RoleAssignmentService } from '../../../services';
+import { AllocateRoleService } from '../../../services';
 import * as fromStore from '../../../store';
 import { AllocateRoleHomeComponent } from './allocate-role-home.component';
 
@@ -18,7 +18,7 @@ describe('AllocateRoleHomeComponent', () => {
   const routerMock = jasmine.createSpyObj('Router', [
     'navigateByUrl'
   ]);
-  const roleAssignmentService = jasmine.createSpyObj('RoleAssingnmentService', ['getValidRoles']);
+  const allocateRoleService = jasmine.createSpyObj('AllocateRoleService', ['getValidRoles']);
   let store: Store<fromStore.State>;
   let storePipeMock: any;
 
@@ -51,8 +51,8 @@ describe('AllocateRoleHomeComponent', () => {
           }
         },
         {
-          provide: RoleAssignmentService,
-          useValue: roleAssignmentService
+          provide: AllocateRoleService,
+          useValue: allocateRoleService
         }
       ]
     }).compileComponents();

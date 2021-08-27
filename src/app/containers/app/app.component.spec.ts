@@ -2,10 +2,6 @@ import { RoutesRecognized } from '@angular/router';
 import { of } from 'rxjs';
 import { AppComponent } from './app.component';
 
-const mockRoles = [{ roleId: '1', roleName: 'Role 1' },
-      { roleId: '2', roleName: 'Role 2' },
-      { roleId: '3', roleName: 'Role 3' }];
-
 describe('AppComponent', () => {
   let environmentService;
   let appComponent: AppComponent;

@@ -1,7 +1,7 @@
-import { RoleAssignmentService } from './role-assignment.service';
+import { AllocateRoleService } from './allocate-role.service';
 import { RoleExclusionsService } from './role-exclusions.service';
 
-export const services: any[] = [RoleAssignmentService, RoleExclusionsService];
+export const services: any[] = [AllocateRoleService, RoleExclusionsService];
 
-export * from './role-assignment.service';
+export * from './allocate-role.service';
 export * from './role-exclusions.service';

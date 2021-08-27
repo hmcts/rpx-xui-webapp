@@ -15,6 +15,6 @@ router.post('/exclusions/delete', deleteUserExclusion);
 router.post('/allocate-role/confirm', confirmAllocateRole);
 router.post('/allocate-role/delete', deleteRoleByCaseAndRoleId);
 
-router.get('/valid-roles/get', getPossibleRoles);
+router.get('/allocate-role/valid-roles', getPossibleRoles);
 
 export default router;

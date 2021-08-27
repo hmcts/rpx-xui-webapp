@@ -5,12 +5,12 @@ import { catchError } from 'rxjs/operators';
 
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../work-allocation-2/utils';
 import { Role } from '../models';
-import { RoleAssignmentService } from '../services';
+import { AllocateRoleService } from '../services';
 
 @Injectable({ providedIn: 'root' })
 export class RoleAllocationsResolver implements Resolve<Role[]> {
   constructor(
-    private readonly service: RoleAssignmentService,
+    private readonly service: AllocateRoleService,
     private readonly router: Router,
   ) {}
 

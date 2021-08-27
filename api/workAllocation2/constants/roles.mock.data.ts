@@ -12,7 +12,7 @@ export const CASEROLES: CaseRole[] = [
     id: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
     location: 'Taylor House',
     name: 'Judge Beech',
-    role: TypeOfRole.LEAD_JUDGE,
+    role: TypeOfRole.LeadJudge,
     start: '2021-07-13T00:29:10.656Z',
   },
   {
@@ -25,7 +25,7 @@ export const CASEROLES: CaseRole[] = [
     id: 'd90ah606-98e8-47f8-b53c-a7ab77fde22b',
     location: 'Milton Keynes',
     name: 'Kuda Nyamainashe',
-    role: TypeOfRole.LEAD_JUDGE,
+    role: TypeOfRole.LeadJudge,
     start: '2021-05-19T00:29:10.656Z',
   },
 ];

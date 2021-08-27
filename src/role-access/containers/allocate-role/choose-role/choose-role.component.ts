@@ -9,7 +9,7 @@ import { CHOOSE_A_ROLE, ERROR_MESSAGE } from '../../../constants';
 import { AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState, Role, TypeOfRole } from '../../../models';
 import { RoleAllocationTitleText } from '../../../models/enums';
 import { OptionsModel } from '../../../models/options-model';
-import { RoleAssignmentService } from '../../../services/role-assignment.service';
+import { AllocateRoleService } from '../../../services';
 import * as fromFeature from '../../../store';
 
 @Component({
@@ -31,13 +31,13 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
 
   public allocateRoleStateDataSub: Subscription;
 
-  public typeOfRole: string;
+  public typeOfRole: TypeOfRole;
 
   public userType: string = '';
 
   constructor(private readonly store: Store<fromFeature.State>,
               private readonly route: ActivatedRoute,
-              private readonly roleAssignmentService: RoleAssignmentService) {
+              private readonly allocateRoleService: AllocateRoleService) {
   }
 
   public ngOnInit(): void {
@@ -55,7 +55,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
     );
     this.radioOptionControl = new FormControl(this.typeOfRole ? this.typeOfRole : '', [Validators.required]);
     this.formGroup = new FormGroup({[this.radioControlName]: this.radioOptionControl});
-    const rolesList = this.roleAssignmentService.validRoles;
+    const rolesList = this.allocateRoleService.validRoles;
     this.optionsList = this.getOptions(rolesList);
   }
 

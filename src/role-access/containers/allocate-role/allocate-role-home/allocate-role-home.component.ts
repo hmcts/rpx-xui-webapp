@@ -13,7 +13,7 @@ import {
   searchPersonVisibilityStates
 } from '../../../constants/allocate-role-page-visibility-states';
 import { AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState, AllocateTo, Role } from '../../../models';
-import { RoleAssignmentService } from '../../../services';
+import { AllocateRoleService } from '../../../services';
 import * as fromFeature from '../../../store';
 import { AllocateRoleCheckAnswersComponent } from '../allocate-role-check-answers/allocate-role-check-answers.component';
 import { AllocateRoleSearchPersonComponent } from '../allocate-role-search-person/allocate-role-search-person.component';
@@ -64,14 +64,14 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
 
   constructor(private readonly appStore: Store<fromAppStore.State>,
               private readonly store: Store<fromFeature.State>,
-              private readonly roleAssignmentService: RoleAssignmentService,
+              private readonly allocateRoleService: AllocateRoleService,
               private readonly route: ActivatedRoute,
               private readonly router: Router) {
     // Get the roles from the route, which will have been put there by the resolver.
     this.generalRoles = this.route.snapshot.data.validRoles;
     this.userType = this.route.snapshot.queryParams && this.route.snapshot.queryParams.userType ?
       this.route.snapshot.queryParams.userType : '';
-    this.roleAssignmentService.validRoles =  this.getSpecificRoles(this.generalRoles, this.userType);
+    this.allocateRoleService.validRoles =  this.getSpecificRoles(this.generalRoles, this.userType);
     this.caseId = this.route.snapshot.queryParams && this.route.snapshot.queryParams.caseId ?
       this.route.snapshot.queryParams.caseId : '';
     this.store.dispatch(new fromFeature.AllocateRoleSetCaseId(this.caseId));

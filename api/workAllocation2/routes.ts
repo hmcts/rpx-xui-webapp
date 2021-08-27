@@ -8,7 +8,7 @@ import {
   getCaseWorkersForService,
   getRolesByCaseId,
   getRolesCategory,
-  getTask,
+  getTask, getTasksByCaseId,
   postTaskAction,
   postTaskSearchForCompletable,
   searchCase,
@@ -44,6 +44,7 @@ router.use('/task/:taskId/:action', postTaskAction);
 router.use('/task/:taskId', getTask);
 router.use('/task', searchTask);
 router.use('/taskWithPagination', searchTask);
+router.use('/task/:caseId', getTasksByCaseId);
 
 router.use('/exclusion/rolesCategory', getRolesCategory);
 

@@ -33,7 +33,7 @@ describe('ShowAllocateLinkDirective', () => {
         id: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
         location: 'Taylor House',
         name: 'Judge Beech',
-        role: TypeOfRole.CASE_MANAGER,
+        role: TypeOfRole.CaseManager,
         start: '2021-07-13T00:29:10.656Z',
         email: 'test@mail.com'
       },

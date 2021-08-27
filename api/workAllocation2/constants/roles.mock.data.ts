@@ -12,7 +12,7 @@ export const CASEROLES: CaseRole[] = [
     id: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
     location: 'Taylor House',
     name: 'Judge Beech',
-    role: TypeOfRole.LeadJudge,
+    role: TypeOfRole.LEAD_JUDGE,
     start: '2021-07-13T00:29:10.656Z',
   },
   {
@@ -25,7 +25,7 @@ export const CASEROLES: CaseRole[] = [
     id: 'd90ah606-98e8-47f8-b53c-a7ab77fde22b',
     location: 'Milton Keynes',
     name: 'Kuda Nyamainashe',
-    role: TypeOfRole.LeadJudge,
+    role: TypeOfRole.LEAD_JUDGE,
     start: '2021-05-19T00:29:10.656Z',
   },
   {
@@ -38,7 +38,7 @@ export const CASEROLES: CaseRole[] = [
     id: 'd90ah606-98e8-47r8-b53c-a7ab77fde22b',
     location: 'Taylor House',
     name: 'Bisa Bulter',
-    role: TypeOfRole.CaseManager,
+    role: TypeOfRole.CASE_MANAGER,
     start: '2021-08-19T00:29:10.656Z',
   },
 ];

@@ -2,8 +2,8 @@ import { ModuleWithProviders } from '@angular/core';
 // routes
 import { RouterModule, Routes } from '@angular/router';
 import { CaseResolver, editorRouting, viewerRouting as caseViewRouting } from '@hmcts/ccd-case-ui-toolkit';
-import { CaseRolesResolverService } from '../app/resolvers/case-roles-resolver.service';
 import { HealthCheckGuard } from 'src/app/shared/guards/health-check.guard';
+import { CaseRolesResolverService } from '../app/resolvers/case-roles-resolver.service';
 import { CaseTasksResolverService } from '../app/resolvers/case-tasks-resolver.service';
 import {
   CaseCreateSubmitComponent,

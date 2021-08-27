@@ -21,7 +21,7 @@ export interface UserDetails {
   };
   canShareCases: boolean;
   userInfo: UserInfo;
-  locationInfo?: LocationInfo []
+  locationInfo?: LocationInfo[];
 }
 
 export enum UserRole {

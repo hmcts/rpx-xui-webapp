@@ -443,10 +443,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.3.1-check-for-object-before-teardown":
-  version "4.3.1-check-for-object-before-teardown"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.3.1-check-for-object-before-teardown.tgz#e23cf65cf115ebd698f267c22e909458b7859aaa"
-  integrity sha512-kMQF9jiGXRYu589PHJHf+Kcsk3+QO6elnrqKmWAW20pManqnr3D9BOKgbe3RNB+FJjQ6qkptesVugT0GbCqPsA==
+"@hmcts/ccd-case-ui-toolkit@4.3.1-check-for-object-before-teardown-1":
+  version "4.3.1-check-for-object-before-teardown-1"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.3.1-check-for-object-before-teardown-1.tgz#8fa331942eb6560516f789fb4afb1875749467a7"
+  integrity sha512-LSQy3M0gkkFARqVn76rPErHWRKb5rxsjCQ/19q+YO/yOuqucH4LvgMsIfvK4nm0FCLkllXNPCvNsYYbWRqL4HQ==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
     "@angular/cli" "^6.0.8"

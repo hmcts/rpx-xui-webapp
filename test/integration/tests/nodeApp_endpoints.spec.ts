@@ -52,10 +52,10 @@ describe('nodeApp endpoint', () => {
     expect(response.status).to.equal(200);
     const actualLocationObjKeys = response.data;
     const expectedUserDetailsObj_oidc = nodeAppDataModels.getUserDetails_oidc();
-    expect(actualLocationObjKeys).to.include.members(Object.keys(expectedUserDetailsObj_oidc));
+    expect(actualLocationObjKeys).to.have.all.keys(Object.keys(expectedUserDetailsObj_oidc));
 
     if (actualLocationObjKeys.locationInfo.length > 0){
-      expect(actualLocationObjKeys.locationInfo[0]).to.include.members(Object.keys(expectedUserDetailsObj_oidc.locationInfo[0]));
+      expect(actualLocationObjKeys.locationInfo[0]).to.have.all.keys(Object.keys(expectedUserDetailsObj_oidc.locationInfo[0]));
     }
 
     expect(actualLocationObjKeys.roles).to.be.an('array');

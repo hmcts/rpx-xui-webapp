@@ -110,7 +110,8 @@ class WorkAllocationModels {
             domain: 1,
             email: "andy.kings@email.com",
             id: "id131",
-            name: "Andy Kings"
+            name: "Andy Kings",
+            knownAs:'Lead Judgee'
         }
     }
 
@@ -186,7 +187,8 @@ class WorkAllocationModels {
             location:"test location",
             name:"caserole name",
             role:"test-case-role",
-            start: "2021-02-16T18:58:48.987+0000"
+            start: "2021-02-16T18:58:48.987+0000",
+            email:'test@test.com'
         }
     }
 

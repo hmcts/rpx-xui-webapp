@@ -34,7 +34,7 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
   }
 
   private setPerson(allocation: AllocateRoleStateData): void {
-    if (allocation.typeOfRole === TypeOfRole.CaseManager) {
+    if (allocation.typeOfRole === TypeOfRole.CASE_MANAGER) {
       this.domain = PersonRole.CASEWORKER;
       this.boldTitle = RoleAllocationCaptionText.LegalOpsChoose;
     }

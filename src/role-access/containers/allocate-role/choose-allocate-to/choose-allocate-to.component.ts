@@ -39,7 +39,7 @@ export class ChooseAllocateToComponent implements OnInit {
       allocateRoleStateData => {
         this.typeOfRole = allocateRoleStateData.typeOfRole;
         this.allocateTo = allocateRoleStateData.allocateTo;
-        if (this.typeOfRole === TypeOfRole.CaseManager) {
+        if (this.typeOfRole === TypeOfRole.CASE_MANAGER) {
           this.caption = RoleAllocationCaptionText.LegalOpsAllocate;
         } else {
           if (this.typeOfRole) {

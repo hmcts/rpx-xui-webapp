@@ -66,10 +66,10 @@ exports.config = {
        
     },
 
-    afterLaunch(){
+    async afterLaunch(){
         try{
 
-            generateMergedReport();
+            await generateMergedReport();
 
         }catch(err){
             console.log(JSON.stringify(err));

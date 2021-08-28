@@ -67,6 +67,12 @@ exports.config = {
     },
 
     afterLaunch(){
-        reportMerger();
+        try{
+
+            reportMerger();
+
+        }catch(err){
+            console.log(JSON.stringify(err));
+        }
     }
 };

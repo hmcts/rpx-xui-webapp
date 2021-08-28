@@ -2,7 +2,7 @@
 const fs = require('fs');
 const {conf} = require('../config/config');
 
-generateMergedReport();
+//generateMergedReport();
 
 async function generateMergedReport() {
     let destDir = process.env.PWD + "/" + conf.reportPath;
@@ -53,4 +53,6 @@ async function generateMergedReport() {
 
 
 }
+
+module.exports = generateMergedReport;
 

@@ -10,6 +10,8 @@ const {getScenarioCookie} = require('../helpers/pa11yUtil');
 
 const isParallelExecution = argv.parallel ? argv.parallel === "true" : true;
 
+const reportMerger = require('../reporter/reportsMerger');
+
 const capability = {
     'browserName': 'chrome',
     'chromeOptions': { args: ['--headless', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks', '--disable-notifications'] }
@@ -62,5 +64,9 @@ exports.config = {
     },
     onComplete() {
        
+    },
+
+    afterLaunch(){
+        reportMerger();
     }
 };

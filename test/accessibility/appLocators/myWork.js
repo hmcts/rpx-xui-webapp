@@ -4,10 +4,12 @@ module.exports = {
     myWork: 'exui-task-home',
     myTasks: 'exui-task-home exui-my-tasks',
     availableTasks: 'exui-task-home exui-available-tasks',
+    myCases: 'exui-task-home exui-my-cases',
+
 
     subNavihationLinks : {
         myTasks: GetSubnavigationLinkCss('list'),
-        availableTasks: GetSubnavigationLinkCss('availablee'),
+        availableTasks: GetSubnavigationLinkCss('available'),
         myCases: GetSubnavigationLinkCss('my-cases')
     },
     workFilterButton:'exui-task-home exui-task-list-filter button',

@@ -36,21 +36,27 @@ describe('Work Allocation: Reallocate', function () {
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator(workAllocationWorkflow.chooseRole.container))
         
-        await pa11ytest(this, actions, conf.baseUrl + '/role-access/allocate-role?userType=judicial');
+        await pa11ytest(this, actions, conf.baseUrl + 'role-access/allocate-role?userType=judicial');
 
     });
 
-    it('Reallocate : Choose how to allocate', async function () {
+    it.only('Reallocate : Choose how to allocate', async function () {
         userDetailsMock.withIACJudicialUser('IAC_Judge_WA_R2');
         await MockApp.startServer();
         const actions = [];
+        actions.push(...PallyActions.navigateTourl(conf.baseUrl + 'role-access/allocate-role?userType=judicial'))
+
         actions.push(...PallyActions.waitForPageWithCssLocator(workAllocationWorkflow.chooseRole.container))
-        actions.push(...PallyActions.clickElement(workAllocationWorkflow.chooseRole.option_1))
+        actions.push(...PallyActions.checkOption(workAllocationWorkflow.chooseRole.option_1))
+        actions.push(...PallyActions.clickElement(workAllocationWorkflow.continue))
+
+
+        actions.push(...PallyActions.waitForPageWithCssLocator(workAllocationWorkflow.chooseRole.container))
+        actions.push(...PallyActions.checkOption(workAllocationWorkflow.chooseRole.option_1))
         actions.push(...PallyActions.clickElement(workAllocationWorkflow.continue))
         actions.push(...PallyActions.waitForPageWithCssLocator(workAllocationWorkflow.chooseHowToAllocate.container))
 
-        actions.push(...PallyActions.waitForPageWithCssLocator(workAllocationWorkflow.chooseDuration.container))
-        await pa11ytest(this, actions, conf.baseUrl + '/role-access/allocate-role?userType=judicial');
+        await pa11ytest(this, actions, conf.baseUrl);
     });
 
 
@@ -59,14 +65,19 @@ describe('Work Allocation: Reallocate', function () {
         await MockApp.startServer();
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator(workAllocationWorkflow.chooseRole.container))
-        actions.push(...PallyActions.clickElement(workAllocationWorkflow.chooseRole.option_1))
+        actions.push(...PallyActions.checkOption(workAllocationWorkflow.chooseRole.option_1))
+        actions.push(...PallyActions.clickElement(workAllocationWorkflow.continue))
+
+
+        actions.push(...PallyActions.waitForPageWithCssLocator(workAllocationWorkflow.chooseRole.container))
+        actions.push(...PallyActions.checkOption(workAllocationWorkflow.chooseRole.option_1))
         actions.push(...PallyActions.clickElement(workAllocationWorkflow.continue))
         actions.push(...PallyActions.waitForPageWithCssLocator(workAllocationWorkflow.chooseHowToAllocate.container))
-        actions.push(...PallyActions.clickElement(workAllocationWorkflow.chooseHowToAllocate.reserverToMe))
+        actions.push(...PallyActions.checkOption(workAllocationWorkflow.chooseHowToAllocate.reserverToMe))
         actions.push(...PallyActions.clickElement(workAllocationWorkflow.continue))
 
         actions.push(...PallyActions.waitForPageWithCssLocator(workAllocationWorkflow.chooseDuration.container))
-        await pa11ytest(this, actions, conf.baseUrl + '/role-access/allocate-role?userType=judicial');
+        await pa11ytest(this, actions, conf.baseUrl + 'role-access/allocate-role?userType=judicial');
     });
 
 
@@ -75,19 +86,25 @@ describe('Work Allocation: Reallocate', function () {
         await MockApp.startServer();
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator(workAllocationWorkflow.chooseRole.container))
-        actions.push(...PallyActions.clickElement(workAllocationWorkflow.chooseRole.option_1))
+        actions.push(...PallyActions.checkOption(workAllocationWorkflow.chooseRole.option_1))
+        actions.push(...PallyActions.clickElement(workAllocationWorkflow.continue))
+
+
+
+        actions.push(...PallyActions.waitForPageWithCssLocator(workAllocationWorkflow.chooseRole.container))
+        actions.push(...PallyActions.checkOption(workAllocationWorkflow.chooseRole.option_1))
         actions.push(...PallyActions.clickElement(workAllocationWorkflow.continue))
         actions.push(...PallyActions.waitForPageWithCssLocator(workAllocationWorkflow.chooseHowToAllocate.container))
-        actions.push(...PallyActions.clickElement(workAllocationWorkflow.chooseHowToAllocate.reserverToMe))
+        actions.push(...PallyActions.checkOption(workAllocationWorkflow.chooseHowToAllocate.reserverToMe))
         actions.push(...PallyActions.clickElement(workAllocationWorkflow.continue))
 
         actions.push(...PallyActions.waitForPageWithCssLocator(workAllocationWorkflow.chooseDuration.container))
-        actions.push(...PallyActions.clickElement(workAllocationWorkflow.chooseDuration.indefinite))
+        actions.push(...PallyActions.checkOption(workAllocationWorkflow.chooseDuration.indefinite))
         actions.push(...PallyActions.clickElement(workAllocationWorkflow.continue))
 
         actions.push(...PallyActions.waitForPageWithCssLocator(workAllocationWorkflow.allocateCheckAnswers))
 
-        await pa11ytest(this, actions, conf.baseUrl + '/role-access/allocate-role?userType=judicial');
+        await pa11ytest(this, actions, conf.baseUrl + 'role-access/allocate-role?userType=judicial');
 
     });
 

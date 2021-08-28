@@ -1,5 +1,5 @@
 module.exports = {
-    continue: '.govuk-button[type="submit"]',
+    continue: '.govuk-button-group button.govuk-button',
     reAllocateWorkFlow:'exui-task-container-assignment',
 
     chooseRole:{

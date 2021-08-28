@@ -24,7 +24,7 @@ async function initBrowser() {
     page = await testBrowser.newPage();
     await page.goto("http://localhost:4200/");
     await page.setCookie({ name: 'scenarioMockPort', value: '' + MockApp.serverPort })
-    await page.goto("http://localhost:4200/");
+    // await page.goto("http://localhost:4200/");
 
 }
 

@@ -29,7 +29,7 @@ class UserDetails{
         userDetails.userInfo.uid = testUser[0].idamId;
         userDetails.roles = roles;
 
-        MockApp.onGet('', (req, res) => {
+        MockApp.onGet('/api/user/details', (req, res) => {
             res.send(userDetails);
         })
     }

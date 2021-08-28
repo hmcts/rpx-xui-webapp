@@ -5,7 +5,7 @@ const {conf} = require('../config/config');
 //generateMergedReport();
 
 async function generateMergedReport() {
-    let destDir = process.env.PWD + "/" + conf.reportPath;
+    let destDir = conf.reportPath;
 
     const results = fs.readdirSync(destDir, { withFileTypes: true })
         .filter(item => !item.isDirectory())

@@ -10,7 +10,7 @@ const {getScenarioCookie} = require('../helpers/pa11yUtil');
 
 const isParallelExecution = argv.parallel ? argv.parallel === "true" : true;
 
-const reportMerger = require('../reporter/reportsMerger');
+const generateMergedReport = require('../reporter/reportsMerger');
 
 const capability = {
     'browserName': 'chrome',
@@ -69,7 +69,7 @@ exports.config = {
     afterLaunch(){
         try{
 
-            reportMerger();
+            generateMergedReport();
 
         }catch(err){
             console.log(JSON.stringify(err));

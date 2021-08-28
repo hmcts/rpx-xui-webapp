@@ -24,7 +24,7 @@ async function generateMergedReport() {
         if (!result.includes('.json')) {
             continue;
         }
-
+        console.log();
         const reportData = fs.readFileSync(destDir + result);
         const jsonObj = JSON.parse(reportData);
 
@@ -47,9 +47,16 @@ async function generateMergedReport() {
     fs.copyFileSync(sourceReport, destReport);
 
     let htmlData = fs.readFileSync(sourceReport, 'utf8');
+    console.log('html read done');
     fs.writeFileSync(destJson, mergedReportData);
+    console.log('merged json done');
+
     htmlData = htmlData.replace('replacejsoncontent', JSON.stringify(mergedReportData));
+    console.log('html update done');
+
     fs.writeFileSync(destReport, htmlData);
+    console.log('html update write done');
+
 
 
 }

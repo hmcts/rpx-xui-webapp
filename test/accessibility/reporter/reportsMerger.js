@@ -6,7 +6,7 @@ const {conf} = require('../config/config');
 
 async function generateMergedReport() {
     let destDir = conf.reportPath;
-
+    console.log('destDir ' + destDir);
     const results = fs.readdirSync(destDir, { withFileTypes: true })
         .filter(item => !item.isDirectory())
         .map(item => item.name)
@@ -24,7 +24,7 @@ async function generateMergedReport() {
         if (!result.includes('.json')) {
             continue;
         }
-        console.log();
+        console.log('reading individual json '+result);
         const reportData = fs.readFileSync(destDir + result);
         const jsonObj = JSON.parse(reportData);
 
@@ -44,15 +44,19 @@ async function generateMergedReport() {
     let destReport = `${destDir}Report.html`
     let destJson = `${destDir}report_output.json`
 
+    console.log('destRepprt :' + destReport );
+    console.log('destJson :' + destJson);
+
+
     fs.copyFileSync(sourceReport, destReport);
 
     let htmlData = fs.readFileSync(sourceReport, 'utf8');
-    console.log('html read done');
-    fs.writeFileSync(destJson, mergedReportData);
-    console.log('merged json done');
+    console.log('html read done : ' + htmlData);
+    fs.writeFileSync(destJson, JSON.stringify(mergedReportData));
+    console.log('merged json done ' + JSON.stringify(mergedReportData));
 
     htmlData = htmlData.replace('replacejsoncontent', JSON.stringify(mergedReportData));
-    console.log('html update done');
+    console.log('html update done ' + htmlData);
 
     fs.writeFileSync(destReport, htmlData);
     console.log('html update write done');

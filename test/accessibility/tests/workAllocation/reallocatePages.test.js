@@ -40,7 +40,7 @@ describe('Work Allocation: Reallocate', function () {
 
     });
 
-    it.only('Reallocate : Choose how to allocate', async function () {
+    it('Reallocate : Choose how to allocate', async function () {
         userDetailsMock.withIACJudicialUser('IAC_Judge_WA_R2');
         await MockApp.startServer();
         const actions = [];

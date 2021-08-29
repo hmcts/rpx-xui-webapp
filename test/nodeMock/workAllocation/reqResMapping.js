@@ -30,6 +30,9 @@ module.exports = {
         },
         '/workallocation2/exclusion/rolesCategory': (req, res)=>{
             res.send(workAllocationMockData.getExclusionRoleCategories());
+        },
+        '/api/role-access/allocate-role/valid-roles' : (req,res) => {
+            res.send(workAllocationMockData.getRoles());
         }
     },
     post: {

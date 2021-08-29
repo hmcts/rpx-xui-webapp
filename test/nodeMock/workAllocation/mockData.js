@@ -219,6 +219,30 @@ class WorkAllocationMockData {
 
     }
 
+    getRoles(){
+        const roles = [];
+        const leadJudge = WorkAllocationDataModels.getRole();
+        const hearingJudge = WorkAllocationDataModels.getRole();
+        const caseManager = WorkAllocationDataModels.getRole();
+
+        leadJudge.roleId = 'lead-judge';
+        leadJudge.roleName = 'Lead judge';
+        leadJudge.roleType = 'judicial';
+
+        hearingJudge.roleId = 'hearing-judge';
+        hearingJudge.roleName = 'Hearing judge';
+        hearingJudge.roleType = 'judicial';
+
+        caseManager.roleId = 'case-manager';
+        caseManager.roleName = 'Case manager';
+        caseManager.roleType = 'legalops';
+
+        roles.push(leadJudge);
+        roles.push(hearingJudge);
+        roles.push(caseManager);
+        return roles;
+
+    }
 
 }
 

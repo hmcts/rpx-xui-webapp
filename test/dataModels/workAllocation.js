@@ -198,6 +198,14 @@ class WorkAllocationModels {
             tasks : []
         }
     }
+
+    getRole(){
+        return {
+            roleId:'',
+            roleName:'',
+            roleType:''
+        }
+    }
 }
 
 

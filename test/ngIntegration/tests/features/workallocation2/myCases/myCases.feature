@@ -32,10 +32,11 @@ Feature: WA Release 2: My cases
 
     Scenario Outline: My cases pagnation control display with only 1 page of items
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
-        Given I set MOCK workallocation cases with permissions for view "My Cases" and assigned state ""
-            | Permissions | Count |
-            | Manage      | 10    |
-            | Read        | 10    |
+        Given I set MOCK workallocation cases with permissions for view "My cases"
+            | Roles          | Count |
+            | case-allocator | 10    |
+            |                | 10    |
+
         Given I set MOCK request "/workallocation2/caseWithPagination/" intercept with reference "taskSearchRequest"
         Given I start MockApp
 

@@ -3,9 +3,9 @@ import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@a
 import { EMPTY, Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
+import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../work-allocation-2/utils';
 import { RoleExclusion } from '../models';
 import { RoleExclusionsService } from '../services';
-import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../work-allocation-2/utils';
 
 @Injectable({ providedIn: 'root' })
 export class RoleExclusionsResolver implements Resolve<RoleExclusion[]> {

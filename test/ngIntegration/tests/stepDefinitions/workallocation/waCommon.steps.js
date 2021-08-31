@@ -203,7 +203,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I validate task request body in reference {string} has locations set', async function(reference, locationsDatatable){
-       const reqBody = global.scenario[reference];
+       const reqBody = global.scenarioData[reference];
        return "Pending";
 
     });

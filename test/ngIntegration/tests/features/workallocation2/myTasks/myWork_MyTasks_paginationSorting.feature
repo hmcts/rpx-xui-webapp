@@ -50,4 +50,42 @@ Feature: WA Release 2: My work - My Tasks - pagination sorting
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
             # | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
- 
+    Scenario Outline: My Tasks pagnation control display with only 1 page of items
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
+        Given I set MOCK tasks with permissions for view "My Tasks" and assigned state ""
+            | Permissions | Count |
+            | Manage      | 10    |
+            | Read        | 10    |
+        Given I set MOCK request "/workallocation2/taskWithPagination/" intercept with reference "taskSearchRequest"
+        Given I start MockApp
+
+        Given I navigate to home page
+        Then I validate tasks count in page 20
+        Then I validate task table pagination controls, is displayed state is "false"
+
+        Examples:
+            | UserIdentifier  | UserType | Roles                                           |
+            # | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
+            | IAC_Judge_WA_R2 | Judge    | caseworker-ia-iacjudge,caseworker-ia,caseworker |
+
+
+
+    Scenario Outline: My Tasks pagnation control display 0 items
+        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
+        Given I set MOCK tasks with permissions for view "My Tasks" and assigned state ""
+            | Permissions | Count |
+            | Manage      | 0    |
+            | Read        | 0    |
+        Given I set MOCK request "/workallocation2/taskWithPagination/" intercept with reference "taskSearchRequest"
+        Given I start MockApp
+
+        Given I navigate to home page
+        Then I validate tasks count in page 0
+        Then I validate task table pagination controls, is displayed state is "false"
+        Then I validate WA tasks table footer displayed status is "true"
+        Then I validate WA tasks table footer message is "You have no assigned tasks"
+
+        Examples:
+            | UserIdentifier  | UserType | Roles                                           |
+            # | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
+            | IAC_Judge_WA_R2 | Judge    | caseworker-ia-iacjudge,caseworker-ia,caseworker |

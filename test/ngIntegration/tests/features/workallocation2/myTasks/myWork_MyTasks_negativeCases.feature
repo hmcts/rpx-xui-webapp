@@ -11,7 +11,7 @@ Feature: WA Release 2: My work - My Tasks - negative scenarios
         Given I start MockApp
         Given I navigate to home page
 
-        Then I see error message of type "<ErrorMessageType>" with message "<ErrorMessage>"
+        Then I see error message of type "<ErrorMessageType>" displayed with message "<ErrorMessage>"
         Examples:
             | ResponseCode | ErrorMessageType | ErrorMessage                                        |
             | 500          | Page             | Sorry, there is a problem with the service          |
@@ -26,7 +26,7 @@ Feature: WA Release 2: My work - My Tasks - negative scenarios
         Given I start MockApp
         Given I navigate to home page
 
-        Then I see error message of type "<ErrorMessageType>" with message "<ErrorMessage>"
+        Then I see error message of type "<ErrorMessageType>" displayed with message "<ErrorMessage>"
         Examples:
             | ResponseCode | ErrorMessageType | ErrorMessage                                        |
             | 500          | Page             | Sorry, there is a problem with the service          |

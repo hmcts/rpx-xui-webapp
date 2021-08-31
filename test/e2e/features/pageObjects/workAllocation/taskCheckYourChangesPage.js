@@ -1,7 +1,7 @@
 
 const BrowserWaits = require("../../../support/customWaits");
 const CucumberReporter = require("../../../support/reportLogger");
-const checkyourChangesTable = require("../common/checkYourChangesTable");
+const CheckyourChangesTable = require("../common/checkYourChangesTable");
 class TaskCheckYourChangesPage{
     constructor(){
         this.pageContainer = $("exui-task-assignment-confirm");
@@ -12,6 +12,8 @@ class TaskCheckYourChangesPage{
 
         this.submitButton = $("exui-task-assignment-confirm button[type = 'submit']");
         this.cancelLink = element(by.xpath("//exui-task-assignment-confirm//p/a[contains(text(),'Cancel')]"));
+
+        this.checkYourChangesTable = new CheckyourChangesTable(this.pageContainer);
     }
 
 
@@ -26,27 +28,26 @@ class TaskCheckYourChangesPage{
     }
 
     async validatePage() {
-        const headerText = await this.header.getText();
-        expect(headerText.includes("Check your answers")).to.be.true;
-        expect(await checkyourChangesTable.isDisplayed()).to.be.true;
-        expect(await this.changeLink.isDisplayed()).to.be.true;
+        const heaerText = await this.header.getText();
+        expect(heaerText).to.contains("Check your answers");
+        await BrowserWaits.waitForElement(this.checkYourChangesTable.changesTable);
+        expect(await this.checkYourChangesTable.isLinkWithTextPresentAtRow(1,'Change')).to.be.true;
 
     }
 
     async getColumnValue(header) {
-        const colElement = await checkyourChangesTable.getColumnValueAtRow(1,header);
-        const coltext = await colElement.getText();
+        const coltext = await this.checkYourChangesTable.getColumnValueAtRow(1,header);
         return coltext;
     }
 
     async clickChangeLink() {
-        await checkyourChangesTable.clickLinkWithTextAtRow(1,"change");
+        await this.checkyourChangesTable.clickLinkWithTextAtRow(1,"change");
     }
 
 
 
     async isTaskTableHeaderDisplayed(headerCol) {
-        const colheaderPos = await checkyourChangesTable.isTableHeaderDisplayed(headerCol);
+        const colheaderPos = await this.checkyourChangesTable.isTableHeaderDisplayed(headerCol);
         return colheaderPos !== -1;
     }
 

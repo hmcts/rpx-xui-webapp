@@ -2,8 +2,8 @@ const jwt = require('jsonwebtoken');
 const reportLogger = require('../../e2e/support/reportLogger');
 // const addContext = require('mochawesome/addContext');
 const MockApp = require('../../nodeMock/app');
-const config = require('../config/protractor-cucumber.conf');
-
+const minimist = require('minimist');
+const argv = minimist(process.argv.slice(2));
 
 const axios = require('axios');
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
@@ -19,7 +19,8 @@ const http = axios.create(axiosOptions);
 class BrowserUtil{
 
     async gotoHomePage(){
-        await browser.get(config.config.baseUrl);
+        const baseUrl =  argv.debug ? 'http://localhost:3000/': 'http://localhost:4200/';
+        await browser.get(baseUrl);
     }
 
     setAuthCookie(){

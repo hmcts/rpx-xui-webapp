@@ -178,20 +178,18 @@ class WorkAllocationMockData {
         return task;
     }
 
-    getRelease2CaseWithPermission(permissions, view, assignState) {
+    getRelease2CaseWithPermission(roles, view) {
         view = view.replace(" ", "");
         const waCase = WorkAllocationDataModels.getRelease2Case();
-        waCase.permissions = permissions;
-        waCase.actions = WorkAllocationDataModels.getRelease2CaseActions(permissions, view, assignState);
+        waCase.permissions = roles;
+        waCase.actions = WorkAllocationDataModels.getRelease2CaseActions(roles, view);
 
         return waCase;
     }
 
     async findPersonResponse(searchTerm, personsData) {
 
-        if (this.findPersonsAllAdata.length === 0) {
-            this.findPersonsAllAdata = await this.getFindPersonsDataFrom(findPersonsDetails);
-        }
+        this.findPersonsAllAdata = await this.getFindPersonsDataFrom(findPersonsDetails);
         searchTerm = searchTerm.toLowerCase();
         const referenceData = personsData ? personsData : this.findPersonsAllAdata;
         const filteredUsers = await ArrayUtil.filter(referenceData, async (person) => {
@@ -200,6 +198,51 @@ class WorkAllocationMockData {
         return filteredUsers;
     }
 
+    getExclusionRoleCategories(){
+        const roleCategories = [];
+        const judicial = WorkAllocationDataModels.getRoleCategory();
+        judicial.roleId = "judicial";
+        judicial.roleName = "Judicial"
+
+        const legalOps = WorkAllocationDataModels.getRoleCategory();
+        legalOps.roleId = "legalOps";
+        legalOps.roleName = "Legal Ops"
+
+        const admin = WorkAllocationDataModels.getRoleCategory();
+        admin.roleId = "admin";
+        admin.roleName = "Admin"
+
+        roleCategories.push(judicial);
+        roleCategories.push(legalOps);
+        roleCategories.push(admin);
+        return roleCategories;
+
+    }
+
+    getRoles(){
+        const roles = [];
+        const leadJudge = WorkAllocationDataModels.getRole();
+        const hearingJudge = WorkAllocationDataModels.getRole();
+        const caseManager = WorkAllocationDataModels.getRole();
+
+        leadJudge.roleId = 'lead-judge';
+        leadJudge.roleName = 'Lead judge';
+        leadJudge.roleType = 'judicial';
+
+        hearingJudge.roleId = 'hearing-judge';
+        hearingJudge.roleName = 'Hearing judge';
+        hearingJudge.roleType = 'judicial';
+
+        caseManager.roleId = 'case-manager';
+        caseManager.roleName = 'Case manager';
+        caseManager.roleType = 'legalops';
+
+        roles.push(leadJudge);
+        roles.push(hearingJudge);
+        roles.push(caseManager);
+        return roles;
+
+    }
 
 }
 

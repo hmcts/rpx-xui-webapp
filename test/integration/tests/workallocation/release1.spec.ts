@@ -1,12 +1,12 @@
 import { expect } from 'chai';
 import { v4 as uuid } from 'uuid';
 // import mocha from 'mocha';
-import { config } from './config/config';
-import { getUserId, getXSRFToken } from './utils/authUtil';
-import Request from './utils/request';
-import { setTestContext } from './utils/helper';
+import { config } from '../config/config';
+import { getUserId, getXSRFToken } from '../utils/authUtil';
+import Request from '../utils/request';
+import { setTestContext } from '../utils/helper';
 
-import TaskRequestBody from './utils/wa/taskRequestBody';
+import TaskRequestBody from '../utils/wa/taskRequestBody';
 
 
 describe('Work allocations MVP', () => {

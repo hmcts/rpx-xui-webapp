@@ -13,13 +13,11 @@ axios.defaults.headers.common['Content-Type'] = 'application/json'
 
 
 let { requestMapping,configurations} = require('./reqResMapping');
-const { browser } = require('protractor');
 const CCDCaseConfig = require('./ccd/ccdCaseConfig/caseCreateConfigGenerator');
 const CCDCaseDetails = require('./ccd/ccdCaseConfig/caseDetailsConfigGenerator');
 
 const { getDLCaseConfig} = require('../ngIntegration/mockData/ccdCaseMock');
 const nodeAppMock = require('./nodeApp/mockData');
-const browserUtil = require('../ngIntegration/util/browserUtil');
 const port = 3001;
 
 

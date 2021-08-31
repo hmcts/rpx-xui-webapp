@@ -7,9 +7,10 @@ import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 
 import { UserRole } from '../../../../app/models';
+import { UserType } from '../../../../cases/models/user-type';
 import { ChooseRadioOptionComponent } from '../../../components';
 import { CHOOSE_A_ROLE } from '../../../constants';
-import { AllocateRoleNavigationEvent, AllocateRoleStateData } from '../../../models';
+import { Actions, AllocateRoleNavigationEvent, AllocateRoleStateData } from '../../../models';
 import { AllocateRoleService } from '../../../services';
 import { ChooseRoleComponent } from './choose-role.component';
 
@@ -26,6 +27,7 @@ const secondRoles = [{ roleId: '1', roleName: 'Role 1' },
       { roleId: '3', roleName: 'Role 3' }];
 
 const mockAllocateRoleStateData: AllocateRoleStateData = {
+  action: Actions.Allocate,
   caseId: '1234',
   state: null,
   typeOfRole: null,
@@ -83,7 +85,7 @@ describe('ChooseRoleComponent', () => {
 
   it('should correctly navigate on click of continue', () => {
     const navEvent = AllocateRoleNavigationEvent.CONTINUE;
-    component.dispatchEvent(navEvent, UserRole.Judicial);
+    component.dispatchEvent(navEvent, UserType.JUDICIAL, UserRole.Judicial);
     expect(mockStore.dispatch).toHaveBeenCalled();
   });
 

@@ -32,6 +32,5 @@ export async function handleTaskPost(path: string, payload: any, req: EnhancedRe
 export async function handleGetTasksByCaseId(path: string, req: EnhancedRequest): Promise<any> {
   logger.info('getting tasks for', path);
   const headers = setHeaders(req);
-  console.log('headers are ', headers, ' path is ', path);
   return await httpMock.get<TaskList>(path, { headers });
 }

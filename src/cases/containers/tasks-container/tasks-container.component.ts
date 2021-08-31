@@ -9,11 +9,13 @@ import { Task } from '../../../work-allocation-2/models/tasks';
 })
 export class TasksContainerComponent implements OnInit {
   public tasks: Task[] = [];
+  public warningIncluded: boolean;
 
   constructor(private readonly route: ActivatedRoute) { }
 
   public ngOnInit(): void {
     this.tasks = this.route.snapshot.data.tasks as Task[];
+    this.warningIncluded = this.tasks.some(task => task.warnings);
   }
 
 }

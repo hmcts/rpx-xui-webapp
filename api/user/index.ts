@@ -3,7 +3,7 @@ import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
 import { UserInfo } from '../auth/interfaces/UserInfo';
 import { getConfigValue } from '../configuration';
-import { CASE_SHARE_PERMISSIONS, SESSION_TIMEOUTS, SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
+import { CASE_SHARE_PERMISSIONS, SERVICES_ROLE_ASSIGNMENT_API_PATH, SESSION_TIMEOUTS } from '../configuration/references';
 import { http } from '../lib/http';
 import { setHeaders } from '../lib/proxy';
 import { LocationInfo, RoleAssignment } from './interfaces/roleAssignment';

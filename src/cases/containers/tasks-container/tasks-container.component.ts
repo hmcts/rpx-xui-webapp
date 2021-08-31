@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Task } from '../../../work-allocation-2/models/tasks';
 
 @Component({
   selector: 'exui-tasks-container',
@@ -6,10 +8,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./tasks-container.component.scss']
 })
 export class TasksContainerComponent implements OnInit {
+  public tasks: Task[] = [];
 
-  constructor() { }
+  constructor(private readonly route: ActivatedRoute) { }
 
-  ngOnInit() {
+  public ngOnInit(): void {
+    this.tasks = this.route.snapshot.data.tasks as Task[];
   }
 
 }

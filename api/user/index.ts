@@ -3,7 +3,7 @@ import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
 import { UserInfo } from '../auth/interfaces/UserInfo';
 import { getConfigValue } from '../configuration';
-import { CASE_SHARE_PERMISSIONS, SESSION_TIMEOUTS } from '../configuration/references';
+import { CASE_SHARE_PERMISSIONS, SERVICES_ROLE_ASSIGNMENT_API_PATH, SESSION_TIMEOUTS } from '../configuration/references';
 import { http } from '../lib/http';
 import { setHeaders } from '../lib/proxy';
 import { LocationInfo, RoleAssignment } from './interfaces/roleAssignment';
@@ -36,9 +36,7 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
 
 export async function getRoleAssignmentForUser(userInfo: UserInfo, req: any): Promise<any []> {
   let locationInfo = [];
-  // const baseUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
-  // This is a temporary change to do Early integration
-  const baseUrl = 'http://am-role-assignment-service-pr-920.service.core-compute-preview.internal';
+  const baseUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
   const id = userInfo.id ? userInfo.id : userInfo.uid;
   const path = `${baseUrl}/am/role-assignments/actors/${id}`;
   const headers = setHeaders(req);

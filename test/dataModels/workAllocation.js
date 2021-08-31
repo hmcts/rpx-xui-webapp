@@ -52,19 +52,40 @@ class WorkAllocationModels {
         return {
             "id": v4(),
             "task_title": "Review FTPA application",
-            "startDate": "2021-05-12T16:00:00.000+0000",
-            "endDate": "2021-05-12T16:00:00.000+0000",
             "location_name": "Glasgow",
-            "location": "765320",
             "case_id": "1620409659381330",
             "case_category": "Protection",
             "case_name": "Jo Fly " + Math.floor((Math.random() * 100) + 1),
-            "case_role": "Lead Judge",
-            "jurisdiction": "Immigration and Asylum",
             "permissions": [],
             "actions": [],
-            "assignee": v4()
+            "assignee": v4(),
+            "startDate": "2021-02-16T18:58:48.987+0000",
+            "endDate": "2021-02-16T18:58:48.987+0000",
+            "jurisdiction":"Test jurisdiction",
+            "case_role":"Test case role"
         };
+    }
+
+    getRelease2Tasks(){
+        const tasks = [];
+        for(let i =0 ;i <25; i++){
+            tasks.push(this.getRelease2Task());
+        } 
+        return {
+            tasks: tasks,
+            total_records:100
+        }
+    }
+
+    getRelease2Cases() {
+        const cases = [];
+        for (let i = 0; i < 25; i++) {
+            cases.push(this.getRelease2Case());
+        }
+        return {
+            cases: cases,
+            total_records: 100
+        }
     }
 
     getLocation() {
@@ -89,7 +110,8 @@ class WorkAllocationModels {
             domain: 1,
             email: "andy.kings@email.com",
             id: "id131",
-            name: "Andy Kings"
+            name: "Andy Kings",
+            knownAs:'Lead Judgee'
         }
     }
 
@@ -125,11 +147,10 @@ class WorkAllocationModels {
         return Object.values(allowedActions);
     }
 
-    getRelease2CaseActions(permissions, view, assignState) {
+    getRelease2CaseActions(roles, view) {
         const actions = [];
         let actionsView = {};
         view = view.toLowerCase();
-        assignState = assignState ? assignState.toLowerCase() : '';
         if (caseActionsMatrix[view] === undefined) {
             throw new Error(`View ${view} is not modeled in Mock data model. test requires update`);
         }
@@ -138,18 +159,52 @@ class WorkAllocationModels {
         }
 
         let allowedActions = {};
-        for (let i = 0; i < permissions.length; i++) {
-            if (actionsView[permissions[i]] === undefined) {
-                throw new Error(`Permission ${permissions[i]} is not modeled in Mock data model. test requires update`);
+        for (let i = 0; i < roles.length; i++) {
+            if (roles[i] === ''){
+                continue;
+            } else if (actionsView[roles[i]] === undefined) {
+                throw new Error(`Role ${roles[i]} is not modeled in Mock data model. test requires update`);
             }
-            let permissionActions = actionsView[permissions[i]];
+            let roleActions = actionsView[roles[i]];
 
-            for (let i = 0; i < permissionActions.length; i++) {
-                allowedActions[permissionActions[i].id] = permissionActions[i];
+            for (let i = 0; i < roleActions.length; i++) {
+                allowedActions[roleActions[i].id] = roleActions[i];
             }
         }
 
         return Object.values(allowedActions);
+    }
+
+    getRoleCategory(){
+        return { "roleId": "judicial", "roleName": "Judicial" }
+    }
+
+    getCaseRole(){
+        return {
+            actions:[],
+            end: "2021-02-16T18:58:48.987+0000",
+            id: v4(),
+            location:"test location",
+            name:"caserole name",
+            role:"test-case-role",
+            start: "2021-02-16T18:58:48.987+0000",
+            email:'test@test.com'
+        }
+    }
+
+    getCompletableTasks(){
+        return {
+            task_required_for_event:true,
+            tasks : []
+        }
+    }
+
+    getRole(){
+        return {
+            roleId:'',
+            roleName:'',
+            roleType:''
+        }
     }
 }
 
@@ -165,6 +220,11 @@ const ACTIONS = {
     Assign: { id: 'assign', title: 'Assign task' },
     MarkAsDone: { id: 'mark-as-done', title: 'Mark as done' },
     Cancel: { id: 'cancel', title: 'Cancel task' },
+}
+
+const CASE_ACTIONS = {
+    ReAllocate: { id: 'reallocate', title: 'Reallocate' },
+    RemoveAllocation: { id: 'remove', title: 'Remove' },
 }
 const taskActionsMatrix = {
     mytasks: {
@@ -202,11 +262,7 @@ const taskActionsMatrix = {
 
 const caseActionsMatrix = {
     mycases: {
-        Read: [],
-        Refer: [],
-        Manage: [],
-        Execute: [],
-        Cancel: []
+        "case-allocator": [CASE_ACTIONS.ReAllocate, CASE_ACTIONS.RemoveAllocation],
     }
 }
 

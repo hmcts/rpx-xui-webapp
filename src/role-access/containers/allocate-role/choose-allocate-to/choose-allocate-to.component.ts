@@ -41,7 +41,7 @@ export class ChooseAllocateToComponent implements OnInit {
         this.typeOfRole = allocateRoleStateData.typeOfRole;
         this.allocateTo = allocateRoleStateData.allocateTo;
         const action = EnumUtil(Actions).getKeyOrDefault(allocateRoleStateData.action);
-        if (this.typeOfRole === TypeOfRole.CASE_MANAGER) {
+        if (this.typeOfRole === TypeOfRole.CaseManager) {
           this.caption = `${action} ${RoleCaptionText.ALegalOpsCaseManager}`;
         } else {
           if (this.typeOfRole) {

@@ -105,7 +105,9 @@ const config = {
                 reportName: 'XUI Manage Cases Functional Tests',
                 // openReportInBrowser: true,
                 jsonDir: 'reports/tests/functional',
-                reportPath: 'reports/tests/functional'
+                reportPath: 'reports/tests/functional',
+                displayDuration: true,
+                durationInMS: false
             }
         }
     ]

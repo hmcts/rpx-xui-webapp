@@ -12,7 +12,7 @@ Feature: WA Release 2: All work -  negative scenarios
         Given I navigate to home page
         When I click on primary navigation header tab "All work"
 
-        Then I see error message of type "<ErrorMessageType>" with message "<ErrorMessage>"
+        Then I see error message of type "<ErrorMessageType>" displayed with message "<ErrorMessage>"
         Examples:
             | ResponseCode | ErrorMessageType | ErrorMessage                                        |
             | 500          | Page             | Sorry, there is a problem with the service          |
@@ -27,7 +27,7 @@ Feature: WA Release 2: All work -  negative scenarios
         Given I navigate to home page
         When I click on primary navigation header tab "All work"
 
-        Then I see error message of type "<ErrorMessageType>" with message "<ErrorMessage>"
+        Then I see error message of type "<ErrorMessageType>" displayed with message "<ErrorMessage>"
         Examples:
             | ResponseCode | ErrorMessageType | ErrorMessage                                        |
             | 500          | Page             | Sorry, there is a problem with the service          |
@@ -42,7 +42,7 @@ Feature: WA Release 2: All work -  negative scenarios
         Given I navigate to home page
         When I click on primary navigation header tab "All work"
 
-        Then I see error message of type "<ErrorMessageType>" with message "<ErrorMessage>"
+        Then I see error message of type "<ErrorMessageType>" displayed with message "<ErrorMessage>"
         Examples:
             | ResponseCode | ErrorMessageType | ErrorMessage                                        |
             | 500          | Page             | Sorry, there is a problem with the service          |

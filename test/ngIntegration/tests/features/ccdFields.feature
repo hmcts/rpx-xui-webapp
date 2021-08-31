@@ -49,7 +49,6 @@ Feature: Case fields
             | item2 | Item 2 |
             | item3 | Item 3 |
 
-
     Scenario Outline: Mandatory case field validation non complex fields  "<fieldId>""
         Given I set field properties for field with id "<fieldId>" in event "CaseFieldsProperties"
             | key             | value     |

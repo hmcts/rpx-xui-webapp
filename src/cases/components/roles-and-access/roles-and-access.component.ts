@@ -29,12 +29,12 @@ export class RolesAndAccessComponent implements OnInit {
   @Input()
   public set roles(value: CaseRole[]) {
     this.pRoles = value;
-    this.legalOpsRoles = this.roles.filter(role => role.role === TypeOfRole.CASE_MANAGER);
+    this.legalOpsRoles = this.roles.filter(role => role.role === TypeOfRole.CaseManager);
     this.judicialRoles = this.roles.filter(role => RolesAndAccessComponent.isJudicialRole(role));
   }
 
   public static isJudicialRole(caseRole: CaseRole): boolean {
-    return caseRole.role === TypeOfRole.LEAD_JUDGE || caseRole.role === TypeOfRole.HEARING_JUDGE;
+    return caseRole.role === TypeOfRole.LeadJudge || caseRole.role === TypeOfRole.HearingJudge;
   }
 
   public ngOnInit(): void {

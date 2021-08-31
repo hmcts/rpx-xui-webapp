@@ -7,8 +7,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { CaseRole } from '../../../api/workAllocation2/interfaces/caseRole';
 
-import { CaseRolesResolverService } from './case-roles-resolver.service';
 import { TypeOfRole } from '../../role-access/models';
+import { CaseRolesResolverService } from './case-roles-resolver.service';
 
 describe('CaseRolesResolverService', () => {
   let httpClient: HttpClient;
@@ -23,7 +23,7 @@ describe('CaseRolesResolverService', () => {
       id: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
       location: 'Taylor House',
       name: 'Judge Beech',
-      role: TypeOfRole.LEAD_JUDGE,
+      role: TypeOfRole.LeadJudge,
       start: '2021-07-13T00:29:10.656Z',
       email: 'test@mail.com'
     },
@@ -37,7 +37,7 @@ describe('CaseRolesResolverService', () => {
       id: 'd90ah606-98e8-47f8-b53c-a7ab77fde22b',
       location: 'Milton Keynes',
       name: 'Kuda Nyamainashe',
-      role: TypeOfRole.HEARING_JUDGE,
+      role: TypeOfRole.HearingJudge,
       start: '2021-05-19T00:29:10.656Z',
       email: 'test@mail.com'
     },

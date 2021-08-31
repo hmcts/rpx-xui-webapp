@@ -57,20 +57,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     });
 
-    Then('I validate tasks count in page {int}', async function (tasksCount){
-        
-        await BrowserWaits.retryWithActionCallback(async () => {
-            expect(parseInt(await taskListPage.getTaskListCountInTable()), 'Task count does not match expected ').to.equal(tasksCount);
-            if (tasksCount === 0) {
-                expect(await taskListPage.isTableFooterDisplayed(), "task list table footer is not displayed").to.be.true;
-                expect(await taskListPage.getTableFooterMessage(), "task list table footer message when 0 tasks are displayed").to.equal("You have no assigned tasks.");
-            } else {
-                expect(await taskListPage.isTableFooterDisplayed(), "task list table footer is displayed").to.be.false;
-            }
-        });
-         
-     });
-
      Then('I validate tasks column sorting', async function(){
          let tasksRequested = false; 
          let sortColumnInRequestParam = "";

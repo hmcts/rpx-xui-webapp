@@ -1,11 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Actions, AllocateRoleStateData } from '../models';
+import { Actions, AllocateRoleStateData, Role } from '../models';
 
 @Injectable({ providedIn: 'root' })
 export class AllocateRoleService {
   public static allocateRoleBaseUrl = '/api/role-access/allocate-role';
+  public validRoles = [];
   constructor(private readonly http: HttpClient) { }
 
   public confirmAllocation(allocateRoleStateData: AllocateRoleStateData) {
@@ -21,6 +22,10 @@ export class AllocateRoleService {
   public removeAllocation(assigmentId: string): Observable<any> {
     const body = {assigmentId};
     return this.http.post(`${AllocateRoleService.allocateRoleBaseUrl}/delete`, body);
+  }
+
+  public getValidRoles(): Observable<Role[]> {
+    return this.http.get<Role[]>(`${AllocateRoleService.allocateRoleBaseUrl}/valid-roles`);
   }
 
 }

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { RoleExclusionsService } from './role-exclusions.service';
 
-describe('SearchFilterService', () => {
+describe('RoleExclusionsService', () => {
     let roleExclusionsService: RoleExclusionsService;
     let mockHttp: HttpClient;
     beforeEach(() => {

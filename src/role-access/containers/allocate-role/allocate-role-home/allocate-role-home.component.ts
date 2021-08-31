@@ -5,7 +5,7 @@ import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { $enum as EnumUtil } from 'ts-enum-util';
 import { AppUtils } from '../../../../app/app-utils';
-import { UserRole } from '../../../../app/models/user-details.model';
+import { UserRole } from '../../../../app/models';
 import * as fromAppStore from '../../../../app/store';
 import {
   checkAnswersVisibilityStates,
@@ -22,8 +22,10 @@ import {
   AllocateRoleStateData,
   AllocateTo,
   DurationOfRole,
+  Role,
   TypeOfRole
 } from '../../../models';
+import { AllocateRoleService } from '../../../services';
 import * as fromFeature from '../../../store';
 import { AllocateRoleCheckAnswersComponent } from '../allocate-role-check-answers/allocate-role-check-answers.component';
 import { AllocateRoleSearchPersonComponent } from '../allocate-role-search-person/allocate-role-search-person.component';
@@ -64,6 +66,8 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
   public appStoreSub: Subscription;
   public allocateRoleStateDataSub: Subscription;
 
+  public generalRoles: Role[];
+
   public navigationCurrentState: AllocateRoleState;
   public allocateTo: AllocateTo;
   public assignmentId: string;
@@ -78,6 +82,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
 
   constructor(private readonly appStore: Store<fromAppStore.State>,
               private readonly store: Store<fromFeature.State>,
+              private readonly allocateRoleService: AllocateRoleService,
               private readonly route: ActivatedRoute,
               private readonly router: Router) {
     if (this.route.snapshot.queryParams) {
@@ -88,6 +93,10 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
       this.userNameToBeRemoved = this.route.snapshot.queryParams.userName ? this.route.snapshot.queryParams.userName : null;
       this.typeOfRole = this.route.snapshot.queryParams.typeOfRole ? this.route.snapshot.queryParams.typeOfRole : null;
       this.action = this.route.snapshot.routeConfig.path ? this.route.snapshot.routeConfig.path : null;
+    }
+    if (this.route.snapshot.data) {
+      this.generalRoles = this.route.snapshot.data.validRoles;
+      this.allocateRoleService.validRoles =  this.getSpecificRoles(this.generalRoles, this.userType);
     }
     if (this.action === Actions.Reallocate) {
       this.instantiateReallocateRoleData();
@@ -273,6 +282,10 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
       default:
         throw new Error('Invalid allocation navigation event');
     }
+  }
+
+  private getSpecificRoles(roles: Role[], userRole: string): Role[] {
+    return roles.filter(role => role.roleType === userRole);
   }
 
   public ngOnDestroy(): void {

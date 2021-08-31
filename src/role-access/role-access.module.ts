@@ -6,14 +6,15 @@ import { AbstractAppConfig } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
+
 import { AppConfig } from '../app/services/ccd-config/ccd-case.config';
 import { SharedModule } from '../app/shared/shared.module';
+import { InfoMessageCommService } from '../work-allocation-2/services';
 import * as fromComponents from './components';
 import * as fromContainers from './containers';
 import { roleAccessRouting } from './role-access.routes';
 import { RoleExclusionsService } from './services';
 import { effects, reducers } from './store';
-import { InfoMessageCommService } from '../work-allocation-2/services';
 
 @NgModule({
   imports: [

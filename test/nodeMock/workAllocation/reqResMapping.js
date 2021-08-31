@@ -27,6 +27,12 @@ module.exports = {
         },
         '/workallocation/caseworker/location/:locId': (req, res) => {
             res.send(workAllocationMockData.getCaseworkersList(10));
+        },
+        '/workallocation2/exclusion/rolesCategory': (req, res)=>{
+            res.send(workAllocationMockData.getExclusionRoleCategories());
+        },
+        '/api/role-access/allocate-role/valid-roles' : (req,res) => {
+            res.send(workAllocationMockData.getRoles());
         }
     },
     post: {
@@ -174,6 +180,9 @@ module.exports = {
                 res.send(response);
             });
             
+        },
+        '/api/user/exclusions/confirm' : (req,res)=>{
+            res.send({});
         }
     }
 

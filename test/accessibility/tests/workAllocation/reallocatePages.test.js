@@ -26,7 +26,7 @@ const typeOfRole = 'Lead%20judge';
 
 const route = `role-access/allocate-role/allocate?caseId=${caseId}&userType=judicial&assignmentId=${assignmentId}&actorId=${actorId}&userName=${userName}&typeOfRole=${typeOfRole}`
 
-describe('Work Allocation: Reallocate', function () {
+describe('Work Allocation: Allocate', function () {
 
     before(async function (done) {
         MockApp.init();
@@ -38,7 +38,7 @@ describe('Work Allocation: Reallocate', function () {
     });
 
 
-    it('Reallocate : choose role ', async function () {
+    it('choose role ', async function () {
         userDetailsMock.withIACJudicialUser('IAC_Judge_WA_R2');
         await MockApp.startServer();
         const actions = [];
@@ -48,7 +48,7 @@ describe('Work Allocation: Reallocate', function () {
 
     });
 
-    it('Reallocate : Choose how to allocate', async function () {
+    it('Choose how to allocate', async function () {
         userDetailsMock.withIACJudicialUser('IAC_Judge_WA_R2');
         await MockApp.startServer();
         const actions = [];
@@ -68,7 +68,7 @@ describe('Work Allocation: Reallocate', function () {
     });
 
 
-    it('Reallocate : Choose duration', async function () {
+    it('Choose duration', async function () {
         userDetailsMock.withIACJudicialUser('IAC_Judge_WA_R2');
         await MockApp.startServer();
         const actions = [];
@@ -89,7 +89,7 @@ describe('Work Allocation: Reallocate', function () {
     });
 
 
-    it('Reallocate : Allocate check answers ', async function () {
+    it('Allocate check answers ', async function () {
         userDetailsMock.withIACJudicialUser('IAC_Judge_WA_R2');
         await MockApp.startServer();
         const actions = [];

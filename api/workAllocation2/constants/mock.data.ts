@@ -1782,6 +1782,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'William Priest',
+      warnings: true,
       permissions: ['Read', 'Manage'],
     },
     {

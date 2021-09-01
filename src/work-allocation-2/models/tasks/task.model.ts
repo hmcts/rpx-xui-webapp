@@ -10,5 +10,6 @@ export default interface Task {
   taskName: string;
   dueDate: Date;
   actions: TaskAction[];
+  warnings?: boolean;
   derivedIcon?: string;
 }

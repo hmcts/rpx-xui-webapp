@@ -1,8 +1,8 @@
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
-import { UserType } from 'src/cases/models/user-type';
 import { CaseRole } from '../../../../api/workAllocation2/interfaces/caseRole';
-import { LocationInfo } from '../../../app/models/user-details.model';
+import { LocationInfo } from '../../../app/models';
+import { UserType } from '../../../cases/models/user-type';
 
 interface Item extends CaseRole {
   open: boolean;

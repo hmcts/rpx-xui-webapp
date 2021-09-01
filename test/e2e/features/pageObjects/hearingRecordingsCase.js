@@ -16,7 +16,11 @@ class HearingRecordingsCase {
 
     async createCase() {
       await BrowserWaits.waitForSeconds(3);
-      await this.addNewBtn.click();
+      await BrowserWaits.retryWithActionCallback(async () => {
+        await this.addNewBtn.click();
+        await BrowserWaits.waitForElement(this.ccdFields.docUploadField,5);
+
+      });
       await BrowserWaits.waitForSeconds(3);
       await this.ccdFields.docUpload();
       await BrowserWaits.waitForSeconds(3);

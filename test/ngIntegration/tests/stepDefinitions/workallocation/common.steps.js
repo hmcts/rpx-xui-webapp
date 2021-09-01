@@ -27,6 +27,7 @@ const CucumberReporter = require('../../../../e2e/support/reportLogger');
 const headerpage = require('../../../../e2e/features/pageObjects/headerPage');
 const taskActionPage = require('../../../../e2e/features/pageObjects/workAllocation/taskActionPage');
 const TaskListTable = require('../../../../e2e/features/pageObjects/workAllocation/taskListTable');
+const CaseListTable = require('../../../../e2e/features/pageObjects/workAllocation/casesTable');
 
 
 const ArrayUtil = require("../../../../e2e/utils/ArrayUtil");
@@ -35,6 +36,8 @@ const workAllocationDataModel = require("../../../../dataModels/workAllocation")
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
     const taskListTable = new TaskListTable();
+    const waCaseListTable = new CaseListTable();
+
     When('I click task list pagination link {string} and wait for req reference {string} not null', async function (paginationLinktext, reference) {
         await taskListTable.waitForTable();
         await BrowserWaits.retryWithActionCallback(async () => {
@@ -54,6 +57,27 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             }, 5000);
         });
        
+    });
+
+    When('I click WA case list pagination link {string} and wait for req reference {string} not null', async function (paginationLinktext, reference) {
+        await waCaseListTable.waitForTable();
+        await BrowserWaits.retryWithActionCallback(async () => {
+
+            const val = await browserUtil.addTextToElementWithCssSelector('tbody tr .cdk-column-case_category exui-task-field,tbody tr .cdk-column-case_category exui-work-field', 'Sort test', true);
+            if (val !== "success") {
+                throw new Error(JSON.stringify(val));
+
+            }
+            await waCaseListTable.clickPaginationLink(paginationLinktext);
+            await BrowserWaits.waitForConditionAsync(async () => {
+                const caseCatColVal = await waCaseListTable.getColumnValueForCaseAt('Case category', 1);
+                return !caseCatColVal.includes('Sort test');
+            });
+            await BrowserWaits.waitForConditionAsync(async () => {
+                return global.scenarioData[reference] !== null
+            }, 5000);
+        });
+
     });
 
     Then('I validate task search request with reference {string} has pagination parameters', async function (requestReference, datatable) {

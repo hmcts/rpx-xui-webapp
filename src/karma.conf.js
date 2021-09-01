@@ -8,7 +8,7 @@ module.exports = function (config) {
     basePath: '',
     frameworks: ['parallel', 'jasmine', '@angular-devkit/build-angular'],
     parallelOptions: {
-      executors: 2,
+      executors: 3,
       shardStrategy: 'round-robin'
     },
     plugins: [

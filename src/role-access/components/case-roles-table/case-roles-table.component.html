@@ -27,7 +27,16 @@
     </tr>
     <tr *ngIf="item.open">
       <td colspan="6" class="right">
-        <a [href]="getActionHref(action, item)" *ngFor="let action of item.actions">{{action.title}}</a>
+        <a *ngFor="let action of item.actions"
+           href="javascript:void(0)"
+           [routerLink]="['/', 'role-access', 'allocate-role', action.id]"
+           [queryParams]="{
+           'caseId': caseDetails.case_id,
+           'userType': userType,
+           'assignmentId': item.id,
+           'actorId': item.actorId,
+           'userName': item.name,
+           'typeOfRole': item.role}">{{action.title}}</a>
       </td>
     </tr>
   </ng-container>

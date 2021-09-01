@@ -1,5 +1,5 @@
 import { TypeOfRole } from '../../role-access/models';
-import { UserType } from '../../../api/user/interfaces/user-type';
+import { UserType } from '../models/user-type';
 import { ShowAllocateLinkDirective } from './show-allocate-link.directive';
 
 describe('ShowAllocateLinkDirective', () => {
@@ -25,6 +25,7 @@ describe('ShowAllocateLinkDirective', () => {
     directive.showAllocateRoleLink = true;
     directive.roles = [
       {
+        actorId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3',
         actions: [
           {id: 'reallocate', title: 'Reallocate'},
           {id: 'remove', title: 'Remove Allocation'},

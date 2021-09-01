@@ -1,6 +1,5 @@
 import { ExclusionState, ExclusionStateData } from '../../models';
-import * as fromActions from '../actions';
-import { ExclusionActionTypes } from '../actions';
+import { ExclusionAction, ExclusionActionTypes } from '../actions';
 
 export const initialState: ExclusionStateData = {
   caseId: null,
@@ -12,7 +11,7 @@ export const initialState: ExclusionStateData = {
   lastError: null
 };
 
-export function exclusionReducer(currentState = initialState, action: fromActions.ExclusionAction): ExclusionStateData {
+export function exclusionReducer(currentState = initialState, action: ExclusionAction): ExclusionStateData {
   switch (action.type) {
     case ExclusionActionTypes.CHANGE_NAVIGATION: {
       return {

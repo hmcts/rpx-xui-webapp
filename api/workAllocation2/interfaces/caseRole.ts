@@ -7,6 +7,7 @@ export interface CaseRole {
   start: string;
   end: string;
   id: string;
+  actorId: string;
   actions: Action[];
   email: string;
 }

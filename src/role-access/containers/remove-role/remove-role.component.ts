@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CaseRole, RemoveAllocationNavigationEvent } from '../../../role-access/models/case-role.interface';
-import { Answer } from '../../../role-access/models';
 import { handleFatalErrors } from '../../../work-allocation-2/utils';
-import { AllocateRoleService } from '../../../role-access/services/allocate-role.service';
-import { RemoveRoleText } from '../../../role-access/models/enums/answer-text';
+import { Answer, CaseRole, RemoveAllocationNavigationEvent } from '../../models';
+import { RemoveRoleText } from '../../models/enums/answer-text';
+import { AllocateRoleService } from '../../services/allocate-role.service';
 
 @Component({
   selector: 'exui-remove-role',
@@ -16,7 +15,7 @@ export class RemoveRoleComponent implements OnInit {
   public answers: Answer[] = [];
   public caption = null;
   public caseId: string;
-  public roleId: string;
+  public assignmentId: string;
   public heading = RemoveRoleText.heading;
   public hint = RemoveRoleText.hint;
 
@@ -26,20 +25,19 @@ export class RemoveRoleComponent implements OnInit {
 
   public ngOnInit(): void {
     const roles = this.route.snapshot.data.roles as CaseRole[];
-    this.route.paramMap.subscribe(params => {
-      this.caseId = params.get('cid');
-      this.roleId = params.get('roleId');
-      const currentRole = roles.find(role => role.id === this.roleId);
-      this.answers.push({label: 'Type of role', value: currentRole.role});
-      this.answers.push({label: 'Person', value: currentRole.name, secondValue: currentRole.email});
-    });
+    this.caseId = this.route.snapshot.queryParams.caseId;
+    this.assignmentId = this.route.snapshot.queryParams.assignmentId;
+    const currentRole = roles.find(assignment => assignment.id === this.assignmentId);
+    const personDetails = `${currentRole.name}\n${currentRole.email}`;
+    this.answers.push({label: 'Type of role', value: currentRole.role});
+    this.answers.push({label: 'Person', value: personDetails});
   }
 
   public onNavEvent(navEvent: RemoveAllocationNavigationEvent): void {
     const goToCaseUrl = `cases/case-details/${this.caseId}/roles-and-access`;
     switch (navEvent) {
       case RemoveAllocationNavigationEvent.REMOVE_ROLE_ALLOCATION: {
-        this.allocateRoleService.removeAllocation(this.caseId, this.roleId).subscribe(() =>
+        this.allocateRoleService.removeAllocation(this.assignmentId).subscribe(() =>
         this.router.navigate([goToCaseUrl], {
           state: {
               showMessage: true,

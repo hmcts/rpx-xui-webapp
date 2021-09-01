@@ -3,6 +3,8 @@
 
 module.exports = function (config) {
   config.set({
+    browserNoActivityTimeout: 60000,
+    browserDisconnectTimeout: 60000,
     basePath: '',
     frameworks: ['parallel', 'jasmine', '@angular-devkit/build-angular'],
     parallelOptions: {

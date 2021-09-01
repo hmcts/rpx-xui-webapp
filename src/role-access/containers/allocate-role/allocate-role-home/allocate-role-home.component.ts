@@ -5,7 +5,7 @@ import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { $enum as EnumUtil } from 'ts-enum-util';
 import { AppUtils } from '../../../../app/app-utils';
-import { UserRole } from '../../../../app/models/user-details.model';
+import { UserRole } from '../../../../app/models';
 import * as fromAppStore from '../../../../app/store';
 import {
   checkAnswersVisibilityStates,
@@ -21,9 +21,12 @@ import {
   AllocateRoleState,
   AllocateRoleStateData,
   AllocateTo,
-  DurationOfRole, RoleCategory,
+  DurationOfRole,
+  Role,
+  RoleCategory,
   TypeOfRole
 } from '../../../models';
+import { AllocateRoleService } from '../../../services';
 import * as fromFeature from '../../../store';
 import { AllocateRoleCheckAnswersComponent } from '../allocate-role-check-answers/allocate-role-check-answers.component';
 import { AllocateRoleSearchPersonComponent } from '../allocate-role-search-person/allocate-role-search-person.component';
@@ -77,6 +80,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
 
   constructor(private readonly appStore: Store<fromAppStore.State>,
               private readonly store: Store<fromFeature.State>,
+              private readonly allocateRoleService: AllocateRoleService,
               private readonly route: ActivatedRoute,
               private readonly router: Router) {
     if (this.route.snapshot.queryParams) {
@@ -111,7 +115,6 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
       period: null,
       lastError: null
     };
-    console.log(allocateRoleState);
     this.store.dispatch(new fromFeature.AllocateRoleInstantiate(allocateRoleState));
   }
 

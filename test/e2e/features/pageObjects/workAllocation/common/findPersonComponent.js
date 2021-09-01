@@ -1,18 +1,17 @@
-const BrowserWaits = require("../../../support/customWaits"); 
-const CucumberReporter = require("../../../support/reportLogger");
+const BrowserWaits = require("../../../../support/customWaits"); 
+const CucumberReporter = require("../../../../support/reportLogger");
+const exuiErrorMessage = require("../../common/exuiErrorMessage");
 
-class FindPersonPage{
-    constructor(){
-        this.findPersonContainer = $("exui-find-person");
-        this.header = $("exui-find-person h1");
-        this.headerCaption = $("exui-find-person h1 span");
 
-        this.searchInput = $("exui-find-person #inputSelectPerson");
-        this.searchInputHintText = $("exui-find-person .govuk-hint");
+class FindPersonComponent{
+    constructor(parentlocator){
 
-        this.continueButton = $("exui-work-allocation-home button[type = 'submit']");
-        this.cancelLink = element(by.xpath("//exui-work-allocation-home//p/a[contains(text(),'Cancel')]"));
+        this.findPersonContainer = parentlocator.$("xuilib-find-person");
+        this.header = parentlocator.$("xuilib-find-person h1");
+        this.headerCaption = parentlocator.$("xuilib-find-person h1 span");
 
+        this.searchInput = parentlocator.$("xuilib-find-person #inputSelectPerson");
+        this.searchInputHintText = parentlocator.$("xuilib-find-person .govuk-hint");
         this.searchResultsContainer = $(".cdk-overlay-container .mat-autocomplete-visible");
 
     }
@@ -25,6 +24,10 @@ class FindPersonPage{
            CucumberReporter.AddMessage(err.stack);
            return false;
         }
+    }
+
+    async isDisplayed(){
+        return await this.amOnPage();
     }
 
     async validatePage(){
@@ -41,16 +44,6 @@ class FindPersonPage{
 
     async getHeaderCaption(){
         return await this.headerCaption.getText();
-    }
-
-    async clickContinueButton(){
-        expect(await this.amOnPage(),"Not on find person page").to.be.true;
-        await this.continueButton.click();
-    }
-
-    async clickCancelLink() {
-        expect(await this.amOnPage(), "Not on find person page").to.be.true;
-        await this.cancelLink.click();
     }
 
     async inputSearchTerm(searchTerm){
@@ -84,14 +77,14 @@ class FindPersonPage{
         return element(by.xpath(`//*[contains(@class,'cdk-overlay-container')]//*[contains(@class,'mat-autocomplete-visible')]//mat-option//*[contains(@class,'mat-option-text') and contains(text(),'${resulttext}')]`));
     }
 
-    async isPersonDisplayed(result){
+    async isPersonReturned(result){
         const resultElement = this.getResultElementWithText(result);
         return await resultElement.isPresent() && resultElement.isDisplayed()
 
     }
 
     async selectPerson(result){
-        expect(await this.isPersonDisplayed(result),'Result is not found').to.be.true;
+        expect(await this.isPersonReturned(result),'Result is not found').to.be.true;
         await this.getResultElementWithText(result).click();
     }
 
@@ -102,4 +95,4 @@ class FindPersonPage{
 
 }
 
-module.exports = new FindPersonPage();
+module.exports = FindPersonComponent;

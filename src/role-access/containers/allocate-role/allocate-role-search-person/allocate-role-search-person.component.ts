@@ -43,7 +43,7 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
 
   private setData(allocateRoleStateData: AllocateRoleStateData): void {
     const action = EnumUtil(Actions).getKeyOrDefault(allocateRoleStateData.action);
-    if (allocateRoleStateData.typeOfRole === TypeOfRole.CASE_MANAGER) {
+    if (allocateRoleStateData.typeOfRole === TypeOfRole.CaseManager) {
       this.domain = PersonRole.CASEWORKER;
       this.title = `${action} ${RoleCaptionText.ALegalOpsCaseManager}`;
     } else {

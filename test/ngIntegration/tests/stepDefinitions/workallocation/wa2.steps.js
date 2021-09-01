@@ -92,21 +92,16 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         
     });
 
-    Given('I set MOCK workallocation cases with permissions for view {string} and assigned state {string}', async function (view, assignedState, casePermissionsTable) {
+    Given('I set MOCK workallocation cases with permissions for view {string}', async function (view, casePermissionsTable) {
         const casePermissionHashes = casePermissionsTable.hashes();
         const cases = [];
         view = view.split(" ").join("");
         view = view.toLowerCase();
         for (let i = 0; i < casePermissionHashes.length; i++) {
-            let taskCount = 0;
-            if (casePermissionHashes[i].hasOwnProperty('Count')) {
-                taskCount = parseInt(casePermissionHashes[i]['Count']);
-            } else {
-                taskCount = 1;
-            }
-
-            for (let j = 0; j < taskCount; j++) {
-                cases.push(workAllocationMockData.getRelease2CaseWithPermission(casePermissionHashes[i]['Permissions'].split(","), view, assignedState));
+            
+            let caseCount = casePermissionHashes[i]['Count'];
+            for (let j = 0; j < caseCount; j++) {
+                cases.push(workAllocationMockData.getRelease2CaseWithPermission(casePermissionHashes[i]['Roles'].split(","), view));
             }
 
         }

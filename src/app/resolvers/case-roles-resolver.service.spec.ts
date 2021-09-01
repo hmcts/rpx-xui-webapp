@@ -22,7 +22,7 @@ describe('CaseRolesResolverService', () => {
       location: 'Taylor House',
       name: 'Judge Beech',
       roleCategory: RoleCategory.JUDICIAL,
-      roleName: TypeOfRole.LEAD_JUDGE,
+      roleName: TypeOfRole.LeadJudge,
       start: '2021-07-13T00:29:10.656Z',
       email: 'test@mail.com'
     },
@@ -37,7 +37,7 @@ describe('CaseRolesResolverService', () => {
       location: 'Milton Keynes',
       name: 'Kuda Nyamainashe',
       roleCategory: RoleCategory.JUDICIAL,
-      roleName: TypeOfRole.HEARING_JUDGE,
+      roleName: TypeOfRole.HearingJudge,
       start: '2021-05-19T00:29:10.656Z',
       email: 'test@mail.com'
     },

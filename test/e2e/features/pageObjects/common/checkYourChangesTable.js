@@ -3,11 +3,11 @@ const BrowserWaits = require("../../../support/customWaits");
 
 class CheckYourChangesAnswersTable {
 
-    constructor() {
+    constructor(parentlocator) {
 
-        this.changesTable = $("table");
-        this.tableHeaders = $$('table tr th');
-        this.tableRows = $$('table tr');
+        this.changesTable = parentlocator.$("table");
+        this.tableHeaders = parentlocator.$$('table tr th');
+        this.tableRows = parentlocator.$$('table tbody tr');
 
     }
 
@@ -16,6 +16,8 @@ class CheckYourChangesAnswersTable {
     }
 
     async getTableRowAtIndex(index) {
+        await this.waitForTableRows();
+
         const rowCount = this.getRowsCount();
         if (index - 1 >= rowCount) {
             throw new Error(`Cannot get row at index ${index}, table has total rows ${rowCount}`);
@@ -24,6 +26,8 @@ class CheckYourChangesAnswersTable {
     }
 
     async getHeaderColumnPos(header) {
+        await this.waitForTableRows();
+
         const colsCount = await this.tableHeaders.count();
         let colIndex = -1;
         for (let i = 0; i < colsCount; i++) {
@@ -39,6 +43,8 @@ class CheckYourChangesAnswersTable {
 
 
     async getColumnElementAtRow(rowIndex, header) {
+        await this.waitForTableRows();
+
         const pos = await this.getHeaderColumnPos(header);
         const rowElement = await this.getTableRowAtIndex(rowIndex);
 
@@ -51,18 +57,23 @@ class CheckYourChangesAnswersTable {
     }
 
     async getColumnValueAtRow(rowIndex, header) {
+        await this.waitForTableRows();
         const colElement = await this.getColumnElementAtRow(rowIndex, header);
         const coltext = await colElement.getText();
         return coltext;
     }
 
     async getLinkElementWithTextAtRow(rowIndex, linkText) {
+        await this.waitForTableRows();
+
         const rowElement = await this.getTableRowAtIndex(rowIndex);
         return rowElement.element(by.xpath(`//td//a[contains(text(),'${linkText}')]`));
     }
 
     async isLinkWithTextPresentAtRow(rowIndex, linkText) {
-        const linkElement = this.getLinkElementWithTextAtRow(rowIndex, linkText);
+        await this.waitForTableRows();
+
+        const linkElement = await this.getLinkElementWithTextAtRow(rowIndex, linkText);
         try {
             await BrowserWaits.waitForElement(linkElement);
             return true;
@@ -73,17 +84,27 @@ class CheckYourChangesAnswersTable {
     }
 
     async clickLinkWithTextAtRow(rowIndex, linkText) {
+        await this.waitForTableRows();
+
         const linkElement = this.getLinkElementWithTextAtRow(rowIndex, linkText);
         await BrowserWaits.waitForElement(linkElement);
         await linkElement.click();
     }
 
     async isTableHeaderDisplayed(headerCol) {
+        await this.waitForTableRows();
+
         const colheaderPos = await this.getHeaderColumnPos(headerCol);
         return colheaderPos !== -1;
+    }
+
+    async waitForTableRows(){
+        await BrowserWaits.waitForConditionAsync(async () => {
+            return (await this.getRowsCount()) > 0
+        });
     }
 
 
 }
 
-module.exports = new CheckYourChangesAnswersTable();
+module.exports = CheckYourChangesAnswersTable;

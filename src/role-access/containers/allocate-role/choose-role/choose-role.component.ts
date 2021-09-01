@@ -4,13 +4,12 @@ import { ActivatedRoute } from '@angular/router';
 import { PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { $enum as EnumUtil } from 'ts-enum-util';
-import { UserRole } from '../../../../app/models/user-details.model';
-import * as fromAppStore from '../../../../app/store';
+import { UserRole } from '../../../../app/models';
 import { CHOOSE_A_ROLE, ERROR_MESSAGE } from '../../../constants';
-import { AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState, RoleCategory, TypeOfRole } from '../../../models';
+import { AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState, Role, RoleCategory, TypeOfRole } from '../../../models';
 import { RoleAllocationTitleText } from '../../../models/enums';
 import { OptionsModel } from '../../../models/options-model';
+import { AllocateRoleService } from '../../../services';
 import * as fromFeature from '../../../store';
 
 @Component({
@@ -36,9 +35,9 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
 
   public roleCategory: string = '';
 
-  constructor(private readonly appStore: Store<fromAppStore.State>,
-              private readonly store: Store<fromFeature.State>,
-              private readonly route: ActivatedRoute) {
+  constructor(private readonly store: Store<fromFeature.State>,
+              private readonly route: ActivatedRoute,
+              private readonly allocateRoleService: AllocateRoleService) {
   }
 
   public ngOnInit(): void {
@@ -56,19 +55,8 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
     );
     this.radioOptionControl = new FormControl(this.typeOfRole ? this.typeOfRole : '', [Validators.required]);
     this.formGroup = new FormGroup({[this.radioControlName]: this.radioOptionControl});
-
-    const judicialOptions = [
-      {
-        optionId: EnumUtil(TypeOfRole).getKeyOrDefault(TypeOfRole.LEAD_JUDGE),
-        optionValue: TypeOfRole.LEAD_JUDGE
-      },
-      {
-        optionId: EnumUtil(TypeOfRole).getKeyOrDefault(TypeOfRole.HEARING_JUDGE),
-        optionValue: TypeOfRole.HEARING_JUDGE
-      }
-    ];
-    const legalOpsOptions = [{optionId: EnumUtil(TypeOfRole).getKeyOrDefault(TypeOfRole.CASE_MANAGER), optionValue: TypeOfRole.CASE_MANAGER}];
-    this.optionsList = this.roleCategory === RoleCategory.JUDICIAL ? judicialOptions : legalOpsOptions;
+    const rolesList = this.allocateRoleService.getValidRoles().subscribe(roles =>
+        this.optionsList = this.getOptions(roles.filter(role => role.roleCategory === this.roleCategory)));
   }
 
   public navigationHandler(navEvent: AllocateRoleNavigationEvent, roleCategory: RoleCategory, isLegalOpsOrJudicialRole: UserRole): void {
@@ -128,6 +116,10 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
       default:
         throw new Error('Invalid option');
     }
+  }
+
+  public getOptions(roles: Role[]): OptionsModel[] {
+    return roles.map(role => ({optionId: role.roleId, optionValue: role.roleName}));
   }
 
   public ngOnDestroy(): void {

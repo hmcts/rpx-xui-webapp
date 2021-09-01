@@ -13,7 +13,7 @@ Feature: WA Release 2: My cases - negative scenarios
         When I navigate to My work sub navigation tab "My cases"
 
 
-        Then I see error message of type "<ErrorMessageType>" with message "<ErrorMessage>"
+        Then I see error message of type "<ErrorMessageType>" displayed with message "<ErrorMessage>"
         Examples:
             | UserIdentifier     | UserRoles                                          | ResponseCode | ErrorMessageType | ErrorMessage                                        |
             | IAC_CaseOfficer_R2 | caseworker-ia-caseofficer,caseworker-ia-admofficer | 500          | Page             | Sorry, there is a problem with the service          |

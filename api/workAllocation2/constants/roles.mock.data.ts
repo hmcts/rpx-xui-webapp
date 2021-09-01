@@ -14,7 +14,7 @@ export const CASEROLES: CaseRole[] = [
     location: 'Taylor House',
     name: 'Judge Beech',
     roleCategory: RoleCategory.JUDICIAL,
-    roleName: TypeOfRole.LEAD_JUDGE,
+    roleName: TypeOfRole.LeadJudge,
     start: '2021-07-13T00:29:10.656Z',
   },
   {
@@ -29,7 +29,7 @@ export const CASEROLES: CaseRole[] = [
     location: 'Milton Keynes',
     name: 'Kuda Nyamainashe',
     roleCategory: RoleCategory.JUDICIAL,
-    roleName: TypeOfRole.LEAD_JUDGE,
+    roleName: TypeOfRole.LeadJudge,
     start: '2021-05-19T00:29:10.656Z',
   },
   {
@@ -44,7 +44,7 @@ export const CASEROLES: CaseRole[] = [
     location: 'Taylor House',
     name: 'Bisa Bulter',
     roleCategory: RoleCategory.LEGAL_OPERATIONS,
-    roleName: TypeOfRole.CASE_MANAGER,
+    roleName: TypeOfRole.CaseManager,
     start: '2021-08-19T00:29:10.656Z',
   },
 ];

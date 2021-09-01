@@ -58,7 +58,7 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
     this.typeOfRole = allocateRoleStateData.typeOfRole;
     this.allocateTo = allocateRoleStateData.allocateTo;
     const action = EnumUtil(Actions).getKeyOrDefault(allocateRoleStateData.action);
-    if (this.typeOfRole === TypeOfRole.CASE_MANAGER) {
+    if (this.typeOfRole === TypeOfRole.CaseManager) {
       this.caption = `${action} ${RoleCaptionText.ALegalOpsCaseManager}`;
     } else {
       if (this.typeOfRole) {
@@ -82,7 +82,7 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
       personDetails += `${allocateRoleStateData.person.name}\n${allocateRoleStateData.person.email}`;
     }
     if (allocateRoleStateData.allocateTo === AllocateTo.ALLOCATE_TO_ANOTHER_PERSON ||
-      (allocateRoleStateData.allocateTo === null && allocateRoleStateData.typeOfRole === TypeOfRole.CASE_MANAGER) ||
+      (allocateRoleStateData.allocateTo === null && allocateRoleStateData.typeOfRole === TypeOfRole.CaseManager) ||
       allocateRoleStateData.action === Actions.Reallocate) {
       this.answers.push({label: AnswerLabelText.Person, value: personDetails, action: AllocateRoleState.SEARCH_PERSON});
     }

@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
-import { LocationInfo } from '../../../app/models/user-details.model';
+import { LocationInfo } from '../../../app/models';
 import { CaseRole, RoleCategory } from '../../models';
 
 interface Item extends CaseRole {

@@ -1,8 +1,9 @@
 
 const BrowserWaits = require('../../support/customWaits');
 var cucumberReporter = require('../../support/reportLogger');
+const ArrayUtil = require('../../utils/ArrayUtil');
 
-class TaskInfoMessageBanner{
+class MessageBanner{
 
 
     constructor(parentCssLocator) {
@@ -39,6 +40,15 @@ class TaskInfoMessageBanner{
         return messages;
     }
 
+    async isMessageTextDisplayed(expectedMessage){
+        const allMessages = await this.getBannerMessagesDisplayed();
+        const matchingMessages = await ArrayUtil.filter(allMessages,async (message) => {
+            return message.includes(expectedMessage);
+        });
+
+        return matchingMessages.length > 0;
+    }
+
 }
 
-module.exports = TaskInfoMessageBanner;
+module.exports = MessageBanner;

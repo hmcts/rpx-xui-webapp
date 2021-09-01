@@ -31,12 +31,12 @@ Feature: WA Release 2: My work - My tasks - Manage links
 
         Then I validate manage link actions for tasks
             | index | actions                                |
-            | 0     | Reassign task,Unassign task,Go to task |
             | 1     | Reassign task,Unassign task,Go to task |
-            | 2     |                                        |
-            | 3     | Reassign task,Unassign task,Go to task |
+            | 2     | Reassign task,Unassign task,Go to task |
+            | 3     |                                        |
             | 4     | Reassign task,Unassign task,Go to task |
-            | 5     |                                        |
+            | 5     | Reassign task,Unassign task,Go to task |
+            | 6     |                                        |
 
         Examples:
             | UserIdentifier     | UserType   | Roles                                              |

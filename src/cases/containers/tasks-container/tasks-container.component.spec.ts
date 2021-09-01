@@ -2,8 +2,9 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { AlertService, CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
-import { getMockTasks } from '../../../work-allocation-2/tests/utils.spec';
 
+import { TaskAlertBannerComponent } from '../../../cases/components';
+import { getMockTasks } from '../../../work-allocation-2/tests/utils.spec';
 import { TasksContainerComponent } from './tasks-container.component';
 
 const metadataField = {} as CaseField;
@@ -113,7 +114,7 @@ describe('TasksContainerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [TasksContainerComponent],
+      declarations: [TaskAlertBannerComponent, TasksContainerComponent],
       providers: [
         {provide: AlertService, useValue: mockAlertService},
         {

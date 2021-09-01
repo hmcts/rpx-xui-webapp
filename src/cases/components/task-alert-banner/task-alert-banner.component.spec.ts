@@ -19,6 +19,8 @@ describe('TaskAlertBannerComponent', () => {
   });
 
   it('should have the relevant text', () => {
+    component.alertTitle = 'This is the title';
+    component.alertMessage = 'This is the message';
     const titleElement = document.getElementById(`alertTitle`) as HTMLElement;
     expect(titleElement.innerText).toBe(component.alertTitle);
     const messageElement = document.getElementById(`alertMessage`) as HTMLElement;

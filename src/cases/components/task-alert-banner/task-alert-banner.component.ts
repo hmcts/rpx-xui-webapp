@@ -6,6 +6,6 @@ import { Component } from '@angular/core';
   styleUrls: ['./task-alert-banner.component.scss']
 })
 export class TaskAlertBannerComponent {
-  public alertTitle = 'Task alert';
-  public alertMessage = 'An application is pending a decision. Consider if this application has an impact on any other tasks you might wish to complete.';
+  @Input() public alertTitle;
+  @Input() public alertMessage;
 }

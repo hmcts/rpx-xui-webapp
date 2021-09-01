@@ -18,6 +18,14 @@ const  workAllocationWorkflow = require('../../appLocators/workAllocationWorkFlo
 const primaryNavLocators = require('../../appLocators/primaryNavHeader');
 
 
+const assignmentId = 'cc311b32-5aea-4cd1-8b72-911fb47c8a2e';
+const caseId = '1546883526751282';
+const actorId = '38eb0c5e-29c7-453e-b92d-f2029aaed6c3';
+const userName = 'Judge%20Beech';
+const typeOfRole = 'Lead%20judge';
+
+const route = `role-access/allocate-role/allocate?caseId=${caseId}&userType=judicial&assignmentId=${assignmentId}&actorId=${actorId}&userName=${userName}&typeOfRole=${typeOfRole}`
+
 describe('Work Allocation: Reallocate', function () {
 
     before(async function (done) {
@@ -36,7 +44,7 @@ describe('Work Allocation: Reallocate', function () {
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator(workAllocationWorkflow.chooseRole.container))
         
-        await pa11ytest(this, actions, conf.baseUrl + 'role-access/allocate-role?userType=judicial');
+        await pa11ytest(this, actions, conf.baseUrl + route);
 
     });
 
@@ -44,7 +52,7 @@ describe('Work Allocation: Reallocate', function () {
         userDetailsMock.withIACJudicialUser('IAC_Judge_WA_R2');
         await MockApp.startServer();
         const actions = [];
-        actions.push(...PallyActions.navigateTourl(conf.baseUrl + 'role-access/allocate-role?userType=judicial'))
+        actions.push(...PallyActions.navigateTourl(conf.baseUrl + route))
 
         actions.push(...PallyActions.waitForPageWithCssLocator(workAllocationWorkflow.chooseRole.container))
         actions.push(...PallyActions.checkOption(workAllocationWorkflow.chooseRole.option_1))
@@ -77,7 +85,7 @@ describe('Work Allocation: Reallocate', function () {
         actions.push(...PallyActions.clickElement(workAllocationWorkflow.continue))
 
         actions.push(...PallyActions.waitForPageWithCssLocator(workAllocationWorkflow.chooseDuration.container))
-        await pa11ytest(this, actions, conf.baseUrl + 'role-access/allocate-role?userType=judicial');
+        await pa11ytest(this, actions, conf.baseUrl + route);
     });
 
 
@@ -104,7 +112,7 @@ describe('Work Allocation: Reallocate', function () {
 
         actions.push(...PallyActions.waitForPageWithCssLocator(workAllocationWorkflow.allocateCheckAnswers))
 
-        await pa11ytest(this, actions, conf.baseUrl + 'role-access/allocate-role?userType=judicial');
+        await pa11ytest(this, actions, conf.baseUrl + route);
 
     });
 

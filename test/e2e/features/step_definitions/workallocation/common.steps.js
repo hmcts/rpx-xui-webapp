@@ -31,6 +31,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         expect(await taskListTable.getPaginationResultText()).to.include(pagnationResultText);
     });
 
+    Then('I validate WA case list page results text displayed as {string}', async function (pagnationResultText) {
+        expect(await waCaseListTable.getPaginationResultText()).to.include(pagnationResultText);
+    });
+
     Then('I validate task table pagination controls, is displayed state is {string}', async function (isDisplauyed) {
         expect(await taskListTable.isPaginationControlDisplayed()).to.equal(isDisplauyed.toLowerCase() == "true");
     });
@@ -49,6 +53,23 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             await taskListTable.pagePreviousLink.click();
         } else {
             await taskListTable.clickPaginationPageNum(paginationLinktext);
+        }
+    });
+
+    When('I click WA case list pagination link {string}', async function (paginationLinktext) {
+        await BrowserWaits.waitForSeconds(1);
+
+        await BrowserWaits.waitForConditionAsync(async () => {
+            const colCount = await waCaseListTable.getColumnCount();
+            const rowCount = await waCaseListTable.getTaskListCountInTable();
+            return colCount > 0 && rowCount > 0;
+        });
+        if (paginationLinktext.toLowerCase() === "next") {
+            await waCaseListTable.pageNextLink.click();
+        } else if (paginationLinktext.toLowerCase() === "previous") {
+            await waCaseListTable.pagePreviousLink.click();
+        } else {
+            await waCaseListTable.clickPaginationPageNum(paginationLinktext);
         }
     });
 
@@ -303,7 +324,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I validate WA cases table footer displayed status is {string}', async function (displayStateBool) {
         const expectedDisplayState = displayStateBool.toLowerCase().includes("true");
-        expect(await casesTable.isTableFooterDisplayed()).to.equal(expectedDisplayState);
+        expect(await waCaseListTable.isTableFooterDisplayed()).to.equal(expectedDisplayState);
     });
 
     Then('I validate WA tasks table footer message is {string}', async function (message) {
@@ -311,8 +332,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I validate WA cases table footer message is {string}', async function (message) {
-        const expectedDisplayState = displayStateBool.toLowerCase().includes("true");
-        expect(await casesTable.getTableFooterMessage()).to.include(message);
+        expect(await waCaseListTable.getTableFooterMessage()).to.include(message);
     });
 
 });

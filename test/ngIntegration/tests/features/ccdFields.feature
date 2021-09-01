@@ -1,4 +1,5 @@
-@ng
+#  disabled tests in MC as same tests are now enabled in CCD-CASE-UI-TOOLKIT functional test
+# @ng
 Feature: Case fields
 
     Background: Mock event setup

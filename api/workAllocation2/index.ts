@@ -23,8 +23,10 @@ import {
 import { AxiosResponse } from 'axios';
 import { sendPost } from '../common/crudService';
 import { Caseworker, Judicialworker } from './interfaces/common';
+import { TaskList } from './interfaces/task';
 import { handleShowAllocatorLinkByCaseId, refineRoleAssignments } from './roleService';
 import * as roleServiceMock from './roleService.mock';
+import { handleGetTasksByCaseId } from './taskService';
 import * as taskServiceMock from './taskService.mock';
 import {
   assignActionsToCases,
@@ -154,6 +156,16 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     res.send(returnData);
   } catch (error) {
     next(error);
+  }
+}
+
+export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
+  const caseId = req.params.caseId;
+  try {
+    const {status, data} = await handleGetTasksByCaseId(`${baseWorkAllocationTaskUrl}/task/${caseId}`, req);
+    return res.send(data as TaskList).status(status);
+  } catch (e) {
+    next(e);
   }
 }
 

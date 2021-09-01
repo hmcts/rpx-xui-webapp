@@ -53,6 +53,19 @@ export function allocateRoleReducer(currentState = allocateRoleInitialState,
         action: action.payload.action
       };
     }
+    case AllocateRoleActionTypes.ALLOCATE_ROLE_INSTANTIATE: {
+      return {
+        ...currentState,
+        caseId: action.payload.caseId,
+        assignmentId: action.payload.assignmentId,
+        state: action.payload.state,
+        personToBeRemoved: action.payload.personToBeRemoved,
+        typeOfRole: action.payload.typeOfRole,
+        allocateTo: action.payload.allocateTo,
+        durationOfRole: action.payload.durationOfRole,
+        action: action.payload.action
+      };
+    }
     case AllocateRoleActionTypes.CHOOSE_ROLE_AND_GO: {
       return {
         ...currentState,

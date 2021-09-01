@@ -22,7 +22,6 @@ import {
   AllocateRoleStateData,
   AllocateTo,
   DurationOfRole,
-  Role,
   RoleCategory,
   TypeOfRole
 } from '../../../models';

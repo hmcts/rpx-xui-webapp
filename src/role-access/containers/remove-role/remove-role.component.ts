@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { handleFatalErrors } from '../../../work-allocation-2/utils';
 import { Answer, CaseRole, RemoveAllocationNavigationEvent } from '../../models';
 import { RemoveRoleText } from '../../models/enums/answer-text';
-import { AllocateRoleService } from '../../services/allocate-role.service';
+import { AllocateRoleService } from '../../services';
 
 @Component({
   selector: 'exui-remove-role',

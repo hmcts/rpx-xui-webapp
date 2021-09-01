@@ -22,8 +22,10 @@ import {
 
 import { CaseRole } from './interfaces/caseRole';
 import { Caseworker, Judicialworker } from './interfaces/common';
+import { TaskList } from './interfaces/task';
 import { handleDeleteRoleIdByCaseId, handleGetRolesByCaseId, handleShowAllocatorLinkByCaseId } from './roleService';
 import * as roleServiceMock from './roleService.mock';
+import { handleGetTasksByCaseId } from './taskService';
 import * as taskServiceMock from './taskService.mock';
 import {
   assignActionsToCases,
@@ -153,6 +155,16 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     res.send(returnData);
   } catch (error) {
     next(error);
+  }
+}
+
+export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
+  const caseId = req.params.caseId;
+  try {
+    const {status, data} = await handleGetTasksByCaseId(`${baseWorkAllocationTaskUrl}/task/${caseId}`, req);
+    return res.send(data as TaskList).status(status);
+  } catch (e) {
+    next(e);
   }
 }
 

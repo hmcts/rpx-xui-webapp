@@ -90,6 +90,7 @@ export function getMockTasks(): Task[] {
       location: 'Taylor House',
       taskName: 'Review respondent evidence',
       dueDate: new Date(628021800000),
+      warnings: true,
       actions: [
         {
           id: 'actionId1',

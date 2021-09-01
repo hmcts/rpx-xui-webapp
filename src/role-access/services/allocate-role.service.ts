@@ -6,7 +6,6 @@ import { Actions, AllocateRoleStateData, Role } from '../models';
 @Injectable({ providedIn: 'root' })
 export class AllocateRoleService {
   public static allocateRoleBaseUrl = '/api/role-access/allocate-role';
-  public validRoles = [];
   constructor(private readonly http: HttpClient) { }
 
   public confirmAllocation(allocateRoleStateData: AllocateRoleStateData) {

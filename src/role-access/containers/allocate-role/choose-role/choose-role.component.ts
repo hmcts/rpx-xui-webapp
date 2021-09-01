@@ -56,8 +56,8 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
     );
     this.radioOptionControl = new FormControl(this.typeOfRole ? this.typeOfRole : '', [Validators.required]);
     this.formGroup = new FormGroup({[this.radioControlName]: this.radioOptionControl});
-    const rolesList = this.allocateRoleService.validRoles;
-    this.optionsList = this.getOptions(rolesList);
+    const rolesList = this.allocateRoleService.getValidRoles().subscribe(roles =>
+        this.optionsList = this.getOptions(roles.filter(role => role.roleType === this.userType)));
   }
 
   public navigationHandler(navEvent: AllocateRoleNavigationEvent, userType: string, isLegalOpsOrJudicialRole: UserRole): void {
@@ -119,7 +119,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getOptions(roles: Role[]): OptionsModel[] {
+  public getOptions(roles: Role[]): OptionsModel[] {
     return roles.map(role => ({optionId: role.roleId, optionValue: role.roleName}));
   }
 

@@ -7,6 +7,7 @@ import { $enum as EnumUtil } from 'ts-enum-util';
 import { AppUtils } from '../../../../app/app-utils';
 import { UserRole } from '../../../../app/models';
 import * as fromAppStore from '../../../../app/store';
+import { UserType } from '../../../../cases/models/user-type';
 import {
   checkAnswersVisibilityStates,
   chooseAllocateToVisibilityStates,
@@ -32,7 +33,6 @@ import { AllocateRoleSearchPersonComponent } from '../allocate-role-search-perso
 import { ChooseAllocateToComponent } from '../choose-allocate-to/choose-allocate-to.component';
 import { ChooseDurationComponent } from '../choose-duration/choose-duration.component';
 import { ChooseRoleComponent } from '../choose-role/choose-role.component';
-import { UserType } from '../../../../cases/models/user-type';
 
 @Component({
   selector: 'exui-allocate-role-home',
@@ -66,8 +66,6 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
   public appStoreSub: Subscription;
   public allocateRoleStateDataSub: Subscription;
 
-  public generalRoles: Role[];
-
   public navigationCurrentState: AllocateRoleState;
   public allocateTo: AllocateTo;
   public assignmentId: string;
@@ -93,10 +91,6 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
       this.userNameToBeRemoved = this.route.snapshot.queryParams.userName ? this.route.snapshot.queryParams.userName : null;
       this.typeOfRole = this.route.snapshot.queryParams.typeOfRole ? this.route.snapshot.queryParams.typeOfRole : null;
       this.action = this.route.snapshot.routeConfig.path ? this.route.snapshot.routeConfig.path : null;
-    }
-    if (this.route.snapshot.data) {
-      this.generalRoles = this.route.snapshot.data.validRoles;
-      this.allocateRoleService.validRoles =  this.getSpecificRoles(this.generalRoles, this.userType);
     }
     if (this.action === Actions.Reallocate) {
       this.instantiateReallocateRoleData();

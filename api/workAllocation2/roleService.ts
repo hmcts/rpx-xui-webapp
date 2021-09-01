@@ -16,12 +16,6 @@ export async function handleGetRolesByCaseId(path: string, req: EnhancedRequest)
     return await httpMock.get<CaseRole>(path, { headers });
 }
 
-export async function handleDeleteRoleIdByCaseId(path: string, req: EnhancedRequest): Promise<AxiosResponse<CaseRole>> {
-    logger.info('handle delete method', path);
-    const headers = setHeaders(req);
-    return await httpMock.delete<CaseRole>(path, { headers });
-}
-
 export function handleShowAllocatorLinkByCaseId(jurisdiction: string, caseLocationId: string, req: EnhancedRequest): boolean {
     const roleAssignments = req.session.roleAssignmentResponse as RoleAssignment[];
     let isCaseAllocator = false;

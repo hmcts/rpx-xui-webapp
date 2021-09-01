@@ -1,14 +1,15 @@
 import { TypeOfRole } from './allocate-role.enum';
 
 export interface CaseRole {
-  email: string;
   name: string;
   role: TypeOfRole;
   location: string;
   start: string;
   end: string;
   id: string;
+  actorId: string;
   actions: Action[];
+  email: string;
 }
 
 export interface Action {

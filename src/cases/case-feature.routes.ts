@@ -9,6 +9,7 @@ import { CaseFilterComponent } from './containers/case-filter/case-filter.compon
 import { CaseHomeComponent } from './containers/case-home/case-home.component';
 import { CaseListComponent } from './containers/case-list/case-list.component';
 import { CaseSearchComponent } from './containers/case-search/case-search.component';
+import { CaseViewerContainerComponent } from './containers/case-viewer-container/case-viewer-container.component';
 import { ActivityResolver } from './resolvers/activity.resolver';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
 
@@ -96,7 +97,12 @@ export const ROUTES: Routes = [
           component: CaseDetailsHomeComponent,
           resolve: { case: CaseResolver },
           runGuardsAndResolvers: 'always',
-          children: caseViewRouting,
+          children: [
+            {
+              path: '',
+              component: CaseViewerContainerComponent
+            },
+            ...caseViewRouting],
           canActivate: [ HealthCheckGuard ],
           data: {
             title: 'Case Details'

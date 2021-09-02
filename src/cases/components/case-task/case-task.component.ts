@@ -7,7 +7,11 @@ import { Task } from '../../../work-allocation-2/models/tasks';
   styleUrls: ['./case-task.component.scss']
 })
 export class CaseTaskComponent implements OnInit {
-  ngOnInit(): void {
-  }
   @Input() public task: Task;
+
+  public ngOnInit(): void {
+  }
+  public getAssigneeName(task: Task): string {
+    return task.assigneeName ? task.assigneeName : 'Unassigned';
+  }
 }

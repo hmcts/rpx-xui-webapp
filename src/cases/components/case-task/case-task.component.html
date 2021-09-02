@@ -16,14 +16,14 @@
         </dt>
         <dd class="govuk-summary-list__value">{{getAssigneeName(task)}}</dd>
     </div>
-    <div class="govuk-summary-list__row">
+    <div class="govuk-summary-list__row" *ngIf="manageOptions && manageOptions.length > 0">
         <dt class="govuk-summary-list__key">
             <span class="row-padding">Manage</span>
         </dt>
         <dd class="govuk-summary-list__value">
-            <a href="" class="right">Assign to me</a>
-            <a href="" class="right">Reassign task</a>
-            <a href="" class="right">Unassign task</a>
+            <ng-container *ngFor="let option of manageOptions">
+                <a [routerLink]="option.path" class="right">{{option.text}}</a>
+            </ng-container>
         </dd>
     </div>
     <div *ngIf="isTaskAssignedToCurrentUser(task)" class="govuk-summary-list__row">

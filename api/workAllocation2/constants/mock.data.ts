@@ -1775,6 +1775,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
   tasks: [
     {
       assignee: '44d5d2c2-7112-4bef-8d05-baaa610bf463',
+      assigneeName: 'Judge XUI test',
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc1',
       task_title: 'Review FTPA application',
       dueDate: '2021-05-05T16:00:00.000+0000',
@@ -1788,6 +1789,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
     },
     {
       assignee: '44d5d2c2-7112-4bef-8d05-baaa610bf463',
+      assigneeName: 'Judge XUI test',
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc2',
       task_title: 'Review application decision',
       dueDate: '2021-05-12T16:00:00.000+0000',
@@ -1800,6 +1802,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
     },
     {
       assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc3',
       task_title: 'Generate decision and reason',
       dueDate: '2021-05-18T16:00:00.000+0000',
@@ -1812,6 +1815,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
     },
     {
       assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc4',
       task_title: 'Follow-up non-standard direction',
       dueDate: '2021-05-20T16:00:00.000+0000',
@@ -1824,6 +1828,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
     },
     {
       assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc5',
       task_title: 'Review FTPA application',
       dueDate: '2021-05-05T16:00:00.000+0000',
@@ -1836,6 +1841,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
     },
     {
       assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc6',
       task_title: 'Review application decision',
       dueDate: '2021-05-12T16:00:00.000+0000',
@@ -1848,6 +1854,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
     },
     {
       assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc7',
       task_title: 'Generate decision and reason',
       dueDate: '2021-05-18T16:00:00.000+0000',
@@ -1860,6 +1867,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
     },
     {
       assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc8',
       task_title: 'Follow-up non-standard direction',
       dueDate: '2021-05-20T16:00:00.000+0000',
@@ -1872,6 +1880,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
     },
     {
       assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc9',
       task_title: 'Review FTPA application',
       dueDate: '2021-05-05T16:00:00.000+0000',
@@ -1884,6 +1893,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
     },
     {
       assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bd0',
       task_title: 'Review application decision',
       dueDate: '2021-05-12T16:00:00.000+0000',
@@ -1896,6 +1906,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
     },
     {
       assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bd1',
       task_title: 'Generate decision and reason',
       dueDate: '2021-05-18T16:00:00.000+0000',
@@ -1908,6 +1919,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
     },
     {
       assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bd2',
       task_title: 'Follow-up non-standard direction',
       dueDate: '2021-05-20T16:00:00.000+0000',
@@ -1920,6 +1932,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
     },
     {
       assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bd3',
       task_title: 'Review FTPA application',
       dueDate: '2021-05-05T16:00:00.000+0000',
@@ -1932,6 +1945,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
     },
     {
       assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bd4',
       task_title: 'Review application decision',
       dueDate: '2021-05-12T16:00:00.000+0000',
@@ -1944,6 +1958,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
     },
     {
       assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bd5',
       task_title: 'Generate decision and reason',
       dueDate: '2021-05-18T16:00:00.000+0000',
@@ -1956,6 +1971,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
     },
     {
       assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bd6',
       task_title: 'Follow-up non-standard direction',
       dueDate: '2021-05-20T16:00:00.000+0000',
@@ -1968,6 +1984,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
     },
     {
       assignee: null,
+      assigneeName: null,
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc17',
       task_title: 'Review FTPA application',
       dueDate: '2021-05-05T16:00:00.000+0000',
@@ -1980,6 +1997,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
     },
     {
       assignee: null,
+      assigneeName: null,
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc18',
       task_title: 'Review application decision',
       dueDate: '2021-05-12T16:00:00.000+0000',
@@ -1992,6 +2010,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
     },
     {
       assignee: null,
+      assigneeName: null,
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc19',
       task_title: 'Generate decision and reason',
       dueDate: '2021-05-18T16:00:00.000+0000',
@@ -2004,6 +2023,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
     },
     {
       assignee: null,
+      assigneeName: null,
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc20',
       task_title: 'Follow-up non-standard direction',
       dueDate: '2021-05-20T16:00:00.000+0000',
@@ -2016,6 +2036,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
     },
     {
       assignee: null,
+      assigneeName: null,
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc21',
       task_title: 'Review FTPA application',
       dueDate: '2021-05-05T16:00:00.000+0000',
@@ -2028,6 +2049,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
     },
     {
       assignee: null,
+      assigneeName: null,
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc22',
       task_title: 'Review application decision',
       dueDate: '2021-05-12T16:00:00.000+0000',
@@ -2040,6 +2062,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
     },
     {
       assignee: null,
+      assigneeName: null,
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc23',
       task_title: 'Generate decision and reason',
       dueDate: '2021-05-18T16:00:00.000+0000',
@@ -2052,6 +2075,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
     },
     {
       assignee: null,
+      assigneeName: null,
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc24',
       task_title: 'Follow-up non-standard direction',
       dueDate: '2021-05-20T16:00:00.000+0000',
@@ -2064,6 +2088,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
     },
     {
       assignee: null,
+      assigneeName: null,
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc25',
       task_title: 'Review FTPA application',
       dueDate: '2021-05-05T16:00:00.000+0000',
@@ -2076,6 +2101,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
     },
     {
       assignee: null,
+      assigneeName: null,
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc26',
       task_title: 'Review application decision',
       dueDate: '2021-05-12T16:00:00.000+0000',
@@ -2088,6 +2114,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
     },
     {
       assignee: null,
+      assigneeName: null,
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc27',
       task_title: 'Generate decision and reason',
       dueDate: '2021-05-18T16:00:00.000+0000',
@@ -2100,6 +2127,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
     },
     {
       assignee: null,
+      assigneeName: null,
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc28',
       task_title: 'Follow-up non-standard direction',
       dueDate: '2021-05-20T16:00:00.000+0000',

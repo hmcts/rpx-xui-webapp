@@ -26,7 +26,7 @@
             <a href="" class="right">Unassign task</a>
         </dd>
     </div>
-    <div class="govuk-summary-list__row">
+    <div *ngIf="isTaskAssignedToCurrentUser(task)" class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
             <span class="row-padding">Next steps</span>
         </dt>

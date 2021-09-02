@@ -3,7 +3,7 @@ var CaseListPage = require("../pageObjects/CaseListPage");
 var FRCase = require('../pageObjects/FRCase');
 var ProbateCase = require('../pageObjects/ProbateCase');
 var DivorceCase = require('../pageObjects/Divorcecase');
-var IACCase = require('../pageObjects/iacCase'); 
+var IACCase = require('../pageObjects/iacCase');
 
 
 var CaseManager = require('../pageObjects/common/CaseManager');
@@ -73,5 +73,21 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I am on case form page', async function () {
         await caseManager.AmOnCCDCaseEditPage();
+    });
+
+    When('I click \'Accept additional cookies\'', async function () {
+        await caseManager.acceptCookies();
+    });
+
+    Then('I see all analytical cookies', async function () {
+        await caseManager.AmOnCaseDetailsPage();
+    });
+
+    When('I click \'Reject additional cookies\'', async function () {
+        await caseManager.rejectCookies();
+    });
+
+    Then('I don\'t see any analytical cookie', async function () {
+        await caseManager.AmOnCaseDetailsPage();
     });
 });

@@ -9,7 +9,11 @@ alertMessage="An application is pending a decision. Consider if this application
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
         <h2 class="govuk-heading-m">Active tasks</h2>
-        <exui-case-task></exui-case-task>
+        <ng-container *ngIf="tasks">
+          <ng-container *ngFor="let task of tasks">
+            <exui-case-task [task]="task"></exui-case-task>
+          </ng-container>
+        </ng-container>
       </div>
     </div>
   </div>

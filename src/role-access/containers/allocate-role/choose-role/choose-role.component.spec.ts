@@ -17,8 +17,8 @@ const firstRoleOptions = [{ optionId: 'lead-judge', optionValue: 'Lead judge' },
       { optionId: 'hearing-judge', optionValue: 'Hearing judge' }];
 
 const personRoles = [
-  {roleId: 'lead-judge', roleName: 'Lead judge', roleCategory: 'JUDICIAL'},
-  {roleId: 'hearing-judge', roleName: 'Hearing judge', roleCategory: 'JUDICIAL'}];
+  {roleId: 'lead-judge', roleName: 'Lead judge', roleCategory: RoleCategory.JUDICIAL},
+  {roleId: 'hearing-judge', roleName: 'Hearing judge', roleCategory: RoleCategory.JUDICIAL}];
 
 const mockAllocateRoleStateData: AllocateRoleStateData = {
   action: Actions.Allocate,
@@ -56,7 +56,7 @@ describe('ChooseRoleComponent', () => {
           useValue: {
             snapshot: {
               queryParams: {
-                userType: 'judicial'
+                roleCategory: 'JUDICIAL'
               }
             },
           }

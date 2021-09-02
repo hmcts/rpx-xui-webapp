@@ -24,7 +24,7 @@ const actorId = '38eb0c5e-29c7-453e-b92d-f2029aaed6c3';
 const userName = 'Judge%20Beech';
 const typeOfRole = 'Lead%20judge';
 
-const route = `role-access/allocate-role/allocate?caseId=${caseId}&userType=judicial&assignmentId=${assignmentId}&actorId=${actorId}&userName=${userName}&typeOfRole=${typeOfRole}`
+const route = `role-access/allocate-role/allocate?caseId=${caseId}&roleCategory=JUDICIAL&assignmentId=${assignmentId}&actorId=${actorId}&userName=${userName}&typeOfRole=${typeOfRole}`
 
 describe('Work Allocation: Allocate', function () {
 
@@ -43,7 +43,7 @@ describe('Work Allocation: Allocate', function () {
         await MockApp.startServer();
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator(workAllocationWorkflow.chooseRole.container))
-        
+
         await pa11ytest(this, actions, conf.baseUrl + route);
 
     });

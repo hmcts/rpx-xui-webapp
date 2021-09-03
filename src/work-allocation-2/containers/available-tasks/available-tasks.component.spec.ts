@@ -279,6 +279,8 @@ describe('AvailableTasksComponent', () => {
           title: 'Assign to me',
         },
         task: {
+          assignee: null,
+          assigneeName: null,
           id: TASK_ID,
           case_id: '2345678901234567',
           caseName: 'Mankai Lit',

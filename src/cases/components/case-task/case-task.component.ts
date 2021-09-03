@@ -36,28 +36,28 @@ export class CaseTaskComponent implements OnInit {
   }
 
   public getManageOptions(task: Task): Array<{text: string, path: string}> {
-    if(!task.assignee) {
-      if(task.permissions.length === 0 || (task.permissions.length === 1 && task.permissions.includes('Manage'))) {
+    if (!task.assignee) {
+      if (task.permissions.length === 0 || (task.permissions.length === 1 && task.permissions.includes('Manage'))) {
         return [];
       } else {
         return [{text: 'Assign to me', path: ''}];
       }
     }
 
-    if(this.isTaskAssignedToCurrentUser(task)) {
+    if (this.isTaskAssignedToCurrentUser(task)) {
       return [
         {text: 'Assign to me', path: ''},
         {text: 'Reassign task', path: ''},
         {text: 'Unassign task', path: ''}
       ];
     } else {
-      if(task.permissions.includes('Execute') && task.permissions.includes('Manage')) {
+      if (task.permissions.includes('Execute') && task.permissions.includes('Manage')) {
         return [
           {text: 'Assign to me', path: ''},
           {text: 'Reassign task', path: ''},
           {text: 'Unassign task', path: ''}
         ];
-      } else if(task.permissions.includes('Manage')) {
+      } else if (task.permissions.includes('Manage')) {
         return [
           {text: 'Reassign task', path: ''},
           {text: 'Unassign task', path: ''}

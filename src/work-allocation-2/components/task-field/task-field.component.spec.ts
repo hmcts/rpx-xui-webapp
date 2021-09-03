@@ -54,6 +54,8 @@ describe('WorkAllocation', () => {
       // Set up the config and the task.
       const config: FieldConfig = getConfig('caseName', FieldType.STRING);
       const task: Task = {
+        assignee: null,
+        assigneeName: null,
         id: 'The task ID',
         case_id: 'The case reference',
         caseName: 'The case name',
@@ -84,6 +86,8 @@ describe('WorkAllocation', () => {
       // Set up the config and the task.
       const config: FieldConfig = getConfig('case_id', FieldType.STRING);
       const task: Task = {
+        assignee: null,
+        assigneeName: null,
         id: 'The task ID',
         case_id: 'The case reference',
         caseName: 'The case name',
@@ -118,6 +122,8 @@ describe('WorkAllocation', () => {
       // Set up the config and the task.
       const config: FieldConfig = getConfig('dueDate', FieldType.DATE_DUE);
       const task: Task = {
+        assignee: null,
+        assigneeName: null,
         id: 'The task ID',
         case_id: 'The case reference',
         caseName: 'The case name',
@@ -168,6 +174,8 @@ describe('WorkAllocation', () => {
       // Set up the config and the task.
       const config: FieldConfig = getConfig('dueDate', FieldType.DATE_AGE_DAYS);
       const task: Task = {
+        assignee: null,
+        assigneeName: null,
         id: 'The task ID',
         case_id: 'The case reference',
         caseName: 'The case name',
@@ -214,6 +222,8 @@ describe('WorkAllocation', () => {
       // Set up the config and the task.
       const config: FieldConfig = getConfig('dueDate', FieldType.DATE);
       const task: Task = {
+        assignee: null,
+        assigneeName: null,
         id: 'The task ID',
         case_id: 'The case reference',
         caseName: 'The case name',
@@ -245,6 +255,8 @@ describe('WorkAllocation', () => {
       // Set up the config and the task.
       const config: FieldConfig = getConfig('dueDate', FieldType.DATETIME);
       const task: Task = {
+        assignee: null,
+        assigneeName: null,
         id: 'The task ID',
         case_id: 'The case reference',
         caseName: 'The case name',
@@ -276,6 +288,8 @@ describe('WorkAllocation', () => {
       // Set up the config and the task.
       const config: FieldConfig = getConfig('happy', FieldType.BOOLEAN);
       const task: Task = {
+        assignee: null,
+        assigneeName: null,
         id: 'The task ID',
         case_id: 'The case reference',
         caseName: 'The case name',
@@ -350,6 +364,8 @@ describe('WorkAllocation', () => {
       // Set up the config and the task.
       const config: FieldConfig = getConfig('pi', FieldType.INTEGER);
       const task: Task = {
+        assignee: null,
+        assigneeName: null,
         id: 'The task ID',
         case_id: 'The case reference',
         caseName: 'The case name',
@@ -414,6 +430,8 @@ describe('WorkAllocation', () => {
       // Set up the config and the task.
       const config: FieldConfig = getConfig('pi', FieldType.DECIMAL_2);
       const task: Task = {
+        assignee: null,
+        assigneeName: null,
         id: 'The task ID',
         case_id: 'The case reference',
         caseName: 'The case name',
@@ -484,6 +502,8 @@ describe('WorkAllocation', () => {
       // Set up the config and the task.
       const config: FieldConfig = getConfig('link', FieldType.URL);
       const task: Task = {
+        assignee: null,
+        assigneeName: null,
         id: 'The task ID',
         case_id: 'The case reference',
         caseName: 'The case name',
@@ -556,6 +576,8 @@ describe('WorkAllocation', () => {
       // Set up the config and the task.
       const config: FieldConfig = getConfig('image', FieldType.IMAGE);
       const task: Task = {
+        assignee: null,
+        assigneeName: null,
         id: 'The task ID',
         case_id: 'The case reference',
         caseName: 'The case name',
@@ -625,6 +647,8 @@ describe('WorkAllocation', () => {
       // Set up the config and the task.
       const config: FieldConfig = getConfig('case_id', FieldType.CASE_REFERENCE);
       const task: Task = {
+        assignee: null,
+        assigneeName: null,
         id: 'The task ID',
         case_id: 'The case reference',
         caseName: 'The case name',
@@ -676,6 +700,8 @@ describe('WorkAllocation', () => {
       // Set up the config and the task.
       const config: FieldConfig = getConfig('case_id', FieldType.CASE_REFERENCE_STRING);
       const task: Task = {
+        assignee: null,
+        assigneeName: null,
         id: 'The task ID',
         case_id: '1234567890987654',
         caseName: 'The case name',

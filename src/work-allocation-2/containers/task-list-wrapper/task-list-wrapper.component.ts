@@ -281,6 +281,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     this.performSearchPagination().subscribe(result => {
         this.loadingService.unregister(loadingToken);
         this.tasks = result.tasks;
+        console.log(this.tasks);
         this.tasksTotal = result.total_records;
         this.tasks.forEach(task => task.assigneeName = getAssigneeName(this.caseworkers, task.assignee));
         this.tasksLoaded = true;

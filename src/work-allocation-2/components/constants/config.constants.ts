@@ -91,6 +91,27 @@ const DUE_DATE: FieldConfig = {
   sortName: 'dueDate',
   views: TaskView.ALL_VIEWS
 };
+const DUE_DATE_AS_TEXT: FieldConfig = {
+  name: 'dueDate',
+  type: FieldType.FORMATTED_DATE,
+  columnLabel: 'Due date',
+  sortName: 'dueDate',
+  views: TaskView.ALL_VIEWS
+};
+const CREATED_DATE: FieldConfig = {
+  name: 'created_date',
+  type: FieldType.FORMATTED_DATE,
+  columnLabel: 'Task created',
+  sortName: 'created_date',
+  views: TaskView.ALL_VIEWS
+}
+const PRIORITY: FieldConfig = {
+  name: 'priority',
+  type: FieldType.PRIORITY,
+  columnLabel: 'Priority',
+  sortName: 'dueDate',
+  views: TaskView.ALL_VIEWS
+};
 const START_DATE: FieldConfig = {
   name: 'startDate',
   type: FieldType.DATE,
@@ -114,35 +135,42 @@ const ASSIGNEE: FieldConfig = {
   views: TaskView.ALL_VIEWS
 };
 
+// can be used concatenated to differentiate between views
+const JUDICIAL_DATES: FieldConfig[] = [
+  CREATED_DATE
+]
+const STAFF_DATES: FieldConfig[] = [
+  DUE_DATE_AS_TEXT, PRIORITY
+]
 
 /**
  * The views.
  */
 const AVAILABLE_TASKS: FieldConfig[] = [
-  CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_TEXT, DUE_DATE
+  CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_TEXT, ...JUDICIAL_DATES
 ];
 
 const MY_CASES: FieldConfig[] = [
   CASE_NAME_AS_LINK, JURISDICTION, CASE_CATEGORY, CASE_ROLE, START_DATE, END_DATE
 ];
 const MY_TASKS: FieldConfig[] = [
-  CASE_REFERENCE_AS_LINK, CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_TEXT, DUE_DATE
+  CASE_REFERENCE_AS_LINK, CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_TEXT, ...STAFF_DATES
 ];
 const MY_WORK_TASKS: FieldConfig[] = [
-  CASE_NAME_AS_LINK, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_LINK, DUE_DATE
+  CASE_NAME_AS_LINK, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_LINK, ...STAFF_DATES
 ];
 const TASK_MANAGER: FieldConfig[] = [
-  CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, TASK_NAME_AS_TEXT, DUE_DATE, ASSIGNEE
+  CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, TASK_NAME_AS_TEXT, ...STAFF_DATES, ASSIGNEE
 ];
 const TASK_ACTIONS: FieldConfig[] = [
   ...MY_TASKS
 ];
 const TASK_ACTIONS_WITH_ASSIGNEE: FieldConfig[] = [
-  ...TASK_MANAGER
+  CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, TASK_NAME_AS_TEXT, ...STAFF_DATES, ASSIGNEE
 ];
 
 const ALL_WORK_TASKS: FieldConfig[] = [
-  CASE_NAME_AS_LINK, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_LINK, DUE_DATE, ASSIGNEE
+  CASE_NAME_AS_LINK, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_LINK, ...STAFF_DATES, ASSIGNEE
 ]
 
 export const CONFIG_CONSTANTS = {

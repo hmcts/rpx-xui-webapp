@@ -9,7 +9,7 @@ import { ErrorMessage } from '../../../app/models/error-message.model';
 import { Location } from '../../models/dtos';
 import { LocationDataService } from '../../services/location-data.service';
 
-export const LOCATION_ERROR: ErrorMessage = {
+const LOCATION_ERROR: ErrorMessage = {
   title: 'There is a problem',
   description: 'At least one location is required',
   fieldId: 'task_assignment_caseworker'

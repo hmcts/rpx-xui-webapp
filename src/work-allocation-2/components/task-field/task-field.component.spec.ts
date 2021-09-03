@@ -241,6 +241,37 @@ describe('WorkAllocation', () => {
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
     });
 
+    it('should handle a FORMATTED_DATE type', () => {
+      // Set up the config and the task.
+      const config: FieldConfig = getConfig('dueDate', FieldType.FORMATTED_DATE);
+      const task: Task = {
+        id: 'The task ID',
+        case_id: 'The case reference',
+        caseName: 'The case name',
+        caseCategory: 'The case category',
+        location: 'The location',
+        taskName: 'The task name',
+        dueDate: new Date(2020, 10, 6, 1, 2, 3), // Month of 10 = November as it's 0-based.
+        actions: []
+      };
+
+      // Add the task and it should work (showing the due date).
+      component.config = config;
+      component.task = task;
+      fixture.detectChanges();
+      expect(fixture.debugElement.nativeElement.innerText).toBe('6 November 2020');
+
+      // Change the value of task.dueDate.
+      task.dueDate = new Date(2020, 11, 15, 14, 15, 16); // Month of 11 = December.
+      fixture.detectChanges();
+      expect(fixture.debugElement.nativeElement.innerText).toBe('15 December 2020');
+
+      // Clear out the value of task.dueDate.
+      task.dueDate = undefined;
+      fixture.detectChanges();
+      expect(fixture.debugElement.nativeElement.innerText).toBe('');
+    });
+
     it('should handle a DATETIME type', () => {
       // Set up the config and the task.
       const config: FieldConfig = getConfig('dueDate', FieldType.DATETIME);
@@ -265,6 +296,37 @@ describe('WorkAllocation', () => {
       task.dueDate = new Date(2020, 11, 15, 14, 15, 16); // Month of 11 = December.
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.innerText).toBe('15/12/2020 14:15');
+
+      // Clear out the value of task.dueDate.
+      task.dueDate = undefined;
+      fixture.detectChanges();
+      expect(fixture.debugElement.nativeElement.innerText).toBe('');
+    });
+
+    it('should handle a PRIORITY type', () => {
+      // Set up the config and the task.
+      const config: FieldConfig = getConfig('dueDate', FieldType.PRIORITY);
+      const task: Task = {
+        id: 'The task ID',
+        case_id: 'The case reference',
+        caseName: 'The case name',
+        caseCategory: 'The case category',
+        location: 'The location',
+        taskName: 'The task name',
+        dueDate: new Date(2020, 10, 6, 1, 2, 3), // Month of 10 = November as it's 0-based.
+        actions: []
+      };
+
+      // Add the task and it should work (showing the due date).
+      component.config = config;
+      component.task = task;
+      fixture.detectChanges();
+      expect(fixture.debugElement.nativeElement.innerText).toBe('HIGH');
+
+      // Change the value of task.dueDate.
+      task.dueDate = new Date(9999, 11, 15, 14, 15, 16); // Month of 11 = December.
+      fixture.detectChanges();
+      expect(fixture.debugElement.nativeElement.innerText).toBe('LOW');
 
       // Clear out the value of task.dueDate.
       task.dueDate = undefined;

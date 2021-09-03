@@ -46,7 +46,10 @@ describe('AllocateRoleHomeComponent', () => {
               queryParams: {
                 caseId: '111111',
                 userType: 'Judicial'
-              }
+              },
+              routeConfig: {
+                path: 'allocate',
+              },
             }
           }
         },

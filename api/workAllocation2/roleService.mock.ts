@@ -12,10 +12,4 @@ export const init = () => {
     ];
   });
 
-  const deleteCaseRolesUrl = /http:\/\/am-role-assignment-service-aat.service.core-compute-aat.internal\/cases\/[a-fA-F0-9]{16}\/role/;
-  mock.onDelete(deleteCaseRolesUrl).reply(() => {
-    return [
-      204,
-    ];
-  });
 };

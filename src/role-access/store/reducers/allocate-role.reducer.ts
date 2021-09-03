@@ -1,10 +1,10 @@
 import {
+  Actions,
   AllocateRoleState,
   AllocateRoleStateData,
   DurationOfRole,
 } from '../../models';
-import * as fromActions from '../actions';
-import { AllocateRoleActionTypes } from '../actions';
+import { AllocateRoleAction, AllocateRoleActionTypes } from '../actions';
 
 export const allocateRoleInitialState: AllocateRoleStateData = {
   caseId: null,
@@ -13,12 +13,13 @@ export const allocateRoleInitialState: AllocateRoleStateData = {
   allocateTo: null,
   person: null,
   durationOfRole: DurationOfRole.INDEFINITE,
+  action: Actions.Allocate,
   period: null,
   lastError: null
 };
 
 export function allocateRoleReducer(currentState = allocateRoleInitialState,
-                                    action: fromActions.AllocateRoleAction): AllocateRoleStateData {
+                                    action: AllocateRoleAction): AllocateRoleStateData {
   switch (action.type) {
     case AllocateRoleActionTypes.CHANGE_NAVIGATION: {
       return {
@@ -31,10 +32,38 @@ export function allocateRoleReducer(currentState = allocateRoleInitialState,
         ...allocateRoleInitialState
       };
     }
-    case AllocateRoleActionTypes.SET_CASE_ID: {
+    case AllocateRoleActionTypes.SET_INITIAL_DATA: {
       return {
         ...currentState,
-        caseId: action.payload
+        caseId: action.payload.caseId,
+        roleCategory: action.payload.roleCategory
+      };
+    }
+    case AllocateRoleActionTypes.ALLOCATE_ROLE_INSTANTIATE: {
+      return {
+        ...currentState,
+        caseId: action.payload.caseId,
+        assignmentId: action.payload.assignmentId,
+        state: action.payload.state,
+        personToBeRemoved: action.payload.personToBeRemoved,
+        typeOfRole: action.payload.typeOfRole,
+        allocateTo: action.payload.allocateTo,
+        durationOfRole: action.payload.durationOfRole,
+        roleCategory: action.payload.roleCategory,
+        action: action.payload.action
+      };
+    }
+    case AllocateRoleActionTypes.ALLOCATE_ROLE_INSTANTIATE: {
+      return {
+        ...currentState,
+        caseId: action.payload.caseId,
+        assignmentId: action.payload.assignmentId,
+        state: action.payload.state,
+        personToBeRemoved: action.payload.personToBeRemoved,
+        typeOfRole: action.payload.typeOfRole,
+        allocateTo: action.payload.allocateTo,
+        durationOfRole: action.payload.durationOfRole,
+        action: action.payload.action
       };
     }
     case AllocateRoleActionTypes.CHOOSE_ROLE_AND_GO: {

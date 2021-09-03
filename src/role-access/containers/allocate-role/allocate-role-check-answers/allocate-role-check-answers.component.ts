@@ -2,7 +2,9 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
+import { $enum as EnumUtil } from 'ts-enum-util';
 import {
+  Actions,
   AllocateRoleNavigation,
   AllocateRoleNavigationEvent,
   AllocateRoleState,
@@ -12,7 +14,8 @@ import {
   DurationOfRole,
   TypeOfRole
 } from '../../../models';
-import { AnswerHeaderText, AnswerLabelText, RoleAllocationCaptionText } from '../../../models/enums';
+import { AnswerHeaderText, AnswerLabelText } from '../../../models/enums';
+import { RoleCaptionText } from '../../../models/enums/allocation-text';
 import * as fromFeature from '../../../store';
 
 @Component({
@@ -29,7 +32,7 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
   public hint: AnswerHeaderText = AnswerHeaderText.CheckInformation;
   public storeSubscription: Subscription;
   private allocateRoleStateData: AllocateRoleStateData;
-  public typeOfRole: string;
+  public typeOfRole: TypeOfRole;
   public allocateTo: AllocateTo;
 
   constructor(private readonly store: Store<fromFeature.State>) {
@@ -54,16 +57,21 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
     this.allocateRoleStateData = allocateRoleStateData;
     this.typeOfRole = allocateRoleStateData.typeOfRole;
     this.allocateTo = allocateRoleStateData.allocateTo;
+    const action = EnumUtil(Actions).getKeyOrDefault(allocateRoleStateData.action);
     if (this.typeOfRole === TypeOfRole.CaseManager) {
-      this.caption = RoleAllocationCaptionText.LegalOpsAllocate;
+      this.caption = `${action} ${RoleCaptionText.ALegalOpsCaseManager}`;
     } else {
       if (this.typeOfRole) {
-        this.caption = `Allocate a ${this.typeOfRole.toLowerCase()}`;
+        this.caption = `${action} a ${this.typeOfRole.toLowerCase()}`;
       }
     }
     this.answers = [];
-    this.answers.push({ label: AnswerLabelText.TypeOfRole, value: allocateRoleStateData.typeOfRole, action: AllocateRoleState.CHOOSE_ROLE });
-    this.answers.push({ label: AnswerLabelText.WhoBeAllocatedTo, value: allocateRoleStateData.allocateTo, action: AllocateRoleState.CHOOSE_ALLOCATE_TO });
+    if (allocateRoleStateData.action === Actions.Allocate) {
+      this.answers.push({ label: AnswerLabelText.TypeOfRole, value: allocateRoleStateData.typeOfRole, action: AllocateRoleState.CHOOSE_ROLE });
+      if (allocateRoleStateData.allocateTo) {
+        this.answers.push({ label: AnswerLabelText.WhoBeAllocatedTo, value: allocateRoleStateData.allocateTo, action: AllocateRoleState.CHOOSE_ALLOCATE_TO });
+      }
+    }
     this.setPersonDetails(allocateRoleStateData);
     this.setDurationOfRole(allocateRoleStateData);
   }
@@ -73,7 +81,9 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
     if (allocateRoleStateData.person && allocateRoleStateData.person.email) {
       personDetails += `${allocateRoleStateData.person.name}\n${allocateRoleStateData.person.email}`;
     }
-    if (allocateRoleStateData.allocateTo === AllocateTo.ALLOCATE_TO_ANOTHER_PERSON) {
+    if (allocateRoleStateData.allocateTo === AllocateTo.ALLOCATE_TO_ANOTHER_PERSON ||
+      (allocateRoleStateData.allocateTo === null && allocateRoleStateData.typeOfRole === TypeOfRole.CaseManager) ||
+      allocateRoleStateData.action === Actions.Reallocate) {
       this.answers.push({label: AnswerLabelText.Person, value: personDetails, action: AllocateRoleState.SEARCH_PERSON});
     }
   }

@@ -6,7 +6,7 @@ import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { UserRole } from '../../../../app/models';
 import { CHOOSE_A_ROLE, ERROR_MESSAGE } from '../../../constants';
-import { AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState, Role, TypeOfRole } from '../../../models';
+import { AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState, Role, RoleCategory, TypeOfRole } from '../../../models';
 import { RoleAllocationTitleText } from '../../../models/enums';
 import { OptionsModel } from '../../../models/options-model';
 import { AllocateRoleService } from '../../../services';
@@ -33,7 +33,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
 
   public typeOfRole: TypeOfRole;
 
-  public userType: string = '';
+  public roleCategory: string = '';
 
   constructor(private readonly store: Store<fromFeature.State>,
               private readonly route: ActivatedRoute,
@@ -41,12 +41,12 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    // userType: 1. judicial/2. legalOps
+    // roleCategory: 1. JUDICIAL/2. LEGAL_OPERATIONS which is exactly matched with back end
     // 1. judicial: add judicial role journey
     // 2. legalOps: add legal Ops role journey
-    this.userType = this.route.snapshot.queryParams && this.route.snapshot.queryParams.userType ?
-      this.route.snapshot.queryParams.userType : '';
-    const userTypePlaceHolder = this.userType === PersonRole.JUDICIAL.toLowerCase() ? PersonRole.JUDICIAL.toLowerCase() : PersonRole.CASEWORKER.toLowerCase();
+    this.roleCategory = this.route.snapshot.queryParams && this.route.snapshot.queryParams.roleCategory ?
+      this.route.snapshot.queryParams.roleCategory : '';
+    const userTypePlaceHolder = this.roleCategory === RoleCategory.JUDICIAL ? PersonRole.JUDICIAL.toLowerCase() : PersonRole.CASEWORKER.toLowerCase();
     this.caption = `Allocate a ${userTypePlaceHolder} role`;
     this.allocateRoleStateDataSub = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(
       allocateRoleStateData => {
@@ -55,11 +55,11 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
     );
     this.radioOptionControl = new FormControl(this.typeOfRole ? this.typeOfRole : '', [Validators.required]);
     this.formGroup = new FormGroup({[this.radioControlName]: this.radioOptionControl});
-    const rolesList = this.allocateRoleService.validRoles;
-    this.optionsList = this.getOptions(rolesList);
+    const rolesList = this.allocateRoleService.getValidRoles().subscribe(roles =>
+        this.optionsList = this.getOptions(roles.filter(role => role.roleCategory === this.roleCategory)));
   }
 
-  public navigationHandler(navEvent: AllocateRoleNavigationEvent, isLegalOpsOrJudicialRole: UserRole): void {
+  public navigationHandler(navEvent: AllocateRoleNavigationEvent, roleCategory: RoleCategory, isLegalOpsOrJudicialRole: UserRole): void {
     this.submitted = true;
     if (this.radioOptionControl.invalid) {
       this.radioOptionControl.setErrors({
@@ -67,24 +67,50 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
       });
       return;
     }
-    this.dispatchEvent(navEvent, isLegalOpsOrJudicialRole);
+    this.dispatchEvent(navEvent, roleCategory, isLegalOpsOrJudicialRole);
   }
 
-  public dispatchEvent(navEvent: AllocateRoleNavigationEvent, isLegalOpsOrJudicialRole: UserRole): void {
+  public dispatchEvent(navEvent: AllocateRoleNavigationEvent, roleCategory: RoleCategory, isLegalOpsOrJudicialRole: UserRole): void {
     switch (navEvent) {
       case AllocateRoleNavigationEvent.CONTINUE:
         const typeOfRole = this.radioOptionControl.value;
-        switch (isLegalOpsOrJudicialRole) {
-          case UserRole.LegalOps:
-            this.store.dispatch(new fromFeature.ChooseRoleAndGo({
-              typeOfRole, allocateRoleState: AllocateRoleState.SEARCH_PERSON}));
+        switch (roleCategory) {
+          case RoleCategory.JUDICIAL: {
+            switch (isLegalOpsOrJudicialRole) {
+              case UserRole.LegalOps:
+                this.store.dispatch(new fromFeature.ChooseRoleAndGo({
+                  typeOfRole, allocateRoleState: AllocateRoleState.SEARCH_PERSON
+                }));
+                break;
+              case UserRole.Judicial:
+                this.store.dispatch(new fromFeature.ChooseRoleAndGo({
+                  typeOfRole, allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO
+                }));
+                break;
+              default:
+                throw new Error('Invalid user role');
+            }
             break;
-          case UserRole.Judicial:
-            this.store.dispatch(new fromFeature.ChooseRoleAndGo({
-              typeOfRole, allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO}));
+          }
+          case RoleCategory.LEGAL_OPERATIONS: {
+            switch (isLegalOpsOrJudicialRole) {
+              case UserRole.LegalOps:
+                this.store.dispatch(new fromFeature.ChooseRoleAndGo({
+                  typeOfRole, allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO
+                }));
+                break;
+              case UserRole.Judicial:
+                this.store.dispatch(new fromFeature.ChooseRoleAndGo({
+                  typeOfRole, allocateRoleState: AllocateRoleState.SEARCH_PERSON
+                }));
+                break;
+              default:
+                throw new Error('Invalid user role');
+            }
             break;
+          }
           default:
-            throw new Error('Invalid user role');
+            throw new Error('Invalid userType');
         }
         break;
       default:
@@ -92,7 +118,7 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getOptions(roles: Role[]): OptionsModel[] {
+  public getOptions(roles: Role[]): OptionsModel[] {
     return roles.map(role => ({optionId: role.roleId, optionValue: role.roleName}));
   }
 

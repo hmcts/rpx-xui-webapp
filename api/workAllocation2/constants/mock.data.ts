@@ -1771,6 +1771,148 @@ export const JUDICIAL_WORKERS = [
   }
 ]
 
+export const ASSIGNED_CASE_TASKS = {
+  tasks: [
+    {
+      assignee: '44d5d2c2-7112-4bef-8d05-baaa610bf463',
+      assigneeName: 'Judicial User',
+      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc1',
+      task_title: 'assigned Own Execute Manage',
+      dueDate: '2021-05-05T16:00:00.000+0000',
+      location_name: 'Birmingham',
+      location_id: '231596',
+      case_id: '1620409659381330',
+      case_category: 'EEA',
+      case_name: 'William Priest',
+      warnings: true,
+      permissions: ['Own', 'Execute', 'Manage'],
+    },
+    {
+      assignee: '44d5d2c2-7112-4bef-8d05-baaa610bf463',
+      assigneeName: 'Judicial User',
+      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc2',
+      task_title: 'assigned Manage Execute',
+      dueDate: '2021-05-12T16:00:00.000+0000',
+      location_name: 'Glasgow',
+      location_id: '366559',
+      case_id: '1620409659381330',
+      case_category: 'Protection',
+      case_name: 'Jo Fly',
+      permissions: ['Manage', 'Execute'],
+    },
+    {
+      assignee: 'bce92ab6-0023-46e3-886b-7f61384df090',
+      assigneeName: 'Judicial User 10',
+      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc3',
+      task_title: 'assigned Own Manage Execute',
+      dueDate: '2021-05-18T16:00:00.000+0000',
+      location_name: 'Manchester',
+      location_id: '512401',
+      case_id: '1620409659381330',
+      case_category: 'refusalOfHumanRights',
+      case_name: 'Francis Gigs',
+      permissions: ['Own', 'Execute', 'Manage'],
+    },
+    {
+      assignee: 'bce92ab6-0023-46e3-886b-7f61384df090',
+      assigneeName: 'Judicial User 10',
+      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc4',
+      task_title: 'assigned Manage Execute',
+      dueDate: '2021-05-20T16:00:00.000+0000',
+      location_name: 'Newcastle',
+      location_id: '366796',
+      case_id: '1620409659381330',
+      case_category: 'asylum',
+      case_name: 'Alan Jonson',
+      permissions: ['Manage', 'Execute'],
+    },
+    {
+      assignee: 'bce92ab6-0023-46e3-886b-7f61384df090',
+      assigneeName: 'Judicial User 10',
+      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc4',
+      task_title: 'assigned Manage',
+      dueDate: '2021-05-20T16:00:00.000+0000',
+      location_name: 'Newcastle',
+      location_id: '366796',
+      case_id: '1620409659381330',
+      case_category: 'asylum',
+      case_name: 'Alan Jonson',
+      permissions: ['Manage'],
+    },
+    {
+      assignee: 'bce92ab6-0023-46e3-886b-7f61384df090',
+      assigneeName: 'Judicial User 10',
+      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc4',
+      task_title: 'assigned',
+      dueDate: '2021-05-20T16:00:00.000+0000',
+      location_name: 'Newcastle',
+      location_id: '366796',
+      case_id: '1620409659381330',
+      case_category: 'asylum',
+      case_name: 'Alan Jonson',
+      permissions: [],
+    }
+  ]
+};
+
+export const UNASSIGNED_CASE_TASKS = {
+  tasks: [
+    {
+      assignee: null,
+      assigneeName: null,
+      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc1',
+      task_title: 'Unassigned Own Execute Manage',
+      dueDate: '2021-05-05T16:00:00.000+0000',
+      location_name: 'Birmingham',
+      location_id: '231596',
+      case_id: '1620409659381330',
+      case_category: 'EEA',
+      case_name: 'William Priest',
+      warnings: true,
+      permissions: ['Own', 'Execute', 'Manage'],
+    },
+    {
+      assignee: null,
+      assigneeName: null,
+      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc2',
+      task_title: 'Unassigned Manage Execute',
+      dueDate: '2021-05-12T16:00:00.000+0000',
+      location_name: 'Glasgow',
+      location_id: '366559',
+      case_id: '1620409659381330',
+      case_category: 'Protection',
+      case_name: 'Jo Fly',
+      permissions: ['Manage', 'Execute'],
+    },
+    {
+      assignee: null,
+      assigneeName: null,
+      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc3',
+      task_title: 'Unassigned Manage',
+      dueDate: '2021-05-18T16:00:00.000+0000',
+      location_name: 'Manchester',
+      location_id: '512401',
+      case_id: '1620409659381330',
+      case_category: 'refusalOfHumanRights',
+      case_name: 'Francis Gigs',
+      permissions: ['Manage'],
+    },
+    {
+      assignee: null,
+      assigneeName: null,
+      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc4',
+      task_title: 'Unassigned',
+      dueDate: '2021-05-20T16:00:00.000+0000',
+      location_name: 'Newcastle',
+      location_id: '366796',
+      case_id: '1620409659381330',
+      case_category: 'asylum',
+      case_name: 'Alan Jonson',
+      permissions: [],
+    }
+  ]
+};
+
 export const JUDICIAL_AVAILABLE_TASKS = {
   tasks: [
     {

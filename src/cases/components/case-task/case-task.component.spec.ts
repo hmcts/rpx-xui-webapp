@@ -77,10 +77,9 @@ describe('CaseTaskComponent', () => {
         const spyOnIsTaskAssignedToCurrentUser = spyOn(component, 'isTaskAssignedToCurrentUser');
         spyOnIsTaskAssignedToCurrentUser.and.returnValue(true);
         const options = component.getManageOptions(task);
-        expect(options.length).toEqual(3);
-        expect(options[0].text).toEqual('Assign to me');
-        expect(options[1].text).toEqual('Reassign task');
-        expect(options[2].text).toEqual('Unassign task');
+        expect(options.length).toEqual(2);
+        expect(options[0].text).toEqual('Reassign task');
+        expect(options[1].text).toEqual('Unassign task');
     });
 
     it('getManageOptions assignee Task not AssignedToCurrentUser with Execute and Manage permissions', () => {

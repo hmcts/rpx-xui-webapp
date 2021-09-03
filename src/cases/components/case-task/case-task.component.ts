@@ -46,7 +46,6 @@ export class CaseTaskComponent implements OnInit {
 
     if (this.isTaskAssignedToCurrentUser(task)) {
       return [
-        {text: 'Assign to me', path: ''},
         {text: 'Reassign task', path: `/work/${task.id}/reassign`},
         {text: 'Unassign task', path: `/work/${task.id}/unclaim`}
       ];

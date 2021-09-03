@@ -27,16 +27,26 @@ const CucumberReporter = require('../../../../e2e/support/reportLogger');
 const headerpage = require('../../../../e2e/features/pageObjects/headerPage');
 const taskActionPage = require('../../../../e2e/features/pageObjects/workAllocation/taskActionPage');
 const TaskListTable = require('../../../../e2e/features/pageObjects/workAllocation/taskListTable');
+const CaseListTable = require('../../../../e2e/features/pageObjects/workAllocation/casesTable');
+
 
 const ArrayUtil = require("../../../../e2e/utils/ArrayUtil");
 
+const workAllocationDataModel = require("../../../../dataModels/workAllocation");
+
 defineSupportCode(function ({ And, But, Given, Then, When }) {
     const taskListTable = new TaskListTable();
+    const waCaseListTable = new CaseListTable();
+
     When('I click task list pagination link {string} and wait for req reference {string} not null', async function (paginationLinktext, reference) {
-        
+        await taskListTable.waitForTable();
         await BrowserWaits.retryWithActionCallback(async () => {
-            await browserUtil.addTextToElementWithCssSelector('tbody tr:nth-of-type(1) .cdk-column-case_category exui-work-field', 'Sort test', true);
             
+            const val = await browserUtil.addTextToElementWithCssSelector('tbody tr .cdk-column-case_category exui-task-field,tbody tr .cdk-column-case_category exui-work-field', 'Sort test', true);
+            if (val !== "success"){
+                throw new Error(JSON.stringify(val));
+
+           } 
             await taskListTable.clickPaginationLink(paginationLinktext);
             await BrowserWaits.waitForConditionAsync(async () => {
                 const caseCatColVal = await taskListTable.getColumnValueForTaskAt('Case category', 1);
@@ -49,6 +59,26 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
        
     });
 
+    When('I click WA case list pagination link {string} and wait for req reference {string} not null', async function (paginationLinktext, reference) {
+        await waCaseListTable.waitForTable();
+        await BrowserWaits.retryWithActionCallback(async () => {
+
+            const val = await browserUtil.addTextToElementWithCssSelector('tbody tr .cdk-column-case_category exui-task-field,tbody tr .cdk-column-case_category exui-work-field', 'Sort test', true);
+            if (val !== "success") {
+                throw new Error(JSON.stringify(val));
+
+            }
+            await waCaseListTable.clickPaginationLink(paginationLinktext);
+            await BrowserWaits.waitForConditionAsync(async () => {
+                const caseCatColVal = await waCaseListTable.getColumnValueForCaseAt('Case category', 1);
+                return !caseCatColVal.includes('Sort test');
+            });
+            await BrowserWaits.waitForConditionAsync(async () => {
+                return global.scenarioData[reference] !== null
+            }, 5000);
+        });
+
+    });
 
     Then('I validate task search request with reference {string} has pagination parameters', async function (requestReference, datatable) {
         const reqBody = global.scenarioData[requestReference];
@@ -112,5 +142,94 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         
     });
 
+
+    Given('I set MOCK case workers for release {string}', async function(forRelease,datatable){
+        const persons = getPersonResponse(datatable);
+        let url = null;
+        if (forRelease === "1"){
+            MockApp.onGet('workallocation/caseworker', (req,res) => {
+                res.send(persons);
+            });
+        } else if (forRelease === "2"){
+            MockApp.onGet('workallocation2/caseworker', (req, res) => {
+                res.send(persons);
+            });
+        } else{
+            throw new Error(`Unexpected release identifier "${forRelease}"  passed to setup mock`);
+        }
+
+    });
+
+    Then('I validate task table values displayed', async function(datatable){
+        const tableRowHashes = datatable.hashes();
+        const softAssert= new SoftAssert();
+        for (let i = 0; i < tableRowHashes.length; i++){
+            const expectRowHash = tableRowHashes[i];
+            const rowNum = parseInt(expectRowHash["row"]);
+
+            const hashkeys = Object.keys(expectRowHash);
+
+            for (let j = 0; j < hashkeys.length; j++){
+                const columnName = hashkeys[j];
+                const expectedValue = expectRowHash[columnName];
+
+                let actualColumnValue = null;
+                if (columnName === "row"){
+                    continue;
+                }else{
+                    actualColumnValue = await taskListTable.getColumnValueForTaskAt(columnName, rowNum)
+                }
+
+                softAssert.setScenario(`At row ${rowNum} validation of column ${columnName}`);
+                await softAssert.assert(async () => expect(actualColumnValue).to.includes(expectedValue));
+
+            }
+
+            
+        }
+        softAssert.finally();
+    });
+
+    function getLocationsResponse(datatable){
+        const locationHashes = datatable.hashes();
+        const locations = [];
+        for (let i = 0; i < locationHashes.length; i++) {
+            const locationFromDatatable = locationHashes[i];
+            const location = workAllocationDataModel.getLocation();
+
+            const locationInputKeys = Object.keys(locationFromDatatable);
+            for (let j = 0; j < locationInputKeys.length; j++) {
+                const key = locationInputKeys[j];
+                location[key] = locationFromDatatable[key];
+            }
+            locations.push(location);
+           
+        }
+        return locations;
+    }
+    
+    function getPersonResponse(datatable){
+        const personHashes = datatable.hashes();
+        const personsData = [];
+        for (let i = 0; i < personHashes.length;i++){
+            const personFromDatatable = personHashes[i];
+            const person = workAllocationDataModel.getCaseWorkerOrperson();
+            
+            const personInputKeys = Object.keys(personFromDatatable);
+            for (let j = 0; j < personInputKeys.length;j++ ){
+                const key = personInputKeys[j];
+                if (key === "location.id"){
+                    person.location.id = personFromDatatable[key]
+                } else if (key === "location.locationName"){
+                    person.location.locationName = personFromDatatable[key]
+                }else{
+                    person[key] = personFromDatatable[key];
+                }
+                
+            }
+            personsData.push(person);
+        }
+        return personsData;
+    }
 
 });

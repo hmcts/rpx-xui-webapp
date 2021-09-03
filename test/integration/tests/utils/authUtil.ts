@@ -21,6 +21,9 @@ export async function getSessionCookieString( username, password) {
 
 export function updateSessionCookieString(username, name, value) {
     let isNewCookie = true;
+    if (!authCookiesForUsers[username]){
+        return;
+    }
     for (const cookie of authCookiesForUsers[username]) {
         // console.log(`${cookie.name} : ${cookie.value}`);
         if (cookie.name === name){
@@ -91,19 +94,7 @@ async function  authenticateAndGetcookies(username, password)  {
             const primaryNavElement = page.$('.hmcts-primary-navigation');
             const loginEmailField = page.$('#username'); 
  
-            // await new Promise((resolve,reject) => {
-            //     let interval = setInterval(async () => {
-            //         console.log("Checing login status : " + new Date().toTimeString());
-            //         if (primaryNavElement != undefined){
-            //             resolve('Login successful');
-            //         } else if (loginEmailField != undefined){
-            //             let usernameInput = await page.$eval('#username', element => element.value);
-            //             if (usernameInput === ""){
-            //                 reject("Login page reloaded, first time login issue");
-            //             }
-            //         }
-            //     },10000);
-            // });
+          
 
             let waitCounter = 0;
             while (waitCounter < 20){

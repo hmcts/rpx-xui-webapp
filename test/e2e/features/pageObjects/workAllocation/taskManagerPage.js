@@ -48,15 +48,21 @@ class TaskManagerPage extends TaskList{
 
     async selectCaseworkerFilter(optionDisplayText){
         expect(await this.amOnPage(), "Not on Task manager page ").to.be.true;
-        await this.waitForSpinnerToDissappear();
-        await this.caseWorkerFilter.element(by.xpath(`//option[text() = '${optionDisplayText}']`)).click(); 
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await this.waitForSpinnerToDissappear();
+            await this.caseWorkerFilter.element(by.xpath(`//option[text() = '${optionDisplayText}']`)).click();
+        });
+       
     }
 
     async selectLocationFilter(optionDisplayText) {
         expect(await this.amOnPage(), "Not on Task manager page ").to.be.true;
-        await this.waitForSpinnerToDissappear();
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await this.waitForSpinnerToDissappear();
 
-        await this.locationFilter.element(by.xpath(`//option[text() = '${optionDisplayText}']`)).click();
+            await this.locationFilter.element(by.xpath(`//option[text() = '${optionDisplayText}']`)).click();
+        });
+        
     }
 
     async isBannerMessageDisplayed() {

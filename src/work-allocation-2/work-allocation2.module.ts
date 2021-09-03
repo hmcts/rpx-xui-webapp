@@ -11,7 +11,6 @@ import { WorkAllocationComponentsModule } from './components/work-allocation.com
 import * as fromContainers from './containers';
 import { WorkAllocationFeatureToggleGuard } from './guards';
 import { CaseworkerDataService, WorkAllocationTaskService } from './services';
-import { FindAPersonService } from './services/find-person.service';
 import { WorkAllocationFeatureService } from './services/work-allocation-feature.service';
 import { workAllocationRouting } from './work-allocation-feature.routes';
 
@@ -27,7 +26,7 @@ import { workAllocationRouting } from './work-allocation-feature.routes';
     PipesModule,
     workAllocationRouting,
     CdkTableModule,
-    ExuiCommonLibModule,
+    ExuiCommonLibModule
   ],
   declarations: [...fromContainers.containers],
   providers: [
@@ -35,8 +34,7 @@ import { workAllocationRouting } from './work-allocation-feature.routes';
     WorkAllocationFeatureToggleGuard,
     AlertService,
     CaseworkerDataService,
-    WorkAllocationFeatureService,
-    FindAPersonService
+    WorkAllocationFeatureService
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

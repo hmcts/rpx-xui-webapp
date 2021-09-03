@@ -1,7 +1,7 @@
 
 const BrowserWaits = require("../../../support/customWaits");
 const CucumberReporter = require("../../../support/reportLogger");
-
+const CheckyourChangesTable = require("../common/checkYourChangesTable");
 class TaskCheckYourChangesPage{
     constructor(){
         this.pageContainer = $("exui-task-assignment-confirm");
@@ -13,12 +13,7 @@ class TaskCheckYourChangesPage{
         this.submitButton = $("exui-task-assignment-confirm button[type = 'submit']");
         this.cancelLink = element(by.xpath("//exui-task-assignment-confirm//p/a[contains(text(),'Cancel')]"));
 
-        this.taskDetailsTable = $("exui-task-assignment-confirm table");
-        this.tableHeaders = $$('exui-task-assignment-confirm table tr th');
-        this.tableColumnValues = $$('exui-task-assignment-confirm table tr td');
-
-        this.changeLink = $("exui-task-assignment-confirm table tr td #change__link");
- 
+        this.checkYourChangesTable = new CheckyourChangesTable(this.pageContainer);
     }
 
 
@@ -34,50 +29,25 @@ class TaskCheckYourChangesPage{
 
     async validatePage() {
         const heaerText = await this.header.getText();
-        expect(heaerText.includes("Check your changes")).to.be.true;
-        expect(await this.taskDetailsTable.isDisplayed()).to.be.true;
-        expect(await this.changeLink.isDisplayed()).to.be.true;
+        expect(heaerText).to.contains("Check your answers");
+        await BrowserWaits.waitForElement(this.checkYourChangesTable.changesTable);
+        expect(await this.checkYourChangesTable.isLinkWithTextPresentAtRow(1,'Change')).to.be.true;
 
-    }
-
-    async getHeaderColumnPos(header){
-        const colsCount = await this.tableHeaders.count();
-        let colIndex = -1;
-        for(let i = 0; i < colsCount; i++){
-            const headerColElement = await this.tableHeaders.get(i);
-            const headerText = await headerColElement.getText();
-            if (headerText === header){
-               colIndex = i;
-               break; 
-            }
-        }
-        return colIndex;
-    }
-
-    
-    async getColumnElement(header) {
-        const pos = await this.getHeaderColumnPos(header);
-        if(pos === -1){
-            throw new Error(`Table header "${header}" not found`);
-        }
-        const col = await this.tableColumnValues.get(pos);
-        return col;
     }
 
     async getColumnValue(header) {
-        const colElement = await this.getColumnElement(header);
-        const coltext = await colElement.getText();
+        const coltext = await this.checkYourChangesTable.getColumnValueAtRow(1,header);
         return coltext;
     }
 
-    async  clickChnageLink(){
-        await this.changeLink.click();
+    async clickChangeLink() {
+        await this.checkyourChangesTable.clickLinkWithTextAtRow(1,"change");
     }
 
 
 
-    async isTaskTableHeaderDisplayed(headerCol){
-        const colheaderPos = await this.getHeaderColumnPos(headerCol);
+    async isTaskTableHeaderDisplayed(headerCol) {
+        const colheaderPos = await this.checkyourChangesTable.isTableHeaderDisplayed(headerCol);
         return colheaderPos !== -1;
     }
 

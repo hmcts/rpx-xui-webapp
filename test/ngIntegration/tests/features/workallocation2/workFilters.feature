@@ -1,4 +1,4 @@
-
+@ng
 Feature: WA Release 2: My work - Work filters
 
     Background: Mock and browser setup
@@ -19,8 +19,9 @@ Feature: WA Release 2: My work - Work filters
             | id    | locationName  |
             | 12345 | Aldgate Tower |
 
-        Given I set MOCK request "/workallocation2/task" intercept with reference "workallocationTaskRequest"
-       
+        Given I set MOCK request "/workallocation2/taskWithPagination" intercept with reference "workallocationTaskRequest"
+        Given I set MOCK request "/workallocation2/caseWithPagination" intercept with reference "workallocationCasesRequest"
+
 
     Scenario Outline:  Work filters show hide button and Apply for "<UserType>"
         Given I set MOCK with "wa_release_2" release user and roles "<Roles>"
@@ -77,7 +78,7 @@ Feature: WA Release 2: My work - Work filters
         Examples:
             | UserType       | Roles                                          |
             | Caseworker IAC | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            | Judge          | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
+            # | Judge          | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
 
 
@@ -112,7 +113,7 @@ Feature: WA Release 2: My work - Work filters
             | Bradford     |
         Examples:
             | UserType       | Roles                                              |
-            | Caseworker IAC | caseworker-ia-caseofficer,caseworker-ia-admofficer |
+            # | Caseworker IAC | caseworker-ia-caseofficer,caseworker-ia-admofficer |
             | Judge          | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
 
@@ -163,7 +164,7 @@ Feature: WA Release 2: My work - Work filters
         Examples:
             | UserType       | Roles                                              |
             | Caseworker IAC | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            | Judge          | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
+            # | Judge          | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
 
     Scenario Outline:  Work filters applied selection persistence within and across session "<UserType>"
@@ -226,7 +227,7 @@ Feature: WA Release 2: My work - Work filters
 
         Examples:
             | UserType       | Roles                                              |
-            | Caseworker IAC | caseworker-ia-caseofficer,caseworker-ia-admofficer |
+            # | Caseworker IAC | caseworker-ia-caseofficer,caseworker-ia-admofficer |
             | Judge          | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
 
@@ -263,10 +264,19 @@ Feature: WA Release 2: My work - Work filters
             | Aldgate Tower |
             | Bradford      |
             | Newcastle     |
-        
+       
+        Given I reset reference "workallocationCasesRequest" value to null
+        When I click My work sub navigation tab "My cases"
+        When I wait for reference "workallocationCasesRequest" value not null
+        Then I validate task request body in reference "workallocationCasesRequest" has locations set
+            | locationName  |
+            | Aldgate Tower |
+            | Bradford      |
+            | Newcastle     |
+
         Examples:
             | UserType       | Roles                                              |
             | Caseworker IAC | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            | Judge          | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
+            # | Judge          | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
 

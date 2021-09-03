@@ -1,8 +1,10 @@
 import { NavigationExtras } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { ConfigConstants } from '../components/constants';
-import { TaskService, TaskSort } from '../enums';
+
 import { Caseworker, Location } from '../models/dtos';
+import { ConfigConstants } from '../components/constants';
+import { InfoMessage, InfoMessageType, TaskService, TaskSort } from '../enums';
+import { InformationMessage } from '../models/comms';
 import { Task, TaskFieldConfig, TaskServiceConfig } from '../models/tasks';
 
 const LOCATION_A: Location = { id: 'a', locationName: 'Taylor House', services: [ 'a' ] };
@@ -89,6 +91,24 @@ export function getMockTaskServiceConfig(): TaskServiceConfig {
     defaultSortFieldName: 'dueDate',
     fields: getMockTaskFieldConfig()
   };
+}
+
+/**
+ * Mock TaskServiceConfig.
+ */
+export function getMockInfoMessages(): InformationMessage[] {
+  return [{
+    type: InfoMessageType.SUCCESS,
+    message: InfoMessage.UNASSIGNED_TASK
+  },
+  {
+    type: InfoMessageType.INFO,
+    message: InfoMessage.LIST_OF_TASKS_REFRESHED
+  },
+  {
+    type: InfoMessageType.WARNING,
+    message: InfoMessage.TASK_NO_LONGER_AVAILABLE
+  }];
 }
 
 export class MockRouter {

@@ -92,6 +92,23 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         
     });
 
+    Given('I set MOCK workallocation cases with permissions for view {string}', async function (view, casePermissionsTable) {
+        const casePermissionHashes = casePermissionsTable.hashes();
+        const cases = [];
+        view = view.split(" ").join("");
+        view = view.toLowerCase();
+        for (let i = 0; i < casePermissionHashes.length; i++) {
+            
+            let caseCount = casePermissionHashes[i]['Count'];
+            for (let j = 0; j < caseCount; j++) {
+                cases.push(workAllocationMockData.getRelease2CaseWithPermission(casePermissionHashes[i]['Roles'].split(","), view));
+            }
+
+        }
+        global.scenarioData[`workallocation2.${view}`] = { cases: cases, total_records: cases.length };
+
+    });
+
 
     Given('I set MOCK tasks with attributes for view {string}', async function (forView, attributesDatatable) {
         const tasksHashes = attributesDatatable.hashes();
@@ -104,7 +121,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 tasks = workAllocationMockData.getMyWorkMyTasks(150);
             } else if (view.includes("available")) {
                 tasks = workAllocationMockData.getMyWorkAvailableTasks(200);
-            } if (view.includes("allwork")) {
+            }else if (view.includes("allwork")) {
                 tasks = workAllocationMockData.getAllWorkTasks(400);
             }else{
                 throw new Error("Unrecognised task view " + forView);
@@ -125,10 +142,12 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
                 } else if (key.toLowerCase() === "assignee") {
                     if (taskHash[key] === ""){
                         delete task[key];
-                    }else{
+                    } else{
                         task[key] = taskHash[key];
                     }
                     
+                } else if (key.toLowerCase().includes("date")) {
+                    task[key] = getDateValueForDays(taskHash[key]);
                 }else{
                     task[key] = taskHash[key];
                 }

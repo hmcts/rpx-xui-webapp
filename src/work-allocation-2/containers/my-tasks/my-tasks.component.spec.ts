@@ -6,8 +6,9 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
-import { SessionStorageService } from '../../../app/services';
+
 import { TaskListComponent } from '..';
+import { SessionStorageService } from '../../../app/services';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { FieldType } from '../../enums';
 import { Task } from '../../models/tasks';
@@ -22,6 +23,15 @@ import { MyTasksComponent } from './my-tasks.component';
 class WrapperComponent {
   @ViewChild(MyTasksComponent) public appComponentRef: MyTasksComponent;
 }
+
+const userInfo =
+  `{"id":"exampleId",
+    "forename":"Joe",
+    "surname":"Bloggs",
+    "email":"JoeBloggs@example.com",
+    "active":true,
+    "roles":["caseworker","caseworker-ia","caseworker-ia-caseofficer"],
+    "token":"eXaMpLeToKeN"}`;
 
 describe('MyTasksComponent', () => {
   let component: MyTasksComponent;
@@ -72,13 +82,21 @@ describe('MyTasksComponent', () => {
     fixture.detectChanges();
   });
 
-
   it('should make a call to load tasks using the default search request', () => {
     const searchRequest = component.getSearchTaskRequestPagination();
     const payload = {searchRequest, view: component.view};
     expect(mockTaskService.searchTaskWithPagination).toHaveBeenCalledWith(payload);
     expect(component.tasks).toBeDefined();
     expect(component.tasks.length).toEqual(2);
+  });
+
+  it('should allow searching via location', () => {
+    mockSessionStorageService.getItem.and.returnValue(userInfo);
+    const exampleLocations = ['location1', 'location2', 'location3'];
+    component.selectedLocations = exampleLocations;
+    const searchParameter = component.getSearchTaskRequestPagination().search_parameters[1];
+    expect(searchParameter.key).toBe('location');
+    expect(searchParameter.values).toBe(exampleLocations);
   });
 
   it('should have all column headers, including "Manage +"', () => {

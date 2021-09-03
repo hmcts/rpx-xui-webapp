@@ -60,7 +60,6 @@ class CaseEdit {
         return errorSummaryText;
     }
 
-
     async isCallbackErrorSummaryDisplayed() {
         try {
             await BrowserWaits.waitForElement(this.callbackErrorSummaryContainer);

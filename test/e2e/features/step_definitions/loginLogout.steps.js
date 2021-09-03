@@ -63,7 +63,7 @@ defineSupportCode(function ({ Given, When, Then }) {
           }else{
             return true;
           }
- 
+
         });
 
         break;
@@ -79,7 +79,7 @@ defineSupportCode(function ({ Given, When, Then }) {
 
           console.log(err + " : Login re attempt " + loginAttemptRetryCounter);
           world.attach(err + " : Login re attempt " + loginAttemptRetryCounter);
-        console.log(err); 
+        console.log(err);
           await browser.driver.manage()
             .deleteAllCookies();
           await browser.get(config.config.baseUrl);
@@ -108,8 +108,8 @@ defineSupportCode(function ({ Given, When, Then }) {
       await browser.driver.manage()
         .deleteAllCookies();
       CucumberReportLogger.AddMessage("App base url : " + config.config.baseUrl);
-      await browser.get(config.config.baseUrl); 
-      await BrowserWaits.waitForElement(loginPage.signinTitle); 
+      await browser.get(config.config.baseUrl);
+      await BrowserWaits.waitForElement(loginPage.signinTitle);
     });
 
     expect(await loginPage.signinBtn.isDisplayed()).to.be.true;
@@ -202,7 +202,7 @@ defineSupportCode(function ({ Given, When, Then }) {
     await expect(loginPage.dashboard_header.getText())
       .to
       .eventually
-      .contains('Case List');
+      .contains('Case list');
 
     await BrowserUtil.waitForLD();
 
@@ -304,14 +304,25 @@ defineSupportCode(function ({ Given, When, Then }) {
 
     loginAttempts++;
     await loginattemptCheckAndRelogin(userEmail, key, this);
-
     await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
       world.attach("Login success page load load attempt : " + message)
     });
 
   });
 
+ // hrs.tester@hmcts.net/passwOrd01hrs
+  Given('I am logged into Expert UI with hrs testes user details', async function () {
+    await loginPage.givenIAmLoggedIn(config.config.params.hrsTesterUser, config.config.params.hrsTesterPassword);
+    const world = this;
 
+    loginAttempts++;
+    await loginattemptCheckAndRelogin(config.config.params.hrsTesterUser, config.config.params.hrsTesterPassword, this);
+
+    await BrowserWaits.retryForPageLoad($("exui-app-header"), function (message) {
+      world.attach("Login success page load load attempt : " + message)
+    });
+
+  });
 
 
   Given(/^I navigate to Expert UI Url direct link$/, async function () {

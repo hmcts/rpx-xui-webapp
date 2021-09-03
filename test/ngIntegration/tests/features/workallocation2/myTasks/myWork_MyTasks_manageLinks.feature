@@ -31,15 +31,15 @@ Feature: WA Release 2: My work - My tasks - Manage links
 
         Then I validate manage link actions for tasks
             | index | actions                                |
-            | 0     | Reassign task,Unassign task,Go to task |
             | 1     | Reassign task,Unassign task,Go to task |
-            | 2     |                                        |
-            | 3     | Reassign task,Unassign task,Go to task |
+            | 2     | Reassign task,Unassign task,Go to task |
+            | 3     |                                        |
             | 4     | Reassign task,Unassign task,Go to task |
-            | 5     |                                        |
+            | 5     | Reassign task,Unassign task,Go to task |
+            | 6     |                                        |
 
         Examples:
             | UserIdentifier     | UserType   | Roles                                              |
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
+            # | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 

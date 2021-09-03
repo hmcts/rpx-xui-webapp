@@ -4,9 +4,9 @@ import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
 
-import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX } from './constants/actions';
+import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX, ViewType } from './constants/actions';
 import { Action, Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/common';
-import { Person, PersonDomain } from './interfaces/person';
+import { Person, PersonRole } from './interfaces/person';
 
 export function prepareGetTaskUrl(baseUrl: string, taskId: string): string {
   return `${baseUrl}/task/${taskId}`;
@@ -79,17 +79,24 @@ export function preparePaginationUrl(req: EnhancedRequest, postPath: string): st
  * @param tasks The tasks to set up the actions for.
  * @param view This dictates which set of actions we should use.
  */
-export function assignActionsToTasks(tasks: any[], view: any): any[] {
-  const allWorkView = 'AllWork';
+export function assignActionsToTasks(tasks: any[], view: any, currentUser: string): any[] {
+  const allWorkView = ViewType.ALL_WORK;
+  const activeTasksView = ViewType.ACTIVE_TASKS;
   const tasksWithActions: any[] = [];
   if (tasks) {
     for (const task of tasks) {
       let thisView = view;
       if (view === allWorkView) {
-        thisView = task.assignee ? 'AllWorkAssigned' : 'AllWorkUnassigned';
+        thisView = task.assignee ? ViewType.ALL_WORK_ASSIGNED : ViewType.ALL_WORK_UNASSIGNED;
+      }
+      if (view === activeTasksView) {
+        thisView = ViewType.ACTIVE_TASKS_UNASSIGNED;
+        if (task.assignee) {
+          thisView = currentUser === task.assignee ?
+           ViewType.ACTIVE_TASKS_ASSIGNED_CURRENT : ViewType.ACTIVE_TASKS_ASSIGNED_OTHER;
+        }
       }
       const actions: Action[] = getActionsByPermissions(thisView, task.permissions);
-      view = allWorkView;
       const taskWithAction = {...task, actions};
       tasksWithActions.push(taskWithAction);
     }
@@ -112,7 +119,7 @@ export function assignActionsToCases(cases: any[], view: any): any[] {
       // This was debated for EUI-3619
       // As actions can change based on whether assigned or not, there might need to be a check here
       const actions: Action[] = getActionsByPermissions(view, item.permissions);
-      const caseWithAction = { ...item, actions };
+      const caseWithAction = {...item, actions};
       casesWithActions.push(caseWithAction);
     }
   }
@@ -183,6 +190,10 @@ export function getActionsByPermissions(view, permissions: TaskPermission[]): Ac
         actionList = !manageActionList.includes(undefined) ? manageActionList : actionList;
         break;
       case TaskPermission.EXECUTE:
+        // if on active tasks and there is no manage permission do not add execute actions
+        if (view.includes(ViewType.ACTIVE_TASKS) && !permissions.includes(TaskPermission.MANAGE)) {
+          break;
+        }
         const executeActionList = actionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX[view][TaskPermission.EXECUTE]);
         actionList = !executeActionList.includes(undefined) ? executeActionList : actionList;
         break;
@@ -194,11 +205,13 @@ export function getActionsByPermissions(view, permissions: TaskPermission[]): Ac
         break;
     }
   });
-  return actionList;
+  // Note sorting is implemented to order all possible action lists the same
+  // Currently sorting by id but can be changed
+  return actionList.sort((a, b) => a.id.localeCompare(b.id));
 }
 
-export function applySearchFilter(person: Person, domain: PersonDomain, searchTerm: any): boolean {
-  if (domain === PersonDomain.BOTH) {
+export function applySearchFilter(person: Person, domain: string, searchTerm: any): boolean {
+  if (domain === PersonRole.ALL) {
     return person && person.name.toLowerCase().includes(searchTerm.toLowerCase());
   }
   return person && person.domain === domain && person.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -206,7 +219,7 @@ export function applySearchFilter(person: Person, domain: PersonDomain, searchTe
 
 export async function handlePost(path: string, payload: any, req: EnhancedRequest): Promise<any> {
   const headers = setHeaders(req);
-  const response: AxiosResponse = await http.post(path, payload, { headers });
+  const response: AxiosResponse = await http.post(path, payload, {headers});
   // Return the whole response, not just the data, so we can
   // see what the status of the response is.
   return response;

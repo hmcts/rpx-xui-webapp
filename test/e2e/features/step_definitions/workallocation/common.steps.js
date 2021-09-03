@@ -4,6 +4,9 @@ const reportLogger = require('../../../support/reportLogger');
 const BrowserWaits = require('../../../support/customWaits');
 const SoftAssert = require('../../../../ngIntegration/util/softAssert');
 const TaskListTable = require('../../pageObjects/workAllocation/taskListTable');
+const casesTable = require('../../pageObjects/workAllocation/casesTable');
+
+
 const caseDetailsPage = require("../../pageObjects/caseDetailsPage");
 const caseListPage = require("../../pageObjects/CaseListPage");
 
@@ -13,15 +16,23 @@ const allWorkPage = require("../../pageObjects/workAllocation/allWorkPage");
 const taskActionPage = require(".././../pageObjects/workAllocation/taskActionPage");
 
 const ArrayUtil = require('../../../utils/ArrayUtil');
-const findPersonPage = require('../../pageObjects/workAllocation/findPersonPage');
+const findPersonPage = require('../../pageObjects/workAllocation/common/findPersonComponent');
 const taskCheckYourChangesPage = require('../../pageObjects/workAllocation/taskCheckYourChangesPage');
+
+const workflowUtil = require('../../pageObjects/common/workflowUtil');
+
+const taskListPage = require('../../../../e2e/features/pageObjects/workAllocation/taskListPage');
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
     const taskListTable = new TaskListTable();
-
+    const waCaseListTable = new casesTable();
 
     Then('I validate task list page results text displayed as {string}', async function (pagnationResultText) {
         expect(await taskListTable.getPaginationResultText()).to.include(pagnationResultText);
+    });
+
+    Then('I validate WA case list page results text displayed as {string}', async function (pagnationResultText) {
+        expect(await waCaseListTable.getPaginationResultText()).to.include(pagnationResultText);
     });
 
     Then('I validate task table pagination controls, is displayed state is {string}', async function (isDisplauyed) {
@@ -45,6 +56,22 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         }
     });
 
+    When('I click WA case list pagination link {string}', async function (paginationLinktext) {
+        await BrowserWaits.waitForSeconds(1);
+
+        await BrowserWaits.waitForConditionAsync(async () => {
+            const colCount = await waCaseListTable.getColumnCount();
+            const rowCount = await waCaseListTable.getTaskListCountInTable();
+            return colCount > 0 && rowCount > 0;
+        });
+        if (paginationLinktext.toLowerCase() === "next") {
+            await waCaseListTable.pageNextLink.click();
+        } else if (paginationLinktext.toLowerCase() === "previous") {
+            await waCaseListTable.pagePreviousLink.click();
+        } else {
+            await waCaseListTable.clickPaginationPageNum(paginationLinktext);
+        }
+    });
 
     When('I click task list table header column {string}', async function(columnHeaderLabel){
         await taskListTable.clickColumnHeader(columnHeaderLabel);
@@ -104,19 +131,48 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
             let taskIndex = parseInt(taskHashes[i].index);
             if (taskHashes[i]["actions"] === ""){
                 softAssert.setScenario(`Manage link not present for task  ${JSON.stringify(taskHashes[i])} `);
-                await softAssert.assert(async () => expect(await taskListTable.isManageLinkPresent(taskIndex+1)).to.be.false);
+                await softAssert.assert(async () => expect(await taskListTable.isManageLinkPresent(taskIndex)).to.be.false);
                 continue;
             }
-            if (!(await taskListTable.isManageLinkOpenForTaskAtPos(taskIndex+1))){
-                await taskListTable.clickManageLinkForTaskAt(taskIndex+1);
+            if (!(await taskListTable.isManageLinkOpenForTaskAtPos(taskIndex))){
+                await taskListTable.clickManageLinkForTaskAt(taskIndex);
             }
 
             for (let j = 0; j < taskActions.length;j++){
                 let action = taskActions[j];
+
                 softAssert.setScenario(`Action ${action} present for task  ${JSON.stringify(taskHashes[i])} isPresent`);
                 await softAssert.assert(async () => expect(await taskListTable.isTaskActionPresent(action)).to.be.true);
             }
             
+        }
+        softAssert.finally();
+
+    });
+
+    Then('I validate manage link actions for cases', async function (tasksDatatable) {
+        const softAssert = new SoftAssert();
+        const taskHashes = tasksDatatable.hashes();
+
+        for (let i = 0; i < taskHashes.length; i++) {
+
+            const taskActions = taskHashes[i]["actions"].split(",");
+            let taskIndex = parseInt(taskHashes[i].index);
+            if (taskHashes[i]["actions"] === "") {
+                softAssert.setScenario(`Manage link not present for task  ${JSON.stringify(taskHashes[i])} `);
+                await softAssert.assert(async () => expect(await waCaseListTable.isManageLinkPresent(taskIndex + 1)).to.be.false);
+                continue;
+            }
+            if (!(await waCaseListTable.isManageLinkOpenForCaseAtPos(taskIndex))) {
+                await waCaseListTable.clickManageLinkForCaseAt(taskIndex);
+            }
+
+            for (let j = 0; j < taskActions.length; j++) {
+                let action = taskActions[j];
+                softAssert.setScenario(`Action ${action} present for task  ${JSON.stringify(taskHashes[i])} isPresent`);
+                await softAssert.assert(async () => expect(await waCaseListTable.isCaseActionPresent(action)).to.be.true);
+            }
+
         }
         softAssert.finally();
 
@@ -133,12 +189,30 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         }
     });
 
+    When('I open Manage link for wa cases at row {int}', async function (taskAtRow) {
+        const isManageLinkOpen = await waCaseListTable.isManageLinkOpenForCaseAtPos(taskAtRow);
+        if (!isManageLinkOpen) {
+            await BrowserWaits.retryWithActionCallback(async () => {
+                await waCaseListTable.clickManageLinkForCaseAt(taskAtRow);
+                await BrowserWaits.waitForConditionAsync(async () => await waCaseListTable.isManageLinkOpenForCaseAtPos(taskAtRow), 2000);
+            });
+        }
+    });
+
     Then('I see action link {string} is present for task with Manage link open', async function(manageLinkAction){
         expect(await taskListTable.isTaskActionPresent(manageLinkAction), `Task action ${manageLinkAction} is not present`).to.be.true;
     });
 
+    Then('I see action link {string} is present for case with Manage link open', async function (manageLinkAction) {
+        expect(await waCaseListTable.isCaseActionPresent(manageLinkAction), `Case action ${manageLinkAction} is not present`).to.be.true;
+    });
+
     When('I click action link {string} on task with Manage link open', async function (manageLinkAction){
         await taskListTable.clickTaskAction(manageLinkAction);
+    });
+
+    When('I click action link {string} on case with Manage link open', async function (manageLinkAction) {
+        await waCaseListTable.clickCaseAction(manageLinkAction);
     });
 
     Then('I validate notification message banner is displayed in {string} page', async function(page){
@@ -217,12 +291,48 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await taskActionPage.clickCancelLink();
     });
 
-    When('I click cancel link in find person page', async function(){
-        await findPersonPage.clickCancelLink();
+    When('In workflow, I click cancel link', async function(){
+        const workFlowPage = workflowUtil.getWorlflowPageObject(global.scenarioData['workflow']);
+        expect(workFlowPage,'workFlowPage pagee is null. test issue, include step Then I am in workflow page "xxx" ').to.be.not.null;
+        await workFlowPage.workFlowContainer.clickCancelLink();
     });
 
-    When(' I click cancel in check your changes of work allocation', async function(){
-       await taskCheckYourChangesPage.clickCancelLink(); 
+    When('In workflow, I click continue', async function () {
+        const workFlowPage = workflowUtil.getWorlflowPageObject(global.scenarioData['workflow']);
+        expect(workFlowPage, 'workFlowPage pagee is null. test issue, include step Then I am in workflow page "xxx" ').to.be.not.null;
+        await workFlowPage.workFlowContainer.clickContinue();
+    });
+
+    Then('I validate tasks count in page {int}', async function (tasksCount) {
+
+        await BrowserWaits.retryWithActionCallback(async () => {
+            expect(parseInt(await taskListPage.getTaskListCountInTable()), 'Task count does not match expected ').to.equal(tasksCount);
+            if (tasksCount === 0) {
+                expect(await taskListPage.isTableFooterDisplayed(), "task list table footer is not displayed").to.be.true;
+                expect(await taskListPage.getTableFooterMessage(), "task list table footer message when 0 tasks are displayed").to.equal("You have no assigned tasks.");
+            } else {
+                expect(await taskListPage.isTableFooterDisplayed(), "task list table footer is displayed").to.be.false;
+            }
+        });
+
+    });
+
+    Then('I validate WA tasks table footer displayed status is {string}', async function(displayStateBool){
+        const expectedDisplayState = displayStateBool.toLowerCase().includes("true");
+        expect(await taskListTable.isTableFooterDisplayed()).to.equal(expectedDisplayState);
+    });
+
+    Then('I validate WA cases table footer displayed status is {string}', async function (displayStateBool) {
+        const expectedDisplayState = displayStateBool.toLowerCase().includes("true");
+        expect(await waCaseListTable.isTableFooterDisplayed()).to.equal(expectedDisplayState);
+    });
+
+    Then('I validate WA tasks table footer message is {string}', async function (message) {
+        expect(await taskListTable.getTableFooterMessage()).to.include(message);
+    });
+
+    Then('I validate WA cases table footer message is {string}', async function (message) {
+        expect(await waCaseListTable.getTableFooterMessage()).to.include(message);
     });
 
 });

@@ -13,13 +13,17 @@ const customReporter = require('../../e2e/support/reportLogger');
 
 const isParallelExecution = argv.parallel ? argv.parallel=== "true" : true;
 
+const chromeOptArgs = [ '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'];
+if (!argv.head ){
+    chromeOptArgs.push('--headless');
+}
 const jenkinsConfig = [
 
     {
         browserName: 'chrome',
         acceptInsecureCerts: true,
         nogui: true,
-        chromeOptions: { args: ['--headless', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'] }
+        chromeOptions: { args: chromeOptArgs  }
     }
 ];
 
@@ -28,7 +32,7 @@ const localConfig = [
 
         browserName: 'chrome',
         acceptInsecureCerts: true,
-        chromeOptions: { args: ['--headless1', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote '] },
+        chromeOptions: { args: chromeOptArgs},
         proxy: {
             proxyType: 'manual',
             httpProxy: 'proxyout.reform.hmcts.net:8080',
@@ -40,7 +44,7 @@ const localConfig = [
 
 if(isParallelExecution){
     jenkinsConfig[0].shardTestFiles = true;
-    jenkinsConfig[0].maxInstances = 4;
+    jenkinsConfig[0].maxInstances = 3;
 }
 
 const cap = (argv.local) ? localConfig : jenkinsConfig;
@@ -91,6 +95,11 @@ const config = {
             MockApp.setLogMessageCallback(customReporter.AddMessage);
         }    
         MockApp.setLogMessageCallback(customReporter.AddJson);
+
+        //Set default explict timeout default value to 10sec
+        const customWaits = require('../../e2e/support/customWaits');
+        customWaits.setDefaultWaitTime(20000);
+
     },
     cucumberOpts: {
         strict: true,
@@ -120,7 +129,9 @@ const config = {
                 reportName: 'XUI Manage Cases Functional Tests',
                 // openReportInBrowser: true,
                 jsonDir: 'reports/tests/ngIntegration',
-                reportPath: 'reports/tests/ngIntegration'
+                reportPath: 'reports/tests/ngIntegration',
+                displayDuration : true,
+                durationInMS : false
             }
         }
     ]
@@ -137,7 +148,7 @@ function getBDDTags() {
             tags = argv.tags.split(',');
         }else{
             tags = ["@ng", "~@ignore"];
-        s}
+        }
     }else{
         tags.push("@none"); 
     }

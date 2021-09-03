@@ -7,6 +7,7 @@ const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
 const CucumberReporter = require('../../../e2e/support/reportLogger');
 
 const headerpage = require('../../../e2e/features/pageObjects/headerPage');
+const workAllocationDataModel = require("../../../dataModels/workAllocation");
 
 defineSupportCode(function ({ And, But, Given, Then, When }) {
 
@@ -63,6 +64,19 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         })
      });
 
+    Given('I set MOCK request {string} response log to report', async function (url) {
+        MockApp.addIntercept(url, (req, res, next) => { 
+        
+            let send = res.send;
+            res.send = function (body) {
+                CucumberReporter.AddMessage('Intercept response or api ' + url);
+                CucumberReporter.AddJson(body)
+                send.call(this, body);
+            }
+            next();
+        })
+    });
+
      Given('I reset reference {string} value to null', async function(reference){
          global.scenarioData[reference] = null;
      });
@@ -102,6 +116,31 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
        }
         
         
+     });
+
+
+    Given('I set MOCK find person response for jurisdictions', async function(datatable){
+        const personsConfigHashes = datatable.hashes();
+
+        MockApp.onPost('/workallocation2/findPerson', (req,res) => {
+            const inputJurisdiction = req.body.searchOptions.jurisdiction;
+            const filterdUsersForJurisdiction = [];
+            for (let i = 0; i < personsConfigHashes.length; i++){
+                const inputperson = personsConfigHashes[i];
+                // const inputJurisdiction = parseInt(inputperson.jurisdiction);
+                if (inputJurisdiction === parseInt(inputperson.jurisdiction)){
+                    const person = workAllocationDataModel.getFindPersonObj();
+
+                    person['domain'] = parseInt(inputperson['jurisdiction']);
+                    person['id'] = inputperson['id'];
+                    person['email'] = inputperson['email'];
+                    person['name'] = inputperson['name'];
+                    filterdUsersForJurisdiction.push(person);
+                }
+            } 
+            res.send(filterdUsersForJurisdiction);
+        });
+
      });
 
 

@@ -1,64 +1,33 @@
 import MockAdapter from 'axios-mock-adapter';
-import * as faker from 'faker/locale/en_GB';
-import { httpMock } from '../common/httpMock';
+import { HttpMockAdapter } from '../common/httpMockAdapter';
 import {
   ALL_TASKS,
   CASEWORKER_AVAILABLE_TASKS,
   CASEWORKER_MY_TASKS,
   JUDICIAL_AVAILABLE_TASKS,
-  JUDICIAL_MY_TASKS, JUDICIAL_WORKERS
+  JUDICIAL_MY_TASKS,
+  JUDICIAL_WORKERS
 } from './constants/mock.data';
 
-// random generator
-export const generator = (schema, min = 1, max) => {
-  max = max || min;
-  return Array.from({
-    length: faker.random.number({
-      min,
-      // tslint:disable-next-line:object-literal-sort-keys
-      max,
-    }),
-  }).map(() => {
-    const innerGen = anySchema => Object.keys(anySchema).reduce((entity, key) => {
-      if (anySchema[key] instanceof Array || anySchema[key] === null) {
-        entity[key] = anySchema[key];
-        return entity;
-      }
-      if (Object.prototype.toString.call(anySchema[key]) === '[object Object]') {
-        entity[key] = innerGen(anySchema[key]);
-        return entity;
-      }
-      entity[key] = faker.fake(anySchema[key]);
-      return entity;
-    }, {});
-
-    return innerGen(schema);
-  });
-};
-
 export const init = () => {
-  const mock = new MockAdapter(httpMock);
+  const mock: MockAdapter = HttpMockAdapter.getInstance();
 
   const judicialMyTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/myTasks\?view=judicial/;
-  // tslint:disable-next-line:max-line-length
   const judicialAvailableTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/availableTasks\?view=judicial/;
   const caseworkerMyTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/myTasks\?view=caseworker/;
-  // tslint:disable-next-line:max-line-length
   const caseworkerAvailableTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/availableTasks\?view=caseworker/;
-  // tslint:disable-next-line:max-line-length
   const getTaskFromIDUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/;
-  // tslint:disable-next-line:max-line-length
+  const getTasksByCaseIdUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{16}/;
   const claimTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/claim/;
-  // tslint:disable-next-line:max-line-length
   const unclaimTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/unclaim/;
-  // tslint:disable-next-line:max-line-length
+  const completeTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/complete/;
+  const cancelTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/cancel/;
   const assignTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/assign/;
-
   const judicialWorkersUrl = /http:\/\/rd-judicialworker-ref-api-aat.service.core-compute-aat.internal\/judicialworkers/;
-  // tslint:disable-next-line:max-line-length
   const judicialAllTasksUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/allTasks\?view=judicial/;
-  // tslint:disable-next-line:max-line-length
   const caseworkerAllTasksUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/allTasks\?view=caseworker/;
+
+  const locationField = 'location_id';
 
   mock.onPost(judicialWorkersUrl).reply(() => {
     // return an array in the form of [status, data, headers]
@@ -74,9 +43,12 @@ export const init = () => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
     const [pageSize, pageNumber] = getPageParameters(config.url);
+    const searchConfig = body.search_parameters;
+    const locationConfig = getLocationConfig(searchConfig)[0];
     const sortingConfig = body.sorting_parameters;
-    const taskList = sort(JUDICIAL_MY_TASKS.tasks,
-       getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
+    const filteredTaskList = filterByFieldName(JUDICIAL_MY_TASKS.tasks, locationField, locationConfig.values);
+    const taskList = sort(filteredTaskList,
+      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {
@@ -86,7 +58,7 @@ export const init = () => {
     ];
   });
 
-    // simulate some error if needed
+  // simulate some error if needed
   // mock.onGet(url).networkErrorOnce()
   mock.onPost(judicialAllTasksUrl).reply(config => {
     // return an array in the form of [status, data, headers]
@@ -113,9 +85,12 @@ export const init = () => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
     const [pageSize, pageNumber] = getPageParameters(config.url);
+    const searchConfig = body.search_parameters;
+    const locationConfig = getLocationConfig(searchConfig)[0];
     const sortingConfig = body.sorting_parameters;
-    const taskList = sort(JUDICIAL_AVAILABLE_TASKS.tasks,
-       getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
+    const filteredTaskList = filterByFieldName(JUDICIAL_AVAILABLE_TASKS.tasks, locationField, locationConfig.values);
+    const taskList = sort(filteredTaskList,
+      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {
@@ -129,9 +104,12 @@ export const init = () => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
     const [pageSize, pageNumber] = getPageParameters(config.url);
+    const searchConfig = body.search_parameters;
+    const locationConfig = getLocationConfig(searchConfig)[0];
     const sortingConfig = body.sorting_parameters;
-    const taskList = sort(CASEWORKER_MY_TASKS.tasks,
-       getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
+    const filteredTaskList = filterByFieldName(CASEWORKER_MY_TASKS.tasks, locationField, locationConfig.values);
+    const taskList = sort(filteredTaskList,
+      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {
@@ -155,9 +133,12 @@ export const init = () => {
     // return an array in the form of [status, data, headers]
     const body = JSON.parse(config.data);
     const [pageSize, pageNumber] = getPageParameters(config.url);
+    const searchConfig = body.search_parameters;
+    const locationConfig = getLocationConfig(searchConfig)[0];
     const sortingConfig = body.sorting_parameters;
-    const taskList = sort(CASEWORKER_AVAILABLE_TASKS.tasks,
-       getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
+    const filteredTaskList = filterByFieldName(CASEWORKER_AVAILABLE_TASKS.tasks, locationField, locationConfig.values);
+    const taskList = sort(filteredTaskList,
+      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
     return [
       200,
       {
@@ -177,7 +158,27 @@ export const init = () => {
     ];
   });
 
+  mock.onGet(getTasksByCaseIdUrl).reply(config => {
+    // return an array in the form of [status, data, headers]
+    const caseId = config.url.match(/[a-fA-F0-9]{16}/);
+    let tasks = ALL_TASKS.tasks.filter(task => task.case_id === caseId[0]);
+    // note: added next line to ensure results returned in all circumstances
+    tasks = tasks === [] ? tasks : JUDICIAL_AVAILABLE_TASKS.tasks;
+    return [
+      200,
+      tasks,
+    ];
+  });
+
   mock.onPost(claimTaskUrl).reply(() => {
+    // return an array in the form of [status, data, headers]
+    return [
+      204,
+      'success',
+    ];
+  });
+
+  mock.onPost(cancelTaskUrl).reply(() => {
     // return an array in the form of [status, data, headers]
     return [
       204,
@@ -193,9 +194,17 @@ export const init = () => {
     ];
   });
 
+  mock.onPost(completeTaskUrl).reply(() => {
+    // return an array in the form of [status, data, headers]
+    return [
+      204,
+      'success',
+    ];
+  });
+
   mock.onPost(assignTaskUrl).reply(config => {
     const data = JSON.parse(config.data);
-    const id = data.userId.toString().replace(/[^0-9.]/g, '');
+    const id = data.userId.toString().substr(0, 1);
     const mod = parseInt(id, 10) % 2;
     if (mod === 0) {
       return [
@@ -209,7 +218,6 @@ export const init = () => {
       ];
     }
   });
-  return mock;
 };
 
 export const getSortName = (sortName: string): string => {
@@ -229,6 +237,10 @@ export const getSortName = (sortName: string): string => {
   }
 };
 
+export const getLocationConfig = (searchConfig: any[]): any[] => {
+  return searchConfig.filter(config => config.key === 'location');
+};
+
 export const sort = (array: any[], sortName: string, isAsc: boolean): any[] => {
   array = array.sort((a, b) => a[sortName].localeCompare(b[sortName]));
   return isAsc ? array : array.reverse();
@@ -245,3 +257,8 @@ export const getPageParameters = (url: string): [number, number] => {
   const pageNumber = Math.floor(firstResult / pageSize) + 1;
   return [pageSize, pageNumber];
 }
+
+export const filterByFieldName = (array: any[], fieldName: string, locations: any[]): any[] => {
+  return array.filter(item => locations.includes(item[fieldName]));
+};
+

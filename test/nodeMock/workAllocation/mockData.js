@@ -1,19 +1,19 @@
-const { v4 } = require ('uuid');
+const { v4 } = require('uuid');
 const ArrayUtil = require("../../e2e/utils/ArrayUtil");
 const WorkAllocationDataModels = require("../../dataModels/workAllocation");
 
 class WorkAllocationMockData {
 
-    constructor(){
+    constructor() {
         this.findPersonsAllAdata = [];
     }
 
-   async getFindPersonsDataFrom(database){
+    async getFindPersonsDataFrom(database) {
         return await ArrayUtil.map(database, async (personDetails) => {
             let personModel = WorkAllocationDataModels.getFindPersonObj();
             let personDetailsKeys = Object.keys(personDetails);
 
-            await ArrayUtil.map(personDetailsKeys,async (key) => {
+            await ArrayUtil.map(personDetailsKeys, async (key) => {
                 personModel[key] = personDetails[key];
             });
             return personModel;
@@ -49,10 +49,10 @@ class WorkAllocationMockData {
         return this.getRelease1TaskList(25, taskActions);
     }
 
-    getMyWorkMyTasks(count){
-        let tasks = { tasks : [], total_records : count};
-        for(let i = 0; i < count;i++){
-            tasks.tasks.push(this.getRelease2TaskWithPermissions(["Manage", "Read"],"MyTasks","assigned"));
+    getMyWorkMyTasks(count) {
+        let tasks = { tasks: [], total_records: count };
+        for (let i = 0; i < count; i++) {
+            tasks.tasks.push(this.getRelease2TaskWithPermissions(["Manage", "Read"], "MyTasks", "assigned"));
         }
         return tasks;
     }
@@ -60,7 +60,15 @@ class WorkAllocationMockData {
     getMyWorkAvailableTasks(count) {
         let tasks = { tasks: [], total_records: count };
         for (let i = 0; i < count; i++) {
-            tasks.tasks.push(this.getRelease2TaskWithPermissions(["Manage", "Read"],"AvailableTasks",  null));
+            tasks.tasks.push(this.getRelease2TaskWithPermissions(["Manage", "Read"], "AvailableTasks", null));
+        }
+        return tasks;
+    }
+
+    getAllWorkTasks(count) {
+        let tasks = { tasks: [], total_records: count };
+        for (let i = 0; i < count; i++) {
+            tasks.tasks.push(this.getRelease2TaskWithPermissions(["Manage", "Read"], "AllWork", null));
         }
         return tasks;
     }
@@ -73,49 +81,12 @@ class WorkAllocationMockData {
         return tasks;
     }
 
-    getCaseList(count, actions) {       
-        const cases = [];
+    getMyCases(count) {
+        let cases = { cases: [], total_records: count };
         for (let i = 0; i < count; i++) {
-            cases.push({
-                "id": "00b8bef2-7089-11eb-b34d-4e1650b0295"+i,
-                "name": "task name "+i,
-                "assignee": "b8c3049c-af32-4230-bf6c-33b29df6847"+i,
-                "type": "wa-task-configuration-api-task",
-                "task_state": "assigned",
-                "task_system": "SELF",
-                "security_classification": "PUBLIC",
-                "task_title": "task name"+i,
-                "created_date": "2021-02-16T18:58:48.987+0000",
-                "due_date": "2021-02-16T18:58:48.987+0000",
-                "location_name": "Taylor House "+i,
-                "location": "76532"+i,
-                "execution_type": "Case Management Task",
-                "jurisdiction": "IA",
-                "region": "1",
-                "case_type_id": "Asylum",
-                "case_id": "161350192272981"+i,
-                "case_category": "protection",
-                "case_name": "Bob Smith",
-                "auto_assigned": false,
-                "warnings": false,
-                "actions": taskActions,
-                "dueDate": "2021-02-16T18:58:48.987+0000",
-                "taskName": "task name "+i,
-                "caseName": "Bob Smith"+i,
-                "caseCategory": "protection",
-                "assigneeName": null
-            });
+            cases.cases.push(this.getRelease2CaseWithPermission([], "MyCases", "assigned"));
         }
-        return { cases: cases, total_records:150 };
-    }
-
-    getMyCases() {
-        const caseActions = [
-            { "id": "reassign", "title": "Reassign task" },
-            { "id": "unclaim", "title": "Unassign task" },
-            { "id": "go", "title": "Go to case" }
-        ];
-        return this.getCaseList(25, caseActions);
+        return cases;
     }
 
     getRelease1TaskList(count, actions) {
@@ -129,20 +100,20 @@ class WorkAllocationMockData {
             let task = WorkAllocationDataModels.getRelease1Task();;
             task.id = v4();
             task.assignee = v4();
-            task.name = task.name+" "+i
+            task.name = task.name + " " + i
             task.task_title = task.task_title + " " + i
             task.location = task.location + i
-            task.case_id = task.case_id+1;
+            task.case_id = task.case_id + 1;
             task.taskName = task.taskName + 1;
             task.caseName = task.caseName + 1;
             task.actions = taskActions;
 
             tasks.push(task);
         }
-        return { tasks: tasks, total_records:150 };
+        return { tasks: tasks, total_records: 150 };
     }
 
-    getPersonList(count){
+    getPersonList(count) {
         const persons = [];
         for (let ctr = 0; ctr < count; ctr++) {
             persons.push({
@@ -162,7 +133,7 @@ class WorkAllocationMockData {
         return persons;
     }
 
-    getCaseworkersList(count) { 
+    getCaseworkersList(count) {
         return this.getPersonList(count);
     }
 
@@ -172,7 +143,7 @@ class WorkAllocationMockData {
         }
     }
 
-    getRelease2TaskDetails(){
+    getRelease2TaskDetails() {
         return WorkAllocationDataModels.getRelease2Task()
     }
 
@@ -198,28 +169,80 @@ class WorkAllocationMockData {
     }
 
 
-    getRelease2TaskWithPermissions(permissions,view,assignState){
-        view = view.replace(" ","");
+    getRelease2TaskWithPermissions(permissions, view, assignState) {
+        view = view.replace(" ", "");
         const task = WorkAllocationDataModels.getRelease2Task();;
         task.permissions = permissions;
         task.actions = WorkAllocationDataModels.getRelease2TaskActions(permissions, view, assignState);
-       
+
         return task;
     }
 
-    async findPersonResponse(searchTerm, personsData){
-        
-        if (this.findPersonsAllAdata.length === 0){
-            this.findPersonsAllAdata = await this.getFindPersonsDataFrom(findPersonsDetails);
-        }
+    getRelease2CaseWithPermission(roles, view) {
+        view = view.replace(" ", "");
+        const waCase = WorkAllocationDataModels.getRelease2Case();
+        waCase.permissions = roles;
+        waCase.actions = WorkAllocationDataModels.getRelease2CaseActions(roles, view);
+
+        return waCase;
+    }
+
+    async findPersonResponse(searchTerm, personsData) {
+
+        this.findPersonsAllAdata = await this.getFindPersonsDataFrom(findPersonsDetails);
         searchTerm = searchTerm.toLowerCase();
-        const referenceData = personsData ? personsData: this.findPersonsAllAdata;
-        const filteredUsers = await ArrayUtil.filter(referenceData,async (person) => {
+        const referenceData = personsData ? personsData : this.findPersonsAllAdata;
+        const filteredUsers = await ArrayUtil.filter(referenceData, async (person) => {
             return person.email.toLowerCase().includes(searchTerm) || person.name.toLowerCase().includes(searchTerm);
         });
         return filteredUsers;
     }
 
+    getExclusionRoleCategories(){
+        const roleCategories = [];
+        const judicial = WorkAllocationDataModels.getRoleCategory();
+        judicial.roleId = "judicial";
+        judicial.roleName = "Judicial"
+
+        const legalOps = WorkAllocationDataModels.getRoleCategory();
+        legalOps.roleId = "legalOps";
+        legalOps.roleName = "Legal Ops"
+
+        const admin = WorkAllocationDataModels.getRoleCategory();
+        admin.roleId = "admin";
+        admin.roleName = "Admin"
+
+        roleCategories.push(judicial);
+        roleCategories.push(legalOps);
+        roleCategories.push(admin);
+        return roleCategories;
+
+    }
+
+    getRoles(){
+        const roles = [];
+        const leadJudge = WorkAllocationDataModels.getRole();
+        const hearingJudge = WorkAllocationDataModels.getRole();
+        const caseManager = WorkAllocationDataModels.getRole();
+
+        leadJudge.roleId = 'lead-judge';
+        leadJudge.roleName = 'Lead judge';
+        leadJudge.roleCategory = 'JUDICIAL';
+
+        hearingJudge.roleId = 'hearing-judge';
+        hearingJudge.roleName = 'Hearing judge';
+        hearingJudge.roleCategory = 'JUDICIAL';
+
+        caseManager.roleId = 'case-manager';
+        caseManager.roleName = 'Case manager';
+        caseManager.roleCategory = 'LEGAL_OPERATIONS';
+
+        roles.push(leadJudge);
+        roles.push(hearingJudge);
+        roles.push(caseManager);
+        return roles;
+
+    }
 
 }
 
@@ -228,7 +251,7 @@ class WorkAllocationMockData {
 module.exports = new WorkAllocationMockData();
 
 const findPersonsDetails = [
-    { domain: 1, email: "Aleena.Agarwal@justice.gov.uk", id: "", name:"Aleena Agarwal"},
+    { domain: 1, email: "Aleena.Agarwal@justice.gov.uk", id: "", name: "Aleena Agarwal" },
     { domain: 1, email: "Tommy.Wong@justice.gov.uk", id: "", name: "Tommy Wong" },
     { domain: 1, email: "Adnan.Akgun@justice.gov.uk", id: "", name: "Adnan Akgun" },
     { domain: 1, email: "Andy.Wilkins@justice.gov.uk", id: "", name: "Andy Wilkins" },

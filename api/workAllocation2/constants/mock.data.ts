@@ -1,61 +1,76 @@
 /* tslint:disable */
-
-import { PersonDomain } from "../interfaces/person";
+import { PersonRole } from "../interfaces/person";
 
 export const PERSON = [
   {
-    id: 'id123',
-    name: 'John Smith',
-    email: 'john.smith@email.com',
-    domain: PersonDomain.CASEWORKER
+    id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3',
+    name: 'Jacky Collins',
+    email: 'jacky.collins@judicial.com',
+    domain: PersonRole.JUDICIAL,
+    knownAs: 'Hearing Judge'
   },
   {
-    id: 'id124',
-    name: 'Andy Wilkins',
-    email: 'andy.wilkins@email.com',
-    domain: PersonDomain.JUDICIAL
+    id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3',
+    name: 'Jasmine Chiswell',
+    email: 'jasmine.chiswell@judicial.com',
+    domain: PersonRole.JUDICIAL,
+    knownAs: 'Lead Judge'
   },
   {
-    id: 'id125',
-    name: 'Kevin Harper',
-    email: 'kevin.harper@email.com',
-    domain: PersonDomain.JUDICIAL
+    id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3',
+    name: 'Jamie Vardy',
+    email: 'jamie.vardy@judicial.com',
+    domain: PersonRole.JUDICIAL,
+    knownAs: 'Lead Judge'
   },
   {
-    id: 'id126',
-    name: 'Mohammed Lala',
-    email: 'mo.lala@email.com',
-    domain: PersonDomain.JUDICIAL
+    id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3',
+    name: 'James Priest',
+    email: 'james.priest@judicial.com',
+    domain: PersonRole.JUDICIAL,
+    knownAs: 'Hearing Judge'
   },
   {
-    id: 'id127',
-    name: 'Paul Howes',
-    email: 'paul.howes@email.com',
-    domain: PersonDomain.CASEWORKER
+    id: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
+    name: 'Jacky Collins',
+    email: 'jacky.collins@legalops.com',
+    domain: PersonRole.CASEWORKER
   },
   {
-    id: 'id128',
-    name: 'Paul Graham',
-    email: 'paul.graham@email.com',
-    domain: PersonDomain.CASEWORKER
+    id: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
+    name: 'Jasmine Chiswell',
+    email: 'jasmine.chiswell@legalops.com',
+    domain: PersonRole.CASEWORKER
   },
   {
-    id: 'id129',
-    name: 'Aleena Agarwal',
-    email: 'aleena.agarwal@email.com',
-    domain: PersonDomain.CASEWORKER
+    id: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
+    name: 'Jamie Vardy',
+    email: 'jamie.vardy@legalops.com',
+    domain: PersonRole.CASEWORKER
   },
   {
-    id: 'id130',
-    name: 'Connor McElroy',
-    email: 'connor.mcelroy@email.com',
-    domain: PersonDomain.CASEWORKER
+    id: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
+    name: 'James Priest',
+    email: 'James Priest@legalops.com',
+    domain: PersonRole.CASEWORKER
   },
   {
-    id: 'id131',
-    name: 'Andy Kings',
-    email: 'andy.kings@email.com',
-    domain: PersonDomain.JUDICIAL
+    id: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
+    name: 'Michael Jackson',
+    email: 'michael.jackson@legalops.com',
+    domain: PersonRole.CASEWORKER
+  },
+  {
+    id: 'id109',
+    name: 'James Priest',
+    email: 'james.priest@admin.com',
+    domain: PersonRole.ADMIN
+  },
+  {
+    id: 'id110',
+    name: 'Michael Jackson',
+    email: 'michael.jackson@admin.com',
+    domain: PersonRole.ADMIN
   },
 ]
 
@@ -83,7 +98,7 @@ export const JUDICIAL_MY_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'Ella Ryan',
-      permissions: ['Read'],
+      permissions: ['Execute', 'Manage'],
     },
     {
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba3',
@@ -1767,6 +1782,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'William Priest',
+      warnings: true,
       permissions: ['Read', 'Manage'],
     },
     {
@@ -1778,7 +1794,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'Jo Fly',
-      permissions: ['Read', 'Manage'],
+      permissions: ['Read', 'Manage', 'Execute'],
     },
     {
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc3',

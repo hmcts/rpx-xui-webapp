@@ -37,18 +37,18 @@ Feature: WA Release 2: All work - Task assignment work flows
         When I open Manage link for task at row <taskAtRow>
         Then I see action link "<action>" is present for task with Manage link open
         When I click action link "<action>" on task with Manage link open
-        Then I see find person page displayed with caption "<action>"
-        When I enter search term "test" in find person input text
-        Then I see following options available in find person results
+        Then In workflow, I see find person page displayed with caption "<action>"
+        When In workflow, I enter search term "test" in find person input text
+        Then In workflow, I see following options available in find person results
             | value             |
             | Test12@justice.uk |
             | Test23@justice.uk |
             | Test34@justice.uk |
             | Test45@justice.uk |
-        When I select find person result "Test23@justice.uk"
-        Then I see find person is selected with "Test23@justice.uk"
+        When In workflow, I select find person result "Test23@justice.uk"
+        Then In workflow, I see find person is selected with "Test23@justice.uk"
 
-        When I click continue in find person page
+        When In workflow, I click continue
 
         Then I see task check your changes page for action "<action>" displayed
 
@@ -67,7 +67,7 @@ Feature: WA Release 2: All work - Task assignment work flows
         Examples:
             | UserIdentifier     | UserType   | Roles                                              | taskAtRow | action        | submitBtnLabel | bannermessage                              |
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer | 4         | Reassign task | Reassign       | You've reassigned a task to somebody else. |
-            | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    | 1         | Assign task   | Assign         | You've assigned a task to somebody else.   |
+            # | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    | 1         | Assign task   | Assign         | You've assigned a task to somebody else.   |
 
 
 
@@ -88,25 +88,25 @@ Feature: WA Release 2: All work - Task assignment work flows
         When I open Manage link for task at row <taskAtRow>
         Then I see action link "<action>" is present for task with Manage link open
         When I click action link "<action>" on task with Manage link open
-        Then I see find person page displayed with caption "<action>"
-        When I enter search term "test" in find person input text
-        Then I see following options available in find person results
+        Then In workflow, I see find person page displayed with caption "<action>"
+        When In workflow, I enter search term "test" in find person input text
+        Then In workflow, I see following options available in find person results
             | value             |
             | Test12@justice.uk |
             | Test23@justice.uk |
             | Test34@justice.uk |
             | Test45@justice.uk |
-        When I select find person result "Test23@justice.uk"
-        Then I see find person is selected with "Test23@justice.uk"
+        When In workflow, I select find person result "Test23@justice.uk"
+        Then In workflow, I see find person is selected with "Test23@justice.uk"
 
-        When I click cancel link in find person page
+        When In workflow, I click cancel link
 
       
         Then I see navigation header tab page "All work"
        
         Examples:
             | UserIdentifier     | UserType   | Roles                                              | taskAtRow | action        | submitBtnLabel | bannermessage                              |
-            | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer | 4         | Reassign task | Reassign       | You've reassigned a task to somebody else. |
+            # | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer | 4         | Reassign task | Reassign       | You've reassigned a task to somebody else. |
             | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    | 1         | Assign task   | Assign         | You've assigned a task to somebody else.   |
 
 
@@ -128,18 +128,18 @@ Feature: WA Release 2: All work - Task assignment work flows
         When I open Manage link for task at row <taskAtRow>
         Then I see action link "<action>" is present for task with Manage link open
         When I click action link "<action>" on task with Manage link open
-        Then I see find person page displayed with caption "<action>"
-        When I enter search term "test" in find person input text
-        Then I see following options available in find person results
+        Then In workflow, I see find person page displayed with caption "<action>"
+        When In workflow, I enter search term "test" in find person input text
+        Then In workflow, I see following options available in find person results
             | value             |
             | Test12@justice.uk |
             | Test23@justice.uk |
             | Test34@justice.uk |
             | Test45@justice.uk |
-        When I select find person result "Test23@justice.uk"
-        Then I see find person is selected with "Test23@justice.uk"
+        When In workflow, I select find person result "Test23@justice.uk"
+        Then In workflow, I see find person is selected with "Test23@justice.uk"
 
-        When I click continue in find person page
+        When In workflow, I click continue
 
         Then I see task check your changes page for action "<action>" displayed
 
@@ -155,7 +155,7 @@ Feature: WA Release 2: All work - Task assignment work flows
         Examples:
             | UserIdentifier     | UserType   | Roles                                              | taskAtRow | action        | submitBtnLabel | bannermessage                              |
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer | 4         | Reassign task | Reassign       | You've reassigned a task to somebody else. |
-            | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    | 1         | Assign task   | Assign         | You've assigned a task to somebody else.   |
+            # | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    | 1         | Assign task   | Assign         | You've assigned a task to somebody else.   |
 
 
 

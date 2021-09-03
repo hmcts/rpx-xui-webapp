@@ -36,6 +36,8 @@ import { OrganisationModule } from '../organisation/organisation.module';
 import { casesRouting } from './case-feature.routes';
 // from components
 import * as fromComponents from './components';
+// from directives
+import * as fromDirectives from './directives';
 // from containers
 import * as fromContainers from './containers';
 import { ActivityResolver } from './resolvers/activity.resolver';
@@ -65,7 +67,7 @@ import { effects, reducers } from './store';
     LoadingModule,
     ReactiveFormsModule
   ],
-  declarations: [...fromComponents.components, ...fromContainers.containers],
+  declarations: [...fromComponents.components, ...fromContainers.containers, ...fromDirectives.directives],
   providers: [
     PlaceholderService,
     CasesService,

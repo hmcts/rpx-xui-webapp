@@ -38,8 +38,15 @@ export const VIEW_PERMISSIONS_ACTIONS_MATRIX = {
   // level 1 - select a view, like 'MyTasks'
   // level 2 - select a permission, like 'Manage'
   // level 3 - return the actions array, like [REASSIGN, RELEASE, GO]
-  ActiveTasks: {
-    Manage: [REASSIGN, RELEASE, CLAIM],
+  ActiveTasksAssignedCurrentUser: {
+    Execute: [CLAIM, REASSIGN, RELEASE],
+  },
+  ActiveTasksAssignedOtherUser: {
+    Execute: [CLAIM],
+    Manage: [REASSIGN, RELEASE],
+  },
+  ActiveTasksUnassigned: {
+    Execute: [CLAIM],
   },
   AllWorkAssigned: {
     Cancel: [CANCEL],
@@ -69,4 +76,16 @@ export enum TaskPermission {
   OWN = 'Own',
   EXECUTE = 'Execute',
   CANCEL = 'Cancel',
+}
+
+export enum ViewType {
+  ACTIVE_TASKS = 'ActiveTasks',
+  ACTIVE_TASKS_ASSIGNED_CURRENT = 'ActiveTasksAssignedCurrentUser',
+  ACTIVE_TASKS_ASSIGNED_OTHER = 'ActiveTasksAssignedOtherUser',
+  ACTIVE_TASKS_UNASSIGNED = 'ActiveTasksUnassigned',
+  ALL_WORK = 'AllWork',
+  ALL_WORK_ASSIGNED = 'AllWorkAssigned',
+  ALL_WORK_UNASSIGNED = 'AllWorkUnassigned',
+  AVAILABLE_TASKS = 'AvailableTasks',
+  MY_TASKS = 'MyTasks',
 }

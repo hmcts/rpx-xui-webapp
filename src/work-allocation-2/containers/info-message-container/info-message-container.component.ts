@@ -28,7 +28,7 @@ export class InfoMessageContainerComponent implements OnInit {
   constructor(
     private readonly router: Router,
     private readonly messageService: InfoMessageCommService
-  ) {}
+  ) { }
 
   public ngOnInit(): void {
     this.router.events.subscribe(event => {
@@ -37,13 +37,19 @@ export class InfoMessageContainerComponent implements OnInit {
       }
     });
 
-    this.subscribeToInfoMessageCommService();
+    this.getInfoMessages();
   }
 
-  public subscribeToInfoMessageCommService(): void {
+  public getInfoMessages(): void {
+    // subscribe to the info message communication service
     this.messageService.infoMessageChangeEmitted$.subscribe(messages => {
       this.infoMessages = messages;
-      this.showInfoMessage = (messages || []).length > 0;
+
+      // add any additional information messages that have been passed in the state (i.e. role access exclusion)
+      if (window && window.history && window.history.state.showMessage && window.history.state.message) {
+        this.infoMessages.push(window.history.state.message);
+      }
+      this.showInfoMessage = (this.infoMessages || []).length > 0;
     });
   }
 

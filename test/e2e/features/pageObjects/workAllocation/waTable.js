@@ -124,7 +124,7 @@ class WAListTable {
     }
 
     async getTableRowAt(position) {
-        await BrowserWaits.waitForCondition(async () => {
+        await BrowserWaits.waitForConditionAsync(async () => {
             return await this.tableRows.count() > 0;
         });
         return await this.tableRows.get(position - 1);
@@ -194,7 +194,7 @@ class WAListTable {
         try {
             await BrowserWaits.waitForConditionAsync(async () => {
                 return await row.isDisplayed();
-            }, 2000);
+            }, 2000,'Wait for manage link row to display');
             return true;
         } catch (err) {
             return false;
@@ -205,7 +205,7 @@ class WAListTable {
 
     async isRowActionPresent(rowAction) {
         await BrowserWaits.waitForElement(this.displayedActionRow);
-        const actionLink = this.displayedActionRow.element(by.xpath(`//div[@class = "task-action"]//a[contains(text(),"${rowAction}" )]`))
+        const actionLink = this.displayedActionRow.element(by.xpath(`//div[contains(@class,"task-action") or contains(@class,"case-action")]//a[contains(text(),"${rowAction}" )]`))
         return actionLink.isPresent();
     }
 
@@ -213,7 +213,7 @@ class WAListTable {
 
         await BrowserWaits.waitForConditionAsync(async () => await this.isRowActionPresent(action), 5000);
 
-        const actionLink = this.displayedActionRow.element(by.xpath(`//div[@class = "task-action"]//a[contains(text(),"${action}" )]`))
+        const actionLink = this.displayedActionRow.element(by.xpath(`//div[contains(@class,"task-action") or contains(@class,"case-action")]//a[contains(text(),"${action}" )]`))
         await browser.executeScript('arguments[0].scrollIntoView()',
             actionLink.getWebElement());
         await actionLink.click();

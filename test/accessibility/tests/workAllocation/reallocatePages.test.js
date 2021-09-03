@@ -24,7 +24,9 @@ const actorId = '38eb0c5e-29c7-453e-b92d-f2029aaed6c3';
 const userName = 'Judge%20Beech';
 const typeOfRole = 'Lead%20judge';
 
-const route = `role-access/allocate-role/allocate?caseId=${caseId}&userType=judicial&assignmentId=${assignmentId}&actorId=${actorId}&userName=${userName}&typeOfRole=${typeOfRole}`
+const route = `role-access/allocate-role/allocate?caseId=${caseId}&roleCategory=JUDICIAL&assignmentId=${assignmentId}&actorId=${actorId}&userName=${userName}&typeOfRole=${typeOfRole}`
+
+const allocateRoleRoute = `role-access/allocate-role/allocate?caseId=1546883526751282&roleCategory=JUDICIAL`
 
 describe('Work Allocation: Allocate', function () {
 
@@ -43,8 +45,8 @@ describe('Work Allocation: Allocate', function () {
         await MockApp.startServer();
         const actions = [];
         actions.push(...PallyActions.waitForPageWithCssLocator(workAllocationWorkflow.chooseRole.container))
-        
-        await pa11ytest(this, actions, conf.baseUrl + route);
+
+        await pa11ytest(this, actions, conf.baseUrl + allocateRoleRoute);
 
     });
 
@@ -52,7 +54,7 @@ describe('Work Allocation: Allocate', function () {
         userDetailsMock.withIACJudicialUser('IAC_Judge_WA_R2');
         await MockApp.startServer();
         const actions = [];
-        actions.push(...PallyActions.navigateTourl(conf.baseUrl + route))
+        actions.push(...PallyActions.navigateTourl(conf.baseUrl + allocateRoleRoute))
 
         actions.push(...PallyActions.waitForPageWithCssLocator(workAllocationWorkflow.chooseRole.container))
         actions.push(...PallyActions.checkOption(workAllocationWorkflow.chooseRole.option_1))
@@ -85,7 +87,7 @@ describe('Work Allocation: Allocate', function () {
         actions.push(...PallyActions.clickElement(workAllocationWorkflow.continue))
 
         actions.push(...PallyActions.waitForPageWithCssLocator(workAllocationWorkflow.chooseDuration.container))
-        await pa11ytest(this, actions, conf.baseUrl + route);
+        await pa11ytest(this, actions, conf.baseUrl + allocateRoleRoute);
     });
 
 
@@ -112,7 +114,7 @@ describe('Work Allocation: Allocate', function () {
 
         actions.push(...PallyActions.waitForPageWithCssLocator(workAllocationWorkflow.allocateCheckAnswers))
 
-        await pa11ytest(this, actions, conf.baseUrl + route);
+        await pa11ytest(this, actions, conf.baseUrl + allocateRoleRoute);
 
     });
 

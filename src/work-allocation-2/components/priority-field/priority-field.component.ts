@@ -14,13 +14,13 @@ export class PriorityFieldComponent {
   @Input() public dueDate: Date;
 
   public get priority(): TaskPriority {
-    const d = new Date();
+    const today = new Date();
     if (this.dueDate) {
-      const isToday = this.dueDate.toDateString() === d.toDateString();
+      const isToday = this.dueDate.toDateString() === today.toDateString();
       if (isToday) {
         return TaskPriority.MEDIUM;
       } else {
-        return this.dueDate < d ? TaskPriority.HIGH : TaskPriority.LOW
+        return this.dueDate < today ? TaskPriority.HIGH : TaskPriority.LOW
       }
     }
   }

@@ -4,6 +4,11 @@ var FRCase = require('../pageObjects/FRCase');
 var ProbateCase = require('../pageObjects/ProbateCase');
 var DivorceCase = require('../pageObjects/Divorcecase');
 var IACCase = require('../pageObjects/iacCase');
+<<<<<<< HEAD
+=======
+
+var HearingRecordingsCase = require('../pageObjects/hearingRecordingsCase');
+>>>>>>> 87f9abed409b506ae576e6c1ecd77b83649f7351
 
 var CaseManager = require('../pageObjects/common/CaseManager');
 

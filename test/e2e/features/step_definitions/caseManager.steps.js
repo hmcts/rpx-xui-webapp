@@ -5,6 +5,7 @@ var ProbateCase = require('../pageObjects/ProbateCase');
 var DivorceCase = require('../pageObjects/Divorcecase');
 var IACCase = require('../pageObjects/iacCase');
 
+var BrowserCookiesUtil = require('../pageObjects/browserCookiesUtil');
 
 var CaseManager = require('../pageObjects/common/CaseManager');
 
@@ -76,19 +77,20 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     When('I click \'Accept additional cookies\'', async function () {
-        await caseManager.acceptCookies();
+        await BrowserCookiesUtil.acceptCookies();
     });
 
     Then('I see the analytical cookies', async function () {
-        await caseManager.verifyCookies();
+        expect(await BrowserCookiesUtil.isCookiePresent('_ga')).to.be.true;
+        expect(await BrowserCookiesUtil.isCookiePresent('_gid')).to.be.true;
     });
 
     When('I click \'Reject additional cookies\'', async function () {
-        await caseManager.rejectCookies();
+        await BrowserCookiesUtil.rejectCookies();
     });
 
     Then('I don\'t see any analytical cookie', async function () {
-        await caseManager.verifyCookies();
-        await caseManager.checkCookies();
+        expect(await BrowserCookiesUtil.isCookiePresent('_ga')).to.be.false;
+        expect(await BrowserCookiesUtil.isCookiePresent('_gid')).to.be.false;
     });
 });

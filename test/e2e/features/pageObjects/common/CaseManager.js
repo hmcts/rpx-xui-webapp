@@ -35,11 +35,7 @@ class CaseManager {
         this.caseEditPage = new CaseEditPage();
         this.createCaseContainer= $("ccd-create-case-filters form");
 
-        this.acceptCookiesBtn = $("#cookie-accept-submit");
-        this.rejectCookiesBtn = $("#cookie-reject-submit");
-
-        this.hideMessageBtn = element(by.xpath('//header/div[@class=\'govuk-cookie-banner\']/div[1]/div[1]/div[1]/div[1]/p[3]/a[1]'));
-    }
+        }
 
     async cancelCaseCreation(){
         await BrowserWaits.waitForElement(this.ccdCaseEdit);
@@ -60,38 +56,6 @@ class CaseManager {
         await BrowserWaits.waitForElement(this.createCaseContainer);
     }
 
-    async acceptCookies(){
-      await this.acceptCookiesBtn.click();
-      await BrowserWaits.waitForElement(this.hideMessageBtn);
-    }
-
-    async rejectCookies(){
-      await this.rejectCookiesBtn.click();
-      await BrowserWaits.waitForElement(this.hideMessageBtn);
-    }
-
-  async verifyCookies(){
-
-      await return browser.manage().getCookies().then(function getCookie (cookiesArray){
-      for(let i=0; i<cookiesArray.length;i++){
-        console.log("Name of the Cookie "+cookiesArray[i].name);
-      }
-      let hasGaCookies = cookiesArray.some( cookie => cookie['name'] === '_ga' )
-      // console.log(hasGaCookies);
-      let hasGidCookies = cookiesArray.some( cookie => cookie['name'] === '_gid' )
-      // console.log(hasGidCookies);
-
-       let analyticalCookies = (hasGaCookies == true) || (hasGidCookies == true);
-
-      console.log(analyticalCookies);
-
-        return analyticalCookies;
-    })
-  }
-
-  async checkCookies(){
-    expect (this.verifyCookies()).to.be.false;
-  }
 
     async startCaseCreation(jurisdiction, caseType, event){
 

@@ -3,7 +3,7 @@ import { Task } from '../../../work-allocation-2/models/tasks';
 import { LetContext } from '@hmcts/rpx-xui-common-lib';
 
 describe('CaseTaskComponent', () => {
-    const sessionStorage = jasmine.createSpyObj('sessionStorage', ['get']);
+    const sessionStorage = jasmine.createSpyObj('sessionStorage', ['getItem']);
     const component = new CaseTaskComponent(sessionStorage);
     it('getManageOptions no assignee no permissions', () => {
         const task: Task = {
@@ -152,5 +152,68 @@ describe('CaseTaskComponent', () => {
         spyOnIsTaskAssignedToCurrentUser.and.returnValue(false);
         const options = component.getManageOptions(task);
         expect(options.length).toEqual(0);
+    });
+
+    it('isTaskAssignedToCurrentUser when no userDetails in sessionStorage', () => {
+        const task: Task = {
+            assignee: '3314e308-e83b-4f39-a414-6844e185e5ac',
+            assigneeName: 'Some Name',
+            permissions: ['Own'],
+            id: null,
+            case_id: null,
+            caseName: null,
+            caseCategory: null,
+            location: null,
+            taskName: null,
+            dueDate: new Date(),
+            actions: [],
+            warnings: false,
+            derivedIcon: null
+        };
+        const result = component.isTaskAssignedToCurrentUser(task);
+        expect(result).toBeFalsy();
+    });
+
+    it('isTaskAssignedToCurrentUser when user is assigned to task', () => {
+        const task: Task = {
+            assignee: '44d5d2c2-7112-4bef-8d05-baaa610bf463',
+            assigneeName: 'Some Name',
+            permissions: ['Own'],
+            id: null,
+            case_id: null,
+            caseName: null,
+            caseCategory: null,
+            location: null,
+            taskName: null,
+            dueDate: new Date(),
+            actions: [],
+            warnings: false,
+            derivedIcon: null
+        };
+        sessionStorage.getItem.and.returnValue('{\"sub\":\"juser8@mailinator.com\",\"uid\":\"44d5d2c2-7112-4bef-8d05-baaa610bf463\",\"roles\":[\"caseworker\",\"caseworker-ia\",\"caseworker-ia-iacjudge\"],\"name\":\"XUI test Judge\",\"given_name\":\"XUI test\",\"family_name\":\"Judge\",\"token\":\"\"}');
+        const result = component.isTaskAssignedToCurrentUser(task);
+        expect(result).toBeTruthy();
+    });
+    it('getAssigneeName should return correctName', () => {
+        const task: Task = {
+            assignee: '44d5d2c2-7112-4bef-8d05-baaa610bf463',
+            assigneeName: 'Some Name',
+            permissions: ['Own'],
+            id: null,
+            case_id: null,
+            caseName: null,
+            caseCategory: null,
+            location: null,
+            taskName: null,
+            dueDate: new Date(),
+            actions: [],
+            warnings: false,
+            derivedIcon: null
+        };
+        let name = component.getAssigneeName(task);
+        expect(name).toEqual('Some Name');
+
+        task.assigneeName = null;
+        name = component.getAssigneeName(task);
     });
 });

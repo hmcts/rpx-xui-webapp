@@ -47,20 +47,20 @@ export class CaseTaskComponent implements OnInit {
     if (this.isTaskAssignedToCurrentUser(task)) {
       return [
         {text: 'Assign to me', path: ''},
-        {text: 'Reassign task', path: ''},
-        {text: 'Unassign task', path: ''}
+        {text: 'Reassign task', path: `/work/${task.id}/reassign`},
+        {text: 'Unassign task', path: `/work/${task.id}/unclaim`}
       ];
     } else {
       if (task.permissions.includes('Execute') && task.permissions.includes('Manage')) {
         return [
           {text: 'Assign to me', path: ''},
-          {text: 'Reassign task', path: ''},
-          {text: 'Unassign task', path: ''}
+          {text: 'Reassign task', path: `/work/${task.id}/reassign`},
+          {text: 'Unassign task', path: `/work/${task.id}/unclaim`}
         ];
       } else if (task.permissions.includes('Manage')) {
         return [
-          {text: 'Reassign task', path: ''},
-          {text: 'Unassign task', path: ''}
+          {text: 'Reassign task', path: `/work/${task.id}/reassign`},
+          {text: 'Unassign task', path: `/work/${task.id}/unclaim`}
         ];
       } else {
         return [];

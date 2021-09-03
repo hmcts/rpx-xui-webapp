@@ -1,6 +1,6 @@
 import { Person } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
 import { AllocateRoleState } from './allocate-role-state.enum';
-import { Actions, AllocateTo, DurationOfRole, Period, TypeOfRole } from './allocate-role.enum';
+import { Actions, AllocateTo, DurationOfRole, Period, RoleCategory, TypeOfRole } from './allocate-role.enum';
 import { HttpError } from './http-error.interface';
 
 export interface AllocateRoleStateData {
@@ -14,5 +14,6 @@ export interface AllocateRoleStateData {
   durationOfRole: DurationOfRole;
   action: Actions;
   period: Period;
+  roleCategory?: RoleCategory;
   lastError?: HttpError;
 }

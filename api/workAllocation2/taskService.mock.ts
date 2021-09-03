@@ -204,7 +204,7 @@ export const init = () => {
 
   mock.onPost(assignTaskUrl).reply(config => {
     const data = JSON.parse(config.data);
-    const id = data.userId.toString().replace(/[^0-9.]/g, '');
+    const id = data.userId.toString().substr(0, 1);
     const mod = parseInt(id, 10) % 2;
     if (mod === 0) {
       return [

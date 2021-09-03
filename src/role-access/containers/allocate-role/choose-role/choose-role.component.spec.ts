@@ -7,10 +7,9 @@ import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 
 import { UserRole } from '../../../../app/models';
-import { UserType } from '../../../../cases/models/user-type';
 import { ChooseRadioOptionComponent } from '../../../components';
 import { CHOOSE_A_ROLE } from '../../../constants';
-import { Actions, AllocateRoleNavigationEvent, AllocateRoleStateData } from '../../../models';
+import { Actions, AllocateRoleNavigationEvent, AllocateRoleStateData, RoleCategory } from '../../../models';
 import { AllocateRoleService } from '../../../services';
 import { ChooseRoleComponent } from './choose-role.component';
 
@@ -18,8 +17,8 @@ const firstRoleOptions = [{ optionId: 'lead-judge', optionValue: 'Lead judge' },
       { optionId: 'hearing-judge', optionValue: 'Hearing judge' }];
 
 const personRoles = [
-  {roleId: 'lead-judge', roleName: 'Lead judge', roleType: 'judicial'},
-  {roleId: 'hearing-judge', roleName: 'Hearing judge', roleType: 'judicial'}];
+  {roleId: 'lead-judge', roleName: 'Lead judge', roleCategory: RoleCategory.JUDICIAL},
+  {roleId: 'hearing-judge', roleName: 'Hearing judge', roleCategory: RoleCategory.JUDICIAL}];
 
 const mockAllocateRoleStateData: AllocateRoleStateData = {
   action: Actions.Allocate,
@@ -57,7 +56,7 @@ describe('ChooseRoleComponent', () => {
           useValue: {
             snapshot: {
               queryParams: {
-                userType: 'judicial'
+                roleCategory: 'JUDICIAL'
               }
             },
           }
@@ -79,7 +78,7 @@ describe('ChooseRoleComponent', () => {
 
   it('should correctly navigate on click of continue', () => {
     const navEvent = AllocateRoleNavigationEvent.CONTINUE;
-    component.dispatchEvent(navEvent, UserType.JUDICIAL, UserRole.Judicial);
+    component.dispatchEvent(navEvent, RoleCategory.JUDICIAL, UserRole.Judicial);
     expect(mockStore.dispatch).toHaveBeenCalled();
   });
 

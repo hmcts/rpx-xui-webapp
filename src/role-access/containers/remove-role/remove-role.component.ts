@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { handleFatalErrors } from '../../../work-allocation-2/utils';
 import { Answer, CaseRole, RemoveAllocationNavigationEvent } from '../../models';
 import { RemoveRoleText } from '../../models/enums/answer-text';
-import { AllocateRoleService } from '../../services/allocate-role.service';
+import { AllocateRoleService } from '../../services';
 
 @Component({
   selector: 'exui-remove-role',
@@ -29,7 +29,7 @@ export class RemoveRoleComponent implements OnInit {
     this.assignmentId = this.route.snapshot.queryParams.assignmentId;
     const currentRole = roles.find(assignment => assignment.id === this.assignmentId);
     const personDetails = `${currentRole.name}\n${currentRole.email}`;
-    this.answers.push({label: 'Type of role', value: currentRole.role});
+    this.answers.push({label: 'Type of role', value: currentRole.roleName});
     this.answers.push({label: 'Person', value: personDetails});
   }
 

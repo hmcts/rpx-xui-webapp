@@ -1774,8 +1774,8 @@ export const JUDICIAL_WORKERS = [
 export const JUDICIAL_AVAILABLE_TASKS = {
   tasks: [
     {
-      assignee: '44d5d2c2-7112-4bef-8d05-baaa610bf463',
-      assigneeName: 'Judge XUI test',
+      assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc1',
       task_title: 'Review FTPA application',
       dueDate: '2021-05-05T16:00:00.000+0000',
@@ -1788,8 +1788,8 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       permissions: ['Read', 'Manage'],
     },
     {
-      assignee: '44d5d2c2-7112-4bef-8d05-baaa610bf463',
-      assigneeName: 'Judge XUI test',
+      assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc2',
       task_title: 'Review application decision',
       dueDate: '2021-05-12T16:00:00.000+0000',
@@ -1801,8 +1801,8 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       permissions: ['Read', 'Manage', 'Execute'],
     },
     {
-      assignee: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
-      assigneeName: 'juser4 Judge',
+      assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc3',
       task_title: 'Generate decision and reason',
       dueDate: '2021-05-18T16:00:00.000+0000',
@@ -1814,8 +1814,8 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       permissions: ['Execute'],
     },
     {
-      assignee: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
-      assigneeName: 'juser4 Judge',
+      assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc4',
       task_title: 'Follow-up non-standard direction',
       dueDate: '2021-05-20T16:00:00.000+0000',
@@ -1827,8 +1827,8 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       permissions: ['Read', 'Manage'],
     },
     {
-      assignee: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
-      assigneeName: 'juser4 Judge',
+      assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc5',
       task_title: 'Review FTPA application',
       dueDate: '2021-05-05T16:00:00.000+0000',
@@ -1840,8 +1840,8 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       permissions: ['Cancel', 'Manage'],
     },
     {
-      assignee: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
-      assigneeName: 'juser4 Judge',
+      assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc6',
       task_title: 'Review application decision',
       dueDate: '2021-05-12T16:00:00.000+0000',

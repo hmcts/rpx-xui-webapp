@@ -1,4 +1,4 @@
-@fullfunctional5
+@fullfunctional
 Feature: Cookie banner functionality
 
     Background:

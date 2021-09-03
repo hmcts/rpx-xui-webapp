@@ -39,15 +39,6 @@ class BrowserCookiesUtil{
         await this.rejectCookiesBtn.click();
         await BrowserWaits.waitForElement(this.hideMessageBtn);
     }
-
-  async deleteAllCookies(){
-    // browser.executeScript('window.sessionStorage.clear();');
-    // browser.executeScript('window.localStorage.clear();');
-    // const deleteCookies = await browser.manage().deleteAllCookies();
-    // return deleteCookies;
-    browser.close();
-    }
-
 }
 
 module.exports = new BrowserCookiesUtil();

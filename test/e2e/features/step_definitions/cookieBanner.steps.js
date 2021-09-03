@@ -11,7 +11,6 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Then('I see the analytical cookies', async function () {
         expect(await CookieBanner.isCookiePresent('_ga')).to.be.true;
         expect(await CookieBanner.isCookiePresent('_gid')).to.be.true;
-        // await CookieBanner.deleteAllCookies();
     });
 
     When('I click \'Reject additional cookies\'', async function () {
@@ -21,6 +20,5 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Then('I don\'t see any analytical cookie', async function () {
         expect(await CookieBanner.isCookiePresent('_ga')).to.be.false;
         expect(await CookieBanner.isCookiePresent('_gid')).to.be.false;
-        // await CookieBanner.deleteAllCookies();
     });
 });

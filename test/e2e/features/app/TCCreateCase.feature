@@ -8,14 +8,14 @@ Feature: Test case type case creation and case details validations
     Then I should be redirected to EUI dashboard page
     
     Scenario: Start create case page form fields validating against API response
-        When I click on create case button
+        When I click on primary navigation header tab "Create case", I see selected tab page displayed
         Then Create case page should be displayed
         When I start case with jurisdiction "Family Divorce" case type "XUI Test Case type" and event "Create a case"
         Then I am on case form page
         Then Validate create case form pages fields against the api response
 
     Scenario: Validate check your answers summary page 		
-        When I click on create case button
+        When I click on primary navigation header tab "Create case", I see selected tab page displayed
         Then Create case page should be displayed
         When I start case with jurisdiction "Family Divorce" case type "XUI Test Case type" and event "Create a case"
         Then I am on case form page
@@ -23,21 +23,21 @@ Feature: Test case type case creation and case details validations
         Then Validate check your answer summery page
 
     Scenario: Validate mandatory fields condition check in page 	
-        When I click on create case button
+        When I click on primary navigation header tab "Create case", I see selected tab page displayed
         Then Create case page should be displayed
         When I start case with jurisdiction "Family Divorce" case type "XUI Test Case type" and event "Create a case"
         Then I am on case form page
         Then Validate mandatory fields functionality
     
     Scenario:  Validate event pages display show condition logic	
-        When I click on create case button
+        When I click on primary navigation header tab "Create case", I see selected tab page displayed
         Then Create case page should be displayed
         When I start case with jurisdiction "Family Divorce" case type "XUI Test Case type" and event "Create a case"
         Then I am on case form page
         Then Validate event pages display show condition logic
 
     Scenario: Validate Case event check your answers summary page links 	
-        When I click on create case button
+        When I click on primary navigation header tab "Create case", I see selected tab page displayed
         Then Create case page should be displayed
         When I start case with jurisdiction "Family Divorce" case type "XUI Test Case type" and event "Create a case"
         Then I am on case form page

@@ -66,7 +66,7 @@ export const getXuiNodeMiddleware = () => {
 
     const routeCredential = {
         password,
-        routes: ['/workallocation/caseworker'],
+        routes: ['/workallocation/caseworker', '/workallocation2/caseworker'],
         scope: 'openid profile roles manage-user create-user',
         userName,
     }

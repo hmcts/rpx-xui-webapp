@@ -2,6 +2,7 @@ Dropdown = require('./webdriver-components/dropdown.js')
 Button = require('./webdriver-components/button.js')
 var BrowserWaits = require("../../support/customWaits");
 
+const headerPage = require('./headerPage');
 class SearchPage {
 
   constructor(){
@@ -35,19 +36,20 @@ class SearchPage {
     this.firstResultCaseLink = $("ccd-search-result>table>tbody>tr:nth-of-type(1)>td:nth-of-type(1)>a"); 
   }
 
+  async waitForSpinnerToDissappear() {
+  await BrowserWaits.waitForConditionAsync(async () => {
+    return !(await $(".loading-spinner-in-action").isPresent());
+  }, 40000);
+};
+
   async _waitForSearchComponent() {
     await BrowserWaits.retryWithActionCallback(async () => {
       await BrowserWaits.waitForElement(this.searchFilterContainer);
-      await this.waitForSpinnerToDissappear();
     }, "Wait for search page, search input form to display");
-    
+    await this.waitForSpinnerToDissappear();
+
   }
 
-  async waitForSpinnerToDissappear() {
-    await BrowserWaits.waitForCondition(async () => {
-      return !(await $(".loading-spinner-in-action").isPresent());
-    });
-  }
   async selectJurisdiction(option){
     await this._waitForSearchComponent();
 
@@ -80,22 +82,30 @@ class SearchPage {
   }
 
   async clickResetButton() {
-    await this._waitForSearchComponent();
-    await BrowserWaits.waitForElement(this.resetButton);
-    await browser.executeScript('arguments[0].scrollIntoView()',
-      this.resetButton); 
-    await this.resetButton.click();
+    await BrowserWaits.retryWithActionCallback(async () => {
+      await this._waitForSearchComponent();
+      await this.waitForSpinnerToDissappear();
+      await BrowserWaits.waitForElement(this.resetButton);
+      await browser.executeScript('arguments[0].scrollIntoView()',
+        this.resetButton);
+      await this.resetButton.click();
+    });
+    
   }
 
   async openFirstCaseInResults(){
+    
     await this.searchResultsTopPagination.isPresent();
     await BrowserWaits.waitForElement(this.firstResultCaseLink);
     var thisPageUrl = await browser.getCurrentUrl();
 
-    await this.waitForSpinnerToDissappear();
-    await browser.executeScript('arguments[0].scrollIntoView()',
-      this.firstResultCaseLink);
-    await this.firstResultCaseLink.click();
+    await BrowserWaits.retryWithActionCallback(async () =>{
+      await this.waitForSpinnerToDissappear();
+      await browser.executeScript('arguments[0].scrollIntoView()',
+        this.firstResultCaseLink);
+      await this.firstResultCaseLink.click();
+    });
+   
 
     await BrowserWaits.waitForPageNavigation(thisPageUrl);
   }

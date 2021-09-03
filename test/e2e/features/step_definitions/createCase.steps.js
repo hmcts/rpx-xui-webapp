@@ -42,6 +42,7 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
     await headerPage.clickCreateCase();
 
   });
+
   Then('Create case page should be displayed', async function () {
      
     expect(await new CreateCaseStartPage().amOnPage()).to.be.true;

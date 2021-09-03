@@ -142,7 +142,7 @@ class Request {
                 retryAttemptCounter++;
                 const status = retVal  ? retVal.status : "unknown";
                 const responseBody = retVal  ? retVal.data : "unknown"; 
-                let errorMessage = retVal ? `STATUS CODE : ${status} =>RESPONSE BODY :  ${responseBody}` : `unknown request error occured  ` 
+                let errorMessage = retVal ? `STATUS CODE : ${status} =>RESPONSE BODY :  ${JSON.stringify(responseBody)}` : `unknown request error occured  ` 
                 retryErrorLogs.push(`\n Retry ${retryAttemptCounter  } : ${errorMessage}`);
 
                 reporterMsg(` Unexpected response : ${errorMessage}`);

@@ -129,7 +129,7 @@ describe('workAllocation.utils', () => {
       expect(tasksWithActionsAllWorkAssigned[0].actions[2]).to.be.equal(RELEASE);
 
       const tasksWithActionsAllWorkUnassigned = assignActionsToTasks(JUDICIAL_AVAILABLE_TASKS.tasks, 'AllWork', '');
-      expect(tasksWithActionsAllWorkUnassigned[0].actions[0]).to.be.equal(COMPLETE);
+      expect(tasksWithActionsAllWorkUnassigned[0].actions[0]).to.be.equal(ASSIGN);
       expect(tasksWithActionsAllWorkUnassigned[0].actions[1]).to.be.equal(GO);
 
       const tasksWithActionsActiveTasksAssignedCurrentUser = assignActionsToTasks(JUDICIAL_MY_TASKS.tasks, 'ActiveTasks', '49db7670-09b3-49e3-b945-b98f4e5e9a99');

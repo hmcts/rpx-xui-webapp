@@ -5,8 +5,6 @@ var ProbateCase = require('../pageObjects/ProbateCase');
 var DivorceCase = require('../pageObjects/Divorcecase');
 var IACCase = require('../pageObjects/iacCase');
 
-var BrowserCookiesUtil = require('../pageObjects/browserCookiesUtil');
-
 var CaseManager = require('../pageObjects/common/CaseManager');
 
 var { defineSupportCode } = require('cucumber');
@@ -74,23 +72,5 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Then('I am on case form page', async function () {
         await caseManager.AmOnCCDCaseEditPage();
-    });
-
-    When('I click \'Accept additional cookies\'', async function () {
-        await BrowserCookiesUtil.acceptCookies();
-    });
-
-    Then('I see the analytical cookies', async function () {
-        expect(await BrowserCookiesUtil.isCookiePresent('_ga')).to.be.true;
-        expect(await BrowserCookiesUtil.isCookiePresent('_gid')).to.be.true;
-    });
-
-    When('I click \'Reject additional cookies\'', async function () {
-        await BrowserCookiesUtil.rejectCookies();
-    });
-
-    Then('I don\'t see any analytical cookie', async function () {
-        expect(await BrowserCookiesUtil.isCookiePresent('_ga')).to.be.false;
-        expect(await BrowserCookiesUtil.isCookiePresent('_gid')).to.be.false;
     });
 });

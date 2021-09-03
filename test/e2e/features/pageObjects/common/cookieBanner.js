@@ -1,7 +1,5 @@
 
-
-const BrowserWaits = require('../../support/customWaits');
-
+const BrowserWaits = require('../../../support/customWaits');
 
 class BrowserCookiesUtil{
 
@@ -24,7 +22,6 @@ class BrowserCookiesUtil{
             }
         }
         return expectedCookie;
-
     }
 
     async isCookiePresent(cookieName){
@@ -41,6 +38,14 @@ class BrowserCookiesUtil{
     async rejectCookies() {
         await this.rejectCookiesBtn.click();
         await BrowserWaits.waitForElement(this.hideMessageBtn);
+    }
+
+  async deleteAllCookies(){
+    // browser.executeScript('window.sessionStorage.clear();');
+    // browser.executeScript('window.localStorage.clear();');
+    // const deleteCookies = await browser.manage().deleteAllCookies();
+    // return deleteCookies;
+    browser.close();
     }
 
 }

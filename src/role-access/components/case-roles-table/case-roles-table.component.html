@@ -13,7 +13,7 @@
   <ng-container *ngFor="let item of items">
     <tr class="govuk-table__row" [ngClass]="{'hide-border-bottom ': item.open}">
       <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{item.name}}</td>
-      <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{item.role}}</td>
+      <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{item.roleName}}</td>
       <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{item.location}}</td>
       <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{item.start | date:'dd MMMM yyyy'}}</td>
       <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{item.end | date:'dd MMMM yyyy'}}</td>
@@ -32,11 +32,11 @@
            [routerLink]="['/', 'role-access', 'allocate-role', action.id]"
            [queryParams]="{
            'caseId': caseDetails.case_id,
-           'userType': userType,
+           'roleCategory': roleCategory,
            'assignmentId': item.id,
            'actorId': item.actorId,
            'userName': item.name,
-           'typeOfRole': item.role}">{{action.title}}</a>
+           'typeOfRole': item.roleName}">{{action.title}}</a>
       </td>
     </tr>
   </ng-container>
@@ -45,7 +45,7 @@
 <dl class="govuk-summary-list" *ngIf="!roles ||  !roles.length">
   <div class="govuk-summary-list__row">
     <dd class="govuk-summary-list__value">
-      There are no {{userType === 'legalOps' ? 'legal ops' : userType }} roles for this case.
+      There are no {{roleCategory === 'JUDICIAL' ? 'judicial' : 'legal ops' }} roles for this case.
     </dd>
   </div>
 </dl>

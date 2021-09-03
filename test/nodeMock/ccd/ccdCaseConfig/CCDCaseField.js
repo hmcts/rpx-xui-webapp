@@ -88,9 +88,14 @@ class CCDcaseField {
                 break
             case "OrderSummary":
             case "CaseLink":
-                template.field_type.id = "TextCaseReference";
-                template.field_type.type = "Text";
-                template.field_type.regular_expression = "(?:^[0-9]{16}$|^\\d{4}-\\d{4}-\\d{4}-\\d{4}$)";
+
+                template.field_type.id = "CaseLink";
+                template.field_type.type = "Complex";
+
+                const caseRef = this.getCCDFieldTemplateCopy({ type: "Text", id: "CaseReference", label: "Case Reference" });
+                caseRef.field_type.id = "TextCaseReference";
+                caseRef.field_type.regular_expression = "(?:^[0-9]{16}$|^\\d{4}-\\d{4}-\\d{4}-\\d{4}$)";
+                template.field_type.complex_fields = [caseRef];
                 
                 break;
             case "Organisation":

@@ -13,4 +13,4 @@ export const PERSON_ERROR_MESSAGE = {
   title: 'There is a problem',
   description: 'You must select a name',
   fieldId: 'search-person-error-message'
-}
+};

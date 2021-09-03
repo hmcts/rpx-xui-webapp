@@ -34,27 +34,38 @@ export const ROUTES: Routes = [
   },
   {
     path: 'allocate-role',
-    resolve: { validRoles: RoleAllocationsResolver },
-    component: AllocateRoleHomeComponent,
+    component: null,
     children: [
       {
-        path: '',
-        component: null,
+        path: 'allocate',
+        component: AllocateRoleHomeComponent,
+        resolve: { validRoles: RoleAllocationsResolver },
         canActivate: [HealthCheckGuard],
         data: {
           title: 'HMCTS Manage cases | Role and access | Allocate a role',
         }
+      },
+      {
+        path: 'reallocate',
+        component: AllocateRoleHomeComponent,
+        canActivate: [HealthCheckGuard],
+        data: {
+          title: 'HMCTS Manage cases | Role and access | Reallocate a role',
+        }
+      },
+      {
+        path: 'remove',
+        component: RemoveRoleComponent,
+        canActivate: [HealthCheckGuard],
+        resolve: {
+          roles: CaseRolesResolverService
+        },
+        data: {
+          title: 'HMCTS Manage cases | Role and access | Remove a role',
+        }
       }
     ]
   },
-  {
-    path: 'remove/:cid/:roleId',
-    component: RemoveRoleComponent,
-    canActivate: [HealthCheckGuard],
-    resolve: {
-      roles: CaseRolesResolverService
-    }
-  }
 ];
 
 export const roleAccessRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);

@@ -4,10 +4,9 @@ import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { CaseRole } from '../../../role-access/models/case-role.interface';
 import { LocationInfo, UserDetails } from '../../../app/models/user-details.model';
 import * as fromRoot from '../../../app/store';
-import { RoleExclusion } from '../../../role-access/models';
+import { CaseRole, RoleExclusion } from '../../../role-access/models';
 import { RoleExclusionsService } from '../../../role-access/services';
 
 @Component({

@@ -1,7 +1,7 @@
-import { UserRole } from '../../app/models';
+import { RoleCategory } from './allocate-role.enum';
 
 export interface Role {
   roleId: string;
   roleName: string;
-  roleType?: UserRole;
+  roleCategory?: RoleCategory;
 }

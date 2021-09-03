@@ -79,8 +79,8 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
         await caseManager.acceptCookies();
     });
 
-    Then('I see all analytical cookies', async function () {
-        await caseManager.AmOnCaseDetailsPage();
+    Then('I see the analytical cookies', async function () {
+        await caseManager.verifyCookies();
     });
 
     When('I click \'Reject additional cookies\'', async function () {
@@ -88,6 +88,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     Then('I don\'t see any analytical cookie', async function () {
-        await caseManager.AmOnCaseDetailsPage();
+        await caseManager.verifyCookies();
+        await caseManager.checkCookies();
     });
 });

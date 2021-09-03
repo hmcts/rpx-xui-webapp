@@ -3,59 +3,59 @@ import { PersonRole } from "../interfaces/person";
 
 export const PERSON = [
   {
-    id: 'id100',
+    id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3',
     name: 'Jacky Collins',
     email: 'jacky.collins@judicial.com',
     domain: PersonRole.JUDICIAL,
     knownAs: 'Hearing Judge'
   },
   {
-    id: 'id101',
+    id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3',
     name: 'Jasmine Chiswell',
     email: 'jasmine.chiswell@judicial.com',
     domain: PersonRole.JUDICIAL,
     knownAs: 'Lead Judge'
   },
   {
-    id: 'id102',
+    id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3',
     name: 'Jamie Vardy',
     email: 'jamie.vardy@judicial.com',
     domain: PersonRole.JUDICIAL,
     knownAs: 'Lead Judge'
   },
   {
-    id: 'id103',
+    id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3',
     name: 'James Priest',
     email: 'james.priest@judicial.com',
     domain: PersonRole.JUDICIAL,
     knownAs: 'Hearing Judge'
   },
   {
-    id: 'id104',
+    id: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
     name: 'Jacky Collins',
     email: 'jacky.collins@legalops.com',
     domain: PersonRole.CASEWORKER
   },
   {
-    id: 'id105',
+    id: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
     name: 'Jasmine Chiswell',
     email: 'jasmine.chiswell@legalops.com',
     domain: PersonRole.CASEWORKER
   },
   {
-    id: 'id106',
+    id: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
     name: 'Jamie Vardy',
     email: 'jamie.vardy@legalops.com',
     domain: PersonRole.CASEWORKER
   },
   {
-    id: 'id107',
+    id: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
     name: 'James Priest',
     email: 'James Priest@legalops.com',
     domain: PersonRole.CASEWORKER
   },
   {
-    id: 'id108',
+    id: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
     name: 'Michael Jackson',
     email: 'michael.jackson@legalops.com',
     domain: PersonRole.CASEWORKER
@@ -1785,7 +1785,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_category: 'EEA',
       case_name: 'William Priest',
       warnings: true,
-      permissions: ['Own', 'Execute', 'Manage'],
+      permissions: ['Read', 'Manage'],
     },
     {
       assignee: '44d5d2c2-7112-4bef-8d05-baaa610bf463',
@@ -1798,7 +1798,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'Jo Fly',
-      permissions: ['Execute', 'Manage'],
+      permissions: ['Read', 'Manage', 'Execute'],
     },
     {
       assignee: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
@@ -1811,7 +1811,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Francis Gigs',
-      permissions: ['Own', 'Execute', 'Manage'],
+      permissions: ['Execute'],
     },
     {
       assignee: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
@@ -1824,7 +1824,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'Alan Jonson',
-      permissions: ['Execute', 'Manage'],
+      permissions: ['Read', 'Manage'],
     },
     {
       assignee: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
@@ -1837,7 +1837,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'Michael Jackson',
-      permissions: ['Manage'],
+      permissions: ['Cancel', 'Manage'],
     },
     {
       assignee: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
@@ -1850,7 +1850,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'George Bush',
-      permissions: [],
+      permissions: ['Manage', 'Cancel'],
     },
     {
       assignee: null,
@@ -1863,7 +1863,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'refusalOfHumanRights',
       case_name: 'Taylor Swift',
-      permissions: ['Own', 'Execute', 'Manage'],
+      permissions: ['Read', 'Manage'],
     },
     {
       assignee: null,
@@ -1876,7 +1876,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'asylum',
       case_name: 'Kenny Young',
-      permissions: ['Manage', 'Execute'],
+      permissions: ['Read'],
     },
     {
       assignee: null,
@@ -1889,7 +1889,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'EEA',
       case_name: 'William Paraphrase',
-      permissions: ['Manage'],
+      permissions: ['Read', 'Manage'],
     },
     {
       assignee: null,
@@ -1902,7 +1902,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       case_id: '1620409659381330',
       case_category: 'Protection',
       case_name: 'Jo Flying',
-      permissions: [],
+      permissions: ['Read', 'Manage'],
     },
     {
       assignee: null,

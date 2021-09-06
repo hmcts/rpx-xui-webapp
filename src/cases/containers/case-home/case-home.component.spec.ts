@@ -51,6 +51,10 @@ describe('CaseHomeComponent', () => {
     fixture.detectChanges();
   });
 
+  beforeAll(() => {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+  });
+
   describe('paramHandler', () => {
 
     it('should create params for DRAFT_DELETED', () => {

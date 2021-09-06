@@ -3,10 +3,18 @@
 
 module.exports = function (config) {
   config.set({
+    defaultTimeoutInterval: 60000,
+    browserNoActivityTimeout: 60000,
+    browserDisconnectTimeout: 60000,
     basePath: '',
-    frameworks: ['jasmine', '@angular-devkit/build-angular'],
+    frameworks: ['parallel', 'jasmine', '@angular-devkit/build-angular'],
+    parallelOptions: {
+      executors: 3,
+      shardStrategy: 'round-robin'
+    },
     plugins: [
       require('karma-jasmine'),
+      require('karma-parallel'),
       require('karma-chrome-launcher'),
       require('karma-jasmine-html-reporter'),
       require('karma-spec-reporter'),

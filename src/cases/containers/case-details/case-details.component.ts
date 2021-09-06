@@ -26,7 +26,9 @@ export class CaseDetailsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this.$caseIdSubscription.unsubscribe();
+    if (this.$caseIdSubscription) {
+      this.$caseIdSubscription.unsubscribe();
+    }
   }
 
 

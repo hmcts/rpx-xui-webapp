@@ -2,11 +2,13 @@ import MockAdapter from 'axios-mock-adapter';
 import { HttpMockAdapter } from '../common/httpMockAdapter';
 import {
   ALL_TASKS,
+  ASSIGNED_CASE_TASKS,
   CASEWORKER_AVAILABLE_TASKS,
   CASEWORKER_MY_TASKS,
   JUDICIAL_AVAILABLE_TASKS,
   JUDICIAL_MY_TASKS,
-  JUDICIAL_WORKERS
+  JUDICIAL_WORKERS,
+  UNASSIGNED_CASE_TASKS
 } from './constants/mock.data';
 
 export const init = () => {
@@ -160,10 +162,7 @@ export const init = () => {
 
   mock.onGet(getTasksByCaseIdUrl).reply(config => {
     // return an array in the form of [status, data, headers]
-    const caseId = config.url.match(/[a-fA-F0-9]{16}/);
-    let tasks = ALL_TASKS.tasks.filter(task => task.case_id === caseId[0]);
-    // note: added next line to ensure results returned in all circumstances
-    tasks = tasks === [] ? tasks : JUDICIAL_AVAILABLE_TASKS.tasks;
+    const tasks = [...ASSIGNED_CASE_TASKS.tasks, ...UNASSIGNED_CASE_TASKS.tasks];
     return [
       200,
       tasks,

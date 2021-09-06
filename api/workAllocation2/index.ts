@@ -79,11 +79,15 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
 export async function searchCase(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
     const searchRequest = req.body.searchRequest;
-    const view = searchRequest.search_by === 'judge' ? 'judicial' : 'caseworker';
-    const basePath = prepareSearchCaseUrl(baseWorkAllocationTaskUrl, `myCases?view=${view}`);
-    const postCasePath = preparePaginationUrl(req, basePath);
-
+    const view = req.body.view;
+    let basePath = '';
     // TODO below call mock api will be replaced when real api is ready
+    if (view === 'MyCases') {
+      basePath = prepareSearchCaseUrl(baseWorkAllocationTaskUrl, `myCases?view=${searchRequest.search_by}`);
+    } else if (view === 'AllWorkCases') {
+      basePath = prepareSearchCaseUrl(baseWorkAllocationTaskUrl, `allWorkCases?view=${searchRequest.search_by}`);
+    }
+    const postCasePath = preparePaginationUrl(req, basePath);
     const promise = await handlePost(postCasePath, searchRequest, req);
 
     const {status, data} = promise;

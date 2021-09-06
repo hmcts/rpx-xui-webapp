@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { UserInfo } from '../../../app/models';
+import { AppUtils } from '../../../app/app-utils';
+import { UserInfo, UserRole } from '../../../app/models';
 import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
 import { SortOrder } from '../../enums';
 import { Caseworker, Location } from '../../interfaces/common';
 import { FieldConfig, SortField } from '../../models/common';
-import { PaginationParameter, SearchTaskRequest } from '../../models/dtos';
+import { PaginationParameter, SearchCaseRequest } from '../../models/dtos';
 import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-case-list-wrapper.component';
 
 @Component({
@@ -26,59 +27,38 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent {
     page_size: 25
   };
   public get emptyMessage(): string {
-    return ListConstants.EmptyMessage.AllWork;
+    return ListConstants.EmptyMessage.AllWorkCases;
   }
 
   public get sortSessionKey(): string {
-    return SortConstants.Session.AllWork;
+    return SortConstants.Session.AllWorkCases;
   }
 
   public get pageSessionKey(): string {
-    return PageConstants.Session.AllWork;
+    return PageConstants.Session.AllWorkCases;
   }
 
   public get view(): string {
-    return ListConstants.View.AllWork;
+    return ListConstants.View.AllWorkCases;
   }
 
   public get fields(): FieldConfig[] {
-    return ConfigConstants.AllWorkTasks;
+    return ConfigConstants.AllWorkCases;
   }
 
-/*  public loadCaseWorkersAndLocations() {
-    this.locationService.getLocations().subscribe(locations => {
-      this.locations = [...locations];
-    }, error => {
-      handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
-    });
-  }*/
-
-  public getSearchTaskRequestPagination(): SearchTaskRequest {
+  public getSearchCaseRequestPagination(): SearchCaseRequest {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      const isJudge = userInfo.roles.some(role => ListConstants.JUDGE_ROLES.includes(role));
+      const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
       return {
-        search_parameters: [
-        // this.getLocationParameter(),
-        this.getCaseworkerParameter()
-        ],
+        search_parameters: [],
         sorting_parameters: [this.getSortParameter()],
-        search_by: isJudge ? 'judge' : 'caseworker',
+        search_by: userRole,
         pagination_parameters: this.getPaginationParameter()
       };
     }
   }
-
-/*  private getLocationParameter() {
-    let values: string[];
-    if (this.selectedLocation && this.selectedLocation.id !== FilterConstants.Options.Locations.ALL.id) {
-      values = [ this.selectedLocation.id ];
-    } else {
-      values = this.locations.map(loc => loc.id);
-    }
-    return { key: 'location', operator: 'IN', values };
-  }*/
 
   private getCaseworkerParameter() {
     let values: string[];

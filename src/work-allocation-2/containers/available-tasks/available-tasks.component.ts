@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 
-import { UserInfo } from '../../../app/models/user-details.model';
+import { AppUtils } from '../../../app/app-utils';
+import { UserInfo, UserRole } from '../../../app/models';
 import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
 import { InfoMessage, InfoMessageType, TaskActionIds } from '../../enums';
 import { FieldConfig } from '../../models/common';
@@ -39,14 +40,14 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      const isJudge = userInfo.roles.some(role => ListConstants.JUDGE_ROLES.includes(role));
+      const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
       return {
         search_parameters: [
           this.getLocationParameter(),
           {key: 'state', operator: 'IN', values: ['unassigned']}
         ],
         sorting_parameters: [this.getSortParameter()],
-        search_by: isJudge ? 'judge' : 'caseworker',
+        search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
         pagination_parameters: this.getPaginationParameter()
       };
     }

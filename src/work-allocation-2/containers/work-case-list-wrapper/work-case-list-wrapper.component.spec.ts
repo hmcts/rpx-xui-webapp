@@ -59,6 +59,10 @@ describe('WorkCaseListWrapperComponent', () => {
     fixture.detectChanges();
   }));
 
+  afterEach(() => {
+    fixture.destroy();
+  });
+
   it('should create', () => {
     expect(component).toBeDefined();
   });

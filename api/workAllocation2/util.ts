@@ -4,6 +4,7 @@ import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
 
+import { CASE_ALLOCATOR_ROLE } from '../user/constants';
 import { TaskPermission, VIEW_PERMISSIONS_ACTIONS_MATRIX, ViewType } from './constants/actions';
 import { Action, Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/common';
 import { Person, PersonRole } from './interfaces/person';
@@ -115,10 +116,7 @@ export function assignActionsToCases(cases: any[], view: any): any[] {
   const casesWithActions: any[] = [];
   if (cases) {
     for (const item of cases) {
-      // Note: There is no current logic to determine whether assigned or unassigned
-      // This was debated for EUI-3619
-      // As actions can change based on whether assigned or not, there might need to be a check here
-      const actions: Action[] = getActionsByPermissions(view, item.permissions);
+      const actions: Action[] = getActionsFromAllocatorRole(CASE_ALLOCATOR_ROLE);
       const caseWithAction = {...item, actions};
       casesWithActions.push(caseWithAction);
     }
@@ -208,6 +206,14 @@ export function getActionsByPermissions(view, permissions: TaskPermission[]): Ac
   // Note sorting is implemented to order all possible action lists the same
   // Currently sorting by id but can be changed
   return actionList.sort((a, b) => a.id.localeCompare(b.id));
+}
+
+export function getActionsFromAllocatorRole(userRole: any): Action[] {
+  let actionList: Action[] = [];
+  if (userRole === CASE_ALLOCATOR_ROLE) {
+    actionList = (VIEW_PERMISSIONS_ACTIONS_MATRIX.AllCases.Manage);
+  }
+  return actionList;
 }
 
 export function applySearchFilter(person: Person, domain: string, searchTerm: any): boolean {

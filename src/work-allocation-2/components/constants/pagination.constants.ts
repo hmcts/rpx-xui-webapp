@@ -1,7 +1,8 @@
 const SESSION = {
   AvailableTasks: 'availableTasksPage',
   MyTasks: 'myTasksPage',
-  AllWork: 'allWorkTaskPage'
+  AllWork: 'allWorkTaskPage',
+  AllWorkCases: 'allWorkCasesPage'
 };
 
 export const PAGE_CONSTANTS = {

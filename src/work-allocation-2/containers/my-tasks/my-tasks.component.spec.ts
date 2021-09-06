@@ -168,4 +168,8 @@ describe('MyTasksComponent', () => {
     expect(component.fields[0].type).toBe(FieldType.CASE_NAME);
     expect(component.fields[4].type).toBe(FieldType.TASK_NAME);
   });
+
+  afterEach(() => {
+    fixture.destroy();
+  });
 });

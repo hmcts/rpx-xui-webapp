@@ -82,6 +82,8 @@ export function getMockCases(): Case[] {
 export function getMockTasks(): Task[] {
   return [
     {
+      assignee: null,
+      assigneeName: null,
       id: '1549476532065586',
       case_id: '1549476532065586',
       taskId: '1549476532065586',
@@ -103,6 +105,8 @@ export function getMockTasks(): Task[] {
       ]
     },
     {
+      assignee: null,
+      assigneeName: null,
       id: '1549476532065587',
       case_id: '1549476532065587',
       taskId: '1549476532065587',

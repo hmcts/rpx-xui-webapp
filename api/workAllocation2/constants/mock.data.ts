@@ -1,5 +1,6 @@
 /* tslint:disable */
 import { PersonRole } from "../interfaces/person";
+import  { v4 as uuidv4 } from 'uuid';
 
 export const PERSON = [
   {
@@ -1771,9 +1772,153 @@ export const JUDICIAL_WORKERS = [
   }
 ]
 
+export const ASSIGNED_CASE_TASKS = {
+  tasks: [
+    {
+      assignee: '44d5d2c2-7112-4bef-8d05-baaa610bf463',
+      assigneeName: 'Judicial User',
+      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc1',
+      task_title: 'assigned Own Execute Manage',
+      dueDate: '2021-05-05T16:00:00.000+0000',
+      location_name: 'Birmingham',
+      location_id: '231596',
+      case_id: '1620409659381330',
+      case_category: 'EEA',
+      case_name: 'William Priest',
+      warnings: true,
+      permissions: ['Own', 'Execute', 'Manage'],
+    },
+    {
+      assignee: '44d5d2c2-7112-4bef-8d05-baaa610bf463',
+      assigneeName: 'Judicial User',
+      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc2',
+      task_title: 'assigned Manage Execute',
+      dueDate: '2021-05-12T16:00:00.000+0000',
+      location_name: 'Glasgow',
+      location_id: '366559',
+      case_id: '1620409659381330',
+      case_category: 'Protection',
+      case_name: 'Jo Fly',
+      permissions: ['Manage', 'Execute'],
+    },
+    {
+      assignee: 'bce92ab6-0023-46e3-886b-7f61384df090',
+      assigneeName: 'Judicial User 10',
+      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc3',
+      task_title: 'assigned Own Manage Execute',
+      dueDate: '2021-05-18T16:00:00.000+0000',
+      location_name: 'Manchester',
+      location_id: '512401',
+      case_id: '1620409659381330',
+      case_category: 'refusalOfHumanRights',
+      case_name: 'Francis Gigs',
+      permissions: ['Own', 'Execute', 'Manage'],
+    },
+    {
+      assignee: 'bce92ab6-0023-46e3-886b-7f61384df090',
+      assigneeName: 'Judicial User 10',
+      id: uuidv4(),
+      task_title: 'assigned Manage Execute',
+      dueDate: '2021-05-20T16:00:00.000+0000',
+      location_name: 'Newcastle',
+      location_id: '366796',
+      case_id: '1620409659381330',
+      case_category: 'asylum',
+      case_name: 'Alan Jonson',
+      permissions: ['Manage', 'Execute'],
+    },
+    {
+      assignee: 'bce92ab6-0023-46e3-886b-7f61384df090',
+      assigneeName: 'Judicial User 10',
+      id: uuidv4(),
+      task_title: 'assigned Manage',
+      dueDate: '2021-05-20T16:00:00.000+0000',
+      location_name: 'Newcastle',
+      location_id: '366796',
+      case_id: '1620409659381330',
+      case_category: 'asylum',
+      case_name: 'Alan Jonson',
+      permissions: ['Manage'],
+    },
+    {
+      assignee: 'bce92ab6-0023-46e3-886b-7f61384df090',
+      assigneeName: 'Judicial User 10',
+      id: uuidv4(),
+      task_title: 'assigned',
+      dueDate: '2021-05-20T16:00:00.000+0000',
+      location_name: 'Newcastle',
+      location_id: '366796',
+      case_id: '1620409659381330',
+      case_category: 'asylum',
+      case_name: 'Alan Jonson',
+      permissions: [],
+    }
+  ]
+};
+
+export const UNASSIGNED_CASE_TASKS = {
+  tasks: [
+    {
+      assignee: null,
+      assigneeName: null,
+      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc1',
+      task_title: 'Unassigned Own Execute Manage',
+      dueDate: '2021-05-05T16:00:00.000+0000',
+      location_name: 'Birmingham',
+      location_id: '231596',
+      case_id: '1620409659381330',
+      case_category: 'EEA',
+      case_name: 'William Priest',
+      warnings: true,
+      permissions: ['Own', 'Execute', 'Manage'],
+    },
+    {
+      assignee: null,
+      assigneeName: null,
+      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc2',
+      task_title: 'Unassigned Manage Execute',
+      dueDate: '2021-05-12T16:00:00.000+0000',
+      location_name: 'Glasgow',
+      location_id: '366559',
+      case_id: '1620409659381330',
+      case_category: 'Protection',
+      case_name: 'Jo Fly',
+      permissions: ['Manage', 'Execute'],
+    },
+    {
+      assignee: null,
+      assigneeName: null,
+      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc3',
+      task_title: 'Unassigned Manage',
+      dueDate: '2021-05-18T16:00:00.000+0000',
+      location_name: 'Manchester',
+      location_id: '512401',
+      case_id: '1620409659381330',
+      case_category: 'refusalOfHumanRights',
+      case_name: 'Francis Gigs',
+      permissions: ['Manage'],
+    },
+    {
+      assignee: null,
+      assigneeName: null,
+      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc5',
+      task_title: 'Unassigned',
+      dueDate: '2021-05-20T16:00:00.000+0000',
+      location_name: 'Newcastle',
+      location_id: '366796',
+      case_id: '1620409659381330',
+      case_category: 'asylum',
+      case_name: 'Alan Jonson',
+      permissions: [],
+    }
+  ]
+};
+
 export const JUDICIAL_AVAILABLE_TASKS = {
   tasks: [
     {
+      assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc1',
       task_title: 'Review FTPA application',
       dueDate: '2021-05-05T16:00:00.000+0000',
@@ -1786,6 +1931,8 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       permissions: ['Read', 'Manage'],
     },
     {
+      assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc2',
       task_title: 'Review application decision',
       dueDate: '2021-05-12T16:00:00.000+0000',
@@ -1797,6 +1944,8 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       permissions: ['Read', 'Manage', 'Execute'],
     },
     {
+      assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc3',
       task_title: 'Generate decision and reason',
       dueDate: '2021-05-18T16:00:00.000+0000',
@@ -1808,7 +1957,9 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       permissions: ['Execute'],
     },
     {
-      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc4',
+      assignee: null,
+      assigneeName: null,
+      id: uuidv4(),
       task_title: 'Follow-up non-standard direction',
       dueDate: '2021-05-20T16:00:00.000+0000',
       location_name: 'Newcastle',
@@ -1819,6 +1970,8 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       permissions: ['Read', 'Manage'],
     },
     {
+      assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc5',
       task_title: 'Review FTPA application',
       dueDate: '2021-05-05T16:00:00.000+0000',
@@ -1830,6 +1983,8 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       permissions: ['Cancel', 'Manage'],
     },
     {
+      assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc6',
       task_title: 'Review application decision',
       dueDate: '2021-05-12T16:00:00.000+0000',
@@ -1841,6 +1996,8 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       permissions: ['Manage', 'Cancel'],
     },
     {
+      assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc7',
       task_title: 'Generate decision and reason',
       dueDate: '2021-05-18T16:00:00.000+0000',
@@ -1852,6 +2009,8 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       permissions: ['Read', 'Manage'],
     },
     {
+      assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc8',
       task_title: 'Follow-up non-standard direction',
       dueDate: '2021-05-20T16:00:00.000+0000',
@@ -1863,6 +2022,8 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       permissions: ['Read'],
     },
     {
+      assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc9',
       task_title: 'Review FTPA application',
       dueDate: '2021-05-05T16:00:00.000+0000',
@@ -1874,6 +2035,8 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       permissions: ['Read', 'Manage'],
     },
     {
+      assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bd0',
       task_title: 'Review application decision',
       dueDate: '2021-05-12T16:00:00.000+0000',
@@ -1885,6 +2048,8 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       permissions: ['Read', 'Manage'],
     },
     {
+      assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bd1',
       task_title: 'Generate decision and reason',
       dueDate: '2021-05-18T16:00:00.000+0000',
@@ -1896,6 +2061,8 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       permissions: ['Execute'],
     },
     {
+      assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bd2',
       task_title: 'Follow-up non-standard direction',
       dueDate: '2021-05-20T16:00:00.000+0000',
@@ -1907,6 +2074,8 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       permissions: ['Read', 'Manage'],
     },
     {
+      assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bd3',
       task_title: 'Review FTPA application',
       dueDate: '2021-05-05T16:00:00.000+0000',
@@ -1918,6 +2087,8 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       permissions: ['Cancel', 'Manage'],
     },
     {
+      assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bd4',
       task_title: 'Review application decision',
       dueDate: '2021-05-12T16:00:00.000+0000',
@@ -1929,6 +2100,8 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       permissions: ['Manage', 'Cancel'],
     },
     {
+      assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bd5',
       task_title: 'Generate decision and reason',
       dueDate: '2021-05-18T16:00:00.000+0000',
@@ -1940,6 +2113,8 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       permissions: ['Read', 'Manage'],
     },
     {
+      assignee: null,
+      assigneeName: null,
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bd6',
       task_title: 'Follow-up non-standard direction',
       dueDate: '2021-05-20T16:00:00.000+0000',
@@ -1951,6 +2126,8 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       permissions: ['Read'],
     },
     {
+      assignee: null,
+      assigneeName: null,
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc17',
       task_title: 'Review FTPA application',
       dueDate: '2021-05-05T16:00:00.000+0000',
@@ -1962,6 +2139,8 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       permissions: ['Read', 'Manage'],
     },
     {
+      assignee: null,
+      assigneeName: null,
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc18',
       task_title: 'Review application decision',
       dueDate: '2021-05-12T16:00:00.000+0000',
@@ -1973,6 +2152,8 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       permissions: ['Read', 'Manage'],
     },
     {
+      assignee: null,
+      assigneeName: null,
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc19',
       task_title: 'Generate decision and reason',
       dueDate: '2021-05-18T16:00:00.000+0000',
@@ -1984,6 +2165,8 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       permissions: ['Execute'],
     },
     {
+      assignee: null,
+      assigneeName: null,
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc20',
       task_title: 'Follow-up non-standard direction',
       dueDate: '2021-05-20T16:00:00.000+0000',
@@ -1995,6 +2178,8 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       permissions: ['Read', 'Manage'],
     },
     {
+      assignee: null,
+      assigneeName: null,
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc21',
       task_title: 'Review FTPA application',
       dueDate: '2021-05-05T16:00:00.000+0000',
@@ -2006,6 +2191,8 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       permissions: ['Cancel', 'Manage'],
     },
     {
+      assignee: null,
+      assigneeName: null,
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc22',
       task_title: 'Review application decision',
       dueDate: '2021-05-12T16:00:00.000+0000',
@@ -2017,6 +2204,8 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       permissions: ['Manage', 'Cancel'],
     },
     {
+      assignee: null,
+      assigneeName: null,
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc23',
       task_title: 'Generate decision and reason',
       dueDate: '2021-05-18T16:00:00.000+0000',
@@ -2028,6 +2217,8 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       permissions: ['Read', 'Manage'],
     },
     {
+      assignee: null,
+      assigneeName: null,
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc24',
       task_title: 'Follow-up non-standard direction',
       dueDate: '2021-05-20T16:00:00.000+0000',
@@ -2039,6 +2230,8 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       permissions: ['Read'],
     },
     {
+      assignee: null,
+      assigneeName: null,
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc25',
       task_title: 'Review FTPA application',
       dueDate: '2021-05-05T16:00:00.000+0000',
@@ -2050,6 +2243,8 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       permissions: ['Read', 'Manage'],
     },
     {
+      assignee: null,
+      assigneeName: null,
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc26',
       task_title: 'Review application decision',
       dueDate: '2021-05-12T16:00:00.000+0000',
@@ -2061,6 +2256,8 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       permissions: ['Read', 'Manage', 'Execute'],
     },
     {
+      assignee: null,
+      assigneeName: null,
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc27',
       task_title: 'Generate decision and reason',
       dueDate: '2021-05-18T16:00:00.000+0000',
@@ -2072,6 +2269,8 @@ export const JUDICIAL_AVAILABLE_TASKS = {
       permissions: ['Execute'],
     },
     {
+      assignee: null,
+      assigneeName: null,
       id: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc28',
       task_title: 'Follow-up non-standard direction',
       dueDate: '2021-05-20T16:00:00.000+0000',

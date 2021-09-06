@@ -5,6 +5,7 @@ import { ASSIGN, CLAIM, CLAIM_AND_GO, COMPLETE, GO, REASSIGN, RELEASE, TaskPermi
 import { JUDICIAL_AVAILABLE_TASKS, JUDICIAL_MY_TASKS } from './constants/mock.data';
 import { Caseworker, CaseworkerApi, Location, LocationApi } from './interfaces/common';
 import { PersonRole } from './interfaces/person';
+import { Task } from './interfaces/task';
 import { applySearchFilter,
   assignActionsToTasks,
   getActionsByPermissions,
@@ -14,6 +15,88 @@ import { applySearchFilter,
   preparePaginationUrl,
   preparePostTaskUrlAction,
   prepareSearchTaskUrl } from './util';
+
+const myTasks = [
+  {
+    id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba1',
+    assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
+    task_title: 'Review FTPA application',
+    dueDate: '2021-05-05T16:00:00.000+0000',
+    location_name: 'Birmingham',
+    location_id: '231596',
+    case_id: '1620409659381330',
+    case_category: 'EEA',
+    case_name: 'James Priest',
+    permissions: ['Read', 'Manage'],
+  },
+  {
+    id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba2',
+    assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
+    task_title: 'Review application decision',
+    dueDate: '2021-05-12T16:00:00.000+0000',
+    location_name: 'Glasgow',
+    location_id: '366559',
+    case_id: '1620409659381330',
+    case_category: 'Protection',
+    case_name: 'Ella Ryan',
+    permissions: ['Execute', 'Manage'],
+  },
+  {
+    id: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba3',
+    assignee: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
+    task_title: 'Generate decision and reason',
+    dueDate: '2021-05-18T16:00:00.000+0000',
+    location_name: 'Manchester',
+    location_id: '512401',
+    case_id: '1620409659381330',
+    case_category: 'refusalOfHumanRights',
+    case_name: 'Jo Jackson',
+    permissions: ['Read'],
+  },
+];
+
+const availableTasks = [
+  {
+    assignee: null,
+    assigneeName: null,
+    id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc1',
+    task_title: 'Review FTPA application',
+    dueDate: '2021-05-05T16:00:00.000+0000',
+    location_name: 'Birmingham',
+    location_id: '231596',
+    case_id: '1620409659381330',
+    case_category: 'EEA',
+    case_name: 'William Priest',
+    warnings: true,
+    permissions: ['Read', 'Manage'],
+  },
+  {
+    assignee: null,
+    assigneeName: null,
+    id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc2',
+    task_title: 'Review application decision',
+    dueDate: '2021-05-12T16:00:00.000+0000',
+    location_name: 'Glasgow',
+    location_id: '366559',
+    case_id: '1620409659381330',
+    case_category: 'Protection',
+    case_name: 'Jo Fly',
+    permissions: ['Read', 'Manage', 'Execute'],
+  },
+  {
+    assignee: null,
+    assigneeName: null,
+    id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc3',
+    task_title: 'Generate decision and reason',
+    dueDate: '2021-05-18T16:00:00.000+0000',
+    location_name: 'Manchester',
+    location_id: '512401',
+    case_id: '1620409659381330',
+    case_category: 'refusalOfHumanRights',
+    case_name: 'Francis Gigs',
+    permissions: ['Execute'],
+  },
+];
 
 describe('workAllocation.utils', () => {
 
@@ -118,26 +201,26 @@ describe('workAllocation.utils', () => {
   describe('assignActionsToTasks', () => {
 
     it('should assign actions to tasks', () => {
-      const tasksWithActions = assignActionsToTasks(JUDICIAL_MY_TASKS.tasks, 'MyTasks', '');
+      const tasksWithActions = assignActionsToTasks(myTasks, 'MyTasks', '');
       expect(tasksWithActions[0].actions[0]).to.be.equal(GO);
       expect(tasksWithActions[0].actions[1]).to.be.equal(REASSIGN);
       expect(tasksWithActions[0].actions[2]).to.be.equal(RELEASE);
 
-      const tasksWithActionsAllWorkAssigned = assignActionsToTasks(JUDICIAL_MY_TASKS.tasks, 'AllWork', '');
+      const tasksWithActionsAllWorkAssigned = assignActionsToTasks(myTasks, 'AllWork', '');
       expect(tasksWithActionsAllWorkAssigned[0].actions[0]).to.be.equal(GO);
       expect(tasksWithActionsAllWorkAssigned[0].actions[1]).to.be.equal(REASSIGN);
       expect(tasksWithActionsAllWorkAssigned[0].actions[2]).to.be.equal(RELEASE);
 
-      const tasksWithActionsAllWorkUnassigned = assignActionsToTasks(JUDICIAL_AVAILABLE_TASKS.tasks, 'AllWork', '');
+      const tasksWithActionsAllWorkUnassigned = assignActionsToTasks(availableTasks, 'AllWork', '');
       expect(tasksWithActionsAllWorkUnassigned[0].actions[0]).to.be.equal(ASSIGN);
       expect(tasksWithActionsAllWorkUnassigned[0].actions[1]).to.be.equal(GO);
 
-      const tasksWithActionsActiveTasksAssignedCurrentUser = assignActionsToTasks(JUDICIAL_MY_TASKS.tasks, 'ActiveTasks', '49db7670-09b3-49e3-b945-b98f4e5e9a99');
+      const tasksWithActionsActiveTasksAssignedCurrentUser = assignActionsToTasks(myTasks, 'ActiveTasks', '49db7670-09b3-49e3-b945-b98f4e5e9a99');
       expect(tasksWithActionsActiveTasksAssignedCurrentUser[1].actions[0]).to.be.equal(CLAIM);
       expect(tasksWithActionsActiveTasksAssignedCurrentUser[1].actions[1]).to.be.equal(REASSIGN);
       expect(tasksWithActionsActiveTasksAssignedCurrentUser[1].actions[2]).to.be.equal(RELEASE);
 
-      const tasksWithActionsActiveTasksUnassigned = assignActionsToTasks(JUDICIAL_AVAILABLE_TASKS.tasks, 'ActiveTasks', 'Not the current user');
+      const tasksWithActionsActiveTasksUnassigned = assignActionsToTasks(availableTasks, 'ActiveTasks', 'Not the current user');
       expect(tasksWithActionsActiveTasksUnassigned[1].actions[0]).to.be.equal(CLAIM);
     });
   });

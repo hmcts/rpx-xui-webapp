@@ -1,23 +1,24 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
-import { CaseRole } from 'api/workAllocation2/interfaces/caseRole';
 import { EMPTY, Observable } from 'rxjs';
 import { catchError, first } from 'rxjs/operators';
+import { TaskList } from '../../work-allocation-2/models/dtos';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../work-allocation-2/utils';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CaseRolesResolverService implements Resolve<CaseRole[]> {
-  public static CASE_ROLES_URL: string = '/workallocation2/roles';
+export class CaseTasksResolverService implements Resolve<TaskList> {
+
+  public static CASE_TASKS_URL: string = '/workallocation2/case/task';
 
   constructor(private readonly http: HttpClient, private readonly router: Router) {
   }
 
-  public resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<CaseRole[]> {
-    const caseId = route.params.cid || route.queryParams.caseId;
-    return this.http.get<CaseRole[]>(`${CaseRolesResolverService.CASE_ROLES_URL}/${caseId}`)
+  public resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<TaskList> {
+    const caseId = route.paramMap.get('cid');
+    return this.http.get<TaskList>(`${CaseTasksResolverService.CASE_TASKS_URL}/${caseId}`)
       .pipe(
         first(),
         catchError(error => {

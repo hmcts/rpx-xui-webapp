@@ -6,6 +6,8 @@ export const init = () => {
 
   const allocateRoleConfirmUrl = /http:\/\/am-role-assignment-service-aat.service.core-compute-aat.internal\/am\/role-assignments/;
 
+  const deleteRoleUrl = /http:\/\/am-role-assignment-service-aat.service.core-compute-aat.internal\/am\/role-assignments\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/;
+
   mock.onPost(allocateRoleConfirmUrl).reply(config => {
     const payload = JSON.parse(config.data);
     const durationOfRole = payload.durationOfRole;
@@ -20,4 +22,13 @@ export const init = () => {
       payload,
     ];
   });
+
+  mock.onDelete(deleteRoleUrl).reply(config => {
+    const payload = JSON.parse(config.data);
+    return [
+      200,
+      payload,
+    ];
+  });
+
 };

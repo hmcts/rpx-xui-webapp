@@ -4,8 +4,9 @@ import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { $enum as EnumUtil } from 'ts-enum-util';
 import { CHOOSE_ALLOCATE_TO, ERROR_MESSAGE } from '../../../constants';
-import { AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState, AllocateTo, TypeOfRole } from '../../../models';
-import { RoleAllocationCaptionText, RoleAllocationTitleText } from '../../../models/enums';
+import { Actions, AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState, AllocateTo, TypeOfRole } from '../../../models';
+import { RoleAllocationTitleText } from '../../../models/enums';
+import { RoleCaptionText } from '../../../models/enums/allocation-text';
 import { OptionsModel } from '../../../models/options-model';
 import * as fromFeature from '../../../store';
 
@@ -39,11 +40,12 @@ export class ChooseAllocateToComponent implements OnInit {
       allocateRoleStateData => {
         this.typeOfRole = allocateRoleStateData.typeOfRole;
         this.allocateTo = allocateRoleStateData.allocateTo;
+        const action = EnumUtil(Actions).getKeyOrDefault(allocateRoleStateData.action);
         if (this.typeOfRole === TypeOfRole.CaseManager) {
-          this.caption = RoleAllocationCaptionText.LegalOpsAllocate;
+          this.caption = `${action} ${RoleCaptionText.ALegalOpsCaseManager}`;
         } else {
           if (this.typeOfRole) {
-            this.caption = `Allocate a ${this.typeOfRole.toLowerCase()}`;
+            this.caption = `${action} a ${this.typeOfRole.toLowerCase()}`;
           }
         }
       }

@@ -9,23 +9,19 @@ import { of } from 'rxjs';
 import { UserRole } from '../../../../app/models';
 import { ChooseRadioOptionComponent } from '../../../components';
 import { CHOOSE_A_ROLE } from '../../../constants';
-import { AllocateRoleNavigationEvent, AllocateRoleStateData } from '../../../models';
+import { Actions, AllocateRoleNavigationEvent, AllocateRoleStateData, RoleCategory } from '../../../models';
 import { AllocateRoleService } from '../../../services';
 import { ChooseRoleComponent } from './choose-role.component';
 
-const firstRoles = [{ roleId: '1', roleName: 'Role 1' },
-      { roleId: '2', roleName: 'Role 2' },
-      { roleId: '3', roleName: 'Role 3' }];
+const firstRoleOptions = [{ optionId: 'lead-judge', optionValue: 'Lead judge' },
+      { optionId: 'hearing-judge', optionValue: 'Hearing judge' }];
 
-const firstRoleOptions = [{ optionId: '1', optionValue: 'Role 1' },
-      { optionId: '2', optionValue: 'Role 2' },
-      { optionId: '3', optionValue: 'Role 3' }];
-
-const secondRoles = [{ roleId: '1', roleName: 'Role 1' },
-      { roleId: '2', roleName: 'Role 2' },
-      { roleId: '3', roleName: 'Role 3' }];
+const personRoles = [
+  {roleId: 'lead-judge', roleName: 'Lead judge', roleCategory: RoleCategory.JUDICIAL},
+  {roleId: 'hearing-judge', roleName: 'Hearing judge', roleCategory: RoleCategory.JUDICIAL}];
 
 const mockAllocateRoleStateData: AllocateRoleStateData = {
+  action: Actions.Allocate,
   caseId: '1234',
   state: null,
   typeOfRole: null,
@@ -43,9 +39,7 @@ describe('ChooseRoleComponent', () => {
   let fixture: ComponentFixture<ChooseRoleComponent>;
   const mockStore = jasmine.createSpyObj('store', ['dispatch', 'pipe']);
 
-  const allocateRoleService = {
-    validRoles: firstRoles
-  };
+  const mockAllocateRoleService = jasmine.createSpyObj('allocateRoleService', ['getValidRoles']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -62,12 +56,12 @@ describe('ChooseRoleComponent', () => {
           useValue: {
             snapshot: {
               queryParams: {
-                userType: 'judicial'
+                roleCategory: 'JUDICIAL'
               }
             },
           }
         },
-        { provide: AllocateRoleService, useValue: allocateRoleService }
+        { provide: AllocateRoleService, useValue: mockAllocateRoleService }
       ]
     })
     .compileComponents();
@@ -78,12 +72,13 @@ describe('ChooseRoleComponent', () => {
     component = fixture.componentInstance;
     component.formGroup = formGroup;
     mockStore.pipe.and.returnValue(of(mockAllocateRoleStateData));
+    mockAllocateRoleService.getValidRoles.and.returnValue(of(personRoles));
     fixture.detectChanges();
   });
 
   it('should correctly navigate on click of continue', () => {
     const navEvent = AllocateRoleNavigationEvent.CONTINUE;
-    component.dispatchEvent(navEvent, UserRole.Judicial);
+    component.dispatchEvent(navEvent, RoleCategory.JUDICIAL, UserRole.Judicial);
     expect(mockStore.dispatch).toHaveBeenCalled();
   });
 

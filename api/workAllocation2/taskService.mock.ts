@@ -17,6 +17,7 @@ export const init = () => {
   const caseworkerMyTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/myTasks\?view=caseworker/;
   const caseworkerAvailableTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/availableTasks\?view=caseworker/;
   const getTaskFromIDUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/;
+  const getTasksByCaseIdUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{16}/;
   const claimTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/claim/;
   const unclaimTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/unclaim/;
   const completeTaskUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/task\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/complete/;
@@ -157,6 +158,18 @@ export const init = () => {
     ];
   });
 
+  mock.onGet(getTasksByCaseIdUrl).reply(config => {
+    // return an array in the form of [status, data, headers]
+    const caseId = config.url.match(/[a-fA-F0-9]{16}/);
+    let tasks = ALL_TASKS.tasks.filter(task => task.case_id === caseId[0]);
+    // note: added next line to ensure results returned in all circumstances
+    tasks = tasks === [] ? tasks : JUDICIAL_AVAILABLE_TASKS.tasks;
+    return [
+      200,
+      tasks,
+    ];
+  });
+
   mock.onPost(claimTaskUrl).reply(() => {
     // return an array in the form of [status, data, headers]
     return [
@@ -191,7 +204,7 @@ export const init = () => {
 
   mock.onPost(assignTaskUrl).reply(config => {
     const data = JSON.parse(config.data);
-    const id = data.userId.toString().replace(/[^0-9.]/g, '');
+    const id = data.userId.toString().substr(0, 1);
     const mod = parseInt(id, 10) % 2;
     if (mod === 0) {
       return [

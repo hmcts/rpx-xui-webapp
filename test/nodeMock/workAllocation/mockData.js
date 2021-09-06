@@ -227,15 +227,15 @@ class WorkAllocationMockData {
 
         leadJudge.roleId = 'lead-judge';
         leadJudge.roleName = 'Lead judge';
-        leadJudge.roleType = 'judicial';
+        leadJudge.roleCategory = 'JUDICIAL';
 
         hearingJudge.roleId = 'hearing-judge';
         hearingJudge.roleName = 'Hearing judge';
-        hearingJudge.roleType = 'judicial';
+        hearingJudge.roleCategory = 'JUDICIAL';
 
         caseManager.roleId = 'case-manager';
         caseManager.roleName = 'Case manager';
-        caseManager.roleType = 'legalops';
+        caseManager.roleCategory = 'LEGAL_OPERATIONS';
 
         roles.push(leadJudge);
         roles.push(hearingJudge);

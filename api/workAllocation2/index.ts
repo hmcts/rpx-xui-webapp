@@ -20,10 +20,13 @@ import {
   handlePostSearch
 } from './caseWorkerService';
 
-import { CaseRole } from './interfaces/caseRole';
+import { AxiosResponse } from 'axios';
+import { sendPost } from '../common/crudService';
 import { Caseworker, Judicialworker } from './interfaces/common';
-import { handleDeleteRoleIdByCaseId, handleGetRolesByCaseId, handleShowAllocatorLinkByCaseId } from './roleService';
+import { TaskList } from './interfaces/task';
+import { handleShowAllocatorLinkByCaseId, refineRoleAssignments } from './roleService';
 import * as roleServiceMock from './roleService.mock';
+import { handleGetTasksByCaseId } from './taskService';
 import * as taskServiceMock from './taskService.mock';
 import {
   assignActionsToCases,
@@ -156,6 +159,16 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
   }
 }
 
+export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
+  const caseId = req.params.caseId;
+  try {
+    const {status, data} = await handleGetTasksByCaseId(`${baseWorkAllocationTaskUrl}/task/${caseId}`, req);
+    return res.send(data as TaskList).status(status);
+  } catch (e) {
+    next(e);
+  }
+}
+
 /**
  * Post to invoke an action on a Task.
  */
@@ -204,9 +217,9 @@ export async function retrieveAllCaseWorkers(req: EnhancedRequest, res: Response
  */
 export async function getAllJudicialWorkers(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    const judicialworkers: Judicialworker[] = await retrieveAllJudicialWorkers(req, res);
+    const judicialWorkers: Judicialworker[] = await retrieveAllJudicialWorkers(req, res);
     res.status(200);
-    res.send(judicialworkers);
+    res.send(judicialWorkers);
   } catch (error) {
     next(error);
   }
@@ -221,7 +234,6 @@ export async function retrieveAllJudicialWorkers(req: EnhancedRequest, res: Resp
   const {data} = await handlePostRoleAssingnments(roleApiPath, payload, req);
   const userIds = getUserIdsFromRoleApiResponse(data);
   const userUrl = `${baseJudicialWorkerRefUrl}/judicialworkers/`;
-  // const userResponse = await handlePostJudicialWorkersRefData(userUrl, userIds, req);
   const userResponse = await handlePost(userUrl, userIds, req);
   req.session.judicialWorkers = userResponse.data;
   return userResponse.data;
@@ -319,22 +331,16 @@ export async function getRolesCategory(req: EnhancedRequest, res: Response, next
 export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   const caseId = req.params.caseId;
   try {
-    const {status, data} = await handleGetRolesByCaseId(`${baseRoleAssignmentUrl}/cases/${caseId}`, req);
-    return res.send(data as CaseRole).status(status);
-  } catch (e) {
-    next(e);
-  }
-}
-
-export async function deleteRoleByCaseAndRoleId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
-  const caseId = req.body.caseId;
-  const roleId = req.body.roleId;
-  try {
-    if (roleId === 'd90ah606-98e8-47f8-b53c-a7ab77fde22b') {
-      return res.send().status(500);
-    }
-    const {status} = await handleDeleteRoleIdByCaseId(`${baseRoleAssignmentUrl}/cases/${caseId}/role/${roleId}`, req);
-    return res.send().status(status);
+    const basePath = `${baseRoleAssignmentUrl}/am/role-assignments/query`;
+    const roleAssignmentsBody = {
+      attributes: {
+        caseId: [caseId],
+      },
+    };
+    const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
+    const {status, data} = response;
+    const refinedData = refineRoleAssignments(data);
+    return res.status(status).send(refinedData);
   } catch (e) {
     next(e);
   }

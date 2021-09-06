@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { TaskPermission } from '../../../work-allocation-2/models/tasks/task-permission.model';
 import { UserInfo } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { Task } from '../../../work-allocation-2/models/tasks';
@@ -32,12 +33,12 @@ export class CaseTaskComponent implements OnInit {
   }
 
   public doesUserHaveOwnAndExecute(task: Task): boolean {
-    return task.permissions.includes('Own') && task.permissions.includes('Execute');
+    return task.permissions.includes(TaskPermission.OWN) && task.permissions.includes(TaskPermission.EXECUTE);
   }
 
   public getManageOptions(task: Task): Array<{text: string, path: string}> {
     if (!task.assignee) {
-      if (task.permissions.length === 0 || (task.permissions.length === 1 && task.permissions.includes('Manage'))) {
+      if (task.permissions.length === 0 || (task.permissions.length === 1 && task.permissions.includes(TaskPermission.MANAGE))) {
         return [];
       } else {
         return [{text: 'Assign to me', path: ''}];
@@ -50,13 +51,13 @@ export class CaseTaskComponent implements OnInit {
         {text: 'Unassign task', path: `/work/${task.id}/unclaim`}
       ];
     } else {
-      if (task.permissions.includes('Execute') && task.permissions.includes('Manage')) {
+      if (task.permissions.includes(TaskPermission.EXECUTE) && task.permissions.includes(TaskPermission.MANAGE)) {
         return [
           {text: 'Assign to me', path: ''},
           {text: 'Reassign task', path: `/work/${task.id}/reassign`},
           {text: 'Unassign task', path: `/work/${task.id}/unclaim`}
         ];
-      } else if (task.permissions.includes('Manage')) {
+      } else if (task.permissions.includes(TaskPermission.MANAGE)) {
         return [
           {text: 'Reassign task', path: `/work/${task.id}/reassign`},
           {text: 'Unassign task', path: `/work/${task.id}/unclaim`}

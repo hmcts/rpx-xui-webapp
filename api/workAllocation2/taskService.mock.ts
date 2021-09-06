@@ -163,8 +163,6 @@ export const init = () => {
   mock.onGet(getTasksByCaseIdUrl).reply(config => {
     // return an array in the form of [status, data, headers]
     const tasks = [...ASSIGNED_CASE_TASKS.tasks, ...UNASSIGNED_CASE_TASKS.tasks];
-    // note: added next line to ensure results returned in all circumstances
-    // tasks = tasks === [] ? tasks : JUDICIAL_AVAILABLE_TASKS.tasks;
     return [
       200,
       tasks,

@@ -1,5 +1,6 @@
 /* tslint:disable */
 import { PersonRole } from "../interfaces/person";
+import  { v4 as uuidv4 } from 'uuid';
 
 export const PERSON = [
   {
@@ -1816,7 +1817,7 @@ export const ASSIGNED_CASE_TASKS = {
     {
       assignee: 'bce92ab6-0023-46e3-886b-7f61384df090',
       assigneeName: 'Judicial User 10',
-      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc4',
+      id: uuidv4(),
       task_title: 'assigned Manage Execute',
       dueDate: '2021-05-20T16:00:00.000+0000',
       location_name: 'Newcastle',
@@ -1829,7 +1830,7 @@ export const ASSIGNED_CASE_TASKS = {
     {
       assignee: 'bce92ab6-0023-46e3-886b-7f61384df090',
       assigneeName: 'Judicial User 10',
-      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc4',
+      id: uuidv4(),
       task_title: 'assigned Manage',
       dueDate: '2021-05-20T16:00:00.000+0000',
       location_name: 'Newcastle',
@@ -1842,7 +1843,7 @@ export const ASSIGNED_CASE_TASKS = {
     {
       assignee: 'bce92ab6-0023-46e3-886b-7f61384df090',
       assigneeName: 'Judicial User 10',
-      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc4',
+      id: uuidv4(),
       task_title: 'assigned',
       dueDate: '2021-05-20T16:00:00.000+0000',
       location_name: 'Newcastle',
@@ -1900,7 +1901,7 @@ export const UNASSIGNED_CASE_TASKS = {
     {
       assignee: null,
       assigneeName: null,
-      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc4',
+      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc5',
       task_title: 'Unassigned',
       dueDate: '2021-05-20T16:00:00.000+0000',
       location_name: 'Newcastle',
@@ -1958,7 +1959,7 @@ export const JUDICIAL_AVAILABLE_TASKS = {
     {
       assignee: null,
       assigneeName: null,
-      id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc4',
+      id: uuidv4(),
       task_title: 'Follow-up non-standard direction',
       dueDate: '2021-05-20T16:00:00.000+0000',
       location_name: 'Newcastle',

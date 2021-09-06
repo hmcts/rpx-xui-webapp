@@ -39,6 +39,10 @@ describe('CaseCreateComponent', () => {
   let component: CasesCreateComponent;
   let fixture: ComponentFixture<CasesCreateComponent>;
 
+  beforeAll(() => {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+  });
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [

@@ -119,6 +119,16 @@ describe('TaskListWrapperComponent', () => {
       const exampleNavigateCall = { state: { returnUrl: '/mywork/manager', showAssigneeColumn: true } };
       expect(lastNavigateCall.extras).toEqual(exampleNavigateCall);
     });
+    it('User should be Judicial', () => {
+      mockSessionStorageService.getItem.and.returnValue('{\"sub\":\"juser8@mailinator.com\",\"uid\":\"44d5d2c2-7112-4bef-8d05-baaa610bf463\",\"roles\":[\"caseworker\",\"caseworker-ia\",\"caseworker-ia-iacjudge\"],\"name\":\"XUI test Judge\",\"given_name\":\"XUI test\",\"family_name\":\"Judge\",\"token\":\"\"}');
+      const isJudicial = component.isCurrentUserJudicial();
+      expect(isJudicial).toBeTruthy();
+    });
+    it('User should not be Judicial', () => {
+      mockSessionStorageService.getItem.and.returnValue('{\"sub\":\"juser8@mailinator.com\",\"uid\":\"44d5d2c2-7112-4bef-8d05-baaa610bf463\",\"roles\":[\"caseworker\",\"caseworker-ia\"],\"name\":\"XUI test Judge\",\"given_name\":\"XUI test\",\"family_name\":\"Judge\",\"token\":\"\"}');
+      const isJudicial = component.isCurrentUserJudicial();
+      expect(isJudicial).toBeFalsy();
+    });
   });
 
   describe('onPaginationHandler()', () => {
@@ -129,18 +139,6 @@ describe('TaskListWrapperComponent', () => {
       component.onPaginationHandler(2);
       expect(component.pagination.page_number).toBe(2);
       expect(mockSessionStorageService.getItem).toHaveBeenCalledWith('pageSessionKey');
-    });
-  });
-  describe('isCurrentUserJudicial', () => {
-    xit('User should be Judicial', () => {
-      mockSessionStorageService.getItem.and.returnValue('{\"sub\":\"juser8@mailinator.com\",\"uid\":\"44d5d2c2-7112-4bef-8d05-baaa610bf463\",\"roles\":[\"caseworker\",\"caseworker-ia\",\"caseworker-ia-iacjudge\"],\"name\":\"XUI test Judge\",\"given_name\":\"XUI test\",\"family_name\":\"Judge\",\"token\":\"\"}');
-      const isJudicial = component.isCurrentUserJudicial();
-      expect(isJudicial).toBeTruthy();
-    });
-    xit('User should not be Judicial', () => {
-      mockSessionStorageService.getItem.and.returnValue('{\"sub\":\"juser8@mailinator.com\",\"uid\":\"44d5d2c2-7112-4bef-8d05-baaa610bf463\",\"roles\":[\"caseworker\",\"caseworker-ia\"],\"name\":\"XUI test Judge\",\"given_name\":\"XUI test\",\"family_name\":\"Judge\",\"token\":\"\"}');
-      const isJudicial = component.isCurrentUserJudicial();
-      expect(isJudicial).toBeFalsy();
     });
   });
 });

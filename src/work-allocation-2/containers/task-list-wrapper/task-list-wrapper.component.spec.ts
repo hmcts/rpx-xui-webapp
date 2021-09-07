@@ -6,7 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService, FilterService} from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
-import { CaseworkerDataService }  from '../../services';
+import { CaseworkerDataService } from '../../services';
 
 import { TaskListComponent } from '..';
 import { SessionStorageService } from '../../../app/services';

@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { TaskPermission } from '../../../work-allocation-2/models/tasks/task-permission.model';
 import { UserInfo } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { Task } from '../../../work-allocation-2/models/tasks';
+import { TaskPermission } from '../../../work-allocation-2/models/tasks/task-permission.model';
 
 @Component({
   selector: 'exui-case-task',
@@ -10,12 +10,33 @@ import { Task } from '../../../work-allocation-2/models/tasks';
   styleUrls: ['./case-task.component.scss']
 })
 export class CaseTaskComponent implements OnInit {
-  @Input() public task: Task;
-  public manageOptions: Array<{text: string, path: string}>;
-  constructor(private readonly sessionStorageService: SessionStorageService) {}
+
+  constructor(private readonly sessionStorageService: SessionStorageService) {
+  }
+
+  public get task(): Task {
+    return this.pTask;
+  }
+
+  @Input()
+  public set task(value: Task) {
+    value.description = CaseTaskComponent.replaceCaseRefVarWithCaseId(value.description, value);
+    this.pTask = value;
+  }
+
+  private static CASE_REFERENCE_VARIABLE = '${[CASE_REFERENCE]}';
+  public manageOptions: { text: string, path: string }[];
+  private pTask: Task;
+
+  private static replaceCaseRefVarWithCaseId(str: string, task: Task): string {
+    if (!str) {
+      return '';
+    }
+    return str.replace(CaseTaskComponent.CASE_REFERENCE_VARIABLE, task.case_id);
+  }
 
   public ngOnInit(): void {
-    this.manageOptions = this.getManageOptions(this.task);
+    this.manageOptions = this.getManageOptions(this.pTask);
   }
 
   public getAssigneeName(task: Task): string {
@@ -36,7 +57,7 @@ export class CaseTaskComponent implements OnInit {
     return task.permissions.includes(TaskPermission.OWN) && task.permissions.includes(TaskPermission.EXECUTE);
   }
 
-  public getManageOptions(task: Task): Array<{text: string, path: string}> {
+  public getManageOptions(task: Task): { text: string, path: string }[] {
     if (!task.assignee) {
       if (task.permissions.length === 0 || (task.permissions.length === 1 && task.permissions.includes(TaskPermission.MANAGE))) {
         return [];

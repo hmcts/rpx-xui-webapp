@@ -17,5 +17,4 @@ export class TasksContainerComponent implements OnInit {
     this.tasks = this.route.snapshot.data.tasks as Task[];
     this.warningIncluded = this.tasks.some(task => task.warnings);
   }
-
 }

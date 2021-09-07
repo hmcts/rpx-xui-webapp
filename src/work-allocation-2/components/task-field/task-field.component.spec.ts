@@ -255,6 +255,8 @@ describe('WorkAllocation', () => {
       // Set up the config and the task.
       const config: FieldConfig = getConfig('dueDate', FieldType.FORMATTED_DATE);
       const task: Task = {
+        assignee: null,
+        assigneeName: null,
         id: 'The task ID',
         case_id: 'The case reference',
         caseName: 'The case name',
@@ -319,6 +321,8 @@ describe('WorkAllocation', () => {
       // Set up the config and the task.
       const config: FieldConfig = getConfig('dueDate', FieldType.PRIORITY);
       const task: Task = {
+        assignee: null,
+        assigneeName: null,
         id: 'The task ID',
         case_id: 'The case reference',
         caseName: 'The case name',

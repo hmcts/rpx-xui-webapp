@@ -30,6 +30,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   private pTasks: Task[];
   public selectedLocations: string[] = [];
   private tasksLoaded: boolean = false;
+  protected userDetailsKey: string = 'userDetails';
 
   private selectedLocationsSubscription: Subscription;
   /**

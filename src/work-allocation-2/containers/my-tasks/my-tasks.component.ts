@@ -11,7 +11,6 @@ import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper
   templateUrl: 'my-tasks.component.html'
 })
 export class MyTasksComponent extends TaskListWrapperComponent implements OnInit {
-  public userDetailsKey: string = 'userDetails';
   public get emptyMessage(): string {
     return ListConstants.EmptyMessage.MyTasks;
   }

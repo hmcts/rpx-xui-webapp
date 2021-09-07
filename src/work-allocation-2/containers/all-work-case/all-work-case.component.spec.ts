@@ -136,7 +136,7 @@ describe('AllWorkCaseComponent', () => {
     actionLink.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     // Ensure the correct attempt has been made to navigate.
-    expect(navigateSpy).toHaveBeenCalledWith([`/work/${caseItem.id}/${actionId}/`], jasmine.any(Object));
+    expect(navigateSpy).toHaveBeenCalledWith([`/role-access/allocate-role/${actionId}?caseId=${caseItem.id}/`], jasmine.any(Object));
   });
 
   afterEach(() => {

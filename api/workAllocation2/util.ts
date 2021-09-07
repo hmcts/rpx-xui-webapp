@@ -112,11 +112,11 @@ export function assignActionsToTasks(tasks: any[], view: any, currentUser: strin
  * @param cases The cases to set up the actions for.
  * @param view This dictates which set of actions we should use.
  */
-export function assignActionsToCases(cases: any[], view: any): any[] {
+export function assignActionsToCases(cases: any[], view: any, isAllocator: boolean): any[] {
   const casesWithActions: any[] = [];
   if (cases) {
     for (const item of cases) {
-      const actions: Action[] = getActionsFromAllocatorRole(CASE_ALLOCATOR_ROLE);
+      const actions: Action[] = getActionsFromAllocatorRole(isAllocator);
       const caseWithAction = {...item, actions};
       casesWithActions.push(caseWithAction);
     }
@@ -208,9 +208,9 @@ export function getActionsByPermissions(view, permissions: TaskPermission[]): Ac
   return actionList.sort((a, b) => a.id.localeCompare(b.id));
 }
 
-export function getActionsFromAllocatorRole(userRole: any): Action[] {
+export function getActionsFromAllocatorRole(isAllocator: boolean): Action[] {
   let actionList: Action[] = [];
-  if (userRole === CASE_ALLOCATOR_ROLE) {
+  if (isAllocator) {
     actionList = (VIEW_PERMISSIONS_ACTIONS_MATRIX.AllCases.Manage);
   }
   return actionList;

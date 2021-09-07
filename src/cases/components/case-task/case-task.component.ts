@@ -36,7 +36,7 @@ export class CaseTaskComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.manageOptions = this.getManageOptions(this.pTask);
+    this.manageOptions = this.getManageOptions(this.task);
   }
 
   public getAssigneeName(task: Task): string {

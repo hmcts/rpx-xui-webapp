@@ -28,12 +28,7 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnInit
   }
 
   public get fields(): FieldConfig[] {
-    const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
-    if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
-      const isJudge = userInfo.roles.some(role => ListConstants.JUDGE_ROLES.includes(role));
-      return isJudge ? ConfigConstants.MyWorkTasksForJudicial: ConfigConstants.MyWorkTasksForLegalOps;
-    }
+    return this.isCurrentUserJudicial() ? ConfigConstants.MyWorkTasksForJudicial : ConfigConstants.MyWorkTasksForLegalOps;
   }
 
   public filteredLocations: string[] = [];

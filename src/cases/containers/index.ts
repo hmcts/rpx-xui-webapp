@@ -9,6 +9,7 @@ import { CaseDetailsHomeComponent } from './case-details-home/case-details-home.
 import { CaseShareComponent } from './case-share/case-share.component';
 import { CaseShareConfirmComponent } from './case-share-confirm/case-share-confirm.component';
 import { CaseShareCompleteComponent } from './case-share-complete/case-share-complete.component';
+import { CaseViewerContainerComponent } from './case-viewer-container/case-viewer-container.component';
 
 
 export const containers: any[] = [
@@ -16,6 +17,7 @@ export const containers: any[] = [
   CasesCreateComponent,
   CaseFilterComponent,
   CaseSearchComponent,
+  CaseViewerContainerComponent,
   CaseDetailsComponent,
   CaseHomeComponent,
   CaseCreateSubmitComponent,

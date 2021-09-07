@@ -1,8 +1,8 @@
 
 module.exports = {
 
-    allWork: 'exui-all-tasks ',
-    tasks: 'exui-all-tasks exui-all-work-tasks',
+    allWork: 'exui-all-work-home',
+    tasks: 'exui-all-work-home exui-all-work-tasks',
     cases: '',
 
     subNavihationLinks: {
@@ -13,6 +13,6 @@ module.exports = {
 }
 
 function GetSubnavigationLinkCss(subNav) {
-    return `exui-all-tasks .hmcts-sub-navigation li a[href*="${subNav}"]']`
+    return `exui-all-work-home .hmcts-sub-navigation li a[href*="${subNav}"]']`
 }
 

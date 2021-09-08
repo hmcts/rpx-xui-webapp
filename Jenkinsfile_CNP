@@ -71,14 +71,6 @@ withPipeline(type, product, component) {
             reportName           : "node coverage tests"
         ])
 
-        publishHTML ( [
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "reports/tests/coverage/ng",
-            reportFiles          : "index.html",
-            reportName           : "ng coverage tests"
-        ])
 
          publishHTML([
             allowMissing         : true,

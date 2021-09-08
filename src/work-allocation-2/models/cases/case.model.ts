@@ -6,6 +6,9 @@ export default interface Case {
   case_id: string;
   caseName: string;
   caseCategory: string;
+  assignee?: string;
+  roleName?: string;
+  roleCategory?: string;
   location: string;
   taskName: string;
   dueDate: Date;

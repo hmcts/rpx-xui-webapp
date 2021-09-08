@@ -1,45 +1,32 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router} from '@angular/router';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
-
-import { TaskListComponent } from '..';
 import { SessionStorageService } from '../../../app/services';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
-import { FieldType } from '../../enums';
-import { Task } from '../../models/tasks';
-import { CaseworkerDataService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
-import { getMockTasks } from '../../tests/utils.spec';
-import { MyTasksComponent } from './my-tasks.component';
+import { Case } from '../../models/cases';
+import { CaseworkerDataService, WorkAllocationCaseService, WorkAllocationFeatureService } from '../../services';
+import { getMockCases } from '../../tests/utils.spec';
+import { WorkCaseListComponent } from '../work-case-list/work-case-list.component';
+import { AllWorkCaseComponent } from './all-work-case.component';
 
-@Component({
-  template: `
-    <exui-my-tasks></exui-my-tasks>`
-})
+@Component({ template: `<exui-all-work-cases></exui-all-work-cases>` })
+
 class WrapperComponent {
-  @ViewChild(MyTasksComponent) public appComponentRef: MyTasksComponent;
+  @ViewChild(AllWorkCaseComponent) public appComponentRef: AllWorkCaseComponent;
 }
 
-const userInfo =
-  `{"id":"exampleId",
-    "forename":"Joe",
-    "surname":"Bloggs",
-    "email":"JoeBloggs@example.com",
-    "active":true,
-    "roles":["caseworker","caseworker-ia","caseworker-ia-caseofficer"],
-    "token":"eXaMpLeToKeN"}`;
-
-describe('MyTasksComponent', () => {
-  let component: MyTasksComponent;
+describe('AllWorkCaseComponent', () => {
+  let component: AllWorkCaseComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
 
-  let router: Router;
-  const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTaskWithPagination']);
+  const routerMock = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate']);
+  const mockCaseService = jasmine.createSpyObj('mockCaseService', ['searchCase']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
@@ -56,9 +43,10 @@ describe('MyTasksComponent', () => {
         WorkAllocationComponentsModule,
         PaginationModule
       ],
-      declarations: [MyTasksComponent, WrapperComponent, TaskListComponent],
+      declarations: [AllWorkCaseComponent, WrapperComponent, WorkCaseListComponent],
       providers: [
-        { provide: WorkAllocationTaskService, useValue: mockTaskService },
+        { provide: Router, useValue: routerMock },
+        { provide: WorkAllocationCaseService, useValue: mockCaseService },
         { provide: AlertService, useValue: mockAlertService },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
         { provide: CaseworkerDataService, useValue: mockCaseworkerService },
@@ -73,30 +61,22 @@ describe('MyTasksComponent', () => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
-    router = TestBed.get(Router);
-    const tasks: Task[] = getMockTasks();
-    mockTaskService.searchTaskWithPagination.and.returnValue(of({tasks}));
+    component.isPaginationEnabled$ = of(false);
+    const cases: Case[] = getMockCases();
+    mockCaseService.searchCase.and.returnValue(of({ cases }));
     mockCaseworkerService.getAll.and.returnValue(of([]));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     fixture.detectChanges();
   });
 
-  it('should make a call to load tasks using the default search request', () => {
-    const searchRequest = component.getSearchTaskRequestPagination();
-    const payload = {searchRequest, view: component.view};
-    expect(mockTaskService.searchTaskWithPagination).toHaveBeenCalledWith(payload);
-    expect(component.tasks).toBeDefined();
-    expect(component.tasks.length).toEqual(2);
-  });
 
-  it('should allow searching via location', () => {
-    mockSessionStorageService.getItem.and.returnValue(userInfo);
-    const exampleLocations = ['location1', 'location2', 'location3'];
-    component.selectedLocations = exampleLocations;
-    const searchParameter = component.getSearchTaskRequestPagination().search_parameters[1];
-    expect(searchParameter.key).toBe('location');
-    expect(searchParameter.values).toBe(exampleLocations);
+  it('should make a call to load cases using the default search request', () => {
+    const searchRequest = component.getSearchCaseRequestPagination();
+    const payload = { searchRequest, view: component.view };
+    expect(mockCaseService.searchCase).toHaveBeenCalledWith(payload);
+    expect(component.cases).toBeDefined();
+    expect(component.cases.length).toEqual(2);
   });
 
   it('should have all column headers, including "Manage +"', () => {
@@ -117,7 +97,7 @@ describe('MyTasksComponent', () => {
     expect(headerCells[headerCells.length - 1].textContent.trim()).toEqual('');
   });
 
-  it('should not show the footer when there are tasks', () => {
+  it('should not show the footer when there are cases', () => {
     const element = fixture.debugElement.nativeElement;
     const footerRow = element.querySelector('.footer-row');
     expect(footerRow).toBeDefined();
@@ -126,8 +106,8 @@ describe('MyTasksComponent', () => {
     expect(footerRowClass).not.toContain('shown');
   });
 
-  it('should show the footer when there no tasks', () => {
-    spyOnProperty(component, 'tasks').and.returnValue([]);
+  it('should show the footer when there are no cases', () => {
+    spyOnProperty(component, 'cases').and.returnValue([]);
     fixture.detectChanges();
     const element = fixture.debugElement.nativeElement;
     const footerRow = element.querySelector('.footer-row');
@@ -141,32 +121,21 @@ describe('MyTasksComponent', () => {
   });
 
   it('should appropriately handle clicking on a row action', () => {
-    const navigateSpy = spyOn(router, 'navigate');
     const element = fixture.debugElement.nativeElement;
-    // Use the first task.
-    const task = component.tasks[0];
+    // Use the first case.
+    const caseItem = component.cases[0];
     // Click on the Manage + button.
-    const manageButton = element.querySelector(`#manage_${task.id}`);
+    const manageButton = element.querySelector(`#manage_${caseItem.id}`);
     manageButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
-    // Use the first action from that task.
-    const actionId = task.actions[0].id;
+    // Use the first action from that case.
+    const actionId = caseItem.actions[0].id;
     const actionLink = element.querySelector(`#action_${actionId}`);
     // Click on the action link.
     actionLink.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     // Ensure the correct attempt has been made to navigate.
-    expect(navigateSpy).toHaveBeenCalledWith([`/work/${task.id}/${actionId}/`], jasmine.any(Object));
-  });
-
-  it('should allow setting the release 2 details', () => {
-    // verifying fields best way to check as the elements (apart from column names) on page will not change
-    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
-    component.ngOnInit();
-    fixture.detectChanges();
-    expect(component.fields[0].name).toBe('case_name');
-    expect(component.fields[0].type).toBe(FieldType.CASE_NAME);
-    expect(component.fields[4].type).toBe(FieldType.TASK_NAME);
+    expect(routerMock.navigateByUrl).toHaveBeenCalledWith(jasmine.stringMatching('reallocate'));
   });
 
   afterEach(() => {

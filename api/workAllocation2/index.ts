@@ -24,7 +24,7 @@ import { AxiosResponse } from 'axios';
 import { sendPost } from '../common/crudService';
 import { Caseworker, Judicialworker } from './interfaces/common';
 import { TaskList } from './interfaces/task';
-import { handleShowAllocatorLinkByCaseId, refineRoleAssignments } from './roleService';
+import { checkIfCaseAllocator, refineRoleAssignments } from './roleService';
 import * as roleServiceMock from './roleService.mock';
 import { handleGetTasksByCaseId } from './taskService';
 import * as taskServiceMock from './taskService.mock';
@@ -79,11 +79,22 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
 export async function searchCase(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
     const searchRequest = req.body.searchRequest;
-    const view = searchRequest.search_by === 'judge' ? 'judicial' : 'caseworker';
-    const basePath = prepareSearchCaseUrl(baseWorkAllocationTaskUrl, `myCases?view=${view}`);
-    const postCasePath = preparePaginationUrl(req, basePath);
-
+    const view = req.body.view;
+    let basePath = '';
     // TODO below call mock api will be replaced when real api is ready
+    if (view === 'MyCases') {
+      basePath = prepareSearchCaseUrl(baseWorkAllocationTaskUrl, `myCases?view=${searchRequest.search_by}`);
+    } else if (view === 'AllWorkCases') {
+      basePath = prepareSearchCaseUrl(baseWorkAllocationTaskUrl, `allWorkCases?view=${searchRequest.search_by}`);
+    }
+    const searchMap = {};
+    searchRequest.search_parameters.forEach(item => {
+      if (item.operator === 'EQUAL') {
+        searchMap[item.key] = item.values;
+      }
+    });
+
+    const postCasePath = preparePaginationUrl(req, basePath);
     const promise = await handlePost(postCasePath, searchRequest, req);
 
     const {status, data} = promise;
@@ -91,9 +102,9 @@ export async function searchCase(req: EnhancedRequest, res: Response, next: Next
     // Assign actions to the cases on the data from the API.
     let returnData;
     if (data) {
-      // Note: CasePermission placed in here is an example of what we could be getting (i.e. Manage permission)
-      // These should be mocked as if we were getting them from the user themselves
-      returnData = {cases: assignActionsToCases(data.cases, req.body.view), total_records: data.total_records};
+      // @ts-ignore
+      const isCaseAllocator: boolean = checkIfCaseAllocator(searchMap.jurisdiction, searchMap.location, req);
+      returnData = {cases: assignActionsToCases(data.cases, req.body.view, isCaseAllocator), total_records: data.total_records};
     }
 
     // Send the (possibly modified) data back in the Response.
@@ -350,7 +361,7 @@ export async function showAllocateRoleLink(req: EnhancedRequest, res: Response, 
   const jurisdiction = req.params.jurisdiction;
   const caseLocationId = req.params.caseLocationId;
   try {
-    const result: boolean = handleShowAllocatorLinkByCaseId(jurisdiction, caseLocationId, req);
+    const result: boolean = checkIfCaseAllocator(jurisdiction, caseLocationId, req);
     return res.send(result).status(200);
   } catch (e) {
     next(e);

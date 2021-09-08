@@ -1,4 +1,5 @@
 import { AvailableTasksFilterComponent } from './available-tasks-filter/available-tasks-filter.component';
+import { CaseManagerFilterComponent } from './case-manager-filter/case-manager-filter.component';
 import { CaseNameFieldComponent } from './case-name-field/case-name-field.component';
 import { CaseReferenceFieldComponent } from './case-reference-field/case-reference-field.component';
 import { DerivedIconFieldComponent } from './derived-icon-field/derived-icon-field.component';
@@ -16,6 +17,7 @@ import { WorkFieldComponent } from './work-field/work-field.component';
 export const components: any[] = [
   AvailableTasksFilterComponent,
   CaseNameFieldComponent,
+  CaseManagerFilterComponent,
   CaseReferenceFieldComponent,
   DerivedIconFieldComponent,
   ImageFieldComponent,
@@ -42,4 +44,4 @@ export * from './task-list-filter/task-list-filter.component';
 export * from './task-manager-filter/task-manager-filter.component';
 export * from './task-name-field/task-name-field.component';
 export * from './url-field/url-field.component';
-export * from './work-field/work-field.component'
+export * from './work-field/work-field.component';

@@ -40,6 +40,13 @@ const CASE_ROLE: FieldConfig = {
   sortName: 'caseRole',
   views: TaskView.ALL_VIEWS
 };
+const ROLE: FieldConfig = {
+  name: 'role',
+  type: FieldType.STRING,
+  columnLabel: 'Role',
+  sortName: 'role',
+  views: TaskView.ALL_VIEWS
+};
 const CASE_CATEGORY: FieldConfig = {
   name: 'case_category',
   type: FieldType.STRING,
@@ -113,7 +120,14 @@ const ASSIGNEE: FieldConfig = {
   sortName: 'assignee',
   views: TaskView.ALL_VIEWS
 };
-
+const PERSON: FieldConfig = {
+  disableSort: true,
+  name: 'actorName',
+  type: FieldType.STRING,
+  columnLabel: 'Person',
+  sortName: 'actorName',
+  views: TaskView.ALL_VIEWS
+};
 
 /**
  * The views.
@@ -140,10 +154,12 @@ const TASK_ACTIONS: FieldConfig[] = [
 const TASK_ACTIONS_WITH_ASSIGNEE: FieldConfig[] = [
   ...TASK_MANAGER
 ];
-
 const ALL_WORK_TASKS: FieldConfig[] = [
   CASE_NAME_AS_LINK, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_LINK, DUE_DATE, ASSIGNEE
-]
+];
+const ALL_WORK_CASES: FieldConfig[] = [
+  CASE_NAME_AS_LINK, CASE_CATEGORY, LOCATION, ROLE, PERSON
+];
 
 export const CONFIG_CONSTANTS = {
   AvailableTasks: AVAILABLE_TASKS,
@@ -153,5 +169,6 @@ export const CONFIG_CONSTANTS = {
   TaskActions: TASK_ACTIONS,
   TaskActionsWithAssignee: TASK_ACTIONS_WITH_ASSIGNEE,
   TaskManager: TASK_MANAGER,
-  AllWorkTasks: ALL_WORK_TASKS
+  AllWorkTasks: ALL_WORK_TASKS,
+  AllWorkCases: ALL_WORK_CASES
 };

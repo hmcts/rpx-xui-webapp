@@ -92,7 +92,7 @@ describe('AllWorkTaskComponent', () => {
       surname: 'surName',
       email: 'email',
       active: true,
-      roles: ['role1'],
+      roles: ['caseworker-ia-caseofficer'],
       uid: '1233434'
     }));
     const searchRequest = component.getSearchTaskRequestPagination();
@@ -122,4 +122,9 @@ describe('AllWorkTaskComponent', () => {
     expect(component.tasks).toBeDefined();
     expect(component.tasks.length).toEqual(2);
   });
+
+  afterEach(() => {
+    fixture.destroy();
+  });
+
 });

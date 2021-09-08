@@ -111,14 +111,11 @@ export function assignActionsToTasks(tasks: any[], view: any, currentUser: strin
  * @param cases The cases to set up the actions for.
  * @param view This dictates which set of actions we should use.
  */
-export function assignActionsToCases(cases: any[], view: any): any[] {
+export function assignActionsToCases(cases: any[], view: any, isAllocator: boolean): any[] {
   const casesWithActions: any[] = [];
   if (cases) {
     for (const item of cases) {
-      // Note: There is no current logic to determine whether assigned or unassigned
-      // This was debated for EUI-3619
-      // As actions can change based on whether assigned or not, there might need to be a check here
-      const actions: Action[] = getActionsByPermissions(view, item.permissions);
+      const actions: Action[] = getActionsFromAllocatorRole(isAllocator);
       const caseWithAction = {...item, actions};
       casesWithActions.push(caseWithAction);
     }
@@ -208,6 +205,14 @@ export function getActionsByPermissions(view, permissions: TaskPermission[]): Ac
   // Note sorting is implemented to order all possible action lists the same
   // Currently sorting by id but can be changed
   return actionList.sort((a, b) => a.id.localeCompare(b.id));
+}
+
+export function getActionsFromAllocatorRole(isAllocator: boolean): Action[] {
+  let actionList: Action[] = [];
+  if (isAllocator) {
+    actionList = (VIEW_PERMISSIONS_ACTIONS_MATRIX.AllCases.Manage);
+  }
+  return actionList;
 }
 
 export function applySearchFilter(person: Person, domain: string, searchTerm: any): boolean {

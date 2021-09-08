@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import { HttpMockAdapter } from '../common/httpMockAdapter';
-import { CASEWORKER_MY_CASES, JUDICIAL_MY_CASES } from './constants/mock.data';
+import { CASEWORKER_ALL_CASES, CASEWORKER_MY_CASES, JUDICIAL_ALL_CASES, JUDICIAL_MY_CASES } from './constants/mock.data';
 
 export const init = () => {
   const mock: MockAdapter = HttpMockAdapter.getInstance();
@@ -8,6 +8,10 @@ export const init = () => {
   const judicialMyCaseUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/myCases\?view=judicial/;
   // tslint:disable-next-line:max-line-length
   const caseworkerMyCaseUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/myCases\?view=caseworker/;
+
+  const judicialAllCaseUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/allWorkCases\?view=judicial/;
+  // tslint:disable-next-line:max-line-length
+  const caseworkerAllCaseUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/allWorkCases\?view=legalops/;
 
   // simulate some error if needed
   // mock.onGet(url).networkErrorOnce()
@@ -39,6 +43,38 @@ export const init = () => {
       {
         cases: paginate(caseList, paginationConfig.page_number, paginationConfig.page_size),
         total_records: CASEWORKER_MY_CASES.cases.length,
+      },
+    ];
+  });
+
+  mock.onPost(judicialAllCaseUrl).reply(config => {
+    // return an array in the form of [status, data, headers]
+    const body = JSON.parse(config.data);
+    const paginationConfig = body.pagination_parameters;
+    const sortingConfig = body.sorting_parameters;
+    const caseList = sort(JUDICIAL_ALL_CASES.cases,
+      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
+    return [
+      200,
+      {
+        cases: paginate(caseList, paginationConfig.page_number, paginationConfig.page_size),
+        total_records: JUDICIAL_ALL_CASES.cases.length,
+      },
+    ];
+  });
+
+  mock.onPost(caseworkerAllCaseUrl).reply(config => {
+    // return an array in the form of [status, data, headers]
+    const body = JSON.parse(config.data);
+    const paginationConfig = body.pagination_parameters;
+    const sortingConfig = body.sorting_parameters;
+    const caseList = sort(CASEWORKER_ALL_CASES.cases,
+      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
+    return [
+      200,
+      {
+        cases: paginate(caseList, paginationConfig.page_number, paginationConfig.page_size),
+        total_records: CASEWORKER_ALL_CASES.cases.length,
       },
     ];
   });

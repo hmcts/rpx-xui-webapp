@@ -12,7 +12,6 @@ import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper
   templateUrl: 'my-tasks.component.html'
 })
 export class MyTasksComponent extends TaskListWrapperComponent implements OnInit {
-
   public get emptyMessage(): string {
     return ListConstants.EmptyMessage.MyTasks;
   }
@@ -30,13 +29,13 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnInit
   }
 
   public get fields(): FieldConfig[] {
-    return ConfigConstants.MyWorkTasks;
+    return this.isCurrentUserJudicial() ? ConfigConstants.MyWorkTasksForJudicial : ConfigConstants.MyWorkTasksForLegalOps;
   }
 
   public filteredLocations: string[] = [];
 
   public getSearchTaskRequestPagination(): SearchTaskRequest {
-    const userInfoStr = this.sessionStorageService.getItem('userDetails');
+    const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       const id = userInfo.id ? userInfo.id : userInfo.uid;

@@ -138,7 +138,7 @@ export function getMockCaseFieldConfig(): FieldConfig[] {
 }
 
 export function getMockTaskFieldConfig(): FieldConfig[] {
-  return ConfigConstants.AvailableTasks;
+  return ConfigConstants.AvailableTasksForJudicial;
 }
 
 /**

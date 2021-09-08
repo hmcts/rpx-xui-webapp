@@ -200,6 +200,7 @@ describe('CaseTaskComponent', () => {
     const result = component.isTaskAssignedToCurrentUser(task);
     expect(result).toBeTruthy();
   });
+
   it('getAssigneeName should return correctName', () => {
     const task: Task = {
       assignee: '44d5d2c2-7112-4bef-8d05-baaa610bf463',
@@ -226,7 +227,7 @@ describe('CaseTaskComponent', () => {
 
   it('should replace the task variable with the case id', () => {
 
-    component.task = {
+    const task = {
       actions: [],
       caseCategory: '',
       caseName: '',
@@ -246,6 +247,7 @@ describe('CaseTaskComponent', () => {
       warnings: true,
       permissions: ['Own', 'Execute', 'Manage']
     };
-    expect(component.task.description).toBe('[Link the appeal](/cases/case-details/1620409659381330/trigger/linkAppeal/linkAppealreasonForLinkAppealPageId)');
+    const result = CaseTaskComponent.replaceCaseRefVarWithCaseId(task.description, task);
+    expect(result).toBe('[Link the appeal](/cases/case-details/1620409659381330/trigger/linkAppeal/linkAppealreasonForLinkAppealPageId)');
   });
 });

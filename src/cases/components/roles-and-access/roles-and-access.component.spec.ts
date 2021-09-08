@@ -46,7 +46,8 @@ describe('RolesAndAccessComponent', () => {
       },
       tabs: [],
       triggers: [],
-      events: []
+      events: [],
+      metadataFields: []
     };
     component.roleAssignmentInfo = initialMockState.appConfig.userDetails.roleAssignmentInfo[0];
     fixture.detectChanges();

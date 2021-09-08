@@ -90,7 +90,6 @@
           "options": {
             "codeCoverage": true,
             "codeCoverageExclude": [
-                "**/*.spec.ts",
                 "**/*.spec.js",
                 "test/**",
                 "config/**",

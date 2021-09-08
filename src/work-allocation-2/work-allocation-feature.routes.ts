@@ -84,7 +84,7 @@ export const ROUTES: Routes = [
             path: 'cases',
             component: AllWorkCaseComponent,
             data: {
-              title: 'HMCTS Manage cases | All work | Tasks', subTitle: 'Tasks'
+              title: 'HMCTS Manage cases | All work | Cases', subTitle: 'Cases'
             }
           }
         ]

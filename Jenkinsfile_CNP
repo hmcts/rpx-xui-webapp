@@ -62,7 +62,6 @@ withPipeline(type, product, component) {
 
     after('test') {
 
-        yarnBuilder.yarn('test:coverage:node')
         publishHTML ( [
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -72,7 +71,6 @@ withPipeline(type, product, component) {
             reportName           : "node coverage tests"
         ])
 
-        yarnBuilder.yarn('test:coverage:ng')
         publishHTML ( [
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -91,7 +89,6 @@ withPipeline(type, product, component) {
             reportName           : 'XUI Manage Cases Mutation tests'
         ])
 
-        yarnBuilder.yarn('test:a11y')
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,

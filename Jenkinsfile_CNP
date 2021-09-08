@@ -62,28 +62,7 @@ withPipeline(type, product, component) {
 
     after('test') {
 
-         publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "reports/tests/mutation/node/",
-            reportFiles          : 'index.html',
-            reportName           : 'XUI Manage Cases Mutation tests'
-        ])
-
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "reports/tests/a11y/",
-            reportFiles          : 'Report.html',
-            reportName           : 'Manage Cases a11y Test Report'
-        ])
-
-    }
-
-    after('test:coverage:all') {
-
+        yarnBuilder.yarn('test:coverage:node')
         publishHTML ( [
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -93,6 +72,7 @@ withPipeline(type, product, component) {
             reportName           : "node coverage tests"
         ])
 
+        yarnBuilder.yarn('test:coverage:ng')
         publishHTML ( [
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -100,6 +80,25 @@ withPipeline(type, product, component) {
             reportDir            : "reports/tests/coverage/ng",
             reportFiles          : "index.html",
             reportName           : "ng coverage tests"
+        ])
+
+         publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "reports/tests/mutation/node/",
+            reportFiles          : 'index.html',
+            reportName           : 'XUI Manage Cases Mutation tests'
+        ])
+
+        yarnBuilder.yarn('test:a11y')
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "reports/tests/a11y/",
+            reportFiles          : 'Report.html',
+            reportName           : 'Manage Cases a11y Test Report'
         ])
 
     }

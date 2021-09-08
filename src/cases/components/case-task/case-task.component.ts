@@ -28,7 +28,7 @@ export class CaseTaskComponent implements OnInit {
   public manageOptions: { text: string, path: string }[];
   private pTask: Task;
 
-  private static replaceCaseRefVarWithCaseId(str: string, task: Task): string {
+  public static replaceCaseRefVarWithCaseId(str: string, task: Task): string {
     if (!str) {
       return '';
     }

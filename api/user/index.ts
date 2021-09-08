@@ -21,11 +21,11 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
     const canShareCases = roles.some(role => permissions.includes(role));
     const sessionTimeouts = getConfigValue(SESSION_TIMEOUTS) as RoleGroupSessionTimeout[];
     const sessionTimeout = getUserSessionTimeout(roles, sessionTimeouts);
-    const locationInfo = await getUserRoleAssignments(req.session.passport.user.userinfo, req);
+    const roleAssignmentInfo = await getUserRoleAssignments(req.session.passport.user.userinfo, req);
     const userInfo = {...req.session.passport.user.userinfo, token: `Bearer ${req.session.passport.user.tokenset.accessToken}`};
     res.send({
       canShareCases,
-      locationInfo,
+      roleAssignmentInfo,
       sessionTimeout,
       userInfo,
     });
@@ -42,7 +42,7 @@ export async function getRoleAssignmentForUser(userInfo: UserInfo, req: any): Pr
   const headers = setHeaders(req);
   try {
     const response: AxiosResponse = await http.get(path, { headers });
-    locationInfo = getLocationInfo(response.data.roleAssignmentResponse);
+    locationInfo = getRoleAssignmentInfo(response.data.roleAssignmentResponse);
     req.session.roleAssignmentResponse = response.data.roleAssignmentResponse;
   } catch (error) {
     console.log(error);
@@ -50,20 +50,20 @@ export async function getRoleAssignmentForUser(userInfo: UserInfo, req: any): Pr
   return locationInfo;
 }
 
-export function getLocationInfo(roleAssignmentResponse: RoleAssignment[]): LocationInfo[] {
-  const locationInfo = [];
+export function getRoleAssignmentInfo(roleAssignmentResponse: RoleAssignment[]): LocationInfo[] {
+  const roleAssignmentInfo = [];
   roleAssignmentResponse.forEach(roleAssignment => {
       const isCaseAllocator = isCurrentUserCaseAllocator(roleAssignment);
       const attributes = {...roleAssignment.attributes};
       attributes.isCaseAllocator = isCaseAllocator;
-      locationInfo.push(attributes);
+      roleAssignmentInfo.push(attributes);
   });
-  return locationInfo;
+  return roleAssignmentInfo;
 }
 
 export async function getUserRoleAssignments(userInfo: UserInfo, req): Promise<any []> {
-  const locationInfo = req.session.roleAssignmentResponse ?
-                      getLocationInfo(req.session.roleAssignmentResponse) :
+  const roleAssignmentInfo = req.session.roleAssignmentResponse ?
+                      getRoleAssignmentInfo(req.session.roleAssignmentResponse) :
                       await getRoleAssignmentForUser(userInfo, req);
-  return locationInfo;
+  return roleAssignmentInfo;
 }

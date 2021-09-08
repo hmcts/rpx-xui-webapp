@@ -4,7 +4,7 @@ import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { LocationInfo, UserDetails } from '../../../app/models/user-details.model';
+import { RoleAssignmentInfo, UserDetails } from '../../../app/models/user-details.model';
 import * as fromRoot from '../../../app/store';
 import { CaseRole, RoleExclusion } from '../../../role-access/models';
 import { RoleExclusionsService } from '../../../role-access/services';
@@ -18,7 +18,7 @@ export class RolesAndAccessContainerComponent implements OnInit {
   public caseDetails: CaseView;
   public showAllocateRoleLink: boolean = false;
   public exclusions$: Observable<RoleExclusion[]>;
-  public locationInfo$: Observable<LocationInfo>;
+  public roleAssignmentInfo$: Observable<RoleAssignmentInfo>;
   public jurisdictionFieldId = '[JURISDICTION]';
 
   constructor(private readonly route: ActivatedRoute,
@@ -31,9 +31,9 @@ export class RolesAndAccessContainerComponent implements OnInit {
     this.applyJurisdiction(this.caseDetails);
     this.roles = this.route.snapshot.data.roles as CaseRole[];
     this.exclusions$ = this.roleExclusionsService.getCurrentUserRoleExclusions();
-    this.locationInfo$ = this.store.pipe(
+    this.roleAssignmentInfo$ = this.store.pipe(
       select(fromRoot.getUserDetails),
-      map((userDetails) => userDetails.locationInfo[0])
+      map((userDetails) => userDetails.roleAssignmentInfo[0])
     );
   }
 
@@ -46,8 +46,8 @@ export class RolesAndAccessContainerComponent implements OnInit {
   }
 
   public setDisplayAllocateLink(user: UserDetails, caseJurisdiction: any): void {
-    if (user && user.locationInfo) {
-      this.showAllocateRoleLink = user.locationInfo.some(locationInfo => locationInfo.jurisdiction === caseJurisdiction);
+    if (user && user.roleAssignmentInfo) {
+      this.showAllocateRoleLink = user.roleAssignmentInfo.some(roleAssignmentInfo => roleAssignmentInfo.jurisdiction === caseJurisdiction);
     }
   }
 }

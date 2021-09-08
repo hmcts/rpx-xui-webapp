@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
-import { LocationInfo } from '../../../app/models';
+import { RoleAssignmentInfo } from '../../../app/models';
 import { CaseRole, RoleCategory } from '../../models';
 
 interface Item extends CaseRole {
@@ -15,7 +15,7 @@ interface Item extends CaseRole {
 export class CaseRolesTableComponent {
   public items: Item[] = [];
   @Input() public caseDetails: CaseView;
-  @Input() public locationInfo: LocationInfo;
+  @Input() public roleAssignmentInfo: RoleAssignmentInfo;
   @Input() public roleCategory: RoleCategory = RoleCategory.LEGAL_OPERATIONS;
   @ViewChild('body') private tableBody: ElementRef;
 

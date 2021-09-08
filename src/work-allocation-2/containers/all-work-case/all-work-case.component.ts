@@ -73,7 +73,7 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent {
   public onActionHandler(caseAction: InvokedCaseAction): void {
     let actionUrl = '';
     if (caseAction.action.id === Actions.Reallocate) {
-      actionUrl = `role-access/allocate-role/${caseAction.action.id}?caseId=${caseAction.invokedCase.case_id}&roleCategory=JUDICIAL&assignmentId=${caseAction.invokedCase.id}&userName=71bf6e83-ec6c-46d0-a04d-183f1d7b323d&typeOfRole=judge`;
+      actionUrl = `role-access/allocate-role/${caseAction.action.id}?caseId=${caseAction.invokedCase.case_id}&roleCategory=${caseAction.invokedCase.roleCategory}&assignmentId=${caseAction.invokedCase.id}&userName=${caseAction.invokedCase.assignee}&typeOfRole=${caseAction.invokedCase.roleName}`;
     } else if (caseAction.action.id === Actions.Remove) {
       actionUrl = `role-access/allocate-role/${caseAction.action.id}?caseId=${caseAction.invokedCase.case_id}&assignmentId=${caseAction.invokedCase.id}`;
     }

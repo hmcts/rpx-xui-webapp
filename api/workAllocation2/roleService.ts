@@ -25,7 +25,7 @@ export function toRefinedRoleAssignments(rawRoleAssignment: any): any {
   };
 }
 
-export function handleShowAllocatorLinkByCaseId(jurisdiction: string, caseLocationId: string, req: EnhancedRequest): boolean {
+export function checkIfCaseAllocator(jurisdiction: string, caseLocationId: string, req: EnhancedRequest): boolean {
   const roleAssignments = req.session.roleAssignmentResponse as RoleAssignment[];
   let isCaseAllocator = false;
   if (roleAssignments) {

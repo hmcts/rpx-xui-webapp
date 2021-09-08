@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { UserInfo } from '../../../app/models/user-details.model';
+import { UserInfo, UserRole } from '../../../app/models/user-details.model';
 import { ConfigConstants, ListConstants, SortConstants } from '../../components/constants';
 import { FieldConfig } from '../../models/common';
 import { SearchCaseRequest } from '../../models/dtos';
 import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-case-list-wrapper.component';
+import { AppUtils } from '../../../app/app-utils';
 
 @Component({
   selector: 'exui-my-cases',
@@ -32,13 +33,13 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent {
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       const id = userInfo.id ? userInfo.id : userInfo.uid;
-      const isJudge = userInfo.roles.some(role => ListConstants.JUDGE_ROLES.includes(role));
+      const userRole: UserRole = AppUtils.isLegalOpsOrJudicial(userInfo.roles);
       return {
         search_parameters: [
           { key: 'user', operator: 'IN', values: [id] },
         ],
         sorting_parameters: [this.getSortParameter()],
-        search_by: isJudge ? 'judge' : 'caseworker',
+        search_by: userRole,
         pagination_parameters: this.getPaginationParameter()
       };
     }

@@ -25,7 +25,7 @@ describe('AllWorkCaseComponent', () => {
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
 
-  let router: Router;
+  const routerMock = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate']);
   const mockCaseService = jasmine.createSpyObj('mockCaseService', ['searchCase']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
@@ -45,6 +45,7 @@ describe('AllWorkCaseComponent', () => {
       ],
       declarations: [AllWorkCaseComponent, WrapperComponent, WorkCaseListComponent],
       providers: [
+        { provide: Router, useValue: routerMock },
         { provide: WorkAllocationCaseService, useValue: mockCaseService },
         { provide: AlertService, useValue: mockAlertService },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
@@ -61,7 +62,6 @@ describe('AllWorkCaseComponent', () => {
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
     component.isPaginationEnabled$ = of(false);
-    router = TestBed.get(Router);
     const cases: Case[] = getMockCases();
     mockCaseService.searchCase.and.returnValue(of({ cases }));
     mockCaseworkerService.getAll.and.returnValue(of([]));
@@ -120,8 +120,7 @@ describe('AllWorkCaseComponent', () => {
     expect(footerCell.textContent.trim()).toEqual(component.emptyMessage);
   });
 
-  it('should appropriately handle clicking on a row action', () => {
-    const navigateSpy = spyOn(router, 'navigate');
+  fit('should appropriately handle clicking on a row action', () => {
     const element = fixture.debugElement.nativeElement;
     // Use the first case.
     const caseItem = component.cases[0];
@@ -136,7 +135,7 @@ describe('AllWorkCaseComponent', () => {
     actionLink.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     // Ensure the correct attempt has been made to navigate.
-    expect(navigateSpy).toHaveBeenCalledWith([`/role-access/allocate-role/${actionId}?caseId=${caseItem.id}/`], jasmine.any(Object));
+    expect(routerMock.navigateByUrl).toHaveBeenCalledWith(jasmine.stringMatching(`role-access/allocate-role/${actionId}?caseId=${caseItem.id}/`));
   });
 
   afterEach(() => {

@@ -105,5 +105,5 @@ describe('DeleteExclusionComponent', () => {
     component.onNavEvent(ExclusionNavigationEvent.DELETE_EXCLUSION);
     const additionalState = {state: {showMessage: true, messageText: ExclusionMessageText.Delete}};
     expect(routerMock.navigate).toHaveBeenCalledWith([goToCaseUrl], additionalState);
-  })
+  });
 });

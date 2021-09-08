@@ -26,10 +26,11 @@ module.exports = function (config) {
     },
     coverageIstanbulReporter: {
       dir: require('path').join(__dirname, '../reports/tests/coverage/ng'),
-      reports: ['html', 'lcov', 'text-summary'],
-      fixWebpackSourcePaths: true
+      reports: ['html', 'lcovonly', 'text-summary'],
+      fixWebpackSourcePaths: true,
+      combineBrowserReports: true
     },
-    reporters: ['spec', 'progress', 'kjhtml'],
+    reporters: ['coverage-istanbul'],
     specReporter: {
       maxLogLines: 5,             // limit number of lines logged per test
       suppressErrorSummary: false,// do not print error summary

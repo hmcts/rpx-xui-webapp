@@ -147,7 +147,9 @@ describe('Work allocations Release 2', () => {
         const actual = response.data;
         const expected = workAllocationDataModels.getCaseRole();
         expect(actual).to.be.an('array');
-        expect(actual[0]).to.have.all.keys(Object.keys(expected));
+        if (actual.length > 0) {
+            expect(actual[0]).to.have.all.keys(Object.keys(expected));
+        }
     });
 
 });

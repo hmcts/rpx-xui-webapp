@@ -27,7 +27,8 @@ module.exports = function (config) {
     coverageIstanbulReporter: {
       dir: require('path').join(__dirname, '../reports/tests/coverage/ng'),
       reports: ['html', 'lcovonly', 'text-summary'],
-      fixWebpackSourcePaths: true
+      fixWebpackSourcePaths: true,
+      combineBrowserReports: true
     },
     reporters: ['spec', 'progress', 'kjhtml', 'coverage-istanbul'],
     specReporter: {

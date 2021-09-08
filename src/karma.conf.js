@@ -30,7 +30,7 @@ module.exports = function (config) {
       fixWebpackSourcePaths: true,
       combineBrowserReports: true
     },
-    reporters: ['coverage-istanbul'],
+    reporters: ['spec', 'progress', 'kjhtml', 'coverage-istanbul'],
     specReporter: {
       maxLogLines: 5,             // limit number of lines logged per test
       suppressErrorSummary: false,// do not print error summary

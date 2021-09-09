@@ -49,7 +49,7 @@ describe('RolesAndAccessComponent', () => {
       events: [],
       metadataFields: []
     };
-    component.roleAssignmentInfo = initialMockState.appConfig.userDetails.roleAssignmentInfo[0];
+    component.showAllocateRoleLink = false
     fixture.detectChanges();
   });
 

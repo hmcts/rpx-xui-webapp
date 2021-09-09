@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
-import { RoleAssignmentInfo } from '../../../app/models/user-details.model';
 import { CaseRole, RoleCategory, RoleExclusion } from '../../../role-access/models';
 
 @Component({
@@ -18,7 +17,6 @@ export class RolesAndAccessComponent implements OnInit {
   @Input() public exclusions: RoleExclusion[] = [];
   @Input() public showAllocateRoleLink: boolean = false;
   @Input() public caseDetails: CaseView;
-  @Input() public roleAssignmentInfo: RoleAssignmentInfo;
 
   private pRoles: CaseRole[] = [];
   public jurisdictionFieldId = '[JURISDICTION]';

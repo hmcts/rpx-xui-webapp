@@ -118,7 +118,7 @@ describe('CaseRolesTableComponent', () => {
     fixture = TestBed.createComponent(CaseRolesTableComponent);
     component = fixture.componentInstance;
     component.caseDetails = CASE_VIEW;
-    component.roleAssignmentInfo = initialMockState.appConfig.userDetails.roleAssignmentInfo[0];
+    component.showAllocateRoleLink = false;
     fixture.detectChanges();
   });
 

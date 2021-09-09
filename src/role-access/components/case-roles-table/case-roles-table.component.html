@@ -18,7 +18,7 @@
       <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{item.start | date:'dd MMMM yyyy'}}</td>
       <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{item.end | date:'dd MMMM yyyy'}}</td>
       <td class="govuk-table__cell">
-        <span (click)="item.open = !item.open" [hidden]="roleAssignmentInfo && !roleAssignmentInfo.isCaseAllocator">
+        <span (click)="item.open = !item.open" [hidden]="!showAllocateRoleLink">
           <a href="javascript:void(0)"
              class="right_m">Manage</a><span
           class="govuk-accordion-wa__icon" [ngClass]="{'plus': !item.open, 'minus': item.open}"></span>

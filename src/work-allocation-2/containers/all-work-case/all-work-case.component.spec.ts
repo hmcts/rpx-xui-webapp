@@ -135,7 +135,7 @@ describe('AllWorkCaseComponent', () => {
     actionLink.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     // Ensure the correct attempt has been made to navigate.
-    expect(routerMock.navigateByUrl).toHaveBeenCalledWith(jasmine.stringMatching('allocate'));
+    expect(routerMock.navigateByUrl).toHaveBeenCalledWith(jasmine.stringMatching('remove'));
   });
 
   afterEach(() => {

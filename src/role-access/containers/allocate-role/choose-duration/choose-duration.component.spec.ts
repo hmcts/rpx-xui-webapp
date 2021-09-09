@@ -125,6 +125,43 @@ describe('ChooseDurationComponent', () => {
     const startDateValid = component.isDateValid();
     expect(startDateValid).toBeTruthy();
   });
+
+  it('valid date', () => {
+    component.yearStartDate.setValue(2020);
+    component.monthStartDate.setValue(1);
+    component.dayStartDate.setValue(10);
+
+    component.yearEndDate.setValue(2020);
+    component.monthEndDate.setValue(1);
+    component.dayEndDate.setValue(10);
+    const startDateValid = component.isDateValid();
+    expect(startDateValid).toBeTruthy();
+  });
+
+  it('valid date', () => {
+    component.yearStartDate.setValue(2020);
+    component.monthStartDate.setValue(10);
+    component.dayStartDate.setValue(29);
+
+    component.yearEndDate.setValue(2020);
+    component.monthEndDate.setValue(10);
+    component.dayEndDate.setValue(29);
+    const startDateValid = component.isDateValid();
+    expect(startDateValid).toBeTruthy();
+  });
+
+  it('valid date', () => {
+    component.yearStartDate.setValue(2020);
+    component.monthStartDate.setValue(11);
+    component.dayStartDate.setValue(29);
+
+    component.yearEndDate.setValue(2020);
+    component.monthEndDate.setValue(11);
+    component.dayEndDate.setValue(29);
+    const startDateValid = component.isDateValid();
+    expect(startDateValid).toBeTruthy();
+  });
+
   it('isStartDateValid to be falsy', () => {
     component.yearStartDate.setValue(2020);
     component.monthStartDate.setValue(12);

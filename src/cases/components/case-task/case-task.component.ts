@@ -1,8 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { TaskPermission } from '../../../work-allocation-2/models/tasks/task-permission.model';
-import { UserInfo } from '../../../app/models';
+import { UserInfo, UserRole } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { Task } from '../../../work-allocation-2/models/tasks';
+import { AppUtils } from 'src/app/app-utils';
 
 @Component({
   selector: 'exui-case-task',
@@ -12,6 +13,7 @@ import { Task } from '../../../work-allocation-2/models/tasks';
 export class CaseTaskComponent implements OnInit {
   @Input() public task: Task;
   public manageOptions: Array<{text: string, path: string}>;
+  public isUserJudidical: boolean;
   constructor(private readonly sessionStorageService: SessionStorageService) {}
 
   public ngOnInit(): void {
@@ -27,6 +29,7 @@ export class CaseTaskComponent implements OnInit {
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       const userId = userInfo.id ? userInfo.id : userInfo.uid;
+      this.isUserJudidical = AppUtils.isLegalOpsOrJudicial(userInfo.roles) === UserRole.Judicial;
       return task.assignee && task.assignee === userId;
     }
     return false;
@@ -34,6 +37,10 @@ export class CaseTaskComponent implements OnInit {
 
   public doesUserHaveOwnAndExecute(task: Task): boolean {
     return task.permissions.includes(TaskPermission.OWN) && task.permissions.includes(TaskPermission.EXECUTE);
+  }
+
+  public getDueDateTitle(): string {
+    return this.isUserJudidical ? 'Task created' : 'Due date';
   }
 
   public getManageOptions(task: Task): Array<{text: string, path: string}> {
@@ -66,5 +73,13 @@ export class CaseTaskComponent implements OnInit {
         return [];
       }
     }
+  }
+
+    public toDate(value: string | number | Date): Date {
+    if (value) {
+      const d = new Date(value);
+      return isNaN(d.getTime()) ? null : d;
+    }
+    return null;
   }
 }

@@ -11,7 +11,6 @@ import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, GOV_UI_COMPONENTS } from '@hmcts/rpx-xui-common-lib';
 import { McLaunchDarklyService } from './services/mc-launch-darkly-service';
 import { CaseRolesResolverService } from '../resolvers/case-roles-resolver.service';
-import { PriorityFieldComponent } from '../../work-allocation-2/components/priority-field/priority-field.component';
 
 /**
  * Shared Module
@@ -22,13 +21,11 @@ import { PriorityFieldComponent } from '../../work-allocation-2/components/prior
 @NgModule( {
   imports: [RouterModule, CommonModule, MediaViewerModule, ExuiCommonLibModule],
   declarations: [
-    PriorityFieldComponent,
     ...fromAppComponents.components,
     ...fromAppContainers.containers,
     ...fromAppDirectives.directives
   ],
   exports: [
-    PriorityFieldComponent,
     ...fromAppComponents.components,
     ...fromAppContainers.containers,
     ...fromAppDirectives.directives,

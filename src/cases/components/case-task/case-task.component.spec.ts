@@ -214,5 +214,14 @@ describe('CaseTaskComponent', () => {
 
         task.assigneeName = null;
         name = component.getAssigneeName(task);
+        expect(name).toEqual('Unassigned');
+    });
+    it('getDueDateTitle should be Task created', () => {
+        component.isUserJudidical = true;
+        expect(component.getDueDateTitle()).toEqual('Task created');
+    });
+    it('getDueDateTitle should be Due date', () => {
+        component.isUserJudidical = false;
+        expect(component.getDueDateTitle()).toEqual('Due date');
     });
 });

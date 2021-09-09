@@ -1,0 +1,32 @@
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_typography';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_colours';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_measurements';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_shims';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_css3';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_conditionals';
+
+.case-field {
+
+  @extend %contain-floats;
+  @include box-sizing(border-box);
+
+  margin-bottom: $gutter-half;
+
+  @include media(tablet) {
+    margin-bottom: $gutter;
+  }
+
+  .case-field__label {
+    display: block;
+    color: $text-colour;
+    padding-bottom: 2px;
+
+    @include bold-19;
+  }
+
+  .case-field__value {
+    @include core-19;
+  }
+}
+
+@import "src/shared/components/palette/base-field/grey-bar.scss";

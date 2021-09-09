@@ -1,0 +1,1 @@
+[{"__symbolic":"module","version":4,"metadata":{"ConditionalShowRegistrarService":{"__symbolic":"class","decorators":[{"__symbolic":"call","expression":{"__symbolic":"reference","module":"@angular/core","name":"Injectable","line":3,"character":1}}],"members":{"register":[{"__symbolic":"method"}],"refresh":[{"__symbolic":"method"}],"reset":[{"__symbolic":"method"}]}}}}]

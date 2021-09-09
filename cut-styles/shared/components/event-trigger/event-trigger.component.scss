@@ -1,0 +1,29 @@
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_colours.scss';
+
+.event-trigger {
+  width: auto;
+
+  margin-top: 40px;
+  margin-bottom: 20px;
+
+  .form-group {
+    margin-top: 3px;
+    margin-right: 10px;
+    margin-bottom: 0;
+    float: left;
+    text-align: right;
+    width: 325px;
+    .form-label {
+      float: left;
+      margin-top: 5px;
+    }
+  }
+
+  select {
+    &.EventTrigger-empty,
+    [data-default] {
+      color: $secondary-text-colour;
+    }
+    width: 250px;
+  }
+}

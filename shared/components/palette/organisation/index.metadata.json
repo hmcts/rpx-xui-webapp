@@ -1,0 +1,1 @@
+[{"__symbolic":"module","version":4,"metadata":{},"exports":[{"from":"./organisation.module"},{"from":"./read-organisation-field.component"},{"from":"./write-organisation-field.component"},{"from":"./write-organisation-complex-field.component"}]}]

@@ -1,0 +1,74 @@
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_typography';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_colours.scss';
+
+.hmcts-banner {
+  border: 0 solid;
+  margin-bottom: 10px;
+  color: #000000;
+  .warning-message {
+    font-weight: bold;
+  }
+}
+
+.govuk-hint {
+  font-size: 1.1rem;
+}
+
+.name-header {
+  font-weight: bold;
+  margin-top: 10px;
+  font-size: 18px;
+}
+
+.td-address {
+  width: 90%;
+  padding-top: 2px;
+}
+
+.td-select {
+  width: 10%;
+}
+
+.warning-panel {
+  background-color: #e7ebef;
+  height: 40px;
+  margin-bottom: 0;
+  align-items: center;
+  display: flex;
+  .warning-message {
+    padding-left: 15px;
+  }
+}
+
+.complex-field-table {
+  &>tbody>tr>th {
+    border: none;
+  }
+
+  &>tbody>tr:last-child {
+    &>th, &>td {
+      border-bottom: none;
+    }
+  }
+}
+
+.complex-field-title {
+  width: 300px;;
+}
+
+.label-width-small {
+  width: 100px;
+}
+
+.label-width-medium {
+  width: 150px;
+}
+
+.scroll-container {
+  height: 600px;
+  overflow-y: scroll;
+}
+
+.no-result-message {
+  margin-top: 15px;
+}

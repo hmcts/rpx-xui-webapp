@@ -1,0 +1,94 @@
+@import 'src/components/typography';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_shims';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_conditionals';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_measurements';
+
+$black: #000000;
+$white: #FFFFFF;
+$header-background-color: $black;
+
+.global-header {
+  background-color: $header-background-color;
+  width: 100%;
+  @extend %contain-floats;
+
+  .header-title {
+    @include bold-20pt;
+    @extend %contain-floats;
+    float: left;
+    font-weight: bold;
+    color: $white;
+    @include vertical-align;
+
+    @include media(desktop){
+      width: 50%;
+    }
+    @media screen and (max-width: 379px) {
+      width: auto;
+      float: none;
+    }
+
+    .header-title-span {
+      padding-left: 22px;
+    }
+  }
+
+  .header-username {
+    @include core-14pt;
+    @extend %contain-floats;
+    float: right;
+    text-align: right;
+    color: $white;
+    @include vertical-align;
+
+    @include media(desktop){
+      width: 50%;
+    }
+
+    .header-username-span {
+      padding-right: 15px;
+    }
+  }
+}
+
+#global-header .full-screen {
+  max-width: 100%;
+}
+.title {
+  font-weight: bold;
+  color: $white;
+  font-size: 24px;
+  @extend %contain-floats;
+}
+.title-solicitor {
+  float: left;
+}
+.proposition-right {
+  float: right;
+  padding-top: 5px;
+}
+#global-header.with-proposition .header-wrapper .header-logo {
+  width: 27%;
+}
+#global-header.with-proposition .header-wrapper .header-proposition {
+  width: 100%;
+  float: none;
+  .content {
+    margin: 0;
+  }
+}
+#user-name, #sign-out {
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  color: white;
+  margin: 0 0 0 9px;
+  text-decoration: none;
+  background-color: $header-background-color;
+  &:focus {
+    color: $white;
+  }
+}
+#sign-out:hover {
+  text-decoration: underline;
+}

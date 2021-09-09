@@ -1,0 +1,33 @@
+import { NgZone, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { Subscription } from 'rxjs/Subscription';
+import { Activity, CaseEventData, CaseEventTrigger, CaseView, DisplayMode } from '../../../domain';
+import { CaseReferencePipe } from '../../../pipes';
+import { ActivityPollingService, AlertService } from '../../../services';
+import { CaseNotifier, CasesService } from '../../case-editor';
+export declare class CaseEventTriggerComponent implements OnInit, OnDestroy {
+    private ngZone;
+    private casesService;
+    private caseNotifier;
+    private router;
+    private alertService;
+    private route;
+    private caseReferencePipe;
+    private activityPollingService;
+    BANNER: DisplayMode;
+    eventTrigger: CaseEventTrigger;
+    caseDetails: CaseView;
+    activitySubscription: Subscription;
+    caseSubscription: Subscription;
+    parentUrl: string;
+    constructor(ngZone: NgZone, casesService: CasesService, caseNotifier: CaseNotifier, router: Router, alertService: AlertService, route: ActivatedRoute, caseReferencePipe: CaseReferencePipe, activityPollingService: ActivityPollingService);
+    ngOnInit(): void;
+    ngOnDestroy(): void;
+    postEditActivity(): Observable<Activity[]>;
+    submit(): (sanitizedEditForm: CaseEventData) => Observable<object>;
+    validate(): (sanitizedEditForm: CaseEventData, pageId: string) => Observable<object>;
+    submitted(event: any): void;
+    cancel(): Promise<boolean>;
+    isDataLoaded(): boolean;
+}

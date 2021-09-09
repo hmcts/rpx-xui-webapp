@@ -1,0 +1,52 @@
+@import 'src/components/typography';
+@import "node_modules/govuk_frontend_toolkit/stylesheets/_shims";
+@import "node_modules/govuk_frontend_toolkit/stylesheets/_grid_layout";
+
+@mixin phase-banner() {
+  padding-top: 10px;
+  padding-left: 15px;
+  border-bottom: 1px solid $border-colour;
+  max-width: 1005px;
+  margin: 0 auto;
+
+  @include media(tablet) {
+    padding-bottom: 10px;
+  }
+
+  p {
+    display: table;
+    margin: 0;
+    color: $banner-text-colour;
+    @include core-12pt;
+  }
+
+  .phase-tag {
+    @include phase-tag();
+  }
+
+  span {
+    display: table-cell;
+    vertical-align: baseline;
+  }
+}
+
+@mixin phase-tag() {
+  @include inline-block;
+  margin: 0 8px 0 0;
+  padding: 2px 5px 0;
+
+  @include bold-12pt($line-height: 20 / 16);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-decoration: none;
+
+  color: $white;
+  background-color: $govuk-blue;
+}
+
+.phase-banner {
+   @include phase-banner();
+}
+.full-screen {
+  max-width: 100%;
+}

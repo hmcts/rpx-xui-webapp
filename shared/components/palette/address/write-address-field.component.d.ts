@@ -1,0 +1,32 @@
+import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
+import { OnChanges, OnInit, QueryList, SimpleChanges } from '@angular/core';
+import { WriteComplexFieldComponent } from '../complex/write-complex-field.component';
+import { AddressOption } from './address-option.model';
+import { AddressesService } from '../../../services/addresses/addresses.service';
+import { FormControl, FormGroup } from '@angular/forms';
+import { IsCompoundPipe } from '../utils/is-compound.pipe';
+import { FocusElementDirective } from '../../../directives/focus-element';
+export declare class WriteAddressFieldComponent extends AbstractFieldWriteComponent implements OnInit, OnChanges {
+    private isCompoundPipe;
+    writeComplexFieldComponent: WriteComplexFieldComponent;
+    focusElementDirectives: QueryList<FocusElementDirective>;
+    addressesService: AddressesService;
+    formGroup: FormGroup;
+    addressFormGroup: FormGroup;
+    postcode: FormControl;
+    addressList: FormControl;
+    addressOptions: AddressOption[];
+    missingPostcode: boolean;
+    constructor(addressesService: AddressesService, isCompoundPipe: IsCompoundPipe);
+    ngOnInit(): void;
+    findAddress(): void;
+    refocusElement(): void;
+    blankAddress(): void;
+    isComplexWithHiddenFields(): boolean;
+    shouldShowDetailFields(): boolean;
+    addressSelected(): void;
+    ngOnChanges(changes: SimpleChanges): void;
+    buildIdPrefix(elementId: string): string;
+    private defaultLabel;
+    private setFormValue;
+}

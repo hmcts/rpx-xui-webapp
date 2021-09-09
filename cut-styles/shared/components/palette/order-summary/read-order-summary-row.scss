@@ -1,0 +1,22 @@
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_typography';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_colours.scss';
+
+$padding: 12px;
+
+td {
+  padding-top: $padding;
+  padding-bottom: $padding;
+  margin: 0;
+  border-bottom: 1px solid $black;
+  @include core-16;
+}
+td:nth-child(1) {
+  width: 20px;
+}
+td:nth-child(2) {
+  width: 70%;
+}
+td:nth-child(3) {
+  text-align: right;
+  width: 10%;
+}

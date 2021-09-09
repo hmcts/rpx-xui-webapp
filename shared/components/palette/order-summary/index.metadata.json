@@ -1,0 +1,1 @@
+[{"__symbolic":"module","version":4,"metadata":{},"exports":[{"from":"./fee-value.model"},{"from":"./fee.model"},{"from":"./order-summary.model"},{"from":"./order-summary.module"},{"from":"./read-order-summary-field.component"},{"from":"./read-order-summary-row.component"},{"from":"./write-order-summary-field.component"}]}]

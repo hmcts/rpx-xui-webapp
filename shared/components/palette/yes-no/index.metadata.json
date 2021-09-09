@@ -1,0 +1,1 @@
+[{"__symbolic":"module","version":4,"metadata":{},"exports":[{"from":"./read-yes-no-field.component"},{"from":"./write-yes-no-field.component"},{"from":"./yes-no.module"},{"from":"./yes-no.service"}]}]

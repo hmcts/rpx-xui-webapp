@@ -1,0 +1,22 @@
+@import 'src/components/typography';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_shims';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_conditionals';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_measurements';
+
+$darkgray: #231F20;
+$gray: #ECEDEE;
+
+.footer-text {
+  color: $darkgray;
+  margin-top: 5px;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: normal;
+}
+#footer .full-screen {
+  max-width: 100%;
+  padding-left: 20px;
+}
+

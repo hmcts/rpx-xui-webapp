@@ -1,0 +1,42 @@
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = require("@angular/core");
+var common_1 = require("@angular/common");
+var fixed_list_module_1 = require("../fixed-list/fixed-list.module");
+var read_multi_select_list_field_component_1 = require("./read-multi-select-list-field.component");
+var write_multi_select_list_field_component_1 = require("./write-multi-select-list-field.component");
+var forms_1 = require("@angular/forms");
+var utils_module_1 = require("../utils/utils.module");
+var markdown_module_1 = require("../../markdown/markdown.module");
+var MultiSelectListModule = /** @class */ (function () {
+    function MultiSelectListModule() {
+    }
+    MultiSelectListModule = __decorate([
+        core_1.NgModule({
+            imports: [
+                common_1.CommonModule,
+                fixed_list_module_1.FixedListModule,
+                forms_1.ReactiveFormsModule,
+                utils_module_1.PaletteUtilsModule,
+                markdown_module_1.MarkdownModule
+            ],
+            declarations: [
+                read_multi_select_list_field_component_1.ReadMultiSelectListFieldComponent,
+                write_multi_select_list_field_component_1.WriteMultiSelectListFieldComponent
+            ],
+            entryComponents: [
+                read_multi_select_list_field_component_1.ReadMultiSelectListFieldComponent,
+                write_multi_select_list_field_component_1.WriteMultiSelectListFieldComponent
+            ]
+        })
+    ], MultiSelectListModule);
+    return MultiSelectListModule;
+}());
+exports.MultiSelectListModule = MultiSelectListModule;
+//# sourceMappingURL=multi-select-list.module.js.map

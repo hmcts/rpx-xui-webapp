@@ -1,0 +1,46 @@
+.CaseHistory {
+  th, td {
+    border-bottom: none;
+  }
+}
+
+.caseHistorySection {
+  margin-top: 40px;
+}
+
+.EventDetails {
+  th, td {
+    border-bottom: none;
+  }
+}
+
+th {
+  width: 1%;
+  white-space: nowrap;
+  vertical-align: top;
+}
+
+.compound-field {
+  td {
+    padding: 0;
+  }
+}
+
+.case-viewer-controls {
+  margin-top: 47px;
+  margin-bottom: 20px;
+}
+
+ccd-case-header {
+  float: left;
+  margin-right: 10px;
+}
+
+ccd-event-trigger {
+  float: right;
+}
+.case-viewer-label {
+  min-width: 300px;
+  white-space:normal;
+}
+

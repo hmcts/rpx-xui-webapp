@@ -1,0 +1,30 @@
+import { Observable } from 'rxjs';
+import { DocumentData } from '../../domain/document/document-data.model';
+import { HttpService } from '../http';
+import { AbstractAppConfig } from '../../../app.config';
+export declare class DocumentManagementService {
+    private http;
+    private appConfig;
+    private static readonly PDF;
+    private static readonly IMAGE;
+    private static readonly WORD;
+    private static readonly EXCEL;
+    private static readonly POWERPOINT;
+    private static readonly TXT;
+    private static readonly RTF;
+    private static readonly RESPONSE_DELAY;
+    private static readonly imagesList;
+    private static readonly wordList;
+    private static readonly excelList;
+    private static readonly powerpointList;
+    constructor(http: HttpService, appConfig: AbstractAppConfig);
+    uploadFile(formData: FormData): Observable<DocumentData>;
+    secureUploadFile(formData: FormData): Observable<DocumentData>;
+    getMediaViewerInfo(documentFieldValue: any): string;
+    getContentType(documentFieldValue: any): string;
+    isImage(imageType: string): boolean;
+    isWord(wordType: string): boolean;
+    isExcel(excelType: string): boolean;
+    isPowerpoint(powerpointType: string): boolean;
+    private transformDocumentUrl;
+}

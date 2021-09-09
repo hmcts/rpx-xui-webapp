@@ -1,0 +1,56 @@
+#fieldset-case-data {
+  margin-bottom: 30px;
+
+  th {
+    width: 1%;
+    white-space: nowrap;
+    vertical-align: top;
+  }
+}
+
+.compound-field {
+  td {
+    padding: 0;
+  }
+}
+
+#confirmation-header {
+  width: 630px;
+  background-color: #17958b;
+  border: solid 1px #979797;
+  color: #ffffff;
+  text-align: center;
+}
+
+#confirmation-body {
+  width: 630px;
+  background-color: #ffffff;
+}
+
+.valign-top {
+  vertical-align: top;
+}
+
+.summary-fields {
+  margin-bottom: 30px;
+  tbody tr th, tbody tr td {
+    border-bottom: 0px;
+  }
+}
+
+a.disabled {
+  pointer-events: none;
+  cursor: default;
+}
+
+.case-field-label {
+  width: 45%
+}
+
+.case-field-content {
+  width: 50%
+}
+
+.case-field-change {
+  width: 5%
+}

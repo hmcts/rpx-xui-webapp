@@ -1,0 +1,59 @@
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_colours.scss';
+
+#case-timeline {
+  a {
+    cursor: pointer;
+    text-decoration: underline;
+    color: $link-colour;
+  }
+  a:hover { color: $link-hover-colour; }
+  a:visited { color: $link-visited-colour; }
+}
+
+.EventLogTable {
+  tbody>tr {
+
+    $leftPadding: 10px;
+    $borderWidth: 8px;
+
+    td:first-child {
+      padding-left: $leftPadding;
+    }
+
+    &.EventLogTable-Selected {
+      border-left: $borderWidth solid $govuk-blue;
+      background-color: $highlight-colour;
+
+      td:first-child {
+        padding-left: $leftPadding - $borderWidth / 2;
+      }
+    }
+
+    &:not(.EventLogTable-Selected):hover {
+      border-left: $borderWidth solid $link-hover-colour;
+      background-color: $highlight-colour;
+
+      cursor: pointer;
+      cursor: hand;
+
+      td:first-child {
+        padding-left: $leftPadding - $borderWidth / 2;
+      }
+    }
+    .event-link {
+      float: left;
+      padding-right:8px;
+    }
+    .doc-img {
+      width: 16px;
+      float: left;
+    }
+    .doc-tooltip {
+      left: 35%;
+      bottom: 7px;
+    }
+    .doc-tooltip::after {
+      border-color: transparent;
+    }
+  }
+}

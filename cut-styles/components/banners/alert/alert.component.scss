@@ -1,0 +1,61 @@
+@import "src/components/typography";
+
+// Clearfix
+
+%clearfix {
+  &:after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+}
+
+$module: 'alert';
+
+.#{$module} {
+  @extend %clearfix;
+  color: $white;
+  padding: 10px;
+
+  font-size: 16px;
+  line-height: 1.25;
+
+  &-error {
+    background-color: $mellow-red;
+  }
+
+  &-warning {
+    background-color: #912b88;
+  }
+
+  &-success, &-confirmation {
+    background-color: #006435;
+
+    // corrects icon-tick dimensions from original 27px x 27px
+    .icon-tick {
+      height: 20px;
+      width: 20px;
+      background-size: cover;
+    }
+  }
+
+  &-message {
+    color: $white;
+    display: table-cell;
+    font-weight: bold;
+
+    a, a:visited {
+      color: $white;
+      text-decoration: underline;
+    }
+  }
+
+  .icon {
+    display: table-cell;
+    vertical-align: top;
+
+    + .#{$module}-message {
+      padding-left: 10px;
+    }
+  }
+}

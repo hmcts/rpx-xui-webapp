@@ -1,0 +1,1 @@
+[{"__symbolic":"module","version":4,"metadata":{},"exports":[{"from":"./case-create"},{"from":"./case-edit"},{"from":"./case-edit-confirm"},{"from":"./case-edit-form"},{"from":"./case-edit-page"},{"from":"./case-edit-submit"},{"from":"./case-progress"},{"from":"./domain"},{"from":"./services"},{"from":"./case-editor.module"},{"from":"./editor.routing"}]}]

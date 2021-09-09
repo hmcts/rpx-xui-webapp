@@ -1,0 +1,84 @@
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_shims';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_conditionals';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_measurements';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_colours.scss';
+
+$blue_table: #005ea5;
+$black: #231F20;
+
+table {
+
+  thead tr th {
+    vertical-align: top;
+  }
+
+  tbody tr td {
+    font-size: 16px;
+    word-wrap: break-word;
+
+    a {
+      float: left;
+    }
+  }
+
+  .caseid-col {
+    white-space: nowrap;
+  }
+}
+
+.notification {
+  text-align: center;
+  padding: 30px 0px 30px 0px;
+  margin-top: 75px;
+}
+a:hover {
+  color: $blue_table;
+}
+
+.search-result-reset-link {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+.search-result-column-header {
+  width: unset;
+  table-layout: normal;
+  div {
+    display: table-cell;
+    width: auto;
+    @media screen and (max-width: 379px) {
+      display: block;
+      float: right;
+    }
+  }
+}
+
+.search-result-column-label {
+  font-size: 16px;
+  font-weight: bold;
+  word-wrap: break-word;
+  cursor: pointer;
+  padding-right: 15px;
+}
+
+.search-result-column-sort {
+  font-size: 16px;
+}
+
+.sort-widget {
+  cursor: pointer;
+  text-decoration: none;
+  color: $black;
+}
+
+span.heading-medium {
+  margin-top: -20px;
+}
+
+.govuk-table__checkbox {
+  vertical-align: middle;
+  padding-left: 3px;
+}
+
+#search-result-heading__text:focus {
+  outline: none; 
+}

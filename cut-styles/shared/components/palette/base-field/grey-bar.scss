@@ -1,0 +1,35 @@
+.form :host::ng-deep .grey-bar {
+  > * > .form-group, > * > dl.case-field {
+    margin-left: 15px;
+    padding-left: 15px;
+
+    /**
+     * Something to join the bars together...?
+     * For now, these are commented out as it looks a little bit off.
+     * It might be better to stretch above and below, rather than just above,
+     * but there's a lack of consistency with the padding/margin below the
+     * form controls so margin-/padding-bottom doesn't work at the moment.
+     *
+     * NOTE: This also requires that radio buttons and checkboxes gain a
+     * white background or there will be an overlap.
+     */
+    // margin-top: -15px;
+    // padding-top: 15px;
+
+    /**
+     * Change the border-colour only when this is not in an error state.
+     */
+    &:not(.form-group-error) {
+      border-left: solid 5px #b1b4b6; /* govuk-border-colour */
+    }
+
+    /**
+     * Input controls need to be block elements or it messes up layout
+     */
+    input, select, textarea {
+      &:not(.inline-block) {
+        display: block;
+      }
+    }
+  }
+}

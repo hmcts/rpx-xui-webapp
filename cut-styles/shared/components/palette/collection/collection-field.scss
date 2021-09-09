@@ -1,0 +1,75 @@
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_typography';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_colours.scss';
+
+.collection-field-table {
+  tr:first-child>td {
+    padding-top: 0;
+  }
+  tr:last-child>td {
+    border-bottom: none;
+  }
+  td.collection-actions {
+    width: 1px;
+    white-space: nowrap;
+  }
+}
+.error-spacing {
+  margin-top: 10px;
+}
+.collection-title{
+  height: 51px;
+}
+.float-left {
+  float: left;
+  padding-top: 8px;
+}
+.float-right {
+  float: right;
+}
+.complex-panel {
+  $padding: 5px;
+  margin: 13px 0px;
+
+  border: 1px solid $border-colour;
+
+  .complex-panel-title {
+    background-color: $panel-colour;
+    padding: $padding;
+    border-bottom: 1px solid $border-colour;
+    font-weight: bold;
+    display: block;
+    color: $text-colour;
+    padding-bottom: 2px;
+
+    @include bold-19;
+  }
+
+  .complex-panel-table {
+    &>tbody>tr>th {
+      vertical-align: top;
+    }
+
+    &>tbody>tr:last-child {
+      &>th, &>td {
+        border-bottom: none;
+      }
+    }
+  }
+
+  .complex-panel-simple-field {
+    th {
+      padding-left: $padding;
+      width: 295px;
+    }
+  }
+
+  .complex-panel-compound-field {
+    td {
+      padding: $padding;
+    }
+  }
+}
+
+.collection-indicator {
+  border-left: solid 5px #b1b4b6; /* govuk-border-colour */
+}

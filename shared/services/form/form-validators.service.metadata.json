@@ -1,0 +1,1 @@
+[{"__symbolic":"module","version":4,"metadata":{"FormValidatorsService":{"__symbolic":"class","decorators":[{"__symbolic":"call","expression":{"__symbolic":"reference","module":"@angular/core","name":"Injectable","line":7,"character":1}}],"members":{"addValidators":[{"__symbolic":"method"}]},"statics":{"CUSTOM_VALIDATED_TYPES":["Date","MoneyGBP","Label"]}}}}]

@@ -1,0 +1,1 @@
+[{"__symbolic":"module","version":4,"metadata":{"HttpError":{"__symbolic":"class","members":{"__ctor__":[{"__symbolic":"constructor"}]},"statics":{"DEFAULT_ERROR":"Unknown error","DEFAULT_MESSAGE":"Something unexpected happened, our technical staff have been automatically notified","DEFAULT_STATUS":500}}}}]

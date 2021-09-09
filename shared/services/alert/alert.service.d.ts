@@ -1,0 +1,32 @@
+import { Router } from '@angular/router';
+import 'rxjs/operator/publish';
+import { ConnectableObservable } from 'rxjs/Rx';
+import { Alert } from '../../domain/alert/alert.model';
+import { AlertLevel } from '../../domain';
+export declare class AlertService {
+    private router;
+    private successObserver;
+    private errorObserver;
+    private warningObserver;
+    private alertObserver;
+    preservedError: string;
+    preservedWarning: string;
+    preservedSuccess: string;
+    message: string;
+    level: AlertLevel;
+    successes: ConnectableObservable<Alert>;
+    errors: ConnectableObservable<Alert>;
+    warnings: ConnectableObservable<Alert>;
+    alerts: ConnectableObservable<Alert>;
+    private preserveAlerts;
+    constructor(router: Router);
+    clear(): void;
+    error(message: string): void;
+    warning(message: string): void;
+    success(message: string): void;
+    setPreserveAlerts(preserve: boolean, urlInfo?: string[]): void;
+    currentUrlIncludesInfo(preserve: boolean, urlInfo: string[]): boolean;
+    isPreserveAlerts(): boolean;
+    preserveMessages(message: string): string;
+    push(msgObject: any): void;
+}

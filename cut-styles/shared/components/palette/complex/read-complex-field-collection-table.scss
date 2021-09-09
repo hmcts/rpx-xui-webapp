@@ -1,0 +1,107 @@
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_typography';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_colours.scss';
+
+.complex-panel {
+  $padding: 5px;
+  margin: 13px 0px;
+
+  border: 1px solid $border-colour;
+
+  .complex-panel-title {
+    background-color: $panel-colour;
+    padding: $padding;
+    border-bottom: 1px solid $border-colour;
+    font-weight: bold;
+    display: block;
+    color: $text-colour;
+    padding-bottom: 2px;
+
+    @include bold-19;
+  }
+
+  .complex-panel-table {
+    &>tbody>tr>th {
+      vertical-align: top;
+    }
+
+    &>tbody>tr:last-child {
+      &>th {
+        border-bottom: none;
+      }
+    }
+    th {
+      padding-left: $padding;
+      font-weight: bold;
+      border-bottom: none;
+    }
+    td {
+      padding-left: $padding;
+      padding-top: 0;
+      padding-bottom:0;
+      border-bottom: none;
+    }
+  }
+  .new-table-row{
+    border-top: 1px solid $border-colour;
+  }
+  .complex-panel-simple-field {
+    th {
+      padding-left: $padding;
+      padding-top: 0px;
+      padding-bottom: 0px;
+      width: 295px;
+    }
+  }
+  .complex-panel-nested-field {
+    th {
+      padding-left: 33px;
+      padding-top: 0px;
+      padding-bottom: 0px;
+      width: 200px;
+    }
+  }
+  .complex-panel-compound-field {
+    td {
+      padding: $padding;
+      border-bottom: none;
+    }
+  }
+}
+.sort-widget {
+  cursor: pointer;
+  text-decoration: none;
+  color: $black;
+}
+
+.accordion-wrapper {
+
+  margin-bottom: 20px;
+
+  .heading-medium {
+    margin: 0px;
+  }
+  .accordion-heading{
+    border-top: 1px solid #bfc1c3;
+    padding-top: 20px;
+    padding-bottom: 10px;
+    height: 20px;
+    cursor: pointer;
+
+    .accordion-image {
+      width: 25px;
+      margin-right: 20px;
+    }
+  }
+  .accordion-body {
+    margin-top: 20px;
+    margin-right: 20px;
+  }
+  .last-accordion {
+    border-bottom: 1px solid #bfc1c3;
+    padding-bottom: 30px;
+  }
+
+}
+
+
+

@@ -1,0 +1,645 @@
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_shims';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_conditionals';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_measurements';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_colours.scss';
+
+/* datepicker-container ensure no leakage of css via view encapsulation
+Details inside it are for the actual component first shown on page */
+.datepicker-container {
+  display: inline-block;
+  position: relative;
+  min-width: 298px;
+
+  .govuk-input {
+    height: 35px;
+    min-width: 298px;
+    width: auto;
+    padding-right: 40px;
+    border: 1px solid #000;
+
+    &:focus {
+      outline: 1px solid #ffdd00;
+      border: 1px solid black;
+    }
+
+    &::-ms-clear {
+      display: none;
+    }
+  }
+
+  .datepicker-wrapper-input {
+    position: relative;
+    display: inline-block;
+    top: -20%;
+    border: 0;
+
+    &:focus {
+      border: 0;
+      outline: none;
+    }
+  }
+
+  .mat-icon-button {
+    height: 32px;
+    width: 32px;
+
+    &:focus {
+      outline: 1px solid #ffdd00;
+    }
+
+    .mat-datepicker-toggle-default-icon {
+      position: relative;
+      top: -5px;
+    }
+  }
+
+  .mat-datepicker-toggle {
+    position: absolute;
+    right: 0;
+  }
+}
+
+// this is the overlay container from which shows the datetimepicker panel in order to access it
+.cdk-overlay-container {
+  // all datepicker content shown within mat-datepicker-content
+  .mat-datepicker-content {
+    border: 1px solid black;
+    border-radius: 0;
+    max-width: 295px;
+
+    .mat-calendar-table {
+      width: calc(100% - 1px);
+      table-layout: fixed;
+    }
+
+    .mat-calendar-header {
+      height: 34px;
+      border-bottom: 1px ridge #bfc1c3;
+    }
+
+    .mat-calendar-period-button {
+      left: 14%;
+      min-width: 125px;
+      border-right: 1px ridge #bfc1c3;
+      border-left: 1px ridge #bfc1c3;
+      border-radius: 0px;
+      top: -20px;
+      width: 200%;
+
+      .mat-button-wrapper {
+        text-align: center;
+        font-weight: bold;
+      }
+
+      &:focus {
+        border: 2px solid black;
+      }
+    }
+
+    .mat-calendar-previous-button {
+      left: -73%;
+      top: -20px;
+      border: 2px solid transparent;
+      border-radius: 0;
+
+      &:focus {
+        border-color: black;
+      }
+
+      &::after {
+        border-left-width: 5px;
+        border-top-width: 5px;
+        color: black;
+        padding: 4px;
+        top: -2px;
+        left: -2px;
+      }
+    }
+
+    .mat-calendar-next-button {
+      top: -20px;
+      left: 1%;
+      border: 2px solid transparent;
+      border-radius: 0;
+
+      &:focus {
+        border-color: black;
+      }
+
+      &::after {
+        border-right-width: 5px;
+        border-top-width: 5px;
+        color: black;
+        padding: 4px;
+        top: -2px;
+        left: -2px;
+      }
+    }
+
+    .mat-button-wrapper {
+      text-transform: capitalize !important;
+    }
+
+    .mat-calendar {
+      border-bottom: 1px solid black;
+    }
+
+    .mat-calendar-table-header-divider {
+      padding: 0px;
+      border-bottom: none;
+
+      &::after {
+        height: 0px;
+      }
+    }
+
+    .mat-calendar-content {
+      padding: 0px;
+    }
+
+    // day selection panel
+    ngx-mat-month-view {
+
+      .mat-calendar-table-header {
+        color: black;
+        th.ng-star-inserted {
+          font-weight: bold;
+          font-size: 15px;
+          padding-top: 2%;
+          padding-bottom: 2%;
+          column-width: 20px;
+        }
+        tr:nth-of-type(1) {
+          th {
+            visibility: hidden;
+            &::after {
+              visibility: visible;
+              color: black;
+              position: relative;
+              left: -15px;
+            }
+          }
+          th:nth-of-type(1)::after {
+            content: 'MON';
+          }
+          th:nth-of-type(2)::after {
+            left: -12px;
+            content: 'TUE';
+          }
+          th:nth-of-type(3)::after {
+            left: -18px;
+            content: 'WED';
+          }
+          th:nth-of-type(4)::after {
+            left: -14px;
+            content: 'THU';
+          }
+          th:nth-of-type(5)::after {
+            left: -10px;
+            content: 'FRI';
+          }
+          th:nth-of-type(6)::after {
+            content: 'SAT';
+          }
+          th:nth-of-type(7)::after {
+            content: 'SUN';
+          }
+        }
+      }
+
+      .mat-calendar-body-label {
+        font-weight: bold;
+        font-size: large;
+        color: black;
+      }
+
+      .mat-calendar-body-selected {
+        border: none;
+        background-color: transparent;
+        color: white;
+      }
+
+      .mat-calendar-body-active {
+        background-color:	#5694ca;
+      }
+
+      .mat-calendar-body-today {
+        border: none;
+        box-shadow: none;
+      }
+
+      .mat-calendar-body-cell {
+        border: 1px ridge #bfc1c3;
+
+        &[aria-selected="true"] {
+          background-color: #1d70b8;
+          outline: 3px solid #ffdd00;
+          border: 2px solid black;
+          outline-offset: 1px;
+          z-index: 1;
+        }
+      }
+    }
+
+    // year selection panel
+    ngx-mat-multi-year-view {
+      .mat-calendar-table {
+        border-collapse: separate;
+        border-spacing: 10px;
+
+        .mat-calendar-body-active {
+          background-color:	#5694ca;
+        }
+
+        .mat-calendar-body-cell {
+          .mat-calendar-body-cell-content {
+            border: none;
+          }
+
+          .mat-calendar-body-selected {
+            border: none;
+            box-shadow: none;
+            background-color: transparent;
+          }
+
+          border: 1px solid #bfc1c3;
+
+          &[aria-selected="true"] {
+            background-color: #1d70b8;
+            outline: 2px solid #ffdd00;
+          }
+        }
+      }
+    }
+
+    // month selection panel
+    ngx-mat-year-view {
+      .mat-calendar-table {
+        border-collapse: separate;
+        border-spacing: 20px;
+
+        tr:nth-of-type(1) {
+          visibility: collapse;
+        }
+
+        .mat-calendar-body-active {
+          background-color:	#5694ca;
+        }
+
+        .mat-calendar-body-cell {
+          .mat-calendar-body-cell-content {
+            border: none;
+          }
+
+          .mat-calendar-body-selected {
+            border: none;
+            box-shadow: none;
+            background-color: transparent;
+          }
+
+          border: 1px solid #bfc1c3;
+
+          &[aria-selected="true"] {
+            background-color: #1d70b8;
+            outline: 3px solid #ffdd00;
+            border: 2px solid black;
+            outline-offset: 1px;
+          }
+        }
+      }
+    }
+
+    // timepicker part of panel
+    .time-container {
+      height: 80px;
+      padding-top: 0;
+
+      .ngx-mat-timepicker {
+        width: 100%;
+
+        .table {
+          margin-left: 0 !important;
+
+          tbody {
+            position: relative;
+          }
+
+          tr {
+
+
+            .mat-icon-button {
+
+              .mat-button-wrapper {
+                width: auto;
+                height: auto;
+              }
+              &:focus {
+                outline:none;
+              }
+            }
+            &:first-child {
+              position: absolute;
+              left: 49px;
+              top: 15px;
+              z-index: 2;
+              button:disabled {
+                display: none;
+              }
+              td {
+                &:first-child {
+                  [aria-label="expand_less icon"] {
+                    position: absolute;
+                    left: -2px;
+                    top: 25px;
+                  }
+                }
+
+                &:nth-child(3) {
+                  [aria-label="expand_less icon"].mat-icon-button {
+                    position: absolute;
+                    left: 82px !important;
+                    top: 25px;
+                  }
+                }
+
+                &:nth-child(5) {
+                  [aria-label="expand_less icon"].mat-icon-button {
+                    position: absolute;
+                    left: 169px !important;
+                    top: 25px;
+                  }
+                }
+
+                &:nth-last-child(1) {
+                  [aria-label="expand_less icon"].mat-icon-button {
+                    left: 153px !important;
+                  }
+                }
+
+                &:nth-last-child(2) {
+                  [aria-label="expand_less icon"].mat-icon-button {
+                    left: 65px !important;
+                  }
+                }
+              }
+            }
+
+            &:nth-child(2) {
+              display: flex;
+              padding: 20px 0 20px 15px;
+
+
+              td {
+                margin-right: 30px;
+                text-align: right;
+
+                &:first-child {
+                  .mat-form-field {
+                    width: 50px;
+                  }
+                  .mat-form-field::before {
+                    color: black;
+                    content: "Hours";
+                    position: relative;
+                    top: -5px;
+                    left: -5px;
+                    font-size: 15px;
+                  }
+                }
+
+                &:nth-child(3) {
+                  .mat-form-field::before {
+                    color: black;
+                    content: "Minutes";
+                    position: relative;
+                    top: -5px;
+                    font-size: 15px;
+                  }
+                }
+
+                &:last-child {
+                  text-align: left;
+                  left: -15px;
+                }
+              }
+              .mat-form-field-disabled {
+                display: none;
+              }
+              td:nth-of-type(5) {
+                .mat-form-field::before {
+                  color: black;
+                  content: "Seconds";
+                  position: relative;
+                  top: -5px;
+                  font-size: 15px;
+                }
+              }
+              .meridian {
+                border-bottom: none;
+
+                .mat-button {
+                  height: 30px;
+                  top: 21px;
+                  border-radius: 0;
+                  color: black;
+                  border-color: black;
+                  background-color: #dee0e2;
+                  display: flex;
+                  justify-content: center;
+
+                  .mat-button-wrapper {
+                    position: relative;
+                    top: -2px;
+                  }
+                }
+              }
+            }
+
+            &:nth-child(4) {
+              display: flex;
+              padding: 2rem 0 2rem 15px;
+
+              td {
+                margin-right: 30px;
+                text-align: right;
+
+                &:last-child {
+                  text-align: left;
+                }
+              }
+            }
+
+            &:last-child {
+              position: absolute;
+              left: 49px;
+              top: 40px;
+
+              button:disabled {
+                display: none;
+              }
+
+              td {
+                &:first-child {
+                  [aria-label="expand_more icon"] {
+                    position: absolute;
+                    top: 15px;
+                    left: -2px;
+                  }
+                }
+
+                &:nth-child(3) {
+                  [aria-label="expand_more icon"].mat-icon-button {
+                    position: absolute;
+                    left: 82px !important;
+                    top: 15px;
+                  }
+                }
+
+                &:nth-child(5) {
+                  [aria-label="expand_more icon"].mat-icon-button {
+                    position: absolute;
+                    top: 15px;
+                    left: 169px;
+                  }
+                }
+
+                &:nth-last-child(1) {
+                  [aria-label="expand_more icon"].mat-icon-button {
+                    left: 65px !important;
+                  }
+                }
+
+                &:nth-last-child(1).ng-star-inserted {
+                  [aria-label="expand_more icon"].mat-icon-button {
+                    left: 153px !important;
+                  }
+                }
+              }
+
+            }
+
+            td {
+              padding: 0;
+              border-bottom: 0;
+              position: relative
+            }
+
+            .spacer {
+              display: none;
+            }
+
+            .mat-icon {
+              visibility: hidden;
+              display: none;
+            }
+
+
+            .mat-button-wrapper {
+              display: block;
+              width: 15px;
+              height: 8px;
+            }
+
+            .mat-form-field-wrapper {
+              padding-bottom: 0;
+            }
+
+            .mat-form-field {
+              width: auto;
+              max-width: none;
+            }
+
+            [aria-label="expand_less icon"].mat-icon-button {
+              .mat-button-wrapper::after {
+                content: ' \25B2';
+              }
+            }
+
+
+            [aria-label="expand_more icon"].mat-icon-button {
+              .mat-button-wrapper::after {
+                content: '\25BC';
+              }
+            }
+
+            .mat-form-field-flex {
+              width: 100%;
+
+              .mat-form-field-infix {
+                border: 1px solid black;
+                height: 20px;
+                width: 37px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+              }
+            }
+
+            .mat-form-field-underline {
+              visibility: hidden;
+            }
+
+            input {
+              height: 33px;
+              width: 37px;
+
+              &:focus {
+                border-color: black;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // bottom of panel for 'Confirm' button
+    .actions {
+      padding-bottom: 20px;
+      margin-top: 20px;
+      justify-content: flex-start;
+
+      .mat-button {
+        background-color: #00823b;
+        position: relative;
+        display: -moz-inline-stack;
+        display: inline-block;
+        padding: .526315em .789473em .263157em;
+        border: none;
+        border-radius: 0;
+        outline: 1px solid transparent;
+        outline-offset: -1px;
+        -webkit-appearance: none;
+        box-shadow: 0 2px 0 #003618;
+        font-size: 1em;
+        line-height: 1.25;
+        text-decoration: none;
+        -webkit-font-smoothing: antialiased;
+        color: #fff;
+        box-sizing: border-box;
+        vertical-align: top;
+        width: 80px;
+        cursor: pointer;
+
+        &:focus {
+          outline: 2px solid #ffdd00;
+        }
+
+        &:hover {
+          background-color: darkgreen;
+        }
+
+        .mat-icon {
+          visibility: hidden;
+        }
+
+        .mat-button-wrapper::before {
+          color: white;
+          content: 'Confirm';
+          position: relative;
+          font-size: 15px;
+          left: -3px;
+        }
+      }
+    }
+  }
+}

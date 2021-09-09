@@ -1,0 +1,1 @@
+[{"__symbolic":"module","version":4,"metadata":{},"exports":[{"from":"./abstract-field-read.component"},{"from":"./abstract-field-write.component"},{"from":"./base-field.module"},{"from":"./field-read.component"},{"from":"./field-write.component"},{"from":"./field-read-label.component"},{"from":"./palette-context.enum"}]}]

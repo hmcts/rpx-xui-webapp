@@ -1,0 +1,18 @@
+@import 'src/components/typography';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_shims';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_conditionals';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_measurements';
+
+$blue: #005ea5;
+
+.cut-nav-bar {
+  background-color: $blue;
+  max-width: 990px;
+  margin: 0 auto;
+  height: 55px;
+  padding: 0 15px 0 15px;
+  @extend %contain-floats;
+}
+.full-screen {
+  max-width: 100%;
+}

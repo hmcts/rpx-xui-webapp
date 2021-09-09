@@ -1,0 +1,1 @@
+[{"__symbolic":"module","version":4,"metadata":{},"exports":[{"from":"./delete-or-cancel-dialog"},{"from":"./document-dialog"},{"from":"./remove-dialog"},{"from":"./save-or-discard-dialog"},{"from":"./dialogs.module"}]}]

@@ -1,0 +1,20 @@
+@import 'src/components/typography';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_shims';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_conditionals';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_measurements';
+
+div select {
+  @include core-12pt;
+}
+
+.form-group {
+  margin-bottom: 7px;
+}
+
+.ccd-dropdown {
+  width: 100%;
+}
+
+span.heading-medium {
+  margin-top: 0;
+}

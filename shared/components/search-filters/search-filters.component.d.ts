@@ -1,0 +1,47 @@
+import { EventEmitter, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { SearchInput } from './domain/search-input.model';
+import { SearchService, WindowService, OrderService, JurisdictionService } from '../../services';
+import { Jurisdiction, CaseTypeLite, CaseState, CaseField } from '../../domain';
+export declare class SearchFiltersComponent implements OnInit {
+    private searchService;
+    private orderService;
+    private jurisdictionService;
+    private windowService;
+    static readonly PARAM_JURISDICTION = "jurisdiction";
+    static readonly PARAM_CASE_TYPE = "case-type";
+    static readonly PARAM_CASE_STATE = "case-state";
+    caseFields: CaseField[];
+    jurisdictions: Jurisdiction[];
+    autoApply: boolean;
+    onApply: EventEmitter<any>;
+    onReset: EventEmitter<any>;
+    onJurisdiction: EventEmitter<any>;
+    searchInputs: SearchInput[];
+    searchInputsReady: boolean;
+    selected: {
+        jurisdiction?: Jurisdiction;
+        caseType?: CaseTypeLite;
+        formGroup?: FormGroup;
+        caseState?: CaseState;
+        page?: number;
+        metadataFields?: string[];
+    };
+    selectedJurisdictionCaseTypes?: CaseTypeLite[];
+    formGroup: FormGroup;
+    constructor(searchService: SearchService, orderService: OrderService, jurisdictionService: JurisdictionService, windowService: WindowService);
+    ngOnInit(): void;
+    private getQueryParams;
+    reset(): void;
+    apply(): void;
+    populateValuesInLocalStorage(): void;
+    getMetadataFields(): string[];
+    isSearchable(): boolean;
+    isSearchableAndSearchInputsReady(): boolean;
+    onJurisdictionIdChange(): void;
+    onCaseTypeIdChange(): void;
+    isJurisdictionSelected(): boolean;
+    private selectCaseType;
+    private setFocusToTop;
+    private getCaseFields;
+}

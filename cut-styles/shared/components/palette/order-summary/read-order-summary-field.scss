@@ -1,0 +1,58 @@
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_typography';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_colours.scss';
+
+$padding: 12px;
+
+.order-summary-title {
+  border: 0;
+  @include bold-24;
+}
+
+table {
+  margin-bottom: 23px;
+  thead {
+    tr{
+      td {
+        margin: 0;
+        border-bottom: 1px solid $black;
+        padding-top: 41px;
+        padding-bottom: 36px;
+        @include bold-16;
+      }
+      td:nth-child(3) {
+        text-align: right;
+      }
+    }
+  }
+  tbody {
+    tr {
+      td {
+        padding-top: $padding;
+        padding-bottom: $padding;
+        margin: 0;
+        border-bottom: 1px solid $black;
+        @include core-16;
+      }
+      td:nth-child(1) {
+        width: 20px;
+      }
+      td:nth-child(2) {
+        width: 70%;
+      }
+      td:nth-child(3) {
+        text-align: right;
+        width: 10%;
+      }
+    }
+    tr:last-child {
+      td:nth-child(1) {
+        border-bottom: 0px;
+      }
+      td:nth-child(2) {
+        @include bold-16;
+        text-align: right;
+        border-bottom: 0px;
+      }
+    }  
+  }
+}

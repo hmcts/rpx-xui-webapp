@@ -1,0 +1,1 @@
+[{"__symbolic":"module","version":4,"metadata":{},"exports":[{"from":"./money-gbp-input.component"},{"from":"./money-gbp.module"},{"from":"./read-money-gbp-field.component"},{"from":"./write-money-gbp-field.component"}]}]

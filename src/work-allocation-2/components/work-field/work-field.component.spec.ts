@@ -722,7 +722,7 @@ describe('WorkAllocation', () => {
       let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(task.caseName);
-      expect(element.getAttribute('href')).toBe(`/cases/case-details/1#overviwe`);
+      expect(element.getAttribute('href')).toBe(`/cases/case-details/1#overview`);
 
       // Change the value of task.case_id.
       task.case_id = 'NEW CASE REFERENCE';

@@ -730,7 +730,7 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe(task.caseName);
-      expect(element.getAttribute('href')).toBe(`/cases/case-details/NEW CASE REFERENCE`);
+      expect(element.getAttribute('href')).toBe(`/cases/case-details/NEW CASE REFERENCE#overview`);
 
       // Clear out the value of task.link and we should no longer have the anchor.
       task.case_id = undefined;

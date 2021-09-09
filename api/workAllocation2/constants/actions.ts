@@ -32,6 +32,14 @@ export const REASSIGN: Action = {
   id: 'reassign',
   title: 'Reassign task',
 };
+export const RE_ALLOCATE: Action = {
+  id: 'reallocate',
+  title: 'Reallocate',
+};
+export const REMOVE_ALLOCATE: Action = {
+  id: 'remove',
+  title: 'Remove Allocation',
+};
 
 export const VIEW_PERMISSIONS_ACTIONS_MATRIX = {
   // This matrix is for configuring permissions and actions defined in the work allocation permission table
@@ -47,6 +55,9 @@ export const VIEW_PERMISSIONS_ACTIONS_MATRIX = {
   },
   ActiveTasksUnassigned: {
     Execute: [CLAIM],
+  },
+  AllCases: {
+    Manage: [RE_ALLOCATE, REMOVE_ALLOCATE],
   },
   AllWorkAssigned: {
     Cancel: [CANCEL],

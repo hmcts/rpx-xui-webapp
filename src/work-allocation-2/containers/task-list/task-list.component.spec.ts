@@ -57,7 +57,7 @@ function getTasks(): Task[] {
  * Mock fields
  */
 function getFields(): FieldConfig[] {
-  return ConfigConstants.MyTasks;
+  return ConfigConstants.AvailableTasksForJudicial;
 }
 
 /**

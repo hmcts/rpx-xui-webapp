@@ -40,6 +40,13 @@ const CASE_ROLE: FieldConfig = {
   sortName: 'caseRole',
   views: TaskView.ALL_VIEWS
 };
+const ROLE: FieldConfig = {
+  name: 'role',
+  type: FieldType.STRING,
+  columnLabel: 'Role',
+  sortName: 'role',
+  views: TaskView.ALL_VIEWS
+};
 const CASE_CATEGORY: FieldConfig = {
   name: 'case_category',
   type: FieldType.STRING,
@@ -142,6 +149,14 @@ const JUDICIAL_DATES: FieldConfig[] = [
 const STAFF_DATES: FieldConfig[] = [
   DUE_DATE_AS_TEXT, PRIORITY
 ]
+const PERSON: FieldConfig = {
+  disableSort: true,
+  name: 'actorName',
+  type: FieldType.STRING,
+  columnLabel: 'Person',
+  sortName: 'actorName',
+  views: TaskView.ALL_VIEWS
+};
 
 /**
  * The views.
@@ -149,7 +164,12 @@ const STAFF_DATES: FieldConfig[] = [
 const AVAILABLE_TASKS: FieldConfig[] = [
   CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_TEXT, ...JUDICIAL_DATES
 ];
-
+const AVAILABLE_TASKS_FOR_JUDICIAL: FieldConfig[] = [
+  CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_TEXT, DUE_DATE
+];
+const AVAILABLE_TASKS_FOR_LEGAL_OPS: FieldConfig[] = [
+  CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_TEXT, DUE_DATE
+];
 const MY_CASES: FieldConfig[] = [
   CASE_NAME_AS_LINK, JURISDICTION, CASE_CATEGORY, CASE_ROLE, START_DATE, END_DATE
 ];
@@ -158,6 +178,12 @@ const MY_TASKS: FieldConfig[] = [
 ];
 const MY_WORK_TASKS: FieldConfig[] = [
   CASE_NAME_AS_LINK, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_LINK, ...STAFF_DATES
+];
+const MY_WORK_TASKS_FOR_JUDICIAL: FieldConfig[] = [
+  CASE_NAME_AS_LINK, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_LINK, DUE_DATE
+];
+const MY_WORK_TASKS_FOR_LEGAL_OPS: FieldConfig[] = [
+  CASE_NAME_AS_LINK, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_LINK, DUE_DATE
 ];
 const TASK_MANAGER: FieldConfig[] = [
   CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, TASK_NAME_AS_TEXT, ...STAFF_DATES, ASSIGNEE
@@ -168,18 +194,23 @@ const TASK_ACTIONS: FieldConfig[] = [
 const TASK_ACTIONS_WITH_ASSIGNEE: FieldConfig[] = [
   CASE_NAME_AS_TEXT, CASE_CATEGORY, LOCATION, TASK_NAME_AS_TEXT, ...STAFF_DATES, ASSIGNEE
 ];
-
 const ALL_WORK_TASKS: FieldConfig[] = [
   CASE_NAME_AS_LINK, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_LINK, ...STAFF_DATES, ASSIGNEE
-]
+];
+const ALL_WORK_CASES: FieldConfig[] = [
+  CASE_NAME_AS_LINK, CASE_CATEGORY, LOCATION, ROLE, PERSON
+];
 
 export const CONFIG_CONSTANTS = {
-  AvailableTasks: AVAILABLE_TASKS,
+  AvailableTasksForJudicial: AVAILABLE_TASKS_FOR_JUDICIAL,
+  AvailableTasksForLegalOps: AVAILABLE_TASKS_FOR_LEGAL_OPS,
   MyCases: MY_CASES,
   MyTasks: MY_TASKS,
-  MyWorkTasks: MY_WORK_TASKS,
+  MyWorkTasksForJudicial: MY_WORK_TASKS_FOR_JUDICIAL,
+  MyWorkTasksForLegalOps: MY_WORK_TASKS_FOR_LEGAL_OPS,
   TaskActions: TASK_ACTIONS,
   TaskActionsWithAssignee: TASK_ACTIONS_WITH_ASSIGNEE,
   TaskManager: TASK_MANAGER,
-  AllWorkTasks: ALL_WORK_TASKS
+  AllWorkTasks: ALL_WORK_TASKS,
+  AllWorkCases: ALL_WORK_CASES
 };

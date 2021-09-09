@@ -6,6 +6,7 @@ import { TaskActionConstants } from './components/constants';
 import {
   AllWorkHomeComponent,
   AllWorkTaskComponent,
+  AllWorkCaseComponent,
   AvailableTasksComponent,
   MyTasksComponent,
   TaskActionContainerComponent,
@@ -77,6 +78,13 @@ export const ROUTES: Routes = [
             component: AllWorkTaskComponent,
             data: {
               title: 'HMCTS Manage cases | All work | Tasks', subTitle: 'Tasks'
+            }
+          },
+          {
+            path: 'cases',
+            component: AllWorkCaseComponent,
+            data: {
+              title: 'HMCTS Manage cases | All work | Cases', subTitle: 'Cases'
             }
           }
         ]

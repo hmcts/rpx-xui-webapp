@@ -5,7 +5,7 @@ import { ChangeDetectorRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { getMockCases, MockRouter } from '../../tests/utils.spec';
-import { InfoMessageCommService, WorkAllocationCaseService, WorkAllocationFeatureService } from '../../services';
+import { CaseworkerDataService, InfoMessageCommService, WorkAllocationCaseService, WorkAllocationFeatureService } from '../../services';
 import { MyCasesComponent } from '../my-cases/my-cases.component';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
@@ -27,6 +27,7 @@ describe('WorkCaseListWrapperComponent', () => {
   const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
+  const mockCaseworkerDataService = jasmine.createSpyObj('mockCaseworkerDataService', ['getAll']);
   beforeEach((() => {
     TestBed.configureTestingModule({
       imports: [
@@ -46,7 +47,8 @@ describe('WorkCaseListWrapperComponent', () => {
         { provide: AlertService, useValue: mockAlertService },
         { provide: WorkAllocationFeatureService, useValue: mockFeatureService },
         { provide: LoadingService, useValue: mockLoadingService },
-        { provide: FeatureToggleService, useValue: mockFeatureToggleService }
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
+        { provide: CaseworkerDataService, useValue: mockCaseworkerDataService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WorkCaseListWrapperComponent);
@@ -56,8 +58,13 @@ describe('WorkCaseListWrapperComponent', () => {
     mockWorkAllocationService.searchCase.and.returnValue(of({ cases }));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
+    mockCaseworkerDataService.getAll.and.returnValue(of([]));
     fixture.detectChanges();
   }));
+
+  afterEach(() => {
+    fixture.destroy();
+  });
 
   it('should create', () => {
     expect(component).toBeDefined();

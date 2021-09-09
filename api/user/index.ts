@@ -65,5 +65,5 @@ export async function getUserRoleAssignments(userInfo: UserInfo, req): Promise<a
   const locationInfo = req.session.roleAssignmentResponse ?
                       getLocationInfo(req.session.roleAssignmentResponse) :
                       await getRoleAssignmentForUser(userInfo, req);
-  return locationInfo
+  return locationInfo;
 }

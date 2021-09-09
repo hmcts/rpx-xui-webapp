@@ -1,10 +1,8 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { FieldType, TaskView } from './../../enums';
-import { Task } from './../../models/tasks';
+import { FieldType, TaskView } from '../../enums';
 import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
-
+import { Task } from './../../models/tasks';
 import { FieldConfig } from '../../models/common';
 import { WorkFieldComponent } from './work-field.component';
 
@@ -743,7 +741,7 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe(task.caseName);
-      expect(element.getAttribute('href')).toBe(`/cases/case-details/The case reference`);
+      expect(element.getAttribute('href')).toBe(`/cases/case-details/The case reference#overview`);
 
       // Make task.link null.
       task.case_id = null;

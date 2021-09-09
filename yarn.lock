@@ -153,10 +153,10 @@
   dependencies:
     tslib "^1.9.0"
 
-"@angular-material-components/moment-adapter@^4.0.1":
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/@angular-material-components/moment-adapter/-/moment-adapter-4.0.1.tgz#a2827110f4f8f028926ecb3905e1abc90eaf7b1d"
-  integrity sha512-wHLRZKHOTAaY7EzM8p7EBGIMKdHAuY4HU1UjmvAuwMZ4uy1eIGSkGPS4MP3MtSq68Mj3aUyeDCCMeJM8IoGtnw==
+"@angular-material-components/moment-adapter@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@angular-material-components/moment-adapter/-/moment-adapter-5.0.0.tgz#e277b82a4a3554260cd274a1862edf64cc186cac"
+  integrity sha512-/9+8b4hpe8GwlgbuXAckDg5ZKms6yDWRKQcyXYuNKC+8Ya6M0M5NHYz3d4YXjJ73xOGURr73NlqZzYsknjYkUQ==
   dependencies:
     tslib "^2.0.0"
 
@@ -538,10 +538,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.2.0.tgz#f40241a2839b1bbcc821ecb6dd80a46627df99b8"
-  integrity sha512-XVjALsR9IOVzoS9tnLbOqqkKKKMcUN5udjPii2XjNCn2RGzYw49aMld+PLto/IPlxSAuhj0adpSHcQwDG1p+gA==
+"@hmcts/rpx-xui-common-lib@1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.0.tgz#7de3caa3a2836ffe41f9c426dccf5860c426a519"
+  integrity sha512-GFw/DuF8SNRItKHdKv6IFqsp0qgkzRPkWNttuUWv+E19I90n+2Nhq6uragOm0a0Rra3ajuk3zYpd1xFYjBaN0A==
   dependencies:
     tslib "^1.9.0"
 
@@ -1092,34 +1092,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-16.4.13.tgz#7dfd9c14661edc65cccd43a29eb454174642370d"
   integrity sha512-bLL69sKtd25w7p1nvg9pigE4gtKVpGTPojBFLMkGHXuUgap2sLqQt2qUnqmVCDfzGUL0DRNZP+1prIZJbMeAXg==
 
-"@types/node@12.12.2":
-  version "12.12.2"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.2.tgz#e84a8a664633a7615645b1b2dc0cfddb2e564b02"
-  integrity sha512-Dt624lmxSFhjor3/QoBAJyqKbPgPnJETqG+eUSxOYwwq5HeHh9hel1c4YAcFmCsClMESmMqcTBbfkjWK+ytCsg==
-
-"@types/pino-pretty@*":
-  version "4.7.1"
-  resolved "https://registry.yarnpkg.com/@types/pino-pretty/-/pino-pretty-4.7.1.tgz#2ce3f56f3cf4f9632374419d616ae2e6c933b935"
-  integrity sha512-l1ntNXdpVWsnPYUk5HyO5Lxfr38zLCgxVfEn/9Zhhm+nGF04/BiIou/m8XPwvoVZLV+livUo79VdHXMJPfUYxA==
-  dependencies:
-    "@types/pino" "*"
-
-"@types/pino-std-serializers@*":
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/@types/pino-std-serializers/-/pino-std-serializers-2.4.1.tgz#f8bd52a209c8b3c97d1533b1ba27f57c816382bf"
-  integrity sha512-17XcksO47M24IVTVKPeAByWUd3Oez7EbIjXpSbzMPhXVzgjGtrOa49gKBwxH9hb8dKv58OelsWQ+A1G1l9S3wQ==
-  dependencies:
-    "@types/node" "*"
-
-"@types/pino@*", "@types/pino@^6.3.5":
-  version "6.3.11"
-  resolved "https://registry.yarnpkg.com/@types/pino/-/pino-6.3.11.tgz#83652799e76b3ad692aaf68f6fbf994e83af5db2"
-  integrity sha512-S7+fLONqSpHeW9d7TApUqO6VN47KYgOXhCNKwGBVLHObq8HhaAYlVqUNdfnvoXjCMiwE5xcPm/5R2ZUh8bgaXQ==
-  dependencies:
-    "@types/node" "*"
-    "@types/pino-pretty" "*"
-    "@types/pino-std-serializers" "*"
-    sonic-boom "^2.1.0"
+"@types/node@>=10.0.0":
+  version "15.6.1"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-15.6.1.tgz#32d43390d5c62c5b6ec486a9bc9c59544de39a08"
+  integrity sha512-7EIraBEyRHEe7CH+Fm1XvgqU6uwZN8Q7jppJGcqjROMT29qhAuuOxYB1uEY5UMYQKEmA5D+5tBnhdaPXSsLONA==
 
 "@types/q@1.0.7":
   version "1.0.7"
@@ -5829,20 +5805,20 @@ govuk-elements-sass@^3.1.2:
   dependencies:
     govuk_frontend_toolkit "^7.1.0"
 
-govuk-frontend@^3.1.0:
-  version "3.13.0"
-  resolved "https://registry.yarnpkg.com/govuk-frontend/-/govuk-frontend-3.13.0.tgz#c52f3a3d54edccf58439db038dd75bbee5df0efa"
-  integrity sha512-JiPCeasuHZ+9m1VyqhsfE81PhWIW4Sweoe6Jvn6oMjQNr75ZpupiytN3DGwA+WKOoESHZibIG+heAzlkdZ/MhA==
+govuk-frontend@^3.12.0:
+  version "3.12.0"
+  resolved "https://registry.yarnpkg.com/govuk-frontend/-/govuk-frontend-3.12.0.tgz#55d7057ed8f480a3f83ffeae54b68e0fc81607a3"
+  integrity sha512-+mM8BqEUqsBVSV/ud0dEhE8OmMdhkK53eEUp5YyPN+y3mwcdRnwwP2A2B5qFdFi6E6j/2AYuCG8l5kXD+JXNxA==
 
 govuk_frontend_toolkit@^7.1.0:
   version "7.6.0"
   resolved "https://registry.yarnpkg.com/govuk_frontend_toolkit/-/govuk_frontend_toolkit-7.6.0.tgz#b09a60631afbba4bfac76a8b7c02e72419c29cf5"
   integrity sha1-sJpgYxr7ukv6x2qLfALnJBnCnPU=
 
-govuk_frontend_toolkit@^8.2.0:
-  version "8.2.0"
-  resolved "https://registry.yarnpkg.com/govuk_frontend_toolkit/-/govuk_frontend_toolkit-8.2.0.tgz#6f23bd9bbce02b22c82f4ebba6cd4b07a2141fd7"
-  integrity sha512-USdHnptTl7HPHb9XZbyEK63lL66bzPl/pQLNMURFIXhhZCbW2gJglwMzTMHxdkgkWfKERiDocjsiukClHZ+opw==
+govuk_frontend_toolkit@^9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/govuk_frontend_toolkit/-/govuk_frontend_toolkit-9.0.0.tgz#3634b4323c5f0dbf7580b6e32dc5c36b2b614eda"
+  integrity sha512-ZhG3TumoxOURR/YRxy7rtre45BCbwF7a+dEDddaJYwf0T5qtN/s6xU/RnDvSbm4Ljpy8OL+5WrIWA3cUOM/uAA==
 
 graceful-fs@4.1.15:
   version "4.1.15"

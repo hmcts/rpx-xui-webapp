@@ -1,16 +1,23 @@
-<div class="hmcts-filter-layout__filter all-work-filter">
+<!--<div class="hmcts-filter-layout__filter all-work-filter">
   <div class="govuk-form-group">
-    <label for="case_assignment_caseworker" class="govuk-label">Service</label>
+    <label for="case_assignment_caseworker" class="govuk-heading-m">Service</label>
     <select id="case_assignment_caseworker" name="case_assignment_caseworker" class="govuk-select form-control">
       <option value="IA" selected>Immigration and Asylum</option>
     </select>
   </div>
   <div class="govuk-form-group">
-    <label for="case_assignment_location" class="govuk-label">Case location</label>
+    <label for="case_assignment_location" class="govuk-heading-m">Case location</label>
     <select id="case_assignment_location" name="case_assignment_location" class="govuk-select form-control"
     [(ngModel)]="location">
       <option [ngValue]="ALL_LOCATIONS">{{ALL_LOCATIONS.locationName}}</option>
       <option *ngFor="let loc of locations" [ngValue]="loc">{{loc.locationName}}</option>
     </select>
   </div>
+</div>-->
+
+
+<div class="hmcts-filter-layout__filter all-work-filter">
+  <xuilib-generic-filter
+    [config]="fieldsConfig"
+  ></xuilib-generic-filter>
 </div>

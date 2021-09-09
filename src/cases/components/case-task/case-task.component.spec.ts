@@ -247,7 +247,7 @@ describe('CaseTaskComponent', () => {
       warnings: true,
       permissions: ['Own', 'Execute', 'Manage']
     };
-    const result = CaseTaskComponent.replaceCaseRefVarWithCaseId(task.description, task);
+    const result = CaseTaskComponent.replaceVariablesWithRealValues(task);
     expect(result).toBe('[Link the appeal](/cases/case-details/1620409659381330/trigger/linkAppeal/linkAppealreasonForLinkAppealPageId)');
   });
 });

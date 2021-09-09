@@ -3,6 +3,7 @@ import { UserInfo } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { Task } from '../../../work-allocation-2/models/tasks';
 import { TaskPermission } from '../../../work-allocation-2/models/tasks/task-permission.model';
+import { replaceAll } from '../../utils/utils';
 
 @Component({
   selector: 'exui-case-task',
@@ -10,6 +11,16 @@ import { TaskPermission } from '../../../work-allocation-2/models/tasks/task-per
   styleUrls: ['./case-task.component.scss']
 })
 export class CaseTaskComponent implements OnInit {
+  private static CASE_REFERENCE_VARIABLE = '${[CASE_REFERENCE]}';
+  private static CASE_ID_VARIABLE = '${[case_id]}';
+  private static TASK_ID_VARIABLE = '${[id]}';
+  private static VARIABLES: string[] = [
+    CaseTaskComponent.CASE_REFERENCE_VARIABLE,
+    CaseTaskComponent.CASE_ID_VARIABLE,
+    CaseTaskComponent.TASK_ID_VARIABLE
+  ];
+  public manageOptions: { text: string, path: string }[];
+  private pTask: Task;
 
   constructor(private readonly sessionStorageService: SessionStorageService) {
   }
@@ -20,19 +31,20 @@ export class CaseTaskComponent implements OnInit {
 
   @Input()
   public set task(value: Task) {
-    value.description = CaseTaskComponent.replaceCaseRefVarWithCaseId(value.description, value);
+    value.description = CaseTaskComponent.replaceVariablesWithRealValues(value);
     this.pTask = value;
   }
 
-  private static CASE_REFERENCE_VARIABLE = '${[CASE_REFERENCE]}';
-  public manageOptions: { text: string, path: string }[];
-  private pTask: Task;
-
-  public static replaceCaseRefVarWithCaseId(str: string, task: Task): string {
-    if (!str) {
+  public static replaceVariablesWithRealValues(task: Task): string {
+    if (!task.description) {
       return '';
     }
-    return str.replace(CaseTaskComponent.CASE_REFERENCE_VARIABLE, task.case_id);
+    return CaseTaskComponent.VARIABLES.reduce((description: string, variable: string) => {
+      if (variable === CaseTaskComponent.TASK_ID_VARIABLE) {
+        return replaceAll(description, variable, task.id);
+      }
+      return replaceAll(description, variable, task.case_id);
+    }, task.description);
   }
 
   public ngOnInit(): void {

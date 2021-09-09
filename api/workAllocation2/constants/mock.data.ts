@@ -1793,7 +1793,11 @@ export const ASSIGNED_CASE_TASKS = {
       assignee: '44d5d2c2-7112-4bef-8d05-baaa610bf463',
       assigneeName: 'Judicial User',
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc2',
-      description: '[Send Direction](/cases/case-details/${[CASE_REFERENCE]}/trigger/sendDirection/sendDirectionsendDirection)',
+      description: '## Check the response uploaded by the respondent\n' +
+        ' \n' +
+        'If it complies with the Procedure Rules and Practice Directions, [direct the appellant to review the Home Office response](/cases/case-details/${[case_id]}/trigger/requestResponseReview?taskId=${[id]})\n' +
+        ' \n' +
+        'If it does not comply, [direct the respondent to amend the appeal response](/cases/case-details/${[case_id]}/trigger/requestResponseAmend?taskId=${[id]})',
       task_title: 'Send direction',
       dueDate: '2021-05-12T16:00:00.000+0000',
       location_name: 'Glasgow',

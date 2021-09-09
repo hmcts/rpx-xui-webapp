@@ -9,10 +9,10 @@ export class ActivityResolver implements Resolve<boolean> {
   constructor(private readonly activityService: ActivityService) {}
 
   public resolve(): Observable<boolean> {
-    try{
+    try {
       this.activityService.verifyUserIsAuthorized();
     } catch (err) {
-      console.log( err);
+      console.log(err);
     }
     return Observable.of(true);
   }

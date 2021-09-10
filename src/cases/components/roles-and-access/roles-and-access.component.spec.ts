@@ -46,9 +46,10 @@ describe('RolesAndAccessComponent', () => {
       },
       tabs: [],
       triggers: [],
-      events: []
+      events: [],
+      metadataFields: []
     };
-    component.locationInfo = initialMockState.appConfig.userDetails.locationInfo[0];
+    component.showAllocateRoleLink = false
     fixture.detectChanges();
   });
 

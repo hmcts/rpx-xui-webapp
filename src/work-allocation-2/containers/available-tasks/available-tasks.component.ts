@@ -17,7 +17,7 @@ import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper
 export class AvailableTasksComponent extends TaskListWrapperComponent {
 
   public get fields(): FieldConfig[] {
-    return ConfigConstants.AvailableTasks;
+    return this.isCurrentUserJudicial() ? ConfigConstants.AvailableTasksForJudicial : ConfigConstants.AvailableTasksForLegalOps;
   }
 
   public get sortSessionKey(): string {

@@ -45,6 +45,7 @@ export class AddExclusionHomeComponent implements OnInit, OnDestroy {
   public navigationCurrentState: ExclusionState;
   public exclusionOption: ExcludeOption;
   public caseId: string;
+  public jurisdiction: string;
 
   public navEvent: ExclusionNavigation;
 
@@ -59,7 +60,9 @@ export class AddExclusionHomeComponent implements OnInit, OnDestroy {
               private readonly router: Router) {
     this.caseId = this.route.snapshot.queryParams && this.route.snapshot.queryParams.caseId ?
       this.route.snapshot.queryParams.caseId : '';
-    this.store.dispatch(new fromFeature.ExclusionSetCaseId(this.caseId));
+    this.jurisdiction = this.route.snapshot.queryParams && this.route.snapshot.queryParams.jurisdiction ?
+      this.route.snapshot.queryParams.jurisdiction : '';
+    this.store.dispatch(new fromFeature.ExclusionSetCaseId(this.caseId, this.jurisdiction));
   }
 
   public ngOnInit(): void {

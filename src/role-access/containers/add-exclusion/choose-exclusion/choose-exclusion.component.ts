@@ -1,8 +1,9 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
+import { combineLatest, Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
+import { UserDetails } from '../../../../app/models';
 import { $enum as EnumUtil } from 'ts-enum-util';
 import * as fromRoot from '../../../../app/store';
 import { ERROR_MESSAGE, EXCLUSION_OPTION } from '../../../constants';
@@ -23,7 +24,7 @@ export class ChooseExclusionComponent implements OnInit, OnDestroy {
   @Input() public navEvent: ExclusionNavigation;
   public title = RoleAllocationTitleText.ExclusionAllocate;
   public caption = RoleAllocationCaptionText.Exclusion;
-  public locationInfo$: Observable<any>;
+  public userDetails$: Observable<UserDetails>;
 
   public submitted: boolean = false;
 
@@ -48,20 +49,24 @@ export class ChooseExclusionComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.exclusionStateDataSub = this.store.pipe(select(fromFeature.getRoleAccessState)).subscribe(
-      exclusionStateData => {
-        this.exclusionOption = exclusionStateData.exclusionOption;
-      }
-    );
+    const roleAccessState$ = this.store.pipe(select(fromFeature.getRoleAccessState))
+    this.userDetails$ = this.store.pipe(select(fromRoot.getUserDetails));
+    combineLatest([roleAccessState$, this.userDetails$]).subscribe(([exclusionStateData, userDetails]: any) => {
+      this.exclusionOption = exclusionStateData.exclusionOption;
+      this.setOptionsList(userDetails, exclusionStateData.jurisdiction);
+    });
     this.radioOptionControl = new FormControl(this.exclusionOption ? this.exclusionOption : '', [Validators.required]);
     this.formGroup = new FormGroup({[this.radioControlName]: this.radioOptionControl});
+  }
 
-    // currently the case allocator role information is stored in location info
-    this.locationInfo$ = this.store.pipe(select(fromRoot.getLocationInfo));
-    this.locationInfo$.subscribe(li => {
-      const firstLocationInfo = li[0];
-      this.optionsList = (firstLocationInfo && firstLocationInfo.isCaseAllocator) ? [this.excludeMe, this.excludeOther] : [this.excludeMe];
-    });
+  public setOptionsList(userDetails: UserDetails, jurisdiction: string) {
+    // Todo: Need to add check for
+    // Case Jurisdiction and LocationId
+    // with User's Jurisdiction and LocationId
+    const caseJurisdictionAndLocation = userDetails.roleAssignmentInfo
+    &&
+    userDetails.roleAssignmentInfo.some(roleAssignment => roleAssignment.isCaseAllocator && roleAssignment.jurisdiction === jurisdiction);
+    this.optionsList = caseJurisdictionAndLocation ? [this.excludeMe, this.excludeOther] : [this.excludeMe];
   }
 
   public navigationHandler(navEvent: ExclusionNavigationEvent) {

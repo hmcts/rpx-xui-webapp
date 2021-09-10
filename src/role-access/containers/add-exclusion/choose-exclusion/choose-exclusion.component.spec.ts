@@ -9,6 +9,7 @@ import { ChooseRadioOptionComponent } from '../../../components';
 import { EXCLUSION_OPTION } from '../../../constants';
 import { ExcludeOption, ExclusionNavigationEvent } from '../../../models';
 import { ChooseExclusionComponent } from './choose-exclusion.component';
+import { UserDetails } from '../../../../app/models';
 
 describe('ChooseExclusionComponent', () => {
   const radioOptionControl: FormControl = new FormControl('');
@@ -51,11 +52,14 @@ describe('ChooseExclusionComponent', () => {
   });
 
   it('should check whether user is a case allocator', () => {
-    expect(component.optionsList.length).toBe(2);
-    spyOnPipeToStore.and.returnValue(of([{isCaseAllocator: false}, {}]));
-    component.ngOnInit();
-    fixture.detectChanges();
-    expect(component.optionsList.length).toBe(1);
+    const userDetails = {} as UserDetails;
+    userDetails.roleAssignmentInfo = [{isCaseAllocator: true, primaryLocation: '', jurisdiction: 'IA'}];
+    component.setOptionsList(userDetails, 'IA');
+    expect(component.optionsList.length).toEqual(2);
+
+    userDetails.roleAssignmentInfo = [{isCaseAllocator: false, primaryLocation: '', jurisdiction: ''}];
+    component.setOptionsList(userDetails, 'DIVORCE');
+    expect(component.optionsList.length).toEqual(1);
   });
 
   it('should correctly navigate on click of continue', () => {

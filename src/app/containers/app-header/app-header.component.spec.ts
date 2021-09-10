@@ -283,7 +283,7 @@ describe('AppHeaderComponent', () => {
 
   describe('observable testing', async () => {
     const userInfo: UserInfo = { id: '1', forename: 'Test', surname: 'User', email: 'testemail', active: true, roles: ['pui-case-manager'] };
-    const locationInfo = [];
+    const roleAssignmentInfo = [];
     const userDetails: UserDetails = {
       sessionTimeout: {
         idleModalDisplayTime: 100,
@@ -291,7 +291,7 @@ describe('AppHeaderComponent', () => {
       },
       canShareCases: true,
       userInfo,
-      locationInfo
+      roleAssignmentInfo
     };
     const applicationThemes = AppConstants.APPLICATION_USER_THEMES;
     it('should allow running of combinelatest', async () => {

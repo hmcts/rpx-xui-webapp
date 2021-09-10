@@ -153,7 +153,6 @@ describe('CaseViewerContainerComponent', () => {
       termsAndCondition: null,
       loaded: true,
       loading: true,
-      locationInfo: [],
       termsAndConditions: null,
       isTermsAndConditionsFeatureEnabled: null,
       useIdleSessionTimeout: null,
@@ -171,7 +170,8 @@ describe('CaseViewerContainerComponent', () => {
           roles: ['caseworker-ia-iacjudge'],
           uid: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
           surname: 'judge'
-        }
+        },
+        roleAssignmentInfo: []
       }
     }
   };

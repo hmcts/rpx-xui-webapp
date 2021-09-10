@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { Observable, of, throwError } from 'rxjs';
+import { PriorityFieldComponentModule } from '../../../work-allocation-2/components/priority-field/priority.module';
 import { PersonRole } from '../../../../api/workAllocation2/interfaces/person';
 import { TaskActionConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
@@ -60,7 +61,7 @@ describe('TaskAssignmentConfirmComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         CdkTableModule,
-        ExuiCommonLibModule,
+        PriorityFieldComponentModule,
         RouterTestingModule,
         WorkAllocationComponentsModule,
         ExuiCommonLibModule

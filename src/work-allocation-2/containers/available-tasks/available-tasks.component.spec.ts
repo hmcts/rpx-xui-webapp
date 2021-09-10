@@ -280,6 +280,7 @@ describe('AvailableTasksComponent', () => {
         },
         task: {
           assignee: null,
+          description: null,
           assigneeName: null,
           id: TASK_ID,
           case_id: '2345678901234567',

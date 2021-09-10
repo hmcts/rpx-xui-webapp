@@ -89,6 +89,7 @@ export function getMockTasks(): Task[] {
       assignee: null,
       assigneeName: null,
       id: '1549476532065586',
+      description: null,
       case_id: '1549476532065586',
       taskId: '1549476532065586',
       caseName: 'Kili Muso',
@@ -111,6 +112,7 @@ export function getMockTasks(): Task[] {
     {
       assignee: null,
       assigneeName: null,
+      description: null,
       id: '1549476532065587',
       case_id: '1549476532065587',
       taskId: '1549476532065587',

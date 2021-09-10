@@ -36,8 +36,3 @@ export const getUseIdleSessionTimeout = createSelector(
   getConfigState,
   fromApp.getUseIdleSessionTimeout
 );
-
-export const getLocationInfo = createSelector(
-  getConfigState,
-  fromApp.getLocationInfo
-);

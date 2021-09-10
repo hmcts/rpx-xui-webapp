@@ -211,7 +211,7 @@ export class ChooseDurationComponent implements OnInit {
   }
 
   private formatString(month: number) {
-    return month > 10 ? month.toString() : `0${month}`;
+    return month >= 10 ? month.toString() : `0${month}`;
   }
 
   public getTodayDate(): Date {

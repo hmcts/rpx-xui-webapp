@@ -9,19 +9,10 @@ export interface AppConfigState {
   termsAndCondition: TermsAndCondition;
   loaded: boolean;
   loading: boolean;
-  locationInfo?: LocationInfo[];
   termsAndConditions: TCDocument;
   isTermsAndConditionsFeatureEnabled: boolean;
   useIdleSessionTimeout: boolean;
   userDetails: UserDetails;
-}
-
-export interface LocationInfo {
-  primaryLocation: string;
-  caseId: string;
-  jurisdiction: string;
-  region: string;
-  isCaseAllocator: boolean;
 }
 
 export const initialState: AppConfigState = {
@@ -102,8 +93,7 @@ export function reducer(
     case fromActions.LOAD_USER_DETAILS_SUCCESS:
       return {
         ...state,
-        userDetails: action.payload,
-        locationInfo: action.payload.locationInfo
+        userDetails: action.payload
       };
     case fromActions.START_IDLE_SESSION_TIMEOUT:
       return {
@@ -125,7 +115,6 @@ export function reducer(
 
 
 export const getFeatureConfig = (state: AppConfigState) => state.config;
-export const getLocationInfo = (state: AppConfigState) => state.locationInfo;
 export const getTandCLoadedConfig = (state: AppConfigState) => state.termsAndCondition;
 export const getTermsConditions = (state: AppConfigState) => state.termsAndConditions;
 export const getUseIdleSessionTimeout = (state: AppConfigState) => state.useIdleSessionTimeout;

@@ -15,6 +15,7 @@ import { InfoMessageCommService, WorkAllocationTaskService } from '../../service
 import { getMockTasks } from '../../tests/utils.spec';
 import { REDIRECTS } from '../../utils';
 import { TaskAssignmentConfirmComponent } from './task-assignment-confirm.component';
+import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
 
 @Component({
   template: `<exui-task-assignment-confirm></exui-task-assignment-confirm>`
@@ -37,6 +38,7 @@ describe('TaskAssignmentConfirmComponent', () => {
   const mockTasks = getMockTasks();
   // Provide a fake implementation of assignTask(), which returns different responses based on the task ID
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['assignTask']);
+  const mockSessionStorageService = jasmine.createSpyObj('SessionStorageService', ['getItem']);
   mockTaskService.assignTask.and.callFake((taskId: any) => {
     switch (taskId) {
       // For testing recognised error status 401
@@ -86,7 +88,8 @@ describe('TaskAssignmentConfirmComponent', () => {
           }
         },
         { provide: Router, useValue: { url: 'localhost/test', navigate: (_1: any, _2: any) => {} } },
-        { provide: InfoMessageCommService, useValue: mockInfoMessageCommService }
+        { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
+        { provide: SessionStorageService, useValue: mockSessionStorageService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);

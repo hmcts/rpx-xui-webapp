@@ -30,6 +30,25 @@ module.exports = function (config) {
       fixWebpackSourcePaths: true,
       combineBrowserReports: true
     },
+    // enforce percentage thresholds
+    // anything under these percentages will cause karma to fail with an exit code of 1 if not running in watch mode
+    thresholds: {
+      emitWarning: false, // set to `true` to not fail the test command when thresholds are not met
+      // thresholds for all files
+      global: {
+        statements: 80,
+        lines: 80,
+        branches: 80,
+        functions: 80
+      },
+      // thresholds per file
+      each: {
+        statements: 80,
+        lines: 80,
+        branches: 80,
+        functions: 80,
+      }
+    },
     reporters: ['spec', 'progress', 'kjhtml', 'coverage-istanbul'],
     specReporter: {
       maxLogLines: 5,             // limit number of lines logged per test

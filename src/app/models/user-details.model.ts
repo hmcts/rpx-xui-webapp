@@ -8,7 +8,7 @@ export interface UserInfo {
   uid?: string;
 }
 
-export interface LocationInfo {
+export interface RoleAssignmentInfo {
   primaryLocation: string;
   jurisdiction: string;
   isCaseAllocator: boolean;
@@ -21,7 +21,7 @@ export interface UserDetails {
   };
   canShareCases: boolean;
   userInfo: UserInfo;
-  locationInfo?: LocationInfo[];
+  roleAssignmentInfo?: RoleAssignmentInfo[];
 }
 
 export enum UserRole {

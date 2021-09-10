@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
-import { LocationInfo } from '../../../app/models/user-details.model';
 import { CaseRole, RoleCategory, RoleExclusion } from '../../../role-access/models';
 
 @Component({
@@ -13,13 +12,14 @@ export class RolesAndAccessComponent implements OnInit {
   public legalOps: RoleCategory = RoleCategory.LEGAL_OPERATIONS;
   public judicial: RoleCategory = RoleCategory.JUDICIAL;
   public caseId: string;
+  public jurisdiction: string;
 
   @Input() public exclusions: RoleExclusion[] = [];
   @Input() public showAllocateRoleLink: boolean = false;
   @Input() public caseDetails: CaseView;
-  @Input() public locationInfo: LocationInfo;
 
   private pRoles: CaseRole[] = [];
+  public jurisdictionFieldId = '[JURISDICTION]';
 
   public get roles(): CaseRole[] {
     return this.pRoles;
@@ -34,5 +34,9 @@ export class RolesAndAccessComponent implements OnInit {
 
   public ngOnInit(): void {
     this.caseId = this.caseDetails.case_id;
+    const jurisdictionField = this.caseDetails.metadataFields.find(field => field.id === this.jurisdictionFieldId);
+    if (jurisdictionField) {
+      this.jurisdiction = jurisdictionField.value;
+    }
   }
 }

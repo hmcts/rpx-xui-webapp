@@ -9,6 +9,7 @@ export default interface Task {
   caseName: string;
   caseCategory: string;
   location: string;
+  description: string;
   taskName: string;
   dueDate: Date;
   actions: TaskAction[];

@@ -3,7 +3,8 @@ import { TaskPermission } from '../../../work-allocation-2/models/tasks/task-per
 import { UserInfo, UserRole } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { Task } from '../../../work-allocation-2/models/tasks';
-import { AppUtils } from 'src/app/app-utils';
+import { AppUtils } from '../../../app/app-utils';
+import { replaceAll } from '../../../cases/utils/utils';
 
 @Component({
   selector: 'exui-case-task',
@@ -11,10 +12,42 @@ import { AppUtils } from 'src/app/app-utils';
   styleUrls: ['./case-task.component.scss']
 })
 export class CaseTaskComponent implements OnInit {
-  @Input() public task: Task;
-  public manageOptions: Array<{text: string, path: string}>;
+  private static CASE_REFERENCE_VARIABLE = '${[CASE_REFERENCE]}';
+  private static CASE_ID_VARIABLE = '${[case_id]}';
+  private static TASK_ID_VARIABLE = '${[id]}';
+  private static VARIABLES: string[] = [
+    CaseTaskComponent.CASE_REFERENCE_VARIABLE,
+    CaseTaskComponent.CASE_ID_VARIABLE,
+    CaseTaskComponent.TASK_ID_VARIABLE
+  ];
+  public manageOptions: { text: string, path: string }[];
   public isUserJudidical: boolean;
-  constructor(private readonly sessionStorageService: SessionStorageService) {}
+  private pTask: Task;
+
+  constructor(private readonly sessionStorageService: SessionStorageService) {
+  }
+
+  public get task(): Task {
+    return this.pTask;
+  }
+
+  @Input()
+  public set task(value: Task) {
+    value.description = CaseTaskComponent.replaceVariablesWithRealValues(value);
+    this.pTask = value;
+  }
+
+  public static replaceVariablesWithRealValues(task: Task): string {
+    if (!task.description) {
+      return '';
+    }
+    return CaseTaskComponent.VARIABLES.reduce((description: string, variable: string) => {
+      if (variable === CaseTaskComponent.TASK_ID_VARIABLE) {
+        return replaceAll(description, variable, task.id);
+      }
+      return replaceAll(description, variable, task.case_id);
+    }, task.description);
+  }
 
   public ngOnInit(): void {
     this.manageOptions = this.getManageOptions(this.task);
@@ -43,7 +76,7 @@ export class CaseTaskComponent implements OnInit {
     return this.isUserJudidical ? 'Task created' : 'Due date';
   }
 
-  public getManageOptions(task: Task): Array<{text: string, path: string}> {
+  public getManageOptions(task: Task): {text: string, path: string} [] {
     if (!task.assignee) {
       if (task.permissions.length === 0 || (task.permissions.length === 1 && task.permissions.includes(TaskPermission.MANAGE))) {
         return [];

@@ -40,7 +40,7 @@
             <span class="row-padding">Next steps</span>
         </dt>
         <dd class="govuk-summary-list__value">
-            <a href="#">{{task.task_title}}</a>
+            <ccd-markdown [content]="task?.description"></ccd-markdown>
         </dd>
     </div>
 </dl>

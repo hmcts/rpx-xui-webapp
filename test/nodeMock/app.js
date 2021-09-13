@@ -251,23 +251,16 @@ if (args.standalone){
 
 function setUpcaseConfig() {
     const { getTestJurisdiction }  = require('../ngIntegration/mockData/ccdCaseMock');
-    mockInstance.onGet('/data/internal/cases/:caseid', (req, res) => {
+    // mockInstance.onGet('/data/internal/cases/:caseid', (req, res) => {
         
-        res.send(caseDetailsLabelShowCondition().getCase());
-    });
+    //     res.send(caseDetailsLabelShowCondition().getCase());
+    // });
 
     mockInstance.onGet('/api/user/details', (req, res) => {
-        const userdetails = nodeAppMock.getUserDetailsTemplate();
-        userdetails.userInfo.roles = ["caseworker-ia-caseofficer","caseworker","caseworker-ia-admofficer","caseworker-ia"]; //caseworker
-        // userdetails.userInfo.roles = ["caseworker-ia-iacjudge",  "caseworker-ia"]; //judge
+        const roles = ['caseworker', 'caseworker-ia', 'caseworker-ia-iacjudge'];
+        const idamid = '44d5d2c2-7112-4bef-8d05-baaa610bf463';
+        res.send(nodeAppMock.getUserDetailsWithRolesAndIdamId(roles, idamid));
 
-        // userdetails.userInfo.id = "12b6a360-7f19-4985-b065-94320a891eaa"; //co r1
-        userdetails.userInfo.id = "3db21928-cbbc-4364-bd91-137c7031fe17"; //co r2
-        // userdetails.userInfo.id = "4fd5803c-a1ae-4790-b735-dc262e8322b8"; //judge r1
-        // userdetails.userInfo.id = "38eb0c5e-29c7-453e-b92d-f2029aaed6c3"; //judge r2
-
-
-        res.send(userdetails);
     });
 
 }
@@ -292,6 +285,7 @@ function caseDetailsLabelShowCondition(){
             { id: "label5ForItem1", type: "Label", label: "Show condition is null", props: { show_condition: null } }
         ]
     })
+    .addMetadata()
     return caseDetail;
 }
 

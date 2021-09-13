@@ -3,9 +3,8 @@ const BrowserWaits = require("../../../support/customWaits");
 
 class ChooseRadioOptionComponent{
 
-    constructor(parentElement){
-        this.parent = parentElement;
-        this.component = this.parent.$("exui-choose-radio-option");
+    constructor(){
+        this.component = $("exui-choose-radio-option");
 
         this.header = this.component.$("h1");
         this.headerCaption = this.component.$("h1 span");
@@ -42,15 +41,16 @@ class ChooseRadioOptionComponent{
         if (!isMsgDisplayed){
             throw new Error("Validation error message is not displayed.");
         }
-        return await this.errorMessage.getText();
+        return this.errorMessage.getText();
     }
 
     async getHeaderCaption(){
-        return await this.headerCaption.getText();
+        return this.headerCaption.getText();
     }
 
     async getHeaderText(){
-        return await this.header.getText();
+        await this.isDisplayed();
+        return this.header.getText();
 
     }
 

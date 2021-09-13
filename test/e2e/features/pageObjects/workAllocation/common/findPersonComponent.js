@@ -63,7 +63,7 @@ class FindPersonComponent{
     }
 
     async getPersonsReturned(){
-        const results = this.searchResultsContainer.$(".mat-option-text");
+        const results = this.searchResultsContainer.$$(".mat-option-text");
         const resultCount = await results.count();
         const resulttexts = [];
         for(let i = 0; i < resultCount; i++){

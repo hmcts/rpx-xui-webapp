@@ -119,6 +119,27 @@ describe('Work Allocation: Allocate', function () {
     });
 
 
+    it('Delete exclusion ', async function () {
+        userDetailsMock.withIACJudicialUser('IAC_Judge_WA_R2');
+        await MockApp.startServer();
+        const actions = [];
+        actions.push(...PallyActions.waitForPageWithCssLocator(workAllocationWorkflow.deleteExclusionPage))
+
+        await pa11ytest(this, actions, conf.baseUrl + 'role-access/delete-exclusion/1547480421733777');
+
+    });
+
+    it('Remove allocation ', async function () {
+        userDetailsMock.withIACJudicialUser('IAC_Judge_WA_R2');
+        await MockApp.startServer();
+        const actions = [];
+        actions.push(...PallyActions.waitForPageWithCssLocator(workAllocationWorkflow.removeAllocation))
+
+        await pa11ytest(this, actions, conf.baseUrl + 'role-access/allocate-role/remove?caseId=1546883526751282&roleCategory=JUDICIAL&assignmentId=c0129361-e8b1-482c-b124-8e5fcbd5db15&actorId=44d5d2c2-7112-4bef-8d05-baaa610bf463&userName=c0129361-e8b1-482c-b124-8e5fcbd5db15&typeOfRole=judge');
+
+    });
+
+
 });
 
 

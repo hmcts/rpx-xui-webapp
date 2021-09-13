@@ -54,13 +54,13 @@ export class ChooseDurationComponent implements OnInit {
       { id: '2', duration: DurationOfRole.INDEFINITE, description:  ChooseDurationComponent.indefiniteDesc, checked: false },
       { id: '3', duration: DurationOfRole.ANOTHER_PERIOD, description: ChooseDurationComponent.anotherPeriodDesc, checked: false }
     ];
-    this.dayStartDate = new FormControl([Validators.required, Validators.min(1), Validators.max(31)]);
-    this.monthStartDate = new FormControl([Validators.required, Validators.min(1), Validators.max(12)]);
-    this.yearStartDate = new FormControl(Validators.required);
-    this.dayEndDate = new FormControl([Validators.required, Validators.min(1), Validators.max(31)]);
-    this.monthEndDate = new FormControl([Validators.required, Validators.min(1), Validators.max(12)]);
-    this.yearEndDate = new FormControl(Validators.required);
-    this.radioSelected = new FormControl(Validators.required);
+    this.dayStartDate = new FormControl('', [Validators.required, Validators.min(1), Validators.max(31)]);
+    this.monthStartDate = new FormControl('', [Validators.required, Validators.min(1), Validators.max(12)]);
+    this.yearStartDate = new FormControl('', Validators.required);
+    this.dayEndDate = new FormControl(['', Validators.required, Validators.min(1), Validators.max(31)]);
+    this.monthEndDate = new FormControl('', [Validators.required, Validators.min(1), Validators.max(12)]);
+    this.yearEndDate = new FormControl('', Validators.required);
+    this.radioSelected = new FormControl('', Validators.required);
    }
 
   public ngOnInit(): void {

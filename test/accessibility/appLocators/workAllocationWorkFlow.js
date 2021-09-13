@@ -36,8 +36,10 @@ module.exports = {
         resultFirstOption:'.cdk-overlay-container mat-option span'
     },
     taskAssignmentCheckYourAnswers:'exui-task-assignment-confirm',
-    taskActionContainer:'exui-task-action-container'
+    taskActionContainer:'exui-task-action-container',
 
+    deleteExclusionPage:'exui-delete-exclusion',
+    removeAllocation:'exui-remove-role'
 
 
 }

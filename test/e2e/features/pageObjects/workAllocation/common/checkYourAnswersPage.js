@@ -4,7 +4,7 @@ const BrowserWaits = require("../../../../support/customWaits");
 class CheckYourAnswersPage{
 
     constructor(){
-        this.container = $('exui-check-answers exui-answers');
+        this.container = $('exui-answers');
         this.header = this.container.$('h1');
         this.headerCaption = this.header .$('span');
 
@@ -15,6 +15,10 @@ class CheckYourAnswersPage{
         this.submitButton = $(".govuk-button-group button");
         this.cancelLink = $(".govuk-button-group p>a");
 
+    }
+
+    async waitForPage(){
+        await BrowserWaits.waitForElement(this.container);
     }
 
     async getTotalQuestionsCount(){

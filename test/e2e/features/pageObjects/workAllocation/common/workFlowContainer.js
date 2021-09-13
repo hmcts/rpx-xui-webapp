@@ -2,22 +2,14 @@
 const BrowserWaits = require("../../../../support/customWaits");
 
 class WorkFlowContainer{
-    constructor(workflowLocator) {
-        this.container = workflowLocator;
-        this.backLink = this.container.$('a.govuk-back-link');
-        this.continueButton = this.container.$('.govuk-button-group button , button.govuk-button[type="submit"]');
-        this.cancelLink = this.container.$('.govuk-button-group p>a,#main-content p>a');
+    constructor() {
+        this.container = $('.govuk-main-wrapper');
+        this.backLink = $('a.govuk-back-link');
+        this.continueButton = $('.page .govuk-button-group button , .page .govuk-button-group button.govuk-button[type="submit"]');
+        this.cancelLink = $('.govuk-button-group p>a,#main-content p>a');
 
     }
 
-
-    async isDisplayed() {
-        return await this.container.isPresent();
-    }
-
-    async waitForPage() {
-        await BrowserWaits.waitForElement(this.container);
-    }
 
     async isContinueButtonDisplayed() {
         return await this.continueButton.idPresent() && await this.continueButton.isDisplayed();

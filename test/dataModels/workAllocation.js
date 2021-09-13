@@ -181,14 +181,27 @@ class WorkAllocationModels {
 
     getCaseRole(){
         return {
-            actions:[],
+            actions: [{ id: "reallocate", title: "Reallocate" }, { id: "remove", title: "Remove Allocation" }],
             end: "2021-02-16T18:58:48.987+0000",
             id: v4(),
             location:"test location",
             name:"caserole name",
-            role:"test-case-role",
-            start: "2021-02-16T18:58:48.987+0000",
-            email:'test@test.com'
+            roleCategory:"test-case-role",
+            roleName:'',
+            start: "2020-09-16T18:58:48.987+0000",
+            end:'',
+            email:'test@test.com',
+            actorid: v4()
+        }
+    }
+
+    getCaseExclusion() {
+        return {
+            "added": 1627776000000,
+            "name": "Judge Birch",
+            "notes": "this case been remitted from Upper Tribunal and required different judge",
+            "type": "Other",
+            "userType": "Judicial"
         }
     }
 

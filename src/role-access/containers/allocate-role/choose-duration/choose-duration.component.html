@@ -4,28 +4,27 @@
   Duration of role
 </h1>
 <div class="govuk-form-group" [formGroup]="formGroup">
-  <fieldset class="govuk-fieldset" aria-describedby="contact-hint">
-    <span id="contact-hint" class="govuk-hint">
-    </span>
+  <fieldset class="govuk-fieldset" aria-label="Duration of role">
+    <legend class="hidden-legend">Duration of role</legend>
     <div class="govuk-radios govuk-radios--conditional" data-module="radios">
-      <div *ngFor="let durationWithDesc of allDurations" class="govuk-radios__item">
-        <input class="govuk-radios__input" id="contact-1" name="radioSelected" type="radio" [value]="durationWithDesc.duration" aria-describedby="contact-1-item-hint" 
-        formControlName="radioSelected" (change)="onItemChange(durationWithDesc.duration)" [checked]="durationWithDesc.checked"/>
-        <label class="govuk-label govuk-radios__label" for="contact-1">
-        {{durationWithDesc.duration}} 
+      <div *ngFor="let durationDesc of allDurations" class="govuk-radios__item">
+        <input class="govuk-radios__input" id="contact-{{durationDesc.id}}" name="radioSelected" type="radio" [value]="durationDesc.duration" [attr.aria-describedby]="durationDesc.description" 
+        formControlName="radioSelected" (change)="onItemChange(durationDesc.duration)" [checked]="durationDesc.checked"/>
+        <label class="govuk-label govuk-radios__label" for="contact-{{durationDesc.id}}">
+        {{durationDesc.duration}} 
         </label>
-        <span id="contact-1-item-hint" class="govuk-hint govuk-radios__hint">
-        {{durationWithDesc.description}}
+        <span id="contact-{{durationDesc.id}}-item-hint" class="govuk-hint govuk-radios__hint">
+        {{durationDesc.description}}
         </span>
       </div>
       <div id="conditional-contact-3" 
       [ngClass]="anotherPeriod? (isStartDateError || isEndDateError? 'govuk-radios__conditional form-group-error' : 'govuk-radios__conditional'):'govuk-radios__conditional govuk-radios__conditional--hidden'">
         <div class="govuk-form-group">
-          <fieldset class="govuk-fieldset" aria-describedby="passport-issued-hint" role="group">
+          <fieldset class="govuk-fieldset" aria-describedby="passport-issued-1-hint" role="group">
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
             Access starts
           </legend>
-          <span id="passport-issued-hint" class="govuk-hint">
+          <span id="passport-issued-1-hint" class="govuk-hint">
             For example, 12 11 2007
           </span>
           <div class="govuk-error-summary__body">
@@ -33,31 +32,31 @@
               {{startDateErrorMessage}}
             </span>
           </div>
-          <div class="govuk-date-input" id="passport-issued">
+          <div class="govuk-date-input" id="passport-issued-1">
             <div class="govuk-date-input__item">
               <div class="govuk-form-group">
-              <label class="govuk-label govuk-date-input__label" for="passport-issued-day">
+              <label class="govuk-label govuk-date-input__label" for="passport-issued-day-1">
               Day
               </label>
-              <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="passport-issued-day" name="passport-issued-day" type="number" pattern="[0-9]*" formControlName="dayStartDate" 
+              <input id="passport-issued-day-1" name="passport-issued-day-1" type="number" pattern="[0-9]*" formControlName="dayStartDate" 
               [ngClass]="isStartDateError?'govuk-input govuk-date-input__input govuk-input--width-2 date-error':'govuk-input govuk-date-input__input govuk-input--width-2'"/>
               </div>
             </div>
             <div class="govuk-date-input__item">
               <div class="govuk-form-group">
-                <label class="govuk-label govuk-date-input__label" for="passport-issued-month">
+                <label class="govuk-label govuk-date-input__label" for="passport-issued-month-1">
                 Month
                 </label>
-                <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="passport-issued-month" name="passport-issued-month" type="number" pattern="[0-9]*" formControlName="monthStartDate" min="0" max="11"
+                <input id="passport-issued-month-1" name="passport-issued-month-1" type="number" pattern="[0-9]*" formControlName="monthStartDate" min="0" max="11"
                 [ngClass]="isStartDateError?'govuk-input govuk-date-input__input govuk-input--width-2 date-error':'govuk-input govuk-date-input__input govuk-input--width-2'"/>
               </div>
             </div>
             <div class="govuk-date-input__item">
               <div class="govuk-form-group">
-                <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
+                <label class="govuk-label govuk-date-input__label" for="passport-issued-year-1">
                 Year
                 </label>
-                <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="passport-issued-year" name="passport-issued-year" type="number" pattern="[0-9]*" formControlName="yearStartDate" 
+                <input id="passport-issued-year-1" name="passport-issued-year-1" type="number" pattern="[0-9]*" formControlName="yearStartDate" 
                 [ngClass]="isStartDateError?'govuk-input govuk-date-input__input govuk-input--width-4 date-error':'govuk-input govuk-date-input__input govuk-input--width-4'"/>
               </div>
             </div>
@@ -65,11 +64,11 @@
           </fieldset>
         </div>
         <div class="govuk-form-group">
-          <fieldset class="govuk-fieldset" aria-describedby="passport-issued-hint" role="group">
+          <fieldset class="govuk-fieldset" aria-describedby="passport-issued-2-hint" role="group">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
               Access ends
             </legend>
-            <span id="passport-issued-hint" class="govuk-hint">
+            <span id="passport-issued-2-hint" class="govuk-hint">
               For example, 12 11 2007
             </span>
             <div class="govuk-error-summary__body">
@@ -77,31 +76,31 @@
                 {{endDateErrorMessage}}
               </span>
             </div>
-            <div class="govuk-date-input" id="passport-issued">
+            <div class="govuk-date-input" id="passport-issued-2">
               <div class="govuk-date-input__item">
                 <div class="govuk-form-group">
-                  <label class="govuk-label govuk-date-input__label" for="passport-issued-day">
+                  <label class="govuk-label govuk-date-input__label" for="passport-issued-day-2">
                   Day
                   </label>
-                  <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="passport-issued-day" name="passport-issued-day" type="number" pattern="[0-9]*" formControlName="dayEndDate" 
+                  <input id="passport-issued-day-2" name="passport-issued-day-2" type="number" pattern="[0-9]*" formControlName="dayEndDate" 
                   [ngClass]="isEndDateError?'govuk-input govuk-date-input__input govuk-input--width-2 date-error':'govuk-input govuk-date-input__input govuk-input--width-2'"/>
                 </div>
               </div>
               <div class="govuk-date-input__item">
                 <div class="govuk-form-group">
-                  <label class="govuk-label govuk-date-input__label" for="passport-issued-month">
+                  <label class="govuk-label govuk-date-input__label" for="passport-issued-month-2">
                   Month
                   </label>
-                  <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="passport-issued-month" name="passport-issued-month" type="number" pattern="[0-9]*" formControlName="monthEndDate" min="0" max="11"
+                  <input id="passport-issued-month-2" name="passport-issued-month-2" type="number" pattern="[0-9]*" formControlName="monthEndDate" min="0" max="11"
                   [ngClass]="isEndDateError?'govuk-input govuk-date-input__input govuk-input--width-2 date-error':'govuk-input govuk-date-input__input govuk-input--width-2'"/>
                 </div>
               </div>
               <div class="govuk-date-input__item">
                 <div class="govuk-form-group">
-                  <label class="govuk-label govuk-date-input__label" for="passport-issued-year">
+                  <label class="govuk-label govuk-date-input__label" for="passport-issued-year-2">
                   Year
                   </label>
-                  <input id="passport-issued-year" name="passport-issued-year" type="number" pattern="[0-9]*"  formControlName="yearEndDate" 
+                  <input id="passport-issued-year-2" name="passport-issued-year-2" type="number" pattern="[0-9]*"  formControlName="yearEndDate" 
                   [ngClass]="isEndDateError?'govuk-input govuk-date-input__input govuk-input--width-4 date-error':'govuk-input govuk-date-input__input govuk-input--width-4'"/>
                 </div>
               </div>

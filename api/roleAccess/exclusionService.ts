@@ -19,7 +19,7 @@ export async function getUserExclusions(req: EnhancedRequest, res: Response, nex
         notes: 'this case been remitted from Upper Tribunal and required different judge',
         type: 'Other',
         userType: 'Judicial',
-      }
+      },
     ];
   } else {
     exclusions = [];

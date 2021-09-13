@@ -31,38 +31,38 @@ Feature: WA Release 2: Allocate Role judiciary - Negative path
 
         # Choose role error validation
         Then I see Allocate role work flow page "Choose a role" with caption "Allocate a jurdiciary role" is displayed
-        When I click continue in Allocate role work flow page "Choose how to allocate the judicial role"
+        When I click continue in work flow page "Choose how to allocate the judicial role"
         
         Then I see validation error with message "Please select an option"
         Then I see field with text "Choose a role" display validation message "Please select an option"
 
-        When I select Choose a role option "<Role>" in Allocate role work flow
-        When I click continue in Allocate role work flow page "Choose a role"
+        When I select Choose a role option "<Role>" in work flow
+        When I click continue in work flow page "Choose a role"
 
 
         # Choose how to allocate the judicial role validation
         Then I see Allocate role work flow page "Choose how to allocate the judicial role" with caption "Allocate a <Role>" is displayed
-        When I click continue in Allocate role work flow page "Choose how to allocate the judicial role"
+        When I click continue in work flow page "Choose how to allocate the judicial role"
 
         Then I see validation error with message "Please select an option"
         Then I see field with text "Choose how to allocate the role" display validation message "Please select an option"
 
-        When I select Choose how to allocate option "Reserve to me" in Allocate role work flow
-        When I click continue in Allocate role work flow page "Choose how to allocate the judicial role"
+        When I select Choose how to allocate option "Reserve to me" in work flow
+        When I click continue in work flow page "Choose how to allocate the judicial role"
 
 
         Then I see Allocate role work flow page "Duration of role" with caption "Allocate a <Role>" is displayed
-        When I select duration option "<Duration>" in Allocate role work flow
-        Then I validate date input field "Access starts" is displayed "<DateInputsDisplayed>" in Allocate role work flow page
-        Then I validate date input field "Access ends" is displayed "<DateInputsDisplayed>" in Allocate role work flow page
+        When I select duration option "<Duration>" in work flow
+        Then I validate date input field "Access starts" is displayed "<DateInputsDisplayed>" in work flow page
+        Then I validate date input field "Access ends" is displayed "<DateInputsDisplayed>" in work flow page
 
-        When I click continue in Allocate role work flow page "Duration of role"
+        When I click continue in work flow page "Duration of role"
         Then I see validation error with message "Please select an option"
         Then I see field with text "Choose how to allocate the role" display validation message "Please select an option"
        
-        When I enter duration date for field "Access starts" with current date plus <startDate> in Allocate role work flow
-        When I enter duration date for field "Access ends" with current date plus <endDate> in Allocate role work flow
-        When I click continue in Allocate role work flow page "Duration of role"
+        When I enter duration date for field "Access starts" with current date plus <startDate> in work flow
+        When I enter duration date for field "Access ends" with current date plus <endDate> in work flow
+        When I click continue in work flow page "Duration of role"
 
         Then I see Allocate role work flow page "Check your answers" with caption "Allocate a <Role>" is displayed
         Then I see Check your answers page has total 3 questions
@@ -72,7 +72,7 @@ Feature: WA Release 2: Allocate Role judiciary - Negative path
             | How the role will be allocated | Allocate to me |
             | Duration of role               | <Duration>     |
 
-        When I click button with label "Confirm allocation" in Allocate role work flow  Check your answers page
+        When I click button with label "Confirm allocation" in work flow  Check your answers page
         # Then I see case details page displayed with tab "Role and access" selected
         Then I see error message of type "Page" displayed with message "<>"
 

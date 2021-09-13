@@ -1,15 +1,33 @@
 
 const BrowserWaits = require("../../../support/customWaits"); 
-
+const reportLogger = require("../../../support/reportLogger");
+const BrowserUtil = require('../../../../ngIntegration/util/browserUtil');
 class CaseRolesTable{
 
-    constructor(parentElement){
+    constructor(parentXpath){ 
+        this.parentXpath = parentXpath;
+        this.taskDetailsTable = element(by.xpath(`${parentXpath}//table`));
+        this.tableHeaders = element.all(by.xpath(`${parentXpath}//table//thead//tr//th`));
+        this.tableRows = element.all(by.xpath(`${parentXpath}//table//tbody//tr[contains(@class,'govuk-table__row')]`));
 
-        this.parent = parentElement;
-        this.taskDetailsTable = parentElement.$("table");
-        this.tableHeaders = parentElement.$$('table tr th');
-        this.tableRows = parentElement.$$('table tr');
+        this.summaryMessage = element(by.xpath(`${parentXpath}//dd`));
 
+    }
+
+
+    async isTableDisplayed(){
+        reportLogger.AddMessage(`Table locator: ${this.taskDetailsTable.locator().toString()}`);
+        return this.taskDetailsTable.isPresent();
+    }
+
+    async isNoDataSummaryMessageDisplayed(){
+        reportLogger.AddMessage(`No data summary locator: ${this.summaryMessage.locator().toString()}`);
+        return this.summaryMessage.isPresent();
+    }
+
+    async getNoDataSummaryMessage(){
+        reportLogger.AddMessage(`No data summary locator: ${this.summaryMessage.locator().toString()}`);
+        return this.summaryMessage.getText();
     }
 
     async getRowsCount(){
@@ -17,11 +35,11 @@ class CaseRolesTable{
     }
 
     async getTableRowAtIndex(index){
-        const rowCount = this.getRowsCount();
+        const rowCount = await this.getRowsCount();
         if (index-1 >= rowCount){
             throw new Error(`Cannot get row at index ${index}, table has total rows ${rowCount}`);
         }
-        return await this.tableRows.get(index - 1);
+        return this.tableRows.get(index - 1);
     }
 
     async getHeaderColumnPos(header) {
@@ -58,30 +76,56 @@ class CaseRolesTable{
     }
 
     async getLinkElementWithTextAtRow(rowIndex,linkText){
-        const rowElement = await this.getTableRowAtIndex(rowIndex);
-        return rowElement.element(by.xpath(`//td//a[contains(text(),'${linkText}')]`));
+        const linkElement = element(by.xpath(`${this.parentXpath}//table//tbody//tr[contains(@class,'govuk-table__row')][${rowIndex}]//td//a[contains(text(),'${linkText}')]`));
+        
+        reportLogger.AddMessage(`Case role table link with text element at row : ${linkElement.locator().toString()}`);
+        return linkElement;
     }
 
     async isLinkWithTextPresentAtRow(rowIndex,linkText){
-        const linkElement = this.getLinkElementWithTextAtRow(rowIndex,linkText);
+        const linkElement = await this.getLinkElementWithTextAtRow(rowIndex,linkText);
         try{
             await BrowserWaits.waitForElement(linkElement);
             return true;
         }
         catch(err){
+            reportLogger.AddMessage(`error checking ${linkElement.locator().toString()}`);
+
             return false;
         }
     }
 
     async clickLinkWithTextAtRow(rowIndex,linkText) {
-        const linkElement = this.getLinkElementWithTextAtRow(rowIndex,linkText);
+        const linkElement = await this.getLinkElementWithTextAtRow(rowIndex,linkText);
         await BrowserWaits.waitForElement(linkElement);
+
+        await BrowserUtil.scrollToElement(linkElement);
         await linkElement.click();
     }
 
     async isTableHeaderDisplayed(headerCol) {
         const colheaderPos = await this.getHeaderColumnPos(headerCol);
-        return colheaderPos !== -1;
+        return colheaderPos != -1;
+    }
+
+    async isActionRowDisplayed(atRow){
+        const actionRowDatas = element.all(by.xpath(`${this.parentXpath}//table//tbody//tr[contains(@class,'govuk-table__row')][${atRow}]/following-sibling::tr[position()=1]//td`));
+        reportLogger.AddMessage(`Action at row ${atRow} locator : ${actionRowDatas.locator().toString()}`);
+        const tdCountOfRow = await actionRowDatas.count();
+        reportLogger.AddMessage(`Action at row ${atRow} locator : ${actionRowDatas.locator().toString()} has ${tdCountOfRow} data colums`);
+        return tdCountOfRow === 1;
+    }
+
+    async isManageActionLinkDisplayed(actionLinkLabel) {
+        const actionLink = element(by.xpath(`${this.parentXpath}//table//tbody//tr//td//a[contains(text(),'${actionLinkLabel}')]`))
+        return actionLink.isPresent();
+    }
+
+    async clickManageActionLink(actionLinkLabel){
+        const actionLink = element(by.xpath(`${this.parentXpath}//table//tbody//tr//td//a[contains(text(),'${actionLinkLabel}')]`))
+        await BrowserUtil.scrollToElement(actionLink);
+
+        await actionLink.click();
     }
 
 

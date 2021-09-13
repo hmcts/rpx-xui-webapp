@@ -33,6 +33,36 @@ module.exports = {
         },
         '/api/role-access/allocate-role/valid-roles' : (req,res) => {
             res.send(workAllocationMockData.getRoles());
+        },
+        '/workallocation2/case/task/:caseId' : (req,res) => {
+            res.send(workAllocationMockData.getMyTasks());
+        },
+        '/workallocation2/roles/:caseId' : (req,res) => {
+            const actions = [{ id: "reallocate", title: "Reallocate" }, { id: "remove", title: "Remove Allocation" }]
+            const mockRoles = [
+                { email: 'j1@test.com', name: 'judeg a', roleCategory: 'JUDICIAL', roleName: 'judge', actions: actions},
+                { email: 'j2@test.com', name: 'judeg b', roleCategory: 'JUDICIAL', roleName: 'judge', actions: actions },
+                { email: 'j3@test.com', name: 'judeg c', roleCategory: 'JUDICIAL', roleName: 'judge', actions: actions },
+                { email: 'leagal1@test.com', name: 'legal a', roleCategory: 'LEGAL_OPERATIONS', roleName: 'tribunal-caseworker', actions: actions }
+            ];
+            res.send(workAllocationMockData.getCaseRoles(mockRoles));
+        },
+        '/api/role-access/exclusions/get' : (req,res) => {
+            const date1 = new Date();
+            date1.setDate(date1.getDate() - 5);
+
+            const date2= new Date();
+            date2.setDate(date2.getDate() - 15);
+
+            const date3 = new Date();
+            date3.setDate(date3.getDate() - 25);
+            const mockExclusions = [
+                { added: date1.getTime(), name: 'judeg a', userType: 'Judicial', type: 'judge', notes: 'test exclude 1' },
+                { added: date2.getTime(), name: 'judeg b', userType: 'Judicial', type: 'judge', notes: 'test exclude 2'},
+                { added: date3.getTime(), name: 'judeg c', userType: 'Legal Ops', type: 'judge', notes: 'test exclude 3'},
+            ];
+            
+            res.send(mockExclusions);
         }
     },
     post: {
@@ -183,8 +213,23 @@ module.exports = {
         },
         '/api/user/exclusions/confirm' : (req,res)=>{
             res.send({});
+        },
+        '/api/role-access/allocate-role/confirm': (req, res) => {
+            res.send({});
+        },
+        '/api/role-access/allocate-role/reallocate': (req, res) => {
+            res.send({});
+        },
+        '/api/role-access/exclusions/confirm' : (req,res) => {
+            res.send({});
+
+        },
+        '/api/role-access/allocate-role/delete' : (req,res) => {
+            res.status(204).send({});
+
         }
     }
+  
 
    
 }

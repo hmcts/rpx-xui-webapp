@@ -6,7 +6,7 @@ class NodeApp{
 
         return {
             "canShareCases": false,
-            "locationInfo": [
+            "roleAssignmentInfo": [
                 this.getUserDetailsLocationInfo()
             ],
             "sessionTimeout": {
@@ -33,7 +33,7 @@ class NodeApp{
     getUserDetails_oauth(){
         return {
             "canShareCases": false,
-            "locationInfo": [
+            "roleAssignmentInfo": [
                 this.getUserDetailsLocationInfo()
             ],
             "sessionTimeout": {
@@ -64,7 +64,7 @@ class NodeApp{
         return {
             "primaryLocation": location,
             "jurisdiction": "IA",
-            "isCaseAllocator": isCaseAllocator
+            "isCaseAllocator": true
         }
     }
 

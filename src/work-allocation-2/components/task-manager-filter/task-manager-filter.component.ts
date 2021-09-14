@@ -1,113 +1,154 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
-
-import { SessionStorageService } from '../../../app/services';
-import { Caseworker, Location } from '../../models/dtos';
-import { FilterConstants } from '../constants';
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { FilterService } from '@hmcts/rpx-xui-common-lib';
+import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models';
+import { Location } from '../../models/dtos';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'exui-task-manager-filter',
   templateUrl: './task-manager-filter.component.html',
-  styleUrls: ['./task-manager-filter.component.scss']
+  styleUrls: ['./task-manager-filter.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
-export class TaskManagerFilterComponent implements OnChanges {
-  // Protected instances of the exported constants.
-  public readonly ALL_LOCATIONS: Location = FilterConstants.Options.Locations.ALL;
-  public readonly ALL_CASEWORKERS: Caseworker = FilterConstants.Options.Caseworkers.ALL;
-  public readonly NO_CASEWORKER_ASSIGNED: Caseworker = FilterConstants.Options.Caseworkers.UNASSIGNED;
+export class TaskManagerFilterComponent implements OnInit {
+  
+  private static FILTER_NAME: string = 'all-tasks';
 
-  /**
-   * The caseworkers that are available to be selected from.
-   */
-  @Input() public caseworkers: Caseworker[];
+  @Input() public locations: Location[] = [];
 
-  /**
-   * The locations that are available to be selected from.
-   */
-  @Input() public locations: Location[];
-
-  @Input()
-  public get location(): Location {
-    return this.pLocation;
-  }
-  public set location(value: Location) {
-    value = value || this.ALL_LOCATIONS; // undefined or null means "All"
-    if (this.pLocation !== value) {
-      this.pLocation = value;
-      this.saveFilterToSession();
-      this.emitChangedEvent();
+  public fieldsConfig: FilterConfig = {
+    persistence: 'session',
+    enableDisabledButton: true,
+    id: TaskManagerFilterComponent.FILTER_NAME,
+    fields: [],
+    cancelButtonText: 'Reset to default',
+    applyButtonText: 'Apply',
+    cancelSetting: {
+      id: TaskManagerFilterComponent.FILTER_NAME,
+      fields: [
+        {
+          name: 'service',
+          value: ['IA']
+        }
+      ]
     }
-  }
-  private pLocation: Location = this.ALL_LOCATIONS;
+  };
 
-  @Input()
-  public get caseworker(): Caseworker {
-    return this.pCaseworker;
+  constructor(private readonly filterService: FilterService) {
   }
-  public set caseworker(value: Caseworker) {
-    value = value || this.ALL_CASEWORKERS; // undefined or null means "All"
-    if (this.pCaseworker !== value) {
-      this.pCaseworker = value;
-      this.saveFilterToSession();
-      this.emitChangedEvent();
+
+  private static initServiceFilter(): FilterFieldConfig {
+    return {
+      name: 'service',
+      options: [
+        {
+          key: 'IA',
+          label: 'Immigration and Asylum'
+        }
+      ],
+      minSelected: 1,
+      maxSelected: 1,
+      minSelectedError: 'You must select a service',
+      maxSelectedError: null,
+      title: 'Service',
+      type: 'select'
+    };
+  }
+
+  private static initCaseLocationFilter(locations: Location[]): FilterFieldConfig {
+    if (!locations) {
+      locations = [];
     }
-  }
-  private pCaseworker: Caseworker = this.ALL_CASEWORKERS;
-
-  /**
-   * Emit an event to notify the parent component that the selected Caseworker
-   * and/or Location has changed. The new selection is emitted with the event
-   * but can also be retrieved from component.location.
-   */
-  @Output() public selectionChanged: EventEmitter<{ location: Location, caseworker: Caseworker }>
-    = new EventEmitter<{ location: Location, caseworker: Caseworker }>();
-
-  /**
-   * Accept the SessionStorageService for adding to and retrieving from sessionStorage.
-   */
-  constructor(private readonly sessionStorageService: SessionStorageService) {
+    return {
+      name: 'location',
+      options: locations.map(loc => ({key: loc.id, label: loc.locationName})),
+      minSelected: 1,
+      maxSelected: 1,
+      minSelectedError: 'You must select a location',
+      maxSelectedError: null,
+      title: 'Case Location',
+      type: 'select'
+    };
   }
 
-  public ngOnChanges(): void {
-    if (this.caseworkers && this.locations) {
-      // See if we have anything stored in the session for the filter.
-      const stored: string = this.sessionStorageService.getItem(FilterConstants.Session.TaskManager);
-      if (stored) {
-        const { caseworkerId, locationId } = JSON.parse(stored);
-        this.pCaseworker = this.getCaseworkerByIdamId(caseworkerId);
-        this.pLocation = this.getLocationById(locationId);
-      }
-      this.emitChangedEvent();
-    }
+  private static initRoleTypeFilter(): FilterFieldConfig {
+    return {
+      name: 'role',
+      options: [
+        {
+          key: 'Judicial',
+          label: 'Judicial'
+        },
+        {
+          key: 'Legal Ops',
+          label: 'Legal Ops'
+        },
+        {
+          key: 'Admin',
+          label: 'Admin'
+        }
+      ],
+      minSelected: 1,
+      maxSelected: 1,
+      minSelectedError: 'You must select a role type',
+      maxSelectedError: null,
+      showCondition: 'selectPerson=Specific person',
+      type: 'select'
+    };
   }
 
-  private saveFilterToSession(): void {
-    const toStore = JSON.stringify({
-      caseworkerId: this.caseworker.idamId,
-      locationId: this.location.id
-    });
-    this.sessionStorageService.setItem(FilterConstants.Session.TaskManager, toStore);
+  private static initPersonFilter(): FilterFieldConfig {
+    return {
+      name: 'selectPerson',
+      options: [
+        {
+          key: 'All',
+          label: 'All'
+        },
+        {
+          key: 'None / Available tasks',
+          label: 'None / Available tasks'
+        },
+        {
+          key: 'Specific person',
+          label: 'Specific person'
+        }
+      ],
+      minSelected: 1,
+      maxSelected: 1,
+      minSelectedError: 'You must select a person',
+      maxSelectedError: null,
+      title: 'Person',
+      type: 'radio'
+    };
   }
 
-  public getLocationById(id: string): Location {
-    if (id === this.ALL_LOCATIONS.id) {
-      return this.ALL_LOCATIONS;
-    }
-    return this.locations.find(loc => loc.id === id) || this.ALL_LOCATIONS;
+  private static findPersonFilter(): FilterFieldConfig {
+    return {
+      name: 'person',
+      options: [],
+      minSelected: 0,
+      maxSelected: 0,
+      minSelectedError: 'You must select a person',
+      maxSelectedError: null,
+      showCondition: 'selectPerson=Specific person',
+      type: 'find-person'
+    };
   }
 
-  public getCaseworkerByIdamId(id: string): Caseworker {
-    if (id === this.ALL_CASEWORKERS.idamId) {
-      return this.ALL_CASEWORKERS;
-    } else if (id === this.NO_CASEWORKER_ASSIGNED.idamId) {
-      return this.NO_CASEWORKER_ASSIGNED;
-    }
-    return this.caseworkers.find(cw => cw.idamId === id) || this.ALL_CASEWORKERS;
-  }
-
-  private emitChangedEvent(): void {
-    this.selectionChanged.emit({
-      caseworker: this.caseworker,
-      location: this.location
+  public ngOnInit(): void {
+    this.fieldsConfig.fields = [
+      TaskManagerFilterComponent.initServiceFilter(),
+      TaskManagerFilterComponent.initCaseLocationFilter(this.locations),
+      TaskManagerFilterComponent.initPersonFilter(),
+      TaskManagerFilterComponent.initRoleTypeFilter(),
+      TaskManagerFilterComponent.findPersonFilter()
+    ];
+    this.filterService.getStream(TaskManagerFilterComponent.FILTER_NAME)
+      .pipe(
+        filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
+      ).subscribe((f: FilterSetting) => {
+      console.log(f);
     });
   }
 }

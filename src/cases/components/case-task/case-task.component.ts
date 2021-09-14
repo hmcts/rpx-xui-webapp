@@ -1,9 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { UserInfo } from '../../../app/models';
+import { TaskPermission } from '../../../work-allocation-2/models/tasks/task-permission.model';
+import { UserInfo, UserRole } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { Task } from '../../../work-allocation-2/models/tasks';
-import { TaskPermission } from '../../../work-allocation-2/models/tasks/task-permission.model';
-import { replaceAll } from '../../utils/utils';
+import { AppUtils } from '../../../app/app-utils';
+import { replaceAll } from '../../../cases/utils/utils';
 
 @Component({
   selector: 'exui-case-task',
@@ -20,6 +21,7 @@ export class CaseTaskComponent implements OnInit {
     CaseTaskComponent.TASK_ID_VARIABLE
   ];
   public manageOptions: { text: string, path: string }[];
+  public isUserJudidical: boolean;
   private pTask: Task;
 
   constructor(private readonly sessionStorageService: SessionStorageService) {
@@ -60,6 +62,7 @@ export class CaseTaskComponent implements OnInit {
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       const userId = userInfo.id ? userInfo.id : userInfo.uid;
+      this.isUserJudidical = AppUtils.isLegalOpsOrJudicial(userInfo.roles) === UserRole.Judicial;
       return task.assignee && task.assignee === userId;
     }
     return false;
@@ -69,7 +72,11 @@ export class CaseTaskComponent implements OnInit {
     return task.permissions.includes(TaskPermission.OWN) && task.permissions.includes(TaskPermission.EXECUTE);
   }
 
-  public getManageOptions(task: Task): { text: string, path: string }[] {
+  public getDueDateTitle(): string {
+    return this.isUserJudidical ? 'Task created' : 'Due date';
+  }
+
+  public getManageOptions(task: Task): {text: string, path: string} [] {
     if (!task.assignee) {
       if (task.permissions.length === 0 || (task.permissions.length === 1 && task.permissions.includes(TaskPermission.MANAGE))) {
         return [];
@@ -99,5 +106,13 @@ export class CaseTaskComponent implements OnInit {
         return [];
       }
     }
+  }
+
+    public toDate(value: string | number | Date): Date {
+    if (value) {
+      const d = new Date(value);
+      return isNaN(d.getTime()) ? null : d;
+    }
+    return null;
   }
 }

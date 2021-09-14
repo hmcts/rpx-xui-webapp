@@ -54,7 +54,7 @@ class MockApp{
     }
 
     logMessage(message){
-        const msg = this.serverPort+" ******* Mock app : " + message;
+        const msg = '[NODE_MOCK_'+this.serverPort+"] " + message;
         this.requestLogs.push(msg);
         if (this.logMessageCallback){
             this.logMessageCallback(msg);
@@ -64,14 +64,18 @@ class MockApp{
     }
 
     onRequest(endPoint, method,req,res,callback){
-        const scenarioId = this.getCookieFromRequest(req,"scenarioId");
-        const scenarioMockPort = this.getCookieFromRequest(req,'scenarioMockPort');
-        if (scenarioMockPort && this.serverPort !== parseInt(scenarioMockPort)) {
+        try{
+            const scenarioId = this.getCookieFromRequest(req, "scenarioId");
+            const scenarioMockPort = this.getCookieFromRequest(req, 'scenarioMockPort');
+            // this.logMessage(` => ${scenarioMockPort} => ${req.method}: ${req.originalUrl}`);
 
-            this.proxyRequest(req, res, parseInt(scenarioMockPort));
-        } else {
-            // this.logMessage(`on mock ${this.serverPort} : req ${req.method} ${req.originalUrl}`);
-            callback(req,res);
+            if (scenarioMockPort && this.serverPort !== parseInt(scenarioMockPort)) {
+                this.proxyRequest(req, res, parseInt(scenarioMockPort));
+            } else {
+                callback(req, res);
+            }
+        }catch(err){
+            res.status(500).send({message:'MOCK error', err:err});
         }
     }
 
@@ -187,7 +191,7 @@ class MockApp{
 
       
         
-        console.log("mock api started");
+        console.log("mock server started on port : " + this.serverPort);
         // return "Mock started successfully"
 
     }
@@ -258,7 +262,7 @@ function setUpcaseConfig() {
 
     mockInstance.onGet('/api/user/details', (req, res) => {
         const roles = ['caseworker', 'caseworker-ia', 'caseworker-ia-iacjudge'];
-        const idamid = '44d5d2c2-7112-4bef-8d05-baaa610bf463';
+        const idamid = '44d5d2c2-kjnjhbjhb-kjnbjbj-ubhb';
         res.send(nodeAppMock.getUserDetailsWithRolesAndIdamId(roles, idamid));
 
     });

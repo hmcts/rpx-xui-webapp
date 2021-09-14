@@ -1,6 +1,6 @@
 
 const BrowserWaits = require('../../support/customWaits');
-const { browser } = require('protractor');
+const TaskMessageBanner = require("./messageBanner");
 
 const CucumberReportLogger = require('../../support/reportLogger');
 class CaseListPage{
@@ -41,6 +41,9 @@ class CaseListPage{
         this.ccdCaseViewer = $("ccd-case-viewer");
 
         this.loadingSpinner = $(".loading-spinner-in-action");
+
+        this.taskInfoMessageBanner = new TaskMessageBanner(".case-list-component");
+
     }
 
     async amOnPage(){
@@ -79,15 +82,18 @@ class CaseListPage{
     }
 
     async clickSearchApplyBtn(){ 
-        await this._waitForSearchComponent();
-        await this.waitForSpinnerToDissappear();
-        await browser.executeScript('arguments[0].scrollIntoView()',
-            this.searchApplyBtn);
-        await BrowserWaits.waitForElementClickable(this.searchApplyBtn);
-        await this.searchApplyBtn.click();
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await this._waitForSearchComponent();
+            await this.waitForSpinnerToDissappear();
+            await browser.executeScript('arguments[0].scrollIntoView()',
+                this.searchApplyBtn);
+            await BrowserWaits.waitForElementClickable(this.searchApplyBtn);
+            await this.searchApplyBtn.click();
+        });
     }
 
     async clickSearchResetBtn() {
+        
         await this._waitForSearchComponent();
         await browser.executeScript('arguments[0].scrollIntoView()',
             this.searchReset);

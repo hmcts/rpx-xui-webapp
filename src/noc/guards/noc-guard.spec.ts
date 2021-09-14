@@ -32,7 +32,7 @@ describe('NocGuard', () => {
         'pui-finance-manager',
         'pui-organisation-manager',
         'pui-user-manager'
-      ],
+      ]
     }
   };
   const USER_2: UserDetails = {

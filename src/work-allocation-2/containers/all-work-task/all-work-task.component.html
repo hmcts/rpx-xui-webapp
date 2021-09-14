@@ -1,0 +1,9 @@
+<exui-task-manager-filter [caseworkers]="caseworkers" [locations]="locations" (selectionChanged)="onSelectionChanged($event)"></exui-task-manager-filter>
+<div class="hmcts-filter-layout__content exui-task-list">
+  <exui-task-list
+  [taskServiceConfig]="taskServiceConfig" [tasks]="tasks" [fields]="fields" [tasksTotal]="tasksTotal" [pagination]="pagination"
+  [sortedBy]="sortedBy" [emptyMessage]="emptyMessage"
+  (paginationEvent)="onPaginationEvent($event)"
+  (sortEvent)="onSortHandler($event)" (actionEvent)="onActionHandler($event)">
+  </exui-task-list>
+</div>

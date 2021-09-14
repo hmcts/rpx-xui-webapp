@@ -3,7 +3,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { combineLatest, Observable, of, Subscription } from 'rxjs';
-import { UserDetails } from 'src/app/models/user-details.model';
+import { UserDetails } from '../../../app/models/user-details.model';
 
 import { AppUtils } from '../../app-utils';
 import { AppConstants, LD_FLAG_MC_APPLICATION_THEMES } from '../../app.constants';
@@ -144,6 +144,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     this.serviceMessageCookie = AppConstants.SERVICE_MESSAGE_COOKIE;
     this.userDetails$ = this.store.pipe(select(fromActions.getUserDetails));
     this.setAppHeaderProperties(this.defaultTheme);
+
     const applicationThemes$ = this.featureToggleService.getValue<Theme[]>(LD_FLAG_MC_APPLICATION_THEMES, this.getDefaultApplicationThemes());
     combineLatest([this.userDetails$, applicationThemes$]).subscribe(([userDetails, applicationThemes]) => {
         this.setHeaderContent(userDetails, applicationThemes);

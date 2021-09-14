@@ -24,10 +24,10 @@ class BrowserWaits{
 
     }
 
-    async waitForElement(element,message){
+    async waitForElement(element, message, waitForSeconds){
         const startTime = Date.now();
         CucumberReporter.AddMessage("starting wait for element max in sec " + this.waitTime / 1000 + " : " + element.locator().toString());
-        await browser.wait(EC.visibilityOf(element), this.waitTime,"Error : "+element.locator().toString() + " => "+message);
+        await browser.wait(EC.visibilityOf(element), waitForSeconds ? waitForSeconds*1000 :  this.waitTime,"Error : "+element.locator().toString() + " => "+message);
         CucumberReporter.AddMessage("wait done in sec " + (Date.now() - startTime ) / 1000); 
 
     }
@@ -44,18 +44,18 @@ class BrowserWaits{
     }
 
     async waitForCondition(condition){
-        await browser.wait( condition, this.waitTime);
+        await this.waitForConditionAsync( condition, this.waitTime);
     }
 
-    async waitForConditionAsync(condition,waitInMillisec){
-        const waitForMillisec = waitInMillisec ? waitInMillisec : this.waitTime; 
+    async waitForConditionAsync(condition,waitInMillisec,waitMessage){
+        const waitForMillisec = waitInMillisec ? waitInMillisec : this.waitTime;
         await new Promise((resolve,reject) => {
             const conditionCheckInterval = setInterval(async () => {
                 let isConditionMet = false; 
                 try{
                     isConditionMet = await condition();
                 }catch(err){
-                    CucumberReporter.AddMessage("Error waiting for condition " + err); 
+                    CucumberReporter.AddMessage("Error waiting for condition " + err.stack); 
                 }
                 if (isConditionMet) {
                     clearInterval(conditionCheckInterval);
@@ -65,7 +65,7 @@ class BrowserWaits{
 
             setTimeout(() => {
                 clearInterval(conditionCheckInterval);
-                reject(new Error(`wait condition not satisfied after total wait time ${waitForMillisec}`));
+                reject(new Error(`wait condition not satisfied after total wait time ${waitForMillisec} : ${waitMessage ? waitMessage : ''}`));
             }, waitForMillisec)
         });
   
@@ -130,20 +130,23 @@ class BrowserWaits{
     async retryWithActionCallback( callback,actionMessage) {
         let retryCounter = 0;
         let isSuccess = false;
+        let error = null;
         while (retryCounter < 3) {
+            await this.waitForSeconds(retryCounter);
             try {
-                await callback();
+                const retVal = await callback();
                 isSuccess = true;
-                break;
+                return retVal;
             }
             catch (err) {
+                error = err
                 retryCounter += 1;
-                CucumberReporter.AddMessage(`Actions success Condition ${actionMessage ? actionMessage : ''} failed ${err.stack}. `); 
+                CucumberReporter.AddMessage(`Actions success Condition ${actionMessage ? actionMessage : ''} failed ${err.message} ${err.stack}. `);
                 CucumberReporter.AddMessage(`Retrying attempt ${retryCounter}. `); 
             }
         }
         if (!isSuccess){
-            throw new Error("Action failed to meet success condition after 3 retry attempts.");
+            throw new Error("Action failed to meet success condition after 3 retry attempts.",error.stack);
         }
     }
 }

@@ -4,21 +4,27 @@ const AppActions = require('../helpers/applicationActions');
 const PallyActions = require('../helpers/pallyActions');
 
 const assert = require('assert');
-const { pa11ytest, getResults } = require('../helpers/pa11yUtil');
+const { pa11ytest, getResults, initBrowser } = require('../helpers/pa11yUtil');
 const { conf } = require('../config/config');;
 
 const divorceCaseActions = require('../caseCreationActions/divorce');
 const MockApp = require('../../nodeMock/app');
 
 const ccdApi = require('../../nodeMock/ccd/ccdApi');
+const nodeAppMockData = require('../../nodeMock/nodeApp/mockData');
 
 describe('Work Allocation: ', function () {
 
-    beforeEach(async function (done) {
+    before(async function (done) {
         MockApp.init()
+        const roles = ['caseworker', 'caseworker-ia', 'caseworker-ia-caseofficer','caseworker-ia-admofficer'];
+        const idamid = '123456-as6543-987gvc-9909nb';
+        MockApp.onGet('/api/user/details', (req,res) => {
+            res.send(nodeAppMockData.getUserDetailsWithRolesAndIdamId(roles, idamid));
+        });
         done();
     });
-    afterEach(async function (done) {
+    after(async function (done) {
         await MockApp.stopServer();
         done();
     });

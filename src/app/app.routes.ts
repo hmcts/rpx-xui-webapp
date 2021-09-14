@@ -9,6 +9,7 @@ import {
   ServiceDownComponent,
   SignedOutComponent,
 } from './components';
+import { ApplicationRoutingComponent } from './components/routing/application-routing.component';
 import { AcceptTcWrapperComponent, LegacyTermsAndConditionsComponent, TermsAndConditionsComponent } from './containers';
 import { AcceptTermsGuard } from './guards/acceptTerms.guard';
 import { AuthGuard } from './services/auth/auth.guard';
@@ -20,7 +21,7 @@ export const routingConfiguration: ExtraOptions = {
 export const ROUTES: Routes = [
   {
     path: '',
-    redirectTo: 'cases',
+    component: ApplicationRoutingComponent,
     pathMatch: 'full'
   },
   {
@@ -29,9 +30,19 @@ export const ROUTES: Routes = [
     loadChildren: '../cases/cases.module#CasesModule'
   },
   {
+    path: 'work',
+    canActivate: [AuthGuard, AcceptTermsGuard],
+    loadChildren: '../work-allocation-2/work-allocation2.module#WorkAllocationModule2'
+  },
+  {
     path: 'tasks',
     canActivate: [AuthGuard, AcceptTermsGuard],
     loadChildren: '../work-allocation/work-allocation.module#WorkAllocationModule'
+  },
+  {
+    path: 'role-access',
+    canActivate: [AuthGuard, AcceptTermsGuard],
+    loadChildren: '../role-access/role-access.module#RoleAccessModule'
   },
   // TODO: remove redundant redirections
   { path: 'case/:jurisdiction/:case-type/:cid', redirectTo: 'cases/case-details/:cid', pathMatch: 'full' },

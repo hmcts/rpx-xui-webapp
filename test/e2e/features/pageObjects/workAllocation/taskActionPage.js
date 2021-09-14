@@ -12,7 +12,12 @@ class TaskActionPage extends TaskList {
   
         this.unassignBtn = element(by.xpath('//exui-task-action-container//button[contains(text(),"Unassign")]'));
 
+        //In release 1
         this.cancelBtn = element(by.xpath('//exui-task-action-container//button[contains(text(),"Cancel")]'));
+
+        //From release2
+        this.submitBtn = $("exui-task-action-container button[id = 'submit-button']");
+        this.cancelLink = element(by.xpath('//exui-task-action-container//p/a[contains(text(),"Cancel")]'));
 
         this.bannerMessageContainer = $('exui-info-message ')
         this.infoMessages = $$('exui-info-message .hmcts-banner__message');
@@ -38,7 +43,28 @@ class TaskActionPage extends TaskList {
     }
 
     async getPageHeader() {
+        await BrowserWaits.waitForElement(this.pageHeaderTitle);
         return await this.pageHeaderTitle.getText();
+    }
+
+    async getActionDescription(){
+        await BrowserWaits.waitForElement(this.actionDescription);
+        return await this.actionDescription.getText();
+    }
+
+    async clickCancelLink(){
+        await BrowserWaits.waitForElement(this.cancelLink);
+        await this.cancelLink.click();
+    }
+
+    async getSubmitBtnActionLabel(){
+        await BrowserWaits.waitForElement(this.submitBtn);
+        return await this.submitBtn.getText();
+    }
+
+    async clickSubmit(){
+        await BrowserWaits.waitForElement(this.submitBtn);
+        await this.submitBtn.click();
     }
 
     async clickUnassignBtn() {
@@ -94,7 +120,10 @@ class TaskActionPage extends TaskList {
         return false;
     }
 
-
+    async getColumnValue(columnHeader){
+        await this.waitForTable();
+        return await this.getColumnValueForTaskAt(columnHeader,1);
+    }
 
     async isTaskDisplayed() {
         try {
@@ -116,20 +145,14 @@ class TaskActionPage extends TaskList {
         let verb = this.getSubmitBtnText(action);
         const submitBtn = element(by.xpath(`//exui-task-action-container//button[contains(text(),"${verb}")]`));
         if (softAssert){
-            await softAssert.assert(async () => expect(await this.pageHeaderTitle.getText()).to.include(`${verb} task`));
-            await softAssert.assert(async () => expect(await this.actionDescription.getText()).to.include(`${verb} this task`));
-
-
-            await softAssert.assert(async () => expect(submitBtn.isDisplayed(), `Submit button with text ${verb} not displayed`).to.be.true);
-            await softAssert.assert(async () => expect(this.cancelBtn.isDisplayed(), `Cancel button with not displayed`).to.be.true);
+            await BrowserWaits.waitForElement(this.pageHeaderTitle);
+           
+            await softAssert.assert(async () => expect(await submitBtn.isDisplayed(), `Submit button with text ${verb} not displayed`).to.be.true);
+            await softAssert.assert(async () => expect(await this.cancelBtn.isDisplayed(), `Cancel button with not displayed`).to.be.true);
         }else{
 
-            expect(await this.pageHeaderTitle.getText()).to.include(`${verb} task`);
-            expect(await this.actionDescription.getText()).to.include(`${verb} this task`);
-
-
-            expect(submitBtn.isDisplayed(), `Submit button with text ${verb} not displayed`).to.be.true;
-            expect(this.cancelBtn.isDisplayed(), `Cancel button with not displayed`).to.be.true;
+            expect(await submitBtn.isDisplayed(), `Submit button with text ${verb} not displayed`).to.be.true;
+            expect(await this.cancelBtn.isDisplayed(), `Cancel button with not displayed`).to.be.true;
         }
        
     }

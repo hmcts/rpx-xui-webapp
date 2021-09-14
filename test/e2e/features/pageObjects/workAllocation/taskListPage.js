@@ -1,8 +1,9 @@
 const TaskList = require('./taskListTable');
 const BrowserWaits = require('../../../support/customWaits');
 var cucumberReporter = require('../../../support/reportLogger');
+const { $ } = require('protractor');
 
-var TaskMessageBanner = require('./taskMessageBanner');
+var TaskMessageBanner = require('../messageBanner');
 
 class TaskListPage extends TaskList {
 
@@ -19,6 +20,9 @@ class TaskListPage extends TaskList {
         this.infoMessages = $$('exui-info-message .hmcts-banner__message');
 
         this.taskInfoMessageBanner = new TaskMessageBanner();
+
+        this.pagePreviousLink = $('exui-task-list pagination-template .pagination-previous a');
+        this.pageNextLink = $('exui-task-list pagination-template .pagination-next a');
     }
 
     async amOnPage() {
@@ -52,6 +56,7 @@ class TaskListPage extends TaskList {
 
     async isMyTasksDisplayed(){
         expect(await this.amOnPage(), "Not on Task list page ").to.be.true;
+        await this.waitForSpinnerToDissappear();
         try {
             await BrowserWaits.waitForElement(this.myTasksContaine);
             return true;
@@ -63,6 +68,7 @@ class TaskListPage extends TaskList {
 
     async isAvailableTasksDisplayed(){
         expect(await this.amOnPage(), "Not on Task list page ").to.be.true;
+        await this.waitForSpinnerToDissappear();
         try{
             await BrowserWaits.waitForElement(this.availableTasksContainer); 
             return true;
@@ -92,6 +98,9 @@ class TaskListPage extends TaskList {
         }
         return false;
     }
+
+
+  
 
 }
 

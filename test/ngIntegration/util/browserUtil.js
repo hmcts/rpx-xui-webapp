@@ -2,11 +2,10 @@ const jwt = require('jsonwebtoken');
 const reportLogger = require('../../e2e/support/reportLogger');
 // const addContext = require('mochawesome/addContext');
 const MockApp = require('../../nodeMock/app');
-const config = require('../config/protractor-cucumber.conf');
-
+const minimist = require('minimist');
+const argv = minimist(process.argv.slice(2));
 
 const axios = require('axios');
-
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 axios.defaults.headers.common['Content-Type'] = 'application/json';
@@ -20,7 +19,8 @@ const http = axios.create(axiosOptions);
 class BrowserUtil{
 
     async gotoHomePage(){
-        await browser.get(config.config.baseUrl);
+        const baseUrl =  argv.debug ? 'http://localhost:3000/': 'http://localhost:4200/';
+        await browser.get(baseUrl);
     }
 
     setAuthCookie(){
@@ -91,7 +91,6 @@ class BrowserUtil{
                 if (perf[i].name.includes(url)) {
                     ldDone = true;
                     await this.stepWithRetry(async () => global.scenarioData['featureToggles'] = (await http.get(perf[i].name, {})).data, 3, 'Get LD feature toggles request')
-
                     // await browser.sleep(2000);
                     reportLogger.AddMessage("LD response received");
                     //reportLogger.AddJson(global.scenarioData['featureToggles']);
@@ -128,6 +127,34 @@ class BrowserUtil{
             }
         }
     }
+
+
+    async getScenarioIdCookieValue(){
+        const scenarioId = await browser.manage().getCookie('scenarioId')
+        return scenarioId ? scenarioId.value : null;
+    }
+
+    async addTextToElementWithCssSelector(cssSelector, text,append){
+        return await browser.executeScript( () => {
+            let div = document.querySelector(arguments[0]);
+            if(div === undefined || div == null){
+                return `no element found with query selector ${arguments[0]}`
+            }
+            if (arguments[2]){
+                div.innerHTML += arguments[1];
+            }else{
+                div.innerHTML = arguments[1];
+            }
+            return "success";
+            
+        }, cssSelector, text, append);
+    }
+
+    async scrollToElement(element){
+        await browser.executeScript('arguments[0].scrollIntoView()',
+            element);
+    }
+
 }
 
 module.exports = new BrowserUtil();

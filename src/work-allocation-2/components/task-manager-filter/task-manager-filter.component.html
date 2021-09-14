@@ -1,0 +1,19 @@
+<div class="hmcts-filter-layout__filter all-work-filter">
+  <div class="govuk-form-group">
+    <label for="task_assignment_location" class="govuk-label all-work-filter-label">Task location</label>
+    <select id="task_assignment_location" name="task_assignment_location" class="govuk-select task-assignment__location form-control"
+    [(ngModel)]="location">
+      <option [ngValue]="ALL_LOCATIONS">{{ALL_LOCATIONS.locationName}}</option>
+      <option *ngFor="let loc of locations" [ngValue]="loc">{{loc.locationName}}</option>
+    </select>
+  </div>
+  <div class="govuk-form-group">
+    <label for="task_assignment_caseworker" class="govuk-label all-work-filter-label">Assignee</label>
+    <select id="task_assignment_caseworker" name="task_assignment_caseworker" class="govuk-select task-assignment__caseworker form-control"
+    [(ngModel)]="caseworker">
+      <option [ngValue]="ALL_CASEWORKERS">{{ALL_CASEWORKERS | caseworkerDisplayName}}</option>
+      <option [ngValue]="NO_CASEWORKER_ASSIGNED">{{NO_CASEWORKER_ASSIGNED | caseworkerDisplayName}}</option>
+      <option *ngFor="let cw of caseworkers" [ngValue]="cw">{{cw | caseworkerDisplayName}}</option>
+    </select>
+  </div>
+</div>

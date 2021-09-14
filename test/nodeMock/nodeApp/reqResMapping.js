@@ -30,8 +30,17 @@ module.exports = {
         },
 
         '/api/user/details': (req, res) => {
-            res.send(nodeAppMockData.getUserDetailsTemplate());
+            const roles = ['caseworker', 'caseworker-ia','caseworker-ia-iacjudge'];
+            const idamid = '44d5d2c2-7112-4bef-8d05-baaa610bf463';
+            res.send(nodeAppMockData.getUserDetailsWithRolesAndIdamId(roles, idamid));
+        },
+        '/auth/logout': (req,res) => {
+            res.header('location','/auth/login');
+            res.status(302).send();
         }
+
+        
+
     },
     post: {
     }

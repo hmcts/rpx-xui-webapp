@@ -1,0 +1,50 @@
+<main class="govuk-main-wrapper" id="main-content" role="main">
+  <h1 class="govuk-heading-l">
+    <span class="govuk-caption-l">{{verb}} task</span>
+    Check your answers
+  </h1>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+
+      <div id="reassign-confirm-hint" class="govuk-hint">
+        {{assignHintText}}
+      </div>
+
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+        <tr>
+          <th class="govuk-table__header">Case name</th>
+          <th class="govuk-table__header">Case category</th>
+          <th class="govuk-table__header">Location</th>
+          <th class="govuk-table__header">Task</th>
+          <th class="govuk-table__header">Date</th>
+          <th class="govuk-table__header">Person</th>
+          <th class="govuk-table__header"></th>
+        </tr>
+        </thead>
+
+        <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">{{ taskAndCaseworker.case_name }}</td>
+          <td class="govuk-table__cell">{{ taskAndCaseworker.case_category }}</td>
+          <td class="govuk-table__cell">{{ taskAndCaseworker.location_name }}</td>
+          <td class="govuk-table__cell">{{ taskAndCaseworker.task_title }}</td>
+          <td class="govuk-table__cell">
+            <strong class="govuk-tag govuk-tag--red">
+              {{ taskAndCaseworker.dueDate }}
+            </strong>
+          </td>
+          <td class="govuk-table__cell">{{ selectedPerson.name }}</td>
+          <td class="govuk-table__cell"><a class="govuk-link fright" href="javascript:void(0)"
+                                           id="change__link" aria-label="Change task assigment"
+                                           (click)="onChange()">Change</a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+      <button class="govuk-button govuk-!-margin-right-1" type="submit" (click)="onSubmit()">{{verb}}</button>
+      <p><a href="javascript:void(0)" (click)="onCancel()">Cancel</a></p>
+    </div>
+  </div>
+</main>

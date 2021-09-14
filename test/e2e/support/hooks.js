@@ -102,24 +102,38 @@ defineSupportCode(({ Before,After }) => {
 
     After(async function(scenario) {
         CucumberReportLog.AddMessage("scenario completed with status : " + scenario.result.status);
+        await CucumberReportLog.AddScreenshot(global.screenShotUtils);
+
         const world = this;
         try{
-            await CucumberReportLog.AddScreenshot(global.screenShotUtils);
-            if (scenario.result.status === 'failed') {
+            let browserErrorLogs = []
+            if (scenario.result.status === 'failed'){
                 let browserLog = await browser.manage().logs().get('browser');
-                let browserErrorLogs = []
+                
                 for (let browserLogCounter = 0; browserLogCounter < browserLog.length; browserLogCounter++) {
                     if (browserLog[browserLogCounter].level.value > 900) {
                         browserErrorLogs.push(browserLog[browserLogCounter]);
                     }
                 }
-                CucumberReportLog.AddJson(browserErrorLogs);
-            } else {
+            }else{
                 browser.manage().logs().get('browser');
-                await CucumberReportLog.AddMessage("Cleared browser logs after successful scenario.");
+                CucumberReportLog.AddJson(browserErrorLogs);
+                if (global.scenarioData['featureToggles']){
+                    //CucumberReportLog.AddJson(global.scenarioData['featureToggles'])
+                }
+            } 
+            
+            await CucumberReportLog.AddMessage("Cleared browser logs after successful scenario.");
+            if (global.scenarioData['featureToggles']) {
+                //CucumberReportLog.AddJson(global.scenarioData['featureToggles'])
             }
         }catch(err) {
             CucumberReportLog.AddMessage("Error in hooks with browserlogs or screenshots. See error details : " + err);
-        }        
+        }     
+        
+        await browser.executeScript('window.sessionStorage.clear();');
+        await browser.executeScript('window.localStorage.clear();');
+        await browser.manage().deleteAllCookies();
+
     });
 });

@@ -1,20 +1,29 @@
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 
-
 var screenShotUtils = require("protractor-screenshot-utils").ProtractorScreenShotUtils;
 
 chai.use(chaiAsPromised);
 const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));
 
+const MockApp = require('../../nodeMock/app');
+const browserUtil = require('../util/browserUtil');
+const customReporter = require('../../e2e/support/reportLogger');
+
+const isParallelExecution = argv.parallel ? argv.parallel=== "true" : true;
+
+const chromeOptArgs = [ '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'];
+if (!argv.head.includes('true') ){
+    chromeOptArgs.push('--headless');
+}
 const jenkinsConfig = [
 
     {
         browserName: 'chrome',
         acceptInsecureCerts: true,
         nogui: true,
-        chromeOptions: { args: ['--headless', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'] }
+        chromeOptions: { args: chromeOptArgs  }
     }
 ];
 
@@ -23,7 +32,7 @@ const localConfig = [
 
         browserName: 'chrome',
         acceptInsecureCerts: true,
-        chromeOptions: { args: ['--headless1', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote '] },
+        chromeOptions: { args: chromeOptArgs},
         proxy: {
             proxyType: 'manual',
             httpProxy: 'proxyout.reform.hmcts.net:8080',
@@ -33,6 +42,11 @@ const localConfig = [
     }
 ];
 
+if(isParallelExecution){
+    jenkinsConfig[0].shardTestFiles = true;
+    jenkinsConfig[0].maxInstances = 3;
+}
+
 const cap = (argv.local) ? localConfig : jenkinsConfig;
 
 const config = {
@@ -40,7 +54,7 @@ const config = {
     framework: 'custom',
     frameworkPath: require.resolve('protractor-cucumber-framework'),
     specs: ['../tests/features/**/*.feature'],
-    baseUrl: argv.debug ? 'http://localhost:3000/' : 'http://localhost:4200/',
+    baseUrl: argv.debug ? 'http://localhost:3000/': 'http://localhost:4200/',
     params: {
 
     },
@@ -49,6 +63,14 @@ const config = {
     getPageTimeout: 120000,
     allScriptsTimeout: 500000,
     multiCapabilities: cap,
+
+    beforeLaunch(){
+        if (isParallelExecution) {
+            MockApp.setServerPort(3001);
+            MockApp.init();
+            MockApp.startServer();
+        }    
+    },
 
     onPrepare() {
         browser.waitForAngularEnabled(false);
@@ -59,13 +81,31 @@ const config = {
         global.screenShotUtils = new screenShotUtils({
             browserInstance: browser
         });
-    },
 
+        if (isParallelExecution){
+            MockApp.getNextAvailableClientPort().then(res => {
+                MockApp.setServerPort(res.data.port);
+                MockApp.init();
+                //MockApp.startServer();
+                
+            });
+        }else{
+            MockApp.setServerPort(3001);
+            //await MockApp.startServer();
+            MockApp.setLogMessageCallback(customReporter.AddMessage);
+        }    
+        MockApp.setLogMessageCallback(customReporter.AddJson);
+
+        //Set default explict timeout default value to 10sec
+        const customWaits = require('../../e2e/support/customWaits');
+        customWaits.setDefaultWaitTime(20000);
+
+    },
     cucumberOpts: {
         strict: true,
         // format: ['node_modules/cucumber-pretty'],
         format: ['node_modules/cucumber-pretty', 'json:reports/ngIntegrationtests/json/results.json'],
-        tags: getBDDTags(),
+        tags: getBDDTags() ,
         require: [
             '../../e2e/support/timeout.js',
             '../util/cucumberHooks.js',
@@ -89,7 +129,9 @@ const config = {
                 reportName: 'XUI Manage Cases Functional Tests',
                 // openReportInBrowser: true,
                 jsonDir: 'reports/tests/ngIntegration',
-                reportPath: 'reports/tests/ngIntegration'
+                reportPath: 'reports/tests/ngIntegration',
+                displayDuration : true,
+                durationInMS : false
             }
         }
     ]
@@ -98,17 +140,21 @@ const config = {
 };
 
 function getBDDTags() {
-    const tags = [];
+    let tags = [];
     if (!process.env.TEST_URL ||
         process.env.TEST_URL.includes("pr-") ||
-        process.env.TEST_URL.includes("localhost")) {
-        tags.push("@ng");
+        process.env.TEST_URL.includes("localhost")) { 
+        if (argv.tags){
+            tags = argv.tags.split(',');
+        }else{
+            tags = ["@ng", "~@ignore"];
+        }
     }else{
         tags.push("@none"); 
     }
 
     console.log(`BDD tags ${JSON.stringify(tags)}`);
-    return argv.tags ? argv.tags.split(',') :  tags;
+    return argv.tags ? argv.tags.split(','): tags;
 }
 
 exports.config = config;

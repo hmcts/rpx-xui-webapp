@@ -2,6 +2,8 @@ var mocha = require('mocha');
 const fs = require('fs');
 
 const { conf } = require('../config/config');
+const MockApp = require('../../nodeMock/app');
+
 
 module.exports = report;
 
@@ -11,7 +13,7 @@ function report(runner) {
     let passCounter = 0;
     let failCounter = 0;
     runner.on('pass', function (test) {
-        if (test.ctx.a11yResult.issues.length === 0) {
+        if (test.ctx.a11yResult && test.ctx.a11yResult.issues.length === 0) {
             onPass(test);
         } else {
             test.state = "failed";
@@ -65,18 +67,22 @@ function generateReport(passCount, failCount, tests) {
     if (!fs.existsSync(destDir)) {
         fs.mkdirSync(destDir);
     }
-    let destReport = destDir + "Report.html"
-    let destJson = destDir + "report_output.js"
+    let destReport = `${destDir}Report_${MockApp.serverPort}.html`
+    let destJson = `${destDir}report_output_${MockApp.serverPort}.json`
 
     fs.copyFileSync(sourceReport, destReport);
 
     let htmlData = fs.readFileSync(sourceReport, 'utf8');
-    var result = 'var replacejsoncontent = ' + JSON.stringify(reportJson);
+    var result = JSON.stringify(reportJson);
     fs.writeFileSync(destJson, result);
+    htmlData = htmlData.replace('replacejsoncontent', JSON.stringify(reportJson));
+    fs.writeFileSync(destReport, htmlData);
+
     copyResources();
 
 
 }
+
 
 function getTestDetails(test) {
     return {
@@ -117,6 +123,11 @@ function consoleReport(reportjson) {
         if (test.status === "failed") {
             let a11yResult = test.a11yResult;
             console.log("\t \t Test Case : " + test.name);
+            if (a11yResult === undefined){
+                console.log("\t Test execution failed and no a11y test result returned" );
+                continue;
+            }
+            
 
             console.log("\t \t Page title : " + a11yResult.documentTitle);
             console.log("\t \t Page url : " + a11yResult.pageUrl);

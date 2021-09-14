@@ -5,7 +5,7 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Action, Store, StoreModule } from '@ngrx/store';
 import { BehaviorSubject, combineLatest, Observable, of, Subscription } from 'rxjs';
 import { AppConstants } from 'src/app/app.constants';
-import { UserDetails, UserInfo } from 'src/app/models/user-details.model';
+import { UserDetails, UserInfo } from '../../../app/models/user-details.model';
 
 import { LoggerService } from '../../services/logger/logger.service';
 import * as fromActions from '../../store';
@@ -283,13 +283,15 @@ describe('AppHeaderComponent', () => {
 
   describe('observable testing', async () => {
     const userInfo: UserInfo = { id: '1', forename: 'Test', surname: 'User', email: 'testemail', active: true, roles: ['pui-case-manager'] };
+    const roleAssignmentInfo = [];
     const userDetails: UserDetails = {
       sessionTimeout: {
         idleModalDisplayTime: 100,
         totalIdleTime: 0,
       },
       canShareCases: true,
-      userInfo
+      userInfo,
+      roleAssignmentInfo
     };
     const applicationThemes = AppConstants.APPLICATION_USER_THEMES;
     it('should allow running of combinelatest', async () => {

@@ -38,6 +38,7 @@ export * from './case-reference-field/case-reference-field.component';
 export * from './derived-icon-field/derived-icon-field.component';
 export * from './image-field/image-field.component';
 export * from './info-message/info-message.component';
+export * from './my-cases-filter/my-cases-filter.component';
 export * from './task-assignment/task-assignment.component';
 export * from './task-field/task-field.component';
 export * from './task-list-filter/task-list-filter.component';

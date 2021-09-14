@@ -7,6 +7,7 @@ import { AlertService, CaseUIToolkitModule, PipesModule } from '@hmcts/ccd-case-
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 
 import { SharedModule } from '../app/shared/shared.module';
+import { PriorityFieldComponentModule } from './components/priority-field/priority.module';
 import { WorkAllocationComponentsModule } from './components/work-allocation.components.module';
 import * as fromContainers from './containers';
 import { WorkAllocationFeatureToggleGuard } from './guards';
@@ -26,7 +27,8 @@ import { workAllocationRouting } from './work-allocation-feature.routes';
     PipesModule,
     workAllocationRouting,
     CdkTableModule,
-    ExuiCommonLibModule
+    ExuiCommonLibModule,
+    PriorityFieldComponentModule
   ],
   declarations: [...fromContainers.containers],
   providers: [

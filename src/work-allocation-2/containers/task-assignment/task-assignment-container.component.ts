@@ -1,9 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit/dist/shared/services';
 import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { AppUtils } from 'src/app/app-utils';
+import { UserInfo, UserRole } from 'src/app/models';
 
 import { ErrorMessage } from '../../../app/models';
 import { ConfigConstants } from '../../components/constants';
@@ -30,16 +33,21 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   private readonly assignTask: Subscription;
   public taskId: string;
   public rootPath: string;
+  public isJudicial: boolean;
 
   public defaultPerson: string;
+  protected userDetailsKey: string = 'userDetails';
 
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
+    private readonly sessionStorageService: SessionStorageService
   ) { }
 
   public get fields(): FieldConfig[] {
-    return this.showAssigneeColumn ? ConfigConstants.TaskActionsWithAssignee : ConfigConstants.TaskActions;
+    return this.showAssigneeColumn ?
+    (this.isJudicial ? ConfigConstants.TaskActionsWithAssigneeForJudicial : ConfigConstants.TaskActionsWithAssigneeForLegalOps) :
+    ConfigConstants.TaskActions;
   }
 
   private get returnUrl(): string {
@@ -71,6 +79,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   };
 
   public ngOnInit(): void {
+    this.isJudicial = this.isCurrentUserJudicial();
     // Get the task from the route, which will have been put there by the resolver.
     const task = this.route.snapshot.data.taskAndCaseworkers.data;
     this.tasks = [task];
@@ -85,6 +94,16 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
         this.person = person;
       }
     });
+  }
+
+  public isCurrentUserJudicial(): boolean {
+    const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
+    if (userInfoStr) {
+      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      const isJudge = AppUtils.isLegalOpsOrJudicial(userInfo.roles) === UserRole.Judicial;
+      return isJudge;
+    }
+    return false
   }
 
   public ngOnDestroy(): void {

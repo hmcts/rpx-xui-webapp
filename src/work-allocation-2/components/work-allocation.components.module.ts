@@ -9,6 +9,7 @@ import { MatAutocompleteModule, MatFormFieldModule, MatInputModule, MatNativeDat
 import * as fromComponents from '.';
 import { CaseworkerDataService, InfoMessageCommService, LocationDataService } from '../services';
 import { WorkAllocationPipesModule } from '../pipes/work-allocation.pipes.module';
+import { PriorityFieldComponentModule } from './priority-field/priority.module';
 
 // from containers
 @NgModule({
@@ -23,7 +24,8 @@ import { WorkAllocationPipesModule } from '../pipes/work-allocation.pipes.module
     MatAutocompleteModule,
     MatFormFieldModule,
     MatNativeDateModule,
-    MatInputModule
+    MatInputModule,
+    PriorityFieldComponentModule
   ],
   declarations: [
     ...fromComponents.components,

@@ -398,7 +398,7 @@ describe('TaskListComponent', () => {
     const element = fixture.debugElement.nativeElement;
     const referenceButton = element.querySelector('#sort_by_caseName');
     const categoryButton = element.querySelector('#sort_by_caseCategory');
-    const dueDateButton = element.querySelector('#sort_by_dueDate');
+    const dueDateButton = element.querySelector('#sort_by_created_date');
     referenceButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
 
@@ -422,7 +422,7 @@ describe('TaskListComponent', () => {
     dueDateButton.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     expect(component.sortEvent.emit).toHaveBeenCalled();
-    expect(component.sortEvent.emit).toHaveBeenCalledWith('dueDate');
+    expect(component.sortEvent.emit).toHaveBeenCalledWith('created_date');
   });
 
   describe('act upon deep linking', () => {

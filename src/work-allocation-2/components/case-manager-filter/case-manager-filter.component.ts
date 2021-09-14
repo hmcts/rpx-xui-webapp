@@ -1,5 +1,8 @@
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { FilterService } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
+import { filter } from 'rxjs/operators';
+import { Location } from '../../models/dtos';
 
 @Component({
   selector: 'exui-case-manager-filter',
@@ -14,22 +17,30 @@ export class CaseManagerFilterComponent implements OnInit {
   @Input() public locations: Location[] = [];
 
   public fieldsConfig: FilterConfig = {
-    persistence: 'local',
+    persistence: 'session',
+    enableDisabledButton: true,
     id: CaseManagerFilterComponent.FILTER_NAME,
     fields: [],
     cancelButtonText: 'Reset to default',
     applyButtonText: 'Apply',
-    cancelSetting: null
+    cancelSetting: {
+      id: CaseManagerFilterComponent.FILTER_NAME,
+      fields: [
+        {
+          name: 'service',
+          value: ['IA']
+        }
+      ]
+    }
   };
 
-  public fieldsSettings: FilterSetting = {
-    id: CaseManagerFilterComponent.FILTER_NAME,
-    fields: [],
-  };
+  constructor(private readonly filterService: FilterService) {
+
+  }
 
   private static initServiceFilter(): FilterFieldConfig {
     return {
-      name: CaseManagerFilterComponent.FILTER_NAME,
+      name: 'service',
       options: [
         {
           key: 'IA',
@@ -37,7 +48,7 @@ export class CaseManagerFilterComponent implements OnInit {
         }
       ],
       minSelected: 1,
-      maxSelected: null,
+      maxSelected: 1,
       minSelectedError: 'You must select a service',
       maxSelectedError: null,
       title: 'Service',
@@ -45,17 +56,15 @@ export class CaseManagerFilterComponent implements OnInit {
     };
   }
 
-  private static initCaseLocationFilter(): FilterFieldConfig {
+  private static initCaseLocationFilter(locations: Location[]): FilterFieldConfig {
+    if (!locations) {
+      locations = [];
+    }
     return {
-      name: CaseManagerFilterComponent.FILTER_NAME,
-      options: [
-        {
-          key: 'Taylor House',
-          label: 'Taylor House'
-        }
-      ],
+      name: 'location',
+      options: locations.map(loc => ({key: loc.id, label: loc.locationName})),
       minSelected: 1,
-      maxSelected: null,
+      maxSelected: 1,
       minSelectedError: 'You must select a location',
       maxSelectedError: null,
       title: 'Case Location',
@@ -65,7 +74,7 @@ export class CaseManagerFilterComponent implements OnInit {
 
   private static initRoleTypeFilter(): FilterFieldConfig {
     return {
-      name: CaseManagerFilterComponent.FILTER_NAME,
+      name: 'role',
       options: [
         {
           key: 'Judicial',
@@ -74,10 +83,14 @@ export class CaseManagerFilterComponent implements OnInit {
         {
           key: 'Legal Ops',
           label: 'Legal Ops'
+        },
+        {
+          key: 'Admin',
+          label: 'Admin'
         }
       ],
       minSelected: 1,
-      maxSelected: null,
+      maxSelected: 1,
       minSelectedError: 'You must select a role type',
       maxSelectedError: null,
       title: 'Role type',
@@ -87,7 +100,7 @@ export class CaseManagerFilterComponent implements OnInit {
 
   private static initPersonFilter(): FilterFieldConfig {
     return {
-      name: CaseManagerFilterComponent.FILTER_NAME,
+      name: 'selectPerson',
       options: [
         {
           key: 'All',
@@ -99,20 +112,40 @@ export class CaseManagerFilterComponent implements OnInit {
         }
       ],
       minSelected: 1,
-      maxSelected: null,
+      maxSelected: 1,
       minSelectedError: 'You must select a person',
       maxSelectedError: null,
-      title: 'Role type',
+      title: 'Person',
       type: 'radio'
+    };
+  }
+
+  private static findPersonFilter(): FilterFieldConfig {
+    return {
+      name: 'person',
+      options: [],
+      minSelected: 0,
+      maxSelected: 0,
+      minSelectedError: 'You must select a person',
+      maxSelectedError: null,
+      showCondition: 'selectPerson=Specific person',
+      type: 'find-person'
     };
   }
 
   public ngOnInit(): void {
     this.fieldsConfig.fields = [
       CaseManagerFilterComponent.initServiceFilter(),
-      CaseManagerFilterComponent.initCaseLocationFilter(),
+      CaseManagerFilterComponent.initCaseLocationFilter(this.locations),
       CaseManagerFilterComponent.initRoleTypeFilter(),
-      CaseManagerFilterComponent.initPersonFilter()
+      CaseManagerFilterComponent.initPersonFilter(),
+      CaseManagerFilterComponent.findPersonFilter()
     ];
+    this.filterService.getStream(CaseManagerFilterComponent.FILTER_NAME)
+      .pipe(
+        filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
+      ).subscribe((f: FilterSetting) => {
+      console.log(f);
+    });
   }
 }

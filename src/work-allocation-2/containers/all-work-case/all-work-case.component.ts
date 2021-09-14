@@ -16,21 +16,19 @@ import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-cas
   styleUrls: ['all-work-case.component.scss']
 })
 export class AllWorkCaseComponent extends WorkCaseListWrapperComponent {
+  public sortedBy: SortField = {
+    fieldName: '',
+    order: SortOrder.NONE
+  };
+  public pagination: PaginationParameter = {
+    page_number: 1,
+    page_size: 25
+  };
   private selectedJurisdiction: any = 'IA';
   private selectedLocation: Location = {
     id: '231596',
     locationName: 'Taylor House',
     services: [],
-  };
-
-  public sortedBy: SortField = {
-    fieldName: '',
-    order: SortOrder.NONE
-  };
-
-  public pagination: PaginationParameter = {
-    page_number: 1,
-    page_size: 25
   };
 
   public get emptyMessage(): string {

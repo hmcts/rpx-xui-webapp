@@ -1,15 +1,17 @@
-<exui-case-manager-filter (selectionChanged)="onSelectionChanged($event)"></exui-case-manager-filter>
-<div class="hmcts-filter-layout__content exui-task-list">
-  <exui-work-case-list
-    [caseServiceConfig]="caseServiceConfig"
-    [cases]="cases"
-    [fields]="fields"
-    [casesTotal]="casesTotal"
-    [pagination]="pagination"
-    [sortedBy]="sortedBy"
-    [emptyMessage]="emptyMessage"
-    (paginationEvent)="onPaginationEvent($event)"
-    (sortEvent)="onSortHandler($event)"
-    (actionEvent)="onActionHandler($event)">
-  </exui-work-case-list>
-</div>
+<ng-container *ngIf="locations$ | async as locations">
+  <exui-case-manager-filter [locations]="locations" (selectionChanged)="onSelectionChanged($event)"></exui-case-manager-filter>
+  <div class="hmcts-filter-layout__content exui-task-list">
+    <exui-work-case-list
+      [caseServiceConfig]="caseServiceConfig"
+      [cases]="cases"
+      [fields]="fields"
+      [casesTotal]="casesTotal"
+      [pagination]="pagination"
+      [sortedBy]="sortedBy"
+      [emptyMessage]="emptyMessage"
+      (paginationEvent)="onPaginationEvent($event)"
+      (sortEvent)="onSortHandler($event)"
+      (actionEvent)="onActionHandler($event)">
+    </exui-work-case-list>
+  </div>
+</ng-container>

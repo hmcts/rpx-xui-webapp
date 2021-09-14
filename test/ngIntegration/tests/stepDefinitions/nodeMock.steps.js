@@ -66,7 +66,7 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
 
     Given('I set MOCK request {string} response log to report', async function (url) {
         MockApp.addIntercept(url, (req, res, next) => { 
-        
+            CucumberReporter.AddJson(req.body)
             let send = res.send;
             res.send = function (body) {
                 CucumberReporter.AddMessage('Intercept response or api ' + url);
@@ -122,22 +122,28 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     Given('I set MOCK find person response for jurisdictions', async function(datatable){
         const personsConfigHashes = datatable.hashes();
 
+        const allPersons = [];
+        for (let i = 0; i < personsConfigHashes.length; i++) {
+            const inputperson = personsConfigHashes[i];
+            const person = workAllocationDataModel.getFindPersonObj();
+
+            for (const key of Object.keys(inputperson)){
+                person[key] = inputperson[key];
+            }
+
+           
+            allPersons.push(person);
+            
+        }
+
         MockApp.onPost('/workallocation2/findPerson', (req,res) => {
             const inputJurisdiction = req.body.searchOptions.jurisdiction;
             const filterdUsersForJurisdiction = [];
-            for (let i = 0; i < personsConfigHashes.length; i++){
-                const inputperson = personsConfigHashes[i];
-                // const inputJurisdiction = parseInt(inputperson.jurisdiction);
-                if (inputJurisdiction === parseInt(inputperson.jurisdiction)){
-                    const person = workAllocationDataModel.getFindPersonObj();
-
-                    person['domain'] = parseInt(inputperson['jurisdiction']);
-                    person['id'] = inputperson['id'];
-                    person['email'] = inputperson['email'];
-                    person['name'] = inputperson['name'];
-                    filterdUsersForJurisdiction.push(person);
-                }
-            } 
+            for (const p of allPersons){
+                if (p.domain === inputJurisdiction){
+                    filterdUsersForJurisdiction.push(p);
+                }  
+            }
             res.send(filterdUsersForJurisdiction);
         });
 

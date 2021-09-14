@@ -1,6 +1,6 @@
 
 const reassignTaskWorkFlow = require('../workAllocation/reassignTaskWorkflow');
-const reallocateWorkflowPage = require('../workAllocation/allocateRoleWorkFlow');
+const reallocateWorkflowPage = require('../workAllocation/workFlow');
 const BrowserWaits = require('../../../support/customWaits');
 const reportLogger = require('../../../support/reportLogger');
 

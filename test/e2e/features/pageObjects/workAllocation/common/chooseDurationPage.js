@@ -1,5 +1,5 @@
 
-
+const BrowserWaits = require('../../../../support/customWaits');
 class ChooseDuration{
 
     constructor(parent){
@@ -10,6 +10,8 @@ class ChooseDuration{
         this.errorMessage = $('#error-message');
         this.radioOptions = this.container.$$(".govuk-radios");
 
+        this.anotherPeriodValidationIndicator = $('exui-choose-duration #conditional-contact-3.form-group-error');
+
     }
 
 
@@ -19,6 +21,7 @@ class ChooseDuration{
             return await this.container.isDisplayed();
         }
         catch (err) {
+            console.log(err);
             return false;
         }
     }
@@ -83,33 +86,53 @@ class ChooseDuration{
             return await dateInput.isPresent() && await dateInput.isDisplayed();
     }
 
-    async enterDayInDateInputWithLabel(label){
-        const dateInput = this.getDateInputFieldWithLabel(label);
-        const dayField = this.getFieldFromDatInput(dateInput,'Day');
+    async enterDayInDateInputWithLabel(label,val){
+        const dayField = this.getFieldFromDatInput(label,'Day');
+        await dayField.clear();
+        await dayField.sendKeys(val);
     }
 
-    async enterMonthInDateInputWithLabel(label) {
-        const dateInput = this.getDateInputFieldWithLabel(label);
-        const dayField = this.getFieldFromDatInput(dateInput, 'Month');
+    async enterMonthInDateInputWithLabel(label,val) {
+        const monthField = this.getFieldFromDatInput(label, 'Month');
+        await monthField.clear()
+        await monthField.sendKeys(val);
     }
 
-    async enterYearInDateInputWithLabel(label) {
-        const dateInput = this.getDateInputFieldWithLabel(label);
-        const dayField = this.getFieldFromDatInput(dateInput, 'Year');
+    async enterYearInDateInputWithLabel(label,val) { 
+        const yearField = this.getFieldFromDatInput(label, 'Year');
+        await yearField.clear();
+        await yearField.sendKeys(val);
     }
 
-    async isDateInputWithLabelDisplayed(){
+    async isDateInputWithLabelDisplayed(label){
         const dateInput = this.getDateInputFieldWithLabel(label);
         return await dateInput.isPresent() && dateInput.isDisplayed();
     }
 
-    getFieldFromDatInput(dateInputLocator,fieldLabel){
-        return dateInputLocator.element(by.xpath(`//label[contains(text() ,'${fieldLabel}')]/parent::div[contains(@class,'form-group')]//input`));
+    async isValidationErrorDisplayedForDateInput(label){
+        const errorMessageElement = this.getDateInputErrorMessageElement(label);
+        const errorMessage = await errorMessageElement.getText()
+        return errorMessage !== '';
+    }
+
+    async getAnotherPeriodValidationMessageForField(label) {
+        const errorMessageElement = this.getDateInputErrorMessageElement(label);
+        return errorMessageElement.getText();
+    }
+
+    getDateInputErrorMessageElement(forFieldWithLabel) {
+        return element(by.xpath(`//div[contains(@class,'govuk-radios__conditional')]//legend[contains(text(),'${forFieldWithLabel}')]/parent::fieldset//span[contains(@class ,'govuk-error-message')]`));
+    }
+
+    getFieldFromDatInput(forFieldWithLabel,fieldLabel){
+        return element(by.xpath(`//div[contains(@class,'govuk-radios__conditional')]//legend[contains(text(),'${forFieldWithLabel}')]/parent::fieldset//label[contains(text() ,'${fieldLabel}')]/following-sibling::input`));
     }
 
     getDateInputFieldWithLabel(label){
         return this.container.element(by.xpath(`//div[contains(@class,'govuk-radios__conditional')]//legend[contains(text(),'${label}')]/parent::fieldset`));
     }
+
+
 
 
 

@@ -1,3 +1,5 @@
+const nodeAppDataModel = require('../../dataModels/nodeApp');
+
 class NodeAppMockData {
 
     getConfigurationValue(configurationKey) {
@@ -5,13 +7,13 @@ class NodeAppMockData {
     }
 
     getUserDetailsWithRoles(roles) {
-        const userDetails = this.getUserDetailsTemplate();
+        const userDetails = nodeAppDataModel.getUserDetails_oidc();
         userDetails.userInfo.roles = roles;
         return userDetails;
     }
 
     getUserDetailsWithRolesAndIdamId(roles,idamId) {
-        const userDetails = this.getUserDetailsTemplate();
+        const userDetails = nodeAppDataModel.getUserDetails_oidc();
         userDetails.userInfo.roles = roles;
         userDetails.userInfo.id = idamId;
         return userDetails;

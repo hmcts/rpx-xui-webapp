@@ -244,6 +244,34 @@ class WorkAllocationMockData {
 
     }
 
+    getCaseRoles(roles){
+        const caseRolesRes = [];
+        for(const role of roles){
+            const caseRoleObj = WorkAllocationDataModels.getCaseRole();
+
+            for (let key of Object.keys(role)){
+                caseRoleObj[key] = role[key];
+            }
+            
+            caseRolesRes.push(caseRoleObj);
+        }
+        return caseRolesRes;
+    }
+
+    getCaseExclusions(exclusions) {
+        const caseExlusionsRes = [];
+        for (const exclusion of exclusions) {
+            const caseExclusionObj = WorkAllocationDataModels.getCaseRole();
+
+            for (let key of Object.keys(exclusion)) {
+                caseExclusionObj[key] = exclusion[key];
+            }
+
+            caseExlusionsRes.push(caseExclusionObj);
+        }
+        return caseExlusionsRes;
+    }
+
 }
 
 

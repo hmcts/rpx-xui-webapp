@@ -44,7 +44,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   }
 
   public get fields(): FieldConfig[] {
-    return ConfigConstants.AllWorkTasks;
+    return this.isCurrentUserJudicial() ? ConfigConstants.AllWorkTasksForJudicial : ConfigConstants.AllWorkTasksForLegalOps;
   }
 
   public loadCaseWorkersAndLocations() {

@@ -11,15 +11,17 @@ class AllocateRoleWorkFlow{
 
     constructor(){
       
-        this.workFlowContainer = new WorkFlowContainer($('exui-allocate-role-navigation'));
+        this.workFlowContainer = new WorkFlowContainer();
 
         this.chooseRolesPage = new ChooseRadioOptionComponent(this.workFlowContainer.container);
         this.chooseHowToAllocateRolePage = new ChooseRadioOptionComponent(this.workFlowContainer.container.$('exui-choose-allocate-to'));
         this.findPersonPage = new FindPersonComponent(this.workFlowContainer.container);
-        this.durationOfRolePage = new ChooseDuration(this.workFlowContainer.container.$('exui-choose-duration'));
+        this.durationOfRolePage = new ChooseDuration(this.workFlowContainer.container);
         this.checkYourAnswers = checkYourAnswersPage;
 
     }
+
+    
 
 
 }

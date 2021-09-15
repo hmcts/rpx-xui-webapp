@@ -35,13 +35,13 @@ class CaseDetailsPage{
     async isTabWithLabelSelected(tabLabel){
         await this.waitForTabHeader();
         const tabElement = this.getTabElementWithLabel(tabLabel);
-        return (await tabElement.getAtribute('class')).includes('mat-tab-label-active');
+        return (await tabElement.getAttribute('class')).includes('mat-tab-label-active');
     }
 
     async clickTabWithLabel(tabLabel){
         await this.waitForTabHeader();
         const tabElement = this.getTabElementWithLabel(tabLabel);
-        return await tabElement.click();
+        await tabElement.click();
     }
 
     getTabElementWithLabel(tabLabel){

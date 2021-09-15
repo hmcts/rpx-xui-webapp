@@ -16,7 +16,7 @@ class WrapperComponent {
   @ViewChild(RemoveRoleComponent) public appComponentRef: RemoveRoleComponent;
 }
 
-fdescribe('RemoveRoleComponent', () => {
+describe('RemoveRoleComponent', () => {
   let component: RemoveRoleComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;

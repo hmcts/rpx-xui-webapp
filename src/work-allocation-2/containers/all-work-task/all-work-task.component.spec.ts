@@ -205,7 +205,7 @@ describe('AllWorkTaskComponent', () => {
     }));
 
 
-    fit(`onPaginationEvent with error response code ${scr.statusCode}`, () => {
+    it(`onPaginationEvent with error response code ${scr.statusCode}`, () => {
       const navigateSpy = spyOn(router, 'navigate');
       component.getSearchTaskRequestPagination();
       const searchRequest = component.onPaginationEvent(1);

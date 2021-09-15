@@ -1,4 +1,4 @@
-@ng 
+# Tested covered in unit tests
 Feature: WA Release 2: My work -  Available tasks - Negative Scenarios
 
     Background: Mock and browser setup

@@ -30,7 +30,7 @@ Feature: WA Release 2: Allocate Role Legal ops
         Then I see case details tab label "Roles and access" is displayed is "true"
         When I click tab with label "Roles and access" in case details page
         Then I see Roles and access page is displayed
-        Then I validate add link for role category "LEGAL_OPERATIONS" is displayed in Roles and access page
+        Then I validate add link for role category "Legal Ops" is displayed in Roles and access page
         When I click add link for role category  "LEGAL_OPERATIONS" in case roles and access page
 
         Then I see Allocate role work flow page "Choose a role" with caption "Allocate a legal ops role" is displayed
@@ -77,7 +77,7 @@ Feature: WA Release 2: Allocate Role Legal ops
         Then I see case details tab label "Roles and access" is displayed is "true"
         When I click tab with label "Roles and access" in case details page
         Then I see Roles and access page is displayed
-        Then I validate add link for role category "LEGAL_OPERATIONS" is displayed in Roles and access page
+        Then I validate add link for role category "Legal Ops" is displayed in Roles and access page
         When I click add link for role category  "LEGAL_OPERATIONS" in case roles and access page
 
         Then I see Allocate role work flow page "Choose a role" with caption "Allocate a legal ops role" is displayed
@@ -132,7 +132,7 @@ Feature: WA Release 2: Allocate Role Legal ops
         Then I see case details tab label "Roles and access" is displayed is "true"
         When I click tab with label "Roles and access" in case details page
         Then I see Roles and access page is displayed
-        Then I validate add link for role category "LEGAL_OPERATIONS" is displayed in Roles and access page
+        Then I validate add link for role category "Legal Ops" is displayed in Roles and access page
         When I click add link for role category  "LEGAL_OPERATIONS" in case roles and access page
 
         Then I see Allocate role work flow page "Choose a role" with caption "Allocate a legal ops role" is displayed
@@ -184,7 +184,7 @@ Feature: WA Release 2: Allocate Role Legal ops
         Then I see case details tab label "Roles and access" is displayed is "true"
         When I click tab with label "Roles and access" in case details page
         Then I see Roles and access page is displayed
-        Then I validate add link for role category "LEGAL_OPERATIONS" is displayed in Roles and access page
+        Then I validate add link for role category "Legal Ops" is displayed in Roles and access page
         When I click add link for role category  "LEGAL_OPERATIONS" in case roles and access page
 
         Then I see Allocate role work flow page "Choose a role" with caption "Allocate a legal ops role" is displayed
@@ -228,7 +228,7 @@ Feature: WA Release 2: Allocate Role Legal ops
         Then I see case details tab label "Roles and access" is displayed is "true"
         When I click tab with label "Roles and access" in case details page
         Then I see Roles and access page is displayed
-        Then I validate add link for role category "LEGAL_OPERATIONS" is displayed in Roles and access page
+        Then I validate add link for role category "Legal Ops" is displayed in Roles and access page
         When I click add link for role category  "LEGAL_OPERATIONS" in case roles and access page
 
         Then I see Allocate role work flow page "Choose a role" with caption "Allocate a legal ops role" is displayed

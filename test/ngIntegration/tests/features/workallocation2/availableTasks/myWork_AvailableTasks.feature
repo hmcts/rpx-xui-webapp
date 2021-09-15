@@ -52,7 +52,7 @@ Feature: WA Release 2: My work -  Available tasks
         Examples:
             | UserIdentifier     | UserType   | Roles                                              |
             | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
+            # | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
 
     Scenario: Available Tasks sort column persist in session with Caseworker user 
@@ -68,6 +68,15 @@ Feature: WA Release 2: My work -  Available tasks
         Given I navigate to home page
         When I navigate to My work sub navigation tab "Available tasks"
         Then I validate tasks count in page 25
+        Then I validate task list table columns displayed for user "Caseworker"
+            | ColumnHeader  | Caseworker | Judge |
+            | Case name     | Yes        | Yes   |
+            | Case category | Yes        | Yes   |
+            | Location      | Yes        | Yes   |
+            | Task          | Yes        | Yes   |
+            | Task created  | No         | Yes   |
+            | Due date      | Yes        | No    |
+            | Priority      | Yes        | No    |
         Then I validate task table pagination controls, is displayed state is "true"
         Then I validate task list page results text displayed as "Displaying 1 - 25 out of 140 tasks"
 

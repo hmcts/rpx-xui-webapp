@@ -41,6 +41,19 @@ class CheckYourChangesAnswersTable {
         return colIndex;
     }
 
+    async getHeaders() {
+        await this.waitForTableRows();
+        const headers = [];
+        const colsCount = await this.tableHeaders.count();
+        for (let i = 0; i < colsCount; i++) {
+            const headerColElement = await this.tableHeaders.get(i);
+            const headerText = await headerColElement.getText();
+            headers.push(headerText);
+           
+        }
+        return headers;
+    }
+
 
     async getColumnElementAtRow(rowIndex, header) {
         await this.waitForTableRows();

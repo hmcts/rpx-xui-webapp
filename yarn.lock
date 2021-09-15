@@ -160,6 +160,13 @@
   dependencies:
     tslib "^2.0.0"
 
+"@angular-material-components/moment-adapter@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@angular-material-components/moment-adapter/-/moment-adapter-5.0.0.tgz#e277b82a4a3554260cd274a1862edf64cc186cac"
+  integrity sha512-/9+8b4hpe8GwlgbuXAckDg5ZKms6yDWRKQcyXYuNKC+8Ya6M0M5NHYz3d4YXjJ73xOGURr73NlqZzYsknjYkUQ==
+  dependencies:
+    tslib "^2.0.0"
+
 "@angular/animations@^7.2.13":
   version "7.2.16"
   resolved "https://registry.yarnpkg.com/@angular/animations/-/animations-7.2.16.tgz#6e3f43df292bc53c3a526dabfd8025b3cd03b070"
@@ -443,13 +450,13 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ccd-case-ui-toolkit@4.3.2-EUI-4424-date-pickers-working-as-expected-r3":
-  version "4.3.2-EUI-4424-date-pickers-working-as-expected-r3"
-  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.3.2-EUI-4424-date-pickers-working-as-expected-r3.tgz#a787a87d8eeb9b0c1c8b4041d8836c48a6fbe1fa"
-  integrity sha512-tvTzMzjXUcx5Ljjox0vQOIXXS5w4fvDwgPY1BZpRqYQttdVZ8vyFwJTHDdVd3USs1IiNYenNhwLau5bEI/EuBg==
+"@hmcts/ccd-case-ui-toolkit@4.3.2-EUI-4424-date-pickers-working-as-expected-r4":
+  version "4.3.2-EUI-4424-date-pickers-working-as-expected-r4"
+  resolved "https://registry.yarnpkg.com/@hmcts/ccd-case-ui-toolkit/-/ccd-case-ui-toolkit-4.3.2-EUI-4424-date-pickers-working-as-expected-r4.tgz#2215fc7e3e06dfb52088a420787812fd2987863e"
+  integrity sha512-Ywo6DmQ4XGsFbuVLqCLT7Qafy9WMqHf7WmOgmoQ1XbAHgeFXDKkb94tUUfCEzA4EKKMRrjIwpXL8X9lK9QqcDQ==
   dependencies:
     "@angular-material-components/datetime-picker" "^2.0.4"
-    "@angular-material-components/moment-adapter" "^4.0.1"
+    "@angular-material-components/moment-adapter" "^5.0.0"
     "@angular/cli" "^6.0.8"
     "@angular/compiler-cli" "~7.0.3"
     "@hmcts/ccpay-web-component" "3.0.3"

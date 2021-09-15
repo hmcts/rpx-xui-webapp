@@ -24,6 +24,13 @@ describe('exclusions.exclusionService', () => {
     type: 'Other',
     userType: 'Judicial',
   };
+  const exampleRoleExclusion2 = {
+    added: Date.UTC(2021, 7, 10),
+    name: 'Judge test',
+    notes: 'this case been remitted from Upper Tribunal and required different judge',
+    type: 'Other',
+    userType: 'Judicial',
+  };
   const confirmRoleExclusion = {
     added: Date.UTC(2021, 7, 1),
     name: 'Judge ABCDE',
@@ -64,7 +71,7 @@ describe('exclusions.exclusionService', () => {
       await getUserExclusions(req, response, next);
 
       // Should have received the HTTP response. The get simply returns the data.
-      expect(response.send).to.have.been.calledWith(sinon.match([exampleRoleExclusion]));
+      expect(response.send).to.have.been.calledWith(sinon.match([exampleRoleExclusion, exampleRoleExclusion2]));
 
       const nonJudgeReq = mockReq({
         session: {

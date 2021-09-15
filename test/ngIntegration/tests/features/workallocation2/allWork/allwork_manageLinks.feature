@@ -18,7 +18,7 @@ Feature: WA Release 2: All work - Manage links
         Given I set MOCK task details for WA release2
             | case_name        | case_category      | location_name |
             | Allwork test scr | auto test category | London QA lab |
-@test
+
     Scenario Outline:  Task Manage links for "<UserType>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>"
         # Given I set MOCK request "/workallocation2/taskWithPagination" response log to report

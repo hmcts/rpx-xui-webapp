@@ -54,8 +54,8 @@ describe('nodeApp endpoint', () => {
     const expectedUserDetailsObj_oidc = nodeAppDataModels.getUserDetails_oidc();
     expect(actualLocationObjKeys).to.have.all.keys(Object.keys(expectedUserDetailsObj_oidc));
 
-    if (actualLocationObjKeys.locationInfo.length > 0){
-      expect(actualLocationObjKeys.locationInfo[0]).to.have.all.keys(Object.keys(expectedUserDetailsObj_oidc.locationInfo[0]));
+    if (actualLocationObjKeys.roleAssignmentInfo.length > 0){
+      expect(actualLocationObjKeys.roleAssignmentInfo[0]).to.have.all.keys(Object.keys(expectedUserDetailsObj_oidc.roleAssignmentInfo[0]));
     }
 
     expect(actualLocationObjKeys.userInfo.roles).to.be.an('array');
@@ -82,7 +82,7 @@ describe('nodeApp endpoint', () => {
     const expectedUserDetailsObj_oidc = nodeAppDataModels.getUserDetails_oidc();
     expect(actualLocationObjKeys).to.have.all.keys(Object.keys(expectedUserDetailsObj_oidc));
 
-    // expect(actualLocationObjKeys.locationInfo[0].isCaseAllocator).to.be.true;
+    expect(actualLocationObjKeys.roleAssignmentInfo[0].isCaseAllocator).to.be.true;
 
   });
 

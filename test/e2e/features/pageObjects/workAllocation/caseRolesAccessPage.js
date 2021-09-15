@@ -1,17 +1,31 @@
 
 const CaseRolesTable = require("../common/caseRolesTable");
-
+const BrowserWaits = require('../../../support/customWaits');
 class CaseRolesAccessPage{
     constructor(){
-        this.legalOpsRolesAccessTable = new CaseRolesTable($('exui-role-'));
-        this.addLegalOpsRoleLink = element(by.xpath("//<place holder>/p/a[contains(text(),'Add')]"));
+        this.pageContainer = $('exui-roles-and-access-container');
+        this.legalOpsRolesAccessTable = new CaseRolesTable(`//h2[contains(text(),'Legal Ops')]/following-sibling::exui-case-roles-table[position()=1]`);
+        this.addLegalOpsRoleLink = element(by.xpath(`//h2[contains(text(),'Legal Ops')]/following-sibling::p[position()=1]/a[contains(text(),'Allocate a role')]`));
 
-        this.judicialRolesAccessTable = new CaseRolesTable($('exui-role-'));
-        this.addJudicialRoleLink = element(by.xpath("//<place holder>/p/a[contains(text(),'Add')]"));
+        this.judicialRolesAccessTable = new CaseRolesTable(`//h2[contains(text(),'Judiciary')]/following-sibling::exui-case-roles-table[position()=1]`);
+        this.addJudicialRoleLink = element(by.xpath(`//h2[contains(text(),'Judiciary')]/following-sibling::p[position()=1]/a[contains(text(),'Allocate a role')]`));
 
-        this.exclusionTable = new CaseRolesTable($('exui-role-exclusions'));
-        this.addExcluusionLink = element(by.xpath("//exui-role-exclusions/p/a[contains(text(),'Add')]"));
+        this.exclusionTable = new CaseRolesTable(`//h2[contains(text(),'Exclusions')]/following-sibling::exui-exclusions-table[position()=1]`);
+        this.addExcluusionLink = element(by.xpath(`//h2[contains(text(),'Exclusions')]/following-sibling::p[position()=1]/a[contains(text(),'Add')]`));
 
+    }
+
+    async waitForPage(){
+        await BrowserWaits.waitForElement(this.pageContainer);
+    }
+
+    async isPageDisplayed(){
+        try{
+            await this.waitForPage();
+            return true;
+        }catch(err){
+            return false;
+        }
     }
 
     getTableForRoleACcessType(type){
@@ -35,22 +49,60 @@ class CaseRolesAccessPage{
         return await table.isTableHeaderDisplayed(headerText); 
     }
 
-    async getTableColumnValueForAccessRoleType(rolesFor,headerText) {
+    async getTableColumnValueForAccessRoleType(rolesFor,atRow,headerText) {
         const table = this.getTableForRoleACcessType(rolesFor);
-        return await table.getColumnValue(headerText);
+        return await table.getColumnValueAtRow(atRow,headerText);
     }
 
 
-    async isTableColumnLinkPresentForAccessRoleType(rolesFor,linktext) {
+    async isTableColumnLinkPresentForAccessRoleType(rolesFor, atRow,linktext) {
         const table = this.getTableForRoleACcessType(rolesFor);
-        return await table.isLinkWithTextPresent(linktext);
+        return await table.isLinkWithTextPresent(atRow, linktext);
     }
 
-    async clickTableColumnLinkForAccessRoleType(linktext) {
+    async clickTableColumnLinkForAccessRoleType(rolesFor,atRow,linktext) {
         const table = this.getTableForRoleACcessType(rolesFor);
-        return await table.clickLinkWithText(linktext);
+        return table.clickLinkWithText(atRow,linktext);
     }
 
+    async isAllocateRoleLinkPresentForCategory(rolecategory){
+        const isPresent = await this.getAllocateRoleLinkForCategory(rolecategory).isPresent();
+        if (!isPresent){
+            return false;
+        }
+        return this.getAllocateRoleLinkForCategory(rolecategory).isDisplayed();
+    }
+
+    async clickAllocateRoleLinkForCategory(rolecategory){
+        await this.getAllocateRoleLinkForCategory(rolecategory).click();
+    }
+
+    async isExclusionAddLinkPresent(){
+        return this.getExclusionAddLink().isPresent();
+    }
+
+    async clickAddExclusionLink(){
+        await this.getExclusionAddLink().click();
+    }
+
+    getAllocateRoleLinkForCategory(rolecategory){
+        let allLink = null;
+        const normalisedRoleCategory = rolecategory.toLowerCase().split(" ").join("");
+        if (normalisedRoleCategory.includes('legalops')) {
+            allLink = this.addLegalOpsRoleLink;
+        } else if (normalisedRoleCategory.includes('jud')) {
+            allLink = this.addJudicialRoleLink;
+        } else if (normalisedRoleCategory.includes('exclusion')) {
+            allLink = this.addExcluusionLink;
+        } else {
+            throw new Error(`${rolecategory} is not recognized as valid role type`);
+        }
+        return allLink;
+    }
+
+    getExclusionAddLink() {
+        return $(`exui-roles-and-access p a[href*="add-exclusion"]`);
+    }
 
 }
 

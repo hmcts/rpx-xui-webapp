@@ -223,10 +223,10 @@ describe('CaseTaskComponent', () => {
 
     task.assigneeName = null;
     name = component.getAssigneeName(task);
+    expect(name).toEqual('Unassigned');
   });
 
   it('should replace the task variable with the case id', () => {
-
     const task = {
       actions: [],
       caseCategory: '',
@@ -249,5 +249,13 @@ describe('CaseTaskComponent', () => {
     };
     const result = CaseTaskComponent.replaceVariablesWithRealValues(task);
     expect(result).toBe('[Link the appeal](/cases/case-details/1620409659381330/trigger/linkAppeal/linkAppealreasonForLinkAppealPageId)');
+  });
+  it('getDueDateTitle should be Task created', () => {
+      component.isUserJudidical = true;
+      expect(component.getDueDateTitle()).toEqual('Task created');
+  });
+  it('getDueDateTitle should be Due date', () => {
+      component.isUserJudidical = false;
+      expect(component.getDueDateTitle()).toEqual('Due date');
   });
 });

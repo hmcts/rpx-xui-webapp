@@ -28,9 +28,10 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     });
 
     When('I click continue in add exclusion work flow page {string}', async function (workFlowPage) {
-        let workFlowPageObject = getWorkflowPageObject(workFlowPage);
-        await workFlowPageObject.clickContinueButton();
+        await exclusionWorkFlow.workFlowContainer.clickContinue();
     });
+
+
 
     When('I select Choose the person\'s role option {string} in add exclusion work flow', async function (excludeRoleOption) {
         await exclusionWorkFlow.choosePersonRole.selectRadioOption(excludeRoleOption);
@@ -40,6 +41,32 @@ defineSupportCode(function ({ And, But, Given, Then, When }) {
     When('I enter description {string} in add exclusion Describe the exclusion page', async function (exclusionDescription) {
         await exclusionWorkFlow.describeExclusion.enterExclusionDescription(exclusionDescription);
     });
+
+    When('I search with text {string} in Find the person page of exclusion work flow', async function (searchText) {
+        await exclusionWorkFlow.findPersonPage.inputSearchTerm(searchText);
+    });
+
+    Then('I see following options returned to Select in Find person search result of exclusions work flow', async function (resultsDatatable) {
+        const dataTablehashes = resultsDatatable.hashes();
+        let retryCounter = 0;
+        await BrowserWaits.retryWithActionCallback(async () => {
+            await BrowserWaits.waitForSeconds(retryCounter * 2);
+            retryCounter++;
+            for (let i = 0; i < dataTablehashes.length; i++) {
+                const expectedPerson = dataTablehashes[i]['Person'];
+                const personExpectedIsReturned = await exclusionWorkFlow.findPersonPage.isPersonReturned(expectedPerson);
+                expect(personExpectedIsReturned, `${expectedPerson} is expected to retun in find person search is not retuned.`).to.be.true;
+            }
+        });
+
+    });
+
+
+    When('I select Person {string} from Find person search result in exclusions work flow', async function (selectPerson) {
+        await exclusionWorkFlow.findPersonPage.selectPerson(selectPerson);
+    });
+
+
 
     function getWorkflowPageObject(workFlowPage) {
         let workFlowPageObject = null;

@@ -13,6 +13,13 @@ export async function getUserExclusions(req: EnhancedRequest, res: Response, nex
         type: 'Other',
         userType: 'Judicial',
       },
+      {
+        added: Date.UTC(2021, 7, 10),
+        name: 'Judge test',
+        notes: 'this case been remitted from Upper Tribunal and required different judge',
+        type: 'Other',
+        userType: 'Judicial',
+      },
     ];
   } else {
     exclusions = [];

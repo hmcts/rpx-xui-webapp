@@ -132,6 +132,7 @@ class BrowserWaits{
         let isSuccess = false;
         let error = null;
         while (retryCounter < 3) {
+            await this.waitForSeconds(retryCounter);
             try {
                 const retVal = await callback();
                 isSuccess = true;

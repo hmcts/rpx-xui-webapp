@@ -54,7 +54,7 @@ class MockApp{
     }
 
     logMessage(message){
-        const msg = this.serverPort+" ******* Mock app : " + message;
+        const msg = '[NODE_MOCK_'+this.serverPort+"] " + message;
         this.requestLogs.push(msg);
         if (this.logMessageCallback){
             this.logMessageCallback(msg);
@@ -64,14 +64,18 @@ class MockApp{
     }
 
     onRequest(endPoint, method,req,res,callback){
-        const scenarioId = this.getCookieFromRequest(req,"scenarioId");
-        const scenarioMockPort = this.getCookieFromRequest(req,'scenarioMockPort');
-        if (scenarioMockPort && this.serverPort !== parseInt(scenarioMockPort)) {
+        try{
+            const scenarioId = this.getCookieFromRequest(req, "scenarioId");
+            const scenarioMockPort = this.getCookieFromRequest(req, 'scenarioMockPort');
+            // this.logMessage(` => ${scenarioMockPort} => ${req.method}: ${req.originalUrl}`);
 
-            this.proxyRequest(req, res, parseInt(scenarioMockPort));
-        } else {
-            // this.logMessage(`on mock ${this.serverPort} : req ${req.method} ${req.originalUrl}`);
-            callback(req,res);
+            if (scenarioMockPort && this.serverPort !== parseInt(scenarioMockPort)) {
+                this.proxyRequest(req, res, parseInt(scenarioMockPort));
+            } else {
+                callback(req, res);
+            }
+        }catch(err){
+            res.status(500).send({message:'MOCK error', err:err});
         }
     }
 
@@ -187,7 +191,7 @@ class MockApp{
 
       
         
-        console.log("mock api started");
+        console.log("mock server started on port : " + this.serverPort);
         // return "Mock started successfully"
 
     }
@@ -251,23 +255,16 @@ if (args.standalone){
 
 function setUpcaseConfig() {
     const { getTestJurisdiction }  = require('../ngIntegration/mockData/ccdCaseMock');
-    mockInstance.onGet('/data/internal/cases/:caseid', (req, res) => {
+    // mockInstance.onGet('/data/internal/cases/:caseid', (req, res) => {
         
-        res.send(caseDetailsLabelShowCondition().getCase());
-    });
+    //     res.send(caseDetailsLabelShowCondition().getCase());
+    // });
 
     mockInstance.onGet('/api/user/details', (req, res) => {
-        const userdetails = nodeAppMock.getUserDetailsTemplate();
-        userdetails.userInfo.roles = ["caseworker-ia-caseofficer","caseworker","caseworker-ia-admofficer","caseworker-ia"]; //caseworker
-        // userdetails.userInfo.roles = ["caseworker-ia-iacjudge",  "caseworker-ia"]; //judge
+        const roles = ['caseworker', 'caseworker-ia', 'caseworker-ia-iacjudge'];
+        const idamid = '44d5d2c2-kjnjhbjhb-kjnbjbj-ubhb';
+        res.send(nodeAppMock.getUserDetailsWithRolesAndIdamId(roles, idamid));
 
-        // userdetails.userInfo.id = "12b6a360-7f19-4985-b065-94320a891eaa"; //co r1
-        userdetails.userInfo.id = "3db21928-cbbc-4364-bd91-137c7031fe17"; //co r2
-        // userdetails.userInfo.id = "4fd5803c-a1ae-4790-b735-dc262e8322b8"; //judge r1
-        // userdetails.userInfo.id = "38eb0c5e-29c7-453e-b92d-f2029aaed6c3"; //judge r2
-
-
-        res.send(userdetails);
     });
 
 }
@@ -292,6 +289,7 @@ function caseDetailsLabelShowCondition(){
             { id: "label5ForItem1", type: "Label", label: "Show condition is null", props: { show_condition: null } }
         ]
     })
+    .addMetadata()
     return caseDetail;
 }
 

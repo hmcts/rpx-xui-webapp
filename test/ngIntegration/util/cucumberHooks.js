@@ -38,6 +38,7 @@ defineSupportCode(({ Before, After }) => {
     });
 // 
     After(async function (scenario) {
+
         if(argv.debug || true){
         //    await BrowserWaits.waitForSeconds(600);
         }

@@ -443,7 +443,7 @@ describe('CaseListComponent', () => {
     });
 
     it('should correctly set the summary text', () => {
-      expect(paginationSummary.textContent).toContain('Displaying 1 - 2 out of 2 cases');
+      expect(paginationSummary.textContent).toContain('Showing 1 to 2 of 2 results');
     });
   });
 

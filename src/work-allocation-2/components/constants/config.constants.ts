@@ -111,7 +111,7 @@ const CREATED_DATE: FieldConfig = {
   columnLabel: 'Task created',
   sortName: 'created_date',
   views: TaskView.ALL_VIEWS
-}
+};
 const PRIORITY: FieldConfig = {
   name: 'priority',
   type: FieldType.PRIORITY,
@@ -121,14 +121,14 @@ const PRIORITY: FieldConfig = {
 };
 const START_DATE: FieldConfig = {
   name: 'startDate',
-  type: FieldType.DATE,
+  type: FieldType.FORMATTED_DATE,
   columnLabel: 'Start',
   sortName: 'startDate',
   views: TaskView.ALL_VIEWS
 };
 const END_DATE: FieldConfig = {
   name: 'endDate',
-  type: FieldType.DATE,
+  type: FieldType.FORMATTED_DATE,
   columnLabel: 'End',
   sortName: 'endDate',
   views: TaskView.ALL_VIEWS
@@ -145,10 +145,10 @@ const ASSIGNEE: FieldConfig = {
 // can be used concatenated to differentiate between views
 const JUDICIAL_DATES: FieldConfig[] = [
   CREATED_DATE
-]
+];
 const STAFF_DATES: FieldConfig[] = [
   DUE_DATE_AS_TEXT, PRIORITY
-]
+];
 const PERSON: FieldConfig = {
   disableSort: true,
   name: 'actorName',

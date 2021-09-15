@@ -17,6 +17,9 @@
   <ng-container *ngSwitchCase="fieldType.DATETIME">
     {{ workField[config.name] | date:'dd/MM/yyyy HH:mm'}}
   </ng-container>
+  <ng-container *ngSwitchCase="fieldType.FORMATTED_DATE">
+    {{ workField[config.name] | date:'d MMMM yyyy'}}
+  </ng-container>
   <ng-container *ngSwitchCase="fieldType.BOOLEAN">
     {{ workField[config.name] | yesNo }}
   </ng-container>

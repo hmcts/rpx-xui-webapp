@@ -41,7 +41,6 @@ class WAListTable {
     async waitForTable() {
         await BrowserWaits.waitForElement(this.table);
         await BrowserWaits.waitForConditionAsync(async () => {
-            await BrowserWaits.waitForSeconds(2);
             let tableRowsCount = await this.tableRows.count();
             let isTableFooterDispayed = await this.tableFooter.isDisplayed();
             cucumberReporter.AddMessage(`Waiting for WA list table condition : row count is ${tableRowsCount} or table foorter displayed ${isTableFooterDispayed}`);
@@ -302,6 +301,17 @@ class WAListTable {
 
     async isPaginationControlDisplayed() {
         return this.paginationContainer.isPresent() && this.paginationContainer.isDisplayed();
+    }
+
+    async getTableDisplayValuesAtRow(rowNum) {
+        const displayValuesObject = {};
+        const columnHeaders = await this.getColumnHeaderNames();
+
+        for (const column of columnHeaders){
+            displayValuesObject[column] = await this.getColumnValueAt(column, rowNum);
+        }
+        return displayValuesObject;
+
     }
 }
 

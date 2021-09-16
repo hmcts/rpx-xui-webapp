@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { JurisdictionType } from '../../../../api/workAllocation2/interfaces/jurisdiction';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { Actions } from '../../../role-access/models';
@@ -24,7 +25,7 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent {
     page_number: 1,
     page_size: 25
   };
-  private selectedJurisdiction: any = 'IA';
+  private selectedJurisdiction: any = JurisdictionType.IA;
   private selectedLocation: Location = {
     id: '231596',
     locationName: 'Taylor House',

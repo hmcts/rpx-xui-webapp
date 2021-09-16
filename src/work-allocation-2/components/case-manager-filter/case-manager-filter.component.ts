@@ -1,7 +1,10 @@
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { FilterService } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
+import { JurisdictionType } from 'api/workAllocation2/interfaces/jurisdiction';
 import { filter } from 'rxjs/operators';
+import { PersonRole } from '../../../../api/workAllocation2/interfaces/person';
+import { SERVICE_OPTIONS_LIST } from '../../../app/app.constants';
 import { Location } from '../../models/dtos';
 
 @Component({
@@ -28,7 +31,7 @@ export class CaseManagerFilterComponent implements OnInit {
       fields: [
         {
           name: 'service',
-          value: ['IA']
+          value: [JurisdictionType.IA]
         }
       ]
     }
@@ -41,12 +44,7 @@ export class CaseManagerFilterComponent implements OnInit {
   private static initServiceFilter(): FilterFieldConfig {
     return {
       name: 'service',
-      options: [
-        {
-          key: 'IA',
-          label: 'Immigration and Asylum'
-        }
-      ],
+      options: SERVICE_OPTIONS_LIST,
       minSelected: 1,
       maxSelected: 1,
       minSelectedError: 'You must select a service',
@@ -77,16 +75,16 @@ export class CaseManagerFilterComponent implements OnInit {
       name: 'role',
       options: [
         {
-          key: 'Judicial',
-          label: 'Judicial'
+          key: PersonRole.JUDICIAL,
+          label: PersonRole.JUDICIAL
         },
         {
-          key: 'Legal Ops',
-          label: 'Legal Ops'
+          key: PersonRole.CASEWORKER,
+          label: PersonRole.CASEWORKER,
         },
         {
-          key: 'Admin',
-          label: 'Admin'
+          key: PersonRole.ADMIN,
+          label: PersonRole.ADMIN,
         }
       ],
       minSelected: 1,
@@ -103,8 +101,8 @@ export class CaseManagerFilterComponent implements OnInit {
       name: 'selectPerson',
       options: [
         {
-          key: 'All',
-          label: 'All'
+          key: PersonRole.ALL,
+          label: PersonRole.ALL
         },
         {
           key: 'Specific person',
@@ -136,7 +134,11 @@ export class CaseManagerFilterComponent implements OnInit {
   public ngOnInit(): void {
     this.fieldsConfig.fields = [
       CaseManagerFilterComponent.initServiceFilter(),
-      CaseManagerFilterComponent.initCaseLocationFilter(this.locations),
+      CaseManagerFilterComponent.initCaseLocationFilter([{
+        id: 'all',
+        locationName: 'All locations',
+        services: []
+      }, ...this.locations]),
       CaseManagerFilterComponent.initRoleTypeFilter(),
       CaseManagerFilterComponent.initPersonFilter(),
       CaseManagerFilterComponent.findPersonFilter()
@@ -145,7 +147,6 @@ export class CaseManagerFilterComponent implements OnInit {
       .pipe(
         filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
       ).subscribe((f: FilterSetting) => {
-      console.log(f);
     });
   }
 }

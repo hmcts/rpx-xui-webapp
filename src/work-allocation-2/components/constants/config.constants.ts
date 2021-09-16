@@ -26,6 +26,14 @@ const CASE_NAME_AS_LINK: FieldConfig = {
   sortName: 'caseName',
   views: TaskView.ALL_VIEWS
 };
+const CASE_NAME_AS_LINK_DISABLE_SORT: FieldConfig = {
+  name: 'case_name',
+  type: FieldType.CASE_NAME,
+  columnLabel: 'Case name',
+  sortName: 'caseName',
+  disableSort: true,
+  views: TaskView.ALL_VIEWS
+};
 const CASE_NAME_AS_TEXT: FieldConfig = {
   name: 'case_name',
   type: FieldType.STRING,
@@ -47,11 +55,27 @@ const ROLE: FieldConfig = {
   sortName: 'role',
   views: TaskView.ALL_VIEWS
 };
+const ROLE_DISABLE_SORT: FieldConfig = {
+  name: 'role',
+  type: FieldType.STRING,
+  columnLabel: 'Role',
+  sortName: 'role',
+  disableSort: true,
+  views: TaskView.ALL_VIEWS
+};
 const CASE_CATEGORY: FieldConfig = {
   name: 'case_category',
   type: FieldType.STRING,
   columnLabel: 'Case category',
   sortName: 'caseCategory',
+  views: TaskView.ALL_VIEWS
+};
+const CASE_CATEGORY_DISABLE_SORT: FieldConfig = {
+  name: 'case_category',
+  type: FieldType.STRING,
+  columnLabel: 'Case category',
+  sortName: 'caseCategory',
+  disableSort: true,
   views: TaskView.ALL_VIEWS
 };
 const JURISDICTION: FieldConfig = {
@@ -66,6 +90,14 @@ const LOCATION: FieldConfig = {
   type: FieldType.STRING,
   columnLabel: 'Location',
   sortName: 'locationName',
+  views: TaskView.ALL_VIEWS
+};
+const LOCATION_DISABLE_SORT: FieldConfig = {
+  name: 'location_name',
+  type: FieldType.STRING,
+  columnLabel: 'Location',
+  sortName: 'locationName',
+  disableSort: true,
   views: TaskView.ALL_VIEWS
 };
 const DERIVED_ICON: FieldConfig = {
@@ -134,11 +166,11 @@ const END_DATE: FieldConfig = {
   views: TaskView.ALL_VIEWS
 };
 const ASSIGNEE: FieldConfig = {
-  disableSort: true,
   name: 'assigneeName',
   type: FieldType.STRING,
   columnLabel: 'Person',
   sortName: 'assignee',
+  disableSort: true,
   views: TaskView.ALL_VIEWS
 };
 
@@ -150,10 +182,10 @@ const STAFF_DATES: FieldConfig[] = [
   DUE_DATE_AS_TEXT, PRIORITY
 ];
 const PERSON: FieldConfig = {
-  disableSort: true,
   name: 'actorName',
   type: FieldType.STRING,
   columnLabel: 'Person',
+  disableSort: true,
   sortName: 'actorName',
   views: TaskView.ALL_VIEWS
 };
@@ -198,7 +230,7 @@ const ALL_WORK_TASKS_FOR_JUDICIAL: FieldConfig[] = [
   CASE_NAME_AS_LINK, CASE_CATEGORY, LOCATION, DERIVED_ICON, TASK_NAME_AS_LINK, ...JUDICIAL_DATES, ASSIGNEE
 ];
 const ALL_WORK_CASES: FieldConfig[] = [
-  CASE_NAME_AS_LINK, CASE_CATEGORY, LOCATION, ROLE, PERSON
+  CASE_NAME_AS_LINK_DISABLE_SORT, CASE_CATEGORY_DISABLE_SORT, LOCATION_DISABLE_SORT, ROLE_DISABLE_SORT, PERSON
 ];
 
 export const CONFIG_CONSTANTS = {

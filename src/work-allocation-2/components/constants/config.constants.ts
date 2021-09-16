@@ -27,12 +27,8 @@ const CASE_NAME_AS_LINK: FieldConfig = {
   views: TaskView.ALL_VIEWS
 };
 const CASE_NAME_AS_LINK_DISABLE_SORT: FieldConfig = {
-  name: 'case_name',
-  type: FieldType.CASE_NAME,
-  columnLabel: 'Case name',
-  sortName: 'caseName',
-  disableSort: true,
-  views: TaskView.ALL_VIEWS
+  ...CASE_NAME_AS_LINK,
+  disableSort: true
 };
 const CASE_NAME_AS_TEXT: FieldConfig = {
   name: 'case_name',
@@ -56,12 +52,8 @@ const ROLE: FieldConfig = {
   views: TaskView.ALL_VIEWS
 };
 const ROLE_DISABLE_SORT: FieldConfig = {
-  name: 'role',
-  type: FieldType.STRING,
-  columnLabel: 'Role',
-  sortName: 'role',
-  disableSort: true,
-  views: TaskView.ALL_VIEWS
+  ...ROLE,
+  disableSort: true
 };
 const CASE_CATEGORY: FieldConfig = {
   name: 'case_category',
@@ -71,12 +63,8 @@ const CASE_CATEGORY: FieldConfig = {
   views: TaskView.ALL_VIEWS
 };
 const CASE_CATEGORY_DISABLE_SORT: FieldConfig = {
-  name: 'case_category',
-  type: FieldType.STRING,
-  columnLabel: 'Case category',
-  sortName: 'caseCategory',
-  disableSort: true,
-  views: TaskView.ALL_VIEWS
+  ...CASE_CATEGORY,
+  disableSort: true
 };
 const JURISDICTION: FieldConfig = {
   name: 'jurisdiction',
@@ -93,12 +81,8 @@ const LOCATION: FieldConfig = {
   views: TaskView.ALL_VIEWS
 };
 const LOCATION_DISABLE_SORT: FieldConfig = {
-  name: 'location_name',
-  type: FieldType.STRING,
-  columnLabel: 'Location',
-  sortName: 'locationName',
-  disableSort: true,
-  views: TaskView.ALL_VIEWS
+  ...LOCATION,
+  disableSort: true
 };
 const DERIVED_ICON: FieldConfig = {
   name: 'derivedIcon',

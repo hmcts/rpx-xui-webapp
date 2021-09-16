@@ -373,7 +373,7 @@ export async function getTasksForCaseIdAndEventId(req: EnhancedRequest, res: Res
   const eventId = req.params.eventId;
   try {
     const promise = new Promise((resolve, reject) => {
-      if(!caseId || !eventId) {
+      if (!caseId || !eventId) {
         return reject(false);
       }
       eventId !== 'sendDirection' ? resolve(false) : resolve(true);
